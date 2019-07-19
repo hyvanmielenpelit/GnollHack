@@ -2257,7 +2257,7 @@ struct obj *otmp;
                 You("fall asleep.");
             else
                 You_hear("sinister laughter as you fall asleep...");
-            fall_asleep(-rn1(11, 20), TRUE);
+            fall_asleep(-rn1(6, 15), TRUE);
         }
         break;
     }

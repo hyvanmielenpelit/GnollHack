@@ -1100,7 +1100,7 @@ unsigned trflags;
             You("are enveloped in a cloud of gas!");
         } else {
             pline("A cloud of gas puts you to sleep!");
-            fall_asleep(-rnd(25), TRUE);
+            fall_asleep(-rn1(7,8), TRUE);
         }
         (void) steedintrap(trap, (struct obj *) 0);
         break;
@@ -1608,7 +1608,7 @@ struct obj *otmp;
     case SLP_GAS_TRAP:
         if (!resists_sleep(steed) && !breathless(steed->data)
             && !steed->msleeping && steed->mcanmove) {
-            if (sleep_monst(steed, rnd(25), -1))
+            if (sleep_monst(steed, rn1(7,8), -1))
                 /* no in_sight check here; you can feel it even if blind */
                 pline("%s suddenly falls asleep!", Monnam(steed));
         }
@@ -2294,7 +2294,7 @@ register struct monst *mtmp;
         case SLP_GAS_TRAP:
             if (!resists_sleep(mtmp) && !breathless(mptr) && !mtmp->msleeping
                 && mtmp->mcanmove) {
-                if (sleep_monst(mtmp, rnd(25), -1) && in_sight) {
+                if (sleep_monst(mtmp, rn1(7,8), -1) && in_sight) {
                     pline("%s suddenly falls asleep!", Monnam(mtmp));
                     seetrap(trap);
                 }

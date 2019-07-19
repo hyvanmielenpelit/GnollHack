@@ -404,7 +404,7 @@ struct obj *otmp;
         /* [wakeup() doesn't rouse victims of temporary sleep,
            so it's okay to leave `wake' set to TRUE here] */
         reveal_invis = TRUE;
-        if (sleep_monst(mtmp, d(1 + otmp->spe, 12), WAND_CLASS))
+        if (sleep_monst(mtmp, d(1 + otmp->spe, 8), WAND_CLASS))
             slept_monst(mtmp);
         if (!Blind)
             learn_it = TRUE;
@@ -2420,7 +2420,7 @@ boolean ordinary;
             You("don't feel sleepy!");
         } else {
             pline_The("sleep ray hits you!");
-            fall_asleep(-rnd(50), TRUE);
+            fall_asleep(-rn1(5,8), TRUE);
         }
         break;
 
@@ -3615,7 +3615,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
         break;
     case ZT_SLEEP:
         tmp = 0;
-        (void) sleep_monst(mon, d(nd, 25),
+        (void) sleep_monst(mon, rn1(5, 8),
                            type == ZT_WAND(ZT_SLEEP) ? WAND_CLASS : '\0');
         break;
     case ZT_DEATH:                              /* death/disintegration */
@@ -3773,7 +3773,7 @@ xchar sx, sy;
             shieldeff(u.ux, u.uy);
             You("don't feel sleepy.");
         } else {
-            fall_asleep(-d(nd, 25), TRUE); /* sleep ray */
+            fall_asleep(-rn1(5, 8), TRUE); /* sleep ray */
         }
         break;
     case ZT_DEATH:

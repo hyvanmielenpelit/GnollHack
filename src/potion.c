@@ -781,7 +781,7 @@ register struct obj *otmp;
             else
                 Your("%s are frozen to the %s!", makeplural(body_part(FOOT)),
                      surface(u.ux, u.uy));
-            nomul(-(rn1(10, 25 - 12 * bcsign(otmp))));
+            nomul(-(rn1(9 - 6 * bcsign(otmp), 8 - 4 * bcsign(otmp))));
             multi_reason = "frozen by a potion";
             nomovemsg = You_can_move_again;
             exercise(A_DEX, FALSE);
@@ -792,7 +792,7 @@ register struct obj *otmp;
             You("yawn.");
         } else {
             You("suddenly fall asleep!");
-            fall_asleep(-rn1(10, 25 - 12 * bcsign(otmp)), TRUE);
+            fall_asleep(-rn1(9 - 6 * bcsign(otmp), 8 - 4 * bcsign(otmp)), TRUE);
         }
         break;
     case POT_MONSTER_DETECTION:
@@ -1452,7 +1452,7 @@ int how;
         }
         case POT_SLEEPING:
             /* wakeup() doesn't rouse victims of temporary sleep */
-            if (sleep_monst(mon, rnd(12), POTION_CLASS)) {
+            if (sleep_monst(mon, rn1(9,8), POTION_CLASS)) {
                 pline("%s falls asleep.", Monnam(mon));
                 slept_monst(mon);
             }
@@ -1462,7 +1462,7 @@ int how;
                 /* really should be rnd(5) for consistency with players
                  * breathing potions, but...
                  */
-                paralyze_monst(mon, rnd(25));
+                paralyze_monst(mon, rn1(9, 8));
             }
             break;
         case POT_SPEED:

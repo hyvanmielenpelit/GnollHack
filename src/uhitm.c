@@ -1199,6 +1199,8 @@ int dieroll;
         }
     }
 
+	int damagedealt = tmp;
+
     if (!already_killed)
         mon->mhp -= tmp;
     /* adjustments might have made tmp become less than what
@@ -1246,12 +1248,12 @@ int dieroll;
         if (thrown)
             hit(mshot_xname(obj), mon, exclam(tmp));
         else if (!flags.verbose)
-            You("hit it.");
+            You("hit it for %d damage.", damagedealt);
         else
-            You("%s %s%s",
+            You("%s %s for %d damage%s",
                 (obj && (is_shield(obj) || obj->otyp == HEAVY_IRON_BALL))
                   ? "bash" : Role_if(PM_BARBARIAN) ? "smite" : "hit",
-                mon_nam(mon), canseemon(mon) ? exclam(tmp) : ".");
+                mon_nam(mon), damagedealt, canseemon(mon) ? exclam(tmp) : ".");
     }
 
     if (silvermsg) {
@@ -1907,11 +1909,11 @@ int specialdmg; /* blessed and/or silver bonus against various things */
         if (!negated && mdef->mcanmove && !rn2(3) && tmp < mdef->mhp) {
             if (!Blind)
                 pline("%s is frozen by you!", Monnam(mdef));
-            paralyze_monst(mdef, rnd(10));
+            paralyze_monst(mdef, 2 + rnd(8));
         }
         break;
     case AD_SLEE:
-        if (!negated && !mdef->msleeping && sleep_monst(mdef, rnd(10), -1)) {
+        if (!negated && !mdef->msleeping && sleep_monst(mdef, rn1(3,8), -1)) {
             if (!Blind)
                 pline("%s is put to sleep by you!", Monnam(mdef));
             slept_monst(mdef);

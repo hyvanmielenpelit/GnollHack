@@ -1113,7 +1113,7 @@ register struct attack *mattk;
         if (uncancelled && multi >= 0 && !rn2(5)) {
             if (Sleep_resistance)
                 break;
-            fall_asleep(-rnd(10), TRUE);
+            fall_asleep(-rn1(3, 8), TRUE);
             if (Blind)
                 You("are put to sleep!");
             else

@@ -881,6 +881,15 @@ int spell;
 }
 
 int
+getspellenergycost(spelllevel)
+int spelllevel;
+{
+	int energy = spelllevel * 3;
+
+	return energy;
+}
+
+int
 spelleffects(spell, atme)
 int spell;
 boolean atme;
@@ -927,12 +936,15 @@ boolean atme;
      *  Note: dotele() also calculates energy use and checks nutrition
      *  and strength requirements; it any of these change, update it too.
      */
-    energy = (spellev(spell) * 5); /* 5 <= energy <= 35 */
+    //energy = (spellev(spell) * 5);
+	/* 5 <= energy <= 35 */
+	energy = getspellenergycost(spellev(spell));
 
-    if (u.uhunger <= 10 && spellid(spell) != SPE_DETECT_FOOD) {
+    /*if (u.uhunger <= 10 && spellid(spell) != SPE_DETECT_FOOD) {
         You("are too hungry to cast that spell.");
         return 0;
-    } else if (ACURR(A_STR) < 4 && spellid(spell) != SPE_RESTORE_ABILITY) {
+    } else*/
+	if (ACURR(A_STR) < 4 && spellid(spell) != SPE_RESTORE_ABILITY) {
         You("lack the strength to cast spells.");
         return 0;
     } else if (check_capacity(
@@ -963,23 +975,26 @@ boolean atme;
     if (energy > u.uen) {
         You("don't have enough energy to cast that spell.");
         return res;
-    } else {
+    } 
+	//else {
+		/* If hero is a wizard, their current intelligence
+			 * (bonuses + temporary + current)
+			 * affects hunger reduction in casting a spell.
+			 * 1. int = 17-18 no reduction
+			 * 2. int = 16    1/4 hungr
+			 * 3. int = 15    1/2 hungr
+			 * 4. int = 1-14  normal reduction
+			 * The reason for this is:
+			 * a) Intelligence affects the amount of exertion
+			 * in thinking.
+			 * b) Wizards have spent their life at magic and
+			 * understand quite well how to cast spells.
+			 */
+		/*
         if (spellid(spell) != SPE_DETECT_FOOD) {
             int hungr = energy * 2;
 
-            /* If hero is a wizard, their current intelligence
-             * (bonuses + temporary + current)
-             * affects hunger reduction in casting a spell.
-             * 1. int = 17-18 no reduction
-             * 2. int = 16    1/4 hungr
-             * 3. int = 15    1/2 hungr
-             * 4. int = 1-14  normal reduction
-             * The reason for this is:
-             * a) Intelligence affects the amount of exertion
-             * in thinking.
-             * b) Wizards have spent their life at magic and
-             * understand quite well how to cast spells.
-             */
+            
             intell = acurr(A_INT);
             if (!Role_if(PM_WIZARD))
                 intell = 10;
@@ -1002,17 +1017,18 @@ boolean atme;
                 hungr /= 2;
                 break;
             }
+			*/
             /* don't put player (quite) into fainting from
              * casting a spell, particularly since they might
              * not even be hungry at the beginning; however,
              * this is low enough that they must eat before
              * casting anything else except detect food
              */
-            if (hungr > u.uhunger - 3)
-                hungr = u.uhunger - 3;
-            morehungry(hungr);
-        }
-    }
+            //if (hungr > u.uhunger - 3)
+            //    hungr = u.uhunger - 3;
+            //morehungry(hungr);
+        //}
+    //}
 
     chance = percent_success(spell);
     if (confused || (rnd(100) > chance)) {
@@ -1652,12 +1668,12 @@ int *spell_no;
      * given string and are of the form "a - ".
      */
     if (!iflags.menu_tab_sep) {
-        Sprintf(buf, "%-20s     Level %-12s Fail Retention", "    Name",
+        Sprintf(buf, "%-20s     Level %-12s Cost Fail Retention", "    Name",
                 "Category");
-        fmt = "%-20s  %2d   %-12s %3d%% %9s";
+        fmt = "%-20s  %2d   %-12s %4d %3d%% %9s";
     } else {
-        Sprintf(buf, "Name\tLevel\tCategory\tFail\tRetention");
-        fmt = "%s\t%-d\t%s\t%-d%%\t%s";
+        Sprintf(buf, "Name\tLevel\tCategory\tCost\tFail\tRetention");
+        fmt = "%s\t%-d\t%s\t%-d\t%-d%%\t%s";
     }
     add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, buf,
              MENU_UNSELECTED);
@@ -1665,6 +1681,7 @@ int *spell_no;
         splnum = !spl_orderindx ? i : spl_orderindx[i];
         Sprintf(buf, fmt, spellname(splnum), spellev(splnum),
                 spelltypemnemonic(spell_skilltype(spellid(splnum))),
+				getspellenergycost(spellev(splnum)),
                 100 - percent_success(splnum),
                 spellretention(splnum, retentionbuf));
 
@@ -1760,7 +1777,7 @@ int spell;
     /* Players basic likelihood of being able to cast any spell
      * is based of their `magic' statistic. (Int or Wis)
      */
-    chance = 11 * statused / 2;
+    chance = 10 * (statused - 3);
 
     /*
      * High level spells are harder.  Easier for higher level casters.
@@ -1769,43 +1786,50 @@ int spell;
      */
     skill = P_SKILL(spell_skilltype(spellid(spell)));
     skill = max(skill, P_UNSKILLED) - 1; /* unskilled => 0 */
-    difficulty =
-        (spellev(spell) - 1) * 4 - ((skill * 6) + (u.ulevel / 3) + 1);
+    //difficulty =
+    //    (spellev(spell) - 1) * 4 - ((skill * 6) + ((u.ulevel - 1) * 2) + 0);
 
-    if (difficulty > 0) {
+	chance += -45 * (spellev(spell) - 1);
+	chance += (statused - 3) * 3 * skill;
+	chance += (statused - 3) * 3 * (u.ulevel - 1);
+	chance += -5 * splcaster;
+
+//	if (difficulty > 0) {
         /* Player is too low level or unskilled. */
-        chance -= isqrt(900 * difficulty + 2000);
-    } else {
+//        chance -= isqrt(900 * difficulty + 2000);
+//    } else {
         /* Player is above level.  Learning continues, but the
          * law of diminishing returns sets in quickly for
          * low-level spells.  That is, a player quickly gains
          * no advantage for raising level.
          */
-        int learning = 15 * -difficulty / spellev(spell);
-        chance += learning > 20 ? 20 : learning;
-    }
+//        int learning = 15 * -difficulty / spellev(spell);
+//        chance += learning > 20 ? 20 : learning;
+//    }
 
     /* Clamp the chance: >18 stat and advanced learning only help
      * to a limit, while chances below "hopeless" only raise the
      * specter of overflowing 16-bit ints (and permit wearing a
      * shield to raise the chances :-).
      */
+	/*
     if (chance < 0)
         chance = 0;
-    if (chance > 120)
-        chance = 120;
-
+    if (chance > 500)
+        chance = 500;
+	*/
     /* Wearing anything but a light shield makes it very awkward
      * to cast a spell.  The penalty is not quite so bad for the
      * player's role-specific spell.
      */
+	/*
     if (uarms && weight(uarms) > (int) objects[SMALL_SHIELD].oc_weight) {
         if (spellid(spell) == urole.spelspec) {
-            chance /= 2;
+            chance *= 0.75;
         } else {
-            chance /= 4;
+            chance /= 2;
         }
-    }
+    }*/
 
     /* Finally, chance (based on player intell/wisdom and level) is
      * combined with ability (based on player intrinsics and
@@ -1813,7 +1837,7 @@ int spell;
      * a player is, intrinsics and encumbrance can prevent casting;
      * and no matter how able, learning is always required.
      */
-    chance = chance * (20 - splcaster) / 15 - splcaster;
+	// chance = chance * (20 - splcaster) / 15 - splcaster;
 
     /* Clamp to percentile */
     if (chance > 100)

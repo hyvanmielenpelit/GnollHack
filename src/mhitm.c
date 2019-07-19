@@ -1121,7 +1121,7 @@ register struct attack *mattk;
         break;
     case AD_SLEE:
         if (!cancelled && !mdef->msleeping
-            && sleep_monst(mdef, rnd(10), -1)) {
+            && sleep_monst(mdef, rn1(3,8), -1)) {
             if (vis && canspotmon(mdef)) {
                 Strcpy(buf, Monnam(mdef));
                 pline("%s is put to sleep by %s.", buf, mon_nam(magr));
