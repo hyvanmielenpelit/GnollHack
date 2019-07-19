@@ -1,6 +1,6 @@
-/* GnollHack 0.1	drawing.c	$NHDT-Date: 1546656404 2019/01/05 02:46:44 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.59 $ */
-/* Copyright (c) NetHack Development Team 1992.                   */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack 4.0	drawing.c	$NHDT-Date: 1546656404 2019/01/05 02:46:44 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.59 $ */
+/* Copyright (c) GnollHack Development Team 1992.                   */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 #include "tcap.h"
@@ -305,7 +305,7 @@ char ch;
  *
  * init_symbols()
  *                     Sets the current display symbols, the
- *                     loadable symbols to the default NetHack
+ *                     loadable symbols to the default GnollHack
  *                     symbols, including the r_syms rogue level
  *                     symbols. This would typically be done
  *                     immediately after execution begins. Any

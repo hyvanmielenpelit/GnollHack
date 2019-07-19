@@ -1,6 +1,6 @@
-/* GnollHack 0.1	mhmain.c	$NHDT-Date: 1432512811 2015/05/25 00:13:31 $  $NHDT-Branch: master $:$NHDT-Revision: 1.62 $ */
+/* GnollHack 4.0	mhmain.c	$NHDT-Date: 1432512811 2015/05/25 00:13:31 $  $NHDT-Branch: master $:$NHDT-Revision: 1.62 $ */
 /* Copyright (C) 2001 by Alex Kompel 	 */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "winMS.h"
 #include <commdlg.h>
@@ -15,7 +15,7 @@
 #include "mhmsgwnd.h"
 #include "mhmap.h"
 
-typedef struct mswin_nethack_main_window {
+typedef struct mswin_GnollHack_main_window {
     int mapAcsiiModeSave;
 } NHMainWindow, *PNHMainWindow;
 
@@ -226,7 +226,7 @@ MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_KEYDOWN: {
 
-        /* translate arrow keys into nethack commands */
+        /* translate arrow keys into GnollHack commands */
         switch (wParam) {
         case VK_LEFT:
             if (STATEON(VK_CONTROL)) {
@@ -394,10 +394,10 @@ MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_SYSCHAR: /* Alt-char pressed */
     {
         /*
-          If not nethackmode, don't handle Alt-keys here.
+          If not GnollHackmode, don't handle Alt-keys here.
           If no Alt-key pressed it can never be an extended command
         */
-        if (GetNHApp()->regNetHackMode && ((lParam & 1 << 29) != 0)) {
+        if (GetNHApp()->regGnollHackMode && ((lParam & 1 << 29) != 0)) {
             unsigned char c = (unsigned char) (wParam & 0xFF);
             unsigned char scancode = (lParam >> 16) & 0xFF;
             if (index(extendedlist, tolower(c)) != 0) {
@@ -473,12 +473,12 @@ MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             case IDYES:
 #ifdef SAFERHANGUP
                 /* destroy popup window - it has its own loop and we need to
-                return control to NetHack core at this point */
+                return control to GnollHack core at this point */
                 if (IsWindow(GetNHApp()->hPopupWnd))
                     SendMessage(GetNHApp()->hPopupWnd, WM_COMMAND, IDCANCEL,
                                 0);
 
-                /* tell NetHack core that "hangup" is requested */
+                /* tell GnollHack core that "hangup" is requested */
                 hangup(1);
 #else
                 NHEVENT_KBD('y');
@@ -971,7 +971,7 @@ onWMCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
     } break;
 
     case IDM_NHMODE: {
-        GetNHApp()->regNetHackMode = GetNHApp()->regNetHackMode ? 0 : 1;
+        GetNHApp()->regGnollHackMode = GetNHApp()->regGnollHackMode ? 0 : 1;
         mswin_menu_check_intf_mode();
         mswin_apply_window_style_all();
         break;
@@ -1100,7 +1100,7 @@ mswin_menu_check_intf_mode()
 {
     HMENU hMenu = GetMenu(GetNHApp()->hMainWnd);
 
-    if (GetNHApp()->regNetHackMode)
+    if (GetNHApp()->regGnollHackMode)
         CheckMenuItem(hMenu, IDM_NHMODE, MF_CHECKED);
     else
         CheckMenuItem(hMenu, IDM_NHMODE, MF_UNCHECKED);
@@ -1213,7 +1213,7 @@ mswin_apply_window_style(HWND hwnd) {
     if( !GetNHApp()->bWindowsLocked ) {
         style = WS_CHILD|WS_CLIPSIBLINGS|WS_CAPTION|WS_SIZEBOX|(style & (WS_VISIBLE|WS_VSCROLL|WS_HSCROLL));
         exstyle = WS_EX_WINDOWEDGE;
-    } else if (GetNHApp()->regNetHackMode) {
+    } else if (GetNHApp()->regGnollHackMode) {
         /* do away borders */
         style = WS_CHILD|WS_CLIPSIBLINGS|(style & (WS_VISIBLE|WS_VSCROLL|WS_HSCROLL));
         exstyle = 0;

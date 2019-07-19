@@ -1,17 +1,17 @@
-/* GnollHack 0.1	nh340key.c	$NHDT-Date: 1432512793 2015/05/25 00:13:13 $  $NHDT-Branch: master $:$NHDT-Revision: 1.12 $ */
-/* Copyright (c) NetHack PC Development Team 2003                      */
-/* NetHack may be freely redistributed.  See license for details.      */
+/* GnollHack 4.0	nh340key.c	$NHDT-Date: 1432512793 2015/05/25 00:13:13 $  $NHDT-Branch: master $:$NHDT-Revision: 1.12 $ */
+/* Copyright (c) GnollHack PC Development Team 2003                      */
+/* GnollHack may be freely redistributed.  See license for details.      */
 
 /*
- * This is the NetHack keystroke processing from NetHack 3.4.0.
+ * This is the GnollHack keystroke processing from GnollHack 3.4.0.
  * It can be built as a run-time loadable dll (nh340key.dll),
- * placed in the same directory as the nethack.exe executable,
+ * placed in the same directory as the GnollHack.exe executable,
  * and loaded by specifying OPTIONS=altkeyhandler:nh340key
  * in defaults.nh
  */
 
-static char where_to_get_source[] = "http://www.nethack.org/";
-static char author[] = "The NetHack Development Team";
+static char where_to_get_source[] = "http://www.GnollHack.org/";
+static char author[] = "The GnollHack Development Team";
 
 #include "win32api.h"
 #include "hack.h"

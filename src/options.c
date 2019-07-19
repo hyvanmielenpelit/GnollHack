@@ -1,7 +1,7 @@
-/* GnollHack 0.1	options.c	$NHDT-Date: 1554591224 2019/04/06 22:53:44 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.363 $ */
+/* GnollHack 4.0	options.c	$NHDT-Date: 1554591224 2019/04/06 22:53:44 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.363 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2008. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #ifdef OPTION_LISTS_ONLY /* (AMIGA) external program for opt lists */
 #include "config.h"
@@ -60,15 +60,15 @@ static struct Bool_Opt {
     { "acoustics", &flags.acoustics, TRUE, SET_IN_GAME },
 #if defined(SYSFLAGS) && defined(AMIGA)
     /* Amiga altmeta causes Alt+key to be converted into Meta+key by
-       low level nethack code; on by default, can be toggled off if
+       low level GnollHack code; on by default, can be toggled off if
        Alt+key is needed for some ASCII chars on non-ASCII keyboard */
     { "altmeta", &sysflags.altmeta, TRUE, DISP_IN_GAME },
 #else
 #ifdef ALTMETA
-    /* non-Amiga altmeta causes nethack's top level command loop to treat
+    /* non-Amiga altmeta causes GnollHack's top level command loop to treat
        two character sequence "ESC c" as M-c, for terminals or emulators
        which send "ESC c" when Alt+c is pressed; off by default, enabling
-       this can potentially make trouble if user types ESC when nethack
+       this can potentially make trouble if user types ESC when GnollHack
        is honoring this conversion request (primarily after starting a
        count prefix prior to a command and then deciding to cancel it) */
     { "altmeta", &iflags.altmeta, FALSE, SET_IN_GAME },
@@ -840,7 +840,7 @@ void
 initoptions_finish()
 {
 #ifndef MAC
-    char *opts = getenv("NETHACKOPTIONS");
+    char *opts = getenv("GnollHackOPTIONS");
 
     if (!opts)
         opts = getenv("HACKOPTIONS");
@@ -861,7 +861,7 @@ initoptions_finish()
             /* let the total length of options be long;
              * parseoptions() will check each individually
              */
-            config_error_init(FALSE, "NETHACKOPTIONS", FALSE);
+            config_error_init(FALSE, "GnollHackOPTIONS", FALSE);
             (void) parseoptions(opts, TRUE, FALSE);
             config_error_done();
         }
@@ -1026,7 +1026,7 @@ const char *optname;
 #ifdef MICRO
     pline("\"%s\" settable only from %s.", optname, configfile);
 #else
-    pline("%s can be set only from NETHACKOPTIONS or %s.", optname,
+    pline("%s can be set only from GnollHackOPTIONS or %s.", optname,
           configfile);
 #endif
 }
@@ -1208,7 +1208,7 @@ const char *optn;
         Sprintf(buf, "%lu.%lu.%lu", FEATURE_NOTICE_VER_MAJ,
                 FEATURE_NOTICE_VER_MIN, FEATURE_NOTICE_VER_PATCH);
         pline(
-          "Feature change alerts disabled for NetHack %s features and prior.",
+          "Feature change alerts disabled for GnollHack %s features and prior.",
               buf);
     }
     return 1;
@@ -2069,7 +2069,7 @@ boolean tinitial, tfrom_file;
     }
 
 #if defined(MICRO) && !defined(AMIGA)
-    /* included for compatibility with old NetHack.cnf files */
+    /* included for compatibility with old GnollHack.cnf files */
     if (match_optname(opts, "IBM_", 4, FALSE)) {
         iflags.BIOS = !negated;
         return retval;
@@ -3549,7 +3549,7 @@ boolean tinitial, tfrom_file;
      * For user, making it be first in a config file is trivial, use
      * OPTIONS=windowtype:Foo
      * as the first non-comment line of the file.
-     * Making it first in NETHACKOPTIONS requires it to be at the _end_
+     * Making it first in GnollHackOPTIONS requires it to be at the _end_
      * because comma-separated option strings are processed from right
      * to left.
      */
@@ -4313,7 +4313,7 @@ boolean dolist;
 #if defined(MICRO) || defined(MAC) || defined(WIN32)
 #define OPTIONS_HEADING "OPTIONS"
 #else
-#define OPTIONS_HEADING "NETHACKOPTIONS"
+#define OPTIONS_HEADING "GnollHackOPTIONS"
 #endif
 
 static char fmtstr_doset[] = "%s%-15s [%s]   ";
@@ -6111,15 +6111,15 @@ const char *strval;
 /* data for option_help() */
 static const char *opt_intro[] = {
     "",
-    "                 NetHack Options Help:", "",
+    "                 GnollHack Options Help:", "",
 #define CONFIG_SLOT 3 /* fill in next value at run-time */
     (char *) 0,
 #if !defined(MICRO) && !defined(MAC)
-    "or use `NETHACKOPTIONS=\"<options>\"' in your environment",
+    "or use `GnollHackOPTIONS=\"<options>\"' in your environment",
 #endif
     "(<options> is a list of options separated by commas)",
 #ifdef VMS
-    "-- for example, $ DEFINE NETHACKOPTIONS \"noautopickup,fruit:kumquat\"",
+    "-- for example, $ DEFINE GnollHackOPTIONS \"noautopickup,fruit:kumquat\"",
 #endif
     "or press \"O\" while playing and use the menu.",
     "",
@@ -6344,10 +6344,10 @@ struct fruit *replace_fruit;
 }
 
 /*
- * This is a somewhat generic menu for taking a list of NetHack style
+ * This is a somewhat generic menu for taking a list of GnollHack style
  * class choices and presenting them via a description
- * rather than the traditional NetHack characters.
- * (Benefits users whose first exposure to NetHack is via tiles).
+ * rather than the traditional GnollHack characters.
+ * (Benefits users whose first exposure to GnollHack is via tiles).
  *
  * prompt
  *           The title at the top of the menu.
@@ -6800,7 +6800,7 @@ char *op;
 }
 
 /* set up for wizard mode if player or save file has requested to it;
-   called from port-specific startup code to handle `nethack -D' or
+   called from port-specific startup code to handle `GnollHack -D' or
    OPTIONS=playmode:debug, or from dorecover()'s restgamestate() if
    restoring a game which was saved in wizard mode */
 void

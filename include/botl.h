@@ -1,6 +1,6 @@
-/* GnollHack 0.1  botl.h  $NHDT-Date: 1554591222 2019/04/06 22:53:42 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.24 $ */
+/* GnollHack 4.0  botl.h  $NHDT-Date: 1554591222 2019/04/06 22:53:42 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.24 $ */
 /* Copyright (c) Michael Allison, 2003                            */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef BOTL_H
 #define BOTL_H

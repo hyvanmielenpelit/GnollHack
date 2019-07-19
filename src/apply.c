@@ -1,7 +1,7 @@
-/* GnollHack 0.1	apply.c	$NHDT-Date: 1553363415 2019/03/23 17:50:15 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.272 $ */
+/* GnollHack 4.0	apply.c	$NHDT-Date: 1553363415 2019/03/23 17:50:15 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.272 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 
@@ -2983,7 +2983,7 @@ struct obj *obj;
      *      .52125.
      *      .85458.
      *      ...9...
-     *  (Note: no roles in nethack can become expert or better
+     *  (Note: no roles in GnollHack can become expert or better
      *  for polearm skill; Yeoman in slash'em can become expert.)
      */
     min_range = 4;

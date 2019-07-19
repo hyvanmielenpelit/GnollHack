@@ -1,6 +1,6 @@
 #ifndef lint
 /* static char yysccsid[] = "@(#)yaccpar	1.9 (Berkeley) 02/21/93"; */
-/* static char nhsccsid[] = "@(#)yaccpar   1.9.0-nh (NetHack) 12/03/2015"; */
+/* static char nhsccsid[] = "@(#)yaccpar   1.9.0-nh (GnollHack) 12/03/2015"; */
 #endif
 #define YYBYACC 1
 #define YYMAJOR 1
@@ -11,10 +11,10 @@
 #define yyerrok (yyerrflag=0)
 #define YYRECOVERING (yyerrflag!=0)
 #define YYPREFIX "yy"
-/* GnollHack 0.1  dgn_comp.y	$NHDT-Date: 1551901399 2019/03/06 19:43:19 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.15 $ */
+/* GnollHack 4.0  dgn_comp.y	$NHDT-Date: 1551901399 2019/03/06 19:43:19 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.15 $ */
 /*	Copyright (c) 1989 by Jean-Christophe Collet */
 /*	Copyright (c) 1990 by M. Stephenson				  */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /*
  * This file contains the Dungeon Compiler code
@@ -529,7 +529,7 @@ check_branch()
  *
  *	The file will have the following format:
  *
- *	[ nethack version ID ]
+ *	[ GnollHack version ID ]
  *	[ number of dungeons ]
  *	[ first dungeon struct ]
  *	[ levels for the first dungeon ]

@@ -1,5 +1,5 @@
-/* GnollHack 0.1	write.c	$NHDT-Date: 1450261366 2015/12/16 10:22:46 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.17 $ */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack 4.0	write.c	$NHDT-Date: 1450261366 2015/12/16 10:22:46 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.17 $ */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 

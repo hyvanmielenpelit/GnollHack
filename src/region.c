@@ -1,6 +1,6 @@
-/* GnollHack 0.1	region.c	$NHDT-Date: 1543455828 2018/11/29 01:43:48 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.43 $ */
+/* GnollHack 4.0	region.c	$NHDT-Date: 1543455828 2018/11/29 01:43:48 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.43 $ */
 /* Copyright (c) 1996 by Jean-Christophe Collet  */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 #include "lev.h"

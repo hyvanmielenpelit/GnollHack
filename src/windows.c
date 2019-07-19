@@ -1,6 +1,6 @@
-/* GnollHack 0.1	windows.c	$NHDT-Date: 1526933747 2018/05/21 20:15:47 $  $NHDT-Branch: NetHack-3.6.2 $:$NHDT-Revision: 1.48 $ */
+/* GnollHack 4.0	windows.c	$NHDT-Date: 1526933747 2018/05/21 20:15:47 $  $NHDT-Branch: GnollHack-3.6.2 $:$NHDT-Revision: 1.48 $ */
 /* Copyright (c) D. Cohrs, 1993. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 #ifdef TTY_GRAPHICS

@@ -1,6 +1,6 @@
-/* GnollHack 0.1	music.c	$NHDT-Date: 1544442713 2018/12/10 11:51:53 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.57 $ */
+/* GnollHack 4.0	music.c	$NHDT-Date: 1544442713 2018/12/10 11:51:53 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.57 $ */
 /*      Copyright (c) 1989 by Jean-Christophe Collet */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /*
  * This file contains the different functions designed to manipulate the
@@ -828,7 +828,7 @@ char *buf;
      * For this to work, you need to have installed the PD speaker-control
      * driver for PC-compatible UNIX boxes that I (esr@snark.thyrsus.com)
      * posted to comp.sources.unix in Feb 1990.  A copy should be included
-     * with your nethack distribution.
+     * with your GnollHack distribution.
      */
     int fd;
 

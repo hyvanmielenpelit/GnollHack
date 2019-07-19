@@ -1,6 +1,6 @@
-/* GnollHack 0.1	extern.h	$NHDT-Date: 1557088399 2019/05/05 20:33:19 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.703 $ */
+/* GnollHack 4.0	extern.h	$NHDT-Date: 1557088399 2019/05/05 20:33:19 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.703 $ */
 /* Copyright (c) Steve Creps, 1988.				  */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef EXTERN_H
 #define EXTERN_H
@@ -1645,7 +1645,7 @@ E int NDECL(tgetch);
 E int FDECL(ntposkey, (int *, int *, int *));
 E void FDECL(set_output_mode, (int));
 E void NDECL(synch_cursor);
-E void NDECL(nethack_enter_nttty);
+E void NDECL(GnollHack_enter_nttty);
 E void NDECL(nttty_exit);
 #endif
 
@@ -2835,7 +2835,7 @@ E void FDECL(dump_forward_putstr, (winid, int, const char*, int));
 
 /* ### winnt.c ### */
 #ifdef WIN32
-E void NDECL(nethack_enter_winnt);
+E void NDECL(GnollHack_enter_winnt);
 #endif
 
 /* ### wizard.c ### */

@@ -1,7 +1,7 @@
-/* GnollHack 0.1	config.h	$NHDT-Date: 1447728911 2015/11/17 02:55:11 $  $NHDT-Branch: master $:$NHDT-Revision: 1.91 $ */
+/* GnollHack 4.0	config.h	$NHDT-Date: 1447728911 2015/11/17 02:55:11 $  $NHDT-Branch: master $:$NHDT-Revision: 1.91 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2016. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef CONFIG_H /* make sure the compiler does not see the typedefs twice */
 #define CONFIG_H
@@ -81,7 +81,7 @@
 #define BEOS_GRAPHICS             /* (optional) */
 #define DEFAULT_WINDOW_SYS "BeOS" /* "tty" */
 #ifndef HACKDIR                   /* override the default hackdir below */
-#define HACKDIR "/boot/apps/NetHack"
+#define HACKDIR "/boot/apps/GnollHack"
 #endif
 #endif
 
@@ -112,7 +112,7 @@
 #ifndef DEFAULT_WINDOW_SYS
 #define DEFAULT_WINDOW_SYS "mswin"
 #endif
-#define HACKDIR "\\nethack"
+#define HACKDIR "\\GnollHack"
 #endif
 
 #ifndef DEFAULT_WINDOW_SYS
@@ -128,7 +128,7 @@
 #ifdef X11_GRAPHICS
 /*
  * There are two ways that X11 tiles may be defined.  (1) using a custom
- * format loaded by NetHack code, or (2) using the XPM format loaded by
+ * format loaded by GnollHack code, or (2) using the XPM format loaded by
  * the free XPM library.  The second option allows you to then use other
  * programs to generate tiles files.  For example, the PBMPlus tools
  * would allow:
@@ -165,7 +165,7 @@
  *                           this does NOT default to compiled-in value)
  *              EXPLORERS    (who can use explore mode, aka discover mode)
  *              SHELLERS     (who can use ! to execute a shell subprocess)
- *              MAXPLAYERS   (see MAX_NR_OF_PLAYERS below and nethack.sh)
+ *              MAXPLAYERS   (see MAX_NR_OF_PLAYERS below and GnollHack.sh)
  *              SUPPORT      (how to get local support) [no default]
  *              RECOVER      (how to recover a game at your site) [no default]
  *            For the record file (see topten.c):
@@ -178,9 +178,9 @@
  *            The following options pertain to crash reporting:
  *              GREPPATH     (the path to the system grep(1) utility)
  *              GDBPATH      (the path to the system gdb(1) program)
- *            Regular nethack options can also be specified in order to
+ *            Regular GnollHack options can also be specified in order to
  *            provide system-wide default values local to your system:
- *              OPTIONS      (same as in users' .nethackrc or defaults.nh)
+ *              OPTIONS      (same as in users' .GnollHackrc or defaults.nh)
  *
  *              In the future there may be other ways to supply SYSCF
  *              information (Windows registry, Apple resource forks, etc)
@@ -189,7 +189,7 @@
  *              exist and be readable, otherwise the game will complain and
  *              refuse to start.
  *              SYSCF_FILE:  file containing the SYSCF options shown above;
- *              default is 'sysconf' in nethack's playground.
+ *              default is 'sysconf' in GnollHack's playground.
  */
 
 #ifndef WIZARD_NAME /* allow for compile-time or Makefile changes */
@@ -278,9 +278,9 @@
  *      Internal Compression Options
  *
  *      Internal compression options RLECOMP and ZEROCOMP alter the data
- *      that gets written to the save file by NetHack, in contrast
+ *      that gets written to the save file by GnollHack, in contrast
  *      to COMPRESS or ZLIB_COMP which compress the entire file after
- *      the NetHack data is written out.
+ *      the GnollHack data is written out.
  *
  *      Defining RLECOMP builds in support for internal run-length
  *      compression of level structures. If RLECOMP support is included
@@ -295,7 +295,7 @@
  *      COMPRESS or ZLIB_COMP support is included. One reason for doing
  *      so would be to provide savefile read compatibility with a savefile
  *      where those options were in effect. With RLECOMP and/or ZEROCOMP
- *      defined, NetHack can read an rlecomp or zerocomp savefile in, yet
+ *      defined, GnollHack can read an rlecomp or zerocomp savefile in, yet
  *      re-save without them.
  *
  *      Using any compression option will create smaller bones/level/save
@@ -315,7 +315,7 @@
 
 /*
  *      Defining REPRODUCIBLE_BUILD causes 'util/makedefs -v' to construct
- *      date+time in include/date.h (to be shown by nethack's 'v' command)
+ *      date+time in include/date.h (to be shown by GnollHack's 'v' command)
  *      from SOURCE_DATE_EPOCH in the build environment rather than use
  *      current date+time when makedefs is run.
  *
@@ -323,7 +323,7 @@
  *      of "last build <date><time>" if SOURCE_DATE_EPOCH has a value
  *      which seems valid at the time date.h is generated.  The person
  *      building the program is responsible for setting it correctly,
- *      and the value should be in UTC rather than local time.  NetHack
+ *      and the value should be in UTC rather than local time.  GnollHack
  *      normally uses local time and doesn't display timezone so toggling
  *      REPRODUCIBLE_BUILD on or off might yield a date+time that appears
  *      to be incorrect relative to what the other setting produced.]
@@ -352,7 +352,7 @@
  * otherwise it will be the current directory.
  */
 #ifndef HACKDIR
-#define HACKDIR "/usr/games/lib/nethackdir"
+#define HACKDIR "/usr/games/lib/GnollHackdir"
 #endif
 
 /*
@@ -430,7 +430,7 @@ typedef unsigned char uchar;
 /* #define STRNCMPI */ /* compiler/library has the strncmpi function */
 
 /*
- * There are various choices for the NetHack vision system.  There is a
+ * There are various choices for the GnollHack vision system.  There is a
  * choice of two algorithms with the same behavior.  Defining VISION_TABLES
  * creates huge (60K) tables at compile time, drastically increasing data
  * size, but runs slightly faster than the alternate algorithm.  (MSDOS in
@@ -457,7 +457,7 @@ typedef unsigned char uchar;
 
 #define DOAGAIN '\001' /* ^A, the "redo" key used in cmd.c and getline.c */
 
-/* CONFIG_ERROR_SECURE: If user makes NETHACKOPTIONS point to a file ...
+/* CONFIG_ERROR_SECURE: If user makes GnollHackOPTIONS point to a file ...
  *  TRUE: Show the first error, nothing else.
  *  FALSE: Show all errors as normal, with line numbers and context.
  */
@@ -486,23 +486,23 @@ typedef unsigned char uchar;
  *  ESC [ 1 ; 0 ; n ; m z   Start a glyph (aka a tile) number n, with flags m
  *  ESC [ 1 ; 1 z           End a glyph.
  *  ESC [ 1 ; 2 ; n z       Select a window n to output to.
- *  ESC [ 1 ; 3 z           End of data. NetHack has finished sending data,
+ *  ESC [ 1 ; 3 z           End of data. GnollHack has finished sending data,
  *                          and is waiting for input.
  *
- * Whenever NetHack outputs anything, it will first output the "select window"
- * code. Whenever NetHack outputs a tile, it will first output the "start
+ * Whenever GnollHack outputs anything, it will first output the "select window"
+ * code. Whenever GnollHack outputs a tile, it will first output the "start
  * glyph" code, then the escape codes for color and the glyph character
  * itself, and then the "end glyph" code.
  *
- * To compile NetHack with this, add tile.c to WINSRC and tile.o to WINOBJ
+ * To compile GnollHack with this, add tile.c to WINSRC and tile.o to WINOBJ
  * in the hints file or Makefile.
  * Set boolean option vt_tiledata in your config file to turn this on.
  * Note that gnome-terminal at least doesn't work with this. */
 /* #define TTY_TILES_ESCCODES */
 
-/* NetHack will execute an external program whenever a new message-window
+/* GnollHack will execute an external program whenever a new message-window
  * message is shown.  The program to execute is given in environment variable
- * NETHACK_MSGHANDLER.  It will get the message as the only parameter.
+ * GnollHack_MSGHANDLER.  It will get the message as the only parameter.
  * Only available with POSIX_TYPES or GNU C */
 /* #define MSGHANDLER */
 
@@ -539,7 +539,7 @@ typedef unsigned char uchar;
 #endif
 
 #ifndef DUMPLOG_FILE
-#define DUMPLOG_FILE        "/tmp/nethack.%n.%d.log"
+#define DUMPLOG_FILE        "/tmp/GnollHack.%n.%d.log"
 /* DUMPLOG_FILE allows following placeholders:
    %% literal '%'
    %v version (eg. "3.6.2-0")

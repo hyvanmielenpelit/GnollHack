@@ -1,7 +1,7 @@
-/* GnollHack 0.1	do_wear.c	$NHDT-Date: 1551138255 2019/02/25 23:44:15 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.108 $ */
+/* GnollHack 4.0	do_wear.c	$NHDT-Date: 1551138255 2019/02/25 23:44:15 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.108 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 
@@ -678,7 +678,7 @@ Armor_off(VOID_ARGS)
 
 /* The gone functions differ from the off functions in that if you die from
  * taking it off and have life saving, you still die.  [Obsolete reference
- * to lack of fire resistance being fatal in hell (nethack 3.0) and life
+ * to lack of fire resistance being fatal in hell (GnollHack 3.0) and life
  * saving putting a removed item back on to prevent that from immediately
  * repeating.]
  */

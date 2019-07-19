@@ -1,7 +1,7 @@
-/* GnollHack 0.1  cppregex.cpp */
-/* $NHDT-Date: 1524684157 2018/04/25 19:22:37 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.8 $ */
+/* GnollHack 4.0  cppregex.cpp */
+/* $NHDT-Date: 1524684157 2018/04/25 19:22:37 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.8 $ */
 /* Copyright (c) Sean Hunt  2015.                                 */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include <regex>
 #include <memory>

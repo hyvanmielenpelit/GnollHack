@@ -1,6 +1,6 @@
-/* GnollHack 0.1	winMS.h	$NHDT-Date: 1434804346 2015/06/20 12:45:46 $  $NHDT-Branch: win32-x64-working $:$NHDT-Revision: 1.41 $ */
+/* GnollHack 4.0	winMS.h	$NHDT-Date: 1434804346 2015/06/20 12:45:46 $  $NHDT-Branch: win32-x64-working $:$NHDT-Revision: 1.41 $ */
 /* Copyright (C) 2001 by Alex Kompel */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef WINMS_H
 #define WINMS_H
@@ -25,7 +25,7 @@
                      from youprop.h.
                      A better fix would be to ensure we include all window
                      header files before we start clobbering the global name
-                     space with NetHack specific macros. */
+                     space with GnollHack specific macros. */
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -100,7 +100,7 @@ typedef struct mswin_nhwindow_app {
 
     DWORD saveRegistrySettings; /* Flag if we should save this time */
     DWORD
-        regNetHackMode; /* NetHack mode means no Windows keys in some places
+        regGnollHackMode; /* GnollHack mode means no Windows keys in some places
                            */
 
     COLORREF regMapColors[CLR_MAX];

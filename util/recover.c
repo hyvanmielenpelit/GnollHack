@@ -1,4 +1,4 @@
-/* GnollHack 0.1	recover.c	$NHDT-Date: 1550103078 2019/02/14 00:11:18 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.19 $ */
+/* NetHack 0.1	recover.c	$NHDT-Date: 1550103078 2019/02/14 00:11:18 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.19 $ */
 /*	Copyright (c) Janet Walz, 1992.				  */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -72,7 +72,7 @@ char *argv[];
 #endif
 
     if (!dir)
-        dir = getenv("NETHACKDIR");
+        dir = getenv("NetHackDIR");
     if (!dir)
         dir = getenv("HACKDIR");
 #if defined(EXEPATH)
@@ -225,7 +225,7 @@ char *basename;
     /* level 0 file contains:
      *  pid of creating process (ignored here)
      *  level number for current level of save file
-     *  name of save file nethack would have created
+     *  name of save file NetHack would have created
      *  savefile info
      *  player name
      *  and game state
@@ -380,7 +380,7 @@ char *basename;
 
         (void) sprintf(iconfile, "%s.info", savename);
         in = open("NetHack:default.icon", O_RDONLY);
-        out = open(iconfile, O_WRONLY | O_TRUNC | O_CREAT);
+        out = open(GnollHacke, O_WRONLY | O_TRUNC | O_CREAT);
         if (in > -1 && out > -1) {
             copy_bytes(in, out);
         }

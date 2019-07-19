@@ -1,6 +1,6 @@
-/* GnollHack 0.1	ntconf.h	$NHDT-Date: 1447424077 2015/11/13 14:14:37 $  $NHDT-Branch: master $:$NHDT-Revision: 1.48 $ */
-/* Copyright (c) NetHack PC Development Team 1993, 1994.  */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack 4.0	ntconf.h	$NHDT-Date: 1447424077 2015/11/13 14:14:37 $  $NHDT-Branch: master $:$NHDT-Revision: 1.48 $ */
+/* Copyright (c) GnollHack PC Development Team 1993, 1994.  */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef NTCONF_H
 #define NTCONF_H
@@ -27,7 +27,7 @@
 #define SYSCF_FILE "sysconf" /* Use a file to hold the SYSCF configuration */
 
 #define DUMPLOG      /* Enable dumplog files */
-/*#define DUMPLOG_FILE "nethack-%n-%d.log"*/
+/*#define DUMPLOG_FILE "GnollHack-%n-%d.log"*/
 #define DUMPLOG_MSG_COUNT 50
 
 #define USER_SOUNDS
@@ -280,6 +280,6 @@ extern void FDECL(nhassert_failed, (const char * exp, const char * file,
         (nhassert_failed(#expression, __FILE__, __LINE__), 0))
 #endif
 
-#define nethack_enter(argc, argv) nethack_enter_winnt()
-extern void FDECL(nethack_exit, (int)) NORETURN;
+#define GnollHack_enter(argc, argv) GnollHack_enter_winnt()
+extern void FDECL(GnollHack_exit, (int)) NORETURN;
 #endif /* NTCONF_H */

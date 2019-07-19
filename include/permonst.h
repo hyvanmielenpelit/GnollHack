@@ -1,7 +1,7 @@
-/* GnollHack 0.1	permonst.h	$NHDT-Date: 1539804913 2018/10/17 19:35:13 $  $NHDT-Branch: keni-makedefsm $:$NHDT-Revision: 1.12 $ */
+/* GnollHack 4.0	permonst.h	$NHDT-Date: 1539804913 2018/10/17 19:35:13 $  $NHDT-Branch: keni-makedefsm $:$NHDT-Revision: 1.12 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Kenneth Lorber, Kensington, Maryland, 2015. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef PERMONST_H
 #define PERMONST_H

@@ -1,6 +1,6 @@
-/* GnollHack 0.1	tile2bmp.c	$NHDT-Date: 1451442061 2015/12/30 02:21:01 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.15 $ */
-/*   Copyright (c) NetHack PC Development Team 1995                 */
-/*   NetHack may be freely redistributed.  See license for details. */
+/* GnollHack 4.0	tile2bmp.c	$NHDT-Date: 1451442061 2015/12/30 02:21:01 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.15 $ */
+/*   Copyright (c) GnollHack PC Development Team 1995                 */
+/*   GnollHack may be freely redistributed.  See license for details. */
 
 /*
  * Edit History:
@@ -195,10 +195,10 @@ char *argv[];
         strcpy(bmpname, argv[1]);
 
 #ifdef OBSOLETE
-    bmpfile2 = fopen(NETHACK_PACKED_TILEFILE, WRBMODE);
+    bmpfile2 = fopen(GnollHack_PACKED_TILEFILE, WRBMODE);
     if (bmpfile2 == (FILE *) 0) {
         Fprintf(stderr, "Unable to open output file %s\n",
-                NETHACK_PACKED_TILEFILE);
+                GnollHack_PACKED_TILEFILE);
         exit(EXIT_FAILURE);
     }
 #endif

@@ -1,6 +1,6 @@
-/* GnollHack 0.1	polyself.c	$NHDT-Date: 1556497911 2019/04/29 00:31:51 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.132 $ */
+/* GnollHack 4.0	polyself.c	$NHDT-Date: 1556497911 2019/04/29 00:31:51 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.132 $ */
 /*      Copyright (C) 1987, 1988, 1989 by Ken Arromdee */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /*
  * Polymorph self routine.

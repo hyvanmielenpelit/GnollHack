@@ -1,6 +1,6 @@
-/* GnollHack 0.1	sp_lev.c	$NHDT-Date: 1553787633 2019/03/28 15:40:33 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.111 $ */
+/* GnollHack 4.0	sp_lev.c	$NHDT-Date: 1553787633 2019/03/28 15:40:33 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.111 $ */
 /*      Copyright (c) 1989 by Jean-Christophe Collet */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /*
  * This file contains the various functions that are related to the special
@@ -432,7 +432,7 @@ struct opvar *ov;
  * __FUNCTION__ -- gcc extension, starting before C99 and continuing after;
  *                 picked up by other compilers (or vice versa?);
  * __FUNC__     -- supported by Borland;
- * nhFunc       -- slightly intrusive but fully portable nethack construct
+ * nhFunc       -- slightly intrusive but fully portable GnollHack construct
  *                 for any version of any compiler.
  */
 #define opvar_free(ov)                                    \

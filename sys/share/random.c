@@ -15,9 +15,9 @@
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-/* Several minor changes were made for the NetHack distribution to satisfy
+/* Several minor changes were made for the GnollHack distribution to satisfy
  * non-BSD compilers (by definition BSD compilers do not need to compile
- * this file for NetHack).  These changes consisted of:
+ * this file for GnollHack).  These changes consisted of:
  *	- changing the sccsid conditions to nested ifdefs from defined()s
  *	to accommodate stupid preprocessors
  *	- giving srandom() type void instead of allowing it to default to int

@@ -1,7 +1,7 @@
-/* GnollHack 0.1	save.c	$NHDT-Date: 1554591225 2019/04/06 22:53:45 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.117 $ */
+/* GnollHack 4.0	save.c	$NHDT-Date: 1554591225 2019/04/06 22:53:45 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.117 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2009. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 #include "lev.h"
@@ -1483,7 +1483,7 @@ char *from, *to;
         panic("Can't copy %s to %s", from, to);
 #else
     char buf[BUFSIZ]; /* this is system interaction, therefore
-                       * BUFSIZ instead of NetHack's BUFSZ */
+                       * BUFSIZ instead of GnollHack's BUFSZ */
     int nfrom, nto, fdfrom, fdto;
 
     if ((fdfrom = open(from, O_RDONLY | O_BINARY, FCMASK)) < 0)

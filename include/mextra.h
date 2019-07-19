@@ -1,7 +1,7 @@
-/* GnollHack 0.1	mextra.h	$NHDT-Date: 1547428759 2019/01/14 01:19:19 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.22 $ */
+/* GnollHack 4.0	mextra.h	$NHDT-Date: 1547428759 2019/01/14 01:19:19 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.22 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2006. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef MEXTRA_H
 #define MEXTRA_H

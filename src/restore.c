@@ -1,7 +1,7 @@
-/* GnollHack 0.1	restore.c	$NHDT-Date: 1555201698 2019/04/14 00:28:18 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.129 $ */
+/* GnollHack 4.0	restore.c	$NHDT-Date: 1555201698 2019/04/14 00:28:18 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.129 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2009. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 #include "lev.h"

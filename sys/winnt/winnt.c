@@ -1,6 +1,6 @@
-/* GnollHack 0.1	winnt.c	$NHDT-Date: 1524321419 2018/04/21 14:36:59 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.30 $ */
-/* Copyright (c) NetHack PC Development Team 1993, 1994 */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack 4.0	winnt.c	$NHDT-Date: 1524321419 2018/04/21 14:36:59 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.30 $ */
+/* Copyright (c) GnollHack PC Development Team 1993, 1994 */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /*
  *  WIN32 system functions.
@@ -195,7 +195,7 @@ int *lan_username_size;
     if (status)
         username_buffer[i] = '\0';
     else
-        Strcpy(username_buffer, "NetHack");
+        Strcpy(username_buffer, "GnollHack");
     if (lan_username_size)
         *lan_username_size = strlen(username_buffer);
     return username_buffer;
@@ -320,9 +320,9 @@ genericptr_t ptr2;
                     "displayed\n"
                     "inside an unzip utility.\n\n"
                     "You have to unzip the contents of the zip file into a\n"
-                    "folder on your system, and then run \"NetHack.exe\" or "
+                    "folder on your system, and then run \"GnollHack.exe\" or "
                     "\n"
-                    "\"NetHackW.exe\" from there.\n\n"
+                    "\"GnollHackW.exe\" from there.\n\n"
                     "If that is not the situation, you are encouraged to\n"
                     "report the error as shown above.\n\n",
                     1023);
@@ -434,7 +434,7 @@ GetConsoleHwnd(void)
     /* Get current window title */
     GetConsoleTitle(OldTitle, sizeof OldTitle);
 
-    (void) sprintf(NewTitle, "NETHACK%d/%d", GetTickCount(),
+    (void) sprintf(NewTitle, "GnollHack%d/%d", GetTickCount(),
                    GetCurrentProcessId());
     SetConsoleTitle(NewTitle);
 
@@ -500,7 +500,7 @@ void nhassert_failed(const char * exp, const char * file, int line)
 }
 
 void
-nethack_exit(code)
+GnollHack_exit(code)
 int code;
 {
     /* Only if we started from the GUI, not the command prompt,
@@ -545,12 +545,12 @@ const char *str;
     return;
 }
 
-/* nethack_enter_winnt() is called from main immediately after
+/* GnollHack_enter_winnt() is called from main immediately after
    initializing the window port */
-void nethack_enter_winnt()
+void GnollHack_enter_winnt()
 {
 	if (WINDOWPORT("tty"))
-		nethack_enter_nttty();
+		GnollHack_enter_nttty();
 }
 
 /* CP437 to Unicode mapping according to the Unicode Consortium */

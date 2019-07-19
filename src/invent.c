@@ -1,7 +1,7 @@
-/* GnollHack 0.1	invent.c	$NHDT-Date: 1555196229 2019/04/13 22:57:09 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.253 $ */
+/* GnollHack 4.0	invent.c	$NHDT-Date: 1555196229 2019/04/13 22:57:09 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.253 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Derek S. Ray, 2015. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 
@@ -1265,7 +1265,7 @@ static const char *const currencies[] = {
     "sporebuck",             /* Spore */
     "Triganic Pu",           /* The Hitchhiker's Guide to the Galaxy */
     "woolong",               /* Cowboy Bebop */
-    "zorkmid",               /* Zork, NetHack */
+    "zorkmid",               /* Zork, GnollHack */
 };
 
 const char *
@@ -1762,7 +1762,7 @@ register const char *let, *word;
                 You("cannot %s gold.", word);
                 return (struct obj *) 0;
             }
-            /* Historic note: early Nethack had a bug which was
+            /* Historic note: early GnollHack had a bug which was
              * first reported for Larn, where trying to drop 2^32-n
              * gold pieces was allowed, and did interesting things
              * to your money supply.  The LRS is the tax bureau

@@ -1,14 +1,14 @@
-/* GnollHack 0.1	rm.h	$NHDT-Date: 1547255911 2019/01/12 01:18:31 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.60 $ */
+/* GnollHack 4.0	rm.h	$NHDT-Date: 1547255911 2019/01/12 01:18:31 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.60 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Pasi Kallinen, 2017. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef RM_H
 #define RM_H
 
 /*
  * The dungeon presentation graphics code and data structures were rewritten
- * and generalized for NetHack's release 2 by Eric S. Raymond (eric@snark)
+ * and generalized for GnollHack's release 2 by Eric S. Raymond (eric@snark)
  * building on Don G. Kneller's MS-DOS implementation.	See drawing.c for
  * the code that permits the user to set the contents of the symbol structure.
  *

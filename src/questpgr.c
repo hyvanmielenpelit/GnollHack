@@ -1,6 +1,6 @@
-/* GnollHack 0.1	questpgr.c	$NHDT-Date: 1505172128 2017/09/11 23:22:08 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.38 $ */
+/* GnollHack 4.0	questpgr.c	$NHDT-Date: 1505172128 2017/09/11 23:22:08 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.38 $ */
 /*      Copyright 1991, M. Stephenson                             */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 #include "dlb.h"

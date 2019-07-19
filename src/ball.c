@@ -1,7 +1,7 @@
-/* GnollHack 0.1	ball.c	$NHDT-Date: 1557088406 2019/05/05 20:33:26 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.36 $ */
+/* GnollHack 4.0	ball.c	$NHDT-Date: 1557088406 2019/05/05 20:33:26 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.36 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) David Cohrs, 2006. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /* Ball & Chain
  * =============================================================*/

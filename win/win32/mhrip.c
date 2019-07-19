@@ -1,6 +1,6 @@
-/* GnollHack 0.1	mhrip.c	$NHDT-Date: 1432512812 2015/05/25 00:13:32 $  $NHDT-Branch: master $:$NHDT-Revision: 1.19 $ */
+/* GnollHack 4.0	mhrip.c	$NHDT-Date: 1432512812 2015/05/25 00:13:32 $  $NHDT-Branch: master $:$NHDT-Revision: 1.19 $ */
 /* Copyright (C) 2001 by Alex Kompel 	 */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "win10.h"
 #include "winMS.h"
@@ -22,7 +22,7 @@
 
 PNHWinApp GetNHApp(void);
 
-typedef struct mswin_nethack_text_window {
+typedef struct mswin_GnollHack_text_window {
     HANDLE rip_bmp;
     TCHAR *window_text;
     TCHAR *rip_text;

@@ -1,12 +1,12 @@
-/* GnollHack 0.1	alloc.c	$NHDT-Date: 1454376505 2016/02/02 01:28:25 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.16 $ */
+/* GnollHack 4.0	alloc.c	$NHDT-Date: 1454376505 2016/02/02 01:28:25 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.16 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /* to get the malloc() prototype from system.h */
 #define ALLOC_C /* comment line for pre-compiled headers */
 /* since this file is also used in auxiliary programs, don't include all the
-   function declarations for all of nethack */
+   function declarations for all of GnollHack */
 #define EXTERN_H /* comment line for pre-compiled headers */
 #include "config.h"
 

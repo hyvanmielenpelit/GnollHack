@@ -1,12 +1,12 @@
-/* GnollHack 0.1	mhinput.c	$NHDT-Date: 1432512810 2015/05/25 00:13:30 $  $NHDT-Branch: master $:$NHDT-Revision: 1.11 $ */
+/* GnollHack 4.0	mhinput.c	$NHDT-Date: 1432512810 2015/05/25 00:13:30 $  $NHDT-Branch: master $:$NHDT-Revision: 1.11 $ */
 /* Copyright (C) 2001 by Alex Kompel 	 */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include <assert.h>
 #include "winMS.h"
 #include "mhinput.h"
 
-/* nethack input queue functions */
+/* GnollHack input queue functions */
 
 #define NH_INPUT_BUFFER_SIZE 64
 

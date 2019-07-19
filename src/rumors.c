@@ -1,7 +1,7 @@
-/* GnollHack 0.1	rumors.c	$NHDT-Date: 1545132266 2018/12/18 11:24:26 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.34 $ */
+/* GnollHack 4.0	rumors.c	$NHDT-Date: 1545132266 2018/12/18 11:24:26 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.34 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 #include "lev.h"
@@ -350,7 +350,7 @@ int mechanism;
     }
     line = getrumor(truth, buf, reading ? FALSE : TRUE);
     if (!*line)
-        line = "NetHack rumors file closed for renovation.";
+        line = "GnollHack rumors file closed for renovation.";
     switch (mechanism) {
     case BY_ORACLE:
         /* Oracle delivers the rumor */

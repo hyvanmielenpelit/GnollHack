@@ -1,7 +1,7 @@
-/* GnollHack 0.1	mklev.c	$NHDT-Date: 1550800390 2019/02/22 01:53:10 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.59 $ */
+/* GnollHack 4.0	mklev.c	$NHDT-Date: 1550800390 2019/02/22 01:53:10 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.59 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Alex Smith, 2017. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 
@@ -792,7 +792,25 @@ makelevel()
     place_branch(branchp, 0, 0);
 
     /* for each room: put things inside */
-    for (croom = rooms; croom->hx > 0; croom++) {
+	register int altarsplaced = 0;
+	register int chance = 60;
+	register int tries = 0;
+	register int u_depth = depth(&u.uz);
+
+	if (u_depth == 1)
+	{
+		do {
+			croom = &rooms[rn2(nroom)];
+			tries++;
+		} while (croom->rtype != OROOM || tries == 10);
+
+		if(tries < 10) {
+			mkaltar(croom);
+			altarsplaced = 1;
+		}
+	}
+
+	for (croom = rooms; croom->hx > 0; croom++) {
         if (croom->rtype != OROOM)
             continue;
 
@@ -820,12 +838,17 @@ makelevel()
             (void) mkgold(0L, somex(croom), somey(croom));
         if (Is_rogue_level(&u.uz))
             goto skip_nonrogue;
-        if (!rn2(10))
+        if (!rn2(30))
             mkfount(0, croom);
         if (!rn2(60))
             mksink(croom);
-        if (!rn2(60))
-            mkaltar(croom);
+
+		chance = 45;
+
+		if (!rn2(chance) && altarsplaced == 0 && u_depth > 3)	{
+			mkaltar(croom);
+			altarsplaced++;
+		}
         x = 80 - (depth(&u.uz) * 2);
         if (x < 2)
             x = 2;

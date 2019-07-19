@@ -1,7 +1,7 @@
-/* GnollHack 0.1	dungeon.h	$NHDT-Date: 1447755969 2015/11/17 10:26:09 $  $NHDT-Branch: master $:$NHDT-Revision: 1.24 $ */
+/* GnollHack 4.0	dungeon.h	$NHDT-Date: 1447755969 2015/11/17 10:26:09 $  $NHDT-Branch: master $:$NHDT-Revision: 1.24 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2006. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef DUNGEON_H
 #define DUNGEON_H
@@ -182,7 +182,7 @@ struct linfo {
  * fountains").  This makes it also subject to player conditions (amnesia).
  */
 
-/* Because clearly Nethack needs more ways to specify alignment */
+/* Because clearly GnollHack needs more ways to specify alignment */
 #define Amask2msa(x) ((x) == 4 ? 3 : (x) &AM_MASK)
 #define Msa2amask(x) ((x) == 3 ? 4 : (x))
 #define MSA_NONE 0 /* unaligned or multiple alignments */

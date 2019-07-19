@@ -1,7 +1,7 @@
-/* GnollHack 0.1	cmd.c	$NHDT-Date: 1557088405 2019/05/05 20:33:25 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.333 $ */
+/* GnollHack 4.0	cmd.c	$NHDT-Date: 1557088405 2019/05/05 20:33:25 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.333 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2013. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 #include "lev.h"
@@ -3414,7 +3414,7 @@ struct ext_func_tab extcmdlist[] = {
     { '\0', "vanquished", "list vanquished monsters",
             dovanquished, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { M('v'), "version",
-            "list compile time options for this version of NetHack",
+            "list compile time options for this version of GnollHack",
             doextversion, IFBURIED | AUTOCOMPLETE | GENERALCMD },
     { 'v', "versionshort", "show version", doversion, IFBURIED | GENERALCMD },
     { '\0', "vision", "show vision array",
@@ -3662,7 +3662,7 @@ dokeylist(VOID_ARGS)
         }
     }
 #ifndef NO_SIGNAL
-    putstr(datawin, 0, "^c       break out of NetHack (SIGINT)");
+    putstr(datawin, 0, "^c       break out of GnollHack (SIGINT)");
     keys_used[(uchar) C('c')] = TRUE;
 #endif
 
@@ -4271,7 +4271,7 @@ uchar c;
 char *txt; /* sufficiently long buffer */
 {
     /* should probably switch to "SPC", "ESC", "RET"
-       since nethack's documentation uses ESC for <escape> */
+       since GnollHack's documentation uses ESC for <escape> */
     if (c == ' ')
         Sprintf(txt, "<space>");
     else if (c == '\033')

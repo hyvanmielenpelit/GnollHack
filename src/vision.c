@@ -1,6 +1,6 @@
-/* GnollHack 0.1	vision.c	$NHDT-Date: 1448013598 2015/11/20 09:59:58 $  $NHDT-Branch: master $:$NHDT-Revision: 1.27 $ */
+/* GnollHack 4.0	vision.c	$NHDT-Date: 1448013598 2015/11/20 09:59:58 $  $NHDT-Branch: master $:$NHDT-Revision: 1.27 $ */
 /* Copyright (c) Dean Luick, with acknowledgements to Dave Cohrs, 1990. */
-/* NetHack may be freely redistributed.  See license for details.       */
+/* GnollHack may be freely redistributed.  See license for details.       */
 
 #include "hack.h"
 
@@ -2369,7 +2369,7 @@ char *limits;   /* points at range limit for current row, or NULL */
                  * the odds are that we can actually see part of the wall
                  * beyond the mark on this row.  If so, then see one beyond
                  * the mark.  Otherwise don't.  This is a kludge so corners
-                 * with an adjacent doorway show up in nethack.
+                 * with an adjacent doorway show up in GnollHack.
                  */
                 right_edge = is_clear(row - step, right_mark) ? right_mark + 1
                                                               : right_mark;

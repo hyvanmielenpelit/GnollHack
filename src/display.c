@@ -1,7 +1,7 @@
-/* GnollHack 0.1	display.c	$NHDT-Date: 1556835736 2019/05/02 22:22:16 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.101 $ */
+/* GnollHack 4.0	display.c	$NHDT-Date: 1556835736 2019/05/02 22:22:16 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.101 $ */
 /* Copyright (c) Dean Luick, with acknowledgements to Kevin Darcy */
 /* and Dave Cohrs, 1990.                                          */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /*
  *                      THE NEW DISPLAY CODE

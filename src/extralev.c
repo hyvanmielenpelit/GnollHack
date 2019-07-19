@@ -1,6 +1,6 @@
-/* GnollHack 0.1	extralev.c	$NHDT-Date: 1446975468 2015/11/08 09:37:48 $  $NHDT-Branch: master $:$NHDT-Revision: 1.12 $ */
+/* GnollHack 4.0	extralev.c	$NHDT-Date: 1446975468 2015/11/08 09:37:48 $  $NHDT-Branch: master $:$NHDT-Revision: 1.12 $ */
 /*      Copyright 1988, 1989 by Ken Arromdee                      */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /*
  * Support code for "rogue"-style level.
@@ -209,7 +209,7 @@ makeroguerooms()
     /* Rogue levels are structured 3 by 3, with each section containing
      * a room or an intersection.  The minimum width is 2 each way.
      * One difference between these and "real" Rogue levels: real Rogue
-     * uses 24 rows and NetHack only 23.  So we cheat a bit by making the
+     * uses 24 rows and GnollHack only 23.  So we cheat a bit by making the
      * second row of rooms not as deep.
      *
      * Each normal space has 6/7 rows and 25 columns in which a room may

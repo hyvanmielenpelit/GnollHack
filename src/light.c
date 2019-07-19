@@ -1,6 +1,6 @@
-/* GnollHack 0.1	light.c	$NHDT-Date: 1446191876 2015/10/30 07:57:56 $  $NHDT-Branch: master $:$NHDT-Revision: 1.28 $ */
+/* GnollHack 4.0	light.c	$NHDT-Date: 1446191876 2015/10/30 07:57:56 $  $NHDT-Branch: master $:$NHDT-Revision: 1.28 $ */
 /* Copyright (c) Dean Luick, 1994                                       */
-/* NetHack may be freely redistributed.  See license for details.       */
+/* GnollHack may be freely redistributed.  See license for details.       */
 
 #include "hack.h"
 #include "lev.h" /* for checking save modes */

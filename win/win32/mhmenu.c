@@ -1,6 +1,6 @@
-/* GnollHack 0.1	mhmenu.c	$NHDT-Date: 1432512811 2015/05/25 00:13:31 $  $NHDT-Branch: master $:$NHDT-Revision: 1.48 $ */
+/* GnollHack 4.0	mhmenu.c	$NHDT-Date: 1432512811 2015/05/25 00:13:31 $  $NHDT-Branch: master $:$NHDT-Revision: 1.48 $ */
 /* Copyright (c) Alex Kompel, 2002                                */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "win10.h"
 #include "winMS.h"
@@ -38,7 +38,7 @@ typedef struct mswin_menu_item {
     BOOL has_focus;
 } NHMenuItem, *PNHMenuItem;
 
-typedef struct mswin_nethack_menu_window {
+typedef struct mswin_GnollHack_menu_window {
     int type; /* MENU_TYPE_TEXT or MENU_TYPE_MENU */
     int how;  /* for menus: PICK_NONE, PICK_ONE, PICK_ANY */
 
@@ -152,7 +152,7 @@ mswin_menu_window_select_menu(HWND hWnd, int how, MENU_ITEM_P **_selected,
         activate = TRUE;
     }
 
-    data->is_active = activate && !GetNHApp()->regNetHackMode;
+    data->is_active = activate && !GetNHApp()->regGnollHackMode;
 
     /* set menu type */
     SetMenuListType(hWnd, how);
@@ -1089,7 +1089,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
             y = (lpdis->rcItem.bottom + lpdis->rcItem.top - tileYScaled) / 2;
 
             if (GetNHApp()->bmpMapTiles == GetNHApp()->bmpTiles) {
-                /* using original nethack tiles - apply image transparently */
+                /* using original GnollHack tiles - apply image transparently */
                 (*GetNHApp()->lpfnTransparentBlt)(lpdis->hDC, x, y, 
                                           tileXScaled, tileYScaled,
                                           tileDC, t_x, t_y, TILE_X, TILE_Y,
@@ -1393,8 +1393,8 @@ onListChar(HWND hWnd, HWND hwndList, WORD ch)
         return -2;
 
     case ' ': {
-        if (GetNHApp()->regNetHackMode) {
-            /* NetHack mode: Scroll down one page,
+        if (GetNHApp()->regGnollHackMode) {
+            /* GnollHack mode: Scroll down one page,
                ends menu when on last page. */
             SCROLLINFO si;
 
@@ -1684,15 +1684,15 @@ NHMenuTextWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_KEYDOWN:
         switch (wParam) {
         /* close on space in Windows mode
-           page down on space in NetHack mode */
+           page down on space in GnollHack mode */
         case VK_SPACE: {
             SCROLLINFO si;
 
             si.cbSize = sizeof(SCROLLINFO);
             si.fMask = SIF_POS | SIF_RANGE | SIF_PAGE;
             GetScrollInfo(hWnd, SB_VERT, &si);
-            /* If nethackmode and not at the end of the list */
-            if (GetNHApp()->regNetHackMode
+            /* If GnollHackmode and not at the end of the list */
+            if (GetNHApp()->regGnollHackMode
                 && (si.nPos + (int) si.nPage) <= (si.nMax - si.nMin))
                 SendMessage(hWnd, EM_SCROLL, SB_PAGEDOWN, 0);
             else

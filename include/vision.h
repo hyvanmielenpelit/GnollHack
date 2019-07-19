@@ -1,6 +1,6 @@
-/* GnollHack 0.1	vision.h	$NHDT-Date: 1432512777 2015/05/25 00:12:57 $  $NHDT-Branch: master $:$NHDT-Revision: 1.9 $ */
+/* GnollHack 4.0	vision.h	$NHDT-Date: 1432512777 2015/05/25 00:12:57 $  $NHDT-Branch: master $:$NHDT-Revision: 1.9 $ */
 /* Copyright (c) Dean Luick, with acknowledgements to Dave Cohrs, 1990. */
-/* NetHack may be freely redistributed.  See license for details.	*/
+/* GnollHack may be freely redistributed.  See license for details.	*/
 
 #ifndef VISION_H
 #define VISION_H

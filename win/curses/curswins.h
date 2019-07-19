@@ -1,7 +1,7 @@
 /* vim:set cin ft=c sw=4 sts=4 ts=8 et ai cino=Ls\:0t0(0 : -*- mode:c;fill-column:80;tab-width:8;c-basic-offset:4;indent-tabs-mode:nil;c-file-style:"k&r" -*-*/
-/* GnollHack 0.1 curswins.h */
+/* GnollHack 4.0 curswins.h */
 /* Copyright (c) Karl Garrison, 2010. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef CURSWIN_H
 # define CURSWIN_H
@@ -12,7 +12,7 @@
 WINDOW *curses_create_window(int width, int height, orient orientation);
 
 void curses_destroy_win(WINDOW * win);
-void curses_refresh_nethack_windows(void);
+void curses_refresh_GnollHack_windows(void);
 WINDOW *curses_get_nhwin(winid wid);
 void curses_add_nhwin(winid wid, int height, int width, int y, int x,
                       orient orientation, boolean border);

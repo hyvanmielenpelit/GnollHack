@@ -1,6 +1,6 @@
-/* GnollHack 0.1	tilemap.c	$NHDT-Date: 1542501042 2018/11/18 00:30:42 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.35 $ */
+/* GnollHack 4.0	tilemap.c	$NHDT-Date: 1542501042 2018/11/18 00:30:42 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.35 $ */
 /*      Copyright (c) 2016 by Michael Allison                     */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /*
  *      This source file is compiled twice:

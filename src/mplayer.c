@@ -1,6 +1,6 @@
-/* GnollHack 0.1	mplayer.c	$NHDT-Date: 1550524564 2019/02/18 21:16:04 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.26 $ */
+/* GnollHack 4.0	mplayer.c	$NHDT-Date: 1550524564 2019/02/18 21:16:04 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.26 $ */
 /*      Copyright (c) Izchak Miller, 1992.                        */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 
@@ -9,7 +9,7 @@ STATIC_DCL void FDECL(get_mplname, (struct monst *, char *));
 STATIC_DCL void FDECL(mk_mplayer_armor, (struct monst *, SHORT_P));
 
 /* These are the names of those who
- * contributed to the development of NetHack 3.2/3.3/3.4/3.6.
+ * contributed to the development of GnollHack 3.2/3.3/3.4/3.6.
  *
  * Keep in alphabetical order within teams.
  * Same first name is entered once within each team.

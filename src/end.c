@@ -1,7 +1,7 @@
-/* GnollHack 0.1	end.c	$NHDT-Date: 1557094801 2019/05/05 22:20:01 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.170 $ */
+/* GnollHack 4.0	end.c	$NHDT-Date: 1557094801 2019/05/05 22:20:01 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.170 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #define NEED_VARARGS /* comment line for pre-compiled headers */
 
@@ -65,9 +65,9 @@ STATIC_DCL void FDECL(dump_everything, (int, time_t));
 STATIC_DCL int NDECL(num_extinct);
 
 #if defined(__BEOS__) || defined(MICRO) || defined(OS2)
-extern void FDECL(nethack_exit, (int));
+extern void FDECL(GnollHack_exit, (int));
 #else
-#define nethack_exit exit
+#define GnollHack_exit exit
 #endif
 
 #define done_stopprint program_state.stopprint
@@ -112,7 +112,7 @@ extern void FDECL(nethack_exit, (int));
 #define SYSOPT_PANICTRACE_LIBC 0
 #endif
 #else
-#define SYSOPT_PANICTRACE_GDB (nh_getenv("NETHACK_USE_GDB") == 0 ? 0 : 2)
+#define SYSOPT_PANICTRACE_GDB (nh_getenv("GnollHack_USE_GDB") == 0 ? 0 : 2)
 #ifdef PANICTRACE_LIBC
 #define SYSOPT_PANICTRACE_LIBC 1
 #else
@@ -566,7 +566,7 @@ int how;
 }
 
 #if defined(WIN32) && !defined(SYSCF)
-#define NOTIFY_NETHACK_BUGS
+#define NOTIFY_GnollHack_BUGS
 #endif
 
 /*VARARGS1*/
@@ -592,13 +592,13 @@ VA_DECL(const char *, str)
                         ? "Program initialization has failed."
                         : "Suddenly, the dungeon collapses.");
 #ifndef MICRO
-#ifdef NOTIFY_NETHACK_BUGS
+#ifdef NOTIFY_GnollHack_BUGS
     if (!wizard)
         raw_printf("Report the following error to \"%s\" or at \"%s\".",
                    DEVTEAM_EMAIL, DEVTEAM_URL);
     else if (program_state.something_worth_saving)
         raw_print("\nError save file being written.\n");
-#else /* !NOTIFY_NETHACK_BUGS */
+#else /* !NOTIFY_GnollHack_BUGS */
     if (!wizard) {
         const char *maybe_rebuild = !program_state.something_worth_saving
                                      ? "."
@@ -614,7 +614,7 @@ VA_DECL(const char *, str)
             raw_printf("Report error to \"%s\"%s", WIZARD_NAME,
                        maybe_rebuild);
     }
-#endif /* ?NOTIFY_NETHACK_BUGS */
+#endif /* ?NOTIFY_GnollHack_BUGS */
     /* XXX can we move this above the prints?  Then we'd be able to
      * suppress "it may be possible to rebuild" based on dosave0()
      * or say it's NOT possible to rebuild. */
@@ -730,7 +730,7 @@ time_t when; /* date+time at end of game */
 
     /* one line version ID, which includes build date+time;
        it's conceivable that the game started with a different
-       build date+time or even with an older nethack version,
+       build date+time or even with an older GnollHack version,
        but we only have access to the one it finished under */
     putstr(0, 0, getversionstring(pbuf));
     putstr(0, 0, "");
@@ -1668,7 +1668,7 @@ int status;
         return;
 #endif
     program_state.exiting = 1;
-    nethack_exit(status);
+    GnollHack_exit(status);
 }
 
 enum vanq_order_modes {

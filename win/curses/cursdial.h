@@ -1,7 +1,7 @@
 /* vim:set cin ft=c sw=4 sts=4 ts=8 et ai cino=Ls\:0t0(0 : -*- mode:c;fill-column:80;tab-width:8;c-basic-offset:4;indent-tabs-mode:nil;c-file-style:"k&r" -*-*/
-/* GnollHack 0.1 cursdial.h */
+/* GnollHack 4.0 cursdial.h */
 /* Copyright (c) Karl Garrison, 2010. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef CURSDIAL_H
 # define CURSDIAL_H

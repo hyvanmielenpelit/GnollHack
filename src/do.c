@@ -1,7 +1,7 @@
-/* GnollHack 0.1	do.c	$NHDT-Date: 1548978604 2019/01/31 23:50:04 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.189 $ */
+/* GnollHack 4.0	do.c	$NHDT-Date: 1548978604 2019/01/31 23:50:04 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.189 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Derek S. Ray, 2015. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /* Contains code for 'd', 'D' (drop), '>', '<' (up, down) */
 
@@ -846,7 +846,7 @@ int retry;
         unsigned ggoresults = 0;
 
         all_categories = FALSE;
-        /* Gather valid classes via traditional NetHack method */
+        /* Gather valid classes via traditional GnollHack method */
         i = ggetobj("drop", drop, 0, TRUE, &ggoresults);
         if (i == -2)
             all_categories = TRUE;
@@ -1148,7 +1148,7 @@ currentlevel_rewrite()
     if (!savelev(fd, ledger_no(&u.uz), COUNT_SAVE)) {
         (void) nhclose(fd);
         delete_levelfile(ledger_no(&u.uz));
-        pline("NetHack is out of disk space for making levels!");
+        pline("GnollHack is out of disk space for making levels!");
         You("can save, quit, or continue playing.");
         return -1;
     }

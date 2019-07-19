@@ -1,6 +1,6 @@
-/* GnollHack 0.1	mhstatus.c	$NHDT-Date: 1536411224 2018/09/08 12:53:44 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.29 $ */
+/* GnollHack 4.0	mhstatus.c	$NHDT-Date: 1536411224 2018/09/08 12:53:44 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.29 $ */
 /* Copyright (C) 2001 by Alex Kompel 	 */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include <assert.h>
 #include "winos.h"
@@ -67,7 +67,7 @@ void back_buffer_init(back_buffer_t * back_buffer, HWND hWnd, int width, int hei
 }
 
 
-typedef struct mswin_nethack_status_window {
+typedef struct mswin_GnollHack_status_window {
     int index;
     char window_text[NHSW_LINES][MAXWINDOWTEXT + 1];
     mswin_status_lines * status_lines;

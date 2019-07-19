@@ -1,7 +1,7 @@
-/* GnollHack 0.1	dogmove.c	$NHDT-Date: 1557094801 2019/05/05 22:20:01 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.74 $ */
+/* GnollHack 4.0	dogmove.c	$NHDT-Date: 1557094801 2019/05/05 22:20:01 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.74 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 
@@ -1350,7 +1350,7 @@ static struct qmchoices {
     { PM_LARGE_CAT, 0, PM_LARGE_DOG, M_AP_MONSTER },
     { PM_HOUSECAT, 0, PM_GIANT_RAT, M_AP_MONSTER },
     { 0, S_DOG, SINK,
-      M_AP_FURNITURE }, /* sorry, no fire hydrants in NetHack */
+      M_AP_FURNITURE }, /* sorry, no fire hydrants in GnollHack */
     { 0, 0, TRIPE_RATION, M_AP_OBJECT }, /* leave this at end */
 };
 

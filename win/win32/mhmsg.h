@@ -1,11 +1,11 @@
-/* GnollHack 0.1	mhmsg.h	$NHDT-Date: 1432512811 2015/05/25 00:13:31 $  $NHDT-Branch: master $:$NHDT-Revision: 1.15 $ */
+/* GnollHack 4.0	mhmsg.h	$NHDT-Date: 1432512811 2015/05/25 00:13:31 $  $NHDT-Branch: master $:$NHDT-Revision: 1.15 $ */
 /* Copyright (C) 2001 by Alex Kompel 	 */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
-#ifndef MHNethackMessages_H
-#define MHNethackMessages_H
+#ifndef MHGnollHackMessages_H
+#define MHGnollHackMessages_H
 
-/* nethack messages */
+/* GnollHack messages */
 #define WM_MSNH_COMMAND (WM_APP + 1)
 
 #define MSNH_MSG_ADDWND 100

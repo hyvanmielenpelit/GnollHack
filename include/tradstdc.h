@@ -1,7 +1,7 @@
-/* GnollHack 0.1	tradstdc.h	$NHDT-Date: 1555361295 2019/04/15 20:48:15 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.36 $ */
+/* GnollHack 4.0	tradstdc.h	$NHDT-Date: 1555361295 2019/04/15 20:48:15 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.36 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2006. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef TRADSTDC_H
 #define TRADSTDC_H
@@ -81,7 +81,7 @@
  }  --existing closing brace, still pairs with the hidden one in VA_DECL()
  * Reading the code--or using source browsing tools which match braces--
  * results in seeing a matched set of braces.  Usage of VA_END() is
- * potentially trickier, but nethack uses it in a straightforward manner.
+ * potentially trickier, but GnollHack uses it in a straightforward manner.
  */
 
 #ifdef USE_STDARG
@@ -135,7 +135,7 @@
  * CAVEAT:  passing double (including float promoted to double) will
  * almost certainly break this, as would any integer type bigger than
  * sizeof (char *).
- * NetHack avoids floating point, and any configuration able to use
+ * GnollHack avoids floating point, and any configuration able to use
  * 'long long int' or I64P32 or the like should be using USE_STDARG.
  */
 #ifndef VA_TYPE
@@ -156,7 +156,7 @@ typedef const char *vA;
    been passed may or may not cause severe trouble depending on
    the function-calling/argument-passing mechanism being used.
 
-   [nethack's core doesn't use VA_NEXT() so doesn't use VA_SHIFT()
+   [GnollHack's core doesn't use VA_NEXT() so doesn't use VA_SHIFT()
    either, and this definition is just retained for completeness.
    lev_comp does use VA_NEXT(), but it passes all 'argX' arguments.]
  */
@@ -389,7 +389,7 @@ typedef genericptr genericptr_t; /* (void *) or (char *) */
 /*
  * As of IRIX 4.0.1, /bin/cc claims to be an ANSI compiler, but it thinks
  * it's impossible for a prototype to match an old-style definition with
- * unwidened argument types.  Thus, we have to turn off all NetHack
+ * unwidened argument types.  Thus, we have to turn off all GnollHack
  * prototypes, and avoid declaring several system functions, since the system
  * include files have prototypes and the compiler also complains that
  * prototyped and unprototyped declarations don't match.
@@ -412,7 +412,7 @@ typedef genericptr genericptr_t; /* (void *) or (char *) */
 #endif
 
 #ifdef __clang__
-/* clang's gcc emulation is sufficient for nethack's usage */
+/* clang's gcc emulation is sufficient for GnollHack's usage */
 #ifndef __GNUC__
 #define __GNUC__ 4
 #endif

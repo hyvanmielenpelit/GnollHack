@@ -1,7 +1,7 @@
-/* GnollHack 0.1	display.h	$NHDT-Date: 1546212620 2018/12/30 23:30:20 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.29 $ */
+/* GnollHack 4.0	display.h	$NHDT-Date: 1546212620 2018/12/30 23:30:20 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.29 $ */
 /* Copyright (c) Dean Luick, with acknowledgements to Kevin Darcy */
 /* and Dave Cohrs, 1990.                                          */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef DISPLAY_H
 #define DISPLAY_H
@@ -101,7 +101,7 @@
  * This one checks to see if you know a monster is both there and invisible.
  * 1) If you can see the monster and have see invisible, it is assumed the
  * monster is transparent, but visible in some manner.  (Earlier versions of
- * Nethack were really inconsistent on this.)
+ * GnollHack were really inconsistent on this.)
  * 2) If you can't see the monster, but can see its location and you have
  * telepathy that works when you can see, you can tell that there is a
  * creature in an apparently empty spot.

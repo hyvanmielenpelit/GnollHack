@@ -1,6 +1,6 @@
-/* GnollHack 0.1	rnd.c	$NHDT-Date: 1524689470 2018/04/25 20:51:10 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.18 $ */
+/* GnollHack 4.0	rnd.c	$NHDT-Date: 1524689470 2018/04/25 20:51:10 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.18 $ */
 /*      Copyright (c) 2004 by Robert Patrick Rankin               */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 

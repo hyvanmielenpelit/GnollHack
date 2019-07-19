@@ -1,11 +1,11 @@
-/* GnollHack 0.1	patchlevel.h	$NHDT-Date: 1557254337 2019/05/07 18:38:57 $  $NHDT-Branch: NetHack-3.6.2 $:$NHDT-Revision: 1.126 $ */
+/* GnollHack 4.0	patchlevel.h	$NHDT-Date: 1557254337 2019/05/07 18:38:57 $  $NHDT-Branch: GnollHack-3.6.2 $:$NHDT-Revision: 1.126 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2012. */
 /* GnollHack may be freely redistributed.  See license for details. */
 
-/* GnollHack 0.1.x */
-#define VERSION_MAJOR 0
-#define VERSION_MINOR 1
+/* GnollHack 4.0.x */
+#define VERSION_MAJOR 4
+#define VERSION_MINOR 0
 /*
  * PATCHLEVEL is updated for each release.
  */
@@ -54,7 +54,7 @@
  */
 
 /*
- *  GnollHack 0.1.0, December 7, 2015
+ *  GnollHack 4.0.0, December 7, 2015
  *
  *  Hundreds of bug fixes.
  *  Some code reorganization.
@@ -110,7 +110,7 @@
  */
 
 /*
- *  NetHack 3.4.0, March 20, 2002
+ *  GnollHack 3.4.0, March 20, 2002
  *
  *  Hundreds of general bug fixes including some for sliming, zapping,
  *conduct,
@@ -128,7 +128,7 @@
  *  Added the travel command which works by mouse click or '_' command
  *  Config file BOULDER option to specify the symbol for displaying boulders
  *  Incorporate modified versions of several 3.3.1 patches that have been
- *      in circulation in the NetHack community
+ *      in circulation in the GnollHack community
  *  New Gnomish Mines levels (courtesy Kelly Bailey)
  *  Mac: command-key shortcuts in the player selection dialog
  *  Amiga: screenmode requester, and several amiga specific bug fixes
@@ -159,7 +159,7 @@
  */
 
 /*
- *  NetHack 3.3.0, December 10, 1999
+ *  GnollHack 3.3.0, December 10, 1999
  *
  *  Implement the differentiation of character class or role from the
  *  character race.
@@ -168,7 +168,7 @@
  *  addition to the Human "norm".
  *  Addition of the Monk and Ranger classes.
  *  Integrate some of the features of several branch versions of the game,
- *  notably NetHack--, NHplus, SLASH, and Slash'em.
+ *  notably GnollHack--, NHplus, SLASH, and Slash'em.
  *  Adopt "the wizard patch" spellcasting system.
  *  Support for the Qt widget set.
  *  Y2K fix: use 4 digit year values for the dates in the score file
@@ -243,7 +243,7 @@
  */
 
 /*
- *  NetHack 3.2.0, April 11, 1996
+ *  GnollHack 3.2.0, April 11, 1996
  *  enhancements to the windowing systems including "tiles" or icons to
  *      visually represent monsters and objects (courtesy Warwick Allison)
  *  window based menu system introduced for inventory and selection
@@ -290,7 +290,7 @@
  */
 
 /*
- *  NetHack 3.1.0, January 25, 1993
+ *  GnollHack 3.1.0, January 25, 1993
  *  many, many changes and bugfixes -- some of the highlights include:
  *  display rewrite using line-of-sight vision
  *  general window interface, with the ability to use multiple interfaces
@@ -428,7 +428,7 @@
  */
 
 /*
- *  NetHack 3.0 baseline release, July, 1989
+ *  GnollHack 3.0 baseline release, July, 1989
  */
 
 /* Version 3.0 */

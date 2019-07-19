@@ -1,7 +1,7 @@
-/* GnollHack 0.1	allmain.c	$NHDT-Date: 1555552624 2019/04/18 01:57:04 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.100 $ */
+/* GnollHack 4.0	allmain.c	$NHDT-Date: 1555552624 2019/04/18 01:57:04 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.100 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /* various code that was replicated in *main.c */
 
@@ -646,7 +646,7 @@ newgame()
     return;
 }
 
-/* show "welcome [back] to nethack" message at program startup */
+/* show "welcome [back] to GnollHack" message at program startup */
 void
 welcome(new_game)
 boolean new_game; /* false => restoring an old game */
@@ -678,8 +678,8 @@ boolean new_game; /* false => restoring an old game */
                 : currentgend != flags.initgend))
         Sprintf(eos(buf), " %s", genders[currentgend].adj);
 
-    pline(new_game ? "%s %s, welcome to NetHack!  You are a%s %s %s."
-                   : "%s %s, the%s %s %s, welcome back to NetHack!",
+    pline(new_game ? "%s %s, welcome to GnollHack!  You are a%s %s %s."
+                   : "%s %s, the%s %s %s, welcome back to GnollHack!",
           Hello((struct monst *) 0), plname, buf, urace.adj,
           (currentgend && urole.name.f) ? urole.name.f : urole.name.m);
 }

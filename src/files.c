@@ -1,7 +1,7 @@
-/* GnollHack 0.1	files.c	$NHDT-Date: 1546144856 2018/12/30 04:40:56 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.249 $ */
+/* GnollHack 4.0	files.c	$NHDT-Date: 1546144856 2018/12/30 04:40:56 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.249 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Derek S. Ray, 2015. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #define NEED_VARARGS
 
@@ -92,7 +92,7 @@ char lock[PL_NSIZ + 25]; /* long enough for username+-+name+.99 */
 #define SAVESIZE (PL_NSIZ + 22) /* [.save]<uid>player.e;1 */
 #else
 #if defined(WIN32)
-#define SAVESIZE (PL_NSIZ + 40) /* username-player.NetHack-saved-game */
+#define SAVESIZE (PL_NSIZ + 40) /* username-player.GnollHack-saved-game */
 #else
 #define SAVESIZE FILENAME /* from macconf.h or pcconf.h */
 #endif
@@ -104,7 +104,7 @@ char lock[PL_NSIZ + 25]; /* long enough for username+-+name+.99 */
 #define SAVE_EXTENSION ".sav"
 #endif
 #ifdef WIN32
-#define SAVE_EXTENSION ".NetHack-saved-game"
+#define SAVE_EXTENSION ".GnollHack-saved-game"
 #endif
 #endif
 
@@ -118,7 +118,7 @@ struct level_ftrack {
     int init;
     int fd;    /* file descriptor for level file     */
     int oflag; /* open flags                         */
-    boolean nethack_thinks_it_is_open; /* Does NetHack think it's open? */
+    boolean GnollHack_thinks_it_is_open; /* Does GnollHack think it's open? */
 } lftrack;
 #if defined(WIN32)
 #include <share.h>
@@ -555,7 +555,7 @@ char errbuf[];
 
     /* for failure, return an explanation that our caller can use;
        settle for `lock' instead of `fq_lock' because the latter
-       might end up being too big for nethack's BUFSZ */
+       might end up being too big for GnollHack's BUFSZ */
     if (fd < 0 && errbuf)
         Sprintf(errbuf, "Cannot open file \"%s\" for level %d (errno %d).",
                 lock, lev, errno);
@@ -644,20 +644,20 @@ int lev, oflag;
             reslt = lseek(fd, 0L, SEEK_SET);
             if (reslt == -1L)
                 panic("open_levelfile_exclusively: lseek failed %d", errno);
-            lftrack.nethack_thinks_it_is_open = TRUE;
+            lftrack.GnollHack_thinks_it_is_open = TRUE;
         } else {
             really_close();
             fd = sopen(name, oflag, SH_DENYRW, FCMASK);
             lftrack.fd = fd;
             lftrack.oflag = oflag;
-            lftrack.nethack_thinks_it_is_open = TRUE;
+            lftrack.GnollHack_thinks_it_is_open = TRUE;
         }
     } else {
         fd = sopen(name, oflag, SH_DENYRW, FCMASK);
         lftrack.fd = fd;
         lftrack.oflag = oflag;
         if (fd >= 0)
-            lftrack.nethack_thinks_it_is_open = TRUE;
+            lftrack.GnollHack_thinks_it_is_open = TRUE;
     }
     return fd;
 }
@@ -670,7 +670,7 @@ really_close()
     if (lftrack.init) {
         fd = lftrack.fd;
 
-        lftrack.nethack_thinks_it_is_open = FALSE;
+        lftrack.GnollHack_thinks_it_is_open = FALSE;
         lftrack.fd = -1;
         lftrack.oflag = 0;
         if (fd != -1)
@@ -686,7 +686,7 @@ int fd;
     if (lftrack.fd == fd) {
         really_close(); /* close it, but reopen it to hold it */
         fd = open_levelfile(0, (char *) 0);
-        lftrack.nethack_thinks_it_is_open = FALSE;
+        lftrack.GnollHack_thinks_it_is_open = FALSE;
         return 0;
     }
     return close(fd);
@@ -1692,7 +1692,7 @@ int retryct;
 #ifdef USE_FCNTL
     lockfd = open(filename, O_RDWR);
     if (lockfd == -1) {
-        HUP raw_printf("Cannot open file %s.  Is NetHack installed correctly?",
+        HUP raw_printf("Cannot open file %s.  Is GnollHack installed correctly?",
                        filename);
         nesting--;
         return FALSE;
@@ -1770,7 +1770,7 @@ int retryct;
             HUP perror(lockname);
             HUP raw_printf("Cannot lock %s.", filename);
             HUP raw_printf(
-  "(Perhaps you are running NetHack from inside the distribution package?).");
+  "(Perhaps you are running GnollHack from inside the distribution package?).");
             nesting--;
             return FALSE;
         default:
@@ -1876,15 +1876,15 @@ const char *filename;
 
 const char *default_configfile =
 #ifdef UNIX
-    ".nethackrc";
+    ".GnollHackrc";
 #else
 #if defined(MAC) || defined(__BEOS__)
-    "NetHack Defaults";
+    "GnollHack Defaults";
 #else
 #if defined(MSDOS) || defined(WIN32)
     "defaults.nh";
 #else
-    "NetHack.cnf";
+    "GnollHack.cnf";
 #endif
 #endif
 #endif
@@ -1894,13 +1894,13 @@ char configfile[BUFSZ];
 
 #ifdef MSDOS
 /* conflict with speed-dial under windows
- * for XXX.cnf file so support of NetHack.cnf
+ * for XXX.cnf file so support of GnollHack.cnf
  * is for backward compatibility only.
  * Preferred name (and first tried) is now defaults.nh but
  * the game will try the old name if there
  * is no defaults.nh.
  */
-const char *backward_compat_configfile = "nethack.cnf";
+const char *backward_compat_configfile = "GnollHack.cnf";
 #endif
 
 /* remember the name of the file we're accessing;
@@ -1946,7 +1946,7 @@ int src;
 #ifdef UNIX
         if (access(configfile, 4) == -1) { /* 4 is R_OK on newer systems */
             /* nasty sneaky attempt to read file through
-             * NetHack's setuid permissions -- this is the only
+             * GnollHack's setuid permissions -- this is the only
              * place a file name may be wholly under the player's
              * control (but SYSCF_FILE is not under the player's
              * control so it's OK).
@@ -1992,29 +1992,29 @@ int src;
 /* constructed full path names don't need fqname() */
 #ifdef VMS
     /* no punctuation, so might be a logical name */
-    set_configfile_name(fqname("nethackini", CONFIGPREFIX, 0));
+    set_configfile_name(fqname("GnollHackini", CONFIGPREFIX, 0));
     if ((fp = fopenp(configfile, "r")) != (FILE *) 0)
         return fp;
-    set_configfile_name("sys$login:nethack.ini");
+    set_configfile_name("sys$login:GnollHack.ini");
     if ((fp = fopenp(configfile, "r")) != (FILE *) 0)
         return fp;
 
     envp = nh_getenv("HOME");
     if (!envp || !*envp)
-        Strcpy(tmp_config, "NetHack.cnf");
+        Strcpy(tmp_config, "GnollHack.cnf");
     else
         Sprintf(tmp_config, "%s%s%s", envp,
                 !index(":]>/", envp[strlen(envp) - 1]) ? "/" : "",
-                "NetHack.cnf");
+                "GnollHack.cnf");
     set_configfile_name(tmp_config);
     if ((fp = fopenp(configfile, "r")) != (FILE *) 0)
         return fp;
 #else /* should be only UNIX left */
     envp = nh_getenv("HOME");
     if (!envp)
-        Strcpy(tmp_config, ".nethackrc");
+        Strcpy(tmp_config, ".GnollHackrc");
     else
-        Sprintf(tmp_config, "%s/%s", envp, ".nethackrc");
+        Sprintf(tmp_config, "%s/%s", envp, ".GnollHackrc");
 
     set_configfile_name(tmp_config);
     if ((fp = fopenp(configfile, "r")) != (FILE *) 0)
@@ -2024,13 +2024,13 @@ int src;
     if (envp) {
         /* OSX-style configuration settings */
         Sprintf(tmp_config, "%s/%s", envp,
-                "Library/Preferences/NetHack Defaults");
+                "Library/Preferences/GnollHack Defaults");
         set_configfile_name(tmp_config);
         if ((fp = fopenp(configfile, "r")) != (FILE *) 0)
             return fp;
         /* may be easier for user to edit if filename as '.txt' suffix */
         Sprintf(tmp_config, "%s/%s", envp,
-                "Library/Preferences/NetHack Defaults.txt");
+                "Library/Preferences/GnollHack Defaults.txt");
         set_configfile_name(tmp_config);
         if ((fp = fopenp(configfile, "r")) != (FILE *) 0)
             return fp;
@@ -2039,7 +2039,7 @@ int src;
     if (errno != ENOENT) {
         const char *details;
 
-        /* e.g., problems when setuid NetHack can't search home
+        /* e.g., problems when setuid GnollHack can't search home
            directory restricted to user */
 #if defined(NHSTDC) && !defined(NOTSTDC)
         if ((details = strerror(errno)) == 0)
@@ -2883,7 +2883,7 @@ fopen_wizkit_file()
     if (access(wizkit, 4) == -1) {
         /* 4 is R_OK on newer systems */
         /* nasty sneaky attempt to read file through
-         * NetHack's setuid permissions -- this is a
+         * GnollHack's setuid permissions -- this is a
          * place a file name may be wholly under the player's
          * control
          */
@@ -2924,7 +2924,7 @@ fopen_wizkit_file()
     if ((fp = fopenp(tmp_wizkit, "r")) != (FILE *) 0)
         return fp;
     else if (errno != ENOENT) {
-        /* e.g., problems when setuid NetHack can't search home
+        /* e.g., problems when setuid GnollHack can't search home
          * directory restricted to user */
         raw_printf("Couldn't open default wizkit file %s (%d).", tmp_wizkit,
                    errno);
@@ -3608,7 +3608,7 @@ recover_savefile()
     /* level 0 file contains:
      *  pid of creating process (ignored here)
      *  level number for current level of save file
-     *  name of save file nethack would have created
+     *  name of save file GnollHack would have created
      *  savefile info
      *  player name
      *  and game state

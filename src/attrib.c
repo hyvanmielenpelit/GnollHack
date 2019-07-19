@@ -1,6 +1,6 @@
-/* GnollHack 0.1	attrib.c	$NHDT-Date: 1553363417 2019/03/23 17:50:17 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.65 $ */
+/* GnollHack 4.0	attrib.c	$NHDT-Date: 1553363417 2019/03/23 17:50:17 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.65 $ */
 /*      Copyright 1988, 1989, 1990, 1992, M. Stephenson           */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /*  attribute modification routines. */
 

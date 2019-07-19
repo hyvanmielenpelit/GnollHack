@@ -1,6 +1,6 @@
-/* GnollHack 0.1  monsym.h        $NHDT-Date: 1547428769 2019/01/14 01:19:29 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.12 $ */
+/* GnollHack 4.0  monsym.h        $NHDT-Date: 1547428769 2019/01/14 01:19:29 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.12 $ */
 /*      Copyright (c) 2016 by Pasi Kallinen              */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 /*      Monster symbols and creation information rev 1.0          */
 
 #ifndef MONSYM_H

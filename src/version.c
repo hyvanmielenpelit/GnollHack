@@ -1,7 +1,7 @@
-/* GnollHack 0.1	version.c	$NHDT-Date: 1552353060 2019/03/12 01:11:00 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.52 $ */
+/* GnollHack 4.0	version.c	$NHDT-Date: 1552353060 2019/03/12 01:11:00 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.52 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2018. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 #include "dlb.h"
@@ -16,11 +16,11 @@
 #include "patchlevel.h"
 #endif
 
-#if defined(NETHACK_GIT_SHA)
-const char *NetHack_git_sha = NETHACK_GIT_SHA;
+#if defined(GnollHack_GIT_SHA)
+const char *GnollHack_git_sha = GnollHack_GIT_SHA;
 #endif
-#if defined(NETHACK_GIT_BRANCH)
-const char *NetHack_git_branch = NETHACK_GIT_BRANCH;
+#if defined(GnollHack_GIT_BRANCH)
+const char *GnollHack_git_branch = GnollHack_GIT_BRANCH;
 #endif
 
 STATIC_DCL void FDECL(insert_rtoption, (char *));
@@ -33,7 +33,7 @@ char *buf;
     return strcpy(buf, VERSION_STRING);
 }
 
-/* fill and return the given buffer with the long nethack version string */
+/* fill and return the given buffer with the long GnollHack version string */
 char *
 getversionstring(buf)
 char *buf;
@@ -41,7 +41,7 @@ char *buf;
     Strcpy(buf, VERSION_ID);
 
 #if defined(RUNTIME_PORT_ID) \
-    || defined(NETHACK_GIT_SHA) || defined(NETHACK_GIT_BRANCH)
+    || defined(GnollHack_GIT_SHA) || defined(GnollHack_GIT_BRANCH)
     {
         int c = 0;
 #if defined(RUNTIME_PORT_ID)
@@ -58,15 +58,15 @@ char *buf;
         if (tmp)
             Sprintf(eos(buf), "%s%s", c++ ? "," : "", tmp);
 #endif
-#if defined(NETHACK_GIT_SHA)
-        if (NetHack_git_sha)
-            Sprintf(eos(buf), "%s%s", c++ ? "," : "", NetHack_git_sha);
+#if defined(GnollHack_GIT_SHA)
+        if (GnollHack_git_sha)
+            Sprintf(eos(buf), "%s%s", c++ ? "," : "", GnollHack_git_sha);
 #endif
-#if defined(NETHACK_GIT_BRANCH)
+#if defined(GnollHack_GIT_BRANCH)
 #if defined(BETA)
-        if (NetHack_git_branch)
+        if (GnollHack_git_branch)
             Sprintf(eos(buf), "%sbranch:%s",
-                    c++ ? "," : "", NetHack_git_branch);
+                    c++ ? "," : "", GnollHack_git_branch);
 #endif
 #endif
         if (c)
@@ -76,7 +76,7 @@ char *buf;
         if (dotoff)
             Strcat(buf, ".");
     }
-#endif /* RUNTIME_PORT_ID || NETHACK_GIT_SHA || NETHACK_GIT_BRANCH */
+#endif /* RUNTIME_PORT_ID || GnollHack_GIT_SHA || GnollHack_GIT_BRANCH */
 
     return buf;
 }

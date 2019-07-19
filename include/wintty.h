@@ -1,6 +1,6 @@
-/* GnollHack 0.1	wintty.h	$NHDT-Date: 1553858470 2019/03/29 11:21:10 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.33 $ */
+/* GnollHack 4.0	wintty.h	$NHDT-Date: 1553858470 2019/03/29 11:21:10 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.33 $ */
 /* Copyright (c) David Cohrs, 1991,1992				  */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef WINTTY_H
 #define WINTTY_H

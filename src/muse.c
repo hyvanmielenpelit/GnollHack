@@ -1,6 +1,6 @@
-/* GnollHack 0.1	muse.c	$NHDT-Date: 1547025167 2019/01/09 09:12:47 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.92 $ */
+/* GnollHack 4.0	muse.c	$NHDT-Date: 1547025167 2019/01/09 09:12:47 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.92 $ */
 /*      Copyright (C) 1990 by Ken Arromdee                         */
-/* NetHack may be freely redistributed.  See license for details.  */
+/* GnollHack may be freely redistributed.  See license for details.  */
 
 /*
  * Monster item usage routines.

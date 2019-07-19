@@ -1,6 +1,6 @@
-/* GnollHack 0.1	explode.c	$NHDT-Date: 1545182146 2018/12/19 01:15:46 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.60 $ */
+/* GnollHack 4.0	explode.c	$NHDT-Date: 1545182146 2018/12/19 01:15:46 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.60 $ */
 /*      Copyright (C) 1990 by Ken Arromdee */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 

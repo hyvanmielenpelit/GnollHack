@@ -1,7 +1,7 @@
-/* GnollHack 0.1	mail.c	$NHDT-Date: 1545597424 2018/12/23 20:37:04 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.39 $ */
+/* GnollHack 4.0	mail.c	$NHDT-Date: 1545597424 2018/12/23 20:37:04 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.39 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Pasi Kallinen, 2018. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 
@@ -461,8 +461,8 @@ readmail(otmp)
 struct obj *otmp UNUSED;
 {
     static char *junk[] = {
-        NULL, /* placeholder for "Report bugs to <devteam@nethack.org>.", */
-        "Please disregard previous letter.", "Welcome to NetHack.",
+        NULL, /* placeholder for "Report bugs to <devteam@GnollHack.org>.", */
+        "Please disregard previous letter.", "Welcome to GnollHack.",
 #ifdef AMIGA
         "Only Amiga makes it possible.", "CATS have all the answers.",
 #endif
@@ -471,7 +471,7 @@ struct obj *otmp UNUSED;
         "**FR33 P0T10N 0F FULL H34L1NG**",
         "Please return to sender (Asmodeus)",
      "Buy a potion of gain level for only $19.99!  Guaranteed to be blessed!",
-        "Invitation: Visit the NetHack web site at http://www.nethack.org!"
+        "Invitation: Visit the GnollHack web site at http://www.GnollHack.org!"
     };
 
     /* XXX replace with more general substitution code and add local

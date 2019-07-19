@@ -1,7 +1,7 @@
-/* GnollHack 0.1	wield.c	$NHDT-Date: 1543492132 2018/11/29 11:48:52 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.58 $ */
+/* GnollHack 4.0	wield.c	$NHDT-Date: 1543492132 2018/11/29 11:48:52 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.58 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2009. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 

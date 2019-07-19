@@ -1,7 +1,7 @@
-/* GnollHack 0.1	mkmaze.c	$NHDT-Date: 1555022325 2019/04/11 22:38:45 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.68 $ */
+/* GnollHack 4.0	mkmaze.c	$NHDT-Date: 1555022325 2019/04/11 22:38:45 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.68 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Pasi Kallinen, 2018. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 #include "sp_lev.h"

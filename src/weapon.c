@@ -1,11 +1,11 @@
-/* GnollHack 0.1	weapon.c	$NHDT-Date: 1548209744 2019/01/23 02:15:44 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.69 $ */
+/* NetHack 0.1	weapon.c	$NHDT-Date: 1548209744 2019/01/23 02:15:44 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.69 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2011. */
 /* NetHack may be freely redistributed.  See license for details. */
 
 /*
  *      This module contains code for calculation of "to hit" and damage
- *      bonuses for any given weapon used, as well as weapons selection
+ * GnollHacknuses for any given weapon used, as well as weapons selection
  *      code for monsters.
  */
 #include "hack.h"
@@ -192,11 +192,11 @@ struct monst *mon;
  * 3d6 or 1d6+1) so we add on the extra damage in dmgval() if the weapon
  * doesn't do an exact die of damage.
  *
- * Of course new weapons were added later in the development of Nethack.  No
+ * Of course new weapons were added later in the development of NetHack.  No
  * AD&D consistency was kept, but most of these don't exist in AD&D anyway.
  *
  * Second edition AD&D came out a few years later; luckily it used the same
- * table.  As of this writing (1999), third edition is in progress but not
+ * table.  As of this writing (1999), third edition is in progreGnollHacknot
  * released.  Let's see if the weapon table stays the same.  --KAA
  * October 2000: It didn't.  Oh, well.
  */

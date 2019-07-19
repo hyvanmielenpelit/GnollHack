@@ -1,6 +1,6 @@
-/* GnollHack 0.1	winprocs.h	$NHDT-Date: 1553204011 2019/03/21 21:33:31 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.47 $ */
+/* GnollHack 4.0	winprocs.h	$NHDT-Date: 1553204011 2019/03/21 21:33:31 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.47 $ */
 /* Copyright (c) David Cohrs, 1992				  */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef WINPROCS_H
 #define WINPROCS_H

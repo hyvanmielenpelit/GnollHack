@@ -1,7 +1,7 @@
-/* GnollHack 0.1	rip.c	$NHDT-Date: 1488788514 2017/03/06 08:21:54 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.23 $ */
+/* GnollHack 4.0	rip.c	$NHDT-Date: 1488788514 2017/03/06 08:21:54 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.23 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2017. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 
@@ -39,13 +39,13 @@ static const char *rip_txt[] = {
 };
 #define STONE_LINE_CENT 28 /* char[] element of center of stone face */
 #else                      /* NH320_DEDICATION */
-/* NetHack 3.2.x displayed a dual tombstone as a tribute to Izchak. */
+/* GnollHack 3.2.x displayed a dual tombstone as a tribute to Izchak. */
 static const char *rip_txt[] = {
     "              ----------                      ----------",
     "             /          \\                    /          \\",
     "            /    REST    \\                  /    This    \\",
     "           /      IN      \\                /  release of  \\",
-    "          /     PEACE      \\              /   NetHack is   \\",
+    "          /     PEACE      \\              /   GnollHack is   \\",
     "         /                  \\            /   dedicated to   \\",
     "         |                  |            |  the memory of   |",
     "         |                  |            |                  |",

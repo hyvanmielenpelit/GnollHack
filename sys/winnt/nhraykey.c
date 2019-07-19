@@ -1,6 +1,6 @@
-/* GnollHack 0.1	nhraykey.c	$NHDT-Date: 1457207047 2016/03/05 19:44:07 $  $NHDT-Branch: chasonr $:$NHDT-Revision: 1.16 $ */
-/* Copyright (c) NetHack PC Development Team 2003                      */
-/* NetHack may be freely redistributed.  See license for details.      */
+/* GnollHack 4.0	nhraykey.c	$NHDT-Date: 1457207047 2016/03/05 19:44:07 $  $NHDT-Branch: chasonr $:$NHDT-Revision: 1.16 $ */
+/* Copyright (c) GnollHack PC Development Team 2003                      */
+/* GnollHack may be freely redistributed.  See license for details.      */
 
 /*
  * Keystroke handling contributed by Ray Chason.
@@ -9,13 +9,13 @@
  * The problem
  * ===========
  *
- * The console-mode Nethack wants both keyboard and mouse input.  The
+ * The console-mode GnollHack wants both keyboard and mouse input.  The
  * problem is that the Windows API provides no easy way to get mouse input
  * and also keyboard input properly translated according to the user's
  * chosen keyboard layout.
  *
  * The ReadConsoleInput function returns a stream of keyboard and mouse
- * events.  Nethack is interested in those events that represent a key
+ * events.  GnollHack is interested in those events that represent a key
  * pressed, or a click on a mouse button.  The keyboard events from
  * ReadConsoleInput are not translated according to the keyboard layout,
  * and do not take into account the shift, control, or alt keys.
@@ -114,11 +114,11 @@
  *       and we ignore it.
  *
  *     * Keys on the numeric keypad are processed for commands as in the
- *       unpatched Nethack, and for prompts by returning the ASCII
+ *       unpatched GnollHack, and for prompts by returning the ASCII
  *       character, even if the num lock is off.
  *
  *     * Alt sequences are processed for commands as in the unpatched
- *       Nethack, and ignored for prompts.
+ *       GnollHack, and ignored for prompts.
  *
  *     * Control codes are returned as received, because ReadConsole will
  *       not return the ESC key.
@@ -157,7 +157,7 @@
  *
  */
 
-static char where_to_get_source[] = "http://www.nethack.org/";
+static char where_to_get_source[] = "http://www.GnollHack.org/";
 static char author[] = "Ray Chason";
 
 #include "win32api.h"

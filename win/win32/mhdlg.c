@@ -1,6 +1,6 @@
-/* GnollHack 0.1	mhdlg.c	$NHDT-Date: 1544695946 2018/12/13 10:12:26 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.30 $ */
+/* GnollHack 4.0	mhdlg.c	$NHDT-Date: 1544695946 2018/12/13 10:12:26 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.30 $ */
 /* Copyright (C) 2001 by Alex Kompel 	 */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /* various dialog boxes are defined here */
 

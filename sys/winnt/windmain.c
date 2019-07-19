@@ -1,6 +1,6 @@
-/* GnollHack 0.1	windmain.c	$NHDT-Date: 1543465755 2018/11/29 04:29:15 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.101 $ */
+/* GnollHack 4.0	windmain.c	$NHDT-Date: 1543465755 2018/11/29 04:29:15 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.101 $ */
 /* Copyright (c) Derek S. Ray, 2015. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /* main.c - Windows */
 
@@ -26,7 +26,7 @@ static char *FDECL(exepath, (char *));
 char *NDECL(exename);
 boolean NDECL(fakeconsole);
 void NDECL(freefakeconsole);
-E void FDECL(nethack_exit, (int));
+E void FDECL(GnollHack_exit, (int));
 E char chosen_windowtype[WINTYPELEN];   /* flag.h */
 #if defined(MSWIN_GRAPHICS)
 E void NDECL(mswin_destroy_reg);
@@ -119,13 +119,13 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
 # endif
 #endif
 
-    hname = "NetHack"; /* used for syntax messages */
+    hname = "GnollHack"; /* used for syntax messages */
     /* Save current directory and make sure it gets restored when
      * the game is exited.
      */
     if (getcwd(orgdir, sizeof orgdir) == (char *) 0)
-        error("NetHack: current directory path too long");
-    dir = nh_getenv("NETHACKDIR");
+        error("GnollHack: current directory path too long");
+    dir = nh_getenv("GnollHackDIR");
     if (dir == (char *) 0)
         dir = nh_getenv("HACKDIR");
     if (dir == (char *) 0)
@@ -175,7 +175,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
                     (char *) alloc(strlen(envp) + 10);
                 Strcpy(fqn_prefix[SYSCONFPREFIX], envp);
                 append_slash(fqn_prefix[SYSCONFPREFIX]);
-                Strcat(fqn_prefix[SYSCONFPREFIX], "NetHack\\");
+                Strcat(fqn_prefix[SYSCONFPREFIX], "GnollHack\\");
             }
         }
 
@@ -231,7 +231,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
     if (!validate_prefix_locations(failbuf)) {
         raw_printf("Some invalid directory locations were specified:\n\t%s\n",
                    failbuf);
-        nethack_exit(EXIT_FAILURE);
+        GnollHack_exit(EXIT_FAILURE);
     }
     if (!hackdir[0])
         Strcpy(hackdir, orgdir);
@@ -243,7 +243,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
 
     if (argc >= 1
         && !strcmpi(default_window_sys, "mswin")
-        && (strstri(argv[0], "nethackw.exe") || GUILaunched))
+        && (strstri(argv[0], "GnollHackw.exe") || GUILaunched))
             iflags.windowtype_locked = TRUE;
 
     windowtype = default_window_sys;
@@ -262,18 +262,18 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
 
     if (!dlb_init()) {
         pline(
-            "%s\n%s\n%s\n%s\n\nNetHack was unable to open the required file "
+            "%s\n%s\n%s\n%s\n\nGnollHack was unable to open the required file "
             "\"%s\".%s",
             copyright_banner_line(1), copyright_banner_line(2),
             copyright_banner_line(3), copyright_banner_line(4), DLBFILE,
-            "\nAre you perhaps trying to run NetHack within a zip utility?");
+            "\nAre you perhaps trying to run GnollHack within a zip utility?");
         error("dlb_init failure.");
     }
 
     u.uhp = 1; /* prevent RIP on early quits */
     u.ux = 0;  /* prevent flush_screen() */
 
-    nethack_enter(argc, argv);
+    GnollHack_enter(argc, argv);
     iflags.use_background_glyph = FALSE;
     if (WINDOWPORT("mswin"))
         iflags.use_background_glyph = TRUE;
@@ -369,7 +369,7 @@ attempt_restore:
 	//	iflags.debug_fuzzer = TRUE;
 
 	moveloop(resuming);
-    nethack_exit(EXIT_SUCCESS);
+    GnollHack_exit(EXIT_SUCCESS);
     /*NOTREACHED*/
     return 0;
 }
@@ -386,7 +386,7 @@ char *argv[];
      */
     if (argc > 1) {
         if (argcheck(argc, argv, ARG_VERSION) == 2)
-            nethack_exit(EXIT_SUCCESS);
+            GnollHack_exit(EXIT_SUCCESS);
 
         if (argcheck(argc, argv, ARG_DEBUG) == 1) {
             argc--;
@@ -426,18 +426,18 @@ char *argv[];
 #endif
                 prscore(argc, argv);
 
-                nethack_exit(EXIT_SUCCESS);
+                GnollHack_exit(EXIT_SUCCESS);
             }
             if (GUILaunched) {
                 if (!strncmpi(argv[1], "-clearreg", 6)) { /* clear registry */
                     mswin_destroy_reg();
-                    nethack_exit(EXIT_SUCCESS);
+                    GnollHack_exit(EXIT_SUCCESS);
                 }
             }
             /* Don't initialize the full window system just to print usage */
             if (!strncmp(argv[1], "-?", 2) || !strncmp(argv[1], "/?", 2)) {
                 nhusage();
-                nethack_exit(EXIT_SUCCESS);
+                GnollHack_exit(EXIT_SUCCESS);
             }
         }
     }
@@ -528,7 +528,7 @@ char *argv[];
         /* FALL THROUGH */
         case '?':
             nhusage();
-            nethack_exit(EXIT_SUCCESS);
+            GnollHack_exit(EXIT_SUCCESS);
         }
     }
 }
@@ -826,7 +826,7 @@ getlock()
         unlock_file(HLOCK);
         Sprintf(oops, "Cannot open %s", fq_lock);
         raw_print(oops);
-        nethack_exit(EXIT_FAILURE);
+        GnollHack_exit(EXIT_FAILURE);
     }
 
     (void) nhclose(fd);

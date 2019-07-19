@@ -1,6 +1,6 @@
-/* GnollHack 0.1	sys.c	$NHDT-Date: 1547118632 2019/01/10 11:10:32 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.43 $ */
+/* GnollHack 4.0	sys.c	$NHDT-Date: 1547118632 2019/01/10 11:10:32 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.43 $ */
 /* Copyright (c) Kenneth Lorber, Kensington, Maryland, 2008. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 

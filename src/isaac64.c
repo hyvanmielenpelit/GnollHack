@@ -4,7 +4,7 @@
   Based on the public domain ISAAC implementation by Robert J. Jenkins Jr.*/
 
 /*
- * Changes for NetHack:
+ * Changes for GnollHack:
  *      include config.h;
  *      skip rest of file if USE_ISAAC64 isn't defined there;
  *      re-do 'inline' handling.

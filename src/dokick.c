@@ -1,6 +1,6 @@
-/* GnollHack 0.1	dokick.c	$NHDT-Date: 1551920353 2019/03/07 00:59:13 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.131 $ */
+/* GnollHack 4.0	dokick.c	$NHDT-Date: 1551920353 2019/03/07 00:59:13 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.131 $ */
 /* Copyright (c) Izchak Miller, Mike Stephenson, Steve Linhart, 1989. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 

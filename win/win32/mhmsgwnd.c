@@ -1,6 +1,6 @@
-/* GnollHack 0.1	mhmsgwnd.c	$NHDT-Date: 1432512812 2015/05/25 00:13:32 $  $NHDT-Branch: master $:$NHDT-Revision: 1.32 $ */
+/* GnollHack 4.0	mhmsgwnd.c	$NHDT-Date: 1432512812 2015/05/25 00:13:32 $  $NHDT-Branch: master $:$NHDT-Revision: 1.32 $ */
 /* Copyright (C) 2001 by Alex Kompel 	 */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "winMS.h"
 #include "mhmsgwnd.h"
@@ -24,7 +24,7 @@ struct window_line {
     char text[MAXWINDOWTEXT + 1];
 };
 
-typedef struct mswin_nethack_message_window {
+typedef struct mswin_GnollHack_message_window {
     size_t max_text;
     struct window_line window_text[MAX_MSG_LINES];
     int lines_last_turn; /* lines added during the last turn */
@@ -215,7 +215,7 @@ NHMessageWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             SetScrollInfo(hWnd, SB_VERT, &si, TRUE);
         }
 
-        /* update NetHack internal window position */
+        /* update GnollHack internal window position */
         GetWindowRect(hWnd, &rt);
         ScreenToClient(GetNHApp()->hMainWnd, (LPPOINT) &rt);
         ScreenToClient(GetNHApp()->hMainWnd, ((LPPOINT) &rt) + 1);

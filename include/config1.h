@@ -1,7 +1,7 @@
-/* GnollHack 0.1	config1.h	$NHDT-Date: 1555702947 2019/04/19 19:42:27 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.21 $ */
+/* GnollHack 4.0	config1.h	$NHDT-Date: 1555702947 2019/04/19 19:42:27 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.21 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Kenneth Lorber, Kensington, Maryland, 2015. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef CONFIG1_H
 #define CONFIG1_H
@@ -87,7 +87,7 @@
 #define NEED_VARARGS
 #undef UNIX
 #define DLB
-#define HACKDIR "NetHack:"
+#define HACKDIR "GnollHack:"
 #define NO_MACRO_CPATH
 #endif
 

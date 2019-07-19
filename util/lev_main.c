@@ -1,6 +1,6 @@
-/* GnollHack 0.1	lev_main.c	$NHDT-Date: 1543371692 2018/11/28 02:21:32 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.56 $ */
+/* GnollHack 4.0	lev_main.c	$NHDT-Date: 1543371692 2018/11/28 02:21:32 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.56 $ */
 /*      Copyright (c) 1989 by Jean-Christophe Collet */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /*
  * This file contains the main function for the parser
@@ -30,7 +30,7 @@
 #endif
 
 #ifdef WIN_CE
-#define PREFIX "\\nethack\\dat\\"
+#define PREFIX "\\GnollHack\\dat\\"
 #endif
 
 #ifndef MPWTOOL

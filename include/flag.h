@@ -1,7 +1,7 @@
-/* GnollHack 0.1	flag.h	$NHDT-Date: 1554155745 2019/04/01 21:55:45 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.150 $ */
+/* GnollHack 4.0	flag.h	$NHDT-Date: 1554155745 2019/04/01 21:55:45 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.150 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2006. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /* If you change the flag structure make sure you increment EDITLEVEL in   */
 /* patchlevel.h if needed.  Changing the instance_flags structure does     */
@@ -55,7 +55,7 @@ struct flag {
      * type from 'boolean' to 'char'.  A compiler was smart enough to
      * complain that assigning any of the relevant letters was not 0 or 1
      * so not appropriate for boolean (by a configuration which used
-     * SKIP_BOOLEAN to bypass nethack's 'boolean' and use a C++-compatible
+     * SKIP_BOOLEAN to bypass GnollHack's 'boolean' and use a C++-compatible
      * one).  So the type was changed to 'xchar', which is guaranteed to
      * match the size of 'boolean' (this guarantee only applies for the
      * !SKIP_BOOLEAN config, unfortunately).  Since xchar does not match
@@ -234,7 +234,7 @@ struct debug_flags {
 struct instance_flags {
     /* stuff that really isn't option or platform related. They are
      * set and cleared during the game to control the internal
-     * behaviour of various NetHack functions and probably warrant
+     * behaviour of various GnollHack functions and probably warrant
      * a structure of their own elsewhere some day.
      */
     boolean debug_fuzzer;  /* fuzz testing */
@@ -419,7 +419,7 @@ struct instance_flags {
     int wc2_term_cols;		/* terminal width, in characters */
     int wc2_term_rows;		/* terminal height, in characters */
     int wc2_statuslines;        /* default = 2, curses can handle 3 */
-    int wc2_windowborders;	/* display borders on NetHack windows */
+    int wc2_windowborders;	/* display borders on GnollHack windows */
     int wc2_petattr;            /* text attributes for pet */
     struct autopickup_exception *autopickup_exceptions[2];
 #define AP_LEAVE 0

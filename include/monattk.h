@@ -1,5 +1,5 @@
-/* GnollHack 0.1	monattk.h	$NHDT-Date: 1432512775 2015/05/25 00:12:55 $  $NHDT-Branch: master $:$NHDT-Revision: 1.11 $ */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack 4.0	monattk.h	$NHDT-Date: 1432512775 2015/05/25 00:12:55 $  $NHDT-Branch: master $:$NHDT-Revision: 1.11 $ */
+/* GnollHack may be freely redistributed.  See license for details. */
 /* Copyright 1988, M. Stephenson */
 
 #ifndef MONATTK_H

@@ -1,7 +1,7 @@
-/* GnollHack 0.1	skills.h	$NHDT-Date: 1547255911 2019/01/12 01:18:31 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.15 $ */
+/* GnollHack 4.0	skills.h	$NHDT-Date: 1547255911 2019/01/12 01:18:31 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.15 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985-1999. */
 /*-Copyright (c) Pasi Kallinen, 2017. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef SKILLS_H
 #define SKILLS_H
@@ -96,7 +96,7 @@ enum skill_levels {
     P_BASIC        = 2,
     P_SKILLED      = 3,
     P_EXPERT       = 4,
-    /* when the skill system was adopted into nethack, levels beyond expert
+    /* when the skill system was adopted into GnollHack, levels beyond expert
        were unnamed and just used numbers.  Devteam coined them Master and
        Grand Master.  Sometime after that, Heroes of Might and Magic IV (tm)
        was released and had two more levels which use these same names. */

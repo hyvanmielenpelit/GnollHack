@@ -1,6 +1,6 @@
-/* GnollHack 0.1	prop.h	$NHDT-Date: 1547514641 2019/01/15 01:10:41 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.20 $ */
+/* GnollHack 4.0	prop.h	$NHDT-Date: 1547514641 2019/01/15 01:10:41 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.20 $ */
 /* Copyright (c) 1989 Mike Threepoint				  */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef PROP_H
 #define PROP_H
@@ -117,7 +117,7 @@ struct prop {
 #define W_TOOL 0x00080000L   /* Eyewear */
 #define W_ACCESSORY (W_RING | W_AMUL | W_TOOL)
     /* historical note: originally in slash'em, 'worn' saddle stayed in
-       hero's inventory; in nethack, it's kept in the steed's inventory */
+       hero's inventory; in GnollHack, it's kept in the steed's inventory */
 #define W_SADDLE 0x00100000L /* KMH -- For riding monsters */
 #define W_BALL 0x00200000L   /* Punishment ball */
 #define W_CHAIN 0x00400000L  /* Punishment chain */

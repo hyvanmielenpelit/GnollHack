@@ -1,6 +1,6 @@
-/* GnollHack 0.1	mhmap.c	$NHDT-Date: 1435002695 2015/06/22 19:51:35 $  $NHDT-Branch: master $:$NHDT-Revision: 1.56 $ */
+/* GnollHack 4.0	mhmap.c	$NHDT-Date: 1435002695 2015/06/22 19:51:35 $  $NHDT-Branch: master $:$NHDT-Revision: 1.56 $ */
 /* Copyright (C) 2001 by Alex Kompel      */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "win10.h"
 #include "winMS.h"
@@ -30,7 +30,7 @@ extern short glyph2tile[];
     ((ntile / GetNHApp()->mapTilesPerLine) * GetNHApp()->mapTile_Y)
 
 /* map window data */
-typedef struct mswin_nethack_map_window {
+typedef struct mswin_GnollHack_map_window {
     HWND hWnd;                  /* window */
 
     int map[COLNO][ROWNO];      /* glyph map */
@@ -72,7 +72,7 @@ typedef struct mswin_nethack_map_window {
 
 } NHMapWindow, *PNHMapWindow;
 
-static TCHAR szNHMapWindowClass[] = TEXT("MSNethackMapWndClass");
+static TCHAR szNHMapWindowClass[] = TEXT("MSGnollHackMapWndClass");
 LRESULT CALLBACK MapWndProc(HWND, UINT, WPARAM, LPARAM);
 static void register_map_window_class(void);
 static void onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam);
@@ -822,7 +822,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     }
 
 #ifdef USE_PILEMARK
-    /* rely on NetHack core helper routine */
+    /* rely on GnollHack core helper routine */
     (void) mapglyph(data->map[i][j], &mgch, &color, &special,
                     i, j);
     if ((glyph != NO_GLYPH) && (special & MG_PET)
@@ -897,7 +897,7 @@ paintGlyph(PNHMapWindow data, int i, int j, RECT * rect)
         //nhglyph2charcolor(data->map[i][j], &ch, &color);
         //OldFg = SetTextColor(hDC, nhcolor_to_RGB(color));
     #else
-        /* rely on NetHack core helper routine */
+        /* rely on GnollHack core helper routine */
         (void) mapglyph(data->map[i][j], &mgch, &color,
                         &special, i, j);
         ch = (char) mgch;
@@ -1177,7 +1177,7 @@ onMSNH_HScroll(HWND hWnd, WPARAM wParam, LPARAM lParam)
     SetScrollInfo(hWnd, SB_HORZ, &si, TRUE);
 }
 
-/* map nethack map coordinates to the screen location */
+/* map GnollHack map coordinates to the screen location */
 void
 nhcoord2display(PNHMapWindow data, int x, int y, LPRECT lpOut)
 {
@@ -1246,7 +1246,7 @@ nhglyph2charcolor(short g, uchar *ch, int *color)
 }
 #endif
 
-/* map nethack color to RGB */
+/* map GnollHack color to RGB */
 COLORREF
 nhcolor_to_RGB(int c)
 {

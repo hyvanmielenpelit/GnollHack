@@ -1,7 +1,7 @@
-/* GnollHack 0.1	global.h	$NHDT-Date: 1557254325 2019/05/07 18:38:45 $  $NHDT-Branch: NetHack-3.6.2 $:$NHDT-Revision: 1.71 $ */
+/* GnollHack 4.0	global.h	$NHDT-Date: 1557254325 2019/05/07 18:38:45 $  $NHDT-Branch: GnollHack-3.6.2 $:$NHDT-Revision: 1.71 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2006. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef GLOBAL_H
 #define GLOBAL_H
@@ -27,7 +27,7 @@
 #define ORACLEFILE "oracles"    /* file with oracular information */
 #define DATAFILE "data"         /* file giving the meaning of symbols used */
 #define CMDHELPFILE "cmdhelp"   /* file telling what commands do */
-#define HISTORY "history"       /* file giving nethack's history */
+#define HISTORY "history"       /* file giving GnollHack's history */
 #define LICENSE "license"       /* file with license information */
 #define OPTIONFILE "opthelp"    /* file explaining runtime options */
 #define OPTIONS_USED "options"  /* compile-time options, for #version */
@@ -103,7 +103,7 @@ typedef uchar nhsym;
 
 #define SIZE(x) (int)(sizeof(x) / sizeof(x[0]))
 
-/* A limit for some NetHack int variables.  It need not, and for comparable
+/* A limit for some GnollHack int variables.  It need not, and for comparable
  * scoring should not, depend on the actual limit on integers for a
  * particular machine, although it is set to the minimum required maximum
  * signed integer for C (2^15 -1).
@@ -359,9 +359,9 @@ struct savefile_info {
 #define PANICTRACE_GDB
 #endif
 
-/* Supply nethack_enter macro if not supplied by port */
-#ifndef nethack_enter
-#define nethack_enter(argc, argv) ((void) 0)
+/* Supply GnollHack_enter macro if not supplied by port */
+#ifndef GnollHack_enter
+#define GnollHack_enter(argc, argv) ((void) 0)
 #endif
 
 

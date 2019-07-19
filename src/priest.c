@@ -1,6 +1,6 @@
-/* GnollHack 0.1	priest.c	$NHDT-Date: 1545131519 2018/12/18 11:11:59 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.45 $ */
+/* GnollHack 4.0	priest.c	$NHDT-Date: 1545131519 2018/12/18 11:11:59 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.45 $ */
 /* Copyright (c) Izchak Miller, Steve Linhart, 1989.              */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 #include "mfndpos.h"

@@ -1,6 +1,6 @@
-/* GnollHack 0.1	nttty.c	$NHDT-Date: 1554215932 2019/04/02 14:38:52 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.99 $ */
-/* Copyright (c) NetHack PC Development Team 1993    */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack 4.0	nttty.c	$NHDT-Date: 1554215932 2019/04/02 14:38:52 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.99 $ */
+/* Copyright (c) GnollHack PC Development Team 1993    */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /* tty.c - (Windows NT) version */
 
@@ -92,7 +92,7 @@ static boolean orig_QuickEdit;
 
 /* Support for changing console font if existing glyph widths are too wide */
 
-/* Flag for whether NetHack was launched via the GUI, not the command line.
+/* Flag for whether GnollHack was launched via the GUI, not the command line.
  * The reason we care at all, is so that we can get
  * a final RETURN at the end of the game when launched from the GUI
  * to prevent the scoreboard (or panic message :-|) from vanishing
@@ -113,7 +113,7 @@ static HWND GetConsoleHandle(void);
 static HWND GetConsoleHwnd(void);
 static boolean altered_palette;
 static COLORREF UserDefinedColors[CLR_MAX];
-static COLORREF NetHackColors[CLR_MAX] = {
+static COLORREF GnollHackColors[CLR_MAX] = {
     0x00000000, 0x00c80000, 0x0000c850, 0x00b4b432, 0x000000d2, 0x00800080,
     0x000064b4, 0x00c0c0c0, 0x00646464, 0x00f06464, 0x0000ff00, 0x00ffff00,
     0x000000ff, 0x00ff00ff, 0x0000ffff, 0x00ffffff
@@ -1124,7 +1124,7 @@ tty_change_color(color_number, rgb, reverse)
 int color_number, reverse;
 long rgb;
 {
-    /* Map NetHack color index to NT Console palette index */
+    /* Map GnollHack color index to NT Console palette index */
     int idx, win32_color_number[] = {
         0,  /* CLR_BLACK           0 */
         4,  /* CLR_RED             1 */
@@ -1145,9 +1145,9 @@ long rgb;
     };
     int k;
     if (color_number < 0) { /* indicates OPTIONS=palette with no value */
-        /* copy the NetHack palette into UserDefinedColors */
+        /* copy the GnollHack palette into UserDefinedColors */
         for (k = 0; k < CLR_MAX; k++)
-            UserDefinedColors[k] = NetHackColors[k];
+            UserDefinedColors[k] = GnollHackColors[k];
     } else if (color_number >= 0 && color_number < CLR_MAX) {
         if (!altered_palette) {
             /* make sure a full suite is available */
@@ -1210,7 +1210,7 @@ char *op;
     if (!op) {
         change_color(-1, 0, 0); /* indicates palette option with
                                    no value meaning "load an entire
-                                   hard-coded NetHack palette." */
+                                   hard-coded GnollHack palette." */
         return 1;
     }
 
@@ -1495,7 +1495,7 @@ GetConsoleHwnd(void)
     /* Get current window title */
     GetConsoleTitle(OldTitle, sizeof OldTitle);
 
-    (void) sprintf(NewTitle, "NETHACK%d/%d", GetTickCount(),
+    (void) sprintf(NewTitle, "GnollHack%d/%d", GetTickCount(),
                    GetCurrentProcessId());
     SetConsoleTitle(NewTitle);
 
@@ -1635,8 +1635,8 @@ clean_up:
 }
 
 /* set_known_good_console_font sets the code page and font used by the console
- * to settings know to work well with NetHack.  It also saves the original
- * settings so that they can be restored prior to NetHack exit.
+ * to settings know to work well with GnollHack.  It also saves the original
+ * settings so that they can be restored prior to GnollHack exit.
  */
 void
 set_known_good_console_font()
@@ -1663,7 +1663,7 @@ set_known_good_console_font()
 }
 
 /* restore_original_console_font will restore the console font and code page
- * settings to what they were when NetHack was launched.
+ * settings to what they were when GnollHack was launched.
  */
 void
 restore_original_console_font()
@@ -1777,7 +1777,7 @@ void early_raw_print(const char *s)
 }
 #endif
 
-/* nethack_enter_nttty() is the first thing that is called from main
+/* GnollHack_enter_nttty() is the first thing that is called from main
  * once the tty port is confirmed.
  *
  * We initialize all console state to support rendering to the console
@@ -1789,7 +1789,7 @@ void early_raw_print(const char *s)
  * not later change.
  *
  * We also check and set the console font to a font that we know will work
- * well with nethack.
+ * well with GnollHack.
  *
  * The intent of this early initialization is to get all state that is
  * not dependent upon game options initialized allowing us to simplify
@@ -1802,7 +1802,7 @@ void early_raw_print(const char *s)
  *
  */
 
-void nethack_enter_nttty()
+void GnollHack_enter_nttty()
 {
 #if 0
     /* set up state needed by early_raw_print() */

@@ -1,6 +1,6 @@
 #ifndef lint
 /* static char yysccsid[] = "@(#)yaccpar	1.9 (Berkeley) 02/21/93"; */
-/* static char nhsccsid[] = "@(#)yaccpar   1.9.0-nh (NetHack) 12/03/2015"; */
+/* static char nhsccsid[] = "@(#)yaccpar   1.9.0-nh (GnollHack) 12/03/2015"; */
 #endif
 #define YYBYACC 1
 #define YYMAJOR 1
@@ -11,9 +11,9 @@
 #define yyerrok (yyerrflag=0)
 #define YYRECOVERING (yyerrflag!=0)
 #define YYPREFIX "yy"
-/* NetHack 3.6  lev_comp.y	$NHDT-Date: 1551901401 2019/03/06 19:43:21 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.26 $ */
+/* GnollHack 3.6  lev_comp.y	$NHDT-Date: 1551901401 2019/03/06 19:43:21 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.26 $ */
 /*      Copyright (c) 1989 by Jean-Christophe Collet */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /*
  * This file contains the Level Compiler code
@@ -38,7 +38,7 @@
 #include "sp_lev.h"
 
 #define ERR             (-1)
-/* many types of things are put in chars for transference to NetHack.
+/* many types of things are put in chars for transference to GnollHack.
  * since some systems will use signed chars, limit everybody to the
  * same number for portability.
  */

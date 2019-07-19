@@ -1,9 +1,9 @@
-/* GnollHack 0.1	nhdefkey.c	$NHDT-Date: 1432512793 2015/05/25 00:13:13 $  $NHDT-Branch: master $:$NHDT-Revision: 1.14 $ */
-/* Copyright (c) NetHack PC Development Team 2003                      */
-/* NetHack may be freely redistributed.  See license for details.      */
+/* GnollHack 4.0	nhdefkey.c	$NHDT-Date: 1432512793 2015/05/25 00:13:13 $  $NHDT-Branch: master $:$NHDT-Revision: 1.14 $ */
+/* Copyright (c) GnollHack PC Development Team 2003                      */
+/* GnollHack may be freely redistributed.  See license for details.      */
 
 /*
- * This is the default NetHack keystroke processing.
+ * This is the default GnollHack keystroke processing.
  * It can be built as a run-time loadable dll (nhdefkey.dll).
  * Alternative keystroke handlers can be built using the
  * entry points in this file as a template.
@@ -11,13 +11,13 @@
  * Use the defaults.nh "altkeyhandler" option to set a
  * different dll name (without the ".DLL" extension) to
  * get different processing. Ensure that the dll referenced
- * in defaults.nh exists in the same directory as NetHack in
+ * in defaults.nh exists in the same directory as GnollHack in
  * order for it to load successfully.
  *
  */
 
-static char where_to_get_source[] = "http://www.nethack.org/";
-static char author[] = "The NetHack Development Team";
+static char where_to_get_source[] = "http://www.GnollHack.org/";
+static char author[] = "The GnollHack Development Team";
 
 #include "win32api.h"
 #include "hack.h"
