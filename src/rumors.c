@@ -485,11 +485,21 @@ doconsult(oracl)
 struct monst *oracl;
 {
     long umoney;
-    int u_pay, minor_cost = 50, major_cost = 500 + 50 * u.ulevel;
-    int add_xpts;
+	int u_pay, minor_cost = 50, major_cost = 500 + 50 * u.ulevel;
+	int unid_cnt = count_unidentified(invent);
+	int minor_id_cost = 250;
+	int major_id_cost = 400 + 50 * unid_cnt;
+	int oracleaction = 0;
+	int add_xpts;
     char qbuf[QBUFSZ];
 
-    multi = 0;
+	if (major_id_cost < 500 + 50 * u.ulevel)
+		major_id_cost = 500 + 50 * u.ulevel;
+
+	if (major_id_cost > 2000)
+		major_id_cost = 2000;
+	
+	multi = 0;
     umoney = money_cnt(invent);
 
     if (!oracl) {
@@ -503,50 +513,101 @@ struct monst *oracl;
         return 0;
     }
 
-    Sprintf(qbuf, "\"Wilt thou settle for a minor consultation?\" (%d %s)",
-            minor_cost, currency((long) minor_cost));
-    switch (ynq(qbuf)) {
-    default:
-    case 'q':
-        return 0;
-    case 'y':
-        if (umoney < (long) minor_cost) {
-            You("don't even have enough money for that!");
-            return 0;
-        }
-        u_pay = minor_cost;
-        break;
-    case 'n':
-        if (umoney <= (long) minor_cost /* don't even ask */
-            || (oracle_cnt == 1 || oracle_flg < 0))
-            return 0;
-        Sprintf(qbuf, "\"Then dost thou desire a major one?\" (%d %s)",
-                major_cost, currency((long) major_cost));
-        if (yn(qbuf) != 'y')
-            return 0;
-        u_pay = (umoney < (long) major_cost) ? (int) umoney : major_cost;
-        break;
-    }
+	Sprintf(qbuf, "\"Dost thou desire a consultation or identification?\"");
+	switch (ciq(qbuf)) {
+	default:
+	case 'q':
+		return 0;
+	case 'c':
+		Sprintf(qbuf, "\"Wilt thou settle for a minor consultation?\" (%d %s)",
+			minor_cost, currency((long)minor_cost));
+		switch (ynq(qbuf)) {
+		default:
+		case 'q':
+			return 0;
+		case 'y':
+			if (umoney < (long)minor_cost) {
+				You("don't even have enough money for that!");
+				return 0;
+			}
+			u_pay = minor_cost;
+			oracleaction = 1;
+			break;
+		case 'n':
+			if (umoney <= (long)minor_cost /* don't even ask */
+				|| (oracle_cnt == 1 || oracle_flg < 0))
+				return 0;
+			Sprintf(qbuf, "\"Then dost thou desire a major one?\" (%d %s)",
+				major_cost, currency((long)major_cost));
+			if (yn(qbuf) != 'y')
+				return 0;
+			u_pay = (umoney < (long)major_cost) ? (int)umoney : major_cost;
+			oracleaction = 2;
+			break;
+		}
+		break;
+	case 'i':
+		Sprintf(qbuf, "\"Wilt thou settle for a standard identification?\" (%d %s)",
+			minor_id_cost, currency((long)minor_id_cost));
+		switch (ynq(qbuf)) {
+		default:
+		case 'q':
+			return 0;
+		case 'y':
+			if (umoney < (long)minor_id_cost) {
+				You("don't even have enough money for that!");
+				return 0;
+			}
+			u_pay = minor_id_cost;
+			oracleaction = 3;
+			break;
+		case 'n':
+			Sprintf(qbuf, "\"Then dost thou desire an improved one?\" (%d %s)",
+				major_id_cost, currency((long)major_id_cost));
+			if (yn(qbuf) != 'y')
+				return 0;
+			if (umoney < (long)major_id_cost) {
+				You("don't even have enough money for that!");
+				return 0;
+			}
+			u_pay = major_id_cost;
+			oracleaction = 4;
+			break;
+		}
+		break;
+	}
     money2mon(oracl, (long) u_pay);
     context.botl = 1;
     add_xpts = 0; /* first oracle of each type gives experience points */
-    if (u_pay == minor_cost) {
-        outrumor(1, BY_ORACLE);
-        if (!u.uevent.minor_oracle)
-            add_xpts = u_pay / (u.uevent.major_oracle ? 25 : 10);
-        /* 5 pts if very 1st, or 2 pts if major already done */
-        u.uevent.minor_oracle = TRUE;
-    } else {
-        boolean cheapskate = u_pay < major_cost;
+	switch (oracleaction) {
+	case 1:
+		outrumor(1, BY_ORACLE);
+		if (!u.uevent.minor_oracle)
+			add_xpts = u_pay / (u.uevent.major_oracle ? 25 : 10);
+		/* 5 pts if very 1st, or 2 pts if major already done */
+		u.uevent.minor_oracle = TRUE;
+		break;
+	case 2:
+		boolean cheapskate = u_pay < major_cost;
 
-        outoracle(cheapskate, TRUE);
-        if (!cheapskate && !u.uevent.major_oracle)
-            add_xpts = u_pay / (u.uevent.minor_oracle ? 25 : 10);
-        /* ~100 pts if very 1st, ~40 pts if minor already done */
-        u.uevent.major_oracle = TRUE;
-        exercise(A_WIS, !cheapskate);
-    }
-    if (add_xpts) {
+		outoracle(cheapskate, TRUE);
+		if (!cheapskate && !u.uevent.major_oracle)
+			add_xpts = u_pay / (u.uevent.minor_oracle ? 25 : 10);
+		/* ~100 pts if very 1st, ~40 pts if minor already done */
+		u.uevent.major_oracle = TRUE;
+		exercise(A_WIS, !cheapskate);
+		break;
+	case 3:
+		identify_pack(1, FALSE);
+		break;
+	case 4:
+		identify_pack(0, FALSE);
+		break;
+	default:
+		break;
+	}
+
+	if (add_xpts) {
         more_experienced(add_xpts, u_pay / 50);
         newexplevel();
     }

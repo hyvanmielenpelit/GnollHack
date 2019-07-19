@@ -3151,8 +3151,8 @@ xchar x, y;
             shk_names_obj(
                 shkp, obj,
                 (sell_how != SELL_NORMAL)
-                    ? "traded %s for %ld zorkmid%s in %scredit."
-                    : "relinquish %s and acquire %ld zorkmid%s in %scredit.",
+                    ? "traded %s for %ld gold piece%s in %scredit."
+                    : "relinquish %s and acquire %ld gold piece%s in %scredit.",
                 tmpcr, (eshkp->credit > 0L) ? "additional " : "");
             eshkp->credit += tmpcr;
             subfrombill(obj, shkp);

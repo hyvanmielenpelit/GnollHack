@@ -1265,7 +1265,7 @@ static const char *const currencies[] = {
     "sporebuck",             /* Spore */
     "Triganic Pu",           /* The Hitchhiker's Guide to the Galaxy */
     "woolong",               /* Cowboy Bebop */
-    "zorkmid",               /* Zork, GnollHack */
+    "zorkmid",               /* Zork, NetHack */
 };
 
 const char *
@@ -1274,7 +1274,7 @@ long amount;
 {
     const char *res;
 
-    res = Hallucination ? currencies[rn2(SIZE(currencies))] : "zorkmid";
+    res = Hallucination ? currencies[rn2(SIZE(currencies))] : "gold piece";
     if (amount != 1L)
         res = makeplural(res);
     return res;

@@ -67,6 +67,7 @@ const char ynchars[] = "yn";
 const char ynqchars[] = "ynq";
 const char ynaqchars[] = "ynaq";
 const char ynNaqchars[] = "yn#aq";
+const char ciqchars[] = "ciq";
 NEARDATA long yn_number = 0L;
 
 const char disclosure_options[] = "iavgco";
