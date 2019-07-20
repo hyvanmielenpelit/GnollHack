@@ -1104,8 +1104,21 @@ int dieroll;
         if (thrown != HMON_THROWN || !obj || !uwep
             || !ammo_and_launcher(obj, uwep))
             tmp += dbon();
+		else if (ammo_and_launcher(obj, uwep)){
+			if (uwep->otyp == CROSSBOW)
+				tmp += 3; // Light crossbows get +3 bonus, (heavy) crossbows get 18/00 strength bonus
+			else
+				tmp += dbon(); //Normal bows get full strength bonus
+
+			//All bows get bow's enchantment bonus
+			tmp += uwep->spe;
+			/* negative enchantment mustn't produce negative damage */
+			if (tmp < 0)
+				tmp = 0;
+		}
     }
 
+	//Bonus from weapon skills
     if (valid_weapon_attack) {
         struct obj *wep;
 

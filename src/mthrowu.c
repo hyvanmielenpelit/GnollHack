@@ -74,7 +74,7 @@ const char *name; /* if null, then format `*objp' */
         return 0;
     } else {
         if (Blind || !flags.verbose)
-            You("are hit%s", exclam(dam));
+            You("are hit%s",  exclam(dam));
         else
             You("are hit by %s%s", onm, exclam(dam));
 
@@ -597,6 +597,22 @@ struct obj *obj;         /* missile (or stack providing it) */
                     if (singleobj->otyp == ELVEN_ARROW)
                         dam++;
                 }
+
+				//Give bow damage bonuses
+				if (MON_WEP(mon) && singleobj)
+				{
+					if(ammo_and_launcher(singleobj, MON_WEP(mon)))
+					{
+						hitv += MON_WEP(mon)->spe;
+						dam += MON_WEP(mon)->spe;
+						if (MON_WEP(mon)->otyp == CROSSBOW) {
+							dam += 3;
+						}
+						else {
+							dam += mdbon(mon);
+						}
+					}
+				}
                 if (bigmonst(youmonst.data))
                     hitv++;
                 hitv += 8 + singleobj->spe;
