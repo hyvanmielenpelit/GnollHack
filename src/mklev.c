@@ -838,7 +838,7 @@ makelevel()
             (void) mkgold(0L, somex(croom), somey(croom));
         if (Is_rogue_level(&u.uz))
             goto skip_nonrogue;
-        if (!rn2(30))
+        if (!rn2(20))
             mkfount(0, croom);
         if (!rn2(60))
             mksink(croom);

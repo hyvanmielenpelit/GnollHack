@@ -487,18 +487,12 @@ struct monst *oracl;
     long umoney;
 	int u_pay, minor_cost = 50, major_cost = 500 + 50 * u.ulevel;
 	int unid_cnt = count_unidentified(invent);
-	int minor_id_cost = 250;
-	int major_id_cost = 400 + 50 * unid_cnt;
+	int minor_id_cost = 175 + 15 * u.ulevel;
+	int major_id_cost = minor_id_cost * 3;
 	int oracleaction = 0;
 	int add_xpts;
     char qbuf[QBUFSZ];
 
-	if (major_id_cost < 500 + 50 * u.ulevel)
-		major_id_cost = 500 + 50 * u.ulevel;
-
-	if (major_id_cost > 2000)
-		major_id_cost = 2000;
-	
 	multi = 0;
     umoney = money_cnt(invent);
 
@@ -579,6 +573,13 @@ struct monst *oracl;
     money2mon(oracl, (long) u_pay);
     context.botl = 1;
     add_xpts = 0; /* first oracle of each type gives experience points */
+
+	int majoridnum = rn1(2,4);
+	if (!rn2(4))
+		majoridnum = 0;
+
+	boolean cheapskate;
+
 	switch (oracleaction) {
 	case 1:
 		outrumor(1, BY_ORACLE);
@@ -588,7 +589,7 @@ struct monst *oracl;
 		u.uevent.minor_oracle = TRUE;
 		break;
 	case 2:
-		boolean cheapskate = u_pay < major_cost;
+		cheapskate = u_pay < major_cost;
 
 		outoracle(cheapskate, TRUE);
 		if (!cheapskate && !u.uevent.major_oracle)
@@ -601,7 +602,7 @@ struct monst *oracl;
 		identify_pack(1, FALSE);
 		break;
 	case 4:
-		identify_pack(0, FALSE);
+		identify_pack(majoridnum, FALSE);
 		break;
 	default:
 		break;
