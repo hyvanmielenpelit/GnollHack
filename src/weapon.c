@@ -953,23 +953,24 @@ struct monst* mon;
 		mon->data == &mons[PM_HEZROU] || mon->data == &mons[PM_ORC_CAPTAIN] || mon->data == &mons[PM_WATCH_CAPTAIN] || 
 		mon->data == &mons[PM_BUGBEAR] || mon->data == &mons[PM_ELVENKING]) {
 		bonus = 3;
-	} else if (mon->data == &mons[PM_OGRE] || mon->data == &mons[PM_ALEAX] || mon->data == &mons[PM_NALFESHNEE] || 
+	} else if (mon->data == &mons[PM_OGRE] || mon->data == &mons[PM_ALEAX] || mon->data == &mons[PM_ICE_DEVIL] ||
 		mon->data == &mons[PM_DWARF_KING]) {
 		bonus = 4;
-	} else if (mon->data == &mons[PM_OGRE_LORD || mon->data == &mons[PM_VAMPIRE]] ||
-		mon->data == &mons[PM_MARILITH]) {
+	} else if (mon->data == &mons[PM_OGRE_LORD] || mon->data == &mons[PM_VAMPIRE] ||
+		mon->data == &mons[PM_NALFESHNEE]) {
 		bonus = 5;
-	} else if (mon->data == &mons[PM_OGRE_KING] || mon->data == &mons[PM_CYCLOPS] || mon->data == &mons[PM_GIANT] || 
-		mon->data == &mons[PM_STONE_GIANT] ||
-		mon->data == &mons[PM_DISPATER] || mon->data == &mons[PM_YEENOGHU] || mon->data == &mons[PM_VAMPIRE_LORD] ||
-		mon->data == &mons[PM_ARCHON] || mon->data == &mons[PM_BALROG] || mon->data == &mons[PM_GERYON] ||
-		mon->data == &mons[PM_ORCUS] || mon->data == &mons[PM_PIT_FIEND]) {
+	} else if (mon->data == &mons[PM_OGRE_KING]  ||	mon->data == &mons[PM_VAMPIRE_LORD] ||
+		mon->data == &mons[PM_ARCHON] || mon->data == &mons[PM_PIT_FIEND] || mon->data == &mons[PM_BALROG]) {
 		bonus = 6;
-	} else if (mon->data == &mons[PM_FIRE_GIANT] || mon->data == &mons[PM_FROST_GIANT] || mon->data == &mons[PM_HILL_GIANT] ||
-		mon->data == &mons[PM_VLAD_THE_IMPALER] || mon->data == &mons[PM_ETTIN]) {
+	} else if (mon->data == &mons[PM_GIANT] || mon->data == &mons[PM_STONE_GIANT] || mon->data == &mons[PM_VLAD_THE_IMPALER] ||
+		mon->data == &mons[PM_YEENOGHU] || mon->data == &mons[PM_ORCUS]) {
 		bonus = 7;
-	} else if (mon->data == &mons[PM_STORM_GIANT] || mon->data == &mons[PM_TITAN] || mon->data == &mons[PM_ASMODEUS] || mon->data == &mons[PM_DEMOGORGON]) {
+	} else if (mon->data == &mons[PM_FIRE_GIANT] || mon->data == &mons[PM_FROST_GIANT] || mon->data == &mons[PM_HILL_GIANT] ||
+		mon->data == &mons[PM_ETTIN] || mon->data == &mons[PM_DISPATER] || 	mon->data == &mons[PM_GERYON] || 
+		mon->data == &mons[PM_BAALZEBUB]) {
 		bonus = 8;
+	} else if (mon->data == &mons[PM_STORM_GIANT] || mon->data == &mons[PM_TITAN] || mon->data == &mons[PM_CYCLOPS] || mon->data == &mons[PM_ASMODEUS] || mon->data == &mons[PM_DEMOGORGON]) {
+		bonus = 9;
 
 	}
 	else	{
