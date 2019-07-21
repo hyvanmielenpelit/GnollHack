@@ -73,28 +73,46 @@ const char *name; /* if null, then format `*objp' */
             You("are almost hit by %s.", onm);
         return 0;
     } else {
-        if (Blind || !flags.verbose)
-            You("are hit%s",  exclam(dam));
-        else
-            You("are hit by %s%s", onm, exclam(dam));
-
-        if (is_acid && Acid_resistance) {
-            pline("It doesn't seem to hurt you.");
+        if ((is_acid && Acid_resistance)) {
+			if (Blind || !flags.verbose)
+				You("are hit, but it does not seem to hurt you%s", exclam(dam));
+			else
+				You("are hit by %s, but it doesn't seem to hurt you%s", onm, exclam(dam));
+			//pline("It doesn't seem to hurt you.");
         } else if (obj && obj->oclass == POTION_CLASS) {
             /* an explosion which scatters objects might hit hero with one
                (potions deliberately thrown at hero are handled by m_throw) */
-            potionhit(&youmonst, obj, POTHIT_OTHER_THROW);
+			if (Blind || !flags.verbose)
+				You("are hit by something%s", exclam(dam));
+			else
+				You("are hit by %s%s", onm, exclam(dam));
+			potionhit(&youmonst, obj, POTHIT_OTHER_THROW);
             *objp = obj = 0; /* potionhit() uses up the potion */
         } else {
-            if (obj && objects[obj->otyp].oc_material == SILVER
+			if(dam <1)
+			{
+				if (Blind || !flags.verbose)
+					You("are hit, but it does not seem to hurt you%s", exclam(dam));
+				else
+					You("are hit by %s, but it doesn't seem to hurt you%s", onm, exclam(dam));
+			}
+			else
+			{
+				if (Blind || !flags.verbose)
+					You("are hit for %d damage%s", dam, exclam(dam));
+				else
+					You("are hit by %s for %d damage%s", onm, dam, exclam(dam));
+			}
+			if (obj && objects[obj->otyp].oc_material == SILVER
                 && Hate_silver) {
                 /* extra damage already applied by dmgval() */
                 pline_The("silver sears your flesh!");
                 exercise(A_CON, FALSE);
             }
             if (is_acid)
-                pline("It burns!");
-            losehp(dam, knm, kprefix); /* acid damage */
+                pline("It burns!"); /* acid damage */
+
+            losehp(dam, knm, kprefix);
             exercise(A_STR, FALSE);
         }
         return 1;
@@ -226,7 +244,7 @@ struct obj *otmp, *mwep;
             && mwep->otyp == ELVEN_BOW)
             || (is_orc(mtmp->data) && otmp->otyp == ORCISH_ARROW
                 && mwep->otyp == ORCISH_BOW)
-            || (is_gnome(mtmp->data) && otmp->otyp == CROSSBOW_BOLT
+            || (is_gnoll(mtmp->data) && otmp->otyp == CROSSBOW_BOLT
                 && mwep->otyp == CROSSBOW))
             multishot++;
     }

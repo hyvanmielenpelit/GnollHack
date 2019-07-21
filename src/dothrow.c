@@ -174,11 +174,11 @@ int shotlimit;
                     && uwep->otyp == ORCISH_BOW)
                     multishot++;
                 break;
-            case PM_GNOME:
-                /* arbitrary; there isn't any gnome-specific gear */
-                if (skill == -P_CROSSBOW)
-                    multishot++;
-                break;
+            case PM_GNOLL:
+				if (obj->otyp == CROSSBOW_BOLT && uwep
+					&& uwep->otyp == CROSSBOW)
+					multishot++;
+				break;
             case PM_HUMAN:
             case PM_DWARF:
             default:
@@ -190,7 +190,7 @@ int shotlimit;
            instead, high strength is necessary to load and shoot quickly */
         if (multishot > 1 && skill == -P_CROSSBOW
             && ammo_and_launcher(obj, uwep)
-            && (int) ACURRSTR < (Race_if(PM_GNOME) ? 16 : 18))
+            && (int) ACURRSTR < (Race_if(PM_GNOLL) ? 16 : 18))
             multishot = rnd(multishot);
 
         multishot = rnd(multishot);

@@ -2581,7 +2581,7 @@ int final;
     if (Halluc_resistance)
         enl_msg(You_, "resist", "resisted", " hallucinations",
                 from_what(HALLUC_RES));
-    if (u.uedibility)
+    if (u.uedibility || maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)))
         you_can("recognize detrimental food", "");
 
     /*** Vision and senses ***/

@@ -931,7 +931,7 @@ dbon()
         return 6;
 }
 
-/* monster damage bonus for strength */
+/* monster damage bonus for strength*/
 int
 mdbon(mon)
 struct monst* mon;

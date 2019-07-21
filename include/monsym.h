@@ -44,7 +44,7 @@ enum mon_class_types {
     S_DRAGON     = 30, /* D */
     S_ELEMENTAL  = 31, /* E: includes invisible stalker */
     S_FUNGUS     = 32, /* F */
-    S_GNOME      = 33, /* G */
+    S_GNOLL      = 33, /* G */
     S_GIANT      = 34, /* H: large humanoid: giant, ettin, minotaur */
     S_invisible  = 35, /* I: non-class present in def_monsyms[] */
     S_JABBERWOCK = 36, /* J */
@@ -73,6 +73,7 @@ enum mon_class_types {
 
     S_WORM_TAIL  = 59, /* ~ */
     S_MIMIC_DEF  = 60, /* ] */
+
 
     MAXMCLASSES  = 61  /* number of monster classes */
 };
@@ -114,7 +115,7 @@ enum mon_class_types {
 #define DEF_DRAGON      'D'
 #define DEF_ELEMENTAL   'E'
 #define DEF_FUNGUS      'F'
-#define DEF_GNOME       'G'
+#define DEF_GNOLL       'G'
 #define DEF_GIANT       'H'
 #define DEF_JABBERWOCK  'J'
 #define DEF_KOP         'K'

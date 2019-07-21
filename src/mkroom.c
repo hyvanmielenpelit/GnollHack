@@ -752,7 +752,7 @@ courtmon()
     else if (i > 30)
         return &mons[PM_HOBGOBLIN];
     else if (i > 15)
-        return mkclass(S_GNOME, 0);
+        return mkclass(S_GNOLL, 0);
     else
         return mkclass(S_KOBOLD, 0);
 }

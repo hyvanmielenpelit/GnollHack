@@ -383,7 +383,13 @@
 #define	PM_GUIDE	378
 #define	PM_WARRIOR	379
 #define	PM_APPRENTICE	380
+#define	PM_GNOLL	381
+#define	PM_GNOLL_LORD	382
+#define	PM_GNOLL_KING	383
+#define	PM_GNOLL_MUMMY	384
+#define	PM_GNOLL_ZOMBIE	385
+#define	PM_GNOLL_WARDEN	386
 
-#define	NUMMONS	381
+#define	NUMMONS	387
 
 #endif /* PM_H */

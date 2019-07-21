@@ -2638,7 +2638,7 @@ register struct monst *mon;
              */
             if ((youmonst.data->mlet == S_KOBOLD
                  || youmonst.data->mlet == S_ORC
-                 || youmonst.data->mlet == S_GNOME) && !weapon_used)
+                 || youmonst.data->mlet == S_GNOLL) && !weapon_used)
                 goto use_weapon;
             /*FALLTHRU*/
 

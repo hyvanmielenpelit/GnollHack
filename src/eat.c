@@ -333,7 +333,11 @@ struct obj *otmp;
     } else if (otmp->otyp == CRAM_RATION) {
         if (maybe_polyd(is_dwarf(youmonst.data), Race_if(PM_DWARF)))
             nut += nut / 6; /* 600 -> 700 */
-    }
+	}
+	else if (otmp->otyp == TRIPE_RATION) {
+		if (maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)))
+			nut += nut * 2; /* 200 -> 600 */
+	}
     return nut;
 }
 
@@ -1610,7 +1614,7 @@ struct obj *otmp;
     if (!nonrotting_corpse(mnum)) {
         long age = peek_at_iced_corpse_age(otmp);
 
-        rotted = (monstermoves - age) / (10L + rn2(20));
+        rotted = (monstermoves - age) / (20L + rn2(20));
         if (otmp->cursed)
             rotted += 2L;
         else if (otmp->blessed)
@@ -1620,7 +1624,7 @@ struct obj *otmp;
     if (mnum != PM_ACID_BLOB && !stoneable && !slimeable && rotted > 5L) {
         boolean cannibal = maybe_cannibal(mnum, FALSE);
 
-        pline("Ulch - that %s was tainted%s!",
+		pline("Ulch - that %s was tainted%s!",
               (mons[mnum].mlet == S_FUNGUS) ? "fungoid vegetation"
                   : glob ? "glob"
                       : vegetarian(&mons[mnum]) ? "protoplasm"
@@ -1646,12 +1650,12 @@ struct obj *otmp;
             useupf(otmp, 1L);
         return 2;
     } else if (acidic(&mons[mnum]) && !Acid_resistance) {
-        tp++;
+		tp++;
         You("have a very bad case of stomach acid.");   /* not body_part() */
         losehp(rnd(15), !glob ? "acidic corpse" : "acidic glob",
                KILLED_BY_AN); /* acid damage */
     } else if (poisonous(&mons[mnum]) && rn2(5)) {
-        tp++;
+		tp++;
         pline("Ecch - that must have been poisonous!");
         if (!Poison_resistance) {
             losestr(rnd(4));
@@ -1661,7 +1665,7 @@ struct obj *otmp;
             You("seem unaffected by the poison.");
     /* now any corpse left too long will make you mildly ill */
     } else if ((rotted > 5L || (rotted > 3L && rn2(5))) && !Sick_resistance) {
-        tp++;
+		tp++;
         You_feel("%ssick.", (Sick) ? "very " : "");
         losehp(rnd(8), !glob ? "cadaver" : "rotted glob", KILLED_BY_AN);
     }
@@ -1669,8 +1673,8 @@ struct obj *otmp;
     /* delay is weight dependent */
     context.victual.reqtime = 3 + ((!glob ? mons[mnum].cwt : otmp->owt) >> 6);
 
-    if (!tp && !nonrotting_corpse(mnum) && (otmp->orotten || !rn2(7))) {
-        if (rottenfood(otmp)) {
+    if (!tp && !nonrotting_corpse(mnum) && (otmp->orotten)) { //  || !rn2(7)
+		if (rottenfood(otmp)) {
             otmp->orotten = TRUE;
             (void) touchfood(otmp);
             retcode = 1;
@@ -1799,7 +1803,14 @@ struct obj *otmp;
             pline("That satiated your %s!", body_part(STOMACH));
         break;
     case TRIPE_RATION:
-        if (carnivorous(youmonst.data) && !humanoid(youmonst.data))
+		if (maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)))	{
+			if (u.uhunger <= 200)
+				pline(Hallucination ? "Woof! Like best tripe I ever had!"
+					: "That tripe really hit the spot!");
+			else if (u.uhunger <= 700)
+				pline("That satiated your %s!", body_part(STOMACH));
+		}
+		else if (carnivorous(youmonst.data) && !humanoid(youmonst.data))
             pline("That tripe ration was surprisingly good!");
         else if (maybe_polyd(is_orc(youmonst.data), Race_if(PM_ORC)))
             pline(Hallucination ? "Tastes great!  Less filling!"
@@ -2454,7 +2465,13 @@ doeat()
     if (check_capacity((char *) 0))
         return 0;
 
-    if (u.uedibility) {
+	if (maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL))) {
+		int res = edibility_prompts(otmp);
+
+		if (res == 1) {
+			return 0;
+		}
+	} else if (u.uedibility) {
         int res = edibility_prompts(otmp);
 
         if (res) {

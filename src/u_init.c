@@ -227,9 +227,21 @@ static struct inv_sub {
     /* { PM_DWARF, SMALL_SHIELD, DWARVISH_ROUNDSHIELD }, */
     /* { PM_DWARF, PICK_AXE, DWARVISH_MATTOCK }, */
     { PM_DWARF, LEMBAS_WAFER, CRAM_RATION },
-    { PM_GNOME, BOW, CROSSBOW },
-    { PM_GNOME, ARROW, CROSSBOW_BOLT },
-    { NON_PM, STRANGE_OBJECT, STRANGE_OBJECT }
+	{ PM_GNOLL, LONG_SWORD, FLAIL },
+	{ PM_GNOLL, SHORT_SWORD, FLAIL },
+	{ PM_GNOLL, MACE, FLAIL },
+	{ PM_GNOLL, CLUB, FLAIL },
+	{ PM_GNOLL, BOW, CROSSBOW },
+    { PM_GNOLL, ARROW, CROSSBOW_BOLT },
+	{ PM_GNOLL, CRAM_RATION, TRIPE_RATION },
+	{ PM_GNOLL, LEMBAS_WAFER, TRIPE_RATION },
+	{ PM_GNOLL, FOOD_RATION, TRIPE_RATION },
+	{ PM_GNOLL, APPLE, TIN },
+	{ PM_GNOLL, CARROT, TIN },
+	{ PM_GNOLL, ORANGE, TIN },
+	{ PM_GNOLL, BANANA, TIN },
+	{ PM_GNOLL, PEAR, TIN },
+	{ NON_PM, STRANGE_OBJECT, STRANGE_OBJECT }
 };
 
 static const struct def_skill Skill_A[] = {
@@ -1064,7 +1076,39 @@ register struct trobj *trop;
                                 (trop->trotyp == UNDEF_TYP) ? "random " : "",
                                 OBJ_NAME(objects[otyp]));
                     otyp = obj->otyp = inv_subs[i].subs_otyp;
-                    break;
+					if (obj->otyp == TIN)
+					{
+						switch (rn2(8))
+						{
+						case 0:
+							obj->corpsenm = PM_SEWER_RAT;
+							break;
+						case 1:
+							obj->corpsenm = PM_NEWT;
+							break;
+						case 2:
+							obj->corpsenm = PM_IGUANA;
+							break;
+						case 3:
+							obj->corpsenm = PM_GECKO;
+							break;
+						case 4:
+							obj->corpsenm = PM_LIZARD;
+							break;
+						case 5:
+							obj->corpsenm = PM_LICHEN;
+							break;
+						case 6:
+							obj->corpsenm = PM_GIANT_RAT;
+							break;
+						case 7:
+							obj->corpsenm = PM_HOBBIT;
+							break;
+						default:
+							break;
+						}
+						break;
+					}
                 }
         }
 

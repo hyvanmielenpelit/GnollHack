@@ -101,7 +101,11 @@ static const struct innate {
                  { 1, &HPoison_resistance, "", "" },
                  { 0, 0, 0, 0 } },
 
+	gnl_abil[] = { { 1, &HPoison_resistance, "", "" },
+				   { 0, 0, 0, 0 } },
+
   hum_abil[] = { { 0, 0, 0, 0 } };
+
 
 STATIC_DCL void NDECL(exerper);
 STATIC_DCL void FDECL(postadjabil, (long *));
@@ -741,7 +745,7 @@ long frommask;
         case PM_ELF:
             abil = elf_abil;
             break;
-        case PM_GNOME:
+        case PM_GNOLL:
             abil = gno_abil;
             break;
         case PM_ORC:
@@ -750,7 +754,7 @@ long frommask;
         case PM_HUMAN:
             abil = hum_abil;
             break;
-        default:
+		default:
             break;
         }
 
@@ -921,9 +925,9 @@ int oldlevel, newlevel;
     case PM_ORC:
         rabil = orc_abil;
         break;
-    case PM_HUMAN:
+	case PM_HUMAN:
     case PM_DWARF:
-    case PM_GNOME:
+    case PM_GNOLL:
     default:
         rabil = 0;
         break;

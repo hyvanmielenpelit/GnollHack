@@ -249,7 +249,7 @@ int mndx, mode;
                 mndx = PM_ELF;
             else if (is_dwarf(ptr))
                 mndx = PM_DWARF;
-            else if (is_gnome(ptr))
+            else if (is_gnoll(ptr))
                 mndx = PM_GNOME;
             else if (is_orc(ptr))
                 mndx = PM_ORC;

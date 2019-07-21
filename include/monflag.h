@@ -111,7 +111,7 @@
 #define M2_HUMAN 0x00000008L        /* is a human */
 #define M2_ELF 0x00000010L          /* is an elf */
 #define M2_DWARF 0x00000020L        /* is a dwarf */
-#define M2_GNOME 0x00000040L        /* is a gnome */
+#define M2_GNOLL 0x00000040L        /* is a gnoll */
 #define M2_ORC 0x00000080L          /* is an orc */
 #define M2_DEMON 0x00000100L        /* is a demon */
 #define M2_MERC 0x00000200L         /* is a guard or soldier */
@@ -172,7 +172,7 @@
 #define MH_HUMAN M2_HUMAN
 #define MH_ELF M2_ELF
 #define MH_DWARF M2_DWARF
-#define MH_GNOME M2_GNOME
+#define MH_GNOLL M2_GNOLL
 #define MH_ORC M2_ORC
 
 /* for mons[].geno (constant during game) */

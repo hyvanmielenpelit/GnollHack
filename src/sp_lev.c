@@ -6049,8 +6049,10 @@ const char *name;
     fd = dlb_fopen(name, RDBMODE);
     if (!fd)
         return FALSE;
-    Fread((genericptr_t) &vers_info, sizeof vers_info, 1, fd);
-    if (!check_version(&vers_info, name, TRUE)) {
+    
+	Fread((genericptr_t) &vers_info, sizeof vers_info, 1, fd);
+    
+	if (!check_version(&vers_info, name, TRUE)) {
         (void) dlb_fclose(fd);
         goto give_up;
     }

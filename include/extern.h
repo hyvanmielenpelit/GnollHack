@@ -2757,6 +2757,7 @@ E void FDECL(mwepgone, (struct monst *));
 E int FDECL(mon_wield_item, (struct monst *));
 E int NDECL(abon);
 E int NDECL(dbon);
+E int FDECL(mdbon, (struct monst*));
 E void FDECL(wet_a_towel, (struct obj *, int, BOOLEAN_P));
 E void FDECL(dry_a_towel, (struct obj *, int, BOOLEAN_P));
 E char *FDECL(skill_level_name, (int, char *));
