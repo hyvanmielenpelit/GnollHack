@@ -222,7 +222,7 @@ register struct monst *mtmp;
      *      (1/7 and mon is not mimicing furniture or object)
      */
     if (couldsee(mtmp->mx, mtmp->my) && distu(mtmp->mx, mtmp->my) <= 100
-        && (!Stealth || (mtmp->data == &mons[PM_ETTIN] && rn2(10)))
+        && (!Stealth) // || (mtmp->data == &mons[PM_ETTIN] && rn2(10)))
         && (!(mtmp->data->mlet == S_NYMPH
               || mtmp->data == &mons[PM_JABBERWOCK]
 #if 0 /* DEFERRED */

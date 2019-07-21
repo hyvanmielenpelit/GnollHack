@@ -689,7 +689,7 @@ const struct Race races[] = {
         NON_PM,
         PM_GNOLL_MUMMY,
         PM_GNOLL_ZOMBIE,
-        MH_GNOLL | ROLE_MALE | ROLE_FEMALE | ROLE_NEUTRAL,
+        MH_GNOLL | ROLE_MALE | ROLE_FEMALE | ROLE_NEUTRAL | ROLE_CHAOTIC,
         MH_GNOLL,
         MH_DWARF | MH_GNOLL,
         MH_HUMAN,

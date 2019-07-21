@@ -182,7 +182,7 @@ register struct monst *mtmp;
     switch (ptr->mlet) {
     case S_GIANT:
         if (rn2(2))
-            (void) mongets(mtmp, (mm != PM_ETTIN) ? BOULDER : CLUB);
+			(void)mongets(mtmp, BOULDER); // (mm != PM_ETTIN) ? BOULDER : CLUB);
         break;
     case S_HUMAN:
         if (is_mercenary(ptr)) {

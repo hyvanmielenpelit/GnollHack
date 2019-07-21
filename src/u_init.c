@@ -228,11 +228,19 @@ static struct inv_sub {
     /* { PM_DWARF, PICK_AXE, DWARVISH_MATTOCK }, */
     { PM_DWARF, LEMBAS_WAFER, CRAM_RATION },
 	{ PM_GNOLL, LONG_SWORD, FLAIL },
-	{ PM_GNOLL, SHORT_SWORD, FLAIL },
+	{ PM_GNOLL, SPEAR, ORCISH_SPEAR },
+	{ PM_GNOLL, SHORT_SWORD, ORCISH_SHORT_SWORD },
+	{ PM_GNOLL, SCALPEL, ORCISH_DAGGER },
+	{ PM_GNOLL, DAGGER, ORCISH_DAGGER },
 	{ PM_GNOLL, MACE, FLAIL },
 	{ PM_GNOLL, CLUB, FLAIL },
 	{ PM_GNOLL, BOW, CROSSBOW },
     { PM_GNOLL, ARROW, CROSSBOW_BOLT },
+	{ PM_GNOLL, HELMET, ORCISH_HELM },
+	{ PM_GNOLL, SMALL_SHIELD, ORCISH_SHIELD },
+	{ PM_GNOLL, RING_MAIL, ORCISH_RING_MAIL },
+	{ PM_GNOLL, CHAIN_MAIL, ORCISH_CHAIN_MAIL },
+	{ PM_GNOLL, ROBE, LEATHER_ARMOR },
 	{ PM_GNOLL, CRAM_RATION, TRIPE_RATION },
 	{ PM_GNOLL, LEMBAS_WAFER, TRIPE_RATION },
 	{ PM_GNOLL, FOOD_RATION, TRIPE_RATION },
@@ -1078,7 +1086,7 @@ register struct trobj *trop;
                     otyp = obj->otyp = inv_subs[i].subs_otyp;
 					if (obj->otyp == TIN)
 					{
-						switch (rn2(8))
+						switch (rn2(5))
 						{
 						case 0:
 							obj->corpsenm = PM_SEWER_RAT;
@@ -1093,18 +1101,10 @@ register struct trobj *trop;
 							obj->corpsenm = PM_GECKO;
 							break;
 						case 4:
-							obj->corpsenm = PM_LIZARD;
-							break;
-						case 5:
-							obj->corpsenm = PM_LICHEN;
-							break;
-						case 6:
 							obj->corpsenm = PM_GIANT_RAT;
 							break;
-						case 7:
-							obj->corpsenm = PM_HOBBIT;
-							break;
 						default:
+							obj->corpsenm = PM_SEWER_RAT;
 							break;
 						}
 						break;

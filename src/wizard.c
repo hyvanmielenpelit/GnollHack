@@ -28,7 +28,7 @@ STATIC_DCL unsigned long FDECL(strategy, (struct monst *));
    their chaotic counterparts */
 static NEARDATA const int nasties[] = {
     /* neutral */
-    PM_COCKATRICE, PM_ETTIN, PM_STALKER, PM_MINOTAUR,
+    PM_COCKATRICE, PM_STALKER, PM_MINOTAUR, //PM_ETTIN, 
     PM_OWLBEAR, PM_PURPLE_WORM, PM_XAN, PM_UMBER_HULK,
     PM_XORN, PM_ZRUTY, PM_LEOCROTTA, PM_BALUCHITHERIUM,
     PM_CARNIVOROUS_APE, PM_FIRE_ELEMENTAL, PM_JABBERWOCK,

@@ -966,7 +966,7 @@ struct monst* mon;
 		mon->data == &mons[PM_YEENOGHU] || mon->data == &mons[PM_ORCUS]) {
 		bonus = 7;
 	} else if (mon->data == &mons[PM_FIRE_GIANT] || mon->data == &mons[PM_FROST_GIANT] || mon->data == &mons[PM_HILL_GIANT] ||
-		mon->data == &mons[PM_ETTIN] || mon->data == &mons[PM_DISPATER] || 	mon->data == &mons[PM_GERYON] || 
+		mon->data == &mons[PM_DISPATER] || 	mon->data == &mons[PM_GERYON] || 
 		mon->data == &mons[PM_BAALZEBUB]) {
 		bonus = 8;
 	} else if (mon->data == &mons[PM_STORM_GIANT] || mon->data == &mons[PM_TITAN] || mon->data == &mons[PM_CYCLOPS] || mon->data == &mons[PM_ASMODEUS] || mon->data == &mons[PM_DEMOGORGON]) {

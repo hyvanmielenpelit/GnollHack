@@ -178,10 +178,10 @@ int mndx;
     case PM_GIANT_MUMMY:
         mndx = PM_GIANT;
         break;
-    case PM_ETTIN_ZOMBIE:
+/*    case PM_ETTIN_ZOMBIE:
     case PM_ETTIN_MUMMY:
         mndx = PM_ETTIN;
-        break;
+        break;*/
     default:
         break;
     }
@@ -357,7 +357,7 @@ unsigned corpseflags;
     case PM_ELF_MUMMY:
     case PM_HUMAN_MUMMY:
     case PM_GIANT_MUMMY:
-    case PM_ETTIN_MUMMY:
+//    case PM_ETTIN_MUMMY:
     case PM_KOBOLD_ZOMBIE:
     case PM_DWARF_ZOMBIE:
     case PM_GNOME_ZOMBIE:
@@ -365,7 +365,7 @@ unsigned corpseflags;
     case PM_ELF_ZOMBIE:
     case PM_HUMAN_ZOMBIE:
     case PM_GIANT_ZOMBIE:
-    case PM_ETTIN_ZOMBIE:
+//    case PM_ETTIN_ZOMBIE:
         num = undead_to_corpse(mndx);
         corpstatflags |= CORPSTAT_INIT;
         obj = mkcorpstat(CORPSE, mtmp, &mons[num], x, y, corpstatflags);

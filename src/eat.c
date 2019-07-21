@@ -1722,7 +1722,7 @@ struct obj *otmp;
                   /* tiger reference is to TV ads for "Frosted Flakes",
                      breakfast cereal targeted at kids by "Tony the tiger" */
               Hallucination
-                 ? (yummy ? ((u.umonnum == PM_TIGER) ? "gr-r-reat" : "gnarly")
+                 ? (yummy ? ((u.umonnum == PM_LARGE_CAT) ? "gr-r-reat" : "gnarly")
                           : palatable ? "copacetic" : "grody")
                  : (yummy ? "delicious" : palatable ? "okay" : "terrible"),
               (yummy || !palatable) ? '!' : '.');
@@ -2414,7 +2414,7 @@ struct obj *otmp;
     /*
      * Breaks conduct, but otherwise safe.
      */
-    if (!u.uconduct.unvegan
+    if (!u.uconduct.unvegan && !maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL))
         && ((material == LEATHER || material == BONE
              || material == DRAGON_HIDE || material == WAX)
             || (cadaver && !vegan(&mons[mnum])))) {
@@ -2425,7 +2425,7 @@ struct obj *otmp;
         else
             return 2;
     }
-    if (!u.uconduct.unvegetarian
+    if (!u.uconduct.unvegetarian && !maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL))
         && ((material == LEATHER || material == BONE
              || material == DRAGON_HIDE)
             || (cadaver && !vegetarian(&mons[mnum])))) {

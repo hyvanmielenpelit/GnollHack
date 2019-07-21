@@ -19,7 +19,7 @@
 #define	PM_COYOTE	14
 #define	PM_WEREJACKAL	15
 #define	PM_LITTLE_DOG	16
-#define	PM_DINGO	17
+#define	PM_GNOLL_LORD	17
 #define	PM_DOG	18
 #define	PM_LARGE_DOG	19
 #define	PM_WOLF	20
@@ -36,11 +36,11 @@
 #define	PM_SHOCKING_SPHERE	31
 #define	PM_KITTEN	32
 #define	PM_HOUSECAT	33
-#define	PM_JAGUAR	34
-#define	PM_LYNX	35
-#define	PM_PANTHER	36
+#define	PM_GNOLL	34
+#define	PM_GNOLL_MUMMY	35
+#define	PM_GNOLL_ZOMBIE	36
 #define	PM_LARGE_CAT	37
-#define	PM_TIGER	38
+#define	PM_GNOLL_KING	38
 #define	PM_GREMLIN	39
 #define	PM_GARGOYLE	40
 #define	PM_WINGED_GARGOYLE	41
@@ -383,13 +383,7 @@
 #define	PM_GUIDE	378
 #define	PM_WARRIOR	379
 #define	PM_APPRENTICE	380
-#define	PM_GNOLL	381
-#define	PM_GNOLL_LORD	382
-#define	PM_GNOLL_KING	383
-#define	PM_GNOLL_MUMMY	384
-#define	PM_GNOLL_ZOMBIE	385
-#define	PM_GNOLL_WARDEN	386
 
-#define	NUMMONS	387
+#define	NUMMONS	381
 
 #endif /* PM_H */
