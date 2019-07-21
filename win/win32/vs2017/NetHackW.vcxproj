@@ -204,6 +204,17 @@
     <ClInclude Include="$(WinWin32Dir)mhtext.h" />
     <ClInclude Include="$(WinWin32Dir)winMS.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\gnollhack.ico" />
+    <Image Include="..\mnsel.bmp" />
+    <Image Include="..\mnselcnt.bmp" />
+    <Image Include="..\mnunsel.bmp" />
+    <Image Include="..\petmark.bmp" />
+    <Image Include="..\pilemark.bmp" />
+    <Image Include="..\rip.bmp" />
+    <Image Include="..\splash.bmp" />
+    <Image Include="..\tiles.bmp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Target Name="AfterBuild">
     <MSBuild Projects="afternethack.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
