@@ -96,11 +96,11 @@ OBJECT(OBJ("strange object", None),
            BITS(kn, 1, 1, 0, 0, 1, 0, 0, 0, 0, PIERCE, sub, metal), \
            0, WEAPON_CLASS, prob, 0, wt,                            \
            cost, sdam, ldam, hitbon, 0, wt, color)
-#define BOW(name,desc,kn,prob,wt,cost,hitbon,metal,sub,color) \
+#define BOW(name,desc,kn,prob,wt,cost,sdam,ldam,hitbon,metal,sub,color) \
     OBJECT(OBJ(name,desc),                                          \
            BITS(kn, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, sub, metal),      \
            0, WEAPON_CLASS, prob, 0, wt,                            \
-           cost, 2, 2, hitbon, 0, wt, color)
+           cost, sdam, ldam, hitbon, 0, wt, color)
 
 /* Note: for weapons that don't do an even die of damage (ex. 2-7 or 3-18)
    the extra damage is added on in weapon.c, not here! */
@@ -292,12 +292,12 @@ WEAPON("bullwhip", None,
        1, 0, 0,  2,  20,   4,  2,  1, 0, 0,   P_WHIP, LEATHER, CLR_BROWN),
 
 /* bows */
-BOW("bow", None,               1, 24, 30, 60, 0, WOOD, P_BOW, HI_WOOD),
-BOW("elven bow", "runed bow",  0, 12, 30, 60, 0, WOOD, P_BOW, HI_WOOD),
-BOW("orcish bow", "crude bow", 0, 12, 30, 60, 0, WOOD, P_BOW, CLR_BLACK),
-BOW("yumi", "long bow",        0,  0, 30, 60, 0, WOOD, P_BOW, HI_WOOD),
-BOW("sling", None,             1, 40,  3, 20, 0, LEATHER, P_SLING, HI_LEATHER),
-BOW("crossbow", None,          1, 45, 50, 40, 0, WOOD, P_CROSSBOW, HI_WOOD),
+BOW("bow", None,               1, 24, 30, 60, 3, 6, 0, WOOD, P_BOW, HI_WOOD),
+BOW("elven bow", "runed bow",  0, 12, 30, 60, 3, 6, 1, WOOD, P_BOW, HI_WOOD),
+BOW("orcish bow", "crude bow", 0, 12, 30, 60, 2, 4, 0, WOOD, P_BOW, CLR_BLACK),
+BOW("yumi", "long bow",        0,  0, 30, 60, 4, 8, 0, WOOD, P_BOW, HI_WOOD),
+BOW("sling", None,             1, 40,  3, 20, 2, 4, 0, LEATHER, P_SLING, HI_LEATHER),
+BOW("crossbow", None,          1, 45, 50, 40, 5, 5, 0, WOOD, P_CROSSBOW, HI_WOOD),
 
 #undef P
 #undef S

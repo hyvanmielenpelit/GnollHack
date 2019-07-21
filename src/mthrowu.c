@@ -179,6 +179,7 @@ struct obj *otmp, *mwep;
 {
     int skill = (int) objects[otmp->otyp].oc_skill;
     int multishot = 1;
+	int multishotrndextra = 0;
 
     if (otmp->quan > 1L /* no point checking if there's only 1 */
         /* ammo requires corresponding launcher be wielded */
@@ -188,65 +189,60 @@ struct obj *otmp, *mwep;
                : otmp->oclass == WEAPON_CLASS)
         && !mtmp->mconf) {
         /* Assumes lords are skilled, princes are expert */
-        if (is_prince(mtmp->data))
-            multishot += 2;
-        else if (is_lord(mtmp->data))
-            multishot++;
+		if (is_prince(mtmp->data))
+			multishot += 1;
+		else if (is_lord(mtmp->data))
+			multishotrndextra += 1;
         /* fake players treated as skilled (regardless of role limits) */
         else if (is_mplayer(mtmp->data))
-            multishot++;
+			multishotrndextra += 1;
 
         /* this portion is different from hero multishot; from slash'em?
          */
         /* Elven Craftsmanship makes for light, quick bows */
+		/*
         if (otmp->otyp == ELVEN_ARROW && !otmp->cursed)
             multishot++;
         if (ammo_and_launcher(otmp, uwep) && mwep->otyp == ELVEN_BOW
             && !mwep->cursed)
             multishot++;
-        /* 1/3 of launcher enchantment */
         if (ammo_and_launcher(otmp, mwep) && mwep->spe > 1)
-            multishot += (long) rounddiv(mwep->spe, 3);
-        /* Some randomness */
-        multishot = (long) rnd((int) multishot);
+            multishot += (long) rounddiv(mwep->spe, 3);*/
+
+		/* Some randomness */
+		if(multishotrndextra > 0)
+			multishot += rn2(multishotrndextra + 1);
+		/* 1/3 of launcher enchantment */
 
         /* class bonus */
         switch (monsndx(mtmp->data)) {
-        case PM_CAVEMAN: /* give bonus for low-tech gear */
-            if (skill == -P_SLING || skill == P_SPEAR)
-                multishot++;
-            break;
         case PM_MONK: /* allow higher volley count */
             if (skill == -P_SHURIKEN)
-                multishot++;
-            break;
-        case PM_RANGER:
-            if (skill != P_DAGGER)
-                multishot++;
-            break;
-        case PM_ROGUE:
-            if (skill == P_DAGGER)
                 multishot++;
             break;
         case PM_NINJA:
             if (skill == -P_SHURIKEN || skill == -P_DART)
                 multishot++;
-            /*FALLTHRU*/
-        case PM_SAMURAI:
-            if (otmp->otyp == YA && mwep->otyp == YUMI)
+            else if (otmp->otyp == YA && mwep->otyp == YUMI)
                 multishot++;
             break;
         default:
             break;
         }
         /* racial bonus */
+		/*
         if ((is_elf(mtmp->data) && otmp->otyp == ELVEN_ARROW
             && mwep->otyp == ELVEN_BOW)
             || (is_orc(mtmp->data) && otmp->otyp == ORCISH_ARROW
                 && mwep->otyp == ORCISH_BOW)
             || (is_gnoll(mtmp->data) && otmp->otyp == CROSSBOW_BOLT
                 && mwep->otyp == CROSSBOW))
-            multishot++;
+            multishot++;*/
+
+		if (!strongmonst(mtmp->data) && otmp->otyp == CROSSBOW_BOLT
+				&& mwep->otyp == CROSSBOW)
+			multishot = 1; //Only strong monsters multishoot with crossbows 
+
     }
 
     if (otmp->quan < multishot)
@@ -377,7 +373,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
                 pline("Splat!  %s is hit with %s egg!", Monnam(mtmp),
                       otmp->known ? an(mons[otmp->corpsenm].mname) : "an");
             else
-                hit(distant_name(otmp, mshot_xname), mtmp, exclam(damage));
+                hit(distant_name(otmp, mshot_xname), mtmp, exclam(damage), damage);
         } else if (verbose && !target)
             pline("%s%s is hit%s", (otmp->otyp == EGG) ? "Splat!  " : "",
                   Monnam(mtmp), exclam(damage));
@@ -590,6 +586,7 @@ struct obj *obj;         /* missile (or stack providing it) */
             oldumort = u.umortality;
             switch (singleobj->otyp) {
                 int dam, hitv;
+				int mindistance = 0;
             case EGG:
                 if (!touch_petrifies(&mons[singleobj->corpsenm])) {
                     impossible("monster throwing egg type %d",
@@ -604,7 +601,8 @@ struct obj *obj;         /* missile (or stack providing it) */
                 break;
             default:
                 dam = dmgval(singleobj, &youmonst);
-                hitv = 3 - distmin(u.ux, u.uy, mon->mx, mon->my);
+				mindistance = distmin(u.ux, u.uy, mon->mx, mon->my);
+                hitv = 3 - mindistance;
                 if (hitv < -4)
                     hitv = -4;
                 if (is_elf(mon->data)
@@ -615,6 +613,28 @@ struct obj *obj;         /* missile (or stack providing it) */
                     if (singleobj->otyp == ELVEN_ARROW)
                         dam++;
                 }
+
+				//Using wielded long-rangen weapons at black point is difficult
+				if (mindistance <= 1) {
+					if (MON_WEP(mon) && ammo_and_launcher(singleobj, MON_WEP(mon)))
+					{
+						switch (objects[MON_WEP(mon)->otyp].oc_skill) {
+						case P_BOW:
+							hitv -= 10;
+							break;
+						case P_CROSSBOW:
+							hitv -= 8;
+							break;
+						default:
+							hitv -= 10;
+							break;
+						}
+					}
+					else
+					{
+						hitv -= 0;
+					}
+				}
 
 				//Give bow damage bonuses
 				if (MON_WEP(mon) && singleobj)
@@ -629,6 +649,19 @@ struct obj *obj;         /* missile (or stack providing it) */
 						else {
 							dam += mdbon(mon);
 						}
+						if (bigmonst(youmonst.data))
+						{
+							int diesize = objects[MON_WEP(mon)->otyp].oc_wldam;
+							if (diesize > 0)
+								dam += rnd(diesize);
+						}
+						else
+						{
+							int diesize = objects[MON_WEP(mon)->otyp].oc_wsdam;
+							if (diesize > 0)
+								dam += rnd(diesize);
+						}
+
 					}
 				}
                 if (bigmonst(youmonst.data))

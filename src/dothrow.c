@@ -105,6 +105,7 @@ int shotlimit;
      * (potential volley of up to N missiles; default for N is 1)
      */
     multishot = 1;
+	int multishotrndextra = 0;
     skill = objects[obj->otyp].oc_skill;
     if (obj->quan > 1L /* no point checking if there's only 1 */
         /* ammo requires corresponding launcher be wielded */
@@ -122,46 +123,30 @@ int shotlimit;
         /* Bonus if the player is proficient in this weapon... */
         switch (P_SKILL(weapon_type(obj))) {
         case P_EXPERT:
-            multishot++;
-        /*FALLTHRU*/
+			if (!weakmultishot)
+				multishot++;
+			/*FALLTHRU*/
+			break;
         case P_SKILLED:
-            if (!weakmultishot)
-                multishot++;
-            break;
+			if (!weakmultishot)
+				multishotrndextra++;
+			/*FALLTHRU*/
+			break;
         default: /* basic or unskilled: no bonus */
             break;
         }
         /* ...or is using a special weapon for their role... */
         switch (Role_switch) {
-        case PM_CAVEMAN:
-            /* give bonus for low-tech gear */
-            if (skill == -P_SLING || skill == P_SPEAR)
-                multishot++;
-            break;
         case PM_MONK:
             /* allow higher volley count despite skill limitation */
-            if (skill == -P_SHURIKEN)
-                multishot++;
-            break;
-        case PM_RANGER:
-            /* arbitrary; encourage use of other missiles beside daggers */
-            if (skill != P_DAGGER)
-                multishot++;
-            break;
-        case PM_ROGUE:
-            /* possibly should add knives... */
-            if (skill == P_DAGGER)
-                multishot++;
-            break;
-        case PM_SAMURAI:
-            /* role-specific launcher and its ammo */
-            if (obj->otyp == YA && uwep && uwep->otyp == YUMI)
+            if (skill == -P_SHURIKEN && !weakmultishot)
                 multishot++;
             break;
         default:
             break; /* No bonus */
         }
         /* ...or using their race's special bow; no bonus for spears */
+		/*
         if (!weakmultishot)
             switch (Race_switch) {
             case PM_ELF:
@@ -182,19 +167,24 @@ int shotlimit;
             case PM_HUMAN:
             case PM_DWARF:
             default:
-                break; /* No bonus */
+                break; 
             }
-
+		*/
         /* crossbows are slow to load and probably shouldn't allow multiple
            shots at all, but that would result in players never using them;
            instead, high strength is necessary to load and shoot quickly */
-        if (multishot > 1 && skill == -P_CROSSBOW
-            && ammo_and_launcher(obj, uwep)
-            && (int) ACURRSTR < (Race_if(PM_GNOLL) ? 16 : 18))
-            multishot = rnd(multishot);
+		if (multishot > 1 && skill == -P_CROSSBOW
+			&& ammo_and_launcher(obj, uwep)
+			&& (int)ACURRSTR < 17) //(Race_if(PM_GNOLL) ? 16 : 18))
+		{
+			multishot = 1;
+			multishotrndextra = 0;
+		}
 
-        multishot = rnd(multishot);
-        if ((long) multishot > obj->quan)
+		if(multishotrndextra > 0)
+	        multishot += rn2(multishotrndextra + 1); //add random amount;
+        
+		if ((long) multishot > obj->quan)
             multishot = (int) obj->quan;
         if (shotlimit > 0 && multishot > shotlimit)
             multishot = shotlimit;
@@ -1550,7 +1540,8 @@ register struct obj *obj; /* thrownobj or kickedobj or uwep */
      * Polearms get a distance penalty even when wielded; it's
      * hard to hit at a distance.
      */
-    disttmp = 3 - distmin(u.ux, u.uy, mon->mx, mon->my);
+	int mindistance = distmin(u.ux, u.uy, mon->mx, mon->my);
+    disttmp = 3 - mindistance;
     if (disttmp < -4)
         disttmp = -4;
     tmp += disttmp;
@@ -1572,7 +1563,27 @@ register struct obj *obj; /* thrownobj or kickedobj or uwep */
             break;
         }
     }
+	if (hmode == HMON_THROWN && mindistance <= 1) {
 
+		if (uwep && ammo_and_launcher(obj, uwep))
+		{
+			switch(objects[uwep->otyp].oc_skill){
+			case P_BOW:
+				tmp -= 10;
+				break;
+			case P_CROSSBOW:
+				tmp -= 8;
+				break;
+			default:
+				tmp -= 10;
+				break;
+			}
+		}
+		else
+		{
+			tmp -= 0;
+		}
+	}
     tmp += omon_adj(mon, obj, TRUE);
     if (is_orc(mon->data)
         && maybe_polyd(is_elf(youmonst.data), Race_if(PM_ELF)))

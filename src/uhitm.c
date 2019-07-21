@@ -1110,8 +1110,21 @@ int dieroll;
 			else
 				tmp += dbon(); //Normal bows get full strength bonus
 
-			//All bows get bow's enchantment bonus
+			//All bows get bow's enchantment bonus and damage
 			tmp += uwep->spe;
+			if (bigmonst(mon->data))
+			{
+				int diesize = objects[uwep->otyp].oc_wldam;
+				if(diesize > 0)
+					tmp += rnd(diesize);
+			}
+			else
+			{
+				int diesize = objects[uwep->otyp].oc_wsdam;
+				if (diesize > 0)
+					tmp += rnd(diesize);
+			}
+
 			/* negative enchantment mustn't produce negative damage */
 			if (tmp < 0)
 				tmp = 0;
@@ -1259,7 +1272,7 @@ int dieroll;
         && (!destroyed
             || (thrown && m_shot.n > 1 && m_shot.o == obj->otyp))) {
         if (thrown)
-            hit(mshot_xname(obj), mon, exclam(tmp));
+            hit(mshot_xname(obj), mon, exclam(tmp), tmp);
         else if (!flags.verbose)
             You("hit it for %d damage.", damagedealt);
         else

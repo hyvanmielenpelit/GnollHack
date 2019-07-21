@@ -170,7 +170,7 @@ struct obj *otmp;
                 dmg *= 2;
             if (otyp == SPE_FORCE_BOLT)
                 dmg = spell_damage_bonus(dmg);
-            hit(zap_type_text, mtmp, exclam(dmg));
+            hit(zap_type_text, mtmp, exclam(dmg), dmg);
             (void) resist(mtmp, otmp->oclass, dmg, TELL);
         } else
             miss(zap_type_text, mtmp);
@@ -3134,17 +3134,25 @@ int force;
 }
 
 void
-hit(str, mtmp, force)
+hit(str, mtmp, force, damage)
 const char *str;
 struct monst *mtmp;
 const char *force; /* usually either "." or "!" */
+int damage;
 {
     if ((!cansee(bhitpos.x, bhitpos.y) && !canspotmon(mtmp)
          && !(u.uswallow && mtmp == u.ustuck)) || !flags.verbose)
-        pline("%s %s it.", The(str), vtense(str, "hit"));
-    else
-        pline("%s %s %s%s", The(str), vtense(str, "hit"),
-              mon_nam(mtmp), force);
+		if(damage >  0)
+	        pline("%s %s it for %d damage%s", The(str), vtense(str, "hit"), damage, force);
+		else
+			pline("%s %s it%s", The(str), vtense(str, "hit"), force);
+	else
+		if (damage > 0)
+			pline("%s %s %s for %d damage%s", The(str), vtense(str, "hit"),
+              mon_nam(mtmp), damage, force);
+		else
+			pline("%s %s %s%s", The(str), vtense(str, "hit"),
+				mon_nam(mtmp), force);
 }
 
 void
@@ -3949,7 +3957,7 @@ const char *fltxt;
         if (!m_amulet)
             pline("%s is disintegrated!", Monnam(mon));
         else
-            hit(fltxt, mon, "!");
+            hit(fltxt, mon, "!", -1);
     }
 
 /* note: worn amulet of life saving must be preserved in order to operate */
@@ -4087,7 +4095,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
             if (zap_hit(find_mac(mon), spell_type)) {
                 if (mon_reflects(mon, (char *) 0)) {
                     if (cansee(mon->mx, mon->my)) {
-                        hit(fltxt, mon, exclam(0));
+                        hit(fltxt, mon, exclam(0), -1);
                         shieldeff(mon->mx, mon->my);
                         (void) mon_reflects(mon,
                                             "But it reflects from %s %s!");
@@ -4101,7 +4109,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     if (is_rider(mon->data)
                         && abs(type) == ZT_BREATH(ZT_DEATH)) {
                         if (canseemon(mon)) {
-                            hit(fltxt, mon, ".");
+                            hit(fltxt, mon, ".", -1);
                             pline("%s disintegrates.", Monnam(mon));
                             pline("%s body reintegrates before your %s!",
                                   s_suffix(Monnam(mon)),
@@ -4115,7 +4123,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     }
                     if (mon->data == &mons[PM_DEATH] && abstype == ZT_DEATH) {
                         if (canseemon(mon)) {
-                            hit(fltxt, mon, ".");
+                            hit(fltxt, mon, ".", -1);
                             pline("%s absorbs the deadly %s!", Monnam(mon),
                                   type == ZT_BREATH(ZT_DEATH) ? "blast"
                                                               : "ray");
@@ -4147,7 +4155,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                         if (!otmp) {
                             /* normal non-fatal hit */
                             if (say || canseemon(mon))
-                                hit(fltxt, mon, exclam(tmp));
+                                hit(fltxt, mon, exclam(tmp), tmp);
                         } else {
                             /* some armor was destroyed; no damage done */
                             if (canseemon(mon))

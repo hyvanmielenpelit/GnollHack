@@ -113,8 +113,8 @@ static struct trobj Ranger[] = {
 #define RAN_ZERO_ARROWS 3
     { DAGGER, 1, WEAPON_CLASS, 1, UNDEF_BLESS },
     { BOW, 1, WEAPON_CLASS, 1, UNDEF_BLESS },
-    { ARROW, 2, WEAPON_CLASS, 50, UNDEF_BLESS },
-    { ARROW, 0, WEAPON_CLASS, 30, UNDEF_BLESS },
+    { ARROW, 2, WEAPON_CLASS, 15, UNDEF_BLESS },
+    { ARROW, 0, WEAPON_CLASS, 25, UNDEF_BLESS },
     { CLOAK_OF_DISPLACEMENT, 2, ARMOR_CLASS, 1, UNDEF_BLESS },
     { CRAM_RATION, 0, FOOD_CLASS, 4, 0 },
     { 0, 0, 0, 0, 0 }
@@ -718,7 +718,9 @@ u_init()
         ini_inv(Healer);
         if (!rn2(25))
             ini_inv(Lamp);
-        knows_object(POT_FULL_HEALING);
+		knows_object(POT_HEALING);
+		knows_object(POT_EXTRA_HEALING);
+		knows_object(POT_FULL_HEALING);
         skill_init(Skill_H);
         break;
     case PM_KNIGHT:
@@ -761,8 +763,8 @@ u_init()
          */
         break;
     case PM_RANGER:
-        Ranger[RAN_TWO_ARROWS].trquan = rn1(10, 50);
-        Ranger[RAN_ZERO_ARROWS].trquan = rn1(10, 30);
+        Ranger[RAN_TWO_ARROWS].trquan = rn1(11, 15);
+        Ranger[RAN_ZERO_ARROWS].trquan = rn1(25, 26);
         ini_inv(Ranger);
         skill_init(Skill_Ran);
         break;
@@ -861,10 +863,13 @@ u_init()
         knows_object(DWARVISH_MITHRIL_COAT);
         knows_object(DWARVISH_CLOAK);
         knows_object(DWARVISH_ROUNDSHIELD);
-        break;
+		break;
 
-    case PM_GNOME:
-        break;
+    case PM_GNOLL:
+		/*Gnolls can smell simple potions*/
+		knows_object(POT_FRUIT_JUICE);
+		knows_object(POT_BOOZE);
+		break;
 
     case PM_ORC:
         /* compensate for generally inferior equipment */

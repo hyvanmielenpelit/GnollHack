@@ -2938,7 +2938,7 @@ E void NDECL(zapwrapup);
 E void FDECL(weffects, (struct obj *));
 E int FDECL(spell_damage_bonus, (int));
 E const char *FDECL(exclam, (int force));
-E void FDECL(hit, (const char *, struct monst *, const char *));
+E void FDECL(hit, (const char *, struct monst *, const char *, int));
 E void FDECL(miss, (const char *, struct monst *));
 E struct monst *FDECL(bhit, (int, int, int, enum bhit_call_types,
                              int (*)(MONST_P, OBJ_P),

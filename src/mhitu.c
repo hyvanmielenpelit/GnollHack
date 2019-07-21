@@ -20,16 +20,17 @@ STATIC_DCL int FDECL(explmu, (struct monst *, struct attack *, BOOLEAN_P));
 STATIC_DCL void FDECL(missmu, (struct monst *, BOOLEAN_P, struct attack *));
 STATIC_DCL void FDECL(mswings, (struct monst *, struct obj *));
 STATIC_DCL void FDECL(wildmiss, (struct monst *, struct attack *));
-STATIC_DCL void FDECL(hitmsg, (struct monst *, struct attack *));
+STATIC_DCL void FDECL(hitmsg, (struct monst *, struct attack *), int);
 
 /* See comment in mhitm.c.  If we use this a lot it probably should be */
 /* changed to a parameter to mhitu. */
 static int dieroll;
 
 STATIC_OVL void
-hitmsg(mtmp, mattk)
+hitmsg(mtmp, mattk, damage)
 struct monst *mtmp;
 struct attack *mattk;
+int damage;
 {
     int compat;
     const char *pfmt = 0;
@@ -43,36 +44,73 @@ struct attack *mattk;
               !Blind ? "smiles at" : !Deaf ? "talks to" : "touches",
               (compat == 2) ? "engagingly" : "seductively");
     } else {
-        switch (mattk->aatyp) {
-        case AT_BITE:
-            pfmt = "%s bites!";
-            break;
-        case AT_KICK:
-            pline("%s kicks%c", Monst_name,
-                  thick_skinned(youmonst.data) ? '.' : '!');
-            break;
-        case AT_STNG:
-            pfmt = "%s stings!";
-            break;
-        case AT_BUTT:
-            pfmt = "%s butts!";
-            break;
-        case AT_TUCH:
-            pfmt = "%s touches you!";
-            break;
-        case AT_TENT:
-            pfmt = "%s tentacles suck you!";
-            Monst_name = s_suffix(Monst_name);
-            break;
-        case AT_EXPL:
-        case AT_BOOM:
-            pfmt = "%s explodes!";
-            break;
-        default:
-            pfmt = "%s hits!";
-        }
-        if (pfmt)
-            pline(pfmt, Monst_name);
+		if (damage < 1)
+		{
+			switch (mattk->aatyp) {
+			case AT_BITE:
+					pfmt = "%s bites!";
+				break;
+			case AT_KICK:
+				pline("%s kicks%c", Monst_name,
+					  thick_skinned(youmonst.data) ? '.' : '!');
+				break;
+			case AT_STNG:
+				pfmt = "%s stings!";
+				break;
+			case AT_BUTT:
+				pfmt = "%s butts!";
+				break;
+			case AT_TUCH:
+				pfmt = "%s touches you!";
+				break;
+			case AT_TENT:
+				pfmt = "%s tentacles suck you!";
+				Monst_name = s_suffix(Monst_name);
+				break;
+			case AT_EXPL:
+			case AT_BOOM:
+				pfmt = "%s explodes!";
+				break;
+			default:
+				pfmt = "%s hits!";
+			}
+			if (pfmt)
+				pline(pfmt, Monst_name);
+			}
+		else
+		{
+			switch (mattk->aatyp) {
+			case AT_BITE:
+				pfmt = "%s bites for %d damage!";
+				break;
+			case AT_KICK:
+				pline("%s kicks for %d damage%c", Monst_name,
+					thick_skinned(youmonst.data) ? '.' : '!');
+				break;
+			case AT_STNG:
+				pfmt = "%s stings for %d damage!";
+				break;
+			case AT_BUTT:
+				pfmt = "%s butts for %d damage!";
+				break;
+			case AT_TUCH:
+				pfmt = "%s touches you for %d damage!";
+				break;
+			case AT_TENT:
+				pfmt = "%s tentacles suck you for %d damage!";
+				Monst_name = s_suffix(Monst_name);
+				break;
+			case AT_EXPL:
+			case AT_BOOM:
+				pfmt = "%s explodes for %d damage!";
+				break;
+			default:
+				pfmt = "%s hits for %d damage!";
+			}
+			if (pfmt)
+				pline(pfmt, Monst_name, damage);
+
+		}
     }
 }
 
@@ -975,7 +1013,35 @@ register struct attack *mattk;
     uncancelled = !mtmp->mcan && (rn2(10) >= 3 * armpro);
 
     permdmg = 0;
-    /*  Now, adjust damages via resistances or specific attacks */
+
+	//This is separately applied to hand-to-hand weapons
+	if ((mattk->adtyp == AD_PHYS && mattk->aatyp == AT_HUGS && !sticks(youmonst.data)) || mattk->adtyp == AD_DRIN)
+	{
+		//Do nothing
+	}
+	else {
+		/*  Negative armor class reduces damage done instead of fully protecting against hits. */
+		if (dmg && u.uac < 0) {
+			dmg -= rnd(-u.uac);
+			if (dmg < 1)
+				dmg = 1;
+		}
+	}
+	if ((mattk->adtyp == AD_PHYS && mattk->aatyp == AT_HUGS && !sticks(youmonst.data)))
+	{
+		//Do nothing
+	} else	{
+		if (dmg) {
+			if (Half_physical_damage
+				/* Mitre of Holiness */
+				|| (Role_if(PM_PRIEST) && uarmh && is_quest_artifact(uarmh)
+					&& (is_undead(mtmp->data) || is_demon(mtmp->data)
+						|| is_vampshifter(mtmp))))
+				dmg = (dmg + 1) / 2;
+		}
+	}
+
+	/*  Now, adjust damages via resistances or specific attacks */
     switch (mattk->adtyp) {
     case AD_PHYS:
         if (mattk->aatyp == AT_HUGS && !sticks(youmonst.data)) {
@@ -984,14 +1050,23 @@ register struct attack *mattk;
                     dmg = 0;
                 } else {
                     u.ustuck = mtmp;
-                    pline("%s grabs you!", Monnam(mtmp));
+					if(dmg)
+	                    pline("%s grabs you! You sustain %d damage.", Monnam(mtmp), dmg);
+					else
+						pline("%s grabs you!", Monnam(mtmp));
+
                 }
             } else if (u.ustuck == mtmp) {
                 exercise(A_STR, FALSE);
-                You("are being %s.", (mtmp->data == &mons[PM_ROPE_GOLEM])
+				if (dmg)
+					You("are being %s. You sustain %d damage.", (mtmp->data == &mons[PM_ROPE_GOLEM])
                                          ? "choked"
-                                         : "crushed");
-            }
+                                         : "crushed", dmg);
+				else
+					You("are being %s, but sustain no damage.", (mtmp->data == &mons[PM_ROPE_GOLEM])
+						? "choked"
+						: "crushed");
+			}
         } else { /* hand to hand weapon */
             struct obj *otmp = mon_currwep;
 
@@ -1013,10 +1088,28 @@ register struct attack *mattk;
                     dmg += rn1(4, 3); /* 3..6 */
                 if (dmg <= 0)
                     dmg = 1;
-                if (!(otmp->oartifact
-                      && artifact_hit(mtmp, &youmonst, otmp, &dmg, dieroll)))
-                    hitmsg(mtmp, mattk);
-                if (!dmg)
+
+				/*Negative AC reduces damage*/
+				if (dmg && u.uac < 0) {
+					dmg -= rnd(-u.uac);
+					if (dmg < 1)
+						dmg = 1;
+				}
+				if (dmg) {
+					if (Half_physical_damage
+						/* Mitre of Holiness */
+						|| (Role_if(PM_PRIEST) && uarmh && is_quest_artifact(uarmh)
+							&& (is_undead(mtmp->data) || is_demon(mtmp->data)
+								|| is_vampshifter(mtmp))))
+						dmg = (dmg + 1) / 2;
+				}
+
+				//Finally, display damage caused
+				if (!(otmp->oartifact
+					&& artifact_hit(mtmp, &youmonst, otmp, &dmg, dieroll)))
+					hitmsg(mtmp, mattk, dmg);
+
+				if (!dmg)
                     break;
                 if (objects[otmp->otyp].oc_material == SILVER
                     && Hate_silver) {
@@ -1049,27 +1142,28 @@ register struct attack *mattk;
                 rustm(&youmonst, otmp);
             } else if (mattk->aatyp != AT_TUCH || dmg != 0
                        || mtmp != u.ustuck)
-                hitmsg(mtmp, mattk);
+                hitmsg(mtmp, mattk, dmg);
         }
         break;
     case AD_DISE:
-        hitmsg(mtmp, mattk);
         if (!diseasemu(mdat))
             dmg = 0;
-        break;
+		hitmsg(mtmp, mattk, dmg);
+		break;
     case AD_FIRE:
-        hitmsg(mtmp, mattk);
-        if (uncancelled) {
-            pline("You're %s!", on_fire(youmonst.data, mattk));
+		hitmsg(mtmp, mattk, -1);
+		if (uncancelled) {
             if (completelyburns(youmonst.data)) { /* paper or straw golem */
                 You("go up in flames!");
                 /* KMH -- this is okay with unchanging */
                 rehumanize();
                 break;
-            } else if (Fire_resistance) {
-                pline_The("fire doesn't feel hot!");
+            } else if (Fire_resistance || !dmg) {
+                pline("You are %s, but the fire doesn't feel hot!", on_fire(youmonst.data, mattk));
                 dmg = 0;
-            }
+            } else
+				pline("You're %s! You sustain %d damage.", on_fire(youmonst.data, mattk), dmg);
+
             if ((int) mtmp->m_lev > rn2(20))
                 destroy_item(SCROLL_CLASS, AD_FIRE);
             if ((int) mtmp->m_lev > rn2(20))
@@ -1079,38 +1173,42 @@ register struct attack *mattk;
             burn_away_slime();
         } else
             dmg = 0;
-        break;
+		break;
     case AD_COLD:
-        hitmsg(mtmp, mattk);
-        if (uncancelled) {
-            pline("You're covered in frost!");
-            if (Cold_resistance) {
-                pline_The("frost doesn't seem cold!");
+		hitmsg(mtmp, mattk, -1);
+		if (uncancelled) {
+            if (Cold_resistance || !dmg) {
+                pline("You're covered in frost, but the frost doesn't feel cold!");
                 dmg = 0;
-            }
+            } else
+				pline("You're covered in frost! You sustain %d damage.", dmg);
+
             if ((int) mtmp->m_lev > rn2(20))
                 destroy_item(POTION_CLASS, AD_COLD);
         } else
             dmg = 0;
-        break;
+		break;
     case AD_ELEC:
-        hitmsg(mtmp, mattk);
-        if (uncancelled) {
-            You("get zapped!");
-            if (Shock_resistance) {
-                pline_The("zap doesn't shock you!");
+		hitmsg(mtmp, mattk, -1);
+		if (uncancelled) {
+            if (Shock_resistance || !dmg) {
+				You("get zapped, but the zap doesn't shock you!");
+				//pline_The("zap doesn't shock you!");
                 dmg = 0;
             }
+			else
+				You("get zapped for %d damage!", dmg);
+
             if ((int) mtmp->m_lev > rn2(20))
                 destroy_item(WAND_CLASS, AD_ELEC);
             if ((int) mtmp->m_lev > rn2(20))
                 destroy_item(RING_CLASS, AD_ELEC);
         } else
             dmg = 0;
-        break;
+		break;
     case AD_SLEE:
-        hitmsg(mtmp, mattk);
-        if (uncancelled && multi >= 0 && !rn2(5)) {
+		hitmsg(mtmp, mattk, dmg);
+		if (uncancelled && multi >= 0 && !rn2(5)) {
             if (Sleep_resistance)
                 break;
             fall_asleep(-rn1(3, 8), TRUE);
@@ -1119,7 +1217,7 @@ register struct attack *mattk;
             else
                 You("are put to sleep by %s!", mon_nam(mtmp));
         }
-        break;
+		break;
     case AD_BLND:
         if (can_blnd(mtmp, &youmonst, mattk->aatyp, (struct obj *) 0)) {
             if (!Blind)
@@ -1139,7 +1237,7 @@ register struct attack *mattk;
     case AD_DRCO:
         ptmp = A_CON;
  dopois:
-        hitmsg(mtmp, mattk);
+        hitmsg(mtmp, mattk, dmg);
         if (uncancelled && !rn2(8)) {
             Sprintf(buf, "%s %s", s_suffix(Monnam(mtmp)),
                     mpoisons_subj(mtmp, mattk));
@@ -1147,7 +1245,7 @@ register struct attack *mattk;
         }
         break;
     case AD_DRIN:
-        hitmsg(mtmp, mattk);
+        hitmsg(mtmp, mattk, dmg);
         if (defends(AD_DRIN, uwep) || !has_head(youmonst.data)) {
             You("don't seem harmed.");
             /* Not clear what to do for green slimes */
@@ -1162,10 +1260,8 @@ register struct attack *mattk;
                  helm_simple_name(uarmh));
             break;
         }
-        /* negative armor class doesn't reduce this damage */
-        if (Half_physical_damage)
-            dmg = (dmg + 1) / 2;
-        mdamageu(mtmp, dmg);
+		//Cause the damage here rather than below
+		mdamageu(mtmp, dmg);
         dmg = 0; /* don't inflict a second dose below */
 
         if (!uarmh || uarmh->otyp != DUNCE_CAP) {
@@ -1183,7 +1279,7 @@ register struct attack *mattk;
         forget_objects(25); /* lose memory of 25% of objects */
         break;
     case AD_PLYS:
-        hitmsg(mtmp, mattk);
+        hitmsg(mtmp, mattk, dmg);
         if (uncancelled && multi >= 0 && !rn2(3)) {
             if (Free_action) {
                 You("momentarily stiffen.");
@@ -1200,11 +1296,11 @@ register struct attack *mattk;
         }
         break;
     case AD_DRLI:
-        hitmsg(mtmp, mattk);
-        if (uncancelled && !rn2(3) && !Drain_resistance) {
+		hitmsg(mtmp, mattk, dmg);
+		if (uncancelled && !rn2(3) && !Drain_resistance) {
             losexp("life drainage");
         }
-        break;
+		break;
     case AD_LEGS: {
         long side = rn2(2) ? RIGHT_SIDE : LEFT_SIDE;
         const char *sidestr = (side == RIGHT_SIDE) ? "right" : "left",
@@ -1226,11 +1322,11 @@ register struct attack *mattk;
             if (uarmf) {
                 if (rn2(2) && (uarmf->otyp == LOW_BOOTS
                                || uarmf->otyp == IRON_SHOES)) {
-                    pline("%s pricks the exposed part of your %s %s!",
-                          Monst_name, sidestr, leg);
+                    pline("%s pricks the exposed part of your %s %s for %d damage!",
+                          Monst_name, sidestr, leg, dmg);
                 } else if (!rn2(5)) {
-                    pline("%s pricks through your %s boot!", Monst_name,
-                          sidestr);
+                    pline("%s pricks through your %s boot for %d damage!", Monst_name,
+                          sidestr, dmg);
                 } else {
                     pline("%s scratches your %s boot!", Monst_name,
                           sidestr);
@@ -1238,7 +1334,7 @@ register struct attack *mattk;
                     break;
                 }
             } else
-                pline("%s pricks your %s %s!", Monst_name, sidestr, leg);
+                pline("%s pricks your %s %s for %d damage!", Monst_name, sidestr, leg, dmg);
 
             set_wounded_legs(side, rnd(60 - ACURR(A_DEX)));
             exercise(A_STR, FALSE);
@@ -1247,7 +1343,7 @@ register struct attack *mattk;
         break;
     }
     case AD_STON: /* cockatrice */
-        hitmsg(mtmp, mattk);
+        hitmsg(mtmp, mattk, dmg);
         if (!rn2(3)) {
             if (mtmp->mcan) {
                 if (!Deaf)
@@ -1278,7 +1374,7 @@ register struct attack *mattk;
         }
         break;
     case AD_STCK:
-        hitmsg(mtmp, mattk);
+        hitmsg(mtmp, mattk, dmg);
         if (uncancelled && !u.ustuck && !sticks(youmonst.data))
             u.ustuck = mtmp;
         break;
@@ -1288,8 +1384,11 @@ register struct attack *mattk;
                 if (u_slip_free(mtmp, mattk)) {
                     dmg = 0;
                 } else {
-                    pline("%s swings itself around you!", Monnam(mtmp));
-                    u.ustuck = mtmp;
+					if(dmg)
+						pline("%s swings itself around you for %d damage!", Monnam(mtmp), dmg);
+					else
+						pline("%s swings itself around you!", Monnam(mtmp));
+					u.ustuck = mtmp;
                 }
             } else if (u.ustuck == mtmp) {
                 if (is_pool(mtmp->mx, mtmp->my) && !Swimming && !Amphibious) {
@@ -1305,7 +1404,10 @@ register struct attack *mattk;
                             an(mtmp->data->mname));
                     done(DROWNING);
                 } else if (mattk->aatyp == AT_HUGS)
-                    You("are being crushed.");
+					if(dmg)
+						You("are being crushed, sustaining %d damage.", dmg);
+					else
+						You("are being crushed, but sustain no damage.");
             } else {
                 dmg = 0;
                 if (flags.verbose)
@@ -1316,7 +1418,7 @@ register struct attack *mattk;
             dmg = 0;
         break;
     case AD_WERE:
-        hitmsg(mtmp, mattk);
+        hitmsg(mtmp, mattk, dmg);
         if (uncancelled && !rn2(4) && u.ulycn == NON_PM
             && !Protection_from_shape_changers && !defends(AD_WERE, uwep)) {
             You_feel("feverish.");
@@ -1326,7 +1428,7 @@ register struct attack *mattk;
         }
         break;
     case AD_SGLD:
-        hitmsg(mtmp, mattk);
+        hitmsg(mtmp, mattk, dmg);
         if (youmonst.data->mlet == mdat->mlet)
             break;
         if (!mtmp->mcan)
@@ -1344,7 +1446,7 @@ register struct attack *mattk;
     case AD_SITM: /* for now these are the same */
     case AD_SEDU:
         if (is_animal(mtmp->data)) {
-            hitmsg(mtmp, mattk);
+            hitmsg(mtmp, mattk, -1);
             if (mtmp->mcan)
                 break;
             /* Continue below */
@@ -1394,7 +1496,7 @@ register struct attack *mattk;
         break;
 
     case AD_SAMU:
-        hitmsg(mtmp, mattk);
+        hitmsg(mtmp, mattk, dmg);
         /* when the Wizard or quest nemesis hits, there's a 1/20 chance
            to steal a quest artifact (any, not just the one for the hero's
            own role) or the Amulet or one of the invocation tools */
@@ -1403,7 +1505,7 @@ register struct attack *mattk;
         break;
 
     case AD_TLPT:
-        hitmsg(mtmp, mattk);
+        hitmsg(mtmp, mattk, dmg);
         if (uncancelled) {
             if (flags.verbose)
                 Your("position suddenly seems %suncertain!",
@@ -1442,7 +1544,7 @@ register struct attack *mattk;
         }
         break;
     case AD_RUST:
-        hitmsg(mtmp, mattk);
+        hitmsg(mtmp, mattk, dmg);
         if (mtmp->mcan)
             break;
         if (u.umonnum == PM_IRON_GOLEM) {
@@ -1454,13 +1556,13 @@ register struct attack *mattk;
         erode_armor(&youmonst, ERODE_RUST);
         break;
     case AD_CORR:
-        hitmsg(mtmp, mattk);
+        hitmsg(mtmp, mattk, dmg);
         if (mtmp->mcan)
             break;
         erode_armor(&youmonst, ERODE_CORRODE);
         break;
     case AD_DCAY:
-        hitmsg(mtmp, mattk);
+        hitmsg(mtmp, mattk, dmg);
         if (mtmp->mcan)
             break;
         if (u.umonnum == PM_WOOD_GOLEM || u.umonnum == PM_LEATHER_GOLEM) {
@@ -1475,16 +1577,17 @@ register struct attack *mattk;
         /* a cancelled nurse is just an ordinary monster,
          * nurses don't heal those that cause petrification */
         if (mtmp->mcan || (Upolyd && touch_petrifies(youmonst.data))) {
-            hitmsg(mtmp, mattk);
+            hitmsg(mtmp, mattk, dmg);
             break;
         }
         if (!uwep && !uarmu && !uarm && !uarmc
             && !uarms && !uarmg && !uarmf && !uarmh) {
             boolean goaway = FALSE;
 
-            pline("%s hits!  (I hope you don't mind.)", Monnam(mtmp));
-            if (Upolyd) {
-                u.mh += rnd(7);
+			int healamount = 0;
+			if (Upolyd) {
+				int starthp = u.mh;
+				u.mh += rnd(7);
                 if (!rn2(7)) {
                     /* no upper limit necessary; effect is temporary */
                     u.mhmax++;
@@ -1493,8 +1596,10 @@ register struct attack *mattk;
                 }
                 if (u.mh > u.mhmax)
                     u.mh = u.mhmax;
-            } else {
-                u.uhp += rnd(7);
+				healamount = u.mh - starthp;
+			} else {
+				int starthp = u.uhp;
+				u.uhp += rnd(7);
                 if (!rn2(7)) {
                     /* hard upper limit via nurse care: 25 * ulevel */
                     if (u.uhpmax < 5 * u.ulevel + d(2 * u.ulevel, 10))
@@ -1504,8 +1609,14 @@ register struct attack *mattk;
                 }
                 if (u.uhp > u.uhpmax)
                     u.uhp = u.uhpmax;
-            }
-            if (!rn2(3))
+				healamount = u.uhp - starthp;
+			}
+			if(healamount > 0)
+				pline("%s hits you for %d healing!", Monnam(mtmp), healamount);
+			else
+				pline("%s hits you but nothing happens.", Monnam(mtmp));
+
+			if (!rn2(3))
                 exercise(A_STR, TRUE);
             if (!rn2(3))
                 exercise(A_CON, TRUE);
@@ -1528,11 +1639,11 @@ register struct attack *mattk;
                     verbalize("Doc, I can't help you unless you cooperate.");
                 dmg = 0;
             } else
-                hitmsg(mtmp, mattk);
+                hitmsg(mtmp, mattk, dmg);
         }
         break;
     case AD_CURS:
-        hitmsg(mtmp, mattk);
+        hitmsg(mtmp, mattk, dmg);
         if (!night() && mdat == &mons[PM_GREMLIN])
             break;
         if (!mtmp->mcan && !rn2(10)) {
@@ -1552,39 +1663,44 @@ register struct attack *mattk;
         }
         break;
     case AD_STUN:
-        hitmsg(mtmp, mattk);
-        if (!mtmp->mcan && !rn2(4)) {
-            make_stunned((HStun & TIMEOUT) + (long) dmg, TRUE);
+		if (!mtmp->mcan && !rn2(4)) {
+			hitmsg(mtmp, mattk, dmg / 2);
+			make_stunned((HStun & TIMEOUT) + (long) dmg, TRUE);
             dmg /= 2;
-        }
-        break;
+        } else
+			hitmsg(mtmp, mattk, dmg);
+
+		break;
     case AD_ACID:
-        hitmsg(mtmp, mattk);
-        if (!mtmp->mcan && !rn2(3))
+		if (!mtmp->mcan && !rn2(3))
             if (Acid_resistance) {
-                pline("You're covered in %s, but it seems harmless.",
+				hitmsg(mtmp, mattk, -1);
+				pline("You're covered in %s, but it seems harmless.",
                       hliquid("acid"));
                 dmg = 0;
             } else {
-                pline("You're covered in %s!  It burns!", hliquid("acid"));
+				hitmsg(mtmp, mattk, dmg);
+				pline("You're covered in %s!  It burns!", hliquid("acid"));
                 exercise(A_STR, FALSE);
             }
-        else
-            dmg = 0;
-        break;
+        else {
+			hitmsg(mtmp, mattk, -1);
+			dmg = 0;
+		}
+		break;
     case AD_SLOW:
-        hitmsg(mtmp, mattk);
+        hitmsg(mtmp, mattk, dmg);
         if (uncancelled && HFast && !defends(AD_SLOW, uwep) && !rn2(4))
             u_slow_down();
         break;
     case AD_DREN:
-        hitmsg(mtmp, mattk);
+        hitmsg(mtmp, mattk, -1);
         if (uncancelled && !rn2(4)) /* 25% chance */
             drain_en(dmg);
         dmg = 0;
         break;
     case AD_CONF:
-        hitmsg(mtmp, mattk);
+        hitmsg(mtmp, mattk, -1);
         if (!mtmp->mcan && !rn2(4) && !mtmp->mspec_used) {
             mtmp->mspec_used = mtmp->mspec_used + (dmg + rn2(6));
             if (Confusion)
@@ -1615,9 +1731,9 @@ register struct attack *mattk;
             }
             /*FALLTHRU*/
         default: /* case 16: ... case 5: */
-            You_feel("your life force draining away...");
             permdmg = 1; /* actual damage done below */
-            break;
+			You_feel("your life force draining away... You lose %d hit points, some of them permanently.", dmg);
+			break;
         case 4:
         case 3:
         case 2:
@@ -1631,36 +1747,41 @@ register struct attack *mattk;
         }
         break;
     case AD_PEST:
-        pline("%s reaches out, and you feel fever and chills.", Monnam(mtmp));
-        (void) diseasemu(mdat); /* plus the normal damage */
+        pline("%s reaches out, and you feel fever and chills. You lose %d hit points.", Monnam(mtmp), dmg);
+		(void) diseasemu(mdat); /* plus the normal damage */
         break;
     case AD_FAMN:
-        pline("%s reaches out, and your body shrivels.", Monnam(mtmp));
+        pline("%s reaches out, and your body shrivels. You lose %d hit points.", Monnam(mtmp), dmg);
         exercise(A_CON, FALSE);
         if (!is_fainted())
             morehungry(rn1(40, 40));
         /* plus the normal damage */
         break;
     case AD_SLIM:
-        hitmsg(mtmp, mattk);
         if (!uncancelled)
             break;
         if (flaming(youmonst.data)) {
-            pline_The("slime burns away!");
+			hitmsg(mtmp, mattk, -1);
+			pline_The("slime burns away!");
             dmg = 0;
         } else if (Unchanging || noncorporeal(youmonst.data)
                    || youmonst.data == &mons[PM_GREEN_SLIME]) {
-            You("are unaffected.");
+			hitmsg(mtmp, mattk, -1);
+			You("are unaffected.");
             dmg = 0;
         } else if (!Slimed) {
-            You("don't feel very well.");
+			hitmsg(mtmp, mattk, dmg);
+			You("don't feel very well.");
             make_slimed(10L, (char *) 0);
             delayed_killer(SLIMED, KILLED_BY_AN, mtmp->data->mname);
-        } else
-            pline("Yuck!");
+		}
+		else {
+			hitmsg(mtmp, mattk, dmg);
+			pline("Yuck!");
+		}
         break;
     case AD_ENCH: /* KMH -- remove enchantment (disenchanter) */
-        hitmsg(mtmp, mattk);
+        hitmsg(mtmp, mattk, dmg);
         /* uncancelled is sufficient enough; please
            don't make this attack less frequent */
         if (uncancelled) {
@@ -1701,58 +1822,43 @@ register struct attack *mattk;
         dmg = 0;
     }
 
-    /*  Negative armor class reduces damage done instead of fully protecting
-     *  against hits.
-     */
-    if (dmg && u.uac < 0) {
-        dmg -= rnd(-u.uac);
-        if (dmg < 1)
-            dmg = 1;
-    }
-
     if (dmg) {
-        if (Half_physical_damage
-            /* Mitre of Holiness */
-            || (Role_if(PM_PRIEST) && uarmh && is_quest_artifact(uarmh)
-                && (is_undead(mtmp->data) || is_demon(mtmp->data)
-                    || is_vampshifter(mtmp))))
-            dmg = (dmg + 1) / 2;
+		if (permdmg) { /* Death's life force drain */
+			int lowerlimit, * hpmax_p;
+			/*
+			 * Apply some of the damage to permanent hit points:
+			 *  polymorphed         100% against poly'd hpmax
+			 *  hpmax > 25*lvl      100% against normal hpmax
+			 *  hpmax > 10*lvl  50..100%
+			 *  hpmax >  5*lvl  25..75%
+			 *  otherwise        0..50%
+			 * Never reduces hpmax below 1 hit point per level.
+			 */
+			permdmg = rn2(dmg / 2 + 1);
+			if (Upolyd || u.uhpmax > 25 * u.ulevel)
+				permdmg = dmg;
+			else if (u.uhpmax > 10 * u.ulevel)
+				permdmg += dmg / 2;
+			else if (u.uhpmax > 5 * u.ulevel)
+				permdmg += dmg / 4;
 
-        if (permdmg) { /* Death's life force drain */
-            int lowerlimit, *hpmax_p;
-            /*
-             * Apply some of the damage to permanent hit points:
-             *  polymorphed         100% against poly'd hpmax
-             *  hpmax > 25*lvl      100% against normal hpmax
-             *  hpmax > 10*lvl  50..100%
-             *  hpmax >  5*lvl  25..75%
-             *  otherwise        0..50%
-             * Never reduces hpmax below 1 hit point per level.
-             */
-            permdmg = rn2(dmg / 2 + 1);
-            if (Upolyd || u.uhpmax > 25 * u.ulevel)
-                permdmg = dmg;
-            else if (u.uhpmax > 10 * u.ulevel)
-                permdmg += dmg / 2;
-            else if (u.uhpmax > 5 * u.ulevel)
-                permdmg += dmg / 4;
-
-            if (Upolyd) {
-                hpmax_p = &u.mhmax;
-                /* [can't use youmonst.m_lev] */
-                lowerlimit = min((int) youmonst.data->mlevel, u.ulevel);
-            } else {
-                hpmax_p = &u.uhpmax;
-                lowerlimit = u.ulevel;
-            }
-            if (*hpmax_p - permdmg > lowerlimit)
-                *hpmax_p -= permdmg;
-            else if (*hpmax_p > lowerlimit)
-                *hpmax_p = lowerlimit;
-            /* else unlikely...
-             * already at or below minimum threshold; do nothing */
-            context.botl = 1;
-        }
+			if (Upolyd) {
+				hpmax_p = &u.mhmax;
+				/* [can't use youmonst.m_lev] */
+				lowerlimit = min((int)youmonst.data->mlevel, u.ulevel);
+			}
+			else {
+				hpmax_p = &u.uhpmax;
+				lowerlimit = u.ulevel;
+			}
+			if (*hpmax_p - permdmg > lowerlimit)
+				* hpmax_p -= permdmg;
+			else if (*hpmax_p > lowerlimit)
+				* hpmax_p = lowerlimit;
+			/* else unlikely...
+			 * already at or below minimum threshold; do nothing */
+			context.botl = 1;
+		}
 
         mdamageu(mtmp, dmg);
     }
@@ -2055,7 +2161,7 @@ boolean ufound;
         int tmp = d((int) mattk->damn, (int) mattk->damd);
         boolean not_affected = defends((int) mattk->adtyp, uwep);
 
-        hitmsg(mtmp, mattk);
+        hitmsg(mtmp, mattk, -1);
 
         switch (mattk->adtyp) {
         case AD_COLD:
@@ -2090,7 +2196,8 @@ boolean ufound;
                     burn_away_slime();
                 if (physical_damage)
                     tmp = Maybe_Half_Phys(tmp);
-                mdamageu(mtmp, tmp);
+				You("sustain %d damage.", tmp);
+				mdamageu(mtmp, tmp);
             }
             break;
 
