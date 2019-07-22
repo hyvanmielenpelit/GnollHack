@@ -121,7 +121,7 @@ PROJECTILE("silver arrow", None,
 PROJECTILE("ya", "bamboo arrow",
            0, 15, 1, 4, 7, 7, 1,        METAL, -P_BOW, HI_METAL),
 PROJECTILE("crossbow bolt", None,
-           1, 55, 1, 2, 4, 6, 0,        IRON, -P_CROSSBOW, HI_METAL),
+           1, 55, 1, 2, 3, 4, 0,        IRON, -P_CROSSBOW, HI_METAL), //1d3+1 //1d4+1
 
 /* missiles that don't use a launcher */
 WEAPON("dart", None,
