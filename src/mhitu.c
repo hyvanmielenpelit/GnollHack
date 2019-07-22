@@ -84,8 +84,7 @@ int damage;
 				pfmt = "%s bites for %d damage!";
 				break;
 			case AT_KICK:
-				pline("%s kicks for %d damage%c", Monst_name,
-					thick_skinned(youmonst.data) ? '.' : '!');
+				pfmt = "%s kicks for %d damage!";
 				break;
 			case AT_STNG:
 				pfmt = "%s stings for %d damage!";
@@ -627,11 +626,11 @@ register struct monst *mtmp;
     /*  Special demon handling code */
     if ((mtmp->cham == NON_PM) && is_demon(mdat) && !range2
         && mtmp->data != &mons[PM_BALROG] && mtmp->data != &mons[PM_SUCCUBUS]
-        && mtmp->data != &mons[PM_INCUBUS]) {
-		int chance = 50;
+        && mtmp->data != &mons[PM_INCUBUS] && mtmp->data != &mons[PM_FLIND] && mtmp->data->mlevel >= 7) {
+		int chance = 40;
 		if (is_dlord(mdat))
 			chance = 20;
-		else if (is_dprince(mdat))
+		else if (is_dprince(mdat) || mtmp->data == &mons[PM_WIZARD_OF_YENDOR])
 			chance = 13;
 		if (!mtmp->mcan && !rn2(chance))
 			(void)msummon(mtmp);

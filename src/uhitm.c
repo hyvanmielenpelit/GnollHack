@@ -1615,9 +1615,9 @@ int specialdmg; /* blessed and/or silver bonus against various things */
     /* since hero can't be cancelled, only defender's armor applies */
     negated = !(rn2(10) >= 3 * armpro);
 
-    if (is_demon(youmonst.data) && !rn2(13) && !uwep
+    if (is_demon(youmonst.data) && !rn2(13) && !uwep && u.umonnum
         && u.umonnum != PM_SUCCUBUS && u.umonnum != PM_INCUBUS
-        && u.umonnum != PM_BALROG) {
+        && u.umonnum != PM_BALROG && u.umonnum != PM_FLIND && youmonst.data->mlevel >= 7) {
         demonpet();
         return 0;
     }

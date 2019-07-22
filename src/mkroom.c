@@ -245,9 +245,10 @@ mk_zoo_thronemon(x,y)
 int x,y;
 {
     int i = rnd(level_difficulty());
-    int pm = (i > 9) ? PM_OGRE_KING
-        : (i > 5) ? PM_ELVENKING
-        : (i > 2) ? PM_DWARF_KING
+    int pm = (i > 8) ? PM_OGRE_KING
+        : (i > 6) ? PM_ELVENKING
+		: (i > 4) ? PM_GNOLL_KING
+		: (i > 2) ? PM_DWARF_KING
         : PM_GNOME_KING;
     struct monst *mon = makemon(&mons[pm], x, y, NO_MM_FLAGS);
 

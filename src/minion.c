@@ -75,20 +75,26 @@ struct monst *mon;
         atyp = (ptr->maligntyp == A_NONE) ? A_NONE : sgn(ptr->maligntyp);
     }
 
-    if (is_dprince(ptr) || (ptr == &mons[PM_WIZARD_OF_YENDOR])) {
-        dtype = (!rn2(50)) ? dprince(atyp) : (!rn2(20)) ? dlord(atyp)
-                                                       : ndemon(atyp);
-        cnt = (!rn2(4) && is_ndemon(&mons[dtype])) ? 2 : 1;
+	if (ptr == &mons[PM_FLIND_LORD]) {
+		dtype = (!rn2(80)) ? PM_YEENOGHU : (!rn2(40)) ? monsndx(ptr) : (!rn2(4)) ? ndemon(atyp) : PM_FLIND;
+		if (dtype == PM_YEENOGHU && (mvitals[PM_YEENOGHU].mvflags & G_GONE))
+			dtype = monsndx(ptr);
+		if (dtype == PM_FLIND && (mvitals[PM_FLIND].mvflags & G_GONE))
+			dtype = ndemon(atyp);
+		cnt = 1;
+	} else if (is_dprince(ptr) || (ptr == &mons[PM_WIZARD_OF_YENDOR])) {
+        dtype = (!rn2(20)) ? dlord(atyp) : ndemon(atyp); //(!rn2(50)) ? dprince(atyp) : 
+        cnt = (!rn2(3) && is_ndemon(&mons[dtype])) ? 2 : 1;
     } else if (is_dlord(ptr)) {
-        dtype = (!rn2(50)) ? dprince(atyp) : (!rn2(20)) ? dlord(atyp)
+        dtype = (!rn2(80)) ? dprince(atyp) : (!rn2(40)) ? dlord(atyp)
                                                         : ndemon(atyp);
         cnt = (!rn2(4) && is_ndemon(&mons[dtype])) ? 2 : 1;
     } else if (is_ndemon(ptr)) {
-        dtype = (!rn2(50)) ? dlord(atyp) : (!rn2(6)) ? ndemon(atyp)
+        dtype = (!rn2(80)) ? dlord(atyp) : (!rn2(6)) ? ndemon(atyp)
                                                      : monsndx(ptr);
         cnt = 1;
     } else if (is_lminion(mon)) {
-        dtype = (is_lord(ptr) && !rn2(20))
+        dtype = (is_lord(ptr) && !rn2(40))
                     ? llord()
                     : (is_lord(ptr) || !rn2(6)) ? lminion() : monsndx(ptr);
         cnt = (!rn2(4) && !is_lord(&mons[dtype])) ? 2 : 1;
@@ -224,7 +230,7 @@ register struct monst *mtmp;
 {
     long cash, demand, offer;
 
-    if (uwep && uwep->oartifact == ART_EXCALIBUR) {
+    if (uwep && (uwep->oartifact == ART_EXCALIBUR || uwep->oartifact == ART_DEMONBANE)) {
         pline("%s looks very angry.", Amonnam(mtmp));
         mtmp->mpeaceful = mtmp->mtame = 0;
         set_malign(mtmp);
@@ -259,40 +265,92 @@ register struct monst *mtmp;
         if (!tele_restrict(mtmp))
             (void) rloc(mtmp, TRUE);
         return 1;
-    }
-    cash = money_cnt(invent);
-    demand =
-        (cash * (rnd(80) + 20 * Athome))
-        / (100 * (1 + (sgn(u.ualign.type) == sgn(mtmp->data->maligntyp))));
+	}
+	else if (mtmp->data == &mons[PM_YEENOGHU] && maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)))
+	{
+		if (canspotmon(mtmp))
+			pline("%s, the Demon Lord of Gnolls, stands towering before you.", Amonnam(mtmp));
+		else
+			pline("You hear the thundering voice of %s, the Demon Lord of Gnolls.", Amonnam(mtmp));
 
-    if (!demand || multi < 0) { /* you have no gold or can't move */
-        mtmp->mpeaceful = 0;
-        set_malign(mtmp);
-        return 0;
-    } else {
-        /* make sure that the demand is unmeetable if the monster
-           has the Amulet, preventing monster from being satisfied
-           and removed from the game (along with said Amulet...) */
-        if (mon_has_amulet(mtmp))
-            demand = cash + (long) rn1(1000, 40);
+		pline("%s speaks.", Amonnam(mtmp));
 
-        pline("%s demands %ld %s for safe passage.", Amonnam(mtmp), demand,
-              currency(demand));
+		if ((u.ualign.type == A_CHAOTIC && (u.ualign.record >= 14 || !(2-rnl(3)))) || (u.ualign.type == A_NEUTRAL && !rnl(3)) || (uwep && uwep->oartifact == ART_HOWLING_FLAIL))
+		{
+			verbalize("You have pleased me, my minion. I will grant one wish!");
+			/* give a wish and discard the monster (mtmp set to null) */
+			mongrantswish(&mtmp);
+			//mongrantswish removes the monster (calls mongone)
+			pline("The demon lord laughs, then vanishes.");
+			return 1;
+		}
+		if (u.ualign.type != A_LAWFUL)
+		{
+			verbalize("You have not pleased me! Prove your allegiance to the Abyss, and you shall be rewarded.");
+			pline("%s scowls at you, then vanishes.", Amonnam(mtmp));
+		}
+		else
+		{
+			verbalize("Your ways displease me. Follow the path of the Abyss, and you shall be rewarded.");
+			pline("%s scowls at you menacingly, then vanishes.", Amonnam(mtmp));
+		}
+	}
+	else if (mtmp->data == &mons[PM_DEMOGORGON] || mtmp->data == &mons[PM_YEENOGHU] || mtmp->data == &mons[PM_JUIBLEX] || mtmp->data == &mons[PM_ORCUS])
+	{
+		//Demon lords and princes get angry for all but devout (and some random less devout) chaotic characters
+		if ((u.ualign.type == A_CHAOTIC && (u.ualign.record >= 14 || !rnl(4))))
+		{
+			pline("%s laughs menacingly, then vanishes.",
+				Amonnam(mtmp));
+		} else 
+		{
+			pline("Seeing you, %s gets angry...", Amonnam(mtmp));
+			mtmp->mpeaceful = 0;
+			set_malign(mtmp);
+			return 0;
+		}
+	}
+	else //An Arch-Devil demands payment
+	{
+		cash = money_cnt(invent);
+		demand =
+			(cash * (rnd(80) + 20 * Athome))
+			/ (100 * (1 + (sgn(u.ualign.type) == sgn(mtmp->data->maligntyp))));
 
-        if ((offer = bribe(mtmp)) >= demand) {
-            pline("%s vanishes, laughing about cowardly mortals.",
-                  Amonnam(mtmp));
-        } else if (offer > 0L
-                   && (long) rnd(5 * ACURR(A_CHA)) > (demand - offer)) {
-            pline("%s scowls at you menacingly, then vanishes.",
-                  Amonnam(mtmp));
-        } else {
-            pline("%s gets angry...", Amonnam(mtmp));
-            mtmp->mpeaceful = 0;
-            set_malign(mtmp);
-            return 0;
-        }
-    }
+		if (!demand || multi < 0) { /* you have no gold or can't move */
+			mtmp->mpeaceful = 0;
+			set_malign(mtmp);
+			return 0;
+		} else {
+			/* make sure that the demand is unmeetable if the monster
+			   has the Amulet, preventing monster from being satisfied
+			   and removed from the game (along with said Amulet...) */
+			if (mon_has_amulet(mtmp))
+				demand = cash + (long) rn1(1000, 40);
+
+			if (canspotmon(mtmp))
+				pline("%s stands towering before you.", Amonnam(mtmp));
+			else
+				pline("You hear the thundering voice of %s.", Amonnam(mtmp));
+
+			verbalize("For your life, we, %s, demand a gift of %ld %s.", Amonnam(mtmp), demand,
+				  currency(demand));
+
+			if ((offer = bribe(mtmp)) >= demand) {
+				pline("%s vanishes, laughing about cowardly mortals.",
+					  Amonnam(mtmp));
+			} else if (offer > 0L
+					   && (long) rnd(5 * ACURR(A_CHA)) > (demand - offer)) {
+				pline("%s scowls at you menacingly, then vanishes.",
+					  Amonnam(mtmp));
+			} else {
+				pline("%s gets angry...", Amonnam(mtmp));
+				mtmp->mpeaceful = 0;
+				set_malign(mtmp);
+				return 0;
+			}
+		}
+	}
     mongone(mtmp);
     return 1;
 }

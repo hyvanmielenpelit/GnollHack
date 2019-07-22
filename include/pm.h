@@ -15,8 +15,8 @@
 #define	PM_COCKATRICE	10
 #define	PM_PYROLISK	11
 #define	PM_JACKAL	12
-#define	PM_FOX	13
-#define	PM_COYOTE	14
+#define	PM_FLIND	13
+#define	PM_FLIND_LORD	14
 #define	PM_WEREJACKAL	15
 #define	PM_LITTLE_DOG	16
 #define	PM_GNOLL_LORD	17

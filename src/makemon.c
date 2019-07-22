@@ -180,9 +180,30 @@ register struct monst *mtmp;
      *          kops get clubs & cream pies.
      */
     switch (ptr->mlet) {
-    case S_GIANT:
+	case S_GNOLL:
+		switch (mm) {
+		case PM_GNOLL:
+		case PM_GNOLL_LORD:
+			if (!rn2(2))
+				(void)mongets(mtmp, FLAIL);
+			if (!rn2(4))
+			{
+				(void)mongets(mtmp, CROSSBOW);
+				m_initthrow(mtmp, CROSSBOW_BOLT, 6 + rnd(20));
+			}
+			break;
+		case PM_GNOLL_KING:
+			(void)mongets(mtmp, FLAIL);
+			(void)mongets(mtmp, CROSSBOW);
+			m_initthrow(mtmp, CROSSBOW_BOLT, 21+rnd(10));
+			break;
+		default:
+			break;
+		}
+		break;
+	case S_GIANT:
         if (rn2(2))
-			(void)mongets(mtmp, BOULDER); // (mm != PM_ETTIN) ? BOULDER : CLUB);
+			(void)mongets(mtmp, (mm != PM_ETTIN) ? BOULDER : CLUB);
         break;
     case S_HUMAN:
         if (is_mercenary(ptr)) {
@@ -778,13 +799,30 @@ register struct monst *mtmp;
         }
         break;
     case S_GNOLL:
+		if(ptr == &mons[PM_FLIND])
+		{
+			if(!rn2(3))
+				(void)mongets(mtmp, WAN_LIGHTNING);
+		}
+		else if (ptr == &mons[PM_FLIND_LORD])
+		{
+			if (!rn2(2))
+				(void)mongets(mtmp, WAN_LIGHTNING);
+		}
+		else if (ptr == &mons[PM_GNOLL] || ptr == &mons[PM_GNOLL_LORD] || ptr == &mons[PM_GNOLL_KING])
+		{
+			//Get nothing
+		}
+		else
+		{
 			if (!rn2((In_mines(&u.uz) && in_mklev) ? 20 : 60)) {
 				otmp = mksobj(rn2(4) ? TALLOW_CANDLE : WAX_CANDLE, TRUE, FALSE);
 				otmp->quan = 1;
 				otmp->owt = weight(otmp);
 				if (!mpickobj(mtmp, otmp) && !levl[mtmp->mx][mtmp->my].lit)
 					begin_burn(otmp, FALSE);
-        }
+			}
+		}
         break;
     default:
         break;
@@ -1328,7 +1366,7 @@ int mmflags;
     if (is_dprince(ptr) && ptr->msound == MS_BRIBE) {
         mtmp->mpeaceful = mtmp->minvis = mtmp->perminvis = 1;
         mtmp->mavenge = 0;
-        if (uwep && uwep->oartifact == ART_EXCALIBUR)
+        if (uwep && (uwep->oartifact == ART_EXCALIBUR || uwep->oartifact == ART_DEMONBANE))
             mtmp->mpeaceful = mtmp->mtame = FALSE;
     }
 #ifndef DCC30_BUG
@@ -2001,6 +2039,11 @@ peace_minded(ptr)
 register struct permonst *ptr;
 {
     aligntyp mal = ptr->maligntyp, ual = u.ualign.type;
+
+	if (ptr == &mons[PM_YEENOGHU] && maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)))
+	{
+		return TRUE;
+	}
 
     if (always_peaceful(ptr))
         return TRUE;
