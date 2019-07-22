@@ -1100,7 +1100,7 @@ register struct trobj *trop;
 							obj->corpsenm = PM_NEWT;
 							break;
 						case 2:
-							obj->corpsenm = PM_IGUANA;
+							obj->corpsenm = PM_LIZARD;
 							break;
 						case 3:
 							obj->corpsenm = PM_GECKO;

@@ -1707,6 +1707,14 @@ flesh golem
 	which they were set, his shrivelled complexion and straight
 	black lips.
 		[ Frankenstein, by Mary Wollstonecraft Shelley ]
+
+flind*
+	Flinds are hybrids between gnolls and demons, possessing
+	the traits of both of their parents. When a demon lord
+	produces such offspring, the resulting flinds are known to
+	command the power to summon their demonic kin to do their
+	bidding.
+
 flint*
 	An emerald is as green as grass;
 	A ruby red as blood;
@@ -1931,6 +1939,14 @@ giant humanoid
 	boulders as weapons, hurling them over large distances.  All
 	types of giants share a love for men - roasted, boiled, or
 	fried.  Their table manners are legendary.
+
+gnoll*
+	Gnolls are fierce hyena-headed humanoids. They are proficient
+	in using flails and crossbows, and possess an excellent sense
+	of smell. They ordinarily hunt small game such as small lizards
+	and rats, but occasionally favor larger animals. Some evil
+	gnolls are known to worship a demon lord called Yeenoghu.
+
 # note: "gnomish wizard" is a monster
 ~gnome ??m*
 #~gnom* cave*man
@@ -5666,10 +5682,11 @@ ya
 	The arrow of choice of the samurai, ya are made of very
 	straight bamboo, and are tipped with hardened steel.
 yeenoghu
-	Yeenoghu, the demon lord of gnolls, still exists although
-	all his followers have been wiped off the face of the earth.
-	He casts magic projectiles at those close to him, and a mere
-	gaze into his piercing eyes may hopelessly confuse the
+	Yeenoghu, the demon lord of gnolls, is a fearsome lord of
+	all gnollkind. Following the re-emergence of gnolls, he has
+	achieved a prominent status among both demons and deities
+	alike. He casts magic projectiles at those close to him, and
+	a mere gaze into his piercing eyes may hopelessly confuse the
 	battle-weary adventurer.
 yeti
 	The Abominable Snowman, or yeti, is one of the truly great

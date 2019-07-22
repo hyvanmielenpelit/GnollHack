@@ -894,7 +894,7 @@ spelleffects(spell, atme)
 int spell;
 boolean atme;
 {
-    int energy, damage, chance, n, intell;
+	int energy, damage, chance, n; // , intell;
     int otyp, skill, role_skill, res = 0;
     boolean confused = (Confusion != 0);
     boolean physical_damage = FALSE;
@@ -1734,7 +1734,7 @@ int spell;
      * the probability of player's success at cast a given spell.
      */
     int chance, splcaster, special, statused;
-    int difficulty;
+//    int difficulty;
     int skill;
 
     /* Calculate intrinsic ability (splcaster) */
