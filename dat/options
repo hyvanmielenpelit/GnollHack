@@ -1,5 +1,5 @@
 
-    GnollHack version 4.0.2
+    GnollHack version 4.0.3
 
 Options compiled into this edition:
 
@@ -11,7 +11,7 @@ Options compiled into this edition:
     screen clipping, screen control via WIN32 console I/O, traditional
     status display, status via windowport with highlighting, user sounds,
     system configuration at run-time, save and bones files accepted from
-    versions 3.6.0 through 4.0.2, and basic GnollHack features.
+    versions 3.6.0 through 4.0.3, and basic GnollHack features.
 
 Supported windowing systems:
 

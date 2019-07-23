@@ -691,7 +691,7 @@ const struct Race races[] = {
         PM_GNOLL_ZOMBIE,
         MH_GNOLL | ROLE_MALE | ROLE_FEMALE | ROLE_NEUTRAL | ROLE_CHAOTIC,
         MH_GNOLL,
-        MH_DWARF | MH_GNOLL,
+        MH_GNOLL, //MH_DWARF | 
         MH_HUMAN,
         /*  Str    Int Wis Dex Con Cha */
         { 3, 3, 3, 3, 3, 3 },

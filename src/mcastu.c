@@ -254,7 +254,17 @@ boolean foundyou;
     }
 
     nomul(0);
-    if (rn2(ml * 10) < (mtmp->mconf ? 100 : 20)) { /* fumbled attack */
+	/*Spellnum + 1 is used as spell level 1...ml; chance of fail is 50% for ml and 0% for ml /2,
+	  interpolated linearly*/
+	int	failchance = 0;
+	int sl = spellnum + 1;
+	if (sl > ml / 2 && ml > 0) { // fail only if spell level is high enough
+		failchance = (50 * (sl - ml / 2)) / (ml - ml / 2);
+	}
+	if (ml == 0)
+		failchance = 100;
+
+    if (rn2(100) < failchance) {//(rn2(ml * 10) < (mtmp->mconf ? 100 : 20)) { /* fumbled attack */
         if (canseemon(mtmp) && !Deaf)
             pline_The("air crackles around %s.", mon_nam(mtmp));
         return (0);

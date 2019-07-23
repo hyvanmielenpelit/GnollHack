@@ -46,8 +46,8 @@
 #define	PM_GNOME_LORD	41
 #define	PM_GNOMISH_WIZARD	42
 #define	PM_GNOME_KING	43
-#define	PM_GNOLL_WARDEN	44
-#define	PM_GNOLL_LORD	45
+#define	PM_GNOLL_LORD	44
+#define	PM_GNOLL_WARDEN	45
 #define	PM_GNOLL_KING	46
 #define	PM_FLIND	47
 #define	PM_FLIND_LORD	48

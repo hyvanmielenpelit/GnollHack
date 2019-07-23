@@ -182,6 +182,14 @@ register struct monst *mtmp;
     switch (ptr->mlet) {
 	case S_GNOLL:
 		switch (mm) {
+		case PM_GNOMISH_WIZARD:
+			if (!rn2(3))
+				(void)mongets(mtmp, DAGGER);
+			break;
+		case PM_GNOLL_WARDEN:
+			if (!rn2(3))
+				(void)mongets(mtmp, FLAIL);
+			break;
 		case PM_GNOLL:
 			if (!rn2(3))
 				(void)mongets(mtmp, FLAIL);
@@ -827,12 +835,22 @@ register struct monst *mtmp;
 			if (!rn2(2))
 				(void)mongets(mtmp, WAN_LIGHTNING);
 		}
+		else if (ptr == &mons[PM_GNOLL_WARDEN])
+		{
+			if (!rn2(6))
+				(void)mongets(mtmp, WAN_MAGIC_MISSILE);
+		}
 		else if (ptr == &mons[PM_GNOLL] || ptr == &mons[PM_GNOLL_LORD] || ptr == &mons[PM_GNOLL_KING])
 		{
 			//Get nothing
 		}
 		else
 		{
+			if (ptr == &mons[PM_GNOMISH_WIZARD])
+			{
+				if(!rn2(6))
+					(void)mongets(mtmp, WAN_CREATE_MONSTER);
+			}
 			if (!rn2((In_mines(&u.uz) && in_mklev) ? 20 : 60)) {
 				otmp = mksobj(rn2(4) ? TALLOW_CANDLE : WAX_CANDLE, TRUE, FALSE);
 				otmp->quan = 1;
