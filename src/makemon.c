@@ -524,8 +524,14 @@ register struct monst *mtmp;
             (void) mongets(mtmp, WAN_STRIKING);
             break;
         case PM_YEENOGHU:
-            (void) mongets(mtmp, FLAIL);
-            break;
+//            (void) mongets(mtmp, TRIPLE_HEADED_FLAIL);
+			otmp = mksobj(TRIPLE_HEADED_FLAIL, FALSE, FALSE);
+			//bless(otmp);
+			otmp->oerodeproof = TRUE;
+			spe2 = 1+rn2(3);
+			otmp->spe = max(otmp->spe, spe2);
+			(void)mpickobj(mtmp, otmp);
+			break;
         }
         /* prevent djinn and mail daemons from leaving objects when
          * they vanish

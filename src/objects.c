@@ -205,9 +205,11 @@ WEAPON("elven broadsword", "runed broadsword",
         /* +d4 small, +1 large */
 WEAPON("long sword", None,
        1, 0, 0, 50,  40,  15,  8, 12, 0, S,   P_LONG_SWORD, IRON, HI_METAL),
+WEAPON("silver long sword", None,
+	1, 0, 0, 0, 40, 15, 8, 12, 0, S, P_LONG_SWORD, SILVER, HI_SILVER),
 WEAPON("two-handed sword", None,
-       1, 0, 1, 22, 150,  50, 12,  6, 0, S,   P_TWO_HANDED_SWORD,
-                                                            IRON, HI_METAL),
+    1, 0, 1, 22, 150,  50, 12,  6, 0, S,   P_TWO_HANDED_SWORD,
+                                                        IRON, HI_METAL),
         /* +2d6 large */
 WEAPON("katana", "samurai sword",
        0, 0, 0,  4,  40,  80, 10, 12, 1, S,   P_LONG_SWORD, IRON, HI_METAL),
@@ -284,8 +286,10 @@ WEAPON("quarterstaff", "staff",
 WEAPON("aklys", "thonged club",
        0, 0, 0,  8,  15,   4,  6,  3, 0, B,   P_CLUB, IRON, HI_METAL),
 WEAPON("flail", None,
-       1, 0, 0, 40,  15,   4,  6,  4, 0, B,   P_FLAIL, IRON, HI_METAL),
-        /* +1 small, +1d4 large */
+       1, 0, 0, 40,  35,   4,  6,  4, 0, B,   P_FLAIL, IRON, HI_METAL),
+WEAPON("triple-headed flail", None,
+	1, 0, 0, 0, 50, 100, 6, 4, 2, B, P_FLAIL, IRON, HI_METAL),
+	/* +1 small, +1d4 large */
 
 /* misc */
 WEAPON("bullwhip", None,
@@ -297,7 +301,8 @@ BOW("elven bow", "runed bow",  0, 12, 30, 60, 3, 6, 1, WOOD, P_BOW, HI_WOOD),
 BOW("orcish bow", "crude bow", 0, 12, 30, 60, 2, 4, 0, WOOD, P_BOW, CLR_BLACK),
 BOW("yumi", "long bow",        0,  0, 30, 60, 4, 8, 0, WOOD, P_BOW, HI_WOOD),
 BOW("sling", None,             1, 40,  3, 20, 2, 4, 0, LEATHER, P_SLING, HI_LEATHER),
-BOW("crossbow", None,          1, 45, 50, 40, 5, 5, 0, WOOD, P_CROSSBOW, HI_WOOD),
+BOW("heavy crossbow", None,	   1, 10, 70, 80, 8, 8, 0, WOOD, P_CROSSBOW, HI_WOOD),
+BOW("crossbow", None,          1, 35, 50, 40, 5, 5, 0, WOOD, P_CROSSBOW, HI_WOOD),
 
 #undef P
 #undef S

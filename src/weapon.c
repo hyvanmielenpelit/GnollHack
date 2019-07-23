@@ -243,7 +243,8 @@ struct monst *mon;
             tmp += rnd(6);
             break;
 
-        case BATTLE_AXE:
+		case TRIPLE_HEADED_FLAIL:
+		case BATTLE_AXE:
         case BARDICHE:
         case TRIDENT:
             tmp += d(2, 4);
@@ -286,7 +287,10 @@ struct monst *mon;
         case ACID_VENOM:
             tmp += rnd(6);
             break;
-        }
+		case TRIPLE_HEADED_FLAIL:
+			tmp += d(2, 4);
+			break;
+		}
     }
     if (Is_weapon) {
         tmp += otmp->spe;
@@ -591,7 +595,9 @@ register struct monst *mtmp;
                 break;
             case P_CROSSBOW:
                 propellor = oselect(mtmp, CROSSBOW);
-            }
+				if (!propellor)
+					propellor = oselect(mtmp, HEAVY_CROSSBOW);
+			}
             if ((otmp = MON_WEP(mtmp)) && mwelded(otmp) && otmp != propellor
                 && mtmp->weapon_check == NO_WEAPON_WANTED)
                 propellor = 0;

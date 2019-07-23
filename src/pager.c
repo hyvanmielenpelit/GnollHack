@@ -268,10 +268,9 @@ int x, y;
     char *name, monnambuf[BUFSZ];
     boolean accurate = !Hallucination;
 
-	name = distant_monnam(mtmp, ARTICLE_NONE, monnambuf);
-//    name = (mtmp->data == &mons[PM_COYOTE] && accurate)
-//              ? coyotename(mtmp, monnambuf)
-//              : distant_monnam(mtmp, ARTICLE_NONE, monnambuf);
+    name = (mtmp->data == &mons[PM_COYOTE] && accurate)
+              ? coyotename(mtmp, monnambuf)
+              : distant_monnam(mtmp, ARTICLE_NONE, monnambuf);
     Sprintf(buf, "%s%s%s",
             (mtmp->mx != x || mtmp->my != y)
                 ? ((mtmp->isshk && accurate) ? "tail of " : "tail of a ")

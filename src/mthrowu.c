@@ -239,8 +239,10 @@ struct obj *otmp, *mwep;
                 && mwep->otyp == CROSSBOW))
             multishot++;*/
 
-		if (!strongmonst(mtmp->data) && otmp->otyp == CROSSBOW_BOLT
-				&& mwep->otyp == CROSSBOW)
+		boolean crossbowing = (!otmp && !mwep && ammo_and_launcher(otmp, mwep)
+			&& weapon_type(mwep) == P_CROSSBOW);
+
+		if (!strongmonst(mtmp->data) && crossbowing)
 			multishot = 1; //Only strong monsters multishoot with crossbows 
 
     }
@@ -646,6 +648,9 @@ struct obj *obj;         /* missile (or stack providing it) */
 						if (MON_WEP(mon)->otyp == CROSSBOW) {
 							dam += 3;
 						}
+						else if (MON_WEP(mon)->otyp == HEAVY_CROSSBOW) {
+							dam += 6;
+					}
 						else {
 							dam += mdbon(mon);
 						}

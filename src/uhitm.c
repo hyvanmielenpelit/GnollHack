@@ -1107,6 +1107,8 @@ int dieroll;
 		else if (ammo_and_launcher(obj, uwep)){
 			if (uwep->otyp == CROSSBOW)
 				tmp += 3; // Light crossbows get +3 bonus, (heavy) crossbows get 18/00 strength bonus
+			else if (uwep->otyp == HEAVY_CROSSBOW)
+				tmp += 6;
 			else
 				tmp += dbon(); //Normal bows get full strength bonus
 
