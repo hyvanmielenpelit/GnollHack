@@ -848,7 +848,7 @@ int dieroll;
                             && uwep->otyp == YUMI)
                             tmp++;
                         else if (Race_if(PM_ELF) && obj->otyp == ELVEN_ARROW
-                                 && uwep->otyp == ELVEN_BOW)
+                                 && uwep->otyp == ELVEN_LONG_BOW)
                             tmp++;
                     }
                     if (obj->opoisoned && is_poisonable(obj))

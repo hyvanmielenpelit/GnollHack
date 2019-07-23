@@ -232,9 +232,9 @@ struct obj *otmp, *mwep;
         /* racial bonus */
 		/*
         if ((is_elf(mtmp->data) && otmp->otyp == ELVEN_ARROW
-            && mwep->otyp == ELVEN_BOW)
+            && mwep->otyp == ELVEN_LONG_BOW)
             || (is_orc(mtmp->data) && otmp->otyp == ORCISH_ARROW
-                && mwep->otyp == ORCISH_BOW)
+                && mwep->otyp == ORCISH_SHORT_BOW)
             || (is_gnoll(mtmp->data) && otmp->otyp == CROSSBOW_BOLT
                 && mwep->otyp == CROSSBOW))
             multishot++;*/
@@ -610,7 +610,7 @@ struct obj *obj;         /* missile (or stack providing it) */
                 if (is_elf(mon->data)
                     && objects[singleobj->otyp].oc_skill == P_BOW) {
                     hitv++;
-                    if (MON_WEP(mon) && MON_WEP(mon)->otyp == ELVEN_BOW)
+                    if (MON_WEP(mon) && MON_WEP(mon)->otyp == ELVEN_LONG_BOW)
                         hitv++;
                     if (singleobj->otyp == ELVEN_ARROW)
                         dam++;

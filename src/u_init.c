@@ -112,7 +112,7 @@ static struct trobj Ranger[] = {
 #define RAN_TWO_ARROWS 2
 #define RAN_ZERO_ARROWS 3
     { DAGGER, 1, WEAPON_CLASS, 1, UNDEF_BLESS },
-    { BOW, 1, WEAPON_CLASS, 1, UNDEF_BLESS },
+    { SHORT_BOW, 1, WEAPON_CLASS, 1, UNDEF_BLESS },
     { ARROW, 2, WEAPON_CLASS, 15, UNDEF_BLESS },
     { ARROW, 0, WEAPON_CLASS, 25, UNDEF_BLESS },
     { CLOAK_OF_DISPLACEMENT, 2, ARMOR_CLASS, 1, UNDEF_BLESS },
@@ -204,8 +204,9 @@ static struct inv_sub {
     { PM_ELF, DAGGER, ELVEN_DAGGER },
     { PM_ELF, SPEAR, ELVEN_SPEAR },
     { PM_ELF, SHORT_SWORD, ELVEN_SHORT_SWORD },
-    { PM_ELF, BOW, ELVEN_BOW },
-    { PM_ELF, ARROW, ELVEN_ARROW },
+    { PM_ELF, SHORT_BOW, ELVEN_LONG_BOW },
+	{ PM_ELF, LONG_BOW, ELVEN_LONG_BOW },
+	{ PM_ELF, ARROW, ELVEN_ARROW },
     { PM_ELF, HELMET, ELVEN_LEATHER_HELM },
     /* { PM_ELF, SMALL_SHIELD, ELVEN_SHIELD }, */
     { PM_ELF, CLOAK_OF_DISPLACEMENT, ELVEN_CLOAK },
@@ -213,8 +214,9 @@ static struct inv_sub {
     { PM_ORC, DAGGER, ORCISH_DAGGER },
     { PM_ORC, SPEAR, ORCISH_SPEAR },
     { PM_ORC, SHORT_SWORD, ORCISH_SHORT_SWORD },
-    { PM_ORC, BOW, ORCISH_BOW },
-    { PM_ORC, ARROW, ORCISH_ARROW },
+    { PM_ORC, SHORT_BOW, ORCISH_SHORT_BOW },
+	{ PM_ORC, LONG_BOW, ORCISH_SHORT_BOW },
+	{ PM_ORC, ARROW, ORCISH_ARROW },
     { PM_ORC, HELMET, ORCISH_HELM },
     { PM_ORC, SMALL_SHIELD, ORCISH_SHIELD },
     { PM_ORC, RING_MAIL, ORCISH_RING_MAIL },
@@ -234,8 +236,9 @@ static struct inv_sub {
 	{ PM_GNOLL, DAGGER, ORCISH_DAGGER },
 	{ PM_GNOLL, MACE, FLAIL },
 	{ PM_GNOLL, CLUB, FLAIL },
-	{ PM_GNOLL, BOW, CROSSBOW },
-    { PM_GNOLL, ARROW, CROSSBOW_BOLT },
+	{ PM_GNOLL, SHORT_BOW, CROSSBOW },
+	{ PM_GNOLL, LONG_BOW, CROSSBOW },
+	{ PM_GNOLL, ARROW, CROSSBOW_BOLT },
 	{ PM_GNOLL, HELMET, ORCISH_HELM },
 	{ PM_GNOLL, SMALL_SHIELD, ORCISH_SHIELD },
 	{ PM_GNOLL, RING_MAIL, ORCISH_RING_MAIL },
@@ -843,7 +846,7 @@ u_init()
         /* Elves can recognize all elvish objects */
         knows_object(ELVEN_SHORT_SWORD);
         knows_object(ELVEN_ARROW);
-        knows_object(ELVEN_BOW);
+        knows_object(ELVEN_LONG_BOW);
         knows_object(ELVEN_SPEAR);
         knows_object(ELVEN_DAGGER);
         knows_object(ELVEN_BROADSWORD);
@@ -878,7 +881,7 @@ u_init()
         /* Orcs can recognize all orcish objects */
         knows_object(ORCISH_SHORT_SWORD);
         knows_object(ORCISH_ARROW);
-        knows_object(ORCISH_BOW);
+        knows_object(ORCISH_SHORT_BOW);
         knows_object(ORCISH_SPEAR);
         knows_object(ORCISH_DAGGER);
         knows_object(ORCISH_CHAIN_MAIL);

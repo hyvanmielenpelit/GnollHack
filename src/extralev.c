@@ -331,7 +331,7 @@ makerogueghost()
         if (rn2(4))
             curse(ghostobj);
     }
-    ghostobj = mksobj_at(BOW, x, y, FALSE, FALSE);
+    ghostobj = mksobj_at(LONG_BOW, x, y, FALSE, FALSE);
     ghostobj->spe = 1;
     if (rn2(4))
         curse(ghostobj);

@@ -206,7 +206,7 @@ WEAPON("elven broadsword", "runed broadsword",
 WEAPON("long sword", None,
        1, 0, 0, 50,  40,  15,  8, 12, 0, S,   P_LONG_SWORD, IRON, HI_METAL),
 WEAPON("silver long sword", None,
-	1, 0, 0, 0, 40, 15, 8, 12, 0, S, P_LONG_SWORD, SILVER, HI_SILVER),
+	1, 0, 0, 0, 40, 500, 8, 12, 0, S, P_LONG_SWORD, SILVER, HI_SILVER),
 WEAPON("two-handed sword", None,
     1, 0, 1, 22, 150,  50, 12,  6, 0, S,   P_TWO_HANDED_SWORD,
                                                         IRON, HI_METAL),
@@ -268,10 +268,13 @@ WEAPON("bec de corbin", "beaked polearm",
 
 /* bludgeons */
 WEAPON("mace", None,
-       1, 0, 0, 40,  30,   5,  6,  6, 0, B,   P_MACE, IRON, HI_METAL),
+       1, 0, 0, 38,  30,   5,  6,  6, 0, B,   P_MACE, IRON, HI_METAL),
         /* +1 small */
+WEAPON("silver mace", None,
+	1, 0, 0, 2, 30, 250, 6, 6, 0, B, P_MACE, SILVER, HI_SILVER),
+	/* +1 small */
 WEAPON("morning star", None,
-       1, 0, 0, 12, 120,  10,  4,  6, 0, B,   P_MORNING_STAR, IRON, HI_METAL),
+    1, 0, 0, 12, 120,  10,  4,  6, 0, B,   P_MORNING_STAR, IRON, HI_METAL),
         /* +d4 small, +1 large */
 WEAPON("war hammer", None,
        1, 0, 0, 15,  50,   5,  4,  4, 0, B,   P_HAMMER, IRON, HI_METAL),
@@ -296,13 +299,15 @@ WEAPON("bullwhip", None,
        1, 0, 0,  2,  20,   4,  2,  1, 0, 0,   P_WHIP, LEATHER, CLR_BROWN),
 
 /* bows */
-BOW("bow", None,               1, 24, 30, 60, 3, 6, 0, WOOD, P_BOW, HI_WOOD),
-BOW("elven bow", "runed bow",  0, 12, 30, 60, 3, 6, 1, WOOD, P_BOW, HI_WOOD),
-BOW("orcish bow", "crude bow", 0, 12, 30, 60, 2, 4, 0, WOOD, P_BOW, CLR_BLACK),
-BOW("yumi", "long bow",        0,  0, 30, 60, 4, 8, 0, WOOD, P_BOW, HI_WOOD),
+BOW("bow", None,			   1, 0, 30, 60, 3, 4, 0, WOOD, P_BOW, HI_WOOD),
+BOW("short bow", None,         1, 12, 30, 60, 3, 4, 0, WOOD, P_BOW, HI_WOOD),
+BOW("elven long bow", "runed long bow",  0, 12, 30, 60, 5, 7, 1, WOOD, P_BOW, HI_WOOD),
+BOW("orcish short bow", "crude short bow", 0, 12, 30, 60, 2, 3, 0, WOOD, P_BOW, CLR_BLACK),
+BOW("long bow", None,		   1, 12, 30, 60, 4, 6, 0, WOOD, P_BOW, HI_WOOD),
+BOW("yumi", "oriental long bow", 0,  0, 30, 60, 4, 8, 0, WOOD, P_BOW, HI_WOOD),
 BOW("sling", None,             1, 40,  3, 20, 2, 4, 0, LEATHER, P_SLING, HI_LEATHER),
+BOW("crossbow", None,		   1, 35, 50, 40, 5, 5, 0, WOOD, P_CROSSBOW, HI_WOOD),
 BOW("heavy crossbow", None,	   1, 10, 70, 80, 8, 8, 0, WOOD, P_CROSSBOW, HI_WOOD),
-BOW("crossbow", None,          1, 35, 50, 40, 5, 5, 0, WOOD, P_CROSSBOW, HI_WOOD),
 
 #undef P
 #undef S

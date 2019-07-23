@@ -263,7 +263,8 @@ struct monst *mon;
         case IRON_CHAIN:
         case CROSSBOW_BOLT:
         case MACE:
-        case WAR_HAMMER:
+		case SILVER_MACE:
+		case WAR_HAMMER:
         case FLAIL:
         case SPETUM:
         case TRIDENT:
@@ -584,11 +585,13 @@ register struct monst *mtmp;
             case P_BOW:
                 propellor = oselect(mtmp, YUMI);
                 if (!propellor)
-                    propellor = oselect(mtmp, ELVEN_BOW);
+                    propellor = oselect(mtmp, ELVEN_LONG_BOW);
+				if (!propellor)
+					propellor = oselect(mtmp, LONG_BOW);
+				if (!propellor)
+                    propellor = oselect(mtmp, SHORT_BOW);
                 if (!propellor)
-                    propellor = oselect(mtmp, BOW);
-                if (!propellor)
-                    propellor = oselect(mtmp, ORCISH_BOW);
+                    propellor = oselect(mtmp, ORCISH_SHORT_BOW);
                 break;
             case P_SLING:
                 propellor = oselect(mtmp, SLING);

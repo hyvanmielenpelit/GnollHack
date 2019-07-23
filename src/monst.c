@@ -432,7 +432,13 @@ NEARDATA struct permonst mons[] = {
 		SIZ(750, 150, MS_ORC, MZ_SMALL), 0, 0, M1_HUMANOID | M1_OMNIVORE,
 		M2_PRINCE | M2_MALE | M2_COLLECT,
 		M3_INFRAVISIBLE | M3_INFRAVISION, 6, HI_LORD),
-										 
+
+	MON("gnoll warden", S_GNOLL, LVL(4, 10, 2, 0, -6), (G_GENO | 1),
+		A(ATTK(AT_MAGC, AD_SPEL, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
+			NO_ATTK),
+		SIZ(900, 180, MS_ORC, MZ_SMALL), 0, 0, M1_HUMANOID | M1_CARNIVORE,
+		M2_GNOLL | M2_MAGIC, M3_INFRAVISIBLE | M3_INFRAVISION, 6, CLR_CYAN),
+					
 	MON("gnoll lord", S_GNOLL, LVL(4, 9, 7, 0, -5), (G_GENO | G_LGROUP | 2),
 		A(ATTK(AT_WEAP, AD_PHYS, 1, 10), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
 			NO_ATTK),
@@ -453,7 +459,6 @@ NEARDATA struct permonst mons[] = {
 		SIZ(900, 350, MS_BARK, MZ_HUMAN), MR_FIRE | MR_POISON, 0, M1_HUMANOID | M1_CARNIVORE,
 		M2_GNOLL | M2_DEMON | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_COLLECT,
 		M3_INFRAVISIBLE | M3_INFRAVISION, 14, CLR_GRAY),
-
 
 	MON("flind lord", S_GNOLL, LVL(16, 10, -3, 40, -12), (G_GENO | 1),
 		A(ATTK(AT_WEAP, AD_PHYS, 3, 8), ATTK(AT_WEAP, AD_PHYS, 3, 8), NO_ATTK,
@@ -3287,16 +3292,6 @@ struct permonst _mons2[] = {
                                        | M2_STRONG | M2_COLLECT | M2_MAGIC,
         M3_INFRAVISIBLE, 8, HI_DOMESTIC),
 
-	//EXTRA GNOLLS
-	/*
-		
-			
-			MON("gnoll warden", S_GNOLL, LVL(3, 10, 4, 10, 0), (G_GENO | 1),
-				A(ATTK(AT_MAGC, AD_SPEL, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
-				  NO_ATTK),
-				SIZ(700, 120, MS_ORC, MZ_SMALL), 0, 0, M1_HUMANOID | M1_CARNIVORE,
-				M2_GNOLL | M2_MAGIC, M3_INFRAVISIBLE | M3_INFRAVISION, 5, HI_ZAP),
-		*/		
      /* array terminator
      */
     MON("", 0, LVL(0, 0, 0, 0, 0), (0),

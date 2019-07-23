@@ -151,12 +151,12 @@ int shotlimit;
             switch (Race_switch) {
             case PM_ELF:
                 if (obj->otyp == ELVEN_ARROW && uwep
-                    && uwep->otyp == ELVEN_BOW)
+                    && uwep->otyp == ELVEN_LONG_BOW)
                     multishot++;
                 break;
             case PM_ORC:
                 if (obj->otyp == ORCISH_ARROW && uwep
-                    && uwep->otyp == ORCISH_BOW)
+                    && uwep->otyp == ORCISH_SHORT_BOW)
                     multishot++;
                 break;
             case PM_GNOLL:
@@ -173,9 +173,9 @@ int shotlimit;
         /* crossbows are slow to load and probably shouldn't allow multiple
            shots at all, but that would result in players never using them;
            instead, high strength is necessary to load and shoot quickly */
-		if (multishot > 1 && skill == -P_CROSSBOW
+		if (multishot > 1 && skill == -P_CROSSBOW && obj && uwep
 			&& ammo_and_launcher(obj, uwep)
-			&& (int)ACURRSTR < 17) //(Race_if(PM_GNOLL) ? 16 : 18))
+			&& (ACURRSTR < (uwep->otyp == HEAVY_CROSSBOW ? STR18(50) : 17))) //(Race_if(PM_GNOLL) ? 16 : 18))
 		{
 			multishot = 1;
 			multishotrndextra = 0;
@@ -1661,7 +1661,7 @@ register struct obj *obj; /* thrownobj or kickedobj or uwep */
                     && (!Upolyd || your_race(youmonst.data))
                     && objects[uwep->otyp].oc_skill == P_BOW) {
                     tmp++;
-                    if (Race_if(PM_ELF) && uwep->otyp == ELVEN_BOW)
+                    if (Race_if(PM_ELF) && uwep->otyp == ELVEN_LONG_BOW)
                         tmp++;
                     else if (Role_if(PM_SAMURAI) && uwep->otyp == YUMI)
                         tmp++;
