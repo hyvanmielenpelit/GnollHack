@@ -391,7 +391,7 @@ HELM("helm of telepathy", "visored helmet",
  *          is the same as order of dragons defined in monst.c.
  */
 #define DRGN_ARMR(name,mgc,power,cost,ac,color)  \
-    ARMOR(name, None, 1, mgc, 1, power, 0, 5, 40,  \
+    ARMOR(name, None, 1, mgc, 1, power, 0, 5, 500,  \
           cost, ac, 0, ARM_SUIT, DRAGON_HIDE, color)
 /* 3.4.1: dragon scale mail reclassified as "magic" since magic is
    needed to create them */
@@ -476,29 +476,29 @@ CLOAK("leather cloak", None,
       1, 0,          0,  8, 0, 15, 40,  9, 1,  LEATHER, CLR_BROWN),
 /* with shuffled appearances... */
 CLOAK("cloak of protection", "tattered cape",
-      0, 1, PROTECTION,  9, 0, 10, 50,  7, 3,  CLOTH, HI_CLOTH),
+      0, 1, PROTECTION,  9, 0, 10, 200,  7, 3,  CLOTH, HI_CLOTH),
         /* cloak of protection is now the only item conferring MC 3 */
 CLOAK("cloak of invisibility", "opera cloak",
-      0, 1,      INVIS, 9, 0, 10, 60,  9, 1,  CLOTH, CLR_BRIGHT_MAGENTA),
+      0, 1,      INVIS, 9, 0, 10, 150,  9, 1,  CLOTH, CLR_BRIGHT_MAGENTA),
 CLOAK("cloak of magic resistance", "ornamental cope",
-      0, 1,  ANTIMAGIC,  2, 0, 10, 60,  9, 1,  CLOTH, CLR_WHITE),
+      0, 1,  ANTIMAGIC,  2, 0, 10, 400,  9, 1,  CLOTH, CLR_WHITE),
         /*  'cope' is not a spelling mistake... leave it be */
 CLOAK("cloak of displacement", "piece of cloth",
-      0, 1,  DISPLACED, 7, 0, 10, 50,  9, 1,  CLOTH, HI_CLOTH),
+      0, 1,  DISPLACED, 7, 0, 10, 300,  9, 1,  CLOTH, HI_CLOTH),
 
 /* robes */
 ROBE("robe", None, //STARTMARKER
-	1, 1, 0, 3, 0, 10, 50, 9, 2, CLOTH, CLR_RED),//STARTMARKER 2
+	1, 1, 0, 3, 0, 15, 25, 9, 2, CLOTH, CLR_RED),//STARTMARKER 2
 ROBE("robe of protection", "golden ornamental robe",
-	0, 1, PROTECTION, 3, 0, 10, 50, 6, 2, CLOTH, CLR_YELLOW),
+	0, 1, PROTECTION, 3, 0, 15, 200, 6, 2, CLOTH, CLR_YELLOW),
 	/* robe was adopted from slash'em, where it's worn as a suit
 	rather than as a cloak and there are several variations */
 ROBE("robe of magic resistance", "silvery ornamental robe",
-	0, 1, ANTIMAGIC, 2, 0, 10, 60, 8, 2, CLOTH, CLR_WHITE),
+	0, 1, ANTIMAGIC, 2, 0, 15, 400, 8, 2, CLOTH, CLR_WHITE),
 ROBE("robe of the archmagi", "blue ornamental robe",
-	0, 1, 0, 1, 0, 10, 80, 8, 2, CLOTH, CLR_BLUE),
+	0, 1, 0, 1, 0, 20, 750, 8, 2, CLOTH, CLR_BLUE),
 ROBE("robe of starry wisdom", "shining black robe",
-	0, 1, 0, 1, 0, 10, 80, 8, 2, CLOTH, CLR_BLACK),
+	0, 1, 0, 1, 0, 20, 750, 8, 2, CLOTH, CLR_BLACK),
 ROBE("mummy wrapping", None, //ENDMARKER
 1, 0, 0, 0, 0, 3, 2, 10, 1, CLOTH, CLR_GRAY),
 	/* worn mummy wrapping blocks invisibility */
@@ -506,13 +506,13 @@ ROBE("mummy wrapping", None, //ENDMARKER
 
 /* bracers */
 BRACERS("leather bracers", None, //STARTMARKER
-	1, 0, 0, 3, 0, 5, 50, 9, 2, CLOTH, HI_CLOTH),
+	1, 0, 0, 3, 0, 5, 5, 9, 2, CLOTH, HI_CLOTH),
 BRACERS("bracers of defense", "runed bracers",//STARTMARKER 2
-	0, 1, PROTECTION, 3, 0, 5, 50, 7, 2, CLOTH, HI_CLOTH),
+	0, 1, PROTECTION, 3, 0, 5, 250, 7, 2, CLOTH, HI_CLOTH),
 BRACERS("bracers of archery", "deerskin bracers",
-	0, 1, 0, 2, 0, 5, 100, 9, 2, CLOTH, HI_CLOTH),
+	0, 1, 0, 2, 0, 5, 400, 9, 2, CLOTH, HI_CLOTH),
 BRACERS("bracers of magic resistance", "ornamental bracers",//ENDMARKER
-0, 1, ANTIMAGIC, 2, 0, 5, 60, 9, 2, CLOTH, HI_CLOTH),
+0, 1, ANTIMAGIC, 2, 0, 5, 250, 9, 2, CLOTH, HI_CLOTH),
 
 /* shields */
 SHIELD("small shield", None,
@@ -1170,18 +1170,17 @@ ROCK("rock", None,         1, 100,  10,  0, 3, 3, 0, 10, 7, MINERAL, CLR_GRAY),
  */
 OBJECT(OBJ("boulder", None),
        BITS(1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, P_NONE, MINERAL), 0,
-       ROCK_CLASS, 100, 0, 6000, 0, 20, 20, 0, 0, 2000, HI_MINERAL),
+       ROCK_CLASS, 100, 0, 12000, 0, 20, 20, 0, 0, 2000, HI_MINERAL),
 OBJECT(OBJ("statue", None),
        BITS(1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, P_NONE, MINERAL), 0,
-       ROCK_CLASS, 900, 0, 2500, 0, 20, 20, 0, 0, 2500, CLR_WHITE),
-
+       ROCK_CLASS, 900, 0, 5000, 0, 20, 20, 0, 0, 2500, CLR_WHITE),
 OBJECT(OBJ("heavy iron ball", None),
        BITS(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, WHACK, P_NONE, IRON), 0,
-       BALL_CLASS, 1000, 0, 480, 10, 25, 25, 0, 0, 200, HI_METAL),
+       BALL_CLASS, 1000, 0, 800, 10, 25, 25, 0, 0, 200, HI_METAL),
         /* +d4 when "very heavy" */
 OBJECT(OBJ("iron chain", None),
        BITS(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, WHACK, P_NONE, IRON), 0,
-       CHAIN_CLASS, 1000, 0, 120, 0, 4, 4, 0, 0, 200, HI_METAL),
+       CHAIN_CLASS, 1000, 0, 200, 0, 4, 4, 0, 0, 200, HI_METAL),
         /* +1 both l & s */
 
 /* Venom is normally a transitory missile (spit by various creatures)
