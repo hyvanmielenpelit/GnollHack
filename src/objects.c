@@ -96,9 +96,9 @@ OBJECT(OBJ("strange object", None),
            BITS(kn, 1, 1, 0, 0, 1, 0, 0, 0, 0, PIERCE, sub, metal), \
            0, WEAPON_CLASS, prob, 0, wt,                            \
            cost, sdam, ldam, hitbon, 0, wt, color)
-#define BOW(name,desc,kn,prob,wt,cost,sdam,ldam,hitbon,metal,sub,color) \
+#define BOW(name,desc,kn,bi,prob,wt,cost,sdam,ldam,hitbon,metal,sub,color) \
     OBJECT(OBJ(name,desc),                                          \
-           BITS(kn, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, sub, metal),      \
+           BITS(kn, 0, 1, 0, 0, 1, 0, 0, bi, 0, 0, sub, metal),      \
            0, WEAPON_CLASS, prob, 0, wt,                            \
            cost, sdam, ldam, hitbon, 0, wt, color)
 
@@ -299,15 +299,16 @@ WEAPON("bullwhip", None,
        1, 0, 0,  2,  20,   4,  2,  1, 0, 0,   P_WHIP, LEATHER, CLR_BROWN),
 
 /* bows */
-BOW("bow", None,			   1, 0, 30, 60, 3, 4, 0, WOOD, P_BOW, HI_WOOD),
-BOW("short bow", None,         1, 12, 30, 60, 3, 4, 0, WOOD, P_BOW, HI_WOOD),
-BOW("elven long bow", "runed long bow",  0, 12, 30, 60, 5, 7, 1, WOOD, P_BOW, HI_WOOD),
-BOW("orcish short bow", "crude short bow", 0, 12, 30, 60, 2, 3, 0, WOOD, P_BOW, CLR_BLACK),
-BOW("long bow", None,		   1, 12, 30, 60, 4, 6, 0, WOOD, P_BOW, HI_WOOD),
-BOW("yumi", "oriental long bow", 0,  0, 30, 60, 4, 8, 0, WOOD, P_BOW, HI_WOOD),
-BOW("sling", None,             1, 40,  3, 20, 2, 4, 0, LEATHER, P_SLING, HI_LEATHER),
-BOW("crossbow", None,		   1, 35, 50, 40, 5, 5, 0, WOOD, P_CROSSBOW, HI_WOOD),
-BOW("heavy crossbow", None,	   1, 10, 70, 80, 8, 8, 0, WOOD, P_CROSSBOW, HI_WOOD),
+BOW("bow", None,			   1, 1, 0, 30, 60, 3, 4, 0, WOOD, P_BOW, HI_WOOD),
+BOW("short bow", None,         1, 1, 12, 30, 60, 3, 4, 0, WOOD, P_BOW, HI_WOOD),
+BOW("elven long bow", "runed long bow",  0, 1, 12, 30, 60, 5, 7, 1, WOOD, P_BOW, HI_WOOD),
+BOW("orcish short bow", "crude short bow", 0, 1, 12, 30, 60, 2, 3, 0, WOOD, P_BOW, CLR_BLACK),
+BOW("long bow", None,		   1, 1, 12, 30, 60, 4, 6, 0, WOOD, P_BOW, HI_WOOD),
+BOW("yumi", "oriental long bow", 0, 1, 0, 30, 60, 4, 8, 0, WOOD, P_BOW, HI_WOOD),
+BOW("sling", None,             1, 0, 40,  3, 20, 2, 4, 0, LEATHER, P_SLING, HI_LEATHER),
+BOW("crossbow", None,		   1, 1, 30, 50, 40, 5, 5, 0, WOOD, P_CROSSBOW, HI_WOOD),
+BOW("hand crossbow", None,	   1, 0, 5, 20, 30, 2, 2, 0, WOOD, P_CROSSBOW, HI_WOOD),
+BOW("heavy crossbow", None,	   1, 1, 10, 70, 80, 8, 8, 0, WOOD, P_CROSSBOW, HI_WOOD),
 
 #undef P
 #undef S

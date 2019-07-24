@@ -122,8 +122,10 @@ static struct trobj Ranger[] = {
 static struct trobj Rogue[] = {
 #define R_DAGGERS 1
     { SHORT_SWORD, 0, WEAPON_CLASS, 1, UNDEF_BLESS },
-    { DAGGER, 0, WEAPON_CLASS, 10, 0 }, /* quan is variable */
-    { LEATHER_ARMOR, 1, ARMOR_CLASS, 1, UNDEF_BLESS },
+    { DAGGER, 0, WEAPON_CLASS, 5, 0 }, /* quan is variable */
+	{ HAND_CROSSBOW, 1, WEAPON_CLASS, 1, UNDEF_BLESS },
+	{ CROSSBOW_BOLT, 1, WEAPON_CLASS, 15, UNDEF_BLESS },
+	{ LEATHER_ARMOR, 1, ARMOR_CLASS, 1, UNDEF_BLESS },
     { POT_SICKNESS, 0, POTION_CLASS, 1, 0 },
     { LOCK_PICK, 0, TOOL_CLASS, 1, 0 },
     { SACK, 0, TOOL_CLASS, 1, 0 },
@@ -772,7 +774,7 @@ u_init()
         skill_init(Skill_Ran);
         break;
     case PM_ROGUE:
-        Rogue[R_DAGGERS].trquan = rn1(10, 6);
+        Rogue[R_DAGGERS].trquan = rn1(5, 6);
         u.umoney0 = 0;
         ini_inv(Rogue);
         if (!rn2(5))
@@ -1126,6 +1128,13 @@ register struct trobj *trop;
             trop++;
             continue;
         }
+
+		//Rogues get poisoned crossbow bolts
+		if (Role_if(PM_ROGUE))
+		{
+			if (obj->otyp == CROSSBOW_BOLT)
+				obj->opoisoned = 1;
+		}
 
         if (trop->trclass == COIN_CLASS) {
             /* no "blessed" or "identified" money */

@@ -175,7 +175,7 @@ int shotlimit;
            instead, high strength is necessary to load and shoot quickly */
 		if (multishot > 1 && skill == -P_CROSSBOW && obj && uwep
 			&& ammo_and_launcher(obj, uwep)
-			&& (ACURRSTR < (uwep->otyp == HEAVY_CROSSBOW ? STR18(50) : 17))) //(Race_if(PM_GNOLL) ? 16 : 18))
+			&& (ACURRSTR < (uwep->otyp == HEAVY_CROSSBOW ? STR18(50) : uwep->otyp == CROSSBOW ? 17: 15))) //(Race_if(PM_GNOLL) ? 16 : 18))
 		{
 			multishot = 1;
 			multishotrndextra = 0;
@@ -1563,20 +1563,21 @@ register struct obj *obj; /* thrownobj or kickedobj or uwep */
             break;
         }
     }
-	if (hmode == HMON_THROWN && mindistance <= 1) {
-
-		if (uwep && ammo_and_launcher(obj, uwep))
+	if (hmode == HMON_THROWN) {
+		if (obj && uwep && mon && ammo_and_launcher(obj, uwep))
 		{
-			switch(objects[uwep->otyp].oc_skill){
-			case P_BOW:
-				tmp -= 10;
-				break;
-			case P_CROSSBOW:
-				tmp -= 8;
-				break;
-			default:
-				tmp -= 10;
-				break;
+			if (mindistance <= 1) {
+				switch (objects[uwep->otyp].oc_skill) {
+				case P_BOW:
+					tmp -= 10;
+					break;
+				case P_CROSSBOW:
+					tmp -= 8;
+					break;
+				default:
+					tmp -= 10;
+					break;
+				}
 			}
 		}
 		else
@@ -1648,10 +1649,10 @@ register struct obj *obj; /* thrownobj or kickedobj or uwep */
             if (!ammo_and_launcher(obj, uwep)) {
                 tmp -= 4;
             } else {
-                tmp += uwep->spe - greatest_erosion(uwep);
-                tmp += weapon_hit_bonus(uwep);
-                if (uwep->oartifact)
-                    tmp += spec_abon(uwep, mon);
+				tmp += hitval(uwep, mon);	//tmp += uwep->spe - greatest_erosion(uwep);
+                tmp += weapon_hit_bonus(uwep); //Players get skill bonuses
+//                if (uwep->oartifact)
+//                    tmp += spec_abon(uwep, mon);
                 /*
                  * Elves and Samurais are highly trained w/bows,
                  * especially their own special types of bow.

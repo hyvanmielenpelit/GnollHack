@@ -1109,27 +1109,13 @@ int dieroll;
 				tmp += 3; // Light crossbows get +3 bonus, (heavy) crossbows get 18/00 strength bonus
 			else if (uwep->otyp == HEAVY_CROSSBOW)
 				tmp += 6;
+			else if (uwep->otyp == HAND_CROSSBOW)
+				tmp += 0;
 			else
 				tmp += dbon(); //Normal bows get full strength bonus
 
 			//All bows get bow's enchantment bonus and damage
-			tmp += uwep->spe;
-			if (bigmonst(mon->data))
-			{
-				int diesize = objects[uwep->otyp].oc_wldam;
-				if(diesize > 0)
-					tmp += rnd(diesize);
-			}
-			else
-			{
-				int diesize = objects[uwep->otyp].oc_wsdam;
-				if (diesize > 0)
-					tmp += rnd(diesize);
-			}
-
-			/* negative enchantment mustn't produce negative damage */
-			if (tmp < 0)
-				tmp = 0;
+			tmp += dmgval(uwep, mon);
 		}
     }
 

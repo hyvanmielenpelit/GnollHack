@@ -336,11 +336,36 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
     /* High level monsters will be more likely to hit */
     /* This check applies only if this monster is the target
      * the archer was aiming at. */
-    if (archer && target == mtmp) {
+    if (archer && mtmp && target == mtmp) {
         if (archer->m_lev > 5)
             tmp += archer->m_lev - 5;
-        if (mon_launcher && mon_launcher->oartifact)
-            tmp += spec_abon(mon_launcher, mtmp);
+//        if (mon_launcher && mon_launcher->oartifact)
+//            tmp += spec_abon(mon_launcher, mtmp);
+		if (otmp && mon_launcher && is_ammo(otmp)) {
+			if (!ammo_and_launcher(otmp, mon_launcher)) {
+				tmp -= 4;
+			}
+			else {
+				tmp += hitval(mon_launcher, mtmp);
+				//tmp += weapon_hit_bonus(uwep);  //Monsters do not get skill-based to-hit bonuses
+
+				//Penalty for shooting short range
+				if (archer && distmin(archer->mx, archer->my, mtmp->mx, mtmp->my) <= 1) {
+					switch (objects[mon_launcher->otyp].oc_skill) {
+					case P_BOW:
+						tmp -= 10;
+						break;
+					case P_CROSSBOW:
+						tmp -= 8;
+						break;
+					default:
+						tmp -= 10;
+						break;
+					}
+				}
+			}
+		}
+
     }
     if (tmp < rnd(20)) {
         if (!ismimic) {
@@ -365,6 +390,24 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
         return 1;
     } else {
         damage = dmgval(otmp, mtmp);
+		if (otmp && mon_launcher && ammo_and_launcher(otmp, mon_launcher)) {
+			damage += dmgval(mon_launcher, mtmp);
+			//Add strength damage, no skill damage
+			if (mon_launcher->otyp == CROSSBOW) {
+				damage += 3;
+			}
+			else if (mon_launcher->otyp == HEAVY_CROSSBOW) {
+				damage += 6;
+			}
+			else if (mon_launcher->otyp == HAND_CROSSBOW) {
+				damage += 0;
+			}
+			else {
+				if(archer)
+					damage += mdbon(archer);
+			}
+		}
+
         if (otmp->otyp == ACID_VENOM && resists_acid(mtmp))
             damage = 0;
         if (ismimic)
@@ -618,7 +661,7 @@ struct obj *obj;         /* missile (or stack providing it) */
 
 				//Using wielded long-rangen weapons at black point is difficult
 				if (mindistance <= 1) {
-					if (MON_WEP(mon) && ammo_and_launcher(singleobj, MON_WEP(mon)))
+					if (singleobj && MON_WEP(mon) && ammo_and_launcher(singleobj, MON_WEP(mon)))
 					{
 						switch (objects[MON_WEP(mon)->otyp].oc_skill) {
 						case P_BOW:
@@ -632,41 +675,35 @@ struct obj *obj;         /* missile (or stack providing it) */
 							break;
 						}
 					}
-					else
-					{
-						hitv -= 0;
-					}
 				}
 
 				//Give bow damage bonuses
 				if (MON_WEP(mon) && singleobj)
 				{
-					if(ammo_and_launcher(singleobj, MON_WEP(mon)))
+					if(is_ammo(singleobj))
 					{
-						hitv += MON_WEP(mon)->spe;
-						dam += MON_WEP(mon)->spe;
-						if (MON_WEP(mon)->otyp == CROSSBOW) {
-							dam += 3;
-						}
-						else if (MON_WEP(mon)->otyp == HEAVY_CROSSBOW) {
-							dam += 6;
-					}
-						else {
-							dam += mdbon(mon);
-						}
-						if (bigmonst(youmonst.data))
+						if(ammo_and_launcher(singleobj, MON_WEP(mon)))
 						{
-							int diesize = objects[MON_WEP(mon)->otyp].oc_wldam;
-							if (diesize > 0)
-								dam += rnd(diesize);
+							hitv += hitval(MON_WEP(mon), &youmonst); //MON_WEP(mon)->spe - greatest_erosion(MON_WEP(mon));
+							//hitv += weapon_hit_bonus(MON_WEP(mon)); //Monsters do not get skill bonuses
+							dam += dmgval(MON_WEP(mon), &youmonst);
+							if (MON_WEP(mon)->otyp == CROSSBOW) {
+								dam += 3;
+							}
+							else if (MON_WEP(mon)->otyp == HEAVY_CROSSBOW) {
+								dam += 6;
+							}
+							else if (MON_WEP(mon)->otyp == HAND_CROSSBOW) {
+								dam += 0;
+							}
+							else {
+								dam += mdbon(mon);
+							}
 						}
 						else
 						{
-							int diesize = objects[MON_WEP(mon)->otyp].oc_wsdam;
-							if (diesize > 0)
-								dam += rnd(diesize);
+							hitv -= 4;
 						}
-
 					}
 				}
                 if (bigmonst(youmonst.data))
