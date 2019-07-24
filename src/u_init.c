@@ -1188,7 +1188,11 @@ register struct trobj *trop;
                 setworn(obj, W_ARMU);
             else if (is_cloak(obj) && !uarmc)
                 setworn(obj, W_ARMC);
-            else if (is_boots(obj) && !uarmf)
+			else if (is_robe(obj) && !uarmo)
+				setworn(obj, W_ARMO);
+			else if (is_bracers(obj) && !uarmb)
+				setworn(obj, W_ARMB);
+			else if (is_boots(obj) && !uarmf)
                 setworn(obj, W_ARMF);
             else if (is_suit(obj) && !uarm)
                 setworn(obj, W_ARM);

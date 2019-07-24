@@ -877,7 +877,7 @@ u_slip_free(mtmp, mattk)
 struct monst *mtmp;
 struct attack *mattk;
 {
-    struct obj *obj = (uarmc ? uarmc : uarm);
+    struct obj *obj = (uarmc ? uarmc : (uarmo ? uarmo : uarm));
 
     if (!obj)
         obj = uarmu;
@@ -1579,7 +1579,7 @@ register struct attack *mattk;
             hitmsg(mtmp, mattk, dmg);
             break;
         }
-        if (!uwep && !uarmu && !uarm && !uarmc
+        if (!uwep && !uarmu && !uarm && !uarmc && !uarmo && !uarmb
             && !uarms && !uarmg && !uarmf && !uarmh) {
             boolean goaway = FALSE;
 
@@ -2657,7 +2657,7 @@ struct monst *mon;
         }
     }
 
-    naked = (!uarmc && !uarmf && !uarmg && !uarms && !uarmh && !uarmu);
+    naked = (!uarmc && !uarmf && !uarmg && !uarms && !uarmh && !uarmu && !uarmo && !uarmb);
     pline("%s %s%s.", Who,
           Deaf ? "seems to murmur into your ear"
                : naked ? "murmurs sweet nothings into your ear"
@@ -2665,13 +2665,16 @@ struct monst *mon;
           naked ? "" : ", while helping you undress");
     mayberem(mon, Who, uarmc, cloak_simple_name(uarmc));
     if (!uarmc)
-        mayberem(mon, Who, uarm, suit_simple_name(uarm));
-    mayberem(mon, Who, uarmf, "boots");
+        mayberem(mon, Who, uarmo, robe_simple_name(uarmo));
+	if (!uarmc && !uarmo)
+		mayberem(mon, Who, uarm, suit_simple_name(uarm));
+	mayberem(mon, Who, uarmf, "boots");
     if (!tried_gloves)
         mayberem(mon, Who, uarmg, "gloves");
-    mayberem(mon, Who, uarms, "shield");
+	mayberem(mon, Who, uarmb, "bracers");
+	mayberem(mon, Who, uarms, "shield");
     mayberem(mon, Who, uarmh, helm_simple_name(uarmh));
-    if (!uarmc && !uarm)
+    if (!uarmc && !uarmo && !uarm)
         mayberem(mon, Who, uarmu, "shirt");
 
     /* removing armor (levitation boots, or levitation ring to make
@@ -2859,7 +2862,7 @@ const char *str;
         verbalize("Take off your %s; %s.", str,
                   (obj == uarm)
                      ? "let's get a little closer"
-                     : (obj == uarmc || obj == uarms)
+                     : (obj == uarmc || obj == uarms || obj == uarmo || obj == uarmb)
                         ? "it's in the way"
                         : (obj == uarmf)
                            ? "let me rub your feet"

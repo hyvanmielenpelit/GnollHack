@@ -79,7 +79,7 @@ struct monst *victim;
 
 #define burn_dmg(obj, descr) erode_obj(obj, descr, ERODE_BURN, EF_GREASE)
     while (1) {
-        switch (rn2(5)) {
+        switch (rn2(6)) {
         case 0:
             item = hitting_u ? uarmh : which_armor(victim, W_ARMH);
             if (item) {
@@ -96,7 +96,12 @@ struct monst *victim;
                 (void) burn_dmg(item, cloak_simple_name(item));
                 return TRUE;
             }
-            item = hitting_u ? uarm : which_armor(victim, W_ARM);
+			item = hitting_u ? uarmo : which_armor(victim, W_ARMO);
+			if (item) {
+				(void)burn_dmg(item, robe_simple_name(item));
+				return TRUE;
+			}
+			item = hitting_u ? uarm : which_armor(victim, W_ARM);
             if (item) {
                 (void) burn_dmg(item, xname(item));
                 return TRUE;
@@ -120,7 +125,12 @@ struct monst *victim;
             if (!burn_dmg(item, "boots"))
                 continue;
             break;
-        }
+		case 5:
+			item = hitting_u ? uarmb : which_armor(victim, W_ARMB);
+			if (!burn_dmg(item, "bracers"))
+				continue;
+			break;
+		}
         break; /* Out of while loop */
     }
 #undef burn_dmg
@@ -1142,7 +1152,9 @@ unsigned trflags;
                     (void) snuff_lit(otmp);
             if (uarmc)
                 (void) water_damage(uarmc, cloak_simple_name(uarmc), TRUE);
-            else if (uarm)
+			else if (uarmo)
+				(void)water_damage(uarmo, robe_simple_name(uarmo), TRUE);
+			else if (uarm)
                 (void) water_damage(uarm, suit_simple_name(uarm), TRUE);
             else if (uarmu)
                 (void) water_damage(uarmu, "shirt", TRUE);
@@ -3698,7 +3710,7 @@ boolean *lostsome;
                 if (!((obj->otyp == LOADSTONE && obj->cursed) || obj == uamul
                       || obj == uleft || obj == uright || obj == ublindf
                       || obj == uarm || obj == uarmc || obj == uarmg
-                      || obj == uarmf || obj == uarmu
+                      || obj == uarmf || obj == uarmu || obj == uarmo || obj == uarmb
                       || (obj->cursed && (obj == uarmh || obj == uarms))
                       || welded(obj)))
                     otmp = obj;

@@ -893,9 +893,9 @@ int propidx; /* special cases can have negative values */
                     Sprintf(buf, because_of, bare_artifactname(ublindf));
                 break;
             case INVIS:
-                if (u.uprops[INVIS].blocked & W_ARMC)
+                if (u.uprops[INVIS].blocked & W_ARMO)
                     Sprintf(buf, because_of,
-                            ysimple_name(uarmc)); /* mummy wrapping */
+                            ysimple_name(uarmo)); /* mummy wrapping */
                 break;
             case CLAIRVOYANT:
                 if (wizard && (u.uprops[CLAIRVOYANT].blocked & W_ARMH))

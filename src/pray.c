@@ -293,7 +293,10 @@ worst_cursed_item()
     /* then cloak due to body armor */
     } else if (uarmc && uarmc->cursed) { /* cloak */
         otmp = uarmc;
-    } else if (uarm && uarm->cursed) { /* suit */
+	}
+	else if (uarmo && uarmo->cursed) { /* robe */
+		otmp = uarmo;
+	} else if (uarm && uarm->cursed) { /* suit */
         otmp = uarm;
     /* if worn helmet of opposite alignment is making you an adherent
        of the current god, he/she/it won't uncurse that for you */
@@ -302,8 +305,13 @@ worst_cursed_item()
         otmp = uarmh;
     } else if (uarmf && uarmf->cursed) { /* boots */
         otmp = uarmf;
-    } else if (uarmu && uarmu->cursed) { /* shirt */
+	}
+	else if (uarmb && uarmb->cursed) { /* bracers */
+		otmp = uarmb;
+	} else if (uarmu && uarmu->cursed) { /* shirt */
         otmp = uarmu;
+    } else if (uamul && uamul->cursed) { /* amulet */
+        otmp = uamul;
     } else if (uamul && uamul->cursed) { /* amulet */
         otmp = uamul;
     } else if (uleft && uleft->cursed) { /* left ring */
@@ -626,10 +634,13 @@ aligntyp resp_god;
         if (uarmc && !(EReflecting & W_ARMC)
             && !(EDisint_resistance & W_ARMC))
             (void) destroy_arm(uarmc);
-        if (uarm && !(EReflecting & W_ARM) && !(EDisint_resistance & W_ARM)
-            && !uarmc)
+		if (uarmo && !(EReflecting & W_ARMO)
+			&& !(EDisint_resistance & W_ARMO) && !uarmo)
+			(void)destroy_arm(uarmo);
+		if (uarm && !(EReflecting & W_ARM) && !(EDisint_resistance & W_ARM)
+            && !uarmc && !uarmo)
             (void) destroy_arm(uarm);
-        if (uarmu && !uarm && !uarmc)
+        if (uarmu && !uarm && !uarmo && !uarmc)
             (void) destroy_arm(uarmu);
         if (!Disint_resistance) {
             fry_by_god(resp_god, TRUE);

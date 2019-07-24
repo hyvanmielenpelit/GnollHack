@@ -881,7 +881,12 @@ break_armor()
                 useup(otmp);
             }
         }
-        if (uarmu) {
+		if ((otmp = uarmo) != 0) {
+			Your("%s in torn to pieces!", robe_simple_name(otmp));
+			(void)Robe_off();
+			useup(uarmo);
+		}
+		if (uarmu) {
             Your("shirt rips to shreds!");
             useup(uarmu);
         }
@@ -893,7 +898,15 @@ break_armor()
             (void) Armor_gone();
             dropx(otmp);
         }
-        if ((otmp = uarmc) != 0) {
+		if ((otmp = uarmo) != 0) {
+			if (is_whirly(youmonst.data))
+				Your("%s falls, unsupported!", robe_simple_name(otmp));
+			else
+				You("shrink out of your %s!", robe_simple_name(otmp));
+			(void)Robe_off();
+			dropx(otmp);
+		}
+		if ((otmp = uarmc) != 0) {
             if (is_whirly(youmonst.data))
                 Your("%s falls, unsupported!", cloak_simple_name(otmp));
             else

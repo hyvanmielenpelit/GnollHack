@@ -1070,7 +1070,7 @@ struct monst *mtmp;
     if (in_your_sanctuary(mtmp, 0, 0))
         return FALSE;
     if (dmgtype(mtmp->data, AD_HEAL)
-        && !uwep && !uarmu && !uarm && !uarmh
+        && !uwep && !uarmu && !uarm && !uarmh && !uarmo && !uarmb
         && !uarms && !uarmg && !uarmc && !uarmf)
         return FALSE;
     /* all offensive items require orthogonal or diagonal targetting */

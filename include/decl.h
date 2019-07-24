@@ -241,7 +241,9 @@ E uchar monsyms[MAXMCLASSES];                      /* current class symbols */
 #include "obj.h"
 E NEARDATA struct obj *invent, *uarm, *uarmc, *uarmh, *uarms, *uarmg, *uarmf,
     *uarmu, /* under-wear, so to speak */
-    *uskin, *uamul, *uleft, *uright, *ublindf, *uwep, *uswapwep, *uquiver;
+	*uarmo, /* over-wear, so to speak */
+	*uarmb, /* bracers, so to speak */
+	*uskin, *uamul, *uleft, *uright, *ublindf, *uwep, *uswapwep, *uquiver;
 
 E NEARDATA struct obj *uchain; /* defined only when punished */
 E NEARDATA struct obj *uball;

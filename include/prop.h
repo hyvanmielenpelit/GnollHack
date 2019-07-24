@@ -101,7 +101,10 @@ struct prop {
 #define W_ARMG 0x00000010L /* Gloves/gauntlets */
 #define W_ARMF 0x00000020L /* Footwear */
 #define W_ARMU 0x00000040L /* Undershirt */
-#define W_ARMOR (W_ARM | W_ARMC | W_ARMH | W_ARMS | W_ARMG | W_ARMF | W_ARMU)
+#define W_ARMO 0x01000000L  /* Robe or overcoat */
+#define W_ARMB 0x02000000L  /* Bracers */
+
+#define W_ARMOR (W_ARM | W_ARMC | W_ARMH | W_ARMS | W_ARMG | W_ARMF | W_ARMU | W_ARMO | W_ARMB)
 /* Weapons and artifacts */
 #define W_WEP 0x00000100L     /* Wielded weapon */
 #define W_QUIVER 0x00000200L  /* Quiver for (f)iring ammo */
@@ -121,6 +124,7 @@ struct prop {
 #define W_SADDLE 0x00100000L /* KMH -- For riding monsters */
 #define W_BALL 0x00200000L   /* Punishment ball */
 #define W_CHAIN 0x00400000L  /* Punishment chain */
+  /*0x00400000L unused */
 
     /*** Property is blocked by an object ***/
     long blocked; /* Same assignments as extrinsic */
@@ -154,5 +158,7 @@ struct prop {
 #define WORN_AMUL W_AMUL
 #define WORN_BLINDF W_TOOL
 #define WORN_SHIRT W_ARMU
+#define WORN_ROBE W_ARMO
+#define WORN_BRACERS W_ARMB
 
 #endif /* PROP_H */

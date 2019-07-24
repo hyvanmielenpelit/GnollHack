@@ -2380,9 +2380,9 @@ boolean ordinary;
          */
         int msg = !Invis && !Blind && !BInvis;
 
-        if (BInvis && uarmc->otyp == MUMMY_WRAPPING) {
+        if (uarmo && BInvis && uarmo->otyp == MUMMY_WRAPPING) {
             /* A mummy wrapping absorbs it and protects you */
-            You_feel("rather itchy under %s.", yname(uarmc));
+            You_feel("rather itchy under %s.", yname(uarmo));
             break;
         }
         if (ordinary || !rn2(10)) { /* permanent */
@@ -3792,17 +3792,21 @@ xchar sx, sy;
                 (void) destroy_arm(uarms);
                 break;
             } else if (uarm) {
-                /* destroy suit; if present, cloak goes too */
+                /* destroy suit; if present, cloak and robe go too */
                 if (uarmc)
                     (void) destroy_arm(uarmc);
-                (void) destroy_arm(uarm);
+				if (uarmo)
+					(void)destroy_arm(uarmo);
+				(void) destroy_arm(uarm);
                 break;
             }
             /* no shield or suit, you're dead; wipe out cloak
                and/or shirt in case of life-saving or bones */
             if (uarmc)
                 (void) destroy_arm(uarmc);
-            if (uarmu)
+			if (uarmo)
+				(void)destroy_arm(uarmo);
+			if (uarmu)
                 (void) destroy_arm(uarmu);
         } else if (nonliving(youmonst.data) || is_demon(youmonst.data)) {
             shieldeff(sx, sy);

@@ -21,11 +21,15 @@ register struct obj *otmp;
                             ? "shield"
                             : (otmp == uarmg)
                                   ? "gloves"
+								: (otmp == uarmb)
+									  ? "bracers"
                                   : (otmp == uarmc)
                                         ? cloak_simple_name(otmp)
-                                        : (otmp == uarmh)
-                                              ? helm_simple_name(otmp)
-                                              : suit_simple_name(otmp));
+									  : (otmp == uarmo)
+											? robe_simple_name(otmp)
+											: (otmp == uarmh)
+												  ? helm_simple_name(otmp)
+												  : suit_simple_name(otmp));
 }
 
 /* proportional subset of gold; return value actually fits in an int */
@@ -199,11 +203,15 @@ boolean unchain_ball; /* whether to unpunish or just unwield */
             (void) Armor_off();
         else if (obj == uarmc)
             (void) Cloak_off();
-        else if (obj == uarmf)
+		else if (obj == uarmo)
+			(void) Robe_off();
+		else if (obj == uarmf)
             (void) Boots_off();
         else if (obj == uarmg)
             (void) Gloves_off();
-        else if (obj == uarmh)
+		else if (obj == uarmb)
+			(void) Bracers_off();
+		else if (obj == uarmh)
             (void) Helmet_off();
         else if (obj == uarms)
             (void) Shield_off();
@@ -314,10 +322,12 @@ retry:
     /* can't steal armor while wearing cloak - so steal the cloak. */
     else if (otmp == uarm && uarmc)
         otmp = uarmc;
-    /* can't steal shirt while wearing cloak or suit */
+    /* can't steal shirt while wearing cloak, robe or suit */
     else if (otmp == uarmu && uarmc)
         otmp = uarmc;
-    else if (otmp == uarmu && uarm)
+	else if (otmp == uarmu && uarmo)
+		otmp = uarmo;
+	else if (otmp == uarmu && uarm)
         otmp = uarm;
 
 gotobj:
@@ -560,9 +570,11 @@ struct monst *mtmp;
     if (otmp) { /* we have something to snatch */
         /* take off outer gear if we're targetting [hypothetical]
            quest artifact suit, shirt, gloves, or rings */
-        if ((otmp == uarm || otmp == uarmu) && uarmc)
+        if ((otmp == uarm || otmp == uarmo || otmp == uarmu) && uarmc)
             remove_worn_item(uarmc, FALSE);
-        if (otmp == uarmu && uarm)
+		if ((otmp == uarm || otmp == uarmu) && uarmo)
+			remove_worn_item(uarmo, FALSE);
+		if (otmp == uarmu && uarm)
             remove_worn_item(uarm, FALSE);
         if ((otmp == uarmg || ((otmp == uright || otmp == uleft) && uarmg))
             && uwep) {

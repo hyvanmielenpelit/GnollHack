@@ -152,9 +152,11 @@ NEARDATA struct obj
     *uwep = (struct obj *) 0, *uarm = (struct obj *) 0,
     *uswapwep = (struct obj *) 0,
     *uquiver = (struct obj *) 0,       /* quiver */
-        *uarmu = (struct obj *) 0,     /* under-wear, so to speak */
-            *uskin = (struct obj *) 0, /* dragon armor, if a dragon */
-                *uarmc = (struct obj *) 0, *uarmh = (struct obj *) 0,
+    *uarmu = (struct obj *) 0,     /* under-wear, so to speak */
+    *uarmo = (struct obj *) 0,     /* over-wear, so to speak */
+	*uarmb = (struct obj*) 0,     /* bracers */
+	*uskin = (struct obj *) 0, /* dragon armor, if a dragon */
+    *uarmc = (struct obj *) 0, *uarmh = (struct obj *) 0,
     *uarms = (struct obj *) 0, *uarmg = (struct obj *) 0,
     *uarmf = (struct obj *) 0, *uamul = (struct obj *) 0,
     *uright = (struct obj *) 0, *uleft = (struct obj *) 0,

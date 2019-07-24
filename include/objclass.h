@@ -40,7 +40,9 @@ enum obj_armor_types {
     ARM_GLOVES = 3,
     ARM_BOOTS  = 4,
     ARM_CLOAK  = 5,
-    ARM_SHIRT  = 6
+    ARM_SHIRT  = 6,
+	ARM_ROBE = 7,
+	ARM_BRACERS = 8
 };
 
 struct objclass {

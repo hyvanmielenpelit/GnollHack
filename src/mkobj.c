@@ -2541,7 +2541,11 @@ struct obj *obj;
             if (obj != uarmc)
                 what = "cloak";
             break;
-        case W_ARMH:
+		case W_ARMO:
+			if (obj != uarmo)
+				what = "robe";
+			break;
+		case W_ARMH:
             if (obj != uarmh)
                 what = "helm";
             break;
@@ -2553,7 +2557,11 @@ struct obj *obj;
             if (obj != uarmg)
                 what = "gloves";
             break;
-        case W_ARMF:
+		case W_ARMB:
+			if (obj != uarmb)
+				what = "bracers";
+			break;
+		case W_ARMF:
             if (obj != uarmf)
                 what = "boots";
             break;

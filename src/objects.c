@@ -345,6 +345,15 @@ BOW("heavy crossbow", None,	   1, 1, 10, 70, 80, 8, 8, 0, WOOD, P_CROSSBOW, HI_W
 #define BOOTS(name,desc,kn,mgc,power,prob,delay,wt,cost,ac,can,metal,c)  \
     ARMOR(name, desc, kn, mgc, 0, power, prob, delay, wt,  \
           cost, ac, can, ARM_BOOTS, metal, c)
+#define SHIRT(name,desc,kn,mgc,power,prob,delay,wt,cost,ac,can,metal,c)  \
+    ARMOR(name, desc, kn, mgc, 0, power, prob, delay, wt,  \
+          cost, ac, can, ARM_SHIRT, metal, c)
+#define ROBE(name,desc,kn,mgc,power,prob,delay,wt,cost,ac,can,metal,c)  \
+    ARMOR(name, desc, kn, mgc, 0, power, prob, delay, wt,  \
+          cost, ac, can, ARM_ROBE, metal, c)
+#define BRACERS(name,desc,kn,mgc,power,prob,delay,wt,cost,ac,can,metal,c)  \
+    ARMOR(name, desc, kn, mgc, 0, power, prob, delay, wt,  \
+          cost, ac, can, ARM_BRACERS, metal, c)
 
 /* helmets */
 HELM("elven leather helm", "leather hat",
@@ -453,9 +462,6 @@ ARMOR("T-shirt", None,
       1, 0, 0,  0,  2, 0,   5,   2, 10, 0,  ARM_SHIRT, CLOTH, CLR_WHITE),
 
 /* cloaks */
-CLOAK("mummy wrapping", None,
-      1, 0,          0,  0, 0,  3,  2, 10, 1,  CLOTH, CLR_GRAY),
-        /* worn mummy wrapping blocks invisibility */
 CLOAK("elven cloak", "faded pall",
       0, 1,    STEALTH,  8, 0, 10, 60,  9, 1,  CLOTH, CLR_BLACK),
 CLOAK("orcish cloak", "coarse mantelet",
@@ -464,10 +470,6 @@ CLOAK("dwarvish cloak", "hooded cloak",
       0, 0,          0,  8, 0, 10, 50, 10, 1,  CLOTH, HI_CLOTH),
 CLOAK("oilskin cloak", "slippery cloak",
       0, 0,          0,  8, 0, 10, 50,  9, 2,  CLOTH, HI_CLOTH),
-CLOAK("robe", None,
-      1, 1,          0,  3, 0, 15, 50,  8, 2,  CLOTH, CLR_RED),
-        /* robe was adopted from slash'em, where it's worn as a suit
-           rather than as a cloak and there are several variations */
 CLOAK("alchemy smock", "apron",
       0, 1, POISON_RES,  9, 0, 10, 50,  9, 1,  CLOTH, CLR_WHITE),
 CLOAK("leather cloak", None,
@@ -482,7 +484,31 @@ CLOAK("cloak of magic resistance", "ornamental cope",
       0, 1,  ANTIMAGIC,  2, 0, 10, 60,  9, 1,  CLOTH, CLR_WHITE),
         /*  'cope' is not a spelling mistake... leave it be */
 CLOAK("cloak of displacement", "piece of cloth",
-      0, 1,  DISPLACED, 10, 0, 10, 50,  9, 1,  CLOTH, HI_CLOTH),
+      0, 1,  DISPLACED, 7, 0, 10, 50,  9, 1,  CLOTH, HI_CLOTH),
+
+/* robes */
+ROBE("robe", None,
+	1, 1, 0, 3, 0, 10, 50, 9, 2, CLOTH, CLR_RED),
+ROBE("robe of protection", "runed robe",
+	0, 1, PROTECTION, 3, 0, 10, 50, 6, 2, CLOTH, HI_CLOTH),
+	/* robe was adopted from slash'em, where it's worn as a suit
+	rather than as a cloak and there are several variations */
+ROBE("robe of magic resistance", "ornamental robe",
+	0, 1, ANTIMAGIC, 2, 0, 10, 60, 8, 2, CLOTH, CLR_WHITE),
+ROBE("mummy wrapping", None,
+	1, 0, 0, 0, 0, 3, 2, 10, 1, CLOTH, CLR_GRAY),
+/* worn mummy wrapping blocks invisibility */
+
+
+/* bracers */
+BRACERS("leather bracers", None,
+	1, 0, 0, 3, 0, 5, 50, 9, 2, CLOTH, HI_CLOTH),
+BRACERS("bracers of defense", "runed bracers",
+	0, 1, PROTECTION, 3, 0, 5, 50, 7, 2, CLOTH, HI_CLOTH),
+BRACERS("bracers of magic resistance", "ornamental bracers",
+	0, 1, ANTIMAGIC, 2, 0, 5, 60, 8, 2, CLOTH, HI_CLOTH),
+	/* robe was adopted from slash'em, where it's worn as a suit
+	rather than as a cloak and there are several variations */
 
 /* shields */
 SHIELD("small shield", None,
@@ -516,11 +542,11 @@ GLOVES("gauntlets of dexterity", "fencing gloves",
 
 /* boots */
 BOOTS("low boots", "walking shoes",
-      0, 0,          0, 25, 2, 10,  8, 9, 0, LEATHER, HI_LEATHER),
+      0, 0,          0, 18, 2, 10,  8, 9, 0, LEATHER, HI_LEATHER),
 BOOTS("iron shoes", "hard shoes",
       0, 0,          0,  7, 2, 50, 16, 8, 0, IRON, HI_METAL),
 BOOTS("high boots", "jackboots",
-      0, 0,          0, 15, 2, 20, 12, 8, 0, LEATHER, HI_LEATHER),
+      0, 0,          0, 12, 2, 20, 12, 8, 0, LEATHER, HI_LEATHER),
 /* with shuffled appearances... */
 BOOTS("speed boots", "combat boots",
       0, 1,       FAST, 12, 2, 20, 50, 9, 0, LEATHER, HI_LEATHER),
@@ -540,6 +566,8 @@ BOOTS("levitation boots", "snow boots",
 #undef HELM
 #undef CLOAK
 #undef SHIELD
+#undef ROBE
+#undef BRACERS
 #undef GLOVES
 #undef BOOTS
 #undef ARMOR

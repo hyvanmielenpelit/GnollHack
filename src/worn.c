@@ -15,9 +15,11 @@ const struct worn {
     struct obj **w_obj;
 } worn[] = { { W_ARM, &uarm },
              { W_ARMC, &uarmc },
-             { W_ARMH, &uarmh },
+			 { W_ARMO, &uarmo },
+			 { W_ARMH, &uarmh },
              { W_ARMS, &uarms },
-             { W_ARMG, &uarmg },
+			 { W_ARMB, &uarmb },
+			 { W_ARMG, &uarmg },
              { W_ARMF, &uarmf },
              { W_ARMU, &uarmu },
              { W_RINGL, &uleft },
@@ -193,7 +195,13 @@ struct obj *obj;
         case ARM_SHIRT:
             res = W_ARMU;
             break; /* WORN_SHIRT */
-        }
+		case ARM_ROBE:
+			res = W_ARMO;
+			break; /* WORN_ROBE */
+		case ARM_BRACERS:
+			res = W_ARMB;
+			break; /* BRACERS */
+		}
         break;
     case WEAPON_CLASS:
         res = W_WEP | W_SWAPWEP;
@@ -573,7 +581,15 @@ boolean racialexception;
             if (!is_boots(obj))
                 continue;
             break;
-        case W_ARM:
+		case W_ARMB:
+			if (!is_bracers(obj))
+				continue;
+			break;
+		case W_ARMO:
+			if (!is_robe(obj))
+				continue;
+			break;
+		case W_ARM:
             if (!is_suit(obj))
                 continue;
             if (racialexception && (racial_exception(mon, obj) < 1))
@@ -602,7 +618,7 @@ outer_break:
                   || best->otyp == DUNCE_CAP) && !best->cursed);
     /* if wearing a cloak, account for the time spent removing
        and re-wearing it when putting on a suit or shirt */
-    if ((flag == W_ARM || flag == W_ARMU) && (mon->misc_worn_check & W_ARMC))
+    if ((flag == W_ARM || flag == W_ARMU || flag == W_ARMO) && (mon->misc_worn_check & W_ARMC))
         m_delay += 2;
     /* when upgrading a piece of armor, account for time spent
        taking off current one */
@@ -660,11 +676,15 @@ long flag;
             return uarm;
         case W_ARMC:
             return uarmc;
-        case W_ARMH:
+		case W_ARMO:
+			return uarmo;
+		case W_ARMH:
             return uarmh;
         case W_ARMS:
             return uarms;
-        case W_ARMG:
+		case W_ARMB:
+			return uarmb;
+		case W_ARMG:
             return uarmg;
         case W_ARMF:
             return uarmf;

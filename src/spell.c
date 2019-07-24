@@ -1743,12 +1743,13 @@ int spell;
     special = urole.spelheal;
     statused = ACURR(urole.spelstat);
 
-    if (uarm && is_metallic(uarm))
+/*    if (uarm && is_metallic(uarm))
         splcaster += (uarmc && uarmc->otyp == ROBE) ? urole.spelarmr / 2
                                                     : urole.spelarmr;
     else if (uarmc && uarmc->otyp == ROBE)
         splcaster -= urole.spelarmr;
-    if (uarms)
+*/
+	if (uarms)
         splcaster += urole.spelshld;
 
     if (uarmh && is_metallic(uarmh) && uarmh->otyp != HELM_OF_BRILLIANCE)

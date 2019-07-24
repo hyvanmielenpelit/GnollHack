@@ -214,10 +214,10 @@ doread()
             return 0;
         }
         /* can't read shirt worn under suit (under cloak is ok though) */
-        if (scroll->otyp == T_SHIRT && uarm && scroll == uarmu) {
+        if (scroll->otyp == T_SHIRT && (uarm || uarmo) && scroll == uarmu) {
             pline("%s shirt is obscured by %s%s.",
                   scroll->unpaid ? "That" : "Your", shk_your(buf, uarm),
-                  suit_simple_name(uarm));
+                  uarmo ? robe_simple_name(uarmo) : suit_simple_name(uarm));
             return 0;
         }
         u.uconduct.literate++;

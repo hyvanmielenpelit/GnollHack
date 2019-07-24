@@ -224,6 +224,12 @@ struct obj {
 #define is_shirt(otmp)           \
     (otmp->oclass == ARMOR_CLASS \
      && objects[otmp->otyp].oc_armcat == ARM_SHIRT)
+#define is_robe(otmp)           \
+    (otmp->oclass == ARMOR_CLASS \
+     && objects[otmp->otyp].oc_armcat == ARM_ROBE)
+#define is_bracers(otmp)           \
+    (otmp->oclass == ARMOR_CLASS \
+     && objects[otmp->otyp].oc_armcat == ARM_BRACERS)
 #define is_suit(otmp) \
     (otmp->oclass == ARMOR_CLASS && objects[otmp->otyp].oc_armcat == ARM_SUIT)
 #define is_elven_armor(otmp)                                              \

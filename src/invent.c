@@ -67,7 +67,7 @@ struct obj *obj;
         SCROLL_CLASS, SPBOOK_CLASS, GEM_CLASS, FOOD_CLASS, TOOL_CLASS,
         WEAPON_CLASS, ARMOR_CLASS, ROCK_CLASS, BALL_CLASS, CHAIN_CLASS, 0,
     };
-    static char armcat[8];
+    static char armcat[10];
     const char *classorder;
     char *p;
     int k, otyp = obj->otyp, oclass = obj->oclass;
@@ -92,7 +92,7 @@ struct obj *obj;
        and the non-armor ones we use are fairly arbitrary */
     switch (oclass) {
     case ARMOR_CLASS:
-        if (!armcat[7]) {
+        if (!armcat[9]) {
             /* one-time init; we use a different order than the subclass
                values defined by objclass.h */
             armcat[ARM_HELM]   = 1; /* [2] */
@@ -101,14 +101,16 @@ struct obj *obj;
             armcat[ARM_SHIELD] = 4; /* [1] */
             armcat[ARM_CLOAK]  = 5; /* [5] */
             armcat[ARM_SHIRT]  = 6; /* [6] */
-            armcat[ARM_SUIT]   = 7; /* [0] */
-            armcat[7]          = 8; /* sanity protection */
+			armcat[ARM_ROBE] = 7; /* [7] */
+			armcat[ARM_BRACERS] = 8; /* [8] */
+			armcat[ARM_SUIT]   = 9; /* [0] */
+            armcat[9]          = 10; /* sanity protection */
         }
         k = objects[otyp].oc_armcat;
         /* oc_armcat overloads oc_subtyp which is an 'schar' so guard
            against somebody assigning something unexpected to it */
-        if (k < 0 || k >= 7)
-            k = 7;
+        if (k < 0 || k >= 9)
+            k = 9;
         k = armcat[k];
         break;
     case WEAPON_CLASS:
@@ -1879,7 +1881,7 @@ boolean
 wearing_armor()
 {
     return (boolean) (uarm || uarmc || uarmf || uarmg
-                      || uarmh || uarms || uarmu);
+                      || uarmh || uarms || uarmu || uarmo || uarmb);
 }
 
 boolean
@@ -3728,13 +3730,17 @@ doprarm()
             lets[ct++] = obj_to_let(uarmu);
         if (uarm)
             lets[ct++] = obj_to_let(uarm);
-        if (uarmc)
+		if (uarmo)
+			lets[ct++] = obj_to_let(uarmo);
+		if (uarmc)
             lets[ct++] = obj_to_let(uarmc);
         if (uarmh)
             lets[ct++] = obj_to_let(uarmh);
         if (uarms)
             lets[ct++] = obj_to_let(uarms);
-        if (uarmg)
+		if (uarmb)
+			lets[ct++] = obj_to_let(uarmb);
+		if (uarmg)
             lets[ct++] = obj_to_let(uarmg);
         if (uarmf)
             lets[ct++] = obj_to_let(uarmf);

@@ -711,8 +711,8 @@ register struct obj *otmp;
         break;
     case SPE_INVISIBILITY:
         /* spell cannot penetrate mummy wrapping */
-        if (BInvis && uarmc->otyp == MUMMY_WRAPPING) {
-            You_feel("rather itchy under %s.", yname(uarmc));
+        if (uarmo && BInvis && uarmo->otyp == MUMMY_WRAPPING) {
+            You_feel("rather itchy under %s.", yname(uarmo));
             break;
         }
         /* FALLTHRU */

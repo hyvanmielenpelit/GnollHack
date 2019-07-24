@@ -517,7 +517,11 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
                 Strcat(buf, "gloves");
             else if (is_cloak(obj))
                 Strcpy(buf, "cloak");
-            else if (is_helmet(obj))
+			else if (is_robe(obj))
+				Strcpy(buf, "robe");
+			else if (is_bracers(obj))
+				Strcpy(buf, "bracers");
+			else if (is_helmet(obj))
                 Strcpy(buf, "helmet");
             else if (is_shield(obj))
                 Strcpy(buf, "shield");
@@ -2101,7 +2105,7 @@ static struct sing_plur one_off[] = {
 static const char *const as_is[] = {
     /* makesingular() leaves these plural due to how they're used */
     "boots",   "shoes",     "gloves",    "lenses",   "scales",
-    "eyes",    "gauntlets", "iron bars",
+    "eyes",    "gauntlets", "iron bars", "bracers",
     /* both singular and plural are spelled the same */
     "bison",   "deer",      "elk",       "fish",      "fowl",
     "tuna",    "yaki",      "-hai",      "krill",     "manes",
@@ -2677,9 +2681,11 @@ STATIC_OVL NEARDATA const struct o_range o_ranges[] = {
     { "gauntlets", ARMOR_CLASS, LEATHER_GLOVES, GAUNTLETS_OF_DEXTERITY },
     { "boots", ARMOR_CLASS, LOW_BOOTS, LEVITATION_BOOTS },
     { "shoes", ARMOR_CLASS, LOW_BOOTS, IRON_SHOES },
-    { "cloak", ARMOR_CLASS, MUMMY_WRAPPING, CLOAK_OF_DISPLACEMENT },
+    { "cloak", ARMOR_CLASS, ELVEN_CLOAK, CLOAK_OF_DISPLACEMENT },
     { "shirt", ARMOR_CLASS, HAWAIIAN_SHIRT, T_SHIRT },
-    { "dragon scales", ARMOR_CLASS, GRAY_DRAGON_SCALES,
+	{ "robe", ARMOR_CLASS, ROBE, MUMMY_WRAPPING },
+	{ "bracers", ARMOR_CLASS, LEATHER_BRACERS, BRACERS_OF_MAGIC_RESISTANCE },
+	{ "dragon scales", ARMOR_CLASS, GRAY_DRAGON_SCALES,
       YELLOW_DRAGON_SCALES },
     { "dragon scale mail", ARMOR_CLASS, GRAY_DRAGON_SCALE_MAIL,
       YELLOW_DRAGON_SCALE_MAIL },
@@ -4072,10 +4078,6 @@ struct obj *cloak;
 {
     if (cloak) {
         switch (cloak->otyp) {
-        case ROBE:
-            return "robe";
-        case MUMMY_WRAPPING:
-            return "wrapping";
         case ALCHEMY_SMOCK:
             return (objects[cloak->otyp].oc_name_known && cloak->dknown)
                        ? "smock"
@@ -4085,6 +4087,23 @@ struct obj *cloak;
         }
     }
     return "cloak";
+}
+
+const char*
+robe_simple_name(robe)
+struct obj* robe;
+{
+	if (robe) {
+		switch (robe->otyp) {
+		case ROBE: //special types here
+			return "robe";
+		case MUMMY_WRAPPING:
+			return "wrapping";
+		default:
+			break;
+		}
+	}
+	return "robe";
 }
 
 /* helm vs hat for messages */
