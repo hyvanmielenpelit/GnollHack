@@ -648,7 +648,13 @@ Robe_on(VOID_ARGS)
 	switch (uarmo->otyp) {
 	case ROBE:
 	case ROBE_OF_PROTECTION:
+		makeknown(uarmo->otyp);
+		break;
 	case ROBE_OF_MAGIC_RESISTANCE:
+		break;
+	case ROBE_OF_THE_ARCHMAGI:
+		makeknown(uarmo->otyp);
+		context.botl = 1; /* taken care of in attrib.c */
 		break;
 	case MUMMY_WRAPPING:
 		/* Note: it's already being worn, so we have to cheat here. */
@@ -677,6 +683,10 @@ Robe_off(VOID_ARGS)
 	case ROBE_OF_PROTECTION:
 	case ROBE_OF_MAGIC_RESISTANCE:
 		break;
+	case ROBE_OF_THE_ARCHMAGI:
+		makeknown(uarmo->otyp);
+		context.botl = 1; /* taken care of in attrib.c */
+		break;
 	case MUMMY_WRAPPING:
 		if (Invis && !Blind) {
 			newsym(u.ux, u.uy);
@@ -700,6 +710,8 @@ Bracers_on(VOID_ARGS)
 	switch (uarmb->otyp) {
 	case LEATHER_BRACERS:
 	case BRACERS_OF_DEFENSE:
+		makeknown(uarmb->otyp);
+		break;
 	case BRACERS_OF_MAGIC_RESISTANCE:
 		break;
 	default:

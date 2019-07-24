@@ -203,7 +203,11 @@ int *lo_p, *hi_p; /* output: range that item belongs among */
             *lo_p = CLOAK_OF_PROTECTION, *hi_p = CLOAK_OF_DISPLACEMENT;
         else if (otyp >= SPEED_BOOTS && otyp <= LEVITATION_BOOTS)
             *lo_p = SPEED_BOOTS, *hi_p = LEVITATION_BOOTS;
-        break;
+		else if (otyp >= ROBE_OF_PROTECTION && otyp <= MUMMY_WRAPPING)
+			* lo_p = ROBE_OF_PROTECTION, * hi_p = MUMMY_WRAPPING;
+		else if (otyp >= LEATHER_BRACERS && otyp <= BRACERS_OF_MAGIC_RESISTANCE)
+			* lo_p = LEATHER_BRACERS, * hi_p = BRACERS_OF_MAGIC_RESISTANCE;
+		break;
     case POTION_CLASS:
         /* potion of water has the only fixed description */
         *lo_p = bases[POTION_CLASS];
@@ -219,7 +223,7 @@ int *lo_p, *hi_p; /* output: range that item belongs among */
                 break;
         *hi_p = i - 1;
         break;
-    case RING_CLASS:
+	case RING_CLASS:
     case WAND_CLASS:
     case VENOM_CLASS:
         /* entire class */

@@ -1059,13 +1059,22 @@ int x;
     } else if (x == A_CON) {
         if (uwep && uwep->oartifact == ART_OGRESMASHER)
             return (schar) 25;
-    } else if (x == A_INT || x == A_WIS) {
+    } else if (x == A_INT) {
         /* yes, this may raise int/wis if player is sufficiently
          * stupid.  there are lower levels of cognition than "dunce".
          */
-        if (uarmh && uarmh->otyp == DUNCE_CAP)
+		if (tmp >= 25 || (uarmo && uarmo->otyp == ROBE_OF_THE_ARCHMAGI))
+			return (schar)25;
+		else if (uarmh && uarmh->otyp == DUNCE_CAP)
             return (schar) 6;
-    }
+	}
+	else if (x == A_WIS) {
+		/* yes, this may raise int/wis if player is sufficiently
+		 * stupid.  there are lower levels of cognition than "dunce".
+		 */
+		if (uarmh && uarmh->otyp == DUNCE_CAP)
+			return (schar)6;
+	}
 #ifdef WIN32_BUG
     return (x = ((tmp >= 25) ? 25 : (tmp <= 3) ? 3 : tmp));
 #else
@@ -1107,7 +1116,11 @@ int attrindx;
     } else if (attrindx == A_CON) {
         if (uwep && uwep->oartifact == ART_OGRESMASHER)
             lolimit = hilimit;
-    }
+	}
+	else if (attrindx == A_INT) {
+		if (uarmo && uarmo->otyp == ROBE_OF_THE_ARCHMAGI)
+			lolimit = hilimit;
+	}
     /* this exception is hypothetical; the only other worn item affecting
        Int or Wis is another helmet so can't be in use at the same time */
     if (attrindx == A_INT || attrindx == A_WIS) {

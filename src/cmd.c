@@ -2147,7 +2147,7 @@ int mode, final, attrindx;
             hide_innate_value = TRUE;
         break;
     case A_INT:
-        if (uarmh && uarmh->otyp == DUNCE_CAP && uarmh->cursed)
+        if ((uarmh && uarmh->otyp == DUNCE_CAP && uarmh->cursed) || uarmo && uarmo->otyp == ROBE_OF_THE_ARCHMAGI && uarmo->cursed)
             hide_innate_value = TRUE;
         break;
     case A_WIS:

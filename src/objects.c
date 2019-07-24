@@ -479,7 +479,7 @@ CLOAK("cloak of protection", "tattered cape",
       0, 1, PROTECTION,  9, 0, 10, 50,  7, 3,  CLOTH, HI_CLOTH),
         /* cloak of protection is now the only item conferring MC 3 */
 CLOAK("cloak of invisibility", "opera cloak",
-      0, 1,      INVIS, 10, 0, 10, 60,  9, 1,  CLOTH, CLR_BRIGHT_MAGENTA),
+      0, 1,      INVIS, 9, 0, 10, 60,  9, 1,  CLOTH, CLR_BRIGHT_MAGENTA),
 CLOAK("cloak of magic resistance", "ornamental cope",
       0, 1,  ANTIMAGIC,  2, 0, 10, 60,  9, 1,  CLOTH, CLR_WHITE),
         /*  'cope' is not a spelling mistake... leave it be */
@@ -487,25 +487,27 @@ CLOAK("cloak of displacement", "piece of cloth",
       0, 1,  DISPLACED, 7, 0, 10, 50,  9, 1,  CLOTH, HI_CLOTH),
 
 /* robes */
-ROBE("robe", None,
-	1, 1, 0, 3, 0, 10, 50, 9, 2, CLOTH, CLR_RED),
-ROBE("robe of protection", "runed robe",
-	0, 1, PROTECTION, 3, 0, 10, 50, 6, 2, CLOTH, HI_CLOTH),
+ROBE("robe", None, //STARTMARKER
+	1, 1, 0, 3, 0, 10, 50, 9, 2, CLOTH, CLR_RED),//STARTMARKER 2
+ROBE("robe of protection", "yellow ornamental robe",
+	0, 1, PROTECTION, 3, 0, 10, 50, 6, 2, CLOTH, CLR_YELLOW),
 	/* robe was adopted from slash'em, where it's worn as a suit
 	rather than as a cloak and there are several variations */
-ROBE("robe of magic resistance", "ornamental robe",
+ROBE("robe of magic resistance", "white ornamental robe",
 	0, 1, ANTIMAGIC, 2, 0, 10, 60, 8, 2, CLOTH, CLR_WHITE),
-ROBE("mummy wrapping", None,
-	1, 0, 0, 0, 0, 3, 2, 10, 1, CLOTH, CLR_GRAY),
-/* worn mummy wrapping blocks invisibility */
+ROBE("robe of the archmagi", "blue ornamental robe",
+	0, 1, 0, 1, 0, 10, 60, 7, 2, CLOTH, CLR_BLUE),
+ROBE("mummy wrapping", None, //ENDMARKER
+1, 0, 0, 0, 0, 3, 2, 10, 1, CLOTH, CLR_GRAY),
+	/* worn mummy wrapping blocks invisibility */
 
 
 /* bracers */
-BRACERS("leather bracers", None,
+BRACERS("leather bracers", None, //STARTMARKER
 	1, 0, 0, 3, 0, 5, 50, 9, 2, CLOTH, HI_CLOTH),
-BRACERS("bracers of defense", "runed bracers",
+BRACERS("bracers of defense", "runed bracers",//STARTMARKER 2
 	0, 1, PROTECTION, 3, 0, 5, 50, 7, 2, CLOTH, HI_CLOTH),
-BRACERS("bracers of magic resistance", "ornamental bracers",
+BRACERS("bracers of magic resistance", "ornamental bracers",//ENDMARKER
 	0, 1, ANTIMAGIC, 2, 0, 5, 60, 8, 2, CLOTH, HI_CLOTH),
 	/* robe was adopted from slash'em, where it's worn as a suit
 	rather than as a cloak and there are several variations */
