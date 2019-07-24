@@ -3171,7 +3171,10 @@ struct obj *no_wish;
          * Don't check if it's a wand or spellbook.
          * (avoid "wand/finger of death" confusion).
          */
-        if (!strstri(bp, "wand ") && !strstri(bp, "spellbook ") && !strstri(bp, "bracers ") && !strstri(bp, "robe ") && !strstri(bp, "cloak ")
+        if (!strstri(bp, "wand ") && !strstri(bp, "spellbook ") && !strstri(bp, "bracers ") 
+			&& !strstri(bp, "robe ") && !strstri(bp, "cloak ") && !strstri(bp, "gloves ")
+			&& !strstri(bp, "gauntlets ") && !strstri(bp, "belt ") && !strstri(bp, "girdle ")
+			&& !strstri(bp, "boots ")
             && !strstri(bp, "finger ")) {
             if ((p = strstri(bp, "tin of ")) != 0) {
                 if (!strcmpi(p + 7, "spinach")) {
