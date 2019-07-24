@@ -672,7 +672,7 @@ Robe_off(VOID_ARGS)
 
 	/* no shirt currently requires special handling when taken off, but we
 	   keep this uncommented in case somebody adds a new one which does */
-	switch (uarmb->otyp) {
+	switch (uarmo->otyp) {
 	case ROBE:
 	case ROBE_OF_PROTECTION:
 	case ROBE_OF_MAGIC_RESISTANCE:
@@ -685,7 +685,7 @@ Robe_off(VOID_ARGS)
 		}
 		break;
 	default:
-		impossible(unknown_type, c_robe, uarmb->otyp);
+		impossible(unknown_type, c_robe, uarmo->otyp);
 	}
 
 	setworn((struct obj*) 0, W_ARMO);
@@ -1922,7 +1922,7 @@ boolean noisy;
 			err++;
 		}
 		else
-		*mask = W_ARMO;
+			*mask = W_ARMO;
 	} else if (is_cloak(otmp)) {
         if (uarmc) {
             if (noisy)
