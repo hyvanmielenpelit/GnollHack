@@ -830,7 +830,8 @@ cast_protection()
         }
         u.uspellprot += gain;
         u.uspmtime = (P_SKILL(spell_skilltype(SPE_PROTECTION)) == P_EXPERT)
-                        ? 20 : 10;
+                        ? 150 :(P_SKILL(spell_skilltype(SPE_PROTECTION)) == P_SKILLED)
+                        ? 100 : 50;
         if (!u.usptime)
             u.usptime = u.uspmtime;
         find_ac();
