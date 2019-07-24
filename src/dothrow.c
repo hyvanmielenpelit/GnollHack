@@ -1579,6 +1579,9 @@ register struct obj *obj; /* thrownobj or kickedobj or uwep */
 					break;
 				}
 			}
+			//Bracers bonus
+			if(uarmb && uarmb->otyp == BRACERS_OF_ARCHERY)
+				tmp += 2;
 		}
 		else
 		{

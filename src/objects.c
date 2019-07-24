@@ -496,7 +496,7 @@ ROBE("robe of protection", "yellow ornamental robe",
 ROBE("robe of magic resistance", "white ornamental robe",
 	0, 1, ANTIMAGIC, 2, 0, 10, 60, 8, 2, CLOTH, CLR_WHITE),
 ROBE("robe of the archmagi", "blue ornamental robe",
-	0, 1, 0, 1, 0, 10, 60, 7, 2, CLOTH, CLR_BLUE),
+	0, 1, 0, 1, 0, 10, 80, 7, 2, CLOTH, CLR_BLUE),
 ROBE("mummy wrapping", None, //ENDMARKER
 1, 0, 0, 0, 0, 3, 2, 10, 1, CLOTH, CLR_GRAY),
 	/* worn mummy wrapping blocks invisibility */
@@ -507,10 +507,10 @@ BRACERS("leather bracers", None, //STARTMARKER
 	1, 0, 0, 3, 0, 5, 50, 9, 2, CLOTH, HI_CLOTH),
 BRACERS("bracers of defense", "runed bracers",//STARTMARKER 2
 	0, 1, PROTECTION, 3, 0, 5, 50, 7, 2, CLOTH, HI_CLOTH),
+BRACERS("bracers of archery", "deerskin bracers",
+	0, 1, 0, 2, 0, 5, 50, 7, 2, CLOTH, HI_CLOTH),
 BRACERS("bracers of magic resistance", "ornamental bracers",//ENDMARKER
-	0, 1, ANTIMAGIC, 2, 0, 5, 60, 8, 2, CLOTH, HI_CLOTH),
-	/* robe was adopted from slash'em, where it's worn as a suit
-	rather than as a cloak and there are several variations */
+0, 1, ANTIMAGIC, 2, 0, 5, 60, 8, 2, CLOTH, HI_CLOTH),
 
 /* shields */
 SHIELD("small shield", None,
@@ -522,7 +522,7 @@ SHIELD("Uruk-hai shield", "white-handed shield",
 SHIELD("orcish shield", "red-eyed shield",
        0, 0, 0,          0, 2, 0,  50,  7, 9, 0,  IRON, CLR_RED),
 SHIELD("large shield", None,
-       1, 0, 1,          0, 7, 0, 100, 10, 8, 0,  IRON, HI_METAL),
+       1, 0, 1,          0, 5, 0, 100, 10, 8, 0,  IRON, HI_METAL),
 SHIELD("dwarvish roundshield", "large round shield",
        0, 0, 0,          0, 4, 0, 100, 10, 8, 0,  IRON, HI_METAL),
 SHIELD("shield of reflection", "polished silver shield",

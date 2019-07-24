@@ -1116,6 +1116,11 @@ int dieroll;
 
 			//All bows get bow's enchantment bonus and damage
 			tmp += dmgval(uwep, mon);
+
+			//Bracers give extra 1d8 damage
+			if (uarmb && uarmb->otyp == BRACERS_OF_ARCHERY)
+				tmp += d(1,8);
+
 		}
     }
 

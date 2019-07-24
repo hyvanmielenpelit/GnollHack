@@ -709,6 +709,8 @@ Bracers_on(VOID_ARGS)
 	   keep this uncommented in case somebody adds a new one which does */
 	switch (uarmb->otyp) {
 	case LEATHER_BRACERS:
+	case BRACERS_OF_ARCHERY:
+		break;
 	case BRACERS_OF_DEFENSE:
 		makeknown(uarmb->otyp);
 		break;
@@ -731,6 +733,7 @@ Bracers_off(VOID_ARGS)
 	switch (uarmb->otyp) {
 	case LEATHER_BRACERS:
 	case BRACERS_OF_DEFENSE:
+	case BRACERS_OF_ARCHERY:
 	case BRACERS_OF_MAGIC_RESISTANCE:
 		break;
 	default:

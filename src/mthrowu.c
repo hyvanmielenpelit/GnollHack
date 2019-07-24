@@ -406,6 +406,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 				if(archer)
 					damage += mdbon(archer);
 			}
+			//Bracers here, if need be
 		}
 
         if (otmp->otyp == ACID_VENOM && resists_acid(mtmp))
@@ -674,6 +675,7 @@ struct obj *obj;         /* missile (or stack providing it) */
 							hitv -= 10;
 							break;
 						}
+						//Bracers here, if need be
 					}
 				}
 
