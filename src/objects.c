@@ -489,14 +489,16 @@ CLOAK("cloak of displacement", "piece of cloth",
 /* robes */
 ROBE("robe", None, //STARTMARKER
 	1, 1, 0, 3, 0, 10, 50, 9, 2, CLOTH, CLR_RED),//STARTMARKER 2
-ROBE("robe of protection", "yellow ornamental robe",
+ROBE("robe of protection", "golden ornamental robe",
 	0, 1, PROTECTION, 3, 0, 10, 50, 6, 2, CLOTH, CLR_YELLOW),
 	/* robe was adopted from slash'em, where it's worn as a suit
 	rather than as a cloak and there are several variations */
-ROBE("robe of magic resistance", "white ornamental robe",
+ROBE("robe of magic resistance", "silvery ornamental robe",
 	0, 1, ANTIMAGIC, 2, 0, 10, 60, 8, 2, CLOTH, CLR_WHITE),
 ROBE("robe of the archmagi", "blue ornamental robe",
-	0, 1, 0, 1, 0, 10, 80, 7, 2, CLOTH, CLR_BLUE),
+	0, 1, 0, 1, 0, 10, 80, 8, 2, CLOTH, CLR_BLUE),
+ROBE("robe of starry wisdom", "shining black robe",
+	0, 1, 0, 1, 0, 10, 80, 8, 2, CLOTH, CLR_BLACK),
 ROBE("mummy wrapping", None, //ENDMARKER
 1, 0, 0, 0, 0, 3, 2, 10, 1, CLOTH, CLR_GRAY),
 	/* worn mummy wrapping blocks invisibility */
@@ -508,9 +510,9 @@ BRACERS("leather bracers", None, //STARTMARKER
 BRACERS("bracers of defense", "runed bracers",//STARTMARKER 2
 	0, 1, PROTECTION, 3, 0, 5, 50, 7, 2, CLOTH, HI_CLOTH),
 BRACERS("bracers of archery", "deerskin bracers",
-	0, 1, 0, 2, 0, 5, 50, 7, 2, CLOTH, HI_CLOTH),
+	0, 1, 0, 2, 0, 5, 100, 9, 2, CLOTH, HI_CLOTH),
 BRACERS("bracers of magic resistance", "ornamental bracers",//ENDMARKER
-0, 1, ANTIMAGIC, 2, 0, 5, 60, 8, 2, CLOTH, HI_CLOTH),
+0, 1, ANTIMAGIC, 2, 0, 5, 60, 9, 2, CLOTH, HI_CLOTH),
 
 /* shields */
 SHIELD("small shield", None,
@@ -534,7 +536,7 @@ SHIELD("shield of reflection", "polished silver shield",
  * HI_METAL or CLR_BLACK.  All have shuffled descriptions.
  */
 GLOVES("leather gloves", "old gloves",
-       0, 0,        0, 16, 1, 10,  8, 9, 0,  LEATHER, HI_LEATHER),
+       0, 0,        0, 15, 1, 10,  8, 9, 0,  LEATHER, HI_LEATHER),
 GLOVES("gauntlets of fumbling", "padded gloves",
        0, 1, FUMBLING,  8, 1, 10, 50, 9, 0,  LEATHER, HI_LEATHER),
 GLOVES("gauntlets of power", "riding gloves",

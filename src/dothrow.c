@@ -1581,7 +1581,7 @@ register struct obj *obj; /* thrownobj or kickedobj or uwep */
 			}
 			//Bracers bonus
 			if(uarmb && uarmb->otyp == BRACERS_OF_ARCHERY)
-				tmp += 2;
+				tmp += (uarmb->cursed ? -2 : 2) + (uarmb->blessed ? 1 : 0) + uarmb->spe;
 		}
 		else
 		{

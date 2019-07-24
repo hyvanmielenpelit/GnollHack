@@ -652,6 +652,7 @@ Robe_on(VOID_ARGS)
 		break;
 	case ROBE_OF_MAGIC_RESISTANCE:
 		break;
+	case ROBE_OF_STARRY_WISDOM:
 	case ROBE_OF_THE_ARCHMAGI:
 		makeknown(uarmo->otyp);
 		context.botl = 1; /* taken care of in attrib.c */
@@ -683,6 +684,7 @@ Robe_off(VOID_ARGS)
 	case ROBE_OF_PROTECTION:
 	case ROBE_OF_MAGIC_RESISTANCE:
 		break;
+	case ROBE_OF_STARRY_WISDOM:
 	case ROBE_OF_THE_ARCHMAGI:
 		makeknown(uarmo->otyp);
 		context.botl = 1; /* taken care of in attrib.c */

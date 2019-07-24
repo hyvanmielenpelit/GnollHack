@@ -1072,7 +1072,9 @@ int x;
 		/* yes, this may raise int/wis if player is sufficiently
 		 * stupid.  there are lower levels of cognition than "dunce".
 		 */
-		if (uarmh && uarmh->otyp == DUNCE_CAP)
+		if (tmp >= 25 || (uarmo && uarmo->otyp == ROBE_OF_STARRY_WISDOM))
+			return (schar)25;
+		else if (uarmh && uarmh->otyp == DUNCE_CAP)
 			return (schar)6;
 	}
 #ifdef WIN32_BUG
@@ -1119,6 +1121,10 @@ int attrindx;
 	}
 	else if (attrindx == A_INT) {
 		if (uarmo && uarmo->otyp == ROBE_OF_THE_ARCHMAGI)
+			lolimit = hilimit;
+	}
+	else if (attrindx == A_WIS) {
+		if (uarmo && uarmo->otyp == ROBE_OF_STARRY_WISDOM)
 			lolimit = hilimit;
 	}
     /* this exception is hypothetical; the only other worn item affecting
