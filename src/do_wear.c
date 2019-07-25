@@ -616,10 +616,18 @@ Shield_off(VOID_ARGS)
 STATIC_PTR int
 Shirt_on(VOID_ARGS)
 {
+	long oldprop =
+		u.uprops[objects[uarmu->otyp].oc_oprop].extrinsic & ~WORN_SHIRT;
+
+
     /* no shirt currently requires special handling when put on, but we
        keep this uncommented in case somebody adds a new one which does */
     switch (uarmu->otyp) {
 	case SHIRT_OF_UNCONTROLLABLE_LAUGHTER:
+		if (!oldprop && !(HLaughing & ~TIMEOUT))
+			incr_itimeout(&HLaughing, rnd(20));
+		break;
+
 	case SHIRT_OF_SOUND_MINDEDNESS:
 	case HAWAIIAN_SHIRT:
     case T_SHIRT:
@@ -637,12 +645,20 @@ Shirt_on(VOID_ARGS)
 int
 Shirt_off(VOID_ARGS)
 {
+
+	struct obj* otmp = uarmu;
+	int otyp = otmp->otyp;
+	long oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_SHIRT;
+
     context.takeoff.mask &= ~W_ARMU;
 
     /* no shirt currently requires special handling when taken off, but we
        keep this uncommented in case somebody adds a new one which does */
     switch (uarmu->otyp) {
 	case SHIRT_OF_UNCONTROLLABLE_LAUGHTER:
+		if (!oldprop && !(HLaughing & ~TIMEOUT))
+			HLaughing = ELaughing = 0;
+		break;
 	case SHIRT_OF_SOUND_MINDEDNESS:
 	case HAWAIIAN_SHIRT:
     case T_SHIRT:

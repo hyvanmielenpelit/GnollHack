@@ -378,7 +378,8 @@ boolean on, silently;
             break;
         /* properties which maybe should have an effect but don't */
         case DISPLACED:
-        case FUMBLING:
+		case FUMBLING:
+		case LAUGHING:
         case JUMPING:
         case PROTECTION:
             break;

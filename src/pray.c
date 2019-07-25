@@ -90,6 +90,7 @@ static int p_type; /* (-1)-3: (-1)=really naughty, 3=really good */
 #define TROUBLE_STUNNED (-9)
 #define TROUBLE_CONFUSED (-10)
 #define TROUBLE_HALLUCINATION (-11)
+#define TROUBLE_LAUGHING (-12)
 
 
 #define ugod_is_angry() (u.ualign.record < 0)
@@ -235,7 +236,9 @@ in_trouble()
     if (Cursed_obj(uarmg, GAUNTLETS_OF_FUMBLING)
         || Cursed_obj(uarmf, FUMBLE_BOOTS))
         return TROUBLE_FUMBLING;
-    if (worst_cursed_item())
+	if (Cursed_obj(uarmu, SHIRT_OF_UNCONTROLLABLE_LAUGHTER))
+		return TROUBLE_LAUGHING;
+	if (worst_cursed_item())
         return TROUBLE_CURSED_ITEMS;
     if (u.usteed) { /* can't voluntarily dismount from a cursed saddle */
         otmp = which_armor(u.usteed, W_SADDLE);
@@ -497,7 +500,13 @@ int trouble;
         goto decurse;
         /*NOTREACHED*/
         break;
-    case TROUBLE_CURSED_ITEMS:
+	case TROUBLE_LAUGHING:
+		if (Cursed_obj(uarmu, SHIRT_OF_UNCONTROLLABLE_LAUGHTER))
+			otmp = uarmu;
+		goto decurse;
+		/*NOTREACHED*/
+		break;
+	case TROUBLE_CURSED_ITEMS:
         otmp = worst_cursed_item();
         if (otmp == uright)
             what = rightglow;

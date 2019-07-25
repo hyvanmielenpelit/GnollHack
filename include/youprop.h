@@ -119,6 +119,10 @@
 #define EFumbling u.uprops[FUMBLING].extrinsic
 #define Fumbling (HFumbling || EFumbling)
 
+#define HLaughing u.uprops[LAUGHING].intrinsic
+#define ELaughing u.uprops[LAUGHING].extrinsic
+#define Laughing (HLaughing || ELaughing)
+
 #define HWounded_legs u.uprops[WOUNDED_LEGS].intrinsic
 #define EWounded_legs u.uprops[WOUNDED_LEGS].extrinsic
 #define Wounded_legs (HWounded_legs || EWounded_legs)

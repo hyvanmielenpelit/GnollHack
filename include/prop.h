@@ -84,9 +84,11 @@ enum prop_types {
     REFLECTING        = 64,
     FREE_ACTION       = 65,
     FIXED_ABIL        = 66,
-    LIFESAVED         = 67
+    LIFESAVED         = 67,
+	/* New */
+	LAUGHING		  = 68
 };
-#define LAST_PROP (LIFESAVED)
+#define LAST_PROP (LAUGHING)
 
 /*** Where the properties come from ***/
 /* Definitions were moved here from obj.h and you.h */

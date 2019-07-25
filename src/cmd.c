@@ -2398,7 +2398,11 @@ int final;
         if (magic || cause_known(FUMBLING))
             enl_msg(You_, "fumble", "fumbled", "", from_what(FUMBLING));
     }
-    if (Sleepy) {
+	if (Laughing) {
+		if (magic || cause_known(LAUGHING))
+			enl_msg(You_, "laugh uncontrollably", "laughed uncontrollably", "", from_what(LAUGHING));
+	}
+	if (Sleepy) {
         if (magic || cause_known(SLEEPY)) {
             Strcpy(buf, from_what(SLEEPY));
             if (wizard)

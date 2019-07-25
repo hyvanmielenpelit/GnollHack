@@ -13,6 +13,7 @@ STATIC_DCL void NDECL(levitation_dialogue);
 STATIC_DCL void NDECL(slime_dialogue);
 STATIC_DCL void FDECL(slimed_to_death, (struct kinfo *));
 STATIC_DCL void NDECL(slip_or_trip);
+STATIC_DCL void NDECL(laugh_uncontrollably);
 STATIC_DCL void FDECL(see_lamp_flicker, (struct obj *, const char *));
 STATIC_DCL void FDECL(lantern_message, (struct obj *));
 STATIC_DCL void FDECL(cleanup_burn, (ANY_P *, long));
@@ -93,7 +94,8 @@ const struct propname {
     { FREE_ACTION, "free action" },
     { FIXED_ABIL, "fixed abilites" },
     { LIFESAVED, "life will be saved" },
-    {  0, 0 },
+	{ LAUGHING, "laughing uncontrollably" },
+	{  0, 0 },
 };
 
 /* He is being petrified - dialogue by inmet!tower */
@@ -692,7 +694,22 @@ nh_timeout()
                 if (Fumbling)
                     incr_itimeout(&HFumbling, rnd(20));
                 break;
-            case DETECT_MONSTERS:
+			case LAUGHING:
+				/* call this only when a move took place.  */
+				/* otherwise handle laughing msgs locally. */
+				if (u.umoved) {
+					laugh_uncontrollably();
+					nomul(-1);
+					multi_reason = "laughing";
+					wake_nearby();
+				}
+				/* from outside means slippery ice; don't reset
+				   counter if that's the only fumble reason */
+				//HLaughing &= ~FROMOUTSIDE;
+				if (Laughing)
+					incr_itimeout(&HLaughing, rnd(20));
+				break;
+			case DETECT_MONSTERS:
                 see_monsters();
                 break;
             }
@@ -1049,6 +1066,26 @@ slip_or_trip()
             dismount_steed(DISMOUNT_FELL);
         }
     }
+}
+
+/* give a fumble message */
+STATIC_OVL void
+laugh_uncontrollably()
+{
+	switch (rn2(4)) {
+		case 1:
+			You("start laughing uncontrollably.");
+			break;
+		case 2:
+			You("suddenly almost laugh your head off.");
+			break;
+		case 3:
+			You("remember something funny and laugh out loudly.");
+			break;
+		default:
+			You("giggle at some funny thoughts.");
+			break;
+		}
 }
 
 /* Print a lamp flicker message with tailer. */
