@@ -23,6 +23,10 @@ register struct obj *otmp;
                                   ? "gloves"
 								: (otmp == uarmb)
 									  ? "bracers"
+								: (otmp == uarmv)
+									  ? "belt"
+								: (otmp == uarmp)
+									  ? "pants"
                                   : (otmp == uarmc)
                                         ? cloak_simple_name(otmp)
 									  : (otmp == uarmo)
@@ -211,6 +215,10 @@ boolean unchain_ball; /* whether to unpunish or just unwield */
             (void) Gloves_off();
 		else if (obj == uarmb)
 			(void) Bracers_off();
+		else if (obj == uarmv)
+			(void)Belt_off();
+		else if (obj == uarmp)
+			(void)Pants_off();
 		else if (obj == uarmh)
             (void) Helmet_off();
         else if (obj == uarms)

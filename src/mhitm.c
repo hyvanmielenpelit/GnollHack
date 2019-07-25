@@ -923,6 +923,7 @@ register struct attack *mattk;
         } else if (mattk->aatyp == AT_WEAP) {
             if (otmp) {
                 struct obj *marmg;
+				struct obj* marmv;
 
                 if (otmp->otyp == CORPSE
                     && touch_petrifies(&mons[otmp->corpsenm]))
@@ -930,8 +931,11 @@ register struct attack *mattk;
                 tmp += dmgval(otmp, mdef);
                 if ((marmg = which_armor(magr, W_ARMG)) != 0
                     && marmg->otyp == GAUNTLETS_OF_POWER)
-                    tmp += rn1(4, 3); /* 3..6 */
-                if (tmp < 1) /* is this necessary?  mhitu.c has it... */
+                    tmp += rn1(4, 3); /* 4..6 */
+				else if ((marmv = which_armor(magr, W_ARMV)) != 0
+					&& marmv->otyp == BELT_OF_GIANT_STRENGTH)
+					tmp += rn1(4, 6); /* 4..6 */
+				if (tmp < 1) /* is this necessary?  mhitu.c has it... */
                     tmp = 1;
                 if (otmp->oartifact) {
                     (void) artifact_hit(magr, mdef, otmp, &tmp, dieroll);

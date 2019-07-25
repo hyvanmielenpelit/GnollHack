@@ -521,6 +521,10 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 				Strcpy(buf, "robe");
 			else if (is_bracers(obj))
 				Strcpy(buf, "bracers");
+			else if (is_belt(obj))
+				Strcpy(buf, "belt");
+			else if (is_pants(obj))
+				Strcpy(buf, "pants");
 			else if (is_helmet(obj))
                 Strcpy(buf, "helmet");
             else if (is_shield(obj))
@@ -2105,7 +2109,7 @@ static struct sing_plur one_off[] = {
 static const char *const as_is[] = {
     /* makesingular() leaves these plural due to how they're used */
     "boots",   "shoes",     "gloves",    "lenses",   "scales",
-    "eyes",    "gauntlets", "iron bars", "bracers",
+    "eyes",    "gauntlets", "iron bars", "bracers", "pants", "trousers", "shorts", "jeans",
     /* both singular and plural are spelled the same */
     "bison",   "deer",      "elk",       "fish",      "fowl",
     "tuna",    "yaki",      "-hai",      "krill",     "manes",
@@ -2685,6 +2689,8 @@ STATIC_OVL NEARDATA const struct o_range o_ranges[] = {
     { "shirt", ARMOR_CLASS, HAWAIIAN_SHIRT, T_SHIRT },
 	{ "robe", ARMOR_CLASS, ROBE, MUMMY_WRAPPING },
 	{ "bracers", ARMOR_CLASS, LEATHER_BRACERS, BRACERS_OF_MAGIC_RESISTANCE },
+	{ "belt", ARMOR_CLASS, LEATHER_BELT, BELT_OF_GIANT_STRENGTH },
+	{ "pants", ARMOR_CLASS, LEATHER_PANTS, TRUNK_OF_SWIMMING },
 	{ "dragon scales", ARMOR_CLASS, GRAY_DRAGON_SCALES,
       YELLOW_DRAGON_SCALES },
     { "dragon scale mail", ARMOR_CLASS, GRAY_DRAGON_SCALE_MAIL,
@@ -2731,7 +2737,7 @@ static const struct alt_spellings {
     { "grappling iron", GRAPPLING_HOOK },
     { "grapnel", GRAPPLING_HOOK },
     { "grapple", GRAPPLING_HOOK },
-    { "protection from shape shifters", RIN_PROTECTION_FROM_SHAPE_CHAN },
+    { "protection from shape shifters", RIN_PROTECTION_FROM_SHAPE_CHANGERS },
     /* if we ever add other sizes, move this to o_ranges[] with "bag" */
     { "box", LARGE_BOX },
     /* normally we wouldn't have to worry about unnecessary <space>, but

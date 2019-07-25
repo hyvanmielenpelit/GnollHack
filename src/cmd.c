@@ -2137,7 +2137,7 @@ int mode, final, attrindx;
     }
     switch (attrindx) {
     case A_STR:
-        if (uarmg && uarmg->otyp == GAUNTLETS_OF_POWER && uarmg->cursed)
+        if ((uarmg && uarmg->otyp == GAUNTLETS_OF_POWER && uarmg->cursed) || (uarmv && uarmv->otyp == BELT_OF_GIANT_STRENGTH && uarmv->cursed))
             hide_innate_value = TRUE;
         break;
     case A_DEX:
@@ -2510,7 +2510,7 @@ int final;
             you_are(buf, "");
     }
     /* report 'nudity' */
-    if (!uarm && !uarmu && !uarmc && !uarms && !uarmg && !uarmf && !uarmh && !uarmo && !uarmb) {
+    if (!uarm && !uarmu && !uarmc && !uarms && !uarmg && !uarmf && !uarmh && !uarmo && !uarmb && !uarmv && !uarmp) {
         if (u.uroleplay.nudist)
             enl_msg(You_, "do", "did", " not wear any armor", "");
         else

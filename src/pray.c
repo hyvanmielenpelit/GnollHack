@@ -308,6 +308,12 @@ worst_cursed_item()
 	}
 	else if (uarmb && uarmb->cursed) { /* bracers */
 		otmp = uarmb;
+	}
+	else if (uarmv && uarmv->cursed) { /* belt */
+		otmp = uarmv;
+	}
+	else if (uarmp && uarmp->cursed) { /* pants */
+		otmp = uarmp;
 	} else if (uarmu && uarmu->cursed) { /* shirt */
         otmp = uarmu;
     } else if (uamul && uamul->cursed) { /* amulet */

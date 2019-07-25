@@ -147,7 +147,9 @@ static struct trobj Tourist[] = {
     { POT_EXTRA_HEALING, 0, POTION_CLASS, 2, UNDEF_BLESS },
     { SCR_MAGIC_MAPPING, 0, SCROLL_CLASS, 4, UNDEF_BLESS },
     { HAWAIIAN_SHIRT, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
-    { EXPENSIVE_CAMERA, UNDEF_SPE, TOOL_CLASS, 1, 0 },
+	{ LEATHER_BELT, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
+	{ BEIGE_SHORTS, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
+	{ EXPENSIVE_CAMERA, UNDEF_SPE, TOOL_CLASS, 1, 0 },
     { CREDIT_CARD, 0, TOOL_CLASS, 1, 0 },
     { 0, 0, 0, 0, 0 }
 };
@@ -1192,6 +1194,10 @@ register struct trobj *trop;
 				setworn(obj, W_ARMO);
 			else if (is_bracers(obj) && !uarmb)
 				setworn(obj, W_ARMB);
+			else if (is_belt(obj) && !uarmv)
+				setworn(obj, W_ARMV);
+			else if (is_pants(obj) && !uarmp)
+				setworn(obj, W_ARMP);
 			else if (is_boots(obj) && !uarmf)
                 setworn(obj, W_ARMF);
             else if (is_suit(obj) && !uarm)

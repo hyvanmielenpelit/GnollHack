@@ -10,6 +10,7 @@ static NEARDATA const char unknown_type[] = "Unknown type of %s (%d)";
 static NEARDATA const char c_armor[] = "armor", c_suit[] = "suit",
                            c_shirt[] = "shirt", c_robe[] = "robe",
 						   c_bracers[] = "bracers", c_cloak[] = "cloak",
+                           c_belt[] = "belt", c_pants[] = "pants",
                            c_gloves[] = "gloves", c_boots[] = "boots",
                            c_helmet[] = "helmet", c_shield[] = "shield",
                            c_weapon[] = "weapon", c_sword[] = "sword",
@@ -34,6 +35,8 @@ STATIC_PTR int NDECL(Shield_on);
 STATIC_PTR int NDECL(Shirt_on);
 STATIC_PTR int NDECL(Robe_on);
 STATIC_PTR int NDECL(Bracers_on);
+STATIC_PTR int NDECL(Belt_on);
+STATIC_PTR int NDECL(Pants_on);
 STATIC_DCL void NDECL(Amulet_on);
 STATIC_DCL void FDECL(learnring, (struct obj *, BOOLEAN_P));
 STATIC_DCL void FDECL(Ring_off_or_gone, (struct obj *, BOOLEAN_P));
@@ -611,10 +614,15 @@ Shirt_on(VOID_ARGS)
     /* no shirt currently requires special handling when put on, but we
        keep this uncommented in case somebody adds a new one which does */
     switch (uarmu->otyp) {
-    case HAWAIIAN_SHIRT:
+	case SHIRT_OF_UNCONTROLLABLE_LAUGHTER:
+	case SHIRT_OF_SOUND_MINDEDNESS:
+	case HAWAIIAN_SHIRT:
     case T_SHIRT:
         break;
-    default:
+	case SHIRT_OF_COMELINESS:
+		adj_abon(uarmu, uarmu->spe);
+		break;
+	default:
         impossible(unknown_type, c_shirt, uarmu->otyp);
     }
     uarmu->known = 1; /* shirt's +/- evident because of status line AC */
@@ -629,10 +637,16 @@ Shirt_off(VOID_ARGS)
     /* no shirt currently requires special handling when taken off, but we
        keep this uncommented in case somebody adds a new one which does */
     switch (uarmu->otyp) {
-    case HAWAIIAN_SHIRT:
+	case SHIRT_OF_UNCONTROLLABLE_LAUGHTER:
+	case SHIRT_OF_SOUND_MINDEDNESS:
+	case HAWAIIAN_SHIRT:
     case T_SHIRT:
         break;
-    default:
+	case SHIRT_OF_COMELINESS:
+		if (!context.takeoff.cancelled_don)
+			adj_abon(uarmu, -uarmu->spe);
+		break;
+	default:
         impossible(unknown_type, c_shirt, uarmu->otyp);
     }
 
@@ -647,6 +661,7 @@ Robe_on(VOID_ARGS)
 	   keep this uncommented in case somebody adds a new one which does */
 	switch (uarmo->otyp) {
 	case ROBE:
+	case BATHROBE:
 	case ROBE_OF_PROTECTION:
 		makeknown(uarmo->otyp);
 		break;
@@ -681,6 +696,7 @@ Robe_off(VOID_ARGS)
 	   keep this uncommented in case somebody adds a new one which does */
 	switch (uarmo->otyp) {
 	case ROBE:
+	case BATHROBE:
 	case ROBE_OF_PROTECTION:
 	case ROBE_OF_MAGIC_RESISTANCE:
 		break;
@@ -743,6 +759,94 @@ Bracers_off(VOID_ARGS)
 	}
 
 	setworn((struct obj*) 0, W_ARMB);
+	return 0;
+}
+
+// Belts and pants
+
+STATIC_PTR int
+Belt_on(VOID_ARGS)
+{
+	/* no shirt currently requires special handling when put on, but we
+	   keep this uncommented in case somebody adds a new one which does */
+	switch (uarmv->otyp) {
+	case LEATHER_BELT:
+		break;
+	case BELT_OF_GIANT_STRENGTH:
+		makeknown(uarmv->otyp);
+		context.botl = 1; /* taken care of in attrib.c */
+		break;
+	default:
+		impossible(unknown_type, c_belt, uarmv->otyp);
+	}
+	uarmv->known = 1; /* belt's +/- evident because of status line AC */
+	return 0;
+}
+
+int
+Belt_off(VOID_ARGS)
+{
+	context.takeoff.mask &= ~W_ARMV;
+
+	/* no shirt currently requires special handling when taken off, but we
+	   keep this uncommented in case somebody adds a new one which does */
+	switch (uarmv->otyp) {
+	case LEATHER_BELT:
+		break;
+	case BELT_OF_GIANT_STRENGTH:
+		makeknown(uarmv->otyp);
+		context.botl = 1; /* taken care of in attrib.c */
+		break;
+	default:
+		impossible(unknown_type, c_belt, uarmv->otyp);
+	}
+
+	setworn((struct obj*) 0, W_ARMV);
+	return 0;
+}
+
+STATIC_PTR int
+Pants_on(VOID_ARGS)
+{
+	/* no shirt currently requires special handling when put on, but we
+	   keep this uncommented in case somebody adds a new one which does */
+	switch (uarmp->otyp) {
+	case LEATHER_PANTS:
+	case BEIGE_SHORTS:
+	case SKIRT:
+	case KILT:
+	case JEANS:
+		break;
+	case TRUNK_OF_SWIMMING:
+		break;
+	default:
+		impossible(unknown_type, c_pants, uarmp->otyp);
+	}
+	uarmp->known = 1; /* pant's +/- evident because of status line AC */
+	return 0;
+}
+
+int
+Pants_off(VOID_ARGS)
+{
+	context.takeoff.mask &= ~W_ARMP;
+
+	/* no shirt currently requires special handling when taken off, but we
+	   keep this uncommented in case somebody adds a new one which does */
+	switch (uarmp->otyp) {
+	case LEATHER_PANTS:
+	case BEIGE_SHORTS:
+	case SKIRT:
+	case KILT:
+	case JEANS:
+		break;
+	case TRUNK_OF_SWIMMING:
+		break;
+	default:
+		impossible(unknown_type, c_pants, uarmp->otyp);
+	}
+
+	setworn((struct obj*) 0, W_ARMP);
 	return 0;
 }
 
@@ -1042,7 +1146,7 @@ register struct obj *obj;
     case RIN_INCREASE_DAMAGE:
         u.udaminc += obj->spe;
         break;
-    case RIN_PROTECTION_FROM_SHAPE_CHAN:
+    case RIN_PROTECTION_FROM_SHAPE_CHANGERS:
         rescham();
         break;
     case RIN_PROTECTION:
@@ -1160,7 +1264,7 @@ boolean gone;
         if (obj->spe)
             find_ac(); /* updates botl */
         break;
-    case RIN_PROTECTION_FROM_SHAPE_CHAN:
+    case RIN_PROTECTION_FROM_SHAPE_CHANGERS:
         /* If you're no longer protected, let the chameleons
          * change shape again -dgk
          */
@@ -1287,6 +1391,10 @@ struct obj *obj; /* if null, do all worn items; otherwise just obj itself */
         (void) Boots_on();
 	if (!obj ? uarmb != 0 : (obj == uarmb))
 		(void) Bracers_on();
+	if (!obj ? uarmv != 0 : (obj == uarmv))
+		(void) Belt_on();
+	if (!obj ? uarmp != 0 : (obj == uarmp))
+		(void) Pants_on();
 	if (!obj ? uarmg != 0 : (obj == uarmg))
         (void) Gloves_on();
     if (!obj ? uarmh != 0 : (obj == uarmh))
@@ -1322,6 +1430,10 @@ struct obj *otmp;
         result = (afternmv == Helmet_on);
 	else if (otmp == uarmb)
 		result = (afternmv == Bracers_on);
+	else if (otmp == uarmv)
+		result = (afternmv == Belt_on);
+	else if (otmp == uarmp)
+		result = (afternmv == Pants_on);
 	else if (otmp == uarmg)
         result = (afternmv == Gloves_on);
     else if (otmp == uarms)
@@ -1355,6 +1467,10 @@ struct obj *otmp;
         result = (afternmv == Helmet_off || what == WORN_HELMET);
 	else if (otmp == uarmb)
 		result = (afternmv == Bracers_off || what == WORN_BRACERS);
+	else if (otmp == uarmv)
+		result = (afternmv == Belt_off || what == WORN_BELT);
+	else if (otmp == uarmp)
+		result = (afternmv == Pants_off || what == WORN_PANTS);
 	else if (otmp == uarmg)
         result = (afternmv == Gloves_off || what == WORN_GLOVES);
     else if (otmp == uarms)
@@ -1487,6 +1603,8 @@ boolean accessorizing;
     MOREWORN(uarms, Narmorpieces);
     MOREWORN(uarmg, Narmorpieces);
 	MOREWORN(uarmb, Narmorpieces);
+	MOREWORN(uarmp, Narmorpieces);
+	MOREWORN(uarmv, Narmorpieces);
 	MOREWORN(uarmf, Narmorpieces);
     /* for cloak/suit/shirt, we only count the outermost item so that it
        can be taken off without confirmation if final count ends up as 1 */
@@ -1705,7 +1823,15 @@ register struct obj *otmp;
 		}
 		else if (is_bracers(otmp)) {
 			nomovemsg = "You finish taking off your bracers.";
-			afternmv = Gloves_off;
+			afternmv = Bracers_off;
+		}
+		else if (is_belt(otmp)) {
+			nomovemsg = "You finish taking off your belt.";
+			afternmv = Belt_off;
+		}
+		else if (is_pants(otmp)) {
+			nomovemsg = "You finish taking off your pants.";
+			afternmv = Pants_off;
 		} else if (is_boots(otmp)) {
             nomovemsg = "You finish taking off your boots.";
             afternmv = Boots_off;
@@ -1745,6 +1871,10 @@ register struct obj *otmp;
 			(void) Robe_off();
 		else if (is_bracers(otmp)) //here just in case is instantaneous
 			(void) Bracers_off();
+		else if (is_belt(otmp)) //here just in case is instantaneous
+			(void)Belt_off();
+		else if (is_pants(otmp)) //here just in case is instantaneous
+			(void)Pants_off();
 		else if (is_shield(otmp))
             (void) Shield_off();
         else
@@ -1911,6 +2041,24 @@ boolean noisy;
 		}
 		else
 			*mask = W_ARMB;
+	}
+	else if (is_belt(otmp)) {
+		if (uarmv) {
+			if (noisy)
+				already_wearing(c_belt);
+			err++;
+		}
+		else
+			*mask = W_ARMV;
+	}
+	else if (is_pants(otmp)) {
+		if (uarmp) {
+			if (noisy)
+				already_wearing(c_pants);
+			err++;
+		}
+		else
+			*mask = W_ARMP;
 	} else if (is_shirt(otmp)) {
         if (uarm || uarmc || uarmu || uarmo) {
             if (uarmu) {
@@ -2131,6 +2279,10 @@ struct obj *obj;
             afternmv = Helmet_on;
 		else if (obj == uarmb)
 			afternmv = Bracers_on;
+		else if (obj == uarmv)
+			afternmv = Belt_on;
+		else if (obj == uarmp)
+			afternmv = Pants_on;
 		else if (obj == uarmg)
             afternmv = Gloves_on;
         else if (obj == uarmf)
@@ -2193,7 +2345,7 @@ dowear()
         pline("Don't even bother.");
         return 0;
     }
-    if (uarm && uarmu && uarmc && uarmh && uarms && uarmg && uarmf && uarmo && uarmb
+    if (uarm && uarmu && uarmc && uarmh && uarms && uarmg && uarmf && uarmo && uarmb && uarmv && uarmp
         && uleft && uright && uamul && ublindf) {
         /* 'W' message doesn't mention accessories */
         You("are already wearing a full complement of armor.");
@@ -2210,7 +2362,7 @@ doputon()
     struct obj *otmp;
 
     if (uleft && uright && uamul && ublindf
-        && uarm && uarmu && uarmc && uarmh && uarms && uarmg && uarmf && uarmo && uarmb) {
+        && uarm && uarmu && uarmc && uarmh && uarms && uarmg && uarmf && uarmo && uarmb && uarmv && uarmp) {
         /* 'P' message doesn't mention armor */
         Your("%s%s are full, and you're already wearing an amulet and %s.",
              humanoid(youmonst.data) ? "ring-" : "",
@@ -2247,6 +2399,10 @@ find_ac()
 		uac -= ARM_BONUS(uarmo);
 	if (uarmb)
 		uac -= ARM_BONUS(uarmb);
+	if (uarmv)
+		uac -= ARM_BONUS(uarmv);
+	if (uarmp)
+		uac -= ARM_BONUS(uarmp);
 	if (uleft && uleft->otyp == RIN_PROTECTION)
         uac -= uleft->spe;
     if (uright && uright->otyp == RIN_PROTECTION)
@@ -2377,7 +2533,13 @@ struct monst *victim;
     otmp = (victim == &youmonst) ? uarmh : which_armor(victim, W_ARMH);
     if (otmp && (!otmph || !rn2(4)))
         otmph = otmp;
-	otmp = (victim == &youmonst) ? uarmg : which_armor(victim, W_ARMB);
+	otmp = (victim == &youmonst) ? uarmb : which_armor(victim, W_ARMB);
+	if (otmp && (!otmph || !rn2(4)))
+		otmph = otmp;
+	otmp = (victim == &youmonst) ? uarmv : which_armor(victim, W_ARMV);
+	if (otmp && (!otmph || !rn2(4)))
+		otmph = otmp;
+	otmp = (victim == &youmonst) ? uarmp : which_armor(victim, W_ARMP);
 	if (otmp && (!otmph || !rn2(4)))
 		otmph = otmp;
 	otmp = (victim == &youmonst) ? uarmg : which_armor(victim, W_ARMG);
@@ -2530,6 +2692,10 @@ register struct obj *otmp;
         context.takeoff.mask |= WORN_BOOTS;
 	else if (otmp == uarmb)
 		context.takeoff.mask |= WORN_BRACERS;
+	else if (otmp == uarmv)
+		context.takeoff.mask |= WORN_BELT;
+	else if (otmp == uarmp)
+		context.takeoff.mask |= WORN_PANTS;
 	else if (otmp == uarmg)
         context.takeoff.mask |= WORN_GLOVES;
     else if (otmp == uarmh)
@@ -2601,6 +2767,16 @@ do_takeoff()
 		otmp = uarmb;
 		if (!cursed(otmp))
 			(void)Bracers_off();
+	}
+	else if (doff->what == WORN_BELT) {
+		otmp = uarmv;
+		if (!cursed(otmp))
+			(void)Belt_off();
+	}
+	else if (doff->what == WORN_PANTS) {
+		otmp = uarmp;
+		if (!cursed(otmp))
+			(void)Pants_off();
 	} else if (doff->what == WORN_GLOVES) {
         otmp = uarmg;
         if (!cursed(otmp))
@@ -2909,7 +3085,24 @@ register struct obj *atmp;
         Your("boots disintegrate!");
         (void) Boots_off();
         useup(otmp);
-    } else if (DESTROY_ARM(uarms)) {
+	}
+	else if (DESTROY_ARM(uarmv)) {
+		if (donning(otmp))
+			cancel_don();
+		Your("belt disintegrates!");
+		(void)Belt_off();
+		useup(otmp);
+		selftouch("You");
+	}
+	else if (DESTROY_ARM(uarmp)) {
+		if (donning(otmp))
+			cancel_don();
+		Your("pants vanish!");
+		(void)Pants_off();
+		useup(otmp);
+		selftouch("You");
+	}
+	else if (DESTROY_ARM(uarms)) {
         if (donning(otmp))
             cancel_don();
         Your("shield crumbles away!");
@@ -2944,6 +3137,13 @@ register schar delta;
         }
         context.botl = 1;
     }
+	if (uarmu && uarmu == otmp && otmp->otyp == SHIRT_OF_COMELINESS) {
+		if (delta) {
+			makeknown(uarmh->otyp);
+			ABON(A_CHA) += (delta);
+		}
+		context.botl = 1;
+	}
 }
 
 /* decide whether a worn item is covered up by some other worn item,

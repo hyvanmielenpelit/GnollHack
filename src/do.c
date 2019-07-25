@@ -512,7 +512,7 @@ register struct obj *obj;
             pline_The("cold %s faucet flashes brightly for a moment.",
                       hliquid("water"));
             break;
-        case RIN_PROTECTION_FROM_SHAPE_CHAN:
+        case RIN_PROTECTION_FROM_SHAPE_CHANGERS:
             pline_The("sink looks nothing like a fountain.");
             break;
         case RIN_PROTECTION:

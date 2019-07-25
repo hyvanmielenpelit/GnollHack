@@ -2561,6 +2561,14 @@ struct obj *obj;
 			if (obj != uarmb)
 				what = "bracers";
 			break;
+		case W_ARMV:
+			if (obj != uarmv)
+				what = "belt";
+			break;
+		case W_ARMP:
+			if (obj != uarmp)
+				what = "pants";
+			break;
 		case W_ARMF:
             if (obj != uarmf)
                 what = "boots";

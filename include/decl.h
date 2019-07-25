@@ -242,7 +242,9 @@ E uchar monsyms[MAXMCLASSES];                      /* current class symbols */
 E NEARDATA struct obj *invent, *uarm, *uarmc, *uarmh, *uarms, *uarmg, *uarmf,
     *uarmu, /* under-wear, so to speak */
 	*uarmo, /* over-wear, so to speak */
-	*uarmb, /* bracers, so to speak */
+	*uarmb, /* bracers */
+	*uarmv, /* belts, vyo in Finnish */
+	*uarmp, /* pants */
 	*uskin, *uamul, *uleft, *uright, *ublindf, *uwep, *uswapwep, *uquiver;
 
 E NEARDATA struct obj *uchain; /* defined only when punished */

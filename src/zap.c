@@ -1040,7 +1040,13 @@ register struct obj *obj;
             context.botl = 1;
         }
         break;
-        /* case RIN_PROTECTION:  not needed */
+	case SHIRT_OF_COMELINESS:
+		if ((obj->owornmask & W_ARMU) && (obj == uarmu)) {
+			ABON(A_CHA) -= obj->spe;
+			context.botl = 1;
+		}
+		break;
+		/* case RIN_PROTECTION:  not needed */
     }
     if (objects[otyp].oc_magic
         || (obj->spe && (obj->oclass == ARMOR_CLASS
@@ -1156,7 +1162,13 @@ boolean by_you;
             context.botl = 1;
         }
         break;
-    case GAUNTLETS_OF_DEXTERITY:
+		case SHIRT_OF_COMELINESS:
+		if ((obj->owornmask & W_ARMU) && (obj == uarmu)) {
+			ABON(A_CHA)--;
+			context.botl = 1;
+		}
+		break;
+	case GAUNTLETS_OF_DEXTERITY:
         if ((obj->owornmask & W_ARMG) && (obj == uarmg)) {
             ABON(A_DEX)--;
             context.botl = 1;

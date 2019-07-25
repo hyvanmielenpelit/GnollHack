@@ -1071,7 +1071,8 @@ register struct attack *mattk;
 
             if (mattk->aatyp == AT_WEAP && otmp) {
                 struct obj *marmg;
-                int tmp;
+				struct obj* marmv;
+				int tmp;
 
                 if (otmp->otyp == CORPSE
                     && touch_petrifies(&mons[otmp->corpsenm])) {
@@ -1085,7 +1086,10 @@ register struct attack *mattk;
                 if ((marmg = which_armor(mtmp, W_ARMG)) != 0
                     && marmg->otyp == GAUNTLETS_OF_POWER)
                     dmg += rn1(4, 3); /* 3..6 */
-                if (dmg <= 0)
+				else if ((marmv = which_armor(mtmp, W_ARMV)) != 0
+					&& marmv->otyp == BELT_OF_GIANT_STRENGTH)
+					dmg += rn1(4, 3); /* 3..6 */
+				if (dmg <= 0)
                     dmg = 1;
 
 				/*Negative AC reduces damage*/
@@ -1579,7 +1583,7 @@ register struct attack *mattk;
             hitmsg(mtmp, mattk, dmg);
             break;
         }
-        if (!uwep && !uarmu && !uarm && !uarmc && !uarmo && !uarmb
+        if (!uwep && !uarmu && !uarm && !uarmc && !uarmo && !uarmb && !uarmv && !uarmp
             && !uarms && !uarmg && !uarmf && !uarmh) {
             boolean goaway = FALSE;
 
@@ -2657,7 +2661,7 @@ struct monst *mon;
         }
     }
 
-    naked = (!uarmc && !uarmf && !uarmg && !uarms && !uarmh && !uarmu && !uarmo && !uarmb);
+    naked = (!uarmc && !uarmf && !uarmg && !uarms && !uarmh && !uarmu && !uarmo && !uarmb && !uarmv && !uarmp);
     pline("%s %s%s.", Who,
           Deaf ? "seems to murmur into your ear"
                : naked ? "murmurs sweet nothings into your ear"
@@ -2676,6 +2680,8 @@ struct monst *mon;
     mayberem(mon, Who, uarmh, helm_simple_name(uarmh));
     if (!uarmc && !uarmo && !uarm)
         mayberem(mon, Who, uarmu, "shirt");
+	mayberem(mon, Who, uarmv, "belt");
+	mayberem(mon, Who, uarmp, "pants");
 
     /* removing armor (levitation boots, or levitation ring to make
        room for adornment ring with incubus case) might result in the
@@ -2862,13 +2868,13 @@ const char *str;
         verbalize("Take off your %s; %s.", str,
                   (obj == uarm)
                      ? "let's get a little closer"
-                     : (obj == uarmc || obj == uarms || obj == uarmo || obj == uarmb)
+                     : (obj == uarmc || obj == uarms || obj == uarmo || obj == uarmb || obj == uarmv)
                         ? "it's in the way"
                         : (obj == uarmf)
                            ? "let me rub your feet"
                            : (obj == uarmg)
                               ? "they're too clumsy"
-                              : (obj == uarmu)
+                              : (obj == uarmu || obj == uarmp)
                                  ? "let me massage you"
                                  /* obj == uarmh */
                                  : hairbuf);

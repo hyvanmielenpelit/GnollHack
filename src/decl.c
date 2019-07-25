@@ -155,6 +155,8 @@ NEARDATA struct obj
     *uarmu = (struct obj *) 0,     /* under-wear, so to speak */
     *uarmo = (struct obj *) 0,     /* over-wear, so to speak */
 	*uarmb = (struct obj*) 0,     /* bracers */
+	*uarmv = (struct obj*) 0,     /* belts, vyo in Finnish */
+	*uarmp = (struct obj*) 0,     /* pants */
 	*uskin = (struct obj *) 0, /* dragon armor, if a dragon */
     *uarmc = (struct obj *) 0, *uarmh = (struct obj *) 0,
     *uarms = (struct obj *) 0, *uarmg = (struct obj *) 0,

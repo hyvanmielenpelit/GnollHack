@@ -243,14 +243,17 @@ register boolean special;
                 armor = rnd_class(PLATE_MAIL, CHAIN_MAIL);
             break;
         case PM_WIZARD:
-            if (rn2(4))
+			armor = rn2(2) ? ROBE
+				: ROBE_OF_PROTECTION;
+			if (rn2(4))
                 weapon = rn2(2) ? QUARTERSTAFF : ATHAME;
             if (rn2(2)) {
-                armor = rn2(2) ? BLACK_DRAGON_SCALE_MAIL
-                               : SILVER_DRAGON_SCALE_MAIL;
                 cloak = CLOAK_OF_MAGIC_RESISTANCE;
             }
-            if (rn2(4))
+			if (!rn2(3)) {
+				cloak = BRACERS_OF_DEFENSE;
+			}
+			if (!rn2(3))
                 helm = HELM_OF_BRILLIANCE;
             shield = STRANGE_OBJECT;
             break;

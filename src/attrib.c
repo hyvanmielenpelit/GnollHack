@@ -1043,7 +1043,7 @@ int x;
     register int tmp = (u.abon.a[x] + u.atemp.a[x] + u.acurr.a[x]);
 
     if (x == A_STR) {
-        if (tmp >= 125 || (uarmg && uarmg->otyp == GAUNTLETS_OF_POWER))
+        if (tmp >= 125 || (uarmg && uarmg->otyp == GAUNTLETS_OF_POWER) || (uarmv && uarmv->otyp == BELT_OF_GIANT_STRENGTH))
             return (schar) 125;
         else
 #ifdef WIN32_BUG
@@ -1113,7 +1113,7 @@ int attrindx;
     if (attrindx == A_STR) {
         hilimit = STR19(25); /* 125 */
         /* lower limit for Str can also be 25 */
-        if (uarmg && uarmg->otyp == GAUNTLETS_OF_POWER)
+        if (uarmg && uarmg->otyp == GAUNTLETS_OF_POWER || uarmv && uarmv->otyp == BELT_OF_GIANT_STRENGTH)
             lolimit = hilimit;
     } else if (attrindx == A_CON) {
         if (uwep && uwep->oartifact == ART_OGRESMASHER)

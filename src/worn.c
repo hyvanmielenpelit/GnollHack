@@ -19,6 +19,8 @@ const struct worn {
 			 { W_ARMH, &uarmh },
              { W_ARMS, &uarms },
 			 { W_ARMB, &uarmb },
+			 { W_ARMV, &uarmv },
+			 { W_ARMP, &uarmp },
 			 { W_ARMG, &uarmg },
              { W_ARMF, &uarmf },
              { W_ARMU, &uarmu },
@@ -200,6 +202,12 @@ struct obj *obj;
 			break; /* WORN_ROBE */
 		case ARM_BRACERS:
 			res = W_ARMB;
+			break; /* BRACERS */
+		case ARM_BELT:
+			res = W_ARMV;
+			break; /* BRACERS */
+		case ARM_PANTS:
+			res = W_ARMP;
 			break; /* BRACERS */
 		}
         break;
@@ -585,6 +593,14 @@ boolean racialexception;
 			if (!is_bracers(obj))
 				continue;
 			break;
+		case W_ARMV:
+			if (!is_belt(obj))
+				continue;
+			break;
+		case W_ARMP:
+			if (!is_pants(obj))
+				continue;
+			break;
 		case W_ARMO:
 			if (!is_robe(obj))
 				continue;
@@ -684,6 +700,10 @@ long flag;
             return uarms;
 		case W_ARMB:
 			return uarmb;
+		case W_ARMV:
+			return uarmv;
+		case W_ARMP:
+			return uarmp;
 		case W_ARMG:
             return uarmg;
         case W_ARMF:
