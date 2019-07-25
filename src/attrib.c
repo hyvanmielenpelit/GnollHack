@@ -1043,9 +1043,11 @@ int x;
     register int tmp = (u.abon.a[x] + u.atemp.a[x] + u.acurr.a[x]);
 
     if (x == A_STR) {
-        if (tmp >= 125 || (uarmg && uarmg->otyp == GAUNTLETS_OF_POWER) || (uarmv && uarmv->otyp == BELT_OF_GIANT_STRENGTH))
-            return (schar) 125;
-        else
+        if (tmp >= STR19(25) || (uarmv && uarmv->otyp == BELT_OF_GIANT_STRENGTH))
+            return (schar) STR19(25);
+		else if ((uarmg && uarmg->otyp == GAUNTLETS_OF_POWER))
+			return (schar)STR19(19);
+		else
 #ifdef WIN32_BUG
             return (x = ((tmp <= 3) ? 3 : tmp));
 #else
@@ -1111,11 +1113,18 @@ int attrindx;
 
     /* upper limit for Str is 25 but its value is encoded differently */
     if (attrindx == A_STR) {
-        hilimit = STR19(25); /* 125 */
+         /* 125 */
         /* lower limit for Str can also be 25 */
-        if (uarmg && uarmg->otyp == GAUNTLETS_OF_POWER || uarmv && uarmv->otyp == BELT_OF_GIANT_STRENGTH)
-            lolimit = hilimit;
-    } else if (attrindx == A_CON) {
+		if (uarmv && uarmv->otyp == BELT_OF_GIANT_STRENGTH)
+		{
+			hilimit = STR19(25);
+			lolimit = hilimit;
+		}
+		else if (uarmg && uarmg->otyp == GAUNTLETS_OF_POWER){
+			hilimit = STR19(19);
+			lolimit = hilimit;
+		}
+	} else if (attrindx == A_CON) {
         if (uwep && uwep->oartifact == ART_OGRESMASHER)
             lolimit = hilimit;
 	}

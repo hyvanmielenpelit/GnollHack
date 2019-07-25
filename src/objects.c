@@ -468,7 +468,7 @@ ARMOR("shirt of uncontrollable laughter", "really funny t-shirt",
     0, 1, 0,  0,  2, 0,   5,   50, 10, 0,  ARM_SHIRT, CLOTH, CLR_BLUE),
 ARMOR("shirt of comeliness", "cool t-shirt",
 	0, 1, 0, 0, 2, 0, 5, 3, 50, 0, ARM_SHIRT, CLOTH, CLR_BLACK),
-ARMOR("shirt of sound mindedness", "t-shirt with logo",
+ARMOR("shirt of sound mindedness", "green t-shirt",
 	0, 1, 0, HALLUC_RES, 2, 0, 5, 3, 50, 0, ARM_SHIRT, CLOTH, CLR_GREEN),
 ARMOR("T-shirt", None,
     1, 0, 0,  0,  2, 0,   5,   2, 10, 0,  ARM_SHIRT, CLOTH, CLR_WHITE),
@@ -501,19 +501,19 @@ CLOAK("cloak of displacement", "piece of cloth",
 
 /* robes */
 ROBE("robe", None, //STARTMARKER
-	1, 1, 0, 5, 0, 15, 25, 9, 2, CLOTH, CLR_RED),//STARTMARKER 2
+	1, 1, 0, 5, 1, 15, 25, 9, 2, CLOTH, CLR_RED),//STARTMARKER 2
 ROBE("robe of protection", "golden ornamental robe",
-	0, 1, PROTECTION, 5, 0, 25, 200, 6, 3, CLOTH, HI_GOLD),
+	0, 1, PROTECTION, 5, 1, 25, 200, 6, 3, CLOTH, HI_GOLD),
 	/* robe was adopted from slash'em, where it's worn as a suit
 	rather than as a cloak and there are several variations */
 ROBE("robe of magic resistance", "silvery ornamental robe",
-	0, 1, ANTIMAGIC, 4, 0, 20, 400, 8, 2, CLOTH, HI_SILVER),
+	0, 1, ANTIMAGIC, 4, 1, 20, 400, 8, 2, CLOTH, HI_SILVER),
 ROBE("robe of the archmagi", "blue ornamental robe",
-	0, 1, 0, 2, 0, 30, 750, 8, 3, CLOTH, HI_ZAP),
+	0, 1, 0, 2, 2, 30, 750, 8, 3, CLOTH, HI_ZAP),
 ROBE("robe of starry wisdom", "shining black robe",
-	0, 1, 0, 2, 0, 30, 750, 8, 3, CLOTH, CLR_BLACK),
+	0, 1, 0, 2, 2, 30, 750, 8, 3, CLOTH, CLR_BLACK),
 ROBE("bathrobe", "soft cotton robe",
-	0, 1, 0, 2, 0, 15, 5, 10, 0, CLOTH, CLR_WHITE),
+	0, 1, 0, 2, 1, 15, 5, 10, 0, CLOTH, CLR_WHITE),
 ROBE("mummy wrapping", None, //ENDMARKER
 1, 0, 0, 0, 0, 3, 2, 10, 1, CLOTH, CLR_GRAY),
 	/* worn mummy wrapping blocks invisibility */
@@ -521,34 +521,34 @@ ROBE("mummy wrapping", None, //ENDMARKER
 
 /* bracers */
 BRACERS("leather bracers", None, //STARTMARKER
-	1, 0, 0, 3, 0, 5, 5, 9, 0, CLOTH, HI_LEATHER),
+	1, 0, 0, 3, 1, 5, 5, 9, 0, CLOTH, HI_LEATHER),
 BRACERS("bracers of defense", "runed bracers",//STARTMARKER 2
-	0, 1, PROTECTION, 3, 0, 5, 250, 7, 2, CLOTH, HI_LEATHER),
+	0, 1, PROTECTION, 3, 1, 5, 250, 7, 2, CLOTH, HI_LEATHER),
 BRACERS("bracers of archery", "deerskin bracers",
-	0, 1, 0, 2, 0, 5, 400, 9, 0, CLOTH, HI_LEATHER),
+	0, 1, 0, 2, 1, 5, 400, 9, 0, CLOTH, HI_LEATHER),
 BRACERS("bracers of magic resistance", "ornamental bracers",//ENDMARKER
-0, 1, ANTIMAGIC, 2, 0, 5, 250, 9, 2, CLOTH, HI_LEATHER),
+0, 1, ANTIMAGIC, 2, 1, 5, 250, 9, 2, CLOTH, HI_LEATHER),
 
 
 /* belts */
 BELT("leather belt", None, //STARTMARKER
 	1, 0, 0, 6, 0, 5, 5, 10, 0, CLOTH, HI_LEATHER),
-BELT("belt of giant strength", "ornamental belt", //ENDMARKER
+BELT("belt of giant strength", "ornamental girdle", //ENDMARKER
 	0, 1, 0, 2, 0, 5, 5, 10, 0, CLOTH, HI_LEATHER),
 
 /* pants */
 PANTS("leather pants", None, //STARTMARKER
-	1, 0, 0, 3, 0, 10, 10, 9, 0, CLOTH, HI_LEATHER),
+	1, 0, 0, 3, 2, 10, 10, 9, 0, CLOTH, HI_LEATHER),
 PANTS("beige shorts", "beige short pants",
-	0, 0, 0, 1, 0, 5, 10, 10, 0, CLOTH, CLR_BROWN),
+	0, 0, 0, 1, 2, 5, 10, 10, 0, CLOTH, CLR_BROWN),
 PANTS("jeans", "blue long pants", 
-	0, 0, 0, 1, 0, 10, 5, 10, 0, CLOTH, CLR_BLUE),
+	0, 0, 0, 1, 2, 10, 5, 10, 0, CLOTH, CLR_BLUE),
 PANTS("skirt", None, 
-	1, 0, 0, 1, 0, 10, 5, 10, 0, CLOTH, CLR_RED),
+	1, 0, 0, 1, 1, 10, 5, 10, 0, CLOTH, CLR_RED),
 PANTS("kilt", None, 
-	1, 0, 0, 1, 0, 8, 10, 10, 0, CLOTH, CLR_MAGENTA),
+	1, 0, 0, 1, 1, 8, 10, 10, 0, CLOTH, CLR_MAGENTA),
 PANTS("trunk of swimming", "blue short pants", //STARTMARKER
-	0, 1, SWIMMING, 1, 0, 2, 50, 9, 0, CLOTH, CLR_BLUE),
+	0, 1, SWIMMING, 1, 1, 2, 50, 9, 0, CLOTH, CLR_BLUE),
 
 /* shields */
 SHIELD("small shield", None,

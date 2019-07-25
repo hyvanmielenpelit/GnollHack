@@ -481,7 +481,9 @@ Gloves_on(VOID_ARGS)
             incr_itimeout(&HFumbling, rnd(20));
         break;
     case GAUNTLETS_OF_POWER:
-        makeknown(uarmg->otyp);
+        if(!(uarmv && uarmv->otyp == BELT_OF_GIANT_STRENGTH))
+			makeknown(uarmg->otyp);
+
         context.botl = 1; /* taken care of in attrib.c */
         break;
     case GAUNTLETS_OF_DEXTERITY:
@@ -535,7 +537,8 @@ Gloves_off(VOID_ARGS)
             HFumbling = EFumbling = 0;
         break;
     case GAUNTLETS_OF_POWER:
-        makeknown(uarmg->otyp);
+		if (!(uarmv && uarmv->otyp == BELT_OF_GIANT_STRENGTH))
+			makeknown(uarmg->otyp);
         context.botl = 1; /* taken care of in attrib.c */
         break;
     case GAUNTLETS_OF_DEXTERITY:
@@ -800,6 +803,9 @@ Belt_off(VOID_ARGS)
 	case LEATHER_BELT:
 		break;
 	case BELT_OF_GIANT_STRENGTH:
+		if (uarmg && uarmg->otyp == GAUNTLETS_OF_POWER)
+			makeknown(uarmg->otyp);
+
 		makeknown(uarmv->otyp);
 		context.botl = 1; /* taken care of in attrib.c */
 		break;
@@ -1859,6 +1865,10 @@ register struct obj *otmp;
 		else if (is_shirt(otmp)) {
 			nomovemsg = "You finish taking off your robe.";
 			afternmv = Shirt_off;
+		}
+		else if (is_shield(otmp)) {
+			nomovemsg = "You finish taking off your shield.";
+			afternmv = Shield_off;
 		} else {
             nomovemsg = "You finish taking off your suit.";
             afternmv = Armor_off;
@@ -1883,8 +1893,14 @@ register struct obj *otmp;
          */
         if (is_cloak(otmp))
             (void) Cloak_off();
+		else if (is_gloves(otmp)) //here just in case is instantaneous
+			(void)Gloves_off();
+		else if (is_boots(otmp)) //here just in case is instantaneous
+			(void)Boots_off();
+		else if (is_helmet(otmp)) //here just in case is instantaneous
+			(void)Helmet_off();
 		else if (is_robe(otmp)) //here just in case is instantaneous
-			(void) Robe_off();
+			(void)Robe_off();
 		else if (is_bracers(otmp)) //here just in case is instantaneous
 			(void) Bracers_off();
 		else if (is_belt(otmp)) //here just in case is instantaneous
@@ -1895,7 +1911,9 @@ register struct obj *otmp;
 			(void)Shirt_off();
 		else if (is_shield(otmp))
             (void) Shield_off();
-        else
+		else if (is_suit(otmp))
+			(void) Armor_off();
+		else
             setworn((struct obj *) 0, otmp->owornmask & W_ARMOR);
         off_msg(otmp);
     }
