@@ -1162,7 +1162,7 @@ boolean by_you;
             context.botl = 1;
         }
         break;
-		case SHIRT_OF_COMELINESS:
+	case SHIRT_OF_COMELINESS:
 		if ((obj->owornmask & W_ARMU) && (obj == uarmu)) {
 			ABON(A_CHA)--;
 			context.botl = 1;

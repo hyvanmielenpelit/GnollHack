@@ -322,6 +322,7 @@ Cloak_off(VOID_ARGS)
     context.takeoff.mask &= ~W_ARMC;
     /* For mummy wrapping, taking it off first resets `Invisible'. */
     setworn((struct obj *) 0, W_ARMC);
+	context.takeoff.cancelled_don = FALSE;
     switch (otyp) {
     case ORCISH_CLOAK:
     case DWARVISH_CLOAK:
@@ -605,6 +606,7 @@ Shield_off(VOID_ARGS)
     }
 
     setworn((struct obj *) 0, W_ARMS);
+	context.takeoff.cancelled_don = FALSE;
     return 0;
 }
 
@@ -651,12 +653,14 @@ Shirt_off(VOID_ARGS)
     }
 
     setworn((struct obj *) 0, W_ARMU);
+	context.takeoff.cancelled_don = FALSE;
     return 0;
 }
 
 STATIC_PTR int
 Robe_on(VOID_ARGS)
 {
+
 	/* no shirt currently requires special handling when put on, but we
 	   keep this uncommented in case somebody adds a new one which does */
 	switch (uarmo->otyp) {
@@ -717,6 +721,7 @@ Robe_off(VOID_ARGS)
 	}
 
 	setworn((struct obj*) 0, W_ARMO);
+	context.takeoff.cancelled_don = FALSE;
 	return 0;
 }
 
@@ -759,6 +764,7 @@ Bracers_off(VOID_ARGS)
 	}
 
 	setworn((struct obj*) 0, W_ARMB);
+	context.takeoff.cancelled_don = FALSE;
 	return 0;
 }
 
@@ -802,6 +808,7 @@ Belt_off(VOID_ARGS)
 	}
 
 	setworn((struct obj*) 0, W_ARMV);
+	context.takeoff.cancelled_don = FALSE;
 	return 0;
 }
 
@@ -847,6 +854,7 @@ Pants_off(VOID_ARGS)
 	}
 
 	setworn((struct obj*) 0, W_ARMP);
+	context.takeoff.cancelled_don = FALSE;
 	return 0;
 }
 
@@ -1825,6 +1833,10 @@ register struct obj *otmp;
 			nomovemsg = "You finish taking off your bracers.";
 			afternmv = Bracers_off;
 		}
+		else if (is_shirt(otmp)) {
+			nomovemsg = "You finish taking off your shirt.";
+			afternmv = Shirt_off;
+		}
 		else if (is_belt(otmp)) {
 			nomovemsg = "You finish taking off your belt.";
 			afternmv = Belt_off;
@@ -1843,6 +1855,10 @@ register struct obj *otmp;
 		else if (is_robe(otmp)) {
 			nomovemsg = "You finish taking off your robe.";
 			afternmv = Robe_off;
+		}
+		else if (is_shirt(otmp)) {
+			nomovemsg = "You finish taking off your robe.";
+			afternmv = Shirt_off;
 		} else {
             nomovemsg = "You finish taking off your suit.";
             afternmv = Armor_off;
@@ -1875,6 +1891,8 @@ register struct obj *otmp;
 			(void)Belt_off();
 		else if (is_pants(otmp)) //here just in case is instantaneous
 			(void)Pants_off();
+		else if (is_shirt(otmp)) //here just in case is instantaneous
+			(void)Shirt_off();
 		else if (is_shield(otmp))
             (void) Shield_off();
         else
@@ -3139,7 +3157,7 @@ register schar delta;
     }
 	if (uarmu && uarmu == otmp && otmp->otyp == SHIRT_OF_COMELINESS) {
 		if (delta) {
-			makeknown(uarmh->otyp);
+			makeknown(uarmu->otyp);
 			ABON(A_CHA) += (delta);
 		}
 		context.botl = 1;
