@@ -402,39 +402,39 @@ HELM("helm of telepathy", "visored helmet",
           cost, ac, 0, ARM_SUIT, DRAGON_HIDE, color)
 /* 3.4.1: dragon scale mail reclassified as "magic" since magic is
    needed to create them */
-DRGN_ARMR("gray dragon scale mail",    1, ANTIMAGIC,  1200, 1, CLR_GRAY),
-DRGN_ARMR("silver dragon scale mail",  1, REFLECTING, 1200, 1, DRAGON_SILVER),
+DRGN_ARMR("gray dragon scale mail",    1, ANTIMAGIC,  6000, 1, CLR_GRAY),
+DRGN_ARMR("silver dragon scale mail",  1, REFLECTING, 6000, 1, DRAGON_SILVER),
 #if 0 /* DEFERRED */
 DRGN_ARMR("shimmering dragon scale mail", 1, DISPLACED, 1200, 1, CLR_CYAN),
 #endif
-DRGN_ARMR("red dragon scale mail",     1, FIRE_RES,    900, 1, CLR_RED),
-DRGN_ARMR("white dragon scale mail",   1, COLD_RES,    900, 1, CLR_WHITE),
-DRGN_ARMR("orange dragon scale mail",  1, SLEEP_RES,   900, 1, CLR_ORANGE),
-DRGN_ARMR("black dragon scale mail",   1, DISINT_RES, 1200, 1, CLR_BLACK),
-DRGN_ARMR("blue dragon scale mail",    1, SHOCK_RES,   900, 1, CLR_BLUE),
-DRGN_ARMR("green dragon scale mail",   1, POISON_RES,  900, 1, CLR_GREEN),
-DRGN_ARMR("yellow dragon scale mail",  1, ACID_RES,    900, 1, CLR_YELLOW),
+DRGN_ARMR("red dragon scale mail",     1, FIRE_RES,   4000, 1, CLR_RED),
+DRGN_ARMR("white dragon scale mail",   1, COLD_RES,   3000, 1, CLR_WHITE),
+DRGN_ARMR("orange dragon scale mail",  1, SLEEP_RES,  4000, 1, CLR_ORANGE),
+DRGN_ARMR("black dragon scale mail",   1, DISINT_RES, 5000, 1, CLR_BLACK),
+DRGN_ARMR("blue dragon scale mail",    1, SHOCK_RES,  4000, 1, CLR_BLUE),
+DRGN_ARMR("green dragon scale mail",   1, POISON_RES, 3000, 1, CLR_GREEN),
+DRGN_ARMR("yellow dragon scale mail",  1, ACID_RES,   3000, 1, CLR_YELLOW),
 /* For now, only dragons leave these. */
 /* 3.4.1: dragon scales left classified as "non-magic"; they confer
    magical properties but are produced "naturally" */
-DRGN_ARMR("gray dragon scales",        0, ANTIMAGIC,   700, 7, CLR_GRAY),
-DRGN_ARMR("silver dragon scales",      0, REFLECTING,  700, 7, DRAGON_SILVER),
+DRGN_ARMR("gray dragon scales",        0, ANTIMAGIC,  1500, 7, CLR_GRAY),
+DRGN_ARMR("silver dragon scales",      0, REFLECTING, 1500, 7, DRAGON_SILVER),
 #if 0 /* DEFERRED */
 DRGN_ARMR("shimmering dragon scales",  0, DISPLACED,   700, 7, CLR_CYAN),
 #endif
-DRGN_ARMR("red dragon scales",         0, FIRE_RES,    500, 7, CLR_RED),
-DRGN_ARMR("white dragon scales",       0, COLD_RES,    500, 7, CLR_WHITE),
-DRGN_ARMR("orange dragon scales",      0, SLEEP_RES,   500, 7, CLR_ORANGE),
-DRGN_ARMR("black dragon scales",       0, DISINT_RES,  700, 7, CLR_BLACK),
-DRGN_ARMR("blue dragon scales",        0, SHOCK_RES,   500, 7, CLR_BLUE),
-DRGN_ARMR("green dragon scales",       0, POISON_RES,  500, 7, CLR_GREEN),
-DRGN_ARMR("yellow dragon scales",      0, ACID_RES,    500, 7, CLR_YELLOW),
+DRGN_ARMR("red dragon scales",         0, FIRE_RES,   1000, 7, CLR_RED),
+DRGN_ARMR("white dragon scales",       0, COLD_RES,    750, 7, CLR_WHITE),
+DRGN_ARMR("orange dragon scales",      0, SLEEP_RES,  1000, 7, CLR_ORANGE),
+DRGN_ARMR("black dragon scales",       0, DISINT_RES, 1250, 7, CLR_BLACK),
+DRGN_ARMR("blue dragon scales",        0, SHOCK_RES,  1000, 7, CLR_BLUE),
+DRGN_ARMR("green dragon scales",       0, POISON_RES,  750, 7, CLR_GREEN),
+DRGN_ARMR("yellow dragon scales",      0, ACID_RES,    750, 7, CLR_YELLOW),
 #undef DRGN_ARMR
 /* other suits */
 ARMOR("full plate mail", None,
-	1, 0, 1, 0, 8, 7, 650, 1500, 1, 2, ARM_SUIT, IRON, HI_METAL),
+	1, 0, 1, 0, 8, 7, 650, 2000, 1, 2, ARM_SUIT, IRON, HI_METAL),
 ARMOR("field plate mail", None,
-	1, 0, 1, 0, 12, 6, 550, 900, 2, 2, ARM_SUIT, IRON, HI_METAL),
+	1, 0, 1, 0, 12, 6, 550, 1000, 2, 2, ARM_SUIT, IRON, HI_METAL),
 ARMOR("plate mail", None,
     1, 0, 1,  0, 34, 5, 450, 600,  3, 2,  ARM_SUIT, IRON, HI_METAL),
 ARMOR("crystal plate mail", None,
