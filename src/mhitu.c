@@ -968,7 +968,7 @@ register struct attack *mattk;
 {
     struct permonst *mdat = mtmp->data;
     int uncancelled, ptmp;
-    int dmg, armpro, permdmg, tmphp;
+    int dmg = 0, armpro, permdmg, tmphp;
     char buf[BUFSZ];
     struct permonst *olduasmon = youmonst.data;
     int res;
@@ -999,10 +999,17 @@ register struct attack *mattk;
         }
     }
 
+	dmg = 0;
     /*  First determine the base damage done */
-    dmg = d((int) mattk->damn, (int) mattk->damd);
+	if(mattk->damn > 0 && mattk->damd > 0)
+	    dmg += d((int) mattk->damn, (int) mattk->damd);
+	dmg += (int)mattk->damp;
     if ((is_undead(mdat) || is_vampshifter(mtmp)) && midnight())
-        dmg += d((int) mattk->damn, (int) mattk->damd); /* extra damage */
+	{
+		if (mattk->damn > 0 && mattk->damd > 0)
+			dmg += d((int) mattk->damn, (int) mattk->damd); /* extra damage */
+		dmg += (int)mattk->damp;
+	}
 
     /*  Next a cancellation factor.
      *  Use uncancelled when cancellation factor takes into account certain
@@ -1899,8 +1906,11 @@ struct monst *mtmp;
 struct attack *mattk;
 {
     struct trap *t = t_at(u.ux, u.uy);
-    int tmp = d((int) mattk->damn, (int) mattk->damd);
-    int tim_tmp;
+	int tmp = 0;
+	if(mattk->damn > 0 && mattk->damd > 0)
+		tmp += d((int)mattk->damn, (int)mattk->damd);
+	tmp += mattk->damp;
+	int tim_tmp;
     struct obj *otmp2;
     int i;
     boolean physical_damage = FALSE;
@@ -2161,8 +2171,11 @@ boolean ufound;
               levl[mtmp->mux][mtmp->muy].typ == WATER ? "empty water"
                                                       : "thin air");
     } else {
-        int tmp = d((int) mattk->damn, (int) mattk->damd);
-        boolean not_affected = defends((int) mattk->adtyp, uwep);
+		int tmp = 0;
+		if(mattk->damn > 0 && mattk->damd > 0)
+			tmp += d((int)mattk->damn, (int)mattk->damd);
+		tmp += (int)mattk->damp;
+		boolean not_affected = defends((int) mattk->adtyp, uwep);
 
         hitmsg(mtmp, mattk, -1);
 
@@ -2374,7 +2387,10 @@ struct attack *mattk;
                 if (mtmp->mcan && mtmp->data == &mons[PM_ARCHON] && rn2(5))
                     react = -1;
             } else {
-                int blnd = d((int) mattk->damn, (int) mattk->damd);
+				int blnd = 0;
+				if(mattk->damn > 0 && mattk->damd > 0)
+					blnd += d((int)mattk->damn, (int)mattk->damd);
+				blnd += mattk->damp;
 
                 You("are blinded by %s radiance!", s_suffix(mon_nam(mtmp)));
                 make_blinded((long) blnd, FALSE);
@@ -2910,12 +2926,13 @@ struct attack *mattk;
             || olduasmon->mattk[i].aatyp == AT_BOOM)
             oldu_mattk = &olduasmon->mattk[i];
     }
-    if (oldu_mattk->damn)
+    if (oldu_mattk->damn > 0 && oldu_mattk->damd > 0)
         tmp = d((int) oldu_mattk->damn, (int) oldu_mattk->damd);
-    else if (oldu_mattk->damd)
+    else if (oldu_mattk->damd > 0)
         tmp = d((int) olduasmon->mlevel + 1, (int) oldu_mattk->damd);
     else
         tmp = 0;
+	tmp += oldu_mattk->damp;
 
     /* These affect the enemy even if you were "killed" (rehumanized) */
     switch (oldu_mattk->adtyp) {

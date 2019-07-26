@@ -1545,14 +1545,16 @@ int mdead;
         if (mddat->mattk[i].aatyp == AT_NONE)
             break;
     }
-    if (mddat->mattk[i].damn)
+    if (mddat->mattk[i].damn > 0 && mddat->mattk[i].damd)
         tmp = d((int) mddat->mattk[i].damn, (int) mddat->mattk[i].damd);
     else if (mddat->mattk[i].damd)
         tmp = d((int) mddat->mlevel + 1, (int) mddat->mattk[i].damd);
     else
         tmp = 0;
 
-    /* These affect the enemy even if defender killed */
+	tmp += (int)mddat->mattk[i].damp;
+	
+	/* These affect the enemy even if defender killed */
     switch (mddat->mattk[i].adtyp) {
     case AD_ACID:
         if (mhit && !rn2(2)) {

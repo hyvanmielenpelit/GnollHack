@@ -20,7 +20,7 @@
 
 struct attack {
     uchar aatyp;
-    uchar adtyp, damn, damd;
+    uchar adtyp, damn, damd, damp;
 };
 
 /*	Max # of attacks for any given monster.
