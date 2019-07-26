@@ -505,13 +505,13 @@ CLOAK("cloak of displacement", "piece of cloth",
 ROBE("robe", "old robe", //STARTMARKER 1 & 2
 	0, 0, 0, 5, 1, 15, 25, 9, 2, CLOTH, CLR_RED),
 ROBE("robe of protection", "golden ornamental robe",
-	0, 1, PROTECTION, 5, 1, 25, 200, 6, 3, CLOTH, HI_GOLD),
+	0, 1, PROTECTION, 5, 1, 25, 400, 6, 3, CLOTH, HI_GOLD),
 ROBE("robe of magic resistance", "silvery ornamental robe",
 	0, 1, ANTIMAGIC, 4, 1, 20, 400, 8, 2, CLOTH, HI_SILVER),
 ROBE("robe of the archmagi", "shining blue robe",
-	0, 1, 0, 2, 2, 30, 500, 8, 3, CLOTH, HI_ZAP),
+	0, 1, 0, 2, 2, 30, 400, 8, 3, CLOTH, HI_ZAP),
 ROBE("robe of starry wisdom", "shining black robe",
-	0, 1, 0, 2, 2, 30, 500, 8, 3, CLOTH, CLR_BLACK),
+	0, 1, 0, 2, 2, 30, 400, 8, 3, CLOTH, CLR_BLACK),
 ROBE("bathrobe", "soft cotton robe",//ENDMARKER 2
 	0, 1, 0, 2, 1, 15, 5, 10, 0, CLOTH, CLR_WHITE),
 /* without shuffled appearances... */
