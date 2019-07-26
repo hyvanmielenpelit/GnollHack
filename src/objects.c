@@ -550,11 +550,11 @@ PANTS("beige shorts", "beige short pants",
 	0, 0, 0, 1, 2, 5, 10, 10, 0, CLOTH, CLR_BROWN),
 PANTS("jeans", "blue long pants", 
 	0, 0, 0, 1, 2, 10, 5, 10, 0, CLOTH, CLR_BLUE),
-PANTS("skirt", None, 
+PANTS("skirt", None, //STARTMARKER FOR NO "PAIR OF"
 	1, 0, 0, 1, 1, 10, 5, 10, 0, CLOTH, CLR_RED),
-PANTS("kilt", None, 
+PANTS("kilt", None,  //ENDMARKER FOR NO "PAIR OF"
 	1, 0, 0, 1, 1, 8, 10, 10, 0, CLOTH, CLR_MAGENTA),
-PANTS("trunk of swimming", "blue short pants", //ENDMARKER
+PANTS("trunks of swimming", "blue short pants", //ENDMARKER
 	0, 1, SWIMMING, 1, 1, 2, 50, 10, 0, CLOTH, CLR_BLUE),
 
 /* shields */

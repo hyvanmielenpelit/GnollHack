@@ -853,7 +853,7 @@ Pants_on(VOID_ARGS)
 	case KILT:
 	case JEANS:
 		break;
-	case TRUNK_OF_SWIMMING:
+	case TRUNKS_OF_SWIMMING:
 		break;
 	default:
 		impossible(unknown_type, c_pants, uarmp->otyp);
@@ -876,7 +876,7 @@ Pants_off(VOID_ARGS)
 	case KILT:
 	case JEANS:
 		break;
-	case TRUNK_OF_SWIMMING:
+	case TRUNKS_OF_SWIMMING:
 		break;
 	default:
 		impossible(unknown_type, c_pants, uarmp->otyp);

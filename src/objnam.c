@@ -495,7 +495,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             Sprintf(buf, "set of %s", actualn);
             break;
         }
-        if (is_boots(obj) || is_gloves(obj) || is_bracers(obj))
+        if (is_boots(obj) || is_gloves(obj) || is_bracers(obj) || (is_pants(obj) && !(typ >= SKIRT && typ <= KILT)))
             Strcpy(buf, "pair of ");
 
         if (obj->otyp >= ELVEN_SHIELD && obj->otyp <= ORCISH_SHIELD
@@ -2109,7 +2109,7 @@ static struct sing_plur one_off[] = {
 static const char *const as_is[] = {
     /* makesingular() leaves these plural due to how they're used */
     "boots",   "shoes",     "gloves",    "lenses",   "scales",
-    "eyes",    "gauntlets", "iron bars", "bracers", "pants", "trousers", "shorts", "jeans",
+    "eyes",    "gauntlets", "iron bars", "bracers", "pants", "trousers", "shorts", "jeans", "trunks",
     /* both singular and plural are spelled the same */
     "bison",   "deer",      "elk",       "fish",      "fowl",
     "tuna",    "yaki",      "-hai",      "krill",     "manes",
@@ -2690,7 +2690,7 @@ STATIC_OVL NEARDATA const struct o_range o_ranges[] = {
 	{ "robe", ARMOR_CLASS, ROBE, MUMMY_WRAPPING },
 	{ "bracers", ARMOR_CLASS, LEATHER_BRACERS, BRACERS_OF_MAGIC_RESISTANCE },
 	{ "belt", ARMOR_CLASS, LEATHER_BELT, BELT_OF_GIANT_STRENGTH },
-	{ "pants", ARMOR_CLASS, LEATHER_PANTS, TRUNK_OF_SWIMMING },
+	{ "pants", ARMOR_CLASS, LEATHER_PANTS, TRUNKS_OF_SWIMMING },
 	{ "dragon scales", ARMOR_CLASS, GRAY_DRAGON_SCALES,
       YELLOW_DRAGON_SCALES },
     { "dragon scale mail", ARMOR_CLASS, GRAY_DRAGON_SCALE_MAIL,
@@ -2717,7 +2717,8 @@ static const struct alt_spellings {
 	{ "smooth shield", SHIELD_OF_REFLECTION },
     { "grey dragon scale mail", GRAY_DRAGON_SCALE_MAIL },
     { "grey dragon scales", GRAY_DRAGON_SCALES },
-    { "iron ball", HEAVY_IRON_BALL },
+	{ "swimming trunks", TRUNKS_OF_SWIMMING },
+	{ "iron ball", HEAVY_IRON_BALL },
     { "lantern", BRASS_LANTERN },
     { "mattock", DWARVISH_MATTOCK },
     { "amulet of poison resistance", AMULET_VERSUS_POISON },
