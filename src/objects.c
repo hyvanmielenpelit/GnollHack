@@ -462,16 +462,17 @@ ARMOR("leather jacket", None,
       1, 0, 0,  0, 12, 0,  30,  10,  9, 0,  ARM_SUIT, LEATHER, CLR_BLACK),
 
 /* shirts */
-ARMOR("Hawaiian shirt", None,
+ARMOR("Hawaiian shirt", None, //STARTMARKER 1
       1, 0, 0,  0,  8, 0,   5,   3, 10, 0,  ARM_SHIRT, CLOTH, CLR_MAGENTA),
-ARMOR("shirt of uncontrollable laughter", "funny T-shirt",
+/* with shuffled appearances... */
+ARMOR("shirt of uncontrollable laughter", "funny T-shirt", //STARTMARKER 2
     0, 1, 0,  LAUGHING,  2, 0,   5,   50, 10, 0,  ARM_SHIRT, CLOTH, CLR_BLUE),
 ARMOR("shirt of comeliness", "cool T-shirt",
 	0, 1, 0, 0, 2, 0, 5, 3, 50, 0, ARM_SHIRT, CLOTH, CLR_BLACK),
-ARMOR("shirt of sound mindedness", "green T-shirt",
+ARMOR("shirt of sound mindedness", "green T-shirt", 
 	0, 1, 0, HALLUC_RES, 2, 0, 5, 3, 50, 0, ARM_SHIRT, CLOTH, CLR_GREEN),
-ARMOR("T-shirt", None,
-    1, 0, 0,  0,  2, 0,   5,   2, 10, 0,  ARM_SHIRT, CLOTH, CLR_WHITE),
+ARMOR("T-shirt", "old T-shirt",//ENDMARKER 1 & 2
+    0, 0, 0,  0,  2, 0,   5,   2, 10, 0,  ARM_SHIRT, CLOTH, CLR_WHITE),
 
 
 /* cloaks */
@@ -489,54 +490,57 @@ CLOAK("leather cloak", None,
       1, 0,          0,  8, 0, 15, 40,  9, 1,  LEATHER, CLR_BROWN),
 /* with shuffled appearances... */
 CLOAK("cloak of protection", "tattered cape",
-      0, 1, PROTECTION,  9, 0, 10, 200,  7, 3,  CLOTH, HI_CLOTH),
+      0, 1, PROTECTION,  9, 0, 10, 250,  7, 3,  CLOTH, HI_CLOTH),
         /* cloak of protection is now the only item conferring MC 3 */
 CLOAK("cloak of invisibility", "opera cloak",
-      0, 1,      INVIS, 9, 0, 10, 150,  9, 1,  CLOTH, CLR_BRIGHT_MAGENTA),
+      0, 1,      INVIS, 9, 0, 10, 250,  9, 1,  CLOTH, CLR_BRIGHT_MAGENTA),
 CLOAK("cloak of magic resistance", "ornamental cope",
-      0, 1,  ANTIMAGIC,  2, 0, 10, 400,  9, 1,  CLOTH, CLR_WHITE),
+      0, 1,  ANTIMAGIC,  2, 0, 10, 250,  9, 1,  CLOTH, CLR_WHITE),
         /*  'cope' is not a spelling mistake... leave it be */
 CLOAK("cloak of displacement", "piece of cloth",
-      0, 1,  DISPLACED, 7, 0, 10, 300,  9, 1,  CLOTH, HI_CLOTH),
+      0, 1,  DISPLACED, 7, 0, 10, 250,  9, 1,  CLOTH, HI_CLOTH),
 
 /* robes */
-ROBE("robe", None, //STARTMARKER
-	1, 1, 0, 5, 1, 15, 25, 9, 2, CLOTH, CLR_RED),//STARTMARKER 2
+/* with shuffled appearances... */
+ROBE("robe", "old robe", //STARTMARKER 1 & 2
+	0, 0, 0, 5, 1, 15, 25, 9, 2, CLOTH, CLR_RED),
 ROBE("robe of protection", "golden ornamental robe",
 	0, 1, PROTECTION, 5, 1, 25, 200, 6, 3, CLOTH, HI_GOLD),
-	/* robe was adopted from slash'em, where it's worn as a suit
-	rather than as a cloak and there are several variations */
 ROBE("robe of magic resistance", "silvery ornamental robe",
 	0, 1, ANTIMAGIC, 4, 1, 20, 400, 8, 2, CLOTH, HI_SILVER),
-ROBE("robe of the archmagi", "blue ornamental robe",
-	0, 1, 0, 2, 2, 30, 750, 8, 3, CLOTH, HI_ZAP),
+ROBE("robe of the archmagi", "shining blue robe",
+	0, 1, 0, 2, 2, 30, 500, 8, 3, CLOTH, HI_ZAP),
 ROBE("robe of starry wisdom", "shining black robe",
-	0, 1, 0, 2, 2, 30, 750, 8, 3, CLOTH, CLR_BLACK),
-ROBE("bathrobe", "soft cotton robe",
+	0, 1, 0, 2, 2, 30, 500, 8, 3, CLOTH, CLR_BLACK),
+ROBE("bathrobe", "soft cotton robe",//ENDMARKER 2
 	0, 1, 0, 2, 1, 15, 5, 10, 0, CLOTH, CLR_WHITE),
+/* without shuffled appearances... */
 ROBE("mummy wrapping", None, //ENDMARKER
 1, 0, 0, 0, 0, 3, 2, 10, 1, CLOTH, CLR_GRAY),
 	/* worn mummy wrapping blocks invisibility */
 
 
 /* bracers */
-BRACERS("leather bracers", None, //STARTMARKER
-	1, 0, 0, 3, 1, 5, 5, 9, 0, CLOTH, HI_LEATHER),
-BRACERS("bracers of defense", "runed bracers",//STARTMARKER 2
-	0, 1, PROTECTION, 3, 1, 5, 250, 7, 2, CLOTH, HI_LEATHER),
+/* with shuffled appearances... */
+BRACERS("leather bracers", "old bracers", //STARTMARKER 1 & 2
+	0, 0, 0, 3, 1, 5, 5, 9, 0, CLOTH, HI_LEATHER),
+BRACERS("bracers of defense", "runed bracers",
+	0, 1, PROTECTION, 3, 1, 5, 300, 7, 2, CLOTH, HI_LEATHER),
 BRACERS("bracers of archery", "deerskin bracers",
-	0, 1, 0, 2, 1, 5, 400, 9, 0, CLOTH, HI_LEATHER),
-BRACERS("bracers of magic resistance", "ornamental bracers",//ENDMARKER
-0, 1, ANTIMAGIC, 2, 1, 5, 250, 9, 2, CLOTH, HI_LEATHER),
+	0, 1, 0, 2, 1, 5, 300, 9, 0, CLOTH, HI_LEATHER),
+BRACERS("bracers of magic resistance", "ornamental bracers",//ENDMARKER 1 & 2
+0, 1, ANTIMAGIC, 2, 1, 5, 300, 9, 2, CLOTH, HI_LEATHER),
 
 
 /* belts */
-BELT("leather belt", None, //STARTMARKER
-	1, 0, 0, 6, 0, 5, 5, 10, 0, CLOTH, HI_LEATHER),
-BELT("belt of giant strength", "ornamental girdle", //ENDMARKER
-	0, 1, 0, 2, 0, 5, 5, 10, 0, CLOTH, HI_LEATHER),
+/* with shuffled appearances... */
+BELT("leather belt", "expensive belt", //STARTMARKER 1 & 2
+	0, 0, 0, 6, 0, 5, 5, 5, 0, CLOTH, HI_LEATHER),
+BELT("belt of giant strength", "ornamental belt", //ENDMARKER 1 & 2
+	0, 1, 0, 2, 0, 5, 5, 300, 0, CLOTH, HI_LEATHER),
 
 /* pants */
+/* no shuffled appearances... */
 PANTS("leather pants", None, //STARTMARKER
 	1, 0, 0, 3, 2, 10, 10, 9, 0, CLOTH, HI_LEATHER),
 PANTS("beige shorts", "beige short pants",
@@ -574,11 +578,11 @@ SHIELD("shield of reflection", "polished silver shield",
 GLOVES("leather gloves", "old gloves",
        0, 0,        0, 15, 1, 10,  8, 9, 0,  LEATHER, HI_LEATHER),
 GLOVES("gauntlets of fumbling", "padded gloves",
-       0, 1, FUMBLING,  8, 1, 10, 50, 9, 0,  LEATHER, HI_LEATHER),
+       0, 1, FUMBLING,  8, 1, 10, 100, 9, 0,  LEATHER, HI_LEATHER),
 GLOVES("gauntlets of power", "riding gloves",
-       0, 1,        0,  8, 1, 30, 50, 9, 0,  IRON, CLR_BROWN),
+       0, 1,        0,  8, 1, 30, 100, 9, 0,  IRON, CLR_BROWN),
 GLOVES("gauntlets of dexterity", "fencing gloves",
-       0, 1,        0,  8, 1, 10, 50, 9, 0,  LEATHER, HI_LEATHER),
+       0, 1,        0,  8, 1, 10, 100, 9, 0,  LEATHER, HI_LEATHER),
 
 /* boots */
 BOOTS("low boots", "walking shoes",
@@ -606,6 +610,7 @@ BOOTS("levitation boots", "snow boots",
 #undef HELM
 #undef CLOAK
 #undef SHIELD
+#undef SHIRT
 #undef ROBE
 #undef BRACERS
 #undef BELT

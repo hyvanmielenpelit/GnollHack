@@ -203,10 +203,14 @@ int *lo_p, *hi_p; /* output: range that item belongs among */
             *lo_p = CLOAK_OF_PROTECTION, *hi_p = CLOAK_OF_DISPLACEMENT;
         else if (otyp >= SPEED_BOOTS && otyp <= LEVITATION_BOOTS)
             *lo_p = SPEED_BOOTS, *hi_p = LEVITATION_BOOTS;
-		else if (otyp >= ROBE_OF_PROTECTION && otyp <= MUMMY_WRAPPING)
-			* lo_p = ROBE_OF_PROTECTION, * hi_p = MUMMY_WRAPPING;
+		else if (otyp >= ROBE && otyp <= BATHROBE)
+			* lo_p = ROBE, * hi_p = BATHROBE;
 		else if (otyp >= LEATHER_BRACERS && otyp <= BRACERS_OF_MAGIC_RESISTANCE)
 			* lo_p = LEATHER_BRACERS, * hi_p = BRACERS_OF_MAGIC_RESISTANCE;
+		else if (otyp >= SHIRT_OF_UNCONTROLLABLE_LAUGHTER && otyp <= T_SHIRT)
+			* lo_p = SHIRT_OF_UNCONTROLLABLE_LAUGHTER, * hi_p = T_SHIRT;
+		else if (otyp >= LEATHER_BELT && otyp <= BELT_OF_GIANT_STRENGTH)
+			* lo_p = LEATHER_BELT, * hi_p = BELT_OF_GIANT_STRENGTH;
 		break;
     case POTION_CLASS:
         /* potion of water has the only fixed description */
@@ -250,9 +254,9 @@ shuffle_all()
         AMULET_CLASS, POTION_CLASS, RING_CLASS,  SCROLL_CLASS,
         SPBOOK_CLASS, WAND_CLASS,   VENOM_CLASS,
     };
-    /* sub-class type ranges (one item from each group) */
+    /* armor sub-class type ranges (one item from each group) */
     static short shuffle_types[] = {
-        HELMET, LEATHER_GLOVES, CLOAK_OF_PROTECTION, SPEED_BOOTS,
+        HELMET, LEATHER_GLOVES, SHIRT_OF_UNCONTROLLABLE_LAUGHTER, CLOAK_OF_PROTECTION, SPEED_BOOTS, ROBE, LEATHER_BRACERS, LEATHER_BELT
     };
     int first, last, idx;
 
