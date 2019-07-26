@@ -495,7 +495,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             Sprintf(buf, "set of %s", actualn);
             break;
         }
-        if (is_boots(obj) || is_gloves(obj))
+        if (is_boots(obj) || is_gloves(obj) || is_bracers(obj))
             Strcpy(buf, "pair of ");
 
         if (obj->otyp >= ELVEN_SHIELD && obj->otyp <= ORCISH_SHIELD

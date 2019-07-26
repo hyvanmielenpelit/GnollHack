@@ -801,6 +801,9 @@ Belt_on(VOID_ARGS)
 		makeknown(uarmv->otyp);
 		context.botl = 1; /* taken care of in attrib.c */
 		break;
+	case BELT_OF_DWARVENKIND:
+		adj_abon(uarmv, uarmv->spe);
+		break;
 	default:
 		impossible(unknown_type, c_belt, uarmv->otyp);
 	}
@@ -824,6 +827,10 @@ Belt_off(VOID_ARGS)
 
 		makeknown(uarmv->otyp);
 		context.botl = 1; /* taken care of in attrib.c */
+		break;
+	case BELT_OF_DWARVENKIND:
+		if (!context.takeoff.cancelled_don)
+			adj_abon(uarmv, -uarmv->spe);
 		break;
 	default:
 		impossible(unknown_type, c_belt, uarmv->otyp);
@@ -3193,6 +3200,13 @@ register schar delta;
 		if (delta) {
 			makeknown(uarmu->otyp);
 			ABON(A_CHA) += (delta);
+		}
+		context.botl = 1;
+	}
+	if (uarmv && uarmv == otmp && otmp->otyp == BELT_OF_DWARVENKIND) {
+		if (delta) {
+			makeknown(uarmv->otyp);
+			ABON(A_CON) += (delta);
 		}
 		context.botl = 1;
 	}

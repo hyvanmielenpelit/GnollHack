@@ -450,7 +450,7 @@ ARMOR("chain mail", None,
 ARMOR("orcish chain mail", "crude chain mail",
       0, 0, 0,  0, 20, 5, 300,  75,  6, 1,  ARM_SUIT, IRON, CLR_BLACK),
 ARMOR("scale mail", None,
-      1, 0, 0,  0, 65, 5, 250,  45,  6, 1,  ARM_SUIT, IRON, HI_METAL),
+      1, 0, 0,  0, 62, 5, 250,  45,  6, 1,  ARM_SUIT, IRON, HI_METAL),
 ARMOR("studded leather armor", None,
       1, 0, 0,  0, 67, 3, 200,  15,  7, 1,  ARM_SUIT, LEATHER, HI_LEATHER),
 ARMOR("ring mail", None,
@@ -530,15 +530,17 @@ BRACERS("bracers of defense", "runed bracers",
 BRACERS("bracers of archery", "deerskin bracers",
 	0, 1, 0, 2, 1, 5, 300, 9, 0, CLOTH, HI_LEATHER),
 BRACERS("bracers of magic resistance", "ornamental bracers",//ENDMARKER 1 & 2
-0, 1, ANTIMAGIC, 2, 1, 5, 300, 9, 2, CLOTH, HI_LEATHER),
+	0, 1, ANTIMAGIC, 2, 1, 5, 300, 9, 2, CLOTH, HI_LEATHER),
 
 
 /* belts */
 /* with shuffled appearances... */
-BELT("leather belt", "expensive belt", //STARTMARKER 1 & 2
-	0, 0, 0, 6, 0, 5, 5, 5, 0, CLOTH, HI_LEATHER),
+BELT("leather belt", "old belt", //STARTMARKER 1 & 2
+	0, 0, 0, 6, 0, 5, 5, 10, 0, CLOTH, HI_LEATHER),
+BELT("belt of dwarvenkind", "broad belt", 
+	0, 1, POISON_RES, 3, 0, 5, 250, 10, 1, CLOTH, HI_LEATHER),
 BELT("belt of giant strength", "ornamental belt", //ENDMARKER 1 & 2
-	0, 1, 0, 2, 0, 5, 5, 300, 0, CLOTH, HI_LEATHER),
+	0, 1, 0, 2, 0, 5, 250, 10, 0, CLOTH, HI_LEATHER),
 
 /* pants */
 /* no shuffled appearances... */
@@ -552,8 +554,8 @@ PANTS("skirt", None,
 	1, 0, 0, 1, 1, 10, 5, 10, 0, CLOTH, CLR_RED),
 PANTS("kilt", None, 
 	1, 0, 0, 1, 1, 8, 10, 10, 0, CLOTH, CLR_MAGENTA),
-PANTS("trunk of swimming", "blue short pants", //STARTMARKER
-	0, 1, SWIMMING, 1, 1, 2, 50, 9, 0, CLOTH, CLR_BLUE),
+PANTS("trunk of swimming", "blue short pants", //ENDMARKER
+	0, 1, SWIMMING, 1, 1, 2, 50, 10, 0, CLOTH, CLR_BLUE),
 
 /* shields */
 SHIELD("small shield", None,

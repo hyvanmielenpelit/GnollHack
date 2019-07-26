@@ -1033,7 +1033,13 @@ register struct obj *obj;
             context.botl = 1;
         }
         break;
-    case HELM_OF_BRILLIANCE:
+	case BELT_OF_DWARVENKIND:
+		if ((obj->owornmask & W_ARMV) && (obj == uarmv)) {
+			ABON(A_CON) -= obj->spe;
+			context.botl = 1;
+		}
+		break;
+	case HELM_OF_BRILLIANCE:
         if ((obj->owornmask & W_ARMH) && (obj == uarmh)) {
             ABON(A_INT) -= obj->spe;
             ABON(A_WIS) -= obj->spe;
@@ -1174,7 +1180,13 @@ boolean by_you;
             context.botl = 1;
         }
         break;
-    default:
+	case BELT_OF_DWARVENKIND:
+		if ((obj->owornmask & W_ARMV) && (obj == uarmv)) {
+			ABON(A_CON)--;
+			context.botl = 1;
+		}
+		break;
+	default:
         break;
     }
     if (context.botl)
