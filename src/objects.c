@@ -469,11 +469,11 @@ ARMOR("Hawaiian shirt", None, //STARTMARKER 1
 ARMOR("shirt of uncontrollable laughter", "funny T-shirt", //STARTMARKER 2
     0, 1, 0,  LAUGHING,  2, 0,   5,   50, 10, 0,  ARM_SHIRT, CLOTH, CLR_BLUE),
 ARMOR("shirt of comeliness", "cool T-shirt",
-	0, 1, 0, 0, 2, 0, 5, 3, 50, 0, ARM_SHIRT, CLOTH, CLR_BLACK),
+	0, 1, 0, 0,			 2, 0,   5,   50, 10, 0, ARM_SHIRT, CLOTH, CLR_BLACK),
 ARMOR("shirt of sound mindedness", "green T-shirt", 
-	0, 1, 0, HALLUC_RES, 2, 0, 5, 3, 50, 0, ARM_SHIRT, CLOTH, CLR_GREEN),
+	0, 1, 0, HALLUC_RES, 2, 0, 5,     50, 10, 0, ARM_SHIRT, CLOTH, CLR_GREEN),
 ARMOR("T-shirt", "old T-shirt",//ENDMARKER 1 & 2
-    0, 0, 0,  0,  2, 0,   5,   2, 10, 0,  ARM_SHIRT, CLOTH, CLR_WHITE),
+    0, 0, 0,  0,		 2, 0, 5,      2, 10, 0,  ARM_SHIRT, CLOTH, CLR_WHITE),
 
 
 /* cloaks */
