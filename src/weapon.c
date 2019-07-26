@@ -216,10 +216,13 @@ struct monst *mon;
 
     if (otyp == CREAM_PIE)
         return 0;
-
+	
     if (bigmonst(ptr)) {
-        if (objects[otyp].oc_wldam)
-            tmp = rnd(objects[otyp].oc_wldam);
+        if (objects[otyp].oc_wldam > 0 && objects[otyp].oc_wldice > 0)
+            tmp += d(objects[otyp].oc_wldice, objects[otyp].oc_wldam);
+		tmp += objects[otyp].oc_wldmgplus;
+
+		/*
         switch (otyp) {
         case IRON_CHAIN:
         case CROSSBOW_BOLT:
@@ -256,9 +259,13 @@ struct monst *mon;
             tmp += d(2, 6);
             break;
         }
+		*/
     } else {
-        if (objects[otyp].oc_wsdam)
-            tmp = rnd(objects[otyp].oc_wsdam);
+		if (objects[otyp].oc_wsdam > 0 && objects[otyp].oc_wsdice > 0)
+			tmp += d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam);
+		tmp += objects[otyp].oc_wsdmgplus;
+		//tmp = rnd(objects[otyp].oc_wsdam);
+		/*
         switch (otyp) {
         case IRON_CHAIN:
         case CROSSBOW_BOLT:
@@ -292,6 +299,7 @@ struct monst *mon;
 			tmp += d(2, 4);
 			break;
 		}
+		*/
     }
     if (Is_weapon) {
         tmp += otmp->spe;

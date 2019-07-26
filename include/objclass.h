@@ -116,7 +116,8 @@ struct objclass {
     short oc_cost;            /* base cost in shops */
     /* Check the AD&D rules!  The FIRST is small monster damage. */
     /* for weapons, and tools, rocks, and gems useful as weapons */
-    schar oc_wsdam, oc_wldam; /* max small/large monster damage */
+	schar oc_wsdice, oc_wsdam, oc_wsdmgplus; /* small monster damage */
+	schar oc_wldice, oc_wldam, oc_wldmgplus; /* large monster damage */
     schar oc_oc1, oc_oc2;
 #define oc_hitbon oc_oc1 /* weapons: "to hit" bonus */
 
