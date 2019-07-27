@@ -1121,8 +1121,8 @@ int attrindx;
 			lolimit = hilimit;
 		}
 		else if (uarmg && uarmg->otyp == GAUNTLETS_OF_POWER){
-			hilimit = STR19(19);
-			lolimit = hilimit;
+			//hilimit = STR19(19);
+			lolimit = STR19(19);
 		}
 	} else if (attrindx == A_CON) {
         if (uwep && uwep->oartifact == ART_OGRESMASHER)

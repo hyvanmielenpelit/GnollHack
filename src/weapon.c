@@ -905,19 +905,19 @@ abon()
 	else if (str == STR18(100))
 		sbon = 3;
 	else if (str == STR19(19))
-		sbon = 4;
+		sbon = 3;
 	else if (str == STR19(20))
-		sbon = 4;
+		sbon =4;
 	else if (str == STR19(21))
 		sbon = 4;
 	else if (str == STR19(22))
-		sbon = 4;
+		sbon = 5;
 	else if (str == STR19(23))
-		sbon = 4;
+		sbon = 5;
 	else if (str == STR19(24))
-		sbon = 4;
+		sbon = 6;
 	else
-        sbon = 5;
+        sbon = 6;
 
     /* Game tuning kludge: make it a bit easier for a low level character to
      * hit */
@@ -983,40 +983,40 @@ struct monst* mon;
 {
 	int bonus = 0;
 
-	if (mon->data == &mons[PM_GNOME_LORD] || mon->data == &mons[PM_DWARF] || mon->data == &mons[PM_ELF_LORD] ||
+	if (mon->data == &mons[PM_GNOME_LORD] || mon->data == &mons[PM_ELF_LORD] ||
 		mon->data == &mons[PM_FOREST_CENTAUR] || mon->data == &mons[PM_HILL_ORC] || 
 		mon->data == &mons[PM_KOP_SERGEANT] || mon->data == &mons[PM_SOLDIER] || mon->data == &mons[PM_WATCHMAN]) {
 		bonus = 1;
 	}
-	else if (mon->data == &mons[PM_GNOME_KING] || mon->data == &mons[PM_DWARF_LORD] || 
+	else if (mon->data == &mons[PM_GNOME_KING] || mon->data == &mons[PM_DWARF] ||
 		mon->data == &mons[PM_LIEUTENANT] || mon->data == &mons[PM_MOUNTAIN_CENTAUR] || mon->data == &mons[PM_HOBGOBLIN] ||
 		mon->data == &mons[PM_KOP_LIEUTENANT] || mon->data == &mons[PM_ERINYS] || mon->data == &mons[PM_MORDOR_ORC] ||
-		mon->data == &mons[PM_URUK_HAI]) {
+		mon->data == &mons[PM_URUK_HAI] || mon->data == &mons[PM_VROCK]) {
 		bonus = 2;
 	} else if (mon->data == &mons[PM_CAPTAIN] || mon->data == &mons[PM_BLACK_NAGA] || mon->data == &mons[PM_RED_NAGA] ||
-		mon->data == &mons[PM_CROESUS] || mon->data == &mons[PM_VROCK] || mon->data == &mons[PM_KOP_KAPTAIN] ||
-		mon->data == &mons[PM_ORC_CAPTAIN] || mon->data == &mons[PM_WATCH_CAPTAIN] || 
-		mon->data == &mons[PM_BUGBEAR] || mon->data == &mons[PM_ELVENKING]) {
+		mon->data == &mons[PM_CROESUS]|| mon->data == &mons[PM_KOP_KAPTAIN] ||
+		mon->data == &mons[PM_ORC_CAPTAIN] || mon->data == &mons[PM_DWARF_LORD] || mon->data == &mons[PM_WATCH_CAPTAIN] ||
+		mon->data == &mons[PM_BUGBEAR] || mon->data == &mons[PM_ELVENKING] || mon->data == &mons[PM_HEZROU]) {
 		bonus = 3;
-	} else if (mon->data == &mons[PM_DWARF_KING] || mon->data == &mons[PM_HEZROU]) {
+	} else if (mon->data == &mons[PM_DWARF_KING] || mon->data == &mons[PM_ICE_DEVIL]) { //Glabrezu missing from here
 		bonus = 4;
 	}
-	else if (mon->data == &mons[PM_OGRE] || mon->data == &mons[PM_ALEAX] || mon->data == &mons[PM_ICE_DEVIL]) {
+	else if (mon->data == &mons[PM_OGRE] || mon->data == &mons[PM_NALFESHNEE] || mon->data == &mons[PM_ALEAX]) {
 		bonus = 5;
 	} else if (mon->data == &mons[PM_OGRE_LORD] || mon->data == &mons[PM_VAMPIRE] ||
-		mon->data == &mons[PM_NALFESHNEE]) {
+		mon->data == &mons[PM_PIT_FIEND]) {
 		bonus = 6;
 	} else if (mon->data == &mons[PM_OGRE_KING]  ||	mon->data == &mons[PM_VAMPIRE_LORD] ||
-		mon->data == &mons[PM_ARCHON] || mon->data == &mons[PM_PIT_FIEND] || mon->data == &mons[PM_BALROG]) {
+		mon->data == &mons[PM_ARCHON] || mon->data == &mons[PM_BALROG]) {
 		bonus = 7;
-	} else if (mon->data == &mons[PM_GIANT] || mon->data == &mons[PM_STONE_GIANT] || mon->data == &mons[PM_VLAD_THE_IMPALER] ||
-		mon->data == &mons[PM_YEENOGHU] || mon->data == &mons[PM_ORCUS]) {
+	} else if (mon->data == &mons[PM_GIANT] || mon->data == &mons[PM_STONE_GIANT] || mon->data == &mons[PM_HILL_GIANT] ||
+		mon->data == &mons[PM_VLAD_THE_IMPALER]) {
 		bonus = 8;
-	} else if (mon->data == &mons[PM_FIRE_GIANT] || mon->data == &mons[PM_FROST_GIANT] || mon->data == &mons[PM_HILL_GIANT] ||
-		mon->data == &mons[PM_DISPATER] || 	mon->data == &mons[PM_GERYON] || 
-		mon->data == &mons[PM_BAALZEBUB]) {
+	} else if (mon->data == &mons[PM_FIRE_GIANT] || mon->data == &mons[PM_FROST_GIANT] || mon->data == &mons[PM_STORM_GIANT] ||
+		mon->data == &mons[PM_DISPATER] || mon->data == &mons[PM_GERYON] || mon->data == &mons[PM_YEENOGHU] || mon->data == &mons[PM_ORCUS] ||
+		mon->data == &mons[PM_BAALZEBUB] || mon->data == &mons[PM_ASMODEUS] || mon->data == &mons[PM_DEMOGORGON]) {
 		bonus = 9;
-	} else if (mon->data == &mons[PM_STORM_GIANT] || mon->data == &mons[PM_TITAN] || mon->data == &mons[PM_CYCLOPS] || mon->data == &mons[PM_ASMODEUS] || mon->data == &mons[PM_DEMOGORGON]) {
+	} else if (mon->data == &mons[PM_TITAN] || mon->data == &mons[PM_CYCLOPS]) {
 		bonus = 10;
 
 	}
