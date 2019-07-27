@@ -202,7 +202,10 @@ register struct monst *mtmp;
 			break;
 		case PM_GNOLL_LORD:
 			if (!rn2(2))
-				(void)mongets(mtmp, FLAIL);
+				if (!rn2(6))
+					(void)mongets(mtmp, DOUBLE_HEADED_FLAIL);
+				else
+					(void)mongets(mtmp, FLAIL);
 			if (!rn2(3))
 			{
 				if(!(rn2(4)))
@@ -214,7 +217,12 @@ register struct monst *mtmp;
 			}
 			break;
 		case PM_GNOLL_KING:
-			(void)mongets(mtmp, FLAIL);
+			if (!rn2(20))
+				(void)mongets(mtmp, TRIPLE_HEADED_FLAIL);
+			else if (rn2(3))
+				(void)mongets(mtmp, DOUBLE_HEADED_FLAIL);
+			else
+				(void)mongets(mtmp, FLAIL);
 			(void)mongets(mtmp, HEAVY_CROSSBOW);
 			m_initthrow(mtmp, CROSSBOW_BOLT, 21+rnd(10), !rn2(5));
 			break;
@@ -549,7 +557,7 @@ register struct monst *mtmp;
 			otmp = mksobj(TRIPLE_HEADED_FLAIL, FALSE, FALSE);
 			//bless(otmp);
 			otmp->oerodeproof = TRUE;
-			spe2 = 1+rn2(3);
+			spe2 = 2+rn2(2);
 			otmp->spe = max(otmp->spe, spe2);
 			(void)mpickobj(mtmp, otmp);
 			break;

@@ -291,9 +291,12 @@ WEAPON("aklys", "thonged club",
 WEAPON("flail", None,
        1, 0, 0, 40,  35,   4,  1, 6, 1, 2, 4, 0, 0, B,   P_FLAIL, IRON, HI_METAL),
 	/* +1 small, +1d4 large */
+WEAPON("double-headed flail", None,
+	1, 0, 0, 0, 80, 250, 1, 10, 1, 3, 4, 0, -1, B, P_FLAIL, IRON, HI_METAL),
+	/* one-handed, flail damage x c. 1.5, -1 hit bonus (difficult to wield)*/
 WEAPON("triple-headed flail", None,
-	1, 0, 0, 0, 120, 1000, 3, 6, 3, 6, 4, 0, 2, B, P_FLAIL, IRON, HI_METAL),
-	/* +1 small, +1d4 large x 3*/
+	1, 0, 0, 0, 120, 1000, 2, 6, 2, 4, 4, 0, -2, B, P_FLAIL, IRON, HI_METAL),
+	/* one-handed, flail damage x 2, -2 hit bonus (difficult to wield)*/
 
 /* misc */
 WEAPON("bullwhip", None,
@@ -400,7 +403,7 @@ HELM("helm of telepathy", "visored helmet",
  *          is the same as order of dragons defined in monst.c.
  */
 #define DRGN_ARMR(name,mgc,power,cost,ac,color)  \
-    ARMOR(name, None, 1, mgc, 1, power, 0, 5, 500,  \
+    ARMOR(name, None, 1, mgc, 1, power, 0, 5, 550,  \
           cost, ac, 0, ARM_SUIT, DRAGON_HIDE, color)
 /* 3.4.1: dragon scale mail reclassified as "magic" since magic is
    needed to create them */
