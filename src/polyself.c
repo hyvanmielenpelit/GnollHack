@@ -670,14 +670,16 @@ int mntmp;
     //if (strongmonst(&mons[mntmp]))
     //    ABASE(A_STR) = AMAX(A_STR) = STR18(100);
 
-	ABASE(A_STR) = AMAX(A_STR) = (&mons[mntmp])->str; // STR18(100);
+	int tempstr1, tempstr2;
+
+	ABASE(A_STR) = tempstr1 = AMAX(A_STR) = (&mons[mntmp])->str; // STR18(100);
 	ABASE(A_DEX) = AMAX(A_DEX) = (&mons[mntmp])->dex;
 	ABASE(A_CON) = AMAX(A_CON) = (&mons[mntmp])->con;
 	ABASE(A_INT) = AMAX(A_INT) = (&mons[mntmp])->intl;
 //	ABASE(A_WIS) = AMAX(A_WIS) = (&mons[mntmp])->wis; // Wisdom does not change 
 	ABASE(A_CHA) = AMAX(A_CHA) = (&mons[mntmp])->cha;
 
-	AMAX(A_STR) = monster_attribute_maximum(&mons[mntmp], A_STR);
+	AMAX(A_STR) = tempstr2 = monster_attribute_maximum(&mons[mntmp], A_STR);
 	AMAX(A_DEX) = monster_attribute_maximum(&mons[mntmp], A_DEX);
 	AMAX(A_CON) = monster_attribute_maximum(&mons[mntmp], A_CON);
 	AMAX(A_INT) = monster_attribute_maximum(&mons[mntmp], A_INT);
@@ -926,6 +928,51 @@ int attribute_index;
 
 	
 }
+
+
+
+int
+monster_attribute_minimum(monster_class_ptr, attribute_index)
+struct permonst* monster_class_ptr;
+int attribute_index;
+{
+	if (!monster_class_ptr)
+		return 0;
+
+	if (attribute_index < A_STR || attribute_index > A_CHA)
+		return 0;
+
+	int monster_attribute_score = 0;
+	switch (attribute_index) {
+	case A_STR:
+		monster_attribute_score = monster_class_ptr->str;
+		break;
+	case A_DEX:
+		monster_attribute_score = monster_class_ptr->dex;
+		break;
+	case A_CON:
+		monster_attribute_score = monster_class_ptr->con;
+		break;
+	case A_INT:
+		monster_attribute_score = monster_class_ptr->intl;
+		break;
+	case A_WIS:
+		monster_attribute_score = monster_class_ptr->wis;
+		break;
+	case A_CHA:
+		monster_attribute_score = monster_class_ptr->cha;
+		break;
+	}
+	if (monster_attribute_score <= 3)
+		return monster_attribute_score;
+	else
+		return 3;
+
+
+}
+
+
+
 
 STATIC_OVL void
 break_armor()

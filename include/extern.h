@@ -1909,6 +1909,7 @@ E void NDECL(change_sex);
 E void FDECL(polyself, (int));
 E int FDECL(polymon, (int));
 E int FDECL(monster_attribute_maximum, (struct permonst *, int));
+E int FDECL(monster_attribute_minimum, (struct permonst*, int));
 E void NDECL(rehumanize);
 E int NDECL(dobreathe);
 E int NDECL(dospit);

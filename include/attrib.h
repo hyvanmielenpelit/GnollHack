@@ -40,9 +40,7 @@ struct attribs {
     schar a[A_MAX];
 };
 
-#define ATTRMAX(x)                                        \
-    (Upolyd ? monster_attribute_maximum(youmonst.data, x) \
-         : urace.attrmax[x])
-#define ATTRMIN(x) (Upolyd ? 1 : urace.attrmin[x])
+#define ATTRMAX(x) (Upolyd ? monster_attribute_maximum(youmonst.data, x) : urace.attrmax[x])
+#define ATTRMIN(x) (Upolyd ? monster_attribute_minimum(youmonst.data, x) : urace.attrmin[x])
 
 #endif /* ATTRIB_H */

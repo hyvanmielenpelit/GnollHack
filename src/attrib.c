@@ -1074,15 +1074,10 @@ int x;
 			str = str2;
 
 #ifdef WIN32_BUG
-        return (x = ((str <= 3) ? 3 : str));
+        return (x = ((str <= 1) ? 1 : str));
 #else
-        return (schar) ((str <= 3) ? 3 : str);
+        return (schar) ((str <= 1) ? 1 : str);
 #endif
-    } else if (x == A_CHA) {
-        if (tmp < 18
-            && (youmonst.data->mlet == S_NYMPH || u.umonnum == PM_SUCCUBUS
-                || u.umonnum == PM_INCUBUS))
-            return (schar) 18;
     } else if (x == A_CON) {
         if (uwep && uwep->oartifact == ART_OGRESMASHER)
             return (schar) 25;
@@ -1105,9 +1100,9 @@ int x;
 			return (schar)6;
 	}
 #ifdef WIN32_BUG
-    return (x = ((tmp >= 25) ? 25 : (tmp <= 3) ? 3 : tmp));
+    return (x = ((tmp >= 25) ? 25 : (tmp <= 1) ? 1 : tmp));
 #else
-    return (schar) ((tmp >= 25) ? 25 : (tmp <= 3) ? 3 : tmp);
+    return (schar) ((tmp >= 25) ? 25 : (tmp <= 1) ? 1 : tmp);
 #endif
 }
 
