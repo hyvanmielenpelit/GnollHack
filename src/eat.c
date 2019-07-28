@@ -505,6 +505,7 @@ int *dmg_p; /* for dishing out extra damage in lieu of Int loss */
     struct permonst *pd = mdef->data;
     boolean give_nutrit = FALSE;
 	int result = MM_HIT, xtra_dmg = 0;
+	int int_loss = rnd(2);
 
 	if (noncorporeal(pd)) {
         if (visflag)
@@ -514,7 +515,7 @@ int *dmg_p; /* for dishing out extra damage in lieu of Int loss */
     } else if (magr == &youmonst) {
         You("eat %s brain!", s_suffix(mon_nam(mdef)));
     } else if (mdef == &youmonst) {
-        Your("brain is eaten!");
+        Your("brain is being eaten!");
     } else { /* monster against monster */
         if (visflag && canspotmon(mdef))
             pline("%s brain is eaten!", s_suffix(Monnam(mdef)));
@@ -565,7 +566,6 @@ int *dmg_p; /* for dishing out extra damage in lieu of Int loss */
             /* life-saving needed to reach here */
             exercise(A_WIS, FALSE);
 
-			int int_loss = rnd(2);
 			mdef->mint -= int_loss;
 			if (mdef->mint < monster_attribute_minimum(mdef->data, A_INT))
 				*dmg_p += mdef->mhp;
@@ -581,7 +581,7 @@ int *dmg_p; /* for dishing out extra damage in lieu of Int loss */
 				You("feel smarter.");
 			}
             exercise(A_WIS, TRUE);
-			int int_loss = rnd(2);
+
 			mdef->mint -= int_loss;
 			if (mdef->mint < monster_attribute_minimum(mdef->data, A_INT))
 				*dmg_p += mdef->mhp;
@@ -598,9 +598,10 @@ int *dmg_p; /* for dishing out extra damage in lieu of Int loss */
         /* no such thing as mindless players */
 
 		//REDUCE INTELLIGENCE
-		(void)adjattrib(A_INT, -rnd(2), FALSE);
+		(void)adjattrib(A_INT, -int_loss, FALSE);
 		forget_levels(25);  /* lose memory of 25% of levels */
 		forget_objects(25); /* lose memory of 25% of objects */
+		You("lose %d intelligence %s!", int_loss, int_loss > 1 ? "points" : "point");
 
 		if (ABASE(A_INT) < ATTRMIN(A_INT)) {
             static NEARDATA const char brainlessness[] = "brainlessness";
