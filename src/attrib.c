@@ -1139,20 +1139,20 @@ int attrindx;
 
 		if (uarmv && uarmv->otyp == BELT_OF_GIANT_STRENGTH)
 		{
-			//hilimit = STR19(25);
 			lolimit2 = STR19(19 + uarmv->spe);
 			if (lolimit2 > STR19(25))
 				lolimit2 = STR19(25);
 
 			if(lolimit2 > lolimit)
 				lolimit = lolimit2;
+			hilimit = lolimit;
 		}
 		
 		if (uarmg && uarmg->otyp == GAUNTLETS_OF_POWER){
-			//hilimit = STR18(100);
 			lolimit2 = STR18(100);
 			if (lolimit2 > lolimit)
 				lolimit = lolimit2;
+			hilimit = lolimit;
 		}
 	} else if (attrindx == A_CON) {
         if (uwep && uwep->oartifact == ART_OGRESMASHER)

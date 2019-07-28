@@ -72,7 +72,8 @@ struct monst {
     xchar mux, muy;       /* where the monster thinks you are */
 #define MTSZ 4
     coord mtrack[MTSZ];   /* monster track */
-    int mhp, mhpmax;
+	int mstr, mdex, mcon, mint, mwis, mcha; /* monster current stats */
+	int mhp, mhpmax;
     unsigned mappearance; /* for undetected mimics and the wiz */
     uchar m_ap_type;      /* what mappearance is describing, m_ap_types */
 

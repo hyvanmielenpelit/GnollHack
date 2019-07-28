@@ -504,9 +504,9 @@ int *dmg_p; /* for dishing out extra damage in lieu of Int loss */
 {
     struct permonst *pd = mdef->data;
     boolean give_nutrit = FALSE;
-    int result = MM_HIT, xtra_dmg = rnd(10);
+	int result = MM_HIT, xtra_dmg = 0;
 
-    if (noncorporeal(pd)) {
+	if (noncorporeal(pd)) {
         if (visflag)
             pline("%s brain is unharmed.",
                   (mdef == &youmonst) ? "Your" : s_suffix(Monnam(mdef)));
@@ -519,6 +519,9 @@ int *dmg_p; /* for dishing out extra damage in lieu of Int loss */
         if (visflag && canspotmon(mdef))
             pline("%s brain is eaten!", s_suffix(Monnam(mdef)));
     }
+
+	if (!magr || !mdef)
+		return MM_MISS;
 
     if (flesh_petrifies(pd)) {
         /* mind flayer has attempted to eat the brains of a petrification
@@ -561,19 +564,29 @@ int *dmg_p; /* for dishing out extra damage in lieu of Int loss */
             done(DIED);
             /* life-saving needed to reach here */
             exercise(A_WIS, FALSE);
-            *dmg_p += xtra_dmg; /* Rider takes extra damage */
-        } else {
+
+			int int_loss = rnd(2);
+			mdef->mint -= int_loss;
+			if (mdef->mint < monster_attribute_minimum(mdef->data, A_INT))
+				*dmg_p += mdef->mhp;
+			pline("%s loses %d intelligence %s.", Monnam(mdef), int_loss, int_loss > 1 ? "points" : "point");
+		} else {
             morehungry(-rnd(30)); /* cannot choke */
             if (ABASE(A_INT) < AMAX(A_INT)) {
                 /* recover lost Int; won't increase current max */
-                ABASE(A_INT) += rnd(4);
+				ABASE(A_INT) += 1; // rnd(4);
                 if (ABASE(A_INT) > AMAX(A_INT))
                     ABASE(A_INT) = AMAX(A_INT);
                 context.botl = 1;
-            }
+				You("feel smarter.");
+			}
             exercise(A_WIS, TRUE);
-            *dmg_p += xtra_dmg;
-        }
+			int int_loss = rnd(2);
+			mdef->mint -= int_loss;
+			if (mdef->mint < monster_attribute_minimum(mdef->data, A_INT))
+				*dmg_p += mdef->mhp;
+			pline("%s loses %d intelligence %s.", Monnam(mdef), int_loss, int_loss > 1 ? "points" : "point");
+		}
         /* targetting another mind flayer or your own underlying species
            is cannibalism */
         (void) maybe_cannibal(monsndx(pd), TRUE);
@@ -583,7 +596,13 @@ int *dmg_p; /* for dishing out extra damage in lieu of Int loss */
          * monster mind flayer is eating hero's brain
          */
         /* no such thing as mindless players */
-        if (ABASE(A_INT) <= ATTRMIN(A_INT)) {
+
+		//REDUCE INTELLIGENCE
+		(void)adjattrib(A_INT, -rnd(2), FALSE);
+		forget_levels(25);  /* lose memory of 25% of levels */
+		forget_objects(25); /* lose memory of 25% of objects */
+
+		if (ABASE(A_INT) < ATTRMIN(A_INT)) {
             static NEARDATA const char brainlessness[] = "brainlessness";
 
             if (Lifesaved) {
@@ -625,7 +644,10 @@ int *dmg_p; /* for dishing out extra damage in lieu of Int loss */
             /* Rider takes extra damage regardless of whether attacker dies */
             *dmg_p += xtra_dmg;
         } else {
-            *dmg_p += xtra_dmg;
+			mdef->mint -= rnd(2);
+			if(mdef->mint < monster_attribute_minimum(mdef->data, A_INT))
+	            *dmg_p += mdef->mhp;
+
             give_nutrit = TRUE;
             if (*dmg_p >= mdef->mhp && visflag && canspotmon(mdef))
                 pline("%s last thought fades away...",

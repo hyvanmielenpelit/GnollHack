@@ -965,6 +965,13 @@ xchar x, y; /* clone's preferred location or 0 (near mon) */
     m2->mhp = mon->mhp / 2;
     mon->mhp -= m2->mhp;
 
+	m2->mstr = mon->mstr;
+	m2->mdex = mon->mdex;
+	m2->mcon = mon->mcon;
+	m2->mint = mon->mint;
+	m2->mwis = mon->mwis;
+	m2->mcha = mon->mcha;
+
     /* since shopkeepers and guards will only be cloned if they've been
      * polymorphed away from their original forms, the clone doesn't have
      * room for the extra information.  we also don't want two shopkeepers
@@ -1319,7 +1326,15 @@ int mmflags;
     /* set up level and hit points */
     newmonhp(mtmp, mndx);
 
-    if (is_female(ptr))
+	/* set up stats*/
+	mtmp->mstr = ptr->str;
+	mtmp->mdex = ptr->dex;
+	mtmp->mcon = ptr->con;
+	mtmp->mint = ptr->intl;
+	mtmp->mwis = ptr->wis;
+	mtmp->mcha = ptr->cha;
+	
+	if (is_female(ptr))
         mtmp->female = TRUE;
     else if (is_male(ptr))
         mtmp->female = FALSE;

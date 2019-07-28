@@ -2033,7 +2033,6 @@ boolean noisy;
             err++;
 		}
 		else if (Upolyd && !has_head(youmonst.data)) {
-			/* (flimsy exception matches polyself handling) */
 			if (noisy)
 				You("have no head to put your %s on.",
 					helm_simple_name(otmp));

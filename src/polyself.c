@@ -670,22 +670,22 @@ int mntmp;
     //if (strongmonst(&mons[mntmp]))
     //    ABASE(A_STR) = AMAX(A_STR) = STR18(100);
 
-	int tempstr1, tempstr2;
 
-	ABASE(A_STR) = tempstr1 = AMAX(A_STR) = (&mons[mntmp])->str; // STR18(100);
+	ABASE(A_STR) = AMAX(A_STR) = (&mons[mntmp])->str; // STR18(100);
 	ABASE(A_DEX) = AMAX(A_DEX) = (&mons[mntmp])->dex;
 	ABASE(A_CON) = AMAX(A_CON) = (&mons[mntmp])->con;
 	ABASE(A_INT) = AMAX(A_INT) = (&mons[mntmp])->intl;
 //	ABASE(A_WIS) = AMAX(A_WIS) = (&mons[mntmp])->wis; // Wisdom does not change 
 	ABASE(A_CHA) = AMAX(A_CHA) = (&mons[mntmp])->cha;
 
-	AMAX(A_STR) = tempstr2 = monster_attribute_maximum(&mons[mntmp], A_STR);
+	/* These are incorrect in the sense that they give monster race's maximum, not the current undrained maximum
+	AMAX(A_STR) = monster_attribute_maximum(&mons[mntmp], A_STR);
 	AMAX(A_DEX) = monster_attribute_maximum(&mons[mntmp], A_DEX);
 	AMAX(A_CON) = monster_attribute_maximum(&mons[mntmp], A_CON);
 	AMAX(A_INT) = monster_attribute_maximum(&mons[mntmp], A_INT);
-//	AMAX(A_WIS) = monster_attribute_maximum(&mons[mntmp], A_WIS);
+	AMAX(A_WIS) = monster_attribute_maximum(&mons[mntmp], A_WIS);
 	AMAX(A_CHA) = monster_attribute_maximum(&mons[mntmp], A_CHA);
-
+	*/
 
     if (Stone_resistance && Stoned) { /* parnes@eniac.seas.upenn.edu */
         make_stoned(0L, "You no longer seem to be petrifying.", 0,

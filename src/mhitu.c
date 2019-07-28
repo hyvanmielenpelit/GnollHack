@@ -1077,8 +1077,6 @@ register struct attack *mattk;
             struct obj *otmp = mon_currwep;
 
             if (mattk->aatyp == AT_WEAP && otmp) {
-                struct obj *marmg;
-				struct obj* marmv;
 				int tmp;
 
                 if (otmp->otyp == CORPSE
@@ -1090,14 +1088,7 @@ register struct attack *mattk;
                         goto do_stone;
                 }
                 dmg += dmgval(otmp, &youmonst);
-				if ((marmv = which_armor(mtmp, W_ARMV)) != 0
-					&& marmv->otyp == BELT_OF_GIANT_STRENGTH)
-					dmg += strength_damage_bonus(STR19(19) + marmv->spe);
-				else if ((marmg = which_armor(mtmp, W_ARMG)) != 0
-                    && marmg->otyp == GAUNTLETS_OF_POWER)
-                    dmg += strength_damage_bonus(STR18(100));
-				else
-					dmg += strength_damage_bonus(mtmp->data->str);
+				dmg += mdbon(mtmp);
 
 				if (dmg <= 0)
                     dmg = 1;
@@ -1287,9 +1278,6 @@ register struct attack *mattk;
                 break;
         }
         /* adjattrib gives dunce cap message when appropriate */
-        (void) adjattrib(A_INT, -rnd(2), FALSE);
-        forget_levels(25);  /* lose memory of 25% of levels */
-        forget_objects(25); /* lose memory of 25% of objects */
         break;
     case AD_PLYS:
         hitmsg(mtmp, mattk, dmg);

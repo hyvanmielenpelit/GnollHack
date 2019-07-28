@@ -1000,56 +1000,37 @@ struct monst* mon;
 {
 	int bonus = 0;
 
-	/*
-	if (mon->data == &mons[PM_GNOME_LORD] || mon->data == &mons[PM_ELF_LORD] ||
-		mon->data == &mons[PM_FOREST_CENTAUR] || mon->data == &mons[PM_HILL_ORC] || 
-		mon->data == &mons[PM_KOP_SERGEANT] || mon->data == &mons[PM_SOLDIER] || mon->data == &mons[PM_WATCHMAN]) {
-		bonus = 1;
-	}
-	else if (mon->data == &mons[PM_GNOME_KING] || mon->data == &mons[PM_DWARF] ||
-		mon->data == &mons[PM_LIEUTENANT] || mon->data == &mons[PM_MOUNTAIN_CENTAUR] || mon->data == &mons[PM_HOBGOBLIN] ||
-		mon->data == &mons[PM_KOP_LIEUTENANT] || mon->data == &mons[PM_ERINYS] || mon->data == &mons[PM_MORDOR_ORC] ||
-		mon->data == &mons[PM_URUK_HAI] || mon->data == &mons[PM_VROCK]) {
-		bonus = 2;
-	} else if (mon->data == &mons[PM_CAPTAIN] || mon->data == &mons[PM_BLACK_NAGA] || mon->data == &mons[PM_RED_NAGA] ||
-		mon->data == &mons[PM_CROESUS]|| mon->data == &mons[PM_KOP_KAPTAIN] ||
-		mon->data == &mons[PM_ORC_CAPTAIN] || mon->data == &mons[PM_DWARF_LORD] || mon->data == &mons[PM_WATCH_CAPTAIN] ||
-		mon->data == &mons[PM_BUGBEAR] || mon->data == &mons[PM_ELVENKING] || mon->data == &mons[PM_HEZROU]) {
-		bonus = 3;
-	} else if (mon->data == &mons[PM_DWARF_KING] || mon->data == &mons[PM_ICE_DEVIL]) { //Glabrezu missing from here
-		bonus = 4;
-	}
-	else if (mon->data == &mons[PM_OGRE] || mon->data == &mons[PM_NALFESHNEE] || mon->data == &mons[PM_ALEAX]) {
-		bonus = 5;
-	} else if (mon->data == &mons[PM_OGRE_LORD] || mon->data == &mons[PM_VAMPIRE] ||
-		mon->data == &mons[PM_PIT_FIEND]) {
-		bonus = 6;
-	} else if (mon->data == &mons[PM_OGRE_KING]  ||	mon->data == &mons[PM_VAMPIRE_LORD] ||
-		mon->data == &mons[PM_ARCHON] || mon->data == &mons[PM_BALROG]) {
-		bonus = 7;
-	} else if (mon->data == &mons[PM_GIANT] || mon->data == &mons[PM_STONE_GIANT] || mon->data == &mons[PM_HILL_GIANT] ||
-		mon->data == &mons[PM_VLAD_THE_IMPALER]) {
-		bonus = 8;
-	} else if (mon->data == &mons[PM_FIRE_GIANT] || mon->data == &mons[PM_FROST_GIANT] || mon->data == &mons[PM_STORM_GIANT] ||
-		mon->data == &mons[PM_DISPATER] || mon->data == &mons[PM_GERYON] || mon->data == &mons[PM_YEENOGHU] || mon->data == &mons[PM_ORCUS] ||
-		mon->data == &mons[PM_BAALZEBUB] || mon->data == &mons[PM_ASMODEUS] || mon->data == &mons[PM_DEMOGORGON]) {
-		bonus = 9;
-	} else if (mon->data == &mons[PM_TITAN] || mon->data == &mons[PM_CYCLOPS]) {
-		bonus = 10;
-
-	}
-	else	{
-		if (strongmonst(mon->data))
-			bonus = 3;
-	}
-	*/
 	if(!mon)
-		bonus += strength_damage_bonus(mon->data->str);
+	{
+		bonus += strength_damage_bonus(monster_current_str(mon));
+	}
 
 	return bonus;
 
 }
 
+int
+monster_current_str(mon)
+struct monst* mon;
+{
+	int currstr = 0;
+	struct obj* marmg;
+	struct obj* marmv;
+
+	if (!mon)
+		return 0;
+
+	if ((marmv = which_armor(mon, W_ARMV)) != 0
+		&& marmv->otyp == BELT_OF_GIANT_STRENGTH)
+		currstr = STR19(19) + marmv->spe;
+	else if ((marmg = which_armor(mon, W_ARMG)) != 0
+		&& marmg->otyp == GAUNTLETS_OF_POWER)
+		currstr = STR18(100);
+	else
+		currstr = mon->mstr;
+
+	return currstr;
+}
 /* monster to hit bonus for strength*/
 int
 mabon(mon)
@@ -1058,8 +1039,9 @@ struct monst* mon;
 	int bonus = 0;
 
 	if (!mon)
-		bonus += strength_tohit_bonus(mon->data->str);
-
+	{
+		bonus += strength_tohit_bonus(monster_current_str(mon));
+	}
 	return bonus;
 
 }

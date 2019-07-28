@@ -2769,6 +2769,7 @@ E int FDECL(mabon, (struct monst*));
 E int FDECL(mdbon, (struct monst*));
 E int FDECL(strength_damage_bonus, (int));
 E int FDECL(strength_tohit_bonus, (int));
+E int FDECL(monster_current_str, (struct monst*));
 E int NDECL(dbon);
 E void FDECL(wet_a_towel, (struct obj *, int, BOOLEAN_P));
 E void FDECL(dry_a_towel, (struct obj *, int, BOOLEAN_P));

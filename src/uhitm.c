@@ -2514,7 +2514,7 @@ register struct monst *mon;
                     } else {
                         if (mattk->aatyp == AT_CLAW)
                             verb = "hit"; /* not "claws" */
-                        You("%s %s.", verb, mon_nam(mon));
+                        You("%s %s for %d damage.", verb, mon_nam(mon), specialdmg);
                         if (silverhit && flags.verbose)
                             silver_sears(&youmonst, mon, silverhit);
                     }
