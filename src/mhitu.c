@@ -2683,21 +2683,29 @@ struct monst *mon;
                : naked ? "murmurs sweet nothings into your ear"
                        : "murmurs in your ear",
           naked ? "" : ", while helping you undress");
-    mayberem(mon, Who, uarmc, cloak_simple_name(uarmc));
-    if (!uarmc)
+	if (uarmc)
+		mayberem(mon, Who, uarmc, cloak_simple_name(uarmc));
+
+    if (!uarmc && uarmo)
         mayberem(mon, Who, uarmo, robe_simple_name(uarmo));
-	if (!uarmc && !uarmo)
+	if (!uarmc && !uarmo && uarm)
 		mayberem(mon, Who, uarm, suit_simple_name(uarm));
-	mayberem(mon, Who, uarmf, "boots");
-    if (!tried_gloves)
+	if (uarmf)
+		mayberem(mon, Who, uarmf, "boots");
+    if (!tried_gloves && uarmg)
         mayberem(mon, Who, uarmg, "gloves");
-	mayberem(mon, Who, uarmb, "bracers");
-	mayberem(mon, Who, uarms, "shield");
-    mayberem(mon, Who, uarmh, helm_simple_name(uarmh));
-    if (!uarmc && !uarmo && !uarm)
+	if (uarmb)
+		mayberem(mon, Who, uarmb, "bracers");
+	if (uarms)
+		mayberem(mon, Who, uarms, "shield");
+	if (uarmh)
+		mayberem(mon, Who, uarmh, helm_simple_name(uarmh));
+	if (!uarmc && !uarmo && !uarm && uarmu)
         mayberem(mon, Who, uarmu, "shirt");
-	mayberem(mon, Who, uarmv, "belt");
-	mayberem(mon, Who, uarmp, "pants");
+	if (uarmv)
+		mayberem(mon, Who, uarmv, "belt");
+	if (uarmp)
+		mayberem(mon, Who, uarmp, pants_simple_name(uarmp));
 
     /* removing armor (levitation boots, or levitation ring to make
        room for adornment ring with incubus case) might result in the

@@ -121,7 +121,9 @@ PROJECTILE("silver arrow", None,
 PROJECTILE("ya", "bamboo arrow",
            0, 15, 1, 4, 1, 7, 0, 1, 7, 0, 1,        METAL, -P_BOW, HI_METAL),
 PROJECTILE("crossbow bolt", None,
-           1, 55, 1, 2, 1, 3, 1, 1, 4, 1, 0,        IRON, -P_CROSSBOW, HI_METAL), //1d3+1 //1d4+1
+           1, 40, 1, 2, 1, 3, 1, 1, 4, 1, 0,        IRON, -P_CROSSBOW, HI_METAL), //1d3+1 //1d4+1
+PROJECTILE("gnollish quarrel", "crude crossbow bolt",
+           0, 15, 1, 2, 1, 2, 1, 1, 3, 1, 0,        IRON, -P_CROSSBOW, HI_METAL), //1d2+1 //1d3+1
 
 /* missiles that don't use a launcher */
 WEAPON("dart", None,
@@ -155,11 +157,13 @@ WEAPON("trident", None,
 
 /* blades; all stack */
 WEAPON("dagger", None,
-       1, 1, 0, 30,  10,   4,  1, 4, 0, 1,  3, 0, 2, P,   P_DAGGER, IRON, HI_METAL),
+       1, 1, 0, 24,  10,   4,  1, 4, 0, 1,  3, 0, 2, P,   P_DAGGER, IRON, HI_METAL),
 WEAPON("elven dagger", "runed dagger",
        0, 1, 0, 10,  10,   4,  1, 5, 0, 1, 3, 0, 2, P,   P_DAGGER, WOOD, HI_WOOD),
 WEAPON("orcish dagger", "crude dagger",
        0, 1, 0, 12,  10,   4,  1, 3, 0, 1,  3, 0, 2, P,   P_DAGGER, IRON, CLR_BLACK),
+WEAPON("bone dagger", None,
+       1, 1, 0, 6,  10,   4,  1, 3, 0, 1,  3, 0, 2, P,   P_DAGGER, BONE, CLR_BLACK),
 WEAPON("silver dagger", None,
        1, 1, 0,  3,  12,  40,  1, 4, 0, 1,  3, 0, 2, P,   P_DAGGER, SILVER, HI_SILVER),
 WEAPON("athame", None,
@@ -370,6 +374,8 @@ BOW("heavy crossbow", None,					1, 1, 10,180, 150, 1, 8, 0, 1, 8, 0, 0, WOOD, P_
 /* helmets */
 HELM("elven leather helm", "leather hat",
      0, 0,           0,  6, 1,  3,  8,  9, 0, LEATHER, HI_LEATHER),
+HELM("gnollish hood", "crude leather hood",
+     0, 0,           0,  6, 1,  3,  8,  9, 0, LEATHER, HI_LEATHER),
 HELM("orcish helm", "iron skull cap",
      0, 0,           0,  6, 1, 30, 10,  9, 0, IRON, CLR_BLACK),
 HELM("dwarvish iron helm", "hard hat",
@@ -447,7 +453,7 @@ ARMOR("crystal plate mail", None,
 ARMOR("bronze plate mail", None,
       1, 0, 1,  0, 25, 5, 450, 150,  4, 1,  ARM_SUIT, COPPER, HI_COPPER),
 ARMOR("splint mail", None,
-      1, 0, 1,  0, 62, 5, 400, 125,  4, 1,  ARM_SUIT, IRON, HI_METAL),
+      1, 0, 1,  0, 54, 5, 400, 125,  4, 1,  ARM_SUIT, IRON, HI_METAL),
 ARMOR("banded mail", None,
       1, 0, 1,  0, 62, 5, 350, 200,  4, 1,  ARM_SUIT, IRON, HI_METAL),
 ARMOR("dwarvish mithril-coat", None,
@@ -461,13 +467,17 @@ ARMOR("orcish chain mail", "crude chain mail",
 ARMOR("scale mail", None,
       1, 0, 0,  0, 62, 5, 250,  45,  6, 1,  ARM_SUIT, IRON, HI_METAL),
 ARMOR("studded leather armor", None,
-      1, 0, 0,  0, 67, 3, 200,  15,  7, 1,  ARM_SUIT, LEATHER, HI_LEATHER),
+      1, 0, 0,  0, 55, 3, 200,  15,  7, 1,  ARM_SUIT, LEATHER, HI_LEATHER),
+ARMOR("gnollish studded leather armor", "crude studded leather armor",
+      0, 0, 0,  0, 12, 3, 200,  15,  8, 1,  ARM_SUIT, LEATHER, HI_LEATHER),
 ARMOR("ring mail", None,
       1, 0, 0,  0, 72, 5, 250,  30,  7, 1,  ARM_SUIT, IRON, HI_METAL),
 ARMOR("orcish ring mail", "crude ring mail",
       0, 0, 0,  0, 20, 5, 250,  15,  8, 1,  ARM_SUIT, IRON, CLR_BLACK),
 ARMOR("leather armor", None,
-      1, 0, 0,  0, 72, 3, 150,   5,  8, 1,  ARM_SUIT, LEATHER, HI_LEATHER),
+      1, 0, 0,  0, 60, 3, 150,   5,  8, 1,  ARM_SUIT, LEATHER, HI_LEATHER),
+ARMOR("gnollish leather armor", "crude leather armor",
+      0, 0, 0,  0, 12, 3, 150,   3,  9, 1,  ARM_SUIT, LEATHER, HI_LEATHER),
 ARMOR("leather jacket", None,
       1, 0, 0,  0, 12, 0,  30,  10,  9, 0,  ARM_SUIT, LEATHER, CLR_BLACK),
 
@@ -525,6 +535,8 @@ ROBE("robe of starry wisdom", "shining black robe",
 ROBE("bathrobe", "soft cotton robe",//ENDMARKER 2
 	0, 1, 0, 2, 1, 15, 5, 10, 0, CLOTH, CLR_WHITE),
 /* without shuffled appearances... */
+ROBE("shamanistic robe", "crude robe",
+	0, 0, 0, 2, 1, 15, 25, 9, 2, CLOTH, CLR_RED),
 ROBE("mummy wrapping", None, //ENDMARKER
 1, 0, 0, 0, 0, 3, 2, 10, 1, CLOTH, CLR_GRAY),
 	/* worn mummy wrapping blocks invisibility */

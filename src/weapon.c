@@ -887,37 +887,13 @@ struct monst *mon;
 int
 abon()
 {
-    int sbon;
+    int sbon = 0;
     int str = ACURR(A_STR), dex = ACURR(A_DEX);
 
     if (Upolyd)
         return (adj_lev(&mons[u.umonnum]) - 3);
-    if (str < 6)
-        sbon = -2;
-    else if (str < 8)
-        sbon = -1;
-    else if (str < 17)
-        sbon = 0;
-    else if (str <= STR18(50))
-        sbon = 1; /* up to 18/50 */
-    else if (str < STR18(100))
-        sbon = 2;
-	else if (str == STR18(100))
-		sbon = 3;
-	else if (str == STR19(19))
-		sbon = 3;
-	else if (str == STR19(20))
-		sbon =4;
-	else if (str == STR19(21))
-		sbon = 4;
-	else if (str == STR19(22))
-		sbon = 5;
-	else if (str == STR19(23))
-		sbon = 5;
-	else if (str == STR19(24))
-		sbon = 6;
-	else
-        sbon = 6;
+
+	sbon += strength_tohit_bonus(str);
 
     /* Game tuning kludge: make it a bit easier for a low level character to
      * hit */
@@ -935,6 +911,40 @@ abon()
         return (sbon + dex - 14);
 }
 
+int strength_tohit_bonus(str)
+int str;
+{
+	int sbon = 0;
+	if (str < 6)
+		sbon = -2;
+	else if (str < 8)
+		sbon = -1;
+	else if (str < 17)
+		sbon = 0;
+	else if (str <= STR18(50))
+		sbon = 1; /* up to 18/50 */
+	else if (str < STR18(100))
+		sbon = 2;
+	else if (str == STR18(100))
+		sbon = 3;
+	else if (str == STR19(19))
+		sbon = 3;
+	else if (str == STR19(20))
+		sbon = 4;
+	else if (str == STR19(21))
+		sbon = 4;
+	else if (str == STR19(22))
+		sbon = 5;
+	else if (str == STR19(23))
+		sbon = 5;
+	else if (str == STR19(24))
+		sbon = 6;
+	else
+		sbon = 6;
+
+	return sbon;
+}
+
 /* damage bonus for strength */
 int
 dbon()
@@ -944,38 +954,45 @@ dbon()
     if (Upolyd)
         return 0;
 
-    if (str < 6)
-        return -1;
-    else if (str < 16)
-        return 0;
-    else if (str < 18)
-        return 1;
-    else if (str == 18)
-        return 2; /* up to 18 */
-    else if (str <= STR18(75))
-        return 3; /* up to 18/75 */
-    else if (str <= STR18(90))
-        return 4; /* up to 18/90 */
-    else if (str < STR18(100))
-        return 5; /* up to 18/99 */
+	return strength_damage_bonus(str);
+}
+
+int
+strength_damage_bonus(str)
+int str;
+{
+	if (str < 6)
+		return -1;
+	else if (str < 16)
+		return 0;
+	else if (str < 18)
+		return 1;
+	else if (str == 18)
+		return 2; /* up to 18 */
+	else if (str <= STR18(75))
+		return 3; /* up to 18/75 */
+	else if (str <= STR18(90))
+		return 4; /* up to 18/90 */
+	else if (str < STR18(100))
+		return 5; /* up to 18/99 */
 	else if (str == STR18(100))
 		return 6; /* up to 18/00 */
 	else if (str == STR19(19))
 		return 7; /* up to 19 */
 	else if (str == STR19(20))
-		return 7; /* up to 20 */
+		return 8; /* up to 20 */
 	else if (str == STR19(21))
-		return 8; /* up to 21 */
+		return 9; /* up to 21 */
 	else if (str == STR19(22))
-		return 8; /* up to 22 */
+		return 10; /* up to 22 */
 	else if (str == STR19(23))
-		return 9; /* up to 23 */
+		return 11; /* up to 23 */
 	else if (str == STR19(24))
-		return 9; /* up to 24 */
+		return 12; /* up to 24 */
 	else
-        return 10;
-}
+		return 13;
 
+}
 /* monster damage bonus for strength*/
 int
 mdbon(mon)

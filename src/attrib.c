@@ -1043,15 +1043,29 @@ int x;
     register int tmp = (u.abon.a[x] + u.atemp.a[x] + u.acurr.a[x]);
 
     if (x == A_STR) {
-        if (tmp >= STR19(25) || (uarmv && uarmv->otyp == BELT_OF_GIANT_STRENGTH))
-            return (schar) STR19(25);
-		else if ((uarmg && uarmg->otyp == GAUNTLETS_OF_POWER))
-			return (schar)STR19(19);
-		else
+		int str = tmp;
+		int str2 = 0;
+		
+		if (uarmv && uarmv->otyp == BELT_OF_GIANT_STRENGTH)
+		{
+			str2 = STR19(19 + uarmv->spe);
+			if(str2 > STR19(25))
+				str2 = STR19(25);
+		}
+		if (str2 > str)
+			str = str2;
+
+		if (uarmg && uarmg->otyp == GAUNTLETS_OF_POWER)
+		{
+			str2 = STR18(100);
+		}
+		if (str2 > str)
+			str = str2;
+
 #ifdef WIN32_BUG
-            return (x = ((tmp <= 3) ? 3 : tmp));
+        return (x = ((str <= 3) ? 3 : str));
 #else
-            return (schar) ((tmp <= 3) ? 3 : tmp);
+        return (schar) ((str <= 3) ? 3 : str);
 #endif
     } else if (x == A_CHA) {
         if (tmp < 18
@@ -1115,14 +1129,24 @@ int attrindx;
     if (attrindx == A_STR) {
          /* 125 */
         /* lower limit for Str can also be 25 */
+		int lolimit2 = lolimit;
+
 		if (uarmv && uarmv->otyp == BELT_OF_GIANT_STRENGTH)
 		{
-			hilimit = STR19(25);
-			lolimit = hilimit;
+			//hilimit = STR19(25);
+			lolimit2 = STR19(19 + uarmv->spe);
+			if (lolimit2 > STR19(25))
+				lolimit2 = STR19(25);
+
+			if(lolimit2 > lolimit)
+				lolimit = lolimit2;
 		}
-		else if (uarmg && uarmg->otyp == GAUNTLETS_OF_POWER){
-			//hilimit = STR19(19);
-			lolimit = STR19(19);
+		
+		if (uarmg && uarmg->otyp == GAUNTLETS_OF_POWER){
+			//hilimit = STR18(100);
+			lolimit2 = STR18(100);
+			if (lolimit2 > lolimit)
+				lolimit = lolimit2;
 		}
 	} else if (attrindx == A_CON) {
         if (uwep && uwep->oartifact == ART_OGRESMASHER)

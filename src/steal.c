@@ -26,7 +26,7 @@ register struct obj *otmp;
 								: (otmp == uarmv)
 									  ? "belt"
 								: (otmp == uarmp)
-									  ? "pants"
+									  ? pants_simple_name(otmp)
                                   : (otmp == uarmc)
                                         ? cloak_simple_name(otmp)
 									  : (otmp == uarmo)

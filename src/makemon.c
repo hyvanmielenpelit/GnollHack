@@ -188,24 +188,49 @@ register struct monst *mtmp;
 				(void)mongets(mtmp, DAGGER);
 			break;
 		case PM_GNOLL_WARDEN:
+			if (rn2(7))
+				(void)mongets(mtmp, SHAMANISTIC_ROBE);
 			if (!rn2(3))
 				(void)mongets(mtmp, FLAIL);
+			else if (!rn2(2))
+				(void)mongets(mtmp, BONE_DAGGER);
 			break;
 		case PM_GNOLL:
+			if (rn2(7))
+			{
+				if(rn2(3))
+					(void)mongets(mtmp, GNOLLISH_LEATHER_ARMOR);
+				else
+					(void)mongets(mtmp, GNOLLISH_STUDDED_LEATHER_ARMOR);
+			}
+			if (rn2(3))
+			{
+				(void)mongets(mtmp, GNOLLISH_HOOD);
+			}
 			if (!rn2(3))
 				(void)mongets(mtmp, FLAIL);
 			if (!rn2(5))
 			{
 				(void)mongets(mtmp, CROSSBOW);
-				m_initthrow(mtmp, CROSSBOW_BOLT, 6 + rnd(20), !rn2(20));
+				m_initthrow(mtmp, GNOLLISH_QUARREL, 6 + rnd(20), !rn2(20));
 			}
 			break;
 		case PM_GNOLL_LORD:
+			if (rn2(7))
+			{
+				(void)mongets(mtmp, GNOLLISH_STUDDED_LEATHER_ARMOR);
+			}
+			if (rn2(7))
+			{
+				(void)mongets(mtmp, GNOLLISH_HOOD);
+			}
 			if (!rn2(2))
+			{
 				if (!rn2(6))
 					(void)mongets(mtmp, DOUBLE_HEADED_FLAIL);
 				else
 					(void)mongets(mtmp, FLAIL);
+			}
 			if (!rn2(3))
 			{
 				if(!(rn2(4)))
@@ -213,10 +238,11 @@ register struct monst *mtmp;
 				else
 					(void)mongets(mtmp, CROSSBOW);
 
-				m_initthrow(mtmp, CROSSBOW_BOLT, 11 + rnd(15), !rn2(10));
+				m_initthrow(mtmp, GNOLLISH_QUARREL, 11 + rnd(15), !rn2(10));
 			}
 			break;
 		case PM_GNOLL_KING:
+			(void)mongets(mtmp, GNOLLISH_STUDDED_LEATHER_ARMOR);
 			if (!rn2(20))
 				(void)mongets(mtmp, TRIPLE_HEADED_FLAIL);
 			else if (rn2(3))
@@ -224,7 +250,7 @@ register struct monst *mtmp;
 			else
 				(void)mongets(mtmp, FLAIL);
 			(void)mongets(mtmp, HEAVY_CROSSBOW);
-			m_initthrow(mtmp, CROSSBOW_BOLT, 21+rnd(10), !rn2(5));
+			m_initthrow(mtmp, GNOLLISH_QUARREL, 21+rnd(10), !rn2(5));
 			break;
 		default:
 			break;

@@ -861,6 +861,7 @@ break_armor()
 {
     register struct obj *otmp;
 
+	//Suit, cloak, robe, shirt, belt, and pants
     if (breakarm(youmonst.data)) {
         if ((otmp = uarm) != 0) {
             if (donning(otmp))
@@ -871,7 +872,9 @@ break_armor()
             useup(otmp);
         }
         if ((otmp = uarmc) != 0) {
-            if (otmp->oartifact) {
+			if (donning(otmp))
+				cancel_don();
+			if (otmp->oartifact) {
                 Your("%s falls off!", cloak_simple_name(otmp));
                 (void) Cloak_off();
                 dropx(otmp);
@@ -882,15 +885,38 @@ break_armor()
             }
         }
 		if ((otmp = uarmo) != 0) {
+			if (donning(otmp))
+				cancel_don();
 			Your("%s in torn to pieces!", robe_simple_name(otmp));
 			(void)Robe_off();
-			useup(uarmo);
+			useup(otmp);
 		}
-		if (uarmu) {
-            Your("shirt rips to shreds!");
-            useup(uarmu);
+		if ((otmp = uarmu) != 0) {
+			if (donning(otmp))
+				cancel_don();
+			Your("shirt rips to shreds!");
+			(void)Shirt_off();
+			useup(otmp);
         }
-    } else if (sliparm(youmonst.data)) {
+		if ((otmp = uarmv) != 0) {
+			if (donning(otmp))
+				cancel_don();
+			Your("belt breaks!");
+			(void)Belt_off();
+			useup(otmp);
+		}
+		if ((otmp = uarmp) != 0) {
+			if (donning(otmp))
+				cancel_don();
+			if(otmp->otyp == SKIRT || otmp->otyp == KILT)
+				Your("%s is torn to pieces!", pants_simple_name(otmp));
+			else
+				Your("%s are torn to pieces!", pants_simple_name(otmp));
+
+			(void)Pants_off();
+			useup(otmp);
+		}
+	} else if (sliparm(youmonst.data)) {
         if (((otmp = uarm) != 0) && (racial_exception(&youmonst, otmp) < 1)) {
             if (donning(otmp))
                 cancel_don();
@@ -922,10 +948,32 @@ break_armor()
             setworn((struct obj *) 0, otmp->owornmask & W_ARMU);
             dropx(otmp);
         }
-    }
-    if (has_horns(youmonst.data)) {
+		if ((otmp = uarmv) != 0) {
+			if (is_whirly(youmonst.data))
+				Your("belt falls!");
+			else
+				You("shrink out of your belt!");
+			setworn((struct obj*) 0, otmp->owornmask & W_ARMV);
+			dropx(otmp);
+		}
+		if ((otmp = uarmp) != 0) {
+			if (is_whirly(youmonst.data))
+			{
+				if (otmp->otyp == SKIRT || otmp->otyp == KILT)
+					Your("%s falls, unsupported!", pants_simple_name(otmp));
+				else
+					Your("%s fall, unsupported!", pants_simple_name(otmp));
+			}
+			else
+				You("shrink out of your %s!", pants_simple_name(otmp));
+			(void)Pants_off();
+			dropx(otmp);
+		}
+	}
+	//Helmet
+    if (has_horns(youmonst.data) || !has_head(youmonst.data)) {
         if ((otmp = uarmh) != 0) {
-            if (is_flimsy(otmp) && !donning(otmp)) {
+            if (is_flimsy(otmp) && !donning(otmp) && has_head(youmonst.data)) {
                 char hornbuf[BUFSZ];
 
                 /* Future possibilities: This could damage/destroy helmet */
@@ -942,7 +990,8 @@ break_armor()
             }
         }
     }
-    if (nohands(youmonst.data) || verysmall(youmonst.data)) {
+	//Gloves and weapons
+    if (nohands(youmonst.data) || nolimbs(youmonst.data) || verysmall(youmonst.data)) {
         if ((otmp = uarmg) != 0) {
             if (donning(otmp))
                 cancel_don();
@@ -966,7 +1015,8 @@ break_armor()
             dropx(otmp);
         }
     }
-    if (nohands(youmonst.data) || verysmall(youmonst.data)
+	//Boots
+    if (nohands(youmonst.data) || nolimbs(youmonst.data) || verysmall(youmonst.data)
         || slithy(youmonst.data) || youmonst.data->mlet == S_CENTAUR) {
         if ((otmp = uarmf) != 0) {
             if (donning(otmp))
@@ -980,6 +1030,21 @@ break_armor()
             dropx(otmp);
         }
     }
+	//Bracers
+	if (nohands(youmonst.data) || nolimbs(youmonst.data) || verysmall(youmonst.data)) {
+		if ((otmp = uarmb) != 0) {
+			if (donning(otmp))
+				cancel_don();
+			if (is_whirly(youmonst.data))
+				Your("bracers fall away!");
+			else
+				Your("bracers %s off your arms!",
+					verysmall(youmonst.data) ? "slide" : "are pushed");
+			(void)Bracers_off();
+			dropx(otmp);
+		}
+	}
+
 }
 
 STATIC_OVL void

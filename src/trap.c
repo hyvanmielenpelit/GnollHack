@@ -137,7 +137,7 @@ struct monst *victim;
 			break;
 		case 7:
 			item = hitting_u ? uarmp : which_armor(victim, W_ARMP);
-			if (!burn_dmg(item, "pants"))
+			if (!burn_dmg(item, pants_simple_name(item)))
 				continue;
 			break;
 		}

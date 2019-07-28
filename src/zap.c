@@ -1053,6 +1053,17 @@ register struct obj *obj;
 		}
 		break;
 		/* case RIN_PROTECTION:  not needed */
+	case GAUNTLETS_OF_POWER:
+		if ((obj->owornmask & W_ARMG) && (obj == uarmg)) {
+			context.botl = 1;
+		}
+		break;
+	case BELT_OF_GIANT_STRENGTH:
+		if ((obj->owornmask & W_ARMV) && (obj == uarmv)) {
+			context.botl = 1;
+		}
+		break;
+
     }
     if (objects[otyp].oc_magic
         || (obj->spe && (obj->oclass == ARMOR_CLASS
@@ -1183,6 +1194,16 @@ boolean by_you;
 	case BELT_OF_DWARVENKIND:
 		if ((obj->owornmask & W_ARMV) && (obj == uarmv)) {
 			ABON(A_CON)--;
+			context.botl = 1;
+		}
+		break;
+	case GAUNTLETS_OF_POWER:
+		if ((obj->owornmask & W_ARMG) && (obj == uarmg)) {
+			context.botl = 1;
+		}
+		break;
+	case BELT_OF_GIANT_STRENGTH:
+		if ((obj->owornmask & W_ARMV) && (obj == uarmv)) {
 			context.botl = 1;
 		}
 		break;

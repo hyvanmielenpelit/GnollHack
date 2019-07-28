@@ -367,7 +367,8 @@ Helmet_on(VOID_ARGS)
     case ELVEN_LEATHER_HELM:
     case DWARVISH_IRON_HELM:
     case ORCISH_HELM:
-    case HELM_OF_TELEPATHY:
+	case GNOLLISH_HOOD:
+	case HELM_OF_TELEPATHY:
         break;
     case HELM_OF_BRILLIANCE:
         adj_abon(uarmh, uarmh->spe);
@@ -433,7 +434,8 @@ Helmet_off(VOID_ARGS)
     case ELVEN_LEATHER_HELM:
     case DWARVISH_IRON_HELM:
     case ORCISH_HELM:
-        break;
+	case GNOLLISH_HOOD:
+		break;
     case DUNCE_CAP:
         context.botl = 1;
         break;
@@ -481,7 +483,7 @@ Gloves_on(VOID_ARGS)
             incr_itimeout(&HFumbling, rnd(20));
         break;
     case GAUNTLETS_OF_POWER:
-        if(!(uarmv && uarmv->otyp == BELT_OF_GIANT_STRENGTH))
+        if(!(uarmv && uarmv->otyp == BELT_OF_GIANT_STRENGTH && uarmv->spe >= -1))
 			makeknown(uarmg->otyp);
 
         context.botl = 1; /* taken care of in attrib.c */
@@ -537,9 +539,11 @@ Gloves_off(VOID_ARGS)
             HFumbling = EFumbling = 0;
         break;
     case GAUNTLETS_OF_POWER:
-		if (!(uarmv && uarmv->otyp == BELT_OF_GIANT_STRENGTH))
+		if (!(uarmv && uarmv->otyp == BELT_OF_GIANT_STRENGTH && uarmv->spe >= -1))
 			makeknown(uarmg->otyp);
-        context.botl = 1; /* taken care of in attrib.c */
+		if (uarmv && uarmv->otyp == BELT_OF_GIANT_STRENGTH && uarmv->spe < -1)
+			makeknown(uarmv->otyp);
+		context.botl = 1; /* taken care of in attrib.c */
         break;
     case GAUNTLETS_OF_DEXTERITY:
         if (!context.takeoff.cancelled_don)
@@ -684,6 +688,7 @@ Robe_on(VOID_ARGS)
 	   keep this uncommented in case somebody adds a new one which does */
 	switch (uarmo->otyp) {
 	case ROBE:
+	case SHAMANISTIC_ROBE:
 	case BATHROBE:
 	case ROBE_OF_PROTECTION:
 		makeknown(uarmo->otyp);
@@ -719,6 +724,7 @@ Robe_off(VOID_ARGS)
 	   keep this uncommented in case somebody adds a new one which does */
 	switch (uarmo->otyp) {
 	case ROBE:
+	case SHAMANISTIC_ROBE:
 	case BATHROBE:
 	case ROBE_OF_PROTECTION:
 	case ROBE_OF_MAGIC_RESISTANCE:
@@ -798,7 +804,8 @@ Belt_on(VOID_ARGS)
 	case LEATHER_BELT:
 		break;
 	case BELT_OF_GIANT_STRENGTH:
-		makeknown(uarmv->otyp);
+		if (!(uarmg && uarmg->otyp == GAUNTLETS_OF_POWER && uarmv->spe < -1))
+			makeknown(uarmv->otyp);
 		context.botl = 1; /* taken care of in attrib.c */
 		break;
 	case BELT_OF_DWARVENKIND:
@@ -822,10 +829,11 @@ Belt_off(VOID_ARGS)
 	case LEATHER_BELT:
 		break;
 	case BELT_OF_GIANT_STRENGTH:
-		if (uarmg && uarmg->otyp == GAUNTLETS_OF_POWER)
+		if (uarmg && uarmg->otyp == GAUNTLETS_OF_POWER && uarmv->spe > -1)
 			makeknown(uarmg->otyp);
 
-		makeknown(uarmv->otyp);
+		if (!(uarmg && uarmg->otyp == GAUNTLETS_OF_POWER && uarmv->spe < -1))
+			makeknown(uarmv->otyp);
 		context.botl = 1; /* taken care of in attrib.c */
 		break;
 	case BELT_OF_DWARVENKIND:
@@ -3156,7 +3164,11 @@ register struct obj *atmp;
 	else if (DESTROY_ARM(uarmp)) {
 		if (donning(otmp))
 			cancel_don();
-		Your("pants vanish!");
+		if(uarmp->otyp == SKIRT || uarmp->otyp == KILT)
+			Your("%s vanishes in thin air!", pants_simple_name(uarmp));
+		else
+			Your("%s vanish in thin air!", pants_simple_name(uarmp));
+
 		(void)Pants_off();
 		useup(otmp);
 		selftouch("You");

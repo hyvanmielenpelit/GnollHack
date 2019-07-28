@@ -4124,6 +4124,26 @@ struct obj* robe;
 	return "robe";
 }
 
+const char*
+pants_simple_name(pants)
+struct obj* pants;
+{
+	if (pants) {
+		switch (pants->otyp) {
+		case SKIRT: //special types here
+			return "skirt";
+		case KILT: //special types here
+			return "kilt";
+		case TRUNKS_OF_SWIMMING: //special types here
+			return "trunks";
+		default:
+			break;
+		}
+	}
+	return "pants";
+}
+
+
 /* helm vs hat for messages */
 const char *
 helm_simple_name(helmet)
