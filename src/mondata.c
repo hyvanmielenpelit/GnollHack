@@ -421,7 +421,7 @@ register struct permonst *ptr;
     return (boolean) (bigmonst(ptr)
                       || (ptr->msize > MZ_SMALL && !humanoid(ptr))
                       /* special cases of humanoids that cannot wear suits */
-                      || ptr == &mons[PM_MARILITH]
+                      || ptr == &mons[PM_MARILITH] || ptr == &mons[PM_GLABREZU]
                       || ptr == &mons[PM_WINGED_GARGOYLE]);
 }
 

@@ -1984,7 +1984,7 @@ boolean noisy;
 
     /* this is the same check as for 'W' (dowear), but different message,
        in case we get here via 'P' (doputon) */
-    if (verysmall(youmonst.data) || nohands(youmonst.data)) {
+    if (verysmall(youmonst.data) || nohands(youmonst.data) || nolimbs(youmonst.data)) {
         if (noisy)
             You("can't wear any armor in your current form.");
         return 0;
@@ -2031,7 +2031,14 @@ boolean noisy;
                           helm_simple_name(otmp),
                           plur(num_horns(youmonst.data)));
             err++;
-        } else
+		}
+		else if (Upolyd && !has_head(youmonst.data)) {
+			/* (flimsy exception matches polyself handling) */
+			if (noisy)
+				You("have no head to put your %s on.",
+					helm_simple_name(otmp));
+			err++;
+		} else
             *mask = W_ARMH;
     } else if (is_shield(otmp)) {
         if (uarms) {
@@ -2122,6 +2129,11 @@ boolean noisy;
 		if (uarmp) {
 			if (noisy)
 				already_wearing(c_pants);
+			err++;
+		}
+		else if (Upolyd && slithy(youmonst.data) && otmp->otyp != SKIRT && otmp->otyp != KILT) {
+			if (noisy)
+				You("have no legs...");
 			err++;
 		}
 		else
@@ -2233,7 +2245,7 @@ struct obj *obj;
             char answer, qbuf[QBUFSZ];
             int res = 0;
 
-            if (nolimbs(youmonst.data)) {
+            if (nolimbs(youmonst.data) || nohands(youmonst.data)) {
                 You("cannot make the ring stick to your body.");
                 return 0;
             }
