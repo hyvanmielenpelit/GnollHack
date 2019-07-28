@@ -678,6 +678,7 @@ struct obj *obj;         /* missile (or stack providing it) */
 						//Bracers here, if need be
 					}
 				}
+				//Give strength to hit bonus
 
 				//Give bow damage bonuses
 				if (MON_WEP(mon) && singleobj)
@@ -690,15 +691,19 @@ struct obj *obj;         /* missile (or stack providing it) */
 							//hitv += weapon_hit_bonus(MON_WEP(mon)); //Monsters do not get skill bonuses
 							dam += dmgval(MON_WEP(mon), &youmonst);
 							if (MON_WEP(mon)->otyp == CROSSBOW) {
+								hitv += 1;
 								dam += 3;
 							}
 							else if (MON_WEP(mon)->otyp == HEAVY_CROSSBOW) {
+								hitv += 3;
 								dam += 6;
 							}
 							else if (MON_WEP(mon)->otyp == HAND_CROSSBOW) {
+								hitv += 0;
 								dam += 0;
 							}
 							else {
+								hitv += mabon(mon);
 								dam += mdbon(mon);
 							}
 						}
@@ -707,6 +712,11 @@ struct obj *obj;         /* missile (or stack providing it) */
 							hitv -= 4;
 						}
 					}
+				}
+				else
+				{
+					hitv += mabon(mon);
+					dam += mdbon(mon);
 				}
                 if (bigmonst(youmonst.data))
                     hitv++;
@@ -981,6 +991,9 @@ struct monst *mtmp;
     xchar x, y;
     const char *onm;
 
+	if (!mtmp)
+		return;
+
     /* Rearranged beginning so monsters can use polearms not in a line */
     if (mtmp->weapon_check == NEED_WEAPON || !MON_WEP(mtmp)) {
         mtmp->weapon_check = NEED_RANGED_WEAPON;
@@ -1016,7 +1029,9 @@ struct monst *mtmp;
         if (bigmonst(youmonst.data))
             hitv++;
         hitv += 8 + otmp->spe;
-        if (dam < 1)
+		hitv += mabon(mtmp); //strength to hit bonus
+		dam += mdbon(mtmp); // strength damage bonus
+		if (dam < 1)
             dam = 1;
 
         (void) thitu(hitv, dam, &otmp, (char *) 0);

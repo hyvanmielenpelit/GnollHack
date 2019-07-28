@@ -53,7 +53,13 @@ struct permonst {
         cnutrit;                /* its nutritional value */
     uchar msound;               /* noise it makes (6 bits) */
     uchar msize;                /* physical size (3 bits) */
-    uchar mresists;             /* resistances */
+	schar str,					/* strength */
+		dex,					/* dexterity */
+		con,					/* constitution */
+		intl,					/* intelligence */
+		wis,					/* wisdom */
+		cha;                    /* charisma */
+	uchar mresists;             /* resistances */
     uchar mconveys;             /* conveyed by eating */
     unsigned long mflags1,      /* boolean bitflags */
         mflags2;                /* more boolean bitflags */

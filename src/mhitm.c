@@ -929,12 +929,15 @@ register struct attack *mattk;
                     && touch_petrifies(&mons[otmp->corpsenm]))
                     goto do_stone;
                 tmp += dmgval(otmp, mdef);
-                if ((marmg = which_armor(magr, W_ARMG)) != 0
-                    && marmg->otyp == GAUNTLETS_OF_POWER)
-                    tmp += (strongmonst(magr->data) ? 1 : 7); /* rn1(3, 4) + 3..6 */
-				else if ((marmv = which_armor(magr, W_ARMV)) != 0
+				if ((marmv = which_armor(magr, W_ARMV)) != 0
 					&& marmv->otyp == BELT_OF_GIANT_STRENGTH)
-					tmp += (strongmonst(magr->data) ? 4 : 10); /* rn1(3, 4) 3..6 */
+					tmp += strength_damage_bonus(STR19(19) + marmv->spe); // (strongmonst(magr->data) ? 4 : 10); /* rn1(3, 4) 3..6 */
+				else if ((marmg = which_armor(magr, W_ARMG)) != 0
+					&& marmg->otyp == GAUNTLETS_OF_POWER)
+					tmp += strength_damage_bonus(STR18(100)); // (strongmonst(magr->data) ? 1 : 7); /* rn1(3, 4) + 3..6 */
+				else
+					tmp += strength_damage_bonus(magr->data->str);
+
 				if (tmp < 1) /* is this necessary?  mhitu.c has it... */
                     tmp = 1;
                 if (otmp->oartifact) {

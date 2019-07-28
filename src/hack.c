@@ -2982,12 +2982,24 @@ weight_cap()
         /* consistent with can_carry() in mon.c */
         if (youmonst.data->mlet == S_NYMPH)
             carrcap = MAX_CARR_CAP;
-        else if (!youmonst.data->cwt)
+		else if (youmonst.data->msize == MZ_TINY)
+			carrcap = carrcap / 10;
+		else if (youmonst.data->msize == MZ_SMALL)
+			carrcap = carrcap / 2;
+		else if (youmonst.data->msize == MZ_LARGE)
+			carrcap = carrcap * 2;
+		else if (youmonst.data->msize == MZ_HUGE)
+			carrcap = carrcap * 5;
+		else if (youmonst.data->msize == MZ_GIGANTIC)
+			carrcap = carrcap * 10;
+
+/*		else if (!youmonst.data->cwt)
             carrcap = (carrcap * (long) youmonst.data->msize) / MZ_HUMAN;
         else if (!strongmonst(youmonst.data)
                  || (strongmonst(youmonst.data)
                      && (youmonst.data->cwt > WT_HUMAN)))
             carrcap = (carrcap * (long) youmonst.data->cwt / WT_HUMAN);
+*/
     }
 
     if (Levitation || Is_airlevel(&u.uz) /* pugh@cornell */

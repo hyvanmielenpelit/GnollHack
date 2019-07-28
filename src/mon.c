@@ -1182,7 +1182,7 @@ int
 max_mon_load(mtmp)
 struct monst *mtmp;
 {
-    long maxload;
+    long carrcap = 0;
 
     /* Base monster carrying capacity is equal to human maximum
      * carrying capacity, or half human maximum if not strong.
@@ -1192,21 +1192,36 @@ struct monst *mtmp;
      * and human weights.  Corpseless monsters are given a capacity
      * proportional to their size instead of weight.
      */
-    if (!mtmp->data->cwt)
+	/*
+	if (!mtmp->data->cwt)
         maxload = (MAX_CARR_CAP * (long) mtmp->data->msize) / MZ_HUMAN;
     else if (!strongmonst(mtmp->data)
              || (strongmonst(mtmp->data) && (mtmp->data->cwt > WT_HUMAN)))
         maxload = (MAX_CARR_CAP * (long) mtmp->data->cwt) / WT_HUMAN;
     else
-        maxload = MAX_CARR_CAP; /*strong monsters w/cwt <= WT_HUMAN*/
+        maxload = MAX_CARR_CAP; /*strong monsters w/cwt <= WT_HUMAN
 
     if (!strongmonst(mtmp->data))
         maxload /= 2;
 
     if (maxload < 1)
         maxload = 1;
+	*/
 
-    return (int) maxload;
+	carrcap = 50 * (youmonst.data->str + youmonst.data->con) + 50;
+	if (mtmp->data->mlet == S_NYMPH)
+		carrcap = MAX_CARR_CAP;
+	else if (mtmp->data->msize == MZ_TINY)
+		carrcap = carrcap / 10;
+	else if (mtmp->data->msize == MZ_SMALL)
+		carrcap = carrcap / 2;
+	else if (mtmp->data->msize == MZ_LARGE)
+		carrcap = carrcap * 2;
+	else if (mtmp->data->msize == MZ_HUGE)
+		carrcap = carrcap * 5;
+	else if (mtmp->data->msize == MZ_GIGANTIC)
+		carrcap = carrcap * 10;
+    return (int) carrcap;
 }
 
 /* for restricting monsters' object-pickup.

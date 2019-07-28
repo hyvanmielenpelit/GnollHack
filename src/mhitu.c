@@ -1090,12 +1090,15 @@ register struct attack *mattk;
                         goto do_stone;
                 }
                 dmg += dmgval(otmp, &youmonst);
-                if ((marmg = which_armor(mtmp, W_ARMG)) != 0
-                    && marmg->otyp == GAUNTLETS_OF_POWER)
-                    dmg += (strongmonst(mtmp->data) ? 1 : 7); /* 3..6 */
-				else if ((marmv = which_armor(mtmp, W_ARMV)) != 0
+				if ((marmv = which_armor(mtmp, W_ARMV)) != 0
 					&& marmv->otyp == BELT_OF_GIANT_STRENGTH)
-					dmg += (strongmonst(mtmp->data) ? 4 : 10); /* 3..6 */
+					dmg += strength_damage_bonus(STR19(19) + marmv->spe);
+				else if ((marmg = which_armor(mtmp, W_ARMG)) != 0
+                    && marmg->otyp == GAUNTLETS_OF_POWER)
+                    dmg += strength_damage_bonus(STR18(100));
+				else
+					dmg += strength_damage_bonus(mtmp->data->str);
+
 				if (dmg <= 0)
                     dmg = 1;
 

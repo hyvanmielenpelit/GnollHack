@@ -606,9 +606,10 @@ struct attack *uattk;
 {
     boolean malive, wep_was_destroyed = FALSE;
     struct obj *wepbefore = uwep;
-    int armorpenalty, attknum = 0, x = u.ux + u.dx, y = u.uy + u.dy,
-                      tmp = find_roll_to_hit(mon, uattk->aatyp, uwep,
-                                             &attknum, &armorpenalty);
+	int armorpenalty, attknum = 0, x = u.ux + u.dx, y = u.uy + u.dy;
+
+	//DETERMINE IF YOU HIT THE MONSTER
+	int tmp = find_roll_to_hit(mon, uattk->aatyp, uwep, &attknum, &armorpenalty);
     int dieroll = rnd(20);
     int mhit = (tmp > dieroll || u.uswallow);
 

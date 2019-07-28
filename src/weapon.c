@@ -551,7 +551,7 @@ register struct monst *mtmp;
              * Big weapon is basically the same as bimanual.
              * All monsters can wield the remaining weapons.
              */
-            if (((strongmonst(mtmp->data)
+            if ((((strongmonst(mtmp->data) || mtmp->data->str >= 14)
                   && (mtmp->misc_worn_check & W_ARMS) == 0)
                  || !objects[pwep[i]].oc_bimanual)
                 && (objects[pwep[i]].oc_material != SILVER
@@ -672,7 +672,7 @@ register struct monst *mtmp;
 {
     register struct obj *otmp;
     register int i;
-    boolean strong = strongmonst(mtmp->data);
+    boolean strong = (strongmonst(mtmp->data) || mtmp->data->str >= 13);
     boolean wearing_shield = (mtmp->misc_worn_check & W_ARMS) != 0;
 
     /* prefer artifacts to everything else */
@@ -890,8 +890,8 @@ abon()
     int sbon = 0;
     int str = ACURR(A_STR), dex = ACURR(A_DEX);
 
-    if (Upolyd)
-        return (adj_lev(&mons[u.umonnum]) - 3);
+//    if (Upolyd)
+//        return (adj_lev(&mons[u.umonnum]) - 3);
 
 	sbon += strength_tohit_bonus(str);
 
@@ -1000,6 +1000,7 @@ struct monst* mon;
 {
 	int bonus = 0;
 
+	/*
 	if (mon->data == &mons[PM_GNOME_LORD] || mon->data == &mons[PM_ELF_LORD] ||
 		mon->data == &mons[PM_FOREST_CENTAUR] || mon->data == &mons[PM_HILL_ORC] || 
 		mon->data == &mons[PM_KOP_SERGEANT] || mon->data == &mons[PM_SOLDIER] || mon->data == &mons[PM_WATCHMAN]) {
@@ -1041,6 +1042,24 @@ struct monst* mon;
 		if (strongmonst(mon->data))
 			bonus = 3;
 	}
+	*/
+	if(!mon)
+		bonus += strength_damage_bonus(mon->data->str);
+
+	return bonus;
+
+}
+
+/* monster to hit bonus for strength*/
+int
+mabon(mon)
+struct monst* mon;
+{
+	int bonus = 0;
+
+	if (!mon)
+		bonus += strength_tohit_bonus(mon->data->str);
+
 	return bonus;
 
 }

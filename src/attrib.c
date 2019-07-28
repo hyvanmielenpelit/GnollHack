@@ -561,9 +561,20 @@ exerchk()
                can't exceed 18 via exercise even if actual max is higher */
             lolim = ATTRMIN(i); /* usually 3; might be higher */
             hilim = ATTRMAX(i); /* usually 18; maybe lower or higher */
-            if (hilim > 18)
-                hilim = 18;
-            if ((ax < 0) ? (ABASE(i) <= lolim) : (ABASE(i) >= hilim))
+			
+			//An extra limit here for an unknown reason
+			if (i == A_STR)
+			{
+				if (hilim > STR18(100))
+					hilim = STR18(100);
+			}
+			else
+			{
+				if (hilim > 18)
+					hilim = 18;
+			}
+			
+			if ((ax < 0) ? (ABASE(i) <= lolim) : (ABASE(i) >= hilim))
                 goto nextattrib;
             /* can't exercise non-Wisdom while polymorphed; previous
                exercise/abuse gradually wears off without impact then */
