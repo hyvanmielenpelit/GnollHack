@@ -1983,6 +1983,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 
     mdef->mstrategy &= ~STRAT_WAITFORU; /* in case player is very fast */
     mdef->mhp -= tmp;
+
     if (DEADMONSTER(mdef)) {
         if (mdef->mtame && !cansee(mdef->mx, mdef->my)) {
             You_feel("embarrassed for a moment.");
@@ -1995,7 +1996,9 @@ int specialdmg; /* blessed and/or silver bonus against various things */
         } else if (tmp)
             killed(mdef);
         return 2;
-    }
+    } else if (flags.verbose && tmp > 0)
+		You("inflict %d damage.", tmp);
+
     return 1;
 }
 
@@ -2514,7 +2517,7 @@ register struct monst *mon;
                     } else {
                         if (mattk->aatyp == AT_CLAW)
                             verb = "hit"; /* not "claws" */
-                        You("%s %s for %d damage.", verb, mon_nam(mon), specialdmg);
+                        You("%s %s.", verb, mon_nam(mon));
                         if (silverhit && flags.verbose)
                             silver_sears(&youmonst, mon, silverhit);
                     }
