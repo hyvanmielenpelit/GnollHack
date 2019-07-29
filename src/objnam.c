@@ -906,6 +906,8 @@ struct obj *obj;
 
 #define DONAME_WITH_PRICE 1
 #define DONAME_VAGUE_QUAN 2
+#define DONAME_WITH_WEIGHT_FIRST 4
+#define DONAME_WITH_WEIGHT_LAST 8
 
 STATIC_OVL char *
 doname_base(obj, doname_flags)
@@ -914,8 +916,10 @@ unsigned doname_flags;
 {
     boolean ispoisoned = FALSE,
             with_price = (doname_flags & DONAME_WITH_PRICE) != 0,
-            vague_quan = (doname_flags & DONAME_VAGUE_QUAN) != 0;
-    boolean known, dknown, cknown, bknown, lknown;
+            vague_quan = (doname_flags & DONAME_VAGUE_QUAN) != 0,
+			weightfirst = (doname_flags & DONAME_WITH_WEIGHT_FIRST) != 0,
+			weightlast = (doname_flags & DONAME_WITH_WEIGHT_LAST) != 0;
+			boolean known, dknown, cknown, bknown, lknown;
     int omndx = obj->corpsenm;
     char prefix[PREFIX];
     char tmpbuf[PREFIX + 1]; /* for when we have to add something at
@@ -1246,10 +1250,32 @@ unsigned doname_flags;
 
     /* show weight for items (debug tourist info)
      * aum is stolen from Crawl's "Arbitrary Unit of Measure" */
-    if (wizard && iflags.wizweight) {
-        Sprintf(eos(bp), " (%d aum)", obj->owt);
-    }
-    bp = strprepend(bp, prefix);
+
+	bp = strprepend(bp, prefix);
+
+	if ((wizard && iflags.wizweight) || weightfirst) {
+		char buf[BUFSZ];
+		if (obj->owt >= 10000)
+			Sprintf(buf, "%3.0f cwt - %s", ((double)obj->owt) / 1000, bp);
+		else if (obj->owt >= 100)
+			Sprintf(buf, "%3.0f lbs - %s", ((double)obj->owt) / 10, bp);
+		else
+			Sprintf(buf, "%1.1f lbs - %s", ((double)obj->owt) / 10, bp);
+		strcpy(bp, buf);
+	}
+	
+	if (weightlast)
+	{
+		char buf[BUFSZ];
+		if (obj->owt >= 10000)
+			Sprintf(buf, "%s (%d cwt)", bp, (int)((double)obj->owt) / 1000);
+		else if (obj->owt >= 100)
+			Sprintf(buf, "%s (%d lbs)", bp, (int)((double)obj->owt) / 10);
+		else
+			Sprintf(buf, "%s (%.1f lbs)", bp, ((double)obj->owt) / 10);
+		strcpy(bp, buf);
+	}
+
     return bp;
 }
 
@@ -1266,6 +1292,22 @@ doname_with_price(obj)
 struct obj *obj;
 {
     return doname_base(obj, DONAME_WITH_PRICE);
+}
+
+/* Name of object including price. */
+char*
+doname_with_price_and_weight_last(obj)
+struct obj* obj;
+{
+	return doname_base(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_LAST);
+}
+
+/* Name of object including price. */
+char*
+doname_with_price_and_weight_first(obj)
+struct obj* obj;
+{
+	return doname_base(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_FIRST);
 }
 
 /* "some" instead of precise quantity if obj->dknown not set */
@@ -1287,6 +1329,22 @@ struct obj *obj;
      */
     return doname_base(obj, DONAME_VAGUE_QUAN);
 }
+
+char*
+doname_with_weight_first(obj)
+struct obj* obj;
+{
+	return doname_base(obj, DONAME_WITH_WEIGHT_FIRST);
+}
+
+
+char*
+doname_with_weight_last(obj)
+struct obj* obj;
+{
+	return doname_base(obj, DONAME_WITH_WEIGHT_LAST);
+}
+
 
 /* used from invent.c */
 boolean

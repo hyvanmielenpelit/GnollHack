@@ -1574,6 +1574,7 @@ boolean identified, all_containers, reportempty;
     register struct obj *box, *obj;
     char buf[BUFSZ];
     boolean cat, dumping = iflags.in_dumplog;
+	int count = 0;
 
     for (box = list; box; box = box->nobj) {
         if (Is_container(box) || box->otyp == STATUE) {
@@ -1615,7 +1616,9 @@ boolean identified, all_containers, reportempty;
                             if (Is_container(obj) || obj->otyp == STATUE)
                                 obj->cknown = obj->lknown = 1;
                         }
-                        Strcpy(&buf[2], doname_with_price(obj));
+						count++;
+						Sprintf(&buf[2], "%2d - %s", count, doname_with_price_and_weight_first(obj));
+						//Strcpy(&buf[2], doname_with_price_and_weight_first(obj));
                         putstr(tmpwin, 0, buf);
                     }
                     unsortloot(&sortedcobj);

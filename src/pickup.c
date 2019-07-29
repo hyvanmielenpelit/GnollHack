@@ -918,7 +918,7 @@ boolean FDECL((*allow), (OBJ_P)); /* allow function */
                          (qflags & USE_INVLET) ? curr->invlet
                            : (first && curr->oclass == COIN_CLASS) ? '$' : 0,
                          def_oc_syms[(int) objects[curr->otyp].oc_class].sym,
-                         ATR_NONE, doname_with_price(curr), MENU_UNSELECTED);
+                         ATR_NONE, doname_with_price_and_weight_first(curr), MENU_UNSELECTED);
                 first = FALSE;
             }
         }

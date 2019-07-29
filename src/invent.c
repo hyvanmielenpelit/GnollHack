@@ -2190,7 +2190,7 @@ int FDECL((*fn), (OBJ_P)), FDECL((*ckfn), (OBJ_P));
                 first = FALSE;
             }
             (void) safe_qbuf(qbuf, qpfx, "?", otmp,
-                             ininv ? safeq_xprname : doname,
+                             ininv ? safeq_xprname : doname_with_weight_first,
                              ininv ? safeq_shortxprname : ansimpleoname,
                              "item");
             sym = (takeoff || ident || otmp->quan < 2L) ? nyaq(qbuf)
@@ -2451,6 +2451,8 @@ long quan;       /* if non-0, print this quantity, not obj->quan */
         savequan = obj->quan;
         obj->quan = quan;
     }
+
+	
     /*
      * If let is:
      *  -  Then obj == null and 'txt' refers to hands or fingers.
@@ -2460,14 +2462,16 @@ long quan;       /* if non-0, print this quantity, not obj->quan */
     if (cost != 0 || let == '*') {
         /* if dot is true, we're doing Iu, otherwise Ix */
         Sprintf(li,
-                iflags.menu_tab_sep ? "%c - %s\t%6ld %s"
-                                    : "%c - %-45s %6ld %s",
-                (dot && use_invlet ? obj->invlet : let),
-                (txt ? txt : doname(obj)), cost, currency(cost));
+
+					(iflags.menu_tab_sep ? "%c - %s\t%6ld %s"
+                                    : "%c - %-45s %6ld %s"),
+			(dot && use_invlet ? obj->invlet : let),
+			(txt ? txt : doname(obj)), cost, currency(cost));
     } else {
         /* ordinary inventory display or pickup message */
-        Sprintf(li, "%c - %s%s", (use_invlet ? obj->invlet : let),
-                (txt ? txt : doname(obj)), (dot ? "." : ""));
+        Sprintf(li, 
+			"%c - %s%s", (use_invlet ? obj->invlet : let),
+			(txt ? txt : doname_with_weight_last(obj)), (dot ? "." : ""));
     }
     if (savequan)
         obj->quan = savequan;
@@ -2674,7 +2678,9 @@ long *out_cnt;
         add_menu(win, NO_GLYPH, &any, HANDS_SYM, 0, ATR_NONE,
                  xtra_choice, MENU_UNSELECTED);
     }
- nextclass:
+
+
+nextclass:
     classcount = 0;
     for (srtinv = sortedinvent; (otmp = srtinv->obj) != 0; ++srtinv) {
         if (lets && !index(lets, otmp->invlet))
@@ -2697,7 +2703,7 @@ long *out_cnt;
                 any.a_char = ilet;
             add_menu(win, obj_to_glyph(otmp, rn2_on_display_rng), &any, ilet,
                      wizid ? def_oc_syms[(int) otmp->oclass].sym : 0,
-                     ATR_NONE, doname(otmp), MENU_UNSELECTED);
+                     ATR_NONE, doname_with_weight_first(otmp), MENU_UNSELECTED);
         }
     }
     if (flags.sortpack) {
@@ -2812,7 +2818,7 @@ char avoidlet;
                     any.a_char = ilet;
                     add_menu(win, obj_to_glyph(otmp, rn2_on_display_rng),
                              &any, ilet, 0, ATR_NONE,
-                             doname(otmp), MENU_UNSELECTED);
+                             doname_with_weight_first(otmp), MENU_UNSELECTED);
                 }
             }
             if (flags.sortpack && *++invlet)
@@ -3470,12 +3476,14 @@ boolean picked_some;
         if (dfeature)
             pline1(fbuf);
         read_engr_at(u.ux, u.uy); /* Eric Backus */
-        You("%s here %s.", verb, doname_with_price(otmp));
+        You("%s here %s.", verb, doname_with_price_and_weight_last(otmp));
         iflags.last_msg = PLNMSG_ONE_ITEM_HERE;
         if (otmp->otyp == CORPSE)
             feel_cockatrice(otmp, FALSE);
     } else {
         char buf[BUFSZ];
+		char buf2[BUFSZ];
+		int count = 0;
 
         display_nhwindow(WIN_MESSAGE, FALSE);
         tmpwin = create_nhwindow(NHW_MENU);
@@ -3494,7 +3502,9 @@ boolean picked_some;
                 putstr(tmpwin, 0, buf);
                 break;
             }
-            putstr(tmpwin, 0, doname_with_price(otmp));
+			count++;
+			Sprintf(buf2, "%2d - %s", count, doname_with_price_and_weight_first(otmp));
+            putstr(tmpwin, 0, buf2);
         }
         display_nhwindow(tmpwin, TRUE);
         destroy_nhwindow(tmpwin);
