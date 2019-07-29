@@ -384,7 +384,8 @@ register struct monst *magr, *mdef;
                 if (vis)
                     mswingsm(magr, mdef, otmp);
                 tmp += hitval(otmp, mdef);
-            }
+				tmp += mabon(magr);
+			}
             /*FALLTHRU*/
         case AT_CLAW:
         case AT_KICK:
@@ -1707,7 +1708,7 @@ int aatyp;
     case AT_BOOM:
     case AT_GAZE:
     case AT_BREA:
-	case AT_DMNS:
+	case AT_SMMN:
 	case AT_MAGC:
         w_mask = ~0L; /* special case; no defense needed */
         break;

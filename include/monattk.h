@@ -25,7 +25,7 @@
 #define AT_GAZE 15  /* gaze - ranged */
 #define AT_TENT 16  /* tentacles */
 
-#define AT_DMNS 253 /* uses demon special abilities */
+#define AT_SMMN 253 /* uses demon special abilities */
 #define AT_WEAP 254 /* uses weapon */
 #define AT_MAGC 255 /* uses magic spell(s) */
 
@@ -82,7 +82,8 @@
 #define AD_CLRC 240 /* random clerical spell */
 #define AD_SPEL 241 /* random magic spell */
 #define AD_RBRE 242 /* random breath weapon */
-#define AD_SMMN 243 /* Summons demons */
+#define AD_DMNS 243 /* Summons demons */
+#define AD_LYCA 244 /* Lycanthrope summon */
 
 #define AD_SAMU 252 /* hits, may steal Amulet (Wizard) */
 #define AD_CURS 253 /* random curse (ex. gremlin) */

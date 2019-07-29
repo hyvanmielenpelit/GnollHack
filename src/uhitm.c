@@ -1980,7 +1980,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
             mdef->mconf = 1;
         }
         break;
-	case AD_SMMN:
+	case AD_DMNS:
 		chance = mattk->damp;
 		if(chance > 0)
 		{

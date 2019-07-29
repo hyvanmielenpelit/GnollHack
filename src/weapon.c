@@ -894,6 +894,7 @@ abon()
 //        return (adj_lev(&mons[u.umonnum]) - 3);
 
 	sbon += strength_tohit_bonus(str);
+	sbon += dexterity_tohit_bonus(dex);
 
     /* Game tuning kludge: make it a bit easier for a low level character to
      * hit */
@@ -1031,6 +1032,25 @@ struct monst* mon;
 
 	return currstr;
 }
+int
+monster_current_dex(mon)
+struct monst* mon;
+{
+	int currdex = 0;
+	struct obj* marmg;
+
+	if (!mon)
+		return 0;
+
+	currdex = mon->mdex;
+
+	if ((marmg = which_armor(mon, W_ARMG)) != 0
+		&& marmg->otyp == GAUNTLETS_OF_DEXTERITY)
+		currdex += marmg->spe;
+
+	return currdex;
+}
+
 /* monster to hit bonus for strength*/
 int
 mabon(mon)
@@ -1041,10 +1061,51 @@ struct monst* mon;
 	if (!mon)
 	{
 		bonus += strength_tohit_bonus(monster_current_str(mon));
+		bonus += dexterity_tohit_bonus(monster_current_dex(mon));
 	}
 	return bonus;
 
 }
+
+int
+dexterity_ac_bonus(dex)
+int dex;
+{
+	if (dex < 1)
+		return -5;
+	else if (dex < 7)
+		return -7 + dex;
+	else if (dex < 14)
+		return 0;
+	else if (dex <= 25)
+		return dex - 14;
+	else
+		return 11;
+}
+
+int dexterity_tohit_bonus(dex)
+int dex;
+{
+	int sbon = 0;
+
+	if (dex < 4)
+		sbon = -3;
+	else if (dex < 6)
+		sbon = -2;
+	else if (dex < 8)
+		sbon = -1;
+	else if (dex < 14)
+		sbon = 0;
+	else if (dex == 14)
+		sbon = 1;
+	else if (dex <= 25)
+		sbon = (dex - 13) / 2;
+	else
+		sbon = 6;
+
+	return sbon;
+}
+
 
 /* increase a towel's wetness */
 void

@@ -712,6 +712,11 @@ struct obj *obj;         /* missile (or stack providing it) */
 							hitv -= 4;
 						}
 					}
+					else
+					{
+						hitv += mabon(mon);
+						dam += mdbon(mon);
+					}
 				}
 				else
 				{
@@ -1029,7 +1034,7 @@ struct monst *mtmp;
         if (bigmonst(youmonst.data))
             hitv++;
         hitv += 8 + otmp->spe;
-		hitv += mabon(mtmp); //strength to hit bonus
+		hitv += mabon(mtmp); //strength and dex to hit bonus
 		dam += mdbon(mtmp); // strength damage bonus
 		if (dam < 1)
             dam = 1;

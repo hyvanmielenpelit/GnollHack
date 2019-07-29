@@ -97,7 +97,7 @@ register int nk;
                 tmp += 5;
             else if (tmp2 == AT_MAGC)
                 tmp += 10;
-			else if (tmp2 == AT_DMNS)
+			else if (tmp2 == AT_SMMN)
 				tmp += 10;
 			else
                 tmp += 3;

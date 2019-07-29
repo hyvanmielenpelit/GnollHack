@@ -190,7 +190,9 @@ int msgflg; /* positive => no message, zero => message, and */
     if (msgflg <= 0)
         You_feel("%s%s!", (incr > 1 || incr < -1) ? "very " : "", attrstr);
     context.botl = TRUE;
-    if (program_state.in_moveloop && (ndx == A_STR || ndx == A_CON))
+	//Check if AC needs to be updated
+	find_ac();
+	if (program_state.in_moveloop && (ndx == A_STR || ndx == A_CON))
         (void) encumber_msg();
     return TRUE;
 }

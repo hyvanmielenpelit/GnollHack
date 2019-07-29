@@ -2486,7 +2486,10 @@ find_ac()
     if (uright && uright->otyp == RIN_PROTECTION)
         uac -= uright->spe;
 
-    /* armor class from other sources */
+	//DEX Bonus
+	uac -= dexterity_ac_bonus(ACURR(A_DEX));
+	
+	/* armor class from other sources */
     if (HProtection & INTRINSIC)
         uac -= u.ublessed;
     uac -= u.uspellprot;

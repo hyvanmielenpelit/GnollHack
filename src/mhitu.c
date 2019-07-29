@@ -607,8 +607,9 @@ register struct monst *mtmp;
 
     /*  Work out the armor class differential   */
     tmp = AC_VALUE(u.uac) + 10; /* tmp ~= 0 - 20 */
-    tmp += mtmp->m_lev;
-    if (multi < 0)
+    tmp += mtmp->m_lev;	//Add level to hit chance
+	tmp += mabon(mtmp); //Add monster's STR and DEX bonus
+	if (multi < 0)
         tmp += 4;
     if ((Invis && !perceives(mdat)) || !mtmp->mcansee)
         tmp -= 2;
@@ -623,51 +624,6 @@ register struct monst *mtmp;
         newsym(mtmp->mx, mtmp->my);
     }
 
-    /*  Special lycanthrope handling code */
-    if ((mtmp->cham == NON_PM) && is_were(mdat) && !range2) {
-        if (is_human(mdat)) {
-            if (!rn2(5 - (night() * 2)) && !mtmp->mcan)
-                new_were(mtmp);
-        } else if (!rn2(30) && !mtmp->mcan)
-            new_were(mtmp);
-        mdat = mtmp->data;
-
-        if (!rn2(10) && !mtmp->mcan) {
-            int numseen, numhelp;
-            char buf[BUFSZ], genericwere[BUFSZ];
-
-            Strcpy(genericwere, "creature");
-            numhelp = were_summon(mdat, FALSE, &numseen, genericwere);
-            if (youseeit) {
-                pline("%s summons help!", Monnam(mtmp));
-                if (numhelp > 0) {
-                    if (numseen == 0)
-                        You_feel("hemmed in.");
-                } else
-                    pline("But none comes.");
-            } else {
-                const char *from_nowhere;
-
-                if (!Deaf) {
-                    pline("%s %s!", Something, makeplural(growl_sound(mtmp)));
-                    from_nowhere = "";
-                } else
-                    from_nowhere = " from nowhere";
-                if (numhelp > 0) {
-                    if (numseen < 1)
-                        You_feel("hemmed in.");
-                    else {
-                        if (numseen == 1)
-                            Sprintf(buf, "%s appears", an(genericwere));
-                        else
-                            Sprintf(buf, "%s appear",
-                                    makeplural(genericwere));
-                        pline("%s%s!", upstart(buf), from_nowhere);
-                    }
-                } /* else no help came; but you didn't know it tried */
-            }
-        }
-    }
 
     if (u.uinvulnerable) {
         /* monsters won't attack you */
@@ -696,7 +652,7 @@ register struct monst *mtmp;
         mon_currwep = (struct obj *)0;
         mattk = getmattk(mtmp, &youmonst, i, sum, &alt_attk);
         if ((u.uswallow && mattk->aatyp != AT_ENGL)
-            || (skipnonmagc && mattk->aatyp != AT_MAGC && mattk->aatyp != AT_DMNS))
+            || (skipnonmagc && mattk->aatyp != AT_MAGC && mattk->aatyp != AT_SMMN))
             continue;
 
         switch (mattk->aatyp) {
@@ -822,22 +778,75 @@ register struct monst *mtmp;
                 sum[i] = castmu(mtmp, mattk, TRUE, foundyou);
             break;
 
-		case AT_DMNS:
-			/*  Special demon handling code */
-			if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
-				int chance = mattk->damp;
-				if (!mtmp->mcan && rn2(100) < chance)
-				{
-					pline("%s gates in some help.", Monnam(mtmp));
-					(void)msummon(mtmp);
-					sum[i] = 1;
+		case AT_SMMN:
+			if(mattk->adtyp == AD_DMNS)
+			{
+				/*  Special demon handling code */
+				if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
+					int chance = mattk->damp;
+					if (!mtmp->mcan && rn2(100) < chance)
+					{
+						pline("%s gates in some help.", Monnam(mtmp));
+						(void)msummon(mtmp);
+						sum[i] = 1;
+					}
+					else
+					{
+						pline("%s attempts to gate in some help, but nothing happens.", Monnam(mtmp));
+					}
 				}
-				else
-				{
-					pline("%s attempts to gate in some help, but nothing happens.", Monnam(mtmp));
+			} else if (mattk->adtyp == AD_LYCA)
+			{
+				/*  Special lycanthrope handling code */
+				if ((mtmp->cham == NON_PM) && is_were(mdat) && !range2) {
+					if (is_human(mdat)) {
+						if (!rn2(5 - (night() * 2)) && !mtmp->mcan)
+							new_were(mtmp);
+					}
+					else if (!rn2(30) && !mtmp->mcan)
+						new_were(mtmp);
+					mdat = mtmp->data;
+
+					if (!rn2(10) && !mtmp->mcan) {
+						int numseen, numhelp;
+						char buf[BUFSZ], genericwere[BUFSZ];
+
+						Strcpy(genericwere, "creature");
+						numhelp = were_summon(mdat, FALSE, &numseen, genericwere);
+						if (youseeit) {
+							pline("%s summons help!", Monnam(mtmp));
+							if (numhelp > 0) {
+								if (numseen == 0)
+									You_feel("hemmed in.");
+							}
+							else
+								pline("But none comes.");
+						}
+						else {
+							const char* from_nowhere;
+
+							if (!Deaf) {
+								pline("%s %s!", Something, makeplural(growl_sound(mtmp)));
+								from_nowhere = "";
+							}
+							else
+								from_nowhere = " from nowhere";
+							if (numhelp > 0) {
+								if (numseen < 1)
+									You_feel("hemmed in.");
+								else {
+									if (numseen == 1)
+										Sprintf(buf, "%s appears", an(genericwere));
+									else
+										Sprintf(buf, "%s appear",
+											makeplural(genericwere));
+									pline("%s%s!", upstart(buf), from_nowhere);
+								}
+							} /* else no help came; but you didn't know it tried */
+						}
+					}
 				}
 			}
-
 			break;
 
 		default: /* no attack */
