@@ -26,7 +26,7 @@ struct attack {
 /*	Max # of attacks for any given monster.
  */
 
-#define NATTK 6
+#define NATTK 8
 
 /*	Weight of a human body
  */

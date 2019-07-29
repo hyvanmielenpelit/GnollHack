@@ -926,7 +926,7 @@ register struct attack *mattk;
                     && touch_petrifies(&mons[otmp->corpsenm]))
                     goto do_stone;
                 tmp += dmgval(otmp, mdef);
-				tmp += mdbon(magr, mdef);
+				tmp += mdbon(magr);
 
 				if (tmp < 1) /* is this necessary?  mhitu.c has it... */
                     tmp = 1;
@@ -1707,7 +1707,8 @@ int aatyp;
     case AT_BOOM:
     case AT_GAZE:
     case AT_BREA:
-    case AT_MAGC:
+	case AT_DMNS:
+	case AT_MAGC:
         w_mask = ~0L; /* special case; no defense needed */
         break;
     case AT_CLAW:

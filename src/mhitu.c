@@ -623,20 +623,6 @@ register struct monst *mtmp;
         newsym(mtmp->mx, mtmp->my);
     }
 
-    /*  Special demon handling code */
-    if ((mtmp->cham == NON_PM) && is_demon(mdat) && !range2
-        && mtmp->data != &mons[PM_BALROG] && mtmp->data != &mons[PM_SUCCUBUS]
-        && mtmp->data != &mons[PM_INCUBUS] && mtmp->data != &mons[PM_FLIND] && mtmp->data->mlevel >= 7) {
-		int chance = 40;
-		if (is_dlord(mdat))
-			chance = 20;
-		else if (is_dprince(mdat) || mtmp->data == &mons[PM_WIZARD_OF_YENDOR])
-			chance = 13;
-		if (!mtmp->mcan && !rn2(chance))
-			(void)msummon(mtmp);
-
-	}
-    
     /*  Special lycanthrope handling code */
     if ((mtmp->cham == NON_PM) && is_were(mdat) && !range2) {
         if (is_human(mdat)) {
@@ -710,7 +696,7 @@ register struct monst *mtmp;
         mon_currwep = (struct obj *)0;
         mattk = getmattk(mtmp, &youmonst, i, sum, &alt_attk);
         if ((u.uswallow && mattk->aatyp != AT_ENGL)
-            || (skipnonmagc && mattk->aatyp != AT_MAGC))
+            || (skipnonmagc && mattk->aatyp != AT_MAGC && mattk->aatyp != AT_DMNS))
             continue;
 
         switch (mattk->aatyp) {
@@ -836,7 +822,20 @@ register struct monst *mtmp;
                 sum[i] = castmu(mtmp, mattk, TRUE, foundyou);
             break;
 
-        default: /* no attack */
+		case AT_DMNS:
+			/*  Special demon handling code */
+			if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
+				int chance = mattk->damp;
+				if (!mtmp->mcan && rn2(100) < chance)
+				{
+					(void)msummon(mtmp);
+					sum[i] = 1;
+				}
+			}
+
+			break;
+
+		default: /* no attack */
             break;
         }
         if (context.botl)

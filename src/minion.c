@@ -149,9 +149,14 @@ struct monst *mon;
                 EMIN(mtmp)->renegade =
                     (atyp != u.ualign.type) ^ !mtmp->mpeaceful;
             }
-            if (is_demon(ptr) && canseemon(mtmp))
-                pline("%s appears in a cloud of smoke!", Amonnam(mtmp));
-        }
+			if(canseemon(mtmp))
+			{ 
+				if (is_demon(ptr))
+					pline("%s appears in a cloud of smoke!", Amonnam(mtmp));
+				else
+					pline("%s summons %s!", Monnam(mon), Amonnam(mtmp));
+			}
+		}
         cnt--;
     }
 
