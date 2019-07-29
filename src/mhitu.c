@@ -828,8 +828,13 @@ register struct monst *mtmp;
 				int chance = mattk->damp;
 				if (!mtmp->mcan && rn2(100) < chance)
 				{
+					pline("%s gates in some help.", Monnam(mtmp));
 					(void)msummon(mtmp);
 					sum[i] = 1;
+				}
+				else
+				{
+					pline("%s attempts to gate in some help, but nothing happens.", Monnam(mtmp));
 				}
 			}
 

@@ -154,7 +154,7 @@ struct monst *mon;
 				if (is_demon(ptr))
 					pline("%s appears in a cloud of smoke!", Amonnam(mtmp));
 				else
-					pline("%s summons %s!", Monnam(mon), Amonnam(mtmp));
+					pline("%s appears!", Amonnam(mtmp));
 			}
 		}
         cnt--;

@@ -1480,12 +1480,21 @@ demonpet()
     struct permonst *pm;
     struct monst *dtmp;
 
-    pline("Some hell-p has arrived!");
+    //pline("Some hell-p has arrived!");
     i = !rn2(6) ? ndemon(u.ualign.type) : NON_PM;
     pm = i != NON_PM ? &mons[i] : youmonst.data;
-    if ((dtmp = makemon(pm, u.ux, u.uy, NO_MM_FLAGS)) != 0)
-        (void) tamedog(dtmp, (struct obj *) 0);
-    exercise(A_WIS, TRUE);
+	if ((dtmp = makemon(pm, u.ux, u.uy, NO_MM_FLAGS)) != 0)
+	{
+		(void)tamedog(dtmp, (struct obj*) 0);
+		if (canseemon(dtmp))
+		{
+			if (is_demon(dtmp->data))
+				pline("%s appears in a cloud of smoke!", Amonnam(dtmp));
+			else
+				pline("%s appears!", Amonnam(dtmp));
+		}
+	}
+	exercise(A_WIS, TRUE);
 }
 
 STATIC_OVL boolean
@@ -1973,9 +1982,17 @@ int specialdmg; /* blessed and/or silver bonus against various things */
         break;
 	case AD_SMMN:
 		chance = mattk->damp;
-		if (chance > 0 && !rn2(chance)) {
-			demonpet();
-			return 0;
+		if(chance > 0)
+		{
+			if (rn2(100) < chance) {
+				You("gate in some help!");
+				demonpet();
+				return 0;
+			}
+			else
+			{
+				You("attempt to gate in some help, but nothing happens.");
+			}
 		}
 		break;
     default:
