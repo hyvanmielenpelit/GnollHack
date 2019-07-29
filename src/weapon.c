@@ -899,18 +899,28 @@ abon()
     /* Game tuning kludge: make it a bit easier for a low level character to
      * hit */
     sbon += (u.ulevel < 3) ? 1 : 0;
+	return sbon;
 
-    if (dex < 4)
-        return (sbon - 3);
-    else if (dex < 6)
-        return (sbon - 2);
-    else if (dex < 8)
-        return (sbon - 1);
-    else if (dex < 14)
-        return sbon;
-    else
-        return (sbon + dex - 14);
 }
+
+/* attack bonus for dexterity only for ranged*/
+int
+ranged_abon()
+{
+	int sbon = 0;
+	int str = ACURR(A_STR), dex = ACURR(A_DEX);
+
+	//    if (Upolyd)
+	//        return (adj_lev(&mons[u.umonnum]) - 3);
+
+	sbon += dexterity_tohit_bonus(dex);
+
+	/* Game tuning kludge: make it a bit easier for a low level character to
+	 * hit */
+	sbon += (u.ulevel < 3) ? 1 : 0;
+	return sbon;
+}
+
 
 int strength_tohit_bonus(str)
 int str;

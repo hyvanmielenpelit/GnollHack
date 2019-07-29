@@ -2764,6 +2764,7 @@ E void FDECL(possibly_unwield, (struct monst *, BOOLEAN_P));
 E void FDECL(mwepgone, (struct monst *));
 E int FDECL(mon_wield_item, (struct monst *));
 E int NDECL(abon);
+E int NDECL(ranged_abon);
 E int NDECL(dbon);
 E int FDECL(mabon, (struct monst*));
 E int FDECL(mdbon, (struct monst*));

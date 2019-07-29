@@ -1525,16 +1525,8 @@ register struct obj *obj; /* thrownobj or kickedobj or uwep */
      * Certain items which don't in themselves do damage ignore 'tmp'.
      * Distance and monster size affect chance to hit.
      */
-    tmp = -1 + Luck + find_mac(mon) + u.uhitinc
+    tmp = -1 + Luck + ranged_abon() + find_mac(mon) + u.uhitinc
           + maybe_polyd(youmonst.data->mlevel, u.ulevel);
-    if (ACURR(A_DEX) < 4)
-        tmp -= 3;
-    else if (ACURR(A_DEX) < 6)
-        tmp -= 2;
-    else if (ACURR(A_DEX) < 8)
-        tmp -= 1;
-    else if (ACURR(A_DEX) >= 14)
-        tmp += (ACURR(A_DEX) - 14);
 
     /* Modify to-hit depending on distance; but keep it sane.
      * Polearms get a distance penalty even when wielded; it's
@@ -1563,6 +1555,9 @@ register struct obj *obj; /* thrownobj or kickedobj or uwep */
             break;
         }
     }
+
+		//Bows have point black penalty
+		//OTHER BONUSES FROM BOW ARE GIVEN BELOW, THIS IS FOR POINT BLACK RANGE ONLY
 	if (hmode == HMON_THROWN) {
 		if (obj && uwep && mon && ammo_and_launcher(obj, uwep))
 		{
@@ -1588,10 +1583,16 @@ register struct obj *obj; /* thrownobj or kickedobj or uwep */
 			tmp -= 0;
 		}
 	}
+
+	//Bonus from hitval(obj) and other if monster is still etc.
     tmp += omon_adj(mon, obj, TRUE);
+
+	//Elfs get a bonus
     if (is_orc(mon->data)
         && maybe_polyd(is_elf(youmonst.data), Race_if(PM_ELF)))
         tmp++;
+
+	//Guaranteed hit
     if (guaranteed_hit) {
         tmp += 1000; /* Guaranteed hit */
     }
@@ -1691,6 +1692,8 @@ register struct obj *obj; /* thrownobj or kickedobj or uwep */
             /* attack hits mon */
             if (hmode == HMON_APPLIED)
                 u.uconduct.weaphit++;
+
+			//DAMAGE IS DONE HERE
             if (hmon(mon, obj, hmode, dieroll)) { /* mon still alive */
                 if (mon->wormno)
                     cutworm(mon, bhitpos.x, bhitpos.y, chopper);

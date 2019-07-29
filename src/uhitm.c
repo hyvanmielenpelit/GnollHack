@@ -1105,7 +1105,7 @@ int dieroll;
         if (thrown != HMON_THROWN || !obj || !uwep
             || !ammo_and_launcher(obj, uwep))
             tmp += dbon();
-		else if (ammo_and_launcher(obj, uwep)){
+		else if (obj && uwep && ammo_and_launcher(obj, uwep)){
 			if (uwep->otyp == CROSSBOW)
 				tmp += 3; // Light crossbows get +3 bonus, (heavy) crossbows get 18/00 strength bonus
 			else if (uwep->otyp == HEAVY_CROSSBOW)
@@ -1122,6 +1122,11 @@ int dieroll;
 			if (uarmb && uarmb->otyp == BRACERS_OF_ARCHERY)
 				tmp += + (uarmb->cursed ? -2 : 2) + (uarmb->blessed ? 1 : 0) + uarmb->spe;
 
+		}
+		else if (thrown == HMON_THROWN && obj && !is_ammo(obj))
+		{
+			//Thrown weapons get also damage bonus
+			tmp += dbon();
 		}
     }
 
@@ -2416,6 +2421,7 @@ register struct monst *mon;
             dieroll = rnd(20);
             dhit = (tmp > dieroll || u.uswallow);
             /* caller must set bhitpos */
+			//DAMAGE IS DONE HERE FOR WEAPON
             if (!known_hitum(mon, weapon, &dhit, tmp,
                              armorpenalty, mattk, dieroll)) {
                 /* enemy dead, before any special abilities used */
@@ -2435,7 +2441,7 @@ register struct monst *mon;
             }
             /* Do not print "You hit" message; known_hitum already did it. */
             if (dhit && mattk->adtyp != AD_SPEL && mattk->adtyp != AD_PHYS)
-                sum[i] = damageum(mon, mattk, 0);
+				sum[i] = damageum(mon, mattk, 0); //SPECIAL EFFECTS ARE DONE HERE FOR SPECIALS AFTER HITUM
             break;
         case AT_CLAW:
             if (uwep && !cantwield(youmonst.data) && !weapon_used)
@@ -2468,7 +2474,7 @@ register struct monst *mon;
                         mon_nam(mon),
                         (compat == 2) ? "engagingly" : "seductively");
                     /* doesn't anger it; no wakeup() */
-                    sum[i] = damageum(mon, mattk, 0);
+                    sum[i] = damageum(mon, mattk, 0); //SPECIAL EFFECTS ARE DONE HERE FOR SPECIALS WITHOUT HITUM
                     break;
                 }
                 wakeup(mon, TRUE);
@@ -2540,6 +2546,7 @@ register struct monst *mon;
                         if (silverhit && flags.verbose)
                             silver_sears(&youmonst, mon, silverhit);
                     }
+					//SPECIAL EFFECTS ARE DONE HERE FOR SPECIALS WITHOUT HITUM (AND BELOW MORE FOR HUGS)
                     sum[i] = damageum(mon, mattk, specialdmg);
                 }
             } else { /* !dhit */

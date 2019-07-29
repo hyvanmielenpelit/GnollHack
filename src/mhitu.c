@@ -1036,7 +1036,9 @@ register struct attack *mattk;
 	//This is separately applied to hand-to-hand weapons
 	if ((mattk->adtyp == AD_PHYS && mattk->aatyp == AT_HUGS && !sticks(youmonst.data)) || mattk->adtyp == AD_DRIN)
 	{
-		//Do nothing
+		/* Strength bonus*/
+		dmg += mdbon(mtmp);
+
 	}
 	else {
 		/*  Negative armor class reduces damage done instead of fully protecting against hits. */
