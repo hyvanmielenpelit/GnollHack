@@ -1026,21 +1026,9 @@ newhp()
             if (urace.hpadv.hirnd > 0)
                 hp += rnd(urace.hpadv.hirnd);
         }
-        if (ACURR(A_CON) <= 3)
-            conplus = -2;
-        else if (ACURR(A_CON) <= 6)
-            conplus = -1;
-        else if (ACURR(A_CON) <= 14)
-            conplus = 0;
-        else if (ACURR(A_CON) <= 16)
-            conplus = 1;
-        else if (ACURR(A_CON) == 17)
-            conplus = 2;
-        else if (ACURR(A_CON) == 18)
-            conplus = 3;
-        else
-            conplus = 4;
-        hp += conplus;
+		conplus = constitution_hp_bonus(ACURR(A_CON));
+
+		hp += conplus;
     }
     if (hp <= 0)
         hp = 1;

@@ -1030,8 +1030,12 @@ struct monst* mon;
 	else
 		currstr = mon->mstr;
 
+	if (currstr > STR19(25))
+		currstr = STR19(25);
+
 	return currstr;
 }
+
 int
 monster_current_dex(mon)
 struct monst* mon;
@@ -1048,8 +1052,35 @@ struct monst* mon;
 		&& marmg->otyp == GAUNTLETS_OF_DEXTERITY)
 		currdex += marmg->spe;
 
+	if (currdex > 25)
+		currdex = 25;
+
 	return currdex;
 }
+
+int
+monster_current_con(mon)
+struct monst* mon;
+{
+	int currcon = 0;
+	struct obj* marmv;
+
+	if (!mon)
+		return 0;
+
+	currcon = mon->mcon;
+
+	if ((marmv = which_armor(mon, W_ARMV)) != 0
+		&& marmv->otyp == BELT_OF_DWARVENKIND)
+		currcon += marmv->spe;
+
+	if (currcon > 25)
+		currcon = 25;
+
+	return currcon;
+}
+
+
 
 /* monster to hit bonus for strength*/
 int
@@ -1102,6 +1133,25 @@ int dex;
 		sbon = (dex - 13) / 2;
 	else
 		sbon = 6;
+
+	return sbon;
+}
+
+int constitution_hp_bonus(con)
+int con;
+{
+	int sbon = 0;
+
+	if (con <= 3)
+		sbon = -2;
+	else if (con <= 6)
+		sbon = -1;
+	else if (con < 15)
+		sbon = 0;
+	else if (con <= 25)
+		sbon = (con - 14);
+	else
+		sbon = 11;
 
 	return sbon;
 }

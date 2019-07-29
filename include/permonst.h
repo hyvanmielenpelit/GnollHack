@@ -53,7 +53,7 @@ struct permonst {
         cnutrit;                /* its nutritional value */
     uchar msound;               /* noise it makes (6 bits) */
     uchar msize;                /* physical size (3 bits) */
-	schar str,					/* strength */
+	int str,					/* strength */
 		dex,					/* dexterity */
 		con,					/* constitution */
 		intl,					/* intelligence */

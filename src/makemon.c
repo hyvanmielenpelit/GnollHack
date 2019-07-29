@@ -1071,23 +1071,26 @@ monhp_per_lvl(mon)
 struct monst *mon;
 {
     struct permonst *ptr = mon->data;
-    int hp = rnd(8); /* default is d8 */
+    int hp = rnd(8) + constitution_hp_bonus(mon->mcon); /* default is d8 */
 
     /* like newmonhp, but home elementals are ignored, riders use normal d8 */
     if (is_golem(ptr)) {
         /* draining usually won't be applicable for these critters */
         hp = golemhp(monsndx(ptr)) / (int) ptr->mlevel;
-    } else if (ptr->mlevel > 49) {
+//    } else if (ptr->mlevel > 49) {
         /* arbitrary; such monsters won't be involved in draining anyway */
-        hp = 4 + rnd(4); /* 5..8 */
-    } else if (ptr->mlet == S_DRAGON && monsndx(ptr) >= PM_GRAY_DRAGON) {
+//        hp = 4 + rnd(4); /* 5..8 */
+//    } else if (ptr->mlet == S_DRAGON && monsndx(ptr) >= PM_GRAY_DRAGON) {
         /* adult dragons; newmonhp() uses In_endgame(&u.uz) ? 8 : 4 + rnd(4)
          */
-        hp = 4 + rn2(5); /* 4..8 */
+//        hp = rnd(8) + constitution_hp_bonus(mon->mcon); /* 4..8 */
     } else if (!mon->m_lev) {
         /* level 0 monsters use 1d4 instead of Nd8 */
-        hp = rnd(4);
+        hp = rnd(4) + constitution_hp_bonus(mon->mcon) / 2;
     }
+	if (hp < 1)
+		hp = 1;
+
     return hp;
 }
 
@@ -1106,25 +1109,35 @@ int mndx;
     } else if (is_rider(ptr)) {
         /* we want low HP, but a high mlevel so they can attack well */
         mon->mhpmax = mon->mhp = d(10, 8);
-    } else if (ptr->mlevel > 49) {
+ //   } else if (ptr->mlevel > 49) {
         /* "special" fixed hp monster
          * the hit points are encoded in the mlevel in a somewhat strange
          * way to fit in the 50..127 positive range of a signed character
          * above the 1..49 that indicate "normal" monster levels */
-        mon->mhpmax = mon->mhp = 2 * (ptr->mlevel - 6);
-        mon->m_lev = mon->mhp / 4; /* approximation */
+		//ABOVE is obsolete, since hp's are now ints
+//		mon->mhpmax = mon->mhp = 2 * (ptr->mlevel - 6);
+//        mon->m_lev = mon->mhp / 4; /* approximation */
     } else if (ptr->mlet == S_DRAGON && mndx >= PM_GRAY_DRAGON) {
         /* adult dragons */
-        mon->mhpmax = mon->mhp =
-            (int) (In_endgame(&u.uz)
-                       ? (8 * mon->m_lev)
-                       : (4 * mon->m_lev + d((int) mon->m_lev, 4)));
+		int dragonhp = (int)(In_endgame(&u.uz)
+			? (8 * mon->m_lev + mon->m_lev * constitution_hp_bonus(mon->mcon))
+			: (d((int)mon->m_lev, 8) + mon->m_lev * constitution_hp_bonus(mon->mcon)));
+		if (dragonhp < 1)
+			dragonhp = 1;
+		mon->mhpmax = mon->mhp = dragonhp;
+             //4 * mon->m_lev + 
     } else if (!mon->m_lev) {
-        mon->mhpmax = mon->mhp = rnd(4);
+		int hp = rnd(4) + constitution_hp_bonus(mon->mcon) / 2;
+		if (hp < 1)
+			hp = 1;
+		mon->mhpmax = mon->mhp = hp;
     } else {
-        mon->mhpmax = mon->mhp = d((int) mon->m_lev, 8);
-        if (is_home_elemental(ptr))
-            mon->mhpmax = (mon->mhp *= 3);
+		int hp = d((int)mon->m_lev, 8) + mon->m_lev * constitution_hp_bonus(mon->mcon);
+		if (hp < 1)
+			hp = 1;
+		mon->mhpmax = mon->mhp = hp;
+		if (is_home_elemental(ptr))
+            mon->mhpmax = (mon->mhp *= 2); //Down from x3
     }
 }
 
@@ -1323,9 +1336,6 @@ int mmflags;
         quest_status.leader_m_id = mtmp->m_id;
     mtmp->mnum = mndx;
 
-    /* set up level and hit points */
-    newmonhp(mtmp, mndx);
-
 	/* set up stats*/
 	mtmp->mstr = ptr->str;
 	mtmp->mdex = ptr->dex;
@@ -1334,6 +1344,9 @@ int mmflags;
 	mtmp->mwis = ptr->wis;
 	mtmp->mcha = ptr->cha;
 	
+	/* set up level and hit points */
+	newmonhp(mtmp, mndx);
+
 	if (is_female(ptr))
         mtmp->female = TRUE;
     else if (is_male(ptr))
