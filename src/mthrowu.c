@@ -61,7 +61,9 @@ const char *name; /* if null, then format `*objp' */
             : an(name);
     is_acid = (obj && obj->otyp == ACID_VENOM);
 
-    if (u.uac + tlev <= (dieroll = rnd(20))) {
+	//TO-HIT IS DONE HERE
+	dieroll = rnd(20);
+    if (u.uac + tlev <= dieroll) {
         ++mesg_given;
         if (Blind || !flags.verbose) {
             pline("It misses.");
@@ -112,6 +114,7 @@ const char *name; /* if null, then format `*objp' */
             if (is_acid)
                 pline("It burns!"); /* acid damage */
 
+			//DAMAGE IS DONE HERE
             losehp(dam, knm, kprefix);
             exercise(A_STR, FALSE);
         }
@@ -660,6 +663,7 @@ struct obj *obj;         /* missile (or stack providing it) */
                         dam++;
                 }
 
+				//SEPARATE POINT BLANK ADJUSTMENT HERE, MORE ON AMMO_AND_LAUNCHER BELOW
 				//Using wielded long-rangen weapons at black point is difficult
 				if (mindistance <= 1) {
 					if (singleobj && MON_WEP(mon) && ammo_and_launcher(singleobj, MON_WEP(mon)))
@@ -678,55 +682,52 @@ struct obj *obj;         /* missile (or stack providing it) */
 						//Bracers here, if need be
 					}
 				}
-				//Give strength to hit bonus
+				//All cases get dex ranged to-hit bonus
+				hitv += mrabon(mon);
 
 				//Give bow damage bonuses
-				if (MON_WEP(mon) && singleobj)
+				if(singleobj && is_ammo(singleobj))
 				{
-					if(is_ammo(singleobj))
+					if(MON_WEP(mon) && ammo_and_launcher(singleobj, MON_WEP(mon)))
 					{
-						if(ammo_and_launcher(singleobj, MON_WEP(mon)))
-						{
-							hitv += hitval(MON_WEP(mon), &youmonst); //MON_WEP(mon)->spe - greatest_erosion(MON_WEP(mon));
-							//hitv += weapon_hit_bonus(MON_WEP(mon)); //Monsters do not get skill bonuses
-							dam += dmgval(MON_WEP(mon), &youmonst);
-							if (MON_WEP(mon)->otyp == CROSSBOW) {
-								hitv += 1;
-								dam += 3;
-							}
-							else if (MON_WEP(mon)->otyp == HEAVY_CROSSBOW) {
-								hitv += 3;
-								dam += 6;
-							}
-							else if (MON_WEP(mon)->otyp == HAND_CROSSBOW) {
-								hitv += 0;
-								dam += 0;
-							}
-							else {
-								hitv += mabon(mon);
-								dam += mdbon(mon);
-							}
+						//Fitting ammo gets launcher's hitval and dmgval and str damage bonus if bow, fixed for crossbows
+						//LAUNCHER HITVAL
+						hitv += hitval(MON_WEP(mon), &youmonst); //MON_WEP(mon)->spe - greatest_erosion(MON_WEP(mon));
+						//hitv += weapon_hit_bonus(MON_WEP(mon)); //Monsters do not get skill bonuses
+						//LAUNCHER DMGVAL
+						dam += dmgval(MON_WEP(mon), &youmonst);
+
+						//Give strength damage bonus
+						if (MON_WEP(mon)->otyp == CROSSBOW) {
+							dam += 3;
 						}
-						else
-						{
-							hitv -= 4;
+						else if (MON_WEP(mon)->otyp == HEAVY_CROSSBOW) {
+							dam += 6;
+						}
+						else if (MON_WEP(mon)->otyp == HAND_CROSSBOW) {
+							dam += 0;
+						}
+						else {
+							dam += mdbon(mon);
 						}
 					}
 					else
 					{
-						hitv += mabon(mon);
-						dam += mdbon(mon);
+						//Non-fitting ammo gets to-hit penalty and no str damage bonus
+						hitv -= 4;
 					}
 				}
 				else
 				{
-					hitv += mabon(mon);
-					dam += mdbon(mon);
+					//Non-ammo (normal thrown weapon) gets damage bonus
+					dam += mtdbon(mon);
 				}
-                if (bigmonst(youmonst.data))
+
+				if (bigmonst(youmonst.data))
                     hitv++;
-                hitv += 8 + singleobj->spe;
-                if (dam < 1)
+                hitv += 10 + hitval(singleobj, &youmonst);
+				hitv += mon->m_lev;
+				if (dam < 1)
                     dam = 1;
                 hitu = thitu(hitv, dam, &singleobj, (char *) 0);
             }
@@ -1033,9 +1034,11 @@ struct monst *mtmp;
             hitv = -4;
         if (bigmonst(youmonst.data))
             hitv++;
-        hitv += 8 + otmp->spe;
-		hitv += mabon(mtmp); //strength and dex to hit bonus
+        hitv += 10 + hitval(otmp, &youmonst);
+		hitv += mtmp->m_lev;
+		hitv += mabon(mtmp); // since a pole, str & dex to hit bonus
 		dam += mdbon(mtmp); // strength damage bonus
+
 		if (dam < 1)
             dam = 1;
 
@@ -1044,6 +1047,56 @@ struct monst *mtmp;
         return;
     }
 
+	/* Pick a weapon 
+	struct obj* mon_launcher = MON_WEP(mtmp);
+
+	if (is_ammo(otmp)) {
+		if (!mon_launcher || !ammo_and_launcher(otmp, mon_launcher)) {
+			hitv -= 4;
+		}
+		else {
+			//TOHIT BONUSES
+			hitv += hitval(mon_launcher, mtmp);
+
+			//tmp += weapon_hit_bonus(uwep);  //Monsters do not get skill-based to-hit bonuses
+
+			//Penalty for shooting short range
+			if (distmin(archer->mx, archer->my, mtmp->mx, mtmp->my) <= 1) {
+				switch (objects[mon_launcher->otyp].oc_skill) {
+				case P_BOW:
+					hitv -= 10;
+					break;
+				case P_CROSSBOW:
+					hitv -= 8;
+					break;
+				default:
+					hitv -= 10;
+					break;
+				}
+			}
+
+			//DAMAGE BONUSES
+			if (otmp && mon_launcher && ammo_and_launcher(otmp, mon_launcher)) {
+				dam += dmgval(mon_launcher, &youmonst);
+				//Add strength damage, no skill damage
+				if (mon_launcher->otyp == CROSSBOW) {
+					dam += 3;
+				}
+				else if (mon_launcher->otyp == HEAVY_CROSSBOW) {
+					dam += 6;
+				}
+				else if (mon_launcher->otyp == HAND_CROSSBOW) {
+					dam += 0;
+				}
+				else {
+					if (mtmp)
+						dam += mrdbon(mtmp);
+				}
+				//Bracers here, if need be
+			}
+		}
+	}
+*/
     x = mtmp->mx;
     y = mtmp->my;
     /* If you are coming toward the monster, the monster

@@ -1957,7 +1957,7 @@ struct monst *mtmp, *victim;
         else if (is_golem(ptr)) /* strange creatures */
             hp_threshold = ((mtmp->mhpmax / 10) + 1) * 10 - 1;
         else if (is_home_elemental(ptr))
-            hp_threshold *= 3;
+            hp_threshold *= 2;
         lev_limit = 3 * (int) ptr->mlevel / 2; /* same as adj_lev() */
         /* If they can grow up, be sure the level is high enough for that */
         if (oldtype != newtype && mons[newtype].mlevel > lev_limit)

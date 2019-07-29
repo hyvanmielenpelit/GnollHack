@@ -355,9 +355,11 @@ register struct monst *magr, *mdef;
      */
     magr->mlstmv = monstermoves;
 
+	int tmp2 = tmp;
     /* Now perform all attacks for the monster. */
     for (i = 0; i < NATTK; i++) {
-        res[i] = MM_MISS;
+		tmp = tmp2; //Reset hitv to original start value
+		res[i] = MM_MISS;
         mattk = getmattk(magr, mdef, i, res, &alt_attk);
         otmp = (struct obj *) 0;
         attk = 1;
@@ -384,7 +386,6 @@ register struct monst *magr, *mdef;
                 if (vis)
                     mswingsm(magr, mdef, otmp);
                 tmp += hitval(otmp, mdef);
-				tmp += mabon(magr);
 			}
             /*FALLTHRU*/
         case AT_CLAW:
@@ -407,11 +408,14 @@ register struct monst *magr, *mdef;
                 strike = 0;
                 break;
             }
-            dieroll = rnd(20 + i);
+
+			//Give strength and dexerity bonus to hit
+			tmp += mabon(magr);
+			
+			//TO-HIT IS DETERMINED HERE
+			dieroll = rnd(20 + i);
             strike = (tmp > dieroll);
-            /* KMH -- don't accumulate to-hit bonuses */
-            if (otmp)
-                tmp -= hitval(otmp, mdef);
+
             if (strike) {
                 res[i] = hitmm(magr, mdef, mattk);
                 if ((mdef->data == &mons[PM_BLACK_PUDDING]
@@ -815,9 +819,32 @@ register struct attack *mattk;
     struct obj *obj;
     char buf[BUFSZ];
     struct permonst *pa = magr->data, *pd = mdef->data;
-    int armpro, num, tmp = d((int) mattk->damn, (int) mattk->damd),
-                     res = MM_MISS;
+    int armpro, num,res = MM_MISS;
     boolean cancelled;
+
+	int tmp = 0;
+
+	struct obj* mweapon = MON_WEP(magr);
+
+	if (mweapon && mattk->aatyp == AT_WEAP)
+	{
+		tmp += dmgval(mweapon, mdef);
+	}
+	else
+	{
+		if (mattk->damn > 0 && mattk->damd > 0)
+			tmp += d((int)mattk->damn, (int)mattk->damd);
+		tmp += (int)mattk->damp;
+	}
+
+	//Damage bonus is obtained in any case
+	if (mattk->adtyp == AD_PHYS || mattk->adtyp == AD_DRIN)
+	{
+		if (mattk->aatyp == AT_WEAP || mattk->aatyp == AT_HUGS)
+			tmp += mdbon(magr);
+		else
+			tmp += mdbon(magr) / 2;
+	}
 
     if ((touch_petrifies(pd) /* or flesh_petrifies() */
          || (mattk->adtyp == AD_DGST && pd == &mons[PM_MEDUSA]))
@@ -926,8 +953,8 @@ register struct attack *mattk;
                 if (otmp->otyp == CORPSE
                     && touch_petrifies(&mons[otmp->corpsenm]))
                     goto do_stone;
-                tmp += dmgval(otmp, mdef);
-				tmp += mdbon(magr);
+                //tmp += dmgval(otmp, mdef);
+				//tmp += mdbon(magr);
 
 				if (tmp < 1) /* is this necessary?  mhitu.c has it... */
                     tmp = 1;

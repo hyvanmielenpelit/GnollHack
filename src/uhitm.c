@@ -1102,10 +1102,14 @@ int dieroll;
         /* If you throw using a propellor, you don't get a strength
          * bonus but you do get an increase-damage bonus.
          */
-        if (thrown != HMON_THROWN || !obj || !uwep
-            || !ammo_and_launcher(obj, uwep))
-            tmp += dbon();
-		else if (obj && uwep && ammo_and_launcher(obj, uwep)){
+		if (thrown != HMON_THROWN || !obj || !uwep
+			|| !ammo_and_launcher(obj, uwep)) {
+			if (thrown == HMON_THROWN)
+				tmp += tdbon();
+			else
+				tmp += dbon();
+		}
+		else if (obj && uwep && ammo_and_launcher(obj, uwep)) {
 			if (uwep->otyp == CROSSBOW)
 				tmp += 3; // Light crossbows get +3 bonus, (heavy) crossbows get 18/00 strength bonus
 			else if (uwep->otyp == HEAVY_CROSSBOW)
@@ -1125,8 +1129,8 @@ int dieroll;
 		}
 		else if (thrown == HMON_THROWN && obj && !is_ammo(obj))
 		{
-			//Thrown weapons get also damage bonus
-			tmp += dbon();
+			//Thrown weapons get also damage bonus, but specific for thrown weapons
+			tmp += tdbon();
 		}
     }
 
@@ -1615,10 +1619,35 @@ register struct attack *mattk;
 int specialdmg; /* blessed and/or silver bonus against various things */
 {
     register struct permonst *pd = mdef->data;
-    int armpro, tmp = d((int) mattk->damn, (int) mattk->damd);
+    int armpro;
     boolean negated;
     struct obj *mongold;
 	int chance = 0;
+
+	int tmp = 0;
+	
+	/*  First determine the base damage done */
+	struct obj* mweapon = uwep;
+	if (mweapon && mattk->aatyp == AT_WEAP)
+	{
+		//Use weapon damage
+		tmp += dmgval(mweapon, mdef);
+	}
+	else
+	{
+		//Use stats from ATTK
+		if (mattk->damn > 0 && mattk->damd > 0)
+			tmp += d((int)mattk->damn, (int)mattk->damd);
+		tmp += (int)mattk->damp;
+	}
+
+	if (mattk->adtyp == AD_PHYS || mattk->adtyp == AD_DRIN)
+	{
+		if (mattk->aatyp == AT_WEAP || mattk->aatyp == AT_HUGS)
+			tmp += dbon();
+		else
+			tmp += dbon() / 2;
+	}
 
     armpro = magic_negation(mdef);
     /* since hero can't be cancelled, only defender's armor applies */
@@ -1986,6 +2015,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
         }
         break;
 	case AD_DMNS:
+		tmp = 0;
 		chance = mattk->damp;
 		if(chance > 0)
 		{
@@ -2000,7 +2030,10 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 			}
 		}
 		break;
-    default:
+	case AD_LYCA: //Not implemented
+		tmp = 0;
+		break;
+	default:
         tmp = 0;
         break;
     }
@@ -2451,7 +2484,11 @@ register struct monst *mon;
             if (uwep && youmonst.data->mlet == S_LICH && !weapon_used)
                 goto use_weapon;
             /*FALLTHRU*/
-        case AT_KICK:
+		case AT_SMMN:
+			sum[i] = damageum(mon, mattk, 0); //SPECIAL EFFECTS ARE DONE HERE FOR SPECIALS AFTER HITUM
+			break;
+
+		case AT_KICK:
         case AT_BITE:
         case AT_STNG:
         case AT_BUTT:

@@ -2753,6 +2753,7 @@ E int FDECL(vms_get_saved_games, (const char *, char ***));
 /* ### weapon.c ### */
 
 E const char *FDECL(weapon_descr, (struct obj *));
+E int FDECL(basehitval, (struct obj*));
 E int FDECL(hitval, (struct obj *, struct monst *));
 E int FDECL(dmgval, (struct obj *, struct monst *));
 E int FDECL(special_dmgval, (struct monst *, struct monst *, long, long *));
@@ -2766,8 +2767,11 @@ E int FDECL(mon_wield_item, (struct monst *));
 E int NDECL(abon);
 E int NDECL(ranged_abon);
 E int NDECL(dbon);
+E int NDECL(tdbon);
 E int FDECL(mabon, (struct monst*));
+E int FDECL(mrabon, (struct monst*));
 E int FDECL(mdbon, (struct monst*));
+E int FDECL(mtdbon, (struct monst*));
 E int FDECL(strength_damage_bonus, (int));
 E int FDECL(strength_tohit_bonus, (int));
 E int FDECL(dexterity_ac_bonus, (int));

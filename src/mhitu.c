@@ -608,7 +608,7 @@ register struct monst *mtmp;
     /*  Work out the armor class differential   */
     tmp = AC_VALUE(u.uac) + 10; /* tmp ~= 0 - 20 */
     tmp += mtmp->m_lev;	//Add level to hit chance
-	tmp += mabon(mtmp); //Add monster's STR and DEX bonus
+	tmp += mabon(mtmp); //Add monster's STR and DEX bonus, thrown weapons are dealt separately
 	if (multi < 0)
         tmp += 4;
     if ((Invis && !perceives(mdat)) || !mtmp->mcansee)
@@ -647,7 +647,10 @@ register struct monst *mtmp;
             return (foo == 1);
     }
 
+	int tmp2 = tmp;
+
     for (i = 0; i < NATTK; i++) {
+		tmp = tmp2; // Revert hit bonus to original value
         sum[i] = 0;
         mon_currwep = (struct obj *)0;
         mattk = getmattk(mtmp, &youmonst, i, sum, &alt_attk);
@@ -757,13 +760,11 @@ register struct monst *mtmp;
                         tmp += hittmp;
                         mswings(mtmp, mon_currwep);
                     }
+					//TO-HIT IS DONE HERE
                     if (tmp > (j = dieroll = rnd(20 + i)))
                         sum[i] = hitmu(mtmp, mattk);
                     else
                         missmu(mtmp, (tmp == j), mattk);
-                    /* KMH -- Don't accumulate to-hit bonuses */
-                    if (mon_currwep)
-                        tmp -= hittmp;
                 } else {
                     wildmiss(mtmp, mattk);
                     /* skip any remaining non-spell attacks */
@@ -1014,15 +1015,40 @@ register struct attack *mattk;
 
 	dmg = 0;
     /*  First determine the base damage done */
-	if(mattk->damn > 0 && mattk->damd > 0)
-	    dmg += d((int) mattk->damn, (int) mattk->damd);
-	dmg += (int)mattk->damp;
+	struct obj* mweapon = MON_WEP(mtmp);
+	if (mweapon && mattk->aatyp == AT_WEAP)
+	{
+		//Use weapon damage
+		dmg += dmgval(mweapon, &youmonst);
+	}
+	else
+	{
+		//Use stats from ATTK
+		if (mattk->damn > 0 && mattk->damd > 0)
+			dmg += d((int)mattk->damn, (int)mattk->damd);
+		dmg += (int)mattk->damp;
+	}
+	
+	//Get damage bonus in both cases if physical
+	if(mattk->adtyp == AD_PHYS || mattk->adtyp == AD_DRIN)
+	{
+		if(mattk->aatyp == AT_WEAP || mattk->aatyp == AT_HUGS)
+			dmg += mdbon(mtmp);
+		else
+			dmg += mdbon(mtmp) / 2;
+	}
+	//Let's add this even if a weapon is being used
     if ((is_undead(mdat) || is_vampshifter(mtmp)) && midnight())
 	{
 		if (mattk->damn > 0 && mattk->damd > 0)
 			dmg += d((int) mattk->damn, (int) mattk->damd); /* extra damage */
 		dmg += (int)mattk->damp;
 	}
+
+	//Make sure damage is at least 1
+	if (dmg <= 0)
+		dmg = 1;
+
 
     /*  Next a cancellation factor.
      *  Use uncancelled when cancellation factor takes into account certain
@@ -1034,13 +1060,15 @@ register struct attack *mattk;
     permdmg = 0;
 
 	//This is separately applied to hand-to-hand weapons
+	//Random additions so that we can correctly calculate the final damage early
 	if ((mattk->adtyp == AD_PHYS && mattk->aatyp == AT_HUGS && !sticks(youmonst.data)) || mattk->adtyp == AD_DRIN)
 	{
 		/* Strength bonus*/
-		dmg += mdbon(mtmp);
+		//dmg += mdbon(mtmp);
 
 	}
 	else {
+		/*This happens almost always*/
 		/*  Negative armor class reduces damage done instead of fully protecting against hits. */
 		if (dmg && u.uac < 0) {
 			dmg -= rnd(-u.uac);
@@ -1102,11 +1130,6 @@ register struct attack *mattk;
                     if (!Stoned)
                         goto do_stone;
                 }
-                dmg += dmgval(otmp, &youmonst);
-				dmg += mdbon(mtmp);
-
-				if (dmg <= 0)
-                    dmg = 1;
 
 				/*Negative AC reduces damage*/
 				if (dmg && u.uac < 0) {

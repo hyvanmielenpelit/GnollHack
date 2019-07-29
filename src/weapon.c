@@ -135,6 +135,25 @@ struct obj *obj;
  *      hitval returns an integer representing the "to hit" bonuses
  *      of "otmp" against the monster.
  */
+
+int basehitval(otmp)
+struct obj* otmp;
+{
+	if (!otmp)
+		return 0;
+
+	int tmp = 0;
+	boolean Is_weapon = (otmp->oclass == WEAPON_CLASS || is_weptool(otmp));
+
+	if (Is_weapon)
+		tmp += otmp->spe;
+
+	/* Put weapon specific "to hit" bonuses in below: */
+	tmp += objects[otmp->otyp].oc_hitbon;
+
+	return tmp;
+
+}
 int
 hitval(otmp, mon)
 struct obj *otmp;
@@ -142,13 +161,9 @@ struct monst *mon;
 {
     int tmp = 0;
     struct permonst *ptr = mon->data;
-    boolean Is_weapon = (otmp->oclass == WEAPON_CLASS || is_weptool(otmp));
+	boolean Is_weapon = (otmp->oclass == WEAPON_CLASS || is_weptool(otmp));
 
-    if (Is_weapon)
-        tmp += otmp->spe;
-
-    /* Put weapon specific "to hit" bonuses in below: */
-    tmp += objects[otmp->otyp].oc_hitbon;
+	tmp += basehitval(otmp);
 
     /* Put weapon vs. monster type "to hit" bonuses in below: */
 
@@ -962,11 +977,16 @@ dbon()
 {
     int str = ACURR(A_STR);
 
-    if (Upolyd)
-        return 0;
-
 	return strength_damage_bonus(str);
 }
+
+/* damage bonus for strength for thrown weapons (bows get full strength)*/
+int
+tdbon()
+{
+	return dbon() / 2;
+}
+
 
 int
 strength_damage_bonus(str)
@@ -1011,9 +1031,25 @@ struct monst* mon;
 {
 	int bonus = 0;
 
-	if(!mon)
+	if(mon)
 	{
 		bonus += strength_damage_bonus(monster_current_str(mon));
+	}
+
+	return bonus;
+
+}
+
+/* monster damage bonus for strength for throw weapons (bows get full damage bonus)*/
+int
+mtdbon(mon)
+struct monst* mon;
+{
+	int bonus = 0;
+
+	if (mon)
+	{
+		bonus += mdbon(mon) / 2;
 	}
 
 	return bonus;
@@ -1092,16 +1128,31 @@ struct monst* mon;
 
 
 
-/* monster to hit bonus for strength*/
+/* monster to hit bonus for strength and dex*/
 int
 mabon(mon)
 struct monst* mon;
 {
 	int bonus = 0;
 
-	if (!mon)
+	if (mon)
 	{
 		bonus += strength_tohit_bonus(monster_current_str(mon));
+		bonus += dexterity_tohit_bonus(monster_current_dex(mon));
+	}
+	return bonus;
+
+}
+
+/* monster to hit bonus for dex only for ranged*/
+int
+mrabon(mon)
+struct monst* mon;
+{
+	int bonus = 0;
+
+	if (mon)
+	{
 		bonus += dexterity_tohit_bonus(monster_current_dex(mon));
 	}
 	return bonus;
