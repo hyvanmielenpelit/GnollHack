@@ -2977,46 +2977,61 @@ weight_cap()
        functions enough in that situation to enhance carrying capacity */
     BLevitation &= ~I_SPECIAL;
 
-    carrcap = 50 * (ACURRSTR + ACURR(A_CON)) + 50;
-    if (Upolyd) {
+	//2.5 lbs for each point of STR and CON + 3 lbs
+    carrcap = ((long)(2.5 * 16)) * (ACURRSTR + ACURR(A_CON)) + 48;
+
+	//Add more carrying capacity for strong heroes
+	if(ACURR(A_STR) >= STR18(1))
+	{
+		//Bonus 2 ounces per percentile strength
+		if (ACURR(A_STR) < STR19(19))
+			carrcap += (long)(2 * (ACURR(A_STR) - 18));
+
+		//5 lbs per bonus since CON cannot increase in the same way
+		carrcap += ((long)(5 * 16)) * (strength_tohit_bonus(ACURR(A_STR))- strength_tohit_bonus(18));
+		carrcap += ((long)(5 * 16)) * (strength_tohit_bonus(ACURR(A_STR)) - strength_tohit_bonus(18));
+	}
+//	if (Upolyd) {
         /* consistent with can_carry() in mon.c */
         if (youmonst.data->mlet == S_NYMPH)
             carrcap = MAX_CARR_CAP;
 		else if (youmonst.data->msize == MZ_TINY)
-			carrcap = carrcap / 10;
+			carrcap = carrcap / 16; //every lbs is an ounce
 		else if (youmonst.data->msize == MZ_SMALL)
 			carrcap = carrcap / 2;
 		else if (youmonst.data->msize == MZ_LARGE)
-			carrcap = carrcap * 2;
+			carrcap = (long)(carrcap * 1.5);
 		else if (youmonst.data->msize == MZ_HUGE)
-			carrcap = carrcap * 5;
+			carrcap = (long)(carrcap * 2);
 		else if (youmonst.data->msize == MZ_GIGANTIC)
-			carrcap = carrcap * 10;
+			carrcap = (long)(carrcap * 3);
 
 /*		else if (!youmonst.data->cwt)
             carrcap = (carrcap * (long) youmonst.data->msize) / MZ_HUMAN;
         else if (!strongmonst(youmonst.data)
                  || (strongmonst(youmonst.data)
                      && (youmonst.data->cwt > WT_HUMAN)))
-            carrcap = (carrcap * (long) youmonst.data->cwt / WT_HUMAN);
-*/
-    }
+            carrcap = (carrcap * (long) youmonst.data->cwt / WT_HUMAN);*/
+  //  }
 
     if (Levitation || Is_airlevel(&u.uz) /* pugh@cornell */
         || (u.usteed && strongmonst(u.usteed->data))) {
-        carrcap = MAX_CARR_CAP;
+		if(carrcap < MAX_CARR_CAP)
+			carrcap = MAX_CARR_CAP;
     } else {
-        if (carrcap > MAX_CARR_CAP)
-            carrcap = MAX_CARR_CAP;
         if (!Flying) {
             if (EWounded_legs & LEFT_SIDE)
                 carrcap -= 100;
             if (EWounded_legs & RIGHT_SIDE)
                 carrcap -= 100;
         }
-        if (carrcap < 0)
-            carrcap = 0;
     }
+
+	//Strict limits
+	if (carrcap > MAX_CARR_CAP * 5)
+		carrcap = MAX_CARR_CAP * 5;
+	if (carrcap < 0)
+		carrcap = 0;
 
     if (ELevitation != save_ELev || BLevitation != save_BLev) {
         ELevitation = save_ELev;

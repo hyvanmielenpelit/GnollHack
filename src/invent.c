@@ -2817,15 +2817,15 @@ int show_weights;
 		//For inventory this should give the same result
 		if (show_weights == 1 || (show_weights == 2 && total_ounce_weight == yourweight))
 		{
-			Sprintf(wtbuf, "You are unburdened at %.0f lbs with a limit of %.0f lbs.", burdnedweightlimit, maxweightlimit);
+			Sprintf(wtbuf, "You are unburdened at %d %s with a limit of %d %s.", (int)burdnedweightlimit, (int)burdnedweightlimit == 1 ? "lb" : "lbs", (int)maxweightlimit, (int)maxweightlimit == 1 ? "lb" : "lbs");
 			add_menu(win, NO_GLYPH, &any, 0, 0, 0, wtbuf, MENU_UNSELECTED);
 		}
 		else if (show_weights == 2 || show_weights == 3)
 		{
 			if (carryingweight >= 10)
-				Sprintf(wtbuf, "You are carrying %.0f %s and unburdened at %.0f lbs.", carryingweight, carryingweight == 1 ? "lb" : "lbs", burdnedweightlimit);
+				Sprintf(wtbuf, "You are carrying %d %s and unburdened at %d %s.", (int)carryingweight, (int)carryingweight == 1 ? "lb" : "lbs", (int)burdnedweightlimit, (int)burdnedweightlimit == 1 ? "lb" : "lbs");
 			else
-				Sprintf(wtbuf, "You are carrying %1.1f %s and unburdened at %.0f lbs.", carryingweight, carryingweight == 1 ? "lb" : "lbs", burdnedweightlimit);
+				Sprintf(wtbuf, "You are carrying %1.1f %s and unburdened at %d %s.", carryingweight, carryingweight == 1 ? "lb" : "lbs", (int)burdnedweightlimit, (int)burdnedweightlimit == 1 ? "lb" : "lbs");
 			add_menu(win, NO_GLYPH, &any, 0, 0, 0, wtbuf, MENU_UNSELECTED);
 		}
 
@@ -2858,9 +2858,9 @@ int show_weights;
 		putstr(win, 0, totalbuf);
 
 		if (carriedweight >= 10)
-			Sprintf(totalbuf, "You are carrying %.0f %s and unburdened at %.0f lbs.", carriedweight, carriedweight == 1 ? "lb" : "lbs", unburdenedweight);
+			Sprintf(totalbuf, "You are carrying %d %s and unburdened at %d %s.", (int)carriedweight, (int)carriedweight == 1 ? "lb" : "lbs", (int)unburdenedweight, (int)unburdenedweight == 1 ? "lb" : "lbs");
 		else
-			Sprintf(totalbuf, "You are carrying %1.1f %s and unburdened at %.0f lbs.", carriedweight, carriedweight == 1 ? "lb" : "lbs", unburdenedweight);
+			Sprintf(totalbuf, "You are carrying %1.1f %s and unburdened at %d %s.", carriedweight, carriedweight == 1 ? "lb" : "lbs", (int)unburdenedweight, (int)unburdenedweight == 1 ? "lb" : "lbs");
 		putstr(win, 0, totalbuf);
 	}
 
