@@ -2977,19 +2977,19 @@ weight_cap()
        functions enough in that situation to enhance carrying capacity */
     BLevitation &= ~I_SPECIAL;
 
-	//2.5 lbs for each point of STR and CON + 3 lbs
-    carrcap = ((long)(2.5 * 16)) * (ACURRSTR + ACURR(A_CON)) + 48;
+	//3.5 lbs for each point of STR and CON + 3 lbs
+    carrcap = ((long)(3.5 * 16)) * (ACURRSTR + ACURR(A_CON)) + 48;
 
 	//Add more carrying capacity for strong heroes
 	if(ACURR(A_STR) >= STR18(1))
 	{
-		//Bonus 2 ounces per percentile strength
+		//Bonus 3.5 ounces per percentile strength
 		if (ACURR(A_STR) < STR19(19))
-			carrcap += (long)(2 * (ACURR(A_STR) - 18));
+			carrcap += (long)(3.5 * (ACURR(A_STR) - 18));
 
-		//5 lbs per bonus since CON cannot increase in the same way
-		carrcap += ((long)(5 * 16)) * (strength_tohit_bonus(ACURR(A_STR))- strength_tohit_bonus(18));
-		carrcap += ((long)(5 * 16)) * (strength_tohit_bonus(ACURR(A_STR)) - strength_tohit_bonus(18));
+		//7 lbs per bonus since CON cannot increase in the same way
+		carrcap += ((long)(7 * 16)) * (strength_damage_bonus(ACURR(A_STR))- strength_damage_bonus(18));
+		carrcap += ((long)(7 * 16)) * (strength_tohit_bonus(ACURR(A_STR)) - strength_tohit_bonus(18));
 	}
 //	if (Upolyd) {
         /* consistent with can_carry() in mon.c */
@@ -3002,9 +3002,9 @@ weight_cap()
 		else if (youmonst.data->msize == MZ_LARGE)
 			carrcap = (long)(carrcap * 1.5);
 		else if (youmonst.data->msize == MZ_HUGE)
-			carrcap = (long)(carrcap * 2);
+			carrcap = (long)(carrcap * 2.5);
 		else if (youmonst.data->msize == MZ_GIGANTIC)
-			carrcap = (long)(carrcap * 3);
+			carrcap = (long)(carrcap * 4);
 
 /*		else if (!youmonst.data->cwt)
             carrcap = (carrcap * (long) youmonst.data->msize) / MZ_HUMAN;
