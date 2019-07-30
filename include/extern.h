@@ -695,7 +695,7 @@ E void VDECL(panic, (const char *, ...)) PRINTF_F(1, 2) NORETURN;
 #if !defined(MAKEDEFS_C) && !defined(LEV_LEX_C)
 E void FDECL(done, (int));
 E void FDECL(container_contents, (struct obj *, BOOLEAN_P,
-                                  BOOLEAN_P, BOOLEAN_P));
+                                  BOOLEAN_P, BOOLEAN_P, int));
 E void FDECL(nh_terminate, (int)) NORETURN;
 E int NDECL(dovanquished);
 E int NDECL(num_genocides);
@@ -989,9 +989,9 @@ E boolean NDECL(wearing_armor);
 E boolean FDECL(is_worn, (struct obj *));
 E struct obj *FDECL(g_at, (int, int));
 E boolean FDECL(splittable, (struct obj *));
-E struct obj *FDECL(getobj, (const char *, const char *));
+E struct obj *FDECL(getobj, (const char *, const char *, int));
 E int FDECL(ggetobj, (const char *, int (*)(OBJ_P), int,
-                      BOOLEAN_P, unsigned *));
+                      BOOLEAN_P, unsigned *, int));
 E int FDECL(askchain, (struct obj **, const char *, int, int (*)(OBJ_P),
                        int (*)(OBJ_P), int, const char *));
 E void FDECL(fully_identify_obj, (struct obj *));
@@ -1003,7 +1003,7 @@ E void FDECL(prinv, (const char *, struct obj *, long));
 E char *FDECL(xprname,
               (struct obj *, const char *, CHAR_P, BOOLEAN_P, long, long));
 E int NDECL(ddoinv);
-E char FDECL(display_inventory, (const char *, BOOLEAN_P));
+E char FDECL(display_inventory, (const char *, BOOLEAN_P, int));
 E int FDECL(display_binventory, (int, int, BOOLEAN_P));
 E struct obj *FDECL(display_cinventory, (struct obj *));
 E struct obj *FDECL(display_minventory, (struct monst *, int, char *));
@@ -1868,7 +1868,9 @@ E int FDECL(pickup_object, (struct obj *, long, BOOLEAN_P));
 E int FDECL(query_category, (const char *, struct obj *, int,
                              menu_item **, int));
 E int FDECL(query_objlist, (const char *, struct obj **, int,
-                            menu_item **, int, boolean (*)(OBJ_P)));
+                            menu_item **, int, boolean (*)(OBJ_P), int));
+E void FDECL(add_weight_summary, (winid, int, int));
+E void FDECL(add_weight_summary_putstr, (winid, int, int));
 E struct obj *FDECL(pick_obj, (struct obj *));
 E int NDECL(encumber_msg);
 E int FDECL(container_at, (int, int, BOOLEAN_P));

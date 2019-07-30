@@ -374,8 +374,10 @@ BOW("heavy crossbow", None,					1, 1, 10,180, 150, 1, 8, 0, 1, 8, 0, 0, WOOD, P_
 /* helmets */
 HELM("elven leather helm", "leather hat",
      0, 0,           0,  6, 1,  3,  8,  9, 0, LEATHER, HI_LEATHER),
+HELM("cotton hood", None,
+     1, 0,           0,  3, 1,  3,  8,  10, 0, CLOTH, CLR_BLACK),
 HELM("gnollish hood", "crude leather hood",
-     0, 0,           0,  6, 1,  3,  8,  9, 0, LEATHER, HI_LEATHER),
+     0, 0,           0,  3, 1,  3,  8,  9, 0, LEATHER, HI_LEATHER),
 HELM("orcish helm", "iron skull cap",
      0, 0,           0,  6, 1, 30, 10,  9, 0, IRON, CLR_BLACK),
 HELM("dwarvish iron helm", "hard hat",

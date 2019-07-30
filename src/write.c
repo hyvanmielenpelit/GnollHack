@@ -115,7 +115,7 @@ register struct obj *pen;
     }
 
     /* get paper to write on */
-    paper = getobj(write_on, "write on");
+    paper = getobj(write_on, "write on", 0);
     if (!paper)
         return 0;
     /* can't write on a novel (unless/until it's been converted into a blank

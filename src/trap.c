@@ -4215,7 +4215,7 @@ struct trap *ttmp;
     boolean bad_tool;
     int fails;
 
-    obj = getobj(oil, "untrap with");
+    obj = getobj(oil, "untrap with", 0);
     if (!obj)
         return 0;
 

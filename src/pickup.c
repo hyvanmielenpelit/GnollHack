@@ -212,7 +212,7 @@ int *menu_on_demand;
                     objs->ocontainer->cknown = 1;
                 goto ask_again;
             } else if (sym == 'i') {
-                (void) display_inventory((char *) 0, TRUE);
+                (void) display_inventory((char *) 0, TRUE, 1);
                 goto ask_again;
             } else if (sym == 'm') {
                 m_seen = TRUE;
@@ -576,14 +576,14 @@ int what; /* should be a long */
             Sprintf(qbuf, "Pick %d of what?", count);
             val_for_n_or_more = count; /* set up callback selector */
             n = query_objlist(qbuf, objchain_p, traverse_how,
-                              &pick_list, PICK_ONE, n_or_more);
+                              &pick_list, PICK_ONE, n_or_more, 2);
             /* correct counts, if any given */
             for (i = 0; i < n; i++)
                 pick_list[i].count = count;
         } else {
             n = query_objlist("Pick up what?", objchain_p,
                               (traverse_how | FEEL_COCKATRICE),
-                              &pick_list, PICK_ANY, all_but_uchain);
+                              &pick_list, PICK_ANY, all_but_uchain, 2);
         }
 
     menu_pickup:
@@ -638,7 +638,7 @@ int what; /* should be a long */
                 n = query_objlist("Pick up what?", objchain_p, traverse_how,
                                   &pick_list, PICK_ANY,
                                   (via_menu == -2) ? allow_all
-                                                   : allow_category);
+                                                   : allow_category, 2);
                 goto menu_pickup;
             }
         }
@@ -825,13 +825,14 @@ menu_item **pick_list; /* list of objects and counts to pick up */
  *      FEEL_COCKATRICE   - touch corpse.
  */
 int
-query_objlist(qstr, olist_p, qflags, pick_list, how, allow)
+query_objlist(qstr, olist_p, qflags, pick_list, how, allow, show_weights)
 const char *qstr;                 /* query string */
 struct obj **olist_p;             /* the list to pick from */
 int qflags;                       /* options to control the query */
 menu_item **pick_list;            /* return list of items picked */
 int how;                          /* type of query */
 boolean FDECL((*allow), (OBJ_P)); /* allow function */
+int show_weights;
 {
     int i, n;
     winid win;
@@ -843,6 +844,7 @@ boolean FDECL((*allow), (OBJ_P)); /* allow function */
             engulfer = (qflags & INCLUDE_HERO) != 0;
     unsigned sortflags;
     Loot *sortedolist, *srtoli;
+	int wtcount = 0;
 
     *pick_list = (menu_item *) 0;
     if (!olist && !engulfer)
@@ -914,11 +916,12 @@ boolean FDECL((*allow), (OBJ_P)); /* allow function */
                 }
 
                 any.a_obj = curr;
+				wtcount += curr->owt;
                 add_menu(win, obj_to_glyph(curr, rn2_on_display_rng), &any,
                          (qflags & USE_INVLET) ? curr->invlet
                            : (first && curr->oclass == COIN_CLASS) ? '$' : 0,
                          def_oc_syms[(int) objects[curr->otyp].oc_class].sym,
-                         ATR_NONE, doname_with_price_and_weight_first(curr), MENU_UNSELECTED);
+                         ATR_NONE, show_weights > 0 ? doname_with_price_and_weight_first(curr) : doname_with_price(curr), MENU_UNSELECTED);
                 first = FALSE;
             }
         }
@@ -926,7 +929,7 @@ boolean FDECL((*allow), (OBJ_P)); /* allow function */
     } while (sorted && *pack);
     unsortloot(&sortedolist);
 
-    if (engulfer) {
+	if (engulfer) {
         char buf[BUFSZ];
 
         any = zeroany;
@@ -945,7 +948,9 @@ boolean FDECL((*allow), (OBJ_P)); /* allow function */
                  MENU_UNSELECTED);
     }
 
-    end_menu(win, qstr);
+	add_weight_summary(win, wtcount, show_weights);
+
+	end_menu(win, qstr);
     n = select_menu(win, how, pick_list);
     destroy_nhwindow(win);
 
@@ -2615,7 +2620,7 @@ boolean more_containers; /* True iff #loot multiple and this isn't last one */
         } else if (c == ':') { /* note: will set obj->cknown */
             if (!current_container->cknown)
                 used = 1; /* gaining info */
-            container_contents(current_container, FALSE, FALSE, TRUE);
+            container_contents(current_container, FALSE, FALSE, TRUE, 1);
         } else
             break;
     } /* loop until something other than '?' or ':' is picked */
@@ -2666,7 +2671,7 @@ boolean more_containers; /* True iff #loot multiple and this isn't last one */
         add_valid_menu_class(0);
     } else if (stash_one) {
         /* put one item into container */
-        if ((otmp = getobj(stashable, "stash")) != 0) {
+        if ((otmp = getobj(stashable, "stash", 1)) != 0) {
             if (in_container(otmp)) {
                 used = 1;
             } else {
@@ -2815,7 +2820,7 @@ boolean put_in;
         Sprintf(buf, "%s what?", action);
         n = query_objlist(buf, put_in ? &invent : &(current_container->cobj),
                           mflags, &pick_list, PICK_ANY,
-                          all_categories ? allow_all : allow_category);
+                          all_categories ? allow_all : allow_category, 2);
         if (n) {
             n_looted = n;
             for (i = 0; i < n; i++) {
@@ -3022,7 +3027,7 @@ dotip()
     }
 
     /* either no floor container(s) or couldn't tip one or didn't tip any */
-    cobj = getobj(tippables, "tip");
+    cobj = getobj(tippables, "tip", 0);
     if (!cobj)
         return 0;
 

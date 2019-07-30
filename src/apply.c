@@ -1439,7 +1439,7 @@ static NEARDATA const char cuddly[] = { TOOL_CLASS, GEM_CLASS, 0 };
 int
 dorub()
 {
-    struct obj *obj = getobj(cuddly, "rub");
+    struct obj *obj = getobj(cuddly, "rub", 0);
 
     if (obj && obj->oclass == GEM_CLASS) {
         if (is_graystone(obj)) {
@@ -2284,7 +2284,7 @@ struct obj *obj;
             dropx(obj);
             return;
         }
-        otmp = getobj(lubricables, "grease");
+        otmp = getobj(lubricables, "grease", 0);
         if (!otmp)
             return;
         if (inaccessible_equipment(otmp, "grease", FALSE))
@@ -2335,7 +2335,7 @@ struct obj *tstone;
                   ? coins_gems
                   : allowall;
     Sprintf(stonebuf, "rub on the stone%s", plur(tstone->quan));
-    if ((obj = getobj(choices, stonebuf)) == 0)
+    if ((obj = getobj(choices, stonebuf, 0)) == 0)
         return;
 
     if (obj == tstone && obj->quan == 1L) {
@@ -3545,7 +3545,7 @@ doapply()
         return 0;
 
     setapplyclasses(class_list); /* tools[] */
-    obj = getobj(class_list, "use or apply");
+    obj = getobj(class_list, "use or apply", 0);
     if (!obj)
         return 0;
 

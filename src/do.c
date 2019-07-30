@@ -32,7 +32,7 @@ dodrop()
 
     if (*u.ushops)
         sellobj_state(SELL_DELIBERATE);
-    result = drop(getobj(&drop_types[i], "drop"));
+    result = drop(getobj(&drop_types[i], "drop", 3));
     if (*u.ushops)
         sellobj_state(SELL_NORMAL);
     if (result)
@@ -801,7 +801,7 @@ doddrop()
     if (*u.ushops)
         sellobj_state(SELL_DELIBERATE);
     if (flags.menu_style != MENU_TRADITIONAL
-        || (result = ggetobj("drop", drop, 0, FALSE, (unsigned *) 0)) < -1)
+        || (result = ggetobj("drop", drop, 0, FALSE, (unsigned *) 0, 3)) < -1)
         result = menu_drop(result);
     if (*u.ushops)
         sellobj_state(SELL_NORMAL);
@@ -847,7 +847,7 @@ int retry;
 
         all_categories = FALSE;
         /* Gather valid classes via traditional GnollHack method */
-        i = ggetobj("drop", drop, 0, TRUE, &ggoresults);
+        i = ggetobj("drop", drop, 0, TRUE, &ggoresults, 3);
         if (i == -2)
             all_categories = TRUE;
         if (ggoresults & ALL_FINISHED) {
@@ -881,7 +881,7 @@ int retry;
         /* should coordinate with perm invent, maybe not show worn items */
         n = query_objlist("What would you like to drop?", &invent,
                           (USE_INVLET | INVORDER_SORT), &pick_list, PICK_ANY,
-                          all_categories ? allow_all : allow_category);
+                          all_categories ? allow_all : allow_category, 3);
         if (n > 0) {
             /*
              * picklist[] contains a set of pointers into inventory, but

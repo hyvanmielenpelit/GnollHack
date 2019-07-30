@@ -569,7 +569,7 @@ int *dmg_p; /* for dishing out extra damage in lieu of Int loss */
 			mdef->mint -= int_loss;
 			if (mdef->mint < monster_attribute_minimum(mdef->data, A_INT))
 				*dmg_p += mdef->mhp;
-			pline("%s loses %d intelligence %s.", Monnam(mdef), int_loss, int_loss > 1 ? "points" : "point");
+			pline("%s loses %d intelligence %s.", Monnam(mdef), int_loss, int_loss == 1 ? "point" : "points");
 		} else {
             morehungry(-rnd(30)); /* cannot choke */
             if (ABASE(A_INT) < AMAX(A_INT)) {
@@ -585,7 +585,7 @@ int *dmg_p; /* for dishing out extra damage in lieu of Int loss */
 			mdef->mint -= int_loss;
 			if (mdef->mint < monster_attribute_minimum(mdef->data, A_INT))
 				*dmg_p += mdef->mhp;
-			pline("%s loses %d intelligence %s.", Monnam(mdef), int_loss, int_loss > 1 ? "points" : "point");
+			pline("%s loses %d intelligence %s.", Monnam(mdef), int_loss, int_loss == 1 ? "point" : "points");
 		}
         /* targetting another mind flayer or your own underlying species
            is cannibalism */
@@ -2776,7 +2776,7 @@ struct obj *obj;
         res = 1;
     }
 
-    otmp = getobj(comestibles, "open");
+    otmp = getobj(comestibles, "open", 0);
     if (!otmp)
         return res;
 
@@ -3209,7 +3209,7 @@ skipfloor:
      * "ugly checks" and we need to check for inedible items.
      */
     otmp = getobj(feeding ? allobj : offering ? offerfodder : comestibles,
-                  verb);
+                  verb, 0);
     if (corpsecheck && otmp && !(offering && otmp->oclass == AMULET_CLASS))
         if (otmp->otyp != CORPSE || (corpsecheck == 2 && !tinnable(otmp))) {
             You_cant("%s that!", verb);

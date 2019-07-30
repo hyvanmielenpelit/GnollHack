@@ -764,8 +764,8 @@ time_t when; /* date+time at end of game */
     dump_plines();
     putstr(0, 0, "");
     putstr(0, 0, "Inventory:");
-    (void) display_inventory((char *) 0, TRUE);
-    container_contents(invent, TRUE, TRUE, FALSE);
+    (void) display_inventory((char *) 0, TRUE, 0);
+    container_contents(invent, TRUE, TRUE, FALSE, 0);
     enlightenment((BASICENLIGHTENMENT | MAGICENLIGHTENMENT),
                   (how >= PANICKED) ? ENL_GAMEOVERALIVE : ENL_GAMEOVERDEAD);
     putstr(0, 0, "");
@@ -804,8 +804,8 @@ boolean taken;
         c = ask ? yn_function(qbuf, ynqchars, defquery) : defquery;
         if (c == 'y') {
             /* caller has already ID'd everything */
-            (void) display_inventory((char *) 0, TRUE);
-            container_contents(invent, TRUE, TRUE, FALSE);
+            (void) display_inventory((char *) 0, TRUE, 0);
+            container_contents(invent, TRUE, TRUE, FALSE, 0);
         }
         if (c == 'q')
             done_stopprint++;
@@ -1567,14 +1567,16 @@ int how;
 }
 
 void
-container_contents(list, identified, all_containers, reportempty)
+container_contents(list, identified, all_containers, reportempty, show_weights)
 struct obj *list;
 boolean identified, all_containers, reportempty;
+int show_weights;
 {
     register struct obj *box, *obj;
     char buf[BUFSZ];
     boolean cat, dumping = iflags.in_dumplog;
 	int count = 0;
+	int totalweight = 0;
 
     for (box = list; box; box = box->nobj) {
         if (Is_container(box) || box->otyp == STATUE) {
@@ -1608,6 +1610,7 @@ boolean identified, all_containers, reportempty;
                                  | (flags.sortpack ? SORTLOOT_PACK : 0));
                     sortedcobj = sortloot(&box->cobj, sortflags, FALSE,
                                           (boolean FDECL((*), (OBJ_P))) 0);
+					totalweight = 0;
                     for (srtc = sortedcobj; ((obj = srtc->obj) != 0); ++srtc) {
                         if (identified) {
                             discover_object(obj->otyp, TRUE, FALSE);
@@ -1617,11 +1620,14 @@ boolean identified, all_containers, reportempty;
                                 obj->cknown = obj->lknown = 1;
                         }
 						count++;
-						Sprintf(&buf[2], "%2d - %s", count, doname_with_price_and_weight_first(obj));
+						totalweight += obj->owt;
+						Sprintf(&buf[2], "%2d - %s", count, show_weights > 0 ? doname_with_price_and_weight_first(obj) : doname_with_price(obj));
 						//Strcpy(&buf[2], doname_with_price_and_weight_first(obj));
                         putstr(tmpwin, 0, buf);
                     }
-                    unsortloot(&sortedcobj);
+					add_weight_summary_putstr(tmpwin, totalweight, show_weights);
+
+					unsortloot(&sortedcobj);
                 } else if (cat) {
                     Strcpy(&buf[2], "Schroedinger's cat!");
                     putstr(tmpwin, 0, buf);
@@ -1632,7 +1638,7 @@ boolean identified, all_containers, reportempty;
                 destroy_nhwindow(tmpwin);
                 if (all_containers)
                     container_contents(box->cobj, identified, TRUE,
-                                       reportempty);
+                                       reportempty, show_weights);
             } else if (reportempty) {
                 pline("%s is empty.", upstart(thesimpleoname(box)));
                 display_nhwindow(WIN_MESSAGE, FALSE);

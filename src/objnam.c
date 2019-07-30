@@ -1253,26 +1253,26 @@ unsigned doname_flags;
 
 	bp = strprepend(bp, prefix);
 
+	double objweight = ((double)obj->owt) / 16; //ounces to lbs
+
 	if ((wizard && iflags.wizweight) || weightfirst) {
 		char buf[BUFSZ];
-		if (obj->owt >= 10000)
-			Sprintf(buf, "%3.0f cwt - %s", ((double)obj->owt) / 1000, bp);
-		else if (obj->owt >= 1000)
-			Sprintf(buf, "%1.1f cwt - %s", ((double)obj->owt) / 1000, bp);
-		else if (obj->owt >= 100)
-			Sprintf(buf, "%3.0f lbs - %s", ((double)obj->owt) / 10, bp);
+		if (objweight >= 1000)
+			Sprintf(buf, "%3.0f cwt - %s", objweight / 100, bp);
+		else if (objweight >= 10)
+			Sprintf(buf, "%3.0f lbs - %s", objweight, bp);
 		else
-			Sprintf(buf, "%1.1f %s - %s", ((double)obj->owt) / 10, obj->owt == 10 ? "lb " : "lbs", bp);
+			Sprintf(buf, "%1.1f %s - %s", objweight, objweight == 1 ? "lb " : "lbs", bp);
 		strcpy(bp, buf);
 	}
 	
 	if (weightlast)
 	{
 		char buf[BUFSZ];
-		if (obj->owt >= 100 || ((int)(obj->owt / 10)) * 10 == (int)obj->owt)
-			Sprintf(buf, "%s (%d %s)", bp, (int)((double)obj->owt) / 10, obj->owt == 10 ? "lb" : "lbs");
+		if (objweight >= 10 || ((int)(obj->owt / 10)) * 10 == (int)obj->owt)
+			Sprintf(buf, "%s (%d %s)", bp, (int)objweight, objweight == 1 ? "lb" : "lbs");
 		else
-			Sprintf(buf, "%s (%.1f %s)", bp, ((double)obj->owt) / 10, obj->owt == 10 ? "lb" : "lbs");
+			Sprintf(buf, "%s (%.1f %s)", bp, objweight, objweight == 1 ? "lb" : "lbs");
 		strcpy(bp, buf);
 	}
 

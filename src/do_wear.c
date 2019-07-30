@@ -368,6 +368,7 @@ Helmet_on(VOID_ARGS)
     case DWARVISH_IRON_HELM:
     case ORCISH_HELM:
 	case GNOLLISH_HOOD:
+	case COTTON_HOOD:
 	case HELM_OF_TELEPATHY:
         break;
     case HELM_OF_BRILLIANCE:
@@ -435,6 +436,7 @@ Helmet_off(VOID_ARGS)
     case DWARVISH_IRON_HELM:
     case ORCISH_HELM:
 	case GNOLLISH_HOOD:
+	case COTTON_HOOD:
 		break;
     case DUNCE_CAP:
         context.botl = 1;
@@ -1798,7 +1800,7 @@ dotakeoff()
         return 0;
     }
     if (Narmorpieces != 1 || ParanoidRemove)
-        otmp = getobj(clothes, "take off");
+        otmp = getobj(clothes, "take off", 0);
     if (!otmp)
         return 0;
 
@@ -1817,7 +1819,7 @@ doremring()
         return 0;
     }
     if (Naccessories != 1 || ParanoidRemove)
-        otmp = getobj(accessories, "remove");
+        otmp = getobj(accessories, "remove", 0);
     if (!otmp)
         return 0;
 
@@ -2429,7 +2431,7 @@ dowear()
         You("are already wearing a full complement of armor.");
         return 0;
     }
-    otmp = getobj(clothes, "wear");
+    otmp = getobj(clothes, "wear", 0);
     return otmp ? accessory_or_armor_on(otmp) : 0;
 }
 
@@ -2448,7 +2450,7 @@ doputon()
              (ublindf->otyp == LENSES) ? "some lenses" : "a blindfold");
         return 0;
     }
-    otmp = getobj(accessories, "put on");
+    otmp = getobj(accessories, "put on", 0);
     return otmp ? accessory_or_armor_on(otmp) : 0;
 }
 
@@ -3032,7 +3034,7 @@ doddoremarm()
     add_valid_menu_class(0); /* reset */
     if (flags.menu_style != MENU_TRADITIONAL
         || (result = ggetobj("take off", select_off, 0, FALSE,
-                             (unsigned *) 0)) < -1)
+                             (unsigned *) 0, 0)) < -1)
         result = menu_remarm(result);
 
     if (context.takeoff.mask) {
@@ -3080,7 +3082,7 @@ int retry;
     } else if (flags.menu_style == MENU_COMBINATION) {
         unsigned ggofeedback = 0;
 
-        i = ggetobj("take off", select_off, 0, TRUE, &ggofeedback);
+        i = ggetobj("take off", select_off, 0, TRUE, &ggofeedback, 0);
         if (ggofeedback & ALL_FINISHED)
             return 0;
         all_worn_categories = (i == -2);
@@ -3093,7 +3095,7 @@ int retry;
     n = query_objlist("What do you want to take off?", &invent,
                       (SIGNAL_NOMENU | USE_INVLET | INVORDER_SORT),
                       &pick_list, PICK_ANY,
-                      all_worn_categories ? is_worn : is_worn_by_type);
+                      all_worn_categories ? is_worn : is_worn_by_type, 0);
     if (n > 0) {
         for (i = 0; i < n; i++)
             (void) select_off(pick_list[i].item.a_obj);

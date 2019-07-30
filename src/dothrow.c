@@ -266,7 +266,7 @@ dothrow()
     if (!ok_to_throw(&shotlimit))
         return 0;
 
-    obj = getobj(uslinging() ? bullets : toss_objs, "throw");
+    obj = getobj(uslinging() ? bullets : toss_objs, "throw", 0);
     /* it is also possible to throw food */
     /* (or jewels, or iron balls... ) */
 
@@ -378,7 +378,7 @@ dofire()
                use direction of previous throw as getobj()'s choice here */
             in_doagain = 0;
             /* choose something from inventory, then usually quiver it */
-            obj = getobj(uslinging() ? bullets : toss_objs, "throw");
+            obj = getobj(uslinging() ? bullets : toss_objs, "throw", 0);
             /* Q command doesn't allow gold in quiver */
             if (obj && !obj->owornmask && obj->oclass != COIN_CLASS)
                 setuqwep(obj); /* demi-autoquiver */
