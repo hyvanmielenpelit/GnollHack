@@ -1871,6 +1871,8 @@ E int FDECL(query_objlist, (const char *, struct obj **, int,
                             menu_item **, int, boolean (*)(OBJ_P), int));
 E void FDECL(add_weight_summary, (winid, int, int));
 E void FDECL(add_weight_summary_putstr, (winid, int, int));
+E int FDECL(enclevelmaximumweight, (int));
+E int FDECL(enclevelminimumweight, (int));
 E struct obj *FDECL(pick_obj, (struct obj *));
 E int NDECL(encumber_msg);
 E int FDECL(container_at, (int, int, BOOLEAN_P));

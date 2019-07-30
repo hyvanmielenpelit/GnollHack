@@ -2786,17 +2786,30 @@ int show_weights;
 			"Weight Summary", MENU_UNSELECTED);
 
 		char wtbuf[BUFSZ];
-		int iw, wc, maxw, yourweight, yourmaxweight;
+		char carrybuf[BUFSZ];
+		char totalbuf[BUFSZ];
+
+		int iw, wc, yourweight, yourenclevel, curlevelminweight= 0, curlevelmaxweight = 0;
+		double curlevelminweight_lbs = 0, curlevelmaxweight_lbs = 0;
+
 		iw = inv_weight();
 		wc = weight_cap();
-		maxw = (OVERLOADED + 1) * wc / 2;
+		yourenclevel = near_capacity();
+		curlevelminweight = enclevelminimumweight(yourenclevel);
+		curlevelmaxweight = enclevelmaximumweight(yourenclevel);
+		curlevelminweight_lbs = ((double)curlevelminweight) / 16;
+		curlevelmaxweight_lbs = ((double)curlevelmaxweight) / 16;
 		yourweight = iw + wc;
-		yourmaxweight = maxw + wc;
 
 		double carryingweight = ((double)yourweight) / 16; //ounces to lbs
 		double burdnedweightlimit = ((double)wc) / 16; //ounces to lbs
-		double maxweightlimit = ((double)yourmaxweight) / 16; //ounces to lbs
 		double totalweight = ((double)total_ounce_weight) / 16; //ounces to lbs
+
+		const char* burdentype[] = { "unencumbered", "burdened",
+											 "stressed",     "strained",
+											 "overtaxed",    "overloaded" };
+
+		const char *verb = burdentype[yourenclevel];
 
 		// Inventory show_weights = 1
 		// Pick up show_weights = 2
@@ -2814,23 +2827,63 @@ int show_weights;
 			add_menu(win, NO_GLYPH, &any, 0, 0, 0, wtbuf, MENU_UNSELECTED);
 		}
 
-		//For inventory this should give the same result
+		//Back end of printout
+		if (yourenclevel == UNENCUMBERED)
+			Sprintf(wtbuf, "%s until %d %s.", verb, (int)curlevelmaxweight_lbs, (int)curlevelmaxweight_lbs == 1 ? "lb" : "lbs");
+		else if (yourenclevel == OVERLOADED)
+			Sprintf(wtbuf, "%s with at least %d %s.", verb, (int)curlevelminweight_lbs, (int)curlevelminweight_lbs == 1 ? "lb" : "lbs");
+		else
+			Sprintf(wtbuf, "%s between %d and %d %s.", verb, (int)curlevelminweight_lbs, (int)curlevelmaxweight_lbs, ((int)curlevelminweight_lbs == 1 && (int)curlevelmaxweight_lbs == 1) ? "lb" : "lbs");
+
+
+		//Front end of printout
 		if (show_weights == 1 || (show_weights == 2 && total_ounce_weight == yourweight))
 		{
-			Sprintf(wtbuf, "You are unburdened at %d %s with a limit of %d %s.", (int)burdnedweightlimit, (int)burdnedweightlimit == 1 ? "lb" : "lbs", (int)maxweightlimit, (int)maxweightlimit == 1 ? "lb" : "lbs");
-			add_menu(win, NO_GLYPH, &any, 0, 0, 0, wtbuf, MENU_UNSELECTED);
+			Sprintf(carrybuf, "%s", "You are ");
 		}
-		else if (show_weights == 2 || show_weights == 3)
+		else
 		{
 			if (carryingweight >= 10)
-				Sprintf(wtbuf, "You are carrying %d %s and unburdened at %d %s.", (int)carryingweight, (int)carryingweight == 1 ? "lb" : "lbs", (int)burdnedweightlimit, (int)burdnedweightlimit == 1 ? "lb" : "lbs");
+				Sprintf(carrybuf, "You are carrying %d %s and ", (int)carryingweight, (int)carryingweight == 1 ? "lb" : "lbs");
 			else
-				Sprintf(wtbuf, "You are carrying %1.1f %s and unburdened at %d %s.", carryingweight, carryingweight == 1 ? "lb" : "lbs", (int)burdnedweightlimit, (int)burdnedweightlimit == 1 ? "lb" : "lbs");
-			add_menu(win, NO_GLYPH, &any, 0, 0, 0, wtbuf, MENU_UNSELECTED);
+				Sprintf(carrybuf, "You are carrying %1.1f %s and ", carryingweight, carryingweight == 1 ? "lb" : "lbs");
 		}
+
+		Sprintf(totalbuf, "%s%s", carrybuf, wtbuf);
+
+		add_menu(win, NO_GLYPH, &any, 0, 0, 0, totalbuf, MENU_UNSELECTED);
 
 	}
 
+}
+
+int
+enclevelminimumweight(enclevel)
+int enclevel;
+{
+	int weight;
+	int wt = weight_cap();
+
+	if (enclevel == UNENCUMBERED)
+		weight = 0;
+	else
+		weight = wt + (enclevel - 1) * wt / 2;
+	return weight;
+}
+
+int
+enclevelmaximumweight(enclevel)
+int enclevel;
+{
+	int weight;
+	int wt = weight_cap();
+
+	if (enclevel == OVERLOADED)
+		weight = 1000000;
+	else
+		weight = (wt + enclevel * wt / 2 ) - 1;
+
+	return weight;
 }
 
 void
@@ -2841,26 +2894,68 @@ int show_weights;
 {
 	if (show_weights > 0)
 	{
+		char buf[BUFSZ];
+		char wtbuf[BUFSZ];
+		char carrybuf[BUFSZ];
 		char totalbuf[BUFSZ];
 
+		int iw, wc, yourweight, yourenclevel, curlevelminweight = 0, curlevelmaxweight = 0;
+		double curlevelminweight_lbs = 0, curlevelmaxweight_lbs = 0;
+		iw = inv_weight();
+		wc = weight_cap();
+		yourenclevel = near_capacity();
+		curlevelminweight = enclevelminimumweight(yourenclevel);
+		curlevelmaxweight = enclevelmaximumweight(yourenclevel);
+		curlevelminweight_lbs = ((double)curlevelminweight) / 16;
+		curlevelmaxweight_lbs = ((double)curlevelmaxweight) / 16;
+		yourweight = iw + wc;
+
+		const char* burdentype[] = { "unencumbered", "burdened",
+											 "stressed",     "strained",
+											 "overtaxed",    "overloaded" };
+
+		const char* verb = burdentype[yourenclevel];
+
+
+
 		//NOTE: Nested container listing should not be used with show_weights on
-		int yourweight = inv_weight() + weight_cap();
-		double carriedweight = ((double)yourweight) / 16; // ounces to lbs
+		double carryingweight = ((double)yourweight) / 16; // ounces to lbs
 		double unburdenedweight = ((double)(weight_cap())) / 16; // ounces to lbs
 		double totalweight = ((double)total_ounce_weight) / 16; // ounces to lbs
 
 		if (totalweight >= 1000)
-			Sprintf(totalbuf, "   = %3.0f %s of total weight", totalweight / 1000, "cwt");
+			Sprintf(buf, "   = %3.0f %s of total weight", totalweight / 1000, "cwt");
 		else if (totalweight >= 10)
-			Sprintf(totalbuf, "   = %3.0f %s of total weight", totalweight, totalweight == 1 ? "lb" : "lbs");
+			Sprintf(buf, "   = %3.0f %s of total weight", totalweight, totalweight == 1 ? "lb" : "lbs");
 		else
-			Sprintf(totalbuf, "   = %1.1f %s of total weight", totalweight, totalweight == 1 ? "lb" : "lbs");
-		putstr(win, 0, totalbuf);
+			Sprintf(buf, "   = %1.1f %s of total weight", totalweight, totalweight == 1 ? "lb" : "lbs");
+		putstr(win, 0, buf);
 
+
+		/*
 		if (carriedweight >= 10)
-			Sprintf(totalbuf, "You are carrying %d %s and unburdened at %d %s.", (int)carriedweight, (int)carriedweight == 1 ? "lb" : "lbs", (int)unburdenedweight, (int)unburdenedweight == 1 ? "lb" : "lbs");
+			Sprintf(totalbuf, "You are carrying %d %s and unburdened until %d %s.", (int)carriedweight, (int)carriedweight == 1 ? "lb" : "lbs", (int)unburdenedweight, (int)unburdenedweight == 1 ? "lb" : "lbs");
 		else
-			Sprintf(totalbuf, "You are carrying %1.1f %s and unburdened at %d %s.", carriedweight, carriedweight == 1 ? "lb" : "lbs", (int)unburdenedweight, (int)unburdenedweight == 1 ? "lb" : "lbs");
+			Sprintf(totalbuf, "You are carrying %1.1f %s and unburdened until %d %s.", carriedweight, carriedweight == 1 ? "lb" : "lbs", (int)unburdenedweight, (int)unburdenedweight == 1 ? "lb" : "lbs");
+		*/
+
+		//Back end of printout
+		if (yourenclevel == UNENCUMBERED)
+			Sprintf(wtbuf, "%s until %d %s.", verb, (int)curlevelmaxweight_lbs, (int)curlevelmaxweight_lbs == 1 ? "lb" : "lbs");
+		else if (yourenclevel == OVERLOADED)
+			Sprintf(wtbuf, "%s with at least %d %s.", verb, (int)curlevelminweight_lbs, (int)curlevelminweight_lbs == 1 ? "lb" : "lbs");
+		else
+			Sprintf(wtbuf, "%s between %d and %d %s.", verb, (int)curlevelminweight_lbs, (int)curlevelmaxweight_lbs, ((int)curlevelminweight_lbs == 1 && (int)curlevelmaxweight_lbs == 1) ? "lb" : "lbs");
+
+
+		if (carryingweight >= 10)
+			Sprintf(carrybuf, "You are carrying %d %s and ", (int)carryingweight, (int)carryingweight == 1 ? "lb" : "lbs");
+		else
+			Sprintf(carrybuf, "You are carrying %1.1f %s and ", carryingweight, carryingweight == 1 ? "lb" : "lbs");
+
+		Sprintf(totalbuf, "%s%s", carrybuf, wtbuf);
+
+
 		putstr(win, 0, totalbuf);
 	}
 
