@@ -190,17 +190,17 @@ WEAPON("battle-axe", "double-headed axe",       /* "double-bitted"? */
 
 /* swords */
 WEAPON("short sword", None,
-       1, 0, 0,  8,  30,  10,  1, 6, 0, 1,  8, 0, 0, P,   P_SHORT_SWORD, IRON, HI_METAL),
+       1, 0, 0,  8,  45,  10,  1, 6, 0, 1,  8, 0, 0, P,   P_SHORT_SWORD, IRON, HI_METAL),
 WEAPON("elven short sword", "runed short sword",
-       0, 0, 0,  2,  30,  10,  1, 8, 0, 1, 8, 0, 0, P,   P_SHORT_SWORD, WOOD, HI_WOOD),
+       0, 0, 0,  2,  40,  10,  1, 8, 0, 1, 8, 0, 0, P,   P_SHORT_SWORD, WOOD, HI_WOOD),
 WEAPON("orcish short sword", "crude short sword",
-       0, 0, 0,  3,  30,  10,  1, 5, 0, 1,  8, 0, 0, P,   P_SHORT_SWORD, IRON, CLR_BLACK),
+       0, 0, 0,  3,  50,  10,  1, 5, 0, 1,  8, 0, 0, P,   P_SHORT_SWORD, IRON, CLR_BLACK),
 WEAPON("dwarvish short sword", "broad short sword",
-       0, 0, 0,  2,  30,  10,  1, 7, 0, 1, 8, 0, 0, P,   P_SHORT_SWORD, IRON, HI_METAL),
+       0, 0, 0,  2,  50,  10,  1, 7, 0, 1, 8, 0, 0, P,   P_SHORT_SWORD, IRON, HI_METAL),
 WEAPON("scimitar", "curved sword",
-       0, 0, 0, 15,  40,  15,  1, 8, 0, 1, 8, 0, 0, S,   P_SCIMITAR, IRON, HI_METAL),
+       0, 0, 0, 15,  60,  15,  1, 8, 0, 1, 8, 0, 0, S,   P_SCIMITAR, IRON, HI_METAL),
 WEAPON("silver saber", None,
-       1, 0, 0,  6,  40,  75,  1, 8, 0, 1, 8, 0, 0, S,   P_SABER, SILVER, HI_SILVER),
+       1, 0, 0,  6,  55,  75,  1, 8, 0, 1, 8, 0, 0, S,   P_SABER, SILVER, HI_SILVER),
 WEAPON("broadsword", None,
        1, 0, 0,  8,  60,  10,  2, 4, 0, 1, 6, 1, 0, S,   P_BROAD_SWORD, IRON, HI_METAL),
         /* +d4 small, +1 large */
@@ -208,22 +208,22 @@ WEAPON("elven broadsword", "runed broadsword",
        0, 0, 0,  4,  55,  10,  2, 4, 0, 1, 6, 1, 0, S,   P_BROAD_SWORD, WOOD, HI_WOOD),
         /* +d4 small, +1 large */
 WEAPON("long sword", None,
-       1, 0, 0, 40,  50,  15,  1, 8, 0, 1, 12, 0, 0, S,   P_LONG_SWORD, IRON, HI_METAL),
+       1, 0, 0, 40,  60,  15,  1, 8, 0, 1, 12, 0, 0, S,   P_LONG_SWORD, IRON, HI_METAL),
 WEAPON("silver long sword", None,
-	   1, 0, 0, 0, 50, 500, 1, 8, 0, 1, 12, 0, 0, S, P_LONG_SWORD, SILVER, HI_SILVER),
+	   1, 0, 0, 0, 55, 500, 1, 8, 0, 1, 12, 0, 0, S, P_LONG_SWORD, SILVER, HI_SILVER),
 WEAPON("two-handed sword", None,
-       1, 0, 1, 20, 100,  50, 1, 12, 0, 3, 6, 0, 0, S,   P_TWO_HANDED_SWORD,
+       1, 0, 1, 20, 120,  50, 1, 12, 0, 3, 6, 0, 0, S,   P_TWO_HANDED_SWORD,
                                                         IRON, HI_METAL),
         /* +2d6 large */
 WEAPON("katana", "samurai sword",
-       0, 0, 0,  4,  45,  80, 1, 10, 0, 1, 12, 0, 1, S,   P_LONG_SWORD, IRON, HI_METAL),
+       0, 0, 0,  4,  80,  80, 1, 10, 0, 1, 12, 0, 1, S,   P_LONG_SWORD, IRON, HI_METAL),
 /* special swords set up for artifacts */
 WEAPON("tsurugi", "long samurai sword",
-       0, 0, 1,  0,  90, 500, 1, 16, 0, 3, 6, 1, 2, S,   P_TWO_HANDED_SWORD,
+       0, 0, 1,  0,  100, 500, 1, 16, 0, 3, 6, 1, 2, S,   P_TWO_HANDED_SWORD,
                                                             METAL, HI_METAL),
         /* +2d6 large */
 WEAPON("runesword", "runed broadsword",
-       0, 0, 0,  0,  45, 300,  2, 4, 0, 1, 6, 1, 0, S,   P_BROAD_SWORD, IRON, CLR_BLACK),
+       0, 0, 0,  0,  55, 300,  2, 4, 0, 1, 6, 1, 0, S,   P_BROAD_SWORD, IRON, CLR_BLACK),
         /* +d4 small, +1 large; Stormbringer: +5d2 +d8 from level drain */
 
 /* polearms */
@@ -650,7 +650,7 @@ BOOTS("levitation boots", "snow boots",
     OBJECT(OBJ(name, stone),                                          \
            BITS(0, 0, spec, 0, mgc, spec, 0, 0, 0,                    \
                 HARDGEM(mohs), 0, P_NONE, metal),                     \
-           power, RING_CLASS, 0, 0, 3, cost,  0, 0, 0, 0, 0, 0, 0, 0, 15, color)
+           power, RING_CLASS, 0, 0, 1, cost,  0, 0, 0, 0, 0, 0, 0, 0, 15, color)
 RING("adornment", "wooden",
      ADORNED,                  100, 1, 1, 2, WOOD, HI_WOOD),
 RING("gain strength", "granite",
@@ -717,7 +717,7 @@ RING("protection from shape changers", "shiny",
 #define AMULET(name,desc,power,prob) \
     OBJECT(OBJ(name, desc),                                            \
            BITS(0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, P_NONE, IRON),        \
-           power, AMULET_CLASS, prob, 0, 20, 150,  0, 0, 0, 0, 0, 0, 0, 0, 20, HI_METAL)
+           power, AMULET_CLASS, prob, 0, 5, 150,  0, 0, 0, 0, 0, 0, 0, 0, 20, HI_METAL)
 AMULET("amulet of ESP",                "circular", TELEPAT, 175),
 AMULET("amulet of life saving",       "spherical", LIFESAVED, 75),
 AMULET("amulet of strangulation",          "oval", STRANGLED, 135),
@@ -734,11 +734,11 @@ AMULET("amulet of magical breathing", "octagonal", MAGICAL_BREATHING, 65),
 OBJECT(OBJ("cheap plastic imitation of the Amulet of Yendor",
            "Amulet of Yendor"),
        BITS(0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, PLASTIC),
-       0, AMULET_CLASS, 0, 0, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, HI_METAL),
+       0, AMULET_CLASS, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, HI_METAL),
 OBJECT(OBJ("Amulet of Yendor", /* note: description == name */
            "Amulet of Yendor"),
        BITS(0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, MITHRIL),
-       0, AMULET_CLASS, 0, 0, 20, 30000, 0, 0, 0, 0, 0, 0, 0, 0, 20, HI_METAL),
+       0, AMULET_CLASS, 0, 0, 10, 30000, 0, 0, 0, 0, 0, 0, 0, 0, 20, HI_METAL),
 #undef AMULET
 
 /* tools ... */
@@ -766,12 +766,12 @@ CONTAINER("bag of tricks",  "bag", 0, 1, 1, 20,  15, 100, CLOTH, HI_CLOTH),
 #undef CONTAINER
 
 /* lock opening tools */
-TOOL("skeleton key",       "key", 0, 0, 0, 0, 80,  3, 10, IRON, HI_METAL),
-TOOL("lock pick",           None, 1, 0, 0, 0, 60,  4, 20, IRON, HI_METAL),
+TOOL("skeleton key",       "key", 0, 0, 0, 0, 80,  2, 10, IRON, HI_METAL),
+TOOL("lock pick",           None, 1, 0, 0, 0, 60,  2, 20, IRON, HI_METAL),
 TOOL("credit card",         None, 1, 0, 0, 0, 15,  1, 10, PLASTIC, CLR_WHITE),
 /* light sources */
-TOOL("tallow candle",   "candle", 0, 1, 0, 0, 20,  2, 10, WAX, CLR_WHITE),
-TOOL("wax candle",      "candle", 0, 1, 0, 0,  5,  2, 20, WAX, CLR_WHITE),
+TOOL("tallow candle",   "candle", 0, 1, 0, 0, 20,  1, 10, WAX, CLR_WHITE),
+TOOL("wax candle",      "candle", 0, 1, 0, 0,  5,  1, 20, WAX, CLR_WHITE),
 TOOL("brass lantern",       None, 1, 0, 0, 0, 30, 30, 12, COPPER, CLR_YELLOW),
 TOOL("oil lamp",          "lamp", 0, 0, 0, 0, 45, 20, 10, COPPER, CLR_YELLOW),
 TOOL("magic lamp",        "lamp", 0, 0, 1, 0, 15, 20, 50, COPPER, CLR_YELLOW),
@@ -796,8 +796,8 @@ TOOL("land mine",           None, 1, 0, 0, 0, 0, 300,180, IRON, CLR_RED),
 TOOL("beartrap",            None, 1, 0, 0, 0, 0, 200, 60, IRON, HI_METAL),
 /* instruments;
    "If tin whistles are made out of tin, what do they make foghorns out of?" */
-TOOL("tin whistle",    "whistle", 0, 0, 0, 0,100, 3, 10, METAL, HI_METAL),
-TOOL("magic whistle",  "whistle", 0, 0, 1, 0, 30, 3, 10, METAL, HI_METAL),
+TOOL("tin whistle",    "whistle", 0, 0, 0, 0,100, 2, 10, METAL, HI_METAL),
+TOOL("magic whistle",  "whistle", 0, 0, 1, 0, 30, 2, 10, METAL, HI_METAL),
 TOOL("wooden flute",     "flute", 0, 0, 0, 0,  4, 5, 12, WOOD, HI_WOOD),
 TOOL("magic flute",      "flute", 0, 0, 1, 1,  2, 5, 36, WOOD, HI_WOOD),
 TOOL("tooled horn",       "horn", 0, 0, 0, 0,  5, 18, 15, BONE, CLR_WHITE),
@@ -813,7 +813,7 @@ TOOL("leather drum",      "drum", 0, 0, 0, 0,  4, 25, 25, LEATHER, HI_LEATHER),
 TOOL("drum of earthquake","drum", 0, 0, 1, 1,  2, 25, 25, LEATHER, HI_LEATHER),
 /* tools useful as weapons */
 WEPTOOL("pick-axe", None,
-        1, 0, 0, 20, 100,  50,  1, 6, 0, 1, 3, 0, WHACK,  P_PICK_AXE, IRON, HI_METAL),
+        1, 0, 0, 20, 75,  50,  1, 6, 0, 1, 3, 0, WHACK,  P_PICK_AXE, IRON, HI_METAL),
 WEPTOOL("grappling hook", "iron hook",
         0, 0, 0,  5,  30,  50,  1, 2, 0, 1, 6, 0, WHACK,  P_FLAIL,    IRON, HI_METAL),
 WEPTOOL("unicorn horn", None,
@@ -901,7 +901,7 @@ FOOD("tin",                  75,  0, 10, 1, METAL,   0, HI_METAL),
 #define POTION(name,desc,mgc,power,prob,cost,color) \
     OBJECT(OBJ(name, desc),                                             \
            BITS(0, 1, 0, 0, mgc, 0, 0, 0, 0, 0, 0, P_NONE, GLASS),      \
-           power, POTION_CLASS, prob, 0, 20, cost,  0, 0, 0, 0, 0, 0, 0, 0, 10, color)
+           power, POTION_CLASS, prob, 0, 12, cost,  0, 0, 0, 0, 0, 0, 0, 0, 10, color)
 POTION("gain ability",           "ruby",  1, 0, 42, 300, CLR_RED),
 POTION("restore ability",        "pink",  1, 0, 40, 100, CLR_BRIGHT_MAGENTA),
 POTION("confusion",            "orange",  1, CONFUSION, 42, 100, CLR_ORANGE),
@@ -936,7 +936,7 @@ POTION("water",                 "clear",  0, 0, 92, 100, CLR_CYAN),
 #define SCROLL(name,text,mgc,prob,cost) \
     OBJECT(OBJ(name, text),                                           \
            BITS(0, 1, 0, 0, mgc, 0, 0, 0, 0, 0, 0, P_NONE, PAPER),    \
-           0, SCROLL_CLASS, prob, 0, 5, cost,  0, 0,  0, 0, 0, 0, 0, 0, 6, HI_PAPER)
+           0, SCROLL_CLASS, prob, 0, 4, cost,  0, 0,  0, 0, 0, 0, 0, 0, 6, HI_PAPER)
 SCROLL("enchant armor",              "ZELGO MER",  1,  63,  80),
 SCROLL("destroy armor",         "JUYED AWK YACC",  1,  45, 100),
 SCROLL("confuse monster",                 "NR 9",  1,  53, 100),
@@ -1125,7 +1125,7 @@ OBJECT(OBJ("Book of the Dead", "papyrus"),
 #define WAND(name,typ,prob,cost,mgc,dir,metal,color) \
     OBJECT(OBJ(name, typ),                                              \
            BITS(0, 0, 1, 0, mgc, 1, 0, 0, 0, 0, dir, P_NONE, metal),    \
-           0, WAND_CLASS, prob, 0, 7, cost, 0, 0, 0, 0, 0, 0, 0, 0, 30, color)
+           0, WAND_CLASS, prob, 0, 6, cost, 0, 0, 0, 0, 0, 0, 0, 0, 30, color)
 WAND("light",           "glass", 95, 100, 1, NODIR, GLASS, HI_GLASS),
 WAND("secret door detection",
                         "balsa", 50, 150, 1, NODIR, WOOD, HI_WOOD),
