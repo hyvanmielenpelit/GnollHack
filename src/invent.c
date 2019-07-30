@@ -2797,8 +2797,8 @@ int show_weights;
 		yourenclevel = near_capacity();
 		curlevelminweight = enclevelminimumweight(yourenclevel);
 		curlevelmaxweight = enclevelmaximumweight(yourenclevel);
-		curlevelminweight_lbs = ((double)curlevelminweight) / 16;
-		curlevelmaxweight_lbs = ((double)curlevelmaxweight) / 16;
+		curlevelminweight_lbs = ((double)curlevelminweight) / 16; //ounces to lbs
+		curlevelmaxweight_lbs = ((double)curlevelmaxweight) / 16; //ounces to lbs
 		yourweight = iw + wc;
 
 		double carryingweight = ((double)yourweight) / 16; //ounces to lbs
@@ -2906,8 +2906,8 @@ int show_weights;
 		yourenclevel = near_capacity();
 		curlevelminweight = enclevelminimumweight(yourenclevel);
 		curlevelmaxweight = enclevelmaximumweight(yourenclevel);
-		curlevelminweight_lbs = ((double)curlevelminweight) / 16;
-		curlevelmaxweight_lbs = ((double)curlevelmaxweight) / 16;
+		curlevelminweight_lbs = ((double)curlevelminweight) / 16; //ounces to lbs
+		curlevelmaxweight_lbs = ((double)curlevelmaxweight) / 16; //ounces to lbs
 		yourweight = iw + wc;
 
 		const char* burdentype[] = { "unencumbered", "burdened",
