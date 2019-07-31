@@ -457,7 +457,7 @@ ARMOR("bronze plate mail", None,
 ARMOR("splint mail", None,
       1, 0, 1,  0, 54, 5, 640, 125,  4, 1,  ARM_SUIT, IRON, HI_METAL),
 ARMOR("banded mail", None,
-      1, 0, 1,  0, 62, 5, 560, 200,  4, 1,  ARM_SUIT, IRON, HI_METAL),
+      1, 0, 1,  0, 59, 5, 560, 200,  4, 1,  ARM_SUIT, IRON, HI_METAL),
 ARMOR("dwarvish mithril-coat", None,
       1, 0, 0,  0, 10, 1, 250, 750,  4, 2,  ARM_SUIT, MITHRIL, HI_SILVER),
 ARMOR("elven mithril-coat", None,
@@ -517,7 +517,7 @@ CLOAK("cloak of protection", "tattered cape",
 CLOAK("cloak of invisibility", "opera cloak",
       0, 1,      INVIS, 9, 0, 10, 250,  9, 1,  CLOTH, CLR_BRIGHT_MAGENTA),
 CLOAK("cloak of magic resistance", "ornamental cope",
-      0, 1,  ANTIMAGIC,  2, 0, 10, 250,  9, 1,  CLOTH, CLR_WHITE),
+      0, 1,  ANTIMAGIC,  4, 0, 10, 250,  9, 1,  CLOTH, CLR_WHITE),
         /*  'cope' is not a spelling mistake... leave it be */
 CLOAK("cloak of displacement", "piece of cloth",
       0, 1,  DISPLACED, 7, 0, 10, 250,  9, 1,  CLOTH, HI_CLOTH),
@@ -553,7 +553,7 @@ BRACERS("bracers of defense", "runed bracers",
 BRACERS("bracers of archery", "deerskin bracers",
 	0, 1, 0, 2, 1, 10, 300, 9, 0, CLOTH, HI_LEATHER),
 BRACERS("bracers of magic resistance", "ornamental bracers",//ENDMARKER 1 & 2
-	0, 1, ANTIMAGIC, 2, 1, 10, 300, 9, 2, CLOTH, HI_LEATHER),
+	0, 1, ANTIMAGIC, 3, 1, 10, 300, 9, 2, CLOTH, HI_LEATHER),
 
 
 /* belts */

@@ -303,13 +303,21 @@ unsigned corpseflags;
     int mndx = monsndx(mdat);
     unsigned corpstatflags = corpseflags;
     boolean burythem = ((corpstatflags & CORPSTAT_BURIED) != 0);
+	int oneinchance = 0;
+	int basemonsterindex = 0;
 
     switch (mndx) {
-    case PM_GRAY_DRAGON:
+	case PM_BABY_GRAY_DRAGON:
+	case PM_BABY_SILVER_DRAGON:
+	case PM_BABY_RED_DRAGON:
+	case PM_BABY_ORANGE_DRAGON:
+	case PM_BABY_WHITE_DRAGON:
+	case PM_BABY_BLACK_DRAGON:
+	case PM_BABY_BLUE_DRAGON:
+	case PM_BABY_GREEN_DRAGON:
+	case PM_BABY_YELLOW_DRAGON:
+	case PM_GRAY_DRAGON:
     case PM_SILVER_DRAGON:
-#if 0 /* DEFERRED */
-    case PM_SHIMMERING_DRAGON:
-#endif
     case PM_RED_DRAGON:
     case PM_ORANGE_DRAGON:
     case PM_WHITE_DRAGON:
@@ -319,8 +327,19 @@ unsigned corpseflags;
     case PM_YELLOW_DRAGON:
         /* Make dragon scales.  This assumes that the order of the
            dragons is the same as the order of the scales. */
-        if (!rn2(mtmp->mrevived ? 20 : 3)) {
-            num = GRAY_DRAGON_SCALES + monsndx(mdat) - PM_GRAY_DRAGON;
+		if (mndx >= PM_BABY_GRAY_DRAGON && mndx <= PM_BABY_YELLOW_DRAGON)
+		{
+			oneinchance = mtmp->mrevived ? 50 : 5;
+			basemonsterindex = PM_BABY_GRAY_DRAGON;
+		}
+		else if (mndx >= PM_GRAY_DRAGON && mndx <= PM_YELLOW_DRAGON)
+		{
+			oneinchance = mtmp->mrevived ? 20 : 2;
+			basemonsterindex = PM_GRAY_DRAGON;
+		}
+
+        if (oneinchance > 0 && basemonsterindex > 0 && !rn2(oneinchance)) {
+            num = GRAY_DRAGON_SCALES + monsndx(mdat) - basemonsterindex;
             obj = mksobj_at(num, x, y, FALSE, FALSE);
             obj->spe = 0;
             obj->cursed = obj->blessed = FALSE;

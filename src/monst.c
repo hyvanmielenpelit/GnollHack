@@ -1187,15 +1187,6 @@ NEARDATA struct permonst mons[] = {
         SIZ(1500, 500, MS_ROAR, MZ_HUGE), STATS(18, 14, 18, 14, 14, 9), 0, 0,
         M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_GREEDY | M2_JEWELS, 0, 13, DRAGON_SILVER),
-#if 0 /* DEFERRED */
-    MON("baby shimmering dragon", S_DRAGON,
-        LVL(12, 9, 2, 10, 0), G_GENO,
-        A(ATTK(AT_BITE, AD_PHYS, 2, 6),
-          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(1500, 500, MS_ROAR, MZ_HUGE), 0, 0,
-        M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_CARNIVORE,
-        M2_HOSTILE | M2_STRONG | M2_GREEDY | M2_JEWELS, 0, 13, CLR_CYAN),
-#endif
     MON("baby red dragon", S_DRAGON, LVL(12, 9, 2, 10, 0), G_GENO,
         A(ATTK(AT_BITE, AD_PHYS, 2, 6, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
@@ -1257,18 +1248,6 @@ NEARDATA struct permonst mons[] = {
             | M1_CARNIVORE,
         M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC,
         0, 20, DRAGON_SILVER),
-#if 0 /* DEFERRED */
-    MON("shimmering dragon", S_DRAGON,
-        LVL(15, 9, -1, 20, 4), (G_GENO | 1),
-        A(ATTK(AT_BREA, AD_MAGM, 4, 6, 0), ATTK(AT_BITE, AD_PHYS, 3, 8),
-          ATTK(AT_CLAW, AD_PHYS, 1, 4, 0), ATTK(AT_CLAW, AD_PHYS, 1, 4),
-          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(WT_DRAGON, 1500, MS_ROAR, MZ_GIGANTIC), 0, 0,
-        M1_FLY | M1_THICK_HIDE | M1_NOHANDS | M1_SEE_INVIS | M1_OVIPAROUS
-          | M1_CARNIVORE,
-        M2_HOSTILE | M2_STRONG | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC,
-        0, 20, CLR_CYAN),
-#endif
     MON("red dragon", S_DRAGON, LVL(15, 9, -1, 20, -4), (G_GENO | 1),
         A(ATTK(AT_BREA, AD_FIRE, 6, 6, 0), ATTK(AT_BITE, AD_PHYS, 3, 8, 0),
           ATTK(AT_CLAW, AD_PHYS, 1, 4, 0), ATTK(AT_CLAW, AD_PHYS, 1, 4, 0), NO_ATTK,
