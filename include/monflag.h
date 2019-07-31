@@ -131,7 +131,7 @@
 #define M2_WANDER 0x00800000L       /* wanders randomly */
 #define M2_STALK 0x01000000L        /* follows you to other levels */
 #define M2_NASTY 0x02000000L        /* extra-nasty monster (more xp) */
-#define M2_STRONG 0x04000000L       /* strong (or big) monster */
+#define M2_REFLECTING 0x04000000L       /* strong (or big) monster */
 #define M2_ROCKTHROW 0x08000000L    /* throws boulders */
 #define M2_GREEDY 0x10000000L       /* likes gold */
 #define M2_JEWELS 0x20000000L       /* likes gems */

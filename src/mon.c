@@ -325,7 +325,16 @@ unsigned corpseflags;
     case PM_BLUE_DRAGON:
     case PM_GREEN_DRAGON:
     case PM_YELLOW_DRAGON:
-        /* Make dragon scales.  This assumes that the order of the
+	case PM_ANCIENT_GRAY_DRAGON:
+	case PM_ANCIENT_SILVER_DRAGON:
+	case PM_ANCIENT_RED_DRAGON:
+	case PM_ANCIENT_ORANGE_DRAGON:
+	case PM_ANCIENT_WHITE_DRAGON:
+	case PM_ANCIENT_BLACK_DRAGON:
+	case PM_ANCIENT_BLUE_DRAGON:
+	case PM_ANCIENT_GREEN_DRAGON:
+	case PM_ANCIENT_YELLOW_DRAGON:
+		/* Make dragon scales.  This assumes that the order of the
            dragons is the same as the order of the scales. */
 		if (mndx >= PM_BABY_GRAY_DRAGON && mndx <= PM_BABY_YELLOW_DRAGON)
 		{
@@ -337,8 +346,13 @@ unsigned corpseflags;
 			oneinchance = mtmp->mrevived ? 20 : 2;
 			basemonsterindex = PM_GRAY_DRAGON;
 		}
+		else if (mndx >= PM_ANCIENT_GRAY_DRAGON && mndx <= PM_ANCIENT_YELLOW_DRAGON)
+		{
+			oneinchance = mtmp->mrevived ? 10 : 1;
+			basemonsterindex = PM_ANCIENT_GRAY_DRAGON;
+		}
 
-        if (oneinchance > 0 && basemonsterindex > 0 && !rn2(oneinchance)) {
+        if (oneinchance > 0 && basemonsterindex > 0 && (oneinchance == 1 || !rn2(oneinchance))) {
             num = GRAY_DRAGON_SCALES + monsndx(mdat) - basemonsterindex;
             obj = mksobj_at(num, x, y, FALSE, FALSE);
             obj->spe = 0;

@@ -457,8 +457,8 @@ register struct monst *mon;
     int base = mon->data->ac;
     long mwflags = mon->misc_worn_check;
 
-	//DEX bonus for monsters
-	base += dexterity_ac_bonus(mon->mdex);
+	//DEX bonus for monsters, reduce the number from AC; not add!
+	base -= dexterity_ac_bonus(mon->mdex);
 
     for (obj = mon->minvent; obj; obj = obj->nobj) {
         if (obj->owornmask & mwflags)

@@ -2134,9 +2134,8 @@ const char *str;
         if (str)
             pline(str, s_suffix(mon_nam(mon)), "armor");
         return TRUE;
-    } else if (mon->data == &mons[PM_SILVER_DRAGON]
-               || mon->data == &mons[PM_CHROMATIC_DRAGON]) {
-        /* Silver dragons only reflect when mature; babies do not */
+    } else if (is_reflecting(mon->data)) {
+        /* Silver dragons only reflect when mature; babies do, too XnotX */
         if (str)
             pline(str, s_suffix(mon_nam(mon)), "scales");
         return TRUE;
@@ -2170,7 +2169,7 @@ const char *fmt, *str;
         if (fmt && str)
             pline(fmt, str, uskin ? "luster" : "armor");
         return TRUE;
-    } else if (youmonst.data == &mons[PM_SILVER_DRAGON]) {
+    } else if (is_reflecting(youmonst.data)) {  //youmonst.data == &mons[PM_SILVER_DRAGON]) {
         if (fmt && str)
             pline(fmt, str, "scales");
         return TRUE;

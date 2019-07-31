@@ -114,7 +114,9 @@
 #define race_hostile(ptr) (((ptr)->mflags2 & urace.hatemask) != 0L)
 #define race_peaceful(ptr) (((ptr)->mflags2 & urace.lovemask) != 0L)
 #define extra_nasty(ptr) (((ptr)->mflags2 & M2_NASTY) != 0L)
-#define strongmonst(ptr) (((ptr)->mflags2 & M2_STRONG) != 0L)
+/*#define strongmonst(ptr) (((ptr)->mflags2 & M2_STRONG) != 0L)*/
+#define strongmonst(ptr) (((ptr)->str) >= 17)
+#define is_reflecting(ptr) (((ptr)->mflags2 & M2_REFLECTING) != 0L)
 #define can_breathe(ptr) attacktype(ptr, AT_BREA)
 #define cantwield(ptr) (nohands(ptr) || verysmall(ptr))
 #define could_twoweap(ptr) ((ptr)->mattk[1].aatyp == AT_WEAP)
