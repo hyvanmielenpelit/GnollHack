@@ -324,7 +324,7 @@ moverock()
                                     slot or into the overflow ('#') slot
                                     unless already carrying at least one */
                               && (inv_cnt(FALSE) < 52 || !carrying(BOULDER))),
-                    willpickup = (canpickup && autopick_testobj(otmp, TRUE));
+                    willpickup = (canpickup && autopick_testobj(otmp, TRUE) && flags.pickup);
 
                 if (u.usteed && P_SKILL(P_RIDING) < P_BASIC) {
                     You("aren't skilled enough to %s %s from %s.",
@@ -333,14 +333,15 @@ moverock()
                 } else {
                     /*
                      * willpickup:  you easily pick it up
-                     * canpickup:   you could easily pick it up
+                     * canpickup:   you XcouldX easily pick it up
                      * otherwise:   you easily push it aside
                      */
-                    pline("However, you %seasily %s.",
-                          (willpickup || !canpickup) ? "" : "could ",
-                          (willpickup || canpickup) ? "pick it up"
-                                                    : "push it aside");
-                    sokoban_guilt();
+                    pline("However, you %s%s.",
+                          (willpickup && canpickup) ? "easily pick it up"
+                                                    : "push it aside",
+						 (!willpickup && canpickup) ? ", as you could easily even lift it" : "");
+
+					sokoban_guilt();
                     break;
                 }
                 break;
@@ -2984,8 +2985,7 @@ weight_cap()
 	if(ACURR(A_STR) >= STR18(1))
 	{
 		//Bonus 3.5 ounces per percentile strength
-		if (ACURR(A_STR) < STR19(19))
-			carrcap += (long)(3.5 * (ACURR(A_STR) - 18));
+		carrcap += (long)(3.5 * (min(ACURR(A_STR), STR18(100)) - 18));
 
 		//7 lbs per bonus since CON cannot increase in the same way
 		carrcap += ((long)(7 * 16)) * (strength_damage_bonus(ACURR(A_STR))- strength_damage_bonus(18));
@@ -2996,15 +2996,15 @@ weight_cap()
         if (youmonst.data->mlet == S_NYMPH)
             carrcap = MAX_CARR_CAP;
 		else if (youmonst.data->msize == MZ_TINY)
-			carrcap = carrcap / 16; //every lbs is an ounce
+			carrcap = carrcap / 10;
 		else if (youmonst.data->msize == MZ_SMALL)
 			carrcap = carrcap / 2;
 		else if (youmonst.data->msize == MZ_LARGE)
-			carrcap = (long)(carrcap * 1.5);
+			carrcap = (long)(carrcap * 2);
 		else if (youmonst.data->msize == MZ_HUGE)
-			carrcap = (long)(carrcap * 2.5);
+			carrcap = (long)(carrcap * 5);
 		else if (youmonst.data->msize == MZ_GIGANTIC)
-			carrcap = (long)(carrcap * 4);
+			carrcap = (long)(carrcap * 10);
 
 /*		else if (!youmonst.data->cwt)
             carrcap = (carrcap * (long) youmonst.data->msize) / MZ_HUMAN;
@@ -3028,10 +3028,12 @@ weight_cap()
     }
 
 	//Strict limits
+	/*
 	if (carrcap > MAX_CARR_CAP * 5)
 		carrcap = MAX_CARR_CAP * 5;
 	if (carrcap < 0)
 		carrcap = 0;
+	*/
 
     if (ELevitation != save_ELev || BLevitation != save_BLev) {
         ELevitation = save_ELev;
@@ -3055,7 +3057,7 @@ inv_weight()
     while (otmp) {
         if (otmp->oclass == COIN_CLASS)
             wt += (int) (((long) otmp->quan) / 10L) + 1; // + 50L) / 100L);
-        else if (otmp->otyp != BOULDER || !throws_rocks(youmonst.data))
+        else //if (otmp->otyp != BOULDER || !throws_rocks(youmonst.data))
             wt += otmp->owt;
         otmp = otmp->nobj;
     }
