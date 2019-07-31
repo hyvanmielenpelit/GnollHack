@@ -205,7 +205,7 @@
     <ClInclude Include="$(WinWin32Dir)winMS.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\gnollhack.ico" />
+    <Image Include="..\GnollHackNew.ico" />
     <Image Include="..\mnsel.bmp" />
     <Image Include="..\mnselcnt.bmp" />
     <Image Include="..\mnunsel.bmp" />

@@ -258,7 +258,8 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="$(WinWin32Dir)nethack.ico" />
-    <Image Include="..\GnollHack.ico" />
+    <Image Include="..\GnollHackOld.ico" />
+    <Image Include="..\GnollHackNew.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Target Name="AfterBuild">
