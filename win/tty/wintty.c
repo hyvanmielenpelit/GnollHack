@@ -3681,8 +3681,8 @@ static const enum statusfields
     twolineorder[3][MAX_PER_ROW] = {
     { BL_TITLE, BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH, BL_ALIGN,
       BL_SCORE, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD },
-    { BL_LEVELDESC, BL_GOLD, BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX,
-      BL_AC, BL_XP, BL_EXP, BL_HD, BL_TIME, BL_HUNGER,
+    { BL_LEVELDESC, BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX,  //BL_GOLD, 
+      BL_AC, BL_XP, BL_EXP, BL_HD, BL_TIME, BL_SKILL, BL_HUNGER,
       BL_CAP, BL_CONDITION, BL_FLUSH },
     /* third row of array isn't used for twolineorder */
     { BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
@@ -3692,8 +3692,8 @@ static const enum statusfields
     threelineorder[3][MAX_PER_ROW] = {
     { BL_TITLE, BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH,
       BL_SCORE, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
-    { BL_ALIGN, BL_GOLD, BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX,
-      BL_AC, BL_XP, BL_EXP, BL_HD, BL_HUNGER,
+    { BL_ALIGN, BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX,  //BL_GOLD, 
+      BL_AC, BL_XP, BL_EXP, BL_HD, BL_SKILL, BL_HUNGER,
       BL_CAP, BL_FLUSH, blPAD, blPAD },
     { BL_LEVELDESC, BL_TIME, BL_CONDITION, BL_FLUSH, blPAD, blPAD,
       blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD }
@@ -3836,7 +3836,7 @@ unsigned long *colormasks;
     int attrmask;
     long *condptr = (long *) ptr;
     char *text = (char *) ptr;
-    char goldbuf[40], *lastchar, *p;
+    char *lastchar, *p;  //goldbuf[40], 
     const char *fmt;
     boolean reset_state = NO_RESET;
 
@@ -3862,8 +3862,8 @@ unsigned long *colormasks;
         tty_status[NOW][fldidx].dirty = TRUE;
         truncation_expected = FALSE;
         break;
-    case BL_GOLD:
-        text = decode_mixed(goldbuf, text);
+//    case BL_GOLD:
+//        text = decode_mixed(goldbuf, text);
         /*FALLTHRU*/
     default:
         attrmask = (color >> 8) & 0x00FF;
@@ -3913,7 +3913,9 @@ unsigned long *colormasks;
     case BL_LEVELDESC:
         dlvl_shrinklvl = 0; /* caller is passing full length string */
         /*FALLTHRU*/
-    case BL_HUNGER:
+	case BL_SKILL:
+		/*FALLTHRU*/
+	case BL_HUNGER:
         /* The core sends trailing blanks for some fields.
            Let's suppress the trailing blanks */
         if (tty_status[NOW][fldidx].lth > 0) {
@@ -3930,11 +3932,11 @@ unsigned long *colormasks;
         if (iflags.wc2_hitpointbar)
             tty_status[NOW][fldidx].lth = 30 + 2; /* '[' and ']' */
         break;
-    case BL_GOLD:
-        /* \GXXXXNNNN counts as 1 [moot since we use decode_mixed() above] */
+/*     case BL_GOLD:
+        // \GXXXXNNNN counts as 1 [moot since we use decode_mixed() above]
         if ((p = index(status_vals[fldidx], '\\')) != 0 && p[1] == 'G')
             tty_status[NOW][fldidx].lth -= (10 - 1);
-        break;
+        break; */
     case BL_CAP:
         enc_shrinklvl = 0; /* caller is passing full length string */
         enclev = stat_cap_indx();

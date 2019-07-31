@@ -1405,6 +1405,7 @@ int skill;
     You("are now %s skilled in %s.",
         P_SKILL(skill) >= P_MAX_SKILL(skill) ? "most" : "more",
         P_NAME(skill));
+	update_can_advance_any_skill();
 }
 
 static const struct skill_range {
@@ -1563,6 +1564,25 @@ enhance_weapon_skill()
     return 0;
 }
 
+void
+update_can_advance_any_skill()
+{
+	int i = 0;
+	/* check for more skills able to advance, if so then .. */
+	for (i = 0; i < P_NUM_SKILLS; i++) {
+		if (can_advance(i, FALSE)) {
+			if(!u.canadvanceskill);
+				context.botl = TRUE;
+			u.canadvanceskill = TRUE;
+			return;
+		}
+	}
+	if (u.canadvanceskill);
+		context.botl = TRUE;
+
+	u.canadvanceskill = FALSE;
+	return;
+}
 /*
  * Change from restricted to unrestricted, allowing P_BASIC as max.  This
  * function may be called with with P_NONE.  Used in pray.c as well as below.
@@ -1590,7 +1610,8 @@ int degree;
         P_ADVANCE(skill) += degree;
         if (!advance_before && can_advance(skill, FALSE))
             give_may_advance_msg(skill);
-    }
+		update_can_advance_any_skill();
+	}
 }
 
 void
@@ -1608,6 +1629,8 @@ int n; /* number of slots to gain; normally one */
             after++;
     if (before < after)
         give_may_advance_msg(P_NONE);
+
+	update_can_advance_any_skill();
 }
 
 void
@@ -1632,6 +1655,7 @@ int n; /* number of slots to lose; normally one */
                to that effect would seem pretty confusing.... */
         }
     }
+	update_can_advance_any_skill();
 }
 
 int

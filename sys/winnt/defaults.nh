@@ -220,6 +220,9 @@ OPTIONS=hilite_status:cap/burdened/yellow/stressed/orange/strained/red&bold/over
 ## Hunger
 OPTIONS=hilite_status:hunger/satiated/yellow/hungry/orange/weak/red&bold/fainting/red&inverse/fainted/red&inverse&blink
 
+## Skill
+OPTIONS=hilite_status:skill-availability/skill/green
+
 ## Mental
 OPTIONS=hilite_status:condition/hallu/yellow
 OPTIONS=hilite_status:condition/conf/orange
@@ -229,9 +232,6 @@ OPTIONS=hilite_status:condition/stun/red&bold
 OPTIONS=hilite_status:condition/termill/red&inverse
 OPTIONS=hilite_status:condition/foodpois/red&inverse
 OPTIONS=hilite_status:condition/slime/red&inverse
-
-# gold
-OPTIONS=hilite_status:gold/up/yellow/down/brown
 
 # St, Dx, Co, In, Wi, Ch
 OPTIONS=hilite_status:characteristics/up/green/down/red

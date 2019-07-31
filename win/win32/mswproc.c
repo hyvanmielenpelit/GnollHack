@@ -3081,6 +3081,7 @@ mswin_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, 
                     status_string->str = NULL;
             }
         } break;
+			/*
         case BL_GOLD: {
             char buf[BUFSZ];
             char *p;
@@ -3103,7 +3104,7 @@ mswin_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, 
             Sprintf(status_field->string,
                     status_field->format ? status_field->format : "%s", buf);
             nhassert(status_string->str == status_field->string);
-        } break;
+        } break;*/
         default: {
             Sprintf(status_field->string,
                     status_field->format ? status_field->format : "%s", text);

@@ -937,6 +937,10 @@ u_init()
         break;
     }
 
+	//Check if any skill can be advanced
+	update_can_advance_any_skill();
+
+
     return;
 }
 

@@ -101,11 +101,11 @@ do_statusline2()
          /* dungeon location (and gold), hero health (HP, PW, AC),
             experience (HD if poly'd, else Exp level and maybe Exp points),
             time (in moves), varying number of status conditions */
-         dloc[QBUFSZ], hlth[QBUFSZ], expr[QBUFSZ], tmmv[QBUFSZ], cond[QBUFSZ];
+         dloc[QBUFSZ], hlth[QBUFSZ], expr[QBUFSZ], tmmv[QBUFSZ], cond[QBUFSZ], skll[QBUFSZ];
     register char *nb;
-    unsigned dln, dx, hln, xln, tln, cln;
+    unsigned dln, dx, hln, xln, tln, cln, sln;
     int hp, hpmax, cap;
-    long money;
+//    long money;
 
     /*
      * Various min(x,9999)'s are to avoid having excessive values
@@ -118,15 +118,21 @@ do_statusline2()
 
     /* dungeon location plus gold */
     (void) describe_level(dloc); /* includes at least one trailing space */
-    if ((money = money_cnt(invent)) < 0L)
-        money = 0L; /* ought to issue impossible() and then discard gold */
-    Sprintf(eos(dloc), "%s:%-2ld", /* strongest hero can lift ~300000 gold */
+	/*
+    if ((money = money_cnt(invent)) < 0L) 
+        money = 0L;
+    Sprintf(eos(dloc), "%s:%-2ld",
             (iflags.in_dumplog || iflags.invis_goldsym) ? "$"
               : encglyph(objnum_to_glyph(GOLD_PIECE)),
             min(money, 999999L));
     dln = strlen(dloc);
-    /* '$' encoded as \GXXXXNNNN is 9 chars longer than display will need */
     dx = strstri(dloc, "\\G") ? 9 : 0;
+	*/
+	/* ought to issue impossible() and then discard gold */
+    /* strongest hero can lift ~300000 gold */
+   /* '$' encoded as \GXXXXNNNN is 9 chars longer than display will need */
+	dln = strlen(dloc);
+	dx = 0;
 
     /* health and armor class (has trailing space for AC 0..9) */
     hp = Upolyd ? u.mh : u.uhp;
@@ -154,7 +160,11 @@ do_statusline2()
         tmmv[0] = '\0';
     tln = strlen(tmmv);
 
-    /* status conditions; worst ones first */
+	/* can advance skills */
+	Sprintf(skll, "%s", u.canadvanceskill ? "Skill" : ""); // can_advance_any_skill()
+	sln = strlen(skll);
+
+	/* status conditions; worst ones first */
     cond[0] = '\0'; /* once non-empty, cond will have a leading space */
     nb = cond;
     /*
@@ -210,8 +220,8 @@ do_statusline2()
      * wider displays can still show wider status than the map if the
      * interface supports that.
      */
-    if ((dln - dx) + 1 + hln + 1 + xln + 1 + tln + 1 + cln <= COLNO) {
-        Sprintf(newbot2, "%s %s %s %s %s", dloc, hlth, expr, tmmv, cond);
+    if ((dln - dx) + 1 + hln + 1 + xln + tln + 1 + sln + 1 + cln <= COLNO) {
+        Sprintf(newbot2, "%s %s %s %s %s %s", dloc, hlth, expr, tmmv, skll, cond);
     } else {
         if (dln + 1 + hln + 1 + xln + 1 + tln + 1 + cln + 1 > MAXCO) {
             panic("bot2: second status line exceeds MAXCO (%u > %d)",
@@ -517,11 +527,12 @@ STATIC_VAR struct istat_s initblstats[MAXBLSTATS] = {
     INIT_BLSTAT("alignment", " %s", ANY_STR, 40, BL_ALIGN),
     INIT_BLSTAT("score", " S:%s", ANY_LONG, 20, BL_SCORE),
     INIT_BLSTAT("carrying-capacity", " %s", ANY_INT, 20, BL_CAP),
-    INIT_BLSTAT("gold", " %s", ANY_LONG, 30, BL_GOLD),
+//    INIT_BLSTAT("gold", " %s", ANY_LONG, 30, BL_GOLD),
     INIT_BLSTATP("power", " Pw:%s", ANY_INT, 10, BL_ENEMAX, BL_ENE),
     INIT_BLSTAT("power-max", "(%s)", ANY_INT, 10, BL_ENEMAX),
     INIT_BLSTAT("experience-level", " Xp:%s", ANY_INT, 10, BL_XP),
-    INIT_BLSTAT("armor-class", " AC:%s", ANY_INT, 10, BL_AC),
+	INIT_BLSTAT("skill-availability", " %s", ANY_INT, 10, BL_SKILL),
+	INIT_BLSTAT("armor-class", " AC:%s", ANY_INT, 10, BL_AC),
     INIT_BLSTAT("HD", " HD:%s", ANY_INT, 10, BL_HD),
     INIT_BLSTAT("time", " T:%s", ANY_LONG, 20, BL_TIME),
     /* hunger used to be 'ANY_UINT'; see note below in bot_via_windowport() */
@@ -561,7 +572,7 @@ bot_via_windowport()
     const char *titl;
     register char *nb;
     int i, idx, cap;
-    long money;
+    //long money;
 
     if (!blinit)
         panic("bot before init.");
@@ -642,9 +653,9 @@ bot_via_windowport()
     valset[BL_LEVELDESC] = TRUE; /* indicate val already set */
 
     /* Gold */
-    if ((money = money_cnt(invent)) < 0L)
-        money = 0L; /* ought to issue impossible() and then discard gold */
-    blstats[idx][BL_GOLD].a.a_long = min(money, 999999L);
+//    if ((money = money_cnt(invent)) < 0L)
+//        money = 0L; /* ought to issue impossible() and then discard gold */
+//    blstats[idx][BL_GOLD].a.a_long = min(money, 999999L);
     /*
      * The tty port needs to display the current symbol for gold
      * as a field header, so to accommodate that we pass gold with
@@ -660,11 +671,13 @@ bot_via_windowport()
      * The currency prefix is encoded as ten character \GXXXXNNNN
      * sequence.
      */
+	/*
     Sprintf(blstats[idx][BL_GOLD].val, "%s:%ld",
             (iflags.in_dumplog || iflags.invis_goldsym) ? "$"
               : encglyph(objnum_to_glyph(GOLD_PIECE)),
             blstats[idx][BL_GOLD].a.a_long);
-    valset[BL_GOLD] = TRUE; /* indicate val already set */
+    valset[BL_GOLD] = TRUE; // indicate val already set
+	*/
 
     /* Power (magical energy) */
     blstats[idx][BL_ENE].a.a_int = min(u.uen, 9999);
@@ -679,6 +692,12 @@ bot_via_windowport()
     /* Experience */
     blstats[idx][BL_XP].a.a_int = u.ulevel;
     blstats[idx][BL_EXP].a.a_long = u.uexp;
+
+	/* Skills */
+	blstats[idx][BL_SKILL].a.a_int = (int)u.canadvanceskill;
+	Strcpy(blstats[idx][BL_SKILL].val,
+		(u.canadvanceskill == TRUE) ? "Skill" : "");
+	valset[BL_SKILL] = TRUE;
 
     /* Time (moves) */
     blstats[idx][BL_TIME].a.a_long = moves;
@@ -794,14 +813,15 @@ boolean *valsetlist;
      * Setting 'chg = 2' is enough to render the field properly, but
      * not to honor an initial highlight, so force 'update_all = TRUE'.
      */
+	/*
     if (fld == BL_GOLD
         && (context.rndencode != oldrndencode
             || showsyms[COIN_CLASS + SYM_OFF_O] != oldgoldsym)) {
-        update_all = TRUE; /* chg = 2; */
+        update_all = TRUE; // chg = 2; 
         oldrndencode = context.rndencode;
         oldgoldsym = showsyms[COIN_CLASS + SYM_OFF_O];
     }
-
+	*/
     reset = FALSE;
 #ifdef STATUS_HILITES
     if (!update_all && !chg && curr->time) {
@@ -1937,7 +1957,9 @@ boolean from_configfile;
     static const char *hutxt[] = { "Satiated", "", "Hungry", "Weak",
                                    "Fainting", "Fainted", "Starved" };
 
-    /* Examples:
+	static const char* sktxt[] = { "", "Skill" };
+
+	/* Examples:
         3.6.1:
       OPTION=hilite_status: hitpoints/<10%/red
       OPTION=hilite_status: hitpoints/<10%/red/<5%/purple/1/red+blink+inverse
@@ -2020,7 +2042,13 @@ boolean from_configfile;
                                          SATIATED, STARVED + 1, &kidx)) {
             txt = hu_stat[kidx];   /* store hu_stat[] val, not hutxt[] */
             txtval = TRUE;
-        } else if (!strcmpi(s[sidx], "changed")) {
+		}
+		else if (fld == BL_SKILL
+			&& is_fld_arrayvalues(s[sidx], sktxt,
+				0, 1 + 1, &kidx)) {
+			txt = sktxt[kidx];   /* store sktxt in any case */
+			txtval = TRUE;
+		} else if (!strcmpi(s[sidx], "changed")) {
             changed = TRUE;
         } else if (is_ltgt_percentnumber(s[sidx])) {
             const char *op;
@@ -2881,7 +2909,7 @@ int fld;
         nopts++;
     }
 
-    if (fld != BL_CAP && fld != BL_HUNGER
+    if (fld != BL_CAP && fld != BL_HUNGER && fld != BL_SKILL
         && (at == ANY_INT || at == ANY_LONG)) {
         any = zeroany;
         any.a_int = onlybeh = BL_TH_VAL_ABSOLUTE;
@@ -2899,7 +2927,7 @@ int fld;
     }
 
     if (initblstats[fld].anytype == ANY_STR
-        || fld == BL_CAP || fld == BL_HUNGER) {
+        || fld == BL_CAP || fld == BL_HUNGER || fld == BL_SKILL) {
         any = zeroany;
         any.a_int = onlybeh = BL_TH_TEXTMATCH;
         Sprintf(buf, "%s text match", initblstats[fld].fldname);
@@ -3242,7 +3270,8 @@ choose_value:
                 (fld == BL_CAP
                  || fld == BL_ALIGN
                  || fld == BL_HUNGER
-                 || fld == BL_TITLE) ? "Choose" : "Enter",
+				|| fld == BL_SKILL
+				|| fld == BL_TITLE) ? "Choose" : "Enter",
                 initblstats[fld].fldname);
         if (fld == BL_CAP) {
             int rv = query_arrayvalue(qry_buf,
@@ -3277,7 +3306,19 @@ choose_value:
 
             hilite.rel = TXT_VALUE;
             Strcpy(hilite.textmatch, hutxt[rv]);
-        } else if (fld == BL_TITLE) {
+		}
+		else if (fld == BL_SKILL) {
+			static const char* sktxt[] = { (char*)0, "Skill" };
+			int rv = query_arrayvalue(qry_buf,
+				sktxt,
+				0, 1 + 1);
+
+			if (rv < 0)
+				goto choose_behavior;
+
+			hilite.rel = TXT_VALUE;
+			Strcpy(hilite.textmatch, sktxt[rv]);
+		} else if (fld == BL_TITLE) {
             const char *rolelist[3 * 9 + 1];
             char mbuf[MAXVALWIDTH], fbuf[MAXVALWIDTH], obuf[MAXVALWIDTH];
             int i, j, rv;

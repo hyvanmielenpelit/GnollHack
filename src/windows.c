@@ -924,27 +924,28 @@ unsigned long *colormasks UNUSED;
           BL_SCORE, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH,
           BL_FLUSH },
         /* line two, default order */
-        { BL_LEVELDESC, BL_GOLD,
+        { BL_LEVELDESC, // BL_GOLD,
           BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX, BL_AC,
           BL_XP, BL_EXP, BL_HD,
           BL_TIME,
-          BL_HUNGER, BL_CAP, BL_CONDITION,
+		  BL_SKILL, BL_HUNGER, BL_CAP, BL_CONDITION,
           BL_FLUSH },
         /* move time to the end */
-        { BL_LEVELDESC, BL_GOLD,
+        { BL_LEVELDESC, //BL_GOLD,
           BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX, BL_AC,
           BL_XP, BL_EXP, BL_HD,
-          BL_HUNGER, BL_CAP, BL_CONDITION,
+		  BL_SKILL,BL_HUNGER, BL_CAP, BL_CONDITION,
           BL_TIME, BL_FLUSH },
         /* move experience and time to the end */
-        { BL_LEVELDESC, BL_GOLD,
+        { BL_LEVELDESC, // BL_GOLD,
           BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX, BL_AC,
-          BL_HUNGER, BL_CAP, BL_CONDITION,
+		  BL_SKILL, BL_HUNGER, BL_CAP, BL_CONDITION,
           BL_XP, BL_EXP, BL_HD, BL_TIME, BL_FLUSH },
         /* move level description plus gold and experience and time to end */
         { BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX, BL_AC,
-          BL_HUNGER, BL_CAP, BL_CONDITION,
-          BL_LEVELDESC, BL_GOLD, BL_XP, BL_EXP, BL_HD, BL_TIME, BL_FLUSH },
+		  BL_SKILL, BL_HUNGER, BL_CAP, BL_CONDITION,
+          BL_LEVELDESC, //BL_GOLD,
+		  BL_XP, BL_EXP, BL_HD, BL_TIME, BL_FLUSH },
     };
 
     /* in case interface is using genl_status_update() but has not
@@ -1014,8 +1015,8 @@ unsigned long *colormasks UNUSED;
     }
     /* if '$' is encoded, buffer length of \GXXXXNNNN is 9 greater than
        single char; we want to subtract that 9 when checking display length */
-    lndelta = (status_activefields[BL_GOLD]
-               && strstr(status_vals[BL_GOLD], "\\G")) ? 9 : 0;
+	lndelta = 0; // (status_activefields[BL_GOLD]
+               //&& strstr(status_vals[BL_GOLD], "\\G")) ? 9 : 0;
     /* basic bot2 formats groups of second line fields into five buffers,
        then decides how to order those buffers based on comparing lengths
        of [sub]sets of them to the width of the map; we have more control
@@ -1056,7 +1057,13 @@ unsigned long *colormasks UNUSED;
                     if (strcmp(val, " "))
                         Strcpy(nb = eos(nb), " ");
                     break;
-                case BL_CAP:
+				case BL_SKILL:
+					/* skill==" " - keep it, end up with " ";
+					   skill!=" " - insert space and get "  skill" */
+					if (strcmp(val, " "))
+						Strcpy(nb = eos(nb), " ");
+					break;
+				case BL_CAP:
                     /* cap==" " - suppress it, retain "  hunger" or " ";
                        cap!=" " - use it, get "  hunger cap" or "  cap" */
                     if (!strcmp(val, " "))

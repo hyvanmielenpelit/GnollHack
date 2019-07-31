@@ -2794,6 +2794,7 @@ E void FDECL(dry_a_towel, (struct obj *, int, BOOLEAN_P));
 E char *FDECL(skill_level_name, (int, char *));
 E const char *FDECL(skill_name, (int));
 E boolean FDECL(can_advance, (int, BOOLEAN_P));
+E void NDECL(update_can_advance_any_skill);
 E int NDECL(enhance_weapon_skill);
 E void FDECL(unrestrict_weapon_skill, (int));
 E void FDECL(use_skill, (int, int));

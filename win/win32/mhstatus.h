@@ -13,9 +13,9 @@
 
 static const int fieldorder1[] = { BL_TITLE, BL_STR, BL_DX,    BL_CO,    BL_IN,
                              BL_WI,    BL_CH,  BL_ALIGN, BL_SCORE, -1 };
-static const int fieldorder2[] = { BL_LEVELDESC, BL_GOLD,      BL_HP,   BL_HPMAX,
+static const int fieldorder2[] = { BL_LEVELDESC, BL_HP,   BL_HPMAX,
                              BL_ENE,       BL_ENEMAX,    BL_AC,   BL_XP,
-                             BL_EXP,       BL_HD,        BL_TIME, BL_HUNGER,
+                             BL_EXP,       BL_HD,         BL_TIME, BL_SKILL,     BL_HUNGER,
                              BL_CAP,       BL_CONDITION, -1 };
 static const int *fieldorders[] = { fieldorder1, fieldorder2, NULL };
 static const int fieldcounts[NHSW_LINES] = { SIZE(fieldorder1) - 1, SIZE(fieldorder2) - 1};
