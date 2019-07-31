@@ -1752,7 +1752,7 @@ register struct attack *mattk;
         break;
     case AD_DETH:
         pline("%s reaches out with its deadly touch.", Monnam(mtmp));
-        if (is_undead(youmonst.data)) {
+        if (is_undead(youmonst.data) || Death_resistance) {
             /* Still does normal damage */
             pline("Was that the touch of death?");
             break;

@@ -792,7 +792,8 @@ gcrownu()
     HFire_resistance |= FROMOUTSIDE;
     HCold_resistance |= FROMOUTSIDE;
     HShock_resistance |= FROMOUTSIDE;
-    HSleep_resistance |= FROMOUTSIDE;
+	HDeath_resistance |= FROMOUTSIDE;
+	HSleep_resistance |= FROMOUTSIDE;
     HPoison_resistance |= FROMOUTSIDE;
     godvoice(u.ualign.type, (char *) 0);
 

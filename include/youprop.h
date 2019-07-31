@@ -44,6 +44,10 @@
 #define EShock_resistance u.uprops[SHOCK_RES].extrinsic
 #define Shock_resistance (HShock_resistance || EShock_resistance)
 
+#define HDeath_resistance u.uprops[DEATH_RES].intrinsic
+#define EDeath_resistance u.uprops[DEATH_RES].extrinsic
+#define Death_resistance (HDeath_resistance || EDeath_resistance)
+
 #define HPoison_resistance u.uprops[POISON_RES].intrinsic
 #define EPoison_resistance u.uprops[POISON_RES].extrinsic
 #define Poison_resistance (HPoison_resistance || EPoison_resistance)

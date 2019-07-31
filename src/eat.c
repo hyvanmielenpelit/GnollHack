@@ -928,7 +928,17 @@ register struct permonst *ptr;
             HShock_resistance |= FROMOUTSIDE;
         }
         break;
-    case POISON_RES:
+	case DEATH_RES: /* death resistance */
+		debugpline0("Trying to give death resistance");
+		if (!(HDeath_resistance & FROMOUTSIDE)) {
+			if (Hallucination)
+				You_feel("immortal!");
+			else
+				Your("life force feels firmer!");
+			HDeath_resistance |= FROMOUTSIDE;
+		}
+		break;
+	case POISON_RES:
         debugpline0("Trying to give poison resistance");
         if (!(HPoison_resistance & FROMOUTSIDE)) {
             You_feel(Poison_resistance ? "especially healthy." : "healthy.");

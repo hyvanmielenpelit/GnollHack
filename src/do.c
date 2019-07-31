@@ -421,7 +421,10 @@ register struct obj *obj;
     case RIN_SHOCK_RESISTANCE:
         pline("Static electricity surrounds the sink.");
         break;
-    case RIN_CONFLICT:
+	case RIN_DEATH_RESISTANCE:
+		pline("A pillar of smoke arises from the sink.");
+		break;
+	case RIN_CONFLICT:
         You_hear("loud noises coming from the drain.");
         break;
     case RIN_SUSTAIN_ABILITY: /* KMH */

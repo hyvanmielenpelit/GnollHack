@@ -59,8 +59,8 @@ struct permonst {
 		intl,					/* intelligence */
 		wis,					/* wisdom */
 		cha;                    /* charisma */
-	uchar mresists;             /* resistances */
-    uchar mconveys;             /* conveyed by eating */
+	unsigned short mresists;             /* resistances */
+	unsigned short mconveys;             /* conveyed by eating */
     unsigned long mflags1,      /* boolean bitflags */
         mflags2;                /* more boolean bitflags */
     unsigned short mflags3;     /* yet more boolean bitflags */

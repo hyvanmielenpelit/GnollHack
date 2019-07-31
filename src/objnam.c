@@ -3247,7 +3247,7 @@ struct obj *no_wish;
         if (!strstri(bp, "wand ") && !strstri(bp, "spellbook ") && !strstri(bp, "bracers ") 
 			&& !strstri(bp, "robe ") && !strstri(bp, "cloak ") && !strstri(bp, "gloves ")
 			&& !strstri(bp, "gauntlets ") && !strstri(bp, "belt ") && !strstri(bp, "girdle ")
-			&& !strstri(bp, "boots ")
+			&& !strstri(bp, "boots ") && !strstri(bp, "ring ") && !strstri(bp, "potion ") && !strstri(bp, "scroll ")
             && !strstri(bp, "finger ")) {
             if ((p = strstri(bp, "tin of ")) != 0) {
                 if (!strcmpi(p + 7, "spinach")) {

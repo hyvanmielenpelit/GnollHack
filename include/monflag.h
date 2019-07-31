@@ -47,14 +47,15 @@
 #define MS_WERE 38      /* lycanthrope in human form */
 #define MS_BOAST 39     /* giants */
 
-#define MR_FIRE 0x01   /* resists fire */
-#define MR_COLD 0x02   /* resists cold */
-#define MR_SLEEP 0x04  /* resists sleep */
-#define MR_DISINT 0x08 /* resists disintegration */
-#define MR_ELEC 0x10   /* resists electricity */
-#define MR_POISON 0x20 /* resists poison */
-#define MR_ACID 0x40   /* resists acid */
-#define MR_STONE 0x80  /* resists petrification */
+#define MR_FIRE 0x0001   /* resists fire */
+#define MR_COLD 0x0002   /* resists cold */
+#define MR_SLEEP 0x0004  /* resists sleep */
+#define MR_DISINT 0x0008 /* resists disintegration */
+#define MR_ELEC 0x0010   /* resists electricity */
+#define MR_POISON 0x0020 /* resists poison */
+#define MR_ACID 0x0040   /* resists acid */
+#define MR_STONE 0x0080  /* resists petrification */
+#define MR_DETH 0x0100  /* resists death */
 /* other resistances: magic, sickness */
 /* other conveyances: teleport, teleport control, telepathy */
 

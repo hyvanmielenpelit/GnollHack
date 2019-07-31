@@ -484,9 +484,11 @@ long wp_mask;
         mask = &EFire_resistance;
     else if (dtyp == AD_COLD)
         mask = &ECold_resistance;
-    else if (dtyp == AD_ELEC)
-        mask = &EShock_resistance;
-    else if (dtyp == AD_MAGM)
+    else if (dtyp == AD_DRAY)
+        mask = &EDeath_resistance;
+	else if (dtyp == AD_ELEC)
+		mask = &EShock_resistance;
+	else if (dtyp == AD_MAGM)
         mask = &EAntimagic;
     else if (dtyp == AD_DISN)
         mask = &EDisint_resistance;
@@ -792,7 +794,9 @@ struct monst *mtmp;
             return !(yours ? Cold_resistance : resists_cold(mtmp));
         case AD_ELEC:
             return !(yours ? Shock_resistance : resists_elec(mtmp));
-        case AD_MAGM:
+		case AD_DRAY:
+			return !(yours ? Death_resistance : resists_death(mtmp));
+		case AD_MAGM:
         case AD_STUN:
             return !(yours ? Antimagic : (rn2(100) < ptr->mr));
         case AD_DRST:
@@ -1750,7 +1754,8 @@ long *abil;
         { &EFire_resistance, AD_FIRE },
         { &ECold_resistance, AD_COLD },
         { &EShock_resistance, AD_ELEC },
-        { &EAntimagic, AD_MAGM },
+		{ &EDeath_resistance, AD_DRAY },
+		{ &EAntimagic, AD_MAGM },
         { &EDisint_resistance, AD_DISN },
         { &EPoison_resistance, AD_DRST },
         { &EDrain_resistance, AD_DRLI },

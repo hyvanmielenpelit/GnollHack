@@ -39,11 +39,12 @@ STATIC_DCL void FDECL(wishcmdassist, (int));
 #define ZT_FIRE (AD_FIRE - 1)
 #define ZT_COLD (AD_COLD - 1)
 #define ZT_SLEEP (AD_SLEE - 1)
-#define ZT_DEATH (AD_DISN - 1) /* or disintegration */
+#define ZT_DISINTEGRATION (AD_DISN - 1) /* or disintegration */
 #define ZT_LIGHTNING (AD_ELEC - 1)
 #define ZT_POISON_GAS (AD_DRST - 1)
 #define ZT_ACID (AD_ACID - 1)
-/* 8 and 9 are currently unassigned */
+#define ZT_DEATH (AD_DRAY - 1)
+/* 9 is currently unassigned */
 
 #define ZT_WAND(x) (x)
 #define ZT_SPELL(x) (10 + (x))
@@ -60,19 +61,19 @@ STATIC_VAR const char are_blinded_by_the_flash[] =
 const char *const flash_types[] =       /* also used in buzzmu(mcastu.c) */
     {
         "magic missile", /* Wands must be 0-9 */
-        "bolt of fire", "bolt of cold", "sleep ray", "death ray",
-        "bolt of lightning", "", "", "", "",
+        "bolt of fire", "bolt of cold", "sleep ray", "disintegration ray",
+        "bolt of lightning", "", "", "death ray", "",
 
         "magic missile", /* Spell equivalents must be 10-19 */
-        "fireball", "cone of cold", "sleep ray", "finger of death",
+        "fireball", "cone of cold", "sleep ray", "disintegrate",
         "bolt of lightning", /* there is no spell, used for retribution */
-        "", "", "", "",
+        "", "", "finger of death", "",
 
         "blast of missiles", /* Dragon breath equivalents 20-29*/
         "blast of fire", "blast of frost", "blast of sleep gas",
         "blast of disintegration", "blast of lightning",
-        "blast of poison gas", "blast of acid", "", ""
-    };
+        "blast of poison gas", "blast of acid", "blast of death ray", ""
+};
 
 /*
  * Recognizing unseen wands by zapping:  in 3.4.3 and earlier, zapping
@@ -2486,7 +2487,7 @@ boolean ordinary;
 
     case WAN_DEATH:
     case SPE_FINGER_OF_DEATH:
-        if (nonliving(youmonst.data) || is_demon(youmonst.data)) {
+        if (nonliving(youmonst.data) || is_demon(youmonst.data) || Death_resistance) {
             pline((obj->otyp == WAN_DEATH)
                       ? "The wand shoots an apparently harmless beam at you."
                       : "You seem no deader than before.");
@@ -3079,7 +3080,11 @@ struct obj *obj;
 
         if (otyp == WAN_DIGGING || otyp == SPE_DIG)
             zap_dig();
-        else if (otyp >= SPE_MAGIC_MISSILE && otyp <= SPE_FINGER_OF_DEATH)
+		else if (otyp == SPE_FINGER_OF_DEATH)
+			buzz(ZT_SPELL(ZT_DEATH), u.ulevel / 2 + 1, u.ux, u.uy, u.dx, u.dy);
+		else if (otyp == WAN_DEATH)
+			buzz(ZT_WAND(ZT_DEATH), 1, u.ux, u.uy, u.dx, u.dy);
+		else if (otyp >= SPE_MAGIC_MISSILE && otyp <= SPE_DISINTEGRATE)
             buzz(otyp - SPE_MAGIC_MISSILE + 10, u.ulevel / 2 + 1, u.ux, u.uy,
                  u.dx, u.dy);
         else if (otyp >= WAN_MAGIC_MISSILE && otyp <= WAN_LIGHTNING)
@@ -3621,6 +3626,9 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
     boolean spellcaster = is_hero_spell(type); /* maybe get a bonus! */
 
     *ootmp = (struct obj *) 0;
+	struct obj* otmp2;
+
+
     switch (abstype) {
     case ZT_MAGIC_MISSILE:
         if (resists_magm(mon)) {
@@ -3669,51 +3677,47 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
         (void) sleep_monst(mon, rn1(5, 8),
                            type == ZT_WAND(ZT_SLEEP) ? WAND_CLASS : '\0');
         break;
-    case ZT_DEATH:                              /* death/disintegration */
-        if (abs(type) != ZT_BREATH(ZT_DEATH)) { /* death */
-            if (mon->data == &mons[PM_DEATH]) {
-                mon->mhpmax += mon->mhpmax / 2;
-                if (mon->mhpmax >= MAGIC_COOKIE)
-                    mon->mhpmax = MAGIC_COOKIE - 1;
-                mon->mhp = mon->mhpmax;
-                tmp = 0;
-                break;
-            }
-            if (nonliving(mon->data) || is_demon(mon->data)
-                || is_vampshifter(mon) || resists_magm(mon)) {
-                /* similar to player */
-                sho_shieldeff = TRUE;
-                break;
-            }
-            type = -1; /* so they don't get saving throws */
+    case ZT_DISINTEGRATION:  /* disintegration */
+        if (resists_disint(mon)) {
+            sho_shieldeff = TRUE;
+        } else if (mon->misc_worn_check & W_ARMS) {
+            /* destroy shield; victim survives */
+            *ootmp = which_armor(mon, W_ARMS);
+        } else if (mon->misc_worn_check & W_ARM) {
+            /* destroy body armor, also cloak if present */
+            *ootmp = which_armor(mon, W_ARM);
+            if ((otmp2 = which_armor(mon, W_ARMC)) != 0)
+                m_useup(mon, otmp2);
         } else {
-            struct obj *otmp2;
-
-            if (resists_disint(mon)) {
-                sho_shieldeff = TRUE;
-            } else if (mon->misc_worn_check & W_ARMS) {
-                /* destroy shield; victim survives */
-                *ootmp = which_armor(mon, W_ARMS);
-            } else if (mon->misc_worn_check & W_ARM) {
-                /* destroy body armor, also cloak if present */
-                *ootmp = which_armor(mon, W_ARM);
-                if ((otmp2 = which_armor(mon, W_ARMC)) != 0)
-                    m_useup(mon, otmp2);
-            } else {
-                /* no body armor, victim dies; destroy cloak
-                   and shirt now in case target gets life-saved */
-                tmp = MAGIC_COOKIE;
-                if ((otmp2 = which_armor(mon, W_ARMC)) != 0)
-                    m_useup(mon, otmp2);
-                if ((otmp2 = which_armor(mon, W_ARMU)) != 0)
-                    m_useup(mon, otmp2);
-            }
-            type = -1; /* no saving throw wanted */
-            break;     /* not ordinary damage */
+            /* no body armor, victim dies; destroy cloak
+                and shirt now in case target gets life-saved */
+            tmp = MAGIC_COOKIE;
+            if ((otmp2 = which_armor(mon, W_ARMC)) != 0)
+                m_useup(mon, otmp2);
+            if ((otmp2 = which_armor(mon, W_ARMU)) != 0)
+                m_useup(mon, otmp2);
         }
-        tmp = mon->mhp + 1;
-        break;
-    case ZT_LIGHTNING:
+        type = -1; /* no saving throw wanted */
+        break;     /* not ordinary damage */
+	case ZT_DEATH:                              /* death */
+		if (mon->data == &mons[PM_DEATH]) {
+			mon->mhpmax += mon->mhpmax / 2;
+			if (mon->mhpmax >= MAGIC_COOKIE)
+				mon->mhpmax = MAGIC_COOKIE - 1;
+			mon->mhp = mon->mhpmax;
+			tmp = 0;
+			break;
+		}
+		if (nonliving(mon->data) || is_demon(mon->data)
+			|| is_vampshifter(mon) || resists_magm(mon)) {
+			/* similar to player */
+			sho_shieldeff = TRUE;
+			break;
+		}
+		type = -1; /* so they don't get saving throws */
+		tmp = mon->mhp + 1;
+		break;
+	case ZT_LIGHTNING:
         if (resists_elec(mon)) {
             sho_shieldeff = TRUE;
             tmp = 0;
@@ -3827,48 +3831,53 @@ xchar sx, sy;
             fall_asleep(-rn1(5, 8), TRUE); /* sleep ray */
         }
         break;
-    case ZT_DEATH:
-        if (abstyp == ZT_BREATH(ZT_DEATH)) {
-            if (Disint_resistance) {
-                You("are not disintegrated.");
-                break;
-            } else if (uarms) {
-                /* destroy shield; other possessions are safe */
-                (void) destroy_arm(uarms);
-                break;
-            } else if (uarm) {
-                /* destroy suit; if present, cloak and robe go too */
-                if (uarmc)
-                    (void) destroy_arm(uarmc);
-				if (uarmo)
-					(void)destroy_arm(uarmo);
-				(void) destroy_arm(uarm);
-                break;
-            }
-            /* no shield or suit, you're dead; wipe out cloak
-               and/or shirt in case of life-saving or bones */
+    case ZT_DISINTEGRATION:
+        if (Disint_resistance) {					// if (abstyp == ZT_BREATH(ZT_DISINTEGRATION)) {
+            You("are not disintegrated.");
+            break;
+        } else if (uarms) {
+            /* destroy shield; other possessions are safe */
+            (void) destroy_arm(uarms);
+            break;
+        } else if (uarm) {
+            /* destroy suit; if present, cloak and robe go too */
             if (uarmc)
                 (void) destroy_arm(uarmc);
 			if (uarmo)
 				(void)destroy_arm(uarmo);
-			if (uarmu)
-                (void) destroy_arm(uarmu);
-        } else if (nonliving(youmonst.data) || is_demon(youmonst.data)) {
-            shieldeff(sx, sy);
-            You("seem unaffected.");
-            break;
-        } else if (Antimagic) {
-            shieldeff(sx, sy);
-            You("aren't affected.");
+			(void) destroy_arm(uarm);
             break;
         }
+        /* no shield or suit, you're dead; wipe out cloak
+            and/or shirt in case of life-saving or bones */
+        if (uarmc)
+            (void) destroy_arm(uarmc);
+		if (uarmo)
+			(void)destroy_arm(uarmo);
+		if (uarmu)
+            (void) destroy_arm(uarmu);
         killer.format = KILLED_BY_AN;
         Strcpy(killer.name, fltxt ? fltxt : "");
         /* when killed by disintegration breath, don't leave corpse */
-        u.ugrave_arise = (type == -ZT_BREATH(ZT_DEATH)) ? -3 : NON_PM;
+        u.ugrave_arise = (type == -ZT_BREATH(ZT_DISINTEGRATION)) ? -3 : NON_PM;
         done(DIED);
         return; /* lifesaved */
-    case ZT_LIGHTNING:
+	case ZT_DEATH:
+		if (nonliving(youmonst.data) || is_demon(youmonst.data) || Death_resistance) {
+			shieldeff(sx, sy);
+			You("seem unaffected.");
+			break;
+		}
+		else if (Antimagic) {
+			shieldeff(sx, sy);
+			You("aren't affected.");
+			break;
+		}
+		killer.format = KILLED_BY_AN;
+		Strcpy(killer.name, fltxt ? fltxt : "");
+		done(DIED);
+		return; /* lifesaved */
+	case ZT_LIGHTNING:
         if (Shock_resistance) {
             shieldeff(sx, sy);
             You("aren't affected.");
@@ -4070,6 +4079,12 @@ boolean say; /* Announce out of sight hit/miss events if true */
     const char *fltxt;
     struct obj *otmp;
     int spell_type;
+	int zaptype = 0;
+
+	if (abstype >= ZT_DEATH)
+		zaptype = ZT_DISINTEGRATION;
+	else
+		zaptype = abstype;
 
     /* if its a Hero Spell then get its SPE_TYPE */
     spell_type = is_hero_spell(type) ? SPE_MAGIC_MISSILE + abstype : 0;
@@ -4100,7 +4115,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
         range = 1;
     save_bhitpos = bhitpos;
 
-    tmp_at(DISP_BEAM, zapdir_to_glyph(dx, dy, abstype));
+    tmp_at(DISP_BEAM, zapdir_to_glyph(dx, dy, zaptype)); //abstype => zaptype
     while (range-- > 0) {
         lsx = sx;
         sx += dx;
@@ -4154,7 +4169,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     int tmp = zhitm(mon, type, nd, &otmp);
 
                     if (is_rider(mon->data)
-                        && abs(type) == ZT_BREATH(ZT_DEATH)) {
+                        && abs(type) == ZT_BREATH(ZT_DISINTEGRATION)) {
                         if (canseemon(mon)) {
                             hit(fltxt, mon, ".", -1);
                             pline("%s disintegrates.", Monnam(mon));
@@ -4304,7 +4319,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     dx = -dx;
                     break;
                 }
-                tmp_at(DISP_CHANGE, zapdir_to_glyph(dx, dy, abstype));
+                tmp_at(DISP_CHANGE, zapdir_to_glyph(dx, dy, zaptype));  //abstype changed to zaptype
             }
         }
     }
@@ -4319,10 +4334,11 @@ boolean say; /* Announce out of sight hit/miss events if true */
                              /* "damage" indicates wall rather than door */
                              : abstype == ZT_ACID
                                 ? "damage"
-                                : abstype == ZT_DEATH
+                                : abstype == ZT_DISINTEGRATION
                                    ? "disintegrate"
-                                   : "destroy",
-                       FALSE);
+									: abstype == ZT_DEATH
+										? "destroy" : "destroy",
+												   FALSE);
     bhitpos = save_bhitpos;
 }
 
@@ -4646,15 +4662,17 @@ short exploding_wand_typ;
             see_txt = "The door freezes and shatters!";
             sense_txt = "feel cold.";
             break;
-        case ZT_DEATH:
-            /* death spells/wands don't disintegrate */
-            if (abs(type) != ZT_BREATH(ZT_DEATH))
-                goto def_case;
+        case ZT_DISINTEGRATION:
             new_doormask = D_NODOOR;
             see_txt = "The door disintegrates!";
             hear_txt = "crashing wood.";
             break;
-        case ZT_LIGHTNING:
+		case ZT_DEATH:
+			new_doormask = D_BROKEN;
+			see_txt = "The door withers away!";
+			sense_txt = "feel death lurking nearby.";
+			break;
+		case ZT_LIGHTNING:
             new_doormask = D_BROKEN;
             see_txt = "The door splinters!";
             hear_txt = "crackling.";

@@ -138,8 +138,7 @@ int expltype;
             adtyp = AD_COLD;
             break;
         case 4:
-            str = (olet == WAND_CLASS) ? "death field"
-                                       : "disintegration field";
+            str = "disintegration field";
             adtyp = AD_DISN;
             break;
         case 5:
@@ -154,7 +153,11 @@ int expltype;
             str = "splash of acid";
             adtyp = AD_ACID;
             break;
-        default:
+		case 8:
+			str = "death field";
+			adtyp = AD_DRAY;
+			break;
+		default:
             impossible("explosion base type %d?", type);
             return;
         }
@@ -183,15 +186,15 @@ int expltype;
                     explmask[i][j] = !!Cold_resistance;
                     break;
                 case AD_DISN:
-                    explmask[i][j] = (olet == WAND_CLASS)
-                                         ? !!(nonliving(youmonst.data)
-                                              || is_demon(youmonst.data))
-                                         : !!Disint_resistance;
+                    explmask[i][j] = !!Disint_resistance;
                     break;
                 case AD_ELEC:
                     explmask[i][j] = !!Shock_resistance;
                     break;
-                case AD_DRST:
+				case AD_DRAY:
+					explmask[i][j] = !!(Death_resistance || nonliving(youmonst.data) || is_demon(youmonst.data));
+					break;
+				case AD_DRST:
                     explmask[i][j] = !!Poison_resistance;
                     break;
                 case AD_ACID:
@@ -224,13 +227,12 @@ int expltype;
                         explmask[i][j] |= resists_cold(mtmp);
                         break;
                     case AD_DISN:
-                        explmask[i][j] |= (olet == WAND_CLASS)
-                                              ? (nonliving(mtmp->data)
-                                                 || is_demon(mtmp->data)
-                                                 || is_vampshifter(mtmp))
-                                              : resists_disint(mtmp);
+                        explmask[i][j] |= resists_disint(mtmp);
                         break;
-                    case AD_ELEC:
+					case AD_DRAY:
+						explmask[i][j] |= (resists_death(mtmp) || nonliving(mtmp->data) || is_demon(mtmp->data));
+						break;
+					case AD_ELEC:
                         explmask[i][j] |= resists_elec(mtmp);
                         break;
                     case AD_DRST:
@@ -352,12 +354,12 @@ int expltype;
                             adj = "chilly";
                             break;
                         case AD_DISN:
-                            if (olet == WAND_CLASS)
-                                adj = "irradiated by pure energy";
-                            else
-                                adj = "perforated";
+                            adj = "perforated";
                             break;
-                        case AD_ELEC:
+						case AD_DRAY:
+							adj = "irradiated by pure energy";
+							break;
+						case AD_ELEC:
                             adj = "shocked";
                             break;
                         case AD_DRST:
@@ -380,12 +382,12 @@ int expltype;
                             adj = "chilly";
                             break;
                         case AD_DISN:
-                            if (olet == WAND_CLASS)
-                                adj = "overwhelmed by pure energy";
-                            else
-                                adj = "perforated";
+                            adj = "perforated";
                             break;
-                        case AD_ELEC:
+						case AD_DRAY:
+							adj = "overwhelmed by pure energy";
+							break;
+						case AD_ELEC:
                             adj = "shocked";
                             break;
                         case AD_DRST:

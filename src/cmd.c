@@ -2569,10 +2569,12 @@ int final;
     if (Sleep_resistance)
         you_are("sleep resistant", from_what(SLEEP_RES));
     if (Disint_resistance)
-        you_are("disintegration-resistant", from_what(DISINT_RES));
+        you_are("disintegration resistant", from_what(DISINT_RES));
     if (Shock_resistance)
         you_are("shock resistant", from_what(SHOCK_RES));
-    if (Poison_resistance)
+	if (Death_resistance)
+		you_are("death resistant", from_what(DEATH_RES));
+	if (Poison_resistance)
         you_are("poison resistant", from_what(POISON_RES));
     if (Acid_resistance)
         you_are("acid resistant", from_what(ACID_RES));

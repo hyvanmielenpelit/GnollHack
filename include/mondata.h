@@ -20,6 +20,8 @@
     ((((mon)->data->mresists | (mon)->mextrinsics) & MR_DISINT) != 0)
 #define resists_elec(mon) \
     ((((mon)->data->mresists | (mon)->mextrinsics) & MR_ELEC) != 0)
+#define resists_death(mon) \
+    ((((mon)->data->mresists | (mon)->mextrinsics) & MR_DETH) != 0)
 #define resists_poison(mon) \
     ((((mon)->data->mresists | (mon)->mextrinsics) & MR_POISON) != 0)
 #define resists_acid(mon) \

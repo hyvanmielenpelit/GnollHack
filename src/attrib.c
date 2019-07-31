@@ -54,7 +54,8 @@ static const struct innate {
                  { 13, &(HCold_resistance), "warm", "cooler" },
                  { 15, &(HShock_resistance), "insulated", "conductive" },
                  { 17, &(HTeleport_control), "controlled", "uncontrolled" },
-                 { 0, 0, 0, 0 } },
+				 { 19, &(HDeath_resistance), "less mortal", "more mortal" },
+				 { 0, 0, 0, 0 } },
 
   pri_abil[] = { { 15, &(HWarning), "sensitive", "" },
                  { 20, &(HFire_resistance), "cool", "warmer" },
