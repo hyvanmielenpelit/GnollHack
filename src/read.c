@@ -2353,7 +2353,7 @@ struct obj *sobj;
         return;
     }
     if (amorphous(youmonst.data) || is_whirly(youmonst.data)
-        || unsolid(youmonst.data)) {
+        || unsolid(youmonst.data) || noncorporeal(youmonst.data)) {
         if (!reuse_ball) {
             pline("A ball and chain appears, then falls away.");
             dropy(mkobj(BALL_CLASS, TRUE));

@@ -55,7 +55,7 @@
 #define MR_POISON 0x0020 /* resists poison */
 #define MR_ACID 0x0040   /* resists acid */
 #define MR_STONE 0x0080  /* resists petrification */
-#define MR_DETH 0x0100  /* resists death */
+#define MR_DEATH 0x0100  /* resists death */
 /* other resistances: magic, sickness */
 /* other conveyances: teleport, teleport control, telepathy */
 
@@ -160,6 +160,9 @@
 #define M3_INFRAVISIBLE 0x0200 /* visible by infravision */
 
 #define M3_DISPLACES 0x0400 /* moves monsters out of its way */
+#define M3_NONCORPOREAL 0x0800      /* is noncorporeal, different from unsolid in the sense that
+									    a unsolid monster can be disintegrated, but noncorporeal not*/
+#define M3_NONLIVING 0x1000      /* is nonliving, such as a golem or other construct or a vortex (unaffected by death attacks)*/
 
 #define MZ_TINY 0          /* < 2' */
 #define MZ_SMALL 1         /* 2-4' */

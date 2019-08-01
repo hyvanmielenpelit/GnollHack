@@ -668,7 +668,7 @@ int *fail_reason;
                         ? "disappears"
                         : golem_xform
                               ? "turns into flesh"
-                              : (nonliving(mon->data) || is_vampshifter(mon))
+                              : (is_not_living(mon->data) || is_vampshifter(mon))
                                     ? "moves"
                                     : "comes to life";
     if ((x == u.ux && y == u.uy) || cause == ANIMATE_SPELL) {
@@ -827,7 +827,7 @@ struct trap *trap;
     struct permonst *mptr = mtmp->data;
 
     if (amorphous(mptr) || is_whirly(mptr) || flaming(mptr)
-        || unsolid(mptr) || mptr == &mons[PM_GELATINOUS_CUBE]) {
+        || unsolid(mptr) || noncorporeal(mptr) || mptr == &mons[PM_GELATINOUS_CUBE]) {
         xchar x = trap->tx;
         xchar y = trap->ty;
 
@@ -1086,7 +1086,7 @@ unsigned trflags;
             break;
         feeltrap(trap);
         if (amorphous(youmonst.data) || is_whirly(youmonst.data)
-            || unsolid(youmonst.data)) {
+            || unsolid(youmonst.data) || noncorporeal(youmonst.data)) {
             pline("%s bear trap closes harmlessly through you.",
                   A_Your[trap->madeby_u]);
             break;

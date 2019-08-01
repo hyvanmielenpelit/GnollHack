@@ -144,6 +144,9 @@ TRAP:"anti magic", random
 TRAP:"magic", random
 TRAP:"magic", random
 
+# Meet the dracolich
+MONSTER:('D',"dracolich"), (7,10)
+
 # Random monsters.
 # The ghosts.
 MONSTER:(' ',"ghost"),random

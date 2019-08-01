@@ -1466,7 +1466,7 @@ struct obj *obj;   /* weapon */
 
     /* odds to joust are expert:80%, skilled:60%, basic:40%, unskilled:20% */
     if ((joust_dieroll = rn2(5)) < skill_rating) {
-        if (joust_dieroll == 0 && rnl(50) == (50 - 1) && !unsolid(mon->data)
+        if (joust_dieroll == 0 && rnl(50) == (50 - 1) && !unsolid(mon->data) && !noncorporeal(mon->data)
             && !obj_resists(obj, 0, 100))
             return -1; /* hit that breaks lance */
         return 1;      /* successful joust */

@@ -2804,7 +2804,8 @@ static const struct alt_spellings {
     { "grappling iron", GRAPPLING_HOOK },
     { "grapnel", GRAPPLING_HOOK },
     { "grapple", GRAPPLING_HOOK },
-    { "protection from shape shifters", RIN_PROTECTION_FROM_SHAPE_CHANGERS },
+	{ "ring of death resistance", RIN_LIFE_PROTECTION },
+	{ "ring of protection from shape shifters", RIN_PROTECTION_FROM_SHAPE_CHANGERS },
     /* if we ever add other sizes, move this to o_ranges[] with "bag" */
     { "box", LARGE_BOX },
     /* normally we wouldn't have to worry about unnecessary <space>, but

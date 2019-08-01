@@ -841,7 +841,7 @@ int mntmp;
         reset_utrap(TRUE);
     }
     if (amorphous(youmonst.data) || is_whirly(youmonst.data)
-        || unsolid(youmonst.data)) {
+        || unsolid(youmonst.data) || noncorporeal(youmonst.data)) {
         if (Punished) {
             You("slip out of the iron chain.");
             unpunish();
@@ -852,7 +852,7 @@ int mntmp;
     }
     if (u.utrap && (u.utraptype == TT_WEB || u.utraptype == TT_BEARTRAP)
         && (amorphous(youmonst.data) || is_whirly(youmonst.data)
-            || unsolid(youmonst.data) || (youmonst.data->msize <= MZ_SMALL
+            || unsolid(youmonst.data) || noncorporeal(youmonst.data) || (youmonst.data->msize <= MZ_SMALL
                                           && u.utraptype == TT_BEARTRAP))) {
         You("are no longer stuck in the %s.",
             u.utraptype == TT_WEB ? "web" : "bear trap");
@@ -2064,9 +2064,9 @@ udeadinside()
        seems silly when you're polymorphed into something undead;
        monkilled() distinguishes between living (killed) and non (destroyed)
        for monster death message; we refine the nonliving aspect a bit */
-    return !nonliving(youmonst.data)
+    return !is_not_living(youmonst.data)
              ? "dead"          /* living, including demons */
-             : !weirdnonliving(youmonst.data)
+             : !is_nonliving(youmonst.data)
                  ? "condemned" /* undead plus manes */
                  : "empty";    /* golems plus vortices */
 }

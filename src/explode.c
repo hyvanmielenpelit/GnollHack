@@ -192,7 +192,7 @@ int expltype;
                     explmask[i][j] = !!Shock_resistance;
                     break;
 				case AD_DRAY:
-					explmask[i][j] = !!(Death_resistance || nonliving(youmonst.data) || is_demon(youmonst.data));
+					explmask[i][j] = !!(Death_resistance || is_not_living(youmonst.data) || is_demon(youmonst.data));
 					break;
 				case AD_DRST:
                     explmask[i][j] = !!Poison_resistance;
@@ -230,7 +230,7 @@ int expltype;
                         explmask[i][j] |= resists_disint(mtmp);
                         break;
 					case AD_DRAY:
-						explmask[i][j] |= (resists_death(mtmp) || nonliving(mtmp->data) || is_demon(mtmp->data));
+						explmask[i][j] |= (resists_death(mtmp) || is_not_living(mtmp->data) || is_demon(mtmp->data) || is_vampshifter(mtmp));
 						break;
 					case AD_ELEC:
                         explmask[i][j] |= resists_elec(mtmp);
@@ -465,7 +465,7 @@ int expltype;
                         if (cansee(mtmp->mx, mtmp->my) || canspotmon(mtmp))
                             pline("%s is %s!", Monnam(mtmp),
                                   xkflg ? "burned completely"
-                                        : nonliving(mtmp->data) ? "destroyed"
+                                        : is_not_living(mtmp->data) ? "destroyed"
                                                                 : "killed");
                         xkilled(mtmp, XKILL_NOMSG | XKILL_NOCONDUCT | xkflg);
                     } else {

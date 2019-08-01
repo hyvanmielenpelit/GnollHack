@@ -2073,7 +2073,7 @@ struct obj *obj, *otmp;
                     } else {
                         /* couldn't see corpse's location */
                         if (Role_if(PM_HEALER) && !Deaf
-                            && !nonliving(&mons[corpsenm])) {
+                            && !is_not_living(&mons[corpsenm])) {
                             if (!type_is_pname(&mons[corpsenm]))
                                 corpsname = an(corpsname);
                             if (!Hallucination)
@@ -2487,7 +2487,7 @@ boolean ordinary;
 
     case WAN_DEATH:
     case SPE_FINGER_OF_DEATH:
-        if (nonliving(youmonst.data) || is_demon(youmonst.data) || Death_resistance) {
+        if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance) {
             pline((obj->otyp == WAN_DEATH)
                       ? "The wand shoots an apparently harmless beam at you."
                       : "You seem no deader than before.");
@@ -3678,7 +3678,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
                            type == ZT_WAND(ZT_SLEEP) ? WAND_CLASS : '\0');
         break;
     case ZT_DISINTEGRATION:  /* disintegration */
-        if (resists_disint(mon)) {
+        if (resists_disint(mon) || noncorporeal(mon->data)) {
             sho_shieldeff = TRUE;
         } else if (mon->misc_worn_check & W_ARMS) {
             /* destroy shield; victim survives */
@@ -3708,7 +3708,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 			tmp = 0;
 			break;
 		}
-		if (nonliving(mon->data) || is_demon(mon->data)
+		if (is_not_living(mon->data) || is_demon(mon->data)
 			|| is_vampshifter(mon) || resists_magm(mon)) {
 			/* similar to player */
 			sho_shieldeff = TRUE;
@@ -3832,7 +3832,7 @@ xchar sx, sy;
         }
         break;
     case ZT_DISINTEGRATION:
-        if (Disint_resistance) {					// if (abstyp == ZT_BREATH(ZT_DISINTEGRATION)) {
+        if (Disint_resistance || noncorporeal(youmonst.data)) {					// if (abstyp == ZT_BREATH(ZT_DISINTEGRATION)) {
             You("are not disintegrated.");
             break;
         } else if (uarms) {
@@ -3863,7 +3863,7 @@ xchar sx, sy;
         done(DIED);
         return; /* lifesaved */
 	case ZT_DEATH:
-		if (nonliving(youmonst.data) || is_demon(youmonst.data) || Death_resistance) {
+		if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance) {
 			shieldeff(sx, sy);
 			You("seem unaffected.");
 			break;
@@ -4678,7 +4678,7 @@ short exploding_wand_typ;
             hear_txt = "crackling.";
             break;
         default:
-        def_case:
+//        def_case:
             if (exploding_wand_typ > 0) {
                 /* Magical explosion from misc exploding wand */
                 if (exploding_wand_typ == WAN_STRIKING) {

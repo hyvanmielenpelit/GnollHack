@@ -757,7 +757,8 @@ const char *in_str;
             { "elf lord", PM_ELF_LORD },
             { "olog hai", PM_OLOG_HAI },
             { "arch lich", PM_ARCH_LICH },
-            /* Some irregular plurals */
+			{ "archlich", PM_ARCH_LICH },
+			/* Some irregular plurals */
             { "incubi", PM_INCUBUS },
             { "succubi", PM_SUCCUBUS },
             { "violet fungi", PM_VIOLET_FUNGUS },

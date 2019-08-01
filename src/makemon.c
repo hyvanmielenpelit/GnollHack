@@ -1998,7 +1998,7 @@ struct monst *mtmp, *victim;
             if (canspotmon(mtmp))
                 pline("As %s grows up into %s, %s %s!", mon_nam(mtmp),
                       an(ptr->mname), mhe(mtmp),
-                      nonliving(ptr) ? "expires" : "dies");
+                      is_not_living(ptr) ? "expires" : "dies");
             set_mon_data(mtmp, ptr); /* keep mvitals[] accurate */
             mondied(mtmp);
             return (struct permonst *) 0;

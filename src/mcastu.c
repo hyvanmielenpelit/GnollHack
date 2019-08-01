@@ -109,17 +109,17 @@ int spellval;
         return MGC_AGGRAVATION;
     case 12:
     case 11:
-    case 10:
-        return MGC_CURSE_ITEMS;
+		return MGC_DISAPPEAR;
+	case 10:
     case 9:
-    case 8:
-        return MGC_DESTRY_ARMR;
+		return MGC_CURSE_ITEMS;
+	case 8:
     case 7:
-    case 6:
-        return MGC_WEAKEN_YOU;
+		return MGC_DESTRY_ARMR;
+	case 6:
     case 5:
-    case 4:
-        return MGC_DISAPPEAR;
+		return MGC_WEAKEN_YOU;
+	case 4:
     case 3:
         return MGC_STUN_YOU;
     case 2:
@@ -187,11 +187,18 @@ register struct attack *mattk;
 boolean thinks_it_foundyou;
 boolean foundyou;
 {
-    int dmg, ml = mtmp->m_lev;
+	int dmg;
     int ret;
     int spellnum = 0;
+	int  ml = 0;
+	
+	//Assumes that attack type is AT_MAGC when this function is called
+	if(mattk->damp > 0)
+		ml = mattk->damp;
+	else
+		ml = mtmp->m_lev;
 
-    /* Three cases:
+	/* Three cases:
      * -- monster is attacking you.  Search for a useful spell.
      * -- monster thinks it's attacking you.  Search for a useful spell,
      *    without checking for undirected.  If the spell found is directed,
@@ -387,7 +394,7 @@ int spellnum;
     switch (spellnum) {
     case MGC_DEATH_TOUCH:
         pline("Oh no, %s's using the touch of death!", mhe(mtmp));
-        if (nonliving(youmonst.data) || is_demon(youmonst.data)) {
+        if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance) {
             You("seem no deader than before.");
         } else if (!Antimagic && rn2(mtmp->m_lev) > 12) {
             if (Hallucination) {
@@ -863,7 +870,7 @@ register struct attack *mattk;
     }
     if (lined_up(mtmp) && rn2(3)) {
         nomul(0);
-        if (mattk->adtyp && (mattk->adtyp < 11)) { /* no cf unsigned >0 */
+        if (mattk->adtyp && (mattk->adtyp <= AD_SPC2)) { /* no cf unsigned >0 */
             if (canseemon(mtmp))
                 pline("%s zaps you with a %s!", Monnam(mtmp),
                       flash_types[ad_to_typ(mattk->adtyp)]);

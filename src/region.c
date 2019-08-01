@@ -955,7 +955,7 @@ genericptr_t p2;
     reg = (NhRegion *) p1;
     dam = reg->arg.a_int;
     if (p2 == (genericptr_t) 0) { /* This means *YOU* Bozo! */
-        if (u.uinvulnerable || nonliving(youmonst.data) || Breathless
+        if (u.uinvulnerable || is_not_living(youmonst.data) || Breathless
             || Underwater)
             return FALSE;
         if (!Blind) {
@@ -977,7 +977,7 @@ genericptr_t p2;
 
         /* Non living and non breathing monsters are not concerned;
            adult green dragon is not affected by gas cloud, baby one is */
-        if (!(nonliving(mtmp->data) || is_vampshifter(mtmp))
+        if (!(is_not_living(mtmp->data) || is_vampshifter(mtmp))
             && !breathless(mtmp->data)
             /* not is_swimmer(); assume that non-fish are swimming on
                the surface and breathing the air above it periodically
@@ -986,7 +986,7 @@ genericptr_t p2;
                  && is_pool(mtmp->mx, mtmp->my))
             /* exclude monsters with poison gas breath attack:
                adult green dragon and Chromatic Dragon (and iron golem,
-               but nonliving() and breathless() tests also catch that) */
+               but is_not_living() and breathless() tests also catch that) */
             && !(attacktype_fordmg(mtmp->data, AT_BREA, AD_DRST)
                  || attacktype_fordmg(mtmp->data, AT_BREA, AD_RBRE))) {
             if (cansee(mtmp->mx, mtmp->my))
@@ -1064,7 +1064,7 @@ region_danger()
         /* the only type of region we understand is gas_cloud */
         if (f_indx == INSIDE_GAS_CLOUD) {
             /* completely harmless if you don't need to breathe */
-            if (nonliving(youmonst.data) || Breathless)
+            if (is_not_living(youmonst.data) || Breathless)
                 continue;
             /* minor inconvenience if you're poison resistant;
                not harmful enough to be a prayer-level trouble */

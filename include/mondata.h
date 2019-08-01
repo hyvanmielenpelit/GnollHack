@@ -21,7 +21,7 @@
 #define resists_elec(mon) \
     ((((mon)->data->mresists | (mon)->mextrinsics) & MR_ELEC) != 0)
 #define resists_death(mon) \
-    ((((mon)->data->mresists | (mon)->mextrinsics) & MR_DETH) != 0)
+    ((((mon)->data->mresists | (mon)->mextrinsics) & MR_DEATH) != 0)
 #define resists_poison(mon) \
     ((((mon)->data->mresists | (mon)->mextrinsics) & MR_POISON) != 0)
 #define resists_acid(mon) \
@@ -40,7 +40,7 @@
     (((ptr)->mflags1 & (M1_AMPHIBIOUS | M1_BREATHLESS)) != 0L)
 #define passes_walls(ptr) (((ptr)->mflags1 & M1_WALLWALK) != 0L)
 #define amorphous(ptr) (((ptr)->mflags1 & M1_AMORPHOUS) != 0L)
-#define noncorporeal(ptr) ((ptr)->mlet == S_GHOST)
+#define noncorporeal(ptr) (((ptr)->mflags1 & M3_NONCORPOREAL) != 0L)   //((ptr)->mlet == S_GHOST)
 #define tunnels(ptr) (((ptr)->mflags1 & M1_TUNNEL) != 0L)
 #define needspick(ptr) (((ptr)->mflags1 & M1_NEEDPICK) != 0L)
 #define hides_under(ptr) (((ptr)->mflags1 & M1_CONCEAL) != 0L)
@@ -91,6 +91,7 @@
 #define polyok(ptr) (((ptr)->mflags2 & M2_NOPOLY) == 0L)
 #define is_shapeshifter(ptr) (((ptr)->mflags2 & M2_SHAPESHIFTER) != 0L)
 #define is_undead(ptr) (((ptr)->mflags2 & M2_UNDEAD) != 0L)
+#define is_nonliving(ptr) (((ptr)->mflags3 & M3_NONLIVING) != 0L)
 #define is_were(ptr) (((ptr)->mflags2 & M2_WERE) != 0L)
 #define is_elf(ptr) (((ptr)->mflags2 & M2_ELF) != 0L)
 #define is_dwarf(ptr) (((ptr)->mflags2 & M2_DWARF) != 0L)
@@ -192,10 +193,11 @@
 
 #define hates_light(ptr) ((ptr) == &mons[PM_GREMLIN])
 
-/* used to vary a few messages */
-#define weirdnonliving(ptr) (is_golem(ptr) || (ptr)->mlet == S_VORTEX)
-#define nonliving(ptr) \
-    (is_undead(ptr) || (ptr) == &mons[PM_MANES] || weirdnonliving(ptr))
+/* used to vary a few messages, not affected by death attacks*/
+#define is_not_living(ptr) \
+    (is_undead(ptr) || is_nonliving(ptr))
+
+#define is_living(ptr) !is_not_living(ptr)
 
 /* no corpse (ie, blank scrolls) if killed by fire */
 #define completelyburns(ptr) \

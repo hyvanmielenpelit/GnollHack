@@ -74,8 +74,8 @@ int shotlimit;
         pline("%s must be wielded before it can be thrown.", The(xname(obj)));
         return 0;
     }
-    if ((obj->oartifact == ART_MJOLLNIR && ACURR(A_STR) < STR19(25))
-        || (obj->otyp == BOULDER && !throws_rocks(youmonst.data))) {
+    if ((obj->oartifact == ART_MJOLLNIR && ACURR(A_STR) < STR18(100)) //STR19(25)
+        || (obj->otyp == BOULDER && !(throws_rocks(youmonst.data) || (int)obj->owt <= enclevelmaximumweight(UNENCUMBERED)))) {
         pline("It's too heavy.");
         return 1;
     }
@@ -1226,8 +1226,11 @@ boolean twoweap; /* used to restore twoweapon mode if wielded weapon returns */
         }
 
         if (obj->otyp == BOULDER)
-            range = 20; /* you must be giant */
-        else if (obj->oartifact == ART_MJOLLNIR)
+			if(throws_rocks(youmonst.data))
+				range = 20; /* you must be giant */
+			else
+				range = 10; /* non-giant */
+		else if (obj->oartifact == ART_MJOLLNIR)
             range = (range + 1) / 2; /* it's heavy */
         else if (tethered_weapon) /* primary weapon is aklys */
             /* if an aklys is going to return, range is limited by the

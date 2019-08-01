@@ -2007,7 +2007,7 @@ struct monst *mtmp;
     if (difficulty < 6 && !rn2(30))
         return rn2(6) ? POT_POLYMORPH : WAN_POLYMORPH;
 
-    if (!rn2(40) && !nonliving(pm) && !is_vampshifter(mtmp))
+    if (!rn2(40) && !is_not_living(pm) && !is_vampshifter(mtmp))
         return AMULET_OF_LIFE_SAVING;
 
     switch (rn2(3)) {
@@ -2071,7 +2071,7 @@ struct obj *obj;
         break;
     case AMULET_CLASS:
         if (typ == AMULET_OF_LIFE_SAVING)
-            return (boolean) !(nonliving(mon->data) || is_vampshifter(mon));
+            return (boolean) !(is_not_living(mon->data) || is_vampshifter(mon));
         if (typ == AMULET_OF_REFLECTION)
             return TRUE;
         break;
@@ -2506,7 +2506,7 @@ boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
                    "You killed/destroyed <mon>" so give our own message */
                 if (vis)
                     pline("%s is %s by the fire!", Monnam(mon),
-                          nonliving(mon->data) ? "destroyed" : "killed");
+                          is_not_living(mon->data) ? "destroyed" : "killed");
                 xkilled(mon, XKILL_NOMSG | XKILL_NOCONDUCT);
             } else
                 monkilled(mon, "fire", AD_FIRE);

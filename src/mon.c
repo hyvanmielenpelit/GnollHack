@@ -1375,7 +1375,7 @@ long flag;
               || (is_swimmer(mdat) && !wantpool));
     lavaok = (is_flyer(mdat) || is_clinger(mdat) || likes_lava(mdat));
     thrudoor = ((flag & (ALLOW_WALL | BUSTDOOR)) != 0L);
-    poisongas_ok = ((nonliving(mdat) || is_vampshifter(mon)
+    poisongas_ok = ((is_not_living(mdat) || is_vampshifter(mon)
                      || breathless(mdat)) || resists_poison(mon));
     in_poisongas = ((gas_reg = visible_region_at(x,y)) != 0
                     && gas_reg->glyph == gas_glyph);
@@ -1890,7 +1890,7 @@ struct obj *
 mlifesaver(mon)
 struct monst *mon;
 {
-    if (!nonliving(mon->data) || is_vampshifter(mon)) {
+    if (!is_not_living(mon->data) || is_vampshifter(mon)) {
         struct obj *otmp = which_armor(mon, W_AMUL);
 
         if (otmp && otmp->otyp == AMULET_OF_LIFE_SAVING)
@@ -1972,7 +1972,7 @@ register struct monst *mtmp;
             boolean in_door = (amorphous(mtmp->data)
                                && closed_door(mtmp->mx, mtmp->my)),
                 /* alternate message phrasing for some monster types */
-                spec_mon = (nonliving(mtmp->data)
+                spec_mon = (is_not_living(mtmp->data)
                             || noncorporeal(mtmp->data)
                             || amorphous(mtmp->data)),
                 spec_death = (disintegested /* disintegrated or digested */
@@ -2301,7 +2301,7 @@ int how;
     if ((mdef->wormno ? worm_known(mdef) : cansee(mdef->mx, mdef->my))
         && fltxt)
         pline("%s is %s%s%s!", Monnam(mdef),
-              nonliving(mdef->data) ? "destroyed" : "killed",
+              is_not_living(mdef->data) ? "destroyed" : "killed",
               *fltxt ? " by the " : "", fltxt);
     else
         be_sad = (mdef->mtame != 0);
@@ -2371,7 +2371,7 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
         boolean namedpet = has_mname(mtmp) && !Hallucination;
 
         You("%s %s!",
-            nonliving(mtmp->data) ? "destroy" : "kill",
+            is_not_living(mtmp->data) ? "destroy" : "kill",
             !(wasinside || canspotmon(mtmp)) ? "it"
               : !mtmp->mtame ? mon_nam(mtmp)
                 : x_monnam(mtmp, namedpet ? ARTICLE_NONE : ARTICLE_THE,

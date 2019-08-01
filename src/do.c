@@ -180,8 +180,7 @@ const char *verb;
                         if (DEADMONSTER(mtmp)) {
                             if (canspotmon(mtmp))
                                 pline("%s is %s!", Monnam(mtmp),
-                                      (nonliving(mtmp->data)
-                                       || is_vampshifter(mtmp))
+                                      (is_not_living(mtmp->data) || is_vampshifter(mtmp))
                                       ? "destroyed" : "killed");
                             mondied(mtmp);
                         }
@@ -421,7 +420,7 @@ register struct obj *obj;
     case RIN_SHOCK_RESISTANCE:
         pline("Static electricity surrounds the sink.");
         break;
-	case RIN_DEATH_RESISTANCE:
+	case RIN_LIFE_PROTECTION:
 		pline("A pillar of smoke arises from the sink.");
 		break;
 	case RIN_CONFLICT:

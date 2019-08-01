@@ -1348,7 +1348,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
     if (spec_ability(otmp, SPFX_DRLI)) {
         /* some non-living creatures (golems, vortices) are
            vulnerable to life drain effects */
-        const char *life = nonliving(mdef->data) ? "animating force" : "life";
+        const char *life = is_not_living(mdef->data) ? "animating force" : "life";
 
         if (!youdefend) {
             if (vis) {
