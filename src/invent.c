@@ -2830,6 +2830,9 @@ int show_weights;
 		// Inventory show_weights = 1
 		// Pick up show_weights = 2
 		// Drop show_weights = 3
+		// Inventory show_weights, but no You are-line = 4
+		// Pick up show_weights, but no You are-line = 5
+		// Drop show_weights, but no You are-line = 6
 
 		if (show_weights > 0 && total_ounce_weight > 0)
 		{
@@ -2843,32 +2846,34 @@ int show_weights;
 			add_menu(win, NO_GLYPH, &any, 0, 0, 0, wtbuf, MENU_UNSELECTED);
 		}
 
-		//Back end of printout
-		if (yourenclevel == UNENCUMBERED)
-			Sprintf(wtbuf, "%s until %d %s.", verb, (int)curlevelmaxweight_lbs, (int)curlevelmaxweight_lbs == 1 ? "lb" : "lbs");
-		else if (yourenclevel == OVERLOADED)
-			Sprintf(wtbuf, "%s with at least %d %s.", verb, (int)curlevelminweight_lbs, (int)curlevelminweight_lbs == 1 ? "lb" : "lbs");
-		else
-			Sprintf(wtbuf, "%s between %d and %d %s.", verb, (int)curlevelminweight_lbs, (int)curlevelmaxweight_lbs, ((int)curlevelminweight_lbs == 1 && (int)curlevelmaxweight_lbs == 1) ? "lb" : "lbs");
-
-
-		//Front end of printout
-		if (show_weights == 1 || (show_weights == 2 && total_ounce_weight == yourweight))
+		if (show_weights > 0 && show_weights <= 3)
 		{
-			Sprintf(carrybuf, "%s", "You are ");
-		}
-		else
-		{
-			if (carryingweight >= 10)
-				Sprintf(carrybuf, "You are carrying %d %s and ", (int)carryingweight, (int)carryingweight == 1 ? "lb" : "lbs");
+			//Back end of printout
+			if (yourenclevel == UNENCUMBERED)
+				Sprintf(wtbuf, "%s until %d %s.", verb, (int)curlevelmaxweight_lbs, (int)curlevelmaxweight_lbs == 1 ? "lb" : "lbs");
+			else if (yourenclevel == OVERLOADED)
+				Sprintf(wtbuf, "%s with at least %d %s.", verb, (int)curlevelminweight_lbs, (int)curlevelminweight_lbs == 1 ? "lb" : "lbs");
 			else
-				Sprintf(carrybuf, "You are carrying %1.1f %s and ", carryingweight, carryingweight == 1 ? "lb" : "lbs");
+				Sprintf(wtbuf, "%s between %d and %d %s.", verb, (int)curlevelminweight_lbs, (int)curlevelmaxweight_lbs, ((int)curlevelminweight_lbs == 1 && (int)curlevelmaxweight_lbs == 1) ? "lb" : "lbs");
+
+
+			//Front end of printout
+			if (show_weights == 1 || (show_weights == 2 && total_ounce_weight == yourweight))
+			{
+				Sprintf(carrybuf, "%s", "You are ");
+			}
+			else
+			{
+				if (carryingweight >= 10)
+					Sprintf(carrybuf, "You are carrying %d %s and ", (int)carryingweight, (int)carryingweight == 1 ? "lb" : "lbs");
+				else
+					Sprintf(carrybuf, "You are carrying %1.1f %s and ", carryingweight, carryingweight == 1 ? "lb" : "lbs");
+			}
+
+			Sprintf(totalbuf, "%s%s", carrybuf, wtbuf);
+
+			add_menu(win, NO_GLYPH, &any, 0, 0, 0, totalbuf, MENU_UNSELECTED);
 		}
-
-		Sprintf(totalbuf, "%s%s", carrybuf, wtbuf);
-
-		add_menu(win, NO_GLYPH, &any, 0, 0, 0, totalbuf, MENU_UNSELECTED);
-
 	}
 
 }
@@ -2932,6 +2937,12 @@ int show_weights;
 
 		const char* verb = burdentype[yourenclevel];
 
+		// Inventory show_weights = 1
+		// Pick up show_weights = 2
+		// Drop show_weights = 3
+		// Inventory show_weights, but no You are-line = 4
+		// Pick up show_weights, but no You are-line = 5
+		// Drop show_weights, but no You are-line = 6
 
 
 		//NOTE: Nested container listing should not be used with show_weights on
@@ -2948,31 +2959,27 @@ int show_weights;
 		putstr(win, 0, buf);
 
 
-		/*
-		if (carriedweight >= 10)
-			Sprintf(totalbuf, "You are carrying %d %s and unburdened until %d %s.", (int)carriedweight, (int)carriedweight == 1 ? "lb" : "lbs", (int)unburdenedweight, (int)unburdenedweight == 1 ? "lb" : "lbs");
-		else
-			Sprintf(totalbuf, "You are carrying %1.1f %s and unburdened until %d %s.", carriedweight, carriedweight == 1 ? "lb" : "lbs", (int)unburdenedweight, (int)unburdenedweight == 1 ? "lb" : "lbs");
-		*/
-
-		//Back end of printout
-		if (yourenclevel == UNENCUMBERED)
-			Sprintf(wtbuf, "%s until %d %s.", verb, (int)curlevelmaxweight_lbs, (int)curlevelmaxweight_lbs == 1 ? "lb" : "lbs");
-		else if (yourenclevel == OVERLOADED)
-			Sprintf(wtbuf, "%s with at least %d %s.", verb, (int)curlevelminweight_lbs, (int)curlevelminweight_lbs == 1 ? "lb" : "lbs");
-		else
-			Sprintf(wtbuf, "%s between %d and %d %s.", verb, (int)curlevelminweight_lbs, (int)curlevelmaxweight_lbs, ((int)curlevelminweight_lbs == 1 && (int)curlevelmaxweight_lbs == 1) ? "lb" : "lbs");
+		if (show_weights > 0 && show_weights <= 3)
+		{
+			//Back end of printout
+			if (yourenclevel == UNENCUMBERED)
+				Sprintf(wtbuf, "%s until %d %s.", verb, (int)curlevelmaxweight_lbs, (int)curlevelmaxweight_lbs == 1 ? "lb" : "lbs");
+			else if (yourenclevel == OVERLOADED)
+				Sprintf(wtbuf, "%s with at least %d %s.", verb, (int)curlevelminweight_lbs, (int)curlevelminweight_lbs == 1 ? "lb" : "lbs");
+			else
+				Sprintf(wtbuf, "%s between %d and %d %s.", verb, (int)curlevelminweight_lbs, (int)curlevelmaxweight_lbs, ((int)curlevelminweight_lbs == 1 && (int)curlevelmaxweight_lbs == 1) ? "lb" : "lbs");
 
 
-		if (carryingweight >= 10)
-			Sprintf(carrybuf, "You are carrying %d %s and ", (int)carryingweight, (int)carryingweight == 1 ? "lb" : "lbs");
-		else
-			Sprintf(carrybuf, "You are carrying %1.1f %s and ", carryingweight, carryingweight == 1 ? "lb" : "lbs");
+			if (carryingweight >= 10)
+				Sprintf(carrybuf, "You are carrying %d %s and ", (int)carryingweight, (int)carryingweight == 1 ? "lb" : "lbs");
+			else
+				Sprintf(carrybuf, "You are carrying %1.1f %s and ", carryingweight, carryingweight == 1 ? "lb" : "lbs");
 
-		Sprintf(totalbuf, "%s%s", carrybuf, wtbuf);
+			Sprintf(totalbuf, "%s%s", carrybuf, wtbuf);
 
 
-		putstr(win, 0, totalbuf);
+			putstr(win, 0, totalbuf);
+		}
 	}
 
 }
@@ -4553,7 +4560,7 @@ char *title;
         n = query_objlist(title ? title : tmp, &(mon->minvent),
                           (INVORDER_SORT | (incl_hero ? INCLUDE_HERO : 0)),
                           &selected, pickings,
-                          do_all ? allow_all : worn_wield_only, 2); //Looking at things elsewhere
+                          do_all ? allow_all : worn_wield_only, 5); //Looking at things in monster's inventory far away
 
         iflags.suppress_price--;
         /* was 'set_uasmon();' but that potentially has side-effects */
@@ -4589,7 +4596,7 @@ register struct obj *obj;
 
     if (obj->cobj) {
         n = query_objlist(qbuf, &(obj->cobj), INVORDER_SORT,
-                          &selected, PICK_NONE, allow_all, 2); //Looking at things elsewhere
+                          &selected, PICK_NONE, allow_all, 5); //Looking at things in container's inventory far away
     } else {
         invdisp_nothing(qbuf, "(empty)");
         n = 0;
