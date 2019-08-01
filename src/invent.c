@@ -2192,7 +2192,7 @@ int FDECL((*fn), (OBJ_P)), FDECL((*ckfn), (OBJ_P));
                 first = FALSE;
             }
             (void) safe_qbuf(qbuf, qpfx, "?", otmp,
-                             ininv ? safeq_xprname : doname_with_weight_first,
+                             ininv ? safeq_xprname : doname_with_weight_first_true, //Looks like we are doing a drop here
                              ininv ? safeq_shortxprname : ansimpleoname,
                              "item");
             sym = (takeoff || ident || otmp->quan < 2L) ? nyaq(qbuf)
@@ -2563,6 +2563,16 @@ int show_weights;
     boolean wizid = FALSE;
 	int wtcount = 0;
 
+	boolean loadstonecorrectly = FALSE;
+
+	if(show_weights == 1) // Inventory
+		loadstonecorrectly = TRUE;
+	else if (show_weights == 2) { // Pick up
+		loadstonecorrectly = (boolean)objects[LOADSTONE].oc_name_known;
+	}
+	else if (show_weights == 3) // Drop
+		loadstonecorrectly = TRUE;
+
     if (lets && !*lets)
         lets = 0; /* simplify tests: (lets) instead of (lets && *lets) */
 
@@ -2705,10 +2715,16 @@ nextclass:
                 any.a_obj = otmp;
             else
                 any.a_char = ilet;
-			wtcount += otmp->owt;
+
+			/*calculate weight sum here*/
+			if(otmp->otyp == LOADSTONE && !loadstonecorrectly)
+				wtcount += objects[LUCKSTONE].oc_weight;
+			else
+				wtcount += otmp->owt;
+
             add_menu(win, obj_to_glyph(otmp, rn2_on_display_rng), &any, ilet,
                      wizid ? def_oc_syms[(int) otmp->oclass].sym : 0,
-                     ATR_NONE, show_weights > 0 ? doname_with_weight_first(otmp) : doname(otmp), MENU_UNSELECTED);
+                     ATR_NONE, show_weights > 0 ? doname_with_weight_first(otmp, loadstonecorrectly) : doname(otmp), MENU_UNSELECTED);
         }
     }
     if (flags.sortpack) {
@@ -3015,7 +3031,7 @@ char avoidlet;
                     any.a_char = ilet;
                     add_menu(win, obj_to_glyph(otmp, rn2_on_display_rng),
                              &any, ilet, 0, ATR_NONE,
-                             doname_with_weight_first(otmp), MENU_UNSELECTED);
+                             doname_with_weight_first(otmp, TRUE), MENU_UNSELECTED);
                 }
             }
             if (flags.sortpack && *++invlet)
@@ -3673,7 +3689,7 @@ boolean picked_some;
         if (dfeature)
             pline1(fbuf);
         read_engr_at(u.ux, u.uy); /* Eric Backus */
-        You("%s here %s.", verb, doname_with_price_and_weight_last(otmp));
+        You("%s here %s.", verb, doname_with_price_and_weight_last(otmp, objects[LOADSTONE].oc_name_known)); //See on the ground
         iflags.last_msg = PLNMSG_ONE_ITEM_HERE;
         if (otmp->otyp == CORPSE)
             feel_cockatrice(otmp, FALSE);
@@ -3702,8 +3718,11 @@ boolean picked_some;
                 break;
             }
 			count++;
-			totalweight += otmp->owt;
-			Sprintf(buf2, "%2d - %s", count, doname_with_price_and_weight_first(otmp));
+			if(otmp->otyp == LOADSTONE && !objects[LOADSTONE].oc_name_known)
+				totalweight += objects[LUCKSTONE].oc_weight;
+			else
+				totalweight += otmp->owt;
+			Sprintf(buf2, "%2d - %s", count, doname_with_price_and_weight_first(otmp, objects[LOADSTONE].oc_name_known)); //Looking at what is on the ground
             putstr(tmpwin, 0, buf2);
         }
 
@@ -4534,7 +4553,7 @@ char *title;
         n = query_objlist(title ? title : tmp, &(mon->minvent),
                           (INVORDER_SORT | (incl_hero ? INCLUDE_HERO : 0)),
                           &selected, pickings,
-                          do_all ? allow_all : worn_wield_only, 1);
+                          do_all ? allow_all : worn_wield_only, 2); //Looking at things elsewhere
 
         iflags.suppress_price--;
         /* was 'set_uasmon();' but that potentially has side-effects */
@@ -4570,7 +4589,7 @@ register struct obj *obj;
 
     if (obj->cobj) {
         n = query_objlist(qbuf, &(obj->cobj), INVORDER_SORT,
-                          &selected, PICK_NONE, allow_all, 1);
+                          &selected, PICK_NONE, allow_all, 2); //Looking at things elsewhere
     } else {
         invdisp_nothing(qbuf, "(empty)");
         n = 0;
@@ -4622,7 +4641,7 @@ boolean as_if_seen;
         only.y = y;
         if (query_objlist("Things that are buried here:",
                           &level.buriedobjlist, INVORDER_SORT,
-                          &selected, PICK_NONE, only_here, 1) > 0)
+                          &selected, PICK_NONE, only_here, 2) > 0)
             free((genericptr_t) selected);
         only.x = only.y = 0;
     }

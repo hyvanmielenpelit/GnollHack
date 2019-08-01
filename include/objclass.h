@@ -112,7 +112,7 @@ struct objclass {
     uchar oc_color; /* color of the object */
 
     short oc_prob;            /* probability, used in mkobj() */
-    unsigned short oc_weight; /* encumbrance (1 cn = 0.1 lb.) */
+    unsigned short oc_weight; /* encumbrance (1 oz = 1/16 lb.) previously (1 cn = 0.1 lb.) */
     short oc_cost;            /* base cost in shops */
     /* Check the AD&D rules!  The FIRST is small monster damage. */
     /* for weapons, and tools, rocks, and gems useful as weapons */

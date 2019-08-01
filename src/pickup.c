@@ -846,7 +846,17 @@ int show_weights;
     Loot *sortedolist, *srtoli;
 	int wtcount = 0;
 
-    *pick_list = (menu_item *) 0;
+	boolean loadstonecorrectly = FALSE;
+
+	if (show_weights == 1) // Inventory
+		loadstonecorrectly = TRUE;
+	else if (show_weights == 2) { // Pick up
+		loadstonecorrectly = (boolean)objects[LOADSTONE].oc_name_known;
+	}
+	else if (show_weights == 3) // Drop
+		loadstonecorrectly = TRUE;
+
+	*pick_list = (menu_item *) 0;
     if (!olist && !engulfer)
         return 0;
 
@@ -916,12 +926,18 @@ int show_weights;
                 }
 
                 any.a_obj = curr;
-				wtcount += curr->owt;
+
+				/* count the weight sum here */
+				if(curr->otyp == LOADSTONE && !loadstonecorrectly)
+					wtcount += objects[LUCKSTONE].oc_weight;
+				else
+					wtcount += curr->owt;
+
                 add_menu(win, obj_to_glyph(curr, rn2_on_display_rng), &any,
                          (qflags & USE_INVLET) ? curr->invlet
                            : (first && curr->oclass == COIN_CLASS) ? '$' : 0,
                          def_oc_syms[(int) objects[curr->otyp].oc_class].sym,
-                         ATR_NONE, show_weights > 0 ? doname_with_price_and_weight_first(curr) : doname_with_price(curr), MENU_UNSELECTED);
+                         ATR_NONE, show_weights > 0 ? doname_with_price_and_weight_first(curr, loadstonecorrectly) : doname_with_price(curr), MENU_UNSELECTED);
                 first = FALSE;
             }
         }

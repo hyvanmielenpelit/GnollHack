@@ -908,6 +908,7 @@ struct obj *obj;
 #define DONAME_VAGUE_QUAN 2
 #define DONAME_WITH_WEIGHT_FIRST 4
 #define DONAME_WITH_WEIGHT_LAST 8
+#define DONAME_LOADSTONE_CORRECTLY 16
 
 STATIC_OVL char *
 doname_base(obj, doname_flags)
@@ -918,8 +919,9 @@ unsigned doname_flags;
             with_price = (doname_flags & DONAME_WITH_PRICE) != 0,
             vague_quan = (doname_flags & DONAME_VAGUE_QUAN) != 0,
 			weightfirst = (doname_flags & DONAME_WITH_WEIGHT_FIRST) != 0,
-			weightlast = (doname_flags & DONAME_WITH_WEIGHT_LAST) != 0;
-			boolean known, dknown, cknown, bknown, lknown;
+			weightlast = (doname_flags & DONAME_WITH_WEIGHT_LAST) != 0,
+			loadstonecorrectly = (doname_flags & DONAME_LOADSTONE_CORRECTLY) != 0;
+	boolean known, dknown, cknown, bknown, lknown;
     int omndx = obj->corpsenm;
     char prefix[PREFIX];
     char tmpbuf[PREFIX + 1]; /* for when we have to add something at
@@ -1253,7 +1255,14 @@ unsigned doname_flags;
 
 	bp = strprepend(bp, prefix);
 
-	double objweight = ((double)obj->owt) / 16; //ounces to lbs
+	double objweight = 0;
+	double objweight_oz = 0;
+	if (!loadstonecorrectly && obj->otyp == LOADSTONE)
+		objweight_oz = objects[LUCKSTONE].oc_weight;  
+	else
+		objweight_oz = obj->owt; 
+
+	objweight = ((double)objweight_oz) / 16;  //ounces to lbs
 
 	if ((wizard && iflags.wizweight) || weightfirst) {
 		char buf[BUFSZ];
@@ -1269,7 +1278,7 @@ unsigned doname_flags;
 	if (weightlast)
 	{
 		char buf[BUFSZ];
-		if (objweight >= 10 || ((int)(obj->owt / 10)) * 10 == (int)obj->owt)
+		if (objweight >= 10)// || ((int)(objweight / 10)) * 10 == (int)objweight)
 			Sprintf(buf, "%s (%d %s)", bp, (int)objweight, objweight == 1 ? "lb" : "lbs");
 		else
 			Sprintf(buf, "%s (%.1f %s)", bp, objweight, objweight == 1 ? "lb" : "lbs");
@@ -1296,18 +1305,20 @@ struct obj *obj;
 
 /* Name of object including price. */
 char*
-doname_with_price_and_weight_last(obj)
+doname_with_price_and_weight_last(obj,  loadstonecorrectly)
 struct obj* obj;
+boolean loadstonecorrectly;
 {
-	return doname_base(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_LAST);
+	return doname_base(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_LAST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0));
 }
 
 /* Name of object including price. */
 char*
-doname_with_price_and_weight_first(obj)
+doname_with_price_and_weight_first(obj, loadstonecorrectly)
 struct obj* obj;
+boolean loadstonecorrectly;
 {
-	return doname_base(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_FIRST);
+	return doname_base(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_FIRST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0));
 }
 
 /* "some" instead of precise quantity if obj->dknown not set */
@@ -1331,18 +1342,29 @@ struct obj *obj;
 }
 
 char*
-doname_with_weight_first(obj)
+doname_with_weight_first(obj, loadstonecorrectly)
+struct obj* obj;
+boolean loadstonecorrectly;
+
+{
+	return doname_base(obj, DONAME_WITH_WEIGHT_FIRST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0));
+}
+
+char*
+doname_with_weight_first_true(obj)
 struct obj* obj;
 {
-	return doname_base(obj, DONAME_WITH_WEIGHT_FIRST);
+	return doname_base(obj, DONAME_WITH_WEIGHT_FIRST | DONAME_LOADSTONE_CORRECTLY);
 }
 
 
+
 char*
-doname_with_weight_last(obj)
+doname_with_weight_last(obj, loadstonecorrectly)
 struct obj* obj;
+boolean loadstonecorrectly;
 {
-	return doname_base(obj, DONAME_WITH_WEIGHT_LAST);
+	return doname_base(obj, DONAME_WITH_WEIGHT_LAST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0));
 }
 
 

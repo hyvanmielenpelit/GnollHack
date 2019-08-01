@@ -1172,7 +1172,7 @@ coord *click_cc;
             char invlet;
             struct obj *invobj;
 
-            invlet = display_inventory((const char *) 0, TRUE, 1);
+            invlet = display_inventory((const char *) 0, TRUE, 1, TRUE);
             if (!invlet || invlet == '\033')
                 return 0;
             *out_str = '\0';

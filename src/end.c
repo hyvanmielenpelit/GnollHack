@@ -1577,6 +1577,17 @@ int show_weights;
     boolean cat, dumping = iflags.in_dumplog;
 	int count = 0;
 	int totalweight = 0;
+	boolean loadstonecorrectly = FALSE;
+
+	if (show_weights == 1) // Inventory
+		loadstonecorrectly = TRUE;
+	else if (show_weights == 2) { // Pick up
+		loadstonecorrectly = (boolean)objects[LOADSTONE].oc_name_known;
+	}
+	else if (show_weights == 3) // Drop
+		loadstonecorrectly = TRUE;
+
+
 
     for (box = list; box; box = box->nobj) {
         if (Is_container(box) || box->otyp == STATUE) {
@@ -1620,8 +1631,14 @@ int show_weights;
                                 obj->cknown = obj->lknown = 1;
                         }
 						count++;
-						totalweight += obj->owt;
-						Sprintf(&buf[2], "%2d - %s", count, show_weights > 0 ? doname_with_price_and_weight_first(obj) : doname_with_price(obj));
+
+						/* total sum here */
+						if (obj->otyp == LOADSTONE && !loadstonecorrectly)
+							totalweight += objects[LUCKSTONE].oc_weight;
+						else
+							totalweight += obj->owt;
+	
+						Sprintf(&buf[2], "%2d - %s", count, show_weights > 0 ? doname_with_price_and_weight_first(obj, loadstonecorrectly) : doname_with_price(obj));
 						//Strcpy(&buf[2], doname_with_price_and_weight_first(obj));
                         putstr(tmpwin, 0, buf);
                     }
