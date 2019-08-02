@@ -275,10 +275,10 @@ WEAPON("mace", None,
        1, 0, 0, 38,  60,   5,  1, 6, 1, 1, 6, 0, 0, B,   P_MACE, IRON, HI_METAL),
         /* +1 small */
 WEAPON("silver mace", None,
-	1, 0, 0, 2, 55, 250, 1, 6, 1, 1, 6, 0, 0, B, P_MACE, SILVER, HI_SILVER),
-	/* +1 small */
+	   1, 0, 0, 2, 55, 250, 1, 6, 1, 1, 6, 0, 0, B, P_MACE, SILVER, HI_SILVER),
+		/* +1 small */
 WEAPON("morning star", None,
-    1, 0, 0, 12, 60,  10,  2, 4, 0, 1,  6, 1, 0, B,   P_MORNING_STAR, IRON, HI_METAL),
+	   1, 0, 0, 12, 60,  10,  2, 4, 0, 1,  6, 1, 0, B,   P_MORNING_STAR, IRON, HI_METAL),
         /* +d4 small, +1 large */
 WEAPON("war hammer", None,
        1, 0, 0, 15,  50,   5,  1, 4, 1, 1, 4, 0, 0, B,   P_HAMMER, IRON, HI_METAL),
@@ -296,10 +296,10 @@ WEAPON("flail", None,
        1, 0, 0, 40,  35,   4,  1, 6, 1, 2, 4, 0, 0, B,   P_FLAIL, IRON, HI_METAL),
 	/* +1 small, +1d4 large */
 WEAPON("double-headed flail", None,
-	1, 0, 0, 0, 55, 250, 1, 10, 1, 3, 4, 0, -1, B, P_FLAIL, IRON, HI_METAL),
+	   1, 0, 0, 0, 55, 250, 1, 10, 1, 3, 4, 0, -1, B, P_FLAIL, IRON, HI_METAL),
 	/* one-handed, flail damage x c. 1.5, -1 hit bonus (difficult to wield)*/
 WEAPON("triple-headed flail", None,
-	1, 0, 0, 0, 70, 1000, 2, 6, 2, 4, 4, 0, -2, B, P_FLAIL, IRON, HI_METAL),
+	   1, 0, 0, 0, 70, 1000, 2, 6, 2, 4, 4, 0, -2, B, P_FLAIL, IRON, HI_METAL),
 	/* one-handed, flail damage x 2, -2 hit bonus (difficult to wield)*/
 
 /* misc */
@@ -445,39 +445,39 @@ DRGN_ARMR("yellow dragon scales",      0, ACID_RES,    750, 7, CLR_YELLOW),
 #undef DRGN_ARMR
 /* other suits */
 ARMOR("full plate mail", None,
-	1, 0, 1, 0, 8, 7, 960, 2000, 1, 2, ARM_SUIT, IRON, HI_METAL),
+	  1, 0, 1, 0, 10, 7, 960, 2000, 1, 2, ARM_SUIT, IRON, HI_METAL),
 ARMOR("field plate mail", None,
-	1, 0, 1, 0, 12, 6, 840, 1000, 2, 2, ARM_SUIT, IRON, HI_METAL),
+	  1, 0, 1, 0, 15, 6, 840, 1000, 2, 2, ARM_SUIT, IRON, HI_METAL),
 ARMOR("plate mail", None,
-    1, 0, 1,  0, 34, 5, 720, 600,  3, 2,  ARM_SUIT, IRON, HI_METAL),
+      1, 0, 1,  0, 40, 5, 720, 600,  3, 2,  ARM_SUIT, IRON, HI_METAL),
 ARMOR("crystal plate mail", None,
       1, 0, 1,  0, 10, 5, 600, 900,  3, 2,  ARM_SUIT, GLASS, CLR_WHITE),
 ARMOR("bronze plate mail", None,
-      1, 0, 1,  0, 25, 5, 800, 150,  4, 1,  ARM_SUIT, COPPER, HI_COPPER),
+      1, 0, 1,  0, 20, 5, 800, 150,  4, 1,  ARM_SUIT, COPPER, HI_COPPER),
 ARMOR("splint mail", None,
-      1, 0, 1,  0, 54, 5, 640, 125,  4, 1,  ARM_SUIT, IRON, HI_METAL),
+      1, 0, 1,  0, 40, 5, 640, 125,  4, 1,  ARM_SUIT, IRON, HI_METAL),
 ARMOR("banded mail", None,
-      1, 0, 1,  0, 59, 5, 560, 200,  4, 1,  ARM_SUIT, IRON, HI_METAL),
+      1, 0, 1,  0, 45, 5, 560, 200,  4, 1,  ARM_SUIT, IRON, HI_METAL),
 ARMOR("dwarvish mithril-coat", None,
       1, 0, 0,  0, 10, 1, 250, 750,  4, 2,  ARM_SUIT, MITHRIL, HI_SILVER),
 ARMOR("elven mithril-coat", None,
       1, 0, 0,  0, 15, 1, 150, 250,  5, 2,  ARM_SUIT, MITHRIL, HI_SILVER),
 ARMOR("chain mail", None,
-      1, 0, 0,  0, 62, 5, 480,  75,  5, 1,  ARM_SUIT, IRON, HI_METAL),
+      1, 0, 0,  0, 50, 5, 480,  75,  5, 1,  ARM_SUIT, IRON, HI_METAL),
 ARMOR("orcish chain mail", "crude chain mail",
       0, 0, 0,  0, 20, 5, 450,  40,  6, 1,  ARM_SUIT, IRON, CLR_BLACK),
 ARMOR("scale mail", None,
-      1, 0, 0,  0, 62, 5, 500,  45,  6, 1,  ARM_SUIT, IRON, HI_METAL),
+      1, 0, 0,  0, 45, 5, 500,  45,  6, 1,  ARM_SUIT, IRON, HI_METAL),
 ARMOR("studded leather armor", None,
-      1, 0, 0,  0, 55, 3, 200,  15,  7, 1,  ARM_SUIT, LEATHER, HI_LEATHER),
+      1, 0, 0,  0, 45, 3, 200,  15,  7, 1,  ARM_SUIT, LEATHER, HI_LEATHER),
 ARMOR("gnollish studded leather armor", "crude studded leather armor",
       0, 0, 0,  0, 12, 3, 175,  15,  8, 1,  ARM_SUIT, LEATHER, HI_LEATHER),
 ARMOR("ring mail", None,
-      1, 0, 0,  0, 72, 5, 500,  30,  7, 1,  ARM_SUIT, IRON, HI_METAL),
+      1, 0, 0,  0, 50, 5, 500,  30,  7, 1,  ARM_SUIT, IRON, HI_METAL),
 ARMOR("orcish ring mail", "crude ring mail",
       0, 0, 0,  0, 20, 5, 450,  15,  8, 1,  ARM_SUIT, IRON, CLR_BLACK),
 ARMOR("leather armor", None,
-      1, 0, 0,  0, 60, 3, 150,   5,  8, 1,  ARM_SUIT, LEATHER, HI_LEATHER),
+      1, 0, 0,  0, 50, 3, 150,   5,  8, 1,  ARM_SUIT, LEATHER, HI_LEATHER),
 ARMOR("gnollish leather armor", "crude leather armor",
       0, 0, 0,  0, 12, 3, 125,   3,  9, 1,  ARM_SUIT, LEATHER, HI_LEATHER),
 ARMOR("leather jacket", None,
@@ -485,100 +485,100 @@ ARMOR("leather jacket", None,
 
 /* shirts */
 ARMOR("Hawaiian shirt", None, //STARTMARKER 1
-      1, 0, 0,  0,  8, 0,   5,   3, 10, 0,  ARM_SHIRT, CLOTH, CLR_MAGENTA),
+    1, 0, 0, 0,			 8, 0, 5,  5, 10, 0, ARM_SHIRT, CLOTH, CLR_MAGENTA),
 /* with shuffled appearances... */
 ARMOR("shirt of uncontrollable laughter", "funny T-shirt", //STARTMARKER 2
-    0, 1, 0,  LAUGHING,  2, 0,   5,   50, 10, 0,  ARM_SHIRT, CLOTH, CLR_BLUE),
+    0, 1, 0,  LAUGHING,  6, 0, 5, 50, 10, 0, ARM_SHIRT, CLOTH, CLR_BLUE),
 ARMOR("shirt of comeliness", "black T-shirt",
-	0, 1, 0, 0,			 2, 0,   5,   50, 10, 0, ARM_SHIRT, CLOTH, CLR_BLACK),
+	0, 1, 0, 0,			 6, 0, 5, 50, 10, 0, ARM_SHIRT, CLOTH, CLR_BLACK),
 ARMOR("shirt of sound mindedness", "green T-shirt", 
-	0, 1, 0, HALLUC_RES, 2, 0, 5,     50, 10, 0, ARM_SHIRT, CLOTH, CLR_GREEN),
+	0, 1, 0, HALLUC_RES, 6, 0, 5, 50, 10, 0, ARM_SHIRT, CLOTH, CLR_GREEN),
 ARMOR("T-shirt", "old T-shirt",//ENDMARKER 1 & 2
-    0, 0, 0,  0,		 2, 0, 5,      2, 10, 0,  ARM_SHIRT, CLOTH, CLR_WHITE),
+    0, 0, 0, 0,			 4, 0, 5,  2, 10, 0, ARM_SHIRT, CLOTH, CLR_WHITE),
 
 
 /* cloaks */
 CLOAK("elven cloak", "faded pall",
       0, 1,    STEALTH,  8, 0, 10, 60,  9, 1,  CLOTH, CLR_BLACK),
 CLOAK("orcish cloak", "coarse mantelet",
-      0, 0,          0,  8, 0, 10, 40, 10, 1,  CLOTH, CLR_BLACK),
+      0, 0,				 0,  8, 0, 10, 40, 10, 1,  CLOTH, CLR_BLACK),
 CLOAK("dwarvish cloak", "hooded cloak",
-      0, 0,          0,  8, 0, 10, 50, 10, 1,  CLOTH, HI_CLOTH),
+      0, 0,			     0,  8, 0, 10, 50, 10, 1,  CLOTH, HI_CLOTH),
 CLOAK("oilskin cloak", "slippery cloak",
-      0, 0,          0,  8, 0, 10, 50,  9, 2,  CLOTH, HI_CLOTH),
+      0, 0,				 0,  8, 0, 10, 50,  9, 2,  CLOTH, HI_CLOTH),
 CLOAK("alchemy smock", "apron",
       0, 1, POISON_RES,  9, 0, 10, 50,  9, 1,  CLOTH, CLR_WHITE),
 CLOAK("leather cloak", None,
-      1, 0,          0,  8, 0, 15, 40,  9, 1,  LEATHER, CLR_BROWN),
+      1, 0,				 0,  8, 0, 15, 40,  9, 1,  LEATHER, CLR_BROWN),
 /* with shuffled appearances... */
 CLOAK("cloak of protection", "tattered cape",
       0, 1, PROTECTION,  9, 0, 10, 250,  7, 3,  CLOTH, HI_CLOTH),
         /* cloak of protection is now the only item conferring MC 3 */
 CLOAK("cloak of invisibility", "opera cloak",
-      0, 1,      INVIS, 9, 0, 10, 250,  9, 1,  CLOTH, CLR_BRIGHT_MAGENTA),
+      0, 1,      INVIS,  9, 0, 10, 250,  9, 1,  CLOTH, CLR_BRIGHT_MAGENTA),
 CLOAK("cloak of magic resistance", "ornamental cope",
       0, 1,  ANTIMAGIC,  4, 0, 10, 250,  9, 1,  CLOTH, CLR_WHITE),
         /*  'cope' is not a spelling mistake... leave it be */
 CLOAK("cloak of displacement", "piece of cloth",
-      0, 1,  DISPLACED, 7, 0, 10, 250,  9, 1,  CLOTH, HI_CLOTH),
+      0, 1,  DISPLACED,  7, 0, 10, 250,  9, 1,  CLOTH, HI_CLOTH),
 
 /* robes */
 /* with shuffled appearances... */
 ROBE("robe", "old robe", //STARTMARKER 1 & 2
-	0, 0, 0, 5, 1, 20, 25, 9, 2, CLOTH, CLR_RED),
+	0, 0, 0,		  10, 1, 20,  25,  9, 2, CLOTH, CLR_RED),
 ROBE("robe of protection", "golden ornamental robe",
-	0, 1, PROTECTION, 5, 1, 25, 400, 6, 3, CLOTH, HI_GOLD),
+	0, 1, PROTECTION, 10, 1, 25, 400,  6, 3, CLOTH, HI_GOLD),
 ROBE("robe of magic resistance", "silvery ornamental robe",
-	0, 1, ANTIMAGIC, 4, 1, 25, 400, 8, 2, CLOTH, HI_SILVER),
+	0, 1, ANTIMAGIC,   9, 1, 25, 400,  8, 2, CLOTH, HI_SILVER),
 ROBE("robe of the archmagi", "shining blue robe",
-	0, 1, 0, 2, 2, 30, 400, 8, 3, CLOTH, HI_ZAP),
-ROBE("robe of starry wisdom", "shining black robe",
-	0, 1, 0, 2, 2, 30, 400, 8, 3, CLOTH, CLR_BLACK),
-ROBE("bathrobe", "soft cotton robe",//ENDMARKER 2
-	0, 1, 0, 2, 1, 25, 5, 10, 0, CLOTH, CLR_WHITE),
+	0, 1, 0,		   5, 2, 30, 400,  8, 3, CLOTH, HI_ZAP),
+ROBE("robe of starry wisdom", "shining black robe", //ENDMARKER 2
+	0, 1, 0,		   5, 2, 30, 400,  8, 3, CLOTH, CLR_BLACK),
 /* without shuffled appearances... */
+ROBE("bathrobe", "soft cotton robe",
+	0, 1, 0,		   6, 1, 25,   5, 10, 0, CLOTH, CLR_WHITE),
 ROBE("shamanistic robe", "crude robe",
-	0, 0, 0, 2, 1, 15, 25, 9, 2, CLOTH, CLR_RED),
-ROBE("mummy wrapping", None, //ENDMARKER
-1, 0, 0, 0, 0, 3, 2, 10, 1, CLOTH, CLR_GRAY),
+	0, 0, 0,		   7, 1, 15,  25,  9, 2, CLOTH, CLR_RED),
+ROBE("mummy wrapping", None, //ENDMARKER 1
+	1, 0, 0,		   0, 0,  3,   2, 10, 1, CLOTH, CLR_GRAY),
 	/* worn mummy wrapping blocks invisibility */
 
 
 /* bracers */
 /* with shuffled appearances... */
 BRACERS("leather bracers", "old bracers", //STARTMARKER 1 & 2
-	0, 0, 0, 3, 1, 10, 5, 9, 0, CLOTH, HI_LEATHER),
+	0, 0, 0,		  8, 1, 10,   5, 9, 0, CLOTH, HI_LEATHER),
 BRACERS("bracers of defense", "runed bracers",
-	0, 1, PROTECTION, 3, 1, 10, 300, 7, 2, CLOTH, HI_LEATHER),
+	0, 1, PROTECTION, 8, 1, 10, 300, 7, 2, CLOTH, HI_LEATHER),
 BRACERS("bracers of archery", "deerskin bracers",
-	0, 1, 0, 2, 1, 10, 300, 9, 0, CLOTH, HI_LEATHER),
+	0, 1, 0,		  7, 1, 10, 300, 9, 0, CLOTH, HI_LEATHER),
 BRACERS("bracers of magic resistance", "ornamental bracers",//ENDMARKER 1 & 2
-	0, 1, ANTIMAGIC, 3, 1, 10, 300, 9, 2, CLOTH, HI_LEATHER),
+	0, 1, ANTIMAGIC,  8, 1, 10, 300, 9, 2, CLOTH, HI_LEATHER),
 
 
 /* belts */
 /* with shuffled appearances... */
 BELT("leather belt", "old belt", //STARTMARKER 1 & 2
-	0, 0, 0, 6, 0, 5, 5, 10, 0, CLOTH, HI_LEATHER),
+	0, 0, 0,		  10, 0, 5,   5, 10, 0, CLOTH, HI_LEATHER),
 BELT("belt of dwarvenkind", "broad belt", 
-	0, 1, POISON_RES, 3, 0, 5, 250, 10, 1, CLOTH, HI_LEATHER),
+	0, 1, POISON_RES, 8, 0, 5, 250, 10, 1, CLOTH, HI_LEATHER),
 BELT("belt of giant strength", "ornamental belt", //ENDMARKER 1 & 2
-	0, 1, 0, 2, 0, 5, 250, 10, 0, CLOTH, HI_LEATHER),
+	0, 1, 0,		  7, 0, 5, 250, 10, 0, CLOTH, HI_LEATHER),
 
 /* pants */
 /* no shuffled appearances... */
 PANTS("leather pants", None, //STARTMARKER
-	1, 0, 0, 3, 2, 50, 10, 9, 0, CLOTH, HI_LEATHER),
+	1, 0, 0,		8, 2, 50, 10,  9, 0, CLOTH, HI_LEATHER),
 PANTS("beige shorts", "beige short pants",
-	0, 0, 0, 1, 2, 15, 10, 10, 0, CLOTH, CLR_BROWN),
+	0, 0, 0,		3, 2, 15, 10, 10, 0, CLOTH, CLR_BROWN),
 PANTS("jeans", "blue long pants", 
-	0, 0, 0, 1, 2, 50, 5, 10, 0, CLOTH, CLR_BLUE),
+	0, 0, 0,		3, 2, 50,  5, 10, 0, CLOTH, CLR_BLUE),
 PANTS("skirt", None, //STARTMARKER FOR NO "PAIR OF"
-	1, 0, 0, 1, 1, 10, 5, 10, 0, CLOTH, CLR_RED),
+	1, 0, 0,		3, 1, 10,  5, 10, 0, CLOTH, CLR_RED),
 PANTS("kilt", None,  //ENDMARKER FOR NO "PAIR OF"
-	1, 0, 0, 1, 1, 15, 10, 10, 0, CLOTH, CLR_MAGENTA),
+	1, 0, 0,		3, 1, 15, 10, 10, 0, CLOTH, CLR_MAGENTA),
 PANTS("trunks of swimming", "blue short pants", //ENDMARKER
-	0, 1, SWIMMING, 1, 1, 3, 50, 10, 0, CLOTH, CLR_BLUE),
+	0, 1, SWIMMING, 3, 1,  3, 50, 10, 0, CLOTH, CLR_BLUE),
 
 /* shields */
 SHIELD("small shield", None,
