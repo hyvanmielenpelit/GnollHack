@@ -263,6 +263,8 @@ WEAPON("guisarme", "pruning hook",
 WEAPON("bill-guisarme", "hooked polearm",
        0, 0, 1,  4, 120,   7,  2, 4, 0, 1, 10, 0, 0, P|S, P_POLEARMS, IRON, HI_METAL),
         /* +1d4 small */
+WEAPON("infernal ancus", "black ornamental hooked polearm",
+       0, 0, 0,  0, 100, 100,  1, 6, 1, 1, 8, 1, 0, P|S, P_POLEARMS, IRON, CLR_BLACK),
 /* other */
 WEAPON("lucern hammer", "pronged polearm",
        0, 0, 1,  5, 150,   7,  2, 4, 0, 1, 6, 0, 0, B|P, P_POLEARMS, IRON, HI_METAL),
@@ -285,6 +287,8 @@ WEAPON("war hammer", None,
         /* +1 small */
 WEAPON("club", None,
        1, 0, 0, 12,  40,   3,  1, 6, 0, 1, 3, 0, 0, B,   P_CLUB, WOOD, HI_WOOD),
+WEAPON("infernal club", "black jagged-toothed club",
+       0, 0, 0,  0,  60, 100,  1, 6, 1, 1, 6, 1, 0, B,   P_CLUB, WOOD, CLR_BLACK),
 WEAPON("rubber hose", None,
        1, 0, 0,  0,  20,   3,  1, 4, 0, 1, 3, 0, 0, B,   P_WHIP, PLASTIC, CLR_BROWN),
 WEAPON("quarterstaff", "staff",
@@ -296,7 +300,7 @@ WEAPON("flail", None,
        1, 0, 0, 40,  35,   4,  1, 6, 1, 2, 4, 0, 0, B,   P_FLAIL, IRON, HI_METAL),
 	/* +1 small, +1d4 large */
 WEAPON("double-headed flail", None,
-	   1, 0, 0, 0, 55, 250, 1, 10, 1, 3, 4, 0, -1, B, P_FLAIL, IRON, HI_METAL),
+	   1, 0, 0,  0,  55, 250, 1, 10, 1, 3, 4, 0, -1, B, P_FLAIL, IRON, HI_METAL),
 	/* one-handed, flail damage x c. 1.5, -1 hit bonus (difficult to wield)*/
 WEAPON("triple-headed flail", None,
 	   1, 0, 0, 0, 70, 1000, 2, 6, 2, 4, 4, 0, -2, B, P_FLAIL, IRON, HI_METAL),

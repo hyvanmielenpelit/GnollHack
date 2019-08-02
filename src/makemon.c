@@ -168,6 +168,7 @@ register struct monst *mtmp;
     register int mm = monsndx(ptr);
     struct obj *otmp;
     int bias, spe2, w1, w2;
+	int i = 0;
 
     if (Is_rogue_level(&u.uz))
         return;
@@ -575,7 +576,19 @@ register struct monst *mtmp;
         case PM_HORNED_DEVIL:
             (void) mongets(mtmp, rn2(4) ? TRIDENT : BULLWHIP);
             break;
-        case PM_DISPATER:
+		case PM_MARILITH:
+			(void)mongets(mtmp, !rn2(2) ? LONG_SWORD : !rn2(2) ? SCIMITAR : AXE);
+			(void)mongets(mtmp, !rn2(2) ? LONG_SWORD : !rn2(2) ? SCIMITAR : AXE);
+			(void)mongets(mtmp, !rn2(2) ? LONG_SWORD : !rn2(2) ? SCIMITAR : AXE);
+			(void)mongets(mtmp, !rn2(2) ? LONG_SWORD : !rn2(2) ? SCIMITAR : AXE);
+			(void)mongets(mtmp, !rn2(2) ? LONG_SWORD : !rn2(2) ? SCIMITAR : AXE);
+			(void)mongets(mtmp, !rn2(2) ? LONG_SWORD : !rn2(2) ? SCIMITAR : AXE);
+			break;
+		case PM_PIT_FIEND:
+			(void)mongets(mtmp, INFERNAL_ANCUS);
+			(void)mongets(mtmp, INFERNAL_CLUB);
+			break;
+		case PM_DISPATER:
             (void) mongets(mtmp, WAN_STRIKING);
             break;
         case PM_YEENOGHU:
