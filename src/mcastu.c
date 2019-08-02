@@ -453,9 +453,14 @@ int spellnum;
         dmg = 0;
         break;
     case MGC_DESTRY_ARMR:
-        if (Antimagic) {
+		if (Antimagic) {
+			shieldeff(u.ux, u.uy);
+			pline("A field of force surrounds you!");
+		}
+		else if (uarmc && uarmc->otyp == CLOAK_OF_INTEGRITY) {
             shieldeff(u.ux, u.uy);
-            pline("A field of force surrounds you!");
+            pline("Your cloak neutralizes the destructive energies of the spell!");
+			makeknown(uarmc->otyp);
         } else if (!destroy_arm(some_armor(&youmonst))) {
             Your("skin itches.");
         }

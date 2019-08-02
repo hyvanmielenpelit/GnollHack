@@ -1034,6 +1034,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
         boolean same_color;
 
         otmp = some_armor(&youmonst);
+enchantarmor:
         if (!otmp) {
             strange_feeling(sobj, !Blind
                                       ? "Your skin glows then fades."
@@ -1154,46 +1155,59 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
                   Blind ? "again" : "unexpectedly");
         break;
     }
-    case SCR_DESTROY_ARMOR: {
-        otmp = some_armor(&youmonst);
-        if (confused) {
-            if (!otmp) {
-                strange_feeling(sobj, "Your bones itch.");
-                sobj = 0; /* useup() in strange_feeling() */
-                exercise(A_STR, FALSE);
-                exercise(A_CON, FALSE);
-                break;
-            }
-            old_erodeproof = (otmp->oerodeproof != 0);
-            new_erodeproof = scursed;
-            otmp->oerodeproof = 0; /* for messages */
-            p_glow2(otmp, NH_PURPLE);
-            if (old_erodeproof && !new_erodeproof) {
-                /* restore old_erodeproof before shop charges */
-                otmp->oerodeproof = 1;
-                costly_alteration(otmp, COST_DEGRD);
-            }
-            otmp->oerodeproof = new_erodeproof ? 1 : 0;
-            break;
-        }
-        if (!scursed || !otmp || !otmp->cursed) {
-            if (!destroy_arm(otmp)) {
-                strange_feeling(sobj, "Your skin itches.");
-                sobj = 0; /* useup() in strange_feeling() */
-                exercise(A_STR, FALSE);
-                exercise(A_CON, FALSE);
-                break;
-            } else
-                known = TRUE;
-        } else { /* armor and scroll both cursed */
-            pline("%s.", Yobjnam2(otmp, "vibrate"));
-            if (otmp->spe >= -6) {
-                otmp->spe += -1;
-                adj_abon(otmp, -1);
-            }
-            make_stunned((HStun & TIMEOUT) + (long) rn1(10, 10), TRUE);
-        }
-    } break;
+	case SCR_DESTROY_ARMOR: {
+		otmp = some_armor(&youmonst);
+		if (confused) {
+			if (!otmp) {
+				strange_feeling(sobj, "Your bones itch.");
+				sobj = 0; /* useup() in strange_feeling() */
+				exercise(A_STR, FALSE);
+				exercise(A_CON, FALSE);
+				break;
+			}
+			old_erodeproof = (otmp->oerodeproof != 0);
+			new_erodeproof = scursed;
+			otmp->oerodeproof = 0; /* for messages */
+			p_glow2(otmp, NH_PURPLE);
+			if (old_erodeproof && !new_erodeproof) {
+				/* restore old_erodeproof before shop charges */
+				otmp->oerodeproof = 1;
+				costly_alteration(otmp, COST_DEGRD);
+			}
+			otmp->oerodeproof = new_erodeproof ? 1 : 0;
+			break;
+		}
+		if (uarmc && uarmc->otyp == CLOAK_OF_INTEGRITY)
+		{
+			pline("Your cloak absorbs the destructive energies of the scroll.");
+			makeknown(uarmc->otyp);
+			known = TRUE;
+			otmp = uarmc;
+			goto enchantarmor;
+		}
+		else
+		{
+			if (!scursed || !otmp || !otmp->cursed) {
+				if (!destroy_arm(otmp)) {
+					strange_feeling(sobj, "Your skin itches.");
+					sobj = 0; /* useup() in strange_feeling() */
+					exercise(A_STR, FALSE);
+					exercise(A_CON, FALSE);
+					break;
+				}
+				else
+					known = TRUE;
+			}
+			else { /* armor and scroll both cursed */
+				pline("%s.", Yobjnam2(otmp, "vibrate"));
+				if (otmp->spe >= -6) {
+					otmp->spe += -1;
+					adj_abon(otmp, -1);
+				}
+				make_stunned((HStun & TIMEOUT) + (long)rn1(10, 10), TRUE);
+			}
+		}
+	}   break;
     case SCR_CONFUSE_MONSTER:
     case SPE_CONFUSE_MONSTER:
         if (youmonst.data->mlet != S_HUMAN || scursed) {
