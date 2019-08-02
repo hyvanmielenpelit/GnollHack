@@ -4089,7 +4089,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
     /* if its a Hero Spell then get its SPE_TYPE */
     spell_type = is_hero_spell(type) ? SPE_MAGIC_MISSILE + abstype : 0;
 
-    fltxt = flash_types[(type <= -30) ? abstype : abs(type)];
+	fltxt = flash_types[abstype]; // (type <= -30) ? abstype : abs(type)];
     if (u.uswallow) {
         register int tmp;
 

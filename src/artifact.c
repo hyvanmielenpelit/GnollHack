@@ -794,6 +794,8 @@ struct monst *mtmp;
             return !(yours ? Cold_resistance : resists_cold(mtmp));
         case AD_ELEC:
             return !(yours ? Shock_resistance : resists_elec(mtmp));
+		case AD_DISN:
+			return !(yours ? Disint_resistance : resists_disint(mtmp));
 		case AD_DRAY:
 			return !(yours ? Death_resistance : resists_death(mtmp));
 		case AD_MAGM:

@@ -1048,6 +1048,7 @@ struct monst *mtmp;
 /*#define MUSE_WAN_TELEPORTATION 15*/
 #define MUSE_POT_SLEEPING 16
 #define MUSE_SCR_EARTH 17
+#define MUSE_WAN_DISINTEGRATION 18
 
 /* Select an offensive item/action for a monster.  Returns TRUE iff one is
  * found.
@@ -1086,7 +1087,12 @@ struct monst *mtmp;
                 m.offensive = obj;
                 m.has_offense = MUSE_WAN_DEATH;
             }
-            nomore(MUSE_WAN_SLEEP);
+			nomore(MUSE_WAN_DISINTEGRATION);
+			if (obj->otyp == WAN_DISINTEGRATION && obj->spe > 0) {
+				m.offensive = obj;
+				m.has_offense = MUSE_WAN_DISINTEGRATION;
+			}
+			nomore(MUSE_WAN_SLEEP);
             if (obj->otyp == WAN_SLEEP && obj->spe > 0 && multi >= 0) {
                 m.offensive = obj;
                 m.has_offense = MUSE_WAN_SLEEP;
@@ -1382,6 +1388,7 @@ struct monst *mtmp;
     int i;
     struct obj *otmp = m.offensive;
     boolean oseen;
+	int raytype = 0;
 
     /* offensive potions are not drunk, they're thrown */
     if (otmp->oclass != POTION_CLASS && (i = precheck(mtmp, otmp)) != 0)
@@ -1390,7 +1397,8 @@ struct monst *mtmp;
 
     switch (m.has_offense) {
     case MUSE_WAN_DEATH:
-    case MUSE_WAN_SLEEP:
+	case MUSE_WAN_DISINTEGRATION:
+	case MUSE_WAN_SLEEP:
     case MUSE_WAN_FIRE:
     case MUSE_WAN_COLD:
     case MUSE_WAN_LIGHTNING:
@@ -1400,8 +1408,12 @@ struct monst *mtmp;
         if (oseen)
             makeknown(otmp->otyp);
         m_using = TRUE;
-        buzz((int) (-30 - (otmp->otyp - WAN_MAGIC_MISSILE)),
-             (otmp->otyp == WAN_MAGIC_MISSILE) ? 2 : 6, mtmp->mx, mtmp->my,
+		//Positioned differently, because there is now poison and acid attack wands
+		if (otmp->otyp == WAN_DEATH)
+			raytype = -38;
+		else
+			raytype = -30 - (otmp->otyp - WAN_MAGIC_MISSILE);
+        buzz(raytype, (otmp->otyp == WAN_MAGIC_MISSILE) ? 2 : 6, mtmp->mx, mtmp->my,
              sgn(mtmp->mux - mtmp->mx), sgn(mtmp->muy - mtmp->my));
         m_using = FALSE;
         return (DEADMONSTER(mtmp)) ? 1 : 2;
