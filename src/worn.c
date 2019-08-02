@@ -408,7 +408,8 @@ boolean on, silently;
         case COLD_RES:
         case SLEEP_RES:
         case DISINT_RES:
-        case SHOCK_RES:
+		case DEATH_RES:
+		case SHOCK_RES:
         case POISON_RES:
         case ACID_RES:
         case STONE_RES:
