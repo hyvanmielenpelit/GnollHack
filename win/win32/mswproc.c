@@ -3038,8 +3038,8 @@ mswin_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, 
     long cond, *condptr = (long *) ptr;
     char *text = (char *) ptr;
     MSNHMsgUpdateStatus update_cmd_data;
-    int ocolor, ochar;
-    unsigned ospecial;
+//    int ocolor, ochar;
+//    unsigned ospecial;
 
     logDebug("mswin_status_update(%d, %p, %d, %d, %x, %p)\n", idx, ptr, chg, percent, color, condmasks);
 
