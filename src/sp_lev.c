@@ -2468,7 +2468,8 @@ boolean prefilled;
         case COURT:
         case ZOO:
         case BEEHIVE:
-        case ANTHOLE:
+		case LIBRARY:
+		case ANTHOLE:
         case COCKNEST:
         case LEPREHALL:
         case MORGUE:
@@ -2493,7 +2494,10 @@ boolean prefilled;
     case BEEHIVE:
         level.flags.has_beehive = TRUE;
         break;
-    case BARRACKS:
+	case LIBRARY:
+		level.flags.has_library = TRUE;
+		break;
+	case BARRACKS:
         level.flags.has_barracks = TRUE;
         break;
     case TEMPLE:

@@ -612,7 +612,8 @@ clear_level_structures()
     level.flags.has_court = 0;
     level.flags.has_morgue = level.flags.graveyard = 0;
     level.flags.has_beehive = 0;
-    level.flags.has_barracks = 0;
+	level.flags.has_library = 0;
+	level.flags.has_barracks = 0;
     level.flags.has_temple = 0;
     level.flags.has_swamp = 0;
     level.flags.noteleport = 0;
@@ -768,7 +769,9 @@ makelevel()
             mkroom(LEPREHALL);
         else if (u_depth > 6 && !rn2(7))
             mkroom(ZOO);
-        else if (u_depth > 8 && !rn2(5))
+		else if (u_depth > 7 && !rn2(7))
+			mkroom(LIBRARY);
+		else if (u_depth > 8 && !rn2(5))
             mkroom(TEMPLE);
         else if (u_depth > 9 && !rn2(5)
                  && !(mvitals[PM_KILLER_BEE].mvflags & G_GONE))

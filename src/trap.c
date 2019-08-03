@@ -3333,15 +3333,18 @@ xchar x, y;
 
     if (Is_container(obj)) {
         switch (obj->otyp) {
-        case ICE_BOX:
+		case ICE_BOX:
             return FALSE; /* Immune */
-        case CHEST:
+		case CHEST:
             chance = 40;
             break;
         case LARGE_BOX:
             chance = 30;
             break;
-        default:
+		case BOOKSHELF:
+			chance = 50;
+			break;
+		default:
             chance = 20;
             break;
         }

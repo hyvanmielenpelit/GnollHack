@@ -146,6 +146,30 @@ dosounds()
             }
         }
     }
+
+	if (level.flags.has_library && !rn2(200)) {
+		for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
+			if (DEADMONSTER(mtmp))
+				continue;
+			if ((mtmp->data->mlet == S_LICH || mtmp->data == &mons[PM_IMP] || mtmp->data == &mons[PM_QUASIT]  
+				|| mtmp->data == &mons[PM_GNOLL_WARDEN] || mtmp->data == &mons[PM_GNOMISH_WIZARD])
+				&& mon_in_room(mtmp, LIBRARY)) {
+				switch (rn2(2) + hallu) {
+				case 0:
+					You("suddenly realize it is quiter than usual.");
+					break;
+				case 1:
+					You_hear("somebody demanding quietness.");
+					break;
+				case 2:
+					You_hear("pages turning in your head.");
+					break;
+				}
+				return;
+			}
+		}
+	}
+
     if (level.flags.has_morgue && !rn2(200)) {
         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
             if (DEADMONSTER(mtmp))

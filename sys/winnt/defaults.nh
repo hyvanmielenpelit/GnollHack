@@ -235,4 +235,3 @@ OPTIONS=hilite_status:condition/slime/red&inverse
 
 # St, Dx, Co, In, Wi, Ch
 OPTIONS=hilite_status:characteristics/up/green/down/red
-

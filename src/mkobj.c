@@ -284,7 +284,10 @@ struct obj *box;
     case ICE_BOX:
         n = 20;
         break;
-    case CHEST:
+	case BOOKSHELF:
+		n = (level_difficulty() >= 13) ? 7 : (level_difficulty() >= 10) ? 5 : 3;
+		break;
+	case CHEST:
         n = box->olocked ? 7 : 5;
         break;
     case LARGE_BOX:
@@ -307,18 +310,23 @@ struct obj *box;
     }
 
     for (n = rn2(n + 1); n > 0; n--) {
-        if (box->otyp == ICE_BOX) {
-            if (!(otmp = mksobj(CORPSE, TRUE, TRUE)))
-                continue;
-            /* Note: setting age to 0 is correct.  Age has a different
-             * from usual meaning for objects stored in ice boxes. -KAA
-             */
-            otmp->age = 0L;
-            if (otmp->timed) {
-                (void) stop_timer(ROT_CORPSE, obj_to_any(otmp));
-                (void) stop_timer(REVIVE_MON, obj_to_any(otmp));
-            }
-        } else {
+		if (box->otyp == ICE_BOX) {
+			if (!(otmp = mksobj(CORPSE, TRUE, TRUE)))
+				continue;
+			/* Note: setting age to 0 is correct.  Age has a different
+			 * from usual meaning for objects stored in ice boxes. -KAA
+			 */
+			otmp->age = 0L;
+			if (otmp->timed) {
+				(void)stop_timer(ROT_CORPSE, obj_to_any(otmp));
+				(void)stop_timer(REVIVE_MON, obj_to_any(otmp));
+			}
+		} else if (box->otyp == BOOKSHELF) {
+			if (rn2(3))
+				otmp = mkobj(SCROLL_CLASS, FALSE);
+			else
+				otmp = mkobj(SPBOOK_CLASS, FALSE);
+		} else {
             register int tprob;
             const struct icp *iprobs = boxiprobs;
 
@@ -923,7 +931,8 @@ boolean artif;
                 otmp->otrapped = !(rn2(10));
                 /*FALLTHRU*/
             case ICE_BOX:
-            case SACK:
+			case BOOKSHELF:
+			case SACK:
             case OILSKIN_SACK:
             case BAG_OF_HOLDING:
                 mkbox_cnts(otmp);

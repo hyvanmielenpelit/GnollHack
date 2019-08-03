@@ -1208,7 +1208,9 @@ wiz_map_levltyp(VOID_ARGS)
             Strcat(dsc, " barracks");
         if (level.flags.has_beehive)
             Strcat(dsc, " hive");
-        if (level.flags.has_swamp)
+		if (level.flags.has_library)
+			Strcat(dsc, " library");
+		if (level.flags.has_swamp)
             Strcat(dsc, " swamp");
         /* level flags */
         if (level.flags.noteleport)

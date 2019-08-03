@@ -2446,7 +2446,10 @@ register boolean newlev;
         case BEEHIVE:
             You("enter a giant beehive!");
             break;
-        case COCKNEST:
+		case LIBRARY:
+			You("enter a library!");
+			break;
+		case COCKNEST:
             You("enter a disgusting nest!");
             break;
         case ANTHOLE:
@@ -2510,7 +2513,10 @@ register boolean newlev;
                 case BEEHIVE:
                     level.flags.has_beehive = 0;
                     break;
-                }
+				case LIBRARY:
+					level.flags.has_library = 0;
+					break;
+				}
             }
             if (rt == COURT || rt == SWAMP || rt == MORGUE || rt == ZOO)
                 for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {

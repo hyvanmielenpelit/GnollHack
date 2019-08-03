@@ -727,7 +727,6 @@ register struct monst* mtmp;
 int handindex;
 {
 	register struct obj* otmp;
-	register int i;
 	boolean strong = (strongmonst(mtmp->data) || mtmp->data->str >= 13);
 	boolean wearing_shield = (mtmp->misc_worn_check & W_ARMS) != 0;
 	int weaponindex = 1; //Start with second hand, if free

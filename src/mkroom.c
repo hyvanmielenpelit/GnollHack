@@ -23,6 +23,7 @@ STATIC_DCL void NDECL(mkshop), FDECL(mkzoo, (int)), NDECL(mkswamp);
 STATIC_DCL void NDECL(mktemple);
 STATIC_DCL coord *FDECL(shrine_pos, (int));
 STATIC_DCL struct permonst *NDECL(morguemon);
+STATIC_DCL struct permonst *FDECL(librarymon, (int));
 STATIC_DCL struct permonst *NDECL(squadmon);
 STATIC_DCL void FDECL(save_room, (int, struct mkroom *));
 STATIC_DCL void FDECL(rest_room, (int, struct mkroom *));
@@ -59,7 +60,10 @@ int roomtype;
         case BEEHIVE:
             mkzoo(BEEHIVE);
             break;
-        case MORGUE:
+		case LIBRARY:
+			mkzoo(LIBRARY);
+			break;
+		case MORGUE:
             mkzoo(MORGUE);
             break;
         case BARRACKS:
@@ -109,7 +113,11 @@ mkshop()
                 mkzoo(BEEHIVE);
                 return;
             }
-            if (*ep == 't' || *ep == 'T' || *ep == '\\') {
+			if (*ep == 'k' || *ep == 'K') { //Kirjasto is library in Finnish
+				mkzoo(LIBRARY);
+				return;
+			}
+			if (*ep == 't' || *ep == 'T' || *ep == '\\') {
                 mkzoo(COURT);
                 return;
             }
@@ -270,6 +278,12 @@ struct mkroom *sroom;
     int sh, tx = 0, ty = 0, goldlim = 0, type = sroom->rtype;
     int rmno = (int) ((sroom - rooms) + ROOMOFFSET);
     coord mm;
+	int librarytype = 0;
+
+	register int roll = rn2(4);
+	int hd = level_difficulty();
+	struct permonst* mainlibrarymonst;
+
 
     sh = sroom->fdoor;
     switch (type) {
@@ -289,7 +303,69 @@ struct mkroom *sroom;
     throne_placed:
         mk_zoo_thronemon(tx, ty);
         break;
-    case BEEHIVE:
+	case LIBRARY:
+
+		if (hd <= 8)
+		{
+			if (roll <= 1)
+				librarytype = 0; //Gnomish wizards
+			else
+				librarytype = 1; //Gnoll wardens
+		}
+		else if (hd <= 12)
+		{
+			if (roll == 0)
+				librarytype = 0; //Gnomish wizards
+			else if (roll == 1)
+				librarytype = 1; //Gnoll wardens
+			else
+				librarytype = 2; //Liches
+		}
+		else
+		{
+			if (roll <= 2)
+				librarytype = 2; //Liches
+			else
+				librarytype = 3; //Mind flayers
+		}
+
+		if (librarytype == 0) // Gnomes
+		{
+			mainlibrarymonst = &mons[PM_GNOMISH_WIZARD];
+		}
+		else if (librarytype == 1) // Gnolls
+		{
+			mainlibrarymonst = &mons[PM_GNOLL_WARDEN];
+		}
+		else if (librarytype == 2) // Liches
+		{
+			if (Inhell || In_endgame(&u.uz)) {
+				mainlibrarymonst = !rn2(4) ? &mons[PM_ARCH_LICH] : &mons[PM_MASTER_LICH];
+			}
+			else
+			{
+				if (hd >= 25)
+					mainlibrarymonst = &mons[PM_MASTER_LICH];
+				if (hd >= 13)
+					mainlibrarymonst = &mons[PM_DEMILICH];
+				else
+					mainlibrarymonst = &mons[PM_LICH];
+			}
+		}
+		else if (librarytype == 3) // Mindflayers
+		{
+			if ((Inhell || In_endgame(&u.uz)) && !rn2(3)) {
+				mainlibrarymonst = &mons[PM_MASTER_MIND_FLAYER];
+			}
+			else
+				mainlibrarymonst = &mons[PM_MIND_FLAYER];
+		}
+		else
+			mainlibrarymonst = &mons[PM_GNOMISH_WIZARD];
+		//Note in library we place only a monster in one in every 2 squares
+
+		/* FALLTHRU: Here we place the mainlibrarymonst */
+	case BEEHIVE:
         tx = sroom->lx + (sroom->hx - sroom->lx + 1) / 2;
         ty = sroom->ly + (sroom->hy - sroom->ly + 1) / 2;
         if (sroom->irregular) {
@@ -301,7 +377,7 @@ struct mkroom *sroom;
             }
         }
         break;
-    case ZOO:
+	case ZOO:
     case LEPREHALL:
         goldlim = 500 * level_difficulty();
         break;
@@ -325,12 +401,23 @@ struct mkroom *sroom;
             /* don't place monster on explicitly placed throne */
             if (type == COURT && IS_THRONE(levl[sx][sy].typ))
                 continue;
-            mon = makemon((type == COURT)
+
+			if (type == LIBRARY && rn2(2)) //LIBRARY gets only one monster in 2 squares, objects in every square
+			{
+				mon = (struct monst*) 0; //No monster
+			}
+			else
+			{
+				mon = makemon((type == COURT)
                            ? courtmon()
                            : (type == BARRACKS)
                               ? squadmon()
                               : (type == MORGUE)
                                  ? morguemon()
+                              : (type == LIBRARY)
+								? (sx == tx && sy == ty
+									? mainlibrarymonst
+									: librarymon(librarytype))
                                  : (type == BEEHIVE)
                                      ? (sx == tx && sy == ty
                                          ? &mons[PM_QUEEN_BEE]
@@ -343,7 +430,9 @@ struct mkroom *sroom;
                                                  ? antholemon()
                                                  : (struct permonst *) 0,
                           sx, sy, MM_ASLEEP);
-            if (mon) {
+			}
+
+			if (mon) {
                 mon->msleeping = 1;
                 if (type == COURT && mon->mpeaceful) {
                     mon->mpeaceful = 0;
@@ -377,7 +466,13 @@ struct mkroom *sroom;
                     (void) mksobj_at(LUMP_OF_ROYAL_JELLY, sx, sy, TRUE,
                                      FALSE);
                 break;
-            case BARRACKS:
+			case LIBRARY:
+				if (!rn2(4)) //Bookshelves are fuller at higher difficulty
+					(void)mksobj_at(BOOKSHELF, sx, sy, TRUE, FALSE);
+				else if(!rn2(level_difficulty() >= 12 ? 3 : 4))
+					(void)mkobj_at(!rn2(4) ? SPBOOK_CLASS : SCROLL_CLASS, sx, sy, FALSE);
+				break;
+			case BARRACKS:
                 if (!rn2(20)) /* the payroll and some loot */
                     (void) mksobj_at((rn2(3)) ? LARGE_BOX : CHEST, sx, sy,
                                      TRUE, FALSE);
@@ -431,7 +526,10 @@ struct mkroom *sroom;
     case BEEHIVE:
         level.flags.has_beehive = 1;
         break;
-    }
+	case LIBRARY:
+		level.flags.has_beehive = 1;
+		break;
+	}
 }
 
 /* make a swarm of undead around mm */
@@ -480,6 +578,53 @@ morguemon()
                      : (i < 40) ? &mons[PM_WRAITH]
                                 : mkclass(S_ZOMBIE, 0));
 }
+
+
+STATIC_OVL struct permonst*
+librarymon(type)
+int type;
+{
+	int hd = level_difficulty();
+	register int i = rn2(100);
+
+	if(type == 0) // Gnomes
+	{
+		return &mons[PM_GNOMISH_WIZARD];
+	}
+	else if (type == 1) // Gnolls
+	{
+		return &mons[PM_GNOLL_WARDEN];
+	}
+	else if (type == 2) // Liches
+	{
+		if (i <= (hd >= 17 ? 20 : hd >= 13 ? 15 : 10)) // Another main 
+		{
+			if ((hd >= 25 || Inhell || In_endgame(&u.uz)) && !rn2(4))
+				return &mons[PM_MASTER_LICH];
+			else if((hd >= 13 || Inhell || In_endgame(&u.uz)) && !rn2(2))
+				return &mons[PM_DEMILICH];
+			else
+				return &mons[PM_LICH];
+		}
+		else if(i <= (hd >= 17 ? 40 : hd >= 13 ? 30 : 20))
+			return &mons[PM_LICH];
+		else if (i <= 65)
+			return &mons[PM_QUASIT];
+		else if (i <= 100)
+			return &mons[PM_IMP];
+	}
+	else if (type == 3) // Mindflayers
+	{
+		if ((Inhell || In_endgame(&u.uz)) && !rn2(4)) {
+			return &mons[PM_MASTER_MIND_FLAYER];
+		}
+		else
+			return &mons[PM_MIND_FLAYER];
+	}
+
+	return (struct permonst*) 0;
+}
+
 
 struct permonst *
 antholemon()
