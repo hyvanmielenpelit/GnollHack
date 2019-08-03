@@ -190,7 +190,7 @@ register struct monst *mtmp;
 			break;
 		case PM_GNOLL_WARDEN:
 			if (rn2(7))
-				(void)mongets(mtmp, SHAMANISTIC_ROBE);
+				(void)mongets(mtmp, GNOLLISH_HAIRCLOTH_ROBE);
 			if (!rn2(3))
 				(void)mongets(mtmp, FLAIL);
 			else if (!rn2(2))

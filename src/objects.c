@@ -477,7 +477,7 @@ ARMOR("studded leather armor", None,
 ARMOR("gnollish studded leather armor", "crude studded leather armor",
       0, 0, 0,  0, 12, 3, 175,  15,  8, 1,  ARM_SUIT, LEATHER, HI_LEATHER),
 ARMOR("ring mail", None,
-      1, 0, 0,  0, 50, 5, 500,  30,  7, 1,  ARM_SUIT, IRON, HI_METAL),
+      1, 0, 0,  0, 45, 5, 500,  30,  7, 1,  ARM_SUIT, IRON, HI_METAL),
 ARMOR("orcish ring mail", "crude ring mail",
       0, 0, 0,  0, 20, 5, 450,  15,  8, 1,  ARM_SUIT, IRON, CLR_BLACK),
 ARMOR("leather armor", None,
@@ -528,23 +528,25 @@ CLOAK("cloak of integrity", "hard woven cloak",
 CLOAK("cloak of displacement", "piece of cloth",
       0, 1,  DISPLACED,  7, 0, 10, 250,  9, 1,  CLOTH, HI_CLOTH),
 
-/* robes */
+/* robes and gowns */
 /* with shuffled appearances... */
 ROBE("robe", "old robe", //STARTMARKER 1 & 2
-	0, 0, 0,		  10, 1, 20,  25,  9, 2, CLOTH, CLR_RED),
+	0, 0, 0,		  10, 1, 20,  25,  10, 2, CLOTH, CLR_RED),
 ROBE("robe of protection", "golden ornamental robe",
-	0, 1, PROTECTION, 10, 1, 25, 400,  6, 3, CLOTH, HI_GOLD),
+	0, 1, PROTECTION, 10, 1, 25, 400,  7, 3, CLOTH, HI_GOLD),
 ROBE("robe of magic resistance", "silvery ornamental robe",
-	0, 1, ANTIMAGIC,   9, 1, 25, 400,  8, 2, CLOTH, HI_SILVER),
+	0, 1, ANTIMAGIC,   9, 1, 25, 400,  9, 2, CLOTH, HI_SILVER),
 ROBE("robe of the archmagi", "shining blue robe",
-	0, 1, 0,		   5, 2, 30, 400,  8, 3, CLOTH, HI_ZAP),
+	0, 1, 0,		   5, 2, 30, 400,  9, 3, CLOTH, HI_ZAP),
 ROBE("robe of starry wisdom", "shining black robe", //ENDMARKER 2
-	0, 1, 0,		   5, 2, 30, 400,  8, 3, CLOTH, CLR_BLACK),
+	0, 1, 0,		   5, 2, 30, 400,  9, 3, CLOTH, CLR_BLACK),
 /* without shuffled appearances... */
 ROBE("bathrobe", "soft cotton robe",
-	0, 1, 0,		   6, 1, 25,   5, 10, 0, CLOTH, CLR_WHITE),
-ROBE("shamanistic robe", "crude robe",
-	0, 0, 0,		   7, 1, 15,  25,  9, 2, CLOTH, CLR_RED),
+	0, 0, 0,		   6, 1, 25,   5, 10, 0, CLOTH, CLR_WHITE),
+ROBE("clerical gown", None,
+	1, 0, 0,		   6, 1, 15,  25, 10, 2, CLOTH, CLR_BLACK),
+ROBE("gnollish haircloth robe", "crude robe",
+	0, 0, 0,		   6, 1, 30,  10,  9, 2, CLOTH, CLR_BROWN),
 ROBE("mummy wrapping", None, //ENDMARKER 1
 	1, 0, 0,		   0, 0,  3,   2, 10, 1, CLOTH, CLR_GRAY),
 	/* worn mummy wrapping blocks invisibility */

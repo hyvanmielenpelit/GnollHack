@@ -692,7 +692,8 @@ Robe_on(VOID_ARGS)
 	   keep this uncommented in case somebody adds a new one which does */
 	switch (uarmo->otyp) {
 	case ROBE:
-	case SHAMANISTIC_ROBE:
+	case GNOLLISH_HAIRCLOTH_ROBE:
+	case CLERICAL_GOWN:
 	case BATHROBE:
 	case ROBE_OF_PROTECTION:
 		makeknown(uarmo->otyp);
@@ -728,7 +729,8 @@ Robe_off(VOID_ARGS)
 	   keep this uncommented in case somebody adds a new one which does */
 	switch (uarmo->otyp) {
 	case ROBE:
-	case SHAMANISTIC_ROBE:
+	case GNOLLISH_HAIRCLOTH_ROBE:
+	case CLERICAL_GOWN:
 	case BATHROBE:
 	case ROBE_OF_PROTECTION:
 	case ROBE_OF_MAGIC_RESISTANCE:
