@@ -719,6 +719,44 @@ register struct monst *mtmp;
     return (struct obj *) 0;
 }
 
+
+/* select a nth suitable hand to hand weapon for the marilith */
+struct obj*
+select_marilith_nth_hwep(mtmp, handindex)
+register struct monst* mtmp;
+int handindex;
+{
+	register struct obj* otmp;
+	register int i;
+	boolean strong = (strongmonst(mtmp->data) || mtmp->data->str >= 13);
+	boolean wearing_shield = (mtmp->misc_worn_check & W_ARMS) != 0;
+	int weaponindex = 1; //Start with second hand, if free
+
+	if(!mtmp)
+		return (struct obj*) 0;
+
+	if (MON_WEP(mtmp) && (handindex == 1 || (handindex ==2 && (objects[MON_WEP(mtmp)->otyp].oc_bimanual || wearing_shield))))
+		return MON_WEP(mtmp);
+
+	//Never select MON_WEP otherwise select weaponindex'th first suitable weapon, if none, then return 0
+	if (objects[MON_WEP(mtmp)->otyp].oc_bimanual || wearing_shield)
+		weaponindex++; //Second hand is not free, previously returned MON_WEP
+
+	//Is blade, sword, or axe, extra hands do not use two-handed weapons for simplicity (maybe too weak)
+	for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
+		if (otmp != MON_WEP(mtmp) && (is_blade(otmp) || is_sword(otmp) || is_axe(otmp)) && !objects[otmp->otyp].oc_bimanual
+			&& !(objects[otmp->otyp].oc_material == SILVER && mon_hates_silver(mtmp)))
+		{
+			//Suitable weapon found
+			weaponindex++;
+			if (weaponindex == handindex)
+				return otmp;
+		}
+	}
+	/* failure, no weapons left for extra hands */
+	return (struct obj*) 0;
+}
+
 /* Called after polymorphing a monster, robbing it, etc....  Monsters
  * otherwise never unwield stuff on their own.  Might print message.
  */

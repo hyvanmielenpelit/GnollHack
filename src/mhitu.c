@@ -14,7 +14,7 @@ STATIC_DCL int FDECL(passiveum, (struct permonst *, struct monst *,
 STATIC_DCL void FDECL(mayberem, (struct monst *, const char *,
                                  struct obj *, const char *));
 STATIC_DCL boolean FDECL(diseasemu, (struct permonst *));
-STATIC_DCL int FDECL(hitmu, (struct monst *, struct attack *));
+STATIC_DCL int FDECL(hitmu, (struct monst *, struct attack *, struct obj*));
 STATIC_DCL int FDECL(gulpmu, (struct monst *, struct attack *));
 STATIC_DCL int FDECL(explmu, (struct monst *, struct attack *, BOOLEAN_P));
 STATIC_DCL void FDECL(missmu, (struct monst *, BOOLEAN_P, struct attack *));
@@ -648,6 +648,7 @@ register struct monst *mtmp;
     }
 
 	int tmp2 = tmp;
+	int weaponattackcount = 0;
 
     for (i = 0; i < NATTK; i++) {
 		tmp = tmp2; // Revert hit bonus to original value
@@ -672,7 +673,7 @@ register struct monst *mtmp;
                     if (tmp > (j = rnd(20 + i))) {
                         if (mattk->aatyp != AT_KICK
                             || !thick_skinned(youmonst.data))
-                            sum[i] = hitmu(mtmp, mattk);
+                            sum[i] = hitmu(mtmp, mattk, (struct obj*) 0);
                     } else
                         missmu(mtmp, (tmp == j), mattk);
                 } else {
@@ -687,7 +688,7 @@ register struct monst *mtmp;
             /* Note: if displaced, prev attacks never succeeded */
             if ((!range2 && i >= 2 && sum[i - 1] && sum[i - 2])
                 || mtmp == u.ustuck)
-                sum[i] = hitmu(mtmp, mattk);
+                sum[i] = hitmu(mtmp, mattk, (struct obj*) 0);
             break;
 
         case AT_GAZE: /* can affect you either ranged or not */
@@ -754,15 +755,20 @@ register struct monst *mtmp;
                         break;
                 }
                 if (foundyou) {
-                    mon_currwep = MON_WEP(mtmp);
-                    if (mon_currwep) {
+					weaponattackcount++;
+					if(mtmp->data == &mons[PM_MARILITH])
+						mon_currwep = select_marilith_nth_hwep(mtmp, weaponattackcount);
+					else
+	                    mon_currwep = MON_WEP(mtmp);
+
+					if (mon_currwep) {
                         hittmp = hitval(mon_currwep, &youmonst);
                         tmp += hittmp;
                         mswings(mtmp, mon_currwep);
                     }
 					//TO-HIT IS DONE HERE
                     if (tmp > (j = dieroll = rnd(20 + i)))
-                        sum[i] = hitmu(mtmp, mattk);
+                        sum[i] = hitmu(mtmp, mattk, mon_currwep);
                     else
                         missmu(mtmp, (tmp == j), mattk);
                 } else {
@@ -976,9 +982,10 @@ struct monst *mon;
  *             attacking you
  */
 STATIC_OVL int
-hitmu(mtmp, mattk)
+hitmu(mtmp, mattk, omonwep)
 register struct monst *mtmp;
 register struct attack *mattk;
+register struct obj* omonwep;
 {
     struct permonst *mdat = mtmp->data;
     int uncancelled, ptmp;
@@ -1015,7 +1022,7 @@ register struct attack *mattk;
 
 	dmg = 0;
     /*  First determine the base damage done */
-	struct obj* mweapon = MON_WEP(mtmp);
+	struct obj* mweapon = omonwep; // MON_WEP(mtmp);
 	if (mweapon && mattk->aatyp == AT_WEAP)
 	{
 		//Use weapon damage
@@ -1117,7 +1124,7 @@ register struct attack *mattk;
 						: "crushed");
 			}
         } else { /* hand to hand weapon */
-            struct obj *otmp = mon_currwep;
+			struct obj* otmp = omonwep; //mon_currwep;
 
             if (mattk->aatyp == AT_WEAP && otmp) {
 				int tmp;

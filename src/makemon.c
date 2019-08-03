@@ -577,12 +577,12 @@ register struct monst *mtmp;
             (void) mongets(mtmp, rn2(4) ? TRIDENT : BULLWHIP);
             break;
 		case PM_MARILITH:
-			(void)mongets(mtmp, !rn2(2) ? LONG_SWORD : !rn2(2) ? SCIMITAR : AXE);
-			(void)mongets(mtmp, !rn2(2) ? LONG_SWORD : !rn2(2) ? SCIMITAR : AXE);
-			(void)mongets(mtmp, !rn2(2) ? LONG_SWORD : !rn2(2) ? SCIMITAR : AXE);
-			(void)mongets(mtmp, !rn2(2) ? LONG_SWORD : !rn2(2) ? SCIMITAR : AXE);
-			(void)mongets(mtmp, !rn2(2) ? LONG_SWORD : !rn2(2) ? SCIMITAR : AXE);
-			(void)mongets(mtmp, !rn2(2) ? LONG_SWORD : !rn2(2) ? SCIMITAR : AXE);
+			(void)mongets(mtmp, !rn2(5) ? LONG_SWORD : !rn2(4) ? SCIMITAR : !rn2(3) ? SHORT_SWORD : !rn2(2) ? BONE_DAGGER : AXE);
+			(void)mongets(mtmp, !rn2(5) ? LONG_SWORD : !rn2(4) ? SCIMITAR : !rn2(3) ? SHORT_SWORD : !rn2(2) ? BONE_DAGGER : AXE);
+			(void)mongets(mtmp, !rn2(5) ? LONG_SWORD : !rn2(4) ? SCIMITAR : !rn2(3) ? SHORT_SWORD : !rn2(2) ? BONE_DAGGER : AXE);
+			(void)mongets(mtmp, !rn2(5) ? LONG_SWORD : !rn2(4) ? SCIMITAR : !rn2(3) ? SHORT_SWORD : !rn2(2) ? DAGGER : AXE);
+			(void)mongets(mtmp, !rn2(5) ? LONG_SWORD : !rn2(4) ? SCIMITAR : !rn2(3) ? SHORT_SWORD : !rn2(2) ? DAGGER : AXE);
+			(void)mongets(mtmp, !rn2(5) ? LONG_SWORD : !rn2(4) ? SCIMITAR : !rn2(3) ? SHORT_SWORD : !rn2(2) ? DAGGER : AXE);
 			break;
 		case PM_PIT_FIEND:
 			(void)mongets(mtmp, INFERNAL_ANCUS);
