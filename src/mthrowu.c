@@ -447,7 +447,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 		if (otmp->special_enchantment) {
 			switch(otmp->special_enchantment)
 			{
-			case MINOR_COLD_ENCHANTMENT:
+			case COLD_ENCHANTMENT:
 				if (resists_cold(mtmp)) {
 					if (vis)
 						pline_The("cold doesn't seem to affect %s.",
@@ -463,7 +463,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 				if (!rn2(10))
 					otmp->special_enchantment = 0;
 				break;
-			case MINOR_FIRE_ENCHANTMENT:
+			case FIRE_ENCHANTMENT:
 				if (resists_fire(mtmp)) {
 					if (vis)
 						pline_The("fire doesn't seem to affect %s.",
@@ -479,7 +479,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 				if (!rn2(3))
 					otmp->special_enchantment = 0;
 				break;
-			case MINOR_LIGHTNING_ENCHANTMENT:
+			case LIGHTNING_ENCHANTMENT:
 				if (resists_elec(mtmp)) {
 					if (vis)
 						pline_The("lightning doesn't seem to affect %s.",
@@ -495,8 +495,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 				}
 				otmp->special_enchantment = 0;
 				break;
-			case MAJOR_DEATH_ENCHANTMENT:
-			case MINOR_DEATH_ENCHANTMENT:
+			case DEATH_ENCHANTMENT:
 				if (resists_death(mtmp) || is_not_living(mtmp->data) || is_demon(mtmp->data) || is_vampshifter(mtmp)) {
 					if (vis)
 						pline_The("death magic doesn't seem to affect %s.",
@@ -510,12 +509,6 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 					damage = mtmp->mhp;
 				}
 				otmp->special_enchantment = 0;
-				break;
-			case MAJOR_COLD_ENCHANTMENT:
-				break;
-			case MAJOR_FIRE_ENCHANTMENT:
-				break;
-			case MAJOR_LIGHTNING_ENCHANTMENT:
 				break;
 			default:
 				break;
@@ -829,25 +822,21 @@ struct obj *obj;         /* missile (or stack providing it) */
 				
 				/* if damage triggered life-saving,
 				   major death magic is limited to minor death magic */
-				extra_enchantment_damage(onmbuf, (singleobj->special_enchantment == MAJOR_DEATH_ENCHANTMENT && u.umortality > oldumort) ? MINOR_DEATH_ENCHANTMENT : singleobj->special_enchantment, knmbuf);
+				extra_enchantment_damage(onmbuf, singleobj->special_enchantment, knmbuf, (u.umortality > oldumort));
 			
 				//Remove special enchantment
 				switch (singleobj->special_enchantment)
 				{
-				case MINOR_COLD_ENCHANTMENT:
-				case MAJOR_COLD_ENCHANTMENT:
+				case COLD_ENCHANTMENT:
 					if (!rn2(10))
 						singleobj->special_enchantment = 0;
 					break;
-				case MINOR_FIRE_ENCHANTMENT:
-				case MAJOR_FIRE_ENCHANTMENT:
+				case FIRE_ENCHANTMENT:
 					if (!rn2(3))
 						singleobj->special_enchantment = 0;
 					break;
-				case MINOR_LIGHTNING_ENCHANTMENT:
-				case MAJOR_LIGHTNING_ENCHANTMENT:
-				case MINOR_DEATH_ENCHANTMENT:
-				case MAJOR_DEATH_ENCHANTMENT:
+				case LIGHTNING_ENCHANTMENT:
+				case DEATH_ENCHANTMENT:
 					singleobj->special_enchantment = 0;
 					break;
 				default:

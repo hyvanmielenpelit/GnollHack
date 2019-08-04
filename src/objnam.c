@@ -460,13 +460,13 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         if (is_poisonable(obj) && obj->opoisoned)
             Strcpy(buf, "poisoned ");
 		
-		if (obj->special_enchantment == MINOR_COLD_ENCHANTMENT || obj->special_enchantment == MAJOR_COLD_ENCHANTMENT)
+		if (obj->special_enchantment == COLD_ENCHANTMENT)
 			Strcat(buf, "cold-enchanted ");
-		else if (obj->special_enchantment == MINOR_FIRE_ENCHANTMENT || obj->special_enchantment == MAJOR_FIRE_ENCHANTMENT)
+		else if (obj->special_enchantment == FIRE_ENCHANTMENT)
 			Strcat(buf, "fire-enchanted ");
-		else if (obj->special_enchantment == MINOR_LIGHTNING_ENCHANTMENT || obj->special_enchantment == MAJOR_LIGHTNING_ENCHANTMENT)
+		else if (obj->special_enchantment == LIGHTNING_ENCHANTMENT)
 			Strcat(buf, "lightning-enchanted ");
-		else if (obj->special_enchantment == MINOR_DEATH_ENCHANTMENT || obj->special_enchantment == MAJOR_DEATH_ENCHANTMENT)
+		else if (obj->special_enchantment == DEATH_ENCHANTMENT)
 			Strcat(buf, "death-enchanted ");
 		/*FALLTHRU*/
     case VENOM_CLASS:
@@ -959,18 +959,18 @@ unsigned doname_flags;
         ispoisoned = TRUE;
     }
 
-	if (!strncmp(bp, "cold-enchanted ", 15) && (obj->special_enchantment == MINOR_COLD_ENCHANTMENT || obj->special_enchantment == MAJOR_COLD_ENCHANTMENT)) {
+	if (!strncmp(bp, "cold-enchanted ", 15) && obj->special_enchantment == COLD_ENCHANTMENT) {
 		bp += 15;
 		isenchanted = obj->special_enchantment;
-	} else if (!strncmp(bp, "fire-enchanted ", 15) && (obj->special_enchantment == MINOR_FIRE_ENCHANTMENT || obj->special_enchantment == MAJOR_FIRE_ENCHANTMENT)) {
+	} else if (!strncmp(bp, "fire-enchanted ", 15) && obj->special_enchantment == FIRE_ENCHANTMENT) {
 		bp += 15;
 		isenchanted = obj->special_enchantment;
 	}
-	else if (!strncmp(bp, "lightning-enchanted ", 20) && (obj->special_enchantment == MINOR_LIGHTNING_ENCHANTMENT || obj->special_enchantment == MAJOR_LIGHTNING_ENCHANTMENT)) {
+	else if (!strncmp(bp, "lightning-enchanted ", 20) && obj->special_enchantment == LIGHTNING_ENCHANTMENT) {
 		bp += 20;
 		isenchanted = obj->special_enchantment;
 	}
-	else if (!strncmp(bp, "death-enchanted ", 16) && (obj->special_enchantment == MINOR_DEATH_ENCHANTMENT || obj->special_enchantment == MAJOR_DEATH_ENCHANTMENT)) {
+	else if (!strncmp(bp, "death-enchanted ", 16) && obj->special_enchantment == DEATH_ENCHANTMENT) {
 		bp += 16;
 		isenchanted = obj->special_enchantment;
 	}
@@ -1088,20 +1088,16 @@ unsigned doname_flags;
 		{
 			switch (isenchanted)
 			{
-			case MINOR_COLD_ENCHANTMENT:
-			case MAJOR_COLD_ENCHANTMENT:
+			case COLD_ENCHANTMENT:
 				Strcat(prefix, "cold-enchanted ");
 				break;
-			case MINOR_FIRE_ENCHANTMENT:
-			case MAJOR_FIRE_ENCHANTMENT:
+			case FIRE_ENCHANTMENT:
 				Strcat(prefix, "fire-enchanted ");
 				break;
-			case MINOR_LIGHTNING_ENCHANTMENT:
-			case MAJOR_LIGHTNING_ENCHANTMENT:
+			case LIGHTNING_ENCHANTMENT:
 				Strcat(prefix, "lightning-enchanted ");
 				break;
-			case MINOR_DEATH_ENCHANTMENT:
-			case MAJOR_DEATH_ENCHANTMENT:
+			case DEATH_ENCHANTMENT:
 				Strcat(prefix, "death-enchanted ");
 				break;
 			default:
@@ -3103,19 +3099,19 @@ struct obj *no_wish;
 		}
 		else if (!strncmpi(bp, "cold-enchanted ", l = 15))
 		{
-			special_enchantment = MINOR_COLD_ENCHANTMENT;
+			special_enchantment = COLD_ENCHANTMENT;
 		}
 		else if (!strncmpi(bp, "fire-enchanted ", l = 15))
 		{
-			special_enchantment = MINOR_FIRE_ENCHANTMENT;
+			special_enchantment = FIRE_ENCHANTMENT;
 		}
 		else if (!strncmpi(bp, "lightning-enchanted ", l = 20))
 		{
-			special_enchantment = MINOR_LIGHTNING_ENCHANTMENT;
+			special_enchantment = LIGHTNING_ENCHANTMENT;
 		}
 		else if (!strncmpi(bp, "death-enchanted ", l = 16))
 		{
-			special_enchantment = MINOR_DEATH_ENCHANTMENT;
+			special_enchantment = DEATH_ENCHANTMENT;
 		}
 		else if (!strncmpi(bp, "trapped ", l = 8)) {
             trapped = 0; /* undo any previous "untrapped" */

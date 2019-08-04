@@ -346,10 +346,11 @@ boolean thrown_weapon; /* thrown weapons are less deadly */
 
 /* called when an attack or trap has poisoned hero (used to be in mon.c) */
 void
-extra_enchantment_damage(reason, sptype, pkiller)
+extra_enchantment_damage(reason, sptype, pkiller, lifesavedalready)
 const char* reason,    /* controls what messages we display */
 * pkiller;   /* for score+log file if fatal */
 int sptype;
+boolean lifesavedalready;
 {
 	int i, loss, kprefix = KILLED_BY_AN;
 
@@ -370,7 +371,7 @@ int sptype;
 	}
 
 	//Effects
-	if(sptype == MINOR_COLD_ENCHANTMENT || sptype == MAJOR_COLD_ENCHANTMENT)
+	if(sptype == COLD_ENCHANTMENT)
 	{
 		pline("%s%s %s cold-enchanted!",
 			isupper((uchar)* reason) ? "" : "The ", reason,
@@ -382,7 +383,7 @@ int sptype;
 		}
 
 
-		if (sptype == MINOR_COLD_ENCHANTMENT) {
+		if (sptype == COLD_ENCHANTMENT) {
 			loss = rnd(6);
 			losehp(loss, pkiller, kprefix); 
 		}
@@ -393,7 +394,7 @@ int sptype;
 			//+Slow Damage
 		}
 	}
-	else if (sptype == MINOR_FIRE_ENCHANTMENT || sptype == MAJOR_FIRE_ENCHANTMENT)
+	else if (sptype == FIRE_ENCHANTMENT)
 	{
 		pline("%s%s %s fire-enchanted!",
 			isupper((uchar)* reason) ? "" : "The ", reason,
@@ -405,7 +406,7 @@ int sptype;
 		}
 
 
-		if (sptype == MINOR_FIRE_ENCHANTMENT) {
+		if (sptype == FIRE_ENCHANTMENT) {
 			loss = d(2, 6);
 			losehp(loss, pkiller, kprefix); 
 		}
@@ -416,7 +417,7 @@ int sptype;
 			losehp(loss, pkiller, kprefix); 
 		}
 	}
-	else if (sptype == MINOR_LIGHTNING_ENCHANTMENT || sptype == MAJOR_LIGHTNING_ENCHANTMENT)
+	else if (sptype == LIGHTNING_ENCHANTMENT)
 	{
 		pline("%s%s %s lightning-enchanted!",
 			isupper((uchar)* reason) ? "" : "The ", reason,
@@ -428,7 +429,7 @@ int sptype;
 		}
 
 
-		if (sptype == MINOR_LIGHTNING_ENCHANTMENT) {
+		if (sptype == LIGHTNING_ENCHANTMENT) {
 			loss = d(4, 6);
 			losehp(loss, pkiller, kprefix);
 		}
@@ -439,7 +440,7 @@ int sptype;
 			losehp(loss, pkiller, kprefix); 
 		}
 	}
-	else if (sptype == MINOR_DEATH_ENCHANTMENT || sptype == MAJOR_DEATH_ENCHANTMENT)
+	else if (sptype == DEATH_ENCHANTMENT)
 	{
 		pline("%s%s %s imbued by death magic!",
 			isupper((uchar)* reason) ? "" : "The ", reason,
@@ -451,42 +452,10 @@ int sptype;
 		}
 
 
-		if (sptype == MINOR_DEATH_ENCHANTMENT) {
+		if (lifesavedalready) {
+			//Just do 10d6 damage if life was saved by amulet of life saving
 			loss = rn1(10, 6);
 			losehp(loss, pkiller, kprefix);
-
-			//If still alive
-			if (adjattrib(A_CON, -rn2(2), 1))
-			{
-				if (ACURR(A_CON) == 25)
-					You_feel("sick inside.");
-				else if (ABASE(A_CON) < ATTRMIN(A_CON))
-				{
-					static NEARDATA const char deathmagic[] = "death magic";
-
-					if (Lifesaved) {
-						Strcpy(killer.name, deathmagic);
-						killer.format = KILLED_BY;
-						done(DIED);
-						/* amulet of life saving has now been used up */
-						pline("Unfortunately your life energy is still gone.");
-						/* sanity check against adding other forms of life-saving */
-						u.uprops[LIFESAVED].extrinsic =
-							u.uprops[LIFESAVED].intrinsic = 0L;
-					}
-					else {
-						pline("The last vestiges of your life energy fade away.");
-					}
-					Strcpy(killer.name, deathmagic);
-					killer.format = KILLED_BY;
-					done(DIED);
-					/* can only get here when in wizard or explore mode and user has
-						explicitly chosen not to die; arbitrarily boost intelligence */
-					ABASE(A_CON) = ATTRMIN(A_CON) + 2;
-					You_feel("like a scarecrow.");
-					context.botl = TRUE;
-				}
-			}
 		}
 		else
 		{

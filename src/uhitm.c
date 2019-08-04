@@ -1177,8 +1177,7 @@ int dieroll;
 	if (obj && obj->special_enchantment > 0) {
 		switch (obj->special_enchantment)
 		{
-		case MINOR_COLD_ENCHANTMENT:
-		case MAJOR_COLD_ENCHANTMENT:
+		case COLD_ENCHANTMENT:
 			if (resists_cold(mon))
 				needenchantmsg = -obj->special_enchantment;
 			else
@@ -1192,8 +1191,7 @@ int dieroll;
 				unenchantmsg = TRUE;
 			}
 			break;
-		case MINOR_FIRE_ENCHANTMENT:
-		case MAJOR_FIRE_ENCHANTMENT:
+		case FIRE_ENCHANTMENT:
 			if (resists_fire(mon))
 				needenchantmsg = -obj->special_enchantment;
 			else
@@ -1207,8 +1205,7 @@ int dieroll;
 				unenchantmsg = TRUE;
 			}
 			break;
-		case MINOR_LIGHTNING_ENCHANTMENT:
-		case MAJOR_LIGHTNING_ENCHANTMENT:
+		case LIGHTNING_ENCHANTMENT:
 			if (resists_elec(mon))
 				needenchantmsg = -obj->special_enchantment;
 			else
@@ -1220,19 +1217,7 @@ int dieroll;
 			/* defer "obj is no longer enchanted" until after hit message */
 			unenchantmsg = TRUE;
 			break;
-		case MINOR_DEATH_ENCHANTMENT:
-			if (resists_death(mon) || is_not_living(mon->data) || is_demon(mon->data) || is_vampshifter(mon))
-				needenchantmsg = -obj->special_enchantment;
-			else
-			{
-				needenchantmsg = obj->special_enchantment;
-				tmp += d(10, 6);
-			}
-			obj->special_enchantment = 0;
-			/* defer "obj is no longer enchanted" until after hit message */
-			unenchantmsg = TRUE;
-			break;
-		case MAJOR_DEATH_ENCHANTMENT:
+		case DEATH_ENCHANTMENT:
 			if (resists_death(mon) || is_not_living(mon->data) || is_demon(mon->data) || is_vampshifter(mon))
 				needenchantmsg = -obj->special_enchantment;
 			else
@@ -1249,7 +1234,7 @@ int dieroll;
 			break;
 		}
 
-		if (obj->special_enchantment == MINOR_DEATH_ENCHANTMENT || obj->special_enchantment == MAJOR_DEATH_ENCHANTMENT)
+		if (obj->special_enchantment == DEATH_ENCHANTMENT)
 		{
 			if (Role_if(PM_SAMURAI)) {
 				You("dishonorably use a death-enchanted weapon!");
@@ -1363,18 +1348,29 @@ int dieroll;
     }
 
     if (!hittxt /*( thrown => obj exists )*/
-        && (!destroyed
+        && (1 == 1 //!destroyed
             || (thrown && m_shot.n > 1 && m_shot.o == obj->otyp))) {
-        if (thrown)
-            hit(mshot_xname(obj), mon, exclam(tmp), tmp);
-        else if (!flags.verbose)
-            You("hit it for %d damage.", damagedealt);
-        else
-            You("%s %s for %d damage%s",
-                (obj && (is_shield(obj) || obj->otyp == HEAVY_IRON_BALL))
-                  ? "bash" : Role_if(PM_BARBARIAN) ? "smite" : "hit",
-                mon_nam(mon), damagedealt, canseemon(mon) ? exclam(tmp) : ".");
-    }
+		if (thrown)
+			hit(mshot_xname(obj), mon, exclam(destroyed ? 100 : tmp), destroyed ? -1 : tmp);
+		else if (!destroyed) {
+			if(!flags.verbose)
+				You("hit it for %d damage.", damagedealt);
+			else
+				You("%s %s for %d damage%s",
+				(obj && (is_shield(obj) || obj->otyp == HEAVY_IRON_BALL))
+					? "bash" : Role_if(PM_BARBARIAN) ? "smite" : "hit",
+					mon_nam(mon), damagedealt, canseemon(mon) ? exclam(tmp) : ".");
+		}
+		else {
+			if (!flags.verbose)
+				You("hit it.");
+			else
+				You("%s %s%s",
+				(obj && (is_shield(obj) || obj->otyp == HEAVY_IRON_BALL))
+					? "bash" : Role_if(PM_BARBARIAN) ? "smite" : "hit",
+					mon_nam(mon), canseemon(mon) ? exclam(tmp) : ".");
+		}
+	}
 
     if (silvermsg) {
         const char *fmt;
@@ -1447,39 +1443,29 @@ int dieroll;
 	{
 		switch (needenchantmsg)
 		{
-		case -MINOR_COLD_ENCHANTMENT:
-		case -MAJOR_COLD_ENCHANTMENT:
+		case -COLD_ENCHANTMENT:
 			pline_The("cold doesn't seem to affect %s.", mon_nam(mon));
 			break;
-		case -MINOR_FIRE_ENCHANTMENT:
-		case -MAJOR_FIRE_ENCHANTMENT:
+		case -FIRE_ENCHANTMENT:
 			pline_The("fire doesn't seem to affect %s.", mon_nam(mon));
 			break;
-		case -MINOR_LIGHTNING_ENCHANTMENT:
-		case -MAJOR_LIGHTNING_ENCHANTMENT:
+		case -LIGHTNING_ENCHANTMENT:
 			pline_The("electricity doesn't seem to affect %s.", mon_nam(mon));
 			break;
-		case -MINOR_DEATH_ENCHANTMENT:
-		case -MAJOR_DEATH_ENCHANTMENT:
+		case -DEATH_ENCHANTMENT:
 			pline_The("death magic doesn't seem to affect %s.", mon_nam(mon));
 			break;
-		case MINOR_COLD_ENCHANTMENT:
-		case MAJOR_COLD_ENCHANTMENT:
+		case COLD_ENCHANTMENT:
 			pline_The("cold sears %s.", mon_nam(mon));
 			break;
-		case MINOR_FIRE_ENCHANTMENT:
-		case MAJOR_FIRE_ENCHANTMENT:
+		case FIRE_ENCHANTMENT:
 			pline_The("fire burns %s.", mon_nam(mon));
 			break;
-		case MINOR_LIGHTNING_ENCHANTMENT:
-		case MAJOR_LIGHTNING_ENCHANTMENT:
+		case LIGHTNING_ENCHANTMENT:
 			pline("%s is jolted by lightning.", Monnam(mon));
 			break;
-		case MINOR_DEATH_ENCHANTMENT:
+		case DEATH_ENCHANTMENT:
 			pline("%s feels its life energy draining away.", Monnam(mon));
-			break;
-		case MAJOR_DEATH_ENCHANTMENT:
-			pline_The("%s is slain!", Monnam(mon));
 			break;
 		default:
 			pline_The("enchantment doesn't seem to affect %s.", mon_nam(mon));
@@ -1494,7 +1480,7 @@ int dieroll;
 			xkilled(mon, XKILL_NOMSG);
 		destroyed = TRUE; /* return FALSE; */
 	} else if (enchantkilled) {
-		pline_The("death magic was deadly...");
+		pline_The("magic was deadly...");
 		if (!already_killed)
 			xkilled(mon, XKILL_NOMSG);
 		destroyed = TRUE; /* return FALSE; */

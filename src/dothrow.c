@@ -1189,12 +1189,22 @@ boolean twoweap; /* used to restore twoweapon mode if wielded weapon returns */
                        && weapon_type(uwep) == P_CROSSBOW);
 		if (is_ammo(obj)) {
 			if (ammo_and_launcher(obj, uwep)) {
-				baserange = (crossbowing ? 18 : (int)ACURRSTR);
+				if (crossbowing)
+				{
+					if (obj->otyp == HEAVY_CROSSBOW)
+						baserange = 24;
+					else if (obj->otyp == HAND_CROSSBOW)
+						baserange = 9;
+					else
+						baserange = 18;
+				}
+				else
+					baserange = max(1, (int)ACURRSTR); //18 at 18 STR
 			}
 			else if (obj->oclass != GEM_CLASS) //Ammo of launchers without the correct launcher
-				baserange = (int)(ACURRSTR / 3);
+				baserange = max(1, (int)(ACURRSTR / 3)); // 6 at 18 STR, 3 at 9 STR
 			else //Stones being thrown
-				baserange = (int)(ACURRSTR / 2);
+				baserange = max(1, (int)((ACURRSTR)/ 2)); //9 at 18 STR, 4 at 9 STR 
 		}
 		else //Normal thrown weapons are half distance
 		{
