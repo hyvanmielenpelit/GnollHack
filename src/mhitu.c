@@ -756,8 +756,8 @@ register struct monst *mtmp;
                 }
                 if (foundyou) {
 					weaponattackcount++;
-					if(mtmp->data == &mons[PM_MARILITH])
-						mon_currwep = select_marilith_nth_hwep(mtmp, weaponattackcount);
+					if(is_multiweaponmonster(mtmp->data))
+						mon_currwep = select_multiweapon_nth_hwep(mtmp, weaponattackcount);
 					else
 	                    mon_currwep = MON_WEP(mtmp);
 

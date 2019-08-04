@@ -1088,7 +1088,7 @@ long wep_mask; /* used to re-equip returning boomerang */
 boolean twoweap; /* used to restore twoweapon mode if wielded weapon returns */
 {
     register struct monst *mon;
-    register int range, urange;
+    register int range, urange, baserange;
     boolean crossbowing, impaired = (Confusion || Stunned || Blind
                                      || Hallucination || Fumbling);
     boolean tethered_weapon = (obj->otyp == AKLYS && (wep_mask & W_WEP) != 0);
@@ -1184,18 +1184,36 @@ boolean twoweap; /* used to restore twoweapon mode if wielded weapon returns */
         }
     } else {
         /* crossbow range is independent of strength */
+		//urange your moving in a weightless levitation situation
         crossbowing = (ammo_and_launcher(obj, uwep)
                        && weapon_type(uwep) == P_CROSSBOW);
-        urange = (crossbowing ? 18 : (int) ACURRSTR) / 2;
-        /* balls are easy to throw or at least roll;
+		if (is_ammo(obj)) {
+			if (ammo_and_launcher(obj, uwep)) {
+				baserange = (crossbowing ? 18 : (int)ACURRSTR);
+			}
+			else if (obj->oclass != GEM_CLASS) //Ammo of launchers without the correct launcher
+				baserange = (int)(ACURRSTR / 3);
+			else //Stones being thrown
+				baserange = (int)(ACURRSTR / 2);
+		}
+		else //Normal thrown weapons are half distance
+		{
+			baserange = (int) (ACURRSTR / 2);
+		}
+
+
+													  /* balls are easy to throw or at least roll;
          * also, this insures the maximum range of a ball is greater
          * than 1, so the effects from throwing attached balls are
          * actually possible
          */
+
+		//Weight of the object reduces range
         if (obj->otyp == HEAVY_IRON_BALL)
-            range = urange - (int) (obj->owt / 100);
+            range = baserange - (int) (obj->owt / 100);
         else
-            range = urange - (int) (obj->owt / 40);
+            range = baserange - (int) (obj->owt / 40);
+
         if (obj == uball) {
             if (u.ustuck)
                 range = 1;
@@ -1205,19 +1223,14 @@ boolean twoweap; /* used to restore twoweapon mode if wielded weapon returns */
         if (range < 1)
             range = 1;
 
-        if (is_ammo(obj)) {
-            if (ammo_and_launcher(obj, uwep)) {
-                if (crossbowing)
-                    range = BOLT_LIM;
-                else
-                    range++;
-            } else if (obj->oclass != GEM_CLASS)
-                range /= 2;
-        }
-
+		urange = 0;
         if (Is_airlevel(&u.uz) || Levitation) {
             /* action, reaction... */
-            urange -= range;
+			if(youmonst.data->cwt)
+	            urange = min(BOLT_LIM, baserange * obj->owt / youmonst.data->cwt);
+			else
+				urange = min(BOLT_LIM, baserange * obj->owt / (16 * 2 * 80)); //about 160 lbs = about 80 kg
+
             if (urange < 1)
                 urange = 1;
             range -= urange;
@@ -1536,7 +1549,7 @@ register struct obj *obj; /* thrownobj or kickedobj or uwep */
      * hard to hit at a distance.
      */
 	int mindistance = distmin(u.ux, u.uy, mon->mx, mon->my);
-    disttmp = 3 - mindistance;
+    disttmp = 2 - mindistance / 3;
     if (disttmp < -4)
         disttmp = -4;
     tmp += disttmp;

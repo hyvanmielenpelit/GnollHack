@@ -607,10 +607,14 @@ register struct monst *mtmp;
             switch (-prop) {
             case P_BOW:
                 propellor = oselect(mtmp, YUMI);
-                if (!propellor)
+				if (!propellor)
+					propellor = oselect(mtmp, COMPOSITE_LONG_BOW);
+				if (!propellor)
                     propellor = oselect(mtmp, ELVEN_LONG_BOW);
 				if (!propellor)
 					propellor = oselect(mtmp, LONG_BOW);
+				if (!propellor)
+					propellor = oselect(mtmp, COMPOSITE_SHORT_BOW);
 				if (!propellor)
                     propellor = oselect(mtmp, SHORT_BOW);
                 if (!propellor)
@@ -620,9 +624,11 @@ register struct monst *mtmp;
                 propellor = oselect(mtmp, SLING);
                 break;
             case P_CROSSBOW:
-                propellor = oselect(mtmp, CROSSBOW);
+				propellor = oselect(mtmp, HEAVY_CROSSBOW);
 				if (!propellor)
-					propellor = oselect(mtmp, HEAVY_CROSSBOW);
+					propellor = oselect(mtmp, CROSSBOW);
+				if (!propellor)
+					propellor = oselect(mtmp, HAND_CROSSBOW);
 			}
             if ((otmp = MON_WEP(mtmp)) && mwelded(otmp) && otmp != propellor
                 && mtmp->weapon_check == NO_WEAPON_WANTED)
@@ -670,9 +676,9 @@ struct obj *obj;
 /* Weapons in order of preference */
 static const NEARDATA short hwep[] = {
     CORPSE, /* cockatrice corpse */
-    TSURUGI, RUNESWORD, DWARVISH_MATTOCK, TWO_HANDED_SWORD, BATTLE_AXE,
-    KATANA, UNICORN_HORN, CRYSKNIFE, TRIDENT, LONG_SWORD, ELVEN_BROADSWORD,
-    BROADSWORD, SCIMITAR, SILVER_SABER, MORNING_STAR, ELVEN_SHORT_SWORD,
+    TSURUGI, RUNESWORD, TRIPLE_HEADED_FLAIL, DWARVISH_MATTOCK, TWO_HANDED_SWORD, BATTLE_AXE,
+    KATANA, DOUBLE_HEADED_FLAIL, UNICORN_HORN, CRYSKNIFE, TRIDENT, SILVER_LONG_SWORD, LONG_SWORD, ELVEN_BROADSWORD,
+    BROADSWORD, SCIMITAR, SILVER_SABER, SILVER_MACE, INFERNAL_CLUB, INFERNAL_ANCUS, MORNING_STAR, ELVEN_SHORT_SWORD,
     DWARVISH_SHORT_SWORD, SHORT_SWORD, ORCISH_SHORT_SWORD, MACE, AXE,
     DWARVISH_SPEAR, SILVER_SPEAR, ELVEN_SPEAR, SPEAR, ORCISH_SPEAR, FLAIL,
     BULLWHIP, QUARTERSTAFF, JAVELIN, AKLYS, CLUB, PICK_AXE, RUBBER_HOSE,
@@ -722,7 +728,7 @@ register struct monst *mtmp;
 
 /* select a nth suitable hand to hand weapon for the marilith */
 struct obj*
-select_marilith_nth_hwep(mtmp, handindex)
+select_multiweapon_nth_hwep(mtmp, handindex)
 register struct monst* mtmp;
 int handindex;
 {
@@ -741,15 +747,22 @@ int handindex;
 	if (objects[MON_WEP(mtmp)->otyp].oc_bimanual || wearing_shield)
 		weaponindex++; //Second hand is not free, previously returned MON_WEP
 
-	//Is blade, sword, or axe, extra hands do not use two-handed weapons for simplicity (maybe too weak)
+	//Is in hwep table, extra hands do not use two-handed weapons for simplicity (maybe too weak)
 	for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
-		if (otmp != MON_WEP(mtmp) && (is_blade(otmp) || is_sword(otmp) || is_axe(otmp)) && !objects[otmp->otyp].oc_bimanual
-			&& !(objects[otmp->otyp].oc_material == SILVER && mon_hates_silver(mtmp)))
+		if (otmp != MON_WEP(mtmp) && !objects[otmp->otyp].oc_bimanual
+			&& !(objects[otmp->otyp].oc_material == SILVER && mon_hates_silver(mtmp)) && otmp->otyp != CORPSE)
 		{
-			//Suitable weapon found
-			weaponindex++;
-			if (weaponindex == handindex)
-				return otmp;
+			//Suitable weapons are in hwep array
+			for (int i = 0; i < SIZE(hwep); i++) {
+				if (otmp->otyp == hwep[i])
+				{
+					//Suitable weapon found
+					weaponindex++;
+					if (weaponindex == handindex)
+						return otmp;
+
+				}
+			}
 		}
 	}
 	/* failure, no weapons left for extra hands */

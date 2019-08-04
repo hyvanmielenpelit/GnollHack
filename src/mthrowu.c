@@ -264,6 +264,8 @@ struct monst *mtmp;
 struct obj *otmp, *mwep;
 {
     struct monst *mtarg = target;
+
+	//This is monster's weapon range -- looks like unlimited
     int dm = distmin(mtmp->mx, mtmp->my,
                      mtarg ? mtarg->mx : mtmp->mux,
                      mtarg ? mtarg->my : mtmp->muy),
@@ -953,7 +955,7 @@ struct monst *mtmp, *mtarg;
         if (!mtarg->mflee || !rn2(chance)) {
             if (ammo_and_launcher(otmp, mwep)
                 && dist2(mtmp->mx, mtmp->my, mtarg->mx, mtarg->my)
-                   > PET_MISSILE_RANGE2)
+                   > PET_MISSILE_RANGE2) //Monsters shoot a range of 8
                 return 0; /* Out of range */
             /* Set target monster */
             target = mtarg;
@@ -1158,56 +1160,6 @@ struct monst *mtmp;
         return;
     }
 
-	/* Pick a weapon 
-	struct obj* mon_launcher = MON_WEP(mtmp);
-
-	if (is_ammo(otmp)) {
-		if (!mon_launcher || !ammo_and_launcher(otmp, mon_launcher)) {
-			hitv -= 4;
-		}
-		else {
-			//TOHIT BONUSES
-			hitv += hitval(mon_launcher, mtmp);
-
-			//tmp += weapon_hit_bonus(uwep);  //Monsters do not get skill-based to-hit bonuses
-
-			//Penalty for shooting short range
-			if (distmin(archer->mx, archer->my, mtmp->mx, mtmp->my) <= 1) {
-				switch (objects[mon_launcher->otyp].oc_skill) {
-				case P_BOW:
-					hitv -= 10;
-					break;
-				case P_CROSSBOW:
-					hitv -= 8;
-					break;
-				default:
-					hitv -= 10;
-					break;
-				}
-			}
-
-			//DAMAGE BONUSES
-			if (otmp && mon_launcher && ammo_and_launcher(otmp, mon_launcher)) {
-				dam += dmgval(mon_launcher, &youmonst);
-				//Add strength damage, no skill damage
-				if (mon_launcher->otyp == CROSSBOW) {
-					dam += 3;
-				}
-				else if (mon_launcher->otyp == HEAVY_CROSSBOW) {
-					dam += 6;
-				}
-				else if (mon_launcher->otyp == HAND_CROSSBOW) {
-					dam += 0;
-				}
-				else {
-					if (mtmp)
-						dam += mrdbon(mtmp);
-				}
-				//Bracers here, if need be
-			}
-		}
-	}
-*/
     x = mtmp->mx;
     y = mtmp->my;
     /* If you are coming toward the monster, the monster

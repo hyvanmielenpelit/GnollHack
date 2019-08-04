@@ -2626,7 +2626,7 @@ struct permonst _mons2[] = {
         SIZ(WT_HUMAN, 400, MS_CUSS, MZ_LARGE), STATS(18, 16, 14, 14, 12, 15), MR_FIRE | MR_POISON, 0,
         M1_HUMANOID | M1_SLITHY | M1_SEE_INVIS | M1_POIS,
         M2_DEMON | M2_STALK | M2_HOSTILE | M2_NASTY | M2_FEMALE | M2_COLLECT,
-        M3_INFRAVISIBLE | M3_INFRAVISION, 15, CLR_RED),
+        M3_INFRAVISIBLE | M3_INFRAVISION | M3_MULTIWEAPON, 15, CLR_RED),
     MON("pit fiend", S_DEMON, LVL(13, 6, -3, 65, -13),
         (G_HELL | G_NOCORPSE | 2),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 4, 4), ATTK(AT_WEAP, AD_PHYS, 1, 6, 6),
@@ -2634,7 +2634,7 @@ struct permonst _mons2[] = {
         SIZ(WT_HUMAN, 400, MS_GROWL, MZ_LARGE), STATS(18 + 100, 14, 18, 14, 12, 16), MR_FIRE | MR_POISON, 0,
         M1_SEE_INVIS | M1_POIS,
         M2_DEMON | M2_STALK | M2_HOSTILE | M2_NASTY | M2_COLLECT,
-        M3_INFRAVISIBLE | M3_INFRAVISION, 16, CLR_RED),
+        M3_INFRAVISIBLE | M3_INFRAVISION | M3_MULTIWEAPON, 16, CLR_RED),
     MON("sandestin", S_DEMON, LVL(13, 12, 4, 60, -5),
         (G_HELL | G_NOCORPSE | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 6, 0), ATTK(AT_WEAP, AD_PHYS, 2, 6, 0), NO_ATTK,
@@ -2648,7 +2648,7 @@ struct permonst _mons2[] = {
         SIZ(WT_HUMAN, 400, MS_SILENT, MZ_LARGE), STATS(21 + 100, 16, 21, 14, 12, 16), MR_FIRE | MR_POISON, 0,
         M1_FLY | M1_SEE_INVIS | M1_POIS,
         M2_DEMON | M2_STALK | M2_HOSTILE | M2_NASTY | M2_COLLECT,
-        M3_INFRAVISIBLE | M3_INFRAVISION, 20, CLR_RED),
+        M3_INFRAVISIBLE | M3_INFRAVISION | M3_MULTIWEAPON, 20, CLR_RED),
     /* Named demon lords & princes plus Arch-Devils.
      * (their order matters; see minion.c)
      */
