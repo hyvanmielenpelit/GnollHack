@@ -120,16 +120,20 @@ PROJECTILE("silver arrow", None,
            1, 12, 1, 5, 1, 6, 0, 1, 6, 0, 0,        SILVER, -P_BOW, HI_SILVER),
 PROJECTILE("ya", "bamboo arrow",
            0, 15, 1, 4, 1, 7, 0, 1, 7, 0, 1,        METAL, -P_BOW, HI_METAL),
+PROJECTILE("bone arrow", None,
+           1, 10, 1, 6, 1, 4, 0, 1, 5, 0, 0,        BONE, -P_BOW, CLR_WHITE),
 PROJECTILE("crossbow bolt", None,
            1, 40, 1, 2, 1, 3, 1, 1, 4, 1, 0,        IRON, -P_CROSSBOW, HI_METAL), //1d3+1 //1d4+1
 PROJECTILE("gnollish quarrel", "crude crossbow bolt",
            0, 15, 1, 2, 1, 2, 1, 1, 3, 1, 0,        IRON, -P_CROSSBOW, HI_METAL), //1d2+1 //1d3+1
+PROJECTILE("bone quarrel", None,
+           1, 10, 1, 2, 1, 2, 0, 1, 3, 0, 0,        BONE, -P_CROSSBOW, CLR_WHITE), //1d2 //1d3
 
 /* missiles that don't use a launcher */
 WEAPON("dart", None,
-       1, 1, 0, 60,   1,   1, 2, 0, 1, 3, 0,  2, 0, P,   -P_DART, IRON, HI_METAL),
+       1, 1, 0, 50,   1,   1, 2, 0, 1, 3, 0,  2, 0, P,   -P_DART, IRON, HI_METAL),
 WEAPON("shuriken", "throwing star",
-       0, 1, 0, 35,   1,   1, 5, 0, 1,  8, 0,  6, 2, P,   -P_SHURIKEN, IRON, HI_METAL),
+       0, 1, 0, 25,   1,   1, 5, 0, 1,  8, 0,  6, 2, P,   -P_SHURIKEN, IRON, HI_METAL),
 WEAPON("boomerang", None,
        1, 1, 0, 15,   5,  20,  1, 9, 0, 1, 9, 0, 0, 0,   -P_BOOMERANG, WOOD, HI_WOOD),
 

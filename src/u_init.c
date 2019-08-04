@@ -1148,7 +1148,7 @@ register struct trobj *trop;
 				obj->opoisoned = 1;
 		}
 
-        if (trop->trclass == COIN_CLASS) {
+		if (trop->trclass == COIN_CLASS) {
             /* no "blessed" or "identified" money */
             obj->quan = u.umoney0;
         } else {
