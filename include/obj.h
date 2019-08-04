@@ -95,7 +95,18 @@ struct obj {
 /* or accidental tripped rolling boulder trap */
 #define opoisoned otrapped /* object (weapon) is coated with poison */
 
-    Bitfield(recharged, 3); /* number of times it's been recharged */
+	int special_enchantment; /*cold, fire, lightning, or death-enchanted (0 = None, 1-4 Minor, 5-8 Major)*/
+
+#define MINOR_COLD_ENCHANTMENT 1
+#define MINOR_FIRE_ENCHANTMENT 2
+#define MINOR_LIGHTNING_ENCHANTMENT 3
+#define MINOR_DEATH_ENCHANTMENT 4
+#define MAJOR_COLD_ENCHANTMENT 5
+#define MAJOR_FIRE_ENCHANTMENT 6
+#define MAJOR_LIGHTNING_ENCHANTMENT 7
+#define MAJOR_DEATH_ENCHANTMENT 8
+
+	Bitfield(recharged, 3); /* number of times it's been recharged */
 #define on_ice recharged    /* corpse on ice */
     Bitfield(lamplit, 1);   /* a light-source -- can be lit */
     Bitfield(globby, 1);    /* combines with like types on adjacent squares */

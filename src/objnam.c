@@ -459,7 +459,16 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     case WEAPON_CLASS:
         if (is_poisonable(obj) && obj->opoisoned)
             Strcpy(buf, "poisoned ");
-        /*FALLTHRU*/
+		
+		if (obj->special_enchantment == MINOR_COLD_ENCHANTMENT || obj->special_enchantment == MAJOR_COLD_ENCHANTMENT)
+			Strcat(buf, "cold-enchanted ");
+		else if (obj->special_enchantment == MINOR_FIRE_ENCHANTMENT || obj->special_enchantment == MAJOR_FIRE_ENCHANTMENT)
+			Strcat(buf, "fire-enchanted ");
+		else if (obj->special_enchantment == MINOR_LIGHTNING_ENCHANTMENT || obj->special_enchantment == MAJOR_LIGHTNING_ENCHANTMENT)
+			Strcat(buf, "lightning-enchanted ");
+		else if (obj->special_enchantment == MINOR_DEATH_ENCHANTMENT || obj->special_enchantment == MAJOR_DEATH_ENCHANTMENT)
+			Strcat(buf, "death-enchanted ");
+		/*FALLTHRU*/
     case VENOM_CLASS:
     case TOOL_CLASS:
         if (typ == LENSES)
@@ -922,7 +931,7 @@ unsigned doname_flags;
 			weightlast = (doname_flags & DONAME_WITH_WEIGHT_LAST) != 0,
 			loadstonecorrectly = (doname_flags & DONAME_LOADSTONE_CORRECTLY) != 0;
 	boolean known, dknown, cknown, bknown, lknown;
-    int omndx = obj->corpsenm;
+    int omndx = obj->corpsenm, isenchanted = 0;
     char prefix[PREFIX];
     char tmpbuf[PREFIX + 1]; /* for when we have to add something at
                                 the start of prefix instead of the
@@ -949,6 +958,23 @@ unsigned doname_flags;
         bp += 9;
         ispoisoned = TRUE;
     }
+
+	if (!strncmp(bp, "cold-enchanted ", 15) && (obj->special_enchantment == MINOR_COLD_ENCHANTMENT || obj->special_enchantment == MAJOR_COLD_ENCHANTMENT)) {
+		bp += 15;
+		isenchanted = obj->special_enchantment;
+	} else if (!strncmp(bp, "fire-enchanted ", 15) && (obj->special_enchantment == MINOR_FIRE_ENCHANTMENT || obj->special_enchantment == MAJOR_FIRE_ENCHANTMENT)) {
+		bp += 15;
+		isenchanted = obj->special_enchantment;
+	}
+	else if (!strncmp(bp, "lightning-enchanted ", 20) && (obj->special_enchantment == MINOR_LIGHTNING_ENCHANTMENT || obj->special_enchantment == MAJOR_LIGHTNING_ENCHANTMENT)) {
+		bp += 20;
+		isenchanted = obj->special_enchantment;
+	}
+	else if (!strncmp(bp, "death-enchanted ", 16) && (obj->special_enchantment == MINOR_DEATH_ENCHANTMENT || obj->special_enchantment == MAJOR_DEATH_ENCHANTMENT)) {
+		bp += 16;
+		isenchanted = obj->special_enchantment;
+	}
+
 
     if (obj->quan != 1L) {
         if (dknown || !vague_quan)
@@ -1058,7 +1084,31 @@ unsigned doname_flags;
     case WEAPON_CLASS:
         if (ispoisoned)
             Strcat(prefix, "poisoned ");
-        add_erosion_words(obj, prefix);
+		if (isenchanted)
+		{
+			switch (isenchanted)
+			{
+			case MINOR_COLD_ENCHANTMENT:
+			case MAJOR_COLD_ENCHANTMENT:
+				Strcat(prefix, "cold-enchanted ");
+				break;
+			case MINOR_FIRE_ENCHANTMENT:
+			case MAJOR_FIRE_ENCHANTMENT:
+				Strcat(prefix, "fire-enchanted ");
+				break;
+			case MINOR_LIGHTNING_ENCHANTMENT:
+			case MAJOR_LIGHTNING_ENCHANTMENT:
+				Strcat(prefix, "lightning-enchanted ");
+				break;
+			case MINOR_DEATH_ENCHANTMENT:
+			case MAJOR_DEATH_ENCHANTMENT:
+				Strcat(prefix, "death-enchanted ");
+				break;
+			default:
+				break;
+			}
+		}
+		add_erosion_words(obj, prefix);
         if (known) {
             Strcat(prefix, sitoa(obj->spe));
             Strcat(prefix, " ");
@@ -2940,7 +2990,7 @@ struct obj *no_wish;
     int blessed, uncursed, iscursed, ispoisoned, isgreased;
     int eroded, eroded2, erodeproof, locked, unlocked, broken;
     int halfeaten, mntmp, contents;
-    int islit, unlabeled, ishistoric, isdiluted, trapped;
+    int islit, unlabeled, ishistoric, isdiluted, trapped, special_enchantment;
     int tmp, tinv, tvariety;
     int wetness, gsize = 0;
     struct fruit *f;
@@ -2965,7 +3015,7 @@ struct obj *no_wish;
     const char *name = 0;
 
     cnt = spe = spesgn = typ = 0;
-    very = rechrg = blessed = uncursed = iscursed = ispoisoned =
+    very = rechrg = blessed = uncursed = iscursed = ispoisoned = special_enchantment =
         isgreased = eroded = eroded2 = erodeproof = halfeaten =
         islit = unlabeled = ishistoric = isdiluted = trapped =
         locked = unlocked = broken = 0;
@@ -3050,7 +3100,24 @@ struct obj *no_wish;
         } else if (!strncmpi(bp, "poisoned ", l = 9)) {
             ispoisoned = 1;
             /* "trapped" recognized but not honored outside wizard mode */
-        } else if (!strncmpi(bp, "trapped ", l = 8)) {
+		}
+		else if (!strncmpi(bp, "cold-enchanted ", l = 15))
+		{
+			special_enchantment = MINOR_COLD_ENCHANTMENT;
+		}
+		else if (!strncmpi(bp, "fire-enchanted ", l = 15))
+		{
+			special_enchantment = MINOR_FIRE_ENCHANTMENT;
+		}
+		else if (!strncmpi(bp, "lightning-enchanted ", l = 20))
+		{
+			special_enchantment = MINOR_LIGHTNING_ENCHANTMENT;
+		}
+		else if (!strncmpi(bp, "death-enchanted ", l = 16))
+		{
+			special_enchantment = MINOR_DEATH_ENCHANTMENT;
+		}
+		else if (!strncmpi(bp, "trapped ", l = 8)) {
             trapped = 0; /* undo any previous "untrapped" */
             if (wizard)
                 trapped = 1;
@@ -4026,7 +4093,15 @@ struct obj *no_wish;
         if (Is_box(otmp) || typ == TIN)
             otmp->otrapped = (trapped == 1);
     }
-    /* empty for containers rather than for tins */
+	/* set special enchantment */
+	if (special_enchantment) {
+		if (otmp->oclass == WEAPON_CLASS)
+			if(Luck >= 0)
+				otmp->special_enchantment = special_enchantment;
+			else
+				otmp->special_enchantment = 0;
+	}
+	/* empty for containers rather than for tins */
     if (contents == EMPTY) {
         if (otmp->otyp == BAG_OF_TRICKS || otmp->otyp == HORN_OF_PLENTY) {
             if (otmp->spe > 0)

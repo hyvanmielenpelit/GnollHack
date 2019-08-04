@@ -442,7 +442,85 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
                 }
             }
         }
-        if (objects[otmp->otyp].oc_material == SILVER
+		if (otmp->special_enchantment) {
+			switch(otmp->special_enchantment)
+			{
+			case MINOR_COLD_ENCHANTMENT:
+				if (resists_cold(mtmp)) {
+					if (vis)
+						pline_The("cold doesn't seem to affect %s.",
+							mon_nam(mtmp));
+				}
+				else {
+					if (vis)
+						pline_The("cold sears %s!", mon_nam(mtmp));
+					else if (verbose && !target)
+						pline_The("cold sears it!", mon_nam(mtmp));
+					damage += rnd(6);
+				}
+				if (!rn2(10))
+					otmp->special_enchantment = 0;
+				break;
+			case MINOR_FIRE_ENCHANTMENT:
+				if (resists_fire(mtmp)) {
+					if (vis)
+						pline_The("fire doesn't seem to affect %s.",
+							mon_nam(mtmp));
+				}
+				else {
+					if (vis)
+						pline_The("fire burns %s!", mon_nam(mtmp));
+					else if (verbose && !target)
+						pline_The("fire burns it!");
+					damage += d(2, 6);
+				}
+				if (!rn2(3))
+					otmp->special_enchantment = 0;
+				break;
+			case MINOR_LIGHTNING_ENCHANTMENT:
+				if (resists_elec(mtmp)) {
+					if (vis)
+						pline_The("lightning doesn't seem to affect %s.",
+							mon_nam(mtmp));
+				}
+				else {
+					if (vis)
+						pline("%s is jolted by lightning!", Monnam(mtmp));
+					else if (verbose && !target)
+						pline("It is jolted by lightning!");
+
+					damage += d(4, 6);
+				}
+				otmp->special_enchantment = 0;
+				break;
+			case MAJOR_DEATH_ENCHANTMENT:
+			case MINOR_DEATH_ENCHANTMENT:
+				if (resists_death(mtmp) || is_not_living(mtmp->data) || is_demon(mtmp->data) || is_vampshifter(mtmp)) {
+					if (vis)
+						pline_The("death magic doesn't seem to affect %s.",
+							mon_nam(mtmp));
+				}
+				else {
+					if (vis)
+						pline("%s is slain!", Monnam(mtmp));
+					else if (verbose && !target)
+						pline("It is slain!");
+					damage = mtmp->mhp;
+				}
+				otmp->special_enchantment = 0;
+				break;
+			case MAJOR_COLD_ENCHANTMENT:
+				break;
+			case MAJOR_FIRE_ENCHANTMENT:
+				break;
+			case MAJOR_LIGHTNING_ENCHANTMENT:
+				break;
+			default:
+				break;
+
+			}
+		}
+		if (objects[otmp->otyp].oc_material == SILVER
             && mon_hates_silver(mtmp)) {
             if (vis)
                 pline_The("silver sears %s flesh!", s_suffix(mon_nam(mtmp)));
@@ -741,7 +819,40 @@ struct obj *obj;         /* missile (or stack providing it) */
                             poison is limited to attrib loss */
                          (u.umortality > oldumort) ? 0 : 10, TRUE);
             }
-            if (hitu && can_blnd((struct monst *) 0, &youmonst,
+			if (hitu && singleobj->special_enchantment) {
+				char onmbuf[BUFSZ], knmbuf[BUFSZ];
+
+				Strcpy(onmbuf, xname(singleobj));
+				Strcpy(knmbuf, killer_xname(singleobj));
+				
+				/* if damage triggered life-saving,
+				   major death magic is limited to minor death magic */
+				extra_enchantment_damage(onmbuf, (singleobj->special_enchantment == MAJOR_DEATH_ENCHANTMENT && u.umortality > oldumort) ? MINOR_DEATH_ENCHANTMENT : singleobj->special_enchantment, knmbuf);
+			
+				//Remove special enchantment
+				switch (singleobj->special_enchantment)
+				{
+				case MINOR_COLD_ENCHANTMENT:
+				case MAJOR_COLD_ENCHANTMENT:
+					if (!rn2(10))
+						singleobj->special_enchantment = 0;
+					break;
+				case MINOR_FIRE_ENCHANTMENT:
+				case MAJOR_FIRE_ENCHANTMENT:
+					if (!rn2(3))
+						singleobj->special_enchantment = 0;
+					break;
+				case MINOR_LIGHTNING_ENCHANTMENT:
+				case MAJOR_LIGHTNING_ENCHANTMENT:
+				case MINOR_DEATH_ENCHANTMENT:
+				case MAJOR_DEATH_ENCHANTMENT:
+					singleobj->special_enchantment = 0;
+					break;
+				default:
+					break;
+				}
+			}
+			if (hitu && can_blnd((struct monst *) 0, &youmonst,
                                  (uchar) ((singleobj->otyp == BLINDING_VENOM)
                                              ? AT_SPIT
                                              : AT_WEAP),

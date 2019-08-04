@@ -686,7 +686,9 @@ int dieroll;
     boolean get_dmg_bonus = TRUE;
     boolean ispoisoned = FALSE, needpoismsg = FALSE, poiskilled = FALSE,
             unpoisonmsg = FALSE;
-    boolean silvermsg = FALSE, silverobj = FALSE;
+	int needenchantmsg = 0;
+	boolean enchantkilled = FALSE, unenchantmsg = FALSE;
+	boolean silvermsg = FALSE, silverobj = FALSE;
     boolean lightobj = FALSE;
     boolean valid_weapon_attack = FALSE;
     boolean unarmed = !uwep && !uarm && !uarms;
@@ -1171,6 +1173,95 @@ int dieroll;
         else
             poiskilled = TRUE;
     }
+
+	if (obj && obj->special_enchantment > 0) {
+		switch (obj->special_enchantment)
+		{
+		case MINOR_COLD_ENCHANTMENT:
+		case MAJOR_COLD_ENCHANTMENT:
+			if (resists_cold(mon))
+				needenchantmsg = -obj->special_enchantment;
+			else
+			{
+				needenchantmsg = obj->special_enchantment;
+				tmp += rnd(6);
+			}
+			if (!rn2(10)) {
+				obj->special_enchantment = 0;
+				/* defer "obj is no longer enchanted" until after hit message */
+				unenchantmsg = TRUE;
+			}
+			break;
+		case MINOR_FIRE_ENCHANTMENT:
+		case MAJOR_FIRE_ENCHANTMENT:
+			if (resists_fire(mon))
+				needenchantmsg = -obj->special_enchantment;
+			else
+			{
+				needenchantmsg = obj->special_enchantment;
+				tmp += d(2, 6);
+			}
+			if (!rn2(3)) {
+				obj->special_enchantment = 0;
+				/* defer "obj is no longer enchanted" until after hit message */
+				unenchantmsg = TRUE;
+			}
+			break;
+		case MINOR_LIGHTNING_ENCHANTMENT:
+		case MAJOR_LIGHTNING_ENCHANTMENT:
+			if (resists_elec(mon))
+				needenchantmsg = -obj->special_enchantment;
+			else
+			{
+				needenchantmsg = obj->special_enchantment;
+				tmp += d(4, 6);
+			}
+			obj->special_enchantment = 0;
+			/* defer "obj is no longer enchanted" until after hit message */
+			unenchantmsg = TRUE;
+			break;
+		case MINOR_DEATH_ENCHANTMENT:
+			if (resists_death(mon) || is_not_living(mon->data) || is_demon(mon->data) || is_vampshifter(mon))
+				needenchantmsg = -obj->special_enchantment;
+			else
+			{
+				needenchantmsg = obj->special_enchantment;
+				tmp += d(10, 6);
+			}
+			obj->special_enchantment = 0;
+			/* defer "obj is no longer enchanted" until after hit message */
+			unenchantmsg = TRUE;
+			break;
+		case MAJOR_DEATH_ENCHANTMENT:
+			if (resists_death(mon) || is_not_living(mon->data) || is_demon(mon->data) || is_vampshifter(mon))
+				needenchantmsg = -obj->special_enchantment;
+			else
+			{
+				needenchantmsg = 0; //Since gets killed message
+				tmp = mon->mhp + 1;
+			}
+			obj->special_enchantment = 0;
+			/* defer "obj is no longer enchanted" until after hit message */
+			unenchantmsg = TRUE;
+			enchantkilled = TRUE;
+			break;
+		default:
+			break;
+		}
+
+		if (obj->special_enchantment == MINOR_DEATH_ENCHANTMENT || obj->special_enchantment == MAJOR_DEATH_ENCHANTMENT)
+		{
+			if (Role_if(PM_SAMURAI)) {
+				You("dishonorably use a death-enchanted weapon!");
+				adjalign(-sgn(u.ualign.type));
+			}
+			else if (u.ualign.type == A_LAWFUL && u.ualign.record > -10) {
+				You_feel("like an evil coward for using a death-enchanted weapon.");
+				adjalign(-1);
+			}
+		}
+	}
+
     if (tmp < 1) {
         /* make sure that negative damage adjustment can't result
            in inadvertently boosting the victim's hit points */
@@ -1342,7 +1433,7 @@ int dieroll;
        obj->opoisoned was cleared above and any message referring to
        "poisoned <obj>" has now been given; we want just "<obj>" for
        last message, so reformat while obj is still accessible */
-    if (unpoisonmsg)
+    if (unpoisonmsg || unenchantmsg)
         Strcpy(saved_oname, cxname(obj));
 
     /* [note: thrown obj might go away during killed()/xkilled() call
@@ -1351,12 +1442,63 @@ int dieroll;
 
     if (needpoismsg)
         pline_The("poison doesn't seem to affect %s.", mon_nam(mon));
-    if (poiskilled) {
-        pline_The("poison was deadly...");
-        if (!already_killed)
-            xkilled(mon, XKILL_NOMSG);
-        destroyed = TRUE; /* return FALSE; */
-    } else if (destroyed) {
+
+	if (needenchantmsg && !destroyed)	
+	{
+		switch (needenchantmsg)
+		{
+		case -MINOR_COLD_ENCHANTMENT:
+		case -MAJOR_COLD_ENCHANTMENT:
+			pline_The("cold doesn't seem to affect %s.", mon_nam(mon));
+			break;
+		case -MINOR_FIRE_ENCHANTMENT:
+		case -MAJOR_FIRE_ENCHANTMENT:
+			pline_The("fire doesn't seem to affect %s.", mon_nam(mon));
+			break;
+		case -MINOR_LIGHTNING_ENCHANTMENT:
+		case -MAJOR_LIGHTNING_ENCHANTMENT:
+			pline_The("electricity doesn't seem to affect %s.", mon_nam(mon));
+			break;
+		case -MINOR_DEATH_ENCHANTMENT:
+		case -MAJOR_DEATH_ENCHANTMENT:
+			pline_The("death magic doesn't seem to affect %s.", mon_nam(mon));
+			break;
+		case MINOR_COLD_ENCHANTMENT:
+		case MAJOR_COLD_ENCHANTMENT:
+			pline_The("cold sears %s.", mon_nam(mon));
+			break;
+		case MINOR_FIRE_ENCHANTMENT:
+		case MAJOR_FIRE_ENCHANTMENT:
+			pline_The("fire burns %s.", mon_nam(mon));
+			break;
+		case MINOR_LIGHTNING_ENCHANTMENT:
+		case MAJOR_LIGHTNING_ENCHANTMENT:
+			pline("%s is jolted by lightning.", Monnam(mon));
+			break;
+		case MINOR_DEATH_ENCHANTMENT:
+			pline("%s feels its life energy draining away.", Monnam(mon));
+			break;
+		case MAJOR_DEATH_ENCHANTMENT:
+			pline_The("%s is slain!", Monnam(mon));
+			break;
+		default:
+			pline_The("enchantment doesn't seem to affect %s.", mon_nam(mon));
+			break;
+		}
+	}
+
+
+	if (poiskilled) {
+		pline_The("poison was deadly...");
+		if (!already_killed)
+			xkilled(mon, XKILL_NOMSG);
+		destroyed = TRUE; /* return FALSE; */
+	} else if (enchantkilled) {
+		pline_The("death magic was deadly...");
+		if (!already_killed)
+			xkilled(mon, XKILL_NOMSG);
+		destroyed = TRUE; /* return FALSE; */
+	} else if (destroyed) {
         if (!already_killed)
             killed(mon); /* takes care of most messages */
     } else if (u.umconf && hand_to_hand) {
@@ -1368,9 +1510,16 @@ int dieroll;
                 pline("%s appears confused.", Monnam(mon));
         }
     }
+
+	//No longer messages
     if (unpoisonmsg)
         Your("%s %s no longer poisoned.", saved_oname,
              vtense(saved_oname, "are"));
+
+	if (unenchantmsg)
+		Your("%s %s no longer enchanted.", saved_oname,
+			vtense(saved_oname, "are"));
+
 
     return destroyed ? FALSE : TRUE;
 }

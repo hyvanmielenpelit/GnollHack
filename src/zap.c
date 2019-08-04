@@ -1565,7 +1565,10 @@ int id;
     if (obj->opoisoned && is_poisonable(otmp))
         otmp->opoisoned = TRUE;
 
-    if (id == STRANGE_OBJECT && obj->otyp == CORPSE) {
+	if (obj->special_enchantment > 0)
+		otmp->special_enchantment = 0; //Special enchantments do not get passed at the moment
+
+	if (id == STRANGE_OBJECT && obj->otyp == CORPSE) {
         /* turn crocodile corpses into shoes */
         if (obj->corpsenm == PM_CROCODILE) {
             otmp->otyp = LOW_BOOTS;

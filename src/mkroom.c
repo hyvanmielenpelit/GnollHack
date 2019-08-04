@@ -305,7 +305,7 @@ struct mkroom *sroom;
         break;
 	case LIBRARY:
 
-		if (hd <= 8)
+		if (hd <= 9)
 		{
 			if (roll <= 1)
 				librarytype = 0; //Gnomish wizards
@@ -354,7 +354,7 @@ struct mkroom *sroom;
 		}
 		else if (librarytype == 3) // Mindflayers
 		{
-			if ((Inhell || In_endgame(&u.uz)) && !rn2(3)) {
+			if ((hd >= 25 || Inhell || In_endgame(&u.uz)) && !rn2(3)) {
 				mainlibrarymonst = &mons[PM_MASTER_MIND_FLAYER];
 			}
 			else
@@ -597,17 +597,22 @@ int type;
 	}
 	else if (type == 2) // Liches
 	{
-		if (i <= (hd >= 17 ? 20 : hd >= 13 ? 15 : 10)) // Another main 
+		if (i <= 5) // Another main 
 		{
-			if ((hd >= 25 || Inhell || In_endgame(&u.uz)) && !rn2(4))
+			if ((Inhell || In_endgame(&u.uz)) && !rn2(4))
 				return &mons[PM_MASTER_LICH];
-			else if((hd >= 13 || Inhell || In_endgame(&u.uz)) && !rn2(2))
+			else if((hd >= 13 || Inhell || In_endgame(&u.uz)))
 				return &mons[PM_DEMILICH];
 			else
 				return &mons[PM_LICH];
 		}
 		else if(i <= (hd >= 17 ? 40 : hd >= 13 ? 30 : 20))
-			return &mons[PM_LICH];
+		{
+			if (Inhell || In_endgame(&u.uz))
+				return (!rn2(2) ? &mons[PM_DEMILICH] : &mons[PM_LICH]);
+			else
+				return &mons[PM_LICH];
+		}
 		else if (i <= 65)
 			return &mons[PM_QUASIT];
 		else if (i <= 100)

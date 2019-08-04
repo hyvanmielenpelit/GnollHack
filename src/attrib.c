@@ -343,6 +343,169 @@ boolean thrown_weapon; /* thrown weapons are less deadly */
     (void) encumber_msg();
 }
 
+
+/* called when an attack or trap has poisoned hero (used to be in mon.c) */
+void
+extra_enchantment_damage(reason, sptype, pkiller)
+const char* reason,    /* controls what messages we display */
+* pkiller;   /* for score+log file if fatal */
+int sptype;
+{
+	int i, loss, kprefix = KILLED_BY_AN;
+
+	boolean plural = (reason[strlen(reason) - 1] == 's') ? 1 : 0;
+
+	//Handle killer
+	/* suppress killer prefix if it already has one */
+	i = name_to_mon(pkiller);
+	if (i >= LOW_PM && (mons[i].geno & G_UNIQ)) {
+		kprefix = KILLED_BY;
+		if (!type_is_pname(&mons[i]))
+			pkiller = the(pkiller);
+	}
+	else if (!strncmpi(pkiller, "the ", 4) || !strncmpi(pkiller, "an ", 3)
+		|| !strncmpi(pkiller, "a ", 2)) {
+		/*[ does this need a plural check too? ]*/
+		kprefix = KILLED_BY;
+	}
+
+	//Effects
+	if(sptype == MINOR_COLD_ENCHANTMENT || sptype == MAJOR_COLD_ENCHANTMENT)
+	{
+		pline("%s%s %s cold-enchanted!",
+			isupper((uchar)* reason) ? "" : "The ", reason,
+			plural ? "were" : "was");
+		if (Cold_resistance) {
+			shieldeff(u.ux, u.uy);
+			pline_The("cold doesn't seem to affect you.");
+			return;
+		}
+
+
+		if (sptype == MINOR_COLD_ENCHANTMENT) {
+			loss = rnd(6);
+			losehp(loss, pkiller, kprefix); 
+		}
+		else
+		{
+			loss = rnd(6);
+			losehp(loss, pkiller, kprefix);
+			//+Slow Damage
+		}
+	}
+	else if (sptype == MINOR_FIRE_ENCHANTMENT || sptype == MAJOR_FIRE_ENCHANTMENT)
+	{
+		pline("%s%s %s fire-enchanted!",
+			isupper((uchar)* reason) ? "" : "The ", reason,
+			plural ? "were" : "was");
+		if (Fire_resistance) {
+			shieldeff(u.ux, u.uy);
+			pline_The("fire doesn't seem to affect you.");
+			return;
+		}
+
+
+		if (sptype == MINOR_FIRE_ENCHANTMENT) {
+			loss = d(2, 6);
+			losehp(loss, pkiller, kprefix); 
+		}
+		else
+		{
+			//Explosion like fire ball!
+			loss = d(2, 6);
+			losehp(loss, pkiller, kprefix); 
+		}
+	}
+	else if (sptype == MINOR_LIGHTNING_ENCHANTMENT || sptype == MAJOR_LIGHTNING_ENCHANTMENT)
+	{
+		pline("%s%s %s lightning-enchanted!",
+			isupper((uchar)* reason) ? "" : "The ", reason,
+			plural ? "were" : "was");
+		if (Shock_resistance) {
+			shieldeff(u.ux, u.uy);
+			pline_The("lightning doesn't seem to affect you.");
+			return;
+		}
+
+
+		if (sptype == MINOR_LIGHTNING_ENCHANTMENT) {
+			loss = d(4, 6);
+			losehp(loss, pkiller, kprefix);
+		}
+		else
+		{
+			//Lightning bolt in a line!
+			loss = d(4, 6);
+			losehp(loss, pkiller, kprefix); 
+		}
+	}
+	else if (sptype == MINOR_DEATH_ENCHANTMENT || sptype == MAJOR_DEATH_ENCHANTMENT)
+	{
+		pline("%s%s %s imbued by death magic!",
+			isupper((uchar)* reason) ? "" : "The ", reason,
+			plural ? "were" : "was");
+		if (Death_resistance || is_not_living(youmonst.data) || is_demon(youmonst.data)) {
+			shieldeff(u.ux, u.uy);
+			pline_The("death magic doesn't seem to affect you.");
+			return;
+		}
+
+
+		if (sptype == MINOR_DEATH_ENCHANTMENT) {
+			loss = rn1(10, 6);
+			losehp(loss, pkiller, kprefix);
+
+			//If still alive
+			if (adjattrib(A_CON, -rn2(2), 1))
+			{
+				if (ACURR(A_CON) == 25)
+					You_feel("sick inside.");
+				else if (ABASE(A_CON) < ATTRMIN(A_CON))
+				{
+					static NEARDATA const char deathmagic[] = "death magic";
+
+					if (Lifesaved) {
+						Strcpy(killer.name, deathmagic);
+						killer.format = KILLED_BY;
+						done(DIED);
+						/* amulet of life saving has now been used up */
+						pline("Unfortunately your life energy is still gone.");
+						/* sanity check against adding other forms of life-saving */
+						u.uprops[LIFESAVED].extrinsic =
+							u.uprops[LIFESAVED].intrinsic = 0L;
+					}
+					else {
+						pline("The last vestiges of your life energy fade away.");
+					}
+					Strcpy(killer.name, deathmagic);
+					killer.format = KILLED_BY;
+					done(DIED);
+					/* can only get here when in wizard or explore mode and user has
+						explicitly chosen not to die; arbitrarily boost intelligence */
+					ABASE(A_CON) = ATTRMIN(A_CON) + 2;
+					You_feel("like a scarecrow.");
+					context.botl = TRUE;
+				}
+			}
+		}
+		else
+		{
+			u.uhp = -1;
+			context.botl = TRUE;
+			pline_The("magic was deadly...");
+		}
+	}
+
+	if (u.uhp < 1) {
+		killer.format = kprefix;
+		Strcpy(killer.name, pkiller);
+		done(DIED);
+	}
+	(void)encumber_msg();
+}
+
+
+
 void
 change_luck(n)
 register schar n;

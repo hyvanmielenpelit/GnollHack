@@ -805,7 +805,8 @@ boolean artif;
         otmp->known = 1;
     otmp->lknown = 0;
     otmp->cknown = 0;
-    otmp->corpsenm = NON_PM;
+	otmp->corpsenm = NON_PM;
+	otmp->special_enchantment = 0;
 
     if (init) {
         switch (let) {
@@ -822,7 +823,9 @@ boolean artif;
             if (is_poisonable(otmp) && !rn2(100))
                 otmp->opoisoned = 1;
 
-            if (artif && !rn2(20))
+			otmp->special_enchantment = 0; // At the moment no randomly generated special enchantment weapons
+
+			if (artif && !rn2(20))
                 otmp = mk_artifact(otmp, (aligntyp) A_NONE);
             break;
         case FOOD_CLASS:

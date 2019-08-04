@@ -1925,7 +1925,9 @@ struct mkroom *croom;
     }
     if (o->trapped == 0 || o->trapped == 1)
         otmp->otrapped = o->trapped;
-    if (o->greased)
+	if (o->special_enchantment > 0)
+		otmp->special_enchantment = o->special_enchantment;
+	if (o->greased)
         otmp->greased = 1;
 #ifdef INVISIBLE_OBJECTS
     if (o->invis)
@@ -3155,7 +3157,8 @@ struct sp_coder *coder;
     tmpobj.eroded = 0;
     tmpobj.locked = 0;
     tmpobj.trapped = -1;
-    tmpobj.recharged = 0;
+	tmpobj.special_enchantment = 0;
+	tmpobj.recharged = 0;
     tmpobj.invis = 0;
     tmpobj.greased = 0;
     tmpobj.broken = 0;

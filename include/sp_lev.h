@@ -376,6 +376,7 @@ typedef struct {
     short buried;
     short lit;
     short eroded, locked, trapped, recharged, invis, greased, broken;
+	int special_enchantment;
 } object;
 
 typedef struct {
