@@ -10,7 +10,7 @@
  * which kills the monster.  The damage routine returns this cookie to
  * indicate that the monster should be disintegrated.
  */
-#define MAGIC_COOKIE 1000
+#define DISINTEGRATION_DUMMY_DAMAGE 1000
 
 static NEARDATA boolean obj_zapped;
 static NEARDATA int poly_zapped;
@@ -29,7 +29,6 @@ STATIC_DCL void FDECL(revive_egg, (struct obj *));
 STATIC_DCL boolean FDECL(zap_steed, (struct obj *));
 STATIC_DCL void FDECL(skiprange, (int, int *, int *));
 STATIC_DCL int FDECL(zap_hit, (int, int));
-STATIC_OVL void FDECL(disintegrate_mon, (struct monst *, int, const char *));
 STATIC_DCL void FDECL(backfire, (struct obj *));
 STATIC_DCL int FDECL(spell_hit_bonus, (int));
 STATIC_DCL void FDECL(destroy_one_item, (struct obj *, int, int));
@@ -1344,7 +1343,7 @@ int okind;
     case SILVER:
     case PLATINUM:
     case GEMSTONE:
-    case MINERAL:
+	case MINERAL:
         pm_index = rn2(2) ? PM_STONE_GOLEM : PM_CLAY_GOLEM;
         material = "lithic ";
         break;
@@ -1370,7 +1369,11 @@ int okind;
         pm_index = PM_SKELETON; /* nearest thing to "bone golem" */
         material = "bony ";
         break;
-    case GOLD:
+	case PLANARRIFT:
+		pm_index = PM_BLACK_LIGHT; /* nearest thing to "planar rift golem" */
+		material = "void ";
+		break;
+	case GOLD:
         pm_index = PM_GOLD_GOLEM;
         material = "gold ";
         break;
@@ -3694,7 +3697,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
         } else {
             /* no body armor, victim dies; destroy cloak
                 and shirt now in case target gets life-saved */
-            tmp = MAGIC_COOKIE;
+            tmp = DISINTEGRATION_DUMMY_DAMAGE;
             if ((otmp2 = which_armor(mon, W_ARMC)) != 0)
                 m_useup(mon, otmp2);
             if ((otmp2 = which_armor(mon, W_ARMU)) != 0)
@@ -3705,8 +3708,8 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 	case ZT_DEATH:                              /* death */
 		if (mon->data == &mons[PM_DEATH]) {
 			mon->mhpmax += mon->mhpmax / 2;
-			if (mon->mhpmax >= MAGIC_COOKIE)
-				mon->mhpmax = MAGIC_COOKIE - 1;
+			if (mon->mhpmax >= DISINTEGRATION_DUMMY_DAMAGE)
+				mon->mhpmax = DISINTEGRATION_DUMMY_DAMAGE - 1;
 			mon->mhp = mon->mhpmax;
 			tmp = 0;
 			break;
@@ -4004,7 +4007,7 @@ int type; /* either hero cast spell type or 0 */
     return (3 - chance < ac + spell_bonus);
 }
 
-STATIC_OVL void
+void //STATIC_OVL 
 disintegrate_mon(mon, type, fltxt)
 struct monst *mon;
 int type; /* hero vs other */
@@ -4106,7 +4109,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
             pline("%s rips into %s%s", The(fltxt), mon_nam(u.ustuck),
                   exclam(tmp));
         /* Using disintegration from the inside only makes a hole... */
-        if (tmp == MAGIC_COOKIE)
+        if (tmp == DISINTEGRATION_DUMMY_DAMAGE)
             u.ustuck->mhp = 0;
         if (DEADMONSTER(u.ustuck))
             killed(u.ustuck);
@@ -4198,7 +4201,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                         break; /* Out of while loop */
                     }
 
-                    if (tmp == MAGIC_COOKIE) { /* disintegration */
+                    if (tmp == DISINTEGRATION_DUMMY_DAMAGE) { /* disintegration */
                         disintegrate_mon(mon, type, fltxt);
                     } else if (DEADMONSTER(mon)) {
                         if (type < 0) {

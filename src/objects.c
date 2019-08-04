@@ -306,9 +306,12 @@ WEAPON("triple-headed flail", None,
 	   1, 0, 0, 0, 70, 1000, 2, 6, 2, 4, 4, 0, -2, B, P_FLAIL, IRON, HI_METAL),
 	/* one-handed, flail damage x 2, -2 hit bonus (difficult to wield)*/
 
+
 /* misc */
 WEAPON("bullwhip", None,
        1, 0, 0,  2,  20,   4,  1, 2, 0,  1, 1, 0,  0, 0,   P_WHIP, LEATHER, CLR_BROWN),
+WEAPON("black blade of disintegration", "sword-shaped planar rift",
+   	   0, 1, 0,  0,  8,    0,  1, 4, 0,  1, 6, 0, 0, S, P_LONG_SWORD, PLANARRIFT, CLR_BLACK),
 
 /* bows */
 BOW("bow", None,							1, 1, 0,  30, 30, 1, 3, 0, 1, 4, 0, 0, WOOD, P_BOW, HI_WOOD),

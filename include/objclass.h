@@ -30,7 +30,8 @@ enum obj_material_types {
     PLASTIC     = 18,
     GLASS       = 19,
     GEMSTONE    = 20,
-    MINERAL     = 21
+    MINERAL     = 21,
+	PLANARRIFT	= 22
 };
 
 enum obj_armor_types {

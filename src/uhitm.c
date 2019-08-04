@@ -1352,7 +1352,7 @@ int dieroll;
             || (thrown && m_shot.n > 1 && m_shot.o == obj->otyp))) {
 		if (thrown)
 			hit(mshot_xname(obj), mon, exclam(destroyed ? 100 : tmp), destroyed ? -1 : tmp);
-		else if (!destroyed) {
+		else if (!destroyed && !(obj && obj->otyp == BLACK_BLADE_OF_DISINTEGRATION)) {
 			if(!flags.verbose)
 				You("hit it for %d damage.", damagedealt);
 			else
@@ -1425,6 +1425,7 @@ int dieroll;
             whom = strcat(s_suffix(whom), " flesh");
         pline(fmt, whom);
     }
+
     /* if a "no longer poisoned" message is coming, it will be last;
        obj->opoisoned was cleared above and any message referring to
        "poisoned <obj>" has now been given; we want just "<obj>" for
@@ -1435,67 +1436,135 @@ int dieroll;
     /* [note: thrown obj might go away during killed()/xkilled() call
        (via 'thrownobj'; if swallowed, it gets added to engulfer's
        minvent and might merge with a stack that's already there)] */
-
-    if (needpoismsg)
-        pline_The("poison doesn't seem to affect %s.", mon_nam(mon));
-
-	if (needenchantmsg && !destroyed)	
+	
+	  
+	//Black Blade effect
+	boolean bladedisintegratedmon = FALSE;
+	if (obj->otyp == BLACK_BLADE_OF_DISINTEGRATION && !DEADMONSTER(mon))
 	{
-		switch (needenchantmsg)
-		{
-		case -COLD_ENCHANTMENT:
-			pline_The("cold doesn't seem to affect %s.", mon_nam(mon));
-			break;
-		case -FIRE_ENCHANTMENT:
-			pline_The("fire doesn't seem to affect %s.", mon_nam(mon));
-			break;
-		case -LIGHTNING_ENCHANTMENT:
-			pline_The("electricity doesn't seem to affect %s.", mon_nam(mon));
-			break;
-		case -DEATH_ENCHANTMENT:
-			pline_The("death magic doesn't seem to affect %s.", mon_nam(mon));
-			break;
-		case COLD_ENCHANTMENT:
-			pline_The("cold sears %s.", mon_nam(mon));
-			break;
-		case FIRE_ENCHANTMENT:
-			pline_The("fire burns %s.", mon_nam(mon));
-			break;
-		case LIGHTNING_ENCHANTMENT:
-			pline("%s is jolted by lightning.", Monnam(mon));
-			break;
-		case DEATH_ENCHANTMENT:
-			pline("%s feels its life energy draining away.", Monnam(mon));
-			break;
-		default:
-			pline_The("enchantment doesn't seem to affect %s.", mon_nam(mon));
-			break;
+		struct obj* otmp = (struct obj*) 0, *otmp2 = (struct obj*) 0;
+
+		if (resists_disint(mon) || noncorporeal(mon->data)) {
+			shieldeff(mon->mx, mon->my);
+		}
+		else if (mon->misc_worn_check & W_ARMS) {
+			/* destroy shield; victim survives */
+			otmp = which_armor(mon, W_ARMS);
+		}
+		else if (mon->misc_worn_check & W_ARM) {
+			/* destroy body armor, also cloak if present */
+			otmp = which_armor(mon, W_ARM);
+			if ((otmp2 = which_armor(mon, W_ARMC)) != 0)
+				m_useup(mon, otmp2);
+		}
+		else {
+			/* no body armor, victim dies; destroy cloak
+				and shirt now in case target gets life-saved */
+			if ((otmp2 = which_armor(mon, W_ARMC)) != 0)
+				m_useup(mon, otmp2);
+			if ((otmp2 = which_armor(mon, W_ARMU)) != 0)
+				m_useup(mon, otmp2);
+
+			if (is_rider(mon->data)) {
+				if (canseemon(mon)) {
+					pline("%s disintegrates.", Monnam(mon));
+					pline("%s body reintegrates before your %s!",
+						s_suffix(Monnam(mon)),
+						(eyecount(youmonst.data) == 1)
+						? body_part(EYE)
+						: makeplural(body_part(EYE)));
+					pline("%s resurrects!", Monnam(mon));
+				}
+				mon->mhp = mon->mhpmax;
+			}
+			else { /* disintegration */
+				disintegrate_mon(mon, 1, "black blade of disintegration");
+				bladedisintegratedmon = TRUE;
+				destroyed = TRUE;
+			}
+
+			if (mon && !DEADMONSTER(mon) && otmp) {
+				/* some armor was destroyed*/
+				if (canseemon(mon))
+					pline("%s %s is disintegrated!",
+						s_suffix(Monnam(mon)),
+						distant_name(otmp, xname));
+				m_useup(mon, otmp);
+			}
 		}
 	}
 
+	if (!bladedisintegratedmon && mon)
+	{
 
-	if (poiskilled) {
-		pline_The("poison was deadly...");
-		if (!already_killed)
-			xkilled(mon, XKILL_NOMSG);
-		destroyed = TRUE; /* return FALSE; */
-	} else if (enchantkilled) {
-		pline_The("magic was deadly...");
-		if (!already_killed)
-			xkilled(mon, XKILL_NOMSG);
-		destroyed = TRUE; /* return FALSE; */
-	} else if (destroyed) {
-        if (!already_killed)
-            killed(mon); /* takes care of most messages */
-    } else if (u.umconf && hand_to_hand) {
-        nohandglow(mon);
-        if (!mon->mconf && !resist(mon, SPBOOK_CLASS, 0, NOTELL)) {
-            mon->mconf = 1;
-            if (!mon->mstun && mon->mcanmove && !mon->msleeping
-                && canseemon(mon))
-                pline("%s appears confused.", Monnam(mon));
-        }
-    }
+		if (needpoismsg)
+			pline_The("poison doesn't seem to affect %s.", mon_nam(mon));
+
+		if (needenchantmsg && !destroyed)	
+		{
+			switch (needenchantmsg)
+			{
+			case -COLD_ENCHANTMENT:
+				pline_The("cold doesn't seem to affect %s.", mon_nam(mon));
+				break;
+			case -FIRE_ENCHANTMENT:
+				pline_The("fire doesn't seem to affect %s.", mon_nam(mon));
+				break;
+			case -LIGHTNING_ENCHANTMENT:
+				pline_The("electricity doesn't seem to affect %s.", mon_nam(mon));
+				break;
+			case -DEATH_ENCHANTMENT:
+				if (mon->data == &mons[PM_DEATH] && canseemon(mon)) {
+					pline("%s absorbs the deadly magics!", Monnam(mon));
+					pline("It seems even stronger than before.");
+					mon->mhp = mon->mhpmax;
+				} else
+					pline_The("death magic doesn't seem to affect %s.", mon_nam(mon));
+				break;
+			case COLD_ENCHANTMENT:
+				pline_The("cold sears %s.", mon_nam(mon));
+				break;
+			case FIRE_ENCHANTMENT:
+				pline_The("fire burns %s.", mon_nam(mon));
+				break;
+			case LIGHTNING_ENCHANTMENT:
+				pline("%s is jolted by lightning.", Monnam(mon));
+				break;
+			case DEATH_ENCHANTMENT:
+				pline("%s feels its life energy draining away.", Monnam(mon));
+				break;
+			default:
+				pline_The("enchantment doesn't seem to affect %s.", mon_nam(mon));
+				break;
+			}
+		}
+
+		if (poiskilled) {
+			pline_The("poison was deadly...");
+			if (!already_killed)
+				xkilled(mon, XKILL_NOMSG);
+			destroyed = TRUE; /* return FALSE; */
+		} else if (enchantkilled) {
+			pline_The("magic was deadly...");
+			if (!already_killed)
+				xkilled(mon, XKILL_NOMSG);
+			destroyed = TRUE; /* return FALSE; */
+		} else if (destroyed) {
+			if (!already_killed)
+				killed(mon); /* takes care of most messages */
+		} else if (u.umconf && hand_to_hand) {
+			nohandglow(mon);
+			if (!mon->mconf && !resist(mon, SPBOOK_CLASS, 0, NOTELL)) {
+				mon->mconf = 1;
+				if (!mon->mstun && mon->mcanmove && !mon->msleeping
+					&& canseemon(mon))
+					pline("%s appears confused.", Monnam(mon));
+			}
+		}
+
+	}
+
+
 
 	//No longer messages
     if (unpoisonmsg)

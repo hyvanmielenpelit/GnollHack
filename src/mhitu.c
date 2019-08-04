@@ -1027,6 +1027,7 @@ register struct obj* omonwep;
 	{
 		//Use weapon damage
 		dmg += dmgval(mweapon, &youmonst);
+
 	}
 	else
 	{
@@ -1868,7 +1869,10 @@ register struct obj* omonwep;
         dmg = 0;
     }
 
-    if (dmg) {
+	
+	int oldumort = u.umortality;
+
+	if (dmg) {
 		if (permdmg) { /* Death's life force drain */
 			int lowerlimit, * hpmax_p;
 			/*
@@ -1908,6 +1912,71 @@ register struct obj* omonwep;
 
         mdamageu(mtmp, dmg);
     }
+
+	//Add special enchantments
+	if (mattk->aatyp == AT_WEAP && omonwep) {
+		if (omonwep->otyp == BLACK_BLADE_OF_DISINTEGRATION)
+		{
+			if (Disint_resistance || noncorporeal(youmonst.data)) {					// if (abstyp == ZT_BREATH(ZT_DISINTEGRATION)) {
+				You("are not disintegrated.");
+			}
+			else if (uarms) {
+				/* destroy shield; other possessions are safe */
+				(void)destroy_arm(uarms);
+			}
+			else if (uarm) {
+				/* destroy suit; if present, cloak and robe go too */
+				if (uarmc)
+					(void)destroy_arm(uarmc);
+				if (uarmo)
+					(void)destroy_arm(uarmo);
+				(void)destroy_arm(uarm);
+			}
+			else
+			{
+				/* no shield or suit, you're dead; wipe out cloak
+					and/or shirt in case of life-saving or bones */
+				if (uarmc)
+					(void)destroy_arm(uarmc);
+				if (uarmo)
+					(void)destroy_arm(uarmo);
+				if (uarmu)
+					(void)destroy_arm(uarmu);
+				killer.format = KILLED_BY_AN;
+				Strcpy(killer.name, "black blade of disintegration");
+				/* when killed by disintegration breath, don't leave corpse */
+				u.ugrave_arise = -3;
+				done(DIED);
+			}
+		}
+		if (omonwep->special_enchantment > 0)
+		{
+			char onmbuf[BUFSZ], knmbuf[BUFSZ];
+
+			Strcpy(onmbuf, xname(mweapon));
+			Strcpy(knmbuf, killer_xname(mweapon));
+
+			extra_enchantment_damage(onmbuf, omonwep->special_enchantment, knmbuf, (u.umortality > oldumort));
+
+			switch (omonwep->special_enchantment)
+			{
+			case COLD_ENCHANTMENT:
+				if (!rn2(10))
+					omonwep->special_enchantment = 0;
+				break;
+			case FIRE_ENCHANTMENT:
+				if (!rn2(3))
+					omonwep->special_enchantment = 0;
+				break;
+			case LIGHTNING_ENCHANTMENT:
+				omonwep->special_enchantment = 0;
+				break;
+			case DEATH_ENCHANTMENT:
+				omonwep->special_enchantment = 0;
+				break;
+			}
+		}
+	}
 
     if (dmg)
         res = passiveum(olduasmon, mtmp, mattk);
