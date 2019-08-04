@@ -1740,7 +1740,7 @@ int spell;
 
     /* Calculate intrinsic ability (splcaster) */
 
-    splcaster = urole.spelbase;
+	splcaster = 0;  urole.spelbase;
     special = urole.spelheal;
     statused = ACURR(urole.spelstat);
 
@@ -1779,7 +1779,7 @@ int spell;
     /* Players basic likelihood of being able to cast any spell
      * is based of their `magic' statistic. (Int or Wis)
      */
-    chance = 10 * (statused - 3);
+    chance = -210 + 20 * statused;
 
     /*
      * High level spells are harder.  Easier for higher level casters.
@@ -1791,9 +1791,9 @@ int spell;
     //difficulty =
     //    (spellev(spell) - 1) * 4 - ((skill * 6) + ((u.ulevel - 1) * 2) + 0);
 
-	chance += -45 * (spellev(spell) - 1);
-	chance += (statused - 3) * 3 * skill;
-	chance += (statused - 3) * 3 * (u.ulevel - 1);
+	chance += -20 * spellev(spell);
+	chance += 50 * skill;
+	chance += 20 * u.ulevel;
 	chance += -5 * splcaster;
 
 //	if (difficulty > 0) {
