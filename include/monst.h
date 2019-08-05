@@ -157,8 +157,8 @@ struct monst {
     xchar weapon_check;    /* flag for whether to try switching weapons */
 
     int meating;           /* monster is eating timeout */
-	long summonduration;    /* duration for summoned units */
-	boolean timed;
+	long summonduration;   /* duration for summoned units */
+	int timed;			   /* number of timers on the monster */
 	struct mextra *mextra; /* point to mextra struct */
 };
 
