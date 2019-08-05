@@ -588,7 +588,7 @@ register struct monst *mtmp;
 			break;
 		case PM_PIT_FIEND:
 			(void)mongets(mtmp, INFERNAL_ANCUS);
-			(void)mongets(mtmp, INFERNAL_CLUB);
+			(void)mongets(mtmp, INFERNAL_JAGGED_TOOTHED_CLUB);
 			break;
 		case PM_DISPATER:
             (void) mongets(mtmp, WAN_STRIKING);

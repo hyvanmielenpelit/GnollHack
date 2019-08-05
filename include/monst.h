@@ -157,7 +157,8 @@ struct monst {
     xchar weapon_check;    /* flag for whether to try switching weapons */
 
     int meating;           /* monster is eating timeout */
-    struct mextra *mextra; /* point to mextra struct */
+	long summonduration;    /* duration for summoned units */
+	struct mextra *mextra; /* point to mextra struct */
 };
 
 #define newmonst() (struct monst *) alloc(sizeof (struct monst))

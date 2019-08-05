@@ -1948,7 +1948,7 @@ register struct obj* omonwep;
 				if (uarmu)
 					(void)destroy_arm(uarmu);
 				killer.format = KILLED_BY_AN;
-				Strcpy(killer.name, "black blade of disintegration");
+				Strcpy(killer.name, killer_xname(omonwep));
 				/* when killed by disintegration breath, don't leave corpse */
 				u.ugrave_arise = -3;
 				done(DIED);

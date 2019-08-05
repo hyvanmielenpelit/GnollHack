@@ -1444,7 +1444,7 @@ int dieroll;
 	  
 	//Black Blade effect
 	boolean bladedisintegratedmon = FALSE;
-	if (obj->otyp == BLACK_BLADE_OF_DISINTEGRATION && !DEADMONSTER(mon))
+	if (obj && obj->otyp == BLACK_BLADE_OF_DISINTEGRATION && !DEADMONSTER(mon))
 	{
 		struct obj* otmp = (struct obj*) 0, *otmp2 = (struct obj*) 0;
 
@@ -1482,7 +1482,7 @@ int dieroll;
 				mon->mhp = mon->mhpmax;
 			}
 			else { /* disintegration */
-				disintegrate_mon(mon, 1, "black blade of disintegration");
+				disintegrate_mon(mon, 1, xname(obj));
 				bladedisintegratedmon = TRUE;
 				destroyed = TRUE;
 			}

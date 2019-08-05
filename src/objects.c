@@ -291,7 +291,7 @@ WEAPON("war hammer", None,
         /* +1 small */
 WEAPON("club", None,
        1, 0, 0, 12,  40,   3,  1, 6, 0, 1, 3, 0, 0, B,   P_CLUB, WOOD, HI_WOOD),
-WEAPON("infernal club", "black jagged-toothed club",
+WEAPON("infernal jagged-toothed club", "black jagged-toothed club",
        0, 0, 0,  0,  60, 100,  1, 6, 1, 1, 6, 1, 0, B,   P_CLUB, WOOD, CLR_BLACK),
 WEAPON("rubber hose", None,
        1, 0, 0,  0,  20,   3,  1, 4, 0, 1, 3, 0, 0, B,   P_WHIP, PLASTIC, CLR_BROWN),

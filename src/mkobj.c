@@ -824,6 +824,14 @@ boolean artif;
                 otmp->opoisoned = 1;
 
 			otmp->special_enchantment = 0; // At the moment no randomly generated special enchantment weapons
+			switch (otmp->otyp) {
+			case BLACK_BLADE_OF_DISINTEGRATION:
+				otmp->age = 20L;
+				begin_existence(otmp);
+				break;
+			default:
+				break;
+			}
 
 			if (artif && !rn2(20))
                 otmp = mk_artifact(otmp, (aligntyp) A_NONE);

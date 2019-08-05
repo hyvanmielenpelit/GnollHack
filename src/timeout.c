@@ -1583,6 +1583,96 @@ long expire_time;
         update_inventory();
 }
 
+//Black Blade
+/*
+ * Timeout callback for for Black Blade and other summonable objects, very similar to rot_corpse
+ */
+void
+unsummon_item(arg, timeout)
+anything* arg;
+long timeout;
+{
+	xchar x = 0, y = 0;
+	struct obj* obj = arg->a_obj;
+	boolean on_floor = obj->where == OBJ_FLOOR,
+		in_invent = obj->where == OBJ_INVENT;
+
+	if (on_floor) {
+		x = obj->ox;
+		y = obj->oy;
+	}
+	else if (in_invent) {
+		if (flags.verbose) {
+			char* bbname = xname(obj);
+
+			Your("%s%s %s in a puff of smoke%c", obj == uwep ? "wielded " : "", bbname,
+				otense(obj, "vanish"), obj == uwep ? '!' : '.');
+		}
+		if (obj == uwep) {
+			uwepgone(); /* now bare handed */
+			stop_occupation();
+		}
+		else if (obj == uswapwep) {
+			uswapwepgone();
+			stop_occupation();
+		}
+		else if (obj == uquiver) {
+			uqwepgone();
+			stop_occupation();
+		}
+	}
+	else if (obj->where == OBJ_MINVENT && obj->owornmask) {
+		if (obj == MON_WEP(obj->ocarry))
+			setmnotwielded(obj->ocarry, obj);
+	}
+	else if (obj->where == OBJ_MIGRATING) {
+		/* clear destination flag so that obfree()'s check for
+		   freeing a worn object doesn't get a false hit */
+		obj->owornmask = 0L;
+	}
+
+	//Destroy item
+	if (carried(obj)) {
+		useupall(obj);
+	}
+	else {
+		/* clear migrating obj's destination code
+		   so obfree won't think this item is worn */
+		obj_extract_self(obj);
+		obfree(obj, (struct obj*) 0);
+	}
+	obj = (struct obj*) 0;
+
+	//Additional floor considerations
+	if (on_floor) {
+		struct monst* mtmp = m_at(x, y);
+
+		/* a hiding monster may be exposed */
+		if (mtmp && !OBJ_AT(x, y) && mtmp->mundetected
+			&& hides_under(mtmp->data)) {
+			mtmp->mundetected = 0;
+		}
+		else if (x == u.ux && y == u.uy && u.uundetected && hides_under(youmonst.data))
+			(void)hideunder(&youmonst);
+		newsym(x, y);
+	}
+	else if (in_invent)
+		update_inventory();
+
+}
+
+/*
+ * Start a existence timeout on the given object. 
+ */
+void
+begin_existence(obj)
+struct obj* obj;
+{
+	if (start_timer(obj->age, TIMER_OBJECT, ITEM_UNSUMMON, obj_to_any(obj))) {
+		obj->age = 0; //Not strictly necessary
+	}
+}
+
 void
 do_storms()
 {
@@ -1728,7 +1818,8 @@ static const ttable timeout_funcs[NUM_TIME_FUNCS] = {
     TTAB(burn_object, cleanup_burn, "burn_object"),
     TTAB(hatch_egg, (timeout_proc) 0, "hatch_egg"),
     TTAB(fig_transform, (timeout_proc) 0, "fig_transform"),
-    TTAB(melt_ice_away, (timeout_proc) 0, "melt_ice_away")
+    TTAB(melt_ice_away, (timeout_proc) 0, "melt_ice_away"),
+	TTAB(unsummon_item, (timeout_proc)0, "unsummon_item")
 };
 #undef TTAB
 
