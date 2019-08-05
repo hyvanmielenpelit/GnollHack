@@ -2995,6 +2995,7 @@ E void FDECL(destroy_item, (int, int));
 E int FDECL(destroy_mitem, (struct monst *, int, int));
 E int FDECL(resist, (struct monst *, CHAR_P, int, int));
 E void NDECL(makewish);
+E void NDECL(summonblackblade);
 E void FDECL(disintegrate_mon, (struct monst*, int, const char*));
 
 

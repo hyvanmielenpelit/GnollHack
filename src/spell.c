@@ -514,7 +514,9 @@ register struct obj *spellbook;
                 -objects[booktype].oc_level * objects[booktype].oc_delay;
             break;
         case 7:
-            context.spbook.delay = -8 * objects[booktype].oc_delay;
+		case 8:
+		case 9:
+			context.spbook.delay = -8 * objects[booktype].oc_delay;
             break;
         default:
             impossible("Unknown spellbook level %d, book %d;",
@@ -1114,7 +1116,8 @@ boolean atme;
     case SPE_CANCELLATION:
     case SPE_FINGER_OF_DEATH:
     case SPE_LIGHT:
-    case SPE_DETECT_UNSEEN:
+	case SPE_BLACK_BLADE_OF_DISINTEGRATION:
+	case SPE_DETECT_UNSEEN:
     case SPE_HEALING:
     case SPE_EXTRA_HEALING:
     case SPE_DRAIN_LIFE:
@@ -1680,7 +1683,15 @@ int *spell_no;
              MENU_UNSELECTED);
     for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++) {
         splnum = !spl_orderindx ? i : spl_orderindx[i];
-        Sprintf(buf, fmt, spellname(splnum), spellev(splnum),
+		char shortenedname[BUFSZ] = "";
+		char fullname[BUFSZ];
+		strcpy(fullname, spellname(splnum));
+		if (strlen(fullname) > 20)
+			strncpy(shortenedname, fullname, 20);
+		else
+			strcpy(shortenedname, fullname);
+		
+		Sprintf(buf, fmt, shortenedname, spellev(splnum),
                 spelltypemnemonic(spell_skilltype(spellid(splnum))),
 				getspellenergycost(spellev(splnum)),
                 100 - percent_success(splnum),

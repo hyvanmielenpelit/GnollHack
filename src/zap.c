@@ -2208,7 +2208,11 @@ register struct obj *obj;
         if (lightdamage(obj, TRUE, 5))
             known = TRUE;
         break;
-    case WAN_SECRET_DOOR_DETECTION:
+	case SPE_BLACK_BLADE_OF_DISINTEGRATION:
+		known = TRUE;
+		summonblackblade();
+		break;
+	case WAN_SECRET_DOOR_DETECTION:
     case SPE_DETECT_UNSEEN:
         if (!findit())
             return;
@@ -5383,6 +5387,30 @@ retry:
                                    (const char *) 0);
         u.ublesscnt += rn1(100, 50); /* the gods take notice */
     }
+}
+
+void
+summonblackblade()
+{
+	struct obj* otmp;
+
+	otmp = mksobj(BLACK_BLADE_OF_DISINTEGRATION, FALSE, FALSE);
+	if (otmp && otmp != &zeroobj) {
+		const char
+			* verb = ((Is_airlevel(&u.uz) || u.uinwater) ? "slip" : "drop"),
+			* oops_msg = (u.uswallow
+				? "Oops!  %s out of your reach!"
+				: (Is_airlevel(&u.uz) || Is_waterlevel(&u.uz)
+					|| levl[u.ux][u.uy].typ < IRONBARS
+					|| levl[u.ux][u.uy].typ >= ICE)
+				? "Oops!  %s away from you!"
+				: "Oops!  %s to the floor!");
+
+		/* The(aobjnam()) is safe since otmp is unidentified -dlc */
+		(void)hold_another_object(otmp, oops_msg,
+			The(aobjnam(otmp, verb)),
+			(const char*)0);
+	}
 }
 
 /*zap.c*/
