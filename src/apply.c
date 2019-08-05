@@ -24,6 +24,7 @@ STATIC_PTR void FDECL(display_jump_positions, (int));
 STATIC_DCL void FDECL(use_tinning_kit, (struct obj *));
 STATIC_DCL void FDECL(use_figurine, (struct obj **));
 STATIC_DCL void FDECL(use_grease, (struct obj *));
+STATIC_DCL void FDECL(use_wand_on_object, (struct obj*));
 STATIC_DCL void FDECL(use_trap, (struct obj *));
 STATIC_DCL void FDECL(use_stone, (struct obj *));
 STATIC_PTR int NDECL(set_trap); /* occupation callback */
@@ -2310,6 +2311,61 @@ struct obj *obj;
             pline("%s to be empty.", Tobjnam(obj, "seem"));
     }
     update_inventory();
+}
+
+static NEARDATA const char wand_application_objects[] = { ALL_CLASSES, ALLOW_NONE, 0 };
+
+STATIC_OVL void
+use_wand_on_object(obj)
+struct obj* obj;
+{
+	struct obj* otmp;
+
+	if (Glib) {
+		pline("%s from your %s.", Tobjnam(obj, "slip"),
+			makeplural(body_part(FINGER)));
+		dropx(obj);
+		return;
+	}
+
+	if (obj->spe > 0) {
+		if ((obj->cursed || Fumbling) && !rn2(2)) {
+			//Application of a cursed wand??
+/*			consume_obj_charge(obj, TRUE);
+
+			pline("%s from your %s.", Tobjnam(obj, "slip"),
+				makeplural(body_part(FINGER)));
+			dropx(obj);*/
+			return;
+		}
+		otmp = getobj(wand_application_objects, "grease", 0);
+		if (!otmp)
+			return;
+		if (inaccessible_equipment(otmp, "grease", FALSE))
+			return;
+		consume_obj_charge(obj, TRUE);
+
+		if (otmp != &zeroobj) {
+			You("cover %s with a thick layer of grease.", yname(otmp));
+			otmp->greased = 1;
+			if (obj->cursed && !nohands(youmonst.data)) {
+				incr_itimeout(&Glib, rnd(15));
+				pline("Some of the grease gets all over your %s.",
+					makeplural(body_part(HAND)));
+			}
+		}
+		else {
+			incr_itimeout(&Glib, rnd(15));
+			You("coat your %s with grease.", makeplural(body_part(FINGER)));
+		}
+	}
+	else {
+		if (obj->known)
+			pline("%s empty.", Tobjnam(obj, "are"));
+		else
+			pline("%s to be empty.", Tobjnam(obj, "seem"));
+	}
+	update_inventory();
 }
 
 /* touchstones - by Ken Arnold */

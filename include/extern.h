@@ -1444,6 +1444,8 @@ E boolean FDECL(angry_guards, (BOOLEAN_P));
 E void NDECL(pacify_guards);
 E void FDECL(decide_to_shapeshift, (struct monst *, int));
 E boolean FDECL(vamp_stone, (struct monst *));
+E void FDECL(m_detach, (struct monst*, struct permonst*));
+
 
 /* ### mondata.c ### */
 
@@ -2445,15 +2447,24 @@ E void FDECL(begin_burn, (struct obj *, BOOLEAN_P));
 E void FDECL(end_burn, (struct obj *, BOOLEAN_P));
 E void FDECL(unsummon_item, (ANY_P*, long));
 E void FDECL(begin_existence, (struct obj*));
+E void FDECL(unsummon_monster, (ANY_P*, long));
+E void FDECL(begin_summontimer, (struct monst*));
 E void NDECL(do_storms);
 E boolean FDECL(start_timer, (long, SHORT_P, SHORT_P, ANY_P *));
 E long FDECL(stop_timer, (SHORT_P, ANY_P *));
 E long FDECL(peek_timer, (SHORT_P, ANY_P *));
 E void NDECL(run_timers);
+
 E void FDECL(obj_move_timers, (struct obj *, struct obj *));
 E void FDECL(obj_split_timers, (struct obj *, struct obj *));
 E void FDECL(obj_stop_timers, (struct obj *));
 E boolean FDECL(obj_has_timer, (struct obj *, SHORT_P));
+
+E void FDECL(mon_move_timers, (struct monst*, struct monst*));
+E void FDECL(mon_split_timers, (struct monst*, struct monst*));
+E void FDECL(mon_stop_timers, (struct monst*));
+E boolean FDECL(mon_has_timer, (struct monst*, SHORT_P));
+
 E void FDECL(spot_stop_timers, (XCHAR_P, XCHAR_P, SHORT_P));
 E long FDECL(spot_time_expires, (XCHAR_P, XCHAR_P, SHORT_P));
 E long FDECL(spot_time_left, (XCHAR_P, XCHAR_P, SHORT_P));
@@ -2996,6 +3007,7 @@ E int FDECL(destroy_mitem, (struct monst *, int, int));
 E int FDECL(resist, (struct monst *, CHAR_P, int, int));
 E void NDECL(makewish);
 E void NDECL(summonblackblade);
+E void NDECL(summonogre);
 E void FDECL(disintegrate_mon, (struct monst*, int, const char*));
 
 

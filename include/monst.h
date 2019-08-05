@@ -158,6 +158,7 @@ struct monst {
 
     int meating;           /* monster is eating timeout */
 	long summonduration;    /* duration for summoned units */
+	boolean timed;
 	struct mextra *mextra; /* point to mextra struct */
 };
 

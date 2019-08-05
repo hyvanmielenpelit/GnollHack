@@ -2216,6 +2216,10 @@ register struct obj *obj;
 		pline("A sword-shaped planar rift forms before you!");
 		summonblackblade();
 		break;
+	case SPE_SUMMON_OGRE:
+		known = TRUE;
+		summonogre();
+		break;
 	case WAN_SECRET_DOOR_DETECTION:
     case SPE_DETECT_UNSEEN:
         if (!findit())
@@ -5415,6 +5419,22 @@ summonblackblade()
 			The(aobjnam(otmp, verb)),
 			(const char*)0);
 	}
+}
+
+void
+summonogre()
+{
+	struct monst* mon;
+
+	mon = makemon(&mons[PM_OGRE], u.ux, u.uy, NO_MINVENT | MM_NOCOUNTBIRTH);
+	if (mon)
+	{
+		(void)tamedog(mon, (struct obj*) 0);
+		mon->summonduration = 30 + rnd(20);
+		begin_summontimer(mon);
+		pline("%s appears before you in a puff of smoke!", Amonnam(mon));
+	}
+
 }
 
 /*zap.c*/

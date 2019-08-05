@@ -1597,6 +1597,9 @@ long timeout;
 	boolean on_floor = obj->where == OBJ_FLOOR,
 		in_invent = obj->where == OBJ_INVENT;
 
+	if (!obj)
+		return;
+
 	if (on_floor) {
 		x = obj->ox;
 		y = obj->oy;
@@ -1662,7 +1665,7 @@ long timeout;
 }
 
 /*
- * Start a existence timeout on the given object. 
+ * Start an existence timeout on the given object. 
  */
 void
 begin_existence(obj)
@@ -1670,6 +1673,58 @@ struct obj* obj;
 {
 	if (start_timer(obj->age, TIMER_OBJECT, ITEM_UNSUMMON, obj_to_any(obj))) {
 		obj->age = 0; //Not strictly necessary
+	}
+}
+
+//Monster summons here
+
+/*
+ * Timeout callback for for summon monster spells
+ */
+void
+unsummon_monster(arg, timeout)
+anything* arg;
+long timeout;
+{
+	xchar x = 0, y = 0;
+	struct monst* mon = arg->a_monst;
+
+	if (!mon || (mon && DEADMONSTER(mon)))
+		return;
+
+	if (canseemon(mon)) {
+		pline("%s vanishes in a puff of smoke!", Monnam(mon));
+	}
+
+	//Note: assume that the monster drops all its items
+
+	struct permonst* mptr;
+
+	mon->mhp = 0;
+
+	/* Player is thrown from his steed when it unsummons */
+	if (mon == u.usteed)
+		dismount_steed(DISMOUNT_GENERIC);
+
+	mptr = mon->data;
+
+	if (glyph_is_invisible(levl[mon->mx][mon->my].glyph))
+		unmap_object(mon->mx, mon->my);
+
+	m_detach(mon, mptr);
+
+}
+
+
+/*
+ * Start a summon timeout on the given monster.
+ */
+void
+begin_summontimer(mon)
+struct monst* mon;
+{
+	if (start_timer(mon->summonduration, TIMER_MONSTER, MONSTER_UNSUMMON, monst_to_any(mon))) {
+		mon->summonduration = 0; //Not strictly necessary
 	}
 }
 
@@ -1819,7 +1874,8 @@ static const ttable timeout_funcs[NUM_TIME_FUNCS] = {
     TTAB(hatch_egg, (timeout_proc) 0, "hatch_egg"),
     TTAB(fig_transform, (timeout_proc) 0, "fig_transform"),
     TTAB(melt_ice_away, (timeout_proc) 0, "melt_ice_away"),
-	TTAB(unsummon_item, (timeout_proc)0, "unsummon_item")
+	TTAB(unsummon_item, (timeout_proc)0, "unsummon_item"),
+	TTAB(unsummon_monster, (timeout_proc)0, "unsummon_monster")
 };
 #undef TTAB
 
@@ -1943,8 +1999,9 @@ timer_sanity_check()
     for (curr = timer_base; curr; curr = curr->next)
         if (curr->kind == TIMER_OBJECT) {
             struct obj *obj = curr->arg.a_obj;
+			struct monst* mon = curr->arg.a_monst;
 
-            if (obj->timed == 0) {
+            if (obj->timed == 0 && mon->timed == 0) {
                 impossible("timer sanity: untimed obj %s, timer %ld",
                       fmt_ptr((genericptr_t) obj), curr->tid);
             }
@@ -1970,8 +2027,14 @@ run_timers()
         timer_base = curr->next;
 
         if (curr->kind == TIMER_OBJECT)
-            (curr->arg.a_obj)->timed--;
-        (*timeout_funcs[curr->func_index].f)(&curr->arg, curr->timeout);
+		{
+			if(!curr->arg.a_monst)
+				(curr->arg.a_monst)->timed--;
+			else
+				(curr->arg.a_obj)->timed--;
+		}
+		
+		(*timeout_funcs[curr->func_index].f)(&curr->arg, curr->timeout);
         free((genericptr_t) curr);
     }
 }
@@ -1986,26 +2049,31 @@ short kind;
 short func_index;
 anything *arg;
 {
-    timer_element *gnu;
+	timer_element* gnu;
 
-    if (func_index < 0 || func_index >= NUM_TIME_FUNCS)
-        panic("start_timer");
+	if (func_index < 0 || func_index >= NUM_TIME_FUNCS)
+		panic("start_timer");
 
-    gnu = (timer_element *) alloc(sizeof(timer_element));
-    (void) memset((genericptr_t)gnu, 0, sizeof(timer_element));
-    gnu->next = 0;
-    gnu->tid = timer_id++;
-    gnu->timeout = monstermoves + when;
-    gnu->kind = kind;
-    gnu->needs_fixup = 0;
-    gnu->func_index = func_index;
-    gnu->arg = *arg;
-    insert_timer(gnu);
+	gnu = (timer_element*)alloc(sizeof(timer_element));
+	(void)memset((genericptr_t)gnu, 0, sizeof(timer_element));
+	gnu->next = 0;
+	gnu->tid = timer_id++;
+	gnu->timeout = monstermoves + when;
+	gnu->kind = kind;
+	gnu->needs_fixup = 0;
+	gnu->func_index = func_index;
+	gnu->arg = *arg;
+	insert_timer(gnu);
 
-    if (kind == TIMER_OBJECT) /* increment object's timed count */
-        (arg->a_obj)->timed++;
-
-    /* should check for duplicates and fail if any */
+	if (kind == TIMER_OBJECT) /* increment monster's timed count */
+	{
+		(arg->a_obj)->timed++;
+	}
+	else if (kind == TIMER_MONSTER) /* increment monster's timed count */
+	{
+		(arg->a_monst)->timed++;
+	}
+	/* should check for duplicates and fail if any */
     return TRUE;
 }
 
@@ -2025,9 +2093,13 @@ anything *arg;
 
     if (doomed) {
         timeout = doomed->timeout;
-        if (doomed->kind == TIMER_OBJECT)
-            (arg->a_obj)->timed--;
-        if (timeout_funcs[doomed->func_index].cleanup)
+        if (doomed->kind == TIMER_OBJECT) {
+			(arg->a_obj)->timed--;
+		}
+		else if (doomed->kind == TIMER_MONSTER) {
+			(arg->a_monst)->timed--;
+		}
+		if (timeout_funcs[doomed->func_index].cleanup)
             (*timeout_funcs[doomed->func_index].cleanup)(arg, timeout);
         free((genericptr_t) doomed);
         return (timeout - monstermoves);
@@ -2062,15 +2134,38 @@ struct obj *src, *dest;
     int count;
     timer_element *curr;
 
-    for (count = 0, curr = timer_base; curr; curr = curr->next)
+    for (count = 0, curr = timer_base; curr; curr = curr->next) {
         if (curr->kind == TIMER_OBJECT && curr->arg.a_obj == src) {
-            curr->arg.a_obj = dest;
+			curr->arg.a_obj = dest;
             dest->timed++;
             count++;
         }
-    if (count != src->timed)
+	}
+	if (count != src->timed)
         panic("obj_move_timers");
     src->timed = 0;
+}
+
+/*
+ * Move all object timers from src to dest, leaving src untimed.
+ */
+void
+mon_move_timers(src, dest)
+struct monst* src, * dest;
+{
+	int count;
+	timer_element* curr;
+
+	for (count = 0, curr = timer_base; curr; curr = curr->next) {
+		if (curr->kind == TIMER_MONSTER && curr->arg.a_monst == src) {
+			curr->arg.a_monst = dest;
+			dest->timed++;
+			count++;
+		}
+	}
+	if (count != src->timed)
+		panic("mon_move_timers");
+	src->timed = 0;
 }
 
 /*
@@ -2089,6 +2184,24 @@ struct obj *src, *dest;
                                curr->func_index, obj_to_any(dest));
         }
     }
+}
+
+/*
+ * Find all monster timers and duplicate them for the new monster "dest".
+ */
+void
+mon_split_timers(src, dest)
+struct monst* src, * dest;
+{
+	timer_element* curr, * next_timer = 0;
+
+	for (curr = timer_base; curr; curr = next_timer) {
+		next_timer = curr->next; /* things may be inserted */
+		if (curr->kind == TIMER_MONSTER && curr->arg.a_monst == src) {
+			(void)start_timer(curr->timeout - monstermoves, TIMER_MONSTER,
+				curr->func_index, monst_to_any(dest));
+		}
+	}
 }
 
 /*
@@ -2120,6 +2233,36 @@ struct obj *obj;
 }
 
 /*
+ * Stop all timers attached to this monster.  We can get away with this because
+ * all object pointers are unique.
+ */
+void
+mon_stop_timers(mon)
+struct monst* mon;
+{
+	timer_element* curr, * prev, * next_timer = 0;
+
+	for (prev = 0, curr = timer_base; curr; curr = next_timer) {
+		next_timer = curr->next;
+		if (curr->kind == TIMER_MONSTER && curr->arg.a_monst == mon) {
+			if (prev)
+				prev->next = curr->next;
+			else
+				timer_base = curr->next;
+			if (timeout_funcs[curr->func_index].cleanup)
+				(*timeout_funcs[curr->func_index].cleanup)(&curr->arg,
+					curr->timeout);
+			free((genericptr_t)curr);
+		}
+		else {
+			prev = curr;
+		}
+	}
+	mon->timed = 0;
+}
+
+
+/*
  * Check whether object has a timer of type timer_type.
  */
 boolean
@@ -2130,6 +2273,19 @@ short timer_type;
     long timeout = peek_timer(timer_type, obj_to_any(object));
 
     return (boolean) (timeout != 0L);
+}
+
+/*
+ * Check whether object has a timer of type timer_type.
+ */
+boolean
+mon_has_timer(mon, timer_type)
+struct monst* mon;
+short timer_type;
+{
+	long timeout = peek_timer(timer_type, monst_to_any(mon));
+
+	return (boolean)(timeout != 0L);
 }
 
 /*
@@ -2496,7 +2652,7 @@ boolean ghostly;
                     panic("cant find o_id %d", nid);
                 curr->needs_fixup = 0;
             } else if (curr->kind == TIMER_MONSTER) {
-                panic("relink_timers: no monster timer implemented");
+				panic("relink_timers: no monster timer implemented");
             } else
                 panic("relink_timers 2");
         }

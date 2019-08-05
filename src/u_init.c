@@ -30,7 +30,8 @@ static struct trobj Archeologist[] = {
     /* if adventure has a name...  idea from tan@uvm-gen */
     { BULLWHIP, 2, WEAPON_CLASS, 1, UNDEF_BLESS },
     { LEATHER_JACKET, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
-    { FEDORA, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
+	{ LEATHER_PANTS, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
+	{ FEDORA, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { FOOD_RATION, 0, FOOD_CLASS, 3, 0 },
     { PICK_AXE, UNDEF_SPE, TOOL_CLASS, 1, UNDEF_BLESS },
     { TINNING_KIT, UNDEF_SPE, TOOL_CLASS, 1, UNDEF_BLESS },
@@ -44,22 +45,26 @@ static struct trobj Barbarian[] = {
     { TWO_HANDED_SWORD, 0, WEAPON_CLASS, 1, UNDEF_BLESS },
     { AXE, 0, WEAPON_CLASS, 1, UNDEF_BLESS },
     { RING_MAIL, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
-    { FOOD_RATION, 0, FOOD_CLASS, 1, 0 },
+	{ KILT, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
+	{ FOOD_RATION, 0, FOOD_CLASS, 1, 0 },
     { 0, 0, 0, 0, 0 }
 };
 static struct trobj Cave_man[] = {
 #define C_AMMO 2
-    { CLUB, 1, WEAPON_CLASS, 1, UNDEF_BLESS },
-    { SLING, 2, WEAPON_CLASS, 1, UNDEF_BLESS },
+    { CLUB, 3, WEAPON_CLASS, 1, UNDEF_BLESS },
+    { SLING, 3, WEAPON_CLASS, 1, UNDEF_BLESS },
     { FLINT, 0, GEM_CLASS, 15, UNDEF_BLESS }, /* quan is variable */
     { ROCK, 0, GEM_CLASS, 3, 0 },             /* yields 18..33 */
-    { LEATHER_ARMOR, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
+	{ UNDEF_TYP, UNDEF_SPE, AMULET_CLASS, 1, UNDEF_BLESS },
+	{ FOOD_RATION, 0, FOOD_CLASS, 3, 0 },
+	{ LEATHER_ARMOR, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { 0, 0, 0, 0, 0 }
 };
 static struct trobj Healer[] = {
     { SCALPEL, 0, WEAPON_CLASS, 1, UNDEF_BLESS },
     { LEATHER_GLOVES, 1, ARMOR_CLASS, 1, UNDEF_BLESS },
-    { STETHOSCOPE, 0, TOOL_CLASS, 1, 0 },
+	{ ROBE, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
+	{ STETHOSCOPE, 0, TOOL_CLASS, 1, 0 },
     { POT_HEALING, 0, POTION_CLASS, 4, UNDEF_BLESS },
     { POT_EXTRA_HEALING, 0, POTION_CLASS, 4, UNDEF_BLESS },
     { WAN_SLEEP, UNDEF_SPE, WAND_CLASS, 1, UNDEF_BLESS },
@@ -98,9 +103,9 @@ static struct trobj Monk[] = {
     { 0, 0, 0, 0, 0 }
 };
 static struct trobj Priest[] = {
-    { MACE, 1, WEAPON_CLASS, 1, 1 },
+    { MACE, 2, WEAPON_CLASS, 1, 1 },
 	{ RING_MAIL, 0, ARMOR_CLASS, 1, 1 },
-	{ CLERICAL_GOWN, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
+	{ CLERICAL_GOWN, 0, ARMOR_CLASS, 1, 1 },
     { SMALL_SHIELD, 0, ARMOR_CLASS, 1, UNDEF_BLESS },
     { POT_WATER, 0, POTION_CLASS, 4, 1 }, /* holy water */
     { CLOVE_OF_GARLIC, 0, FOOD_CLASS, 1, 0 },
@@ -112,12 +117,13 @@ static struct trobj Ranger[] = {
 #define RAN_BOW 1
 #define RAN_TWO_ARROWS 2
 #define RAN_ZERO_ARROWS 3
-    { DAGGER, 1, WEAPON_CLASS, 1, UNDEF_BLESS },
+	{ DAGGER, 1, WEAPON_CLASS, 1, UNDEF_BLESS },
 	{ SHORT_BOW, 1, WEAPON_CLASS, 1, UNDEF_BLESS },
     { ARROW, 2, WEAPON_CLASS, 15, UNDEF_BLESS },
     { ARROW, 0, WEAPON_CLASS, 25, UNDEF_BLESS },
-	{ LEATHER_BRACERS, 1, WEAPON_CLASS, 1, UNDEF_BLESS },
-	{ CLOAK_OF_DISPLACEMENT, 2, ARMOR_CLASS, 1, UNDEF_BLESS },
+	{ BONE_ARROW, 0, WEAPON_CLASS, 1, UNDEF_BLESS },
+	{ BRACERS_OF_ARCHERY, 0, WEAPON_CLASS, 1, UNDEF_BLESS },
+	{ CLOAK_OF_PROTECTION, 2, ARMOR_CLASS, 1, UNDEF_BLESS },
     { CRAM_RATION, 0, FOOD_CLASS, 4, 0 },
     { 0, 0, 0, 0, 0 }
 };
@@ -246,6 +252,7 @@ static struct inv_sub {
 	{ PM_GNOLL, SHORT_BOW, CROSSBOW },
 	{ PM_GNOLL, LONG_BOW, CROSSBOW },
 	{ PM_GNOLL, ARROW, GNOLLISH_QUARREL },
+	{ PM_GNOLL, BONE_ARROW, BONE_QUARREL },
 	{ PM_GNOLL, HELMET, GNOLLISH_HOOD },
 	{ PM_GNOLL, COTTON_HOOD, GNOLLISH_HOOD },
 	{ PM_GNOLL, RING_MAIL, GNOLLISH_LEATHER_ARMOR },
@@ -1040,7 +1047,11 @@ register struct trobj *trop;
             while (otyp == WAN_WISHING || otyp == nocreate
                    || otyp == nocreate2 || otyp == nocreate3
                    || otyp == nocreate4 || otyp == RIN_LEVITATION
+                   || otyp == AMULET_OF_LIFE_SAVING
                    /* 'useless' items */
+                   || otyp == AMULET_OF_RESTFUL_SLEEP
+                   || otyp == AMULET_OF_STRANGULATION
+                   || otyp == AMULET_OF_CHANGE
                    || otyp == POT_HALLUCINATION
                    || otyp == POT_ACID
                    || otyp == SCR_AMNESIA
@@ -1146,6 +1157,15 @@ register struct trobj *trop;
 		{
 			if (obj->otyp == CROSSBOW_BOLT)
 				obj->opoisoned = 1;
+		}
+
+		//Gnoll rangers get poisoned crossbow bolts
+		if (Role_if(PM_RANGER))
+		{
+			if (obj->otyp == BONE_QUARREL && Race_if(PM_GNOLL))
+				obj->special_enchantment = DEATH_ENCHANTMENT;
+			else if(obj->otyp == BONE_ARROW || obj->otyp == BONE_QUARREL)
+				obj->special_enchantment = LIGHTNING_ENCHANTMENT;
 		}
 
 		if (trop->trclass == COIN_CLASS) {

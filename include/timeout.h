@@ -33,6 +33,7 @@ enum timeout_types {
     FIG_TRANSFORM,
     MELT_ICE_AWAY,
 	ITEM_UNSUMMON,
+	MONSTER_UNSUMMON,
 
     NUM_TIME_FUNCS
 };

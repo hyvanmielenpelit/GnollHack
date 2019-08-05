@@ -26,7 +26,6 @@ STATIC_DCL boolean FDECL(isspecmon, (struct monst *));
 STATIC_DCL boolean FDECL(validspecmon, (struct monst *, int));
 STATIC_DCL struct permonst *FDECL(accept_newcham_form, (int));
 STATIC_DCL struct obj *FDECL(make_corpse, (struct monst *, unsigned));
-STATIC_DCL void FDECL(m_detach, (struct monst *, struct permonst *));
 STATIC_DCL void FDECL(lifesaved_monster, (struct monst *));
 
 /* note: duplicated in dog.c */
@@ -1843,11 +1842,14 @@ struct monst *mon;
         panic("dealloc_monst with nmon");
     if (mon->mextra)
         dealloc_mextra(mon);
+	if(mon->timed)
+		mon_stop_timers(mon);
+
     free((genericptr_t) mon);
 }
 
 /* remove effects of mtmp from other data structures */
-STATIC_OVL void
+void
 m_detach(mtmp, mptr)
 struct monst *mtmp;
 struct permonst *mptr; /* reflects mtmp->data _prior_ to mtmp's death */
