@@ -1085,6 +1085,7 @@ boolean artif;
             : otmp->otyp) {
 	case BLACK_BLADE_OF_DISINTEGRATION:
 		otmp->age = 20L;
+		otmp->nomerge = 1;
 		begin_existence(otmp);
 		break;
 	case CORPSE:

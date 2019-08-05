@@ -2210,6 +2210,10 @@ register struct obj *obj;
         break;
 	case SPE_BLACK_BLADE_OF_DISINTEGRATION:
 		known = TRUE;
+		You("chant an invocation:");
+		verbalize("Sword of Cold and Darkness, free yourself from the heaven's bonds.");
+		verbalize("Become one with my power, one with my body, and let us walk the path of destruction together!");
+		pline("A sword-shaped planar rift forms before you!");
 		summonblackblade();
 		break;
 	case WAN_SECRET_DOOR_DETECTION:
