@@ -315,7 +315,7 @@ WEAPON("triple-headed flail", None,
 WEAPON("bullwhip", None,
        1, 0, 0,  2,  20,   4,  1, 2, 0,  1, 1, 0,  0, 0,   P_WHIP, LEATHER, CLR_BROWN),
 WEAPON("black blade of disintegration", "sword-shaped planar rift",
-   	   0, 1, 0,  0,  8,    0,  1, 4, 0,  1, 6, 0, 0, S, P_LONG_SWORD, PLANARRIFT, CLR_BLACK),
+   	   0, 1, 1,  0,  0,    0,  1, 16, 0,  3, 6, 1, 0, S, P_TWO_HANDED_SWORD, PLANARRIFT, CLR_BLACK),
 
 /* bows */
 BOW("bow", None,							1, 1, 0,  30, 30, 1, 3, 0, 1, 4, 0, 0, WOOD, P_BOW, HI_WOOD),

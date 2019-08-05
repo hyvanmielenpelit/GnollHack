@@ -1869,6 +1869,11 @@ register struct obj* omonwep;
         dmg = 0;
     }
 
+	//Black blade damage adjustment
+	if (mattk->aatyp == AT_WEAP && omonwep && omonwep->otyp == BLACK_BLADE_OF_DISINTEGRATION &&
+		!(Disint_resistance || noncorporeal(youmonst.data))) {
+		dmg  = 0; //Black blade does not do ordinary damage to disintegrateable monsters, to resistant monsters it inflicts normal damage
+	}
 	
 	int oldumort = u.umortality;
 

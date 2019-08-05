@@ -1304,6 +1304,10 @@ int dieroll;
         }
     }
 
+	//Black blade adjustment for disintegrateable creatures - No damage
+	if (obj && obj->otyp == BLACK_BLADE_OF_DISINTEGRATION && !(resists_disint(mon) || noncorporeal(mon->data)))
+		tmp = 0;
+
 	int damagedealt = tmp;
 
     if (!already_killed)
@@ -1352,7 +1356,7 @@ int dieroll;
             || (thrown && m_shot.n > 1 && m_shot.o == obj->otyp))) {
 		if (thrown)
 			hit(mshot_xname(obj), mon, exclam(destroyed ? 100 : tmp), destroyed ? -1 : tmp);
-		else if (!destroyed && !(obj && obj->otyp == BLACK_BLADE_OF_DISINTEGRATION)) {
+		else if (!destroyed && damagedealt > 0) {
 			if(!flags.verbose)
 				You("hit it for %d damage.", damagedealt);
 			else
