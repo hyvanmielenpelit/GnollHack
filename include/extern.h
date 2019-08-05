@@ -31,6 +31,7 @@ E int FDECL(argcheck, (int, char **, enum earlyarg));
 /* ### apply.c ### */
 
 E int NDECL(doapply);
+E int NDECL(dobreak);
 E int NDECL(dorub);
 E int NDECL(dojump);
 E int FDECL(jump, (int));

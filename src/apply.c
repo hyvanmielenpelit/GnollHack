@@ -2336,34 +2336,54 @@ struct obj* obj;
 			pline("%s from your %s.", Tobjnam(obj, "slip"),
 				makeplural(body_part(FINGER)));
 			dropx(obj);*/
+			pline("Nothing happens, yet.");
 			return;
 		}
-		otmp = getobj(wand_application_objects, "grease", 0);
+		otmp = getobj(wand_application_objects, "use wand on", 0);
 		if (!otmp)
 			return;
-		if (inaccessible_equipment(otmp, "grease", FALSE))
+		if (inaccessible_equipment(otmp, "use wand on", FALSE))
 			return;
 		consume_obj_charge(obj, TRUE);
 
-		if (otmp != &zeroobj) {
-			You("cover %s with a thick layer of grease.", yname(otmp));
-			otmp->greased = 1;
-			if (obj->cursed && !nohands(youmonst.data)) {
-				incr_itimeout(&Glib, rnd(15));
-				pline("Some of the grease gets all over your %s.",
-					makeplural(body_part(HAND)));
+		if (otmp && otmp != &zeroobj) {
+			if (otmp->oclass == WEAPON_CLASS)
+			{
+				switch (obj->otyp)
+				{
+				case WAN_DEATH:
+					You("enchant %s with death magic.", yname(otmp));
+					otmp->special_enchantment = DEATH_ENCHANTMENT;
+					break;
+				case WAN_COLD:
+					You("enchant %s with cold magic.", yname(otmp));
+					otmp->special_enchantment = COLD_ENCHANTMENT;
+					break;
+				case WAN_FIRE:
+					You("enchant %s with fire magic.", yname(otmp));
+					otmp->special_enchantment = FIRE_ENCHANTMENT;
+					break;
+				case WAN_LIGHTNING:
+					You("enchant %s with lightning magic.", yname(otmp));
+					otmp->special_enchantment = LIGHTNING_ENCHANTMENT;
+					break;
+				default:
+					break;
+				}
 			}
-		}
-		else {
-			incr_itimeout(&Glib, rnd(15));
-			You("coat your %s with grease.", makeplural(body_part(FINGER)));
+			else
+			{
+				pline("Nothing happens with non-weapons, yet.");
+				return;
+			}
+
 		}
 	}
 	else {
 		if (obj->known)
-			pline("%s empty.", Tobjnam(obj, "are"));
+			pline("%s out of charges.", Tobjnam(obj, "are"));
 		else
-			pline("%s to be empty.", Tobjnam(obj, "seem"));
+			pline("%s out of charges.", Tobjnam(obj, "seem"));
 	}
 	update_inventory();
 }
@@ -3589,6 +3609,33 @@ char class_list[];
         add_class(class_list, FOOD_CLASS);
 }
 
+int
+dobreak()
+{
+	struct obj* obj;
+	register int res = 1;
+	char class_list[MAXOCLASSES + 2];
+
+	if (check_capacity((char*)0))
+		return 0;
+
+	setapplyclasses(class_list); /* tools[] */
+	obj = getobj(class_list, "break", 0);
+	if (!obj)
+		return 0;
+
+	if (!retouch_object(&obj, FALSE))
+		return 1; /* evading your grasp costs a turn; just be
+					 grateful that you don't drop it as well */
+
+	if (obj->oclass == WAND_CLASS)
+		do_break_wand(obj);
+	else
+		You("cannot break that!");
+
+	return res; 
+}
+
 /* the 'a' command */
 int
 doapply()
@@ -3609,8 +3656,9 @@ doapply()
         return 1; /* evading your grasp costs a turn; just be
                      grateful that you don't drop it as well */
 
-    if (obj->oclass == WAND_CLASS)
-        return do_break_wand(obj);
+	if (obj->oclass == WAND_CLASS)
+		use_wand_on_object(obj);
+		return res; // do_break_wand(obj);
 
     switch (obj->otyp) {
     case BLINDFOLD:
