@@ -2608,14 +2608,6 @@ struct obj* obj;
 	update_inventory();
 }
 
-boolean
-iswornarmor(otmp)
-struct obj* otmp;
-{
-	return (otmp == uarm || otmp == uarmc || otmp == uarmo || otmp == uarmu || otmp == uarmp || otmp == uarmb || otmp == uarmg
-		|| otmp == uarmf || otmp == uarmv || otmp == uarmh);
-}
-
 /* touchstones - by Ken Arnold */
 STATIC_OVL void
 use_stone(tstone)
