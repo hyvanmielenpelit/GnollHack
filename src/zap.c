@@ -31,7 +31,6 @@ STATIC_DCL void FDECL(skiprange, (int, int *, int *));
 STATIC_DCL int FDECL(zap_hit, (int, int));
 STATIC_DCL void FDECL(backfire, (struct obj *));
 STATIC_DCL int FDECL(spell_hit_bonus, (int));
-STATIC_DCL void FDECL(destroy_one_item, (struct obj *, int, int));
 STATIC_DCL void FDECL(wishcmdassist, (int));
 
 #define ZT_MAGIC_MISSILE (AD_MAGM - 1)
@@ -2208,7 +2207,7 @@ register struct obj *obj;
         if (lightdamage(obj, TRUE, 5))
             known = TRUE;
         break;
-	case SPE_BLACK_BLADE_OF_DISINTEGRATION:
+	case SPE_BLACK_BLADE_OF_DISASTER:
 		known = TRUE;
 		You("chant an invocation:");
 		verbalize("Sword of Cold and Darkness, free yourself from the heaven's bonds.");
@@ -2519,7 +2518,46 @@ boolean ordinary;
         /* They might survive with an amulet of life saving */
         done(DIED);
         break;
-    case WAN_UNDEAD_TURNING:
+	case WAN_DISINTEGRATION:
+		if (Disint_resistance || noncorporeal(youmonst.data)) {					
+			pline((obj->otyp == WAN_DISINTEGRATION)
+				? "The wand shoots an apparently harmless beam at you."
+				: "You seem to exist as you did before.");
+			break;
+		}
+		else if (uarms) {
+			/* destroy shield; other possessions are safe */
+			(void)destroy_arm(uarms);
+			break;
+		}
+		else if (uarm) {
+			/* destroy suit; if present, cloak and robe go too */
+			if (uarmc)
+				(void)destroy_arm(uarmc);
+			if (uarmo)
+				(void)destroy_arm(uarmo);
+			(void)destroy_arm(uarm);
+			break;
+		}
+		/* no shield or suit, you're dead; wipe out cloak
+			and/or shirt in case of life-saving or bones */
+		if (uarmc)
+			(void)destroy_arm(uarmc);
+		if (uarmo)
+			(void)destroy_arm(uarmo);
+		if (uarmu)
+			(void)destroy_arm(uarmu);
+		
+		learn_it = TRUE;
+		Sprintf(killer.name, "shot %sself with a disintegration ray", uhim());
+		killer.format = NO_KILLER_PREFIX;
+		You("irradiate yourself with disintegration field!");
+		You("are disintegrated.");
+		/* when killed by disintegration breath, don't leave corpse */
+		u.ugrave_arise = 3;
+		done(DIED);
+		break;
+	case WAN_UNDEAD_TURNING:
     case SPE_TURN_UNDEAD:
         learn_it = TRUE;
         (void) unturn_dead(&youmonst);
@@ -4037,7 +4075,7 @@ const char *fltxt;
 /* note: worn amulet of life saving must be preserved in order to operate */
 #define oresist_disintegration(obj)                                       \
     (objects[obj->otyp].oc_oprop == DISINT_RES || obj_resists(obj, 5, 50) \
-     || is_quest_artifact(obj) || obj == m_amulet)
+     || is_quest_artifact(obj) || obj == m_amulet || obj->otyp == BLACK_BLADE_OF_DISINTEGRATION)
 
     for (otmp = mon->minvent; otmp; otmp = otmp2) {
         otmp2 = otmp->nobj;
@@ -4854,10 +4892,12 @@ const char *const destroy_strings[][3] = {
 
 /* guts of destroy_item(), which ought to be called maybe_destroy_items();
    caller must decide whether obj is eligible */
-STATIC_OVL void
-destroy_one_item(obj, osym, dmgtyp)
+void
+
+destroy_one_item(obj, osym, dmgtyp, forcedestroy)
 struct obj *obj;
 int osym, dmgtyp;
+boolean forcedestroy;
 {
     long i, cnt, quan;
     int dmg, xresist, skip, dindx;
@@ -4954,7 +4994,7 @@ int osym, dmgtyp;
         if (obj->in_use)
             --quan; /* one will be used up elsewhere */
         for (i = cnt = 0L; i < quan; i++)
-            if (!rn2(3))
+            if (forcedestroy || !rn2(3))
                 cnt++;
 
         if (!cnt)
@@ -5067,7 +5107,7 @@ int osym, dmgtyp;
             continue;
         }
         /* obj is eligible; maybe destroy it */
-        destroy_one_item(obj, osym, dmgtyp);
+        destroy_one_item(obj, osym, dmgtyp, FALSE);
     }
     /* if we saved some items for later (most likely just a worn ring
        of levitation) and they're still in inventory, handle them now */
@@ -5076,7 +5116,7 @@ int osym, dmgtyp;
            having obj be dropped or destroyed won't affect traversal */
         for (obj = invent; obj; obj = obj->nobj)
             if (obj->o_id == deferrals[i]) {
-                destroy_one_item(obj, osym, dmgtyp);
+                destroy_one_item(obj, osym, dmgtyp, FALSE);
                 break;
             }
     }

@@ -1595,7 +1595,10 @@ long timeout;
 	xchar x = 0, y = 0;
 	struct obj* obj = arg->a_obj;
 	boolean on_floor = obj->where == OBJ_FLOOR,
-		in_invent = obj->where == OBJ_INVENT;
+		in_invent = obj->where == OBJ_INVENT,
+		canseeunsummon = FALSE,
+		iswielded = FALSE;
+	char whosebuf[BUFSZ] = "";
 
 	if (!obj)
 		return;
@@ -1603,36 +1606,47 @@ long timeout;
 	if (on_floor) {
 		x = obj->ox;
 		y = obj->oy;
+		if(cansee(x,y))
+		{
+			canseeunsummon = TRUE;
+			iswielded = FALSE;
+			strcpy(whosebuf, "The ");
+		}
 	}
 	else if (in_invent) {
-		if (flags.verbose) {
-			char* bbname = xname(obj);
+		if (obj->owornmask)
+			remove_worn_item(obj, TRUE);
 
-			Your("%s%s %s in a puff of smoke%c", obj == uwep ? "wielded " : "", bbname,
-				otense(obj, "vanish"), obj == uwep ? '!' : '.');
-		}
-		if (obj == uwep) {
-			uwepgone(); /* now bare handed */
-			stop_occupation();
-		}
-		else if (obj == uswapwep) {
-			uswapwepgone();
-			stop_occupation();
-		}
-		else if (obj == uquiver) {
-			uqwepgone();
-			stop_occupation();
-		}
+		strcpy(whosebuf, "Your ");
+		canseeunsummon = TRUE;
 	}
 	else if (obj->where == OBJ_MINVENT && obj->owornmask) {
 		if (obj == MON_WEP(obj->ocarry))
+		{
 			setmnotwielded(obj->ocarry, obj);
+		}
+		if (obj->ocarry && canseemon(obj->ocarry))
+		{
+			canseeunsummon = TRUE;
+			strcpy(whosebuf, s_suffix(Monnam(obj->ocarry)));
+			strcat(whosebuf, " ");
+			iswielded = FALSE; //Do not show this for monsters
+		}
 	}
 	else if (obj->where == OBJ_MIGRATING) {
 		/* clear destination flag so that obfree()'s check for
 		   freeing a worn object doesn't get a false hit */
 		obj->owornmask = 0L;
+		canseeunsummon = FALSE;
 	}
+
+	if (flags.verbose && canseeunsummon) {
+		char* bbname = xname(obj);
+
+		pline("%s%s%s %s in a puff of smoke%c", whosebuf, iswielded ? "wielded " : "", bbname,
+			otense(obj, "vanish"), iswielded ? '!' : '.');
+	}
+
 
 	//Destroy item
 	if (carried(obj)) {
@@ -1996,16 +2010,25 @@ timer_sanity_check()
     timer_element *curr;
 
     /* this should be much more complete */
-    for (curr = timer_base; curr; curr = curr->next)
-        if (curr->kind == TIMER_OBJECT) {
-            struct obj *obj = curr->arg.a_obj;
+	for (curr = timer_base; curr; curr = curr->next)
+	{
+		if (curr->kind == TIMER_OBJECT) {
+			struct obj* obj = curr->arg.a_obj;
+
+			if (obj->timed == 0) {
+				impossible("timer sanity: untimed obj %s, timer %ld",
+					fmt_ptr((genericptr_t)obj), curr->tid);
+			}
+		}
+		else if (curr->kind == TIMER_MONSTER) {
 			struct monst* mon = curr->arg.a_monst;
 
-            if (obj->timed == 0 && mon->timed == 0) {
-                impossible("timer sanity: untimed obj %s, timer %ld",
-                      fmt_ptr((genericptr_t) obj), curr->tid);
-            }
-        }
+			if (mon->timed == 0) {
+				impossible("timer sanity: untimed mon %s, timer %ld",
+					fmt_ptr((genericptr_t)mon), curr->tid);
+			}
+		}
+	}
 }
 
 /*
@@ -2028,12 +2051,13 @@ run_timers()
 
         if (curr->kind == TIMER_OBJECT)
 		{
-			if(!curr->arg.a_monst)
-				(curr->arg.a_monst)->timed--;
-			else
-				(curr->arg.a_obj)->timed--;
+			(curr->arg.a_obj)->timed--;
 		}
-		
+		else if (curr->kind == TIMER_MONSTER)
+		{
+			(curr->arg.a_monst)->timed--;
+		}
+
 		(*timeout_funcs[curr->func_index].f)(&curr->arg, curr->timeout);
         free((genericptr_t) curr);
     }
@@ -2652,8 +2676,18 @@ boolean ghostly;
                     panic("cant find o_id %d", nid);
                 curr->needs_fixup = 0;
             } else if (curr->kind == TIMER_MONSTER) {
-				panic("relink_timers: no monster timer implemented");
-            } else
+//				panic("relink_timers: no monster timer implemented");
+				if (ghostly) {
+					if (!lookup_id_mapping(curr->arg.a_uint, &nid))
+						panic("relink_timers 1");
+				}
+				else
+					nid = curr->arg.a_uint;
+				curr->arg.a_monst = find_mid_ew(nid);
+				if (!curr->arg.a_monst)
+					panic("cant find m_id %d", nid);
+				curr->needs_fixup = 0;
+			} else
                 panic("relink_timers 2");
         }
     }

@@ -1165,7 +1165,10 @@ register struct trobj *trop;
 			if (obj->otyp == BONE_QUARREL && Race_if(PM_GNOLL))
 				obj->special_enchantment = DEATH_ENCHANTMENT;
 			else if(obj->otyp == BONE_ARROW || obj->otyp == BONE_QUARREL)
+			{
 				obj->special_enchantment = LIGHTNING_ENCHANTMENT;
+				obj->quan++;
+			}
 		}
 
 		if (trop->trclass == COIN_CLASS) {

@@ -210,6 +210,34 @@ char **cs_rows;
     }
 }
 
+
+struct monst*
+find_mid_ew(nid) //everywhere
+unsigned nid;
+{
+	struct monst* mtmp;
+
+	if (!nid)
+		return &youmonst;
+
+	mtmp = find_mid(nid, FM_FMON);
+	if (mtmp)
+		return mtmp;
+	else
+		mtmp = find_mid(nid, FM_MIGRATE);
+
+	if (mtmp)
+		return mtmp;
+	else
+		mtmp = find_mid(nid, FM_MYDOGS);
+
+	if (mtmp)
+		return mtmp;
+	else
+		return (struct monst*) 0;
+}
+
+
 /* (mon->mx == 0) implies migrating */
 #define mon_is_local(mon) ((mon)->mx > 0)
 

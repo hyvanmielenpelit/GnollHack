@@ -1787,6 +1787,7 @@ struct obj *obj;
     return 1;
 }
 
+
 /* the 'T' command */
 int
 dotakeoff()

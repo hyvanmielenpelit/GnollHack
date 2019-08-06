@@ -252,6 +252,7 @@ boolean unchain_ball; /* whether to unpunish or just unwield */
     }
 }
 
+
 /* Returns 1 when something was stolen (or at least, when N should flee now)
  * Returns -1 if the monster died in the attempt
  * Avoid stealing the object stealoid

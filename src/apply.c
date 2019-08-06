@@ -38,6 +38,7 @@ STATIC_DCL boolean FDECL(figurine_location_checks, (struct obj *,
                                                     coord *, BOOLEAN_P));
 STATIC_DCL void FDECL(add_class, (char *, CHAR_P));
 STATIC_DCL void FDECL(setapplyclasses, (char *));
+STATIC_DCL void FDECL(setbreakclasses, (char*));
 STATIC_PTR boolean FDECL(check_jump, (genericptr_t, int, int));
 STATIC_DCL boolean FDECL(is_valid_jump_pos, (int, int, int, BOOLEAN_P));
 STATIC_DCL boolean FDECL(get_valid_jump_position, (int, int));
@@ -2320,6 +2321,11 @@ use_wand_on_object(obj)
 struct obj* obj;
 {
 	struct obj* otmp;
+	char buftext[BUFSZ] = "";
+	boolean undonned = FALSE, wandknown = FALSE, suggestnamingwand = FALSE;
+
+	if (!obj || obj->oclass != WAND_CLASS)
+		return;
 
 	if (Glib) {
 		pline("%s from your %s.", Tobjnam(obj, "slip"),
@@ -2329,52 +2335,266 @@ struct obj* obj;
 	}
 
 	if (obj->spe > 0) {
-		if ((obj->cursed || Fumbling) && !rn2(2)) {
-			//Application of a cursed wand??
-/*			consume_obj_charge(obj, TRUE);
-
-			pline("%s from your %s.", Tobjnam(obj, "slip"),
-				makeplural(body_part(FINGER)));
-			dropx(obj);*/
-			pline("Nothing happens, yet.");
-			return;
-		}
 		otmp = getobj(wand_application_objects, "use wand on", 0);
 		if (!otmp)
 			return;
+
+		if (otmp == obj)
+		{
+			You("cannot use the wand on itself!");
+			return;
+		}
+
 		if (inaccessible_equipment(otmp, "use wand on", FALSE))
 			return;
+
 		consume_obj_charge(obj, TRUE);
 
+		if ((obj->cursed || Fumbling) && !rn2(2)) {
+			//Shoot accidently yourself!!
+
+			pline("The wand slips and you accidently zap yourself with it!");
+			(void)zapyourself(obj, TRUE);
+
+			return;
+		}
+
+		//Normal effect
 		if (otmp && otmp != &zeroobj) {
-			if (otmp->oclass == WEAPON_CLASS)
+			switch (obj->otyp)
 			{
-				switch (obj->otyp)
+			case WAN_DEATH:
+				if (otmp->oclass == WEAPON_CLASS && objects[otmp->otyp].oc_material == BONE)
 				{
-				case WAN_DEATH:
+					wandknown = TRUE;
 					You("enchant %s with death magic.", yname(otmp));
 					otmp->special_enchantment = DEATH_ENCHANTMENT;
-					break;
-				case WAN_COLD:
-					You("enchant %s with cold magic.", yname(otmp));
-					otmp->special_enchantment = COLD_ENCHANTMENT;
-					break;
-				case WAN_FIRE:
-					You("enchant %s with fire magic.", yname(otmp));
-					otmp->special_enchantment = FIRE_ENCHANTMENT;
-					break;
-				case WAN_LIGHTNING:
-					You("enchant %s with lightning magic.", yname(otmp));
-					otmp->special_enchantment = LIGHTNING_ENCHANTMENT;
-					break;
-				default:
+				}
+				else if (otmp->oclass == FOOD_CLASS)
+				{
+					otmp->age = -1000;
+					if (otmp->otyp == TIN)
+					{
+						pline("Nothing much happens.");
+					}
+					else
+					{
+						suggestnamingwand = TRUE;
+						pline("Putrid smell arises from %s!", yname(otmp));
+					}
+				}
+				else
+				{
+					suggestnamingwand = TRUE;
+					pline("%s flickers in black energy for a moment.", Yname2(otmp));
+				}
+				break;
+			case WAN_COLD:
+				if (otmp->special_enchantment == DEATH_ENCHANTMENT)
+				{
+					suggestnamingwand = TRUE;
+					pline("%s flickers in blue for a moment, but then glows black.", Yname2(otmp));
 					break;
 				}
+				if (otmp->special_enchantment == FIRE_ENCHANTMENT)
+				{
+					wandknown = TRUE;
+					pline("The cold energies of the wand dispel the fire enchantment on %s.", yname(otmp));
+					otmp->special_enchantment = 0;
+					break;
+				}
+
+				if (otmp->oclass == WEAPON_CLASS)
+				{
+					wandknown = TRUE;
+					You("enchant %s with cold magic.", yname(otmp));
+					otmp->special_enchantment = COLD_ENCHANTMENT;
+				}
+				else if (otmp->oclass == POTION_CLASS)
+				{
+					wandknown = TRUE;
+					destroy_one_item(otmp, otmp->oclass, AD_COLD, TRUE);
+					update_inventory();
+				}
+				else if (otmp->oclass == FOOD_CLASS)
+				{
+					wandknown = TRUE;
+					pline("%s is covered in frost!", Yname2(otmp));
+				}
+				else
+				{
+					suggestnamingwand = TRUE;
+					pline("%s flickers in blue for a moment.", Yname2(otmp));
+				}
+				break;
+			case WAN_FIRE:
+				if (otmp->special_enchantment == DEATH_ENCHANTMENT)
+				{
+					suggestnamingwand = TRUE;
+					pline("%s flickers in red for a moment, but then glows black.", Yname2(otmp));
+					break;
+				}
+				if (otmp->special_enchantment == COLD_ENCHANTMENT)
+				{
+					wandknown = TRUE;
+					pline("The fiery energies of the wand dispel the cold enchantment on %s.", yname(otmp));
+					otmp->special_enchantment = 0;
+					break;
+				}
+
+				if (is_flammable(otmp) && (otmp->oclass == WEAPON_CLASS || otmp->oclass == ARMOR_CLASS))
+				{
+					wandknown = TRUE;
+					(void)erode_obj(otmp, xname(otmp), ERODE_BURN,
+						EF_GREASE | EF_VERBOSE);
+				}
+				else if (Is_candle(otmp))
+				{
+					wandknown = TRUE;
+					if (otmp->lamplit)
+					{
+						pline("A flame eminates from %s and lights up %s.", yname(obj), yname(otmp));
+						use_lamp(otmp);
+					}
+					else
+						pline("A flame eminates from %s, but nothing much happens to %s.", yname(obj), yname(otmp));
+				}
+				else if(otmp->oclass == WEAPON_CLASS)
+				{
+						wandknown = TRUE;
+						You("enchant %s with fire magic.", yname(otmp));
+						otmp->special_enchantment = FIRE_ENCHANTMENT;
+				}
+				else if (otmp->oclass == POTION_CLASS || otmp->oclass == SCROLL_CLASS || otmp->oclass == SPBOOK_CLASS)
+				{
+					wandknown = TRUE;
+					destroy_one_item(otmp, otmp->oclass, AD_FIRE, TRUE);
+					update_inventory();
+				}
+				else if (otmp->oclass == FOOD_CLASS)
+				{
+					wandknown = TRUE;
+					pline("%s is covered in flames!", Yname2(otmp));
+				}
+				else
+				{
+					suggestnamingwand = TRUE;
+					pline("%s flickers in red for a moment.", Yname2(otmp));
+				}
+				break;
+			case WAN_LIGHTNING:
+				if (otmp->special_enchantment == DEATH_ENCHANTMENT)
+				{
+					suggestnamingwand = TRUE;
+					pline("%s flickers in blue for a moment, but then glows black.", Yname2(otmp));
+					break;
+				}
+				if (otmp->oclass == WEAPON_CLASS)
+				{
+					wandknown = TRUE;
+					You("enchant %s with lightning magic.", yname(otmp));
+					otmp->special_enchantment = LIGHTNING_ENCHANTMENT;
+				}
+				else if (otmp->oclass == RING_CLASS || otmp->oclass == WAND_CLASS)
+				{
+					wandknown = TRUE;
+					destroy_one_item(otmp, otmp->oclass, AD_ELEC, TRUE);
+					update_inventory();
+				}
+				else if (otmp->oclass == FOOD_CLASS)
+				{
+					wandknown = TRUE;
+					pline("%s is jolted by lightning!", Yname2(otmp));
+				}
+				else
+				{
+					suggestnamingwand = TRUE;
+					pline("%s flickers in blue for a moment.", Yname2(otmp));
+				}
+				break;
+			case WAN_STRIKING:
+				if(hero_breaks(otmp, u.ux, u.uy, TRUE))
+					wandknown = TRUE;
+				break;
+			case WAN_CANCELLATION:
+				suggestnamingwand = TRUE;
+				if(objects[otmp->otyp].oc_magic)
+					pline("%s flickers in gray for a while.", Yname2(otmp));
+				else
+					pline("Nothing much happens.");
+
+				cancel_item(otmp);
+				update_inventory();
+				break;
+			case WAN_DISINTEGRATION:
+				//Blessed enchant weapon for Black Blade
+				if (otmp->otyp == BLACK_BLADE_OF_DISINTEGRATION)
+				{
+					suggestnamingwand = TRUE;
+					//This will prompt weapon glow
+					pline("%s glows black-bluish for a while.", Yname2(otmp));
+					otmp->spe += 3 - otmp->spe / 3;
+					break;
+				}
+
+#define oresist_disintegration(obj)                                       \
+    (objects[obj->otyp].oc_oprop == DISINT_RES || obj_resists(obj, 5, 50) \
+     || is_quest_artifact(obj) || obj->otyp == AMULET_OF_LIFE_SAVING)
+
+				if (oresist_disintegration(otmp)) {
+					if (!Blind)
+					{
+						suggestnamingwand = TRUE;
+						pline("%s glows a strange %s, but remains intact.",
+							The(xname(otmp)), hcolor("black"));
+					}
+					break;
+				}
+
+				//Now disintegrate object
+				if (otmp->owornmask)
+					remove_worn_item(otmp, TRUE);
+
+				pline("%s is disintegrated!", Yname2(otmp));
+				wandknown = TRUE;
+				//Destroy item;
+				useupall(otmp);
+				break;
+			case WAN_POLYMORPH:
+				if (otmp->otyp == WAN_POLYMORPH || otmp->otyp == SPE_POLYMORPH
+					|| otmp->otyp == POT_POLYMORPH || obj_resists(otmp, 5, 95)) {
+					if (!Blind)
+					{
+						suggestnamingwand = TRUE;
+						pline("%s glows a strange %s, but remains intact.",
+							The(xname(otmp)), hcolor("purple"));
+					}
+					break;
+				}
+
+				//Polymorph it now
+				wandknown = TRUE;
+				if (otmp->owornmask)
+				{
+					remove_worn_item(otmp, TRUE);
+					undonned = TRUE;
+				}
+				strcpy(buftext, Yname2(otmp));
+				otmp = poly_obj(otmp, STRANGE_OBJECT);
+				pline("%s %smorphs into %s!", buftext, undonned ? "undons and " : "", an(xname(otmp)));
+				update_inventory();
+				break;
+			default:
+				pline("Nothing much happens.");
+				break;
 			}
-			else
-			{
-				pline("Nothing happens with non-weapons, yet.");
-				return;
+
+			//Make the used wand known
+			if (!objects[obj->otyp].oc_name_known) {
+				if (wandknown)
+					makeknown(obj->otyp);
+				else if (suggestnamingwand && !objects[obj->otyp].oc_uname)
+					docall(obj);
 			}
 
 		}
@@ -2386,6 +2606,14 @@ struct obj* obj;
 			pline("%s out of charges.", Tobjnam(obj, "seem"));
 	}
 	update_inventory();
+}
+
+boolean
+iswornarmor(otmp)
+struct obj* otmp;
+{
+	return (otmp == uarm || otmp == uarmc || otmp == uarmo || otmp == uarmu || otmp == uarmp || otmp == uarmb || otmp == uarmg
+		|| otmp == uarmf || otmp == uarmv || otmp == uarmh);
 }
 
 /* touchstones - by Ken Arnold */
@@ -3609,6 +3837,20 @@ char class_list[];
         add_class(class_list, FOOD_CLASS);
 }
 
+
+STATIC_OVL void
+setbreakclasses(class_list)
+char class_list[];
+{
+	register struct obj* otmp;
+
+	for (otmp = invent; otmp; otmp = otmp->nobj) {
+		if ((breaktest(otmp) || otmp->oclass == WAND_CLASS) && !strchr(class_list, otmp->oclass))
+			add_class(class_list, otmp->oclass);
+	}
+}
+
+
 int
 dobreak()
 {
@@ -3616,10 +3858,12 @@ dobreak()
 	register int res = 1;
 	char class_list[MAXOCLASSES + 2];
 
+	//Cannot break when overloaded?
 	if (check_capacity((char*)0))
 		return 0;
 
-	setapplyclasses(class_list); /* tools[] */
+	setbreakclasses(class_list);
+
 	obj = getobj(class_list, "break", 0);
 	if (!obj)
 		return 0;
@@ -3630,6 +3874,22 @@ dobreak()
 
 	if (obj->oclass == WAND_CLASS)
 		do_break_wand(obj);
+	else if (breaktest(obj))
+	{
+		char confirm[QBUFSZ];
+
+		if (!paranoid_query(ParanoidBreakwand, //Use this wall all breaking
+			safe_qbuf(confirm,
+				"Are you really sure you want to break ",
+				"?", obj, yname, ysimple_name, "the item")))
+			return 0;
+
+		if (nohands(youmonst.data)) {
+			You_cant("break %s without hands!", yname(obj));
+			return 0;
+		}
+		res = hero_breaks(obj, u.ux, u.uy, TRUE);
+	}
 	else
 		You("cannot break that!");
 
