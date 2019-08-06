@@ -2322,6 +2322,8 @@ struct obj* obj;
 {
 	struct obj* otmp;
 	char buftext[BUFSZ] = "";
+	char buftext2[BUFSZ] = "";
+	char buftext3[BUFSZ] = "";
 	boolean undonned = FALSE, wandknown = FALSE, suggestnamingwand = FALSE;
 
 	if (!obj || obj->oclass != WAND_CLASS)
@@ -2386,14 +2388,14 @@ struct obj* obj;
 				else
 				{
 					suggestnamingwand = TRUE;
-					pline("%s flickers in black energy for a moment.", Yname2(otmp));
+					pline("%s in black energy for a moment.", Tobjnam(otmp, "flicker"));
 				}
 				break;
 			case WAN_COLD:
 				if (otmp->special_enchantment == DEATH_ENCHANTMENT)
 				{
 					suggestnamingwand = TRUE;
-					pline("%s flickers in blue for a moment, but then glows black.", Yname2(otmp));
+					pline("%s in blue for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
 					break;
 				}
 				if (otmp->special_enchantment == FIRE_ENCHANTMENT)
@@ -2419,19 +2421,19 @@ struct obj* obj;
 				else if (otmp->oclass == FOOD_CLASS)
 				{
 					wandknown = TRUE;
-					pline("%s is covered in frost!", Yname2(otmp));
+					pline("%s covered in frost!", Tobjnam(otmp, "are"));
 				}
 				else
 				{
 					suggestnamingwand = TRUE;
-					pline("%s flickers in blue for a moment.", Yname2(otmp));
+					pline("%s in blue for a moment.", Tobjnam(otmp, "flicker"));
 				}
 				break;
 			case WAN_FIRE:
 				if (otmp->special_enchantment == DEATH_ENCHANTMENT)
 				{
 					suggestnamingwand = TRUE;
-					pline("%s flickers in red for a moment, but then glows black.", Yname2(otmp));
+					pline("%s in red for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
 					break;
 				}
 				if (otmp->special_enchantment == COLD_ENCHANTMENT)
@@ -2457,7 +2459,7 @@ struct obj* obj;
 						use_lamp(otmp);
 					}
 					else
-						pline("A flame eminates from %s, but nothing much happens to %s.", yname(obj), yname(otmp));
+						pline("A flame eminates from %s, but nothing happens to %s.", yname(obj), yname(otmp));
 				}
 				else if(otmp->oclass == WEAPON_CLASS)
 				{
@@ -2474,19 +2476,19 @@ struct obj* obj;
 				else if (otmp->oclass == FOOD_CLASS)
 				{
 					wandknown = TRUE;
-					pline("%s is covered in flames!", Yname2(otmp));
+					pline("%s covered in flames!", Tobjnam(otmp, "are"));
 				}
 				else
 				{
 					suggestnamingwand = TRUE;
-					pline("%s flickers in red for a moment.", Yname2(otmp));
+					pline("%s in red for a moment.", Tobjnam(otmp, "flicker"));
 				}
 				break;
 			case WAN_LIGHTNING:
 				if (otmp->special_enchantment == DEATH_ENCHANTMENT)
 				{
 					suggestnamingwand = TRUE;
-					pline("%s flickers in blue for a moment, but then glows black.", Yname2(otmp));
+					pline("%s in blue for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
 					break;
 				}
 				if (otmp->oclass == WEAPON_CLASS)
@@ -2504,22 +2506,27 @@ struct obj* obj;
 				else if (otmp->oclass == FOOD_CLASS)
 				{
 					wandknown = TRUE;
-					pline("%s is jolted by lightning!", Yname2(otmp));
+					pline("%s jolted by lightning!", Tobjnam(otmp, "are"));
 				}
 				else
 				{
 					suggestnamingwand = TRUE;
-					pline("%s flickers in blue for a moment.", Yname2(otmp));
+					pline("%s in blue for a moment.", Tobjnam(otmp, "flicker"));
 				}
 				break;
 			case WAN_STRIKING:
 				if(hero_breaks(otmp, u.ux, u.uy, TRUE))
 					wandknown = TRUE;
+				else
+				{
+					suggestnamingwand = TRUE;
+					pline("%s for a while.", Tobjnam(otmp, "vibrate"));
+				}
 				break;
 			case WAN_CANCELLATION:
 				suggestnamingwand = TRUE;
 				if(objects[otmp->otyp].oc_magic)
-					pline("%s flickers in gray for a while.", Yname2(otmp));
+					pline("%s in gray for a while.", Tobjnam(otmp, "flicker"));
 				else
 					pline("Nothing much happens.");
 
@@ -2532,7 +2539,7 @@ struct obj* obj;
 				{
 					suggestnamingwand = TRUE;
 					//This will prompt weapon glow
-					pline("%s glows black-bluish for a while.", Yname2(otmp));
+					pline("%s black-bluish for a while.", Tobjnam(otmp, "glow"));
 					otmp->spe += 3 - otmp->spe / 3;
 					break;
 				}
@@ -2545,8 +2552,8 @@ struct obj* obj;
 					if (!Blind)
 					{
 						suggestnamingwand = TRUE;
-						pline("%s glows a strange %s, but remains intact.",
-							The(xname(otmp)), hcolor("black"));
+						pline("%s a strange %s, but %s intact.",
+							Tobjnam(otmp, "glow"), otense(otmp, "remain"), hcolor("black"));
 					}
 					break;
 				}
@@ -2566,8 +2573,8 @@ struct obj* obj;
 					if (!Blind)
 					{
 						suggestnamingwand = TRUE;
-						pline("%s glows a strange %s, but remains intact.",
-							The(xname(otmp)), hcolor("purple"));
+						pline("%s a strange %s, but %s intact.",
+							Tobjnam(otmp, "glow"), otense(otmp, "remain"), hcolor("purple"));
 					}
 					break;
 				}
@@ -2580,8 +2587,12 @@ struct obj* obj;
 					undonned = TRUE;
 				}
 				strcpy(buftext, Yname2(otmp));
+				strcpy(buftext2, otense(otmp, "morph"));
+				strcpy(buftext3, otense(otmp, "undon"));
+				strcat(buftext3, " and ");
+
 				otmp = poly_obj(otmp, STRANGE_OBJECT);
-				pline("%s %smorphs into %s!", buftext, undonned ? "undons and " : "", an(xname(otmp)));
+				pline("%s %s%s into %s!", buftext, undonned ? buftext3 : "", buftext2, an(xname(otmp)));
 				update_inventory();
 				break;
 			default:
