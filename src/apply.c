@@ -2451,7 +2451,7 @@ struct obj* obj;
 				else if (Is_candle(otmp))
 				{
 					wandknown = TRUE;
-					if (otmp->lamplit)
+					if (!otmp->lamplit)
 					{
 						pline("A flame eminates from %s and lights up %s.", yname(obj), yname(otmp));
 						use_lamp(otmp);
