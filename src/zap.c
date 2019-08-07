@@ -2220,7 +2220,7 @@ register struct obj *obj;
 	case SPE_ARMAGEDDON:
 		known = TRUE;
 		You("chant an invocation:");
-		verbalize("Thou who art darker than even darkness, thou who art deeper than even the night!");
+		verbalize("Thou who art darker than even darkness, deeper than even the night!");
 		verbalize("Hereby I call to thee, hereby I swear before thee!");
 		verbalize("Those who would stand against us, all those who are fools,");
 		verbalize("By the power you and I possess, grant destruction equally upon them all!");
