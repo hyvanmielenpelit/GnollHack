@@ -1179,7 +1179,7 @@ enchantarmor:
 		}
 		if (uarmc && uarmc->otyp == CLOAK_OF_INTEGRITY)
 		{
-			pline("Your cloak absorbs the destructive energies of the scroll.");
+			pline("%s the destructive energies of the scroll.", Yobjnam2(uarmc, "absorb"));
 			makeknown(uarmc->otyp);
 			known = TRUE;
 			otmp = uarmc;

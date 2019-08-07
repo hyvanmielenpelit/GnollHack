@@ -1320,7 +1320,7 @@ boolean disp; /* we're just displaying so leave things alone */
 
     if (obj->spe == 1) {
         r = SPINACH_TIN;
-    } else if (obj->cursed) {
+    } else if (obj->cursed || obj->orotten) {
         r = ROTTEN_TIN; /* always rotten if cursed */
     } else if (obj->spe < 0) {
         r = -(obj->spe);
@@ -2715,7 +2715,7 @@ doeat()
 
         context.victual.reqtime = objects[otmp->otyp].oc_delay;
         if (otmp->otyp != FORTUNE_COOKIE
-            && (otmp->cursed || (!nonrotting_food(otmp->otyp)
+            && (otmp->cursed || otmp->orotten || (!nonrotting_food(otmp->otyp)
                                  && (monstermoves - otmp->age)
                                         > (otmp->blessed ? 50L : 30L)
                                  && (otmp->orotten || !rn2(7))))) {
@@ -2724,8 +2724,8 @@ doeat()
                 dont_start = TRUE;
             }
             consume_oeaten(otmp, 1); /* oeaten >>= 1 */
-        } else
-            fprefx(otmp);
+		} else
+				fprefx(otmp);
     }
 
     /* re-calc the nutrition */

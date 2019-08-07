@@ -2374,16 +2374,9 @@ struct obj* obj;
 				}
 				else if (otmp->oclass == FOOD_CLASS)
 				{
-					otmp->age = -1000;
-					if (otmp->otyp == TIN)
-					{
-						pline("Nothing much happens.");
-					}
-					else
-					{
-						suggestnamingwand = TRUE;
-						pline("Putrid smell arises from %s!", yname(otmp));
-					}
+					otmp->orotten = TRUE;
+					suggestnamingwand = TRUE;
+					pline("%s %s in black energy for a moment.", The(cxname(otmp)), otense(otmp, "shine"));
 				}
 				else
 				{
@@ -2401,7 +2394,7 @@ struct obj* obj;
 				if (otmp->special_enchantment == FIRE_ENCHANTMENT)
 				{
 					wandknown = TRUE;
-					pline("The cold energies of the wand dispel the fire enchantment on %s.", yname(otmp));
+					pline("The cold energies of %s dispel the fire enchantment on %s.", the(xname(obj)), yname(otmp));
 					otmp->special_enchantment = 0;
 					break;
 				}
@@ -2421,7 +2414,7 @@ struct obj* obj;
 				else if (otmp->oclass == FOOD_CLASS)
 				{
 					wandknown = TRUE;
-					pline("%s covered in frost!", Tobjnam(otmp, "are"));
+					pline("%s %s covered in frost, but that's about it.", The(cxname(otmp)), otense(otmp, "are"));
 				}
 				else
 				{
@@ -2439,7 +2432,7 @@ struct obj* obj;
 				if (otmp->special_enchantment == COLD_ENCHANTMENT)
 				{
 					wandknown = TRUE;
-					pline("The fiery energies of the wand dispel the cold enchantment on %s.", yname(otmp));
+					pline("The fiery energies of %s dispel the cold enchantment on %s.", the(xname(obj)), yname(otmp));
 					otmp->special_enchantment = 0;
 					break;
 				}
@@ -2447,6 +2440,7 @@ struct obj* obj;
 				if (is_flammable(otmp) && (otmp->oclass == WEAPON_CLASS || otmp->oclass == ARMOR_CLASS))
 				{
 					wandknown = TRUE;
+					pline("Flames erupt from %s and engulf %s!", the(xname(obj)), yname(otmp));
 					(void)erode_obj(otmp, xname(otmp), ERODE_BURN,
 						EF_GREASE | EF_VERBOSE);
 				}
@@ -2459,7 +2453,7 @@ struct obj* obj;
 						use_lamp(otmp);
 					}
 					else
-						pline("A flame eminates from %s, but nothing happens to %s.", yname(obj), yname(otmp));
+						pline("A flame eminates from %s, keeping %s alight.", yname(obj), yname(otmp));
 				}
 				else if(otmp->oclass == WEAPON_CLASS)
 				{
@@ -2476,7 +2470,7 @@ struct obj* obj;
 				else if (otmp->oclass == FOOD_CLASS)
 				{
 					wandknown = TRUE;
-					pline("%s covered in flames!", Tobjnam(otmp, "are"));
+					pline("%s %s covered in flames, but that's about it.", The(cxname(otmp)), otense(otmp, "are"));
 				}
 				else
 				{
@@ -2506,8 +2500,7 @@ struct obj* obj;
 				else if (otmp->oclass == FOOD_CLASS)
 				{
 					wandknown = TRUE;
-					pline("%s jolted by lightning!", Tobjnam(otmp, "are"));
-				}
+					pline("%s %s jolted by lightning, but that's about it.", The(cxname(otmp)), otense(otmp, "are"));				}
 				else
 				{
 					suggestnamingwand = TRUE;
@@ -2520,13 +2513,15 @@ struct obj* obj;
 				else
 				{
 					suggestnamingwand = TRUE;
-					pline("%s for a while.", Tobjnam(otmp, "vibrate"));
+					pline("%s for a while, but that's about it.", Tobjnam(otmp, "vibrate"));
 				}
 				break;
 			case WAN_CANCELLATION:
-				suggestnamingwand = TRUE;
-				if(objects[otmp->otyp].oc_magic)
+				if (objects[otmp->otyp].oc_magic || otmp->spe > 0 || otmp->special_enchantment > 0 || otmp->blessed || otmp->cursed)
+				{
+					suggestnamingwand = TRUE;
 					pline("%s in gray for a while.", Tobjnam(otmp, "flicker"));
+				}
 				else
 					pline("Nothing much happens.");
 
@@ -2539,8 +2534,16 @@ struct obj* obj;
 				{
 					suggestnamingwand = TRUE;
 					//This will prompt weapon glow
-					pline("%s black-bluish for a while.", Tobjnam(otmp, "glow"));
+					pline("%s black-bluish for a while.", Yobjnam2(otmp, "glow"));
 					otmp->spe += 3 - otmp->spe / 3;
+					break;
+				}
+
+				if (uarmc && uarmc->otyp == CLOAK_OF_INTEGRITY)
+				{
+					wandknown = TRUE;
+					pline("%s the destructive energies of %s.", Yobjnam2(uarmc, "absorb"), the(xname(obj)));
+					makeknown(uarmc->otyp);
 					break;
 				}
 
@@ -2562,7 +2565,7 @@ struct obj* obj;
 				if (otmp->owornmask)
 					remove_worn_item(otmp, TRUE);
 
-				pline("%s is disintegrated!", Yname2(otmp));
+				pline("%s disintegrated!", Yobjnam2(otmp, "are"));
 				wandknown = TRUE;
 				//Destroy item;
 				useupall(otmp);

@@ -1110,6 +1110,8 @@ register struct obj *obj;
     }
     unbless(obj);
     uncurse(obj);
+	obj->special_enchantment = 0;
+
     return;
 }
 

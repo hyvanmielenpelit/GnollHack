@@ -3874,9 +3874,6 @@ struct obj *no_wish;
         case AMULET_OF_YENDOR:
             typ = FAKE_AMULET_OF_YENDOR;
             break;
-/*		case BLACK_BLADE_OF_DISINTEGRATION:  //Not needed, since Black Blade has always a limited summon duration
-			typ = TWO_HANDED_SWORD;
-			break;*/
 		case CANDELABRUM_OF_INVOCATION:
             typ = rnd_class(TALLOW_CANDLE, WAX_CANDLE);
             break;
@@ -4099,6 +4096,8 @@ struct obj *no_wish;
 				otmp->special_enchantment = special_enchantment;
 			else
 				otmp->special_enchantment = 0;
+		if(otmp->special_enchantment == DEATH_ENCHANTMENT && objects[otmp->otyp].oc_material != BONE)
+			otmp->special_enchantment = LIGHTNING_ENCHANTMENT;
 	}
 	/* empty for containers rather than for tins */
     if (contents == EMPTY) {
