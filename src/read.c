@@ -1703,7 +1703,7 @@ enchantarmor:
         }
         punish(sobj);
         break;
-    case SCR_STINKING_CLOUD: {
+	case SCR_STINKING_CLOUD: {
         coord cc;
 
         if (!already_known)

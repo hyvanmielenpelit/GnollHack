@@ -2217,6 +2217,17 @@ register struct obj *obj;
 		pline("A sword-shaped planar rift forms before you!");
 		summonblackblade();
 		break;
+	case SPE_ARMAGEDDON:
+		known = TRUE;
+		You("chant an invocation:");
+		verbalize("Thou who art darker than even darkness, thou who art deeper than even the night!");
+		verbalize("Hereby I call to thee, hereby I swear before thee!");
+		verbalize("Those who would stand against us, all those who are fools,");
+		verbalize("By the power you and I possess, grant destruction equally upon them all!");
+		pline("Air starts to radiate strange golden color...");
+		pline("Suddenly immense power blasts all around you!");
+		armageddon();
+		break;
 	case SPE_SUMMON_OGRE:
 		known = TRUE;
 		summonogre();
@@ -5478,5 +5489,42 @@ summonogre()
 	}
 
 }
+
+
+void
+armageddon()
+{
+	struct monst* mon, *mtmp, * mmtmp[3];
+	int killstyle = rn2(3); //0 = all monsters, but not pets or you, 1 = all monsters and pets, but not you, 2 = also you
+
+	mmtmp[0] = fmon;
+	mmtmp[1] = migrating_mons; // Do not kill migrating mons
+	mmtmp[2] = mydogs; /* for use during level changes */
+	for (mon = mmtmp[0]; mon; mon = mon->nmon)
+	{
+		if (mon->mtame > 5 && killstyle == 0)
+			continue;
+
+		for (mtmp = mmtmp[2]; mtmp; mtmp = mtmp->nmon)
+		{
+			if (mtmp == mon && killstyle == 0)
+				continue;
+		}
+		if(!DEADMONSTER(mon))
+		{
+			mon->mhp = 0;
+			xkilled(mon, canseemon(mon) ? XKILL_GIVEMSG : XKILL_NOMSG);
+		}
+	}
+
+	if (killstyle == 2)
+	{
+		pline("Finally, the spell catches up on you... You die.");
+		Strcpy(killer.name, "armageddon spell");
+		killer.format = KILLED_BY_AN;
+		done(DIED);
+	}
+}
+
 
 /*zap.c*/

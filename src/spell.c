@@ -1117,6 +1117,7 @@ boolean atme;
     case SPE_FINGER_OF_DEATH:
     case SPE_LIGHT:
 	case SPE_BLACK_BLADE_OF_DISASTER:
+	case SPE_ARMAGEDDON:
 	case SPE_SUMMON_OGRE:
 	case SPE_DETECT_UNSEEN:
     case SPE_HEALING:
