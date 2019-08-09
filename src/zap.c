@@ -2220,13 +2220,16 @@ register struct obj *obj;
 	case SPE_ARMAGEDDON:
 		known = TRUE;
 		You("chant an invocation:");
-		verbalize("Thou who art darker than even darkness, deeper than even the night!");
-		verbalize("Hereby I call to thee, hereby I swear before thee!");
-		verbalize("Those who would stand against us, all those who are fools,");
-		verbalize("By the power you and I possess, grant destruction equally upon them all!");
-		pline("Air starts to radiate strange golden color...");
+		verbalize("Thou who art darker than the blackest pitch, deeper than the deepest night.");
+		verbalize("I call upon thee, and swear myself to thee.");
+		verbalize("Let the fools who stand before me be destroyed by the power you and I possess!");
+		pline("Air begins to shine with strange golden color...");
 		pline("Suddenly immense power blasts all around you!");
 		armageddon();
+		break;
+	case SPE_WISH:
+		known = TRUE;
+		makewish();
 		break;
 	case SPE_SUMMON_OGRE:
 		known = TRUE;

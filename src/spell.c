@@ -516,6 +516,10 @@ register struct obj *spellbook;
         case 7:
 		case 8:
 		case 9:
+		case 10: //Level for wish spell
+			//Two more levels just in case
+		case 11:
+		case 12:
 			context.spbook.delay = -8 * objects[booktype].oc_delay;
             break;
         default:
@@ -1118,6 +1122,7 @@ boolean atme;
     case SPE_LIGHT:
 	case SPE_BLACK_BLADE_OF_DISASTER:
 	case SPE_ARMAGEDDON:
+	case SPE_WISH:
 	case SPE_SUMMON_OGRE:
 	case SPE_DETECT_UNSEEN:
     case SPE_HEALING:
