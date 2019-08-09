@@ -2235,6 +2235,10 @@ register struct obj *obj;
 		known = TRUE;
 		summonogre();
 		break;
+	case SPE_SUMMON_DEMON:
+		known = TRUE;
+		summondemon();
+		break;
 	case WAN_SECRET_DOOR_DETECTION:
     case SPE_DETECT_UNSEEN:
         if (!findit())
@@ -5492,6 +5496,29 @@ summonogre()
 	}
 
 }
+
+
+void
+summondemon()
+{
+	struct monst* mon = (struct monst*) 0;
+	int monindex = 0;
+	
+	monindex = ndemon(A_NONE);
+	
+	if(monindex)
+		mon = makemon(&mons[monindex], u.ux, u.uy, NO_MINVENT | MM_NOCOUNTBIRTH);
+
+	if (mon)
+	{
+		(void)tamedog(mon, (struct obj*) 0);  //Demons cannot be tamed, so need to find another concept
+		mon->summonduration = 30 + rnd(20);
+		begin_summontimer(mon);
+		pline("%s appears before you in a puff of smoke!", Amonnam(mon));
+	}
+
+}
+
 
 
 void

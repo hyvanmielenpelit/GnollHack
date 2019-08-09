@@ -3011,6 +3011,7 @@ E int FDECL(resist, (struct monst *, CHAR_P, int, int));
 E void NDECL(makewish);
 E void NDECL(summonblackblade);
 E void NDECL(summonogre);
+E void NDECL(summondemon);
 E void NDECL(armageddon);
 E void FDECL(disintegrate_mon, (struct monst*, int, const char*));
 

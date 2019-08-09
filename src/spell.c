@@ -1124,6 +1124,7 @@ boolean atme;
 	case SPE_ARMAGEDDON:
 	case SPE_WISH:
 	case SPE_SUMMON_OGRE:
+	case SPE_SUMMON_DEMON:
 	case SPE_DETECT_UNSEEN:
     case SPE_HEALING:
     case SPE_EXTRA_HEALING:
