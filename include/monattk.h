@@ -84,6 +84,9 @@
 #define AD_RBRE 242 /* random breath weapon */
 #define AD_DMNS 243 /* Summons demons */
 #define AD_LYCA 244 /* Lycanthrope summon */
+#define AD_GNOL 245 /* Summons gnolls, Yeenoghu */
+#define AD_GHUL 246 /* Summons ghouls, Yeenoghu */
+#define AD_UNDO 247 /* Summons undead, Orcus */
 
 #define AD_SAMU 252 /* hits, may steal Amulet (Wizard) */
 #define AD_CURS 253 /* random curse (ex. gremlin) */

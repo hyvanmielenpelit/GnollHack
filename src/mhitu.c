@@ -853,7 +853,68 @@ register struct monst *mtmp;
 						}
 					}
 				}
+			} else if (mattk->adtyp == AD_GNOL)
+			{
+				/*  Special gnoll handling code */
+				if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
+					int chance = mattk->damp;
+					if (!mtmp->mcan && rn2(100) < chance)
+					{
+						pline("%s summons some gnolls!", Monnam(mtmp));
+						(void)yeenoghu_gnoll_summon();
+						sum[i] = 1;
+					}
+					else
+					{
+						if (!rn2(2))
+							pline("%s swings his flail commandingly.", Monnam(mtmp));
+						else
+							pline("%s growls menacingly.", Monnam(mtmp));
+					}
+				}
 			}
+			else if (mattk->adtyp == AD_GHUL)
+			{
+				/*  Special gnoll handling code */
+				if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
+					int chance = mattk->damp;
+					if (!mtmp->mcan && rn2(100) < chance)
+					{
+						pline("%s summons some ghouls!", Monnam(mtmp));
+						(void)yeenoghu_ghoul_summon();
+						sum[i] = 1;
+					}
+					else
+					{
+						if(!rn2(2))
+							pline("%s lets loose a blood-curdling howl!", Monnam(mtmp));
+						else
+							pline("%s howls!", Monnam(mtmp));
+					}
+				}
+			}
+			else if (mattk->adtyp == AD_UNDO)
+			{
+				/*  Special gnoll handling code */
+				if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
+					int chance = mattk->damp;
+					if (!mtmp->mcan && rn2(100) < chance)
+					{
+						pline("%s summons some undead!", Monnam(mtmp));
+						(void)orcus_undead_summon();
+						sum[i] = 1;
+					}
+					else
+					{
+						if(!rn2(2))
+							pline("%s laughs at you!", Monnam(mtmp));
+						else
+							pline("%s swings his wand menacingly.", Monnam(mtmp));
+					}
+				}
+			}
+
+
 			break;
 
 		default: /* no attack */

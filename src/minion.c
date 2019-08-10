@@ -167,6 +167,279 @@ struct monst *mon;
     return result;
 }
 
+
+/* Yeenoghu summons a gnoll */
+int
+yeenoghu_gnoll_summon()
+{
+	int dtype = NON_PM, cnt = 0, result = 0, census;
+	struct monst* mtmp = (struct monst*) 0;
+
+	cnt = d(1, 4);
+
+	/* some candidates can generate a group of monsters, so simple
+	   count of non-null makemon() result is not sufficient */
+	census = monster_census(FALSE);
+
+	int canseemonnumber = 0;
+	struct monst* mtmp2 = (struct monst *) 0;
+
+	while (cnt > 0) {
+		int roll = rn2(15);
+		dtype = NON_PM;
+
+		switch (roll)
+		{
+		case 0:
+		case 1:
+		case 2:
+		case 3:
+		case 4:
+			dtype = PM_GNOLL;
+			break;
+		case 5:
+		case 6:
+		case 7:
+		case 8:
+			dtype = PM_GNOLL_LORD;
+			break;
+		case 9:
+		case 10:
+		case 11:
+			dtype = PM_GNOLL_KING;
+			break;
+		case 12:
+		case 13:
+			dtype = PM_FLIND;
+			break;
+		case 14:
+			dtype = PM_FLIND_LORD;
+			break;
+		default:
+			break;
+
+		}
+
+		if (dtype == NON_PM || mvitals[dtype].mvflags & G_GONE)
+		{
+			cnt--;
+			continue;
+		}
+
+		mtmp = makemon(&mons[dtype], u.ux, u.uy, MM_EMIN);
+		if (mtmp) {
+			result++;
+			if (canseemon(mtmp))
+			{
+				canseemonnumber++;
+				mtmp2 = mtmp;
+			}
+		}
+
+		cnt--;
+	}
+
+	if (result > 0 && canseemonnumber > 0) {
+		if (result == 1 && mtmp)
+			pline("%s appears out of nowhere!", Amonnam(mtmp));
+		else
+		{
+			if (canseemonnumber == 1 && mtmp2)
+				pline("%s appears out of nowhere!", Amonnam(mtmp2));
+			else
+				pline("Some gnolls appear out of nowhere!");
+		}
+	}
+
+	/* how many monsters exist now compared to before? */
+	if (result)
+		result = monster_census(FALSE) - census;
+
+	return result;
+}
+
+/* Yeenoghu summons a ghoul */
+int
+yeenoghu_ghoul_summon()
+{
+	int dtype = NON_PM, cnt = 0, result = 0, census;
+	struct monst* mtmp = (struct monst*) 0;
+
+	cnt = d(1, 4);
+
+	/* some candidates can generate a group of monsters, so simple
+	   count of non-null makemon() result is not sufficient */
+	census = monster_census(FALSE);
+
+	int canseemonnumber = 0;
+	struct monst* mtmp2 = (struct monst*) 0;
+
+	while (cnt > 0) {
+		dtype = PM_GHOUL;
+
+		if (mvitals[dtype].mvflags & G_GONE)
+		{
+			cnt--;
+			break;
+		}
+
+		mtmp = makemon(&mons[dtype], u.ux, u.uy, MM_EMIN);
+		if (mtmp) {
+			result++;
+			if (canseemon(mtmp))
+			{
+				canseemonnumber++;
+				mtmp2 = mtmp;
+			}
+		}
+		cnt--;
+	}
+
+
+	if (result > 0 && canseemonnumber > 0) {
+		if (result == 1 && mtmp)
+			pline("%s crawls out of nowhere!", Amonnam(mtmp));
+		else
+		{
+			if (canseemonnumber == 1 && mtmp2)
+				pline("%s  crawls out of nowhere!", Amonnam(mtmp2));
+			else
+				pline("Some ghouls crawl out of nowhere!");
+		}
+	}
+
+	/* how many monsters exist now compared to before? */
+	if (result)
+		result = monster_census(FALSE) - census;
+
+	return result;
+}
+
+/* Orcus summons undead */
+int
+orcus_undead_summon()
+{
+	int dtype = NON_PM, cnt = 0, result = 0, census;
+	struct monst* mtmp = (struct monst*) 0;
+
+	cnt = d(2, 4);
+
+	/* some candidates can generate a group of monsters, so simple
+	   count of non-null makemon() result is not sufficient */
+	census = monster_census(FALSE);
+
+	int canseemonnumber = 0;
+	struct monst* mtmp2 = (struct monst*) 0;
+
+	while (cnt > 0) {
+		int roll = rn2(20);
+		dtype = NON_PM;
+
+		switch (roll)
+		{
+		case 0:
+		case 1:
+			dtype = PM_GNOME_ZOMBIE;
+			break;
+		case 2:
+			dtype = PM_ELF_ZOMBIE;
+			break;
+		case 3:
+			dtype = PM_ORC_ZOMBIE;
+			break;
+		case 4:
+			dtype = PM_HUMAN_ZOMBIE;
+			break;
+		case 5:
+			dtype = PM_GNOME_MUMMY;
+			break;
+		case 6:
+			dtype = PM_ELF_MUMMY;
+			break;
+		case 7:
+			dtype = PM_ORC_MUMMY;
+			break;
+		case 8:
+			dtype = PM_HUMAN_MUMMY;
+			break;
+		case 9:
+			dtype = PM_GIANT_MUMMY;
+			break;
+		case 10:
+			dtype = PM_ETTIN_MUMMY;
+			break;
+		case 11:
+			dtype = PM_VAMPIRE;
+			break;
+		case 12:
+			dtype = PM_VAMPIRE_MAGE;
+			break;
+		case 13:
+			dtype = PM_VAMPIRE_LORD;
+			break;
+		case 14:
+			dtype = PM_WRAITH;
+			break;
+		case 15:
+			dtype = PM_LICH;
+			break;
+		case 16:
+			dtype = PM_BARROW_WIGHT;
+			break;
+		case 17:
+			dtype = PM_GIANT_ZOMBIE;
+			break;
+		case 18:
+			dtype = PM_DWARF_ZOMBIE;
+			break;
+		case 19:
+			dtype = PM_DWARF_MUMMY;
+			break;
+		default:
+			break;
+		}
+
+		if (dtype == NON_PM || mvitals[dtype].mvflags & G_GONE)
+		{
+			cnt--;
+			continue;
+		}
+
+		mtmp = makemon(&mons[dtype], u.ux, u.uy, MM_EMIN);
+		if (mtmp) {
+			result++;
+			if (canseemon(mtmp))
+			{
+				canseemonnumber++;
+				mtmp2 = mtmp;
+			}
+		}
+
+		cnt--;
+	}
+
+	if (result > 0 && canseemonnumber > 0) {
+		if (result == 1 && mtmp)
+			pline("%s appears out of nowhere!", Amonnam(mtmp));
+		else
+		{
+			if (canseemonnumber == 1 && mtmp2)
+				pline("%s appears out of nowhere!", Amonnam(mtmp2));
+			else
+				pline("Some undead appear out of nowhere!");
+		}
+	}
+
+	/* how many monsters exist now compared to before? */
+	if (result)
+		result = monster_census(FALSE) - census;
+
+	return result;
+}
+
+
+
+
 void
 summon_minion(alignment, talk)
 aligntyp alignment;

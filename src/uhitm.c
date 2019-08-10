@@ -2238,6 +2238,11 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 			}
 		}
 		break;
+	case AD_UNDO: //Not implemented, demon prince ability
+	case AD_GHUL: //Not implemented, demon prince ability
+	case AD_GNOL: //Not implemented, demon prince ability
+		tmp = 0;
+		break;
 	case AD_LYCA: //Not implemented
 		tmp = 0;
 		break;

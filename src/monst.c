@@ -2666,8 +2666,9 @@ struct permonst _mons2[] = {
     MON("Yeenoghu", S_DEMON, LVL(56, 18, -5, 80, -15),
         (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 3, 6, 0), ATTK(AT_WEAP, AD_CONF, 2, 8, 0),
-          ATTK(AT_CLAW, AD_PLYS, 1, 6, 0), ATTK(AT_MAGC, AD_MAGM, 2, 6, 0), ATTK(AT_SMMN, AD_DMNS, 0, 0, 10),
-          NO_ATTK, NO_ATTK, NO_ATTK),
+          ATTK(AT_CLAW, AD_PLYS, 1, 6, 0), ATTK(AT_MAGC, AD_MAGM, 2, 6, 0),
+		  ATTK(AT_SMMN, AD_DMNS, 0, 0, 10), ATTK(AT_SMMN, AD_GNOL, 0, 0, 30),
+		  ATTK(AT_SMMN, AD_GHUL, 0, 0, 15), NO_ATTK),
         SIZ(900, 500, MS_BRIBE, MZ_LARGE), STATS(20 + 100, 17, 20, 19, 17, 17), MR_FIRE | MR_POISON, 0,
         M1_FLY | M1_SEE_INVIS | M1_POIS,
         M2_NOPOLY | M2_DEMON | M2_STALK | M2_HOSTILE | M2_PNAME | M2_NASTY
@@ -2677,7 +2678,8 @@ struct permonst _mons2[] = {
         (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 3, 6, 0), ATTK(AT_CLAW, AD_PHYS, 3, 4, 0),
           ATTK(AT_CLAW, AD_PHYS, 3, 4, 0), ATTK(AT_MAGC, AD_SPEL, 8, 6, 0),
-          ATTK(AT_STNG, AD_DRST, 2, 4, 0), ATTK(AT_SMMN, AD_DMNS, 0, 0, 30), NO_ATTK, NO_ATTK),
+          ATTK(AT_STNG, AD_DRST, 2, 4, 0), ATTK(AT_SMMN, AD_DMNS, 0, 0, 20),
+		  ATTK(AT_SMMN, AD_UNDO, 0, 0, 30), NO_ATTK),
         SIZ(1500, 500, MS_ORC, MZ_HUGE), STATS(25 + 100, 19, 25, 24, 23, 22), MR_FIRE | MR_POISON, 0,
         M1_FLY | M1_SEE_INVIS | M1_POIS,
         M2_NOPOLY | M2_DEMON | M2_STALK | M2_HOSTILE | M2_PNAME | M2_NASTY
