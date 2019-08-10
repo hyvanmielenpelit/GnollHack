@@ -239,6 +239,10 @@ yeenoghu_gnoll_summon()
 		cnt--;
 	}
 
+	char numberword[BUFSZ] = "Some";
+	if(canseemonnumber >= 3)
+		strcpy(numberword, "Several");
+
 	if (result > 0 && canseemonnumber > 0) {
 		if (result == 1 && mtmp)
 			pline("%s appears out of nowhere!", Amonnam(mtmp));
@@ -247,7 +251,7 @@ yeenoghu_gnoll_summon()
 			if (canseemonnumber == 1 && mtmp2)
 				pline("%s appears out of nowhere!", Amonnam(mtmp2));
 			else
-				pline("Some gnolls appear out of nowhere!");
+				pline("%s gnolls appear out of nowhere!", numberword);
 		}
 	}
 
@@ -295,6 +299,9 @@ yeenoghu_ghoul_summon()
 		cnt--;
 	}
 
+	char numberword[BUFSZ] = "Some";
+	if (canseemonnumber >= 3)
+		strcpy(numberword, "Several");
 
 	if (result > 0 && canseemonnumber > 0) {
 		if (result == 1 && mtmp)
@@ -304,7 +311,7 @@ yeenoghu_ghoul_summon()
 			if (canseemonnumber == 1 && mtmp2)
 				pline("%s  crawls out of nowhere!", Amonnam(mtmp2));
 			else
-				pline("Some ghouls crawl out of nowhere!");
+				pline("%s ghouls crawl out of nowhere!", numberword);
 		}
 	}
 
@@ -418,6 +425,10 @@ orcus_undead_summon()
 		cnt--;
 	}
 
+	char numberword[BUFSZ] = "Some";
+	if (canseemonnumber >= 3)
+		strcpy(numberword, "Several");
+
 	if (result > 0 && canseemonnumber > 0) {
 		if (result == 1 && mtmp)
 			pline("%s appears out of nowhere!", Amonnam(mtmp));
@@ -426,7 +437,7 @@ orcus_undead_summon()
 			if (canseemonnumber == 1 && mtmp2)
 				pline("%s appears out of nowhere!", Amonnam(mtmp2));
 			else
-				pline("Some undead appear out of nowhere!");
+				pline("%s undead appear out of nowhere!", numberword);
 		}
 	}
 
