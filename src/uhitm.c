@@ -695,6 +695,8 @@ int dieroll;
     boolean hand_to_hand = (thrown == HMON_MELEE
                             /* not grapnels; applied implies uwep */
                             || (thrown == HMON_APPLIED && is_pole(uwep)));
+	boolean hide_damage_amount = FALSE;
+
     int jousting = 0;
     long silverhit = 0L;
     int wtype;
@@ -1171,8 +1173,11 @@ int dieroll;
         else if (rn2(10))
             tmp += rnd(6);
         else
+		{
             poiskilled = TRUE;
-    }
+			hide_damage_amount = TRUE;
+		}
+	}
 
 	if (obj && obj->special_enchantment > 0) {
 		switch (obj->special_enchantment)
@@ -1224,6 +1229,7 @@ int dieroll;
 			{
 				needenchantmsg = 0; //Since gets killed message
 				tmp = mon->mhp + 1;
+				hide_damage_amount = TRUE;
 			}
 			obj->special_enchantment = 0;
 			/* defer "obj is no longer enchanted" until after hit message */
@@ -1306,7 +1312,10 @@ int dieroll;
 
 	//Black blade adjustment for disintegrateable creatures - No damage
 	if (obj && obj->otyp == BLACK_BLADE_OF_DISINTEGRATION && !(resists_disint(mon) || noncorporeal(mon->data)))
+	{
 		tmp = 0;
+		hide_damage_amount = TRUE;
+	}
 
 	int damagedealt = tmp;
 
@@ -1356,7 +1365,7 @@ int dieroll;
             || (thrown && m_shot.n > 1 && m_shot.o == obj->otyp))) {
 		if (thrown)
 			hit(mshot_xname(obj), mon, exclam(destroyed ? 100 : tmp), destroyed ? -1 : tmp);
-		else if (!destroyed && damagedealt > 0) {
+		else if (!hide_damage_amount && damagedealt > 0) {
 			if(!flags.verbose)
 				You("hit it for %d damage.", damagedealt);
 			else

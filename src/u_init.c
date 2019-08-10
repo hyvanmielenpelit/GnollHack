@@ -1213,6 +1213,12 @@ register struct trobj *trop;
                 obj->blessed = trop->trbless;
 			if (trop->special_enchantment > 0)
 				obj->special_enchantment = trop->special_enchantment;
+			if (obj->special_enchantment == DEATH_ENCHANTMENT && u.ualign.type != A_CHAOTIC)
+			{
+				obj->special_enchantment = LIGHTNING_ENCHANTMENT;
+				if(is_ammo(obj))
+					obj->quan += rnd(2);
+			}
 		}
         /* defined after setting otyp+quan + blessedness */
         obj->owt = weight(obj);
