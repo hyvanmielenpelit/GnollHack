@@ -2380,12 +2380,15 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
                 : x_monnam(mtmp, namedpet ? ARTICLE_NONE : ARTICLE_THE,
                            "poor", namedpet ? SUPPRESS_SADDLE : 0, FALSE));*/
 
-		register char* bp = !(wasinside || canspotmon(mtmp)) ? "it"
+		char bp[BUFSZ] = ""; 
+
+		strcpy(bp, !(wasinside || canspotmon(mtmp)) ? "it"
 			: !mtmp->mtame ? mon_nam(mtmp)
 			: x_monnam(mtmp, namedpet ? ARTICLE_NONE : ARTICLE_THE,
-				"poor", namedpet ? SUPPRESS_SADDLE : 0, FALSE);
+				"poor", namedpet ? SUPPRESS_SADDLE : 0, FALSE));
 
 		*bp = highc(*bp);
+
 		pline("%s is %s!", bp,
 			is_not_living(mtmp->data) ? "destroyed" : "killed");
 

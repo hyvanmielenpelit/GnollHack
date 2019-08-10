@@ -24,7 +24,7 @@ STATIC_PTR void FDECL(display_jump_positions, (int));
 STATIC_DCL void FDECL(use_tinning_kit, (struct obj *));
 STATIC_DCL void FDECL(use_figurine, (struct obj **));
 STATIC_DCL void FDECL(use_grease, (struct obj *));
-STATIC_DCL void FDECL(use_wand_on_object, (struct obj*));
+STATIC_DCL int FDECL(use_wand_on_object, (struct obj*));
 STATIC_DCL void FDECL(use_trap, (struct obj *));
 STATIC_DCL void FDECL(use_stone, (struct obj *));
 STATIC_PTR int NDECL(set_trap); /* occupation callback */
@@ -2316,7 +2316,7 @@ struct obj *obj;
 
 static NEARDATA const char wand_application_objects[] = { ALL_CLASSES, ALLOW_NONE, 0 };
 
-STATIC_OVL void
+STATIC_OVL int 
 use_wand_on_object(obj)
 struct obj* obj;
 {
@@ -2325,30 +2325,31 @@ struct obj* obj;
 	char buftext2[BUFSZ] = "";
 	char buftext3[BUFSZ] = "";
 	boolean undonned = FALSE, wandknown = FALSE, suggestnamingwand = FALSE;
+	int res = 1;
 
 	if (!obj || obj->oclass != WAND_CLASS)
-		return;
+		return 0;
 
 	if (Glib) {
 		pline("%s from your %s.", Tobjnam(obj, "slip"),
 			makeplural(body_part(FINGER)));
 		dropx(obj);
-		return;
+		return 0;
 	}
 
 	if (obj->spe > 0) {
 		otmp = getobj(wand_application_objects, "use wand on", 0);
 		if (!otmp)
-			return;
+			return 0;
 
 		if (otmp == obj)
 		{
 			You("cannot use the wand on itself!");
-			return;
+			return 0;
 		}
 
 		if (inaccessible_equipment(otmp, "use wand on", FALSE))
-			return;
+			return 0;
 
 		consume_obj_charge(obj, TRUE);
 
@@ -2356,9 +2357,7 @@ struct obj* obj;
 			//Shoot accidently yourself!!
 
 			pline("The wand slips and you accidently zap yourself with it!");
-			(void)zapyourself(obj, TRUE);
-
-			return;
+			return zapyourself(obj, TRUE);
 		}
 
 		//Normal effect
@@ -2600,6 +2599,7 @@ struct obj* obj;
 				break;
 			default:
 				pline("Nothing much happens.");
+				res = 0;
 				break;
 			}
 
@@ -2613,13 +2613,16 @@ struct obj* obj;
 
 		}
 	}
-	else {
+	else 
+	{
+		res = 0;
 		if (obj->known)
 			pline("%s out of charges.", Tobjnam(obj, "are"));
 		else
 			pline("%s out of charges.", Tobjnam(obj, "seem"));
 	}
 	update_inventory();
+	return res;
 }
 
 /* touchstones - by Ken Arnold */
@@ -3923,8 +3926,9 @@ doapply()
                      grateful that you don't drop it as well */
 
 	if (obj->oclass == WAND_CLASS)
-		use_wand_on_object(obj);
-		return res; // do_break_wand(obj);
+	{
+		return use_wand_on_object(obj); // do_break_wand(obj);
+	}
 
     switch (obj->otyp) {
     case BLINDFOLD:
