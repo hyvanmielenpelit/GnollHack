@@ -135,6 +135,17 @@ struct objclass {
 
 	int oc_dir_subtype; /* ID for type of ray or immediate effect */
 
+#define RAY_WND_MAGIC_MISSILE 0 
+#define RAY_WND_FIRE 1 
+#define RAY_WND_COLD 2 
+#define RAY_WND_SLEEP 3 
+#define RAY_WND_DISINTEGRATION 4 
+#define RAY_WND_LIGHTNING 5 
+#define RAY_WND_POISON_GAS 6 
+#define RAY_WND_ACID 7 
+#define RAY_WND_DEATH 8 
+#define RAY_WND_DIGGING 91 
+
 #define RAY_MAGIC_MISSILE 10 
 #define RAY_FIRE 11 
 #define RAY_COLD 12 
