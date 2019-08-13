@@ -1736,7 +1736,7 @@ int propindx; /* index of a property which can be conveyed by worn item */
     for (o = invent; o; o = o->nobj) {
         if (!(o->owornmask & mask))
             continue;
-        if ((int) objects[o->otyp].oc_oprop == propindx
+        if (((int) objects[o->otyp].oc_oprop == propindx || (int)objects[o->otyp].oc_oprop2 == propindx || (int)objects[o->otyp].oc_oprop3 == propindx)
             && objects[o->otyp].oc_name_known && o->dknown)
             return TRUE;
     }

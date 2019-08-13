@@ -1711,7 +1711,7 @@ register struct obj *otmp;
     if (Is_candle(otmp))
         return FALSE;
 
-    if (objects[otyp].oc_oprop == FIRE_RES || otyp == WAN_FIRE)
+    if (objects[otyp].oc_flags & O1_FIRE_RESISTANT || objects[otyp].oc_oprop == FIRE_RES || objects[otyp].oc_oprop2 == FIRE_RES || objects[otyp].oc_oprop3 == FIRE_RES || otyp == WAN_FIRE)
         return FALSE;
 
     return (boolean) ((omat <= WOOD && omat != LIQUID) || omat == PLASTIC);

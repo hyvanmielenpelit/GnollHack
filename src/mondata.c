@@ -137,7 +137,7 @@ struct monst *mon;
         slotmask |= W_SWAPWEP;
     for (; o; o = o->nobj)
         if (((o->owornmask & slotmask) != 0L
-             && objects[o->otyp].oc_oprop == ANTIMAGIC)
+             && (objects[o->otyp].oc_oprop == ANTIMAGIC || objects[o->otyp].oc_oprop2 == ANTIMAGIC || objects[o->otyp].oc_oprop3 == ANTIMAGIC))
             || (o->oartifact && defends_when_carried(AD_MAGM, o)))
             return TRUE;
     return FALSE;
@@ -175,7 +175,7 @@ struct monst *mon;
         slotmask |= W_SWAPWEP;
     for (; o; o = o->nobj)
         if (((o->owornmask & slotmask) != 0L
-             && objects[o->otyp].oc_oprop == BLINDED)
+             && (objects[o->otyp].oc_oprop == BLINDED || objects[o->otyp].oc_oprop2 == BLINDED || objects[o->otyp].oc_oprop3 == BLINDED))
             || (o->oartifact && defends_when_carried(AD_BLND, o)))
             return TRUE;
     return FALSE;

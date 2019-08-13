@@ -4094,7 +4094,7 @@ const char *fltxt;
 
 /* note: worn amulet of life saving must be preserved in order to operate */
 #define oresist_disintegration(obj)                                       \
-    (objects[obj->otyp].oc_oprop == DISINT_RES || obj_resists(obj, 5, 50) \
+    (objects[obj->otyp].oc_flags & O1_DISINTEGRATION_RESISTANT || objects[obj->otyp].oc_flags & O1_INDESTRUCTIBLE || objects[obj->otyp].oc_oprop == DISINT_RES  || objects[obj->otyp].oc_oprop2 == DISINT_RES || objects[obj->otyp].oc_oprop3 == DISINT_RES || obj_resists(obj, 5, 50) \
      || is_quest_artifact(obj) || obj == m_amulet || obj->otyp == BLACK_BLADE_OF_DISINTEGRATION)
 
     for (otmp = mon->minvent; otmp; otmp = otmp2) {
@@ -5117,8 +5117,8 @@ int osym, dmgtyp;
            the rest as already processed once control returns here */
         if (deferral_indx < SIZE(deferrals)
             && ((obj->owornmask != 0L
-                 && (objects[obj->otyp].oc_oprop == LEVITATION
-                     || objects[obj->otyp].oc_oprop == FLYING))
+                 && (objects[obj->otyp].oc_oprop == LEVITATION || objects[obj->otyp].oc_oprop2 == LEVITATION || objects[obj->otyp].oc_oprop3 == LEVITATION
+                     || objects[obj->otyp].oc_oprop == FLYING || objects[obj->otyp].oc_oprop2 == FLYING || objects[obj->otyp].oc_oprop3 == FLYING))
                 /* destroyed wands and potions of polymorph don't trigger
                    polymorph so don't need to be deferred */
                 || (obj->otyp == POT_WATER && u.ulycn >= LOW_PM

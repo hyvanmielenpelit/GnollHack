@@ -78,7 +78,13 @@ long mask;
                         p = objects[oobj->otyp].oc_oprop;
                         u.uprops[p].extrinsic =
                             u.uprops[p].extrinsic & ~wp->w_mask;
-                        if ((p = w_blocks(oobj, mask)) != 0)
+						p = objects[oobj->otyp].oc_oprop2;
+						u.uprops[p].extrinsic =
+							u.uprops[p].extrinsic & ~wp->w_mask;
+						p = objects[oobj->otyp].oc_oprop3;
+						u.uprops[p].extrinsic =
+							u.uprops[p].extrinsic & ~wp->w_mask;
+						if ((p = w_blocks(oobj, mask)) != 0)
                             u.uprops[p].blocked &= ~wp->w_mask;
                         if (oobj->oartifact)
                             set_artifact_intrinsic(oobj, 0, mask);
@@ -101,7 +107,13 @@ long mask;
                             p = objects[obj->otyp].oc_oprop;
                             u.uprops[p].extrinsic =
                                 u.uprops[p].extrinsic | wp->w_mask;
-                            if ((p = w_blocks(obj, mask)) != 0)
+							p = objects[obj->otyp].oc_oprop2;
+							u.uprops[p].extrinsic =
+								u.uprops[p].extrinsic | wp->w_mask;
+							p = objects[obj->otyp].oc_oprop3;
+							u.uprops[p].extrinsic =
+								u.uprops[p].extrinsic | wp->w_mask;
+							if ((p = w_blocks(obj, mask)) != 0)
                                 u.uprops[p].blocked |= wp->w_mask;
                         }
                         if (obj->oartifact)
@@ -135,7 +147,14 @@ register struct obj *obj;
             *(wp->w_obj) = 0;
             p = objects[obj->otyp].oc_oprop;
             u.uprops[p].extrinsic = u.uprops[p].extrinsic & ~wp->w_mask;
-            obj->owornmask &= ~wp->w_mask;
+
+			p = objects[obj->otyp].oc_oprop2;
+			u.uprops[p].extrinsic = u.uprops[p].extrinsic & ~wp->w_mask;
+
+			p = objects[obj->otyp].oc_oprop3;
+			u.uprops[p].extrinsic = u.uprops[p].extrinsic & ~wp->w_mask;
+
+			obj->owornmask &= ~wp->w_mask;
             if (obj->oartifact)
                 set_artifact_intrinsic(obj, 0, wp->w_mask);
             if ((p = w_blocks(obj, wp->w_mask)) != 0)
@@ -303,7 +322,7 @@ struct obj *obj; /* item to make known if effect can be seen */
     }
 
     for (otmp = mon->minvent; otmp; otmp = otmp->nobj)
-        if (otmp->owornmask && objects[otmp->otyp].oc_oprop == FAST)
+        if (otmp->owornmask && (objects[otmp->otyp].oc_oprop == FAST || objects[otmp->otyp].oc_oprop2 == FAST || objects[otmp->otyp].oc_oprop3 == FAST))
             break;
     if (otmp) /* speed boots */
         mon->mspeed = MFAST;

@@ -3447,7 +3447,8 @@ xchar x, y;
        note: potions are glass so fall through to fire_damage() and boil */
     if (objects[otyp].oc_material < DRAGON_HIDE
         && ocls != SCROLL_CLASS && ocls != SPBOOK_CLASS
-        && objects[otyp].oc_oprop != FIRE_RES
+        && objects[otyp].oc_oprop != FIRE_RES && objects[otyp].oc_oprop2 != FIRE_RES && objects[otyp].oc_oprop3 != FIRE_RES 
+		&& !(objects[otyp].oc_flags & O1_FIRE_RESISTANT)
         && otyp != WAN_FIRE && otyp != FIRE_HORN
         /* assumes oerodeproof isn't overloaded for some other purpose on
            non-eroding items */
@@ -5277,7 +5278,8 @@ lava_effects()
         for (obj = invent; obj; obj = obj->nobj)
             if ((is_organic(obj) || obj->oclass == POTION_CLASS)
                 && !obj->oerodeproof
-                && objects[obj->otyp].oc_oprop != FIRE_RES
+                && objects[obj->otyp].oc_oprop != FIRE_RES && objects[obj->otyp].oc_oprop2 != FIRE_RES && objects[obj->otyp].oc_oprop3 != FIRE_RES
+				&& !(objects[obj->otyp].oc_flags & O1_FIRE_RESISTANT)
                 && obj->otyp != SCR_FIRE && obj->otyp != SPE_FIREBALL
                 && !obj_resists(obj, 0, 0)) /* for invocation items */
                 obj->in_use = 1;

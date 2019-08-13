@@ -78,8 +78,7 @@ struct objclass {
 #define PIERCE 1 /* for weapons & tools used as weapons */
 #define SLASH 2  /* (latter includes iron ball & chain) */
 #define WHACK 0
-
-    /* 4 free bits */
+	/* 4 free bits */
 
     Bitfield(oc_material, 5); /* one of obj_material_types */
 
@@ -107,8 +106,9 @@ struct objclass {
 #define oc_skill oc_subtyp  /* Skills of weapons, spellbooks, tools, gems */
 #define oc_armcat oc_subtyp /* for armor (enum obj_armor_types) */
 
-    uchar oc_oprop; /* property (invis, &c.) conveyed */
-    char  oc_class; /* object class (enum obj_class_types) */
+    uchar oc_oprop, oc_oprop2, oc_oprop3; /* property (invis, &c.) conveyed */
+	
+	char  oc_class; /* object class (enum obj_class_types) */
     schar oc_delay; /* delay when using such an object */
     uchar oc_color; /* color of the object */
 
@@ -119,14 +119,46 @@ struct objclass {
     /* for weapons, and tools, rocks, and gems useful as weapons */
 	schar oc_wsdice, oc_wsdam, oc_wsdmgplus; /* small monster damage */
 	schar oc_wldice, oc_wldam, oc_wldmgplus; /* large monster damage */
-    schar oc_oc1, oc_oc2;
+	schar oc_oc1, oc_oc2;
+	int oc_oc3;
+	schar oc_oc4;
+
 #define oc_hitbon oc_oc1 /* weapons: "to hit" bonus */
 
 #define a_ac oc_oc1     /* armor class, used in ARM_BONUS in do.c */
 #define a_can oc_oc2    /* armor: used in mhitu.c */
 #define oc_level oc_oc2 /* books: spell level */
+#define oc_mana_cost oc_oc3 /* books: spell mana cost */
+#define oc_spell_attribute oc_oc4 /* books: spell primary casting attribute */
 
     unsigned short oc_nutrition; /* food value */
+
+	int oc_dir_subtype; /* ID for type of ray or immediate effect */
+
+#define RAY_MAGIC_MISSILE 10 
+#define RAY_FIRE 11 
+#define RAY_COLD 12 
+#define RAY_SLEEP 13 
+#define RAY_DISINTEGRATION 14 
+#define RAY_LIGHTNING 15 
+#define RAY_POISON_GAS 16 
+#define RAY_ACID 17 
+#define RAY_DEATH 18 
+#define RAY_DIGGING 101 
+
+	int oc_material_components; /* ID for material component list for a spell or to make the item (if recipe is known) */
+	unsigned long oc_flags; /* E.g. if indestructible or disintegration resistant */
+
+#define O1_NONE 0x00000000 
+#define O1_INDESTRUCTIBLE 0x00000001 
+#define O1_DISINTEGRATION_RESISTANT 0x00000002 
+#define O1_FIRE_RESISTANT 0x00000004 
+#define O1_COLD_RESISTANT 0x00000008 
+#define O1_LIGHTNING_RESISTANT 0x00000010
+#define O1_POLYMORPH_RESISTANT 0x00000020
+#define O1_RUST_RESISTANT 0x00000040
+#define O1_CORROSION_RESISTANT 0x00000080
+
 };
 
 struct class_sym {

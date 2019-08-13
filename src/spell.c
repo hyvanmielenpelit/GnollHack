@@ -888,10 +888,13 @@ int spell;
 }
 
 int
-getspellenergycost(spelllevel)
-int spelllevel;
+getspellenergycost(spell)
+int spell;
 {
-	int energy = spelllevel * 10;
+	if (spell < 0)
+		return 0;
+
+	int energy = objects[spellid(spell)].oc_mana_cost;
 
 	return energy;
 }
@@ -945,7 +948,7 @@ boolean atme;
      */
     //energy = (spellev(spell) * 5);
 	/* 5 <= energy <= 35 */
-	energy = getspellenergycost(spellev(spell));
+	energy = getspellenergycost(spell);
 
     /*if (u.uhunger <= 10 && spellid(spell) != SPE_DETECT_FOOD) {
         You("are too hungry to cast that spell.");
@@ -1701,7 +1704,7 @@ int *spell_no;
 		
 		Sprintf(buf, fmt, shortenedname, spellev(splnum),
                 spelltypemnemonic(spell_skilltype(spellid(splnum))),
-				getspellenergycost(spellev(splnum)),
+				getspellenergycost(splnum),
                 100 - percent_success(splnum),
                 spellretention(splnum, retentionbuf));
 
