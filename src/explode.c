@@ -25,10 +25,11 @@ static int explosion[3][3] = { { S_explode1, S_explode4, S_explode7 },
  *      that Half_physical_damage only affects the damage applied to the hero.
  */
 void
-explode(x, y, type, dam, olet, expltype)
+explode(x, y, type, dam, objtype, olet, expltype)
 int x, y;
 int type; /* the same as in zap.c; passes -(wand typ) for some WAND_CLASS */
 int dam;
+int objtype;
 char olet;
 int expltype;
 {
@@ -45,26 +46,9 @@ int expltype;
             do_hallu = FALSE, inside_engulfer, grabbed, grabbing;
     coord grabxy;
     char hallu_buf[BUFSZ], killr_buf[BUFSZ];
-    short exploding_wand_typ = 0;
+    short exploding_wand_typ = objtype;
 
-    if (olet == WAND_CLASS) { /* retributive strike */
-        /* 'type' is passed as (wand's object type * -1); save
-           object type and convert 'type' itself to zap-type */
-        if (type < 0) {
-            type = -type;
-            exploding_wand_typ = (short) type;
-            /* most attack wands produce specific explosions;
-               other types produce a generic magical explosion */
-            if (objects[type].oc_dir == RAY
-                && type != WAN_DIGGING && type != WAN_SLEEP) {
-                type -= WAN_MAGIC_MISSILE;
-                if (type < 0 || type > 9) {
-                    impossible("explode: wand has bad zap type (%d).", type);
-                    type = 0;
-                }
-            } else
-                type = 0;
-        }
+    if (olet == WAND_CLASS) {
         switch (Role_switch) {
         case PM_PRIEST:
         case PM_MONK:
@@ -790,7 +774,7 @@ boolean diluted_oil;
 
 /* ZT_SPELL(ZT_FIRE) = ZT_SPELL(AD_FIRE-1) = 10+(2-1) = 11 */
 #define ZT_SPELL_O_FIRE 11 /* value kludge, see zap.c */
-    explode(x, y, ZT_SPELL_O_FIRE, dmg, BURNING_OIL, EXPL_FIERY);
+    explode(x, y, ZT_SPELL_O_FIRE, dmg, 0, BURNING_OIL, EXPL_FIERY);
 }
 
 /* lit potion of oil is exploding; extinguish it as a light source before

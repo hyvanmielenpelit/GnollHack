@@ -1408,11 +1408,9 @@ struct monst *mtmp;
         if (oseen)
             makeknown(otmp->otyp);
         m_using = TRUE;
-		//Positioned differently, because there is now poison and acid attack wands
-		if (otmp->otyp == WAN_DEATH)
-			raytype = -38;
-		else
-			raytype = -30 - (otmp->otyp - WAN_MAGIC_MISSILE);
+
+		raytype = -30 - objects[otmp->otyp].oc_dir_subtype; //-30...-38;
+
         buzz(raytype, (otmp->otyp == WAN_MAGIC_MISSILE) ? 2 : 6, mtmp->mx, mtmp->my,
              sgn(mtmp->mux - mtmp->mx), sgn(mtmp->muy - mtmp->my));
         m_using = FALSE;
@@ -1426,7 +1424,7 @@ struct monst *mtmp;
             You_hear("a horn being played.");
         otmp->spe--;
         m_using = TRUE;
-        buzz(-30 - ((otmp->otyp == FROST_HORN) ? AD_COLD - 1 : AD_FIRE - 1),
+        buzz(-30 - ((otmp->otyp == FROST_HORN) ? RAY_WND_COLD : RAY_WND_FIRE),
              rn1(6, 6), mtmp->mx, mtmp->my, sgn(mtmp->mux - mtmp->mx),
              sgn(mtmp->muy - mtmp->my));
         m_using = FALSE;
@@ -2494,7 +2492,7 @@ boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
             m_useup(mon, obj); /* before explode() */
             dmg = (2 * (rn1(3, 3) + 2 * bcsign(obj)) + 1) / 3;
             /* -11 => monster's fireball */
-            explode(mon->mx, mon->my, -11, dmg, SCROLL_CLASS,
+            explode(mon->mx, mon->my, -11, dmg, otyp, SCROLL_CLASS,
                     /* by_you: override -11 for mon but not others */
                     by_you ? -EXPL_FIERY : EXPL_FIERY);
             dmg = 0; /* damage has been applied by explode() */

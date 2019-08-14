@@ -1655,7 +1655,7 @@ enchantarmor:
                 burn_away_slime();
             }
         }
-        explode(cc.x, cc.y, 11, dam, SCROLL_CLASS, EXPL_FIERY);
+        explode(cc.x, cc.y, 11, dam, otyp, SCROLL_CLASS, EXPL_FIERY);
         break;
     }
     case SCR_EARTH:

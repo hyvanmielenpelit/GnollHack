@@ -2388,7 +2388,7 @@ boolean ordinary;
 
     case SPE_FIREBALL:
         You("explode a fireball on top of yourself!");
-        explode(u.ux, u.uy, 11, d(6, 6), WAND_CLASS, EXPL_FIERY);
+        explode(u.ux, u.uy, 11, d(6, 6), obj->otyp, WAND_CLASS, EXPL_FIERY);
         break;
     case WAN_FIRE:
     case FIRE_HORN:
@@ -3153,7 +3153,45 @@ struct obj *obj;
 
     } else {
         /* neither immediate nor directionless */
+		int osubtype = objects[otyp].oc_dir_subtype;
 
+		switch (osubtype)
+		{
+		case RAY_DIGGING:
+		case RAY_WND_DIGGING:
+			zap_dig();
+			break;
+		case RAY_FIRE:
+		case RAY_COLD:
+		case RAY_LIGHTNING:
+		case RAY_SLEEP:
+		case RAY_POISON_GAS:
+		case RAY_ACID:
+		case RAY_DEATH:
+		case RAY_DISINTEGRATION:
+			buzz(osubtype, u.ulevel / 2 + 1, u.ux, u.uy, u.dx, u.dy);
+			break;
+		case RAY_WND_MAGIC_MISSILE:
+			buzz(osubtype, 2, u.ux, u.uy, u.dx, u.dy);
+			break;
+		case RAY_WND_FIRE:
+		case RAY_WND_COLD:
+		case RAY_WND_SLEEP:
+		case RAY_WND_LIGHTNING:
+		case RAY_WND_POISON_GAS:
+		case RAY_WND_ACID:
+			buzz(osubtype, 6, u.ux, u.uy, u.dx, u.dy);
+			break;
+		case RAY_WND_DEATH:
+		case RAY_WND_DISINTEGRATION:
+			buzz(osubtype, 1, u.ux, u.uy, u.dx, u.dy);
+			break;
+		default:
+			impossible("weffects: unexpected spell or wand");
+			break;
+		}
+
+		/*
         if (otyp == WAN_DIGGING || otyp == SPE_DIG)
             zap_dig();
 		else if (otyp == SPE_FINGER_OF_DEATH)
@@ -3168,6 +3206,8 @@ struct obj *obj;
                  (otyp == WAN_MAGIC_MISSILE) ? 2 : 6, u.ux, u.uy, u.dx, u.dy);
         else
             impossible("weffects: unexpected spell or wand");
+			*/
+
         disclose = TRUE;
     }
     if (disclose) {
@@ -4402,7 +4442,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
     }
     tmp_at(DISP_END, 0);
     if (type == ZT_SPELL(ZT_FIRE))
-        explode(sx, sy, type, d(12, 6), 0, EXPL_FIERY);
+        explode(sx, sy, type, d(12, 6), 0, 0, EXPL_FIERY);
     if (shopdamage)
         pay_for_damage(abstype == ZT_FIRE
                           ? "burn away"

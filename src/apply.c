@@ -3641,7 +3641,8 @@ struct obj *obj;
         pline(nothing_else_happens);
         goto discard_broken_wand;
     case WAN_DEATH:
-    case WAN_LIGHTNING:
+	case WAN_DISINTEGRATION:
+	case WAN_LIGHTNING:
         dmg *= 4;
         goto wanexpl;
     case WAN_FIRE:
@@ -3654,7 +3655,7 @@ struct obj *obj;
         /*FALLTHRU*/
     case WAN_MAGIC_MISSILE:
     wanexpl:
-        explode(u.ux, u.uy, -(obj->otyp), dmg, WAND_CLASS, expltype);
+        explode(u.ux, u.uy, objects[obj->otyp].oc_dir_subtype, dmg, obj->otyp, WAND_CLASS, expltype);
         makeknown(obj->otyp); /* explode describes the effect */
         goto discard_broken_wand;
     case WAN_STRIKING:
@@ -3677,7 +3678,7 @@ struct obj *obj;
     /* [TODO?  This really ought to prevent the explosion from being
        fatal so that we never leave a bones file where none of the
        surrounding targets (or underlying objects) got affected yet.] */
-    explode(obj->ox, obj->oy, -(obj->otyp), rnd(dmg), WAND_CLASS,
+    explode(obj->ox, obj->oy, objects[obj->otyp].oc_dir_subtype, rnd(dmg), obj->otyp, WAND_CLASS,
             EXPL_MAGICAL);
 
     /* prepare for potential feedback from polymorph... */
