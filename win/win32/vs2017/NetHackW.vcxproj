@@ -184,6 +184,7 @@
     <ClCompile Include="$(WinWin32Dir)mhtext.c" />
     <ClCompile Include="$(WinWin32Dir)mswproc.c" />
     <ClCompile Include="$(WinWin32Dir)winhack.c" />
+    <ClCompile Include="..\..\..\src\matcomps.c" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="$(WinWin32Dir)winhack.rc" />
@@ -203,6 +204,7 @@
     <ClInclude Include="$(WinWin32Dir)mhstatus.h" />
     <ClInclude Include="$(WinWin32Dir)mhtext.h" />
     <ClInclude Include="$(WinWin32Dir)winMS.h" />
+    <ClInclude Include="..\..\..\include\matcomps.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\GnollHackNew.ico" />

@@ -114,7 +114,7 @@ int set, entry;
     */
     monst_init();
     objects_init();
-    (void) def_char_to_objclass(']');
+	(void) def_char_to_objclass(']');
 
     condnum = tilenum = 0;
 

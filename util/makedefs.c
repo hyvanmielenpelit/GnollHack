@@ -324,7 +324,7 @@ char *options;
         case 'O':
             do_objs();
             break;
-        case 'd':
+		case 'd':
         case 'D':
             do_data();
             break;
@@ -2828,6 +2828,7 @@ do_objs()
         exit(EXIT_FAILURE);
     return;
 }
+
 
 /* Read one line from input, up to and including the next newline
  * character. Returns a pointer to the heap-allocated string, or a

@@ -1679,6 +1679,10 @@ E void NDECL(rename_disco);
 
 E void NDECL(objects_init);
 
+/* ### matcomps.c ### */
+
+E void NDECL(matcomps_init);
+
 /* ### objnam.c ### */
 
 E char *FDECL(obj_typename, (int));
@@ -2372,6 +2376,8 @@ E int FDECL(tport_spell, (int));
 E void NDECL(losespells);
 E int NDECL(dovspell);
 E void FDECL(initialspell, (struct obj *));
+E int NDECL(domix);
+
 
 /* ### steal.c ### */
 

@@ -31,7 +31,7 @@ STATIC_DCL boolean FDECL(confused_book, (struct obj *));
 STATIC_DCL void FDECL(deadbook, (struct obj *));
 STATIC_PTR int NDECL(learn);
 STATIC_DCL boolean NDECL(rejectcasting);
-STATIC_DCL boolean FDECL(getspell, (int *));
+STATIC_DCL boolean FDECL(getspell, (int *, boolean));
 STATIC_PTR int FDECL(CFDECLSPEC spell_cmp, (const genericptr,
                                             const genericptr));
 STATIC_DCL void NDECL(sortspells);
@@ -675,8 +675,9 @@ rejectcasting()
  * parameter.  Otherwise return FALSE.
  */
 STATIC_OVL boolean
-getspell(spell_no)
+getspell(spell_no, mixing)
 int *spell_no;
+boolean mixing;
 {
     int nspells, idx;
     char ilet, lets[BUFSZ], qbuf[QBUFSZ];
@@ -705,7 +706,7 @@ int *spell_no;
             Sprintf(lets, "a-zA-%c", 'A' + nspells - 27);
 
         for (;;) {
-            Sprintf(qbuf, "Cast which spell? [%s *?]", lets);
+            Sprintf(qbuf, "%s which spell? [%s *?]", (mixing ? "Prepare" : "Cast"), lets);
             ilet = yn_function(qbuf, (char *) 0, '\0');
             if (ilet == '*' || ilet == '?')
                 break; /* use menu mode */
@@ -721,7 +722,7 @@ int *spell_no;
             return TRUE;
         }
     }
-    return dospellmenu("Choose which spell to cast", SPELLMENU_CAST,
+    return dospellmenu((mixing ? "Choose which spell to prepare" : "Choose which spell to cast"), SPELLMENU_CAST,
                        spell_no);
 }
 
@@ -731,7 +732,7 @@ docast()
 {
     int spell_no;
 
-    if (getspell(&spell_no))
+    if (getspell(&spell_no, FALSE))
         return spelleffects(spell_no, FALSE);
     return 0;
 }
@@ -1955,5 +1956,20 @@ struct obj *obj;
     }
     return;
 }
+
+
+/* Mixing starts here*/
+
+/* the 'M' command */
+int
+domix()
+{
+	int spell_no;
+
+	if (getspell(&spell_no, TRUE))
+		return 1; // spelleffects(spell_no, FALSE);
+	return 0;
+}
+
 
 /*spell.c*/

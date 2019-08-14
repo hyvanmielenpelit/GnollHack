@@ -125,10 +125,23 @@ init_objects()
      */
     for (i = 0; i < MAXOCLASSES; i++)
         bases[i] = 0;
-    /* initialize object descriptions */
+    
     for (i = 0; i < NUM_OBJECTS; i++)
-        objects[i].oc_name_idx = objects[i].oc_descr_idx = i;
-    /* init base; if probs given check that they add up to 1000,
+	{
+		/* initialize object descriptions */
+		objects[i].oc_name_idx = objects[i].oc_descr_idx = i;
+
+	}
+	
+	/* initialize object material components, if many pointing to the same spell, the last index remains */
+	matcomps_init();
+
+	for (int j = 0; matlists[j].spell_objectid >= 0; j++)
+	{
+		objects[matlists[j].spell_objectid].oc_material_components = j;
+	}
+
+	/* init base; if probs given check that they add up to 1000,
        otherwise compute probs */
     first = 0;
     while (first < NUM_OBJECTS) {
@@ -180,6 +193,7 @@ init_objects()
     shuffle_tiles();
 #endif
     objects[WAN_NOTHING].oc_dir = rn2(2) ? NODIR : IMMEDIATE;
+
 }
 
 /* retrieve the range of objects that otyp shares descriptions with */

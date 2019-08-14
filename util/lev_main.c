@@ -262,7 +262,7 @@ char **argv;
      */
     monst_init();
     objects_init();
-    decl_init();
+	decl_init();
     /* this one does something... */
     init_obj_classes();
 

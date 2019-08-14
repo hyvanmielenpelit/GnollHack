@@ -36,6 +36,7 @@ boolean resuming;
     decl_init();
     monst_init();
     objects_init();
+	//matcomps_init();
 
     /* if a save file created in normal mode is now being restored in
        explore mode, treat it as normal restore followed by 'X' command

@@ -533,7 +533,9 @@ enum bodypart_types {
 #define CFDECLSPEC
 #endif
 
-#define DEVTEAM_EMAIL "devteam@GnollHack.org"
-#define DEVTEAM_URL "http://www.GnollHack.org"
+#define DEVTEAM_EMAIL "gnollhack@hyvanmielenpelit.fi"
+#define DEVTEAM_URL "http://www.gnollhack.com"
+
+#include "matcomps.h"
 
 #endif /* HACK_H */
