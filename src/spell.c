@@ -1764,7 +1764,7 @@ int spell;
 
 	splcaster = 0;  urole.spelbase;
     special = urole.spelheal;
-    statused = ACURR(urole.spelstat);
+	statused = ACURR(objects[spellid(spell)].oc_spell_attribute); //ACURR(urole.spelstat);
 
 /*    if (uarm && is_metallic(uarm))
         splcaster += (uarmc && uarmc->otyp == ROBE) ? urole.spelarmr / 2

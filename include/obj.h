@@ -406,6 +406,7 @@ struct obj {
 #define POTHIT_MONST_THROW 2 /* thrown by a monster */
 #define POTHIT_OTHER_THROW 3 /* propelled by some other means [scatter()] */
 
+
 /*
  *  Notes for adding new oextra structures:
  *

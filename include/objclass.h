@@ -144,7 +144,7 @@ struct objclass {
 #define RAY_WND_POISON_GAS 6 
 #define RAY_WND_ACID 7 
 #define RAY_WND_DEATH 8 
-#define RAY_WND_DIGGING 91 
+#define RAY_WND_DIGGING 101 
 
 #define RAY_MAGIC_MISSILE 10 
 #define RAY_FIRE 11 
@@ -155,7 +155,7 @@ struct objclass {
 #define RAY_POISON_GAS 16 
 #define RAY_ACID 17 
 #define RAY_DEATH 18 
-#define RAY_DIGGING 101 
+#define RAY_DIGGING 111 
 
 	int oc_material_components; /* ID for material component list for a spell or to make the item (if recipe is known) */
 	unsigned long oc_flags; /* E.g. if indestructible or disintegration resistant */
