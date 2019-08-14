@@ -499,7 +499,10 @@ register struct obj *spellbook;
         }
 
         switch (objects[booktype].oc_level) {
-        case 1:
+		case -2:
+		case -1:
+		case 0:
+		case 1:
         case 2:
             context.spbook.delay = -objects[booktype].oc_delay;
             break;
@@ -1666,7 +1669,7 @@ int *spell_no;
 {
     winid tmpwin;
     int i, n, how, splnum;
-    char buf[BUFSZ], retentionbuf[24];
+    char buf[BUFSZ], retentionbuf[24], levelbuf[10];
     const char *fmt;
     menu_item *selected;
     anything any;
@@ -1685,10 +1688,12 @@ int *spell_no;
     if (!iflags.menu_tab_sep) {
         Sprintf(buf, "%-20s     Level %-12s Cost Fail Retention", "    Name",
                 "Category");
-        fmt = "%-20s  %2d   %-12s %4d %3d%% %9s";
-    } else {
+        fmt = "%-20s  %s   %-12s %4d %3d%% %9s";
+//		fmt = "%-20s  %2d   %-12s %4d %3d%% %9s";
+	} else {
         Sprintf(buf, "Name\tLevel\tCategory\tCost\tFail\tRetention");
-        fmt = "%s\t%-d\t%s\t%-d\t%-d%%\t%s";
+		fmt = "%s\t%s\t%s\t%-d\t%-d%%\t%s";
+//		fmt = "%s\t%-d\t%s\t%-d\t%-d%%\t%s";
     }
     add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, buf,
              MENU_UNSELECTED);
@@ -1701,8 +1706,17 @@ int *spell_no;
 			strncpy(shortenedname, fullname, 20);
 		else
 			strcpy(shortenedname, fullname);
-		
-		Sprintf(buf, fmt, shortenedname, spellev(splnum),
+
+		if (spellev(splnum) < -1)
+			strcpy(levelbuf, "c*");
+		else if (spellev(splnum) == -1)
+			strcpy(levelbuf, "ca");
+		else if (spellev(splnum) == 0)
+			strcpy(levelbuf, "Ca");
+		else
+			Sprintf(levelbuf, "%2d", spellev(splnum));
+
+		Sprintf(buf, fmt, shortenedname, levelbuf,//spellev(splnum),
                 spelltypemnemonic(spell_skilltype(spellid(splnum))),
 				getspellenergycost(splnum),
                 100 - percent_success(splnum),

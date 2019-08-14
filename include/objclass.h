@@ -119,9 +119,9 @@ struct objclass {
     /* for weapons, and tools, rocks, and gems useful as weapons */
 	schar oc_wsdice, oc_wsdam, oc_wsdmgplus; /* small monster damage */
 	schar oc_wldice, oc_wldam, oc_wldmgplus; /* large monster damage */
-	schar oc_oc1, oc_oc2;
-	int oc_oc3;
-	schar oc_oc4;
+	schar oc_oc1;
+	int oc_oc2, oc_oc3; //Spell levels can be negative, spell mana cost can be over 255
+	schar oc_oc4;  //Used for spell attributes, where 0-255 is ok
 
 #define oc_hitbon oc_oc1 /* weapons: "to hit" bonus */
 
