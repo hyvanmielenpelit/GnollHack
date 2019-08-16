@@ -136,7 +136,7 @@ init_objects()
 	/* initialize object material components, if many pointing to the same spell, the last index remains */
 	matcomps_init();
 
-	for (int j = 0; matlists[j].spell_objectid >= 0; j++)
+	for (int j = 0; matlists[j].spellsgained > 0; j++)
 	{
 		objects[matlists[j].spell_objectid].oc_material_components = j;
 	}

@@ -39,9 +39,11 @@ V       history display game history
 &       what-does describe the command a keystroke invokes
 
 Game commands:
+^C      break   break an item
 ^D      kick    kick (a door, or something else)
 ^T      'port   teleport (if you can)
-^X      show    show your attributes
+^S      show    show your attributes
+^X      twoweapon toggle two-weapon combat
 a       apply   apply or use a tool (pick-axe, key, camera, etc.)
 A       armor   take off all armor
 c       close   close a door
@@ -70,7 +72,7 @@ T       takeoff take off some armor
 w       wield   wield a weapon  (w-  wield nothing)
 W       wear    put on some armor
 x       xchange swap wielded and secondary weapons
-X       twoweapon toggle two-weapon combat (use '#explore' for explore mode)
+X       mix     prepare a spell from material components
 z       zap     zap a wand  (use y instead of z if number_pad is -1)
 Z       Zap     cast a spell  (use Y instead of Z if number_pad is -1)
 <       up      go up the stairs

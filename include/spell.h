@@ -13,7 +13,9 @@
 struct spell {
     short sp_id;  /* spell id (== object.otyp) */
     xchar sp_lev; /* power level */
-    int sp_know;  /* knowlege of spell */
+    int sp_know;  /* knowledge of spell */
+	int sp_amount;  /* number of times the spell can be cast */
+	int sp_matcomp; /* matcompid, if any */
 };
 
 /* levels of memory destruction with a scroll of amnesia */

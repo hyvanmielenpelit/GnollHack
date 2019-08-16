@@ -10,6 +10,7 @@
 
 struct materialcomponent {
 	int objectid;
+	int monsterid; //Used for corpses and tins
 	int amount;
 	unsigned long flags;
 };
@@ -18,19 +19,21 @@ struct materialcomponent {
 #define MATCOMP_NOT_SPENT 0x00000001
 #define MATCOMP_NO_CURSED 0x00000002
 #define MATCOMP_BLESSED_REQUIRED 0x00000004
+#define MATCOMP_DEATH_ENCHANTMENT_REQUIRED 0x00000008
 
 
 #define MAX_MATERIALS 10
 
 struct materialcomponentlist {
 	int spell_objectid; //Used to link the list with the appropriate spell, one spell can have many, but first we use only the first
+	int spellsgained; //How many spells do you get for these material components
 	struct materialcomponent matcomp[MAX_MATERIALS];
 };
 
 /*extern NEARDATA struct materialcomponentlist matlists[];*/
 
 /*Material components*/
-#define NO_MATCOMP {STRANGE_OBJECT, 0, MATCOMP_NO_FLAGS}
+#define NO_MATCOMP {STRANGE_OBJECT, 0, 0, MATCOMP_NO_FLAGS}
 
 extern NEARDATA struct materialcomponentlist matlists[];
 

@@ -5,6 +5,7 @@
 #include "hack.h"
 
 /* spellmenu arguments; 0 thru n-1 used as spl_book[] index when swapping */
+#define SPELLMENU_PREPARE (-3)
 #define SPELLMENU_CAST (-2)
 #define SPELLMENU_VIEW (-1)
 #define SPELLMENU_SORT (MAXSPELL) /* special menu entry */
@@ -21,6 +22,8 @@
 #define incrnknow(spell, x) (spl_book[spell].sp_know = KEEN + (x))
 
 #define spellev(spell) spl_book[spell].sp_lev
+#define spellamount(spell) spl_book[spell].sp_amount
+#define spellmatcomp(spell) spl_book[spell].sp_matcomp
 #define spellname(spell) OBJ_NAME(objects[spellid(spell)])
 #define spellet(spell) \
     ((char) ((spell < 26) ? ('a' + spell) : ('A' + spell - 26)))
@@ -412,7 +415,13 @@ learn(VOID_ARGS)
         } else {
             spl_book[i].sp_id = booktype;
             spl_book[i].sp_lev = objects[booktype].oc_level;
-            incrnknow(i, 1);
+			spl_book[i].sp_matcomp = objects[booktype].oc_material_components;
+			if(spl_book[i].sp_matcomp)
+				spl_book[i].sp_amount = 0; //How many times material components have been mixed
+			else
+				spl_book[i].sp_amount = -1; //Infinite
+
+			incrnknow(i, 1);
             book->spestudied++;
             You(i > 0 ? "add %s to your repertoire." : "learn %s.", splname);
         }
@@ -928,7 +937,12 @@ boolean atme;
         return 0; /* no time elapses */
     }
 
-    /*
+	if (spellamount(spell) == 0) {
+		You("do not have the spell prepared.");
+		return 0; /* no time elapses */
+	}
+
+	/*
      * Spell casting no longer affects knowledge of the spell. A
      * decrement of spell knowledge is done every turn.
      */
@@ -1043,6 +1057,10 @@ boolean atme;
             //morehungry(hungr);
         //}
     //}
+
+	//One spell preparation is used, successful casting or not
+	if(spellamount(spell) > 0)
+		spellamount(spell)--;
 
     chance = percent_success(spell);
     if (confused || (rnd(100) > chance)) {
@@ -1344,7 +1362,9 @@ int what;
             save_tport.tport_indx = i;
             spl_book[i].sp_id = SPE_TELEPORT_AWAY;
             spl_book[i].sp_lev = objects[SPE_TELEPORT_AWAY].oc_level;
-            spl_book[i].sp_know = KEEN;
+			spl_book[i].sp_matcomp = objects[SPE_TELEPORT_AWAY].oc_material_components;
+			spl_book[i].sp_amount = -1; //Infinite??
+			spl_book[i].sp_know = KEEN;
             return REMOVESPELL; /* operation needed to reverse */
         }
     } else { /* spellid(i) == SPE_TELEPORT_AWAY */
@@ -1670,7 +1690,7 @@ int *spell_no;
 {
     winid tmpwin;
     int i, n, how, splnum;
-    char buf[BUFSZ], retentionbuf[24], levelbuf[10];
+    char buf[BUFSZ], availablebuf[24], levelbuf[10];
     const char *fmt;
     menu_item *selected;
     anything any;
@@ -1687,12 +1707,12 @@ int *spell_no;
      * given string and are of the form "a - ".
      */
     if (!iflags.menu_tab_sep) {
-        Sprintf(buf, "%-20s     Level %-12s Cost Fail Retention", "    Name",
+        Sprintf(buf, "%-20s     Level %-12s Cost Fail Available", "    Name",
                 "Category");
         fmt = "%-20s  %s   %-12s %4d %3d%% %9s";
 //		fmt = "%-20s  %2d   %-12s %4d %3d%% %9s";
 	} else {
-        Sprintf(buf, "Name\tLevel\tCategory\tCost\tFail\tRetention");
+        Sprintf(buf, "Name\tLevel\tCategory\tCost\tFail\tAvailable");
 		fmt = "%s\t%s\t%s\t%-d\t%-d%%\t%s";
 //		fmt = "%s\t%-d\t%s\t%-d\t%-d%%\t%s";
     }
@@ -1709,19 +1729,24 @@ int *spell_no;
 			strcpy(shortenedname, fullname);
 
 		if (spellev(splnum) < -1)
-			strcpy(levelbuf, "c*");
+			strcpy(levelbuf, " *");
 		else if (spellev(splnum) == -1)
-			strcpy(levelbuf, "ca");
+			strcpy(levelbuf, " c");
 		else if (spellev(splnum) == 0)
-			strcpy(levelbuf, "Ca");
+			strcpy(levelbuf, " C");
 		else
 			Sprintf(levelbuf, "%2d", spellev(splnum));
+
+		if (spellamount(splnum) >= 0)
+			Sprintf(availablebuf, "%d", spellamount(splnum));
+		else
+			strcpy(availablebuf, "Infinite");
 
 		Sprintf(buf, fmt, shortenedname, levelbuf,//spellev(splnum),
                 spelltypemnemonic(spell_skilltype(spellid(splnum))),
 				getspellenergycost(splnum),
                 100 - percent_success(splnum),
-                spellretention(splnum, retentionbuf));
+                availablebuf);  //spellretention(splnum, retentionbuf));
 
         any.a_int = splnum + 1; /* must be non-zero */
         add_menu(tmpwin, NO_GLYPH, &any, spellet(splnum), 0, ATR_NONE, buf,
@@ -1952,7 +1977,13 @@ struct obj *obj;
     } else {
         spl_book[i].sp_id = otyp;
         spl_book[i].sp_lev = objects[otyp].oc_level;
-        incrnknow(i, 0);
+		spl_book[i].sp_matcomp = objects[otyp].oc_material_components;
+		if(spl_book[i].sp_matcomp)
+			spl_book[i].sp_amount = 0;
+		else
+			spl_book[i].sp_amount = -1;
+
+		incrnknow(i, 0);
     }
     return;
 }
@@ -1960,7 +1991,7 @@ struct obj *obj;
 
 /* Mixing starts here*/
 
-/* the 'M' command */
+/* the 'X' command, two-weapon moved to M(x) */
 int
 domix()
 {
