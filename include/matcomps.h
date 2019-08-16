@@ -26,6 +26,8 @@ struct materialcomponent {
 
 struct materialcomponentlist {
 	int spell_objectid; //Used to link the list with the appropriate spell, one spell can have many, but first we use only the first
+	char* description_short; //Used for mixing menu, when selecting the spell
+	char* description_long; //Used for prompt when mixing, after selecting the spell
 	int spellsgained; //How many spells do you get for these material components
 	struct materialcomponent matcomp[MAX_MATERIALS];
 };

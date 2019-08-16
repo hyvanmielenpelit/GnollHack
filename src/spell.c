@@ -731,7 +731,7 @@ boolean mixing;
             return TRUE;
         }
     }
-    return dospellmenu((mixing ? "Choose which spell to prepare" : "Choose which spell to cast"), SPELLMENU_CAST,
+    return dospellmenu((mixing ? "Choose which spell to prepare" : "Choose which spell to cast"), (mixing ? SPELLMENU_PREPARE : SPELLMENU_CAST),
                        spell_no);
 }
 
@@ -1690,7 +1690,7 @@ int *spell_no;
 {
     winid tmpwin;
     int i, n, how, splnum;
-    char buf[BUFSZ], availablebuf[24], levelbuf[10];
+    char buf[BUFSZ], availablebuf[24], matcompbuf[24], levelbuf[10];
     const char *fmt;
     menu_item *selected;
     anything any;
@@ -1706,52 +1706,108 @@ int *spell_no;
      * (2) that selection letters are pre-pended to the
      * given string and are of the form "a - ".
      */
-    if (!iflags.menu_tab_sep) {
-        Sprintf(buf, "%-20s     Level %-12s Cost Fail Available", "    Name",
-                "Category");
-        fmt = "%-20s  %s   %-12s %4d %3d%% %9s";
-//		fmt = "%-20s  %2d   %-12s %4d %3d%% %9s";
-	} else {
-        Sprintf(buf, "Name\tLevel\tCategory\tCost\tFail\tAvailable");
-		fmt = "%s\t%s\t%s\t%-d\t%-d%%\t%s";
-//		fmt = "%s\t%-d\t%s\t%-d\t%-d%%\t%s";
-    }
-    add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, buf,
-             MENU_UNSELECTED);
-    for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++) {
-        splnum = !spl_orderindx ? i : spl_orderindx[i];
-		char shortenedname[BUFSZ] = "";
-		char fullname[BUFSZ];
-		strcpy(fullname, spellname(splnum));
-		if (strlen(fullname) > 20)
-			strncpy(shortenedname, fullname, 20);
-		else
-			strcpy(shortenedname, fullname);
+	if (splaction == SPELLMENU_PREPARE)
+	{
+		if (!iflags.menu_tab_sep) {
+			Sprintf(buf, "%-20s     Level Available Material components", "    Name");
+			fmt = "%-20s  %s  %9s  %-19s";
+			//		fmt = "%-20s  %2d   %-12s %4d %3d%% %9s";
+		}
+		else {
+			Sprintf(buf, "Name\tLevel\tAvailable\tMaterial components");
+			fmt = "%s\t%s\t%s\t%s";
+			//		fmt = "%s\t%-d\t%s\t%-d\t%-d%%\t%s";
+		}
+		add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, buf,
+			MENU_UNSELECTED);
+		for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++) {
+			splnum = !spl_orderindx ? i : spl_orderindx[i];
+			char shortenedname[BUFSZ] = "";
+			char fullname[BUFSZ];
+			strcpy(fullname, spellname(splnum));
+			if (strlen(fullname) > 20)
+				strncpy(shortenedname, fullname, 20);
+			else
+				strcpy(shortenedname, fullname);
 
-		if (spellev(splnum) < -1)
-			strcpy(levelbuf, " *");
-		else if (spellev(splnum) == -1)
-			strcpy(levelbuf, " c");
-		else if (spellev(splnum) == 0)
-			strcpy(levelbuf, " C");
-		else
-			Sprintf(levelbuf, "%2d", spellev(splnum));
+			if (spellev(splnum) < -1)
+				strcpy(levelbuf, " *");
+			else if (spellev(splnum) == -1)
+				strcpy(levelbuf, " c");
+			else if (spellev(splnum) == 0)
+				strcpy(levelbuf, " C");
+			else
+				Sprintf(levelbuf, "%2d", spellev(splnum));
 
-		if (spellamount(splnum) >= 0)
-			Sprintf(availablebuf, "%d", spellamount(splnum));
-		else
-			strcpy(availablebuf, "Infinite");
+			if (spellamount(splnum) >= 0)
+				Sprintf(availablebuf, "%d", spellamount(splnum));
+			else
+				strcpy(availablebuf, "Infinite");
 
-		Sprintf(buf, fmt, shortenedname, levelbuf,//spellev(splnum),
-                spelltypemnemonic(spell_skilltype(spellid(splnum))),
+			if (spellmatcomp(splnum))
+				strcpy(matcompbuf, matlists[spellmatcomp(splnum)].description_short);
+			else
+				strcpy(matcompbuf, "Not required");
+
+			Sprintf(buf, fmt, shortenedname, levelbuf,
+				availablebuf, matcompbuf);
+
+			any.a_int = splnum + 1; /* must be non-zero */
+			add_menu(tmpwin, NO_GLYPH, &any, spellet(splnum), 0, ATR_NONE, buf,
+				(splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
+		}
+
+	}
+	else
+	{
+		if (!iflags.menu_tab_sep) {
+			Sprintf(buf, "%-20s     Level %-12s Cost Fail Available", "    Name",
+				"Category");
+			fmt = "%-20s  %s   %-12s %4d %3d%% %9s";
+			//		fmt = "%-20s  %2d   %-12s %4d %3d%% %9s";
+		}
+		else {
+			Sprintf(buf, "Name\tLevel\tCategory\tCost\tFail\tAvailable");
+			fmt = "%s\t%s\t%s\t%-d\t%-d%%\t%s";
+			//		fmt = "%s\t%-d\t%s\t%-d\t%-d%%\t%s";
+		}
+		add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, buf,
+			MENU_UNSELECTED);
+		for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++) {
+			splnum = !spl_orderindx ? i : spl_orderindx[i];
+			char shortenedname[BUFSZ] = "";
+			char fullname[BUFSZ];
+			strcpy(fullname, spellname(splnum));
+			if (strlen(fullname) > 20)
+				strncpy(shortenedname, fullname, 20);
+			else
+				strcpy(shortenedname, fullname);
+
+			if (spellev(splnum) < -1)
+				strcpy(levelbuf, " *");
+			else if (spellev(splnum) == -1)
+				strcpy(levelbuf, " c");
+			else if (spellev(splnum) == 0)
+				strcpy(levelbuf, " C");
+			else
+				Sprintf(levelbuf, "%2d", spellev(splnum));
+
+			if (spellamount(splnum) >= 0)
+				Sprintf(availablebuf, "%d", spellamount(splnum));
+			else
+				strcpy(availablebuf, "Infinite");
+
+			Sprintf(buf, fmt, shortenedname, levelbuf,//spellev(splnum),
+				spelltypemnemonic(spell_skilltype(spellid(splnum))),
 				getspellenergycost(splnum),
-                100 - percent_success(splnum),
-                availablebuf);  //spellretention(splnum, retentionbuf));
+				100 - percent_success(splnum),
+				availablebuf);  //spellretention(splnum, retentionbuf));
 
-        any.a_int = splnum + 1; /* must be non-zero */
-        add_menu(tmpwin, NO_GLYPH, &any, spellet(splnum), 0, ATR_NONE, buf,
-                 (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
-    }
+			any.a_int = splnum + 1; /* must be non-zero */
+			add_menu(tmpwin, NO_GLYPH, &any, spellet(splnum), 0, ATR_NONE, buf,
+				(splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
+		}
+	}
     how = PICK_ONE;
     if (splaction == SPELLMENU_VIEW) {
         if (spellid(1) == NO_SPELL) {
@@ -1998,7 +2054,16 @@ domix()
 	int spell_no;
 
 	if (getspell(&spell_no, TRUE))
+	{
+		if (!spellmatcomp(spell_no))
+		{
+			pline("That spell does not require material components.");
+			return 0;
+		}
+		//Open mixing menu and explain what components are needed
+		pline("You mix %s and prepare the spell to your repertoire.", matlists[spellmatcomp(spell_no)].description_long);
 		return 1; // spelleffects(spell_no, FALSE);
+	}
 	return 0;
 }
 

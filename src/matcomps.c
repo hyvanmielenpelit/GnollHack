@@ -9,14 +9,17 @@
 struct materialcomponentlist matlists[] =
 {
 	{STRANGE_OBJECT,
+	"", "",
 	1,
 	{NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP}},
 
 	{SPE_WISH,
+	"Blessed diamond", "blessed diamond",
 	1,
 	{{DIAMOND, NOT_APPLICABLE, 1, MATCOMP_BLESSED_REQUIRED}, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP}},
 
 	{SPE_ARMAGEDDON,
+	"Dagger and lizard", "death-enchanted bone dagger and a lizard corpse",
 	1,
 	{{BONE_DAGGER, NOT_APPLICABLE, 1, MATCOMP_DEATH_ENCHANTMENT_REQUIRED | MATCOMP_NOT_SPENT | MATCOMP_NO_CURSED},
 	 {CORPSE, PM_LIZARD, 1, MATCOMP_NO_CURSED},
@@ -24,6 +27,7 @@ struct materialcomponentlist matlists[] =
 
 	//Array terminator, uses spellsgained
 	{STRANGE_OBJECT,
+	"","",
 	0,
 	{NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP}},
 
