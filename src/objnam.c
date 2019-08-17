@@ -3914,6 +3914,9 @@ struct obj *no_wish;
                               || typ == ROCK || is_missile(otmp)))))
         otmp->quan = (long) cnt;
 
+	if (oclass == GEM_CLASS)
+		otmp->quan = 1;
+
     if (oclass == VENOM_CLASS)
         otmp->spe = 1;
 

@@ -30,7 +30,7 @@ STATIC_PTR int FDECL(ckunpaid, (struct obj *));
 STATIC_PTR char *FDECL(safeq_xprname, (struct obj *));
 STATIC_PTR char *FDECL(safeq_shortxprname, (struct obj *));
 STATIC_DCL char FDECL(display_pickinv, (const char *, const char *,
-                                        const char *, BOOLEAN_P, long *, int));
+                                        const char *, BOOLEAN_P, long *, int, const char*));
 STATIC_DCL char FDECL(display_used_invlets, (CHAR_P));
 STATIC_DCL boolean FDECL(this_type_only, (struct obj *));
 STATIC_DCL void NDECL(dounpaid);
@@ -1651,10 +1651,14 @@ const char* headertext;
            result if anything other than scroll or spellbook is chosen */
         allowall = FALSE;
     }
-    for (;;) {
+
+	if (!iflags.force_invmenu && strcmp(headertext, "") != 0)
+		pline(headertext);
+
+	for (;;) {
         cnt = 0;
         cntgiven = FALSE;
-		Sprintf(qbuf, "%sWhat do you want to %s?", headertext, word);
+		Sprintf(qbuf, "What do you want to %s?", word);
         if (in_doagain)
             ilet = readchar();
         else if (iflags.force_invmenu) {
@@ -1670,7 +1674,8 @@ const char* headertext;
                 Strcat(qbuf, " [*]");
             else
                 Sprintf(eos(qbuf), " [%s or ?*]", buf);
-            ilet = yn_function(qbuf, (char *) 0, '\0');
+
+			ilet = yn_function(qbuf, (char *) 0, '\0');
         }
         if (digit(ilet)) {
             long tmpcnt = 0;
@@ -1720,7 +1725,7 @@ const char* headertext;
 
             menuquery[0] = qbuf[0] = '\0';
             if (iflags.force_invmenu)
-                Sprintf(menuquery, "%sWhat do you want to %s?", headertext, word);
+                Sprintf(menuquery, "What do you want to %s?", word);
             if (!strcmp(word, "grease"))
                 Sprintf(qbuf, "your %s", makeplural(body_part(FINGER)));
             else if (!strcmp(word, "write with"))
@@ -1737,7 +1742,7 @@ const char* headertext;
                 allowed_choices = altlets;
             ilet = display_pickinv(allowed_choices, *qbuf ? qbuf : (char *) 0,
                                    menuquery,
-                                   TRUE, allowcnt ? &ctmp : (long *) 0, show_weights);
+                                   TRUE, allowcnt ? &ctmp : (long *) 0, show_weights, headertext);
             if (!ilet)
                 continue;
             if (ilet == HANDS_SYM)
@@ -2543,13 +2548,14 @@ free_pickinv_cache()
  * any count returned from the menu selection is placed here.
  */
 STATIC_OVL char
-display_pickinv(lets, xtra_choice, query, want_reply, out_cnt, show_weights)
+display_pickinv(lets, xtra_choice, query, want_reply, out_cnt, show_weights, headertext)
 register const char *lets;
 const char *xtra_choice; /* "fingers", pick hands rather than an object */
 const char *query;
 boolean want_reply;
 long *out_cnt;
 int show_weights;
+const char* headertext;
 {
     static const char not_carrying_anything[] = "Not carrying anything";
     struct obj *otmp, wizid_fakeobj;
@@ -2694,7 +2700,13 @@ int show_weights;
                  xtra_choice, MENU_UNSELECTED);
     }
 
-
+   if(strcmp(headertext, "") != 0)
+   {
+	   add_menu(win, NO_GLYPH, &any, ' ', 0, ATR_NONE,
+		   headertext, MENU_UNSELECTED);
+	   add_menu(win, NO_GLYPH, &any, ' ', 0, ATR_NONE,
+		   "", MENU_UNSELECTED);
+   }
 nextclass:
     classcount = 0;
     for (srtinv = sortedinvent; (otmp = srtinv->obj) != 0; ++srtinv) {
@@ -2998,7 +3010,7 @@ boolean want_reply;
 int show_weights;
 {
     return display_pickinv(lets, (char *) 0, (char *) 0,
-                           want_reply, (long *) 0, show_weights);
+                           want_reply, (long *) 0, show_weights, "");
 }
 
 /*

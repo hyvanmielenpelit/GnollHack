@@ -1834,6 +1834,9 @@ int *spell_no;
 			any.a_int = splnum + 1; /* must be non-zero */
 			add_menu(tmpwin, NO_GLYPH, &any, spellet(splnum), 0, ATR_NONE, buf,
 				(splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
+
+			//Strcat(buf, "=black");
+			//add_menu_coloring(buf);
 		}
 	}
     how = PICK_ONE;
@@ -2090,9 +2093,6 @@ domix()
 }
 
 
-static NEARDATA const char mix_types[] = { ALLOW_COUNT, COIN_CLASS,
-											ALL_CLASSES, 0 };
-
 STATIC_OVL int
 domaterialcomponentsmenu(spell)
 int spell;
@@ -2170,11 +2170,16 @@ int spell;
 		Sprintf(buf, "You need %s. ",
 			buf3); //(mc->flags& MATCOMP_NOT_SPENT ? "a catalyst" : "a component"));
 
-		int i = (invent) ? 0 : (SIZE(mix_types) - 1);
 
 		struct obj* otmp = (struct obj*) 0;
+		char buf5[BUFSZ];
+		Sprintf(buf5, "prepare \"%s\" with", spellname);
 
-		otmp = getobj(&mix_types[i], "use", 0, buf);
+		char classletter = FOOD_CLASS;
+		if (mc->objectid != CORPSE && mc->objectid != TIN && mc->objectid != EGG)
+			classletter = objects[mc->objectid].oc_class;
+
+		otmp = getobj(&classletter, buf5, 0, buf);
 
 		if (!otmp)
 			return 0;
