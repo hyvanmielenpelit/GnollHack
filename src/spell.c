@@ -24,6 +24,7 @@
 #define spellev(spell) spl_book[spell].sp_lev
 #define spellamount(spell) spl_book[spell].sp_amount
 #define spellmatcomp(spell) spl_book[spell].sp_matcomp
+#define spellcooldownleft(spell) spl_book[spell].sp_cooldownleft
 #define spellname(spell) OBJ_NAME(objects[spellid(spell)])
 #define spellet(spell) \
     ((char) ((spell < 26) ? ('a' + spell) : ('A' + spell - 26)))
@@ -943,6 +944,11 @@ boolean atme;
 		return 0; /* no time elapses */
 	}
 
+	if (spellcooldownleft(spell) > 0) {
+		You("cannot cast the spell before the cooldown has expired.");
+		return 0; /* no time elapses */
+	}
+
 	/*
      * Spell casting no longer affects knowledge of the spell. A
      * decrement of spell knowledge is done every turn.
@@ -1063,6 +1069,10 @@ boolean atme;
 	if(spellamount(spell) > 0)
 		spellamount(spell)--;
 
+	//Also it goes under cooldown, successful or not
+	spellcooldownleft(spell) = getspellcooldown(spell) + 1; //+1 takes care of the current turn
+
+	//Now check if successful
     chance = percent_success(spell);
     if (confused || (rnd(100) > chance)) {
         You("fail to cast the spell correctly.");
@@ -1710,8 +1720,8 @@ int *spell_no;
 	if (splaction == SPELLMENU_PREPARE)
 	{
 		if (!iflags.menu_tab_sep) {
-			Sprintf(buf, "%-20s     Level Casts  Material components", "    Name");
-			fmt = "%-20s  %s   %5s  %-19s";
+			Sprintf(buf, "%-20s     Level Casts  Material components    ", "    Name");
+			fmt = "%-20s  %s   %5s  %-23s";
 			//		fmt = "%-20s  %2d   %-12s %4d %3d%% %9s";
 		}
 		else {
@@ -1725,7 +1735,9 @@ int *spell_no;
 			splnum = !spl_orderindx ? i : spl_orderindx[i];
 			char shortenedname[BUFSZ] = "";
 			char fullname[BUFSZ];
+
 			strcpy(fullname, spellname(splnum));
+
 			if (strlen(fullname) > 20)
 				strncpy(shortenedname, fullname, 20);
 			else
@@ -1762,14 +1774,14 @@ int *spell_no;
 	else
 	{
 		if (!iflags.menu_tab_sep) {
-			Sprintf(buf, "%-20s     Level %-12s Mana Stat Fail  Casts", "    Name",
+			Sprintf(buf, "%-20s     Level %-12s Mana Stat Fail Cool Casts", "    Name",
 				"Category");
-			fmt = "%-20s  %s   %-12s %4d  %s %3d%%  %5s";
+			fmt = "%-20s  %s   %-12s %4d  %s %3d%% %4d  %4s";
 			//		fmt = "%-20s  %2d   %-12s %4d %3d%% %8s";
 		}
 		else {
-			Sprintf(buf, "Name\tLevel\tCategory\tMana\tStat\tFail\tCasts");
-			fmt = "%s\t%s\t%s\t%-d\t%-d%%\t%s";
+			Sprintf(buf, "Name\tLevel\tCategory\tMana\tStat\tFail\tCool\tCasts");
+			fmt = "%s\t%s\t%s\t%-d\t%-d%%\t%-d\t%s";
 			//		fmt = "%s\t%-d\t%s\t%-d\t%-d%%\t%s";
 		}
 		add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, buf,
@@ -1778,11 +1790,18 @@ int *spell_no;
 			splnum = !spl_orderindx ? i : spl_orderindx[i];
 			char shortenedname[BUFSZ] = "";
 			char fullname[BUFSZ];
-			strcpy(fullname, spellname(splnum));
-			if (strlen(fullname) > 20)
-				strncpy(shortenedname, fullname, 20);
+
+			Sprintf(fullname, "%s%s", spellcooldownleft(splnum) > 0 ? "-" : "",
+				spellname(splnum));
+
+			if (strlen(fullname) > (size_t)(spellcooldownleft(splnum) > 0 ? 19 : 20))
+				strncpy(shortenedname, fullname, (size_t)(spellcooldownleft(splnum) > 0 ? 19 : 20));
 			else
 				strcpy(shortenedname, fullname);
+
+			if (spellcooldownleft(splnum) > 0)
+				Strcat(shortenedname, "-");
+
 
 			if (spellev(splnum) < -1)
 				strcpy(levelbuf, " *");
@@ -1801,22 +1820,22 @@ int *spell_no;
 			switch (objects[spellid(splnum)].oc_spell_attribute)
 			{
 			case A_STR:
-				strcpy(statbuf, "STR");
+				strcpy(statbuf, "Str");
 				break;
 			case A_DEX:
-				strcpy(statbuf, "DEX");
+				strcpy(statbuf, "Dex");
 				break;
 			case A_CON:
-				strcpy(statbuf, "CON");
+				strcpy(statbuf, "Con");
 				break;
 			case A_INT:
-				strcpy(statbuf, "INT");
+				strcpy(statbuf, "Int");
 				break;
 			case A_WIS:
-				strcpy(statbuf, "WIS");
+				strcpy(statbuf, "Wis");
 				break;
 			case A_CHA:
-				strcpy(statbuf, "CHA");
+				strcpy(statbuf, "Cha");
 				break;
 			default:
 				strcpy(statbuf, "N/A");
@@ -1829,14 +1848,22 @@ int *spell_no;
 				getspellenergycost(splnum),
 				statbuf,
 				100 - percent_success(splnum),
+				spellcooldownleft(splnum) > 0 ? spellcooldownleft(splnum) : getspellcooldown(splnum),
 				availablebuf);  //spellretention(splnum, retentionbuf));
 
 			any.a_int = splnum + 1; /* must be non-zero */
 			add_menu(tmpwin, NO_GLYPH, &any, spellet(splnum), 0, ATR_NONE, buf,
 				(splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
 
-			//Strcat(buf, "=black");
-			//add_menu_coloring(buf);
+			Strcat(buf, "=black");
+			if(spellcooldownleft(splnum) > 0 && splaction != SPELLMENU_PREPARE)
+			{
+				add_menu_coloring(buf);
+			}
+			else
+			{
+				free_menu_coloring_str(buf);
+			}
 		}
 	}
     how = PICK_ONE;
@@ -2279,7 +2306,7 @@ int spell;
 	}
 
 	//And now the result
-	if (!result || (Confusion && spellev(spell) > 1 && rn2(spellev(spell))))
+	if (!result || ((Confusion || Stunned) && spellev(spell) > 1 && rn2(spellev(spell))))
 	{
 		//Explosion
 		int dmg = d(max(1, spellev(spell)), 6);
@@ -2332,5 +2359,27 @@ int spell;
 
 }
 
+int
+getspellcooldown(spell)
+int spell;
+{
+	if (spell < 0)
+		return 0;
+
+	int spell_level = spellev(spell);
+	int cooldown = spell_level + 1;
+
+	if (spell_level < -1)
+		cooldown = 0;
+
+	if (spell_level == 8)
+		cooldown = 10;
+	else if (spell_level == 9)
+		cooldown = 12;
+	else if (spell_level == 10)
+		cooldown = 14;
+
+	return cooldown;
+}
 
 /*spell.c*/

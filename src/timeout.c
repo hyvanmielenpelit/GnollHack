@@ -518,6 +518,14 @@ nh_timeout()
             pline("%s stops galloping.", Monnam(u.usteed));
     }
 
+	//Reduce spell cooldown timers
+	for (int sp_no = 0; sp_no < MAXSPELL; ++sp_no)
+		if (spl_book[sp_no].sp_id == NO_SPELL)
+			break;
+		else if (spl_book[sp_no].sp_cooldownleft > 0)
+			spl_book[sp_no].sp_cooldownleft--;
+
+
     was_flying = Flying;
     for (upp = u.uprops; upp < u.uprops + SIZE(u.uprops); upp++)
         if ((upp->intrinsic & TIMEOUT) && !(--upp->intrinsic & TIMEOUT)) {

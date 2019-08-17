@@ -1789,6 +1789,8 @@ E int FDECL(match_str2clr, (char *));
 E int FDECL(match_str2attr, (const char *, BOOLEAN_P));
 E boolean FDECL(add_menu_coloring, (char *));
 E boolean FDECL(get_menu_coloring, (const char *, int *, int *));
+E int FDECL(get_menu_coloring_index, (const char*));
+E boolean FDECL(free_menu_coloring_str, (const char*));
 E void NDECL(free_menu_coloring);
 E boolean FDECL(msgtype_parse_add, (char *));
 E int FDECL(msgtype_type, (const char *, BOOLEAN_P));
@@ -2377,6 +2379,7 @@ E void NDECL(losespells);
 E int NDECL(dovspell);
 E void FDECL(initialspell, (struct obj *));
 E int NDECL(domix);
+E int FDECL(getspellcooldown, (int));
 
 
 /* ### steal.c ### */

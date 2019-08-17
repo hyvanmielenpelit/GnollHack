@@ -1887,6 +1887,41 @@ int *color, *attr;
     return FALSE;
 }
 
+int
+get_menu_coloring_index(str)
+const char* str;
+{
+	int indx = 0;
+	struct menucoloring* tmpmc;
+
+	if (iflags.use_menu_color)
+		for (tmpmc = menu_colorings; tmpmc; tmpmc = tmpmc->next)
+		{
+			if (regex_match(str, tmpmc->match)) {
+				return indx;
+			}
+			indx++;
+		}
+
+	//Nothing found
+	return -1;
+}
+
+boolean
+free_menu_coloring_str(str)
+const char* str;
+{
+	int i = get_menu_coloring_index(str);
+	if (i >= 0)
+	{
+		free_one_menu_coloring(i);
+		return TRUE;
+	}
+	return FALSE;
+}
+
+
+
 void
 free_menu_coloring()
 {
