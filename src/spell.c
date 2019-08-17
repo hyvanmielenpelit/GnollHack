@@ -1691,7 +1691,7 @@ int *spell_no;
 {
     winid tmpwin;
     int i, n, how, splnum;
-    char buf[BUFSZ], availablebuf[24], matcompbuf[24], levelbuf[10];
+    char buf[BUFSZ], availablebuf[24], matcompbuf[24], levelbuf[10], statbuf[10];
     const char *fmt;
     menu_item *selected;
     anything any;
@@ -1710,12 +1710,12 @@ int *spell_no;
 	if (splaction == SPELLMENU_PREPARE)
 	{
 		if (!iflags.menu_tab_sep) {
-			Sprintf(buf, "%-20s     Level Castings  Material components", "    Name");
-			fmt = "%-20s  %s   %8s  %-19s";
+			Sprintf(buf, "%-20s     Level Casts  Material components", "    Name");
+			fmt = "%-20s  %s   %5s  %-19s";
 			//		fmt = "%-20s  %2d   %-12s %4d %3d%% %9s";
 		}
 		else {
-			Sprintf(buf, "Name\tLevel\tCastings\tMaterial components");
+			Sprintf(buf, "Name\tLevel\tCasts\tMaterial components");
 			fmt = "%s\t%s\t%s\t%s";
 			//		fmt = "%s\t%-d\t%s\t%-d\t%-d%%\t%s";
 		}
@@ -1743,7 +1743,7 @@ int *spell_no;
 			if (spellamount(splnum) >= 0)
 				Sprintf(availablebuf, "%d", spellamount(splnum));
 			else
-				strcpy(availablebuf, "Infinite");
+				strcpy(availablebuf, "Inf.");
 
 			if (spellmatcomp(splnum))
 				strcpy(matcompbuf, matlists[spellmatcomp(splnum)].description_short);
@@ -1762,13 +1762,13 @@ int *spell_no;
 	else
 	{
 		if (!iflags.menu_tab_sep) {
-			Sprintf(buf, "%-20s     Level %-12s Cost Fail  Castings", "    Name",
+			Sprintf(buf, "%-20s     Level %-12s Mana Stat Fail  Casts", "    Name",
 				"Category");
-			fmt = "%-20s  %s   %-12s %4d %3d%%  %8s";
+			fmt = "%-20s  %s   %-12s %4d  %s %3d%%  %5s";
 			//		fmt = "%-20s  %2d   %-12s %4d %3d%% %8s";
 		}
 		else {
-			Sprintf(buf, "Name\tLevel\tCategory\tCost\tFail\tCastings");
+			Sprintf(buf, "Name\tLevel\tCategory\tMana\tStat\tFail\tCasts");
 			fmt = "%s\t%s\t%s\t%-d\t%-d%%\t%s";
 			//		fmt = "%s\t%-d\t%s\t%-d\t%-d%%\t%s";
 		}
@@ -1796,11 +1796,38 @@ int *spell_no;
 			if (spellamount(splnum) >= 0)
 				Sprintf(availablebuf, "%d", spellamount(splnum));
 			else
-				strcpy(availablebuf, "Infinite");
+				strcpy(availablebuf, "Inf.");
+
+			switch (objects[spellid(splnum)].oc_spell_attribute)
+			{
+			case A_STR:
+				strcpy(statbuf, "STR");
+				break;
+			case A_DEX:
+				strcpy(statbuf, "DEX");
+				break;
+			case A_CON:
+				strcpy(statbuf, "CON");
+				break;
+			case A_INT:
+				strcpy(statbuf, "INT");
+				break;
+			case A_WIS:
+				strcpy(statbuf, "WIS");
+				break;
+			case A_CHA:
+				strcpy(statbuf, "CHA");
+				break;
+			default:
+				strcpy(statbuf, "N/A");
+				break;
+			}
+
 
 			Sprintf(buf, fmt, shortenedname, levelbuf,//spellev(splnum),
 				spelltypemnemonic(spell_skilltype(spellid(splnum))),
 				getspellenergycost(splnum),
+				statbuf,
 				100 - percent_success(splnum),
 				availablebuf);  //spellretention(splnum, retentionbuf));
 
