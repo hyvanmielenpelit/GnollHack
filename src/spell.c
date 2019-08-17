@@ -2112,13 +2112,27 @@ int spell;
 		if (!perobj || !mc || mc->amount == 0)
 			continue;
 
-		char buf[BUFSZ], buf2[BUFSZ], buf3[BUFSZ];
+		char buf[BUFSZ], buf2[BUFSZ], buf3[BUFSZ], buf4[BUFSZ] = "";
+
+		if (permon)
+		{
+			if (mc->objectid == CORPSE || mc->objectid == EGG)
+				//Add "lizard" to "corpse" to get "lizard corpse" (or lizard egg)
+				Sprintf(buf4, "%s %s", permon->mname, obj_descr[perobj->oc_name_idx].oc_name);
+			else if (mc->objectid == TIN)
+				//Add "lizard" to "tin" to get "lizard corpse"
+				Sprintf(buf4, "%s of %s meat", obj_descr[perobj->oc_name_idx].oc_name, permon->mname);
+			else
+				strcpy(buf4, obj_descr[perobj->oc_name_idx].oc_name);
+		}
+		else
+			strcpy(buf4, obj_descr[perobj->oc_name_idx].oc_name);
 
 		//Correct type of component
 		Sprintf(buf2, "%s%s%s",
-			(mc->flags& MATCOMP_BLESSED_REQUIRED ? "blessed " : (mc->flags & MATCOMP_NOT_CURSED ? "noncursed" : "")),
+			(mc->flags& MATCOMP_BLESSED_REQUIRED ? "blessed " : (mc->flags & MATCOMP_NOT_CURSED ? "noncursed " : "")),
 			(mc->flags& MATCOMP_DEATH_ENCHANTMENT_REQUIRED ? "death-enchanted " : ""),
-			obj_descr[perobj->oc_name_idx].oc_name);
+			buf4);
 
 		//Indicate how many
 		if (mc->amount == 1)
@@ -2150,6 +2164,9 @@ int spell;
 			acceptable = FALSE;
 
 		if ((mc->flags & MATCOMP_NOT_CURSED) && otmp->cursed)
+			acceptable = FALSE;
+
+		if ((mc->flags & MATCOMP_DEATH_ENCHANTMENT_REQUIRED) && otmp->special_enchantment != DEATH_ENCHANTMENT)
 			acceptable = FALSE;
 
 		if ((mc->objectid == CORPSE || mc->objectid == TIN || mc->objectid == EGG) && mc->monsterid != otmp->corpsenm)
@@ -2242,9 +2259,11 @@ int spell;
 			dmg = 1;
 
 		char buf[BUFSZ];
-		Sprintf(buf, "killed by an explosion caused by a failed spell preparation");
+		Sprintf(buf, "killed by a failed spell preparation");
 
-		if (spellev(spell) >= 4 || dmg > 12)
+		int explosionchance = min(100, max(0, (spellev(spell) - 2) * 10 + dmg * 4));
+
+		if ((99-rnl(100)) < explosionchance)//If lucky explosions happen less frequently
 		{
 			//One more damage
 			Your("concoction explodes in a large ball of fire!");
