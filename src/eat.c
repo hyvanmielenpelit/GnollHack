@@ -1000,7 +1000,8 @@ int pm;
             u.uen += rnd(3);
             if (u.uen > u.uenmax) {
                 if (!rn2(3))
-                    u.uenmax++;
+                    u.ubaseenmax++;
+				updatemaxen();
                 u.uen = u.uenmax;
             }
             if (old_uen != u.uen) {
@@ -2250,7 +2251,8 @@ struct obj *otmp;
             u.mh += otmp->cursed ? -rnd(20) : rnd(20);
             if (u.mh > u.mhmax) {
                 if (!rn2(17))
-                    u.mhmax++;
+                    u.basemhmax++;
+				updatemaxhp();
                 u.mh = u.mhmax;
             } else if (u.mh <= 0) {
                 rehumanize();
@@ -2259,8 +2261,9 @@ struct obj *otmp;
             u.uhp += otmp->cursed ? -rnd(20) : rnd(20);
             if (u.uhp > u.uhpmax) {
                 if (!rn2(17))
-                    u.uhpmax++;
-                u.uhp = u.uhpmax;
+                    u.ubasehpmax++;
+				updatemaxhp();
+				u.uhp = u.uhpmax;
             } else if (u.uhp <= 0) {
                 killer.format = KILLED_BY_AN;
                 Strcpy(killer.name, "rotten lump of royal jelly");

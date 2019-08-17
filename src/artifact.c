@@ -1045,9 +1045,10 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
                 if (youmonst.data != old_uasmon)
                     *dmgptr = 0; /* rehumanized, so no more damage */
                 if (u.uenmax > 0) {
-                    u.uenmax--;
+                    u.ubaseenmax--;
                     if (u.uen > 0)
                         u.uen--;
+					updatemaxen();
                     context.botl = TRUE;
                     You("lose magical energy!");
                 }
@@ -1055,8 +1056,9 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
                 if (mdef->data == &mons[PM_CLAY_GOLEM])
                     mdef->mhp = 1; /* cancelled clay golems will die */
                 if (youattack && attacktype(mdef->data, AT_MAGC)) {
-                    u.uenmax++;
+                    u.ubaseenmax++;
                     u.uen++;
+					updatemaxen();
                     context.botl = TRUE;
                     You("absorb magical energy!");
                 }

@@ -175,7 +175,7 @@ const char *fmt, *arg;
     }
     set_uasmon();
 
-    u.mh = u.mhmax = 0;
+    u.mh = u.mhmax = u.basemhmax = 0;
     u.mtimedone = 0;
     skinback(FALSE);
     u.uundetected = 0;
@@ -324,12 +324,14 @@ newman()
     if (hpmax < u.ulevel)
         hpmax = u.ulevel; /* min of 1 HP per level */
     /* retain same proportion for current HP; u.uhp * hpmax / u.uhpmax */
-    u.uhp = rounddiv((long) u.uhp * (long) hpmax, u.uhpmax);
-    u.uhpmax = hpmax;
-    /*
+	int oldhpmax = u.uhpmax;
+    u.ubasehpmax = hpmax;
+	u.uhpmax = u.ubasehpmax + hpmaxadjustment();
+	u.uhp = rounddiv((long)u.uhp * (long)oldhpmax, u.uhpmax);
+	/*
      * Do the same for spell power.
      */
-    enmax = u.uenmax;
+    enmax = u.ubaseenmax;
     for (i = 0; i < oldlvl; i++)
         enmax -= (int) u.ueninc[i];
     enmax = rounddiv((long) enmax * (long) rn1(4, 8), 10);
@@ -339,7 +341,8 @@ newman()
         enmax = u.ulevel;
     u.uen = rounddiv((long) u.uen * (long) enmax,
                      ((u.uenmax < 1) ? 1 : u.uenmax));
-    u.uenmax = enmax;
+    u.ubaseenmax = enmax;
+	updatemaxen();
     /* [should alignment record be tweaked too?] */
 
     u.uhunger = rn1(500, 500);
@@ -732,7 +735,9 @@ int mntmp;
 	if (hp < 1)
 		hp = 1;
 	u.mhmax = hp;
+	u.basemhmax = hp;
 	u.mh = u.mhmax;
+	updatemaxhp();
 
     if (u.ulevel < mlvl) {
         /* Low level characters can't become high level monsters for long */

@@ -1078,10 +1078,11 @@ register struct obj *otmp;
         num = d(otmp->blessed ? 3 : !otmp->cursed ? 2 : 1, 6);
         if (otmp->cursed)
             num = -num; /* subtract instead of add when cursed */
-        u.uenmax += num;
-        if (u.uenmax <= 0)
+        u.ubaseenmax += num;
+		u.uen += 3 * num;
+		updatemaxen();
+		if (u.uenmax <= 0)
             u.uenmax = 0;
-        u.uen += 3 * num;
         if (u.uen > u.uenmax)
             u.uen = u.uenmax;
         else if (u.uen <= 0)
@@ -1149,12 +1150,13 @@ register boolean curesick, cureblind;
         if (Upolyd) {
             u.mh += nhp;
             if (u.mh > u.mhmax)
-                u.mh = (u.mhmax += nxtra);
+                u.mh = (u.basemhmax += nxtra);
         } else {
             u.uhp += nhp;
             if (u.uhp > u.uhpmax)
-                u.uhp = (u.uhpmax += nxtra);
+                u.uhp = (u.ubasehpmax += nxtra);
         }
+		updatemaxhp();
     }
     if (cureblind) {
         /* 3.6.1: it's debatible whether healing magic should clean off
@@ -2354,7 +2356,8 @@ struct monst *mon,  /* monster being split */
         mtmp2 = cloneu();
         if (mtmp2) {
             mtmp2->mhpmax = u.mhmax / 2;
-            u.mhmax -= mtmp2->mhpmax;
+            u.basemhmax -= mtmp2->mhpmax;
+			updatemaxhp();
             context.botl = 1;
             You("multiply%s!", reason);
         }

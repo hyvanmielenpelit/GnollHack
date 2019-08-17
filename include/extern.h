@@ -117,6 +117,8 @@ E void FDECL(init_attr, (int));
 E void NDECL(redist_attr);
 E void FDECL(adjabil, (int, int));
 E int NDECL(newhp);
+E int NDECL(hpmaxadjustment);
+E void NDECL(updatemaxhp);
 E schar FDECL(acurr, (int));
 E schar NDECL(acurrstr);
 E boolean FDECL(extremeattr, (int));
@@ -740,6 +742,8 @@ E void FDECL(make_grave, (int, int, const char *));
 
 E long FDECL(newuexp, (int));
 E int NDECL(newpw);
+E int NDECL(enmaxadjustment);
+E void NDECL(updatemaxen);
 E int FDECL(experience, (struct monst *, int));
 E void FDECL(more_experienced, (int, int));
 E void FDECL(losexp, (const char *));

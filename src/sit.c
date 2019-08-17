@@ -180,11 +180,12 @@ dosit()
                 You_feel("much, much better!");
                 if (Upolyd) {
                     if (u.mh >= (u.mhmax - 5))
-                        u.mhmax += 4;
+                        u.basemhmax += 4;
                     u.mh = u.mhmax;
                 }
                 if (u.uhp >= (u.uhpmax - 5))
-                    u.uhpmax += 4;
+                    u.ubasehpmax += 4;
+				updatemaxhp();
                 u.uhp = u.uhpmax;
                 u.ucreamed = 0;
                 make_blinded(0L, TRUE);

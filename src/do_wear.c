@@ -204,7 +204,9 @@ Boots_on(VOID_ARGS)
         impossible(unknown_type, c_boots, uarmf->otyp);
     }
     uarmf->known = 1; /* boots' +/- evident because of status line AC */
-    return 0;
+	updatemaxhp();
+	updatemaxen();
+	return 0;
 }
 
 int
@@ -264,7 +266,9 @@ Boots_off(VOID_ARGS)
         impossible(unknown_type, c_boots, otyp);
     }
     context.takeoff.cancelled_don = FALSE;
-    return 0;
+	updatemaxhp();
+	updatemaxen();
+	return 0;
 }
 
 STATIC_PTR int
@@ -310,7 +314,9 @@ Cloak_on(VOID_ARGS)
         impossible(unknown_type, c_cloak, uarmc->otyp);
     }
     uarmc->known = 1; /* cloak's +/- evident because of status line AC */
-    return 0;
+	updatemaxhp();
+	updatemaxen();
+	return 0;
 }
 
 int
@@ -355,7 +361,9 @@ Cloak_off(VOID_ARGS)
     default:
         impossible(unknown_type, c_cloak, otyp);
     }
-    return 0;
+	updatemaxhp();
+	updatemaxen();
+	return 0;
 }
 
 STATIC_PTR
@@ -422,7 +430,9 @@ Helmet_on(VOID_ARGS)
         impossible(unknown_type, c_helmet, uarmh->otyp);
     }
     uarmh->known = 1; /* helmet's +/- evident because of status line AC */
-    return 0;
+	updatemaxhp();
+	updatemaxen();
+	return 0;
 }
 
 int
@@ -469,7 +479,9 @@ Helmet_off(VOID_ARGS)
     }
     setworn((struct obj *) 0, W_ARMH);
     context.takeoff.cancelled_don = FALSE;
-    return 0;
+	updatemaxhp();
+	updatemaxen();
+	return 0;
 }
 
 STATIC_PTR
@@ -499,7 +511,9 @@ Gloves_on(VOID_ARGS)
         impossible(unknown_type, c_gloves, uarmg->otyp);
     }
     uarmg->known = 1; /* gloves' +/- evident because of status line AC */
-    return 0;
+	updatemaxhp();
+	updatemaxen();
+	return 0;
 }
 
 STATIC_OVL void
@@ -570,7 +584,9 @@ Gloves_off(VOID_ARGS)
     if (u.twoweap && uswapwep && uswapwep->otyp == CORPSE)
         wielding_corpse(uswapwep, on_purpose);
 
-    return 0;
+	updatemaxhp();
+	updatemaxen();
+	return 0;
 }
 
 STATIC_PTR int
@@ -593,7 +609,9 @@ Shield_on(VOID_ARGS)
         impossible(unknown_type, c_shield, uarms->otyp);
     }
     uarms->known = 1; /* shield's +/- evident because of status line AC */
-    return 0;
+	updatemaxhp();
+	updatemaxen();
+	return 0;
 }
 
 int
@@ -618,7 +636,9 @@ Shield_off(VOID_ARGS)
 
     setworn((struct obj *) 0, W_ARMS);
 	context.takeoff.cancelled_don = FALSE;
-    return 0;
+	updatemaxhp();
+	updatemaxen();
+	return 0;
 }
 
 STATIC_PTR int
@@ -647,7 +667,9 @@ Shirt_on(VOID_ARGS)
         impossible(unknown_type, c_shirt, uarmu->otyp);
     }
     uarmu->known = 1; /* shirt's +/- evident because of status line AC */
-    return 0;
+	updatemaxhp();
+	updatemaxen();
+	return 0;
 }
 
 int
@@ -681,7 +703,9 @@ Shirt_off(VOID_ARGS)
 
     setworn((struct obj *) 0, W_ARMU);
 	context.takeoff.cancelled_don = FALSE;
-    return 0;
+	updatemaxhp();
+	updatemaxen();
+	return 0;
 }
 
 STATIC_PTR int
@@ -717,6 +741,8 @@ Robe_on(VOID_ARGS)
 		impossible(unknown_type, c_robe, uarmo->otyp);
 	}
 	uarmo->known = 1; /* shirt's +/- evident because of status line AC */
+	updatemaxhp();
+	updatemaxen();
 	return 0;
 }
 
@@ -753,6 +779,8 @@ Robe_off(VOID_ARGS)
 
 	setworn((struct obj*) 0, W_ARMO);
 	context.takeoff.cancelled_don = FALSE;
+	updatemaxhp();
+	updatemaxen();
 	return 0;
 }
 
@@ -774,6 +802,8 @@ Bracers_on(VOID_ARGS)
 		impossible(unknown_type, c_bracers, uarmb->otyp);
 	}
 	uarmb->known = 1; /* shirt's +/- evident because of status line AC */
+	updatemaxhp();
+	updatemaxen();
 	return 0;
 }
 
@@ -796,6 +826,8 @@ Bracers_off(VOID_ARGS)
 
 	setworn((struct obj*) 0, W_ARMB);
 	context.takeoff.cancelled_don = FALSE;
+	updatemaxhp();
+	updatemaxen();
 	return 0;
 }
 
@@ -821,6 +853,8 @@ Belt_on(VOID_ARGS)
 		impossible(unknown_type, c_belt, uarmv->otyp);
 	}
 	uarmv->known = 1; /* belt's +/- evident because of status line AC */
+	updatemaxhp();
+	updatemaxen();
 	return 0;
 }
 
@@ -852,6 +886,8 @@ Belt_off(VOID_ARGS)
 
 	setworn((struct obj*) 0, W_ARMV);
 	context.takeoff.cancelled_don = FALSE;
+	updatemaxhp();
+	updatemaxen();
 	return 0;
 }
 
@@ -873,6 +909,8 @@ Pants_on(VOID_ARGS)
 		impossible(unknown_type, c_pants, uarmp->otyp);
 	}
 	uarmp->known = 1; /* pant's +/- evident because of status line AC */
+	updatemaxhp();
+	updatemaxen();
 	return 0;
 }
 
@@ -898,6 +936,8 @@ Pants_off(VOID_ARGS)
 
 	setworn((struct obj*) 0, W_ARMP);
 	context.takeoff.cancelled_don = FALSE;
+	updatemaxhp();
+	updatemaxen();
 	return 0;
 }
 
@@ -911,7 +951,9 @@ Armor_on(VOID_ARGS)
      * which is called by armor_or_accessory_on() before Armor_on().
      */
     uarm->known = 1; /* suit's +/- evident because of status line AC */
-    return 0;
+	updatemaxhp();
+	updatemaxen();
+	return 0;
 }
 
 int
@@ -920,7 +962,9 @@ Armor_off(VOID_ARGS)
     context.takeoff.mask &= ~W_ARM;
     setworn((struct obj *) 0, W_ARM);
     context.takeoff.cancelled_don = FALSE;
-    return 0;
+	updatemaxhp();
+	updatemaxen();
+	return 0;
 }
 
 /* The gone functions differ from the off functions in that if you die from
@@ -935,7 +979,9 @@ Armor_gone()
     context.takeoff.mask &= ~W_ARM;
     setnotworn(uarm);
     context.takeoff.cancelled_don = FALSE;
-    return 0;
+	updatemaxhp();
+	updatemaxen();
+	return 0;
 }
 
 STATIC_OVL void
@@ -1005,6 +1051,9 @@ Amulet_on()
     case AMULET_OF_YENDOR:
         break;
     }
+	updatemaxhp();
+	updatemaxen();
+	return;
 }
 
 void
@@ -1059,6 +1108,9 @@ Amulet_off()
         break;
     }
     setworn((struct obj *) 0, W_AMUL);
+	updatemaxhp();
+	updatemaxen();
+
     return;
 }
 
@@ -1211,6 +1263,10 @@ register struct obj *obj;
             find_ac(); /* updates botl */
         break;
     }
+	updatemaxhp();
+	updatemaxen();
+
+	return;
 }
 
 STATIC_OVL void
@@ -1324,6 +1380,11 @@ boolean gone;
         restartcham();
         break;
     }
+
+	updatemaxhp();
+	updatemaxen();
+
+	return;
 }
 
 void
@@ -1374,6 +1435,9 @@ struct obj *otmp;
     if (changed) {
         toggle_blindness(); /* potion.c */
     }
+	updatemaxhp();
+	updatemaxen();
+
 }
 
 void
@@ -1413,6 +1477,9 @@ struct obj *otmp;
     if (changed) {
         toggle_blindness(); /* potion.c */
     }
+	updatemaxhp();
+	updatemaxen();
+
 }
 
 /* called in moveloop()'s prologue to set side-effects of worn start-up items;
@@ -3245,6 +3312,9 @@ register schar delta;
 		}
 		context.botl = 1;
 	}
+	updatemaxhp();
+	updatemaxen();
+
 }
 
 /* decide whether a worn item is covered up by some other worn item,

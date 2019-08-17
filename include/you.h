@@ -323,7 +323,7 @@ struct you {
     int umonster;               /* hero's "real" monster num */
     int umonnum;                /* current monster number */
 
-    int mh, mhmax, mtimedone;   /* for polymorph-self */
+    int mh, mhmax, basemhmax, mtimedone;   /* for polymorph-self */
     struct attribs macurr,      /* for monster attribs */
                    mamax;       /* for monster attribs */
     int ulycn;                  /* lycanthrope type */
@@ -370,8 +370,8 @@ struct you {
     uchar uspellprot;        /* protection by SPE_PROTECTION */
     uchar usptime;           /* #moves until uspellprot-- */
     uchar uspmtime;          /* #moves between uspellprot-- */
-    int uhp, uhpmax;         /* hit points, aka health */
-    int uen, uenmax;         /* magical energy - M. Stephenson */
+    int uhp, uhpmax, ubasehpmax;         /* hit points, aka health */
+    int uen, uenmax, ubaseenmax;         /* magical energy - M. Stephenson */
     xchar uhpinc[MAXULEV],   /* increases to uhpmax for each level gain */
           ueninc[MAXULEV];   /* increases to uenmax for each level gain */
     int ugangr;              /* if the gods are angry at you */

@@ -2016,7 +2016,7 @@ basics_enlightenment(mode, final)
 int mode UNUSED;
 int final;
 {
-    static char Power[] = "energy points (spell power)";
+    static char Power[] = "mana (spell power)";
     char buf[BUFSZ];
     int pw = u.uen, hp = (Upolyd ? u.mh : u.uhp),
         pwmax = u.uenmax, hpmax = (Upolyd ? u.mhmax : u.uhpmax);

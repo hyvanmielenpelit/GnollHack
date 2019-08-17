@@ -669,7 +669,7 @@ u_init()
     u.uevent.uopened_dbridge = 0;
     u.uevent.udemigod = 0;              /* not a demi-god yet... */
     u.udg_cnt = 0;
-    u.mh = u.mhmax = u.mtimedone = 0;
+    u.mh = u.mhmax = u.basehpmax = u.mtimedone = 0;
     u.uz.dnum = u.uz0.dnum = 0;
     u.utotype = 0;
 #endif /* 0 */
@@ -689,8 +689,13 @@ u_init()
     set_uasmon();
 
     u.ulevel = 0; /* set up some of the initial attributes */
-    u.uhp = u.uhpmax = newhp();
-    u.uen = u.uenmax = newpw();
+
+	u.ubasehpmax = newhp();
+	u.uhp = u.uhpmax = u.ubasehpmax + hpmaxadjustment();
+  
+	u.ubaseenmax = newpw();
+	u.uen = u.uenmax = u.ubaseenmax + enmaxadjustment();
+
     u.uspellprot = 0;
     adjabil(0, 1);
     u.ulevel = u.ulevelmax = 1;

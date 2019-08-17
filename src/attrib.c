@@ -188,9 +188,12 @@ int msgflg; /* positive => no message, zero => message, and */
         return FALSE;
     }
 
+	updatemaxhp();
+	updatemaxen();
+
     if (msgflg <= 0)
         You_feel("%s%s!", (incr > 1 || incr < -1) ? "very " : "", attrstr);
-    context.botl = TRUE;
+	context.botl = TRUE;
 	//Check if AC needs to be updated
 	find_ac();
 	if (program_state.in_moveloop && (ndx == A_STR || ndx == A_CON))
@@ -230,10 +233,12 @@ register int num;
         --num;
         if (Upolyd) {
             u.mh -= 6;
-            u.mhmax -= 6;
-        } else {
+            u.basemhmax -= 6;
+			updatemaxhp();
+		} else {
             u.uhp -= 6;
-            u.uhpmax -= 6;
+            u.ubasehpmax -= 6;
+			updatemaxhp();
         }
     }
     (void) adjattrib(A_STR, -num, 1);
@@ -1130,7 +1135,7 @@ int oldlevel, newlevel;
 int
 newhp()
 {
-    int hp, conplus;
+	int hp; // , conplus;
 
     if (u.ulevel == 0) {
         /* Initialize hit points */
@@ -1159,15 +1164,42 @@ newhp()
             if (urace.hpadv.hirnd > 0)
                 hp += rnd(urace.hpadv.hirnd);
         }
-		conplus = constitution_hp_bonus(ACURR(A_CON));
+		//conplus = constitution_hp_bonus(ACURR(A_CON));
 
-		hp += conplus;
+		//hp += conplus;
     }
     if (hp <= 0)
         hp = 1;
     if (u.ulevel < MAXULEV)
         u.uhpinc[u.ulevel] = (xchar) hp;
     return hp;
+}
+
+int
+hpmaxadjustment()
+{
+	int adj = 0;
+	int conplus = constitution_hp_bonus(ACURR(A_CON));
+	
+	adj += conplus * u.ulevel;
+
+	return adj;
+}
+
+void
+updatemaxhp()
+{
+	u.uhpmax = u.ubasehpmax + hpmaxadjustment();
+	if (u.uhp > u.uhpmax)
+		u.uhp = u.uhpmax;
+
+	u.mhmax = u.basemhmax; //Monsters do not get hpadjustment yet, since their base hitpoints include consitution bonus +hpmaxadjustment();
+	if (u.mh > u.mhmax)
+		u.mh = u.mhmax;
+
+	context.botl = 1;
+
+	return;
 }
 
 schar

@@ -1418,7 +1418,8 @@ unsigned trflags;
             You("are caught in a magical explosion!");
             losehp(rnd(10), "magical explosion", KILLED_BY_AN);
             Your("body absorbs some of the magical energy!");
-            u.uen = (u.uenmax += 2);
+            u.uen = (u.ubaseenmax += 2);
+			updatemaxen();
             break;
         } else {
             domagictrap();
@@ -3171,12 +3172,21 @@ struct obj *box; /* null for floor trap */
         }
         if (alt > num)
             num = alt;
-        if (u.mhmax > mons[u.umonnum].mlevel)
-            u.mhmax -= rn2(min(u.mhmax, num + 1)), context.botl = 1;
+		if (u.mhmax > mons[u.umonnum].mlevel)
+		{
+			u.basemhmax -= rn2(min(u.mhmax, num + 1));
+			updatemaxhp();
+			context.botl = 1;
+		}
     } else {
         num = d(2, 4);
-        if (u.uhpmax > u.ulevel)
-            u.uhpmax -= rn2(min(u.uhpmax, num + 1)), context.botl = 1;
+		if (u.uhpmax > u.ulevel)
+		{
+			u.ubasehpmax -= rn2(min(u.uhpmax, num + 1));
+			updatemaxhp();
+			context.botl = 1;
+		}
+
     }
     if (!num)
         You("are uninjured.");
@@ -3780,9 +3790,10 @@ drown()
     else if (u.umonnum == PM_IRON_GOLEM) {
         You("rust!");
         i = Maybe_Half_Phys(d(2, 6));
-        if (u.mhmax > i)
-            u.mhmax -= i;
-        losehp(i, "rusting away", KILLED_BY);
+        if (u.basemhmax > i)
+            u.basemhmax -= i;
+		updatemaxhp();
+		losehp(i, "rusting away", KILLED_BY);
     }
     if (inpool_ok)
         return FALSE;
@@ -3916,7 +3927,8 @@ int n;
         You_feel("your magical energy drain away%c", (n > u.uen) ? '!' : '.');
         u.uen -= n;
         if (u.uen < 0) {
-            u.uenmax -= rnd(-u.uen);
+            u.ubaseenmax -= rnd(-u.uen);
+			updatemaxen();
             if (u.uenmax < 0)
                 u.uenmax = 0;
             u.uen = 0;

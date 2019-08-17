@@ -401,16 +401,18 @@ int trouble;
            boosted to be more than that */
         You_feel("much better.");
         if (Upolyd) {
-            u.mhmax += rnd(5);
-            if (u.mhmax <= 5)
-                u.mhmax = 5 + 1;
+            u.basemhmax += rnd(5);
+            if (u.basemhmax <= 5)
+                u.basemhmax = 5 + 1;
+			updatemaxhp();
             u.mh = u.mhmax;
         }
-        if (u.uhpmax < u.ulevel * 5 + 11)
-            u.uhpmax += rnd(5);
-        if (u.uhpmax <= 5)
-            u.uhpmax = 5 + 1;
-        u.uhp = u.uhpmax;
+        if (u.ubasehpmax < u.ulevel * 5 + 11)
+            u.ubasehpmax += rnd(5);
+        if (u.ubasehpmax <= 5)
+            u.ubasehpmax = 5 + 1;
+		updatemaxhp();
+		u.uhp = u.uhpmax;
         context.botl = 1;
         break;
     case TROUBLE_COLLAPSING:
@@ -1112,10 +1114,11 @@ aligntyp g_align;
                 u.ulevelmax -= 1; /* see potion.c */
                 pluslvl(FALSE);
             } else {
-                u.uhpmax += 5;
+                u.ubasehpmax += 5;
                 if (Upolyd)
-                    u.mhmax += 5;
+                    u.basemhmax += 5;
             }
+			updatemaxhp();
             u.uhp = u.uhpmax;
             if (Upolyd)
                 u.mh = u.mhmax;

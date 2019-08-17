@@ -1698,12 +1698,11 @@ register struct obj* omonwep;
 				u.mh += rnd(7);
                 if (!rn2(7)) {
                     /* no upper limit necessary; effect is temporary */
-                    u.mhmax++;
+                    u.basemhmax++;
                     if (!rn2(13))
                         goaway = TRUE;
                 }
-                if (u.mh > u.mhmax)
-                    u.mh = u.mhmax;
+				updatemaxhp();
 				healamount = u.mh - starthp;
 			} else {
 				int starthp = u.uhp;
@@ -1711,12 +1710,11 @@ register struct obj* omonwep;
                 if (!rn2(7)) {
                     /* hard upper limit via nurse care: 25 * ulevel */
                     if (u.uhpmax < 5 * u.ulevel + d(2 * u.ulevel, 10))
-                        u.uhpmax++;
+                        u.ubasehpmax++;
                     if (!rn2(13))
                         goaway = TRUE;
                 }
-                if (u.uhp > u.uhpmax)
-                    u.uhp = u.uhpmax;
+				updatemaxhp();
 				healamount = u.uhp - starthp;
 			}
 			if(healamount > 0)
@@ -2918,7 +2916,8 @@ struct monst *mon;
         case 0:
             You_feel("drained of energy.");
             u.uen = 0;
-            u.uenmax -= rnd(Half_physical_damage ? 5 : 10);
+            u.ubaseenmax -= rnd(Half_physical_damage ? 5 : 10);
+			updatemaxen();
             exercise(A_CON, FALSE);
             if (u.uenmax < 0)
                 u.uenmax = 0;
@@ -2963,7 +2962,8 @@ struct monst *mon;
         case 0:
             You_feel("raised to your full potential.");
             exercise(A_CON, TRUE);
-            u.uen = (u.uenmax += rnd(5));
+            u.uen = (u.ubaseenmax += rnd(5));
+			updatemaxen();
             break;
         case 1:
             You_feel("good enough to do it again.");
@@ -3220,9 +3220,10 @@ struct attack *mattk;
             }
             pline("%s is suddenly very cold!", Monnam(mtmp));
             u.mh += tmp / 2;
-            if (u.mhmax < u.mh)
-                u.mhmax = u.mh;
-            if (u.mhmax > ((youmonst.data->mlevel + 1) * 8))
+            if (u.mh - u.mhmax > 0)
+                u.basemhmax += u.mh - u.mhmax;
+			updatemaxhp();
+			if (u.mhmax > ((youmonst.data->mlevel + 1) * 8))
                 (void) split_mon(&youmonst, mtmp);
             break;
         case AD_STUN: /* Yellow mold */
@@ -3288,8 +3289,9 @@ cloneu()
     mon = christen_monst(mon, plname);
     initedog(mon);
     mon->m_lev = youmonst.data->mlevel;
+	//mon might need mbasehpmax stat
     mon->mhpmax = u.mhmax;
-    mon->mhp = u.mh / 2;
+	mon->mhp = u.mh / 2;
     u.mh -= mon->mhp;
     context.botl = 1;
     return mon;

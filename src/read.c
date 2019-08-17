@@ -1529,8 +1529,10 @@ enchantarmor:
             } else {
                 You_feel("charged up!");
                 u.uen += d(sblessed ? 6 : 4, 4);
-                if (u.uen > u.uenmax) /* if current energy is already at   */
-                    u.uenmax = u.uen; /* or near maximum, increase maximum */
+				if (u.uen > u.uenmax) { /* if current energy is already at   */
+					u.ubaseenmax += u.uen - u.uenmax; /* or near maximum, increase maximum */
+					updatemaxen();
+				}
                 else
                     u.uen = u.uenmax; /* otherwise restore current to max  */
             }

@@ -53,14 +53,18 @@ newpw()
         if (urace.enadv.inrnd > 0)
             en += rnd(urace.enadv.inrnd);
     } else {
-        enrnd = (int) ACURR(A_WIS) / 2;
+		enfix = 0;// (int)max(0, max(ACURR(A_INT), ACURR(A_WIS)) - 6);
+        enrnd = 0;
         if (u.ulevel < urole.xlev) {
             enrnd += urole.enadv.lornd + urace.enadv.lornd;
-            enfix = urole.enadv.lofix + urace.enadv.lofix;
+            enfix += urole.enadv.lofix + urace.enadv.lofix;
         } else {
             enrnd += urole.enadv.hirnd + urace.enadv.hirnd;
-            enfix = urole.enadv.hifix + urace.enadv.hifix;
+            enfix += urole.enadv.hifix + urace.enadv.hifix;
         }
+		if (enrnd < 2)
+			enrnd = 2;
+
         en = enermod(rn1(enrnd, enfix));
     }
     if (en <= 0)
@@ -69,6 +73,33 @@ newpw()
         u.ueninc[u.ulevel] = (xchar) en;
     return en;
 }
+
+int
+enmaxadjustment()
+{
+	int adj = (int)(max(0, max(ACURR(A_INT), ACURR(A_WIS)) - 6) * u.ulevel);
+
+	return adj;
+}
+
+
+void
+updatemaxen()
+{
+	u.uenmax = u.ubaseenmax + enmaxadjustment();
+	if (u.uenmax < 0)
+		u.uenmax = 0;
+	if (u.uen > u.uenmax)
+		u.uen = u.uenmax;
+	if (u.uen < 0)
+		u.uen = 0;
+
+	context.botl = 1;
+
+	return;
+}
+
+
 
 /* return # of exp points for mtmp after nk killed */
 int
@@ -232,10 +263,11 @@ const char *drainer; /* cause of death, if drain should be fatal */
         u.uhp = u.uhpmax;
 
     num = (int) u.ueninc[u.ulevel];
-    u.uenmax -= num;
+    u.ubaseenmax -= num;
+	u.uen -= num;
+	updatemaxen();
     if (u.uenmax < 0)
         u.uenmax = 0;
-    u.uen -= num;
     if (u.uen < 0)
         u.uen = 0;
     else if (u.uen > u.uenmax)
@@ -246,9 +278,10 @@ const char *drainer; /* cause of death, if drain should be fatal */
 
     if (Upolyd) {
         num = monhp_per_lvl(&youmonst);
-        u.mhmax -= num;
+        u.basemhmax -= num;
         u.mh -= num;
-        if (u.mh <= 0)
+		updatemaxhp();
+		if (u.mh <= 0)
             rehumanize();
     }
 
@@ -281,17 +314,17 @@ boolean incr; /* true iff via incremental experience growth */
        in order to retain normal human/whatever increase for later) */
     if (Upolyd) {
         hpinc = monhp_per_lvl(&youmonst);
-        u.mhmax += hpinc;
+        u.basemhmax += hpinc;
         u.mh += hpinc;
-    }
+	}
     hpinc = newhp();
-    u.uhpmax += hpinc;
+	u.ubasehpmax += hpinc;
     u.uhp += hpinc;
 
     /* increase spell power/energy points */
     eninc = newpw();
-    u.uenmax += eninc;
-    u.uen += eninc;
+    u.ubaseenmax += eninc;
+	u.uen += eninc;
 
     /* increase level (unless already maxxed) */
     if (u.ulevel < MAXULEV) {
@@ -312,7 +345,9 @@ boolean incr; /* true iff via incremental experience growth */
         adjabil(u.ulevel - 1, u.ulevel); /* give new intrinsics */
         reset_rndmonst(NON_PM);          /* new monster selection */
     }
-    context.botl = TRUE;
+	updatemaxhp();
+	updatemaxen();
+	context.botl = TRUE;
 }
 
 /* compute a random amount of experience points suitable for the hero's
