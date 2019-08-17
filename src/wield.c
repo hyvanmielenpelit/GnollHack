@@ -269,7 +269,7 @@ dowield()
     }
 
     /* Prompt for a new weapon */
-    if (!(wep = getobj(wield_objs, "wield", 0)))
+    if (!(wep = getobj(wield_objs, "wield", 0, "")))
         /* Cancelled */
         return 0;
     else if (wep == uwep) {
@@ -373,7 +373,7 @@ dowieldquiver()
                         && objects[uswapwep->otyp].oc_skill == P_SLING))
                    ? bullets
                    : ready_objs;
-    newquiver = getobj(quivee_types, "ready", 0);
+    newquiver = getobj(quivee_types, "ready", 0, "");
 
     if (!newquiver) {
         /* Cancelled */

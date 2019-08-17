@@ -32,7 +32,7 @@ dodrop()
 
     if (*u.ushops)
         sellobj_state(SELL_DELIBERATE);
-    result = drop(getobj(&drop_types[i], "drop", 3));
+    result = drop(getobj(&drop_types[i], "drop", 3, ""));
     if (*u.ushops)
         sellobj_state(SELL_NORMAL);
     if (result)

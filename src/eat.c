@@ -2786,7 +2786,7 @@ struct obj *obj;
         res = 1;
     }
 
-    otmp = getobj(comestibles, "open", 0);
+    otmp = getobj(comestibles, "open", 0, "");
     if (!otmp)
         return res;
 
@@ -3219,7 +3219,7 @@ skipfloor:
      * "ugly checks" and we need to check for inedible items.
      */
     otmp = getobj(feeding ? allobj : offering ? offerfodder : comestibles,
-                  verb, 0);
+                  verb, 0, "");
     if (corpsecheck && otmp && !(offering && otmp->oclass == AMULET_CLASS))
         if (otmp->otyp != CORPSE || (corpsecheck == 2 && !tinnable(otmp))) {
             You_cant("%s that!", verb);

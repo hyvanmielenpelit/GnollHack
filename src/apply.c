@@ -1441,7 +1441,7 @@ static NEARDATA const char cuddly[] = { TOOL_CLASS, GEM_CLASS, 0 };
 int
 dorub()
 {
-    struct obj *obj = getobj(cuddly, "rub", 0);
+    struct obj *obj = getobj(cuddly, "rub", 0, "");
 
     if (obj && obj->oclass == GEM_CLASS) {
         if (is_graystone(obj)) {
@@ -2286,7 +2286,7 @@ struct obj *obj;
             dropx(obj);
             return;
         }
-        otmp = getobj(lubricables, "grease", 0);
+        otmp = getobj(lubricables, "grease", 0, "");
         if (!otmp)
             return;
         if (inaccessible_equipment(otmp, "grease", FALSE))
@@ -2338,7 +2338,7 @@ struct obj* obj;
 	}
 
 	if (obj->spe > 0) {
-		otmp = getobj(wand_application_objects, "use wand on", 0);
+		otmp = getobj(wand_application_objects, "use wand on", 0, "");
 		if (!otmp)
 			return 0;
 
@@ -2649,7 +2649,7 @@ struct obj *tstone;
                   ? coins_gems
                   : allowall;
     Sprintf(stonebuf, "rub on the stone%s", plur(tstone->quan));
-    if ((obj = getobj(choices, stonebuf, 0)) == 0)
+    if ((obj = getobj(choices, stonebuf, 0, "")) == 0)
         return;
 
     if (obj == tstone && obj->quan == 1L) {
@@ -3875,7 +3875,7 @@ dobreak()
 
 	setbreakclasses(class_list);
 
-	obj = getobj(class_list, "break", 0);
+	obj = getobj(class_list, "break", 0, "");
 	if (!obj)
 		return 0;
 
@@ -3919,7 +3919,7 @@ doapply()
         return 0;
 
     setapplyclasses(class_list); /* tools[] */
-    obj = getobj(class_list, "use or apply", 0);
+    obj = getobj(class_list, "use or apply", 0, "");
     if (!obj)
         return 0;
 

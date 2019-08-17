@@ -538,7 +538,7 @@ doengrave()
      * Edited by GAN 10/20/86 so as not to change weapon wielded.
      */
 
-    otmp = getobj(styluses, "write with", 0);
+    otmp = getobj(styluses, "write with", 0, "");
     if (!otmp) /* otmp == zeroobj if fingers */
         return 0;
 

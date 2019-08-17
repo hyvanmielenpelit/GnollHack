@@ -502,7 +502,7 @@ dodrink()
         }
     }
 
-    otmp = getobj(beverages, "drink", 0);
+    otmp = getobj(beverages, "drink", 0, "");
     if (!otmp)
         return 0;
 
@@ -1870,7 +1870,7 @@ dodip()
 
     allowall[0] = ALL_CLASSES;
     allowall[1] = '\0';
-    if (!(obj = getobj(allowall, "dip", 0)))
+    if (!(obj = getobj(allowall, "dip", 0, "")))
         return 0;
     if (inaccessible_equipment(obj, "dip", FALSE))
         return 0;
@@ -1924,7 +1924,7 @@ dodip()
 
     /* "What do you want to dip <the object> into? [xyz or ?*] " */
     Sprintf(qbuf, "dip %s into", flags.verbose ? obuf : shortestname);
-    potion = getobj(beverages, qbuf, 0);
+    potion = getobj(beverages, qbuf, 0, "");
     if (!potion)
         return 0;
     if (potion == obj && potion->quan == 1L) {

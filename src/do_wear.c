@@ -1807,7 +1807,7 @@ dotakeoff()
         return 0;
     }
     if (Narmorpieces != 1 || ParanoidRemove)
-        otmp = getobj(clothes, "take off", 0);
+        otmp = getobj(clothes, "take off", 0, "");
     if (!otmp)
         return 0;
 
@@ -1826,7 +1826,7 @@ doremring()
         return 0;
     }
     if (Naccessories != 1 || ParanoidRemove)
-        otmp = getobj(accessories, "remove", 0);
+        otmp = getobj(accessories, "remove", 0, "");
     if (!otmp)
         return 0;
 
@@ -2438,7 +2438,7 @@ dowear()
         You("are already wearing a full complement of armor.");
         return 0;
     }
-    otmp = getobj(clothes, "wear", 0);
+    otmp = getobj(clothes, "wear", 0, "");
     return otmp ? accessory_or_armor_on(otmp) : 0;
 }
 
@@ -2457,7 +2457,7 @@ doputon()
              (ublindf->otyp == LENSES) ? "some lenses" : "a blindfold");
         return 0;
     }
-    otmp = getobj(accessories, "put on", 0);
+    otmp = getobj(accessories, "put on", 0, "");
     return otmp ? accessory_or_armor_on(otmp) : 0;
 }
 

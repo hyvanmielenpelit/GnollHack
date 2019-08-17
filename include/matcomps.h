@@ -17,7 +17,7 @@ struct materialcomponent {
 
 #define MATCOMP_NO_FLAGS 0x00000000
 #define MATCOMP_NOT_SPENT 0x00000001
-#define MATCOMP_NO_CURSED 0x00000002
+#define MATCOMP_NOT_CURSED 0x00000002
 #define MATCOMP_BLESSED_REQUIRED 0x00000004
 #define MATCOMP_DEATH_ENCHANTMENT_REQUIRED 0x00000008
 
@@ -27,7 +27,6 @@ struct materialcomponent {
 struct materialcomponentlist {
 	int spell_objectid; //Used to link the list with the appropriate spell, one spell can have many, but first we use only the first
 	char* description_short; //Used for mixing menu, when selecting the spell
-	char* description_long; //Used for prompt when mixing, after selecting the spell
 	int spellsgained; //How many spells do you get for these material components
 	struct materialcomponent matcomp[MAX_MATERIALS];
 };

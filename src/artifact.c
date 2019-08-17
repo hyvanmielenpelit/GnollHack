@@ -1411,7 +1411,7 @@ doinvoke()
 {
     struct obj *obj;
 
-    obj = getobj(invoke_types, "invoke", 0);
+    obj = getobj(invoke_types, "invoke", 0, "");
     if (!obj)
         return 0;
     if (!retouch_object(&obj, FALSE))
@@ -1506,7 +1506,7 @@ struct obj *obj;
             break;
         }
         case CHARGE_OBJ: {
-            struct obj *otmp = getobj(recharge_type, "charge", 0);
+            struct obj *otmp = getobj(recharge_type, "charge", 0, "");
             boolean b_effect;
 
             if (!otmp) {

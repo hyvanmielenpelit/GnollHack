@@ -47,6 +47,7 @@ STATIC_DCL void NDECL(cast_protection);
 STATIC_DCL void FDECL(spell_backfire, (int));
 STATIC_DCL const char *FDECL(spelltypemnemonic, (int));
 STATIC_DCL boolean FDECL(spell_aim_step, (genericptr_t, int, int));
+STATIC_DCL int FDECL(domaterialcomponentsmenu, (int));
 
 /* The roles[] table lists the role-specific values for tuning
  * percent_success().
@@ -1709,12 +1710,12 @@ int *spell_no;
 	if (splaction == SPELLMENU_PREPARE)
 	{
 		if (!iflags.menu_tab_sep) {
-			Sprintf(buf, "%-20s     Level Available Material components", "    Name");
-			fmt = "%-20s  %s  %9s  %-19s";
+			Sprintf(buf, "%-20s     Level Castings  Material components", "    Name");
+			fmt = "%-20s  %s   %8s  %-19s";
 			//		fmt = "%-20s  %2d   %-12s %4d %3d%% %9s";
 		}
 		else {
-			Sprintf(buf, "Name\tLevel\tAvailable\tMaterial components");
+			Sprintf(buf, "Name\tLevel\tCastings\tMaterial components");
 			fmt = "%s\t%s\t%s\t%s";
 			//		fmt = "%s\t%-d\t%s\t%-d\t%-d%%\t%s";
 		}
@@ -1761,13 +1762,13 @@ int *spell_no;
 	else
 	{
 		if (!iflags.menu_tab_sep) {
-			Sprintf(buf, "%-20s     Level %-12s Cost Fail Available", "    Name",
+			Sprintf(buf, "%-20s     Level %-12s Cost Fail  Castings", "    Name",
 				"Category");
-			fmt = "%-20s  %s   %-12s %4d %3d%% %9s";
-			//		fmt = "%-20s  %2d   %-12s %4d %3d%% %9s";
+			fmt = "%-20s  %s   %-12s %4d %3d%%  %8s";
+			//		fmt = "%-20s  %2d   %-12s %4d %3d%% %8s";
 		}
 		else {
-			Sprintf(buf, "Name\tLevel\tCategory\tCost\tFail\tAvailable");
+			Sprintf(buf, "Name\tLevel\tCategory\tCost\tFail\tCastings");
 			fmt = "%s\t%s\t%s\t%-d\t%-d%%\t%s";
 			//		fmt = "%s\t%-d\t%s\t%-d\t%-d%%\t%s";
 		}
@@ -2055,16 +2056,229 @@ domix()
 
 	if (getspell(&spell_no, TRUE))
 	{
-		if (!spellmatcomp(spell_no))
-		{
-			pline("That spell does not require material components.");
-			return 0;
-		}
 		//Open mixing menu and explain what components are needed
-		pline("You mix %s and prepare the spell to your repertoire.", matlists[spellmatcomp(spell_no)].description_long);
-		return 1; // spelleffects(spell_no, FALSE);
+		return domaterialcomponentsmenu(spell_no);
 	}
 	return 0;
+}
+
+
+static NEARDATA const char mix_types[] = { ALLOW_COUNT, COIN_CLASS,
+											ALL_CLASSES, 0 };
+
+STATIC_OVL int
+domaterialcomponentsmenu(spell)
+int spell;
+{
+	if (!spellmatcomp(spell))
+	{
+		pline("That spell does not require material components.");
+		return 0;
+	}
+
+	if (!invent) {
+		You("have nothing to prepare spells with.");
+		return 0;
+	}
+
+	//Start assuming components are ok, unless we find otherwise below
+	int result = 1;
+
+
+	if (*u.ushops)
+		sellobj_state(SELL_DELIBERATE);
+
+	struct obj* selcomps[MAX_MATERIALS];
+	for (int j = 0; j < MAX_MATERIALS; j++)
+		selcomps[j] = (struct obj*)0;
+
+	char spellname[BUFSZ] = "";
+	char capspellname[BUFSZ] = "";
+	strcpy(spellname, obj_descr[spellid(spell)].oc_name);
+	strcpy(capspellname, spellname);
+	*capspellname = highc(*capspellname); //Make first letter capital
+
+	int matcnt = 0;
+
+	//Check the material components here
+	for(int j = 0; matlists[spellmatcomp(spell)].matcomp[j].amount != 0; j++)
+	{
+		matcnt++;
+
+		struct materialcomponent *mc = &matlists[spellmatcomp(spell)].matcomp[j];
+		struct objclass* perobj = &objects[mc->objectid];
+		struct permonst* permon = &mons[mc->monsterid];
+
+		if (!perobj || !mc || mc->amount == 0)
+			continue;
+
+		char buf[BUFSZ], buf2[BUFSZ], buf3[BUFSZ];
+
+		//Correct type of component
+		Sprintf(buf2, "%s%s%s",
+			(mc->flags& MATCOMP_BLESSED_REQUIRED ? "blessed " : (mc->flags & MATCOMP_NOT_CURSED ? "noncursed" : "")),
+			(mc->flags& MATCOMP_DEATH_ENCHANTMENT_REQUIRED ? "death-enchanted " : ""),
+			obj_descr[perobj->oc_name_idx].oc_name);
+
+		//Indicate how many
+		if (mc->amount == 1)
+			strcpy(buf3, an(buf2));
+		else
+			Sprintf(buf3, "%d %s", mc->amount, makeplural(buf2));
+
+		Sprintf(buf, "You need %s. ",
+			buf3); //(mc->flags& MATCOMP_NOT_SPENT ? "a catalyst" : "a component"));
+
+		int i = (invent) ? 0 : (SIZE(mix_types) - 1);
+
+		struct obj* otmp = (struct obj*) 0;
+
+		otmp = getobj(&mix_types[i], "use", 0, buf);
+
+		if (!otmp)
+			return 0;
+
+		//Save the material component
+		selcomps[j] = otmp;
+
+		//Check if acceptable
+		boolean acceptable = FALSE;
+		if (otmp->otyp == mc->objectid)
+			acceptable = TRUE;
+
+		if ((mc->flags & MATCOMP_BLESSED_REQUIRED) && !otmp->blessed)
+			acceptable = FALSE;
+
+		if ((mc->flags & MATCOMP_NOT_CURSED) && otmp->cursed)
+			acceptable = FALSE;
+
+		if ((mc->objectid == CORPSE || mc->objectid == TIN || mc->objectid == EGG) && mc->monsterid != otmp->corpsenm)
+			acceptable = FALSE;
+
+		//Note: You might ask for another pick from another type (e.g., using both blessed and uncursed items), but this gets a bit too complicated
+		if (acceptable)
+		{
+			if (otmp->quan < mc->amount)
+			{
+				pline("%s requires %s as %s, but you have only %d.",
+					spellname,
+					buf3,
+					otmp->quan);
+				return 0;
+			}
+			//Result is ok so far
+		}
+		else
+		{
+			//Incorrect ingredient
+			result = 0;
+		}
+	}
+
+	//Now go through the selected material components
+	for (int j = 0; j < matcnt; j++)
+	{
+		struct obj* otmp = selcomps[j];
+		struct materialcomponent* mc = &matlists[spellmatcomp(spell)].matcomp[j];
+
+		if (!otmp || !mc)
+			continue;
+
+		if (result)
+			makeknown(otmp->otyp);
+
+		boolean usecomps = !(mc->flags & MATCOMP_NOT_SPENT);
+
+		//Resisting objects cannot be consumed
+		if (obj_resists(otmp, 0, 100))
+			usecomps = FALSE;
+
+		if (otmp->otyp != mc->objectid)
+		{
+			//Wrong item
+			if(otmp->oclass != objects[mc->objectid].oc_class
+				&& otmp->oclass != POTION_CLASS && otmp->oclass != SCROLL_CLASS && otmp->oclass != FOOD_CLASS)
+			{
+				//The same class may get consumed, but not a different class, unless it is a potion, scroll, or food
+				usecomps = FALSE;
+			}
+
+			//Disintegration resistant items, indestructible items, and fire-resistant items won't get destroyed
+			//Loadstone will not get destroyed, nor do containers
+			if((objects[otmp->otyp].oc_flags & O1_DISINTEGRATION_RESISTANT)
+				|| (objects[otmp->otyp].oc_flags & O1_FIRE_RESISTANT)
+				|| (objects[otmp->otyp].oc_flags & O1_LIGHTNING_RESISTANT)
+				|| (objects[otmp->otyp].oc_flags & O1_INDESTRUCTIBLE)
+				|| Is_container(otmp)
+				|| otmp->otyp == LOADSTONE)
+				usecomps = FALSE;
+		}
+		//Use them all up
+		if (!(mc->flags & MATCOMP_NOT_SPENT) && !obj_resists(otmp,0,100) && otmp->oclass == objects[mc->objectid].oc_class)
+		{
+			if(otmp->quan >= mc->amount)
+			{
+				for (int i = 0; i < mc->amount; i++)
+					useup(otmp);
+			}
+			else
+			{
+				impossible("There should always be enough material components at this stage");
+				useupall(otmp);
+			}
+		}
+	}
+
+	//And now the result
+	if (!result || (Confusion && spellev(spell) > 1 && rn2(spellev(spell))))
+	{
+		//Explosion
+		int dmg = d(max(1, spellev(spell)), 6);
+		if (spellev(spell) == 0)
+			dmg = rnd(4);
+		else if (spellev(spell) == -1)
+			dmg = rnd(2);
+		else if (spellev(spell) < -1)
+			dmg = 1;
+
+		char buf[BUFSZ];
+		Sprintf(buf, "killed by an explosion caused by a failed spell preparation");
+
+		if (spellev(spell) >= 4 || dmg > 12)
+		{
+			//One more damage
+			Your("concoction explodes in a large ball of fire!");
+			losehp(Maybe_Half_Phys(dmg), buf, NO_KILLER_PREFIX);
+			explode(u.ux, u.uy, RAY_FIRE, 1, 0, 0,
+				EXPL_MAGICAL);
+		}
+		else
+		{
+			Your("concoction flares up, burning you!");
+			losehp(Maybe_Half_Phys(dmg), buf, NO_KILLER_PREFIX);
+		}
+	}
+	else
+	{
+		//Success
+		int addedamount = matlists[spellmatcomp(spell)].spellsgained;
+		spellamount(spell) += addedamount;
+		You("successfully prepared the material components.", spellname);
+		if (addedamount == 1)
+			You("now have one more casting of \"%s\" prepared.", spellname);
+		else
+			You("now have %d more castings of \"%s\" prepared.", addedamount, spellname);
+
+	}
+
+
+	if (*u.ushops)
+		sellobj_state(SELL_NORMAL);
+	if (result)
+		reset_occupations();
+
+	return result;
+
 }
 
 

@@ -192,7 +192,7 @@ doread()
     known = FALSE;
     if (check_capacity((char *) 0))
         return 0;
-    scroll = getobj(readable, "read", 0);
+    scroll = getobj(readable, "read", 0, "");
     if (!scroll)
         return 0;
 
@@ -1547,7 +1547,7 @@ enchantarmor:
            was already delivered */
         useup(sobj);
         sobj = 0; /* it's gone */
-        otmp = getobj(all_count, "charge", 0);
+        otmp = getobj(all_count, "charge", 0, "");
         if (otmp)
             recharge(otmp, scursed ? -1 : sblessed ? 1 : 0);
         break;

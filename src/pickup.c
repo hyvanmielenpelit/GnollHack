@@ -2687,7 +2687,7 @@ boolean more_containers; /* True iff #loot multiple and this isn't last one */
         add_valid_menu_class(0);
     } else if (stash_one) {
         /* put one item into container */
-        if ((otmp = getobj(stashable, "stash", 1)) != 0) {
+        if ((otmp = getobj(stashable, "stash", 1, "")) != 0) {
             if (in_container(otmp)) {
                 used = 1;
             } else {
@@ -3043,7 +3043,7 @@ dotip()
     }
 
     /* either no floor container(s) or couldn't tip one or didn't tip any */
-    cobj = getobj(tippables, "tip", 0);
+    cobj = getobj(tippables, "tip", 0, "");
     if (!cobj)
         return 0;
 

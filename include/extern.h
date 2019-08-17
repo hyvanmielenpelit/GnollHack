@@ -991,7 +991,7 @@ E boolean NDECL(wearing_armor);
 E boolean FDECL(is_worn, (struct obj *));
 E struct obj *FDECL(g_at, (int, int));
 E boolean FDECL(splittable, (struct obj *));
-E struct obj *FDECL(getobj, (const char *, const char *, int));
+E struct obj *FDECL(getobj, (const char *, const char *, int, const char*));
 E int FDECL(ggetobj, (const char *, int (*)(OBJ_P), int,
                       BOOLEAN_P, unsigned *, int));
 E int FDECL(askchain, (struct obj **, const char *, int, int (*)(OBJ_P),

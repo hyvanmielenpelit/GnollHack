@@ -1423,9 +1423,10 @@ const char *action;
 !!!! may be able to remove "usegold"
  */
 struct obj *
-getobj(let, word, show_weights)
+getobj(let, word, show_weights, headertext)
 register const char *let, *word;
 int show_weights;
+const char* headertext;
 {
     register struct obj *otmp;
     register char ilet = 0;
@@ -1653,7 +1654,7 @@ int show_weights;
     for (;;) {
         cnt = 0;
         cntgiven = FALSE;
-        Sprintf(qbuf, "What do you want to %s?", word);
+		Sprintf(qbuf, "%sWhat do you want to %s?", headertext, word);
         if (in_doagain)
             ilet = readchar();
         else if (iflags.force_invmenu) {
@@ -1719,7 +1720,7 @@ int show_weights;
 
             menuquery[0] = qbuf[0] = '\0';
             if (iflags.force_invmenu)
-                Sprintf(menuquery, "What do you want to %s?", word);
+                Sprintf(menuquery, "%sWhat do you want to %s?", headertext, word);
             if (!strcmp(word, "grease"))
                 Sprintf(qbuf, "your %s", makeplural(body_part(FINGER)));
             else if (!strcmp(word, "write with"))
@@ -4289,7 +4290,7 @@ doorganize() /* inventory organizer by Del Lamb */
             break;
         }
     }
-    if (!(obj = getobj(allowall, "adjust", 1)))
+    if (!(obj = getobj(allowall, "adjust", 1, "")))
         return 0;
 
     /* figure out whether user gave a split count to getobj() */

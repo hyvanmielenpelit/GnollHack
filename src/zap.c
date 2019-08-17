@@ -2300,7 +2300,7 @@ dozap()
 
     if (check_capacity((char *) 0))
         return 0;
-    obj = getobj(zap_syms, "zap", 0);
+    obj = getobj(zap_syms, "zap", 0, "");
     if (!obj)
         return 0;
 
