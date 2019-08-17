@@ -57,8 +57,8 @@ const struct Role roles[] = {
       { 20, 20, 20, 10, 20, 10 },
       /* Init   Lower  Higher */
       { 11, 0, 0, 8, 1, 0 }, /* Hit points */
-      { 1, 0, 0, 1, 0, 1 },
-      14, /* Energy */
+      { 1, 0, 0, 1, 0, 1 }, /* Energy */
+      14,
       10,
       5,
       0,
@@ -600,9 +600,9 @@ struct Role urole = {
     { 7, 7, 7, 7, 7, 7 },
     { 20, 15, 15, 20, 20, 10 },
     /* Init   Lower  Higher */
-    { 10, 0, 0, 8, 1, 0 }, /* Hit points */
-    { 2, 0, 0, 2, 0, 3 },
-    14, /* Energy */
+    { 10, 0, 0, 8, 1, 0 }, /* Hit points: initial z, d; low-levels z, d; high-level, z, d  */
+    { 2, 0, 0, 2, 0, 3 }, /* Energy: initial z, d; low-levels z, d; high-level, z, d */
+    14,
      0,
     10,
      0,
