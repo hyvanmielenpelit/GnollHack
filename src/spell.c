@@ -940,7 +940,7 @@ boolean atme;
     }
 
 	if (spellamount(spell) == 0) {
-		You("do not have the spell prepared.");
+		You("do not have the spell's material components prepared.");
 		return 0; /* no time elapses */
 	}
 
@@ -1069,7 +1069,7 @@ boolean atme;
 	if(spellamount(spell) > 0)
 		spellamount(spell)--;
 
-	//Also it goes under cooldown, successful or not
+	//Also, it goes under cooldown, successful or not
 	spellcooldownleft(spell) = getspellcooldown(spell) + 1; //+1 takes care of the current turn
 
 	//Now check if successful
@@ -1156,7 +1156,8 @@ boolean atme;
     case SPE_TELEPORT_AWAY:
     case SPE_CANCELLATION:
     case SPE_FINGER_OF_DEATH:
-    case SPE_LIGHT:
+	case SPE_TOUCH_OF_DEATH:
+	case SPE_LIGHT:
 	case SPE_BLACK_BLADE_OF_DISASTER:
 	case SPE_ARMAGEDDON:
 	case SPE_WISH:
@@ -1237,14 +1238,14 @@ boolean atme;
     /* end of potion-like spells */
 
     case SPE_CURE_BLINDNESS:
-        healup(0, 0, FALSE, TRUE);
+        healup(0, 0, FALSE, TRUE, FALSE, FALSE, FALSE);
         break;
     case SPE_CURE_SICKNESS:
         if (Sick)
             You("are no longer ill.");
         if (Slimed)
             make_slimed(0L, "The slime disappears!");
-        healup(0, 0, TRUE, FALSE);
+        healup(0, 0, TRUE, FALSE, FALSE, FALSE, FALSE);
         break;
     case SPE_CREATE_FAMILIAR:
         (void) make_familiar((struct obj *) 0, u.ux, u.uy, FALSE);

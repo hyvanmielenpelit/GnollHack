@@ -155,7 +155,6 @@ struct obj *otmp;
     case WAN_STRIKING:
         zap_type_text = "wand";
     /*FALLTHRU*/
-	case SPE_MAGIC_ARROW:
 	case SPE_FORCE_BOLT:
         reveal_invis = TRUE;
         if (disguised_mimic)
@@ -171,7 +170,7 @@ struct obj *otmp;
 			else
 				dmg = d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus;
 
-			//Double damage if needed
+			//Knight quest artifact
 			if (dbldam)
 				dmg *= 2;
 
@@ -183,7 +182,48 @@ struct obj *otmp;
             miss(zap_type_text, mtmp);
         learn_it = TRUE;
         break;
-    case WAN_SLOW_MONSTER:
+	case SPE_MAGIC_ARROW:
+		reveal_invis = TRUE;
+		if (disguised_mimic)
+			seemimic(mtmp);
+		if (u.uswallow || rnd(20) < 5 + u.ulevel + find_mac(mtmp)) //Hitsas +5 arrow + caster level, good at high levels
+		{
+			dmg = 0;
+			if (bigmonst(mtmp->data))
+				dmg = d(objects[otyp].oc_wldice, objects[otyp].oc_wldam) + objects[otyp].oc_wldmgplus;
+			else
+				dmg = d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus;
+
+			//Knight quest artifact
+			if (dbldam)
+				dmg *= 2;
+
+			//Deal the damage
+			hit(zap_type_text, mtmp, exclam(dmg), dmg);
+
+			(void)resist(mtmp, otmp->oclass, dmg, TELL);
+		}
+		else
+			miss(zap_type_text, mtmp);
+		learn_it = TRUE;
+		break;
+	case SPE_TOUCH_OF_DEATH:
+		reveal_invis = TRUE;
+		You("reach out with your deadly touch...");
+		if (resists_magm(mtmp) || is_not_living(mtmp->data) || is_demon(mtmp->data) || resists_death(mtmp)) { /* match effect on player */
+			shieldeff(mtmp->mx, mtmp->my);
+			pline("%s is unaffected by your touch!", Monnam(mtmp));
+			break; /* skip makeknown */
+		} else if (!resist(mtmp, otmp->oclass, 0, TELL) //Get no damage upon successful magic resistance
+			&& !DEADMONSTER(mtmp))
+		{ //Otherwise dead
+			mtmp->mhp = 0;
+			if (DEADMONSTER(mtmp)) {
+				killed(mtmp);
+			}
+		}
+		break;
+	case WAN_SLOW_MONSTER:
     case SPE_SLOW_MONSTER:
         if (!resist(mtmp, otmp->oclass, 0, NOTELL)) {
             if (disguised_mimic)
@@ -2135,6 +2175,7 @@ struct obj *obj, *otmp;
         case SPE_HEALING:
         case SPE_EXTRA_HEALING:
 		case SPE_FULL_HEALING:
+		case SPE_TOUCH_OF_DEATH:
 			res = 0;
             break;
         case SPE_STONE_TO_FLESH:
@@ -2651,13 +2692,13 @@ boolean ordinary;
     case SPE_HEALING:
     case SPE_EXTRA_HEALING:
 		learn_it = TRUE; /* (no effect for spells...) */
-        healup(damage, 0, FALSE, (obj->blessed || obj->otyp == SPE_EXTRA_HEALING));
+        healup(damage, 0, FALSE, (obj->blessed || obj->otyp == SPE_EXTRA_HEALING), (obj->blessed || obj->otyp == SPE_EXTRA_HEALING), FALSE, FALSE);
         You_feel("%sbetter.", obj->otyp == SPE_EXTRA_HEALING ? "much " : "");
 		damage = 0;
         break;
 	case SPE_FULL_HEALING:
 		learn_it = TRUE; /* (no effect for spells...) */
-		healup(9999, 0, TRUE, TRUE);
+		healup(9999, 0, TRUE, TRUE, TRUE, TRUE, TRUE);
 		You_feel("completely healed.");
 		damage = 0;
 		break;
@@ -3211,7 +3252,7 @@ struct obj *obj;
     if (u.usteed && (objects[otyp].oc_dir != NODIR) && !u.dx && !u.dy
         && (u.dz > 0) && zap_steed(obj)) {
         disclose = TRUE;
-    } else if (objects[otyp].oc_dir == IMMEDIATE) {
+    } else if (objects[otyp].oc_dir == IMMEDIATE || objects[otyp].oc_dir == TOUCH) {
         zapsetup(); /* reset obj_zapped */
         if (u.uswallow) {
             (void) bhitm(u.ustuck, obj);
@@ -3219,7 +3260,7 @@ struct obj *obj;
         } else if (u.dz) {
             disclose = zap_updown(obj);
         } else {
-            (void) bhit(u.dx, u.dy, rn1(8, 6), ZAPPED_WAND, bhitm, bhito,
+            (void) bhit(u.dx, u.dy, (objects[otyp].oc_dir == TOUCH) ? 1: rn1(8, 6), ZAPPED_WAND, bhitm, bhito,
                         &obj);
         }
         zapwrapup(); /* give feedback for obj_zapped */
@@ -3227,7 +3268,7 @@ struct obj *obj;
     } else if (objects[otyp].oc_dir == NODIR) {
         zapnodir(obj);
 
-    } else {
+    } else if (objects[otyp].oc_dir == RAY) {
         /* neither immediate nor directionless */
 		int osubtype = objects[otyp].oc_dir_subtype;
 

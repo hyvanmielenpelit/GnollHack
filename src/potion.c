@@ -646,7 +646,7 @@ register struct obj *otmp;
                        KILLED_BY_AN);
             } else if (otmp->cursed) {
                 You_feel("quite proud of yourself.");
-                healup(d(2, 6), 0, 0, 0);
+                healup(d(2, 6), 0, 0, 0, 0, 0, 0);
                 if (u.ulycn >= LOW_PM && !Upolyd)
                     you_were();
                 exercise(A_CON, TRUE);
@@ -682,7 +682,7 @@ register struct obj *otmp;
             make_confused(itimeout_incr(HConfusion, d(3, 8)), FALSE);
         /* the whiskey makes us feel better */
         if (!otmp->odiluted)
-            healup(1, 0, FALSE, FALSE);
+            healup(1, 0, FALSE, FALSE, FALSE, FALSE, FALSE);
         u.uhunger += 10 * (2 + bcsign(otmp));
         newuhs(FALSE);
         exercise(A_WIS, FALSE);
@@ -975,21 +975,20 @@ register struct obj *otmp;
     case POT_HEALING:
         You_feel("better.");
         healup(d(6 + 2 * bcsign(otmp), 4), !otmp->cursed ? 1 : 0,
-               !!otmp->blessed, !otmp->cursed);
+               !!otmp->blessed, !otmp->cursed, FALSE, FALSE, FALSE);
         exercise(A_CON, TRUE);
         break;
     case POT_EXTRA_HEALING:
         You_feel("much better.");
         healup(d(6 + 2 * bcsign(otmp), 8),
                otmp->blessed ? 5 : !otmp->cursed ? 2 : 0, !otmp->cursed,
-               TRUE);
-        (void) make_hallucinated(0L, TRUE, 0L);
+               TRUE, !otmp->cursed, otmp->blessed, !otmp->cursed);
         exercise(A_CON, TRUE);
         exercise(A_STR, TRUE);
         break;
     case POT_FULL_HEALING:
         You_feel("completely healed.");
-        healup(400, 4 + 4 * bcsign(otmp), !otmp->cursed, TRUE);
+        healup(400, 4 + 4 * bcsign(otmp), !otmp->cursed, TRUE, !otmp->cursed, !otmp->cursed, !otmp->cursed);
         /* Restore one lost level if blessed */
         if (otmp->blessed && u.ulevel < u.ulevelmax) {
             /* when multiple levels have been lost, drinking
@@ -997,7 +996,6 @@ register struct obj *otmp;
             u.ulevelmax -= 1;
             pluslvl(FALSE);
         }
-        (void) make_hallucinated(0L, TRUE, 0L);
         exercise(A_STR, TRUE);
         exercise(A_CON, TRUE);
         break;
@@ -1142,9 +1140,9 @@ register struct obj *otmp;
 }
 
 void
-healup(nhp, nxtra, curesick, cureblind)
+healup(nhp, nxtra, curesick, cureblind, curehallucination, curestun, cureconfusion)
 int nhp, nxtra;
-register boolean curesick, cureblind;
+register boolean curesick, cureblind, curehallucination, curestun, cureconfusion;
 {
     if (nhp) {
         if (Upolyd) {
@@ -1170,8 +1168,19 @@ register boolean curesick, cureblind;
         make_vomiting(0L, TRUE);
         make_sick(0L, (char *) 0, TRUE, SICK_ALL);
     }
-    context.botl = 1;
-    return;
+
+	if (curehallucination) {
+		(void)make_hallucinated(0L, TRUE, 0L);
+	}
+	if (curestun) {
+		make_stunned(0L, TRUE);
+	}
+	if (cureconfusion) {
+		make_confused(0L, TRUE);
+	}
+
+	context.botl = 1;
+	return;
 }
 
 void
