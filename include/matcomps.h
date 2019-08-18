@@ -9,8 +9,8 @@
 
 
 struct materialcomponent {
-	int objectid;
-	int monsterid; //Used for corpses and tins
+	int objectid;  //0 if none
+	int monsterid; //Used for corpses and tins, -1 if none
 	int amount;
 	unsigned long flags;
 };
@@ -34,7 +34,9 @@ struct materialcomponentlist {
 /*extern NEARDATA struct materialcomponentlist matlists[];*/
 
 /*Material components*/
-#define NO_MATCOMP {STRANGE_OBJECT, 0, 0, MATCOMP_NO_FLAGS}
+#define NOT_APPLICABLE -1
+
+#define NO_MATCOMP {STRANGE_OBJECT, NOT_APPLICABLE, 0, MATCOMP_NO_FLAGS}
 
 extern NEARDATA struct materialcomponentlist matlists[];
 

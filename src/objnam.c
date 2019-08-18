@@ -36,14 +36,6 @@ struct Jitem {
     ((ptr) < base || strncmpi((ptr), str, num))
 #define Strcasecpy(dst, src) (void) strcasecpy(dst, src)
 
-/* true for gems/rocks that should have " stone" appended to their names */
-#define GemStone(typ)                                                  \
-    (typ == FLINT                                                      \
-     || (objects[typ].oc_material == GEMSTONE                          \
-         && (typ != DILITHIUM_CRYSTAL && typ != RUBY && typ != DIAMOND \
-             && typ != SAPPHIRE && typ != BLACK_OPAL && typ != EMERALD \
-             && typ != OPAL)))
-
 STATIC_OVL struct Jitem Japanese_items[] = { { SHORT_SWORD, "wakizashi" },
                                              { BROADSWORD, "ninja-to" },
                                              { FLAIL, "nunchaku" },

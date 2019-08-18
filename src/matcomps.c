@@ -4,8 +4,6 @@
 
 #include "hack.h"
 
-#define NOT_APPLICABLE 0
-
 struct materialcomponentlist matlists[] =
 {
 	{STRANGE_OBJECT,

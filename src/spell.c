@@ -1111,8 +1111,8 @@ boolean atme;
 		if (throwspell()) {
             cc.x = u.dx;
             cc.y = u.dy;
-            n = rnd(8) + 1;
-            while (n--) {
+			//One time only //n = rnd(8) + 1;
+			for (n = 0; n < 1; n++) {
                 if (!u.dx && !u.dy && !u.dz) {
                     if ((damage = zapyourself(pseudo, TRUE)) != 0) {
                         char buf[BUFSZ];
@@ -2216,7 +2216,9 @@ int spell;
 
 		struct materialcomponent *mc = &matlists[spellmatcomp(spell)].matcomp[j];
 		struct objclass* perobj = &objects[mc->objectid];
-		struct permonst* permon = &mons[mc->monsterid];
+		struct permonst* permon = (struct permonst*)0;
+		if(mc->monsterid >= 0)
+			permon = &mons[mc->monsterid];
 
 		if (!perobj || !mc || mc->amount == 0)
 			continue;
@@ -2232,10 +2234,12 @@ int spell;
 				//Add "lizard" to "tin" to get "lizard corpse"
 				Sprintf(buf4, "%s of %s meat", obj_descr[perobj->oc_name_idx].oc_name, permon->mname);
 			else
-				strcpy(buf4, obj_descr[perobj->oc_name_idx].oc_name);
+				Sprintf(buf4, "%s%s", obj_descr[perobj->oc_name_idx].oc_name, GemStone(mc->objectid) ? " stone" : "");
 		}
 		else
-			strcpy(buf4, obj_descr[perobj->oc_name_idx].oc_name);
+		{
+			Sprintf(buf4, "%s%s", obj_descr[perobj->oc_name_idx].oc_name, GemStone(mc->objectid) ? " stone" : "");
+		}
 
 		//Correct type of component
 		Sprintf(buf2, "%s%s%s",
@@ -2401,6 +2405,12 @@ int spell;
 			You("now have one more casting of \"%s\" prepared.", spellname);
 		else
 			You("now have %d more castings of \"%s\" prepared.", addedamount, spellname);
+
+		/* gain skill for successful preparation */
+		int otyp = spellid(spell);
+		int skill = spell_skilltype(otyp);
+
+		use_skill(skill, spellev(spell));
 
 	}
 

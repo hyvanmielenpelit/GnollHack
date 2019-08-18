@@ -377,6 +377,15 @@ struct obj {
      || ((o)->otyp == iflags.soko_prize_type2            \
          && (o)->record_achieve_special == SOKO_PRIZE2))
 
+/* true for gems/rocks that should have " stone" appended to their names */
+#define GemStone(typ)                                                  \
+    (typ == FLINT                                                      \
+     || (objects[typ].oc_material == GEMSTONE                          \
+         && (typ != DILITHIUM_CRYSTAL && typ != RUBY && typ != DIAMOND \
+             && typ != SAPPHIRE && typ != BLACK_OPAL && typ != EMERALD \
+             && typ != OPAL)))
+
+
 /* Flags for get_obj_location(). */
 #define CONTAINED_TOO 0x1
 #define BURIED_TOO 0x2
