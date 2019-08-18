@@ -1103,44 +1103,43 @@ boolean atme;
      * effects, e.g. more damage, further distance, and so on, without
      * additional cost to the spellcaster.
      */
-    case SPE_FIREBALL:
-    case SPE_CONE_OF_COLD:
-        if (role_skill >= P_SKILLED) {
-            if (throwspell()) {
-                cc.x = u.dx;
-                cc.y = u.dy;
-                n = rnd(8) + 1;
-                while (n--) {
-                    if (!u.dx && !u.dy && !u.dz) {
-                        if ((damage = zapyourself(pseudo, TRUE)) != 0) {
-                            char buf[BUFSZ];
-                            Sprintf(buf, "zapped %sself with a spell",
-                                    uhim());
-                            losehp(damage, buf, NO_KILLER_PREFIX);
-                        }
-                    } else {
-                        explode(u.dx, u.dy,
-                                otyp - SPE_MAGIC_MISSILE + 10,
-                                spell_damage_bonus(u.ulevel / 2 + 1), otyp, 0,
-                                (otyp == SPE_CONE_OF_COLD)
-                                   ? EXPL_FROSTY
-                                   : EXPL_FIERY);
+	case SPE_FIREBALL:
+	case SPE_FIRE_STORM:
+    case SPE_ICE_STORM:
+	case SPE_THUNDERSTORM:
+		if (throwspell()) {
+            cc.x = u.dx;
+            cc.y = u.dy;
+            n = rnd(8) + 1;
+            while (n--) {
+                if (!u.dx && !u.dy && !u.dz) {
+                    if ((damage = zapyourself(pseudo, TRUE)) != 0) {
+                        char buf[BUFSZ];
+                        Sprintf(buf, "zapped %sself with a spell",
+                                uhim());
+                        losehp(damage, buf, NO_KILLER_PREFIX);
                     }
-                    u.dx = cc.x + rnd(3) - 2;
-                    u.dy = cc.y + rnd(3) - 2;
-                    if (!isok(u.dx, u.dy) || !cansee(u.dx, u.dy)
-                        || IS_STWALL(levl[u.dx][u.dy].typ) || u.uswallow) {
-                        /* Spell is reflected back to center */
-                        u.dx = cc.x;
-                        u.dy = cc.y;
-                    }
+                } else {
+                    explode(u.dx, u.dy,
+                            objects[otyp].oc_dir_subtype,
+                            d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus, otyp, 0,
+                            subdirtype2explosiontype(objects[otyp].oc_dir_subtype));
+                }
+                u.dx = cc.x + rnd(3) - 2;
+                u.dy = cc.y + rnd(3) - 2;
+                if (!isok(u.dx, u.dy) || !cansee(u.dx, u.dy)
+                    || IS_STWALL(levl[u.dx][u.dy].typ) || u.uswallow) {
+                    /* Spell is reflected back to center */
+                    u.dx = cc.x;
+                    u.dy = cc.y;
                 }
             }
-            break;
-        } /* else */
-        /*FALLTHRU*/
-
+        }
+        break;
     /* these spells are all duplicates of wand effects */
+	case SPE_FIRE_BOLT:
+	case SPE_LIGHTNING_BOLT:
+	case SPE_CONE_OF_COLD:
 	case SPE_MAGIC_ARROW:
 	case SPE_FORCE_BOLT:
         physical_damage = TRUE;
@@ -1275,6 +1274,41 @@ boolean atme;
 
     obfree(pseudo, (struct obj *) 0); /* now, get rid of it */
     return 1;
+}
+
+int
+subdirtype2explosiontype(subdir)
+int subdir;
+{
+	int expltype = 0;
+	switch (subdir)
+	{
+	case RAY_COLD:
+	case RAY_WND_COLD:
+		expltype = EXPL_FROSTY;
+		break;
+	case RAY_FIRE:
+	case RAY_WND_FIRE:
+		expltype = EXPL_FIERY;
+		break;
+	case RAY_POISON_GAS:
+	case RAY_WND_POISON_GAS:
+	case RAY_ACID:
+	case RAY_WND_ACID:
+		expltype = EXPL_NOXIOUS;
+		break;
+	case RAY_SLEEP:
+	case RAY_WND_SLEEP:
+	case RAY_DEATH:
+	case RAY_WND_DEATH:
+	case RAY_DISINTEGRATION:
+	case RAY_WND_DISINTEGRATION:
+	default:
+		expltype = EXPL_MAGICAL;
+		break;
+	}
+
+	return expltype;
 }
 
 /*ARGSUSED*/

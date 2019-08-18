@@ -2384,6 +2384,7 @@ E int NDECL(dovspell);
 E void FDECL(initialspell, (struct obj *));
 E int NDECL(domix);
 E int FDECL(getspellcooldown, (int));
+E int FDECL(subdirtype2explosiontype, (int));
 
 
 /* ### steal.c ### */

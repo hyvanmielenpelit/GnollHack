@@ -58,7 +58,7 @@ const struct Role roles[] = {
       /* Init   Lower  Higher */
       { 11, 0, 0, 8, 1, 0 }, /* Hit points */
       { 1, 0, 0, 1, 0, 1 }, /* Energy */
-      14,
+      MAXULEV,
       10,
       5,
       0,
@@ -98,9 +98,9 @@ const struct Role roles[] = {
       { 16, 7, 7, 15, 16, 6 },
       { 30, 6, 7, 20, 30, 7 },
       /* Init   Lower  Higher */
-      { 14, 0, 0, 10, 2, 0 }, /* Hit points */
-      { 1, 0, 0, 1, 0, 1 },
-      10, /* Energy */
+      { 17, 0, 0, 12, 3, 0 }, /* Hit points */
+      { 1, 0, 0, 1, 0, 1 }, /* Energy */
+      MAXULEV,
       10,
       14,
       0,
@@ -140,9 +140,9 @@ const struct Role roles[] = {
       { 10, 7, 7, 7, 8, 6 },
       { 30, 6, 7, 20, 30, 7 },
       /* Init   Lower  Higher */
-      { 14, 0, 0, 8, 2, 0 }, /* Hit points */
-      { 1, 0, 0, 1, 0, 1 },
-      10, /* Energy */
+      { 16, 0, 0, 12, 2, 1 }, /* Hit points */
+      { 1, 0, 0, 1, 0, 1 }, /* Energy */
+      MAXULEV,
       0,
       12,
       0,
@@ -181,9 +181,9 @@ const struct Role roles[] = {
       { 7, 7, 13, 7, 11, 16 },
       { 15, 20, 20, 15, 25, 5 },
       /* Init   Lower  Higher */
-      { 11, 0, 0, 8, 1, 0 }, /* Hit points */
-      { 1, 4, 0, 1, 0, 2 },
-      20, /* Energy */
+      { 11, 0, 0, 7, 1, 0 }, /* Hit points */
+      { 1, 3, 0, 2, 0, 2 }, /* Energy */
+      MAXULEV,
       10,
       3,
       -3,
@@ -222,9 +222,9 @@ const struct Role roles[] = {
       { 13, 7, 14, 8, 10, 17 },
       { 30, 15, 15, 10, 20, 10 },
       /* Init   Lower  Higher */
-      { 14, 0, 0, 8, 2, 0 }, /* Hit points */
-      { 1, 4, 0, 1, 0, 2 },
-      10, /* Energy */
+      { 15, 0, 0, 11, 2, 1 }, /* Hit points */
+      { 1, 3, 0, 2, 0, 2 }, /* Energy */
+      MAXULEV,
       10,
       8,
       -2,
@@ -264,9 +264,9 @@ const struct Role roles[] = {
       { 10, 7, 8, 8, 7, 7 },
       { 25, 10, 20, 20, 15, 10 },
       /* Init   Lower  Higher */
-      { 12, 0, 0, 8, 1, 0 }, /* Hit points */
-      { 2, 2, 0, 2, 0, 2 },
-      10, /* Energy */
+      { 12, 0, 0, 8, 1, 1 }, /* Hit points */
+      { 2, 2, 0, 2, 0, 2 }, /* Energy */
+      MAXULEV,
       10,
       8,
       -2,
@@ -306,8 +306,8 @@ const struct Role roles[] = {
       { 7, 7, 10, 7, 7, 7 },
       { 15, 10, 30, 15, 20, 10 },
       /* Init   Lower  Higher */
-      { 12, 0, 0, 8, 1, 0 }, /* Hit points */
-      { 4, 3, 0, 2, 0, 2 },
+      { 12, 0, 0, 7, 1, 0 }, /* Hit points */
+      { 2, 3, 0, 3, 0, 3 },
       10, /* Energy */
       0,
       3,
@@ -405,7 +405,7 @@ const struct Role roles[] = {
       { 13, 13, 13, 9, 13, 7 },
       { 30, 10, 10, 20, 20, 10 },
       /* Init   Lower  Higher */
-      { 13, 0, 0, 6, 1, 0 }, /* Hit points */
+      { 13, 0, 0, 9, 1, 0 }, /* Hit points */
       { 1, 0, 0, 1, 0, 1 },
       12, /* Energy */
       10,
@@ -446,9 +446,9 @@ const struct Role roles[] = {
       { 10, 8, 7, 10, 17, 6 },
       { 30, 10, 8, 30, 14, 8 },
       /* Init   Lower  Higher */
-      { 13, 0, 0, 8, 1, 0 }, /* Hit points */
-      { 1, 0, 0, 1, 0, 1 },
-      11, /* Energy */
+      { 13, 0, 0, 9, 1, 1 }, /* Hit points */
+      { 1, 0, 0, 1, 0, 1 }, /* Energy */
+      MAXULEV,
       10,
       10,
       0,
@@ -487,9 +487,9 @@ const struct Role roles[] = {
       { 7, 10, 6, 7, 7, 10 },
       { 15, 10, 10, 15, 30, 20 },
       /* Init   Lower  Higher */
-      { 8, 0, 0, 8, 0, 0 }, /* Hit points */
-      { 1, 0, 0, 1, 0, 1 },
-      14, /* Energy */
+      { 12, 0, 0, 6, 0, 1 }, /* Hit points */
+      { 1, 0, 0, 1, 0, 1 }, /* Energy */
+	  MAXULEV,
       0,
       5,
       1,
@@ -528,9 +528,9 @@ const struct Role roles[] = {
       { 10, 7, 7, 7, 10, 7 },
       { 30, 6, 7, 20, 30, 7 },
       /* Init   Lower  Higher */
-      { 14, 0, 0, 8, 2, 0 }, /* Hit points */
-      { 1, 0, 0, 1, 0, 1 },
-      10, /* Energy */
+      { 14, 0, 0, 10, 2, 0 }, /* Hit points */
+      { 1, 0, 0, 1, 0, 1 },  /* Energy */
+      MAXULEV,
       0,
       10,
       -2,
@@ -570,9 +570,9 @@ const struct Role roles[] = {
       { 7, 10, 7, 7, 7, 7 },
       { 10, 30, 10, 20, 20, 10 },
       /* Init   Lower  Higher */
-      { 10, 0, 0, 8, 1, 0 }, /* Hit points */
-      { 4, 3, 0, 2, 0, 3 },
-      12, /* Energy */
+      { 10, 0, 0, 6, 0, 1 }, /* Hit points */
+      { 3, 3, 0, 3, 0, 3 }, /* Energy */
+      MAXULEV,
       0,
       1,
       0,

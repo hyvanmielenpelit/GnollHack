@@ -170,6 +170,8 @@ struct objclass {
 #define O1_RUST_RESISTANT 0x00000040
 #define O1_CORROSION_RESISTANT 0x00000080
 
+#define O1_SPELL_EXPLOSION_EFFECT 0x00000100
+
 };
 
 struct class_sym {

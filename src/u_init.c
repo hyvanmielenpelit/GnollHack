@@ -692,16 +692,20 @@ u_init()
     u.ulevel = 0; /* set up some of the initial attributes */
 
 	u.ubasehpmax = newhp();
-	u.uhp = u.uhpmax = u.ubasehpmax + hpmaxadjustment();
-  
 	u.ubaseenmax = newpw();
-	u.uen = u.uenmax = u.ubaseenmax + enmaxadjustment();
 
-    u.uspellprot = 0;
+	u.uspellprot = 0;
     adjabil(0, 1);
     u.ulevel = u.ulevelmax = 1;
 
-    init_uhunger();
+	init_attr(75); /* init attribute values */
+	max_rank_sz(); /* set max str size for class ranks */
+
+	//With level and attributes known, calculate hp and maxhp, en, and maxen
+	u.uhp = u.uhpmax = u.ubasehpmax + hpmaxadjustment();
+	u.uen = u.uenmax = u.ubaseenmax + enmaxadjustment();
+
+	init_uhunger();
     for (i = 0; i <= MAXSPELL; i++)
         spl_book[i].sp_id = NO_SPELL;
     u.ublesscnt = 300; /* no prayers just yet */
@@ -956,10 +960,8 @@ u_init()
         ini_inv(Money);
     u.umoney0 += hidden_gold(); /* in case sack has gold in it */
 
-    find_ac();     /* get initial ac value */
-    init_attr(75); /* init attribute values */
-    max_rank_sz(); /* set max str size for class ranks */
-    /*
+	find_ac();     /* get initial ac value */
+	/*
      *  Do we really need this?
      */
     for (i = 0; i < A_MAX; i++)

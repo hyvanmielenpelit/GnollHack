@@ -63,7 +63,7 @@ const char *const flash_types[] =       /* also used in buzzmu(mcastu.c) */
         "bolt of lightning", "", "", "death ray", "",
 
         "magic missile", /* Spell equivalents must be 10-19 */
-        "fireball", "cone of cold", "sleep ray", "disintegrate",
+        "bolt of fire", "cone of cold", "sleep ray", "disintegrate",
         "bolt of lightning", /* there is no spell, used for retribution */
         "", "", "finger of death", "",
 
@@ -1237,7 +1237,8 @@ int ochance, achance; /* percent chance for ordinary objects, artifacts */
         || obj->otyp == SPE_BOOK_OF_THE_DEAD
         || obj->otyp == CANDELABRUM_OF_INVOCATION
         || obj->otyp == BELL_OF_OPENING
-        || (obj->otyp == CORPSE && is_rider(&mons[obj->corpsenm]))) {
+		|| objects[obj->otyp].oc_flags & O1_INDESTRUCTIBLE
+		|| (obj->otyp == CORPSE && is_rider(&mons[obj->corpsenm]))) {
         return TRUE;
     } else {
         int chance = rn2(100);
@@ -2363,6 +2364,10 @@ boolean ordinary;
 {
     boolean learn_it = FALSE;
     int damage = 0;
+	if (bigmonst(youmonst.data))
+		damage = d(objects[obj->otyp].oc_wldice, objects[obj->otyp].oc_wldam) + objects[obj->otyp].oc_wldmgplus;
+	else
+		damage = d(objects[obj->otyp].oc_wsdice, objects[obj->otyp].oc_wsdam) + objects[obj->otyp].oc_wsdmgplus;
 
     switch (obj->otyp) {
     case WAN_STRIKING:
@@ -2370,14 +2375,11 @@ boolean ordinary;
         learn_it = TRUE;
         if (Antimagic) {
             shieldeff(u.ux, u.uy);
+			damage = 0;
             pline("Boing!");
         } else {
             if (ordinary) {
                 You("bash yourself!");
-				if (bigmonst(youmonst.data))
-					damage = d(objects[obj->otyp].oc_wldice, objects[obj->otyp].oc_wldam) + objects[obj->otyp].oc_wldmgplus;
-				else
-					damage = d(objects[obj->otyp].oc_wsdice, objects[obj->otyp].oc_wsdam) + objects[obj->otyp].oc_wsdmgplus;
 			} else
                 damage = d(1 + obj->spe, 6);
             exercise(A_STR, FALSE);
@@ -2388,53 +2390,56 @@ boolean ordinary;
 		learn_it = TRUE;
 		if (ordinary) {
 			You("shoot yourself with a magical arrow!");
-			if (bigmonst(youmonst.data))
-				damage = d(objects[obj->otyp].oc_wldice, objects[obj->otyp].oc_wldam) + objects[obj->otyp].oc_wldmgplus;
-			else
-				damage = d(objects[obj->otyp].oc_wsdice, objects[obj->otyp].oc_wsdam) + objects[obj->otyp].oc_wsdmgplus;
-
 		}
 		else
 			damage = d(1 + obj->spe, 3);
 		exercise(A_STR, FALSE);
 		break;
 
+	case SPE_LIGHTNING_BOLT:
 	case WAN_LIGHTNING:
         learn_it = TRUE;
         if (!Shock_resistance) {
             You("shock yourself!");
-			if (bigmonst(youmonst.data))
-				damage = d(objects[obj->otyp].oc_wldice, objects[obj->otyp].oc_wldam) + objects[obj->otyp].oc_wldmgplus;
-			else
-				damage = d(objects[obj->otyp].oc_wsdice, objects[obj->otyp].oc_wsdam) + objects[obj->otyp].oc_wsdmgplus;
 			exercise(A_CON, FALSE);
         } else {
             shieldeff(u.ux, u.uy);
             You("zap yourself, but seem unharmed.");
-            ugolemeffects(AD_ELEC, d(12, 6));
-        }
+            ugolemeffects(AD_ELEC, damage);
+			damage = 0;
+		}
         destroy_item(WAND_CLASS, AD_ELEC);
         destroy_item(RING_CLASS, AD_ELEC);
         (void) flashburn((long) rnd(100));
         break;
 
-    case SPE_FIREBALL:
-        You("explode a fireball on top of yourself!");
-        explode(u.ux, u.uy, 11, d(6, 6), obj->otyp, WAND_CLASS, EXPL_FIERY);
+	case SPE_FIREBALL:
+		You("explode a fireball on top of yourself!");
+        explode(u.ux, u.uy, RAY_FIRE, damage, obj->otyp, obj->oclass, EXPL_FIERY);
         break;
-    case WAN_FIRE:
+	case SPE_FIRE_STORM:
+		You("conjure a fire storm on top of yourself!");
+		explode(u.ux, u.uy, RAY_FIRE, damage, obj->otyp, obj->oclass, EXPL_FIERY);
+		break;
+	case SPE_ICE_STORM:
+		You("conjure an ice storm on top of yourself!");
+		explode(u.ux, u.uy, RAY_FIRE, damage, obj->otyp, obj->oclass, EXPL_FROSTY);
+		break;
+	case SPE_THUNDERSTORM:
+		You("conjure a thunderstorm on top of yourself!");
+		explode(u.ux, u.uy, RAY_LIGHTNING, damage, obj->otyp, obj->oclass, EXPL_MAGICAL);
+		break;
+	case SPE_FIRE_BOLT:
+	case WAN_FIRE:
     case FIRE_HORN:
         learn_it = TRUE;
         if (Fire_resistance) {
             shieldeff(u.ux, u.uy);
             You_feel("rather warm.");
-            ugolemeffects(AD_FIRE, d(12, 6));
+            ugolemeffects(AD_FIRE, damage);
+			damage = 0;
         } else {
             pline("You've set yourself afire!");
-			if (bigmonst(youmonst.data))
-				damage = d(objects[obj->otyp].oc_wldice, objects[obj->otyp].oc_wldam) + objects[obj->otyp].oc_wldmgplus;
-			else
-				damage = d(objects[obj->otyp].oc_wsdice, objects[obj->otyp].oc_wsdam) + objects[obj->otyp].oc_wsdmgplus;
         }
         burn_away_slime();
         (void) burnarmor(&youmonst);
@@ -2451,13 +2456,10 @@ boolean ordinary;
         if (Cold_resistance) {
             shieldeff(u.ux, u.uy);
             You_feel("a little chill.");
-            ugolemeffects(AD_COLD, d(12, 6));
+            ugolemeffects(AD_COLD, damage);
+			damage = 0;
         } else {
             You("imitate a popsicle!");
-			if (bigmonst(youmonst.data))
-				damage = d(objects[obj->otyp].oc_wldice, objects[obj->otyp].oc_wldam) + objects[obj->otyp].oc_wldmgplus;
-			else
-				damage = d(objects[obj->otyp].oc_wsdice, objects[obj->otyp].oc_wsdam) + objects[obj->otyp].oc_wsdmgplus;
 		}
         destroy_item(POTION_CLASS, AD_COLD);
         break;
@@ -2468,18 +2470,16 @@ boolean ordinary;
         if (Antimagic) {
             shieldeff(u.ux, u.uy);
             pline_The("missiles bounce!");
+			damage = 0;
         } else {
-			if (bigmonst(youmonst.data))
-				damage = d(objects[obj->otyp].oc_wldice, objects[obj->otyp].oc_wldam) + objects[obj->otyp].oc_wldmgplus;
-			else
-				damage = d(objects[obj->otyp].oc_wsdice, objects[obj->otyp].oc_wsdam) + objects[obj->otyp].oc_wsdmgplus;
 			pline("Idiot!  You've shot yourself!");
         }
         break;
 
     case WAN_POLYMORPH:
     case SPE_POLYMORPH:
-        if (!Unchanging) {
+		damage = 0;
+		if (!Unchanging) {
             learn_it = TRUE;
             polyself(0);
         }
@@ -2487,7 +2487,8 @@ boolean ordinary;
 
     case WAN_CANCELLATION:
     case SPE_CANCELLATION:
-        (void) cancel_monst(&youmonst, obj, TRUE, TRUE, TRUE);
+		damage = 0;
+		(void) cancel_monst(&youmonst, obj, TRUE, TRUE, TRUE);
         break;
 
     case SPE_DRAIN_LIFE:
@@ -2499,7 +2500,8 @@ boolean ordinary;
         break;
 
     case WAN_MAKE_INVISIBLE: {
-        /* have to test before changing HInvis but must change
+		damage = 0;
+		/* have to test before changing HInvis but must change
          * HInvis before doing newsym().
          */
         int msg = !Invis && !Blind && !BInvis;
@@ -2523,7 +2525,8 @@ boolean ordinary;
     }
 
     case WAN_SPEED_MONSTER:
-        if (!(HFast & INTRINSIC)) {
+		damage = 0;
+		if (!(HFast & INTRINSIC)) {
             learn_it = TRUE;
             if (!Fast)
                 You("speed up.");
@@ -2536,7 +2539,8 @@ boolean ordinary;
 
     case WAN_SLEEP:
     case SPE_SLEEP:
-        learn_it = TRUE;
+		damage = 0;
+		learn_it = TRUE;
         if (Sleep_resistance) {
             shieldeff(u.ux, u.uy);
             You("don't feel sleepy!");
@@ -2548,7 +2552,8 @@ boolean ordinary;
 
     case WAN_SLOW_MONSTER:
     case SPE_SLOW_MONSTER:
-        if (HFast & (TIMEOUT | INTRINSIC)) {
+		damage = 0;
+		if (HFast & (TIMEOUT | INTRINSIC)) {
             learn_it = TRUE;
             u_slow_down();
         }
@@ -2556,7 +2561,8 @@ boolean ordinary;
 
     case WAN_TELEPORTATION:
     case SPE_TELEPORT_AWAY:
-        tele();
+		damage = 0;
+		tele();
         /* same criteria as when mounted (zap_steed) */
         if ((Teleport_control && !Stunned) || !couldsee(u.ux0, u.uy0)
             || distu(u.ux0, u.uy0) >= 16)
@@ -2565,7 +2571,8 @@ boolean ordinary;
 
     case WAN_DEATH:
     case SPE_FINGER_OF_DEATH:
-        if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance) {
+		damage = 0;
+		if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance) {
             pline((obj->otyp == WAN_DEATH)
                       ? "The wand shoots an apparently harmless beam at you."
                       : "You seem no deader than before.");
@@ -2580,7 +2587,8 @@ boolean ordinary;
         done(DIED);
         break;
 	case WAN_DISINTEGRATION:
-		if (Disint_resistance || noncorporeal(youmonst.data)) {					
+		damage = 0;
+		if (Disint_resistance || noncorporeal(youmonst.data)) {
 			pline((obj->otyp == WAN_DISINTEGRATION)
 				? "The wand shoots an apparently harmless beam at you."
 				: "You seem to exist as you did before.");
@@ -2620,7 +2628,8 @@ boolean ordinary;
 		break;
 	case WAN_UNDEAD_TURNING:
     case SPE_TURN_UNDEAD:
-        learn_it = TRUE;
+		damage = 0;
+		learn_it = TRUE;
         (void) unturn_dead(&youmonst);
         if (is_undead(youmonst.data)) {
             You_feel("frightened and %sstunned.",
@@ -2631,10 +2640,10 @@ boolean ordinary;
         break;
     case SPE_HEALING:
     case SPE_EXTRA_HEALING:
-        learn_it = TRUE; /* (no effect for spells...) */
-        healup(d(6, obj->otyp == SPE_EXTRA_HEALING ? 8 : 4), 0, FALSE,
-               (obj->blessed || obj->otyp == SPE_EXTRA_HEALING));
+		learn_it = TRUE; /* (no effect for spells...) */
+        healup(damage, 0, FALSE, (obj->blessed || obj->otyp == SPE_EXTRA_HEALING));
         You_feel("%sbetter.", obj->otyp == SPE_EXTRA_HEALING ? "much " : "");
+		damage = 0;
         break;
     case WAN_LIGHT: /* (broken wand) */
         /* assert( !ordinary ); */
@@ -2651,6 +2660,7 @@ boolean ordinary;
         break;
     case WAN_OPENING:
     case SPE_KNOCK:
+		damage = 0;
         if (Punished) {
             learn_it = TRUE;
             unpunish();
@@ -2669,7 +2679,8 @@ boolean ordinary;
         break;
     case WAN_LOCKING:
     case SPE_WIZARD_LOCK:
-        if (!u.utrap) {
+		damage = 0;
+		if (!u.utrap) {
             (void) closeholdingtrap(&youmonst, &learn_it);
         }
         break;
@@ -2677,9 +2688,11 @@ boolean ordinary;
     case SPE_DIG:
     case SPE_DETECT_UNSEEN:
     case WAN_NOTHING:
-        break;
+		damage = 0;
+		break;
     case WAN_PROBING: {
-        struct obj *otmp;
+		damage = 0;
+		struct obj *otmp;
 
         for (otmp = invent; otmp; otmp = otmp->nobj) {
             otmp->dknown = 1;
@@ -2694,7 +2707,8 @@ boolean ordinary;
         break;
     }
     case SPE_STONE_TO_FLESH: {
-        struct obj *otmp, *onxt;
+		damage = 0;
+		struct obj *otmp, *onxt;
         boolean didmerge;
 
         if (u.umonnum == PM_STONE_GOLEM) {
@@ -4152,8 +4166,7 @@ boolean u_caused;
         if (obj->oclass == SCROLL_CLASS || obj->oclass == SPBOOK_CLASS
             || (obj->oclass == FOOD_CLASS
                 && obj->otyp == GLOB_OF_GREEN_SLIME)) {
-            if (obj->otyp == SCR_FIRE || obj->otyp == SPE_FIREBALL
-                || obj_resists(obj, 2, 100))
+            if (objects[obj->otyp].oc_flags & O1_FIRE_RESISTANT || obj_resists(obj, 2, 100))
                 continue;
             scrquan = obj->quan; /* number present */
             delquan = 0L;        /* number to destroy */
@@ -4304,6 +4317,12 @@ boolean say; /* Announce out of sight hit/miss events if true */
 	else
 		zaptype = abstype;
 
+
+	//Define if explosion effect
+	boolean isexplosioneffect = FALSE;
+	if (origobj && objects[origobj->otyp].oc_flags & O1_SPELL_EXPLOSION_EFFECT) // (type == ZT_SPELL(ZT_FIRE));
+		isexplosioneffect = TRUE;
+
     /* if its a Hero Spell then get its SPE_TYPE */
     spell_type = is_hero_spell(type) ? SPE_MAGIC_MISSILE + abstype : 0;
 
@@ -4359,7 +4378,8 @@ boolean say; /* Announce out of sight hit/miss events if true */
         /* hit() and miss() need bhitpos to match the target */
         bhitpos.x = sx, bhitpos.y = sy;
         /* Fireballs only damage when they explode */
-        if (type != ZT_SPELL(ZT_FIRE)) {
+        if (!isexplosioneffect) //type != ZT_SPELL(ZT_FIRE)) {
+		{
             range += zap_over_floor(sx, sy, type, &shopdamage, 0);
             /* zap with fire -> melt ice -> drown monster, so monster
                found and cached above might not be here any more */
@@ -4367,7 +4387,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
         }
 
         if (mon) {
-            if (type == ZT_SPELL(ZT_FIRE))
+            if (isexplosioneffect) //type == ZT_SPELL(ZT_FIRE))
                 break;
             if (type >= 0)
                 mon->mstrategy &= ~STRAT_WAITMASK;
@@ -4388,7 +4408,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     int tmp = zhitm(mon, type, origobj, dmgdice, dicesize, dmgplus, &otmp);
 
                     if (is_rider(mon->data)
-                        && abs(type) == ZT_BREATH(ZT_DISINTEGRATION)) {
+                        && abstype == ZT_DISINTEGRATION) {
                         if (canseemon(mon)) {
                             hit(fltxt, mon, ".", -1);
                             pline("%s disintegrates.", Monnam(mon));
@@ -4426,7 +4446,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                                if it's fire, highly flammable monsters leave
                                no corpse; don't bother reporting that they
                                "burn completely" -- unnecessary verbosity */
-                            if ((type % 10 == ZT_FIRE)
+                            if ((abstype == ZT_FIRE)
                                 /* paper golem or straw golem */
                                 && completelyburns(mon->data))
                                 xkflags |= XKILL_NOCORPSE;
@@ -4500,20 +4520,22 @@ boolean say; /* Announce out of sight hit/miss events if true */
             || (closed_door(sx, sy) && range >= 0)) {
             int bounce, bchance;
             uchar rmn;
-            boolean fireball;
+            boolean fireball = FALSE;
 
         make_bounce:
             bchance = (levl[sx][sy].typ == STONE) ? 10
                 : (In_mines(&u.uz) && IS_WALL(levl[sx][sy].typ)) ? 20
                 : 75;
             bounce = 0;
-            fireball = (type == ZT_SPELL(ZT_FIRE));
-            if ((--range > 0 && isok(lsx, lsy) && cansee(lsx, lsy))
+			// if(type == ZT_SPELL(ZT_FIRE));
+			fireball = isexplosioneffect;
+
+			if ((--range > 0 && isok(lsx, lsy) && cansee(lsx, lsy))
                 || fireball) {
                 if (Is_airlevel(&u.uz)) { /* nothing to bounce off of */
                     pline_The("%s vanishes into the aether!", fltxt);
-                    if (fireball)
-                        type = ZT_WAND(ZT_FIRE); /* skip pending fireball */
+//                    if (fireball) //No need to do anything here
+//                        type = ZT_WAND(ZT_FIRE); /* skip pending fireball */
                     break;
                 } else if (fireball) {
                     sx = lsx;
@@ -4554,8 +4576,45 @@ boolean say; /* Announce out of sight hit/miss events if true */
         }
     }
     tmp_at(DISP_END, 0);
-    if (type == ZT_SPELL(ZT_FIRE))
-        explode(sx, sy, type, d(12, 6), 0, 0, EXPL_FIERY);
+	if (isexplosioneffect) //type == ZT_SPELL(ZT_FIRE))
+	{
+		int damage = 0;
+		if (origobj)
+			damage = d(objects[origobj->otyp].oc_wsdice, objects[origobj->otyp].oc_wsdam) + objects[origobj->otyp].oc_wsdice;
+		else
+			damage = d(dmgdice, dicesize) + dmgplus;
+
+		int expltype = 0;
+		switch (abstype)
+		{
+		case ZT_COLD:
+			expltype = EXPL_FROSTY;
+			break;
+		case ZT_FIRE:
+			expltype = EXPL_FIERY;
+			break;
+		case ZT_POISON_GAS:
+		case ZT_ACID:
+			expltype = EXPL_NOXIOUS;
+			break;
+		case ZT_SLEEP:
+		case ZT_DEATH:
+		case ZT_DISINTEGRATION:
+		default:
+			expltype = EXPL_MAGICAL;
+			break;
+		}
+
+		int otyp = 0;
+		int oclass = 0;
+		if (origobj)
+		{
+			otyp = origobj->otyp;
+			oclass = origobj->oclass;
+		}
+
+		explode(sx, sy, type, damage, otyp, oclass, expltype);
+	}
     if (shopdamage)
         pay_for_damage(abstype == ZT_FIRE
                           ? "burn away"
@@ -5095,7 +5154,7 @@ boolean forcedestroy;
     case AD_FIRE:
         xresist = (Fire_resistance && obj->oclass != POTION_CLASS
                    && obj->otyp != GLOB_OF_GREEN_SLIME);
-        if (obj->otyp == SCR_FIRE || obj->otyp == SPE_FIREBALL)
+        if (objects[obj->otyp].oc_flags & O1_FIRE_RESISTANT)
             skip++;
         if (obj->otyp == SPE_BOOK_OF_THE_DEAD) {
             skip++;
@@ -5334,7 +5393,7 @@ int osym, dmgtyp;
                 skip++;
             break;
         case AD_FIRE:
-            if (obj->otyp == SCR_FIRE || obj->otyp == SPE_FIREBALL)
+            if (objects[obj->otyp].oc_flags & O1_FIRE_RESISTANT)
                 skip++;
             if (obj->otyp == SPE_BOOK_OF_THE_DEAD) {
                 skip++;
