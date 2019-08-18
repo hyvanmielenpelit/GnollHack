@@ -36,6 +36,7 @@ int expltype;
     int i, j, k, damu = dam;
     boolean starting = 1;
     boolean visible, any_shield;
+	boolean instadeath = FALSE;
     int uhurt = 0; /* 0=unhurt, 1=items damaged, 2=you and items damaged */
     const char *str = (const char *) 0;
     int idamres, idamnonres;
@@ -113,20 +114,21 @@ int expltype;
             break;
         case 1:
             str = (olet == BURNING_OIL) ? "burning oil"
-                     : (olet == SCROLL_CLASS) ? "tower of flame" : "fireball";
+                     : (olet == SCROLL_CLASS) ? "tower of flame" : (objtype == SPE_FIRE_STORM) ? "fire storm" : "fireball";
             /* fire damage, not physical damage */
             adtyp = AD_FIRE;
             break;
         case 2:
-            str = "ball of cold";
+            str = (objtype == SPE_ICE_STORM) ? "ice storm" : "ball of cold";
             adtyp = AD_COLD;
             break;
         case 4:
             str = "disintegration field";
             adtyp = AD_DISN;
-            break;
+			instadeath = TRUE;
+			break;
         case 5:
-            str = "ball of lightning";
+            str = (objtype == SPE_THUNDERSTORM) ? "thunderstorm" : "ball of lightning";
             adtyp = AD_ELEC;
             break;
         case 6:
@@ -140,6 +142,7 @@ int expltype;
 		case 8:
 			str = "death field";
 			adtyp = AD_DRAY;
+			instadeath = TRUE;
 			break;
 		default:
             impossible("explosion base type %d?", type);
@@ -294,7 +297,7 @@ int expltype;
             You_hear("a blast.");
     }
 
-    if (dam)
+    if (dam || instadeath)
         for (i = 0; i < 3; i++)
             for (j = 0; j < 3; j++) {
                 if (explmask[i][j] == 2)
@@ -413,7 +416,13 @@ int expltype;
                         if (cansee(i + x - 1, j + y - 1) || inside_engulfer)
                             pline("%s resists the %s!", Monnam(mtmp), str);
                         mdam = (dam + 1) / 2;
-                    }
+						if(instadeath)
+						{
+							instadeath = FALSE;
+							mdam = 0;
+						}
+					}
+					else
                     /* if grabber is reaching into hero's spot and
                        hero's spot is within explosion radius, grabber
                        gets hit by double damage */
@@ -427,8 +436,14 @@ int expltype;
                         mdam *= 2;
                     else if (resists_fire(mtmp) && adtyp == AD_COLD)
                         mdam *= 2;
-                    mtmp->mhp -= mdam;
-                    mtmp->mhp -= (idamres + idamnonres);
+
+					if (instadeath)
+						mtmp->mhp = 0;
+					else
+					{
+						mtmp->mhp -= mdam;
+						mtmp->mhp -= (idamres + idamnonres);
+					}
                 }
                 if (DEADMONSTER(mtmp)) {
                     int xkflg = ((adtyp == AD_FIRE
@@ -483,6 +498,7 @@ int expltype;
             burn_away_slime();
         if (Invulnerable) {
             damu = 0;
+			instadeath = FALSE;
             You("are unharmed!");
         } else if (adtyp == AD_PHYS || physical_dmg)
             damu = Maybe_Half_Phys(damu);
@@ -495,7 +511,7 @@ int expltype;
         destroy_item(WAND_CLASS, (int) adtyp);
 
         ugolemeffects((int) adtyp, damu);
-        if (uhurt == 2) {
+        if (uhurt == 2 && damu) {
             /* if poly'd hero is grabbing another victim, hero takes
                double damage (note: don't rely on u.ustuck here because
                that victim might have been killed when hit by the blast) */
@@ -503,7 +519,15 @@ int expltype;
                 damu *= 2;
             /* hero does not get same fire-resistant vs cold and
                cold-resistant vs fire double damage as monsters [why not?] */
-            if (Upolyd)
+			if (instadeath)
+			{
+				if (Upolyd)
+					damu = u.mh;
+				else
+					damu = u.uhp;
+			}
+
+			if (Upolyd)
                 u.mh -= damu;
             else
                 u.uhp -= damu;

@@ -47,7 +47,7 @@ struct conditionals {
 #endif
     /* commented out in monst.c at present */
     { MON_GLYPH, PM_SHOCKING_SPHERE, "beholder" },
-    { MON_GLYPH, PM_BABY_SILVER_DRAGON, "baby shimmering dragon" },
+    { MON_GLYPH, PM_SILVER_DRAGON_HATCHLING, "shimmering dragon hatchling" },
     { MON_GLYPH, PM_SILVER_DRAGON, "shimmering dragon" },
     { MON_GLYPH, PM_JABBERWOCK, "vorpal jabberwock" },
     { MON_GLYPH, PM_VAMPIRE_LORD, "vampire mage" },

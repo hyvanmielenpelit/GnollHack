@@ -397,8 +397,8 @@ MONSTER:(';',"kraken"),(07,07)
 #
 # the nesting dragon
 MONSTER:('D',"yellow dragon"), (05,04), asleep
-[50%]: MONSTER: ('D',"baby yellow dragon"), (04,04), asleep
-[25%]: MONSTER: ('D',"baby yellow dragon"), (04,05), asleep
+[50%]: MONSTER: ('D',"yellow dragon hatchling"), (04,04), asleep
+[25%]: MONSTER: ('D',"yellow dragon hatchling"), (04,05), asleep
 OBJECT:('%',"egg"), (05,04), montype:"yellow dragon"
 [50%]: OBJECT: ('%',"egg"), (05,04), montype:"yellow dragon"
 [25%]: OBJECT: ('%',"egg"), (05,04), montype:"yellow dragon"

@@ -306,15 +306,15 @@ unsigned corpseflags;
 	int basemonsterindex = 0;
 
     switch (mndx) {
-	case PM_BABY_GRAY_DRAGON:
-	case PM_BABY_SILVER_DRAGON:
-	case PM_BABY_RED_DRAGON:
-	case PM_BABY_ORANGE_DRAGON:
-	case PM_BABY_WHITE_DRAGON:
-	case PM_BABY_BLACK_DRAGON:
-	case PM_BABY_BLUE_DRAGON:
-	case PM_BABY_GREEN_DRAGON:
-	case PM_BABY_YELLOW_DRAGON:
+	case PM_GRAY_DRAGON_HATCHLING:
+	case PM_SILVER_DRAGON_HATCHLING:
+	case PM_RED_DRAGON_HATCHLING:
+	case PM_ORANGE_DRAGON_HATCHLING:
+	case PM_WHITE_DRAGON_HATCHLING:
+	case PM_BLACK_DRAGON_HATCHLING:
+	case PM_BLUE_DRAGON_HATCHLING:
+	case PM_GREEN_DRAGON_HATCHLING:
+	case PM_YELLOW_DRAGON_HATCHLING:
 	case PM_GRAY_DRAGON:
     case PM_SILVER_DRAGON:
     case PM_RED_DRAGON:
@@ -335,10 +335,10 @@ unsigned corpseflags;
 	case PM_ANCIENT_YELLOW_DRAGON:
 		/* Make dragon scales.  This assumes that the order of the
            dragons is the same as the order of the scales. */
-		if (mndx >= PM_BABY_GRAY_DRAGON && mndx <= PM_BABY_YELLOW_DRAGON)
+		if (mndx >= PM_GRAY_DRAGON_HATCHLING && mndx <= PM_YELLOW_DRAGON_HATCHLING)
 		{
 			oneinchance = mtmp->mrevived ? 50 : 5;
-			basemonsterindex = PM_BABY_GRAY_DRAGON;
+			basemonsterindex = PM_GRAY_DRAGON_HATCHLING;
 		}
 		else if (mndx >= PM_GRAY_DRAGON && mndx <= PM_YELLOW_DRAGON)
 		{

@@ -72,7 +72,7 @@ set_uasmon()
     /* resists_magm() takes wielded, worn, and carried equipment into
        into account; cheat and duplicate its monster-specific part */
     PROPSET(ANTIMAGIC, (dmgtype(mdat, AD_MAGM)
-                        || mdat == &mons[PM_BABY_GRAY_DRAGON]
+                        || mdat == &mons[PM_GRAY_DRAGON_HATCHLING]
                         || dmgtype(mdat, AD_RBRE)));
     PROPSET(SICK_RES, (mdat->mlet == S_FUNGUS || mdat == &mons[PM_GHOUL]));
 

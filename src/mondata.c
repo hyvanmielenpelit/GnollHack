@@ -120,7 +120,7 @@ struct monst *mon;
     struct obj *o;
 
     /* as of 3.2.0:  gray dragons, Angels, Oracle, Yeenoghu */
-    if (dmgtype(ptr, AD_MAGM) || ptr == &mons[PM_BABY_GRAY_DRAGON]
+    if (dmgtype(ptr, AD_MAGM) || ptr == &mons[PM_GRAY_DRAGON_HATCHLING]
         || dmgtype(ptr, AD_RBRE)) /* Chromatic Dragon */
         return TRUE;
     /* check for magic resistance granted by wielded weapon */
@@ -720,8 +720,17 @@ const char *in_str;
         static const struct alt_spl names[] = {
             /* Alternate spellings */
             { "grey dragon", PM_GRAY_DRAGON },
-            { "baby grey dragon", PM_BABY_GRAY_DRAGON },
-            { "grey unicorn", PM_GRAY_UNICORN },
+            { "grey dragon hatchling", PM_GRAY_DRAGON_HATCHLING },
+			{ "baby gray dragon", PM_GRAY_DRAGON_HATCHLING },
+			{ "baby grey dragon", PM_GRAY_DRAGON_HATCHLING },
+			{ "baby silver dragon", PM_SILVER_DRAGON_HATCHLING },
+			{ "baby red dragon", PM_RED_DRAGON_HATCHLING },
+			{ "baby white dragon", PM_WHITE_DRAGON_HATCHLING },
+			{ "baby black dragon", PM_BLACK_DRAGON_HATCHLING },
+			{ "baby blue dragon", PM_BLUE_DRAGON_HATCHLING },
+			{ "baby green dragon", PM_GREEN_DRAGON_HATCHLING },
+			{ "baby yellow dragon", PM_YELLOW_DRAGON_HATCHLING },
+			{ "grey unicorn", PM_GRAY_UNICORN },
             { "grey ooze", PM_GRAY_OOZE },
             { "gray-elf", PM_GREY_ELF },
             { "mindflayer", PM_MIND_FLAYER },
@@ -964,6 +973,7 @@ static const short grownups[][2] = {
     { PM_DWARF_LORD, PM_DWARF_KING },
 	{ PM_GNOLL, PM_GNOLL_LORD },
 	{ PM_GNOLL_LORD, PM_GNOLL_KING },
+	{ PM_FLIND, PM_FLIND_LORD },
 	{ PM_MIND_FLAYER, PM_MASTER_MIND_FLAYER },
     { PM_ORC, PM_ORC_CAPTAIN },
     { PM_HILL_ORC, PM_ORC_CAPTAIN },
@@ -983,15 +993,15 @@ static const short grownups[][2] = {
     { PM_MASTER_LICH, PM_ARCH_LICH },
     { PM_VAMPIRE, PM_VAMPIRE_LORD },
     { PM_BAT, PM_GIANT_BAT },
-    { PM_BABY_GRAY_DRAGON, PM_GRAY_DRAGON },
-    { PM_BABY_SILVER_DRAGON, PM_SILVER_DRAGON },
-    { PM_BABY_RED_DRAGON, PM_RED_DRAGON },
-    { PM_BABY_WHITE_DRAGON, PM_WHITE_DRAGON },
-    { PM_BABY_ORANGE_DRAGON, PM_ORANGE_DRAGON },
-    { PM_BABY_BLACK_DRAGON, PM_BLACK_DRAGON },
-    { PM_BABY_BLUE_DRAGON, PM_BLUE_DRAGON },
-    { PM_BABY_GREEN_DRAGON, PM_GREEN_DRAGON },
-    { PM_BABY_YELLOW_DRAGON, PM_YELLOW_DRAGON },
+    { PM_GRAY_DRAGON_HATCHLING, PM_GRAY_DRAGON },
+    { PM_SILVER_DRAGON_HATCHLING, PM_SILVER_DRAGON },
+    { PM_RED_DRAGON_HATCHLING, PM_RED_DRAGON },
+    { PM_WHITE_DRAGON_HATCHLING, PM_WHITE_DRAGON },
+    { PM_ORANGE_DRAGON_HATCHLING, PM_ORANGE_DRAGON },
+    { PM_BLACK_DRAGON_HATCHLING, PM_BLACK_DRAGON },
+    { PM_BLUE_DRAGON_HATCHLING, PM_BLUE_DRAGON },
+    { PM_GREEN_DRAGON_HATCHLING, PM_GREEN_DRAGON },
+    { PM_YELLOW_DRAGON_HATCHLING, PM_YELLOW_DRAGON },
 	{ PM_GRAY_DRAGON, PM_ANCIENT_GRAY_DRAGON },
 	{ PM_SILVER_DRAGON, PM_ANCIENT_SILVER_DRAGON },
 	{ PM_RED_DRAGON, PM_ANCIENT_RED_DRAGON },

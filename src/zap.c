@@ -368,19 +368,24 @@ struct obj *otmp;
         break;
     case SPE_HEALING:
     case SPE_EXTRA_HEALING:
-        reveal_invis = TRUE;
+	case SPE_FULL_HEALING:
+		reveal_invis = TRUE;
         if (mtmp->data != &mons[PM_PESTILENCE]) {
             wake = FALSE; /* wakeup() makes the target angry */
-            mtmp->mhp += d(6, otyp == SPE_EXTRA_HEALING ? 8 : 4);
+			if(otyp == SPE_FULL_HEALING)
+				mtmp->mhp = mtmp->mhpmax;
+			else
+	            mtmp->mhp += d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus;
+
             if (mtmp->mhp > mtmp->mhpmax)
                 mtmp->mhp = mtmp->mhpmax;
             /* plain healing must be blessed to cure blindness; extra
                healing only needs to not be cursed, so spell always cures
                [potions quaffed by monsters behave slightly differently;
                we use the rules for the hero here...] */
-            if (skilled_spell || otyp == SPE_EXTRA_HEALING)
+            if (skilled_spell || otyp == SPE_EXTRA_HEALING || otyp == SPE_FULL_HEALING)
                 mcureblindness(mtmp, canseemon(mtmp));
-            if (canseemon(mtmp)) {
+			if (canseemon(mtmp)) {
                 if (disguised_mimic) {
                     if (is_obj_mappear(mtmp,STRANGE_OBJECT)) {
                         /* it can do better now */
@@ -389,16 +394,16 @@ struct obj *otmp;
                     } else
                         mimic_hit_msg(mtmp, otyp);
                 } else
-                    pline("%s looks%s better.", Monnam(mtmp),
-                          otyp == SPE_EXTRA_HEALING ? " much" : "");
+                    pline("%s looks %s.", Monnam(mtmp),
+                          otyp == SPE_EXTRA_HEALING ? "much better" : otyp == SPE_FULL_HEALING ? "completely healed" : "better");
             }
             if (mtmp->mtame || mtmp->mpeaceful) {
                 adjalign(Role_if(PM_HEALER) ? 1 : sgn(u.ualign.type));
             }
         } else { /* Pestilence */
-            /* Pestilence will always resist; damage is half of 3d{4,8} */
+            /* Pestilence will always resist; damage is half of 3d{4,8,12} */
             (void) resist(mtmp, otmp->oclass,
-                          d(3, otyp == SPE_EXTRA_HEALING ? 8 : 4), TELL);
+                          d(3, otyp == SPE_FULL_HEALING ? 12 : otyp == SPE_EXTRA_HEALING ? 8 : 4), TELL);
         }
         break;
     case WAN_LIGHT: /* (broken wand) */
@@ -2129,7 +2134,8 @@ struct obj *obj, *otmp;
 		case WAN_NOTHING:
         case SPE_HEALING:
         case SPE_EXTRA_HEALING:
-            res = 0;
+		case SPE_FULL_HEALING:
+			res = 0;
             break;
         case SPE_STONE_TO_FLESH:
             res = stone_to_flesh_obj(obj);
@@ -2429,6 +2435,10 @@ boolean ordinary;
 		You("conjure a thunderstorm on top of yourself!");
 		explode(u.ux, u.uy, RAY_LIGHTNING, damage, obj->otyp, obj->oclass, EXPL_MAGICAL);
 		break;
+	case SPE_DEATHSPELL:
+		You("conjure a death field on top of yourself!");
+		explode(u.ux, u.uy, RAY_DEATH, damage, obj->otyp, obj->oclass, EXPL_MAGICAL);
+		break;
 	case SPE_FIRE_BOLT:
 	case WAN_FIRE:
     case FIRE_HORN:
@@ -2645,7 +2655,13 @@ boolean ordinary;
         You_feel("%sbetter.", obj->otyp == SPE_EXTRA_HEALING ? "much " : "");
 		damage = 0;
         break;
-    case WAN_LIGHT: /* (broken wand) */
+	case SPE_FULL_HEALING:
+		learn_it = TRUE; /* (no effect for spells...) */
+		healup(9999, 0, TRUE, TRUE);
+		You_feel("completely healed.");
+		damage = 0;
+		break;
+	case WAN_LIGHT: /* (broken wand) */
         /* assert( !ordinary ); */
         damage = d(obj->spe, 25);
         /*FALLTHRU*/
@@ -2861,7 +2877,8 @@ struct obj *obj; /* wand or spell */
     case WAN_SPEED_MONSTER:
     case SPE_HEALING:
     case SPE_EXTRA_HEALING:
-    case SPE_DRAIN_LIFE:
+	case SPE_FULL_HEALING:
+	case SPE_DRAIN_LIFE:
     case WAN_OPENING:
     case SPE_KNOCK:
         (void) bhitm(u.usteed, obj);

@@ -1107,6 +1107,7 @@ boolean atme;
 	case SPE_FIRE_STORM:
     case SPE_ICE_STORM:
 	case SPE_THUNDERSTORM:
+	case SPE_DEATHSPELL:
 		if (throwspell()) {
             cc.x = u.dx;
             cc.y = u.dy;
@@ -1164,10 +1165,11 @@ boolean atme;
 	case SPE_DETECT_UNSEEN:
     case SPE_HEALING:
     case SPE_EXTRA_HEALING:
-    case SPE_DRAIN_LIFE:
+	case SPE_FULL_HEALING:
+	case SPE_DRAIN_LIFE:
     case SPE_STONE_TO_FLESH:
         if (objects[otyp].oc_dir != NODIR) {
-            if (otyp == SPE_HEALING || otyp == SPE_EXTRA_HEALING) {
+            if (otyp == SPE_HEALING || otyp == SPE_EXTRA_HEALING || otyp == SPE_FULL_HEALING) {
                 /* healing and extra healing are actually potion effects,
                    but they've been extended to take a direction like wands */
                 if (role_skill >= P_SKILLED)
@@ -1760,8 +1762,8 @@ int *spell_no;
 	if (splaction == SPELLMENU_PREPARE)
 	{
 		if (!iflags.menu_tab_sep) {
-			Sprintf(buf, "%-20s     Level Casts  Material components    ", "    Name");
-			fmt = "%-20s  %s   %5s  %-23s";
+			Sprintf(buf, "%-20s     Level Casts  Material components                ", "    Name");
+			fmt = "%-20s  %s   %5s  %-35s";
 			//		fmt = "%-20s  %2d   %-12s %4d %3d%% %9s";
 		}
 		else {
@@ -1992,7 +1994,7 @@ int spell;
         splcaster += urole.spelsbon;
 
     /* `healing spell' bonus */
-    if (spellid(spell) == SPE_HEALING || spellid(spell) == SPE_EXTRA_HEALING
+    if (spellid(spell) == SPE_HEALING || spellid(spell) == SPE_EXTRA_HEALING || spellid(spell) == SPE_FULL_HEALING
         || spellid(spell) == SPE_CURE_BLINDNESS
         || spellid(spell) == SPE_CURE_SICKNESS
         || spellid(spell) == SPE_RESTORE_ABILITY
