@@ -864,8 +864,13 @@ buzzmu(mtmp, mattk)
 register struct monst *mtmp;
 register struct attack *mattk;
 {
-    /* don't print constant stream of curse messages for 'normal'
+	//Sanity check
+	if (!mtmp || !mattk)
+		return 0;
+	
+	/* don't print constant stream of curse messages for 'normal'
        spellcasting monsters at range */
+
     if (mattk->adtyp > AD_SPC2)
         return (0);
 
@@ -879,7 +884,7 @@ register struct attack *mattk;
             if (canseemon(mtmp))
                 pline("%s zaps you with a %s!", Monnam(mtmp),
                       flash_types[ad_to_typ(mattk->adtyp)]);
-            buzz(-ad_to_typ(mattk->adtyp), (int) mattk->damn, mtmp->mx,
+			buzz(-ad_to_typ(mattk->adtyp), (struct obj*)0, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp, mtmp->mx,
                  mtmp->my, sgn(tbx), sgn(tby));
         } else
             impossible("Monster spell %d cast", mattk->adtyp - 1);

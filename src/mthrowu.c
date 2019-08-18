@@ -1033,7 +1033,7 @@ struct attack  *mattk;
             if ((typ >= AD_MAGM) && (typ <= AD_DRAY)) {
                 if (canseemon(mtmp))
                     pline("%s breathes %s!", Monnam(mtmp), breathwep[typ - 1]);
-                dobuzz((int) (-20 - (typ - 1)), (int) mattk->damn,
+                dobuzz((int) (-20 - (typ - 1)), (struct obj*)0, (int) mattk->damn, (int)mattk->damd, (int)mattk->damp,
                        mtmp->mx, mtmp->my, sgn(tbx), sgn(tby), FALSE);
                 nomul(0);
                 /* breath runs out sometimes. Also, give monster some
@@ -1215,6 +1215,10 @@ breamu(mtmp, mattk)
 struct monst *mtmp;
 struct attack *mattk;
 {
+	//Sanity check
+	if (!mtmp || !mattk)
+		return 0;
+
     /* if new breath types are added, change AD_ACID to max type */
     int typ = (mattk->adtyp == AD_RBRE) ? rnd(AD_ACID) : mattk->adtyp; //NOTE: Does not include death ray
 
@@ -1233,7 +1237,7 @@ struct attack *mattk;
                 if (canseemon(mtmp))
                     pline("%s breathes %s!", Monnam(mtmp),
                           breathwep[typ - 1]);
-                buzz((int) (-20 - (typ - 1)), (int) mattk->damn, mtmp->mx,
+				buzz((int)(-20 - (typ - 1)), (struct obj*)0, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp, mtmp->mx,
                      mtmp->my, sgn(tbx), sgn(tby));
                 nomul(0);
                 /* breath runs out sometimes. Also, give monster some

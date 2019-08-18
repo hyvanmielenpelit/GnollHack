@@ -1411,7 +1411,7 @@ struct monst *mtmp;
 
 		raytype = -30 - objects[otmp->otyp].oc_dir_subtype; //-30...-38;
 
-        buzz(raytype, (otmp->otyp == WAN_MAGIC_MISSILE) ? 2 : 6, mtmp->mx, mtmp->my,
+        buzz(raytype, otmp, 0, 0, 0, mtmp->mx, mtmp->my,
              sgn(mtmp->mux - mtmp->mx), sgn(mtmp->muy - mtmp->my));
         m_using = FALSE;
         return (DEADMONSTER(mtmp)) ? 1 : 2;
@@ -1424,8 +1424,8 @@ struct monst *mtmp;
             You_hear("a horn being played.");
         otmp->spe--;
         m_using = TRUE;
-        buzz(-30 - ((otmp->otyp == FROST_HORN) ? RAY_WND_COLD : RAY_WND_FIRE),
-             rn1(6, 6), mtmp->mx, mtmp->my, sgn(mtmp->mux - mtmp->mx),
+        buzz(-30 - objects[otmp->otyp].oc_dir_subtype, otmp, 0, 0, 0,
+             mtmp->mx, mtmp->my, sgn(mtmp->mux - mtmp->mx),
              sgn(mtmp->muy - mtmp->my));
         m_using = FALSE;
         return (DEADMONSTER(mtmp)) ? 1 : 2;
@@ -2476,7 +2476,7 @@ boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
         if (!rn2(3))
             mon->mspec_used = rn1(10, 5);
         /* -21 => monster's fire breath; 1 => # of damage dice */
-        dmg = zhitm(mon, by_you ? 21 : -21, 1, &odummyp);
+        dmg = zhitm(mon, by_you ? 21 : -21, (struct obj*)0, 1, 8, 0, &odummyp);
     } else if (otyp == SCR_FIRE) {
         mreadmsg(mon, obj);
         if (mon->mconf) {
@@ -2501,7 +2501,7 @@ boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
         mzapmsg(mon, obj, TRUE);
         obj->spe--;
         /* -1 => monster's wand of fire; 2 => # of damage dice */
-        dmg = zhitm(mon, by_you ? 1 : -1, 2, &odummyp);
+        dmg = zhitm(mon, by_you ? 1 : -1, (struct obj*)0, 2, 8, 0, &odummyp);
     }
 
     if (dmg) {

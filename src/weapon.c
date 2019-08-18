@@ -225,6 +225,9 @@ dmgval(otmp, mon)
 struct obj *otmp;
 struct monst *mon;
 {
+	if (!otmp || !mon)
+		return 0;
+
     int tmp = 0, otyp = otmp->otyp;
     struct permonst *ptr = mon->data;
     boolean Is_weapon = (otmp->oclass == WEAPON_CLASS || is_weptool(otmp));
@@ -232,91 +235,18 @@ struct monst *mon;
     if (otyp == CREAM_PIE)
         return 0;
 	
-    if (bigmonst(ptr)) {
-        if (objects[otyp].oc_wldam > 0 && objects[otyp].oc_wldice > 0)
-            tmp += d(objects[otyp].oc_wldice, objects[otyp].oc_wldam);
-		tmp += objects[otyp].oc_wldmgplus;
-
-		/*
-        switch (otyp) {
-        case IRON_CHAIN:
-        case CROSSBOW_BOLT:
-        case MORNING_STAR:
-        case PARTISAN:
-        case RUNESWORD:
-        case ELVEN_BROADSWORD:
-        case BROADSWORD:
-            tmp++;
-            break;
-
-        case FLAIL:
-        case RANSEUR:
-        case VOULGE:
-            tmp += rnd(4);
-            break;
-
-        case ACID_VENOM:
-        case HALBERD:
-        case SPETUM:
-            tmp += rnd(6);
-            break;
-
-		case TRIPLE_HEADED_FLAIL:
-		case BATTLE_AXE:
-        case BARDICHE:
-        case TRIDENT:
-            tmp += d(2, 4);
-            break;
-
-        case TSURUGI:
-        case DWARVISH_MATTOCK:
-        case TWO_HANDED_SWORD:
-            tmp += d(2, 6);
-            break;
-        }
-		*/
-    } else {
-		if (objects[otyp].oc_wsdam > 0 && objects[otyp].oc_wsdice > 0)
-			tmp += d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam);
-		tmp += objects[otyp].oc_wsdmgplus;
-		//tmp = rnd(objects[otyp].oc_wsdam);
-		/*
-        switch (otyp) {
-        case IRON_CHAIN:
-        case CROSSBOW_BOLT:
-        case MACE:
-		case SILVER_MACE:
-		case WAR_HAMMER:
-        case FLAIL:
-        case SPETUM:
-        case TRIDENT:
-            tmp++;
-            break;
-
-        case BATTLE_AXE:
-        case BARDICHE:
-        case BILL_GUISARME:
-        case GUISARME:
-        case LUCERN_HAMMER:
-        case MORNING_STAR:
-        case RANSEUR:
-        case BROADSWORD:
-        case ELVEN_BROADSWORD:
-        case RUNESWORD:
-        case VOULGE:
-            tmp += rnd(4);
-            break;
-
-        case ACID_VENOM:
-            tmp += rnd(6);
-            break;
-		case TRIPLE_HEADED_FLAIL:
-			tmp += d(2, 4);
-			break;
+	if(Is_weapon)
+	{
+		if (bigmonst(ptr)) {
+			if (objects[otyp].oc_wldam > 0 && objects[otyp].oc_wldice > 0)
+				tmp += d(objects[otyp].oc_wldice, objects[otyp].oc_wldam);
+			tmp += objects[otyp].oc_wldmgplus;
 		}
-		*/
-    }
-    if (Is_weapon) {
+		else {
+			if (objects[otyp].oc_wsdam > 0 && objects[otyp].oc_wsdice > 0)
+				tmp += d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam);
+			tmp += objects[otyp].oc_wsdmgplus;
+		}
         tmp += otmp->spe;
         /* negative enchantment mustn't produce negative damage */
         if (tmp < 0)

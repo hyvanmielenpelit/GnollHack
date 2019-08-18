@@ -178,7 +178,8 @@ static struct trobj Wizard[] = {
     { UNDEF_TYP, UNDEF_SPE, RING_CLASS, 2, UNDEF_BLESS, 0 },
     { UNDEF_TYP, UNDEF_SPE, POTION_CLASS, 3, UNDEF_BLESS, 0 },
     { UNDEF_TYP, UNDEF_SPE, SCROLL_CLASS, 3, UNDEF_BLESS, 0 },
-    { SPE_FORCE_BOLT, 0, SPBOOK_CLASS, 1, 1, 0 },
+	{ SPE_MAGIC_ARROW, 0, SPBOOK_CLASS, 1, 1, 0 },
+	{ SPE_FORCE_BOLT, 0, SPBOOK_CLASS, 1, 1, 0 },
     { UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, UNDEF_BLESS, 0 },
 	{ ROBE, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
 	{ 0, 0, 0, 0, 0, 0 }
@@ -1099,7 +1100,8 @@ register struct trobj *trop;
                    || (otyp == SCR_ENCHANT_WEAPON && Role_if(PM_MONK))
                    /* wizard patch -- they already have one */
                    || (otyp == SPE_FORCE_BOLT && Role_if(PM_WIZARD))
-                   /* powerful spells are either useless to
+				   || (otyp == SPE_MAGIC_ARROW && Role_if(PM_WIZARD))
+				/* powerful spells are either useless to
                       low level players or unbalancing; also
                       spells in restricted skill categories */
                    || (obj->oclass == SPBOOK_CLASS

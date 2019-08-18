@@ -1141,7 +1141,8 @@ boolean atme;
         /*FALLTHRU*/
 
     /* these spells are all duplicates of wand effects */
-    case SPE_FORCE_BOLT:
+	case SPE_MAGIC_ARROW:
+	case SPE_FORCE_BOLT:
         physical_damage = TRUE;
     /*FALLTHRU*/
     case SPE_SLEEP:
@@ -1699,12 +1700,17 @@ const char *prompt;
 int splaction; /* SPELLMENU_CAST, SPELLMENU_VIEW, or spl_book[] index */
 int *spell_no;
 {
-    winid tmpwin;
-    int i, n, how, splnum;
-    char buf[BUFSZ], availablebuf[24], matcompbuf[24], levelbuf[10], statbuf[10];
+	winid tmpwin;
+	int i, n, how, splnum;
+	char buf[BUFSZ], availablebuf[24], matcompbuf[24], levelbuf[10], statbuf[10];
+	char colorbufs[BUFSZ][MAXSPELL];
+	int colorbufcnt = 0;
     const char *fmt;
     menu_item *selected;
     anything any;
+
+	for (int j = 0; j < MAXSPELL; j++)
+		strcpy(colorbufs[j], "");
 
     tmpwin = create_nhwindow(NHW_MENU);
     start_menu(tmpwin);
@@ -1859,11 +1865,15 @@ int *spell_no;
 			if(spellcooldownleft(splnum) > 0 && splaction != SPELLMENU_PREPARE)
 			{
 				add_menu_coloring(buf);
+				strcpy(colorbufs[colorbufcnt], buf);
+				colorbufcnt++;
 			}
+			/* //Should not be needed
 			else
 			{
 				free_menu_coloring_str(buf);
 			}
+			*/
 		}
 	}
     how = PICK_ONE;
@@ -1880,8 +1890,16 @@ int *spell_no;
     }
     end_menu(tmpwin, prompt);
 
+	//Show menu
     n = select_menu(tmpwin, how, &selected);
     destroy_nhwindow(tmpwin);
+	
+	//Remove menucolors
+	for (int j = 0; j < colorbufcnt; j++)
+	{
+		free_menu_coloring_str(colorbufs[j]);
+	}
+
     if (n > 0) {
         *spell_no = selected[0].item.a_int - 1;
         /* menu selection for `PICK_ONE' does not

@@ -24,7 +24,7 @@ STATIC_DCL void FDECL(polyuse, (struct obj *, int, int));
 STATIC_DCL void FDECL(create_polymon, (struct obj *, int));
 STATIC_DCL int FDECL(stone_to_flesh_obj, (struct obj *));
 STATIC_DCL boolean FDECL(zap_updown, (struct obj *));
-STATIC_DCL void FDECL(zhitu, (int, int, const char *, XCHAR_P, XCHAR_P));
+STATIC_DCL void FDECL(zhitu, (int, struct obj*, int, int, int, const char *, XCHAR_P, XCHAR_P));
 STATIC_DCL void FDECL(revive_egg, (struct obj *));
 STATIC_DCL boolean FDECL(zap_steed, (struct obj *));
 STATIC_DCL void FDECL(skiprange, (int, int *, int *));
@@ -155,7 +155,8 @@ struct obj *otmp;
     case WAN_STRIKING:
         zap_type_text = "wand";
     /*FALLTHRU*/
-    case SPE_FORCE_BOLT:
+	case SPE_MAGIC_ARROW:
+	case SPE_FORCE_BOLT:
         reveal_invis = TRUE;
         if (disguised_mimic)
             seemimic(mtmp);
@@ -164,13 +165,20 @@ struct obj *otmp;
             pline("Boing!");
             break; /* skip makeknown */
         } else if (u.uswallow || rnd(20) < 10 + find_mac(mtmp)) {
-            dmg = d(2, 12);
-            if (dbldam)
-                dmg *= 2;
-            if (otyp == SPE_FORCE_BOLT)
-                dmg = spell_damage_bonus(dmg);
-            hit(zap_type_text, mtmp, exclam(dmg), dmg);
-            (void) resist(mtmp, otmp->oclass, dmg, TELL);
+			dmg = 0;
+			if(bigmonst(mtmp->data))
+				dmg = d(objects[otyp].oc_wldice, objects[otyp].oc_wldam) + objects[otyp].oc_wldmgplus;
+			else
+				dmg = d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus;
+
+			//Double damage if needed
+			if (dbldam)
+				dmg *= 2;
+
+			//Deal the damage
+			hit(zap_type_text, mtmp, exclam(dmg), dmg);
+
+			(void) resist(mtmp, otmp->oclass, dmg, TELL);
         } else
             miss(zap_type_text, mtmp);
         learn_it = TRUE;
@@ -2116,7 +2124,8 @@ struct obj *obj, *otmp;
         case WAN_SLOW_MONSTER: /* no effect on objects */
         case SPE_SLOW_MONSTER:
         case WAN_SPEED_MONSTER:
-        case WAN_NOTHING:
+		case SPE_MAGIC_ARROW:
+		case WAN_NOTHING:
         case SPE_HEALING:
         case SPE_EXTRA_HEALING:
             res = 0;
@@ -2365,19 +2374,40 @@ boolean ordinary;
         } else {
             if (ordinary) {
                 You("bash yourself!");
-                damage = d(2, 12);
-            } else
+				if (bigmonst(youmonst.data))
+					damage = d(objects[obj->otyp].oc_wldice, objects[obj->otyp].oc_wldam) + objects[obj->otyp].oc_wldmgplus;
+				else
+					damage = d(objects[obj->otyp].oc_wsdice, objects[obj->otyp].oc_wsdam) + objects[obj->otyp].oc_wsdmgplus;
+			} else
                 damage = d(1 + obj->spe, 6);
             exercise(A_STR, FALSE);
         }
         break;
 
-    case WAN_LIGHTNING:
+	case SPE_MAGIC_ARROW:
+		learn_it = TRUE;
+		if (ordinary) {
+			You("shoot yourself with a magical arrow!");
+			if (bigmonst(youmonst.data))
+				damage = d(objects[obj->otyp].oc_wldice, objects[obj->otyp].oc_wldam) + objects[obj->otyp].oc_wldmgplus;
+			else
+				damage = d(objects[obj->otyp].oc_wsdice, objects[obj->otyp].oc_wsdam) + objects[obj->otyp].oc_wsdmgplus;
+
+		}
+		else
+			damage = d(1 + obj->spe, 3);
+		exercise(A_STR, FALSE);
+		break;
+
+	case WAN_LIGHTNING:
         learn_it = TRUE;
         if (!Shock_resistance) {
             You("shock yourself!");
-            damage = d(12, 6);
-            exercise(A_CON, FALSE);
+			if (bigmonst(youmonst.data))
+				damage = d(objects[obj->otyp].oc_wldice, objects[obj->otyp].oc_wldam) + objects[obj->otyp].oc_wldmgplus;
+			else
+				damage = d(objects[obj->otyp].oc_wsdice, objects[obj->otyp].oc_wsdam) + objects[obj->otyp].oc_wsdmgplus;
+			exercise(A_CON, FALSE);
         } else {
             shieldeff(u.ux, u.uy);
             You("zap yourself, but seem unharmed.");
@@ -2401,7 +2431,10 @@ boolean ordinary;
             ugolemeffects(AD_FIRE, d(12, 6));
         } else {
             pline("You've set yourself afire!");
-            damage = d(12, 6);
+			if (bigmonst(youmonst.data))
+				damage = d(objects[obj->otyp].oc_wldice, objects[obj->otyp].oc_wldam) + objects[obj->otyp].oc_wldmgplus;
+			else
+				damage = d(objects[obj->otyp].oc_wsdice, objects[obj->otyp].oc_wsdam) + objects[obj->otyp].oc_wsdmgplus;
         }
         burn_away_slime();
         (void) burnarmor(&youmonst);
@@ -2421,8 +2454,11 @@ boolean ordinary;
             ugolemeffects(AD_COLD, d(12, 6));
         } else {
             You("imitate a popsicle!");
-            damage = d(12, 6);
-        }
+			if (bigmonst(youmonst.data))
+				damage = d(objects[obj->otyp].oc_wldice, objects[obj->otyp].oc_wldam) + objects[obj->otyp].oc_wldmgplus;
+			else
+				damage = d(objects[obj->otyp].oc_wsdice, objects[obj->otyp].oc_wsdam) + objects[obj->otyp].oc_wsdmgplus;
+		}
         destroy_item(POTION_CLASS, AD_COLD);
         break;
 
@@ -2433,8 +2469,11 @@ boolean ordinary;
             shieldeff(u.ux, u.uy);
             pline_The("missiles bounce!");
         } else {
-            damage = d(4, 6);
-            pline("Idiot!  You've shot yourself!");
+			if (bigmonst(youmonst.data))
+				damage = d(objects[obj->otyp].oc_wldice, objects[obj->otyp].oc_wldam) + objects[obj->otyp].oc_wldmgplus;
+			else
+				damage = d(objects[obj->otyp].oc_wsdice, objects[obj->otyp].oc_wsdam) + objects[obj->otyp].oc_wsdmgplus;
+			pline("Idiot!  You've shot yourself!");
         }
         break;
 
@@ -2707,7 +2746,7 @@ struct attack *mattk;
     int dtyp = 20 + mattk->adtyp - 1;      /* breath by hero */
     const char *fltxt = flash_types[dtyp]; /* blast of <something> */
 
-    zhitu(dtyp, mattk->damn, fltxt, u.ux, u.uy);
+    zhitu(dtyp, (struct obj*)0, mattk->damn, mattk->damd, mattk->damp, fltxt, u.ux, u.uy);
 }
 
 /* light damages hero in gremlin form */
@@ -2802,7 +2841,8 @@ struct obj *obj; /* wand or spell */
     case SPE_POLYMORPH:
     case WAN_STRIKING:
     case SPE_FORCE_BOLT:
-    case WAN_SLOW_MONSTER:
+	case SPE_MAGIC_ARROW:
+	case WAN_SLOW_MONSTER:
     case SPE_SLOW_MONSTER:
     case WAN_SPEED_MONSTER:
     case SPE_HEALING:
@@ -3130,6 +3170,9 @@ void
 weffects(obj)
 struct obj *obj;
 {
+	if (!obj)
+		return;
+
     int otyp = obj->otyp;
     boolean disclose = FALSE, was_unkn = !objects[otyp].oc_name_known;
 
@@ -3171,22 +3214,16 @@ struct obj *obj;
 		case RAY_ACID:
 		case RAY_DEATH:
 		case RAY_DISINTEGRATION:
-			buzz(osubtype, u.ulevel / 2 + 1, u.ux, u.uy, u.dx, u.dy);
-			break;
 		case RAY_WND_MAGIC_MISSILE:
-			buzz(osubtype, 2, u.ux, u.uy, u.dx, u.dy);
-			break;
 		case RAY_WND_FIRE:
 		case RAY_WND_COLD:
 		case RAY_WND_SLEEP:
 		case RAY_WND_LIGHTNING:
 		case RAY_WND_POISON_GAS:
 		case RAY_WND_ACID:
-			buzz(osubtype, 6, u.ux, u.uy, u.dx, u.dy);
-			break;
 		case RAY_WND_DEATH:
 		case RAY_WND_DISINTEGRATION:
-			buzz(osubtype, 1, u.ux, u.uy, u.dx, u.dy);
+			buzz(osubtype, obj, 0, 0, 0, u.ux, u.uy, u.dx, u.dy);
 			break;
 		default:
 			impossible("weffects: unexpected spell or wand");
@@ -3463,7 +3500,7 @@ struct obj **pobj; /* object tossed/used, set to NULL
                 break;
             case WAN_STRIKING:
             case SPE_FORCE_BOLT:
-                if (typ != DRAWBRIDGE_UP)
+				if (typ != DRAWBRIDGE_UP)
                     destroy_drawbridge(x, y);
                 learn_it = TRUE;
                 break;
@@ -3733,9 +3770,11 @@ int dx, dy;
 /* used by buzz(); also used by munslime(muse.c); returns damage applied
    to mon; note: caller is responsible for killing mon if damage is fatal */
 int
-zhitm(mon, type, nd, ootmp)
+zhitm(mon, type, origobj, dmgdice, dicesize, dmgplus, ootmp)
 register struct monst *mon;
-register int type, nd;
+register int type;
+struct obj* origobj;
+int dmgdice, dicesize, dmgplus;
 struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 {
     register int tmp = 0;
@@ -3746,27 +3785,48 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
     *ootmp = (struct obj *) 0;
 	struct obj* otmp2;
 
+	//Base damage here, set to zero, if not needed
+	if (origobj && mon)
+	{
+		int dam = 0;
+		if (bigmonst(mon->data))
+			dam = d(objects[origobj->otyp].oc_wldice, objects[origobj->otyp].oc_wldam) + objects[origobj->otyp].oc_wldmgplus;
+		else
+			dam = d(objects[origobj->otyp].oc_wsdice, objects[origobj->otyp].oc_wsdam) + objects[origobj->otyp].oc_wsdmgplus;
+
+		tmp = dam;
+	}
+	else
+		tmp = d(dmgdice, dicesize) + dmgplus;
+
 
     switch (abstype) {
     case ZT_MAGIC_MISSILE:
         if (resists_magm(mon)) {
             sho_shieldeff = TRUE;
+			tmp = 0;
             break;
         }
+
+		/*
         tmp = d(nd, 6);
         if (spellcaster)
             tmp = spell_damage_bonus(tmp);
+		*/
         break;
     case ZT_FIRE:
         if (resists_fire(mon)) {
             sho_shieldeff = TRUE;
-            break;
+			tmp = 0;
+			break;
         }
-        tmp = d(nd, 6);
+		/*
+		tmp = d(nd, 6);
         if (resists_cold(mon))
             tmp += 7;
         if (spellcaster)
             tmp = spell_damage_bonus(tmp);
+		*/
         if (burnarmor(mon)) {
             if (!rn2(3))
                 (void) destroy_mitem(mon, POTION_CLASS, AD_FIRE);
@@ -3780,13 +3840,16 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
     case ZT_COLD:
         if (resists_cold(mon)) {
             sho_shieldeff = TRUE;
-            break;
+			tmp = 0;
+			break;
         }
-        tmp = d(nd, 6);
+		/*
+		tmp = d(nd, 6);
         if (resists_fire(mon))
             tmp += d(nd, 3);
         if (spellcaster)
             tmp = spell_damage_bonus(tmp);
+		*/
         if (!rn2(3))
             (void) destroy_mitem(mon, POTION_CLASS, AD_COLD);
         break;
@@ -3796,8 +3859,9 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
                            type == ZT_WAND(ZT_SLEEP) ? WAND_CLASS : '\0');
         break;
     case ZT_DISINTEGRATION:  /* disintegration */
-        if (resists_disint(mon) || noncorporeal(mon->data)) {
-            sho_shieldeff = TRUE;
+		tmp = 0;
+		if (resists_disint(mon) || noncorporeal(mon->data)) {
+			sho_shieldeff = TRUE;
         } else if (mon->misc_worn_check & W_ARMS) {
             /* destroy shield; victim survives */
             *ootmp = which_armor(mon, W_ARMS);
@@ -3830,6 +3894,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 			|| is_vampshifter(mon) || resists_magm(mon)) {
 			/* similar to player */
 			sho_shieldeff = TRUE;
+			tmp = 0;
 			break;
 		}
 		type = -1; /* so they don't get saving throws */
@@ -3840,10 +3905,13 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
             sho_shieldeff = TRUE;
             tmp = 0;
             /* can still blind the monster */
-        } else
-            tmp = d(nd, 6);
+		}
+		/*
+        tmp = d(nd, 6);
         if (spellcaster)
             tmp = spell_damage_bonus(tmp);
+			
+		*/
         if (!resists_blnd(mon)
             && !(type > 0 && u.uswallow && mon == u.ustuck)) {
             register unsigned rnd_tmp = rnd(50);
@@ -3862,16 +3930,18 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
     case ZT_POISON_GAS:
         if (resists_poison(mon)) {
             sho_shieldeff = TRUE;
-            break;
+			tmp = 0;
+			break;
         }
-        tmp = d(nd, 6);
+        //tmp = d(nd, 6);
         break;
     case ZT_ACID:
         if (resists_acid(mon)) {
             sho_shieldeff = TRUE;
-            break;
+			tmp = 0;
+			break;
         }
-        tmp = d(nd, 6);
+        //tmp = d(nd, 6);
         if (!rn2(6))
             acid_damage(MON_WEP(mon));
         if (!rn2(6))
@@ -3894,30 +3964,47 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 }
 
 STATIC_OVL void
-zhitu(type, nd, fltxt, sx, sy)
-int type, nd;
+zhitu(type, origobj, dmgdice, dicesize, dmgplus, fltxt, sx, sy)
+int type;
+struct obj* origobj;
+int dmgdice, dicesize, dmgplus;
 const char *fltxt;
 xchar sx, sy;
 {
     int dam = 0, abstyp = abs(type);
 
+	//Base damage here, set to zero, if not needed
+	if (origobj)
+	{
+		if (bigmonst(youmonst.data))
+			dam = d(objects[origobj->otyp].oc_wldice, objects[origobj->otyp].oc_wldam) + objects[origobj->otyp].oc_wldmgplus;
+		else
+			dam = d(objects[origobj->otyp].oc_wsdice, objects[origobj->otyp].oc_wsdam) + objects[origobj->otyp].oc_wsdmgplus;
+	}
+	else
+		dam = d(dmgdice, dicesize) + dmgplus;
+
+
+
     switch (abstyp % 10) {
     case ZT_MAGIC_MISSILE:
         if (Antimagic) {
             shieldeff(sx, sy);
+			dam = 0;
             pline_The("missiles bounce off!");
         } else {
-            dam = d(nd, 6);
+            //dam = d(nd, 6);
             exercise(A_STR, FALSE);
         }
         break;
     case ZT_FIRE:
         if (Fire_resistance) {
             shieldeff(sx, sy);
-            You("don't feel hot!");
-            ugolemeffects(AD_FIRE, d(nd, 6));
-        } else {
-            dam = d(nd, 6);
+			You("don't feel hot!");
+            ugolemeffects(AD_FIRE, dam);
+			dam = 0;
+		} else {
+            //dam = d(nd, 6);
         }
         burn_away_slime();
         if (burnarmor(&youmonst)) { /* "body hit" */
@@ -3934,15 +4021,17 @@ xchar sx, sy;
         if (Cold_resistance) {
             shieldeff(sx, sy);
             You("don't feel cold.");
-            ugolemeffects(AD_COLD, d(nd, 6));
-        } else {
-            dam = d(nd, 6);
+            ugolemeffects(AD_COLD, dam);
+			dam = 0;
+		} else {
+            //dam = d(nd, 6);
         }
         if (!rn2(3))
             destroy_item(POTION_CLASS, AD_COLD);
         break;
     case ZT_SLEEP:
-        if (Sleep_resistance) {
+		dam = 0;
+		if (Sleep_resistance) {
             shieldeff(u.ux, u.uy);
             You("don't feel sleepy.");
         } else {
@@ -3950,7 +4039,8 @@ xchar sx, sy;
         }
         break;
     case ZT_DISINTEGRATION:
-        if (Disint_resistance || noncorporeal(youmonst.data)) {					// if (abstyp == ZT_BREATH(ZT_DISINTEGRATION)) {
+		dam = 0;
+		if (Disint_resistance || noncorporeal(youmonst.data)) {					// if (abstyp == ZT_BREATH(ZT_DISINTEGRATION)) {
             You("are not disintegrated.");
             break;
         } else if (uarms) {
@@ -3981,6 +4071,7 @@ xchar sx, sy;
         done(DIED);
         return; /* lifesaved */
 	case ZT_DEATH:
+		dam = 0;
 		if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance) {
 			shieldeff(sx, sy);
 			You("seem unaffected.");
@@ -3998,10 +4089,11 @@ xchar sx, sy;
 	case ZT_LIGHTNING:
         if (Shock_resistance) {
             shieldeff(sx, sy);
-            You("aren't affected.");
-            ugolemeffects(AD_ELEC, d(nd, 6));
-        } else {
-            dam = d(nd, 6);
+			You("aren't affected.");
+            ugolemeffects(AD_ELEC, dam);
+			dam = 0;
+		} else {
+            //dam = d(nd, 6);
             exercise(A_CON, FALSE);
         }
         if (!rn2(3))
@@ -4010,7 +4102,8 @@ xchar sx, sy;
             destroy_item(RING_CLASS, AD_ELEC);
         break;
     case ZT_POISON_GAS:
-        poisoned("blast", A_DEX, "poisoned blast", 15, FALSE);
+		dam = 0;
+		poisoned("blast", A_DEX, "poisoned blast", 15, FALSE);
         break;
     case ZT_ACID:
         if (Acid_resistance) {
@@ -4018,7 +4111,7 @@ xchar sx, sy;
             dam = 0;
         } else {
             pline_The("%s burns!", hliquid("acid"));
-            dam = d(nd, 6);
+            //dam = d(nd, 6);
             exercise(A_STR, FALSE);
         }
         /* using two weapons at once makes both of them more vulnerable */
@@ -4125,6 +4218,9 @@ struct monst *mon;
 int type; /* hero vs other */
 const char *fltxt;
 {
+	if (!mon)
+		return;
+
     struct obj *otmp, *otmp2, *m_amulet = mlifesaver(mon);
 
     if (canseemon(mon)) {
@@ -4165,12 +4261,14 @@ const char *fltxt;
 }
 
 void
-buzz(type, nd, sx, sy, dx, dy)
-int type, nd;
+buzz(type, origobj, dmgdice, dicesize, dmgplus, sx, sy, dx, dy)
+int type;
+struct obj* origobj; //Originating item or spell, null if breath weapon
+int dmgdice, dicesize, dmgplus;		 //Damage ndd+p, used only for breath weapons
 xchar sx, sy;
 int dx, dy;
 {
-    dobuzz(type, nd, sx, sy, dx, dy, TRUE);
+    dobuzz(type, origobj, dmgdice, dicesize, dmgplus, sx, sy, dx, dy, TRUE);
 }
 
 /*
@@ -4183,8 +4281,10 @@ int dx, dy;
  * called with dx = dy = 0 with vertical bolts
  */
 void
-dobuzz(type, nd, sx, sy, dx, dy, say)
-register int type, nd;
+dobuzz(type, origobj, dmgdice, dicesize, dmgplus, sx, sy, dx, dy, say)
+register int type;
+struct obj* origobj; //Originating item or spell, null if breath weapon
+int dmgdice, dicesize, dmgplus;		 //Damage ndd+p, used only for breath weapons
 register xchar sx, sy;
 register int dx, dy;
 boolean say; /* Announce out of sight hit/miss events if true */
@@ -4214,7 +4314,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
 
         if (type < 0)
             return;
-        tmp = zhitm(u.ustuck, type, nd, &otmp);
+        tmp = zhitm(u.ustuck, type, origobj, dmgdice, dicesize, dmgplus, &otmp);
         if (!u.ustuck)
             u.uswallow = 0;
         else
@@ -4285,7 +4385,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     dy = -dy;
                 } else {
                     boolean mon_could_move = mon->mcanmove;
-                    int tmp = zhitm(mon, type, nd, &otmp);
+                    int tmp = zhitm(mon, type, origobj, dmgdice, dicesize, dmgplus, &otmp);
 
                     if (is_rider(mon->data)
                         && abs(type) == ZT_BREATH(ZT_DISINTEGRATION)) {
@@ -4372,15 +4472,26 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     dy = -dy;
                     shieldeff(sx, sy);
                 } else {
-                    zhitu(type, nd, fltxt, sx, sy);
+                    zhitu(type, origobj, dmgdice, dicesize, dmgplus, fltxt, sx, sy);
                 }
             } else if (!Blind) {
                 pline("%s whizzes by you!", The(fltxt));
             } else if (abstype == ZT_LIGHTNING) {
                 Your("%s tingles.", body_part(ARM));
             }
-            if (abstype == ZT_LIGHTNING)
-                (void) flashburn((long) d(nd, 50));
+			if (abstype == ZT_LIGHTNING)
+				if (origobj)
+				{
+					int dam = 0;
+					if (bigmonst(youmonst.data))
+						dam = d(objects[otmp->otyp].oc_wldice, objects[otmp->otyp].oc_wldam) + objects[otmp->otyp].oc_wldmgplus;
+					else
+						dam = d(objects[otmp->otyp].oc_wsdice, objects[otmp->otyp].oc_wsdam) + objects[otmp->otyp].oc_wsdmgplus;
+						
+					(void) flashburn((long)dam);
+				}
+				else
+	                (void) flashburn((long) d(dmgdice, dicesize) + dmgplus);
             stop_occupation();
             nomul(0);
         }

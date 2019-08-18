@@ -567,8 +567,8 @@ struct obj *instr;
                 losehp(damage, buf, KILLED_BY); /* fire or frost damage */
             }
         } else {
-            buzz((instr->otyp == FROST_HORN) ? AD_COLD - 1 : AD_FIRE - 1,
-                 rn1(6, 6), u.ux, u.uy, u.dx, u.dy);
+            buzz(objects[instr->otyp].oc_dir_subtype, instr, 0, 0, 0,
+                 u.ux, u.uy, u.dx, u.dy);
         }
         makeknown(instr->otyp);
         break;
