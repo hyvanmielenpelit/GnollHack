@@ -1762,8 +1762,28 @@ int *spell_no;
      */
 	if (splaction == SPELLMENU_PREPARE)
 	{
+		int maxlen = 23;
+
+		for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
+		{
+			int desclen = 0;
+			splnum = !spl_orderindx ? i : spl_orderindx[i];
+			desclen = strlen(matlists[spellmatcomp(splnum)].description_short);
+			if (desclen > maxlen)
+				maxlen = desclen;
+		}
+
+		int extraspaces = maxlen - 23;
+		if (extraspaces > 12)
+			extraspaces = 12;
+
+		char spacebuf[BUFSZ] = "";
+		
+		for (i = 0; i < extraspaces; i++)
+			Strcat(spacebuf, " ");
+
 		if (!iflags.menu_tab_sep) {
-			Sprintf(buf, "%-20s     Level Casts  Material components                ", "    Name");
+			Sprintf(buf, "%-20s     Level Casts  Material components    %s", "    Name", spacebuf);
 			fmt = "%-20s  %s   %5s  %-35s";
 			//		fmt = "%-20s  %2d   %-12s %4d %3d%% %9s";
 		}
@@ -1776,6 +1796,8 @@ int *spell_no;
 			MENU_UNSELECTED);
 		for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++) {
 			splnum = !spl_orderindx ? i : spl_orderindx[i];
+
+			//Shorten spell name if need be
 			char shortenedname[BUFSZ] = "";
 			char fullname[BUFSZ];
 
@@ -1786,6 +1808,7 @@ int *spell_no;
 			else
 				strcpy(shortenedname, fullname);
 
+			//Print spell level
 			if (spellev(splnum) < -1)
 				strcpy(levelbuf, " *");
 			else if (spellev(splnum) == -1)
@@ -1795,16 +1818,29 @@ int *spell_no;
 			else
 				Sprintf(levelbuf, "%2d", spellev(splnum));
 
+			//Print cast times
 			if (spellamount(splnum) >= 0)
 				Sprintf(availablebuf, "%d", spellamount(splnum));
 			else
 				strcpy(availablebuf, "Inf.");
 
+			//Shorten matcomp description, if needed
+			char shortenedmatcompdesc[BUFSZ] = "";
+			char fullmatcompdesc[BUFSZ];
+
+			strcpy(fullmatcompdesc, matlists[spellmatcomp(splnum)].description_short);
+
+			if (strlen(fullmatcompdesc) > 35)
+				strncpy(shortenedmatcompdesc, fullmatcompdesc, 35);
+			else
+				strcpy(shortenedmatcompdesc, fullmatcompdesc);
+
 			if (spellmatcomp(splnum))
-				strcpy(matcompbuf, matlists[spellmatcomp(splnum)].description_short);
+				strcpy(matcompbuf, shortenedmatcompdesc);
 			else
 				strcpy(matcompbuf, "Not required");
 
+			//Finally print everything to buf
 			Sprintf(buf, fmt, shortenedname, levelbuf,
 				availablebuf, matcompbuf);
 
