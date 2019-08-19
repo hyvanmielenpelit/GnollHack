@@ -1044,7 +1044,7 @@ SCROLL("blank paper", "unlabeled",  0,  28,  60, O1_NONE),
 #define PAPER LEATHER /* override enum for use in SPELL() expansion */
 
 SPELL("dig",             "parchment",
-      P_MATTER_SPELL,      20,  6, 7, 10, A_INT, 1, RAY, RAY_DIGGING, 0, 0, 0, 0, 0, 0, HI_LEATHER, O1_NONE),
+      P_MATTER_SPELL,      20,  4, 3, 10, A_INT, 1, RAY, RAY_DIGGING, 0, 0, 0, 0, 0, 0, HI_LEATHER, O1_NONE),
 SPELL("magic missile",   "vellum",
       P_ATTACK_SPELL,      20,  2, 0,  3, A_INT, 1, RAY, RAY_MAGIC_MISSILE, 3, 4, 0, 3, 4, 0, HI_LEATHER, O1_NONE),
 #undef PAPER /* revert to normal material */

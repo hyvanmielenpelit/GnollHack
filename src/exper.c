@@ -49,12 +49,12 @@ newpw()
     if (u.ulevel == 0) {
         en = urole.enadv.infix + urace.enadv.infix;
         if (urole.enadv.inrnd > 0)
-            en += rnd(urole.enadv.inrnd);
+            en += rn2(urole.enadv.inrnd + 1); //Between 0 and inrnd
         if (urace.enadv.inrnd > 0)
-            en += rnd(urace.enadv.inrnd);
+            en += rn2(urace.enadv.inrnd + 1); //Between 0 and inrnd
     } else {
 		enfix = 0;// (int)max(0, max(ACURR(A_INT), ACURR(A_WIS)) - 6);
-        enrnd = 0;
+        enrnd = 1;//So that enrnd 1 randomizes between 0 and 1
         if (u.ulevel < urole.xlev) {
             enrnd += urole.enadv.lornd + urace.enadv.lornd;
             enfix += urole.enadv.lofix + urace.enadv.lofix;
@@ -65,7 +65,7 @@ newpw()
 		if (enrnd < 2)
 			enrnd = 2;
 
-        en = enermod(rn1(enrnd, enfix));
+		en = rn1(enrnd, enfix); // enermod(rn1(enrnd, enfix));
     }
     if (en <= 0)
         en = 1;
@@ -77,7 +77,7 @@ newpw()
 int
 enmaxadjustment()
 {
-	int adj = (int)(max(0, max(ACURR(A_INT), ACURR(A_WIS)) - 6) * u.ulevel);
+	int adj = ((int)(max(0, max(ACURR(A_INT), ACURR(A_WIS)) - 3) * u.ulevel) / 2);
 
 	return adj;
 }
