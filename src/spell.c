@@ -1739,10 +1739,10 @@ int *spell_no;
 {
 	winid tmpwin;
 	int i, n, how, splnum;
-	char buf[BUFSZ], availablebuf[24], matcompbuf[24], levelbuf[10], statbuf[10];
+	char buf[BUFSZ], availablebuf[BUFSZ], matcompbuf[BUFSZ], levelbuf[10], statbuf[10], fmt[BUFSZ];
 	char colorbufs[BUFSZ][MAXSPELL];
 	int colorbufcnt = 0;
-    const char *fmt;
+    //const char *fmt;
     menu_item *selected;
     anything any;
 
@@ -1784,12 +1784,16 @@ int *spell_no;
 
 		if (!iflags.menu_tab_sep) {
 			Sprintf(buf, "%-20s     Level Casts  Material components    %s", "    Name", spacebuf);
-			fmt = "%-20s  %s   %5s  %-35s";
+			char lengthbuf[BUFSZ] = "";
+			Sprintf(lengthbuf, "%ds", 23 + extraspaces);
+			strcpy(fmt, "%-20s  %s   %5s  %-");
+			Strcat(fmt, lengthbuf);
+			//fmt = "%-20s  %s   %5s  %-35s";
 			//		fmt = "%-20s  %2d   %-12s %4d %3d%% %9s";
 		}
 		else {
 			Sprintf(buf, "Name\tLevel\tCasts\tMaterial components");
-			fmt = "%s\t%s\t%s\t%s";
+			strcpy(fmt, "%s\t%s\t%s\t%s");
 			//		fmt = "%s\t%-d\t%s\t%-d\t%-d%%\t%s";
 		}
 		add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, buf,
@@ -1855,12 +1859,12 @@ int *spell_no;
 		if (!iflags.menu_tab_sep) {
 			Sprintf(buf, "%-20s     Level %-12s Mana Stat Fail Cool Casts", "    Name",
 				"Category");
-			fmt = "%-20s  %s   %-12s %4d  %s %3d%% %4d  %4s";
+			strcpy(fmt, "%-20s  %s   %-12s %4d  %s %3d%% %4d  %4s");
 			//		fmt = "%-20s  %2d   %-12s %4d %3d%% %8s";
 		}
 		else {
 			Sprintf(buf, "Name\tLevel\tCategory\tMana\tStat\tFail\tCool\tCasts");
-			fmt = "%s\t%s\t%s\t%-d\t%-d%%\t%-d\t%s";
+			strcpy(fmt, "%s\t%s\t%s\t%-d\t%-d%%\t%-d\t%s");
 			//		fmt = "%s\t%-d\t%s\t%-d\t%-d%%\t%s";
 		}
 		add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, buf,
@@ -1992,7 +1996,7 @@ int *spell_no;
         return TRUE;
     }
     return FALSE;
-}
+} 
 
 STATIC_OVL int
 percent_success(spell)
