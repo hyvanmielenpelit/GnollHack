@@ -2290,6 +2290,10 @@ register struct obj *obj;
 		known = TRUE;
 		makewish();
 		break;
+	case SPE_TIME_STOP:
+		known = TRUE;
+		timestop();
+		break;
 	case SPE_SUMMON_OGRE:
 		known = TRUE;
 		summonogre();
@@ -5824,6 +5828,16 @@ armageddon()
 		killer.format = KILLED_BY_AN;
 		done(DIED);
 	}
+}
+
+
+void
+timestop()
+{
+	pline("The flow of time seems to slow down!");
+	context.time_stopped = TRUE;
+	begin_timestoptimer(rnd(4) + 3);
+
 }
 
 

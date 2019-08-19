@@ -1750,6 +1750,32 @@ struct monst* mon;
 	}
 }
 
+
+
+/*
+ * Start a summon timeout on the given monster.
+ */
+void
+begin_timestoptimer(duration)
+long duration;
+{
+	if (start_timer(duration, TIMER_GLOBAL, TIME_RESTART, &zeroany))
+	{
+		//Success
+	}
+}
+
+
+void
+restart_time(arg, timeout)
+anything* arg;
+long timeout;
+{
+	context.time_stopped = FALSE;
+	pline("The flow of time seems faster again.");
+}
+
+
 void
 do_storms()
 {
@@ -1897,7 +1923,8 @@ static const ttable timeout_funcs[NUM_TIME_FUNCS] = {
     TTAB(fig_transform, (timeout_proc) 0, "fig_transform"),
     TTAB(melt_ice_away, (timeout_proc) 0, "melt_ice_away"),
 	TTAB(unsummon_item, (timeout_proc)0, "unsummon_item"),
-	TTAB(unsummon_monster, (timeout_proc)0, "unsummon_monster")
+	TTAB(unsummon_monster, (timeout_proc)0, "unsummon_monster"),
+	TTAB(restart_time, (timeout_proc)0, "restart_time")
 };
 #undef TTAB
 

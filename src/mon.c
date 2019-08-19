@@ -775,6 +775,7 @@ movemon()
 #ifdef SAFERHANGUP
             /* or if the program has lost contact with the user */
             || program_state.done_hup
+			|| context.time_stopped //Time stop spell has been cast
 #endif
             ) {
             somebody_can_move = FALSE;

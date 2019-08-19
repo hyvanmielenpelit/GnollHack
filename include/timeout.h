@@ -34,6 +34,7 @@ enum timeout_types {
     MELT_ICE_AWAY,
 	ITEM_UNSUMMON,
 	MONSTER_UNSUMMON,
+	TIME_RESTART,
 
     NUM_TIME_FUNCS
 };

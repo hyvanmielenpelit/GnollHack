@@ -130,6 +130,7 @@ struct context_info {
     boolean botl;        /* partially redo status line */
     boolean botlx;       /* print an entirely new bottom line */
     boolean door_opened; /* set to true if door was opened during test_move */
+	boolean time_stopped; /* time has been stopped*/
     struct dig_info digging;
     struct victual_info victual;
     struct tin_info tin;
