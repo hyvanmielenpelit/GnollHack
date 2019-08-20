@@ -24,6 +24,7 @@
 #define spellev(spell) spl_book[spell].sp_lev
 #define spellamount(spell) spl_book[spell].sp_amount
 #define spellmatcomp(spell) spl_book[spell].sp_matcomp
+#define spellcooldownlength(spell) spl_book[spell].sp_cooldownlength
 #define spellcooldownleft(spell) spl_book[spell].sp_cooldownleft
 #define spellname(spell) OBJ_NAME(objects[spellid(spell)])
 #define spellet(spell) \
@@ -422,6 +423,8 @@ learn(VOID_ARGS)
 				spl_book[i].sp_amount = 0; //How many times material components have been mixed
 			else
 				spl_book[i].sp_amount = -1; //Infinite
+			spl_book[i].sp_cooldownlength = objects[booktype].oc_cooldown;
+			spl_book[i].sp_cooldownleft = 0;
 
 			incrnknow(i, 1);
             book->spestudied++;
@@ -1413,6 +1416,8 @@ int what;
             spl_book[i].sp_id = SPE_TELEPORT_AWAY;
             spl_book[i].sp_lev = objects[SPE_TELEPORT_AWAY].oc_level;
 			spl_book[i].sp_matcomp = objects[SPE_TELEPORT_AWAY].oc_material_components;
+			spl_book[i].sp_cooldownlength = objects[SPE_TELEPORT_AWAY].oc_cooldown;
+			spl_book[i].sp_cooldownleft = 0;
 			spl_book[i].sp_amount = -1; //Infinite??
 			spl_book[i].sp_know = KEEN;
             return REMOVESPELL; /* operation needed to reverse */
@@ -2192,6 +2197,8 @@ struct obj *obj;
 			spl_book[i].sp_amount = 0;
 		else
 			spl_book[i].sp_amount = -1;
+		spl_book[i].sp_cooldownlength = objects[otyp].oc_cooldown;
+		spl_book[i].sp_cooldownleft = 0;
 
 		incrnknow(i, 0);
     }
@@ -2256,7 +2263,11 @@ int spell;
 		matcnt++;
 
 		struct materialcomponent *mc = &matlists[spellmatcomp(spell)].matcomp[j];
-		struct objclass* perobj = &objects[mc->objectid];
+		
+		struct objclass* perobj = (struct objclass*)0;
+		if (mc->objectid >= 0)
+			perobj = &objects[mc->objectid];
+
 		struct permonst* permon = (struct permonst*)0;
 		if(mc->monsterid >= 0)
 			permon = &mons[mc->monsterid];
@@ -2266,7 +2277,7 @@ int spell;
 
 		char buf[BUFSZ], buf2[BUFSZ], buf3[BUFSZ], buf4[BUFSZ] = "";
 
-		if (permon)
+		if (permon && perobj)
 		{
 			if (mc->objectid == CORPSE || mc->objectid == EGG)
 				//Add "lizard" to "corpse" to get "lizard corpse" (or lizard egg)
@@ -2472,6 +2483,10 @@ int spell;
 	if (spell < 0)
 		return 0;
 
+	//int cooldown = objects[spellid(spell)].oc_cooldown;
+	int cooldown = spellcooldownlength(spell);
+
+	/*
 	int spell_level = spellev(spell);
 	int cooldown = spell_level + 1;
 
@@ -2484,7 +2499,7 @@ int spell;
 		cooldown = 12;
 	else if (spell_level == 10)
 		cooldown = 14;
-
+		*/
 	return cooldown;
 }
 

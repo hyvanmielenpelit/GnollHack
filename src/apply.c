@@ -15,6 +15,7 @@ STATIC_DCL void FDECL(use_whistle, (struct obj *));
 STATIC_DCL void FDECL(use_magic_whistle, (struct obj *));
 STATIC_DCL int FDECL(use_leash, (struct obj *));
 STATIC_DCL int FDECL(use_mirror, (struct obj *));
+STATIC_DCL int FDECL(use_holysymbol, (struct obj*));
 STATIC_DCL void FDECL(use_bell, (struct obj **));
 STATIC_DCL void FDECL(use_candelabrum, (struct obj *));
 STATIC_DCL void FDECL(use_candle, (struct obj **));
@@ -982,6 +983,167 @@ struct obj *obj;
     }
     return 1;
 }
+
+STATIC_OVL int
+use_holysymbol(obj)
+struct obj* obj;
+{
+	if (!getdir((char*)0))
+		return 0;
+
+	(void)bhit(u.dx, u.dy, 6, ZAPPED_WAND, uthitm, uthito,
+		& obj);
+
+	return 1;
+}
+
+/* Routines for IMMEDIATE wands and spells. */
+/* bhitm: monster mtmp was hit by the effect of wand or spell otmp */
+int
+uthitm(mtmp, otmp)
+struct monst* mtmp;
+struct obj* otmp;
+{
+	boolean wake = TRUE; /* Most 'zaps' should wake monster */
+	boolean reveal_invis = FALSE, learn_it = FALSE;
+	boolean helpful_gesture = FALSE;
+	int dmg = 0;
+
+	if (!otmp || !mtmp)
+		return 0;
+
+	if (u.uswallow && mtmp == u.ustuck)
+		reveal_invis = FALSE;
+
+	wake = FALSE;
+
+	if (is_undead(mtmp->data) || is_vampshifter(mtmp) || is_demon(mtmp->data)) {
+		reveal_invis = TRUE;
+		wake = TRUE;
+		if(otmp->blessed)
+			dmg = d(2,6) + Role_if(PM_PRIEST) ? u.ulevel / 2 : 0;
+		else
+			dmg = d(1,6) + Role_if(PM_PRIEST) ? u.ulevel / 2 : 0;
+		context.bypasses = TRUE; /* for make_corpse() */
+
+		//Check if successful, priests have +5 levels to the use of holy symbol, Demons are 5 levels more difficult to turn
+		int percentchance = (Role_if(PM_PRIEST) ? 50: 0) + (otmp->blessed ? 20 : 0) + (u.ulevel - mtmp->m_lev - (is_demon(mtmp->data) ? 5 : 0)) * 10;
+
+		if (is_dlord(mtmp->data) || is_dprince(mtmp->data))
+			percentchance = 0;
+
+		if (rn2(100) < percentchance)  //
+		{
+			if (!otmp->cursed)
+			{
+				pline("%s shines brightly before %s!", Yname2(otmp), the(mon_nam(mtmp)));
+				if (!resist(mtmp, otmp->oclass, dmg, TELL))
+				{
+					if (!DEADMONSTER(mtmp))
+						monflee(mtmp, 0, FALSE, TRUE);
+				}
+			}
+			else
+			{
+				if (!resist(mtmp, otmp->oclass, 0, TELL) && !is_dlord(mtmp->data) && !is_dprince(mtmp->data) && !mtmp->mtame)
+				{
+					if (mtmp->m_lev <= 10 && mtmp->m_lev < u.ulevel && rn2(100) < (percentchance - 100))
+					{
+						You("successfully take control of %s.", the(mon_nam(mtmp)));
+						(void)tamedog(mtmp, (struct obj*) 0);
+					}
+					else
+					{
+						if (!mtmp->mpeaceful)
+						{
+							You("successfully pacify %s.", the(mon_nam(mtmp)));
+							mtmp->mpeaceful = 1;
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			if (is_dlord(mtmp->data) || is_dprince(mtmp->data))
+				pline("%s laughs at your feeble attempt.", Monnam(mtmp));
+			else
+				You("fail to turn %s.", the(mon_nam(mtmp)));
+		}
+	}
+
+
+	if (wake) {
+		if (!DEADMONSTER(mtmp)) {
+			wakeup(mtmp, helpful_gesture ? FALSE : TRUE);
+			m_respond(mtmp);
+			if (mtmp->isshk && !*u.ushops)
+				hot_pursuit(mtmp);
+		}
+		else if (M_AP_TYPE(mtmp))
+			seemimic(mtmp); /* might unblock if mimicing a boulder/door */
+	}
+	/* note: bhitpos won't be set if swallowed, but that's okay since
+	 * reveal_invis will be false.  We can't use mtmp->mx, my since it
+	 * might be an invisible worm hit on the tail.
+	 */
+	if (reveal_invis) {
+		if (!DEADMONSTER(mtmp) && cansee(bhitpos.x, bhitpos.y)
+			&& !canspotmon(mtmp))
+			map_invisible(bhitpos.x, bhitpos.y);
+	}
+	/* if effect was observable then discover the wand type provided
+	   that the wand itself has been seen */
+	if (learn_it)
+		learnwand(otmp);
+	return 0;
+}
+
+int
+uthito(obj, otmp)
+struct obj* obj, * otmp;
+{
+	int res = 0; /* did not affect object by default */
+
+	if (obj == otmp)
+		return 0;
+
+	if (obj->bypass) {
+		/* The bypass bit is currently only used as follows:
+		 *
+		 * UNDEAD_TURNING - When an undead creature gets killed via
+		 *             undead turning, prevent its corpse from being
+		 *             immediately revived by the same effect.
+		 *
+		 * The bypass bit on all objects is reset each turn, whenever
+		 * context.bypasses is set.
+		 *
+		 * We check the obj->bypass bit above AND context.bypasses
+		 * as a safeguard against any stray occurrence left in an obj
+		 * struct someplace, although that should never happen.
+		 */
+		if (context.bypasses) {
+			return 0;
+		}
+		else {
+			debugpline1("%s for a moment.", Tobjnam(obj, "pulsate"));
+			obj->bypass = 0;
+		}
+	}
+
+	/*
+	 * Some parts of this function expect the object to be on the floor
+	 * obj->{ox,oy} to be valid.  The exception to this (so far) is
+	 * for the STONE_TO_FLESH spell.
+	 */
+	if (!(obj->where == OBJ_FLOOR))
+		impossible("bhito: obj is not floor or Stone To Flesh spell");
+
+	//Do nothing, holy symbol does not revive corpses
+
+	return res;
+}
+
 
 STATIC_OVL void
 use_bell(optr)
@@ -4020,7 +4182,10 @@ doapply()
     case MIRROR:
         res = use_mirror(obj);
         break;
-    case BELL:
+	case HOLY_SYMBOL:
+		res = use_holysymbol(obj);
+		break;
+	case BELL:
     case BELL_OF_OPENING:
         use_bell(&obj);
         break;

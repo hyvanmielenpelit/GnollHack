@@ -52,7 +52,8 @@ const struct class_sym def_oc_syms[MAXOCLASSES] = {
     { ROCK_SYM, "large stones", "boulder or statue" },
     { BALL_SYM, "iron balls", "iron ball" },
     { CHAIN_SYM, "chains", "iron chain" },
-    { VENOM_SYM, "venoms", "splash of venom" }
+    { VENOM_SYM, "venoms", "splash of venom" },
+	{ REAGENT_SYM, "reagents", "reagent" }
 };
 
 /* Default monster class symbols.  See monsym.h. */
@@ -705,7 +706,8 @@ struct symparse loadsyms[] = {
     { SYM_OC, BALL_CLASS + SYM_OFF_O, "S_ball" },
     { SYM_OC, CHAIN_CLASS + SYM_OFF_O, "S_chain" },
     { SYM_OC, VENOM_CLASS + SYM_OFF_O, "S_venom" },
-    { SYM_MON, S_ANT + SYM_OFF_M, "S_ant" },
+	{ SYM_OC, REAGENT_CLASS + SYM_OFF_O, "S_reagent" },
+	{ SYM_MON, S_ANT + SYM_OFF_M, "S_ant" },
     { SYM_MON, S_BLOB + SYM_OFF_M, "S_blob" },
     { SYM_MON, S_COCKATRICE + SYM_OFF_M, "S_cockatrice" },
     { SYM_MON, S_DOG + SYM_OFF_M, "S_dog" },

@@ -462,7 +462,8 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 			Strcat(buf, "death-enchanted ");
 		/*FALLTHRU*/
     case VENOM_CLASS:
-    case TOOL_CLASS:
+	case REAGENT_CLASS:
+	case TOOL_CLASS:
         if (typ == LENSES)
             Strcpy(buf, "pair of ");
         else if (is_wet_towel(obj))
@@ -1248,7 +1249,8 @@ unsigned doname_flags;
             }
         /* Small things and ammo not for a bow */
         case RING_CLASS:
-        case AMULET_CLASS:
+		case REAGENT_CLASS:
+		case AMULET_CLASS:
         case WAND_CLASS:
         case COIN_CLASS:
         case GEM_CLASS:
@@ -2053,12 +2055,12 @@ static const char *wrp[] = {
     "wand",   "ring",      "potion",     "scroll", "gem",
     "amulet", "spellbook", "spell book",
     /* for non-specific wishes */
-    "weapon", "armor",     "tool",       "food",   "comestible",
+    "weapon", "armor",     "tool",  "reagent",     "food",   "comestible",
 };
 static const char wrpsym[] = { WAND_CLASS,   RING_CLASS,   POTION_CLASS,
                                SCROLL_CLASS, GEM_CLASS,    AMULET_CLASS,
                                SPBOOK_CLASS, SPBOOK_CLASS, WEAPON_CLASS,
-                               ARMOR_CLASS,  TOOL_CLASS,   FOOD_CLASS,
+                               ARMOR_CLASS,  TOOL_CLASS, REAGENT_CLASS,   FOOD_CLASS,
                                FOOD_CLASS };
 
 /* return form of the verb (input plural) if xname(otmp) were the subject */
@@ -2815,7 +2817,8 @@ STATIC_OVL NEARDATA const struct o_range o_ranges[] = {
       YELLOW_DRAGON_SCALE_MAIL },
     { "sword", WEAPON_CLASS, SHORT_SWORD, KATANA },
     { "venom", VENOM_CLASS, BLINDING_VENOM, ACID_VENOM },
-    { "gray stone", GEM_CLASS, LUCKSTONE, FLINT },
+	{ "reagent", REAGENT_CLASS, THREAD_OF_SPIDER_SILK, MITHRIL_NUGGET },
+	{ "gray stone", GEM_CLASS, LUCKSTONE, FLINT },
     { "grey stone", GEM_CLASS, LUCKSTONE, FLINT },
 };
 
@@ -2864,6 +2867,9 @@ static const struct alt_spellings {
     { "grappling iron", GRAPPLING_HOOK },
     { "grapnel", GRAPPLING_HOOK },
     { "grapple", GRAPPLING_HOOK },
+	{ "spider silk", THREAD_OF_SPIDER_SILK },
+	{ "ginseng", GINSENG_ROOT },
+	{ "mandrake", MANDRAKE_ROOT },
 	{ "ring of death resistance", RIN_LIFE_PROTECTION },
 	{ "ring of protection from shape shifters", RIN_PROTECTION_FROM_SHAPE_CHANGERS },
     /* if we ever add other sizes, move this to o_ranges[] with "bag" */
@@ -3054,7 +3060,7 @@ struct obj *no_wish;
                 bp++;
             l = 0;
         } else if (!strncmpi(bp, "blessed ", l = 8)
-                   || !strncmpi(bp, "holy ", l = 5)) {
+                   || !strncmpi(bp, "holy water", l = 9)) {
             blessed = 1;
         } else if (!strncmpi(bp, "moist ", l = 6)
                    || !strncmpi(bp, "wet ", l = 4)) {
@@ -3063,7 +3069,7 @@ struct obj *no_wish;
             else
                 wetness = rnd(2);
         } else if (!strncmpi(bp, "cursed ", l = 7)
-                   || !strncmpi(bp, "unholy ", l = 7)) {
+                   || !strncmpi(bp, "unholy water ", l = 12)) {
             iscursed = 1;
         } else if (!strncmpi(bp, "uncursed ", l = 9)) {
             uncursed = 1;

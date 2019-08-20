@@ -16,22 +16,23 @@ enum obj_material_types {
     FLESH       =  4, /*   ditto    */
     PAPER       =  5,
     CLOTH       =  6,
-    LEATHER     =  7,
-    WOOD        =  8,
-    BONE        =  9,
-    DRAGON_HIDE = 10, /* not leather! */
-    IRON        = 11, /* Fe - includes steel */
-    METAL       = 12, /* Sn, &c. */
-    COPPER      = 13, /* Cu - includes brass */
-    SILVER      = 14, /* Ag */
-    GOLD        = 15, /* Au */
-    PLATINUM    = 16, /* Pt */
-    MITHRIL     = 17,
-    PLASTIC     = 18,
-    GLASS       = 19,
-    GEMSTONE    = 20,
-    MINERAL     = 21,
-	PLANARRIFT	= 22
+	SILK		=  7,
+	LEATHER     =  8,
+    WOOD        =  9,
+    BONE        = 10,
+    DRAGON_HIDE = 11, /* not leather! */
+    IRON        = 12, /* Fe - includes steel */
+    METAL       = 13, /* Sn, &c. */
+    COPPER      = 14, /* Cu - includes brass */
+    SILVER      = 15, /* Ag */
+    GOLD        = 16, /* Au */
+    PLATINUM    = 17, /* Pt */
+    MITHRIL     = 18,
+    PLASTIC     = 19,
+    GLASS       = 20,
+    GEMSTONE    = 21,
+    MINERAL     = 22,
+	PLANARRIFT	= 23
 };
 
 enum obj_armor_types {
@@ -125,12 +126,13 @@ struct objclass {
 	int oc_oc2, oc_oc3; //Spell levels can be negative, spell mana cost can be over 255
 	schar oc_oc4;  //Used for spell attributes, where 0-255 is ok
 
-#define oc_hitbon oc_oc1 /* weapons: "to hit" bonus */
+#define oc_hitbon oc_oc1		/* weapons: "to hit" bonus */
+#define a_ac oc_oc1				/* armor class, used in ARM_BONUS in do.c */
+#define oc_cooldown oc_oc1      /* books: cooldown time */
 
-#define a_ac oc_oc1     /* armor class, used in ARM_BONUS in do.c */
-#define a_can oc_oc2    /* armor: used in mhitu.c */
-#define oc_level oc_oc2 /* books: spell level */
-#define oc_mana_cost oc_oc3 /* books: spell mana cost */
+#define a_can oc_oc2			/* armor: used in mhitu.c */
+#define oc_level oc_oc2			/* books: spell level */
+#define oc_mana_cost oc_oc3		/* books: spell mana cost */
 #define oc_spell_attribute oc_oc4 /* books: spell primary casting attribute */
 
     unsigned short oc_nutrition; /* food value */
@@ -213,8 +215,9 @@ enum obj_class_types {
     BALL_CLASS   = 15,
     CHAIN_CLASS  = 16,
     VENOM_CLASS  = 17,
+	REAGENT_CLASS = 18,
 
-    MAXOCLASSES  = 18
+    MAXOCLASSES  = 19
 };
 
 #define ALLOW_COUNT (MAXOCLASSES + 1) /* Can be used in the object class    */
@@ -249,6 +252,7 @@ extern uchar oc_syms[MAXOCLASSES];      /* current class symbols */
 #define BALL_SYM '0'
 #define CHAIN_SYM '_'
 #define VENOM_SYM '.'
+#define REAGENT_SYM '§'
 
 struct fruit {
     char fname[PL_FSIZ];

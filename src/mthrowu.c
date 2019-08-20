@@ -1415,7 +1415,8 @@ int whodidit;   /* 1==hero, 0=other, -1==just check whether it'll pass thru */
                         || obj_type == HUGE_CHUNK_OF_MEAT);
             break;
         case SPBOOK_CLASS:
-        case WAND_CLASS:
+		case REAGENT_CLASS:
+		case WAND_CLASS:
         case BALL_CLASS:
         case CHAIN_CLASS:
             hits = TRUE;

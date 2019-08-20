@@ -30,22 +30,24 @@ static const struct icp mkobjprobs[] = { { 10, WEAPON_CLASS },
                                          { 20, FOOD_CLASS },
                                          { 8, TOOL_CLASS },
                                          { 8, GEM_CLASS },
-                                         { 16, POTION_CLASS },
-                                         { 16, SCROLL_CLASS },
+                                         { 15, POTION_CLASS },
+                                         { 15, SCROLL_CLASS },
                                          { 4, SPBOOK_CLASS },
                                          { 4, WAND_CLASS },
                                          { 3, RING_CLASS },
-                                         { 1, AMULET_CLASS } };
+										 { 2, REAGENT_CLASS },
+										 { 1, AMULET_CLASS } };
 
 static const struct icp boxiprobs[] = { { 18, GEM_CLASS },
                                         { 15, FOOD_CLASS },
-                                        { 18, POTION_CLASS },
-                                        { 18, SCROLL_CLASS },
+                                        { 17, POTION_CLASS },
+                                        { 17, SCROLL_CLASS },
                                         { 12, SPBOOK_CLASS },
                                         { 7, COIN_CLASS },
                                         { 6, WAND_CLASS },
                                         { 5, RING_CLASS },
-                                        { 1, AMULET_CLASS } };
+										{ 2, REAGENT_CLASS },
+										{ 1, AMULET_CLASS } };
 
 static const struct icp rogueprobs[] = { { 12, WEAPON_CLASS },
                                          { 12, ARMOR_CLASS },
@@ -57,12 +59,13 @@ static const struct icp rogueprobs[] = { { 12, WEAPON_CLASS },
 
 static const struct icp hellprobs[] = { { 20, WEAPON_CLASS },
                                         { 20, ARMOR_CLASS },
-                                        { 16, FOOD_CLASS },
+                                        { 15, FOOD_CLASS },
                                         { 12, TOOL_CLASS },
                                         { 10, GEM_CLASS },
                                         { 1, POTION_CLASS },
                                         { 1, SCROLL_CLASS },
-                                        { 8, WAND_CLASS },
+										{ 1, REAGENT_CLASS },
+										{ 8, WAND_CLASS },
                                         { 8, RING_CLASS },
                                         { 4, AMULET_CLASS } };
 
@@ -986,7 +989,8 @@ boolean artif;
             } else
                 blessorcurse(otmp, 10);
             break;
-        case VENOM_CLASS:
+		case REAGENT_CLASS:
+		case VENOM_CLASS:
         case CHAIN_CLASS:
         case BALL_CLASS:
             break;

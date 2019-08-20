@@ -374,7 +374,12 @@ unsigned corpseflags;
     case PM_LONG_WORM:
         (void) mksobj_at(WORM_TOOTH, x, y, TRUE, FALSE);
         goto default_1;
-    case PM_VAMPIRE:
+	case PM_CAVE_SPIDER:
+	case PM_GIANT_SPIDER:
+		if(mndx == PM_GIANT_SPIDER || !rn2(2))
+			(void)mksobj_at(THREAD_OF_SPIDER_SILK, x, y, TRUE, FALSE);
+		goto default_1;
+	case PM_VAMPIRE:
     case PM_VAMPIRE_LORD:
         /* include mtmp in the mkcorpstat() call */
         num = undead_to_corpse(mndx);

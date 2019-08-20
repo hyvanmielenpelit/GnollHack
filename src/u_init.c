@@ -108,7 +108,8 @@ static struct trobj Priest[] = {
 	{ RING_MAIL, 0, ARMOR_CLASS, 1, 1, 0 },
 	{ CLERICAL_GOWN, 0, ARMOR_CLASS, 1, 1, 0 },
     { SMALL_SHIELD, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-    { POT_WATER, 0, POTION_CLASS, 4, 1, 0 }, /* holy water */
+	{ HOLY_SYMBOL, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 }, //Blessed holy symbol is even more powerful
+	{ POT_WATER, 0, POTION_CLASS, 4, 1, 0 }, /* holy water */
     { CLOVE_OF_GARLIC, 0, FOOD_CLASS, 1, 0, 0 },
     { SPRIG_OF_WOLFSBANE, 0, FOOD_CLASS, 1, 0, 0 },
     { UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 2, UNDEF_BLESS, 0 },

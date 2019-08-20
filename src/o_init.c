@@ -152,7 +152,7 @@ init_objects()
         bases[(int) oclass] = first;
 
         if (oclass == GEM_CLASS) {
-            setgemprobs((d_level *) 0);
+           // setgemprobs((d_level *) 0);
 
             if (rn2(2)) { /* change turquoise from green to blue? */
                 COPY_OBJ_DESCR(objects[TURQUOISE], objects[SAPPHIRE]);
@@ -243,7 +243,8 @@ int *lo_p, *hi_p; /* output: range that item belongs among */
         break;
 	case RING_CLASS:
     case WAND_CLASS:
-    case VENOM_CLASS:
+	case REAGENT_CLASS:
+	case VENOM_CLASS:
         /* entire class */
         *lo_p = bases[ocls];
         for (i = *lo_p; objects[i].oc_class == ocls; i++)
@@ -266,7 +267,7 @@ shuffle_all()
     /* entire classes; obj_shuffle_range() handles their exceptions */
     static char shuffle_classes[] = {
         AMULET_CLASS, POTION_CLASS, RING_CLASS,  SCROLL_CLASS,
-        SPBOOK_CLASS, WAND_CLASS,   VENOM_CLASS,
+        SPBOOK_CLASS, WAND_CLASS,   VENOM_CLASS, REAGENT_CLASS,  //Odd "," in the end, do we need this?
     };
     /* armor sub-class type ranges (one item from each group) */
     static short shuffle_types[] = {

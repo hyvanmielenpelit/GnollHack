@@ -615,7 +615,8 @@ doengrave()
         ptext = FALSE;
         break;
     /* Objects too silly to engrave with */
-    case FOOD_CLASS:
+	case REAGENT_CLASS:
+	case FOOD_CLASS:
     case SCROLL_CLASS:
     case SPBOOK_CLASS:
         pline("%s would get %s.", Yname2(otmp),
