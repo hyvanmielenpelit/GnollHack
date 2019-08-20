@@ -988,10 +988,13 @@ STATIC_OVL int
 use_holysymbol(obj)
 struct obj* obj;
 {
+	if (!obj)
+		return 0;
+
 	if (!getdir((char*)0))
 		return 0;
 
-	(void)bhit(u.dx, u.dy, 6, ZAPPED_WAND, uthitm, uthito,
+	(void)bhit(u.dx, u.dy, obj->blessed ? 4 : 3, ZAPPED_WAND, uthitm, uthito,
 		& obj);
 
 	return 1;
