@@ -3417,7 +3417,7 @@ struct ext_func_tab extcmdlist[] = {
             wiz_timeout_queue, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { M('T'), "tip", "empty a container", dotip, AUTOCOMPLETE },
     { '_', "travel", "travel to a specific location on the map", dotravel },
-    { M('t'), "turn", "turn undead away", doturn, IFBURIED | AUTOCOMPLETE },
+ //   { M('t'), "turn", "turn undead away", doturn, IFBURIED | AUTOCOMPLETE }, //Replaced by holy symbol
     { C('x'), "twoweapon", "toggle two-weapon combat",
             dotwoweapon, AUTOCOMPLETE },
     { M('u'), "untrap", "untrap something", dountrap, AUTOCOMPLETE },

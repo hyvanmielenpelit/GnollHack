@@ -1321,7 +1321,7 @@ OBJECT(OBJ("acid venom", "splash of venom"),
 /* Reagents here, which do not belong to any class, includes also all other odd non-food objects with no other apparent purpose*/
 OBJECT(OBJ("thread of spider silk", None), /* STARTMARKER 1&2 */
 	BITS(1, 1, 0, 0, 0, 0, 0, 0, 0, 0, WHACK, P_NONE, SILK), 0, 0, 0,
-	REAGENT_CLASS, 500, 0, 2, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, HI_ORGANIC, 0, 0, O1_NONE),
+	REAGENT_CLASS, 500, 0, 2, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, CLR_GRAY, 0, 0, O1_NONE),
 OBJECT(OBJ("mithril nugget", None), /* ENDMARKER 1&2 */
 	BITS(1, 1, 0, 0, 0, 0, 0, 0, 0, 0, WHACK, P_NONE, MITHRIL), 0, 0, 0,
 	REAGENT_CLASS, 500, 0, 16, 250, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,20, HI_SILVER, 0, 0, O1_NONE),

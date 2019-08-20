@@ -994,6 +994,16 @@ struct obj* obj;
 	if (!getdir((char*)0))
 		return 0;
 
+	u.uconduct.gnostic++;
+
+	if ((u.ualign.type != A_CHAOTIC
+		&& (is_demon(youmonst.data) || is_undead(youmonst.data)))
+		|| u.ugangr > 6 || Inhell) { /* "Die, mortal!" */
+		You("raise %s high, but nothing happens.", yname(obj));
+		exercise(A_WIS, FALSE);
+		return 0;
+	}
+	exercise(A_WIS, TRUE);
 	(void)bhit(u.dx, u.dy, obj->blessed ? 4 : 3, ZAPPED_WAND, uthitm, uthito,
 		& obj);
 
