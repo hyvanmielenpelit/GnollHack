@@ -2314,8 +2314,8 @@ int spell;
 		else
 			Sprintf(buf3, "%d %s", mc->amount, makeplural(buf2));
 
-		Sprintf(buf, "You need %s. ",
-			buf3); //(mc->flags& MATCOMP_NOT_SPENT ? "a catalyst" : "a component"));
+		Sprintf(buf, "You need %s%s. ",
+			buf3, (mc->flags& MATCOMP_NOT_SPENT ? " as a catalyst" : " as a component"));
 
 
 		struct obj* otmp = (struct obj*) 0;
