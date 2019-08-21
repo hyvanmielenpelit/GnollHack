@@ -1004,6 +1004,13 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
             scursed = sobj->cursed, already_known, old_erodeproof,
             new_erodeproof;
     struct obj *otmp;
+	char allowall[2];
+	void FDECL((*func), (OBJ_P)) = 0;
+	const char* glowcolor = 0;
+#define COST_alter (-2)
+#define COST_none (-1)
+	int costchange = COST_none;
+	boolean altfmt = FALSE;
 
     if (objects[otyp].oc_magic)
         exercise(A_WIS, TRUE);                       /* just for trying */
@@ -1028,6 +1035,8 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
             readmail(sobj);
         break;
 #endif
+	case SPE_PROTECT_ARMOR:
+	case SPE_ENCHANT_ARMOR:
     case SCR_ENCHANT_ARMOR: {
         register schar s;
         boolean special_armor;
@@ -1044,7 +1053,7 @@ enchantarmor:
             exercise(A_STR, !scursed);
             break;
         }
-        if (confused) {
+        if (confused || otyp == SPE_PROTECT_ARMOR) {
             old_erodeproof = (otmp->oerodeproof != 0);
             new_erodeproof = !scursed;
             otmp->oerodeproof = 0; /* for messages */
@@ -1369,11 +1378,13 @@ enchantarmor:
          * monsters are not visible
          */
         break;
-    case SCR_ENCHANT_WEAPON:
+	case SPE_PROTECT_WEAPON:
+	case SPE_ENCHANT_WEAPON:
+	case SCR_ENCHANT_WEAPON:
         /* [What about twoweapon mode?  Proofing/repairing/enchanting both
            would be too powerful, but shouldn't we choose randomly between
            primary and secondary instead of always acting on primary?] */
-        if (confused && uwep
+        if ((confused || otyp == SPE_PROTECT_WEAPON) && uwep
             && erosion_matters(uwep) && uwep->oclass != ARMOR_CLASS) {
             old_erodeproof = (uwep->oerodeproof != 0);
             new_erodeproof = !scursed;
@@ -1401,6 +1412,16 @@ enchantarmor:
             uwep->oerodeproof = new_erodeproof ? 1 : 0;
             break;
         }
+		else if (otyp == SPE_PROTECT_WEAPON)
+		{
+			if(uwep)
+				You_feel("as if your weapon is warmer than normal, but then it passes.");
+			else
+				You("experience a passing feeling of warmth.");
+
+			break;
+		}
+
         if (!chwepon(sobj, scursed ? -1
                              : !uwep ? 1
                                : (uwep->spe >= 9) ? !rn2(uwep->spe)
@@ -1521,7 +1542,76 @@ enchantarmor:
             pline("You're not carrying anything to be identified.");
         }
         break;
-    case SCR_CHARGING:
+	case SPE_CURSE:
+	case SPE_BLESS:
+		cval = 1;
+		allowall[0] = ALL_CLASSES;
+		allowall[1] = '\0';
+		if (invent && !confused) {
+			otmp = getobj(allowall, (otyp == SPE_BLESS ? "bless" : "curs"), 0, "");
+			if (otyp == SPE_BLESS) {
+				if (otmp->cursed) {
+					func = uncurse;
+					glowcolor = NH_AMBER;
+					costchange = COST_UNCURS;
+				}
+				else if (!otmp->blessed) {
+					func = bless;
+					glowcolor = NH_LIGHT_BLUE;
+					costchange = COST_alter;
+					altfmt = TRUE; /* "with a <color> aura" */
+				}
+			}
+			else  { //Curse
+				if (otmp->blessed) {
+					func = unbless;
+					glowcolor = "brown";
+					costchange = COST_UNBLSS;
+				}
+				else if (!otmp->cursed) {
+					func = curse;
+					glowcolor = NH_BLACK;
+					costchange = COST_alter;
+					altfmt = TRUE;
+				}
+			}
+			if (func) {
+				/* give feedback before altering the target object;
+				   this used to set obj->bknown even when not seeing
+				   the effect; now hero has to see the glow, and bknown
+				   is cleared instead of set if perception is distorted */
+				glowcolor = hcolor(glowcolor);
+				if (altfmt)
+					pline("%s with %s aura.", Yobjnam2(otmp, "glow"), an(glowcolor));
+				else
+					pline("%s %s.", Yobjnam2(otmp, "glow"), glowcolor);
+				iflags.last_msg = PLNMSG_OBJ_GLOWS;
+				otmp->bknown = !Hallucination;
+				/* potions of water are the only shop goods whose price depends
+				   on their curse/bless state */
+				if (otmp->unpaid && otmp->otyp == POT_WATER) {
+					if (costchange == COST_alter)
+						/* added blessing or cursing; update shop
+						   bill to reflect item's new higher price */
+						alter_cost(otmp, 0L);
+					else if (costchange != COST_none)
+						/* removed blessing or cursing; you
+						   degraded it, now you'll have to buy it... */
+						costly_alteration(otmp, costchange);
+				}
+				/* finally, change curse/bless state */
+				(*func)(otmp);
+			}
+		}
+		else
+		{
+			/* when casting a spell we know we're not confused,
+			   so inventory must be empty (another message has
+			   already been given above if reading a scroll) */
+			pline("You're not carrying anything to be %s.", (otyp == SPE_BLESS ? "blessed" : "cursed"));
+		}
+		break;
+	case SCR_CHARGING:
         if (confused) {
             if (scursed) {
                 You_feel("discharged.");

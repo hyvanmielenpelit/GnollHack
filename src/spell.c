@@ -756,8 +756,8 @@ spelltypemnemonic(skill)
 int skill;
 {
     switch (skill) {
-    case P_ATTACK_SPELL:
-        return "attack";
+    case P_ARCANE_SPELL:
+        return "arcane";
     case P_HEALING_SPELL:
         return "healing";
     case P_DIVINATION_SPELL:
@@ -766,11 +766,17 @@ int skill;
         return "enchantment";
     case P_CLERIC_SPELL:
         return "clerical";
-    case P_ESCAPE_SPELL:
-        return "escape";
-    case P_MATTER_SPELL:
-        return "matter";
-    default:
+    case P_MOVEMENT_SPELL:
+        return "movement";
+    case P_TRANSMUTATION_SPELL:
+        return "transmutation";
+	case P_CONJURATION_SPELL:
+		return "conjuration";
+	case P_ABJURATION_SPELL:
+		return "abjuration";
+	case P_NECROMANCY_SPELL:
+		return "necromancy";
+	default:
         impossible("Unknown spell skill, %d;", skill);
         return "";
     }
@@ -1218,7 +1224,13 @@ boolean atme;
     case SPE_DETECT_FOOD:
     case SPE_CAUSE_FEAR:
     case SPE_IDENTIFY:
-        /* high skill yields effect equivalent to blessed scroll */
+	case SPE_BLESS:
+	case SPE_CURSE:
+	case SPE_ENCHANT_ARMOR:
+	case SPE_ENCHANT_WEAPON:
+	case SPE_PROTECT_ARMOR:
+	case SPE_PROTECT_WEAPON:
+		/* high skill yields effect equivalent to blessed scroll */
         if (role_skill >= P_SKILLED)
             pseudo->blessed = 1;
     /*FALLTHRU*/
@@ -1865,9 +1877,9 @@ int *spell_no;
 	else
 	{
 		if (!iflags.menu_tab_sep) {
-			Sprintf(buf, "%-20s     Level %-12s Mana Stat Fail Cool Casts", "    Name",
+			Sprintf(buf, "%-20s     Level %-13s Mana Stat Fail Cool Casts", "    Name",
 				"Category");
-			strcpy(fmt, "%-20s  %s   %-12s %4d  %s %3d%% %4d  %4s");
+			strcpy(fmt, "%-20s  %s   %-13s %4d  %s %3d%% %4d  %4s");
 			//		fmt = "%-20s  %2d   %-12s %4d %3d%% %8s";
 		}
 		else {

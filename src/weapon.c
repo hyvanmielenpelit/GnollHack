@@ -25,21 +25,25 @@ STATIC_DCL void FDECL(skill_advance, (int));
 #define PN_SABER (-5)
 #define PN_HAMMER (-6)
 #define PN_WHIP (-7)
-#define PN_ATTACK_SPELL (-8)
-#define PN_HEALING_SPELL (-9)
-#define PN_DIVINATION_SPELL (-10)
-#define PN_ENCHANTMENT_SPELL (-11)
-#define PN_CLERIC_SPELL (-12)
-#define PN_ESCAPE_SPELL (-13)
-#define PN_MATTER_SPELL (-14)
+#define PN_ARCANE_SPELL (-8)
+#define PN_CLERIC_SPELL (-9)
+#define PN_HEALING_SPELL (-10)
+#define PN_DIVINATION_SPELL (-11)
+#define PN_ABJURATION_SPELL (-12)
+#define PN_MOVEMENT_SPELL (-13)
+#define PN_TRANSMUTATION_SPELL (-14)
+#define PN_ENCHANTMENT_SPELL (-15)
+#define PN_CONJURATION_SPELL (-16)
+#define PN_NECROMANCY_SPELL (-17)
+
 
 STATIC_VAR NEARDATA const short skill_names_indices[P_NUM_SKILLS] = {
     0, DAGGER, KNIFE, AXE, PICK_AXE, SHORT_SWORD, BROADSWORD, LONG_SWORD,
     TWO_HANDED_SWORD, SCIMITAR, PN_SABER, CLUB, MACE, MORNING_STAR, FLAIL,
     PN_HAMMER, QUARTERSTAFF, PN_POLEARMS, SPEAR, TRIDENT, LANCE, BOW, SLING,
     CROSSBOW, DART, SHURIKEN, BOOMERANG, PN_WHIP, UNICORN_HORN,
-    PN_ATTACK_SPELL, PN_HEALING_SPELL, PN_DIVINATION_SPELL,
-    PN_ENCHANTMENT_SPELL, PN_CLERIC_SPELL, PN_ESCAPE_SPELL, PN_MATTER_SPELL,
+    PN_ARCANE_SPELL, PN_CLERIC_SPELL, PN_HEALING_SPELL, PN_DIVINATION_SPELL,
+    PN_ABJURATION_SPELL, PN_MOVEMENT_SPELL, PN_TRANSMUTATION_SPELL, PN_ENCHANTMENT_SPELL, PN_CONJURATION_SPELL, PN_NECROMANCY_SPELL,
     PN_BARE_HANDED, PN_TWO_WEAPONS, PN_RIDING
 };
 
@@ -47,8 +51,8 @@ STATIC_VAR NEARDATA const short skill_names_indices[P_NUM_SKILLS] = {
 STATIC_VAR NEARDATA const char *const odd_skill_names[] = {
     "no skill", "bare hands", /* use barehands_or_martial[] instead */
     "two weapon combat", "riding", "polearms", "saber", "hammer", "whip",
-    "attack spells", "healing spells", "divination spells",
-    "enchantment spells", "clerical spells", "escape spells", "matter spells",
+    "arcane spells", "clerical spells", "healing spells", "divination spells", "abjuration spells",
+	"movement spells", "transmutation spells", "enchantment spells", "conjuration spells", "necromancy spells",
 };
 /* indexed vis `is_martial() */
 STATIC_VAR NEARDATA const char *const barehands_or_martial[] = {
@@ -1889,7 +1893,7 @@ const struct def_skill *class_skill;
     } else if (Role_if(PM_PRIEST)) {
         P_SKILL(P_CLERIC_SPELL) = P_BASIC;
     } else if (Role_if(PM_WIZARD)) {
-        P_SKILL(P_ATTACK_SPELL) = P_BASIC;
+        P_SKILL(P_ARCANE_SPELL) = P_BASIC;
         P_SKILL(P_ENCHANTMENT_SPELL) = P_BASIC;
     }
 

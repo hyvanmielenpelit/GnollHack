@@ -51,20 +51,23 @@ enum p_skills {
     P_UNICORN_HORN       = 28, /* last weapon, two-handed */
 
     /* Spell Skills added by Larry Stewart-Zerba */
-    P_ATTACK_SPELL       = 29,
-    P_HEALING_SPELL      = 30,
-    P_DIVINATION_SPELL   = 31,
-    P_ENCHANTMENT_SPELL  = 32,
-    P_CLERIC_SPELL       = 33,
-    P_ESCAPE_SPELL       = 34,
-    P_MATTER_SPELL       = 35,
+    P_ARCANE_SPELL       = 29,
+	P_CLERIC_SPELL		 = 30,
+	P_HEALING_SPELL      = 31,
+    P_DIVINATION_SPELL   = 32,
+	P_ABJURATION_SPELL	 = 33,
+    P_MOVEMENT_SPELL     = 34,
+    P_TRANSMUTATION_SPELL= 35,
+	P_ENCHANTMENT_SPELL  = 36,
+	P_CONJURATION_SPELL  = 37,
+	P_NECROMANCY_SPELL	 = 38,
 
     /* Other types of combat */
-    P_BARE_HANDED_COMBAT = 36, /* actually weaponless; gloves are ok */
-    P_TWO_WEAPON_COMBAT  = 37, /* pair of weapons, one in each hand */
-    P_RIDING             = 38, /* How well you control your steed */
+    P_BARE_HANDED_COMBAT = 39, /* actually weaponless; gloves are ok */
+    P_TWO_WEAPON_COMBAT  = 40, /* pair of weapons, one in each hand */
+    P_RIDING             = 41, /* How well you control your steed */
 
-    P_NUM_SKILLS         = 39
+    P_NUM_SKILLS         = 42
 };
 
 #define P_MARTIAL_ARTS P_BARE_HANDED_COMBAT /* Role distinguishes */
@@ -72,8 +75,8 @@ enum p_skills {
 #define P_FIRST_WEAPON P_DAGGER
 #define P_LAST_WEAPON P_UNICORN_HORN
 
-#define P_FIRST_SPELL P_ATTACK_SPELL
-#define P_LAST_SPELL P_MATTER_SPELL
+#define P_FIRST_SPELL P_ARCANE_SPELL
+#define P_LAST_SPELL P_NECROMANCY_SPELL
 
 #define P_LAST_H_TO_H P_RIDING
 #define P_FIRST_H_TO_H P_BARE_HANDED_COMBAT
