@@ -788,6 +788,7 @@ boolean artif;
     int mndx, tryct;
     struct obj *otmp;
     char let = objects[otyp].oc_class;
+	int i1 = 0, i2 = 0, i3 = 0;
 
     otmp = newobj();
     *otmp = zeroobj;
@@ -1088,7 +1089,16 @@ boolean artif;
             ? POT_WATER
             : otmp->otyp) {
 	case BLACK_BLADE_OF_DISINTEGRATION:
-		otmp->age = 20L;
+		otmp->age = d(objects[SPE_BLACK_BLADE_OF_DISASTER].oc_spell_dur_dice, objects[SPE_BLACK_BLADE_OF_DISASTER].oc_spell_dur_dicesize) + objects[SPE_BLACK_BLADE_OF_DISASTER].oc_spell_dur_plus;
+		otmp->nomerge = 1;
+		begin_existence(otmp);
+		break;
+	case FORCE_FIELD_ARMOR:
+		i1 = objects[SPE_MAGE_ARMOR].oc_spell_dur_dice;
+		i2 = objects[SPE_MAGE_ARMOR].oc_spell_dur_dicesize;
+		i3 = objects[SPE_MAGE_ARMOR].oc_spell_dur_plus;
+
+		otmp->age = d(objects[SPE_MAGE_ARMOR].oc_spell_dur_dice, objects[SPE_MAGE_ARMOR].oc_spell_dur_dicesize) + objects[SPE_MAGE_ARMOR].oc_spell_dur_plus;
 		otmp->nomerge = 1;
 		begin_existence(otmp);
 		break;

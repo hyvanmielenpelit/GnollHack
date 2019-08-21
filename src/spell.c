@@ -853,9 +853,10 @@ cast_protection()
             }
         }
         u.uspellprot += gain;
-        u.uspmtime = (P_SKILL(spell_skilltype(SPE_PROTECTION)) == P_EXPERT)
-                        ? 150 :(P_SKILL(spell_skilltype(SPE_PROTECTION)) == P_SKILLED)
-                        ? 100 : 50;
+        u.uspmtime = d(objects[SPE_PROTECTION].oc_spell_dur_dice, objects[SPE_PROTECTION].oc_spell_dur_dicesize) + objects[SPE_PROTECTION].oc_spell_dur_plus
+			* (P_SKILL(spell_skilltype(SPE_PROTECTION)) == P_EXPERT)
+                        ? 3 :(P_SKILL(spell_skilltype(SPE_PROTECTION)) == P_SKILLED)
+                        ? 2 : 1;
         if (!u.usptime)
             u.usptime = u.uspmtime;
         find_ac();
@@ -1162,6 +1163,7 @@ boolean atme;
 	case SPE_TOUCH_OF_DEATH:
 	case SPE_LIGHT:
 	case SPE_BLACK_BLADE_OF_DISASTER:
+	case SPE_MAGE_ARMOR:
 	case SPE_ARMAGEDDON:
 	case SPE_WISH:
 	case SPE_TIME_STOP:
@@ -2021,21 +2023,16 @@ int spell;
     special = urole.spelheal;
 	statused = ACURR(objects[spellid(spell)].oc_spell_attribute); //ACURR(urole.spelstat);
 
-/*    if (uarm && is_metallic(uarm))
-        splcaster += (uarmc && uarmc->otyp == ROBE) ? urole.spelarmr / 2
-                                                    : urole.spelarmr;
-    else if (uarmc && uarmc->otyp == ROBE)
-        splcaster -= urole.spelarmr;
-*/
-	if (uarms)
-        splcaster += urole.spelshld;
-
-    if (uarmh && is_metallic(uarmh) && uarmh->otyp != HELM_OF_BRILLIANCE)
-        splcaster += uarmhbon;
-    if (uarmg && is_metallic(uarmg))
-        splcaster += uarmgbon;
-    if (uarmf && is_metallic(uarmf))
-        splcaster += uarmfbon;
+	if (uarm && is_metallic(uarm) && !(objects[uarms->otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY))
+		splcaster += urole.spelarmr / (objects[uarms->otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY ? 2 : 1);
+	if (uarms && !(objects[uarms->otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY))
+        splcaster += urole.spelshld / (objects[uarms->otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY ? 2 : 1);	
+    if (uarmh && is_metallic(uarmh) && !(objects[uarmh->otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY))
+        splcaster += uarmhbon / (objects[uarms->otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY ? 2 : 1);
+    if (uarmg && is_metallic(uarmg) && !(objects[uarmg->otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY))
+        splcaster += uarmgbon / (objects[uarms->otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY ? 2 : 1);
+    if (uarmf && is_metallic(uarmf) && !(objects[uarmf->otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY))
+        splcaster += uarmfbon / (objects[uarms->otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY ? 2 : 1);
 
     if (spellid(spell) == urole.spelspec)
         splcaster += urole.spelsbon;

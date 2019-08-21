@@ -32,7 +32,8 @@ enum obj_material_types {
     GLASS       = 20,
     GEMSTONE    = 21,
     MINERAL     = 22,
-	PLANARRIFT	= 23
+	PLANARRIFT	= 23,
+	FORCEFIELD  = 24
 };
 
 enum obj_armor_types {
@@ -120,20 +121,30 @@ struct objclass {
     short oc_cost;            /* base cost in shops */
     /* Check the AD&D rules!  The FIRST is small monster damage. */
     /* for weapons, and tools, rocks, and gems useful as weapons */
-	schar oc_wsdice, oc_wsdam, oc_wsdmgplus; /* small monster damage */
-	schar oc_wldice, oc_wldam, oc_wldmgplus; /* large monster damage */
-	schar oc_oc1;
+	int oc_wsdice, oc_wsdam, oc_wsdmgplus; /* small monster damage, also used for spell damage */
+	int oc_wldice, oc_wldam, oc_wldmgplus; /* large monster damage, also used for duration for spells */
+	int oc_oc1;
 	int oc_oc2, oc_oc3; //Spell levels can be negative, spell mana cost can be over 255
-	schar oc_oc4;  //Used for spell attributes, where 0-255 is ok
+	int oc_oc4;  //Used for spell attributes and duration
 
+/* weapons */
 #define oc_hitbon oc_oc1		/* weapons: "to hit" bonus */
-#define a_ac oc_oc1				/* armor class, used in ARM_BONUS in do.c */
-#define oc_cooldown oc_oc1      /* books: cooldown time */
 
+/* armor */
+#define a_ac oc_oc1				/* armor class, used in ARM_BONUS in do.c */
 #define a_can oc_oc2			/* armor: used in mhitu.c */
+
+/* spells */
+#define oc_cooldown oc_oc1      /* books: cooldown time */
 #define oc_level oc_oc2			/* books: spell level */
 #define oc_mana_cost oc_oc3		/* books: spell mana cost */
-#define oc_spell_attribute oc_oc4 /* books: spell primary casting attribute */
+#define oc_spell_attribute oc_oc4		/* books: spell primary casting attribute */
+#define oc_spell_dmg_dice oc_wsdice		/* books: damage no of dice */
+#define oc_spell_dmg_dicesize oc_wsdam	/* books: damage size of dice */
+#define oc_spell_dmg_plus oc_wsdmgplus	/* books: damage constant added */
+#define oc_spell_dur_dice oc_wldice		/* books: duration no of dice */
+#define oc_spell_dur_dicesize oc_wldam	/* books: duration size of dice */
+#define oc_spell_dur_plus oc_wldmgplus	/* books: duration constant added */
 
     unsigned short oc_nutrition; /* food value */
 
@@ -175,6 +186,9 @@ struct objclass {
 #define O1_CORROSION_RESISTANT 0x00000080
 
 #define O1_SPELL_EXPLOSION_EFFECT 0x00000100
+
+#define O1_NO_SPELL_CASTING_PENALTY 0x00000200
+#define O1_HALF_SPELL_CASTING_PENALTY 0x00000400
 
 };
 

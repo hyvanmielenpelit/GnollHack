@@ -3032,6 +3032,7 @@ E void FDECL(destroy_one_item, (struct obj*, int, int, boolean));
 E int FDECL(resist, (struct monst *, CHAR_P, int, int));
 E void NDECL(makewish);
 E void NDECL(summonblackblade);
+E void NDECL(summonmagearmor);
 E void NDECL(summonogre);
 E void NDECL(summondemon);
 E void NDECL(armageddon);

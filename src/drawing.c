@@ -53,7 +53,7 @@ const struct class_sym def_oc_syms[MAXOCLASSES] = {
     { BALL_SYM, "iron balls", "iron ball" },
     { CHAIN_SYM, "chains", "iron chain" },
     { VENOM_SYM, "venoms", "splash of venom" },
-	{ REAGENT_SYM, "reagents", "reagent" }
+	{ REAGENT_SYM, "miscellaneous items", "miscellaneous item" }
 };
 
 /* Default monster class symbols.  See monsym.h. */

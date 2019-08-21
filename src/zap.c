@@ -165,10 +165,7 @@ struct obj *otmp;
             break; /* skip makeknown */
         } else if (u.uswallow || rnd(20) < 10 + find_mac(mtmp)) {
 			dmg = 0;
-			if(bigmonst(mtmp->data))
-				dmg = d(objects[otyp].oc_wldice, objects[otyp].oc_wldam) + objects[otyp].oc_wldmgplus;
-			else
-				dmg = d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus;
+			dmg = d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus; //Spells do the same damage for small and big
 
 			//Knight quest artifact
 			if (dbldam)
@@ -189,10 +186,7 @@ struct obj *otmp;
 		if (u.uswallow || rnd(20) < 5 + u.ulevel + find_mac(mtmp)) //Hitsas +5 arrow + caster level, good at high levels
 		{
 			dmg = 0;
-			if (bigmonst(mtmp->data))
-				dmg = d(objects[otyp].oc_wldice, objects[otyp].oc_wldam) + objects[otyp].oc_wldmgplus;
-			else
-				dmg = d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus;
+			dmg = d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus; //Same for small and big
 
 			//Knight quest artifact
 			if (dbldam)
@@ -2276,6 +2270,11 @@ register struct obj *obj;
 		pline("A sword-shaped planar rift forms before you!");
 		summonblackblade();
 		break;
+	case SPE_MAGE_ARMOR:
+		known = TRUE;
+		pline("An armor-shaped force field forms before you!");
+		summonmagearmor();
+		break;
 	case SPE_ARMAGEDDON:
 		known = TRUE;
 		You("chant an invocation:");
@@ -2415,10 +2414,7 @@ boolean ordinary;
 {
     boolean learn_it = FALSE;
     int damage = 0;
-	if (bigmonst(youmonst.data))
-		damage = d(objects[obj->otyp].oc_wldice, objects[obj->otyp].oc_wldam) + objects[obj->otyp].oc_wldmgplus;
-	else
-		damage = d(objects[obj->otyp].oc_wsdice, objects[obj->otyp].oc_wsdam) + objects[obj->otyp].oc_wsdmgplus;
+	damage = d(objects[obj->otyp].oc_wsdice, objects[obj->otyp].oc_wsdam) + objects[obj->otyp].oc_wsdmgplus; //Same for small and big
 
     switch (obj->otyp) {
     case WAN_STRIKING:
@@ -3865,10 +3861,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 	if (origobj && mon)
 	{
 		int dam = 0;
-		if (bigmonst(mon->data))
-			dam = d(objects[origobj->otyp].oc_wldice, objects[origobj->otyp].oc_wldam) + objects[origobj->otyp].oc_wldmgplus;
-		else
-			dam = d(objects[origobj->otyp].oc_wsdice, objects[origobj->otyp].oc_wsdam) + objects[origobj->otyp].oc_wsdmgplus;
+		dam = d(objects[origobj->otyp].oc_wsdice, objects[origobj->otyp].oc_wsdam) + objects[origobj->otyp].oc_wsdmgplus; //Same for smal and big
 
 		tmp = dam;
 	}
@@ -4052,10 +4045,7 @@ xchar sx, sy;
 	//Base damage here, set to zero, if not needed
 	if (origobj)
 	{
-		if (bigmonst(youmonst.data))
-			dam = d(objects[origobj->otyp].oc_wldice, objects[origobj->otyp].oc_wldam) + objects[origobj->otyp].oc_wldmgplus;
-		else
-			dam = d(objects[origobj->otyp].oc_wsdice, objects[origobj->otyp].oc_wsdam) + objects[origobj->otyp].oc_wsdmgplus;
+		dam = d(objects[origobj->otyp].oc_wsdice, objects[origobj->otyp].oc_wsdam) + objects[origobj->otyp].oc_wsdmgplus; //Same for small and big
 	}
 	else
 		dam = d(dmgdice, dicesize) + dmgplus;
@@ -4565,10 +4555,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
 				if (origobj)
 				{
 					int dam = 0;
-					if (bigmonst(youmonst.data))
-						dam = d(objects[otmp->otyp].oc_wldice, objects[otmp->otyp].oc_wldam) + objects[otmp->otyp].oc_wldmgplus;
-					else
-						dam = d(objects[otmp->otyp].oc_wsdice, objects[otmp->otyp].oc_wsdam) + objects[otmp->otyp].oc_wsdmgplus;
+					dam = d(objects[otmp->otyp].oc_wsdice, objects[otmp->otyp].oc_wsdam) + objects[otmp->otyp].oc_wsdmgplus; //Same for small and big
 						
 					(void) flashburn((long)dam);
 				}
@@ -5756,6 +5743,30 @@ summonblackblade()
 }
 
 void
+summonmagearmor()
+{
+	struct obj* otmp;
+
+	otmp = mksobj(FORCE_FIELD_ARMOR, FALSE, FALSE);
+	if (otmp && otmp != &zeroobj) {
+		const char
+			* verb = ((Is_airlevel(&u.uz) || u.uinwater) ? "slip" : "drop"),
+			* oops_msg = (u.uswallow
+				? "Oops!  %s out of your reach!"
+				: (Is_airlevel(&u.uz) || Is_waterlevel(&u.uz)
+					|| levl[u.ux][u.uy].typ < IRONBARS
+					|| levl[u.ux][u.uy].typ >= ICE)
+				? "Oops!  %s away from you!"
+				: "Oops!  %s to the floor!");
+
+		/* The(aobjnam()) is safe since otmp is unidentified -dlc */
+		(void)hold_another_object(otmp, oops_msg,
+			The(aobjnam(otmp, verb)),
+			(const char*)0);
+	}
+}
+
+void
 summonogre()
 {
 	struct monst* mon;
@@ -5836,7 +5847,7 @@ timestop()
 {
 	pline("The flow of time seems to slow down!");
 	context.time_stopped = TRUE;
-	begin_timestoptimer(rnd(4) + 3);
+	begin_timestoptimer(d(objects[SPE_TIME_STOP].oc_spell_dur_dice, objects[SPE_TIME_STOP].oc_spell_dur_dicesize) + objects[SPE_TIME_STOP].oc_spell_dur_plus);
 
 }
 

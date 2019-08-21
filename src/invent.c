@@ -4125,7 +4125,7 @@ long numused;
 STATIC_VAR NEARDATA const char *names[] = {
     0, "Illegal objects", "Weapons", "Armor", "Rings", "Amulets", "Tools",
     "Comestibles", "Potions", "Scrolls", "Spellbooks", "Wands", "Coins",
-    "Gems/Stones", "Boulders/Statues", "Iron balls", "Chains", "Venoms", "Reagents"
+    "Gems/Stones", "Boulders/Statues", "Iron balls", "Chains", "Venoms", "Miscellaneous"
 };
 STATIC_VAR NEARDATA const char oth_symbols[] = { CONTAINED_SYM, '\0' };
 STATIC_VAR NEARDATA const char *oth_names[] = { "Bagged/Boxed items" };
