@@ -2390,6 +2390,7 @@ E void FDECL(initialspell, (struct obj *));
 E int NDECL(domix);
 E int FDECL(getspellcooldown, (int));
 E int FDECL(subdirtype2explosiontype, (int));
+E void FDECL(addspellintrinsictimeout, (int));
 
 
 /* ### steal.c ### */

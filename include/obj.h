@@ -383,7 +383,7 @@ struct obj {
      || (objects[typ].oc_material == GEMSTONE                          \
          && (typ != DILITHIUM_CRYSTAL && typ != RUBY && typ != DIAMOND \
              && typ != SAPPHIRE && typ != BLACK_OPAL && typ != EMERALD \
-             && typ != OPAL)))
+             && typ != OPAL && typ != PEARL && typ != BLACK_PEARL)))
 
 
 /* Flags for get_obj_location(). */

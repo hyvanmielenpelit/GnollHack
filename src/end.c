@@ -1106,15 +1106,29 @@ int how;
     }
     if (Lifesaved && (how <= GENOCIDED)) {
         pline("But wait...");
-        makeknown(AMULET_OF_LIFE_SAVING);
-        Your("medallion %s!", !Blind ? "begins to glow" : "feels warm");
-        if (how == CHOKING)
-            You("vomit ...");
-        You_feel("much better!");
-        pline_The("medallion crumbles to dust!");
-        if (uamul)
-            useup(uamul);
-
+		if (HLifesaved)
+		{
+			You("feel the invisible hand of %s around you.", u_gname());
+			if (how == CHOKING)
+				You("vomit ...");
+			You_feel("much better!");
+			u.uprops[LIFESAVED].intrinsic = u.uprops[LIFESAVED].intrinsic & ~TIMEOUT; //Set timeout to 0
+		}
+		else
+		{
+			if(uamul && uamul->otyp == AMULET_OF_LIFE_SAVING)
+			{
+				makeknown(AMULET_OF_LIFE_SAVING);
+				Your("medallion %s!", !Blind ? "begins to glow" : "feels warm");
+				if (how == CHOKING)
+					You("vomit ...");
+				You_feel("much better!");
+				pline_The("medallion crumbles to dust!");
+				if (uamul)
+					useup(uamul);
+			}
+			//If other possible items, they should come here, or we should make a selection function
+		}
         (void) adjattrib(A_CON, -1, TRUE);
         savelife(how);
         if (how == GENOCIDED) {

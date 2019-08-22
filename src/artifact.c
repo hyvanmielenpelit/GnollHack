@@ -496,6 +496,8 @@ long wp_mask;
         mask = &EPoison_resistance;
     else if (dtyp == AD_DRLI)
         mask = &EDrain_resistance;
+	else if (dtyp == AD_WERE)
+		mask = &ELycanthropy_resistance;
 
     if (mask && wp_mask == W_ART && !on) {
         /* find out if some other artifact also confers this intrinsic;
@@ -798,6 +800,8 @@ struct monst *mtmp;
 			return !(yours ? Disint_resistance : resists_disint(mtmp));
 		case AD_DRAY:
 			return !(yours ? Death_resistance : resists_death(mtmp));
+		case AD_WERE:
+			return !(yours ? Lycanthropy_resistance : resists_lycanthropy(mtmp));
 		case AD_MAGM:
         case AD_STUN:
             return !(yours ? Antimagic : (rn2(100) < ptr->mr));
@@ -1759,6 +1763,7 @@ long *abil;
         { &ECold_resistance, AD_COLD },
         { &EShock_resistance, AD_ELEC },
 		{ &EDeath_resistance, AD_DRAY },
+		{ &ELycanthropy_resistance, AD_WERE },
 		{ &EAntimagic, AD_MAGM },
         { &EDisint_resistance, AD_DISN },
         { &EPoison_resistance, AD_DRST },

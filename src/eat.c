@@ -938,6 +938,16 @@ register struct permonst *ptr;
 			HDeath_resistance |= FROMOUTSIDE;
 		}
 		break;
+	case LYCANTHROPY_RES: /* lycanthropy resistance */
+		debugpline0("Trying to give lycanthropy resistance");
+		if (!(HLycanthropy_resistance & FROMOUTSIDE)) {
+			if (Hallucination)
+				You_feel("bugs do not bother you!");
+			else
+				Your("protected against lycathropy!");
+			HLycanthropy_resistance |= FROMOUTSIDE;
+		}
+		break;
 	case POISON_RES:
         debugpline0("Trying to give poison resistance");
         if (!(HPoison_resistance & FROMOUTSIDE)) {
@@ -1186,7 +1196,7 @@ int pm;
             givit(tmp, ptr);
     } /* check_intrinsics */
 
-    if (catch_lycanthropy >= LOW_PM) {
+    if (catch_lycanthropy >= LOW_PM && !Lycanthropy_resistance) {
         set_ulycn(catch_lycanthropy);
         retouch_equipment(2);
     }

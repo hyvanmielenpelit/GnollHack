@@ -2938,6 +2938,9 @@ register int n;
 register const char *knam;
 boolean k_format;
 {
+	if (Invulnerable) //Note you must set damage to zero so it does not get displayed to the player
+		return;
+
     if (Upolyd) {
         u.mh -= n;
         if (u.mhmax < u.mh)

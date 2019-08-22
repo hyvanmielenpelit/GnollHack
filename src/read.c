@@ -1709,7 +1709,7 @@ enchantarmor:
         if (!already_known)
             (void) learnscrolltyp(SCR_FIRE);
         if (confused) {
-            if (Fire_resistance) {
+            if (Fire_resistance || Invulnerable) {
                 shieldeff(u.ux, u.uy);
                 if (!Blind)
                     pline("Oh, look, what a pretty fire in your %s.",

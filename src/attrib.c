@@ -55,6 +55,7 @@ static const struct innate {
                  { 15, &(HShock_resistance), "insulated", "conductive" },
                  { 17, &(HTeleport_control), "controlled", "uncontrolled" },
 				 { 19, &(HDeath_resistance), "less mortal", "more mortal" },
+				 { 21, &(HLycanthropy_resistance), "less suspectible to lycanthropy", "more suspectible to lycanthropy" },
 				 { 0, 0, 0, 0 } },
 
   pri_abil[] = { { 15, &(HWarning), "sensitive", "" },
@@ -381,7 +382,7 @@ boolean lifesavedalready;
 		pline("%s%s %s cold-enchanted!",
 			isupper((uchar)* reason) ? "" : "The ", reason,
 			plural ? "were" : "was");
-		if (Cold_resistance) {
+		if (Cold_resistance || Invulnerable) {
 			shieldeff(u.ux, u.uy);
 			pline_The("cold doesn't seem to affect you.");
 			return;
@@ -404,7 +405,7 @@ boolean lifesavedalready;
 		pline("%s%s %s fire-enchanted!",
 			isupper((uchar)* reason) ? "" : "The ", reason,
 			plural ? "were" : "was");
-		if (Fire_resistance) {
+		if (Fire_resistance || Invulnerable) {
 			shieldeff(u.ux, u.uy);
 			pline_The("fire doesn't seem to affect you.");
 			return;
@@ -427,14 +428,14 @@ boolean lifesavedalready;
 		pline("%s%s %s lightning-enchanted!",
 			isupper((uchar)* reason) ? "" : "The ", reason,
 			plural ? "were" : "was");
-		if (Shock_resistance) {
+		if (Shock_resistance || Invulnerable) {
 			shieldeff(u.ux, u.uy);
 			pline_The("lightning doesn't seem to affect you.");
 			return;
 		}
 
 
-		if (sptype == LIGHTNING_ENCHANTMENT) {
+		if (sptype == LIGHTNING_ENCHANTMENT || Invulnerable) {
 			loss = d(4, 6);
 			losehp(loss, pkiller, kprefix);
 		}
@@ -450,7 +451,7 @@ boolean lifesavedalready;
 		pline("%s%s %s imbued by death magic!",
 			isupper((uchar)* reason) ? "" : "The ", reason,
 			plural ? "were" : "was");
-		if (Death_resistance || is_not_living(youmonst.data) || is_demon(youmonst.data)) {
+		if (Death_resistance || is_not_living(youmonst.data) || is_demon(youmonst.data) || Invulnerable) {
 			shieldeff(u.ux, u.uy);
 			pline_The("death magic doesn't seem to affect you.");
 			return;

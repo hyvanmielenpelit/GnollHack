@@ -48,6 +48,10 @@
 #define EDeath_resistance u.uprops[DEATH_RES].extrinsic
 #define Death_resistance (HDeath_resistance || EDeath_resistance)
 
+#define HLycanthropy_resistance u.uprops[LYCANTHROPY_RES].intrinsic
+#define ELycanthropy_resistance u.uprops[LYCANTHROPY_RES].extrinsic
+#define Lycanthropy_resistance (HLycanthropy_resistance || ELycanthropy_resistance)
+
 #define HPoison_resistance u.uprops[POISON_RES].intrinsic
 #define EPoison_resistance u.uprops[POISON_RES].extrinsic
 #define Poison_resistance (HPoison_resistance || EPoison_resistance)
@@ -370,7 +374,9 @@
 
 #define Fixed_abil u.uprops[FIXED_ABIL].extrinsic /* KMH */
 
-#define Lifesaved u.uprops[LIFESAVED].extrinsic
+#define HLifesaved u.uprops[LIFESAVED].intrinsic
+#define ELifesaved u.uprops[LIFESAVED].extrinsic
+#define Lifesaved (HLifesaved || ELifesaved)
 
 /*
  * Some pseudo-properties.

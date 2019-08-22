@@ -56,6 +56,7 @@
 #define MR_ACID 0x0040   /* resists acid */
 #define MR_STONE 0x0080  /* resists petrification */
 #define MR_DEATH 0x0100  /* resists death */
+#define MR_LYCANTHROPY 0x0200  /* resists lycanthropy */
 /* other resistances: magic, sickness */
 /* other conveyances: teleport, teleport control, telepathy */
 

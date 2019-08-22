@@ -2917,7 +2917,7 @@ register struct monst *mon;
                     sum[i] = gulpum(mon, mattk);
                     if (sum[i] == 2 && (mon->data->mlet == S_ZOMBIE
                                         || mon->data->mlet == S_MUMMY)
-                        && rn2(5) && !Sick_resistance) {
+                        && rn2(5) && !Sick_resistance && !Invulnerable) {
                         You_feel("%ssick.", (Sick) ? "very " : "");
                         mdamageu(mon, rnd(8));
                     }
@@ -3037,7 +3037,7 @@ boolean wep_was_destroyed;
                 You("are splashed by %s %s!", s_suffix(mon_nam(mon)),
                     hliquid("acid"));
 
-            if (!Acid_resistance)
+            if (!Acid_resistance && !Invulnerable)
                 mdamageu(mon, tmp);
             if (!rn2(30))
                 erode_armor(&youmonst, ERODE_CORRODE);
@@ -3101,7 +3101,7 @@ boolean wep_was_destroyed;
         break;
     case AD_MAGM:
         /* wrath of gods for attacking Oracle */
-        if (Antimagic) {
+        if (Antimagic || Invulnerable) {
             shieldeff(u.ux, u.uy);
             pline("A hail of magic missiles narrowly misses you!");
         } else {
@@ -3169,7 +3169,7 @@ boolean wep_was_destroyed;
             break;
         case AD_COLD: /* brown mold or blue jelly */
             if (monnear(mon, u.ux, u.uy)) {
-                if (Cold_resistance) {
+                if (Cold_resistance || Invulnerable) {
                     shieldeff(u.ux, u.uy);
                     You_feel("a mild chill.");
                     ugolemeffects(AD_COLD, tmp);
@@ -3192,7 +3192,7 @@ boolean wep_was_destroyed;
             break;
         case AD_FIRE:
             if (monnear(mon, u.ux, u.uy)) {
-                if (Fire_resistance) {
+                if (Fire_resistance || Invulnerable) {
                     shieldeff(u.ux, u.uy);
                     You_feel("mildly warm.");
                     ugolemeffects(AD_FIRE, tmp);
@@ -3203,7 +3203,7 @@ boolean wep_was_destroyed;
             }
             break;
         case AD_ELEC:
-            if (Shock_resistance) {
+            if (Shock_resistance || Invulnerable) {
                 shieldeff(u.ux, u.uy);
                 You_feel("a mild tingle.");
                 ugolemeffects(AD_ELEC, tmp);

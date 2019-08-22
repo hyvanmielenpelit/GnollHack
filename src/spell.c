@@ -1282,7 +1282,25 @@ boolean atme;
     case SPE_PROTECTION:
         cast_protection();
         break;
-    case SPE_JUMPING:
+	case SPE_REFLECTION:
+	case SPE_ANTI_MAGIC_SHELL:
+	case SPE_PROTECTION_FROM_FIRE:
+	case SPE_PROTECTION_FROM_COLD:
+	case SPE_PROTECTION_FROM_LIGHTNING:
+	case SPE_PROTECTION_FROM_ACID:
+	case SPE_PROTECTION_FROM_POISON:
+	case SPE_PROTECTION_FROM_LIFE_DRAINING:
+	case SPE_PROTECTION_FROM_DEATH_MAGIC:
+	case SPE_PROTECTION_FROM_DISINTEGRATION:
+	case SPE_PROTECTION_FROM_SICKNESS:
+	case SPE_PROTECTION_FROM_PETRIFICATION:
+	case SPE_PROTECTION_FROM_LYCANTHROPY:
+	case SPE_GLOBE_OF_INVULNERABILITY:
+	case SPE_DIVINE_INTERVENTION:
+		You("successfully cast \"%s\".", spellname(spell));
+		addspellintrinsictimeout(otyp);
+		break;
+	case SPE_JUMPING:
         if (!jump(max(role_skill, 1)))
             pline1(nothing_happens);
         break;
@@ -1297,6 +1315,83 @@ boolean atme;
 
     obfree(pseudo, (struct obj *) 0); /* now, get rid of it */
     return 1;
+}
+
+void
+addspellintrinsictimeout(otyp)
+int otyp;
+{
+	if (otyp <= 0)
+		return;
+
+	if (objects[otyp].oc_dir_subtype <= 0 || objects[otyp].oc_dir_subtype > LAST_PROP)
+		return;
+
+	boolean hadbefore = u.uprops[objects[otyp].oc_dir_subtype].intrinsic || u.uprops[objects[otyp].oc_dir_subtype].extrinsic;
+	long duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_dicesize) + objects[otyp].oc_spell_dur_plus;
+	long oldtimeout = u.uprops[objects[otyp].oc_dir_subtype].intrinsic & TIMEOUT;
+	long oldprop = u.uprops[objects[otyp].oc_dir_subtype].intrinsic & ~TIMEOUT;
+
+	if (oldtimeout > duration || duration <= 0)
+		return;
+
+	u.uprops[objects[otyp].oc_dir_subtype].intrinsic = oldprop | duration;
+	if (!hadbefore)
+	{
+		switch(objects[otyp].oc_dir_subtype)
+		{
+		case REFLECTING:
+			Your("skin starts to feel more reflecting than before.");
+			break;
+		case FIRE_RES:
+			Your("skin starts to feel less prone to burning than before.");
+			break;
+		case COLD_RES:
+			Your("skin starts to feel less prone to frostbites than before.");
+			break;
+		case SHOCK_RES:
+			Your("skin starts to feel less prone to electricity than before.");
+			break;
+		case DISINT_RES:
+			Your("body starts to feel firmer than before.");
+			break;
+		case POISON_RES:
+			You("starts to feel more healthy than before.");
+			break;
+		case ACID_RES:
+			Your("skin starts to feel less prone to acid than before.");
+			break;
+		case STONE_RES:
+			Your("skin starts to feel limber than before.");
+			break;
+		case DRAIN_RES:
+			You("start to feel less suspectible to draining than before.");
+			break;
+		case SICK_RES:
+			You("start to feel unbothered by disease agents.");
+			break;
+		case INVULNERABLE:
+			Your("skin starts to feel less prone to damage than before.");
+			break;
+		case ANTIMAGIC:
+			You_feel("more protected from magic.");
+			break;
+		case DEATH_RES:
+			Your("soul's silver cord starts to feel thicker than before.");
+			break;
+		case LYCANTHROPY_RES:
+			You_feel("more protected from lycanthropy.");
+			break;
+		case LIFESAVED:
+			You_feel("less mortal than before.");
+			break;
+		default:
+			break;
+		}
+	}
+
+	
+	return;
 }
 
 int

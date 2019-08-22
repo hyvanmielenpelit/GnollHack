@@ -181,6 +181,9 @@ int expltype;
 				case AD_DRAY:
 					explmask[i][j] = !!(Death_resistance || is_not_living(youmonst.data) || is_demon(youmonst.data));
 					break;
+				case AD_WERE:
+					explmask[i][j] = !!Lycanthropy_resistance;
+					break;
 				case AD_DRST:
                     explmask[i][j] = !!Poison_resistance;
                     break;

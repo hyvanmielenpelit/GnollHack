@@ -1159,6 +1159,9 @@ register struct obj* omonwep;
 		}
 	}
 
+	if (Invulnerable)
+		dmg = 0;
+
 	/*  Now, adjust damages via resistances or specific attacks */
     switch (mattk->adtyp) {
     case AD_PHYS:
@@ -1214,6 +1217,9 @@ register struct obj* omonwep;
 								|| is_vampshifter(mtmp))))
 						dmg = (dmg + 1) / 2;
 				}
+
+				if (Invulnerable)
+					dmg = 0;
 
 				//Finally, display damage caused
 				if (!(otmp->oartifact
@@ -1528,7 +1534,7 @@ register struct obj* omonwep;
     case AD_WERE:
         hitmsg(mtmp, mattk, dmg);
         if (uncancelled && !rn2(4) && u.ulycn == NON_PM
-            && !Protection_from_shape_changers && !defends(AD_WERE, uwep)) {
+            && !Protection_from_shape_changers && !Lycanthropy_resistance && !defends(AD_WERE, uwep)) {
             You_feel("feverish.");
             exercise(A_CON, FALSE);
             set_ulycn(monsndx(mdat));
@@ -1930,11 +1936,17 @@ register struct obj* omonwep;
 
 	//Black blade damage adjustment
 	if (mattk->aatyp == AT_WEAP && omonwep && omonwep->otyp == BLACK_BLADE_OF_DISINTEGRATION &&
-		!(Disint_resistance || noncorporeal(youmonst.data))) {
+		!(Disint_resistance || noncorporeal(youmonst.data) || Invulnerable)) {
 		dmg  = 0; //Black blade does not do ordinary damage to disintegrateable monsters, to resistant monsters it inflicts normal damage
 	}
 	
 	int oldumort = u.umortality;
+
+	if (Invulnerable)
+	{
+		dmg = 0;
+		permdmg = 0;
+	}
 
 	if (dmg) {
 		if (permdmg) { /* Death's life force drain */
@@ -1981,7 +1993,7 @@ register struct obj* omonwep;
 	if (mattk->aatyp == AT_WEAP && omonwep) {
 		if (omonwep->otyp == BLACK_BLADE_OF_DISINTEGRATION)
 		{
-			if (Disint_resistance || noncorporeal(youmonst.data)) {					// if (abstyp == ZT_BREATH(ZT_DISINTEGRATION)) {
+			if (Disint_resistance || noncorporeal(youmonst.data) || Invulnerable) {					// if (abstyp == ZT_BREATH(ZT_DISINTEGRATION)) {
 				You("are not disintegrated.");
 			}
 			else if (uarms) {
@@ -2214,7 +2226,7 @@ struct attack *mattk;
         }
         break;
     case AD_ACID:
-        if (Acid_resistance) {
+        if (Acid_resistance || Invulnerable) {
             You("are covered with a seemingly harmless goo.");
             tmp = 0;
         } else {
@@ -2244,7 +2256,7 @@ struct attack *mattk;
     case AD_ELEC:
         if (!mtmp->mcan && rn2(2)) {
             pline_The("air around you crackles with electricity.");
-            if (Shock_resistance) {
+            if (Shock_resistance || Invulnerable) {
                 shieldeff(u.ux, u.uy);
                 You("seem unhurt.");
                 ugolemeffects(AD_ELEC, tmp);
@@ -2255,7 +2267,7 @@ struct attack *mattk;
         break;
     case AD_COLD:
         if (!mtmp->mcan && rn2(2)) {
-            if (Cold_resistance) {
+            if (Cold_resistance || Invulnerable) {
                 shieldeff(u.ux, u.uy);
                 You_feel("mildly chilly.");
                 ugolemeffects(AD_COLD, tmp);
@@ -2267,7 +2279,7 @@ struct attack *mattk;
         break;
     case AD_FIRE:
         if (!mtmp->mcan && rn2(2)) {
-            if (Fire_resistance) {
+            if (Fire_resistance || Invulnerable) {
                 shieldeff(u.ux, u.uy);
                 You_feel("mildly hot.");
                 ugolemeffects(AD_FIRE, tmp);
@@ -2296,6 +2308,9 @@ struct attack *mattk;
 
     if (physical_damage)
         tmp = Maybe_Half_Phys(tmp);
+
+	if (Invulnerable)
+		tmp = 0;
 
     mdamageu(mtmp, tmp);
     if (tmp)
@@ -2381,6 +2396,8 @@ boolean ufound;
                     burn_away_slime();
                 if (physical_damage)
                     tmp = Maybe_Half_Phys(tmp);
+				if (Invulnerable)
+					tmp = 0;
 				You("sustain %d damage.", tmp);
 				mdamageu(mtmp, tmp);
             }
@@ -2589,7 +2606,7 @@ struct attack *mattk;
 
                 pline("%s attacks you with a fiery gaze!", Monnam(mtmp));
                 stop_occupation();
-                if (Fire_resistance) {
+                if (Fire_resistance || Invulnerable) {
                     pline_The("fire doesn't feel hot!");
                     dmg = 0;
                 }

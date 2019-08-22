@@ -22,6 +22,8 @@
     ((((mon)->data->mresists | (mon)->mextrinsics) & MR_ELEC) != 0)
 #define resists_death(mon) \
     ((((mon)->data->mresists | (mon)->mextrinsics) & MR_DEATH) != 0)
+#define resists_lycanthropy(mon) \
+    ((((mon)->data->mresists | (mon)->mextrinsics) & MR_LYCANTHROPY) != 0)
 #define resists_poison(mon) \
     ((((mon)->data->mresists | (mon)->mextrinsics) & MR_POISON) != 0)
 #define resists_acid(mon) \

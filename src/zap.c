@@ -159,7 +159,7 @@ struct obj *otmp;
         reveal_invis = TRUE;
         if (disguised_mimic)
             seemimic(mtmp);
-        if (resists_magm(mtmp)) { /* match effect on player */
+        if (resists_magm(mtmp) || Invulnerable) { /* match effect on player */
             shieldeff(mtmp->mx, mtmp->my);
             pline("Boing!");
             break; /* skip makeknown */
@@ -2467,7 +2467,7 @@ boolean ordinary;
     case WAN_STRIKING:
     case SPE_FORCE_BOLT:
         learn_it = TRUE;
-        if (Antimagic) {
+        if (Antimagic || Invulnerable) {
             shieldeff(u.ux, u.uy);
 			damage = 0;
             pline("Boing!");
@@ -2493,7 +2493,7 @@ boolean ordinary;
 	case SPE_LIGHTNING_BOLT:
 	case WAN_LIGHTNING:
         learn_it = TRUE;
-        if (!Shock_resistance) {
+        if (!Shock_resistance && !Invulnerable) {
             You("shock yourself!");
 			exercise(A_CON, FALSE);
         } else {
@@ -2531,7 +2531,7 @@ boolean ordinary;
 	case WAN_FIRE:
     case FIRE_HORN:
         learn_it = TRUE;
-        if (Fire_resistance) {
+        if (Fire_resistance || Invulnerable) {
             shieldeff(u.ux, u.uy);
             You_feel("rather warm.");
             ugolemeffects(AD_FIRE, damage);
@@ -2551,7 +2551,7 @@ boolean ordinary;
     case SPE_CONE_OF_COLD:
     case FROST_HORN:
         learn_it = TRUE;
-        if (Cold_resistance) {
+        if (Cold_resistance || Invulnerable) {
             shieldeff(u.ux, u.uy);
             You_feel("a little chill.");
             ugolemeffects(AD_COLD, damage);
@@ -2565,7 +2565,7 @@ boolean ordinary;
     case WAN_MAGIC_MISSILE:
     case SPE_MAGIC_MISSILE:
         learn_it = TRUE;
-        if (Antimagic) {
+        if (Antimagic || Invulnerable) {
             shieldeff(u.ux, u.uy);
             pline_The("missiles bounce!");
 			damage = 0;
@@ -2686,7 +2686,7 @@ boolean ordinary;
         break;
 	case WAN_DISINTEGRATION:
 		damage = 0;
-		if (Disint_resistance || noncorporeal(youmonst.data)) {
+		if (Disint_resistance || noncorporeal(youmonst.data) || Invulnerable) {
 			pline((obj->otyp == WAN_DISINTEGRATION)
 				? "The wand shoots an apparently harmless beam at you."
 				: "You seem to exist as you did before.");
@@ -4106,7 +4106,7 @@ xchar sx, sy;
 
     switch (abstyp % 10) {
     case ZT_MAGIC_MISSILE:
-        if (Antimagic) {
+        if (Antimagic || Invulnerable) {
             shieldeff(sx, sy);
 			dam = 0;
             pline_The("missiles bounce off!");
@@ -4116,7 +4116,7 @@ xchar sx, sy;
         }
         break;
     case ZT_FIRE:
-        if (Fire_resistance) {
+        if (Fire_resistance || Invulnerable) {
             shieldeff(sx, sy);
 			You("don't feel hot!");
             ugolemeffects(AD_FIRE, dam);
@@ -4136,7 +4136,7 @@ xchar sx, sy;
         }
         break;
     case ZT_COLD:
-        if (Cold_resistance) {
+        if (Cold_resistance || Invulnerable) {
             shieldeff(sx, sy);
             You("don't feel cold.");
             ugolemeffects(AD_COLD, dam);
@@ -4158,7 +4158,7 @@ xchar sx, sy;
         break;
     case ZT_DISINTEGRATION:
 		dam = 0;
-		if (Disint_resistance || noncorporeal(youmonst.data)) {					// if (abstyp == ZT_BREATH(ZT_DISINTEGRATION)) {
+		if (Disint_resistance || noncorporeal(youmonst.data) || Invulnerable) {					// if (abstyp == ZT_BREATH(ZT_DISINTEGRATION)) {
             You("are not disintegrated.");
             break;
         } else if (uarms) {
@@ -4190,7 +4190,7 @@ xchar sx, sy;
         return; /* lifesaved */
 	case ZT_DEATH:
 		dam = 0;
-		if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance) {
+		if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance || Invulnerable) {
 			shieldeff(sx, sy);
 			You("seem unaffected.");
 			break;
@@ -4205,7 +4205,7 @@ xchar sx, sy;
 		done(DIED);
 		return; /* lifesaved */
 	case ZT_LIGHTNING:
-        if (Shock_resistance) {
+        if (Shock_resistance || Invulnerable) {
             shieldeff(sx, sy);
 			You("aren't affected.");
             ugolemeffects(AD_ELEC, dam);
@@ -4224,7 +4224,7 @@ xchar sx, sy;
 		poisoned("blast", A_DEX, "poisoned blast", 15, FALSE);
         break;
     case ZT_ACID:
-        if (Acid_resistance) {
+        if (Acid_resistance || Invulnerable) {
             pline_The("%s doesn't hurt.", hliquid("acid"));
             dam = 0;
         } else {
@@ -5355,7 +5355,7 @@ boolean forcedestroy;
         for (i = 0; i < cnt; i++)
             useup(obj);
         if (dmg) {
-            if (xresist) {
+            if (xresist || Invulnerable) {
                 You("aren't hurt!");
             } else {
                 const char *how = destroy_strings[dindx][2];

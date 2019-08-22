@@ -308,13 +308,15 @@ boolean foundyou;
         dmg = d((int) ((ml / 2) + 1), 6);
     if (Half_spell_damage)
         dmg = (dmg + 1) / 2;
+	if (Invulnerable)
+		dmg = 0;
 
     ret = 1;
 
     switch (mattk->adtyp) {
     case AD_FIRE:
         pline("You're enveloped in flames.");
-        if (Fire_resistance) {
+        if (Fire_resistance || Invulnerable) {
             shieldeff(u.ux, u.uy);
             pline("But you resist the effects.");
             dmg = 0;
@@ -323,7 +325,7 @@ boolean foundyou;
         break;
     case AD_COLD:
         pline("You're covered in frost.");
-        if (Cold_resistance) {
+        if (Cold_resistance || Invulnerable) {
             shieldeff(u.ux, u.uy);
             pline("But you resist the effects.");
             dmg = 0;
@@ -331,7 +333,7 @@ boolean foundyou;
         break;
     case AD_MAGM:
         You("are hit by a shower of missiles!");
-        if (Antimagic) {
+        if (Antimagic || Invulnerable) {
             shieldeff(u.ux, u.uy);
             pline_The("missiles bounce off!");
             dmg = 0;
@@ -394,7 +396,7 @@ int spellnum;
     switch (spellnum) {
     case MGC_DEATH_TOUCH:
         pline("Oh no, %s's using the touch of death!", mhe(mtmp));
-        if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance) {
+        if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance) { //Invulnerability does not protect against death attacks
             You("seem no deader than before.");
         } else if (!Antimagic && rn2(mtmp->m_lev) > 12) {
             if (Hallucination) {
@@ -475,7 +477,9 @@ int spellnum;
             dmg = mtmp->m_lev - 6;
             if (Half_spell_damage)
                 dmg = (dmg + 1) / 2;
-            losestr(rnd(dmg));
+			if (Invulnerable)
+				dmg = 0;
+			losestr(rnd(dmg));
             if (u.uhp < 1)
                 done_in_by(mtmp, DIED);
         }
@@ -494,7 +498,7 @@ int spellnum;
             impossible("no reason for monster to cast disappear spell?");
         break;
     case MGC_STUN_YOU:
-        if (Antimagic || Free_action) {
+        if (Antimagic || Free_action || Invulnerable) {
             shieldeff(u.ux, u.uy);
             if (!Stunned)
                 You_feel("momentarily disoriented.");
@@ -518,7 +522,7 @@ int spellnum;
     case MGC_PSI_BOLT:
         /* prior to 3.4.0 Antimagic was setting the damage to 1--this
            made the spell virtually harmless to players with magic res. */
-        if (Antimagic) {
+        if (Antimagic || Invulnerable) {
             shieldeff(u.ux, u.uy);
             dmg = (dmg + 1) / 2;
         }

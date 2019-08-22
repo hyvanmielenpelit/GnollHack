@@ -718,6 +718,66 @@ nh_timeout()
 				if (Laughing)
 					incr_itimeout(&HLaughing, rnd(20));
 				break;
+			case REFLECTING:
+				if (!Reflecting)
+					Your("skin is suddenly less reflecting than before.");
+				break;
+			case FIRE_RES:
+				if(!Fire_resistance)
+					Your("skin suddenly feels more prone to burning than before.");
+				break;
+			case COLD_RES:
+				if (!Cold_resistance)
+					Your("skin suddenly feels more prone to frostbites than before.");
+				break;
+			case SHOCK_RES:
+				if (!Shock_resistance)
+					Your("skin suddenly feels more prone to electricity than before.");
+				break;
+			case DISINT_RES:
+				if (!Disint_resistance)
+					Your("body suddenly feels less firm than before.");
+				break;
+			case POISON_RES:
+				if (!Poison_resistance)
+					You("suddenly feel less healthy than before.");
+				break;
+			case ACID_RES:
+				if (!Acid_resistance)
+					Your("skin suddenly feels more prone to acid than before.");
+				break;
+			case STONE_RES:
+				if (!Stone_resistance)
+					Your("skin suddenly feels less limb than before.");
+				break;
+			case DRAIN_RES:
+				if (!Drain_resistance)
+					You("suddenly feel more suspectible to draining than before.");
+				break;
+			case SICK_RES:
+				if (!Sick_resistance)
+					You("suddenly feel like you are might be catching a cold.");
+				break;
+			case INVULNERABLE:
+				if (!Invulnerable)
+					Your("skin suddenly feels more prone to damage than before.");
+				break;
+			case ANTIMAGIC:
+				if (!Antimagic)
+					You("suddenly feel less protected from magic.");
+				break;
+			case DEATH_RES:
+				if (!Death_resistance)
+					Your("soul's silver cord suddenly feels thinner than before.");
+				break;
+			case LYCANTHROPY_RES:
+				if (!Lycanthropy_resistance)
+					You("suddenly feel less protected from lycanthropy.");
+				break;
+			case LIFESAVED:
+				if (!Lifesaved)
+					You("suddenly feel more mortal than before.");
+				break;
 			case DETECT_MONSTERS:
                 see_monsters();
                 break;

@@ -87,7 +87,8 @@ enum prop_types {
     LIFESAVED         = 67,
 	/* New */
 	DEATH_RES		  = 68,
-	LAUGHING		  = 69 //KEEP THIS LAST
+	LYCANTHROPY_RES	  = 69,
+	LAUGHING		  = 70 //KEEP THIS LAST
 };
 #define LAST_PROP (LAUGHING)
 
