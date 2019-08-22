@@ -1970,7 +1970,8 @@ int chg; /* recharging */
     case WAN_DEATH:
     case WAN_POLYMORPH:
     case WAN_UNDEAD_TURNING:
-        k = 10;
+	case WAN_RESURRECTION:
+		k = 10;
         break;
     case WAN_COLD:
     case WAN_FIRE:

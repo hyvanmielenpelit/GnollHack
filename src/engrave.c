@@ -695,7 +695,8 @@ doengrave()
                 break;
             case WAN_NOTHING:
             case WAN_UNDEAD_TURNING:
-            case WAN_OPENING:
+			case WAN_RESURRECTION:
+			case WAN_OPENING:
             case WAN_LOCKING:
             case WAN_PROBING:
                 break;

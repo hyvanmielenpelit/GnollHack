@@ -291,7 +291,7 @@ struct obj *book2;
             set_malign(mtmp);
         }
         /* next handle the affect on things you're carrying */
-        (void) unturn_dead(&youmonst);
+        (void) revive_from_inventory(&youmonst);
         /* last place some monsters around you */
         mm.x = u.ux;
         mm.y = u.uy;

@@ -3812,7 +3812,8 @@ struct obj *obj;
     case WAN_PROBING:
     case WAN_ENLIGHTENMENT:
     case WAN_OPENING:
-    case WAN_SECRET_DOOR_DETECTION:
+	case WAN_UNDEAD_TURNING:
+	case WAN_SECRET_DOOR_DETECTION:
         pline(nothing_else_happens);
         goto discard_broken_wand;
     case WAN_DEATH:
@@ -3841,8 +3842,8 @@ struct obj *obj;
     case WAN_CANCELLATION:
     case WAN_POLYMORPH:
     case WAN_TELEPORTATION:
-    case WAN_UNDEAD_TURNING:
-        affects_objects = TRUE;
+	case WAN_RESURRECTION:
+		affects_objects = TRUE;
         break;
     default:
         break;

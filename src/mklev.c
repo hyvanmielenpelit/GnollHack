@@ -889,10 +889,10 @@ makelevel()
         }
 
  skip_nonrogue:
-        if (!rn2(3)) {
+        if (!rn2(2)) {
             (void) mkobj_at(0, somex(croom), somey(croom), TRUE);
             tryct = 0;
-            while (!rn2(5)) {
+            while (!rn2(4)) {
                 if (++tryct > 100) {
                     impossible("tryct overflow4");
                     break;

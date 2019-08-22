@@ -244,8 +244,6 @@ struct obj *otmp;
     case WAN_UNDEAD_TURNING:
     case SPE_TURN_UNDEAD:
         wake = FALSE;
-        if (unturn_dead(mtmp))
-            wake = TRUE;
         if (is_undead(mtmp->data) || is_vampshifter(mtmp)) {
             reveal_invis = TRUE;
             wake = TRUE;
@@ -261,7 +259,13 @@ struct obj *otmp;
             }
         }
         break;
-    case WAN_POLYMORPH:
+	case WAN_RESURRECTION:
+	case SPE_RESURRECTION:
+		wake = FALSE;
+		if (revive_from_inventory(mtmp))
+			wake = TRUE;
+		break;
+	case WAN_POLYMORPH:
     case SPE_POLYMORPH:
     case POT_POLYMORPH:
         if (mtmp->data == &mons[PM_LONG_WORM] && has_mcorpsenm(mtmp)) {
@@ -1000,7 +1004,7 @@ struct obj *obj;
 
 /* try to revive all corpses and eggs carried by `mon' */
 int
-unturn_dead(mon)
+revive_from_inventory(mon)
 struct monst *mon;
 {
     struct obj *otmp, *otmp2;
@@ -2101,59 +2105,67 @@ struct obj *obj, *otmp;
             break;
         case WAN_UNDEAD_TURNING:
         case SPE_TURN_UNDEAD:
-            if (obj->otyp == EGG) {
-                revive_egg(obj);
-            } else if (obj->otyp == CORPSE) {
-                struct monst *mtmp;
-                xchar ox, oy;
-                int corpsenm = corpse_revive_type(obj);
-                char *corpsname = cxname_singular(obj);
-
-                /* get corpse's location before revive() uses it up */
-                if (!get_obj_location(obj, &ox, &oy, 0))
-                    ox = obj->ox, oy = obj->oy; /* won't happen */
-
-                mtmp = revive(obj, TRUE);
-                if (!mtmp) {
-                    res = 0; /* no monster implies corpse was left intact */
-                } else {
-                    if (cansee(ox, oy)) {
-                        if (canspotmon(mtmp)) {
-                            pline("%s is resurrected!",
-                                  upstart(noname_monnam(mtmp, ARTICLE_THE)));
-                            learn_it = TRUE;
-                        } else {
-                            /* saw corpse but don't see monster: maybe
-                               mtmp is invisible, or has been placed at
-                               a different spot than <ox,oy> */
-                            if (!type_is_pname(&mons[corpsenm]))
-                                corpsname = The(corpsname);
-                            pline("%s disappears.", corpsname);
-                        }
-                    } else {
-                        /* couldn't see corpse's location */
-                        if (Role_if(PM_HEALER) && !Deaf
-                            && !is_not_living(&mons[corpsenm])) {
-                            if (!type_is_pname(&mons[corpsenm]))
-                                corpsname = an(corpsname);
-                            if (!Hallucination)
-                                You_hear("%s reviving.", corpsname);
-                            else
-                                You_hear("a defibrillator.");
-                            learn_it = TRUE;
-                        }
-                        if (canspotmon(mtmp))
-                            /* didn't see corpse but do see monster: it
-                               has been placed somewhere other than <ox,oy>
-                               or blind hero spots it with ESP */
-                            pline("%s appears.", Monnam(mtmp));
-                    }
-                    if (learn_it)
-                        exercise(A_WIS, TRUE);
-                }
-            }
+			//Effect moved to resurrection
             break;
-        case WAN_OPENING:
+		case WAN_RESURRECTION:
+		case SPE_RESURRECTION:
+			if (obj->otyp == EGG) {
+				revive_egg(obj);
+			}
+			else if (obj->otyp == CORPSE) {
+				struct monst* mtmp;
+				xchar ox, oy;
+				int corpsenm = corpse_revive_type(obj);
+				char* corpsname = cxname_singular(obj);
+
+				/* get corpse's location before revive() uses it up */
+				if (!get_obj_location(obj, &ox, &oy, 0))
+					ox = obj->ox, oy = obj->oy; /* won't happen */
+
+				mtmp = revive(obj, TRUE);
+				if (!mtmp) {
+					res = 0; /* no monster implies corpse was left intact */
+				}
+				else {
+					if (cansee(ox, oy)) {
+						if (canspotmon(mtmp)) {
+							pline("%s is resurrected!",
+								upstart(noname_monnam(mtmp, ARTICLE_THE)));
+							learn_it = TRUE;
+						}
+						else {
+							/* saw corpse but don't see monster: maybe
+							   mtmp is invisible, or has been placed at
+							   a different spot than <ox,oy> */
+							if (!type_is_pname(&mons[corpsenm]))
+								corpsname = The(corpsname);
+							pline("%s disappears.", corpsname);
+						}
+					}
+					else {
+						/* couldn't see corpse's location */
+						if (Role_if(PM_HEALER) && !Deaf
+							&& !is_not_living(&mons[corpsenm])) {
+							if (!type_is_pname(&mons[corpsenm]))
+								corpsname = an(corpsname);
+							if (!Hallucination)
+								You_hear("%s reviving.", corpsname);
+							else
+								You_hear("a defibrillator.");
+							learn_it = TRUE;
+						}
+						if (canspotmon(mtmp))
+							/* didn't see corpse but do see monster: it
+							   has been placed somewhere other than <ox,oy>
+							   or blind hero spots it with ESP */
+							pline("%s appears.", Monnam(mtmp));
+					}
+					if (learn_it)
+						exercise(A_WIS, TRUE);
+				}
+			}
+			break;
+		case WAN_OPENING:
         case SPE_KNOCK:
         case WAN_LOCKING:
         case SPE_WIZARD_LOCK:
@@ -2684,7 +2696,6 @@ boolean ordinary;
     case SPE_TURN_UNDEAD:
 		damage = 0;
 		learn_it = TRUE;
-        (void) unturn_dead(&youmonst);
         if (is_undead(youmonst.data)) {
             You_feel("frightened and %sstunned.",
                      Stunned ? "even more " : "");
@@ -2692,7 +2703,13 @@ boolean ordinary;
         } else
             You("shudder in dread.");
         break;
-    case SPE_HEALING:
+	case WAN_RESURRECTION:
+	case SPE_RESURRECTION:
+		damage = 0;
+		learn_it = TRUE;
+		(void)revive_from_inventory(&youmonst);
+		break;
+	case SPE_HEALING:
     case SPE_EXTRA_HEALING:
 		learn_it = TRUE; /* (no effect for spells...) */
         healup(damage, 0, FALSE, (obj->blessed || obj->otyp == SPE_EXTRA_HEALING), (obj->blessed || obj->otyp == SPE_EXTRA_HEALING), FALSE, FALSE);

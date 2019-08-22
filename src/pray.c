@@ -2000,7 +2000,7 @@ doturn()
     pline("Calling upon %s, you chant an arcane formula.", u_gname());
     exercise(A_WIS, TRUE);
 
-    /* note: does not perform unturn_dead() on victims' inventories */
+    /* note: does not perform revive_from_inventory() on victims' inventories */
     range = BOLT_LIM + (u.ulevel / 5); /* 5 to 11 */
     range *= range;
     once = 0;
