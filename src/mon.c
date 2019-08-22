@@ -306,7 +306,6 @@ unsigned corpseflags;
 	int basemonsterindex = 0;
 
     switch (mndx) {
-	case PM_GRAY_DRAGON_HATCHLING:
 	case PM_SILVER_DRAGON_HATCHLING:
 	case PM_RED_DRAGON_HATCHLING:
 	case PM_ORANGE_DRAGON_HATCHLING:
@@ -459,78 +458,7 @@ unsigned corpseflags;
 		num = rnd(4);
 		while (num--)
 		{
-			int otyp = 0;
-	
-			switch (rn2(21))
-			{
-			case 0:
-				otyp = JADE;
-				break;
-			case 1:
-				otyp = AGATE;
-				break;
-			case 2:
-				otyp = OBSIDIAN;
-				break;
-			case 3:
-				otyp = FLUORITE;
-				break;
-			case 4:
-				otyp = JASPER;
-				break;
-			case 5:
-				otyp = AMETHYST;
-				break;
-			case 6:
-				otyp = GARNET;
-				break;
-			case 7:
-				otyp = CHRYSOBERYL;
-				break;
-			case 8:
-				otyp = OPAL;
-				break;
-			case 9:
-				otyp = JET;
-				break;
-			case 10:
-				otyp = TOPAZ;
-				break;
-			case 11:
-				otyp = AQUAMARINE;
-				break;
-			case 12:
-				otyp = CITRINE;
-				break;
-			case 13:
-				otyp = TURQUOISE;
-				break;
-			case 14:
-				otyp = CITRINE;
-				break;
-			case 15:
-				otyp = EMERALD;
-				break;
-			case 16:
-				otyp = SAPPHIRE;
-				break;
-			case 17:
-				otyp = BLACK_OPAL;
-				break;
-			case 18:
-				otyp = RUBY;
-				break;
-			case 19:
-				otyp = DIAMOND;
-				break;
-			case 20:
-				otyp = JACINTH;
-				break;
-			default:
-				otyp = JADE;
-				break;
-			}
-			obj = mksobj_at(otyp, x, y, TRUE, FALSE);
+			obj = mksobj_at(randomtruegem(), x, y, TRUE, FALSE);
 		}
 		free_mname(mtmp);
 		break;
@@ -598,6 +526,139 @@ unsigned corpseflags;
     newsym(x, y);
     return obj;
 }
+
+
+int
+randomtruegem()
+{
+	int otyp = 0;
+
+	switch (rn2(21))
+	{
+	case 0:
+		otyp = JADE;
+		break;
+	case 1:
+		otyp = AGATE;
+		break;
+	case 2:
+		otyp = OBSIDIAN;
+		break;
+	case 3:
+		otyp = FLUORITE;
+		break;
+	case 4:
+		otyp = JASPER;
+		break;
+	case 5:
+		otyp = AMETHYST;
+		break;
+	case 6:
+		otyp = GARNET;
+		break;
+	case 7:
+		otyp = CHRYSOBERYL;
+		break;
+	case 8:
+		otyp = OPAL;
+		break;
+	case 9:
+		otyp = JET;
+		break;
+	case 10:
+		otyp = TOPAZ;
+		break;
+	case 11:
+		otyp = AQUAMARINE;
+		break;
+	case 12:
+		otyp = CITRINE;
+		break;
+	case 13:
+		otyp = TURQUOISE;
+		break;
+	case 14:
+		otyp = CITRINE;
+		break;
+	case 15:
+		otyp = EMERALD;
+		break;
+	case 16:
+		otyp = SAPPHIRE;
+		break;
+	case 17:
+		otyp = BLACK_OPAL;
+		break;
+	case 18:
+		otyp = RUBY;
+		break;
+	case 19:
+		otyp = DIAMOND;
+		break;
+	case 20:
+		otyp = JACINTH;
+		break;
+	default:
+		otyp = JADE;
+		break;
+	}
+
+	return otyp;
+}
+
+
+int
+randomreagent()
+{
+	int otyp = 0;
+
+	if (!rn2(2))
+		return randomtruegem();
+	else
+	{
+		switch (rn2(11))
+		{
+		case 0:
+			otyp = SILVER_ARROW;
+			break;
+		case 1:
+			otyp = CLOVE_OF_GARLIC;
+			break;
+		case 2:
+			otyp = GINSENG_ROOT;
+			break;
+		case 3:
+			otyp = MANDRAKE_ROOT;
+			break;
+		case 4:
+			otyp = SPRIG_OF_WOLFSBANE;
+			break;
+		case 5:
+			otyp = THREAD_OF_SPIDER_SILK;
+			break;
+		case 6:
+			otyp = MITHRIL_NUGGET;
+			break;
+		case 7:
+			otyp = POT_WATER;
+			break;
+		case 8:
+			otyp = BONE_DAGGER;
+			break;
+		case 9:
+			otyp = PEARL;
+			break;
+		case 10:
+			otyp = BLACK_PEARL;
+			break;
+		default:
+			otyp = CLOVE_OF_GARLIC;
+			break;
+		}
+		return otyp;
+	}
+}
+
 
 /* check mtmp and water/lava for compatibility, 0 (survived), 1 (died) */
 int
@@ -2565,6 +2626,7 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
                 stackobj(otmp);
             }
         }
+
         /* corpse--none if hero was inside the monster */
         if (!wasinside && corpse_chance(mtmp, (struct monst *) 0, FALSE)) {
             cadaver = make_corpse(mtmp, burycorpse ? CORPSTAT_BURIED

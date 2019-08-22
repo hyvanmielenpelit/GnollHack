@@ -170,7 +170,7 @@ register struct monst *mtmp;
     register int mm = monsndx(ptr);
     struct obj *otmp;
     int bias, spe2, w1, w2;
-	int i = 0;
+	int i = 0, n = 0;
 
     if (Is_rogue_level(&u.uz))
         return;
@@ -505,6 +505,15 @@ register struct monst *mtmp;
             if (!rn2(3))
                 (void) mongets(mtmp, URUK_HAI_SHIELD);
             break;
+		case PM_ORC_SHAMAN:
+			if (!rn2(2))
+			{
+				int n = 0;
+				n = rn2(3); //0...2
+				while (n--)
+					(void)mongets(mtmp, randomreagent());
+			}
+			break;
         default:
             if (mm != PM_ORC_SHAMAN && rn2(2))
                 (void) mongets(mtmp, (mm == PM_GOBLIN || rn2(2) == 0)
@@ -566,7 +575,7 @@ register struct monst *mtmp;
             (void) mongets(mtmp,
                            (rn2(7) ? SPEAR : rn2(3) ? TRIDENT : STILETTO));
         break;
-    case S_DEMON:
+	case S_DEMON:
         switch (mm) {
         case PM_BALROG:
             (void) mongets(mtmp, BULLWHIP);
@@ -679,6 +688,7 @@ register struct monst *mtmp;
     register int cnt;
     register struct obj *otmp;
     register struct permonst *ptr = mtmp->data;
+	int n = 0;
 
     if (Is_rogue_level(&u.uz))
         return;
@@ -804,10 +814,16 @@ register struct monst *mtmp;
             (void) mongets(mtmp, POT_OBJECT_DETECTION);
         break;
     case S_GIANT:
-        if (ptr == &mons[PM_MINOTAUR]) {
-            if (!rn2(3) || (in_mklev && Is_earthlevel(&u.uz)))
-                (void) mongets(mtmp, WAN_DIGGING);
-        } else if (is_giant(ptr)) {
+		if (ptr == &mons[PM_MINOTAUR]) {
+			if (!rn2(3) || (in_mklev && Is_earthlevel(&u.uz)))
+				(void)mongets(mtmp, WAN_DIGGING);
+		} else if (ptr == &mons[PM_TITAN]) {
+			//Reagents
+			n = rnd(5);
+			while (n--)
+				(void)mongets(mtmp, randomreagent());
+
+		} else if (is_giant(ptr)) {
             for (cnt = rn2((int) (mtmp->m_lev / 2)); cnt; cnt--) {
                 otmp = mksobj(rnd_class(DILITHIUM_CRYSTAL, LUCKSTONE - 1),
                               FALSE, FALSE);
@@ -825,7 +841,8 @@ register struct monst *mtmp;
         }
         break;
     case S_LICH:
-        if (ptr == &mons[PM_MASTER_LICH] && !rn2(13))
+		//Weapons
+		if (ptr == &mons[PM_MASTER_LICH] && !rn2(13))
             (void) mongets(mtmp, (rn2(7) ? ATHAME : WAN_NOTHING));
         else if (ptr == &mons[PM_ARCH_LICH] && !rn2(3)) {
             otmp = mksobj(rn2(3) ? ATHAME : QUARTERSTAFF, TRUE,
@@ -836,8 +853,30 @@ register struct monst *mtmp;
                 otmp->oerodeproof = 1;
             (void) mpickobj(mtmp, otmp);
         }
-        break;
-    case S_MUMMY:
+
+		//Bracers
+		if (!rn2(4))
+			(void)mongets(mtmp, rn2(2) ? BRACERS_OF_DEFENSE : BRACERS_OF_MAGIC_RESISTANCE);
+
+		//Reagents
+		n = rnd(3) + (ptr == &mons[PM_MASTER_LICH] || ptr == &mons[PM_ARCH_LICH] ? 2 : 0); //1...3 + 2
+		while (n--)
+			(void)mongets(mtmp, randomreagent());
+
+		//Some spellbooks
+		n = rn2(3 + (ptr == &mons[PM_MASTER_LICH] || ptr == &mons[PM_ARCH_LICH] ? 1 : 0)); // 0...2/3
+		while (n--)
+		{
+			otmp = mkobj(SPBOOK_CLASS, FALSE);
+			(void)mpickobj(mtmp, otmp);
+		}
+
+		//Possibly robes
+		if (ptr == &mons[PM_MASTER_LICH] || ptr == &mons[PM_ARCH_LICH])
+			if (!rn2(3))
+				(void)mongets(mtmp, ROBE_OF_THE_ARCHMAGI);
+		break;
+	case S_MUMMY:
         if (rn2(7))
             (void) mongets(mtmp, MUMMY_WRAPPING);
         break;
@@ -887,6 +926,13 @@ register struct monst *mtmp;
 		}
 		else if (ptr == &mons[PM_GNOLL_WARDEN])
 		{
+			if(!rn2(2))
+			{
+				int n = 0;
+				n = rn2(3); //0...2
+				while (n--)
+					(void)mongets(mtmp, randomreagent());
+			}
 			if (!rn2(6))
 				(void)mongets(mtmp, WAN_MAGIC_MISSILE);
 		}
@@ -898,6 +944,14 @@ register struct monst *mtmp;
 		{
 			if (ptr == &mons[PM_GNOMISH_WIZARD])
 			{
+				if (!rn2(2))
+				{
+					int n = 0;
+					n = rn2(3); //0...2
+					while (n--)
+						(void)mongets(mtmp, randomreagent());
+				}
+
 				if(!rn2(6))
 					(void)mongets(mtmp, WAN_CREATE_MONSTER);
 			}

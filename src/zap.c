@@ -171,8 +171,8 @@ struct obj *otmp;
 			if (dbldam)
 				dmg *= 2;
 
-			//Deal the damage
-			hit(zap_type_text, mtmp, exclam(dmg), dmg);
+			//Deal the damage, resist will tell this separately
+			hit(zap_type_text, mtmp, exclam(dmg), 0);
 
 			(void) resist(mtmp, otmp->oclass, dmg, TELL);
         } else
@@ -193,7 +193,7 @@ struct obj *otmp;
 				dmg *= 2;
 
 			//Deal the damage
-			hit(zap_type_text, mtmp, exclam(dmg), dmg);
+			hit(zap_type_text, mtmp, exclam(dmg), 0);
 
 			(void)resist(mtmp, otmp->oclass, dmg, TELL);
 		}
