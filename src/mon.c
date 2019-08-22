@@ -530,7 +530,7 @@ unsigned corpseflags;
 				otyp = JADE;
 				break;
 			}
-			obj = mksobj_at(GEM_CLASS, x, y, TRUE, FALSE);
+			obj = mksobj_at(otyp, x, y, TRUE, FALSE);
 		}
 		free_mname(mtmp);
 		break;
