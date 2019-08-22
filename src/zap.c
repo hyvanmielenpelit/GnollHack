@@ -265,6 +265,36 @@ struct obj *otmp;
 		if (revive_from_inventory(mtmp))
 			wake = TRUE;
 		break;
+	case SPE_NEGATE_UNDEATH:
+		wake = FALSE;
+		if (is_undead(mtmp->data) || is_vampshifter(mtmp)) {
+			reveal_invis = TRUE;
+			wake = TRUE;
+			dmg = max(mtmp->mhp, d(20,6));
+			if (dbldam)
+				dmg *= 2;
+			context.bypasses = TRUE; /* for make_corpse() */
+			if (!resist(mtmp, otmp->oclass, dmg, TELL)) {
+				if (!DEADMONSTER(mtmp))
+					monflee(mtmp, 0, FALSE, TRUE);
+			}
+		}
+		break;
+	case SPE_BANISH_DEMON:
+		wake = FALSE;
+		if (is_demon(mtmp->data)) {
+			reveal_invis = TRUE;
+			wake = TRUE;
+			dmg = max(mtmp->mhp, d(30, 6));
+			if (dbldam)
+				dmg *= 2;
+			context.bypasses = TRUE; /* for make_corpse() */
+			if (!resist(mtmp, otmp->oclass, dmg, TELL)) {
+				if (!DEADMONSTER(mtmp))
+					monflee(mtmp, 0, FALSE, TRUE);
+			}
+		}
+		break;
 	case WAN_POLYMORPH:
     case SPE_POLYMORPH:
     case POT_POLYMORPH:
@@ -2105,6 +2135,8 @@ struct obj *obj, *otmp;
             break;
         case WAN_UNDEAD_TURNING:
         case SPE_TURN_UNDEAD:
+		case SPE_BANISH_DEMON:
+		case SPE_NEGATE_UNDEATH:
 			//Effect moved to resurrection
             break;
 		case WAN_RESURRECTION:
@@ -5591,15 +5623,18 @@ int damage, tell;
 
     resisted = rn2(100 + alev - dlev) < mtmp->data->mr;
     if (resisted) {
-        if (tell) {
+		damage = (damage + 1) / 2;
+		if (tell) {
             shieldeff(mtmp->mx, mtmp->my);
             pline("%s resists!", Monnam(mtmp));
         }
-        damage = (damage + 1) / 2;
     }
 
     if (damage) {
-        mtmp->mhp -= damage;
+		if(tell)
+			pline("%s sustains %d damage!", Monnam(mtmp), damage);
+
+		mtmp->mhp -= damage;
         if (DEADMONSTER(mtmp)) {
             if (m_using)
                 monkilled(mtmp, "", AD_RBRE);

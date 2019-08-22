@@ -362,11 +362,11 @@ const struct shclass shtypes[] = {
         { 0, 0 },
         { 0, 0 } },
       shkbooks },
-	{ "reagent store",
+	{ "quality reagents and components",
 		REAGENT_CLASS,
 		3,
 		D_SHOP,
-		{ { 10, REAGENT_CLASS }, // 2 items so far
+		{ { 5, REAGENT_CLASS }, // 2 items so far
 		  { 55, GEM_CLASS },
 		  { 5, -MANDRAKE_ROOT },
 		  { 5, -GINSENG_ROOT },
@@ -375,7 +375,7 @@ const struct shclass shtypes[] = {
 		  { 5, -SPRIG_OF_WOLFSBANE },
 		  { 5, -BONE_DAGGER },
 		  { 5, -HOLY_SYMBOL },
-		  { 0, 0 } },
+		  { 5, -SILVER_ARROW } },
 		shkreagents },
 		{ "health food store",
       FOOD_CLASS,
