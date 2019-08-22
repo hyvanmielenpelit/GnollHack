@@ -455,7 +455,86 @@ unsigned corpseflags;
             obj = mksobj_at(SCR_BLANK_PAPER, x, y, TRUE, FALSE);
         free_mname(mtmp);
         break;
-    /* expired puddings will congeal into a large blob;
+	case PM_GEMSTONE_GOLEM:
+		num = rnd(4);
+		while (num--)
+		{
+			int otyp = 0;
+	
+			switch (rn2(21))
+			{
+			case 0:
+				otyp = JADE;
+				break;
+			case 1:
+				otyp = AGATE;
+				break;
+			case 2:
+				otyp = OBSIDIAN;
+				break;
+			case 3:
+				otyp = FLUORITE;
+				break;
+			case 4:
+				otyp = JASPER;
+				break;
+			case 5:
+				otyp = AMETHYST;
+				break;
+			case 6:
+				otyp = GARNET;
+				break;
+			case 7:
+				otyp = CHRYSOBERYL;
+				break;
+			case 8:
+				otyp = OPAL;
+				break;
+			case 9:
+				otyp = JET;
+				break;
+			case 10:
+				otyp = TOPAZ;
+				break;
+			case 11:
+				otyp = AQUAMARINE;
+				break;
+			case 12:
+				otyp = CITRINE;
+				break;
+			case 13:
+				otyp = TURQUOISE;
+				break;
+			case 14:
+				otyp = CITRINE;
+				break;
+			case 15:
+				otyp = EMERALD;
+				break;
+			case 16:
+				otyp = SAPPHIRE;
+				break;
+			case 17:
+				otyp = BLACK_OPAL;
+				break;
+			case 18:
+				otyp = RUBY;
+				break;
+			case 19:
+				otyp = DIAMOND;
+				break;
+			case 20:
+				otyp = JACINTH;
+				break;
+			default:
+				otyp = JADE;
+				break;
+			}
+			obj = mksobj_at(GEM_CLASS, x, y, TRUE, FALSE);
+		}
+		free_mname(mtmp);
+		break;
+		/* expired puddings will congeal into a large blob;
        like dragons, relies on the order remaining consistent */
     case PM_GRAY_OOZE:
     case PM_BROWN_PUDDING:

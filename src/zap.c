@@ -1393,7 +1393,6 @@ int okind;
     case COPPER:
     case SILVER:
     case PLATINUM:
-    case GEMSTONE:
 	case MINERAL:
         pm_index = rn2(2) ? PM_STONE_GOLEM : PM_CLAY_GOLEM;
         material = "lithic ";
@@ -1436,7 +1435,11 @@ int okind;
         pm_index = PM_PAPER_GOLEM;
         material = "paper ";
         break;
-    default:
+	case GEMSTONE:
+		pm_index = PM_GEMSTONE_GOLEM;
+		material = "gemstone ";
+		break;
+	default:
         /* if all else fails... */
         pm_index = PM_STRAW_GOLEM;
         material = "";

@@ -2137,7 +2137,9 @@ int type;
         return 60;
     case PM_GLASS_GOLEM:
         return 60;
-    case PM_IRON_GOLEM:
+	case PM_GEMSTONE_GOLEM:
+		return 70;
+	case PM_IRON_GOLEM:
         return 80;
     default:
         return 0;
