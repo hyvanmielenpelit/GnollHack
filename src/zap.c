@@ -364,9 +364,14 @@ struct obj *otmp;
     case SPE_CANCELLATION:
         if (disguised_mimic)
             seemimic(mtmp);
-        (void) cancel_monst(mtmp, otmp, TRUE, TRUE, FALSE);
+        (void) cancel_monst(mtmp, otmp, TRUE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_dicesize) + objects[otmp->otyp].oc_spell_dur_plus);
         break;
-    case WAN_TELEPORTATION:
+	case SPE_LOWER_MAGIC_RESISTANCE:
+	case SPE_NEGATE_MAGIC_RESISTANCE:
+	case SPE_FORBID_SUMMONING:
+		(void)add_temporary_property(mtmp, otmp, TRUE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_dicesize) + objects[otmp->otyp].oc_spell_dur_plus);
+		break;
+	case WAN_TELEPORTATION:
     case SPE_TELEPORT_AWAY:
         if (disguised_mimic)
             seemimic(mtmp);
@@ -724,8 +729,17 @@ boolean adjacentok; /* False: at obj's spot only, True: nearby is allowed */
            but some need to stay cancelled */
         if (!dmgtype(mtmp2->data, AD_SEDU)
             && (!SYSOPT_SEDUCE || !dmgtype(mtmp2->data, AD_SSEX)))
+		{
             mtmp2->mcan = 0;
-        mtmp2->mcansee = 1; /* set like in makemon */
+			mtmp2->mcan_timer = 0;
+		}
+		mtmp2->mhalfmagicres = 0;
+		mtmp2->mhalfmagicres_timer = 0;
+		mtmp2->mnomagicres = 0;
+		mtmp2->mnomagicres_timer = 0;
+		mtmp2->mnosummon = 0;
+		mtmp2->mnosummon_timer = 0;
+		mtmp2->mcansee = 1; /* set like in makemon */
         mtmp2->mblinded = 0;
         mtmp2->mstun = 0;
         mtmp2->mconf = 0;
@@ -2133,7 +2147,10 @@ struct obj *obj, *otmp;
             break;
         case WAN_MAKE_INVISIBLE:
             break;
-        case WAN_UNDEAD_TURNING:
+		case SPE_LOWER_MAGIC_RESISTANCE:
+		case SPE_NEGATE_MAGIC_RESISTANCE:
+		case SPE_FORBID_SUMMONING:
+		case WAN_UNDEAD_TURNING:
         case SPE_TURN_UNDEAD:
 		case SPE_BANISH_DEMON:
 		case SPE_NEGATE_UNDEATH:
@@ -2586,10 +2603,16 @@ boolean ordinary;
     case WAN_CANCELLATION:
     case SPE_CANCELLATION:
 		damage = 0;
-		(void) cancel_monst(&youmonst, obj, TRUE, TRUE, TRUE);
+		(void) cancel_monst(&youmonst, obj, TRUE, TRUE, TRUE, d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_dicesize) + objects[obj->otyp].oc_spell_dur_plus);
         break;
 
-    case SPE_DRAIN_LIFE:
+	case SPE_LOWER_MAGIC_RESISTANCE:
+	case SPE_NEGATE_MAGIC_RESISTANCE:
+	case SPE_FORBID_SUMMONING:
+		(void)add_temporary_property(&youmonst, obj, TRUE, TRUE, TRUE, d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_dicesize) + objects[obj->otyp].oc_spell_dur_plus);
+		break;
+	
+	case SPE_DRAIN_LIFE:
         if (!Drain_resistance) {
             learn_it = TRUE; /* (no effect for spells...) */
             losexp("life drainage");
@@ -2960,7 +2983,10 @@ struct obj *obj; /* wand or spell */
     case WAN_MAKE_INVISIBLE:
     case WAN_CANCELLATION:
     case SPE_CANCELLATION:
-    case WAN_POLYMORPH:
+	case SPE_LOWER_MAGIC_RESISTANCE:
+	case SPE_NEGATE_MAGIC_RESISTANCE:
+	case SPE_FORBID_SUMMONING:
+	case WAN_POLYMORPH:
     case SPE_POLYMORPH:
     case WAN_STRIKING:
     case SPE_FORCE_BOLT:
@@ -2992,10 +3018,11 @@ struct obj *obj; /* wand or spell */
  * themselves with cancellation.
  */
 boolean
-cancel_monst(mdef, obj, youattack, allow_cancel_kill, self_cancel)
+cancel_monst(mdef, obj, youattack, allow_cancel_kill, self_cancel, duration)
 register struct monst *mdef;
 register struct obj *obj;
 boolean youattack, allow_cancel_kill, self_cancel;
+int duration;
 {
     boolean youdefend = (mdef == &youmonst);
     static const char writing_vanishes[] =
@@ -3040,7 +3067,8 @@ boolean youattack, allow_cancel_kill, self_cancel;
         }
     } else {
         mdef->mcan = 1;
-        /* force shapeshifter into its base form */
+		mdef->mcan_timer = duration;
+		/* force shapeshifter into its base form */
         if (M_AP_TYPE(mdef) != M_AP_NOTHING)
             seemimic(mdef);
         /* [not 'else if'; chameleon might have been hiding as a mimic] */
@@ -3068,6 +3096,57 @@ boolean youattack, allow_cancel_kill, self_cancel;
         }
     }
     return TRUE;
+}
+
+boolean
+add_temporary_property(mdef, obj, youattack, allow_cancel_kill, self_cancel, duration)
+register struct monst* mdef;
+register struct obj* obj;
+boolean youattack, allow_cancel_kill, self_cancel;
+int duration;
+{
+	boolean youdefend = (mdef == &youmonst);
+
+	if (!obj)
+		return FALSE;
+
+	if (youdefend)
+	{
+		if (objects[obj->otyp].oc_flags & O1_SPELL_BYPASSES_MAGIC_RESISTANCE)
+			; //OK;
+		else if (!youattack && Antimagic)
+			return FALSE; /* resisted cancellation */
+			
+		pline("A dim shimmer surrounds you.");
+	}
+	else
+	{
+		if (objects[obj->otyp].oc_flags & O1_SPELL_BYPASSES_MAGIC_RESISTANCE)
+			; //OK;
+		else if (resist(mdef, obj->oclass, 0, TELL))
+			return FALSE;
+
+		pline("A dim shimmer surrounds %s.", mon_nam(mdef));
+	}
+
+
+	if (obj->otyp == SPE_LOWER_MAGIC_RESISTANCE)
+	{
+		mdef->mhalfmagicres = 1;
+		mdef->mhalfmagicres_timer = duration;
+	}
+	else if (obj->otyp == SPE_NEGATE_MAGIC_RESISTANCE)
+	{
+		mdef->mnomagicres = 1;
+		mdef->mnomagicres_timer = duration;
+	}
+	else if (obj->otyp == SPE_FORBID_SUMMONING)
+	{
+		mdef->mnosummon = 1;
+		mdef->mnosummon_timer = duration;
+	}
+		
+	return TRUE;
 }
 
 /* you've zapped an immediate type wand up or down */
@@ -5621,7 +5700,11 @@ int damage, tell;
     else if (dlev < 1)
         dlev = is_mplayer(mtmp->data) ? u.ulevel : 1;
 
-    resisted = rn2(100 + alev - dlev) < mtmp->data->mr;
+	if (mtmp->mnomagicres)
+		resisted = FALSE;
+	else
+	    resisted = rn2(100 + alev - dlev) < (mtmp->data->mr / (mtmp->mhalfmagicres ? 2 : 1));
+
     if (resisted) {
 		damage = (damage + 1) / 2;
 		if (tell) {

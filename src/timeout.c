@@ -526,6 +526,17 @@ nh_timeout()
 			spl_book[sp_no].sp_cooldownleft--;
 
 
+	//Reduce youmonst timers
+	if (youmonst.mcan_timer && !--youmonst.mcan_timer)
+		youmonst.mcan = 0;
+	if (youmonst.mhalfmagicres_timer && !--youmonst.mhalfmagicres_timer)
+		youmonst.mhalfmagicres = 0;
+	if (youmonst.mnomagicres_timer && !--youmonst.mnomagicres_timer)
+		youmonst.mnomagicres = 0;
+	if (youmonst.mnosummon_timer && !--youmonst.mnosummon_timer)
+		youmonst.mnosummon = 0;
+
+
     was_flying = Flying;
     for (upp = u.uprops; upp < u.uprops + SIZE(u.uprops); upp++)
         if ((upp->intrinsic & TIMEOUT) && !(--upp->intrinsic & TIMEOUT)) {
@@ -772,7 +783,7 @@ nh_timeout()
 				break;
 			case LYCANTHROPY_RES:
 				if (!Lycanthropy_resistance)
-					You("suddenly feel less protected from lycanthropy.");
+					You("suddenly feel that your immunity to lycanthropy is gone.");
 				break;
 			case LIFESAVED:
 				if (!Lifesaved)
@@ -783,7 +794,75 @@ nh_timeout()
                 break;
             }
         }
-
+		else if ((upp->intrinsic & TIMEOUT) && ((upp->intrinsic & TIMEOUT) == 3))
+		{
+			// Early warning
+			switch (upp - u.uprops) {
+			case FAST:
+				if (!Very_fast)
+					You_feel("you are starting to slow down%s.",
+						Fast ? " a bit" : "");
+				break;
+			case INVIS:
+				You("are starting to feel a bit more visible.");
+				break;
+			case LEVITATION:
+				You("are starting to feel a bit less buoyant.");
+				break;
+			case FLYING:
+				/* timed Flying is via #wizintrinsic only */
+				You("are starting to feel a bit less aerial.");
+				break;
+			case PASSES_WALLS:
+				pline("You're starting to get back to your %s self again.",
+					!Upolyd ? "normal" : "unusual");
+				break;
+			case REFLECTING:
+				Your("skin is starting to feel a bit less reflecting than before.");
+				break;
+			case FIRE_RES:
+				Your("skin is starting to feel a bit more prone to burning than before.");
+			case COLD_RES:
+				Your("skin is starting to feel a bit more prone to frostbites than before.");
+				break;
+			case SHOCK_RES:
+				Your("skin is starting to feel a bit more prone to electricity than before.");
+				break;
+			case DISINT_RES:
+				Your("body is starting to feel a bit less firm than before.");
+				break;
+			case POISON_RES:
+				You("are starting to feel a bit less healthy than before.");
+				break;
+			case ACID_RES:
+				Your("skin is starting to feel a bit more prone to acid than before.");
+				break;
+			case STONE_RES:
+				Your("skin is starting to feel a bit less limb than before.");
+				break;
+			case DRAIN_RES:
+				You("are starting to feel a bit more suspectible to draining than before.");
+				break;
+			case SICK_RES:
+				You("are starting to feel a bit more bothered by bugs.");
+				break;
+			case INVULNERABLE:
+				Your("skin is starting to feel a bit more prone to damage than before.");
+				break;
+			case ANTIMAGIC:
+				You("are starting to feel a bit less protected from magic.");
+				break;
+			case DEATH_RES:
+				Your("soul's silver cord is starting to feel a bit thinner than before.");
+				break;
+			case LYCANTHROPY_RES:
+				You("are starting to feel a bit less protected from lycanthropy.");
+				break;
+			case LIFESAVED:
+				You("is starting to feel a bit more mortal than before.");
+				break;
+			}
+		}
     run_timers();
 }
 

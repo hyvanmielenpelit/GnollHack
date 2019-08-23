@@ -884,6 +884,14 @@ mcalcdistress()
             mtmp->mcanmove = 1;
         if (mtmp->mfleetim && !--mtmp->mfleetim)
             mtmp->mflee = 0;
+		if (mtmp->mcan_timer && !--mtmp->mcan_timer)
+			mtmp->mcan = 0;
+		if (mtmp->mhalfmagicres_timer && !--mtmp->mhalfmagicres_timer)
+			mtmp->mhalfmagicres = 0;
+		if (mtmp->mnomagicres_timer && !--mtmp->mnomagicres_timer)
+			mtmp->mnomagicres = 0;
+		if (mtmp->mnosummon_timer && !--mtmp->mnosummon_timer)
+			mtmp->mnosummon = 0;
 
         /* FIXME: mtmp->mlstmv ought to be updated here */
     }

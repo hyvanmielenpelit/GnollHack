@@ -3007,7 +3007,9 @@ E void FDECL(ubreatheu, (struct attack *));
 E int FDECL(lightdamage, (struct obj *, BOOLEAN_P, int));
 E boolean FDECL(flashburn, (long));
 E boolean FDECL(cancel_monst, (struct monst *, struct obj *, BOOLEAN_P,
-                               BOOLEAN_P, BOOLEAN_P));
+                               BOOLEAN_P, BOOLEAN_P, int));
+E boolean FDECL(add_temporary_property, (struct monst*, struct obj*, BOOLEAN_P,
+	BOOLEAN_P, BOOLEAN_P, int));
 E void NDECL(zapsetup);
 E void NDECL(zapwrapup);
 E void FDECL(weffects, (struct obj *));

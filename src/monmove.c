@@ -588,7 +588,7 @@ register struct monst *mtmp;
             struct attack *a;
 
             for (a = &mdat->mattk[0]; a < &mdat->mattk[NATTK]; a++) {
-                if (a->aatyp == AT_MAGC
+                if (a->aatyp == AT_MAGC && !mtmp->mcan
                     && (a->adtyp == AD_SPEL || a->adtyp == AD_CLRC)) {
                     if (castmu(mtmp, a, FALSE, FALSE)) {
                         tmp = 3;

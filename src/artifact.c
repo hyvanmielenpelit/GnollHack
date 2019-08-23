@@ -1041,7 +1041,7 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
          * into a golem, and the "cancel" effect acts as if some magical
          * energy remains in spellcasting defenders to be absorbed later.
          */
-        if (!cancel_monst(mdef, mb, youattack, FALSE, FALSE)) {
+        if (!cancel_monst(mdef, mb, youattack, FALSE, FALSE, d(3,4)+5)) {
             resisted = TRUE;
         } else {
             do_stun = FALSE;

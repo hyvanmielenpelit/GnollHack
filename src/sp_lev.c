@@ -1800,9 +1800,12 @@ struct mkroom *croom;
             mtmp->mtrapseen = m->seentraps;
         if (m->female)
             mtmp->female = 1;
-        if (m->cancelled)
-            mtmp->mcan = 1;
-        if (m->revived)
+		if (m->cancelled)
+		{
+			mtmp->mcan = 1;
+			mtmp->mcan_timer = (m->cancelled % 127);
+		}
+		if (m->revived)
             mtmp->mrevived = 1;
         if (m->avenge)
             mtmp->mavenge = 1;

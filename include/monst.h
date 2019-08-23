@@ -86,7 +86,14 @@ struct monst {
     Bitfield(invis_blkd, 1);  /* invisibility blocked */
     Bitfield(perminvis, 1);   /* intrinsic minvis value */
     Bitfield(mcan, 1);        /* has been cancelled */
-    Bitfield(mburied, 1);     /* has been buried */
+	int mcan_timer;				  /* cancellation timeout */
+	Bitfield(mhalfmagicres, 1);	/* has half normal magic resistance */
+	int mhalfmagicres_timer;	/* 50% MR timeout */
+	Bitfield(mnomagicres, 1);	/* has no magic resistance */
+	int mnomagicres_timer;		/* no MR timeout */
+	Bitfield(mnosummon, 1);		/* cannot summon */
+	int mnosummon_timer;		/* no summon timeout */
+	Bitfield(mburied, 1);     /* has been buried */
     Bitfield(mundetected, 1); /* not seen in present hiding place;
                                * implies one of M1_CONCEAL or M1_HIDE,
                                * but not mimic (that is, snake, spider,

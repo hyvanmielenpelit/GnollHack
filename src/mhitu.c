@@ -779,141 +779,148 @@ register struct monst *mtmp;
             }
             break;
         case AT_MAGC:
-            if (range2)
-                sum[i] = buzzmu(mtmp, mattk);
-            else
-                sum[i] = castmu(mtmp, mattk, TRUE, foundyou);
+			if(!mtmp->mcan)
+			{
+				if (range2)
+					sum[i] = buzzmu(mtmp, mattk);
+				else
+					sum[i] = castmu(mtmp, mattk, TRUE, foundyou);
+			}
             break;
 
 		case AT_SMMN:
-			if(mattk->adtyp == AD_DMNS)
+			if (!mtmp->mnosummon)
 			{
-				/*  Special demon handling code */
-				if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
-					int chance = mattk->damp;
-					if (!mtmp->mcan && rn2(100) < chance)
-					{
-						pline("%s gates in some help.", Monnam(mtmp));
-						(void)msummon(mtmp);
-						sum[i] = 1;
-					}
-					else
-					{
-						pline("%s attempts to gate in some help, but nothing happens.", Monnam(mtmp));
+				if (mattk->adtyp == AD_DMNS)
+				{
+					/*  Special demon handling code */
+					if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
+						int chance = mattk->damp;
+						if (!mtmp->mcan && rn2(100) < chance)
+						{
+							pline("%s gates in some help.", Monnam(mtmp));
+							(void)msummon(mtmp);
+							sum[i] = 1;
+						}
+						else
+						{
+							pline("%s attempts to gate in some help, but nothing happens.", Monnam(mtmp));
+						}
 					}
 				}
-			} else if (mattk->adtyp == AD_LYCA)
-			{
-				/*  Special lycanthrope handling code */
-				if ((mtmp->cham == NON_PM) && is_were(mdat) && !range2) {
-					if (is_human(mdat)) {
-						if (!rn2(5 - (night() * 2)) && !mtmp->mcan)
+				else if (mattk->adtyp == AD_LYCA)
+				{
+					/*  Special lycanthrope handling code */
+					if ((mtmp->cham == NON_PM) && is_were(mdat) && !range2) {
+						if (is_human(mdat)) {
+							if (!rn2(5 - (night() * 2)) && !mtmp->mcan)
+								new_were(mtmp);
+						}
+						else if (!rn2(30) && !mtmp->mcan)
 							new_were(mtmp);
-					}
-					else if (!rn2(30) && !mtmp->mcan)
-						new_were(mtmp);
-					mdat = mtmp->data;
+						mdat = mtmp->data;
 
-					if (!rn2(10) && !mtmp->mcan) {
-						int numseen, numhelp;
-						char buf[BUFSZ], genericwere[BUFSZ];
+						if (!rn2(10) && !mtmp->mcan) {
+							int numseen, numhelp;
+							char buf[BUFSZ], genericwere[BUFSZ];
 
-						Strcpy(genericwere, "creature");
-						numhelp = were_summon(mdat, FALSE, &numseen, genericwere);
-						if (youseeit) {
-							pline("%s summons help!", Monnam(mtmp));
-							if (numhelp > 0) {
-								if (numseen == 0)
-									You_feel("hemmed in.");
-							}
-							else
-								pline("But none comes.");
-						}
-						else {
-							const char* from_nowhere;
-
-							if (!Deaf) {
-								pline("%s %s!", Something, makeplural(growl_sound(mtmp)));
-								from_nowhere = "";
-							}
-							else
-								from_nowhere = " from nowhere";
-							if (numhelp > 0) {
-								if (numseen < 1)
-									You_feel("hemmed in.");
-								else {
-									if (numseen == 1)
-										Sprintf(buf, "%s appears", an(genericwere));
-									else
-										Sprintf(buf, "%s appear",
-											makeplural(genericwere));
-									pline("%s%s!", upstart(buf), from_nowhere);
+							Strcpy(genericwere, "creature");
+							numhelp = were_summon(mdat, FALSE, &numseen, genericwere);
+							if (youseeit) {
+								pline("%s summons help!", Monnam(mtmp));
+								if (numhelp > 0) {
+									if (numseen == 0)
+										You_feel("hemmed in.");
 								}
-							} /* else no help came; but you didn't know it tried */
+								else
+									pline("But none comes.");
+							}
+							else {
+								const char* from_nowhere;
+
+								if (!Deaf) {
+									pline("%s %s!", Something, makeplural(growl_sound(mtmp)));
+									from_nowhere = "";
+								}
+								else
+									from_nowhere = " from nowhere";
+								if (numhelp > 0) {
+									if (numseen < 1)
+										You_feel("hemmed in.");
+									else {
+										if (numseen == 1)
+											Sprintf(buf, "%s appears", an(genericwere));
+										else
+											Sprintf(buf, "%s appear",
+												makeplural(genericwere));
+										pline("%s%s!", upstart(buf), from_nowhere);
+									}
+								} /* else no help came; but you didn't know it tried */
+							}
 						}
 					}
 				}
-			} else if (mattk->adtyp == AD_GNOL)
-			{
-				/*  Special gnoll handling code */
-				if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
-					int chance = mattk->damp;
-					if (!mtmp->mcan && rn2(100) < chance)
-					{
-						pline("%s summons some gnolls!", Monnam(mtmp));
-						(void)yeenoghu_gnoll_summon();
-						sum[i] = 1;
-					}
-					else
-					{
-						if (!rn2(2))
-							pline("%s swings his flail commandingly.", Monnam(mtmp));
+				else if (mattk->adtyp == AD_GNOL)
+				{
+					/*  Special gnoll handling code */
+					if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
+						int chance = mattk->damp;
+						if (!mtmp->mcan && rn2(100) < chance)
+						{
+							pline("%s summons some gnolls!", Monnam(mtmp));
+							(void)yeenoghu_gnoll_summon();
+							sum[i] = 1;
+						}
 						else
-							pline("%s growls menacingly.", Monnam(mtmp));
+						{
+							if (!rn2(2))
+								pline("%s swings his flail commandingly.", Monnam(mtmp));
+							else
+								pline("%s growls menacingly.", Monnam(mtmp));
+						}
+					}
+				}
+				else if (mattk->adtyp == AD_GHUL)
+				{
+					/*  Special gnoll handling code */
+					if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
+						int chance = mattk->damp;
+						if (!mtmp->mcan && rn2(100) < chance)
+						{
+							pline("%s summons some ghouls!", Monnam(mtmp));
+							(void)yeenoghu_ghoul_summon();
+							sum[i] = 1;
+						}
+						else
+						{
+							if (!rn2(2))
+								pline("%s lets loose a blood-curdling howl!", Monnam(mtmp));
+							else
+								pline("%s howls!", Monnam(mtmp));
+						}
+					}
+				}
+				else if (mattk->adtyp == AD_UNDO)
+				{
+					/*  Special gnoll handling code */
+					if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
+						int chance = mattk->damp;
+						if (!mtmp->mcan && rn2(100) < chance)
+						{
+							pline("%s summons some undead!", Monnam(mtmp));
+							(void)orcus_undead_summon();
+							sum[i] = 1;
+						}
+						else
+						{
+							if (!rn2(2))
+								pline("%s laughs at you!", Monnam(mtmp));
+							else
+								pline("%s swings his wand menacingly.", Monnam(mtmp));
+						}
 					}
 				}
 			}
-			else if (mattk->adtyp == AD_GHUL)
-			{
-				/*  Special gnoll handling code */
-				if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
-					int chance = mattk->damp;
-					if (!mtmp->mcan && rn2(100) < chance)
-					{
-						pline("%s summons some ghouls!", Monnam(mtmp));
-						(void)yeenoghu_ghoul_summon();
-						sum[i] = 1;
-					}
-					else
-					{
-						if(!rn2(2))
-							pline("%s lets loose a blood-curdling howl!", Monnam(mtmp));
-						else
-							pline("%s howls!", Monnam(mtmp));
-					}
-				}
-			}
-			else if (mattk->adtyp == AD_UNDO)
-			{
-				/*  Special gnoll handling code */
-				if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
-					int chance = mattk->damp;
-					if (!mtmp->mcan && rn2(100) < chance)
-					{
-						pline("%s summons some undead!", Monnam(mtmp));
-						(void)orcus_undead_summon();
-						sum[i] = 1;
-					}
-					else
-					{
-						if(!rn2(2))
-							pline("%s laughs at you!", Monnam(mtmp));
-						else
-							pline("%s swings his wand menacingly.", Monnam(mtmp));
-					}
-				}
-			}
-
 
 			break;
 
