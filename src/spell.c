@@ -477,11 +477,11 @@ register struct obj *spellbook;
 	else
 		Sprintf(buf, "\"%s\" is %s. Continue?", namebuf,  an(lvlbuf));
 
-	/* attempting to read dull book may make hero fall asleep */
 	if (yn(buf) != 'y')
 		return 0;
 
-    if (!confused && !Sleep_resistance
+	/* attempting to read dull book may make hero fall asleep */
+	if (!confused && !Sleep_resistance
         && !strcmp(OBJ_DESCR(objects[booktype]), "dull")) {
         const char *eyes;
         int dullbook = rnd(25) - ACURR(A_WIS);
