@@ -192,7 +192,7 @@ struct obj *otmp;
 			if (dbldam)
 				dmg *= 2;
 
-			//Deal the damage
+			//Deal the damage, resist will tell this separately
 			hit(zap_type_text, mtmp, exclam(dmg), 0);
 
 			(void)resist(mtmp, otmp->oclass, dmg, TELL);
@@ -274,7 +274,7 @@ struct obj *otmp;
 			if (dbldam)
 				dmg *= 2;
 			context.bypasses = TRUE; /* for make_corpse() */
-			if (!resist(mtmp, otmp->oclass, dmg, TELL)) {
+			if (!resist(mtmp, otmp->oclass, dmg, TELL_LETHAL_STYLE)) {
 				if (!DEADMONSTER(mtmp))
 					monflee(mtmp, 0, FALSE, TRUE);
 			}
@@ -289,7 +289,7 @@ struct obj *otmp;
 			if (dbldam)
 				dmg *= 2;
 			context.bypasses = TRUE; /* for make_corpse() */
-			if (!resist(mtmp, otmp->oclass, dmg, TELL)) {
+			if (!resist(mtmp, otmp->oclass, dmg, TELL_LETHAL_STYLE)) {
 				if (!DEADMONSTER(mtmp))
 					monflee(mtmp, 0, FALSE, TRUE);
 			}
@@ -5631,7 +5631,7 @@ int damage, tell;
     }
 
     if (damage) {
-		if(tell)
+		if(tell && !(tell == TELL_LETHAL_STYLE && !resisted)) //Lethal damage not shown, resisted though yes
 			pline("%s sustains %d damage!", Monnam(mtmp), damage);
 
 		mtmp->mhp -= damage;

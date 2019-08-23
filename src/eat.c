@@ -938,13 +938,13 @@ register struct permonst *ptr;
 			HDeath_resistance |= FROMOUTSIDE;
 		}
 		break;
-	case LYCANTHROPY_RES: /* lycanthropy resistance */
-		debugpline0("Trying to give lycanthropy resistance");
+	case LYCANTHROPY_RES: /* immunity to lycanthropy */
+		debugpline0("Trying to give immunity to lycanthropy");
 		if (!(HLycanthropy_resistance & FROMOUTSIDE)) {
 			if (Hallucination)
 				You_feel("bugs do not bother you!");
 			else
-				Your("protected against lycathropy!");
+				You("are protected against lycathropy!");
 			HLycanthropy_resistance |= FROMOUTSIDE;
 		}
 		break;

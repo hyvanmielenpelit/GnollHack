@@ -161,6 +161,14 @@ Boots_on(VOID_ARGS)
     long oldprop =
         u.uprops[objects[uarmf->otyp].oc_oprop].extrinsic & ~WORN_BOOTS;
 
+	//Note none of the items use more than one property currently
+	long oldprop2 =
+		u.uprops[objects[uarmf->otyp].oc_oprop2].extrinsic & ~WORN_BOOTS;
+	long oldprop3 =
+		u.uprops[objects[uarmf->otyp].oc_oprop3].extrinsic & ~WORN_BOOTS;
+	oldprop2 += 0;
+	oldprop3 += 0;
+
     switch (uarmf->otyp) {
     case LOW_BOOTS:
     case IRON_SHOES:
@@ -215,6 +223,11 @@ Boots_off(VOID_ARGS)
     struct obj *otmp = uarmf;
     int otyp = otmp->otyp;
     long oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_BOOTS;
+	//Note none of the items use more than one property currently
+	long oldprop2 =	u.uprops[objects[otyp].oc_oprop2].extrinsic & ~WORN_BOOTS;
+	long oldprop3 =	u.uprops[objects[otyp].oc_oprop3].extrinsic & ~WORN_BOOTS;
+	oldprop2 += 0;
+	oldprop3 += 0;
 
     context.takeoff.mask &= ~W_ARMF;
     /* For levitation, float_down() returns if Levitation, so we
@@ -276,6 +289,13 @@ Cloak_on(VOID_ARGS)
 {
     long oldprop =
         u.uprops[objects[uarmc->otyp].oc_oprop].extrinsic & ~WORN_CLOAK;
+	//Note none of the items use more than one property currently
+	long oldprop2 =
+		u.uprops[objects[uarmc->otyp].oc_oprop2].extrinsic & ~WORN_CLOAK;
+	long oldprop3 =
+		u.uprops[objects[uarmc->otyp].oc_oprop3].extrinsic & ~WORN_CLOAK;
+	oldprop2 += 0;
+	oldprop3 += 0;
 
     switch (uarmc->otyp) {
     case ORCISH_CLOAK:
@@ -325,6 +345,11 @@ Cloak_off(VOID_ARGS)
     struct obj *otmp = uarmc;
     int otyp = otmp->otyp;
     long oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_CLOAK;
+	//Note none of the items use more than one property currently
+	long oldprop2 =	u.uprops[objects[otyp].oc_oprop2].extrinsic & ~WORN_CLOAK;
+	long oldprop3 =	u.uprops[objects[otyp].oc_oprop3].extrinsic & ~WORN_CLOAK;
+	oldprop2 += 0;
+	oldprop3 += 0;
 
     context.takeoff.mask &= ~W_ARMC;
     /* For mummy wrapping, taking it off first resets `Invisible'. */
@@ -490,6 +515,13 @@ Gloves_on(VOID_ARGS)
 {
     long oldprop =
         u.uprops[objects[uarmg->otyp].oc_oprop].extrinsic & ~WORN_GLOVES;
+	//Note none of the items use more than one property currently
+	long oldprop2 =
+		u.uprops[objects[uarmg->otyp].oc_oprop2].extrinsic & ~WORN_GLOVES;
+	long oldprop3 =
+		u.uprops[objects[uarmg->otyp].oc_oprop3].extrinsic & ~WORN_GLOVES;
+	oldprop2 += 0;
+	oldprop3 += 0;
 
     switch (uarmg->otyp) {
     case LEATHER_GLOVES:
@@ -545,7 +577,15 @@ Gloves_off(VOID_ARGS)
 {
     long oldprop =
         u.uprops[objects[uarmg->otyp].oc_oprop].extrinsic & ~WORN_GLOVES;
-    boolean on_purpose = !context.mon_moving && !uarmg->in_use;
+	//Note none of the items use more than one property currently
+	long oldprop2 =
+		u.uprops[objects[uarmg->otyp].oc_oprop2].extrinsic & ~WORN_GLOVES;
+	long oldprop3 =
+		u.uprops[objects[uarmg->otyp].oc_oprop3].extrinsic & ~WORN_GLOVES;
+	oldprop2 += 0;
+	oldprop3 += 0;
+	
+	boolean on_purpose = !context.mon_moving && !uarmg->in_use;
 
     context.takeoff.mask &= ~W_ARMG;
 
@@ -646,6 +686,13 @@ Shirt_on(VOID_ARGS)
 {
 	long oldprop =
 		u.uprops[objects[uarmu->otyp].oc_oprop].extrinsic & ~WORN_SHIRT;
+	//Note none of the items use more than one property currently
+	long oldprop2 =
+		u.uprops[objects[uarmu->otyp].oc_oprop2].extrinsic & ~WORN_SHIRT;
+	long oldprop3 =
+		u.uprops[objects[uarmu->otyp].oc_oprop3].extrinsic & ~WORN_SHIRT;
+	oldprop2 += 0;
+	oldprop3 += 0;
 
 
     /* no shirt currently requires special handling when put on, but we
@@ -679,6 +726,10 @@ Shirt_off(VOID_ARGS)
 	struct obj* otmp = uarmu;
 	int otyp = otmp->otyp;
 	long oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_SHIRT;
+	long oldprop2 = u.uprops[objects[otyp].oc_oprop2].extrinsic & ~WORN_SHIRT;
+	long oldprop3 = u.uprops[objects[otyp].oc_oprop3].extrinsic & ~WORN_SHIRT;
+	oldprop2 += 0;
+	oldprop3 += 0;
 
     context.takeoff.mask &= ~W_ARMU;
 

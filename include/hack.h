@@ -11,6 +11,7 @@
 #endif
 #include "lint.h"
 
+#define TELL_LETHAL_STYLE 2
 #define TELL 1
 #define NOTELL 0
 #define ON 1
