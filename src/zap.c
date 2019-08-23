@@ -174,7 +174,7 @@ struct obj *otmp;
 			//Deal the damage, resist will tell this separately
 			hit(zap_type_text, mtmp, exclam(dmg), 0);
 
-			(void) resist(mtmp, otmp->oclass, dmg, TELL);
+			(void) resist(mtmp, otmp, 0, dmg, TELL);
         } else
             miss(zap_type_text, mtmp);
         learn_it = TRUE;
@@ -195,7 +195,7 @@ struct obj *otmp;
 			//Deal the damage, resist will tell this separately
 			hit(zap_type_text, mtmp, exclam(dmg), 0);
 
-			(void)resist(mtmp, otmp->oclass, dmg, TELL);
+			(void)resist(mtmp, otmp, 0, dmg, TELL);
 		}
 		else
 			miss(zap_type_text, mtmp);
@@ -204,11 +204,11 @@ struct obj *otmp;
 	case SPE_TOUCH_OF_DEATH:
 		reveal_invis = TRUE;
 		You("reach out with your deadly touch...");
-		if (resists_magm(mtmp) || is_not_living(mtmp->data) || is_demon(mtmp->data) || resists_death(mtmp)) { /* match effect on player */
+		if (is_not_living(mtmp->data) || is_demon(mtmp->data) || resists_death(mtmp)) { /* match effect on player */
 			shieldeff(mtmp->mx, mtmp->my);
 			pline("%s is unaffected by your touch!", Monnam(mtmp));
 			break; /* skip makeknown */
-		} else if (!resist(mtmp, otmp->oclass, 0, TELL) //Get no damage upon successful magic resistance
+		} else if (!resist(mtmp, otmp, 0, 0, TELL) //Get no damage upon successful magic resistance
 			&& !DEADMONSTER(mtmp))
 		{ //Otherwise dead
 			mtmp->mhp = 0;
@@ -219,7 +219,7 @@ struct obj *otmp;
 		break;
 	case WAN_SLOW_MONSTER:
     case SPE_SLOW_MONSTER:
-        if (!resist(mtmp, otmp->oclass, 0, NOTELL)) {
+        if (!resist(mtmp, otmp, 0, 0, NOTELL)) {
             if (disguised_mimic)
                 seemimic(mtmp);
             mon_adjust_speed(mtmp, -1, otmp);
@@ -232,7 +232,7 @@ struct obj *otmp;
         }
         break;
     case WAN_SPEED_MONSTER:
-        if (!resist(mtmp, otmp->oclass, 0, NOTELL)) {
+        if (!resist(mtmp, otmp, 0, 0, NOTELL)) {
             if (disguised_mimic)
                 seemimic(mtmp);
             mon_adjust_speed(mtmp, 1, otmp);
@@ -253,7 +253,7 @@ struct obj *otmp;
             if (otyp == SPE_TURN_UNDEAD)
                 dmg = spell_damage_bonus(dmg);
             context.bypasses = TRUE; /* for make_corpse() */
-            if (!resist(mtmp, otmp->oclass, dmg, NOTELL)) {
+            if (!resist(mtmp, otmp, 0, dmg, NOTELL)) {
                 if (!DEADMONSTER(mtmp))
                     monflee(mtmp, 0, FALSE, TRUE);
             }
@@ -274,7 +274,7 @@ struct obj *otmp;
 			if (dbldam)
 				dmg *= 2;
 			context.bypasses = TRUE; /* for make_corpse() */
-			if (!resist(mtmp, otmp->oclass, dmg, TELL_LETHAL_STYLE)) {
+			if (!resist(mtmp, otmp, 0, dmg, TELL_LETHAL_STYLE)) {
 				if (!DEADMONSTER(mtmp))
 					monflee(mtmp, 0, FALSE, TRUE);
 			}
@@ -289,7 +289,7 @@ struct obj *otmp;
 			if (dbldam)
 				dmg *= 2;
 			context.bypasses = TRUE; /* for make_corpse() */
-			if (!resist(mtmp, otmp->oclass, dmg, TELL_LETHAL_STYLE)) {
+			if (!resist(mtmp, otmp, 0, dmg, TELL_LETHAL_STYLE)) {
 				if (!DEADMONSTER(mtmp))
 					monflee(mtmp, 0, FALSE, TRUE);
 			}
@@ -303,10 +303,10 @@ struct obj *otmp;
                the current zap and shouldn't be affected if hit again */
             ;
         } else if (resists_magm(mtmp)) {
-            /* magic resistance protects from polymorph traps, so make
+            /* magic missile resistance protects from polymorph traps, so make
                it guard against involuntary polymorph attacks too... */
             shieldeff(mtmp->mx, mtmp->my);
-        } else if (!resist(mtmp, otmp->oclass, 0, NOTELL)) {
+        } else if (!resist(mtmp, otmp, 0, 0, NOTELL)) {
             boolean polyspot = (otyp != POT_POLYMORPH),
                     give_msg = (!Hallucination
                                 && (canseemon(mtmp)
@@ -475,7 +475,7 @@ struct obj *otmp;
             }
         } else { /* Pestilence */
             /* Pestilence will always resist; damage is half of 3d{4,8,12} */
-            (void) resist(mtmp, otmp->oclass,
+            (void) resist(mtmp, otmp, 0,
                           d(3, otyp == SPE_FULL_HEALING ? 12 : otyp == SPE_EXTRA_HEALING ? 8 : 4), TELL);
         }
         break;
@@ -489,7 +489,7 @@ struct obj *otmp;
         /* [wakeup() doesn't rouse victims of temporary sleep,
            so it's okay to leave `wake' set to TRUE here] */
         reveal_invis = TRUE;
-        if (sleep_monst(mtmp, d(1 + otmp->spe, 8), WAND_CLASS))
+        if (sleep_monst(mtmp, d(1 + otmp->spe, 8), 12))
             slept_monst(mtmp);
         if (!Blind)
             learn_it = TRUE;
@@ -519,7 +519,7 @@ struct obj *otmp;
             dmg = spell_damage_bonus(dmg);
         if (resists_drli(mtmp)) {
             shieldeff(mtmp->mx, mtmp->my);
-        } else if (!resist(mtmp, otmp->oclass, dmg, NOTELL)
+        } else if (!resist(mtmp, otmp, 0, dmg, NOTELL)
                    && !DEADMONSTER(mtmp)) {
             mtmp->mhp -= dmg;
             mtmp->mhpmax -= dmg;
@@ -3030,7 +3030,7 @@ int duration;
     static const char your[] = "your"; /* should be extern */
 
     if (youdefend ? (!youattack && Antimagic)
-                  : resist(mdef, obj->oclass, 0, NOTELL))
+                  : resist(mdef, obj, 0, 0, NOTELL))
         return FALSE; /* resisted cancellation */
 
     if (self_cancel) { /* 1st cancel inventory */
@@ -3123,7 +3123,7 @@ int duration;
 	{
 		if (objects[obj->otyp].oc_flags & O1_SPELL_BYPASSES_MAGIC_RESISTANCE)
 			; //OK;
-		else if (resist(mdef, obj->oclass, 0, TELL))
+		else if (resist(mdef, obj, 0, 0, TELL))
 			return FALSE;
 
 		pline("A dim shimmer surrounds %s.", mon_nam(mdef));
@@ -4056,7 +4056,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
     case ZT_SLEEP:
         tmp = 0;
         (void) sleep_monst(mon, rn1(5, 8),
-                           type == ZT_WAND(ZT_SLEEP) ? WAND_CLASS : '\0');
+                           type == ZT_WAND(ZT_SLEEP) ? 12 : 0);
         break;
     case ZT_DISINTEGRATION:  /* disintegration */
 		tmp = 0;
@@ -4153,7 +4153,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
     if (is_hero_spell(type) && (Role_if(PM_KNIGHT) && u.uhave.questart))
         tmp *= 2;
     if (tmp > 0 && type >= 0
-        && resist(mon, type < ZT_SPELL(0) ? WAND_CLASS : '\0', 0, NOTELL))
+        && resist(mon, (struct obj*)0, type < ZT_SPELL(0) ? 12 : u.ulevel, 0, NOTELL))
         tmp /= 2;
     if (tmp < 0)
         tmp = 0; /* don't allow negative damage */
@@ -5656,64 +5656,77 @@ int osym, dmgtyp;
 }
 
 int
-resist(mtmp, oclass, damage, tell)
+resist(mtmp, otmp, lvl, damage, tell)
 struct monst *mtmp;
-char oclass;
+struct obj* otmp;
+int lvl;
 int damage, tell;
 {
     int resisted;
     int alev, dlev;
+	char oclass = ILLOBJ_CLASS;
+	if (otmp)
+		oclass = otmp->oclass;
 
-    /* fake players always pass resistance test against Conflict
+	/* fake players always pass resistance test against Conflict
        (this doesn't guarantee that they're never affected by it) */
-    if (oclass == RING_CLASS && !damage && !tell && is_mplayer(mtmp->data))
+    
+	if (oclass == RING_CLASS && !damage && !tell && is_mplayer(mtmp->data))
         return 1;
 
-    /* attack level */
-    switch (oclass) {
-    case WAND_CLASS:
-        alev = 12;
-        break;
-    case TOOL_CLASS:
-        alev = 10;
-        break; /* instrument */
-    case WEAPON_CLASS:
-        alev = 10;
-        break; /* artifact */
-    case SCROLL_CLASS:
-        alev = 9;
-        break;
-    case POTION_CLASS:
-        alev = 6;
-        break;
-    case RING_CLASS:
-        alev = 5;
-        break;
-    default:
-        alev = u.ulevel;
-        break; /* spell */
-    }
-    /* defense level */
-    dlev = (int) mtmp->m_lev;
-    if (dlev > 50)
-        dlev = 50;
-    else if (dlev < 1)
-        dlev = is_mplayer(mtmp->data) ? u.ulevel : 1;
-
-	if (mtmp->mnomagicres)
+	if (otmp && objects[otmp->otyp].oc_flags & O1_SPELL_BYPASSES_MAGIC_RESISTANCE)
 		resisted = FALSE;
 	else
-	    resisted = rn2(100 + alev - dlev) < (mtmp->data->mr / (mtmp->mhalfmagicres ? 2 : 1));
+	{
+		/* attack level */
+		switch (oclass) {
+		case WAND_CLASS:
+			alev = 12;
+			break;
+		case TOOL_CLASS:
+			alev = 10;
+			break; /* instrument */
+		case WEAPON_CLASS:
+			alev = 10;
+			break; /* artifact */
+		case SCROLL_CLASS:
+			alev = 9;
+			break;
+		case POTION_CLASS:
+			alev = 6;
+			break;
+		case RING_CLASS:
+			alev = 5;
+			break;
+		case ILLOBJ_CLASS:
+			alev = lvl;
+			break;
+		default:
+			alev = u.ulevel;
+			break; /* spell */
+		}
+		/* defense level */
+		dlev = (int) mtmp->m_lev;
+		if (dlev > 50)
+			dlev = 50;
+		else if (dlev < 1)
+			dlev = is_mplayer(mtmp->data) ? u.ulevel : 1;
 
-    if (resisted) {
+		if (mtmp->mnomagicres)
+			resisted = FALSE;
+		else
+			resisted = rn2(100 + alev - dlev) < (mtmp->data->mr / (mtmp->mhalfmagicres ? 2 : 1));
+	}
+
+	if (resisted) {
 		damage = (damage + 1) / 2;
 		if (tell) {
-            shieldeff(mtmp->mx, mtmp->my);
-            pline("%s resists!", Monnam(mtmp));
-        }
-    }
+			shieldeff(mtmp->mx, mtmp->my);
+			pline("%s resists!", Monnam(mtmp));
+		}
+	}
 
-    if (damage) {
+	if (damage) {
 		if(tell && !(tell == TELL_LETHAL_STYLE && !resisted)) //Lethal damage not shown, resisted though yes
 			pline("%s sustains %d damage!", Monnam(mtmp), damage);
 

@@ -414,7 +414,7 @@ int expltype;
                      */
                     int mdam = dam;
 
-                    if (resist(mtmp, olet, 0, FALSE)) {
+                    if (resist(mtmp, (struct obj*) 0, (olet == WAND_CLASS ? 12 : 8), 0, FALSE)) {
                         /* inside_engulfer: <i+x-1,j+y-1> == <u.ux,u.uy> */
                         if (cansee(i + x - 1, j + y - 1) || inside_engulfer)
                             pline("%s resists the %s!", Monnam(mtmp), str);

@@ -822,6 +822,7 @@ nh_timeout()
 				break;
 			case FIRE_RES:
 				Your("skin is starting to feel a bit more prone to burning than before.");
+				break;
 			case COLD_RES:
 				Your("skin is starting to feel a bit more prone to frostbites than before.");
 				break;

@@ -941,7 +941,7 @@ struct obj *sobj;
     } else {
         if (mtmp->isshk)
             make_happy_shk(mtmp, FALSE);
-        else if (!resist(mtmp, sobj->oclass, 0, NOTELL))
+        else if (!resist(mtmp, sobj, 0, 0, NOTELL))
             (void) tamedog(mtmp, (struct obj *) 0);
         if ((!was_peaceful && mtmp->mpeaceful) || (!was_tame && mtmp->mtame))
             return 1;
@@ -1270,7 +1270,7 @@ enchantarmor:
                 if (confused || scursed) {
                     mtmp->mflee = mtmp->mfrozen = mtmp->msleeping = 0;
                     mtmp->mcanmove = 1;
-                } else if (!resist(mtmp, sobj->oclass, 0, NOTELL))
+                } else if (!resist(mtmp, sobj, 0, 0, NOTELL))
                     monflee(mtmp, 0, FALSE, FALSE);
                 if (!mtmp->mtame)
                     ct++; /* pets don't laugh at you */

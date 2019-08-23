@@ -119,11 +119,10 @@ struct monst *mon;
     long slotmask;
     struct obj *o;
 
-    /* as of 3.2.0:  gray dragons, Angels, Oracle, Yeenoghu */
-    if (dmgtype(ptr, AD_MAGM) || ptr == &mons[PM_GRAY_DRAGON_HATCHLING]
-        || dmgtype(ptr, AD_RBRE)) /* Chromatic Dragon */
+    if (resists_magicmissile(mon))
         return TRUE;
-    /* check for magic resistance granted by wielded weapon */
+
+	/* check for magic resistance granted by wielded weapon */
     o = is_you ? uwep : MON_WEP(mon);
     if (o && o->oartifact && defends(AD_MAGM, o))
         return TRUE;

@@ -199,7 +199,7 @@ register struct monst *priest;
     gy += rn1(3, -1);
 
     if (!priest->mpeaceful
-        || (Conflict && !resist(priest, RING_CLASS, 0, 0))) {
+        || (Conflict && !resist(priest, (struct obj*)0, 5, 0, 0))) {
         if (monnear(priest, u.ux, u.uy)) {
             if (Displaced)
                 Your("displaced image doesn't fool %s!", mon_nam(priest));
@@ -977,7 +977,13 @@ struct monst *mtmp;
         mhidden_description(mtmp, TRUE, eos(info));
     if (mtmp->mcan)
         Strcat(info, ", cancelled");
-    if (mtmp->mconf)
+	if (mtmp->mnomagicres)
+		Strcat(info, ", no magic resistance");
+	else if (mtmp->mhalfmagicres)
+		Strcat(info, ", halved magic resistance");
+	if (mtmp->mnosummon)
+		Strcat(info, ", unable to summon");
+	if (mtmp->mconf)
         Strcat(info, ", confused");
     if (mtmp->mblinded || !mtmp->mcansee)
         Strcat(info, ", blind");

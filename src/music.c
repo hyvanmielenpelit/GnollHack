@@ -76,7 +76,7 @@ int distance;
                 && (mtmp->mstrategy & STRAT_WAITMASK) != 0)
                 mtmp->mstrategy &= ~STRAT_WAITMASK;
             else if (distm < distance / 3
-                     && !resist(mtmp, TOOL_CLASS, 0, NOTELL)
+                     && !resist(mtmp, (struct obj*)0, 8, 0, NOTELL)
                      /* some monsters are immune */
                      && onscary(0, 0, mtmp))
                 monflee(mtmp, 0, FALSE, TRUE);
@@ -98,7 +98,7 @@ int distance;
         if (DEADMONSTER(mtmp))
             continue;
         if (distu(mtmp->mx, mtmp->my) < distance
-            && sleep_monst(mtmp, d(10, 10), TOOL_CLASS)) {
+            && sleep_monst(mtmp, d(10, 10), 10)) {
             mtmp->msleeping = 1; /* 10d10 turns + wake_nearby to rouse */
             slept_monst(mtmp);
         }
@@ -201,7 +201,7 @@ struct monst *bugler; /* monster that played instrument */
                 && (mtmp->mstrategy & STRAT_WAITMASK) != 0)
                 mtmp->mstrategy &= ~STRAT_WAITMASK;
             else if (distm < distance / 3
-                     && !resist(mtmp, TOOL_CLASS, 0, NOTELL))
+                     && !resist(mtmp, (struct obj*)0, 8, 0, NOTELL))
                 monflee(mtmp, 0, FALSE, TRUE);
         }
     }
@@ -217,7 +217,7 @@ int distance;
     struct monst *mtmp, *mtmp2;
 
     if (u.uswallow) {
-        if (!resist(u.ustuck, TOOL_CLASS, 0, NOTELL))
+        if (!resist(u.ustuck, (struct obj*)0, 8, 0, NOTELL))
             (void) tamedog(u.ustuck, (struct obj *) 0);
     } else {
         for (mtmp = fmon; mtmp; mtmp = mtmp2) {
@@ -226,7 +226,7 @@ int distance;
                 continue;
 
             if (distu(mtmp->mx, mtmp->my) <= distance) {
-                if (!resist(mtmp, TOOL_CLASS, 0, NOTELL))
+                if (!resist(mtmp, (struct obj*)0, 8, 0, NOTELL))
                     (void) tamedog(mtmp, (struct obj *) 0);
             }
         }

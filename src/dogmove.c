@@ -896,7 +896,7 @@ int after; /* this is extra fast monster movement */
     udist = distu(omx, omy);
     /* Let steeds eat and maybe throw rider during Conflict */
     if (mtmp == u.usteed) {
-        if (Conflict && !resist(mtmp, RING_CLASS, 0, 0)) {
+        if (Conflict && !resist(mtmp, (struct obj*) 0, 5, 0, 0)) {
             dismount_steed(DISMOUNT_THROWN);
             return 1;
         }
@@ -935,7 +935,7 @@ int after; /* this is extra fast monster movement */
         allowflags |= ALLOW_ROCK;
     if (is_displacer(mtmp->data))
         allowflags |= ALLOW_MDISP;
-    if (Conflict && !resist(mtmp, RING_CLASS, 0, 0)) {
+    if (Conflict && !resist(mtmp, (struct obj*) 0, 5, 0, 0)) {
         allowflags |= ALLOW_U;
         if (!has_edog) {
             /* Guardian angel refuses to be conflicted; rather,

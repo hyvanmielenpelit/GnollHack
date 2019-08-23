@@ -129,7 +129,7 @@ register struct monst *mtmp;
     nmon = 0;
 #endif
     /* perhaps the monster will resist Conflict */
-    if (resist(mtmp, RING_CLASS, 0, 0))
+    if (resist(mtmp, (struct obj*) 0, 5, 0, 0))
         return 0;
 
     if (u.ustuck == mtmp) {
@@ -1474,12 +1474,12 @@ int amt;
 
 /* `mon' is hit by a sleep attack; return 1 if it's affected, 0 otherwise */
 int
-sleep_monst(mon, amt, how)
+sleep_monst(mon, amt, lvl)
 struct monst *mon;
-int amt, how;
+int amt, lvl;
 {
     if (resists_sleep(mon)
-        || (how >= 0 && resist(mon, (char) how, 0, NOTELL))) {
+        || (lvl >= 0 && resist(mon, (struct obj*)0, lvl, 0, NOTELL))) {
         shieldeff(mon->mx, mon->my);
     } else if (mon->mcanmove) {
         finish_meating(mon); /* terminate any meal-in-progress */

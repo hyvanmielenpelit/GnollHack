@@ -1567,7 +1567,7 @@ int dieroll;
 				killed(mon); /* takes care of most messages */
 		} else if (u.umconf && hand_to_hand) {
 			nohandglow(mon);
-			if (!mon->mconf && !resist(mon, SPBOOK_CLASS, 0, NOTELL)) {
+			if (!mon->mconf && !resist(mon, (struct obj*) 0, 8, 0, NOTELL)) {
 				mon->mconf = 1;
 				if (!mon->mstun && mon->mcanmove && !mon->msleeping
 					&& canseemon(mon))

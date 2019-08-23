@@ -2023,7 +2023,7 @@ doturn()
                 mtmp->mflee = 0;
                 mtmp->mfrozen = 0;
                 mtmp->mcanmove = 1;
-            } else if (!resist(mtmp, '\0', 0, TELL)) {
+            } else if (!resist(mtmp, (struct obj*)0, u.ulevel, 0, TELL)) {
                 xlev = 6;
                 switch (mtmp->data->mlet) {
                 /* this is intentional, lichs are tougher
@@ -2039,7 +2039,7 @@ doturn()
                 case S_MUMMY:
                     xlev += 2; /*FALLTHRU*/
                 case S_ZOMBIE:
-                    if (u.ulevel >= xlev && !resist(mtmp, '\0', 0, NOTELL)) {
+                    if (u.ulevel >= xlev && !resist(mtmp, (struct obj*)0, u.ulevel, 0, NOTELL)) {
                         if (u.ualign.type == A_CHAOTIC) {
                             mtmp->mpeaceful = 1;
                             set_malign(mtmp);

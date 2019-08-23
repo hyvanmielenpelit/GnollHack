@@ -30,6 +30,8 @@
     ((((mon)->data->mresists | (mon)->mextrinsics) & MR_ACID) != 0)
 #define resists_ston(mon) \
     ((((mon)->data->mresists | (mon)->mextrinsics) & MR_STONE) != 0)
+#define resists_magicmissile(mon) \
+    ((((mon)->data->mresists | (mon)->mextrinsics) & MR_MAGICMISSILE) != 0)
 
 #define is_lminion(mon) \
     (is_minion((mon)->data) && mon_aligntyp(mon) == A_LAWFUL)

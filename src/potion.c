@@ -1438,9 +1438,9 @@ int how;
                 break;
             }
  do_illness:
-            if ((mon->mhpmax > 3) && !resist(mon, POTION_CLASS, 0, NOTELL))
+            if ((mon->mhpmax > 3) && !resist(mon, obj, 0, 0, NOTELL))
                 mon->mhpmax /= 2;
-            if ((mon->mhp > 2) && !resist(mon, POTION_CLASS, 0, NOTELL))
+            if ((mon->mhp > 2) && !resist(mon, obj, 0, 0, NOTELL))
                 mon->mhp /= 2;
             if (mon->mhp > mon->mhpmax)
                 mon->mhp = mon->mhpmax;
@@ -1449,7 +1449,7 @@ int how;
             break;
         case POT_CONFUSION:
         case POT_BOOZE:
-            if (!resist(mon, POTION_CLASS, 0, NOTELL))
+            if (!resist(mon, obj, 0, 0, NOTELL))
                 mon->mconf = TRUE;
             break;
         case POT_INVISIBILITY: {
@@ -1463,7 +1463,7 @@ int how;
         }
         case POT_SLEEPING:
             /* wakeup() doesn't rouse victims of temporary sleep */
-            if (sleep_monst(mon, rn1(9,8), POTION_CLASS)) {
+            if (sleep_monst(mon, rn1(9,8), 6)) {
                 pline("%s falls asleep.", Monnam(mon));
                 slept_monst(mon);
             }
@@ -1483,7 +1483,7 @@ int how;
         case POT_BLINDNESS:
             if (haseyes(mon->data)) {
                 int btmp = 64 + rn2(32)
-                            + rn2(32) * !resist(mon, POTION_CLASS, 0, NOTELL);
+                            + rn2(32) * !resist(mon, obj, 0, 0, NOTELL);
 
                 btmp += mon->mblinded;
                 mon->mblinded = min(btmp, 127);
@@ -1532,7 +1532,7 @@ int how;
                 explode_oil(obj, tx, ty);
             break;
         case POT_ACID:
-            if (!resists_acid(mon) && !resist(mon, POTION_CLASS, 0, NOTELL)) {
+            if (!resists_acid(mon) && !resist(mon, obj, 0, 0, NOTELL)) {
                 pline("%s %s in pain!", Monnam(mon),
                       is_silent(mon->data) ? "writhes" : "shrieks");
                 if (!is_silent(mon->data))

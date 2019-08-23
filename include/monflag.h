@@ -47,28 +47,29 @@
 #define MS_WERE 38      /* lycanthrope in human form */
 #define MS_BOAST 39     /* giants */
 
-#define MR_FIRE 0x0001   /* resists fire */
-#define MR_COLD 0x0002   /* resists cold */
-#define MR_SLEEP 0x0004  /* resists sleep */
-#define MR_DISINT 0x0008 /* resists disintegration */
-#define MR_ELEC 0x0010   /* resists electricity */
-#define MR_POISON 0x0020 /* resists poison */
-#define MR_ACID 0x0040   /* resists acid */
-#define MR_STONE 0x0080  /* resists petrification */
-#define MR_DEATH 0x0100  /* resists death */
-#define MR_LYCANTHROPY 0x0200  /* resists lycanthropy */
+#define MR_FIRE 0x00000001L   /* resists fire */
+#define MR_COLD 0x00000002L   /* resists cold */
+#define MR_SLEEP 0x00000004L  /* resists sleep */
+#define MR_DISINT 0x00000008L /* resists disintegration */
+#define MR_ELEC 0x00000010L   /* resists electricity */
+#define MR_POISON 0x00000020L /* resists poison */
+#define MR_ACID 0x00000040L   /* resists acid */
+#define MR_STONE 0x00000080L  /* resists petrification */
+#define MR_DEATH 0x00000100L  /* resists death */
+#define MR_LYCANTHROPY 0x00000200L  /* resists lycanthropy */
+#define MR_MAGICMISSILE 0x00000400L  /* resists lycanthropy */
 /* other resistances: magic, sickness */
 /* other conveyances: teleport, teleport control, telepathy */
 
 /* individual resistances */
-#define MR2_SEE_INVIS 0x0100 /* see invisible */
-#define MR2_LEVITATE 0x0200  /* levitation */
-#define MR2_WATERWALK 0x0400 /* water walking */
-#define MR2_MAGBREATH 0x0800 /* magical breathing */
-#define MR2_DISPLACED 0x1000 /* displaced */
-#define MR2_STRENGTH 0x2000  /* gauntlets of power */
-#define MR2_FUMBLING 0x4000  /* clumsy */
-#define MR2_LAUGHING 0x8000  /* laughing uncontrollably */
+#define MR2_SEE_INVIS 0x00010000L /* see invisible */
+#define MR2_LEVITATE 0x00020000L  /* levitation */
+#define MR2_WATERWALK 0x00040000L /* water walking */
+#define MR2_MAGBREATH 0x00080000L /* magical breathing */
+#define MR2_DISPLACED 0x00100000L /* displaced */
+#define MR2_STRENGTH 0x00200000L  /* gauntlets of power */
+#define MR2_FUMBLING 0x00400000L  /* clumsy */
+#define MR2_LAUGHING 0x00800000L  /* laughing uncontrollably */
 
 #define M1_FLY 0x00000001L         /* can fly or float */
 #define M1_SWIM 0x00000002L        /* can traverse water */

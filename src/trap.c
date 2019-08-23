@@ -1649,7 +1649,7 @@ struct obj *otmp;
         steedhit = TRUE;
         break;
     case POLY_TRAP:
-        if (!resists_magm(steed) && !resist(steed, WAND_CLASS, 0, NOTELL)) {
+        if (!resists_magm(steed) && !resist(steed, (struct obj*) 0, 12, 0, NOTELL)) {
             (void) newcham(steed, (struct permonst *) 0, FALSE, FALSE);
             if (!can_saddle(steed) || !can_ride(steed))
                 dismount_steed(DISMOUNT_POLY);
@@ -2684,7 +2684,7 @@ register struct monst *mtmp;
         case POLY_TRAP:
             if (resists_magm(mtmp)) {
                 shieldeff(mtmp->mx, mtmp->my);
-            } else if (!resist(mtmp, WAND_CLASS, 0, NOTELL)) {
+            } else if (!resist(mtmp, (struct obj*) 0, 12, 0, NOTELL)) {
                 if (newcham(mtmp, (struct permonst *) 0, FALSE, FALSE))
                     /* we're done with mptr but keep it up to date */
                     mptr = mtmp->data;
