@@ -452,11 +452,35 @@ int
 study_book(spellbook)
 register struct obj *spellbook;
 {
+	if (!spellbook)
+		return 0;
+
     int booktype = spellbook->otyp;
     boolean confused = (Confusion != 0);
     boolean too_hard = FALSE;
+	char lvlbuf[BUFSZ] = "";
+	char buf[BUFSZ] = "";
+	char namebuf[BUFSZ] = "";
 
-    /* attempting to read dull book may make hero fall asleep */
+	strcpy(namebuf, OBJ_NAME(objects[booktype]));
+	*namebuf = highc(*namebuf);
+
+	if(objects[booktype].oc_level == -1)
+		Sprintf(lvlbuf, "minor %s cantrip", spelltypemnemonic(objects[booktype].oc_skill));
+	else if (objects[booktype].oc_level == 0)
+		Sprintf(lvlbuf, "major %s cantrip", spelltypemnemonic(objects[booktype].oc_skill));
+	else if (objects[booktype].oc_level > 0)
+		Sprintf(lvlbuf, "level %d %s spell", objects[booktype].oc_level, spelltypemnemonic(objects[booktype].oc_skill));
+
+	if (!objects[spellbook->otyp].oc_name_known)
+		Sprintf(buf, "This spellbook contains %s. Read it?", an(lvlbuf));
+	else
+		Sprintf(buf, "\"%s\" is %s. Continue?", namebuf,  an(lvlbuf));
+
+	/* attempting to read dull book may make hero fall asleep */
+	if (yn(buf) != 'y')
+		return 0;
+
     if (!confused && !Sleep_resistance
         && !strcmp(OBJ_DESCR(objects[booktype]), "dull")) {
         const char *eyes;
