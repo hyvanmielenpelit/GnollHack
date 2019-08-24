@@ -2068,6 +2068,12 @@ int *spell_no;
 			case A_CHA:
 				strcpy(statbuf, "Cha");
 				break;
+			case A_MAX_INT_WIS:
+				strcpy(statbuf, "I/W");
+				break;
+			case A_AVG_INT_WIS:
+				strcpy(statbuf, "I+W");
+				break;
 			default:
 				strcpy(statbuf, "N/A");
 				break;
@@ -2153,26 +2159,39 @@ int spell;
     /* Intrinsic and learned ability are combined to calculate
      * the probability of player's success at cast a given spell.
      */
-    int chance, splcaster, special, statused;
+    int chance, splcaster, special, statused = A_INT;
 //    int difficulty;
     int skill;
+	boolean armorpenalty = TRUE;
+
+	if (Role_if(PM_PRIEST) &&
+		(objects[spellid(spell)].oc_spell_attribute == A_WIS || objects[spellid(spell)].oc_spell_attribute == A_MAX_INT_WIS
+			|| objects[spellid(spell)].oc_spell_attribute == A_AVG_INT_WIS))
+		armorpenalty = FALSE;
 
     /* Calculate intrinsic ability (splcaster) */
-
 	splcaster = 0;  urole.spelbase;
     special = urole.spelheal;
-	statused = ACURR(objects[spellid(spell)].oc_spell_attribute); //ACURR(urole.spelstat);
+	if(objects[spellid(spell)].oc_spell_attribute >= 0 && objects[spellid(spell)].oc_spell_attribute < A_MAX)
+		statused = ACURR(objects[spellid(spell)].oc_spell_attribute); //ACURR(urole.spelstat);
+	else if(objects[spellid(spell)].oc_spell_attribute  == A_MAX_INT_WIS)
+		statused = max(ACURR(A_INT), ACURR(A_WIS));
+	else if (objects[spellid(spell)].oc_spell_attribute == A_AVG_INT_WIS)
+		statused = (ACURR(A_INT) + ACURR(A_WIS)) / 2;
 
-	if (uarm && is_metallic(uarm) && !(objects[uarm->otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY))
-		splcaster += urole.spelarmr / (objects[uarm->otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY ? 2 : 1);
-	if (uarms && !(objects[uarms->otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY))
-        splcaster += urole.spelshld / (objects[uarms->otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY ? 2 : 1);	
-    if (uarmh && is_metallic(uarmh) && !(objects[uarmh->otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY))
-        splcaster += uarmhbon / (objects[uarmh->otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY ? 2 : 1);
-    if (uarmg && is_metallic(uarmg) && !(objects[uarmg->otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY))
-        splcaster += uarmgbon / (objects[uarmg->otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY ? 2 : 1);
-    if (uarmf && is_metallic(uarmf) && !(objects[uarmf->otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY))
-        splcaster += uarmfbon / (objects[uarmf->otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY ? 2 : 1);
+	if (armorpenalty)
+	{
+		if (uarm && is_metallic(uarm) && !(objects[uarm->otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY))
+			splcaster += urole.spelarmr / (objects[uarm->otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY ? 2 : 1);
+		if (uarms && !(objects[uarms->otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY))
+			splcaster += urole.spelshld / (objects[uarms->otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY ? 2 : 1);
+		if (uarmh && is_metallic(uarmh) && !(objects[uarmh->otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY))
+			splcaster += uarmhbon / (objects[uarmh->otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY ? 2 : 1);
+		if (uarmg && is_metallic(uarmg) && !(objects[uarmg->otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY))
+			splcaster += uarmgbon / (objects[uarmg->otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY ? 2 : 1);
+		if (uarmf && is_metallic(uarmf) && !(objects[uarmf->otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY))
+			splcaster += uarmfbon / (objects[uarmf->otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY ? 2 : 1);
+	}
 
     if (spellid(spell) == urole.spelspec)
         splcaster += urole.spelsbon;
