@@ -627,8 +627,9 @@ randomtruegem()
 
 
 int
-randomreagent(alsotruegems)
+randomreagent(alsotruegems, reagentstyle)
 boolean alsotruegems;
+int reagentstyle; //0 = all, 1 = priest only, 2 = all but no priest
 {
 	int otyp = 0;
 
@@ -636,13 +637,19 @@ boolean alsotruegems;
 		return randomtruegem();
 	else
 	{
-		switch (rn2(13))
+		switch (rn2(12))
 		{
 		case 0:
-			otyp = SILVER_ARROW;
+			if(reagentstyle == 2)
+				otyp = CLUMP_OF_BAT_GUANO;
+			else
+				otyp = SILVER_ARROW;
 			break;
 		case 1:
-			otyp = CLOVE_OF_GARLIC;
+			if (reagentstyle == 2)
+				otyp = THREAD_OF_SPIDER_SILK;
+			else
+				otyp = CLOVE_OF_GARLIC;
 			break;
 		case 2:
 			otyp = GINSENG_ROOT;
@@ -651,30 +658,45 @@ boolean alsotruegems;
 			otyp = MANDRAKE_ROOT;
 			break;
 		case 4:
-			otyp = SPRIG_OF_WOLFSBANE;
+			if (reagentstyle == 2)
+				otyp = THREAD_OF_SPIDER_SILK;
+			else
+				otyp = SPRIG_OF_WOLFSBANE;
 			break;
 		case 5:
 			otyp = THREAD_OF_SPIDER_SILK;
 			break;
 		case 6:
-			otyp = CLUMP_OF_BAT_GUANO;
+			if (reagentstyle == 1)
+				otyp = CLOVE_OF_GARLIC;
+			else
+				otyp = CLUMP_OF_BAT_GUANO;
 			break;
 		case 7:
-			otyp = POT_WATER;
+			if (reagentstyle == 2)
+				otyp = BONE_DAGGER;
+			else
+				otyp = POT_WATER;
 			break;
 		case 8:
-			otyp = BONE_DAGGER;
+			if (reagentstyle == 1)
+				otyp = CLOVE_OF_GARLIC;
+			else
+				otyp = BONE_DAGGER;
 			break;
 		case 9:
-			otyp = PEARL;
+			if (reagentstyle == 2)
+				otyp = JET;
+			else
+				otyp = PEARL;
 			break;
 		case 10:
-			otyp = BLACK_PEARL;
+			if (reagentstyle == 1)
+				otyp = SPRIG_OF_WOLFSBANE;
+			else
+				otyp = FUNGAL_SPORE;
 			break;
 		case 11:
-			otyp = FUNGAL_SPORE;
-			break;
-		case 12:
 			otyp = RAVEN_FEATHER;
 			break;
 		default:

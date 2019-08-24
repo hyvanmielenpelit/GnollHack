@@ -110,8 +110,8 @@ static struct trobj Priest[] = {
     { SMALL_SHIELD, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
 	{ HOLY_SYMBOL, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 }, //Blessed holy symbol is even more powerful
 	{ POT_WATER, 0, POTION_CLASS, 4, 1, 0 }, /* holy water */
-    { CLOVE_OF_GARLIC, 0, FOOD_CLASS, 1, 0, 0 },
-    { SPRIG_OF_WOLFSBANE, 0, FOOD_CLASS, 1, 0, 0 },
+//    { CLOVE_OF_GARLIC, 0, FOOD_CLASS, 1, 0, 0 }, //Randomized reagents instead
+//    { SPRIG_OF_WOLFSBANE, 0, FOOD_CLASS, 1, 0, 0 }, //Randomized reagents instead
     { UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 2, UNDEF_BLESS, 0 },
     { 0, 0, 0, 0, 0, 0 }
 };
@@ -818,11 +818,11 @@ u_init()
         else if (!rn2(10))
             ini_inv(Lamp);
 
-		n = rn2(4); //0...3
+		n = 2+rn2(4); //2...5
 
 		for (int i = 0; i < n; i++)
 		{
-			otmp = mksobj(randomreagent(FALSE), TRUE, FALSE);
+			otmp = mksobj(randomreagent(FALSE, 1), TRUE, FALSE);
 			if (otmp)
 			{
 				makeknown(otmp->oclass);
@@ -900,10 +900,10 @@ u_init()
         if (!rn2(5))
             ini_inv(Blindfold);
 
-		n = 1 + rn2(4); //1...4
+		n = 2 + rn2(4); //2...5
 		for (int i = 0; i < n; i++)
 		{
-			otmp = mksobj(randomreagent(FALSE), TRUE, FALSE);
+			otmp = mksobj(randomreagent(FALSE, 2), TRUE, FALSE);
 			if (otmp)
 			{
 				makeknown(otmp->oclass);

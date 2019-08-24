@@ -511,7 +511,7 @@ register struct monst *mtmp;
 				int n = 0;
 				n = rn2(3); //0...2
 				while (n--)
-					(void)mongets(mtmp, randomreagent(FALSE));
+					(void)mongets(mtmp, randomreagent(FALSE, 0));
 			}
 			break;
         default:
@@ -821,7 +821,7 @@ register struct monst *mtmp;
 			//Reagents
 			n = rnd(5);
 			while (n--)
-				(void)mongets(mtmp, randomreagent(TRUE));
+				(void)mongets(mtmp, randomreagent(TRUE, FALSE));
 
 			//Spellbooks
 			n = rnd(3); // 1...3
@@ -859,7 +859,7 @@ register struct monst *mtmp;
 			n = rnd(4);
 			while (n--)
 			{
-				(void)mongets(mtmp, randomreagent(TRUE));
+				(void)mongets(mtmp, randomreagent(TRUE, 2));
 			}
 
 			//Some spellbooks
@@ -897,7 +897,7 @@ register struct monst *mtmp;
 		//Reagents
 		n = rnd(3) + (ptr == &mons[PM_MASTER_LICH] || ptr == &mons[PM_ARCH_LICH] ? 2 : 0); //1...3 + 2
 		while (n--)
-			(void)mongets(mtmp, randomreagent(TRUE));
+			(void)mongets(mtmp, randomreagent(TRUE, 2));
 
 		//Some spellbooks
 		if (ptr == &mons[PM_ARCH_LICH])
@@ -1018,7 +1018,7 @@ register struct monst *mtmp;
 				int n = 0;
 				n = rn2(3); //0...2
 				while (n--)
-					(void)mongets(mtmp, randomreagent(FALSE));
+					(void)mongets(mtmp, randomreagent(FALSE, 0));
 			}
 			if (!rn2(2))
 			{
@@ -1041,7 +1041,7 @@ register struct monst *mtmp;
 					int n = 0;
 					n = rn2(3); //0...2
 					while (n--)
-						(void)mongets(mtmp, randomreagent(TRUE));
+						(void)mongets(mtmp, randomreagent(TRUE, 0));
 				}
 				if (!rn2(2))
 				{
