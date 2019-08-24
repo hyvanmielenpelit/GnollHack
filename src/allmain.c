@@ -223,7 +223,7 @@ boolean resuming;
                         }
                     }
 
-					int roundstofull = Energy_regeneration ? max(1, min(u.uenmax, 100)) : 200;
+					int roundstofull = Energy_regeneration ? max(1, min(u.uenmax, 150)) : 300;
 					int fixedmanaperround = u.uenmax / roundstofull;
 					int basispointchancetogetextramana = (10000 * (u.uenmax % roundstofull)) / roundstofull;
 
