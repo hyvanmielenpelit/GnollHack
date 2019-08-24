@@ -85,7 +85,7 @@ const struct propname {
     { SLOW_DIGESTION, "slow digestion" },
     { HALF_SPDAM, "half spell damage" },
     { HALF_PHDAM, "half physical damage" },
-    { REGENERATION, "HP regeneration" },
+    { REGENERATION, "hit point regeneration" },
     { ENERGY_REGENERATION, "mana regeneration" },
     { PROTECTION, "extra protection" },
     { PROT_FROM_SHAPE_CHANGERS, "protection from shape changers" },

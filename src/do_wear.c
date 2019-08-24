@@ -1227,7 +1227,8 @@ register struct obj *obj;
     switch (obj->otyp) {
     case RIN_TELEPORTATION:
     case RIN_REGENERATION:
-    case RIN_SEARCHING:
+	case RIN_MANA_REGENERATION:
+	case RIN_SEARCHING:
     case RIN_HUNGER:
     case RIN_AGGRAVATE_MONSTER:
     case RIN_POISON_RESISTANCE:
@@ -1344,7 +1345,8 @@ boolean gone;
     switch (obj->otyp) {
     case RIN_TELEPORTATION:
     case RIN_REGENERATION:
-    case RIN_SEARCHING:
+	case RIN_MANA_REGENERATION:
+	case RIN_SEARCHING:
     case RIN_HUNGER:
     case RIN_AGGRAVATE_MONSTER:
     case RIN_POISON_RESISTANCE:

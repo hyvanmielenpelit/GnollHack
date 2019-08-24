@@ -223,7 +223,7 @@ boolean resuming;
                         }
                     }
 
-					int roundstofull = Energy_regeneration ? 150 : 300;
+					int roundstofull = Energy_regeneration ? max(1, min(u.uenmax, 100)) : 200;
 					int fixedmanaperround = u.uenmax / roundstofull;
 					int basispointchancetogetextramana = (10000 * (u.uenmax % roundstofull)) / roundstofull;
 
@@ -239,7 +239,7 @@ boolean resuming;
                     if (u.uenmax > 0 && u.uen < u.uenmax)
 					{
 						u.uen += fixedmanaperround;
-						if(rn2(10000) < basispointchancetogetextramana)
+						if(basispointchancetogetextramana > 0 && rn2(10000) < basispointchancetogetextramana)
 							u.uen += 1;
 
 						if (u.uen > u.uenmax)

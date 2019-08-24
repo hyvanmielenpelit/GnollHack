@@ -2759,8 +2759,10 @@ int final;
 
     /*** Physical attributes ***/
     if (Regeneration)
-        enl_msg("You regenerate", "", "d", "", from_what(REGENERATION));
-    if (Slow_digestion)
+        enl_msg("You regenerate", "", "d", " hit points", from_what(REGENERATION));
+	if (Regeneration)
+		enl_msg("You regenerate", "", "d", " mana", from_what(ENERGY_REGENERATION));
+	if (Slow_digestion)
         you_have("slower digestion", from_what(SLOW_DIGESTION));
     if (u.uhitinc)
         you_have(enlght_combatinc("to hit", u.uhitinc, final, buf), "");

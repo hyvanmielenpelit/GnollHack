@@ -497,7 +497,10 @@ register struct obj *obj;
         case RIN_REGENERATION:
             pline_The("sink looks as good as new.");
             break;
-        case RIN_INVISIBILITY:
+		case RIN_MANA_REGENERATION:
+			pline_The("sink shines with a blue aura for a while.");
+			break;
+		case RIN_INVISIBILITY:
             You("don't see anything happen to the sink.");
             break;
         case RIN_FREE_ACTION:
