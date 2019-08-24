@@ -767,7 +767,7 @@ nh_timeout()
 				break;
 			case SICK_RES:
 				if (!Sick_resistance)
-					You("feel like you are might be catching a cold.");
+					You("feel like you might be catching a cold.");
 				break;
 			case INVULNERABLE:
 				if (!Invulnerable)
