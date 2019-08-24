@@ -4686,7 +4686,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
 				if (origobj)
 				{
 					int dam = 0;
-					dam = d(objects[otmp->otyp].oc_wsdice, objects[otmp->otyp].oc_wsdam) + objects[otmp->otyp].oc_wsdmgplus; //Same for small and big
+					dam = d(objects[origobj->otyp].oc_spell_dmg_dice, objects[origobj->otyp].oc_spell_dmg_dicesize) + objects[origobj->otyp].oc_spell_dmg_plus; //Same for small and big
 						
 					(void) flashburn((long)dam);
 				}

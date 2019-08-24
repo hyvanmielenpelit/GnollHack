@@ -2205,7 +2205,7 @@ int spell;
     //difficulty =
     //    (spellev(spell) - 1) * 4 - ((skill * 6) + ((u.ulevel - 1) * 2) + 0);
 
-	chance += -60 * spellev(spell);
+	chance += -40 * spellev(spell);
 	chance += 50 * skill;
 	chance += 20 * u.ulevel;
 	chance += -5 * splcaster;

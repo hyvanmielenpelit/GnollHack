@@ -152,13 +152,16 @@ static struct trobj Samurai[] = {
 };
 static struct trobj Tourist[] = {
 #define T_DARTS 0
-    { DART, 2, WEAPON_CLASS, 25, UNDEF_BLESS, 0 }, /* quan is variable */
-    { UNDEF_TYP, UNDEF_SPE, FOOD_CLASS, 10, 0 },
+#define T_SACK 1
+	{ DART, 2, WEAPON_CLASS, 25, UNDEF_BLESS, 0 }, /* quan is variable */
+	{ SACK, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
+	{ UNDEF_TYP, UNDEF_SPE, FOOD_CLASS, 10, 0 },
     { POT_EXTRA_HEALING, 0, POTION_CLASS, 2, UNDEF_BLESS, 0 },
     { SCR_MAGIC_MAPPING, 0, SCROLL_CLASS, 4, UNDEF_BLESS, 0 },
     { HAWAIIAN_SHIRT, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
 	{ LEATHER_BELT, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
 	{ BEIGE_SHORTS, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
+	{ LEATHER_SANDALS, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
 	{ EXPENSIVE_CAMERA, UNDEF_SPE, TOOL_CLASS, 1, 0, 0 },
     { CREDIT_CARD, 0, TOOL_CLASS, 1, 0, 0 },
     { 0, 0, 0, 0, 0, 0 }
@@ -1075,9 +1078,10 @@ register struct trobj *trop;
 
     while (trop->trclass) {
         otyp = (int) trop->trotyp;
-        if (otyp != UNDEF_TYP) {
+        if (otyp != UNDEF_TYP)
+		{
             obj = mksobj(otyp, TRUE, FALSE);
-        } else { /* UNDEF_TYP */
+		} else { /* UNDEF_TYP */
             static NEARDATA short nocreate = STRANGE_OBJECT;
             static NEARDATA short nocreate2 = STRANGE_OBJECT;
             static NEARDATA short nocreate3 = STRANGE_OBJECT;
@@ -1161,13 +1165,13 @@ register struct trobj *trop;
                substitutions didn't occur for randomly generated items
                (particularly food) which have racial substitutes */
             for (i = 0; inv_subs[i].race_pm != NON_PM; ++i)
-                if (inv_subs[i].race_pm == urace.malenum
-                    && otyp == inv_subs[i].item_otyp) {
-                    debugpline3("ini_inv: substituting %s for %s%s",
-                                OBJ_NAME(objects[inv_subs[i].subs_otyp]),
-                                (trop->trotyp == UNDEF_TYP) ? "random " : "",
-                                OBJ_NAME(objects[otyp]));
-                    otyp = obj->otyp = inv_subs[i].subs_otyp;
+				if (inv_subs[i].race_pm == urace.malenum
+					&& otyp == inv_subs[i].item_otyp) {
+					debugpline3("ini_inv: substituting %s for %s%s",
+						OBJ_NAME(objects[inv_subs[i].subs_otyp]),
+						(trop->trotyp == UNDEF_TYP) ? "random " : "",
+						OBJ_NAME(objects[otyp]));
+					otyp = obj->otyp = inv_subs[i].subs_otyp;
 					if (obj->otyp == TIN)
 					{
 						switch (rn2(5))
@@ -1193,7 +1197,7 @@ register struct trobj *trop;
 						}
 						break;
 					}
-                }
+				}
         }
 
         /* nudist gets no armor */
@@ -1208,6 +1212,18 @@ register struct trobj *trop;
 		{
 			if (obj->otyp == CROSSBOW_BOLT)
 				obj->opoisoned = 1;
+		}
+
+		if (otyp == SACK)
+		{
+			if (Role_if(PM_TOURIST))
+			{
+				(void)add_to_container(obj, mksobj(BATHROBE, TRUE, FALSE));
+				(void)add_to_container(obj, mksobj(COTTON_SLIPPERS, TRUE, FALSE));
+				(void)add_to_container(obj, mksobj(TOWEL, TRUE, FALSE));
+				makeknown(BATHROBE);
+				obj->owt = weight(obj);
+			}
 		}
 
 		if (trop->trclass == COIN_CLASS) {

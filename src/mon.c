@@ -375,8 +375,8 @@ unsigned corpseflags;
         goto default_1;
 	case PM_CAVE_SPIDER:
 	case PM_GIANT_SPIDER:
-		if(mndx == PM_GIANT_SPIDER || !rn2(2))
-			(void)mksobj_at(THREAD_OF_SPIDER_SILK, x, y, TRUE, FALSE);
+//		if(mndx == PM_GIANT_SPIDER || !rn2(2)) //Cave spider corpses are rare
+		(void)mksobj_at(THREAD_OF_SPIDER_SILK, x, y, TRUE, FALSE);
 		goto default_1;
 	case PM_VAMPIRE:
     case PM_VAMPIRE_LORD:

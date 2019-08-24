@@ -173,7 +173,9 @@ Boots_on(VOID_ARGS)
     case LOW_BOOTS:
     case IRON_SHOES:
     case HIGH_BOOTS:
-    case JUMPING_BOOTS:
+	case COTTON_SLIPPERS:
+	case LEATHER_SANDALS:
+	case JUMPING_BOOTS:
     case KICKING_BOOTS:
         break;
     case WATER_WALKING_BOOTS:
@@ -272,7 +274,9 @@ Boots_off(VOID_ARGS)
     case LOW_BOOTS:
     case IRON_SHOES:
     case HIGH_BOOTS:
-    case JUMPING_BOOTS:
+	case COTTON_SLIPPERS:
+	case LEATHER_SANDALS:
+	case JUMPING_BOOTS:
     case KICKING_BOOTS:
         break;
     default:
