@@ -166,6 +166,7 @@ int mndx;
         break;
     case PM_VAMPIRE:
     case PM_VAMPIRE_LORD:
+	case PM_VAMPIRE_MAGE:
 #if 0 /* DEFERRED */
     case PM_VAMPIRE_MAGE:
 #endif
@@ -379,7 +380,8 @@ unsigned corpseflags;
 		(void)mksobj_at(THREAD_OF_SPIDER_SILK, x, y, TRUE, FALSE);
 		goto default_1;
 	case PM_VAMPIRE:
-    case PM_VAMPIRE_LORD:
+	case PM_VAMPIRE_MAGE:
+	case PM_VAMPIRE_LORD:
         /* include mtmp in the mkcorpstat() call */
         num = undead_to_corpse(mndx);
         corpstatflags |= CORPSTAT_INIT;
@@ -3435,7 +3437,8 @@ struct monst *mon;
             break; /* leave mndx as is */
         wolfchance = 3;
     /*FALLTHRU*/
-    case PM_VAMPIRE_LORD: /* vampire lord or Vlad can become wolf */
+	case PM_VAMPIRE_MAGE: /* vampire mage or Vlad can become wolf */
+	case PM_VAMPIRE_LORD: /* vampire lord or Vlad can become wolf */
         if (!rn2(wolfchance) && !uppercase_only) {
             mndx = PM_WOLF;
             break;
@@ -3493,7 +3496,7 @@ int *mndx_p, monclass;
     if (!is_vampshifter(mon))
         return validspecmon(mon, *mndx_p);
 
-    if (*mndx_p == PM_VAMPIRE || *mndx_p == PM_VAMPIRE_LORD
+    if (*mndx_p == PM_VAMPIRE || *mndx_p == PM_VAMPIRE_LORD || *mndx_p == PM_VAMPIRE_MAGE
         || *mndx_p == PM_VLAD_THE_IMPALER) {
         /* player picked some type of vampire; use mon's self */
         *mndx_p = mon->cham;
@@ -3573,7 +3576,8 @@ struct monst *mon;
         break;
     case PM_VLAD_THE_IMPALER:
     case PM_VAMPIRE_LORD:
-    case PM_VAMPIRE:
+	case PM_VAMPIRE_MAGE:
+	case PM_VAMPIRE:
         mndx = pickvampshape(mon);
         break;
     case NON_PM: /* ordinary */
