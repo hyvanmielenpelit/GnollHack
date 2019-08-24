@@ -1754,6 +1754,7 @@ struct obj *otmp;
                           : carnivorous(youmonst.data))
                          && rn2(10)
                          && ((rotted < 1) ? TRUE : !rn2(rotted+1)));
+
         const char *pmxnam = food_xname(otmp, FALSE);
 
         if (!strncmpi(pmxnam, "the ", 4))
@@ -1846,7 +1847,11 @@ struct obj *otmp;
         else if (u.uhunger <= 700)
             pline("That satiated your %s!", body_part(STOMACH));
         break;
-    case TRIPE_RATION:
+	case CLUMP_OF_BAT_GUANO:
+		pline(Hallucination ? "Oh wow, like, what a guano that was!"
+			: "That guano tasted just terrible!");
+		break;
+	case TRIPE_RATION:
 		if (maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)))	{
 			if (u.uhunger <= 200)
 				pline(Hallucination ? "Woof! Like best tripe I ever had!"

@@ -2817,7 +2817,7 @@ STATIC_OVL NEARDATA const struct o_range o_ranges[] = {
       YELLOW_DRAGON_SCALE_MAIL },
     { "sword", WEAPON_CLASS, SHORT_SWORD, KATANA },
     { "venom", VENOM_CLASS, BLINDING_VENOM, ACID_VENOM },
-	{ "reagent", REAGENT_CLASS, THREAD_OF_SPIDER_SILK, MITHRIL_NUGGET },
+	{ "reagent", REAGENT_CLASS, THREAD_OF_SPIDER_SILK, RAVEN_FEATHER },
 	{ "gray stone", GEM_CLASS, LUCKSTONE, FLINT },
     { "grey stone", GEM_CLASS, LUCKSTONE, FLINT },
 };
@@ -2868,6 +2868,8 @@ static const struct alt_spellings {
     { "grapnel", GRAPPLING_HOOK },
     { "grapple", GRAPPLING_HOOK },
 	{ "spider silk", THREAD_OF_SPIDER_SILK },
+	{ "bat guano", CLUMP_OF_BAT_GUANO },
+	{ "spore", FUNGAL_SPORE },
 	{ "ginseng", GINSENG_ROOT },
 	{ "mandrake", MANDRAKE_ROOT },
 	{ "ring of death resistance", RIN_LIFE_PROTECTION },
@@ -3328,11 +3330,14 @@ struct obj *no_wish;
          * Don't check if it's a wand or spellbook.
          * (avoid "wand/finger of death" confusion).
          */
-        if (!strstri(bp, "wand ") && !strstri(bp, "spellbook ") && !strstri(bp, "bracers ") 
+        if (!strstri(bp, " guano") // rule out bat guano
+			&& !strstri(bp, "wand ") && !strstri(bp, "spellbook ") && !strstri(bp, "bracers ")
 			&& !strstri(bp, "robe ") && !strstri(bp, "cloak ") && !strstri(bp, "gloves ")
 			&& !strstri(bp, "gauntlets ") && !strstri(bp, "belt ") && !strstri(bp, "girdle ")
-			&& !strstri(bp, "boots ") && !strstri(bp, "ring ") && !strstri(bp, "potion ") && !strstri(bp, "scroll ")
-            && !strstri(bp, "finger ")) {
+			&& !strstri(bp, "boots ") && !strstri(bp, "ring ")
+			&& !strstri(bp, "potion ") && !strstri(bp, "scroll ")
+			&& !strstri(bp, "potions ") && !strstri(bp, "scrolls ")
+			&& !strstri(bp, "finger ")) {
             if ((p = strstri(bp, "tin of ")) != 0) {
                 if (!strcmpi(p + 7, "spinach")) {
                     contents = SPINACH;
@@ -3352,7 +3357,8 @@ struct obj *no_wish;
     /* Find corpse type w/o "of" (red dragon scale mail, yeti corpse) */
     if (strncmpi(bp, "samurai sword", 13)  /* not the "samurai" monster! */
         && strncmpi(bp, "wizard lock", 11) /* not the "wizard" monster! */
-        && strncmpi(bp, "ninja-to", 8)     /* not the "ninja" rank */
+		&& strncmpi(bp, "bat guano", 9) /* not the "wizard" monster! */
+		&& strncmpi(bp, "ninja-to", 8)     /* not the "ninja" rank */
         && strncmpi(bp, "master key", 10)  /* not the "master" rank */
         && strncmpi(bp, "magenta", 7)) {   /* not the "mage" rank */
         if (mntmp < LOW_PM && strlen(bp) > 2

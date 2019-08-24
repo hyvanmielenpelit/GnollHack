@@ -897,17 +897,20 @@ FOOD("glob of brown pudding", 0,  2, 20, 0, FLESH,  20, CLR_BROWN),
 FOOD("glob of green slime",   0,  2, 20, 0, FLESH,  20, CLR_GREEN),
 FOOD("glob of black pudding", 0,  2, 20, 0, FLESH,  20, CLR_BLACK),
 
+FOOD("clump of bat guano",	  5,  2, 10, 0, FLESH,  20, CLR_BROWN),
+
 /* fruits & veggies */
 FOOD("kelp frond",            0,  1,  1, 0, VEGGY,  30, CLR_GREEN),
 FOOD("eucalyptus leaf",       3,  1,  1, 0, VEGGY,  30, CLR_GREEN),
-FOOD("apple",                15,  1,  2, 0, VEGGY,  50, CLR_RED),
+FOOD("apple",                10,  1,  2, 0, VEGGY,  50, CLR_RED),
 FOOD("orange",               10,  1,  2, 0, VEGGY,  80, CLR_ORANGE),
 FOOD("pear",                 10,  1,  2, 0, VEGGY,  50, CLR_BRIGHT_GREEN),
 FOOD("melon",                10,  1,  5, 0, VEGGY, 100, CLR_BRIGHT_GREEN),
 FOOD("banana",               10,  1,  2, 0, VEGGY,  80, CLR_YELLOW),
-FOOD("carrot",               15,  1,  2, 0, VEGGY,  50, CLR_ORANGE),
+FOOD("carrot",               10,  1,  2, 0, VEGGY,  50, CLR_ORANGE),
 FOOD("ginseng root",		  7, 1, 1, 0, VEGGY, 40, CLR_BROWN),
 FOOD("mandrake root",		  7, 1, 1, 0, VEGGY, 40, CLR_MAGENTA),
+FOOD("fungal spore",		  5,  1,  1, 0, VEGGY, 1, CLR_GRAY),
 FOOD("sprig of wolfsbane",    7,  1,  1, 0, VEGGY,  40, CLR_GREEN),
 FOOD("clove of garlic",       7,  1,  1, 0, VEGGY,  40, CLR_WHITE),
 /* name of slime mold is changed based on player's OPTION=fruit:something
@@ -1388,9 +1391,9 @@ OBJECT(OBJ("acid venom", "splash of venom"),
 OBJECT(OBJ("thread of spider silk", None), /* STARTMARKER 1&2 */
 	BITS(1, 1, 0, 0, 0, 0, 0, 0, 0, 0, WHACK, P_NONE, SILK), 0, 0, 0,
 	REAGENT_CLASS, 500, 0, 2, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, CLR_GRAY, 0, 0, O1_NONE),
-OBJECT(OBJ("mithril nugget", None), /* ENDMARKER 1&2 */
-	BITS(1, 1, 0, 0, 0, 0, 0, 0, 0, 0, WHACK, P_NONE, MITHRIL), 0, 0, 0,
-	REAGENT_CLASS, 500, 0, 16, 250, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,20, HI_SILVER, 0, 0, O1_NONE),
+OBJECT(OBJ("raven feather", None), /* ENDMARKER 1&2 */
+	BITS(1, 1, 0, 0, 0, 0, 0, 0, 0, 0, WHACK, P_NONE, FLESH), 0, 0, 0,
+	REAGENT_CLASS, 500, 0, 3, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,10, CLR_GRAY, 0, 0, O1_NONE),
 
 
 /* fencepost, the deadly Array Terminator -- name [1st arg] *must* be NULL */

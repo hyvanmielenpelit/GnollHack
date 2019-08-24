@@ -376,8 +376,25 @@ unsigned corpseflags;
         goto default_1;
 	case PM_CAVE_SPIDER:
 	case PM_GIANT_SPIDER:
-//		if(mndx == PM_GIANT_SPIDER || !rn2(2)) //Cave spider corpses are rare
 		(void)mksobj_at(THREAD_OF_SPIDER_SILK, x, y, TRUE, FALSE);
+		goto default_1;
+	case PM_RAVEN:
+		(void)mksobj_at(RAVEN_FEATHER, x, y, TRUE, FALSE);
+		goto default_1;
+	case PM_BAT:
+	case PM_VAMPIRE_BAT:
+	case PM_GIANT_BAT:
+		(void)mksobj_at(CLUMP_OF_BAT_GUANO, x, y, TRUE, FALSE);
+		goto default_1;
+	case PM_BROWN_MOLD:
+	case PM_YELLOW_MOLD:
+	case PM_GREEN_MOLD:
+	case PM_RED_MOLD:
+	case PM_SHRIEKER:
+	case PM_VIOLET_FUNGUS:
+		obj = mksobj_at(FUNGAL_SPORE, x, y, TRUE, FALSE);
+		obj->quan = rnd(4);
+		obj->owt = weight(obj);
 		goto default_1;
 	case PM_VAMPIRE:
 	case PM_VAMPIRE_MAGE:
@@ -618,7 +635,7 @@ randomreagent()
 		return randomtruegem();
 	else
 	{
-		switch (rn2(11))
+		switch (rn2(13))
 		{
 		case 0:
 			otyp = SILVER_ARROW;
@@ -639,7 +656,7 @@ randomreagent()
 			otyp = THREAD_OF_SPIDER_SILK;
 			break;
 		case 6:
-			otyp = MITHRIL_NUGGET;
+			otyp = CLUMP_OF_BAT_GUANO;
 			break;
 		case 7:
 			otyp = POT_WATER;
@@ -652,6 +669,12 @@ randomreagent()
 			break;
 		case 10:
 			otyp = BLACK_PEARL;
+			break;
+		case 11:
+			otyp = FUNGAL_SPORE;
+			break;
+		case 12:
+			otyp = RAVEN_FEATHER;
 			break;
 		default:
 			otyp = CLOVE_OF_GARLIC;
