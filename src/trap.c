@@ -5225,7 +5225,11 @@ boolean nocorpse;
         if (d_override)
             dam = d_override;
         else if (obj) {
-            dam = dmgval(obj, mon);
+			if (is_launcher(obj))
+				dam = d(1, 2);
+			else
+				dam = dmgval(obj, mon);
+
             if (dam < 1)
                 dam = 1;
         }

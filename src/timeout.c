@@ -86,7 +86,7 @@ const struct propname {
     { HALF_SPDAM, "half spell damage" },
     { HALF_PHDAM, "half physical damage" },
     { REGENERATION, "HP regeneration" },
-    { ENERGY_REGENERATION, "energy regeneration" },
+    { ENERGY_REGENERATION, "mana regeneration" },
     { PROTECTION, "extra protection" },
     { PROT_FROM_SHAPE_CHANGERS, "protection from shape changers" },
     { POLYMORPH_CONTROL, "polymorph control" },

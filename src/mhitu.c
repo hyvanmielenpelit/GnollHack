@@ -1094,7 +1094,10 @@ register struct obj* omonwep;
 	if (mweapon && mattk->aatyp == AT_WEAP)
 	{
 		//Use weapon damage
-		dmg += dmgval(mweapon, &youmonst);
+		if (is_launcher(mweapon))
+			dmg += d(1, 2);
+		else
+			dmg += dmgval(mweapon, &youmonst);
 
 	}
 	else

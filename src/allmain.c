@@ -223,14 +223,26 @@ boolean resuming;
                         }
                     }
 
-                    if (u.uen < u.uenmax
-                        && ((wtcap < MOD_ENCUMBER
-                             && (!(moves % ((MAXULEV + 8 - u.ulevel)
-                                            * (Role_if(PM_WIZARD) ? 3 : 4)
-                                            / 6)))) || Energy_regeneration)) {
-                        u.uen += rn1(
-                            (int) (ACURR(A_WIS) + ACURR(A_INT)) / 15 + 1, 1);
-                        if (u.uen > u.uenmax)
+					int roundstofull = Energy_regeneration ? 150 : 300;
+					int fixedmanaperround = u.uenmax / roundstofull;
+					int basispointchancetogetextramana = (10000 * (u.uenmax % roundstofull)) / roundstofull;
+
+					/*
+					&& ((wtcap < MOD_ENCUMBER
+						&& (!(moves % ((MAXULEV + 8 - u.ulevel)
+							* (Role_if(PM_WIZARD) ? 3 : 4)
+							/ 6)))) || Energy_regeneration)
+						u.uen += rn1(
+							(int) (max(ACURR(A_WIS), ACURR(A_INT))) / 15 + 1, 1);
+					*/
+
+                    if (u.uenmax > 0 && u.uen < u.uenmax)
+					{
+						u.uen += fixedmanaperround;
+						if(rn2(10000) < basispointchancetogetextramana)
+							u.uen += 1;
+
+						if (u.uen > u.uenmax)
                             u.uen = u.uenmax;
                         context.botl = TRUE;
                         if (u.uen == u.uenmax)

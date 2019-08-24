@@ -307,7 +307,7 @@ find_skates()
 void
 oinit()
 {
-    setgemprobs(&u.uz);
+    //setgemprobs(&u.uz);
 }
 
 void

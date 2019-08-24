@@ -1104,7 +1104,11 @@ boolean atme;
 		spellamount(spell)--;
 
 	//Also, it goes under cooldown, successful or not
-	spellcooldownleft(spell) = getspellcooldown(spell) + 1; //+1 takes care of the current turn
+	int splcd = getspellcooldown(spell);
+	if(splcd > 0)
+		spellcooldownleft(spell) = splcd;
+	else
+		spellcooldownleft(spell) = 0;
 
 	//Now check if successful
     chance = percent_success(spell);
@@ -1338,7 +1342,7 @@ boolean atme;
     }
 
     /* gain skill for successful cast */
-    use_skill(skill, spellev(spell));
+    use_skill(skill, max(spellev(spell) + 2, 1));
 
     obfree(pseudo, (struct obj *) 0); /* now, get rid of it */
     return 1;
@@ -2159,16 +2163,16 @@ int spell;
     special = urole.spelheal;
 	statused = ACURR(objects[spellid(spell)].oc_spell_attribute); //ACURR(urole.spelstat);
 
-	if (uarm && is_metallic(uarm) && !(objects[uarms->otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY))
-		splcaster += urole.spelarmr / (objects[uarms->otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY ? 2 : 1);
+	if (uarm && is_metallic(uarm) && !(objects[uarm->otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY))
+		splcaster += urole.spelarmr / (objects[uarm->otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY ? 2 : 1);
 	if (uarms && !(objects[uarms->otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY))
         splcaster += urole.spelshld / (objects[uarms->otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY ? 2 : 1);	
     if (uarmh && is_metallic(uarmh) && !(objects[uarmh->otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY))
-        splcaster += uarmhbon / (objects[uarms->otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY ? 2 : 1);
+        splcaster += uarmhbon / (objects[uarmh->otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY ? 2 : 1);
     if (uarmg && is_metallic(uarmg) && !(objects[uarmg->otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY))
-        splcaster += uarmgbon / (objects[uarms->otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY ? 2 : 1);
+        splcaster += uarmgbon / (objects[uarmg->otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY ? 2 : 1);
     if (uarmf && is_metallic(uarmf) && !(objects[uarmf->otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY))
-        splcaster += uarmfbon / (objects[uarms->otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY ? 2 : 1);
+        splcaster += uarmfbon / (objects[uarmf->otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY ? 2 : 1);
 
     if (spellid(spell) == urole.spelspec)
         splcaster += urole.spelsbon;
@@ -2595,7 +2599,7 @@ int spell;
 		int otyp = spellid(spell);
 		int skill = spell_skilltype(otyp);
 
-		use_skill(skill, spellev(spell));
+		use_skill(skill, max(spellev(spell) + 2, 1));
 
 	}
 

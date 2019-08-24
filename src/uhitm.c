@@ -771,7 +771,10 @@ int dieroll;
                         tmp++;
                 }
             } else {
-                tmp = dmgval(obj, mon);
+				if (is_launcher(obj))
+					tmp = d(1, 2);
+				else
+	                tmp = dmgval(obj, mon);
                 /* a minimal hit doesn't exercise proficiency */
                 valid_weapon_attack = (tmp > 1);
                 if (!valid_weapon_attack || mon == u.ustuck || u.twoweap
@@ -1848,7 +1851,10 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 	if (mweapon && mattk->aatyp == AT_WEAP)
 	{
 		//Use weapon damage
-		tmp += dmgval(mweapon, mdef);
+		if (is_launcher(mweapon))
+			tmp = d(1, 2);
+		else
+			tmp += dmgval(mweapon, mdef);
 	}
 	else
 	{

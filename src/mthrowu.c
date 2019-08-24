@@ -394,7 +394,11 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
         potionhit(mtmp, otmp, POTHIT_OTHER_THROW);
         return 1;
     } else {
-        damage = dmgval(otmp, mtmp);
+		if (is_launcher(otmp))
+			damage = d(1, 2);
+		else
+			damage = dmgval(otmp, mtmp);
+
 		if (otmp && mon_launcher && ammo_and_launcher(otmp, mon_launcher)) {
 			damage += dmgval(mon_launcher, mtmp);
 			//Add strength damage, no skill damage
@@ -722,7 +726,11 @@ struct obj *obj;         /* missile (or stack providing it) */
                 hitu = thitu(8, 0, &singleobj, (char *) 0);
                 break;
             default:
-                dam = dmgval(singleobj, &youmonst);
+				if (is_launcher(singleobj))
+					dam = d(1, 2);
+				else
+					dam = dmgval(singleobj, &youmonst);
+
 				mindistance = distmin(u.ux, u.uy, mon->mx, mon->my);
                 hitv = 3 - mindistance;
                 if (hitv < -4)
@@ -1130,7 +1138,11 @@ struct monst *mtmp;
                   obj_is_pname(otmp) ? the(onm) : an(onm));
         }
 
-        dam = dmgval(otmp, &youmonst);
+		if (is_launcher(otmp))
+			dam = d(1, 2);
+		else
+			dam = dmgval(otmp, &youmonst);
+
         hitv = 3 - distmin(u.ux, u.uy, mtmp->mx, mtmp->my);
         if (hitv < -4)
             hitv = -4;

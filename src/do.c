@@ -175,7 +175,11 @@ const char *verb;
                     if (context.mon_moving) {
                         /* normally we'd use ohitmon() but it can call
                            drop_throw() which calls flooreffects() */
-                        damage = dmgval(obj, mtmp);
+						if (is_launcher(obj))
+							damage = d(1, 2);
+						else
+							damage = dmgval(obj, mtmp);
+
                         mtmp->mhp -= damage;
                         if (DEADMONSTER(mtmp)) {
                             if (canspotmon(mtmp))

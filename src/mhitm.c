@@ -828,7 +828,10 @@ register struct attack *mattk;
 
 	if (mweapon && mattk->aatyp == AT_WEAP)
 	{
-		tmp += dmgval(mweapon, mdef);
+		if (is_launcher(mweapon))
+			tmp += d(1, 2);
+		else
+			tmp += dmgval(mweapon, mdef);
 	}
 	else
 	{
