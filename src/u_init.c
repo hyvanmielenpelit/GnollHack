@@ -459,7 +459,6 @@ static const struct def_skill Skill_P[] = {
     { P_CLERIC_SPELL, P_EXPERT },
 	{ P_ABJURATION_SPELL, P_EXPERT },
 	{ P_CONJURATION_SPELL, P_SKILLED },
-	{ P_ENCHANTMENT_SPELL, P_BASIC },
 	{ P_NECROMANCY_SPELL, P_EXPERT },
 	{ P_BARE_HANDED_COMBAT, P_BASIC },
     { P_NONE, 0 }
@@ -619,10 +618,8 @@ static const struct def_skill Skill_W[] = {
     { P_DART, P_EXPERT },
     { P_SHURIKEN, P_BASIC },
     { P_ARCANE_SPELL, P_EXPERT },
-    { P_HEALING_SPELL, P_SKILLED },
     { P_DIVINATION_SPELL, P_EXPERT },
     { P_ENCHANTMENT_SPELL, P_SKILLED },
-    { P_CLERIC_SPELL, P_SKILLED },
     { P_MOVEMENT_SPELL, P_EXPERT },
     { P_TRANSMUTATION_SPELL, P_EXPERT },
 	{ P_CONJURATION_SPELL, P_EXPERT },
@@ -869,8 +866,6 @@ u_init()
             ini_inv(Tinopener);
         else if (!rn2(25))
             ini_inv(Leash);
-        else if (!rn2(25))
-            ini_inv(Towel);
         else if (!rn2(25))
             ini_inv(Magicmarker);
         skill_init(Skill_T);
@@ -1127,7 +1122,10 @@ register struct trobj *trop;
                       spells in restricted skill categories */
                    || (obj->oclass == SPBOOK_CLASS
                        && (objects[otyp].oc_level > 3
-                           || restricted_spell_discipline(otyp)))) {
+                           || restricted_spell_discipline(otyp) 
+						   || (Role_if(PM_WIZARD) && objects[otyp].oc_spell_attribute != A_INT)
+						   || (Role_if(PM_PRIEST) && objects[otyp].oc_spell_attribute != A_WIS)
+						   ))) {
                 dealloc_obj(obj);
                 obj = mkobj(trop->trclass, FALSE);
                 otyp = obj->otyp;
@@ -1172,48 +1170,51 @@ register struct trobj *trop;
 						(trop->trotyp == UNDEF_TYP) ? "random " : "",
 						OBJ_NAME(objects[otyp]));
 					otyp = obj->otyp = inv_subs[i].subs_otyp;
-					if (obj->otyp == TIN)
-					{
-						switch (rn2(5))
-						{
-						case 0:
-							obj->corpsenm = PM_SEWER_RAT;
-							break;
-						case 1:
-							obj->corpsenm = PM_NEWT;
-							break;
-						case 2:
-							obj->corpsenm = PM_LIZARD;
-							break;
-						case 3:
-							obj->corpsenm = PM_GECKO;
-							break;
-						case 4:
-							obj->corpsenm = PM_GIANT_RAT;
-							break;
-						default:
-							obj->corpsenm = PM_SEWER_RAT;
-							break;
-						}
-						break;
-					}
 				}
         }
 
-        /* nudist gets no armor */
+		/* set tin type */
+		if (obj->otyp == TIN)
+		{
+			switch (rn2(5))
+			{
+			case 0:
+				obj->corpsenm = PM_SEWER_RAT;
+				break;
+			case 1:
+				obj->corpsenm = PM_NEWT;
+				break;
+			case 2:
+				obj->corpsenm = PM_LIZARD;
+				break;
+			case 3:
+				obj->corpsenm = PM_GECKO;
+				break;
+			case 4:
+				obj->corpsenm = PM_GIANT_RAT;
+				break;
+			default:
+				obj->corpsenm = PM_SEWER_RAT;
+				break;
+			}
+			break;
+		}
+
+		/* nudist gets no armor */
         if (u.uroleplay.nudist && obj->oclass == ARMOR_CLASS) {
             dealloc_obj(obj);
             trop++;
             continue;
         }
 
-		//Rogues get poisoned crossbow bolts
+		/* rogues get poisoned crossbow bolts */
 		if (Role_if(PM_ROGUE))
 		{
 			if (obj->otyp == CROSSBOW_BOLT)
 				obj->opoisoned = 1;
 		}
 
+		/* Set sack contents*/
 		if (otyp == SACK)
 		{
 			if (Role_if(PM_TOURIST))
