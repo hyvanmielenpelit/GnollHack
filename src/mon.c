@@ -627,11 +627,12 @@ randomtruegem()
 
 
 int
-randomreagent()
+randomreagent(alsotruegems)
+boolean alsotruegems;
 {
 	int otyp = 0;
 
-	if (!rn2(2))
+	if (!rn2(2) && alsotruegems)
 		return randomtruegem();
 	else
 	{

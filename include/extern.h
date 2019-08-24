@@ -1458,7 +1458,7 @@ E void FDECL(decide_to_shapeshift, (struct monst *, int));
 E boolean FDECL(vamp_stone, (struct monst *));
 E void FDECL(m_detach, (struct monst*, struct permonst*));
 E int NDECL(randomtruegem);
-E int NDECL(randomreagent);
+E int FDECL(randomreagent, (boolean));
 
 
 /* ### mondata.c ### */

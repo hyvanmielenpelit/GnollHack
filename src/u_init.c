@@ -740,6 +740,9 @@ u_init()
     u.nv_range = 1;
     u.xray_range = -1;
 
+	int n = 0;
+	struct obj* otmp;
+
     /*** Role-specific initializations ***/
     switch (Role_switch) {
     /* rn2(100) > 50 necessary for some choices because some
@@ -814,6 +817,18 @@ u_init()
             ini_inv(Magicmarker);
         else if (!rn2(10))
             ini_inv(Lamp);
+
+		n = rn2(4); //0...3
+
+		for (int i = 0; i < n; i++)
+		{
+			otmp = mksobj(randomreagent(FALSE), TRUE, FALSE);
+			if (otmp)
+			{
+				makeknown(otmp->oclass);
+				otmp = addinv(otmp);
+			}
+		}
         knows_object(POT_WATER);
         skill_init(Skill_P);
         /* KMH, conduct --
@@ -884,7 +899,19 @@ u_init()
             ini_inv(Magicmarker);
         if (!rn2(5))
             ini_inv(Blindfold);
-        skill_init(Skill_W);
+
+		n = 1 + rn2(4); //1...4
+		for (int i = 0; i < n; i++)
+		{
+			otmp = mksobj(randomreagent(FALSE), TRUE, FALSE);
+			if (otmp)
+			{
+				makeknown(otmp->oclass);
+				otmp = addinv(otmp);
+			}
+		}
+
+		skill_init(Skill_W);
         break;
 
     default: /* impossible */
