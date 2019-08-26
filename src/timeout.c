@@ -526,6 +526,25 @@ nh_timeout()
 			spl_book[sp_no].sp_cooldownleft--;
 
 
+	//Reduce item cooldown timers
+	struct obj* obj;
+	struct monst* mon, * mmtmp[3];
+	int i;
+
+	/* first go through various obj lists directly */
+	reduce_item_cooldown(invent);
+	reduce_item_cooldown(fobj);
+	reduce_item_cooldown(level.buriedobjlist);
+	reduce_item_cooldown(migrating_objs);
+
+	/* second go through monster inventories */
+	mmtmp[0] = fmon;
+	mmtmp[1] = migrating_mons;
+	mmtmp[2] = mydogs; /* for use during level changes */
+	for (i = 0; i < 3; i++)
+		for (mon = mmtmp[i]; mon; mon = mon->nmon)
+			reduce_item_cooldown(mon->minvent);
+
 	//Reduce youmonst timers
 	if (youmonst.mcan_timer && !--youmonst.mcan_timer)
 		youmonst.mcan = 0;
@@ -1772,6 +1791,10 @@ long timeout;
 		if (obj == MON_WEP(obj->ocarry))
 		{
 			setmnotwielded(obj->ocarry, obj);
+		}
+		else
+		{
+			
 		}
 		if (obj->ocarry && canseemon(obj->ocarry))
 		{

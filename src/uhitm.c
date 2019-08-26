@@ -686,7 +686,7 @@ int dieroll;
     boolean get_dmg_bonus = TRUE;
     boolean ispoisoned = FALSE, needpoismsg = FALSE, poiskilled = FALSE,
             unpoisonmsg = FALSE;
-	int needenchantmsg = 0;
+	int needenchantmsg = 0, poisondamage = 0;
 	boolean enchantkilled = FALSE, unenchantmsg = FALSE;
 	boolean silvermsg = FALSE, silverobj = FALSE;
     boolean lightobj = FALSE;
@@ -1174,11 +1174,16 @@ int dieroll;
         if (resists_poison(mon))
             needpoismsg = TRUE;
         else if (rn2(10))
-            tmp += rnd(6);
+		{
+			poisondamage = rnd(6);
+			tmp += poisondamage;
+		}
         else
 		{
-            poiskilled = TRUE;
-			hide_damage_amount = TRUE;
+			poisondamage = d(6, 6);
+			tmp += poisondamage;
+			//poiskilled = TRUE;
+			//hide_damage_amount = TRUE;
 		}
 	}
 
@@ -1328,8 +1333,15 @@ int dieroll;
        a level draining artifact has already done to max HP */
     if (mon->mhp > mon->mhpmax)
         mon->mhp = mon->mhpmax;
-    if (DEADMONSTER(mon))
-        destroyed = TRUE;
+	if (DEADMONSTER(mon))
+	{
+		destroyed = TRUE;
+		if (mon->mhp > -poisondamage)
+		{
+			poiskilled = TRUE;
+			hide_damage_amount = TRUE;
+		}
+	}
     if (mon->mtame && tmp > 0) {
         /* do this even if the pet is being killed (affects revival) */
         abuse_dog(mon); /* reduces tameness */
@@ -1472,6 +1484,8 @@ int dieroll;
 			otmp = which_armor(mon, W_ARM);
 			if ((otmp2 = which_armor(mon, W_ARMC)) != 0)
 				m_useup(mon, otmp2);
+			if ((otmp2 = which_armor(mon, W_ARMO)) != 0)
+				m_useup(mon, otmp2);
 		}
 		else {
 			/* no body armor, victim dies; destroy cloak
@@ -1479,6 +1493,8 @@ int dieroll;
 			if ((otmp2 = which_armor(mon, W_ARMC)) != 0)
 				m_useup(mon, otmp2);
 			if ((otmp2 = which_armor(mon, W_ARMU)) != 0)
+				m_useup(mon, otmp2);
+			if ((otmp2 = which_armor(mon, W_ARMO)) != 0)
 				m_useup(mon, otmp2);
 
 			if (is_rider(mon->data)) {
@@ -1499,14 +1515,14 @@ int dieroll;
 				destroyed = TRUE;
 			}
 
-			if (mon && !DEADMONSTER(mon) && otmp) {
-				/* some armor was destroyed*/
-				if (canseemon(mon))
-					pline("%s %s is disintegrated!",
-						s_suffix(Monnam(mon)),
-						distant_name(otmp, xname));
-				m_useup(mon, otmp);
-			}
+		}
+		if (mon && !DEADMONSTER(mon) && otmp) {
+			/* some armor was destroyed*/
+			if (canseemon(mon))
+				pline("%s %s is disintegrated!",
+					s_suffix(Monnam(mon)),
+					distant_name(otmp, xname));
+			m_useup(mon, otmp);
 		}
 	}
 
@@ -1842,7 +1858,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
     int armpro;
     boolean negated;
     struct obj *mongold;
-	int chance = 0;
+	int chance = 0, poisondamage = 0;
 
 	int tmp = 0;
 	
@@ -2122,10 +2138,10 @@ int specialdmg; /* blessed and/or silver bonus against various things */
                 pline_The("poison doesn't seem to affect %s.", mon_nam(mdef));
             } else {
                 if (!rn2(10)) {
-                    Your("poison was deadly...");
-                    tmp = mdef->mhp;
+					poisondamage = d(6, 6) + 10; // mdef->mhp;
                 } else
-                    tmp += rn1(10, 6);
+					poisondamage = rn1(10, 6);
+				tmp += poisondamage;
             }
         }
         break;
@@ -2270,7 +2286,10 @@ int specialdmg; /* blessed and/or silver bonus against various things */
     mdef->mhp -= tmp;
 
     if (DEADMONSTER(mdef)) {
-        if (mdef->mtame && !cansee(mdef->mx, mdef->my)) {
+		if(poisondamage && mdef->mhp > -poisondamage)
+			Your("poison was deadly...");
+		
+		if (mdef->mtame && !cansee(mdef->mx, mdef->my)) {
             You_feel("embarrassed for a moment.");
             if (tmp)
                 xkilled(mdef, XKILL_NOMSG); /* !tmp but hp<1: already killed */

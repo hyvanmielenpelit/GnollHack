@@ -15,7 +15,7 @@ cost(otmp)
 register struct obj *otmp;
 {
     if (otmp->oclass == SPBOOK_CLASS)
-        return (10 * objects[otmp->otyp].oc_level);
+        return (10 * objects[otmp->otyp].oc_spell_level);
 
     switch (otmp->otyp) {
 #ifdef MAIL

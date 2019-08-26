@@ -323,13 +323,20 @@ boolean thrown_weapon; /* thrown weapons are less deadly */
 
     i = !fatal ? 1 : rn2(fatal + (thrown_weapon ? 20 : 0));
     if (i == 0 && typ != A_CHA) {
-        /* instant kill */
-        u.uhp = -1;
+        /* no more instant kill but 6d6 + 10 damage */
+		loss = d(6, 6) + thrown_weapon ? 0 : 10;
+		losehp(loss, pkiller, kprefix); /* poison damage */
+		
+		//Attribute loss
+		loss = (thrown_weapon || !fatal) ? 1 : d(2, 2); /* was rn1(3,3) */
+		/* check that a stat change was made */
+		if (adjattrib(typ, -loss, 1))
+			poisontell(typ, TRUE);
+		//u.uhp = -1;
         context.botl = TRUE;
-        pline_The("poison was deadly...");
     } else if (i > 5) {
         /* HP damage; more likely--but less severe--with missiles */
-        loss = thrown_weapon ? rnd(6) : rn1(10, 6);
+        loss = thrown_weapon ? rnd(6) : rn1(10, 6); //10...15
         losehp(loss, pkiller, kprefix); /* poison damage */
     } else {
         /* attribute loss; if typ is A_STR, reduction in current and
@@ -341,7 +348,8 @@ boolean thrown_weapon; /* thrown weapons are less deadly */
     }
 
     if (u.uhp < 1) {
-        killer.format = kprefix;
+		pline_The("poison was deadly...");
+		killer.format = kprefix;
         Strcpy(killer.name, pkiller);
         /* "Poisoned by a poisoned ___" is redundant */
         done(strstri(pkiller, "poison") ? DIED : POISONING);

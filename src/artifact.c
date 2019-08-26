@@ -1420,6 +1420,13 @@ doinvoke()
     obj = getobj(invoke_types, "invoke", 0, "");
     if (!obj)
         return 0;
+
+	if (obj->cooldownleft > 0)
+	{
+		You("cannot invoke %s before its cooldown has expired.", the(cxname(obj)));
+		return 0;
+	}
+
     if (!retouch_object(&obj, FALSE))
         return 1;
     return arti_invoke(obj);

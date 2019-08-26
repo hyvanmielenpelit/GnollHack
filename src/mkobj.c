@@ -304,7 +304,9 @@ struct obj *box;
             break;
         }
         /*FALLTHRU*/
-    case BAG_OF_HOLDING:
+	case QUIVER_OF_INFINITE_ARROWS:
+	case POUCH_OF_ENDLESS_BOLTS:
+	case BAG_OF_HOLDING:
         n = 1;
         break;
     default:
@@ -811,6 +813,7 @@ boolean artif;
     otmp->cknown = 0;
 	otmp->corpsenm = NON_PM;
 	otmp->special_enchantment = 0;
+	otmp->cooldownleft = 0;
 
     if (init) {
         switch (let) {

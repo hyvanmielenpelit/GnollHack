@@ -196,7 +196,14 @@ doread()
     if (!scroll)
         return 0;
 
-    /* outrumor has its own blindness check */
+	//Apply only to reading spellbooks, such as Book of the Dead
+	if (scroll->oclass == SPBOOK_CLASS && scroll->cooldownleft > 0)
+	{
+		You("cannot read %s before its cooldown has expired.", the(cxname(scroll)));
+		return 0;
+	}
+
+	/* outrumor has its own blindness check */
     if (scroll->otyp == FORTUNE_COOKIE) {
         if (flags.verbose)
             You("break up the cookie and throw away the pieces.");

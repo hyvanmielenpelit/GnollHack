@@ -128,7 +128,7 @@ cursed_book(bp)
 struct obj *bp;
 {
     boolean was_in_use;
-    int lev = objects[bp->otyp].oc_level;
+    int lev = objects[bp->otyp].oc_spell_level;
     int dmg = 0;
 
     switch (rn2(lev)) {
@@ -417,13 +417,13 @@ learn(VOID_ARGS)
             book->spestudied = rn2(book->spestudied);
         } else {
             spl_book[i].sp_id = booktype;
-            spl_book[i].sp_lev = objects[booktype].oc_level;
+            spl_book[i].sp_lev = objects[booktype].oc_spell_level;
 			spl_book[i].sp_matcomp = objects[booktype].oc_material_components;
 			if(spl_book[i].sp_matcomp)
 				spl_book[i].sp_amount = 0; //How many times material components have been mixed
 			else
 				spl_book[i].sp_amount = -1; //Infinite
-			spl_book[i].sp_cooldownlength = objects[booktype].oc_cooldown;
+			spl_book[i].sp_cooldownlength = objects[booktype].oc_spell_cooldown;
 			spl_book[i].sp_cooldownleft = 0;
 
 			incrnknow(i, 1);
@@ -465,12 +465,12 @@ register struct obj *spellbook;
 	strcpy(namebuf, OBJ_NAME(objects[booktype]));
 	*namebuf = highc(*namebuf);
 
-	if(objects[booktype].oc_level == -1)
+	if(objects[booktype].oc_spell_level == -1)
 		Sprintf(lvlbuf, "minor %s cantrip", spelltypemnemonic(objects[booktype].oc_skill));
-	else if (objects[booktype].oc_level == 0)
+	else if (objects[booktype].oc_spell_level == 0)
 		Sprintf(lvlbuf, "major %s cantrip", spelltypemnemonic(objects[booktype].oc_skill));
-	else if (objects[booktype].oc_level > 0)
-		Sprintf(lvlbuf, "level %d %s spell", objects[booktype].oc_level, spelltypemnemonic(objects[booktype].oc_skill));
+	else if (objects[booktype].oc_spell_level > 0)
+		Sprintf(lvlbuf, "level %d %s spell", objects[booktype].oc_spell_level, spelltypemnemonic(objects[booktype].oc_skill));
 
 	if (!objects[spellbook->otyp].oc_name_known)
 		Sprintf(buf, "This spellbook contains %s. Read it?", an(lvlbuf));
@@ -488,7 +488,7 @@ register struct obj *spellbook;
 
         /* adjust chance if hero stayed awake, got interrupted, retries */
         if (context.spbook.delay && spellbook == context.spbook.book)
-            dullbook -= rnd(objects[booktype].oc_level);
+            dullbook -= rnd(objects[booktype].oc_spell_level);
 
         if (dullbook > 0) {
             eyes = body_part(EYE);
@@ -496,7 +496,7 @@ register struct obj *spellbook;
                 eyes = makeplural(eyes);
             pline("This book is so dull that you can't keep your %s open.",
                   eyes);
-            dullbook += rnd(2 * objects[booktype].oc_level);
+            dullbook += rnd(2 * objects[booktype].oc_spell_level);
             fall_asleep(-dullbook, TRUE);
             return 1;
         }
@@ -536,7 +536,7 @@ register struct obj *spellbook;
             return 1;
         }
 
-        switch (objects[booktype].oc_level) {
+        switch (objects[booktype].oc_spell_level) {
 		case -2:
 		case -1:
 		case 0:
@@ -546,13 +546,13 @@ register struct obj *spellbook;
             break;
         case 3:
         case 4:
-            context.spbook.delay = -(objects[booktype].oc_level - 1)
+            context.spbook.delay = -(objects[booktype].oc_spell_level - 1)
                                    * objects[booktype].oc_delay;
             break;
         case 5:
         case 6:
             context.spbook.delay =
-                -objects[booktype].oc_level * objects[booktype].oc_delay;
+                -objects[booktype].oc_spell_level * objects[booktype].oc_delay;
             break;
         case 7:
 		case 8:
@@ -565,7 +565,7 @@ register struct obj *spellbook;
             break;
         default:
             impossible("Unknown spellbook level %d, book %d;",
-                       objects[booktype].oc_level, booktype);
+                       objects[booktype].oc_spell_level, booktype);
             return 0;
         }
 
@@ -577,7 +577,7 @@ register struct obj *spellbook;
             } else {
                 /* uncursed - chance to fail */
                 int read_ability = ACURR(A_INT) + 4 + u.ulevel / 2
-                                   - 2 * objects[booktype].oc_level
+                                   - 2 * objects[booktype].oc_spell_level
                              + ((ublindf && ublindf->otyp == LENSES) ? 2 : 0);
 
                 /* only wizards know if a spell is too difficult */
@@ -943,7 +943,7 @@ int spell;
 	if (spell < 0)
 		return 0;
 
-	int energy = objects[spellid(spell)].oc_mana_cost;
+	int energy = objects[spellid(spell)].oc_spell_mana_cost;
 
 	return energy;
 }
@@ -1556,9 +1556,9 @@ int what;
             save_tport.savespell = spl_book[i];
             save_tport.tport_indx = i;
             spl_book[i].sp_id = SPE_TELEPORT_AWAY;
-            spl_book[i].sp_lev = objects[SPE_TELEPORT_AWAY].oc_level;
+            spl_book[i].sp_lev = objects[SPE_TELEPORT_AWAY].oc_spell_level;
 			spl_book[i].sp_matcomp = objects[SPE_TELEPORT_AWAY].oc_material_components;
-			spl_book[i].sp_cooldownlength = objects[SPE_TELEPORT_AWAY].oc_cooldown;
+			spl_book[i].sp_cooldownlength = objects[SPE_TELEPORT_AWAY].oc_spell_cooldown;
 			spl_book[i].sp_cooldownleft = 0;
 			spl_book[i].sp_amount = -1; //Infinite??
 			spl_book[i].sp_know = KEEN;
@@ -1708,7 +1708,7 @@ const genericptr vptr2;
      */
     int indx1 = *(int *) vptr1, indx2 = *(int *) vptr2,
         otyp1 = spl_book[indx1].sp_id, otyp2 = spl_book[indx2].sp_id,
-        levl1 = objects[otyp1].oc_level, levl2 = objects[otyp2].oc_level,
+        levl1 = objects[otyp1].oc_spell_level, levl2 = objects[otyp2].oc_spell_level,
         skil1 = objects[otyp1].oc_skill, skil2 = objects[otyp2].oc_skill;
 
     switch (spl_sortmode) {
@@ -2347,13 +2347,13 @@ struct obj *obj;
         impossible("Spell %s already known.", OBJ_NAME(objects[otyp]));
     } else {
         spl_book[i].sp_id = otyp;
-        spl_book[i].sp_lev = objects[otyp].oc_level;
+        spl_book[i].sp_lev = objects[otyp].oc_spell_level;
 		spl_book[i].sp_matcomp = objects[otyp].oc_material_components;
 		if(spl_book[i].sp_matcomp)
 			spl_book[i].sp_amount = 0;
 		else
 			spl_book[i].sp_amount = -1;
-		spl_book[i].sp_cooldownlength = objects[otyp].oc_cooldown;
+		spl_book[i].sp_cooldownlength = objects[otyp].oc_spell_cooldown;
 		spl_book[i].sp_cooldownleft = 0;
 
 		incrnknow(i, 0);
@@ -2639,7 +2639,7 @@ int spell;
 	if (spell < 0)
 		return 0;
 
-	//int cooldown = objects[spellid(spell)].oc_cooldown;
+	//int cooldown = objects[spellid(spell)].oc_spell_cooldown;
 	int cooldown = spellcooldownlength(spell);
 
 	/*

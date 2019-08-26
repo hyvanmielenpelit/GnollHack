@@ -683,7 +683,7 @@ boolean break_the_rules; /* True: wizard mode ^T */
            even though casting failure due to these reasons doesn't.
            [Note: this spellev() is different from the one in spell.c
            but they both yield the same result.] */
-#define spellev(spell_otyp) ((int) objects[spell_otyp].oc_level)
+#define spellev(spell_otyp) ((int) objects[spell_otyp].oc_spell_level)
         energy = 5 * spellev(SPE_TELEPORT_AWAY);
         if (break_the_rules) {
             if (!castit)

@@ -1324,6 +1324,24 @@ register struct obj *objchn;
     return (struct obj *) 0;
 }
 
+void
+reduce_item_cooldown(objchn)
+register struct obj *objchn;
+{
+    while (objchn) {
+		//Reduce cooldown timer
+		if (objchn->cooldownleft > 0)
+			objchn->cooldownleft--;
+
+		//If has contents, then reduce the cooldown of the contents, too
+		if (Has_contents(objchn))
+			reduce_item_cooldown(objchn->cobj);
+		
+		objchn = objchn->nobj;
+    }
+    return;
+}
+
 boolean
 obj_here(obj, x, y)
 register struct obj *obj;

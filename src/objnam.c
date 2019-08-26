@@ -1295,6 +1295,12 @@ unsigned doname_flags;
 
 	bp = strprepend(bp, prefix);
 
+	if (obj->cooldownleft > 0)
+		Strcat(bp, " (cooling down)");
+
+
+	//Weights
+
 	double objweight = 0;
 	double objweight_oz = 0;
 	if (!loadstonecorrectly && obj->otyp == LOADSTONE)
@@ -1313,6 +1319,7 @@ unsigned doname_flags;
 		else
 			Sprintf(buf, "%1.1f %s - %s", objweight, objweight == 1 ? "lb " : "lbs", bp);
 		strcpy(bp, buf);
+
 	}
 	
 	if (weightlast)
@@ -1325,7 +1332,7 @@ unsigned doname_flags;
 		strcpy(bp, buf);
 	}
 
-    return bp;
+	return bp;
 }
 
 char *
@@ -2836,6 +2843,8 @@ static const struct alt_spellings {
     { "silver sabre", SILVER_SABER },
 	{ "double flail", DOUBLE_HEADED_FLAIL },
 	{ "triple flail", TRIPLE_HEADED_FLAIL },
+	{ "quiver of endless arrows", QUIVER_OF_INFINITE_ARROWS },
+	{ "pouch of infinite bolts", POUCH_OF_ENDLESS_BOLTS },
 	{ "smooth shield", SHIELD_OF_REFLECTION },
     { "grey dragon scale mail", GRAY_DRAGON_SCALE_MAIL },
     { "grey dragon scales", GRAY_DRAGON_SCALES },

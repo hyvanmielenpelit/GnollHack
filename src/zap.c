@@ -2430,7 +2430,13 @@ dozap()
     if (!obj)
         return 0;
 
-    check_unpaid(obj);
+	if (obj->cooldownleft > 0)
+	{
+		You("cannot zap %s before its cooldown has expired.", the(cxname(obj)));
+		return 0;
+	}
+
+	check_unpaid(obj);
 
     /* zappable addition done by GAN 11/03/86 */
     if (!zappable(obj))

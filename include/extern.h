@@ -54,6 +54,7 @@ E void FDECL(fig_transform, (ANY_P *, long));
 E int FDECL(unfixable_trouble_count, (BOOLEAN_P));
 E int FDECL(uthitm, (struct monst*, struct obj*));
 E int FDECL(uthito, (struct obj*, struct obj*));
+E int FDECL(endlessarrows, (struct obj*, int, int));
 
 
 /* ### artifact.c ### */
@@ -993,6 +994,7 @@ E struct obj *FDECL(carrying, (int));
 E boolean NDECL(have_lizard);
 E struct obj *NDECL(u_have_novel);
 E struct obj *FDECL(o_on, (unsigned int, struct obj *));
+E void FDECL(reduce_item_cooldown, (struct obj*));
 E boolean FDECL(obj_here, (struct obj *, int, int));
 E boolean NDECL(wearing_armor);
 E boolean FDECL(is_worn, (struct obj *));

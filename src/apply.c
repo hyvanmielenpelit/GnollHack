@@ -4099,6 +4099,12 @@ doapply()
     if (!obj)
         return 0;
 
+	if (obj->cooldownleft > 0)
+	{
+		You("cannot apply %s before its cooldown has expired.", the(cxname(obj)));
+		return 0;
+	}
+
     if (!retouch_object(&obj, FALSE))
         return 1; /* evading your grasp costs a turn; just be
                      grateful that you don't drop it as well */
@@ -4143,9 +4149,15 @@ doapply()
         res = use_container(&obj, 1, FALSE);
         break;
     case BAG_OF_TRICKS:
-        (void) bagotricks(obj, FALSE, (int *) 0);
+        (void)bagotricks(obj, FALSE, (int *) 0);
         break;
-    case CAN_OF_GREASE:
+	case POUCH_OF_ENDLESS_BOLTS:
+		(void)endlessarrows(obj, CROSSBOW_BOLT, rnd(10) + 10);
+		break;
+	case QUIVER_OF_INFINITE_ARROWS:
+		(void)endlessarrows(obj, ARROW, rnd(10) + 10);
+		break;
+	case CAN_OF_GREASE:
         use_grease(obj);
         break;
     case LOCK_PICK:
@@ -4316,6 +4328,76 @@ boolean is_horn;
         unfixable_trbl++;
 
     return unfixable_trbl;
+}
+
+/* release monster from bag of tricks; return number of monsters created */
+int
+endlessarrows(bag, arrowtype, quan)
+struct obj* bag;
+int arrowtype, quan; //ObjID and quantity
+{
+	struct obj* otmp;
+	otmp = mksobj(arrowtype, FALSE, FALSE);
+	if (otmp && otmp != &zeroobj) {
+		otmp->quan = quan;
+		otmp->owt = weight(otmp);
+
+		if (bag->blessed)
+		{
+			otmp->blessed = TRUE;
+			otmp->spe = rnd(3);
+		}
+		if (bag->cursed)
+		{
+			otmp->cursed = TRUE;
+			otmp->spe = -rnd(3);
+		}
+		if (bag->special_enchantment)
+		{
+			if (bag->special_enchantment != DEATH_ENCHANTMENT || (bag->special_enchantment == DEATH_ENCHANTMENT && objects[otmp->otyp].oc_material == BONE))
+				otmp->special_enchantment = bag->special_enchantment;
+		}
+
+		You("pull %s out of %s.", doname(otmp), yname(bag));
+		makeknown(bag->otyp);
+		bag->cooldownleft = objects[bag->otyp].oc_item_cooldown;
+		const char
+			* verb = ((Is_airlevel(&u.uz) || u.uinwater) ? "slip" : "drop"),
+			* oops_msg = (u.uswallow
+				? "Oops!  %s out of your reach!"
+				: (Is_airlevel(&u.uz) || Is_waterlevel(&u.uz)
+					|| levl[u.ux][u.uy].typ < IRONBARS
+					|| levl[u.ux][u.uy].typ >= ICE)
+				? "Oops!  %s away from you!"
+				: "Oops!  %s to the floor!");
+
+		/* The(aobjnam()) is safe since otmp is unidentified -dlc */
+		(void)hold_another_object(otmp, oops_msg,
+			The(aobjnam(otmp, verb)),
+			(const char*)0);
+	}
+	else
+	{
+		pline("%s is empty.", The(cxname(bag)));
+	}
+
+	if (bag->special_enchantment)
+	{
+		if (!rn2(3))
+		{
+			bag->special_enchantment = 0;
+			pline("%s no longer %s.", Yobjnam2(bag, "are"), bag->special_enchantment == FIRE_ENCHANTMENT ? "fire-enchanted" :
+				bag->special_enchantment == COLD_ENCHANTMENT ? "cold-enchanted" :
+				bag->special_enchantment == FIRE_ENCHANTMENT ? "lightning-enchanted" :
+				bag->special_enchantment == DEATH_ENCHANTMENT ? "death-enchanted" : "enchanted");
+		}
+
+	}
+
+	if (otmp)
+		return otmp->quan;
+	else
+		return 0;
 }
 
 /*apply.c*/

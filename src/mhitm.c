@@ -821,6 +821,7 @@ register struct attack *mattk;
     struct permonst *pa = magr->data, *pd = mdef->data;
     int armpro, num,res = MM_MISS;
     boolean cancelled;
+	int poisondamage = 0;
 
 	int tmp = 0;
 
@@ -1360,12 +1361,11 @@ register struct attack *mattk;
                               mon_nam(mdef));
             } else {
                 if (rn2(10))
-                    tmp += rn1(10, 6);
+					poisondamage = rn1(10, 6);
                 else {
-                    if (vis && canspotmon(mdef))
-                        pline_The("poison was deadly...");
-                    tmp = mdef->mhp;
+					poisondamage = d(6, 6) + 10; // mdef->mhp;
                 }
+				tmp += poisondamage;
             }
         }
         break;
@@ -1426,8 +1426,13 @@ register struct attack *mattk;
     if (!tmp)
         return res;
 
-    if ((mdef->mhp -= tmp) < 1) {
-        if (m_at(mdef->mx, mdef->my) == magr) { /* see gulpmm() */
+	//Reduce HP
+	mdef->mhp -= tmp;
+    if (DEADMONSTER(mdef)) {
+		if (poisondamage && mdef->mhp > -poisondamage && vis && canspotmon(mdef))
+			pline_The("poison was deadly...");
+
+		if (m_at(mdef->mx, mdef->my) == magr) { /* see gulpmm() */
             remove_monster(mdef->mx, mdef->my);
             mdef->mhp = 1; /* otherwise place_monster will complain */
             place_monster(mdef, mdef->mx, mdef->my);

@@ -1148,7 +1148,7 @@ register struct trobj *trop;
                       low level players or unbalancing; also
                       spells in restricted skill categories */
                    || (obj->oclass == SPBOOK_CLASS
-                       && (objects[otyp].oc_level > 3
+                       && (objects[otyp].oc_spell_level > 3
                            || restricted_spell_discipline(otyp) 
 						   || (Role_if(PM_WIZARD) && !(objects[otyp].oc_spell_attribute == A_INT || objects[otyp].oc_spell_attribute == A_MAX_INT_WIS || objects[otyp].oc_spell_attribute == A_AVG_INT_WIS))
 						   || (Role_if(PM_PRIEST) && !(objects[otyp].oc_spell_attribute == A_WIS || objects[otyp].oc_spell_attribute == A_MAX_INT_WIS || objects[otyp].oc_spell_attribute == A_AVG_INT_WIS))

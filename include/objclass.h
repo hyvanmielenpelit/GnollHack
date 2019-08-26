@@ -135,16 +135,16 @@ struct objclass {
 #define a_can oc_oc2			/* armor: used in mhitu.c */
 
 /* spells */
-#define oc_cooldown oc_oc1      /* books: cooldown time */
-#define oc_level oc_oc2			/* books: spell level */
-#define oc_mana_cost oc_oc3		/* books: spell mana cost */
+#define oc_spell_cooldown oc_oc1		/* books: spell cooldown time */
+#define oc_spell_level oc_oc2			/* books: spell level */
+#define oc_spell_mana_cost oc_oc3		/* books: spell mana cost */
 #define oc_spell_attribute oc_oc4		/* books: spell primary casting attribute */
-#define oc_spell_dmg_dice oc_wsdice		/* books: damage no of dice */
-#define oc_spell_dmg_dicesize oc_wsdam	/* books: damage size of dice */
-#define oc_spell_dmg_plus oc_wsdmgplus	/* books: damage constant added */
-#define oc_spell_dur_dice oc_wldice		/* books: duration no of dice */
-#define oc_spell_dur_dicesize oc_wldam	/* books: duration size of dice */
-#define oc_spell_dur_plus oc_wldmgplus	/* books: duration constant added */
+#define oc_spell_dmg_dice oc_wsdice		/* books: spell damage no of dice */
+#define oc_spell_dmg_dicesize oc_wsdam	/* books: spell damage size of dice */
+#define oc_spell_dmg_plus oc_wsdmgplus	/* books: spell damage constant added */
+#define oc_spell_dur_dice oc_wldice		/* books: spell duration no of dice */
+#define oc_spell_dur_dicesize oc_wldam	/* books: spell duration size of dice */
+#define oc_spell_dur_plus oc_wldmgplus	/* books: spell duration constant added */
 
     unsigned short oc_nutrition; /* food value */
 
@@ -172,8 +172,10 @@ struct objclass {
 #define RAY_DEATH 18 
 #define RAY_DIGGING 111 
 
-	int oc_material_components; /* ID for material component list for a spell or to make the item (if recipe is known) */
-	unsigned long oc_flags; /* E.g. if indestructible or disintegration resistant */
+	int oc_material_components;		/* ID for material component list for a spell or to make the item (if recipe is known) */
+	int oc_item_cooldown;			/* cooldown before the item can be used / applied / zapped / read etc. again */
+	int oc_item_level;				/* item level, to be used with loot tables */
+	unsigned long oc_flags;			/* E.g. if indestructible or disintegration resistant */
 
 #define O1_NONE 0x00000000 
 #define O1_INDESTRUCTIBLE 0x00000001 

@@ -329,8 +329,8 @@ int range;          /* how much farther will object travel if it misses;
 boolean verbose;    /* give message(s) even when you can't see what happened */
 {
     int damage, tmp;
-    boolean vis, ismimic;
-    int objgone = 1;
+	boolean vis, ismimic;
+    int objgone = 1, poisondamage = 0;
     struct obj *mon_launcher = archer ? MON_WEP(archer) : NULL;
 
     notonhead = (bhitpos.x != mtmp->mx || bhitpos.y != mtmp->my);
@@ -440,12 +440,11 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
                               mon_nam(mtmp));
             } else {
                 if (rn2(30)) {
-                    damage += rnd(6);
+					poisondamage = rnd(6);
                 } else {
-                    if (vis)
-                        pline_The("poison was deadly...");
-                    damage = mtmp->mhp;
+					poisondamage = d(6, 6); // mtmp->mhp;
                 }
+				damage += poisondamage;
             }
         }
 		if (otmp->special_enchantment) {
@@ -547,7 +546,9 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
         if (!DEADMONSTER(mtmp)) { /* might already be dead (if petrified) */
             mtmp->mhp -= damage;
             if (DEADMONSTER(mtmp)) {
-                if (vis || (verbose && !target))
+				if (poisondamage && mtmp->mhp > -poisondamage && vis)
+					pline_The("poison was deadly...");
+				if (vis || (verbose && !target))
                     pline("%s is %s!", Monnam(mtmp),
                           (is_not_living(mtmp->data) || is_vampshifter(mtmp)
                            || !canspotmon(mtmp)) ? "destroyed" : "killed");

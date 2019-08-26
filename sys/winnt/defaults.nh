@@ -75,6 +75,8 @@ MENUCOLOR=" cursed " = red
 MENUCOLOR=" unholy water" = red
 #  Show all cursed worn items in orange and underlined
 MENUCOLOR=" cursed .* (being worn)" = orange&underline
+#  Show all cooling down items in black
+MENUCOLOR="(cooling down)" = black
 
 
 
