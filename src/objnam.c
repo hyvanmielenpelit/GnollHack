@@ -451,7 +451,10 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     case WEAPON_CLASS:
         if (is_poisonable(obj) && obj->opoisoned)
             Strcpy(buf, "poisoned ");
-		
+		/*FALLTHRU*/
+    case VENOM_CLASS:
+	case REAGENT_CLASS:
+	case TOOL_CLASS:
 		if (obj->special_enchantment == COLD_ENCHANTMENT)
 			Strcat(buf, "cold-enchanted ");
 		else if (obj->special_enchantment == FIRE_ENCHANTMENT)
@@ -460,11 +463,9 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 			Strcat(buf, "lightning-enchanted ");
 		else if (obj->special_enchantment == DEATH_ENCHANTMENT)
 			Strcat(buf, "death-enchanted ");
-		/*FALLTHRU*/
-    case VENOM_CLASS:
-	case REAGENT_CLASS:
-	case TOOL_CLASS:
-        if (typ == LENSES)
+
+
+		if (typ == LENSES)
             Strcpy(buf, "pair of ");
         else if (is_wet_towel(obj))
             Strcpy(buf, (obj->spe < 3) ? "moist " : "wet ");
@@ -1104,7 +1105,27 @@ unsigned doname_flags;
         }
         break;
     case TOOL_CLASS:
-        if (obj->owornmask & (W_TOOL | W_SADDLE)) { /* blindfold */
+		if (isenchanted)
+		{
+			switch (isenchanted)
+			{
+			case COLD_ENCHANTMENT:
+				Strcat(prefix, "cold-enchanted ");
+				break;
+			case FIRE_ENCHANTMENT:
+				Strcat(prefix, "fire-enchanted ");
+				break;
+			case LIGHTNING_ENCHANTMENT:
+				Strcat(prefix, "lightning-enchanted ");
+				break;
+			case DEATH_ENCHANTMENT:
+				Strcat(prefix, "death-enchanted ");
+				break;
+			default:
+				break;
+			}
+		}
+		if (obj->owornmask & (W_TOOL | W_SADDLE)) { /* blindfold */
             Strcat(bp, " (being worn)");
             break;
         }

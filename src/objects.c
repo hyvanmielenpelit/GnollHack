@@ -794,8 +794,8 @@ CONTAINER("sack",           "bag", 0, 0, 0, 35,  15,   2, 0, CLOTH, HI_CLOTH, O1
 CONTAINER("oilskin sack",   "bag", 0, 0, 0,  5,  15, 100, 0, CLOTH, HI_CLOTH, O1_NONE),
 /* magic bags start here*/
 CONTAINER("bag of holding", "bag",					0, 1, 0, 20, 15, 100,   0, CLOTH, HI_CLOTH, O1_NONE),
-CONTAINER("quiver of infinite arrows", "quiver",	0, 1, 0, 10, 15, 100, 300, CLOTH, HI_CLOTH, O1_NONE),
-CONTAINER("pouch of endless bolts", "bag",			0, 1, 0, 10, 15, 100, 300, CLOTH, HI_CLOTH, O1_NONE),
+CONTAINER("quiver of infinite arrows", "quiver",	0, 1, 0, 10, 15, 100, 300, CLOTH, HI_CLOTH, O1_SPECIAL_ENCHANTABLE),
+CONTAINER("pouch of endless bolts", "bag",			0, 1, 0, 10, 15, 100, 300, CLOTH, HI_CLOTH, O1_SPECIAL_ENCHANTABLE),
 CONTAINER("bag of tricks",  "bag",					0, 1, 1, 20, 15, 100,  0, CLOTH, HI_CLOTH, O1_NONE), //ENDMARKER
 #undef CONTAINER
 

@@ -2540,7 +2540,7 @@ struct obj* obj;
 			switch (obj->otyp)
 			{
 			case WAN_DEATH:
-				if (otmp->oclass == WEAPON_CLASS && objects[otmp->otyp].oc_material == BONE)
+				if ((otmp->oclass == WEAPON_CLASS || objects[otmp->otyp].oc_flags & O1_SPECIAL_ENCHANTABLE) && objects[otmp->otyp].oc_material == BONE)
 				{
 					wandknown = TRUE;
 					You("enchant %s with death magic.", yname(otmp));
@@ -2573,7 +2573,7 @@ struct obj* obj;
 					break;
 				}
 
-				if (otmp->oclass == WEAPON_CLASS)
+				if (otmp->oclass == WEAPON_CLASS || objects[otmp->otyp].oc_flags & O1_SPECIAL_ENCHANTABLE)
 				{
 					wandknown = TRUE;
 					You("enchant %s with cold magic.", yname(otmp));
@@ -2629,7 +2629,7 @@ struct obj* obj;
 					else
 						pline("A flame eminates from %s, keeping %s alight.", yname(obj), yname(otmp));
 				}
-				else if(otmp->oclass == WEAPON_CLASS)
+				else if(otmp->oclass == WEAPON_CLASS || objects[otmp->otyp].oc_flags & O1_SPECIAL_ENCHANTABLE)
 				{
 						wandknown = TRUE;
 						You("enchant %s with fire magic.", yname(otmp));
@@ -2659,7 +2659,7 @@ struct obj* obj;
 					pline("%s in blue for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
 					break;
 				}
-				if (otmp->oclass == WEAPON_CLASS)
+				if (otmp->oclass == WEAPON_CLASS || objects[otmp->otyp].oc_flags & O1_SPECIAL_ENCHANTABLE)
 				{
 					wandknown = TRUE;
 					You("enchant %s with lightning magic.", yname(otmp));
