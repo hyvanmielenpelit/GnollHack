@@ -346,7 +346,8 @@ doswapweapon()
     if (u.twoweap && !can_twoweapon())
         untwoweapon();
 
-    return result;
+	//Do not take a turn
+	return 0; // result;
 }
 
 int
