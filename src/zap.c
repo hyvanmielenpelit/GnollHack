@@ -441,6 +441,7 @@ struct obj *otmp;
         break;
     case SPE_HEALING:
     case SPE_EXTRA_HEALING:
+	case SPE_GREATER_HEALING:
 	case SPE_FULL_HEALING:
 		reveal_invis = TRUE;
         if (mtmp->data != &mons[PM_PESTILENCE]) {
@@ -2232,6 +2233,7 @@ struct obj *obj, *otmp;
 		case WAN_NOTHING:
         case SPE_HEALING:
         case SPE_EXTRA_HEALING:
+		case SPE_GREATER_HEALING:
 		case SPE_FULL_HEALING:
 		case SPE_TOUCH_OF_DEATH:
 			res = 0;
@@ -2772,6 +2774,7 @@ boolean ordinary;
 		break;
 	case SPE_HEALING:
     case SPE_EXTRA_HEALING:
+	case SPE_GREATER_HEALING:
 		learn_it = TRUE; /* (no effect for spells...) */
         healup(damage, 0, FALSE, (obj->blessed || obj->otyp == SPE_EXTRA_HEALING), (obj->blessed || obj->otyp == SPE_EXTRA_HEALING), FALSE, FALSE);
         You_feel("%sbetter.", obj->otyp == SPE_EXTRA_HEALING ? "much " : "");
@@ -3002,6 +3005,7 @@ struct obj *obj; /* wand or spell */
     case WAN_SPEED_MONSTER:
     case SPE_HEALING:
     case SPE_EXTRA_HEALING:
+	case SPE_GREATER_HEALING:
 	case SPE_FULL_HEALING:
 	case SPE_DRAIN_LIFE:
     case WAN_OPENING:

@@ -381,13 +381,13 @@ const struct shclass shtypes[] = {
       FOOD_CLASS,
       2,
       D_SHOP,
-      { { 70, VEGETARIAN_CLASS },
+      { { 67, VEGETARIAN_CLASS },
         { 20, -POT_FRUIT_JUICE },
         { 4, -POT_HEALING },
         { 3, -POT_FULL_HEALING },
         { 2, -SCR_FOOD_DETECTION },
 		{ 1, -LUMP_OF_ROYAL_JELLY  },
-		{ 0, 0 },
+		{ 3, -POT_GREATER_HEALING  },
 		{ 0, 0 },
 		{ 0, 0 },
 		{ 0, 0 } },
@@ -864,10 +864,12 @@ struct obj *obj;
         return TRUE;
     for (i = 0; i < SIZE(shtypes[0].iprobs) && shp->iprobs[i].iprob; i++) {
         /* pseudo-class needs special handling */
-        if (shp->iprobs[i].itype == VEGETARIAN_CLASS) {
+        if (shp->iprobs[i].itype == VEGETARIAN_CLASS)
+		{
             if (veggy_item(obj, 0))
                 return TRUE;
-        } else if ((shp->iprobs[i].itype < 0)
+        }
+		else if ((shp->iprobs[i].itype < 0)
                        ? shp->iprobs[i].itype == -obj->otyp
                        : shp->iprobs[i].itype == obj->oclass)
             return TRUE;

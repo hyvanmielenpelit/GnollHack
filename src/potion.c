@@ -986,7 +986,15 @@ register struct obj *otmp;
         exercise(A_CON, TRUE);
         exercise(A_STR, TRUE);
         break;
-    case POT_FULL_HEALING:
+	case POT_GREATER_HEALING:
+		You_feel("much, much better.");
+		healup(d(10 + 2 * bcsign(otmp), 8) + 8,
+			otmp->blessed ? 5 : !otmp->cursed ? 2 : 0, !otmp->cursed,
+			TRUE, !otmp->cursed, otmp->blessed, !otmp->cursed);
+		exercise(A_CON, TRUE);
+		exercise(A_STR, TRUE);
+		break;
+	case POT_FULL_HEALING:
         You_feel("completely healed.");
         healup(400, 4 + 4 * bcsign(otmp), !otmp->cursed, TRUE, !otmp->cursed, !otmp->cursed, !otmp->cursed);
         /* Restore one lost level if blessed */
@@ -1056,7 +1064,10 @@ register struct obj *otmp;
         /* levitating blocks flying */
         float_vs_flight();
         break;
-    case POT_GAIN_ENERGY: { /* M. Stephenson */
+	case POT_GREATER_ENERGY:
+	case POT_FULL_ENERGY:
+	case POT_GAIN_ENERGY:
+	{ /* M. Stephenson */
         int num;
 
         if (otmp->cursed)
@@ -1073,8 +1084,15 @@ register struct obj *otmp;
          *      uncursed: +2..12 max (+ 7   avg), +6..36 current (+21   avg)
          *      cursed:   -1.. 6 max (- 3.5 avg), -3..18 current (-10.5 avg)
          */
-        num = d(otmp->blessed ? 3 : !otmp->cursed ? 2 : 1, 6);
-        if (otmp->cursed)
+		num = 0;
+		if(otmp->otyp == POT_GAIN_ENERGY)
+	        num = d(otmp->blessed ? 3 : !otmp->cursed ? 2 : 1, 6);
+		else if (otmp->otyp == POT_GREATER_ENERGY)
+			num = d(otmp->blessed ? 6 : !otmp->cursed ? 4 : 2, 6);
+		else if (otmp->otyp == POT_FULL_ENERGY)
+			num = d(otmp->blessed ? 12 : !otmp->cursed ? 8 : 4, 6) + 400;
+
+		if (otmp->cursed)
             num = -num; /* subtract instead of add when cursed */
         u.ubaseenmax += num;
 		u.uen += 3 * num;
@@ -1403,7 +1421,8 @@ int how;
         case POT_FULL_HEALING:
             cureblind = TRUE;
             /*FALLTHRU*/
-        case POT_EXTRA_HEALING:
+		case POT_GREATER_HEALING:
+		case POT_EXTRA_HEALING:
             if (!obj->cursed)
                 cureblind = TRUE;
             /*FALLTHRU*/
@@ -1640,7 +1659,8 @@ register struct obj *obj;
             u.uhp++, context.botl = 1;
         cureblind = TRUE;
         /*FALLTHRU*/
-    case POT_EXTRA_HEALING:
+	case POT_GREATER_HEALING:
+	case POT_EXTRA_HEALING:
         if (Upolyd && u.mh < u.mhmax)
             u.mh++, context.botl = 1;
         if (u.uhp < u.uhpmax)
@@ -1775,8 +1795,8 @@ register struct obj *o1, *o2;
 {
     /* cut down on the number of cases below */
     if (o1->oclass == POTION_CLASS
-        && (o2->otyp == POT_GAIN_LEVEL || o2->otyp == POT_GAIN_ENERGY
-            || o2->otyp == POT_HEALING || o2->otyp == POT_EXTRA_HEALING
+        && (o2->otyp == POT_GAIN_LEVEL || o2->otyp == POT_GAIN_ENERGY || o2->otyp == POT_GREATER_ENERGY || o2->otyp == POT_FULL_ENERGY
+            || o2->otyp == POT_HEALING || o2->otyp == POT_EXTRA_HEALING || o2->otyp == POT_GREATER_HEALING
             || o2->otyp == POT_FULL_HEALING || o2->otyp == POT_ENLIGHTENMENT
             || o2->otyp == POT_FRUIT_JUICE)) {
         struct obj *swp;
@@ -1790,21 +1810,41 @@ register struct obj *o1, *o2;
     case POT_HEALING:
         switch (o2->otyp) {
         case POT_SPEED:
-        case POT_GAIN_LEVEL:
         case POT_GAIN_ENERGY:
             return POT_EXTRA_HEALING;
-        }
+		case POT_GREATER_ENERGY:
+			return POT_GREATER_HEALING;
+		case POT_FULL_ENERGY:
+			return POT_FULL_HEALING;
+		case POT_GAIN_LEVEL:
+			return POT_GAIN_ABILITY;
+		}
     case POT_EXTRA_HEALING:
         switch (o2->otyp) {
-        case POT_GAIN_LEVEL:
         case POT_GAIN_ENERGY:
-            return POT_FULL_HEALING;
-        }
-    case POT_FULL_HEALING:
+            return POT_GREATER_HEALING;
+		case POT_GREATER_ENERGY:
+		case POT_FULL_ENERGY:
+			return POT_FULL_HEALING;
+		case POT_GAIN_LEVEL:
+			return POT_GAIN_ABILITY;
+		}
+	case POT_GREATER_HEALING:
+		switch (o2->otyp) {
+		case POT_GAIN_ENERGY:
+		case POT_GREATER_ENERGY:
+		case POT_FULL_ENERGY:
+			return POT_FULL_HEALING;
+		case POT_GAIN_LEVEL:
+			return POT_GAIN_ABILITY;
+		}
+	case POT_FULL_HEALING:
         switch (o2->otyp) {
         case POT_GAIN_LEVEL:
         case POT_GAIN_ENERGY:
-            return POT_GAIN_ABILITY;
+		case POT_GREATER_ENERGY:
+		case POT_FULL_ENERGY:
+			return POT_GAIN_ABILITY;
         }
     case UNICORN_HORN:
         switch (o2->otyp) {
@@ -1821,15 +1861,31 @@ register struct obj *o1, *o2;
             return POT_FRUIT_JUICE;
         break;
     case POT_GAIN_LEVEL:
-    case POT_GAIN_ENERGY:
+		switch (o2->otyp) {
+		case POT_CONFUSION:
+			return (rn2(3) ? POT_BOOZE : POT_ENLIGHTENMENT);
+		case POT_HEALING:
+		case POT_EXTRA_HEALING:
+		case POT_GREATER_HEALING:
+		case POT_FULL_HEALING:
+			return POT_GAIN_ABILITY;
+		case POT_FRUIT_JUICE:
+			return POT_SEE_INVISIBLE;
+		case POT_BOOZE:
+			return POT_HALLUCINATION;
+		}
+		break;
+	case POT_GAIN_ENERGY:
         switch (o2->otyp) {
         case POT_CONFUSION:
             return (rn2(3) ? POT_BOOZE : POT_ENLIGHTENMENT);
         case POT_HEALING:
             return POT_EXTRA_HEALING;
         case POT_EXTRA_HEALING:
-            return POT_FULL_HEALING;
-        case POT_FULL_HEALING:
+            return POT_GREATER_HEALING;
+		case POT_GREATER_HEALING:
+			return POT_FULL_HEALING;
+		case POT_FULL_HEALING:
             return POT_GAIN_ABILITY;
         case POT_FRUIT_JUICE:
             return POT_SEE_INVISIBLE;
@@ -1837,7 +1893,43 @@ register struct obj *o1, *o2;
             return POT_HALLUCINATION;
         }
         break;
-    case POT_FRUIT_JUICE:
+	case POT_GREATER_ENERGY:
+		switch (o2->otyp) {
+		case POT_CONFUSION:
+			return (rn2(3) ? POT_BOOZE : POT_ENLIGHTENMENT);
+		case POT_HEALING:
+			return POT_GREATER_HEALING;
+		case POT_EXTRA_HEALING:
+			return POT_FULL_HEALING;
+		case POT_GREATER_HEALING:
+			return POT_FULL_HEALING;
+		case POT_FULL_HEALING:
+			return POT_GAIN_ABILITY;
+		case POT_FRUIT_JUICE:
+			return POT_SEE_INVISIBLE;
+		case POT_BOOZE:
+			return POT_HALLUCINATION;
+		}
+		break;
+	case POT_FULL_ENERGY:
+		switch (o2->otyp) {
+		case POT_CONFUSION:
+			return (rn2(3) ? POT_BOOZE : POT_ENLIGHTENMENT);
+		case POT_HEALING:
+			return POT_FULL_HEALING;
+		case POT_EXTRA_HEALING:
+			return POT_FULL_HEALING;
+		case POT_GREATER_HEALING:
+			return POT_FULL_HEALING;
+		case POT_FULL_HEALING:
+			return POT_GAIN_ABILITY;
+		case POT_FRUIT_JUICE:
+			return POT_SEE_INVISIBLE;
+		case POT_BOOZE:
+			return POT_HALLUCINATION;
+		}
+		break;
+	case POT_FRUIT_JUICE:
         switch (o2->otyp) {
         case POT_SICKNESS:
             return POT_SICKNESS;
@@ -2110,7 +2202,7 @@ dodip()
             obj->opoisoned = TRUE;
             goto poof;
         } else if (obj->opoisoned && (potion->otyp == POT_HEALING
-                                      || potion->otyp == POT_EXTRA_HEALING
+                                      || potion->otyp == POT_EXTRA_HEALING || potion->otyp == POT_GREATER_HEALING
                                       || potion->otyp == POT_FULL_HEALING)) {
             pline("A coating wears off %s.", the(xname(obj)));
             obj->opoisoned = 0;
