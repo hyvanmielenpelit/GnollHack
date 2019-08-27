@@ -54,7 +54,8 @@ struct objclass {
     short oc_name_idx;              /* index of actual name */
     short oc_descr_idx;             /* description when name unknown */
     char *oc_uname;                 /* called by user */
-    Bitfield(oc_name_known, 1);     /* discovered */
+	char* oc_content_desc;          /* high-level books: description of contents */
+	Bitfield(oc_name_known, 1);     /* discovered */
     Bitfield(oc_merge, 1);          /* merge otherwise equal objects */
     Bitfield(oc_uses_known, 1);     /* obj->known affects full description;
                                        otherwise, obj->dknown and obj->bknown

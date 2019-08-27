@@ -3042,6 +3042,7 @@ E void NDECL(summonblackblade);
 E void NDECL(summonmagearmor);
 E void NDECL(summonogre);
 E void NDECL(summondemon);
+E void NDECL(summondemogorgon);
 E void NDECL(armageddon);
 E void NDECL(timestop);
 E void FDECL(disintegrate_mon, (struct monst*, int, const char*));

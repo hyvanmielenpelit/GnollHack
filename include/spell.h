@@ -9,8 +9,6 @@
 
 /* spellbook re-use control; used when reading and when polymorphing */
 #define MAX_SPELL_STUDY 3
-#define A_MAX_INT_WIS A_MAX
-#define A_AVG_INT_WIS A_MAX + 1
 
 struct spell {
     short sp_id;  /* spell id (== object.otyp) */

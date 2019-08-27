@@ -18,6 +18,16 @@ enum attrib_types {
     A_MAX /* used in rn2() selection of attrib */
 };
 
+#define A_MAX_INT_WIS A_MAX
+#define A_MAX_INT_CHA A_MAX + 1
+#define A_MAX_WIS_CHA A_MAX + 2
+#define A_MAX_INT_WIS_CHA A_MAX + 3
+#define A_AVG_INT_WIS A_MAX + 4
+#define A_AVG_INT_CHA A_MAX + 5
+#define A_AVG_WIS_CHA A_MAX + 6
+#define A_AVG_INT_WIS_CHA A_MAX + 7
+
+
 #define ABASE(x) (u.acurr.a[x])
 #define ABON(x) (u.abon.a[x])
 #define AEXE(x) (u.aexe.a[x])

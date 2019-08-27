@@ -464,6 +464,7 @@ register struct obj *spellbook;
 	char namebuf[BUFSZ] = "";
 	char Namebuf2[BUFSZ] = "";
 	boolean takeround = 0;
+	boolean perusetext = 0;
 
 	if (spellbook->otyp != SPE_BLANK_PAPER)
 	{
@@ -484,8 +485,12 @@ register struct obj *spellbook;
 			{
 				if (objects[spellbook->otyp].oc_flags & O1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY)
 				{
-					Sprintf(buf, "The topic of %s is unclear. Read it?", the(cxname(spellbook)));
+					if(!objects[spellbook->otyp].oc_content_desc || objects[spellbook->otyp].oc_content_desc == "")
+						Sprintf(buf, "The topic of %s is unclear. Read it?", the(cxname(spellbook)));
+					else
+						Sprintf(buf, "This spellbook contains %s. Read it?", objects[spellbook->otyp].oc_content_desc);
 					takeround = 1;
+					perusetext = 1;
 				}
 				else
 				{
@@ -516,6 +521,9 @@ register struct obj *spellbook;
 		if (yn(buf) != 'y')
 			return takeround; // Takes one round to read the header if not known in advance
 	}
+
+	if (perusetext)
+		You("start perusing %s...", the(cxname(spellbook)));
 
 	/* attempting to read dull book may make hero fall asleep */
 	if (!confused && !Sleep_resistance
@@ -622,7 +630,8 @@ register struct obj *spellbook;
                     char qbuf[QBUFSZ];
 
                     Sprintf(qbuf,
-                    "This spellbook is %sdifficult to comprehend.  Continue?",
+                    "This spellbook is %s%sdifficult to comprehend. Continue?",
+							(perusetext ? "still " : ""),
                             (read_ability < 12 ? "very " : ""));
                     if (yn(qbuf) != 'y') {
                         spellbook->in_use = FALSE;
@@ -1245,6 +1254,7 @@ boolean atme;
 	case SPE_TIME_STOP:
 	case SPE_SUMMON_OGRE:
 	case SPE_SUMMON_DEMON:
+	case SPE_CALL_DEMOGORGON:
 	case SPE_DETECT_UNSEEN:
     case SPE_HEALING:
     case SPE_EXTRA_HEALING:
@@ -2109,8 +2119,26 @@ int *spell_no;
 			case A_MAX_INT_WIS:
 				strcpy(statbuf, "I/W");
 				break;
+			case A_MAX_INT_CHA:
+				strcpy(statbuf, "I/C");
+				break;
+			case A_MAX_WIS_CHA:
+				strcpy(statbuf, "W/C");
+				break;
+			case A_MAX_INT_WIS_CHA:
+				strcpy(statbuf, "IWC");
+				break;
 			case A_AVG_INT_WIS:
-				strcpy(statbuf, "I+W");
+				strcpy(statbuf, "i+w");
+				break;
+			case A_AVG_INT_CHA:
+				strcpy(statbuf, "i+c");
+				break;
+			case A_AVG_WIS_CHA:
+				strcpy(statbuf, "w+c");
+				break;
+			case A_AVG_INT_WIS_CHA:
+				strcpy(statbuf, "iwc");
 				break;
 			default:
 				strcpy(statbuf, "N/A");
@@ -2203,8 +2231,14 @@ int spell;
 	boolean armorpenalty = TRUE;
 
 	if (Role_if(PM_PRIEST) &&
-		(objects[spellid(spell)].oc_spell_attribute == A_WIS || objects[spellid(spell)].oc_spell_attribute == A_MAX_INT_WIS
-			|| objects[spellid(spell)].oc_spell_attribute == A_AVG_INT_WIS))
+		(objects[spellid(spell)].oc_spell_attribute == A_WIS
+			|| objects[spellid(spell)].oc_spell_attribute == A_MAX_INT_WIS
+			|| objects[spellid(spell)].oc_spell_attribute == A_MAX_WIS_CHA
+			|| objects[spellid(spell)].oc_spell_attribute == A_MAX_INT_WIS_CHA
+			|| objects[spellid(spell)].oc_spell_attribute == A_AVG_INT_WIS
+			|| objects[spellid(spell)].oc_spell_attribute == A_AVG_WIS_CHA
+			|| objects[spellid(spell)].oc_spell_attribute == A_AVG_INT_WIS_CHA
+			))
 		armorpenalty = FALSE;
 
     /* Calculate intrinsic ability (splcaster) */
@@ -2214,8 +2248,20 @@ int spell;
 		statused = ACURR(objects[spellid(spell)].oc_spell_attribute); //ACURR(urole.spelstat);
 	else if(objects[spellid(spell)].oc_spell_attribute  == A_MAX_INT_WIS)
 		statused = max(ACURR(A_INT), ACURR(A_WIS));
+	else if (objects[spellid(spell)].oc_spell_attribute == A_MAX_INT_CHA)
+		statused = max(ACURR(A_INT), ACURR(A_CHA));
+	else if (objects[spellid(spell)].oc_spell_attribute == A_MAX_WIS_CHA)
+		statused = max(ACURR(A_CHA), ACURR(A_WIS));
+	else if (objects[spellid(spell)].oc_spell_attribute == A_MAX_INT_WIS_CHA)
+		statused = max(max(ACURR(A_INT), ACURR(A_WIS)), ACURR(A_CHA));
 	else if (objects[spellid(spell)].oc_spell_attribute == A_AVG_INT_WIS)
 		statused = (ACURR(A_INT) + ACURR(A_WIS)) / 2;
+	else if (objects[spellid(spell)].oc_spell_attribute == A_AVG_INT_CHA)
+		statused = (ACURR(A_INT) + ACURR(A_CHA)) / 2;
+	else if (objects[spellid(spell)].oc_spell_attribute == A_AVG_WIS_CHA)
+		statused = (ACURR(A_CHA) + ACURR(A_WIS)) / 2;
+	else if (objects[spellid(spell)].oc_spell_attribute == A_AVG_INT_WIS_CHA)
+		statused = (ACURR(A_INT) + ACURR(A_WIS) + ACURR(A_CHA)) / 2;
 
 	if (armorpenalty)
 	{
@@ -2489,7 +2535,7 @@ int spell;
 
 		//Correct type of component
 		Sprintf(buf2, "%s%s%s",
-			(mc->flags& MATCOMP_BLESSED_REQUIRED ? "blessed " : (mc->flags & MATCOMP_NOT_CURSED ? "noncursed " : "")),
+			(mc->flags& MATCOMP_BLESSED_REQUIRED ? "blessed " : mc->flags & MATCOMP_CURSED_REQUIRED ? "cursed " : (mc->flags & MATCOMP_NOT_CURSED ? "noncursed " : "")),
 			(mc->flags& MATCOMP_DEATH_ENCHANTMENT_REQUIRED ? "death-enchanted " : ""),
 			buf4);
 
@@ -2525,6 +2571,9 @@ int spell;
 			acceptable = TRUE;
 
 		if ((mc->flags & MATCOMP_BLESSED_REQUIRED) && !otmp->blessed)
+			acceptable = FALSE;
+
+		if ((mc->flags & MATCOMP_CURSED_REQUIRED) && !otmp->cursed)
 			acceptable = FALSE;
 
 		if ((mc->flags & MATCOMP_NOT_CURSED) && otmp->cursed)

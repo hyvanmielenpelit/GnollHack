@@ -2367,6 +2367,14 @@ register struct obj *obj;
 		known = TRUE;
 		summondemon();
 		break;
+	case SPE_CALL_DEMOGORGON:
+		known = TRUE;
+		You("chant an invocation:");
+		verbalize("Lord of the Abyss, Prince of All Demons,");
+		verbalize("I call to thee, and I pledge myself to thee!");
+		verbalize("By the deluge of this blood sacrifice, I ask you to walk this plane once more!");
+		summondemogorgon();
+		break;
 	case WAN_SECRET_DOOR_DETECTION:
     case SPE_DETECT_UNSEEN:
         if (!findit())
@@ -5964,6 +5972,50 @@ summondemon()
 	}
 
 }
+
+void
+summondemogorgon()
+{
+	struct monst* mon = (struct monst*) 0;
+	int monindex = 0;
+
+	if(!Blind)
+		pline("A pitch black gate forms in the air before you...");
+	else
+		You("start to smell unnatural stench of death and decay!");
+
+	if (mvitals[PM_DEMOGORGON].mvflags & G_GONE)
+	{
+		pline("However, nobody answers your call.");
+		return;
+	}
+
+	mon = makemon(&mons[monindex = PM_DEMOGORGON], u.ux, u.uy, MM_NOCOUNTBIRTH);
+
+	if (mon)
+	{
+		//Demogorgon gets bored and gets back to the abyss
+		mon->summonduration = 100 + rnd(100);
+		begin_summontimer(mon);
+		if (!Blind)
+			pline("%s steps through the portal!", Monnam(mon));
+		else
+			You_feel("a deeply evil presence near you!", Monnam(mon));
+	}
+	else
+	{
+		pline("However, nothing else happens");
+	}
+	if (!Blind)
+	{
+		pline("The black gate vanishes in a puff of smoke.");
+		if (!Deaf)
+			pline("%s hisses maliciously!", Monnam(mon));
+	}
+	else if(!Deaf)
+		You_hear("malicious hissing!");
+}
+
 
 
 
