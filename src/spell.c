@@ -1383,6 +1383,9 @@ boolean atme;
 	case SPE_PROTECTION_FROM_SICKNESS:
 	case SPE_PROTECTION_FROM_PETRIFICATION:
 	case SPE_PROTECTION_FROM_LYCANTHROPY:
+	case SPE_PROTECTION_FROM_CURSES:
+	case SPE_WATER_BREATHING:
+	case SPE_WATER_WALKING:
 	case SPE_GLOBE_OF_INVULNERABILITY:
 	case SPE_DIVINE_INTERVENTION:
 		You("successfully cast \"%s\".", spellname(spell));
@@ -1469,6 +1472,9 @@ int otyp;
 			break;
 		case LYCANTHROPY_RES:
 			You_feel("more protected from lycanthropy.");
+			break;
+		case CURSE_RES:
+			You_feel("more protected from curses.");
 			break;
 		case LIFESAVED:
 			You_feel("less mortal than before.");
@@ -2309,7 +2315,7 @@ int spell;
 	else if (objects[spellid(spell)].oc_spell_attribute == A_AVG_WIS_CHA)
 		statused = (ACURR(A_CHA) + ACURR(A_WIS)) / 2;
 	else if (objects[spellid(spell)].oc_spell_attribute == A_AVG_INT_WIS_CHA)
-		statused = (ACURR(A_INT) + ACURR(A_WIS) + ACURR(A_CHA)) / 2;
+		statused = (ACURR(A_INT) + ACURR(A_WIS) + ACURR(A_CHA)) / 3;
 
 	if (armorpenalty)
 	{

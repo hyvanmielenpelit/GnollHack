@@ -804,6 +804,10 @@ nh_timeout()
 				if (!Lycanthropy_resistance)
 					You("feel that your immunity to lycanthropy is gone.");
 				break;
+			case CURSE_RES:
+				if (!Curse_resistance)
+					You("feel less protected from curses.");
+				break;
 			case LIFESAVED:
 				if (!Lifesaved)
 					You("feel more mortal than before.");
@@ -877,6 +881,9 @@ nh_timeout()
 				break;
 			case LYCANTHROPY_RES:
 				You("are starting to feel a bit less protected from lycanthropy.");
+				break;
+			case CURSE_RES:
+				You("are starting to feel a bit less protected from curses.");
 				break;
 			case LIFESAVED:
 				You("is starting to feel a bit more mortal than before.");

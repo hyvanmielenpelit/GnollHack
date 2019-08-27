@@ -52,6 +52,10 @@
 #define ELycanthropy_resistance u.uprops[LYCANTHROPY_RES].extrinsic
 #define Lycanthropy_resistance (HLycanthropy_resistance || ELycanthropy_resistance)
 
+#define HCurse_resistance u.uprops[CURSE_RES].intrinsic
+#define ECurse_resistance u.uprops[CURSE_RES].extrinsic
+#define Curse_resistance (HCurse_resistance || ECurse_resistance)
+
 #define HPoison_resistance u.uprops[POISON_RES].intrinsic
 #define EPoison_resistance u.uprops[POISON_RES].extrinsic
 #define Poison_resistance (HPoison_resistance || EPoison_resistance)

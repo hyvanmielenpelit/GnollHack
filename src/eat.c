@@ -948,6 +948,16 @@ register struct permonst *ptr;
 			HLycanthropy_resistance |= FROMOUTSIDE;
 		}
 		break;
+	case CURSE_RES: /* protection from curses */
+		debugpline0("Trying to give protection from curses");
+		if (!(HCurse_resistance & FROMOUTSIDE)) {
+			if (Hallucination)
+				You_feel("auras are suddenly a bit less bothersome to you!");
+			else
+				You("are protected against curses!");
+			HCurse_resistance |= FROMOUTSIDE;
+		}
+		break;
 	case POISON_RES:
         debugpline0("Trying to give poison resistance");
         if (!(HPoison_resistance & FROMOUTSIDE)) {

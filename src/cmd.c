@@ -2578,6 +2578,8 @@ int final;
 		you_are("death resistant", from_what(DEATH_RES));
 	if (Lycanthropy_resistance)
 		you_are("immune to lycanthropy", from_what(LYCANTHROPY_RES));
+	if (Curse_resistance)
+		you_are("protected from curses", from_what(CURSE_RES));
 	if (Poison_resistance)
         you_are("poison resistant", from_what(POISON_RES));
     if (Acid_resistance)

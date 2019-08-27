@@ -341,6 +341,11 @@ rndcurse()
         You(mal_aura, "the magic-absorbing blade");
         return;
     }
+	else if (Curse_resistance)
+	{
+		You_feel("a malignant aura around you, but it quickly dissipates.");
+		return;
+	}
 
     if (Antimagic) {
         shieldeff(u.ux, u.uy);
