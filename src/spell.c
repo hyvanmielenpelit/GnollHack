@@ -457,13 +457,17 @@ register struct obj *spellbook;
 
     int booktype = spellbook->otyp;
     boolean confused = (Confusion != 0);
-    boolean too_hard = FALSE;
+	boolean hallucinated = (Hallucination != 0);
+	boolean too_hard = FALSE;
 	char lvlbuf[BUFSZ] = "";
 	char buf[BUFSZ] = "";
 	char namebuf[BUFSZ] = "";
+	char Namebuf2[BUFSZ] = "";
+	boolean takeround = 0;
 
 	strcpy(namebuf, OBJ_NAME(objects[booktype]));
-	*namebuf = highc(*namebuf);
+	strcpy(Namebuf2, OBJ_NAME(objects[booktype]));
+	*Namebuf2 = highc(*Namebuf2);
 
 	if(objects[booktype].oc_spell_level == -1)
 		Sprintf(lvlbuf, "minor %s cantrip", spelltypemnemonic(objects[booktype].oc_skill));
@@ -472,13 +476,31 @@ register struct obj *spellbook;
 	else if (objects[booktype].oc_spell_level > 0)
 		Sprintf(lvlbuf, "level %d %s spell", objects[booktype].oc_spell_level, spelltypemnemonic(objects[booktype].oc_skill));
 
-	if (!objects[spellbook->otyp].oc_name_known)
-		Sprintf(buf, "This spellbook contains %s. Read it?", an(lvlbuf));
-	else
-		Sprintf(buf, "\"%s\" is %s. Continue?", namebuf,  an(lvlbuf));
-
+	if (!confused && !hallucinated)
+	{
+		if (!objects[spellbook->otyp].oc_name_known)
+		{
+			pline("This spellbook contains \"%s\".", namebuf);
+			makeknown(spellbook->otyp);
+			takeround = 1;
+		}
+		Sprintf(buf, "\"%s\" is %s. Continue?", Namebuf2, an(lvlbuf));
+	}
+	else if(hallucinated)
+	{
+		Sprintf(buf, "Whoa! This book contains some real deep stuff. Continue?");
+		takeround = 1;
+	}
+	else //Confused
+	{
+		takeround = 1;
+		if(!rn2(3))
+			Sprintf(buf, "This spellbook contains %s. Read it?", an(lvlbuf));
+		else
+			Sprintf(buf, "The runes in %s seem to be all over the place. Continue?", the(cxname(spellbook)));
+	}
 	if (yn(buf) != 'y')
-		return 0;
+		return takeround; // Takes one round to read the header if not known in advance
 
 	/* attempting to read dull book may make hero fall asleep */
 	if (!confused && !Sleep_resistance
