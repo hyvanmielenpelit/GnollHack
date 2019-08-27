@@ -804,7 +804,12 @@ register struct monst *mtmp;
 						}
 						else
 						{
-							pline("%s attempts to gate in some help, but nothing happens.", Monnam(mtmp));
+							if(mtmp->data == &mons[PM_DEMOGORGON])
+								pline("%s hisses angrily.", Monnam(mtmp));
+							else if(is_prince(mtmp->data) || is_lord(mtmp->data))
+								pline("%s concentrates for a moment.", Monnam(mtmp));
+							else
+								pline("%s attempts to gate in some help, but nothing happens.", Monnam(mtmp));
 						}
 					}
 				}
