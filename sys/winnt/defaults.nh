@@ -78,7 +78,7 @@ MENUCOLOR=" cursed .* (being worn)" = orange&underline
 #  Show all cooling down items in black
 MENUCOLOR="(cooling down)" = black
 #  Show all forgotten spells in black
-MENUCOLOR="(You cannot recall)" = black
+MENUCOLOR="(You cannot recall this spell)" = black
 
 
 

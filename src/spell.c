@@ -1989,22 +1989,36 @@ int *spell_no;
 
 		if (!iflags.menu_tab_sep) {
 			Sprintf(buf, "%-20s     Level Casts  Material components    %s", "    Name", spacebuf);
-			char lengthbuf[BUFSZ] = "";
-			Sprintf(lengthbuf, "%ds", 23 + extraspaces);
-			strcpy(fmt, "%-20s  %s   %5s  %-");
-			Strcat(fmt, lengthbuf);
-			//fmt = "%-20s  %s   %5s  %-35s";
-			//		fmt = "%-20s  %2d   %-12s %4d %3d%% %9s";
 		}
 		else {
 			Sprintf(buf, "Name\tLevel\tCasts\tMaterial components");
-			strcpy(fmt, "%s\t%s\t%s\t%s");
-			//		fmt = "%s\t%-d\t%s\t%-d\t%-d%%\t%s";
 		}
 		add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, buf,
 			MENU_UNSELECTED);
 		for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++) {
 			splnum = !spl_orderindx ? i : spl_orderindx[i];
+
+			if (!iflags.menu_tab_sep) {
+				if(spellknow(splnum) <= 0)
+					strcpy(fmt, "%-20s  %s");
+				else
+				{
+					char lengthbuf[BUFSZ] = "";
+					Sprintf(lengthbuf, "%ds", 23 + extraspaces);
+					strcpy(fmt, "%-20s  %s   %5s  %-");
+					Strcat(fmt, lengthbuf);
+					//fmt = "%-20s  %s   %5s  %-35s";
+					//		fmt = "%-20s  %2d   %-12s %4d %3d%% %9s";
+				}
+			}
+			else
+			{
+				if (spellknow(splnum) <= 0)
+					strcpy(fmt, "%s\t%s");
+				else
+					strcpy(fmt, "%s\t%s\t%s\t%s");
+				//		fmt = "%s\t%-d\t%s\t%-d\t%-d%%\t%s";
+			}
 
 			//Shorten spell name if need be
 			char shortenedname[BUFSZ] = "";
@@ -2044,21 +2058,21 @@ int *spell_no;
 			else
 				strcpy(shortenedmatcompdesc, fullmatcompdesc);
 
-			if(spellknow(splnum) <= 0)
+			if (spellmatcomp(splnum))
+				strcpy(matcompbuf, shortenedmatcompdesc);
+			else
+				strcpy(matcompbuf, "Not required");
+
+			//Finally print everything to buf
+			if (spellknow(splnum) <= 0)
 			{
-				strcpy(matcompbuf, "(You cannot recall)");
+				Sprintf(buf, fmt, shortenedname, "(You cannot recall this spell)");
 			}
 			else
 			{
-				if (spellmatcomp(splnum))
-					strcpy(matcompbuf, shortenedmatcompdesc);
-				else
-					strcpy(matcompbuf, "Not required");
+				Sprintf(buf, fmt, shortenedname, levelbuf,
+					availablebuf, matcompbuf);
 			}
-			//Finally print everything to buf
-			Sprintf(buf, fmt, shortenedname, levelbuf,
-				availablebuf, matcompbuf);
-
 			any.a_int = splnum + 1; /* must be non-zero */
 			add_menu(tmpwin, NO_GLYPH, &any, spellet(splnum), 0, ATR_NONE, buf,
 				(splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
@@ -2070,13 +2084,9 @@ int *spell_no;
 		if (!iflags.menu_tab_sep) {
 			Sprintf(buf, "%-20s     Level %-13s Mana Stat Fail Cool Casts", "    Name",
 				"Category");
-			strcpy(fmt, "%-20s  %s   %-13s %4d  %s %3d%% %4d  %4s");
-			//		fmt = "%-20s  %2d   %-12s %4d %3d%% %8s";
 		}
 		else {
 			Sprintf(buf, "Name\tLevel\tCategory\tMana\tStat\tFail\tCool\tCasts");
-			strcpy(fmt, "%s\t%s\t%s\t%-d\t%-d%%\t%-d\t%s");
-			//		fmt = "%s\t%-d\t%s\t%-d\t%-d%%\t%s";
 		}
 		add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, buf,
 			MENU_UNSELECTED);
@@ -2085,6 +2095,21 @@ int *spell_no;
 			char shortenedname[BUFSZ] = "";
 			char fullname[BUFSZ] = "";
 			char categorybuf[BUFSZ] = "";
+
+			if (!iflags.menu_tab_sep) {
+				if (spellknow(splnum) <= 0)
+					strcpy(fmt, "%-20s  %s");
+				else
+					strcpy(fmt, "%-20s  %s   %-13s %4d  %s %3d%% %4d  %4s");
+				//		fmt = "%-20s  %2d   %-12s %4d %3d%% %8s";
+			}
+			else {
+				if (spellknow(splnum) <= 0)
+					strcpy(fmt, "%s\t%s");
+				else
+					strcpy(fmt, "%s\t%s\t%s\t%-d\t%-d%%\t%-d\t%s");
+				//		fmt = "%s\t%-d\t%s\t%-d\t%-d%%\t%s";
+			}
 
 			Sprintf(fullname, "%s%s", spellcooldownleft(splnum) > 0 ? "-" : "",
 				spellname(splnum));
@@ -2108,11 +2133,7 @@ int *spell_no;
 			else
 				Sprintf(levelbuf, "%2d", spellev(splnum));
 
-			//Category
-			if (spellknow(splnum) <= 0)
-				strcpy(categorybuf, "(You cannot recall)");
-			else
-				strcpy(categorybuf, spelltypemnemonic(spell_skilltype(spellid(splnum))));
+			strcpy(categorybuf, spelltypemnemonic(spell_skilltype(spellid(splnum))));
 
 
 			if (spellamount(splnum) >= 0)
@@ -2169,14 +2190,17 @@ int *spell_no;
 				break;
 			}
 
-
-			Sprintf(buf, fmt, shortenedname, levelbuf,//spellev(splnum),
-				categorybuf,
-				getspellenergycost(splnum),
-				statbuf,
-				100 - percent_success(splnum),
-				spellcooldownleft(splnum) > 0 ? spellcooldownleft(splnum) : getspellcooldown(splnum),
-				availablebuf);  //spellretention(splnum, retentionbuf));
+			//Category
+			if (spellknow(splnum) <= 0)
+				Sprintf(buf, fmt, shortenedname, "(You cannot recall this spell)");
+			else
+				Sprintf(buf, fmt, shortenedname, levelbuf,//spellev(splnum),
+					categorybuf,
+					getspellenergycost(splnum),
+					statbuf,
+					100 - percent_success(splnum),
+					spellcooldownleft(splnum) > 0 ? spellcooldownleft(splnum) : getspellcooldown(splnum),
+					availablebuf);  //spellretention(splnum, retentionbuf));
 
 			any.a_int = splnum + 1; /* must be non-zero */
 			add_menu(tmpwin, NO_GLYPH, &any, spellet(splnum), 0, ATR_NONE, buf,
