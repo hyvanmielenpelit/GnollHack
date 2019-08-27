@@ -292,7 +292,7 @@ boolean resuming;
                     dosounds();
                     do_storms();
                     gethungry();
-                    age_spells();
+                    //age_spells();
                     exerchk();
                     invault();
                     if (u.uhave.amulet)

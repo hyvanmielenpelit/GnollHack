@@ -5994,7 +5994,7 @@ summondemogorgon()
 
 	if (mon)
 	{
-		//Demogorgon gets bored and gets back to the abyss
+		//Demogorgon gets bored and goes back to the abyss
 		mon->summonduration = 100 + rnd(100);
 		begin_summontimer(mon);
 		if (!Blind)
@@ -6008,7 +6008,6 @@ summondemogorgon()
 	}
 	if (!Blind)
 	{
-		pline("The black gate vanishes in a puff of smoke.");
 		if (!Deaf)
 			pline("%s hisses maliciously!", Monnam(mon));
 	}

@@ -466,18 +466,18 @@ register struct obj *spellbook;
 	boolean takeround = 0;
 	boolean perusetext = 0;
 
-	if (spellbook->otyp != SPE_BLANK_PAPER)
+	if (!(context.spbook.delay && spellbook == context.spbook.book) && spellbook->otyp != SPE_BLANK_PAPER)
 	{
 		strcpy(namebuf, OBJ_NAME(objects[booktype]));
 		strcpy(Namebuf2, OBJ_NAME(objects[booktype]));
 		*Namebuf2 = highc(*Namebuf2);
 
-	if(objects[booktype].oc_spell_level == -1)
-		Sprintf(lvlbuf, "minor %s cantrip", spelltypemnemonic(objects[booktype].oc_skill));
-	else if (objects[booktype].oc_spell_level == 0)
-		Sprintf(lvlbuf, "major %s cantrip", spelltypemnemonic(objects[booktype].oc_skill));
-	else if (objects[booktype].oc_spell_level > 0)
-		Sprintf(lvlbuf, "level %d %s spell", objects[booktype].oc_spell_level, spelltypemnemonic(objects[booktype].oc_skill));
+		if(objects[booktype].oc_spell_level == -1)
+			Sprintf(lvlbuf, "minor %s cantrip", spelltypemnemonic(objects[booktype].oc_skill));
+		else if (objects[booktype].oc_spell_level == 0)
+			Sprintf(lvlbuf, "major %s cantrip", spelltypemnemonic(objects[booktype].oc_skill));
+		else if (objects[booktype].oc_spell_level > 0)
+			Sprintf(lvlbuf, "level %d %s spell", objects[booktype].oc_spell_level, spelltypemnemonic(objects[booktype].oc_skill));
 
 		if (!confused && !hallucinated)
 		{
@@ -1029,24 +1029,33 @@ boolean atme;
 		return 0; /* no time elapses */
 	}
 
+	//This might happen with amnesia etc., the spells no longer "age"
+	if (spellknow(spell) <= 0)
+	{
+		You("cannot recall this spell anymore.");
+		return 0;
+	}
+
 	/*
      * Spell casting no longer affects knowledge of the spell. A
      * decrement of spell knowledge is done every turn.
      */
+	/*
     if (spellknow(spell) <= 0) {
         Your("knowledge of this spell is twisted.");
         pline("It invokes nightmarish images in your mind...");
         spell_backfire(spell);
         return 1;
-    } else if (spellknow(spell) <= KEEN / 200) { /* 100 turns left */
+    } else if (spellknow(spell) <= KEEN / 200) { // 100 turns left
         You("strain to recall the spell.");
-    } else if (spellknow(spell) <= KEEN / 40) { /* 500 turns left */
+    } else if (spellknow(spell) <= KEEN / 40) { // 500 turns left
         You("have difficulty remembering the spell.");
-    } else if (spellknow(spell) <= KEEN / 20) { /* 1000 turns left */
+    } else if (spellknow(spell) <= KEEN / 20) { // 1000 turns left
         Your("knowledge of this spell is growing faint.");
-    } else if (spellknow(spell) <= KEEN / 10) { /* 2000 turns left */
+    } else if (spellknow(spell) <= KEEN / 10) { // 2000 turns left
         Your("recall of this spell is gradually fading.");
     }
+	*/
     /*
      *  Note: dotele() also calculates energy use and checks nutrition
      *  and strength requirements; it any of these change, update it too.
@@ -1970,8 +1979,8 @@ int *spell_no;
 		}
 
 		int extraspaces = maxlen - 23;
-		if (extraspaces > 12)
-			extraspaces = 12;
+		if (extraspaces > 14)
+			extraspaces = 14;
 
 		char spacebuf[BUFSZ] = "";
 		
@@ -2030,16 +2039,22 @@ int *spell_no;
 
 			strcpy(fullmatcompdesc, matlists[spellmatcomp(splnum)].description_short);
 
-			if (strlen(fullmatcompdesc) > 35)
-				strncpy(shortenedmatcompdesc, fullmatcompdesc, 35);
+			if (strlen(fullmatcompdesc) > 37)
+				strncpy(shortenedmatcompdesc, fullmatcompdesc, 37);
 			else
 				strcpy(shortenedmatcompdesc, fullmatcompdesc);
 
-			if (spellmatcomp(splnum))
-				strcpy(matcompbuf, shortenedmatcompdesc);
+			if(spellknow(splnum) <= 0)
+			{
+				strcpy(matcompbuf, "(You cannot recall)");
+			}
 			else
-				strcpy(matcompbuf, "Not required");
-
+			{
+				if (spellmatcomp(splnum))
+					strcpy(matcompbuf, shortenedmatcompdesc);
+				else
+					strcpy(matcompbuf, "Not required");
+			}
 			//Finally print everything to buf
 			Sprintf(buf, fmt, shortenedname, levelbuf,
 				availablebuf, matcompbuf);
@@ -2068,11 +2083,13 @@ int *spell_no;
 		for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++) {
 			splnum = !spl_orderindx ? i : spl_orderindx[i];
 			char shortenedname[BUFSZ] = "";
-			char fullname[BUFSZ];
+			char fullname[BUFSZ] = "";
+			char categorybuf[BUFSZ] = "";
 
 			Sprintf(fullname, "%s%s", spellcooldownleft(splnum) > 0 ? "-" : "",
 				spellname(splnum));
 
+			//Spell name
 			if (strlen(fullname) > (size_t)(spellcooldownleft(splnum) > 0 ? 19 : 20))
 				strncpy(shortenedname, fullname, (size_t)(spellcooldownleft(splnum) > 0 ? 19 : 20));
 			else
@@ -2081,7 +2098,7 @@ int *spell_no;
 			if (spellcooldownleft(splnum) > 0)
 				Strcat(shortenedname, "-");
 
-
+			//Spell level
 			if (spellev(splnum) < -1)
 				strcpy(levelbuf, " *");
 			else if (spellev(splnum) == -1)
@@ -2090,6 +2107,13 @@ int *spell_no;
 				strcpy(levelbuf, " C");
 			else
 				Sprintf(levelbuf, "%2d", spellev(splnum));
+
+			//Category
+			if (spellknow(splnum) <= 0)
+				strcpy(categorybuf, "(You cannot recall)");
+			else
+				strcpy(categorybuf, spelltypemnemonic(spell_skilltype(spellid(splnum))));
+
 
 			if (spellamount(splnum) >= 0)
 				Sprintf(availablebuf, "%d", spellamount(splnum));
@@ -2126,19 +2150,19 @@ int *spell_no;
 				strcpy(statbuf, "W/C");
 				break;
 			case A_MAX_INT_WIS_CHA:
-				strcpy(statbuf, "IWC");
+				strcpy(statbuf, "Any");
 				break;
 			case A_AVG_INT_WIS:
-				strcpy(statbuf, "i+w");
+				strcpy(statbuf, "I+W");
 				break;
 			case A_AVG_INT_CHA:
-				strcpy(statbuf, "i+c");
+				strcpy(statbuf, "I+C");
 				break;
 			case A_AVG_WIS_CHA:
-				strcpy(statbuf, "w+c");
+				strcpy(statbuf, "W+C");
 				break;
 			case A_AVG_INT_WIS_CHA:
-				strcpy(statbuf, "iwc");
+				strcpy(statbuf, "All");
 				break;
 			default:
 				strcpy(statbuf, "N/A");
@@ -2147,7 +2171,7 @@ int *spell_no;
 
 
 			Sprintf(buf, fmt, shortenedname, levelbuf,//spellev(splnum),
-				spelltypemnemonic(spell_skilltype(spellid(splnum))),
+				categorybuf,
 				getspellenergycost(splnum),
 				statbuf,
 				100 - percent_success(splnum),
@@ -2467,6 +2491,13 @@ STATIC_OVL int
 domaterialcomponentsmenu(spell)
 int spell;
 {
+	//This might happen with amnesia etc., the spells no longer "age"
+	if (spellknow(spell) <= 0)
+	{
+		You("cannot recall this spell or its material components anymore.");
+		return 0;
+	}
+
 	if (!spellmatcomp(spell))
 	{
 		pline("That spell does not require material components.");
