@@ -114,7 +114,8 @@ int expltype;
             break;
         case 1:
             str = (olet == BURNING_OIL) ? "burning oil"
-                     : (olet == SCROLL_CLASS) ? "tower of flame" : (objtype == SPE_FIRE_STORM) ? "fire storm" : "fireball";
+                     : (olet == SCROLL_CLASS) ? "tower of flame" : (objtype == SPE_FIRE_STORM) ? "fire storm"
+					 : (objtype == SPE_METEOR_SWARM) ? "meteor explosion" : "fireball";
             /* fire damage, not physical damage */
             adtyp = AD_FIRE;
             break;

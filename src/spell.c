@@ -521,7 +521,6 @@ register struct obj *spellbook;
 		if (yn(buf) != 'y')
 			return takeround; // Takes one round to read the header if not known in advance
 	}
-
 	if (perusetext)
 		You("start perusing %s...", the(cxname(spellbook)));
 
@@ -620,7 +619,8 @@ register struct obj *spellbook;
             if (spellbook->cursed) {
                 too_hard = TRUE;
             } else {
-                /* uncursed - chance to fail */
+
+				/* uncursed - chance to fail */
                 int read_ability = ACURR(A_INT) + 4 + u.ulevel / 2
                                    - 2 * objects[booktype].oc_spell_level
                              + ((ublindf && ublindf->otyp == LENSES) ? 2 : 0);
@@ -674,8 +674,11 @@ register struct obj *spellbook;
         }
         spellbook->in_use = FALSE;
 
-        You("begin to %s the runes.",
-            spellbook->otyp == SPE_BOOK_OF_THE_DEAD ? "recite" : "memorize");
+		if (perusetext)
+			pline("The spellbook seems comprehensible enough.");
+
+		You("begin to %s the runes.",
+			spellbook->otyp == SPE_BOOK_OF_THE_DEAD ? "recite" : "memorize");
     }
 
     context.spbook.book = spellbook;
@@ -1198,14 +1201,19 @@ boolean atme;
      */
 	case SPE_FIREBALL:
 	case SPE_FIRE_STORM:
-    case SPE_ICE_STORM:
+	case SPE_METEOR_SWARM:
+	case SPE_ICE_STORM:
 	case SPE_THUNDERSTORM:
 	case SPE_DEATHSPELL:
 		if (throwspell()) {
             cc.x = u.dx;
             cc.y = u.dy;
 			//One time only //n = rnd(8) + 1;
-			for (n = 0; n < 1; n++) {
+			int shots = 1;
+			if(otyp == SPE_METEOR_SWARM)
+				shots = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_dicesize) + objects[otyp].oc_spell_dur_plus;
+
+			for (n = 0; n < shots; n++) {
                 if (!u.dx && !u.dy && !u.dz) {
                     if ((damage = zapyourself(pseudo, TRUE)) != 0) {
                         char buf[BUFSZ];
@@ -1214,9 +1222,13 @@ boolean atme;
                         losehp(damage, buf, NO_KILLER_PREFIX);
                     }
                 } else {
+					if (otyp == SPE_METEOR_SWARM)
+						You("shoot a meteor!");
+
                     explode(u.dx, u.dy,
                             objects[otyp].oc_dir_subtype,
-                            d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus, otyp, 0,
+							d(objects[otyp].oc_spell_dmg_dice, objects[otyp].oc_spell_dmg_dicesize) + objects[otyp].oc_spell_dmg_plus,
+							otyp, 0,
                             subdirtype2explosiontype(objects[otyp].oc_dir_subtype));
                 }
                 u.dx = cc.x + rnd(3) - 2;
@@ -1261,6 +1273,10 @@ boolean atme;
 	case SPE_ARMAGEDDON:
 	case SPE_WISH:
 	case SPE_TIME_STOP:
+	case SPE_ANIMATE_AIR:
+	case SPE_ANIMATE_EARTH:
+	case SPE_ANIMATE_FIRE:
+	case SPE_ANIMATE_WATER:
 	case SPE_SUMMON_OGRE:
 	case SPE_SUMMON_DEMON:
 	case SPE_CALL_DEMOGORGON:

@@ -2359,13 +2359,41 @@ register struct obj *obj;
 		known = TRUE;
 		timestop();
 		break;
+	case SPE_ANIMATE_AIR:
+		known = TRUE;
+		if (Is_waterlevel(&u.uz))
+			pline("Unfortunately, nothing happens.");
+		else
+			summoncreature(obj->otyp, PM_AIR_ELEMENTAL, "The air around you starts to swirl and forms into %s.", FALSE);
+		break;
+	case SPE_ANIMATE_EARTH:
+		known = TRUE;
+		if (Is_waterlevel(&u.uz) || Is_airlevel(&u.uz))
+			pline("Unfortunately, nothing happens.");
+		else
+			summoncreature(obj->otyp, PM_EARTH_ELEMENTAL, "The air starts to swirl around you and forms into %s.", FALSE);
+		break;
+	case SPE_ANIMATE_FIRE:
+		known = TRUE;
+		if (Is_waterlevel(&u.uz))
+			pline("Unfortunately, nothing happens.");
+		else
+			summoncreature(obj->otyp, PM_FIRE_ELEMENTAL, "A flickering flame appears out of thin air and forms into %s.", FALSE);
+		break;
+	case SPE_ANIMATE_WATER:
+		known = TRUE;
+		if (Inhell || Is_firelevel(&u.uz))
+			pline("Unfortunately, nothing happens.");
+		else
+			summoncreature(obj->otyp, PM_WATER_ELEMENTAL, "Water condensates from thin air and forms into %s.", FALSE);
+		break;
 	case SPE_SUMMON_OGRE:
 		known = TRUE;
-		summonogre();
+		summoncreature(obj->otyp, PM_OGRE, "%s appears in a puff of smoke!", TRUE);
 		break;
 	case SPE_SUMMON_DEMON:
 		known = TRUE;
-		summondemon();
+		summondemon(obj->otyp);
 		break;
 	case SPE_CALL_DEMOGORGON:
 		known = TRUE;
@@ -2373,7 +2401,7 @@ register struct obj *obj;
 		verbalize("Lord of the Abyss, Prince of All Demons,");
 		verbalize("I call to thee, and I pledge myself to thee!");
 		verbalize("By the deluge of this blood sacrifice, I ask you to walk this plane once more!");
-		summondemogorgon();
+		summondemogorgon(obj->otyp);
 		break;
 	case WAN_SECRET_DOOR_DETECTION:
     case SPE_DETECT_UNSEEN:
@@ -2493,8 +2521,8 @@ struct obj *obj;
 boolean ordinary;
 {
     boolean learn_it = FALSE;
-    int damage = 0;
-	damage = d(objects[obj->otyp].oc_wsdice, objects[obj->otyp].oc_wsdam) + objects[obj->otyp].oc_wsdmgplus; //Same for small and big
+    int damage = 0, meteors = 0;
+	damage = d(objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_dicesize) + objects[obj->otyp].oc_spell_dmg_plus; //Same for small and big
 
     switch (obj->otyp) {
     case WAN_STRIKING:
@@ -2546,6 +2574,12 @@ boolean ordinary;
         break;
 	case SPE_FIRE_STORM:
 		You("conjure a fire storm on top of yourself!");
+		explode(u.ux, u.uy, RAY_FIRE, damage, obj->otyp, obj->oclass, EXPL_FIERY);
+		break;
+	case SPE_METEOR_SWARM:
+		pline("A meteor shoots at you!");
+		meteors = d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_dicesize) + objects[obj->otyp].oc_spell_dur_plus;
+		damage = d(objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_dicesize) + objects[obj->otyp].oc_spell_dmg_plus;
 		explode(u.ux, u.uy, RAY_FIRE, damage, obj->otyp, obj->oclass, EXPL_FIERY);
 		break;
 	case SPE_ICE_STORM:
@@ -5936,24 +5970,28 @@ summonmagearmor()
 }
 
 void
-summonogre()
+summoncreature(spl_otyp, monst_id, message_fmt, capitalize)
+int spl_otyp, monst_id;
+char* message_fmt; //input the summoning message with one %s, which is for the monster name
+boolean capitalize; //capitalize the monster name for %s
 {
 	struct monst* mon;
 
-	mon = makemon(&mons[PM_OGRE], u.ux, u.uy, NO_MINVENT | MM_NOCOUNTBIRTH);
+	mon = makemon(&mons[monst_id], u.ux, u.uy, NO_MINVENT | MM_NOCOUNTBIRTH);
 	if (mon)
 	{
 		(void)tamedog(mon, (struct obj*) 0);
-		mon->summonduration = 30 + rnd(20);
+		mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_dicesize) + objects[spl_otyp].oc_spell_dur_plus;
 		begin_summontimer(mon);
-		pline("%s appears before you in a puff of smoke!", Amonnam(mon));
+		pline(message_fmt, capitalize ? Amonnam(mon) : a_monnam(mon)); //"%s appears in a puff of smoke!"
 	}
 
 }
 
 
 void
-summondemon()
+summondemon(spl_otyp)
+int spl_otyp;
 {
 	struct monst* mon = (struct monst*) 0;
 	int monindex = 0;
@@ -5966,7 +6004,7 @@ summondemon()
 	if (mon)
 	{
 		(void)tamedog(mon, (struct obj*) 0);  //Demons cannot be tamed, so need to find another concept
-		mon->summonduration = 30 + rnd(20);
+		mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_dicesize) + objects[spl_otyp].oc_spell_dur_plus;
 		begin_summontimer(mon);
 		pline("%s appears before you in a puff of smoke!", Amonnam(mon));
 	}
@@ -5974,7 +6012,8 @@ summondemon()
 }
 
 void
-summondemogorgon()
+summondemogorgon(spl_otyp)
+int spl_otyp;
 {
 	struct monst* mon = (struct monst*) 0;
 	int monindex = 0;
@@ -5995,7 +6034,7 @@ summondemogorgon()
 	if (mon)
 	{
 		//Demogorgon gets bored and goes back to the abyss
-		mon->summonduration = 100 + rnd(100);
+		mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_dicesize) + objects[spl_otyp].oc_spell_dur_plus;
 		begin_summontimer(mon);
 		if (!Blind)
 			pline("%s steps through the portal!", Monnam(mon));
