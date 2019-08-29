@@ -370,7 +370,7 @@ const struct shclass shtypes[] = {
 		  { 40, GEM_CLASS },
 		  { 5, -BONE_DAGGER },
 		  { 5, -HOLY_SYMBOL },
-		  { 5, -SILVER_ARROW } },
+		  { 5, -SILVER_ARROW },
 		  { 5, -LUMP_OF_ROYAL_JELLY },
 		  { 0, 0 },
 		  { 0, 0 },

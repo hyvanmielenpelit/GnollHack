@@ -2010,10 +2010,10 @@ int *spell_no;
 			Strcat(spacebuf, " ");
 
 		if (!iflags.menu_tab_sep) {
-			Sprintf(buf, "%-20s     Level Casts  Material components    %s", "    Name", spacebuf);
+			Sprintf(buf, "%-20s     Casts  Adds  Material components    %s", "    Name", spacebuf);
 		}
 		else {
-			Sprintf(buf, "Name\tLevel\tCasts\tMaterial components");
+			Sprintf(buf, "Name\tLeCasts\tAdds\tMaterial components");
 		}
 		add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, buf,
 			MENU_UNSELECTED);
@@ -2027,7 +2027,7 @@ int *spell_no;
 				{
 					char lengthbuf[BUFSZ] = "";
 					Sprintf(lengthbuf, "%ds", 23 + extraspaces);
-					strcpy(fmt, "%-20s  %s   %5s  %-");
+					strcpy(fmt, "%-20s  %5s %4s  %-");
 					Strcat(fmt, lengthbuf);
 					//fmt = "%-20s  %s   %5s  %-35s";
 					//		fmt = "%-20s  %2d   %-12s %4d %3d%% %9s";
@@ -2045,6 +2045,7 @@ int *spell_no;
 			//Shorten spell name if need be
 			char shortenedname[BUFSZ] = "";
 			char fullname[BUFSZ];
+			char addsbuf[BUFSZ];
 
 			strcpy(fullname, spellname(splnum));
 
@@ -2069,6 +2070,12 @@ int *spell_no;
 			else
 				strcpy(availablebuf, "Inf.");
 
+			//Print cast times
+			if (spellmatcomp(splnum) > 0)
+				Sprintf(addsbuf, "%d", matlists[spellmatcomp(splnum)].spellsgained);
+			else
+				strcpy(addsbuf, "N/A");
+
 			//Shorten matcomp description, if needed
 			char shortenedmatcompdesc[BUFSZ] = "";
 			char fullmatcompdesc[BUFSZ];
@@ -2092,8 +2099,8 @@ int *spell_no;
 			}
 			else
 			{
-				Sprintf(buf, fmt, shortenedname, levelbuf,
-					availablebuf, matcompbuf);
+				Sprintf(buf, fmt, shortenedname,
+					availablebuf, addsbuf, matcompbuf);
 			}
 			any.a_int = splnum + 1; /* must be non-zero */
 			add_menu(tmpwin, NO_GLYPH, &any, spellet(splnum), 0, ATR_NONE, buf,
