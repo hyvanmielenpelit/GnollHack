@@ -1266,7 +1266,7 @@ enchantarmor:
         }
         break;
     case SCR_SCARE_MONSTER:
-    case SPE_CAUSE_FEAR: {
+    case SPE_MASS_FEAR: {
         register int ct = 0;
         register struct monst *mtmp;
 
@@ -1277,8 +1277,13 @@ enchantarmor:
                 if (confused || scursed) {
                     mtmp->mflee = mtmp->mfrozen = mtmp->msleeping = 0;
                     mtmp->mcanmove = 1;
-                } else if (!resist(mtmp, sobj, 0, 0, NOTELL))
+                } else if (!resist(mtmp, sobj, 0, 0, NOTELL)) {
+					int duration = 0;
+					if (otyp == SPE_MASS_FEAR)
+						duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_dicesize) + objects[otyp].oc_spell_dur_plus;
+
                     monflee(mtmp, 0, FALSE, FALSE);
+				}
                 if (!mtmp->mtame)
                     ct++; /* pets don't laugh at you */
             }

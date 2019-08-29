@@ -85,7 +85,8 @@ register struct obj *obj;
 {
     /* protect invocation tools but not Rider corpses (handled elsewhere)*/
     /* if (obj->oclass != FOOD_CLASS && obj_resists(obj, 0, 0)) */
-    if (objects[obj->otyp].oc_unique)
+    if (objects[obj->otyp].oc_unique
+		|| objects[obj->otyp].oc_flags & O1_INDESTRUCTIBLE)
         return FALSE;
     /* above also prevents the Amulet from being eaten, so we must never
        allow fake amulets to be eaten either [which is already the case] */
@@ -107,7 +108,7 @@ register struct obj *obj;
         return TRUE;
 
     /* return (boolean) !!index(comestibles, obj->oclass); */
-    return (boolean) (obj->oclass == FOOD_CLASS);
+    return (boolean) (obj->oclass == FOOD_CLASS || objects[obj->otyp].oc_flags & O1_EDIBLE_NONFOOD);
 }
 
 /* used for hero init, life saving (if choking), and prayer results of fix
@@ -2606,7 +2607,7 @@ doeat()
             docall(otmp);
         return 1;
     }
-    if (otmp->oclass != FOOD_CLASS) {
+    if (otmp->oclass != FOOD_CLASS && !(objects[otmp->otyp].oc_flags & O1_EDIBLE_NONFOOD)) {
         int material;
 
         context.victual.reqtime = 1;
@@ -2726,7 +2727,8 @@ doeat()
          * all handled in the != FOOD_CLASS case, above.
          */
         switch (objects[otmp->otyp].oc_material) {
-        case FLESH:
+		case ORGANIC:
+		case FLESH:
             u.uconduct.unvegan++;
             if (otmp->otyp != EGG) {
                 violated_vegetarian();
@@ -2743,7 +2745,7 @@ doeat()
 
         context.victual.reqtime = objects[otmp->otyp].oc_delay;
         if (otmp->otyp != FORTUNE_COOKIE
-            && (otmp->cursed || otmp->orotten || (!nonrotting_food(otmp->otyp)
+            && (otmp->cursed || otmp->orotten || otmp->otyp == CLUMP_OF_BAT_GUANO || (!nonrotting_food(otmp->otyp)
                                  && (monstermoves - otmp->age)
                                         > (otmp->blessed ? 50L : 30L)
                                  && (otmp->orotten || !rn2(7))))) {

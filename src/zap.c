@@ -259,6 +259,11 @@ struct obj *otmp;
             }
         }
         break;
+	case SPE_FEAR:
+		if (!DEADMONSTER(mtmp) && !mindless(mtmp->data) && !resist(mtmp, otmp, 0, 0, NOTELL)) {
+			monflee(mtmp, 0, FALSE, TRUE);
+		}
+		break;
 	case WAN_RESURRECTION:
 	case SPE_RESURRECTION:
 		wake = FALSE;
@@ -2153,6 +2158,7 @@ struct obj *obj, *otmp;
 		case SPE_FORBID_SUMMONING:
 		case WAN_UNDEAD_TURNING:
         case SPE_TURN_UNDEAD:
+		case SPE_FEAR:
 		case SPE_BANISH_DEMON:
 		case SPE_NEGATE_UNDEATH:
 			//Effect moved to resurrection
@@ -2386,10 +2392,6 @@ register struct obj *obj;
 			pline("Unfortunately, nothing happens.");
 		else
 			summoncreature(obj->otyp, PM_WATER_ELEMENTAL, "Water condensates from thin air and forms into %s.", FALSE);
-		break;
-	case SPE_SUMMON_OGRE:
-		known = TRUE;
-		summoncreature(obj->otyp, PM_OGRE, "%s appears in a puff of smoke!", TRUE);
 		break;
 	case SPE_SUMMON_DEMON:
 		known = TRUE;
@@ -2717,7 +2719,8 @@ boolean ordinary;
             You("don't feel sleepy!");
         } else {
             pline_The("sleep ray hits you!");
-            fall_asleep(-rn1(5,8), TRUE);
+			int duration = d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_dicesize) + objects[obj->otyp].oc_spell_dur_plus;
+            fall_asleep(-duration, TRUE);
         }
         break;
 
@@ -2808,6 +2811,9 @@ boolean ordinary;
         } else
             You("shudder in dread.");
         break;
+	case SPE_FEAR:
+		You("shudder in dread.");
+		break;
 	case WAN_RESURRECTION:
 	case SPE_RESURRECTION:
 		damage = 0;

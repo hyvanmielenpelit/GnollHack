@@ -10,30 +10,31 @@
    (liquid potion inside glass bottle, metal arrowhead on wooden shaft)
    and object definitions only specify one type on a best-fit basis */
 enum obj_material_types {
-    LIQUID      =  1, /* currently only for venom */
+    LIQUID      =  1, /* currently only for venom */  /* Organics start here */
     WAX         =  2,
     VEGGY       =  3, /* foodstuffs */
-    FLESH       =  4, /*   ditto    */
-    PAPER       =  5,
-    CLOTH       =  6,
-	SILK		=  7,
-	LEATHER     =  8,
-    WOOD        =  9,
-    BONE        = 10,
-    DRAGON_HIDE = 11, /* not leather! */
-    IRON        = 12, /* Fe - includes steel */
-    METAL       = 13, /* Sn, &c. */
-    COPPER      = 14, /* Cu - includes brass */
-    SILVER      = 15, /* Ag */
-    GOLD        = 16, /* Au */
-    PLATINUM    = 17, /* Pt */
-    MITHRIL     = 18,
-    PLASTIC     = 19,
-    GLASS       = 20,
-    GEMSTONE    = 21,
-    MINERAL     = 22,
-	PLANARRIFT	= 23,
-	FORCEFIELD  = 24
+	FLESH       =  4, /*   ditto    */
+	ORGANIC		=  5, /* non-veggy, non-flesh organic material, e.g. bat guano */
+	PAPER       =  6,
+    CLOTH       =  7,
+	SILK		=  8,
+	LEATHER     =  9,
+    WOOD        = 10, /* Organics stop here */
+    BONE        = 11,
+    DRAGON_HIDE = 12, /* not leather! */
+    IRON        = 13, /* Fe - includes steel */
+    METAL       = 14, /* Sn, &c. */
+    COPPER      = 15, /* Cu - includes brass */
+    SILVER      = 16, /* Ag */
+    GOLD        = 17, /* Au */
+    PLATINUM    = 18, /* Pt */
+    MITHRIL     = 19,
+    PLASTIC     = 20,
+    GLASS       = 21,
+    GEMSTONE    = 22,
+    MINERAL     = 23,
+	PLANARRIFT	= 24,
+	FORCEFIELD  = 25
 };
 
 enum obj_armor_types {
@@ -196,6 +197,8 @@ struct objclass {
 #define O1_HALF_SPELL_CASTING_PENALTY 0x00002000
 #define O1_SPECIAL_ENCHANTABLE 0x00004000
 
+#define O1_SOLD_AS_MATERIAL_COMPONENT 0x00010000
+#define O1_EDIBLE_NONFOOD 0x00020000
 };
 
 struct class_sym {

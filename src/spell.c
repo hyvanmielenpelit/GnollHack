@@ -1256,7 +1256,8 @@ boolean atme;
     case SPE_SLOW_MONSTER:
     case SPE_WIZARD_LOCK:
     case SPE_DIG:
-    case SPE_TURN_UNDEAD:
+	case SPE_FEAR:
+	case SPE_TURN_UNDEAD:
 	case SPE_NEGATE_UNDEATH:
 	case SPE_BANISH_DEMON:
 	case SPE_POLYMORPH:
@@ -1277,7 +1278,6 @@ boolean atme;
 	case SPE_ANIMATE_EARTH:
 	case SPE_ANIMATE_FIRE:
 	case SPE_ANIMATE_WATER:
-	case SPE_SUMMON_OGRE:
 	case SPE_SUMMON_DEMON:
 	case SPE_CALL_DEMOGORGON:
 	case SPE_DETECT_UNSEEN:
@@ -1328,7 +1328,7 @@ boolean atme;
     case SPE_REMOVE_CURSE:
     case SPE_CONFUSE_MONSTER:
     case SPE_DETECT_FOOD:
-    case SPE_CAUSE_FEAR:
+    case SPE_MASS_FEAR:
     case SPE_IDENTIFY:
 	case SPE_BLESS:
 	case SPE_CURSE:
