@@ -940,6 +940,12 @@ mcalcdistress()
 			mtmp->mnomagicres = 0;
 		if (mtmp->mnosummon_timer && !--mtmp->mnosummon_timer)
 			mtmp->mnosummon = 0;
+		if (mtmp->mcharmed_timer && !--mtmp->mcharmed_timer)
+		{
+			mtmp->mcharmed = 0;
+			mtmp->mpeaceful = mtmp->morigpeaceful;
+			mtmp->mtame = mtmp->morigtame;
+		}
 
         /* FIXME: mtmp->mlstmv ought to be updated here */
     }
@@ -3039,6 +3045,10 @@ boolean via_attack;
         else if (flags.verbose && !Deaf)
             growl(mtmp);
     }
+
+	/* just in case remove charm */
+	mtmp->mcharmed = 0;
+	mtmp->mcharmed_timer = 0;
 
     /* attacking your own quest leader will anger his or her guardians */
     if (!context.mon_moving /* should always be the case here */

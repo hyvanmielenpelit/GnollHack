@@ -1385,7 +1385,8 @@ boolean unexpected;
 
 /* digging via wand zap or spell cast */
 void
-zap_dig()
+zap_dig(origobj)
+struct obj* origobj;
 {
     struct rm *room;
     struct monst *mtmp;
@@ -1459,7 +1460,7 @@ zap_dig()
             /* diridx is valid if < 8 */
         }
     }
-    digdepth = rn1(18, 8);
+    digdepth = (origobj && objects[origobj->otyp].oc_spell_range > 0) ? objects[origobj->otyp].oc_spell_range : rn1(18, 8);
     tmp_at(DISP_BEAM, cmap_to_glyph(S_digbeam));
     while (--digdepth >= 0) {
         if (!isok(zx, zy))

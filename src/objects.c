@@ -59,7 +59,7 @@ struct monst { struct monst *dummy; };  /* lint: struct obj's union */
 /* first pass -- object descriptive text */
 #define OBJ(name,desc)  name, desc
 #define OBJECT(obj,contentdesc,bits,prp1,prp2,prp3,sym,prob,dly,wt, \
-               cost,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,oc1,oc2,oc3,oc4,nut,color, dirsubtype,materials,cooldown,level,flags)  { obj }
+               cost,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,oc1,oc2,oc3,oc4,oc5,oc6,nut,color, dirsubtype,materials,cooldown,level,flags)  { obj }
 #define None (char *) 0 /* less visual distraction for 'no description' */
 
 NEARDATA struct objdescr obj_descr[] =
@@ -67,9 +67,9 @@ NEARDATA struct objdescr obj_descr[] =
 /* second pass -- object definitions */
 #define BITS(nmkn,mrg,uskn,ctnr,mgc,chrg,uniq,nwsh,big,tuf,dir,sub,mtrl) \
   nmkn,mrg,uskn,0,mgc,chrg,uniq,nwsh,big,tuf,dir,mtrl,sub /*SCO cpp fodder*/
-#define OBJECT(obj,contentdesc,bits,prp1,prp2,prp3,sym,prob,dly,wt,cost,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,oc1,oc2,oc3,oc4,nut,color,dirsubtype,materials,cooldown,level,flags) \
+#define OBJECT(obj,contentdesc,bits,prp1,prp2,prp3,sym,prob,dly,wt,cost,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,oc1,oc2,oc3,oc4,oc5,oc6,nut,color,dirsubtype,materials,cooldown,level,flags) \
   { 0, 0, (char *) 0, contentdesc, bits, prp1, prp2, prp3, sym, dly, COLOR_FIELD(color) prob, wt, \
-    cost, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, oc1, oc2, oc3, oc4, nut, dirsubtype,materials,cooldown,level,flags }
+    cost, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, oc1, oc2, oc3, oc4, oc5, oc6, nut, dirsubtype,materials,cooldown,level,flags }
 #ifndef lint
 #define HARDGEM(n) (n >= 8)
 #else
@@ -82,7 +82,7 @@ NEARDATA struct objclass objects[] =
 /* dummy object[0] -- description [2nd arg] *must* be NULL */
 OBJECT(OBJ("strange object", None), None,
        BITS(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, P_NONE, 0),
-       0, 0, 0, ILLOBJ_CLASS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+       0, 0, 0, ILLOBJ_CLASS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
 
 /* weapons ... */
 #define WEAPON(name,desc,kn,mg,bi,prob,wt,                \
@@ -90,18 +90,18 @@ OBJECT(OBJ("strange object", None), None,
     OBJECT(OBJ(name,desc), None,                                          \
            BITS(kn, mg, 1, 0, 0, 1, 0, 0, bi, 0, typ, sub, metal),  \
            0, 0, 0, WEAPON_CLASS, prob, 0, wt,                            \
-           cost, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, hitbon, 0, 0, 0, wt, color, 0, 0, 0, 0, flags)
+           cost, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, hitbon, 0, 0, 0, 0, 0, wt, color, 0, 0, 0, 0, flags)
 #define PROJECTILE(name,desc,kn,prob,wt,                  \
                    cost,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,hitbon,metal,sub,color,flags) \
     OBJECT(OBJ(name,desc), None,                                         \
            BITS(kn, 1, 1, 0, 0, 1, 0, 0, 0, 0, PIERCE, sub, metal), \
            0, 0, 0, WEAPON_CLASS, prob, 0, wt,                            \
-           cost, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, hitbon, 0, 0, 0, wt, color, 0, 0, 0, 0, flags)
+           cost, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, hitbon, 0, 0, 0, 0, 0, wt, color, 0, 0, 0, 0, flags)
 #define BOW(name,desc,kn,bi,prob,wt,cost,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,hitbon,metal,sub,color,flags) \
     OBJECT(OBJ(name,desc), None,                                         \
            BITS(kn, 0, 1, 0, 0, 1, 0, 0, bi, 0, 0, sub, metal),      \
            0, 0, 0, WEAPON_CLASS, prob, 0, wt,                            \
-           cost, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, hitbon, 0, 0, 0, wt, color, 0, 0, 0, 0, flags)
+           cost, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, hitbon, 0, 0, 0, 0, 0, wt, color, 0, 0, 0, 0, flags)
 
 /* Note: for weapons that don't do an even die of damage (ex. 2-7 or 3-18)
    the extra damage is added on in weapon.c, not here! */
@@ -351,7 +351,7 @@ BOW("heavy crossbow", None,					1, 1, 10, 200, 150, 1, 8, 0, 1, 8, 0, 0, WOOD, P
     OBJECT(OBJ(name, desc), None,                                        \
            BITS(kn, 0, 1, 0, mgc, 1, 0, 0, blk, 0, 0, sub, metal),  \
            power, 0, 0, ARMOR_CLASS, prob, delay, wt,                     \
-           cost, 0, 0, 0, 0, 0, 0, 10 - ac, can, 0, 0, wt, c, 0, 0, 0, 0, flags)
+           cost, 0, 0, 0, 0, 0, 0, 10 - ac, can, 0, 0, 0, 0, wt, c, 0, 0, 0, 0, flags)
 #define HELM(name,desc,kn,mgc,power,prob,delay,wt,cost,ac,can,metal,c,flags)  \
     ARMOR(name, desc, kn, mgc, 0, power, prob, delay, wt,  \
           cost, ac, can, ARM_HELM, metal, c, flags)
@@ -672,7 +672,7 @@ BOOTS("levitation boots", "snow boots",
     OBJECT(OBJ(name, stone), None,                                         \
            BITS(0, 0, spec, 0, mgc, spec, 0, 0, 0,                    \
                 HARDGEM(mohs), 0, P_NONE, metal),                     \
-           power, power2, power3, RING_CLASS, 0, 0, 1, cost,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, color, 0, 0, 0, 0, flags)
+           power, power2, power3, RING_CLASS, 0, 0, 1, cost,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, color, 0, 0, 0, 0, flags)
 RING("adornment", "wooden",
      ADORNED, 0, 0, 100, 1, 1, 2, WOOD, HI_WOOD, O1_NONE),
 RING("gain strength", "granite",
@@ -743,7 +743,7 @@ RING("protection from shape changers", "shiny",
 #define AMULET(name,desc,power,prob, flags) \
     OBJECT(OBJ(name, desc), None,                                           \
            BITS(0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, P_NONE, IRON),        \
-           power, 0, 0,  AMULET_CLASS, prob, 0, 5, 150,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, HI_METAL, 0, 0, 0, 0, flags)
+           power, 0, 0,  AMULET_CLASS, prob, 0, 5, 150,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, HI_METAL, 0, 0, 0, 0, flags)
 AMULET("amulet of ESP",                "circular", TELEPAT, 175, O1_NONE),
 AMULET("amulet of life saving",       "spherical", LIFESAVED, 75, O1_NONE),
 AMULET("amulet of strangulation",          "oval", STRANGLED, 135, O1_NONE),
@@ -760,11 +760,11 @@ AMULET("amulet of magical breathing", "octagonal", MAGICAL_BREATHING, 65, O1_NON
 OBJECT(OBJ("cheap plastic imitation of the Amulet of Yendor",
            "Amulet of Yendor"), None,
        BITS(0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, PLASTIC),
-       0, 0, 0, AMULET_CLASS, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, HI_METAL, 0, 0, 0, 0, O1_NONE),
+       0, 0, 0, AMULET_CLASS, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, HI_METAL, 0, 0, 0, 0, O1_NONE),
 OBJECT(OBJ("Amulet of Yendor", /* note: description == name */
            "Amulet of Yendor"), None,
        BITS(0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, MITHRIL),
-       0, 0, 0, AMULET_CLASS, 0, 0, 10, 30000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, HI_METAL, 0, 0, 0, 0, O1_INDESTRUCTIBLE),
+       0, 0, 0, AMULET_CLASS, 0, 0, 10, 30000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, HI_METAL, 0, 0, 0, 0, O1_INDESTRUCTIBLE),
 #undef AMULET
 
 /* tools ... */
@@ -772,19 +772,19 @@ OBJECT(OBJ("Amulet of Yendor", /* note: description == name */
 #define TOOL(name,desc,kn,mrg,mgc,chg,prob,wt,cost,cooldown,mat,color,flags) \
     OBJECT(OBJ(name, desc), None,                                            \
            BITS(kn, mrg, chg, 0, mgc, chg, 0, 0, 0, 0, 0, P_NONE, mat), \
-           0, 0, 0, TOOL_CLASS, prob, 0, wt, cost,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, wt, color, 0, 0, cooldown, 0, flags)
+           0, 0, 0, TOOL_CLASS, prob, 0, wt, cost,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, wt, color, 0, 0, cooldown, 0, flags)
 #define SPELLTOOL(name,desc,kn,mrg,mgc,chg,prob,wt,cost,dir,dirsubtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus,cooldown,mat,color,flags) \
     OBJECT(OBJ(name, desc), None,                                            \
            BITS(kn, mrg, chg, 0, mgc, chg, 0, 0, 0, 0, dir, P_NONE, mat), \
-           0, 0, 0, TOOL_CLASS, prob, 0, wt, cost, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, 0, 0, 0, 0, wt, color, dirsubtype, 0, cooldown, 0, flags)
+           0, 0, 0, TOOL_CLASS, prob, 0, wt, cost, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, 0, 0, 0, 0, 0, 0, wt, color, dirsubtype, 0, cooldown, 0, flags)
 #define CONTAINER(name,desc,kn,mgc,chg,prob,wt,cost,cooldown,mat,color,flags) \
     OBJECT(OBJ(name, desc), None,                                            \
            BITS(kn, 0, chg, 1, mgc, chg, 0, 0, 0, 0, 0, P_NONE, mat),   \
-           0, 0, 0, TOOL_CLASS, prob, 0, wt, cost,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, wt, color, 0, 0, cooldown, 0, flags)
+           0, 0, 0, TOOL_CLASS, prob, 0, wt, cost,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, wt, color, 0, 0, cooldown, 0, flags)
 #define WEPTOOL(name,desc,kn,mgc,bi,prob,wt,cost,sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, hitbon,sub,cooldown,mat,clr,flags)\
     OBJECT(OBJ(name, desc), None,                                            \
            BITS(kn, 0, 1, 0, mgc, 1, 0, 0, bi, 0, hitbon, sub, mat),    \
-           0, 0, 0, TOOL_CLASS, prob, 0, wt, cost, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, hitbon, 0, 0, 0, wt, clr, 0, 0, cooldown, 0, flags)
+           0, 0, 0, TOOL_CLASS, prob, 0, wt, cost, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, hitbon, 0, 0, 0, 0, 0, wt, clr, 0, 0, cooldown, 0, flags)
 /* containers */
 CONTAINER("large box",       None, 1, 0, 0, 40, 350,   8, 0, WOOD, HI_WOOD, O1_NONE), //STARTMARKER
 CONTAINER("chest",           None, 1, 0, 0, 35, 600,  16, 0, WOOD, HI_WOOD, O1_NONE),
@@ -837,8 +837,8 @@ TOOL("magic whistle",  "whistle", 0, 0, 1, 0, 30, 2, 10, 0, METAL, HI_METAL, O1_
 TOOL("wooden flute",     "flute", 0, 0, 0, 0,  4, 5, 12, 0, WOOD, HI_WOOD, O1_NONE),
 TOOL("magic flute",      "flute", 0, 0, 1, 1,  2, 5, 36, 0, WOOD, HI_WOOD, O1_NONE),
 TOOL("tooled horn",       "horn", 0, 0, 0, 0,  5, 18, 15, 0, BONE, CLR_WHITE, O1_NONE),
-SPELLTOOL("frost horn",   "horn", 0, 0, 1, 1,  2, 18, 50, RAY, RAY_WND_COLD, 6, 6, 0, 6, 6, 0, 5, BONE, CLR_WHITE, O1_NONE),
-SPELLTOOL("fire horn",    "horn", 0, 0, 1, 1,  2, 18, 50, RAY, RAY_WND_FIRE, 6, 6, 0, 6, 6, 0, 5, BONE, CLR_WHITE, O1_NONE),
+SPELLTOOL("frost horn",   "horn", 0, 0, 1, 1,  2, 18, 50, RAY, RAY_WND_COLD, 6, 6, 0, 0, 0, 0, 5, BONE, CLR_WHITE, O1_NONE),
+SPELLTOOL("fire horn",    "horn", 0, 0, 1, 1,  2, 18, 50, RAY, RAY_WND_FIRE, 6, 6, 0, 0, 0, 0, 5, BONE, CLR_WHITE, O1_NONE),
 TOOL("horn of plenty",    "horn", 0, 0, 1, 1,  2, 18, 50, 300, BONE, CLR_WHITE, O1_NONE),
         /* horn, but not an instrument */
 TOOL("wooden harp",       "harp", 0, 0, 0, 0,  4, 30, 50, 0, WOOD, HI_WOOD, O1_NONE),
@@ -861,10 +861,10 @@ WEPTOOL("unicorn horn", None,
  */
 OBJECT(OBJ("Candelabrum of Invocation", "candelabrum"), None,
        BITS(0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, P_NONE, GOLD),
-       0, 0, 0, TOOL_CLASS, 0, 0, 10, 5000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 200, HI_GOLD, 0, 0, 0, 0, O1_INDESTRUCTIBLE),
+       0, 0, 0, TOOL_CLASS, 0, 0, 10, 5000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 200, HI_GOLD, 0, 0, 0, 0, O1_INDESTRUCTIBLE),
 OBJECT(OBJ("Bell of Opening", "silver bell"), None,
        BITS(0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, P_NONE, SILVER),
-       0, 0, 0, TOOL_CLASS, 0, 0, 10, 5000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 50, HI_SILVER, 0, 0, 0, 0, O1_INDESTRUCTIBLE),
+       0, 0, 0, TOOL_CLASS, 0, 0, 10, 5000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 50, HI_SILVER, 0, 0, 0, 0, O1_INDESTRUCTIBLE),
 #undef TOOL
 #undef WEPTOOL
 
@@ -872,7 +872,7 @@ OBJECT(OBJ("Bell of Opening", "silver bell"), None,
 #define FOOD(name, prob, delay, wt, unk, tin, nutrition, color, flags)         \
     OBJECT(OBJ(name, None), None,                                      \
            BITS(1, 1, unk, 0, 0, 0, 0, 0, 0, 0, 0, P_NONE, tin), 0, 0, 0,     \
-           FOOD_CLASS, prob, delay, wt, nutrition / 20 + 5,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
+           FOOD_CLASS, prob, delay, wt, nutrition / 20 + 5,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
            nutrition, color, 0, 0, 0, 0, flags)
 /* All types of food (except tins & corpses) must have a delay of at least 1.
  * Delay on corpses is computed and is weight dependant.
@@ -893,7 +893,7 @@ FOOD("huge chunk of meat",    0, 20,400, 0, FLESH,2000, CLR_BROWN, O1_NONE),
 /* special case because it's not mergable */
 OBJECT(OBJ("meat ring", None), None,
        BITS(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, FLESH),
-       0, 0, 0, FOOD_CLASS, 0, 1, 5, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, CLR_BROWN, 0, 0, 0, 0, O1_NONE),
+       0, 0, 0, FOOD_CLASS, 0, 1, 5, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, CLR_BROWN, 0, 0, 0, 0, O1_NONE),
 /* pudding 'corpses' will turn into these and combine;
    must be in same order as the pudding monsters */
 FOOD("glob of gray ooze",     0,  2, 20, 0, FLESH,  20, CLR_GRAY, O1_NONE),
@@ -935,7 +935,7 @@ FOOD("tin",                  75,  0, 10, 1, METAL,   0, HI_METAL, O1_NONE),
 #define POTION(name,desc,mgc,power,prob,cost,color,flags) \
     OBJECT(OBJ(name, desc), None,                                            \
            BITS(0, 1, 0, 0, mgc, 0, 0, 0, 0, 0, 0, P_NONE, GLASS),      \
-           power, 0, 0, POTION_CLASS, prob, 0, 12, cost,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, color, 0, 0, 0, 0, flags)
+           power, 0, 0, POTION_CLASS, prob, 0, 12, cost,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, color, 0, 0, 0, 0, flags)
 POTION("gain ability",           "ruby",  1, 0, 42, 300, CLR_RED, O1_NONE),
 POTION("restore ability",        "pink",  1, 0, 40, 100, CLR_BRIGHT_MAGENTA, O1_NONE),
 POTION("confusion",            "orange",  1, CONFUSION, 42, 100, CLR_ORANGE, O1_NONE),
@@ -973,7 +973,7 @@ POTION("water",                 "clear",  0, 0, 92, 100, CLR_CYAN, O1_SOLD_AS_MA
 #define SCROLL(name,text,mgc,prob,cost,flags) \
     OBJECT(OBJ(name, text), None,                                           \
            BITS(0, 1, 0, 0, mgc, 0, 0, 0, 0, 0, 0, P_NONE, PAPER),    \
-           0, 0, 0, SCROLL_CLASS, prob, 0, 4, cost,  0, 0,  0, 0, 0, 0, 0, 0, 0, 0, 6, HI_PAPER, 0, 0, 0, 0, flags)
+           0, 0, 0, SCROLL_CLASS, prob, 0, 4, cost,  0, 0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, HI_PAPER, 0, 0, 0, 0, flags)
 SCROLL("enchant armor",              "ZELGO MER",  1,  63,  80, O1_NONE),
 SCROLL("destroy armor",         "JUYED AWK YACC",  1,  45, 100, O1_NONE),
 SCROLL("confuse monster",                 "NR 9",  1,  53, 100, O1_NONE),
@@ -1040,11 +1040,11 @@ SCROLL("blank paper", "unlabeled",  0,  28,  60, O1_NONE),
      * out in the process, allowing more than 52 spells be known but keeping
      * only 52 be castable at any given time.]
      */
-#define SPELL(name,desc,contentdesc,sub,prob,learndelay,cooldown,level,manacost,attr,mgc,dir,dirsubtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,color,flags)  \
+#define SPELL(name,desc,contentdesc,sub,prob,learndelay,cooldown,level,manacost,attr,range,radius,mgc,dir,dirsubtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,color,flags)  \
     OBJECT(OBJ(name, desc), contentdesc,                                            \
            BITS(0, 0, 0, 0, mgc, 0, 0, 0, 0, 0, dir, sub, PAPER),       \
            0, 0, 0, SPBOOK_CLASS, prob, learndelay, 50, level * 100,               \
-           sdice,sdam,sdmgplus,ldice,ldam,ldmgplus, cooldown, level, manacost, attr, 20, color,dirsubtype, 0, 0, 0, flags)
+           sdice,sdam,sdmgplus,ldice,ldam,ldmgplus, cooldown, level, manacost, attr, range, radius, 20, color,dirsubtype, 0, 0, 0, flags)
 /* Spellbook description normally refers to book covers (primarily color).
    Parchment and vellum would never be used for such, but rather than
    eliminate those, finagle their definitions to refer to the pages
@@ -1058,253 +1058,261 @@ SCROLL("blank paper", "unlabeled",  0,  28,  60, O1_NONE),
 #define PAPER LEATHER /* override enum for use in SPELL() expansion */
 
 SPELL("dig",             "parchment", None,
-      P_TRANSMUTATION_SPELL,      20,  4, 4, 3, 10, A_INT, 1, RAY, RAY_DIGGING, 0, 0, 0, 0, 0, 0, HI_LEATHER, O1_NONE),
+      P_TRANSMUTATION_SPELL, 20,  4,			 4, 3, 10, A_INT, 10, 0, 1, RAY, RAY_DIGGING, 0, 0, 0, 0, 0, 0, HI_LEATHER, O1_NONE),
 SPELL("magic missile",   "vellum", None,
-      P_ARCANE_SPELL,      20,  2, 0, 0,  7, A_INT, 1, RAY, RAY_MAGIC_MISSILE, 3, 4, 0, 0, 0, 0, HI_LEATHER, O1_NONE),
+      P_ARCANE_SPELL,      20,  2,				 0, 0,  7, A_INT, 10, 0, 1, RAY, RAY_MAGIC_MISSILE, 3, 4, 0, 0, 0, 0, HI_LEATHER, O1_NONE),
 #undef PAPER /* revert to normal material */
 SPELL("fire bolt",        "light red", None,
-      P_ARCANE_SPELL,      15,  4, 0, 3, 20, A_INT, 1, RAY, RAY_FIRE, 3, 6, 0, 0, 0, 0, CLR_RED, O1_FIRE_RESISTANT),
+      P_ARCANE_SPELL,      15,  4,				 0, 3, 20, A_INT, 10, 0, 1, RAY, RAY_FIRE, 3, 6, 0, 0, 0, 0, CLR_RED, O1_FIRE_RESISTANT),
 SPELL("fireball",         "ragged", None,
-      P_ARCANE_SPELL,      15,  6, 2, 5, 50, A_INT, 1, TARGETED, RAY_FIRE, 5, 6, 0, 0, 0, 0, HI_PAPER, O1_FIRE_RESISTANT | O1_SPELL_EXPLOSION_EFFECT),
+      P_ARCANE_SPELL,      15,  6,				 2, 5, 50, A_INT, 14, 0, 1, TARGETED, RAY_FIRE, 5, 6, 0, 0, 0, 0, HI_PAPER, O1_FIRE_RESISTANT | O1_SPELL_EXPLOSION_EFFECT),
 SPELL("fire storm",       "crimson", None,
-      P_ARCANE_SPELL,      10,  8, 4, 7,100, A_INT, 1, TARGETED, RAY_FIRE, 12, 6, 0, 0, 0, 0, CLR_RED, O1_FIRE_RESISTANT | O1_SPELL_EXPLOSION_EFFECT),
+      P_ARCANE_SPELL,      10,  8,				 4, 7,100, A_INT, 16, 0, 1, TARGETED, RAY_FIRE, 12, 6, 0, 0, 0, 0, CLR_RED, O1_FIRE_RESISTANT | O1_SPELL_EXPLOSION_EFFECT),
 SPELL("meteor swarm",     "oval-patterned", None,
-      P_ARCANE_SPELL,       5, 10, 6, 9,200, A_INT, 1, TARGETED, RAY_FIRE, 8, 6, 0, 2, 2, 1, CLR_RED, O1_FIRE_RESISTANT | O1_SPELL_EXPLOSION_EFFECT),
+      P_ARCANE_SPELL,       5, 10,				 6, 9,200, A_INT, 18, 0, 1, TARGETED, RAY_FIRE, 8, 6, 0, 2, 2, 1, CLR_RED, O1_FIRE_RESISTANT | O1_SPELL_EXPLOSION_EFFECT),
 SPELL("cone of cold",     "dog eared", None,
-      P_ARCANE_SPELL,      10,  6, 0, 5, 50, A_INT, 1, RAY, RAY_COLD, 15, 6, 0, 0, 0, 0, HI_PAPER, O1_COLD_RESISTANT),
+      P_ARCANE_SPELL,      10,  6,				 0, 5, 50, A_INT, 12, 0, 1, RAY, RAY_COLD, 15, 6, 0, 0, 0, 0, HI_PAPER, O1_COLD_RESISTANT),
 SPELL("ice storm",		  "mithril-plated", None,
-      P_ARCANE_SPELL,      10,  7, 2, 6, 75, A_INT, 1, TARGETED, RAY_COLD, 4, 10, 8, 0, 0, 0, HI_SILVER, O1_COLD_RESISTANT | O1_SPELL_EXPLOSION_EFFECT),
+      P_ARCANE_SPELL,      10,  7,				 2, 6, 75, A_INT, 14, 0, 1, TARGETED, RAY_COLD, 4, 10, 8, 0, 0, 0, HI_SILVER, O1_COLD_RESISTANT | O1_SPELL_EXPLOSION_EFFECT),
 SPELL("sleep",            "mottled", None,
-      P_ENCHANTMENT_SPELL, 10,  1,20, 1, 10, A_CHA, 1, RAY, RAY_SLEEP, 0, 0, 0, 2, 6, 7, HI_PAPER, O1_NONE),
+      P_ENCHANTMENT_SPELL, 10,  1,				20, 1, 10, A_CHA, 12, 0, 1, RAY, RAY_SLEEP, 0, 0, 0, 2, 6, 7, HI_PAPER, O1_NONE),
 SPELL("disintegrate",	  "stained", None,
-      P_ARCANE_SPELL,       5, 12, 4, 10,300, A_INT, 1, RAY, RAY_DISINTEGRATION, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_DISINTEGRATION_RESISTANT),
+      P_ARCANE_SPELL,       5, 12,				 4, 10,300, A_INT, 8, 0, 1, RAY, RAY_DISINTEGRATION, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_DISINTEGRATION_RESISTANT),
 SPELL("lightning bolt",   "shimmering", None,
-      P_ARCANE_SPELL,      10,  3, 	0, 2, 15, A_INT, 1, RAY, RAY_LIGHTNING, 6, 6, 0, 0, 0, 0, HI_PAPER, O1_LIGHTNING_RESISTANT),
+      P_ARCANE_SPELL,      10,  3,				 0, 2, 15, A_INT, 14, 0, 1, RAY, RAY_LIGHTNING, 6, 6, 0, 0, 0, 0, HI_PAPER, O1_LIGHTNING_RESISTANT),
 SPELL("thunderstorm",	  "strange", None,
-      P_ARCANE_SPELL,      10,  10, 3, 8,150, A_INT, 1, TARGETED, RAY_LIGHTNING, 10, 12, 0, 0, 0, 0, HI_PAPER, O1_LIGHTNING_RESISTANT | O1_SPELL_EXPLOSION_EFFECT),
+      P_ARCANE_SPELL,      10,  10,				 3, 8,150, A_INT, 18, 0, 1, TARGETED, RAY_LIGHTNING, 10, 12, 0, 0, 0, 0, HI_PAPER, O1_LIGHTNING_RESISTANT | O1_SPELL_EXPLOSION_EFFECT),
 SPELL("light",            "cloth", None,
-      P_DIVINATION_SPELL,  10,  1, 0, 0,  2, A_INT, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, HI_CLOTH, O1_NONE),
+      P_DIVINATION_SPELL,  10,  1,				 0, 0,  2, A_INT, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, HI_CLOTH, O1_NONE),
 SPELL("black blade of disaster", "ebony", "some long-forgotten arcane magic",
-	P_CONJURATION_SPELL,		5,  10, 20, 9,200, A_INT, 1, NODIR, 0, 0, 0, 0, 3, 4, 8, CLR_BLACK, O1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY | O1_DISINTEGRATION_RESISTANT),
+	P_CONJURATION_SPELL,		5,  10,			20, 9,200, A_INT, 0, 0, 1, NODIR, 0, 0, 0, 0, 3, 4, 8, CLR_BLACK, O1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY | O1_DISINTEGRATION_RESISTANT),
 SPELL("animate air",	  "wave-patterned", None,
-	P_CONJURATION_SPELL,		   10,  3,15, 7,100, A_INT, 1, NODIR, 0, 0, 0, 0, 1, 20, 30, HI_PAPER, O1_NONE),
+	P_CONJURATION_SPELL,		   10,  3,		15, 7,100, A_INT, 0, 0, 1, NODIR, 0, 0, 0, 0, 1, 20, 30, HI_PAPER, O1_NONE),
 SPELL("animate earth",	  "octagonal-patterned", None,
-	P_CONJURATION_SPELL,		   10,  3,20, 4, 30, A_INT, 1, NODIR, 0, 0, 0, 0, 1, 20, 30, HI_PAPER, O1_NONE),
+	P_CONJURATION_SPELL,		   10,  3,		20, 4, 30, A_INT, 0, 0, 1, NODIR, 0, 0, 0, 0, 1, 20, 30, HI_PAPER, O1_NONE),
 SPELL("animate fire",	  "flame-patterned", None,
-	P_CONJURATION_SPELL,		   10,  3, 5, 5, 50, A_INT, 1, NODIR, 0, 0, 0, 0, 1, 20, 30, HI_PAPER, O1_NONE),
+	P_CONJURATION_SPELL,		   10,  3,		 5, 5, 50, A_INT, 0, 0, 1, NODIR, 0, 0, 0, 0, 1, 20, 30, HI_PAPER, O1_NONE),
 SPELL("animate water",	  "water-drop-patterned", None,
-	P_CONJURATION_SPELL,		   10,  3,30, 3, 20, A_INT, 1, NODIR, 0, 0, 0, 0, 1, 20, 30, HI_PAPER, O1_NONE),
+	P_CONJURATION_SPELL,		   10,  3,		30, 3, 20, A_INT, 0, 0, 1, NODIR, 0, 0, 0, 0, 1, 20, 30, HI_PAPER, O1_NONE),
 SPELL("summon demon",	  "worn", None,
-	P_CONJURATION_SPELL,			5,  5, 4, 7,100, A_AVG_INT_CHA, 1, NODIR, 0, 0, 0, 0, 1, 20, 30, HI_PAPER, O1_NONE),
+	P_CONJURATION_SPELL,			5,  5,		 4, 7,100, A_AVG_INT_CHA, 0, 0, 1, NODIR, 0, 0, 0, 0, 1, 20, 30, HI_PAPER, O1_NONE),
 SPELL("call Demogorgon",  "abysmal", "some aeon-old prayer",
-	P_CONJURATION_SPELL,			5, 20,200,10,300, A_AVG_INT_WIS_CHA, 1, NODIR, 0, 0, 0, 0, 1, 100, 100, HI_PAPER, O1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY),
+	P_CONJURATION_SPELL,			5, 20,	   200,10,300, A_AVG_INT_WIS_CHA, 0, 0, 1, NODIR, 0, 0, 0, 0, 1, 100, 100, HI_PAPER, O1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY),
 SPELL("detect monsters",  "leathery", None,
-      P_DIVINATION_SPELL,  18,  1, 1, 0, 5, A_MAX_INT_WIS, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, HI_LEATHER, O1_NONE),
+      P_DIVINATION_SPELL,  18,  1,				 1, 0, 5, A_MAX_INT_WIS, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, HI_LEATHER, O1_NONE),
 SPELL("knock",            "pink", None,
-      P_TRANSMUTATION_SPELL,      25,  1, 0, -1, 1, A_INT, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, CLR_BRIGHT_MAGENTA, O1_NONE),
+      P_TRANSMUTATION_SPELL,      25,  1,		 0, -1, 1, A_INT, 12, 0, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, CLR_BRIGHT_MAGENTA, O1_NONE),
 SPELL("force bolt",       "red", None,
-      P_ARCANE_SPELL,      15,  2, 0, 1,10, A_INT, 1, IMMEDIATE, 0, 3, 6, 1, 0, 0, 0, CLR_RED, O1_NONE),
+      P_ARCANE_SPELL,      15,  2,				 0, 1, 10, A_INT, 10, 0, 1, IMMEDIATE, 0, 3, 6, 1, 0, 0, 0, CLR_RED, O1_NONE),
 SPELL("magic arrow",      "hardcover", None,
-      P_ARCANE_SPELL,      15,  1, 0, -1, 4, A_INT, 1, IMMEDIATE, 0, 1, 8, 1, 0, 0, 0, CLR_BROWN, O1_NONE),
+      P_ARCANE_SPELL,      15,  1,				 0, -1, 4, A_INT, 18, 0, 1, IMMEDIATE, 0, 1, 8, 1, 0, 0, 0, CLR_BROWN, O1_NONE),
 SPELL("confuse monster", "orange", None,
-      P_ENCHANTMENT_SPELL, 15,  2, 0, 0,  7, A_AVG_INT_CHA, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, CLR_ORANGE, O1_NONE),
+      P_ENCHANTMENT_SPELL, 15,  2,				 0, 0,  7, A_AVG_INT_CHA, 16, 0, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, CLR_ORANGE, O1_NONE),
 SPELL("cure blindness",  "yellow", None,
-      P_HEALING_SPELL,     15,  2, 1, 0,  7, A_WIS, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, CLR_YELLOW, O1_NONE),
+      P_HEALING_SPELL,     15,  2,				 1, 0,  7, A_WIS, 0, 0, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, CLR_YELLOW, O1_NONE),
 SPELL("drain life",      "velvet", None,
-      P_ARCANE_SPELL,      10,  2, 1, 5, 50, A_AVG_INT_WIS, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, CLR_MAGENTA, O1_NONE),
+      P_ARCANE_SPELL,      10,  2,				 1, 5, 50, A_AVG_INT_WIS, 10, 0, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, CLR_MAGENTA, O1_NONE),
 SPELL("slow monster",    "light green", None,
-      P_ENCHANTMENT_SPELL, 15,  2, 0, 1, 10, A_INT, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, CLR_BRIGHT_GREEN, O1_NONE),
+      P_ENCHANTMENT_SPELL, 15,  2,				 0, 1, 10, A_INT, 12, 0, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, CLR_BRIGHT_GREEN, O1_NONE),
 SPELL("wizard lock",     "dark green", None,
-      P_TRANSMUTATION_SPELL,      30,  3, 0, -1, 3, A_INT, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, CLR_GREEN, O1_NONE),
+      P_TRANSMUTATION_SPELL,      30,  3,		 0, -1, 3, A_INT, 12, 0, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, CLR_GREEN, O1_NONE),
 SPELL("create monster",  "turquoise", None,
-      P_CLERIC_SPELL,      10,  3, 3, 3, 30, A_AVG_INT_WIS_CHA, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_BRIGHT_CYAN, O1_NONE),
+      P_CLERIC_SPELL,      10,  3,				 3, 3, 30, A_AVG_INT_WIS_CHA, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_BRIGHT_CYAN, O1_NONE),
 SPELL("detect food",     "cyan", None,
-      P_DIVINATION_SPELL,  15,  3, 0, -1, 4, A_MAX_INT_WIS, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_CYAN, O1_NONE),
+      P_DIVINATION_SPELL,  15,  3,				 0, -1, 4, A_MAX_INT_WIS, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_CYAN, O1_NONE),
 SPELL("fear",			"blue-hued", None,
-      P_ENCHANTMENT_SPELL, 10,  1, 0, 0, 7, A_AVG_INT_WIS_CHA, 1, IMMEDIATE, 0, 0, 0, 0, 6, 6, 10, CLR_BRIGHT_BLUE, O1_NONE),
+      P_ENCHANTMENT_SPELL, 10,  1,				 0, 0, 7, A_AVG_INT_WIS_CHA, 10, 0, 1, IMMEDIATE, 0, 0, 0, 0, 6, 6, 10, CLR_BRIGHT_BLUE, O1_NONE),
 SPELL("mass fear",      "light blue", None,
-      P_ENCHANTMENT_SPELL, 10,  2, 0, 4, 30, A_AVG_INT_WIS_CHA, 1, NODIR, 0, 0, 0, 0, 6, 6, 10, CLR_BRIGHT_BLUE, O1_NONE),
+      P_ENCHANTMENT_SPELL, 10,  2,				 0, 4, 30, A_AVG_INT_WIS_CHA, 0, 0, 1, NODIR, 0, 0, 0, 0, 6, 6, 10, CLR_BRIGHT_BLUE, O1_NONE),
 SPELL("clairvoyance",    "dark blue", None,
-      P_DIVINATION_SPELL,  15,  3, 3, 2, 15, A_WIS, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_BLUE, O1_NONE),
+      P_DIVINATION_SPELL,  15,  3,				 3, 2, 15, A_WIS, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_BLUE, O1_NONE),
 SPELL("cure sickness",   "indigo", None,
-      P_HEALING_SPELL,     17,  3, 3, 2, 15, A_WIS, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_BLUE, O1_NONE),
-SPELL("charm monster",   "magenta", None,
-      P_ENCHANTMENT_SPELL, 15,  3, 2, 6, 75, A_AVG_INT_WIS_CHA, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, CLR_MAGENTA, O1_NONE),
+      P_HEALING_SPELL,     17,  3,				 3, 2, 15, A_WIS, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_BLUE, O1_NONE),
+SPELL("sphere of charming", "magenta", None,
+      P_ENCHANTMENT_SPELL, 15,  3,				 2, 6, 75, A_AVG_INT_WIS_CHA, 0, 1, 1, NODIR, 0, 0, 0, 0, 8, 6, 30, CLR_MAGENTA, O1_NONE),
+SPELL("charm monster",   "eye-patterned", None,
+      P_ENCHANTMENT_SPELL, 10,  3,				 2, 4, 30, A_AVG_INT_WIS_CHA, 8, 0, 1, IMMEDIATE, 0, 0, 0, 0, 10, 10, 50, CLR_MAGENTA, O1_NONE),
+SPELL("mass charm",		 "multi-hued", None,
+      P_ENCHANTMENT_SPELL,  5,  3,				 2, 8,150, A_AVG_INT_WIS_CHA, 0, 5, 1, NODIR, 0, 0, 0, 0, 10, 10, 50, CLR_MAGENTA, O1_NONE),
+SPELL("dominate monster",   "eye-and-triangle-patterned", None,
+      P_ENCHANTMENT_SPELL,  5,  3,				 2, 7,100, A_AVG_INT_WIS_CHA, 8, 0, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, CLR_MAGENTA, O1_NONE),
+SPELL("sphere of domination", "pyramid-patterned", None,
+      P_ENCHANTMENT_SPELL, 5,  3,				 2, 9,200, A_AVG_INT_WIS_CHA, 0, 1, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_MAGENTA, O1_NONE),
 SPELL("haste self",      "purple", None,
-      P_MOVEMENT_SPELL,      18,  4, 4, 3, 30, A_INT, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_MAGENTA, O1_NONE),
+      P_MOVEMENT_SPELL,      18,  4,			 4, 3, 30, A_INT, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_MAGENTA, O1_NONE),
 SPELL("detect unseen",   "violet", None,
-      P_DIVINATION_SPELL,  15,  4, 2, 1, 10, A_WIS, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_MAGENTA, O1_NONE),
+      P_DIVINATION_SPELL,  15,  4,				 2, 1, 10, A_WIS, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_MAGENTA, O1_NONE),
 SPELL("levitation",      "tan", None,
-      P_MOVEMENT_SPELL,      15,  4, 3, 2, 15, A_INT, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_BROWN, O1_NONE),
+      P_MOVEMENT_SPELL,      15,  4,			 3, 2, 15, A_INT, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_BROWN, O1_NONE),
 SPELL("healing",         "white", None,
-      P_HEALING_SPELL,     12,  2, 0, 1, 10, A_WIS, 1, IMMEDIATE, 0, 4, 4, 0, 0, 0, 0, CLR_WHITE, O1_NONE),
+      P_HEALING_SPELL,     12,  2,				 0, 1, 10, A_WIS, 0, 0, 1, IMMEDIATE, 0, 4, 4, 0, 0, 0, 0, CLR_WHITE, O1_NONE),
 SPELL("extra healing",   "plaid", None,
-      P_HEALING_SPELL,     10,  5, 2, 3, 20, A_WIS, 1, IMMEDIATE, 0, 6, 6, 0, 0, 0, 0, CLR_GREEN, O1_NONE),
+      P_HEALING_SPELL,     10,  5,				 2, 3, 20, A_WIS, 0, 0, 1, IMMEDIATE, 0, 6, 6, 0, 0, 0, 0, CLR_GREEN, O1_NONE),
 SPELL("greater healing",  "darkened", None,
-      P_HEALING_SPELL,     10,  5, 4, 5, 50, A_WIS, 1, IMMEDIATE, 0, 8, 8, 8, 0, 0, 0, CLR_GREEN, O1_NONE),
+      P_HEALING_SPELL,     10,  5,				 4, 5, 50, A_WIS, 0, 0, 1, IMMEDIATE, 0, 8, 8, 8, 0, 0, 0, CLR_GREEN, O1_NONE),
 SPELL("full healing",     "light gray", None,
-      P_HEALING_SPELL,     10,  6, 6, 7, 50, A_WIS, 1, IMMEDIATE, 0, 0, 0, 255, 0, 0, 0, CLR_WHITE, O1_NONE),
+      P_HEALING_SPELL,     10,  6,				 6, 7, 50, A_WIS, 0, 0, 1, IMMEDIATE, 0, 0, 0, 255, 0, 0, 0, CLR_WHITE, O1_NONE),
 SPELL("restore ability",  "light brown", None,
-      P_HEALING_SPELL,     20,  5, 6, 5, 50, A_WIS, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_BROWN, O1_NONE),
+      P_HEALING_SPELL,     10,  5,				 6, 5, 50, A_WIS, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_BROWN, O1_NONE),
 SPELL("invisibility",     "dark brown", None,
-      P_MOVEMENT_SPELL,      20,  5, 3, 2, 15, A_INT, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_BROWN, O1_NONE),
+      P_MOVEMENT_SPELL,      15,  5,			 3, 2, 15, A_INT, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_BROWN, O1_NONE),
 SPELL("detect treasure",  "gray", None,
-      P_DIVINATION_SPELL,  20,  5, 1, 0, 7, A_MAX_INT_WIS, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_GRAY, O1_NONE),
+      P_DIVINATION_SPELL,  15,  5,				 1, 0, 7, A_MAX_INT_WIS, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_GRAY, O1_NONE),
 SPELL("remove curse",     "wrinkled", None,
-      P_CLERIC_SPELL,      15,  5, 5, 4, 20, A_WIS, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_NONE),
+      P_CLERIC_SPELL,      15,  5,				 5, 4, 20, A_WIS, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_NONE),
 SPELL("magic mapping",    "dusty", None,
-      P_DIVINATION_SPELL,  18,  7, 5, 4, 60, A_MAX_INT_WIS, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_NONE),
+      P_DIVINATION_SPELL,  18,  7,				 5, 4, 60, A_MAX_INT_WIS, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_NONE),
 SPELL("identify",         "bronze-plated", None,
-      P_DIVINATION_SPELL,  15,  5, 5, 4, 30, A_MAX_INT_WIS, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, HI_COPPER, O1_NONE),
+      P_DIVINATION_SPELL,  15,  5,				 5, 4, 30, A_MAX_INT_WIS, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, HI_COPPER, O1_NONE),
 SPELL("turn undead",      "copper-plated", None,
-      P_CLERIC_SPELL,      16,  8, 6, 5, 50, A_WIS, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, HI_COPPER, O1_NONE),
+      P_CLERIC_SPELL,      11,  8,				 6, 5, 50, A_WIS, 0, 0, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, HI_COPPER, O1_NONE),
 SPELL("polymorph",        "silver-plated", None,
-      P_TRANSMUTATION_SPELL,      10,  6, 6, 5, 50, A_INT, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, HI_SILVER, O1_NONE),
+      P_TRANSMUTATION_SPELL,      10,  6,		 6, 5, 50, A_INT, 8, 0, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, HI_SILVER, O1_NONE),
 SPELL("teleport away",    "gold-plated", None,
-      P_MOVEMENT_SPELL,      15,  6, 5, 4, 30, A_INT, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, HI_GOLD, O1_NONE),
+      P_MOVEMENT_SPELL,      15,  6,			 5, 4, 30, A_INT, 0, 0, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, HI_GOLD, O1_NONE),
 SPELL("create familiar",  "glittering", None,
-      P_CLERIC_SPELL,      10,  7, 5, 4, 30, A_AVG_INT_WIS_CHA, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_WHITE, O1_NONE),
+      P_CLERIC_SPELL,      10,  7,				 5, 4, 30, A_AVG_INT_WIS_CHA, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_WHITE, O1_NONE),
 SPELL("cancellation",     "shining", None,
-      P_TRANSMUTATION_SPELL,      15,  8, 6, 5, 50, A_INT, 1, IMMEDIATE, 0, 0, 0, 0, 1, 20, 30, CLR_WHITE, O1_SPELL_BYPASSES_MAGIC_RESISTANCE),
+      P_TRANSMUTATION_SPELL,      15,  8,		 6, 5, 50, A_INT, 8, 0, 1, IMMEDIATE, 0, 0, 0, 0, 1, 20, 30, CLR_WHITE, O1_SPELL_BYPASSES_MAGIC_RESISTANCE),
 SPELL("protection",       "dull", None,
-	P_ABJURATION_SPELL,      16, 3,200, 2, 15, A_WIS, 1, NODIR, 0, 0, 0, 0, 2, 10, 40, HI_PAPER, O1_NONE),
+	P_ABJURATION_SPELL,      16, 3,			   200, 2, 15, A_WIS, 0, 0, 1, NODIR, 0, 0, 0, 0, 2, 10, 40, HI_PAPER, O1_NONE),
 SPELL("jumping",          "thin", None,
-      P_MOVEMENT_SPELL,      15,  3, 0,-1,  4, A_DEX, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_NONE),
+      P_MOVEMENT_SPELL,      15,  3,			 0,-1,  4, A_DEX, 0, 0, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_NONE),
 SPELL("stone to flesh",   "thick", None,
-      P_HEALING_SPELL,     11,  1, 4, 3, 20, A_AVG_INT_WIS, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_NONE),
+      P_HEALING_SPELL,     11,  1,				 4, 3, 20, A_AVG_INT_WIS, 1, 0, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_NONE),
 SPELL("touch of death",   "heavy", "ancient Stygian magic",
-	P_NECROMANCY_SPELL,		    5,  8, 8, 7,100, A_AVG_INT_WIS, 1, TOUCH, RAY_DEATH, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY),
+	P_NECROMANCY_SPELL,		    5,  8,			 8, 7,100, A_AVG_INT_WIS, 1, 0, 1, TOUCH, RAY_DEATH, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY),
 SPELL("finger of death",  "leather bound", "ancient Stygian magic",
-	P_NECROMANCY_SPELL,		    5, 10, 10, 8,150, A_AVG_INT_WIS, 1, RAY, RAY_DEATH, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY),
+	P_NECROMANCY_SPELL,		    5, 10,			10, 8,150, A_AVG_INT_WIS,  8, 0, 1, RAY, RAY_DEATH, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY),
 SPELL("deathspell",	      "morbid", "ancient Stygian magic",
-	P_NECROMANCY_SPELL,		    5, 10, 12, 9,200, A_AVG_INT_WIS, 1, TARGETED, RAY_DEATH, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY | O1_SPELL_EXPLOSION_EFFECT),
+	P_NECROMANCY_SPELL,		    5, 10,			12, 9,200, A_AVG_INT_WIS, 12, 1, 1, TARGETED, RAY_DEATH, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY | O1_SPELL_EXPLOSION_EFFECT),
 SPELL("armageddon",       "pitch black", "ancient Stygian magic",
-	P_NECROMANCY_SPELL,       2, 14, 20,10,300, A_AVG_INT_WIS, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_BLACK, O1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY),
+	P_NECROMANCY_SPELL,       2, 14,			20,10,300, A_AVG_INT_WIS, 0, 255, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_BLACK, O1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY),
 SPELL("wish",			  "platinum-plated", "some long-forgotten arcane magic",
-      P_CONJURATION_SPELL,       2, 15, 20,10,300, A_AVG_INT_WIS_CHA, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, HI_SILVER, O1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY),
+      P_CONJURATION_SPELL,       2, 15,			20,10,300, A_AVG_INT_WIS_CHA, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, HI_SILVER, O1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY),
 SPELL("time stop",		   "ancient", "some long-forgotten arcane magic",
-	P_TRANSMUTATION_SPELL,  2, 10, 12, 9,200, A_INT, 1, NODIR, 0, 0, 0, 0, 1, 4, 3, HI_PAPER, O1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY),
+	P_TRANSMUTATION_SPELL,  2, 10,				12, 9,200, A_INT, 0, 0, 1, NODIR, 0, 0, 0, 0, 1, 4, 3, HI_PAPER, O1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY),
 SPELL("mage armor",		   "ornamental", None,
-	  P_ABJURATION_SPELL,	   15,  1,360, 1, 10, A_INT, 1, NODIR, 0, 0, 0, 0, 4, 20, 200, CLR_BLACK, O1_NONE),
+	  P_ABJURATION_SPELL,	   15,  1,		   360, 1, 10, A_INT, 0, 0, 1, NODIR, 0, 0, 0, 0, 4, 20, 200, CLR_BLACK, O1_NONE),
 SPELL("bless",			   "spiritual", None,
-	P_CLERIC_SPELL,			   10, 1, 4, 3, 20, A_WIS, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_BLACK, O1_NONE),
+	P_CLERIC_SPELL,			   10, 1,			 4, 3, 20, A_WIS, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_BLACK, O1_NONE),
 SPELL("curse",			   "blasphemous", None,
-	  P_CLERIC_SPELL,	       10,  1,4, 3, 20, A_WIS, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_BLACK, O1_NONE),
+	  P_CLERIC_SPELL,	       10,  1,			 4, 3, 20, A_WIS, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_BLACK, O1_NONE),
 SPELL("enchant armor",		  "glowing", None,
-	  P_ENCHANTMENT_SPELL,		10, 3, 4, 3,20, A_AVG_INT_WIS, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_NONE),
+	  P_ENCHANTMENT_SPELL,		10, 3,			 4, 3,20, A_AVG_INT_WIS, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_NONE),
 SPELL("enchant weapon",		  "dark gray", None,
-	  P_ENCHANTMENT_SPELL,		10, 3, 5, 4,30, A_AVG_INT_WIS, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_NONE),
+	  P_ENCHANTMENT_SPELL,		10, 3,			 5, 4,30, A_AVG_INT_WIS, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_NONE),
 SPELL("protect armor",		  "glowing", None,
-	  P_ENCHANTMENT_SPELL,		10, 2, 2, 1,10, A_MAX_INT_WIS, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_NONE),
+	  P_ENCHANTMENT_SPELL,		10, 2,			 2, 1,10, A_MAX_INT_WIS, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_NONE),
 SPELL("protect weapon",		  "dark gray", None,
-	  P_ENCHANTMENT_SPELL,		10, 2, 3, 2,15, A_MAX_INT_WIS, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_NONE),
+	  P_ENCHANTMENT_SPELL,		10, 2,			 3, 2,15, A_MAX_INT_WIS, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_NONE),
 SPELL("resurrection",		  "bright-colored", None,
-	P_CLERIC_SPELL,				10, 5,10, 5,50, A_WIS, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, CLR_WHITE, O1_NONE),
+	P_CLERIC_SPELL,				10, 5,			10, 5,50, A_WIS, 6, 0, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, CLR_WHITE, O1_NONE),
 SPELL("negate undeath",		  "inspiring", None,
-	P_CLERIC_SPELL,				5, 4 , 8, 7,100, A_WIS, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_NONE),
+	P_CLERIC_SPELL,				5, 4,			 8, 7,100, A_WIS, 8, 0, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_NONE),
 SPELL("banish demon",		  "thought-provoking", None,
-	P_CLERIC_SPELL,				5, 4 , 9, 8,150, A_WIS, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_NONE),
+	P_CLERIC_SPELL,				5, 4,			 9, 8,150, A_WIS, 8, 0, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_NONE),
 SPELL("anti-magic shell",   "immaculate", None,
-	  P_ABJURATION_SPELL,	    5,  1,120, 7,100, A_INT, 1, NODIR, ANTIMAGIC, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_NONE),
+	  P_ABJURATION_SPELL,	    5,  1,		   120, 7,100, A_INT, 0, 0, 1, NODIR, ANTIMAGIC, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_NONE),
 SPELL("reflection", "polished silver", None,
-	  P_ABJURATION_SPELL,	    5,  1,120, 6, 75, A_MAX_INT_WIS, 1, NODIR, REFLECTING, 0, 0, 0, 10, 6, 25, HI_SILVER, O1_NONE),
+	  P_ABJURATION_SPELL,	    5,  1,		   120, 6, 75, A_MAX_INT_WIS, 0, 0, 1, NODIR, REFLECTING, 0, 0, 0, 10, 6, 25, HI_SILVER, O1_NONE),
 SPELL("protection from fire", "flame-patterned", None,
-	  P_ABJURATION_SPELL,	    5,  1,120, 2, 15, A_MAX_INT_WIS, 1, NODIR, FIRE_RES, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_FIRE_RESISTANT),
+	  P_ABJURATION_SPELL,	    5,  1,		   120, 2, 15, A_MAX_INT_WIS, 0, 0, 1, NODIR, FIRE_RES, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_FIRE_RESISTANT),
 SPELL("protection from lightning", "cloudy", None,
-	  P_ABJURATION_SPELL,	    5,  1,120, 2, 15, A_MAX_INT_WIS, 1, NODIR, SHOCK_RES, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_LIGHTNING_RESISTANT),
+	  P_ABJURATION_SPELL,	    5,  1,		   120, 2, 15, A_MAX_INT_WIS, 0, 0, 1, NODIR, SHOCK_RES, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_LIGHTNING_RESISTANT),
 SPELL("protection from cold", "blue and white", None,
-	  P_ABJURATION_SPELL,	    5,  1,120, 2, 15, A_MAX_INT_WIS, 1, NODIR, COLD_RES, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_COLD_RESISTANT),
+	  P_ABJURATION_SPELL,	    5,  1,		   120, 2, 15, A_MAX_INT_WIS, 0, 0, 1, NODIR, COLD_RES, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_COLD_RESISTANT),
 SPELL("protection from acid", "incomplete", None,
-	  P_ABJURATION_SPELL,	    5,  1,120, 1, 10, A_WIS, 1, NODIR, ACID_RES, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_NONE),
+	  P_ABJURATION_SPELL,	    5,  1,		   120, 1, 10, A_WIS, 0, 0, 1, NODIR, ACID_RES, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_NONE),
 SPELL("protection from poison", "intimidating-looking", None,
-	P_ABJURATION_SPELL,			5, 1, 120, 1, 10, A_MAX_INT_WIS, 1, NODIR, POISON_RES, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_NONE),
+	P_ABJURATION_SPELL,			5, 1,		   120, 1, 10, A_MAX_INT_WIS, 0, 0, 1, NODIR, POISON_RES, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_NONE),
 SPELL("protection from life draining", "adorned", None,
-	P_ABJURATION_SPELL,			5, 1, 120, 0, 7, A_WIS, 1, NODIR, DRAIN_RES, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_NONE),
+	P_ABJURATION_SPELL,			5, 1,		   120, 0, 7, A_WIS, 0, 0, 1, NODIR, DRAIN_RES, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_NONE),
 SPELL("protection from death magic", "decorated", None,
-	P_ABJURATION_SPELL,			5, 1, 120, 3, 20, A_WIS, 1, NODIR, DEATH_RES, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_NONE),
+	P_ABJURATION_SPELL,			5, 1,		   120, 3, 20, A_WIS, 0, 0, 1, NODIR, DEATH_RES, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_NONE),
 SPELL("protection from disintegration", "expensive-looking", None,
-	P_ABJURATION_SPELL,			5, 1, 120, 4, 30, A_INT, 1, NODIR, DISINT_RES, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_DISINTEGRATION_RESISTANT),
+	P_ABJURATION_SPELL,			5, 1,		   120, 4, 30, A_INT, 0, 0, 1, NODIR, DISINT_RES, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_DISINTEGRATION_RESISTANT),
 SPELL("protection from sickness", "baroque", None,
-	P_ABJURATION_SPELL,			5, 1, 120, 4, 30, A_WIS, 1, NODIR, SICK_RES, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_NONE),
+	P_ABJURATION_SPELL,			5, 1,		   120, 4, 30, A_WIS, 0, 0, 1, NODIR, SICK_RES, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_NONE),
 SPELL("protection from petrification", "aged", None,
-	P_ABJURATION_SPELL,			5, 1, 120, 5, 50, A_MAX_INT_WIS, 1, NODIR, STONE_RES, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_NONE),
+	P_ABJURATION_SPELL,			5, 1,		   120, 5, 50, A_MAX_INT_WIS, 0, 0, 1, NODIR, STONE_RES, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_NONE),
 SPELL("globe of invulnerability", "striped", "some long-forgotten arcane magic",
-	P_ABJURATION_SPELL,			5, 1,  60, 8,150, A_WIS, 1, NODIR, INVULNERABLE, 0, 0, 0, 1, 6, 4, HI_PAPER, O1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY | O1_INDESTRUCTIBLE),
+	P_ABJURATION_SPELL,			5, 1,			60, 8,150, A_WIS, 0, 0, 1, NODIR, INVULNERABLE, 0, 0, 0, 1, 6, 4, HI_PAPER, O1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY | O1_INDESTRUCTIBLE),
 SPELL("divine intervention", "square-patterned", "some aeon-old prayer",
-	P_ABJURATION_SPELL,			5, 1, 120, 9,200, A_WIS, 1, NODIR, LIFESAVED, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY),
+	P_ABJURATION_SPELL,			5, 1,		   120, 9,200, A_WIS, 0, 0, 1, NODIR, LIFESAVED, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY),
 SPELL("protection from lycanthropy", "strange-looking", None,
-	P_ABJURATION_SPELL,			5, 1, 120, 0, 7, A_WIS, 1, NODIR, LYCANTHROPY_RES, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_NONE),
+	P_ABJURATION_SPELL,			5, 1,		   120, 0, 7, A_WIS, 0, 0, 1, NODIR, LYCANTHROPY_RES, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_NONE),
 SPELL("protection from curses", "cross-patterned", None,
-	P_ABJURATION_SPELL,			5, 1, 120, 3,20, A_WIS, 1, NODIR, CURSE_RES, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_NONE),
+	P_ABJURATION_SPELL,			5, 1,		   120, 3,20, A_WIS, 0, 0, 1, NODIR, CURSE_RES, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_NONE),
 SPELL("water breathing",		"navy blue", None,
-	P_TRANSMUTATION_SPELL,		5, 1, 0, 3,20, A_INT, 1, NODIR, MAGICAL_BREATHING, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_NONE),
+	P_TRANSMUTATION_SPELL,		5, 1,			 0, 3,20, A_INT, 0, 0, 1, NODIR, MAGICAL_BREATHING, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_NONE),
 SPELL("water walking",			"circle-patterned", None,
-	P_MOVEMENT_SPELL,			5, 1, 0, 1,10, A_MAX_INT_WIS, 1, NODIR, WWALKING, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_NONE),
+	P_MOVEMENT_SPELL,			5, 1,			 0, 1,10, A_MAX_INT_WIS, 0, 0, 1, NODIR, WWALKING, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_NONE),
 SPELL("lower magic resistance", "dim", None,
-	P_ABJURATION_SPELL,			5, 1, 5, 4, 30, A_MAX_INT_WIS, 1, IMMEDIATE, 0, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_SPELL_BYPASSES_MAGIC_RESISTANCE),
+	P_ABJURATION_SPELL,			5, 1,			 5, 4, 30, A_MAX_INT_WIS, 12, 0, 1, IMMEDIATE, 0, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_SPELL_BYPASSES_MAGIC_RESISTANCE),
 SPELL("negate magic resistance", "dark", None,
-	P_ABJURATION_SPELL,			5, 1, 9, 8, 150, A_AVG_INT_WIS, 1, IMMEDIATE, 0, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_SPELL_BYPASSES_MAGIC_RESISTANCE),
+	P_ABJURATION_SPELL,			5, 1,			 9, 8, 150, A_AVG_INT_WIS, 10, 0, 1, IMMEDIATE, 0, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_SPELL_BYPASSES_MAGIC_RESISTANCE),
 SPELL("forbid summoning",		"oval-patterned", None,
-	P_ABJURATION_SPELL,			5, 1, 4, 3, 20, A_MAX_INT_WIS, 1, IMMEDIATE, 0, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_NONE),
+	P_ABJURATION_SPELL,			5, 1,			 4, 3, 20, A_MAX_INT_WIS, 8, 0, 1, IMMEDIATE, 0, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_NONE),
 
 
 
 /* books with fixed descriptions
  */
-SPELL("blank paper", "plain", None, P_NONE, 18, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_NONE),
+SPELL("blank paper", "plain", None, P_NONE, 18, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_NONE),
 /* tribute book for 3.6 */
 OBJECT(OBJ("novel", "paperback"), None,
        BITS(0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, P_NONE, PAPER),
-       0, 0, 0, SPBOOK_CLASS, 0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 20, CLR_BRIGHT_BLUE, 0, 0, 0, 0, O1_NONE),
+       0, 0, 0, SPBOOK_CLASS, 0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 20, CLR_BRIGHT_BLUE, 0, 0, 0, 0, O1_NONE),
 /* a special, one of a kind, spellbook */
 OBJECT(OBJ("Book of the Dead", "papyrus"), None,
        BITS(0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, P_NONE, PAPER),
-       0, 0, 0, SPBOOK_CLASS, 0, 0, 20, 10000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 20, HI_PAPER, 0, 0, 0, 0, O1_INDESTRUCTIBLE),
+       0, 0, 0, SPBOOK_CLASS, 0, 0, 20, 10000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 20, HI_PAPER, 0, 0, 0, 0, O1_INDESTRUCTIBLE),
 #undef SPELL
 
 /* wands ... */
-#define WAND(name,typ,prob,cost,mgc,dir,dirsubtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,metal,color,flags) \
+#define WAND(name,typ,prob,cost,mgc,dir,dirsubtype,range,radius,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,metal,color,flags) \
     OBJECT(OBJ(name, typ),  None,                                             \
            BITS(0, 0, 1, 0, mgc, 1, 0, 0, 0, 0, dir, P_NONE, metal),    \
-           0, 0, 0, WAND_CLASS, prob, 0, 6, cost, sdice,sdam,sdmgplus,ldice,ldam,ldmgplus, 0, 0, 0, 0, 30, color, dirsubtype, 0, 0, 0, flags)
-WAND("light",           "glass", 95, 100, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, GLASS, HI_GLASS, O1_NONE),
+           0, 0, 0, WAND_CLASS, prob, 0, 6, cost, sdice,sdam,sdmgplus,ldice,ldam,ldmgplus, 0, 0, 0, 0, range, radius, 30, color, dirsubtype, 0, 0, 0, flags)
+WAND("light",           "glass", 95, 100, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, 0, GLASS, HI_GLASS, O1_NONE),
 WAND("secret door detection",
-                        "balsa", 50, 150, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, WOOD, HI_WOOD, O1_NONE),
-WAND("enlightenment", "crystal", 15, 150, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, GLASS, HI_GLASS, O1_NONE),
-WAND("create monster",  "maple", 45, 200, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, WOOD, HI_WOOD, O1_NONE),
-WAND("wishing",          "pine",  5, 500, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, WOOD, HI_WOOD, O1_LIGHTNING_RESISTANT),
-WAND("nothing",           "oak", 25, 100, 0, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, WOOD, HI_WOOD, O1_NONE),
-WAND("striking",        "ebony", 70, 150, 1, IMMEDIATE, 0, 2, 12, 0, 0, 0, 0, WOOD, HI_WOOD, O1_NONE),
-WAND("make invisible", "marble", 45, 150, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, MINERAL, HI_MINERAL, O1_NONE),
-WAND("slow monster",      "tin", 50, 150, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, METAL, HI_METAL, O1_NONE),
-WAND("speed monster",   "brass", 50, 150, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, COPPER, HI_COPPER, O1_NONE),
-WAND("undead turning", "copper", 50, 150, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, COPPER, HI_COPPER, O1_NONE),
-WAND("polymorph",      "silver", 45, 200, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, SILVER, HI_SILVER, O1_POLYMORPH_RESISTANT),
-WAND("cancellation", "platinum", 45, 200, 1, IMMEDIATE, 0, 0, 0, 0, 1, 20, 30, PLATINUM, CLR_WHITE, O1_SPELL_BYPASSES_MAGIC_RESISTANCE | O1_LIGHTNING_RESISTANT | O1_POLYMORPH_RESISTANT | O1_DISINTEGRATION_RESISTANT),
-WAND("teleportation", "iridium", 45, 200, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, METAL, CLR_BRIGHT_CYAN, O1_NONE),
-WAND("opening",          "zinc", 25, 150, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, METAL, HI_METAL, O1_NONE),
-WAND("locking",      "aluminum", 25, 150, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, METAL, HI_METAL, O1_NONE),
-WAND("probing",       "uranium", 30, 150, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, METAL, HI_METAL, O1_NONE),
-WAND("digging",          "iron", 50, 150, 1, RAY, RAY_WND_DIGGING, 0, 0, 0, 0, 0, 0, IRON, HI_METAL, O1_NONE),
-WAND("magic missile",   "steel", 50, 150, 1, RAY, RAY_WND_MAGIC_MISSILE, 3, 4, 0, 0, 0, 0, IRON, HI_METAL, O1_NONE),
-WAND("fire",        "hexagonal", 40, 175, 1, RAY, RAY_WND_FIRE, 8, 6, 0, 0, 0, 0, IRON, HI_METAL, O1_FIRE_RESISTANT),
-WAND("cold",            "short", 40, 175, 1, RAY, RAY_WND_COLD, 12, 6, 0, 0, 0, 0, IRON, HI_METAL, O1_COLD_RESISTANT),
-WAND("sleep",		    "runed", 50, 175, 1, RAY, RAY_WND_SLEEP, 0, 0, 0, 4, 6, 0, IRON, HI_METAL, O1_NONE),
-WAND("disintegration",   "long",  5, 500, 1, RAY, RAY_WND_DISINTEGRATION, 0, 0, 0, 0, 0, 0, IRON, HI_METAL, O1_DISINTEGRATION_RESISTANT),
-WAND("lightning",      "curved", 40, 175, 1, RAY, RAY_WND_LIGHTNING, 6, 6, 0, 0, 0, 0, IRON, HI_METAL, O1_LIGHTNING_RESISTANT),
-WAND("death",	 "skull-headed",  5, 500, 1, RAY, RAY_WND_DEATH, 0, 0, 0, 0, 0, 0, BONE, CLR_WHITE, O1_NONE),
-WAND("resurrection", "ornamental",5, 200, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, IRON, CLR_MAGENTA, O1_NONE),
+                        "balsa", 50, 150, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, 0, WOOD, HI_WOOD, O1_NONE),
+WAND("enlightenment", "crystal", 15, 150, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, 0, GLASS, HI_GLASS, O1_NONE),
+WAND("create monster",  "maple", 45, 200, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, 0, WOOD, HI_WOOD, O1_NONE),
+WAND("wishing",          "pine",  5, 500, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, 0, WOOD, HI_WOOD, O1_LIGHTNING_RESISTANT),
+WAND("nothing",           "oak", 25, 100, 0, IMMEDIATE, 0,  0, 0, 0, 0, 0, 0, 0, 0, WOOD, HI_WOOD, O1_NONE),
+WAND("striking",        "ebony", 70, 150, 1, IMMEDIATE, 0, 10, 0, 2, 12, 0, 0, 0, 0, WOOD, HI_WOOD, O1_NONE),
+WAND("make invisible", "marble", 45, 150, 1, IMMEDIATE, 0,  8, 0, 0, 0, 0, 0, 0, 0, MINERAL, HI_MINERAL, O1_NONE),
+WAND("slow monster",      "tin", 50, 150, 1, IMMEDIATE, 0, 12, 0, 0, 0, 0, 0, 0, 0, METAL, HI_METAL, O1_NONE),
+WAND("speed monster",   "brass", 50, 150, 1, IMMEDIATE, 0, 12, 0, 0, 0, 0, 0, 0, 0, COPPER, HI_COPPER, O1_NONE),
+WAND("undead turning", "copper", 50, 150, 1, IMMEDIATE, 0,  8, 0, 0, 0, 0, 0, 0, 0, COPPER, HI_COPPER, O1_NONE),
+WAND("polymorph",      "silver", 45, 200, 1, IMMEDIATE, 0,  6, 0, 0, 0, 0, 0, 0, 0, SILVER, HI_SILVER, O1_POLYMORPH_RESISTANT),
+WAND("cancellation", "platinum", 45, 200, 1, IMMEDIATE, 0, 10, 0, 0, 0, 0, 1, 20, 30, PLATINUM, CLR_WHITE, O1_SPELL_BYPASSES_MAGIC_RESISTANCE | O1_LIGHTNING_RESISTANT | O1_POLYMORPH_RESISTANT | O1_DISINTEGRATION_RESISTANT),
+WAND("teleportation", "iridium", 45, 200, 1, IMMEDIATE, 0, 10, 0, 0, 0, 0, 0, 0, 0, METAL, CLR_BRIGHT_CYAN, O1_NONE),
+WAND("opening",          "zinc", 25, 150, 1, IMMEDIATE, 0, 12, 0, 0, 0, 0, 0, 0, 0, METAL, HI_METAL, O1_NONE),
+WAND("locking",      "aluminum", 25, 150, 1, IMMEDIATE, 0, 12, 0, 0, 0, 0, 0, 0, 0, METAL, HI_METAL, O1_NONE),
+WAND("probing",       "uranium", 30, 150, 1, IMMEDIATE, 0, 12, 0, 0, 0, 0, 0, 0, 0, METAL, HI_METAL, O1_NONE),
+WAND("digging",          "iron", 50, 150, 1, RAY, RAY_WND_DIGGING,			10, 0, 0, 0, 0, 0, 0, 0, IRON, HI_METAL, O1_NONE),
+WAND("magic missile",   "steel", 50, 150, 1, RAY, RAY_WND_MAGIC_MISSILE,	12, 0, 3, 4, 0, 0, 0, 0, IRON, HI_METAL, O1_NONE),
+WAND("fire",        "hexagonal", 40, 175, 1, RAY, RAY_WND_FIRE,				 8, 0, 8, 6, 0, 0, 0, 0, IRON, HI_METAL, O1_FIRE_RESISTANT),
+WAND("cold",            "short", 40, 175, 1, RAY, RAY_WND_COLD,				12, 0, 12, 6, 0, 0, 0, 0, IRON, HI_METAL, O1_COLD_RESISTANT),
+WAND("sleep",		    "runed", 50, 175, 1, RAY, RAY_WND_SLEEP,			10, 0, 0, 0, 0, 4, 6, 0, IRON, HI_METAL, O1_NONE),
+WAND("disintegration",   "long",  5, 500, 1, RAY, RAY_WND_DISINTEGRATION,	 8, 0, 0, 0, 0, 0, 0, 0, IRON, HI_METAL, O1_DISINTEGRATION_RESISTANT),
+WAND("lightning",      "curved", 40, 175, 1, RAY, RAY_WND_LIGHTNING,		14, 0, 6, 6, 0, 0, 0, 0, IRON, HI_METAL, O1_LIGHTNING_RESISTANT),
+WAND("death",	 "skull-headed",  5, 500, 1, RAY, RAY_WND_DEATH,			 8, 0, 0, 0, 0, 0, 0, 0, BONE, CLR_WHITE, O1_NONE),
+WAND("resurrection", "ornamental",5, 200, 1, IMMEDIATE, 0,					 6, 0, 0, 0, 0, 0, 0, 0, IRON, CLR_MAGENTA, O1_NONE),
 /* extra descriptions, shuffled into use at start of new game */
-WAND(None,             "forked",  0, 150, 1, 0, 0, 0, 0, 0, 0, 0, 0, WOOD, HI_WOOD, O1_NONE),
-WAND(None,             "spiked",  0, 150, 1, 0, 0, 0, 0, 0, 0, 0, 0, IRON, HI_METAL, O1_NONE),
-WAND(None,            "jeweled",  0, 150, 1, 0, 0, 0, 0, 0, 0, 0, 0, IRON, HI_MINERAL, O1_NONE),
+WAND(None,             "forked",  0, 150, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, WOOD, HI_WOOD, O1_NONE),
+WAND(None,             "spiked",  0, 150, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, IRON, HI_METAL, O1_NONE),
+WAND(None,            "jeweled",  0, 150, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, IRON, HI_MINERAL, O1_NONE),
 #undef WAND
 
 /* coins ... - so far, gold is all there is */
 #define COIN(name,prob,metal,worth) \
     OBJECT(OBJ(name, None),  None,                                       \
            BITS(0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, P_NONE, metal),    \
-           0, 0, 0, COIN_CLASS, prob, 0, 1, worth,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, HI_GOLD, 0, 0, 0, 0, O1_NONE)
+           0, 0, 0, COIN_CLASS, prob, 0, 1, worth,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, HI_GOLD, 0, 0, 0, 0, O1_NONE)
 COIN("gold piece", 1000, GOLD, 1),
 #undef COIN
 
@@ -1313,12 +1321,12 @@ COIN("gold piece", 1000, GOLD, 1),
     OBJECT(OBJ(name, desc), None,                                             \
            BITS(0, 1, 0, 0, 0, 0, 0, 0, 0,                              \
                 HARDGEM(mohs), 0, -P_SLING, glass),                     \
-           0, 0, 0, GEM_CLASS, prob, 0, 1, gval, 1, 3, 0, 1, 3, 0, 0, 0, 0, 0, nutr, color, 0, 0, 0, 0, flags)
+           0, 0, 0, GEM_CLASS, prob, 0, 1, gval, 1, 3, 0, 1, 3, 0, 0, 0, 0, 0, 0, 0, nutr, color, 0, 0, 0, 0, flags)
 #define ROCK(name,desc,kn,prob,wt,gval, sdam, ldam, mgc,nutr,mohs,glass,color) \
     OBJECT(OBJ(name, desc),  None,                                            \
            BITS(kn, 1, 0, 0, mgc, 0, 0, 0, 0,                           \
                 HARDGEM(mohs), 0, -P_SLING, glass),                     \
-           0, 0, 0, GEM_CLASS, prob, 0, wt, gval, 1, sdam, 0, 1, ldam, 0, 0, 0, 0, 0, nutr, color, 0, 0, 0, 0, O1_NONE)
+           0, 0, 0, GEM_CLASS, prob, 0, wt, gval, 1, sdam, 0, 1, ldam, 0, 0, 0, 0, 0, 0, 0, nutr, color, 0, 0, 0, 0, O1_NONE)
 GEM("dilithium crystal", "white",  2, 1, 4500, 15,  5, GEMSTONE, CLR_WHITE, O1_NONE),
 GEM("diamond",           "white",  3, 1, 4000, 15,  10, GEMSTONE, CLR_WHITE, O1_SOLD_AS_MATERIAL_COMPONENT),
 GEM("black pearl",		 "black",  3, 1, 3750, 15,  5, GEMSTONE, CLR_BLACK, O1_SOLD_AS_MATERIAL_COMPONENT),
@@ -1383,17 +1391,17 @@ ROCK("rock", None,         1, 100,  10,  0, 3, 3, 0, 10, 7, MINERAL, CLR_GRAY),
  */
 OBJECT(OBJ("boulder", None), None,
        BITS(1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, P_NONE, MINERAL), 0, 0, 0,
-       ROCK_CLASS, 100, 0, 8000, 0, 1, 20, 0, 1, 20, 0, 0, 0, 0, 0, 2000, HI_MINERAL, 0, 0, 0, 0, O1_NONE),
+       ROCK_CLASS, 100, 0, 8000, 0, 1, 20, 0, 1, 20, 0, 0, 0, 0, 0, 0, 0, 2000, HI_MINERAL, 0, 0, 0, 0, O1_NONE),
 OBJECT(OBJ("statue", None), None,
        BITS(1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, P_NONE, MINERAL), 0, 0, 0,
-       ROCK_CLASS, 900, 0, 4000, 0, 1, 20, 0, 1, 20, 0, 0, 0, 0, 0, 2500, CLR_WHITE, 0, 0, 0, 0, O1_NONE),
+       ROCK_CLASS, 900, 0, 4000, 0, 1, 20, 0, 1, 20, 0, 0, 0, 0, 0, 0, 0, 2500, CLR_WHITE, 0, 0, 0, 0, O1_NONE),
 OBJECT(OBJ("heavy iron ball", None), None,
        BITS(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, WHACK, P_NONE, IRON), 0, 0, 0,
-       BALL_CLASS, 1000, 0, 800, 10, 1, 25, 0, 1, 25, 0, 0, 0, 0, 0, 200, HI_METAL, 0, 0, 0, 0, O1_NONE),
+       BALL_CLASS, 1000, 0, 800, 10, 1, 25, 0, 1, 25, 0, 0, 0, 0, 0, 0, 0, 200, HI_METAL, 0, 0, 0, 0, O1_NONE),
         /* +d4 when "very heavy" */
 OBJECT(OBJ("iron chain", None), None,
        BITS(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, WHACK, P_NONE, IRON), 0, 0, 0,
-       CHAIN_CLASS, 1000, 0, 240, 0, 1, 4, 0, 1, 4, 0, 0, 0, 0, 0, 200, HI_METAL, 0, 0, 0, 0, O1_NONE),
+       CHAIN_CLASS, 1000, 0, 240, 0, 1, 4, 0, 1, 4, 0, 0, 0, 0, 0, 0, 0, 200, HI_METAL, 0, 0, 0, 0, O1_NONE),
         /* +1 both l & s */
 
 /* Venom is normally a transitory missile (spit by various creatures)
@@ -1401,17 +1409,17 @@ OBJECT(OBJ("iron chain", None), None,
  */
 OBJECT(OBJ("blinding venom", "splash of venom"), None,
        BITS(0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, P_NONE, LIQUID), 0, 0, 0,
-       VENOM_CLASS, 500, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, HI_ORGANIC, 0, 0, 0, 0, O1_NONE),
+       VENOM_CLASS, 500, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, HI_ORGANIC, 0, 0, 0, 0, O1_NONE),
 OBJECT(OBJ("acid venom", "splash of venom"), None,
        BITS(0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, P_NONE, LIQUID), 0, 0, 0,
-       VENOM_CLASS, 500, 0, 1, 0, 2, 6, 0, 2, 6, 0, 0, 0, 0, 0, 0, HI_ORGANIC, 0, 0, 0, 0, O1_NONE),
+       VENOM_CLASS, 500, 0, 1, 0, 2, 6, 0, 2, 6, 0, 0, 0, 0, 0, 0, 0, 0, HI_ORGANIC, 0, 0, 0, 0, O1_NONE),
         /* +d6 small or large */
 
 /* Reagents here, which do not belong to any class, includes also all other odd non-food objects with no other apparent purpose*/
 #define REAGENT(name, prob, eatdelay, wt, cost, material, nutrition, color, flags)         \
     OBJECT(OBJ(name, None), None,                                      \
            BITS(1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, P_NONE, material), 0, 0, 0,     \
-           REAGENT_CLASS, prob, eatdelay, wt, cost,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
+           REAGENT_CLASS, prob, eatdelay, wt, cost,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
            nutrition, color, 0, 0, 0, 0, flags)
 
 	REAGENT("thread of spider silk",	125, 0, 1, 10, SILK, 2, CLR_GRAY, O1_SOLD_AS_MATERIAL_COMPONENT), /* STARTMARKER 1&2 */
@@ -1430,7 +1438,7 @@ OBJECT(OBJ("acid venom", "splash of venom"), None,
 /* fencepost, the deadly Array Terminator -- name [1st arg] *must* be NULL */
 OBJECT(OBJ(None, None), None,
        BITS(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, P_NONE, 0), 0, 0, 0,
-       ILLOBJ_CLASS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, O1_NONE)
+       ILLOBJ_CLASS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, O1_NONE)
 }; /* objects[] */
 
 #ifndef OBJECTS_PASS_2_

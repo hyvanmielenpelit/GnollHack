@@ -316,7 +316,7 @@ E int FDECL(use_pick_axe2, (struct obj *));
 E boolean FDECL(mdig_tunnel, (struct monst *));
 E void FDECL(draft_message, (BOOLEAN_P));
 E void FDECL(watch_dig, (struct monst *, XCHAR_P, XCHAR_P, BOOLEAN_P));
-E void NDECL(zap_dig);
+E void FDECL(zap_dig, (struct obj*));
 E struct obj *FDECL(bury_an_obj, (struct obj *, boolean *));
 E void FDECL(bury_objs, (int, int));
 E void FDECL(unearth_objs, (int, int));
@@ -2100,6 +2100,8 @@ E void FDECL(punish, (struct obj *));
 E void NDECL(unpunish);
 E boolean FDECL(cant_revive, (int *, BOOLEAN_P, struct obj *));
 E boolean NDECL(create_particular);
+E int FDECL(maybe_tame, (struct monst*, struct obj*));
+
 
 /* ### rect.c ### */
 

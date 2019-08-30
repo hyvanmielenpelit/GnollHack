@@ -496,7 +496,7 @@ const struct Role roles[] = {
       2,
       10,
       A_INT,
-      SPE_CHARM_MONSTER,
+      SPE_SPHERE_OF_CHARMING,
       -4 },
     { { "Valkyrie", 0 },
       { { "Stripling", 0 },

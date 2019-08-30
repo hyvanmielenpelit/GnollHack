@@ -300,6 +300,10 @@ struct obj *otmp;
 			}
 		}
 		break;
+	case SPE_CHARM_MONSTER:
+	case SPE_DOMINATE_MONSTER:
+		(void)maybe_tame(mtmp, otmp);
+		break;
 	case WAN_POLYMORPH:
     case SPE_POLYMORPH:
     case POT_POLYMORPH:
@@ -3126,6 +3130,16 @@ int duration;
     } else {
         mdef->mcan = 1;
 		mdef->mcan_timer = duration;
+
+		/* break charm */
+		if (mdef->mcharmed)
+		{
+			mdef->mcharmed = 0;
+			mdef->mcharmed_timer = 0;
+			mdef->mpeaceful = mdef->morigpeaceful;
+			mdef->mtame = mdef->morigtame;
+		}
+
 		/* force shapeshifter into its base form */
         if (M_AP_TYPE(mdef) != M_AP_NOTHING)
             seemimic(mdef);
@@ -3449,7 +3463,16 @@ struct obj *obj;
         } else if (u.dz) {
             disclose = zap_updown(obj);
         } else {
-            (void) bhit(u.dx, u.dy, (objects[otyp].oc_dir == TOUCH) ? 1: rn1(8, 6), ZAPPED_WAND, bhitm, bhito,
+			int range = 1;
+
+			if (objects[otyp].oc_dir == TOUCH)
+				range = 1;
+			else if (objects[otyp].oc_spell_range > 0)
+				range = objects[otyp].oc_spell_range;
+			else
+				range = rn1(8, 6);
+
+			(void) bhit(u.dx, u.dy, range, ZAPPED_WAND, bhitm, bhito,
                         &obj);
         }
         zapwrapup(); /* give feedback for obj_zapped */
@@ -3465,7 +3488,7 @@ struct obj *obj;
 		{
 		case RAY_DIGGING:
 		case RAY_WND_DIGGING:
-			zap_dig();
+			zap_dig(obj);
 			break;
 		case RAY_FIRE:
 		case RAY_COLD:
@@ -4589,7 +4612,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
     }
     if (type < 0)
         newsym(u.ux, u.uy);
-    range = rn1(7, 7);
+    range = (!origobj || objects[origobj->otyp].oc_spell_range <= 0) ? rn1(7, 7) : objects[origobj->otyp].oc_spell_range;
     if (dx == 0 && dy == 0)
         range = 1;
     save_bhitpos = bhitpos;

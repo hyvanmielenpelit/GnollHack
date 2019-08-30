@@ -30,7 +30,6 @@ STATIC_DCL void FDECL(forget_objclass, (int));
 #endif
 STATIC_DCL void FDECL(randomize, (int *, int));
 STATIC_DCL void FDECL(forget, (int));
-STATIC_DCL int FDECL(maybe_tame, (struct monst *, struct obj *));
 STATIC_DCL boolean FDECL(get_valid_stinking_cloud_pos, (int, int));
 STATIC_DCL boolean FDECL(is_valid_stinking_cloud_pos, (int, int, BOOLEAN_P));
 STATIC_PTR void FDECL(display_stinking_cloud_positions, (int));
@@ -933,7 +932,7 @@ int howmuch;
 }
 
 /* monster is hit by scroll of taming's effect */
-STATIC_OVL int
+int
 maybe_tame(mtmp, sobj)
 struct monst *mtmp;
 struct obj *sobj;
@@ -948,8 +947,18 @@ struct obj *sobj;
     } else {
         if (mtmp->isshk)
             make_happy_shk(mtmp, FALSE);
-        else if (!resist(mtmp, sobj, 0, 0, NOTELL))
-            (void) tamedog(mtmp, (struct obj *) 0);
+		else if (!resist(mtmp, sobj, 0, 0, NOTELL))
+		{
+			if (sobj && objects[sobj->otyp].oc_spell_dur_plus > -1)
+			{
+				/* Charm can be dispelled is non-permanent if timer > 0 */
+				mtmp->morigpeaceful = mtmp->mpeaceful;
+				mtmp->morigtame = mtmp->mtame;
+				mtmp->mcharmed = 1;
+				mtmp->mcharmed_timer = d(objects[sobj->otyp].oc_spell_dur_dice, objects[sobj->otyp].oc_spell_dur_dicesize) + objects[sobj->otyp].oc_spell_dur_plus;
+			}
+			(void)tamedog(mtmp, (struct obj*) 0);
+		}
         if ((!was_peaceful && mtmp->mpeaceful) || (!was_tame && mtmp->mtame))
             return 1;
     }
@@ -1442,7 +1451,10 @@ enchantarmor:
             sobj = 0; /* nothing enchanted: strange_feeling -> useup */
         break;
     case SCR_TAMING:
-    case SPE_CHARM_MONSTER: {
+    case SPE_SPHERE_OF_CHARMING:
+	case SPE_SPHERE_OF_DOMINATION:
+	case SPE_MASS_CHARM:
+	{
         int candidates, res, results, vis_results;
 
         if (u.uswallow) {
@@ -1451,6 +1463,9 @@ enchantarmor:
         } else {
             int i, j, bd = confused ? 5 : 1;
             struct monst *mtmp;
+
+			if (otyp != SCR_TAMING)
+				bd = objects[otyp].oc_spell_radius;
 
             /* note: maybe_tame() can return either positive or
                negative values, but not both for the same scroll */

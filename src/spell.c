@@ -44,7 +44,7 @@ STATIC_DCL boolean NDECL(spellsortmenu);
 STATIC_DCL boolean FDECL(dospellmenu, (const char *, int, int *));
 STATIC_DCL int FDECL(percent_success, (int));
 STATIC_DCL char *FDECL(spellretention, (int, char *));
-STATIC_DCL int NDECL(throwspell);
+STATIC_DCL int FDECL(throwspell, (int));
 STATIC_DCL void NDECL(cast_protection);
 STATIC_DCL void FDECL(spell_backfire, (int));
 STATIC_DCL const char *FDECL(spelltypemnemonic, (int));
@@ -86,7 +86,7 @@ STATIC_DCL int FDECL(domaterialcomponentsmenu, (int));
  *      Ran to hide (SPE_INVISIBILITY)
  *      Rog to find loot (SPE_DETECT_TREASURE)
  *      Sam to be At One (SPE_CLAIRVOYANCE)
- *      Tou to smile (SPE_CHARM_MONSTER)
+ *      Tou to smile (SPE_SPHERE_OF_CHARMING)
  *      Val control the cold (SPE_CONE_OF_COLD)
  *      Wiz all really, but SPE_MAGIC_MISSILE is their party trick
  *
@@ -1205,7 +1205,7 @@ boolean atme;
 	case SPE_ICE_STORM:
 	case SPE_THUNDERSTORM:
 	case SPE_DEATHSPELL:
-		if (throwspell()) {
+		if (throwspell(otyp)) {
             cc.x = u.dx;
             cc.y = u.dy;
 			//One time only //n = rnd(8) + 1;
@@ -1268,6 +1268,8 @@ boolean atme;
 	case SPE_FORBID_SUMMONING:
 	case SPE_FINGER_OF_DEATH:
 	case SPE_TOUCH_OF_DEATH:
+	case SPE_CHARM_MONSTER:
+	case SPE_DOMINATE_MONSTER:
 	case SPE_LIGHT:
 	case SPE_BLACK_BLADE_OF_DISASTER:
 	case SPE_MAGE_ARMOR:
@@ -1340,8 +1342,10 @@ boolean atme;
         if (role_skill >= P_SKILLED)
             pseudo->blessed = 1;
     /*FALLTHRU*/
-    case SPE_CHARM_MONSTER:
-    case SPE_MAGIC_MAPPING:
+    case SPE_SPHERE_OF_CHARMING:
+	case SPE_SPHERE_OF_DOMINATION:
+	case SPE_MASS_CHARM:
+	case SPE_MAGIC_MAPPING:
     case SPE_CREATE_MONSTER:
         (void) seffects(pseudo);
         break;
@@ -1555,10 +1559,14 @@ int x, y;
 
 /* Choose location where spell takes effect. */
 STATIC_OVL int
-throwspell()
+throwspell(otyp)
+int otyp;
 {
     coord cc, uc;
     struct monst *mtmp;
+	int range = 10;
+	if (otyp >= 0 && objects[otyp].oc_spell_range > 0)
+		range = objects[otyp].oc_spell_range;
 
     if (u.uinwater) {
         pline("You're joking!  In this weather?");
@@ -1574,7 +1582,7 @@ throwspell()
     if (getpos(&cc, TRUE, "the desired position") < 0)
         return 0; /* user pressed ESC */
     /* The number of moves from hero to where the spell drops.*/
-    if (distmin(u.ux, u.uy, cc.x, cc.y) > 10) {
+    if (distmin(u.ux, u.uy, cc.x, cc.y) > range) {
         pline_The("spell dissipates over the distance!");
         return 0;
     } else if (u.uswallow) {

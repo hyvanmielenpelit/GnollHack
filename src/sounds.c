@@ -435,6 +435,15 @@ register struct monst *mtmp;
         if (context.run)
             nomul(0);
         wake_nearto(mtmp->mx, mtmp->my, mtmp->data->mlevel * 12);
+		/* break charm*/
+		if(mtmp->mcharmed)
+		{
+			mtmp->mcharmed = 0;
+			mtmp->mcharmed_timer = 0;
+			mtmp->mpeaceful = mtmp->morigpeaceful;
+			mtmp->mtame = mtmp->morigtame;
+		}
+
     }
 }
 

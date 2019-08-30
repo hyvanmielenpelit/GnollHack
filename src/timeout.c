@@ -527,7 +527,6 @@ nh_timeout()
 
 
 	//Reduce item cooldown timers
-	struct obj* obj;
 	struct monst* mon, * mmtmp[3];
 	int i;
 
@@ -554,6 +553,8 @@ nh_timeout()
 		youmonst.mnomagicres = 0;
 	if (youmonst.mnosummon_timer && !--youmonst.mnosummon_timer)
 		youmonst.mnosummon = 0;
+	if (youmonst.mcharmed_timer && !--youmonst.mcharmed_timer)
+		youmonst.mcharmed = 0;
 
 
     was_flying = Flying;

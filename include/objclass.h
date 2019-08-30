@@ -109,10 +109,7 @@ struct objclass {
     /* 3 free bits */
 
     schar oc_subtyp;
-#define oc_skill oc_subtyp  /* Skills of weapons, spellbooks, tools, gems */
-#define oc_armcat oc_subtyp /* for armor (enum obj_armor_types) */
-
-    uchar oc_oprop, oc_oprop2, oc_oprop3; /* property (invis, &c.) conveyed */
+    uchar oc_oprop, oc_oprop2, oc_oprop3; /* properties (invis, &c.) conveyed */
 	
 	char  oc_class; /* object class (enum obj_class_types) */
     schar oc_delay; /* delay when using such an object */
@@ -125,14 +122,19 @@ struct objclass {
     /* for weapons, and tools, rocks, and gems useful as weapons */
 	int oc_wsdice, oc_wsdam, oc_wsdmgplus; /* small monster damage, also used for spell damage */
 	int oc_wldice, oc_wldam, oc_wldmgplus; /* large monster damage, also used for duration for spells */
-	int oc_oc1;
-	int oc_oc2, oc_oc3; //Spell levels can be negative, spell mana cost can be over 255
-	int oc_oc4;  //Used for spell attributes and duration
+	int oc_oc1;	/* Used for spell cooldown */
+	int oc_oc2; /* Used for spell level */
+	int oc_oc3; /* Used for spell mana cost */
+	int oc_oc4; /* Used for spell attributes */
+	int oc_oc5; /* Used for spell range */
+	int oc_oc6; /* Used for spell radius */
 
 /* weapons */
+#define oc_skill oc_subtyp		/* Skills of weapons, spellbooks, tools, gems */
 #define oc_hitbon oc_oc1		/* weapons: "to hit" bonus */
 
 /* armor */
+#define oc_armcat oc_subtyp		/* armor: (enum obj_armor_types) */
 #define a_ac oc_oc1				/* armor class, used in ARM_BONUS in do.c */
 #define a_can oc_oc2			/* armor: used in mhitu.c */
 
@@ -141,6 +143,8 @@ struct objclass {
 #define oc_spell_level oc_oc2			/* books: spell level */
 #define oc_spell_mana_cost oc_oc3		/* books: spell mana cost */
 #define oc_spell_attribute oc_oc4		/* books: spell primary casting attribute */
+#define oc_spell_range oc_oc5			/* books: spell range */
+#define oc_spell_radius oc_oc6			/* books: spell radius */
 #define oc_spell_dmg_dice oc_wsdice		/* books: spell damage no of dice */
 #define oc_spell_dmg_dicesize oc_wsdam	/* books: spell damage size of dice */
 #define oc_spell_dmg_plus oc_wsdmgplus	/* books: spell damage constant added */
