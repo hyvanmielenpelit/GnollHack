@@ -1951,6 +1951,7 @@ register struct obj *obj;
     if (MON_WEP(mon) == obj)
         MON_NOWEP(mon);
     obj->owornmask &= ~W_WEP;
+
 }
 
 /*weapon.c*/

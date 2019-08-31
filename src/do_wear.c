@@ -1103,7 +1103,11 @@ Amulet_on()
         if (newnap < oldnap || oldnap == 0L)
             HSleepy = (HSleepy & ~TIMEOUT) | newnap;
     } break;
-    case AMULET_OF_YENDOR:
+	case AMULET_OF_MANA:
+	case DEMON_BLOOD_TALISMAN:
+		makeknown(uamul->otyp);
+		break;
+	case AMULET_OF_YENDOR:
         break;
     }
 	updatemaxhp();

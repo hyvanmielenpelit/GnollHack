@@ -124,19 +124,32 @@ struct objclass {
 	int oc_wldice, oc_wldam, oc_wldmgplus; /* large monster damage, also used for duration for spells */
 	int oc_oc1;	/* Used for spell cooldown */
 	int oc_oc2; /* Used for spell level */
-	int oc_oc3; /* Used for spell mana cost */
-	int oc_oc4; /* Used for spell attributes */
+	int oc_oc3; /* Used for spell mana cost; other items mana pool bonus */
+	int oc_oc4; /* Used for spell attributes; other items hit point bonus */
 	int oc_oc5; /* Used for spell range */
 	int oc_oc6; /* Used for spell radius */
+
+/* general*/
+#define oc_mana_bonus oc_oc3	/* armor, weapons, rings, amulets: mana pool bonus: Fixed points unless O1_MANA_PERCENTAGE_BONUS is specified */
+#define oc_hp_bonus oc_oc4	/* armor, weapons, rings, amulets: hit point bonus: Fixed points unless O1_HP_PERCENTAGE_BONUS is specified */
 
 /* weapons */
 #define oc_skill oc_subtyp		/* Skills of weapons, spellbooks, tools, gems */
 #define oc_hitbon oc_oc1		/* weapons: "to hit" bonus */
+/* oc_oc2 unused */
+/* oc_oc3 mana pool bonus */
+/* oc_oc4 hit point bonus */
+/* oc_oc5 unused */
+/* oc_oc6 unused */
 
 /* armor */
 #define oc_armcat oc_subtyp		/* armor: (enum obj_armor_types) */
 #define a_ac oc_oc1				/* armor class, used in ARM_BONUS in do.c */
 #define a_can oc_oc2			/* armor: used in mhitu.c */
+/* oc_oc3 mana pool bonus */
+/* oc_oc4 hit point bonus */
+/* oc_oc5 unused */
+/* oc_oc6 unused */
 
 /* spells */
 #define oc_spell_cooldown oc_oc1		/* books: spell cooldown time */
@@ -183,6 +196,7 @@ struct objclass {
 	int oc_item_level;				/* item level, to be used with loot tables */
 	unsigned long oc_flags;			/* E.g. if indestructible or disintegration resistant */
 
+/* Item resistances */
 #define O1_NONE 0x00000000 
 #define O1_INDESTRUCTIBLE 0x00000001 
 #define O1_DISINTEGRATION_RESISTANT 0x00000002 
@@ -193,6 +207,7 @@ struct objclass {
 #define O1_RUST_RESISTANT 0x00000040
 #define O1_CORROSION_RESISTANT 0x00000080
 
+/* Item resistances */
 #define O1_SPELL_EXPLOSION_EFFECT 0x00000100
 #define O1_SPELL_BYPASSES_MAGIC_RESISTANCE 0x00000200
 #define O1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY 0x00000400
@@ -200,9 +215,10 @@ struct objclass {
 #define O1_NO_SPELL_CASTING_PENALTY 0x00001000
 #define O1_HALF_SPELL_CASTING_PENALTY 0x00002000
 #define O1_SPECIAL_ENCHANTABLE 0x00004000
+#define O1_MANA_PERCENTAGE_BONUS 0x00008000
 
-#define O1_SOLD_AS_MATERIAL_COMPONENT 0x00010000
-#define O1_EDIBLE_NONFOOD 0x00020000
+#define O1_SOLD_AS_MATERIAL_COMPONENT 0x00100000
+#define O1_EDIBLE_NONFOOD 0x00200000
 };
 
 struct class_sym {

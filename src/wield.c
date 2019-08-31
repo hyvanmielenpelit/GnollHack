@@ -85,6 +85,8 @@ setuwep(obj)
 register struct obj *obj;
 {
     struct obj *olduwep = uwep;
+	int oldmanamax = u.uenmax;
+	int oldhpmax = u.uhpmax;
 
     if (obj == uwep)
         return; /* necessary to not set unweapon */
@@ -92,6 +94,10 @@ register struct obj *obj;
      * *whenever* Sunsword is unwielded, from whatever cause.
      */
     setworn(obj, W_WEP);
+
+	if (u.uenmax != oldmanamax || u.uhpmax != oldhpmax) // this should identify all objects giving hp or mana
+		makeknown(obj->otyp);
+
     if (uwep == obj && artifact_light(olduwep) && olduwep->lamplit) {
         end_burn(olduwep, FALSE);
         if (!Blind)
@@ -302,6 +308,9 @@ dowield()
     if (flags.pushweapon && oldwep && uwep != oldwep)
         setuswapwep(oldwep);
     untwoweapon();
+
+	updatemaxen();
+	updatemaxhp();
 
     return result;
 }
