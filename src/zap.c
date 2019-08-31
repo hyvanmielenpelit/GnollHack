@@ -3490,6 +3490,7 @@ struct obj *obj;
 		case RAY_WND_DIGGING:
 			zap_dig(obj);
 			break;
+		case RAY_MAGIC_MISSILE:
 		case RAY_FIRE:
 		case RAY_COLD:
 		case RAY_LIGHTNING:
