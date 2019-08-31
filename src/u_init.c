@@ -113,7 +113,8 @@ static struct trobj Priest[] = {
 //    { CLOVE_OF_GARLIC, 0, FOOD_CLASS, 1, 0, 0 }, //Randomized reagents instead
 //    { SPRIG_OF_WOLFSBANE, 0, FOOD_CLASS, 1, 0, 0 }, //Randomized reagents instead
     { UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 2, UNDEF_BLESS, 0 },
-    { 0, 0, 0, 0, 0, 0 }
+	{ UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 2, UNDEF_BLESS, 0 },
+	{ 0, 0, 0, 0, 0, 0 }
 };
 static struct trobj Ranger[] = {
 #define RAN_BOW 1
@@ -183,8 +184,9 @@ static struct trobj Wizard[] = {
     { UNDEF_TYP, UNDEF_SPE, POTION_CLASS, 3, UNDEF_BLESS, 0 },
     { UNDEF_TYP, UNDEF_SPE, SCROLL_CLASS, 3, UNDEF_BLESS, 0 },
 	{ SPE_MAGIC_ARROW, 0, SPBOOK_CLASS, 1, 1, 0 },
-	{ SPE_FORCE_BOLT, 0, SPBOOK_CLASS, 1, 1, 0 },
-    { UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, UNDEF_BLESS, 0 },
+	{ UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, UNDEF_BLESS, 0 },
+	{ UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, UNDEF_BLESS, 0 },
+	{ UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, UNDEF_BLESS, 0 },
 	{ ROBE, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
 	{ 0, 0, 0, 0, 0, 0 }
 };
@@ -717,7 +719,7 @@ u_init()
 	max_rank_sz(); /* set max str size for class ranks */
 
 	//With level and attributes known, calculate hp and maxhp, en, and maxen
-	u.uhp = u.uhpmax = u.ubasehpmax + hpmaxadjustment();
+	u.uhp = u.uhpmax = u.ubasehpmax + hpmaxadjustment(TRUE);
 	u.uen = u.uenmax = u.ubaseenmax + enmaxadjustment();
 
 	init_uhunger();

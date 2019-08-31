@@ -121,7 +121,7 @@ E void FDECL(init_attr, (int));
 E void NDECL(redist_attr);
 E void FDECL(adjabil, (int, int));
 E int NDECL(newhp);
-E int NDECL(hpmaxadjustment);
+E int FDECL(hpmaxadjustment, (boolean));
 E void NDECL(updatemaxhp);
 E schar FDECL(acurr, (int));
 E schar NDECL(acurrstr);

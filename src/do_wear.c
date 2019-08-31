@@ -781,6 +781,7 @@ Robe_on(VOID_ARGS)
 	case ROBE_OF_PROTECTION:
 		makeknown(uarmo->otyp);
 		break;
+	case GOWN_OF_THE_ARCHBISHOPS:
 	case ROBE_OF_MAGIC_RESISTANCE:
 		break;
 	case ROBE_OF_STARRY_WISDOM:
@@ -819,6 +820,7 @@ Robe_off(VOID_ARGS)
 	case BATHROBE:
 	case ROBE_OF_PROTECTION:
 	case ROBE_OF_MAGIC_RESISTANCE:
+	case GOWN_OF_THE_ARCHBISHOPS:
 		break;
 	case ROBE_OF_STARRY_WISDOM:
 	case ROBE_OF_THE_ARCHMAGI:

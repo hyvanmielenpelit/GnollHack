@@ -78,6 +78,7 @@ long mask;
                     if (wp->w_mask & ~(W_SWAPWEP | W_QUIVER)) {
                         /* leave as "x = x <op> y", here and below, for broken
                          * compilers */
+						struct objclass* peritem = &objects[oobj->otyp];
                         p = objects[oobj->otyp].oc_oprop;
                         u.uprops[p].extrinsic =
                             u.uprops[p].extrinsic & ~wp->w_mask;
@@ -107,7 +108,8 @@ long mask;
                     if (wp->w_mask & ~(W_SWAPWEP | W_QUIVER)) {
                         if (obj->oclass == WEAPON_CLASS || is_weptool(obj)
                             || mask != W_WEP) {
-                            p = objects[obj->otyp].oc_oprop;
+							struct objclass* peritem = &objects[obj->otyp];
+							p = objects[obj->otyp].oc_oprop;
                             u.uprops[p].extrinsic =
                                 u.uprops[p].extrinsic | wp->w_mask;
 							p = objects[obj->otyp].oc_oprop2;

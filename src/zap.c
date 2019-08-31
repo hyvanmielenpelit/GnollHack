@@ -2450,6 +2450,19 @@ register struct obj *obj;
 		verbalize("By the deluge of this blood sacrifice, come forth and walk this plane once more!");
 		summondemogorgon(obj->otyp);
 		break;
+	case SPE_GUARDIAN_ANGEL:
+		summoncreature(obj->otyp, (rn2(100) < (u.ulevel - 1) * 5) ? PM_ARCHON : PM_ALEAX, "%s descends from the heavens.", TRUE);
+		break;
+	case SPE_DIVINE_MOUNT:
+		summoncreature(obj->otyp, PM_KI_RIN, "%s appears before you.", TRUE);
+		break;
+	case SPE_HEAVENLY_ARMY:
+		You("recite an old prayer to %s...", u_gname());
+		for (int n = d(2, 4); n > 0; n--)
+		{
+			summoncreature(obj->otyp, (rn2(100) < 10 + u.ulevel) ? PM_ARCHON : PM_ALEAX, "%s descends from the heavens.", TRUE);
+		}
+		break;
 	case WAN_SECRET_DOOR_DETECTION:
     case SPE_DETECT_UNSEEN:
         if (!findit())

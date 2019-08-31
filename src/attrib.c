@@ -1185,10 +1185,11 @@ newhp()
 }
 
 int
-hpmaxadjustment()
+hpmaxadjustment(addconstitutionbonus)
+boolean addconstitutionbonus;
 {
 	int basehp = u.ubasehpmax;
-	int baseadj = constitution_hp_bonus(ACURR(A_CON)) * u.ulevel;
+	int baseadj = addconstitutionbonus ? constitution_hp_bonus(ACURR(A_CON)) * u.ulevel : 0;
 	int adj = baseadj;
 	int otyp = 0;
 	struct obj* uitem;
@@ -1265,11 +1266,11 @@ hpmaxadjustment()
 void
 updatemaxhp()
 {
-	u.uhpmax = u.ubasehpmax + hpmaxadjustment();
+	u.uhpmax = u.ubasehpmax + hpmaxadjustment(TRUE);
 	if (u.uhp > u.uhpmax)
 		u.uhp = u.uhpmax;
 
-	u.mhmax = u.basemhmax; //Monsters do not get hpadjustment yet, since their base hitpoints include consitution bonus +hpmaxadjustment();
+	u.mhmax = u.basemhmax + hpmaxadjustment(FALSE); //Monsters do not get CON bonus from hpadjustment, since their base hitpoints include consitution bonus +hpmaxadjustment();
 	if (u.mh > u.mhmax)
 		u.mh = u.mhmax;
 

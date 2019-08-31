@@ -1492,7 +1492,10 @@ coord *tm;
                (less useful to use, and encourage pets to avoid the trap) */
             if (otmp) {
                 otmp->blessed = 0;
-                otmp->cursed = 1;
+				if(objects[otmp->otyp].oc_flags & O1_NOT_CURSEABLE)
+					otmp->cursed = 0;
+				else
+					otmp->cursed = 1;
                 otmp->owt = weight(otmp);
                 place_object(otmp, m.x, m.y);
             }
@@ -1527,7 +1530,10 @@ coord *tm;
                               TRUE, FALSE);
                 otmp->quan = 1;
                 otmp->blessed = 0;
-                otmp->cursed = 1;
+				if (objects[otmp->otyp].oc_flags & O1_NOT_CURSEABLE)
+					otmp->cursed = 0;
+				else
+					otmp->cursed = 1;
                 otmp->owt = weight(otmp);
                 place_object(otmp, m.x, m.y);
             }

@@ -326,7 +326,7 @@ newman()
     /* retain same proportion for current HP; u.uhp * hpmax / u.uhpmax */
 	int oldhpmax = u.uhpmax;
     u.ubasehpmax = hpmax;
-	u.uhpmax = u.ubasehpmax + hpmaxadjustment();
+	u.uhpmax = u.ubasehpmax + hpmaxadjustment(TRUE);
 	u.uhp = rounddiv((long)u.uhp * (long)oldhpmax, u.uhpmax);
 	/*
      * Do the same for spell power.

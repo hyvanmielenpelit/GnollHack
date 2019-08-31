@@ -1351,30 +1351,39 @@ register struct obj *otmp;
         old_light = arti_light_radius(otmp);
     already_cursed = otmp->cursed;
     otmp->blessed = 0;
-    otmp->cursed = 1;
+	if(objects[otmp->otyp].oc_flags & O1_NOT_CURSEABLE)
+		otmp->cursed = 0;
+	else
+		otmp->cursed = 1;
     /* welded two-handed weapon interferes with some armor removal */
-    if (otmp == uwep && bimanual(uwep))
-        reset_remarm();
-    /* rules at top of wield.c state that twoweapon cannot be done
-       with cursed alternate weapon */
-    if (otmp == uswapwep && u.twoweap)
-        drop_uswapwep();
-    /* some cursed items need immediate updating */
-    if (carried(otmp) && confers_luck(otmp)) {
-        set_moreluck();
-    } else if (otmp->otyp == BAG_OF_HOLDING) {
-        otmp->owt = weight(otmp);
-    } else if (otmp->otyp == FIGURINE) {
-        if (otmp->corpsenm != NON_PM && !dead_species(otmp->corpsenm, TRUE)
-            && (carried(otmp) || mcarried(otmp)))
-            attach_fig_transform_timeout(otmp);
-    } else if (otmp->oclass == SPBOOK_CLASS) {
-        /* if book hero is reading becomes cursed, interrupt */
-        if (!already_cursed)
-            book_cursed(otmp);
-    }
-    if (otmp->lamplit)
-        maybe_adjust_light(otmp, old_light);
+	if (otmp->cursed)
+	{
+		if (otmp == uwep && bimanual(uwep))
+			reset_remarm();
+		/* rules at top of wield.c state that twoweapon cannot be done
+		   with cursed alternate weapon */
+		if (otmp == uswapwep && u.twoweap)
+			drop_uswapwep();
+		/* some cursed items need immediate updating */
+		if (carried(otmp) && confers_luck(otmp)) {
+			set_moreluck();
+		}
+		else if (otmp->otyp == BAG_OF_HOLDING) {
+			otmp->owt = weight(otmp);
+		}
+		else if (otmp->otyp == FIGURINE) {
+			if (otmp->corpsenm != NON_PM && !dead_species(otmp->corpsenm, TRUE)
+				&& (carried(otmp) || mcarried(otmp)))
+				attach_fig_transform_timeout(otmp);
+		}
+		else if (otmp->oclass == SPBOOK_CLASS) {
+			/* if book hero is reading becomes cursed, interrupt */
+			if (!already_cursed)
+				book_cursed(otmp);
+		}
+		if (otmp->lamplit)
+			maybe_adjust_light(otmp, old_light);
+	}
     return;
 }
 
