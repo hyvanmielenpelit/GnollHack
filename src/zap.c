@@ -2328,6 +2328,7 @@ zapnodir(obj)
 register struct obj *obj;
 {
     boolean known = FALSE;
+	int monstid = 0;
 
     switch (obj->otyp) {
     case WAN_LIGHT:
@@ -2397,6 +2398,46 @@ register struct obj *obj;
 		else
 			summoncreature(obj->otyp, PM_WATER_ELEMENTAL, "Water condensates from thin air and forms into %s.", FALSE);
 		break;
+	case SPE_CREATE_GOLD_GOLEM:
+	case SPE_CREATE_GLASS_GOLEM:
+	case SPE_CREATE_GEMSTONE_GOLEM:
+	case SPE_CREATE_CLAY_GOLEM:
+	case SPE_CREATE_STONE_GOLEM:
+	case SPE_CREATE_IRON_GOLEM:
+	case SPE_CREATE_WOOD_GOLEM:
+	case SPE_CREATE_PAPER_GOLEM:
+		switch (obj->otyp)
+		{
+		case SPE_CREATE_GOLD_GOLEM:
+			monstid = PM_GOLD_GOLEM;
+			break;
+		case SPE_CREATE_GLASS_GOLEM:
+			monstid = PM_GLASS_GOLEM;
+			break;
+		case SPE_CREATE_GEMSTONE_GOLEM:
+			monstid = PM_GEMSTONE_GOLEM;
+			break;
+		case SPE_CREATE_CLAY_GOLEM:
+			monstid = PM_CLAY_GOLEM;
+			break;
+		case SPE_CREATE_STONE_GOLEM:
+			monstid = PM_STONE_GOLEM;
+			break;
+		case SPE_CREATE_IRON_GOLEM:
+			monstid = PM_IRON_GOLEM;
+			break;
+		case SPE_CREATE_WOOD_GOLEM:
+			monstid = PM_WOOD_GOLEM;
+			break;
+		case SPE_CREATE_PAPER_GOLEM:
+			monstid = PM_PAPER_GOLEM;
+			break;
+		default:
+			monstid = PM_STRAW_GOLEM;
+			break;
+		}
+		summoncreature(obj->otyp, monstid, "%s forms before you.", TRUE);
+		break;
 	case SPE_SUMMON_DEMON:
 		known = TRUE;
 		summondemon(obj->otyp);
@@ -2404,9 +2445,9 @@ register struct obj *obj;
 	case SPE_CALL_DEMOGORGON:
 		known = TRUE;
 		You("chant an invocation:");
-		verbalize("Lord of the Abyss, Prince of All Demons,");
+		verbalize("Lord of the Abyss, Prince of Demons,");
 		verbalize("I call to thee, and I pledge myself to thee!");
-		verbalize("By the deluge of this blood sacrifice, I ask you to walk this plane once more!");
+		verbalize("By the deluge of this blood sacrifice, come forth and walk this plane once more!");
 		summondemogorgon(obj->otyp);
 		break;
 	case WAN_SECRET_DOOR_DETECTION:
@@ -6012,7 +6053,8 @@ boolean capitalize; //capitalize the monster name for %s
 	{
 		(void)tamedog(mon, (struct obj*) 0);
 		mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_dicesize) + objects[spl_otyp].oc_spell_dur_plus;
-		begin_summontimer(mon);
+		if(mon->summonduration > 0) //Otherwise, permanent
+			begin_summontimer(mon);
 		pline(message_fmt, capitalize ? Amonnam(mon) : a_monnam(mon)); //"%s appears in a puff of smoke!"
 	}
 

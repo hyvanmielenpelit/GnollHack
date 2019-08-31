@@ -1280,6 +1280,14 @@ boolean atme;
 	case SPE_ANIMATE_EARTH:
 	case SPE_ANIMATE_FIRE:
 	case SPE_ANIMATE_WATER:
+	case SPE_CREATE_GOLD_GOLEM:
+	case SPE_CREATE_GLASS_GOLEM:
+	case SPE_CREATE_GEMSTONE_GOLEM:
+	case SPE_CREATE_CLAY_GOLEM:
+	case SPE_CREATE_STONE_GOLEM:
+	case SPE_CREATE_IRON_GOLEM:
+	case SPE_CREATE_WOOD_GOLEM:
+	case SPE_CREATE_PAPER_GOLEM:
 	case SPE_SUMMON_DEMON:
 	case SPE_CALL_DEMOGORGON:
 	case SPE_DETECT_UNSEEN:
@@ -2622,7 +2630,13 @@ int spell;
 		}
 		else
 		{
-			Sprintf(buf4, "%s%s", obj_descr[perobj->oc_name_idx].oc_name, GemStone(mc->objectid) ? " stone" : "");
+			Sprintf(buf4, "%s%s%s",
+				objects[mc->objectid].oc_class == SCROLL_CLASS ? "scroll of " :
+					objects[mc->objectid].oc_class == POTION_CLASS ? "potion of " : 
+					objects[mc->objectid].oc_class == WAND_CLASS ? "wand of " :
+					objects[mc->objectid].oc_class == SPBOOK_CLASS ? "spellbook of " : "",
+				obj_descr[perobj->oc_name_idx].oc_name, 
+				GemStone(mc->objectid) ? " stone" : "");
 		}
 
 		//Correct type of component
