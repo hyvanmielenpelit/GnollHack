@@ -1187,10 +1187,77 @@ newhp()
 int
 hpmaxadjustment()
 {
-	int adj = 0;
-	int conplus = constitution_hp_bonus(ACURR(A_CON));
-	
-	adj += conplus * u.ulevel;
+	int basehp = u.ubasehpmax;
+	int baseadj = constitution_hp_bonus(ACURR(A_CON)) * u.ulevel;
+	int adj = baseadj;
+	int otyp = 0;
+	struct obj* uitem;
+
+	for (int i = 0; i < 15; i++)
+	{
+		switch (i)
+		{
+		case 0:
+			uitem = uwep;
+			break;
+		case 1:
+			uitem = uarm;
+			break;
+		case 2:
+			uitem = uarmc;
+			break;
+		case 3:
+			uitem = uarmh;
+			break;
+		case 4:
+			uitem = uarms;
+			break;
+		case 5:
+			uitem = uarmg;
+			break;
+		case 6:
+			uitem = uarmf;
+			break;
+		case 7:
+			uitem = uarmu;
+			break;
+		case 8:
+			uitem = uarmo;
+			break;
+		case 9:
+			uitem = uarmb;
+			break;
+		case 10:
+			uitem = uarmv;
+			break;
+		case 11:
+			uitem = uarmp;
+			break;
+		case 12:
+			uitem = uamul;
+			break;
+		case 13:
+			uitem = uright;
+			break;
+		case 14:
+			uitem = uleft;
+			break;
+		default:
+			uitem = (struct obj*)0;
+			break;
+		}
+		if (uitem)
+		{
+			otyp = uitem->otyp;
+			if (objects[otyp].oc_class != SPBOOK_CLASS && objects[otyp].oc_hp_bonus > 0)
+			{
+				if (objects[otyp].oc_flags & O1_HP_PERCENTAGE_BONUS)
+					adj += (objects[otyp].oc_hp_bonus * (basehp + baseadj)) / 100;
+				else
+					adj += objects[otyp].oc_hp_bonus;
+			}
+		}
+	}
 
 	return adj;
 }

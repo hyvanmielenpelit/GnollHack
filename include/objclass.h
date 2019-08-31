@@ -151,6 +151,17 @@ struct objclass {
 /* oc_oc5 unused */
 /* oc_oc6 unused */
 
+/* comestibles and reagents (and other edibles) */
+#define oc_edible_subtype oc_oc1		/* weapons: "to hit" bonus */
+
+#define EDIBLE_NORMAL 0 
+#define EDIBLE_ROTTEN 1 
+#define EDIBLE_SICKENING 2 
+#define EDIBLE_ACIDIC 3 
+#define EDIBLE_POISONOUS 4 
+#define EDIBLE_TAINTED 5 
+
+
 /* spells */
 #define oc_spell_cooldown oc_oc1		/* books: spell cooldown time */
 #define oc_spell_level oc_oc2			/* books: spell level */
@@ -216,6 +227,7 @@ struct objclass {
 #define O1_HALF_SPELL_CASTING_PENALTY 0x00002000
 #define O1_SPECIAL_ENCHANTABLE 0x00004000
 #define O1_MANA_PERCENTAGE_BONUS 0x00008000
+#define O1_HP_PERCENTAGE_BONUS 0x00010000
 
 #define O1_SOLD_AS_MATERIAL_COMPONENT 0x00100000
 #define O1_EDIBLE_NONFOOD 0x00200000

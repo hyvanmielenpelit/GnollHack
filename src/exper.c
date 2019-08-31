@@ -139,7 +139,7 @@ enmaxadjustment()
 		if (uitem)
 		{
 			otyp = uitem->otyp;
-			if(objects[otyp].oc_mana_bonus > 0)
+			if(objects[otyp].oc_class != SPBOOK_CLASS && objects[otyp].oc_mana_bonus > 0)
 			{
 				if (objects[otyp].oc_flags & O1_MANA_PERCENTAGE_BONUS)
 					adj += (objects[otyp].oc_mana_bonus * (baseen + baseadj)) / 100;

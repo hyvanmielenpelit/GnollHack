@@ -2744,8 +2744,51 @@ doeat()
         }
 
         context.victual.reqtime = objects[otmp->otyp].oc_delay;
-        if (otmp->otyp != FORTUNE_COOKIE
-            && (otmp->cursed || otmp->orotten || otmp->otyp == CLUMP_OF_BAT_GUANO || (!nonrotting_food(otmp->otyp)
+
+		if (objects[otmp->otyp].oc_edible_subtype == EDIBLE_TAINTED) {
+			pline("Ulch - that %s was tainted!", cxname(otmp));
+			if (Sick_resistance) {
+				pline("It doesn't seem at all sickening, though...");
+			}
+			else {
+				long sick_time;
+
+				sick_time = (long)rn1(10, 10);
+				/* make sure new ill doesn't result in improvement */
+				if (Sick && (sick_time > Sick))
+					sick_time = (Sick > 1L) ? Sick - 1L : 1L;
+				make_sick(sick_time, doname(otmp),
+					TRUE, SICK_VOMITABLE);
+			}
+			if (carried(otmp))
+				useup(otmp);
+			else
+				useupf(otmp, 1L);
+			return 2;
+		}
+		else if (objects[otmp->otyp].oc_edible_subtype == EDIBLE_ACIDIC && !Acid_resistance) {
+			You("have a very bad case of stomach acid.");   /* not body_part() */
+			losehp(rnd(15), "acidic food",
+				KILLED_BY_AN); /* acid damage */
+			consume_oeaten(otmp, 2); /* oeaten >>= 2 */
+		}
+		else if (objects[otmp->otyp].oc_edible_subtype == EDIBLE_POISONOUS) {
+			pline("Ecch - that must have been poisonous!");
+			if (!Poison_resistance) {
+				losestr(rnd(4));
+				losehp(rnd(15), "poisonous food",
+					KILLED_BY_AN);
+			}
+			else
+				You("seem unaffected by the poison.");
+			consume_oeaten(otmp, 2); /* oeaten >>= 2 */
+		}
+		else if (objects[otmp->otyp].oc_edible_subtype == EDIBLE_SICKENING && !Sick_resistance) {
+			You_feel("%ssick.", (Sick) ? "very " : "");
+			losehp(rnd(8), "sickening food", KILLED_BY_AN);
+			consume_oeaten(otmp, 2); /* oeaten >>= 2 */
+		} else if (otmp->otyp != FORTUNE_COOKIE
+            && (otmp->cursed || otmp->orotten || objects[otmp->otyp].oc_edible_subtype == EDIBLE_ROTTEN || (!nonrotting_food(otmp->otyp)
                                  && (monstermoves - otmp->age)
                                         > (otmp->blessed ? 50L : 30L)
                                  && (otmp->orotten || !rn2(7))))) {

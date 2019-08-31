@@ -95,9 +95,6 @@ register struct obj *obj;
      */
     setworn(obj, W_WEP);
 
-	if (u.uenmax != oldmanamax || u.uhpmax != oldhpmax) // this should identify all objects giving hp or mana
-		makeknown(obj->otyp);
-
     if (uwep == obj && artifact_light(olduwep) && olduwep->lamplit) {
         end_burn(olduwep, FALSE);
         if (!Blind)

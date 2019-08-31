@@ -56,6 +56,9 @@ long mask;
     register struct obj *oobj;
     register int p;
 
+	int oldmanamax = u.uenmax;
+	int oldhpmax = u.uhpmax;
+
     if ((mask & (W_ARM | I_SPECIAL)) == (W_ARM | I_SPECIAL)) {
         /* restoring saved game; no properties are conferred via skin */
         uskin = obj;
@@ -123,8 +126,12 @@ long mask;
             }
     }
 
+
 	updatemaxen();
 	updatemaxhp();
+
+	if (obj && (u.uenmax != oldmanamax || u.uhpmax != oldhpmax)) // this should identify all objects giving hp or mana
+		makeknown(obj->otyp);
 
 	update_inventory();
 }

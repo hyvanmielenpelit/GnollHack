@@ -543,7 +543,10 @@ Gloves_on(VOID_ARGS)
     case GAUNTLETS_OF_DEXTERITY:
         adj_abon(uarmg, uarmg->spe);
         break;
-    default:
+	case GLOVES_OF_SPELLCASTING:
+		makeknown(uarmg->otyp); //Known from mana pool change
+		break;
+	default:
         impossible(unknown_type, c_gloves, uarmg->otyp);
     }
     uarmg->known = 1; /* gloves' +/- evident because of status line AC */
@@ -595,7 +598,8 @@ Gloves_off(VOID_ARGS)
 
     switch (uarmg->otyp) {
     case LEATHER_GLOVES:
-        break;
+	case GLOVES_OF_SPELLCASTING:
+		break;
     case GAUNTLETS_OF_FUMBLING:
         if (!oldprop && !(HFumbling & ~TIMEOUT))
             HFumbling = EFumbling = 0;
@@ -1105,6 +1109,7 @@ Amulet_on()
     } break;
 	case AMULET_OF_MANA:
 	case DEMON_BLOOD_TALISMAN:
+	case PERIAPT_OF_VITALITY:
 		makeknown(uamul->otyp);
 		break;
 	case AMULET_OF_YENDOR:
@@ -1132,7 +1137,10 @@ Amulet_off()
     case AMULET_OF_CHANGE:
     case AMULET_OF_UNCHANGING:
     case FAKE_AMULET_OF_YENDOR:
-        break;
+	case AMULET_OF_MANA:
+	case PERIAPT_OF_VITALITY:
+	case DEMON_BLOOD_TALISMAN:
+		break;
     case AMULET_OF_MAGICAL_BREATHING:
         if (Underwater) {
             /* HMagical_breathing must be set off
