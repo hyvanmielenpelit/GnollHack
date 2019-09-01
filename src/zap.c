@@ -2329,6 +2329,15 @@ register struct obj *obj;
 {
     boolean known = FALSE;
 	int monstid = 0;
+	int archoncount = 0;
+	int angelcount = 0;
+	int aleaxcount = 0;
+	char buf[BUFSZ];
+	char aleaxbuf[BUFSZ];
+	char angelbuf[BUFSZ];
+	char archonbuf[BUFSZ];
+	struct monst* mtmp = (struct monst*)0;
+	struct obj* otmp = (struct obj*)0;
 
     switch (obj->otyp) {
     case WAN_LIGHT:
@@ -2375,28 +2384,28 @@ register struct obj *obj;
 		if (Is_waterlevel(&u.uz))
 			pline("Unfortunately, nothing happens.");
 		else
-			summoncreature(obj->otyp, PM_AIR_ELEMENTAL, "The air around you starts to swirl and forms into %s.", FALSE);
+			(void)summoncreature(obj->otyp, PM_AIR_ELEMENTAL, "The air around you starts to swirl and forms into %s.", FALSE);
 		break;
 	case SPE_ANIMATE_EARTH:
 		known = TRUE;
 		if (Is_waterlevel(&u.uz) || Is_airlevel(&u.uz))
 			pline("Unfortunately, nothing happens.");
 		else
-			summoncreature(obj->otyp, PM_EARTH_ELEMENTAL, "The air starts to swirl around you and forms into %s.", FALSE);
+			(void)summoncreature(obj->otyp, PM_EARTH_ELEMENTAL, "The air starts to swirl around you and forms into %s.", FALSE);
 		break;
 	case SPE_ANIMATE_FIRE:
 		known = TRUE;
 		if (Is_waterlevel(&u.uz))
 			pline("Unfortunately, nothing happens.");
 		else
-			summoncreature(obj->otyp, PM_FIRE_ELEMENTAL, "A flickering flame appears out of thin air and forms into %s.", FALSE);
+			(void)summoncreature(obj->otyp, PM_FIRE_ELEMENTAL, "A flickering flame appears out of thin air and forms into %s.", FALSE);
 		break;
 	case SPE_ANIMATE_WATER:
 		known = TRUE;
 		if (Inhell || Is_firelevel(&u.uz))
 			pline("Unfortunately, nothing happens.");
 		else
-			summoncreature(obj->otyp, PM_WATER_ELEMENTAL, "Water condensates from thin air and forms into %s.", FALSE);
+			(void)summoncreature(obj->otyp, PM_WATER_ELEMENTAL, "Water condensates from thin air and forms into %s.", FALSE);
 		break;
 	case SPE_CREATE_GOLD_GOLEM:
 	case SPE_CREATE_GLASS_GOLEM:
@@ -2436,7 +2445,7 @@ register struct obj *obj;
 			monstid = PM_STRAW_GOLEM;
 			break;
 		}
-		summoncreature(obj->otyp, monstid, "%s forms before you.", TRUE);
+		(void)summoncreature(obj->otyp, monstid, "%s forms before you.", TRUE);
 		break;
 	case SPE_SUMMON_DEMON:
 		known = TRUE;
@@ -2451,17 +2460,120 @@ register struct obj *obj;
 		summondemogorgon(obj->otyp);
 		break;
 	case SPE_GUARDIAN_ANGEL:
-		summoncreature(obj->otyp, (rn2(100) < (u.ulevel - 1) * 5) ? PM_ARCHON : PM_ALEAX, "%s descends from the heavens.", TRUE);
+		(void)summoncreature(obj->otyp, (rn2(100) < (u.ulevel - 1) * 1) ? PM_ARCHON : (rn2(100) < (u.ulevel - 1) * 5) ? PM_ANGEL : PM_ALEAX, "%s descends from the heavens.", TRUE);
 		break;
 	case SPE_DIVINE_MOUNT:
-		summoncreature(obj->otyp, PM_KI_RIN, "%s appears before you.", TRUE);
+		mtmp = summoncreature(obj->otyp, PM_KI_RIN, "%s appears before you.", TRUE);
+		if (mtmp)
+		{
+			otmp = mksobj(SADDLE, TRUE, FALSE);
+			if (otmp)
+			{
+				otmp->dknown = otmp->bknown = otmp->rknown = 1;
+				put_saddle_on_mon(otmp, mtmp);
+			}
+		}
 		break;
 	case SPE_HEAVENLY_ARMY:
 		You("recite an old prayer to %s...", u_gname());
 		for (int n = d(2, 4); n > 0; n--)
 		{
-			summoncreature(obj->otyp, (rn2(100) < 10 + u.ulevel) ? PM_ARCHON : PM_ALEAX, "%s descends from the heavens.", TRUE);
+			int roll = rn2(3);
+			switch (roll)
+			{
+			case 0:
+				monstid = PM_ALEAX;
+				break;
+			case 1:
+				monstid = PM_ANGEL;
+				break;
+			case 2:
+				monstid = PM_ARCHON;
+				break;
+			default:
+				monstid = PM_ALEAX;
+				break;
+			}
+			mtmp = summoncreature(obj->otyp, monstid, "", TRUE);
+			if (mtmp)
+			{
+				if (monstid == PM_ARCHON)
+					archoncount++;
+				else if (monstid == PM_ANGEL)
+					angelcount++;
+				else
+					aleaxcount++;
+			}
 		}
+
+		if (archoncount > 0 || angelcount > 0 || aleaxcount > 0)
+		{
+			if (archoncount == 0)
+				strcpy(archonbuf, "");
+			else if (archoncount == 1)
+				strcpy(archonbuf, "an Archon");
+			else
+				Sprintf(archonbuf, "%d Archons", archoncount);
+
+			if (angelcount == 0)
+				strcpy(angelbuf, "");
+			else if (angelcount == 1)
+				strcpy(angelbuf, "an Angel");
+			else
+				Sprintf(angelbuf, "%d Angels", angelcount);
+
+			if (aleaxcount == 0)
+				strcpy(aleaxbuf, "");
+			else if (aleaxcount == 1)
+				strcpy(aleaxbuf, "an Aleax");
+			else
+				Sprintf(aleaxbuf, "%d Aleaxes", aleaxcount);
+
+			if (archoncount == 1)
+				*archonbuf = highc(*archonbuf);
+			else if (archoncount == 0 && angelcount == 1)
+				*angelbuf = highc(*angelbuf);
+			else if (archoncount == 0 && angelcount == 0 && aleaxcount == 1)
+				*aleaxbuf = highc(*aleaxbuf);
+
+			if (archoncount > 0 && angelcount > 0 && aleaxcount > 0)
+			{
+				Sprintf(buf, "%s, %s, and %s", archonbuf, angelbuf, aleaxbuf);
+			}
+			else if(archoncount > 0 && angelcount > 0) // No Aleax
+			{
+				Sprintf(buf, "%s and %s", archonbuf, angelbuf);
+			}
+			else if (archoncount > 0 && aleaxcount > 0) // No Angels
+			{
+				Sprintf(buf, "%s and %s", archonbuf, aleaxbuf);
+			}
+			else if (angelcount > 0 && aleaxcount > 0) // No Archon
+			{
+				Sprintf(buf, "%s and %s", angelbuf, aleaxbuf);
+			}
+			else if (archoncount > 0) // Only Archon
+			{
+				Sprintf(buf, "%s", archonbuf);
+			}
+			else if (angelcount > 0) // Only Angel
+			{
+				Sprintf(buf, "%s", angelbuf);
+			}
+			else if (aleaxcount > 0) // No Aleax
+			{
+				Sprintf(buf, "%s", aleaxbuf);
+			}
+			if (aleaxcount + angelcount + archoncount == 1)
+			{
+				pline("%s descends from the heavens.", buf);
+			}
+			else
+			{
+				pline("%s descend from the heavens!", buf);
+			}
+		}
+
 		break;
 	case WAN_SECRET_DOOR_DETECTION:
     case SPE_DETECT_UNSEEN:
@@ -6053,13 +6165,13 @@ summonmagearmor()
 	}
 }
 
-void
+struct monst*
 summoncreature(spl_otyp, monst_id, message_fmt, capitalize)
 int spl_otyp, monst_id;
 char* message_fmt; //input the summoning message with one %s, which is for the monster name
 boolean capitalize; //capitalize the monster name for %s
 {
-	struct monst* mon;
+	struct monst* mon = (struct monst*)0;
 
 	mon = makemon(&mons[monst_id], u.ux, u.uy, NO_MINVENT | MM_NOCOUNTBIRTH);
 	if (mon)
@@ -6068,9 +6180,10 @@ boolean capitalize; //capitalize the monster name for %s
 		mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_dicesize) + objects[spl_otyp].oc_spell_dur_plus;
 		if(mon->summonduration > 0) //Otherwise, permanent
 			begin_summontimer(mon);
-		pline(message_fmt, capitalize ? Amonnam(mon) : a_monnam(mon)); //"%s appears in a puff of smoke!"
+		if(strcmp(message_fmt, "") != 0) //Strings do not match
+			pline(message_fmt, capitalize ? Amonnam(mon) : a_monnam(mon)); //"%s appears in a puff of smoke!"
 	}
-
+	return mon;
 }
 
 
