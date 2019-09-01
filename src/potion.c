@@ -1503,7 +1503,7 @@ int how;
         }
         case POT_SLEEPING:
             /* wakeup() doesn't rouse victims of temporary sleep */
-            if (sleep_monst(mon, obj, rn1(9,8), 0)) {
+            if (sleep_monst(mon, obj, rn1(9,8), 0, FALSE)) {
                 pline("%s falls asleep.", Monnam(mon));
                 slept_monst(mon);
             }

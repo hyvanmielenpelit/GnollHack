@@ -1089,7 +1089,7 @@ SPELL("ice storm",		  "mithril-plated", None,
 SPELL("sleep",				"mottled", None,
       P_ENCHANTMENT_SPELL, 10,  1,				20, 1, 10, A_CHA, 12, 0, 1, RAY, RAY_SLEEP, 0, 0, 0, 2, 6, 7, HI_PAPER, O1_NONE),
 SPELL("mass sleep",         "obtuse", None,
-      P_ENCHANTMENT_SPELL,  5,  5,				30, 5, 50, A_CHA, 12, 0, 1, NODIR, 0, 0, 0, 0, 3, 6, 10, HI_PAPER, O1_NONE),
+      P_ENCHANTMENT_SPELL,  5,  5,				30, 5, 50, A_CHA, 0, 6, 1, NODIR, 0, 0, 0, 0, 4, 6, 14, HI_PAPER, O1_NONE),
 
 SPELL("disintegrate",	  "stained", None,
       P_ARCANE_SPELL,       5, 12,				 4, 10,300, A_INT, 8, 0, 1, RAY, RAY_DISINTEGRATION, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_DISINTEGRATION_RESISTANT),

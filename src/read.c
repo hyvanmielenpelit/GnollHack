@@ -1515,6 +1515,8 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 	}
 	case SPE_MASS_SLEEP:
 	{
+		pline("Glittering dust starts to swirl around you...");
+
 		int candidates, results, vis_results;
 		int i, j, bd, res = 0;
 		struct monst* mtmp;
@@ -1530,17 +1532,22 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 				if ((mtmp = m_at(u.ux + i, u.uy + j)) != 0
 					|| (!i && !j && (mtmp = u.usteed) != 0))
 				{
-					++candidates;
-					res = 0;
-					if (!resist(mtmp, sobj, 0, 0, TELL))
+					if(!mtmp->mtame)
 					{
-						if(sleep_monst(mtmp, sobj, duration, 0))
+						++candidates;
+						res = 0;
+						if (sleep_monst(mtmp, sobj, duration, u.ulevel, TELL))
+						{
+							slept_monst(mtmp);
 							res = 1;
+							if (canspotmon(mtmp))
+							{
+								pline("%s falls asleep!", Monnam(mtmp));
+								vis_results += res;
+							}
+						}
+						results += res;
 					}
-
-					results += res;
-					if (canspotmon(mtmp))
-						vis_results += res;
 				}
 			}
 	

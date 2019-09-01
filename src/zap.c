@@ -555,7 +555,7 @@ struct obj *otmp;
         /* [wakeup() doesn't rouse victims of temporary sleep,
            so it's okay to leave `wake' set to TRUE here] */
         reveal_invis = TRUE;
-        if (sleep_monst(mtmp, otmp, d(1 + otmp->spe, 8), 0))
+        if (sleep_monst(mtmp, otmp, d(1 + otmp->spe, 8), 0, TRUE))
             slept_monst(mtmp);
         if (!Blind)
             learn_it = TRUE;
@@ -4383,7 +4383,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
         break;
     case ZT_SLEEP:
         tmp = 0;
-        (void) sleep_monst(mon, origobj, !origobj ? rn1(5, 8) : duration, 0); // Duration 0 = permanent sleep
+        (void) sleep_monst(mon, origobj, !origobj ? rn1(5, 8) : duration, 0, TRUE); // Duration 0 = permanent sleep
         break;
     case ZT_DISINTEGRATION:  /* disintegration */
 		tmp = 0;
