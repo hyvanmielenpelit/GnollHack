@@ -98,7 +98,7 @@ int distance;
         if (DEADMONSTER(mtmp))
             continue;
         if (distu(mtmp->mx, mtmp->my) < distance
-            && sleep_monst(mtmp, d(10, 10), 10)) {
+            && sleep_monst(mtmp, (struct obj*)0, d(10, 10), 10)) {
             mtmp->msleeping = 1; /* 10d10 turns + wake_nearby to rouse */
             slept_monst(mtmp);
         }

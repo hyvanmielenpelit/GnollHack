@@ -416,7 +416,7 @@ register struct monst *mtmp;
         mtmp->mconf = 0;
 
     /* stunned monsters get un-stunned with larger probability */
-    if (mtmp->mstun && !rn2(10))
+    if (mtmp->mstun && !rn2(20))
         mtmp->mstun = 0;
 
     /* some monsters teleport */
@@ -904,7 +904,7 @@ register int after;
     gx = mtmp->mux;
     gy = mtmp->muy;
     appr = mtmp->mflee ? -1 : 1;
-    if (mtmp->mconf || (u.uswallow && mtmp == u.ustuck)) {
+    if (mtmp->mconf || mtmp->mstun || (u.uswallow && mtmp == u.ustuck)) {
         appr = 0;
     } else {
         struct obj *lepgold, *ygold;

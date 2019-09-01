@@ -573,6 +573,11 @@ peffects(otmp)
 register struct obj *otmp;
 {
     register int i, ii, lim;
+	
+	if (!otmp)
+		return 0;
+
+	int duration = d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_dicesize) + objects[otmp->otyp].oc_spell_dur_plus;
 
     switch (otmp->otyp) {
     case POT_RESTORE_ABILITY:
@@ -619,7 +624,7 @@ register struct obj *otmp;
         if (Hallucination || Halluc_resistance)
             nothing++;
         (void) make_hallucinated(itimeout_incr(HHallucination,
-                                          rn1(200, 600 - 300 * bcsign(otmp))),
+			otmp->oclass == POTION_CLASS ? rn1(200, 600 - 300 * bcsign(otmp)) : duration),
                                  TRUE, 0L);
         break;
     case POT_WATER:
@@ -725,7 +730,7 @@ register struct obj *otmp;
         if (otmp->blessed)
             HInvis |= FROMOUTSIDE;
         else
-            incr_itimeout(&HInvis, rn1(15, 31));
+            incr_itimeout(&HInvis, otmp->oclass == POTION_CLASS ? rn1(15, 31) : duration);
         newsym(u.ux, u.uy); /* update position */
         if (otmp->cursed) {
             pline("For some reason, you feel your presence is known.");
@@ -760,7 +765,7 @@ register struct obj *otmp;
         if (otmp->blessed)
             HSee_invisible |= FROMOUTSIDE;
         else
-            incr_itimeout(&HSee_invisible, rn1(100, 750));
+            incr_itimeout(&HSee_invisible, otmp->oclass == POTION_CLASS ? rn1(100, 750) : duration);
         set_mimic_blocking(); /* do special mimic handling */
         see_monsters();       /* see invisible monsters */
         newsym(u.ux, u.uy);   /* see yourself! */
@@ -930,7 +935,7 @@ register struct obj *otmp;
             unkn++;
         }
         exercise(A_DEX, TRUE);
-        incr_itimeout(&HFast, rn1(10, 100 + 60 * bcsign(otmp)));
+        incr_itimeout(&HFast, otmp->oclass == POTION_CLASS ? rn1(10, 100 + 60 * bcsign(otmp)) : duration);
         break;
     case POT_BLINDNESS:
         if (Blind)
@@ -974,14 +979,14 @@ register struct obj *otmp;
         break;
     case POT_HEALING:
         You_feel("better.");
-        healup(d(6 + 2 * bcsign(otmp), 4), !otmp->cursed ? 1 : 0,
+        healup(d(6 + 2 * bcsign(otmp), 4), otmp->blessed ? 1 : 0,
                !!otmp->blessed, !otmp->cursed, FALSE, FALSE, FALSE);
         exercise(A_CON, TRUE);
         break;
     case POT_EXTRA_HEALING:
         You_feel("much better.");
         healup(d(6 + 2 * bcsign(otmp), 8),
-               otmp->blessed ? 5 : !otmp->cursed ? 2 : 0, !otmp->cursed,
+               otmp->blessed ? 2 : 0, !otmp->cursed,
                TRUE, !otmp->cursed, otmp->blessed, !otmp->cursed);
         exercise(A_CON, TRUE);
         exercise(A_STR, TRUE);
@@ -989,14 +994,14 @@ register struct obj *otmp;
 	case POT_GREATER_HEALING:
 		You_feel("much, much better.");
 		healup(d(10 + 2 * bcsign(otmp), 8) + 8,
-			otmp->blessed ? 5 : !otmp->cursed ? 2 : 0, !otmp->cursed,
+			otmp->blessed ? 3 : 0, !otmp->cursed,
 			TRUE, !otmp->cursed, otmp->blessed, !otmp->cursed);
 		exercise(A_CON, TRUE);
 		exercise(A_STR, TRUE);
 		break;
 	case POT_FULL_HEALING:
         You_feel("completely healed.");
-        healup(400, 4 + 4 * bcsign(otmp), !otmp->cursed, TRUE, !otmp->cursed, !otmp->cursed, !otmp->cursed);
+        healup(400, otmp->blessed ? 4 : 0, !otmp->cursed, TRUE, !otmp->cursed, !otmp->cursed, !otmp->cursed);
         /* Restore one lost level if blessed */
         if (otmp->blessed && u.ulevel < u.ulevelmax) {
             /* when multiple levels have been lost, drinking
@@ -1057,7 +1062,7 @@ register struct obj *otmp;
                is the only factor (ie, not also wearing Lev ring or boots) */
             HLevitation |= I_SPECIAL;
         } else /* timeout is already at least 1 */
-            incr_itimeout(&HLevitation, rn1(140, 10));
+            incr_itimeout(&HLevitation, otmp->oclass == POTION_CLASS ? rn1(140, 10) : duration);
 
         if (Levitation && IS_SINK(levl[u.ux][u.uy].typ))
             spoteffects(FALSE);
@@ -1068,7 +1073,7 @@ register struct obj *otmp;
 	case POT_FULL_ENERGY:
 	case POT_GAIN_ENERGY:
 	{ /* M. Stephenson */
-        int num;
+        int num = 0, numxtra = 0;
 
         if (otmp->cursed)
             You_feel("lackluster.");
@@ -1086,16 +1091,32 @@ register struct obj *otmp;
          */
 		num = 0;
 		if(otmp->otyp == POT_GAIN_ENERGY)
-	        num = d(otmp->blessed ? 3 : !otmp->cursed ? 2 : 1, 6);
+	        num = d(3, 6);
 		else if (otmp->otyp == POT_GREATER_ENERGY)
-			num = d(otmp->blessed ? 6 : !otmp->cursed ? 4 : 2, 6);
+			num = d(6, 6);
 		else if (otmp->otyp == POT_FULL_ENERGY)
-			num = d(otmp->blessed ? 12 : !otmp->cursed ? 8 : 4, 6) + 400;
+			num = d(12, 6) + 400;
+
+		if (otmp->otyp == POT_GAIN_ENERGY)
+			numxtra = 1;
+		else if (otmp->otyp == POT_GREATER_ENERGY)
+			numxtra = 2;
+		else if (otmp->otyp == POT_FULL_ENERGY)
+			numxtra = 3;
 
 		if (otmp->cursed)
-            num = -num; /* subtract instead of add when cursed */
-        u.ubaseenmax += num;
-		u.uen += 3 * num;
+		{
+			/* subtract instead of add when cursed */
+            num = -num;
+			u.ubaseenmax -= numxtra;
+		}
+		else if(otmp->blessed)
+		{
+			num = num * 2;
+	        u.ubaseenmax += numxtra;
+		}
+		u.uen += num;
+
 		updatemaxen();
 		if (u.uenmax <= 0)
             u.uenmax = 0;
@@ -1162,7 +1183,7 @@ healup(nhp, nxtra, curesick, cureblind, curehallucination, curestun, cureconfusi
 int nhp, nxtra;
 register boolean curesick, cureblind, curehallucination, curestun, cureconfusion;
 {
-    if (nhp) {
+    if (nhp + nxtra > 0) {
         if (Upolyd) {
             u.mh += nhp;
             if (u.mh > u.mhmax)
@@ -1482,7 +1503,7 @@ int how;
         }
         case POT_SLEEPING:
             /* wakeup() doesn't rouse victims of temporary sleep */
-            if (sleep_monst(mon, rn1(9,8), 6)) {
+            if (sleep_monst(mon, obj, rn1(9,8), 0)) {
                 pline("%s falls asleep.", Monnam(mon));
                 slept_monst(mon);
             }

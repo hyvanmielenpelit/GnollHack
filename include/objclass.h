@@ -207,7 +207,7 @@ struct objclass {
 	int oc_item_level;				/* item level, to be used with loot tables */
 	unsigned long oc_flags;			/* E.g. if indestructible or disintegration resistant */
 
-/* Item resistances */
+/* Item resistances -- General: cannot be overriden */
 #define O1_NONE 0x00000000 
 #define O1_INDESTRUCTIBLE 0x00000001 
 #define O1_DISINTEGRATION_RESISTANT 0x00000002 
@@ -218,12 +218,13 @@ struct objclass {
 #define O1_RUST_RESISTANT 0x00000040
 #define O1_CORROSION_RESISTANT 0x00000080
 
-/* Spellbook flags */
+/* Spellbook flags  -- Can be the same as non-spellbook flags*/
 #define O1_SPELL_EXPLOSION_EFFECT 0x00000100
 #define O1_SPELL_BYPASSES_MAGIC_RESISTANCE 0x00000200
 #define O1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY 0x00000400
+#define O1_SPELL_IS_NONREVERSIBLE_PERMANENT 0x00000800
 
-/* General flags */
+/* Non-spellbook flags -- Can be the same as spellbook flags */
 #define O1_NO_SPELL_CASTING_PENALTY 0x00001000
 #define O1_HALF_SPELL_CASTING_PENALTY 0x00002000
 #define O1_SPECIAL_ENCHANTABLE 0x00004000
@@ -231,7 +232,7 @@ struct objclass {
 #define O1_HP_PERCENTAGE_BONUS 0x00010000
 #define O1_NOT_CURSEABLE 0x00020000
 
-/* Reagent flags */
+/* General flags -- General: cannot be overriden */
 #define O1_SOLD_AS_MATERIAL_COMPONENT 0x00100000
 #define O1_EDIBLE_NONFOOD 0x00200000
 };

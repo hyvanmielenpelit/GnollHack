@@ -1252,7 +1252,7 @@ boolean atme;
     /*FALLTHRU*/
     case SPE_SLEEP:
     case SPE_MAGIC_MISSILE:
-    case SPE_KNOCK:
+	case SPE_KNOCK:
     case SPE_SLOW_MONSTER:
     case SPE_WIZARD_LOCK:
     case SPE_DIG:
@@ -1270,6 +1270,9 @@ boolean atme;
 	case SPE_TOUCH_OF_DEATH:
 	case SPE_CHARM_MONSTER:
 	case SPE_DOMINATE_MONSTER:
+	case SPE_POWER_WORD_KILL:
+	case SPE_POWER_WORD_STUN:
+	case SPE_POWER_WORD_BLIND:
 	case SPE_LIGHT:
 	case SPE_BLACK_BLADE_OF_DISASTER:
 	case SPE_MAGE_ARMOR:
@@ -1356,6 +1359,9 @@ boolean atme;
     case SPE_SPHERE_OF_CHARMING:
 	case SPE_SPHERE_OF_DOMINATION:
 	case SPE_MASS_CHARM:
+	case SPE_MASS_DOMINATION:
+	case SPE_MASS_SLEEP:
+	case SPE_HOLY_WORD:
 	case SPE_MAGIC_MAPPING:
     case SPE_CREATE_MONSTER:
         (void) seffects(pseudo);

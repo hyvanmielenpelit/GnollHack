@@ -1150,7 +1150,7 @@ register struct attack *mattk;
         break;
     case AD_SLEE:
         if (!cancelled && !mdef->msleeping
-            && sleep_monst(mdef, rn1(3,8), -1)) {
+            && sleep_monst(mdef, (struct obj *)0, rn1(3,8), -1)) {
             if (vis && canspotmon(mdef)) {
                 Strcpy(buf, Monnam(mdef));
                 pline("%s is put to sleep by %s.", buf, mon_nam(magr));
@@ -1481,13 +1481,15 @@ int amt;
 }
 
 /* `mon' is hit by a sleep attack; return 1 if it's affected, 0 otherwise */
+/* lvl needs to specified only if otmp == 0, level -1 == cannot be resisted */
 int
-sleep_monst(mon, amt, lvl)
+sleep_monst(mon, otmp, amt, lvl)
 struct monst *mon;
+struct obj* otmp;
 int amt, lvl;
 {
     if (resists_sleep(mon)
-        || (lvl >= 0 && resist(mon, (struct obj*)0, lvl, 0, NOTELL))) {
+        || (lvl >= 0 && resist(mon, otmp, lvl, 0, NOTELL))) {
         shieldeff(mon->mx, mon->my);
     } else if (mon->mcanmove) {
         finish_meating(mon); /* terminate any meal-in-progress */

@@ -144,8 +144,9 @@ struct obj *otmp;
     struct obj *obj;
     boolean disguised_mimic = (mtmp->data->mlet == S_MIMIC
                                && M_AP_TYPE(mtmp) != M_AP_NOTHING);
+	int duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_dicesize) + objects[otyp].oc_spell_dur_plus;
 
-    if (u.uswallow && mtmp == u.ustuck)
+	if (u.uswallow && mtmp == u.ustuck)
         reveal_invis = FALSE;
 
     notonhead = (mtmp->mx != bhitpos.x || mtmp->my != bhitpos.y);
@@ -215,6 +216,61 @@ struct obj *otmp;
 			if (DEADMONSTER(mtmp)) {
 				killed(mtmp);
 			}
+		}
+		break;
+	case SPE_POWER_WORD_KILL:
+		reveal_invis = TRUE;
+		if (is_not_living(mtmp->data) || is_demon(mtmp->data) || resists_death(mtmp) || mindless(mtmp->data)) { /* match effect on player */
+			shieldeff(mtmp->mx, mtmp->my);
+			pline("%s is unaffected by the power word!", Monnam(mtmp));
+			break; /* skip makeknown */
+		}
+		else if (!resist(mtmp, otmp, 0, 0, TELL) //Get no effect upon successful magic resistance
+			&& !DEADMONSTER(mtmp))
+		{ //Otherwise dead
+			mtmp->mhp = 0;
+			if (DEADMONSTER(mtmp)) {
+				killed(mtmp);
+			}
+		}
+		break;
+	case SPE_POWER_WORD_STUN:
+		reveal_invis = TRUE;
+		if (mindless(mtmp->data)) { /* match effect on player */
+			shieldeff(mtmp->mx, mtmp->my);
+			pline("%s is unaffected by the power word!", Monnam(mtmp));
+			break; /* skip makeknown */
+		}
+		else if (mtmp->mstun) { /* match effect on player */
+			pline("%s does not seem more stunned than before.", Monnam(mtmp));
+			break; /* skip makeknown */
+		}
+		else if (!resist(mtmp, otmp, 0, 0, TELL) //Get no effect upon successful magic resistance
+			&& !DEADMONSTER(mtmp))
+		{
+			mtmp->mstun = 1;
+			pline("%s is stunned!", Monnam(mtmp));
+		}
+		break;
+	case SPE_POWER_WORD_BLIND:
+		reveal_invis = TRUE;
+		if (!haseyes(mtmp->data) || mindless(mtmp->data))
+		{ /* match effect on player */
+			shieldeff(mtmp->mx, mtmp->my);
+			pline("%s is unaffected by the power word!", Monnam(mtmp));
+			break; /* skip makeknown */
+		}
+		else if (!mtmp->mcansee && ((duration > 0 && (int)mtmp->mblinded > duration) || (duration == 0 && mtmp->mblinded == 0)))
+		{ /* match effect on player */
+			pline("%s does not seem more blind than before.", Monnam(mtmp));
+			break; /* skip makeknown */
+		}
+		else if (!resist(mtmp, otmp, 0, 0, TELL) //Get no effect upon successful magic resistance
+			&& !DEADMONSTER(mtmp))
+		{
+			mtmp->mcansee = 0;
+			mtmp->mblinded = duration;
+			pline("%s is blinded!", Monnam(mtmp));
 		}
 		break;
 	case WAN_SLOW_MONSTER:
@@ -499,7 +555,7 @@ struct obj *otmp;
         /* [wakeup() doesn't rouse victims of temporary sleep,
            so it's okay to leave `wake' set to TRUE here] */
         reveal_invis = TRUE;
-        if (sleep_monst(mtmp, d(1 + otmp->spe, 8), 12))
+        if (sleep_monst(mtmp, otmp, d(1 + otmp->spe, 8), 0))
             slept_monst(mtmp);
         if (!Blind)
             learn_it = TRUE;
@@ -2165,6 +2221,9 @@ struct obj *obj, *otmp;
 		case SPE_FEAR:
 		case SPE_BANISH_DEMON:
 		case SPE_NEGATE_UNDEATH:
+		case SPE_POWER_WORD_KILL:
+		case SPE_POWER_WORD_STUN:
+		case SPE_POWER_WORD_BLIND:
 			//Effect moved to resurrection
             break;
 		case WAN_RESURRECTION:
@@ -2915,6 +2974,8 @@ boolean ordinary;
 
     case WAN_DEATH:
     case SPE_FINGER_OF_DEATH:
+	case SPE_TOUCH_OF_DEATH:
+	case SPE_POWER_WORD_KILL:
 		damage = 0;
 		if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance) {
             pline((obj->otyp == WAN_DEATH)
@@ -2930,6 +2991,18 @@ boolean ordinary;
         /* They might survive with an amulet of life saving */
         done(DIED);
         break;
+	case SPE_POWER_WORD_STUN:
+	{
+		int duration = d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_dicesize) + objects[obj->otyp].oc_spell_dur_plus;
+		make_stunned((HStun & TIMEOUT) + duration, TRUE);
+		break;
+	}
+	case SPE_POWER_WORD_BLIND:
+	{
+		int duration = d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_dicesize) + objects[obj->otyp].oc_spell_dur_plus;
+		make_blinded((Blinded & TIMEOUT) + duration, (boolean)!Blind);
+		break;
+	}
 	case WAN_DISINTEGRATION:
 		damage = 0;
 		if (Disint_resistance || noncorporeal(youmonst.data) || Invulnerable) {
@@ -3217,6 +3290,10 @@ struct obj *obj; /* wand or spell */
     case SPE_POLYMORPH:
     case WAN_STRIKING:
     case SPE_FORCE_BOLT:
+	case SPE_TOUCH_OF_DEATH:
+	case SPE_POWER_WORD_KILL:
+	case SPE_POWER_WORD_STUN:
+	case SPE_POWER_WORD_BLIND:
 	case SPE_MAGIC_ARROW:
 	case WAN_SLOW_MONSTER:
     case SPE_SLOW_MONSTER:
@@ -4232,21 +4309,24 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
     register int abstype = abs(type) % 10;
     boolean sho_shieldeff = FALSE;
     boolean spellcaster = is_hero_spell(type); /* maybe get a bonus! */
+	int duration = 0;
 
     *ootmp = (struct obj *) 0;
 	struct obj* otmp2;
 
 	//Base damage here, set to zero, if not needed
-	if (origobj && mon)
+	if (origobj)
 	{
 		int dam = 0;
-		dam = d(objects[origobj->otyp].oc_wsdice, objects[origobj->otyp].oc_wsdam) + objects[origobj->otyp].oc_wsdmgplus; //Same for smal and big
+		dam = d(objects[origobj->otyp].oc_spell_dmg_dice, objects[origobj->otyp].oc_spell_dmg_dicesize) + objects[origobj->otyp].oc_spell_dmg_plus; //Same for smal and big
 
 		tmp = dam;
 	}
 	else
 		tmp = d(dmgdice, dicesize) + dmgplus;
 
+	if(origobj)
+		duration = d(objects[origobj->otyp].oc_spell_dur_dice, objects[origobj->otyp].oc_spell_dur_dicesize) + objects[origobj->otyp].oc_spell_dur_plus; //Same for smal and big
 
     switch (abstype) {
     case ZT_MAGIC_MISSILE:
@@ -4303,8 +4383,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
         break;
     case ZT_SLEEP:
         tmp = 0;
-        (void) sleep_monst(mon, rn1(5, 8),
-                           type == ZT_WAND(ZT_SLEEP) ? 12 : 0);
+        (void) sleep_monst(mon, origobj, !origobj ? rn1(5, 8) : duration, 0); // Duration 0 = permanent sleep
         break;
     case ZT_DISINTEGRATION:  /* disintegration */
 		tmp = 0;

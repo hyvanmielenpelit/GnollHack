@@ -2210,7 +2210,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
         }
         break;
     case AD_SLEE:
-        if (!negated && !mdef->msleeping && sleep_monst(mdef, rn1(3,8), -1)) {
+        if (!negated && !mdef->msleeping && sleep_monst(mdef, (struct obj*)0, rn1(3,8), -1)) {
             if (!Blind)
                 pline("%s is put to sleep by you!", Monnam(mdef));
             slept_monst(mdef);
