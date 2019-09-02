@@ -2443,28 +2443,28 @@ register struct obj *obj;
 		if (Is_waterlevel(&u.uz))
 			pline("Unfortunately, nothing happens.");
 		else
-			(void)summoncreature(obj->otyp, PM_AIR_ELEMENTAL, "The air around you starts to swirl and forms into %s.", FALSE);
+			(void)summoncreature(obj->otyp, PM_AIR_ELEMENTAL, "The air around you starts to swirl and forms into %s.", FALSE, TRUE);
 		break;
 	case SPE_ANIMATE_EARTH:
 		known = TRUE;
 		if (Is_waterlevel(&u.uz) || Is_airlevel(&u.uz))
 			pline("Unfortunately, nothing happens.");
 		else
-			(void)summoncreature(obj->otyp, PM_EARTH_ELEMENTAL, "The air starts to swirl around you and forms into %s.", FALSE);
+			(void)summoncreature(obj->otyp, PM_EARTH_ELEMENTAL, "The air starts to swirl around you and forms into %s.", FALSE, TRUE);
 		break;
 	case SPE_ANIMATE_FIRE:
 		known = TRUE;
 		if (Is_waterlevel(&u.uz))
 			pline("Unfortunately, nothing happens.");
 		else
-			(void)summoncreature(obj->otyp, PM_FIRE_ELEMENTAL, "A flickering flame appears out of thin air and forms into %s.", FALSE);
+			(void)summoncreature(obj->otyp, PM_FIRE_ELEMENTAL, "A flickering flame appears out of thin air and forms into %s.", FALSE, TRUE);
 		break;
 	case SPE_ANIMATE_WATER:
 		known = TRUE;
 		if (Inhell || Is_firelevel(&u.uz))
 			pline("Unfortunately, nothing happens.");
 		else
-			(void)summoncreature(obj->otyp, PM_WATER_ELEMENTAL, "Water condensates from thin air and forms into %s.", FALSE);
+			(void)summoncreature(obj->otyp, PM_WATER_ELEMENTAL, "Water condensates from thin air and forms into %s.", FALSE, TRUE);
 		break;
 	case SPE_CREATE_GOLD_GOLEM:
 	case SPE_CREATE_GLASS_GOLEM:
@@ -2504,7 +2504,7 @@ register struct obj *obj;
 			monstid = PM_STRAW_GOLEM;
 			break;
 		}
-		(void)summoncreature(obj->otyp, monstid, "%s forms before you.", TRUE);
+		(void)summoncreature(obj->otyp, monstid, "%s forms before you.", TRUE, FALSE);
 		break;
 	case SPE_SUMMON_DEMON:
 		known = TRUE;
@@ -2519,10 +2519,10 @@ register struct obj *obj;
 		summondemogorgon(obj->otyp);
 		break;
 	case SPE_GUARDIAN_ANGEL:
-		(void)summoncreature(obj->otyp, (rn2(100) < (u.ulevel - 1) * 1) ? PM_ARCHON : (rn2(100) < (u.ulevel - 1) * 5) ? PM_ANGEL : PM_ALEAX, "%s descends from the heavens.", TRUE);
+		(void)summoncreature(obj->otyp, (rn2(100) < (u.ulevel - 1) * 1) ? PM_ARCHON : (rn2(100) < (u.ulevel - 1) * 5) ? PM_ANGEL : PM_ALEAX, "%s descends from the heavens.", TRUE, TRUE);
 		break;
 	case SPE_DIVINE_MOUNT:
-		mtmp = summoncreature(obj->otyp, PM_KI_RIN, "%s appears before you.", TRUE);
+		mtmp = summoncreature(obj->otyp, PM_KI_RIN, "%s appears before you.", TRUE, TRUE);
 		if (mtmp)
 		{
 			otmp = mksobj(SADDLE, TRUE, FALSE);
@@ -2553,7 +2553,7 @@ register struct obj *obj;
 				monstid = PM_ALEAX;
 				break;
 			}
-			mtmp = summoncreature(obj->otyp, monstid, "", TRUE);
+			mtmp = summoncreature(obj->otyp, monstid, "", TRUE, TRUE);
 			if (mtmp)
 			{
 				if (monstid == PM_ARCHON)
@@ -6245,16 +6245,18 @@ summonmagearmor()
 }
 
 struct monst*
-summoncreature(spl_otyp, monst_id, message_fmt, capitalize)
+summoncreature(spl_otyp, monst_id, message_fmt, capitalize, markassummoned)
 int spl_otyp, monst_id;
 char* message_fmt; //input the summoning message with one %s, which is for the monster name
 boolean capitalize; //capitalize the monster name for %s
+boolean markassummoned; //mark as summoned
 {
 	struct monst* mon = (struct monst*)0;
 
 	mon = makemon(&mons[monst_id], u.ux, u.uy, NO_MINVENT | MM_NOCOUNTBIRTH);
 	if (mon)
 	{
+		mon->issummoned = markassummoned;
 		(void)tamedog(mon, (struct obj*) 0);
 		mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_dicesize) + objects[spl_otyp].oc_spell_dur_plus;
 		if(mon->summonduration > 0) //Otherwise, permanent
@@ -6280,6 +6282,7 @@ int spl_otyp;
 
 	if (mon)
 	{
+		mon->issummoned = TRUE;
 		(void)tamedog(mon, (struct obj*) 0);  //Demons cannot be tamed, so need to find another concept
 		mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_dicesize) + objects[spl_otyp].oc_spell_dur_plus;
 		begin_summontimer(mon);
@@ -6311,6 +6314,7 @@ int spl_otyp;
 	if (mon)
 	{
 		//Demogorgon gets bored and goes back to the abyss
+		mon->issummoned = TRUE;
 		mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_dicesize) + objects[spl_otyp].oc_spell_dur_plus;
 		begin_summontimer(mon);
 		if (!Blind)

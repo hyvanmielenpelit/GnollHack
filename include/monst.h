@@ -129,6 +129,7 @@ struct monst {
     Bitfield(isminion, 1);  /* is a minion */
     Bitfield(isgd, 1);      /* is guard */
     Bitfield(ispriest, 1);  /* is an aligned priest or high priest */
+	Bitfield(issummoned, 1);  /* is a summoned monster */
 
     Bitfield(iswiz, 1);     /* is the Wizard of Yendor */
     Bitfield(wormno, 5);    /* at most 31 worms on any level */

@@ -3042,7 +3042,7 @@ E int FDECL(resist, (struct monst *, struct obj *, int, int, int));
 E void NDECL(makewish);
 E void NDECL(summonblackblade);
 E void NDECL(summonmagearmor);
-E struct monst* FDECL(summoncreature, (int, int, char *, boolean));
+E struct monst* FDECL(summoncreature, (int, int, char *, boolean, boolean));
 E void FDECL(summondemon, (int));
 E void FDECL(summondemogorgon, (int));
 E void NDECL(armageddon);
