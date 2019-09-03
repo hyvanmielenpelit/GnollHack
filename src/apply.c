@@ -4144,8 +4144,12 @@ doapply()
     case ICE_BOX:
 	case BOOKSHELF:
 	case SACK:
-    case BAG_OF_HOLDING:
-    case OILSKIN_SACK:
+	case BACKPACK:
+	case LEATHER_BAG:
+	case ORIENTAL_SILK_SACK:
+	case BAG_OF_HOLDING:
+	case BAG_OF_CONTAINMENT:
+	case OILSKIN_SACK:
         res = use_container(&obj, 1, FALSE);
         break;
     case BAG_OF_TRICKS:

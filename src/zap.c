@@ -924,7 +924,9 @@ boolean by_hero;
          */
         || (container && (container->olocked || container_nesting > 2
                           || container->otyp == STATUE
-                          || (container->otyp == BAG_OF_HOLDING && rn2(40)))))
+                          || (container->otyp == BAG_OF_HOLDING && rn2(40))
+						  || (container->otyp == BAG_OF_CONTAINMENT && rn2(80))
+			)))
         return (struct monst *) 0;
 
     /* record the object's location now that we're sure where it is */

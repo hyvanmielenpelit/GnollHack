@@ -702,7 +702,7 @@ RING("regeneration", "moonstone",
 RING("mana regeneration", "crystal",
      ENERGY_REGENERATION, 0, 0, 300, 1, 0,  6, 0, 0, MINERAL, HI_MINERAL, O1_NONE),
 RING("the sorcerer-kings", "serpent-headed",
-     0, 0, 0, 300, 1, 0,  6,200, 0, MINERAL, HI_MINERAL, O1_NONE),
+     0, 0, 0, 300, 1, 0,  6,150, 0, MINERAL, HI_MINERAL, O1_NONE),
 RING("searching", "tiger eye",
      SEARCHING, 0, 0, 200, 1, 0,  6, 0, 0, GEMSTONE, CLR_BROWN, O1_NONE),
 RING("stealth", "jade",
@@ -800,14 +800,17 @@ OBJECT(OBJ("Amulet of Yendor", /* note: description == name */
            0, 0, 0, TOOL_CLASS, prob, 0, wt, cost, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, hitbon, 0, 0, 0, 0, 0, wt, clr, 0, 0, cooldown, 0, flags)
 /* containers */
 CONTAINER("large box",       None, 1, 0, 0, 40, 350,   8, 0, WOOD, HI_WOOD, O1_NONE), //STARTMARKER
-CONTAINER("chest",           None, 1, 0, 0, 35, 600,  16, 0, WOOD, HI_WOOD, O1_NONE),
+CONTAINER("chest",           None, 1, 0, 0, 30, 600,  16, 0, WOOD, HI_WOOD, O1_NONE),
 CONTAINER("ice box",         None, 1, 0, 0,  5, 900,  42, 0, PLASTIC, CLR_WHITE, O1_NONE),
 CONTAINER("bookshelf",		 None, 1, 0, 0,  0, 1600, 36, 0, WOOD, HI_WOOD, O1_NONE),
-CONTAINER("backpack",		 None, 1, 0, 0, 10,  15,   2, 0, CLOTH, HI_CLOTH, O1_NONE),
-CONTAINER("sack",           "bag", 0, 0, 0, 25,  15,   2, 0, CLOTH, HI_CLOTH, O1_NONE),
-CONTAINER("oilskin sack",   "bag", 0, 0, 0,  5,  15, 100, 0, CLOTH, HI_CLOTH, O1_NONE),
+CONTAINER("backpack",		 None, 1, 0, 0, 10,  15,   5, 0, CLOTH, HI_CLOTH, O1_NONE),
+CONTAINER("leather bag",	 "bag",0, 0, 0,	 5,  10,  25, 0, LEATHER, HI_LEATHER, O1_NONE),
+CONTAINER("oriental silk sack", "bag",0,0,0, 5,  10,  25, 0, SILK, HI_CLOTH, O1_NONE),
+CONTAINER("sack",           "bag", 0, 0, 0, 15,  10,   2, 0, CLOTH, HI_CLOTH, O1_NONE),
+CONTAINER("oilskin sack",   "bag", 0, 0, 0,  5,  10, 100, 0, CLOTH, HI_CLOTH, O1_NONE),
 /* magic bags start here*/
 CONTAINER("bag of holding", "bag",					0, 1, 0, 20, 15, 100,   0, CLOTH, HI_CLOTH, O1_NONE),
+CONTAINER("bag of containment", "bag",				0, 1, 0,  5, 15, 100,   0, CLOTH, HI_CLOTH, O1_NONE),
 CONTAINER("quiver of infinite arrows", "quiver",	0, 1, 0, 10, 15, 100, 300, CLOTH, HI_CLOTH, O1_SPECIAL_ENCHANTABLE),
 CONTAINER("pouch of endless bolts", "bag",			0, 1, 0, 10, 15, 100, 300, CLOTH, HI_CLOTH, O1_SPECIAL_ENCHANTABLE),
 CONTAINER("bag of tricks",  "bag",					0, 1, 1, 20, 15, 100,  0, CLOTH, HI_CLOTH, O1_NONE), //ENDMARKER

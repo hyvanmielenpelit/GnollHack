@@ -298,7 +298,11 @@ struct obj *box;
         break;
     case SACK:
     case OILSKIN_SACK:
-        /* initial inventory: sack starts out empty */
+	case BACKPACK:
+	case LEATHER_BAG:
+	case ORIENTAL_SILK_SACK:
+	case BAG_OF_CONTAINMENT:
+		/* initial inventory: sack starts out empty */
         if (moves <= 1 && !in_mklev) {
             n = 0;
             break;
@@ -307,7 +311,7 @@ struct obj *box;
 	case QUIVER_OF_INFINITE_ARROWS:
 	case POUCH_OF_ENDLESS_BOLTS:
 	case BAG_OF_HOLDING:
-        n = 1;
+		n = 1;
         break;
     default:
         n = 0;
@@ -352,7 +356,7 @@ struct obj *box;
                         otmp->quan = 1L;
                     otmp->owt = weight(otmp);
                 }
-            if (box->otyp == BAG_OF_HOLDING) {
+            if (box->otyp == BAG_OF_HOLDING || box->otyp == BAG_OF_CONTAINMENT) {
                 if (Is_mbag(otmp)) {
                     otmp->otyp = SACK;
                     otmp->spe = 0;
@@ -943,9 +947,13 @@ boolean artif;
             case ICE_BOX:
 			case BOOKSHELF:
 			case SACK:
-            case OILSKIN_SACK:
-            case BAG_OF_HOLDING:
-                mkbox_cnts(otmp);
+			case BACKPACK:
+			case OILSKIN_SACK:
+			case LEATHER_BAG:
+			case ORIENTAL_SILK_SACK:
+			case BAG_OF_HOLDING:
+			case BAG_OF_CONTAINMENT:
+				mkbox_cnts(otmp);
                 break;
             case EXPENSIVE_CAMERA:
             case TINNING_KIT:
@@ -1312,7 +1320,7 @@ register struct obj *otmp;
     otmp->blessed = 1;
     if (carried(otmp) && confers_luck(otmp))
         set_moreluck();
-    else if (otmp->otyp == BAG_OF_HOLDING)
+    else if (otmp->otyp == BAG_OF_HOLDING || otmp->otyp == BAG_OF_CONTAINMENT)
         otmp->owt = weight(otmp);
     else if (otmp->otyp == FIGURINE && otmp->timed)
         (void) stop_timer(FIG_TRANSFORM, obj_to_any(otmp));
@@ -1332,7 +1340,7 @@ register struct obj *otmp;
     otmp->blessed = 0;
     if (carried(otmp) && confers_luck(otmp))
         set_moreluck();
-    else if (otmp->otyp == BAG_OF_HOLDING)
+    else if (otmp->otyp == BAG_OF_HOLDING || otmp->otyp == BAG_OF_CONTAINMENT)
         otmp->owt = weight(otmp);
     if (otmp->lamplit)
         maybe_adjust_light(otmp, old_light);
@@ -1368,7 +1376,7 @@ register struct obj *otmp;
 		if (carried(otmp) && confers_luck(otmp)) {
 			set_moreluck();
 		}
-		else if (otmp->otyp == BAG_OF_HOLDING) {
+		else if (otmp->otyp == BAG_OF_HOLDING || otmp->otyp == BAG_OF_CONTAINMENT) {
 			otmp->owt = weight(otmp);
 		}
 		else if (otmp->otyp == FIGURINE) {
@@ -1398,7 +1406,7 @@ register struct obj *otmp;
     otmp->cursed = 0;
     if (carried(otmp) && confers_luck(otmp))
         set_moreluck();
-    else if (otmp->otyp == BAG_OF_HOLDING)
+    else if (otmp->otyp == BAG_OF_HOLDING || otmp->otyp == BAG_OF_CONTAINMENT)
         otmp->owt = weight(otmp);
     else if (otmp->otyp == FIGURINE && otmp->timed)
         (void) stop_timer(FIG_TRANSFORM, obj_to_any(otmp));
@@ -1477,6 +1485,9 @@ register struct obj *obj;
         if (obj->otyp == BAG_OF_HOLDING)
             cwt = obj->cursed ? (cwt * 2) : obj->blessed ? ((cwt + 3) / 4)
                                                          : ((cwt + 1) / 2);
+		else if (obj->otyp == BAG_OF_CONTAINMENT)
+			cwt = obj->cursed ? (cwt * 4 - 1) / 3 : obj->blessed ? ((cwt * 3 + 1) / 4)
+			: ((cwt * 7 + 1) / 8);
 
         return wt + cwt;
     }

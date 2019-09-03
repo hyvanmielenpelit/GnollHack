@@ -1230,7 +1230,7 @@ struct obj *container, *obj;
     struct obj **prev;
     int owt, nwt;
 
-    if (container->otyp != BAG_OF_HOLDING)
+    if (container->otyp != BAG_OF_HOLDING && container->otyp != BAG_OF_CONTAINMENT)
         return obj->owt;
 
     owt = nwt = container->owt;
