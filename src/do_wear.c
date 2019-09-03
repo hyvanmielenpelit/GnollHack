@@ -161,14 +161,6 @@ Boots_on(VOID_ARGS)
     long oldprop =
         u.uprops[objects[uarmf->otyp].oc_oprop].extrinsic & ~WORN_BOOTS;
 
-	//Note none of the items use more than one property currently
-	long oldprop2 =
-		u.uprops[objects[uarmf->otyp].oc_oprop2].extrinsic & ~WORN_BOOTS;
-	long oldprop3 =
-		u.uprops[objects[uarmf->otyp].oc_oprop3].extrinsic & ~WORN_BOOTS;
-	oldprop2 += 0;
-	oldprop3 += 0;
-
     switch (uarmf->otyp) {
     case LOW_BOOTS:
     case IRON_SHOES:
@@ -225,11 +217,6 @@ Boots_off(VOID_ARGS)
     struct obj *otmp = uarmf;
     int otyp = otmp->otyp;
     long oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_BOOTS;
-	//Note none of the items use more than one property currently
-	long oldprop2 =	u.uprops[objects[otyp].oc_oprop2].extrinsic & ~WORN_BOOTS;
-	long oldprop3 =	u.uprops[objects[otyp].oc_oprop3].extrinsic & ~WORN_BOOTS;
-	oldprop2 += 0;
-	oldprop3 += 0;
 
     context.takeoff.mask &= ~W_ARMF;
     /* For levitation, float_down() returns if Levitation, so we
@@ -293,13 +280,6 @@ Cloak_on(VOID_ARGS)
 {
     long oldprop =
         u.uprops[objects[uarmc->otyp].oc_oprop].extrinsic & ~WORN_CLOAK;
-	//Note none of the items use more than one property currently
-	long oldprop2 =
-		u.uprops[objects[uarmc->otyp].oc_oprop2].extrinsic & ~WORN_CLOAK;
-	long oldprop3 =
-		u.uprops[objects[uarmc->otyp].oc_oprop3].extrinsic & ~WORN_CLOAK;
-	oldprop2 += 0;
-	oldprop3 += 0;
 
     switch (uarmc->otyp) {
     case ORCISH_CLOAK:
@@ -349,11 +329,6 @@ Cloak_off(VOID_ARGS)
     struct obj *otmp = uarmc;
     int otyp = otmp->otyp;
     long oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_CLOAK;
-	//Note none of the items use more than one property currently
-	long oldprop2 =	u.uprops[objects[otyp].oc_oprop2].extrinsic & ~WORN_CLOAK;
-	long oldprop3 =	u.uprops[objects[otyp].oc_oprop3].extrinsic & ~WORN_CLOAK;
-	oldprop2 += 0;
-	oldprop3 += 0;
 
     context.takeoff.mask &= ~W_ARMC;
     /* For mummy wrapping, taking it off first resets `Invisible'. */
@@ -519,13 +494,6 @@ Gloves_on(VOID_ARGS)
 {
     long oldprop =
         u.uprops[objects[uarmg->otyp].oc_oprop].extrinsic & ~WORN_GLOVES;
-	//Note none of the items use more than one property currently
-	long oldprop2 =
-		u.uprops[objects[uarmg->otyp].oc_oprop2].extrinsic & ~WORN_GLOVES;
-	long oldprop3 =
-		u.uprops[objects[uarmg->otyp].oc_oprop3].extrinsic & ~WORN_GLOVES;
-	oldprop2 += 0;
-	oldprop3 += 0;
 
     switch (uarmg->otyp) {
     case LEATHER_GLOVES:
@@ -535,16 +503,11 @@ Gloves_on(VOID_ARGS)
             incr_itimeout(&HFumbling, rnd(20));
         break;
     case GAUNTLETS_OF_POWER:
-        if(!(uarmv && uarmv->otyp == BELT_OF_GIANT_STRENGTH && uarmv->spe >= -1))
-			makeknown(uarmg->otyp);
-
-        context.botl = 1; /* taken care of in attrib.c */
         break;
     case GAUNTLETS_OF_DEXTERITY:
         adj_abon(uarmg, uarmg->spe);
         break;
 	case GLOVES_OF_SPELLCASTING:
-		makeknown(uarmg->otyp); //Known from mana pool change
 		break;
 	default:
         impossible(unknown_type, c_gloves, uarmg->otyp);
@@ -584,13 +547,6 @@ Gloves_off(VOID_ARGS)
 {
     long oldprop =
         u.uprops[objects[uarmg->otyp].oc_oprop].extrinsic & ~WORN_GLOVES;
-	//Note none of the items use more than one property currently
-	long oldprop2 =
-		u.uprops[objects[uarmg->otyp].oc_oprop2].extrinsic & ~WORN_GLOVES;
-	long oldprop3 =
-		u.uprops[objects[uarmg->otyp].oc_oprop3].extrinsic & ~WORN_GLOVES;
-	oldprop2 += 0;
-	oldprop3 += 0;
 	
 	boolean on_purpose = !context.mon_moving && !uarmg->in_use;
 
@@ -605,11 +561,6 @@ Gloves_off(VOID_ARGS)
             HFumbling = EFumbling = 0;
         break;
     case GAUNTLETS_OF_POWER:
-		if (!(uarmv && uarmv->otyp == BELT_OF_GIANT_STRENGTH && uarmv->spe >= -1))
-			makeknown(uarmg->otyp);
-		if (uarmv && uarmv->otyp == BELT_OF_GIANT_STRENGTH && uarmv->spe < -1)
-			makeknown(uarmv->otyp);
-		context.botl = 1; /* taken care of in attrib.c */
         break;
     case GAUNTLETS_OF_DEXTERITY:
         if (!context.takeoff.cancelled_don)
@@ -694,14 +645,6 @@ Shirt_on(VOID_ARGS)
 {
 	long oldprop =
 		u.uprops[objects[uarmu->otyp].oc_oprop].extrinsic & ~WORN_SHIRT;
-	//Note none of the items use more than one property currently
-	long oldprop2 =
-		u.uprops[objects[uarmu->otyp].oc_oprop2].extrinsic & ~WORN_SHIRT;
-	long oldprop3 =
-		u.uprops[objects[uarmu->otyp].oc_oprop3].extrinsic & ~WORN_SHIRT;
-	oldprop2 += 0;
-	oldprop3 += 0;
-
 
     /* no shirt currently requires special handling when put on, but we
        keep this uncommented in case somebody adds a new one which does */
@@ -734,10 +677,6 @@ Shirt_off(VOID_ARGS)
 	struct obj* otmp = uarmu;
 	int otyp = otmp->otyp;
 	long oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_SHIRT;
-	long oldprop2 = u.uprops[objects[otyp].oc_oprop2].extrinsic & ~WORN_SHIRT;
-	long oldprop3 = u.uprops[objects[otyp].oc_oprop3].extrinsic & ~WORN_SHIRT;
-	oldprop2 += 0;
-	oldprop3 += 0;
 
     context.takeoff.mask &= ~W_ARMU;
 
@@ -779,15 +718,10 @@ Robe_on(VOID_ARGS)
 	case CLERICAL_GOWN:
 	case BATHROBE:
 	case ROBE_OF_PROTECTION:
-		makeknown(uarmo->otyp);
-		break;
 	case GOWN_OF_THE_ARCHBISHOPS:
 	case ROBE_OF_MAGIC_RESISTANCE:
-		break;
 	case ROBE_OF_STARRY_WISDOM:
 	case ROBE_OF_THE_ARCHMAGI:
-		makeknown(uarmo->otyp);
-		context.botl = 1; /* taken care of in attrib.c */
 		break;
 	case MUMMY_WRAPPING:
 		/* Note: it's already being worn, so we have to cheat here. */
@@ -821,11 +755,8 @@ Robe_off(VOID_ARGS)
 	case ROBE_OF_PROTECTION:
 	case ROBE_OF_MAGIC_RESISTANCE:
 	case GOWN_OF_THE_ARCHBISHOPS:
-		break;
 	case ROBE_OF_STARRY_WISDOM:
 	case ROBE_OF_THE_ARCHMAGI:
-		makeknown(uarmo->otyp);
-		context.botl = 1; /* taken care of in attrib.c */
 		break;
 	case MUMMY_WRAPPING:
 		if (Invis && !Blind) {
@@ -840,6 +771,7 @@ Robe_off(VOID_ARGS)
 
 	setworn((struct obj*) 0, W_ARMO);
 	context.takeoff.cancelled_don = FALSE;
+
 	updatemaxhp();
 	updatemaxen();
 	return 0;
@@ -901,11 +833,8 @@ Belt_on(VOID_ARGS)
 	   keep this uncommented in case somebody adds a new one which does */
 	switch (uarmv->otyp) {
 	case LEATHER_BELT:
-		break;
+	case BELT_OF_ENDURANCE:
 	case BELT_OF_GIANT_STRENGTH:
-		if (!(uarmg && uarmg->otyp == GAUNTLETS_OF_POWER && uarmv->spe < -1))
-			makeknown(uarmv->otyp);
-		context.botl = 1; /* taken care of in attrib.c */
 		break;
 	case BELT_OF_DWARVENKIND:
 		adj_abon(uarmv, uarmv->spe);
@@ -928,14 +857,8 @@ Belt_off(VOID_ARGS)
 	   keep this uncommented in case somebody adds a new one which does */
 	switch (uarmv->otyp) {
 	case LEATHER_BELT:
-		break;
+	case BELT_OF_ENDURANCE:
 	case BELT_OF_GIANT_STRENGTH:
-		if (uarmg && uarmg->otyp == GAUNTLETS_OF_POWER && uarmv->spe > -1)
-			makeknown(uarmg->otyp);
-
-		if (!(uarmg && uarmg->otyp == GAUNTLETS_OF_POWER && uarmv->spe < -1))
-			makeknown(uarmv->otyp);
-		context.botl = 1; /* taken care of in attrib.c */
 		break;
 	case BELT_OF_DWARVENKIND:
 		if (!context.takeoff.cancelled_don)
@@ -2754,7 +2677,7 @@ struct monst *victim;
     if (!otmph)
         otmph = (victim == &youmonst) ? uarm : which_armor(victim, W_ARM);
 	if (!otmph)
-		otmph = (victim == &youmonst) ? uarmu : which_armor(victim, W_ARMO);
+		otmph = (victim == &youmonst) ? uarmo : which_armor(victim, W_ARMO);
 	if (!otmph)
         otmph = (victim == &youmonst) ? uarmu : which_armor(victim, W_ARMU);
 

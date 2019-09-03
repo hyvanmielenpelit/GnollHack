@@ -2115,7 +2115,7 @@ int *spell_no;
 			if (spellmatcomp(splnum))
 				strcpy(matcompbuf, shortenedmatcompdesc);
 			else
-				strcpy(matcompbuf, "Not required");
+				strcpy(matcompbuf, "(Not required)");
 
 			//Finally print everything to buf
 			if (spellknow(splnum) <= 0)

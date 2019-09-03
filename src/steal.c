@@ -82,6 +82,16 @@ register struct obj *chain;
     return chain;
 }
 
+struct obj*
+findobjecttype(chain, otyp)
+register struct obj* chain;
+int otyp;
+{
+	while (chain && chain->otyp != otyp)
+		chain = chain->nobj;
+	return chain;
+}
+
 /*
  * Steal gold coins only.  Leprechauns don't care for lesser coins.
 */
@@ -748,10 +758,51 @@ boolean is_pet; /* If true, pet should keep wielded/worn items */
         obfree(otmp, (struct obj *) 0);
     } /* isgd && has gold */
 
-    while ((otmp = (is_pet ? droppables(mtmp) : mtmp->minvent)) != 0) {
+	while ((otmp = (is_pet ? droppables(mtmp) : mtmp->minvent)) != 0) {
         obj_extract_self(otmp);
-        mdrop_obj(mtmp, otmp, is_pet && flags.verbose);
-    }
+		if (mtmp->issummoned  // Summoned monsters take their possessions with them, except central artifacts
+			&& otmp->otyp != AMULET_OF_YENDOR
+			&& otmp->otyp != CANDELABRUM_OF_INVOCATION
+			&& otmp->otyp != SPE_BOOK_OF_THE_DEAD
+			&& !is_quest_artifact(otmp)
+			)
+		{
+			int omx = mtmp->mx, omy = mtmp->my;
+			boolean update_mon = FALSE;
+
+			if (otmp->owornmask) {
+				/* perform worn item handling if the monster is still alive */
+				if (!DEADMONSTER(mtmp)) {
+					mtmp->misc_worn_check &= ~otmp->owornmask;
+					update_mon = TRUE;
+
+					/* don't charge for an owned saddle on dead steed (provided
+					   that the hero is within the same shop at the time) */
+				}
+				else if (mtmp->mtame && (otmp->owornmask & W_SADDLE) != 0L
+					&& !otmp->unpaid && costly_spot(omx, omy)
+					/* being at costly_spot guarantees lev->roomno is not 0 */
+					&& index(in_rooms(u.ux, u.uy, SHOPBASE),
+						levl[omx][omy].roomno)) {
+					otmp->no_charge = 1;
+				}
+				/* this should be done even if the monster has died */
+				if (otmp->owornmask & W_WEP)
+					setmnotwielded(mtmp, otmp);
+				otmp->owornmask = 0L;
+			}
+
+			/* do this last, after placing obj on floor; removing steed's saddle
+			   throws rider, possibly inflicting fatal damage and producing bones */
+			if (update_mon)
+				update_mon_intrinsics(mtmp, otmp, FALSE, TRUE);
+
+
+			obfree(otmp, (struct obj*) 0); //Delete the item
+		}
+		else
+			mdrop_obj(mtmp, otmp, is_pet&& flags.verbose);
+	}
 
     if (show && cansee(omx, omy))
         newsym(omx, omy);

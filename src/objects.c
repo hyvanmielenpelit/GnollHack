@@ -471,7 +471,7 @@ ARMOR("bronze plate mail", None,
 ARMOR("splint mail", None,
       1, 0, 1,			 0, 0, 0, 40, 5, 640, 125,  4, 1, 0, 0, ARM_SUIT, IRON, HI_METAL, O1_NONE),
 ARMOR("banded mail", None,
-      1, 0, 1,			 0, 0, 0, 41, 5, 560, 200,  4, 1, 0, 0, ARM_SUIT, IRON, HI_METAL, O1_NONE),
+      1, 0, 1,			 0, 0, 0, 40, 5, 560, 200,  4, 1, 0, 0, ARM_SUIT, IRON, HI_METAL, O1_NONE),
 ARMOR("dwarvish mithril-coat", None,
       1, 0, 0,			 0, 0, 0, 10, 1, 250, 750,  4, 2, 0, 0, ARM_SUIT, MITHRIL, HI_SILVER, O1_RUST_RESISTANT | O1_CORROSION_RESISTANT | O1_HALF_SPELL_CASTING_PENALTY),
 ARMOR("elven mithril-coat", None,
@@ -481,7 +481,7 @@ ARMOR("chain mail", None,
 ARMOR("orcish chain mail", "crude chain mail",
       0, 0, 0,			 0, 0, 0, 20, 5, 450,  40,  6, 1, 0, 0, ARM_SUIT, IRON, CLR_BLACK, O1_NONE),
 ARMOR("scale mail", None,
-      1, 0, 0,			 0, 0, 0, 45, 5, 500,  45,  6, 1, 0, 0, ARM_SUIT, IRON, HI_METAL, O1_NONE),
+      1, 0, 0,			 0, 0, 0, 40, 5, 500,  45,  6, 1, 0, 0, ARM_SUIT, IRON, HI_METAL, O1_NONE),
 ARMOR("studded leather armor", None,
       1, 0, 0,			 0, 0, 0, 45, 3, 200,  15,  7, 1, 0, 0, ARM_SUIT, LEATHER, HI_LEATHER, O1_NONE),
 ARMOR("gnollish studded leather armor", "crude studded leather armor",
@@ -495,7 +495,7 @@ ARMOR("leather armor", None,
 ARMOR("gnollish leather armor", "crude leather armor",
       0, 0, 0,			 0, 0, 0, 12, 3, 125,   3,  9, 1, 0, 0, ARM_SUIT, LEATHER, HI_LEATHER, O1_NONE),
 ARMOR("leather jacket", None,
-      1, 0, 0,			 0, 0, 0, 12, 0,  30,  10,  9, 0, 0, 0, ARM_SUIT, LEATHER, CLR_BLACK, O1_NONE),
+      1, 0, 0,			 0, 0, 0, 10, 0,  30,  10,  9, 0, 0, 0, ARM_SUIT, LEATHER, CLR_BLACK, O1_NONE),
 ARMOR("force field armor", "armor-shaped force field",
       0, 1, 0,			 0, 0, 0, 0,  0,   0,   4,  4, 0, 0, 0, ARM_SUIT, FORCEFIELD, CLR_WHITE, O1_NO_SPELL_CASTING_PENALTY | O1_FIRE_RESISTANT | O1_LIGHTNING_RESISTANT | O1_COLD_RESISTANT | O1_CORROSION_RESISTANT | O1_RUST_RESISTANT),
 
@@ -581,11 +581,13 @@ BRACERS("bracers of magic resistance", "ornamental bracers",//ENDMARKER 1 & 2
 /* belts */
 /* with shuffled appearances... */
 BELT("leather belt", "old belt", //STARTMARKER 1 & 2
-	0, 0, 0,		 0, 0, 10, 0, 5,   5, 10, 0, 0, 0, CLOTH, HI_LEATHER, O1_NO_SPELL_CASTING_PENALTY),
+	0, 0, 0,		  0, 0, 10, 0, 5,   5, 10, 0, 0, 0, CLOTH, HI_LEATHER, O1_NO_SPELL_CASTING_PENALTY),
 BELT("belt of dwarvenkind", "broad belt", 
-	0, 1, POISON_RES, 0, 0, 8, 0, 5, 250, 10, 1, 0, 0, CLOTH, HI_LEATHER, O1_NONE),
+	0, 1, POISON_RES, 0, 0,  8, 0, 5, 250, 10, 1, 0, 0, CLOTH, HI_LEATHER, O1_NONE),
+BELT("belt of endurance", "brown belt", 
+	0, 1, 0,		  0, 0,  8, 0, 5, 250, 10, 1, 0, 50, CLOTH, HI_LEATHER, O1_HP_PERCENTAGE_BONUS),
 BELT("belt of giant strength", "ornamental belt", //ENDMARKER 1 & 2
-	0, 1, 0,		  0, 0, 7, 0, 5, 250, 10, 0, 0, 0, CLOTH, HI_LEATHER, O1_NONE),
+	0, 1, 0,		  0, 0,  7, 0, 5, 250, 10, 0, 0, 0, CLOTH, HI_LEATHER, O1_NONE),
 
 /* pants */
 /* no shuffled appearances... */

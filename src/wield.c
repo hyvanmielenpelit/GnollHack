@@ -85,8 +85,6 @@ setuwep(obj)
 register struct obj *obj;
 {
     struct obj *olduwep = uwep;
-	int oldmanamax = u.uenmax;
-	int oldhpmax = u.uhpmax;
 
     if (obj == uwep)
         return; /* necessary to not set unweapon */
@@ -186,15 +184,19 @@ struct obj *wep;
              * to death in Hell due to loss of fire resistance.
              * "Lifesaved re-wielding or re-wearing" is ancient history.]
              */
+
+			//Kludge removed by Janne Gustafsson; items may now be identified by setuwep
+			/*
             long dummy = wep->owornmask;
 
             wep->owornmask |= W_WEP;
             if (wep->otyp == AKLYS && (wep->owornmask & W_WEP) != 0)
                 You("secure the tether.");
-            prinv((char *) 0, wep, 0L);
             wep->owornmask = dummy;
+			*/
         }
         setuwep(wep);
+		prinv((char*)0, wep, 0L);
 
         /* KMH -- Talking artifacts are finally implemented */
         arti_speak(wep);

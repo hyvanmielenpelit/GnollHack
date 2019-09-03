@@ -1426,7 +1426,7 @@ register int after;
             } else
                 newsym(mtmp->mx, mtmp->my);
         }
-        if (OBJ_AT(mtmp->mx, mtmp->my) && mtmp->mcanmove) {
+        if (OBJ_AT(mtmp->mx, mtmp->my) && mtmp->mcanmove && !mtmp->issummoned) {
             /* recompute the likes tests, in case we polymorphed
              * or if the "likegold" case got taken above */
             if (setlikes) {

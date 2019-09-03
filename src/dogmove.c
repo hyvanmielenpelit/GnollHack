@@ -443,7 +443,7 @@ int udist;
                 return dog_eat(mtmp, obj, omx, omy, FALSE);
 
             carryamt = can_carry(mtmp, obj);
-            if (carryamt > 0 && !obj->cursed
+            if (carryamt > 0 && !obj->cursed && !mtmp->issummoned
                 && could_reach_item(mtmp, obj->ox, obj->oy)) {
                 if (rn2(20) < edog->apport + 3) {
                     if (rn2(udist) || !rn2(edog->apport)) {

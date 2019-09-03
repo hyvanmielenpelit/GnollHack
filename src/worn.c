@@ -58,6 +58,12 @@ long mask;
 
 	int oldmanamax = u.uenmax;
 	int oldhpmax = u.uhpmax;
+	int oldstr = ACURR(A_STR);
+	int olddex = ACURR(A_DEX);
+	int oldcon = ACURR(A_CON);
+	int oldint = ACURR(A_INT);
+	int oldwis = ACURR(A_WIS);
+	int oldcha = ACURR(A_CHA);
 
     if ((mask & (W_ARM | I_SPECIAL)) == (W_ARM | I_SPECIAL)) {
         /* restoring saved game; no properties are conferred via skin */
@@ -132,8 +138,20 @@ long mask;
 	updatemaxen();
 	updatemaxhp();
 
-	if (obj && (u.uenmax != oldmanamax || u.uhpmax != oldhpmax)) // this should identify all objects giving hp or mana
+	if (obj && (
+		   u.uenmax != oldmanamax
+		|| u.uhpmax != oldhpmax
+		|| ACURR(A_STR) != oldstr
+		|| ACURR(A_DEX) != olddex
+		|| ACURR(A_CON) != oldcon
+		|| ACURR(A_INT) != oldint
+		|| ACURR(A_WIS) != oldwis
+		|| ACURR(A_CHA) != oldcha
+		)) // this should identify all objects giving hp or mana or stats
+	{
 		makeknown(obj->otyp);
+		context.botl = 1;
+	}
 
 	update_inventory();
 }
@@ -149,6 +167,16 @@ register struct obj *obj;
 
     if (!obj)
         return;
+
+	int oldmanamax = u.uenmax;
+	int oldhpmax = u.uhpmax;
+	int oldstr = ACURR(A_STR);
+	int olddex = ACURR(A_DEX);
+	int oldcon = ACURR(A_CON);
+	int oldint = ACURR(A_INT);
+	int oldwis = ACURR(A_WIS);
+	int oldcha = ACURR(A_CHA);
+
     if (obj == uwep || obj == uswapwep)
         u.twoweap = 0;
 	for (wp = worn; wp->w_mask; wp++)
@@ -179,7 +207,21 @@ register struct obj *obj;
 	updatemaxen();
 	updatemaxhp();
 
-    update_inventory();
+	if (obj && (
+		u.uenmax != oldmanamax
+		|| u.uhpmax != oldhpmax
+		|| ACURR(A_STR) != oldstr
+		|| ACURR(A_DEX) != olddex
+		|| ACURR(A_CON) != oldcon
+		|| ACURR(A_INT) != oldint
+		|| ACURR(A_WIS) != oldwis
+		|| ACURR(A_CHA) != oldcha
+		)) // this should identify all objects giving hp or mana or stats
+	{
+		makeknown(obj->otyp);
+		context.botl = 1;
+	}
+	update_inventory();
 }
 
 /* return item worn in slot indiciated by wornmask; needed by poly_obj() */

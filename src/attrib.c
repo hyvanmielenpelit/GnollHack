@@ -1291,7 +1291,7 @@ int x;
 		
 		if (uarmv && uarmv->otyp == BELT_OF_GIANT_STRENGTH)
 		{
-			str2 = STR19(19 + uarmv->spe);
+			str2 = STR19(20 + uarmv->spe);
 			if(str2 > STR19(25))
 				str2 = STR19(25);
 		}
@@ -1317,8 +1317,18 @@ int x;
         /* yes, this may raise int/wis if player is sufficiently
          * stupid.  there are lower levels of cognition than "dunce".
          */
-		if (tmp >= 25 || (uarmo && uarmo->otyp == ROBE_OF_THE_ARCHMAGI))
-			return (schar)25;
+		if (uarmo && uarmo->otyp == ROBE_OF_THE_ARCHMAGI && uarmh && uarmh->otyp == DUNCE_CAP)
+		{
+			//Nothing
+		}
+		else if(uarmo && uarmo->otyp == ROBE_OF_THE_ARCHMAGI)
+		{
+			int intelligence2 = 20 + uarmo->spe;
+			if (intelligence2 > 25)
+				intelligence2 = 25;
+			if (intelligence2 > tmp)
+				tmp = intelligence2;
+		}
 		else if (uarmh && uarmh->otyp == DUNCE_CAP)
             return (schar) 6;
 	}
@@ -1326,8 +1336,18 @@ int x;
 		/* yes, this may raise int/wis if player is sufficiently
 		 * stupid.  there are lower levels of cognition than "dunce".
 		 */
-		if (tmp >= 25 || (uarmo && uarmo->otyp == ROBE_OF_STARRY_WISDOM))
-			return (schar)25;
+		if (uarmo && uarmo->otyp == ROBE_OF_STARRY_WISDOM && uarmh && uarmh->otyp == DUNCE_CAP)
+		{
+			//Nothing
+		}
+		else if (uarmo && uarmo->otyp == ROBE_OF_STARRY_WISDOM)
+		{
+			int wisdom2 = 20 + uarmo->spe;
+			if (wisdom2 > 25)
+				wisdom2 = 25;
+			if (wisdom2 > tmp)
+				tmp = wisdom2;
+		}
 		else if (uarmh && uarmh->otyp == DUNCE_CAP)
 			return (schar)6;
 	}
