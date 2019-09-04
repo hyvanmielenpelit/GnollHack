@@ -833,7 +833,7 @@ Belt_on(VOID_ARGS)
 	   keep this uncommented in case somebody adds a new one which does */
 	switch (uarmv->otyp) {
 	case LEATHER_BELT:
-	case BELT_OF_ENDURANCE:
+	case BELT_OF_FORTITUDE:
 	case BELT_OF_GIANT_STRENGTH:
 		break;
 	case BELT_OF_DWARVENKIND:
@@ -857,7 +857,7 @@ Belt_off(VOID_ARGS)
 	   keep this uncommented in case somebody adds a new one which does */
 	switch (uarmv->otyp) {
 	case LEATHER_BELT:
-	case BELT_OF_ENDURANCE:
+	case BELT_OF_FORTITUDE:
 	case BELT_OF_GIANT_STRENGTH:
 		break;
 	case BELT_OF_DWARVENKIND:
@@ -1164,7 +1164,7 @@ register struct obj *obj;
     switch (obj->otyp) {
     case RIN_TELEPORTATION:
     case RIN_REGENERATION:
-	case RIN_MANA_REGENERATION:
+	case RIN_REPLENISHMENT:
 	case RIN_SEARCHING:
     case RIN_HUNGER:
     case RIN_AGGRAVATE_MONSTER:
@@ -1314,7 +1314,7 @@ boolean gone;
     switch (obj->otyp) {
     case RIN_TELEPORTATION:
     case RIN_REGENERATION:
-	case RIN_MANA_REGENERATION:
+	case RIN_REPLENISHMENT:
 	case RIN_SEARCHING:
     case RIN_HUNGER:
     case RIN_AGGRAVATE_MONSTER:

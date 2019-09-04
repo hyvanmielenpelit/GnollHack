@@ -851,7 +851,7 @@ register struct monst *mtmp;
 	case S_VAMPIRE:
 		if (ptr == &mons[PM_VAMPIRE_MAGE]) {
 			if(!rnd(7))
-				(void)mongets(mtmp, RIN_MANA_REGENERATION);
+				(void)mongets(mtmp, RIN_REPLENISHMENT);
 			if (!rnd(20))
 				(void)mongets(mtmp, ROBE_OF_THE_ARCHMAGI);
 
@@ -892,7 +892,7 @@ register struct monst *mtmp;
 
 		//Ring
 		if (!rn2(4))
-			(void)mongets(mtmp, RIN_MANA_REGENERATION);
+			(void)mongets(mtmp, RIN_REPLENISHMENT);
 
 		//Reagents
 		n = rnd(3) + (ptr == &mons[PM_MASTER_LICH] || ptr == &mons[PM_ARCH_LICH] ? 2 : 0); //1...3 + 2

@@ -213,9 +213,11 @@ WEAPON("elven broadsword", "runed broadsword",
        0, 0, 0,  4,  55,  10,  2, 4, 0, 1, 6, 1, 0, 0, 0, 0, 0, 0, S,   P_BROAD_SWORD, WOOD, HI_WOOD, O1_NONE),
         /* +d4 small, +1 large */
 WEAPON("long sword", None,
-       1, 0, 0, 40,  60,  15,  1, 8, 0, 1, 12, 0, 0, 0, 0, 0, 0, 0, S,   P_LONG_SWORD, IRON, HI_METAL, O1_NONE),
+       1, 0, 0, 38,  60,  15,  1, 8, 0, 1, 12, 0, 0, 0, 0, 0, 0, 0, S,   P_LONG_SWORD, IRON, HI_METAL, O1_NONE),
 WEAPON("silver long sword", None,
-	   1, 0, 0, 0, 55, 500, 1, 8, 0, 1, 12, 0, 0, 0, 0, 0, 0, 0, S, P_LONG_SWORD, SILVER, HI_SILVER, O1_NONE),
+	   1, 0, 0, 0,   55, 500, 1, 8, 0, 1, 12, 0, 0, 0, 0, 0, 0, 0, S, P_LONG_SWORD, SILVER, HI_SILVER, O1_NONE),
+WEAPON("glass sword", None,
+	   1, 0, 0, 2,   20, 500, 1, 8, 0, 1, 12, 0, 0, 0, 0, 0, 0, 0, S, P_LONG_SWORD, GLASS, HI_GLASS, O1_NONE),
 WEAPON("two-handed sword", None,
        1, 0, 1, 20, 120,  50, 1, 12, 0, 3, 6, 0, 0, 0, 0, 0, 0, 0, S,   P_TWO_HANDED_SWORD,
                                                         IRON, HI_METAL, O1_NONE),
@@ -549,7 +551,7 @@ ROBE("robe of protection", "golden ornamental robe",
 ROBE("robe of magic resistance", "silvery ornamental robe",
 	0, 1, ANTIMAGIC,  0, 0, 9, 1, 25, 400,  9, 2, 0, 0, CLOTH, HI_SILVER, O1_NONE),
 ROBE("gown of the archbishops", "shining purple robe",
-	0, 1, CURSE_RES, DEATH_RES, DRAIN_RES, 5, 2, 30, 400,  9, 3, 0, 0, CLOTH, HI_ZAP, O1_NOT_CURSEABLE),
+	0, 1, CURSE_RES, DEATH_RES, DRAIN_RES, 5, 2, 30, 400,  9, 3,15, 15, CLOTH, HI_ZAP, O1_NOT_CURSEABLE | O1_HP_PERCENTAGE_BONUS | O1_MANA_PERCENTAGE_BONUS),
 ROBE("robe of the archmagi", "shining blue robe",
 	0, 1, 0,		   0, 0, 5, 2, 30, 400,  9, 3, 0, 0, CLOTH, HI_ZAP, O1_NONE),
 ROBE("robe of starry wisdom", "shining black robe", //ENDMARKER 2
@@ -584,7 +586,7 @@ BELT("leather belt", "old belt", //STARTMARKER 1 & 2
 	0, 0, 0,		  0, 0, 10, 0, 5,   5, 10, 0, 0, 0, CLOTH, HI_LEATHER, O1_NO_SPELL_CASTING_PENALTY),
 BELT("belt of dwarvenkind", "broad belt", 
 	0, 1, POISON_RES, 0, 0,  8, 0, 5, 250, 10, 1, 0, 0, CLOTH, HI_LEATHER, O1_NONE),
-BELT("belt of endurance", "brown belt", 
+BELT("belt of fortitude", "brown belt", 
 	0, 1, 0,		  0, 0,  8, 0, 5, 250, 10, 1, 0, 50, CLOTH, HI_LEATHER, O1_HP_PERCENTAGE_BONUS),
 BELT("belt of giant strength", "ornamental belt", //ENDMARKER 1 & 2
 	0, 1, 0,		  0, 0,  7, 0, 5, 250, 10, 0, 0, 0, CLOTH, HI_LEATHER, O1_NONE),
@@ -707,10 +709,12 @@ RING("protection", "black onyx",
            cloak of protection) doesn't give a second MC boost */
 RING("regeneration", "moonstone",
      REGENERATION, 0, 0, 200, 1, 0,  6, 0, 0, MINERAL, HI_MINERAL, O1_NONE),
-RING("mana regeneration", "crystal",
+RING("replenishment", "crystal",
      ENERGY_REGENERATION, 0, 0, 300, 1, 0,  6, 0, 0, MINERAL, HI_MINERAL, O1_NONE),
 RING("the sorcerer-kings", "serpent-headed",
      0, 0, 0, 300, 1, 0,  6,150, 0, MINERAL, HI_MINERAL, O1_NONE),
+RING("fortitude", "immaculate",
+     0, 0, 0, 200, 1, 0,  6,  0, 25, MINERAL, HI_MINERAL, O1_HP_PERCENTAGE_BONUS),
 RING("searching", "tiger eye",
      SEARCHING, 0, 0, 200, 1, 0,  6, 0, 0, GEMSTONE, CLR_BROWN, O1_NONE),
 RING("stealth", "jade",
@@ -770,9 +774,9 @@ AMULET("amulet versus poison",        "pyramidal", 115, POISON_RES, 0, 0, 0, 0, 
 AMULET("amulet of change",               "square", 130, 0, 0, 0, 0, 0, O1_NONE),
 AMULET("amulet of unchanging",          "concave", 45,  UNCHANGING, 0, 0, 0, 0, O1_POLYMORPH_RESISTANT),
 AMULET("amulet of reflection",        "hexagonal", 75,  REFLECTING, 0, 0, 0, 0, O1_NONE),
-AMULET("amulet of mana",		        "convex",		50,  0, 0, 0, 100, 0, O1_NONE), //100 mana points
+AMULET("amulet of mana",		        "convex",		50,  0, 0, 0, 75, 0, O1_NONE), //100 mana points
 AMULET("demon blood talisman", "non-Euclidian-shaped",	25, 0, 0, 0, 100, 0, O1_MANA_PERCENTAGE_BONUS), //doubles mana capacity
-AMULET("periapt of vitality",	        "linear",		50,  0, 0, 0, 0, 50, O1_NONE), //50 hit points
+AMULET("periapt of vitality",	        "linear",		50, 0, 0, 0, 0, 25, O1_NONE), //50 hit points
 AMULET("amulet of magical breathing", "octagonal", 65,  MAGICAL_BREATHING, 0, 0, 0, 0, O1_NONE),
 /* fixed descriptions; description duplication is deliberate;
  * fake one must come before real one because selection for
