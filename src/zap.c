@@ -220,7 +220,9 @@ struct obj *otmp;
 		break;
 	case SPE_TOUCH_OF_PETRIFICATION:
 	case SPE_FLESH_TO_STONE:
-		if (!munstone(mtmp, TRUE))
+		if (resists_ston(mtmp))
+			pline("%s is unaffected.", Monnam(mtmp));
+		else if(!resist(mtmp, otmp, 0, 0, TELL) && !munstone(mtmp, TRUE))
 			minstapetrify(mtmp, TRUE);
 		break;
 	case SPE_POWER_WORD_KILL:
