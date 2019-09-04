@@ -152,7 +152,7 @@ struct objclass {
 /* oc_oc6 unused */
 
 /* comestibles and reagents (and other edibles) */
-#define oc_edible_subtype oc_oc1		/* weapons: "to hit" bonus */
+#define oc_edible_subtype oc_oc1		/* edibles: is rotten, poisoned, et*/
 
 #define EDIBLE_NORMAL 0 
 #define EDIBLE_ROTTEN 1 

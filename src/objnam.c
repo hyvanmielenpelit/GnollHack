@@ -4136,7 +4136,7 @@ struct obj *no_wish;
 				otmp->special_enchantment = special_enchantment;
 			else
 				otmp->special_enchantment = 0;
-		if(otmp->special_enchantment == DEATH_ENCHANTMENT && objects[otmp->otyp].oc_material != BONE)
+		if(otmp->special_enchantment == DEATH_ENCHANTMENT && !(objects[otmp->otyp].oc_material == BONE || objects[otmp->otyp].oc_material == GLASS))
 			otmp->special_enchantment = LIGHTNING_ENCHANTMENT;
 	}
 	/* empty for containers rather than for tins */

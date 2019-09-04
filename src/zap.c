@@ -3282,7 +3282,8 @@ struct obj *obj; /* wand or spell */
 
     /* Default processing via bhitm() for these */
     case SPE_CURE_SICKNESS:
-    case WAN_MAKE_INVISIBLE:
+	case SPE_CURE_PETRIFICATION:
+	case WAN_MAKE_INVISIBLE:
     case WAN_CANCELLATION:
     case SPE_CANCELLATION:
 	case SPE_LOWER_MAGIC_RESISTANCE:

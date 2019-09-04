@@ -1392,7 +1392,11 @@ boolean atme;
             make_slimed(0L, "The slime disappears!");
         healup(0, 0, TRUE, FALSE, FALSE, FALSE, FALSE);
         break;
-    case SPE_CREATE_FAMILIAR:
+	case SPE_CURE_PETRIFICATION:
+		if (Stoned)
+			fix_petrification();
+		break;
+	case SPE_CREATE_FAMILIAR:
         (void) make_familiar((struct obj *) 0, u.ux, u.uy, FALSE);
         break;
     case SPE_CLAIRVOYANCE:
@@ -2386,7 +2390,8 @@ int spell;
     if (spellid(spell) == SPE_HEALING || spellid(spell) == SPE_EXTRA_HEALING || spellid(spell) == SPE_GREATER_HEALING || spellid(spell) == SPE_FULL_HEALING
         || spellid(spell) == SPE_CURE_BLINDNESS
         || spellid(spell) == SPE_CURE_SICKNESS
-        || spellid(spell) == SPE_RESTORE_ABILITY
+		|| spellid(spell) == SPE_CURE_PETRIFICATION
+		|| spellid(spell) == SPE_RESTORE_ABILITY
         || spellid(spell) == SPE_REMOVE_CURSE)
         splcaster += special;
 

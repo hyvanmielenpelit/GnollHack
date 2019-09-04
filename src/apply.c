@@ -2540,7 +2540,7 @@ struct obj* obj;
 			switch (obj->otyp)
 			{
 			case WAN_DEATH:
-				if ((otmp->oclass == WEAPON_CLASS || objects[otmp->otyp].oc_flags & O1_SPECIAL_ENCHANTABLE) && objects[otmp->otyp].oc_material == BONE)
+				if ((otmp->oclass == WEAPON_CLASS || objects[otmp->otyp].oc_flags & O1_SPECIAL_ENCHANTABLE) && (objects[otmp->otyp].oc_material == BONE || objects[otmp->otyp].oc_material == GLASS))
 				{
 					wandknown = TRUE;
 					You("enchant %s with death magic.", yname(otmp));
@@ -4358,7 +4358,7 @@ int arrowtype, quan; //ObjID and quantity
 		}
 		if (bag->special_enchantment)
 		{
-			if (bag->special_enchantment != DEATH_ENCHANTMENT || (bag->special_enchantment == DEATH_ENCHANTMENT && objects[otmp->otyp].oc_material == BONE))
+			if (bag->special_enchantment != DEATH_ENCHANTMENT || (bag->special_enchantment == DEATH_ENCHANTMENT && (objects[otmp->otyp].oc_material == BONE || objects[otmp->otyp].oc_material == GLASS)))
 				otmp->special_enchantment = bag->special_enchantment;
 		}
 

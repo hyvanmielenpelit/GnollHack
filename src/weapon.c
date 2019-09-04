@@ -153,7 +153,8 @@ struct obj* otmp;
 		tmp += otmp->spe;
 
 	/* Put weapon specific "to hit" bonuses in below: */
-	tmp += objects[otmp->otyp].oc_hitbon;
+	if(otmp->oclass != SPBOOK_CLASS) /* spellbooks use oc_oc1 for something else */
+		tmp += objects[otmp->otyp].oc_hitbon;
 
 	return tmp;
 
