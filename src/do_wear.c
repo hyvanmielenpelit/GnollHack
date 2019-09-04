@@ -1219,10 +1219,19 @@ register struct obj *obj;
     case RIN_GAIN_STRENGTH:
         which = A_STR;
         goto adjust_attrib;
-    case RIN_GAIN_CONSTITUTION:
+	case RIN_GAIN_DEXTERITY:
+		which = A_DEX;
+		goto adjust_attrib;
+	case RIN_GAIN_CONSTITUTION:
         which = A_CON;
         goto adjust_attrib;
-    case RIN_ADORNMENT:
+	case RIN_GAIN_INTELLIGENCE:
+		which = A_INT;
+		goto adjust_attrib;
+	case RIN_GAIN_WISDOM:
+		which = A_WIS;
+		goto adjust_attrib;
+	case RIN_ADORNMENT:
         which = A_CHA;
  adjust_attrib:
         old_attrib = ACURR(which);
@@ -1237,7 +1246,30 @@ register struct obj *obj;
             learnring(obj, observable);
         context.botl = 1;
         break;
-    case RIN_INCREASE_ACCURACY: /* KMH */
+	case RIN_POWER:
+	{
+		int oldstr, olddex, oldcon, oldint, oldwis, oldcha;
+		oldstr = ACURR(A_STR);
+		olddex = ACURR(A_DEX);
+		oldcon = ACURR(A_CON);
+		oldint = ACURR(A_INT);
+		oldwis = ACURR(A_WIS);
+		oldcha = ACURR(A_CHA);
+		ABON(A_STR) += obj->spe;
+		ABON(A_DEX) += obj->spe;
+		ABON(A_CON) += obj->spe;
+		ABON(A_INT) += obj->spe;
+		ABON(A_WIS) += obj->spe;
+		ABON(A_CHA) += obj->spe;
+		observable = (oldstr != ACURR(A_STR) || olddex != ACURR(A_DEX)
+			|| oldcon != ACURR(A_CON) || oldint != ACURR(A_INT)
+			|| oldwis != ACURR(A_WIS) || oldcha != ACURR(A_CHA));
+		if (observable)
+			learnring(obj, observable);
+		context.botl = 1;
+		break;
+	}
+	case RIN_INCREASE_ACCURACY: /* KMH */
         u.uhitinc += obj->spe;
         break;
     case RIN_INCREASE_DAMAGE:
@@ -1339,10 +1371,19 @@ boolean gone;
     case RIN_GAIN_STRENGTH:
         which = A_STR;
         goto adjust_attrib;
-    case RIN_GAIN_CONSTITUTION:
+	case RIN_GAIN_DEXTERITY:
+		which = A_DEX;
+		goto adjust_attrib;
+	case RIN_GAIN_CONSTITUTION:
         which = A_CON;
         goto adjust_attrib;
-    case RIN_ADORNMENT:
+	case RIN_GAIN_INTELLIGENCE:
+		which = A_INT;
+		goto adjust_attrib;
+	case RIN_GAIN_WISDOM:
+		which = A_WIS;
+		goto adjust_attrib;
+	case RIN_ADORNMENT:
         which = A_CHA;
  adjust_attrib:
         old_attrib = ACURR(which);
@@ -1353,7 +1394,30 @@ boolean gone;
             learnring(obj, observable);
         context.botl = 1;
         break;
-    case RIN_INCREASE_ACCURACY: /* KMH */
+	case RIN_POWER:
+	{
+		int oldstr, olddex, oldcon, oldint, oldwis, oldcha;
+		oldstr = ACURR(A_STR);
+		olddex = ACURR(A_DEX);
+		oldcon = ACURR(A_CON);
+		oldint = ACURR(A_INT);
+		oldwis = ACURR(A_WIS);
+		oldcha = ACURR(A_CHA);
+		ABON(A_STR) -= obj->spe;
+		ABON(A_DEX) -= obj->spe;
+		ABON(A_CON) -= obj->spe;
+		ABON(A_INT) -= obj->spe;
+		ABON(A_WIS) -= obj->spe;
+		ABON(A_CHA) -= obj->spe;
+		observable = (oldstr != ACURR(A_STR) || olddex != ACURR(A_DEX)
+			|| oldcon != ACURR(A_CON) || oldint != ACURR(A_INT)
+			|| oldwis != ACURR(A_WIS) || oldcha != ACURR(A_CHA));
+		if (observable)
+			learnring(obj, observable);
+		context.botl = 1;
+		break;
+	}
+	case RIN_INCREASE_ACCURACY: /* KMH */
         u.uhitinc -= obj->spe;
         break;
     case RIN_INCREASE_DAMAGE:

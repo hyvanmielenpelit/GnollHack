@@ -218,6 +218,11 @@ struct obj *otmp;
 			}
 		}
 		break;
+	case SPE_TOUCH_OF_PETRIFICATION:
+	case SPE_FLESH_TO_STONE:
+		if (!munstone(mtmp, TRUE))
+			minstapetrify(mtmp, TRUE);
+		break;
 	case SPE_POWER_WORD_KILL:
 		reveal_invis = TRUE;
 		if (is_not_living(mtmp->data) || is_demon(mtmp->data) || resists_death(mtmp) || mindless(mtmp->data)) { /* match effect on player */
@@ -1163,25 +1168,54 @@ register struct obj *obj;
     int otyp = obj->otyp;
 
     switch (otyp) {
-    case RIN_GAIN_STRENGTH:
+	case RIN_GAIN_STRENGTH:
         if ((obj->owornmask & W_RING) && u_ring) {
             ABON(A_STR) -= obj->spe;
             context.botl = 1;
         }
         break;
-    case RIN_GAIN_CONSTITUTION:
+	case RIN_GAIN_DEXTERITY:
+		if ((obj->owornmask & W_RING) && u_ring) {
+			ABON(A_DEX) -= obj->spe;
+			context.botl = 1;
+		}
+		break;
+	case RIN_GAIN_CONSTITUTION:
         if ((obj->owornmask & W_RING) && u_ring) {
             ABON(A_CON) -= obj->spe;
             context.botl = 1;
         }
         break;
-    case RIN_ADORNMENT:
+	case RIN_GAIN_INTELLIGENCE:
+		if ((obj->owornmask & W_RING) && u_ring) {
+			ABON(A_INT) -= obj->spe;
+			context.botl = 1;
+		}
+		break;
+	case RIN_GAIN_WISDOM:
+		if ((obj->owornmask & W_RING) && u_ring) {
+			ABON(A_WIS) -= obj->spe;
+			context.botl = 1;
+		}
+		break;
+	case RIN_ADORNMENT:
         if ((obj->owornmask & W_RING) && u_ring) {
             ABON(A_CHA) -= obj->spe;
             context.botl = 1;
         }
         break;
-    case RIN_INCREASE_ACCURACY:
+	case RIN_POWER:
+		if ((obj->owornmask & W_RING) && u_ring) {
+			ABON(A_STR) -= obj->spe;
+			ABON(A_DEX) -= obj->spe;
+			ABON(A_CON) -= obj->spe;
+			ABON(A_INT) -= obj->spe;
+			ABON(A_WIS) -= obj->spe;
+			ABON(A_CHA) -= obj->spe;
+			context.botl = 1;
+		}
+		break;
+	case RIN_INCREASE_ACCURACY:
         if ((obj->owornmask & W_RING) && u_ring)
             u.uhitinc -= obj->spe;
         break;
@@ -1314,19 +1348,48 @@ boolean by_you;
             context.botl = 1;
         }
         break;
-    case RIN_GAIN_CONSTITUTION:
+	case RIN_GAIN_DEXTERITY:
+		if ((obj->owornmask & W_RING) && u_ring) {
+			ABON(A_DEX)--;
+			context.botl = 1;
+		}
+		break;
+	case RIN_GAIN_CONSTITUTION:
         if ((obj->owornmask & W_RING) && u_ring) {
             ABON(A_CON)--;
             context.botl = 1;
         }
         break;
-    case RIN_ADORNMENT:
+	case RIN_GAIN_INTELLIGENCE:
+		if ((obj->owornmask & W_RING) && u_ring) {
+			ABON(A_INT)--;
+			context.botl = 1;
+		}
+		break;
+	case RIN_GAIN_WISDOM:
+		if ((obj->owornmask & W_RING) && u_ring) {
+			ABON(A_WIS)--;
+			context.botl = 1;
+		}
+		break;
+	case RIN_ADORNMENT:
         if ((obj->owornmask & W_RING) && u_ring) {
             ABON(A_CHA)--;
             context.botl = 1;
         }
         break;
-    case RIN_INCREASE_ACCURACY:
+	case RIN_POWER:
+		if ((obj->owornmask & W_RING) && u_ring) {
+			ABON(A_STR)--;
+			ABON(A_DEX)--;
+			ABON(A_CON)--;
+			ABON(A_INT)--;
+			ABON(A_WIS)--;
+			ABON(A_CHA)--;
+			context.botl = 1;
+		}
+		break;
+	case RIN_INCREASE_ACCURACY:
         if ((obj->owornmask & W_RING) && u_ring)
             u.uhitinc--;
         break;
@@ -2307,6 +2370,8 @@ struct obj *obj, *otmp;
 		case SPE_GREATER_HEALING:
 		case SPE_FULL_HEALING:
 		case SPE_TOUCH_OF_DEATH:
+		case SPE_TOUCH_OF_PETRIFICATION:
+		case SPE_FLESH_TO_STONE:
 			res = 0;
             break;
         case SPE_STONE_TO_FLESH:
@@ -2993,6 +3058,17 @@ boolean ordinary;
         /* They might survive with an amulet of life saving */
         done(DIED);
         break;
+	case SPE_TOUCH_OF_PETRIFICATION:
+	case SPE_FLESH_TO_STONE:
+		if (!Stoned && !Stone_resistance
+			&& !(poly_when_stoned(youmonst.data)
+				&& polymon(PM_STONE_GOLEM))) {
+			int kformat = NO_KILLER_PREFIX;
+			char kname[BUFSZ] = "";
+			Sprintf(kname, "cast flesh to stone on %sself", uhim());
+			make_stoned(5L, (char*)0, kformat, kname);
+		}
+		break;
 	case SPE_POWER_WORD_STUN:
 	{
 		int duration = d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_dicesize) + objects[obj->otyp].oc_spell_dur_plus;
@@ -3294,6 +3370,8 @@ struct obj *obj; /* wand or spell */
     case WAN_STRIKING:
     case SPE_FORCE_BOLT:
 	case SPE_TOUCH_OF_DEATH:
+	case SPE_TOUCH_OF_PETRIFICATION:
+	case SPE_FLESH_TO_STONE:
 	case SPE_POWER_WORD_KILL:
 	case SPE_POWER_WORD_STUN:
 	case SPE_POWER_WORD_BLIND:

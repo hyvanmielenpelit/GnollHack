@@ -2070,22 +2070,44 @@ struct obj *otmp;
             } /* inner switch */
             break; /* default case of outer switch */
 
-        case RIN_ADORNMENT:
-            accessory_has_effect(otmp);
-            if (adjattrib(A_CHA, otmp->spe, -1))
-                makeknown(typ);
-            break;
         case RIN_GAIN_STRENGTH:
             accessory_has_effect(otmp);
             if (adjattrib(A_STR, otmp->spe, -1))
                 makeknown(typ);
             break;
-        case RIN_GAIN_CONSTITUTION:
+		case RIN_GAIN_DEXTERITY:
+			accessory_has_effect(otmp);
+			if (adjattrib(A_DEX, otmp->spe, -1))
+				makeknown(typ);
+			break;
+		case RIN_GAIN_CONSTITUTION:
             accessory_has_effect(otmp);
             if (adjattrib(A_CON, otmp->spe, -1))
                 makeknown(typ);
             break;
-        case RIN_INCREASE_ACCURACY:
+		case RIN_GAIN_INTELLIGENCE:
+			accessory_has_effect(otmp);
+			if (adjattrib(A_INT, otmp->spe, -1))
+				makeknown(typ);
+			break;
+		case RIN_GAIN_WISDOM:
+			accessory_has_effect(otmp);
+			if (adjattrib(A_WIS, otmp->spe, -1))
+				makeknown(typ);
+			break;
+		case RIN_ADORNMENT:
+			accessory_has_effect(otmp);
+			if (adjattrib(A_CHA, otmp->spe, -1))
+				makeknown(typ);
+			break;
+		case RIN_POWER:
+			accessory_has_effect(otmp);
+			if (adjattrib(A_STR, otmp->spe, -1) || adjattrib(A_DEX, otmp->spe, -1) 
+				|| adjattrib(A_CON, otmp->spe, -1) || adjattrib(A_INT, otmp->spe, -1) 
+				|| adjattrib(A_WIS, otmp->spe, -1) || adjattrib(A_CHA, otmp->spe, -1))
+				makeknown(typ);
+			break;
+		case RIN_INCREASE_ACCURACY:
             accessory_has_effect(otmp);
             u.uhitinc = (schar) bounded_increase((int) u.uhitinc, otmp->spe,
                                                  RIN_INCREASE_ACCURACY);

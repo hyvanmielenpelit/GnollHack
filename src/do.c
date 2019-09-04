@@ -438,12 +438,32 @@ register struct obj *obj;
                   hliquid("water"),
                   (obj->spe < 0) ? "weak" : "strong");
         break;
-    case RIN_GAIN_CONSTITUTION:
+	case RIN_GAIN_DEXTERITY:
+		pline_The("%s flow seems %ser now.",
+			hliquid("water"),
+			(obj->spe < 0) ? "stiff" : "nimbl");
+		break;
+	case RIN_GAIN_CONSTITUTION:
         pline_The("%s flow seems %ser now.",
                   hliquid("water"),
                   (obj->spe < 0) ? "less" : "great");
         break;
-    case RIN_INCREASE_ACCURACY: /* KMH */
+	case RIN_GAIN_INTELLIGENCE:
+		pline_The("%s flow seems %ser now.",
+			hliquid("water"),
+			(obj->spe < 0) ? "coars" : "fin");
+		break;
+	case RIN_GAIN_WISDOM:
+		pline_The("%s flow seems %s now.",
+			hliquid("water"),
+			(obj->spe < 0) ? "less sensible" : "more sensible");
+		break;
+	case RIN_POWER:
+		pline_The("%s flow seems %s now.",
+			hliquid("water"),
+			(obj->spe < 0) ? "much worse" : "much better");
+		break;
+	case RIN_INCREASE_ACCURACY: /* KMH */
         pline_The("%s flow %s the drain.",
                   hliquid("water"),
                   (obj->spe < 0) ? "misses" : "hits");
