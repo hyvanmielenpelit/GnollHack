@@ -289,7 +289,15 @@ boolean force;      /* Quietly force this animal */
         return (FALSE);
     }
 
-    if (!force && !Role_if(PM_KNIGHT) && !(--mtmp->mtame)) {
+	/* Reduce tameness */
+	if (!force && !Role_if(PM_KNIGHT) && P_SKILL(P_RIDING) < P_EXPERT && 
+		!rn2(
+			P_SKILL(P_RIDING) < P_BASIC ? 10 : 
+			P_SKILL(P_RIDING) == P_BASIC ? 20 : 50 /* P_SKILLED */
+		)) /* must be tame at this point*/
+		mtmp->mtame--; /* reduce tameness if not knight */
+
+    if (!force && !Role_if(PM_KNIGHT) && !mtmp->mtame) {
         /* no longer tame */
         newsym(mtmp->mx, mtmp->my);
         pline("%s resists%s!", Monnam(mtmp),
@@ -334,7 +342,7 @@ boolean force;      /* Quietly force this animal */
                          SUPPRESS_IT | SUPPRESS_INVISIBLE
                              | SUPPRESS_HALLUCINATION,
                          TRUE));
-        losehp(Maybe_Half_Phys(rn1(5, 10)), buf, NO_KILLER_PREFIX);
+        losehp(Maybe_Half_Phys(rnd(8) + 1), buf, NO_KILLER_PREFIX);
         return (FALSE);
     }
 
