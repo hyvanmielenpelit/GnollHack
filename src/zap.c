@@ -137,7 +137,7 @@ struct obj *otmp;
 {
     boolean wake = TRUE; /* Most 'zaps' should wake monster */
     boolean reveal_invis = FALSE, learn_it = FALSE;
-    boolean dbldam = Role_if(PM_KNIGHT) && u.uhave.questart;
+	boolean dbldam = 0; // Role_if(PM_KNIGHT) && u.uhave.questart;
     boolean skilled_spell, helpful_gesture = FALSE;
     int dmg, otyp = otmp->otyp;
     const char *zap_type_text = "spell";
@@ -4480,8 +4480,8 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
     }
     if (sho_shieldeff)
         shieldeff(mon->mx, mon->my);
-    if (is_hero_spell(type) && (Role_if(PM_KNIGHT) && u.uhave.questart))
-        tmp *= 2;
+//    if (is_hero_spell(type) && (Role_if(PM_KNIGHT) && u.uhave.questart))
+//        tmp *= 2;
     if (tmp > 0 && type >= 0
         && resist(mon, (struct obj*)0, type < ZT_SPELL(0) ? 12 : u.ulevel, 0, NOTELL))
         tmp /= 2;

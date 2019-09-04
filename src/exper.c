@@ -149,6 +149,12 @@ enmaxadjustment()
 		}
 
 	}
+
+	/* Magic mirror also gives +30% mana*/
+	if (Role_if(PM_KNIGHT) && u.uhave.questart)
+	{
+		adj += (30 * (baseen + baseadj)) / 100;
+	}
 	return adj;
 }
 

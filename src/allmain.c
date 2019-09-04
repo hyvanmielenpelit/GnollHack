@@ -358,6 +358,8 @@ boolean resuming;
 
         clear_splitobjs();
         find_ac();
+		updatemaxen();
+		updatemaxhp();
         if (!context.mv || Blind) {
             /* redo monsters if hallu or wearing a helm of telepathy */
             if (Hallucination) { /* update screen randomly */
