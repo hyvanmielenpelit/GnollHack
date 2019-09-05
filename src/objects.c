@@ -1334,7 +1334,7 @@ SPELL("lower magic resistance", "dim", None,
 SPELL("negate magic resistance", "dark", None,
 	P_ABJURATION_SPELL,			5, 1,			 9, 8, 150, A_AVG_INT_WIS, 10, 0, 1, IMMEDIATE, 0, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_SPELL_BYPASSES_MAGIC_RESISTANCE),
 SPELL("forbid summoning",		"oval-patterned", None,
-	P_ABJURATION_SPELL,				5, 1,			 4, 3, 20, A_MAX_INT_WIS, 8, 0, 1, IMMEDIATE, 0, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_NONE),
+	P_ABJURATION_SPELL,			5, 1,			 4, 3, 20, A_MAX_INT_WIS, 8, 0, 1, IMMEDIATE, 0, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_NONE),
 SPELL("cold-enchant item",		"baleful", None,
 	P_ENCHANTMENT_SPELL,		5, 1,			 0, 1, 10, A_INT, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_COLD_RESISTANT),
 SPELL("fire-enchant item",		"deformed", None,
@@ -1342,7 +1342,7 @@ SPELL("fire-enchant item",		"deformed", None,
 SPELL("lightning-enchant item",	"degraded", None,
 	P_ENCHANTMENT_SPELL,		5, 1,			 0, 3, 20, A_INT, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_LIGHTNING_RESISTANT),
 SPELL("death-enchant item",		"diabolical", None,
-	P_ENCHANTMENT_SPELL,		5, 1,			 0, 8,150, A_AVG_INT_WIS, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_LIGHTNING_RESISTANT),
+	P_ENCHANTMENT_SPELL,		5, 3,			 0, 8,150, A_AVG_INT_WIS, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_NONE),
 
 
 
