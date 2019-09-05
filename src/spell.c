@@ -1438,7 +1438,108 @@ boolean atme;
         if (!jump(max(role_skill, 1)))
             pline1(nothing_happens);
         break;
-    default:
+	case SPE_COLD_ENCHANT_ITEM:
+	case SPE_FIRE_ENCHANT_ITEM:
+	case SPE_LIGHTNING_ENCHANT_ITEM:
+	case SPE_DEATH_ENCHANT_ITEM:
+	{
+		const char enchant_objects[] = { ALL_CLASSES, ALLOW_NONE, 0 };
+		struct obj* otmp;
+		char buf[BUFSZ] = "";
+		strcpy(buf, otyp == SPE_COLD_ENCHANT_ITEM ? "cold-enchant" :
+			otyp == SPE_FIRE_ENCHANT_ITEM ? "fire-enchant" :
+			otyp == SPE_LIGHTNING_ENCHANT_ITEM ? "lightning-enchant" :
+			otyp == SPE_DEATH_ENCHANT_ITEM ? "death-enchant" :
+			"enchant");
+
+		otmp = getobj(enchant_objects, buf, 0, "");
+		if (!otmp)
+			return 0;
+
+		if (inaccessible_equipment(otmp, buf, FALSE))
+			return 0;
+
+		if (otmp && otmp != &zeroobj) {
+			switch (otyp)
+			{
+			case SPE_DEATH_ENCHANT_ITEM:
+				if ((otmp->oclass == WEAPON_CLASS || objects[otmp->otyp].oc_flags & O1_SPECIAL_ENCHANTABLE) && (objects[otmp->otyp].oc_material == BONE || objects[otmp->otyp].oc_material == GLASS))
+				{
+					You("enchant %s with death magic.", yname(otmp));
+					otmp->special_enchantment = DEATH_ENCHANTMENT;
+				}
+				else
+				{
+					pline("%s in black energy for a moment.", Tobjnam(otmp, "flicker"));
+				}
+				break;
+			case SPE_COLD_ENCHANT_ITEM:
+				if (otmp->special_enchantment == DEATH_ENCHANTMENT)
+				{
+					pline("%s in blue for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
+					break;
+				}
+				if (otmp->special_enchantment == FIRE_ENCHANTMENT)
+				{
+					pline("The cold energies dispel the fire enchantment on %s.", yname(otmp));
+					otmp->special_enchantment = 0;
+					break;
+				}
+
+				if (otmp->oclass == WEAPON_CLASS || objects[otmp->otyp].oc_flags & O1_SPECIAL_ENCHANTABLE)
+				{
+					You("enchant %s with cold magic.", yname(otmp));
+					otmp->special_enchantment = COLD_ENCHANTMENT;
+				}
+				else
+				{
+					pline("%s in blue for a moment.", Tobjnam(otmp, "flicker"));
+				}
+				break;
+			case SPE_FIRE_ENCHANT_ITEM:
+				if (otmp->special_enchantment == DEATH_ENCHANTMENT)
+				{
+					pline("%s in red for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
+					break;
+				}
+				if (otmp->special_enchantment == COLD_ENCHANTMENT)
+				{
+					pline("The fiery energies dispel the cold enchantment on %s.", yname(otmp));
+					otmp->special_enchantment = 0;
+					break;
+				}
+
+				if (otmp->oclass == WEAPON_CLASS || objects[otmp->otyp].oc_flags & O1_SPECIAL_ENCHANTABLE)
+				{
+					You("enchant %s with fire magic.", yname(otmp));
+					otmp->special_enchantment = FIRE_ENCHANTMENT;
+				}
+				else
+				{
+					pline("%s in red for a moment.", Tobjnam(otmp, "flicker"));
+				}
+				break;
+			case SPE_LIGHTNING_ENCHANT_ITEM:
+				if (otmp->special_enchantment == DEATH_ENCHANTMENT)
+				{
+					pline("%s in blue for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
+					break;
+				}
+				if (otmp->oclass == WEAPON_CLASS || objects[otmp->otyp].oc_flags & O1_SPECIAL_ENCHANTABLE)
+				{
+					You("enchant %s with lightning magic.", yname(otmp));
+					otmp->special_enchantment = LIGHTNING_ENCHANTMENT;
+				}
+				else
+				{
+					pline("%s in blue for a moment.", Tobjnam(otmp, "flicker"));
+				}
+				break;
+			}
+		}
+		break;
+	}
+	default:
         impossible("Unknown spell %d attempted.", spell);
         obfree(pseudo, (struct obj *) 0);
         return 0;
