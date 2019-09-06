@@ -1641,7 +1641,7 @@ int otyp;
 			Your("image is duplicated by a displaced double.");
 			break;
 		case CONFLICT:
-			You_feel("your neighborhood is more quarrelsome.");
+			Your("neighborhood feels more quarrelsome than before.");
 			break;
 		default:
 			break;

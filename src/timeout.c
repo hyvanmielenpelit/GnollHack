@@ -834,7 +834,7 @@ nh_timeout()
 				break;
 			case CONFLICT:
 				if (!Conflict)
-					You_feel("your neighborhood is less quarrelsome than before.");
+					Your("neighborhood feels less quarrelsome than before.");
 				break;
 			}
         }
@@ -922,7 +922,7 @@ nh_timeout()
 				Your("mirror image is starting to vanish.");
 				break;
 			case CONFLICT:
-				You_feel("your neighborhood is starting to feel a bit less quarrelsome than before.");
+				Your("neighborhood is starting to feel a bit less quarrelsome than before.");
 				break;
 			}
 		}

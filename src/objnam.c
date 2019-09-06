@@ -2905,6 +2905,9 @@ static const struct alt_spellings {
 	{ "spore", FUNGAL_SPORE },
 	{ "ginseng", GINSENG_ROOT },
 	{ "mandrake", MANDRAKE_ROOT },
+	{ "wolfsbane", SPRIG_OF_WOLFSBANE },
+	{ "garlic", CLOVE_OF_GARLIC },
+	{ "feather", RAVEN_FEATHER },
 	{ "ring of death resistance", RIN_LIFE_PROTECTION },
 	{ "ring of protection from shape shifters", RIN_PROTECTION_FROM_SHAPE_CHANGERS },
     /* if we ever add other sizes, move this to o_ranges[] with "bag" */
