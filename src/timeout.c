@@ -816,7 +816,27 @@ nh_timeout()
 			case DETECT_MONSTERS:
                 see_monsters();
                 break;
-            }
+			case TELEPAT:
+				if (!Blind_telepat)
+					You_feel("less telepathic.");
+				break;
+			case WWALKING:
+				if (!Wwalking)
+					You_feel("less able to walk on water.");
+				break;
+			case MAGICAL_BREATHING:
+				if (!EMagical_breathing && !HMagical_breathing)
+					You_feel("less able to breathe in water.");
+				break;
+			case DISPLACED:
+				if (!Displaced)
+					Your("mirror image vanishes.");
+				break;
+			case CONFLICT:
+				if (!Conflict)
+					You_feel("your neighborhood is less quarrelsome than before.");
+				break;
+			}
         }
 		else if ((upp->intrinsic & TIMEOUT) && ((upp->intrinsic & TIMEOUT) == 3))
 		{
@@ -887,7 +907,22 @@ nh_timeout()
 				You("are starting to feel a bit less protected from curses.");
 				break;
 			case LIFESAVED:
-				You("is starting to feel a bit more mortal than before.");
+				You("are starting to feel a bit more mortal than before.");
+				break;
+			case TELEPAT:
+				You("are starting to feel a bit less telepathic than before.");
+				break;
+			case WWALKING:
+				You("are starting to feel a bit less able to walk on water than before.");
+				break;
+			case MAGICAL_BREATHING:
+				You("are starting to feel a bit less able to breathe in water than before.");
+				break;
+			case DISPLACED:
+				Your("mirror image is starting to vanish.");
+				break;
+			case CONFLICT:
+				You_feel("your neighborhood is starting to feel a bit less quarrelsome than before.");
 				break;
 			}
 		}

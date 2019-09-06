@@ -1365,7 +1365,9 @@ boolean atme;
 	case SPE_MASS_SLEEP:
 	case SPE_HOLY_WORD:
 	case SPE_MAGIC_MAPPING:
-    case SPE_CREATE_MONSTER:
+	case SPE_DETECT_TRAPS:
+	case SPE_STINKING_CLOUD:
+	case SPE_CREATE_MONSTER:
         (void) seffects(pseudo);
         break;
 
@@ -1429,6 +1431,9 @@ boolean atme;
 	case SPE_PROTECTION_FROM_CURSES:
 	case SPE_WATER_BREATHING:
 	case SPE_WATER_WALKING:
+	case SPE_TELEPATHY:
+	case SPE_MIRROR_IMAGE:
+	case SPE_MASS_CONFLICT:
 	case SPE_GLOBE_OF_INVULNERABILITY:
 	case SPE_DIVINE_INTERVENTION:
 		You("successfully cast \"%s\".", spellname(spell));
@@ -1622,6 +1627,21 @@ int otyp;
 			break;
 		case LIFESAVED:
 			You_feel("less mortal than before.");
+			break;
+		case TELEPAT:
+			You_feel("telepathic.");
+			break;
+		case WWALKING:
+			You_feel("like you could walk on water.");
+			break;
+		case MAGICAL_BREATHING:
+			You_feel("like you breathe in water.");
+			break;
+		case DISPLACED:
+			Your("image is duplicated by a displaced double.");
+			break;
+		case CONFLICT:
+			You_feel("your neighborhood is more quarrelsome.");
 			break;
 		default:
 			break;

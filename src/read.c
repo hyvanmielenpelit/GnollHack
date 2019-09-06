@@ -1859,7 +1859,17 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
             pline("Unfortunately, you can't grasp the details.");
         }
         break;
-    case SCR_AMNESIA:
+	case SPE_DETECT_TRAPS:
+		if (level.flags.nommap) {
+			Your("%s spins as %s blocks the spell!", body_part(HEAD),
+				something);
+			make_confused(HConfusion + rnd(30), FALSE);
+			break;
+		}
+		if(trap_detect(sobj) == 0) //Something was detected
+			You("become aware of the location of nearby traps!");
+		break;
+	case SCR_AMNESIA:
         known = TRUE;
         forget((!sblessed ? ALL_SPELLS : 0)
                | (!confused || scursed ? ALL_MAP : 0));
@@ -1973,10 +1983,11 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
         }
         punish(sobj);
         break;
+	case SPE_STINKING_CLOUD:
 	case SCR_STINKING_CLOUD: {
         coord cc;
 
-        if (!already_known)
+        if (!already_known && otyp == SCR_STINKING_CLOUD)
             You("have found a scroll of stinking cloud!");
         known = TRUE;
         pline("Where do you want to center the %scloud?",
