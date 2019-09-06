@@ -2902,6 +2902,7 @@ static const struct alt_spellings {
     { "grapple", GRAPPLING_HOOK },
 	{ "spider silk", THREAD_OF_SPIDER_SILK },
 	{ "bat guano", CLUMP_OF_BAT_GUANO },
+	{ "guano", CLUMP_OF_BAT_GUANO },
 	{ "spore", FUNGAL_SPORE },
 	{ "ginseng", GINSENG_ROOT },
 	{ "mandrake", MANDRAKE_ROOT },
