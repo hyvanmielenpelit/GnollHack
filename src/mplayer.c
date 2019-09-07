@@ -284,7 +284,7 @@ register boolean special;
 
         if (special) {
             if (!rn2(10))
-                (void) mongets(mtmp, rn2(3) ? LUCKSTONE : LOADSTONE);
+                (void) mongets(mtmp, rn2(3) ? LUCKSTONE : !rn2(2) ? LOADSTONE : JINXSTONE);
             mk_mplayer_armor(mtmp, armor);
             mk_mplayer_armor(mtmp, cloak);
             mk_mplayer_armor(mtmp, helm);

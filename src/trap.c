@@ -3731,7 +3731,7 @@ boolean *lostsome;
                  * in removing them + loadstone and other cursed stuff
                  * for obvious reasons.
                  */
-                if (!((obj->otyp == LOADSTONE && obj->cursed) || obj == uamul
+                if (!(((objects[obj->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && obj->cursed) || obj == uamul
                       || obj == uleft || obj == uright || obj == ublindf
                       || obj == uarm || obj == uarmc || obj == uarmg
                       || obj == uarmf || obj == uarmu || obj == uarmo || obj == uarmb || obj == uarmv || obj == uarmp

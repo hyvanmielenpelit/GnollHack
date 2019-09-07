@@ -528,7 +528,7 @@ register struct monst *mtmp;
             && m_carrying(mtmp, SLING)) { /* propellor */
             for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
                 if (otmp->oclass == GEM_CLASS
-                    && (otmp->otyp != LOADSTONE || !otmp->cursed)) {
+                    && (!(objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) || !otmp->cursed)) {
                     propellor = m_carrying(mtmp, SLING);
                     return otmp;
                 }
@@ -578,14 +578,14 @@ register struct monst *mtmp;
              * always select the first object of a type, and maybe the
              * monster is carrying two but only the first is unthrowable.
              */
-            if (rwep[i] != LOADSTONE) {
+            if (!(objects[rwep[i]].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED)) {
                 /* Don't throw a cursed weapon-in-hand or an artifact */
                 if ((otmp = oselect(mtmp, rwep[i])) && !otmp->oartifact
                     && !(otmp == MON_WEP(mtmp) && mwelded(otmp)))
                     return otmp;
             } else
                 for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
-                    if (otmp->otyp == LOADSTONE && !otmp->cursed)
+                    if ((objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && !otmp->cursed)
                         return otmp;
                 }
         }

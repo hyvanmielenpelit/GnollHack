@@ -351,7 +351,7 @@ struct obj *box;
                 otmp->owt = weight(otmp);
             } else
                 while (otmp->otyp == ROCK) {
-                    otmp->otyp = rnd_class(DILITHIUM_CRYSTAL, LOADSTONE);
+                    otmp->otyp = rnd_class(DILITHIUM_CRYSTAL, JINXSTONE);
                     if (otmp->quan > 2L)
                         otmp->quan = 1L;
                     otmp->owt = weight(otmp);
@@ -907,7 +907,7 @@ boolean artif;
             break;
         case GEM_CLASS:
             otmp->corpsenm = 0; /* LOADSTONE hack */
-            if (otmp->otyp == LOADSTONE)
+            if (objects[otmp->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED)
                 curse(otmp);
             else if (otmp->otyp == ROCK)
                 otmp->quan = (long) rn1(6, 6);

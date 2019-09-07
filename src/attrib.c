@@ -508,7 +508,8 @@ boolean parameter; /* So I can't think up of a good name.  So sue me. --KAA */
     register long bonchance = 0;
 
     for (otmp = invent; otmp; otmp = otmp->nobj)
-        if (confers_luck(otmp)) {
+        if (confers_luck(otmp) && carried_object_confers_powers(otmp))
+		{
             if (otmp->cursed)
                 bonchance -= otmp->quan;
             else if (otmp->blessed)
@@ -519,6 +520,59 @@ boolean parameter; /* So I can't think up of a good name.  So sue me. --KAA */
 
     return sgn((int) bonchance);
 }
+
+boolean
+carried_object_confers_powers(otmp)
+struct obj* otmp;
+{
+	return ((otmp->oclass == WEAPON_CLASS && (otmp->owornmask & W_WEAPON))
+		|| (otmp->oclass == ARMOR_CLASS && (otmp->owornmask & W_ARMOR))
+		|| (otmp->oclass == RING_CLASS && (otmp->owornmask & W_RING))
+		|| (otmp->oclass == AMULET_CLASS && (otmp->owornmask & W_AMUL))
+		|| (otmp->oclass == TOOL_CLASS && (otmp->owornmask & W_TOOL))
+		|| (objects[otmp->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED));
+}
+
+boolean
+object_confers_powers(otmp)
+struct obj* otmp;
+{
+	return carried(otmp) && carried_object_confers_powers(otmp);
+}
+
+void
+update_carried_item_extrinsics()
+{
+	struct obj* otmp;
+
+	//Clear first all carried item extrinsics
+	for (int i = 1; i <= LAST_PROP; i++)
+	{
+		u.uprops[i].extrinsic &= ~W_CARRIED;
+	}
+
+	//Add then extrinsics from all carried items
+	for (otmp = invent; otmp; otmp = otmp->nobj)
+	{
+		if (objects[otmp->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED)
+		{
+			if(objects[otmp->otyp].oc_oprop > 0)
+				u.uprops[objects[otmp->otyp].oc_oprop].extrinsic |= W_CARRIED;
+			if (objects[otmp->otyp].oc_oprop2 > 0)
+				u.uprops[objects[otmp->otyp].oc_oprop2].extrinsic |= W_CARRIED;
+			if (objects[otmp->otyp].oc_oprop3 > 0)
+				u.uprops[objects[otmp->otyp].oc_oprop3].extrinsic |= W_CARRIED;
+		}
+	}
+
+	if(Fumbling && (HFumbling & TIMEOUT) == 0)
+		incr_itimeout(&HFumbling, rnd(20));
+
+	if (Laughing && (HLaughing & TIMEOUT) == 0)
+		incr_itimeout(&HLaughing, rnd(20));
+
+}
+
 
 /* there has just been an inventory change affecting a luck-granting item */
 void
@@ -1033,7 +1087,12 @@ int propidx; /* special cases can have negative values */
                 Sprintf(buf, because_of, obj->oartifact
                                              ? bare_artifactname(obj)
                                              : ysimple_name(obj));
-            else if (propidx == BLINDED && Blindfolded_only)
+/*			else if (wizard
+				&& (obj = what_carried_gives(propidx) != 0))
+				Sprintf(buf, because_of, obj->oartifact
+					? bare_artifactname(obj)
+					: ysimple_name(obj));*/
+			else if (propidx == BLINDED && Blindfolded_only)
                 Sprintf(buf, because_of, ysimple_name(ublindf));
 
             /* remove some verbosity and/or redundancy */

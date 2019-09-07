@@ -132,7 +132,9 @@ struct prop {
 #define W_SADDLE 0x00100000L /* KMH -- For riding monsters */
 #define W_BALL 0x00200000L   /* Punishment ball */
 #define W_CHAIN 0x00400000L  /* Punishment chain */
-  /*0x00400000L unused */
+
+/* Carried */
+#define W_CARRIED 0x80000000L  /* Carried */
 
     /*** Property is blocked by an object ***/
     long blocked; /* Same assignments as extrinsic */
@@ -170,5 +172,6 @@ struct prop {
 #define WORN_BRACERS W_ARMB
 #define WORN_BELT W_ARMV
 #define WORN_PANTS W_ARMP
+#define CARRIED_ITEM W_CARRIED
 
 #endif /* PROP_H */

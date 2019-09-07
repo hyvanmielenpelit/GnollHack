@@ -1367,7 +1367,8 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 						}
 					}
 				}
-				if (sblessed || wornmask || obj->otyp == LOADSTONE
+				if (sblessed || wornmask || objects[obj->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED
+					|| objects[obj->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED
 					|| (obj->otyp == LEASH && obj->leashmon)) {
 					/* water price varies by curse/bless status */
 					boolean shop_h2o = (obj->unpaid && obj->otyp == POT_WATER);

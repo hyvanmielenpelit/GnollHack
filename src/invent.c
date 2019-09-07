@@ -840,7 +840,11 @@ struct obj *obj;
         set_artifact_intrinsic(obj, 1, W_ART);
     }
 
-    /* "special achievements" aren't discoverable during play, they
+	update_carried_item_extrinsics();
+	updatemaxen();
+	updatemaxhp();
+
+	/* "special achievements" aren't discoverable during play, they
        end up being recorded in XLOGFILE at end of game, nowhere else;
        record_achieve_special overloads corpsenm which is ordinarily
        initialized to NON_PM (-1) rather than to 0; any special prize
@@ -1137,7 +1141,11 @@ struct obj *obj;
         set_artifact_intrinsic(obj, 0, W_ART);
     }
 
-    if (obj->otyp == LOADSTONE) {
+	update_carried_item_extrinsics();
+	updatemaxen();
+	updatemaxhp();
+
+    if (objects[obj->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED) {
         curse(obj);
     } else if (confers_luck(obj)) {
         set_moreluck();
@@ -1412,7 +1420,7 @@ boolean
 splittable(obj)
 struct obj *obj;
 {
-    return !((obj->otyp == LOADSTONE && obj->cursed)
+    return !(((objects[obj->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && obj->cursed)
              || (obj == uwep && welded(uwep)));
 }
 

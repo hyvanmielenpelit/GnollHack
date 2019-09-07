@@ -4277,7 +4277,8 @@ doapply()
     case FLINT:
     case LUCKSTONE:
     case LOADSTONE:
-    case TOUCHSTONE:
+	case JINXSTONE:
+	case TOUCHSTONE:
         use_stone(obj);
         break;
     default:

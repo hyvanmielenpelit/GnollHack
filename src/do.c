@@ -587,12 +587,12 @@ canletgo(obj, word)
 struct obj *obj;
 const char *word;
 {
-    if (obj->owornmask & (W_ARMOR | W_ACCESSORY)) {
-        if (*word)
-            Norep("You cannot %s %s you are wearing.", word, something);
-        return FALSE;
-    }
-    if (obj->otyp == LOADSTONE && obj->cursed) {
+	if (obj->owornmask & (W_ARMOR | W_ACCESSORY)) {
+		if (*word)
+			Norep("You cannot %s %s you are wearing.", word, something);
+		return FALSE;
+	}
+	if (objects[obj->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED && obj->cursed) {
         /* getobj() kludge sets corpsenm to user's specified count
            when refusing to split a stack of cursed loadstones */
         if (*word) {
@@ -600,8 +600,8 @@ const char *word;
                implicitly forced to be 1; replicate its kludge... */
             if (!strcmp(word, "throw") && obj->quan > 1L)
                 obj->corpsenm = 1;
-            pline("For some reason, you cannot %s%s the stone%s!", word,
-                  obj->corpsenm ? " any of" : "", plur(obj->quan));
+            pline("For some reason, you cannot %s%s %s%s!", word,
+                  obj->corpsenm ? " any of" : "", is_graystone(obj) ? "the stone" : "the item", plur(obj->quan));
         }
         obj->corpsenm = 0; /* reset */
         obj->bknown = 1;
@@ -937,7 +937,7 @@ int retry;
                 if (cnt < otmp->quan) {
                     if (welded(otmp)) {
                         ; /* don't split */
-                    } else if (otmp->otyp == LOADSTONE && otmp->cursed) {
+                    } else if ((objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && otmp->cursed) {
                         /* same kludge as getobj(), for canletgo()'s use */
                         otmp->corpsenm = (int) cnt; /* don't split */
                     } else {

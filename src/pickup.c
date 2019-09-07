@@ -1524,14 +1524,17 @@ boolean telekinesis; /* not picking it up directly by hand */
     /* Whats left of the special case for gold :-) */
     if (obj->oclass == COIN_CLASS)
         context.botl = 1;
-    if (obj->quan != count && obj->otyp != LOADSTONE)
+    if (obj->quan != count && !(objects[obj->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED))
         obj = splitobj(obj, count);
 
+	/* Finnaly, pick the object up */
     obj = pick_obj(obj);
 
     if (uwep && uwep == obj)
         mrg_to_wielded = TRUE;
     nearload = near_capacity();
+
+	/* Display message regarding new item in inventory */
     prinv(nearload == SLT_ENCUMBER ? moderateloadmsg : (char *) 0, obj,
           count);
     mrg_to_wielded = FALSE;
@@ -2133,9 +2136,9 @@ register struct obj *obj;
         Norep("You cannot %s %s you are wearing.",
               Icebox ? "refrigerate" : "stash", something);
         return 0;
-    } else if ((obj->otyp == LOADSTONE) && obj->cursed) {
+    } else if ((objects[obj->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && obj->cursed) {
         obj->bknown = 1;
-        pline_The("stone%s won't leave your person.", plur(obj->quan));
+        pline_The("%s%s won't leave your person.", is_graystone(obj) ? "The stone" : "The item", plur(obj->quan));
         return 0;
     } else if (obj->otyp == AMULET_OF_YENDOR
                || obj->otyp == CANDELABRUM_OF_INVOCATION
@@ -2304,7 +2307,7 @@ register struct obj *obj;
     if ((res = lift_object(obj, current_container, &count, FALSE)) <= 0)
         return res;
 
-    if (obj->quan != count && obj->otyp != LOADSTONE)
+    if (obj->quan != count && !(objects[obj->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED))
         obj = splitobj(obj, count);
 
     /* Remove the object from the list. */

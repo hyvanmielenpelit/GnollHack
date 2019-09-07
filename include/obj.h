@@ -349,8 +349,7 @@ struct obj {
 
 /* special stones */
 #define is_graystone(obj)                                 \
-    ((obj)->otyp == LUCKSTONE || (obj)->otyp == LOADSTONE \
-     || (obj)->otyp == FLINT || (obj)->otyp == TOUCHSTONE)
+    ((obj)->otyp >= LUCKSTONE && (obj)->otyp <= FLINT)
 
 /* misc helpers, simple enough to be macros */
 #define is_flimsy(otmp)                           \

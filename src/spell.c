@@ -2883,13 +2883,16 @@ int spell;
 			}
 
 			//Disintegration resistant items, indestructible items, and fire-resistant items won't get destroyed
-			//Loadstone will not get destroyed, nor do containers
+			//Loadstone will not get destroyed, nor do containers or worn items, which can be cursed
 			if((objects[otmp->otyp].oc_flags & O1_DISINTEGRATION_RESISTANT)
 				|| (objects[otmp->otyp].oc_flags & O1_FIRE_RESISTANT)
 				|| (objects[otmp->otyp].oc_flags & O1_LIGHTNING_RESISTANT)
 				|| (objects[otmp->otyp].oc_flags & O1_INDESTRUCTIBLE)
 				|| Is_container(otmp)
-				|| otmp->otyp == LOADSTONE)
+				|| objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED
+				|| objects[otmp->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED
+				|| otmp->owornmask & ~W_WEAPON
+				|| otmp->oclass == WEAPON_CLASS && (otmp->owornmask & W_WEAPON))
 				usecomps = FALSE;
 		}
 		//Use them all up

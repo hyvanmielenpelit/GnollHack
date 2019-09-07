@@ -711,7 +711,7 @@ RING("regeneration", "moonstone",
      REGENERATION, 0, 0, 200, 1, 0,  6, 0, 0, MINERAL, HI_MINERAL, O1_NONE),
 RING("replenishment", "crystal",
      ENERGY_REGENERATION, 0, 0, 300, 1, 0,  6, 0, 0, MINERAL, HI_MINERAL, O1_NONE),
-RING("the serpent", "serpent-headed",
+RING("the serpent god", "serpent-headed",
      0, 0, 0, 300, 1, 0,  6,150, 0, MINERAL, HI_MINERAL, O1_NONE),
 RING("fortitude", "immaculate",
      0, 0, 0, 200, 1, 0,  6,  0, 25, MINERAL, HI_MINERAL, O1_HP_PERCENTAGE_BONUS),
@@ -983,7 +983,7 @@ POTION("enlightenment",        "swirly",  1, 0, 20, 200, CLR_BROWN, O1_NONE),
 POTION("monster detection",    "bubbly",  1, 0, 40, 150, CLR_WHITE, O1_NONE),
 POTION("object detection",      "smoky",  1, 0, 32, 150, CLR_GRAY, O1_NONE),
 POTION("gain energy",          "cloudy",  1, 0, 42, 150, CLR_WHITE, O1_NONE),
-POTION("greater energy",  "eerie green",  1, 0, 20, 150, CLR_WHITE, O1_NONE),
+POTION("greater energy",     "greenish",  1, 0, 20, 150, CLR_GREEN, O1_NONE),
 POTION("full energy",		  "silvery",  1, 0, 10, 150, CLR_WHITE, O1_NONE),
 POTION("sleeping",       "effervescent",  1, 0, 32, 100, CLR_GRAY, O1_NONE),
 POTION("polymorph",            "golden",  1, 0, 10, 200, CLR_YELLOW, O1_POLYMORPH_RESISTANT),
@@ -1232,7 +1232,7 @@ SPELL("full healing",     "light gray", None,
 SPELL("restore ability",  "light brown", None,
       P_HEALING_SPELL,			10,  5,			 6, 5, 50, A_WIS, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_BROWN, O1_NONE),
 SPELL("invisibility",     "dark brown", None,
-      P_ENCHANTMENT_SPELL,		10,  5,			 3, 2, 15, A_INT, 0, 0, 1, NODIR, 0, 0, 0, 0, 2, 20, 50, CLR_BROWN, O1_NONE),
+      P_ENCHANTMENT_SPELL,		10,  5,			120,2, 15, A_INT, 0, 0, 1, NODIR, 0, 0, 0, 0, 2, 20, 50, CLR_BROWN, O1_NONE),
 SPELL("detect treasure",  "gray", None,
       P_DIVINATION_SPELL,		10,  5,			 1, 0,  7, A_MAX_INT_WIS, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_GRAY, O1_NONE),
 SPELL("remove curse",     "wrinkled", None,
@@ -1297,7 +1297,7 @@ SPELL("anti-magic shell",   "immaculate", None,
 	  P_ABJURATION_SPELL,	    5,  1,		   120, 7,100, A_INT, 0, 0, 1, NODIR, ANTIMAGIC, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_NONE),
 SPELL("reflection", "polished silver", None,
 	  P_ABJURATION_SPELL,	    5,  1,		   120, 6, 75, A_MAX_INT_WIS, 0, 0, 1, NODIR, REFLECTING, 0, 0, 0, 10, 6, 25, HI_SILVER, O1_NONE),
-SPELL("protection from fire", "flame-patterned", None,
+SPELL("protection from fire", "smoky", None,
 	  P_ABJURATION_SPELL,	    5,  1,		   120, 2, 15, A_MAX_INT_WIS, 0, 0, 1, NODIR, FIRE_RES, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_FIRE_RESISTANT),
 SPELL("protection from lightning", "cloudy", None,
 	  P_ABJURATION_SPELL,	    5,  1,		   120, 2, 15, A_MAX_INT_WIS, 0, 0, 1, NODIR, SHOCK_RES, 0, 0, 0, 10, 6, 25, HI_PAPER, O1_LIGHTNING_RESISTANT),
@@ -1421,11 +1421,11 @@ COIN("gold piece", 1000, GOLD, 1),
            BITS(0, 1, 0, 0, 0, 0, 0, 0, 0,                              \
                 HARDGEM(mohs), 0, -P_SLING, glass),                     \
            0, 0, 0, GEM_CLASS, prob, 0, 1, gval, 1, 3, 0, 1, 3, 0, 0, 0, 0, 0, 0, 0, nutr, color, 0, 0, 0, 0, flags)
-#define ROCK(name,desc,kn,prob,wt,gval, sdam, ldam, mgc,nutr,mohs,glass,color) \
+#define ROCK(name,desc,power1,power2,power3,kn,prob,wt,gval, sdam, ldam, mgc,nutr,mohs,glass,color,flags) \
     OBJECT(OBJ(name, desc),  None,                                            \
            BITS(kn, 1, 0, 0, mgc, 0, 0, 0, 0,                           \
                 HARDGEM(mohs), 0, -P_SLING, glass),                     \
-           0, 0, 0, GEM_CLASS, prob, 0, wt, gval, 1, sdam, 0, 1, ldam, 0, 0, 0, 0, 0, 0, 0, nutr, color, 0, 0, 0, 0, O1_NONE)
+           power1, power2, power3, GEM_CLASS, prob, 0, wt, gval, 1, sdam, 0, 1, ldam, 0, 0, 0, 0, 0, 0, 0, nutr, color, 0, 0, 0, 0, flags)
 GEM("dilithium crystal", "white",  2, 1, 4500, 15,  5, GEMSTONE, CLR_WHITE, O1_NONE),
 GEM("diamond",           "white",  3, 1, 4000, 15,  10, GEMSTONE, CLR_WHITE, O1_SOLD_AS_MATERIAL_COMPONENT),
 GEM("black pearl",		 "black",  3, 1, 3750, 15,  5, GEMSTONE, CLR_BLACK, O1_SOLD_AS_MATERIAL_COMPONENT),
@@ -1474,11 +1474,18 @@ GEM("worthless piece of violet glass", "violet",
  * that is currently everything between luckstones and flint
  * (inclusive).
  */
-ROCK("luckstone", "gray",  0,  10,  10, 60, 3, 3, 1, 10, 7, MINERAL, CLR_GRAY),
-ROCK("loadstone", "gray",  0,  10, 500,  1, 3, 3, 1, 10, 6, MINERAL, CLR_GRAY),
-ROCK("touchstone", "gray", 0,   8,  10, 45, 3, 3, 1, 10, 6, MINERAL, CLR_GRAY),
-ROCK("flint", "gray",      0,  10,  10,  1, 6, 6, 0, 10, 7, MINERAL, CLR_GRAY),
-ROCK("rock", None,         1, 100,  10,  0, 3, 3, 0, 10, 7, MINERAL, CLR_GRAY),
+ROCK("luckstone", "gray",	//Gray stone start marker
+	0, 0, 0,				0,  10,  10, 60, 3, 3, 1, 10, 7, MINERAL, CLR_GRAY, O1_CONFERS_LUCK | O1_CONFERS_POWERS_WHEN_CARRIED),
+ROCK("loadstone", "gray", 
+	0, 0, 0,				0,  10, 500,  1, 3, 3, 1, 10, 6, MINERAL, CLR_GRAY, O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED | O1_CANNOT_BE_DROPPED_IF_CURSED),
+ROCK("jinxstone", "gray",  
+	FUMBLING, 0, 0,			0,  10,  10,  1, 3, 3, 1, 10, 6, MINERAL, CLR_GRAY, O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED | O1_CANNOT_BE_DROPPED_IF_CURSED | O1_CONFERS_POWERS_WHEN_CARRIED),
+ROCK("touchstone", "gray", 
+	0, 0, 0,				0,   8,  10, 45, 3, 3, 1, 10, 6, MINERAL, CLR_GRAY, O1_NONE),
+ROCK("flint", "gray",      //Gray stone end marker 
+	0, 0, 0,				0,  10,  10,  1, 6, 6, 0, 10, 7, MINERAL, CLR_GRAY, O1_NONE),
+ROCK("rock", None,         
+	0, 0, 0,				1,  90,  10,  0, 3, 3, 0, 10, 7, MINERAL, CLR_GRAY, O1_NONE),
 #undef GEM
 #undef ROCK
 

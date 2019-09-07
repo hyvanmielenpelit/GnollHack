@@ -283,7 +283,12 @@ worst_cursed_item()
             if (Cursed_obj(otmp, LOADSTONE))
                 return otmp;
     }
-    /* weapon takes precedence if it is interfering
+	/* Then jinxstone if carried */
+	for (otmp = invent; otmp; otmp = otmp->nobj)
+		if (Cursed_obj(otmp, JINXSTONE))
+			return otmp;
+
+	/* weapon takes precedence if it is interfering
        with taking off a ring or putting on a shield */
     if (welded(uwep) && (uright || bimanual(uwep))) { /* weapon */
         otmp = uwep;
@@ -340,7 +345,9 @@ worst_cursed_item()
         for (otmp = invent; otmp; otmp = otmp->nobj) {
             if (!otmp->cursed)
                 continue;
-            if (otmp->otyp == LOADSTONE || confers_luck(otmp))
+            if ((objects[otmp->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED)
+				|| objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED 
+				|| confers_luck(otmp))
                 break;
         }
     }

@@ -304,9 +304,11 @@ boolean
 confers_luck(obj)
 struct obj *obj;
 {
-    /* might as well check for this too */
-    if (obj->otyp == LUCKSTONE)
-        return TRUE;
+	/* might as well check for this too */
+	if (obj->otyp == LUCKSTONE)
+		return TRUE;
+	if (objects[obj->otyp].oc_flags & O1_CONFERS_LUCK)
+		return TRUE;
 
     return (boolean) (obj->oartifact && spec_ability(obj, SPFX_LUCK));
 }
@@ -1858,13 +1860,35 @@ long *abil;
                         return obj;
                 }
             }
-        } else {
-            if (wornbits && wornbits == (wornmask & obj->owornmask))
-                return obj;
         }
+
+		/* check worn */
+		if (wornbits && wornbits == (wornmask & obj->owornmask))
+            return obj;
     }
     return (struct obj *) 0;
 }
+
+/*
+ * Return the first item that is conveying a particular intrinsic (using propid).
+ */
+struct obj*
+what_carried_gives(propid)
+int propid;
+{
+	struct obj* obj;
+
+	for (obj = invent; obj; obj = obj->nobj) {
+		/* check carried */
+		if (objects[obj->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED)
+		{
+			if (objects[obj->otyp].oc_oprop == propid || objects[obj->otyp].oc_oprop2 == propid || objects[obj->otyp].oc_oprop3 == propid)
+				return obj;
+		}
+	}
+	return (struct obj*) 0;
+}
+
 
 const char *
 glow_color(arti_indx)
