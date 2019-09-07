@@ -75,11 +75,11 @@ struct objclass {
     Bitfield(oc_tough, 1); /* hard gems/rings */
 
     Bitfield(oc_dir, 3);
-#define NODIR 1     /* for wands/spells: non-directional */
-#define IMMEDIATE 2 /*               directional */
-#define RAY 3       /*               zap beams */
-#define TARGETED 4  /*               targeted using throwspell */
-#define TOUCH 5       /*             like immediate but touch distance */
+#define NODIR 1     /* for wands/spells:	non-directional */
+#define IMMEDIATE 2 /*						directional */
+#define RAY 3       /*						zap beams */
+#define TARGETED 4  /*						targeted using throwspell */
+#define TOUCH 5     /*						like immediate but touch distance */
 
 #define PIERCE 1 /* for weapons & tools used as weapons */
 #define SLASH 2  /* (latter includes iron ball & chain) */
