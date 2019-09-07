@@ -2184,12 +2184,31 @@ const char *fmt, *str;
         if (fmt && str)
             pline(fmt, str, uskin ? "luster" : "armor");
         return TRUE;
+    } else if (EReflecting & W_ARM) {
+        if (fmt && str)
+            pline(fmt, str, uskin ? "luster" : "armor");
+        return TRUE;
     } else if (is_reflecting(youmonst.data)) {  //youmonst.data == &mons[PM_SILVER_DRAGON]) {
         if (fmt && str)
             pline(fmt, str, "scales");
         return TRUE;
     }
-    return FALSE;
+	else if (HReflecting & TIMEOUT) { //Spell
+		if (fmt && str)
+			pline(fmt, str, "protective spell");
+		return TRUE;
+	}
+	else if (EReflecting & W_CARRIED) {
+		if (fmt && str)
+			pline(fmt, str, "force field");
+		return TRUE;
+	}
+	else if (HReflecting) {
+		if (fmt && str)
+			pline(fmt, str, "mere presence");
+		return TRUE;
+	}
+	return FALSE;
 }
 
 /* cure mon's blindness (use_defensive, dog_eat, meatobj) */
