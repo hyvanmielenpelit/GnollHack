@@ -565,11 +565,26 @@ update_carried_item_extrinsics()
 		}
 	}
 
-	if(Fumbling && (HFumbling & TIMEOUT) == 0)
-		incr_itimeout(&HFumbling, rnd(20));
+	if (EFumbling) //Item is causing fumbling, then add HFumbling timer
+	{
+		if ((HFumbling & TIMEOUT) == 0)
+			incr_itimeout(&HFumbling, rnd(20));
+	}
+	else if((HFumbling & ~TIMEOUT) == 0) //No innate fumbling
+	{
+		HFumbling = 0; // Cleared than &= ~TIMEOUT;
+	}
 
-	if (Laughing && (HLaughing & TIMEOUT) == 0)
-		incr_itimeout(&HLaughing, rnd(20));
+	if (ELaughing) //Item is causing laughing, then add HLaughing timer
+	{
+		if ((HLaughing & TIMEOUT) == 0)
+			incr_itimeout(&HLaughing, rnd(20));
+	}
+	else if ((HLaughing & ~TIMEOUT) == 0) //No innate laughing
+	{
+		if ((HLaughing & TIMEOUT) > 0)
+			HLaughing = 0; // Cleared than &= ~TIMEOUT;
+	}
 
 }
 
