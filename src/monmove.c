@@ -508,10 +508,10 @@ register struct monst *mtmp;
         } else if (!u.uinvulnerable && !Invulnerable) {
             register boolean m_sen = sensemon(mtmp);
 
-            if (m_sen || (Blind_telepat && rn2(2)) || !rn2(10)) {
+            if (m_sen || ((Blind_telepat || Unblind_telepat) && rn2(2)) || !rn2(10)) {
                 int dmg;
                 pline("It locks on to your %s!",
-                      m_sen ? "telepathy" : Blind_telepat ? "latent telepathy"
+                      m_sen ? "telepathy" : (Blind_telepat || Unblind_telepat) ? "latent telepathy"
                                                           : "mind");
                 dmg = rnd(15);
                 if (Half_spell_damage)
@@ -529,7 +529,7 @@ register struct monst *mtmp;
                 continue;
             if (m2 == mtmp)
                 continue;
-            if ((telepathic(m2->data) && (rn2(2) || m2->mblinded))
+            if (( (telepathic(m2->data) || (m2->mblinded && unblind_telepathic(m2->data))) && (rn2(2) || m2->mblinded))
                 || !rn2(10)) {
                 if (cansee(m2->mx, m2->my))
                     pline("It locks on to %s.", mon_nam(m2));

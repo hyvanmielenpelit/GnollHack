@@ -368,7 +368,7 @@ boolean resuming;
                 see_traps();
                 if (u.uswallow)
                     swallowed(0);
-            } else if (Unblind_telepat) {
+            } else if (Blind_telepat || Unblind_telepat) {
                 see_monsters();
             } else if (Warning || Warn_of_mon)
                 see_monsters();

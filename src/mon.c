@@ -2711,9 +2711,10 @@ cleanup:
         && (mndx < PM_ARCHEOLOGIST || mndx > PM_WIZARD)
         && u.ualign.type != A_CHAOTIC) {
         HTelepat &= ~INTRINSIC;
-        change_luck(-2);
+		HBlind_telepat &= ~INTRINSIC;
+		change_luck(-2);
         You("murderer!");
-        if (Blind && !Blind_telepat)
+        if (Blind && !(Blind_telepat || Unblind_telepat || Detect_monsters))
             see_monsters(); /* Can't sense monsters any more. */
     }
     if ((mtmp->mpeaceful && !rn2(2)) || mtmp->mtame)

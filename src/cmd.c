@@ -2606,9 +2606,11 @@ int final;
             enl_msg(You_, "will see", "would have seen",
                     " invisible when not blind", from_what(SEE_INVIS));
     }
-    if (Blind_telepat)
+    if (Unblind_telepat)
         you_are("telepathic", from_what(TELEPAT));
-    if (Warning)
+	if (Blind_telepat)
+		you_are("telepathic when blind", from_what(BLIND_TELEPAT));
+	if (Warning)
         you_are("warned", from_what(WARNING));
     if (Warn_of_mon && context.warntype.obj) {
         Sprintf(buf, "aware of the presence of %s",

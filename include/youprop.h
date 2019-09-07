@@ -154,8 +154,12 @@
 
 #define HTelepat u.uprops[TELEPAT].intrinsic
 #define ETelepat u.uprops[TELEPAT].extrinsic
-#define Blind_telepat (HTelepat || ETelepat)
-#define Unblind_telepat (ETelepat)
+#define Telepat (HTelepat || ETelepat)
+#define Unblind_telepat Telepat
+
+#define HBlind_telepat u.uprops[BLIND_TELEPAT].intrinsic
+#define EBlind_telepat u.uprops[BLIND_TELEPAT].extrinsic
+#define Blind_telepat (HBlind_telepat || EBlind_telepat)
 
 #define HWarning u.uprops[WARNING].intrinsic
 #define EWarning u.uprops[WARNING].extrinsic

@@ -185,7 +185,7 @@ struct obj *wep; /* uwep for attack(), null for kick_monster() */
             seemimic(mtmp);
             return FALSE;
         }
-        if (!((Blind ? Blind_telepat : Unblind_telepat) || Detect_monsters)) {
+        if (!((Blind ? (Blind_telepat || Unblind_telepat) : Unblind_telepat) || Detect_monsters)) {
             struct obj *obj;
 
             if (!Blind && Hallucination)
@@ -3328,7 +3328,7 @@ struct monst *mtmp;
         u.ustuck = mtmp;
 
     if (Blind) {
-        if (!Blind_telepat)
+        if (!(Blind_telepat || Unblind_telepat || Detect_monsters))
             what = generic; /* with default fmt */
         else if (M_AP_TYPE(mtmp) == M_AP_MONSTER)
             what = a_monnam(mtmp); /* differs from what was sensed */

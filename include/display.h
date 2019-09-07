@@ -32,7 +32,7 @@
      /* 1. the monster has a brain to sense            */  \
      (!mindless(mon->data))                                \
      /* AND     2a. hero is blind and telepathic       */  \
-      && ((Blind && Blind_telepat)                         \
+      && ((Blind && (Blind_telepat || Unblind_telepat))                         \
           /* OR 2b. hero is using a telepathy inducing */  \
           /*        object and in range                */  \
           || (Unblind_telepat                              \

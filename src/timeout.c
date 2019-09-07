@@ -814,11 +814,19 @@ nh_timeout()
 					You("feel more mortal than before.");
 				break;
 			case DETECT_MONSTERS:
-                see_monsters();
+				if (!Detect_monsters)
+					You_feel("less sensitive to the presence of monsters than before.");
+				see_monsters();
                 break;
-			case TELEPAT:
+			case BLIND_TELEPAT:
 				if (!Blind_telepat)
+					You_feel("less telepathic when blind.");
+				see_monsters();
+				break;
+			case TELEPAT:
+				if (!Unblind_telepat)
 					You_feel("less telepathic.");
+				see_monsters();
 				break;
 			case WWALKING:
 				if (!Wwalking)
@@ -908,6 +916,12 @@ nh_timeout()
 				break;
 			case LIFESAVED:
 				You("are starting to feel a bit more mortal than before.");
+				break;
+			case DETECT_MONSTERS:
+				You("are starting to feel a bit less sensitive to the presence of monsters than before.");
+				break;
+			case BLIND_TELEPAT:
+				You("are starting to feel a bit less telepathic when blind than before.");
 				break;
 			case TELEPAT:
 				You("are starting to feel a bit less telepathic than before.");

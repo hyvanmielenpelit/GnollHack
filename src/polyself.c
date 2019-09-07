@@ -79,7 +79,8 @@ set_uasmon()
     PROPSET(STUNNED, (mdat == &mons[PM_STALKER] || is_bat(mdat)));
     PROPSET(HALLUC_RES, dmgtype(mdat, AD_HALU));
     PROPSET(SEE_INVIS, perceives(mdat));
-    PROPSET(TELEPAT, telepathic(mdat));
+	PROPSET(BLIND_TELEPAT, blind_telepathic(mdat));
+	PROPSET(TELEPAT, telepathic(mdat));
     /* note that Infravision uses mons[race] rather than usual mons[role] */
     PROPSET(INFRAVISION, infravision(Upolyd ? mdat : &mons[urace.malenum]));
     PROPSET(INVIS, pm_invisible(mdat));
@@ -1734,11 +1735,11 @@ domindblast()
             continue;
         if (mtmp->mpeaceful)
             continue;
-        u_sen = telepathic(mtmp->data) && !mtmp->mcansee;
+        u_sen = (telepathic(mtmp->data) || unblind_telepathic(mtmp->data)) && !mtmp->mcansee;
         if (u_sen || (telepathic(mtmp->data) && rn2(2)) || !rn2(10)) {
             You("lock in on %s %s.", s_suffix(mon_nam(mtmp)),
                 u_sen ? "telepathy"
-                      : telepathic(mtmp->data) ? "latent telepathy" : "mind");
+                      : telepathic(mtmp->data) || unblind_telepathic(mtmp->data) ? "latent telepathy" : "mind");
             mtmp->mhp -= rnd(15);
             if (DEADMONSTER(mtmp))
                 killed(mtmp);

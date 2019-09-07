@@ -1075,7 +1075,7 @@ register struct obj* omonwep;
      */
     if (mtmp->mundetected && (hides_under(mdat) || mdat->mlet == S_EEL)) {
         mtmp->mundetected = 0;
-        if (!(Blind ? Blind_telepat : Unblind_telepat)) {
+        if (!(Blind ? (Blind_telepat || Unblind_telepat) : Unblind_telepat)) {
             struct obj *obj;
             const char *what;
 

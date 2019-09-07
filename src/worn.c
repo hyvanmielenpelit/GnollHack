@@ -450,7 +450,9 @@ boolean on, silently;
         /* properties which have no effect for monsters */
         case CLAIRVOYANT:
         case STEALTH:
-        case TELEPAT:
+		case DETECT_MONSTERS:
+		case BLIND_TELEPAT:
+		case TELEPAT:
             break;
         /* properties which should have an effect but aren't implemented */
         case LEVITATION:

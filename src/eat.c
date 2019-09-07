@@ -841,11 +841,15 @@ register struct permonst *ptr;
         res = control_teleport(ptr);
         ifdebugresist("can get teleport control");
         break;
-    case TELEPAT:
-        res = telepathic(ptr);
-        ifdebugresist("can get telepathy");
+    case BLIND_TELEPAT:
+        res = blind_telepathic(ptr);
+        ifdebugresist("can get blind-telepathy");
         break;
-    default:
+	case TELEPAT:
+		res = unblind_telepathic(ptr);
+		ifdebugresist("can get telepathy");
+		break;
+	default:
         /* res stays 0 */
         break;
     }
@@ -879,10 +883,13 @@ register struct permonst *ptr;
     case TELEPORT_CONTROL:
         chance = 12;
         break;
-    case TELEPAT:
+    case BLIND_TELEPAT:
         chance = 1;
         break;
-    default:
+	case TELEPAT:
+		chance = 15;
+		break;
+	default:
         chance = 15;
         break;
     }
@@ -981,18 +988,27 @@ register struct permonst *ptr;
             HTeleport_control |= FROMOUTSIDE;
         }
         break;
-    case TELEPAT:
-        debugpline0("Trying to give telepathy");
-        if (!(HTelepat & FROMOUTSIDE)) {
+    case BLIND_TELEPAT:
+        debugpline0("Trying to give blind-telepathy");
+        if (!(HBlind_telepat & FROMOUTSIDE)) {
             You_feel(Hallucination ? "in touch with the cosmos."
                                    : "a strange mental acuity.");
-            HTelepat |= FROMOUTSIDE;
+            HBlind_telepat |= FROMOUTSIDE;
             /* If blind, make sure monsters show up. */
             if (Blind)
                 see_monsters();
         }
         break;
-    default:
+	case TELEPAT:
+		debugpline0("Trying to give telepathy");
+		if (!(HTelepat & FROMOUTSIDE)) {
+			You_feel(Hallucination ? "in touch with the cosmos."
+				: "a peculiar mental acuity.");
+			HTelepat |= FROMOUTSIDE;
+			see_monsters();
+		}
+		break;
+	default:
         debugpline0("Tried to give an impossible intrinsic");
         break;
     }

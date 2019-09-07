@@ -524,7 +524,7 @@ deserted_shop(enterstring)
             }
         }
 
-    if (Blind && !(Blind_telepat || Detect_monsters))
+    if (Blind && !(Blind_telepat || Unblind_telepat || Detect_monsters))
         ++n; /* force feedback to be less specific */
 
     pline("This shop %s %s.", (m < n) ? "seems to be" : "is",
@@ -1256,7 +1256,7 @@ dopay()
         goto proceed;
     }
 
-    if ((!sk && (!Blind || Blind_telepat)) || (!Blind && !seensk)) {
+    if ((!sk && (!Blind || (Blind_telepat || Unblind_telepat || Detect_monsters))) || (!Blind && !seensk)) {
         There("appears to be no shopkeeper here to receive your payment.");
         return 0;
     }

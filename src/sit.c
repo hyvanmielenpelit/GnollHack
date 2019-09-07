@@ -430,29 +430,37 @@ attrcurse()
         }
         /*FALLTHRU*/
     case 4:
-        if (HTelepat & INTRINSIC) {
-            HTelepat &= ~INTRINSIC;
-            if (Blind && !Blind_telepat)
+        if (HBlind_telepat & INTRINSIC) {
+			HBlind_telepat &= ~INTRINSIC;
+            if (Blind && !(Blind_telepat || Unblind_telepat || Detect_monsters))
                 see_monsters(); /* Can't sense mons anymore! */
             Your("senses fail!");
             break;
         }
         /*FALLTHRU*/
-    case 5:
+	case 5:
+		if (HTelepat & INTRINSIC) {
+			HTelepat &= ~INTRINSIC;
+			see_monsters(); /* Can't sense mons anymore! */
+			Your("senses fail!");
+			break;
+		}
+		/*FALLTHRU*/
+	case 6:
         if (HCold_resistance & INTRINSIC) {
             HCold_resistance &= ~INTRINSIC;
             You_feel("cooler.");
             break;
         }
         /*FALLTHRU*/
-    case 6:
+    case 7:
         if (HInvis & INTRINSIC) {
             HInvis &= ~INTRINSIC;
             You_feel("paranoid.");
             break;
         }
         /*FALLTHRU*/
-    case 7:
+    case 8:
         if (HSee_invisible & INTRINSIC) {
             HSee_invisible &= ~INTRINSIC;
             You("%s!", Hallucination ? "tawt you taw a puttie tat"
@@ -460,21 +468,21 @@ attrcurse()
             break;
         }
         /*FALLTHRU*/
-    case 8:
+    case 9:
         if (HFast & INTRINSIC) {
             HFast &= ~INTRINSIC;
             You_feel("slower.");
             break;
         }
         /*FALLTHRU*/
-    case 9:
+    case 10:
         if (HStealth & INTRINSIC) {
             HStealth &= ~INTRINSIC;
             You_feel("clumsy.");
             break;
         }
         /*FALLTHRU*/
-    case 10:
+    case 11:
         /* intrinsic protection is just disabled, not set back to 0 */
         if (HProtection & INTRINSIC) {
             HProtection &= ~INTRINSIC;
@@ -482,7 +490,7 @@ attrcurse()
             break;
         }
         /*FALLTHRU*/
-    case 11:
+    case 12:
         if (HAggravate_monster & INTRINSIC) {
             HAggravate_monster &= ~INTRINSIC;
             You_feel("less attractive.");

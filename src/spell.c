@@ -1628,6 +1628,12 @@ int otyp;
 		case LIFESAVED:
 			You_feel("less mortal than before.");
 			break;
+		case DETECT_MONSTERS:
+			You_feel("sensitive to the presence of monsters.");
+			break;
+		case BLIND_TELEPAT:
+			You_feel("telepathic when blind.");
+			break;
 		case TELEPAT:
 			You_feel("telepathic.");
 			break;

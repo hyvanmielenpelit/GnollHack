@@ -44,7 +44,7 @@ enum prop_types {
     HUNGER            = 28,
     /* Vision and senses */
     SEE_INVIS         = 29,
-    TELEPAT           = 30,
+    TELEPAT           = 30,  /* Blind telepathy is now its own property type*/
     WARNING           = 31,
     WARN_OF_MON       = 32,
     WARN_UNDEAD       = 33,
@@ -89,7 +89,8 @@ enum prop_types {
 	DEATH_RES		  = 68,
 	LYCANTHROPY_RES	  = 69,
 	CURSE_RES		  = 70,
-	LAUGHING		  = 71 //KEEP THIS LAST
+	BLIND_TELEPAT	  = 71,
+	LAUGHING		  = 72 //KEEP THIS LAST
 };
 #define LAST_PROP (LAUGHING)
 
