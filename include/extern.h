@@ -407,6 +407,7 @@ E void FDECL(schedule_goto, (d_level *, BOOLEAN_P, BOOLEAN_P, int,
                              const char *, const char *));
 E void NDECL(deferred_goto);
 E boolean FDECL(revive_corpse, (struct obj *));
+E boolean FDECL(animate_corpse, (struct obj*, int));
 E void FDECL(revive_mon, (ANY_P *, long));
 E int NDECL(donull);
 E int NDECL(dowipe);
@@ -2997,7 +2998,7 @@ E boolean FDECL(get_mon_location, (struct monst *, xchar *, xchar *, int));
 E struct monst *FDECL(get_container_location,
                       (struct obj * obj, int *, int *));
 E struct monst *FDECL(montraits, (struct obj *, coord *, BOOLEAN_P));
-E struct monst *FDECL(revive, (struct obj *, BOOLEAN_P));
+E struct monst *FDECL(revive, (struct obj *, BOOLEAN_P, int));
 E int FDECL(revive_from_inventory, (struct monst *));
 E void FDECL(cancel_item, (struct obj *));
 E boolean FDECL(drain_item, (struct obj *, BOOLEAN_P));

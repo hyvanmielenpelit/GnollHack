@@ -572,7 +572,7 @@ update_carried_item_extrinsics()
 	}
 	else if((HFumbling & ~TIMEOUT) == 0) //No innate fumbling
 	{
-		HFumbling = 0; // Cleared than &= ~TIMEOUT;
+		HFumbling = 0; // Clearer than &= ~TIMEOUT;
 	}
 
 	if (ELaughing) //Item is causing laughing, then add HLaughing timer
@@ -583,7 +583,7 @@ update_carried_item_extrinsics()
 	else if ((HLaughing & ~TIMEOUT) == 0) //No innate laughing
 	{
 		if ((HLaughing & TIMEOUT) > 0)
-			HLaughing = 0; // Cleared than &= ~TIMEOUT;
+			HLaughing = 0; // Clearer than &= ~TIMEOUT;
 	}
 
 }

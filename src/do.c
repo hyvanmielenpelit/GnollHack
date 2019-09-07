@@ -1794,7 +1794,7 @@ struct obj *corpse;
         if (container_where == OBJ_MINVENT && mtmp2)
             mcarry = mtmp2;
     }
-    mtmp = revive(corpse, FALSE); /* corpse is gone if successful */
+    mtmp = revive(corpse, FALSE, -1); /* corpse is gone if successful */
 
     if (mtmp) {
         switch (where) {
@@ -1850,6 +1850,102 @@ struct obj *corpse;
         return TRUE;
     }
     return FALSE;
+}
+
+/*
+ * Return TRUE if we created a monster for the corpse.  If successful, the
+ * corpse is gone.
+ */
+boolean
+animate_corpse(corpse, animateintomon)
+struct obj* corpse;
+int animateintomon; // monstid to be animated into
+{
+	if (animateintomon < 0 || animateintomon >= NUMMONS || !corpse || corpse->corpsenm < 0 || corpse->corpsenm >= NUMMONS)
+		return FALSE;
+
+	struct monst* mtmp, * mcarry;
+	boolean is_uwep, chewed;
+	xchar where;
+	char cname[BUFSZ];
+	struct obj* container = (struct obj*) 0;
+	int container_where = 0;
+	int oldcorpsenum = corpse->corpsenm;
+
+	where = corpse->where;
+	is_uwep = (corpse == uwep);
+	chewed = (corpse->oeaten != 0);
+	Strcpy(cname, corpse_xname(corpse,
+		chewed ? "bite-covered" : (const char*)0,
+		CXN_SINGULAR));
+	mcarry = (where == OBJ_MINVENT) ? corpse->ocarry : 0;
+
+	if (where == OBJ_CONTAINED) {
+		struct monst* mtmp2;
+
+		container = corpse->ocontainer;
+		mtmp2 = get_container_location(container, &container_where, (int*)0);
+		/* container_where is the outermost container's location even if
+		 * nested */
+		if (container_where == OBJ_MINVENT && mtmp2)
+			mcarry = mtmp2;
+	}
+	mtmp = revive(corpse, FALSE, animateintomon); /* corpse is gone if successful */
+
+	if (mtmp) {
+		switch (where) {
+		case OBJ_INVENT:
+			if (is_uwep)
+				pline_The("%s writhes out of your grasp!", cname);
+			else
+				You_feel("squirming in your backpack!");
+			break;
+
+		case OBJ_FLOOR:
+			if (cansee(mtmp->mx, mtmp->my))
+				pline("%s rises from the dead as %s!",
+					The(mons[oldcorpsenum].mname), an(mons[animateintomon].mname));
+			break;
+
+		case OBJ_MINVENT: /* probably a nymph's */
+			if (cansee(mtmp->mx, mtmp->my)) {
+				if (canseemon(mcarry))
+					pline("Startled, %s drops %s as it gets animated!",
+						mon_nam(mcarry), an(cname));
+				else
+					pline("%s rises from the dead as %s!",
+						The(mons[oldcorpsenum].mname), an(mons[animateintomon].mname));
+			}
+			break;
+		case OBJ_CONTAINED: {
+			char sackname[BUFSZ];
+
+			if (container_where == OBJ_MINVENT && cansee(mtmp->mx, mtmp->my)
+				&& mcarry && canseemon(mcarry) && container) {
+				pline("%s writhes out of %s!", Amonnam(mtmp),
+					yname(container));
+			}
+			else if (container_where == OBJ_INVENT && container) {
+				Strcpy(sackname, an(xname(container)));
+				pline("%s %s out of %s in your pack!",
+					Blind ? Something : Amonnam(mtmp),
+					locomotion(mtmp->data, "writhes"), sackname);
+			}
+			else if (container_where == OBJ_FLOOR && container
+				&& cansee(mtmp->mx, mtmp->my)) {
+				Strcpy(sackname, an(xname(container)));
+				pline("%s escapes from %s!", Amonnam(mtmp), sackname);
+			}
+			break;
+		}
+		default:
+			/* we should be able to handle the other cases... */
+			impossible("animate_corpse: lost corpse @ %d", where);
+			break;
+		}
+		return TRUE;
+	}
+	return FALSE;
 }
 
 /* Revive the corpse via a timeout. */

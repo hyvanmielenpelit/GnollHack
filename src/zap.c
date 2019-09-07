@@ -878,9 +878,10 @@ int *container_nesting;
  * and only one monster will be resurrected.
  */
 struct monst *
-revive(corpse, by_hero)
+revive(corpse, by_hero, animateintomon)
 struct obj *corpse;
 boolean by_hero;
+int animateintomon;
 {
     struct monst *mtmp = 0;
     struct permonst *mptr;
@@ -940,7 +941,11 @@ boolean by_hero;
     corpse->ox = x, corpse->oy = y;
 
     /* prepare for the monster */
-    montype = corpse->corpsenm;
+	if(animateintomon < 0)
+	    montype = corpse->corpsenm;
+	else
+		montype = animateintomon;
+
     mptr = &mons[montype];
     /* [should probably handle recorporealization first; if corpse and
        ghost are at same location, revived creature shouldn't be bumped
@@ -1080,6 +1085,12 @@ boolean by_hero;
     /* track that this monster was revived at least once */
     mtmp->mrevived = 1;
 
+	if (animateintomon >= 0)
+	{
+		//Animated are tamed
+		tamedog(mtmp, (struct obj*) 0);
+	}
+
     /* finally, get rid of the corpse--it's gone now */
     switch (corpse->where) {
     case OBJ_INVENT:
@@ -1150,7 +1161,7 @@ struct monst *mon;
         }
 
         /* for a stack, only one is revived */
-        if ((mtmp2 = revive(otmp, !context.mon_moving)) != 0) {
+        if ((mtmp2 = revive(otmp, !context.mon_moving, -1)) != 0) {
             ++res;
             if (youseeit)
                 pline("%s%s suddenly comes alive!", owner, corpse);
@@ -2308,7 +2319,7 @@ struct obj *obj, *otmp;
 				if (!get_obj_location(obj, &ox, &oy, 0))
 					ox = obj->ox, oy = obj->oy; /* won't happen */
 
-				mtmp = revive(obj, TRUE);
+				mtmp = revive(obj, TRUE, -1);
 				if (!mtmp) {
 					res = 0; /* no monster implies corpse was left intact */
 				}
@@ -2703,6 +2714,164 @@ register struct obj *obj;
 		}
 
 		break;
+	case SPE_MASTER_MONSTER_SUMMONING: 
+	{
+		You("successfully cast the summoning spell.");
+		int monstcount = 0;
+		int vismonstcount = 0;
+		struct monst* lastseenmon = (struct monst*)0;
+
+		for (int n = d(2, 4); n > 0; n--)
+		{
+			monstid = pick_nasty();
+			mtmp = summoncreature(obj->otyp, monstid, "", TRUE, TRUE);
+			if (mtmp)
+			{
+				monstcount++;
+				if (canseemon(mtmp))
+				{
+					lastseenmon = mtmp;
+					vismonstcount++;
+				}
+			}
+		}
+		if (monstcount == 0)
+			pline("However, nothing happens.");
+		else if (vismonstcount == 0)
+			pline("However, nothing seems to happen.");
+		else if (vismonstcount == 1) {
+			if (lastseenmon)
+				pline("%s appears in a cloud of smoke!", An(mon_nam(lastseenmon)));
+		}
+		else
+			pline("Monsters appear in a cloud of smoke!");
+
+		break;
+	}
+	case SPE_CALL_GHOULS:
+	{
+		You("call out for nearby ghouls in the dungeon.");
+		int monstcount = 0;
+		int vismonstcount = 0;
+		struct monst* lastseenmon = (struct monst*)0;
+
+		for (int n = d(2, 4); n > 0; n--)
+		{
+			monstid = PM_GHOUL;
+			mtmp = summoncreature(obj->otyp, monstid, "", TRUE, TRUE);
+			if (mtmp)
+			{
+				monstcount++;
+				if (canseemon(mtmp))
+				{
+					lastseenmon = mtmp;
+					vismonstcount++;
+				}
+			}
+		}
+		if (monstcount == 0)
+			pline("However, nothing happens.");
+		else if (vismonstcount == 0)
+			pline("However, nothing seems to happen.");
+		else if (vismonstcount == 1)
+		{
+			if (lastseenmon)
+				pline("%s crawls out of nowhere!", An(mon_nam(lastseenmon)));
+		}
+		else if (vismonstcount == 2)
+			pline("Two ghouls crawl out of nowhere!");
+		else
+			pline("Several ghouls crawl out of nowhere!");
+
+
+		break;
+	}
+	case SPE_ANIMATE_ZOMBIE:
+	{
+		You("successfully cast the animation spell.");
+		int zombietype;
+		int radius = objects[obj->otyp].oc_spell_radius;
+		struct obj* sobj;
+		sobj = fobj;
+
+		while(sobj)
+		{
+			zombietype = -1;
+			if ((radius <= 0 || dist2(u.ux, u.uy, sobj->ox, sobj->oy) <= radius * radius) 
+				&& cansee(sobj->ox, sobj->oy) 
+				&& !IS_STWALL(levl[sobj->ox][sobj->oy].typ))
+			{
+				if (sobj->otyp == CORPSE && sobj->corpsenm > 0)
+				{
+					if (sobj->corpsenm == PM_HUMAN || mons[sobj->corpsenm].mflags2 & M2_HUMAN)
+						zombietype = PM_HUMAN_ZOMBIE;
+					else if (sobj->corpsenm == PM_DWARF || mons[sobj->corpsenm].mflags2 & M2_DWARF)
+						zombietype = PM_DWARF_ZOMBIE;
+					else if (sobj->corpsenm == PM_ELF || mons[sobj->corpsenm].mflags2 & M2_ELF)
+						zombietype = PM_ELF_ZOMBIE;
+					else if (sobj->corpsenm == PM_GNOLL || mons[sobj->corpsenm].mflags2 & M2_GNOLL)
+						zombietype = PM_GNOLL_ZOMBIE;
+					else if (sobj->corpsenm == PM_ORC || mons[sobj->corpsenm].mflags2 & M2_ORC)
+						zombietype = PM_ORC_ZOMBIE;
+					else if (sobj->corpsenm == PM_GIANT || mons[sobj->corpsenm].mflags2 & M2_GIANT)
+						zombietype = PM_GIANT_ZOMBIE;
+					else if (sobj->corpsenm == PM_ETTIN)
+						zombietype = PM_ETTIN_ZOMBIE;
+					if (zombietype > 0)
+					{
+						(void)animate_corpse(sobj, zombietype);
+						sobj = fobj; //The corpse got deleted, so move to beginning
+						continue;
+					}
+				}
+			}
+			sobj = sobj->nobj;
+		}
+		break;
+	}
+	case SPE_ANIMATE_MUMMY:
+	{
+		You("successfully cast the animation spell.");
+		int zombietype;
+		int radius = objects[obj->otyp].oc_spell_radius;
+		struct obj* sobj;
+		sobj = fobj;
+
+		while (sobj)
+		{
+			zombietype = -1;
+			if ((radius <= 0 || dist2(u.ux, u.uy, sobj->ox, sobj->oy) <= radius * radius)
+				&& cansee(sobj->ox, sobj->oy)
+				&& !IS_STWALL(levl[sobj->ox][sobj->oy].typ))
+			{
+				if (sobj->otyp == CORPSE && sobj->corpsenm > 0)
+				{
+					if (sobj->corpsenm == PM_HUMAN || mons[sobj->corpsenm].mflags2 & M2_HUMAN)
+						zombietype = PM_HUMAN_MUMMY;
+					else if (sobj->corpsenm == PM_DWARF || mons[sobj->corpsenm].mflags2 & M2_DWARF)
+						zombietype = PM_DWARF_MUMMY;
+					else if (sobj->corpsenm == PM_ELF || mons[sobj->corpsenm].mflags2 & M2_ELF)
+						zombietype = PM_ELF_MUMMY;
+					else if (sobj->corpsenm == PM_GNOLL || mons[sobj->corpsenm].mflags2 & M2_GNOLL)
+						zombietype = PM_GNOLL_MUMMY;
+					else if (sobj->corpsenm == PM_ORC || mons[sobj->corpsenm].mflags2 & M2_ORC)
+						zombietype = PM_ORC_MUMMY;
+					else if (sobj->corpsenm == PM_GIANT || mons[sobj->corpsenm].mflags2 & M2_GIANT)
+						zombietype = PM_GIANT_MUMMY;
+					else if (sobj->corpsenm == PM_ETTIN)
+						zombietype = PM_ETTIN_MUMMY;
+					if (zombietype > 0)
+					{
+						(void)animate_corpse(sobj, zombietype);
+						sobj = fobj; //The corpse got deleted, so move to beginning
+						continue;
+					}
+				}
+			}
+			sobj = sobj->nobj;
+		}
+		break;
+	}
 	case WAN_SECRET_DOOR_DETECTION:
     case SPE_DETECT_UNSEEN:
         if (!findit())
