@@ -821,11 +821,11 @@ CONTAINER("oriental silk sack", "bag",0,0,0, 5,   3,  50, 0, SILK, HI_CLOTH, O1_
 CONTAINER("sack",           "bag", 0, 0, 0, 10,  10,   5, 0, CLOTH, HI_CLOTH, O1_NONE),
 CONTAINER("oilskin sack",   "bag", 0, 0, 0,  5,  10, 100, 0, CLOTH, HI_CLOTH, O1_NONE),
 /* magic bags start here*/
-CONTAINER("bag of holding", "bag",					0, 1, 0, 15, 15, 100,   0, CLOTH, HI_CLOTH, O1_NONE), //STARTMARKER 2
+CONTAINER("bag of holding", "bag",					0, 1, 0, 20, 15, 100,   0, CLOTH, HI_CLOTH, O1_NONE), //STARTMARKER 2
 CONTAINER("bag of wizardry", "bag",					0, 1, 0, 10, 15, 100,   0, CLOTH, HI_CLOTH, O1_NONE),
-CONTAINER("bag of weightless treasure", "bag",		0, 1, 0, 10, 15, 100,   0, CLOTH, HI_CLOTH, O1_NONE),
-CONTAINER("quiver of infinite arrows", "bag",		0, 1, 0, 10, 15, 100, 300, CLOTH, HI_CLOTH, O1_SPECIAL_ENCHANTABLE),
-CONTAINER("pouch of endless bolts", "bag",			0, 1, 0, 10, 15, 100, 300, CLOTH, HI_CLOTH, O1_SPECIAL_ENCHANTABLE),
+CONTAINER("bag of weightless treasure", "bag",		0, 1, 0, 15, 15, 100,   0, CLOTH, HI_CLOTH, O1_NONE),
+CONTAINER("quiver of infinite arrows", "bag",		0, 1, 0,  5, 15, 100, 300, CLOTH, HI_CLOTH, O1_SPECIAL_ENCHANTABLE),
+CONTAINER("pouch of endless bolts", "bag",			0, 1, 0,  5, 15, 100, 300, CLOTH, HI_CLOTH, O1_SPECIAL_ENCHANTABLE),
 CONTAINER("bag of tricks",  "bag",					0, 1, 1, 20, 15, 100,  0, CLOTH, HI_CLOTH, O1_NONE), //ENDMARKER 1&2
 #undef CONTAINER
 

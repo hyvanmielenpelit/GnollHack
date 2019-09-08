@@ -146,7 +146,7 @@ static struct trobj Rogue[] = {
 	{ COTTON_HOOD, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
 	{ POT_SICKNESS, 0, POTION_CLASS, 1, 0, 0 },
     { LOCK_PICK, 0, TOOL_CLASS, 1, 0, 0 },
-    { SACK, 0, TOOL_CLASS, 1, 0, 0 },
+    { BAG_OF_WEIGHTLESS_TREASURE, 0, TOOL_CLASS, 1, 0, 0 },
     { 0, 0, 0, 0, 0, 0 }
 };
 static struct trobj Samurai[] = {
