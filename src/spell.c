@@ -1302,6 +1302,7 @@ boolean atme;
 	case SPE_CALL_GHOUL:
 	case SPE_RAISE_ZOMBIE:
 	case SPE_CREATE_MUMMY:
+	case SPE_CREATE_DRACOLICH:
 	case SPE_DETECT_UNSEEN:
     case SPE_HEALING:
     case SPE_EXTRA_HEALING:
@@ -2405,11 +2406,11 @@ int *spell_no;
 			add_menu(tmpwin, NO_GLYPH, &any, spellet(splnum), 0, ATR_NONE, buf,
 				(splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
 
-			Strcat(buf, "=black");
+			Strcat(shortenedname, "=black");
 			if(spellcooldownleft(splnum) > 0 && splaction != SPELLMENU_PREPARE)
 			{
-				add_menu_coloring(buf);
-				strcpy(colorbufs[colorbufcnt], buf);
+				add_menu_coloring(shortenedname);
+				strcpy(colorbufs[colorbufcnt], shortenedname);
 				colorbufcnt++;
 			}
 			/* //Should not be needed
@@ -2843,7 +2844,7 @@ int spell;
 		if ((mc->flags & MATCOMP_DEATH_ENCHANTMENT_REQUIRED) && otmp->special_enchantment != DEATH_ENCHANTMENT)
 			acceptable = FALSE;
 
-		if ((mc->objectid == CORPSE || mc->objectid == TIN || mc->objectid == EGG) && mc->monsterid != otmp->corpsenm)
+		if ((mc->objectid == CORPSE || mc->objectid == TIN || mc->objectid == EGG) && mc->monsterid >= 0 && mc->monsterid != otmp->corpsenm)
 			acceptable = FALSE;
 
 		//Note: You might ask for another pick from another type (e.g., using both blessed and uncursed items), but this gets a bit too complicated

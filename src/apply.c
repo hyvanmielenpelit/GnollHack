@@ -2781,6 +2781,17 @@ struct obj* obj;
 				pline("%s %s%s into %s!", buftext, undonned ? buftext3 : "", buftext2, an(xname(otmp)));
 				update_inventory();
 				break;
+			case WAN_EVAPORATION:
+				if (otmp->oclass == POTION_CLASS)
+				{
+					pline("%s!", Yobjnam2(otmp, "evaporate"));
+					wandknown = TRUE;
+					useupall(otmp);
+				}
+				else
+					pline("Nothing much happens.");
+
+				break;
 			default:
 				pline("Nothing much happens.");
 				res = 0;

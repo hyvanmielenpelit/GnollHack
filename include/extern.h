@@ -323,6 +323,7 @@ E boolean FDECL(mdig_tunnel, (struct monst *));
 E void FDECL(draft_message, (BOOLEAN_P));
 E void FDECL(watch_dig, (struct monst *, XCHAR_P, XCHAR_P, BOOLEAN_P));
 E void FDECL(zap_dig, (struct obj*));
+E void FDECL(zap_evaporation, (struct obj*));
 E struct obj *FDECL(bury_an_obj, (struct obj *, boolean *));
 E void FDECL(bury_objs, (int, int));
 E void FDECL(unearth_objs, (int, int));

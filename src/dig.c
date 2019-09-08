@@ -1590,6 +1590,154 @@ struct obj* origobj;
     return;
 }
 
+/* evaporation via wand zap or spell cast */
+void
+zap_evaporation(origobj)
+struct obj* origobj;
+{
+	struct monst* mtmp;
+	int zx, zy, digdepth;
+
+	if (u.uswallow) {
+		mtmp = u.ustuck;
+
+		if (!is_whirly(mtmp->data)) {
+			if (is_animal(mtmp->data))
+				You("dehydrate %s %s wall!", s_suffix(mon_nam(mtmp)),
+					mbodypart(mtmp, STOMACH));
+			mtmp->mhp = 1; /* almost dead */
+			expels(mtmp, mtmp->data, !is_animal(mtmp->data));
+		}
+		return;
+	} /* swallowed */
+
+	if (u.dz) {
+		int x = u.ux;
+		int y = u.uy;
+		struct trap* t;
+		struct rm* lev = &levl[x][y];
+		boolean see_it = cansee(x, y);
+		char msgtxt[BUFSZ];
+
+		if (Is_waterlevel(&u.uz))
+		{
+			pline("Nothing happens.");
+		}
+		else
+		{
+			if (u.dz < 0)
+			{
+				lev->typ = ROOM, lev->flags = 0;
+				t = maketrap(x, y, PIT);
+				if (t)
+					t->tseen = 1;
+				if (see_it)
+					strcpy(msgtxt, "The water evaporates.");
+				Norep("%s", msgtxt);
+				if (lev->typ == ROOM)
+					newsym(x, y);
+			}
+			else
+				pline("Nothing happens.");
+		}
+		return;
+	} /* up or down */
+
+	/* normal case: evaporating across the level */
+	zx = u.ux + u.dx;
+	zy = u.uy + u.dy;
+	digdepth = (origobj && objects[origobj->otyp].oc_spell_range > 0) ? objects[origobj->otyp].oc_spell_range : rn1(18, 8);
+	tmp_at(DISP_BEAM, cmap_to_glyph(S_digbeam));
+
+	while (--digdepth >= 0)
+	{
+		if (!isok(zx, zy))
+			break;
+
+		tmp_at(zx, zy);
+		delay_output(); /* wait a little bit */
+
+		struct rm* lev = &levl[zx][zy];
+		boolean see_it = cansee(zx, zy);
+
+		/* Kill water elementals */
+		mtmp = m_at(zx, zy);
+		if (mtmp)
+		{
+			if (mtmp->mnum == PM_WATER_ELEMENTAL)
+			{
+				mtmp->mhp = 0;
+				if (DEADMONSTER(mtmp))
+					killed(mtmp);
+			}
+		}
+
+		/* Destroy potions */
+		struct obj* otmp, * otmp2;
+		for (otmp = level.objects[zx][zy]; otmp; otmp = otmp2) {
+			otmp2 = otmp->nexthere;
+			if(otmp->oclass == POTION_CLASS)
+			{
+				if(see_it)
+					pline("%s!", Tobjnam(otmp, "evaporate"));
+
+				delobj(otmp);
+			}
+		}
+
+		/* Destroy water and fountains */
+		if (is_ice(zx, zy)) {
+			//melt_ice(zx, zy, (char*)0);
+		}
+		else if (is_pool(zx, zy)) {
+			const char* msgtxt = "You hear hissing gas.";
+
+			if (lev->typ == DRAWBRIDGE_UP)
+			{ // DRAWBRIDGE_UP
+				digdepth -= 1;
+				if (see_it)
+					msgtxt = "Some water evaporates.";
+			}
+			else 
+			{ // Leave no pits, evaporation gives a walkable route
+				digdepth -= 1;
+				lev->typ = ROOM, lev->flags = 0;
+				if (see_it)
+					msgtxt = "The water evaporates.";
+			}
+			Norep("%s", msgtxt);
+			if (lev->typ == ROOM)
+				newsym(zx, zy);
+		}
+		else if (IS_FOUNTAIN(lev->typ))
+		{
+			/* replace the fountain with ordinary floor */
+			lev->typ = ROOM;
+			lev->flags = 0;
+			lev->blessedftn = 0;
+			if (see_it)
+				pline_The("fountain dries up!");
+			/* The location is seen if the hero/monster is invisible
+			   or felt if the hero is blind. */
+			newsym(zx, zy);
+			level.flags.nfountains--;
+			digdepth -= 1;
+		}
+
+		if (IS_ROCK(lev->typ))
+		{
+			if (!IS_TREE(lev->typ) || lev->typ == SDOOR){
+				break;
+			}
+		}
+		zx += u.dx;
+		zy += u.dy;
+	}                    /* while */
+	tmp_at(DISP_END, 0); /* closing call */
+
+	return;
+}
+
 /*
  * This checks what is on the surface above the
  * location where an adjacent pit might be created if

@@ -2811,7 +2811,7 @@ register struct obj *obj;
 		while(sobj)
 		{
 			zombietype = -1;
-			if ((radius <= 0 || dist2(u.ux, u.uy, sobj->ox, sobj->oy) <= radius * radius) 
+			if ((radius < 0 || dist2(u.ux, u.uy, sobj->ox, sobj->oy) <= radius * radius) 
 				&& cansee(sobj->ox, sobj->oy) 
 				&& !IS_STWALL(levl[sobj->ox][sobj->oy].typ))
 			{
@@ -2858,7 +2858,7 @@ register struct obj *obj;
 		while (sobj)
 		{
 			zombietype = -1;
-			if ((radius <= 0 || dist2(u.ux, u.uy, sobj->ox, sobj->oy) <= radius * radius)
+			if ((radius < 0 || dist2(u.ux, u.uy, sobj->ox, sobj->oy) <= radius * radius)
 				&& cansee(sobj->ox, sobj->oy)
 				&& !IS_STWALL(levl[sobj->ox][sobj->oy].typ))
 			{
@@ -2894,7 +2894,43 @@ register struct obj *obj;
 
 		break;
 	}
-	case WAN_SECRET_DOOR_DETECTION:
+	case SPE_CREATE_DRACOLICH:
+	{
+		You("successfully permormed the necromatic magic.");
+		int zombietype;
+		int monstcount = 0;
+		int radius = objects[obj->otyp].oc_spell_radius;
+		struct obj* sobj;
+		sobj = fobj;
+
+		while (sobj)
+		{
+			zombietype = -1;
+			if ((radius < 0 || distmin(u.ux, u.uy, sobj->ox, sobj->oy) <= radius)
+				&& cansee(sobj->ox, sobj->oy)
+				&& !IS_STWALL(levl[sobj->ox][sobj->oy].typ))
+			{
+				if (sobj->otyp == CORPSE && sobj->corpsenm > 0)
+				{
+					if (mons[sobj->corpsenm].mlet == S_DRAGON)
+						zombietype = PM_DRACOLICH;
+
+					if (zombietype > 0)
+					{
+						if (animate_corpse(sobj, zombietype))
+							monstcount++;
+						sobj = fobj; //The corpse got deleted, so move to beginning
+						continue;
+					}
+				}
+			}
+			sobj = sobj->nobj;
+		}
+		if (monstcount == 0)
+			pline("However, nothing happens.");
+
+		break;
+	}	case WAN_SECRET_DOOR_DETECTION:
     case SPE_DETECT_UNSEEN:
         if (!findit())
             return;
@@ -3105,7 +3141,22 @@ boolean ordinary;
         destroy_item(FOOD_CLASS, AD_FIRE); /* only slime for now */
         break;
 
-    case WAN_COLD:
+	case SPE_LOWER_WATER:
+	case WAN_EVAPORATION:
+		if (youmonst.data == &mons[PM_WATER_ELEMENTAL])
+		{
+			learn_it = TRUE;
+			Sprintf(killer.name, "shot %sself with an evaporation ray", uhim());
+			killer.format = NO_KILLER_PREFIX;
+			You("irradiate yourself with evaporating energy!");
+			You("die.");
+			/* They might survive with an amulet of life saving */
+			done(DIED);
+		}
+		destroy_item(POTION_CLASS, AD_FIRE);
+		destroy_item(POTION_CLASS, AD_FIRE);
+		break;
+	case WAN_COLD:
     case SPE_CONE_OF_COLD:
     case FROST_HORN:
         learn_it = TRUE;
@@ -4006,6 +4057,10 @@ struct obj *obj;
 		case RAY_DIGGING:
 		case RAY_WND_DIGGING:
 			zap_dig(obj);
+			break;
+		case RAY_EVAPORATION:
+		case RAY_WND_EVAPORATION:
+			zap_evaporation(obj);
 			break;
 		case RAY_MAGIC_MISSILE:
 		case RAY_FIRE:
