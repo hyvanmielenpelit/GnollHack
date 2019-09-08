@@ -2930,7 +2930,8 @@ register struct obj *obj;
 			pline("However, nothing happens.");
 
 		break;
-	}	case WAN_SECRET_DOOR_DETECTION:
+	}	
+	case WAN_SECRET_DOOR_DETECTION:
     case SPE_DETECT_UNSEEN:
         if (!findit())
             return;
