@@ -4263,7 +4263,8 @@ doapply()
         res = use_stethoscope(obj);
         break;
     case MIRROR:
-        res = use_mirror(obj);
+	case MAGIC_MIRROR:
+		res = use_mirror(obj);
         break;
 	case HOLY_SYMBOL:
 		res = use_holysymbol(obj);
