@@ -446,7 +446,7 @@ struct materialcomponentlist matlists[] =
 		}
 	},
 
-	{ SPE_CALL_GHOULS,
+	{ SPE_CALL_GHOUL,
 	"Bat guano, corpse",
 	1,
 		{
@@ -456,7 +456,7 @@ struct materialcomponentlist matlists[] =
 		}
 	},
 
-	{ SPE_MASTER_MONSTER_SUMMONING,
+	{ SPE_YENDORIAN_GREAT_SUMMONING,
 	"Jacinth stone, fungal spore",
 	1,
 		{

@@ -2714,9 +2714,9 @@ register struct obj *obj;
 		}
 
 		break;
-	case SPE_MASTER_MONSTER_SUMMONING: 
+	case SPE_YENDORIAN_GREAT_SUMMONING: 
 	{
-		You("successfully cast the summoning spell.");
+		You("successfully cast Rodney's great summoning spell.");
 		int monstcount = 0;
 		int vismonstcount = 0;
 		struct monst* lastseenmon = (struct monst*)0;
@@ -2748,7 +2748,7 @@ register struct obj *obj;
 
 		break;
 	}
-	case SPE_CALL_GHOULS:
+	case SPE_CALL_GHOUL:
 	{
 		You("call out for nearby ghouls in the dungeon.");
 		int monstcount = 0;
@@ -2786,10 +2786,11 @@ register struct obj *obj;
 
 		break;
 	}
-	case SPE_ANIMATE_ZOMBIE:
+	case SPE_RAISE_ZOMBIE:
 	{
-		You("successfully cast the animation spell.");
+		You("successfully cast the voodoo animation spell.");
 		int zombietype;
+		int monstcount = 0;
 		int radius = objects[obj->otyp].oc_spell_radius;
 		struct obj* sobj;
 		sobj = fobj;
@@ -2819,7 +2820,8 @@ register struct obj *obj;
 						zombietype = PM_ETTIN_ZOMBIE;
 					if (zombietype > 0)
 					{
-						(void)animate_corpse(sobj, zombietype);
+						if (animate_corpse(sobj, zombietype))
+							monstcount++;
 						sobj = fobj; //The corpse got deleted, so move to beginning
 						continue;
 					}
@@ -2827,12 +2829,15 @@ register struct obj *obj;
 			}
 			sobj = sobj->nobj;
 		}
+		if (monstcount == 0)
+			pline("However, nothing happens.");
 		break;
 	}
-	case SPE_ANIMATE_MUMMY:
+	case SPE_CREATE_MUMMY:
 	{
-		You("successfully cast the animation spell.");
+		You("successfully permormed the embalming magic.");
 		int zombietype;
+		int monstcount = 0;
 		int radius = objects[obj->otyp].oc_spell_radius;
 		struct obj* sobj;
 		sobj = fobj;
@@ -2862,7 +2867,8 @@ register struct obj *obj;
 						zombietype = PM_ETTIN_MUMMY;
 					if (zombietype > 0)
 					{
-						(void)animate_corpse(sobj, zombietype);
+						if (animate_corpse(sobj, zombietype))
+							monstcount++;
 						sobj = fobj; //The corpse got deleted, so move to beginning
 						continue;
 					}
@@ -2870,6 +2876,9 @@ register struct obj *obj;
 			}
 			sobj = sobj->nobj;
 		}
+		if(monstcount == 0)
+			pline("However, nothing happens.");
+
 		break;
 	}
 	case WAN_SECRET_DOOR_DETECTION:
