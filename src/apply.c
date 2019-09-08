@@ -2540,11 +2540,13 @@ struct obj* obj;
 			switch (obj->otyp)
 			{
 			case WAN_DEATH:
-				if ((otmp->oclass == WEAPON_CLASS || objects[otmp->otyp].oc_flags & O1_SPECIAL_ENCHANTABLE) && (objects[otmp->otyp].oc_material == BONE || objects[otmp->otyp].oc_material == GLASS))
+				if (is_specialenchantable(otmp) && is_deathenchantable(otmp))
 				{
 					wandknown = TRUE;
 					You("enchant %s with death magic.", yname(otmp));
-					otmp->special_enchantment = DEATH_ENCHANTMENT;
+					otmp = special_enchant_quan(otmp, 3 + bcsign(obj) * 2, DEATH_ENCHANTMENT);
+					prinv((char*)0, otmp, 0L);
+					//otmp->special_enchantment = DEATH_ENCHANTMENT;
 				}
 				else if (otmp->oclass == FOOD_CLASS)
 				{
@@ -2573,11 +2575,13 @@ struct obj* obj;
 					break;
 				}
 
-				if (otmp->oclass == WEAPON_CLASS || objects[otmp->otyp].oc_flags & O1_SPECIAL_ENCHANTABLE)
+				if (is_specialenchantable(otmp))
 				{
 					wandknown = TRUE;
 					You("enchant %s with cold magic.", yname(otmp));
-					otmp->special_enchantment = COLD_ENCHANTMENT;
+					otmp = special_enchant_quan(otmp, 30 + bcsign(obj) * 15, COLD_ENCHANTMENT);
+					prinv((char*)0, otmp, 0L);
+					//otmp->special_enchantment = COLD_ENCHANTMENT;
 				}
 				else if (otmp->oclass == POTION_CLASS)
 				{
@@ -2629,11 +2633,13 @@ struct obj* obj;
 					else
 						pline("A flame eminates from %s, keeping %s alight.", yname(obj), yname(otmp));
 				}
-				else if(otmp->oclass == WEAPON_CLASS || objects[otmp->otyp].oc_flags & O1_SPECIAL_ENCHANTABLE)
+				else if(is_specialenchantable(otmp))
 				{
 						wandknown = TRUE;
 						You("enchant %s with fire magic.", yname(otmp));
-						otmp->special_enchantment = FIRE_ENCHANTMENT;
+						otmp = special_enchant_quan(otmp, 20 + bcsign(obj) * 10, FIRE_ENCHANTMENT);
+						prinv((char*)0, otmp, 0L);
+						//otmp->special_enchantment = FIRE_ENCHANTMENT;
 				}
 				else if (otmp->oclass == POTION_CLASS || otmp->oclass == SCROLL_CLASS || otmp->oclass == SPBOOK_CLASS)
 				{
@@ -2659,11 +2665,13 @@ struct obj* obj;
 					pline("%s in blue for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
 					break;
 				}
-				if (otmp->oclass == WEAPON_CLASS || objects[otmp->otyp].oc_flags & O1_SPECIAL_ENCHANTABLE)
+				if (is_specialenchantable(otmp))
 				{
 					wandknown = TRUE;
 					You("enchant %s with lightning magic.", yname(otmp));
-					otmp->special_enchantment = LIGHTNING_ENCHANTMENT;
+					otmp = special_enchant_quan(otmp, 10 + bcsign(obj) * 5, LIGHTNING_ENCHANTMENT);
+					prinv((char*)0, otmp, 0L);
+					//otmp->special_enchantment = LIGHTNING_ENCHANTMENT;
 				}
 				else if (otmp->oclass == RING_CLASS || otmp->oclass == WAND_CLASS)
 				{
@@ -2800,6 +2808,49 @@ struct obj* obj;
 	update_inventory();
 	return res;
 }
+
+struct obj*
+special_enchant_quan(otmp, quan, enchantmenttype)
+struct obj* otmp;
+int quan;
+int enchantmenttype;
+{
+	boolean objsplitted = FALSE;
+
+	if (otmp->quan > 1L && otmp->quan > quan) {
+		objsplitted = TRUE;
+		if (!carried(otmp))
+			(void)splitobj(otmp, otmp->quan - quan);
+		else
+			otmp = splitobj(otmp, quan);
+		debugpline0("split object,");
+	}
+
+	if (is_specialenchantable(otmp))
+	{
+		if (enchantmenttype == DEATH_ENCHANTMENT && !is_deathenchantable(otmp))
+			otmp->special_enchantment = LIGHTNING_ENCHANTMENT;
+		else
+			otmp->special_enchantment = enchantmenttype;
+	}
+
+	if (carried(otmp) && objsplitted) {
+		freeinv(otmp);
+		if (inv_cnt(FALSE) >= 52) {
+			sellobj_state(SELL_DONTSELL);
+			dropy(otmp);
+			sellobj_state(SELL_NORMAL);
+		}
+		else {
+			//Can be merged with other specially-enchanted items
+			//otmp->nomerge = 1; /* used to prevent merge */
+			otmp = addinv(otmp);
+			//otmp->nomerge = 0;
+		}
+	}
+	return otmp;
+}
+
 
 /* touchstones - by Ken Arnold */
 STATIC_OVL void
@@ -4359,8 +4410,22 @@ int arrowtype, quan; //ObjID and quantity
 		}
 		if (bag->special_enchantment)
 		{
-			if (bag->special_enchantment != DEATH_ENCHANTMENT || (bag->special_enchantment == DEATH_ENCHANTMENT && (objects[otmp->otyp].oc_material == BONE || objects[otmp->otyp].oc_material == GLASS)))
+			if (bag->special_enchantment != DEATH_ENCHANTMENT || (bag->special_enchantment == DEATH_ENCHANTMENT && is_deathenchantable(otmp)))
 				otmp->special_enchantment = bag->special_enchantment;
+
+			if (otmp->special_enchantment == DEATH_ENCHANTMENT && quan > 2)
+				otmp->quan = min(quan, rnd(2));
+
+			if (otmp->special_enchantment == LIGHTNING_ENCHANTMENT && quan > 3)
+				otmp->quan = min(quan, 2 + d(1, 3));
+
+			if (otmp->special_enchantment == FIRE_ENCHANTMENT && quan > 5)
+				otmp->quan = min(quan, 4 + d(1, 6));
+
+			if (otmp->special_enchantment == COLD_ENCHANTMENT && quan > 10)
+				otmp->quan = min(quan, 8 + d(2, 6));
+
+			otmp->owt = weight(otmp);
 		}
 
 		You("pull %s out of %s.", doname(otmp), yname(bag));

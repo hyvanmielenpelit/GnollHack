@@ -1527,14 +1527,14 @@ boolean telekinesis; /* not picking it up directly by hand */
     if (obj->quan != count && !(objects[obj->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED))
         obj = splitobj(obj, count);
 
-	/* Finnaly, pick the object up */
+	/* Finally, pick the object up */
     obj = pick_obj(obj);
 
     if (uwep && uwep == obj)
         mrg_to_wielded = TRUE;
     nearload = near_capacity();
 
-	/* Display message regarding new item in inventory */
+	/* Display message regarding a new item in inventory */
     prinv(nearload == SLT_ENCUMBER ? moderateloadmsg : (char *) 0, obj,
           count);
     mrg_to_wielded = FALSE;

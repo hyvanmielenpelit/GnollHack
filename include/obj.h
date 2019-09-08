@@ -214,6 +214,12 @@ struct obj {
 /* 'is_quest_artifact()' only applies to the current role's artifact */
 #define any_quest_artifact(o) ((o)->oartifact >= ART_ORB_OF_DETECTION)
 
+#define is_specialenchantable(otmp)                                            \
+	(otmp->oclass == WEAPON_CLASS || objects[otmp->otyp].oc_flags & O1_SPECIAL_ENCHANTABLE)
+#define is_deathenchantable(otmp)                                            \
+    (objects[otmp->otyp].oc_material == BONE || objects[otmp->otyp].oc_material == GLASS)
+
+
 /* Armor */
 #define is_shield(otmp)          \
     (otmp->oclass == ARMOR_CLASS \

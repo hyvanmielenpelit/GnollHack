@@ -55,6 +55,7 @@ E int FDECL(unfixable_trouble_count, (BOOLEAN_P));
 E int FDECL(uthitm, (struct monst*, struct obj*));
 E int FDECL(uthito, (struct obj*, struct obj*));
 E int FDECL(endlessarrows, (struct obj*, int, int));
+E struct obj* FDECL(special_enchant_quan, (struct obj*, int, int));
 
 
 /* ### artifact.c ### */

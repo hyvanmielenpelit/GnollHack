@@ -1472,10 +1472,12 @@ boolean atme;
 			switch (otyp)
 			{
 			case SPE_DEATH_ENCHANT_ITEM:
-				if ((otmp->oclass == WEAPON_CLASS || objects[otmp->otyp].oc_flags & O1_SPECIAL_ENCHANTABLE) && (objects[otmp->otyp].oc_material == BONE || objects[otmp->otyp].oc_material == GLASS))
+				if (is_specialenchantable(otmp) && is_deathenchantable(otmp))
 				{
 					You("enchant %s with death magic.", yname(otmp));
-					otmp->special_enchantment = DEATH_ENCHANTMENT;
+					otmp = special_enchant_quan(otmp, rnd(2), DEATH_ENCHANTMENT);
+					prinv((char*)0, otmp, 0L);
+					//otmp->special_enchantment = DEATH_ENCHANTMENT;
 				}
 				else
 				{
@@ -1495,10 +1497,12 @@ boolean atme;
 					break;
 				}
 
-				if (otmp->oclass == WEAPON_CLASS || objects[otmp->otyp].oc_flags & O1_SPECIAL_ENCHANTABLE)
+				if (is_specialenchantable(otmp))
 				{
 					You("enchant %s with cold magic.", yname(otmp));
-					otmp->special_enchantment = COLD_ENCHANTMENT;
+					otmp = special_enchant_quan(otmp, 20, COLD_ENCHANTMENT);
+					prinv((char*)0, otmp, 0L);
+					//otmp->special_enchantment = COLD_ENCHANTMENT;
 				}
 				else
 				{
@@ -1518,10 +1522,12 @@ boolean atme;
 					break;
 				}
 
-				if (otmp->oclass == WEAPON_CLASS || objects[otmp->otyp].oc_flags & O1_SPECIAL_ENCHANTABLE)
+				if (is_specialenchantable(otmp))
 				{
 					You("enchant %s with fire magic.", yname(otmp));
-					otmp->special_enchantment = FIRE_ENCHANTMENT;
+					otmp = special_enchant_quan(otmp, 10, FIRE_ENCHANTMENT);
+					prinv((char*)0, otmp, 0L);
+					//otmp->special_enchantment = FIRE_ENCHANTMENT;
 				}
 				else
 				{
@@ -1534,10 +1540,12 @@ boolean atme;
 					pline("%s in blue for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
 					break;
 				}
-				if (otmp->oclass == WEAPON_CLASS || objects[otmp->otyp].oc_flags & O1_SPECIAL_ENCHANTABLE)
+				if (is_specialenchantable(otmp))
 				{
+					otmp = special_enchant_quan(otmp, 5, LIGHTNING_ENCHANTMENT);
 					You("enchant %s with lightning magic.", yname(otmp));
-					otmp->special_enchantment = LIGHTNING_ENCHANTMENT;
+					prinv((char*)0, otmp, 0L);
+					//otmp->special_enchantment = LIGHTNING_ENCHANTMENT;
 				}
 				else
 				{
