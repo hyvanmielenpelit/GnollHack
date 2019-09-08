@@ -303,7 +303,7 @@ struct obj *box;
 	case ORIENTAL_SILK_SACK:
 	case EXPENSIVE_HANDBAG:
 	case BAG_OF_WIZARDRY:
-	case BAG_OF_WEIGHTLESS_TREASURE:
+	case BAG_OF_TREASURE_HAULING:
 		/* initial inventory: sack starts out empty */
         if (moves <= 1 && !in_mklev) {
             n = 0;
@@ -956,7 +956,7 @@ boolean artif;
 			case EXPENSIVE_HANDBAG:
 			case BAG_OF_HOLDING:
 			case BAG_OF_WIZARDRY:
-			case BAG_OF_WEIGHTLESS_TREASURE:
+			case BAG_OF_TREASURE_HAULING:
 				mkbox_cnts(otmp);
                 break;
             case EXPENSIVE_CAMERA:
@@ -1480,7 +1480,7 @@ register struct obj *obj;
 					))
 				cwt += obj->cursed ? (weight(contents) * 2) : obj->blessed ? ((weight(contents) + 15) / 16)
 				: ((weight(contents) + 7) / 8);
-			else if (obj->otyp == BAG_OF_WEIGHTLESS_TREASURE
+			else if (obj->otyp == BAG_OF_TREASURE_HAULING
 				&& (contents->oclass == COIN_CLASS || contents->oclass == GEM_CLASS
 					|| contents->oclass == RING_CLASS || contents->oclass == AMULET_CLASS
 					|| objects[contents->otyp].oc_material == SILVER

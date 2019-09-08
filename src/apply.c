@@ -4201,7 +4201,7 @@ doapply()
 	case EXPENSIVE_HANDBAG:
 	case BAG_OF_HOLDING:
 	case BAG_OF_WIZARDRY:
-	case BAG_OF_WEIGHTLESS_TREASURE:
+	case BAG_OF_TREASURE_HAULING:
 	case OILSKIN_SACK:
         res = use_container(&obj, 1, FALSE);
         break;
