@@ -1012,7 +1012,7 @@ boolean hitsroof;
         if (dmg > 1 && less_damage)
             dmg = 1;
         if (dmg > 0)
-            dmg += u.udaminc;
+            dmg += u.ubasedaminc + u.udaminc;
         if (dmg < 0)
             dmg = 0; /* beware negative rings of increase damage */
         dmg = Maybe_Half_Phys(dmg);
@@ -1551,7 +1551,7 @@ register struct obj *obj; /* thrownobj or kickedobj or uwep */
      * Certain items which don't in themselves do damage ignore 'tmp'.
      * Distance and monster size affect chance to hit.
      */
-    tmp = -1 + Luck + ranged_abon() + find_mac(mon) + u.uhitinc
+    tmp = -1 + Luck + ranged_abon() + find_mac(mon) + u.ubasehitinc + u.uhitinc
           + maybe_polyd(youmonst.data->mlevel, u.ulevel);
 
     /* Modify to-hit depending on distance; but keep it sane.
@@ -2007,7 +2007,8 @@ boolean from_invent;
 
     switch (obj->oclass == POTION_CLASS ? POT_WATER : obj->otyp) {
     case MIRROR:
-        if (hero_caused)
+	case MAGIC_MIRROR:
+		if (hero_caused)
             change_luck(-2);
         break;
     case POT_WATER:      /* really, all potions */
@@ -2124,7 +2125,8 @@ boolean in_view;
     case CRYSTAL_PLATE_MAIL:
     case LENSES:
     case MIRROR:
-    case CRYSTAL_BALL:
+	case MAGIC_MIRROR:
+	case CRYSTAL_BALL:
     case EXPENSIVE_CAMERA:
         to_pieces = " into a thousand pieces";
     /*FALLTHRU*/

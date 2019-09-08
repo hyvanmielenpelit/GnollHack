@@ -1170,7 +1170,10 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 			uncurse(otmp);
 		if (s) {
 			otmp->spe += s;
-			adj_abon(otmp, s);
+			//adj_abon(otmp, s);
+			updateabon();
+			updatemaxen();
+			updatemaxhp();
 			known = otmp->known;
 			/* update shop bill to reflect new higher price */
 			if (s > 0 && otmp->unpaid)
@@ -1230,7 +1233,10 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 				pline("%s.", Yobjnam2(otmp, "vibrate"));
 				if (otmp->spe >= -6) {
 					otmp->spe += -1;
-					adj_abon(otmp, -1);
+					//adj_abon(otmp, -1);
+					updateabon();
+					updatemaxen();
+					updatemaxhp();
 				}
 				make_stunned((HStun & TIMEOUT) + (long)rn1(10, 10), TRUE);
 			}

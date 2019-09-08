@@ -2768,10 +2768,10 @@ int final;
 		enl_msg("You regenerate", "", "d", " mana", from_what(ENERGY_REGENERATION));
 	if (Slow_digestion)
         you_have("slower digestion", from_what(SLOW_DIGESTION));
-    if (u.uhitinc)
-        you_have(enlght_combatinc("to hit", u.uhitinc, final, buf), "");
-    if (u.udaminc)
-        you_have(enlght_combatinc("damage", u.udaminc, final, buf), "");
+    if (u.ubasehitinc + u.uhitinc)
+        you_have(enlght_combatinc("to hit", u.ubasehitinc + u.uhitinc, final, buf), "");
+    if (u.ubasedaminc + u.udaminc)
+        you_have(enlght_combatinc("damage", u.ubasedaminc + u.udaminc, final, buf), "");
     if (u.uspellprot || Protection) {
         int prot = 0;
 

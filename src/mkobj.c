@@ -301,6 +301,7 @@ struct obj *box;
 	case BACKPACK:
 	case LEATHER_BAG:
 	case ORIENTAL_SILK_SACK:
+	case EXPENSIVE_HANDBAG:
 	case BAG_OF_WIZARDRY:
 	case BAG_OF_WEIGHTLESS_TREASURE:
 		/* initial inventory: sack starts out empty */
@@ -952,6 +953,7 @@ boolean artif;
 			case OILSKIN_SACK:
 			case LEATHER_BAG:
 			case ORIENTAL_SILK_SACK:
+			case EXPENSIVE_HANDBAG:
 			case BAG_OF_HOLDING:
 			case BAG_OF_WIZARDRY:
 			case BAG_OF_WEIGHTLESS_TREASURE:

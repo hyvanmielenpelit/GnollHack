@@ -198,7 +198,7 @@ A("The Palantir of Westernesse",        CRYSTAL_BALL,
       0, 0, DRLI(0, 0), DRLI(0, 0), NO_CARY, HEALING, A_NEUTRAL, PM_HEALER,
       NON_PM, 5000L, NO_COLOR),
 
-    A("The Magic Mirror of Merlin", MIRROR,
+    A("The Magic Mirror of Merlin", MAGIC_MIRROR,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_SPEAK), SPFX_ESP, 0,
       NO_ATTK, NO_DFNS, CARY(AD_MAGM), 0, A_LAWFUL, PM_KNIGHT, NON_PM, 1500L,
       NO_COLOR),

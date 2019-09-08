@@ -841,6 +841,7 @@ struct obj *obj;
     }
 
 	update_carried_item_extrinsics();
+	updateabon();
 	updatemaxen();
 	updatemaxhp();
 
@@ -1142,6 +1143,7 @@ struct obj *obj;
     }
 
 	update_carried_item_extrinsics();
+	updateabon();
 	updatemaxen();
 	updatemaxhp();
 
@@ -1592,7 +1594,7 @@ const char* headertext;
                  && otyp != CRYSTAL_BALL /* synonym for apply */
                  /* note: presenting the possibility of invoking non-artifact
                     mirrors and/or lamps is simply a cruel deception... */
-                 && otyp != MIRROR
+                 && otyp != MIRROR && otyp != MAGIC_MIRROR
                  && otyp != MAGIC_LAMP
                  && (otyp != OIL_LAMP /* don't list known oil lamp */
                      || (otmp->dknown && objects[OIL_LAMP].oc_name_known)))

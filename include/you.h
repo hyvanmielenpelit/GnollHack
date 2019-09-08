@@ -364,9 +364,13 @@ struct you {
                          + when blessed or uncursed, - when cursed */
 #define LUCKMAX   10  /* maximum value of u.ulUck */
 #define LUCKMIN (-10) /* minimum value of u.uluck */
-    schar uhitinc;
+	schar ubasehitinc;		/* permanent intrinsic values not affected by items or anything else */
+	schar ubasedaminc;
+	schar ubaseacbonus;
+	schar uhitinc;			/* variable extrinsic values affected by items and spells */
     schar udaminc;
-    schar uac;
+	schar uacbonus;
+	schar uac;
     uchar uspellprot;        /* protection by SPE_PROTECTION */
     uchar usptime;           /* #moves until uspellprot-- */
     uchar uspmtime;          /* #moves between uspellprot-- */

@@ -2125,19 +2125,21 @@ struct obj *otmp;
 			break;
 		case RIN_INCREASE_ACCURACY:
             accessory_has_effect(otmp);
-            u.uhitinc = (schar) bounded_increase((int) u.uhitinc, otmp->spe,
+            u.ubasehitinc = (schar) bounded_increase((int) u.ubasehitinc, otmp->spe,
                                                  RIN_INCREASE_ACCURACY);
             break;
         case RIN_INCREASE_DAMAGE:
             accessory_has_effect(otmp);
-            u.udaminc = (schar) bounded_increase((int) u.udaminc, otmp->spe,
+            u.ubasedaminc = (schar) bounded_increase((int) u.ubasedaminc, otmp->spe,
                                                  RIN_INCREASE_DAMAGE);
             break;
         case RIN_PROTECTION:
             accessory_has_effect(otmp);
             HProtection |= FROMOUTSIDE;
-            u.ublessed = bounded_increase(u.ublessed, otmp->spe,
-                                          RIN_PROTECTION);
+			u.ubaseacbonus = (schar)bounded_increase((int)u.ubaseacbonus, otmp->spe,
+				RIN_PROTECTION);
+			//u.ublessed = bounded_increase(u.ublessed, otmp->spe,
+            //                              RIN_PROTECTION);
             context.botl = 1;
             break;
         case RIN_FREE_ACTION:

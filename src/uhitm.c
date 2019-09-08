@@ -263,7 +263,7 @@ int *attk_count, *role_roll_penalty;
 
     *role_roll_penalty = 0; /* default is `none' */
 
-    tmp = 1 + Luck + abon() + find_mac(mtmp) + u.uhitinc
+    tmp = 1 + Luck + abon() + find_mac(mtmp) + u.ubasehitinc + u.uhitinc
           + maybe_polyd(youmonst.data->mlevel, u.ulevel);
 
     /* some actions should occur only once during multiple attacks */
@@ -888,7 +888,8 @@ int dieroll;
                 case IRON_CHAIN:      /* 1d4+1 */
                     tmp = dmgval(obj, mon);
                     break;
-                case MIRROR:
+				case MIRROR:
+				case MAGIC_MIRROR:
                     if (breaktest(obj)) {
                         You("break %s.  That's bad luck!", ysimple_name(obj));
                         change_luck(-2);
@@ -1105,7 +1106,8 @@ int dieroll;
      *      *OR* if attacking bare-handed!! */
 
     if (get_dmg_bonus && tmp > 0) {
-        tmp += u.udaminc;
+		tmp += u.ubasedaminc;
+		tmp += u.udaminc;
         /* If you throw using a propellor, you don't get a strength
          * bonus but you do get an increase-damage bonus.
          */
@@ -1628,7 +1630,8 @@ struct obj *obj;
         || obj->otyp == HEAVY_IRON_BALL
         || obj->otyp == IRON_CHAIN      /* dmgval handles those first three */
         || obj->otyp == MIRROR          /* silver in the reflective surface */
-        || obj->otyp == CLOVE_OF_GARLIC /* causes shades to flee */
+		|| obj->otyp == MAGIC_MIRROR          /* silver in the reflective surface */
+		|| obj->otyp == CLOVE_OF_GARLIC /* causes shades to flee */
         || objects[obj->otyp].oc_material == SILVER)
         return TRUE;
     return FALSE;
@@ -1930,9 +1933,9 @@ int specialdmg; /* blessed and/or silver bonus against various things */
             if (thick_skinned(pd))
                 tmp = (mattk->aatyp == AT_KICK) ? 0 : (tmp + 1) / 2;
             /* add ring(s) of increase damage */
-            if (u.udaminc > 0) {
+            if (u.ubasedaminc + u.udaminc > 0) {
                 /* applies even if damage was 0 */
-                tmp += u.udaminc;
+                tmp += u.ubasedaminc + u.udaminc;
             } else if (tmp > 0) {
                 /* ring(s) might be negative; avoid converting
                    0 to non-0 or positive to non-positive */
@@ -2881,7 +2884,7 @@ register struct monst *mon;
                    or if it is nearly destroyed or if creature doesn't have
                    the mental ability to be concerned in the first place */
                 if (specialdmg || mindless(mon->data)
-                    || mon->mhp <= 1 + max(u.udaminc, 1))
+                    || mon->mhp <= 1 + max(u.ubasedaminc + u.udaminc, 1))
                     unconcerned = FALSE;
             }
             if (mon->data == &mons[PM_SHADE]) {

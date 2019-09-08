@@ -64,6 +64,7 @@ long mask;
 	int oldint = ACURR(A_INT);
 	int oldwis = ACURR(A_WIS);
 	int oldcha = ACURR(A_CHA);
+	int oldac = u.uac;
 
     if ((mask & (W_ARM | I_SPECIAL)) == (W_ARM | I_SPECIAL)) {
         /* restoring saved game; no properties are conferred via skin */
@@ -135,24 +136,36 @@ long mask;
     }
 
 
+	updateabon();
 	updatemaxen();
 	updatemaxhp();
 
-	if (obj && (
-		   u.uenmax != oldmanamax
-		|| u.uhpmax != oldhpmax
-		|| ACURR(A_STR) != oldstr
-		|| ACURR(A_DEX) != olddex
-		|| ACURR(A_CON) != oldcon
-		|| ACURR(A_INT) != oldint
-		|| ACURR(A_WIS) != oldwis
-		|| ACURR(A_CHA) != oldcha
-		)) // this should identify all objects giving hp or mana or stats
+	if (obj)
 	{
-		makeknown(obj->otyp);
+		if ((
+			u.uenmax != oldmanamax
+			|| u.uhpmax != oldhpmax
+			|| ACURR(A_STR) != oldstr
+			|| ACURR(A_DEX) != olddex
+			|| ACURR(A_CON) != oldcon
+			|| ACURR(A_INT) != oldint
+			|| ACURR(A_WIS) != oldwis
+			|| ACURR(A_CHA) != oldcha
+			|| (obj->oclass !=ARMOR_CLASS && u.uac != oldac)
+			)) // this should identify all objects giving hp or mana or stats or ac
+		{
+			if (obj->oclass == RING_CLASS) //Observable ring
+				learnring(obj, TRUE);
+			else
+				makeknown(obj->otyp);
+		}
+		else if (obj->oclass == RING_CLASS)
+		{
+			//Nonobservable ring
+			learnring(obj, FALSE);
+		}
 		context.botl = 1;
 	}
-
 	update_inventory();
 }
 
@@ -176,6 +189,7 @@ register struct obj *obj;
 	int oldint = ACURR(A_INT);
 	int oldwis = ACURR(A_WIS);
 	int oldcha = ACURR(A_CHA);
+	int oldac = u.uac;
 
     if (obj == uwep || obj == uswapwep)
         u.twoweap = 0;
@@ -204,21 +218,34 @@ register struct obj *obj;
 		}
 	}
 
+	updateabon();
 	updatemaxen();
 	updatemaxhp();
 
-	if (obj && (
-		u.uenmax != oldmanamax
-		|| u.uhpmax != oldhpmax
-		|| ACURR(A_STR) != oldstr
-		|| ACURR(A_DEX) != olddex
-		|| ACURR(A_CON) != oldcon
-		|| ACURR(A_INT) != oldint
-		|| ACURR(A_WIS) != oldwis
-		|| ACURR(A_CHA) != oldcha
-		)) // this should identify all objects giving hp or mana or stats
+	if (obj)
 	{
-		makeknown(obj->otyp);
+		if ((
+			u.uenmax != oldmanamax
+			|| u.uhpmax != oldhpmax
+			|| ACURR(A_STR) != oldstr
+			|| ACURR(A_DEX) != olddex
+			|| ACURR(A_CON) != oldcon
+			|| ACURR(A_INT) != oldint
+			|| ACURR(A_WIS) != oldwis
+			|| ACURR(A_CHA) != oldcha
+			|| (obj->oclass != ARMOR_CLASS && u.uac != oldac)
+			)) // this should identify all objects giving hp or mana or stats or ac
+		{
+			if (obj->oclass == RING_CLASS) //Observable ring
+				learnring(obj, TRUE);
+			else
+				makeknown(obj->otyp);
+		}
+		else if (obj->oclass == RING_CLASS)
+		{
+			//Nonobservable ring
+			learnring(obj, FALSE);
+		}
 		context.botl = 1;
 	}
 	update_inventory();

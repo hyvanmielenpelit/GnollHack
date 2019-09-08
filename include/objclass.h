@@ -122,16 +122,31 @@ struct objclass {
     /* for weapons, and tools, rocks, and gems useful as weapons */
 	int oc_wsdice, oc_wsdam, oc_wsdmgplus; /* small monster damage, also used for spell damage */
 	int oc_wldice, oc_wldam, oc_wldmgplus; /* large monster damage, also used for duration for spells */
-	int oc_oc1;	/* Used for spell cooldown */
+	int oc_oc1;	/* Used for spell cooldown; weapons: to-hit, armors: ac */
 	int oc_oc2; /* Used for spell level */
-	int oc_oc3; /* Used for spell mana cost; other items mana pool bonus */
-	int oc_oc4; /* Used for spell attributes; other items hit point bonus */
-	int oc_oc5; /* Used for spell range */
-	int oc_oc6; /* Used for spell radius */
+	int oc_oc3; /* Used for spell mana cost; other items: mana pool bonus */
+	int oc_oc4; /* Used for spell attributes; other items: hit point bonus */
+	int oc_oc5; /* Used for spell range; non-spellbooks: specification of attributes or other properties item gives bonuses (abon) to using otmp->spe */
+	int oc_oc6; /* Used for spell radius; non-spellbooks: 0 => spe is used, otherise fixed bonus */
 
 /* general*/
-#define oc_mana_bonus oc_oc3	/* armor, weapons, rings, amulets: mana pool bonus: Fixed points unless O1_MANA_PERCENTAGE_BONUS is specified */
-#define oc_hp_bonus oc_oc4	/* armor, weapons, rings, amulets: hit point bonus: Fixed points unless O1_HP_PERCENTAGE_BONUS is specified */
+#define oc_mana_bonus oc_oc3	/* non-spellbooks: mana pool bonus: Fixed points unless O1_MANA_PERCENTAGE_BONUS is specified */
+#define oc_hp_bonus oc_oc4	/* non-spellbooks: hit point bonus: Fixed points unless O1_HP_PERCENTAGE_BONUS is specified */
+#define oc_bonus_attributes oc_oc5	/* non-spellbooks: gives bonuses using spe / oc_oc6 to attributes and properties */
+#define oc_attribute_bonus oc_oc6	/* non-spellbooks: 0 => spe is used, otherise fixed bonus */
+
+#define BONUS_TO_STR 0x0001
+#define BONUS_TO_DEX 0x0002
+#define BONUS_TO_CON 0x0004
+#define BONUS_TO_INT 0x0008
+#define BONUS_TO_WIS 0x0010
+#define BONUS_TO_CHA 0x0020
+#define BONUS_TO_DAMAGE 0x0040
+#define BONUS_TO_HIT 0x0080
+#define BONUS_TO_AC 0x0100
+
+#define BONUS_TO_ALLSTATS BONUS_TO_STR | BONUS_TO_DEX | BONUS_TO_CON | BONUS_TO_INT | BONUS_TO_WIS | BONUS_TO_CHA
+
 
 /* weapons */
 #define oc_skill oc_subtyp		/* Skills of weapons, spellbooks, tools, gems */
@@ -139,7 +154,7 @@ struct objclass {
 /* oc_oc2 unused */
 /* oc_oc3 mana pool bonus */
 /* oc_oc4 hit point bonus */
-/* oc_oc5 unused */
+/* oc_oc5 attributes giving bonus to using spe */
 /* oc_oc6 unused */
 
 /* armor */
@@ -148,7 +163,7 @@ struct objclass {
 #define a_can oc_oc2			/* armor: used in mhitu.c */
 /* oc_oc3 mana pool bonus */
 /* oc_oc4 hit point bonus */
-/* oc_oc5 unused */
+/* oc_oc5 attributes giving bonus to using spe */
 /* oc_oc6 unused */
 
 /* comestibles and reagents (and other edibles) */

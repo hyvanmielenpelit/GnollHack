@@ -162,7 +162,6 @@ static struct trobj Samurai[] = {
 static struct trobj Tourist[] = {
 #define T_DARTS 0
 	{ DART, 2, WEAPON_CLASS, 25, UNDEF_BLESS, 0 }, /* quan is variable */
-	{ UNDEF_TYP, UNDEF_SPE, FOOD_CLASS, 10, 0 },
     { POT_EXTRA_HEALING, 0, POTION_CLASS, 2, UNDEF_BLESS, 0 },
     { SCR_MAGIC_MAPPING, 0, SCROLL_CLASS, 4, UNDEF_BLESS, 0 },
     { HAWAIIAN_SHIRT, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
@@ -172,6 +171,22 @@ static struct trobj Tourist[] = {
 	{ EXPENSIVE_CAMERA, UNDEF_SPE, TOOL_CLASS, 1, 0, 0 },
     { CREDIT_CARD, 0, TOOL_CLASS, 1, 0, 0 },
 	{ LEATHER_BAG, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
+	{ FOOD_RATION, 0, FOOD_CLASS, 2, 0 },
+	{ UNDEF_TYP, UNDEF_SPE, FOOD_CLASS, 6, 0 },
+	{ 0, 0, 0, 0, 0, 0 }
+};
+static struct trobj TouristFemale[] = {
+	{ DART, 2, WEAPON_CLASS, 25, UNDEF_BLESS, 0 }, /* quan is variable */
+	{ POT_EXTRA_HEALING, 0, POTION_CLASS, 2, UNDEF_BLESS, 0 },
+	{ SCR_MAGIC_MAPPING, 0, SCROLL_CLASS, 4, UNDEF_BLESS, 0 },
+	{ HAWAIIAN_SHIRT, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
+	{ SKIRT, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
+	{ LEATHER_SANDALS, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
+	{ EXPENSIVE_CAMERA, UNDEF_SPE, TOOL_CLASS, 1, 0, 0 },
+	{ CREDIT_CARD, 0, TOOL_CLASS, 1, 0, 0 },
+	{ EXPENSIVE_HANDBAG, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
+	{ FOOD_RATION, 0, FOOD_CLASS, 2, 0 },
+	{ UNDEF_TYP, UNDEF_SPE, FOOD_CLASS, 6, 0 },
 	{ 0, 0, 0, 0, 0, 0 }
 };
 static struct trobj Valkyrie[] = {
@@ -187,7 +202,9 @@ static struct trobj Wizard[] = {
 #define W_MULTEND 6
     { QUARTERSTAFF, 1, WEAPON_CLASS, 1, 1, 0 },
 	{ CLOAK_OF_MAGIC_RESISTANCE, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-    { UNDEF_TYP, UNDEF_SPE, WAND_CLASS, 1, UNDEF_BLESS, 0 },
+	{ ROBE, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
+	{ BAG_OF_WIZARDRY, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
+	{ UNDEF_TYP, UNDEF_SPE, WAND_CLASS, 1, UNDEF_BLESS, 0 },
     { UNDEF_TYP, UNDEF_SPE, RING_CLASS, 2, UNDEF_BLESS, 0 },
     { UNDEF_TYP, UNDEF_SPE, POTION_CLASS, 3, UNDEF_BLESS, 0 },
     { UNDEF_TYP, UNDEF_SPE, SCROLL_CLASS, 3, UNDEF_BLESS, 0 },
@@ -195,8 +212,6 @@ static struct trobj Wizard[] = {
 	{ UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, UNDEF_BLESS, 0 },
 	{ UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, UNDEF_BLESS, 0 },
 	{ UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, UNDEF_BLESS, 0 },
-	{ ROBE, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-	{ BAG_OF_WIZARDRY, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
 	{ 0, 0, 0, 0, 0, 0 }
 };
 
@@ -204,6 +219,8 @@ static struct trobj Wizard[] = {
  *      Optional extra inventory items.
  */
 
+static struct trobj ExpensiveHandbag[] = { { EXPENSIVE_HANDBAG, 0, TOOL_CLASS, 1, 0, 0 },
+									{ 0, 0, 0, 0, 0, 0 } };
 static struct trobj Tinopener[] = { { TIN_OPENER, 0, TOOL_CLASS, 1, 0, 0 },
                                     { 0, 0, 0, 0, 0, 0 } };
 static struct trobj Magicmarker[] = { { MAGIC_MARKER, UNDEF_SPE, TOOL_CLASS,
@@ -768,7 +785,8 @@ u_init()
             ini_inv(Lamp);
         else if (!rn2(10))
             ini_inv(Magicmarker);
-        knows_object(SACK);
+		knows_object(SACK);
+		knows_object(BACKPACK);
         knows_object(TOUCHSTONE);
         skill_init(Skill_A);
         break;
@@ -796,6 +814,7 @@ u_init()
             ini_inv(Lamp);
 		knows_object(POT_HEALING);
 		knows_object(POT_EXTRA_HEALING);
+		knows_object(POT_GREATER_HEALING);
 		knows_object(POT_FULL_HEALING);
         skill_init(Skill_H);
         break;
@@ -875,7 +894,8 @@ u_init()
         if (!rn2(5))
             ini_inv(Blindfold);
         knows_object(SACK);
-        skill_init(Skill_R);
+		knows_object(BAG_OF_WEIGHTLESS_TREASURE);
+		skill_init(Skill_R);
         break;
     case PM_SAMURAI:
         Samurai[S_ARROWS].trquan = rn1(20, 26);
@@ -887,17 +907,28 @@ u_init()
         skill_init(Skill_S);
         break;
     case PM_TOURIST:
-        Tourist[T_DARTS].trquan = rn1(20, 21);
-        u.umoney0 = rnd(1000);
-        ini_inv(Tourist);
-        if (!rn2(25))
+		u.umoney0 = 300 + rnd(700);
+		if (flags.female)
+		{
+			TouristFemale[T_DARTS].trquan = rn1(20, 21);
+			ini_inv(TouristFemale);
+		}
+		else
+		{
+			Tourist[T_DARTS].trquan = rn1(20, 21);
+			ini_inv(Tourist);
+		}
+
+		if (!rn2(25))
             ini_inv(Tinopener);
         else if (!rn2(25))
             ini_inv(Leash);
         else if (!rn2(25))
             ini_inv(Magicmarker);
         skill_init(Skill_T);
-        break;
+		knows_object(EXPENSIVE_HANDBAG);
+		knows_object(LEATHER_BAG);
+		break;
     case PM_VALKYRIE:
         ini_inv(Valkyrie);
         if (!rn2(6))
@@ -1164,6 +1195,7 @@ register struct trobj *trop;
                       spells in restricted skill categories */
                    || (obj->oclass == SPBOOK_CLASS
                        && (objects[otyp].oc_spell_level > 3
+						   || carrying(otyp)
                            || restricted_spell_discipline(otyp) 
 						   || (Role_if(PM_WIZARD) && !(objects[otyp].oc_spell_attribute == A_INT
 							   || objects[otyp].oc_spell_attribute == A_MAX_INT_WIS
@@ -1271,14 +1303,14 @@ register struct trobj *trop;
 		}
 
 		/* Set sack contents*/
-		if (otyp == LEATHER_BAG)
+		if (otyp == LEATHER_BAG || otyp == EXPENSIVE_HANDBAG)
 		{
 			if (Role_if(PM_TOURIST))
 			{
 				(void)add_to_container(obj, mksobj(BATHROBE, TRUE, FALSE));
 				(void)add_to_container(obj, mksobj(COTTON_SLIPPERS, TRUE, FALSE));
 				(void)add_to_container(obj, mksobj(TOWEL, TRUE, FALSE));
-				if(!rn2(4))
+				if(!rn2(4) && !flags.female)
 					(void)add_to_container(obj, mksobj(TRUNKS_OF_SWIMMING, TRUE, FALSE));
 				makeknown(BATHROBE);
 				obj->owt = weight(obj);

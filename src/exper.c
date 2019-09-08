@@ -83,6 +83,36 @@ enmaxadjustment()
 	int otyp = 0;
 	struct obj* uitem;
 
+	for (uitem = invent; uitem; uitem = uitem->nobj)
+	{
+		otyp = uitem->otyp;
+		if (objects[otyp].oc_class != SPBOOK_CLASS && objects[otyp].oc_mana_bonus > 0 && (
+			  (uitem == uwep && (uitem->oclass == WEAPON_CLASS || is_weptool(uitem)))
+			|| uitem == uarm
+			|| uitem == uarmc
+			|| uitem == uarmh
+			|| uitem == uarms
+			|| uitem == uarmg
+			|| uitem == uarmf
+			|| uitem == uarmu
+			|| uitem == uarmo
+			|| uitem == uarmb
+			|| uitem == uarmv
+			|| uitem == uarmp
+			|| uitem == uamul
+			|| uitem == uright
+			|| uitem == uleft
+			|| objects[otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED
+			))
+		{
+			if (objects[otyp].oc_flags & O1_MANA_PERCENTAGE_BONUS)
+				adj += (objects[otyp].oc_mana_bonus * (baseen + baseadj)) / 100;
+			else
+				adj += objects[otyp].oc_mana_bonus;
+		}
+	}
+
+	/*
 	for(int i = 0; i < 15; i++)
 	{
 		switch (i)
@@ -149,12 +179,16 @@ enmaxadjustment()
 		}
 
 	}
+	*/
 
-	/* Magic mirror also gives +30% mana*/
+	/* Magic Mirror of Merlin also gives +30% mana*/
+	/* OLD: Base item is now magic mirror, which already does this without a kludge */
+	/*
 	if (Role_if(PM_KNIGHT) && u.uhave.questart)
 	{
 		adj += (30 * (baseen + baseadj)) / 100;
 	}
+	*/
 	return adj;
 }
 

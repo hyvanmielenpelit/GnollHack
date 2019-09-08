@@ -91,7 +91,7 @@ boolean clumsy;
     dmg += specialdmg; /* for blessed (or hypothetically, silver) boots */
     if (uarmf)
         dmg += uarmf->spe;
-    dmg += u.udaminc; /* add ring(s) of increase damage */
+    dmg += u.ubasedaminc + u.udaminc; /* add ring(s) of increase damage */
     if (dmg > 0)
         mon->mhp -= dmg;
     if (!DEADMONSTER(mon) && martial() && !bigmonst(mon->data) && !rn2(3)
@@ -422,7 +422,7 @@ xchar x, y; /* coordinates where object was before the impact, not after */
             result = "cracking";
         }
         if (result) {
-            if (otmp->otyp == MIRROR)
+            if (otmp->otyp == MIRROR || otmp->otyp == MAGIC_MIRROR)
                 change_luck(-2);
 
             /* eggs laid by you.  penalty is -1 per egg, max 5,
@@ -1573,7 +1573,7 @@ boolean shop_floor_obj;
 
         if (objects[otmp->otyp].oc_material == GLASS
             || otmp->otyp == EXPENSIVE_CAMERA) {
-            if (otmp->otyp == MIRROR)
+            if (otmp->otyp == MIRROR || otmp->otyp == MAGIC_MIRROR)
                 change_luck(-2);
             result = "crash";
         } else {

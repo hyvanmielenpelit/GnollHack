@@ -2536,7 +2536,7 @@ const char *arg;
     if (!objects[obj->otyp].oc_magic && saleable(shkp, obj)
         && (obj->oclass == WEAPON_CLASS || obj->oclass == ARMOR_CLASS
             || obj->oclass == SCROLL_CLASS || obj->oclass == SPBOOK_CLASS
-            || obj->otyp == MIRROR)) {
+            )) {  // Took Mirror out since there is also a magic mirror now || obj->otyp == MIRROR
         was_unknown |= !objects[obj->otyp].oc_name_known;
         makeknown(obj->otyp);
     }

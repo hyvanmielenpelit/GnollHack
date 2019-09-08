@@ -351,72 +351,72 @@ BOW("heavy crossbow", None,					1, 1, 10, 200, 150, 1, 8, 0, 1, 8, 0, 0, 0, 0, 0
          * Some creatures are vulnerable to SILVER.
          */
 #define ARMOR(name,desc,kn,mgc,blk,power,power2,power3,prob,delay,wt,  \
-              cost,ac,can,manabon,hpbon,sub,metal,c,flags)                   \
+              cost,ac,can,manabon,hpbon,bonusattrs,abon,sub,metal,c,flags)                   \
     OBJECT(OBJ(name, desc), None,                                        \
            BITS(kn, 0, 1, 0, mgc, 1, 0, 0, blk, 0, 0, sub, metal),  \
            power, power2, power3, ARMOR_CLASS, prob, delay, wt,                     \
-           cost, 0, 0, 0, 0, 0, 0, 10 - ac, can, manabon, hpbon, 0, 0, wt, c, 0, 0, 0, 0, flags)
-#define HELM(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,metal,c,flags)  \
+           cost, 0, 0, 0, 0, 0, 0, 10 - ac, can, manabon, hpbon, bonusattrs, abon, wt, c, 0, 0, 0, 0, flags)
+#define HELM(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c,flags)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, can, manabon, hpbon, ARM_HELM, metal, c, flags)
-#define CLOAK(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,metal,c,flags)  \
+          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_HELM, metal, c, flags)
+#define CLOAK(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c,flags)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, can, manabon, hpbon, ARM_CLOAK, metal, c, flags)
-#define SHIELD(name,desc,kn,mgc,blk,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,metal,c,flags) \
+          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_CLOAK, metal, c, flags)
+#define SHIELD(name,desc,kn,mgc,blk,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c,flags) \
     ARMOR(name, desc, kn, mgc, blk, power, power2, power3, prob, delay, wt, \
-          cost, ac, can, manabon, hpbon, ARM_SHIELD, metal, c, flags)
-#define GLOVES(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,metal,c,flags)  \
+          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_SHIELD, metal, c, flags)
+#define GLOVES(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c,flags)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, can, manabon, hpbon, ARM_GLOVES, metal, c, flags)
-#define BOOTS(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,metal,c,flags)  \
+          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_GLOVES, metal, c, flags)
+#define BOOTS(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c,flags)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, can, manabon, hpbon, ARM_BOOTS, metal, c,flags)
-#define SHIRT(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,metal,c, flags)  \
+          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_BOOTS, metal, c,flags)
+#define SHIRT(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c, flags)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, can, manabon, hpbon, ARM_SHIRT, metal, c, flags)
-#define ROBE(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,metal,c, flags)  \
+          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_SHIRT, metal, c, flags)
+#define ROBE(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c, flags)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, can, manabon, hpbon, ARM_ROBE, metal, c, flags)
-#define BRACERS(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,metal,c, flags)  \
+          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_ROBE, metal, c, flags)
+#define BRACERS(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c, flags)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, can, manabon, hpbon, ARM_BRACERS, metal, c, flags)
-#define BELT(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,metal,c, flags)  \
+          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_BRACERS, metal, c, flags)
+#define BELT(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c, flags)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, can, manabon, hpbon, ARM_BELT, metal, c, flags)
-#define PANTS(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,metal,c, flags)  \
+          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_BELT, metal, c, flags)
+#define PANTS(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c, flags)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, can, manabon, hpbon, ARM_PANTS, metal, c, flags)
+          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_PANTS, metal, c, flags)
 
 /* helmets */
 HELM("elven leather helm", "leather hat",
-     0, 0,           0, 0, 0,  6, 1,  3,  8,  9, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
+     0, 0,           0, 0, 0,  6, 1,  3,  8,  9, 0, 0, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
 HELM("cotton hood", None,
-     1, 0,           0, 0, 0,  3, 1,  3,  8,  10, 0, 0, 0, CLOTH, CLR_BLACK, O1_NONE),
+     1, 0,           0, 0, 0,  3, 1,  3,  8,  10, 0, 0, 0, 0, 0, CLOTH, CLR_BLACK, O1_NONE),
 HELM("gnollish hood", "crude leather hood",
-     0, 0,           0, 0, 0,  3, 1,  3,  8,  9, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
+     0, 0,           0, 0, 0,  3, 1,  3,  8,  9, 0, 0, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
 HELM("orcish helm", "iron skull cap",
-     0, 0,           0, 0, 0,  6, 1, 30, 10,  9, 0, 0, 0, IRON, CLR_BLACK, O1_NONE),
+     0, 0,           0, 0, 0,  6, 1, 30, 10,  9, 0, 0, 0, 0, 0, IRON, CLR_BLACK, O1_NONE),
 HELM("dwarvish iron helm", "hard hat",
-     0, 0,           0, 0, 0,  6, 1, 40, 20,  8, 0, 0, 0, IRON, HI_METAL, O1_NONE),
+     0, 0,           0, 0, 0,  6, 1, 40, 20,  8, 0, 0, 0, 0, 0, IRON, HI_METAL, O1_NONE),
 HELM("fedora", None,
-     1, 0,           0, 0, 0,  0, 0,  3,  1, 10, 0, 0, 0, CLOTH, CLR_BROWN, O1_NONE),
+     1, 0,           0, 0, 0,  0, 0,  3,  1, 10, 0, 0, 0, 0, 0, CLOTH, CLR_BROWN, O1_NONE),
 HELM("cornuthaum", "conical hat",
-     0, 1, CLAIRVOYANT, 0, 0, 3, 1,  4, 80, 10, 1, 0, 0, CLOTH, CLR_BLUE, O1_NONE),
+     0, 1, CLAIRVOYANT, 0, 0, 3, 1,  4, 80, 10, 1, 0, 0, 0, 0, CLOTH, CLR_BLUE, O1_NONE),
         /* name coined by devteam; confers clairvoyance for wizards,
            blocks clairvoyance if worn by role other than wizard */
 HELM("dunce cap", "conical hat",
-     0, 1,           0, 0, 0,  3, 1,  4,  1, 10, 0, 0, 0, CLOTH, CLR_BLUE, O1_NONE),
+     0, 1,           0, 0, 0,  3, 1,  4,  1, 10, 0, 0, 0, 0, 0, CLOTH, CLR_BLUE, O1_NONE),
 HELM("dented pot", None,
-     1, 0,           0, 0, 0,  2, 0, 30,  8,  9, 0, 0, 0, IRON, CLR_BLACK, O1_NONE),
+     1, 0,           0, 0, 0,  2, 0, 30,  8,  9, 0, 0, 0, 0, 0, IRON, CLR_BLACK, O1_NONE),
 /* with shuffled appearances... */
 HELM("helmet", "plumed helmet",
-     0, 0,           0, 0, 0, 10, 1, 50, 10,  9, 0, 0, 0, IRON, HI_METAL, O1_NONE),
+     0, 0,           0, 0, 0, 10, 1, 50, 10,  9, 0, 0, 0, 0, 0, IRON, HI_METAL, O1_NONE),
 HELM("helm of brilliance", "etched helmet",
-     0, 1,           0, 0, 0,  6, 1, 50, 50,  9, 0, 0, 0, IRON, CLR_GREEN, O1_NO_SPELL_CASTING_PENALTY),
+     0, 1,           0, 0, 0,  6, 1, 50, 50,  9, 0, 0, 0, BONUS_TO_INT | BONUS_TO_WIS, 0, IRON, CLR_GREEN, O1_NO_SPELL_CASTING_PENALTY),
 HELM("helm of opposite alignment", "crested helmet",
-     0, 1,           0, 0, 0,  6, 1, 50, 50,  9, 0, 0, 0, IRON, HI_METAL, O1_NONE),
+     0, 1,           0, 0, 0,  6, 1, 50, 50,  9, 0, 0, 0, 0, 0, IRON, HI_METAL, O1_NONE),
 HELM("helm of telepathy", "visored helmet",
-     0, 1,     TELEPAT, 0, 0, 2, 1, 50, 50,  9, 0, 0, 0, IRON, HI_METAL, O1_HALF_SPELL_CASTING_PENALTY),
+     0, 1,     TELEPAT, 0, 0, 2, 1, 50, 50,  9, 0, 0, 0, 0, 0, IRON, HI_METAL, O1_HALF_SPELL_CASTING_PENALTY),
 
 /* suits of armor */
 /*
@@ -426,201 +426,201 @@ HELM("helm of telepathy", "visored helmet",
  *      (2) That the order of the dragon scale mail and dragon scales
  *          is the same as order of dragons defined in monst.c.
  */
-#define DRGN_ARMR(name,mgc,power,power2,power3,cost,ac,manabon,hpbon,color,flags)  \
+#define DRGN_ARMR(name,mgc,power,power2,power3,cost,ac,manabon,hpbon,bonusattrs,abon,color,flags)  \
     ARMOR(name, None, 1, mgc, 1, power, power2, power3, 0, 5, 550,  \
-          cost, ac, 0, manabon, hpbon, ARM_SUIT, DRAGON_HIDE, color, flags)
+          cost, ac, 0, manabon, hpbon, bonusattrs, abon, ARM_SUIT, DRAGON_HIDE, color, flags)
 /* 3.4.1: dragon scale mail reclassified as "magic" since magic is
    needed to create them */
-DRGN_ARMR("gray dragon scale mail",    1, ANTIMAGIC,  0, 0, 6000, 1, 0, 0, CLR_GRAY, O1_NONE),
-DRGN_ARMR("silver dragon scale mail",  1, REFLECTING, 0, 0, 6000, 1, 0, 0, DRAGON_SILVER, O1_NONE),
+DRGN_ARMR("gray dragon scale mail",    1, ANTIMAGIC,  0, 0, 6000, 1, 0, 0, 0, 0, CLR_GRAY, O1_NONE),
+DRGN_ARMR("silver dragon scale mail",  1, REFLECTING, 0, 0, 6000, 1, 0, 0, 0, 0, DRAGON_SILVER, O1_NONE),
 #if 0 /* DEFERRED */
 DRGN_ARMR("shimmering dragon scale mail", 1, DISPLACED, 1200, 1, CLR_CYAN),
 #endif
-DRGN_ARMR("red dragon scale mail",     1, FIRE_RES,   0, 0, 4000, 1, 0, 0, CLR_RED, O1_FIRE_RESISTANT),
-DRGN_ARMR("white dragon scale mail",   1, COLD_RES,   0, 0, 3000, 1, 0, 0, CLR_WHITE, O1_COLD_RESISTANT),
-DRGN_ARMR("orange dragon scale mail",  1, SLEEP_RES,  0, 0, 4000, 1, 0, 0, CLR_ORANGE, O1_NONE),
-DRGN_ARMR("black dragon scale mail",   1, DISINT_RES, 0, 0, 5000, 1, 0, 0, CLR_BLACK, O1_DISINTEGRATION_RESISTANT),
-DRGN_ARMR("blue dragon scale mail",    1, SHOCK_RES,  0, 0, 4000, 1, 0, 0, CLR_BLUE, O1_LIGHTNING_RESISTANT),
-DRGN_ARMR("green dragon scale mail",   1, POISON_RES, 0, 0, 3000, 1, 0, 0, CLR_GREEN, O1_NONE),
-DRGN_ARMR("yellow dragon scale mail",  1, ACID_RES,   0, 0, 3000, 1, 0, 0, CLR_YELLOW, O1_NONE),
+DRGN_ARMR("red dragon scale mail",     1, FIRE_RES,   0, 0, 4000, 1, 0, 0, 0, 0, CLR_RED, O1_FIRE_RESISTANT),
+DRGN_ARMR("white dragon scale mail",   1, COLD_RES,   0, 0, 3000, 1, 0, 0, 0, 0, CLR_WHITE, O1_COLD_RESISTANT),
+DRGN_ARMR("orange dragon scale mail",  1, SLEEP_RES,  0, 0, 4000, 1, 0, 0, 0, 0, CLR_ORANGE, O1_NONE),
+DRGN_ARMR("black dragon scale mail",   1, DISINT_RES, 0, 0, 5000, 1, 0, 0, 0, 0, CLR_BLACK, O1_DISINTEGRATION_RESISTANT),
+DRGN_ARMR("blue dragon scale mail",    1, SHOCK_RES,  0, 0, 4000, 1, 0, 0, 0, 0, CLR_BLUE, O1_LIGHTNING_RESISTANT),
+DRGN_ARMR("green dragon scale mail",   1, POISON_RES, 0, 0, 3000, 1, 0, 0, 0, 0, CLR_GREEN, O1_NONE),
+DRGN_ARMR("yellow dragon scale mail",  1, ACID_RES,   0, 0, 3000, 1, 0, 0, 0, 0, CLR_YELLOW, O1_NONE),
 /* For now, only dragons leave these. */
 /* 3.4.1: dragon scales left classified as "non-magic"; they confer
    magical properties but are produced "naturally" */
-DRGN_ARMR("gray dragon scales",        0, ANTIMAGIC,  0, 0, 1500, 7, 0, 0, CLR_GRAY, O1_NONE),
-DRGN_ARMR("silver dragon scales",      0, REFLECTING, 0, 0, 1500, 7, 0, 0, DRAGON_SILVER, O1_NONE),
+DRGN_ARMR("gray dragon scales",        0, ANTIMAGIC,  0, 0, 1500, 7, 0, 0, 0, 0, CLR_GRAY, O1_NONE),
+DRGN_ARMR("silver dragon scales",      0, REFLECTING, 0, 0, 1500, 7, 0, 0, 0, 0, DRAGON_SILVER, O1_NONE),
 #if 0 /* DEFERRED */
 DRGN_ARMR("shimmering dragon scales",  0, DISPLACED,   700, 7, CLR_CYAN),
 #endif
-DRGN_ARMR("red dragon scales",         0, FIRE_RES,   0, 0, 1000, 7, 0, 0, CLR_RED, O1_FIRE_RESISTANT),
-DRGN_ARMR("white dragon scales",       0, COLD_RES,   0, 0,  750, 7, 0, 0, CLR_WHITE, O1_COLD_RESISTANT),
-DRGN_ARMR("orange dragon scales",      0, SLEEP_RES,  0, 0, 1000, 7, 0, 0, CLR_ORANGE, O1_NONE),
-DRGN_ARMR("black dragon scales",       0, DISINT_RES, 0, 0, 1250, 7, 0, 0, CLR_BLACK, O1_DISINTEGRATION_RESISTANT),
-DRGN_ARMR("blue dragon scales",        0, SHOCK_RES,  0, 0, 1000, 7, 0, 0, CLR_BLUE, O1_LIGHTNING_RESISTANT),
-DRGN_ARMR("green dragon scales",       0, POISON_RES, 0, 0, 750, 7, 0, 0, CLR_GREEN, O1_NONE),
-DRGN_ARMR("yellow dragon scales",      0, ACID_RES,   0, 0,  750, 7, 0, 0, CLR_YELLOW, O1_NONE),
+DRGN_ARMR("red dragon scales",         0, FIRE_RES,   0, 0, 1000, 7, 0, 0, 0, 0, CLR_RED, O1_FIRE_RESISTANT),
+DRGN_ARMR("white dragon scales",       0, COLD_RES,   0, 0,  750, 7, 0, 0, 0, 0, CLR_WHITE, O1_COLD_RESISTANT),
+DRGN_ARMR("orange dragon scales",      0, SLEEP_RES,  0, 0, 1000, 7, 0, 0, 0, 0, CLR_ORANGE, O1_NONE),
+DRGN_ARMR("black dragon scales",       0, DISINT_RES, 0, 0, 1250, 7, 0, 0, 0, 0, CLR_BLACK, O1_DISINTEGRATION_RESISTANT),
+DRGN_ARMR("blue dragon scales",        0, SHOCK_RES,  0, 0, 1000, 7, 0, 0, 0, 0, CLR_BLUE, O1_LIGHTNING_RESISTANT),
+DRGN_ARMR("green dragon scales",       0, POISON_RES, 0, 0, 750, 7, 0, 0, 0, 0, CLR_GREEN, O1_NONE),
+DRGN_ARMR("yellow dragon scales",      0, ACID_RES,   0, 0,  750, 7, 0, 0, 0, 0, CLR_YELLOW, O1_NONE),
 #undef DRGN_ARMR
 /* other suits */
 ARMOR("full plate mail", None,
-	  1, 0, 1,			 0, 0, 0, 10, 7, 960,2000,  1, 2, 0, 0, ARM_SUIT, IRON, HI_METAL, O1_NONE),
+	  1, 0, 1,			 0, 0, 0, 10, 7, 960,2000,  1, 2, 0, 0, 0, 0, ARM_SUIT, IRON, HI_METAL, O1_NONE),
 ARMOR("field plate mail", None,
-	  1, 0, 1,			 0, 0, 0, 20, 6, 840,1000,  2, 2, 0, 0, ARM_SUIT, IRON, HI_METAL, O1_NONE),
+	  1, 0, 1,			 0, 0, 0, 20, 6, 840,1000,  2, 2, 0, 0, 0, 0, ARM_SUIT, IRON, HI_METAL, O1_NONE),
 ARMOR("plate mail", None,
-      1, 0, 1,			 0, 0, 0, 40, 5, 720, 600,  3, 2, 0, 0, ARM_SUIT, IRON, HI_METAL, O1_NONE),
+      1, 0, 1,			 0, 0, 0, 40, 5, 720, 600,  3, 2, 0, 0, 0, 0, ARM_SUIT, IRON, HI_METAL, O1_NONE),
 ARMOR("crystal plate mail", None,
-      1, 0, 1,  REFLECTING, 0, 0, 5, 5, 640,3000,  3, 2, 0, 0, ARM_SUIT, GLASS, CLR_WHITE, O1_RUST_RESISTANT | O1_CORROSION_RESISTANT | O1_HALF_SPELL_CASTING_PENALTY),
+      1, 0, 1,  REFLECTING, 0, 0, 5, 5, 640,3000,  3, 2, 0, 0, 0, 0, ARM_SUIT, GLASS, CLR_WHITE, O1_RUST_RESISTANT | O1_CORROSION_RESISTANT | O1_HALF_SPELL_CASTING_PENALTY),
 ARMOR("bronze plate mail", None,
-      1, 0, 1,			 0, 0, 0, 20, 5, 800, 150,  4, 1, 0, 0, ARM_SUIT, COPPER, HI_COPPER, O1_NONE),
+      1, 0, 1,			 0, 0, 0, 20, 5, 800, 150,  4, 1, 0, 0, 0, 0, ARM_SUIT, COPPER, HI_COPPER, O1_NONE),
 ARMOR("splint mail", None,
-      1, 0, 1,			 0, 0, 0, 40, 5, 640, 125,  4, 1, 0, 0, ARM_SUIT, IRON, HI_METAL, O1_NONE),
+      1, 0, 1,			 0, 0, 0, 40, 5, 640, 125,  4, 1, 0, 0, 0, 0, ARM_SUIT, IRON, HI_METAL, O1_NONE),
 ARMOR("banded mail", None,
-      1, 0, 1,			 0, 0, 0, 40, 5, 560, 200,  4, 1, 0, 0, ARM_SUIT, IRON, HI_METAL, O1_NONE),
+      1, 0, 1,			 0, 0, 0, 40, 5, 560, 200,  4, 1, 0, 0, 0, 0, ARM_SUIT, IRON, HI_METAL, O1_NONE),
 ARMOR("dwarvish mithril-coat", None,
-      1, 0, 0,			 0, 0, 0, 10, 1, 250, 750,  4, 2, 0, 0, ARM_SUIT, MITHRIL, HI_SILVER, O1_RUST_RESISTANT | O1_CORROSION_RESISTANT | O1_HALF_SPELL_CASTING_PENALTY),
+      1, 0, 0,			 0, 0, 0, 10, 1, 250, 750,  4, 2, 0, 0, 0, 0, ARM_SUIT, MITHRIL, HI_SILVER, O1_RUST_RESISTANT | O1_CORROSION_RESISTANT | O1_HALF_SPELL_CASTING_PENALTY),
 ARMOR("elven mithril-coat", None,
-      1, 0, 0,			 0, 0, 0, 15, 1, 150, 250,  5, 2, 0, 0, ARM_SUIT, MITHRIL, HI_SILVER, O1_RUST_RESISTANT | O1_CORROSION_RESISTANT | O1_HALF_SPELL_CASTING_PENALTY),
+      1, 0, 0,			 0, 0, 0, 15, 1, 150, 250,  5, 2, 0, 0, 0, 0, ARM_SUIT, MITHRIL, HI_SILVER, O1_RUST_RESISTANT | O1_CORROSION_RESISTANT | O1_HALF_SPELL_CASTING_PENALTY),
 ARMOR("chain mail", None,
-      1, 0, 0,			 0, 0, 0, 40, 5, 480,  75,  5, 1, 0, 0, ARM_SUIT, IRON, HI_METAL, O1_NONE),
+      1, 0, 0,			 0, 0, 0, 40, 5, 480,  75,  5, 1, 0, 0, 0, 0, ARM_SUIT, IRON, HI_METAL, O1_NONE),
 ARMOR("orcish chain mail", "crude chain mail",
-      0, 0, 0,			 0, 0, 0, 20, 5, 450,  40,  6, 1, 0, 0, ARM_SUIT, IRON, CLR_BLACK, O1_NONE),
+      0, 0, 0,			 0, 0, 0, 20, 5, 450,  40,  6, 1, 0, 0, 0, 0, ARM_SUIT, IRON, CLR_BLACK, O1_NONE),
 ARMOR("scale mail", None,
-      1, 0, 0,			 0, 0, 0, 40, 5, 500,  45,  6, 1, 0, 0, ARM_SUIT, IRON, HI_METAL, O1_NONE),
+      1, 0, 0,			 0, 0, 0, 40, 5, 500,  45,  6, 1, 0, 0, 0, 0, ARM_SUIT, IRON, HI_METAL, O1_NONE),
 ARMOR("studded leather armor", None,
-      1, 0, 0,			 0, 0, 0, 45, 3, 200,  15,  7, 1, 0, 0, ARM_SUIT, LEATHER, HI_LEATHER, O1_NONE),
+      1, 0, 0,			 0, 0, 0, 45, 3, 200,  15,  7, 1, 0, 0, 0, 0, ARM_SUIT, LEATHER, HI_LEATHER, O1_NONE),
 ARMOR("gnollish studded leather armor", "crude studded leather armor",
-      0, 0, 0,			 0, 0, 0, 12, 3, 175,  15,  8, 1, 0, 0, ARM_SUIT, LEATHER, HI_LEATHER, O1_NONE),
+      0, 0, 0,			 0, 0, 0, 12, 3, 175,  15,  8, 1, 0, 0, 0, 0, ARM_SUIT, LEATHER, HI_LEATHER, O1_NONE),
 ARMOR("ring mail", None,
-      1, 0, 0,			 0, 0, 0, 45, 5, 500,  30,  7, 1, 0, 0, ARM_SUIT, IRON, HI_METAL, O1_NONE),
+      1, 0, 0,			 0, 0, 0, 45, 5, 500,  30,  7, 1, 0, 0, 0, 0, ARM_SUIT, IRON, HI_METAL, O1_NONE),
 ARMOR("orcish ring mail", "crude ring mail",
-      0, 0, 0,			 0, 0, 0, 20, 5, 450,  15,  8, 1, 0, 0, ARM_SUIT, IRON, CLR_BLACK, O1_NONE),
+      0, 0, 0,			 0, 0, 0, 20, 5, 450,  15,  8, 1, 0, 0, 0, 0, ARM_SUIT, IRON, CLR_BLACK, O1_NONE),
 ARMOR("leather armor", None,
-      1, 0, 0,			 0, 0, 0, 50, 3, 150,   5,  8, 1, 0, 0, ARM_SUIT, LEATHER, HI_LEATHER, O1_NONE),
+      1, 0, 0,			 0, 0, 0, 50, 3, 150,   5,  8, 1, 0, 0, 0, 0, ARM_SUIT, LEATHER, HI_LEATHER, O1_NONE),
 ARMOR("gnollish leather armor", "crude leather armor",
-      0, 0, 0,			 0, 0, 0, 12, 3, 125,   3,  9, 1, 0, 0, ARM_SUIT, LEATHER, HI_LEATHER, O1_NONE),
+      0, 0, 0,			 0, 0, 0, 12, 3, 125,   3,  9, 1, 0, 0, 0, 0, ARM_SUIT, LEATHER, HI_LEATHER, O1_NONE),
 ARMOR("leather jacket", None,
-      1, 0, 0,			 0, 0, 0, 10, 0,  30,  10,  9, 0, 0, 0, ARM_SUIT, LEATHER, CLR_BLACK, O1_NONE),
+      1, 0, 0,			 0, 0, 0, 10, 0,  30,  10,  9, 0, 0, 0, 0, 0, ARM_SUIT, LEATHER, CLR_BLACK, O1_NONE),
 ARMOR("force field armor", "armor-shaped force field",
-      0, 1, 0,			 0, 0, 0, 0,  0,   0,   4,  4, 0, 0, 0, ARM_SUIT, FORCEFIELD, CLR_WHITE, O1_NO_SPELL_CASTING_PENALTY | O1_FIRE_RESISTANT | O1_LIGHTNING_RESISTANT | O1_COLD_RESISTANT | O1_CORROSION_RESISTANT | O1_RUST_RESISTANT),
+      0, 1, 0,			 0, 0, 0, 0,  0,   0,   4,  4, 0, 0, 0, 0, 0, ARM_SUIT, FORCEFIELD, CLR_WHITE, O1_NO_SPELL_CASTING_PENALTY | O1_FIRE_RESISTANT | O1_LIGHTNING_RESISTANT | O1_COLD_RESISTANT | O1_CORROSION_RESISTANT | O1_RUST_RESISTANT),
 
 /* shirts */
 ARMOR("Hawaiian shirt", None, //STARTMARKER 1
-    1, 0, 0, 0,			 0, 0, 8, 0, 5,  5, 10, 0, 0, 0, ARM_SHIRT, CLOTH, CLR_MAGENTA, O1_NONE),
+    1, 0, 0, 0,			 0, 0, 8, 0, 5,  5, 10, 0, 0, 0, 0, 0, ARM_SHIRT, CLOTH, CLR_MAGENTA, O1_NONE),
 /* with shuffled appearances... */
 ARMOR("shirt of uncontrollable laughter", "funny T-shirt", //STARTMARKER 2
-    0, 1, 0,  LAUGHING,  0, 0, 6, 0, 5, 50, 10, 0, 0, 0, ARM_SHIRT, CLOTH, CLR_BLUE, O1_NONE),
+    0, 1, 0,  LAUGHING,  0, 0, 6, 0, 5, 50, 10, 0, 0, 0, 0, 0, ARM_SHIRT, CLOTH, CLR_BLUE, O1_NONE),
 ARMOR("shirt of comeliness", "black T-shirt",
-	0, 1, 0, 0,			 0, 0, 6, 0, 5, 50, 10, 0, 0, 0, ARM_SHIRT, CLOTH, CLR_BLACK, O1_NONE),
+	0, 1, 0, 0,			 0, 0, 6, 0, 5, 50, 10, 0, 0, 0, BONUS_TO_CHA, 0, ARM_SHIRT, CLOTH, CLR_BLACK, O1_NONE),
 ARMOR("shirt of sound mindedness", "green T-shirt", 
-	0, 1, 0, HALLUC_RES, 0, 0, 6, 0, 5, 50, 10, 0, 0, 0, ARM_SHIRT, CLOTH, CLR_GREEN, O1_NONE),
+	0, 1, 0, HALLUC_RES, 0, 0, 6, 0, 5, 50, 10, 0, 0, 0, 0, 0, ARM_SHIRT, CLOTH, CLR_GREEN, O1_NONE),
 ARMOR("T-shirt", "old T-shirt",//ENDMARKER 1 & 2
-    0, 0, 0, 0,			 0, 0, 4, 0, 5,  2, 10, 0, 0, 0, ARM_SHIRT, CLOTH, CLR_WHITE, O1_NONE),
+    0, 0, 0, 0,			 0, 0, 4, 0, 5,  2, 10, 0, 0, 0, 0, 0, ARM_SHIRT, CLOTH, CLR_WHITE, O1_NONE),
 
 
 /* cloaks */
 CLOAK("elven cloak", "faded pall",
-      0, 1,    STEALTH, 0, 0, 8, 0, 10, 60,  9, 1, 0, 0, CLOTH, CLR_BLACK, O1_NONE),
+      0, 1,    STEALTH, 0, 0, 8, 0, 10, 60,  9, 1, 0, 0, 0, 0, CLOTH, CLR_BLACK, O1_NONE),
 CLOAK("orcish cloak", "coarse mantelet",
-      0, 0,				 0, 0, 0, 8,  0, 10, 40, 10, 1, 0, 0, CLOTH, CLR_BLACK, O1_NONE),
+      0, 0,				 0, 0, 0, 8,  0, 10, 40, 10, 1, 0, 0, 0, 0, CLOTH, CLR_BLACK, O1_NONE),
 CLOAK("dwarvish cloak", "hooded cloak",
-      0, 0,			     0, 0, 0, 8,  0, 10, 50, 10, 1, 0, 0, CLOTH, HI_CLOTH, O1_NONE),
+      0, 0,			     0, 0, 0, 8,  0, 10, 50, 10, 1, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE),
 CLOAK("oilskin cloak", "slippery cloak",
-      0, 0,				 0, 0, 0, 8,  0, 10, 50,  9, 2, 0, 0, CLOTH, HI_CLOTH, O1_NONE),
+      0, 0,				 0, 0, 0, 8,  0, 10, 50,  9, 2, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE),
 CLOAK("alchemy smock", "apron",
-      0, 1, POISON_RES, 0, 0, 9, 0, 10, 50,  9, 1, 0, 0, CLOTH, CLR_WHITE, O1_NONE),
+      0, 1, POISON_RES, 0, 0, 9, 0, 10, 50,  9, 1, 0, 0, 0, 0, CLOTH, CLR_WHITE, O1_NONE),
 CLOAK("leather cloak", None,
-      1, 0,				 0, 0, 0, 8,  0, 15, 40,  9, 1, 0, 0, LEATHER, CLR_BROWN, O1_NONE),
+      1, 0,				 0, 0, 0, 8,  0, 15, 40,  9, 1, 0, 0, 0, 0, LEATHER, CLR_BROWN, O1_NONE),
 /* with shuffled appearances... */
 CLOAK("cloak of protection", "tattered cape",
-      0, 1, PROTECTION, 0, 0, 9, 0, 10, 250,  7, 3, 0, 0, CLOTH, HI_CLOTH, O1_NONE),
+      0, 1, PROTECTION, 0, 0, 9, 0, 10, 250,  7, 3, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE),
         /* cloak of protection is now the only item conferring MC 3 */
 CLOAK("cloak of invisibility", "opera cloak",
-      0, 1,      INVIS, 0, 0, 9, 0, 10, 250,  9, 1, 0, 0, CLOTH, CLR_BRIGHT_MAGENTA, O1_NONE),
+      0, 1,      INVIS, 0, 0, 9, 0, 10, 250,  9, 1, 0, 0, 0, 0, CLOTH, CLR_BRIGHT_MAGENTA, O1_NONE),
 CLOAK("cloak of magic resistance", "ornamental cope",
-      0, 1,  ANTIMAGIC, 0, 0, 6, 0, 10, 250,  9, 1, 0, 0, CLOTH, CLR_GRAY, O1_NONE),
+      0, 1,  ANTIMAGIC, 0, 0, 6, 0, 10, 250,  9, 1, 0, 0, 0, 0, CLOTH, CLR_GRAY, O1_NONE),
         /*  'cope' is not a spelling mistake... leave it be */
 CLOAK("cloak of integrity", "hard woven cloak",
-      0, 1,  DISINT_RES, 0, 0, 6, 0, 10, 250,  8, 1, 0, 0, CLOTH, CLR_WHITE, O1_DISINTEGRATION_RESISTANT | O1_FIRE_RESISTANT),
+      0, 1,  DISINT_RES, 0, 0, 6, 0, 10, 250,  8, 1, 0, 0, 0, 0, CLOTH, CLR_WHITE, O1_DISINTEGRATION_RESISTANT | O1_FIRE_RESISTANT),
 CLOAK("cloak of displacement", "piece of cloth",
-      0, 1,  DISPLACED, 0, 0, 7, 0, 10, 250,  9, 1, 0, 0, CLOTH, HI_CLOTH, O1_NONE),
+      0, 1,  DISPLACED, 0, 0, 7, 0, 10, 250,  9, 1, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE),
 
 /* robes and gowns */
 /* with shuffled appearances... */
 ROBE("robe", "old robe", //STARTMARKER 1 & 2
-	0, 0, 0,		  0, 0, 10, 1, 20,  25,  10, 2, 0, 0, CLOTH, CLR_RED, O1_NONE),
+	0, 0, 0,		  0, 0, 10, 1, 20,  25,  10, 2, 0, 0, 0, 0, CLOTH, CLR_RED, O1_NONE),
 ROBE("robe of protection", "golden ornamental robe",
-	0, 1, PROTECTION, 0, 0, 10, 1, 25, 400,  7, 3, 0, 0, CLOTH, HI_GOLD, O1_NONE),
+	0, 1, PROTECTION, 0, 0, 10, 1, 25, 400,  7, 3, 0, 0, 0, 0, CLOTH, HI_GOLD, O1_NONE),
 ROBE("robe of magic resistance", "silvery ornamental robe",
-	0, 1, ANTIMAGIC,  0, 0, 9, 1, 25, 400,  9, 2, 0, 0, CLOTH, HI_SILVER, O1_NONE),
+	0, 1, ANTIMAGIC,  0, 0, 9, 1, 25, 400,  9, 2, 0, 0, 0, 0, CLOTH, HI_SILVER, O1_NONE),
 ROBE("gown of the archbishops", "shining purple robe",
-	0, 1, CURSE_RES, DEATH_RES, DRAIN_RES, 5, 2, 30, 400,  9, 3,15, 15, CLOTH, HI_ZAP, O1_NOT_CURSEABLE | O1_HP_PERCENTAGE_BONUS | O1_MANA_PERCENTAGE_BONUS),
+	0, 1, CURSE_RES, DEATH_RES, DRAIN_RES, 5, 2, 30, 400,  9, 3,15, 15, 0, 0, CLOTH, HI_ZAP, O1_NOT_CURSEABLE | O1_HP_PERCENTAGE_BONUS | O1_MANA_PERCENTAGE_BONUS),
 ROBE("robe of the archmagi", "shining blue robe",
-	0, 1, 0,		   0, 0, 5, 2, 30, 400,  9, 3, 0, 0, CLOTH, HI_ZAP, O1_NONE),
+	0, 1, 0,		   0, 0, 5, 2, 30, 400,  9, 3, 0, 0, 0, 0, CLOTH, HI_ZAP, O1_NONE),
 ROBE("robe of starry wisdom", "shining black robe", //ENDMARKER 2
-	0, 1, 0,		   0, 0, 5, 2, 30, 400,  9, 3, 0, 0, CLOTH, CLR_BLACK, O1_NONE),
+	0, 1, 0,		   0, 0, 5, 2, 30, 400,  9, 3, 0, 0, 0, 0, CLOTH, CLR_BLACK, O1_NONE),
 /* without shuffled appearances... */
 ROBE("bathrobe", "soft cotton robe",
-	0, 0, 0,		   0, 0, 6, 1, 25,   5, 10, 0, 0, 0, CLOTH, CLR_WHITE, O1_NONE),
+	0, 0, 0,		   0, 0, 6, 1, 25,   5, 10, 0, 0, 0, 0, 0, CLOTH, CLR_WHITE, O1_NONE),
 ROBE("clerical gown", None,
-	1, 0, 0,		   0, 0, 6, 1, 15,  25, 10, 2, 0, 0, CLOTH, CLR_BLACK, O1_NONE),
+	1, 0, 0,		   0, 0, 6, 1, 15,  25, 10, 2, 0, 0, 0, 0, CLOTH, CLR_BLACK, O1_NONE),
 ROBE("gnollish haircloth robe", "crude robe",
-	0, 0, 0,		   0, 0, 6, 1, 30,  10,  9, 2, 0, 0, CLOTH, CLR_BROWN, O1_NONE),
+	0, 0, 0,		   0, 0, 6, 1, 30,  10,  9, 2, 0, 0, 0, 0, CLOTH, CLR_BROWN, O1_NONE),
 ROBE("mummy wrapping", None, //ENDMARKER 1
-	1, 0, 0,		   0, 0, 0, 0,  3,   2, 10, 1, 0, 0, CLOTH, CLR_GRAY, O1_TREATED_AS_MATERIAL_COMPONENT),
+	1, 0, 0,		   0, 0, 0, 0,  3,   2, 10, 1, 0, 0, 0, 0, CLOTH, CLR_GRAY, O1_TREATED_AS_MATERIAL_COMPONENT),
 	/* worn mummy wrapping blocks invisibility */
 
 
 /* bracers */
 /* with shuffled appearances... */
 BRACERS("leather bracers", "old bracers", //STARTMARKER 1 & 2
-	0, 0, 0,		  0, 0, 8, 1, 10,   5, 9, 0, 0, 0, CLOTH, HI_LEATHER, O1_NONE),
+	0, 0, 0,		  0, 0, 8, 1, 10,   5, 9, 0, 0, 0, 0, 0, CLOTH, HI_LEATHER, O1_NONE),
 BRACERS("bracers of defense", "runed bracers",
-	0, 1, PROTECTION, 0, 0, 8, 1, 10, 300, 7, 2, 0, 0, CLOTH, HI_LEATHER, O1_NONE),
+	0, 1, PROTECTION, 0, 0, 8, 1, 10, 300, 7, 2, 0, 0, 0, 0, CLOTH, HI_LEATHER, O1_NONE),
 BRACERS("bracers of archery", "deerskin bracers",
-	0, 1, 0,		  0, 0, 7, 1, 10, 300, 9, 0, 0, 0, CLOTH, HI_LEATHER, O1_NONE),
+	0, 1, 0,		  0, 0, 7, 1, 10, 300, 9, 0, 0, 0, 0, 0, CLOTH, HI_LEATHER, O1_NONE),
 BRACERS("bracers of magic resistance", "ornamental bracers",//ENDMARKER 1 & 2
-	0, 1, ANTIMAGIC,  0, 0, 8, 1, 10, 300, 9, 2, 0, 0, CLOTH, HI_LEATHER, O1_NONE),
+	0, 1, ANTIMAGIC,  0, 0, 8, 1, 10, 300, 9, 2, 0, 0, 0, 0, CLOTH, HI_LEATHER, O1_NONE),
 
 
 /* belts */
 /* with shuffled appearances... */
 BELT("leather belt", "old belt", //STARTMARKER 1 & 2
-	0, 0, 0,		  0, 0, 10, 0, 5,   5, 10, 0, 0, 0, CLOTH, HI_LEATHER, O1_NO_SPELL_CASTING_PENALTY),
+	0, 0, 0,		  0, 0, 10, 0, 5,   5, 10, 0, 0, 0, 0, 0, CLOTH, HI_LEATHER, O1_NO_SPELL_CASTING_PENALTY),
 BELT("belt of dwarvenkind", "broad belt", 
-	0, 1, POISON_RES, 0, 0,  8, 0, 5, 250, 10, 1, 0, 0, CLOTH, HI_LEATHER, O1_NONE),
+	0, 1, POISON_RES, 0, 0,  8, 0, 5, 250, 10, 1, 0, 0, BONUS_TO_CON, 0, CLOTH, HI_LEATHER, O1_NONE),
 BELT("belt of fortitude", "brown belt", 
-	0, 1, 0,		  0, 0,  8, 0, 5, 250, 10, 1, 0, 50, CLOTH, HI_LEATHER, O1_HP_PERCENTAGE_BONUS),
+	0, 1, 0,		  0, 0,  8, 0, 5, 250, 10, 1, 0, 50, 0, 0, CLOTH, HI_LEATHER, O1_HP_PERCENTAGE_BONUS),
 BELT("belt of giant strength", "ornamental belt", //ENDMARKER 1 & 2
-	0, 1, 0,		  0, 0,  7, 0, 5, 250, 10, 0, 0, 0, CLOTH, HI_LEATHER, O1_NONE),
+	0, 1, 0,		  0, 0,  7, 0, 5, 250, 10, 0, 0, 0, 0, 0, CLOTH, HI_LEATHER, O1_NONE),
 
 /* pants */
 /* no shuffled appearances... */
 PANTS("leather pants", None, //STARTMARKER
-	1, 0, 0,		0, 0, 8, 2, 50, 10,  9, 0, 0, 0, CLOTH, HI_LEATHER, O1_NONE),
+	1, 0, 0,		0, 0, 8, 2, 50, 10,  9, 0, 0, 0, 0, 0, CLOTH, HI_LEATHER, O1_NONE),
 PANTS("beige shorts", "beige short pants",
-	0, 0, 0,		0, 0, 3, 2, 15, 10, 10, 0, 0, 0, CLOTH, CLR_BROWN, O1_NONE),
+	0, 0, 0,		0, 0, 3, 2, 15, 10, 10, 0, 0, 0, 0, 0, CLOTH, CLR_BROWN, O1_NONE),
 PANTS("jeans", "blue long pants", 
-	0, 0, 0,		0, 0, 3, 2, 50,  5, 10, 0, 0, 0, CLOTH, CLR_BLUE, O1_NONE),
+	0, 0, 0,		0, 0, 3, 2, 50,  5, 10, 0, 0, 0, 0, 0, CLOTH, CLR_BLUE, O1_NONE),
 PANTS("skirt", None, //STARTMARKER FOR NO "PAIR OF"
-	1, 0, 0,		0, 0, 3, 1, 10,  5, 10, 0, 0, 0, CLOTH, CLR_RED, O1_NONE),
+	1, 0, 0,		0, 0, 3, 1, 10,  5, 10, 0, 0, 0, 0, 0, CLOTH, CLR_RED, O1_NONE),
 PANTS("kilt", None,  //ENDMARKER FOR NO "PAIR OF"
-	1, 0, 0,		0, 0, 3, 1, 15, 10, 10, 0, 0, 0, CLOTH, CLR_MAGENTA, O1_NONE),
+	1, 0, 0,		0, 0, 3, 1, 15, 10, 10, 0, 0, 0, 0, 0, CLOTH, CLR_MAGENTA, O1_NONE),
 PANTS("trunks of swimming", "blue short pants", //ENDMARKER
-	0, 1, SWIMMING, 0, 0, 3, 1,  2, 50, 10, 0, 0, 0, CLOTH, CLR_BLUE, O1_NONE),
+	0, 1, SWIMMING, 0, 0, 3, 1,  2, 50, 10, 0, 0, 0, 0, 0, CLOTH, CLR_BLUE, O1_NONE),
 
 /* shields */
 SHIELD("small shield", None,
-       1, 0, 0,          0, 0, 0, 6, 0,  80,  3, 9, 0, 0, 0, WOOD, HI_WOOD, O1_NONE),
+       1, 0, 0,          0, 0, 0, 6, 0,  80,  3, 9, 0, 0, 0, 0, 0, WOOD, HI_WOOD, O1_NONE),
 SHIELD("elven shield", "blue and green shield",
-       0, 0, 0,          0, 0, 0, 2, 0,  140,  7, 8, 0, 0, 0, WOOD, CLR_GREEN, O1_NONE),
+       0, 0, 0,          0, 0, 0, 2, 0,  140,  7, 8, 0, 0, 0, 0, 0, WOOD, CLR_GREEN, O1_NONE),
 SHIELD("Uruk-hai shield", "white-handed shield",
-       0, 0, 0,          0, 0, 0, 2, 0,  120,  7, 9, 0, 0, 0, IRON, HI_METAL, O1_NONE),
+       0, 0, 0,          0, 0, 0, 2, 0,  120,  7, 9, 0, 0, 0, 0, 0, IRON, HI_METAL, O1_NONE),
 SHIELD("orcish shield", "red-eyed shield",
-       0, 0, 0,          0, 0, 0, 2, 0,  100,  7, 9, 0, 0, 0, IRON, CLR_RED, O1_NONE),
+       0, 0, 0,          0, 0, 0, 2, 0,  100,  7, 9, 0, 0, 0, 0, 0, IRON, CLR_RED, O1_NONE),
 SHIELD("large shield", None,
-       1, 0, 1,          0, 0, 0, 5, 0, 160, 10, 8, 0, 0, 0, IRON, HI_METAL, O1_NONE),
+       1, 0, 1,          0, 0, 0, 5, 0, 160, 10, 8, 0, 0, 0, 0, 0, IRON, HI_METAL, O1_NONE),
 SHIELD("dwarvish roundshield", "large round shield",
-       0, 0, 0,          0, 0, 0, 4, 0, 150, 10, 8, 0, 0, 0, IRON, HI_METAL, O1_NONE),
+       0, 0, 0,          0, 0, 0, 4, 0, 150, 10, 8, 0, 0, 0, 0, 0, IRON, HI_METAL, O1_NONE),
 SHIELD("shield of reflection", "polished silver shield",
-       0, 1, 0, REFLECTING, 0, 0, 3, 0, 70, 750, 8, 0, 0, 0, SILVER, HI_SILVER, O1_RUST_RESISTANT | O1_CORROSION_RESISTANT),
+       0, 1, 0, REFLECTING, 0, 0, 3, 0, 70, 750, 8, 0, 0, 0, 0, 0, SILVER, HI_SILVER, O1_RUST_RESISTANT | O1_CORROSION_RESISTANT),
 
 /* gloves */
 /* These have their color but not material shuffled, so the IRON must
@@ -628,43 +628,43 @@ SHIELD("shield of reflection", "polished silver shield",
  * HI_METAL or CLR_BLACK.  All have shuffled descriptions.
  */
 GLOVES("leather gloves", "old gloves",
-       0, 0,        0, 0, 0, 8, 1, 10,  8, 9, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
+       0, 0,        0, 0, 0, 8, 1, 10,  8, 9, 0, 0, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
 GLOVES("gauntlets of fumbling", "padded gloves",
-       0, 1, FUMBLING, 0, 0, 8, 1, 10, 100, 9, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
+       0, 1, FUMBLING, 0, 0, 8, 1, 10, 100, 9, 0, 0, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
 GLOVES("gloves of spellcasting", "deerskin gloves",
-       0, 1,		0, 0, 0, 8, 1, 10, 100, 9, 0, 0, 25, LEATHER, HI_LEATHER, O1_MANA_PERCENTAGE_BONUS),
+       0, 1,		0, 0, 0, 8, 1, 10, 100, 9, 0, 0, 25, 0, 0, LEATHER, HI_LEATHER, O1_MANA_PERCENTAGE_BONUS),
 GLOVES("gauntlets of power", "riding gloves",
-       0, 1,        0, 0, 0, 8, 1, 30, 100, 9, 0, 0, 0, IRON, CLR_BROWN, O1_NONE),
+       0, 1,        0, 0, 0, 8, 1, 30, 100, 9, 0, 0, 0, 0, 0, IRON, CLR_BROWN, O1_NONE),
 GLOVES("gauntlets of dexterity", "fencing gloves",
-       0, 1,        0, 0, 0, 8, 1, 10, 100, 9, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
+       0, 1,        0, 0, 0, 8, 1, 10, 100, 9, 0, 0, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
 
 /* boots */
 BOOTS("low boots", "walking shoes",
-      0, 0,          0, 0, 0, 14, 2, 10,  8, 9, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
+      0, 0,          0, 0, 0, 14, 2, 10,  8, 9, 0, 0, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
 BOOTS("iron shoes", "hard shoes",
-      0, 0,          0, 0, 0, 7, 2, 60, 16, 8, 0, 0, 0, IRON, HI_METAL, O1_NONE),
+      0, 0,          0, 0, 0, 7, 2, 60, 16, 8, 0, 0, 0, 0, 0, IRON, HI_METAL, O1_NONE),
 BOOTS("leather sandals", None,
-      1, 0,          0, 0, 0, 2, 1, 6,  4, 10, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
+      1, 0,          0, 0, 0, 2, 1, 6,  4, 10, 0, 0, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
 BOOTS("cotton slippers", None,
-      1, 0,          0, 0, 0, 2, 1, 3,  4, 10, 0, 0, 0, CLOTH, CLR_WHITE, O1_NONE),
+      1, 0,          0, 0, 0, 2, 1, 3,  4, 10, 0, 0, 0, 0, 0, CLOTH, CLR_WHITE, O1_NONE),
 BOOTS("high boots", "jackboots",
-      0, 0,          0, 0, 0, 12, 2, 30, 12, 8, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
+      0, 0,          0, 0, 0, 12, 2, 30, 12, 8, 0, 0, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
 /* with shuffled appearances... */
 BOOTS("speed boots", "combat boots",
-      0, 1,       FAST, 0, 0, 12, 2, 30, 50, 9, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
+      0, 1,       FAST, 0, 0, 12, 2, 30, 50, 9, 0, 0, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
 BOOTS("water walking boots", "jungle boots",
-      0, 1,   WWALKING, 0, 0, 12, 2, 15, 50, 9, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
+      0, 1,   WWALKING, 0, 0, 12, 2, 15, 50, 9, 0, 0, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
 BOOTS("jumping boots", "hiking boots",
-      0, 1,    JUMPING, 0, 0, 12, 2, 30, 50, 9, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
+      0, 1,    JUMPING, 0, 0, 12, 2, 30, 50, 9, 0, 0, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
 BOOTS("elven boots", "mud boots",
-      0, 1,    STEALTH, 0, 0, 12, 2, 20,  8, 9, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
+      0, 1,    STEALTH, 0, 0, 12, 2, 20,  8, 9, 0, 0, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
 BOOTS("kicking boots", "buckled boots",
-      0, 1,          0, 0, 0, 12, 2, 60,  8, 9, 0, 0, 0, IRON, CLR_BROWN, O1_NONE),
+      0, 1,          0, 0, 0, 12, 2, 60,  8, 9, 0, 0, 0, 0, 0, IRON, CLR_BROWN, O1_NONE),
         /* CLR_BROWN for same reason as gauntlets of power */
 BOOTS("fumble boots", "riding boots",
-      0, 1,   FUMBLING, 0, 0, 12, 2, 30, 30, 9, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
+      0, 1,   FUMBLING, 0, 0, 12, 2, 30, 30, 9, 0, 0, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
 BOOTS("levitation boots", "snow boots",
-      0, 1, LEVITATION, 0, 0, 12, 2, 15, 30, 9, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
+      0, 1, LEVITATION, 0, 0, 12, 2, 15, 30, 9, 0, 0, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
 #undef HELM
 #undef CLOAK
 #undef SHIELD
@@ -678,106 +678,106 @@ BOOTS("levitation boots", "snow boots",
 #undef ARMOR
 
 /* rings ... */
-#define RING(name,stone,power,power2,power3,cost,mgc,spec,mohs,manabon,hpbon,metal,color,flags) \
+#define RING(name,stone,power,power2,power3,cost,mgc,spec,mohs,manabon,hpbon,bonusattrs,abon,metal,color,flags) \
     OBJECT(OBJ(name, stone), None,                                         \
            BITS(0, 0, spec, 0, mgc, spec, 0, 0, 0,                    \
                 HARDGEM(mohs), 0, P_NONE, metal),                     \
-           power, power2, power3, RING_CLASS, 0, 0, 1, cost,  0, 0, 0, 0, 0, 0, 0, 0, manabon, hpbon, 0, 0, 15, color, 0, 0, 0, 0, flags)
+           power, power2, power3, RING_CLASS, 0, 0, 1, cost,  0, 0, 0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattrs,abon, 15, color, 0, 0, 0, 0, flags)
 RING("adornment", "wooden",
-     ADORNED, 0, 0, 100, 1, 1, 2, 0, 0, WOOD, HI_WOOD, O1_NONE),
+     ADORNED, 0, 0, 100, 1, 1, 2, 0, 0, BONUS_TO_CHA, 0, WOOD, HI_WOOD, O1_NONE),
 RING("gain strength", "granite",
-     0, 0, 0, 150, 1, 1, 7, 0, 0, MINERAL, HI_MINERAL, O1_NONE),
+     0, 0, 0, 150, 1, 1, 7, 0, 0, BONUS_TO_STR, 0, MINERAL, HI_MINERAL, O1_NONE),
 RING("gain dexterity", "thin",
-     0, 0, 0, 150, 1, 1, 7, 0, 0, MINERAL, HI_MINERAL, O1_NONE),
+     0, 0, 0, 150, 1, 1, 7, 0, 0, BONUS_TO_DEX, 0, MINERAL, HI_MINERAL, O1_NONE),
 RING("gain constitution", "opal",
-     0, 0, 0, 150, 1, 1, 7, 0, 0, MINERAL, HI_MINERAL, O1_NONE),
+     0, 0, 0, 150, 1, 1, 7, 0, 0, BONUS_TO_CON, 0, MINERAL, HI_MINERAL, O1_NONE),
 RING("gain intelligence", "adamantine",
-     0, 0, 0, 150, 1, 1, 7, 0, 0, MINERAL, HI_MINERAL, O1_NONE),
+     0, 0, 0, 150, 1, 1, 7, 0, 0, BONUS_TO_INT, 0, MINERAL, HI_MINERAL, O1_NONE),
 RING("gain wisdom", "polished",
-     0, 0, 0, 150, 1, 1, 7, 0, 0, MINERAL, HI_MINERAL, O1_NONE),
+     0, 0, 0, 150, 1, 1, 7, 0, 0, BONUS_TO_WIS, 0, MINERAL, HI_MINERAL, O1_NONE),
 RING("power", "runed",
-     0, 0, 0, 300, 1, 1, 7, 0, 0, MINERAL, HI_MINERAL, O1_NONE),
+     0, 0, 0, 300, 1, 1, 7, 0, 0, BONUS_TO_ALLSTATS, 0, MINERAL, HI_MINERAL, O1_NONE),
 RING("increase accuracy", "clay",
-     0, 0, 0, 150, 1, 1, 4, 0, 0, MINERAL, CLR_RED, O1_NONE),
+     0, 0, 0, 150, 1, 1, 4, 0, 0, BONUS_TO_HIT, 0, MINERAL, CLR_RED, O1_NONE),
 RING("increase damage", "coral",
-     0, 0, 0, 150, 1, 1, 4, 0, 0, MINERAL, CLR_ORANGE, O1_NONE),
+     0, 0, 0, 150, 1, 1, 4, 0, 0, BONUS_TO_DAMAGE, 0, MINERAL, CLR_ORANGE, O1_NONE),
 RING("protection", "black onyx",
-     PROTECTION, 0, 0, 100, 1, 1, 7, 0, 0, MINERAL, CLR_BLACK, O1_NONE),
+     PROTECTION, 0, 0, 100, 1, 1, 7, 0, 0, BONUS_TO_AC, 0, MINERAL, CLR_BLACK, O1_NONE),
         /* 'PROTECTION' intrinsic enhances MC from worn armor by +1,
            regardless of ring's enchantment; wearing a second ring of
            protection (or even one ring of protection combined with
            cloak of protection) doesn't give a second MC boost */
 RING("regeneration", "moonstone",
-     REGENERATION, 0, 0, 200, 1, 0,  6, 0, 0, MINERAL, HI_MINERAL, O1_NONE),
+     REGENERATION, 0, 0, 200, 1, 0,  6, 0, 0, 0, 0, MINERAL, HI_MINERAL, O1_NONE),
 RING("replenishment", "crystal",
-     ENERGY_REGENERATION, 0, 0, 300, 1, 0,  6, 0, 0, MINERAL, HI_MINERAL, O1_NONE),
+     ENERGY_REGENERATION, 0, 0, 300, 1, 0,  6, 0, 0, 0, 0, MINERAL, HI_MINERAL, O1_NONE),
 RING("the serpent god", "serpent-headed",
-     0, 0, 0, 300, 1, 0,  6,150, 0, MINERAL, HI_MINERAL, O1_NONE),
+     0, 0, 0, 300, 1, 0,  6,150, 0, 0, 0, MINERAL, HI_MINERAL, O1_NONE),
 RING("fortitude", "immaculate",
-     0, 0, 0, 200, 1, 0,  6,  0, 25, MINERAL, HI_MINERAL, O1_HP_PERCENTAGE_BONUS),
+     0, 0, 0, 200, 1, 0,  6,  0, 25, 0, 0, MINERAL, HI_MINERAL, O1_HP_PERCENTAGE_BONUS),
 RING("searching", "tiger eye",
-     SEARCHING, 0, 0, 200, 1, 0,  6, 0, 0, GEMSTONE, CLR_BROWN, O1_NONE),
+     SEARCHING, 0, 0, 200, 1, 0,  6, 0, 0, 0, 0, GEMSTONE, CLR_BROWN, O1_NONE),
 RING("stealth", "jade",
-     STEALTH, 0, 0, 100, 1, 0,  6, 0, 0, GEMSTONE, CLR_GREEN, O1_NONE),
+     STEALTH, 0, 0, 100, 1, 0,  6, 0, 0, 0, 0, GEMSTONE, CLR_GREEN, O1_NONE),
 RING("sustain ability", "bronze",
-     FIXED_ABIL, 0, 0, 100, 1, 0,  4, 0, 0, COPPER, HI_COPPER, O1_NONE),
+     FIXED_ABIL, 0, 0, 100, 1, 0,  4, 0, 0, 0, 0, COPPER, HI_COPPER, O1_NONE),
 RING("levitation", "agate",
-     LEVITATION, 0, 0, 200, 1, 0,  7, 0, 0, GEMSTONE, CLR_RED, O1_NONE),
+     LEVITATION, 0, 0, 200, 1, 0,  7, 0, 0, 0, 0, GEMSTONE, CLR_RED, O1_NONE),
 RING("hunger", "topaz",
-     HUNGER, 0, 0, 100, 1, 0,  8, 0, 0, GEMSTONE, CLR_CYAN, O1_NONE),
+     HUNGER, 0, 0, 100, 1, 0,  8, 0, 0, 0, 0, GEMSTONE, CLR_CYAN, O1_NONE),
 RING("aggravate monster", "sapphire",
-     AGGRAVATE_MONSTER, 0, 0,        150, 1, 0,  9, 0, 0, GEMSTONE, CLR_BLUE, O1_NONE),
+     AGGRAVATE_MONSTER, 0, 0,        150, 1, 0,  9, 0, 0, 0, 0, GEMSTONE, CLR_BLUE, O1_NONE),
 RING("conflict", "ruby",
-     CONFLICT, 0, 0, 300, 1, 0,  9, 0, 0, GEMSTONE, CLR_RED, O1_NONE),
+     CONFLICT, 0, 0, 300, 1, 0,  9, 0, 0, 0, 0, GEMSTONE, CLR_RED, O1_NONE),
 RING("warning", "diamond",
-     WARNING, 0, 0, 100, 1, 0, 10, 0, 0, GEMSTONE, CLR_WHITE, O1_NONE),
+     WARNING, 0, 0, 100, 1, 0, 10, 0, 0, 0, 0, GEMSTONE, CLR_WHITE, O1_NONE),
 RING("poison resistance", "pearl",
-     POISON_RES, 0, 0,               150, 1, 0,  4, 0, 0, BONE, CLR_WHITE, O1_NONE),
+     POISON_RES, 0, 0,               150, 1, 0,  4, 0, 0, 0, 0, BONE, CLR_WHITE, O1_NONE),
 RING("fire resistance", "iron",
-     FIRE_RES, 0, 0, 200, 1, 0,  5, 0, 0, IRON, HI_METAL, O1_FIRE_RESISTANT),
+     FIRE_RES, 0, 0, 200, 1, 0,  5, 0, 0, 0, 0, IRON, HI_METAL, O1_FIRE_RESISTANT),
 RING("cold resistance", "brass",
-     COLD_RES, 0, 0, 150, 1, 0,  4, 0, 0, COPPER, HI_COPPER, O1_COLD_RESISTANT),
+     COLD_RES, 0, 0, 150, 1, 0,  4, 0, 0, 0, 0, COPPER, HI_COPPER, O1_COLD_RESISTANT),
 RING("shock resistance", "copper",
-     SHOCK_RES, 0, 0, 150, 1, 0,  3, 0, 0, COPPER, HI_COPPER, O1_LIGHTNING_RESISTANT),
+     SHOCK_RES, 0, 0, 150, 1, 0,  3, 0, 0, 0, 0, COPPER, HI_COPPER, O1_LIGHTNING_RESISTANT),
 RING("life protection", "platinum",
-     DEATH_RES, DRAIN_RES, 0,               200, 1, 0,  3, 0, 0, COPPER, HI_COPPER, O1_LIGHTNING_RESISTANT),
+     DEATH_RES, DRAIN_RES, 0,               200, 1, 0,  3, 0, 0, 0, 0, COPPER, HI_COPPER, O1_LIGHTNING_RESISTANT),
 RING("free action", "twisted",
-     FREE_ACTION, 0, 0, 200, 1, 0,  6, 0, 0, IRON, HI_METAL, O1_NONE),
+     FREE_ACTION, 0, 0, 200, 1, 0,  6, 0, 0, 0, 0, IRON, HI_METAL, O1_NONE),
 RING("slow digestion", "steel",
-     SLOW_DIGESTION, 0, 0, 200, 1, 0,  8, 0, 0, IRON, HI_METAL, O1_NONE),
+     SLOW_DIGESTION, 0, 0, 200, 1, 0,  8, 0, 0, 0, 0, IRON, HI_METAL, O1_NONE),
 RING("teleportation", "silver",
-     TELEPORT, 0, 0, 200, 1, 0,  3, 0, 0, SILVER, HI_SILVER, O1_NONE),
+     TELEPORT, 0, 0, 200, 1, 0,  3, 0, 0, 0, 0, SILVER, HI_SILVER, O1_NONE),
 RING("teleport control", "gold",
-     TELEPORT_CONTROL, 0, 0, 300, 1, 0,  3, 0, 0, GOLD, HI_GOLD, O1_NONE),
+     TELEPORT_CONTROL, 0, 0, 300, 1, 0,  3, 0, 0, 0, 0, GOLD, HI_GOLD, O1_NONE),
 RING("polymorph", "ivory",
-     POLYMORPH, 0, 0, 300, 1, 0,  4, 0, 0, BONE, CLR_WHITE, O1_POLYMORPH_RESISTANT),
+     POLYMORPH, 0, 0, 300, 1, 0,  4, 0, 0, 0, 0, BONE, CLR_WHITE, O1_POLYMORPH_RESISTANT),
 RING("polymorph control", "emerald",
-     POLYMORPH_CONTROL, 0, 0, 300, 1, 0,  8, 0, 0, GEMSTONE, CLR_BRIGHT_GREEN, O1_POLYMORPH_RESISTANT),
+     POLYMORPH_CONTROL, 0, 0, 300, 1, 0,  8, 0, 0, 0, 0, GEMSTONE, CLR_BRIGHT_GREEN, O1_POLYMORPH_RESISTANT),
 RING("invisibility", "wire",
-     INVIS, 0, 0, 150, 1, 0,  5, 0, 0, IRON, HI_METAL, O1_NONE),
+     INVIS, 0, 0, 150, 1, 0,  5, 0, 0, 0, 0, IRON, HI_METAL, O1_NONE),
 RING("see invisible", "engagement",
-     SEE_INVIS, 0, 0, 150, 1, 0,  5, 0, 0, IRON, HI_METAL, O1_NONE),
+     SEE_INVIS, 0, 0, 150, 1, 0,  5, 0, 0, 0, 0, IRON, HI_METAL, O1_NONE),
 RING("protection from shape changers", "shiny",
-     PROT_FROM_SHAPE_CHANGERS, 0, 0, 100, 1, 0,  5, 0, 0, IRON, CLR_BRIGHT_CYAN, O1_POLYMORPH_RESISTANT),
+     PROT_FROM_SHAPE_CHANGERS, 0, 0, 100, 1, 0,  5, 0, 0, 0, 0, IRON, CLR_BRIGHT_CYAN, O1_POLYMORPH_RESISTANT),
 #undef RING
 
 /* amulets ... - THE Amulet comes last because it is special */
-#define AMULET(name,desc,prob,power,power2,power3,manabonus,hpbonus,flags) \
+#define AMULET(name,desc,prob,power,power2,power3,manabonus,hpbonus,bonusattrs,abon,flags) \
     OBJECT(OBJ(name, desc), None,                                           \
            BITS(0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, P_NONE, IRON),        \
-           power, power2, power3,  AMULET_CLASS, prob, 0, 5, 150,  0, 0, 0, 0, 0, 0, 0, 0, manabonus, hpbonus, 0, 0, 20, HI_METAL, 0, 0, 0, 0, flags)
-AMULET("amulet of ESP",                "circular", 125, TELEPAT, 0, 0, 0, 0, O1_NONE),
-AMULET("amulet of life saving",       "spherical", 75,  LIFESAVED, 0, 0, 0, 0, O1_NONE),
-AMULET("amulet of strangulation",          "oval", 110, STRANGLED, 0, 0, 0, 0, O1_NONE),
-AMULET("amulet of restful sleep",    "triangular", 135, SLEEPY, 0, 0, 0, 0, O1_NONE),
-AMULET("amulet versus poison",        "pyramidal", 115, POISON_RES, 0, 0, 0, 0, O1_NONE),
-AMULET("amulet of change",               "square", 130, 0, 0, 0, 0, 0, O1_NONE),
-AMULET("amulet of unchanging",          "concave", 45,  UNCHANGING, 0, 0, 0, 0, O1_POLYMORPH_RESISTANT),
-AMULET("amulet of reflection",        "hexagonal", 75,  REFLECTING, 0, 0, 0, 0, O1_NONE),
-AMULET("amulet of mana",		        "convex",		50,  0, 0, 0, 75, 0, O1_NONE), //100 mana points
-AMULET("demon blood talisman", "non-Euclidian-shaped",	25, 0, 0, 0, 100, 0, O1_MANA_PERCENTAGE_BONUS), //doubles mana capacity
-AMULET("periapt of vitality",	        "linear",		50, 0, 0, 0, 0, 25, O1_NONE), //50 hit points
-AMULET("amulet of magical breathing", "octagonal", 65,  MAGICAL_BREATHING, 0, 0, 0, 0, O1_NONE),
+           power, power2, power3,  AMULET_CLASS, prob, 0, 5, 150,  0, 0, 0, 0, 0, 0, 0, 0, manabonus, hpbonus, bonusattrs, abon, 20, HI_METAL, 0, 0, 0, 0, flags)
+AMULET("amulet of ESP",                "circular", 125, TELEPAT, 0, 0, 0, 0, 0, 0, O1_NONE),
+AMULET("amulet of life saving",       "spherical", 75,  LIFESAVED, 0, 0, 0, 0, 0, 0, O1_NONE),
+AMULET("amulet of strangulation",          "oval", 110, STRANGLED, 0, 0, 0, 0, 0, 0, O1_NONE),
+AMULET("amulet of restful sleep",    "triangular", 135, SLEEPY, 0, 0, 0, 0, 0, 0, O1_NONE),
+AMULET("amulet versus poison",        "pyramidal", 115, POISON_RES, 0, 0, 0, 0, 0, 0, O1_NONE),
+AMULET("amulet of change",               "square", 130, 0, 0, 0, 0, 0, 0, 0, O1_NONE),
+AMULET("amulet of unchanging",          "concave", 45,  UNCHANGING, 0, 0, 0, 0, 0, 0, O1_POLYMORPH_RESISTANT),
+AMULET("amulet of reflection",        "hexagonal", 75,  REFLECTING, 0, 0, 0, 0, 0, 0, O1_NONE),
+AMULET("amulet of mana",		        "convex",		50,  0, 0, 0, 75, 0, 0, 0, O1_NONE), //100 mana points
+AMULET("demon blood talisman", "non-Euclidian-shaped",	25, 0, 0, 0, 100, 0, 0, 0, O1_MANA_PERCENTAGE_BONUS), //doubles mana capacity
+AMULET("periapt of vitality",	        "linear",		50, 0, 0, 0, 0, 25, 0, 0, O1_NONE), //50 hit points
+AMULET("amulet of magical breathing", "octagonal", 65,  MAGICAL_BREATHING, 0, 0, 0, 0, 0, 0, O1_NONE),
 /* fixed descriptions; description duplication is deliberate;
  * fake one must come before real one because selection for
  * description shuffling stops when a non-magic amulet is encountered
@@ -794,88 +794,90 @@ OBJECT(OBJ("Amulet of Yendor", /* note: description == name */
 
 /* tools ... */
 /* tools with weapon characteristics come last */
-#define TOOL(name,desc,kn,mrg,mgc,chg,prob,wt,cost,cooldown,mat,color,flags) \
+#define TOOL(name,desc,kn,mrg,mgc,chg,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,abon,mat,color,flags) \
     OBJECT(OBJ(name, desc), None,                                            \
            BITS(kn, mrg, chg, 0, mgc, chg, 0, 0, 0, 0, 0, P_NONE, mat), \
-           0, 0, 0, TOOL_CLASS, prob, 0, wt, cost,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, wt, color, 0, 0, cooldown, 0, flags)
+           0, 0, 0, TOOL_CLASS, prob, 0, wt, cost,  0, 0, 0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattr, abon, wt, color, 0, 0, cooldown, 0, flags)
 #define SPELLTOOL(name,desc,kn,mrg,mgc,chg,prob,wt,cost,dir,dirsubtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus,cooldown,mat,color,flags) \
     OBJECT(OBJ(name, desc), None,                                            \
            BITS(kn, mrg, chg, 0, mgc, chg, 0, 0, 0, 0, dir, P_NONE, mat), \
            0, 0, 0, TOOL_CLASS, prob, 0, wt, cost, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, 0, 0, 0, 0, 0, 0, wt, color, dirsubtype, 0, cooldown, 0, flags)
-#define CONTAINER(name,desc,kn,mgc,chg,prob,wt,cost,cooldown,mat,color,flags) \
+#define CONTAINER(name,desc,kn,mgc,chg,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,abon,mat,color,flags) \
     OBJECT(OBJ(name, desc), None,                                            \
            BITS(kn, 0, chg, 1, mgc, chg, 0, 0, 0, 0, 0, P_NONE, mat),   \
-           0, 0, 0, TOOL_CLASS, prob, 0, wt, cost,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, wt, color, 0, 0, cooldown, 0, flags)
+           0, 0, 0, TOOL_CLASS, prob, 0, wt, cost,  0, 0, 0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattr, abon, wt, color, 0, 0, cooldown, 0, flags)
 #define WEPTOOL(name,desc,kn,mgc,bi,prob,wt,cost,sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, hitbon,sub,cooldown,mat,clr,flags)\
     OBJECT(OBJ(name, desc), None,                                            \
            BITS(kn, 0, 1, 0, mgc, 1, 0, 0, bi, 0, hitbon, sub, mat),    \
            0, 0, 0, TOOL_CLASS, prob, 0, wt, cost, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, hitbon, 0, 0, 0, 0, 0, wt, clr, 0, 0, cooldown, 0, flags)
 /* containers */
-CONTAINER("large box",       None, 1, 0, 0, 40, 350,   8, 0, WOOD, HI_WOOD, O1_NONE), //STARTMARKER 1
-CONTAINER("chest",           None, 1, 0, 0, 30, 600,  16, 0, WOOD, HI_WOOD, O1_NONE),
-CONTAINER("ice box",         None, 1, 0, 0,  5, 900,  42, 0, PLASTIC, CLR_WHITE, O1_NONE),
-CONTAINER("bookshelf",		 None, 1, 0, 0,  0, 1600, 36, 0, WOOD, HI_WOOD, O1_NONE),
-CONTAINER("backpack",		 None, 1, 0, 0,  5,  15,   5, 0, CLOTH, HI_CLOTH, O1_NONE),
-CONTAINER("leather bag",	 "bag",0, 0, 0,	 5,  15,  25, 0, LEATHER, HI_LEATHER, O1_NONE),
-CONTAINER("oriental silk sack", "bag",0,0,0, 5,   3,  50, 0, SILK, HI_CLOTH, O1_NONE),
-CONTAINER("sack",           "bag", 0, 0, 0, 10,  10,   5, 0, CLOTH, HI_CLOTH, O1_NONE),
-CONTAINER("oilskin sack",   "bag", 0, 0, 0,  5,  10, 100, 0, CLOTH, HI_CLOTH, O1_NONE),
+CONTAINER("large box",       None, 1, 0, 0, 40, 350,   8, 0, 0, 0, 0, 0, WOOD, HI_WOOD, O1_NONE), //STARTMARKER 1
+CONTAINER("chest",           None, 1, 0, 0, 30, 600,  16, 0, 0, 0, 0, 0, WOOD, HI_WOOD, O1_NONE),
+CONTAINER("ice box",         None, 1, 0, 0,  5, 900,  42, 0, 0, 0, 0, 0, PLASTIC, CLR_WHITE, O1_NONE),
+CONTAINER("bookshelf",		 None, 1, 0, 0,  0, 1600, 36, 0, 0, 0, 0, 0, WOOD, HI_WOOD, O1_NONE),
+CONTAINER("backpack",		 None, 1, 0, 0,  5,  15,   5, 0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE),
+CONTAINER("leather bag",	 "bag",0, 0, 0,	 5,  15,  25, 0, 0, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
+CONTAINER("oriental silk sack", "bag",0,0,0, 5,   3,  50, 0, 0, 0, 0, 0, SILK, HI_CLOTH, O1_NONE),
+CONTAINER("expensive handbag", "bag", 0, 0, 0, 2, 5, 500, 0, 0, 0, BONUS_TO_CHA, 2, SILK, HI_GOLD, O1_CONFERS_POWERS_WHEN_CARRIED),
+CONTAINER("sack",           "bag", 0, 0, 0, 10,  10,   5, 0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE),
+CONTAINER("oilskin sack",   "bag", 0, 0, 0,  5,  10, 100, 0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE),
 /* magic bags start here*/
-CONTAINER("bag of holding", "bag",					0, 1, 0, 20, 15, 100,   0, CLOTH, HI_CLOTH, O1_NONE), //STARTMARKER 2
-CONTAINER("bag of wizardry", "bag",					0, 1, 0, 10, 15, 100,   0, CLOTH, HI_CLOTH, O1_NONE),
-CONTAINER("bag of weightless treasure", "bag",		0, 1, 0, 15, 15, 100,   0, CLOTH, HI_CLOTH, O1_NONE),
-CONTAINER("quiver of infinite arrows", "bag",		0, 1, 0,  5, 15, 100, 300, CLOTH, HI_CLOTH, O1_SPECIAL_ENCHANTABLE),
-CONTAINER("pouch of endless bolts", "bag",			0, 1, 0,  5, 15, 100, 300, CLOTH, HI_CLOTH, O1_SPECIAL_ENCHANTABLE),
-CONTAINER("bag of tricks",  "bag",					0, 1, 1, 20, 15, 100,  0, CLOTH, HI_CLOTH, O1_NONE), //ENDMARKER 1&2
+CONTAINER("bag of holding", "bag",					0, 1, 0, 20, 15, 100,   0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE), //STARTMARKER 2
+CONTAINER("bag of wizardry", "bag",					0, 1, 0, 10, 15, 100,   0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE),
+CONTAINER("bag of weightless treasure", "bag",		0, 1, 0, 15, 15, 100,   0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE),
+CONTAINER("quiver of infinite arrows", "bag",		0, 1, 0,  4, 15, 100, 300, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_SPECIAL_ENCHANTABLE),
+CONTAINER("pouch of endless bolts", "bag",			0, 1, 0,  4, 15, 100, 300, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_SPECIAL_ENCHANTABLE),
+CONTAINER("bag of tricks",  "bag",					0, 1, 1, 20, 15, 100,  0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE), //ENDMARKER 1&2
 #undef CONTAINER
 
 /* lock opening tools */
-TOOL("skeleton key",       "key", 0, 0, 0, 0, 80,  2, 10, 0, IRON, HI_METAL, O1_NONE),
-TOOL("lock pick",           None, 1, 0, 0, 0, 60,  2, 20, 0, IRON, HI_METAL, O1_NONE),
-TOOL("credit card",         None, 1, 0, 0, 0, 15,  1, 10, 0, PLASTIC, CLR_WHITE, O1_NONE),
+TOOL("skeleton key",       "key", 0, 0, 0, 0, 80,  2, 10, 0, 0, 0, 0, 0, IRON, HI_METAL, O1_NONE),
+TOOL("lock pick",           None, 1, 0, 0, 0, 60,  2, 20, 0, 0, 0, 0, 0, IRON, HI_METAL, O1_NONE),
+TOOL("credit card",         None, 1, 0, 0, 0, 15,  1, 10, 0, 0, 0, 0, 0, PLASTIC, CLR_WHITE, O1_NONE),
 /* light sources */
-TOOL("tallow candle",   "candle", 0, 1, 0, 0, 20,  1, 10, 0, WAX, CLR_WHITE, O1_NONE),
-TOOL("wax candle",      "candle", 0, 1, 0, 0,  5,  1, 20, 0, WAX, CLR_WHITE, O1_NONE),
-TOOL("brass lantern",       None, 1, 0, 0, 0, 30, 30, 12, 0, COPPER, CLR_YELLOW, O1_NONE),
-TOOL("oil lamp",          "lamp", 0, 0, 0, 0, 45, 20, 10, 0, COPPER, CLR_YELLOW, O1_NONE),
-TOOL("magic lamp",        "lamp", 0, 0, 1, 0, 15, 20, 50, 0, COPPER, CLR_YELLOW, O1_NONE),
+TOOL("tallow candle",   "candle", 0, 1, 0, 0, 20,  1, 10, 0, 0, 0, 0, 0, WAX, CLR_WHITE, O1_NONE),
+TOOL("wax candle",      "candle", 0, 1, 0, 0,  5,  1, 20, 0, 0, 0, 0, 0, WAX, CLR_WHITE, O1_NONE),
+TOOL("brass lantern",       None, 1, 0, 0, 0, 30, 30, 12, 0, 0, 0, 0, 0, COPPER, CLR_YELLOW, O1_NONE),
+TOOL("oil lamp",          "lamp", 0, 0, 0, 0, 45, 20, 10, 0, 0, 0, 0, 0, COPPER, CLR_YELLOW, O1_NONE),
+TOOL("magic lamp",        "lamp", 0, 0, 1, 0, 15, 20, 50, 0, 0, 0, 0, 0, COPPER, CLR_YELLOW, O1_NONE),
 /* other tools */
-TOOL("expensive camera",    None, 1, 0, 0, 1, 15, 12,200, 0, PLASTIC, CLR_BLACK, O1_NONE),
-TOOL("mirror",   "looking glass", 0, 0, 0, 0, 35, 13, 10, 0, GLASS, HI_SILVER, O1_NONE),
-TOOL("holy symbol", "religious symbol", 0, 0, 1, 0, 10, 10,100, 0, SILVER, HI_SILVER, O1_TREATED_AS_MATERIAL_COMPONENT),
-TOOL("crystal ball", "glass orb", 0, 0, 1, 1, 15,150, 60, 100, GLASS, HI_GLASS, O1_NONE),
-TOOL("lenses",              None, 1, 0, 0, 0,  5,  3, 80, 0, GLASS, HI_GLASS, O1_NONE),
-TOOL("blindfold",           None, 1, 0, 0, 0, 50,  2, 20, 0, CLOTH, CLR_BLACK, O1_NONE),
-TOOL("towel",               None, 1, 0, 0, 0, 50,  2, 50, 0, CLOTH, CLR_MAGENTA, O1_NONE),
-TOOL("saddle",              None, 1, 0, 0, 0,  5,200,150, 0, LEATHER, HI_LEATHER, O1_NONE),
-TOOL("leash",               None, 1, 0, 0, 0, 50, 12, 20, 0, LEATHER, HI_LEATHER, O1_NONE),
-TOOL("stethoscope",         None, 1, 0, 0, 0, 25,  4, 75, 0, IRON, HI_METAL, O1_NONE),
-TOOL("tinning kit",         None, 1, 0, 0, 1, 15,100, 30, 0, IRON, HI_METAL, O1_NONE),
-TOOL("tin opener",          None, 1, 0, 0, 0, 30,  4, 30, 0, IRON, HI_METAL, O1_NONE),
-TOOL("can of grease",       None, 1, 0, 0, 1, 15, 15, 20, 0, IRON, HI_METAL, O1_NONE),
-TOOL("figurine",            None, 1, 0, 1, 0, 25, 50, 80, 0, MINERAL, HI_MINERAL, O1_NONE),
+TOOL("expensive camera",    None, 1, 0, 0, 1, 15, 12,200, 0, 0, 0, 0, 0, PLASTIC, CLR_BLACK, O1_NONE),
+TOOL("mirror",   "looking glass", 0, 0, 0, 0, 35, 13, 10, 0, 0, 0, 0, 0, GLASS, HI_SILVER, O1_NONE),
+TOOL("magic mirror", "looking glass", 0, 0, 0, 0, 0, 13, 10, 0, 30, 0, 0, 0, GLASS, HI_SILVER, O1_CONFERS_POWERS_WHEN_CARRIED | O1_MANA_PERCENTAGE_BONUS),
+TOOL("holy symbol", "religious symbol", 0, 0, 1, 0, 10, 10,100, 0, 0, 0, 0, 0, SILVER, HI_SILVER, O1_TREATED_AS_MATERIAL_COMPONENT),
+TOOL("crystal ball", "glass orb", 0, 0, 1, 1, 15,150, 60, 100, 0, 0, 0, 0, GLASS, HI_GLASS, O1_NONE),
+TOOL("lenses",              None, 1, 0, 0, 0,  5,  3, 80, 0, 0, 0, 0, 0, GLASS, HI_GLASS, O1_NONE),
+TOOL("blindfold",           None, 1, 0, 0, 0, 50,  2, 20, 0, 0, 0, 0, 0, CLOTH, CLR_BLACK, O1_NONE),
+TOOL("towel",               None, 1, 0, 0, 0, 50,  2, 50, 0, 0, 0, 0, 0, CLOTH, CLR_MAGENTA, O1_NONE),
+TOOL("saddle",              None, 1, 0, 0, 0,  5,200,150, 0, 0, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
+TOOL("leash",               None, 1, 0, 0, 0, 50, 12, 20, 0, 0, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
+TOOL("stethoscope",         None, 1, 0, 0, 0, 25,  4, 75, 0, 0, 0, 0, 0, IRON, HI_METAL, O1_NONE),
+TOOL("tinning kit",         None, 1, 0, 0, 1, 15,100, 30, 0, 0, 0, 0, 0, IRON, HI_METAL, O1_NONE),
+TOOL("tin opener",          None, 1, 0, 0, 0, 30,  4, 30, 0, 0, 0, 0, 0, IRON, HI_METAL, O1_NONE),
+TOOL("can of grease",       None, 1, 0, 0, 1, 15, 15, 20, 0, 0, 0, 0, 0, IRON, HI_METAL, O1_NONE),
+TOOL("figurine",            None, 1, 0, 1, 0, 25, 50, 80, 0, 0, 0, 0, 0, MINERAL, HI_MINERAL, O1_NONE),
         /* monster type specified by obj->corpsenm */
-TOOL("magic marker",        None, 1, 0, 1, 1, 15,  2, 50, 0, PLASTIC, CLR_RED, O1_NONE),
+TOOL("magic marker",        None, 1, 0, 1, 1, 15,  2, 50, 0, 0, 0, 0, 0, PLASTIC, CLR_RED, O1_NONE),
 /* traps */
-TOOL("land mine",           None, 1, 0, 0, 0, 0, 300,180, 0, IRON, CLR_RED, O1_NONE),
-TOOL("beartrap",            None, 1, 0, 0, 0, 0, 200, 60, 0, IRON, HI_METAL, O1_NONE),
+TOOL("land mine",           None, 1, 0, 0, 0, 0, 300,180, 0, 0, 0, 0, 0, IRON, CLR_RED, O1_NONE),
+TOOL("beartrap",            None, 1, 0, 0, 0, 0, 200, 60, 0, 0, 0, 0, 0, IRON, HI_METAL, O1_NONE),
 /* instruments;
    "If tin whistles are made out of tin, what do they make foghorns out of?" */
-TOOL("tin whistle",    "whistle", 0, 0, 0, 0,100, 2, 10, 0, METAL, HI_METAL, O1_NONE),
-TOOL("magic whistle",  "whistle", 0, 0, 1, 0, 30, 2, 10, 0, METAL, HI_METAL, O1_NONE),
-TOOL("wooden flute",     "flute", 0, 0, 0, 0,  4, 5, 12, 0, WOOD, HI_WOOD, O1_NONE),
-TOOL("magic flute",      "flute", 0, 0, 1, 1,  2, 5, 36, 0, WOOD, HI_WOOD, O1_NONE),
-TOOL("tooled horn",       "horn", 0, 0, 0, 0,  5, 18, 15, 0, BONE, CLR_WHITE, O1_NONE),
+TOOL("tin whistle",    "whistle", 0, 0, 0, 0,100, 2, 10, 0, 0, 0, 0, 0, METAL, HI_METAL, O1_NONE),
+TOOL("magic whistle",  "whistle", 0, 0, 1, 0, 30, 2, 10, 0, 0, 0, 0, 0, METAL, HI_METAL, O1_NONE),
+TOOL("wooden flute",     "flute", 0, 0, 0, 0,  4, 5, 12, 0, 0, 0, 0, 0, WOOD, HI_WOOD, O1_NONE),
+TOOL("magic flute",      "flute", 0, 0, 1, 1,  2, 5, 36, 0, 0, 0, 0, 0, WOOD, HI_WOOD, O1_NONE),
+TOOL("tooled horn",       "horn", 0, 0, 0, 0,  5, 18, 15, 0, 0, 0, 0, 0, BONE, CLR_WHITE, O1_NONE),
 SPELLTOOL("frost horn",   "horn", 0, 0, 1, 1,  2, 18, 50, RAY, RAY_WND_COLD, 6, 6, 0, 0, 0, 0, 5, BONE, CLR_WHITE, O1_NONE),
 SPELLTOOL("fire horn",    "horn", 0, 0, 1, 1,  2, 18, 50, RAY, RAY_WND_FIRE, 6, 6, 0, 0, 0, 0, 5, BONE, CLR_WHITE, O1_NONE),
-TOOL("horn of plenty",    "horn", 0, 0, 1, 1,  2, 18, 50, 300, BONE, CLR_WHITE, O1_NONE),
+TOOL("horn of plenty",    "horn", 0, 0, 1, 1,  2, 18, 50, 300, 0, 0, 0, 0, BONE, CLR_WHITE, O1_NONE),
         /* horn, but not an instrument */
-TOOL("wooden harp",       "harp", 0, 0, 0, 0,  4, 30, 50, 0, WOOD, HI_WOOD, O1_NONE),
-TOOL("magic harp",        "harp", 0, 0, 1, 1,  2, 30, 50, 0, WOOD, HI_WOOD, O1_NONE),
-TOOL("bell",                None, 1, 0, 0, 0,  2, 30, 50, 0, COPPER, HI_COPPER, O1_NONE),
-TOOL("bugle",               None, 1, 0, 0, 0,  4, 10, 15, 0, COPPER, HI_COPPER, O1_NONE),
-TOOL("leather drum",      "drum", 0, 0, 0, 0,  4, 25, 25, 0, LEATHER, HI_LEATHER, O1_NONE),
-TOOL("drum of earthquake","drum", 0, 0, 1, 1,  2, 25, 25, 0, LEATHER, HI_LEATHER, O1_NONE),
+TOOL("wooden harp",       "harp", 0, 0, 0, 0,  4, 30, 50, 0, 0, 0, 0, 0, WOOD, HI_WOOD, O1_NONE),
+TOOL("magic harp",        "harp", 0, 0, 1, 1,  2, 30, 50, 0, 0, 0, 0, 0, WOOD, HI_WOOD, O1_NONE),
+TOOL("bell",                None, 1, 0, 0, 0,  2, 30, 50, 0, 0, 0, 0, 0, COPPER, HI_COPPER, O1_NONE),
+TOOL("bugle",               None, 1, 0, 0, 0,  4, 10, 15, 0, 0, 0, 0, 0, COPPER, HI_COPPER, O1_NONE),
+TOOL("leather drum",      "drum", 0, 0, 0, 0,  4, 25, 25, 0, 0, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
+TOOL("drum of earthquake","drum", 0, 0, 1, 1,  2, 25, 25, 0, 0, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
 /* tools useful as weapons */
 WEPTOOL("pick-axe", None,
         1, 0, 0, 20, 75,  50,  1, 6, 0, 1, 3, 0, WHACK,  P_PICK_AXE, 0, IRON, HI_METAL, O1_NONE),

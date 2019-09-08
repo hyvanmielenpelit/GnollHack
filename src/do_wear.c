@@ -38,7 +38,6 @@ STATIC_PTR int NDECL(Bracers_on);
 STATIC_PTR int NDECL(Belt_on);
 STATIC_PTR int NDECL(Pants_on);
 STATIC_DCL void NDECL(Amulet_on);
-STATIC_DCL void FDECL(learnring, (struct obj *, BOOLEAN_P));
 STATIC_DCL void FDECL(Ring_off_or_gone, (struct obj *, BOOLEAN_P));
 STATIC_PTR int FDECL(select_off, (struct obj *));
 STATIC_DCL struct obj *NDECL(do_takeoff);
@@ -206,8 +205,6 @@ Boots_on(VOID_ARGS)
         impossible(unknown_type, c_boots, uarmf->otyp);
     }
     uarmf->known = 1; /* boots' +/- evident because of status line AC */
-	updatemaxhp();
-	updatemaxen();
 	return 0;
 }
 
@@ -270,8 +267,6 @@ Boots_off(VOID_ARGS)
         impossible(unknown_type, c_boots, otyp);
     }
     context.takeoff.cancelled_don = FALSE;
-	updatemaxhp();
-	updatemaxen();
 	return 0;
 }
 
@@ -318,8 +313,6 @@ Cloak_on(VOID_ARGS)
         impossible(unknown_type, c_cloak, uarmc->otyp);
     }
     uarmc->known = 1; /* cloak's +/- evident because of status line AC */
-	updatemaxhp();
-	updatemaxen();
 	return 0;
 }
 
@@ -365,8 +358,6 @@ Cloak_off(VOID_ARGS)
     default:
         impossible(unknown_type, c_cloak, otyp);
     }
-	updatemaxhp();
-	updatemaxen();
 	return 0;
 }
 
@@ -386,7 +377,7 @@ Helmet_on(VOID_ARGS)
 	case HELM_OF_TELEPATHY:
         break;
     case HELM_OF_BRILLIANCE:
-        adj_abon(uarmh, uarmh->spe);
+        //adj_abon(uarmh, uarmh->spe);
         break;
     case CORNUTHAUM:
         /* people think marked wizards know what they're talking
@@ -434,8 +425,6 @@ Helmet_on(VOID_ARGS)
         impossible(unknown_type, c_helmet, uarmh->otyp);
     }
     uarmh->known = 1; /* helmet's +/- evident because of status line AC */
-	updatemaxhp();
-	updatemaxen();
 	return 0;
 }
 
@@ -469,8 +458,8 @@ Helmet_off(VOID_ARGS)
         see_monsters();
         return 0;
     case HELM_OF_BRILLIANCE:
-        if (!context.takeoff.cancelled_don)
-            adj_abon(uarmh, -uarmh->spe);
+//        if (!context.takeoff.cancelled_don)
+//            adj_abon(uarmh, -uarmh->spe);
         break;
     case HELM_OF_OPPOSITE_ALIGNMENT:
         /* changing alignment can toggle off active artifact
@@ -483,8 +472,6 @@ Helmet_off(VOID_ARGS)
     }
     setworn((struct obj *) 0, W_ARMH);
     context.takeoff.cancelled_don = FALSE;
-	updatemaxhp();
-	updatemaxen();
 	return 0;
 }
 
@@ -505,7 +492,7 @@ Gloves_on(VOID_ARGS)
     case GAUNTLETS_OF_POWER:
         break;
     case GAUNTLETS_OF_DEXTERITY:
-        adj_abon(uarmg, uarmg->spe);
+ //       adj_abon(uarmg, uarmg->spe);
         break;
 	case GLOVES_OF_SPELLCASTING:
 		break;
@@ -513,8 +500,6 @@ Gloves_on(VOID_ARGS)
         impossible(unknown_type, c_gloves, uarmg->otyp);
     }
     uarmg->known = 1; /* gloves' +/- evident because of status line AC */
-	updatemaxhp();
-	updatemaxen();
 	return 0;
 }
 
@@ -563,8 +548,8 @@ Gloves_off(VOID_ARGS)
     case GAUNTLETS_OF_POWER:
         break;
     case GAUNTLETS_OF_DEXTERITY:
-        if (!context.takeoff.cancelled_don)
-            adj_abon(uarmg, -uarmg->spe);
+//        if (!context.takeoff.cancelled_don)
+//            adj_abon(uarmg, -uarmg->spe);
         break;
     default:
         impossible(unknown_type, c_gloves, uarmg->otyp);
@@ -583,8 +568,6 @@ Gloves_off(VOID_ARGS)
     if (u.twoweap && uswapwep && uswapwep->otyp == CORPSE)
         wielding_corpse(uswapwep, on_purpose);
 
-	updatemaxhp();
-	updatemaxen();
 	return 0;
 }
 
@@ -608,8 +591,6 @@ Shield_on(VOID_ARGS)
         impossible(unknown_type, c_shield, uarms->otyp);
     }
     uarms->known = 1; /* shield's +/- evident because of status line AC */
-	updatemaxhp();
-	updatemaxen();
 	return 0;
 }
 
@@ -635,8 +616,6 @@ Shield_off(VOID_ARGS)
 
     setworn((struct obj *) 0, W_ARMS);
 	context.takeoff.cancelled_don = FALSE;
-	updatemaxhp();
-	updatemaxen();
 	return 0;
 }
 
@@ -659,14 +638,12 @@ Shirt_on(VOID_ARGS)
     case T_SHIRT:
         break;
 	case SHIRT_OF_COMELINESS:
-		adj_abon(uarmu, uarmu->spe);
+//		adj_abon(uarmu, uarmu->spe);
 		break;
 	default:
         impossible(unknown_type, c_shirt, uarmu->otyp);
     }
     uarmu->known = 1; /* shirt's +/- evident because of status line AC */
-	updatemaxhp();
-	updatemaxen();
 	return 0;
 }
 
@@ -692,8 +669,8 @@ Shirt_off(VOID_ARGS)
     case T_SHIRT:
         break;
 	case SHIRT_OF_COMELINESS:
-		if (!context.takeoff.cancelled_don)
-			adj_abon(uarmu, -uarmu->spe);
+//		if (!context.takeoff.cancelled_don)
+//			adj_abon(uarmu, -uarmu->spe);
 		break;
 	default:
         impossible(unknown_type, c_shirt, uarmu->otyp);
@@ -701,8 +678,6 @@ Shirt_off(VOID_ARGS)
 
     setworn((struct obj *) 0, W_ARMU);
 	context.takeoff.cancelled_don = FALSE;
-	updatemaxhp();
-	updatemaxen();
 	return 0;
 }
 
@@ -735,8 +710,6 @@ Robe_on(VOID_ARGS)
 		impossible(unknown_type, c_robe, uarmo->otyp);
 	}
 	uarmo->known = 1; /* shirt's +/- evident because of status line AC */
-	updatemaxhp();
-	updatemaxen();
 	return 0;
 }
 
@@ -772,8 +745,6 @@ Robe_off(VOID_ARGS)
 	setworn((struct obj*) 0, W_ARMO);
 	context.takeoff.cancelled_don = FALSE;
 
-	updatemaxhp();
-	updatemaxen();
 	return 0;
 }
 
@@ -795,8 +766,6 @@ Bracers_on(VOID_ARGS)
 		impossible(unknown_type, c_bracers, uarmb->otyp);
 	}
 	uarmb->known = 1; /* shirt's +/- evident because of status line AC */
-	updatemaxhp();
-	updatemaxen();
 	return 0;
 }
 
@@ -819,8 +788,6 @@ Bracers_off(VOID_ARGS)
 
 	setworn((struct obj*) 0, W_ARMB);
 	context.takeoff.cancelled_don = FALSE;
-	updatemaxhp();
-	updatemaxen();
 	return 0;
 }
 
@@ -837,14 +804,12 @@ Belt_on(VOID_ARGS)
 	case BELT_OF_GIANT_STRENGTH:
 		break;
 	case BELT_OF_DWARVENKIND:
-		adj_abon(uarmv, uarmv->spe);
+//		adj_abon(uarmv, uarmv->spe);
 		break;
 	default:
 		impossible(unknown_type, c_belt, uarmv->otyp);
 	}
 	uarmv->known = 1; /* belt's +/- evident because of status line AC */
-	updatemaxhp();
-	updatemaxen();
 	return 0;
 }
 
@@ -861,8 +826,8 @@ Belt_off(VOID_ARGS)
 	case BELT_OF_GIANT_STRENGTH:
 		break;
 	case BELT_OF_DWARVENKIND:
-		if (!context.takeoff.cancelled_don)
-			adj_abon(uarmv, -uarmv->spe);
+//		if (!context.takeoff.cancelled_don)
+//			adj_abon(uarmv, -uarmv->spe);
 		break;
 	default:
 		impossible(unknown_type, c_belt, uarmv->otyp);
@@ -870,8 +835,6 @@ Belt_off(VOID_ARGS)
 
 	setworn((struct obj*) 0, W_ARMV);
 	context.takeoff.cancelled_don = FALSE;
-	updatemaxhp();
-	updatemaxen();
 	return 0;
 }
 
@@ -893,8 +856,6 @@ Pants_on(VOID_ARGS)
 		impossible(unknown_type, c_pants, uarmp->otyp);
 	}
 	uarmp->known = 1; /* pant's +/- evident because of status line AC */
-	updatemaxhp();
-	updatemaxen();
 	return 0;
 }
 
@@ -920,8 +881,6 @@ Pants_off(VOID_ARGS)
 
 	setworn((struct obj*) 0, W_ARMP);
 	context.takeoff.cancelled_don = FALSE;
-	updatemaxhp();
-	updatemaxen();
 	return 0;
 }
 
@@ -935,8 +894,6 @@ Armor_on(VOID_ARGS)
      * which is called by armor_or_accessory_on() before Armor_on().
      */
     uarm->known = 1; /* suit's +/- evident because of status line AC */
-	updatemaxhp();
-	updatemaxen();
 	return 0;
 }
 
@@ -946,8 +903,6 @@ Armor_off(VOID_ARGS)
     context.takeoff.mask &= ~W_ARM;
     setworn((struct obj *) 0, W_ARM);
     context.takeoff.cancelled_don = FALSE;
-	updatemaxhp();
-	updatemaxen();
 	return 0;
 }
 
@@ -963,8 +918,6 @@ Armor_gone()
     context.takeoff.mask &= ~W_ARM;
     setnotworn(uarm);
     context.takeoff.cancelled_don = FALSE;
-	updatemaxhp();
-	updatemaxen();
 	return 0;
 }
 
@@ -1040,8 +993,6 @@ Amulet_on()
 	case AMULET_OF_YENDOR:
         break;
     }
-	updatemaxhp();
-	updatemaxen();
 	return;
 }
 
@@ -1100,14 +1051,12 @@ Amulet_off()
         break;
     }
     setworn((struct obj *) 0, W_AMUL);
-	updatemaxhp();
-	updatemaxen();
 
     return;
 }
 
 /* handle ring discovery; comparable to learnwand() */
-STATIC_OVL void
+void
 learnring(ring, observed)
 struct obj *ring;
 boolean observed;
@@ -1144,8 +1093,18 @@ Ring_on(obj)
 register struct obj *obj;
 {
     long oldprop = u.uprops[objects[obj->otyp].oc_oprop].extrinsic;
-    int old_attrib, which;
-    boolean observable;
+    int old_attrib = 0, which = 0;
+    boolean observable = FALSE;
+	/*
+	int oldstr, olddex, oldcon, oldint, oldwis, oldcha, oldac;
+	oldstr = ACURR(A_STR);
+	olddex = ACURR(A_DEX);
+	oldcon = ACURR(A_CON);
+	oldint = ACURR(A_INT);
+	oldwis = ACURR(A_WIS);
+	oldcha = ACURR(A_CHA);
+	oldac = u.uac;
+	*/
 
     /* make sure ring isn't wielded; can't use remove_worn_item()
        here because it has already been set worn in a ring slot */
@@ -1234,46 +1193,35 @@ register struct obj *obj;
 	case RIN_ADORNMENT:
         which = A_CHA;
  adjust_attrib:
-        old_attrib = ACURR(which);
-        ABON(which) += obj->spe;
-        observable = (old_attrib != ACURR(which));
+        //old_attrib = ACURR(which);
+        //ABON(which) += obj->spe;
+        //observable = (old_attrib != ACURR(which));
         /* if didn't change, usually means ring is +0 but might
            be because nonzero couldn't go below min or above max;
            learn +0 enchantment if attribute value is not stuck
            at a limit [and ring has been seen and its type is
            already discovered, both handled by learnring()] */
-        if (observable || !extremeattr(which))
-            learnring(obj, observable);
-        context.botl = 1;
+        //if (observable || !extremeattr(which))
+        //    learnring(obj, observable);
+        //context.botl = 1;
         break;
 	case RIN_POWER:
 	{
-		int oldstr, olddex, oldcon, oldint, oldwis, oldcha;
-		oldstr = ACURR(A_STR);
-		olddex = ACURR(A_DEX);
-		oldcon = ACURR(A_CON);
-		oldint = ACURR(A_INT);
-		oldwis = ACURR(A_WIS);
-		oldcha = ACURR(A_CHA);
+		/*
 		ABON(A_STR) += obj->spe;
 		ABON(A_DEX) += obj->spe;
 		ABON(A_CON) += obj->spe;
 		ABON(A_INT) += obj->spe;
 		ABON(A_WIS) += obj->spe;
 		ABON(A_CHA) += obj->spe;
-		observable = (oldstr != ACURR(A_STR) || olddex != ACURR(A_DEX)
-			|| oldcon != ACURR(A_CON) || oldint != ACURR(A_INT)
-			|| oldwis != ACURR(A_WIS) || oldcha != ACURR(A_CHA));
-		if (observable)
-			learnring(obj, observable);
-		context.botl = 1;
+		*/
 		break;
 	}
 	case RIN_INCREASE_ACCURACY: /* KMH */
-        u.uhitinc += obj->spe;
+        //u.uhitinc += obj->spe;
         break;
     case RIN_INCREASE_DAMAGE:
-        u.udaminc += obj->spe;
+        //u.udaminc += obj->spe;
         break;
     case RIN_PROTECTION_FROM_SHAPE_CHANGERS:
         rescham();
@@ -1282,15 +1230,21 @@ register struct obj *obj;
         /* usually learn enchantment and discover type;
            won't happen if ring is unseen or if it's +0
            and the type hasn't been discovered yet */
-        observable = (obj->spe != 0);
-        learnring(obj, observable);
-        if (obj->spe)
-            find_ac(); /* updates botl */
+//        observable = (obj->spe != 0);
+//        learnring(obj, observable);
+//        if (obj->spe)
+//            find_ac(); /* updates botl */
         break;
     }
-	updatemaxhp();
-	updatemaxen();
 
+	/*
+	observable = (oldstr != ACURR(A_STR) || olddex != ACURR(A_DEX)
+		|| oldcon != ACURR(A_CON) || oldint != ACURR(A_INT)
+		|| oldwis != ACURR(A_WIS) || oldcha != ACURR(A_CHA)
+		|| oldac != u.uac);
+	if (observable)
+		learnring(obj, observable);
+	*/
 	return;
 }
 
@@ -1301,7 +1255,18 @@ boolean gone;
 {
     long mask = (obj->owornmask & W_RING);
     int old_attrib, which;
+
+	/*
     boolean observable;
+	int oldstr, olddex, oldcon, oldint, oldwis, oldcha, oldac;
+	oldstr = ACURR(A_STR);
+	olddex = ACURR(A_DEX);
+	oldcon = ACURR(A_CON);
+	oldint = ACURR(A_INT);
+	oldwis = ACURR(A_WIS);
+	oldcha = ACURR(A_CHA);
+	oldac = u.uac;
+	*/
 
     context.takeoff.mask &= ~mask;
     if (!(u.uprops[objects[obj->otyp].oc_oprop].extrinsic & mask))
@@ -1387,49 +1352,38 @@ boolean gone;
         which = A_CHA;
  adjust_attrib:
         old_attrib = ACURR(which);
-        ABON(which) -= obj->spe;
-        observable = (old_attrib != ACURR(which));
-        /* same criteria as Ring_on() */
-        if (observable || !extremeattr(which))
-            learnring(obj, observable);
-        context.botl = 1;
+        //ABON(which) -= obj->spe;
+//        observable = (old_attrib != ACURR(which));
+//        /* same criteria as Ring_on() */
+//        if (observable || !extremeattr(which))
+//            learnring(obj, observable);
+//        context.botl = 1;
         break;
 	case RIN_POWER:
 	{
-		int oldstr, olddex, oldcon, oldint, oldwis, oldcha;
-		oldstr = ACURR(A_STR);
-		olddex = ACURR(A_DEX);
-		oldcon = ACURR(A_CON);
-		oldint = ACURR(A_INT);
-		oldwis = ACURR(A_WIS);
-		oldcha = ACURR(A_CHA);
+		/*
 		ABON(A_STR) -= obj->spe;
 		ABON(A_DEX) -= obj->spe;
 		ABON(A_CON) -= obj->spe;
 		ABON(A_INT) -= obj->spe;
 		ABON(A_WIS) -= obj->spe;
 		ABON(A_CHA) -= obj->spe;
-		observable = (oldstr != ACURR(A_STR) || olddex != ACURR(A_DEX)
-			|| oldcon != ACURR(A_CON) || oldint != ACURR(A_INT)
-			|| oldwis != ACURR(A_WIS) || oldcha != ACURR(A_CHA));
-		if (observable)
-			learnring(obj, observable);
-		context.botl = 1;
+		*/
 		break;
 	}
 	case RIN_INCREASE_ACCURACY: /* KMH */
-        u.uhitinc -= obj->spe;
+//        u.uhitinc -= obj->spe;
         break;
     case RIN_INCREASE_DAMAGE:
-        u.udaminc -= obj->spe;
+//        u.udaminc -= obj->spe;
         break;
     case RIN_PROTECTION:
         /* might have been put on while blind and we can now see
            or perhaps been forgotten due to amnesia */
-        observable = (obj->spe != 0);
-        learnring(obj, observable);
-        if (obj->spe)
-            find_ac(); /* updates botl */
+//        observable = (obj->spe != 0);
+//        learnring(obj, observable);
+//        if (obj->spe)
+//            find_ac(); /* updates botl */
         break;
     case RIN_PROTECTION_FROM_SHAPE_CHANGERS:
         /* If you're no longer protected, let the chameleons
@@ -1439,8 +1393,15 @@ boolean gone;
         break;
     }
 
-	updatemaxhp();
-	updatemaxen();
+	/*
+	observable = (oldstr != ACURR(A_STR) || olddex != ACURR(A_DEX)
+		|| oldcon != ACURR(A_CON) || oldint != ACURR(A_INT)
+		|| oldwis != ACURR(A_WIS) || oldcha != ACURR(A_CHA)
+		|| oldac != u.uac);
+	if (observable)
+		learnring(obj, observable);
+	context.botl = 1;
+	*/
 
 	return;
 }
@@ -1493,6 +1454,7 @@ struct obj *otmp;
     if (changed) {
         toggle_blindness(); /* potion.c */
     }
+	updateabon();
 	updatemaxhp();
 	updatemaxen();
 
@@ -1535,6 +1497,7 @@ struct obj *otmp;
     if (changed) {
         toggle_blindness(); /* potion.c */
     }
+	updateabon();
 	updatemaxhp();
 	updatemaxen();
 
@@ -2615,14 +2578,22 @@ find_ac()
 		uac -= ARM_BONUS(uarmv);
 	if (uarmp)
 		uac -= ARM_BONUS(uarmp);
+	
+	/* Kludge removed by JG -- Now in u.uacbonus */
+	/*
 	if (uleft && uleft->otyp == RIN_PROTECTION)
         uac -= uleft->spe;
     if (uright && uright->otyp == RIN_PROTECTION)
         uac -= uright->spe;
+	*/
 
 	//DEX Bonus
 	uac -= dexterity_ac_bonus(ACURR(A_DEX));
 	
+	//Intrinsic and extrinsic AC Bonus
+	uac -= u.ubaseacbonus;
+	uac -= u.uacbonus;
+
 	/* armor class from other sources */
     if (HProtection & INTRINSIC)
         uac -= u.ublessed;
@@ -3341,6 +3312,7 @@ adj_abon(otmp, delta)
 register struct obj *otmp;
 register schar delta;
 {
+	/* OBSOLETE, DO NOT CALL*/
     if (uarmg && uarmg == otmp && otmp->otyp == GAUNTLETS_OF_DEXTERITY) {
         if (delta) {
             makeknown(uarmg->otyp);

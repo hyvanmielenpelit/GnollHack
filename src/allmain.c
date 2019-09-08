@@ -357,7 +357,8 @@ boolean resuming;
         /****************************************/
 
         clear_splitobjs();
-        find_ac();
+        //find_ac(); //Called by update abon 
+		updateabon();
 		updatemaxen();
 		updatemaxhp();
 		update_carried_item_extrinsics();

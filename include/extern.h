@@ -128,6 +128,7 @@ E void FDECL(adjabil, (int, int));
 E int NDECL(newhp);
 E int FDECL(hpmaxadjustment, (boolean));
 E void NDECL(updatemaxhp);
+E void NDECL(updateabon);
 E schar FDECL(acurr, (int));
 E schar NDECL(acurrstr);
 E boolean FDECL(extremeattr, (int));
@@ -576,6 +577,13 @@ E boolean FDECL(walk_path, (coord *, coord *,
                             boolean (*)(genericptr, int, int), genericptr_t));
 E boolean FDECL(hurtle_jump, (genericptr_t, int, int));
 E boolean FDECL(hurtle_step, (genericptr_t, int, int));
+
+
+
+/* ### do_wear.c ### */
+E void FDECL(learnring, (struct obj*, BOOLEAN_P));
+
+
 
 /* ### drawing.c ### */
 #endif /* !MAKEDEFS_C && !LEV_LEX_C */

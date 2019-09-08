@@ -1181,6 +1181,7 @@ register struct obj *obj;
     boolean u_ring = (obj == uleft || obj == uright);
     int otyp = obj->otyp;
 
+	/*
     switch (otyp) {
 	case RIN_GAIN_STRENGTH:
         if ((obj->owornmask & W_RING) && u_ring) {
@@ -1262,7 +1263,7 @@ register struct obj *obj;
 			context.botl = 1;
 		}
 		break;
-		/* case RIN_PROTECTION:  not needed */
+		// case RIN_PROTECTION:  not needed
 	case GAUNTLETS_OF_POWER:
 		if ((obj->owornmask & W_ARMG) && (obj == uarmg)) {
 			context.botl = 1;
@@ -1275,6 +1276,8 @@ register struct obj *obj;
 		break;
 
     }
+	*/
+
     if (objects[otyp].oc_magic
         || (obj->spe && (obj->oclass == ARMOR_CLASS
                          || obj->oclass == WEAPON_CLASS || is_weptool(obj)))
@@ -1322,6 +1325,7 @@ register struct obj *obj;
     unbless(obj);
     uncurse(obj);
 	obj->special_enchantment = 0;
+	updateabon();
 	updatemaxen();
 	updatemaxhp();
 
@@ -1336,7 +1340,7 @@ drain_item(obj, by_you)
 struct obj *obj;
 boolean by_you;
 {
-    boolean u_ring;
+    //boolean u_ring;
 
     /* Is this a charged/enchanted object? */
     if (!obj
@@ -1354,6 +1358,9 @@ boolean by_you;
 
     /* Drain the object and any implied effects */
     obj->spe--;
+
+	context.botl = 1;
+	/*
     u_ring = (obj == uleft) || (obj == uright);
     switch (obj->otyp) {
     case RIN_GAIN_STRENGTH:
@@ -1405,26 +1412,26 @@ boolean by_you;
 		break;
 	case RIN_INCREASE_ACCURACY:
         if ((obj->owornmask & W_RING) && u_ring)
-            u.uhitinc--;
+//            u.uhitinc--;
         break;
     case RIN_INCREASE_DAMAGE:
         if ((obj->owornmask & W_RING) && u_ring)
-            u.udaminc--;
+//            u.udaminc--;
         break;
     case RIN_PROTECTION:
         if (u_ring)
-            context.botl = 1; /* bot() will recalc u.uac */
+            context.botl = 1; // bot() will recalc u.uac
         break;
     case HELM_OF_BRILLIANCE:
         if ((obj->owornmask & W_ARMH) && (obj == uarmh)) {
-            ABON(A_INT)--;
-            ABON(A_WIS)--;
+//            ABON(A_INT)--;
+//            ABON(A_WIS)--;
             context.botl = 1;
         }
         break;
 	case SHIRT_OF_COMELINESS:
 		if ((obj->owornmask & W_ARMU) && (obj == uarmu)) {
-			ABON(A_CHA)--;
+//			ABON(A_CHA)--;
 			context.botl = 1;
 		}
 		break;
@@ -1453,7 +1460,12 @@ boolean by_you;
 	default:
         break;
     }
-    if (context.botl)
+	*/
+	updateabon();
+	updatemaxen();
+	updatemaxhp();
+
+	if (context.botl)
         bot();
     if (carried(obj))
         update_inventory();

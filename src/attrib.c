@@ -1268,6 +1268,37 @@ boolean addconstitutionbonus;
 	int otyp = 0;
 	struct obj* uitem;
 
+
+	for (uitem = invent; uitem; uitem = uitem->nobj)
+	{
+		otyp = uitem->otyp;
+		if (objects[otyp].oc_class != SPBOOK_CLASS && objects[otyp].oc_hp_bonus > 0 && (
+			(uitem == uwep && (uitem->oclass == WEAPON_CLASS || is_weptool(uitem)))
+			|| uitem == uarm
+			|| uitem == uarmc
+			|| uitem == uarmh
+			|| uitem == uarms
+			|| uitem == uarmg
+			|| uitem == uarmf
+			|| uitem == uarmu
+			|| uitem == uarmo
+			|| uitem == uarmb
+			|| uitem == uarmv
+			|| uitem == uarmp
+			|| uitem == uamul
+			|| uitem == uright
+			|| uitem == uleft
+			|| objects[otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED
+			))
+		{
+			if (objects[otyp].oc_flags & O1_HP_PERCENTAGE_BONUS)
+				adj += (objects[otyp].oc_hp_bonus * (basehp + baseadj)) / 100;
+			else
+				adj += objects[otyp].oc_hp_bonus;
+		}
+	}
+
+/*
 	for (int i = 0; i < 15; i++)
 	{
 		switch (i)
@@ -1333,7 +1364,7 @@ boolean addconstitutionbonus;
 			}
 		}
 	}
-
+	*/
 	return adj;
 }
 
@@ -1352,6 +1383,123 @@ updatemaxhp()
 
 	return;
 }
+
+
+void
+updateabon()
+{
+	int otyp = 0;
+	struct obj* uitem;
+	int adj = 0;
+
+	/* reset abons */
+	for (int i = 0; i < A_MAX; i++)
+	{
+		ABON(i) = 0;
+	}
+	u.udaminc = 0;
+	u.uhitinc = 0;
+	u.uacbonus = 0;
+
+	/* add them back again */
+	for (uitem = invent; uitem; uitem = uitem->nobj)
+	{
+		otyp = uitem->otyp;
+		if (objects[otyp].oc_class != SPBOOK_CLASS && (
+			(uitem == uwep && (uitem->oclass == WEAPON_CLASS || is_weptool(uitem)))
+			|| uitem == uarm
+			|| uitem == uarmc
+			|| uitem == uarmh
+			|| uitem == uarms
+			|| uitem == uarmg
+			|| uitem == uarmf
+			|| uitem == uarmu
+			|| uitem == uarmo
+			|| uitem == uarmb
+			|| uitem == uarmv
+			|| uitem == uarmp
+			|| uitem == uamul
+			|| uitem == uright
+			|| uitem == uleft
+			|| objects[otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED
+			))
+		{
+			for (int i = 0; i < A_MAX+3; i++)
+			{
+				int bit = 0;
+				switch (i)
+				{
+				case A_STR:
+					bit = BONUS_TO_STR;
+					break;
+				case A_DEX:
+					bit = BONUS_TO_DEX;
+					break;
+				case A_CON:
+					bit = BONUS_TO_CON;
+					break;
+				case A_INT:
+					bit = BONUS_TO_INT;
+					break;
+				case A_WIS:
+					bit = BONUS_TO_WIS;
+					break;
+				case A_CHA:
+					bit = BONUS_TO_CHA;
+					break;
+				case A_MAX + 0:
+					bit = BONUS_TO_DAMAGE;
+					break;
+				case A_MAX + 1:
+					bit = BONUS_TO_HIT;
+					break;
+				case A_MAX + 2:
+					bit = BONUS_TO_AC;
+					break;
+				default:
+					bit = 0;
+					break;
+				}
+						
+				if (objects[otyp].oc_bonus_attributes & bit)
+				{
+					if (i < A_MAX)
+					{
+						if (objects[otyp].oc_attribute_bonus == 0 && objects[otyp].oc_charged)
+							ABON(i) += uitem->spe;
+						else
+							ABON(i) += objects[otyp].oc_attribute_bonus;
+					}
+					else if (i == A_MAX + 0)
+					{
+						if (objects[otyp].oc_attribute_bonus == 0 && objects[otyp].oc_charged)
+							u.udaminc += uitem->spe;
+						else
+							u.udaminc += objects[otyp].oc_attribute_bonus;
+					}
+					else if (i == A_MAX + 1)
+					{
+						if (objects[otyp].oc_attribute_bonus == 0 && objects[otyp].oc_charged)
+							u.uhitinc += uitem->spe;
+						else
+							u.uhitinc += objects[otyp].oc_attribute_bonus;
+					}
+					else if (i == A_MAX + 2)
+					{
+						if (objects[otyp].oc_attribute_bonus == 0 && objects[otyp].oc_charged)
+							u.uacbonus += uitem->spe;
+						else
+							u.uacbonus += objects[otyp].oc_attribute_bonus;
+					}
+				}
+			}
+		}
+	}
+	find_ac();
+	context.botl = 1;
+
+}
+
 
 schar
 acurr(x)
