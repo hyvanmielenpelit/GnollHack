@@ -171,8 +171,7 @@ static struct trobj Tourist[] = {
 	{ EXPENSIVE_CAMERA, UNDEF_SPE, TOOL_CLASS, 1, 0, 0 },
     { CREDIT_CARD, 0, TOOL_CLASS, 1, 0, 0 },
 	{ LEATHER_BAG, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
-	{ FOOD_RATION, 0, FOOD_CLASS, 2, 0 },
-	{ UNDEF_TYP, UNDEF_SPE, FOOD_CLASS, 6, 0 },
+	{ UNDEF_TYP, UNDEF_SPE, FOOD_CLASS, 10, 0 },
 	{ 0, 0, 0, 0, 0, 0 }
 };
 static struct trobj TouristFemale[] = {
@@ -185,8 +184,7 @@ static struct trobj TouristFemale[] = {
 	{ EXPENSIVE_CAMERA, UNDEF_SPE, TOOL_CLASS, 1, 0, 0 },
 	{ CREDIT_CARD, 0, TOOL_CLASS, 1, 0, 0 },
 	{ EXPENSIVE_HANDBAG, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
-	{ FOOD_RATION, 0, FOOD_CLASS, 2, 0 },
-	{ UNDEF_TYP, UNDEF_SPE, FOOD_CLASS, 6, 0 },
+	{ UNDEF_TYP, UNDEF_SPE, FOOD_CLASS, 10, 0 },
 	{ 0, 0, 0, 0, 0, 0 }
 };
 static struct trobj Valkyrie[] = {
@@ -1166,6 +1164,7 @@ register struct trobj *trop;
              */
             obj = mkobj(trop->trclass, FALSE);
             otyp = obj->otyp;
+
             while (otyp == WAN_WISHING || otyp == nocreate
                    || otyp == nocreate2 || otyp == nocreate3
                    || otyp == nocreate4 || otyp == RIN_LEVITATION
@@ -1285,7 +1284,6 @@ register struct trobj *trop;
 				obj->corpsenm = PM_SEWER_RAT;
 				break;
 			}
-			break;
 		}
 
 		/* nudist gets no armor */
@@ -1310,8 +1308,13 @@ register struct trobj *trop;
 				(void)add_to_container(obj, mksobj(BATHROBE, TRUE, FALSE));
 				(void)add_to_container(obj, mksobj(COTTON_SLIPPERS, TRUE, FALSE));
 				(void)add_to_container(obj, mksobj(TOWEL, TRUE, FALSE));
-				if(!rn2(4) && !flags.female)
-					(void)add_to_container(obj, mksobj(TRUNKS_OF_SWIMMING, TRUE, FALSE));
+				if (!rn2(4))
+				{
+					if (flags.female)
+						(void)add_to_container(obj, mksobj(SWIMMING_BIKINI, TRUE, FALSE));
+					else
+						(void)add_to_container(obj, mksobj(TRUNKS_OF_SWIMMING, TRUE, FALSE));
+				}
 				makeknown(BATHROBE);
 				obj->owt = weight(obj);
 			}

@@ -603,8 +603,10 @@ PANTS("skirt", None, //STARTMARKER FOR NO "PAIR OF"
 	1, 0, 0,		0, 0, 3, 1, 10,  5, 10, 0, 0, 0, 0, 0, CLOTH, CLR_RED, O1_NONE),
 PANTS("kilt", None,  //ENDMARKER FOR NO "PAIR OF"
 	1, 0, 0,		0, 0, 3, 1, 15, 10, 10, 0, 0, 0, 0, 0, CLOTH, CLR_MAGENTA, O1_NONE),
+PANTS("swimming bikini", None,
+	1, 1, SWIMMING, 0, 0, 1, 3,  3, 50, 10, 0, 0, 0, 0, 0, CLOTH, CLR_RED, O1_NONE),
 PANTS("trunks of swimming", "blue short pants", //ENDMARKER
-	0, 1, SWIMMING, 0, 0, 3, 1,  2, 50, 10, 0, 0, 0, 0, 0, CLOTH, CLR_BLUE, O1_NONE),
+	0, 1, SWIMMING, 0, 0, 2, 1,  2, 50, 10, 0, 0, 0, 0, 0, CLOTH, CLR_BLUE, O1_NONE),
 
 /* shields */
 SHIELD("small shield", None,
@@ -821,7 +823,7 @@ CONTAINER("oriental silk sack", "bag",0,0,0, 5,   3,  50, 0, 0, 0, 0, 0, SILK, H
 CONTAINER("expensive handbag", "bag", 0, 0, 0, 2, 5, 500, 0, 0, 0, BONUS_TO_CHA, 2, SILK, HI_GOLD, O1_CONFERS_POWERS_WHEN_CARRIED),
 CONTAINER("sack",           "bag", 0, 0, 0, 10,  10,   5, 0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE),
 CONTAINER("oilskin sack",   "bag", 0, 0, 0,  5,  10, 100, 0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE),
-/* magic bags start here*/
+/* magic bags start here */
 CONTAINER("bag of holding", "bag",					0, 1, 0, 20, 15, 100,   0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE), //STARTMARKER 2
 CONTAINER("bag of wizardry", "bag",					0, 1, 0, 10, 15, 100,   0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE),
 CONTAINER("bag of treasure hauling", "bag",			0, 1, 0, 15, 15, 100,   0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE),
