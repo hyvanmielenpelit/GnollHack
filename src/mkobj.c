@@ -301,7 +301,8 @@ struct obj *box;
 	case BACKPACK:
 	case LEATHER_BAG:
 	case ORIENTAL_SILK_SACK:
-	case BAG_OF_CONTAINMENT:
+	case BAG_OF_WIZARDRY:
+	case BAG_OF_WEIGHTLESS_TREASURE:
 		/* initial inventory: sack starts out empty */
         if (moves <= 1 && !in_mklev) {
             n = 0;
@@ -356,7 +357,7 @@ struct obj *box;
                         otmp->quan = 1L;
                     otmp->owt = weight(otmp);
                 }
-            if (box->otyp == BAG_OF_HOLDING || box->otyp == BAG_OF_CONTAINMENT) {
+            if (Is_weight_changing_bag(box)) {
                 if (Is_mbag(otmp)) {
                     otmp->otyp = SACK;
                     otmp->spe = 0;
@@ -952,7 +953,8 @@ boolean artif;
 			case LEATHER_BAG:
 			case ORIENTAL_SILK_SACK:
 			case BAG_OF_HOLDING:
-			case BAG_OF_CONTAINMENT:
+			case BAG_OF_WIZARDRY:
+			case BAG_OF_WEIGHTLESS_TREASURE:
 				mkbox_cnts(otmp);
                 break;
             case EXPENSIVE_CAMERA:
@@ -1321,7 +1323,7 @@ register struct obj *otmp;
     otmp->blessed = 1;
     if (carried(otmp) && confers_luck(otmp))
         set_moreluck();
-    else if (otmp->otyp == BAG_OF_HOLDING || otmp->otyp == BAG_OF_CONTAINMENT)
+    else if (Is_weight_changing_bag(otmp))
         otmp->owt = weight(otmp);
     else if (otmp->otyp == FIGURINE && otmp->timed)
         (void) stop_timer(FIG_TRANSFORM, obj_to_any(otmp));
@@ -1341,7 +1343,7 @@ register struct obj *otmp;
     otmp->blessed = 0;
     if (carried(otmp) && confers_luck(otmp))
         set_moreluck();
-    else if (otmp->otyp == BAG_OF_HOLDING || otmp->otyp == BAG_OF_CONTAINMENT)
+    else if (Is_weight_changing_bag(otmp))
         otmp->owt = weight(otmp);
     if (otmp->lamplit)
         maybe_adjust_light(otmp, old_light);
@@ -1377,7 +1379,7 @@ register struct obj *otmp;
 		if (carried(otmp) && confers_luck(otmp)) {
 			set_moreluck();
 		}
-		else if (otmp->otyp == BAG_OF_HOLDING || otmp->otyp == BAG_OF_CONTAINMENT) {
+		else if (Is_weight_changing_bag(otmp)) {
 			otmp->owt = weight(otmp);
 		}
 		else if (otmp->otyp == FIGURINE) {
@@ -1407,7 +1409,7 @@ register struct obj *otmp;
     otmp->cursed = 0;
     if (carried(otmp) && confers_luck(otmp))
         set_moreluck();
-    else if (otmp->otyp == BAG_OF_HOLDING || otmp->otyp == BAG_OF_CONTAINMENT)
+    else if (Is_weight_changing_bag(otmp))
         otmp->owt = weight(otmp);
     else if (otmp->otyp == FIGURINE && otmp->timed)
         (void) stop_timer(FIG_TRANSFORM, obj_to_any(otmp));
@@ -1467,8 +1469,29 @@ register struct obj *obj;
         if (obj->otyp == STATUE && obj->corpsenm >= LOW_PM)
             wt = (int) obj->quan * ((int) mons[obj->corpsenm].cwt * 3 / 2);
 
-        for (contents = obj->cobj; contents; contents = contents->nobj)
-            cwt += weight(contents);
+		for (contents = obj->cobj; contents; contents = contents->nobj)
+		{
+			if (obj->otyp == BAG_OF_WIZARDRY
+				&& (contents->oclass == REAGENT_CLASS || contents->oclass == SPBOOK_CLASS
+					|| contents->oclass == WAND_CLASS || contents->oclass == SCROLL_CLASS
+					|| objects[contents->otyp].oc_flags & O1_TREATED_AS_MATERIAL_COMPONENT
+					))
+				cwt += obj->cursed ? (weight(contents) * 2) : obj->blessed ? ((weight(contents) + 15) / 16)
+				: ((weight(contents) + 7) / 8);
+			else if (obj->otyp == BAG_OF_WEIGHTLESS_TREASURE
+				&& (contents->oclass == COIN_CLASS || contents->oclass == GEM_CLASS
+					|| contents->oclass == RING_CLASS || contents->oclass == AMULET_CLASS
+					|| objects[contents->otyp].oc_material == SILVER
+					|| objects[contents->otyp].oc_material == GOLD
+					|| objects[contents->otyp].oc_material == PLATINUM
+					|| objects[contents->otyp].oc_material == MITHRIL
+					|| objects[contents->otyp].oc_material == GEMSTONE
+					))
+				cwt += obj->cursed ? (weight(contents) * 2) : obj->blessed ? ((weight(contents) + 31) / 32)
+				: ((weight(contents) + 15) / 16);
+			else
+				cwt += weight(contents);
+		}
         /*
          *  The weight of bags of holding is calculated as the weight
          *  of the bag plus the weight of the bag's contents modified
@@ -1486,11 +1509,8 @@ register struct obj *obj;
         if (obj->otyp == BAG_OF_HOLDING)
             cwt = obj->cursed ? (cwt * 2) : obj->blessed ? ((cwt + 3) / 4)
                                                          : ((cwt + 1) / 2);
-		else if (obj->otyp == BAG_OF_CONTAINMENT)
-			cwt = obj->cursed ? (cwt * 4 - 1) / 3 : obj->blessed ? ((cwt * 3 + 1) / 4)
-			: ((cwt * 7 + 1) / 8);
 
-        return wt + cwt;
+		return wt + cwt;
     }
     if (obj->otyp == CORPSE && obj->corpsenm >= LOW_PM) {
         long long_wt = obj->quan * (long) mons[obj->corpsenm].cwt;

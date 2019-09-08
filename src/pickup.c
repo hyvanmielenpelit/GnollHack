@@ -29,7 +29,7 @@ STATIC_DCL long FDECL(carry_count, (struct obj *, struct obj *, long,
                                     BOOLEAN_P, int *, int *));
 STATIC_DCL int FDECL(lift_object, (struct obj *, struct obj *, long *,
                                    BOOLEAN_P));
-STATIC_DCL boolean FDECL(mbag_explodes, (struct obj *, int));
+STATIC_DCL boolean FDECL(mbag_explodes, (struct obj *, struct obj*, int));
 STATIC_DCL long FDECL(boh_loss, (struct obj *container, int));
 STATIC_PTR int FDECL(in_container, (struct obj *));
 STATIC_PTR int FDECL(out_container, (struct obj *));
@@ -1230,7 +1230,7 @@ struct obj *container, *obj;
     struct obj **prev;
     int owt, nwt;
 
-    if (container->otyp != BAG_OF_HOLDING && container->otyp != BAG_OF_CONTAINMENT)
+    if (!Is_weight_changing_bag(container))
         return obj->owt;
 
     owt = nwt = container->owt;
@@ -2069,8 +2069,8 @@ boolean *prev_loot;
  * it to explode.  If the object is a bag itself, check recursively.
  */
 STATIC_OVL boolean
-mbag_explodes(obj, depthin)
-struct obj *obj;
+mbag_explodes(obj, container, depthin)
+struct obj *obj, *container;
 int depthin;
 {
     /* these won't cause an explosion when they're empty */
@@ -2078,7 +2078,16 @@ int depthin;
         && obj->spe <= 0)
         return FALSE;
 
-    /* odds: 1/1, 2/2, 3/4, 4/8, 5/16, 6/32, 7/64, 8/128, 9/128, 10/128,... */
+	if (container->otyp == BAG_OF_WIZARDRY &&
+		(obj->otyp == WAN_CANCELLATION || obj->otyp == BAG_OF_TRICKS)
+		&& obj->spe > 0)
+	{
+		//Bag of wizardry will drain the charges of explosing-causing items
+		obj->spe = 0;
+		return FALSE;
+	}
+
+	/* odds: 1/1, 2/2, 3/4, 4/8, 5/16, 6/32, 7/64, 8/128, 9/128, 10/128,... */
     if ((Is_mbag(obj) || obj->otyp == WAN_CANCELLATION)
         && (rn2(1 << (depthin > 7 ? 7 : depthin)) <= depthin))
         return TRUE;
@@ -2086,7 +2095,7 @@ int depthin;
         struct obj *otmp;
 
         for (otmp = obj->cobj; otmp; otmp = otmp->nobj)
-            if (mbag_explodes(otmp, depthin + 1))
+            if (mbag_explodes(otmp, obj, depthin + 1))
                 return TRUE;
     }
     return FALSE;
@@ -2217,7 +2226,7 @@ register struct obj *obj;
             if (rot_alarm)
                 obj->norevive = 1;
         }
-    } else if (Is_mbag(current_container) && mbag_explodes(obj, 0)) {
+    } else if (Is_weight_changing_bag(current_container) && mbag_explodes(obj, current_container, 0)) {
         /* explicitly mention what item is triggering the explosion */
         pline("As you put %s inside, you are blasted by a magical explosion!",
               doname(obj));
@@ -2551,7 +2560,8 @@ boolean more_containers; /* True iff #loot multiple and this isn't last one */
         used = 1;
     }
 
-    cursed_mbag = Is_mbag(current_container)
+    cursed_mbag = Is_weight_changing_bag(current_container)
+		&& current_container->otyp != BAG_OF_WIZARDRY //Bag of wizardry does not lose items, other mbags may
         && current_container->cursed
         && Has_contents(current_container);
     if (cursed_mbag

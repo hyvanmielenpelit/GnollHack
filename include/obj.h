@@ -289,6 +289,8 @@ struct obj {
 #define Is_box(otmp) (otmp->otyp == LARGE_BOX || otmp->otyp == CHEST)
 #define Is_mbag(o) \
 	((o)->otyp >= BAG_OF_HOLDING && (o)->otyp <= BAG_OF_TRICKS)
+#define Is_weight_changing_bag(o) \
+	((o)->otyp >= BAG_OF_HOLDING && (o)->otyp <= BAG_OF_WEIGHTLESS_TREASURE)
 #define SchroedingersBox(o) ((o)->otyp == LARGE_BOX && (o)->spe == 1)
 
 /* dragon gear */

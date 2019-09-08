@@ -237,7 +237,7 @@ struct objclass {
 #define O1_CANNOT_BE_DROPPED_IF_CURSED 0x00200000
 
 /* General flags -- General: cannot be overriden */
-#define O1_SOLD_AS_MATERIAL_COMPONENT 0x10000000
+#define O1_TREATED_AS_MATERIAL_COMPONENT 0x10000000
 #define O1_EDIBLE_NONFOOD 0x20000000
 };
 

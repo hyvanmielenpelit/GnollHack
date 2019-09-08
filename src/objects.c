@@ -118,7 +118,7 @@ PROJECTILE("elven arrow", "runed arrow",
 PROJECTILE("orcish arrow", "crude arrow",
            0, 20, 1, 2, 1, 5, 0, 1, 6, 0, 0,        IRON, -P_BOW, CLR_BLACK, O1_NONE),
 PROJECTILE("silver arrow", None,
-           1, 12, 1, 5, 1, 6, 0, 1, 6, 0, 0,        SILVER, -P_BOW, HI_SILVER, O1_SOLD_AS_MATERIAL_COMPONENT),
+           1, 12, 1, 5, 1, 6, 0, 1, 6, 0, 0,        SILVER, -P_BOW, HI_SILVER, O1_TREATED_AS_MATERIAL_COMPONENT),
 PROJECTILE("ya", "bamboo arrow",
            0, 15, 1, 4, 1, 7, 0, 1, 7, 0, 1,        METAL, -P_BOW, HI_METAL, O1_NONE),
 PROJECTILE("bone arrow", None,
@@ -168,7 +168,7 @@ WEAPON("elven dagger", "runed dagger",
 WEAPON("orcish dagger", "crude dagger",
        0, 1, 0, 12,  10,   4,  1, 3, 0, 1,  3, 0, 2, 0, 0, 0, 0, 0, P,   P_DAGGER, IRON, CLR_BLACK, O1_NONE),
 WEAPON("bone dagger", None,
-       1, 1, 0, 6,  10,   4,  1, 3, 0, 1,  3, 0, 2, 0, 0, 0, 0, 0, P,   P_DAGGER, BONE, CLR_WHITE, O1_SOLD_AS_MATERIAL_COMPONENT),
+       1, 1, 0, 6,  10,   4,  1, 3, 0, 1,  3, 0, 2, 0, 0, 0, 0, 0, P,   P_DAGGER, BONE, CLR_WHITE, O1_TREATED_AS_MATERIAL_COMPONENT),
 WEAPON("silver dagger", None,
        1, 1, 0,  3,  12,  40,  1, 4, 0, 1,  3, 0, 2, 0, 0, 0, 0, 0, P,   P_DAGGER, SILVER, HI_SILVER, O1_NONE),
 WEAPON("athame", None,
@@ -564,7 +564,7 @@ ROBE("clerical gown", None,
 ROBE("gnollish haircloth robe", "crude robe",
 	0, 0, 0,		   0, 0, 6, 1, 30,  10,  9, 2, 0, 0, CLOTH, CLR_BROWN, O1_NONE),
 ROBE("mummy wrapping", None, //ENDMARKER 1
-	1, 0, 0,		   0, 0, 0, 0,  3,   2, 10, 1, 0, 0, CLOTH, CLR_GRAY, O1_SOLD_AS_MATERIAL_COMPONENT),
+	1, 0, 0,		   0, 0, 0, 0,  3,   2, 10, 1, 0, 0, CLOTH, CLR_GRAY, O1_TREATED_AS_MATERIAL_COMPONENT),
 	/* worn mummy wrapping blocks invisibility */
 
 
@@ -811,21 +811,22 @@ OBJECT(OBJ("Amulet of Yendor", /* note: description == name */
            BITS(kn, 0, 1, 0, mgc, 1, 0, 0, bi, 0, hitbon, sub, mat),    \
            0, 0, 0, TOOL_CLASS, prob, 0, wt, cost, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, hitbon, 0, 0, 0, 0, 0, wt, clr, 0, 0, cooldown, 0, flags)
 /* containers */
-CONTAINER("large box",       None, 1, 0, 0, 40, 350,   8, 0, WOOD, HI_WOOD, O1_NONE), //STARTMARKER
+CONTAINER("large box",       None, 1, 0, 0, 40, 350,   8, 0, WOOD, HI_WOOD, O1_NONE), //STARTMARKER 1
 CONTAINER("chest",           None, 1, 0, 0, 30, 600,  16, 0, WOOD, HI_WOOD, O1_NONE),
 CONTAINER("ice box",         None, 1, 0, 0,  5, 900,  42, 0, PLASTIC, CLR_WHITE, O1_NONE),
 CONTAINER("bookshelf",		 None, 1, 0, 0,  0, 1600, 36, 0, WOOD, HI_WOOD, O1_NONE),
 CONTAINER("backpack",		 None, 1, 0, 0,  5,  15,   5, 0, CLOTH, HI_CLOTH, O1_NONE),
 CONTAINER("leather bag",	 "bag",0, 0, 0,	 5,  15,  25, 0, LEATHER, HI_LEATHER, O1_NONE),
 CONTAINER("oriental silk sack", "bag",0,0,0, 5,   3,  50, 0, SILK, HI_CLOTH, O1_NONE),
-CONTAINER("sack",           "bag", 0, 0, 0, 15,  10,   5, 0, CLOTH, HI_CLOTH, O1_NONE),
+CONTAINER("sack",           "bag", 0, 0, 0, 10,  10,   5, 0, CLOTH, HI_CLOTH, O1_NONE),
 CONTAINER("oilskin sack",   "bag", 0, 0, 0,  5,  10, 100, 0, CLOTH, HI_CLOTH, O1_NONE),
 /* magic bags start here*/
-CONTAINER("bag of holding", "bag",					0, 1, 0, 20, 15, 100,   0, CLOTH, HI_CLOTH, O1_NONE),
-CONTAINER("bag of containment", "bag",				0, 1, 0, 10, 15, 100,   0, CLOTH, HI_CLOTH, O1_NONE),
-CONTAINER("quiver of infinite arrows", "quiver",	0, 1, 0, 10, 15, 100, 300, CLOTH, HI_CLOTH, O1_SPECIAL_ENCHANTABLE),
+CONTAINER("bag of holding", "bag",					0, 1, 0, 15, 15, 100,   0, CLOTH, HI_CLOTH, O1_NONE), //STARTMARKER 2
+CONTAINER("bag of wizardry", "bag",					0, 1, 0, 10, 15, 100,   0, CLOTH, HI_CLOTH, O1_NONE),
+CONTAINER("bag of weightless treasure", "bag",		0, 1, 0, 10, 15, 100,   0, CLOTH, HI_CLOTH, O1_NONE),
+CONTAINER("quiver of infinite arrows", "bag",		0, 1, 0, 10, 15, 100, 300, CLOTH, HI_CLOTH, O1_SPECIAL_ENCHANTABLE),
 CONTAINER("pouch of endless bolts", "bag",			0, 1, 0, 10, 15, 100, 300, CLOTH, HI_CLOTH, O1_SPECIAL_ENCHANTABLE),
-CONTAINER("bag of tricks",  "bag",					0, 1, 1, 20, 15, 100,  0, CLOTH, HI_CLOTH, O1_NONE), //ENDMARKER
+CONTAINER("bag of tricks",  "bag",					0, 1, 1, 20, 15, 100,  0, CLOTH, HI_CLOTH, O1_NONE), //ENDMARKER 1&2
 #undef CONTAINER
 
 /* lock opening tools */
@@ -841,7 +842,7 @@ TOOL("magic lamp",        "lamp", 0, 0, 1, 0, 15, 20, 50, 0, COPPER, CLR_YELLOW,
 /* other tools */
 TOOL("expensive camera",    None, 1, 0, 0, 1, 15, 12,200, 0, PLASTIC, CLR_BLACK, O1_NONE),
 TOOL("mirror",   "looking glass", 0, 0, 0, 0, 35, 13, 10, 0, GLASS, HI_SILVER, O1_NONE),
-TOOL("holy symbol", "religious symbol", 0, 0, 1, 0, 10, 10,100, 0, SILVER, HI_SILVER, O1_SOLD_AS_MATERIAL_COMPONENT),
+TOOL("holy symbol", "religious symbol", 0, 0, 1, 0, 10, 10,100, 0, SILVER, HI_SILVER, O1_TREATED_AS_MATERIAL_COMPONENT),
 TOOL("crystal ball", "glass orb", 0, 0, 1, 1, 15,150, 60, 100, GLASS, HI_GLASS, O1_NONE),
 TOOL("lenses",              None, 1, 0, 0, 0,  5,  3, 80, 0, GLASS, HI_GLASS, O1_NONE),
 TOOL("blindfold",           None, 1, 0, 0, 0, 50,  2, 20, 0, CLOTH, CLR_BLACK, O1_NONE),
@@ -994,7 +995,7 @@ POTION("acid",                  "white",  0, 0, 10, 250, CLR_WHITE, O1_COLD_RESI
 POTION("oil",                   "murky",  0, 0, 30, 250, CLR_BROWN, O1_COLD_RESISTANT),
 /* fixed description
  */
-POTION("water",                 "clear",  0, 0, 92, 100, CLR_CYAN, O1_SOLD_AS_MATERIAL_COMPONENT),
+POTION("water",                 "clear",  0, 0, 92, 100, CLR_CYAN, O1_TREATED_AS_MATERIAL_COMPONENT),
 #undef POTION
 
 /* scrolls ... */
@@ -1435,29 +1436,29 @@ COIN("gold piece", 1000, GOLD, 1),
                 HARDGEM(mohs), 0, -P_SLING, glass),                     \
            power1, power2, power3, GEM_CLASS, prob, 0, wt, gval, 1, sdam, 0, 1, ldam, 0, 0, 0, 0, 0, 0, 0, nutr, color, 0, 0, 0, 0, flags)
 GEM("dilithium crystal", "white",  2, 1, 4500, 15,  5, GEMSTONE, CLR_WHITE, O1_NONE),
-GEM("diamond",           "white",  3, 1, 4000, 15,  10, GEMSTONE, CLR_WHITE, O1_SOLD_AS_MATERIAL_COMPONENT),
-GEM("black pearl",		 "black",  3, 1, 3750, 15,  5, GEMSTONE, CLR_BLACK, O1_SOLD_AS_MATERIAL_COMPONENT),
-GEM("ruby",                "red",  4, 1, 3500, 15,  9, GEMSTONE, CLR_RED, O1_SOLD_AS_MATERIAL_COMPONENT),
-GEM("jacinth",          "orange",  3, 1, 3250, 15,  9, GEMSTONE, CLR_ORANGE, O1_SOLD_AS_MATERIAL_COMPONENT),
-GEM("sapphire",           "blue",  4, 1, 3000, 15,  9, GEMSTONE, CLR_BLUE, O1_SOLD_AS_MATERIAL_COMPONENT),
-GEM("black opal",        "black",  3, 1, 2750, 15,  8, GEMSTONE, CLR_BLACK, O1_SOLD_AS_MATERIAL_COMPONENT),
-GEM("emerald",           "green",  5, 1, 2500, 15,  8, GEMSTONE, CLR_GREEN, O1_SOLD_AS_MATERIAL_COMPONENT),
-GEM("turquoise",         "green",  6, 1, 2000, 15,  6, GEMSTONE, CLR_GREEN, O1_SOLD_AS_MATERIAL_COMPONENT),
-GEM("citrine",          "yellow",  4, 1, 1500, 15,  6, GEMSTONE, CLR_YELLOW, O1_SOLD_AS_MATERIAL_COMPONENT),
-GEM("aquamarine",        "green",  6, 1, 1500, 15,  8, GEMSTONE, CLR_GREEN, O1_SOLD_AS_MATERIAL_COMPONENT),
-GEM("amber",   "yellowish brown",  8, 1, 1000, 15,  2, GEMSTONE, CLR_BROWN, O1_SOLD_AS_MATERIAL_COMPONENT),
-GEM("topaz",   "yellowish brown", 10, 1,  900, 15,  8, GEMSTONE, CLR_BROWN, O1_SOLD_AS_MATERIAL_COMPONENT),
-GEM("jet",               "black", 10, 1,  850, 15,  7, GEMSTONE, CLR_BLACK, O1_SOLD_AS_MATERIAL_COMPONENT),
-GEM("opal",              "white", 12, 1,  800, 15,  6, GEMSTONE, CLR_WHITE, O1_SOLD_AS_MATERIAL_COMPONENT),
-GEM("chrysoberyl",      "yellow", 10, 1,  700, 15,  5, GEMSTONE, CLR_YELLOW, O1_SOLD_AS_MATERIAL_COMPONENT),
-GEM("garnet",              "red", 12, 1,  700, 15,  7, GEMSTONE, CLR_RED, O1_SOLD_AS_MATERIAL_COMPONENT),
-GEM("amethyst",         "violet", 12, 1,  600, 15,  7, GEMSTONE, CLR_MAGENTA, O1_SOLD_AS_MATERIAL_COMPONENT),
-GEM("jasper",              "red", 12, 1,  500, 15,  7, GEMSTONE, CLR_RED, O1_SOLD_AS_MATERIAL_COMPONENT),
-GEM("fluorite",         "violet", 12, 1,  400, 15,  4, GEMSTONE, CLR_MAGENTA, O1_SOLD_AS_MATERIAL_COMPONENT),
-GEM("pearl",			 "white", 12, 1,  300, 15,  5, GEMSTONE, CLR_WHITE, O1_SOLD_AS_MATERIAL_COMPONENT),
-GEM("obsidian",          "black", 10, 1,  200, 15,  6, GEMSTONE, CLR_BLACK, O1_SOLD_AS_MATERIAL_COMPONENT),
-GEM("agate",            "orange", 12, 1,  200, 15,  6, GEMSTONE, CLR_ORANGE, O1_SOLD_AS_MATERIAL_COMPONENT),
-GEM("jade",              "green", 10, 1,  300, 15,  6, GEMSTONE, CLR_GREEN, O1_SOLD_AS_MATERIAL_COMPONENT),
+GEM("diamond",           "white",  3, 1, 4000, 15,  10, GEMSTONE, CLR_WHITE, O1_TREATED_AS_MATERIAL_COMPONENT),
+GEM("black pearl",		 "black",  3, 1, 3750, 15,  5, GEMSTONE, CLR_BLACK, O1_TREATED_AS_MATERIAL_COMPONENT),
+GEM("ruby",                "red",  4, 1, 3500, 15,  9, GEMSTONE, CLR_RED, O1_TREATED_AS_MATERIAL_COMPONENT),
+GEM("jacinth",          "orange",  3, 1, 3250, 15,  9, GEMSTONE, CLR_ORANGE, O1_TREATED_AS_MATERIAL_COMPONENT),
+GEM("sapphire",           "blue",  4, 1, 3000, 15,  9, GEMSTONE, CLR_BLUE, O1_TREATED_AS_MATERIAL_COMPONENT),
+GEM("black opal",        "black",  3, 1, 2750, 15,  8, GEMSTONE, CLR_BLACK, O1_TREATED_AS_MATERIAL_COMPONENT),
+GEM("emerald",           "green",  5, 1, 2500, 15,  8, GEMSTONE, CLR_GREEN, O1_TREATED_AS_MATERIAL_COMPONENT),
+GEM("turquoise",         "green",  6, 1, 2000, 15,  6, GEMSTONE, CLR_GREEN, O1_TREATED_AS_MATERIAL_COMPONENT),
+GEM("citrine",          "yellow",  4, 1, 1500, 15,  6, GEMSTONE, CLR_YELLOW, O1_TREATED_AS_MATERIAL_COMPONENT),
+GEM("aquamarine",        "green",  6, 1, 1500, 15,  8, GEMSTONE, CLR_GREEN, O1_TREATED_AS_MATERIAL_COMPONENT),
+GEM("amber",   "yellowish brown",  8, 1, 1000, 15,  2, GEMSTONE, CLR_BROWN, O1_TREATED_AS_MATERIAL_COMPONENT),
+GEM("topaz",   "yellowish brown", 10, 1,  900, 15,  8, GEMSTONE, CLR_BROWN, O1_TREATED_AS_MATERIAL_COMPONENT),
+GEM("jet",               "black", 10, 1,  850, 15,  7, GEMSTONE, CLR_BLACK, O1_TREATED_AS_MATERIAL_COMPONENT),
+GEM("opal",              "white", 12, 1,  800, 15,  6, GEMSTONE, CLR_WHITE, O1_TREATED_AS_MATERIAL_COMPONENT),
+GEM("chrysoberyl",      "yellow", 10, 1,  700, 15,  5, GEMSTONE, CLR_YELLOW, O1_TREATED_AS_MATERIAL_COMPONENT),
+GEM("garnet",              "red", 12, 1,  700, 15,  7, GEMSTONE, CLR_RED, O1_TREATED_AS_MATERIAL_COMPONENT),
+GEM("amethyst",         "violet", 12, 1,  600, 15,  7, GEMSTONE, CLR_MAGENTA, O1_TREATED_AS_MATERIAL_COMPONENT),
+GEM("jasper",              "red", 12, 1,  500, 15,  7, GEMSTONE, CLR_RED, O1_TREATED_AS_MATERIAL_COMPONENT),
+GEM("fluorite",         "violet", 12, 1,  400, 15,  4, GEMSTONE, CLR_MAGENTA, O1_TREATED_AS_MATERIAL_COMPONENT),
+GEM("pearl",			 "white", 12, 1,  300, 15,  5, GEMSTONE, CLR_WHITE, O1_TREATED_AS_MATERIAL_COMPONENT),
+GEM("obsidian",          "black", 10, 1,  200, 15,  6, GEMSTONE, CLR_BLACK, O1_TREATED_AS_MATERIAL_COMPONENT),
+GEM("agate",            "orange", 12, 1,  200, 15,  6, GEMSTONE, CLR_ORANGE, O1_TREATED_AS_MATERIAL_COMPONENT),
+GEM("jade",              "green", 10, 1,  300, 15,  6, GEMSTONE, CLR_GREEN, O1_TREATED_AS_MATERIAL_COMPONENT),
 GEM("worthless piece of white glass", "white",
     70, 1, 0, 6, 5, GLASS, CLR_WHITE, O1_NONE),
 GEM("worthless piece of blue glass", "blue",
@@ -1536,16 +1537,16 @@ OBJECT(OBJ("acid venom", "splash of venom"), None,
            REAGENT_CLASS, prob, eatdelay, wt, cost,  0, 0, 0, 0, 0, 0, ediblesubtype, 0, 0, 0, 0, 0, \
            nutrition, color, 0, 0, 0, 0, flags)
 
-	REAGENT("thread of spider silk",	125, 0, 1, 10, SILK, 0,					 2, CLR_GRAY, O1_SOLD_AS_MATERIAL_COMPONENT), /* STARTMARKER 1&2 */
+	REAGENT("thread of spider silk",	125, 0, 1, 10, SILK, 0,					 2, CLR_GRAY, O1_TREATED_AS_MATERIAL_COMPONENT), /* STARTMARKER 1&2 */
 
-	REAGENT("clump of bat guano",		125, 2, 5, 10, ORGANIC, EDIBLE_ROTTEN,	20, CLR_BROWN, O1_EDIBLE_NONFOOD | O1_SOLD_AS_MATERIAL_COMPONENT),
-	REAGENT("ginseng root",				125, 1, 3, 10, VEGGY, EDIBLE_NORMAL,	40, CLR_BROWN, O1_EDIBLE_NONFOOD | O1_SOLD_AS_MATERIAL_COMPONENT),
-	REAGENT("mandrake root",			125, 1, 3, 10, VEGGY, EDIBLE_NORMAL,	40, CLR_MAGENTA, O1_EDIBLE_NONFOOD | O1_SOLD_AS_MATERIAL_COMPONENT),
-	REAGENT("fungal spore",				125, 1, 1, 10, ORGANIC, EDIBLE_NORMAL,	 1, CLR_GRAY, O1_EDIBLE_NONFOOD | O1_SOLD_AS_MATERIAL_COMPONENT),
-	REAGENT("sprig of wolfsbane",		125, 1, 2, 10, VEGGY, EDIBLE_POISONOUS,	40, CLR_GREEN, O1_EDIBLE_NONFOOD | O1_SOLD_AS_MATERIAL_COMPONENT),
-	REAGENT("clove of garlic",			125, 1, 2, 10, VEGGY, EDIBLE_NORMAL,	40, CLR_WHITE, O1_EDIBLE_NONFOOD | O1_SOLD_AS_MATERIAL_COMPONENT),
+	REAGENT("clump of bat guano",		125, 2, 5, 10, ORGANIC, EDIBLE_ROTTEN,	20, CLR_BROWN, O1_EDIBLE_NONFOOD | O1_TREATED_AS_MATERIAL_COMPONENT),
+	REAGENT("ginseng root",				125, 1, 3, 10, VEGGY, EDIBLE_NORMAL,	40, CLR_BROWN, O1_EDIBLE_NONFOOD | O1_TREATED_AS_MATERIAL_COMPONENT),
+	REAGENT("mandrake root",			125, 1, 3, 10, VEGGY, EDIBLE_NORMAL,	40, CLR_MAGENTA, O1_EDIBLE_NONFOOD | O1_TREATED_AS_MATERIAL_COMPONENT),
+	REAGENT("fungal spore",				125, 1, 1, 10, ORGANIC, EDIBLE_NORMAL,	 1, CLR_GRAY, O1_EDIBLE_NONFOOD | O1_TREATED_AS_MATERIAL_COMPONENT),
+	REAGENT("sprig of wolfsbane",		125, 1, 2, 10, VEGGY, EDIBLE_POISONOUS,	40, CLR_GREEN, O1_EDIBLE_NONFOOD | O1_TREATED_AS_MATERIAL_COMPONENT),
+	REAGENT("clove of garlic",			125, 1, 2, 10, VEGGY, EDIBLE_NORMAL,	40, CLR_WHITE, O1_EDIBLE_NONFOOD | O1_TREATED_AS_MATERIAL_COMPONENT),
 
-	REAGENT("raven feather",			125, 0, 1, 10, ORGANIC, 0,				10, CLR_BLACK, O1_SOLD_AS_MATERIAL_COMPONENT), /* STARTMARKER 1&2 */
+	REAGENT("raven feather",			125, 0, 1, 10, ORGANIC, 0,				10, CLR_BLACK, O1_TREATED_AS_MATERIAL_COMPONENT), /* STARTMARKER 1&2 */
 
 #undef REAGENT
 
