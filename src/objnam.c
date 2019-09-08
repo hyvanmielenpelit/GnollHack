@@ -2874,6 +2874,7 @@ static const struct alt_spellings {
     { "grey dragon scale mail", GRAY_DRAGON_SCALE_MAIL },
     { "grey dragon scales", GRAY_DRAGON_SCALES },
 	{ "swimming trunks", TRUNKS_OF_SWIMMING },
+	{ "bikini", SWIMMING_BIKINI },
 	{ "iron ball", HEAVY_IRON_BALL },
     { "lantern", BRASS_LANTERN },
     { "mattock", DWARVISH_MATTOCK },
@@ -4333,6 +4334,8 @@ struct obj* pants;
 			return "skirt";
 		case KILT: //special types here
 			return "kilt";
+		case SWIMMING_BIKINI: //special types here
+			return "bikini";
 		case TRUNKS_OF_SWIMMING: //special types here
 			return "trunks";
 		default:

@@ -601,10 +601,10 @@ PANTS("jeans", "blue long pants",
 	0, 0, 0,		0, 0, 3, 2, 50,  5, 10, 0, 0, 0, 0, 0, CLOTH, CLR_BLUE, O1_NONE),
 PANTS("skirt", None, //STARTMARKER FOR NO "PAIR OF"
 	1, 0, 0,		0, 0, 3, 1, 10,  5, 10, 0, 0, 0, 0, 0, CLOTH, CLR_RED, O1_NONE),
-PANTS("kilt", None,  //ENDMARKER FOR NO "PAIR OF"
-	1, 0, 0,		0, 0, 3, 1, 15, 10, 10, 0, 0, 0, 0, 0, CLOTH, CLR_MAGENTA, O1_NONE),
 PANTS("swimming bikini", None,
 	1, 1, SWIMMING, 0, 0, 1, 3,  3, 50, 10, 0, 0, 0, 0, 0, CLOTH, CLR_RED, O1_NONE),
+PANTS("kilt", None,  //ENDMARKER FOR NO "PAIR OF"
+	1, 0, 0,		0, 0, 3, 1, 15, 10, 10, 0, 0, 0, 0, 0, CLOTH, CLR_MAGENTA, O1_NONE),
 PANTS("trunks of swimming", "blue short pants", //ENDMARKER
 	0, 1, SWIMMING, 0, 0, 2, 1,  2, 50, 10, 0, 0, 0, 0, 0, CLOTH, CLR_BLUE, O1_NONE),
 

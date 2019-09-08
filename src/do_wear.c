@@ -850,6 +850,7 @@ Pants_on(VOID_ARGS)
 	case KILT:
 	case JEANS:
 		break;
+	case SWIMMING_BIKINI:
 	case TRUNKS_OF_SWIMMING:
 		break;
 	default:
@@ -873,6 +874,7 @@ Pants_off(VOID_ARGS)
 	case KILT:
 	case JEANS:
 		break;
+	case SWIMMING_BIKINI:
 	case TRUNKS_OF_SWIMMING:
 		break;
 	default:
