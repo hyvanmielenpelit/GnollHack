@@ -910,7 +910,7 @@ register struct monst *mtmp;
         verbl_msg_mcan = "I hate this job!";
         if (uwep && (uwep->oclass == WEAPON_CLASS || is_weptool(uwep)))
             verbl_msg = "Put that weapon away before you hurt someone!";
-        else if (uarmc || uarmo || uarm || uarmh || uarms || uarmb || uarmv || uarmp || uarmg || uarmf)
+        else if (uarmc || uarmo || uarm || uarmh || uarms || uarmb || uarmv || uarmg || uarmf)
             verbl_msg = Role_if(PM_HEALER)
                             ? "Doc, I can't help you unless you cooperate."
                             : "Please undress so I can examine you.";

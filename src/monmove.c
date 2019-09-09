@@ -1655,7 +1655,7 @@ struct monst *mtmp;
             && !(typ == CORPSE && verysmall(&mons[obj->corpsenm]))
             && typ != FORTUNE_COOKIE && typ != CANDY_BAR && typ != PANCAKE
             && typ != LEMBAS_WAFER && typ != LUMP_OF_ROYAL_JELLY
-            && obj->oclass != AMULET_CLASS && obj->oclass != RING_CLASS
+            && obj->oclass != AMULET_CLASS && obj->oclass != DECORATION_CLASS && obj->oclass != RING_CLASS
             && obj->oclass != VENOM_CLASS && typ != SACK && typ != ORIENTAL_SILK_SACK && typ != LEATHER_BAG && typ != BACKPACK
 			&& typ != EXPENSIVE_HANDBAG
             && typ != BAG_OF_HOLDING && typ != BAG_OF_WIZARDRY && typ != BAG_OF_TREASURE_HAULING && typ != BAG_OF_TRICKS

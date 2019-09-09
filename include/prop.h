@@ -107,33 +107,52 @@ struct prop {
 #define W_ARMG 0x00000010L /* Gloves/gauntlets */
 #define W_ARMF 0x00000020L /* Footwear */
 #define W_ARMU 0x00000040L /* Undershirt */
-#define W_ARMO 0x01000000L  /* Robe or overcoat */
-#define W_ARMB 0x02000000L  /* Bracers */
-#define W_ARMV 0x04000000L  /* Belt */
-#define W_ARMP 0x08000000L  /* Pants */
+#define W_ARMO 0x00000080L  /* Robe or overcoat */
+#define W_ARMB 0x01000000L  /* Bracers */
+#define W_ARMV 0x02000000L  /* Belt */
 
-#define W_ARMOR (W_ARM | W_ARMC | W_ARMH | W_ARMS | W_ARMG | W_ARMF | W_ARMU | W_ARMO | W_ARMB | W_ARMV | W_ARMP)
+#define W_ARMOR (W_ARM | W_ARMC | W_ARMH | W_ARMS | W_ARMG | W_ARMF | W_ARMU | W_ARMO | W_ARMB | W_ARMV)
 /* Weapons and artifacts */
 #define W_WEP 0x00000100L     /* Wielded weapon */
 #define W_QUIVER 0x00000200L  /* Quiver for (f)iring ammo */
 #define W_SWAPWEP 0x00000400L /* Secondary weapon */
+/* 0x00000800 unused */
+
 #define W_WEAPON (W_WEP | W_SWAPWEP | W_QUIVER)
 #define W_ART 0x00001000L     /* Carrying artifact (not really worn) */
 #define W_ARTI 0x00002000L    /* Invoked artifact  (not really worn) */
+/* 0x00004000 unused */
+/* 0x00008000 unused */
+
 /* Amulets, rings, tools, and other items */
 #define W_AMUL 0x00010000L    /* Amulet */
 #define W_RINGL 0x00020000L   /* Left ring */
 #define W_RINGR 0x00040000L   /* Right ring */
 #define W_RING (W_RINGL | W_RINGR)
 #define W_TOOL 0x00080000L   /* Eyewear */
-#define W_ACCESSORY (W_RING | W_AMUL | W_TOOL)
+
     /* historical note: originally in slash'em, 'worn' saddle stayed in
        hero's inventory; in GnollHack, it's kept in the steed's inventory */
 #define W_SADDLE 0x00100000L /* KMH -- For riding monsters */
 #define W_BALL 0x00200000L   /* Punishment ball */
 #define W_CHAIN 0x00400000L  /* Punishment chain */
+/* 0x00800000 unused -- DECO2 */
+
+	/* new accessories*/
+/* 0x01000000 used by bracers */
+/* 0x02000000 used by belts */
+#define W_DECO  0x04000000L	  /* Special decorative item, such as a brooch, bracelet, nose ring */
+#define W_DECO2 0x00800000L	  /* Special decorative item, such as a brooch, bracelet, nose ring */
+#define W_DECO3 0x08000000L	  /* Special decorative item, such as a brooch, bracelet, nose ring */
+
+#define W_DECORATIONS (W_DECO  | W_DECO2 | W_DECO3)
+/* 0x08000000 unused -- DECO3 */
+#define W_ACCESSORY (W_RING | W_AMUL | W_DECORATIONS | W_TOOL)
 
 /* Carried */
+/*0x10000000 unused */
+/*0x20000000 used by I_SPECIAL */
+/*0x40000000 unused */
 #define W_CARRIED 0x80000000L  /* Carried */
 
     /*** Property is blocked by an object ***/
@@ -171,7 +190,9 @@ struct prop {
 #define WORN_ROBE W_ARMO
 #define WORN_BRACERS W_ARMB
 #define WORN_BELT W_ARMV
-#define WORN_PANTS W_ARMP
+#define WORN_DECORATION W_DECO
+#define WORN_DECORATION2 W_DECO2
+#define WORN_DECORATION3 W_DECO3
 #define CARRIED_ITEM W_CARRIED
 
 #endif /* PROP_H */

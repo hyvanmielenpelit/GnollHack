@@ -63,7 +63,7 @@ struct obj *obj;
        set; it is similar to sortpack's inv_order but items most
        likely to be picked up are moved to the front */
     static char def_srt_order[MAXOCLASSES] = {
-        COIN_CLASS, AMULET_CLASS, RING_CLASS, WAND_CLASS, POTION_CLASS,
+        COIN_CLASS, AMULET_CLASS, DECORATION_CLASS, RING_CLASS, WAND_CLASS, POTION_CLASS,
         SCROLL_CLASS, SPBOOK_CLASS, GEM_CLASS, FOOD_CLASS, REAGENT_CLASS, TOOL_CLASS,
         WEAPON_CLASS, ARMOR_CLASS, ROCK_CLASS, BALL_CLASS, CHAIN_CLASS, 0,
     };
@@ -92,7 +92,7 @@ struct obj *obj;
        and the non-armor ones we use are fairly arbitrary */
     switch (oclass) {
     case ARMOR_CLASS:
-        if (!armcat[11]) {
+        if (!armcat[10]) {
             /* one-time init; we use a different order than the subclass
                values defined by objclass.h */
             armcat[ARM_HELM]   = 1; /* [2] */
@@ -104,9 +104,8 @@ struct obj *obj;
 			armcat[ARM_ROBE] = 7; /* [7] */
 			armcat[ARM_BRACERS] = 8; /* [8] */
 			armcat[ARM_BELT] = 9; /* [9] */
-			armcat[ARM_PANTS] = 10; /* [10] */
-			armcat[ARM_SUIT]   = 11; /* [0] */
-            armcat[11]          = 12; /* sanity protection */
+			armcat[ARM_SUIT]   = 10; /* [0] */
+            armcat[10]          = 11; /* sanity protection */
         }
         k = objects[otyp].oc_armcat;
         /* oc_armcat overloads oc_subtyp which is an 'schar' so guard
@@ -1918,7 +1917,7 @@ boolean
 wearing_armor()
 {
     return (boolean) (uarm || uarmc || uarmf || uarmg
-                      || uarmh || uarms || uarmu || uarmo || uarmb || uarmv || uarmp);
+                      || uarmh || uarms || uarmu || uarmo || uarmb || uarmv);
 }
 
 boolean
@@ -2079,6 +2078,9 @@ int show_weights;
                 return 0;
             } else if (oc_of_sym == AMULET_CLASS && !uamul) {
                 You("are not wearing an amulet.");
+                return 0;
+            } else if (oc_of_sym == DECORATION_CLASS && !udeco && !udeco2 && !udeco3) {
+                You("are not wearing miscellaneous items.");
                 return 0;
             } else if (oc_of_sym == TOOL_CLASS && !ublindf) {
                 You("are not wearing a blindfold.");
@@ -4024,8 +4026,6 @@ doprarm()
 			lets[ct++] = obj_to_let(uarmb);
 		if (uarmv)
 			lets[ct++] = obj_to_let(uarmv);
-		if (uarmp)
-			lets[ct++] = obj_to_let(uarmp);
 		if (uarmg)
             lets[ct++] = obj_to_let(uarmg);
         if (uarmf)
@@ -4153,7 +4153,7 @@ long numused;
 STATIC_VAR NEARDATA const char *names[] = {
     0, "Illegal objects", "Weapons", "Armor", "Rings", "Amulets", "Tools",
     "Comestibles", "Potions", "Scrolls", "Spellbooks", "Wands", "Coins",
-    "Gems/Stones", "Boulders/Statues", "Iron balls", "Chains", "Venoms", "Miscellaneous"
+    "Gems/Stones", "Boulders/Statues", "Iron balls", "Chains", "Venoms", "Reagents",  "Miscellaneous"
 };
 STATIC_VAR NEARDATA const char oth_symbols[] = { CONTAINED_SYM, '\0' };
 STATIC_VAR NEARDATA const char *oth_names[] = { "Bagged/Boxed items" };

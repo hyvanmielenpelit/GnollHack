@@ -4322,7 +4322,7 @@ long cost;
                 return ", gourmets' delight!";
             if (objects[itm->otyp].oc_name_known
                     ? objects[itm->otyp].oc_magic
-                    : (o == AMULET_CLASS || o == RING_CLASS || o == WAND_CLASS
+                    : (o == AMULET_CLASS || o == DECORATION_CLASS || o == RING_CLASS || o == WAND_CLASS
                        || o == POTION_CLASS || o == SCROLL_CLASS
                        || o == SPBOOK_CLASS))
                 return ", painstakingly developed!";

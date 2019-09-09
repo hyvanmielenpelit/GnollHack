@@ -64,7 +64,7 @@ STATIC_OVL NEARDATA const char offerfodder[] = { FOOD_CLASS, AMULET_CLASS,
 /* Gold must come first for getobj(). */
 STATIC_OVL NEARDATA const char allobj[] = {
     COIN_CLASS,   WEAPON_CLASS, ARMOR_CLASS,  POTION_CLASS,
-    SCROLL_CLASS, WAND_CLASS,   RING_CLASS,   AMULET_CLASS,
+    SCROLL_CLASS, WAND_CLASS,   RING_CLASS,   AMULET_CLASS, DECORATION_CLASS,
     FOOD_CLASS,   REAGENT_CLASS,  TOOL_CLASS,   GEM_CLASS,
 	ROCK_CLASS,	  BALL_CLASS,   CHAIN_CLASS,  SPBOOK_CLASS, 0
 };
@@ -2233,7 +2233,7 @@ eatspecial()
     if (otmp->oclass == POTION_CLASS) {
         otmp->quan++; /* dopotion() does a useup() */
         (void) dopotion(otmp);
-    } else if (otmp->oclass == RING_CLASS || otmp->oclass == AMULET_CLASS) {
+    } else if (otmp->oclass == RING_CLASS || otmp->oclass == AMULET_CLASS || otmp->oclass == DECORATION_CLASS) {
         eataccessory(otmp);
     } else if (otmp->otyp == LEASH && otmp->leashmon) {
         o_unleash(otmp);

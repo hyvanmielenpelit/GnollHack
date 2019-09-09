@@ -79,7 +79,7 @@ struct monst *victim;
 
 #define burn_dmg(obj, descr) erode_obj(obj, descr, ERODE_BURN, EF_GREASE)
     while (1) {
-        switch (rn2(8)) {
+        switch (rn2(7)) {
         case 0:
             item = hitting_u ? uarmh : which_armor(victim, W_ARMH);
             if (item) {
@@ -133,11 +133,6 @@ struct monst *victim;
 		case 6:
 			item = hitting_u ? uarmv : which_armor(victim, W_ARMV);
 			if (!burn_dmg(item, "belt"))
-				continue;
-			break;
-		case 7:
-			item = hitting_u ? uarmp : which_armor(victim, W_ARMP);
-			if (!burn_dmg(item, pants_simple_name(item)))
 				continue;
 			break;
 		}
@@ -3734,7 +3729,8 @@ boolean *lostsome;
                 if (!(((objects[obj->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && obj->cursed) || obj == uamul
                       || obj == uleft || obj == uright || obj == ublindf
                       || obj == uarm || obj == uarmc || obj == uarmg
-                      || obj == uarmf || obj == uarmu || obj == uarmo || obj == uarmb || obj == uarmv || obj == uarmp
+                      || obj == uarmf || obj == uarmu || obj == uarmo || obj == uarmb || obj == uarmv
+					  || obj == udeco || obj == udeco2 || obj == udeco3
                       || (obj->cursed && (obj == uarmh || obj == uarms))
                       || welded(obj)))
                     otmp = obj;

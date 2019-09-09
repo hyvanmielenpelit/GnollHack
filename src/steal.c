@@ -25,8 +25,6 @@ register struct obj *otmp;
 									  ? "bracers"
 								: (otmp == uarmv)
 									  ? "belt"
-								: (otmp == uarmp)
-									  ? pants_simple_name(otmp)
                                   : (otmp == uarmc)
                                         ? cloak_simple_name(otmp)
 									  : (otmp == uarmo)
@@ -227,8 +225,6 @@ boolean unchain_ball; /* whether to unpunish or just unwield */
 			(void) Bracers_off();
 		else if (obj == uarmv)
 			(void)Belt_off();
-		else if (obj == uarmp)
-			(void)Pants_off();
 		else if (obj == uarmh)
             (void) Helmet_off();
         else if (obj == uarms)
@@ -240,6 +236,8 @@ boolean unchain_ball; /* whether to unpunish or just unwield */
             setworn((struct obj *) 0, obj->owornmask & W_ARMOR);
     } else if (obj->owornmask & W_AMUL) {
         Amulet_off();
+    } else if (obj->owornmask & W_DECORATIONS) {
+        Decoration_off(obj);
     } else if (obj->owornmask & W_RING) {
         Ring_gone(obj);
     } else if (obj->owornmask & W_TOOL) {
@@ -407,7 +405,8 @@ gotobj:
         switch (otmp->oclass) {
         case TOOL_CLASS:
         case AMULET_CLASS:
-        case RING_CLASS:
+		case DECORATION_CLASS:
+		case RING_CLASS:
         case FOOD_CLASS: /* meat ring */
             remove_worn_item(otmp, TRUE);
             break;

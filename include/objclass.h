@@ -14,7 +14,7 @@ enum obj_material_types {
     WAX         =  2,
     VEGGY       =  3, /* foodstuffs */
 	FLESH       =  4, /*   ditto    */
-	ORGANIC		=  5, /* non-veggy, non-flesh organic material, e.g. bat guano */
+	ORGANIC		=  5, /* non-veggy, non-flesh organic material, e.g. bat guano, feathers */
 	PAPER       =  6,
     CLOTH       =  7,
 	SILK		=  8,
@@ -47,8 +47,27 @@ enum obj_armor_types {
     ARM_SHIRT  = 6,
 	ARM_ROBE = 7,
 	ARM_BRACERS = 8,
-	ARM_BELT = 9,
-	ARM_PANTS = 10
+	ARM_BELT = 9
+};
+
+enum obj_decoration_types {
+	DEC_MULTIPLE_PERMITTED = 0,
+	DEC_WINGS = 1,       
+	DEC_PANTS = 2,
+	DEC_SKIRT = 3,
+	DEC_WRIST_WATCH = 4,
+	DEC_NOSERING = 5,
+	DEC_HEADBAND = 6,
+	DEC_EARRINGS = 7,
+	DEC_IOUN_STONE = 8,
+	DEC_BRACELET = 9,
+	DEC_SCARF = 10
+};
+
+static const char* dec_type_names[] = {
+	"", "set of wings", "pair of pants", "skirt", "watch",
+	"nose ring", "headband", "pair of earrings",
+	"ioun stone", "bracelet", "scarf",
 };
 
 struct objclass {
@@ -296,8 +315,9 @@ enum obj_class_types {
     CHAIN_CLASS  = 16,
     VENOM_CLASS  = 17,
 	REAGENT_CLASS = 18,
+	DECORATION_CLASS = 19,
 
-    MAXOCLASSES  = 19
+    MAXOCLASSES  = 20
 };
 
 #define ALLOW_COUNT (MAXOCLASSES + 1) /* Can be used in the object class    */
@@ -333,6 +353,7 @@ extern uchar oc_syms[MAXOCLASSES];      /* current class symbols */
 #define CHAIN_SYM '_'
 #define VENOM_SYM '.'
 #define REAGENT_SYM '\''
+#define DECORATION_SYM '8'
 
 struct fruit {
     char fname[PL_FSIZ];

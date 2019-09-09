@@ -232,7 +232,8 @@ int *lo_p, *hi_p; /* output: range that item belongs among */
         *hi_p = POT_WATER - 1;
         break;
     case AMULET_CLASS:
-    case SCROLL_CLASS:
+	case DECORATION_CLASS:
+	case SCROLL_CLASS:
     case SPBOOK_CLASS:
         /* exclude non-magic types and also unique ones */
         *lo_p = bases[ocls];
@@ -267,7 +268,7 @@ shuffle_all()
     /* entire classes; obj_shuffle_range() handles their exceptions */
     static char shuffle_classes[] = {
         AMULET_CLASS, POTION_CLASS, RING_CLASS,  SCROLL_CLASS,
-        SPBOOK_CLASS, WAND_CLASS,   VENOM_CLASS, REAGENT_CLASS,  //Odd "," in the end, do we need this?
+        SPBOOK_CLASS, WAND_CLASS, VENOM_CLASS, REAGENT_CLASS,  //Odd "," in the end, do we need this?
     };
     /* armor sub-class type ranges (one item from each group) */
     static short shuffle_types[] = {

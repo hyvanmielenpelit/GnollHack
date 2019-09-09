@@ -2516,7 +2516,7 @@ int final;
             you_are(buf, "");
     }
     /* report 'nudity' */
-    if (!uarm && !uarmu && !uarmc && !uarms && !uarmg && !uarmf && !uarmh && !uarmo && !uarmb && !uarmv && !uarmp) {
+    if (!uarm && !uarmu && !uarmc && !uarms && !uarmg && !uarmf && !uarmh && !uarmo && !uarmb && !uarmv) {
         if (u.uroleplay.nudist)
             enl_msg(You_, "do", "did", " not wear any armor", "");
         else

@@ -319,15 +319,16 @@ worst_cursed_item()
 	}
 	else if (uarmv && uarmv->cursed) { /* belt */
 		otmp = uarmv;
-	}
-	else if (uarmp && uarmp->cursed) { /* pants */
-		otmp = uarmp;
 	} else if (uarmu && uarmu->cursed) { /* shirt */
         otmp = uarmu;
     } else if (uamul && uamul->cursed) { /* amulet */
         otmp = uamul;
-    } else if (uamul && uamul->cursed) { /* amulet */
-        otmp = uamul;
+	} else if (udeco && udeco->cursed) { /* decoration */
+		otmp = udeco;
+	} else if (udeco2 && udeco2->cursed) { /* decoration */
+		otmp = udeco2;
+	} else if (udeco3 && udeco3->cursed) { /* decoration */
+		otmp = udeco3;
     } else if (uleft && uleft->cursed) { /* left ring */
         otmp = uleft;
     } else if (uright && uright->cursed) { /* right ring */

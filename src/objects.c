@@ -383,9 +383,6 @@ BOW("heavy crossbow", None,					1, 1, 10, 200, 150, 1, 8, 0, 1, 8, 0, 0, 0, 0, 0
 #define BELT(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c, flags)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
           cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_BELT, metal, c, flags)
-#define PANTS(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c, flags)  \
-    ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_PANTS, metal, c, flags)
 
 /* helmets */
 HELM("elven leather helm", "leather hat",
@@ -479,17 +476,17 @@ ARMOR("dwarvish mithril-coat", None,
 ARMOR("elven mithril-coat", None,
       1, 0, 0,			 0, 0, 0, 15, 1, 150, 250,  5, 2, 0, 0, 0, 0, ARM_SUIT, MITHRIL, HI_SILVER, O1_RUST_RESISTANT | O1_CORROSION_RESISTANT | O1_HALF_SPELL_CASTING_PENALTY),
 ARMOR("chain mail", None,
-      1, 0, 0,			 0, 0, 0, 40, 5, 480,  75,  5, 1, 0, 0, 0, 0, ARM_SUIT, IRON, HI_METAL, O1_NONE),
+      1, 0, 0,			 0, 0, 0, 50, 5, 480,  75,  5, 1, 0, 0, 0, 0, ARM_SUIT, IRON, HI_METAL, O1_NONE),
 ARMOR("orcish chain mail", "crude chain mail",
       0, 0, 0,			 0, 0, 0, 20, 5, 450,  40,  6, 1, 0, 0, 0, 0, ARM_SUIT, IRON, CLR_BLACK, O1_NONE),
 ARMOR("scale mail", None,
       1, 0, 0,			 0, 0, 0, 40, 5, 500,  45,  6, 1, 0, 0, 0, 0, ARM_SUIT, IRON, HI_METAL, O1_NONE),
 ARMOR("studded leather armor", None,
-      1, 0, 0,			 0, 0, 0, 45, 3, 200,  15,  7, 1, 0, 0, 0, 0, ARM_SUIT, LEATHER, HI_LEATHER, O1_NONE),
+      1, 0, 0,			 0, 0, 0, 50, 3, 200,  15,  7, 1, 0, 0, 0, 0, ARM_SUIT, LEATHER, HI_LEATHER, O1_NONE),
 ARMOR("gnollish studded leather armor", "crude studded leather armor",
-      0, 0, 0,			 0, 0, 0, 12, 3, 175,  15,  8, 1, 0, 0, 0, 0, ARM_SUIT, LEATHER, HI_LEATHER, O1_NONE),
+      0, 0, 0,			 0, 0, 0, 15, 3, 175,  15,  8, 1, 0, 0, 0, 0, ARM_SUIT, LEATHER, HI_LEATHER, O1_NONE),
 ARMOR("ring mail", None,
-      1, 0, 0,			 0, 0, 0, 45, 5, 500,  30,  7, 1, 0, 0, 0, 0, ARM_SUIT, IRON, HI_METAL, O1_NONE),
+      1, 0, 0,			 0, 0, 0, 50, 5, 500,  30,  7, 1, 0, 0, 0, 0, ARM_SUIT, IRON, HI_METAL, O1_NONE),
 ARMOR("orcish ring mail", "crude ring mail",
       0, 0, 0,			 0, 0, 0, 20, 5, 450,  15,  8, 1, 0, 0, 0, 0, ARM_SUIT, IRON, CLR_BLACK, O1_NONE),
 ARMOR("leather armor", None,
@@ -591,22 +588,6 @@ BELT("belt of fortitude", "brown belt",
 BELT("belt of giant strength", "ornamental belt", //ENDMARKER 1 & 2
 	0, 1, 0,		  0, 0,  7, 0, 5, 250, 10, 0, 0, 0, 0, 0, CLOTH, HI_LEATHER, O1_NONE),
 
-/* pants */
-/* no shuffled appearances... */
-PANTS("leather pants", None, //STARTMARKER
-	1, 0, 0,		0, 0, 8, 2, 50, 10,  9, 0, 0, 0, 0, 0, CLOTH, HI_LEATHER, O1_NONE),
-PANTS("beige shorts", "beige short pants",
-	0, 0, 0,		0, 0, 3, 2, 15, 10, 10, 0, 0, 0, 0, 0, CLOTH, CLR_BROWN, O1_NONE),
-PANTS("jeans", "blue long pants", 
-	0, 0, 0,		0, 0, 3, 2, 50,  5, 10, 0, 0, 0, 0, 0, CLOTH, CLR_BLUE, O1_NONE),
-PANTS("skirt", None, //STARTMARKER FOR NO "PAIR OF"
-	1, 0, 0,		0, 0, 3, 1, 10,  5, 10, 0, 0, 0, 0, 0, CLOTH, CLR_RED, O1_NONE),
-PANTS("swimming bikini", None,
-	1, 1, SWIMMING, 0, 0, 1, 3,  3, 50, 10, 0, 0, 0, 0, 0, CLOTH, CLR_RED, O1_NONE),
-PANTS("kilt", None,  //ENDMARKER FOR NO "PAIR OF"
-	1, 0, 0,		0, 0, 3, 1, 15, 10, 10, 0, 0, 0, 0, 0, CLOTH, CLR_MAGENTA, O1_NONE),
-PANTS("trunks of swimming", "blue short pants", //ENDMARKER
-	0, 1, SWIMMING, 0, 0, 2, 1,  2, 50, 10, 0, 0, 0, 0, 0, CLOTH, CLR_BLUE, O1_NONE),
 
 /* shields */
 SHIELD("small shield", None,
@@ -793,6 +774,45 @@ OBJECT(OBJ("Amulet of Yendor", /* note: description == name */
        BITS(0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, MITHRIL),
        0, 0, 0, AMULET_CLASS, 0, 0, 10, 30000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, HI_METAL, 0, 0, 0, 0, O1_INDESTRUCTIBLE),
 #undef AMULET
+
+/* decorations */
+#define DECORATION(name,desc,sub,specialworntext,kn,magic,mergeable,charged,prob,cost,wt,power,power2,power3,manabonus,hpbonus,bonusattrs,abon,nut,material,color,flags) \
+    OBJECT(OBJ(name, desc), specialworntext,                                           \
+           BITS(kn, mergeable, charged, 0, magic, charged, 0, 0, 0, 0, 0, sub, material),        \
+           power, power2, power3,  DECORATION_CLASS, prob, 0, wt, cost,  0, 0, 0, 0, 0, 0, 0, 0, manabonus, hpbonus, bonusattrs, abon, nut, color, 0, 0, 0, 0, flags)
+DECORATION("brooch of shielding", "brooch",	DEC_MULTIPLE_PERMITTED, None,
+	0, 1, 0, 0, 200, 150, 5,
+	PROTECTION, 0, 0, 0, 0, 0, 0,
+	20, GOLD, HI_GOLD, O1_NONE),
+DECORATION("nose ring of bull strength", "golden nose ring", DEC_NOSERING, None,
+	0, 1, 0, 1, 200, 200, 50,
+	0, 0, 0, 0, 0, BONUS_TO_STR, 0,
+	50, GOLD, HI_GOLD, O1_NONE),
+DECORATION("headband of intellect", "shining blue headband", DEC_HEADBAND, None,
+	0, 1, 0, 1, 100, 200, 50,
+	0, 0, 0, 0, 0, BONUS_TO_INT, 0,
+	50, CLOTH, CLR_BLUE, O1_NONE),
+DECORATION("golden earrings", None, DEC_EARRINGS, None,
+	1, 0, 0, 0, 100, 200, 50,
+	0, 0, 0, 0, 0, 0, 0,
+	50, GOLD, HI_GOLD, O1_NONE),
+DECORATION("ioun stone of protection", "ioun stone", DEC_IOUN_STONE, "orbiting your head",
+	0, 1, 0, 0, 100, 200, 50,
+	PROTECTION, 0, 0, 0, 0, 0, 0,
+	50, MINERAL, CLR_RED, O1_NONE),
+DECORATION("ioun stone of regeneration", "ioun stone", DEC_IOUN_STONE, "orbiting your head",		
+	0, 1, 0, 0, 100, 200, 50,
+	REGENERATION, 0, 0, 0, 0, 0, 0,
+	50, MINERAL, CLR_WHITE, O1_NONE),
+DECORATION("ioun stone of sustenance", "ioun stone", DEC_IOUN_STONE, "orbiting your head",		
+	0, 1, 0, 0, 100, 200, 50,
+	SLOW_DIGESTION, 0, 0, 0, 0, 0, 0,
+	50, MINERAL, CLR_WHITE, O1_NONE),
+DECORATION("wings of flying", "artificial wings", DEC_WINGS, "attached to your back",		
+	0, 1, 0, 0, 100, 200, 50,
+	FLYING, 0, 0, 0, 0, 0, 0,
+	50, ORGANIC, CLR_WHITE, O1_NONE),
+#undef DECORATION
 
 /* tools ... */
 /* tools with weapon characteristics come last */

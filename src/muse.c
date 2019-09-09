@@ -1071,7 +1071,7 @@ struct monst *mtmp;
     if (in_your_sanctuary(mtmp, 0, 0))
         return FALSE;
     if (dmgtype(mtmp->data, AD_HEAL)
-        && !uwep && !uarmu && !uarm && !uarmh && !uarmo && !uarmb && !uarmv && !uarmp
+        && !uwep && !uarmu && !uarm && !uarmh && !uarmo && !uarmb && !uarmv
         && !uarms && !uarmg && !uarmc && !uarmf)
         return FALSE;
     /* all offensive items require orthogonal or diagonal targetting */
@@ -2090,7 +2090,9 @@ struct obj *obj;
         if (typ == AMULET_OF_REFLECTION)
             return TRUE;
         break;
-    case TOOL_CLASS:
+	case DECORATION_CLASS:
+		break;
+	case TOOL_CLASS:
         if (typ == PICK_AXE)
             return (boolean) needspick(mon->data);
         if (typ == UNICORN_HORN)

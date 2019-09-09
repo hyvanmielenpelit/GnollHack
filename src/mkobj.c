@@ -33,20 +33,22 @@ static const struct icp mkobjprobs[] = { { 10, WEAPON_CLASS },
                                          { 15, POTION_CLASS },
                                          { 15, SCROLL_CLASS },
                                          { 4, SPBOOK_CLASS },
-                                         { 4, WAND_CLASS },
+                                         { 3, WAND_CLASS },
                                          { 3, RING_CLASS },
 										 { 2, REAGENT_CLASS },
+										 { 1, DECORATION_CLASS },
 										 { 1, AMULET_CLASS } };
 
 static const struct icp boxiprobs[] = { { 18, GEM_CLASS },
                                         { 15, FOOD_CLASS },
                                         { 17, POTION_CLASS },
-                                        { 17, SCROLL_CLASS },
+                                        { 16, SCROLL_CLASS },
                                         { 12, SPBOOK_CLASS },
                                         { 7, COIN_CLASS },
                                         { 6, WAND_CLASS },
                                         { 5, RING_CLASS },
 										{ 2, REAGENT_CLASS },
+   									    { 1, DECORATION_CLASS },
 										{ 1, AMULET_CLASS } };
 
 static const struct icp rogueprobs[] = { { 12, WEAPON_CLASS },
@@ -58,7 +60,7 @@ static const struct icp rogueprobs[] = { { 12, WEAPON_CLASS },
                                          { 5, RING_CLASS } };
 
 static const struct icp hellprobs[] = { { 20, WEAPON_CLASS },
-                                        { 20, ARMOR_CLASS },
+                                        { 18, ARMOR_CLASS },
                                         { 15, FOOD_CLASS },
                                         { 12, TOOL_CLASS },
                                         { 10, GEM_CLASS },
@@ -67,7 +69,8 @@ static const struct icp hellprobs[] = { { 20, WEAPON_CLASS },
 										{ 1, REAGENT_CLASS },
 										{ 8, WAND_CLASS },
                                         { 8, RING_CLASS },
-                                        { 4, AMULET_CLASS } };
+										{ 2, DECORATION_CLASS },
+										{ 4, AMULET_CLASS } };
 
 struct oextra *
 newoextra()
@@ -1060,7 +1063,10 @@ boolean artif;
             break;
         case RING_CLASS:
             if (objects[otmp->otyp].oc_charged) {
-				int addition = ((otmp->otyp == RIN_POWER) ? rnd(2) : rnd(5));
+				int addition = rnd(2);
+				if (otmp->otyp != RIN_POWER)
+					addition += !rn2(2) ? 0 : !rn2(2) ? 1 : !rn2(2) ? 2 : 3;
+
                 blessorcurse(otmp, 3);
                 if (rn2(10)) {
 					if (rn2(10) && bcsign(otmp))
@@ -1081,7 +1087,30 @@ boolean artif;
                 curse(otmp);
             }
             break;
-        case ROCK_CLASS:
+		case DECORATION_CLASS:
+			if (objects[otmp->otyp].oc_charged) {
+				int addition = rnd(2);
+				if (otmp->otyp != STRANGE_OBJECT)
+					addition += !rn2(2) ? 0 : !rn2(2) ? 1 : !rn2(2) ? 2 : 3;
+				blessorcurse(otmp, 3);
+				if (rn2(10)) {
+					if (rn2(10) && bcsign(otmp))
+						otmp->spe = bcsign(otmp) * addition; // rne(3);
+					else
+						otmp->spe = rn2(2) ? addition : -addition; //rne(3) : -rne(3);
+				}
+				/* make useless +0 decorations much less common */
+				if (otmp->spe == 0)
+					otmp->spe = ((otmp->otyp == STRANGE_OBJECT) ? rnd(3) - 2 : rn2(4) - rn2(3));
+				/* negative decorations are usually cursed */
+				if (otmp->spe < 0 && rn2(5))
+					curse(otmp);
+			}
+			else if (rn2(10) && (otmp->otyp == STRANGE_OBJECT || !rn2(9))) {
+				curse(otmp);
+			}
+			break;
+		case ROCK_CLASS:
             switch (otmp->otyp) {
             case STATUE:
                 /* possibly overridden by mkcorpstat() */
@@ -1483,6 +1512,7 @@ register struct obj *obj;
 			else if (obj->otyp == BAG_OF_TREASURE_HAULING
 				&& (contents->oclass == COIN_CLASS || contents->oclass == GEM_CLASS
 					|| contents->oclass == RING_CLASS || contents->oclass == AMULET_CLASS
+					|| contents->oclass == DECORATION_CLASS
 					|| objects[contents->otyp].oc_material == SILVER
 					|| objects[contents->otyp].oc_material == GOLD
 					|| objects[contents->otyp].oc_material == PLATINUM
@@ -2643,9 +2673,17 @@ struct obj *obj;
 			if (obj != uarmv)
 				what = "belt";
 			break;
-		case W_ARMP:
-			if (obj != uarmp)
-				what = "pants";
+		case W_DECO:
+			if (obj != udeco)
+				what = "miscellaneous item";
+			break;
+		case W_DECO2:
+			if (obj != udeco2)
+				what = "secondary miscellaneous item";
+			break;
+		case W_DECO3:
+			if (obj != udeco2)
+				what = "tertiary miscellaneous item";
 			break;
 		case W_ARMF:
             if (obj != uarmf)
@@ -2725,6 +2763,9 @@ struct obj *obj;
         } else if (owornmask & W_AMUL) {
             if (obj->oclass != AMULET_CLASS)
                 what = "amulet";
+        } else if (owornmask & W_DECORATIONS) {
+            if (obj->oclass != DECORATION_CLASS)
+                what = "miscellaneous item";
         } else if (owornmask & W_RING) {
             if (obj->oclass != RING_CLASS && obj->otyp != MEAT_RING)
                 what = "ring";

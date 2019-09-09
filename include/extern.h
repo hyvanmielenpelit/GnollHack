@@ -490,7 +490,7 @@ E int NDECL(Shirt_off);
 E int NDECL(Robe_off);
 E int NDECL(Bracers_off);
 E int NDECL(Belt_off);
-E int NDECL(Pants_off);
+E int FDECL(Decoration_off, (struct obj *));
 E void NDECL(Amulet_off);
 E void FDECL(Ring_on, (struct obj *));
 E void FDECL(Ring_off, (struct obj *));
@@ -1766,7 +1766,7 @@ E int FDECL(rnd_class, (int, int));
 E const char *FDECL(suit_simple_name, (struct obj *));
 E const char *FDECL(cloak_simple_name, (struct obj *));
 E const char* FDECL(robe_simple_name, (struct obj*));
-E const char* FDECL(pants_simple_name, (struct obj*));
+E const char* FDECL(decoration_simple_name, (struct obj*));
 E const char *FDECL(helm_simple_name, (struct obj *));
 E const char *FDECL(mimic_obj_name, (struct monst *));
 E char *FDECL(safe_qbuf, (char *, const char *, const char *, struct obj *,

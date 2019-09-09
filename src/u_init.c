@@ -31,7 +31,6 @@ static struct trobj Archeologist[] = {
     /* if adventure has a name...  idea from tan@uvm-gen */
     { BULLWHIP, 2, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
     { LEATHER_JACKET, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-	{ LEATHER_PANTS, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
 	{ FEDORA, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
     { FOOD_RATION, 0, FOOD_CLASS, 3, 0, 0 },
     { PICK_AXE, UNDEF_SPE, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
@@ -46,7 +45,6 @@ static struct trobj Barbarian[] = {
     { TWO_HANDED_SWORD, 0, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
     { AXE, 0, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
     { RING_MAIL, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-	{ KILT, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
 	{ SACK, UNDEF_SPE, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
 	{ FOOD_RATION, 0, FOOD_CLASS, 1, 0, 0 },
     { 0, 0, 0, 0, 0, 0 }
@@ -166,7 +164,6 @@ static struct trobj Tourist[] = {
     { SCR_MAGIC_MAPPING, 0, SCROLL_CLASS, 4, UNDEF_BLESS, 0 },
     { HAWAIIAN_SHIRT, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
 	{ LEATHER_BELT, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-	{ BEIGE_SHORTS, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
 	{ LEATHER_SANDALS, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
 	{ EXPENSIVE_CAMERA, UNDEF_SPE, TOOL_CLASS, 1, 0, 0 },
     { CREDIT_CARD, 0, TOOL_CLASS, 1, 0, 0 },
@@ -179,11 +176,11 @@ static struct trobj TouristFemale[] = {
 	{ POT_EXTRA_HEALING, 0, POTION_CLASS, 2, UNDEF_BLESS, 0 },
 	{ SCR_MAGIC_MAPPING, 0, SCROLL_CLASS, 4, UNDEF_BLESS, 0 },
 	{ HAWAIIAN_SHIRT, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-	{ SKIRT, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
 	{ LEATHER_SANDALS, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
 	{ EXPENSIVE_CAMERA, UNDEF_SPE, TOOL_CLASS, 1, 0, 0 },
 	{ CREDIT_CARD, 0, TOOL_CLASS, 1, 0, 0 },
-	{ EXPENSIVE_HANDBAG, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
+	{ EXPENSIVE_HANDBAG, 0, TOOL_CLASS, 1, 0, 0 },
+	{ GOLDEN_EARRINGS, 0, DECORATION_CLASS, 1, 0, 0 },
 	{ UNDEF_TYP, UNDEF_SPE, FOOD_CLASS, 10, 0 },
 	{ 0, 0, 0, 0, 0, 0 }
 };
@@ -1308,13 +1305,6 @@ register struct trobj *trop;
 				(void)add_to_container(obj, mksobj(BATHROBE, TRUE, FALSE));
 				(void)add_to_container(obj, mksobj(COTTON_SLIPPERS, TRUE, FALSE));
 				(void)add_to_container(obj, mksobj(TOWEL, TRUE, FALSE));
-				if (!rn2(4))
-				{
-					if (flags.female)
-						(void)add_to_container(obj, mksobj(SWIMMING_BIKINI, TRUE, FALSE));
-					else
-						(void)add_to_container(obj, mksobj(TRUNKS_OF_SWIMMING, TRUE, FALSE));
-				}
 				makeknown(BATHROBE);
 				obj->owt = weight(obj);
 			}
@@ -1386,13 +1376,33 @@ register struct trobj *trop;
 				setworn(obj, W_ARMB);
 			else if (is_belt(obj) && !uarmv)
 				setworn(obj, W_ARMV);
-			else if (is_pants(obj) && !uarmp)
-				setworn(obj, W_ARMP);
 			else if (is_boots(obj) && !uarmf)
                 setworn(obj, W_ARMF);
             else if (is_suit(obj) && !uarm)
                 setworn(obj, W_ARM);
         }
+
+		if (obj->oclass == DECORATION_CLASS && !(udeco && udeco2 && udeco3))
+		{
+			if (objects[obj->otyp].oc_subtyp != DEC_MULTIPLE_PERMITTED &&
+				(udeco && objects[udeco->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
+				|| (udeco2 && objects[udeco2->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
+				|| (udeco3 && objects[udeco3->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
+				)
+			{
+				//Nothing
+			}
+			else
+			{
+				if(!udeco)
+					setworn(obj, W_DECO);
+				else if (!udeco2)
+					setworn(obj, W_DECO2);
+				else if (!udeco3)
+					setworn(obj, W_DECO3);
+			}
+		}
+
 
         if (obj->oclass == WEAPON_CLASS || is_weptool(obj)
             || otyp == TIN_OPENER || otyp == FLINT || otyp == ROCK) {

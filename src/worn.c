@@ -20,7 +20,6 @@ const struct worn {
              { W_ARMS, &uarms },
 			 { W_ARMB, &uarmb },
 			 { W_ARMV, &uarmv },
-			 { W_ARMP, &uarmp },
 			 { W_ARMG, &uarmg },
              { W_ARMF, &uarmf },
              { W_ARMU, &uarmu },
@@ -30,7 +29,10 @@ const struct worn {
              { W_SWAPWEP, &uswapwep },
              { W_QUIVER, &uquiver },
              { W_AMUL, &uamul },
-             { W_TOOL, &ublindf },
+			 { W_DECO, &udeco },
+			 { W_DECO2, &udeco2 },
+			 { W_DECO3, &udeco3 },
+			 { W_TOOL, &ublindf },
              { W_BALL, &uball },
              { W_CHAIN, &uchain },
              { 0, 0 }
@@ -154,12 +156,12 @@ long mask;
 			|| (obj->oclass !=ARMOR_CLASS && u.uac != oldac)
 			)) // this should identify all objects giving hp or mana or stats or ac
 		{
-			if (obj->oclass == RING_CLASS) //Observable ring
+			if (obj->oclass == RING_CLASS || obj->oclass == DECORATION_CLASS) //Observable ring
 				learnring(obj, TRUE);
 			else
 				makeknown(obj->otyp);
 		}
-		else if (obj->oclass == RING_CLASS)
+		else if (obj->oclass == RING_CLASS || obj->oclass == DECORATION_CLASS)
 		{
 			//Nonobservable ring
 			learnring(obj, FALSE);
@@ -236,12 +238,12 @@ register struct obj *obj;
 			|| (obj->oclass != ARMOR_CLASS && u.uac != oldac)
 			)) // this should identify all objects giving hp or mana or stats or ac
 		{
-			if (obj->oclass == RING_CLASS) //Observable ring
+			if (obj->oclass == RING_CLASS || obj->oclass == DECORATION_CLASS) //Observable ring
 				learnring(obj, TRUE);
 			else
 				makeknown(obj->otyp);
 		}
-		else if (obj->oclass == RING_CLASS)
+		else if (obj->oclass == RING_CLASS || obj->oclass == DECORATION_CLASS)
 		{
 			//Nonobservable ring
 			learnring(obj, FALSE);
@@ -278,7 +280,10 @@ struct obj *obj;
     case AMULET_CLASS:
         res = W_AMUL; /* WORN_AMUL */
         break;
-    case RING_CLASS:
+	case DECORATION_CLASS:
+		res = W_DECORATIONS;
+		break;
+	case RING_CLASS:
         res = W_RINGL | W_RINGR; /* W_RING, BOTH_SIDES */
         break;
     case ARMOR_CLASS:
@@ -312,9 +317,6 @@ struct obj *obj;
 			break; /* BRACERS */
 		case ARM_BELT:
 			res = W_ARMV;
-			break; /* BRACERS */
-		case ARM_PANTS:
-			res = W_ARMP;
 			break; /* BRACERS */
 		}
         break;
@@ -711,10 +713,6 @@ boolean racialexception;
 			if (!is_belt(obj))
 				continue;
 			break;
-		case W_ARMP:
-			if (!is_pants(obj))
-				continue;
-			break;
 		case W_ARMO:
 			if (!is_robe(obj))
 				continue;
@@ -816,8 +814,6 @@ long flag;
 			return uarmb;
 		case W_ARMV:
 			return uarmv;
-		case W_ARMP:
-			return uarmp;
 		case W_ARMG:
             return uarmg;
         case W_ARMF:

@@ -454,6 +454,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 		/*FALLTHRU*/
     case VENOM_CLASS:
 	case REAGENT_CLASS:
+	case DECORATION_CLASS:
 	case TOOL_CLASS:
 		if (obj->special_enchantment == COLD_ENCHANTMENT)
 			Strcat(buf, "cold-enchanted ");
@@ -465,7 +466,8 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 			Strcat(buf, "death-enchanted ");
 
 
-		if (typ == LENSES)
+		if (typ == LENSES
+			|| (obj->oclass == DECORATION_CLASS && objects[obj->otyp].oc_subtyp == DEC_EARRINGS))
             Strcpy(buf, "pair of ");
         else if (is_wet_towel(obj))
             Strcpy(buf, (obj->spe < 3) ? "moist " : "wet ");
@@ -498,7 +500,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             Sprintf(buf, "set of %s", actualn);
             break;
         }
-        if (is_boots(obj) || is_gloves(obj) || is_bracers(obj) || (is_pants(obj) && !(typ >= SKIRT && typ <= KILT)))
+        if (is_boots(obj) || is_gloves(obj) || is_bracers(obj))
             Strcpy(buf, "pair of ");
 
         if (obj->otyp >= ELVEN_SHIELD && obj->otyp <= ORCISH_SHIELD
@@ -526,8 +528,6 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 				Strcpy(buf, "bracers");
 			else if (is_belt(obj))
 				Strcpy(buf, "belt");
-			else if (is_pants(obj))
-				Strcpy(buf, "pants");
 			else if (is_helmet(obj))
                 Strcpy(buf, "helmet");
             else if (is_shield(obj))
@@ -1025,7 +1025,9 @@ unsigned doname_flags;
              */
                  || ((!known || !objects[obj->otyp].oc_charged
                       || obj->oclass == ARMOR_CLASS
-                      || obj->oclass == RING_CLASS)
+                      || obj->oclass == RING_CLASS
+					  || obj->oclass == DECORATION_CLASS
+					 )
 #ifdef MAIL
                      && obj->otyp != SCR_MAIL
 #endif
@@ -1065,7 +1067,24 @@ unsigned doname_flags;
         if (obj->owornmask & W_AMUL)
             Strcat(bp, " (being worn)");
         break;
-    case ARMOR_CLASS:
+	case DECORATION_CLASS:
+		if (obj->owornmask & W_DECORATIONS)
+		{
+			if(!objects[obj->otyp].oc_content_desc)
+				Strcat(bp, " (being worn)");
+			else
+			{
+				Strcat(bp, " (");
+				Strcat(bp, objects[obj->otyp].oc_content_desc);
+				Strcat(bp, ")");
+			}
+		}
+		if (known && objects[obj->otyp].oc_charged) {
+			Strcat(prefix, sitoa(obj->spe));
+			Strcat(prefix, " ");
+		}
+		break;
+	case ARMOR_CLASS:
         if (obj->owornmask & W_ARMOR)
             Strcat(bp, (obj == uskin) ? " (embedded in your skin)"
                        /* in case of perm_invent update while Wear/Takeoff
@@ -1272,7 +1291,7 @@ unsigned doname_flags;
         case RING_CLASS:
 		case REAGENT_CLASS:
 		case AMULET_CLASS:
-        case WAND_CLASS:
+		case WAND_CLASS:
         case COIN_CLASS:
         case GEM_CLASS:
             Strcat(bp, " (in quiver pouch)");
@@ -2083,12 +2102,12 @@ static const char *wrp[] = {
     "wand",   "ring",      "potion",     "scroll", "gem",
     "amulet", "spellbook", "spell book",
     /* for non-specific wishes */
-    "weapon", "armor",     "tool",  "reagent",  "miscellaneous item",     "food",   "comestible",
+    "weapon", "armor",     "tool",  "reagent",  "miscellaneous item",   "miscellaneous",     "food",   "comestible",
 };
 static const char wrpsym[] = { WAND_CLASS,   RING_CLASS,   POTION_CLASS,
                                SCROLL_CLASS, GEM_CLASS,    AMULET_CLASS,
                                SPBOOK_CLASS, SPBOOK_CLASS, WEAPON_CLASS,
-                               ARMOR_CLASS,  TOOL_CLASS, REAGENT_CLASS, REAGENT_CLASS,
+                               ARMOR_CLASS,  TOOL_CLASS, REAGENT_CLASS, DECORATION_CLASS, DECORATION_CLASS,
 							   FOOD_CLASS,   FOOD_CLASS };
 
 /* return form of the verb (input plural) if xname(otmp) were the subject */
@@ -2257,7 +2276,8 @@ static struct sing_plur one_off[] = {
 static const char *const as_is[] = {
     /* makesingular() leaves these plural due to how they're used */
     "boots",   "shoes",     "gloves",    "lenses",   "scales",
-    "eyes",    "gauntlets", "iron bars", "bracers", "pants", "trousers", "shorts", "jeans", "trunks",
+    "eyes",    "gauntlets", "iron bars", "bracers", "wings", "earrings",
+	"pants",   "trousers",  "trunks",
     /* both singular and plural are spelled the same */
     "bison",   "deer",      "elk",       "fish",      "fowl",
     "tuna",    "yaki",      "-hai",      "krill",     "manes",
@@ -2838,7 +2858,7 @@ STATIC_OVL NEARDATA const struct o_range o_ranges[] = {
 	{ "robe", ARMOR_CLASS, ROBE, MUMMY_WRAPPING },
 	{ "bracers", ARMOR_CLASS, LEATHER_BRACERS, BRACERS_OF_MAGIC_RESISTANCE },
 	{ "belt", ARMOR_CLASS, LEATHER_BELT, BELT_OF_GIANT_STRENGTH },
-	{ "pants", ARMOR_CLASS, LEATHER_PANTS, TRUNKS_OF_SWIMMING },
+	{ "miscellaneous item", DECORATION_CLASS, BROOCH_OF_SHIELDING, WINGS_OF_FLYING },
 	{ "dragon scales", ARMOR_CLASS, GRAY_DRAGON_SCALES,
       YELLOW_DRAGON_SCALES },
     { "dragon scale mail", ARMOR_CLASS, GRAY_DRAGON_SCALE_MAIL,
@@ -2873,8 +2893,6 @@ static const struct alt_spellings {
 	{ "smooth shield", SHIELD_OF_REFLECTION },
     { "grey dragon scale mail", GRAY_DRAGON_SCALE_MAIL },
     { "grey dragon scales", GRAY_DRAGON_SCALES },
-	{ "swimming trunks", TRUNKS_OF_SWIMMING },
-	{ "bikini", SWIMMING_BIKINI },
 	{ "iron ball", HEAVY_IRON_BALL },
     { "lantern", BRASS_LANTERN },
     { "mattock", DWARVISH_MATTOCK },
@@ -4325,24 +4343,17 @@ struct obj* robe;
 }
 
 const char*
-pants_simple_name(pants)
+decoration_simple_name(pants)
 struct obj* pants;
 {
 	if (pants) {
-		switch (pants->otyp) {
-		case SKIRT: //special types here
-			return "skirt";
-		case KILT: //special types here
-			return "kilt";
-		case SWIMMING_BIKINI: //special types here
-			return "bikini";
-		case TRUNKS_OF_SWIMMING: //special types here
-			return "trunks";
+		switch (pants->otyp)
+		{
 		default:
 			break;
 		}
 	}
-	return "pants";
+	return "miscellaneous item";
 }
 
 

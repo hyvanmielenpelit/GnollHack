@@ -1709,7 +1709,7 @@ register struct obj* omonwep;
             hitmsg(mtmp, mattk, dmg);
             break;
         }
-        if (!uwep && !uarmu && !uarm && !uarmc && !uarmo && !uarmb && !uarmv && !uarmp
+        if (!uwep && !uarmu && !uarm && !uarmc && !uarmo && !uarmb && !uarmv
             && !uarms && !uarmg && !uarmf && !uarmh) {
             boolean goaway = FALSE;
 
@@ -2878,7 +2878,7 @@ struct monst *mon;
         }
     }
 
-    naked = (!uarmc && !uarmf && !uarmg && !uarms && !uarmh && !uarmu && !uarmo && !uarmb && !uarmv && !uarmp);
+    naked = (!uarmc && !uarmf && !uarmg && !uarms && !uarmh && !uarmu && !uarmo && !uarmb && !uarmv);
     pline("%s %s%s.", Who,
           Deaf ? "seems to murmur into your ear"
                : naked ? "murmurs sweet nothings into your ear"
@@ -2905,8 +2905,6 @@ struct monst *mon;
         mayberem(mon, Who, uarmu, "shirt");
 	if (uarmv)
 		mayberem(mon, Who, uarmv, "belt");
-	if (uarmp)
-		mayberem(mon, Who, uarmp, pants_simple_name(uarmp));
 
     /* removing armor (levitation boots, or levitation ring to make
        room for adornment ring with incubus case) might result in the
@@ -3101,7 +3099,7 @@ const char *str;
                            ? "let me rub your feet"
                            : (obj == uarmg)
                               ? "they're too clumsy"
-                              : (obj == uarmu || obj == uarmp)
+                              : (obj == uarmu)
                                  ? "let me massage you"
                                  /* obj == uarmh */
                                  : hairbuf);

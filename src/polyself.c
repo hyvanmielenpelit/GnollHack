@@ -1036,17 +1036,6 @@ break_armor()
 			(void)Belt_off();
 			useup(otmp);
 		}
-		if ((otmp = uarmp) != 0) {
-			if (donning(otmp))
-				cancel_don();
-			if(otmp->otyp == SKIRT || otmp->otyp == KILT)
-				Your("%s is torn to pieces!", pants_simple_name(otmp));
-			else
-				Your("%s are torn to pieces!", pants_simple_name(otmp));
-
-			(void)Pants_off();
-			useup(otmp);
-		}
 	} else if (sliparm(youmonst.data)) {
         if (((otmp = uarm) != 0) && (racial_exception(&youmonst, otmp) < 1)) {
             if (donning(otmp))
@@ -1085,19 +1074,6 @@ break_armor()
 			else
 				You("shrink out of your belt!");
 			setworn((struct obj*) 0, otmp->owornmask & W_ARMV);
-			dropx(otmp);
-		}
-		if ((otmp = uarmp) != 0) {
-			if (is_whirly(youmonst.data))
-			{
-				if (otmp->otyp == SKIRT || otmp->otyp == KILT)
-					Your("%s falls, unsupported!", pants_simple_name(otmp));
-				else
-					Your("%s fall, unsupported!", pants_simple_name(otmp));
-			}
-			else
-				You("shrink out of your %s!", pants_simple_name(otmp));
-			(void)Pants_off();
 			dropx(otmp);
 		}
 	}
