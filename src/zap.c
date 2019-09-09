@@ -2811,8 +2811,8 @@ register struct obj *obj;
 		while(sobj)
 		{
 			zombietype = -1;
-			if ((radius < 0 || dist2(u.ux, u.uy, sobj->ox, sobj->oy) <= radius * radius) 
-				&& cansee(sobj->ox, sobj->oy) 
+			if ((radius < 0 || dist2(u.ux, u.uy, sobj->ox, sobj->oy) <= radius * (radius + 1)) //+1 to make a bit larger and square-like
+				&& cansee(sobj->ox, sobj->oy)
 				&& !IS_STWALL(levl[sobj->ox][sobj->oy].typ))
 			{
 				if (sobj->otyp == CORPSE && sobj->corpsenm > 0)
@@ -2858,7 +2858,7 @@ register struct obj *obj;
 		while (sobj)
 		{
 			zombietype = -1;
-			if ((radius < 0 || dist2(u.ux, u.uy, sobj->ox, sobj->oy) <= radius * radius)
+			if ((radius < 0 || dist2(u.ux, u.uy, sobj->ox, sobj->oy) <= radius * (radius + 1)) //+1 to make a bit larger and square-like
 				&& cansee(sobj->ox, sobj->oy)
 				&& !IS_STWALL(levl[sobj->ox][sobj->oy].typ))
 			{
@@ -2906,7 +2906,7 @@ register struct obj *obj;
 		while (sobj)
 		{
 			zombietype = -1;
-			if ((radius < 0 || distmin(u.ux, u.uy, sobj->ox, sobj->oy) <= radius)
+			if ((radius < 0 || dist2(u.ux, u.uy, sobj->ox, sobj->oy) <= radius * (radius + 1)) //+1 to make a bit larger and square-like
 				&& cansee(sobj->ox, sobj->oy)
 				&& !IS_STWALL(levl[sobj->ox][sobj->oy].typ))
 			{
