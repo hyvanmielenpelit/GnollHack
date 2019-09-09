@@ -2727,7 +2727,7 @@ register struct obj *obj;
 		}
 
 		break;
-	case SPE_YENDORIAN_GREAT_SUMMONING: 
+	case SPE_GREAT_YENDORIAN_SUMMONING: 
 	{
 		You("successfully cast Rodney's great summoning spell.");
 		int monstcount = 0;
@@ -2899,6 +2899,7 @@ register struct obj *obj;
 		You("successfully permormed the necromatic magic.");
 		int zombietype;
 		int monstcount = 0;
+		int hatchlingcount = 0;
 		int radius = objects[obj->otyp].oc_spell_radius;
 		struct obj* sobj;
 		sobj = fobj;
@@ -2910,25 +2911,34 @@ register struct obj *obj;
 				&& cansee(sobj->ox, sobj->oy)
 				&& !IS_STWALL(levl[sobj->ox][sobj->oy].typ))
 			{
-				if (sobj->otyp == CORPSE && sobj->corpsenm > 0)
+				if (sobj->otyp == CORPSE)
 				{
-					if (mons[sobj->corpsenm].mlet == S_DRAGON)
+					if ((sobj->corpsenm >= PM_GRAY_DRAGON && sobj->corpsenm <= PM_ANCIENT_YELLOW_DRAGON) || sobj->corpsenm == PM_CHROMATIC_DRAGON)
+					{
 						zombietype = PM_DRACOLICH;
 
-					if (zombietype > 0)
-					{
 						if (animate_corpse(sobj, zombietype))
 							monstcount++;
-						sobj = fobj; //The corpse got deleted, so move to beginning
+						sobj = fobj; //The corpse got deleted, so move to the beginning
 						continue;
+					}
+					else if (sobj->corpsenm >= PM_GRAY_DRAGON_HATCHLING && sobj->corpsenm <= PM_YELLOW_DRAGON_HATCHLING)
+					{
+						hatchlingcount++;
+						pline("%s twitches for a moment, but nothing else happens.", The(cxname(sobj)));
 					}
 				}
 			}
 			sobj = sobj->nobj;
 		}
-		if (monstcount == 0)
-			pline("However, nothing happens.");
 
+		if (monstcount == 0)
+		{
+			if(hatchlingcount == 0)
+				pline("However, nothing happens.");
+			else
+				You_feel("the corpse%s might not be sufficiently large for the spell.", hatchlingcount > 1 ? "s" : "");
+		}
 		break;
 	}	
 	case WAN_SECRET_DOOR_DETECTION:

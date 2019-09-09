@@ -456,7 +456,7 @@ struct materialcomponentlist matlists[] =
 		}
 	},
 
-	{ SPE_YENDORIAN_GREAT_SUMMONING,
+	{ SPE_GREAT_YENDORIAN_SUMMONING,
 	"Jacinth stone, fungal spore",
 	1,
 		{

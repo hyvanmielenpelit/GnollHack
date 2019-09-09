@@ -1612,33 +1612,54 @@ struct obj* origobj;
 	} /* swallowed */
 
 	if (u.dz) {
-		int x = u.ux;
-		int y = u.uy;
-		struct trap* t;
-		struct rm* lev = &levl[x][y];
-		boolean see_it = cansee(x, y);
-		char msgtxt[BUFSZ];
+		zx = u.ux;
+		zy = u.uy;
+		struct rm* lev = &levl[zx][zy];
+		boolean see_it = cansee(zx, zy);
 
-		if (Is_waterlevel(&u.uz))
+		if (Is_waterlevel(&u.uz) || u.dz < 0)
 		{
 			pline("Nothing happens.");
 		}
 		else
 		{
-			if (u.dz < 0)
-			{
-				lev->typ = ROOM, lev->flags = 0;
-				t = maketrap(x, y, PIT);
-				if (t)
-					t->tseen = 1;
-				if (see_it)
-					strcpy(msgtxt, "The water evaporates.");
+			if (is_pool(zx, zy)) {
+				const char* msgtxt = "You hear hissing gas.";
+
+				if (lev->typ == DRAWBRIDGE_UP)
+				{
+					if (see_it)
+						msgtxt = "Some water evaporates.";
+				}
+				else
+				{ // Leave no pits, evaporation gives a walkable route
+					lev->typ = ROOM, lev->flags = 0;
+					if (lev->typ == MOAT)
+					{
+						struct trap* t = maketrap(zx, zy, PIT);
+						if (t)
+							t->tseen = 1;
+					}
+					if (see_it)
+						msgtxt = "The water evaporates.";
+				}
 				Norep("%s", msgtxt);
 				if (lev->typ == ROOM)
-					newsym(x, y);
+					newsym(zx, zy);
 			}
-			else
-				pline("Nothing happens.");
+			else if (IS_FOUNTAIN(lev->typ))
+			{
+				/* replace the fountain with ordinary floor */
+				lev->typ = ROOM;
+				lev->flags = 0;
+				lev->blessedftn = 0;
+				if (see_it)
+					pline_The("fountain dries up!");
+				/* The location is seen if the hero/monster is invisible
+				   or felt if the hero is blind. */
+				newsym(zx, zy);
+				level.flags.nfountains--;
+			}
 		}
 		return;
 	} /* up or down */
@@ -1692,16 +1713,22 @@ struct obj* origobj;
 		else if (is_pool(zx, zy)) {
 			const char* msgtxt = "You hear hissing gas.";
 
-			if (lev->typ == DRAWBRIDGE_UP)
-			{ // DRAWBRIDGE_UP
+			if (lev->typ == DRAWBRIDGE_UP || (Is_waterlevel(&u.uz)))
+			{
 				digdepth -= 1;
 				if (see_it)
 					msgtxt = "Some water evaporates.";
 			}
-			else 
+			else
 			{ // Leave no pits, evaporation gives a walkable route
 				digdepth -= 1;
 				lev->typ = ROOM, lev->flags = 0;
+				if (lev->typ == MOAT)
+				{
+					struct trap* t = maketrap(zx, zy, PIT);
+					if (t)
+						t->tseen = 1;
+				}
 				if (see_it)
 					msgtxt = "The water evaporates.";
 			}

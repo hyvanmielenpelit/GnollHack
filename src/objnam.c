@@ -2869,7 +2869,7 @@ static const struct alt_spellings {
 	{ "spellbook of call demogorgon", SPE_CALL_DEMOGORGON },
 	{ "spellbook of summon demogorgon", SPE_CALL_DEMOGORGON },
 	{ "spellbook of summon Demogorgon", SPE_CALL_DEMOGORGON },
-	{ "spellbook of yendorian great summoning", SPE_YENDORIAN_GREAT_SUMMONING },
+	{ "spellbook of yendorian great summoning", SPE_GREAT_YENDORIAN_SUMMONING },
 	{ "smooth shield", SHIELD_OF_REFLECTION },
     { "grey dragon scale mail", GRAY_DRAGON_SCALE_MAIL },
     { "grey dragon scales", GRAY_DRAGON_SCALES },
