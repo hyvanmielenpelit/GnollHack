@@ -276,8 +276,8 @@ struct objclass {
 #define O1_NOT_CURSEABLE 0x00020000
 #define O1_CONFERS_LUCK 0x00040000
 #define O1_CONFERS_POWERS_WHEN_CARRIED 0x00080000
-#define O1_CONFERS_POWERS_TO_FEMALE_ONLY 0x00100000
-#define O1_CONFERS_POWERS_TO_MALE_ONLY 0x00200000
+#define O1_CONFERS_POWERS_TO_FEMALE_ONLY 0x00100000  /* note: does not work for extrinsic properties given by worn items (old system), but for everything else */
+#define O1_CONFERS_POWERS_TO_MALE_ONLY 0x00200000    /* note: does not work for extrinsic properties given by worn items (old system), but for everything else */
 #define O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED 0x00400000
 #define O1_CANNOT_BE_DROPPED_IF_CURSED 0x00800000
 
