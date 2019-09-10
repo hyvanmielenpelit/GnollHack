@@ -270,7 +270,7 @@ struct objclass {
 #define O1_SPECIAL_ENCHANTABLE 0x00004000
 #define O1_MANA_PERCENTAGE_BONUS 0x00008000
 #define O1_HP_PERCENTAGE_BONUS 0x00010000
-#define O1_NOT_CURSEABLE 0x00020000
+	/* one slot unused here */
 #define O1_CONFERS_LUCK 0x00040000
 #define O1_CONFERS_POWERS_WHEN_CARRIED 0x00080000
 #define O1_CONFERS_POWERS_TO_FEMALE_ONLY 0x00100000
@@ -281,6 +281,8 @@ struct objclass {
 /* General flags -- General: cannot be overriden */
 #define O1_TREATED_AS_MATERIAL_COMPONENT 0x10000000
 #define O1_EDIBLE_NONFOOD 0x20000000
+#define O1_NON_SPELL_SPELLBOOK 0x40000000  /* uses non-spellbook flags and other non-spellbook stats */
+#define O1_NOT_CURSEABLE 0x80000000
 };
 
 struct class_sym {

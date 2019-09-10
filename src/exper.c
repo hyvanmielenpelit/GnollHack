@@ -86,7 +86,8 @@ enmaxadjustment()
 	for (uitem = invent; uitem; uitem = uitem->nobj)
 	{
 		otyp = uitem->otyp;
-		if (objects[otyp].oc_class != SPBOOK_CLASS && objects[otyp].oc_mana_bonus > 0 && (
+		if ((objects[otyp].oc_class != SPBOOK_CLASS || (uitem->oclass == SPBOOK_CLASS && (objects[uitem->otyp].oc_flags & O1_NON_SPELL_SPELLBOOK)))
+			&& objects[otyp].oc_mana_bonus > 0 && (
 			  (uitem == uwep && (uitem->oclass == WEAPON_CLASS || is_weptool(uitem)))
 			|| uitem == uarm
 			|| uitem == uarmc

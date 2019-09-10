@@ -559,7 +559,8 @@ update_carried_item_extrinsics()
 	//Add then extrinsics from all carried items
 	for (uitem = invent; uitem; uitem = uitem->nobj)
 	{
-		if (
+		if ((uitem->oclass != SPBOOK_CLASS || (uitem->oclass == SPBOOK_CLASS && (objects[uitem->otyp].oc_flags & O1_NON_SPELL_SPELLBOOK)))
+			&& (
 			(uitem == uwep && (uitem->oclass == WEAPON_CLASS || is_weptool(uitem)))
 			|| uitem == uarm
 			|| uitem == uarmc
@@ -577,7 +578,7 @@ update_carried_item_extrinsics()
 			|| uitem == uamul
 			|| uitem == uright
 			|| uitem == uleft
-			|| objects[uitem->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED)
+			|| objects[uitem->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED))
 		{
 			int otyp = uitem->otyp;
 			if (((objects[otyp].oc_flags & O1_CONFERS_POWERS_TO_FEMALE_ONLY) && !(Upolyd ? u.mfemale : flags.female))
@@ -1348,7 +1349,8 @@ boolean addconstitutionbonus;
 	for (uitem = invent; uitem; uitem = uitem->nobj)
 	{
 		otyp = uitem->otyp;
-		if (objects[otyp].oc_class != SPBOOK_CLASS && objects[otyp].oc_hp_bonus > 0 && (
+		if ((objects[otyp].oc_class != SPBOOK_CLASS || (uitem->oclass == SPBOOK_CLASS && (objects[uitem->otyp].oc_flags & O1_NON_SPELL_SPELLBOOK)))
+			&& objects[otyp].oc_hp_bonus > 0 && (
 			(uitem == uwep && (uitem->oclass == WEAPON_CLASS || is_weptool(uitem)))
 			|| uitem == uarm
 			|| uitem == uarmc
@@ -1424,7 +1426,8 @@ updateabon()
 	for (uitem = invent; uitem; uitem = uitem->nobj)
 	{
 		otyp = uitem->otyp;
-		if (objects[otyp].oc_class != SPBOOK_CLASS && (
+		if ((objects[otyp].oc_class != SPBOOK_CLASS || (uitem->oclass == SPBOOK_CLASS && (objects[uitem->otyp].oc_flags & O1_NON_SPELL_SPELLBOOK)))
+			&& (
 			(uitem == uwep && (uitem->oclass == WEAPON_CLASS || is_weptool(uitem)))
 			|| uitem == uarm
 			|| uitem == uarmc
