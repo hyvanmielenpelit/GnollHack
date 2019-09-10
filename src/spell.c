@@ -1079,11 +1079,13 @@ boolean atme;
         return 1;
     }
 
-    /* if the cast attempt is already going to fail due to insufficient
+#if 0
+	/* if the cast attempt is already going to fail due to insufficient
        energy (ie, u.uen < energy), the Amulet's drain effect won't kick
        in and no turn will be consumed; however, when it does kick in,
        the attempt may fail due to lack of energy after the draining, in
        which case a turn will be used up in addition to the energy loss */
+
     if (u.uhave.amulet && u.uen >= energy) {
         You_feel("the amulet draining your energy away.");
         /* this used to be 'energy += rnd(2 * energy)' (without 'res'),
@@ -1098,6 +1100,7 @@ boolean atme;
         context.botl = 1;
         res = 1; /* time is going to elapse even if spell doesn't get cast */
     }
+#endif
 
     if (energy > u.uen) {
         You("don't have enough energy to cast that spell.");
