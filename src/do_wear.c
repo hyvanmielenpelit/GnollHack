@@ -2387,17 +2387,17 @@ struct obj *obj;
                 return 0;
             }
 		} else if (obj->oclass == DECORATION_CLASS) {
-			if (udeco && udeco2 && udeco3) {
-				You("cannot wear more than three miscellanous items.");
-				return 0;
-			}
-			else if (objects[obj->otyp].oc_subtyp != DEC_MULTIPLE_PERMITTED &&
+			if (objects[obj->otyp].oc_subtyp != DEC_MULTIPLE_PERMITTED &&
 				(udeco && objects[udeco->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
 				|| (udeco2 && objects[udeco2->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
 				|| (udeco3 && objects[udeco3->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
 				)
 			{
 				already_wearing(an(dec_type_names[objects[obj->otyp].oc_subtyp]));
+				return 0;
+			}
+			if (udeco && udeco2 && udeco3) {
+				You("cannot wear more than three miscellanous items.");
 				return 0;
 			}
 		} else if (eyewear) {

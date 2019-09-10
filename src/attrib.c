@@ -531,7 +531,10 @@ struct obj* otmp;
 		|| (otmp->oclass == AMULET_CLASS && (otmp->owornmask & W_AMUL))
 		|| (otmp->oclass == DECORATION_CLASS && (otmp->owornmask & W_DECORATIONS))
 		|| (otmp->oclass == TOOL_CLASS && (otmp->owornmask & W_TOOL))
-		|| (objects[otmp->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED));
+		|| (objects[otmp->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED))
+		&&
+		!(((objects[otmp->otyp].oc_flags & O1_CONFERS_POWERS_TO_FEMALE_ONLY) && !(Upolyd ? u.mfemale : flags.female))
+			|| ((objects[otmp->otyp].oc_flags & O1_CONFERS_POWERS_TO_MALE_ONLY) && (Upolyd ? u.mfemale : flags.female)));
 }
 
 boolean
@@ -557,6 +560,12 @@ update_carried_item_extrinsics()
 	{
 		if (objects[otmp->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED)
 		{
+			if (((objects[otmp->otyp].oc_flags & O1_CONFERS_POWERS_TO_FEMALE_ONLY) && !(Upolyd ? u.mfemale : flags.female))
+				|| ((objects[otmp->otyp].oc_flags & O1_CONFERS_POWERS_TO_MALE_ONLY) && (Upolyd ? u.mfemale : flags.female)))
+			{
+				continue;
+			}
+
 			if(objects[otmp->otyp].oc_oprop > 0)
 				u.uprops[objects[otmp->otyp].oc_oprop].extrinsic |= W_CARRIED;
 			if (objects[otmp->otyp].oc_oprop2 > 0)
@@ -1294,6 +1303,12 @@ boolean addconstitutionbonus;
 			|| objects[otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED
 			))
 		{
+			if(((objects[otyp].oc_flags & O1_CONFERS_POWERS_TO_FEMALE_ONLY) && !(Upolyd ? u.mfemale : flags.female))
+				|| ((objects[otyp].oc_flags & O1_CONFERS_POWERS_TO_MALE_ONLY) && (Upolyd ? u.mfemale : flags.female)))
+			{
+				continue;
+			}
+			
 			if (objects[otyp].oc_flags & O1_HP_PERCENTAGE_BONUS)
 				adj += (objects[otyp].oc_hp_bonus * (basehp + baseadj)) / 100;
 			else
@@ -1362,6 +1377,12 @@ updateabon()
 			|| objects[otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED
 			))
 		{
+			if (((objects[otyp].oc_flags & O1_CONFERS_POWERS_TO_FEMALE_ONLY) && !(Upolyd ? u.mfemale : flags.female))
+				|| ((objects[otyp].oc_flags & O1_CONFERS_POWERS_TO_MALE_ONLY) && (Upolyd ? u.mfemale : flags.female)))
+			{
+				continue;
+			}
+
 			for (int i = 0; i < A_MAX+3; i++)
 			{
 				int bit = 0;
@@ -1465,6 +1486,15 @@ int x;
 		if (str2 > str)
 			str = str2;
 
+		if (udeco && udeco->otyp == NOSE_RING_OF_BULL_STRENGTH
+			|| udeco2 && udeco2->otyp == NOSE_RING_OF_BULL_STRENGTH
+			|| udeco3 && udeco3->otyp == NOSE_RING_OF_BULL_STRENGTH)
+		{
+			str2 = 18;
+		}
+		if (str2 > str)
+			str = str2;
+
 #ifdef WIN32_BUG
         return (x = ((str <= 1) ? 1 : str));
 #else
@@ -1551,7 +1581,7 @@ int attrindx;
 
 		if (uarmv && uarmv->otyp == BELT_OF_GIANT_STRENGTH)
 		{
-			lolimit2 = STR19(19 + uarmv->spe);
+			lolimit2 = STR19(20 + uarmv->spe);
 			if (lolimit2 > STR19(25))
 				lolimit2 = STR19(25);
 
@@ -1562,6 +1592,14 @@ int attrindx;
 		
 		if (uarmg && uarmg->otyp == GAUNTLETS_OF_POWER){
 			lolimit2 = STR18(100);
+			if (lolimit2 > lolimit)
+				lolimit = lolimit2;
+			hilimit = lolimit;
+		}
+		if (udeco && udeco->otyp == NOSE_RING_OF_BULL_STRENGTH
+			|| udeco2 && udeco2->otyp == NOSE_RING_OF_BULL_STRENGTH
+			|| udeco3 && udeco3->otyp == NOSE_RING_OF_BULL_STRENGTH) {
+			lolimit2 = 18;
 			if (lolimit2 > lolimit)
 				lolimit = lolimit2;
 			hilimit = lolimit;

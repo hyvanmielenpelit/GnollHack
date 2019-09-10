@@ -107,6 +107,12 @@ enmaxadjustment()
 			|| objects[otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED
 			))
 		{
+			if (((objects[otyp].oc_flags & O1_CONFERS_POWERS_TO_FEMALE_ONLY) && !(Upolyd ? u.mfemale : flags.female))
+				|| ((objects[otyp].oc_flags & O1_CONFERS_POWERS_TO_MALE_ONLY) && (Upolyd ? u.mfemale : flags.female)))
+			{
+				continue;
+			}
+
 			if (objects[otyp].oc_flags & O1_MANA_PERCENTAGE_BONUS)
 				adj += (objects[otyp].oc_mana_bonus * (baseen + baseadj)) / 100;
 			else

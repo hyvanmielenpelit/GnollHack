@@ -2139,7 +2139,12 @@ int mode, final, attrindx;
     }
     switch (attrindx) {
     case A_STR:
-        if ((uarmg && uarmg->otyp == GAUNTLETS_OF_POWER && uarmg->cursed) || (uarmv && uarmv->otyp == BELT_OF_GIANT_STRENGTH && uarmv->cursed))
+        if ((uarmg && uarmg->otyp == GAUNTLETS_OF_POWER && uarmg->cursed)
+			|| (uarmv && uarmv->otyp == BELT_OF_GIANT_STRENGTH && uarmv->cursed)
+			|| (udeco && udeco->otyp == NOSE_RING_OF_BULL_STRENGTH && udeco->cursed)
+			|| (udeco2 && udeco2->otyp == NOSE_RING_OF_BULL_STRENGTH && udeco2->cursed)
+			|| (udeco3 && udeco3->otyp == NOSE_RING_OF_BULL_STRENGTH && udeco3->cursed)
+			)
             hide_innate_value = TRUE;
         break;
     case A_DEX:
