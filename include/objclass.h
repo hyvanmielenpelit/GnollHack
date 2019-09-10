@@ -163,13 +163,6 @@ struct objclass {
 #define BONUS_TO_DAMAGE 0x0040
 #define BONUS_TO_HIT 0x0080
 #define BONUS_TO_AC 0x0100
-/* below does not work yet do to performance concerns */
-#define SETS_MINUMUM_STR 0x0200
-#define SETS_MINUMUM_DEX 0x0400
-#define SETS_MINUMUM_CON 0x0800
-#define SETS_MINUMUM_INT 0x1000
-#define SETS_MINUMUM_WIS 0x2000
-#define SETS_MINUMUM_CHA 0x4000
 
 #define BONUS_TO_ALLSTATS BONUS_TO_STR | BONUS_TO_DEX | BONUS_TO_CON | BONUS_TO_INT | BONUS_TO_WIS | BONUS_TO_CHA
 
