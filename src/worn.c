@@ -29,22 +29,15 @@ const struct worn {
              { W_SWAPWEP, &uswapwep },
              { W_QUIVER, &uquiver },
              { W_AMUL, &uamul },
-			 { W_DECO, &udeco },
-			 { W_DECO2, &udeco2 },
-			 { W_DECO3, &udeco3 },
+			 { W_MISC, &umisc },
+			 { W_MISC2, &umisc2 },
+			 { W_MISC3, &umisc3 },
 			 { W_TOOL, &ublindf },
              { W_BALL, &uball },
              { W_CHAIN, &uchain },
              { 0, 0 }
 };
 
-/* This only allows for one blocking item per property */
-#define w_blocks(o, m) \
-    ((o->otyp == MUMMY_WRAPPING && ((m) & W_ARMC))                          \
-         ? INVIS                                                            \
-         : (o->otyp == CORNUTHAUM && ((m) & W_ARMH) && !Role_if(PM_WIZARD)) \
-               ? CLAIRVOYANT                                                \
-               : 0)
 /* note: monsters don't have clairvoyance, so your role
    has no significant effect on their use of w_blocks() */
 
@@ -56,7 +49,7 @@ long mask;
 {
     register const struct worn *wp;
     register struct obj *oobj;
-    register int p;
+//    register int p;
 
 	int oldmanamax = u.uenmax;
 	int oldhpmax = u.uhpmax;
@@ -80,13 +73,18 @@ long mask;
                 oobj = *(wp->w_obj);
                 if (oobj && !(oobj->owornmask & wp->w_mask))
                     impossible("Setworn: mask = %ld.", wp->w_mask);
+
+				/* If old object remove wornmask */
                 if (oobj) {
                     if (u.twoweap && (oobj->owornmask & (W_WEP | W_SWAPWEP)))
                         u.twoweap = 0;
                     oobj->owornmask &= ~wp->w_mask;
+
+					/* leave as "x = x <op> y", here and below, for broken
+					 * compilers */
+
+					/*
                     if (wp->w_mask & ~(W_SWAPWEP | W_QUIVER)) {
-                        /* leave as "x = x <op> y", here and below, for broken
-                         * compilers */
 						struct objclass* peritem = &objects[oobj->otyp];
                         p = objects[oobj->otyp].oc_oprop;
                         u.uprops[p].extrinsic =
@@ -102,18 +100,24 @@ long mask;
                         if (oobj->oartifact)
                             set_artifact_intrinsic(oobj, 0, mask);
                     }
+					*/
                     /* in case wearing or removal is in progress or removal
                        is pending (via 'A' command for multiple items) */
                     cancel_doff(oobj, wp->w_mask);
                 }
+
+				/* Set new object worn */
                 *(wp->w_obj) = obj;
                 if (obj) {
                     obj->owornmask |= wp->w_mask;
+
+
                     /* Prevent getting/blocking intrinsics from wielding
                      * potions, through the quiver, etc.
                      * Allow weapon-tools, too.
                      * wp_mask should be same as mask at this point.
                      */
+					/*
                     if (wp->w_mask & ~(W_SWAPWEP | W_QUIVER)) {
                         if (obj->oclass == WEAPON_CLASS || is_weptool(obj)
                             || mask != W_WEP) {
@@ -132,12 +136,14 @@ long mask;
                         }
                         if (obj->oartifact)
                             set_artifact_intrinsic(obj, 1, mask);
+						
                     }
+					*/
                 }
             }
     }
 
-
+	update_carried_item_extrinsics();
 	updateabon();
 	updatemaxen();
 	updatemaxhp();
@@ -156,12 +162,12 @@ long mask;
 			|| (obj->oclass !=ARMOR_CLASS && u.uac != oldac)
 			)) // this should identify all objects giving hp or mana or stats or ac
 		{
-			if (obj->oclass == RING_CLASS || obj->oclass == DECORATION_CLASS) //Observable ring
+			if (obj->oclass == RING_CLASS || obj->oclass == MISCELLANEOUS_CLASS) //Observable ring
 				learnring(obj, TRUE);
 			else
 				makeknown(obj->otyp);
 		}
-		else if (obj->oclass == RING_CLASS || obj->oclass == DECORATION_CLASS)
+		else if (obj->oclass == RING_CLASS || obj->oclass == MISCELLANEOUS_CLASS)
 		{
 			//Nonobservable ring
 			learnring(obj, FALSE);
@@ -178,7 +184,7 @@ setnotworn(obj)
 register struct obj *obj;
 {
     register const struct worn *wp;
-    register int p;
+//    register int p;
 
     if (!obj)
         return;
@@ -203,6 +209,7 @@ register struct obj *obj;
 			cancel_doff(obj, wp->w_mask);
 
 			*(wp->w_obj) = 0;
+			/*
 			p = objects[obj->otyp].oc_oprop;
 			u.uprops[p].extrinsic = u.uprops[p].extrinsic & ~wp->w_mask;
 
@@ -217,9 +224,11 @@ register struct obj *obj;
 				set_artifact_intrinsic(obj, 0, wp->w_mask);
 			if ((p = w_blocks(obj, wp->w_mask)) != 0)
 				u.uprops[p].blocked &= ~wp->w_mask;
+			*/
 		}
 	}
 
+	update_carried_item_extrinsics();
 	updateabon();
 	updatemaxen();
 	updatemaxhp();
@@ -238,12 +247,12 @@ register struct obj *obj;
 			|| (obj->oclass != ARMOR_CLASS && u.uac != oldac)
 			)) // this should identify all objects giving hp or mana or stats or ac
 		{
-			if (obj->oclass == RING_CLASS || obj->oclass == DECORATION_CLASS) //Observable ring
+			if (obj->oclass == RING_CLASS || obj->oclass == MISCELLANEOUS_CLASS) //Observable ring
 				learnring(obj, TRUE);
 			else
 				makeknown(obj->otyp);
 		}
-		else if (obj->oclass == RING_CLASS || obj->oclass == DECORATION_CLASS)
+		else if (obj->oclass == RING_CLASS || obj->oclass == MISCELLANEOUS_CLASS)
 		{
 			//Nonobservable ring
 			learnring(obj, FALSE);
@@ -280,8 +289,8 @@ struct obj *obj;
     case AMULET_CLASS:
         res = W_AMUL; /* WORN_AMUL */
         break;
-	case DECORATION_CLASS:
-		res = W_DECORATIONS;
+	case MISCELLANEOUS_CLASS:
+		res = W_MISCITEMS;
 		break;
 	case RING_CLASS:
         res = W_RINGL | W_RINGR; /* W_RING, BOTH_SIDES */

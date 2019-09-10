@@ -98,9 +98,9 @@ enmaxadjustment()
 			|| uitem == uarmo
 			|| uitem == uarmb
 			|| uitem == uarmv
-			|| uitem == udeco
-			|| uitem == udeco2
-			|| uitem == udeco3
+			|| uitem == umisc
+			|| uitem == umisc2
+			|| uitem == umisc3
 			|| uitem == uamul
 			|| uitem == uright
 			|| uitem == uleft
@@ -159,7 +159,7 @@ enmaxadjustment()
 			uitem = uarmv;
 			break;
 		case 11:
-			uitem = udeco;
+			uitem = umisc;
 			break;
 		case 12:
 			uitem = uamul;

@@ -845,7 +845,7 @@ struct obj* ud;
 	if (!ud)
 		return 0;
 
-	if (objects[ud->otyp].oc_subtyp == DEC_IOUN_STONE)
+	if (objects[ud->otyp].oc_subtyp == MISC_IOUN_STONE)
 	{
 		pline("%s to the air and starts to orbit around your %s.", Tobjnam(ud, "rise"), body_part(HEAD));
 	}
@@ -864,7 +864,7 @@ struct obj* ud;
 	if (!ud)
 		return 0;
 
-	long bit = ud->owornmask & W_DECORATIONS;
+	long bit = ud->owornmask & W_MISCITEMS;
 
 	context.takeoff.mask &= ~bit;
 	/* no shirt currently requires special handling when taken off, but we
@@ -873,7 +873,7 @@ struct obj* ud;
 	setworn((struct obj*) 0, bit);
 	context.takeoff.cancelled_don = FALSE;
 
-	if (objects[ud->otyp].oc_subtyp == DEC_IOUN_STONE)
+	if (objects[ud->otyp].oc_subtyp == MISC_IOUN_STONE)
 	{
 		pline("%s orbiting around your %s.", Tobjnam(ud, "stop"), body_part(HEAD));
 	}
@@ -1513,12 +1513,12 @@ struct obj *obj; /* if null, do all worn items; otherwise just obj itself */
         (void) Ring_on(uleft);
     if (!obj ? uamul != 0 : (obj == uamul))
         (void) Amulet_on();
-	if (!obj ? udeco != 0 : (obj == udeco))
-		(void)Decoration_on(udeco);
-	if (!obj ? udeco2 != 0 : (obj == udeco2))
-		(void)Decoration_on(udeco2);
-	if (!obj ? udeco3 != 0 : (obj == udeco3))
-		(void)Decoration_on(udeco3);
+	if (!obj ? umisc != 0 : (obj == umisc))
+		(void)Decoration_on(umisc);
+	if (!obj ? umisc2 != 0 : (obj == umisc2))
+		(void)Decoration_on(umisc2);
+	if (!obj ? umisc3 != 0 : (obj == umisc3))
+		(void)Decoration_on(umisc3);
 
     if (!obj ? uarmu != 0 : (obj == uarmu))
         (void) Shirt_on();
@@ -1613,12 +1613,12 @@ struct obj *otmp;
     /* these 1-turn items don't need 'afternmv' checks */
     else if (otmp == uamul)
         result = (what == WORN_AMUL);
-	else if (otmp == udeco)
-		result = (what == WORN_DECORATION);
-	else if (otmp == udeco2)
-		result = (what == WORN_DECORATION2);
-	else if (otmp == udeco3)
-		result = (what == WORN_DECORATION3);
+	else if (otmp == umisc)
+		result = (what == WORN_MISCELLANEOUS);
+	else if (otmp == umisc2)
+		result = (what == WORN_MISCELLANEOUS2);
+	else if (otmp == umisc3)
+		result = (what == WORN_MISCELLANEOUS3);
 	else if (otmp == uleft)
         result = (what == LEFT_RING);
     else if (otmp == uright)
@@ -1721,10 +1721,10 @@ struct obj *stolenobj; /* no message if stolenobj is already being doffing */
 /* both 'clothes' and 'accessories' now include both armor and accessories;
    TOOL_CLASS is for eyewear, FOOD_CLASS is for MEAT_RING */
 static NEARDATA const char clothes[] = {
-    ARMOR_CLASS, RING_CLASS, AMULET_CLASS, DECORATION_CLASS, TOOL_CLASS, FOOD_CLASS, 0
+    ARMOR_CLASS, RING_CLASS, AMULET_CLASS, MISCELLANEOUS_CLASS, TOOL_CLASS, FOOD_CLASS, 0
 };
 static NEARDATA const char accessories[] = {
-    RING_CLASS, AMULET_CLASS, DECORATION_CLASS, TOOL_CLASS, FOOD_CLASS, ARMOR_CLASS, 0
+    RING_CLASS, AMULET_CLASS, MISCELLANEOUS_CLASS, TOOL_CLASS, FOOD_CLASS, ARMOR_CLASS, 0
 };
 STATIC_VAR NEARDATA int Narmorpieces, Naccessories;
 
@@ -1744,7 +1744,7 @@ boolean accessorizing;
     MOREWORN(uarms, Narmorpieces);
     MOREWORN(uarmg, Narmorpieces);
 	MOREWORN(uarmb, Narmorpieces);
-	MOREWORN(udeco, Narmorpieces);
+	MOREWORN(umisc, Narmorpieces);
 	MOREWORN(uarmv, Narmorpieces);
 	MOREWORN(uarmf, Narmorpieces);
     /* for cloak/suit/shirt, we only count the outermost item so that it
@@ -1764,9 +1764,9 @@ boolean accessorizing;
     MOREWORN(uleft, Naccessories);
     MOREWORN(uright, Naccessories);
     MOREWORN(uamul, Naccessories);
-	MOREWORN(udeco, Naccessories);
-	MOREWORN(udeco2, Naccessories);
-	MOREWORN(udeco3, Naccessories);
+	MOREWORN(umisc, Naccessories);
+	MOREWORN(umisc2, Naccessories);
+	MOREWORN(umisc3, Naccessories);
 	MOREWORN(ublindf, Naccessories);
     if (accessorizing)
         *which = otmp; /* default item iff Naccessories is 1 */
@@ -1868,7 +1868,7 @@ struct obj *obj;
     } else if (obj == uamul) {
         Amulet_off();
         off_msg(obj);
-	} else if (obj == udeco || obj == udeco2 || obj == udeco3) {
+	} else if (obj == umisc || obj == umisc2 || obj == umisc3) {
 		Decoration_off(obj);
 		off_msg(obj);
 	} else if (obj == ublindf) {
@@ -2386,17 +2386,17 @@ struct obj *obj;
                 already_wearing("an amulet");
                 return 0;
             }
-		} else if (obj->oclass == DECORATION_CLASS) {
-			if (objects[obj->otyp].oc_subtyp != DEC_MULTIPLE_PERMITTED &&
-				(udeco && objects[udeco->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
-				|| (udeco2 && objects[udeco2->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
-				|| (udeco3 && objects[udeco3->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
+		} else if (obj->oclass == MISCELLANEOUS_CLASS) {
+			if (objects[obj->otyp].oc_subtyp != MISC_MULTIPLE_PERMITTED &&
+				(umisc && objects[umisc->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
+				|| (umisc2 && objects[umisc2->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
+				|| (umisc3 && objects[umisc3->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
 				)
 			{
 				already_wearing(an(dec_type_names[objects[obj->otyp].oc_subtyp]));
 				return 0;
 			}
-			if (udeco && udeco2 && udeco3) {
+			if (umisc && umisc2 && umisc3) {
 				You("cannot wear more than three miscellanous items.");
 				return 0;
 			}
@@ -2495,25 +2495,25 @@ struct obj *obj;
             Amulet_on();
             /* no feedback here if amulet of change got used up */
             give_feedback = (uamul != 0);
-		} else if (obj->oclass == DECORATION_CLASS) {
-			if(!udeco)
+		} else if (obj->oclass == MISCELLANEOUS_CLASS) {
+			if(!umisc)
 			{
-				setworn(obj, W_DECO);
-				Decoration_on(udeco);
-				give_feedback = (udeco != 0);
+				setworn(obj, W_MISC);
+				Decoration_on(umisc);
+				give_feedback = (umisc != 0);
 			}
-			else if (!udeco2)
+			else if (!umisc2)
 			{
-				setworn(obj, W_DECO2);
-				Decoration_on(udeco2);
-				give_feedback = (udeco2 != 0);
+				setworn(obj, W_MISC2);
+				Decoration_on(umisc2);
+				give_feedback = (umisc2 != 0);
 			}
 			else
 			{
 				//Must be available
-				setworn(obj, W_DECO3);
-				Decoration_on(udeco3);
-				give_feedback = (udeco3 != 0);
+				setworn(obj, W_MISC3);
+				Decoration_on(umisc3);
+				give_feedback = (umisc3 != 0);
 			}
 		} else if (eyewear) {
             /* setworn() handled by Blindf_on() */
@@ -2539,7 +2539,7 @@ dowear()
         pline("Don't even bother.");
         return 0;
     }
-    if (uarm && uarmu && uarmc && uarmh && uarms && uarmg && uarmf && uarmo && uarmb && uarmv && udeco && udeco2 && udeco3
+    if (uarm && uarmu && uarmc && uarmh && uarms && uarmg && uarmf && uarmo && uarmb && uarmv && umisc && umisc2 && umisc3
         && uleft && uright && uamul && ublindf) {
         /* 'W' message doesn't mention accessories */
         You("are already wearing a full complement of armor.");
@@ -2555,7 +2555,7 @@ doputon()
 {
     struct obj *otmp;
 
-    if (uleft && uright && uamul && ublindf && udeco && udeco2 && udeco3
+    if (uleft && uright && uamul && ublindf && umisc && umisc2 && umisc3
         && uarm && uarmu && uarmc && uarmh && uarms && uarmg && uarmf && uarmo && uarmb && uarmv) {
         /* 'P' message doesn't mention armor */
         Your("%s%s are full, and you're already wearing an amulet and %s.",
@@ -2894,12 +2894,12 @@ register struct obj *otmp;
 		context.takeoff.mask |= WORN_BRACERS;
 	else if (otmp == uarmv)
 		context.takeoff.mask |= WORN_BELT;
-	else if (otmp == udeco)
-		context.takeoff.mask |= WORN_DECORATION;
-	else if (otmp == udeco2)
-		context.takeoff.mask |= WORN_DECORATION2;
-	else if (otmp == udeco3)
-		context.takeoff.mask |= WORN_DECORATION3;
+	else if (otmp == umisc)
+		context.takeoff.mask |= WORN_MISCELLANEOUS;
+	else if (otmp == umisc2)
+		context.takeoff.mask |= WORN_MISCELLANEOUS2;
+	else if (otmp == umisc3)
+		context.takeoff.mask |= WORN_MISCELLANEOUS3;
 	else if (otmp == uarmg)
         context.takeoff.mask |= WORN_GLOVES;
     else if (otmp == uarmh)
@@ -2976,18 +2976,18 @@ do_takeoff()
 		otmp = uarmv;
 		if (!cursed(otmp))
 			(void)Belt_off();
-	} else if (doff->what == WORN_DECORATION) {
-		otmp = udeco;
+	} else if (doff->what == WORN_MISCELLANEOUS) {
+		otmp = umisc;
 		if (!cursed(otmp))
 			(void)Decoration_off(otmp);
 	}
-	else if (doff->what == WORN_DECORATION2) {
-		otmp = udeco2;
+	else if (doff->what == WORN_MISCELLANEOUS2) {
+		otmp = umisc2;
 		if (!cursed(otmp))
 			(void)Decoration_off(otmp);
 	}
-	else if (doff->what == WORN_DECORATION3) {
-		otmp = udeco3;
+	else if (doff->what == WORN_MISCELLANEOUS3) {
+		otmp = umisc3;
 		if (!cursed(otmp))
 			(void)Decoration_off(otmp);
 	} else if (doff->what == WORN_GLOVES) {

@@ -454,7 +454,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 		/*FALLTHRU*/
     case VENOM_CLASS:
 	case REAGENT_CLASS:
-	case DECORATION_CLASS:
+	case MISCELLANEOUS_CLASS:
 	case TOOL_CLASS:
 		if (obj->special_enchantment == COLD_ENCHANTMENT)
 			Strcat(buf, "cold-enchanted ");
@@ -467,7 +467,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 
 
 		if (typ == LENSES
-			|| (obj->oclass == DECORATION_CLASS && objects[obj->otyp].oc_subtyp == DEC_EARRINGS))
+			|| (obj->oclass == MISCELLANEOUS_CLASS && objects[obj->otyp].oc_subtyp == MISC_EARRINGS))
             Strcpy(buf, "pair of ");
         else if (is_wet_towel(obj))
             Strcpy(buf, (obj->spe < 3) ? "moist " : "wet ");
@@ -1026,7 +1026,7 @@ unsigned doname_flags;
                  || ((!known || !objects[obj->otyp].oc_charged
                       || obj->oclass == ARMOR_CLASS
                       || obj->oclass == RING_CLASS
-					  || obj->oclass == DECORATION_CLASS
+					  || obj->oclass == MISCELLANEOUS_CLASS
 					 )
 #ifdef MAIL
                      && obj->otyp != SCR_MAIL
@@ -1067,8 +1067,8 @@ unsigned doname_flags;
         if (obj->owornmask & W_AMUL)
             Strcat(bp, " (being worn)");
         break;
-	case DECORATION_CLASS:
-		if (obj->owornmask & W_DECORATIONS)
+	case MISCELLANEOUS_CLASS:
+		if (obj->owornmask & W_MISCITEMS)
 		{
 			if(!objects[obj->otyp].oc_content_desc)
 				Strcat(bp, " (being worn)");
@@ -2107,7 +2107,7 @@ static const char *wrp[] = {
 static const char wrpsym[] = { WAND_CLASS,   RING_CLASS,   POTION_CLASS,
                                SCROLL_CLASS, GEM_CLASS,    AMULET_CLASS,
                                SPBOOK_CLASS, SPBOOK_CLASS, WEAPON_CLASS,
-                               ARMOR_CLASS,  TOOL_CLASS, REAGENT_CLASS, DECORATION_CLASS, DECORATION_CLASS,
+                               ARMOR_CLASS,  TOOL_CLASS, REAGENT_CLASS, MISCELLANEOUS_CLASS, MISCELLANEOUS_CLASS,
 							   FOOD_CLASS,   FOOD_CLASS };
 
 /* return form of the verb (input plural) if xname(otmp) were the subject */
@@ -2865,8 +2865,8 @@ STATIC_OVL NEARDATA const struct o_range o_ranges[] = {
     { "sword", WEAPON_CLASS, SHORT_SWORD, KATANA },
     { "venom", VENOM_CLASS, BLINDING_VENOM, ACID_VENOM },
 	{ "reagent", REAGENT_CLASS, THREAD_OF_SPIDER_SILK, RAVEN_FEATHER },
-	{ "miscellaneous item", DECORATION_CLASS, BROOCH_OF_SHIELDING, WINGS_OF_FLYING },
-	{ "ioun stone", DECORATION_CLASS, IOUN_STONE_OF_PROTECTION, IOUN_STONE_OF_SUSTENANCE },
+	{ "miscellaneous item", MISCELLANEOUS_CLASS, BROOCH_OF_SHIELDING, WINGS_OF_FLYING },
+	{ "ioun stone", MISCELLANEOUS_CLASS, IOUN_STONE_OF_PROTECTION, IOUN_STONE_OF_SUSTENANCE },
 	{ "gray stone", GEM_CLASS, LUCKSTONE, FLINT },
     { "grey stone", GEM_CLASS, LUCKSTONE, FLINT },
 };

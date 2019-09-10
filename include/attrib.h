@@ -30,6 +30,8 @@ enum attrib_types {
 
 #define ABASE(x) (u.acurr.a[x])
 #define ABON(x) (u.abon.a[x])
+#define AFIXMIN(x) (u.afixmin.a[x])
+#define AFIXMAX(x) (u.afixmax.a[x])
 #define AEXE(x) (u.aexe.a[x])
 #define ACURR(x) (acurr(x))
 #define ACURRSTR (acurrstr())

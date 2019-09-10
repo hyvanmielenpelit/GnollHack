@@ -63,7 +63,7 @@ struct obj *obj;
        set; it is similar to sortpack's inv_order but items most
        likely to be picked up are moved to the front */
     static char def_srt_order[MAXOCLASSES] = {
-        COIN_CLASS, AMULET_CLASS, DECORATION_CLASS, RING_CLASS, WAND_CLASS, POTION_CLASS,
+        COIN_CLASS, AMULET_CLASS, MISCELLANEOUS_CLASS, RING_CLASS, WAND_CLASS, POTION_CLASS,
         SCROLL_CLASS, SPBOOK_CLASS, GEM_CLASS, FOOD_CLASS, REAGENT_CLASS, TOOL_CLASS,
         WEAPON_CLASS, ARMOR_CLASS, ROCK_CLASS, BALL_CLASS, CHAIN_CLASS, 0,
     };
@@ -2079,7 +2079,7 @@ int show_weights;
             } else if (oc_of_sym == AMULET_CLASS && !uamul) {
                 You("are not wearing an amulet.");
                 return 0;
-            } else if (oc_of_sym == DECORATION_CLASS && !udeco && !udeco2 && !udeco3) {
+            } else if (oc_of_sym == MISCELLANEOUS_CLASS && !umisc && !umisc2 && !umisc3) {
                 You("are not wearing miscellaneous items.");
                 return 0;
             } else if (oc_of_sym == TOOL_CLASS && !ublindf) {

@@ -236,7 +236,7 @@ boolean unchain_ball; /* whether to unpunish or just unwield */
             setworn((struct obj *) 0, obj->owornmask & W_ARMOR);
     } else if (obj->owornmask & W_AMUL) {
         Amulet_off();
-    } else if (obj->owornmask & W_DECORATIONS) {
+    } else if (obj->owornmask & W_MISCITEMS) {
         Decoration_off(obj);
     } else if (obj->owornmask & W_RING) {
         Ring_gone(obj);
@@ -405,7 +405,7 @@ gotobj:
         switch (otmp->oclass) {
         case TOOL_CLASS:
         case AMULET_CLASS:
-		case DECORATION_CLASS:
+		case MISCELLANEOUS_CLASS:
 		case RING_CLASS:
         case FOOD_CLASS: /* meat ring */
             remove_worn_item(otmp, TRUE);

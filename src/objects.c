@@ -402,7 +402,7 @@ HELM("cornuthaum", "conical hat",
         /* name coined by devteam; confers clairvoyance for wizards,
            blocks clairvoyance if worn by role other than wizard */
 HELM("dunce cap", "conical hat",
-     0, 1,           0, 0, 0,  3, 1,  4,  1, 10, 0, 0, 0, 0, 0, CLOTH, CLR_BLUE, O1_NONE),
+     0, 1,           0, 0, 0,  3, 1,  4,  1, 10, 0, 0, 0, BONUS_TO_INT | BONUS_TO_WIS | FIXED_IS_MAXIMUM | SETS_FIXED_ATTRIBUTE, 6, CLOTH, CLR_BLUE, O1_NONE),
 HELM("dented pot", None,
      1, 0,           0, 0, 0,  2, 0, 30,  8,  9, 0, 0, 0, 0, 0, IRON, CLR_BLACK, O1_NONE),
 /* with shuffled appearances... */
@@ -550,9 +550,9 @@ ROBE("robe of magic resistance", "silvery ornamental robe",
 ROBE("gown of the archbishops", "shining purple robe",
 	0, 1, CURSE_RES, DEATH_RES, DRAIN_RES, 5, 2, 30, 400,  9, 3,15, 15, 0, 0, CLOTH, HI_ZAP, O1_NOT_CURSEABLE | O1_HP_PERCENTAGE_BONUS | O1_MANA_PERCENTAGE_BONUS),
 ROBE("robe of the archmagi", "shining blue robe",
-	0, 1, 0,		   0, 0, 5, 2, 30, 400,  9, 3, 0, 0, 0, 0, CLOTH, HI_ZAP, O1_NONE),
+	0, 1, 0,		   0, 0, 5, 2, 30, 400,  9, 3, 0, 0, BONUS_TO_INT | SETS_FIXED_ATTRIBUTE, 20, CLOTH, HI_ZAP, O1_NONE),
 ROBE("robe of starry wisdom", "shining black robe", //ENDMARKER 2
-	0, 1, 0,		   0, 0, 5, 2, 30, 400,  9, 3, 0, 0, 0, 0, CLOTH, CLR_BLACK, O1_NONE),
+	0, 1, 0,		   0, 0, 5, 2, 30, 400,  9, 3, 0, 0, BONUS_TO_WIS | SETS_FIXED_ATTRIBUTE, 20, CLOTH, CLR_BLACK, O1_NONE),
 /* without shuffled appearances... */
 ROBE("bathrobe", "soft cotton robe",
 	0, 0, 0,		   0, 0, 6, 1, 25,   5, 10, 0, 0, 0, 0, 0, CLOTH, CLR_WHITE, O1_NONE),
@@ -586,7 +586,7 @@ BELT("belt of dwarvenkind", "broad belt",
 BELT("belt of fortitude", "brown belt", 
 	0, 1, 0,		  0, 0,  8, 0, 5, 250, 10, 1, 0, 50, 0, 0, CLOTH, HI_LEATHER, O1_HP_PERCENTAGE_BONUS),
 BELT("belt of giant strength", "ornamental belt", //ENDMARKER 1 & 2
-	0, 1, 0,		  0, 0,  7, 0, 5, 250, 10, 0, 0, 0, 0, 0, CLOTH, HI_LEATHER, O1_NONE),
+	0, 1, 0,		  0, 0,  7, 0, 5, 250, 10, 0, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE, STR19(20), CLOTH, HI_LEATHER, O1_NONE),
 
 
 /* shields */
@@ -617,7 +617,7 @@ GLOVES("gauntlets of fumbling", "padded gloves",
 GLOVES("gloves of spellcasting", "deerskin gloves",
        0, 1,		0, 0, 0, 8, 1, 10, 100, 9, 0, 0, 25, 0, 0, LEATHER, HI_LEATHER, O1_MANA_PERCENTAGE_BONUS),
 GLOVES("gauntlets of power", "riding gloves",
-       0, 1,        0, 0, 0, 8, 1, 30, 100, 9, 0, 0, 0, 0, 0, IRON, CLR_BROWN, O1_NONE),
+       0, 1,        0, 0, 0, 8, 1, 30, 100, 9, 0, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE | IGNORE_SPE, STR18(100) , IRON, CLR_BROWN, O1_NONE),
 GLOVES("gauntlets of dexterity", "fencing gloves",
        0, 1,        0, 0, 0, 8, 1, 10, 100, 9, 0, 0, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE),
 
@@ -776,43 +776,43 @@ OBJECT(OBJ("Amulet of Yendor", /* note: description == name */
 #undef AMULET
 
 /* decorations */
-#define DECORATION(name,desc,sub,specialworntext,kn,magic,mergeable,charged,prob,cost,wt,power,power2,power3,manabonus,hpbonus,bonusattrs,abon,nut,material,color,flags) \
+#define MISCELLANEOUSITEM(name,desc,sub,specialworntext,kn,magic,mergeable,charged,prob,cost,wt,power,power2,power3,manabonus,hpbonus,bonusattrs,abon,nut,material,color,flags) \
     OBJECT(OBJ(name, desc), specialworntext,                                           \
            BITS(kn, mergeable, charged, 0, magic, charged, 0, 0, 0, 0, 0, sub, material),        \
-           power, power2, power3,  DECORATION_CLASS, prob, 0, wt, cost,  0, 0, 0, 0, 0, 0, 0, 0, manabonus, hpbonus, bonusattrs, abon, nut, color, 0, 0, 0, 0, flags)
-DECORATION("brooch of shielding", "brooch",	DEC_MULTIPLE_PERMITTED, None,
+           power, power2, power3,  MISCELLANEOUS_CLASS, prob, 0, wt, cost,  0, 0, 0, 0, 0, 0, 0, 0, manabonus, hpbonus, bonusattrs, abon, nut, color, 0, 0, 0, 0, flags)
+MISCELLANEOUSITEM("brooch of shielding", "brooch",	MISC_MULTIPLE_PERMITTED, None,
 	0, 1, 0, 0, 200, 150, 5,
 	PROTECTION, 0, 0, 0, 0, 0, 0,
 	20, GOLD, HI_GOLD, O1_NONE),
-DECORATION("nose ring of bull strength", "golden nose ring", DEC_NOSERING, None,
+MISCELLANEOUSITEM("nose ring of bull strength", "golden nose ring", MISC_NOSERING, None,
 	0, 1, 0, 0, 200, 200, 50,
-	0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE, 18,
 	50, GOLD, HI_GOLD, O1_NONE),
-DECORATION("headband of intellect", "shining blue headband", DEC_HEADBAND, None,
-	0, 1, 0, 1, 100, 200, 50,
-	0, 0, 0, 0, 0, BONUS_TO_INT, 0,
+MISCELLANEOUSITEM("headband of intellect", "shining blue headband", MISC_HEADBAND, None,
+	0, 1, 0, 0, 100, 200, 50,
+	0, 0, 0, 0, 0, BONUS_TO_INT | SETS_FIXED_ATTRIBUTE, 19,
 	50, CLOTH, CLR_BLUE, O1_NONE),
-DECORATION("golden earrings", None, DEC_EARRINGS, None,
+MISCELLANEOUSITEM("golden earrings", None, MISC_EARRINGS, None,
 	1, 0, 0, 0, 100, 200, 50,
 	0, 0, 0, 0, 0, BONUS_TO_CHA, 1,
 	50, GOLD, HI_GOLD, O1_CONFERS_POWERS_TO_FEMALE_ONLY),
-DECORATION("ioun stone of protection", "ioun stone", DEC_IOUN_STONE, "orbiting your head",
+MISCELLANEOUSITEM("ioun stone of protection", "ioun stone", MISC_IOUN_STONE, "orbiting your head",
 	0, 1, 0, 0, 100, 200, 50, //STARTMARKER FOR IOUNSTONES
 	PROTECTION, 0, 0, 0, 0, 0, 0,
 	50, MINERAL, CLR_RED, O1_NONE),
-DECORATION("ioun stone of regeneration", "ioun stone", DEC_IOUN_STONE, "orbiting your head",		
+MISCELLANEOUSITEM("ioun stone of regeneration", "ioun stone", MISC_IOUN_STONE, "orbiting your head",		
 	0, 1, 0, 0, 100, 200, 50,
 	REGENERATION, 0, 0, 0, 0, 0, 0,
 	50, MINERAL, CLR_WHITE, O1_NONE),
-DECORATION("ioun stone of sustenance", "ioun stone", DEC_IOUN_STONE, "orbiting your head",		
+MISCELLANEOUSITEM("ioun stone of sustenance", "ioun stone", MISC_IOUN_STONE, "orbiting your head",		
 	0, 1, 0, 0, 100, 200, 50, //ENDMARKER FOR IOUNSTONES
 	SLOW_DIGESTION, 0, 0, 0, 0, 0, 0,
 	50, MINERAL, CLR_WHITE, O1_NONE),
-DECORATION("wings of flying", "artificial wings", DEC_WINGS, "attached to your back",		
+MISCELLANEOUSITEM("wings of flying", "artificial wings", MISC_WINGS, "attached to your back",		
 	0, 1, 0, 0, 100, 200, 50,
 	FLYING, 0, 0, 0, 0, 0, 0,
 	50, ORGANIC, CLR_WHITE, O1_NONE),
-#undef DECORATION
+#undef MISCELLANEOUSITEM
 
 /* tools ... */
 /* tools with weapon characteristics come last */

@@ -589,7 +589,7 @@ doengrave()
     switch (otmp->oclass) {
     default:
     case AMULET_CLASS:
-	case DECORATION_CLASS:
+	case MISCELLANEOUS_CLASS:
 	case CHAIN_CLASS:
     case POTION_CLASS:
     case COIN_CLASS:

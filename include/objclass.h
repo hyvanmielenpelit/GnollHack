@@ -51,17 +51,17 @@ enum obj_armor_types {
 };
 
 enum obj_decoration_types {
-	DEC_MULTIPLE_PERMITTED = 0,
-	DEC_WINGS = 1,       
-	DEC_PANTS = 2,
-	DEC_SKIRT = 3,
-	DEC_WRIST_WATCH = 4,
-	DEC_NOSERING = 5,
-	DEC_HEADBAND = 6,
-	DEC_EARRINGS = 7,
-	DEC_IOUN_STONE = 8,
-	DEC_BRACELET = 9,
-	DEC_SCARF = 10
+	MISC_MULTIPLE_PERMITTED = 0,
+	MISC_WINGS = 1,       
+	MISC_PANTS = 2,
+	MISC_SKIRT = 3,
+	MISC_WRIST_WATCH = 4,
+	MISC_NOSERING = 5,
+	MISC_HEADBAND = 6,
+	MISC_EARRINGS = 7,
+	MISC_IOUN_STONE = 8,
+	MISC_BRACELET = 9,
+	MISC_SCARF = 10
 };
 
 static const char* dec_type_names[] = {
@@ -166,6 +166,10 @@ struct objclass {
 
 #define BONUS_TO_ALLSTATS BONUS_TO_STR | BONUS_TO_DEX | BONUS_TO_CON | BONUS_TO_INT | BONUS_TO_WIS | BONUS_TO_CHA
 
+#define SETS_FIXED_ATTRIBUTE 0x0200
+#define FIXED_IS_MAXIMUM 0x0400
+#define IGNORE_SPE 0x0800
+
 
 /* weapons */
 #define oc_skill oc_subtyp		/* Skills of weapons, spellbooks, tools, gems */
@@ -269,8 +273,8 @@ struct objclass {
 #define O1_NOT_CURSEABLE 0x00020000
 #define O1_CONFERS_LUCK 0x00040000
 #define O1_CONFERS_POWERS_WHEN_CARRIED 0x00080000
-#define O1_CONFERS_POWERS_TO_FEMALE_ONLY 0x00100000  /* note: does not work for extrinsic properties given by worn items (old system), but for everything else */
-#define O1_CONFERS_POWERS_TO_MALE_ONLY 0x00200000    /* note: does not work for extrinsic properties given by worn items (old system), but for everything else */
+#define O1_CONFERS_POWERS_TO_FEMALE_ONLY 0x00100000
+#define O1_CONFERS_POWERS_TO_MALE_ONLY 0x00200000  
 #define O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED 0x00400000
 #define O1_CANNOT_BE_DROPPED_IF_CURSED 0x00800000
 
@@ -317,7 +321,7 @@ enum obj_class_types {
     CHAIN_CLASS  = 16,
     VENOM_CLASS  = 17,
 	REAGENT_CLASS = 18,
-	DECORATION_CLASS = 19,
+	MISCELLANEOUS_CLASS = 19,
 
     MAXOCLASSES  = 20
 };

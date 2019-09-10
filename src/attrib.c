@@ -529,7 +529,7 @@ struct obj* otmp;
 		|| (otmp->oclass == ARMOR_CLASS && (otmp->owornmask & W_ARMOR))
 		|| (otmp->oclass == RING_CLASS && (otmp->owornmask & W_RING))
 		|| (otmp->oclass == AMULET_CLASS && (otmp->owornmask & W_AMUL))
-		|| (otmp->oclass == DECORATION_CLASS && (otmp->owornmask & W_DECORATIONS))
+		|| (otmp->oclass == MISCELLANEOUS_CLASS && (otmp->owornmask & W_MISCITEMS))
 		|| (otmp->oclass == TOOL_CLASS && (otmp->owornmask & W_TOOL))
 		|| (objects[otmp->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED))
 		&&
@@ -547,31 +547,97 @@ struct obj* otmp;
 void
 update_carried_item_extrinsics()
 {
-	struct obj* otmp;
+	struct obj* uitem;
 
 	//Clear first all carried item extrinsics
 	for (int i = 1; i <= LAST_PROP; i++)
 	{
-		u.uprops[i].extrinsic &= ~W_CARRIED;
+		u.uprops[i].extrinsic = 0; // &= ~W_CARRIED;
+		u.uprops[i].blocked = 0;
 	}
 
 	//Add then extrinsics from all carried items
-	for (otmp = invent; otmp; otmp = otmp->nobj)
+	for (uitem = invent; uitem; uitem = uitem->nobj)
 	{
-		if (objects[otmp->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED)
+		if (
+			(uitem == uwep && (uitem->oclass == WEAPON_CLASS || is_weptool(uitem)))
+			|| uitem == uarm
+			|| uitem == uarmc
+			|| uitem == uarmh
+			|| uitem == uarms
+			|| uitem == uarmg
+			|| uitem == uarmf
+			|| uitem == uarmu
+			|| uitem == uarmo
+			|| uitem == uarmb
+			|| uitem == uarmv
+			|| uitem == umisc
+			|| uitem == umisc2
+			|| uitem == umisc3
+			|| uitem == uamul
+			|| uitem == uright
+			|| uitem == uleft
+			|| objects[uitem->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED)
 		{
-			if (((objects[otmp->otyp].oc_flags & O1_CONFERS_POWERS_TO_FEMALE_ONLY) && !(Upolyd ? u.mfemale : flags.female))
-				|| ((objects[otmp->otyp].oc_flags & O1_CONFERS_POWERS_TO_MALE_ONLY) && (Upolyd ? u.mfemale : flags.female)))
+			int otyp = uitem->otyp;
+			if (((objects[otyp].oc_flags & O1_CONFERS_POWERS_TO_FEMALE_ONLY) && !(Upolyd ? u.mfemale : flags.female))
+				|| ((objects[otyp].oc_flags & O1_CONFERS_POWERS_TO_MALE_ONLY) && (Upolyd ? u.mfemale : flags.female)))
 			{
 				continue;
 			}
+			int bit = 0;
+			if (uitem == uarm)
+				bit = W_ARM;
+			else if (uitem == uarmc)
+				bit = W_ARMC;
+			else if (uitem == uarmh)
+				bit = W_ARMH;
+			else if (uitem == uarms)
+				bit = W_ARMS;
+			else if (uitem == uarmg)
+				bit = W_ARMG;
+			else if (uitem == uarmf)
+				bit = W_ARMF;
+			else if (uitem == uarmu)
+				bit = W_ARMU;
+			else if (uitem == uarmo)
+				bit = W_ARMO;
+			else if (uitem == uarmb)
+				bit = W_ARMB;
+			else if (uitem == uarmv)
+				bit = W_ARMV;
+			else if (uitem == umisc)
+				bit = W_MISC;
+			else if (uitem == umisc2)
+				bit = W_MISC2;
+			else if (uitem == umisc3)
+				bit = W_MISC3;
+			else if (uitem == uamul)
+				bit = W_AMUL;
+			else if (uitem == uright)
+				bit = W_RINGR;
+			else if (uitem == uleft)
+				bit = W_RINGL;
+			else
+				bit = W_CARRIED;
 
-			if(objects[otmp->otyp].oc_oprop > 0)
-				u.uprops[objects[otmp->otyp].oc_oprop].extrinsic |= W_CARRIED;
-			if (objects[otmp->otyp].oc_oprop2 > 0)
-				u.uprops[objects[otmp->otyp].oc_oprop2].extrinsic |= W_CARRIED;
-			if (objects[otmp->otyp].oc_oprop3 > 0)
-				u.uprops[objects[otmp->otyp].oc_oprop3].extrinsic |= W_CARRIED;
+			/* Properties conferred by item */
+			if (objects[otyp].oc_oprop > 0)
+				u.uprops[objects[otyp].oc_oprop].extrinsic |= bit;//W_CARRIED;
+			if (objects[otyp].oc_oprop2 > 0)
+				u.uprops[objects[otyp].oc_oprop2].extrinsic |= bit;//W_CARRIED;
+			if (objects[otyp].oc_oprop3 > 0)
+				u.uprops[objects[otyp].oc_oprop3].extrinsic |= bit;//W_CARRIED;
+
+			int p = 0;
+			/* Properties blocked by item */
+			if ((p = w_blocks(uitem, bit)) != 0)
+				u.uprops[p].blocked |= bit;
+
+			/* add artifact intrinsics */
+			if (uitem->oartifact)
+				set_artifact_intrinsic(uitem, 1, bit);
+
 		}
 	}
 
@@ -1294,9 +1360,9 @@ boolean addconstitutionbonus;
 			|| uitem == uarmo
 			|| uitem == uarmb
 			|| uitem == uarmv
-			|| uitem == udeco
-			|| uitem == udeco2
-			|| uitem == udeco3
+			|| uitem == umisc
+			|| uitem == umisc2
+			|| uitem == umisc3
 			|| uitem == uamul
 			|| uitem == uright
 			|| uitem == uleft
@@ -1347,6 +1413,8 @@ updateabon()
 	for (int i = 0; i < A_MAX; i++)
 	{
 		ABON(i) = 0;
+		AFIXMIN(i) = 0;
+		AFIXMAX(i) = 0;
 	}
 	u.udaminc = 0;
 	u.uhitinc = 0;
@@ -1368,9 +1436,9 @@ updateabon()
 			|| uitem == uarmo
 			|| uitem == uarmb
 			|| uitem == uarmv
-			|| uitem == udeco
-			|| uitem == udeco2
-			|| uitem == udeco3
+			|| uitem == umisc
+			|| uitem == umisc2
+			|| uitem == umisc3
 			|| uitem == uamul
 			|| uitem == uright
 			|| uitem == uleft
@@ -1424,10 +1492,28 @@ updateabon()
 				{
 					if (i < A_MAX)
 					{
-						if (objects[otyp].oc_attribute_bonus == 0 && objects[otyp].oc_charged)
-							ABON(i) += uitem->spe;
+						if (objects[otyp].oc_bonus_attributes & SETS_FIXED_ATTRIBUTE)
+						{
+							if (objects[otyp].oc_bonus_attributes & FIXED_IS_MAXIMUM)
+							{
+								AFIXMAX(i) = objects[otyp].oc_attribute_bonus;
+								if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
+									AFIXMAX(i) += uitem->spe;
+							}
+							else
+							{
+								AFIXMIN(i) = objects[otyp].oc_attribute_bonus;
+								if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
+									AFIXMIN(i) += uitem->spe;
+							}
+						}
 						else
-							ABON(i) += objects[otyp].oc_attribute_bonus;
+						{
+							if (objects[otyp].oc_attribute_bonus == 0 && objects[otyp].oc_charged)
+								ABON(i) += uitem->spe;
+							else
+								ABON(i) += objects[otyp].oc_attribute_bonus;
+						}
 					}
 					else if (i == A_MAX + 0)
 					{
@@ -1465,7 +1551,31 @@ acurr(x)
 int x;
 {
     register int tmp = (u.abon.a[x] + u.atemp.a[x] + u.acurr.a[x]);
+	
+	if (u.afixmin.a[x] > 0 && u.afixmax.a[x] > 0 && u.afixmin.a[x] > u.afixmax.a[x])
+	{
+		//Nothing
+	}
+	else
+	{
+		if (u.afixmin.a[x] > 0 && u.afixmin.a[x] > tmp)
+			tmp = u.afixmin.a[x];
 
+		if (u.afixmax.a[x] > 0 && u.afixmax.a[x] < tmp)
+			tmp = u.afixmax.a[x];
+
+		if (x == A_STR)
+		{
+			if (tmp > STR19(25))
+				tmp = STR19(25);
+		}
+		else
+		{
+			if (tmp > 25)
+				tmp = 25;
+		}
+	}
+	/*
     if (x == A_STR) {
 		int str = tmp;
 		int str2 = 0;
@@ -1486,9 +1596,9 @@ int x;
 		if (str2 > str)
 			str = str2;
 
-		if (udeco && udeco->otyp == NOSE_RING_OF_BULL_STRENGTH
-			|| udeco2 && udeco2->otyp == NOSE_RING_OF_BULL_STRENGTH
-			|| udeco3 && udeco3->otyp == NOSE_RING_OF_BULL_STRENGTH)
+		if (umisc && umisc->otyp == NOSE_RING_OF_BULL_STRENGTH
+			|| umisc2 && umisc2->otyp == NOSE_RING_OF_BULL_STRENGTH
+			|| umisc3 && umisc3->otyp == NOSE_RING_OF_BULL_STRENGTH)
 		{
 			str2 = 18;
 		}
@@ -1504,9 +1614,9 @@ int x;
         if (uwep && uwep->oartifact == ART_OGRESMASHER)
             return (schar) 25;
     } else if (x == A_INT) {
-        /* yes, this may raise int/wis if player is sufficiently
-         * stupid.  there are lower levels of cognition than "dunce".
-         */
+        // yes, this may raise int/wis if player is sufficiently
+        // stupid.  there are lower levels of cognition than "dunce".
+        
 		if (uarmo && uarmo->otyp == ROBE_OF_THE_ARCHMAGI && uarmh && uarmh->otyp == DUNCE_CAP)
 		{
 			//Nothing
@@ -1523,9 +1633,9 @@ int x;
             return (schar) 6;
 	}
 	else if (x == A_WIS) {
-		/* yes, this may raise int/wis if player is sufficiently
-		 * stupid.  there are lower levels of cognition than "dunce".
-		 */
+			// yes, this may raise int/wis if player is sufficiently
+			// stupid.  there are lower levels of cognition than "dunce".
+		 
 		if (uarmo && uarmo->otyp == ROBE_OF_STARRY_WISDOM && uarmh && uarmh->otyp == DUNCE_CAP)
 		{
 			//Nothing
@@ -1541,11 +1651,11 @@ int x;
 		else if (uarmh && uarmh->otyp == DUNCE_CAP)
 			return (schar)6;
 	}
-#ifdef WIN32_BUG
-    return (x = ((tmp >= 25) ? 25 : (tmp <= 1) ? 1 : tmp));
-#else
-    return (schar) ((tmp >= 25) ? 25 : (tmp <= 1) ? 1 : tmp);
-#endif
+	*/
+	if(x == A_STR)
+		return (schar)((tmp >= STR19(25)) ? STR19(25) : (tmp <= 1) ? 1 : tmp);
+	else
+		return (schar) ((tmp >= 25) ? 25 : (tmp <= 1) ? 1 : tmp);
 }
 
 /* condense clumsy ACURR(A_STR) value into value that fits into game formulas
@@ -1571,10 +1681,38 @@ extremeattr(attrindx) /* does attrindx's value match its max or min? */
 int attrindx;
 {
     /* Fixed_abil and racial MINATTR/MAXATTR aren't relevant here */
-    int lolimit = 3, hilimit = 25, curval = ACURR(attrindx);
+    int lolimit = 3, hilimit = (attrindx == A_STR ? STR19(25) : 25), curval = ACURR(attrindx);
+	
+	if (AFIXMIN(attrindx) > 0 && AFIXMAX(attrindx) > 0 && AFIXMIN(attrindx) > AFIXMAX(attrindx))
+	{
+		//Nothing
+	}
+	else
+	{
+		if (AFIXMIN(attrindx) > 0 && AFIXMIN(attrindx) < hilimit)
+			lolimit = AFIXMIN(attrindx);
+		if (AFIXMAX(attrindx) > 0 && AFIXMAX(attrindx) < hilimit)
+			hilimit = AFIXMAX(attrindx);
 
-    /* upper limit for Str is 25 but its value is encoded differently */
-    if (attrindx == A_STR) {
+		if (lolimit < 1)
+			lolimit = 1;
+
+		if(attrindx == A_STR)
+		{
+			if (hilimit > STR19(25))
+				hilimit = STR19(25);
+		}
+		else
+		{
+			if (hilimit > 25)
+				hilimit = 25;
+		}
+		if (lolimit > hilimit)
+			lolimit = hilimit;
+	}
+#if 0
+	/* upper limit for Str is 25 but its value is encoded differently */
+	if (attrindx == A_STR) {
          /* 125 */
         /* lower limit for Str can also be 25 */
 		int lolimit2 = lolimit;
@@ -1596,9 +1734,9 @@ int attrindx;
 				lolimit = lolimit2;
 			hilimit = lolimit;
 		}
-		if (udeco && udeco->otyp == NOSE_RING_OF_BULL_STRENGTH
-			|| udeco2 && udeco2->otyp == NOSE_RING_OF_BULL_STRENGTH
-			|| udeco3 && udeco3->otyp == NOSE_RING_OF_BULL_STRENGTH) {
+		if (umisc && umisc->otyp == NOSE_RING_OF_BULL_STRENGTH
+			|| umisc2 && umisc2->otyp == NOSE_RING_OF_BULL_STRENGTH
+			|| umisc3 && umisc3->otyp == NOSE_RING_OF_BULL_STRENGTH) {
 			lolimit2 = 18;
 			if (lolimit2 > lolimit)
 				lolimit = lolimit2;
@@ -1622,7 +1760,7 @@ int attrindx;
         if (uarmh && uarmh->otyp == DUNCE_CAP)
             hilimit = lolimit = 6;
     }
-
+#endif
     /* are we currently at either limit? */
     return (curval == lolimit || curval == hilimit) ? TRUE : FALSE;
 }

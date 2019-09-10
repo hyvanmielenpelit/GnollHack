@@ -931,7 +931,7 @@ struct obj *list; /* inventory or container contents */
             } else
                 amulets[i].count += obj->quan; /* always adds one */
 		}
-		else if (obj->oclass == DECORATION_CLASS) {
+		else if (obj->oclass == MISCELLANEOUS_CLASS) {
 			i = obj->otyp - FIRST_DECORATION;
 			if (!decorations[i].count) {
 				decorations[i].count = obj->quan;

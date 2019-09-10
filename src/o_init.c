@@ -232,7 +232,7 @@ int *lo_p, *hi_p; /* output: range that item belongs among */
         *hi_p = POT_WATER - 1;
         break;
     case AMULET_CLASS:
-	case DECORATION_CLASS:
+	case MISCELLANEOUS_CLASS:
 	case SCROLL_CLASS:
     case SPBOOK_CLASS:
         /* exclude non-magic types and also unique ones */

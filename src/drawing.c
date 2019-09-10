@@ -695,7 +695,7 @@ struct symparse loadsyms[] = {
     { SYM_OC, ARMOR_CLASS + SYM_OFF_O, "S_armour" },
     { SYM_OC, RING_CLASS + SYM_OFF_O, "S_ring" },
     { SYM_OC, AMULET_CLASS + SYM_OFF_O, "S_amulet" },
-	{ SYM_OC, DECORATION_CLASS + SYM_OFF_O, "S_decoration" },
+	{ SYM_OC, MISCELLANEOUS_CLASS + SYM_OFF_O, "S_decoration" },
 	{ SYM_OC, TOOL_CLASS + SYM_OFF_O, "S_tool" },
     { SYM_OC, FOOD_CLASS + SYM_OFF_O, "S_food" },
     { SYM_OC, POTION_CLASS + SYM_OFF_O, "S_potion" },

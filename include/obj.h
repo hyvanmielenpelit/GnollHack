@@ -132,6 +132,16 @@ struct obj {
 
 #define newobj() (struct obj *) alloc(sizeof(struct obj))
 
+
+/* property blocking */
+/* This only allows for one blocking item per property */
+#define w_blocks(o, m) \
+    ((o->otyp == MUMMY_WRAPPING && ((m) & W_ARMC))                          \
+         ? INVIS                                                            \
+         : (o->otyp == CORNUTHAUM && ((m) & W_ARMH) && !Role_if(PM_WIZARD)) \
+               ? CLAIRVOYANT                                                \
+               : 0)
+
 /***
  **	oextra referencing and testing macros
  */

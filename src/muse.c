@@ -2090,7 +2090,7 @@ struct obj *obj;
         if (typ == AMULET_OF_REFLECTION)
             return TRUE;
         break;
-	case DECORATION_CLASS:
+	case MISCELLANEOUS_CLASS:
 		break;
 	case TOOL_CLASS:
         if (typ == PICK_AXE)

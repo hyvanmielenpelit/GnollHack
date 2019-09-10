@@ -3730,7 +3730,7 @@ boolean *lostsome;
                       || obj == uleft || obj == uright || obj == ublindf
                       || obj == uarm || obj == uarmc || obj == uarmg
                       || obj == uarmf || obj == uarmu || obj == uarmo || obj == uarmb || obj == uarmv
-					  || obj == udeco || obj == udeco2 || obj == udeco3
+					  || obj == umisc || obj == umisc2 || obj == umisc3
                       || (obj->cursed && (obj == uarmh || obj == uarms))
                       || welded(obj)))
                     otmp = obj;

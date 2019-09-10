@@ -323,12 +323,12 @@ worst_cursed_item()
         otmp = uarmu;
     } else if (uamul && uamul->cursed) { /* amulet */
         otmp = uamul;
-	} else if (udeco && udeco->cursed) { /* decoration */
-		otmp = udeco;
-	} else if (udeco2 && udeco2->cursed) { /* decoration */
-		otmp = udeco2;
-	} else if (udeco3 && udeco3->cursed) { /* decoration */
-		otmp = udeco3;
+	} else if (umisc && umisc->cursed) { /* decoration */
+		otmp = umisc;
+	} else if (umisc2 && umisc2->cursed) { /* decoration */
+		otmp = umisc2;
+	} else if (umisc3 && umisc3->cursed) { /* decoration */
+		otmp = umisc3;
     } else if (uleft && uleft->cursed) { /* left ring */
         otmp = uleft;
     } else if (uright && uright->cursed) { /* right ring */

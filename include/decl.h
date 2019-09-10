@@ -244,7 +244,7 @@ E NEARDATA struct obj *invent, *uarm, *uarmc, *uarmh, *uarms, *uarmg, *uarmf,
 	*uarmo, /* over-wear, so to speak */
 	*uarmb, /* bracers */
 	*uarmv, /* belts, vyo in Finnish */
-	*udeco, *udeco2, *udeco3, /* decorations */
+	*umisc, *umisc2, *umisc3, /* decorations */
 	*uskin, *uamul, *uleft, *uright, *ublindf, *uwep, *uswapwep, *uquiver;
 
 E NEARDATA struct obj *uchain; /* defined only when punished */

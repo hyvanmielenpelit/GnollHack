@@ -141,13 +141,13 @@ struct prop {
 	/* new accessories*/
 /* 0x01000000 used by bracers */
 /* 0x02000000 used by belts */
-#define W_DECO  0x04000000L	  /* Special decorative item, such as a brooch, bracelet, nose ring */
-#define W_DECO2 0x00800000L	  /* Special decorative item, such as a brooch, bracelet, nose ring */
-#define W_DECO3 0x08000000L	  /* Special decorative item, such as a brooch, bracelet, nose ring */
+#define W_MISC  0x04000000L	  /* Special decorative item, such as a brooch, bracelet, nose ring */
+#define W_MISC2 0x00800000L	  /* Special decorative item, such as a brooch, bracelet, nose ring */
+#define W_MISC3 0x08000000L	  /* Special decorative item, such as a brooch, bracelet, nose ring */
 
-#define W_DECORATIONS (W_DECO  | W_DECO2 | W_DECO3)
+#define W_MISCITEMS (W_MISC  | W_MISC2 | W_MISC3)
 /* 0x08000000 unused -- DECO3 */
-#define W_ACCESSORY (W_RING | W_AMUL | W_DECORATIONS | W_TOOL)
+#define W_ACCESSORY (W_RING | W_AMUL | W_MISCITEMS | W_TOOL)
 
 /* Carried */
 /*0x10000000 unused */
@@ -190,9 +190,9 @@ struct prop {
 #define WORN_ROBE W_ARMO
 #define WORN_BRACERS W_ARMB
 #define WORN_BELT W_ARMV
-#define WORN_DECORATION W_DECO
-#define WORN_DECORATION2 W_DECO2
-#define WORN_DECORATION3 W_DECO3
+#define WORN_MISCELLANEOUS W_MISC
+#define WORN_MISCELLANEOUS2 W_MISC2
+#define WORN_MISCELLANEOUS3 W_MISC3
 #define CARRIED_ITEM W_CARRIED
 
 #endif /* PROP_H */

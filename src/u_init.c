@@ -180,7 +180,7 @@ static struct trobj TouristFemale[] = {
 	{ EXPENSIVE_CAMERA, UNDEF_SPE, TOOL_CLASS, 1, 0, 0 },
 	{ CREDIT_CARD, 0, TOOL_CLASS, 1, 0, 0 },
 	{ EXPENSIVE_HANDBAG, 0, TOOL_CLASS, 1, 0, 0 },
-	{ GOLDEN_EARRINGS, 0, DECORATION_CLASS, 1, 0, 0 },
+	{ GOLDEN_EARRINGS, 0, MISCELLANEOUS_CLASS, 1, 0, 0 },
 	{ UNDEF_TYP, UNDEF_SPE, FOOD_CLASS, 10, 0 },
 	{ 0, 0, 0, 0, 0, 0 }
 };
@@ -1382,24 +1382,24 @@ register struct trobj *trop;
                 setworn(obj, W_ARM);
         }
 
-		if (obj->oclass == DECORATION_CLASS && !(udeco && udeco2 && udeco3))
+		if (obj->oclass == MISCELLANEOUS_CLASS && !(umisc && umisc2 && umisc3))
 		{
-			if (objects[obj->otyp].oc_subtyp != DEC_MULTIPLE_PERMITTED &&
-				(udeco && objects[udeco->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
-				|| (udeco2 && objects[udeco2->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
-				|| (udeco3 && objects[udeco3->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
+			if (objects[obj->otyp].oc_subtyp != MISC_MULTIPLE_PERMITTED &&
+				(umisc && objects[umisc->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
+				|| (umisc2 && objects[umisc2->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
+				|| (umisc3 && objects[umisc3->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
 				)
 			{
 				//Nothing
 			}
 			else
 			{
-				if(!udeco)
-					setworn(obj, W_DECO);
-				else if (!udeco2)
-					setworn(obj, W_DECO2);
-				else if (!udeco3)
-					setworn(obj, W_DECO3);
+				if(!umisc)
+					setworn(obj, W_MISC);
+				else if (!umisc2)
+					setworn(obj, W_MISC2);
+				else if (!umisc3)
+					setworn(obj, W_MISC3);
 			}
 		}
 

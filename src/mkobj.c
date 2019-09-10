@@ -36,7 +36,7 @@ static const struct icp mkobjprobs[] = { { 10, WEAPON_CLASS },
                                          { 3, WAND_CLASS },
                                          { 3, RING_CLASS },
 										 { 2, REAGENT_CLASS },
-										 { 1, DECORATION_CLASS },
+										 { 1, MISCELLANEOUS_CLASS },
 										 { 1, AMULET_CLASS } };
 
 static const struct icp boxiprobs[] = { { 18, GEM_CLASS },
@@ -48,7 +48,7 @@ static const struct icp boxiprobs[] = { { 18, GEM_CLASS },
                                         { 6, WAND_CLASS },
                                         { 5, RING_CLASS },
 										{ 2, REAGENT_CLASS },
-   									    { 1, DECORATION_CLASS },
+   									    { 1, MISCELLANEOUS_CLASS },
 										{ 1, AMULET_CLASS } };
 
 static const struct icp rogueprobs[] = { { 12, WEAPON_CLASS },
@@ -69,7 +69,7 @@ static const struct icp hellprobs[] = { { 20, WEAPON_CLASS },
 										{ 1, REAGENT_CLASS },
 										{ 8, WAND_CLASS },
                                         { 8, RING_CLASS },
-										{ 2, DECORATION_CLASS },
+										{ 2, MISCELLANEOUS_CLASS },
 										{ 4, AMULET_CLASS } };
 
 struct oextra *
@@ -1087,7 +1087,7 @@ boolean artif;
                 curse(otmp);
             }
             break;
-		case DECORATION_CLASS:
+		case MISCELLANEOUS_CLASS:
 			if (objects[otmp->otyp].oc_charged) {
 				int addition = rnd(2);
 				if (otmp->otyp != STRANGE_OBJECT)
@@ -1512,7 +1512,7 @@ register struct obj *obj;
 			else if (obj->otyp == BAG_OF_TREASURE_HAULING
 				&& (contents->oclass == COIN_CLASS || contents->oclass == GEM_CLASS
 					|| contents->oclass == RING_CLASS || contents->oclass == AMULET_CLASS
-					|| contents->oclass == DECORATION_CLASS
+					|| contents->oclass == MISCELLANEOUS_CLASS
 					|| objects[contents->otyp].oc_material == SILVER
 					|| objects[contents->otyp].oc_material == GOLD
 					|| objects[contents->otyp].oc_material == PLATINUM
@@ -2673,16 +2673,16 @@ struct obj *obj;
 			if (obj != uarmv)
 				what = "belt";
 			break;
-		case W_DECO:
-			if (obj != udeco)
+		case W_MISC:
+			if (obj != umisc)
 				what = "miscellaneous item";
 			break;
-		case W_DECO2:
-			if (obj != udeco2)
+		case W_MISC2:
+			if (obj != umisc2)
 				what = "secondary miscellaneous item";
 			break;
-		case W_DECO3:
-			if (obj != udeco2)
+		case W_MISC3:
+			if (obj != umisc2)
 				what = "tertiary miscellaneous item";
 			break;
 		case W_ARMF:
@@ -2763,8 +2763,8 @@ struct obj *obj;
         } else if (owornmask & W_AMUL) {
             if (obj->oclass != AMULET_CLASS)
                 what = "amulet";
-        } else if (owornmask & W_DECORATIONS) {
-            if (obj->oclass != DECORATION_CLASS)
+        } else if (owornmask & W_MISCITEMS) {
+            if (obj->oclass != MISCELLANEOUS_CLASS)
                 what = "miscellaneous item";
         } else if (owornmask & W_RING) {
             if (obj->oclass != RING_CLASS && obj->otyp != MEAT_RING)

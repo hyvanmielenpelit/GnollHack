@@ -160,7 +160,7 @@ NEARDATA struct obj
     *uarmc = (struct obj *) 0, *uarmh = (struct obj *) 0,
     *uarms = (struct obj *) 0, *uarmg = (struct obj *) 0,
     *uarmf = (struct obj *) 0, *uamul = (struct obj *) 0,
-	*udeco = (struct obj*) 0, *udeco2 = (struct obj*) 0, *udeco3 = (struct obj*) 0,     /* decorations */
+	*umisc = (struct obj*) 0, *umisc2 = (struct obj*) 0, *umisc3 = (struct obj*) 0,     /* decorations */
 	*uright = (struct obj *) 0, *uleft = (struct obj *) 0,
     *ublindf = (struct obj *) 0, *uchain = (struct obj *) 0,
     *uball = (struct obj *) 0;
