@@ -1594,43 +1594,43 @@ int otyp;
 		switch(objects[otyp].oc_dir_subtype)
 		{
 		case REFLECTING:
-			Your("skin starts to feel more reflecting than before.");
+			Your("skin feels more reflecting than before.");
 			break;
 		case FIRE_RES:
-			Your("skin starts to feel less prone to burning than before.");
+			Your("skin feels less prone to burning than before.");
 			break;
 		case COLD_RES:
-			Your("skin starts to feel less prone to frostbites than before.");
+			Your("skin feels less prone to frostbites than before.");
 			break;
 		case SHOCK_RES:
-			Your("skin starts to feel less prone to electricity than before.");
+			Your("skin feels less prone to electricity than before.");
 			break;
 		case DISINT_RES:
-			Your("body starts to feel firmer than before.");
+			Your("body feels firmer than before.");
 			break;
 		case POISON_RES:
-			You("starts to feel more healthy than before.");
+			You_feel("more healthy than before.");
 			break;
 		case ACID_RES:
-			Your("skin starts to feel less prone to acid than before.");
+			Your("skin feels less prone to acid than before.");
 			break;
 		case STONE_RES:
-			Your("skin starts to feel limber than before.");
+			Your("skin feels limber than before.");
 			break;
 		case DRAIN_RES:
-			You("start to feel less suspectible to draining than before.");
+			You_feel("less suspectible to draining than before.");
 			break;
 		case SICK_RES:
-			You("start to feel unbothered by disease agents.");
+			You_feel("unbothered by disease agents.");
 			break;
 		case INVULNERABLE:
-			Your("skin starts to feel less prone to damage than before.");
+			Your("skin feels less prone to damage than before.");
 			break;
 		case ANTIMAGIC:
 			You_feel("more protected from magic.");
 			break;
 		case DEATH_RES:
-			Your("soul's silver cord starts to feel thicker than before.");
+			Your("soul's silver cord feels thicker than before.");
 			break;
 		case LYCANTHROPY_RES:
 			You_feel("more protected from lycanthropy.");

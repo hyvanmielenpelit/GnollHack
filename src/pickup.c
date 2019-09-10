@@ -1740,6 +1740,17 @@ int cindex, ccount; /* index of this container (1..N), number of them (N) */
         abort_looting = TRUE;
         return 1;
     }
+	else if (cobj->otyp == POUCH_OF_ENDLESS_BOLTS || cobj->otyp == QUIVER_OF_INFINITE_ARROWS) {
+		int tmp;
+
+		You("carefully open %s...", the(xname(cobj)));
+		if(cobj->cooldownleft > 0)
+			You("find nothing but void inside.");
+		else
+			(void)endlessarrows(cobj, (cobj->otyp == POUCH_OF_ENDLESS_BOLTS ? CROSSBOW_BOLT : ARROW), rnd(10) + 10);
+		abort_looting = TRUE;
+		return 1;
+	}
 
     You("%s%s%s...", (!cobj->cknown || !cobj->lknown) ? "carefully " : "", (cobj->otyp == BOOKSHELF) ? "peek into " : "open ",
         the(xname(cobj)));

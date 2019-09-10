@@ -44,7 +44,6 @@
     (((ptr)->mflags1 & (M1_AMPHIBIOUS | M1_BREATHLESS)) != 0L)
 #define passes_walls(ptr) (((ptr)->mflags1 & M1_WALLWALK) != 0L)
 #define amorphous(ptr) (((ptr)->mflags1 & M1_AMORPHOUS) != 0L)
-#define noncorporeal(ptr) (((ptr)->mflags1 & M3_NONCORPOREAL) != 0L)   //((ptr)->mlet == S_GHOST)
 #define tunnels(ptr) (((ptr)->mflags1 & M1_TUNNEL) != 0L)
 #define needspick(ptr) (((ptr)->mflags1 & M1_NEEDPICK) != 0L)
 #define hides_under(ptr) (((ptr)->mflags1 & M1_CONCEAL) != 0L)
@@ -98,7 +97,6 @@
 #define polyok(ptr) (((ptr)->mflags2 & M2_NOPOLY) == 0L)
 #define is_shapeshifter(ptr) (((ptr)->mflags2 & M2_SHAPESHIFTER) != 0L)
 #define is_undead(ptr) (((ptr)->mflags2 & M2_UNDEAD) != 0L)
-#define is_nonliving(ptr) (((ptr)->mflags3 & M3_NONLIVING) != 0L)
 #define is_were(ptr) (((ptr)->mflags2 & M2_WERE) != 0L)
 #define is_elf(ptr) (((ptr)->mflags2 & M2_ELF) != 0L)
 #define is_dwarf(ptr) (((ptr)->mflags2 & M2_DWARF) != 0L)
@@ -154,6 +152,9 @@
 #define infravision(ptr) (((ptr)->mflags3 & M3_INFRAVISION))
 #define infravisible(ptr) (((ptr)->mflags3 & M3_INFRAVISIBLE))
 #define is_displacer(ptr) (((ptr)->mflags3 & M3_DISPLACES) != 0L)
+#define noncorporeal(ptr) (((ptr)->mflags3 & M3_NONCORPOREAL) != 0L)   //((ptr)->mlet == S_GHOST)
+#define is_nonliving(ptr) (((ptr)->mflags3 & M3_NONLIVING) != 0L)
+
 #define is_multiweaponmonster(ptr) (((ptr)->mflags3 & M3_MULTIWEAPON) != 0L)
 #define is_mplayer(ptr) \
     (((ptr) >= &mons[PM_ARCHEOLOGIST]) && ((ptr) <= &mons[PM_WIZARD]))
