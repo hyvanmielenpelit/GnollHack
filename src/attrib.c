@@ -551,7 +551,7 @@ update_carried_item_extrinsics()
 	struct obj* uitem;
 
 	//Clear first all carried item extrinsics
-	for (int i = 1; i <= LAST_PROP; i++)
+	for (int i = 0; i <= LAST_PROP; i++)
 	{
 		u.uprops[i].extrinsic = 0; // &= ~W_CARRIED;
 		u.uprops[i].blocked = 0;
@@ -623,11 +623,11 @@ update_carried_item_extrinsics()
 				bit = W_CARRIED;
 
 			/* Properties conferred by item */
-			if (objects[otyp].oc_oprop > 0)
+			if (objects[otyp].oc_oprop >= 0)
 				u.uprops[objects[otyp].oc_oprop].extrinsic |= bit;//W_CARRIED;
-			if (objects[otyp].oc_oprop2 > 0)
+			if (objects[otyp].oc_oprop2 >= 0)
 				u.uprops[objects[otyp].oc_oprop2].extrinsic |= bit;//W_CARRIED;
-			if (objects[otyp].oc_oprop3 > 0)
+			if (objects[otyp].oc_oprop3 >= 0)
 				u.uprops[objects[otyp].oc_oprop3].extrinsic |= bit;//W_CARRIED;
 
 			int p = 0;

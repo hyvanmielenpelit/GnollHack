@@ -757,9 +757,9 @@ AMULET("amulet versus poison",        "pyramidal", 115, POISON_RES, 0, 0, 0, 0, 
 AMULET("amulet of change",               "square", 130, 0, 0, 0, 0, 0, 0, 0, O1_NONE, 0),
 AMULET("amulet of unchanging",          "concave", 45,  UNCHANGING, 0, 0, 0, 0, 0, 0, O1_POLYMORPH_RESISTANT, 0),
 AMULET("amulet of reflection",        "hexagonal", 75,  REFLECTING, 0, 0, 0, 0, 0, 0, O1_NONE, 0),
-AMULET("amulet of mana",		        "convex",		50,  0, 0, 0, 75, 0, 0, 0, O1_NONE, 0), //100 mana points
-AMULET("demon blood talisman", "non-Euclidian-shaped",	25, 0, 0, 0, 100, 0, 0, 0, O1_MANA_PERCENTAGE_BONUS, 0), //doubles mana capacity
-AMULET("periapt of vitality",	        "linear",		50, 0, 0, 0, 0, 25, 0, 0, O1_NONE, 0), //50 hit points
+AMULET("amulet of mana",		        "convex",  50,  0, 0, 0, 75, 0, 0, 0, O1_NONE, 0),
+AMULET("demon blood talisman",	   "tetrahedral",  25,  0, 0, 0, 100, 0, 0, 0, O1_MANA_PERCENTAGE_BONUS, 0), //doubles mana capacity
+AMULET("periapt of vitality",	        "linear",  50,  0, 0, 0, 0, 25, 0, 0, O1_NONE, 0),
 AMULET("amulet of magical breathing", "octagonal", 65,  MAGICAL_BREATHING, 0, 0, 0, 0, 0, 0, O1_NONE, 0),
 /* fixed descriptions; description duplication is deliberate;
  * fake one must come before real one because selection for
