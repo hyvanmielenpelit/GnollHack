@@ -128,11 +128,13 @@ int msgflg; /* positive => no message, zero => message, and */
     if (Fixed_abil || !incr)
         return FALSE;
 
+	/*
     if ((ndx == A_INT || ndx == A_WIS) && uarmh && uarmh->otyp == DUNCE_CAP) {
         if (msgflg == 0)
             Your("cap constricts briefly, then relaxes again.");
         return FALSE;
     }
+	*/
 
     old_acurr = ACURR(ndx);
     old_abase = ABASE(ndx);

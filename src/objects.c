@@ -402,7 +402,7 @@ HELM("cornuthaum", "conical hat",
         /* name coined by devteam; confers clairvoyance for wizards,
            blocks clairvoyance if worn by role other than wizard */
 HELM("dunce cap", "conical hat",
-     0, 1,           0, 0, 0,  3, 1,  4,  1, 10, 0, 0, 0, BONUS_TO_INT | BONUS_TO_WIS | FIXED_IS_MAXIMUM | SETS_FIXED_ATTRIBUTE, 6, CLOTH, CLR_BLUE, O1_NONE),
+     0, 1,           0, 0, 0,  3, 1,  4,  1, 10, 0, 0, 0, BONUS_TO_INT | BONUS_TO_WIS | FIXED_IS_MAXIMUM | SETS_FIXED_ATTRIBUTE, 6, CLOTH, CLR_BLUE, O1_BECOMES_CURSED_WHEN_WORN),
 HELM("dented pot", None,
      1, 0,           0, 0, 0,  2, 0, 30,  8,  9, 0, 0, 0, 0, 0, IRON, CLR_BLACK, O1_NONE),
 /* with shuffled appearances... */
@@ -411,7 +411,7 @@ HELM("helmet", "plumed helmet",
 HELM("helm of brilliance", "etched helmet",
      0, 1,           0, 0, 0,  6, 1, 50, 50,  9, 0, 0, 0, BONUS_TO_INT | BONUS_TO_WIS, 0, IRON, CLR_GREEN, O1_NO_SPELL_CASTING_PENALTY),
 HELM("helm of opposite alignment", "crested helmet",
-     0, 1,           0, 0, 0,  6, 1, 50, 50,  9, 0, 0, 0, 0, 0, IRON, HI_METAL, O1_NONE),
+     0, 1,           0, 0, 0,  6, 1, 50, 50,  9, 0, 0, 0, 0, 0, IRON, HI_METAL, O1_BECOMES_CURSED_WHEN_WORN),
 HELM("helm of telepathy", "visored helmet",
      0, 1,     TELEPAT, 0, 0, 2, 1, 50, 50,  9, 0, 0, 0, 0, 0, IRON, HI_METAL, O1_HALF_SPELL_CASTING_PENALTY),
 

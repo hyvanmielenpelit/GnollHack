@@ -397,8 +397,15 @@ Helmet_on(VOID_ARGS)
                          : (uarmh->o_id % 2) ? A_CHAOTIC : A_LAWFUL,
                      1);
     /* makeknown(uarmh->otyp);   -- moved below, after xname() */
-    /*FALLTHRU*/
-    case DUNCE_CAP:
+		if (Hallucination) {
+			pline("My brain hurts!"); /* Monty Python's Flying Circus */
+		}
+		else {
+			makeknown(uarmh->otyp);
+		}
+		break;
+	case DUNCE_CAP:
+		/*
         if (uarmh && !uarmh->cursed) {
             if (Blind)
                 pline("%s for a moment.", Tobjnam(uarmh, "vibrate"));
@@ -407,18 +414,16 @@ Helmet_on(VOID_ARGS)
                       hcolor(NH_BLACK));
             curse(uarmh);
         }
-        context.botl = 1; /* reveal new alignment or INT & WIS */
+		*/
+        //context.botl = 1; /* reveal new alignment or INT & WIS */
         if (Hallucination) {
             pline("My brain hurts!"); /* Monty Python's Flying Circus */
-        } else if (uarmh && uarmh->otyp == DUNCE_CAP) {
+        } else {
             You_feel("%s.", /* track INT change; ignore WIS */
                      ACURR(A_INT)
                              <= (ABASE(A_INT) + ABON(A_INT) + ATEMP(A_INT))
                          ? "like sitting in a corner"
                          : "giddy");
-        } else {
-            /* [message moved to uchangealign()] */
-            makeknown(HELM_OF_OPPOSITE_ALIGNMENT);
         }
         break;
     default:

@@ -143,6 +143,13 @@ long mask;
             }
     }
 
+	boolean needbecomecursedmsg = FALSE;
+	/* curse first */
+	if (obj && (objects[obj->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_WORN) && !obj->cursed) {
+		needbecomecursedmsg = TRUE;
+		curse(uarmh);
+	}
+
 	update_carried_item_extrinsics();
 	updateabon();
 	updatemaxen();
@@ -173,7 +180,16 @@ long mask;
 			learnring(obj, FALSE);
 		}
 		context.botl = 1;
+		if (needbecomecursedmsg)
+		{
+			if (Blind)
+				pline("%s for a moment.", Tobjnam(obj, "vibrate"));
+			else
+				pline("%s %s for a moment.", Tobjnam(obj, "glow"),
+					hcolor(NH_BLACK));
+		}
 	}
+
 	update_inventory();
 }
 
@@ -751,8 +767,7 @@ outer_break:
         return;
 
     /* same auto-cursing behavior as for hero */
-    autocurse = ((best->otyp == HELM_OF_OPPOSITE_ALIGNMENT
-                  || best->otyp == DUNCE_CAP) && !best->cursed);
+    autocurse = ((objects[best->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_WORN)  && !best->cursed);
     /* if wearing a cloak, account for the time spent removing
        and re-wearing it when putting on a suit or shirt */
     if ((flag == W_ARM || flag == W_ARMU || flag == W_ARMO) && (mon->misc_worn_check & W_ARMC))
