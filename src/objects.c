@@ -782,7 +782,7 @@ OBJECT(OBJ("Amulet of Yendor", /* note: description == name */
            power, power2, power3,  MISCELLANEOUS_CLASS, prob, 0, wt, cost,  0, 0, 0, 0, 0, 0, 0, 0, manabonus, hpbonus, bonusattrs, abon, nut, color, flagparams, 0, 0, 0, flags)
 MISCELLANEOUSITEM("brooch of shielding", "brooch",	MISC_MULTIPLE_PERMITTED, None,
 	0, 1, 0, 0, 200, 150, 5,
-	PROTECTION, 0, 0, 0, 0, 0, 0,
+	PROTECTION, 0, 0, 0, 0, BONUS_TO_AC, 2,
 	20, GOLD, HI_GOLD, O1_NONE, 0),
 MISCELLANEOUSITEM("nose ring of bull strength", "golden nose ring", MISC_NOSERING, None,
 	0, 1, 0, 0, 200, 200, 50,

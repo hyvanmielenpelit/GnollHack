@@ -2182,15 +2182,28 @@ const char *fmt, *str;
             makeknown(AMULET_OF_REFLECTION);
         }
         return TRUE;
-    } else if (EReflecting & W_ARM) {
+    }
+	else if (EReflecting & W_ARMC) {
+		if (fmt && str)
+			pline(fmt, str, "cloak");
+		return TRUE;
+	}
+	else if (EReflecting & W_ARMO) {
+		if (fmt && str)
+			pline(fmt, str, "robe");
+		return TRUE;
+	}
+	else if (EReflecting & W_ARM) {
         if (fmt && str)
             pline(fmt, str, uskin ? "luster" : "armor");
         return TRUE;
-    } else if (EReflecting & W_ARM) {
-        if (fmt && str)
-            pline(fmt, str, uskin ? "luster" : "armor");
-        return TRUE;
-    } else if (is_reflecting(youmonst.data)) {  //youmonst.data == &mons[PM_SILVER_DRAGON]) {
+	}
+	else if (EReflecting & W_ARMB) {
+		if (fmt && str)
+			pline(fmt, str, "bracers");
+		return TRUE;
+	}
+	else if (is_reflecting(youmonst.data)) {  //youmonst.data == &mons[PM_SILVER_DRAGON]) {
         if (fmt && str)
             pline(fmt, str, "scales");
         return TRUE;
@@ -2200,9 +2213,29 @@ const char *fmt, *str;
 			pline(fmt, str, "protective spell");
 		return TRUE;
 	}
+	else if (EReflecting & W_MISC && umisc) {
+		if (fmt && str)
+			pline(fmt, str, xname(umisc));
+		return TRUE;
+	}
+	else if (EReflecting & W_MISC2 && umisc2) {
+		if (fmt && str)
+			pline(fmt, str, xname(umisc2));
+		return TRUE;
+	}
+	else if (EReflecting & W_MISC3 && umisc3) {
+		if (fmt && str)
+			pline(fmt, str, xname(umisc3));
+		return TRUE;
+	}
 	else if (EReflecting & W_CARRIED) {
 		if (fmt && str)
-			pline(fmt, str, "force field");
+			pline(fmt, str, "item-induced force field");
+		return TRUE;
+	}
+	else if (EReflecting) {
+		if (fmt && str)
+			pline(fmt, str, "item");
 		return TRUE;
 	}
 	else if (HReflecting) {
