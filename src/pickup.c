@@ -1741,8 +1741,6 @@ int cindex, ccount; /* index of this container (1..N), number of them (N) */
         return 1;
     }
 	else if (cobj->otyp == POUCH_OF_ENDLESS_BOLTS || cobj->otyp == QUIVER_OF_INFINITE_ARROWS) {
-		int tmp;
-
 		You("carefully open %s...", the(xname(cobj)));
 		if(cobj->cooldownleft > 0)
 			You("find nothing but void inside.");

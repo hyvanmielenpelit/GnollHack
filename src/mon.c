@@ -377,7 +377,7 @@ unsigned corpseflags;
 	case PM_CAVE_SPIDER:
 	case PM_GIANT_SPIDER:
 	case PM_PHASE_SPIDER:
-		(void)mksobj_at(THREAD_OF_SPIDER_SILK, x, y, TRUE, FALSE);
+		obj = mksobj_at(THREAD_OF_SPIDER_SILK, x, y, TRUE, FALSE);
 		obj->quan = (mndx == PM_PHASE_SPIDER ? rnd(6) + 2 : mndx == PM_GIANT_SPIDER ? rnd(4) + 1 : rnd(2));
 		obj->owt = weight(obj);
 		goto default_1;
@@ -391,7 +391,9 @@ unsigned corpseflags;
 	case PM_BAT:
 	case PM_VAMPIRE_BAT:
 	case PM_GIANT_BAT:
-		(void)mksobj_at(CLUMP_OF_BAT_GUANO, x, y, TRUE, FALSE);
+		obj = mksobj_at(CLUMP_OF_BAT_GUANO, x, y, TRUE, FALSE);
+		obj->quan = (mndx == PM_VAMPIRE_BAT ? rnd(4) : mndx == PM_GIANT_BAT ? rnd(3) : rnd(2));
+		obj->owt = weight(obj);
 		goto default_1;
 	case PM_BROWN_MOLD:
 	case PM_YELLOW_MOLD:

@@ -1088,13 +1088,13 @@ boolean makingboxcontents;
 					otmp->otyp = !rn2(2) ? WAN_LIGHTNING : WAN_FIRE;
 
 			}
-			if (!makingboxcontents && (In_mines(&u.uz) || depth(&u.uz) < 10))
+			if (!makingboxcontents && (In_mines(&u.uz) || level_difficulty() < 10))
 			{
 				if (otmp->otyp == WAN_COLD || otmp->otyp == WAN_FIRE || otmp->otyp == WAN_LIGHTNING)
 					otmp->otyp = !rn2(3) ? WAN_STRIKING : !rn2(2) ? WAN_DIGGING : WAN_SPEED_MONSTER;
 
 			}
-			if (depth(&u.uz) < makingboxcontents ? 5 : 8)
+			if (depth(&u.uz) == 1 || depth(&u.uz) == 2 || level_difficulty() < 5)
 			{
 				if (otmp->otyp == WAN_WISHING)
 					otmp->otyp = WAN_POLYMORPH;
