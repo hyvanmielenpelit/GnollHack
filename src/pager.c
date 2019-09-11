@@ -182,7 +182,7 @@ struct obj **obj_p;
 
     if (!otmp || otmp->otyp != glyphotyp) {
         /* this used to exclude STRANGE_OBJECT; now caller deals with it */
-        otmp = mksobj(glyphotyp, FALSE, FALSE);
+        otmp = mksobj(glyphotyp, FALSE, FALSE, FALSE);
         if (!otmp)
             return FALSE;
         fakeobj = TRUE;
@@ -271,7 +271,7 @@ int x, y;
     name = (mtmp->data == &mons[PM_COYOTE] && accurate)
               ? coyotename(mtmp, monnambuf)
               : distant_monnam(mtmp, ARTICLE_NONE, monnambuf);
-    Sprintf(buf, "%s%s%s",
+    Sprintf(buf, "level %d %s%s%s", accurate ? mtmp->data->difficulty : rn2(3) ? rnd(30) : rnd(80),
             (mtmp->mx != x || mtmp->my != y)
                 ? ((mtmp->isshk && accurate) ? "tail of " : "tail of a ")
                 : "",
@@ -281,6 +281,8 @@ int x, y;
                     ? "peaceful "
                     : "",
             name);
+
+
     if (u.ustuck == mtmp) {
         if (u.uswallow || iflags.save_uswallow) /* monster detection */
             Strcat(buf, is_animal(mtmp->data)
@@ -390,6 +392,7 @@ char *buf, *monbuf;
     struct monst *mtmp = (struct monst *) 0;
     struct permonst *pm = (struct permonst *) 0;
     int glyph;
+	boolean noarticle = FALSE;
 
     buf[0] = monbuf[0] = '\0';
     glyph = glyph_at(x, y);
@@ -447,7 +450,8 @@ char *buf, *monbuf;
             Strcpy(buf, rndmonnam((char *) 0));
         }
     } else if (glyph_is_object(glyph)) {
-        look_at_object(buf, x, y, glyph); /* fill in buf[] */
+		noarticle = TRUE;
+		look_at_object(buf, x, y, glyph); /* fill in buf[] */
     } else if (glyph_is_trap(glyph)) {
         int tnum = what_trap(glyph_to_trap(glyph), rn2_on_display_rng);
 
@@ -496,6 +500,7 @@ char *buf, *monbuf;
                    Is_airlevel(&u.uz) ? "cloudy area" : "fog/vapor cloud");
             break;
         case S_stone:
+			noarticle = TRUE;
             if (!levl[x][y].seenv) {
                 Strcpy(buf, "unexplored");
                 break;
@@ -510,11 +515,22 @@ char *buf, *monbuf;
             }
             /*FALLTHRU*/
         default:
-            Strcpy(buf, defsyms[glyph_to_cmap(glyph)].explanation);
-            break;
-        }
+			strcpy(buf, defsyms[glyph_to_cmap(glyph)].explanation);
+			break;
+   }
 
-    return (pm && !Hallucination) ? pm : (struct permonst *) 0;
+	char exbuf[BUFSIZ];
+	strcpy(exbuf, buf);
+	int article = strstri(exbuf, " of a room") ? 2
+		: !(noarticle == TRUE
+			|| strcmp(exbuf, "air") == 0
+			|| strcmp(exbuf, "land") == 0
+			|| strcmp(exbuf, "water") == 0);
+
+	Strcpy(buf, article == 2 ? the(exbuf)
+		: article == 1 ? an(exbuf) : exbuf);
+	
+	return (pm && !Hallucination) ? pm : (struct permonst *) 0;
 }
 
 /*
@@ -882,7 +898,7 @@ struct permonst **for_supplement;
                 if (!found) {
                     Sprintf(out_str, "%s%s",
                             prefix, an(def_monsyms[i].explain));
-                    *firstmatch = def_monsyms[i].explain;
+                    *firstmatch = an(def_monsyms[i].explain);
                     found++;
                 } else {
                     found += append_str(out_str, an(def_monsyms[i].explain));
@@ -913,7 +929,7 @@ struct permonst **for_supplement;
                 if (!found) {
                     Sprintf(out_str, "%s%s",
                             prefix, an(def_oc_syms[i].explain));
-                    *firstmatch = def_oc_syms[i].explain;
+                    *firstmatch = an(def_oc_syms[i].explain);
                     found++;
                 } else {
                     found += append_str(out_str, an(def_oc_syms[i].explain));
@@ -930,7 +946,7 @@ struct permonst **for_supplement;
 
         if (!found) {
             Sprintf(out_str, "%s%s", prefix, an(unseen_explain));
-            *firstmatch = unseen_explain;
+            *firstmatch = an(unseen_explain);
             found++;
         } else {
             found += append_str(out_str, an(unseen_explain));
@@ -973,7 +989,8 @@ struct permonst **for_supplement;
                             article == 2 ? the(x_str)
                             : article == 1 ? an(x_str) : x_str);
                 }
-                *firstmatch = x_str;
+                *firstmatch = article == 2 ? the(x_str)
+					: article == 1 ? an(x_str) : x_str;
                 found++;
             } else if (!(hit_trap && is_cmap_trap(i))
                        && !(found >= 3 && is_cmap_drawbridge(i))
@@ -1018,7 +1035,7 @@ struct permonst **for_supplement;
         x_str = def_oc_syms[VENOM_CLASS].explain;
         if (!found) {
             Sprintf(out_str, "%s%s", prefix, an(x_str));
-            *firstmatch = x_str;
+            *firstmatch = an(x_str);
             found++;
         } else {
             found += append_str(out_str, an(x_str));
@@ -1028,8 +1045,8 @@ struct permonst **for_supplement;
     /* handle optional boulder symbol as a special case */
     if (iflags.bouldersym && sym == iflags.bouldersym) {
         if (!found) {
-            *firstmatch = "boulder";
-            Sprintf(out_str, "%s%s", prefix, an(*firstmatch));
+            *firstmatch = "a boulder";
+            Sprintf(out_str, "%s%s", prefix, *firstmatch);
             found++;
         } else {
             found += append_str(out_str, "boulder");

@@ -101,7 +101,7 @@ short typ;
 
     if (typ == STRANGE_OBJECT)
         return;
-    obj = mksobj(typ, FALSE, FALSE);
+    obj = mksobj(typ, FALSE, FALSE, FALSE);
     if (!rn2(3))
         obj->oerodeproof = 1;
     if (!rn2(3))
@@ -264,7 +264,7 @@ register boolean special;
         }
 
         if (weapon != STRANGE_OBJECT) {
-            otmp = mksobj(weapon, TRUE, FALSE);
+            otmp = mksobj(weapon, TRUE, FALSE, FALSE);
             otmp->spe = (special ? rn1(5, 4) : rn2(4));
             if (!rn2(3))
                 otmp->oerodeproof = 1;
@@ -307,7 +307,7 @@ register boolean special;
             mkmonmoney(mtmp, rn2(1000));
             quan = rn2(10);
             while (quan--)
-                (void) mpickobj(mtmp, mkobj(RANDOM_CLASS, FALSE));
+                (void) mpickobj(mtmp, mkobj(RANDOM_CLASS, FALSE, FALSE));
         }
         quan = rnd(3);
         while (quan--)

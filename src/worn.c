@@ -234,8 +234,11 @@ register struct obj *obj;
 
 			p = objects[obj->otyp].oc_oprop3;
 			u.uprops[p].extrinsic = u.uprops[p].extrinsic & ~wp->w_mask;
+			*/
 
 			obj->owornmask &= ~wp->w_mask;
+
+			/*
 			if (obj->oartifact)
 				set_artifact_intrinsic(obj, 0, wp->w_mask);
 			if ((p = w_blocks(obj, wp->w_mask)) != 0)

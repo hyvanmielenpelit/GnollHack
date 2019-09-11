@@ -1299,13 +1299,13 @@ dospit()
         switch (mattk->adtyp) {
         case AD_BLND:
         case AD_DRST:
-            otmp = mksobj(BLINDING_VENOM, TRUE, FALSE);
+            otmp = mksobj(BLINDING_VENOM, TRUE, FALSE, FALSE);
             break;
         default:
             impossible("bad attack type in dospit");
             /*FALLTHRU*/
         case AD_ACID:
-            otmp = mksobj(ACID_VENOM, TRUE, FALSE);
+            otmp = mksobj(ACID_VENOM, TRUE, FALSE, FALSE);
             break;
         }
         otmp->spe = 1; /* to indicate it's yours */
@@ -1871,7 +1871,7 @@ int part;
     if (humanoid(mptr) && (part == ARM || part == FINGER || part == FINGERTIP
                            || part == HAND || part == HANDED))
         return humanoid_parts[part];
-    if (mptr == &mons[PM_RAVEN])
+    if (mptr == &mons[PM_RAVEN] || mptr == &mons[PM_ROC])
         return bird_parts[part];
     if (mptr->mlet == S_CENTAUR || mptr->mlet == S_UNICORN
         || (mptr == &mons[PM_ROTHE] && part != HAIR))

@@ -1746,12 +1746,12 @@ int id;
         do {
             if (otmp)
                 delobj(otmp);
-            otmp = mkobj(obj->oclass, FALSE);
+            otmp = mkobj(obj->oclass, FALSE, FALSE);
         } while (--try_limit > 0
                  && objects[otmp->otyp].oc_magic != magic_obj);
     } else {
         /* literally replace obj with this new thing */
-        otmp = mksobj(id, FALSE, FALSE);
+        otmp = mksobj(id, FALSE, FALSE, FALSE);
 /* Actually more things use corpsenm but they polymorph differently */
 #define USES_CORPSENM(typ) \
     ((typ) == CORPSE || (typ) == STATUE || (typ) == FIGURINE)
@@ -2618,7 +2618,7 @@ register struct obj *obj;
 		mtmp = summoncreature(obj->otyp, PM_KI_RIN, "%s appears before you.", TRUE, TRUE);
 		if (mtmp)
 		{
-			otmp = mksobj(SADDLE, TRUE, FALSE);
+			otmp = mksobj(SADDLE, TRUE, FALSE, FALSE);
 			if (otmp)
 			{
 				otmp->dknown = otmp->bknown = otmp->rknown = 1;
@@ -6541,7 +6541,7 @@ summonblackblade()
 {
 	struct obj* otmp;
 
-	otmp = mksobj(BLACK_BLADE_OF_DISINTEGRATION, FALSE, FALSE);
+	otmp = mksobj(BLACK_BLADE_OF_DISINTEGRATION, FALSE, FALSE, FALSE);
 	if (otmp && otmp != &zeroobj) {
 		const char
 			* verb = ((Is_airlevel(&u.uz) || u.uinwater) ? "slip" : "drop"),
@@ -6565,7 +6565,7 @@ summonmagearmor()
 {
 	struct obj* otmp;
 
-	otmp = mksobj(FORCE_FIELD_ARMOR, FALSE, FALSE);
+	otmp = mksobj(FORCE_FIELD_ARMOR, FALSE, FALSE, FALSE);
 	if (otmp && otmp != &zeroobj) {
 		const char
 			* verb = ((Is_airlevel(&u.uz) || u.uinwater) ? "slip" : "drop"),

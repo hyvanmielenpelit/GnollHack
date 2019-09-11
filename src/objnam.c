@@ -2864,7 +2864,7 @@ STATIC_OVL NEARDATA const struct o_range o_ranges[] = {
       YELLOW_DRAGON_SCALE_MAIL },
     { "sword", WEAPON_CLASS, SHORT_SWORD, KATANA },
     { "venom", VENOM_CLASS, BLINDING_VENOM, ACID_VENOM },
-	{ "reagent", REAGENT_CLASS, THREAD_OF_SPIDER_SILK, RAVEN_FEATHER },
+	{ "reagent", REAGENT_CLASS, THREAD_OF_SPIDER_SILK, FEATHER },
 	{ "miscellaneous item", MISCELLANEOUS_CLASS, BROOCH_OF_SHIELDING, WINGS_OF_FLYING },
 	{ "ioun stone", MISCELLANEOUS_CLASS, IOUN_STONE_OF_PROTECTION, IOUN_STONE_OF_SUSTENANCE },
 	{ "gray stone", GEM_CLASS, LUCKSTONE, FLINT },
@@ -2929,7 +2929,6 @@ static const struct alt_spellings {
 	{ "mandrake", MANDRAKE_ROOT },
 	{ "wolfsbane", SPRIG_OF_WOLFSBANE },
 	{ "garlic", CLOVE_OF_GARLIC },
-	{ "feather", RAVEN_FEATHER },
 	{ "ring of death resistance", RIN_LIFE_PROTECTION },
 	{ "ring of protection from shape shifters", RIN_PROTECTION_FROM_SHAPE_CHANGERS },
     /* if we ever add other sizes, move this to o_ranges[] with "bag" */
@@ -3519,7 +3518,7 @@ struct obj *no_wish;
             cnt = 5000;
         else if (cnt < 1)
             cnt = 1;
-        otmp = mksobj(GOLD_PIECE, FALSE, FALSE);
+        otmp = mksobj(GOLD_PIECE, FALSE, FALSE, TRUE);
         otmp->quan = (long) cnt;
         otmp->owt = weight(otmp);
         context.botl = 1;
@@ -3959,7 +3958,7 @@ struct obj *no_wish;
     /*
      * Create the object, then fine-tune it.
      */
-    otmp = typ ? mksobj(typ, TRUE, FALSE) : mkobj(oclass, FALSE);
+    otmp = typ ? mksobj(typ, TRUE, FALSE, TRUE) : mkobj(oclass, FALSE, TRUE);
     typ = otmp->otyp, oclass = otmp->oclass; /* what we actually got */
 
     if (islit && (typ == OIL_LAMP || typ == MAGIC_LAMP || typ == BRASS_LANTERN

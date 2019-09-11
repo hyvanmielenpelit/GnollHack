@@ -214,7 +214,7 @@ boolean artif;
 {
     struct obj *otmp;
 
-    otmp = mkobj(let, artif);
+    otmp = mkobj(let, artif, FALSE);
     place_object(otmp, x, y);
     return otmp;
 }
@@ -226,7 +226,7 @@ boolean init, artif;
 {
     struct obj *otmp;
 
-    otmp = mksobj(otyp, init, artif);
+    otmp = mksobj(otyp, init, artif, FALSE);
     place_object(otmp, x, y);
     return otmp;
 }
@@ -239,7 +239,7 @@ boolean init, artif;
 {
     struct obj *otmp;
 
-    otmp = mksobj(otyp, init, artif);
+    otmp = mksobj(otyp, init, artif, FALSE);
     if (otmp) {
         add_to_migration(otmp);
         otmp->owornmask = (long) MIGR_TO_SPECIES;
@@ -250,9 +250,10 @@ boolean init, artif;
 
 /* mkobj(): select a type of item from a class, use mksobj() to create it */
 struct obj *
-mkobj(oclass, artif)
+mkobj(oclass, artif, makingboxcontents)
 char oclass;
 boolean artif;
+boolean makingboxcontents;
 {
     int tprob, i, prob = rnd(1000);
 
@@ -274,7 +275,7 @@ boolean artif;
     if (objects[i].oc_class != oclass || !OBJ_NAME(objects[i]))
         panic("probtype error, oclass=%d i=%d", (int) oclass, i);
 
-    return mksobj(i, TRUE, artif);
+    return mksobj(i, TRUE, artif, makingboxcontents);
 }
 
 STATIC_OVL void
@@ -325,7 +326,7 @@ struct obj *box;
 
     for (n = rn2(n + 1); n > 0; n--) {
 		if (box->otyp == ICE_BOX) {
-			if (!(otmp = mksobj(CORPSE, TRUE, TRUE)))
+			if (!(otmp = mksobj(CORPSE, TRUE, TRUE, TRUE)))
 				continue;
 			/* Note: setting age to 0 is correct.  Age has a different
 			 * from usual meaning for objects stored in ice boxes. -KAA
@@ -337,16 +338,16 @@ struct obj *box;
 			}
 		} else if (box->otyp == BOOKSHELF) {
 			if (rn2(3))
-				otmp = mkobj(SCROLL_CLASS, FALSE);
+				otmp = mkobj(SCROLL_CLASS, FALSE, TRUE);
 			else
-				otmp = mkobj(SPBOOK_CLASS, FALSE);
+				otmp = mkobj(SPBOOK_CLASS, FALSE, TRUE);
 		} else {
             register int tprob;
             const struct icp *iprobs = boxiprobs;
 
             for (tprob = rnd(100); (tprob -= iprobs->iprob) > 0; iprobs++)
                 ;
-            if (!(otmp = mkobj(iprobs->iclass, TRUE)))
+            if (!(otmp = mkobj(iprobs->iclass, TRUE, TRUE)))
                 continue;
 
             /* handle a couple of special cases */
@@ -791,10 +792,11 @@ static const char dknowns[] = { WAND_CLASS,   RING_CLASS, POTION_CLASS,
 
 /* mksobj(): create a specific type of object */
 struct obj *
-mksobj(otyp, init, artif)
+mksobj(otyp, init, artif, makingboxcontents)
 int otyp;
 boolean init;
 boolean artif;
+boolean makingboxcontents;
 {
     int mndx, tryct;
     struct obj *otmp;
@@ -838,8 +840,35 @@ boolean artif;
                 blessorcurse(otmp, 10);
             if (is_poisonable(otmp) && !rn2(100))
                 otmp->opoisoned = 1;
-
-			otmp->special_enchantment = 0; // At the moment no randomly generated special enchantment weapons
+			else if (is_specialenchantable(otmp) && (is_multigen(otmp) ? !rn2(40) : !rn2(100)))
+			{
+				if (is_deathenchantable(otmp) && !rn2(5))
+				{
+					otmp->special_enchantment = DEATH_ENCHANTMENT;
+					if (is_multigen(otmp))
+					{
+						otmp->quan = rnd(2);
+					}
+				}
+				else
+				{
+					otmp->special_enchantment = rnd(3);
+					if (is_multigen(otmp))
+					{
+						switch (otmp->special_enchantment)
+						{
+						case FIRE_ENCHANTMENT:
+							otmp->quan = (otmp->quan + 1) / 2;
+							break;
+						case LIGHTNING_ENCHANTMENT:
+							otmp->quan = (otmp->quan + 2) / 3;
+							break;
+						default:
+							break;
+						}
+					}
+				}
+			}
 
 			if (artif && !rn2(20))
                 otmp = mk_artifact(otmp, (aligntyp) A_NONE);
@@ -961,7 +990,7 @@ boolean artif;
 			case BAG_OF_WIZARDRY:
 			case BAG_OF_TREASURE_HAULING:
 				mkbox_cnts(otmp);
-                break;
+				break;
             case EXPENSIVE_CAMERA:
             case TINNING_KIT:
             case MAGIC_MARKER:
@@ -1053,7 +1082,24 @@ boolean artif;
             }
             break;
         case WAND_CLASS:
-            if (otmp->otyp == WAN_WISHING)
+			if (!makingboxcontents)
+			{
+				if (otmp->otyp == WAN_DEATH || otmp->otyp == WAN_DISINTEGRATION)
+					otmp->otyp = !rn2(2) ? WAN_LIGHTNING : WAN_FIRE;
+
+			}
+			if (!makingboxcontents && (In_mines(&u.uz) || depth(&u.uz) < 10))
+			{
+				if (otmp->otyp == WAN_COLD || otmp->otyp == WAN_FIRE || otmp->otyp == WAN_LIGHTNING)
+					otmp->otyp = !rn2(3) ? WAN_STRIKING : !rn2(2) ? WAN_DIGGING : WAN_SPEED_MONSTER;
+
+			}
+			if (depth(&u.uz) < makingboxcontents ? 5 : 8)
+			{
+				if (otmp->otyp == WAN_WISHING)
+					otmp->otyp = WAN_POLYMORPH;
+			}
+			if (otmp->otyp == WAN_WISHING)
                 otmp->spe = rnd(3);
             else
                 otmp->spe =
@@ -1117,7 +1163,7 @@ boolean artif;
                 otmp->corpsenm = rndmonnum();
                 if (!verysmall(&mons[otmp->corpsenm])
                     && rn2(level_difficulty() / 2 + 10) > 10)
-                    (void) add_to_container(otmp, mkobj(SPBOOK_CLASS, FALSE));
+                    (void) add_to_container(otmp, mkobj(SPBOOK_CLASS, FALSE, TRUE));
             }
             break;
         case COIN_CLASS:
@@ -1621,7 +1667,7 @@ unsigned corpstatflags;
     if (objtype != CORPSE && objtype != STATUE)
         impossible("making corpstat type %d", objtype);
     if (x == 0 && y == 0) { /* special case - random placement */
-        otmp = mksobj(objtype, init, FALSE);
+        otmp = mksobj(objtype, init, FALSE, FALSE);
         if (otmp)
             (void) rloco(otmp);
     } else
@@ -2277,14 +2323,14 @@ boolean tipping; /* caller emptying entire contents; affects shop handling */
 
         consume_obj_charge(horn, !tipping);
         if (!rn2(13)) {
-            obj = mkobj(POTION_CLASS, FALSE);
+            obj = mkobj(POTION_CLASS, FALSE, FALSE);
             if (objects[obj->otyp].oc_magic)
                 do {
                     obj->otyp = rnd_class(POT_BOOZE, POT_WATER);
                 } while (obj->otyp == POT_SICKNESS);
             what = (obj->quan > 1L) ? "Some potions" : "A potion";
         } else {
-            obj = mkobj(FOOD_CLASS, FALSE);
+            obj = mkobj(FOOD_CLASS, FALSE, FALSE);
             if (obj->otyp == FOOD_RATION && !rn2(7))
                 obj->otyp = LUMP_OF_ROYAL_JELLY;
             what = "Some food";

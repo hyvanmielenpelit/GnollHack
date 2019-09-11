@@ -917,7 +917,7 @@ register struct attack *mattk;
         num = monsndx(pd);
         if (magr->mtame && !magr->isminion
             && !(mvitals[num].mvflags & G_NOCORPSE)) {
-            struct obj *virtualcorpse = mksobj(CORPSE, FALSE, FALSE);
+            struct obj *virtualcorpse = mksobj(CORPSE, FALSE, FALSE, FALSE);
             int nutrit;
 
             set_corpsenm(virtualcorpse, num);

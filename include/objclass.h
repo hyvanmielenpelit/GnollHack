@@ -216,7 +216,7 @@ struct objclass {
 
     unsigned short oc_nutrition; /* food value */
 
-	int oc_dir_subtype; /* ID for type of ray or immediate effect */
+	long oc_dir_subtype; /* ID for type of ray or immediate effect, long because used also for item flags */
 
 #define RAY_WND_MAGIC_MISSILE 0 
 #define RAY_WND_FIRE 1 
@@ -243,6 +243,10 @@ struct objclass {
 #define RAY_EVAPORATION 112 
 
 	int oc_material_components;		/* ID for material component list for a spell or to make the item (if recipe is known) */
+
+#define oc_nonspell_oc7 oc_dir_subtype			/* non-spells: extra parameter 1 */
+#define oc_nonspell_oc8 oc_material_components	/* non-spells: extra parameter 2 */
+
 	int oc_item_cooldown;			/* cooldown before the item can be used / applied / zapped / read etc. again */
 	int oc_item_level;				/* item level, to be used with loot tables */
 	unsigned long oc_flags;			/* E.g. if indestructible or disintegration resistant */
@@ -273,16 +277,57 @@ struct objclass {
 #define O1_BECOMES_CURSED_WHEN_WORN 0x00020000
 #define O1_CONFERS_LUCK 0x00040000
 #define O1_CONFERS_POWERS_WHEN_CARRIED 0x00080000
-#define O1_CONFERS_POWERS_TO_FEMALE_ONLY 0x00100000
-#define O1_CONFERS_POWERS_TO_MALE_ONLY 0x00200000  
-#define O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED 0x00400000
-#define O1_CANNOT_BE_DROPPED_IF_CURSED 0x00800000
+#define O1_CONFERS_POWERS_TO_SPECIFIED_CHARACTERS_ONLY 0x00100000		/* specify roles, races, and alignments in nonspell_oc7 */
+#define O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED 0x00200000
+#define O1_CANNOT_BE_DROPPED_IF_CURSED 0x00400000
 
 /* General flags -- General: cannot be overriden */
 #define O1_TREATED_AS_MATERIAL_COMPONENT 0x10000000
 #define O1_EDIBLE_NONFOOD 0x20000000
 #define O1_NON_SPELL_SPELLBOOK 0x40000000  /* uses non-spellbook flags and other non-spellbook stats */
 #define O1_NOT_CURSEABLE 0x80000000
+
+/* flag values for O1_CONFERS_POWERS_TO_SPECIFIED_CHARACTERS_ONLY in nonspell_oc7 */
+#define PERMITTED_RACE_HUMAN		0x00000001
+#define PERMITTED_RACE_ELF			0x00000002
+#define PERMITTED_RACE_DWARF		0x00000004
+#define PERMITTED_RACE_GNOLL		0x00000008
+#define PERMITTED_RACE_ORC			0x00000010
+
+#define PERMITTED_RACE_MASK (PERMITTED_RACE_HUMAN | PERMITTED_RACE_ELF | PERMITTED_RACE_DWARF | PERMITTED_RACE_GNOLL | PERMITTED_RACE_ORC)
+
+
+#define PERMITTED_ROLE_ARCHEOLOGIST	0x00000020
+#define PERMITTED_ROLE_BARBARIAN	0x00000040
+#define PERMITTED_ROLE_CAVEMAN		0x00000080
+#define PERMITTED_ROLE_HEALER		0x00000100
+#define PERMITTED_ROLE_KNIGHT		0x00000200
+#define PERMITTED_ROLE_MONK			0x00000400
+#define PERMITTED_ROLE_PRIEST		0x00000800
+#define PERMITTED_ROLE_ROGUE		0x00001000
+#define PERMITTED_ROLE_RANGER		0x00002000
+#define PERMITTED_ROLE_SAMURAI		0x00004000
+#define PERMITTED_ROLE_TOURIST		0x00008000
+#define PERMITTED_ROLE_VALKYRIE		0x00010000
+#define PERMITTED_ROLE_WIZARD		0x00020000
+
+#define PERMITTED_ROLE_MASK (PERMITTED_ROLE_ARCHEOLOGIST | PERMITTED_ROLE_BARBARIAN | PERMITTED_ROLE_CAVEMAN | PERMITTED_ROLE_HEALER | PERMITTED_ROLE_KNIGHT | \
+	PERMITTED_ROLE_MONK | PERMITTED_ROLE_PRIEST | PERMITTED_ROLE_ROGUE | PERMITTED_ROLE_RANGER | PERMITTED_ROLE_SAMURAI | PERMITTED_ROLE_TOURIST | \
+	PERMITTED_ROLE_VALKYRIE | PERMITTED_ROLE_WIZARD)
+
+#define PERMITTED_ALIGNMENT_LAWFUL	0x00040000
+#define PERMITTED_ALIGNMENT_NEUTRAL	0x00080000
+#define PERMITTED_ALIGNMENT_CHAOTIC	0x00100000
+
+#define PERMITTED_ALIGNMENT_MASK (PERMITTED_ALIGNMENT_LAWFUL | PERMITTED_ALIGNMENT_NEUTRAL | PERMITTED_ALIGNMENT_CHAOTIC)
+
+#define PERMITTED_GENDER_MALE		0x00200000
+#define PERMITTED_GENDER_FEMALE		0x00400000
+
+#define PERMITTED_GENDER_MASK (PERMITTED_GENDER_MALE | PERMITTED_GENDER_FEMALE)
+
+#define PERMITTED_CHARACTER_MASK (PERMITTED_RACE_MASK | PERMITTED_ROLE_MASK | PERMITTED_ALIGNMENT_MASK | PERMITTED_GENDER_MASK)
+
 };
 
 struct class_sym {
@@ -361,7 +406,7 @@ extern uchar oc_syms[MAXOCLASSES];      /* current class symbols */
 #define CHAIN_SYM '_'
 #define VENOM_SYM '.'
 #define REAGENT_SYM '\''
-#define DECORATION_SYM '8'
+#define MISCELLANEOUS_SYM '8'
 
 struct fruit {
     char fname[PL_FSIZ];

@@ -985,13 +985,13 @@ struct attack *mattk;
         switch (mattk->adtyp) {
         case AD_BLND:
         case AD_DRST:
-            otmp = mksobj(BLINDING_VENOM, TRUE, FALSE);
+            otmp = mksobj(BLINDING_VENOM, TRUE, FALSE, FALSE);
             break;
         default:
             impossible("bad attack type in spitmu");
             /* fall through */
         case AD_ACID:
-            otmp = mksobj(ACID_VENOM, TRUE, FALSE);
+            otmp = mksobj(ACID_VENOM, TRUE, FALSE, FALSE);
             break;
         }
         if (!rn2(BOLT_LIM-distmin(mtmp->mx,mtmp->my,mtarg->mx,mtarg->my))) {
@@ -1197,13 +1197,13 @@ struct attack *mattk;
         switch (mattk->adtyp) {
         case AD_BLND:
         case AD_DRST:
-            otmp = mksobj(BLINDING_VENOM, TRUE, FALSE);
+            otmp = mksobj(BLINDING_VENOM, TRUE, FALSE, FALSE);
             break;
         default:
             impossible("bad attack type in spitmu");
         /* fall through */
         case AD_ACID:
-            otmp = mksobj(ACID_VENOM, TRUE, FALSE);
+            otmp = mksobj(ACID_VENOM, TRUE, FALSE, FALSE);
             break;
         }
         if (!rn2(BOLT_LIM

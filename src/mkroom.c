@@ -484,7 +484,7 @@ struct mkroom *sroom;
                     if (sobj) {
                         for (i = rn2(5); i; i--)
                             (void) add_to_container(
-                                sobj, mkobj(RANDOM_CLASS, FALSE));
+                                sobj, mkobj(RANDOM_CLASS, FALSE, TRUE));
                         sobj->owt = weight(sobj);
                     }
                 }
@@ -500,7 +500,7 @@ struct mkroom *sroom;
         struct obj *chest, *gold;
         levl[tx][ty].typ = THRONE;
         (void) somexy(sroom, &mm);
-        gold = mksobj(GOLD_PIECE, TRUE, FALSE);
+        gold = mksobj(GOLD_PIECE, TRUE, FALSE, FALSE);
         gold->quan = (long) rn1(50 * level_difficulty(), 10);
         gold->owt = weight(gold);
         /* the royal coffers */

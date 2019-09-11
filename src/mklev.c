@@ -827,7 +827,7 @@ makelevel()
             x = somex(croom);
             y = somey(croom);
             tmonst = makemon((struct permonst *) 0, x, y, MM_NOGRP);
-            if (tmonst && tmonst->data == &mons[PM_GIANT_SPIDER]
+            if (tmonst && (tmonst->data == &mons[PM_GIANT_SPIDER] || (tmonst->data == &mons[PM_PHASE_SPIDER] && !rn2(2)))
                 && !occupied(x, y))
                 (void) maketrap(x, y, WEB);
         }
@@ -978,7 +978,7 @@ boolean skip_lvl_checks;
                        && levl[x + 1][y + 1].typ == STONE
                        && levl[x - 1][y + 1].typ == STONE) {
                 if (rn2(1000) < goldprob) {
-                    if ((otmp = mksobj(GOLD_PIECE, FALSE, FALSE)) != 0) {
+                    if ((otmp = mksobj(GOLD_PIECE, FALSE, FALSE, FALSE)) != 0) {
                         otmp->ox = x, otmp->oy = y;
                         otmp->quan = 1L + rnd(goldprob * 3);
                         otmp->owt = weight(otmp);
@@ -990,7 +990,7 @@ boolean skip_lvl_checks;
                 }
                 if (rn2(1000) < gemprob) {
                     for (cnt = rnd(2 + dunlev(&u.uz) / 3); cnt > 0; cnt--)
-                        if ((otmp = mkobj(GEM_CLASS, FALSE)) != 0) {
+                        if ((otmp = mkobj(GEM_CLASS, FALSE, FALSE)) != 0) {
                             if (otmp->otyp == ROCK) {
                                 dealloc_obj(otmp); /* discard it */
                             } else {
@@ -1403,7 +1403,7 @@ coord *tm;
     kind = t ? t->ttyp : NO_TRAP;
 
     if (kind == WEB)
-        (void) makemon(&mons[PM_GIANT_SPIDER], m.x, m.y, NO_MM_FLAGS);
+        (void) makemon(((lvl >= 14 && !rn2(2)) ? &mons[PM_PHASE_SPIDER] : &mons[PM_GIANT_SPIDER]), m.x, m.y, NO_MM_FLAGS);
 
     /* The hero isn't the only person who's entered the dungeon in
        search of treasure. On the very shallowest levels, there's a
@@ -1444,16 +1444,16 @@ coord *tm;
            that kill in a specific way that's obvious after the fact. */
         switch (kind) {
         case ARROW_TRAP:
-            otmp = mksobj(ARROW, TRUE, FALSE);
+            otmp = mksobj(ARROW, TRUE, FALSE, FALSE);
             otmp->opoisoned = 0;
             /* don't adjust the quantity; maybe the trap shot multiple
                times, there was an untrapping attempt, etc... */
             break;
         case DART_TRAP:
-            otmp = mksobj(DART, TRUE, FALSE);
+            otmp = mksobj(DART, TRUE, FALSE, FALSE);
             break;
         case ROCKTRAP:
-            otmp = mksobj(ROCK, TRUE, FALSE);
+            otmp = mksobj(ROCK, TRUE, FALSE, FALSE);
             break;
         default:
             /* no item dropped by the trap */
@@ -1486,7 +1486,7 @@ coord *tm;
                 break;
             }
 
-            otmp = mkobj(poss_class, FALSE);
+            otmp = mkobj(poss_class, FALSE, FALSE);
             /* these items are always cursed, both for flavour (owned
                by a dead adventurer, bones-pile-style) and for balance
                (less useful to use, and encourage pets to avoid the trap) */
@@ -1527,7 +1527,7 @@ coord *tm;
             /* 10% chance of a candle too */
             if (!rn2(10)) {
                 otmp = mksobj(rn2(4) ? TALLOW_CANDLE : WAX_CANDLE,
-                              TRUE, FALSE);
+                              TRUE, FALSE, FALSE);
                 otmp->quan = 1;
                 otmp->blessed = 0;
 				if (objects[otmp->otyp].oc_flags & O1_NOT_CURSEABLE)
@@ -1685,7 +1685,7 @@ struct mkroom *croom;
            present), and didn't bother burying it; now we create a
            loose, easily buriable, stack but we make no attempt to
            replicate mkgold()'s level-based formula for the amount */
-        struct obj *gold = mksobj(GOLD_PIECE, TRUE, FALSE);
+        struct obj *gold = mksobj(GOLD_PIECE, TRUE, FALSE, FALSE);
 
         gold->quan = (long) (rnd(20) + level_difficulty() * rnd(5));
         gold->owt = weight(gold);
@@ -1693,7 +1693,7 @@ struct mkroom *croom;
         add_to_buried(gold);
     }
     for (tryct = rn2(5); tryct; tryct--) {
-        otmp = mkobj(RANDOM_CLASS, TRUE);
+        otmp = mkobj(RANDOM_CLASS, TRUE, FALSE);
         if (!otmp)
             return;
         curse(otmp);

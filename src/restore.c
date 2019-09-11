@@ -317,7 +317,7 @@ boolean ghostly, frozen;
              * [Note: after this fix up, future save/restore of this object
              * will take the Has_contents() code path above.]
              */
-            if ((catcorpse = mksobj(CORPSE, TRUE, FALSE)) != 0) {
+            if ((catcorpse = mksobj(CORPSE, TRUE, FALSE, FALSE)) != 0) {
                 otmp->spe = 1; /* flag for special SchroedingersBox */
                 set_corpsenm(catcorpse, PM_HOUSECAT);
                 (void) stop_timer(ROT_CORPSE, obj_to_any(catcorpse));

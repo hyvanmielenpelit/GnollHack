@@ -369,7 +369,7 @@ MONSTER:('Y',"owlbear"),(47,06),peaceful,asleep
 MONSTER:('@',"wizard"),(32,11),peaceful,asleep,"Newt"
 MONSTER:('@',"Grey-elf"),(44,11),peaceful
 MONSTER:('H',"hill giant"),(47,11),peaceful,asleep
-MONSTER:('G',"gnomish wizard"),(38,06),peaceful
+MONSTER:('g',"gnomish wizard"),(38,06),peaceful
 MONSTER:('@',"prisoner"),(35,11),peaceful
 MONSTER:('@',"prisoner"),(41,11),peaceful,asleep
 

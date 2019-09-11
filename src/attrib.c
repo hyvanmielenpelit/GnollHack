@@ -527,16 +527,15 @@ boolean
 carried_object_confers_powers(otmp)
 struct obj* otmp;
 {
-	return ((otmp->oclass == WEAPON_CLASS && (otmp->owornmask & W_WEAPON))
+	return ((otmp->oclass == WEAPON_CLASS && (otmp->owornmask & W_WEP))
 		|| (otmp->oclass == ARMOR_CLASS && (otmp->owornmask & W_ARMOR))
 		|| (otmp->oclass == RING_CLASS && (otmp->owornmask & W_RING))
 		|| (otmp->oclass == AMULET_CLASS && (otmp->owornmask & W_AMUL))
 		|| (otmp->oclass == MISCELLANEOUS_CLASS && (otmp->owornmask & W_MISCITEMS))
-		|| (otmp->oclass == TOOL_CLASS && (otmp->owornmask & W_TOOL))
+		|| (otmp->oclass == TOOL_CLASS && (otmp->owornmask & W_TOOL || (is_weptool(otmp) && otmp->owornmask & W_WEP)))
 		|| (objects[otmp->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED))
 		&&
-		!(((objects[otmp->otyp].oc_flags & O1_CONFERS_POWERS_TO_FEMALE_ONLY) && !(Upolyd ? u.mfemale : flags.female))
-			|| ((objects[otmp->otyp].oc_flags & O1_CONFERS_POWERS_TO_MALE_ONLY) && (Upolyd ? u.mfemale : flags.female)));
+		!inappropriate_character_type(otmp);
 }
 
 boolean
@@ -583,8 +582,7 @@ update_carried_item_extrinsics()
 			|| objects[uitem->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED))
 		{
 			int otyp = uitem->otyp;
-			if (((objects[otyp].oc_flags & O1_CONFERS_POWERS_TO_FEMALE_ONLY) && !(Upolyd ? u.mfemale : flags.female))
-				|| ((objects[otyp].oc_flags & O1_CONFERS_POWERS_TO_MALE_ONLY) && (Upolyd ? u.mfemale : flags.female)))
+			if (inappropriate_character_type(uitem))
 			{
 				continue;
 			}
@@ -666,6 +664,87 @@ update_carried_item_extrinsics()
 	}
 
 }
+
+boolean
+inappropriate_character_type(uitem)
+struct obj* uitem;
+{
+	int otyp = uitem->otyp;
+	if (objects[otyp].oc_flags & O1_CONFERS_POWERS_TO_SPECIFIED_CHARACTERS_ONLY)
+	{
+		if (objects[otyp].oc_nonspell_oc7 & PERMITTED_GENDER_MASK)
+		{
+			if (
+				   ((objects[otyp].oc_nonspell_oc7 & PERMITTED_GENDER_FEMALE) && (Upolyd ? u.mfemale : flags.female))
+				|| ((objects[otyp].oc_nonspell_oc7 & PERMITTED_GENDER_MALE) && !(Upolyd ? u.mfemale : flags.female))
+				)
+			{
+				// Ok
+			}
+			else
+			{
+				return TRUE;
+			}
+		}
+		if (objects[otyp].oc_nonspell_oc7 & PERMITTED_RACE_MASK)
+		{
+			if (
+				   ((objects[otyp].oc_nonspell_oc7 & PERMITTED_RACE_HUMAN) && Race_if(PM_HUMAN))
+				|| ((objects[otyp].oc_nonspell_oc7 & PERMITTED_RACE_ELF) && Race_if(PM_ELF))
+				|| ((objects[otyp].oc_nonspell_oc7 & PERMITTED_RACE_DWARF) && Race_if(PM_DWARF))
+				|| ((objects[otyp].oc_nonspell_oc7 & PERMITTED_RACE_GNOLL) && Race_if(PM_GNOLL))
+				|| ((objects[otyp].oc_nonspell_oc7 & PERMITTED_RACE_ORC) && Race_if(PM_ORC))
+				)
+			{
+				// Ok
+			}
+			else
+			{
+				return TRUE;
+			}
+		}
+		if (objects[otyp].oc_nonspell_oc7 & PERMITTED_ROLE_MASK)
+		{
+			if (
+				((objects[otyp].oc_nonspell_oc7 & PERMITTED_ROLE_ARCHEOLOGIST) && Role_if(PM_ARCHEOLOGIST))
+				|| ((objects[otyp].oc_nonspell_oc7 & PERMITTED_ROLE_BARBARIAN) && Role_if(PM_BARBARIAN))
+				|| ((objects[otyp].oc_nonspell_oc7 & PERMITTED_ROLE_CAVEMAN) && Role_if(PM_CAVEMAN))
+				|| ((objects[otyp].oc_nonspell_oc7 & PERMITTED_ROLE_HEALER) && Role_if(PM_HEALER))
+				|| ((objects[otyp].oc_nonspell_oc7 & PERMITTED_ROLE_KNIGHT) && Role_if(PM_KNIGHT))
+				|| ((objects[otyp].oc_nonspell_oc7 & PERMITTED_ROLE_MONK) && Role_if(PM_MONK))
+				|| ((objects[otyp].oc_nonspell_oc7 & PERMITTED_ROLE_PRIEST) && Role_if(PM_PRIEST))
+				|| ((objects[otyp].oc_nonspell_oc7 & PERMITTED_ROLE_TOURIST) && Role_if(PM_TOURIST))
+				|| ((objects[otyp].oc_nonspell_oc7 & PERMITTED_ROLE_VALKYRIE) && Role_if(PM_VALKYRIE))
+				|| ((objects[otyp].oc_nonspell_oc7 & PERMITTED_ROLE_WIZARD) && Role_if(PM_WIZARD))
+				)
+			{
+				// Ok
+			}
+			else
+			{
+				return TRUE;
+			}
+		}
+		if (objects[otyp].oc_nonspell_oc7 & PERMITTED_ALIGNMENT_MASK)
+		{
+			if (
+				((objects[otyp].oc_nonspell_oc7 & PERMITTED_ALIGNMENT_LAWFUL) && (u.ualign.type == A_LAWFUL))
+				|| ((objects[otyp].oc_nonspell_oc7 & PERMITTED_ALIGNMENT_NEUTRAL) && (u.ualign.type == A_NEUTRAL))
+				|| ((objects[otyp].oc_nonspell_oc7 & PERMITTED_ALIGNMENT_CHAOTIC) && (u.ualign.type == A_CHAOTIC))
+				)
+			{
+				// Ok
+			}
+			else
+			{
+				return TRUE;
+			}
+		}
+	}
+
+	return FALSE;
+}
+
 
 
 /* there has just been an inventory change affecting a luck-granting item */
@@ -1373,12 +1452,11 @@ boolean addconstitutionbonus;
 			|| objects[otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED
 			))
 		{
-			if(((objects[otyp].oc_flags & O1_CONFERS_POWERS_TO_FEMALE_ONLY) && !(Upolyd ? u.mfemale : flags.female))
-				|| ((objects[otyp].oc_flags & O1_CONFERS_POWERS_TO_MALE_ONLY) && (Upolyd ? u.mfemale : flags.female)))
+			if (inappropriate_character_type(uitem))
 			{
 				continue;
 			}
-			
+
 			if (objects[otyp].oc_flags & O1_HP_PERCENTAGE_BONUS)
 				adj += (objects[otyp].oc_hp_bonus * (basehp + baseadj)) / 100;
 			else
@@ -1450,8 +1528,7 @@ updateabon()
 			|| objects[otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED
 			))
 		{
-			if (((objects[otyp].oc_flags & O1_CONFERS_POWERS_TO_FEMALE_ONLY) && !(Upolyd ? u.mfemale : flags.female))
-				|| ((objects[otyp].oc_flags & O1_CONFERS_POWERS_TO_MALE_ONLY) && (Upolyd ? u.mfemale : flags.female)))
+			if (inappropriate_character_type(uitem))
 			{
 				continue;
 			}

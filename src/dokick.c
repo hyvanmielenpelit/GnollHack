@@ -1127,7 +1127,7 @@ dokick()
                 if (nfall != nfruit) {
                     /* scatter left some in the tree, but treefruit
                      * may not refer to the correct object */
-                    treefruit = mksobj(frtype, TRUE, FALSE);
+                    treefruit = mksobj(frtype, TRUE, FALSE, FALSE);
                     treefruit->quan = nfruit - nfall;
                     pline("%ld %s got caught in the branches.",
                           nfruit - nfall, xname(treefruit));

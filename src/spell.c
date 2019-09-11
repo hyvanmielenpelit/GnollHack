@@ -1184,7 +1184,7 @@ boolean atme;
     context.botl = 1;
     exercise(A_WIS, TRUE);
     /* pseudo is a temporary "false" object containing the spell stats */
-    pseudo = mksobj(spellid(spell), FALSE, FALSE);
+    pseudo = mksobj(spellid(spell), FALSE, FALSE, FALSE);
     pseudo->blessed = pseudo->cursed = 0;
     pseudo->quan = 20L; /* do not let useup get it */
     /*
@@ -1259,6 +1259,7 @@ boolean atme;
     case SPE_SLOW_MONSTER:
     case SPE_WIZARD_LOCK:
     case SPE_DIG:
+	case SPE_LOWER_WATER:
 	case SPE_FEAR:
 	case SPE_TURN_UNDEAD:
 	case SPE_NEGATE_UNDEATH:

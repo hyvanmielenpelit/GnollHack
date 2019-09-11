@@ -18,7 +18,7 @@ enum mon_class_types {
     S_DOG        =  4, /* d */
     S_EYE        =  5, /* e */
     S_FELINE     =  6, /* f: cats */
-    S_GREMLIN    =  7, /* g */
+    S_GNOME		 =  7, /* g */
     S_HUMANOID   =  8, /* h: small humanoids: hobbit, dwarf */
     S_IMP        =  9, /* i: minor demons */
     S_JELLY      = 10, /* j */
@@ -89,7 +89,7 @@ enum mon_class_types {
 #define DEF_DOG         'd'
 #define DEF_EYE         'e'
 #define DEF_FELINE      'f'
-#define DEF_GREMLIN     'g'
+#define DEF_GNOME     'g'
 #define DEF_HUMANOID    'h'
 #define DEF_IMP         'i'
 #define DEF_JELLY       'j'

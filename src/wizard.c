@@ -500,7 +500,7 @@ clonewiz()
         mtmp2->msleeping = mtmp2->mtame = mtmp2->mpeaceful = 0;
         if (!u.uhave.amulet && rn2(2)) { /* give clone a fake */
             (void) add_to_minv(mtmp2,
-                               mksobj(FAKE_AMULET_OF_YENDOR, TRUE, FALSE));
+                               mksobj(FAKE_AMULET_OF_YENDOR, TRUE, FALSE, FALSE));
         }
         mtmp2->m_ap_type = M_AP_MONSTER;
         mtmp2->mappearance = wizapp[rn2(SIZE(wizapp))];

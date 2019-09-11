@@ -108,8 +108,7 @@ enmaxadjustment()
 			|| objects[otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED
 			))
 		{
-			if (((objects[otyp].oc_flags & O1_CONFERS_POWERS_TO_FEMALE_ONLY) && !(Upolyd ? u.mfemale : flags.female))
-				|| ((objects[otyp].oc_flags & O1_CONFERS_POWERS_TO_MALE_ONLY) && (Upolyd ? u.mfemale : flags.female)))
+			if (inappropriate_character_type(uitem))
 			{
 				continue;
 			}

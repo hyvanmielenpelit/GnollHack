@@ -861,7 +861,7 @@ t_missile(otyp, trap)
 int otyp;
 struct trap *trap;
 {
-    struct obj *otmp = mksobj(otyp, TRUE, FALSE);
+    struct obj *otmp = mksobj(otyp, TRUE, FALSE, FALSE);
 
     otmp->quan = 1L;
     otmp->owt = weight(otmp);
@@ -2092,7 +2092,7 @@ long ocount;
         cc.x = bcc.x = x;
         cc.y = bcc.y = y;
     } else {
-        otmp = mksobj(otyp, TRUE, FALSE);
+        otmp = mksobj(otyp, TRUE, FALSE, FALSE);
         otmp->quan = ocount;
         otmp->owt = weight(otmp);
         place_object(otmp, cc.x, cc.y);
@@ -3995,7 +3995,7 @@ int cnt;
 struct trap *ttmp;
 boolean bury_it;
 {
-    struct obj *otmp = mksobj(otyp, TRUE, FALSE);
+    struct obj *otmp = mksobj(otyp, TRUE, FALSE, FALSE);
 
     otmp->quan = cnt;
     otmp->owt = weight(otmp);

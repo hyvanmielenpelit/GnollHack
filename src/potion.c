@@ -2162,7 +2162,7 @@ dodip()
                 obj->otyp = POT_SICKNESS;
                 break;
             case 4: {
-                struct obj *otmp = mkobj(POTION_CLASS, FALSE);
+                struct obj *otmp = mkobj(POTION_CLASS, FALSE, FALSE);
 
                 obj->otyp = otmp->otyp;
                 obfree(otmp, (struct obj *) 0);

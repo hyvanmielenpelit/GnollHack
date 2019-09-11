@@ -256,7 +256,7 @@ boolean sanctum; /* is it the seat of the high priest? */
         }
         /* 2 to 4 spellbooks */
         for (cnt = rn1(3, 2); cnt > 0; --cnt) {
-            (void) mpickobj(priest, mkobj(SPBOOK_CLASS, FALSE));
+            (void) mpickobj(priest, mkobj(SPBOOK_CLASS, FALSE, FALSE));
         }
         /* robe [via makemon()] */
         if (rn2(2) && (otmp = which_armor(priest, W_ARMC)) != 0) {

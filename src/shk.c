@@ -3650,7 +3650,7 @@ boolean catchup; /* restoring a level */
             && dist2(x, y, shkp->mx, shkp->my) <= 2) {
             /* convert to an object */
             otmp = mksobj((ttmp->ttyp == LANDMINE) ? LAND_MINE : BEARTRAP,
-                          TRUE, FALSE);
+                          TRUE, FALSE, FALSE);
             otmp->quan = 1L;
             otmp->owt = weight(otmp);
             (void) mpickobj(shkp, otmp);

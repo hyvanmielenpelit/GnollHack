@@ -808,7 +808,7 @@ level_tele()
                     struct obj *amu;
 
                     if (!u.uhave.amulet
-                        && (amu = mksobj(AMULET_OF_YENDOR, TRUE, FALSE))
+                        && (amu = mksobj(AMULET_OF_YENDOR, TRUE, FALSE, FALSE))
                                != 0) {
                         /* ordinarily we'd use hold_another_object()
                            for something like this, but we don't want

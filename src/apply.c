@@ -2032,7 +2032,7 @@ struct obj *obj;
     }
     consume_obj_charge(obj, TRUE);
 
-    if ((can = mksobj(TIN, FALSE, FALSE)) != 0) {
+    if ((can = mksobj(TIN, FALSE, FALSE, FALSE)) != 0) {
         static const char you_buy_it[] = "You tin it, you bought it!";
 
         can->corpsenm = corpse->corpsenm;
@@ -4407,7 +4407,7 @@ struct obj* bag;
 int arrowtype, quan; //ObjID and quantity
 {
 	struct obj* otmp;
-	otmp = mksobj(arrowtype, FALSE, FALSE);
+	otmp = mksobj(arrowtype, FALSE, FALSE, FALSE);
 	if (otmp && otmp != &zeroobj) {
 		otmp->quan = quan;
 		otmp->owt = weight(otmp);

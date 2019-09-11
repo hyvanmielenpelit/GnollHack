@@ -847,7 +847,7 @@ u_init()
 
 		for (int i = 0; i < n; i++)
 		{
-			otmp = mksobj(randomreagent(FALSE, 1), TRUE, FALSE);
+			otmp = mksobj(randomreagent(FALSE, 1), TRUE, FALSE, FALSE);
 			if (otmp)
 			{
 				makeknown(otmp->oclass);
@@ -942,7 +942,7 @@ u_init()
 		n = 2 + rn2(4); //2...5
 		for (int i = 0; i < n; i++)
 		{
-			otmp = mksobj(randomreagent(FALSE, 2), TRUE, FALSE);
+			otmp = mksobj(randomreagent(FALSE, 2), TRUE, FALSE, FALSE);
 			if (otmp)
 			{
 				makeknown(otmp->oclass);
@@ -1143,7 +1143,7 @@ register struct trobj *trop;
         otyp = (int) trop->trotyp;
         if (otyp != UNDEF_TYP)
 		{
-            obj = mksobj(otyp, TRUE, FALSE);
+            obj = mksobj(otyp, TRUE, FALSE, FALSE);
 		} else { /* UNDEF_TYP */
             static NEARDATA short nocreate = STRANGE_OBJECT;
             static NEARDATA short nocreate2 = STRANGE_OBJECT;
@@ -1159,7 +1159,7 @@ register struct trobj *trop;
              * one will immediately read it and use the iron ball as a
              * weapon.)
              */
-            obj = mkobj(trop->trclass, FALSE);
+            obj = mkobj(trop->trclass, FALSE, FALSE);
             otyp = obj->otyp;
 
             while (otyp == WAN_WISHING || otyp == nocreate
@@ -1211,7 +1211,7 @@ register struct trobj *trop;
 							   ))
 						   ))) {
                 dealloc_obj(obj);
-                obj = mkobj(trop->trclass, FALSE);
+                obj = mkobj(trop->trclass, FALSE, FALSE);
                 otyp = obj->otyp;
             }
 
@@ -1302,9 +1302,9 @@ register struct trobj *trop;
 		{
 			if (Role_if(PM_TOURIST))
 			{
-				(void)add_to_container(obj, mksobj(BATHROBE, TRUE, FALSE));
-				(void)add_to_container(obj, mksobj(COTTON_SLIPPERS, TRUE, FALSE));
-				(void)add_to_container(obj, mksobj(TOWEL, TRUE, FALSE));
+				(void)add_to_container(obj, mksobj(BATHROBE, TRUE, FALSE, TRUE));
+				(void)add_to_container(obj, mksobj(COTTON_SLIPPERS, TRUE, FALSE, TRUE));
+				(void)add_to_container(obj, mksobj(TOWEL, TRUE, FALSE, TRUE));
 				makeknown(BATHROBE);
 				obj->owt = weight(obj);
 			}

@@ -2037,7 +2037,7 @@ boolean confused, helmet_protects, byu, skip_uswallow;
         return;
     }
 
-    otmp2 = mksobj(confused ? ROCK : BOULDER, FALSE, FALSE);
+    otmp2 = mksobj(confused ? ROCK : BOULDER, FALSE, FALSE, FALSE);
     if (!otmp2)
         return;
     otmp2->quan = confused ? rn1(5, 2) : 1;
@@ -2077,7 +2077,7 @@ boolean confused, byu;
     register struct monst *mtmp;
 
     /* Make the object(s) */
-    otmp2 = mksobj(confused ? ROCK : BOULDER, FALSE, FALSE);
+    otmp2 = mksobj(confused ? ROCK : BOULDER, FALSE, FALSE, FALSE);
     if (!otmp2)
         return FALSE; /* Shouldn't happen */
     otmp2->quan = confused ? rn1(5, 2) : 1;
@@ -2659,15 +2659,15 @@ struct obj *sobj;
         || unsolid(youmonst.data) || noncorporeal(youmonst.data)) {
         if (!reuse_ball) {
             pline("A ball and chain appears, then falls away.");
-            dropy(mkobj(BALL_CLASS, TRUE));
+            dropy(mkobj(BALL_CLASS, TRUE, FALSE));
         } else {
             dropy(reuse_ball);
         }
         return;
     }
-    setworn(mkobj(CHAIN_CLASS, TRUE), W_CHAIN);
+    setworn(mkobj(CHAIN_CLASS, TRUE, FALSE), W_CHAIN);
     if (!reuse_ball)
-        setworn(mkobj(BALL_CLASS, TRUE), W_BALL);
+        setworn(mkobj(BALL_CLASS, TRUE, FALSE), W_BALL);
     else
         setworn(reuse_ball, W_BALL);
     uball->spe = 1; /* special ball (see save) */
@@ -2859,7 +2859,7 @@ struct _create_particular_data *d;
             set_malign(mtmp);
         }
         if (d->saddled && can_saddle(mtmp) && !which_armor(mtmp, W_SADDLE)) {
-            struct obj *otmp = mksobj(SADDLE, TRUE, FALSE);
+            struct obj *otmp = mksobj(SADDLE, TRUE, FALSE, FALSE);
 
             put_saddle_on_mon(otmp, mtmp);
         }

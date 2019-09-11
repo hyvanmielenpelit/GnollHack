@@ -54,7 +54,7 @@ const struct class_sym def_oc_syms[MAXOCLASSES] = {
     { CHAIN_SYM, "chains", "iron chain" },
     { VENOM_SYM, "venoms", "splash of venom" },
 	{ REAGENT_SYM, "reagents", "reagent" },
-	{ DECORATION_SYM, "miscellaneous items", "miscellaneous item" }
+	{ MISCELLANEOUS_SYM, "miscellaneous items", "miscellaneous item" }
 };
 
 /* Default monster class symbols.  See monsym.h. */
@@ -66,7 +66,7 @@ const struct class_sym def_monsyms[MAXMCLASSES] = {
     { DEF_DOG, "", "dog or other canine" },
     { DEF_EYE, "", "eye or sphere" },
     { DEF_FELINE, "", "cat or other feline" },
-    { DEF_GREMLIN, "", "gremlin" },
+    { DEF_GNOME, "", "gnome, gremlin, or gargoyle" },
     { DEF_HUMANOID, "", "humanoid" },
     { DEF_IMP, "", "imp or minor demon" },
     { DEF_JELLY, "", "jelly" },
@@ -92,7 +92,7 @@ const struct class_sym def_monsyms[MAXMCLASSES] = {
     { DEF_DRAGON, "", "dragon" },
     { DEF_ELEMENTAL, "", "elemental" },
     { DEF_FUNGUS, "", "fungus or mold" },
-    { DEF_GNOLL, "", "gnoll or gnome" },
+    { DEF_GNOLL, "", "gnoll" },
     { DEF_GIANT, "", "giant humanoid" },
     { '\0', "", "invisible monster" },
     { DEF_JABBERWOCK, "", "jabberwock" },
@@ -715,7 +715,7 @@ struct symparse loadsyms[] = {
     { SYM_MON, S_DOG + SYM_OFF_M, "S_dog" },
     { SYM_MON, S_EYE + SYM_OFF_M, "S_eye" },
     { SYM_MON, S_FELINE + SYM_OFF_M, "S_feline" },
-    { SYM_MON, S_GREMLIN + SYM_OFF_M, "S_gremlin" },
+    { SYM_MON, S_GNOME + SYM_OFF_M, "S_gremlin" },
     { SYM_MON, S_HUMANOID + SYM_OFF_M, "S_humanoid" },
     { SYM_MON, S_IMP + SYM_OFF_M, "S_imp" },
     { SYM_MON, S_JELLY + SYM_OFF_M, "S_jelly" },

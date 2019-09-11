@@ -3273,7 +3273,7 @@ int corpsecheck; /* 0, no check, 1, corpses, 2, tinnable corpses */
                 deltrap(ttmp);
                 if (u_in_beartrap)
                     reset_utrap(TRUE);
-                return mksobj(BEARTRAP, TRUE, FALSE);
+                return mksobj(BEARTRAP, TRUE, FALSE, FALSE);
             } else if (c == 'q') {
                 return (struct obj *) 0;
             }

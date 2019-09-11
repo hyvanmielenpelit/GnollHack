@@ -841,7 +841,7 @@ gcrownu()
         && !carrying(SPE_FINGER_OF_DEATH)) {
         class_gift = SPE_FINGER_OF_DEATH;
     make_splbk:
-        obj = mksobj(class_gift, TRUE, FALSE);
+        obj = mksobj(class_gift, TRUE, FALSE, FALSE);
         bless(obj);
         obj->bknown = TRUE;
         at_your_feet("A spellbook");
@@ -885,7 +885,7 @@ gcrownu()
             Your("%s goes snicker-snack!", xname(obj));
             obj->dknown = TRUE;
         } else if (!already_exists) {
-            obj = mksobj(LONG_SWORD, FALSE, FALSE);
+            obj = mksobj(LONG_SWORD, FALSE, FALSE, FALSE);
             obj = oname(obj, artiname(ART_VORPAL_BLADE));
             obj->spe = 1;
             at_your_feet("A sword");
@@ -907,7 +907,7 @@ gcrownu()
             Your("%s hums ominously!", swordbuf);
             obj->dknown = TRUE;
         } else if (!already_exists) {
-            obj = mksobj(RUNESWORD, FALSE, FALSE);
+            obj = mksobj(RUNESWORD, FALSE, FALSE, FALSE);
             obj = oname(obj, artiname(ART_STORMBRINGER));
             obj->spe = 1;
             at_your_feet(An(swordbuf));
@@ -1219,7 +1219,7 @@ aligntyp g_align;
             /* not yet known spells given preference over already known ones
              */
             /* Also, try to grant a spell for which there is a skill slot */
-            otmp = mkobj(SPBOOK_CLASS, TRUE);
+            otmp = mkobj(SPBOOK_CLASS, TRUE, TRUE);
             while (--trycnt > 0) {
                 if (otmp->otyp != SPE_BLANK_PAPER) {
                     for (sp_no = 0; sp_no < MAXSPELL; sp_no++)

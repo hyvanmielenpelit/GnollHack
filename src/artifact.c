@@ -193,7 +193,7 @@ aligntyp alignment; /* target alignment, or A_NONE */
 
         /* make an appropriate object if necessary, then christen it */
         if (by_align)
-            otmp = mksobj((int) a->otyp, TRUE, FALSE);
+            otmp = mksobj((int) a->otyp, TRUE, FALSE, FALSE);
 
         if (otmp) {
             otmp = oname(otmp, a->name);
@@ -1601,7 +1601,7 @@ struct obj *obj;
             enlightenment(MAGICENLIGHTENMENT, ENL_GAMEINPROGRESS);
             break;
         case CREATE_AMMO: {
-            struct obj *otmp = mksobj(ARROW, TRUE, FALSE);
+            struct obj *otmp = mksobj(ARROW, TRUE, FALSE, FALSE);
 
             if (!otmp)
                 goto nothing_special;

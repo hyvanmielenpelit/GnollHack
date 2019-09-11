@@ -311,7 +311,7 @@ dosit()
                 return 0;
             }
         }
-        uegg = mksobj(EGG, FALSE, FALSE);
+        uegg = mksobj(EGG, FALSE, FALSE, FALSE);
         uegg->spe = 1;
         uegg->quan = 1L;
         uegg->owt = weight(uegg);

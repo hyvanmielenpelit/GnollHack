@@ -153,7 +153,7 @@ int special_enchantment;
 {
     register struct obj *otmp;
 
-    otmp = mksobj(otyp, TRUE, FALSE);
+    otmp = mksobj(otyp, TRUE, FALSE, FALSE);
     otmp->quan = (long) rn1(oquan, 3);
     otmp->owt = weight(otmp);
     if (is_poisonable(otmp) && poisoned)
@@ -337,7 +337,7 @@ register struct monst *mtmp;
             }
         } else if (ptr->msound == MS_PRIEST
                    || quest_mon_represents_role(ptr, PM_PRIEST)) {
-            otmp = mksobj(MACE, FALSE, FALSE);
+            otmp = mksobj(MACE, FALSE, FALSE, FALSE);
             if (otmp) {
                 otmp->spe = rnd(3);
                 if (!rn2(2))
@@ -407,7 +407,7 @@ register struct monst *mtmp;
     case S_ANGEL:
         if (humanoid(ptr)) {
             /* create minion stuff; can't use mongets */
-            otmp = mksobj(LONG_SWORD, FALSE, FALSE);
+            otmp = mksobj(LONG_SWORD, FALSE, FALSE, FALSE);
 
             /* maybe make it special */
             if (!rn2(20) || is_lord(ptr))
@@ -421,7 +421,7 @@ register struct monst *mtmp;
 
             otmp = mksobj(!rn2(4) || is_lord(ptr) ? SHIELD_OF_REFLECTION
                                                   : LARGE_SHIELD,
-                          FALSE, FALSE);
+                          FALSE, FALSE, FALSE);
             otmp->cursed = FALSE;
             otmp->oerodeproof = TRUE;
             otmp->spe = 0;
@@ -604,7 +604,7 @@ register struct monst *mtmp;
             break;
         case PM_YEENOGHU:
 //            (void) mongets(mtmp, FLAIL);
-			otmp = mksobj(TRIPLE_HEADED_FLAIL, FALSE, FALSE);
+			otmp = mksobj(TRIPLE_HEADED_FLAIL, FALSE, FALSE, FALSE);
 			//bless(otmp);
 			otmp->oerodeproof = TRUE;
 			spe2 = 2+rn2(2);
@@ -675,7 +675,7 @@ mkmonmoney(mtmp, amount)
 struct monst *mtmp;
 long amount;
 {
-    struct obj *gold = mksobj(GOLD_PIECE, FALSE, FALSE);
+    struct obj *gold = mksobj(GOLD_PIECE, FALSE, FALSE, FALSE);
 
     gold->quan = amount;
     add_to_minv(mtmp, gold);
@@ -769,7 +769,7 @@ register struct monst *mtmp;
                 /* if hero teleports out of a vault while being confronted
                    by the vault's guard, there is a shrill whistling sound,
                    so guard evidently carries a cursed whistle */
-                otmp = mksobj(TIN_WHISTLE, TRUE, FALSE);
+                otmp = mksobj(TIN_WHISTLE, TRUE, FALSE, FALSE);
                 curse(otmp);
                 (void) mpickobj(mtmp, otmp);
             } else { /* soldiers and their officers */
@@ -827,14 +827,14 @@ register struct monst *mtmp;
 			n = rnd(3); // 1...3
 			while (n--)
 			{
-				otmp = mkobj(SPBOOK_CLASS, FALSE);
+				otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
 				(void)mpickobj(mtmp, otmp);
 			}
 
 		} else if (is_giant(ptr)) {
             for (cnt = rn2((int) (mtmp->m_lev / 2)); cnt; cnt--) {
                 otmp = mksobj(rnd_class(DILITHIUM_CRYSTAL, LUCKSTONE - 1),
-                              FALSE, FALSE);
+                              FALSE, FALSE, FALSE);
                 otmp->quan = (long) rn1(2, 3);
                 otmp->owt = weight(otmp);
                 (void) mpickobj(mtmp, otmp);
@@ -843,7 +843,7 @@ register struct monst *mtmp;
         break;
     case S_WRAITH:
         if (ptr == &mons[PM_NAZGUL]) {
-            otmp = mksobj(RIN_INVISIBILITY, FALSE, FALSE);
+            otmp = mksobj(RIN_INVISIBILITY, FALSE, FALSE, FALSE);
             curse(otmp);
             (void) mpickobj(mtmp, otmp);
         }
@@ -866,7 +866,7 @@ register struct monst *mtmp;
 			n = rnd(4); // 1...4
 			while (n--)
 			{
-				otmp = mkobj(SPBOOK_CLASS, FALSE);
+				otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
 				(void)mpickobj(mtmp, otmp);
 			}
 
@@ -878,7 +878,7 @@ register struct monst *mtmp;
             (void) mongets(mtmp, (rn2(7) ? ATHAME : WAN_NOTHING));
         else if (ptr == &mons[PM_ARCH_LICH] && !rn2(3)) {
             otmp = mksobj(rn2(3) ? ATHAME : QUARTERSTAFF, TRUE,
-                          rn2(13) ? FALSE : TRUE);
+                          rn2(13) ? FALSE : TRUE, FALSE);
             if (otmp->spe < 2)
                 otmp->spe = rnd(3);
             if (!rn2(4))
@@ -909,7 +909,7 @@ register struct monst *mtmp;
 
 		while (n--)
 		{
-			otmp = mkobj(SPBOOK_CLASS, FALSE);
+			otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
 			(void)mpickobj(mtmp, otmp);
 		}
 
@@ -932,7 +932,7 @@ register struct monst *mtmp;
 		{
 			while (n--)
 			{
-				otmp = mkobj(SPBOOK_CLASS, FALSE);
+				otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
 				(void)mpickobj(mtmp, otmp);
 			}
 		}
@@ -943,7 +943,7 @@ register struct monst *mtmp;
 		{
 			if (!rn2(2))
 			{
-				otmp = mkobj(SPBOOK_CLASS, FALSE);
+				otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
 				(void)mpickobj(mtmp, otmp);
 			}
 		}
@@ -955,19 +955,19 @@ register struct monst *mtmp;
     case S_QUANTMECH:
 		if (!rn2(2))
 		{
-			otmp = mkobj(SPBOOK_CLASS, FALSE);
+			otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
 			(void)mpickobj(mtmp, otmp);
 		}
 		if (!rn2(20)) {
             struct obj *catcorpse;
 
-            otmp = mksobj(LARGE_BOX, FALSE, FALSE);
+            otmp = mksobj(LARGE_BOX, FALSE, FALSE, FALSE);
             /* we used to just set the flag, which resulted in weight()
                treating the box as being heavier by the weight of a cat;
                now we include a cat corpse that won't rot; when opening or
                disclosing the box's contents, the corpse might be revived,
                otherwise it's given a rot timer; weight is now ordinary */
-            if ((catcorpse = mksobj(CORPSE, TRUE, FALSE)) != 0) {
+            if ((catcorpse = mksobj(CORPSE, TRUE, FALSE, FALSE)) != 0) {
                 otmp->spe = 1; /* flag for special SchroedingersBox */
                 set_corpsenm(catcorpse, PM_HOUSECAT);
                 (void) stop_timer(ROT_CORPSE, obj_to_any(catcorpse));
@@ -995,7 +995,7 @@ register struct monst *mtmp;
 		{
 			if (!rn2(2))
 			{
-				otmp = mkobj(SPBOOK_CLASS, FALSE);
+				otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
 				(void)mpickobj(mtmp, otmp);
 			}
 		}
@@ -1022,7 +1022,7 @@ register struct monst *mtmp;
 			}
 			if (!rn2(2))
 			{
-				otmp = mkobj(SPBOOK_CLASS, FALSE);
+				otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
 				(void)mpickobj(mtmp, otmp);
 			}
 			if (!rn2(6))
@@ -1045,7 +1045,7 @@ register struct monst *mtmp;
 				}
 				if (!rn2(2))
 				{
-					otmp = mkobj(SPBOOK_CLASS, FALSE);
+					otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
 					(void)mpickobj(mtmp, otmp);
 				}
 
@@ -1053,7 +1053,7 @@ register struct monst *mtmp;
 					(void)mongets(mtmp, WAN_CREATE_MONSTER);
 			}
 			if (!rn2((In_mines(&u.uz) && in_mklev) ? 20 : 60)) {
-				otmp = mksobj(rn2(4) ? TALLOW_CANDLE : WAX_CANDLE, TRUE, FALSE);
+				otmp = mksobj(rn2(4) ? TALLOW_CANDLE : WAX_CANDLE, TRUE, FALSE, FALSE);
 				otmp->quan = 1;
 				otmp->owt = weight(otmp);
 				if (!mpickobj(mtmp, otmp) && !levl[mtmp->mx][mtmp->my].lit)
@@ -1473,7 +1473,8 @@ int mmflags;
                  /* in Sokoban, don't accept a giant on first try;
                     after that, boulder carriers are fair game */
                  && ((tryct == 1 && throws_rocks(ptr) && In_sokoban(&u.uz))
-                     || !goodpos(x, y, &fakemon, gpflags)));
+					 || (tryct <= 20 && In_mines(&u.uz) && (ptr == &mons[PM_MIND_FLAYER] || ptr == &mons[PM_MASTER_MIND_FLAYER]) || ptr == &mons[PM_WINGED_GARGOYLE] || ptr == &mons[PM_GARGOYLE] || ptr == &mons[PM_GREMLIN]))
+                     || !goodpos(x, y, &fakemon, gpflags));
         mndx = monsndx(ptr);
     }
     (void) propagate(mndx, countbirth, FALSE);
@@ -1686,7 +1687,7 @@ int mmflags;
 
         if (!rn2(100) && is_domestic(ptr)
             && can_saddle(mtmp) && !which_armor(mtmp, W_SADDLE)) {
-            struct obj *otmp = mksobj(SADDLE, TRUE, FALSE);
+            struct obj *otmp = mksobj(SADDLE, TRUE, FALSE, FALSE);
             put_saddle_on_mon(otmp, mtmp);
         }
 
@@ -2220,7 +2221,7 @@ int otyp;
 
     if (!otyp)
         return 0;
-    otmp = mksobj(otyp, TRUE, FALSE);
+    otmp = mksobj(otyp, TRUE, FALSE, FALSE);
     if (otmp) {
         if (mtmp->data->mlet == S_DEMON) {
             /* demons never get blessed objects */
@@ -2529,7 +2530,7 @@ register struct monst *mtmp;
             } else if (s_sym == COIN_CLASS) {
                 appear = GOLD_PIECE;
             } else {
-                otmp = mkobj((char) s_sym, FALSE);
+                otmp = mkobj((char) s_sym, FALSE, FALSE);
                 appear = otmp->otyp;
                 /* make sure container contents are free'ed */
                 obfree(otmp, (struct obj *) 0);
