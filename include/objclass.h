@@ -280,6 +280,7 @@ struct objclass {
 #define O1_CONFERS_POWERS_TO_SPECIFIED_CHARACTERS_ONLY 0x00100000		/* specify roles, races, and alignments in nonspell_oc7 */
 #define O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED 0x00200000
 #define O1_CANNOT_BE_DROPPED_IF_CURSED 0x00400000
+#define O1_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED 0x00800000			/* if deathenchantable item, then death, otherwise lightning*/
 
 /* General flags -- General: cannot be overriden */
 #define O1_TREATED_AS_MATERIAL_COMPONENT 0x10000000

@@ -1456,6 +1456,22 @@ int dieroll;
         pline(fmt, whom);
     }
 
+
+
+	boolean objectshatters = FALSE;
+	/* message for shattering blades and objects here */
+	if (objects[obj->otyp].oc_material == GLASS && !(objects[obj->otyp].oc_flags & O1_INDESTRUCTIBLE))
+	{
+		/* Shattering is done below, here just the message*/
+		objectshatters = TRUE;
+		if(obj->quan == 1)
+			pline("%s from the impact!", Yobjnam2(obj, "shatter"));
+		else
+			pline("One of %s shatters from the impact!", yname(obj));
+	}
+
+
+
     /* if a "no longer poisoned" message is coming, it will be last;
        obj->opoisoned was cleared above and any message referring to
        "poisoned <obj>" has now been given; we want just "<obj>" for
@@ -1467,7 +1483,6 @@ int dieroll;
        (via 'thrownobj'; if swallowed, it gets added to engulfer's
        minvent and might merge with a stack that's already there)] */
 	
-	  
 	//Black Blade effect
 	boolean bladedisintegratedmon = FALSE;
 	if (obj && obj->otyp == BLACK_BLADE_OF_DISINTEGRATION && !DEADMONSTER(mon))
@@ -1576,12 +1591,12 @@ int dieroll;
 		if (poiskilled) {
 			pline_The("poison was deadly...");
 			if (!already_killed)
-				xkilled(mon, XKILL_NOMSG);
+				killed(mon); //xkilled(mon, XKILL_NOMSG);
 			destroyed = TRUE; /* return FALSE; */
 		} else if (enchantkilled) {
 			pline_The("magic was deadly...");
 			if (!already_killed)
-				xkilled(mon, XKILL_NOMSG);
+				killed(mon);  //xkilled(mon, XKILL_NOMSG);
 			destroyed = TRUE; /* return FALSE; */
 		} else if (destroyed) {
 			if (!already_killed)
@@ -1598,17 +1613,32 @@ int dieroll;
 
 	}
 
+	if (objectshatters)
+	{
+		if(obj->quan > 1)
+			useup(obj);
+		else
+		{
+			if (obj == uwep)
+				uwepgone(); /* set unweapon */
+			useupall(obj);
+			obj = 0;
+		}
+		update_inventory();
+	}
 
+	if(obj)
+	{
+		//No longer messages
+		if (unpoisonmsg)
+			Your("%s %s no longer poisoned.", saved_oname,
+				vtense(saved_oname, "are"));
 
-	//No longer messages
-    if (unpoisonmsg)
-        Your("%s %s no longer poisoned.", saved_oname,
-             vtense(saved_oname, "are"));
+		if (unenchantmsg)
+			Your("%s %s no longer enchanted.", saved_oname,
+				vtense(saved_oname, "are"));
 
-	if (unenchantmsg)
-		Your("%s %s no longer enchanted.", saved_oname,
-			vtense(saved_oname, "are"));
-
+	}
 
     return destroyed ? FALSE : TRUE;
 }

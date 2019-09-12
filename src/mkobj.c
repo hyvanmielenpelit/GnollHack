@@ -838,11 +838,11 @@ boolean makingboxcontents;
                 otmp->spe = -rne(3);
             } else
                 blessorcurse(otmp, 10);
-            if (is_poisonable(otmp) && !rn2(100))
+            if (is_poisonable(otmp) && !rn2(100) && !(objects[otmp->otyp].oc_flags & O1_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED))
                 otmp->opoisoned = 1;
-			else if (is_specialenchantable(otmp) && (is_multigen(otmp) ? !rn2(40) : !rn2(100)))
+			else if (is_specialenchantable(otmp) && ((objects[otmp->otyp].oc_flags & O1_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED) || (is_multigen(otmp) ? !rn2(40) : !rn2(100))))
 			{
-				if (is_deathenchantable(otmp) && (otmp->otyp == GLASS_SWORD || !rn2(5)))
+				if (is_deathenchantable(otmp) && ((objects[otmp->otyp].oc_flags & O1_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED) || !rn2(5)))
 				{
 					otmp->special_enchantment = DEATH_ENCHANTMENT;
 					if (is_multigen(otmp))
@@ -852,7 +852,7 @@ boolean makingboxcontents;
 				}
 				else
 				{
-					otmp->special_enchantment = rnd(3);
+					otmp->special_enchantment = (objects[otmp->otyp].oc_flags & O1_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED) ? LIGHTNING_ENCHANTMENT : rnd(3);
 					if (is_multigen(otmp))
 					{
 						switch (otmp->special_enchantment)
