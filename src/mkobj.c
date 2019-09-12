@@ -842,7 +842,7 @@ boolean makingboxcontents;
                 otmp->opoisoned = 1;
 			else if (is_specialenchantable(otmp) && (is_multigen(otmp) ? !rn2(40) : !rn2(100)))
 			{
-				if (is_deathenchantable(otmp) && !rn2(5))
+				if (is_deathenchantable(otmp) && (otmp->otyp == GLASS_SWORD || !rn2(5)))
 				{
 					otmp->special_enchantment = DEATH_ENCHANTMENT;
 					if (is_multigen(otmp))

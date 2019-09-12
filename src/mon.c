@@ -2324,7 +2324,7 @@ boolean was_swallowed; /* digestion */
     struct permonst *mdat = mon->data;
     int i, tmp;
 
-    if (mdat == &mons[PM_VLAD_THE_IMPALER] || mdat->mlet == S_LICH) {
+    if (leaves_no_corpse(mdat)) {
         if (cansee(mon->mx, mon->my) && !was_swallowed)
             pline("%s body crumbles into dust.", s_suffix(Monnam(mon)));
         return FALSE;
@@ -2379,8 +2379,13 @@ boolean was_swallowed; /* digestion */
         || is_golem(mdat) || is_mplayer(mdat) || is_rider(mdat) || mon->isshk)
         return TRUE;
 
-    //tmp = 2 + ((mdat->geno & G_FREQ) < 2) + verysmall(mdat);
-	return TRUE; // (boolean)!rn2(tmp);
+	if(leaves_corpses_randomly(mdat))
+	{
+		tmp = 2 + ((mdat->geno & G_FREQ) < 2) + verysmall(mdat);
+		return (boolean)!rn2(tmp);
+	}
+
+	return TRUE;
 }
 
 /* drop (perhaps) a cadaver and remove monster */

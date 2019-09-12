@@ -161,11 +161,13 @@
 #define M3_INFRAVISION 0x0100  /* has infravision */
 #define M3_INFRAVISIBLE 0x0200 /* visible by infravision */
 
-#define M3_DISPLACES 0x0400 /* moves monsters out of its way */
+#define M3_DISPLACES 0x0400			/* moves monsters out of its way */
 #define M3_NONCORPOREAL 0x0800      /* is noncorporeal, different from unsolid in the sense that
 									    a unsolid monster can be disintegrated, but noncorporeal not*/
-#define M3_NONLIVING 0x1000      /* is nonliving, such as a golem or other construct or a vortex (unaffected by death attacks)*/
-#define M3_MULTIWEAPON 0x2000      /* fights with more than one weapon (i.e., the wielded weapon), if available*/
+#define M3_NONLIVING 0x1000			/* is nonliving, such as a golem or other construct or a vortex (unaffected by death attacks)*/
+#define M3_MULTIWEAPON 0x2000		/* fights with more than one weapon (i.e., the wielded weapon), if available*/
+#define M3_RANDOM_CORPSE 0x4000		/* leaves a corpse at random intervals */
+#define M3_NO_CORPSE 0x8000			/* leaves no corpse */
 
 #define MZ_TINY 0          /* < 2' */
 #define MZ_SMALL 1         /* 2-4' */
