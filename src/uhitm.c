@@ -1460,14 +1460,18 @@ int dieroll;
 
 	boolean objectshatters = FALSE;
 	/* message for shattering blades and objects here */
-	if (objects[obj->otyp].oc_material == GLASS && !(objects[obj->otyp].oc_flags & O1_INDESTRUCTIBLE))
+	if (objects[obj->otyp].oc_material == GLASS 
+		&& !(objects[obj->otyp].oc_flags & O1_INDESTRUCTIBLE)
+		&& !is_quest_artifact(obj)
+		&& !obj->oartifact
+		)
 	{
 		/* Shattering is done below, here just the message*/
 		objectshatters = TRUE;
 		if(obj->quan == 1)
-			pline("%s from the impact!", Yobjnam2(obj, "shatter"));
+			pline("%s from the blow!", Yobjnam2(obj, "shatter"));
 		else
-			pline("One of %s shatters from the impact!", yname(obj));
+			pline("One of %s shatters from the blow!", yname(obj));
 	}
 
 

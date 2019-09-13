@@ -255,7 +255,7 @@ char oclass;
 boolean artif;
 boolean makingboxcontents;
 {
-    int tprob, i, prob = rnd(1000);
+    int tprob, i;
 
     if (oclass == RANDOM_CLASS) {
         const struct icp *iprobs = Is_rogue_level(&u.uz)
@@ -268,12 +268,93 @@ boolean makingboxcontents;
         oclass = iprobs->iclass;
     }
 
-    i = bases[(int) oclass];
-    while ((prob -= objects[i].oc_prob) > 0)
-        i++;
+	boolean unacceptable = FALSE;
+	int randomizationclass = rn2(4);
 
-    if (objects[i].oc_class != oclass || !OBJ_NAME(objects[i]))
-        panic("probtype error, oclass=%d i=%d", (int) oclass, i);
+	for(int tryct = 0; tryct < 50; tryct++)
+	{
+		int prob = rnd(1000);
+		i = bases[(int)oclass];
+		while ((prob -= objects[i].oc_prob) > 0)
+			i++;
+
+		if (objects[i].oc_class != oclass || !OBJ_NAME(objects[i]))
+			panic("probtype error, oclass=%d i=%d", (int)oclass, i);
+
+		/* Special code generating more relevant spellbooks */
+		if (oclass == SPBOOK_CLASS && randomizationclass < 3)
+		{
+			switch (randomizationclass)
+			{
+			case 0: /* Disregard spell books of too low and high level, stat, and school */
+				if (P_SKILL(objects[i].oc_skill) < P_BASIC)
+					unacceptable = TRUE;
+				/* FALLTHRU */
+			case 1: /* Disregard spell books of too low and high level and stat */
+				if ((Role_if(PM_WIZARD) && !(objects[i].oc_spell_attribute == A_INT
+					|| objects[i].oc_spell_attribute == A_MAX_INT_WIS
+					|| objects[i].oc_spell_attribute == A_MAX_INT_CHA
+					|| objects[i].oc_spell_attribute == A_MAX_INT_WIS_CHA
+					|| objects[i].oc_spell_attribute == A_AVG_INT_WIS
+					|| objects[i].oc_spell_attribute == A_AVG_INT_CHA
+					|| objects[i].oc_spell_attribute == A_AVG_INT_WIS_CHA
+					))
+					|| (Role_if(PM_PRIEST) && !(objects[i].oc_spell_attribute == A_WIS
+						|| objects[i].oc_spell_attribute == A_MAX_INT_WIS
+						|| objects[i].oc_spell_attribute == A_MAX_WIS_CHA
+						|| objects[i].oc_spell_attribute == A_MAX_INT_WIS_CHA
+						|| objects[i].oc_spell_attribute == A_AVG_INT_WIS
+						|| objects[i].oc_spell_attribute == A_AVG_WIS_CHA
+						|| objects[i].oc_spell_attribute == A_AVG_INT_WIS_CHA
+						))
+					)
+					unacceptable = TRUE;
+				/* FALLTHRU */
+			case 2: /* Disregard spell books of too low and high level */
+				if (objects[i].oc_spell_level > max(3, (u.ulevel + 1) / 2 + 2)		/* Level 1 ->  3, Level 5 ->  5, Level 11 ->  8, Level 19 -> 12*/
+					|| objects[i].oc_spell_level < min(6, (u.ulevel + 1) / 2 - 4) /* Level 1 -> -3, Level 5 -> -1, Level 11 ->  2, Level 19 -> 6 */
+					)
+					unacceptable = TRUE;
+				break;
+			default:
+				break;
+			}
+		}
+
+		if (!unacceptable)
+		{
+			boolean alreadyknown = FALSE;
+			boolean breakforloop = TRUE;
+
+			for (int j = 0; i < MAXSPELL && spellid(j) != NO_SPELL; j++)
+			{
+				if (spellid(j) == i)
+				{
+					alreadyknown = TRUE;
+				}
+			}
+
+			if (alreadyknown)
+			{
+				switch (rn2(3))
+				{
+				case 0: /* pick another item from the same randomization class */
+					breakforloop = FALSE;
+					break;
+				case 1: /* pick another item from new randomized randomization class */
+					randomizationclass = rn2(4);
+					breakforloop = FALSE;
+					break;
+				case 2: /* we make a spellbook for a spell that the player already knows */
+					breakforloop = TRUE;
+					break;
+				}
+			}
+
+			if(breakforloop)
+				break; /* stop the for loop and make the item */
+		}
+	}
 
     return mksobj(i, TRUE, artif, makingboxcontents);
 }
