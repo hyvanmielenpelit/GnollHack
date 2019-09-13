@@ -398,7 +398,7 @@ HELM("dwarvish iron helm", "hard hat",
 HELM("fedora", None,
      1, 0,           0, 0, 0,  0, 0,  3,  1, 10, 0, 0, 0, 0, 0, CLOTH, CLR_BROWN, O1_NONE, 0),
 HELM("cornuthaum", "conical hat",
-     0, 1, CLAIRVOYANT, 0, 0, 3, 1,  4, 80, 10, 1, 0, 0, 0, 0, CLOTH, CLR_BLUE, O1_CONFERS_POWERS_TO_SPECIFIED_CHARACTERS_ONLY, PERMITTED_ROLE_WIZARD),
+     0, 1, CLAIRVOYANT, 0, 0, 3, 1,  4, 80, 10, 1, 0, 0, 0, 0, CLOTH, CLR_BLUE, O1_NONE, PERMITTED_ROLE_WIZARD),
         /* name coined by devteam; confers clairvoyance for wizards,
            blocks clairvoyance if worn by role other than wizard */
 HELM("dunce cap", "conical hat",
@@ -795,7 +795,7 @@ MISCELLANEOUSITEM("headband of intellect", "shining blue headband", MISC_HEADBAN
 MISCELLANEOUSITEM("golden earrings", None, MISC_EARRINGS, None,
 	1, 0, 0, 0, 100, 200, 50,
 	0, 0, 0, 0, 0, BONUS_TO_CHA, 1,
-	50, GOLD, HI_GOLD, O1_CONFERS_POWERS_TO_SPECIFIED_CHARACTERS_ONLY, PERMITTED_GENDER_FEMALE),
+	50, GOLD, HI_GOLD, O1_NONE, PERMITTED_GENDER_FEMALE),
 MISCELLANEOUSITEM("ioun stone of protection", "ioun stone", MISC_IOUN_STONE, "orbiting your head",
 	0, 1, 0, 0, 100, 200, 50, //STARTMARKER FOR IOUNSTONES
 	PROTECTION, 0, 0, 0, 0, 0, 0,
@@ -840,7 +840,7 @@ CONTAINER("bookshelf",		 None, 1, 0, 0,  0, 1600, 36, 0, 0, 0, 0, 0, WOOD, HI_WO
 CONTAINER("backpack",		 None, 1, 0, 0,  5,  15,   5, 0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE, 0),
 CONTAINER("leather bag",	 "bag",0, 0, 0,	 5,  15,  25, 0, 0, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE, 0),
 CONTAINER("oriental silk sack", "bag",0,0,0, 5,   3,  50, 0, 0, 0, 0, 0, SILK, HI_CLOTH, O1_NONE, 0),
-CONTAINER("expensive handbag", "bag", 0, 0, 0, 2, 5, 500, 0, 0, 0, BONUS_TO_CHA, 2, SILK, HI_GOLD, O1_CONFERS_POWERS_WHEN_CARRIED | O1_CONFERS_POWERS_TO_SPECIFIED_CHARACTERS_ONLY, PERMITTED_GENDER_FEMALE),
+CONTAINER("expensive handbag", "bag", 0, 0, 0, 2, 5, 500, 0, 0, 0, BONUS_TO_CHA, 2, SILK, HI_GOLD, O1_CONFERS_POWERS_WHEN_CARRIED, PERMITTED_GENDER_FEMALE),
 CONTAINER("sack",           "bag", 0, 0, 0, 10,  10,   5, 0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE, 0),
 CONTAINER("oilskin sack",   "bag", 0, 0, 0,  5,  10, 100, 0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE, 0),
 /* magic bags start here */

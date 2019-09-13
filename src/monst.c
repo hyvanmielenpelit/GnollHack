@@ -398,7 +398,7 @@ NEARDATA struct permonst mons[] = {
 
 
 	/*
-	 * Gnomes and gnolls
+	 * gnolls
 	 */
 	MON("gnoll", S_GNOLL, LVL(3, 9, 8, 0, -4), (G_GENO | G_LGROUP | 2),
 		A(ATTK(AT_WEAP, AD_PHYS, 1, 8, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,

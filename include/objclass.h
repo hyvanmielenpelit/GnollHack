@@ -242,10 +242,12 @@ struct objclass {
 #define RAY_DIGGING 111 
 #define RAY_EVAPORATION 112 
 
-	int oc_material_components;		/* ID for material component list for a spell or to make the item (if recipe is known) */
+	long oc_material_components;		/* ID for material component list for a spell or to make the item (if recipe is known); long because may be used for extra flags */
 
 #define oc_nonspell_oc7 oc_dir_subtype			/* non-spells: extra parameter 1 */
 #define oc_nonspell_oc8 oc_material_components	/* non-spells: extra parameter 2 */
+
+#define oc_nonspell_permission_mask oc_nonspell_oc7			/* non-spells: roles, races, genders, and alignments that the item's powers are conferred to */
 
 	int oc_item_cooldown;			/* cooldown before the item can be used / applied / zapped / read etc. again */
 	int oc_item_level;				/* item level, to be used with loot tables */
@@ -277,10 +279,9 @@ struct objclass {
 #define O1_BECOMES_CURSED_WHEN_WORN 0x00020000
 #define O1_CONFERS_LUCK 0x00040000
 #define O1_CONFERS_POWERS_WHEN_CARRIED 0x00080000
-#define O1_CONFERS_POWERS_TO_SPECIFIED_CHARACTERS_ONLY 0x00100000		/* specify roles, races, and alignments in nonspell_oc7 */
-#define O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED 0x00200000
-#define O1_CANNOT_BE_DROPPED_IF_CURSED 0x00400000
-#define O1_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED 0x00800000			/* if deathenchantable item, then death, otherwise lightning*/
+#define O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED 0x00100000
+#define O1_CANNOT_BE_DROPPED_IF_CURSED 0x00200000
+#define O1_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED 0x00400000			/* if deathenchantable item, then death, otherwise lightning*/
 
 /* General flags -- General: cannot be overriden */
 #define O1_TREATED_AS_MATERIAL_COMPONENT 0x10000000
@@ -288,7 +289,7 @@ struct objclass {
 #define O1_NON_SPELL_SPELLBOOK 0x40000000  /* uses non-spellbook flags and other non-spellbook stats */
 #define O1_NOT_CURSEABLE 0x80000000
 
-/* flag values for O1_CONFERS_POWERS_TO_SPECIFIED_CHARACTERS_ONLY in nonspell_oc7 */
+/* flag values for CONFERS_POWERS_TO_SPECIFIED_CHARACTERS_ONLY in nonspell_oc7 */
 #define PERMITTED_RACE_HUMAN		0x00000001
 #define PERMITTED_RACE_ELF			0x00000002
 #define PERMITTED_RACE_DWARF		0x00000004
