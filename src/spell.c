@@ -43,6 +43,7 @@ STATIC_DCL void NDECL(sortspells);
 STATIC_DCL boolean NDECL(spellsortmenu);
 STATIC_DCL boolean FDECL(dospellmenu, (const char *, int, int *));
 STATIC_DCL int FDECL(percent_success, (int));
+STATIC_DCL int FDECL(attribute_value_for_spellbook, (int));
 STATIC_DCL char *FDECL(spellretention, (int, char *));
 STATIC_DCL int FDECL(throwspell, (int));
 STATIC_DCL void NDECL(cast_protection);
@@ -580,38 +581,8 @@ register struct obj *spellbook;
             return 1;
         }
 
-        switch (objects[booktype].oc_spell_level) {
-		case -2:
-		case -1:
-		case 0:
-		case 1:
-        case 2:
-            context.spbook.delay = -objects[booktype].oc_delay;
-            break;
-        case 3:
-        case 4:
-            context.spbook.delay = -(objects[booktype].oc_spell_level - 1)
-                                   * objects[booktype].oc_delay;
-            break;
-        case 5:
-        case 6:
-            context.spbook.delay =
-                -objects[booktype].oc_spell_level * objects[booktype].oc_delay;
-            break;
-        case 7:
-		case 8:
-		case 9:
-		case 10: //Level for wish spell
-			//Two more levels just in case
-		case 11:
-		case 12:
-			context.spbook.delay = -8 * objects[booktype].oc_delay;
-            break;
-        default:
-            impossible("Unknown spellbook level %d, book %d;",
-                       objects[booktype].oc_spell_level, booktype);
-            return 0;
-        }
+		context.spbook.delay = -min(8, max(1, (objects[booktype].oc_spell_level)))
+			* objects[booktype].oc_delay;
 
         /* Books are often wiser than their readers (Rus.) */
         spellbook->in_use = TRUE;
@@ -621,9 +592,12 @@ register struct obj *spellbook;
             } else {
 
 				/* uncursed - chance to fail */
-                int read_ability = ACURR(A_INT) + 4 + u.ulevel / 2
-                                   - 2 * objects[booktype].oc_spell_level
-                             + ((ublindf && ublindf->otyp == LENSES) ? 2 : 0);
+				int read_ability = attribute_value_for_spellbook(spellbook->otyp)
+					+ 8 
+					+ u.ulevel
+					+ 4 * max(0, P_SKILL(spell_skilltype(spellbook->otyp)) - 1)
+					- 2 * objects[booktype].oc_spell_level
+					+ ((ublindf && ublindf->otyp == LENSES) ? 2 : 0);
 
                 /* only wizards know if a spell is too difficult */
                 if (Role_if(PM_WIZARD) && read_ability < 20 && !confused) {
@@ -2496,24 +2470,7 @@ int spell;
     /* Calculate intrinsic ability (splcaster) */
 	splcaster = 0;  urole.spelbase;
     special = urole.spelheal;
-	if(objects[spellid(spell)].oc_spell_attribute >= 0 && objects[spellid(spell)].oc_spell_attribute < A_MAX)
-		statused = ACURR(objects[spellid(spell)].oc_spell_attribute); //ACURR(urole.spelstat);
-	else if(objects[spellid(spell)].oc_spell_attribute  == A_MAX_INT_WIS)
-		statused = max(ACURR(A_INT), ACURR(A_WIS));
-	else if (objects[spellid(spell)].oc_spell_attribute == A_MAX_INT_CHA)
-		statused = max(ACURR(A_INT), ACURR(A_CHA));
-	else if (objects[spellid(spell)].oc_spell_attribute == A_MAX_WIS_CHA)
-		statused = max(ACURR(A_CHA), ACURR(A_WIS));
-	else if (objects[spellid(spell)].oc_spell_attribute == A_MAX_INT_WIS_CHA)
-		statused = max(max(ACURR(A_INT), ACURR(A_WIS)), ACURR(A_CHA));
-	else if (objects[spellid(spell)].oc_spell_attribute == A_AVG_INT_WIS)
-		statused = (ACURR(A_INT) + ACURR(A_WIS)) / 2;
-	else if (objects[spellid(spell)].oc_spell_attribute == A_AVG_INT_CHA)
-		statused = (ACURR(A_INT) + ACURR(A_CHA)) / 2;
-	else if (objects[spellid(spell)].oc_spell_attribute == A_AVG_WIS_CHA)
-		statused = (ACURR(A_CHA) + ACURR(A_WIS)) / 2;
-	else if (objects[spellid(spell)].oc_spell_attribute == A_AVG_INT_WIS_CHA)
-		statused = (ACURR(A_INT) + ACURR(A_WIS) + ACURR(A_CHA)) / 3;
+	statused = attribute_value_for_spellbook(spellid(spell));
 
 	if (armorpenalty)
 	{
@@ -2618,6 +2575,36 @@ int spell;
         chance = 0;
 
     return chance;
+}
+
+STATIC_OVL
+int
+attribute_value_for_spellbook(objectid)
+int objectid;
+{
+	int statused = 0;
+
+	if (objects[objectid].oc_spell_attribute >= 0 && objects[objectid].oc_spell_attribute < A_MAX)
+		statused = ACURR(objects[objectid].oc_spell_attribute); //ACURR(urole.spelstat);
+	else if (objects[objectid].oc_spell_attribute == A_MAX_INT_WIS)
+		statused = max(ACURR(A_INT), ACURR(A_WIS));
+	else if (objects[objectid].oc_spell_attribute == A_MAX_INT_CHA)
+		statused = max(ACURR(A_INT), ACURR(A_CHA));
+	else if (objects[objectid].oc_spell_attribute == A_MAX_WIS_CHA)
+		statused = max(ACURR(A_CHA), ACURR(A_WIS));
+	else if (objects[objectid].oc_spell_attribute == A_MAX_INT_WIS_CHA)
+		statused = max(max(ACURR(A_INT), ACURR(A_WIS)), ACURR(A_CHA));
+	else if (objects[objectid].oc_spell_attribute == A_AVG_INT_WIS)
+		statused = (ACURR(A_INT) + ACURR(A_WIS)) / 2;
+	else if (objects[objectid].oc_spell_attribute == A_AVG_INT_CHA)
+		statused = (ACURR(A_INT) + ACURR(A_CHA)) / 2;
+	else if (objects[objectid].oc_spell_attribute == A_AVG_WIS_CHA)
+		statused = (ACURR(A_CHA) + ACURR(A_WIS)) / 2;
+	else if (objects[objectid].oc_spell_attribute == A_AVG_INT_WIS_CHA)
+		statused = (ACURR(A_INT) + ACURR(A_WIS) + ACURR(A_CHA)) / 3;
+
+	return statused;
+
 }
 
 STATIC_OVL char *
