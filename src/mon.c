@@ -384,8 +384,39 @@ unsigned corpseflags;
 		goto default_1;
 	case PM_ROC:
 	case PM_RAVEN:
+	case PM_COCKATRICE:
+	case PM_CHICKATRICE:
+	case PM_COUATL:
+	case PM_ALEAX:
+	case PM_ARCHON:
 		obj = mksobj_at(FEATHER, x, y, TRUE, FALSE);
-		obj->quan = (mndx == PM_ROC ? rnd(6) + 2 : rnd(3));
+		switch (mndx)
+		{
+		case PM_ROC:
+			obj->quan = rnd(8) + 3;
+			break;
+		case PM_RAVEN:
+			break;
+			obj->quan = rnd(3);
+		case PM_COCKATRICE:
+			obj->quan = rnd(4);
+			break;
+		case PM_CHICKATRICE:
+			obj->quan = rnd(3);
+			break;
+		case PM_COUATL:
+			obj->quan = rnd(4) + 1;
+			break;
+		case PM_ALEAX:
+			obj->quan = rnd(5) + 1;
+			break;
+		case PM_ARCHON:
+			obj->quan = rnd(10) + 4;
+			break;
+		default:
+			obj->quan = rnd(3);
+			break;
+		}
 		obj->owt = weight(obj);
 		goto default_1;
 	case PM_BAT:
