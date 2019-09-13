@@ -1384,6 +1384,7 @@ struct obj *body;
 
 #define TAINT_AGE (50L)        /* age when corpses go bad */
 #define TROLL_REVIVE_CHANCE 37 /* 1/37 chance for 50 turns ~ 75% chance */
+#define PHOENIX_REVIVE_CHANCE 25
 #define ROT_AGE (250L)         /* age when corpses rot away */
 
     /* lizards and lichen don't rot or revive */
@@ -1417,8 +1418,8 @@ struct obj *body;
 		 * of reviving after 20 turns.  Always revive by 500.
 		 */
 		action = REVIVE_MON;
-		for (when = 20L; when < 500L; when++)
-			if (!rn2(4))
+		for (when = 7L; when < 500L; when++)
+			if (!rn2(PHOENIX_REVIVE_CHANCE))
 				break;
 
 	}
