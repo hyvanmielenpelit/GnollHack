@@ -1409,7 +1409,20 @@ struct obj *body;
             if (!rn2(3))
                 break;
 
-    } else if (mons[body->corpsenm].mlet == S_TROLL && !body->norevive) {
+    } 
+	else if (body->corpsenm == PM_PHOENIX && !body->norevive)
+	{
+		/*
+		 * Phoenixes always revive.  They have a 1/4 chance per turn
+		 * of reviving after 20 turns.  Always revive by 500.
+		 */
+		action = REVIVE_MON;
+		for (when = 20L; when < 500L; when++)
+			if (!rn2(4))
+				break;
+
+	}
+	else if (mons[body->corpsenm].mlet == S_TROLL && !body->norevive) {
         long age;
         for (age = 2; age <= TAINT_AGE; age++)
             if (!rn2(TROLL_REVIVE_CHANCE)) { /* troll revives */
@@ -1723,7 +1736,7 @@ int x, y;
 /* return TRUE if the corpse has special timing */
 #define special_corpse(num)                                                 \
     (((num) == PM_LIZARD) || ((num) == PM_LICHEN) || (is_rider(&mons[num])) \
-     || (mons[num].mlet == S_TROLL))
+      || ((num) == PM_PHOENIX) || (mons[num].mlet == S_TROLL))
 
 /*
  * OEXTRA note: Passing mtmp causes mtraits to be saved
