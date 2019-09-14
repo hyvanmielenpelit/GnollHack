@@ -1181,7 +1181,6 @@ boolean atme;
 	case SPE_METEOR_SWARM:
 	case SPE_ICE_STORM:
 	case SPE_THUNDERSTORM:
-	case SPE_DEATHSPELL:
 #if 0		
 		if (throwspell(otyp)) {
             cc.x = u.dx;
@@ -1229,7 +1228,8 @@ boolean atme;
 	case SPE_FORCE_BOLT:
         physical_damage = TRUE;
     /*FALLTHRU*/
-    case SPE_SLEEP:
+	case SPE_DEATHSPELL:
+	case SPE_SLEEP:
     case SPE_MAGIC_MISSILE:
 	case SPE_KNOCK:
     case SPE_SLOW_MONSTER:
@@ -1320,8 +1320,24 @@ boolean atme;
                         damage = Maybe_Half_Phys(damage);
                     losehp(damage, buf, NO_KILLER_PREFIX);
                 }
-            } else
-                weffects(pseudo);
+			}
+			else
+			{
+				if (otyp == SPE_METEOR_SWARM)
+				{
+					int shots = 1;
+					shots = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_dicesize) + objects[otyp].oc_spell_dur_plus;
+
+					for (n = 0; n < shots; n++)
+					{
+						You("shoot a meteor!");
+						weffects(pseudo);
+					}
+				}
+				else
+					weffects(pseudo);
+
+			}
         } else
             weffects(pseudo);
         update_inventory(); /* spell may modify inventory */
