@@ -475,11 +475,45 @@ unsigned corpseflags;
 		obj->age -= 100; /* this is an *OLD* corpse */
 		break;
 	case PM_IRON_GOLEM:
+	{
+		int objid = IRON_CHAIN;
 		num = d(2, 6);
 		while (num--)
-			obj = mksobj_at(IRON_CHAIN, x, y, TRUE, FALSE);
-		free_mname(mtmp); /* don't christen obj */
+		{
+			switch (rn2(10))
+			{
+			case 0:
+			case 8:
+				objid = IRON_CHAIN;
+				break;
+			case 1:
+			case 7:
+			case 9:
+				objid = IRON_SLING_BULLET;
+				break;
+			case 2:
+				objid = CHAIN_MAIL;
+				break;
+			case 3:
+				objid = !rn2(10) ? (!rn2(4) ? FULL_PLATE_MAIL : FIELD_PLATE_MAIL) : PLATE_MAIL;
+				break;
+			case 4:
+				objid = IRON_SHOES;
+				break;
+			case 5:
+				objid = HEAVY_IRON_BALL;
+				break;
+			case 6:
+				objid = DWARVISH_IRON_HELM;
+				break;
+			default:
+				break;
+			}
+			obj = mksobj_at(objid, x, y, TRUE, FALSE);
+		}
+		free_mname(mtmp);
 		break;
+	}
 	case PM_GLASS_GOLEM:
 		num = d(2, 4); /* very low chance of creating all glass gems */
 		while (num--)
@@ -520,24 +554,34 @@ unsigned corpseflags;
 			{
 			case 0:
 				objid = LEATHER_ARMOR;
+				break;
 			case 1:
 				objid = LEATHER_BELT;
+				break;
 			case 2:
 				objid = LEATHER_BRACERS;
+				break;
 			case 3:
 				objid = GNOLLISH_LEATHER_ARMOR;
+				break;
 			case 4:
 				objid = GNOLLISH_HOOD;
+				break;
 			case 5:
 				objid = LEATHER_CLOAK;
+				break;
 			case 6:
 				objid = STUDDED_LEATHER_ARMOR;
+				break;
 			case 7:
 				objid = LEATHER_GLOVES;
+				break;
 			case 8:
 				objid = LEATHER_SANDALS;
+				break;
 			case 9:
 				objid = ELVEN_LEATHER_HELM;
+				break;
 			default:
 				break;
 			}
