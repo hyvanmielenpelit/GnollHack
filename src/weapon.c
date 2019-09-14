@@ -104,13 +104,15 @@ struct obj *obj;
         break;
     case P_SLING:
         if (is_ammo(obj))
-            descr = (obj->otyp == ROCK || is_graystone(obj))
+            descr = (obj->otyp == ROCK || obj->otyp == STONE_PEBBLE || obj->otyp == CLAY_PEBBLE || is_graystone(obj))
                         ? "stone"
                         /* avoid "rock"; what about known glass? */
                         : (obj->oclass == GEM_CLASS)
                             ? "gem"
                             /* in case somebody adds odd sling ammo */
-                            : def_oc_syms[(int) obj->oclass].name;
+                            : (obj->otyp == LEADEN_SLING_BULLET || obj->otyp == IRON_SLING_BULLET || obj->otyp == SILVER_SLING_BULLET || is_graystone(obj))
+								? "sling-bullet"
+								: def_oc_syms[(int) obj->oclass].name;
         break;
     case P_BOW:
         if (is_ammo(obj))
@@ -452,7 +454,7 @@ static NEARDATA const int rwep[] = {
     DWARVISH_SPEAR, SILVER_SPEAR, ELVEN_SPEAR, SPEAR, ORCISH_SPEAR, JAVELIN,
     SHURIKEN, YA, SILVER_ARROW, ELVEN_ARROW, ARROW, ORCISH_ARROW,
     CROSSBOW_BOLT, SILVER_DAGGER, ELVEN_DAGGER, DAGGER, ORCISH_DAGGER, KNIFE,
-    FLINT, ROCK, LOADSTONE, LUCKSTONE, DART,
+    FLINT, ROCK, STONE_PEBBLE, CLAY_PEBBLE, LOADSTONE, LUCKSTONE, DART,
     /* BOOMERANG, */ CREAM_PIE
 };
 

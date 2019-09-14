@@ -54,7 +54,7 @@ static struct trobj Cave_man[] = {
     { CLUB, 3, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
     { SLING, 3, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
     { FLINT, 0, GEM_CLASS, 15, UNDEF_BLESS, 0 }, /* quan is variable */
-    { ROCK, 0, GEM_CLASS, 3, 0, 0 },             /* yields 18..33 */
+    { STONE_PEBBLE, 0, GEM_CLASS, 3, 0, 0 },             /* yields 18..33 */
 	{ UNDEF_TYP, UNDEF_SPE, AMULET_CLASS, 1, UNDEF_BLESS, 0 },
 	{ SACK, UNDEF_SPE, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
 	{ FOOD_RATION, 0, FOOD_CLASS, 3, 0 },
@@ -1405,7 +1405,7 @@ register struct trobj *trop;
 
 
         if (obj->oclass == WEAPON_CLASS || is_weptool(obj)
-            || otyp == TIN_OPENER || otyp == FLINT || otyp == ROCK) {
+            || otyp == TIN_OPENER || otyp == FLINT || otyp == ROCK || otyp == STONE_PEBBLE || otyp == CLAY_PEBBLE) {
             if (is_ammo(obj) || is_missile(obj)) {
                 if (!uquiver)
                     setuqwep(obj);

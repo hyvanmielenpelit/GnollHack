@@ -2905,8 +2905,17 @@ static const struct alt_spellings {
 	{ "orcish shortbow", ORCISH_SHORT_BOW },
 	{ "amulet of poison resistance", AMULET_VERSUS_POISON },
     { "potion of sleep", POT_SLEEPING },
-    { "stone", ROCK },
-    { "camera", EXPENSIVE_CAMERA },
+    { "stone", STONE_PEBBLE },
+	{ "clay", CLAY_PEBBLE },
+	{ "lead sling bullet", LEADEN_SLING_BULLET },
+	{ "lead sling-bullet", LEADEN_SLING_BULLET },
+	{ "leaden sling bullet", LEADEN_SLING_BULLET },
+	{ "iron sling bullet", IRON_SLING_BULLET },
+	{ "silver sling bullet", SILVER_SLING_BULLET },
+	{ "sling-bullet", LEADEN_SLING_BULLET },
+	{ "sling bullet", LEADEN_SLING_BULLET },
+	{ "bullet", LEADEN_SLING_BULLET },
+	{ "camera", EXPENSIVE_CAMERA },
     { "tee shirt", T_SHIRT },
     { "can", TIN },
     { "can opener", TIN_OPENER },
@@ -3972,7 +3981,7 @@ struct obj *no_wish;
     if (cnt > 0 && objects[typ].oc_merge
         && (wizard || cnt < rnd(6) || (cnt <= 7 && Is_candle(otmp))
             || (cnt <= 20 && ((oclass == WEAPON_CLASS && is_ammo(otmp))
-                              || typ == ROCK || is_missile(otmp)))))
+                              || typ == ROCK || typ == STONE_PEBBLE || typ == CLAY_PEBBLE || is_missile(otmp)))))
         otmp->quan = (long) cnt;
 
 	if (oclass == GEM_CLASS && !wizard)

@@ -112,23 +112,31 @@ OBJECT(OBJ("strange object", None), None,
 
 /* missiles; materiel reflects the arrowhead, not the shaft */
 PROJECTILE("arrow", None,
-           1, 55, 1, 2, 1, 6, 0, 1, 6, 0, 0,        IRON, -P_BOW, HI_METAL, O1_NONE),
+           1, 40, 1, 2, 1, 6, 0, 1, 6, 0, 0,        IRON, -P_BOW, HI_METAL, O1_NONE),
 PROJECTILE("elven arrow", "runed arrow",
            0, 20, 1, 2, 1, 7, 0, 1, 6, 0, 0,        WOOD, -P_BOW, HI_WOOD, O1_NONE),
 PROJECTILE("orcish arrow", "crude arrow",
            0, 20, 1, 2, 1, 5, 0, 1, 6, 0, 0,        IRON, -P_BOW, CLR_BLACK, O1_NONE),
 PROJECTILE("silver arrow", None,
-           1, 12, 1, 5, 1, 6, 0, 1, 6, 0, 0,        SILVER, -P_BOW, HI_SILVER, O1_TREATED_AS_MATERIAL_COMPONENT),
+           1, 8, 1, 5, 1, 6, 0, 1, 6, 0, 0,        SILVER, -P_BOW, HI_SILVER, O1_TREATED_AS_MATERIAL_COMPONENT),
 PROJECTILE("ya", "bamboo arrow",
-           0, 15, 1, 4, 1, 7, 0, 1, 7, 0, 1,        METAL, -P_BOW, HI_METAL, O1_NONE),
+           0, 11, 1, 4, 1, 7, 0, 1, 7, 0, 1,        METAL, -P_BOW, HI_METAL, O1_NONE),
 PROJECTILE("bone arrow", None,
            1, 10, 1, 6, 1, 4, 0, 1, 5, 0, 0,        BONE, -P_BOW, CLR_WHITE, O1_NONE),
 PROJECTILE("crossbow bolt", None,
-           1, 40, 1, 2, 1, 3, 1, 1, 4, 1, 0,        IRON, -P_CROSSBOW, HI_METAL, O1_NONE), //1d3+1 //1d4+1
+           1, 35, 1, 2, 1, 3, 1, 1, 4, 1, 0,        IRON, -P_CROSSBOW, HI_METAL, O1_NONE), //1d3+1 //1d4+1
 PROJECTILE("gnollish quarrel", "crude crossbow bolt",
            0, 15, 1, 2, 1, 2, 1, 1, 3, 1, 0,        IRON, -P_CROSSBOW, HI_METAL, O1_NONE), //1d2+1 //1d3+1
+PROJECTILE("silver crossbow bolt", None,
+           1, 8, 1, 2, 1, 3, 1, 1, 4, 1, 0,        SILVER, -P_CROSSBOW, HI_METAL, O1_NONE), //1d3+1 //1d4+1
 PROJECTILE("bone quarrel", None,
            1, 10, 1, 2, 1, 2, 0, 1, 3, 0, 0,        BONE, -P_CROSSBOW, CLR_WHITE, O1_NONE), //1d2 //1d3
+PROJECTILE("leaden sling-bullet", None,
+           1, 10, 2, 2, 1, 6, 0, 1, 8, 0, 0,        METAL, -P_SLING, CLR_GRAY, O1_NONE),
+PROJECTILE("iron sling-bullet", None,
+           1,  5, 2, 2, 1, 8, 0, 1, 10, 0, 0,        IRON, -P_SLING, HI_METAL, O1_NONE),
+PROJECTILE("silver sling-bullet", None,
+           1,  5, 2, 2, 1, 7, 0, 1, 9, 0, 0,        SILVER, -P_SLING, HI_SILVER, O1_NONE),
 
 /* missiles that don't use a launcher */
 WEAPON("dart", None,
@@ -1459,11 +1467,11 @@ COIN("gold piece", 1000, GOLD, 1),
            BITS(0, 1, 0, 0, 0, 0, 0, 0, 0,                              \
                 HARDGEM(mohs), 0, -P_SLING, glass),                     \
            0, 0, 0, GEM_CLASS, prob, 0, 1, gval, 1, 3, 0, 1, 3, 0, 0, 0, 0, 0, 0, 0, nutr, color, powconfermask, 0, 0, 0, flags)
-#define ROCK(name,desc,power1,power2,power3,kn,prob,wt,gval, sdam, ldam, mgc,nutr,mohs,glass,color,flags,powconfermask) \
+#define ROCK(name,desc,power1,power2,power3,kn,prob,wt,gval, sdice, sdam, splus, ldice, ldam, lplus, mgc,nutr,mohs,glass,color,flags,powconfermask) \
     OBJECT(OBJ(name, desc),  None,                                            \
            BITS(kn, 1, 0, 0, mgc, 0, 0, 0, 0,                           \
                 HARDGEM(mohs), 0, -P_SLING, glass),                     \
-           power1, power2, power3, GEM_CLASS, prob, 0, wt, gval, 1, sdam, 0, 1, ldam, 0, 0, 0, 0, 0, 0, 0, nutr, color, powconfermask, 0, 0, 0, flags)
+           power1, power2, power3, GEM_CLASS, prob, 0, wt, gval, sdice, sdam, splus, ldice, ldam, lplus, 0, 0, 0, 0, 0, 0, nutr, color, powconfermask, 0, 0, 0, flags)
 GEM("dilithium crystal", "white",  2, 1, 4500, 15,  5, GEMSTONE, CLR_WHITE, O1_NONE, 0),
 GEM("diamond",           "white",  3, 1, 4000, 15,  10, GEMSTONE, CLR_WHITE, O1_TREATED_AS_MATERIAL_COMPONENT, 0),
 GEM("black pearl",		 "black",  3, 1, 3750, 15,  5, GEMSTONE, CLR_BLACK, O1_TREATED_AS_MATERIAL_COMPONENT, 0),
@@ -1513,17 +1521,21 @@ GEM("worthless piece of violet glass", "violet",
  * (inclusive).
  */
 ROCK("luckstone", "gray",	//Gray stone start marker
-	0, 0, 0,				0,  10,  10, 60, 3, 3, 1, 10, 7, MINERAL, CLR_GRAY, O1_CONFERS_LUCK | O1_CONFERS_POWERS_WHEN_CARRIED, 0),
+	0, 0, 0,				0,  10,  10, 60, 1, 3, 0, 1, 3, 0, 1, 10, 7, MINERAL, CLR_GRAY, O1_CONFERS_LUCK | O1_CONFERS_POWERS_WHEN_CARRIED, 0),
 ROCK("loadstone", "gray", 
-	0, 0, 0,				0,  10, 500,  1, 3, 3, 1, 10, 6, MINERAL, CLR_GRAY, O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED | O1_CANNOT_BE_DROPPED_IF_CURSED, 0),
+	0, 0, 0,				0,  10, 500,  1, 1, 10, 0, 1, 10, 0, 1, 10, 6, MINERAL, CLR_GRAY, O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED | O1_CANNOT_BE_DROPPED_IF_CURSED, 0),
 ROCK("jinxstone", "gray",  
-	FUMBLING, 0, 0,			0,  10,  10,  1, 3, 3, 1, 10, 6, MINERAL, CLR_GRAY, O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED | O1_CANNOT_BE_DROPPED_IF_CURSED | O1_CONFERS_POWERS_WHEN_CARRIED, 0),
+	FUMBLING, 0, 0,			0,  10,  10,  1, 1, 3, 0, 1, 3, 0, 1, 10, 6, MINERAL, CLR_GRAY, O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED | O1_CANNOT_BE_DROPPED_IF_CURSED | O1_CONFERS_POWERS_WHEN_CARRIED, 0),
 ROCK("touchstone", "gray", 
-	0, 0, 0,				0,   8,  10, 45, 3, 3, 1, 10, 6, MINERAL, CLR_GRAY, O1_NONE, 0),
+	0, 0, 0,				0,   8,  10, 45, 1, 3, 0, 1, 3, 0, 1, 10, 6, MINERAL, CLR_GRAY, O1_NONE, 0),
 ROCK("flint", "gray",      //Gray stone end marker 
-	0, 0, 0,				0,  10,  10,  1, 6, 6, 0, 10, 7, MINERAL, CLR_GRAY, O1_NONE, 0),
+	0, 0, 0,				0,  10,  10,  1, 1, 8, 0, 1, 8, 0, 0, 10, 7, MINERAL, CLR_GRAY, O1_NONE, 0),
 ROCK("rock", None,         
-	0, 0, 0,				1,  90,  10,  0, 3, 3, 0, 10, 7, MINERAL, CLR_GRAY, O1_NONE, 0),
+	0, 0, 0,				1,  50,  10,  0, 1, 6, 0, 1, 6, 0, 0, 10, 7, MINERAL, CLR_GRAY, O1_NONE, 0),
+ROCK("stone pebble", None,         
+	0, 0, 0,				1,  30,  2,  0, 1, 4, 0, 1, 4, 0, 0, 10, 7, MINERAL, CLR_GRAY, O1_NONE, 0),
+ROCK("clay pebble", None,         
+	0, 0, 0,				1,  10,  2,  0, 1, 3, 0, 1, 3, 0, 0, 10, 7, MINERAL, CLR_BROWN, O1_NONE, 0),
 #undef GEM
 #undef ROCK
 

@@ -306,7 +306,7 @@ unsigned corpseflags;
 	int oneinchance = 0;
 	int basemonsterindex = 0;
 
-    switch (mndx) {
+	switch (mndx) {
 	case PM_SILVER_DRAGON_HATCHLING:
 	case PM_RED_DRAGON_HATCHLING:
 	case PM_ORANGE_DRAGON_HATCHLING:
@@ -316,14 +316,14 @@ unsigned corpseflags;
 	case PM_GREEN_DRAGON_HATCHLING:
 	case PM_YELLOW_DRAGON_HATCHLING:
 	case PM_GRAY_DRAGON:
-    case PM_SILVER_DRAGON:
-    case PM_RED_DRAGON:
-    case PM_ORANGE_DRAGON:
-    case PM_WHITE_DRAGON:
-    case PM_BLACK_DRAGON:
-    case PM_BLUE_DRAGON:
-    case PM_GREEN_DRAGON:
-    case PM_YELLOW_DRAGON:
+	case PM_SILVER_DRAGON:
+	case PM_RED_DRAGON:
+	case PM_ORANGE_DRAGON:
+	case PM_WHITE_DRAGON:
+	case PM_BLACK_DRAGON:
+	case PM_BLUE_DRAGON:
+	case PM_GREEN_DRAGON:
+	case PM_YELLOW_DRAGON:
 	case PM_ANCIENT_GRAY_DRAGON:
 	case PM_ANCIENT_SILVER_DRAGON:
 	case PM_ANCIENT_RED_DRAGON:
@@ -334,7 +334,7 @@ unsigned corpseflags;
 	case PM_ANCIENT_GREEN_DRAGON:
 	case PM_ANCIENT_YELLOW_DRAGON:
 		/* Make dragon scales.  This assumes that the order of the
-           dragons is the same as the order of the scales. */
+		   dragons is the same as the order of the scales. */
 		if (mndx >= PM_GRAY_DRAGON_HATCHLING && mndx <= PM_YELLOW_DRAGON_HATCHLING)
 		{
 			oneinchance = mtmp->mrevived ? 50 : 5;
@@ -351,29 +351,30 @@ unsigned corpseflags;
 			basemonsterindex = PM_ANCIENT_GRAY_DRAGON;
 		}
 
-        if (oneinchance > 0 && basemonsterindex > 0 && (oneinchance == 1 || !rn2(oneinchance))) {
-            num = GRAY_DRAGON_SCALES + monsndx(mdat) - basemonsterindex;
-            obj = mksobj_at(num, x, y, FALSE, FALSE);
-            obj->spe = 0;
-            obj->cursed = obj->blessed = FALSE;
-        }
-        goto default_1;
-    case PM_WHITE_UNICORN:
-    case PM_GRAY_UNICORN:
-    case PM_BLACK_UNICORN:
-        if (mtmp->mrevived && rn2(2)) {
-            if (canseemon(mtmp))
-                pline("%s recently regrown horn crumbles to dust.",
-                      s_suffix(Monnam(mtmp)));
-        } else {
-            obj = mksobj_at(UNICORN_HORN, x, y, TRUE, FALSE);
-            if (obj && mtmp->mrevived)
-                obj->degraded_horn = 1;
-        }
-        goto default_1;
-    case PM_LONG_WORM:
-        (void) mksobj_at(WORM_TOOTH, x, y, TRUE, FALSE);
-        goto default_1;
+		if (oneinchance > 0 && basemonsterindex > 0 && (oneinchance == 1 || !rn2(oneinchance))) {
+			num = GRAY_DRAGON_SCALES + monsndx(mdat) - basemonsterindex;
+			obj = mksobj_at(num, x, y, FALSE, FALSE);
+			obj->spe = 0;
+			obj->cursed = obj->blessed = FALSE;
+		}
+		goto default_1;
+	case PM_WHITE_UNICORN:
+	case PM_GRAY_UNICORN:
+	case PM_BLACK_UNICORN:
+		if (mtmp->mrevived && rn2(2)) {
+			if (canseemon(mtmp))
+				pline("%s recently regrown horn crumbles to dust.",
+					s_suffix(Monnam(mtmp)));
+		}
+		else {
+			obj = mksobj_at(UNICORN_HORN, x, y, TRUE, FALSE);
+			if (obj && mtmp->mrevived)
+				obj->degraded_horn = 1;
+		}
+		goto default_1;
+	case PM_LONG_WORM:
+		(void)mksobj_at(WORM_TOOTH, x, y, TRUE, FALSE);
+		goto default_1;
 	case PM_CAVE_SPIDER:
 	case PM_GIANT_SPIDER:
 	case PM_PHASE_SPIDER:
@@ -390,7 +391,7 @@ unsigned corpseflags;
 	case PM_COUATL:
 	case PM_ALEAX:
 	case PM_ARCHON:
-		if(!mtmp->mrevived || (mtmp->mrevived && !rn2(10)))
+		if (!mtmp->mrevived || (mtmp->mrevived && !rn2(10)))
 		{
 			obj = mksobj_at(FEATHER, x, y, TRUE, FALSE);
 			switch (mndx)
@@ -446,69 +447,105 @@ unsigned corpseflags;
 	case PM_VAMPIRE:
 	case PM_VAMPIRE_MAGE:
 	case PM_VAMPIRE_LORD:
-        /* include mtmp in the mkcorpstat() call */
-        num = undead_to_corpse(mndx);
-        corpstatflags |= CORPSTAT_INIT;
-        obj = mkcorpstat(CORPSE, mtmp, &mons[num], x, y, corpstatflags);
-        obj->age -= 100; /* this is an *OLD* corpse */
-        break;
-    case PM_KOBOLD_MUMMY:
-    case PM_DWARF_MUMMY:
-    case PM_GNOME_MUMMY:
-    case PM_ORC_MUMMY:
-    case PM_ELF_MUMMY:
-    case PM_HUMAN_MUMMY:
-    case PM_GIANT_MUMMY:
-    case PM_ETTIN_MUMMY:
-    case PM_KOBOLD_ZOMBIE:
-    case PM_DWARF_ZOMBIE:
-    case PM_GNOME_ZOMBIE:
-    case PM_ORC_ZOMBIE:
-    case PM_ELF_ZOMBIE:
-    case PM_HUMAN_ZOMBIE:
-    case PM_GIANT_ZOMBIE:
-    case PM_ETTIN_ZOMBIE:
-        num = undead_to_corpse(mndx);
-        corpstatflags |= CORPSTAT_INIT;
-        obj = mkcorpstat(CORPSE, mtmp, &mons[num], x, y, corpstatflags);
-        obj->age -= 100; /* this is an *OLD* corpse */
-        break;
-    case PM_IRON_GOLEM:
-        num = d(2, 6);
-        while (num--)
-            obj = mksobj_at(IRON_CHAIN, x, y, TRUE, FALSE);
-        free_mname(mtmp); /* don't christen obj */
-        break;
-    case PM_GLASS_GOLEM:
-        num = d(2, 4); /* very low chance of creating all glass gems */
-        while (num--)
-            obj = mksobj_at((LAST_GEM + rnd(9)), x, y, TRUE, FALSE);
-        free_mname(mtmp);
-        break;
-    case PM_CLAY_GOLEM:
-        obj = mksobj_at(ROCK, x, y, FALSE, FALSE);
-        obj->quan = (long) (rn2(20) + 50);
-        obj->owt = weight(obj);
-        free_mname(mtmp);
-        break;
-    case PM_STONE_GOLEM:
-        corpstatflags &= ~CORPSTAT_INIT;
-        obj =
-            mkcorpstat(STATUE, (struct monst *) 0, mdat, x, y, corpstatflags);
-        break;
-    case PM_WOOD_GOLEM:
-        num = d(2, 4);
-        while (num--) {
-            obj = mksobj_at(QUARTERSTAFF, x, y, TRUE, FALSE);
-        }
-        free_mname(mtmp);
-        break;
-    case PM_LEATHER_GOLEM:
-        num = d(2, 4);
-        while (num--)
-            obj = mksobj_at(LEATHER_ARMOR, x, y, TRUE, FALSE);
-        free_mname(mtmp);
-        break;
+		/* include mtmp in the mkcorpstat() call */
+		num = undead_to_corpse(mndx);
+		corpstatflags |= CORPSTAT_INIT;
+		obj = mkcorpstat(CORPSE, mtmp, &mons[num], x, y, corpstatflags);
+		obj->age -= 100; /* this is an *OLD* corpse */
+		break;
+	case PM_KOBOLD_MUMMY:
+	case PM_DWARF_MUMMY:
+	case PM_GNOME_MUMMY:
+	case PM_ORC_MUMMY:
+	case PM_ELF_MUMMY:
+	case PM_HUMAN_MUMMY:
+	case PM_GIANT_MUMMY:
+	case PM_ETTIN_MUMMY:
+	case PM_KOBOLD_ZOMBIE:
+	case PM_DWARF_ZOMBIE:
+	case PM_GNOME_ZOMBIE:
+	case PM_ORC_ZOMBIE:
+	case PM_ELF_ZOMBIE:
+	case PM_HUMAN_ZOMBIE:
+	case PM_GIANT_ZOMBIE:
+	case PM_ETTIN_ZOMBIE:
+		num = undead_to_corpse(mndx);
+		corpstatflags |= CORPSTAT_INIT;
+		obj = mkcorpstat(CORPSE, mtmp, &mons[num], x, y, corpstatflags);
+		obj->age -= 100; /* this is an *OLD* corpse */
+		break;
+	case PM_IRON_GOLEM:
+		num = d(2, 6);
+		while (num--)
+			obj = mksobj_at(IRON_CHAIN, x, y, TRUE, FALSE);
+		free_mname(mtmp); /* don't christen obj */
+		break;
+	case PM_GLASS_GOLEM:
+		num = d(2, 4); /* very low chance of creating all glass gems */
+		while (num--)
+			obj = mksobj_at((LAST_GEM + rnd(9)), x, y, TRUE, FALSE);
+		free_mname(mtmp);
+		break;
+	case PM_CLAY_GOLEM:
+		obj = mksobj_at(CLAY_PEBBLE, x, y, FALSE, FALSE);
+		obj->quan = (long)(rn2(20) + 50);
+		obj->owt = weight(obj);
+		free_mname(mtmp);
+		break;
+	case PM_STONE_GOLEM:
+		/*
+		corpstatflags &= ~CORPSTAT_INIT;
+		obj =
+			mkcorpstat(STATUE, (struct monst *) 0, mdat, x, y, corpstatflags);
+		*/
+		obj = mksobj_at(STONE_PEBBLE, x, y, FALSE, FALSE);
+		obj->quan = (long)(rn2(20) + 50);
+		obj->owt = weight(obj);
+		free_mname(mtmp);
+		break;
+	case PM_WOOD_GOLEM:
+		num = d(2, 4);
+		while (num--) {
+			obj = mksobj_at(QUARTERSTAFF, x, y, TRUE, FALSE);
+		}
+		free_mname(mtmp);
+		break;
+	case PM_LEATHER_GOLEM:
+	{
+		int objid = LEATHER_ARMOR;
+		num = d(2, 4);
+		while (num--)
+		{
+			switch (rn2(10))
+			{
+			case 0:
+				objid = LEATHER_ARMOR;
+			case 1:
+				objid = LEATHER_BELT;
+			case 2:
+				objid = LEATHER_BRACERS;
+			case 3:
+				objid = GNOLLISH_LEATHER_ARMOR;
+			case 4:
+				objid = GNOLLISH_HOOD;
+			case 5:
+				objid = LEATHER_CLOAK;
+			case 6:
+				objid = STUDDED_LEATHER_ARMOR;
+			case 7:
+				objid = LEATHER_GLOVES;
+			case 8:
+				objid = LEATHER_SANDALS;
+			case 9:
+				objid = ELVEN_LEATHER_HELM;
+			default:
+				break;
+			}
+			obj = mksobj_at(objid, x, y, TRUE, FALSE);
+		}
+		free_mname(mtmp);
+		break;
+	}
     case PM_GOLD_GOLEM:
         /* Good luck gives more coins */
         obj = mkgold((long) (200 - rnl(101)), x, y);
