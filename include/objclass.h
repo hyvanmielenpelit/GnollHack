@@ -216,7 +216,7 @@ struct objclass {
 
     unsigned short oc_nutrition; /* food value */
 
-	long oc_dir_subtype; /* ID for type of ray or immediate effect, long because used also for item flags */
+	long oc_dir_subtype; /* spells: ID for type of ray or immediate effect, long because used also for item flags */
 
 #define RAY_WND_MAGIC_MISSILE 0 
 #define RAY_WND_FIRE 1 
@@ -242,12 +242,12 @@ struct objclass {
 #define RAY_DIGGING 111 
 #define RAY_EVAPORATION 112 
 
-	long oc_material_components;		/* ID for material component list for a spell or to make the item (if recipe is known); long because may be used for extra flags */
+	long oc_material_components;		/* spells: ID for material component list for a spell or to make the item (if recipe is known); long because may be used for extra flags */
 
-#define oc_nonspell_oc7 oc_dir_subtype			/* non-spells: extra parameter 1 */
-#define oc_nonspell_oc8 oc_material_components	/* non-spells: extra parameter 2 */
+#define oc_nonspell_oc7 oc_dir_subtype			/* non-spells: extra parameter 1 (long) */
+#define oc_nonspell_oc8 oc_material_components	/* non-spells: extra parameter 2 (long) */
 
-#define oc_nonspell_permission_mask oc_nonspell_oc7			/* non-spells: roles, races, genders, and alignments that the item's powers are conferred to */
+#define oc_nonspell_confer_mask oc_nonspell_oc7			/* non-spells: roles, races, genders, and alignments that the item's powers are conferred to */
 
 	int oc_item_cooldown;			/* cooldown before the item can be used / applied / zapped / read etc. again */
 	int oc_item_level;				/* item level, to be used with loot tables */

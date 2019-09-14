@@ -670,13 +670,13 @@ inappropriate_character_type(uitem)
 struct obj* uitem;
 {
 	int otyp = uitem->otyp;
-	if (objects[otyp].oc_nonspell_permission_mask != 0)
+	if (objects[otyp].oc_nonspell_confer_mask != 0)
 	{
-		if (objects[otyp].oc_nonspell_permission_mask & PERMITTED_GENDER_MASK)
+		if (objects[otyp].oc_nonspell_confer_mask & PERMITTED_GENDER_MASK)
 		{
 			if (
-				   ((objects[otyp].oc_nonspell_permission_mask & PERMITTED_GENDER_FEMALE) && (Upolyd ? u.mfemale : flags.female))
-				|| ((objects[otyp].oc_nonspell_permission_mask & PERMITTED_GENDER_MALE) && !(Upolyd ? u.mfemale : flags.female))
+				   ((objects[otyp].oc_nonspell_confer_mask & PERMITTED_GENDER_FEMALE) && (Upolyd ? u.mfemale : flags.female))
+				|| ((objects[otyp].oc_nonspell_confer_mask & PERMITTED_GENDER_MALE) && !(Upolyd ? u.mfemale : flags.female))
 				)
 			{
 				// Ok
@@ -686,14 +686,14 @@ struct obj* uitem;
 				return TRUE;
 			}
 		}
-		if (objects[otyp].oc_nonspell_permission_mask & PERMITTED_RACE_MASK)
+		if (objects[otyp].oc_nonspell_confer_mask & PERMITTED_RACE_MASK)
 		{
 			if (
-				   ((objects[otyp].oc_nonspell_permission_mask & PERMITTED_RACE_HUMAN) && Race_if(PM_HUMAN))
-				|| ((objects[otyp].oc_nonspell_permission_mask & PERMITTED_RACE_ELF) && Race_if(PM_ELF))
-				|| ((objects[otyp].oc_nonspell_permission_mask & PERMITTED_RACE_DWARF) && Race_if(PM_DWARF))
-				|| ((objects[otyp].oc_nonspell_permission_mask & PERMITTED_RACE_GNOLL) && Race_if(PM_GNOLL))
-				|| ((objects[otyp].oc_nonspell_permission_mask & PERMITTED_RACE_ORC) && Race_if(PM_ORC))
+				   ((objects[otyp].oc_nonspell_confer_mask & PERMITTED_RACE_HUMAN) && Race_if(PM_HUMAN))
+				|| ((objects[otyp].oc_nonspell_confer_mask & PERMITTED_RACE_ELF) && Race_if(PM_ELF))
+				|| ((objects[otyp].oc_nonspell_confer_mask & PERMITTED_RACE_DWARF) && Race_if(PM_DWARF))
+				|| ((objects[otyp].oc_nonspell_confer_mask & PERMITTED_RACE_GNOLL) && Race_if(PM_GNOLL))
+				|| ((objects[otyp].oc_nonspell_confer_mask & PERMITTED_RACE_ORC) && Race_if(PM_ORC))
 				)
 			{
 				// Ok
@@ -703,19 +703,19 @@ struct obj* uitem;
 				return TRUE;
 			}
 		}
-		if (objects[otyp].oc_nonspell_permission_mask & PERMITTED_ROLE_MASK)
+		if (objects[otyp].oc_nonspell_confer_mask & PERMITTED_ROLE_MASK)
 		{
 			if (
-				((objects[otyp].oc_nonspell_permission_mask & PERMITTED_ROLE_ARCHEOLOGIST) && Role_if(PM_ARCHEOLOGIST))
-				|| ((objects[otyp].oc_nonspell_permission_mask & PERMITTED_ROLE_BARBARIAN) && Role_if(PM_BARBARIAN))
-				|| ((objects[otyp].oc_nonspell_permission_mask & PERMITTED_ROLE_CAVEMAN) && Role_if(PM_CAVEMAN))
-				|| ((objects[otyp].oc_nonspell_permission_mask & PERMITTED_ROLE_HEALER) && Role_if(PM_HEALER))
-				|| ((objects[otyp].oc_nonspell_permission_mask & PERMITTED_ROLE_KNIGHT) && Role_if(PM_KNIGHT))
-				|| ((objects[otyp].oc_nonspell_permission_mask & PERMITTED_ROLE_MONK) && Role_if(PM_MONK))
-				|| ((objects[otyp].oc_nonspell_permission_mask & PERMITTED_ROLE_PRIEST) && Role_if(PM_PRIEST))
-				|| ((objects[otyp].oc_nonspell_permission_mask & PERMITTED_ROLE_TOURIST) && Role_if(PM_TOURIST))
-				|| ((objects[otyp].oc_nonspell_permission_mask & PERMITTED_ROLE_VALKYRIE) && Role_if(PM_VALKYRIE))
-				|| ((objects[otyp].oc_nonspell_permission_mask & PERMITTED_ROLE_WIZARD) && Role_if(PM_WIZARD))
+				((objects[otyp].oc_nonspell_confer_mask & PERMITTED_ROLE_ARCHEOLOGIST) && Role_if(PM_ARCHEOLOGIST))
+				|| ((objects[otyp].oc_nonspell_confer_mask & PERMITTED_ROLE_BARBARIAN) && Role_if(PM_BARBARIAN))
+				|| ((objects[otyp].oc_nonspell_confer_mask & PERMITTED_ROLE_CAVEMAN) && Role_if(PM_CAVEMAN))
+				|| ((objects[otyp].oc_nonspell_confer_mask & PERMITTED_ROLE_HEALER) && Role_if(PM_HEALER))
+				|| ((objects[otyp].oc_nonspell_confer_mask & PERMITTED_ROLE_KNIGHT) && Role_if(PM_KNIGHT))
+				|| ((objects[otyp].oc_nonspell_confer_mask & PERMITTED_ROLE_MONK) && Role_if(PM_MONK))
+				|| ((objects[otyp].oc_nonspell_confer_mask & PERMITTED_ROLE_PRIEST) && Role_if(PM_PRIEST))
+				|| ((objects[otyp].oc_nonspell_confer_mask & PERMITTED_ROLE_TOURIST) && Role_if(PM_TOURIST))
+				|| ((objects[otyp].oc_nonspell_confer_mask & PERMITTED_ROLE_VALKYRIE) && Role_if(PM_VALKYRIE))
+				|| ((objects[otyp].oc_nonspell_confer_mask & PERMITTED_ROLE_WIZARD) && Role_if(PM_WIZARD))
 				)
 			{
 				// Ok
@@ -725,12 +725,12 @@ struct obj* uitem;
 				return TRUE;
 			}
 		}
-		if (objects[otyp].oc_nonspell_permission_mask & PERMITTED_ALIGNMENT_MASK)
+		if (objects[otyp].oc_nonspell_confer_mask & PERMITTED_ALIGNMENT_MASK)
 		{
 			if (
-				((objects[otyp].oc_nonspell_permission_mask & PERMITTED_ALIGNMENT_LAWFUL) && (u.ualign.type == A_LAWFUL))
-				|| ((objects[otyp].oc_nonspell_permission_mask & PERMITTED_ALIGNMENT_NEUTRAL) && (u.ualign.type == A_NEUTRAL))
-				|| ((objects[otyp].oc_nonspell_permission_mask & PERMITTED_ALIGNMENT_CHAOTIC) && (u.ualign.type == A_CHAOTIC))
+				((objects[otyp].oc_nonspell_confer_mask & PERMITTED_ALIGNMENT_LAWFUL) && (u.ualign.type == A_LAWFUL))
+				|| ((objects[otyp].oc_nonspell_confer_mask & PERMITTED_ALIGNMENT_NEUTRAL) && (u.ualign.type == A_NEUTRAL))
+				|| ((objects[otyp].oc_nonspell_confer_mask & PERMITTED_ALIGNMENT_CHAOTIC) && (u.ualign.type == A_CHAOTIC))
 				)
 			{
 				// Ok

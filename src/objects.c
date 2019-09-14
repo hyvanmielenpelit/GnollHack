@@ -59,7 +59,7 @@ struct monst { struct monst *dummy; };  /* lint: struct obj's union */
 /* first pass -- object descriptive text */
 #define OBJ(name,desc)  name, desc
 #define OBJECT(obj,contentdesc,bits,prp1,prp2,prp3,sym,prob,dly,wt, \
-               cost,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,oc1,oc2,oc3,oc4,oc5,oc6,nut,color, dirsubtype,materials,cooldown,level,flags)  { obj }
+               cost,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,oc1,oc2,oc3,oc4,oc5,oc6,nut,color,dirsubtype,materials,cooldown,level,flags)  { obj }
 #define None (char *) 0 /* less visual distraction for 'no description' */
 
 NEARDATA struct objdescr obj_descr[] =
@@ -86,22 +86,22 @@ OBJECT(OBJ("strange object", None), None,
 
 /* weapons ... */
 #define WEAPON(name,desc,kn,mg,bi,prob,wt,                \
-               cost,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,hitbon,manabon,hpbon,power,power2,power3,typ,sub,metal,color,flags,flagparams) \
+               cost,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,hitbon,manabon,hpbon,power,power2,power3,typ,sub,metal,color,flags,powconfermask) \
     OBJECT(OBJ(name,desc), None,                                          \
            BITS(kn, mg, 1, 0, 0, 1, 0, 0, bi, 0, typ, sub, metal),  \
            power, power2, power3, WEAPON_CLASS, prob, 0, wt,                            \
-           cost, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, hitbon, 0, manabon, hpbon, 0, 0, wt, color, flagparams, 0, 0, 0, flags)
+           cost, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, hitbon, 0, manabon, hpbon, 0, 0, wt, color, powconfermask, 0, 0, 0, flags)
 #define PROJECTILE(name,desc,kn,prob,wt,                  \
                    cost,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,hitbon,metal,sub,color,flags) \
     OBJECT(OBJ(name,desc), None,                                         \
            BITS(kn, 1, 1, 0, 0, 1, 0, 0, 0, 0, PIERCE, sub, metal), \
            0, 0, 0, WEAPON_CLASS, prob, 0, wt,                            \
            cost, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, hitbon, 0, 0, 0, 0, 0, wt, color, 0, 0, 0, 0, flags)
-#define BOW(name,desc,kn,bi,prob,wt,cost,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,hitbon,manabon,hpbon,power,power2,power3,metal,sub,color,flags,flagparams) \
+#define BOW(name,desc,kn,bi,prob,wt,cost,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,hitbon,manabon,hpbon,power,power2,power3,metal,sub,color,flags,powconfermask) \
     OBJECT(OBJ(name,desc), None,                                         \
            BITS(kn, 0, 1, 0, 0, 1, 0, 0, bi, 0, 0, sub, metal),      \
            power, power2, power3, WEAPON_CLASS, prob, 0, wt,                            \
-           cost, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, hitbon, 0, manabon, hpbon, 0, 0, wt, color, flagparams, 0, 0, 0, flags)
+           cost, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, hitbon, 0, manabon, hpbon, 0, 0, wt, color, powconfermask, 0, 0, 0, flags)
 
 /* Note: for weapons that don't do an even die of damage (ex. 2-7 or 3-18)
    the extra damage is added on in weapon.c, not here! */
@@ -351,38 +351,38 @@ BOW("heavy crossbow", None,					1, 1, 10, 200, 150, 1, 8, 0, 1, 8, 0, 0, 0, 0, 0
          * Some creatures are vulnerable to SILVER.
          */
 #define ARMOR(name,desc,kn,mgc,blk,power,power2,power3,prob,delay,wt,  \
-              cost,ac,can,manabon,hpbon,bonusattrs,abon,sub,metal,c,flags,flagparams)                   \
+              cost,ac,can,manabon,hpbon,bonusattrs,abon,sub,metal,c,flags,powconfermask)                   \
     OBJECT(OBJ(name, desc), None,                                        \
            BITS(kn, 0, 1, 0, mgc, 1, 0, 0, blk, 0, 0, sub, metal),  \
            power, power2, power3, ARMOR_CLASS, prob, delay, wt,                     \
-           cost, 0, 0, 0, 0, 0, 0, 10 - ac, can, manabon, hpbon, bonusattrs, abon, wt, c, flagparams, 0, 0, 0, flags)
-#define HELM(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c,flags,flagparams)  \
+           cost, 0, 0, 0, 0, 0, 0, 10 - ac, can, manabon, hpbon, bonusattrs, abon, wt, c, powconfermask, 0, 0, 0, flags)
+#define HELM(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c,flags,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_HELM, metal, c, flags, flagparams)
-#define CLOAK(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c,flags,flagparams)  \
+          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_HELM, metal, c, flags, powconfermask)
+#define CLOAK(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c,flags,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_CLOAK, metal, c, flags, flagparams)
-#define SHIELD(name,desc,kn,mgc,blk,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c,flags,flagparams) \
+          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_CLOAK, metal, c, flags, powconfermask)
+#define SHIELD(name,desc,kn,mgc,blk,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c,flags,powconfermask) \
     ARMOR(name, desc, kn, mgc, blk, power, power2, power3, prob, delay, wt, \
-          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_SHIELD, metal, c, flags, flagparams)
-#define GLOVES(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c,flags,flagparams)  \
+          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_SHIELD, metal, c, flags, powconfermask)
+#define GLOVES(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c,flags,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_GLOVES, metal, c, flags, flagparams)
-#define BOOTS(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c,flags,flagparams)  \
+          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_GLOVES, metal, c, flags, powconfermask)
+#define BOOTS(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c,flags,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_BOOTS, metal, c, flags, flagparams)
-#define SHIRT(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c,flags,flagparams)  \
+          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_BOOTS, metal, c, flags, powconfermask)
+#define SHIRT(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c,flags,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_SHIRT, metal, c, flags, flagparams)
-#define ROBE(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c,flags,flagparams)  \
+          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_SHIRT, metal, c, flags, powconfermask)
+#define ROBE(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c,flags,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_ROBE, metal, c, flags, flagparams)
-#define BRACERS(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c,flags,flagparams)  \
+          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_ROBE, metal, c, flags, powconfermask)
+#define BRACERS(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c,flags,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_BRACERS, metal, c, flags, flagparams)
-#define BELT(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c,flags,flagparams)  \
+          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_BRACERS, metal, c, flags, powconfermask)
+#define BELT(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c,flags,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_BELT, metal, c, flags, flagparams)
+          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_BELT, metal, c, flags, powconfermask)
 
 /* helmets */
 HELM("elven leather helm", "leather hat",
@@ -423,9 +423,9 @@ HELM("helm of telepathy", "visored helmet",
  *      (2) That the order of the dragon scale mail and dragon scales
  *          is the same as order of dragons defined in monst.c.
  */
-#define DRGN_ARMR(name,mgc,power,power2,power3,cost,ac,manabon,hpbon,bonusattrs,abon,color,flags,flagparams)  \
+#define DRGN_ARMR(name,mgc,power,power2,power3,cost,ac,manabon,hpbon,bonusattrs,abon,color,flags,powconfermask)  \
     ARMOR(name, None, 1, mgc, 1, power, power2, power3, 0, 5, 550,  \
-          cost, ac, 0, manabon, hpbon, bonusattrs, abon, ARM_SUIT, DRAGON_HIDE, color, flags, flagparams)
+          cost, ac, 0, manabon, hpbon, bonusattrs, abon, ARM_SUIT, DRAGON_HIDE, color, flags, powconfermask)
 /* 3.4.1: dragon scale mail reclassified as "magic" since magic is
    needed to create them */
 DRGN_ARMR("gray dragon scale mail",    1, ANTIMAGIC,  0, 0, 6000, 1, 0, 0, 0, 0, CLR_GRAY, O1_NONE, 0),
@@ -661,11 +661,11 @@ BOOTS("levitation boots", "snow boots",
 #undef ARMOR
 
 /* rings ... */
-#define RING(name,stone,power,power2,power3,cost,mgc,spec,mohs,manabon,hpbon,bonusattrs,abon,metal,color,flags,flagparams) \
+#define RING(name,stone,power,power2,power3,cost,mgc,spec,mohs,manabon,hpbon,bonusattrs,abon,metal,color,flags,powconfermask) \
     OBJECT(OBJ(name, stone), None,                                         \
            BITS(0, 0, spec, 0, mgc, spec, 0, 0, 0,                    \
                 HARDGEM(mohs), 0, P_NONE, metal),                     \
-           power, power2, power3, RING_CLASS, 0, 0, 1, cost,  0, 0, 0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattrs,abon, 15, color, flagparams, 0, 0, 0, flags)
+           power, power2, power3, RING_CLASS, 0, 0, 1, cost,  0, 0, 0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattrs,abon, 15, color, powconfermask, 0, 0, 0, flags)
 RING("adornment", "wooden",
      ADORNED, 0, 0, 100, 1, 1, 2, 0, 0, BONUS_TO_CHA, 0, WOOD, HI_WOOD, O1_NONE, 0),
 RING("gain strength", "granite",
@@ -745,10 +745,10 @@ RING("protection from shape changers", "shiny",
 #undef RING
 
 /* amulets ... - THE Amulet comes last because it is special */
-#define AMULET(name,desc,prob,power,power2,power3,manabonus,hpbonus,bonusattrs,abon,flags,flagparams) \
+#define AMULET(name,desc,prob,power,power2,power3,manabonus,hpbonus,bonusattrs,abon,flags,powconfermask) \
     OBJECT(OBJ(name, desc), None,                                           \
            BITS(0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, P_NONE, IRON),        \
-           power, power2, power3,  AMULET_CLASS, prob, 0, 5, 150,  0, 0, 0, 0, 0, 0, 0, 0, manabonus, hpbonus, bonusattrs, abon, 20, HI_METAL, flagparams, 0, 0, 0, flags)
+           power, power2, power3,  AMULET_CLASS, prob, 0, 5, 150,  0, 0, 0, 0, 0, 0, 0, 0, manabonus, hpbonus, bonusattrs, abon, 20, HI_METAL, powconfermask, 0, 0, 0, flags)
 AMULET("amulet of ESP",                "circular", 125, TELEPAT, 0, 0, 0, 0, 0, 0, O1_NONE, 0),
 AMULET("amulet of life saving",       "spherical", 75,  LIFESAVED, 0, 0, 0, 0, 0, 0, O1_NONE, 0),
 AMULET("amulet of strangulation",          "oval", 110, STRANGLED, 0, 0, 0, 0, 0, 0, O1_NONE, 0),
@@ -776,10 +776,10 @@ OBJECT(OBJ("Amulet of Yendor", /* note: description == name */
 #undef AMULET
 
 /* decorations */
-#define MISCELLANEOUSITEM(name,desc,sub,specialworntext,kn,magic,mergeable,charged,prob,cost,wt,power,power2,power3,manabonus,hpbonus,bonusattrs,abon,nut,material,color,flags,flagparams) \
+#define MISCELLANEOUSITEM(name,desc,sub,specialworntext,kn,magic,mergeable,charged,prob,cost,wt,power,power2,power3,manabonus,hpbonus,bonusattrs,abon,nut,material,color,flags,powconfermask) \
     OBJECT(OBJ(name, desc), specialworntext,                                           \
            BITS(kn, mergeable, charged, 0, magic, charged, 0, 0, 0, 0, 0, sub, material),        \
-           power, power2, power3,  MISCELLANEOUS_CLASS, prob, 0, wt, cost,  0, 0, 0, 0, 0, 0, 0, 0, manabonus, hpbonus, bonusattrs, abon, nut, color, flagparams, 0, 0, 0, flags)
+           power, power2, power3,  MISCELLANEOUS_CLASS, prob, 0, wt, cost,  0, 0, 0, 0, 0, 0, 0, 0, manabonus, hpbonus, bonusattrs, abon, nut, color, powconfermask, 0, 0, 0, flags)
 MISCELLANEOUSITEM("brooch of shielding", "brooch",	MISC_MULTIPLE_PERMITTED, None,
 	0, 1, 0, 0, 200, 150, 5,
 	PROTECTION, 0, 0, 0, 0, BONUS_TO_AC, 2,
@@ -816,22 +816,22 @@ MISCELLANEOUSITEM("wings of flying", "artificial wings", MISC_WINGS, "attached t
 
 /* tools ... */
 /* tools with weapon characteristics come last */
-#define TOOL(name,desc,kn,mrg,mgc,chg,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,abon,mat,color,flags,flagparams) \
+#define TOOL(name,desc,kn,mrg,mgc,chg,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,abon,mat,color,flags,powconfermask) \
     OBJECT(OBJ(name, desc), None,                                            \
            BITS(kn, mrg, chg, 0, mgc, chg, 0, 0, 0, 0, 0, P_NONE, mat), \
-           0, 0, 0, TOOL_CLASS, prob, 0, wt, cost,  0, 0, 0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattr, abon, wt, color, flagparams, 0, cooldown, 0, flags)
+           0, 0, 0, TOOL_CLASS, prob, 0, wt, cost,  0, 0, 0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattr, abon, wt, color, powconfermask, 0, cooldown, 0, flags)
 #define SPELLTOOL(name,desc,kn,mrg,mgc,chg,prob,wt,cost,dir,dirsubtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus,cooldown,mat,color,flags) \
     OBJECT(OBJ(name, desc), None,                                            \
            BITS(kn, mrg, chg, 0, mgc, chg, 0, 0, 0, 0, dir, P_NONE, mat), \
            0, 0, 0, TOOL_CLASS, prob, 0, wt, cost, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, 0, 0, 0, 0, 0, 0, wt, color, dirsubtype, 0, cooldown, 0, flags)
-#define CONTAINER(name,desc,kn,mgc,chg,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,abon,mat,color,flags,flagparams) \
+#define CONTAINER(name,desc,kn,mgc,chg,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,abon,mat,color,flags,powconfermask) \
     OBJECT(OBJ(name, desc), None,                                            \
            BITS(kn, 0, chg, 1, mgc, chg, 0, 0, 0, 0, 0, P_NONE, mat),   \
-           0, 0, 0, TOOL_CLASS, prob, 0, wt, cost,  0, 0, 0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattr, abon, wt, color, flagparams, 0, cooldown, 0, flags)
-#define WEPTOOL(name,desc,kn,mgc,bi,prob,wt,cost,sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, hitbon,sub,cooldown,mat,clr,flags,flagparams)\
+           0, 0, 0, TOOL_CLASS, prob, 0, wt, cost,  0, 0, 0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattr, abon, wt, color, powconfermask, 0, cooldown, 0, flags)
+#define WEPTOOL(name,desc,kn,mgc,bi,prob,wt,cost,sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, hitbon,sub,cooldown,mat,clr,flags,powconfermask)\
     OBJECT(OBJ(name, desc), None,                                            \
            BITS(kn, 0, 1, 0, mgc, 1, 0, 0, bi, 0, hitbon, sub, mat),    \
-           0, 0, 0, TOOL_CLASS, prob, 0, wt, cost, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, hitbon, 0, 0, 0, 0, 0, wt, clr, flagparams, 0, cooldown, 0, flags)
+           0, 0, 0, TOOL_CLASS, prob, 0, wt, cost, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, hitbon, 0, 0, 0, 0, 0, wt, clr, powconfermask, 0, cooldown, 0, flags)
 /* containers */
 CONTAINER("large box",       None, 1, 0, 0, 40, 350,   8, 0, 0, 0, 0, 0, WOOD, HI_WOOD, O1_NONE, 0), //STARTMARKER 1
 CONTAINER("chest",           None, 1, 0, 0, 30, 600,  16, 0, 0, 0, 0, 0, WOOD, HI_WOOD, O1_NONE, 0),
@@ -922,11 +922,11 @@ OBJECT(OBJ("Bell of Opening", "silver bell"), None,
 #undef WEPTOOL
 
 /* Comestibles ... */
-#define FOOD(name, prob, delay, wt, unk, tin, nutrition, color, flags, flagparams)         \
+#define FOOD(name, prob, delay, wt, unk, tin, nutrition, color, flags, powconfermask)         \
     OBJECT(OBJ(name, None), None,                                      \
            BITS(1, 1, unk, 0, 0, 0, 0, 0, 0, 0, 0, P_NONE, tin), 0, 0, 0,     \
            FOOD_CLASS, prob, delay, wt, nutrition / 20 + 5,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
-           nutrition, color, flagparams, 0, 0, 0, flags)
+           nutrition, color, powconfermask, 0, 0, 0, flags)
 /* All types of food (except tins & corpses) must have a delay of at least 1.
  * Delay on corpses is computed and is weight dependant.
  * Domestic pets prefer tripe rations above all others.
@@ -985,10 +985,10 @@ FOOD("tin",                  75,  0, 10, 1, METAL,   0, HI_METAL, O1_NONE, 0),
 #undef FOOD
 
 /* potions ... */
-#define POTION(name,desc,mgc,power,prob,cost,color,flags,flagparams) \
+#define POTION(name,desc,mgc,power,prob,cost,color,flags,powconfermask) \
     OBJECT(OBJ(name, desc), None,                                            \
            BITS(0, 1, 0, 0, mgc, 0, 0, 0, 0, 0, 0, P_NONE, GLASS),      \
-           power, 0, 0, POTION_CLASS, prob, 0, 12, cost,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, color, flagparams, 0, 0, 0, flags)
+           power, 0, 0, POTION_CLASS, prob, 0, 12, cost,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, color, powconfermask, 0, 0, 0, flags)
 POTION("gain ability",           "ruby",  1, 0, 42, 300, CLR_RED, O1_NONE, 0),
 POTION("restore ability",        "pink",  1, 0, 40, 100, CLR_BRIGHT_MAGENTA, O1_NONE, 0),
 POTION("confusion",            "orange",  1, CONFUSION, 42, 100, CLR_ORANGE, O1_NONE, 0),
@@ -1023,10 +1023,10 @@ POTION("water",                 "clear",  0, 0, 92, 100, CLR_CYAN, O1_TREATED_AS
 #undef POTION
 
 /* scrolls ... */
-#define SCROLL(name,text,mgc,prob,cost,flags,flagparams) \
+#define SCROLL(name,text,mgc,prob,cost,flags,powconfermask) \
     OBJECT(OBJ(name, text), None,                                           \
            BITS(0, 1, 0, 0, mgc, 0, 0, 0, 0, 0, 0, P_NONE, PAPER),    \
-           0, 0, 0, SCROLL_CLASS, prob, 0, 4, cost,  0, 0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, HI_PAPER, flagparams, 0, 0, 0, flags)
+           0, 0, 0, SCROLL_CLASS, prob, 0, 4, cost,  0, 0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, HI_PAPER, powconfermask, 0, 0, 0, flags)
 SCROLL("enchant armor",              "ZELGO MER",  1,  63,  80, O1_NONE, 0),
 SCROLL("destroy armor",         "JUYED AWK YACC",  1,  45, 100, O1_NONE, 0),
 SCROLL("confuse monster",                 "NR 9",  1,  53, 100, O1_NONE, 0),
@@ -1118,15 +1118,15 @@ SPELL("magic missile",   "vellum", None,
 SPELL("fire bolt",        "light red", None,
       P_ARCANE_SPELL,			10,  4,			 0, 3, 20, A_INT, 10, 0, 1, RAY, RAY_FIRE, 3, 6, 0, 0, 0, 0, CLR_RED, O1_FIRE_RESISTANT),
 SPELL("fireball",         "ragged", None,
-      P_ARCANE_SPELL,			10,  6,			 2, 5, 50, A_INT, 14, 0, 1, TARGETED, RAY_FIRE, 5, 6, 0, 0, 0, 0, HI_PAPER, O1_FIRE_RESISTANT | O1_SPELL_EXPLOSION_EFFECT),
+      P_ARCANE_SPELL,			10,  6,			 2, 5, 50, A_INT, 14, 0, 1, RAY, RAY_FIRE, 5, 6, 0, 0, 0, 0, HI_PAPER, O1_FIRE_RESISTANT | O1_SPELL_EXPLOSION_EFFECT),
 SPELL("fire storm",       "crimson", None,
-      P_ARCANE_SPELL,			 5,  8,			 4, 7,100, A_INT, 16, 0, 1, TARGETED, RAY_FIRE, 12, 6, 0, 0, 0, 0, CLR_RED, O1_FIRE_RESISTANT | O1_SPELL_EXPLOSION_EFFECT),
+      P_ARCANE_SPELL,			 5,  8,			 4, 7,100, A_INT, 16, 0, 1, RAY, RAY_FIRE, 12, 6, 0, 0, 0, 0, CLR_RED, O1_FIRE_RESISTANT | O1_SPELL_EXPLOSION_EFFECT),
 SPELL("meteor swarm",     "oval-patterned", None,
-      P_ARCANE_SPELL,			 5, 10,			 6, 9,200, A_INT, 18, 0, 1, TARGETED, RAY_FIRE, 8, 6, 0, 2, 2, 1, CLR_RED, O1_FIRE_RESISTANT | O1_SPELL_EXPLOSION_EFFECT),
+      P_ARCANE_SPELL,			 5, 10,			 6, 9,200, A_INT, 18, 0, 1, RAY, RAY_FIRE, 8, 6, 0, 2, 2, 1, CLR_RED, O1_FIRE_RESISTANT | O1_SPELL_EXPLOSION_EFFECT),
 SPELL("cone of cold",     "dog eared", None,
       P_ARCANE_SPELL,			10,  6,			 0, 5, 50, A_INT, 12, 0, 1, RAY, RAY_COLD, 15, 6, 0, 0, 0, 0, HI_PAPER, O1_COLD_RESISTANT),
 SPELL("ice storm",		  "mithril-plated", None,
-      P_ARCANE_SPELL,			10,  7,			 2, 6, 75, A_INT, 14, 0, 1, TARGETED, RAY_COLD, 4, 10, 8, 0, 0, 0, HI_SILVER, O1_COLD_RESISTANT | O1_SPELL_EXPLOSION_EFFECT),
+      P_ARCANE_SPELL,			10,  7,			 2, 6, 75, A_INT, 14, 0, 1, RAY, RAY_COLD, 4, 10, 8, 0, 0, 0, HI_SILVER, O1_COLD_RESISTANT | O1_SPELL_EXPLOSION_EFFECT),
 
 SPELL("sleep",				"mottled", None,
       P_ENCHANTMENT_SPELL,		10,  1,			20, 1, 10, A_CHA, 12, 0, 1, RAY, RAY_SLEEP, 0, 0, 0, 2, 6, 7, HI_PAPER, O1_NONE),
@@ -1138,7 +1138,7 @@ SPELL("disintegrate",	  "stained", None,
 SPELL("lightning bolt",   "shimmering", None,
       P_ARCANE_SPELL,			10,  3,			 0, 2, 15, A_INT, 14, 0, 1, RAY, RAY_LIGHTNING, 6, 6, 0, 0, 0, 0, HI_PAPER, O1_LIGHTNING_RESISTANT),
 SPELL("thunderstorm",	  "strange", None,
-      P_ARCANE_SPELL,			10,  10,		 3, 8,150, A_INT, 18, 0, 1, TARGETED, RAY_LIGHTNING, 10, 12, 0, 0, 0, 0, HI_PAPER, O1_LIGHTNING_RESISTANT | O1_SPELL_EXPLOSION_EFFECT),
+      P_ARCANE_SPELL,			10,  10,		 3, 8,150, A_INT, 18, 0, 1, RAY, RAY_LIGHTNING, 10, 12, 0, 0, 0, 0, HI_PAPER, O1_LIGHTNING_RESISTANT | O1_SPELL_EXPLOSION_EFFECT),
 SPELL("light",            "cloth", None,
       P_DIVINATION_SPELL,		10,  1,			 0, 0,  2, A_INT, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, HI_CLOTH, O1_NONE),
 SPELL("black blade of disaster", "ebony", "some long-forgotten arcane magic",
@@ -1291,7 +1291,7 @@ SPELL("touch of death",   "heavy", "ancient Stygian magic",
 SPELL("finger of death",  "leather bound", "ancient Stygian magic",
 	P_NECROMANCY_SPELL,		    5, 10,			10, 9,200, A_AVG_INT_WIS,  8, 0, 1, RAY, RAY_DEATH, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY),
 SPELL("deathspell",	      "morbid", "ancient Stygian magic",
-	P_NECROMANCY_SPELL,		    5, 10,			12,10,300, A_AVG_INT_WIS, 12, 1, 1, TARGETED, RAY_DEATH, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY | O1_SPELL_EXPLOSION_EFFECT),
+	P_NECROMANCY_SPELL,		    5, 10,			12,10,300, A_AVG_INT_WIS, 12, 1, 1, RAY, RAY_DEATH, 0, 0, 0, 0, 0, 0, HI_PAPER, O1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY | O1_SPELL_EXPLOSION_EFFECT),
 SPELL("armageddon",       "pitch black", "ancient Stygian magic",
 	P_NECROMANCY_SPELL,			2, 14,			20,12,750, A_AVG_INT_WIS, 0, 255, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_BLACK, O1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY),
 SPELL("wish",			  "platinum-plated", "some long-forgotten arcane magic",
@@ -1454,16 +1454,16 @@ COIN("gold piece", 1000, GOLD, 1),
 #undef COIN
 
 /* gems ... - includes stones and rocks but not boulders */
-#define GEM(name,desc,prob,wt,gval,nutr,mohs,glass,color,flags,flagparams) \
+#define GEM(name,desc,prob,wt,gval,nutr,mohs,glass,color,flags,powconfermask) \
     OBJECT(OBJ(name, desc), None,                                             \
            BITS(0, 1, 0, 0, 0, 0, 0, 0, 0,                              \
                 HARDGEM(mohs), 0, -P_SLING, glass),                     \
-           0, 0, 0, GEM_CLASS, prob, 0, 1, gval, 1, 3, 0, 1, 3, 0, 0, 0, 0, 0, 0, 0, nutr, color, flagparams, 0, 0, 0, flags)
-#define ROCK(name,desc,power1,power2,power3,kn,prob,wt,gval, sdam, ldam, mgc,nutr,mohs,glass,color,flags,flagparams) \
+           0, 0, 0, GEM_CLASS, prob, 0, 1, gval, 1, 3, 0, 1, 3, 0, 0, 0, 0, 0, 0, 0, nutr, color, powconfermask, 0, 0, 0, flags)
+#define ROCK(name,desc,power1,power2,power3,kn,prob,wt,gval, sdam, ldam, mgc,nutr,mohs,glass,color,flags,powconfermask) \
     OBJECT(OBJ(name, desc),  None,                                            \
            BITS(kn, 1, 0, 0, mgc, 0, 0, 0, 0,                           \
                 HARDGEM(mohs), 0, -P_SLING, glass),                     \
-           power1, power2, power3, GEM_CLASS, prob, 0, wt, gval, 1, sdam, 0, 1, ldam, 0, 0, 0, 0, 0, 0, 0, nutr, color, flagparams, 0, 0, 0, flags)
+           power1, power2, power3, GEM_CLASS, prob, 0, wt, gval, 1, sdam, 0, 1, ldam, 0, 0, 0, 0, 0, 0, 0, nutr, color, powconfermask, 0, 0, 0, flags)
 GEM("dilithium crystal", "white",  2, 1, 4500, 15,  5, GEMSTONE, CLR_WHITE, O1_NONE, 0),
 GEM("diamond",           "white",  3, 1, 4000, 15,  10, GEMSTONE, CLR_WHITE, O1_TREATED_AS_MATERIAL_COMPONENT, 0),
 GEM("black pearl",		 "black",  3, 1, 3750, 15,  5, GEMSTONE, CLR_BLACK, O1_TREATED_AS_MATERIAL_COMPONENT, 0),
@@ -1560,11 +1560,11 @@ OBJECT(OBJ("acid venom", "splash of venom"), None,
         /* +d6 small or large */
 
 /* Reagents here, which do not belong to any class, includes also all other odd non-food objects with no other apparent purpose*/
-#define REAGENT(name, prob, eatdelay, wt, cost, material, ediblesubtype, nutrition, color, flags, flagparams)         \
+#define REAGENT(name, prob, eatdelay, wt, cost, material, ediblesubtype, nutrition, color, flags, powconfermask)         \
     OBJECT(OBJ(name, None), None,                                      \
            BITS(1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, P_NONE, material), 0, 0, 0,     \
            REAGENT_CLASS, prob, eatdelay, wt, cost,  0, 0, 0, 0, 0, 0, ediblesubtype, 0, 0, 0, 0, 0, \
-           nutrition, color, flagparams, 0, 0, 0, flags)
+           nutrition, color, powconfermask, 0, 0, 0, flags)
 
 	REAGENT("thread of spider silk",	125, 0, 1, 10, SILK, 0,					 2, CLR_GRAY, O1_TREATED_AS_MATERIAL_COMPONENT, 0), /* STARTMARKER 1&2 */
 

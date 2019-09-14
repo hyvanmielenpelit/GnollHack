@@ -1182,6 +1182,7 @@ boolean atme;
 	case SPE_ICE_STORM:
 	case SPE_THUNDERSTORM:
 	case SPE_DEATHSPELL:
+#if 0		
 		if (throwspell(otyp)) {
             cc.x = u.dx;
             cc.y = u.dy;
@@ -1218,7 +1219,8 @@ boolean atme;
                 }
             }
         }
-        break;
+        break; */
+#endif
     /* these spells are all duplicates of wand effects */
 	case SPE_FIRE_BOLT:
 	case SPE_LIGHTNING_BOLT:
