@@ -177,17 +177,17 @@ struct objclass {
 /* oc_oc2 unused */
 /* oc_oc3 mana pool bonus */
 /* oc_oc4 hit point bonus */
-/* oc_oc5 attributes giving bonus to using spe */
-/* oc_oc6 unused */
+/* oc_oc5 attributes giving bonus to using spe / oc_oc6 to attributes and properties */
+/* oc_oc6 modifier to oc_oc5: 0 => spe is used, otherise fixed bonus */
 
 /* armor */
-#define oc_armcat oc_subtyp		/* armor: (enum obj_armor_types) */
-#define a_ac oc_oc1				/* armor class, used in ARM_BONUS in do.c */
-#define a_can oc_oc2			/* armor: used in mhitu.c */
+#define oc_armor_category oc_subtyp						/* armor: (enum obj_armor_types) */
+#define a_ac oc_oc1										/* armor class, used in ARM_BONUS in do.c */
+#define a_magic_attack_protection_level oc_oc2			/* armor: used in mhitu.c */
 /* oc_oc3 mana pool bonus */
 /* oc_oc4 hit point bonus */
-/* oc_oc5 attributes giving bonus to using spe */
-/* oc_oc6 unused */
+/* oc_oc5 attributes giving bonus to using spe / oc_oc6 to attributes and properties */
+/* oc_oc6 modifier to oc_oc5: 0 => spe is used, otherise fixed bonus */
 
 /* comestibles and reagents (and other edibles) */
 #define oc_edible_subtype oc_oc1		/* edibles: is rotten, poisoned, et*/

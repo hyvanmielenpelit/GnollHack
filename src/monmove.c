@@ -280,13 +280,13 @@ boolean fleemsg;
     if (!first || !mtmp->mflee) {
         /* don't lose untimed scare */
         if (!fleetime)
-            mtmp->mfleetim = 0;
-        else if (!mtmp->mflee || mtmp->mfleetim) {
-            fleetime += (int) mtmp->mfleetim;
+            mtmp->mflee_timer = 0;
+        else if (!mtmp->mflee || mtmp->mflee_timer) {
+            fleetime += (int) mtmp->mflee_timer;
             /* ensure monster flees long enough to visibly stop fighting */
             if (fleetime == 1)
                 fleetime++;
-            mtmp->mfleetim = (unsigned) min(fleetime, 127);
+            mtmp->mflee_timer = (unsigned) min(fleetime, 127);
         }
         if (!mtmp->mflee && fleemsg && canseemon(mtmp)
             && M_AP_TYPE(mtmp) != M_AP_FURNITURE
@@ -433,7 +433,7 @@ register struct monst *mtmp;
         return 1; /* m_respond gaze can kill medusa */
 
     /* fleeing monsters might regain courage */
-    if (mtmp->mflee && !mtmp->mfleetim && mtmp->mhp == mtmp->mhpmax
+    if (mtmp->mflee && !mtmp->mflee_timer && mtmp->mhp == mtmp->mhpmax
         && !rn2(25))
         mtmp->mflee = 0;
 
@@ -588,7 +588,7 @@ register struct monst *mtmp;
             struct attack *a;
 
             for (a = &mdat->mattk[0]; a < &mdat->mattk[NATTK]; a++) {
-                if (a->aatyp == AT_MAGC && !mtmp->mcan
+                if (a->aatyp == AT_MAGC && !mtmp->mcancelled
                     && (a->adtyp == AD_SPEL || a->adtyp == AD_CLRC)) {
                     if (castmu(mtmp, a, FALSE, FALSE)) {
                         tmp = 3;
@@ -887,7 +887,7 @@ register int after;
 #endif
 
     /* teleport if that lies in our nature */
-    if (ptr == &mons[PM_TENGU] && !rn2(5) && !mtmp->mcan
+    if (ptr == &mons[PM_TENGU] && !rn2(5) && !mtmp->mcancelled
         && !tele_restrict(mtmp)) {
         if (mtmp->mhp < 7 || mtmp->mpeaceful || rn2(2))
             (void) rloc(mtmp, TRUE);

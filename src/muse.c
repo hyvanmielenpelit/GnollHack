@@ -1711,14 +1711,14 @@ struct monst *mtmp;
         nomore(MUSE_WAN_MAKE_INVISIBLE);
         if (obj->otyp == WAN_MAKE_INVISIBLE && obj->spe > 0 && !mtmp->minvis
             && !mtmp->invis_blkd && (!mtmp->mpeaceful || See_invisible)
-            && (!attacktype(mtmp->data, AT_GAZE) || mtmp->mcan)) {
+            && (!attacktype(mtmp->data, AT_GAZE) || mtmp->mcancelled)) {
             m.misc = obj;
             m.has_misc = MUSE_WAN_MAKE_INVISIBLE;
         }
         nomore(MUSE_POT_INVISIBILITY);
         if (obj->otyp == POT_INVISIBILITY && !mtmp->minvis
             && !mtmp->invis_blkd && (!mtmp->mpeaceful || See_invisible)
-            && (!attacktype(mtmp->data, AT_GAZE) || mtmp->mcan)) {
+            && (!attacktype(mtmp->data, AT_GAZE) || mtmp->mcancelled)) {
             m.misc = obj;
             m.has_misc = MUSE_POT_INVISIBILITY;
         }
@@ -2439,7 +2439,7 @@ boolean by_you;
        isn't able to cure itself of green slime with its own attack
        [possible extension: monst capable of casting high level clerical
        spells could toss pillar of fire at self--probably too suicidal] */
-    if (!mon->mcan && !mon->mspec_used
+    if (!mon->mcancelled && !mon->mspec_used
         && attacktype_fordmg(mptr, AT_BREA, AD_FIRE)) {
         odummy = zeroobj; /* otyp == STRANGE_OBJECT */
         return muse_unslime(mon, &odummy, (struct trap *) 0, by_you);

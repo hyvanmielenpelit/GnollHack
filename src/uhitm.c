@@ -1354,7 +1354,7 @@ int dieroll;
     }
     if ((mdat == &mons[PM_BLACK_PUDDING] || mdat == &mons[PM_BROWN_PUDDING])
         /* pudding is alive and healthy enough to split */
-        && mon->mhp > 1 && !mon->mcan
+        && mon->mhp > 1 && !mon->mcancelled
         /* iron weapon using melee or polearm hit [3.6.1: metal weapon too;
            also allow either or both weapons to cause split when twoweap] */
         && obj && (obj == uwep || (u.twoweap && obj == uswapwep))
@@ -2110,7 +2110,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
         tmp = 0;
         break;
     case AD_CURS:
-        if (night() && !rn2(10) && !mdef->mcan) {
+        if (night() && !rn2(10) && !mdef->mcancelled) {
             if (pd == &mons[PM_CLAY_GOLEM]) {
                 if (!Blind)
                     pline("Some writing vanishes from %s head!",
@@ -2118,7 +2118,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
                 xkilled(mdef, XKILL_NOMSG);
                 /* Don't return yet; keep hp<1 and tmp=0 for pet msg */
             } else {
-                mdef->mcan = 1;
+                mdef->mcancelled = 1;
                 You("chuckle.");
             }
         }
@@ -3081,7 +3081,7 @@ boolean wep_was_destroyed;
      */
     switch (ptr->mattk[i].adtyp) {
     case AD_FIRE:
-        if (mhit && !mon->mcan && weapon) {
+        if (mhit && !mon->mcancelled && weapon) {
             if (aatyp == AT_KICK) {
                 if (uarmf && !rn2(6))
                     (void) erode_obj(uarmf, xname(uarmf), ERODE_BURN,
@@ -3140,7 +3140,7 @@ boolean wep_was_destroyed;
         }
         break;
     case AD_RUST:
-        if (mhit && !mon->mcan && weapon) {
+        if (mhit && !mon->mcancelled && weapon) {
             if (aatyp == AT_KICK) {
                 if (uarmf)
                     (void) erode_obj(uarmf, xname(uarmf), ERODE_RUST,
@@ -3151,7 +3151,7 @@ boolean wep_was_destroyed;
         }
         break;
     case AD_CORR:
-        if (mhit && !mon->mcan && weapon) {
+        if (mhit && !mon->mcancelled && weapon) {
             if (aatyp == AT_KICK) {
                 if (uarmf)
                     (void) erode_obj(uarmf, xname(uarmf), ERODE_CORRODE,
@@ -3189,7 +3189,7 @@ boolean wep_was_destroyed;
 
     /*  These only affect you if they still live.
      */
-    if (malive && !mon->mcan && rn2(3)) {
+    if (malive && !mon->mcancelled && rn2(3)) {
         switch (ptr->mattk[i].adtyp) {
         case AD_PLYS:
             if (ptr == &mons[PM_FLOATING_EYE]) {
@@ -3317,7 +3317,7 @@ struct attack *mattk;     /* null means we find one internally */
 
     switch (mattk->adtyp) {
     case AD_FIRE:
-        if (!rn2(6) && !mon->mcan
+        if (!rn2(6) && !mon->mcancelled
             /* steam vortex: fire resist applies, fire damage doesn't */
             && mon->data != &mons[PM_STEAM_VORTEX]) {
             (void) erode_obj(obj, NULL, ERODE_BURN, EF_NONE);
@@ -3329,17 +3329,17 @@ struct attack *mattk;     /* null means we find one internally */
         }
         break;
     case AD_RUST:
-        if (!mon->mcan) {
+        if (!mon->mcancelled) {
             (void) erode_obj(obj, (char *) 0, ERODE_RUST, EF_GREASE);
         }
         break;
     case AD_CORR:
-        if (!mon->mcan) {
+        if (!mon->mcancelled) {
             (void) erode_obj(obj, (char *) 0, ERODE_CORRODE, EF_GREASE);
         }
         break;
     case AD_ENCH:
-        if (!mon->mcan) {
+        if (!mon->mcancelled) {
             if (drain_item(obj, TRUE) && carried(obj)
                 && (obj->known || obj->oclass == ARMOR_CLASS)) {
                 pline("%s less effective.", Yobjnam2(obj, "seem"));

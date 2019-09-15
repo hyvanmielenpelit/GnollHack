@@ -786,7 +786,7 @@ boolean adjacentok; /* False: at obj's spot only, True: nearby is allowed */
         mtmp2->mflee = mtmp->mflee;
         mtmp2->mburied = mtmp->mburied;
         mtmp2->mundetected = mtmp->mundetected;
-        mtmp2->mfleetim = mtmp->mfleetim;
+        mtmp2->mflee_timer = mtmp->mflee_timer;
         mtmp2->mlstmv = mtmp->mlstmv;
         mtmp2->m_ap_type = mtmp->m_ap_type;
         /* set these ones explicitly */
@@ -803,8 +803,8 @@ boolean adjacentok; /* False: at obj's spot only, True: nearby is allowed */
         if (!dmgtype(mtmp2->data, AD_SEDU)
             && (!SYSOPT_SEDUCE || !dmgtype(mtmp2->data, AD_SSEX)))
 		{
-            mtmp2->mcan = 0;
-			mtmp2->mcan_timer = 0;
+            mtmp2->mcancelled = 0;
+			mtmp2->mcancelled_timer = 0;
 		}
 		mtmp2->mhalfmagicres = 0;
 		mtmp2->mhalfmagicres_timer = 0;
@@ -3707,8 +3707,8 @@ int duration;
                 rehumanize();
         }
     } else {
-        mdef->mcan = 1;
-		mdef->mcan_timer = duration;
+        mdef->mcancelled = 1;
+		mdef->mcancelled_timer = duration;
 
 		/* break charm */
 		if (mdef->mcharmed)
@@ -3724,7 +3724,7 @@ int duration;
             seemimic(mdef);
         /* [not 'else if'; chameleon might have been hiding as a mimic] */
         if (mdef->cham >= LOW_PM) {
-            /* note: newcham() uncancels shapechangers (resets m->mcan
+            /* note: newcham() uncancels shapechangers (resets m->mcancelled
                to 0), but only for shapechangers whose m->cham is already
                NON_PM and we just verified that it's LOW_PM or higher */
             newcham(mdef, &mons[mdef->cham], FALSE, FALSE);

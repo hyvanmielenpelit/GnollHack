@@ -242,8 +242,8 @@ boolean devour;
         mtmp->mhpmax += edog->mhpmax_penalty;
         edog->mhpmax_penalty = 0;
     }
-    if (mtmp->mflee && mtmp->mfleetim > 1)
-        mtmp->mfleetim /= 2;
+    if (mtmp->mflee && mtmp->mflee_timer > 1)
+        mtmp->mflee_timer /= 2;
     if (mtmp->mtame < 20)
         mtmp->mtame++;
     if (x != mtmp->mx || y != mtmp->my) { /* moved & ate on same turn */

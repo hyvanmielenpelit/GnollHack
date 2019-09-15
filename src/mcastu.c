@@ -237,7 +237,7 @@ boolean foundyou;
     }
 
     /* monster unable to cast spells? */
-    if (mtmp->mcan || mtmp->mspec_used || !ml) {
+    if (mtmp->mcancelled || mtmp->mspec_used || !ml) {
         cursetxt(mtmp, is_undirected_spell(mattk->adtyp, spellnum));
         return (0);
     }
@@ -878,7 +878,7 @@ register struct attack *mattk;
     if (mattk->adtyp > AD_SPC2)
         return (0);
 
-    if (mtmp->mcan) {
+    if (mtmp->mcancelled) {
         cursetxt(mtmp, FALSE);
         return (0);
     }

@@ -359,38 +359,38 @@ BOW("heavy crossbow", None,					1, 1, 10, 200, 150, 1, 8, 0, 1, 8, 0, 0, 0, 0, 0
          * Some creatures are vulnerable to SILVER.
          */
 #define ARMOR(name,desc,kn,mgc,blk,power,power2,power3,prob,delay,wt,  \
-              cost,ac,can,manabon,hpbon,bonusattrs,abon,sub,metal,c,flags,powconfermask)                   \
+              cost,ac,mgcattkprot,manabon,hpbon,bonusattrs,abon,sub,metal,c,flags,powconfermask)                   \
     OBJECT(OBJ(name, desc), None,                                        \
            BITS(kn, 0, 1, 0, mgc, 1, 0, 0, blk, 0, 0, sub, metal),  \
            power, power2, power3, ARMOR_CLASS, prob, delay, wt,                     \
-           cost, 0, 0, 0, 0, 0, 0, 10 - ac, can, manabon, hpbon, bonusattrs, abon, wt, c, powconfermask, 0, 0, 0, flags)
-#define HELM(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c,flags,powconfermask)  \
+           cost, 0, 0, 0, 0, 0, 0, 10 - ac, mgcattkprot, manabon, hpbon, bonusattrs, abon, wt, c, powconfermask, 0, 0, 0, flags)
+#define HELM(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgcattkprot,manabon,hpbon,bonusattrs,abon,metal,c,flags,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_HELM, metal, c, flags, powconfermask)
-#define CLOAK(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c,flags,powconfermask)  \
+          cost, ac, mgcattkprot, manabon, hpbon, bonusattrs, abon, ARM_HELM, metal, c, flags, powconfermask)
+#define CLOAK(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgcattkprot,manabon,hpbon,bonusattrs,abon,metal,c,flags,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_CLOAK, metal, c, flags, powconfermask)
-#define SHIELD(name,desc,kn,mgc,blk,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c,flags,powconfermask) \
+          cost, ac, mgcattkprot, manabon, hpbon, bonusattrs, abon, ARM_CLOAK, metal, c, flags, powconfermask)
+#define SHIELD(name,desc,kn,mgc,blk,power,power2,power3,prob,delay,wt,cost,ac,mgcattkprot,manabon,hpbon,bonusattrs,abon,metal,c,flags,powconfermask) \
     ARMOR(name, desc, kn, mgc, blk, power, power2, power3, prob, delay, wt, \
-          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_SHIELD, metal, c, flags, powconfermask)
-#define GLOVES(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c,flags,powconfermask)  \
+          cost, ac, mgcattkprot, manabon, hpbon, bonusattrs, abon, ARM_SHIELD, metal, c, flags, powconfermask)
+#define GLOVES(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgcattkprot,manabon,hpbon,bonusattrs,abon,metal,c,flags,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_GLOVES, metal, c, flags, powconfermask)
-#define BOOTS(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c,flags,powconfermask)  \
+          cost, ac, mgcattkprot, manabon, hpbon, bonusattrs, abon, ARM_GLOVES, metal, c, flags, powconfermask)
+#define BOOTS(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgcattkprot,manabon,hpbon,bonusattrs,abon,metal,c,flags,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_BOOTS, metal, c, flags, powconfermask)
-#define SHIRT(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c,flags,powconfermask)  \
+          cost, ac, mgcattkprot, manabon, hpbon, bonusattrs, abon, ARM_BOOTS, metal, c, flags, powconfermask)
+#define SHIRT(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgcattkprot,manabon,hpbon,bonusattrs,abon,metal,c,flags,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_SHIRT, metal, c, flags, powconfermask)
-#define ROBE(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c,flags,powconfermask)  \
+          cost, ac, mgcattkprot, manabon, hpbon, bonusattrs, abon, ARM_SHIRT, metal, c, flags, powconfermask)
+#define ROBE(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgcattkprot,manabon,hpbon,bonusattrs,abon,metal,c,flags,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_ROBE, metal, c, flags, powconfermask)
-#define BRACERS(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c,flags,powconfermask)  \
+          cost, ac, mgcattkprot, manabon, hpbon, bonusattrs, abon, ARM_ROBE, metal, c, flags, powconfermask)
+#define BRACERS(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgcattkprot,manabon,hpbon,bonusattrs,abon,metal,c,flags,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_BRACERS, metal, c, flags, powconfermask)
-#define BELT(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,can,manabon,hpbon,bonusattrs,abon,metal,c,flags,powconfermask)  \
+          cost, ac, mgcattkprot, manabon, hpbon, bonusattrs, abon, ARM_BRACERS, metal, c, flags, powconfermask)
+#define BELT(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgcattkprot,manabon,hpbon,bonusattrs,abon,metal,c,flags,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, can, manabon, hpbon, bonusattrs, abon, ARM_BELT, metal, c, flags, powconfermask)
+          cost, ac, mgcattkprot, manabon, hpbon, bonusattrs, abon, ARM_BELT, metal, c, flags, powconfermask)
 
 /* helmets */
 HELM("elven leather helm", "leather hat",
@@ -1116,13 +1116,11 @@ SCROLL("blank paper", "unlabeled",  0,  28,  60, O1_NONE, 0),
    by a sheet of parchment, making this become less of an exception.  Also,
    changing the internal composition from paper to leather makes eating a
    parchment or vellum spellbook break vegetarian conduct, as it should.) */
-#define PAPER LEATHER /* override enum for use in SPELL() expansion */
 
 SPELL("dig",             "parchment", None,
       P_TRANSMUTATION_SPELL,	10,  4,			 4, 3, 10, A_INT, 10, 0, 1, RAY, RAY_DIGGING, 0, 0, 0, 0, 0, 0, HI_LEATHER, O1_NONE),
 SPELL("magic missile",   "vellum", None,
       P_ARCANE_SPELL,			10,  2,			 0, 0,  7, A_INT, 10, 0, 1, RAY, RAY_MAGIC_MISSILE, 3, 4, 0, 0, 0, 0, HI_LEATHER, O1_NONE),
-#undef PAPER /* revert to normal material */
 SPELL("fire bolt",        "light red", None,
       P_ARCANE_SPELL,			10,  4,			 0, 3, 20, A_INT, 10, 0, 1, RAY, RAY_FIRE, 3, 6, 0, 0, 0, 0, CLR_RED, O1_FIRE_RESISTANT),
 SPELL("fireball",         "ragged", None,

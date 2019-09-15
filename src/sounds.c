@@ -971,7 +971,7 @@ register struct monst *mtmp;
 
     if (pline_msg) {
         pline("%s %s", Monnam(mtmp), pline_msg);
-    } else if (mtmp->mcan && verbl_msg_mcan) {
+    } else if (mtmp->mcancelled && verbl_msg_mcan) {
         verbalize1(verbl_msg_mcan);
     } else if (verbl_msg) {
         /* more 3.6 tribute */

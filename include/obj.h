@@ -233,32 +233,32 @@ struct obj {
 /* Armor */
 #define is_shield(otmp)          \
     (otmp->oclass == ARMOR_CLASS \
-     && objects[otmp->otyp].oc_armcat == ARM_SHIELD)
+     && objects[otmp->otyp].oc_armor_category == ARM_SHIELD)
 #define is_helmet(otmp) \
-    (otmp->oclass == ARMOR_CLASS && objects[otmp->otyp].oc_armcat == ARM_HELM)
+    (otmp->oclass == ARMOR_CLASS && objects[otmp->otyp].oc_armor_category == ARM_HELM)
 #define is_boots(otmp)           \
     (otmp->oclass == ARMOR_CLASS \
-     && objects[otmp->otyp].oc_armcat == ARM_BOOTS)
+     && objects[otmp->otyp].oc_armor_category == ARM_BOOTS)
 #define is_gloves(otmp)          \
     (otmp->oclass == ARMOR_CLASS \
-     && objects[otmp->otyp].oc_armcat == ARM_GLOVES)
+     && objects[otmp->otyp].oc_armor_category == ARM_GLOVES)
 #define is_cloak(otmp)           \
     (otmp->oclass == ARMOR_CLASS \
-     && objects[otmp->otyp].oc_armcat == ARM_CLOAK)
+     && objects[otmp->otyp].oc_armor_category == ARM_CLOAK)
 #define is_shirt(otmp)           \
     (otmp->oclass == ARMOR_CLASS \
-     && objects[otmp->otyp].oc_armcat == ARM_SHIRT)
+     && objects[otmp->otyp].oc_armor_category == ARM_SHIRT)
 #define is_robe(otmp)           \
     (otmp->oclass == ARMOR_CLASS \
-     && objects[otmp->otyp].oc_armcat == ARM_ROBE)
+     && objects[otmp->otyp].oc_armor_category == ARM_ROBE)
 #define is_bracers(otmp)           \
     (otmp->oclass == ARMOR_CLASS \
-     && objects[otmp->otyp].oc_armcat == ARM_BRACERS)
+     && objects[otmp->otyp].oc_armor_category == ARM_BRACERS)
 #define is_belt(otmp)           \
     (otmp->oclass == ARMOR_CLASS \
-     && objects[otmp->otyp].oc_armcat == ARM_BELT)
+     && objects[otmp->otyp].oc_armor_category == ARM_BELT)
 #define is_suit(otmp) \
-    (otmp->oclass == ARMOR_CLASS && objects[otmp->otyp].oc_armcat == ARM_SUIT)
+    (otmp->oclass == ARMOR_CLASS && objects[otmp->otyp].oc_armor_category == ARM_SUIT)
 #define is_elven_armor(otmp)                                              \
     ((otmp)->otyp == ELVEN_LEATHER_HELM                                   \
      || (otmp)->otyp == ELVEN_MITHRIL_COAT || (otmp)->otyp == ELVEN_CLOAK \

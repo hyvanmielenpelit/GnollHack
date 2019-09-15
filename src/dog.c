@@ -506,11 +506,11 @@ long nmv; /* number of moves */
         else
             mtmp->mfrozen -= imv;
     }
-    if (mtmp->mfleetim) {
-        if (imv >= (int) mtmp->mfleetim)
-            mtmp->mfleetim = 1;
+    if (mtmp->mflee_timer) {
+        if (imv >= (int) mtmp->mflee_timer)
+            mtmp->mflee_timer = 1;
         else
-            mtmp->mfleetim -= imv;
+            mtmp->mflee_timer -= imv;
     }
 
     /* might recover from temporary trouble */
@@ -890,7 +890,7 @@ register struct obj *obj;
 
     /* If we cannot tame it, at least it's no longer afraid. */
     mtmp->mflee = 0;
-    mtmp->mfleetim = 0;
+    mtmp->mflee_timer = 0;
 
     /* make grabber let go now, whether it becomes tame or not */
     if (mtmp == u.ustuck) {

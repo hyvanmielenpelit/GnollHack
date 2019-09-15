@@ -1802,8 +1802,8 @@ struct mkroom *croom;
             mtmp->female = 1;
 		if (m->cancelled)
 		{
-			mtmp->mcan = 1;
-			mtmp->mcan_timer = (m->cancelled % 127);
+			mtmp->mcancelled = 1;
+			mtmp->mcancelled_timer = (m->cancelled % 127);
 		}
 		if (m->revived)
             mtmp->mrevived = 1;
@@ -1826,7 +1826,7 @@ struct mkroom *croom;
         }
         if (m->fleeing) {
             mtmp->mflee = 1;
-            mtmp->mfleetim = (m->fleeing % 127);
+            mtmp->mflee_timer = (m->fleeing % 127);
         }
 
         if (m->has_invent) {

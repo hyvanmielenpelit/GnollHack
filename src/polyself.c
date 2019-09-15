@@ -1564,7 +1564,7 @@ dogaze()
                 if (DEADMONSTER(mtmp))
                     continue;
 
-                if (mtmp->data == &mons[PM_FLOATING_EYE] && !mtmp->mcan) {
+                if (mtmp->data == &mons[PM_FLOATING_EYE] && !mtmp->mcancelled) {
                     if (!Free_action) {
                         You("are frozen by %s gaze!",
                             s_suffix(mon_nam(mtmp)));
@@ -1584,7 +1584,7 @@ dogaze()
                  * works on the monster's turn, but for it to *not* have an
                  * effect would be too weird.
                  */
-                if (mtmp->data == &mons[PM_MEDUSA] && !mtmp->mcan) {
+                if (mtmp->data == &mons[PM_MEDUSA] && !mtmp->mcancelled) {
                     pline("Gazing at the awake %s is not a very good idea.",
                           l_monnam(mtmp));
                     /* as if gazing at a sleeping anything is fruitful... */

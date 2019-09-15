@@ -1058,10 +1058,10 @@ mcalcdistress()
             mtmp->mcansee = 1;
         if (mtmp->mfrozen && !--mtmp->mfrozen)
             mtmp->mcanmove = 1;
-        if (mtmp->mfleetim && !--mtmp->mfleetim)
+        if (mtmp->mflee_timer && !--mtmp->mflee_timer)
             mtmp->mflee = 0;
-		if (mtmp->mcan_timer && !--mtmp->mcan_timer)
-			mtmp->mcan = 0;
+		if (mtmp->mcancelled_timer && !--mtmp->mcancelled_timer)
+			mtmp->mcancelled = 0;
 		if (mtmp->mhalfmagicres_timer && !--mtmp->mhalfmagicres_timer)
 			mtmp->mhalfmagicres = 0;
 		if (mtmp->mnomagicres_timer && !--mtmp->mnomagicres_timer)
@@ -3387,7 +3387,7 @@ restartcham()
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
             continue;
-        if (!mtmp->mcan)
+        if (!mtmp->mcancelled)
             mtmp->cham = pm_to_cham(monsndx(mtmp->data));
         if (mtmp->data->mlet == S_MIMIC && mtmp->msleeping
             && cansee(mtmp->mx, mtmp->my)) {
@@ -3426,7 +3426,7 @@ register struct monst *mtmp;
 {
     struct trap *t;
 
-    if (mtmp->mcan || M_AP_TYPE(mtmp) || cansee(mtmp->mx, mtmp->my)
+    if (mtmp->mcancelled || M_AP_TYPE(mtmp) || cansee(mtmp->mx, mtmp->my)
         || rn2(3) || mtmp == u.ustuck
         /* can't hide while trapped except in pits */
         || (mtmp->mtrapped && (t = t_at(mtmp->mx, mtmp->my)) != 0
@@ -3909,10 +3909,10 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
             return 0;
         /* cancelled shapechangers become uncancelled prior
            to being given a new shape */
-        if (mtmp->mcan && !Protection_from_shape_changers) {
+        if (mtmp->mcancelled && !Protection_from_shape_changers) {
             mtmp->cham = pm_to_cham(monsndx(mtmp->data));
             if (mtmp->cham != NON_PM)
-                mtmp->mcan = 0;
+                mtmp->mcancelled = 0;
         }
     }
 

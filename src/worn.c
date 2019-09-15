@@ -315,7 +315,7 @@ struct obj *obj;
         res = W_RINGL | W_RINGR; /* W_RING, BOTH_SIDES */
         break;
     case ARMOR_CLASS:
-        switch (objects[otyp].oc_armcat) {
+        switch (objects[otyp].oc_armor_category) {
         case ARM_SUIT:
             res = W_ARM;
             break; /* WORN_ARMOR */

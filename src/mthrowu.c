@@ -975,7 +975,7 @@ struct attack *mattk;
 {
     struct obj *otmp;
 
-    if (mtmp->mcan) {
+    if (mtmp->mcancelled) {
         if (!Deaf)
             pline("A dry rattle comes from %s throat.",
                   s_suffix(mon_nam(mtmp)));
@@ -1029,7 +1029,7 @@ struct attack  *mattk;
     int typ = (mattk->adtyp == AD_RBRE) ? rnd(AD_ACID) : mattk->adtyp ; // Does not include death ray
 
     if (m_lined_up(mtarg, mtmp)) {
-        if (mtmp->mcan) {
+        if (mtmp->mcancelled) {
             if (!Deaf) {
                 if (canseemon(mtmp))
                     pline("%s coughs.", Monnam(mtmp));
@@ -1187,7 +1187,7 @@ struct attack *mattk;
 {
     struct obj *otmp;
 
-    if (mtmp->mcan) {
+    if (mtmp->mcancelled) {
         if (!Deaf)
             pline("A dry rattle comes from %s throat.",
                   s_suffix(mon_nam(mtmp)));
@@ -1236,7 +1236,7 @@ struct attack *mattk;
     int typ = (mattk->adtyp == AD_RBRE) ? rnd(AD_ACID) : mattk->adtyp; //NOTE: Does not include death ray
 
     if (lined_up(mtmp)) {
-        if (mtmp->mcan) {
+        if (mtmp->mcancelled) {
             if (!Deaf) {
                 if (canseemon(mtmp))
                     pline("%s coughs.", Monnam(mtmp));
@@ -1408,7 +1408,7 @@ int whodidit;   /* 1==hero, 0=other, -1==just check whether it'll pass thru */
             break;
         }
         case ARMOR_CLASS:
-            hits = (objects[obj_type].oc_armcat != ARM_GLOVES);
+            hits = (objects[obj_type].oc_armor_category != ARM_GLOVES);
             break;
         case TOOL_CLASS:
             hits = (obj_type != SKELETON_KEY && obj_type != LOCK_PICK

@@ -544,7 +544,7 @@ struct monst *summoner;
     coord bypos;
     int count, census, tmp, makeindex, s_cls, m_cls;
 
-	if (!summoner || summoner->mcan || summoner->mnosummon)
+	if (!summoner || summoner->mcancelled || summoner->mnosummon)
 		return 0;
 
 #define MAXNASTIES 10 /* more than this can be created */

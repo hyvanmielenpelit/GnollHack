@@ -107,8 +107,8 @@ struct obj *obj;
 			armcat[ARM_SUIT]   = 10; /* [0] */
             armcat[10]          = 11; /* sanity protection */
         }
-        k = objects[otyp].oc_armcat;
-        /* oc_armcat overloads oc_subtyp which is an 'schar' so guard
+        k = objects[otyp].oc_armor_category;
+        /* oc_armor_category overloads oc_subtyp which is an 'schar' so guard
            against somebody assigning something unexpected to it */
         if (k < 0 || k >= 11)
             k = 11;

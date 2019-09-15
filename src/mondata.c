@@ -205,7 +205,7 @@ struct obj *obj; /* aatyp == AT_WEAP, AT_SPIT */
     case AT_MAGC:
     case AT_BREA: /* assumed to be lightning */
         /* light-based attacks may be cancelled or resisted */
-        if (magr && magr->mcan)
+        if (magr && magr->mcancelled)
             return FALSE;
         return !resists_blnd(mdef);
 
@@ -248,7 +248,7 @@ struct obj *obj; /* aatyp == AT_WEAP, AT_SPIT */
     case AT_TUCH:
     case AT_STNG:
         /* some physical, blind-inducing attacks can be cancelled */
-        if (magr && magr->mcan)
+        if (magr && magr->mcancelled)
             return FALSE;
         break;
 

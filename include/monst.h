@@ -85,8 +85,8 @@ struct monst {
     Bitfield(minvis, 1);      /* currently invisible */
     Bitfield(invis_blkd, 1);  /* invisibility blocked */
     Bitfield(perminvis, 1);   /* intrinsic minvis value */
-    Bitfield(mcan, 1);        /* has been cancelled */
-	int mcan_timer;				  /* cancellation timeout */
+    Bitfield(mcancelled, 1);        /* has been cancelled */
+	int mcancelled_timer;				  /* cancellation timeout */
 	Bitfield(mhalfmagicres, 1);	/* has half normal magic resistance */
 	int mhalfmagicres_timer;	/* 50% MR timeout */
 	Bitfield(mnomagicres, 1);	/* has no magic resistance */
@@ -112,7 +112,7 @@ struct monst {
     Bitfield(mavenge, 1);   /* did something to deserve retaliation */
     Bitfield(mflee, 1);     /* fleeing */
 
-    Bitfield(mfleetim, 7);  /* timeout for mflee */
+    Bitfield(mflee_timer, 7);  /* timeout for mflee */
     Bitfield(msleeping, 1); /* asleep until woken */
 
     Bitfield(mblinded, 7);  /* cansee 0, temp.blinded n, blind 0 */

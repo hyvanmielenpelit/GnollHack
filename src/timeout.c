@@ -545,8 +545,8 @@ nh_timeout()
 			reduce_item_cooldown(mon->minvent);
 
 	//Reduce youmonst timers
-	if (youmonst.mcan_timer && !--youmonst.mcan_timer)
-		youmonst.mcan = 0;
+	if (youmonst.mcancelled_timer && !--youmonst.mcancelled_timer)
+		youmonst.mcancelled = 0;
 	if (youmonst.mhalfmagicres_timer && !--youmonst.mhalfmagicres_timer)
 		youmonst.mhalfmagicres = 0;
 	if (youmonst.mnomagicres_timer && !--youmonst.mnomagicres_timer)
