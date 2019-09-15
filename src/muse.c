@@ -2154,7 +2154,7 @@ const char *str;
     } else if (is_reflecting(mon->data)) {
         /* Silver dragons only reflect when mature; babies do, too XnotX */
         if (str)
-            pline(str, s_suffix(mon_nam(mon)), "scales");
+            pline(str, s_suffix(mon_nam(mon)), mon->data->mlet == S_DRAGON ? "scales" : "body");
         return TRUE;
     }
     return FALSE;

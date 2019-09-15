@@ -407,12 +407,27 @@ register struct monst *mtmp;
     case S_ANGEL:
         if (humanoid(ptr)) {
             /* create minion stuff; can't use mongets */
-            otmp = mksobj(LONG_SWORD, FALSE, FALSE, FALSE);
+			int weaptype = LONG_SWORD;
+			int artifacttype = ART_SUNSWORD;
+			switch (rn2(2))
+			{
+			case 0:
+				weaptype = LONG_SWORD;
+				artifacttype = ART_SUNSWORD;
+				break;
+			case 1:
+				weaptype = SILVER_LONG_SWORD;
+				artifacttype = ART_DEMONBANE;
+				break;
+			default:
+				break;
+			}
+            otmp = mksobj(weaptype, FALSE, FALSE, FALSE);
 
             /* maybe make it special */
             if (!rn2(20) || is_lord(ptr))
                 otmp = oname(otmp,
-                             artiname(rn2(2) ? ART_DEMONBANE : ART_SUNSWORD));
+                             artiname(artifacttype));
             bless(otmp);
             otmp->oerodeproof = TRUE;
             spe2 = rn2(4);
@@ -575,6 +590,48 @@ register struct monst *mtmp;
             (void) mongets(mtmp,
                            (rn2(7) ? SPEAR : rn2(3) ? TRIDENT : STILETTO));
         break;
+	case S_GOLEM:
+		if (mm == PM_SILVER_GOLEM)
+		{
+			for(int i = 0; i < 4; i++)
+			{
+				int weaptype = SILVER_SABER;
+				int artifacttype = ART_GRAYSWANDIR;
+
+				switch (rn2(6))
+				{
+				case 0:
+				case 1:
+				case 2:
+					weaptype = SILVER_SABER;
+					artifacttype = ART_GRAYSWANDIR;
+					break;
+				case 3:
+					weaptype = SILVER_LONG_SWORD;
+					artifacttype = ART_DEMONBANE;
+					break;
+				case 4:
+					weaptype = SILVER_DAGGER;
+					artifacttype = 0;
+					break;
+				case 5:
+					weaptype = SILVER_MACE;
+					artifacttype = ART_MACE_OF_DISRUPTION;
+					break;
+				default:
+					break;
+				}
+				otmp = mksobj(weaptype, FALSE, FALSE, FALSE);
+
+				/* maybe make it special */
+				if (artifacttype > 0 && (!rn2(40) || is_lord(ptr)))
+					otmp = oname(otmp,
+						artiname(artifacttype));
+
+				(void)mpickobj(mtmp, otmp);
+			}
+		}
+		break;
 	case S_DEMON:
         switch (mm) {
         case PM_BALROG:
@@ -2293,7 +2350,9 @@ int type;
 		return 70;
 	case PM_IRON_GOLEM:
         return 80;
-    default:
+	case PM_SILVER_GOLEM:
+		return 160;
+	default:
         return 0;
     }
 }

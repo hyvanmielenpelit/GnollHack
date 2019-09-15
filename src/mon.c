@@ -520,6 +520,12 @@ unsigned corpseflags;
 			obj = mksobj_at((LAST_GEM + rnd(9)), x, y, TRUE, FALSE);
 		free_mname(mtmp);
 		break;
+	case PM_SILVER_GOLEM:
+		obj = mksobj_at(SILVER_SLING_BULLET, x, y, FALSE, FALSE);
+		obj->quan = (long)(rn2(20) + 20);
+		obj->owt = weight(obj);
+		free_mname(mtmp);
+		break;
 	case PM_CLAY_GOLEM:
 		obj = mksobj_at(CLAY_PEBBLE, x, y, FALSE, FALSE);
 		obj->quan = (long)(rn2(20) + 50);
