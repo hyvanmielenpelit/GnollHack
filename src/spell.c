@@ -5,6 +5,7 @@
 #include "hack.h"
 
 /* spellmenu arguments; 0 thru n-1 used as spl_book[] index when swapping */
+#define SPELLMENU_DETAILS (-4)
 #define SPELLMENU_PREPARE (-3)
 #define SPELLMENU_CAST (-2)
 #define SPELLMENU_VIEW (-1)
@@ -736,9 +737,9 @@ rejectcasting()
  * parameter.  Otherwise return FALSE.
  */
 STATIC_OVL boolean
-getspell(spell_no, mixing)
+getspell(spell_no, spell_list_type)
 int *spell_no;
-boolean mixing;
+int spell_list_type;
 {
     int nspells, idx;
     char ilet, lets[BUFSZ], qbuf[QBUFSZ];
@@ -767,7 +768,7 @@ boolean mixing;
             Sprintf(lets, "a-zA-%c", 'A' + nspells - 27);
 
         for (;;) {
-            Sprintf(qbuf, "%s which spell? [%s *?]", (mixing ? "Prepare" : "Cast"), lets);
+            Sprintf(qbuf, "%s which spell? [%s *?]", (spell_list_type == 2 ? "Provide information on" : spell_list_type == 1 ? "Prepare" : "Cast"), lets);
             ilet = yn_function(qbuf, (char *) 0, '\0');
             if (ilet == '*' || ilet == '?')
                 break; /* use menu mode */
@@ -783,7 +784,8 @@ boolean mixing;
             return TRUE;
         }
     }
-    return dospellmenu((mixing ? "Choose which spell to prepare" : "Choose which spell to cast"), (mixing ? SPELLMENU_PREPARE : SPELLMENU_CAST),
+    return dospellmenu((spell_list_type == 2 ? "Choose a spell to be described in more detail" : spell_list_type == 1 ? "Choose which spell to prepare" : "Choose which spell to cast"),
+		(spell_list_type == 2 ? SPELLMENU_DETAILS : spell_list_type == 1 ? SPELLMENU_PREPARE : SPELLMENU_CAST),
                        spell_no);
 }
 
@@ -796,6 +798,17 @@ docast()
     if (getspell(&spell_no, FALSE))
         return spelleffects(spell_no, FALSE);
     return 0;
+}
+
+/* the M('z') command -- spell info / descriptions */
+int
+dospelldescriptions()
+{
+	int spell_no;
+
+	if (getspell(&spell_no, 2))
+		return spelldescription(spell_no);
+	return 0;
 }
 
 STATIC_OVL const char *
@@ -971,6 +984,46 @@ int spell;
 	return energy;
 }
 
+
+int
+spelldescription(spell)
+int spell;
+{
+
+	if (spellknow(spell) <= 0)
+	{
+		You("cannot recall this spell anymore.");
+		return 0;
+	}
+
+
+	int i, subs = 0;
+	const char* gang = (char*)0;
+	const char** textp;
+	winid datawin = WIN_ERR;
+
+	const char* bufarray[] = { "Line 1","Line 2","Line 3","Line 4","Line 5", (char *)0 };
+	textp = bufarray;
+
+	datawin = create_nhwindow(NHW_MENU);
+	for (i = 0; textp[i]; i++) {
+		char buf[BUFSZ];
+		const char* txt;
+
+		if (strstri(textp[i], "%s") != 0) {
+			Sprintf(buf, textp[i]);
+			txt = buf;
+		}
+		else
+			txt = textp[i];
+		putstr(datawin, 0, txt);
+	}
+	display_nhwindow(datawin, FALSE);
+	destroy_nhwindow(datawin), datawin = WIN_ERR;
+
+	return 0;
+}
+
 int
 spelleffects(spell, atme)
 int spell;
@@ -981,7 +1034,7 @@ boolean atme;
     boolean confused = (Confusion != 0);
     boolean physical_damage = FALSE;
     struct obj *pseudo;
-    coord cc;
+    //coord cc;
 
     /*
      * Reject attempting to cast while stunned or with no free hands.
@@ -2134,12 +2187,13 @@ int *spell_no;
 {
 	winid tmpwin;
 	int i, n, how, splnum;
-	char buf[BUFSZ], availablebuf[BUFSZ], matcompbuf[BUFSZ], levelbuf[10], statbuf[10], fmt[BUFSZ];
+	char buf[BUFSZ], availablebuf[BUFSZ], matcompbuf[BUFSZ], descbuf[BUFSZ], levelbuf[10], statbuf[10], fmt[BUFSZ];
 	char colorbufs[BUFSZ][MAXSPELL];
 	int colorbufcnt = 0;
     //const char *fmt;
     menu_item *selected;
     anything any;
+	const char* nodesc = "(No short description)";
 
 	for (int j = 0; j < MAXSPELL; j++)
 		strcpy(colorbufs[j], "");
@@ -2155,7 +2209,102 @@ int *spell_no;
      * (2) that selection letters are pre-pended to the
      * given string and are of the form "a - ".
      */
-	if (splaction == SPELLMENU_PREPARE)
+	if (splaction == SPELLMENU_DETAILS)
+	{
+		int maxlen = 15;
+
+		for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
+		{
+			int desclen = 0;
+			splnum = !spl_orderindx ? i : spl_orderindx[i];
+			if (objects[spellid(splnum)].oc_short_description)
+				desclen = strlen(objects[spellid(splnum)].oc_short_description);
+			else
+				desclen = strlen(nodesc);
+			if (desclen > maxlen)
+				maxlen = desclen;
+		}
+
+		int extraspaces = maxlen - 15;
+		if (extraspaces > 42)
+			extraspaces = 42;
+
+		char spacebuf[BUFSZ] = "";
+
+		for (i = 0; i < extraspaces; i++)
+			Strcat(spacebuf, " ");
+
+		if (!iflags.menu_tab_sep) {
+			Sprintf(buf, "%-24s  Description    %s", "    Name", spacebuf);
+		}
+		else {
+			Sprintf(buf, "Name\tDescription");
+		}
+
+		add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, buf,
+			MENU_UNSELECTED);
+		for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++) {
+			splnum = !spl_orderindx ? i : spl_orderindx[i];
+			char shortenedname[BUFSZ] = "";
+			char fullname[BUFSZ] = "";
+			char categorybuf[BUFSZ] = "";
+
+			if (!iflags.menu_tab_sep) {
+				strcpy(fmt, "%-20s  %s");
+			}
+			else {
+				strcpy(fmt, "%s\t%s");
+			}
+
+			Sprintf(fullname, "%s", spellname(splnum));
+
+			//Spell name
+			if (strlen(fullname) > (size_t)(20))
+				strncpy(shortenedname, fullname, (size_t)(20));
+			else
+				strcpy(shortenedname, fullname);
+
+			Sprintf(fullname, "%s", spellname(splnum));
+
+			//Spell name
+			if (strlen(fullname) > (size_t)(20))
+				strncpy(shortenedname, fullname, (size_t)(20));
+			else
+				strcpy(shortenedname, fullname);
+
+
+			//Shorten description, if needed
+			char shorteneddesc[BUFSZ] = "";
+			char fulldesc[BUFSZ];
+
+			if(objects[spellid(splnum)].oc_short_description)
+			{
+				strcpy(fulldesc, objects[spellid(splnum)].oc_short_description);
+
+				if (strlen(fulldesc) > 57)
+					strncpy(shorteneddesc, fulldesc, 57);
+				else
+					strcpy(shorteneddesc, fulldesc);
+
+				strcpy(descbuf, shorteneddesc);
+			}
+			else
+				strcpy(descbuf, nodesc);
+
+
+			//Finally print
+			if (spellknow(splnum) <= 0)
+				Sprintf(buf, fmt, shortenedname, "(You cannot recall this spell)");
+			else
+				Sprintf(buf, fmt, shortenedname, descbuf);
+
+			any.a_int = splnum + 1; /* must be non-zero */
+			add_menu(tmpwin, NO_GLYPH, &any, spellet(splnum), 0, ATR_NONE, buf,
+				(splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
+
+		}
+	}
+	else if (splaction == SPELLMENU_PREPARE)
 	{
 		int maxlen = 23;
 
@@ -2178,10 +2327,10 @@ int *spell_no;
 			Strcat(spacebuf, " ");
 
 		if (!iflags.menu_tab_sep) {
-			Sprintf(buf, "%-20s     Casts  Adds  Material components    %s", "    Name", spacebuf);
+			Sprintf(buf, "%-24s Casts  Adds  Material components    %s", "    Name", spacebuf);
 		}
 		else {
-			Sprintf(buf, "Name\tLeCasts\tAdds\tMaterial components");
+			Sprintf(buf, "Name\tCasts\tAdds\tMaterial components");
 		}
 		add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, buf,
 			MENU_UNSELECTED);
