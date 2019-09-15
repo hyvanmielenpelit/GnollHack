@@ -237,7 +237,7 @@ boolean unchain_ball; /* whether to unpunish or just unwield */
     } else if (obj->owornmask & W_AMUL) {
         Amulet_off();
     } else if (obj->owornmask & W_MISCITEMS) {
-        Decoration_off(obj);
+        MiscellaneousItem_off(obj);
     } else if (obj->owornmask & W_RING) {
         Ring_gone(obj);
     } else if (obj->owornmask & W_TOOL) {

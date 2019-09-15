@@ -36,7 +36,7 @@ STATIC_PTR int NDECL(Shirt_on);
 STATIC_PTR int NDECL(Robe_on);
 STATIC_PTR int NDECL(Bracers_on);
 STATIC_PTR int NDECL(Belt_on);
-STATIC_PTR int FDECL(Decoration_on, (struct obj*));
+STATIC_PTR int FDECL(MiscellaneousItem_on, (struct obj*));
 STATIC_DCL void NDECL(Amulet_on);
 STATIC_DCL void FDECL(Ring_off_or_gone, (struct obj *, BOOLEAN_P));
 STATIC_PTR int FDECL(select_off, (struct obj *));
@@ -844,7 +844,7 @@ Belt_off(VOID_ARGS)
 }
 
 STATIC_PTR int
-Decoration_on(ud)
+MiscellaneousItem_on(ud)
 struct obj* ud;
 {
 	if (!ud)
@@ -863,7 +863,7 @@ struct obj* ud;
 }
 
 int
-Decoration_off(ud)
+MiscellaneousItem_off(ud)
 struct obj* ud;
 {
 	if (!ud)
@@ -1519,11 +1519,11 @@ struct obj *obj; /* if null, do all worn items; otherwise just obj itself */
     if (!obj ? uamul != 0 : (obj == uamul))
         (void) Amulet_on();
 	if (!obj ? umisc != 0 : (obj == umisc))
-		(void)Decoration_on(umisc);
+		(void)MiscellaneousItem_on(umisc);
 	if (!obj ? umisc2 != 0 : (obj == umisc2))
-		(void)Decoration_on(umisc2);
+		(void)MiscellaneousItem_on(umisc2);
 	if (!obj ? umisc3 != 0 : (obj == umisc3))
-		(void)Decoration_on(umisc3);
+		(void)MiscellaneousItem_on(umisc3);
 
     if (!obj ? uarmu != 0 : (obj == uarmu))
         (void) Shirt_on();
@@ -1874,7 +1874,7 @@ struct obj *obj;
         Amulet_off();
         off_msg(obj);
 	} else if (obj == umisc || obj == umisc2 || obj == umisc3) {
-		Decoration_off(obj);
+		MiscellaneousItem_off(obj);
 		off_msg(obj);
 	} else if (obj == ublindf) {
         Blindf_off(obj); /* does its own off_msg */
@@ -2398,7 +2398,7 @@ struct obj *obj;
 				|| (umisc3 && objects[umisc3->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
 				)
 			{
-				already_wearing(an(dec_type_names[objects[obj->otyp].oc_subtyp]));
+				already_wearing(an(misc_type_names[objects[obj->otyp].oc_subtyp]));
 				return 0;
 			}
 			if (umisc && umisc2 && umisc3) {
@@ -2504,20 +2504,20 @@ struct obj *obj;
 			if(!umisc)
 			{
 				setworn(obj, W_MISC);
-				Decoration_on(umisc);
+				MiscellaneousItem_on(umisc);
 				give_feedback = (umisc != 0);
 			}
 			else if (!umisc2)
 			{
 				setworn(obj, W_MISC2);
-				Decoration_on(umisc2);
+				MiscellaneousItem_on(umisc2);
 				give_feedback = (umisc2 != 0);
 			}
 			else
 			{
 				//Must be available
 				setworn(obj, W_MISC3);
-				Decoration_on(umisc3);
+				MiscellaneousItem_on(umisc3);
 				give_feedback = (umisc3 != 0);
 			}
 		} else if (eyewear) {
@@ -2984,17 +2984,17 @@ do_takeoff()
 	} else if (doff->what == WORN_MISCELLANEOUS) {
 		otmp = umisc;
 		if (!cursed(otmp))
-			(void)Decoration_off(otmp);
+			(void)MiscellaneousItem_off(otmp);
 	}
 	else if (doff->what == WORN_MISCELLANEOUS2) {
 		otmp = umisc2;
 		if (!cursed(otmp))
-			(void)Decoration_off(otmp);
+			(void)MiscellaneousItem_off(otmp);
 	}
 	else if (doff->what == WORN_MISCELLANEOUS3) {
 		otmp = umisc3;
 		if (!cursed(otmp))
-			(void)Decoration_off(otmp);
+			(void)MiscellaneousItem_off(otmp);
 	} else if (doff->what == WORN_GLOVES) {
         otmp = uarmg;
         if (!cursed(otmp))

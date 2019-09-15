@@ -491,7 +491,7 @@ E int NDECL(Shirt_off);
 E int NDECL(Robe_off);
 E int NDECL(Bracers_off);
 E int NDECL(Belt_off);
-E int FDECL(Decoration_off, (struct obj *));
+E int FDECL(MiscellaneousItem_off, (struct obj *));
 E void NDECL(Amulet_off);
 E void FDECL(Ring_on, (struct obj *));
 E void FDECL(Ring_off, (struct obj *));

@@ -61,13 +61,16 @@ enum obj_decoration_types {
 	MISC_EARRINGS = 7,
 	MISC_IOUN_STONE = 8,
 	MISC_BRACELET = 9,
-	MISC_SCARF = 10
+	MISC_BRACERS = 10,		/* alternative implementation of bracers */
+	MISC_BELT = 11,			/* alternative implementation of belts */
+	MISC_LENSES = 12,		/* alternative implementation of eyewear */
+	MISC_SCARF = 13
 };
 
-static const char* dec_type_names[] = {
+static const char* misc_type_names[] = {
 	"", "set of wings", "pair of pants", "skirt", "watch",
 	"nose ring", "headband", "pair of earrings",
-	"ioun stone", "bracelet", "scarf",
+	"ioun stone", "bracelet", "bracers", "belt", "lenses", "scarf",
 };
 
 struct objclass {
