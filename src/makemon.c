@@ -624,7 +624,7 @@ register struct monst *mtmp;
 				otmp = mksobj(weaptype, FALSE, FALSE, FALSE);
 
 				/* maybe make it special */
-				if (artifacttype > 0 && (!rn2(40) || is_lord(ptr)))
+				if (artifacttype > 0 && !rn2(40))
 					otmp = oname(otmp,
 						artiname(artifacttype));
 

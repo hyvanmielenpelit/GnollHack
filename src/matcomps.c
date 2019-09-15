@@ -284,6 +284,16 @@ struct materialcomponentlist matlists[] =
 		} 
 	},
 
+	{ SPE_CREATE_SILVER_GOLEM,
+	"30 silver sling-bullets, spider silk",
+	1,
+		{
+			{SILVER_SLING_BULLET, NOT_APPLICABLE, 30, MATCOMP_NO_FLAGS},
+			{THREAD_OF_SPIDER_SILK, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
+			NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
+		}
+	},
+
 	{ SPE_CREATE_PAPER_GOLEM,
 	"Blank scroll, spider silk, ginseng",
 	1,

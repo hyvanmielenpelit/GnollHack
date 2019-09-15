@@ -2562,6 +2562,7 @@ register struct obj *obj;
 	case SPE_CREATE_GOLD_GOLEM:
 	case SPE_CREATE_GLASS_GOLEM:
 	case SPE_CREATE_GEMSTONE_GOLEM:
+	case SPE_CREATE_SILVER_GOLEM:
 	case SPE_CREATE_CLAY_GOLEM:
 	case SPE_CREATE_STONE_GOLEM:
 	case SPE_CREATE_IRON_GOLEM:
@@ -2577,6 +2578,9 @@ register struct obj *obj;
 			break;
 		case SPE_CREATE_GEMSTONE_GOLEM:
 			monstid = PM_GEMSTONE_GOLEM;
+			break;
+		case SPE_CREATE_SILVER_GOLEM:
+			monstid = PM_SILVER_GOLEM;
 			break;
 		case SPE_CREATE_CLAY_GOLEM:
 			monstid = PM_CLAY_GOLEM;
