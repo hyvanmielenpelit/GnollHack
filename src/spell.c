@@ -354,7 +354,7 @@ learn(VOID_ARGS)
     struct obj *book = context.spbook.book;
 
     /* JDS: lenses give 50% faster reading; 33% smaller read time */
-    if (context.spbook.delay && ublindf && ublindf->otyp == LENSES && rn2(2))
+    if (context.spbook.delay && Enhanced_vision && rn2(2))
         context.spbook.delay++;
     if (Confusion) { /* became confused while learning */
         (void) confused_book(book);
@@ -598,7 +598,7 @@ register struct obj *spellbook;
 					+ u.ulevel
 					+ 4 * max(0, P_SKILL(spell_skilltype(spellbook->otyp)) - 1)
 					- 2 * objects[booktype].oc_spell_level
-					+ ((ublindf && ublindf->otyp == LENSES) ? 2 : 0);
+					+ (Enhanced_vision ? 2 : 0);
 
                 /* only wizards know if a spell is too difficult */
                 if (Role_if(PM_WIZARD) && read_ability < 20 && !confused) {

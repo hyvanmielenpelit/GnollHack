@@ -376,7 +376,7 @@ struct obj {
         "a pair of lenses named the Eyes of the Overworld" is not */    \
      || ((o)->oartifact == ART_EYES_OF_THE_OVERWORLD                    \
          && !undiscovered_artifact(ART_EYES_OF_THE_OVERWORLD)))
-#define pair_of(o) ((o)->otyp == LENSES || is_gloves(o) || is_boots(o))
+#define pair_of(o) ((o)->otyp == LENSES || is_gloves(o) || is_boots(o) || is_bracers(o))
 
 /* 'PRIZE' values override obj->corpsenm so prizes mustn't be object types
    which use that field for monster type (or other overloaded purpose) */

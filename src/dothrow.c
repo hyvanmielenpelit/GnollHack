@@ -2124,10 +2124,12 @@ boolean in_view;
         /*FALLTHRU*/
     case CRYSTAL_PLATE_MAIL:
     case LENSES:
-    case MIRROR:
+	case SUNGLASSES:
+	case MIRROR:
 	case MAGIC_MIRROR:
 	case CRYSTAL_BALL:
-    case EXPENSIVE_CAMERA:
+	case EXPENSIVE_WATCH:
+	case EXPENSIVE_CAMERA:
         to_pieces = " into a thousand pieces";
     /*FALLTHRU*/
     case POT_WATER: /* really, all potions */

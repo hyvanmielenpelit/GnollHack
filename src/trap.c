@@ -3212,7 +3212,7 @@ domagictrap()
         int cnt = rnd(4);
 
         /* blindness effects */
-        if (!resists_blnd(&youmonst)) {
+        if (!resists_blnd(&youmonst) && !Flash_resistance) {
             You("are momentarily blinded by a flash of light!");
             make_blinded((long) rn1(5, 10), FALSE);
             if (!Blind)

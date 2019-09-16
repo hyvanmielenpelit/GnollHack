@@ -4178,7 +4178,7 @@ doapply()
 
     switch (obj->otyp) {
     case BLINDFOLD:
-    case LENSES:
+//    case LENSES:
         if (obj == ublindf) {
             if (!cursed(obj))
                 Blindf_off(obj);

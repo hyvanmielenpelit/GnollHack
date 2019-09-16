@@ -50,7 +50,7 @@ enum obj_armor_types {
 	ARM_BELT = 9
 };
 
-enum obj_decoration_types {
+enum obj_miscellaneous_types {
 	MISC_MULTIPLE_PERMITTED = 0,
 	MISC_WINGS = 1,       
 	MISC_PANTS = 2,
@@ -64,13 +64,14 @@ enum obj_decoration_types {
 	MISC_BRACERS = 10,		/* alternative implementation of bracers */
 	MISC_BELT = 11,			/* alternative implementation of belts */
 	MISC_LENSES = 12,		/* alternative implementation of eyewear */
-	MISC_SCARF = 13
+	MISC_BLINDFOLD = 13,	/* alternative implementation for blindfold */
+	MISC_SCARF = 14
 };
 
 static const char* misc_type_names[] = {
-	"", "set of wings", "pair of pants", "skirt", "watch",
+	"", "set of wings", "pair of pants", "skirt", "wrist watch",
 	"nose ring", "headband", "pair of earrings",
-	"ioun stone", "bracelet", "bracers", "belt", "lenses", "scarf",
+	"ioun stone", "bracelet", "pair of bracers", "belt", "pair of lenses", "scarf",
 };
 
 struct objclass {

@@ -226,7 +226,7 @@ REGION:(00,00,25,10),unlit,"ordinary"
 # Stairs
 STAIR:(20,05),up
 # Objects
-OBJECT:('(',"lenses"),$place[0],blessed,0,name:"The Eyes of the Overworld"
+OBJECT:('8',"lenses"),$place[0],blessed,0,name:"The Eyes of the Overworld"
 OBJECT:random,random
 OBJECT:random,random
 OBJECT:random,random

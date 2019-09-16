@@ -95,7 +95,7 @@
 #define Confusion HConfusion
 
 #define Blinded u.uprops[BLINDED].intrinsic
-#define Blindfolded (ublindf && ublindf->otyp != LENSES)
+#define Blindfolded (ublindf)
 /* ...means blind because of a cover */
 #define Blind                                     \
     ((u.uroleplay.blind || Blinded || Blindfolded \
@@ -130,6 +130,18 @@
 #define HFumbling u.uprops[FUMBLING].intrinsic
 #define EFumbling u.uprops[FUMBLING].extrinsic
 #define Fumbling (HFumbling || EFumbling)
+
+#define HFlash_resistance u.uprops[FLASH_RES].intrinsic
+#define EFlash_resistance u.uprops[FLASH_RES].extrinsic
+#define Flash_resistance (HFlash_resistance || EFlash_resistance)
+
+#define HEnhanced_vision u.uprops[ENHANCED_VISION].intrinsic
+#define EEnhanced_vision u.uprops[ENHANCED_VISION].extrinsic
+#define Enhanced_vision (HEnhanced_vision || EEnhanced_vision)
+
+#define HEye_protection u.uprops[EYE_PROTECTION].intrinsic
+#define EEye_protection u.uprops[EYE_PROTECTION].extrinsic
+#define Eye_protection (HEye_protection || EEye_protection)
 
 #define HLaughing u.uprops[LAUGHING].intrinsic
 #define ELaughing u.uprops[LAUGHING].extrinsic

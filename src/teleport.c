@@ -1063,7 +1063,7 @@ unsigned trflags;
         You_feel("a wrenching sensation.");
         return;
     }
-    if (!Blind)
+    if (!Blind && !Flash_resistance)
         You("are momentarily blinded by a flash of light.");
     else
         You("are momentarily disoriented.");

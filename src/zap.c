@@ -3571,7 +3571,7 @@ boolean
 flashburn(duration)
 long duration;
 {
-    if (!resists_blnd(&youmonst)) {
+    if (!resists_blnd(&youmonst) && !Flash_resistance) {
         You(are_blinded_by_the_flash);
         make_blinded(duration, FALSE);
         if (!Blind)

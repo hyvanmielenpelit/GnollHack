@@ -217,8 +217,8 @@ struct obj *obj; /* aatyp == AT_WEAP, AT_SPIT */
             if (is_you && Blindfolded)
                 return FALSE;
         } else if (obj && (obj->otyp == BLINDING_VENOM)) {
-            /* all ublindf, including LENSES, protect, cream-pies too */
-            if (is_you && (ublindf || u.ucreamed))
+            /* all ublindf protect, cream-pies too */
+            if (is_you && (ublindf || u.ucreamed || Eye_protection))
                 return FALSE;
             check_visor = TRUE;
         } else if (obj && (obj->otyp == POT_BLINDNESS)) {
@@ -237,8 +237,8 @@ struct obj *obj; /* aatyp == AT_WEAP, AT_SPIT */
         break;
 
     case AT_CLAW:
-        /* e.g. raven: all ublindf, including LENSES, protect */
-        if (is_you && ublindf)
+        /* e.g. raven: all ublindf protect */
+        if (is_you && (ublindf || Eye_protection))
             return FALSE;
         if ((magr == &youmonst) && u.uswallow)
             return FALSE; /* can't affect eyes while inside monster */

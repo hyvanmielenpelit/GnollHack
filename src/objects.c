@@ -783,17 +783,17 @@ OBJECT(OBJ("Amulet of Yendor", /* note: description == name */
        0, 0, 0, AMULET_CLASS, 0, 0, 10, 30000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, HI_METAL, 0, 0, 0, 0, O1_INDESTRUCTIBLE),
 #undef AMULET
 
-/* decorations */
+/* miscellaneous (magic) items */
 #define MISCELLANEOUSITEM(name,desc,sub,specialworntext,kn,magic,mergeable,charged,prob,cost,wt,power,power2,power3,manabonus,hpbonus,bonusattrs,abon,nut,material,color,flags,powconfermask) \
     OBJECT(OBJ(name, desc), specialworntext, None,                                          \
            BITS(kn, mergeable, charged, 0, magic, charged, 0, 0, 0, 0, 0, sub, material),        \
            power, power2, power3,  MISCELLANEOUS_CLASS, prob, 0, wt, cost,  0, 0, 0, 0, 0, 0, 0, 0, manabonus, hpbonus, bonusattrs, abon, nut, color, powconfermask, 0, 0, 0, flags)
 MISCELLANEOUSITEM("brooch of shielding", "brooch",	MISC_MULTIPLE_PERMITTED, None,
-	0, 1, 0, 0, 200, 150, 5,
+	0, 1, 0, 0, 100, 150, 5,
 	PROTECTION, 0, 0, 0, 0, BONUS_TO_AC, 2,
 	20, GOLD, HI_GOLD, O1_NONE, 0),
 MISCELLANEOUSITEM("nose ring of bull strength", "golden nose ring", MISC_NOSERING, None,
-	0, 1, 0, 0, 200, 200, 50,
+	0, 1, 0, 0, 100, 200, 50,
 	0, 0, 0, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE, 18,
 	50, GOLD, HI_GOLD, O1_NONE, 0),
 MISCELLANEOUSITEM("headband of intellect", "shining blue headband", MISC_HEADBAND, None,
@@ -820,6 +820,25 @@ MISCELLANEOUSITEM("wings of flying", "artificial wings", MISC_WINGS, "attached t
 	0, 1, 0, 0, 100, 200, 50,
 	FLYING, 0, 0, 0, 0, 0, 0,
 	50, ORGANIC, CLR_WHITE, O1_NONE, 0),
+MISCELLANEOUSITEM("lenses", "clear glasses", MISC_LENSES, None,
+	0, 0, 0, 0, 50, 80, 3,
+	ENHANCED_VISION, 0, 0, 0, 0, 0, 0,
+	20, GLASS, HI_GLASS, O1_NONE, 0),
+MISCELLANEOUSITEM("sunglasses", "shaded glasses", MISC_LENSES, None,
+	0, 0, 0, 0, 50, 100, 3,
+	FLASH_RES, 0, 0, 0, 0, 0, 0,
+	20, GLASS, CLR_BLACK, O1_NONE, 0),
+MISCELLANEOUSITEM("goggles of eye protection", "bulky goggles", MISC_LENSES, None,
+	0, 0, 0, 0, 50, 100, 3,
+	EYE_PROTECTION, 0, 0, 0, 0, 0, 0,
+	20, PLASTIC, HI_GLASS, O1_NONE, 0),
+MISCELLANEOUSITEM("expensive watch", None, MISC_WRIST_WATCH, None,
+	1, 0, 0, 0, 50, 200, 50,
+	0, 0, 0, 0, 0, BONUS_TO_CHA, 1,
+	50, GOLD, HI_GOLD, O1_NONE, PERMITTED_GENDER_MALE),
+
+
+
 #undef MISCELLANEOUSITEM
 
 /* tools ... */
@@ -853,7 +872,7 @@ CONTAINER("sack",           "bag", 0, 0, 0, 10,  10,   5, 0, 0, 0, 0, 0, CLOTH, 
 CONTAINER("oilskin sack",   "bag", 0, 0, 0,  5,  10, 100, 0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE, 0),
 /* magic bags start here */
 CONTAINER("bag of holding", "bag",					0, 1, 0, 20, 15, 100,   0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE, 0), //STARTMARKER 2
-CONTAINER("bag of wizardry", "bag",					0, 1, 0, 10, 15, 100,   0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE, 0),
+CONTAINER("bag of wizardry", "bag",					0, 1, 0, 15, 15, 100,   0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE, 0),
 CONTAINER("bag of treasure hauling", "bag",			0, 1, 0, 15, 15, 100,   0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE, 0),
 CONTAINER("quiver of infinite arrows", "bag",		0, 1, 0,  4, 15, 100, 300, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_SPECIAL_ENCHANTABLE, 0),
 CONTAINER("pouch of endless bolts", "bag",			0, 1, 0,  4, 15, 100, 300, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_SPECIAL_ENCHANTABLE, 0),
@@ -876,7 +895,6 @@ TOOL("mirror",   "looking glass", 0, 0, 0, 0, 35, 13, 10, 0, 0, 0, 0, 0, GLASS, 
 TOOL("magic mirror", "looking glass", 0, 0, 0, 0, 0, 13, 10, 0, 30, 0, 0, 0, GLASS, HI_SILVER, O1_CONFERS_POWERS_WHEN_CARRIED | O1_MANA_PERCENTAGE_BONUS, 0),
 TOOL("holy symbol", "religious symbol", 0, 0, 1, 0, 10, 10,100, 0, 0, 0, 0, 0, SILVER, HI_SILVER, O1_TREATED_AS_MATERIAL_COMPONENT, 0),
 TOOL("crystal ball", "glass orb", 0, 0, 1, 1, 15,150, 60, 100, 0, 0, 0, 0, GLASS, HI_GLASS, O1_NONE, 0),
-TOOL("lenses",              None, 1, 0, 0, 0,  5,  3, 80, 0, 0, 0, 0, 0, GLASS, HI_GLASS, O1_NONE, 0),
 TOOL("blindfold",           None, 1, 0, 0, 0, 50,  2, 20, 0, 0, 0, 0, 0, CLOTH, CLR_BLACK, O1_NONE, 0),
 TOOL("towel",               None, 1, 0, 0, 0, 50,  2, 50, 0, 0, 0, 0, 0, CLOTH, CLR_MAGENTA, O1_NONE, 0),
 TOOL("saddle",              None, 1, 0, 0, 0,  5,200,150, 0, 0, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE, 0),

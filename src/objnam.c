@@ -466,8 +466,12 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 			Strcat(buf, "death-enchanted ");
 
 
-		if (typ == LENSES
-			|| (obj->oclass == MISCELLANEOUS_CLASS && objects[obj->otyp].oc_subtyp == MISC_EARRINGS))
+		if (obj->oclass == MISCELLANEOUS_CLASS && (
+			objects[obj->otyp].oc_subtyp == MISC_EARRINGS
+			|| objects[obj->otyp].oc_subtyp == MISC_LENSES
+			|| objects[obj->otyp].oc_subtyp == MISC_PANTS
+			|| objects[obj->otyp].oc_subtyp == MISC_BRACERS
+			))
             Strcpy(buf, "pair of ");
         else if (is_wet_towel(obj))
             Strcpy(buf, (obj->spe < 3) ? "moist " : "wet ");

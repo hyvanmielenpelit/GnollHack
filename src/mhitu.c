@@ -2419,7 +2419,7 @@ boolean ufound;
             break;
 
         case AD_BLND:
-            not_affected = resists_blnd(&youmonst);
+            not_affected = resists_blnd(&youmonst) || Flash_resistance;
             if (!not_affected) {
                 /* sometimes you're affected even if it's invisible */
                 if (mon_visible(mtmp) || (rnd(tmp /= 2) > u.ulevel)) {
@@ -2578,7 +2578,7 @@ struct attack *mattk;
         }
         break;
     case AD_BLND:
-        if (canseemon(mtmp) && !resists_blnd(&youmonst)
+        if (canseemon(mtmp) && !resists_blnd(&youmonst) && !Flash_resistance
             && distu(mtmp->mx, mtmp->my) <= BOLT_LIM * BOLT_LIM) {
             if (cancelled) {
                 react = rn1(2, 2); /* "puzzled" || "dazzled" */
