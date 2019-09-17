@@ -3278,7 +3278,7 @@ struct ext_func_tab extcmdlist[] = {
 	{ C('c'), "break", "break something", dobreak, IFBURIED | AUTOCOMPLETE },
 	{ 'C', "call", "call (name) something", docallcmd, IFBURIED },
     { 'Z', "cast", "zap (cast) a spell", docast, IFBURIED },
-	{ M('z'), "spellinfo", "spell descriptions", dospelldescriptions, IFBURIED | AUTOCOMPLETE },
+	{ M('z'), "spelldetails", "spell descriptions", dospelldescriptions, IFBURIED | AUTOCOMPLETE },
 	{ M('x'), "examine", "item descriptions", doitemdescriptions, IFBURIED | AUTOCOMPLETE },
 	{ M('c'), "chat", "talk to someone", dotalk, IFBURIED | AUTOCOMPLETE },
     { 'c', "close", "close a door", doclose },

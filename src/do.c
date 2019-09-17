@@ -88,13 +88,31 @@ register struct obj* obj;
 	/* Type */
 	strcpy(buf2, def_oc_syms[obj->oclass].name);
 	*buf2 = highc(*buf2);
-	Sprintf(buf, "Type:                %s", buf2);
-	if (objects[otyp].oc_class == ARMOR_CLASS)
+	Sprintf(buf, "Class:               %s", buf2);
+	if (objects[otyp].oc_class == WEAPON_CLASS)
+	{
+		if (is_ammo(obj))
+		{
+			Strcat(buf, " - Projectile");
+		}
+		else if (is_launcher(obj))
+		{
+			Strcat(buf, " - Ranged");
+		}
+
+		if (bimanual(obj))
+		{
+			Strcat(buf, " - Two-handed");
+		}
+	}
+	else if (objects[otyp].oc_class == ARMOR_CLASS)
 	{
 		Strcat(buf, " - ");
-		Strcat(buf, armor_class_simple_name(obj));
+		strcpy(buf2, armor_class_simple_name(obj));
+		*buf2 = highc(*buf2);
+		Strcat(buf, buf2);
 	}
-	if (objects[otyp].oc_class == MISCELLANEOUS_CLASS && objects[otyp].oc_subtyp > MISC_MULTIPLE_PERMITTED)
+	else if (objects[otyp].oc_class == MISCELLANEOUS_CLASS && objects[otyp].oc_subtyp > MISC_MULTIPLE_PERMITTED)
 	{
 		Strcat(buf, " - ");
 		strcpy(buf2, misc_type_names[objects[otyp].oc_subtyp]);
@@ -111,9 +129,21 @@ register struct obj* obj;
 	txt = buf;
 	putstr(datawin, 0, txt);
 	*/
-	double weight = ((double)objects[otyp].oc_weight) / 16;
-	Sprintf(buf2, "%f0.1", weight);
-	Sprintf(buf, "Weight:              %s lb%s", buf2, weight == 1 ? "" : "s");
+	double objweight = ((double)objects[otyp].oc_weight) / 16;
+	if (objweight >= 1000)
+		Sprintf(buf2, "%3.0f cwt", objweight / 100);
+	else if (objweight >= 10)
+		Sprintf(buf2, "%3.0f lbs", objweight);
+	else
+		Sprintf(buf2, "%1.1f %s", objweight, objweight == 1 ? "lb " : "lbs");
+
+	Sprintf(buf, "Weight:              %s", buf2);
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	strcpy(buf2, materialnm[objects[otyp].oc_material]);
+	*buf2 = highc(*buf2);
+	Sprintf(buf, "Material:            %s", buf2);
 	txt = buf;
 	putstr(datawin, 0, txt);
 
@@ -123,6 +153,12 @@ register struct obj* obj;
 
 		char plusbuf[BUFSZ];
 		boolean maindiceprinted = FALSE;
+
+		strcpy(buf2, weapon_descr(obj));
+		*buf2 = highc(*buf2);
+		Sprintf(buf, "Skill:               %s", buf2);
+		txt = buf;
+		putstr(datawin, 0, txt);
 
 		Sprintf(buf, "Damage - Small:      ");
 
@@ -179,7 +215,7 @@ register struct obj* obj;
 	}
 	else if (objects[otyp].oc_class == ARMOR_CLASS)
 	{
-		Sprintf(buf2, "%d", objects[otyp].a_ac);
+		Sprintf(buf2, "%d", 10 - objects[otyp].a_ac);
 		Sprintf(buf, "Armor class:         %s", buf2);
 		txt = buf;
 		putstr(datawin, 0, txt);
