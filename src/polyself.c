@@ -992,7 +992,7 @@ break_armor()
 {
     register struct obj *otmp;
 
-	//Suit, cloak, robe, shirt, belt, and pants
+	//Suit, cloak, robe, shirt
     if (breakarm(youmonst.data)) {
         if ((otmp = uarm) != 0) {
             if (donning(otmp))
@@ -1029,13 +1029,6 @@ break_armor()
 			(void)Shirt_off();
 			useup(otmp);
         }
-		if ((otmp = uarmv) != 0) {
-			if (donning(otmp))
-				cancel_don();
-			Your("belt breaks!");
-			(void)Belt_off();
-			useup(otmp);
-		}
 	} else if (sliparm(youmonst.data)) {
         if (((otmp = uarm) != 0) && (racial_exception(&youmonst, otmp) < 1)) {
             if (donning(otmp))
@@ -1068,14 +1061,6 @@ break_armor()
             setworn((struct obj *) 0, otmp->owornmask & W_ARMU);
             dropx(otmp);
         }
-		if ((otmp = uarmv) != 0) {
-			if (is_whirly(youmonst.data))
-				Your("belt falls!");
-			else
-				You("shrink out of your belt!");
-			setworn((struct obj*) 0, otmp->owornmask & W_ARMV);
-			dropx(otmp);
-		}
 	}
 	//Helmet
     if (has_horns(youmonst.data) || !has_head(youmonst.data)) {

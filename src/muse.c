@@ -1071,7 +1071,7 @@ struct monst *mtmp;
     if (in_your_sanctuary(mtmp, 0, 0))
         return FALSE;
     if (dmgtype(mtmp->data, AD_HEAL)
-        && !uwep && !uarmu && !uarm && !uarmh && !uarmo && !uarmb && !uarmv
+        && !uwep && !uarmu && !uarm && !uarmh && !uarmo && !uarmb
         && !uarms && !uarmg && !uarmc && !uarmf)
         return FALSE;
     /* all offensive items require orthogonal or diagonal targetting */
@@ -2226,6 +2226,16 @@ const char *fmt, *str;
 	else if (EReflecting & W_MISC3 && umisc3) {
 		if (fmt && str)
 			pline(fmt, str, xname(umisc3));
+		return TRUE;
+	}
+	else if (EReflecting & W_MISC4 && umisc4) {
+		if (fmt && str)
+			pline(fmt, str, xname(umisc4));
+		return TRUE;
+	}
+	else if (EReflecting & W_MISC5 && umisc5) {
+		if (fmt && str)
+			pline(fmt, str, xname(umisc5));
 		return TRUE;
 	}
 	else if (EReflecting & W_CARRIED) {

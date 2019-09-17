@@ -290,7 +290,7 @@ register boolean special;
             mk_mplayer_armor(mtmp, helm);
             mk_mplayer_armor(mtmp, shield);
             if (weapon == WAR_HAMMER) /* valkyrie: wimpy weapon or Mjollnir */
-                mk_mplayer_armor(mtmp, GAUNTLETS_OF_POWER);
+                mk_mplayer_armor(mtmp, GAUNTLETS_OF_OGRE_POWER);
             else if (rn2(8))
                 mk_mplayer_armor(mtmp, rnd_class(LEATHER_GLOVES,
                                                  GAUNTLETS_OF_DEXTERITY));

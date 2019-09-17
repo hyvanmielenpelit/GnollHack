@@ -254,9 +254,6 @@ struct obj {
 #define is_bracers(otmp)           \
     (otmp->oclass == ARMOR_CLASS \
      && objects[otmp->otyp].oc_armor_category == ARM_BRACERS)
-#define is_belt(otmp)           \
-    (otmp->oclass == ARMOR_CLASS \
-     && objects[otmp->otyp].oc_armor_category == ARM_BELT)
 #define is_suit(otmp) \
     (otmp->oclass == ARMOR_CLASS && objects[otmp->otyp].oc_armor_category == ARM_SUIT)
 #define is_elven_armor(otmp)                                              \

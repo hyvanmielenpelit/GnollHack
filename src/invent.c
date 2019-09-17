@@ -67,7 +67,7 @@ struct obj *obj;
         SCROLL_CLASS, SPBOOK_CLASS, GEM_CLASS, FOOD_CLASS, REAGENT_CLASS, TOOL_CLASS,
         WEAPON_CLASS, ARMOR_CLASS, ROCK_CLASS, BALL_CLASS, CHAIN_CLASS, 0,
     };
-    static char armcat[12];
+    static char armcat[10];
     const char *classorder;
     char *p;
     int k, otyp = obj->otyp, oclass = obj->oclass;
@@ -92,7 +92,7 @@ struct obj *obj;
        and the non-armor ones we use are fairly arbitrary */
     switch (oclass) {
     case ARMOR_CLASS:
-        if (!armcat[10]) {
+        if (!armcat[9]) {
             /* one-time init; we use a different order than the subclass
                values defined by objclass.h */
             armcat[ARM_HELM]   = 1; /* [2] */
@@ -103,9 +103,8 @@ struct obj *obj;
             armcat[ARM_SHIRT]  = 6; /* [6] */
 			armcat[ARM_ROBE] = 7; /* [7] */
 			armcat[ARM_BRACERS] = 8; /* [8] */
-			armcat[ARM_BELT] = 9; /* [9] */
-			armcat[ARM_SUIT]   = 10; /* [0] */
-            armcat[10]          = 11; /* sanity protection */
+			armcat[ARM_SUIT]   = 9; /* [0] */
+            armcat[9]          = 10; /* sanity protection */
         }
         k = objects[otyp].oc_armor_category;
         /* oc_armor_category overloads oc_subtyp which is an 'schar' so guard
@@ -1917,7 +1916,7 @@ boolean
 wearing_armor()
 {
     return (boolean) (uarm || uarmc || uarmf || uarmg
-                      || uarmh || uarms || uarmu || uarmo || uarmb || uarmv);
+                      || uarmh || uarms || uarmu || uarmo || uarmb);
 }
 
 boolean
@@ -2079,7 +2078,7 @@ int show_weights;
             } else if (oc_of_sym == AMULET_CLASS && !uamul) {
                 You("are not wearing an amulet.");
                 return 0;
-            } else if (oc_of_sym == MISCELLANEOUS_CLASS && !umisc && !umisc2 && !umisc3) {
+            } else if (oc_of_sym == MISCELLANEOUS_CLASS && !umisc && !umisc2 && !umisc3 && !umisc4 && !umisc5) {
                 You("are not wearing miscellaneous items.");
                 return 0;
             } else if (oc_of_sym == TOOL_CLASS && !ublindf) {
@@ -4024,8 +4023,6 @@ doprarm()
             lets[ct++] = obj_to_let(uarms);
 		if (uarmb)
 			lets[ct++] = obj_to_let(uarmb);
-		if (uarmv)
-			lets[ct++] = obj_to_let(uarmv);
 		if (uarmg)
             lets[ct++] = obj_to_let(uarmg);
         if (uarmf)
@@ -4071,7 +4068,7 @@ STATIC_OVL boolean
 tool_in_use(obj)
 struct obj *obj;
 {
-    if ((obj->owornmask & (W_TOOL | W_SADDLE)) != 0L)
+    if ((obj->owornmask & (W_BLINDFOLD | W_SADDLE)) != 0L)
         return TRUE;
     if (obj->oclass != TOOL_CLASS)
         return FALSE;

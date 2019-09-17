@@ -1829,8 +1829,8 @@ long *abil;
     unsigned long spfx;
     long wornbits;
     long wornmask = (W_ARM | W_ARMC | W_ARMH | W_ARMS
-                     | W_ARMG | W_ARMF | W_ARMU | W_ARMO | W_ARMB | W_ARMV | W_MISC | W_MISC2 | W_MISC3
-                     | W_AMUL | W_RINGL | W_RINGR | W_TOOL
+                     | W_ARMG | W_ARMF | W_ARMU | W_ARMO | W_ARMB | W_MISC | W_MISC2 | W_MISC3 | W_MISC4 | W_MISC5
+                     | W_AMUL | W_RINGL | W_RINGR | W_BLINDFOLD
                      | W_ART | W_ARTI);
 
     if (u.twoweap)

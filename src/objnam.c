@@ -530,8 +530,6 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 				Strcpy(buf, "robe");
 			else if (is_bracers(obj))
 				Strcpy(buf, "bracers");
-			else if (is_belt(obj))
-				Strcpy(buf, "belt");
 			else if (is_helmet(obj))
                 Strcpy(buf, "helmet");
             else if (is_shield(obj))
@@ -1148,7 +1146,7 @@ unsigned doname_flags;
 				break;
 			}
 		}
-		if (obj->owornmask & (W_TOOL | W_SADDLE)) { /* blindfold */
+		if (obj->owornmask & (W_BLINDFOLD | W_SADDLE)) { /* blindfold */
             Strcat(bp, " (being worn)");
             break;
         }
@@ -2861,7 +2859,6 @@ STATIC_OVL NEARDATA const struct o_range o_ranges[] = {
     { "shirt", ARMOR_CLASS, HAWAIIAN_SHIRT, T_SHIRT },
 	{ "robe", ARMOR_CLASS, ROBE, MUMMY_WRAPPING },
 	{ "bracers", ARMOR_CLASS, LEATHER_BRACERS, BRACERS_OF_MAGIC_RESISTANCE },
-	{ "belt", ARMOR_CLASS, LEATHER_BELT, BELT_OF_GIANT_STRENGTH },
 	{ "dragon scales", ARMOR_CLASS, GRAY_DRAGON_SCALES,
       YELLOW_DRAGON_SCALES },
     { "dragon scale mail", ARMOR_CLASS, GRAY_DRAGON_SCALE_MAIL,
@@ -2870,7 +2867,9 @@ STATIC_OVL NEARDATA const struct o_range o_ranges[] = {
     { "venom", VENOM_CLASS, BLINDING_VENOM, ACID_VENOM },
 	{ "reagent", REAGENT_CLASS, THREAD_OF_SPIDER_SILK, FEATHER },
 	{ "miscellaneous item", MISCELLANEOUS_CLASS, BROOCH_OF_SHIELDING, WINGS_OF_FLYING },
+	{ "belt", MISCELLANEOUS_CLASS, LEATHER_BELT, BELT_OF_STORM_GIANT_STRENGTH },
 	{ "ioun stone", MISCELLANEOUS_CLASS, IOUN_STONE_OF_PROTECTION, IOUN_STONE_OF_SUSTENANCE },
+	{ "glasses", MISCELLANEOUS_CLASS, LENSES, GOGGLES_OF_EYE_PROTECTION },
 	{ "gray stone", GEM_CLASS, LUCKSTONE, FLINT },
     { "grey stone", GEM_CLASS, LUCKSTONE, FLINT },
 };
@@ -2896,7 +2895,8 @@ static const struct alt_spellings {
 	{ "spellbook of summon Demogorgon", SPE_CALL_DEMOGORGON },
 	{ "spellbook of yendorian great summoning", SPE_GREAT_YENDORIAN_SUMMONING },
 	{ "smooth shield", SHIELD_OF_REFLECTION },
-    { "grey dragon scale mail", GRAY_DRAGON_SCALE_MAIL },
+	{ "gauntlets of power", GAUNTLETS_OF_OGRE_POWER },
+	{ "grey dragon scale mail", GRAY_DRAGON_SCALE_MAIL },
     { "grey dragon scales", GRAY_DRAGON_SCALES },
 	{ "iron ball", HEAVY_IRON_BALL },
     { "lantern", BRASS_LANTERN },
@@ -2944,7 +2944,9 @@ static const struct alt_spellings {
 	{ "garlic", CLOVE_OF_GARLIC },
 	{ "ring of death resistance", RIN_LIFE_PROTECTION },
 	{ "ring of protection from shape shifters", RIN_PROTECTION_FROM_SHAPE_CHANGERS },
-    /* if we ever add other sizes, move this to o_ranges[] with "bag" */
+	{ "belt of giant strength", BELT_OF_HILL_GIANT_STRENGTH },
+	{ "girdle of giant strength", BELT_OF_HILL_GIANT_STRENGTH },
+	/* if we ever add other sizes, move this to o_ranges[] with "bag" */
     { "box", LARGE_BOX },
     /* normally we wouldn't have to worry about unnecessary <space>, but
        " stone" will get stripped off, preventing a wishymatch; that actually

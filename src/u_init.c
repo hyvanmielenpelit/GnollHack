@@ -1376,20 +1376,20 @@ register struct trobj *trop;
 				setworn(obj, W_ARMO);
 			else if (is_bracers(obj) && !uarmb)
 				setworn(obj, W_ARMB);
-			else if (is_belt(obj) && !uarmv)
-				setworn(obj, W_ARMV);
 			else if (is_boots(obj) && !uarmf)
                 setworn(obj, W_ARMF);
             else if (is_suit(obj) && !uarm)
                 setworn(obj, W_ARM);
         }
 
-		if (obj->oclass == MISCELLANEOUS_CLASS && !(umisc && umisc2 && umisc3))
+		if (obj->oclass == MISCELLANEOUS_CLASS && !(umisc && umisc2 && umisc3 && umisc4 && umisc5))
 		{
 			if (objects[obj->otyp].oc_subtyp != MISC_MULTIPLE_PERMITTED &&
 				(umisc && objects[umisc->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
 				|| (umisc2 && objects[umisc2->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
 				|| (umisc3 && objects[umisc3->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
+				|| (umisc4 && objects[umisc4->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
+				|| (umisc5 && objects[umisc5->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
 				)
 			{
 				//Nothing
@@ -1402,6 +1402,10 @@ register struct trobj *trop;
 					setworn(obj, W_MISC2);
 				else if (!umisc3)
 					setworn(obj, W_MISC3);
+				else if (!umisc4)
+					setworn(obj, W_MISC4);
+				else if (!umisc5)
+					setworn(obj, W_MISC5);
 			}
 		}
 

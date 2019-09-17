@@ -243,8 +243,7 @@ E NEARDATA struct obj *invent, *uarm, *uarmc, *uarmh, *uarms, *uarmg, *uarmf,
     *uarmu, /* under-wear, so to speak */
 	*uarmo, /* over-wear, so to speak */
 	*uarmb, /* bracers */
-	*uarmv, /* belts, vyo in Finnish */
-	*umisc, *umisc2, *umisc3, /* decorations */
+	*umisc, *umisc2, *umisc3, *umisc4, *umisc5, /* miscellaneous */
 	*uskin, *uamul, *uleft, *uright, *ublindf, *uwep, *uswapwep, *uquiver;
 
 E NEARDATA struct obj *uchain; /* defined only when punished */

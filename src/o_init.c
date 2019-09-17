@@ -223,8 +223,6 @@ int *lo_p, *hi_p; /* output: range that item belongs among */
 			* lo_p = LEATHER_BRACERS, * hi_p = BRACERS_OF_MAGIC_RESISTANCE;
 		else if (otyp >= SHIRT_OF_UNCONTROLLABLE_LAUGHTER && otyp <= T_SHIRT)
 			* lo_p = SHIRT_OF_UNCONTROLLABLE_LAUGHTER, * hi_p = T_SHIRT;
-		else if (otyp >= LEATHER_BELT && otyp <= BELT_OF_GIANT_STRENGTH)
-			* lo_p = LEATHER_BELT, * hi_p = BELT_OF_GIANT_STRENGTH;
 		break;
     case POTION_CLASS:
         /* potion of water has the only fixed description */

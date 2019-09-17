@@ -1729,7 +1729,7 @@ cause_known(propindx)
 int propindx; /* index of a property which can be conveyed by worn item */
 {
     register struct obj *o;
-    long mask = W_ARMOR | W_AMUL | W_RING | W_TOOL;
+    long mask = W_ARMOR | W_AMUL | W_RING | W_BLINDFOLD;
 
     /* simpler than from_what()/what_gives(); we don't attempt to
        handle artifacts and we deliberately ignore wielded items */
@@ -2137,37 +2137,7 @@ int mode, final, attrindx;
             || stuck_ring(uright, RIN_SUSTAIN_ABILITY))
             hide_innate_value = TRUE;
     }
-	/*
-    switch (attrindx) {
-    case A_STR:
-        if ((uarmg && uarmg->otyp == GAUNTLETS_OF_POWER && uarmg->cursed)
-			|| (uarmv && uarmv->otyp == BELT_OF_GIANT_STRENGTH && uarmv->cursed)
-			|| (umisc && umisc->otyp == NOSE_RING_OF_BULL_STRENGTH && umisc->cursed)
-			|| (umisc2 && umisc2->otyp == NOSE_RING_OF_BULL_STRENGTH && umisc2->cursed)
-			|| (umisc3 && umisc3->otyp == NOSE_RING_OF_BULL_STRENGTH && umisc3->cursed)
-			)
-            hide_innate_value = TRUE;
-        break;
-    case A_DEX:
-        break;
-    case A_CON:
-        if (uwep && uwep->oartifact == ART_OGRESMASHER && uwep->cursed)
-            hide_innate_value = TRUE;
-        break;
-    case A_INT:
-        if ((uarmh && uarmh->otyp == DUNCE_CAP && uarmh->cursed) || (uarmo && uarmo->otyp == ROBE_OF_THE_ARCHMAGI && uarmo->cursed))
-            hide_innate_value = TRUE;
-        break;
-    case A_WIS:
-        if ((uarmh && uarmh->otyp == DUNCE_CAP && uarmh->cursed) || (uarmo&& uarmo->otyp == ROBE_OF_STARRY_WISDOM && uarmo->cursed))
-            hide_innate_value = TRUE;
-        break;
-    case A_CHA:
-        break;
-    default:
-        return; // impossible
-    };
-*/
+
 	if (AFIXMIN(attrindx) > 0 || AFIXMAX(attrindx) > 0)
 		hide_innate_value = TRUE;
 
@@ -2526,7 +2496,7 @@ int final;
             you_are(buf, "");
     }
     /* report 'nudity' */
-    if (!uarm && !uarmu && !uarmc && !uarms && !uarmg && !uarmf && !uarmh && !uarmo && !uarmb && !uarmv) {
+    if (!uarm && !uarmu && !uarmc && !uarms && !uarmg && !uarmf && !uarmh && !uarmo && !uarmb) {
         if (u.uroleplay.nudist)
             enl_msg(You_, "do", "did", " not wear any armor", "");
         else

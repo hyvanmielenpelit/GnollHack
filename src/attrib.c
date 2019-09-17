@@ -532,7 +532,7 @@ struct obj* otmp;
 		|| (otmp->oclass == RING_CLASS && (otmp->owornmask & W_RING))
 		|| (otmp->oclass == AMULET_CLASS && (otmp->owornmask & W_AMUL))
 		|| (otmp->oclass == MISCELLANEOUS_CLASS && (otmp->owornmask & W_MISCITEMS))
-		|| (otmp->oclass == TOOL_CLASS && (otmp->owornmask & W_TOOL || (is_weptool(otmp) && otmp->owornmask & W_WEP)))
+		|| (otmp->oclass == TOOL_CLASS && (otmp->owornmask & W_BLINDFOLD || (is_weptool(otmp) && otmp->owornmask & W_WEP)))
 		|| (objects[otmp->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED))
 		&&
 		!inappropriate_character_type(otmp);
@@ -572,10 +572,11 @@ update_carried_item_extrinsics()
 			|| uitem == uarmu
 			|| uitem == uarmo
 			|| uitem == uarmb
-			|| uitem == uarmv
 			|| uitem == umisc
 			|| uitem == umisc2
 			|| uitem == umisc3
+			|| uitem == umisc4
+			|| uitem == umisc5
 			|| uitem == uamul
 			|| uitem == uright
 			|| uitem == uleft
@@ -605,14 +606,16 @@ update_carried_item_extrinsics()
 				bit = W_ARMO;
 			else if (uitem == uarmb)
 				bit = W_ARMB;
-			else if (uitem == uarmv)
-				bit = W_ARMV;
 			else if (uitem == umisc)
 				bit = W_MISC;
 			else if (uitem == umisc2)
 				bit = W_MISC2;
 			else if (uitem == umisc3)
 				bit = W_MISC3;
+			else if (uitem == umisc4)
+				bit = W_MISC4;
+			else if (uitem == umisc5)
+				bit = W_MISC5;
 			else if (uitem == uamul)
 				bit = W_AMUL;
 			else if (uitem == uright)
@@ -1442,10 +1445,11 @@ boolean addconstitutionbonus;
 			|| uitem == uarmu
 			|| uitem == uarmo
 			|| uitem == uarmb
-			|| uitem == uarmv
 			|| uitem == umisc
 			|| uitem == umisc2
 			|| uitem == umisc3
+			|| uitem == umisc4
+			|| uitem == umisc5
 			|| uitem == uamul
 			|| uitem == uright
 			|| uitem == uleft
@@ -1518,10 +1522,11 @@ updateabon()
 			|| uitem == uarmu
 			|| uitem == uarmo
 			|| uitem == uarmb
-			|| uitem == uarmv
 			|| uitem == umisc
 			|| uitem == umisc2
 			|| uitem == umisc3
+			|| uitem == umisc4
+			|| uitem == umisc5
 			|| uitem == uamul
 			|| uitem == uright
 			|| uitem == uleft
@@ -1657,83 +1662,7 @@ int x;
 				tmp = 25;
 		}
 	}
-	/*
-    if (x == A_STR) {
-		int str = tmp;
-		int str2 = 0;
-		
-		if (uarmv && uarmv->otyp == BELT_OF_GIANT_STRENGTH)
-		{
-			str2 = STR19(20 + uarmv->spe);
-			if(str2 > STR19(25))
-				str2 = STR19(25);
-		}
-		if (str2 > str)
-			str = str2;
 
-		if (uarmg && uarmg->otyp == GAUNTLETS_OF_POWER)
-		{
-			str2 = STR18(100);
-		}
-		if (str2 > str)
-			str = str2;
-
-		if (umisc && umisc->otyp == NOSE_RING_OF_BULL_STRENGTH
-			|| umisc2 && umisc2->otyp == NOSE_RING_OF_BULL_STRENGTH
-			|| umisc3 && umisc3->otyp == NOSE_RING_OF_BULL_STRENGTH)
-		{
-			str2 = 18;
-		}
-		if (str2 > str)
-			str = str2;
-
-#ifdef WIN32_BUG
-        return (x = ((str <= 1) ? 1 : str));
-#else
-        return (schar) ((str <= 1) ? 1 : str);
-#endif
-    } else if (x == A_CON) {
-        if (uwep && uwep->oartifact == ART_OGRESMASHER)
-            return (schar) 25;
-    } else if (x == A_INT) {
-        // yes, this may raise int/wis if player is sufficiently
-        // stupid.  there are lower levels of cognition than "dunce".
-        
-		if (uarmo && uarmo->otyp == ROBE_OF_THE_ARCHMAGI && uarmh && uarmh->otyp == DUNCE_CAP)
-		{
-			//Nothing
-		}
-		else if(uarmo && uarmo->otyp == ROBE_OF_THE_ARCHMAGI)
-		{
-			int intelligence2 = 20 + uarmo->spe;
-			if (intelligence2 > 25)
-				intelligence2 = 25;
-			if (intelligence2 > tmp)
-				tmp = intelligence2;
-		}
-		else if (uarmh && uarmh->otyp == DUNCE_CAP)
-            return (schar) 6;
-	}
-	else if (x == A_WIS) {
-			// yes, this may raise int/wis if player is sufficiently
-			// stupid.  there are lower levels of cognition than "dunce".
-		 
-		if (uarmo && uarmo->otyp == ROBE_OF_STARRY_WISDOM && uarmh && uarmh->otyp == DUNCE_CAP)
-		{
-			//Nothing
-		}
-		else if (uarmo && uarmo->otyp == ROBE_OF_STARRY_WISDOM)
-		{
-			int wisdom2 = 20 + uarmo->spe;
-			if (wisdom2 > 25)
-				wisdom2 = 25;
-			if (wisdom2 > tmp)
-				tmp = wisdom2;
-		}
-		else if (uarmh && uarmh->otyp == DUNCE_CAP)
-			return (schar)6;
-	}
-	*/
 	if(x == A_STR)
 		return (schar)((tmp >= STR19(25)) ? STR19(25) : (tmp <= 1) ? 1 : tmp);
 	else
@@ -1792,57 +1721,7 @@ int attrindx;
 		if (lolimit > hilimit)
 			lolimit = hilimit;
 	}
-#if 0
-	/* upper limit for Str is 25 but its value is encoded differently */
-	if (attrindx == A_STR) {
-         /* 125 */
-        /* lower limit for Str can also be 25 */
-		int lolimit2 = lolimit;
 
-		if (uarmv && uarmv->otyp == BELT_OF_GIANT_STRENGTH)
-		{
-			lolimit2 = STR19(20 + uarmv->spe);
-			if (lolimit2 > STR19(25))
-				lolimit2 = STR19(25);
-
-			if(lolimit2 > lolimit)
-				lolimit = lolimit2;
-			hilimit = lolimit;
-		}
-		
-		if (uarmg && uarmg->otyp == GAUNTLETS_OF_POWER){
-			lolimit2 = STR18(100);
-			if (lolimit2 > lolimit)
-				lolimit = lolimit2;
-			hilimit = lolimit;
-		}
-		if (umisc && umisc->otyp == NOSE_RING_OF_BULL_STRENGTH
-			|| umisc2 && umisc2->otyp == NOSE_RING_OF_BULL_STRENGTH
-			|| umisc3 && umisc3->otyp == NOSE_RING_OF_BULL_STRENGTH) {
-			lolimit2 = 18;
-			if (lolimit2 > lolimit)
-				lolimit = lolimit2;
-			hilimit = lolimit;
-		}
-	} else if (attrindx == A_CON) {
-        if (uwep && uwep->oartifact == ART_OGRESMASHER)
-            lolimit = hilimit;
-	}
-	else if (attrindx == A_INT) {
-		if (uarmo && uarmo->otyp == ROBE_OF_THE_ARCHMAGI)
-			lolimit = hilimit;
-	}
-	else if (attrindx == A_WIS) {
-		if (uarmo && uarmo->otyp == ROBE_OF_STARRY_WISDOM)
-			lolimit = hilimit;
-	}
-    /* this exception is hypothetical; the only other worn item affecting
-       Int or Wis is another helmet so can't be in use at the same time */
-    if (attrindx == A_INT || attrindx == A_WIS) {
-        if (uarmh && uarmh->otyp == DUNCE_CAP)
-            hilimit = lolimit = 6;
-    }
-#endif
     /* are we currently at either limit? */
     return (curval == lolimit || curval == hilimit) ? TRUE : FALSE;
 }

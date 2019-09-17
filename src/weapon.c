@@ -1055,11 +1055,8 @@ struct monst* mon;
 	if (!mon)
 		return 0;
 
-	if ((marmv = which_armor(mon, W_ARMV)) != 0
-		&& marmv->otyp == BELT_OF_GIANT_STRENGTH)
-		currstr = STR19(19) + marmv->spe;
-	else if ((marmg = which_armor(mon, W_ARMG)) != 0
-		&& marmg->otyp == GAUNTLETS_OF_POWER)
+	if ((marmg = which_armor(mon, W_ARMG)) != 0
+		&& marmg->otyp == GAUNTLETS_OF_OGRE_POWER)
 		currstr = STR18(100);
 	else
 		currstr = mon->mstr;
@@ -1103,10 +1100,6 @@ struct monst* mon;
 		return 0;
 
 	currcon = mon->mcon;
-
-	if ((marmv = which_armor(mon, W_ARMV)) != 0
-		&& marmv->otyp == BELT_OF_DWARVENKIND)
-		currcon += marmv->spe;
 
 	if (currcon > 25)
 		currcon = 25;

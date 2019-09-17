@@ -19,7 +19,6 @@ const struct worn {
 			 { W_ARMH, &uarmh },
              { W_ARMS, &uarms },
 			 { W_ARMB, &uarmb },
-			 { W_ARMV, &uarmv },
 			 { W_ARMG, &uarmg },
              { W_ARMF, &uarmf },
              { W_ARMU, &uarmu },
@@ -32,7 +31,9 @@ const struct worn {
 			 { W_MISC, &umisc },
 			 { W_MISC2, &umisc2 },
 			 { W_MISC3, &umisc3 },
-			 { W_TOOL, &ublindf },
+			 { W_MISC4, &umisc4 },
+			 { W_MISC5, &umisc5 },
+			 { W_BLINDFOLD, &ublindf },
              { W_BALL, &uball },
              { W_CHAIN, &uchain },
              { 0, 0 }
@@ -343,9 +344,6 @@ struct obj *obj;
 		case ARM_BRACERS:
 			res = W_ARMB;
 			break; /* BRACERS */
-		case ARM_BELT:
-			res = W_ARMV;
-			break; /* BRACERS */
 		}
         break;
     case WEAPON_CLASS:
@@ -355,7 +353,7 @@ struct obj *obj;
         break;
     case TOOL_CLASS:
         if (otyp == BLINDFOLD || otyp == TOWEL)
-            res = W_TOOL; /* WORN_BLINDF */
+            res = W_BLINDFOLD; /* WORN_BLINDF */
         else if (is_weptool(obj) || otyp == TIN_OPENER)
             res = W_WEP | W_SWAPWEP;
         else if (otyp == SADDLE)
@@ -737,10 +735,6 @@ boolean racialexception;
 			if (!is_bracers(obj))
 				continue;
 			break;
-		case W_ARMV:
-			if (!is_belt(obj))
-				continue;
-			break;
 		case W_ARMO:
 			if (!is_robe(obj))
 				continue;
@@ -839,8 +833,6 @@ long flag;
             return uarms;
 		case W_ARMB:
 			return uarmb;
-		case W_ARMV:
-			return uarmv;
 		case W_ARMG:
             return uarmg;
         case W_ARMF:

@@ -388,9 +388,6 @@ BOW("heavy crossbow", None,					1, 1, 10, 200, 150, 1, 8, 0, 1, 8, 0, 0, 0, 0, 0
 #define BRACERS(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgcattkprot,manabon,hpbon,bonusattrs,abon,metal,c,flags,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
           cost, ac, mgcattkprot, manabon, hpbon, bonusattrs, abon, ARM_BRACERS, metal, c, flags, powconfermask)
-#define BELT(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgcattkprot,manabon,hpbon,bonusattrs,abon,metal,c,flags,powconfermask)  \
-    ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, mgcattkprot, manabon, hpbon, bonusattrs, abon, ARM_BELT, metal, c, flags, powconfermask)
 
 /* helmets */
 HELM("elven leather helm", "leather hat",
@@ -492,7 +489,7 @@ ARMOR("scale mail", None,
 ARMOR("studded leather armor", None,
       1, 0, 0,			 0, 0, 0, 50, 3, 200,  15,  7, 1, 0, 0, 0, 0, ARM_SUIT, LEATHER, HI_LEATHER, O1_NONE, 0),
 ARMOR("gnollish studded leather armor", "crude studded leather armor",
-      0, 0, 0,			 0, 0, 0, 15, 3, 175,  15,  8, 1, 0, 0, 0, 0, ARM_SUIT, LEATHER, HI_LEATHER, O1_NONE, 0),
+      0, 0, 0,			 0, 0, 0, 27, 3, 175,  15,  8, 1, 0, 0, 0, 0, ARM_SUIT, LEATHER, HI_LEATHER, O1_NONE, 0),
 ARMOR("ring mail", None,
       1, 0, 0,			 0, 0, 0, 50, 5, 500,  30,  7, 1, 0, 0, 0, 0, ARM_SUIT, IRON, HI_METAL, O1_NONE, 0),
 ARMOR("orcish ring mail", "crude ring mail",
@@ -500,7 +497,7 @@ ARMOR("orcish ring mail", "crude ring mail",
 ARMOR("leather armor", None,
       1, 0, 0,			 0, 0, 0, 50, 3, 150,   5,  8, 1, 0, 0, 0, 0, ARM_SUIT, LEATHER, HI_LEATHER, O1_NONE, 0),
 ARMOR("gnollish leather armor", "crude leather armor",
-      0, 0, 0,			 0, 0, 0, 12, 3, 125,   3,  9, 1, 0, 0, 0, 0, ARM_SUIT, LEATHER, HI_LEATHER, O1_NONE, 0),
+      0, 0, 0,			 0, 0, 0, 24, 3, 125,   3,  9, 1, 0, 0, 0, 0, ARM_SUIT, LEATHER, HI_LEATHER, O1_NONE, 0),
 ARMOR("leather jacket", None,
       1, 0, 0,			 0, 0, 0, 10, 0,  30,  10,  9, 0, 0, 0, 0, 0, ARM_SUIT, LEATHER, CLR_BLACK, O1_NONE, 0),
 ARMOR("force field armor", "armor-shaped force field",
@@ -576,25 +573,14 @@ ROBE("mummy wrapping", None, //ENDMARKER 1
 /* bracers */
 /* with shuffled appearances... */
 BRACERS("leather bracers", "old bracers", //STARTMARKER 1 & 2
-	0, 0, 0,		  0, 0, 8, 1, 10,   5, 9, 0, 0, 0, 0, 0, CLOTH, HI_LEATHER, O1_NONE, 0),
+	0, 0, 0,		  0, 0, 10, 1, 10,   5, 9, 0, 0, 0, 0, 0, CLOTH, HI_LEATHER, O1_NONE, 0),
 BRACERS("bracers of defense", "runed bracers",
-	0, 1, PROTECTION, 0, 0, 8, 1, 10, 300, 7, 2, 0, 0, 0, 0, CLOTH, HI_LEATHER, O1_NONE, 0),
+	0, 1, PROTECTION, 0, 0, 10, 1, 10, 300, 7, 2, 0, 0, 0, 0, CLOTH, HI_LEATHER, O1_NONE, 0),
 BRACERS("bracers of archery", "deerskin bracers",
-	0, 1, 0,		  0, 0, 7, 1, 10, 300, 9, 0, 0, 0, 0, 0, CLOTH, HI_LEATHER, O1_NONE, 0),
+	0, 1, 0,		  0, 0, 10, 1, 10, 300, 9, 0, 0, 0, 0, 0, CLOTH, HI_LEATHER, O1_NONE, 0),
 BRACERS("bracers of magic resistance", "ornamental bracers",//ENDMARKER 1 & 2
-	0, 1, ANTIMAGIC,  0, 0, 8, 1, 10, 300, 9, 2, 0, 0, 0, 0, CLOTH, HI_LEATHER, O1_NONE, 0),
+	0, 1, ANTIMAGIC,  0, 0, 10, 1, 10, 300, 9, 2, 0, 0, 0, 0, CLOTH, HI_LEATHER, O1_NONE, 0),
 
-
-/* belts */
-/* with shuffled appearances... */
-BELT("leather belt", "old belt", //STARTMARKER 1 & 2
-	0, 0, 0,		  0, 0, 10, 0, 5,   5, 10, 0, 0, 0, 0, 0, CLOTH, HI_LEATHER, O1_NO_SPELL_CASTING_PENALTY, 0),
-BELT("belt of dwarvenkind", "broad belt", 
-	0, 1, POISON_RES, 0, 0,  8, 0, 5, 250, 10, 1, 0, 0, BONUS_TO_CON, 0, CLOTH, HI_LEATHER, O1_NONE, 0),
-BELT("belt of fortitude", "brown belt", 
-	0, 1, 0,		  0, 0,  8, 0, 5, 250, 10, 1, 0, 50, 0, 0, CLOTH, HI_LEATHER, O1_HP_PERCENTAGE_BONUS, 0),
-BELT("belt of giant strength", "ornamental belt", //ENDMARKER 1 & 2
-	0, 1, 0,		  0, 0,  7, 0, 5, 250, 10, 0, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE, STR19(20), CLOTH, HI_LEATHER, O1_NONE, 0),
 
 
 /* shields */
@@ -624,7 +610,7 @@ GLOVES("gauntlets of fumbling", "padded gloves",
        0, 1, FUMBLING, 0, 0, 8, 1, 10, 100, 9, 0, 0, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE, 0),
 GLOVES("gloves of spellcasting", "deerskin gloves",
        0, 1,		0, 0, 0, 8, 1, 10, 100, 9, 0, 0, 25, 0, 0, LEATHER, HI_LEATHER, O1_MANA_PERCENTAGE_BONUS, 0),
-GLOVES("gauntlets of power", "riding gloves",
+GLOVES("gauntlets of ogre power", "riding gloves",
        0, 1,        0, 0, 0, 8, 1, 30, 100, 9, 0, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE | IGNORE_SPE, STR18(100) , IRON, CLR_BROWN, O1_NONE, 0),
 GLOVES("gauntlets of dexterity", "fencing gloves",
        0, 1,        0, 0, 0, 8, 1, 10, 100, 9, 0, 0, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE, 0),
@@ -662,8 +648,6 @@ BOOTS("levitation boots", "snow boots",
 #undef SHIRT
 #undef ROBE
 #undef BRACERS
-#undef BELT
-#undef PANTS
 #undef GLOVES
 #undef BOOTS
 #undef ARMOR
@@ -797,7 +781,7 @@ MISCELLANEOUSITEM("nose ring of bull strength", "golden nose ring", MISC_NOSERIN
 	0, 0, 0, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE, 18,
 	50, GOLD, HI_GOLD, O1_NONE, 0),
 MISCELLANEOUSITEM("headband of intellect", "shining blue headband", MISC_HEADBAND, None,
-	0, 1, 0, 0, 100, 200, 50,
+	0, 1, 0, 0, 50, 200, 50,
 	0, 0, 0, 0, 0, BONUS_TO_INT | SETS_FIXED_ATTRIBUTE, 19,
 	50, CLOTH, CLR_BLUE, O1_NONE, 0),
 MISCELLANEOUSITEM("golden earrings", None, MISC_EARRINGS, None,
@@ -805,38 +789,73 @@ MISCELLANEOUSITEM("golden earrings", None, MISC_EARRINGS, None,
 	0, 0, 0, 0, 0, BONUS_TO_CHA, 1,
 	50, GOLD, HI_GOLD, O1_NONE, PERMITTED_GENDER_FEMALE),
 MISCELLANEOUSITEM("ioun stone of protection", "ioun stone", MISC_IOUN_STONE, "orbiting your head",
-	0, 1, 0, 0, 100, 200, 50, //STARTMARKER FOR IOUNSTONES
+	0, 1, 0, 0, 50, 200, 50, //STARTMARKER FOR IOUNSTONES
 	PROTECTION, 0, 0, 0, 0, 0, 0,
 	50, MINERAL, CLR_RED, O1_NONE, 0),
 MISCELLANEOUSITEM("ioun stone of regeneration", "ioun stone", MISC_IOUN_STONE, "orbiting your head",		
-	0, 1, 0, 0, 100, 200, 50,
+	0, 1, 0, 0, 50, 200, 50,
 	REGENERATION, 0, 0, 0, 0, 0, 0,
 	50, MINERAL, CLR_WHITE, O1_NONE, 0),
 MISCELLANEOUSITEM("ioun stone of sustenance", "ioun stone", MISC_IOUN_STONE, "orbiting your head",		
-	0, 1, 0, 0, 100, 200, 50, //ENDMARKER FOR IOUNSTONES
+	0, 1, 0, 0, 50, 200, 50, //ENDMARKER FOR IOUNSTONES
 	SLOW_DIGESTION, 0, 0, 0, 0, 0, 0,
 	50, MINERAL, CLR_WHITE, O1_NONE, 0),
 MISCELLANEOUSITEM("wings of flying", "artificial wings", MISC_WINGS, "attached to your back",		
-	0, 1, 0, 0, 100, 200, 50,
+	0, 1, 0, 0, 50, 200, 50,
 	FLYING, 0, 0, 0, 0, 0, 0,
 	50, ORGANIC, CLR_WHITE, O1_NONE, 0),
-MISCELLANEOUSITEM("lenses", "clear glasses", MISC_LENSES, None,
-	0, 0, 0, 0, 50, 80, 3,
+MISCELLANEOUSITEM("lenses", "glasses", MISC_LENSES, None,
+	0, 0, 0, 0, 50, 80, 3, //STARTMARKER FOR GLASSES
 	ENHANCED_VISION, 0, 0, 0, 0, 0, 0,
 	20, GLASS, HI_GLASS, O1_NONE, 0),
 MISCELLANEOUSITEM("sunglasses", "shaded glasses", MISC_LENSES, None,
 	0, 0, 0, 0, 50, 100, 3,
 	FLASH_RES, 0, 0, 0, 0, 0, 0,
 	20, GLASS, CLR_BLACK, O1_NONE, 0),
-MISCELLANEOUSITEM("goggles of eye protection", "bulky goggles", MISC_LENSES, None,
+MISCELLANEOUSITEM("goggles of night", "goggles", MISC_LENSES, None,
 	0, 0, 0, 0, 50, 100, 3,
+	INFRAVISION, 0, 0, 0, 0, 0, 0,
+	20, GLASS, CLR_BLACK, O1_NONE, 0),
+MISCELLANEOUSITEM("goggles of eye protection", "goggles", MISC_LENSES, None,
+	0, 0, 0, 0, 50, 100, 3, //ENDMARKER FOR GLASSES
 	EYE_PROTECTION, 0, 0, 0, 0, 0, 0,
 	20, PLASTIC, HI_GLASS, O1_NONE, 0),
 MISCELLANEOUSITEM("expensive watch", None, MISC_WRIST_WATCH, None,
 	1, 0, 0, 0, 50, 200, 50,
 	0, 0, 0, 0, 0, BONUS_TO_CHA, 1,
 	50, GOLD, HI_GOLD, O1_NONE, PERMITTED_GENDER_MALE),
-
+MISCELLANEOUSITEM("leather belt", "belt", MISC_BELT, None,
+	0, 0, 0, 0, 50, 5, 5, //STARTMARKER FOR BELTS
+	0, 0, 0, 0, 0, 0, 0,
+	20, CLOTH, HI_LEATHER, O1_NONE, 0),
+MISCELLANEOUSITEM("belt of dwarvenkind", "belt", MISC_BELT, None,
+	0, 1, 0, 1, 50, 250, 5,
+	POISON_RES, 0, 0, 0, 0, BONUS_TO_CON, 0,
+	20, CLOTH, HI_LEATHER, O1_NONE, 0),
+MISCELLANEOUSITEM("belt of fortitude", "belt", MISC_BELT, None,
+	0, 1, 0, 0, 50, 250, 5,
+	0, 0, 0, 0, 50, 0, 0,
+	20, CLOTH, HI_LEATHER, O1_HP_PERCENTAGE_BONUS, 0),
+MISCELLANEOUSITEM("belt of hill giant strength", "belt", MISC_BELT, None,
+	0, 1, 0, 0, 10, 250, 5,
+	0, 0, 0, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE, STR19(20),
+	20, CLOTH, HI_LEATHER, O1_NONE, 0),
+MISCELLANEOUSITEM("belt of stone giant strength", "belt", MISC_BELT, None,
+	0, 1, 0, 0, 10, 250, 5,
+	0, 0, 0, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE, STR19(21),
+	20, CLOTH, HI_LEATHER, O1_NONE, 0),
+MISCELLANEOUSITEM("belt of fire giant strength", "belt", MISC_BELT, None,
+	0, 1, 0, 0, 10, 250, 5,
+	0, 0, 0, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE, STR19(22),
+	20, CLOTH, HI_LEATHER, O1_NONE, 0),
+MISCELLANEOUSITEM("belt of frost giant strength", "belt", MISC_BELT, None,
+	0, 1, 0, 0, 10, 250, 5,
+	0, 0, 0, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE, STR19(23),
+	20, CLOTH, HI_LEATHER, O1_NONE, 0),
+MISCELLANEOUSITEM("belt of storm giant strength", "belt", MISC_BELT, None,
+	0, 1, 0, 0, 10, 250, 5, //ENDMARKER FOR BELTS
+	0, 0, 0, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE, STR19(24),
+	20, CLOTH, HI_LEATHER, O1_NONE, 0),
 
 
 #undef MISCELLANEOUSITEM

@@ -2728,7 +2728,7 @@ struct obj *obj;
 #if defined(BETA) || defined(DEBUG)
     static unsigned long wearbits[] = {
         W_ARM,    W_ARMC,   W_ARMH,    W_ARMS, W_ARMG,  W_ARMF,  W_ARMU,
-        W_WEP,    W_QUIVER, W_SWAPWEP, W_AMUL, W_RINGL, W_RINGR, W_TOOL,
+        W_WEP,    W_QUIVER, W_SWAPWEP, W_AMUL, W_RINGL, W_RINGR, W_BLINDFOLD,
         W_SADDLE, W_BALL,   W_CHAIN,   0
         /* [W_ART,W_ARTI are property bits for items which aren't worn] */
     };
@@ -2810,10 +2810,6 @@ struct obj *obj;
 			if (obj != uarmb)
 				what = "bracers";
 			break;
-		case W_ARMV:
-			if (obj != uarmv)
-				what = "belt";
-			break;
 		case W_MISC:
 			if (obj != umisc)
 				what = "miscellaneous item";
@@ -2823,8 +2819,16 @@ struct obj *obj;
 				what = "secondary miscellaneous item";
 			break;
 		case W_MISC3:
-			if (obj != umisc2)
+			if (obj != umisc3)
 				what = "tertiary miscellaneous item";
+			break;
+		case W_MISC4:
+			if (obj != umisc4)
+				what = "quaternary miscellaneous item";
+			break;
+		case W_MISC5:
+			if (obj != umisc5)
+				what = "quinary miscellaneous item";
 			break;
 		case W_ARMF:
             if (obj != uarmf)
@@ -2858,7 +2862,7 @@ struct obj *obj;
             if (obj != uright)
                 what = "right ring";
             break;
-        case W_TOOL:
+        case W_BLINDFOLD:
             if (obj != ublindf)
                 what = "blindfold";
             break;
@@ -2910,7 +2914,7 @@ struct obj *obj;
         } else if (owornmask & W_RING) {
             if (obj->oclass != RING_CLASS && obj->otyp != MEAT_RING)
                 what = "ring";
-        } else if (owornmask & W_TOOL) {
+        } else if (owornmask & W_BLINDFOLD) {
             if (obj->otyp != BLINDFOLD && obj->otyp != TOWEL
                 )
                 what = "blindfold";

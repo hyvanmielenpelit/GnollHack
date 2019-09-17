@@ -1709,7 +1709,7 @@ register struct obj* omonwep;
             hitmsg(mtmp, mattk, dmg);
             break;
         }
-        if (!uwep && !uarmu && !uarm && !uarmc && !uarmo && !uarmb && !uarmv
+        if (!uwep && !uarmu && !uarm && !uarmc && !uarmo && !uarmb
             && !uarms && !uarmg && !uarmf && !uarmh) {
             boolean goaway = FALSE;
 
@@ -2878,7 +2878,7 @@ struct monst *mon;
         }
     }
 
-    naked = (!uarmc && !uarmf && !uarmg && !uarms && !uarmh && !uarmu && !uarmo && !uarmb && !uarmv);
+    naked = (!uarmc && !uarmf && !uarmg && !uarms && !uarmh && !uarmu && !uarmo && !uarmb);
     pline("%s %s%s.", Who,
           Deaf ? "seems to murmur into your ear"
                : naked ? "murmurs sweet nothings into your ear"
@@ -2903,8 +2903,6 @@ struct monst *mon;
 		mayberem(mon, Who, uarmh, helm_simple_name(uarmh));
 	if (!uarmc && !uarmo && !uarm && uarmu)
         mayberem(mon, Who, uarmu, "shirt");
-	if (uarmv)
-		mayberem(mon, Who, uarmv, "belt");
 
     /* removing armor (levitation boots, or levitation ring to make
        room for adornment ring with incubus case) might result in the
@@ -3093,7 +3091,7 @@ const char *str;
         verbalize("Take off your %s; %s.", str,
                   (obj == uarm)
                      ? "let's get a little closer"
-                     : (obj == uarmc || obj == uarms || obj == uarmo || obj == uarmb || obj == uarmv)
+                     : (obj == uarmc || obj == uarms || obj == uarmo || obj == uarmb)
                         ? "it's in the way"
                         : (obj == uarmf)
                            ? "let me rub your feet"
