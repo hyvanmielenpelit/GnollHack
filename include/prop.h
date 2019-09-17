@@ -195,4 +195,8 @@ struct prop {
 #define WORN_MISCELLANEOUS5 W_MISC5
 #define CARRIED_ITEM W_CARRIED
 
+
+
+
+
 #endif /* PROP_H */

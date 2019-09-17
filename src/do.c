@@ -13,6 +13,7 @@ STATIC_DCL void NDECL(polymorph_sink);
 STATIC_DCL boolean NDECL(teleport_sink);
 STATIC_DCL void FDECL(dosinkring, (struct obj *));
 STATIC_PTR int FDECL(drop, (struct obj *));
+STATIC_PTR int FDECL(itemdescription, (struct obj*));
 STATIC_PTR int NDECL(wipeoff);
 STATIC_DCL int FDECL(menu_drop, (int));
 STATIC_DCL int NDECL(currentlevel_rewrite);
@@ -40,6 +41,507 @@ dodrop()
 
     return result;
 }
+
+static NEARDATA const char item_description_objects[] = { ALL_CLASSES, ALLOW_NONE, 0 };
+
+
+/* the M('x') command - Item descriptions*/
+int
+doitemdescriptions()
+{
+	int result, i = (invent) ? 0 : (SIZE(item_description_objects) - 1);
+
+	result = itemdescription(getobj(&item_description_objects[i], "examine", 1, ""));
+
+	return result;
+}
+
+
+STATIC_PTR int
+itemdescription(obj)
+register struct obj* obj;
+{
+	if (!obj)
+		return 0;
+
+	winid datawin = WIN_ERR;
+
+	datawin = create_nhwindow(NHW_MENU);
+
+	int otyp = obj->otyp;
+	char buf[BUFSZ];
+	char buf2[BUFSZ];
+	char buf3[BUFSZ];
+	const char* txt;
+
+	extern const struct propname {
+		int prop_num;
+		const char* prop_name;
+	} propertynames[]; /* timeout.c */
+
+	/* Name */
+	strcpy(buf, cxname(obj));
+	*buf = highc(*buf);
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	/* Type */
+	strcpy(buf2, def_oc_syms[obj->oclass].name);
+	*buf2 = highc(*buf2);
+	Sprintf(buf, "Type:                %s", buf2);
+	if (objects[otyp].oc_class == ARMOR_CLASS)
+	{
+		Strcat(buf, " - ");
+		Strcat(buf, armor_class_simple_name(obj));
+	}
+	if (objects[otyp].oc_class == MISCELLANEOUS_CLASS && objects[otyp].oc_subtyp > MISC_MULTIPLE_PERMITTED)
+	{
+		Strcat(buf, " - ");
+		strcpy(buf2, misc_type_names[objects[otyp].oc_subtyp]);
+		*buf2 = highc(*buf2);
+		Strcat(buf, buf2);
+	}
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	/* Letter */
+	/*
+	strcpy(buf2, def_oc_syms[obj->oclass].sym);
+	Sprintf(buf, "Symbol:          %s", buf2);
+	txt = buf;
+	putstr(datawin, 0, txt);
+	*/
+	double weight = ((double)objects[otyp].oc_weight) / 16;
+	Sprintf(buf2, "%f0.1", weight);
+	Sprintf(buf, "Weight:              %s lb%s", buf2, weight == 1 ? "" : "s");
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	if (objects[otyp].oc_class == WEAPON_CLASS)
+	{
+		/* Header for base information */
+
+		char plusbuf[BUFSZ];
+		boolean maindiceprinted = FALSE;
+
+		Sprintf(buf, "Damage - Small:      ");
+
+		if (objects[otyp].oc_wsdice > 0 && objects[otyp].oc_wsdam > 0)
+		{
+			maindiceprinted = TRUE;
+			Sprintf(plusbuf, "%dd%d", objects[otyp].oc_wsdice, objects[otyp].oc_wsdam);
+			Strcat(buf, plusbuf);
+		}
+
+		if (objects[otyp].oc_wsdmgplus != 0)
+		{
+			if (maindiceprinted && objects[otyp].oc_wsdmgplus > 0)
+			{
+				Sprintf(plusbuf, "+");
+				Strcat(buf, plusbuf);
+			}
+			Sprintf(plusbuf, "%d", objects[otyp].oc_wsdmgplus);
+			Strcat(buf, plusbuf);
+		}
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+		/* Now large */
+		maindiceprinted = FALSE;
+
+		Sprintf(buf, "Damage - Large:      ");
+
+		if (objects[otyp].oc_wldice > 0 && objects[otyp].oc_wldam > 0)
+		{
+			maindiceprinted = TRUE;
+			Sprintf(plusbuf, "%dd%d", objects[otyp].oc_wldice, objects[otyp].oc_wldam);
+			Strcat(buf, plusbuf);
+		}
+
+		if (objects[otyp].oc_wldmgplus != 0)
+		{
+			if (maindiceprinted && objects[otyp].oc_wldmgplus > 0)
+			{
+				Sprintf(plusbuf, "+");
+				Strcat(buf, plusbuf);
+			}
+			Sprintf(plusbuf, "%d", objects[otyp].oc_wldmgplus);
+			Strcat(buf, plusbuf);
+		}
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+		if(objects[otyp].oc_hitbon > 0)
+	 		Sprintf(buf, "To-hit bonus:        +%d", objects[otyp].oc_hitbon);
+		else if (objects[otyp].oc_hitbon < 0)
+			Sprintf(buf, "To-hit bonus:        %d", objects[otyp].oc_hitbon);
+
+	}
+	else if (objects[otyp].oc_class == ARMOR_CLASS)
+	{
+		Sprintf(buf2, "%d", objects[otyp].a_ac);
+		Sprintf(buf, "Armor class:         %s", buf2);
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+		Sprintf(buf2, "%d", objects[otyp].a_ac);
+		Sprintf(buf, "Magic cancellation:  %s", buf2);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (obj->known && objects[otyp].oc_charged)
+	{
+		if(objects[otyp].oc_class == WAND_CLASS || objects[otyp].oc_class == TOOL_CLASS)
+			Sprintf(buf, "Charges left:        %d", obj->spe);
+		else
+		{
+			if(obj->spe >= 0)
+				Sprintf(buf, "Enchantment status:  +%d", obj->spe);
+			else
+				Sprintf(buf, "Enchantment status:  %d", obj->spe);
+		}
+
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+	if (obj->bknown || obj->known)
+	{
+		Sprintf(buf, "Blessing status:     %s", obj->blessed ? "Blessed" : obj->cursed ? "Cursed" : "Uncursed");
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+	if (obj->opoisoned)
+	{
+		Sprintf(buf, "Poisoned status:     Poisoned (+6d6 poison damage)");
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+	if (obj->special_enchantment)
+	{
+		Sprintf(buf, "Special enchantment: %s", obj->special_enchantment == FIRE_ENCHANTMENT ? "Fire-enchanted (+2d6 fire damage)" :
+			obj->special_enchantment == COLD_ENCHANTMENT ? "Cold-enchanted (+1d6 cold damage)" :
+			obj->special_enchantment == LIGHTNING_ENCHANTMENT ? "Lightning-enchanted (+4d6 lightning damage)" :
+			obj->special_enchantment == DEATH_ENCHANTMENT ? "Death-enchanted (kills on hit)" : "Unknown enchantment"
+		);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+	if (objects[otyp].oc_class == FOOD_CLASS || objects[otyp].oc_flags & O1_EDIBLE_NONFOOD)
+	{
+		Sprintf(buf, "Other:               %s", "Edible");
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+
+	/* Description*/
+	if (objects[otyp].oc_name_known && objects[otyp].oc_short_description)
+	{
+		/* One empty line here */
+		Sprintf(buf, "");
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+		Sprintf(buf, "Description:");
+		txt = buf;
+		putstr(datawin, 0, txt);
+		Sprintf(buf, objects[otyp].oc_short_description);
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+	}
+
+#if 0
+	/* Mana cost*/
+	if (objects[otyp].oc_§ > 0)
+	{
+		Sprintf(buf2, "%d", objects[otyp].oc_spell_mana_cost);
+	}
+	else
+	{
+		Sprintf(buf2, "None");
+	}
+	Sprintf(buf, "Mana cost:    %s", buf2);
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	/* Cooldown */
+	if (objects[otyp].oc_spell_cooldown > 0)
+	{
+		Sprintf(buf2, "%d round%s", objects[otyp].oc_spell_cooldown, objects[otyp].oc_spell_cooldown == 1 ? "" : "s");
+	}
+	else
+	{
+		Sprintf(buf2, "None");
+	}
+	Sprintf(buf, "Cooldown:     %s", buf2);
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	/* DirType */
+	if (objects[otyp].oc_dir > 0)
+	{
+		strcpy(buf2, "");
+		switch (objects[otyp].oc_dir)
+		{
+		case NODIR:
+			strcpy(buf2, "None");
+			break;
+		case IMMEDIATE:
+			strcpy(buf2, "Effect in selected direction");
+			break;
+		case RAY:
+			if (objects[otyp].oc_flags & O1_SPELL_EXPLOSION_EFFECT)
+				strcpy(buf2, "Ray that explodes on hit");
+			else
+				strcpy(buf2, "Ray in selected direction");
+			break;
+		case TARGETED:
+			strcpy(buf2, "Target selected on screen");
+			break;
+		case TOUCH:
+			strcpy(buf2, "Touch");
+			break;
+		default:
+			break;
+		}
+		Sprintf(buf, "Targeting:    %s", buf2);
+		putstr(datawin, 0, txt);
+	}
+
+	/* Range */
+	if (objects[otyp].oc_spell_range > 0)
+	{
+		Sprintf(buf, "Range:        %d'", objects[otyp].oc_spell_range * 5);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	/* Radius */
+	if (objects[otyp].oc_spell_radius > 0)
+	{
+		Sprintf(buf, "Radius:       %d'", objects[otyp].oc_spell_radius * 5);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	/* Damage or Healing */
+	if (objects[otyp].oc_spell_dmg_dice > 0 || objects[otyp].oc_spell_dmg_dicesize > 0 || objects[otyp].oc_spell_dmg_plus > 0)
+	{
+		char plusbuf[BUFSZ];
+		boolean maindiceprinted = FALSE;
+
+		if (objects[otyp].oc_skill == P_HEALING_SPELL)
+			Sprintf(buf, "Healing:      ");
+		else
+			Sprintf(buf, "Damage:       ");
+
+		if (objects[otyp].oc_spell_dmg_dice > 0 && objects[otyp].oc_spell_dmg_dicesize > 0)
+		{
+			maindiceprinted = TRUE;
+			Sprintf(plusbuf, "%dd%d", objects[otyp].oc_spell_dmg_dice, objects[otyp].oc_spell_dmg_dicesize);
+			Strcat(buf, plusbuf);
+		}
+
+		if (objects[otyp].oc_spell_dmg_plus != 0)
+		{
+			if (maindiceprinted && objects[otyp].oc_spell_dmg_plus > 0)
+			{
+				Sprintf(plusbuf, "+");
+				Strcat(buf, plusbuf);
+			}
+			Sprintf(plusbuf, "%d", objects[otyp].oc_spell_dmg_plus);
+			Strcat(buf, plusbuf);
+		}
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+	}
+
+	if (objects[otyp].oc_dir_subtype > 0)
+	{
+		if (objects[otyp].oc_dir == RAY)
+		{
+			strcpy(buf2, "");
+			strcpy(buf3, "Effect");
+			switch (objects[otyp].oc_dir_subtype)
+			{
+			case RAY_MAGIC_MISSILE:
+				strcpy(buf2, "Force damage");
+				strcpy(buf3, "Damage");
+				break;
+			case RAY_FIRE:
+				strcpy(buf2, "Fire damage");
+				strcpy(buf3, "Damage");
+				break;
+			case RAY_COLD:
+				strcpy(buf2, "Cold damage");
+				strcpy(buf3, "Damage");
+				break;
+			case RAY_SLEEP:
+				strcpy(buf2, "Sleeping");
+				strcpy(buf3, "Effect");
+				break;
+			case RAY_DISINTEGRATION:
+				strcpy(buf2, "Disintegration");
+				strcpy(buf3, "Effect");
+				break;
+			case RAY_LIGHTNING:
+				strcpy(buf2, "Lightning damage");
+				strcpy(buf3, "Damage");
+				break;
+			case RAY_POISON_GAS:
+				strcpy(buf2, "Poison gas");
+				strcpy(buf3, "Damage");
+				break;
+			case RAY_ACID:
+				strcpy(buf2, "Acid damage");
+				strcpy(buf3, "Damage");
+				break;
+			case RAY_DEATH:
+				strcpy(buf2, "Death");
+				strcpy(buf3, "Effect");
+				break;
+			case RAY_DIGGING:
+				strcpy(buf2, "Digs stone");
+				strcpy(buf3, "Effect");
+				break;
+			case RAY_EVAPORATION:
+				strcpy(buf2, "Evaporates water");
+				strcpy(buf3, "Effect");
+				break;
+			default:
+				break;
+			}
+			Sprintf(buf, "%s type:  %s", buf3, buf2);
+			putstr(datawin, 0, txt);
+		}
+		else if (objects[otyp].oc_dir == NODIR)
+		{
+			strcpy(buf2, "");
+			strcpy(buf3, "Effect");
+			for (int j = 0; propertynames[j].prop_num; j++)
+			{
+				if (propertynames[j].prop_num == objects[otyp].oc_dir_subtype)
+				{
+					strcpy(buf2, propertynames[j].prop_name);
+					*buf2 = highc(*buf2);
+					break;
+				}
+			}
+			if (strcmp(buf2, "") != 0) // Something else than ""
+			{
+				Sprintf(buf, "%s type:  %s", buf3, buf2);
+				putstr(datawin, 0, txt);
+			}
+		}
+	}
+
+	/* Duration */
+	if (objects[otyp].oc_spell_dur_dice > 0 || objects[otyp].oc_spell_dur_dicesize > 0 || objects[otyp].oc_spell_dur_plus > 0)
+	{
+		char plusbuf[BUFSZ];
+		boolean maindiceprinted = FALSE;
+
+		Sprintf(buf, "Duration:     ");
+
+		if (objects[otyp].oc_spell_dur_dice > 0 && objects[otyp].oc_spell_dur_dicesize > 0)
+		{
+			maindiceprinted = TRUE;
+			Sprintf(plusbuf, "%dd%d", objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_dicesize);
+			Strcat(buf, plusbuf);
+		}
+
+		if (objects[otyp].oc_spell_dur_plus != 0)
+		{
+			if (maindiceprinted && objects[otyp].oc_spell_dur_plus > 0)
+			{
+				Sprintf(plusbuf, "+");
+				Strcat(buf, plusbuf);
+			}
+			Sprintf(plusbuf, "%d", objects[otyp].oc_spell_dur_plus);
+			Strcat(buf, plusbuf);
+		}
+		Sprintf(plusbuf, " round%s", (objects[otyp].oc_spell_dur_dice == 0 && objects[otyp].oc_spell_dur_dicesize == 0 && objects[otyp].oc_spell_dur_plus == 1) ? "" : "s");
+		Strcat(buf, plusbuf);
+
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	/* Flags */
+	if (objects[otyp].oc_flags & O1_SPELL_BYPASSES_MAGIC_RESISTANCE)
+	{
+		Sprintf(buf, "Other:        %s", "Bypasses magic resistance");
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+
+	/* Material components */
+	if (objects[otyp].oc_material_components > 0)
+	{
+		Sprintf(buf2, "%d casting%s", matlists[objects[otyp].oc_material_components].spellsgained,
+			matlists[objects[otyp].oc_material_components].spellsgained == 1 ? "" : "s");
+
+		Sprintf(buf, "Material components - %s:", buf2);
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+		for (int j = 0; matlists[objects[otyp].oc_material_components].matcomp[j].objectid > 0; j++)
+		{
+			Sprintf(buf, " %2d - %s%s", (j + 1), domatcompname(&matlists[objects[otyp].oc_material_components].matcomp[j]),
+				((matlists[objects[otyp].oc_material_components].matcomp[j].flags & MATCOMP_NOT_SPENT) ? " as a catalyst" : ""));
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+
+	}
+
+	/* Description*/
+	if (objects[otyp].oc_short_description)
+	{
+		/* One empty line here */
+		Sprintf(buf, "");
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+		Sprintf(buf, "Description:");
+		txt = buf;
+		putstr(datawin, 0, txt);
+		Sprintf(buf, objects[otyp].oc_short_description);
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+	}
+	/*
+	//This is for unimplemented longer description
+	int i, subs = 0;
+	const char* gang = (char*)0;
+	const char** textp;
+	const char* bufarray[] = { "Line 1","Line 2","Line 3","Line 4","Line 5", (char *)0 };
+	textp = bufarray;
+
+	for (i = 0; textp[i]; i++) {
+
+		if (strstri(textp[i], "%s") != 0) {
+			Sprintf(buf, textp[i]);
+			txt = buf;
+		}
+		else
+			txt = textp[i];
+		putstr(datawin, 0, txt);
+	}
+	*/
+#endif
+
+	display_nhwindow(datawin, FALSE);
+	destroy_nhwindow(datawin), datawin = WIN_ERR;
+
+	return 0;
+}
+
 
 /* Called when a boulder is dropped, thrown, or pushed.  If it ends up
  * in a pool, it either fills the pool up or sinks away.  In either case,

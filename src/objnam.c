@@ -2277,7 +2277,7 @@ static struct sing_plur one_off[] = {
 
 static const char *const as_is[] = {
     /* makesingular() leaves these plural due to how they're used */
-    "boots",   "shoes",     "gloves",    "lenses",   "scales",
+    "boots",   "shoes",     "gloves",    "lenses", "goggles", "glasses", "eye glasses", "scales",
     "eyes",    "gauntlets", "iron bars", "bracers", "wings", "earrings",
 	"pants",   "trousers",  "trunks",
     /* both singular and plural are spelled the same */
@@ -4358,17 +4358,35 @@ struct obj* robe;
 }
 
 const char*
-decoration_simple_name(pants)
-struct obj* pants;
+miscitem_simple_name(miscitem)
+struct obj* miscitem;
 {
-	if (pants) {
-		switch (pants->otyp)
-		{
-		default:
-			break;
-		}
-	}
 	return "miscellaneous item";
+}
+
+
+const char*
+armor_class_simple_name(item)
+struct obj* item;
+{
+	if (is_suit(item))
+		return suit_simple_name(item);
+	else if (is_robe(item))
+		return robe_simple_name(item);
+	else if (is_cloak(item))
+		return cloak_simple_name(item);
+	else if (is_shirt(item))
+		return "shirt";
+	else if (is_helmet(item))
+		return helm_simple_name(item);
+	else if (is_gloves(item))
+		return "gloves";
+	else if (is_boots(item))
+		return "boots";
+	else if (is_bracers(item))
+		return "bracers";
+
+	return "armor";
 }
 
 

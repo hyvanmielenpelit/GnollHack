@@ -391,6 +391,7 @@ E int FDECL(drop, (struct obj *));
 E int NDECL(wipeoff);
 #endif
 E int NDECL(dodrop);
+E int NDECL(doitemdescriptions);
 E boolean FDECL(boulder_hits_pool, (struct obj *, int, int, BOOLEAN_P));
 E boolean FDECL(flooreffects, (struct obj *, int, int, const char *));
 E void FDECL(doaltarobj, (struct obj *));
@@ -1766,8 +1767,9 @@ E int FDECL(rnd_class, (int, int));
 E const char *FDECL(suit_simple_name, (struct obj *));
 E const char *FDECL(cloak_simple_name, (struct obj *));
 E const char* FDECL(robe_simple_name, (struct obj*));
-E const char* FDECL(decoration_simple_name, (struct obj*));
+E const char* FDECL(miscitem_simple_name, (struct obj*));
 E const char *FDECL(helm_simple_name, (struct obj *));
+E const char* FDECL(armor_class_simple_name, (struct obj*));
 E const char *FDECL(mimic_obj_name, (struct monst *));
 E char *FDECL(safe_qbuf, (char *, const char *, const char *, struct obj *,
                           char *(*)(OBJ_P), char *(*)(OBJ_P), const char *));
@@ -2410,6 +2412,7 @@ E int NDECL(dovspell);
 E void FDECL(initialspell, (struct obj *));
 E int NDECL(domix);
 E int FDECL(getspellcooldown, (int));
+E char* FDECL(domatcompname, (struct materialcomponent*));
 E int FDECL(subdirtype2explosiontype, (int));
 E void FDECL(addspellintrinsictimeout, (int));
 

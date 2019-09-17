@@ -1729,7 +1729,7 @@ cause_known(propindx)
 int propindx; /* index of a property which can be conveyed by worn item */
 {
     register struct obj *o;
-    long mask = W_ARMOR | W_AMUL | W_RING | W_BLINDFOLD;
+    long mask = W_ARMOR | W_AMUL | W_RING | W_BLINDFOLD | W_MISCITEMS;
 
     /* simpler than from_what()/what_gives(); we don't attempt to
        handle artifacts and we deliberately ignore wielded items */
@@ -3279,6 +3279,7 @@ struct ext_func_tab extcmdlist[] = {
 	{ 'C', "call", "call (name) something", docallcmd, IFBURIED },
     { 'Z', "cast", "zap (cast) a spell", docast, IFBURIED },
 	{ M('z'), "spellinfo", "spell descriptions", dospelldescriptions, IFBURIED | AUTOCOMPLETE },
+	{ M('x'), "examine", "item descriptions", doitemdescriptions, IFBURIED | AUTOCOMPLETE },
 	{ M('c'), "chat", "talk to someone", dotalk, IFBURIED | AUTOCOMPLETE },
     { 'c', "close", "close a door", doclose },
     { M('C'), "conduct", "list voluntary challenges you have maintained",

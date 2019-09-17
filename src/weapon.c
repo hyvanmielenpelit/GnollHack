@@ -1050,7 +1050,6 @@ struct monst* mon;
 {
 	int currstr = 0;
 	struct obj* marmg;
-	struct obj* marmv;
 
 	if (!mon)
 		return 0;
@@ -1094,7 +1093,6 @@ monster_current_con(mon)
 struct monst* mon;
 {
 	int currcon = 0;
-	struct obj* marmv;
 
 	if (!mon)
 		return 0;

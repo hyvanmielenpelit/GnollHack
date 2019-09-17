@@ -997,18 +997,373 @@ int spell;
 	}
 
 
+	winid datawin = WIN_ERR;
+
+	datawin = create_nhwindow(NHW_MENU);
+
+	int booktype = spellid(spell);
+	char buf[BUFSZ];
+	char buf2[BUFSZ];
+	char buf3[BUFSZ];
+	const char* txt;
+
+	extern const struct propname {
+		int prop_num;
+		const char* prop_name;
+	} propertynames[]; /* timeout.c */
+
+	/* Name */
+	strcpy(buf, spellname(spell));
+	*buf = highc(*buf);
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	/* Level & category*/
+	if (objects[booktype].oc_spell_level == -1)
+		Sprintf(buf, "Minor %s cantrip", spelltypemnemonic(objects[booktype].oc_skill));
+	else if (objects[booktype].oc_spell_level == 0)
+		Sprintf(buf, "Major %s cantrip", spelltypemnemonic(objects[booktype].oc_skill));
+	else if (objects[booktype].oc_spell_level > 0)
+		Sprintf(buf, "Level %d %s spell", objects[booktype].oc_spell_level, spelltypemnemonic(objects[booktype].oc_skill));
+
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	/* One empty line here */
+	Sprintf(buf, "");
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	/* Attributes*/
+	if (objects[booktype].oc_spell_attribute >= 0)
+	{
+		char statbuf[BUFSZ];
+
+		switch (objects[booktype].oc_spell_attribute)
+		{
+		case A_STR:
+			strcpy(statbuf, "Strength");
+			break;
+		case A_DEX:
+			strcpy(statbuf, "Dexterity");
+			break;
+		case A_CON:
+			strcpy(statbuf, "Constitution");
+			break;
+		case A_INT:
+			strcpy(statbuf, "Intelligence");
+			break;
+		case A_WIS:
+			strcpy(statbuf, "Wisdom");
+			break;
+		case A_CHA:
+			strcpy(statbuf, "Charisma");
+			break;
+		case A_MAX_INT_WIS:
+			strcpy(statbuf, "Higher of intelligence and wisdom");
+			break;
+		case A_MAX_INT_CHA:
+			strcpy(statbuf, "Higher of intelligence and charisma");
+			break;
+		case A_MAX_WIS_CHA:
+			strcpy(statbuf, "Higher of wisdom and charisma");
+			break;
+		case A_MAX_INT_WIS_CHA:
+			strcpy(statbuf, "Higher of intelligence, wisdom, and charisma");
+			break;
+		case A_AVG_INT_WIS:
+			strcpy(statbuf, "Average of intelligence and wisdom");
+			break;
+		case A_AVG_INT_CHA:
+			strcpy(statbuf, "Average of intelligence and charisma");
+			break;
+		case A_AVG_WIS_CHA:
+			strcpy(statbuf, "Average of wisdom and charisma");
+			break;
+		case A_AVG_INT_WIS_CHA:
+			strcpy(statbuf, "Average of intelligence, wisdom, and charisma");
+			break;
+		default:
+			strcpy(statbuf, "Not applicable");
+			break;
+		}
+
+		Sprintf(buf, "Attributes:   %s", statbuf);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	/* Mana cost*/
+	if (objects[booktype].oc_spell_mana_cost > 0)
+	{
+		Sprintf(buf2, "%d", objects[booktype].oc_spell_mana_cost);
+	}
+	else
+	{
+		Sprintf(buf2, "None");
+	}
+	Sprintf(buf, "Mana cost:    %s", buf2);
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	/* Cooldown */
+	if (objects[booktype].oc_spell_cooldown > 0)
+	{
+		Sprintf(buf2, "%d round%s", objects[booktype].oc_spell_cooldown, objects[booktype].oc_spell_cooldown == 1 ? "" : "s");
+	}
+	else
+	{
+		Sprintf(buf2, "None");
+	}
+	Sprintf(buf, "Cooldown:     %s", buf2);
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	/* DirType */
+	if (objects[booktype].oc_dir > 0)
+	{
+		strcpy(buf2, "");
+		switch (objects[booktype].oc_dir)
+		{
+		case NODIR:
+			strcpy(buf2, "None");
+			break;
+		case IMMEDIATE:
+			strcpy(buf2, "Effect in selected direction");
+			break;
+		case RAY:
+			if(objects[booktype].oc_flags & O1_SPELL_EXPLOSION_EFFECT)
+				strcpy(buf2, "Ray that explodes on hit");
+			else
+				strcpy(buf2, "Ray in selected direction");
+			break;
+		case TARGETED:
+			strcpy(buf2, "Target selected on screen");
+			break;
+		case TOUCH:
+			strcpy(buf2, "Touch");
+			break;
+		default:
+			break;
+		}
+		Sprintf(buf, "Targeting:    %s", buf2);
+		putstr(datawin, 0, txt);
+	}
+
+	/* Range */
+	if (objects[booktype].oc_spell_range > 0)
+	{
+		Sprintf(buf, "Range:        %d'", objects[booktype].oc_spell_range * 5);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	/* Radius */
+	if (objects[booktype].oc_spell_radius > 0)
+	{
+		Sprintf(buf, "Radius:       %d'", objects[booktype].oc_spell_radius * 5);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	/* Damage or Healing */
+	if (objects[booktype].oc_spell_dmg_dice > 0 || objects[booktype].oc_spell_dmg_dicesize > 0 || objects[booktype].oc_spell_dmg_plus > 0)
+	{
+		char plusbuf[BUFSZ];
+		boolean maindiceprinted = FALSE;
+
+		if (objects[booktype].oc_skill == P_HEALING_SPELL)
+			Sprintf(buf, "Healing:      ");
+		else
+			Sprintf(buf, "Damage:       ");
+
+		if (objects[booktype].oc_spell_dmg_dice > 0 && objects[booktype].oc_spell_dmg_dicesize > 0)
+		{
+			maindiceprinted = TRUE;
+			Sprintf(plusbuf, "%dd%d", objects[booktype].oc_spell_dmg_dice, objects[booktype].oc_spell_dmg_dicesize);
+			Strcat(buf, plusbuf);
+		}
+
+		if (objects[booktype].oc_spell_dmg_plus != 0)
+		{
+			if (maindiceprinted && objects[booktype].oc_spell_dmg_plus > 0)
+			{
+				Sprintf(plusbuf, "+");
+				Strcat(buf, plusbuf);
+			}
+			Sprintf(plusbuf, "%d", objects[booktype].oc_spell_dmg_plus);
+			Strcat(buf, plusbuf);
+		}
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+	}
+
+	if (objects[booktype].oc_dir_subtype > 0)
+	{
+		if (objects[booktype].oc_dir == RAY)
+		{
+			strcpy(buf2, "");
+			strcpy(buf3, "Effect");
+			switch (objects[booktype].oc_dir_subtype)
+			{
+			case RAY_MAGIC_MISSILE:
+				strcpy(buf2, "Force damage");
+				strcpy(buf3, "Damage");
+				break;
+			case RAY_FIRE:
+				strcpy(buf2, "Fire damage");
+				strcpy(buf3, "Damage");
+				break;
+			case RAY_COLD:
+				strcpy(buf2, "Cold damage");
+				strcpy(buf3, "Damage");
+				break;
+			case RAY_SLEEP:
+				strcpy(buf2, "Sleeping");
+				strcpy(buf3, "Effect");
+				break;
+			case RAY_DISINTEGRATION:
+				strcpy(buf2, "Disintegration");
+				strcpy(buf3, "Effect");
+				break;
+			case RAY_LIGHTNING:
+				strcpy(buf2, "Lightning damage");
+				strcpy(buf3, "Damage");
+				break;
+			case RAY_POISON_GAS:
+				strcpy(buf2, "Poison gas");
+				strcpy(buf3, "Damage");
+				break;
+			case RAY_ACID:
+				strcpy(buf2, "Acid damage");
+				strcpy(buf3, "Damage");
+				break;
+			case RAY_DEATH:
+				strcpy(buf2, "Death");
+				strcpy(buf3, "Effect");
+				break;
+			case RAY_DIGGING:
+				strcpy(buf2, "Digs stone");
+				strcpy(buf3, "Effect");
+				break;
+			case RAY_EVAPORATION:
+				strcpy(buf2, "Evaporates water");
+				strcpy(buf3, "Effect");
+				break;
+			default:
+				break;
+			}
+			Sprintf(buf, "%s type:  %s", buf3, buf2);
+			putstr(datawin, 0, txt);
+		}
+		else if (objects[booktype].oc_dir == NODIR)
+		{
+			strcpy(buf2, "");
+			strcpy(buf3, "Effect");
+			for(int j = 0; propertynames[j].prop_num; j++)
+			{ 
+				if (propertynames[j].prop_num == objects[booktype].oc_dir_subtype)
+				{
+					strcpy(buf2, propertynames[j].prop_name);
+					*buf2 = highc(*buf2);
+					break;
+				}
+			}
+			if (strcmp(buf2, "") != 0) // Something else than ""
+			{
+				Sprintf(buf, "%s type:  %s", buf3, buf2);
+				putstr(datawin, 0, txt);
+			}
+		}
+	}
+
+	/* Duration */
+	if (objects[booktype].oc_spell_dur_dice > 0 || objects[booktype].oc_spell_dur_dicesize > 0 || objects[booktype].oc_spell_dur_plus > 0)
+	{
+		char plusbuf[BUFSZ];
+		boolean maindiceprinted = FALSE;
+
+		Sprintf(buf, "Duration:     ");
+
+		if (objects[booktype].oc_spell_dur_dice > 0 && objects[booktype].oc_spell_dur_dicesize > 0)
+		{
+			maindiceprinted = TRUE;
+			Sprintf(plusbuf, "%dd%d", objects[booktype].oc_spell_dur_dice, objects[booktype].oc_spell_dur_dicesize);
+			Strcat(buf, plusbuf); 
+		}
+
+		if (objects[booktype].oc_spell_dur_plus != 0)
+		{
+			if (maindiceprinted && objects[booktype].oc_spell_dur_plus > 0)
+			{
+				Sprintf(plusbuf, "+");
+				Strcat(buf, plusbuf);
+			}
+			Sprintf(plusbuf, "%d", objects[booktype].oc_spell_dur_plus);
+			Strcat(buf, plusbuf);
+		}
+		Sprintf(plusbuf, " round%s", (objects[booktype].oc_spell_dur_dice == 0 && objects[booktype].oc_spell_dur_dicesize == 0 && objects[booktype].oc_spell_dur_plus == 1) ? "" : "s");
+		Strcat(buf, plusbuf);
+
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	/* Flags */
+	if (objects[booktype].oc_flags & O1_SPELL_BYPASSES_MAGIC_RESISTANCE)
+	{
+		Sprintf(buf, "Other:        %s", "Bypasses magic resistance");
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+
+	/* Material components */
+	if (objects[booktype].oc_material_components > 0)
+	{
+		Sprintf(buf2, "%d casting%s", matlists[objects[booktype].oc_material_components].spellsgained,
+			matlists[objects[booktype].oc_material_components].spellsgained == 1 ? "" : "s");
+
+		Sprintf(buf, "Material components - %s:", buf2);
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+		for (int j = 0; matlists[objects[booktype].oc_material_components].matcomp[j].objectid > 0; j++)
+		{
+			Sprintf(buf, " %2d - %s%s", (j + 1), domatcompname(&matlists[objects[booktype].oc_material_components].matcomp[j]),
+				((matlists[objects[booktype].oc_material_components].matcomp[j].flags & MATCOMP_NOT_SPENT) ? " as a catalyst": ""));
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+
+	}
+
+	/* Description*/
+	if (objects[booktype].oc_short_description)
+	{
+		/* One empty line here */
+		Sprintf(buf, "");
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+		Sprintf(buf, "Description:");
+		txt = buf;
+		putstr(datawin, 0, txt);
+		Sprintf(buf, objects[booktype].oc_short_description);
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+	}
+	/*
+	//This is for unimplemented longer description
 	int i, subs = 0;
 	const char* gang = (char*)0;
 	const char** textp;
-	winid datawin = WIN_ERR;
-
 	const char* bufarray[] = { "Line 1","Line 2","Line 3","Line 4","Line 5", (char *)0 };
 	textp = bufarray;
 
-	datawin = create_nhwindow(NHW_MENU);
 	for (i = 0; textp[i]; i++) {
-		char buf[BUFSZ];
-		const char* txt;
 
 		if (strstri(textp[i], "%s") != 0) {
 			Sprintf(buf, textp[i]);
@@ -1018,6 +1373,7 @@ int spell;
 			txt = textp[i];
 		putstr(datawin, 0, txt);
 	}
+	*/
 	display_nhwindow(datawin, FALSE);
 	destroy_nhwindow(datawin), datawin = WIN_ERR;
 
@@ -2916,8 +3272,11 @@ int spell;
 	for(int j = 0; matlists[spellmatcomp(spell)].matcomp[j].amount != 0; j++)
 	{
 		matcnt++;
+		char buf[BUFSZ], buf3[BUFSZ], buf4[BUFSZ] = "";
+		struct materialcomponent* mc = &matlists[spellmatcomp(spell)].matcomp[j];
+		strcpy(buf3, domatcompname(mc));
 
-		struct materialcomponent *mc = &matlists[spellmatcomp(spell)].matcomp[j];
+		/*
 		
 		struct objclass* perobj = (struct objclass*)0;
 		if (mc->objectid >= 0)
@@ -2965,7 +3324,7 @@ int spell;
 			strcpy(buf3, an(buf2));
 		else
 			Sprintf(buf3, "%d %s", mc->amount, makeplural(buf2));
-
+*/
 		Sprintf(buf, "You need %s%s. ",
 			buf3, (mc->flags& MATCOMP_NOT_SPENT ? " as a catalyst" : " as a component"));
 
@@ -3141,6 +3500,61 @@ int spell;
 
 	return result;
 
+}
+
+char*
+domatcompname(mc)
+struct materialcomponent* mc;
+{
+	struct objclass* perobj = (struct objclass*)0;
+	if (mc->objectid >= 0)
+		perobj = &objects[mc->objectid];
+
+	struct permonst* permon = (struct permonst*)0;
+	if (mc->monsterid >= 0)
+		permon = &mons[mc->monsterid];
+
+	if (!perobj || !mc || mc->amount == 0)
+		return "";
+
+	static char buf3[BUFSZ];
+	char buf2[BUFSZ], buf4[BUFSZ] = "";
+
+	if (permon && perobj)
+	{
+		if (mc->objectid == CORPSE || mc->objectid == EGG)
+			//Add "lizard" to "corpse" to get "lizard corpse" (or lizard egg)
+			Sprintf(buf4, "%s %s", permon->mname, obj_descr[perobj->oc_name_idx].oc_name);
+		else if (mc->objectid == TIN)
+			//Add "lizard" to "tin" to get "lizard corpse"
+			Sprintf(buf4, "%s of %s meat", obj_descr[perobj->oc_name_idx].oc_name, permon->mname);
+		else
+			Sprintf(buf4, "%s%s", obj_descr[perobj->oc_name_idx].oc_name, GemStone(mc->objectid) ? " stone" : "");
+	}
+	else
+	{
+		Sprintf(buf4, "%s%s%s",
+			objects[mc->objectid].oc_class == SCROLL_CLASS ? "scroll of " :
+			objects[mc->objectid].oc_class == POTION_CLASS ? "potion of " :
+			objects[mc->objectid].oc_class == WAND_CLASS ? "wand of " :
+			objects[mc->objectid].oc_class == SPBOOK_CLASS ? "spellbook of " : "",
+			obj_descr[perobj->oc_name_idx].oc_name,
+			GemStone(mc->objectid) ? " stone" : "");
+	}
+
+	//Correct type of component
+	Sprintf(buf2, "%s%s%s",
+		(mc->flags & MATCOMP_BLESSED_REQUIRED ? "blessed " : mc->flags & MATCOMP_CURSED_REQUIRED ? "cursed " : (mc->flags & MATCOMP_NOT_CURSED ? "noncursed " : "")),
+		(mc->flags & MATCOMP_DEATH_ENCHANTMENT_REQUIRED ? "death-enchanted " : ""),
+		buf4);
+
+	//Indicate how many
+	if (mc->amount == 1)
+		strcpy(buf3, an(buf2));
+	else
+		Sprintf(buf3, "%d %s", mc->amount, makeplural(buf2));
+
+	return buf3;
 }
 
 int

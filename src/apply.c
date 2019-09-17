@@ -125,9 +125,7 @@ struct obj *obj;
             } else {
                 const char *what;
 
-                what = (ublindf->otyp == LENSES)
-                           ? "lenses"
-                           : (obj->otyp == ublindf->otyp) ? "other towel"
+                what = (obj->otyp == ublindf->otyp) ? "other towel"
                                                           : "blindfold";
                 if (ublindf->cursed) {
                     You("push your %s %s.", what,
@@ -4178,7 +4176,6 @@ doapply()
 
     switch (obj->otyp) {
     case BLINDFOLD:
-//    case LENSES:
         if (obj == ublindf) {
             if (!cursed(obj))
                 Blindf_off(obj);
@@ -4187,9 +4184,7 @@ doapply()
         } else {
             You("are already %s.", ublindf->otyp == TOWEL
                                        ? "covered by a towel"
-                                       : ublindf->otyp == BLINDFOLD
-                                             ? "wearing a blindfold"
-                                             : "wearing lenses");
+                                       :  "wearing a blindfold");
         }
         break;
     case CREAM_PIE:
