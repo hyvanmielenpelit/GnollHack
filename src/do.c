@@ -89,46 +89,50 @@ register struct obj* obj;
 	strcpy(buf2, def_oc_syms[obj->oclass].name);
 	*buf2 = highc(*buf2);
 	Sprintf(buf, "Class:               %s", buf2);
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	strcpy(buf2, "");
 	if (objects[otyp].oc_class == WEAPON_CLASS)
 	{
 		if (is_ammo(obj))
 		{
-			Strcat(buf, " - Projectile");
+			strcpy(buf2, "Ammunition");
 		}
 		else if (is_launcher(obj))
 		{
-			Strcat(buf, " - Ranged");
+			strcpy(buf2, "Ranged weapon");
+		}
+		else
+		{
+			strcpy(buf2, "Melee weapon");
 		}
 
-		if (bimanual(obj))
-		{
-			Strcat(buf, " - Two-handed");
-		}
 	}
 	else if (objects[otyp].oc_class == ARMOR_CLASS)
 	{
-		Strcat(buf, " - ");
 		strcpy(buf2, armor_class_simple_name(obj));
 		*buf2 = highc(*buf2);
-		Strcat(buf, buf2);
 	}
 	else if (objects[otyp].oc_class == MISCELLANEOUS_CLASS && objects[otyp].oc_subtyp > MISC_MULTIPLE_PERMITTED)
 	{
-		Strcat(buf, " - ");
 		strcpy(buf2, misc_type_names[objects[otyp].oc_subtyp]);
 		*buf2 = highc(*buf2);
-		Strcat(buf, buf2);
 	}
-	txt = buf;
-	putstr(datawin, 0, txt);
+	else if (objects[otyp].oc_class == TOOL_CLASS)
+	{
+		if (is_weptool(obj))
+		{
+			strcpy(buf2, "Weapon tool");
+		}
+	}
+	if (strcmp(buf2, "") != 0)
+	{
+		Sprintf(buf, "Category:            %s", buf2);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
 
-	/* Letter */
-	/*
-	strcpy(buf2, def_oc_syms[obj->oclass].sym);
-	Sprintf(buf, "Symbol:          %s", buf2);
-	txt = buf;
-	putstr(datawin, 0, txt);
-	*/
 	double objweight = ((double)objects[otyp].oc_weight) / 16;
 	if (objweight >= 1000)
 		Sprintf(buf2, "%3.0f cwt", objweight / 100);
@@ -147,6 +151,25 @@ register struct obj* obj;
 	txt = buf;
 	putstr(datawin, 0, txt);
 
+	if(objects[otyp].oc_name_known)
+	{
+		Sprintf(buf2, "%d gold", objects[otyp].oc_cost);
+
+		Sprintf(buf, "Cost:                %s", buf2);
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+		if (is_edible(obj))
+		{
+			Sprintf(buf2, "%d units", objects[otyp].oc_nutrition);
+
+			Sprintf(buf, "Nutritional value:   %s", buf2);
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+	}
+
+
 	if (objects[otyp].oc_class == WEAPON_CLASS)
 	{
 		/* Header for base information */
@@ -154,6 +177,17 @@ register struct obj* obj;
 		char plusbuf[BUFSZ];
 		boolean maindiceprinted = FALSE;
 
+		/* Single or two-handed */
+		if (bimanual(obj))
+			strcpy(buf2, "Two-handed");
+		else
+			strcpy(buf2, "Single-handed");
+
+		Sprintf(buf, "Usability:           %s", buf2);
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+		/* Skill */
 		strcpy(buf2, weapon_descr(obj));
 		*buf2 = highc(*buf2);
 		Sprintf(buf, "Skill:               %s", buf2);
@@ -216,14 +250,17 @@ register struct obj* obj;
 	else if (objects[otyp].oc_class == ARMOR_CLASS)
 	{
 		Sprintf(buf2, "%d", 10 - objects[otyp].a_ac);
-		Sprintf(buf, "Armor class:         %s", buf2);
+		Sprintf(buf, "Base armor class:    %s", buf2);
 		txt = buf;
 		putstr(datawin, 0, txt);
 
-		Sprintf(buf2, "%d", objects[otyp].a_ac);
-		Sprintf(buf, "Magic cancellation:  %s", buf2);
-		txt = buf;
-		putstr(datawin, 0, txt);
+		if (objects[otyp].oc_name_known)
+		{
+			Sprintf(buf2, "%d", objects[otyp].a_ac);
+			Sprintf(buf, "Magic cancellation:  %s", buf2);
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
 	}
 
 	if (obj->known && objects[otyp].oc_charged)
@@ -263,29 +300,346 @@ register struct obj* obj;
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
-	if (objects[otyp].oc_class == FOOD_CLASS || objects[otyp].oc_flags & O1_EDIBLE_NONFOOD)
+
+	/* Various extra info is the item is known */
+	if (objects[otyp].oc_name_known && objects[otyp].oc_class != SPBOOK_CLASS)
 	{
-		Sprintf(buf, "Other:               %s", "Edible");
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
+		if (objects[otyp].oc_oprop > 0
+			|| objects[otyp].oc_oprop2 > 0 
+			|| objects[otyp].oc_oprop3 > 0 
+			|| objects[otyp].oc_mana_bonus > 0 
+			|| objects[otyp].oc_hp_bonus > 0
+			|| objects[otyp].oc_bonus_attributes > 0
+			|| objects[otyp].oc_flags & O1_CONFERS_LUCK)
+		{
+			Sprintf(buf, "Conferred powers:");
+			txt = buf;
+			putstr(datawin, 0, txt);
+
+			int powercnt = 0;
+			for (int j = 1; j <= 6; j++)
+			{
+				int prop = 0;
+				if (j == 1)
+					prop = objects[otyp].oc_oprop;
+				else if (j == 2)
+					prop = objects[otyp].oc_oprop2;
+				else if (j == 3)
+					prop = objects[otyp].oc_oprop3;
+				else if (j == 4)
+					prop = objects[otyp].oc_mana_bonus;
+				else if (j == 5)
+					prop = objects[otyp].oc_hp_bonus;
+				else if (j == 6)
+					prop = objects[otyp].oc_bonus_attributes;
+
+				if (prop > 0)
+				{
+					if (j < 6)
+					{
+						powercnt++;
+
+						strcpy(buf2, "");
+						Sprintf(buf3, " %2d - ", powercnt);
+					}
+					if(j <= 3)
+					{
+						for (int j = 0; propertynames[j].prop_num; j++)
+						{
+							if (propertynames[j].prop_num == prop)
+							{
+								strcpy(buf2, propertynames[j].prop_name);
+								*buf2 = highc(*buf2);
+								break;
+							}
+						}
+					}
+					else if(j == 4)
+					{
+						if (objects[otyp].oc_flags & O1_MANA_PERCENTAGE_BONUS)
+						{
+							Sprintf(buf2, "Mana pool is increased by %d%%", prop);
+						}
+						else
+						{
+							Sprintf(buf2, "Mana pool increased by %d", prop);
+						}
+					}
+					else if (j == 5)
+					{
+						if (objects[otyp].oc_flags & O1_HP_PERCENTAGE_BONUS)
+						{
+							Sprintf(buf2, "Maximum hit points are increased by %d%%", prop);
+						}
+						else
+						{
+							Sprintf(buf2, "Maximum hit points increased by %d", prop);
+						}
+					}
+					else if (j == 6)
+					{
+						for (int k = 0; k < 9; k++)
+						{
+							strcpy(buf2, "");
+							int stat = objects[otyp].oc_attribute_bonus;
+							if (objects[otyp].oc_charged && !(prop & IGNORE_SPE))
+								stat += obj->spe;
+
+							if (k == 0 && prop & BONUS_TO_STR)
+							{
+								powercnt++;
+
+								if (prop & SETS_FIXED_ATTRIBUTE)
+								{
+									char strbuf[BUFSZ] = "";
+									if (stat <= 18)
+										Sprintf(strbuf, "%d", stat);
+									else if(stat < STR18(10))
+										Sprintf(strbuf, "18/0%d", stat - 18);
+									else if (stat < STR18(100))
+										Sprintf(strbuf, "18/%d", stat - 18);
+									else if (stat == STR18(100))
+										Sprintf(strbuf, "18/**");
+									else
+										Sprintf(strbuf, "%d", stat - 100);
+									Sprintf(buf2, "Raises strength to %s", strbuf);
+								}
+								else
+									Sprintf(buf2, "Grants %s%d bonus to strength", stat >= 0 ? "+" : "", stat);
+							}
+							if (k == 1 && prop & BONUS_TO_DEX)
+							{
+								powercnt++;
+
+								if (prop & SETS_FIXED_ATTRIBUTE)
+									Sprintf(buf2, "Raises dexterity to %d", stat);
+								else
+									Sprintf(buf2, "Grants %s%d bonus to dexterity", stat >= 0 ? "+" : "", stat);
+							}
+							if (k == 2 && prop & BONUS_TO_CON)
+							{
+								powercnt++;
+
+								if (prop & SETS_FIXED_ATTRIBUTE)
+									Sprintf(buf2, "Raises constitution to %d", stat);
+								else
+									Sprintf(buf2, "Grants %s%d bonus to constitution", stat >= 0 ? "+" : "", stat);
+							}
+							if (k == 3 && prop & BONUS_TO_INT)
+							{
+								powercnt++;
+
+								if (prop & SETS_FIXED_ATTRIBUTE)
+									Sprintf(buf2, "Raises intelligence to %d", stat);
+								else
+									Sprintf(buf2, "Grants %s%d bonus to intelligence", stat >= 0 ? "+" : "", stat);
+							}
+							if (k == 4 && prop & BONUS_TO_WIS)
+							{
+								powercnt++;
+
+								if (prop & SETS_FIXED_ATTRIBUTE)
+									Sprintf(buf2, "Raises wisdom to %d", stat);
+								else
+									Sprintf(buf2, "Grants %s%d bonus to wisdom", stat >= 0 ? "+" : "", stat);
+							}
+							if (k == 5 && prop & BONUS_TO_CHA)
+							{
+								powercnt++;
+
+								if (prop & SETS_FIXED_ATTRIBUTE)
+									Sprintf(buf2, "Raises charisma to %d", stat);
+								else
+									Sprintf(buf2, "Grants %s%d bonus to charisma", stat >= 0 ? "+" : "", stat);
+							}
+							if (k == 6 && prop & BONUS_TO_AC)
+							{
+								powercnt++;
+
+								Sprintf(buf2, "Grants %s%d bonus to armor class", stat >= 0 ? "+" : "", stat);
+							}
+							if (k == 7 && prop & BONUS_TO_DAMAGE)
+							{
+								powercnt++;
+
+								Sprintf(buf2, "Grants %s%d bonus to damage", stat >= 0 ? "+" : "", stat);
+							}
+							if (k == 8 && prop & BONUS_TO_HIT)
+							{
+								powercnt++;
+
+								Sprintf(buf2, "Grants %s%d bonus to hit", stat >= 0 ? "+" : "", stat);
+							}
+
+							if (strcmp(buf2, "") != 0) // Something else than ""
+							{
+								Sprintf(buf3, " %2d - ", powercnt);
+								Sprintf(buf, "%s%s", buf3, buf2);
+								txt = buf;
+								putstr(datawin, 0, txt);
+							}
+
+						}
+					}
+
+					if (j < 6)
+					{
+						if (strcmp(buf2, "") != 0) // Something else than ""
+						{
+							Sprintf(buf, "%s%s", buf3, buf2);
+							txt = buf;
+							putstr(datawin, 0, txt);
+						}
+					}
+				}
+			}
+			if (objects[otyp].oc_flags & O1_CONFERS_LUCK)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Confers luck", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
 
 
-	/* Description*/
-	if (objects[otyp].oc_name_known && objects[otyp].oc_short_description)
-	{
-		/* One empty line here */
-		Sprintf(buf, "");
-		txt = buf;
-		putstr(datawin, 0, txt);
+			if (objects[otyp].oc_flags & ~(O1_TREATED_AS_MATERIAL_COMPONENT | O1_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED | O1_CONFERS_LUCK))
+			{
+				powercnt = 0;
 
-		Sprintf(buf, "Description:");
-		txt = buf;
-		putstr(datawin, 0, txt);
-		Sprintf(buf, objects[otyp].oc_short_description);
-		txt = buf;
-		putstr(datawin, 0, txt);
+				Sprintf(buf, "Item properties:");
+				txt = buf;
+				putstr(datawin, 0, txt);
 
+				/* Flags here */
+				if (objects[otyp].oc_flags & O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED)
+				{
+					powercnt++;
+					Sprintf(buf, " %2d - Becomes cursed when picked up", powercnt);
+					txt = buf;
+					putstr(datawin, 0, txt);
+				}
+				if (objects[otyp].oc_flags & O1_BECOMES_CURSED_WHEN_WORN)
+				{
+					powercnt++;
+					Sprintf(buf, " %2d - Becomes cursed when worn", powercnt);
+					txt = buf;
+					putstr(datawin, 0, txt);
+				}
+				if (objects[otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED)
+				{
+					powercnt++;
+					Sprintf(buf, " %2d - Undroppable when cursed", powercnt);
+					txt = buf;
+					putstr(datawin, 0, txt);
+				}
+				if (objects[otyp].oc_flags & O1_COLD_RESISTANT)
+				{
+					powercnt++;
+					Sprintf(buf, " %2d - Cold resistant", powercnt);
+					txt = buf;
+					putstr(datawin, 0, txt);
+				}
+				if (objects[otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED)
+				{
+					powercnt++;
+					Sprintf(buf, " %2d - Confers powers when carried", powercnt);
+					txt = buf;
+					putstr(datawin, 0, txt);
+				}
+				if (objects[otyp].oc_flags & O1_CORROSION_RESISTANT)
+				{
+					powercnt++;
+					Sprintf(buf, " %2d - Corrosion resistant", powercnt);
+					txt = buf;
+					putstr(datawin, 0, txt);
+				}
+				if (objects[otyp].oc_flags & O1_DISINTEGRATION_RESISTANT)
+				{
+					powercnt++;
+					Sprintf(buf, " %2d - Disintegration resistant", powercnt);
+					txt = buf;
+					putstr(datawin, 0, txt);
+				}
+				if (objects[otyp].oc_flags & O1_FIRE_RESISTANT)
+				{
+					powercnt++;
+					Sprintf(buf, " %2d - Fire resistant", powercnt);
+					txt = buf;
+					putstr(datawin, 0, txt);
+				}
+				if (objects[otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY)
+				{
+					powercnt++;
+					Sprintf(buf, " %2d - Half normal spell casting penalty", powercnt);
+					txt = buf;
+					putstr(datawin, 0, txt);
+				}
+				if (objects[otyp].oc_flags & O1_INDESTRUCTIBLE)
+				{
+					powercnt++;
+					Sprintf(buf, " %2d - Indestructible", powercnt);
+					txt = buf;
+					putstr(datawin, 0, txt);
+				}
+				if (objects[otyp].oc_flags & O1_LIGHTNING_RESISTANT)
+				{
+					powercnt++;
+					Sprintf(buf, " %2d - Lightning resistant", powercnt);
+					txt = buf;
+					putstr(datawin, 0, txt);
+				}
+				if (objects[otyp].oc_flags & O1_NOT_CURSEABLE)
+				{
+					powercnt++;
+					Sprintf(buf, " %2d - Cannot be cursed", powercnt);
+					txt = buf;
+					putstr(datawin, 0, txt);
+				}
+				if (objects[otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY)
+				{
+					powercnt++;
+					Sprintf(buf, " %2d - No spell casting penalty", powercnt);
+					txt = buf;
+					putstr(datawin, 0, txt);
+				}
+				if (objects[otyp].oc_flags & O1_POLYMORPH_RESISTANT)
+				{
+					powercnt++;
+					Sprintf(buf, " %2d - Polymorph resistant", powercnt);
+					txt = buf;
+					putstr(datawin, 0, txt);
+				}
+				if (objects[otyp].oc_flags & O1_RUST_RESISTANT)
+				{
+					powercnt++;
+					Sprintf(buf, " %2d - Rust-proof", powercnt);
+					txt = buf;
+					putstr(datawin, 0, txt);
+				}
+				if (objects[otyp].oc_flags & O1_SPECIAL_ENCHANTABLE)
+				{
+					powercnt++;
+					Sprintf(buf, " %2d - Can be specially enchanted", powercnt);
+					txt = buf;
+					putstr(datawin, 0, txt);
+				}
+			}
+		}
+		/* Description*/
+		if (objects[otyp].oc_short_description)
+		{
+			/* One empty line here */
+			Sprintf(buf, "");
+			txt = buf;
+			putstr(datawin, 0, txt);
+
+			Sprintf(buf, "Description:");
+			txt = buf;
+			putstr(datawin, 0, txt);
+			Sprintf(buf, objects[otyp].oc_short_description);
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
 	}
 
 #if 0

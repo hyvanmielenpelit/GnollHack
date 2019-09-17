@@ -804,11 +804,11 @@ MISCELLANEOUSITEM("wings of flying", "artificial wings", MISC_WINGS, "attached t
 	0, 1, 0, 0, 50, 200, 50,
 	FLYING, 0, 0, 0, 0, 0, 0,
 	50, ORGANIC, CLR_WHITE, O1_NONE, 0),
-MISCELLANEOUSITEM("lenses", "eye glasses", MISC_LENSES, None,
-	0, 0, 0, 0, 50, 80, 3, //STARTMARKER FOR EYE GLASSES
+MISCELLANEOUSITEM("lenses", "eyeglasses", MISC_LENSES, None,
+	0, 0, 0, 0, 50, 80, 3, //STARTMARKER FOR EYEGLASSES
 	ENHANCED_VISION, 0, 0, 0, 0, 0, 0,
 	20, GLASS, HI_GLASS, O1_NONE, 0),
-MISCELLANEOUSITEM("sunglasses", "shaded eye glasses", MISC_LENSES, None,
+MISCELLANEOUSITEM("sunglasses", "shaded eyeglasses", MISC_LENSES, None,
 	0, 0, 0, 0, 50, 80, 3,
 	FLASH_RES, 0, 0, 0, 0, 0, 0,
 	20, GLASS, CLR_BLACK, O1_NONE, 0),
@@ -821,7 +821,7 @@ MISCELLANEOUSITEM("magic goggles", "goggles", MISC_LENSES, None,
 	INFRAVISION, FLASH_RES, ENHANCED_VISION, 0, 0, 0, 0,
 	20, PLASTIC, HI_GLASS, O1_NONE, 0),
 MISCELLANEOUSITEM("goggles of eye protection", "goggles", MISC_LENSES, None,
-	0, 0, 0, 0, 50, 100, 3, //ENDMARKER FOR EYE GLASSES
+	0, 0, 0, 0, 50, 100, 3, //ENDMARKER FOR EYEGLASSES
 	EYE_PROTECTION, 0, 0, 0, 0, 0, 0,
 	20, PLASTIC, HI_GLASS, O1_NONE, 0),
 MISCELLANEOUSITEM("expensive watch", None, MISC_WRIST_WATCH, None,
@@ -874,8 +874,8 @@ MISCELLANEOUSITEM("belt of storm giant strength", "belt", MISC_BELT, None,
     OBJECT(OBJ(name, desc), None, None,                                           \
            BITS(kn, mrg, chg, 0, mgc, chg, 0, 0, 0, 0, dir, P_NONE, mat), \
            0, 0, 0, TOOL_CLASS, prob, 0, wt, cost, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, 0, 0, 0, 0, 0, 0, wt, color, dirsubtype, 0, cooldown, 0, flags)
-#define CONTAINER(name,desc,kn,mgc,chg,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,abon,mat,color,flags,powconfermask) \
-    OBJECT(OBJ(name, desc), None, None,                                           \
+#define CONTAINER(name,desc,shortdesc,kn,mgc,chg,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,abon,mat,color,flags,powconfermask) \
+    OBJECT(OBJ(name, desc), None, shortdesc,                                           \
            BITS(kn, 0, chg, 1, mgc, chg, 0, 0, 0, 0, 0, P_NONE, mat),   \
            0, 0, 0, TOOL_CLASS, prob, 0, wt, cost,  0, 0, 0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattr, abon, wt, color, powconfermask, 0, cooldown, 0, flags)
 #define WEPTOOL(name,desc,kn,mgc,bi,prob,wt,cost,sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, hitbon,sub,cooldown,mat,clr,flags,powconfermask)\
@@ -883,23 +883,23 @@ MISCELLANEOUSITEM("belt of storm giant strength", "belt", MISC_BELT, None,
            BITS(kn, 0, 1, 0, mgc, 1, 0, 0, bi, 0, hitbon, sub, mat),    \
            0, 0, 0, TOOL_CLASS, prob, 0, wt, cost, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, hitbon, 0, 0, 0, 0, 0, wt, clr, powconfermask, 0, cooldown, 0, flags)
 /* containers */
-CONTAINER("large box",       None, 1, 0, 0, 40, 350,   8, 0, 0, 0, 0, 0, WOOD, HI_WOOD, O1_NONE, 0), //STARTMARKER 1
-CONTAINER("chest",           None, 1, 0, 0, 30, 600,  16, 0, 0, 0, 0, 0, WOOD, HI_WOOD, O1_NONE, 0),
-CONTAINER("ice box",         None, 1, 0, 0,  5, 900,  42, 0, 0, 0, 0, 0, PLASTIC, CLR_WHITE, O1_NONE, 0),
-CONTAINER("bookshelf",		 None, 1, 0, 0,  0, 1600, 36, 0, 0, 0, 0, 0, WOOD, HI_WOOD, O1_NONE, 0),
-CONTAINER("backpack",		 None, 1, 0, 0,  5,  15,   5, 0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE, 0),
-CONTAINER("leather bag",	 "bag",0, 0, 0,	 5,  15,  25, 0, 0, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE, 0),
-CONTAINER("oriental silk sack", "bag",0,0,0, 5,   3,  50, 0, 0, 0, 0, 0, SILK, HI_CLOTH, O1_NONE, 0),
-CONTAINER("expensive handbag", "bag", 0, 0, 0, 2, 5, 500, 0, 0, 0, BONUS_TO_CHA, 2, SILK, HI_GOLD, O1_CONFERS_POWERS_WHEN_CARRIED, PERMITTED_GENDER_FEMALE),
-CONTAINER("sack",           "bag", 0, 0, 0, 10,  10,   5, 0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE, 0),
-CONTAINER("oilskin sack",   "bag", 0, 0, 0,  5,  10, 100, 0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE, 0),
+CONTAINER("large box",       None, None, 1, 0, 0, 40, 350,   8, 0, 0, 0, 0, 0, WOOD, HI_WOOD, O1_NONE, 0), //STARTMARKER 1
+CONTAINER("chest",           None, None, 1, 0, 0, 30, 600,  16, 0, 0, 0, 0, 0, WOOD, HI_WOOD, O1_NONE, 0),
+CONTAINER("ice box",         None, None, 1, 0, 0,  5, 900,  42, 0, 0, 0, 0, 0, PLASTIC, CLR_WHITE, O1_NONE, 0),
+CONTAINER("bookshelf",		 None, None, 1, 0, 0,  0, 1600, 36, 0, 0, 0, 0, 0, WOOD, HI_WOOD, O1_NONE, 0),
+CONTAINER("backpack",		 None, None, 1, 0, 0,  5,  15,   5, 0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE, 0),
+CONTAINER("leather bag",	 "bag", None, 0, 0, 0,	 5,  15,  25, 0, 0, 0, 0, 0, LEATHER, HI_LEATHER, O1_NONE, 0),
+CONTAINER("oriental silk sack", "bag", None,0,0,0, 5,   3,  50, 0, 0, 0, 0, 0, SILK, HI_CLOTH, O1_NONE, 0),
+CONTAINER("expensive handbag", "bag", None, 0, 0, 0, 2, 5, 500, 0, 0, 0, BONUS_TO_CHA, 2, SILK, HI_GOLD, O1_CONFERS_POWERS_WHEN_CARRIED, PERMITTED_GENDER_FEMALE),
+CONTAINER("sack",           "bag", None, 0, 0, 0, 10,  10,   5, 0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE, 0),
+CONTAINER("oilskin sack",   "bag", None, 0, 0, 0,  5,  10, 100, 0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE, 0),
 /* magic bags start here */
-CONTAINER("bag of holding", "bag",					0, 1, 0, 20, 15, 100,   0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE, 0), //STARTMARKER 2
-CONTAINER("bag of wizardry", "bag",					0, 1, 0, 15, 15, 100,   0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE, 0),
-CONTAINER("bag of treasure hauling", "bag",			0, 1, 0, 15, 15, 100,   0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE, 0),
-CONTAINER("quiver of infinite arrows", "bag",		0, 1, 0,  4, 15, 100, 300, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_SPECIAL_ENCHANTABLE, 0),
-CONTAINER("pouch of endless bolts", "bag",			0, 1, 0,  4, 15, 100, 300, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_SPECIAL_ENCHANTABLE, 0),
-CONTAINER("bag of tricks",  "bag",					0, 1, 1, 20, 15, 100,  0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE, 0), //ENDMARKER 1&2
+CONTAINER("bag of holding", "bag", "Reduces the weight of contents by half", 0, 1, 0, 20, 15, 100, 0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE, 0), //STARTMARKER 2
+CONTAINER("bag of wizardry", "bag", "Reduces the weight of spellbooks, scrolls, reagents, and wands to 1/8", 0, 1, 0, 15, 15, 100, 0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE, 0),
+CONTAINER("bag of treasure hauling", "bag", "Reduces the weight of coins, gems, and other treasure to 1/16", 0, 1, 0, 15, 15, 100, 0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE, 0),
+CONTAINER("quiver of infinite arrows", "bag", None, 0, 1, 0, 4, 15, 100, 300, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_SPECIAL_ENCHANTABLE, 0),
+CONTAINER("pouch of endless bolts", "bag", None, 0, 1, 0, 4, 15, 100, 300, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_SPECIAL_ENCHANTABLE, 0),
+CONTAINER("bag of tricks", "bag", None, 0, 1, 1, 20, 15, 100, 0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE, 0), //ENDMARKER 1&2
 #undef CONTAINER
 
 /* lock opening tools */

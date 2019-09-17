@@ -70,7 +70,7 @@ enum obj_miscellaneous_types {
 static const char* misc_type_names[] = {
 	"", "set of wings", "pair of pants", "skirt", "wrist watch",
 	"nose ring", "headband", "pair of earrings",
-	"ioun stone", "bracelet", "pair of bracers", "belt", "pair of eye glasses", "blindfold", "scarf",
+	"ioun stone", "bracelet", "pair of bracers", "belt", "pair of eyeglasses", "blindfold", "scarf",
 };
 
 struct objclass {
