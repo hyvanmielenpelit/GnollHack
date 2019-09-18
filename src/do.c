@@ -397,7 +397,7 @@ register struct obj* obj;
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
-	if (obj->bknown || obj->known)
+	if (obj->bknown)
 	{
 		Sprintf(buf, "Blessing status:      %s", obj->blessed ? "Blessed" : obj->cursed ? "Cursed" : "Uncursed");
 		txt = buf;
