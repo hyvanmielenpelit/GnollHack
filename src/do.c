@@ -88,7 +88,7 @@ register struct obj* obj;
 	/* Type */
 	strcpy(buf2, def_oc_syms[obj->oclass].name);
 	*buf2 = highc(*buf2);
-	Sprintf(buf, "Class:               %s", buf2);
+	Sprintf(buf, "Class:                %s", buf2);
 	txt = buf;
 	putstr(datawin, 0, txt);
 
@@ -128,52 +128,54 @@ register struct obj* obj;
 	}
 	if (strcmp(buf2, "") != 0)
 	{
-		Sprintf(buf, "Category:            %s", buf2);
+		Sprintf(buf, "Category:             %s", buf2);
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
 
+	/* Weight */
 	double objweight = ((double)objects[otyp].oc_weight) / 16;
 	if (objweight >= 1000)
-		Sprintf(buf2, "%3.0f cwt", objweight / 100);
+		Sprintf(buf2, "%.0f cwt", objweight / 100);
 	else if (objweight >= 10)
-		Sprintf(buf2, "%3.0f lbs", objweight);
+		Sprintf(buf2, "%.0f lbs", objweight);
 	else
-		Sprintf(buf2, "%1.1f %s", objweight, objweight == 1 ? "lb " : "lbs");
+		Sprintf(buf2, "%.1f %s", objweight, objweight == 1 ? "lb " : "lbs");
 
-	Sprintf(buf, "Weight:              %s", buf2);
-	txt = buf;
-	putstr(datawin, 0, txt);
-
-	strcpy(buf2, materialnm[objects[otyp].oc_material]);
-	*buf2 = highc(*buf2);
-	Sprintf(buf, "Material:            %s", buf2);
+	Sprintf(buf, "Weight:               %s", buf2);
 	txt = buf;
 	putstr(datawin, 0, txt);
 
 	if(objects[otyp].oc_name_known)
 	{
+		/* Gold value */
 		Sprintf(buf2, "%d gold", objects[otyp].oc_cost);
 
-		Sprintf(buf, "Cost:                %s", buf2);
+		Sprintf(buf, "Value:                %s", buf2);
 		txt = buf;
 		putstr(datawin, 0, txt);
 
+		/* Nutritinal value */
 		if (is_edible(obj))
 		{
 			Sprintf(buf2, "%d units", objects[otyp].oc_nutrition);
 
-			Sprintf(buf, "Nutritional value:   %s", buf2);
+			Sprintf(buf, "Nutritional value:    %s", buf2);
 			txt = buf;
 			putstr(datawin, 0, txt);
 		}
 	}
 
+	/* Material */
+	strcpy(buf2, materialnm[objects[otyp].oc_material]);
+	*buf2 = highc(*buf2);
+	Sprintf(buf, "Material:             %s", buf2);
+	txt = buf;
+	putstr(datawin, 0, txt);
+
 
 	if (objects[otyp].oc_class == WEAPON_CLASS)
 	{
-		/* Header for base information */
-
 		char plusbuf[BUFSZ];
 		boolean maindiceprinted = FALSE;
 
@@ -183,18 +185,91 @@ register struct obj* obj;
 		else
 			strcpy(buf2, "Single-handed");
 
-		Sprintf(buf, "Usability:           %s", buf2);
+		Sprintf(buf, "Hands to use:         %s", buf2);
 		txt = buf;
 		putstr(datawin, 0, txt);
 
 		/* Skill */
 		strcpy(buf2, weapon_descr(obj));
 		*buf2 = highc(*buf2);
-		Sprintf(buf, "Skill:               %s", buf2);
+		Sprintf(buf, "Skill:                %s", buf2);
 		txt = buf;
 		putstr(datawin, 0, txt);
 
-		Sprintf(buf, "Damage - Small:      ");
+		int baserange = 0;
+
+		/* Ammunition range */
+		if (is_launcher(obj)) {
+
+			if (obj->otyp == HEAVY_CROSSBOW)
+				baserange = 24;
+			else if (obj->otyp == HAND_CROSSBOW)
+				baserange = 9;
+			else if (weapon_type(obj) == P_CROSSBOW)
+				baserange = 18;
+			else
+				baserange = max(1, (int)ACURRSTR); //18 at 18 STR
+
+			Sprintf(buf, "Ammunition range:     %d'", max(1, baserange) * 5);
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+
+
+
+		/* Range and throw distance */
+		baserange = 0;
+		int range = 0;
+		boolean crossbowing = FALSE;
+		boolean thrown = TRUE;
+			
+		/* Throw distance and fire distance for ammo */
+		if(uwep)
+			crossbowing = (ammo_and_launcher(obj, uwep)
+				&& weapon_type(uwep) == P_CROSSBOW);
+
+		if (is_ammo(obj)) {
+			if (uwep && ammo_and_launcher(obj, uwep)) {
+				thrown = FALSE;
+				if (crossbowing)
+				{
+					if (obj->otyp == HEAVY_CROSSBOW)
+						baserange = 24;
+					else if (obj->otyp == HAND_CROSSBOW)
+						baserange = 9;
+					else
+						baserange = 18;
+				}
+				else
+					baserange = max(1, (int)ACURRSTR); //18 at 18 STR
+			}
+			else if (obj->oclass != GEM_CLASS) //Ammo of launchers without the correct launcher
+				baserange = max(1, (int)(ACURRSTR / 3)); // 6 at 18 STR, 3 at 9 STR
+			else //Stones being thrown
+				baserange = max(1, (int)((ACURRSTR) / 2)); //9 at 18 STR, 4 at 9 STR 
+		}
+		else //Normal thrown weapons are half distance
+		{
+			baserange = (int)(ACURRSTR / 2);
+		}
+
+		//Weight of the object reduces range
+		if (obj->otyp == HEAVY_IRON_BALL)
+			range = baserange - (int)(obj->owt / 100);
+		else
+			range = baserange - (int)(obj->owt / 40);
+
+		Sprintf(buf2, "%d", max(1, range) * 5);
+		if(thrown)
+			Sprintf(buf, "Throw distance:       %s'", buf2);
+		else
+			Sprintf(buf, "Range when fired:     %s'", buf2);
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+
+		/* Damage - Small */
+		Sprintf(buf, "Base damage - Small:  ");
 
 		if (objects[otyp].oc_wsdice > 0 && objects[otyp].oc_wsdam > 0)
 		{
@@ -216,10 +291,9 @@ register struct obj* obj;
 		txt = buf;
 		putstr(datawin, 0, txt);
 
-		/* Now large */
+		/* Damage - Large */
 		maindiceprinted = FALSE;
-
-		Sprintf(buf, "Damage - Large:      ");
+		Sprintf(buf, "Base damage - Large:  ");
 
 		if (objects[otyp].oc_wldice > 0 && objects[otyp].oc_wldam > 0)
 		{
@@ -242,37 +316,82 @@ register struct obj* obj;
 		putstr(datawin, 0, txt);
 
 		if(objects[otyp].oc_hitbon > 0)
-	 		Sprintf(buf, "To-hit bonus:        +%d", objects[otyp].oc_hitbon);
+	 		Sprintf(buf, "To-hit bonus:         +%d", objects[otyp].oc_hitbon);
 		else if (objects[otyp].oc_hitbon < 0)
-			Sprintf(buf, "To-hit bonus:        %d", objects[otyp].oc_hitbon);
+			Sprintf(buf, "To-hit bonus:         %d", objects[otyp].oc_hitbon);
 
 	}
 	else if (objects[otyp].oc_class == ARMOR_CLASS)
 	{
 		Sprintf(buf2, "%d", 10 - objects[otyp].a_ac);
-		Sprintf(buf, "Base armor class:    %s", buf2);
+		Sprintf(buf, "Base armor class:     %s", buf2);
 		txt = buf;
 		putstr(datawin, 0, txt);
 
 		if (objects[otyp].oc_name_known)
 		{
-			Sprintf(buf2, "%d", objects[otyp].a_ac);
-			Sprintf(buf, "Magic cancellation:  %s", buf2);
+			Sprintf(buf2, "%d", objects[otyp].a_magic_attack_protection_level);
+			Sprintf(buf, "Magic cancellation:   %s", buf2);
 			txt = buf;
 			putstr(datawin, 0, txt);
 		}
 	}
+	else if (objects[otyp].oc_class == WAND_CLASS || (objects[otyp].oc_class == TOOL_CLASS && objects[otyp].oc_dir != 0))
+	{
+		if (objects[otyp].oc_name_known)
+		{
 
+			if (objects[otyp].oc_wsdice > 0 || objects[otyp].oc_wsdam > 0 || objects[otyp].oc_wsdmgplus > 0)
+			{
+				boolean maindiceprinted = FALSE;
+				char plusbuf[BUFSZ];
+				Sprintf(buf, "Wand effect damage:   ");
+
+				if (objects[otyp].oc_wsdice > 0 && objects[otyp].oc_wsdam > 0)
+				{
+					maindiceprinted = TRUE;
+					Sprintf(plusbuf, "%dd%d", objects[otyp].oc_wsdice, objects[otyp].oc_wsdam);
+					Strcat(buf, plusbuf);
+				}
+
+				if (objects[otyp].oc_wsdmgplus != 0)
+				{
+					if (maindiceprinted && objects[otyp].oc_wsdmgplus > 0)
+					{
+						Sprintf(plusbuf, "+");
+						Strcat(buf, plusbuf);
+					}
+					Sprintf(plusbuf, "%d", objects[otyp].oc_wsdmgplus);
+					Strcat(buf, plusbuf);
+				}
+				txt = buf;
+				putstr(datawin, 0, txt);
+
+			}
+			if (objects[otyp].oc_spell_range > 0)
+			{
+				Sprintf(buf, "Wand effect range:    %d'", objects[otyp].oc_spell_range * 5);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (objects[otyp].oc_spell_radius > 0)
+			{
+				Sprintf(buf, "Wand effect radius:   %d'", objects[otyp].oc_spell_radius * 5);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+		}
+	}
 	if (obj->known && objects[otyp].oc_charged)
 	{
 		if(objects[otyp].oc_class == WAND_CLASS || objects[otyp].oc_class == TOOL_CLASS)
-			Sprintf(buf, "Charges left:        %d", obj->spe);
+			Sprintf(buf, "Charges left:         %d", obj->spe);
 		else
 		{
 			if(obj->spe >= 0)
-				Sprintf(buf, "Enchantment status:  +%d", obj->spe);
+				Sprintf(buf, "Enchantment status:   +%d", obj->spe);
 			else
-				Sprintf(buf, "Enchantment status:  %d", obj->spe);
+				Sprintf(buf, "Enchantment status:   %d", obj->spe);
 		}
 
 		txt = buf;
@@ -280,19 +399,19 @@ register struct obj* obj;
 	}
 	if (obj->bknown || obj->known)
 	{
-		Sprintf(buf, "Blessing status:     %s", obj->blessed ? "Blessed" : obj->cursed ? "Cursed" : "Uncursed");
+		Sprintf(buf, "Blessing status:      %s", obj->blessed ? "Blessed" : obj->cursed ? "Cursed" : "Uncursed");
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
 	if (obj->opoisoned)
 	{
-		Sprintf(buf, "Poisoned status:     Poisoned (+6d6 poison damage)");
+		Sprintf(buf, "Poisoned status:      Poisoned (+6d6 poison damage)");
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
 	if (obj->special_enchantment)
 	{
-		Sprintf(buf, "Special enchantment: %s", obj->special_enchantment == FIRE_ENCHANTMENT ? "Fire-enchanted (+2d6 fire damage)" :
+		Sprintf(buf, "Special enchantment:  %s", obj->special_enchantment == FIRE_ENCHANTMENT ? "Fire-enchanted (+2d6 fire damage)" :
 			obj->special_enchantment == COLD_ENCHANTMENT ? "Cold-enchanted (+1d6 cold damage)" :
 			obj->special_enchantment == LIGHTNING_ENCHANTMENT ? "Lightning-enchanted (+4d6 lightning damage)" :
 			obj->special_enchantment == DEATH_ENCHANTMENT ? "Death-enchanted (kills on hit)" : "Unknown enchantment"
@@ -302,7 +421,11 @@ register struct obj* obj;
 	}
 
 	/* Various extra info is the item is known */
-	if (objects[otyp].oc_name_known && objects[otyp].oc_class != SPBOOK_CLASS)
+	if (objects[otyp].oc_name_known
+		&& objects[otyp].oc_class != SPBOOK_CLASS
+		&& objects[otyp].oc_class != WAND_CLASS 
+		&& !(objects[otyp].oc_class == TOOL_CLASS && objects[otyp].oc_dir != 0) // Spell tools
+		)
 	{
 		if (objects[otyp].oc_oprop > 0
 			|| objects[otyp].oc_oprop2 > 0 
@@ -501,130 +624,304 @@ register struct obj* obj;
 				putstr(datawin, 0, txt);
 			}
 
-
-			if (objects[otyp].oc_flags & ~(O1_TREATED_AS_MATERIAL_COMPONENT | O1_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED | O1_CONFERS_LUCK))
+			/* Power confer limitations */
+			if (objects[otyp].oc_nonspell_confer_mask)
 			{
 				powercnt = 0;
 
-				Sprintf(buf, "Item properties:");
+				Sprintf(buf, "Powers are conferred only to:");
 				txt = buf;
 				putstr(datawin, 0, txt);
 
-				/* Flags here */
-				if (objects[otyp].oc_flags & O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED)
+				if (objects[otyp].oc_nonspell_confer_mask & PERMITTED_ROLE_ARCHEOLOGIST)
 				{
 					powercnt++;
-					Sprintf(buf, " %2d - Becomes cursed when picked up", powercnt);
+					Sprintf(buf, " %2d - Archeologists", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_flags & O1_BECOMES_CURSED_WHEN_WORN)
+				if (objects[otyp].oc_nonspell_confer_mask & PERMITTED_ROLE_BARBARIAN)
 				{
 					powercnt++;
-					Sprintf(buf, " %2d - Becomes cursed when worn", powercnt);
+					Sprintf(buf, " %2d - Barbarians", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED)
+				if (objects[otyp].oc_nonspell_confer_mask & PERMITTED_ROLE_CAVEMAN)
 				{
 					powercnt++;
-					Sprintf(buf, " %2d - Undroppable when cursed", powercnt);
+					Sprintf(buf, " %2d - Cave(wo)men", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_flags & O1_COLD_RESISTANT)
+				if (objects[otyp].oc_nonspell_confer_mask & PERMITTED_ROLE_HEALER)
 				{
 					powercnt++;
-					Sprintf(buf, " %2d - Cold resistant", powercnt);
+					Sprintf(buf, " %2d - Healers", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED)
+				if (objects[otyp].oc_nonspell_confer_mask & PERMITTED_ROLE_KNIGHT)
 				{
 					powercnt++;
-					Sprintf(buf, " %2d - Confers powers when carried", powercnt);
+					Sprintf(buf, " %2d - Knights", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_flags & O1_CORROSION_RESISTANT)
+				if (objects[otyp].oc_nonspell_confer_mask & PERMITTED_ROLE_MONK)
 				{
 					powercnt++;
-					Sprintf(buf, " %2d - Corrosion resistant", powercnt);
+					Sprintf(buf, " %2d - Monks", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_flags & O1_DISINTEGRATION_RESISTANT)
+				if (objects[otyp].oc_nonspell_confer_mask & PERMITTED_ROLE_PRIEST)
 				{
 					powercnt++;
-					Sprintf(buf, " %2d - Disintegration resistant", powercnt);
+					Sprintf(buf, " %2d - Priests", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_flags & O1_FIRE_RESISTANT)
+				if (objects[otyp].oc_nonspell_confer_mask & PERMITTED_ROLE_RANGER)
 				{
 					powercnt++;
-					Sprintf(buf, " %2d - Fire resistant", powercnt);
+					Sprintf(buf, " %2d - Rangers", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY)
+				if (objects[otyp].oc_nonspell_confer_mask & PERMITTED_ROLE_ROGUE)
 				{
 					powercnt++;
-					Sprintf(buf, " %2d - Half normal spell casting penalty", powercnt);
+					Sprintf(buf, " %2d - Rogues", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_flags & O1_INDESTRUCTIBLE)
+				if (objects[otyp].oc_nonspell_confer_mask & PERMITTED_ROLE_SAMURAI)
 				{
 					powercnt++;
-					Sprintf(buf, " %2d - Indestructible", powercnt);
+					Sprintf(buf, " %2d - Samurais", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_flags & O1_LIGHTNING_RESISTANT)
+				if (objects[otyp].oc_nonspell_confer_mask & PERMITTED_ROLE_TOURIST)
 				{
 					powercnt++;
-					Sprintf(buf, " %2d - Lightning resistant", powercnt);
+					Sprintf(buf, " %2d - Tourists", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_flags & O1_NOT_CURSEABLE)
+				if (objects[otyp].oc_nonspell_confer_mask & PERMITTED_ROLE_VALKYRIE)
 				{
 					powercnt++;
-					Sprintf(buf, " %2d - Cannot be cursed", powercnt);
+					Sprintf(buf, " %2d - Valkyries", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY)
+				if (objects[otyp].oc_nonspell_confer_mask & PERMITTED_ROLE_WIZARD)
 				{
 					powercnt++;
-					Sprintf(buf, " %2d - No spell casting penalty", powercnt);
+					Sprintf(buf, " %2d - Wizards", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_flags & O1_POLYMORPH_RESISTANT)
+				if (objects[otyp].oc_nonspell_confer_mask & PERMITTED_RACE_DWARF)
 				{
 					powercnt++;
-					Sprintf(buf, " %2d - Polymorph resistant", powercnt);
+					Sprintf(buf, " %2d - Dwarves", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_flags & O1_RUST_RESISTANT)
+				if (objects[otyp].oc_nonspell_confer_mask & PERMITTED_RACE_ELF)
 				{
 					powercnt++;
-					Sprintf(buf, " %2d - Rust-proof", powercnt);
+					Sprintf(buf, " %2d - Elves", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_flags & O1_SPECIAL_ENCHANTABLE)
+				if (objects[otyp].oc_nonspell_confer_mask & PERMITTED_RACE_GNOLL)
 				{
 					powercnt++;
-					Sprintf(buf, " %2d - Can be specially enchanted", powercnt);
+					Sprintf(buf, " %2d - Gnolls", powercnt);
+					txt = buf;
+					putstr(datawin, 0, txt);
+				}
+				if (objects[otyp].oc_nonspell_confer_mask & PERMITTED_RACE_HUMAN)
+				{
+					powercnt++;
+					Sprintf(buf, " %2d - Humans", powercnt);
+					txt = buf;
+					putstr(datawin, 0, txt);
+				}
+				if (objects[otyp].oc_nonspell_confer_mask & PERMITTED_RACE_ORC)
+				{
+					powercnt++;
+					Sprintf(buf, " %2d - Orcs", powercnt);
+					txt = buf;
+					putstr(datawin, 0, txt);
+				}
+				if (objects[otyp].oc_nonspell_confer_mask & PERMITTED_GENDER_FEMALE)
+				{
+					powercnt++;
+					Sprintf(buf, " %2d - Females", powercnt);
+					txt = buf;
+					putstr(datawin, 0, txt);
+				}
+				if (objects[otyp].oc_nonspell_confer_mask & PERMITTED_GENDER_MALE)
+				{
+					powercnt++;
+					Sprintf(buf, " %2d - Males", powercnt);
+					txt = buf;
+					putstr(datawin, 0, txt);
+				}
+				if (objects[otyp].oc_nonspell_confer_mask & PERMITTED_ALIGNMENT_CHAOTIC)
+				{
+					powercnt++;
+					Sprintf(buf, " %2d - Chaotic", powercnt);
+					txt = buf;
+					putstr(datawin, 0, txt);
+				}
+				if (objects[otyp].oc_nonspell_confer_mask & PERMITTED_ALIGNMENT_LAWFUL)
+				{
+					powercnt++;
+					Sprintf(buf, " %2d - Lawful", powercnt);
+					txt = buf;
+					putstr(datawin, 0, txt);
+				}
+				if (objects[otyp].oc_nonspell_confer_mask & PERMITTED_ALIGNMENT_NEUTRAL)
+				{
+					powercnt++;
+					Sprintf(buf, " %2d - Neutral", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
 			}
 		}
+
+		/* Item properties */
+		if (objects[otyp].oc_flags & ~(O1_TREATED_AS_MATERIAL_COMPONENT | O1_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED | O1_CONFERS_LUCK))
+		{
+			int powercnt = 0;
+
+			Sprintf(buf, "Item properties:");
+			txt = buf;
+			putstr(datawin, 0, txt);
+
+			/* Flags here */
+			if (objects[otyp].oc_flags & O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Becomes cursed when picked up", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (objects[otyp].oc_flags & O1_BECOMES_CURSED_WHEN_WORN)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Becomes cursed when worn", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (objects[otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Undroppable when cursed", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (objects[otyp].oc_flags & O1_COLD_RESISTANT)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Cold resistant", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (objects[otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Confers powers when carried", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (objects[otyp].oc_flags & O1_CORROSION_RESISTANT)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Corrosion resistant", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (objects[otyp].oc_flags & O1_DISINTEGRATION_RESISTANT)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Disintegration resistant", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (objects[otyp].oc_flags & O1_FIRE_RESISTANT)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Fire resistant", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (objects[otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Half normal spell casting penalty", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (objects[otyp].oc_flags & O1_INDESTRUCTIBLE)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Indestructible", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (objects[otyp].oc_flags & O1_LIGHTNING_RESISTANT)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Lightning resistant", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (objects[otyp].oc_flags & O1_NOT_CURSEABLE)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Cannot be cursed", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (objects[otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - No spell casting penalty", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (objects[otyp].oc_flags & O1_POLYMORPH_RESISTANT)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Polymorph resistant", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (objects[otyp].oc_flags & O1_RUST_RESISTANT)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Rust-proof", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (objects[otyp].oc_flags & O1_SPECIAL_ENCHANTABLE)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Can be specially enchanted", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+		}
+
+
 		/* Description*/
 		if (objects[otyp].oc_short_description)
 		{
