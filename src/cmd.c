@@ -2586,7 +2586,13 @@ int final;
             enl_msg(You_, "will see", "would have seen",
                     " invisible when not blind", from_what(SEE_INVIS));
     }
-    if (Unblind_telepat)
+	if (Enhanced_vision)
+		you_have("enhanced vision", from_what(ENHANCED_VISION));
+	if (Eye_protection)
+		you_are("protected from eye damage", from_what(EYE_PROTECTION));
+	if (Flash_resistance)
+		you_are("protected from bright light", from_what(FLASH_RES));
+	if (Unblind_telepat)
         you_are("telepathic", from_what(TELEPAT));
 	if (Blind_telepat)
 		you_are("telepathic when blind", from_what(BLIND_TELEPAT));

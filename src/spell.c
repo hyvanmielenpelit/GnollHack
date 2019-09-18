@@ -3276,55 +3276,6 @@ int spell;
 		struct materialcomponent* mc = &matlists[spellmatcomp(spell)].matcomp[j];
 		strcpy(buf3, domatcompname(mc));
 
-		/*
-		
-		struct objclass* perobj = (struct objclass*)0;
-		if (mc->objectid >= 0)
-			perobj = &objects[mc->objectid];
-
-		struct permonst* permon = (struct permonst*)0;
-		if(mc->monsterid >= 0)
-			permon = &mons[mc->monsterid];
-
-		if (!perobj || !mc || mc->amount == 0)
-			continue;
-
-		char buf[BUFSZ], buf2[BUFSZ], buf3[BUFSZ], buf4[BUFSZ] = "";
-
-		if (permon && perobj)
-		{
-			if (mc->objectid == CORPSE || mc->objectid == EGG)
-				//Add "lizard" to "corpse" to get "lizard corpse" (or lizard egg)
-				Sprintf(buf4, "%s %s", permon->mname, obj_descr[perobj->oc_name_idx].oc_name);
-			else if (mc->objectid == TIN)
-				//Add "lizard" to "tin" to get "lizard corpse"
-				Sprintf(buf4, "%s of %s meat", obj_descr[perobj->oc_name_idx].oc_name, permon->mname);
-			else
-				Sprintf(buf4, "%s%s", obj_descr[perobj->oc_name_idx].oc_name, GemStone(mc->objectid) ? " stone" : "");
-		}
-		else
-		{
-			Sprintf(buf4, "%s%s%s",
-				objects[mc->objectid].oc_class == SCROLL_CLASS ? "scroll of " :
-					objects[mc->objectid].oc_class == POTION_CLASS ? "potion of " : 
-					objects[mc->objectid].oc_class == WAND_CLASS ? "wand of " :
-					objects[mc->objectid].oc_class == SPBOOK_CLASS ? "spellbook of " : "",
-				obj_descr[perobj->oc_name_idx].oc_name, 
-				GemStone(mc->objectid) ? " stone" : "");
-		}
-
-		//Correct type of component
-		Sprintf(buf2, "%s%s%s",
-			(mc->flags& MATCOMP_BLESSED_REQUIRED ? "blessed " : mc->flags & MATCOMP_CURSED_REQUIRED ? "cursed " : (mc->flags & MATCOMP_NOT_CURSED ? "noncursed " : "")),
-			(mc->flags& MATCOMP_DEATH_ENCHANTMENT_REQUIRED ? "death-enchanted " : ""),
-			buf4);
-
-		//Indicate how many
-		if (mc->amount == 1)
-			strcpy(buf3, an(buf2));
-		else
-			Sprintf(buf3, "%d %s", mc->amount, makeplural(buf2));
-*/
 		Sprintf(buf, "You need %s%s. ",
 			buf3, (mc->flags& MATCOMP_NOT_SPENT ? " as a catalyst" : " as a component"));
 

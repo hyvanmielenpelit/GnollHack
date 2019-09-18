@@ -545,6 +545,14 @@ struct obj* otmp;
 	return carried(otmp) && carried_object_confers_powers(otmp);
 }
 
+boolean
+object_uses_spellbook_wand_flags_and_properties(uitem)
+struct obj* uitem;
+{
+	return ((uitem->oclass == SPBOOK_CLASS && !(objects[uitem->otyp].oc_flags & O1_NON_SPELL_SPELLBOOK)) 
+		|| uitem->oclass == WAND_CLASS || (uitem->oclass == TOOL_CLASS && (objects[uitem->otyp].oc_flags & O1_WAND_LIKE_TOOL)));
+}
+
 void
 update_carried_item_extrinsics()
 {
@@ -560,7 +568,7 @@ update_carried_item_extrinsics()
 	//Add then extrinsics from all carried items
 	for (uitem = invent; uitem; uitem = uitem->nobj)
 	{
-		if ((uitem->oclass != SPBOOK_CLASS || (uitem->oclass == SPBOOK_CLASS && (objects[uitem->otyp].oc_flags & O1_NON_SPELL_SPELLBOOK)))
+		if (!object_uses_spellbook_wand_flags_and_properties(uitem)
 			&& (
 			(uitem == uwep && (uitem->oclass == WEAPON_CLASS || is_weptool(uitem)))
 			|| uitem == uarm
@@ -1433,7 +1441,7 @@ boolean addconstitutionbonus;
 	for (uitem = invent; uitem; uitem = uitem->nobj)
 	{
 		otyp = uitem->otyp;
-		if ((objects[otyp].oc_class != SPBOOK_CLASS || (uitem->oclass == SPBOOK_CLASS && (objects[uitem->otyp].oc_flags & O1_NON_SPELL_SPELLBOOK)))
+		if (!object_uses_spellbook_wand_flags_and_properties(uitem)
 			&& objects[otyp].oc_hp_bonus > 0 && (
 			(uitem == uwep && (uitem->oclass == WEAPON_CLASS || is_weptool(uitem)))
 			|| uitem == uarm
@@ -1510,7 +1518,7 @@ updateabon()
 	for (uitem = invent; uitem; uitem = uitem->nobj)
 	{
 		otyp = uitem->otyp;
-		if ((objects[otyp].oc_class != SPBOOK_CLASS || (uitem->oclass == SPBOOK_CLASS && (objects[uitem->otyp].oc_flags & O1_NON_SPELL_SPELLBOOK)))
+		if (!object_uses_spellbook_wand_flags_and_properties(uitem)
 			&& (
 			(uitem == uwep && (uitem->oclass == WEAPON_CLASS || is_weptool(uitem)))
 			|| uitem == uarm

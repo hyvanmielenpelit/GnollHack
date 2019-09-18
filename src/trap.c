@@ -3448,7 +3448,7 @@ xchar x, y;
     if (objects[otyp].oc_material < DRAGON_HIDE
         && ocls != SCROLL_CLASS && ocls != SPBOOK_CLASS
         && objects[otyp].oc_oprop != FIRE_RES && objects[otyp].oc_oprop2 != FIRE_RES && objects[otyp].oc_oprop3 != FIRE_RES 
-		&& !(objects[otyp].oc_flags & O1_FIRE_RESISTANT)
+		&& !(objects[otyp].oc_flags & (O1_FIRE_RESISTANT | O1_INDESTRUCTIBLE))
         && otyp != WAN_FIRE && otyp != FIRE_HORN
         /* assumes oerodeproof isn't overloaded for some other purpose on
            non-eroding items */

@@ -336,11 +336,10 @@ register struct obj* obj;
 			putstr(datawin, 0, txt);
 		}
 	}
-	else if (objects[otyp].oc_class == WAND_CLASS || (objects[otyp].oc_class == TOOL_CLASS && objects[otyp].oc_dir != 0))
+	else if (objects[otyp].oc_class == WAND_CLASS || (objects[otyp].oc_class == TOOL_CLASS && (objects[otyp].oc_flags & O1_WAND_LIKE_TOOL)))
 	{
 		if (objects[otyp].oc_name_known)
 		{
-
 			if (objects[otyp].oc_wsdice > 0 || objects[otyp].oc_wsdam > 0 || objects[otyp].oc_wsdmgplus > 0)
 			{
 				boolean maindiceprinted = FALSE;
@@ -421,11 +420,7 @@ register struct obj* obj;
 	}
 
 	/* Various extra info is the item is known */
-	if (objects[otyp].oc_name_known
-		&& objects[otyp].oc_class != SPBOOK_CLASS
-		&& objects[otyp].oc_class != WAND_CLASS 
-		&& !(objects[otyp].oc_class == TOOL_CLASS && objects[otyp].oc_dir != 0) // Spell tools
-		)
+	if (objects[otyp].oc_name_known	&& !object_uses_spellbook_wand_flags_and_properties(obj))
 	{
 		if (objects[otyp].oc_oprop > 0
 			|| objects[otyp].oc_oprop2 > 0 
@@ -798,7 +793,8 @@ register struct obj* obj;
 		}
 
 		/* Item properties */
-		if (objects[otyp].oc_flags & ~(O1_TREATED_AS_MATERIAL_COMPONENT | O1_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED | O1_CONFERS_LUCK))
+		if (objects[otyp].oc_flags & ~(O1_TREATED_AS_MATERIAL_COMPONENT | O1_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED | O1_CONFERS_LUCK
+			| O1_WAND_LIKE_TOOL | O1_NON_SPELL_SPELLBOOK | O1_EDIBLE_NONFOOD))
 		{
 			int powercnt = 0;
 
