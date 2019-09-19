@@ -838,11 +838,6 @@ struct obj *obj;
         set_artifact_intrinsic(obj, 1, W_ART);
     }
 
-	update_carried_item_extrinsics();
-	updateabon();
-	updatemaxen();
-	updatemaxhp();
-
 	/* "special achievements" aren't discoverable during play, they
        end up being recorded in XLOGFILE at end of game, nowhere else;
        record_achieve_special overloads corpsenm which is ordinarily
@@ -880,6 +875,11 @@ struct obj *obj;
          * for correct calculation */
         set_moreluck();
     }
+
+	update_carried_item_extrinsics();
+	updateabon();
+	updatemaxen();
+	updatemaxhp();
 }
 
 /*
@@ -894,7 +894,18 @@ struct obj *obj;
     int saved_otyp = (int) obj->otyp; /* for panic */
     boolean obj_was_thrown;
 
-    if (obj->where != OBJ_FREE)
+	int oldmanamax = u.uenmax;
+	int oldhpmax = u.uhpmax;
+	int oldstr = ACURR(A_STR);
+	int olddex = ACURR(A_DEX);
+	int oldcon = ACURR(A_CON);
+	int oldint = ACURR(A_INT);
+	int oldwis = ACURR(A_WIS);
+	int oldcha = ACURR(A_CHA);
+	int oldac = u.uac;
+
+
+     if (obj->where != OBJ_FREE)
         panic("addinv: obj not free");
     /* normally addtobill() clears no_charge when items in a shop are
        picked up, but won't do so if the shop has become untended */
@@ -948,6 +959,33 @@ struct obj *obj;
  added:
     addinv_core2(obj);
     carry_obj_effects(obj); /* carrying affects the obj */
+
+
+	if ((
+		u.uenmax != oldmanamax
+		|| u.uhpmax != oldhpmax
+		|| ACURR(A_STR) != oldstr
+		|| ACURR(A_DEX) != olddex
+		|| ACURR(A_CON) != oldcon
+		|| ACURR(A_INT) != oldint
+		|| ACURR(A_WIS) != oldwis
+		|| ACURR(A_CHA) != oldcha
+		|| (obj->oclass != ARMOR_CLASS && u.uac != oldac)
+		)) // this should identify all objects giving hp or mana or stats or ac
+	{
+		if (obj->oclass == RING_CLASS || obj->oclass == MISCELLANEOUS_CLASS) //Observable ring
+			learnring(obj, TRUE);
+		else
+			makeknown(obj->otyp);
+	}
+	else if (obj->oclass == RING_CLASS || obj->oclass == MISCELLANEOUS_CLASS)
+	{
+		/* Nonobservable ring */
+		learnring(obj, FALSE);
+	}
+
+
+
     update_inventory();
     return obj;
 }

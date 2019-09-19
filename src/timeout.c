@@ -99,8 +99,10 @@ const struct propname {
 	{ LYCANTHROPY_RES, "lycanthropy resistance" },
 	{ CURSE_RES, "curse resistance" },
 	{ BLIND_TELEPAT, "telepathic when blind" },
-	{ ENHANCED_VISION, "enhanced learning" },
+	{ ENHANCED_VISION, "enhanced vision" },
 	{ FLASH_RES, "flash resistance" },
+	{ EYE_PROTECTION, "protection from eye damage" },
+	{ BRAIN_PROTECTION, "protection from brain damage" },
 	{ LAUGHING, "laughing uncontrollably" },
 	{  0, 0 },
 };
