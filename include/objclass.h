@@ -62,7 +62,7 @@ enum obj_miscellaneous_types {
 	MISC_BRACELET = 9,
 	MISC_BRACERS = 10,		/* alternative implementation of bracers */
 	MISC_BELT = 11,			
-	MISC_LENSES = 12,		/* alternative implementation of glasses */
+	MISC_LENSES = 12,		/* alternative implementation of eyeglasses */
 	MISC_BLINDFOLD = 13,	/* alternative implementation of blindfold */
 	MISC_SCARF = 14
 };

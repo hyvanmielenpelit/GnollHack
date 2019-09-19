@@ -28,27 +28,27 @@ struct icp {
 static const struct icp mkobjprobs[] = { { 8, WEAPON_CLASS },
                                          { 8, ARMOR_CLASS },
                                          { 18, FOOD_CLASS },
-                                         { 6, TOOL_CLASS },
-                                         { 6, GEM_CLASS },
+                                         { 5, TOOL_CLASS },
+                                         { 5, GEM_CLASS },
                                          { 12, POTION_CLASS },
                                          { 12, SCROLL_CLASS },
                                          { 12, SPBOOK_CLASS },
                                          { 2, WAND_CLASS },
                                          { 4, RING_CLASS },
 										 { 8, REAGENT_CLASS },
-										 { 2, MISCELLANEOUS_CLASS },
+										 { 4, MISCELLANEOUS_CLASS },
 										 { 2, AMULET_CLASS } };
 
-static const struct icp boxiprobs[] = { { 14, GEM_CLASS },
+static const struct icp boxiprobs[] = { { 12, GEM_CLASS },
                                         { 12, FOOD_CLASS },
-                                        { 12, POTION_CLASS },
+                                        { 10, POTION_CLASS },
                                         { 12, SCROLL_CLASS },
                                         { 16, SPBOOK_CLASS },
                                         { 8, COIN_CLASS },
                                         { 12, WAND_CLASS },
                                         { 6, RING_CLASS },
 										{ 4, REAGENT_CLASS },
-   									    { 2, MISCELLANEOUS_CLASS },
+   									    { 6, MISCELLANEOUS_CLASS },
 										{ 2, AMULET_CLASS } };
 
 static const struct icp rogueprobs[] = { { 12, WEAPON_CLASS },
@@ -59,8 +59,8 @@ static const struct icp rogueprobs[] = { { 12, WEAPON_CLASS },
                                          { 5, WAND_CLASS },
                                          { 5, RING_CLASS } };
 
-static const struct icp hellprobs[] = { { 16, WEAPON_CLASS },
-                                        { 16, ARMOR_CLASS },
+static const struct icp hellprobs[] = { { 14, WEAPON_CLASS },
+                                        { 14, ARMOR_CLASS },
                                         { 14, FOOD_CLASS },
                                         { 12, TOOL_CLASS },
                                         { 8, GEM_CLASS },
@@ -69,7 +69,7 @@ static const struct icp hellprobs[] = { { 16, WEAPON_CLASS },
 										{ 8, REAGENT_CLASS },
 										{ 8, WAND_CLASS },
                                         { 8, RING_CLASS },
-										{ 4, MISCELLANEOUS_CLASS },
+										{ 8, MISCELLANEOUS_CLASS },
 										{ 4, AMULET_CLASS } };
 
 struct oextra *
@@ -1226,10 +1226,10 @@ boolean makingboxcontents;
 					else
 						otmp->spe = rn2(2) ? addition : -addition; //rne(3) : -rne(3);
 				}
-				/* make useless +0 decorations much less common */
+				/* make useless +0 miscellaneous items much less common */
 				if (otmp->spe == 0)
 					otmp->spe = ((otmp->otyp == STRANGE_OBJECT) ? rnd(3) - 2 : rn2(4) - rn2(3));
-				/* negative decorations are usually cursed */
+				/* negative miscellaneous items are usually cursed */
 				if (otmp->spe < 0 && rn2(5))
 					curse(otmp);
 			}

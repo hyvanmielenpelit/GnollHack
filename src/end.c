@@ -23,8 +23,8 @@
 #define FIRST_GEM DILITHIUM_CRYSTAL
 #define FIRST_AMULET AMULET_OF_ESP
 #define LAST_AMULET AMULET_OF_YENDOR
-#define FIRST_DECORATION BROOCH_OF_SHIELDING
-#define LAST_DECORATION WINGS_OF_FLYING
+#define FIRST_MISCITEM BROOCH_OF_SHIELDING
+#define LAST_MISCITEM WINGS_OF_FLYING
 
 struct valuable_data {
     long count;
@@ -34,14 +34,14 @@ struct valuable_data {
 static struct valuable_data
     gems[LAST_GEM + 1 - FIRST_GEM + 1], /* 1 extra for glass */
     amulets[LAST_AMULET + 1 - FIRST_AMULET],
-	decorations[LAST_DECORATION + 1 - FIRST_DECORATION];
+	miscellaneousitems[LAST_MISCITEM + 1 - FIRST_MISCITEM];
 
 static struct val_list {
     struct valuable_data *list;
     int size;
 } valuables[] = { { gems, sizeof gems / sizeof *gems },
                   { amulets, sizeof amulets / sizeof *amulets },
-				  { decorations, sizeof decorations / sizeof * decorations },
+				  { miscellaneousitems, sizeof miscellaneousitems / sizeof * miscellaneousitems },
 				  { 0, 0 } };
 
 #ifndef NO_SIGNAL
@@ -932,13 +932,13 @@ struct obj *list; /* inventory or container contents */
                 amulets[i].count += obj->quan; /* always adds one */
 		}
 		else if (obj->oclass == MISCELLANEOUS_CLASS) {
-			i = obj->otyp - FIRST_DECORATION;
-			if (!decorations[i].count) {
-				decorations[i].count = obj->quan;
-				decorations[i].typ = obj->otyp;
+			i = obj->otyp - FIRST_MISCITEM;
+			if (!miscellaneousitems[i].count) {
+				miscellaneousitems[i].count = obj->quan;
+				miscellaneousitems[i].typ = obj->otyp;
 			}
 			else
-				decorations[i].count += obj->quan; /* always adds one */
+				miscellaneousitems[i].count += obj->quan; /* always adds one */
 		} else if (obj->oclass == GEM_CLASS && obj->otyp < LUCKSTONE) {
             i = min(obj->otyp, LAST_GEM + 1) - FIRST_GEM;
             if (!gems[i].count) {
