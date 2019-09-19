@@ -598,6 +598,12 @@ int *dmg_p; /* for dishing out extra damage in lieu of Int loss */
          */
         /* no such thing as mindless players */
 
+		if (Brain_protection) {
+			pline("However, your brain is unharmed.");
+			/* all done; no extra harm inflicted upon target */
+			return MM_MISS;
+		}
+
 		//REDUCE INTELLIGENCE
 		(void)adjattrib(A_INT, -int_loss, FALSE);
 		forget_levels(25);  /* lose memory of 25% of levels */

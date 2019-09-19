@@ -2592,6 +2592,8 @@ int final;
 		you_are("protected from eye damage", from_what(EYE_PROTECTION));
 	if (Flash_resistance)
 		you_are("protected from bright light", from_what(FLASH_RES));
+	if (Brain_protection)
+		you_are("protected from brain damage", from_what(BRAIN_PROTECTION));
 	if (Unblind_telepat)
         you_are("telepathic", from_what(TELEPAT));
 	if (Blind_telepat)

@@ -143,6 +143,10 @@
 #define EEye_protection u.uprops[EYE_PROTECTION].extrinsic
 #define Eye_protection (HEye_protection || EEye_protection)
 
+#define HBrain_protection u.uprops[BRAIN_PROTECTION].intrinsic
+#define EBrain_protection u.uprops[BRAIN_PROTECTION].extrinsic
+#define Brain_protection (HBrain_protection || EBrain_protection)
+
 #define HLaughing u.uprops[LAUGHING].intrinsic
 #define ELaughing u.uprops[LAUGHING].extrinsic
 #define Laughing (HLaughing || ELaughing)
