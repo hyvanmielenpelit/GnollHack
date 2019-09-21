@@ -288,9 +288,11 @@ struct objclass {
 #define O1_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED 0x00400000			/* if deathenchantable item, then death, otherwise lightning*/
 
 /* General flags -- General: cannot be overriden */
-#define O1_THROWN_WEAPON 0x04000000										/* says "Thrown weapon" instead of "Melee weapon", default range is larger, can use throwrange data value*/
-#define O1_WAND_LIKE_TOOL 0x08000000									/* apply is the same as zap, uses spellbook/wand paramters and flags instead of normal flags */
-#define O1_TREATED_AS_MATERIAL_COMPONENT 0x10000000
+#define O1_THROWN_WEAPON 0x01000000										/* says "Thrown weapon" instead of "Melee weapon", default range is larger, can use throwrange data value */
+#define O1_WEIGHT_DOES_NOT_REDUCE_RANGE 0x02000000						/* the object magically flies when thrown, ignoring its weight */
+#define O1_RETURNS_TO_HAND_AFTER_THROWING 0x04000000					/* the object returns to the owner's hand after throwing */
+#define O1_CAN_BE_THROWN_ONLY_IF_WIELDED 0x08000000						/* has to be wielded to be thrown, e.g., Mjollnir */
+#define O1_WAND_LIKE_TOOL 0x10000000									/* apply is the same as zap, uses spellbook/wand paramters and flags instead of normal flags */
 #define O1_EDIBLE_NONFOOD 0x20000000
 #define O1_NON_SPELL_SPELLBOOK 0x40000000  /* uses non-spellbook flags and other non-spellbook stats */
 #define O1_NOT_CURSEABLE 0x80000000

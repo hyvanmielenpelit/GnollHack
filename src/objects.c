@@ -118,7 +118,7 @@ PROJECTILE("elven arrow", "runed arrow",
 PROJECTILE("orcish arrow", "crude arrow",
            0, 20, 1, 2, 1, 5, 0, 1, 6, 0, 0,        IRON, -P_BOW, CLR_BLACK, O1_NONE),
 PROJECTILE("silver arrow", None,
-           1, 8, 1, 5, 1, 6, 0, 1, 6, 0, 0,        SILVER, -P_BOW, HI_SILVER, O1_TREATED_AS_MATERIAL_COMPONENT),
+           1, 8, 1, 5, 1, 6, 0, 1, 6, 0, 0,        SILVER, -P_BOW, HI_SILVER, O1_NONE),
 PROJECTILE("ya", "bamboo arrow",
            0, 11, 1, 4, 1, 7, 0, 1, 7, 0, 1,        METAL, -P_BOW, HI_METAL, O1_NONE),
 PROJECTILE("bone arrow", None,
@@ -144,7 +144,7 @@ WEAPON("dart", None,
 WEAPON("shuriken", "throwing star",
        0, 1, 0, 25,   1,   1, 5, 0, 1,  8, 0,  6, 2, 0, 0, 0, 0, 0, 0, P,   -P_SHURIKEN, IRON, HI_METAL, O1_THROWN_WEAPON, 0),
 WEAPON("boomerang", None,
-       1, 1, 0, 15,   5,  20,  1, 9, 0, 1, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0,   -P_BOOMERANG, WOOD, HI_WOOD, O1_THROWN_WEAPON, 0),
+       1, 1, 0, 15,   5,  20,  1, 9, 0, 1, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0,   -P_BOOMERANG, WOOD, HI_WOOD, O1_THROWN_WEAPON | O1_RETURNS_TO_HAND_AFTER_THROWING, 0),
 
 /* spears [note: javelin used to have a separate skill from spears,
    because the latter are primarily stabbing weapons rather than
@@ -152,7 +152,7 @@ WEAPON("boomerang", None,
    under spear skill and spears can now be thrown like javelins] */
 /* Note from JG: Javelins are now marked as thrown weapons while spears are not */
 WEAPON("spear", None,
-       1, 1, 0, 50,  30,   3,  1, 6, 0, 1,  8, 0, 0, -70, 0, 0, 0, 0, 0, P,   P_SPEAR, IRON, HI_METAL, O1_NONE, 0),
+       1, 1, 0, 45,  30,   3,  1, 6, 0, 1,  8, 0, 0, -70, 0, 0, 0, 0, 0, P,   P_SPEAR, IRON, HI_METAL, O1_NONE, 0),
 WEAPON("elven spear", "runed spear",
        0, 1, 0, 10,  30,   3,  1, 7, 0, 1,  8, 0, 0, -80, 0, 0, 0, 0, 0, P,   P_SPEAR, WOOD, HI_WOOD, O1_NONE, 0),
 WEAPON("orcish spear", "crude spear",
@@ -162,7 +162,9 @@ WEAPON("dwarvish spear", "stout spear",
 WEAPON("silver spear", None,
        1, 1, 0,  2,  36,  40,  1, 6, 0,  1, 8, 0, 0, -70, 0, 0, 0, 0, 0, P,   P_SPEAR, SILVER, HI_SILVER, O1_NONE, 0),
 WEAPON("javelin", "throwing spear",
-       0, 1, 0, 10,  20,   3,  1, 6, 0, 1, 6, 0, 0, -90, 0, 0, 0, 0, 0, P,   P_SPEAR, IRON, HI_METAL, O1_THROWN_WEAPON, 0),
+       0, 0, 0, 10,  20,   3,  1, 6, 0, 1, 6, 0, 0, -90, 0, 0, 0, 0, 0, P,   P_SPEAR, IRON, HI_METAL, O1_THROWN_WEAPON, 0),
+WEAPON("javelin of returning", "throwing spear",
+       0, 1, 0, 5,  20,   3,  1, 6, 0, 1, 6, 0, 0, -90, 0, 0, 0, 0, 0, P,   P_SPEAR, IRON, HI_METAL, O1_THROWN_WEAPON | O1_WEIGHT_DOES_NOT_REDUCE_RANGE | O1_RETURNS_TO_HAND_AFTER_THROWING, 0),
 
 /* spearish; doesn't stack, not intended to be thrown */
 WEAPON("trident", None,
@@ -177,7 +179,7 @@ WEAPON("elven dagger", "runed dagger",
 WEAPON("orcish dagger", "crude dagger",
        0, 1, 0, 12,  10,   4,  1, 3, 0, 1,  3, 0, 2, 0, 0, 0, 0, 0, 0, P,   P_DAGGER, IRON, CLR_BLACK, O1_THROWN_WEAPON, 0),
 WEAPON("bone dagger", None,
-       1, 1, 0, 6,  10,   4,  1, 3, 0, 1,  3, 0, 2, 0, 0, 0, 0, 0, 0, P,   P_DAGGER, BONE, CLR_WHITE, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
+       1, 1, 0, 6,  10,   4,  1, 3, 0, 1,  3, 0, 2, 0, 0, 0, 0, 0, 0, P,   P_DAGGER, BONE, CLR_WHITE, O1_NONE | O1_THROWN_WEAPON, 0),
 WEAPON("silver dagger", None,
        1, 1, 0,  3,  12,  40,  1, 4, 0, 1,  3, 0, 2, 0, 0, 0, 0, 0, 0, P,   P_DAGGER, SILVER, HI_SILVER, O1_THROWN_WEAPON, 0),
 WEAPON("athame", None,
@@ -185,7 +187,7 @@ WEAPON("athame", None,
 WEAPON("scalpel", None,
        1, 1, 0,  0,   5,   6,  1, 3, 0, 1, 3, 0, 2, 0, 0, 0, 0, 0, 0, S,   P_KNIFE, METAL, HI_METAL, O1_NONE, 0),
 WEAPON("knife", None,
-       1, 1, 0, 20,   5,   4,  1, 3, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, P|S, P_KNIFE, IRON, HI_METAL, O1_NONE, 0),
+       1, 1, 0, 20,   5,   4,  1, 3, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, P|S, P_KNIFE, IRON, HI_METAL, O1_THROWN_WEAPON, 0),
 WEAPON("stiletto", None,
        1, 1, 0,  5,   5,   4, 1, 3, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, P|S, P_KNIFE, IRON, HI_METAL, O1_NONE, 0),
 /* 3.6: worm teeth and crysknives now stack;
@@ -293,16 +295,14 @@ WEAPON("bec de corbin", "beaked polearm",
 /* bludgeons */
 WEAPON("mace", None,
        1, 0, 0, 38,  60,   5,  1, 6, 1, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, B,   P_MACE, IRON, HI_METAL, O1_NONE, 0),
-        /* +1 small */
 WEAPON("silver mace", None,
 	   1, 0, 0, 2, 55, 250, 1, 6, 1, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, B, P_MACE, SILVER, HI_SILVER, O1_NONE, 0),
-		/* +1 small */
 WEAPON("morning star", None,
 	   1, 0, 0, 12, 60,  10,  2, 4, 0, 1,  6, 1, 0, 0, 0, 0, 0, 0, 0, B,   P_MORNING_STAR, IRON, HI_METAL, O1_NONE, 0),
-        /* +d4 small, +1 large */
 WEAPON("war hammer", None,
        1, 0, 0, 11,  50,   5,  1, 6, 1, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, B,   P_HAMMER, IRON, HI_METAL, O1_NONE, 0),
-        /* +1 small */
+WEAPON("heavy war hammer", None, /* Base object for Mjollnir*/
+       1, 1, 0, 0,  1600, 1000,  1, 8, 1, 1, 8, 0, 0, 0, 0, 0, 0, 0, 0, B,   P_HAMMER, IRON, HI_METAL, O1_THROWN_WEAPON | O1_WEIGHT_DOES_NOT_REDUCE_RANGE | O1_RETURNS_TO_HAND_AFTER_THROWING | O1_CAN_BE_THROWN_ONLY_IF_WIELDED, PERMITTED_ROLE_VALKYRIE),
 WEAPON("club", None,
        1, 0, 0, 12,  40,   3,  1, 6, 0, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, B,   P_CLUB, WOOD, HI_WOOD, O1_NONE, 0),
 WEAPON("infernal jagged-toothed club", "black jagged-toothed club",
@@ -315,7 +315,7 @@ WEAPON("staff of the magi", "staff",
        0, 1, 1, 4,  30,  500,  3, 6, 0, 3, 6, 0, 0, 50, 0, 0, 0, 0, 0, B,   P_QUARTERSTAFF, WOOD, HI_WOOD, O1_MANA_PERCENTAGE_BONUS | O1_FIRE_RESISTANT | O1_LIGHTNING_RESISTANT, 0),
 /* two-piece */
 WEAPON("aklys", "thonged club",
-       0, 0, 0,  8,  15,   4,  1, 6, 0, 1, 3, 0, 0, 4, 0, 0, 0, 0, 0, B,   P_CLUB, IRON, HI_METAL, O1_NONE, 0),
+       0, 0, 0,  8,  15,   4,  1, 6, 0, 1, 3, 0, 0, 4, 0, 0, 0, 0, 0, B,   P_CLUB, IRON, HI_METAL, O1_THROWN_WEAPON, O1_RETURNS_TO_HAND_AFTER_THROWING),
 WEAPON("flail", None,
        1, 0, 0, 40,  35,   4,  1, 6, 1, 2, 4, 0, 0, 0, 0, 0, 0, 0, 0, B,   P_FLAIL, IRON, HI_METAL, O1_NONE, 0),
 	/* +1 small, +1d4 large */
@@ -569,7 +569,7 @@ ROBE("clerical gown", None,
 ROBE("gnollish haircloth robe", "crude robe",
 	0, 0, 0,		   0, 0, 6, 1, 30,  10,  9, 2, 0, 0, 0, 0, CLOTH, CLR_BROWN, O1_NONE, 0),
 ROBE("mummy wrapping", None, //ENDMARKER 1
-	1, 0, 0,		   0, 0, 0, 0,  3,   2, 10, 1, 0, 0, 0, 0, CLOTH, CLR_GRAY, O1_TREATED_AS_MATERIAL_COMPONENT, 0),
+	1, 0, 0,		   0, 0, 0, 0,  3,   2, 10, 1, 0, 0, 0, 0, CLOTH, CLR_GRAY, O1_NONE, 0),
 	/* worn mummy wrapping blocks invisibility */
 
 
@@ -971,7 +971,7 @@ TOOL("magic lamp",        "lamp", 0, 0, 1, 0, 15, 20, 50, 0, 0, 0, 0, 0, COPPER,
 TOOL("expensive camera",    None, 1, 0, 0, 1, 15, 12,200, 0, 0, 0, 0, 0, PLASTIC, CLR_BLACK, O1_NONE, 0),
 TOOL("mirror",   "looking glass", 0, 0, 0, 0, 35, 13, 10, 0, 0, 0, 0, 0, GLASS, HI_SILVER, O1_NONE, 0),
 TOOL("magic mirror", "looking glass", 0, 0, 0, 0, 0, 13, 10, 0, 30, 0, 0, 0, GLASS, HI_SILVER, O1_CONFERS_POWERS_WHEN_CARRIED | O1_MANA_PERCENTAGE_BONUS, 0),
-TOOL("holy symbol", "religious symbol", 0, 0, 1, 0, 10, 10,100, 0, 0, 0, 0, 0, SILVER, HI_SILVER, O1_TREATED_AS_MATERIAL_COMPONENT, 0),
+TOOL("holy symbol", "religious symbol", 0, 0, 1, 0, 10, 10,100, 0, 0, 0, 0, 0, SILVER, HI_SILVER, O1_NONE, 0),
 TOOL("crystal ball", "glass orb", 0, 0, 1, 1, 15,150, 60, 100, 0, 0, 0, 0, GLASS, HI_GLASS, O1_NONE, 0),
 TOOL("blindfold",           None, 1, 0, 0, 0, 50,  2, 20, 0, 0, 0, 0, 0, CLOTH, CLR_BLACK, O1_NONE, 0),
 TOOL("towel",               None, 1, 0, 0, 0, 50,  2, 50, 0, 0, 0, 0, 0, CLOTH, CLR_MAGENTA, O1_NONE, 0),
@@ -1123,7 +1123,7 @@ POTION("acid",                  "white",  0, 0, 10, 250, CLR_WHITE, O1_COLD_RESI
 POTION("oil",                   "murky",  0, 0, 30, 250, CLR_BROWN, O1_COLD_RESISTANT, 0),
 /* fixed description
  */
-POTION("water",                 "clear",  0, 0, 92, 100, CLR_CYAN, O1_TREATED_AS_MATERIAL_COMPONENT, 0),
+POTION("water",                 "clear",  0, 0, 92, 100, CLR_CYAN, O1_NONE, 0),
 #undef POTION
 
 /* scrolls ... */
@@ -1569,29 +1569,29 @@ COIN("gold piece", 1000, GOLD, 1),
                 HARDGEM(mohs), 0, -P_SLING, glass),                     \
            power1, power2, power3, GEM_CLASS, prob, 0, wt, gval, sdice, sdam, splus, ldice, ldam, lplus, 0, 0, 0, 0, 0, 0, nutr, color, powconfermask, 0, 0, 0, flags)
 GEM("dilithium crystal", "white",  2, 1, 4500, 15,  5, GEMSTONE, CLR_WHITE, O1_THROWN_WEAPON, 0),
-GEM("diamond",           "white",  3, 1, 4000, 15,  10, GEMSTONE, CLR_WHITE, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
-GEM("black pearl",		 "black",  3, 1, 3750, 15,  5, GEMSTONE, CLR_BLACK, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
-GEM("ruby",                "red",  4, 1, 3500, 15,  9, GEMSTONE, CLR_RED, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
-GEM("jacinth",          "orange",  3, 1, 3250, 15,  9, GEMSTONE, CLR_ORANGE, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
-GEM("sapphire",           "blue",  4, 1, 3000, 15,  9, GEMSTONE, CLR_BLUE, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
-GEM("black opal",        "black",  3, 1, 2750, 15,  8, GEMSTONE, CLR_BLACK, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
-GEM("emerald",           "green",  5, 1, 2500, 15,  8, GEMSTONE, CLR_GREEN, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
-GEM("turquoise",         "green",  6, 1, 2000, 15,  6, GEMSTONE, CLR_GREEN, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
-GEM("citrine",          "yellow",  4, 1, 1500, 15,  6, GEMSTONE, CLR_YELLOW, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
-GEM("aquamarine",        "green",  6, 1, 1500, 15,  8, GEMSTONE, CLR_GREEN, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
-GEM("amber",   "yellowish brown",  8, 1, 1000, 15,  2, GEMSTONE, CLR_BROWN, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
-GEM("topaz",   "yellowish brown", 10, 1,  900, 15,  8, GEMSTONE, CLR_BROWN, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
-GEM("jet",               "black", 10, 1,  850, 15,  7, GEMSTONE, CLR_BLACK, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
-GEM("opal",              "white", 12, 1,  800, 15,  6, GEMSTONE, CLR_WHITE, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
-GEM("chrysoberyl",      "yellow", 10, 1,  700, 15,  5, GEMSTONE, CLR_YELLOW, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
-GEM("garnet",              "red", 12, 1,  700, 15,  7, GEMSTONE, CLR_RED, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
-GEM("amethyst",         "violet", 12, 1,  600, 15,  7, GEMSTONE, CLR_MAGENTA, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
-GEM("jasper",              "red", 12, 1,  500, 15,  7, GEMSTONE, CLR_RED, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
-GEM("fluorite",         "violet", 12, 1,  400, 15,  4, GEMSTONE, CLR_MAGENTA, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
-GEM("pearl",			 "white", 12, 1,  300, 15,  5, GEMSTONE, CLR_WHITE, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
-GEM("obsidian",          "black", 10, 1,  200, 15,  6, GEMSTONE, CLR_BLACK, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
-GEM("agate",            "orange", 12, 1,  200, 15,  6, GEMSTONE, CLR_ORANGE, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
-GEM("jade",              "green", 10, 1,  300, 15,  6, GEMSTONE, CLR_GREEN, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
+GEM("diamond",           "white",  3, 1, 4000, 15,  10, GEMSTONE, CLR_WHITE, O1_NONE | O1_THROWN_WEAPON, 0),
+GEM("black pearl",		 "black",  3, 1, 3750, 15,  5, GEMSTONE, CLR_BLACK, O1_NONE | O1_THROWN_WEAPON, 0),
+GEM("ruby",                "red",  4, 1, 3500, 15,  9, GEMSTONE, CLR_RED, O1_NONE | O1_THROWN_WEAPON, 0),
+GEM("jacinth",          "orange",  3, 1, 3250, 15,  9, GEMSTONE, CLR_ORANGE, O1_NONE | O1_THROWN_WEAPON, 0),
+GEM("sapphire",           "blue",  4, 1, 3000, 15,  9, GEMSTONE, CLR_BLUE, O1_NONE | O1_THROWN_WEAPON, 0),
+GEM("black opal",        "black",  3, 1, 2750, 15,  8, GEMSTONE, CLR_BLACK, O1_NONE | O1_THROWN_WEAPON, 0),
+GEM("emerald",           "green",  5, 1, 2500, 15,  8, GEMSTONE, CLR_GREEN, O1_NONE | O1_THROWN_WEAPON, 0),
+GEM("turquoise",         "green",  6, 1, 2000, 15,  6, GEMSTONE, CLR_GREEN, O1_NONE | O1_THROWN_WEAPON, 0),
+GEM("citrine",          "yellow",  4, 1, 1500, 15,  6, GEMSTONE, CLR_YELLOW, O1_NONE | O1_THROWN_WEAPON, 0),
+GEM("aquamarine",        "green",  6, 1, 1500, 15,  8, GEMSTONE, CLR_GREEN, O1_NONE | O1_THROWN_WEAPON, 0),
+GEM("amber",   "yellowish brown",  8, 1, 1000, 15,  2, GEMSTONE, CLR_BROWN, O1_NONE | O1_THROWN_WEAPON, 0),
+GEM("topaz",   "yellowish brown", 10, 1,  900, 15,  8, GEMSTONE, CLR_BROWN, O1_NONE | O1_THROWN_WEAPON, 0),
+GEM("jet",               "black", 10, 1,  850, 15,  7, GEMSTONE, CLR_BLACK, O1_NONE | O1_THROWN_WEAPON, 0),
+GEM("opal",              "white", 12, 1,  800, 15,  6, GEMSTONE, CLR_WHITE, O1_NONE | O1_THROWN_WEAPON, 0),
+GEM("chrysoberyl",      "yellow", 10, 1,  700, 15,  5, GEMSTONE, CLR_YELLOW, O1_NONE | O1_THROWN_WEAPON, 0),
+GEM("garnet",              "red", 12, 1,  700, 15,  7, GEMSTONE, CLR_RED, O1_NONE | O1_THROWN_WEAPON, 0),
+GEM("amethyst",         "violet", 12, 1,  600, 15,  7, GEMSTONE, CLR_MAGENTA, O1_NONE | O1_THROWN_WEAPON, 0),
+GEM("jasper",              "red", 12, 1,  500, 15,  7, GEMSTONE, CLR_RED, O1_NONE | O1_THROWN_WEAPON, 0),
+GEM("fluorite",         "violet", 12, 1,  400, 15,  4, GEMSTONE, CLR_MAGENTA, O1_NONE | O1_THROWN_WEAPON, 0),
+GEM("pearl",			 "white", 12, 1,  300, 15,  5, GEMSTONE, CLR_WHITE, O1_NONE | O1_THROWN_WEAPON, 0),
+GEM("obsidian",          "black", 10, 1,  200, 15,  6, GEMSTONE, CLR_BLACK, O1_NONE | O1_THROWN_WEAPON, 0),
+GEM("agate",            "orange", 12, 1,  200, 15,  6, GEMSTONE, CLR_ORANGE, O1_NONE | O1_THROWN_WEAPON, 0),
+GEM("jade",              "green", 10, 1,  300, 15,  6, GEMSTONE, CLR_GREEN, O1_NONE | O1_THROWN_WEAPON, 0),
 GEM("worthless piece of white glass", "white",
     70, 1, 0, 6, 5, GLASS, CLR_WHITE, O1_THROWN_WEAPON, 0),
 GEM("worthless piece of blue glass", "blue",
@@ -1674,16 +1674,16 @@ OBJECT(OBJ("acid venom", "splash of venom"), None, None,
            REAGENT_CLASS, prob, eatdelay, wt, cost,  0, 0, 0, 0, 0, 0, ediblesubtype, 0, 0, 0, 0, 0, \
            nutrition, color, powconfermask, 0, 0, 0, flags)
 
-	REAGENT("thread of spider silk",	125, 0, 1, 10, SILK, 0,					 2, CLR_GRAY, O1_TREATED_AS_MATERIAL_COMPONENT, 0), /* STARTMARKER 1&2 */
+	REAGENT("thread of spider silk",	125, 0, 1, 10, SILK, 0,					 2, CLR_GRAY, O1_NONE, 0), /* STARTMARKER 1&2 */
 
-	REAGENT("clump of bat guano",		125, 2, 5, 10, ORGANIC, EDIBLE_ROTTEN,	20, CLR_BROWN, O1_EDIBLE_NONFOOD | O1_TREATED_AS_MATERIAL_COMPONENT, 0),
-	REAGENT("ginseng root",				125, 1, 3, 10, VEGGY, EDIBLE_NORMAL,	40, CLR_BROWN, O1_EDIBLE_NONFOOD | O1_TREATED_AS_MATERIAL_COMPONENT, 0),
-	REAGENT("mandrake root",			125, 1, 3, 10, VEGGY, EDIBLE_NORMAL,	40, CLR_MAGENTA, O1_EDIBLE_NONFOOD | O1_TREATED_AS_MATERIAL_COMPONENT, 0),
-	REAGENT("fungal spore",				125, 1, 1, 10, ORGANIC, EDIBLE_NORMAL,	 1, CLR_GRAY, O1_EDIBLE_NONFOOD | O1_TREATED_AS_MATERIAL_COMPONENT, 0),
-	REAGENT("sprig of wolfsbane",		125, 1, 2, 10, VEGGY, EDIBLE_POISONOUS,	40, CLR_GREEN, O1_EDIBLE_NONFOOD | O1_TREATED_AS_MATERIAL_COMPONENT, 0),
-	REAGENT("clove of garlic",			125, 1, 2, 10, VEGGY, EDIBLE_NORMAL,	40, CLR_WHITE, O1_EDIBLE_NONFOOD | O1_TREATED_AS_MATERIAL_COMPONENT, 0),
+	REAGENT("clump of bat guano",		125, 2, 5, 10, ORGANIC, EDIBLE_ROTTEN,	20, CLR_BROWN, O1_EDIBLE_NONFOOD | O1_NONE, 0),
+	REAGENT("ginseng root",				125, 1, 3, 10, VEGGY, EDIBLE_NORMAL,	40, CLR_BROWN, O1_EDIBLE_NONFOOD | O1_NONE, 0),
+	REAGENT("mandrake root",			125, 1, 3, 10, VEGGY, EDIBLE_NORMAL,	40, CLR_MAGENTA, O1_EDIBLE_NONFOOD | O1_NONE, 0),
+	REAGENT("fungal spore",				125, 1, 1, 10, ORGANIC, EDIBLE_NORMAL,	 1, CLR_GRAY, O1_EDIBLE_NONFOOD | O1_NONE, 0),
+	REAGENT("sprig of wolfsbane",		125, 1, 2, 10, VEGGY, EDIBLE_POISONOUS,	40, CLR_GREEN, O1_EDIBLE_NONFOOD | O1_NONE, 0),
+	REAGENT("clove of garlic",			125, 1, 2, 10, VEGGY, EDIBLE_NORMAL,	40, CLR_WHITE, O1_EDIBLE_NONFOOD | O1_NONE, 0),
 
-	REAGENT("feather",			125, 0, 1, 10, ORGANIC, 0,				10, CLR_BLACK, O1_TREATED_AS_MATERIAL_COMPONENT, 0), /* STARTMARKER 1&2 */
+	REAGENT("feather",			125, 0, 1, 10, ORGANIC, 0,				10, CLR_BLACK, O1_NONE, 0), /* STARTMARKER 1&2 */
 
 #undef REAGENT
 

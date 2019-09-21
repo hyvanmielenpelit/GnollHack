@@ -1646,7 +1646,7 @@ register struct obj *obj;
 			if (obj->otyp == BAG_OF_WIZARDRY
 				&& (contents->oclass == REAGENT_CLASS || contents->oclass == SPBOOK_CLASS
 					|| contents->oclass == WAND_CLASS || contents->oclass == SCROLL_CLASS
-					|| objects[contents->otyp].oc_flags & O1_TREATED_AS_MATERIAL_COMPONENT
+					|| objects[contents->otyp].oc_flags & O1_NONE
 					))
 				cwt += obj->cursed ? (weight(contents) * 2) : obj->blessed ? ((weight(contents) + 15) / 16)
 				: ((weight(contents) + 7) / 8);

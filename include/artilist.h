@@ -60,7 +60,7 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
      *      Mjollnir will return to the hand of the wielder when thrown
      *      if the wielder is a Valkyrie wearing Gauntlets of Power.
      */
-    A("Mjollnir", WAR_HAMMER, /* Mjo:llnir */
+    A("Mjollnir", HEAVY_WAR_HAMMER, /* Mjo:llnir */
       (SPFX_RESTR | SPFX_ATTK), 0, 0, ELEC(5, 24), NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, PM_VALKYRIE, NON_PM, 4000L, NO_COLOR),
 

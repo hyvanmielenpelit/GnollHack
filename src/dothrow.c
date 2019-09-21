@@ -70,12 +70,13 @@ int shotlimit;
 
     if (!canletgo(obj, "throw"))
         return 0;
-    if (obj->oartifact == ART_MJOLLNIR && obj != uwep) {
+    if ((objects[obj->otyp].oc_flags & O1_CAN_BE_THROWN_ONLY_IF_WIELDED) && obj != uwep) {
         pline("%s must be wielded before it can be thrown.", The(xname(obj)));
         return 0;
     }
-    if ((obj->oartifact == ART_MJOLLNIR && ACURR(A_STR) < STR18(100)) //STR19(25)
-        || (obj->otyp == BOULDER && !(throws_rocks(youmonst.data) || (int)obj->owt <= enclevelmaximumweight(UNENCUMBERED)))) {
+    if (//(obj->oartifact == ART_MJOLLNIR && ACURR(A_STR) < STR18(100)) //STR19(25)
+        (obj->otyp == BOULDER && !(throws_rocks(youmonst.data))))  // || (int)obj->owt <= enclevelmaximumweight(UNENCUMBERED))))
+	{
         pline("It's too heavy.");
         return 1;
     }
@@ -1052,12 +1053,7 @@ boolean
 throwing_weapon(obj)
 struct obj *obj;
 {
-    return (boolean) (is_missile(obj) || is_spear(obj)
-                      /* daggers and knife (excludes scalpel) */
-                      || (is_blade(obj) && !is_sword(obj)
-                          && (objects[obj->otyp].oc_dir & PIERCE))
-                      /* special cases [might want to add AXE] */
-                      || obj->otyp == WAR_HAMMER || obj->otyp == AKLYS);
+    return (boolean) (is_missile(obj) || (objects[obj->otyp].oc_flags & O1_THROWN_WEAPON));
 }
 
 /* the currently thrown object is returning to you (not for boomerangs) */
@@ -1143,7 +1139,7 @@ boolean twoweap; /* used to restore twoweapon mode if wielded weapon returns */
         if (u.dz < 0
             /* Mjollnir must we wielded to be thrown--caller verifies this;
                aklys must we wielded as primary to return when thrown */
-            && ((Role_if(PM_VALKYRIE) && obj->oartifact == ART_MJOLLNIR)
+            && (((objects[obj->otyp].oc_flags & O1_RETURNS_TO_HAND_AFTER_THROWING) && !((objects[obj->otyp].oc_flags & O1_CAN_BE_THROWN_ONLY_IF_WIELDED) && 1)  && !inappropriate_character_type(obj))
                 || tethered_weapon)
             && !impaired) {
             pline("%s the %s and returns to your hand!", Tobjnam(obj, "hit"),
@@ -1273,24 +1269,45 @@ boolean twoweap; /* used to restore twoweapon mode if wielded weapon returns */
     } else {
         /* Mjollnir must we wielded to be thrown--caller verifies this;
            aklys must we wielded as primary to return when thrown */
-        if ((obj->oartifact == ART_MJOLLNIR && Role_if(PM_VALKYRIE))
-            || tethered_weapon) {
-            if (rn2(100)) {
+        if (// (obj->oartifact == ART_MJOLLNIR && Role_if(PM_VALKYRIE))
+            tethered_weapon || ((objects[obj->otyp].oc_flags & O1_RETURNS_TO_HAND_AFTER_THROWING) && !inappropriate_character_type(obj))) {
+//            if (rn2(100)) {
                 if (tethered_weapon)
                     tmp_at(DISP_END, BACKTRACK);
                 else
                     sho_obj_return_to_u(obj); /* display its flight */
 
-                if (!impaired && rn2(100)) {
-                    pline("%s to your hand!", Tobjnam(obj, "return"));
-                    obj = addinv(obj);
-                    (void) encumber_msg();
-                    /* addinv autoquivers an aklys if quiver is empty;
-                       if obj is quivered, remove it before wielding */
-                    if (obj->owornmask & W_QUIVER)
-                        setuqwep((struct obj *) 0);
-                    setuwep(obj);
-                    u.twoweap = twoweap;
+                if (!impaired) // && rn2(100))
+				{
+					/* if uwep, more things need to be done than otherwise */
+					if(wep_mask & W_WEP) // (objects[obj->otyp].oc_flags& O1_CAN_BE_THROWN_ONLY_IF_WIELDED) ||
+					{
+						pline("%s to your hand!", Tobjnam(obj, "return"));
+						obj = addinv(obj);
+						(void) encumber_msg();
+						/* addinv autoquivers an aklys if quiver is empty;
+						   if obj is quivered, remove it before wielding */
+						if (obj->owornmask & W_QUIVER)
+							setuqwep((struct obj *) 0);
+						setuwep(obj);
+						u.twoweap = twoweap;
+					}
+					else
+					{
+						pline("%s to you!", Tobjnam(obj, "return"));
+						obj = addinv(obj);
+						(void)encumber_msg();
+						/* addinv autoquivers an aklys if quiver is empty;
+						   if obj is quivered, remove it before wielding */
+						if ((obj->owornmask & W_QUIVER) && !(wep_mask & W_QUIVER))
+							setuqwep((struct obj*) 0);
+
+						/* Wields if necessary */
+						if ((wep_mask & W_SWAPWEP))
+							setuswapwep(obj);
+						else if ((wep_mask & W_WEP))
+							setuwep(obj);
+					}
                     if (cansee(bhitpos.x, bhitpos.y))
                         newsym(bhitpos.x, bhitpos.y);
                 } else {
@@ -1322,9 +1339,9 @@ boolean twoweap; /* used to restore twoweapon mode if wielded weapon returns */
                 }
                 thrownobj = (struct obj *) 0;
                 return;
-            } else {
-                if (tethered_weapon)
-                    tmp_at(DISP_END, 0);
+ //           } else {
+ //               if (tethered_weapon)
+ //                   tmp_at(DISP_END, 0);
                 /* when this location is stepped on, the weapon will be
                    auto-picked up due to 'obj->was_thrown' of 1;
                    addinv() prevents thrown Mjollnir from being placed
@@ -1332,9 +1349,9 @@ boolean twoweap; /* used to restore twoweapon mode if wielded weapon returns */
                    that slot is empty at the time; since hero will need to
                    explicitly rewield the weapon to get throw-and-return
                    capability back anyway, quivered or not shouldn't matter */
-                pline("%s to return!", Tobjnam(obj, "fail"));
+//                pline("%s to return!", Tobjnam(obj, "fail"));
                 /* continue below with placing 'obj' at target location */
-            }
+//            }
         }
 
         if ((!IS_SOFT(levl[bhitpos.x][bhitpos.y].typ) && breaktest(obj))
@@ -1642,9 +1659,7 @@ register struct obj *obj; /* thrownobj or kickedobj or uwep */
                 }
             }
         } else { /* thrown non-ammo or applied polearm/grapnel */
-            if (otyp == BOOMERANG) /* arbitrary */
-                tmp += 4;
-            else if (throwing_weapon(obj)) /* meant to be thrown */
+            if (throwing_weapon(obj)) /* meant to be thrown */
                 tmp += 2;
             else if (obj == thrownobj) /* not meant to be thrown */
                 tmp -= 2;

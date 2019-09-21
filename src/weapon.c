@@ -165,7 +165,9 @@ struct obj* launcher;
 			else if (objects[launcher->otyp].oc_weapon_range < 0)
 				baserange = max(1, (int)((ACURRSTR * -objects[launcher->otyp].oc_weapon_range) / 100));		/* Bows */
 
-			range = baserange - (int)(ammo->owt / 100);
+			range = baserange;
+			if(!(objects[launcher->otyp].oc_flags & O1_WEIGHT_DOES_NOT_REDUCE_RANGE || objects[ammo->otyp].oc_flags & O1_WEIGHT_DOES_NOT_REDUCE_RANGE))
+				(int)(ammo->owt / 100);
 	}
 	else if(ammo) //Normal thrown weapons are half distance
 	{
@@ -190,10 +192,15 @@ struct obj* launcher;
 		}
 
 		//Weight of the object reduces range
-		if (objects[ammo->otyp].oc_flags & O1_THROWN_WEAPON)
-			range = baserange - (int)(ammo->owt / 100);
+		if (objects[ammo->otyp].oc_flags & O1_WEIGHT_DOES_NOT_REDUCE_RANGE)
+			range = baserange;
 		else
-			range = baserange - (int)(ammo->owt / 40);
+		{
+			if (objects[ammo->otyp].oc_flags & O1_THROWN_WEAPON)
+				range = baserange - (int)(ammo->owt / 100);
+			else
+				range = baserange - (int)(ammo->owt / 40);
+		}
 	}
 
 	if (ammo && uball && ammo == uball) {

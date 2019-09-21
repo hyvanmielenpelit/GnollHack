@@ -953,7 +953,7 @@ struct obj *obj;
            auto-pick it when we move to its spot, but not into quiver;
            aklyses behave like Mjollnir when thrown while wielded, but
            we lack sufficient information here make them exceptions */
-        && obj->oartifact != ART_MJOLLNIR
+        && !(objects[obj->otyp].oc_flags & O1_CAN_BE_THROWN_ONLY_IF_WIELDED)
         && (throwing_weapon(obj) || is_ammo(obj)))
         setuqwep(obj);
  added:
