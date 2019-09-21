@@ -299,7 +299,7 @@ register struct obj* obj;
 
 		if (objects[otyp].oc_name_known)
 		{
-			Sprintf(buf2, "%d", objects[otyp].a_magic_cancellation_level);
+			Sprintf(buf2, "%s%d", objects[otyp].a_magic_cancellation_level >= 0 ? "+" : "", objects[otyp].a_magic_cancellation_level);
 			Sprintf(buf, "Magic cancellation:   %s", buf2);
 			txt = buf;
 			putstr(datawin, 0, txt);
@@ -365,7 +365,7 @@ register struct obj* obj;
 			}
 			else if (obj->oclass == ARMOR_CLASS)
 			{
-				Sprintf(bonusbuf, " (%s%d %s to AC)", obj->spe >= 0 ? "+" : "", -obj->spe, obj->spe >= 0 ? "bonus" : "penalty");
+				Sprintf(bonusbuf, " (%s%d %s to AC)", obj->spe <= 0 ? "+" : "", -obj->spe, obj->spe >= 0 ? "bonus" : "penalty");
 			}
 
 			Sprintf(buf, "Enchantment status:   %s%d%s", obj->spe >= 0 ? "+" : "", obj->spe, bonusbuf);
