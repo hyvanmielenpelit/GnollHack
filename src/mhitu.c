@@ -1015,9 +1015,9 @@ struct monst *mon;
                              : (mon->data == &mons[PM_HIGH_PRIEST]);
 
     for (o = is_you ? invent : mon->minvent; o; o = o->nobj) {
-        /* a_magic_attack_protection_level field is only applicable for armor (which must be worn) */
+        /* a_magic_attack_cancellation_level field is only applicable for armor (which must be worn) */
         if ((o->owornmask & (W_ARMOR | W_MISCITEMS)) != 0L || (objects[o->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED)) {
-            armpro = objects[o->otyp].a_magic_attack_protection_level;
+            armpro = objects[o->otyp].a_magic_attack_cancellation_level;
             if (armpro > mc)
                 mc = armpro;
         }

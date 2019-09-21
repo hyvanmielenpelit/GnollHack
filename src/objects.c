@@ -86,22 +86,22 @@ OBJECT(OBJ("strange object", None), None, None,
 
 /* weapons ... */
 #define WEAPON(name,desc,kn,mg,bi,prob,wt,                \
-               cost,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,hitbon,manabon,hpbon,power,power2,power3,typ,sub,metal,color,flags,powconfermask) \
+               cost,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,hitbon,throwrange,manabon,hpbon,power,power2,power3,typ,sub,metal,color,flags,powconfermask) \
     OBJECT(OBJ(name,desc), None, None,                                         \
            BITS(kn, mg, 1, 0, 0, 1, 0, 0, bi, 0, typ, sub, metal),  \
            power, power2, power3, WEAPON_CLASS, prob, 0, wt,                            \
-           cost, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, hitbon, 0, manabon, hpbon, 0, 0, wt, color, powconfermask, 0, 0, 0, flags)
+           cost, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, hitbon, throwrange, manabon, hpbon, 0, 0, wt, color, powconfermask, 0, 0, 0, flags)
 #define PROJECTILE(name,desc,kn,prob,wt,                  \
                    cost,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,hitbon,metal,sub,color,flags) \
     OBJECT(OBJ(name,desc), None, None,                                        \
            BITS(kn, 1, 1, 0, 0, 1, 0, 0, 0, 0, PIERCE, sub, metal), \
            0, 0, 0, WEAPON_CLASS, prob, 0, wt,                            \
            cost, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, hitbon, 0, 0, 0, 0, 0, wt, color, 0, 0, 0, 0, flags)
-#define BOW(name,desc,kn,bi,prob,wt,cost,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,hitbon,manabon,hpbon,power,power2,power3,metal,sub,color,flags,powconfermask) \
+#define BOW(name,desc,kn,bi,prob,wt,cost,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,hitbon,launchrange,manabon,hpbon,power,power2,power3,metal,sub,color,flags,powconfermask) \
     OBJECT(OBJ(name,desc), None, None,                                         \
            BITS(kn, 0, 1, 0, 0, 1, 0, 0, bi, 0, 0, sub, metal),      \
            power, power2, power3, WEAPON_CLASS, prob, 0, wt,                            \
-           cost, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, hitbon, 0, manabon, hpbon, 0, 0, wt, color, powconfermask, 0, 0, 0, flags)
+           cost, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, hitbon, launchrange, manabon, hpbon, 0, 0, wt, color, powconfermask, 0, 0, 0, flags)
 
 /* Note: for weapons that don't do an even die of damage (ex. 2-7 or 3-18)
    the extra damage is added on in weapon.c, not here! */
@@ -140,209 +140,209 @@ PROJECTILE("silver sling-bullet", None,
 
 /* missiles that don't use a launcher */
 WEAPON("dart", None,
-       1, 1, 0, 50,   1,   1, 2, 0, 1, 3, 0,  2, 0, 0, 0, 0, 0, 0, P,   -P_DART, IRON, HI_METAL, O1_NONE, 0),
+       1, 1, 0, 50,   1,   1, 2, 0, 1, 3, 0,  2, 0, 0, 0, 0, 0, 0, 0, P,   -P_DART, IRON, HI_METAL, O1_THROWN_WEAPON, 0),
 WEAPON("shuriken", "throwing star",
-       0, 1, 0, 25,   1,   1, 5, 0, 1,  8, 0,  6, 2, 0, 0, 0, 0, 0, P,   -P_SHURIKEN, IRON, HI_METAL, O1_NONE, 0),
+       0, 1, 0, 25,   1,   1, 5, 0, 1,  8, 0,  6, 2, 0, 0, 0, 0, 0, 0, P,   -P_SHURIKEN, IRON, HI_METAL, O1_THROWN_WEAPON, 0),
 WEAPON("boomerang", None,
-       1, 1, 0, 15,   5,  20,  1, 9, 0, 1, 9, 0, 0, 0, 0, 0, 0, 0, 0,   -P_BOOMERANG, WOOD, HI_WOOD, O1_NONE, 0),
+       1, 1, 0, 15,   5,  20,  1, 9, 0, 1, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0,   -P_BOOMERANG, WOOD, HI_WOOD, O1_THROWN_WEAPON, 0),
 
 /* spears [note: javelin used to have a separate skill from spears,
    because the latter are primarily stabbing weapons rather than
    throwing ones; but for playability, they've been merged together
    under spear skill and spears can now be thrown like javelins] */
 WEAPON("spear", None,
-       1, 1, 0, 50,  30,   3,  1, 6, 0, 1,  8, 0, 0, 0, 0, 0, 0, 0, P,   P_SPEAR, IRON, HI_METAL, O1_NONE, 0),
+       1, 1, 0, 50,  30,   3,  1, 6, 0, 1,  8, 0, 0, -70, 0, 0, 0, 0, 0, P,   P_SPEAR, IRON, HI_METAL, O1_NONE, 0),
 WEAPON("elven spear", "runed spear",
-       0, 1, 0, 10,  30,   3,  1, 7, 0, 1,  8, 0, 0, 0, 0, 0, 0, 0, P,   P_SPEAR, WOOD, HI_WOOD, O1_NONE, 0),
+       0, 1, 0, 10,  30,   3,  1, 7, 0, 1,  8, 0, 0, -80, 0, 0, 0, 0, 0, P,   P_SPEAR, WOOD, HI_WOOD, O1_NONE, 0),
 WEAPON("orcish spear", "crude spear",
-       0, 1, 0, 13,  30,   3,  1, 5, 0, 1, 8, 0, 0, 0, 0, 0, 0, 0, P,   P_SPEAR, IRON, CLR_BLACK, O1_NONE, 0),
+       0, 1, 0, 13,  30,   3,  1, 5, 0, 1, 8, 0, 0, -65, 0, 0, 0, 0, 0, P,   P_SPEAR, IRON, CLR_BLACK, O1_NONE, 0),
 WEAPON("dwarvish spear", "stout spear",
-       0, 1, 0, 12,  35,   3,  1, 8, 0, 1, 8, 0, 0, 0, 0, 0, 0, 0, P,   P_SPEAR, IRON, HI_METAL, O1_NONE, 0),
+       0, 1, 0, 12,  35,   3,  1, 8, 0, 1, 8, 0, 0, -60, 0, 0, 0, 0, 0, P,   P_SPEAR, IRON, HI_METAL, O1_NONE, 0),
 WEAPON("silver spear", None,
-       1, 1, 0,  2,  36,  40,  1, 6, 0,  1, 8, 0, 0, 0, 0, 0, 0, 0, P,   P_SPEAR, SILVER, HI_SILVER, O1_NONE, 0),
+       1, 1, 0,  2,  36,  40,  1, 6, 0,  1, 8, 0, 0, -70, 0, 0, 0, 0, 0, P,   P_SPEAR, SILVER, HI_SILVER, O1_NONE, 0),
 WEAPON("javelin", "throwing spear",
-       0, 1, 0, 10,  20,   3,  1, 6, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, P,   P_SPEAR, IRON, HI_METAL, O1_NONE, 0),
+       0, 1, 0, 10,  20,   3,  1, 6, 0, 1, 6, 0, 0, -90, 0, 0, 0, 0, 0, P,   P_SPEAR, IRON, HI_METAL, O1_THROWN_WEAPON, 0),
 
 /* spearish; doesn't stack, not intended to be thrown */
 WEAPON("trident", None,
-       1, 0, 0,  8,  25,   5, 1,  6, 1, 3,  4, 0, 0, 0, 0, 0, 0, 0, P,   P_TRIDENT, IRON, HI_METAL, O1_NONE, 0),
+       1, 0, 0,  8,  25,   5, 1,  6, 1, 3,  4, 0, 0, 0, 0, 0, 0, 0, 0, P,   P_TRIDENT, IRON, HI_METAL, O1_NONE, 0),
         /* +1 small, +2d4 large */
 
 /* blades; all stack */
 WEAPON("dagger", None,
-       1, 1, 0, 24,  10,   4,  1, 4, 0, 1,  3, 0, 2, 0, 0, 0, 0, 0, P,   P_DAGGER, IRON, HI_METAL, O1_NONE, 0),
+       1, 1, 0, 24,  10,   4,  1, 4, 0, 1,  3, 0, 2, 0, 0, 0, 0, 0, 0, P,   P_DAGGER, IRON, HI_METAL, O1_THROWN_WEAPON, 0),
 WEAPON("elven dagger", "runed dagger",
-       0, 1, 0, 10,  10,   4,  1, 5, 0, 1, 3, 0, 2, 0, 0, 0, 0, 0, P,   P_DAGGER, WOOD, HI_WOOD, O1_NONE, 0),
+       0, 1, 0, 10,  10,   4,  1, 5, 0, 1, 3, 0, 2, 0, 0, 0, 0, 0, 0, P,   P_DAGGER, WOOD, HI_WOOD, O1_THROWN_WEAPON, 0),
 WEAPON("orcish dagger", "crude dagger",
-       0, 1, 0, 12,  10,   4,  1, 3, 0, 1,  3, 0, 2, 0, 0, 0, 0, 0, P,   P_DAGGER, IRON, CLR_BLACK, O1_NONE, 0),
+       0, 1, 0, 12,  10,   4,  1, 3, 0, 1,  3, 0, 2, 0, 0, 0, 0, 0, 0, P,   P_DAGGER, IRON, CLR_BLACK, O1_THROWN_WEAPON, 0),
 WEAPON("bone dagger", None,
-       1, 1, 0, 6,  10,   4,  1, 3, 0, 1,  3, 0, 2, 0, 0, 0, 0, 0, P,   P_DAGGER, BONE, CLR_WHITE, O1_TREATED_AS_MATERIAL_COMPONENT, 0),
+       1, 1, 0, 6,  10,   4,  1, 3, 0, 1,  3, 0, 2, 0, 0, 0, 0, 0, 0, P,   P_DAGGER, BONE, CLR_WHITE, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
 WEAPON("silver dagger", None,
-       1, 1, 0,  3,  12,  40,  1, 4, 0, 1,  3, 0, 2, 0, 0, 0, 0, 0, P,   P_DAGGER, SILVER, HI_SILVER, O1_NONE, 0),
+       1, 1, 0,  3,  12,  40,  1, 4, 0, 1,  3, 0, 2, 0, 0, 0, 0, 0, 0, P,   P_DAGGER, SILVER, HI_SILVER, O1_THROWN_WEAPON, 0),
 WEAPON("athame", None,
-       1, 1, 0,  0,  10,   4,  1, 4, 0, 1,  3, 0, 2, 0, 0, 0, 0, 0, S,   P_DAGGER, IRON, HI_METAL, O1_NONE, 0),
+       1, 1, 0,  0,  10,   4,  1, 4, 0, 1,  3, 0, 2, 0, 0, 0, 0, 0, 0, S,   P_DAGGER, IRON, HI_METAL, O1_NONE, 0),
 WEAPON("scalpel", None,
-       1, 1, 0,  0,   5,   6,  1, 3, 0, 1, 3, 0, 2, 0, 0, 0, 0, 0, S,   P_KNIFE, METAL, HI_METAL, O1_NONE, 0),
+       1, 1, 0,  0,   5,   6,  1, 3, 0, 1, 3, 0, 2, 0, 0, 0, 0, 0, 0, S,   P_KNIFE, METAL, HI_METAL, O1_NONE, 0),
 WEAPON("knife", None,
-       1, 1, 0, 20,   5,   4,  1, 3, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, P|S, P_KNIFE, IRON, HI_METAL, O1_NONE, 0),
+       1, 1, 0, 20,   5,   4,  1, 3, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, P|S, P_KNIFE, IRON, HI_METAL, O1_NONE, 0),
 WEAPON("stiletto", None,
-       1, 1, 0,  5,   5,   4, 1, 3, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, P|S, P_KNIFE, IRON, HI_METAL, O1_NONE, 0),
+       1, 1, 0,  5,   5,   4, 1, 3, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, P|S, P_KNIFE, IRON, HI_METAL, O1_NONE, 0),
 /* 3.6: worm teeth and crysknives now stack;
    when a stack of teeth is enchanted at once, they fuse into one crysknife;
    when a stack of crysknives drops, the whole stack reverts to teeth */
 WEAPON("worm tooth", None,
-       1, 1, 0,  0,  20,   2,  1, 2, 0, 1,  2, 0, 0, 0, 0, 0, 0, 0, 0,   P_KNIFE, 0, CLR_WHITE, O1_NONE, 0),
+       1, 1, 0,  0,  20,   2,  1, 2, 0, 1,  2, 0, 0, 0, 0, 0, 0, 0, 0, 0,   P_KNIFE, 0, CLR_WHITE, O1_NONE, 0),
 WEAPON("crysknife", None,
-       1, 1, 0,  0,  20, 100, 1, 10, 0, 1, 10, 0, 3, 0, 0, 0, 0, 0, P,   P_KNIFE, MINERAL, CLR_WHITE, O1_NONE, 0),
+       1, 1, 0,  0,  20, 100, 1, 10, 0, 1, 10, 0, 3, 0, 0, 0, 0, 0, 0, P,   P_KNIFE, MINERAL, CLR_WHITE, O1_NONE, 0),
 
 /* axes */
 WEAPON("axe", None,
-       1, 0, 0, 40,  50,   8,  1, 6, 0, 1,  4, 0, 0, 0, 0, 0, 0, 0, S,   P_AXE, IRON, HI_METAL, O1_NONE, 0),
+       1, 0, 0, 40,  50,   8,  1, 6, 0, 1,  4, 0, 0, 0, 0, 0, 0, 0, 0, S,   P_AXE, IRON, HI_METAL, O1_NONE, 0),
 WEAPON("battle-axe", "double-headed axe",       /* "double-bitted"? */
-       0, 0, 1, 10, 100,  40,  2, 6, 0, 3, 4, 1, 0, 0, 0, 0, 0, 0, S,   P_AXE, IRON, HI_METAL, O1_NONE, 0),
+       0, 0, 1, 10, 100,  40,  2, 6, 0, 3, 4, 1, 0, 0, 0, 0, 0, 0, 0, S,   P_AXE, IRON, HI_METAL, O1_NONE, 0),
 
 /* swords */
 WEAPON("short sword", None,
-       1, 0, 0,  8,  45,  10,  1, 6, 0, 1,  8, 0, 0, 0, 0, 0, 0, 0, P,   P_SHORT_SWORD, IRON, HI_METAL, O1_NONE, 0),
+       1, 0, 0,  8,  45,  10,  1, 6, 0, 1,  8, 0, 0, 0, 0, 0, 0, 0, 0, P,   P_SHORT_SWORD, IRON, HI_METAL, O1_NONE, 0),
 WEAPON("elven short sword", "runed short sword",
-       0, 0, 0,  2,  40,  10,  1, 8, 0, 1, 8, 0, 0, 0, 0, 0, 0, 0, P,   P_SHORT_SWORD, WOOD, HI_WOOD, O1_NONE, 0),
+       0, 0, 0,  2,  40,  10,  1, 8, 0, 1, 8, 0, 0, 0, 0, 0, 0, 0, 0, P,   P_SHORT_SWORD, WOOD, HI_WOOD, O1_NONE, 0),
 WEAPON("orcish short sword", "crude short sword",
-       0, 0, 0,  3,  50,  10,  1, 5, 0, 1,  8, 0, 0, 0, 0, 0, 0, 0, P,   P_SHORT_SWORD, IRON, CLR_BLACK, O1_NONE, 0),
+       0, 0, 0,  3,  50,  10,  1, 5, 0, 1,  8, 0, 0, 0, 0, 0, 0, 0, 0, P,   P_SHORT_SWORD, IRON, CLR_BLACK, O1_NONE, 0),
 WEAPON("dwarvish short sword", "broad short sword",
-       0, 0, 0,  2,  50,  10,  1, 7, 0, 1, 8, 0, 0, 0, 0, 0, 0, 0, P,   P_SHORT_SWORD, IRON, HI_METAL, O1_NONE, 0),
+       0, 0, 0,  2,  50,  10,  1, 7, 0, 1, 8, 0, 0, 0, 0, 0, 0, 0, 0, P,   P_SHORT_SWORD, IRON, HI_METAL, O1_NONE, 0),
 WEAPON("scimitar", "curved sword",
-       0, 0, 0, 15,  60,  15,  1, 8, 0, 1, 8, 0, 0, 0, 0, 0, 0, 0, S,   P_SCIMITAR, IRON, HI_METAL, O1_NONE, 0),
+       0, 0, 0, 15,  60,  15,  1, 8, 0, 1, 8, 0, 0, 0, 0, 0, 0, 0, 0, S,   P_SCIMITAR, IRON, HI_METAL, O1_NONE, 0),
 WEAPON("silver saber", None,
-       1, 0, 0,  6,  55,  75,  1, 8, 0, 1, 8, 0, 0, 0, 0, 0, 0, 0, S,   P_SABER, SILVER, HI_SILVER, O1_NONE, 0),
+       1, 0, 0,  6,  55,  75,  1, 8, 0, 1, 8, 0, 0, 0, 0, 0, 0, 0, 0, S,   P_SABER, SILVER, HI_SILVER, O1_NONE, 0),
 WEAPON("broadsword", None,
-       1, 0, 0,  8,  60,  10,  2, 4, 0, 1, 6, 1, 0, 0, 0, 0, 0, 0, S,   P_BROAD_SWORD, IRON, HI_METAL, O1_NONE, 0),
+       1, 0, 0,  8,  60,  10,  2, 4, 0, 1, 6, 1, 0, 0, 0, 0, 0, 0, 0, S,   P_BROAD_SWORD, IRON, HI_METAL, O1_NONE, 0),
         /* +d4 small, +1 large */
 WEAPON("elven broadsword", "runed broadsword",
-       0, 0, 0,  4,  55,  10,  2, 4, 0, 1, 6, 1, 0, 0, 0, 0, 0, 0, S,   P_BROAD_SWORD, WOOD, HI_WOOD, O1_NONE, 0),
+       0, 0, 0,  4,  55,  10,  2, 4, 0, 1, 6, 1, 0, 0, 0, 0, 0, 0, 0, S,   P_BROAD_SWORD, WOOD, HI_WOOD, O1_NONE, 0),
         /* +d4 small, +1 large */
 WEAPON("long sword", None,
-       1, 0, 0, 36,  60,  15,  1, 8, 0, 1, 12, 0, 0, 0, 0, 0, 0, 0, S,   P_LONG_SWORD, IRON, HI_METAL, O1_NONE, 0),
+       1, 0, 0, 36,  60,  15,  1, 8, 0, 1, 12, 0, 0, 0, 0, 0, 0, 0, 0, S,   P_LONG_SWORD, IRON, HI_METAL, O1_NONE, 0),
 WEAPON("silver long sword", None,
-	   1, 0, 0,  1,   55, 500, 1, 8, 0, 1, 12, 0, 0, 0, 0, 0, 0, 0, S, P_LONG_SWORD, SILVER, HI_SILVER, O1_NONE, 0),
+	   1, 0, 0,  1,   55, 500, 1, 8, 0, 1, 12, 0, 0, 0, 0, 0, 0, 0, 0, S, P_LONG_SWORD, SILVER, HI_SILVER, O1_NONE, 0),
 WEAPON("glass sword", None,
-	   1, 0, 0,  3,   20, 500, 1, 8, 0, 1, 12, 0, 0, 0, 0, 0, 0, 0, S, P_LONG_SWORD, GLASS, HI_GLASS, O1_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED, 0),
+	   1, 0, 0,  3,   20, 500, 1, 8, 0, 1, 12, 0, 0, 0, 0, 0, 0, 0, 0, S, P_LONG_SWORD, GLASS, HI_GLASS, O1_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED, 0),
 WEAPON("two-handed sword", None,
-       1, 0, 1, 20, 120,  50, 1, 12, 0, 3, 6, 0, 0, 0, 0, 0, 0, 0, S,   P_TWO_HANDED_SWORD,
+       1, 0, 1, 20, 120,  50, 1, 12, 0, 3, 6, 0, 0, 0, 0, 0, 0, 0, 0, S,   P_TWO_HANDED_SWORD,
                                                         IRON, HI_METAL, O1_NONE, 0),
         /* +2d6 large */
 WEAPON("katana", "samurai sword",
-       0, 0, 0,  4,  80,  80, 1, 10, 0, 1, 12, 0, 1, 0, 0, 0, 0, 0, S,   P_LONG_SWORD, IRON, HI_METAL, O1_NONE, 0),
+       0, 0, 0,  4,  80,  80, 1, 10, 0, 1, 12, 0, 1, 0, 0, 0, 0, 0, 0, S,   P_LONG_SWORD, IRON, HI_METAL, O1_NONE, 0),
 /* special swords set up for artifacts */
 WEAPON("tsurugi", "long samurai sword",
-       0, 0, 1,  0,  100, 500, 1, 16, 0, 3, 6, 1, 2, 0, 0, 0, 0, 0, S,   P_TWO_HANDED_SWORD,
+       0, 0, 1,  0,  100, 500, 1, 16, 0, 3, 6, 1, 2, 0, 0, 0, 0, 0, 0, S,   P_TWO_HANDED_SWORD,
                                                             METAL, HI_METAL, O1_NONE, 0),
         /* +2d6 large */
 WEAPON("runesword", "runed broadsword",
-       0, 0, 0,  0,  55, 300,  2, 4, 0, 1, 6, 1, 0, 0, 0, 0, 0, 0, S,   P_BROAD_SWORD, IRON, CLR_BLACK, O1_NONE, 0),
+       0, 0, 0,  0,  55, 300,  2, 4, 0, 1, 6, 1, 0, 0, 0, 0, 0, 0, 0, S,   P_BROAD_SWORD, IRON, CLR_BLACK, O1_NONE, 0),
         /* +d4 small, +1 large; Stormbringer: +5d2 +d8 from level drain */
 
 /* polearms */
 /* spear-type */
 WEAPON("partisan", "vulgar polearm",
-       0, 0, 1,  5,  80,  10,  1, 6, 0, 1, 6, 1, 0, 0, 0, 0, 0, 0, P,   P_POLEARMS, IRON, HI_METAL, O1_NONE, 0),
+       0, 0, 1,  5,  80,  10,  1, 6, 0, 1, 6, 1, 0, 0, 0, 0, 0, 0, 0, P,   P_POLEARMS, IRON, HI_METAL, O1_NONE, 0),
         /* +1 large */
 WEAPON("ranseur", "hilted polearm",
-       0, 0, 1,  5,  50,   6,  2, 4, 0, 2, 4, 0, 0, 0, 0, 0, 0, 0, P,   P_POLEARMS, IRON, HI_METAL, O1_NONE, 0),
+       0, 0, 1,  5,  50,   6,  2, 4, 0, 2, 4, 0, 0, 0, 0, 0, 0, 0, 0, P,   P_POLEARMS, IRON, HI_METAL, O1_NONE, 0),
         /* +d4 both */
 WEAPON("spetum", "forked polearm",
-       0, 0, 1,  5,  50,  1, 5, 1, 2, 6, 0, 6, 0, 0, 0, 0, 0, 0, P,   P_POLEARMS, IRON, HI_METAL, O1_NONE, 0),
+       0, 0, 1,  5,  50,  1, 5, 1, 2, 6, 0, 6, 0, 0, 0, 0, 0, 0, 0, P,   P_POLEARMS, IRON, HI_METAL, O1_NONE, 0),
         /* +1 small, +d6 large */
 WEAPON("glaive", "single-edged polearm",
-       0, 0, 1,  8,  75,   6, 1, 6, 0, 1, 10, 0, 0, 0, 0, 0, 0, 0, S,   P_POLEARMS, IRON, HI_METAL, O1_NONE, 0),
+       0, 0, 1,  8,  75,   6, 1, 6, 0, 1, 10, 0, 0, 0, 0, 0, 0, 0, 0, S,   P_POLEARMS, IRON, HI_METAL, O1_NONE, 0),
 WEAPON("lance", None,
-       1, 0, 0,  4, 180,  10, 1, 6, 0, 1, 8, 0, 0, 0, 0, 0, 0, 0, P,   P_LANCE, IRON, HI_METAL, O1_NONE, 0),
+       1, 0, 0,  4, 180,  10, 1, 6, 0, 1, 8, 0, 0, 0, 0, 0, 0, 0, 0, P,   P_LANCE, IRON, HI_METAL, O1_NONE, 0),
         /* +2d10 when jousting with lance as primary weapon */
 /* axe-type */
 WEAPON("halberd", "angled poleaxe",
-       0, 0, 1,  8, 150,  10, 1, 10, 0, 2, 6, 0, 0, 0, 0, 0, 0, 0, P|S, P_POLEARMS, IRON, HI_METAL, O1_NONE, 0),
+       0, 0, 1,  8, 150,  10, 1, 10, 0, 2, 6, 0, 0, 0, 0, 0, 0, 0, 0, P|S, P_POLEARMS, IRON, HI_METAL, O1_NONE, 0),
         /* +1d6 large */
 WEAPON("bardiche", "long poleaxe",
-       0, 0, 1,  4, 120,   7,  2, 4, 0, 3, 4, 0, 0, 0, 0, 0, 0, 0, S,   P_POLEARMS, IRON, HI_METAL, O1_NONE, 0),
+       0, 0, 1,  4, 120,   7,  2, 4, 0, 3, 4, 0, 0, 0, 0, 0, 0, 0, 0, S,   P_POLEARMS, IRON, HI_METAL, O1_NONE, 0),
         /* +1d4 small, +2d4 large */
 WEAPON("voulge", "pole cleaver",
-       0, 0, 1,  4, 125,   5, 2, 4, 0, 2, 4, 0, 0, 0, 0, 0, 0, 0, S,   P_POLEARMS, IRON, HI_METAL, O1_NONE, 0),
+       0, 0, 1,  4, 125,   5, 2, 4, 0, 2, 4, 0, 0, 0, 0, 0, 0, 0, 0, S,   P_POLEARMS, IRON, HI_METAL, O1_NONE, 0),
         /* +d4 both */
 WEAPON("dwarvish mattock", "broad pick",
-       0, 0, 1, 13, 120,  50, 1, 12, 0, 3, 6, 1, -1, 0, 0, 0, 0, 0, B,  P_PICK_AXE, IRON, HI_METAL, O1_NONE, 0),
+       0, 0, 1, 13, 120,  50, 1, 12, 0, 3, 6, 1, -1, 0, 0, 0, 0, 0, 0, B,  P_PICK_AXE, IRON, HI_METAL, O1_NONE, 0),
 /* curved/hooked */
 WEAPON("fauchard", "pole sickle",
-       0, 0, 1,  6,  60,   5,  1, 6, 0, 1, 8, 0, 0, 0, 0, 0, 0, 0, P|S, P_POLEARMS, IRON, HI_METAL, O1_NONE, 0),
+       0, 0, 1,  6,  60,   5,  1, 6, 0, 1, 8, 0, 0, 0, 0, 0, 0, 0, 0, P|S, P_POLEARMS, IRON, HI_METAL, O1_NONE, 0),
 WEAPON("guisarme", "pruning hook",
-       0, 0, 1,  6,  80,   5,  2, 4, 0, 1, 8, 0, 0, 0, 0, 0, 0, 0, S,   P_POLEARMS, IRON, HI_METAL, O1_NONE, 0),
+       0, 0, 1,  6,  80,   5,  2, 4, 0, 1, 8, 0, 0, 0, 0, 0, 0, 0, 0, S,   P_POLEARMS, IRON, HI_METAL, O1_NONE, 0),
         /* +1d4 small */
 WEAPON("bill-guisarme", "hooked polearm",
-       0, 0, 1,  4, 120,   7,  2, 4, 0, 1, 10, 0, 0, 0, 0, 0, 0, 0, P|S, P_POLEARMS, IRON, HI_METAL, O1_NONE, 0),
+       0, 0, 1,  4, 120,   7,  2, 4, 0, 1, 10, 0, 0, 0, 0, 0, 0, 0, 0, P|S, P_POLEARMS, IRON, HI_METAL, O1_NONE, 0),
         /* +1d4 small */
 WEAPON("infernal ancus", "black ornamental hooked polearm",
-       0, 0, 0,  0, 100, 100,  1, 6, 1, 1, 8, 1, 0, 0, 0, 0, 0, 0, P|S, P_POLEARMS, IRON, CLR_BLACK, O1_NONE, 0),
+       0, 0, 0,  0, 100, 100,  1, 6, 1, 1, 8, 1, 0, 0, 0, 0, 0, 0, 0, P|S, P_POLEARMS, IRON, CLR_BLACK, O1_NONE, 0),
 /* other */
 WEAPON("lucern hammer", "pronged polearm",
-       0, 0, 1,  5, 150,   7,  2, 4, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, B|P, P_POLEARMS, IRON, HI_METAL, O1_NONE, 0),
+       0, 0, 1,  5, 150,   7,  2, 4, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, B|P, P_POLEARMS, IRON, HI_METAL, O1_NONE, 0),
         /* +1d4 small */
 WEAPON("bec de corbin", "beaked polearm",
-       0, 0, 1,  4, 100,   1, 8, 0, 1,  8, 0,  6, 0, 0, 0, 0, 0, 0, B|P, P_POLEARMS, IRON, HI_METAL, O1_NONE, 0),
+       0, 0, 1,  4, 100,   1, 8, 0, 1,  8, 0,  6, 0, 0, 0, 0, 0, 0, 0, B|P, P_POLEARMS, IRON, HI_METAL, O1_NONE, 0),
 
 /* bludgeons */
 WEAPON("mace", None,
-       1, 0, 0, 38,  60,   5,  1, 6, 1, 1, 6, 0, 0, 0, 0, 0, 0, 0, B,   P_MACE, IRON, HI_METAL, O1_NONE, 0),
+       1, 0, 0, 38,  60,   5,  1, 6, 1, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, B,   P_MACE, IRON, HI_METAL, O1_NONE, 0),
         /* +1 small */
 WEAPON("silver mace", None,
-	   1, 0, 0, 2, 55, 250, 1, 6, 1, 1, 6, 0, 0, 0, 0, 0, 0, 0, B, P_MACE, SILVER, HI_SILVER, O1_NONE, 0),
+	   1, 0, 0, 2, 55, 250, 1, 6, 1, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, B, P_MACE, SILVER, HI_SILVER, O1_NONE, 0),
 		/* +1 small */
 WEAPON("morning star", None,
-	   1, 0, 0, 12, 60,  10,  2, 4, 0, 1,  6, 1, 0, 0, 0, 0, 0, 0, B,   P_MORNING_STAR, IRON, HI_METAL, O1_NONE, 0),
+	   1, 0, 0, 12, 60,  10,  2, 4, 0, 1,  6, 1, 0, 0, 0, 0, 0, 0, 0, B,   P_MORNING_STAR, IRON, HI_METAL, O1_NONE, 0),
         /* +d4 small, +1 large */
 WEAPON("war hammer", None,
-       1, 0, 0, 11,  50,   5,  1, 4, 1, 1, 4, 0, 0, 0, 0, 0, 0, 0, B,   P_HAMMER, IRON, HI_METAL, O1_NONE, 0),
+       1, 0, 0, 11,  50,   5,  1, 4, 1, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, B,   P_HAMMER, IRON, HI_METAL, O1_NONE, 0),
         /* +1 small */
 WEAPON("club", None,
-       1, 0, 0, 12,  40,   3,  1, 6, 0, 1, 3, 0, 0, 0, 0, 0, 0, 0, B,   P_CLUB, WOOD, HI_WOOD, O1_NONE, 0),
+       1, 0, 0, 12,  40,   3,  1, 6, 0, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, B,   P_CLUB, WOOD, HI_WOOD, O1_NONE, 0),
 WEAPON("infernal jagged-toothed club", "black jagged-toothed club",
-       0, 0, 0,  0,  60, 100,  1, 6, 1, 1, 6, 1, 0, 0, 0, 0, 0, 0, B,   P_CLUB, WOOD, CLR_BLACK, O1_NONE, 0),
+       0, 0, 0,  0,  60, 100,  1, 6, 1, 1, 6, 1, 0, 0, 0, 0, 0, 0, 0, B,   P_CLUB, WOOD, CLR_BLACK, O1_NONE, 0),
 WEAPON("rubber hose", None,
-       1, 0, 0,  0,  20,   3,  1, 4, 0, 1, 3, 0, 0, 0, 0, 0, 0, 0, B,   P_WHIP, PLASTIC, CLR_BROWN, O1_NONE, 0),
+       1, 0, 0,  0,  20,   3,  1, 4, 0, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, B,   P_WHIP, PLASTIC, CLR_BROWN, O1_NONE, 0),
 WEAPON("quarterstaff", "staff",
-       0, 0, 1, 11,  30,   5,  1, 6, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, B,   P_QUARTERSTAFF, WOOD, HI_WOOD, O1_NONE, 0),
+       0, 0, 1, 11,  30,   5,  1, 6, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, B,   P_QUARTERSTAFF, WOOD, HI_WOOD, O1_NONE, 0),
 WEAPON("staff of the magi", "staff",
-       0, 1, 1, 4,  30,  500,  3, 6, 0, 3, 6, 0, 0, 50, 0, 0, 0, 0, B,   P_QUARTERSTAFF, WOOD, HI_WOOD, O1_MANA_PERCENTAGE_BONUS | O1_FIRE_RESISTANT | O1_LIGHTNING_RESISTANT, 0),
+       0, 1, 1, 4,  30,  500,  3, 6, 0, 3, 6, 0, 0, 50, 0, 0, 0, 0, 0, B,   P_QUARTERSTAFF, WOOD, HI_WOOD, O1_MANA_PERCENTAGE_BONUS | O1_FIRE_RESISTANT | O1_LIGHTNING_RESISTANT, 0),
 /* two-piece */
 WEAPON("aklys", "thonged club",
-       0, 0, 0,  8,  15,   4,  1, 6, 0, 1, 3, 0, 0, 0, 0, 0, 0, 0, B,   P_CLUB, IRON, HI_METAL, O1_NONE, 0),
+       0, 0, 0,  8,  15,   4,  1, 6, 0, 1, 3, 0, 0, 4, 0, 0, 0, 0, 0, B,   P_CLUB, IRON, HI_METAL, O1_NONE, 0),
 WEAPON("flail", None,
-       1, 0, 0, 40,  35,   4,  1, 6, 1, 2, 4, 0, 0, 0, 0, 0, 0, 0, B,   P_FLAIL, IRON, HI_METAL, O1_NONE, 0),
+       1, 0, 0, 40,  35,   4,  1, 6, 1, 2, 4, 0, 0, 0, 0, 0, 0, 0, 0, B,   P_FLAIL, IRON, HI_METAL, O1_NONE, 0),
 	/* +1 small, +1d4 large */
 WEAPON("double-headed flail", None,
-	   1, 0, 0,  0,  55, 250, 1, 10, 1, 3, 4, 0, -1, 0, 0, 0, 0, 0, B, P_FLAIL, IRON, HI_METAL, O1_NONE, 0),
+	   1, 0, 0,  0,  55, 250, 1, 10, 1, 3, 4, 0, -1, 0, 0, 0, 0, 0, 0, B, P_FLAIL, IRON, HI_METAL, O1_NONE, 0),
 	/* one-handed, flail damage x c. 1.5, -1 hit bonus (difficult to wield)*/
 WEAPON("triple-headed flail", None,
-	   1, 0, 0, 0, 70, 1000, 2, 6, 2, 4, 4, 0, -2, 0, 0, 0, 0, 0, B, P_FLAIL, IRON, HI_METAL, O1_NONE, 0),
+	   1, 0, 0, 0, 70, 1000, 2, 6, 2, 4, 4, 0, -2, 0, 0, 0, 0, 0, 0, B, P_FLAIL, IRON, HI_METAL, O1_NONE, 0),
 	/* one-handed, flail damage x 2, -2 hit bonus (difficult to wield)*/
 
 
 /* misc */
 WEAPON("bullwhip", None,
-       1, 0, 0,  2,  20,   4,  1, 2, 0,  1, 1, 0,  0, 0, 0, 0, 0, 0, 0,   P_WHIP, LEATHER, CLR_BROWN, O1_NONE, 0),
+       1, 0, 0,  2,  20,   4,  1, 2, 0,  1, 1, 0,  0, 0, 0, 0, 0, 0, 0, 0,   P_WHIP, LEATHER, CLR_BROWN, O1_NONE, 0),
 WEAPON("black blade of disintegration", "sword-shaped planar rift",
-   	   0, 1, 1,  0,  0,    0,  1, 16, 0,  3, 6, 1, 0, 0, 0, 0, 0, 0, S, P_TWO_HANDED_SWORD, PLANARRIFT, CLR_BLACK, O1_DISINTEGRATION_RESISTANT, 0),
+   	   0, 1, 1,  0,  0,    0,  1, 16, 0,  3, 6, 1, 0, 0, 0, 0, 0, 0, 0, S, P_TWO_HANDED_SWORD, PLANARRIFT, CLR_BLACK, O1_DISINTEGRATION_RESISTANT, 0),
 
 /* bows */
-BOW("bow", None,							1, 1, 0,  30, 30, 1, 3, 0, 1, 4, 0, 0, 0, 0, 0, 0, 0, WOOD, P_BOW, HI_WOOD, O1_NONE, 0),
-BOW("short bow", None,						1, 1, 12, 30, 30, 1, 3, 0, 1, 4, 0, 0, 0, 0, 0, 0, 0, WOOD, P_BOW, HI_WOOD, O1_NONE, 0),
-BOW("elven long bow", "runed long bow",		0, 1, 12, 40, 200, 1, 5, 0, 1, 7, 0, 1, 0, 0, 0, 0, 0, WOOD, P_BOW, HI_WOOD, O1_NONE, 0),
-BOW("orcish short bow", "crude short bow",  0, 1, 12, 35, 10, 1, 2, 0, 1, 3, 0, 0, 0, 0, 0, 0, 0, WOOD, P_BOW, CLR_BLACK, O1_NONE, 0),
-BOW("long bow", None,						1, 1, 12, 45, 75, 1, 4, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, WOOD, P_BOW, HI_WOOD, O1_NONE, 0),
-BOW("composite long bow", None,				1, 1, 6,  50, 250, 1, 5, 1, 1, 7, 1, 0, 0, 0, 0, 0, 0, WOOD, P_BOW, HI_WOOD, O1_NONE, 0),
-BOW("composite short bow", None,			1, 1, 6,  35, 100, 1, 4, 1, 1, 5, 1, 0, 0, 0, 0, 0, 0, WOOD, P_BOW, HI_WOOD, O1_NONE, 0),
-BOW("yumi", "oriental long bow",			0, 1, 0,  55, 150, 1, 4, 0, 1, 8, 0, 0, 0, 0, 0, 0, 0, WOOD, P_BOW, HI_WOOD, O1_NONE, 0),
-BOW("sling", None,							1, 0, 40,  3, 20, 1, 2, 0, 1, 4, 0, 0, 0, 0, 0, 0, 0, LEATHER, P_SLING, HI_LEATHER, O1_NONE, 0),
-BOW("crossbow", None,						1, 1, 30, 100, 75, 1, 5, 0, 1, 5, 0, 0, 0, 0, 0, 0, 0, WOOD, P_CROSSBOW, HI_WOOD, O1_NONE, 0),
-BOW("hand crossbow", None,					1, 0, 5,  40, 50, 1, 2, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, WOOD, P_CROSSBOW, HI_WOOD, O1_NONE, 0),
-BOW("heavy crossbow", None,					1, 1, 10, 200, 150, 1, 8, 0, 1, 8, 0, 0, 0, 0, 0, 0, 0, WOOD, P_CROSSBOW, HI_WOOD, O1_NONE, 0),
+BOW("bow", None,							1, 1, 0,  30, 30, 1, 3, 0, 1, 4, 0, 0,	-100, 0, 0, 0, 0, 0, WOOD, P_BOW, HI_WOOD, O1_NONE, 0),
+BOW("short bow", None,						1, 1, 12, 30, 30, 1, 3, 0, 1, 4, 0, 0,	 -80, 0, 0, 0, 0, 0, WOOD, P_BOW, HI_WOOD, O1_NONE, 0),
+BOW("elven long bow", "runed long bow",		0, 1, 12, 40, 200, 1, 5, 0, 1, 7, 0, 1, -110, 0, 0, 0, 0, 0, WOOD, P_BOW, HI_WOOD, O1_NONE, 0),
+BOW("orcish short bow", "crude short bow",  0, 1, 12, 35, 10, 1, 2, 0, 1, 3, 0, 0,	 -70, 0, 0, 0, 0, 0, WOOD, P_BOW, CLR_BLACK, O1_NONE, 0),
+BOW("long bow", None,						1, 1, 12, 45, 75, 1, 4, 0, 1, 6, 0, 0,	-100, 0, 0, 0, 0, 0, WOOD, P_BOW, HI_WOOD, O1_NONE, 0),
+BOW("composite long bow", None,				1, 1, 6,  50, 250, 1, 5, 1, 1, 7, 1, 0, -130, 0, 0, 0, 0, 0, WOOD, P_BOW, HI_WOOD, O1_NONE, 0),
+BOW("composite short bow", None,			1, 1, 6,  35, 100, 1, 4, 1, 1, 5, 1, 0,  -90, 0, 0, 0, 0, 0, WOOD, P_BOW, HI_WOOD, O1_NONE, 0),
+BOW("yumi", "oriental long bow",			0, 1, 0,  55, 150, 1, 4, 0, 1, 8, 0, 0, -120, 0, 0, 0, 0, 0, WOOD, P_BOW, HI_WOOD, O1_NONE, 0),
+BOW("sling", None,							1, 0, 40,  3, 20, 1, 2, 0, 1, 4, 0, 0,	 -60, 0, 0, 0, 0, 0, LEATHER, P_SLING, HI_LEATHER, O1_NONE, 0),
+BOW("crossbow", None,						1, 1, 30, 100, 75, 1, 5, 0, 1, 5, 0, 0,	  18, 0, 0, 0, 0, 0, WOOD, P_CROSSBOW, HI_WOOD, O1_NONE, 0),
+BOW("hand crossbow", None,					1, 0, 5,  40, 50, 1, 2, 0, 1, 2, 0, 0,	   9, 0, 0, 0, 0, 0, WOOD, P_CROSSBOW, HI_WOOD, O1_NONE, 0),
+BOW("heavy crossbow", None,					1, 1, 10, 200, 150, 1, 8, 0, 1, 8, 0, 0,  24, 0, 0, 0, 0, 0, WOOD, P_CROSSBOW, HI_WOOD, O1_NONE, 0),
 
 #undef P
 #undef S
@@ -792,7 +792,7 @@ MISCELLANEOUSITEM("golden earrings", None, MISC_EARRINGS, None, None,
 	1, 0, 0, 0, 20, 200, 50,
 	0, 0, 0, 0, 0, BONUS_TO_CHA, 1,
 	50, GOLD, HI_GOLD, O1_NONE, PERMITTED_GENDER_FEMALE),
-MISCELLANEOUSITEM("ioun stone of protection", "ioun stone", MISC_IOUN_STONE, "orbiting your head", None,
+MISCELLANEOUSITEM("ioun stone of protection", "ioun stone", MISC_IOUN_STONE, "orbiting head", None,
 	0, 1, 0, 0, 20, 200, 50, //STARTMARKER FOR IOUNSTONES
 	PROTECTION, 0, 0, 0, 0, 0, 0,
 	50, MINERAL, CLR_RED, O1_NONE, 0),
@@ -1565,48 +1565,48 @@ COIN("gold piece", 1000, GOLD, 1),
            BITS(kn, 1, 0, 0, mgc, 0, 0, 0, 0,                           \
                 HARDGEM(mohs), 0, -P_SLING, glass),                     \
            power1, power2, power3, GEM_CLASS, prob, 0, wt, gval, sdice, sdam, splus, ldice, ldam, lplus, 0, 0, 0, 0, 0, 0, nutr, color, powconfermask, 0, 0, 0, flags)
-GEM("dilithium crystal", "white",  2, 1, 4500, 15,  5, GEMSTONE, CLR_WHITE, O1_NONE, 0),
-GEM("diamond",           "white",  3, 1, 4000, 15,  10, GEMSTONE, CLR_WHITE, O1_TREATED_AS_MATERIAL_COMPONENT, 0),
-GEM("black pearl",		 "black",  3, 1, 3750, 15,  5, GEMSTONE, CLR_BLACK, O1_TREATED_AS_MATERIAL_COMPONENT, 0),
-GEM("ruby",                "red",  4, 1, 3500, 15,  9, GEMSTONE, CLR_RED, O1_TREATED_AS_MATERIAL_COMPONENT, 0),
-GEM("jacinth",          "orange",  3, 1, 3250, 15,  9, GEMSTONE, CLR_ORANGE, O1_TREATED_AS_MATERIAL_COMPONENT, 0),
-GEM("sapphire",           "blue",  4, 1, 3000, 15,  9, GEMSTONE, CLR_BLUE, O1_TREATED_AS_MATERIAL_COMPONENT, 0),
-GEM("black opal",        "black",  3, 1, 2750, 15,  8, GEMSTONE, CLR_BLACK, O1_TREATED_AS_MATERIAL_COMPONENT, 0),
-GEM("emerald",           "green",  5, 1, 2500, 15,  8, GEMSTONE, CLR_GREEN, O1_TREATED_AS_MATERIAL_COMPONENT, 0),
-GEM("turquoise",         "green",  6, 1, 2000, 15,  6, GEMSTONE, CLR_GREEN, O1_TREATED_AS_MATERIAL_COMPONENT, 0),
-GEM("citrine",          "yellow",  4, 1, 1500, 15,  6, GEMSTONE, CLR_YELLOW, O1_TREATED_AS_MATERIAL_COMPONENT, 0),
-GEM("aquamarine",        "green",  6, 1, 1500, 15,  8, GEMSTONE, CLR_GREEN, O1_TREATED_AS_MATERIAL_COMPONENT, 0),
-GEM("amber",   "yellowish brown",  8, 1, 1000, 15,  2, GEMSTONE, CLR_BROWN, O1_TREATED_AS_MATERIAL_COMPONENT, 0),
-GEM("topaz",   "yellowish brown", 10, 1,  900, 15,  8, GEMSTONE, CLR_BROWN, O1_TREATED_AS_MATERIAL_COMPONENT, 0),
-GEM("jet",               "black", 10, 1,  850, 15,  7, GEMSTONE, CLR_BLACK, O1_TREATED_AS_MATERIAL_COMPONENT, 0),
-GEM("opal",              "white", 12, 1,  800, 15,  6, GEMSTONE, CLR_WHITE, O1_TREATED_AS_MATERIAL_COMPONENT, 0),
-GEM("chrysoberyl",      "yellow", 10, 1,  700, 15,  5, GEMSTONE, CLR_YELLOW, O1_TREATED_AS_MATERIAL_COMPONENT, 0),
-GEM("garnet",              "red", 12, 1,  700, 15,  7, GEMSTONE, CLR_RED, O1_TREATED_AS_MATERIAL_COMPONENT, 0),
-GEM("amethyst",         "violet", 12, 1,  600, 15,  7, GEMSTONE, CLR_MAGENTA, O1_TREATED_AS_MATERIAL_COMPONENT, 0),
-GEM("jasper",              "red", 12, 1,  500, 15,  7, GEMSTONE, CLR_RED, O1_TREATED_AS_MATERIAL_COMPONENT, 0),
-GEM("fluorite",         "violet", 12, 1,  400, 15,  4, GEMSTONE, CLR_MAGENTA, O1_TREATED_AS_MATERIAL_COMPONENT, 0),
-GEM("pearl",			 "white", 12, 1,  300, 15,  5, GEMSTONE, CLR_WHITE, O1_TREATED_AS_MATERIAL_COMPONENT, 0),
-GEM("obsidian",          "black", 10, 1,  200, 15,  6, GEMSTONE, CLR_BLACK, O1_TREATED_AS_MATERIAL_COMPONENT, 0),
-GEM("agate",            "orange", 12, 1,  200, 15,  6, GEMSTONE, CLR_ORANGE, O1_TREATED_AS_MATERIAL_COMPONENT, 0),
-GEM("jade",              "green", 10, 1,  300, 15,  6, GEMSTONE, CLR_GREEN, O1_TREATED_AS_MATERIAL_COMPONENT, 0),
+GEM("dilithium crystal", "white",  2, 1, 4500, 15,  5, GEMSTONE, CLR_WHITE, O1_THROWN_WEAPON, 0),
+GEM("diamond",           "white",  3, 1, 4000, 15,  10, GEMSTONE, CLR_WHITE, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
+GEM("black pearl",		 "black",  3, 1, 3750, 15,  5, GEMSTONE, CLR_BLACK, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
+GEM("ruby",                "red",  4, 1, 3500, 15,  9, GEMSTONE, CLR_RED, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
+GEM("jacinth",          "orange",  3, 1, 3250, 15,  9, GEMSTONE, CLR_ORANGE, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
+GEM("sapphire",           "blue",  4, 1, 3000, 15,  9, GEMSTONE, CLR_BLUE, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
+GEM("black opal",        "black",  3, 1, 2750, 15,  8, GEMSTONE, CLR_BLACK, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
+GEM("emerald",           "green",  5, 1, 2500, 15,  8, GEMSTONE, CLR_GREEN, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
+GEM("turquoise",         "green",  6, 1, 2000, 15,  6, GEMSTONE, CLR_GREEN, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
+GEM("citrine",          "yellow",  4, 1, 1500, 15,  6, GEMSTONE, CLR_YELLOW, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
+GEM("aquamarine",        "green",  6, 1, 1500, 15,  8, GEMSTONE, CLR_GREEN, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
+GEM("amber",   "yellowish brown",  8, 1, 1000, 15,  2, GEMSTONE, CLR_BROWN, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
+GEM("topaz",   "yellowish brown", 10, 1,  900, 15,  8, GEMSTONE, CLR_BROWN, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
+GEM("jet",               "black", 10, 1,  850, 15,  7, GEMSTONE, CLR_BLACK, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
+GEM("opal",              "white", 12, 1,  800, 15,  6, GEMSTONE, CLR_WHITE, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
+GEM("chrysoberyl",      "yellow", 10, 1,  700, 15,  5, GEMSTONE, CLR_YELLOW, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
+GEM("garnet",              "red", 12, 1,  700, 15,  7, GEMSTONE, CLR_RED, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
+GEM("amethyst",         "violet", 12, 1,  600, 15,  7, GEMSTONE, CLR_MAGENTA, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
+GEM("jasper",              "red", 12, 1,  500, 15,  7, GEMSTONE, CLR_RED, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
+GEM("fluorite",         "violet", 12, 1,  400, 15,  4, GEMSTONE, CLR_MAGENTA, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
+GEM("pearl",			 "white", 12, 1,  300, 15,  5, GEMSTONE, CLR_WHITE, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
+GEM("obsidian",          "black", 10, 1,  200, 15,  6, GEMSTONE, CLR_BLACK, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
+GEM("agate",            "orange", 12, 1,  200, 15,  6, GEMSTONE, CLR_ORANGE, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
+GEM("jade",              "green", 10, 1,  300, 15,  6, GEMSTONE, CLR_GREEN, O1_TREATED_AS_MATERIAL_COMPONENT | O1_THROWN_WEAPON, 0),
 GEM("worthless piece of white glass", "white",
-    70, 1, 0, 6, 5, GLASS, CLR_WHITE, O1_NONE, 0),
+    70, 1, 0, 6, 5, GLASS, CLR_WHITE, O1_THROWN_WEAPON, 0),
 GEM("worthless piece of blue glass", "blue",
-    70, 1, 0, 6, 5, GLASS, CLR_BLUE, O1_NONE, 0),
+    70, 1, 0, 6, 5, GLASS, CLR_BLUE, O1_THROWN_WEAPON, 0),
 GEM("worthless piece of red glass", "red",
-    77, 1, 0, 6, 5, GLASS, CLR_RED, O1_NONE, 0),
+    77, 1, 0, 6, 5, GLASS, CLR_RED, O1_THROWN_WEAPON, 0),
 GEM("worthless piece of yellowish brown glass", "yellowish brown",
-    77, 1, 0, 6, 5, GLASS, CLR_BROWN, O1_NONE, 0),
+    77, 1, 0, 6, 5, GLASS, CLR_BROWN, O1_THROWN_WEAPON, 0),
 GEM("worthless piece of orange glass", "orange",
-    77, 1, 0, 6, 5, GLASS, CLR_ORANGE, O1_NONE, 0),
+    77, 1, 0, 6, 5, GLASS, CLR_ORANGE, O1_THROWN_WEAPON, 0),
 GEM("worthless piece of yellow glass", "yellow",
-    77, 1, 0, 6, 5, GLASS, CLR_YELLOW, O1_NONE, 0),
+    77, 1, 0, 6, 5, GLASS, CLR_YELLOW, O1_THROWN_WEAPON, 0),
 GEM("worthless piece of black glass", "black",
-    77, 1, 0, 6, 5, GLASS, CLR_BLACK, O1_NONE, 0),
+    77, 1, 0, 6, 5, GLASS, CLR_BLACK, O1_THROWN_WEAPON, 0),
 GEM("worthless piece of green glass", "green",
-    76, 1, 0, 6, 5, GLASS, CLR_GREEN, O1_NONE, 0),
+    76, 1, 0, 6, 5, GLASS, CLR_GREEN, O1_THROWN_WEAPON, 0),
 GEM("worthless piece of violet glass", "violet",
-    76, 1, 0, 6, 5, GLASS, CLR_MAGENTA, O1_NONE, 0),
+    76, 1, 0, 6, 5, GLASS, CLR_MAGENTA, O1_THROWN_WEAPON, 0),
 
 /* Placement note: there is a wishable subrange for
  * "gray stones" in the o_ranges[] array in objnam.c
@@ -1614,21 +1614,21 @@ GEM("worthless piece of violet glass", "violet",
  * (inclusive).
  */
 ROCK("luckstone", "gray",	//Gray stone start marker
-	0, 0, 0,				0,  10,  10, 60, 1, 3, 0, 1, 3, 0, 1, 10, 7, MINERAL, CLR_GRAY, O1_CONFERS_LUCK | O1_CONFERS_POWERS_WHEN_CARRIED, 0),
+	0, 0, 0,				0,  10,  10, 60, 1, 3, 0, 1, 3, 0, 1, 10, 7, MINERAL, CLR_GRAY, O1_CONFERS_LUCK | O1_CONFERS_POWERS_WHEN_CARRIED | O1_THROWN_WEAPON, 0),
 ROCK("loadstone", "gray", 
-	0, 0, 0,				0,  10, 500,  1, 1, 10, 0, 1, 10, 0, 1, 10, 6, MINERAL, CLR_GRAY, O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED | O1_CANNOT_BE_DROPPED_IF_CURSED, 0),
+	0, 0, 0,				0,  10, 500,  1, 1, 10, 0, 1, 10, 0, 1, 10, 6, MINERAL, CLR_GRAY, O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED | O1_CANNOT_BE_DROPPED_IF_CURSED | O1_THROWN_WEAPON, 0),
 ROCK("jinxstone", "gray",  
-	FUMBLING, 0, 0,			0,  10,  10,  1, 1, 3, 0, 1, 3, 0, 1, 10, 6, MINERAL, CLR_GRAY, O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED | O1_CANNOT_BE_DROPPED_IF_CURSED | O1_CONFERS_POWERS_WHEN_CARRIED, 0),
+	FUMBLING, 0, 0,			0,  10,  10,  1, 1, 3, 0, 1, 3, 0, 1, 10, 6, MINERAL, CLR_GRAY, O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED | O1_CANNOT_BE_DROPPED_IF_CURSED | O1_CONFERS_POWERS_WHEN_CARRIED | O1_THROWN_WEAPON, 0),
 ROCK("touchstone", "gray", 
-	0, 0, 0,				0,   8,  10, 45, 1, 3, 0, 1, 3, 0, 1, 10, 6, MINERAL, CLR_GRAY, O1_NONE, 0),
+	0, 0, 0,				0,   8,  10, 45, 1, 3, 0, 1, 3, 0, 1, 10, 6, MINERAL, CLR_GRAY, O1_THROWN_WEAPON, 0),
 ROCK("flint", "gray",      //Gray stone end marker 
-	0, 0, 0,				0,  10,  10,  1, 1, 8, 0, 1, 8, 0, 0, 10, 7, MINERAL, CLR_GRAY, O1_NONE, 0),
+	0, 0, 0,				0,  10,  10,  1, 1, 8, 0, 1, 8, 0, 0, 10, 7, MINERAL, CLR_GRAY, O1_THROWN_WEAPON, 0),
 ROCK("rock", None,         
-	0, 0, 0,				1,  50,  10,  0, 1, 6, 0, 1, 6, 0, 0, 10, 7, MINERAL, CLR_GRAY, O1_NONE, 0),
+	0, 0, 0,				1,  50,  10,  0, 1, 6, 0, 1, 6, 0, 0, 10, 7, MINERAL, CLR_GRAY, O1_THROWN_WEAPON, 0),
 ROCK("stone pebble", None,         
-	0, 0, 0,				1,  30,  2,  0, 1, 4, 0, 1, 4, 0, 0, 10, 7, MINERAL, CLR_GRAY, O1_NONE, 0),
+	0, 0, 0,				1,  30,  2,  0, 1, 4, 0, 1, 4, 0, 0, 10, 7, MINERAL, CLR_GRAY, O1_THROWN_WEAPON, 0),
 ROCK("clay pebble", None,         
-	0, 0, 0,				1,  10,  2,  0, 1, 3, 0, 1, 3, 0, 0, 10, 7, MINERAL, CLR_BROWN, O1_NONE, 0),
+	0, 0, 0,				1,  10,  2,  0, 1, 3, 0, 1, 3, 0, 0, 10, 7, MINERAL, CLR_BROWN, O1_THROWN_WEAPON, 0),
 #undef GEM
 #undef ROCK
 
@@ -1640,13 +1640,13 @@ ROCK("clay pebble", None,
  */
 OBJECT(OBJ("boulder", None), None, None,
        BITS(1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, P_NONE, MINERAL), 0, 0, 0,
-       ROCK_CLASS, 100, 0, 8000, 0, 1, 20, 0, 1, 20, 0, 0, 0, 0, 0, 0, 0, 2000, HI_MINERAL, 0, 0, 0, 0, O1_NONE),
+       ROCK_CLASS, 100, 0, 8000, 0, 1, 20, 0, 1, 20, 0, 0, 0, 0, 0, 0, 0, 2000, HI_MINERAL, 0, 0, 0, 0, O1_THROWN_WEAPON),
 OBJECT(OBJ("statue", None), None, None,
        BITS(1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, P_NONE, MINERAL), 0, 0, 0,
        ROCK_CLASS, 900, 0, 4000, 0, 1, 20, 0, 1, 20, 0, 0, 0, 0, 0, 0, 0, 2500, CLR_WHITE, 0, 0, 0, 0, O1_NONE),
 OBJECT(OBJ("heavy iron ball", None), None, None,
        BITS(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, WHACK, P_NONE, IRON), 0, 0, 0,
-       BALL_CLASS, 1000, 0, 800, 10, 1, 25, 0, 1, 25, 0, 0, 0, 0, 0, 0, 0, 200, HI_METAL, 0, 0, 0, 0, O1_NONE),
+       BALL_CLASS, 1000, 0, 800, 10, 1, 25, 0, 1, 25, 0, 0, 0, 0, 0, 0, 0, 200, HI_METAL, 0, 0, 0, 0, O1_THROWN_WEAPON),
         /* +d4 when "very heavy" */
 OBJECT(OBJ("iron chain", None), None, None,
        BITS(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, WHACK, P_NONE, IRON), 0, 0, 0,

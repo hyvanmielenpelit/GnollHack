@@ -175,7 +175,7 @@ int shotlimit;
            instead, high strength is necessary to load and shoot quickly */
 		if (multishot > 1 && skill == -P_CROSSBOW && obj && uwep
 			&& ammo_and_launcher(obj, uwep)
-			&& (ACURRSTR < (uwep->otyp == HEAVY_CROSSBOW ? STR18(50) : uwep->otyp == CROSSBOW ? 17: 15))) //(Race_if(PM_GNOLL) ? 16 : 18))
+			&& (ACURRSTR < (uwep->otyp == HEAVY_CROSSBOW ? 18 : uwep->otyp == CROSSBOW ? 14: 9))) //(Race_if(PM_GNOLL) ? 16 : 18))
 		{
 			multishot = 1;
 			multishotrndextra = 0;
@@ -1088,8 +1088,8 @@ long wep_mask; /* used to re-equip returning boomerang */
 boolean twoweap; /* used to restore twoweapon mode if wielded weapon returns */
 {
     register struct monst *mon;
-    register int range, urange, baserange;
-    boolean crossbowing, impaired = (Confusion || Stunned || Blind
+    register int range, urange;
+    boolean impaired = (Confusion || Stunned || Blind
                                      || Hallucination || Fumbling);
     boolean tethered_weapon = (obj->otyp == AKLYS && (wep_mask & W_WEP) != 0);
 
@@ -1185,61 +1185,18 @@ boolean twoweap; /* used to restore twoweapon mode if wielded weapon returns */
     } else {
         /* crossbow range is independent of strength */
 		//urange your moving in a weightless levitation situation
-        crossbowing = (ammo_and_launcher(obj, uwep)
-                       && weapon_type(uwep) == P_CROSSBOW);
-		if (is_ammo(obj)) {
-			if (ammo_and_launcher(obj, uwep)) {
-				if (crossbowing)
-				{
-					if (obj->otyp == HEAVY_CROSSBOW)
-						baserange = 24;
-					else if (obj->otyp == HAND_CROSSBOW)
-						baserange = 9;
-					else
-						baserange = 18;
-				}
-				else
-					baserange = max(1, (int)ACURRSTR); //18 at 18 STR
-			}
-			else if (obj->oclass != GEM_CLASS) //Ammo of launchers without the correct launcher
-				baserange = max(1, (int)(ACURRSTR / 3)); // 6 at 18 STR, 3 at 9 STR
-			else //Stones being thrown
-				baserange = max(1, (int)((ACURRSTR)/ 2)); //9 at 18 STR, 4 at 9 STR 
-		}
-		else //Normal thrown weapons are half distance
-		{
-			baserange = (int) (ACURRSTR / 2);
-		}
-
-
-													  /* balls are easy to throw or at least roll;
-         * also, this insures the maximum range of a ball is greater
-         * than 1, so the effects from throwing attached balls are
-         * actually possible
-         */
-
-		//Weight of the object reduces range
-        if (obj->otyp == HEAVY_IRON_BALL)
-            range = baserange - (int) (obj->owt / 100);
-        else
-            range = baserange - (int) (obj->owt / 40);
-
-        if (obj == uball) {
-            if (u.ustuck)
-                range = 1;
-            else if (range >= 5)
-                range = 5;
-        }
-        if (range < 1)
-            range = 1;
+		if (is_ammo(obj) && uwep && ammo_and_launcher(obj, uwep))
+			range = weapon_range(obj, uwep);
+		else
+			range = weapon_range(obj, (struct obj*)0);
 
 		urange = 0;
         if (Is_airlevel(&u.uz) || Levitation) {
             /* action, reaction... */
 			if(youmonst.data->cwt)
-	            urange = min(BOLT_LIM, baserange * obj->owt / youmonst.data->cwt);
+	            urange = min(BOLT_LIM, range * obj->owt / youmonst.data->cwt);
 			else
-				urange = min(BOLT_LIM, baserange * obj->owt / (16 * 2 * 80)); //about 160 lbs = about 80 kg
+				urange = min(BOLT_LIM, range * obj->owt / (16 * 2 * 80)); //about 160 lbs = about 80 kg
 
             if (urange < 1)
                 urange = 1;
@@ -1247,20 +1204,6 @@ boolean twoweap; /* used to restore twoweapon mode if wielded weapon returns */
             if (range < 1)
                 range = 1;
         }
-
-        if (obj->otyp == BOULDER)
-			if(throws_rocks(youmonst.data))
-				range = 20; /* you must be giant */
-			else
-				range = 10; /* non-giant */
-		else if (obj->oartifact == ART_MJOLLNIR)
-            range = (range + 1) / 2; /* it's heavy */
-        else if (tethered_weapon) /* primary weapon is aklys */
-            /* if an aklys is going to return, range is limited by the
-               length of the attached cord [implicit aspect of item] */
-            range = min(range, BOLT_LIM / 2);
-        else if (obj == uball && u.utrap && u.utraptype == TT_INFLOOR)
-            range = 1;
 
         if (Underwater)
             range = 1;

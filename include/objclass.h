@@ -146,7 +146,7 @@ struct objclass {
 	int oc_wsdice, oc_wsdam, oc_wsdmgplus; /* small monster damage, also used for spell damage */
 	int oc_wldice, oc_wldam, oc_wldmgplus; /* large monster damage, also used for duration for spells */
 	int oc_oc1;	/* Used for spell cooldown; weapons: to-hit, armors: ac */
-	int oc_oc2; /* Used for spell level */
+	int oc_oc2; /* Used for spell level; weapons: launch or throw range */
 	int oc_oc3; /* Used for spell mana cost; other items: mana pool bonus */
 	int oc_oc4; /* Used for spell attributes; other items: hit point bonus */
 	int oc_oc5; /* Used for spell range; non-spellbooks: specification of attributes or other properties item gives bonuses (abon) to using otmp->spe */
@@ -178,7 +178,7 @@ struct objclass {
 /* weapons */
 #define oc_skill oc_subtyp		/* Skills of weapons, spellbooks, tools, gems */
 #define oc_hitbon oc_oc1		/* weapons: "to hit" bonus */
-/* oc_oc2 unused */
+#define oc_weapon_range oc_oc2	/* launchers: range for ammo, others throw range: >0 Fixed range, <0 Percentage of STR */
 /* oc_oc3 mana pool bonus */
 /* oc_oc4 hit point bonus */
 /* oc_oc5 attributes giving bonus to using spe / oc_oc6 to attributes and properties */
@@ -187,7 +187,7 @@ struct objclass {
 /* armor */
 #define oc_armor_category oc_subtyp						/* armor: (enum obj_armor_types) */
 #define a_ac oc_oc1										/* armor class, used in ARM_BONUS in do.c */
-#define a_magic_attack_protection_level oc_oc2			/* armor: used in mhitu.c */
+#define a_magic_attack_cancellation_level oc_oc2		/* armor: used in mhitu.c */
 /* oc_oc3 mana pool bonus */
 /* oc_oc4 hit point bonus */
 /* oc_oc5 attributes giving bonus to using spe / oc_oc6 to attributes and properties */
@@ -248,10 +248,10 @@ struct objclass {
 
 	long oc_material_components;		/* spells: ID for material component list for a spell or to make the item (if recipe is known); long because may be used for extra flags */
 
-#define oc_nonspell_oc7 oc_dir_subtype			/* non-spells: extra parameter 1 (long) */
-#define oc_nonspell_oc8 oc_material_components	/* non-spells: extra parameter 2 (long) */
+#define oc_nonspellwand_oc7 oc_dir_subtype			/* non-spells/wands: extra parameter 1 (long) */
+#define oc_nonspellwand_oc8 oc_material_components	/* non-spells/wands: extra parameter 2 (long) */
 
-#define oc_nonspell_confer_mask oc_nonspell_oc7			/* non-spells: roles, races, genders, and alignments that the item's powers are conferred to */
+#define oc_nonspellwand_confer_mask oc_nonspellwand_oc7			/* non-spells/wands: roles, races, genders, and alignments that the item's powers are conferred to */
 
 	int oc_item_cooldown;			/* cooldown before the item can be used / applied / zapped / read etc. again */
 	int oc_item_level;				/* item level, to be used with loot tables */
@@ -288,7 +288,8 @@ struct objclass {
 #define O1_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED 0x00400000			/* if deathenchantable item, then death, otherwise lightning*/
 
 /* General flags -- General: cannot be overriden */
-#define O1_WAND_LIKE_TOOL 0x08000000					/* apply is the same as zap, uses spellbook/wand paramters and flags instead of normal flags */
+#define O1_THROWN_WEAPON 0x04000000										/* says "Thrown weapon" instead of "Melee weapon", default range is larger, can use throwrange data value*/
+#define O1_WAND_LIKE_TOOL 0x08000000									/* apply is the same as zap, uses spellbook/wand paramters and flags instead of normal flags */
 #define O1_TREATED_AS_MATERIAL_COMPONENT 0x10000000
 #define O1_EDIBLE_NONFOOD 0x20000000
 #define O1_NON_SPELL_SPELLBOOK 0x40000000  /* uses non-spellbook flags and other non-spellbook stats */

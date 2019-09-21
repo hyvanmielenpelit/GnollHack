@@ -137,11 +137,97 @@ struct obj *obj;
     return makesingular(descr);
 }
 
+int
+weapon_range(ammo, launcher)
+struct obj* ammo;
+struct obj* launcher;
+{
+	if (!ammo && !launcher)
+		return 0;
+
+	int baserange = 0, range = 0;
+	boolean thrown = TRUE;
+
+	/* Ammunition range */
+	if (!ammo && launcher && is_launcher(launcher)) {
+		if(objects[launcher->otyp].oc_weapon_range > 0)
+			baserange = objects[launcher->otyp].oc_weapon_range;										/* Crossbows and the like */
+		else if (objects[launcher->otyp].oc_weapon_range < 0)
+			baserange = max(1, (int)((ACURRSTR * -objects[launcher->otyp].oc_weapon_range) /100));		/* Bows */
+
+		/* No more info supplied */
+		range = baserange;
+	}
+	else if (ammo && is_ammo(ammo) && launcher && ammo_and_launcher(ammo, launcher)) {
+			thrown = FALSE;
+			if (objects[launcher->otyp].oc_weapon_range > 0)
+				baserange = objects[launcher->otyp].oc_weapon_range;										/* Crossbows and the like */
+			else if (objects[launcher->otyp].oc_weapon_range < 0)
+				baserange = max(1, (int)((ACURRSTR * -objects[launcher->otyp].oc_weapon_range) / 100));		/* Bows */
+
+			range = baserange - (int)(ammo->owt / 100);
+	}
+	else if(ammo) //Normal thrown weapons are half distance
+	{
+		boolean overriden = FALSE;
+
+		/* oc_weapon_range can be used to override usual throwing range for non-launchers */
+		if (!is_launcher(ammo) && objects[ammo->otyp].oc_weapon_range != 0)
+		{
+			overriden = TRUE;
+			if (objects[ammo->otyp].oc_weapon_range > 0)
+				baserange = objects[ammo->otyp].oc_weapon_range;										/* Crossbows and the like */
+			else if (objects[ammo->otyp].oc_weapon_range < 0)
+				baserange = max(1, (int)((ACURRSTR * -objects[ammo->otyp].oc_weapon_range) / 100));		/* Bows */
+		}
+
+		if(!overriden)
+		{
+			if(objects[ammo->otyp].oc_flags & O1_THROWN_WEAPON)
+				baserange = (int)(ACURRSTR / 2);
+			else
+				baserange = (int)(ACURRSTR / 3);
+		}
+
+		//Weight of the object reduces range
+		if (objects[ammo->otyp].oc_flags & O1_THROWN_WEAPON)
+			range = baserange - (int)(ammo->owt / 100);
+		else
+			range = baserange - (int)(ammo->owt / 40);
+	}
+
+	if (ammo && uball && ammo == uball) {
+		if (u.ustuck || (u.utrap && u.utraptype == TT_INFLOOR))
+			range = 1;
+		else if (range >= 5)
+			range = 5;
+	}
+
+#if 0
+	/* Kludges removed by JG; Items and monsters should have the right weight and strength */
+	if (ammo->otyp == BOULDER)
+		if (throws_rocks(youmonst.data))
+			range = 20; /* you must be giant */
+		else
+			range = 10; /* non-giant */
+	else if (ammo->oartifact == ART_MJOLLNIR)
+		range = (range + 1) / 2; /* it's heavy */
+#endif
+
+	if (range < 1)
+		range = 1;
+
+
+	return range;
+}
+
+
+
+
 /*
  *      hitval returns an integer representing the "to hit" bonuses
  *      of "otmp" against the monster.
  */
-
 int basehitval(otmp)
 struct obj* otmp;
 {
@@ -155,7 +241,7 @@ struct obj* otmp;
 		tmp += otmp->spe;
 
 	/* Put weapon specific "to hit" bonuses in below: */
-	if(otmp->oclass != SPBOOK_CLASS) /* spellbooks use oc_oc1 for something else */
+	if(otmp->oclass != SPBOOK_CLASS && otmp->oclass != WAND_CLASS) /* spellbooks and wands use oc_oc1 for something else */
 		tmp += objects[otmp->otyp].oc_hitbon;
 
 	return tmp;
