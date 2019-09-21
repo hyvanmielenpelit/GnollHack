@@ -299,7 +299,7 @@ register struct obj* obj;
 
 		if (objects[otyp].oc_name_known)
 		{
-			Sprintf(buf2, "%d", objects[otyp].a_magic_attack_cancellation_level);
+			Sprintf(buf2, "%d", objects[otyp].a_magic_cancellation_level);
 			Sprintf(buf, "Magic cancellation:   %s", buf2);
 			txt = buf;
 			putstr(datawin, 0, txt);
@@ -352,15 +352,51 @@ register struct obj* obj;
 	}
 	if (obj->known && objects[otyp].oc_charged)
 	{
+		strcpy(buf, "");
+
 		if(objects[otyp].oc_class == WAND_CLASS || objects[otyp].oc_class == TOOL_CLASS)
 			Sprintf(buf, "Charges left:         %d", obj->spe);
 		else
 		{
-			if(obj->spe >= 0)
-				Sprintf(buf, "Enchantment status:   +%d", obj->spe);
-			else
-				Sprintf(buf, "Enchantment status:   %d", obj->spe);
+			char bonusbuf[BUFSZ] = "";
+			if (obj->oclass == WEAPON_CLASS || is_weptool(obj))
+			{
+				Sprintf(bonusbuf, " (%s%d to damage)", obj->spe >= 0 ? "+" : "", obj->spe);
+			}
+			else if (obj->oclass == ARMOR_CLASS)
+			{
+				Sprintf(bonusbuf, " (%s%d %s to AC)", obj->spe >= 0 ? "+" : "", -obj->spe, obj->spe >= 0 ? "bonus" : "penalty");
+			}
+
+			Sprintf(buf, "Enchantment status:   %s%d%s", obj->spe >= 0 ? "+" : "", obj->spe, bonusbuf);
 		}
+
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+	if (obj->rknown && (obj->oeroded || obj->oeroded2 || obj->oerodeproof))
+	{
+		char erodebuf[BUFSZ] = "";
+		char penaltybuf[BUFSZ] = "";
+		int penalty = 0;
+
+		add_erosion_words(obj, erodebuf);
+		*erodebuf = highc(*erodebuf);
+
+		if (obj->oeroded > 0 || obj->oeroded2 > 0)
+		{
+			if (obj->oclass == WEAPON_CLASS || is_weptool(obj))
+			{
+				penalty = greatest_erosion(obj);
+				Sprintf(penaltybuf, "(%d to damage)", -penalty);
+			}
+			else if (obj->oclass == ARMOR_CLASS)
+			{
+				penalty = min(greatest_erosion(obj), objects[obj->otyp].a_ac);
+				Sprintf(penaltybuf, "(+%d penalty to AC)", penalty);
+			}
+		}
+		Sprintf(buf, "Erosion status:       %s%s", erodebuf, penaltybuf);
 
 		txt = buf;
 		putstr(datawin, 0, txt);

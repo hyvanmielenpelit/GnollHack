@@ -1245,6 +1245,7 @@ E struct attack *FDECL(getmattk, (struct monst *, struct monst *,
                                   int, int *, struct attack *));
 E int FDECL(mattacku, (struct monst *));
 E int FDECL(magic_negation, (struct monst *));
+E int FDECL(magic_negation_percentage, (int));
 E boolean NDECL(gulp_blnd_check);
 E int FDECL(gazemu, (struct monst *, struct attack *));
 E void FDECL(mdamageu, (struct monst *, int));
@@ -1775,6 +1776,8 @@ E const char *FDECL(mimic_obj_name, (struct monst *));
 E char *FDECL(safe_qbuf, (char *, const char *, const char *, struct obj *,
                           char *(*)(OBJ_P), char *(*)(OBJ_P), const char *));
 E int FDECL(shiny_obj, (CHAR_P));
+E void FDECL(add_erosion_words, (struct obj*, char*));
+
 
 /* ### options.c ### */
 

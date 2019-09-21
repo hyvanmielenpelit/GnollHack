@@ -1009,44 +1009,72 @@ struct monst *mon;
     struct obj *o;
     long wearmask;
     int armpro, mc = 0;
-    boolean is_you = (mon == &youmonst),
-            gotprot = is_you ? (EProtection != 0L)
-                             /* high priests have innate protection */
-                             : (mon->data == &mons[PM_HIGH_PRIEST]);
+	boolean is_you = (mon == &youmonst);
 
-    for (o = is_you ? invent : mon->minvent; o; o = o->nobj) {
-        /* a_magic_attack_cancellation_level field is only applicable for armor (which must be worn) */
-        if ((o->owornmask & (W_ARMOR | W_MISCITEMS)) != 0L || (objects[o->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED)) {
-            armpro = objects[o->otyp].a_magic_attack_cancellation_level;
-            if (armpro > mc)
-                mc = armpro;
+	for (o = is_you ? invent : mon->minvent; o; o = o->nobj) {
+        /* a_magic_cancellation_level field is only applicable for armor (which must be worn), this should exclude spellbooks and wands, which use oc_oc2 for something else */
+        if ((o->owornmask & (W_ARMOR | W_ACCESSORY)) != 0L || (objects[o->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED)) {
+            armpro = objects[o->otyp].a_magic_cancellation_level;
+            //if (armpro > mc)
+            mc += armpro; //New system, add all mc's together
         }
         /* if we've already confirmed Protection, skip additional checks */
-        if (is_you || gotprot)
-            continue;
+//        if (is_you || gotprot)
+//            continue;
 
         /* omit W_SWAPWEP+W_QUIVER; W_ART+W_ARTI handled by protects() */
-        wearmask = W_ARMOR | W_ACCESSORY | W_MISCITEMS;
+        wearmask = W_ARMOR | W_ACCESSORY;
         if (o->oclass == WEAPON_CLASS || is_weptool(o))
             wearmask |= W_WEP;
-        if (protects(o, ((o->owornmask & wearmask) != 0L) ? TRUE : FALSE))
-            gotprot = TRUE;
+		if (protects(o, ((o->owornmask & wearmask) != 0L) ? TRUE : FALSE))
+			mc++; // gotprot = TRUE;
     }
 
-    if (gotprot) {
+    if (is_you ? (EProtection != 0L)
+		/* high priests have innate protection */
+		: (mon->data == &mons[PM_HIGH_PRIEST])) {
         /* extrinsic Protection increases mc by 1 */
-        if (mc < 3)
-            mc += 1;
-    } else if (mc < 1) {
+        //if (mc < 3)
+		mc++;
+    } 
+	
+	//else if (mc < 1) {
         /* intrinsic Protection is weaker (play balance; obtaining divine
            protection is too easy); it confers minimum mc 1 instead of 0 */
-        if ((is_you && ((HProtection && u.ublessed > 0) || u.uspellprot))
-            /* aligned priests and angels have innate intrinsic Protection */
-            || (mon->data == &mons[PM_ALIGNED_PRIEST] || is_minion(mon->data)))
-            mc = 1;
-    }
+
+	if ((is_you && ((HProtection && u.ublessed > 0) || u.uspellprot))
+		/* aligned priests and angels have innate intrinsic Protection */
+		|| (mon->data == &mons[PM_HIGH_PRIEST]) || (mon->data == &mons[PM_ALIGNED_PRIEST] || is_minion(mon->data)))
+		mc++; // = 1;
+    //}
+
     return mc;
 }
+
+/* armor that sufficiently covers the body might be able to block magic */
+int
+magic_negation_percentage(mclevel)
+int mclevel;
+{
+	if (mclevel < 0)
+		return 0;
+
+	int mcpercentage = 0;
+	switch (mclevel)
+	{
+	case 0:
+		mcpercentage = 0;
+		break;
+	case 1:
+		mcpercentage = 25;
+		break;
+	default:
+		mcpercentage = 100 - 100 / mclevel;
+		break;
+	}
+	return mcpercentage;
+}
+
 
 /*
  * hitmu: monster hits you
@@ -1139,7 +1167,7 @@ register struct obj* omonwep;
      *  armor's special magic protection.  Otherwise just use !mtmp->mcancelled.
      */
     armpro = magic_negation(&youmonst);
-    uncancelled = !mtmp->mcancelled && (rn2(10) >= 3 * armpro);
+	uncancelled = !mtmp->mcancelled && (rn2(100) >= magic_negation_percentage(armpro)); //(rn2(10) >= 3 * armpro);
 
     permdmg = 0;
 

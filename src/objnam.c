@@ -17,7 +17,6 @@ STATIC_DCL boolean FDECL(wishymatch, (const char *, const char *, BOOLEAN_P));
 STATIC_DCL char *NDECL(nextobuf);
 STATIC_DCL void FDECL(releaseobuf, (char *));
 STATIC_DCL char *FDECL(minimal_xname, (struct obj *));
-STATIC_DCL void FDECL(add_erosion_words, (struct obj *, char *));
 STATIC_DCL char *FDECL(doname_base, (struct obj *obj, unsigned));
 STATIC_DCL char *FDECL(just_an, (char *str, const char *));
 STATIC_DCL boolean FDECL(singplur_lookup, (char *, char *, BOOLEAN_P,
@@ -834,7 +833,7 @@ struct permonst *ptr;
     return uniq;
 }
 
-STATIC_OVL void
+void
 add_erosion_words(obj, prefix)
 struct obj *obj;
 char *prefix;

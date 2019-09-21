@@ -2775,6 +2775,7 @@ int final;
     }
     if ((armpro = magic_negation(&youmonst)) > 0) {
         /* magic cancellation factor, conferred by worn armor */
+#if 0
         static const char *const mc_types[] = {
             "" /*ordinary*/, "warded", "guarded", "protected",
         };
@@ -2782,6 +2783,10 @@ int final;
         if (armpro >= SIZE(mc_types))
             armpro = SIZE(mc_types) - 1;
         you_are(mc_types[armpro], "");
+#endif
+		char mcbuf[BUFSZ] = "";
+		Sprintf(mcbuf,"level %d magic cancellation (%d%% chance)", armpro, magic_negation_percentage(armpro));
+		you_have(mcbuf, "");
     }
     if (Half_physical_damage)
         enlght_halfdmg(HALF_PHDAM, final);

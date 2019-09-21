@@ -879,7 +879,7 @@ register struct attack *mattk;
 
     /* cancellation factor is the same as when attacking the hero */
     armpro = magic_negation(mdef);
-    cancelled = magr->mcancelled || !(rn2(10) >= 3 * armpro);
+	cancelled = magr->mcancelled || (rn2(100) < magic_negation_percentage(armpro));  //!(rn2(10) >= 3 * armpro);
 
     switch (mattk->adtyp) {
     case AD_DGST:

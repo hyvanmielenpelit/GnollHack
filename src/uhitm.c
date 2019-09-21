@@ -1927,7 +1927,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 
     armpro = magic_negation(mdef);
     /* since hero can't be cancelled, only defender's armor applies */
-    negated = !(rn2(10) >= 3 * armpro);
+	negated = (rn2(100) < magic_negation_percentage(armpro));  //!(rn2(10) >= 3 * armpro);
 
     switch (mattk->adtyp) {
     case AD_STUN:
