@@ -861,7 +861,8 @@ struct trap *trap;
     otmp->quan = 1L;
     otmp->owt = weight(otmp);
     otmp->opoisoned = 0;
-    otmp->ox = trap->tx, otmp->oy = trap->ty;
+	otmp->special_enchantment = 0;
+	otmp->ox = trap->tx, otmp->oy = trap->ty;
     return otmp;
 }
 

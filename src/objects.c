@@ -150,6 +150,7 @@ WEAPON("boomerang", None,
    because the latter are primarily stabbing weapons rather than
    throwing ones; but for playability, they've been merged together
    under spear skill and spears can now be thrown like javelins] */
+/* Note from JG: Javelins are now marked as thrown weapons while spears are not */
 WEAPON("spear", None,
        1, 1, 0, 50,  30,   3,  1, 6, 0, 1,  8, 0, 0, -70, 0, 0, 0, 0, 0, P,   P_SPEAR, IRON, HI_METAL, O1_NONE, 0),
 WEAPON("elven spear", "runed spear",
@@ -197,9 +198,11 @@ WEAPON("crysknife", None,
 
 /* axes */
 WEAPON("axe", None,
-       1, 0, 0, 40,  50,   8,  1, 6, 0, 1,  4, 0, 0, 0, 0, 0, 0, 0, 0, S,   P_AXE, IRON, HI_METAL, O1_NONE, 0),
+       1, 0, 0, 30,  50,   8,  1, 6, 1, 1, 8, 1, 0, 0, 0, 0, 0, 0, 0, S,   P_AXE, IRON, HI_METAL, O1_NONE, 0),
+WEAPON("throwing axe", None,
+       1, 0, 0, 10,  50,   8,  1, 6, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, S,   P_AXE, IRON, HI_METAL, O1_THROWN_WEAPON, 0),
 WEAPON("battle-axe", "double-headed axe",       /* "double-bitted"? */
-       0, 0, 1, 10, 100,  40,  2, 6, 0, 3, 4, 1, 0, 0, 0, 0, 0, 0, 0, S,   P_AXE, IRON, HI_METAL, O1_NONE, 0),
+       0, 0, 1, 10, 100,  40,  2, 6, 1, 3, 4, 1, 0, 0, 0, 0, 0, 0, 0, S,   P_AXE, IRON, HI_METAL, O1_NONE, 0),
 
 /* swords */
 WEAPON("short sword", None,
@@ -298,7 +301,7 @@ WEAPON("morning star", None,
 	   1, 0, 0, 12, 60,  10,  2, 4, 0, 1,  6, 1, 0, 0, 0, 0, 0, 0, 0, B,   P_MORNING_STAR, IRON, HI_METAL, O1_NONE, 0),
         /* +d4 small, +1 large */
 WEAPON("war hammer", None,
-       1, 0, 0, 11,  50,   5,  1, 4, 1, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, B,   P_HAMMER, IRON, HI_METAL, O1_NONE, 0),
+       1, 0, 0, 11,  50,   5,  1, 6, 1, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, B,   P_HAMMER, IRON, HI_METAL, O1_NONE, 0),
         /* +1 small */
 WEAPON("club", None,
        1, 0, 0, 12,  40,   3,  1, 6, 0, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, B,   P_CLUB, WOOD, HI_WOOD, O1_NONE, 0),

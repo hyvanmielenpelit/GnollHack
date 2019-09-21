@@ -1460,7 +1460,7 @@ int dieroll;
 
 	boolean objectshatters = FALSE;
 	/* message for shattering blades and objects here */
-	if (objects[obj->otyp].oc_material == GLASS 
+	if (obj && objects[obj->otyp].oc_material == GLASS 
 		&& !(objects[obj->otyp].oc_flags & O1_INDESTRUCTIBLE)
 		&& !is_quest_artifact(obj)
 		&& !obj->oartifact
@@ -1617,7 +1617,7 @@ int dieroll;
 
 	}
 
-	if (objectshatters)
+	if (obj && objectshatters)
 	{
 		if(obj->quan > 1)
 			useup(obj);
