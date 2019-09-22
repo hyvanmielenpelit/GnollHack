@@ -1169,6 +1169,7 @@ char *s;
     return ERR;
 }
 
+
 /*
  * Find the index of a monster in the table, knowing its name.
  */

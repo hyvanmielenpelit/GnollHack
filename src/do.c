@@ -192,6 +192,11 @@ register struct obj* obj;
 
 	/* Weight */
 	double objweight = ((double)objects[otyp].oc_weight) / 16;
+
+	/* Show loadstone incorrectly if not known and not carried */
+	if(otyp == LOADSTONE && !carried(obj) && !objects[otyp].oc_name_known)
+		objweight = ((double)objects[LUCKSTONE].oc_weight) / 16;
+
 	if (objweight >= 1000)
 		Sprintf(buf2, "%.0f cwt", objweight / 100);
 	else if (objweight >= 10)

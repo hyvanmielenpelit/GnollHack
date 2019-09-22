@@ -940,7 +940,7 @@ register struct obj *otmp;
 	case POT_MAGIC_RESISTANCE:
 		if (!Antimagic)
 		{ 
-			You("suddenly feel much more protected from magical forces!");
+			You("feel secure from magical forces.");
 		}
 		else
 		{

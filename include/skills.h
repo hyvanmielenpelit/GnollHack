@@ -65,9 +65,12 @@ enum p_skills {
     /* Other types of combat */
     P_BARE_HANDED_COMBAT = 39, /* actually weaponless; gloves are ok */
     P_TWO_WEAPON_COMBAT  = 40, /* pair of weapons, one in each hand */
-    P_RIDING             = 41, /* How well you control your steed */
 
-    P_NUM_SKILLS         = 42
+	/* Non-combat skills */
+	P_RIDING = 41,				/* How well you control your steed */
+	P_DISARM_TRAP = 42,			/* disarming traps */
+	
+	P_NUM_SKILLS         = 43
 };
 
 #define P_MARTIAL_ARTS P_BARE_HANDED_COMBAT /* Role distinguishes */
@@ -78,8 +81,11 @@ enum p_skills {
 #define P_FIRST_SPELL P_ARCANE_SPELL
 #define P_LAST_SPELL P_NECROMANCY_SPELL
 
-#define P_LAST_H_TO_H P_RIDING
 #define P_FIRST_H_TO_H P_BARE_HANDED_COMBAT
+#define P_LAST_H_TO_H P_TWO_WEAPON_COMBAT
+
+#define P_FIRST_NONCOMBAT P_RIDING
+#define P_LAST_NONCOMBAT P_DISARM_TRAP
 
 /* These roles qualify for a martial arts bonus */
 #define martial_bonus() (Role_if(PM_SAMURAI) || Role_if(PM_MONK))

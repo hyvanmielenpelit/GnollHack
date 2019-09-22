@@ -35,6 +35,7 @@ STATIC_DCL void FDECL(skill_advance, (int));
 #define PN_ENCHANTMENT_SPELL (-15)
 #define PN_CONJURATION_SPELL (-16)
 #define PN_NECROMANCY_SPELL (-17)
+#define PN_DISARM_TRAP (-18)
 
 
 STATIC_VAR NEARDATA const short skill_names_indices[P_NUM_SKILLS] = {
@@ -44,7 +45,7 @@ STATIC_VAR NEARDATA const short skill_names_indices[P_NUM_SKILLS] = {
     CROSSBOW, DART, SHURIKEN, BOOMERANG, PN_WHIP, UNICORN_HORN,
     PN_ARCANE_SPELL, PN_CLERIC_SPELL, PN_HEALING_SPELL, PN_DIVINATION_SPELL,
     PN_ABJURATION_SPELL, PN_MOVEMENT_SPELL, PN_TRANSMUTATION_SPELL, PN_ENCHANTMENT_SPELL, PN_CONJURATION_SPELL, PN_NECROMANCY_SPELL,
-    PN_BARE_HANDED, PN_TWO_WEAPONS, PN_RIDING
+    PN_BARE_HANDED, PN_TWO_WEAPONS, PN_RIDING, PN_DISARM_TRAP
 };
 
 /* note: entry [0] isn't used */
@@ -52,7 +53,7 @@ STATIC_VAR NEARDATA const char *const odd_skill_names[] = {
     "no skill", "bare hands", /* use barehands_or_martial[] instead */
     "two weapon combat", "riding", "polearms", "saber", "hammer", "whip",
     "arcane spells", "clerical spells", "healing spells", "divination spells", "abjuration spells",
-	"movement spells", "transmutation spells", "enchantment spells", "conjuration spells", "necromancy spells",
+	"movement spells", "transmutation spells", "enchantment spells", "conjuration spells", "necromancy spells", "disarm trap",
 };
 /* indexed vis `is_martial() */
 STATIC_VAR NEARDATA const char *const barehands_or_martial[] = {
@@ -1486,7 +1487,8 @@ static const struct skill_range {
 } skill_ranges[] = {
     { P_FIRST_H_TO_H, P_LAST_H_TO_H, "Fighting Skills" },
     { P_FIRST_WEAPON, P_LAST_WEAPON, "Weapon Skills" },
-    { P_FIRST_SPELL, P_LAST_SPELL, "Spellcasting Skills" },
+    { P_FIRST_SPELL, P_LAST_SPELL, "Spell Casting Skills" },
+	{ P_FIRST_NONCOMBAT, P_LAST_NONCOMBAT, "Non-Combat Skills" },
 };
 
 /*
@@ -1507,6 +1509,7 @@ enhance_weapon_skill()
     anything any;
     winid win;
     boolean speedy = FALSE;
+	boolean firstheader = TRUE;
 
     if (wizard && yn("Advance skills without practice?") == 'y')
         speedy = TRUE;
@@ -1564,9 +1567,16 @@ enhance_weapon_skill()
                 /* Print headings for skill types */
                 any = zeroany;
                 if (i == skill_ranges[pass].first)
+				{
+					/*
+					if (!firstheader)
+						add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE,
+							"", MENU_UNSELECTED);
+					*/
                     add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings,
                              skill_ranges[pass].name, MENU_UNSELECTED);
-
+					firstheader = FALSE;
+				}
                 if (P_RESTRICTED(i))
                     continue;
                 /*
@@ -1588,21 +1598,26 @@ enhance_weapon_skill()
                             ? "    "
                             : "";
                 (void) skill_level_name(i, sklnambuf);
+
+				char skillnamebuf[BUFSZ] = "";
+				strcpy(skillnamebuf, P_NAME(i));
+				*skillnamebuf = highc(*skillnamebuf);
+
                 if (wizard) {
                     if (!iflags.menu_tab_sep)
                         Sprintf(buf, " %s%-*s %-12s %5d(%4d)", prefix,
-                                longest, P_NAME(i), sklnambuf, P_ADVANCE(i),
+                                longest, skillnamebuf, sklnambuf, P_ADVANCE(i),
                                 practice_needed_to_advance(P_SKILL(i)));
                     else
-                        Sprintf(buf, " %s%s\t%s\t%5d(%4d)", prefix, P_NAME(i),
+                        Sprintf(buf, " %s%s\t%s\t%5d(%4d)", prefix, skillnamebuf,
                                 sklnambuf, P_ADVANCE(i),
                                 practice_needed_to_advance(P_SKILL(i)));
                 } else {
                     if (!iflags.menu_tab_sep)
                         Sprintf(buf, " %s %-*s [%s]", prefix, longest,
-                                P_NAME(i), sklnambuf);
+							skillnamebuf, sklnambuf);
                     else
-                        Sprintf(buf, " %s%s\t[%s]", prefix, P_NAME(i),
+                        Sprintf(buf, " %s%s\t[%s]", prefix, skillnamebuf,
                                 sklnambuf);
                 }
                 any.a_int = can_advance(i, speedy) ? i + 1 : 0;
@@ -2002,7 +2017,11 @@ const struct def_skill *class_skill;
     if (urole.petnum == PM_PONY)
         P_SKILL(P_RIDING) = P_BASIC;
 
-    /*
+	/* Rogues and rangers know how to disarm traps */
+	if (Role_if(PM_ROGUE) || Role_if(PM_RANGER))
+		P_SKILL(P_DISARM_TRAP) = P_BASIC;
+
+	/*
      * Make sure we haven't missed setting the max on a skill
      * & set advance
      */

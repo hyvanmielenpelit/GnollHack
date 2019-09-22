@@ -19,11 +19,13 @@ STATIC_DCL boolean FDECL(isclearpath, (coord *, int, SCHAR_P, SCHAR_P));
 STATIC_DCL void FDECL(dofiretrap, (struct obj *));
 STATIC_DCL void NDECL(domagictrap);
 STATIC_DCL boolean FDECL(emergency_disrobe, (boolean *));
-STATIC_DCL int FDECL(untrap_prob, (struct trap *));
+STATIC_DCL boolean FDECL(succeed_untrap, (struct trap *));
 STATIC_DCL void FDECL(move_into_trap, (struct trap *));
 STATIC_DCL int FDECL(try_disarm, (struct trap *, BOOLEAN_P));
 STATIC_DCL void FDECL(reward_untrap, (struct trap *, struct monst *));
 STATIC_DCL int FDECL(disarm_holdingtrap, (struct trap *));
+STATIC_DCL int FDECL(disarm_magical_trap, (struct trap*));
+STATIC_DCL const char* FDECL(get_trap_name, (int));
 STATIC_DCL int FDECL(disarm_landmine, (struct trap *));
 STATIC_DCL int FDECL(disarm_squeaky_board, (struct trap *));
 STATIC_DCL int FDECL(disarm_shooting_trap, (struct trap *, int));
@@ -3952,35 +3954,144 @@ dountrap()
     return untrap(FALSE);
 }
 
-/* Probability of disabling a trap.  Helge Hafting */
-STATIC_OVL int
-untrap_prob(ttmp)
+/* Did the untrap succeed? */
+STATIC_OVL boolean
+succeed_untrap(ttmp)
 struct trap *ttmp;
 {
-    int chance = 3;
+	boolean res = FALSE;
+	int probability = 0;
+	int usedskilllevel = max(P_UNSKILLED, min(P_EXPERT, P_SKILL(P_DISARM_TRAP) + ((Role_if(PM_ROGUE) && u.uhave.questart) ? 1 : 0)));
+
+	switch (usedskilllevel)
+	{
+	case P_UNSKILLED:
+	{
+		switch (ttmp->ttyp)
+		{
+		case WEB:
+			probability = webmaker(youmonst.data) ? 50 : 1;
+			break;
+		case ANTI_MAGIC:
+		case POLY_TRAP:
+		case TELEP_TRAP:
+		case LEVEL_TELEP:
+		case RUST_TRAP:
+		case FIRE_TRAP:
+		case SLP_GAS_TRAP:
+		case MAGIC_TRAP:
+			probability = 0;
+			break;
+		case ROCKTRAP:
+		case ROLLING_BOULDER_TRAP:
+			probability = 10;
+			break;
+		default:
+			probability = 33;
+			break;
+		}
+		break;
+	}
+	case P_BASIC:
+	{
+		switch (ttmp->ttyp)
+		{
+		case WEB:
+			probability = webmaker(youmonst.data) ? 100 : 3;
+			break;
+		case ANTI_MAGIC:
+		case POLY_TRAP:
+		case TELEP_TRAP:
+		case LEVEL_TELEP:
+		case RUST_TRAP:
+		case FIRE_TRAP:
+		case SLP_GAS_TRAP:
+		case MAGIC_TRAP:
+			probability = 33;
+			break;
+		case ROCKTRAP:
+		case ROLLING_BOULDER_TRAP:
+			probability = 66;
+		break;		default:
+			probability = 83;
+			break;
+		}
+		break;
+	}
+	case P_SKILLED:
+	{
+		switch (ttmp->ttyp)
+		{
+		case WEB:
+			probability = webmaker(youmonst.data) ? 200 : 10;
+			break;
+		case ANTI_MAGIC:
+		case POLY_TRAP:
+		case TELEP_TRAP:
+		case LEVEL_TELEP:
+		case RUST_TRAP:
+		case FIRE_TRAP:
+		case SLP_GAS_TRAP:
+		case MAGIC_TRAP:
+			probability = 83;
+			break;
+		case ROCKTRAP:
+		case ROLLING_BOULDER_TRAP:
+			probability = 90;
+		default:
+			probability = 95;
+			break;
+		}
+		break;
+	}
+	case P_EXPERT:
+	{
+		switch (ttmp->ttyp)
+		{
+		case WEB:
+			probability = webmaker(youmonst.data) ? 400 : 33;
+			break;
+		case ANTI_MAGIC:
+		case POLY_TRAP:
+		case TELEP_TRAP:
+		case LEVEL_TELEP:
+		case RUST_TRAP:
+		case FIRE_TRAP:
+		case SLP_GAS_TRAP:
+		case MAGIC_TRAP:
+			probability = 95;
+			break;
+		case ROCKTRAP:
+		case ROLLING_BOULDER_TRAP:
+			probability = 98;
+		default:
+			probability = 99;
+			break;
+		}
+		break;
+	}
+	default:
+		break;
+	}
 
     /* Only spiders know how to deal with webs reliably */
     if (ttmp->ttyp == WEB && !webmaker(youmonst.data))
-        chance = 30;
+		probability = 3;
     if (Confusion || Hallucination)
-        chance++;
+		probability = probability / 2;
     if (Blind)
-        chance++;
+		probability = (probability * 2) / 3;
     if (Stunned)
-        chance += 2;
+        probability = probability / 2;
     if (Fumbling)
-        chance *= 2;
-    /* Your own traps are better known than others. */
+		probability = probability / 2;
+    
+	/* Your own traps are better known than others. */
     if (ttmp && ttmp->madeby_u)
-        chance--;
-    if (Role_if(PM_ROGUE)) {
-        if (rn2(2 * MAXULEV) < u.ulevel)
-            chance--;
-        if (u.uhave.questart && chance > 1)
-            chance--;
-    } else if (Role_if(PM_RANGER) && chance > 1)
-        chance--;
-    return rn2(chance);
+		probability = probability * 2;
+
+	res = (rn2(100) < probability);
+    return res;
 }
 
 /* Replace trap with object(s).  Helge Hafting */
@@ -4099,7 +4210,7 @@ boolean force_failure;
     }
 
     /* Will our hero succeed? */
-    if (force_failure || untrap_prob(ttmp)) {
+    if (force_failure || !succeed_untrap(ttmp)) {
         if (rnl(5)) {
             pline("Whoops...");
             if (mtmp) { /* must be a trap that holds monsters */
@@ -4194,8 +4305,135 @@ struct trap *ttmp;
         }
     }
     newsym(u.ux + u.dx, u.uy + u.dy);
+
+	/* gain skill for untrap */
+	use_skill(P_DISARM_TRAP, ttmp->madeby_u ? 0: 3);
+
     return 1;
 }
+
+STATIC_OVL int
+disarm_magical_trap(ttmp) /* Janne Gustafsson */
+struct trap* ttmp;
+{
+	int fails = try_disarm(ttmp, FALSE);
+
+	if (fails < 2)
+		return fails;
+	You("disarm %s %s.", the_your[ttmp->madeby_u], get_trap_name(ttmp->ttyp));
+	
+	/* Skills gained */
+	int skillgained = 4;
+
+	switch (ttmp->ttyp)
+	{
+	case POLY_TRAP:
+		skillgained = skillgained + 2;
+	case MAGIC_TRAP:
+		skillgained++;
+	case LEVEL_TELEP:
+		skillgained++;
+	case ANTI_MAGIC:
+	case TELEP_TRAP:
+		skillgained++;
+	case SLP_GAS_TRAP:
+		skillgained++;
+	case RUST_TRAP:
+	case FIRE_TRAP:
+		skillgained++;
+	case ROCKTRAP:
+	case ROLLING_BOULDER_TRAP:
+		skillgained++;
+		break;
+	default:
+		break;
+	}
+	use_skill(P_DISARM_TRAP, ttmp->madeby_u ? 0 : skillgained);
+
+
+	/* Items gained */
+	int genotyp = STRANGE_OBJECT;
+
+	switch (ttmp->ttyp)
+	{
+	case POLY_TRAP:
+		genotyp = WAN_POLYMORPH;
+		break;
+	case MAGIC_TRAP:
+		genotyp = random_objectid_from_class(WAND_CLASS);
+		break;
+	case LEVEL_TELEP:
+		genotyp = WAN_TELEPORTATION;
+		break;
+	case ANTI_MAGIC:
+		genotyp = POT_MAGIC_RESISTANCE;
+		break;
+	case TELEP_TRAP:
+		genotyp = WAN_TELEPORTATION;
+		break;
+	case SLP_GAS_TRAP:
+		genotyp = WAN_SLEEP;
+		break;
+	case RUST_TRAP:
+		genotyp = POT_WATER;
+		break;
+	case FIRE_TRAP:
+		genotyp = WAN_FIRE;
+		break;
+	case ROCKTRAP:
+		genotyp = ROCK;
+	default:
+		break;
+	}
+
+	if (genotyp > STRANGE_OBJECT)
+		cnv_trap_obj(genotyp, 1, ttmp, FALSE);
+	else
+		deltrap(ttmp);
+
+	newsym(u.ux + u.dx, u.uy + u.dy);
+
+	return 1;
+}
+
+	const char* trap_names[] = {
+				   "",
+				   "arrow trap",
+				   "dart trap",
+				   "falling rock trap",
+				   "squeaky board",
+				   "bear trap",
+				   "land mine",
+				   "rolling boulder trap",
+				   "sleep gas trap",
+				   "rust trap", 
+				   "fire trap", 
+				   "pit", 
+				   "spiked pit",
+				   "hole",
+				   "trap door",
+				   "teleport trap",
+				   "level teleport trap",
+				   "magic portal",
+				   "web",
+				   "statue",
+				   "magic trap",
+				   "anti-magic trap",
+				   "polymorph trap",
+				   "vibrating square",
+				   0 };
+
+/*
+ * Find the type of a trap in the table, knowing its name.
+ */
+STATIC_OVL const char*
+get_trap_name(trapid)
+int trapid;
+{
+	return trap_names[trapid];
+}
+
+
 
 STATIC_OVL int
 disarm_landmine(ttmp) /* Helge Hafting */
@@ -4207,6 +4445,10 @@ struct trap *ttmp;
         return fails;
     You("disarm %s land mine.", the_your[ttmp->madeby_u]);
     cnv_trap_obj(LAND_MINE, 1, ttmp, FALSE);
+
+	/* gain skill for untrap */
+	use_skill(P_DISARM_TRAP, ttmp->madeby_u ? 0 : 4);
+
     return 1;
 }
 
@@ -4244,6 +4486,10 @@ struct trap *ttmp;
     You("repair the squeaky board."); /* no madeby_u */
     deltrap(ttmp);
     newsym(u.ux + u.dx, u.uy + u.dy);
+
+	/* gain skill for untrap */
+	use_skill(P_DISARM_TRAP, ttmp->madeby_u ? 0 : 2);
+
     more_experienced(1, 5);
     newexplevel();
     return 1;
@@ -4259,8 +4505,12 @@ int otyp;
 
     if (fails < 2)
         return fails;
-    You("disarm %s trap.", the_your[ttmp->madeby_u]);
+    You("disarm %s %s.", the_your[ttmp->madeby_u], get_trap_name(ttmp->ttyp));
     cnv_trap_obj(otyp, 50 - rnl(50), ttmp, FALSE);
+
+	/* gain skill for untrap */
+	use_skill(P_DISARM_TRAP, ttmp->madeby_u ? 0 : 4);
+
     return 1;
 }
 
@@ -4298,7 +4548,7 @@ struct trap *ttmp;
 {
     int wt;
     struct obj *otmp;
-    boolean uprob;
+    boolean untrap_ok;
 
     /*
      * This works when levitating too -- consistent with the ability
@@ -4318,7 +4568,7 @@ struct trap *ttmp;
         return 1;
 
     /* Will our hero succeed? */
-    if ((uprob = untrap_prob(ttmp)) && !mtmp->msleeping && mtmp->mcanmove) {
+    if ((untrap_ok = succeed_untrap(ttmp)) && !mtmp->msleeping && mtmp->mcanmove) {
         You("try to reach out your %s, but %s backs away skeptically.",
             makeplural(body_part(ARM)), mon_nam(mtmp));
         return 1;
@@ -4341,7 +4591,7 @@ struct trap *ttmp;
         }
     }
     /* need to do cockatrice check first if sleeping or paralyzed */
-    if (uprob) {
+    if (!untrap_ok) {
         You("try to grab %s, but cannot get a firm grasp.", mon_nam(mtmp));
         if (mtmp->msleeping) {
             mtmp->msleeping = 0;
@@ -4491,7 +4741,18 @@ boolean force;
                     return disarm_shooting_trap(ttmp, DART);
                 case ARROW_TRAP:
                     return disarm_shooting_trap(ttmp, ARROW);
-                case PIT:
+				case ROCKTRAP:
+				case ROLLING_BOULDER_TRAP:
+				case ANTI_MAGIC:
+				case POLY_TRAP:
+				case TELEP_TRAP:
+				case LEVEL_TELEP:
+				case RUST_TRAP:
+				case FIRE_TRAP:
+				case SLP_GAS_TRAP:
+				case MAGIC_TRAP:
+					return disarm_magical_trap(ttmp);
+				case PIT:
                 case SPIKED_PIT:
                     if (here) {
                         You("are already on the edge of the pit.");

@@ -255,7 +255,7 @@ char oclass;
 boolean artif;
 boolean makingboxcontents;
 {
-    int tprob, i;
+    int tprob;
 
     if (oclass == RANDOM_CLASS) {
         const struct icp *iprobs = Is_rogue_level(&u.uz)
@@ -268,10 +268,21 @@ boolean makingboxcontents;
         oclass = iprobs->iclass;
     }
 
+	int i = random_objectid_from_class(oclass);
+
+    return mksobj(i, TRUE, artif, makingboxcontents);
+}
+
+int
+random_objectid_from_class(oclass)
+char oclass;
+{
+	int i = 0;
+
 	boolean unacceptable = FALSE;
 	int randomizationclass = rn2(4);
 
-	for(int tryct = 0; tryct < 50; tryct++)
+	for (int tryct = 0; tryct < 50; tryct++)
 	{
 		int prob = rnd(1000);
 		i = bases[(int)oclass];
@@ -351,12 +362,12 @@ boolean makingboxcontents;
 				}
 			}
 
-			if(breakforloop)
+			if (breakforloop)
 				break; /* stop the for loop and make the item */
 		}
 	}
 
-    return mksobj(i, TRUE, artif, makingboxcontents);
+	return i;
 }
 
 STATIC_OVL void
