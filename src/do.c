@@ -412,7 +412,7 @@ register struct obj* obj;
 	{
 		int splcaster = objects[otyp].oc_nonspellwand_spell_casting_penalty;
 
-		Sprintf(buf2, "%s%d%%", splcaster <= 0 ? "+" : "", -splcaster * 5);
+		Sprintf(buf2, "%s%d%%", splcaster < 0 ? "+" : "", -splcaster * 5);
 		if (splcaster < 0)
 			Sprintf(buf, "Spell casting bonus:    %s", buf2);
 		else

@@ -654,7 +654,8 @@ doengrave()
             case WAN_SECRET_DOOR_DETECTION:
             case WAN_CREATE_MONSTER:
             case WAN_WISHING:
-            case WAN_ENLIGHTENMENT:
+			case WAN_IDENTIFY:
+			case WAN_ENLIGHTENMENT:
                 zapnodir(otmp);
                 break;
             /* IMMEDIATE wands */

@@ -3867,7 +3867,8 @@ struct obj *obj;
 
     switch (obj->otyp) {
     case WAN_WISHING:
-    case WAN_NOTHING:
+	case WAN_IDENTIFY:
+	case WAN_NOTHING:
     case WAN_LOCKING:
     case WAN_PROBING:
     case WAN_ENLIGHTENMENT:

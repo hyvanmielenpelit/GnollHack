@@ -2173,7 +2173,8 @@ int chg; /* recharging */
     case WAN_FIRE:
     case WAN_LIGHTNING:
     case WAN_MAGIC_MISSILE:
-        k = 8;
+	case WAN_IDENTIFY:
+		k = 8;
         break;
     case WAN_NOTHING:
         k = 4;

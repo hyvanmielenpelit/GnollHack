@@ -2767,7 +2767,18 @@ register struct obj *obj;
         }
         makewish();
         break;
-    case WAN_ENLIGHTENMENT:
+	case WAN_IDENTIFY:
+		if (invent)
+		{
+			known = TRUE;
+			identify_pack(1, FALSE);
+		}
+		else
+		{
+			pline("Nothing seems to happens.");
+		}
+		break;
+	case WAN_ENLIGHTENMENT:
         known = TRUE;
         You_feel("self-knowledgeable...");
         display_nhwindow(WIN_MESSAGE, FALSE);

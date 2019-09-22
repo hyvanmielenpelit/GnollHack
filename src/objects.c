@@ -1520,12 +1520,13 @@ OBJECT(OBJ("Book of the Dead", "papyrus"), None, None,
     OBJECT(OBJ(name, typ),  None, None,                                             \
            BITS(0, 0, 1, 0, mgc, 1, 0, 0, 0, 0, dir, P_NONE, metal),    \
            0, 0, 0, WAND_CLASS, prob, 0, 6, cost, sdice,sdam,sdmgplus,ldice,ldam,ldmgplus, 0, 0, 0, 0, range, radius, 30, color, dirsubtype, 0, 0, 0, flags)
-WAND("light",           "glass", 95, 100, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, 0, GLASS, HI_GLASS, O1_NONE),
+WAND("light",           "glass", 80, 100, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, 0, GLASS, HI_GLASS, O1_NONE),
 WAND("secret door detection",
                         "balsa", 50, 150, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, 0, WOOD, HI_WOOD, O1_NONE),
 WAND("enlightenment", "crystal", 15, 150, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, 0, GLASS, HI_GLASS, O1_NONE),
 WAND("create monster",  "maple", 45, 200, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, 0, WOOD, HI_WOOD, O1_NONE),
 WAND("wishing",          "pine",  5, 500, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, 0, WOOD, HI_WOOD, O1_LIGHTNING_RESISTANT),
+WAND("identify",	  "mithril", 10, 200, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, 0, IRON, HI_METAL, O1_NONE),
 WAND("nothing",           "oak", 25, 100, 0, IMMEDIATE, 0,  0, 0, 0, 0, 0, 0, 0, 0, WOOD, HI_WOOD, O1_NONE),
 WAND("striking",        "ebony", 70, 150, 1, IMMEDIATE, 0, 10, 0, 2, 12, 0, 0, 0, 0, WOOD, HI_WOOD, O1_NONE),
 WAND("make invisible", "marble", 45, 150, 1, IMMEDIATE, 0,  8, 0, 0, 0, 0, 0, 0, 0, MINERAL, HI_MINERAL, O1_NONE),
@@ -1547,7 +1548,7 @@ WAND("disintegration",   "long",  5, 500, 1, RAY, RAY_WND_DISINTEGRATION,	 8, 0,
 WAND("lightning",      "curved", 40, 175, 1, RAY, RAY_WND_LIGHTNING,		14, 0, 6, 6, 0, 0, 0, 0, IRON, HI_METAL, O1_LIGHTNING_RESISTANT),
 WAND("death",	 "skull-headed",  5, 500, 1, RAY, RAY_WND_DEATH,			 8, 0, 0, 0, 0, 0, 0, 0, BONE, CLR_WHITE, O1_NONE),
 WAND("resurrection", "ornamental",5, 200, 1, IMMEDIATE, 0,					 6, 0, 0, 0, 0, 0, 0, 0, IRON, CLR_MAGENTA, O1_NONE),
-WAND("evaporation",    "flimsy",  5, 150, 1, RAY, RAY_WND_EVAPORATION,		10, 0, 0, 0, 0, 0, 0, 0, IRON, HI_METAL, O1_NONE),
+WAND("evaporation",    "flimsy", 10, 150, 1, RAY, RAY_WND_EVAPORATION,		10, 0, 0, 0, 0, 0, 0, 0, IRON, HI_METAL, O1_NONE),
 /* extra descriptions, shuffled into use at start of new game */
 WAND(None,             "forked",  0, 150, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, WOOD, HI_WOOD, O1_NONE),
 WAND(None,             "spiked",  0, 150, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, IRON, HI_METAL, O1_NONE),
