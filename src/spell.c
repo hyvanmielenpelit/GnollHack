@@ -101,10 +101,6 @@ STATIC_DCL int FDECL(domaterialcomponentsmenu, (int));
  *      to permit magic-use).
  */
 
-#define uarmhbon 4 /* Metal helmets interfere with the mind */
-#define uarmgbon 6 /* Casting channels through the hands */
-#define uarmfbon 2 /* All metal interferes to some degree */
-
 /* since the spellbook itself doesn't blow up, don't say just "explodes" */
 static const char explodes[] = "radiates explosive energy";
 
@@ -2992,12 +2988,49 @@ int spell;
 		armorpenalty = FALSE;
 
     /* Calculate intrinsic ability (splcaster) */
-	splcaster = 0;  urole.spelbase;
+	splcaster = urole.spelbase;
     special = urole.spelheal;
 	statused = attribute_value_for_spellbook(spellid(spell));
 
 	if (armorpenalty)
 	{
+		if (uarm)
+			splcaster += objects[uarm->otyp].oc_nonspellwand_spell_casting_penalty;
+		if (uarms)
+			splcaster += objects[uarms->otyp].oc_nonspellwand_spell_casting_penalty;
+		if (uarmh)
+			splcaster += objects[uarmh->otyp].oc_nonspellwand_spell_casting_penalty;
+		if (uarmg)
+			splcaster += objects[uarmg->otyp].oc_nonspellwand_spell_casting_penalty;
+		if (uarmf)
+			splcaster += objects[uarmf->otyp].oc_nonspellwand_spell_casting_penalty;
+		if (uarmu)
+			splcaster += objects[uarmu->otyp].oc_nonspellwand_spell_casting_penalty;
+		if (uarmo)
+			splcaster += objects[uarmo->otyp].oc_nonspellwand_spell_casting_penalty;
+		if (uarmb)
+			splcaster += objects[uarmb->otyp].oc_nonspellwand_spell_casting_penalty;
+		if (umisc)
+			splcaster += objects[umisc->otyp].oc_nonspellwand_spell_casting_penalty;
+		if (umisc2)
+			splcaster += objects[umisc2->otyp].oc_nonspellwand_spell_casting_penalty;
+		if (umisc3)
+			splcaster += objects[umisc3->otyp].oc_nonspellwand_spell_casting_penalty;
+		if (umisc4)
+			splcaster += objects[umisc4->otyp].oc_nonspellwand_spell_casting_penalty;
+		if (umisc5)
+			splcaster += objects[umisc5->otyp].oc_nonspellwand_spell_casting_penalty;
+		if (uamul)
+			splcaster += objects[uamul->otyp].oc_nonspellwand_spell_casting_penalty;
+		if (uleft)
+			splcaster += objects[uleft->otyp].oc_nonspellwand_spell_casting_penalty;
+		if (uright)
+			splcaster += objects[uright->otyp].oc_nonspellwand_spell_casting_penalty;
+		if (ublindf)
+			splcaster += objects[ublindf->otyp].oc_nonspellwand_spell_casting_penalty;
+		if (uwep)
+			splcaster += objects[uwep->otyp].oc_nonspellwand_spell_casting_penalty;
+		/*
 		if (uarm && is_metallic(uarm) && !(objects[uarm->otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY))
 			splcaster += urole.spelarmr / (objects[uarm->otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY ? 2 : 1);
 		if (uarms && !(objects[uarms->otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY))
@@ -3008,6 +3041,7 @@ int spell;
 			splcaster += uarmgbon / (objects[uarmg->otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY ? 2 : 1);
 		if (uarmf && is_metallic(uarmf) && !(objects[uarmf->otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY))
 			splcaster += uarmfbon / (objects[uarmf->otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY ? 2 : 1);
+		*/
 	}
 
     if (spellid(spell) == urole.spelspec)

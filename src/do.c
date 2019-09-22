@@ -49,11 +49,64 @@ static NEARDATA const char item_description_objects[] = { ALL_CLASSES, ALLOW_NON
 int
 doitemdescriptions()
 {
-	int result, i = (invent) ? 0 : (SIZE(item_description_objects) - 1);
+	boolean proceedtoinventory = floorexamine();
+	if (!proceedtoinventory)
+		return 0;
+		
+	int i = (invent) ? 0 : (SIZE(item_description_objects) - 1);
 
-	result = itemdescription(getobj(&item_description_objects[i], "examine", 1, ""));
+	return itemdescription(getobj(&item_description_objects[i], "examine", 1, ""));
 
-	return result;
+}
+
+/* Returns TRUE if we proceed to inventory.
+ * Object may be either on floor or in inventory.
+ */
+boolean
+floorexamine()
+{
+	register struct obj* otmp;
+	char qbuf[QBUFSZ];
+	char c;
+	boolean res = TRUE;
+	int cnt = 0;
+
+	for (otmp = level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere)
+		cnt++;
+
+	if (!cnt)
+		return TRUE;
+
+	if (cnt > 1)
+	{
+		Sprintf(qbuf, "There are several objects here. Do you want to examine them?");
+		if ((c = yn_function(qbuf, ynqchars, 'n')) != 'y')
+			return  TRUE;
+	}
+
+	/* if we can't touch floor objects then use invent food only */
+	/* Is there some food (probably a heavy corpse) here on the ground? */
+	for (otmp = level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere) 
+	{
+		char qsfx[QBUFSZ];
+		boolean one = (otmp->quan == 1L);
+
+		/* "There is <an object> here; <verb> it?" or
+			"There are <N objects> here; <verb> one?" */
+		Sprintf(qbuf, "There %s ", otense(otmp, "are"));
+		Sprintf(qsfx, " here; %s %s?", "examine", one ? "it" : "them");
+		(void)safe_qbuf(qbuf, qbuf, qsfx, otmp, doname, ansimpleoname,
+			one ? something : (const char*) "things");
+		if ((c = yn_function(qbuf, ynqchars, 'n')) == 'y')
+		{
+			(void)itemdescription(otmp);
+			res = FALSE;
+		}
+		else if (c == 'q')
+			return res;
+	}
+
+	return res;
 }
 
 
@@ -88,7 +141,7 @@ register struct obj* obj;
 	/* Type */
 	strcpy(buf2, def_oc_syms[obj->oclass].name);
 	*buf2 = highc(*buf2);
-	Sprintf(buf, "Class:                %s", buf2);
+	Sprintf(buf, "Class:                  %s", buf2);
 	txt = buf;
 	putstr(datawin, 0, txt);
 
@@ -132,7 +185,7 @@ register struct obj* obj;
 	}
 	if (strcmp(buf2, "") != 0)
 	{
-		Sprintf(buf, "Category:             %s", buf2);
+		Sprintf(buf, "Category:               %s", buf2);
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
@@ -146,7 +199,7 @@ register struct obj* obj;
 	else
 		Sprintf(buf2, "%.1f %s", objweight, objweight == 1 ? "lb " : "lbs");
 
-	Sprintf(buf, "Weight:               %s", buf2);
+	Sprintf(buf, "Weight:                 %s", buf2);
 	txt = buf;
 	putstr(datawin, 0, txt);
 
@@ -155,7 +208,7 @@ register struct obj* obj;
 		/* Gold value */
 		Sprintf(buf2, "%d gold", objects[otyp].oc_cost);
 
-		Sprintf(buf, "Value:                %s", buf2);
+		Sprintf(buf, "Value:                  %s", buf2);
 		txt = buf;
 		putstr(datawin, 0, txt);
 
@@ -164,7 +217,7 @@ register struct obj* obj;
 		{
 			Sprintf(buf2, "%d units", objects[otyp].oc_nutrition);
 
-			Sprintf(buf, "Nutritional value:    %s", buf2);
+			Sprintf(buf, "Nutritional value:      %s", buf2);
 			txt = buf;
 			putstr(datawin, 0, txt);
 		}
@@ -173,7 +226,7 @@ register struct obj* obj;
 	/* Material */
 	strcpy(buf2, materialnm[objects[otyp].oc_material]);
 	*buf2 = highc(*buf2);
-	Sprintf(buf, "Material:             %s", buf2);
+	Sprintf(buf, "Material:               %s", buf2);
 	txt = buf;
 	putstr(datawin, 0, txt);
 
@@ -189,14 +242,14 @@ register struct obj* obj;
 		else
 			strcpy(buf2, "Single-handed");
 
-		Sprintf(buf, "Hands to use:         %s", buf2);
+		Sprintf(buf, "Hands to use:           %s", buf2);
 		txt = buf;
 		putstr(datawin, 0, txt);
 
 		/* Skill */
 		strcpy(buf2, weapon_descr(obj));
 		*buf2 = highc(*buf2);
-		Sprintf(buf, "Skill:                %s", buf2);
+		Sprintf(buf, "Skill:                  %s", buf2);
 		txt = buf;
 		putstr(datawin, 0, txt);
 
@@ -207,7 +260,7 @@ register struct obj* obj;
 
 			baserange = weapon_range((struct obj*)0, obj);
 
-			Sprintf(buf, "Ammunition range:     %d'", max(1, baserange) * 5);
+			Sprintf(buf, "Ammunition range:       %d'", max(1, baserange) * 5);
 			txt = buf;
 			putstr(datawin, 0, txt);
 		}
@@ -230,15 +283,15 @@ register struct obj* obj;
 
 		Sprintf(buf2, "%d", max(1, range) * 5);
 		if(thrown)
-			Sprintf(buf, "Throw distance:       %s'", buf2);
+			Sprintf(buf, "Throw distance:         %s'", buf2);
 		else
-			Sprintf(buf, "Range when fired:     %s'", buf2);
+			Sprintf(buf, "Range when fired:       %s'", buf2);
 		txt = buf;
 		putstr(datawin, 0, txt);
 
 
 		/* Damage - Small */
-		Sprintf(buf, "Base damage - Small:  ");
+		Sprintf(buf, "Base damage - Small:    ");
 
 		if (objects[otyp].oc_wsdice > 0 && objects[otyp].oc_wsdam > 0)
 		{
@@ -262,7 +315,7 @@ register struct obj* obj;
 
 		/* Damage - Large */
 		maindiceprinted = FALSE;
-		Sprintf(buf, "Base damage - Large:  ");
+		Sprintf(buf, "Base damage - Large:    ");
 
 		if (objects[otyp].oc_wldice > 0 && objects[otyp].oc_wldam > 0)
 		{
@@ -285,25 +338,28 @@ register struct obj* obj;
 		putstr(datawin, 0, txt);
 
 		if(objects[otyp].oc_hitbon > 0)
-	 		Sprintf(buf, "To-hit bonus:         +%d", objects[otyp].oc_hitbon);
+	 		Sprintf(buf, "To hit bonus:           +%d", objects[otyp].oc_hitbon);
 		else if (objects[otyp].oc_hitbon < 0)
-			Sprintf(buf, "To-hit bonus:         %d", objects[otyp].oc_hitbon);
+			Sprintf(buf, "To hit bonus:           %d", objects[otyp].oc_hitbon);
 
 	}
 	else if (objects[otyp].oc_class == ARMOR_CLASS)
 	{
 		Sprintf(buf2, "%d", 10 - objects[otyp].a_ac);
-		Sprintf(buf, "Base armor class:     %s", buf2);
+		Sprintf(buf, "Base armor class:       %s", buf2);
 		txt = buf;
 		putstr(datawin, 0, txt);
 
 		if (objects[otyp].oc_name_known)
 		{
+			/* magic cancellation */
 			Sprintf(buf2, "%s%d", objects[otyp].a_magic_cancellation_level >= 0 ? "+" : "", objects[otyp].a_magic_cancellation_level);
-			Sprintf(buf, "Magic cancellation:   %s", buf2);
+			Sprintf(buf, "Magic cancellation:     %s", buf2);
 			txt = buf;
 			putstr(datawin, 0, txt);
+
 		}
+
 	}
 	else if (objects[otyp].oc_class == WAND_CLASS || (objects[otyp].oc_class == TOOL_CLASS && (objects[otyp].oc_flags & O1_WAND_LIKE_TOOL)))
 	{
@@ -313,7 +369,7 @@ register struct obj* obj;
 			{
 				boolean maindiceprinted = FALSE;
 				char plusbuf[BUFSZ];
-				Sprintf(buf, "Wand effect damage:   ");
+				Sprintf(buf, "Wand effect damage:     ");
 
 				if (objects[otyp].oc_wsdice > 0 && objects[otyp].oc_wsdam > 0)
 				{
@@ -338,24 +394,42 @@ register struct obj* obj;
 			}
 			if (objects[otyp].oc_spell_range > 0)
 			{
-				Sprintf(buf, "Wand effect range:    %d'", objects[otyp].oc_spell_range * 5);
+				Sprintf(buf, "Wand effect range:      %d'", objects[otyp].oc_spell_range * 5);
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
 			if (objects[otyp].oc_spell_radius > 0)
 			{
-				Sprintf(buf, "Wand effect radius:   %d'", objects[otyp].oc_spell_radius * 5);
+				Sprintf(buf, "Wand effect radius:     %d'", objects[otyp].oc_spell_radius * 5);
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
 		}
 	}
+
+	if (objects[otyp].oc_name_known && objects[otyp].oc_class != SPBOOK_CLASS && objects[otyp].oc_class != WAND_CLASS &&
+		(objects[otyp].oc_class == ARMOR_CLASS || objects[otyp].oc_nonspellwand_spell_casting_penalty != 0))
+	{
+		int splcaster = objects[otyp].oc_nonspellwand_spell_casting_penalty;
+
+		Sprintf(buf2, "%s%d%%", splcaster <= 0 ? "+" : "", -splcaster * 5);
+		if (splcaster < 0)
+			Sprintf(buf, "Spell casting bonus:    %s", buf2);
+		else
+			Sprintf(buf, "Spell casting penalty:  %s", buf2);
+
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+
+
 	if (obj->known && objects[otyp].oc_charged)
 	{
 		strcpy(buf, "");
 
 		if(objects[otyp].oc_class == WAND_CLASS || objects[otyp].oc_class == TOOL_CLASS)
-			Sprintf(buf, "Charges left:         %d", obj->spe);
+			Sprintf(buf, "Charges left:           %d", obj->spe);
 		else
 		{
 			char bonusbuf[BUFSZ] = "";
@@ -368,7 +442,7 @@ register struct obj* obj;
 				Sprintf(bonusbuf, " (%s%d %s to AC)", obj->spe <= 0 ? "+" : "", -obj->spe, obj->spe >= 0 ? "bonus" : "penalty");
 			}
 
-			Sprintf(buf, "Enchantment status:   %s%d%s", obj->spe >= 0 ? "+" : "", obj->spe, bonusbuf);
+			Sprintf(buf, "Enchantment status:     %s%d%s", obj->spe >= 0 ? "+" : "", obj->spe, bonusbuf);
 		}
 
 		txt = buf;
@@ -396,26 +470,26 @@ register struct obj* obj;
 				Sprintf(penaltybuf, "(+%d penalty to AC)", penalty);
 			}
 		}
-		Sprintf(buf, "Erosion status:       %s%s", erodebuf, penaltybuf);
+		Sprintf(buf, "Erosion status:         %s%s", erodebuf, penaltybuf);
 
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
 	if (obj->bknown)
 	{
-		Sprintf(buf, "Blessing status:      %s", obj->blessed ? "Blessed" : obj->cursed ? "Cursed" : "Uncursed");
+		Sprintf(buf, "Blessing status:        %s", obj->blessed ? "Blessed" : obj->cursed ? "Cursed" : "Uncursed");
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
 	if (obj->opoisoned)
 	{
-		Sprintf(buf, "Poisoned status:      Poisoned (+6d6 poison damage)");
+		Sprintf(buf, "Poisoned status:        Poisoned (+6d6 poison damage)");
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
 	if (obj->special_enchantment)
 	{
-		Sprintf(buf, "Special enchantment:  %s", obj->special_enchantment == FIRE_ENCHANTMENT ? "Fire-enchanted (+2d6 fire damage)" :
+		Sprintf(buf, "Special enchantment:    %s", obj->special_enchantment == FIRE_ENCHANTMENT ? "Fire-enchanted (+2d6 fire damage)" :
 			obj->special_enchantment == COLD_ENCHANTMENT ? "Cold-enchanted (+1d6 cold damage)" :
 			obj->special_enchantment == LIGHTNING_ENCHANTMENT ? "Lightning-enchanted (+4d6 lightning damage)" :
 			obj->special_enchantment == DEATH_ENCHANTMENT ? "Death-enchanted (kills on hit)" : "Unknown enchantment"
@@ -864,13 +938,6 @@ register struct obj* obj;
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
-			if (objects[otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY)
-			{
-				powercnt++;
-				Sprintf(buf, " %2d - Half normal spell casting penalty", powercnt);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
 			if (objects[otyp].oc_flags & O1_INDESTRUCTIBLE)
 			{
 				powercnt++;
@@ -889,13 +956,6 @@ register struct obj* obj;
 			{
 				powercnt++;
 				Sprintf(buf, " %2d - Cannot be cursed", powercnt);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
-			if (objects[otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY)
-			{
-				powercnt++;
-				Sprintf(buf, " %2d - No spell casting penalty", powercnt);
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}

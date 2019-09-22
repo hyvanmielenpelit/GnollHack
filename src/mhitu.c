@@ -1013,14 +1013,11 @@ struct monst *mon;
 
 	for (o = is_you ? invent : mon->minvent; o; o = o->nobj) {
         /* a_magic_cancellation_level field is only applicable for armor (which must be worn), this should exclude spellbooks and wands, which use oc_oc2 for something else */
-        if ((o->owornmask & (W_ARMOR | W_ACCESSORY)) != 0L || (objects[o->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED)) {
+        if ((o->owornmask & (W_ARMOR | W_ACCESSORY)) != 0L)
+		{
             armpro = objects[o->otyp].a_magic_cancellation_level;
-            //if (armpro > mc)
             mc += armpro; //New system, add all mc's together
         }
-        /* if we've already confirmed Protection, skip additional checks */
-//        if (is_you || gotprot)
-//            continue;
 
         /* omit W_SWAPWEP+W_QUIVER; W_ART+W_ARTI handled by protects() */
         wearmask = W_ARMOR | W_ACCESSORY;
@@ -1030,23 +1027,12 @@ struct monst *mon;
 			mc++; // gotprot = TRUE;
     }
 
-    if (is_you ? (EProtection != 0L)
-		/* high priests have innate protection */
-		: (mon->data == &mons[PM_HIGH_PRIEST])) {
-        /* extrinsic Protection increases mc by 1 */
-        //if (mc < 3)
+    if (mon->data == &mons[PM_HIGH_PRIEST])
+		mc = mc + 2;
+	else if (mon->data == &mons[PM_HIGH_PRIEST] || mon->data == &mons[PM_ALIGNED_PRIEST] || is_minion(mon->data))
 		mc++;
-    } 
-	
-	//else if (mc < 1) {
-        /* intrinsic Protection is weaker (play balance; obtaining divine
-           protection is too easy); it confers minimum mc 1 instead of 0 */
-
-	if ((is_you && ((HProtection && u.ublessed > 0) || u.uspellprot))
-		/* aligned priests and angels have innate intrinsic Protection */
-		|| (mon->data == &mons[PM_HIGH_PRIEST]) || (mon->data == &mons[PM_ALIGNED_PRIEST] || is_minion(mon->data)))
-		mc++; // = 1;
-    //}
+	else if ((is_you && ((HProtection && u.ublessed > 0) || u.uspellprot)))
+		mc++;
 
     return mc;
 }

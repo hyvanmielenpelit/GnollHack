@@ -497,7 +497,7 @@ Gloves_on(VOID_ARGS)
     case GAUNTLETS_OF_DEXTERITY:
  //       adj_abon(uarmg, uarmg->spe);
         break;
-	case GLOVES_OF_SPELLCASTING:
+	case GLOVES_OF_SPELL_CASTING:
 		break;
 	default:
         impossible(unknown_type, c_gloves, uarmg->otyp);
@@ -542,7 +542,7 @@ Gloves_off(VOID_ARGS)
 
     switch (uarmg->otyp) {
     case LEATHER_GLOVES:
-	case GLOVES_OF_SPELLCASTING:
+	case GLOVES_OF_SPELL_CASTING:
 		break;
     case GAUNTLETS_OF_FUMBLING:
         if (!oldprop && !(HFumbling & ~TIMEOUT))

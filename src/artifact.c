@@ -451,7 +451,7 @@ boolean being_worn;
 {
     const struct artifact *arti;
 
-    if (being_worn && (objects[otmp->otyp].oc_oprop == PROTECTION || objects[otmp->otyp].oc_oprop2 == PROTECTION || objects[otmp->otyp].oc_oprop3 == PROTECTION))
+    if ((being_worn || objects[otmp->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED) && (objects[otmp->otyp].oc_oprop == PROTECTION || objects[otmp->otyp].oc_oprop2 == PROTECTION || objects[otmp->otyp].oc_oprop3 == PROTECTION))
         return TRUE;
     arti = get_artifact(otmp);
     if (!arti)

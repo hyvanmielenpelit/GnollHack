@@ -187,7 +187,7 @@ struct objclass {
 /* armor */
 #define oc_armor_category oc_subtyp						/* armor: (enum obj_armor_types) */
 #define a_ac oc_oc1										/* armor class, used in ARM_BONUS in do.c */
-#define a_magic_cancellation_level oc_oc2		/* armor: used in mhitu.c */
+#define a_magic_cancellation_level oc_oc2				/* armor: used in mhitu.c */
 /* oc_oc3 mana pool bonus */
 /* oc_oc4 hit point bonus */
 /* oc_oc5 attributes giving bonus to using spe / oc_oc6 to attributes and properties */
@@ -246,12 +246,10 @@ struct objclass {
 #define RAY_DIGGING 111 
 #define RAY_EVAPORATION 112 
 
-	long oc_material_components;		/* spells: ID for material component list for a spell or to make the item (if recipe is known); long because may be used for extra flags */
+	int oc_material_components;		/* spells: ID for material component list for a spell or to make the item (if recipe is known); long because may be used for extra flags */
 
-#define oc_nonspellwand_oc7 oc_dir_subtype			/* non-spells/wands: extra parameter 1 (long) */
-#define oc_nonspellwand_oc8 oc_material_components	/* non-spells/wands: extra parameter 2 (long) */
-
-#define oc_nonspellwand_confer_mask oc_nonspellwand_oc7			/* non-spells/wands: roles, races, genders, and alignments that the item's powers are conferred to */
+#define oc_nonspellwand_confer_mask oc_dir_subtype							/* non-spells/wands: roles, races, genders, and alignments that the item's powers are conferred to */
+#define oc_nonspellwand_spell_casting_penalty oc_material_components		/* non-spells/wands: spell casting penalty when worn */
 
 	int oc_item_cooldown;			/* cooldown before the item can be used / applied / zapped / read etc. again */
 	int oc_item_level;				/* item level, to be used with loot tables */
@@ -275,8 +273,6 @@ struct objclass {
 #define O1_SPELL_IS_NONREVERSIBLE_PERMANENT 0x00000800
 
 /* Non-spellbook / non-wand flags -- Can be the same as spellbook flags */
-#define O1_NO_SPELL_CASTING_PENALTY 0x00001000
-#define O1_HALF_SPELL_CASTING_PENALTY 0x00002000
 #define O1_SPECIAL_ENCHANTABLE 0x00004000
 #define O1_MANA_PERCENTAGE_BONUS 0x00008000
 #define O1_HP_PERCENTAGE_BONUS 0x00010000

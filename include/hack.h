@@ -489,6 +489,10 @@ enum bodypart_types {
     (objects[(obj)->otyp].a_ac + (obj)->spe \
      - min((int) greatest_erosion(obj), objects[(obj)->otyp].a_ac))
 
+#define uarmhbon 4 /* Metal helmets interfere with the mind */
+#define uarmgbon 6 /* Casting channels through the hands */
+#define uarmfbon 2 /* All metal interferes to some degree */
+
 #define makeknown(x) discover_object((x), TRUE, TRUE)
 #define distu(xx, yy) dist2((int)(xx), (int)(yy), (int) u.ux, (int) u.uy)
 #define onlineu(xx, yy) online2((int)(xx), (int)(yy), (int) u.ux, (int) u.uy)

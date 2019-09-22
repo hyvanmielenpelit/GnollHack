@@ -419,6 +419,7 @@ E int NDECL(donull);
 E int NDECL(dowipe);
 E void FDECL(set_wounded_legs, (long, int));
 E void FDECL(heal_legs, (int));
+E boolean NDECL(floorexamine);
 
 /* ### do_name.c ### */
 
