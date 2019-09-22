@@ -1046,17 +1046,24 @@ int mclevel;
 		return 0;
 
 	int mcpercentage = 0;
-	switch (mclevel)
+	if (mclevel > 10)
 	{
-	case 0:
-		mcpercentage = 0;
-		break;
-	case 1:
-		mcpercentage = 25;
-		break;
-	default:
-		mcpercentage = 100 - 100 / mclevel;
-		break;
+		mcpercentage = min(100, 90 + mclevel - 10);
+	}
+	else
+	{
+		switch (mclevel)
+		{
+		case 0:
+			mcpercentage = 0;
+			break;
+		case 1:
+			mcpercentage = 25;
+			break;
+		default:
+			mcpercentage = 100 - 100 / mclevel;
+			break;
+		}
 	}
 	return mcpercentage;
 }
