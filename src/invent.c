@@ -903,6 +903,7 @@ struct obj *obj;
 	int oldwis = ACURR(A_WIS);
 	int oldcha = ACURR(A_CHA);
 	int oldac = u.uac;
+	int oldmc = u.umc;
 
 
      if (obj->where != OBJ_FREE)
@@ -971,6 +972,7 @@ struct obj *obj;
 		|| ACURR(A_WIS) != oldwis
 		|| ACURR(A_CHA) != oldcha
 		|| (obj->oclass != ARMOR_CLASS && u.uac != oldac)
+		|| (obj->oclass != ARMOR_CLASS && u.umc != oldmc)
 		)) // this should identify all objects giving hp or mana or stats or ac
 	{
 		if (obj->oclass == RING_CLASS || obj->oclass == MISCELLANEOUS_CLASS) //Observable ring

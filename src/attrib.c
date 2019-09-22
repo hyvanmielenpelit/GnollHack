@@ -199,6 +199,7 @@ int msgflg; /* positive => no message, zero => message, and */
 	context.botl = TRUE;
 	//Check if AC needs to be updated
 	find_ac();
+	find_mc();
 	if (program_state.in_moveloop && (ndx == A_STR || ndx == A_CON))
         (void) encumber_msg();
     return TRUE;
@@ -1636,6 +1637,7 @@ updateabon()
 		}
 	}
 	find_ac();
+	find_mc();
 	context.botl = 1;
 
 }

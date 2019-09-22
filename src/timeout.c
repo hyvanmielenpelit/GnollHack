@@ -516,7 +516,8 @@ nh_timeout()
             u.usptime = u.uspmtime;
             u.uspellprot--;
             find_ac();
-            if (!Blind)
+			find_mc();
+			if (!Blind)
                 Norep("The %s haze around you %s.", hcolor(NH_GOLDEN),
                       u.uspellprot ? "becomes less dense" : "disappears");
         }

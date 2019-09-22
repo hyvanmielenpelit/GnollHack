@@ -1044,6 +1044,7 @@ u_init()
     u.umoney0 += hidden_gold(); /* in case sack has gold in it */
 
 	find_ac();     /* get initial ac value */
+	find_mc();
 	/*
      *  Do we really need this?
      */

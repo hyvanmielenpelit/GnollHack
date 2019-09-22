@@ -937,7 +937,20 @@ register struct obj *otmp;
         exercise(A_DEX, TRUE);
         incr_itimeout(&HFast, otmp->oclass == POTION_CLASS ? rn1(10, 100 + 60 * bcsign(otmp)) : duration);
         break;
-    case POT_BLINDNESS:
+	case POT_MAGIC_RESISTANCE:
+		if (!Antimagic)
+		{ 
+			You("suddenly feel much more protected from magical forces!");
+		}
+		else
+		{
+			You("feel a bit more secure from magical forces.");
+			unkn++;
+		}
+		exercise(A_WIS, TRUE);
+		incr_itimeout(&HAntimagic, otmp->oclass == POTION_CLASS ? rn1(10, 180 + 90 * bcsign(otmp)) : duration);
+		break;
+	case POT_BLINDNESS:
         if (Blind)
             nothing++;
         make_blinded(itimeout_incr(Blinded,
@@ -1763,6 +1776,12 @@ register struct obj *obj;
             Your("knees seem more flexible now.");
         incr_itimeout(&HFast, rnd(5));
         exercise(A_DEX, TRUE);
+        break;
+    case POT_MAGIC_RESISTANCE:
+        if (!Antimagic)
+            You("feel a bit more protected now.");
+        incr_itimeout(&HAntimagic, rnd(5));
+        exercise(A_WIS, TRUE);
         break;
     case POT_BLINDNESS:
         if (!Blind && !Unaware) {

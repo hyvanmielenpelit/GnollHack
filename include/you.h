@@ -372,8 +372,9 @@ struct you {
 	schar uhitinc;			/* variable extrinsic values affected by items and spells */
     schar udaminc;
 	schar uacbonus;
-	schar uac;
-    uchar uspellprot;        /* protection by SPE_PROTECTION */
+	schar uac;				 /* current armor class */
+	schar umc;				 /* current magic cancellation */
+	uchar uspellprot;        /* protection by SPE_PROTECTION */
     uchar usptime;           /* #moves until uspellprot-- */
     uchar uspmtime;          /* #moves between uspellprot-- */
     int uhp, uhpmax, ubasehpmax;         /* hit points, aka health */

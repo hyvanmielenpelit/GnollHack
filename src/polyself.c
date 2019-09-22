@@ -184,7 +184,8 @@ const char *fmt, *arg;
     if (sticky)
         uunstick();
     find_ac();
-    if (was_mimicking) {
+	find_mc();
+	if (was_mimicking) {
         if (multi < 0)
             unmul("");
         youmonst.m_ap_type = M_AP_NOTHING;
@@ -830,7 +831,8 @@ int mntmp;
         learn_egg_type(egg_type_from_parent(u.umonnum, TRUE));
     }
     find_ac();
-    if ((!Levitation && !u.ustuck && !Flying && is_pool_or_lava(u.ux, u.uy))
+	find_mc();
+	if ((!Levitation && !u.ustuck && !Flying && is_pool_or_lava(u.ux, u.uy))
         || (Underwater && !Swimming))
         spoteffects(TRUE);
     if (Passes_walls && u.utrap

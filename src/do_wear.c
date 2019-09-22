@@ -2514,6 +2514,16 @@ doputon()
     return otmp ? accessory_or_armor_on(otmp) : 0;
 }
 
+
+/* calculate current magic cancellation */
+void
+find_mc()
+{
+
+	u.umc = magic_negation(&youmonst);
+}
+
+
 /* calculate current armor class */
 void
 find_ac()

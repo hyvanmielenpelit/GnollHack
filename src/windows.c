@@ -918,31 +918,31 @@ unsigned long *colormasks UNUSED;
     enum statusfields idx1, idx2, *fieldlist;
     char *nb, *text = (char *) ptr;
 
-    static enum statusfields fieldorder[][15] = {
+    static enum statusfields fieldorder[][17] = {
         /* line one */
         { BL_TITLE, BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH, BL_ALIGN,
-          BL_SCORE, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH,
+          BL_SCORE, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH,
           BL_FLUSH },
         /* line two, default order */
         { BL_LEVELDESC, // BL_GOLD,
-          BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX, BL_AC,
+          BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX, BL_AC, BL_MC_LVL, BL_MC_PCT,
           BL_XP, BL_EXP, BL_HD,
           BL_TIME,
 		  BL_SKILL, BL_HUNGER, BL_CAP, BL_CONDITION,
           BL_FLUSH },
         /* move time to the end */
         { BL_LEVELDESC, //BL_GOLD,
-          BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX, BL_AC,
+          BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX, BL_AC, BL_MC_LVL, BL_MC_PCT,
           BL_XP, BL_EXP, BL_HD,
 		  BL_SKILL,BL_HUNGER, BL_CAP, BL_CONDITION,
           BL_TIME, BL_FLUSH },
         /* move experience and time to the end */
         { BL_LEVELDESC, // BL_GOLD,
-          BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX, BL_AC,
+          BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX, BL_AC, BL_MC_LVL, BL_MC_PCT,
 		  BL_SKILL, BL_HUNGER, BL_CAP, BL_CONDITION,
           BL_XP, BL_EXP, BL_HD, BL_TIME, BL_FLUSH },
         /* move level description plus gold and experience and time to end */
-        { BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX, BL_AC,
+        { BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX, BL_AC, BL_MC_LVL, BL_MC_PCT,
 		  BL_SKILL, BL_HUNGER, BL_CAP, BL_CONDITION,
           BL_LEVELDESC, //BL_GOLD,
 		  BL_XP, BL_EXP, BL_HD, BL_TIME, BL_FLUSH },

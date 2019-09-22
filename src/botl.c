@@ -533,7 +533,9 @@ STATIC_VAR struct istat_s initblstats[MAXBLSTATS] = {
     INIT_BLSTAT("experience-level", " Xp:%s", ANY_INT, 10, BL_XP),
 	INIT_BLSTAT("skill-availability", " %s", ANY_INT, 10, BL_SKILL),
 	INIT_BLSTAT("armor-class", " AC:%s", ANY_INT, 10, BL_AC),
-    INIT_BLSTAT("HD", " HD:%s", ANY_INT, 10, BL_HD),
+	INIT_BLSTAT("magic-cancellation-level", " MC:%s", ANY_INT, 10, BL_MC_LVL),
+	INIT_BLSTAT("magic-cancellation-percentage", "/%s%%", ANY_INT, 10, BL_MC_PCT),
+	INIT_BLSTAT("HD", " HD:%s", ANY_INT, 10, BL_HD),
     INIT_BLSTAT("time", " T:%s", ANY_LONG, 20, BL_TIME),
     /* hunger used to be 'ANY_UINT'; see note below in bot_via_windowport() */
     INIT_BLSTAT("hunger", " %s", ANY_INT, 40, BL_HUNGER),
@@ -686,7 +688,11 @@ bot_via_windowport()
     /* Armor class */
     blstats[idx][BL_AC].a.a_int = u.uac;
 
-    /* Monster level (if Upolyd) */
+	/* Magic cancellation level and percentage */
+	blstats[idx][BL_MC_LVL].a.a_int = u.umc;
+	blstats[idx][BL_MC_PCT].a.a_int = magic_negation_percentage(u.umc);
+
+	/* Monster level (if Upolyd) */
     blstats[idx][BL_HD].a.a_int = Upolyd ? (int) mons[u.umonnum].mlevel : 0;
 
     /* Experience */
@@ -1346,7 +1352,9 @@ static struct fieldid_t {
     { "xl",       BL_XP },
     { "xplvl",    BL_XP },
     { "ac",       BL_AC },
-    { "hit-dice", BL_HD },
+	{ "mc-lvl",   BL_MC_LVL },
+	{ "mc-pct",   BL_MC_PCT },
+	{ "hit-dice", BL_HD },
     { "turns",    BL_TIME },
     { "hp",       BL_HP },
     { "hp-max",   BL_HPMAX },

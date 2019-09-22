@@ -922,7 +922,8 @@ cast_protection()
         if (!u.usptime)
             u.usptime = u.uspmtime;
         find_ac();
-    } else {
+		find_mc();
+	} else {
         Your("skin feels warm for a moment.");
     }
 }

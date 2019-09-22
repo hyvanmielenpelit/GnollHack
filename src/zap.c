@@ -3501,7 +3501,8 @@ int duration;
         if (youdefend) {
             context.botl = 1; /* potential AC change */
             find_ac();
-        }
+			find_mc();
+		}
     }
 
     /* now handle special cases */

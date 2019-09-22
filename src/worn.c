@@ -61,6 +61,7 @@ long mask;
 	int oldwis = ACURR(A_WIS);
 	int oldcha = ACURR(A_CHA);
 	int oldac = u.uac;
+	int oldmc = u.umc;
 
     if ((mask & (W_ARM | I_SPECIAL)) == (W_ARM | I_SPECIAL)) {
         /* restoring saved game; no properties are conferred via skin */
@@ -167,8 +168,9 @@ long mask;
 			|| ACURR(A_INT) != oldint
 			|| ACURR(A_WIS) != oldwis
 			|| ACURR(A_CHA) != oldcha
-			|| (obj->oclass !=ARMOR_CLASS && u.uac != oldac)
-			)) // this should identify all objects giving hp or mana or stats or ac
+			|| (obj->oclass != ARMOR_CLASS && u.uac != oldac)
+			|| (obj->oclass != ARMOR_CLASS && u.umc != oldmc)
+			)) // this should identify all objects giving hp or mana or stats or non-armors giving ac or mc
 		{
 			if (obj->oclass == RING_CLASS || obj->oclass == MISCELLANEOUS_CLASS) //Observable ring
 				learnring(obj, TRUE);
@@ -215,6 +217,7 @@ register struct obj *obj;
 	int oldwis = ACURR(A_WIS);
 	int oldcha = ACURR(A_CHA);
 	int oldac = u.uac;
+	int oldmc = u.umc;
 
     if (obj == uwep || obj == uswapwep)
         u.twoweap = 0;
@@ -265,6 +268,7 @@ register struct obj *obj;
 			|| ACURR(A_WIS) != oldwis
 			|| ACURR(A_CHA) != oldcha
 			|| (obj->oclass != ARMOR_CLASS && u.uac != oldac)
+			|| (obj->oclass != ARMOR_CLASS && u.umc != oldmc)
 			)) // this should identify all objects giving hp or mana or stats or ac
 		{
 			if (obj->oclass == RING_CLASS || obj->oclass == MISCELLANEOUS_CLASS) //Observable ring
