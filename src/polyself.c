@@ -561,7 +561,7 @@ int psflags;
         tryct = 200;
         do {
             /* randomly pick an "ordinary" monster */
-            mntmp = rn1(SPECIAL_PM - LOW_PM, LOW_PM);
+			mntmp = monsndx(rndmonst()); //rn1(SPECIAL_PM - LOW_PM, LOW_PM);
             if (polyok(&mons[mntmp]) && !is_placeholder(&mons[mntmp]))
                 break;
         } while (--tryct > 0);

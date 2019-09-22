@@ -3747,9 +3747,12 @@ struct monst *mon;
             mndx = pick_nasty();
         break;
     case PM_DOPPELGANGER:
-        if (!rn2(7)) {
+        /*
+		if (!rn2(7)) {
             mndx = pick_nasty();
-        } else if (rn2(3)) { /* role monsters */
+        } 
+		else // Removed as potentially being too dangerous */ 
+		if (rn2(3)) { /* role monsters */
             mndx = rn1(PM_WIZARD - PM_ARCHEOLOGIST + 1, PM_ARCHEOLOGIST);
         } else if (!rn2(3)) { /* quest guardians */
             mndx = rn1(PM_APPRENTICE - PM_STUDENT + 1, PM_STUDENT);
@@ -3757,9 +3760,9 @@ struct monst *mon;
             if (mndx == urole.guardnum)
                 mndx = NON_PM;
         } else { /* general humanoids */
-            tryct = 5;
+            tryct = 20;
             do {
-                mndx = rn1(SPECIAL_PM - LOW_PM, LOW_PM);
+				mndx = monsndx(rndmonst()); // rn1(SPECIAL_PM - LOW_PM, LOW_PM);
                 if (humanoid(&mons[mndx]) && polyok(&mons[mndx]))
                     break;
             } while (--tryct > 0);
@@ -3768,8 +3771,17 @@ struct monst *mon;
         }
         break;
     case PM_CHAMELEON:
-        if (!rn2(3))
-            mndx = pick_animal();
+		if (rn2(3))
+		{
+			tryct = 20;
+			do {
+				mndx = monsndx(rndmonst()); // rn1(SPECIAL_PM - LOW_PM, LOW_PM);
+				if (is_animal(&mons[mndx]) && polyok(&mons[mndx]))
+					break;
+			} while (--tryct > 0);
+			if (!tryct)
+				mndx = NON_PM; // pick_animal();
+		}
         break;
     case PM_VLAD_THE_IMPALER:
     case PM_VAMPIRE_LORD:
@@ -3840,7 +3852,10 @@ struct monst *mon;
     if (mndx == NON_PM) {
         tryct = 50;
         do {
-            mndx = rn1(SPECIAL_PM - LOW_PM, LOW_PM);
+			if(tryct > 10) /* try to find first a monster of approriate level */
+				mndx = monsndx(rndmonst());
+			else /* and if that does not work out, randomize any monster */
+				mndx = rn1(SPECIAL_PM - LOW_PM, LOW_PM);
         } while (--tryct > 0 && !validspecmon(mon, mndx)
                  /* try harder to select uppercase monster on rogue level */
                  && (tryct > 40 && Is_rogue_level(&u.uz)
