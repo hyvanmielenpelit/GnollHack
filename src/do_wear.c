@@ -1836,6 +1836,7 @@ struct obj *obj;
         if (obj->owornmask)
             remove_worn_item(obj, FALSE);
     }
+
     return 1;
 }
 

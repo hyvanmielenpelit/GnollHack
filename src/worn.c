@@ -49,7 +49,7 @@ register struct obj *obj;
 long mask;
 {
     register const struct worn *wp;
-    register struct obj *oobj;
+	register struct obj* oobj = (struct obj*)0;
 //    register int p;
 
 	int oldmanamax = u.uenmax;
@@ -157,7 +157,7 @@ long mask;
 	updatemaxen();
 	updatemaxhp();
 
-	if (obj)
+	if (obj || oobj)
 	{
 		if ((
 			u.uenmax != oldmanamax
@@ -168,19 +168,45 @@ long mask;
 			|| ACURR(A_INT) != oldint
 			|| ACURR(A_WIS) != oldwis
 			|| ACURR(A_CHA) != oldcha
-			|| (obj->oclass != ARMOR_CLASS && u.uac != oldac)
-			|| (obj->oclass != ARMOR_CLASS && u.umc != oldmc)
+			|| (obj && obj->oclass != ARMOR_CLASS && u.uac != oldac)
+			|| (obj && obj->oclass != ARMOR_CLASS && u.umc != oldmc)
+			|| (!obj && oobj && oobj->oclass != ARMOR_CLASS && u.uac != oldac)
+			|| (!obj && oobj && oobj->oclass != ARMOR_CLASS && u.umc != oldmc)
 			)) // this should identify all objects giving hp or mana or stats or non-armors giving ac or mc
 		{
-			if (obj->oclass == RING_CLASS || obj->oclass == MISCELLANEOUS_CLASS) //Observable ring
-				learnring(obj, TRUE);
-			else
-				makeknown(obj->otyp);
+			if (obj)
+			{
+				if (obj->oclass == RING_CLASS || obj->oclass == MISCELLANEOUS_CLASS) //Observable ring
+					learnring(obj, TRUE);
+				else
+					makeknown(obj->otyp);
+			}
+			else if (oobj)
+			{
+				if (oobj->oclass == RING_CLASS || oobj->oclass == MISCELLANEOUS_CLASS) //Observable ring
+					learnring(oobj, TRUE);
+				else
+					makeknown(oobj->otyp);
+			}
 		}
-		else if (obj->oclass == RING_CLASS || obj->oclass == MISCELLANEOUS_CLASS)
+		else
 		{
-			//Nonobservable ring
-			learnring(obj, FALSE);
+			if (obj)
+			{
+				if (obj->oclass == RING_CLASS || obj->oclass == MISCELLANEOUS_CLASS)
+				{
+					//Nonobservable ring
+					learnring(obj, FALSE);
+				}
+			}
+			else if (oobj)
+			{
+				if (oobj->oclass == RING_CLASS || oobj->oclass == MISCELLANEOUS_CLASS)
+				{
+					//Nonobservable ring
+					learnring(oobj, FALSE);
+				}
+			}
 		}
 		context.botl = 1;
 		if (needbecomecursedmsg)
@@ -255,6 +281,8 @@ register struct obj *obj;
 	updateabon();
 	updatemaxen();
 	updatemaxhp();
+
+	//int curstr = ACURR(A_STR);
 
 	if (obj)
 	{

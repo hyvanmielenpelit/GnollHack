@@ -1509,7 +1509,7 @@ updateabon()
 	{
 		ABON(i) = 0;
 		AFIXMIN(i) = 0;
-		AFIXMAX(i) = 0;
+		AFIXMAX(i) = (i == A_STR ? STR19(25) : 25);
 	}
 	u.udaminc = 0;
 	u.uhitinc = 0;
@@ -1592,15 +1592,23 @@ updateabon()
 						{
 							if (objects[otyp].oc_bonus_attributes & FIXED_IS_MAXIMUM)
 							{
-								AFIXMAX(i) = objects[otyp].oc_attribute_bonus;
+								int afixmaxcandidate = objects[otyp].oc_attribute_bonus;
 								if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
-									AFIXMAX(i) += uitem->spe;
+									afixmaxcandidate += uitem->spe;
+
+								/* Take the lowest maximum (most constraining) */
+								if (afixmaxcandidate < AFIXMAX(i))
+									AFIXMAX(i) = afixmaxcandidate;
 							}
 							else
 							{
-								AFIXMIN(i) = objects[otyp].oc_attribute_bonus;
+								int afixmincandidate = objects[otyp].oc_attribute_bonus;
 								if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
-									AFIXMIN(i) += uitem->spe;
+									afixmincandidate += uitem->spe;
+
+								/* Take the highest minimum (most constraining) */
+								if (afixmincandidate > AFIXMIN(i))
+									AFIXMIN(i) = afixmincandidate;
 							}
 						}
 						else
