@@ -129,7 +129,7 @@ struct obj *bp;
     int lev = objects[bp->otyp].oc_spell_level;
     int dmg = 0;
 
-    switch (rn2(lev)) {
+    switch (rn2(max(1, (lev + 4) / 2))) {
     case 0:
         You_feel("a wrenching sensation.");
         tele(); /* teleport him */
