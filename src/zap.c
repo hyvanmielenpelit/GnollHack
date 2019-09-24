@@ -2541,7 +2541,7 @@ register struct obj *obj;
 		int vismonstcount = 0;
 		struct monst* lastseenmon = (struct monst*)0;
 
-		for (int n = d(2, 4); n > 0; n--)
+		for (int n = d(1, 3); n > 0; n--)
 		{
 			monstid = pick_nasty();
 			mtmp = summoncreature(obj->otyp, monstid, "", TRUE, TRUE);

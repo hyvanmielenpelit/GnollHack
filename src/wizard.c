@@ -559,8 +559,17 @@ struct monst *summoner;
     } else {
         count = 0;
         s_cls = summoner ? summoner->data->mlet : 0;
-        tmp = (u.ulevel > 3) ? u.ulevel / 3 : 1;
-        /* if we don't have a casting monster, nasties appear around hero,
+		if (summoner)
+		{
+			if(summoner == &youmonst)
+				tmp = max(1, (int)u.ulevel / 8);
+			else
+				tmp = max(1, (int)summoner->m_lev / 8);
+		}
+		else
+			tmp = max(1, u.ulevel / 3);
+
+		/* if we don't have a casting monster, nasties appear around hero,
            otherwise they'll appear around spot summoner thinks she's at */
         bypos.x = u.ux;
         bypos.y = u.uy;

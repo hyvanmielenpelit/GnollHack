@@ -1014,7 +1014,7 @@ register struct obj *otmp;
 		break;
 	case POT_FULL_HEALING:
         You_feel("completely healed.");
-        healup(400, otmp->blessed ? 4 : 0, !otmp->cursed, TRUE, !otmp->cursed, !otmp->cursed, !otmp->cursed);
+        healup(1000, otmp->blessed ? 4 : 0, !otmp->cursed, TRUE, !otmp->cursed, !otmp->cursed, !otmp->cursed);
         /* Restore one lost level if blessed */
         if (otmp->blessed && u.ulevel < u.ulevelmax) {
             /* when multiple levels have been lost, drinking
@@ -1191,23 +1191,30 @@ register struct obj *otmp;
     return -1;
 }
 
+/* nhp = healed hit points, nxtra = increase to maximum, nhp and nxtra do not stack */
 void
 healup(nhp, nxtra, curesick, cureblind, curehallucination, curestun, cureconfusion)
 int nhp, nxtra;
 register boolean curesick, cureblind, curehallucination, curestun, cureconfusion;
 {
-    if (nhp + nxtra > 0) {
+	if (nxtra > 0) {
+		if (Upolyd) {
+			u.basemhmax += nxtra;
+		}
+		else {
+			u.ubasehpmax += nxtra;
+		}
+		updatemaxhp();
+	}
+
+	if (nhp > 0) {
         if (Upolyd) {
             u.mh += nhp;
-            if (u.mh > u.mhmax)
-                u.mh = (u.basemhmax += nxtra);
         } else {
-            u.uhp += nhp;
-            if (u.uhp > u.uhpmax)
-                u.uhp = (u.ubasehpmax += nxtra);
+			u.uhp += nhp;
         }
-		updatemaxhp();
     }
+	
     if (cureblind) {
         /* 3.6.1: it's debatible whether healing magic should clean off
            mundane 'dirt', but if it doesn't, blindness isn't cured */
