@@ -1037,7 +1037,7 @@ struct monst *mon;
     return mc;
 }
 
-/* armor that sufficiently covers the body might be able to block magic */
+
 int
 magic_negation_percentage(mclevel)
 int mclevel;
@@ -1046,9 +1046,9 @@ int mclevel;
 		return 0;
 
 	int mcpercentage = 0;
-	if (mclevel > 10)
+	if (mclevel > 15)
 	{
-		mcpercentage = min(100, 90 + mclevel - 10);
+		mcpercentage = 100;
 	}
 	else
 	{
@@ -1060,8 +1060,50 @@ int mclevel;
 		case 1:
 			mcpercentage = 25;
 			break;
+		case 2:
+			mcpercentage = 50;
+			break;
+		case 3:
+			mcpercentage = 66;
+			break;
+		case 4:
+			mcpercentage = 75;
+			break;
+		case 5:
+			mcpercentage = 80;
+			break;
+		case 6:
+			mcpercentage = 84;
+			break;
+		case 7:
+			mcpercentage = 87;
+			break;
+		case 8:
+			mcpercentage = 90;
+			break;
+		case 9:
+			mcpercentage = 93;
+			break;
+		case 10:
+			mcpercentage = 95;
+			break;
+		case 11:
+			mcpercentage = 96;
+			break;
+		case 12:
+			mcpercentage = 97;
+			break;
+		case 13:
+			mcpercentage = 98;
+			break;
+		case 14:
+			mcpercentage = 99;
+			break;
+		case 15:
+			mcpercentage = 100;
+			break;
 		default:
-			mcpercentage = 100 - 100 / mclevel;
+			mcpercentage = 0;
 			break;
 		}
 	}

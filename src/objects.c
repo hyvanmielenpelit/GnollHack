@@ -362,35 +362,35 @@ BOW("heavy crossbow", None,					1, 1, 10, 200, 150, 1, 8, 0, 1, 8, 0, 0,  24, 0,
          * Some creatures are vulnerable to SILVER.
          */
 #define ARMOR(name,desc,kn,mgc,blk,power,power2,power3,prob,delay,wt,  \
-              cost,ac,mgcattkprot,manabon,hpbon,bonusattrs,abon,splcastpen,sub,metal,c,flags,powconfermask)                   \
+              cost,ac,mgccancel,manabon,hpbon,bonusattrs,abon,splcastpen,sub,metal,c,flags,powconfermask)                   \
     OBJECT(OBJ(name, desc), None, None,                                       \
            BITS(kn, 0, 1, 0, mgc, 1, 0, 0, blk, 0, 0, sub, metal),  \
            power, power2, power3, ARMOR_CLASS, prob, delay, wt,                     \
-           cost, 0, 0, 0, 0, 0, 0, 10 - ac, mgcattkprot, manabon, hpbon, bonusattrs, abon, wt, c, powconfermask, splcastpen, 0, 0, flags)
-#define HELM(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgcattkprot,manabon,hpbon,bonusattrs,abon,splcastpen,metal,c,flags,powconfermask)  \
+           cost, 0, 0, 0, 0, 0, 0, 10 - ac, mgccancel, manabon, hpbon, bonusattrs, abon, wt, c, powconfermask, splcastpen, 0, 0, flags)
+#define HELM(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,abon,splcastpen,metal,c,flags,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, mgcattkprot, manabon, hpbon, bonusattrs, abon, splcastpen, ARM_HELM, metal, c, flags, powconfermask)
-#define CLOAK(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgcattkprot,manabon,hpbon,bonusattrs,abon,splcastpen,metal,c,flags,powconfermask)  \
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, abon, splcastpen, ARM_HELM, metal, c, flags, powconfermask)
+#define CLOAK(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,abon,splcastpen,metal,c,flags,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, mgcattkprot, manabon, hpbon, bonusattrs, abon, splcastpen, ARM_CLOAK, metal, c, flags, powconfermask)
-#define SHIELD(name,desc,kn,mgc,blk,power,power2,power3,prob,delay,wt,cost,ac,mgcattkprot,manabon,hpbon,bonusattrs,abon,splcastpen,metal,c,flags,powconfermask) \
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, abon, splcastpen, ARM_CLOAK, metal, c, flags, powconfermask)
+#define SHIELD(name,desc,kn,mgc,blk,power,power2,power3,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,abon,splcastpen,metal,c,flags,powconfermask) \
     ARMOR(name, desc, kn, mgc, blk, power, power2, power3, prob, delay, wt, \
-          cost, ac, mgcattkprot, manabon, hpbon, bonusattrs, abon, splcastpen, ARM_SHIELD, metal, c, flags, powconfermask)
-#define GLOVES(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgcattkprot,manabon,hpbon,bonusattrs,abon,splcastpen,metal,c,flags,powconfermask)  \
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, abon, splcastpen, ARM_SHIELD, metal, c, flags, powconfermask)
+#define GLOVES(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,abon,splcastpen,metal,c,flags,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, mgcattkprot, manabon, hpbon, bonusattrs, abon, splcastpen, ARM_GLOVES, metal, c, flags, powconfermask)
-#define BOOTS(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgcattkprot,manabon,hpbon,bonusattrs,abon,splcastpen,metal,c,flags,powconfermask)  \
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, abon, splcastpen, ARM_GLOVES, metal, c, flags, powconfermask)
+#define BOOTS(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,abon,splcastpen,metal,c,flags,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, mgcattkprot, manabon, hpbon, bonusattrs, abon, splcastpen, ARM_BOOTS, metal, c, flags, powconfermask)
-#define SHIRT(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgcattkprot,manabon,hpbon,bonusattrs,abon,splcastpen,metal,c,flags,powconfermask)  \
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, abon, splcastpen, ARM_BOOTS, metal, c, flags, powconfermask)
+#define SHIRT(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,abon,splcastpen,metal,c,flags,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, mgcattkprot, manabon, hpbon, bonusattrs, abon, splcastpen, ARM_SHIRT, metal, c, flags, powconfermask)
-#define ROBE(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgcattkprot,manabon,hpbon,bonusattrs,abon,splcastpen,metal,c,flags,powconfermask)  \
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, abon, splcastpen, ARM_SHIRT, metal, c, flags, powconfermask)
+#define ROBE(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,abon,splcastpen,metal,c,flags,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, mgcattkprot, manabon, hpbon, bonusattrs, abon, splcastpen, ARM_ROBE, metal, c, flags, powconfermask)
-#define BRACERS(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgcattkprot,manabon,hpbon,bonusattrs,abon,splcastpen,metal,c,flags,powconfermask)  \
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, abon, splcastpen, ARM_ROBE, metal, c, flags, powconfermask)
+#define BRACERS(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,abon,splcastpen,metal,c,flags,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, mgcattkprot, manabon, hpbon, bonusattrs, abon, splcastpen, ARM_BRACERS, metal, c, flags, powconfermask)
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, abon, splcastpen, ARM_BRACERS, metal, c, flags, powconfermask)
 
 /* helmets */
 HELM("elven leather helm", "leather hat",
@@ -582,7 +582,7 @@ BRACERS("bracers of defense", "runed bracers",
 BRACERS("bracers of archery", "deerskin bracers",
 	0, 1, 0,		  0, 0, 10, 1, 10, 300, 9, 0, 0, 0, 0, 0, 4, CLOTH, HI_LEATHER, O1_NONE, PERMITTED_ALL),
 BRACERS("bracers of spell casting", "shining bracers",
-	0, 1, 0,		  0, 0, 10, 1, 10, 300, 9, 2, 15, 0, 0, 0, -3, CLOTH, HI_LEATHER, O1_MANA_PERCENTAGE_BONUS, PERMITTED_ALL),
+	0, 1, 0,		  0, 0, 10, 1, 10, 300, 9, 2, 10, 0, 0, 0, -7, CLOTH, HI_LEATHER, O1_MANA_PERCENTAGE_BONUS, PERMITTED_ALL),
 BRACERS("bracers of magic resistance", "ornamental bracers",//ENDMARKER 1 & 2
 	0, 1, ANTIMAGIC,  0, 0, 10, 1, 10, 300, 9, 2, 0, 0, 0, 0, 0, CLOTH, HI_LEATHER, O1_NONE, PERMITTED_ALL),
 
@@ -614,7 +614,7 @@ GLOVES("leather gloves", "old gloves",
 GLOVES("gauntlets of fumbling", "padded gloves",
        0, 1, FUMBLING, 0, 0, 8, 1, 10, 100, 9, 0, 0, 0, 0, 0, 12, LEATHER, HI_LEATHER, O1_NONE, PERMITTED_ALL),
 GLOVES("gloves of spell casting", "deerskin gloves",
-       0, 1,		0, 0, 0, 8, 1, 10, 100, 9, 0, 25, 0, 0, 0, -5, LEATHER, HI_LEATHER, O1_MANA_PERCENTAGE_BONUS, PERMITTED_ALL),
+       0, 1,		0, 0, 0, 8, 1, 10, 100, 9, 0, 20, 0, 0, 0, -14, LEATHER, HI_LEATHER, O1_MANA_PERCENTAGE_BONUS, PERMITTED_ALL),
 GLOVES("gauntlets of ogre power", "riding gloves",
        0, 1,        0, 0, 0, 8, 1, 30, 100, 9, 0, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE | IGNORE_SPE, STR18(100), 6, IRON, CLR_BROWN, O1_NONE, PERMITTED_ALL),
 GLOVES("gauntlets of dexterity", "fencing gloves",
