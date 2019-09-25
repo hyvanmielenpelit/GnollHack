@@ -3049,6 +3049,7 @@ int spell;
         splcaster += urole.spelsbon;
 
     /* `healing spell' bonus */
+	/*
     if (spellid(spell) == SPE_HEALING || spellid(spell) == SPE_EXTRA_HEALING || spellid(spell) == SPE_GREATER_HEALING || spellid(spell) == SPE_FULL_HEALING
         || spellid(spell) == SPE_CURE_BLINDNESS
         || spellid(spell) == SPE_CURE_SICKNESS
@@ -3059,13 +3060,15 @@ int spell;
 
     if (splcaster > 20)
         splcaster = 20;
+	*/
 
     /* Calculate learned ability */
 
     /* Players basic likelihood of being able to cast any spell
      * is based of their `magic' statistic. (Int or Wis)
      */
-    chance = -210 + 20 * statused;
+	chance = -70;
+	chance += 10 * statused;
 
     /*
      * High level spells are harder.  Easier for higher level casters.
@@ -3078,7 +3081,7 @@ int spell;
     //    (spellev(spell) - 1) * 4 - ((skill * 6) + ((u.ulevel - 1) * 2) + 0);
 
 	chance += -40 * spellev(spell);
-	chance += 50 * skill;
+	chance += 40 * skill;
 	chance += 20 * u.ulevel;
 	chance += -5 * splcaster;
 
