@@ -1869,26 +1869,6 @@ long *abil;
     return (struct obj *) 0;
 }
 
-/*
- * Return the first item that is conveying a particular intrinsic (using propid).
- */
-struct obj*
-what_carried_gives(propid)
-int propid;
-{
-	struct obj* obj;
-
-	for (obj = invent; obj; obj = obj->nobj) {
-		/* check carried */
-		if (objects[obj->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED)
-		{
-			if (objects[obj->otyp].oc_oprop == propid || objects[obj->otyp].oc_oprop2 == propid || objects[obj->otyp].oc_oprop3 == propid)
-				return obj;
-		}
-	}
-	return (struct obj*) 0;
-}
-
 
 const char *
 glow_color(arti_indx)

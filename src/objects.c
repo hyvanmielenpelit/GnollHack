@@ -466,15 +466,15 @@ DRGN_ARMR("yellow dragon scales",      0, ACID_RES,   0, 0,  750, 7, 0, 0, 0, 0,
 #undef DRGN_ARMR
 /* other suits */
 ARMOR("full plate mail", None,
-	  1, 0, 1,			 0, 0, 0, 10, 7, 960,2000,  1, 2, 0, 0, 0, 0, 20, ARM_SUIT, IRON, HI_METAL, O1_NONE, PERMITTED_ALL),
+	  1, 0, 1,			 0, 0, 0, 10, 7, 960,2000,  1, 5, 0, 0, 0, 0, 20, ARM_SUIT, IRON, HI_METAL, O1_NONE, PERMITTED_ALL),
 ARMOR("field plate mail", None,
-	  1, 0, 1,			 0, 0, 0, 20, 6, 840,1000,  2, 2, 0, 0, 0, 0, 18, ARM_SUIT, IRON, HI_METAL, O1_NONE, PERMITTED_ALL),
+	  1, 0, 1,			 0, 0, 0, 20, 6, 840,1000,  2, 4, 0, 0, 0, 0, 18, ARM_SUIT, IRON, HI_METAL, O1_NONE, PERMITTED_ALL),
 ARMOR("plate mail", None,
       1, 0, 1,			 0, 0, 0, 40, 5, 720, 600,  3, 2, 0, 0, 0, 0, 16, ARM_SUIT, IRON, HI_METAL, O1_NONE, PERMITTED_ALL),
 ARMOR("crystal plate mail", None,
-      1, 0, 1,  REFLECTING, 0, 0,  5, 5, 640,3000,  3, 2, 0, 0, 0, 0,  5, ARM_SUIT, GLASS, CLR_WHITE, O1_RUST_RESISTANT | O1_CORROSION_RESISTANT, PERMITTED_ALL),
+      1, 0, 1,  REFLECTING, 0, 0,  5, 5, 640,3000,  3, 2, 0, 0, 0, 0,  4, ARM_SUIT, GLASS, CLR_WHITE, O1_RUST_RESISTANT | O1_CORROSION_RESISTANT, PERMITTED_ALL),
 ARMOR("bronze plate mail", None,
-      1, 0, 1,			 0, 0, 0, 20, 5, 800, 150,  4, 1, 0, 0, 0, 0, 14, ARM_SUIT, COPPER, HI_COPPER, O1_NONE, PERMITTED_ALL),
+      1, 0, 1,			 0, 0, 0, 20, 5, 800, 150,  4, 3, 0, 0, 0, 0,  8, ARM_SUIT, COPPER, HI_COPPER, O1_NONE, PERMITTED_ALL),
 ARMOR("splint mail", None,
       1, 0, 1,			 0, 0, 0, 40, 5, 640, 125,  4, 1, 0, 0, 0, 0, 12, ARM_SUIT, IRON, HI_METAL, O1_NONE, PERMITTED_ALL),
 ARMOR("banded mail", None,
@@ -504,7 +504,7 @@ ARMOR("gnollish leather armor", "crude leather armor",
 ARMOR("leather jacket", None,
       1, 0, 0,			 0, 0, 0, 10, 0,  30,  10,  9, 0, 0, 0, 0, 0, 0, ARM_SUIT, LEATHER, CLR_BLACK, O1_NONE, PERMITTED_ALL),
 ARMOR("force field armor", "armor-shaped force field",
-      0, 1, 0,			 0, 0, 0, 0,  0,   0,   4,  4, 0, 0, 0, 0, 0, -2, ARM_SUIT, FORCEFIELD, CLR_WHITE, O1_FIRE_RESISTANT | O1_LIGHTNING_RESISTANT | O1_COLD_RESISTANT | O1_CORROSION_RESISTANT | O1_RUST_RESISTANT, PERMITTED_ALL),
+      0, 1, 0,			 0, 0, 0, 0,  0,   0,   4,  4, 2, 0, 0, 0, 0, -2, ARM_SUIT, FORCEFIELD, CLR_WHITE, O1_FIRE_RESISTANT | O1_LIGHTNING_RESISTANT | O1_COLD_RESISTANT | O1_CORROSION_RESISTANT | O1_RUST_RESISTANT, PERMITTED_ALL),
 
 /* shirts */
 ARMOR("Hawaiian shirt", None, //STARTMARKER 1
