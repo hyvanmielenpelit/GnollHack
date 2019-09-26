@@ -187,7 +187,7 @@ struct objclass {
 /* armor */
 #define oc_armor_category oc_subtyp						/* armor: (enum obj_armor_types) */
 #define a_ac oc_oc1										/* armor class, used in ARM_BONUS in do.c */
-#define a_magic_cancellation_level oc_oc2				/* armor: used in mhitu.c */
+#define a_magic_cancellation_level oc_oc2				/* armor: magic cancellation, i.e., resistance level to magical attacks */
 /* oc_oc3 mana pool bonus */
 /* oc_oc4 hit point bonus */
 /* oc_oc5 attributes giving bonus to using spe / oc_oc6 to attributes and properties */
@@ -254,6 +254,7 @@ struct objclass {
 	int oc_item_cooldown;			/* cooldown before the item can be used / applied / zapped / read etc. again */
 	int oc_item_level;				/* item level, to be used with loot tables */
 	unsigned long oc_flags;			/* E.g. if indestructible or disintegration resistant */
+	unsigned long oc_flags2;		/* More flags */
 
 /* Item resistances -- General: cannot be overriden */
 #define O1_NONE 0x00000000 
@@ -266,13 +267,13 @@ struct objclass {
 #define O1_RUST_RESISTANT 0x00000040
 #define O1_CORROSION_RESISTANT 0x00000080
 
-/* Spellbook / wand flags  -- Can be the same as non-spellbook flags*/
+/* Spellbook / wand flags */
 #define O1_SPELL_EXPLOSION_EFFECT 0x00000100
 #define O1_SPELL_BYPASSES_MAGIC_RESISTANCE 0x00000200
 #define O1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY 0x00000400
 #define O1_SPELL_IS_NONREVERSIBLE_PERMANENT 0x00000800
 
-/* Non-spellbook / non-wand flags -- Can be the same as spellbook flags */
+/* Non-spellbook / non-wand flags */
 #define O1_SPECIAL_ENCHANTABLE 0x00004000
 #define O1_MANA_PERCENTAGE_BONUS 0x00008000
 #define O1_HP_PERCENTAGE_BONUS 0x00010000
@@ -292,6 +293,68 @@ struct objclass {
 #define O1_EDIBLE_NONFOOD 0x20000000
 #define O1_NON_SPELL_SPELLBOOK 0x40000000  /* uses non-spellbook flags and other non-spellbook stats */
 #define O1_NOT_CURSEABLE 0x80000000
+
+
+/* Flags 2 */
+#define O2_NONE 0x00000000
+#define O2_ELVEN_ITEM 0x00000001
+#define O2_DWARVEN_ITEM 0x00000002
+#define O2_ORCISH_ITEM 0x00000004
+#define O2_GNOLLISH_ITEM 0x00000008
+#define O2_DRAGON_ITEM 0x00000010
+#define O2_DEMON_ITEM 0x00000020
+
+#define O2_CONTAINER 0x00000100	
+#define O2_CONTAINER_BOX 0x00000200	
+#define O2_CONTAINER_EXPLOSIVE_MAGIC_BAG 0x00000400	
+#define O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG 0x00000800
+
+#define O2_DRAGON_SCALES 0x00001000	
+#define O2_DRAGON_SCALE_MAIL 0x00002000
+#define O2_CANDLE 0x00004000	
+#define O2_RELATIVE_AGE 0x00008000	
+#define O2_IGNITABLE 0x00010000	
+#define O2_READABLE 0x00020000	
+#define O2_GRAYSTONE 0x00040000	
+#define O2_FLIMSY 0x00080000	
+
+/* Artifact flags - to do: Attack type, half physical and spell damage, bonus to monsters only */
+#define O2_NOGEN 0x00100000  /* item is special, bequeathed by gods */
+#define O2_RESTR 0x00200000  /* item is restricted - can't be named */
+#define O2_INTEL 0x00400000  /* item is self-willed - intelligent */
+#define O2_SPEAK 0x00800008  /* item can speak (not implemented) */
+// impemented in powers - SPFX_SEEK 0x00000010L   /* item helps you search for things */
+// impemented in powers - SPFX_WARN 0x00000020L   /* item warns you of danger */
+// impemented in attacks as attack type - SPFX_ATTK 0x00000040L   /* item has a special attack (attk) */
+// impemented in powers as resistances -  SPFX_DEFN 0x00000080L   /* item has a special defence (defn) */
+#define O2_DRLI 0x01000000   /* drains a level from monsters */
+// impemented in powers -  SPFX_SEARCH 0x00000200L /* helps searching */
+#define O2_BEHEAD 0x02000000 /* beheads monsters */
+// impemented in powers - SPFX_HALRES 0x00000800L /* blocks hallucinations */
+// impemented in powers - SPFX_ESP 0x00001000L    /* ESP (like amulet of ESP) */
+// impemented in powers - SPFX_STLTH 0x00002000L  /* Stealth */
+// impemented in powers - SPFX_REGEN 0x00004000L  /* Regeneration */
+// impemented in powers - SPFX_EREGEN 0x00008000L /* Energy Regeneration */
+// impemented in powers - SPFX_HSPDAM 0x00010000L /* 1/2 spell damage (on player) in combat */
+// impemented in powers -  SPFX_HPHDAM 0x00020000L                /* 1/2 physical damage (on player) in combat */
+// impemented in powers -  SPFX_TCTRL 0x00040000L /* Teleportation Control */
+// impemented in item flags - SPFX_LUCK 0x00080000L  /* Increase Luck (like Luckstone) */
+#define O2_DMONS 0x04000000 /* attack bonus on one monster type */
+#define O2_DCLAS 0x08000000 /* attack bonus on monsters w/ symbol mtype */
+#define O2_DFLAG1 0x10000000  /* attack bonus on monsters w/ mflags1 flag */
+#define O2_DFLAG2 0x20000000  /* attack bonus on monsters w/ mflags2 flag */
+#define O2_DALIGN 0x40000000  /* attack bonus on non-aligned monsters  */
+#define O2_DBONUS 0x80F00000  /* attack bonus mask */
+// impemented in item flags -  SPFX_XRAY 0x02000000L    /* gives X-RAY vision to player */
+// impemented in item flags -  SPFX_REFLECT 0x04000000L /* Reflection */
+// impemented in item flags -  SPFX_PROTECT 0x08000000L /* Protection */
+
+
+
+
+
+
+
 
 /* flag values for CONFERS_POWERS_TO_SPECIFIED_CHARACTERS_ONLY in nonspell_oc7 */
 #define PERMITTED_ALL				0x00000000
