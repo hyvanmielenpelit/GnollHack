@@ -468,38 +468,38 @@ HELM("helm of telepathy", "visored helmet",
  *      (2) That the order of the dragon scale mail and dragon scales
  *          is the same as order of dragons defined in monst.c.
  */
-#define DRGN_ARMR(name,mgc,power,power2,power3,cost,ac,manabon,hpbon,bonusattrs,abon,splcastpen,color,flags,flags2,flags3,powconfermask)  \
+#define DRGN_ARMR(name,mgc,power,power2,power3,cost,ac,mc,manabon,hpbon,bonusattrs,abon,splcastpen,color,flags,flags2,flags3,powconfermask)  \
     ARMOR(name, None, 1, mgc, 1, power, power2, power3, 0, 5, 550,  \
-          cost, ac, 0, manabon, hpbon, bonusattrs, abon, splcastpen, ARM_SUIT, DRAGON_HIDE, color, flags, flags2, flags3, powconfermask)
+          cost, ac, mc, manabon, hpbon, bonusattrs, abon, splcastpen, ARM_SUIT, DRAGON_HIDE, color, flags, flags2, flags3, powconfermask)
 /* 3.4.1: dragon scale mail reclassified as "magic" since magic is
    needed to create them */
-DRGN_ARMR("gray dragon scale mail",    1, ANTIMAGIC,  0, 0, 6000, 1, 0, 0, 0, 0,  8, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-DRGN_ARMR("silver dragon scale mail",  1, REFLECTING, 0, 0, 6000, 1, 0, 0, 0, 0,  4, DRAGON_SILVER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("gray dragon scale mail",    1, ANTIMAGIC,  0, 0, 6000, 1, 2, 0, 0, 0, 0,  8, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("silver dragon scale mail",  1, REFLECTING, 0, 0, 6000, 1, 2, 0, 0, 0, 0,  4, DRAGON_SILVER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 #if 0 /* DEFERRED */
 DRGN_ARMR("shimmering dragon scale mail", 1, DISPLACED, 1200, 1, CLR_CYAN),
 #endif
-DRGN_ARMR("red dragon scale mail",     1, FIRE_RES,   0, 0, 4000, 1, 0, 0, 0, 0,  2, CLR_RED, O1_FIRE_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
-DRGN_ARMR("white dragon scale mail",   1, COLD_RES,   0, 0, 3000, 1, 0, 0, 0, 0,  0, CLR_WHITE, O1_COLD_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
-DRGN_ARMR("orange dragon scale mail",  1, SLEEP_RES,  0, 0, 4000, 1, 0, 0, 0, 0,  0, CLR_ORANGE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-DRGN_ARMR("black dragon scale mail",   1, DISINT_RES, 0, 0, 5000, 1, 0, 0, 0, 0,  4, CLR_BLACK, O1_DISINTEGRATION_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
-DRGN_ARMR("blue dragon scale mail",    1, SHOCK_RES,  0, 0, 4000, 1, 0, 0, 0, 0,  2, CLR_BLUE, O1_LIGHTNING_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
-DRGN_ARMR("green dragon scale mail",   1, POISON_RES, 0, 0, 3000, 1, 0, 0, 0, 0,  0, CLR_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-DRGN_ARMR("yellow dragon scale mail",  1, ACID_RES,   0, 0, 3000, 1, 0, 0, 0, 0, -2, CLR_YELLOW, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("red dragon scale mail",     1, FIRE_RES,   0, 0, 4000, 1, 4, 0, 0, 0, 0,  2, CLR_RED, O1_FIRE_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("white dragon scale mail",   1, COLD_RES,   0, 0, 3000, 1, 4, 0, 0, 0, 0,  0, CLR_WHITE, O1_COLD_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("orange dragon scale mail",  1, SLEEP_RES,  0, 0, 4000, 1, 4, 0, 0, 0, 0,  0, CLR_ORANGE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("black dragon scale mail",   1, DISINT_RES, 0, 0, 5000, 1, 4, 0, 0, 0, 0,  4, CLR_BLACK, O1_DISINTEGRATION_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("blue dragon scale mail",    1, SHOCK_RES,  0, 0, 4000, 1, 4, 0, 0, 0, 0,  2, CLR_BLUE, O1_LIGHTNING_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("green dragon scale mail",   1, POISON_RES, 0, 0, 3000, 1, 4, 0, 0, 0, 0,  0, CLR_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("yellow dragon scale mail",  1, ACID_RES,   0, 0, 3000, 1, 3, 0, 0, 0, 0, -2, CLR_YELLOW, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 /* For now, only dragons leave these. */
 /* 3.4.1: dragon scales left classified as "non-magic"; they confer
    magical properties but are produced "naturally" */
-DRGN_ARMR("gray dragon scales",        0, ANTIMAGIC,  0, 0, 1500, 7, 0, 0, 0, 0,  8, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-DRGN_ARMR("silver dragon scales",      0, REFLECTING, 0, 0, 1500, 7, 0, 0, 0, 0,  4, DRAGON_SILVER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("gray dragon scales",        0, ANTIMAGIC,  0, 0, 1500, 7, 1, 0, 0, 0, 0,  8, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("silver dragon scales",      0, REFLECTING, 0, 0, 1500, 7, 1, 0, 0, 0, 0,  4, DRAGON_SILVER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 #if 0 /* DEFERRED */
 DRGN_ARMR("shimmering dragon scales",  0, DISPLACED,   700, 7, CLR_CYAN),
 #endif
-DRGN_ARMR("red dragon scales",         0, FIRE_RES,   0, 0, 1000, 7, 0, 0, 0, 0,  2, CLR_RED, O1_FIRE_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
-DRGN_ARMR("white dragon scales",       0, COLD_RES,   0, 0,  750, 7, 0, 0, 0, 0,  0, CLR_WHITE, O1_COLD_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
-DRGN_ARMR("orange dragon scales",      0, SLEEP_RES,  0, 0, 1000, 7, 0, 0, 0, 0, -2, CLR_ORANGE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-DRGN_ARMR("black dragon scales",       0, DISINT_RES, 0, 0, 1250, 7, 0, 0, 0, 0,  4, CLR_BLACK, O1_DISINTEGRATION_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
-DRGN_ARMR("blue dragon scales",        0, SHOCK_RES,  0, 0, 1000, 7, 0, 0, 0, 0,  2, CLR_BLUE, O1_LIGHTNING_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
-DRGN_ARMR("green dragon scales",       0, POISON_RES, 0, 0, 750, 7, 0, 0, 0, 0,   0, CLR_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-DRGN_ARMR("yellow dragon scales",      0, ACID_RES,   0, 0,  750, 7, 0, 0, 0, 0, -2, CLR_YELLOW, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("red dragon scales",         0, FIRE_RES,   0, 0, 1000, 7, 1, 0, 0, 0, 0,  2, CLR_RED, O1_FIRE_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("white dragon scales",       0, COLD_RES,   0, 0,  750, 7, 1, 0, 0, 0, 0,  0, CLR_WHITE, O1_COLD_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("orange dragon scales",      0, SLEEP_RES,  0, 0, 1000, 7, 1, 0, 0, 0, 0, -2, CLR_ORANGE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("black dragon scales",       0, DISINT_RES, 0, 0, 1250, 7, 1, 0, 0, 0, 0,  4, CLR_BLACK, O1_DISINTEGRATION_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("blue dragon scales",        0, SHOCK_RES,  0, 0, 1000, 7, 1, 0, 0, 0, 0,  2, CLR_BLUE, O1_LIGHTNING_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("green dragon scales",       0, POISON_RES, 0, 0,  750, 7, 1, 0, 0, 0, 0,   0, CLR_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("yellow dragon scales",      0, ACID_RES,   0, 0,  750, 7, 1, 0, 0, 0, 0, -2, CLR_YELLOW, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 #undef DRGN_ARMR
 /* other suits */
 ARMOR("full plate mail", None,
@@ -521,17 +521,17 @@ ARMOR("dwarvish mithril-coat", None,
 ARMOR("elven mithril-coat", None,
       1, 0, 0,			 0, 0, 0, 15, 1, 150, 250,  5, 2, 0, 0, 0, 0, 2, ARM_SUIT, MITHRIL, HI_SILVER, O1_RUST_RESISTANT | O1_CORROSION_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
 ARMOR("chain mail", None,
-      1, 0, 0,			 0, 0, 0, 50, 5, 480,  75,  5, 1, 0, 0, 0, 0, 8, ARM_SUIT, IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      1, 0, 0,			 0, 0, 0, 50, 5, 480,  75,  5, 2, 0, 0, 0, 0, 8, ARM_SUIT, IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ARMOR("orcish chain mail", "crude chain mail",
       0, 0, 0,			 0, 0, 0, 20, 5, 450,  40,  6, 1, 0, 0, 0, 0, 12, ARM_SUIT, IRON, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ARMOR("scale mail", None,
       1, 0, 0,			 0, 0, 0, 40, 5, 500,  45,  6, 1, 0, 0, 0, 0, 6, ARM_SUIT, IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ARMOR("studded leather armor", None,
-      1, 0, 0,			 0, 0, 0, 40, 3, 200,  15,  7, 1, 0, 0, 0, 0, 4, ARM_SUIT, LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      1, 0, 0,			 0, 0, 0, 40, 3, 200,  15,  7, 2, 0, 0, 0, 0, 4, ARM_SUIT, LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ARMOR("gnollish studded leather armor", "crude studded leather armor",
-      0, 0, 0,			 0, 0, 0, 27, 3, 175,  15,  8, 1, 0, 0, 0, 0, 6, ARM_SUIT, LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      0, 0, 0,			 0, 0, 0, 27, 3, 175,  15,  8, 2, 0, 0, 0, 0, 6, ARM_SUIT, LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ARMOR("ring mail", None,
-      1, 0, 0,			 0, 0, 0, 50, 5, 500,  30,  7, 1, 0, 0, 0, 0, 6, ARM_SUIT, IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      1, 0, 0,			 0, 0, 0, 50, 5, 500,  30,  7, 2, 0, 0, 0, 0, 6, ARM_SUIT, IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ARMOR("orcish ring mail", "crude ring mail",
       0, 0, 0,			 0, 0, 0, 20, 5, 450,  15,  8, 1, 0, 0, 0, 0, 10, ARM_SUIT, IRON, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ARMOR("leather armor", None,
@@ -539,31 +539,31 @@ ARMOR("leather armor", None,
 ARMOR("gnollish leather armor", "crude leather armor",
       0, 0, 0,			 0, 0, 0, 24, 3, 125,   3,  9, 1, 0, 0, 0, 0, 4, ARM_SUIT, LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ARMOR("leather jacket", None,
-      1, 0, 0,			 0, 0, 0, 10, 0,  30,  10,  9, 0, 0, 0, 0, 0, 0, ARM_SUIT, LEATHER, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      1, 0, 0,			 0, 0, 0, 10, 0,  30,  10,  9, 1, 0, 0, 0, 0, 0, ARM_SUIT, LEATHER, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ARMOR("force field armor", "armor-shaped force field",
       0, 1, 0,			 0, 0, 0, 0,  0,   0,   4,  4, 2, 0, 0, 0, 0, -2, ARM_SUIT, FORCEFIELD, CLR_WHITE, O1_FIRE_RESISTANT | O1_LIGHTNING_RESISTANT | O1_COLD_RESISTANT | O1_CORROSION_RESISTANT | O1_RUST_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
 
 /* shirts */
 ARMOR("Hawaiian shirt", None, //STARTMARKER 1
-    1, 0, 0, 0,			 0, 0, 8, 0, 5,  5, 10, 0, 0, 0, 0, 0, 0, ARM_SHIRT, CLOTH, CLR_MAGENTA, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+    1, 0, 0, 0,			 0, 0, 8, 0, 5,  5, 10, 1, 0, 0, 0, 0, 0, ARM_SHIRT, CLOTH, CLR_MAGENTA, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 /* with shuffled appearances... */
 ARMOR("shirt of uncontrollable laughter", "funny T-shirt", //STARTMARKER 2
-    0, 1, 0,  LAUGHING,  0, 0, 6, 0, 5, 50, 10, 0, 0, 0, 0, 0, 6, ARM_SHIRT, CLOTH, CLR_BLUE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+    0, 1, 0,  LAUGHING,  0, 0, 6, 0, 5, 50, 10, 1, 0, 0, 0, 0, 6, ARM_SHIRT, CLOTH, CLR_BLUE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ARMOR("shirt of comeliness", "black T-shirt",
-	0, 1, 0, 0,			 0, 0, 6, 0, 5, 50, 10, 0, 0, 0, BONUS_TO_CHA, 0, 0, ARM_SHIRT, CLOTH, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	0, 1, 0, 0,			 0, 0, 6, 0, 5, 50, 10, 1, 0, 0, BONUS_TO_CHA, 0, 0, ARM_SHIRT, CLOTH, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ARMOR("shirt of sound mindedness", "green T-shirt", 
-	0, 1, 0, HALLUC_RES, 0, 0, 6, 0, 5, 50, 10, 0, 0, 0, 0, 0, -2, ARM_SHIRT, CLOTH, CLR_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	0, 1, 0, HALLUC_RES, 0, 0, 6, 0, 5, 50, 10, 1, 0, 0, 0, 0, -2, ARM_SHIRT, CLOTH, CLR_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ARMOR("T-shirt", "old T-shirt",//ENDMARKER 1 & 2
-    0, 0, 0, 0,			 0, 0, 4, 0, 5,  2, 10, 0, 0, 0, 0, 0, 0, ARM_SHIRT, CLOTH, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+    0, 0, 0, 0,			 0, 0, 4, 0, 5,  2, 10, 1, 0, 0, 0, 0, 0, ARM_SHIRT, CLOTH, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 
 
 /* cloaks */
 CLOAK("elven cloak", "faded pall",
-      0, 1,    STEALTH, 0, 0, 8, 0, 10, 60,  9, 1, 0, 0, 0, 0, 0, CLOTH, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      0, 1,        STEALTH, 0, 0, 8,  0, 10, 60,  9, 1, 0, 0, 0, 0, 0, CLOTH, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 CLOAK("orcish cloak", "coarse mantelet",
       0, 0,				 0, 0, 0, 8,  0, 10, 40, 10, 1, 0, 0, 0, 0, 0, CLOTH, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 CLOAK("dwarvish cloak", "hooded cloak",
-      0, 0,			     0, 0, 0, 8,  0, 10, 50, 10, 1, 0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      0, 0,			     0, 0, 0, 8,  0, 10, 50, 10, 2, 0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 CLOAK("oilskin cloak", "slippery cloak",
       0, 0,				 0, 0, 0, 8,  0, 10, 50,  9, 2, 0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 CLOAK("alchemy smock", "apron",
@@ -604,7 +604,7 @@ ROBE("bathrobe", "soft cotton robe",
 ROBE("clerical gown", None,
 	1, 0, 0,		   0, 0, 6, 1, 15,  25, 10, 2, 0, 0, 0, 0, 0, CLOTH, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ROBE("gnollish haircloth robe", "crude robe",
-	0, 0, 0,		   0, 0, 6, 1, 30,  10,  9, 2, 0, 0, 0, 0, 0, CLOTH, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	0, 0, 0,		   0, 0, 6, 1, 30,  10,  9, 1, 0, 0, 0, 0, 0, CLOTH, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ROBE("mummy wrapping", None, //ENDMARKER 1
 	1, 0, 0,		   0, 0, 0, 0,  3,   2, 10, 1, 0, 0, 0, 0, 4, CLOTH, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 	/* worn mummy wrapping blocks invisibility */
