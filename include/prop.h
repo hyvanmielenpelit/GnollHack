@@ -10,6 +10,9 @@
  * note:  propertynames[] array in timeout.c has string values for these.
  *        Property #0 is not used.
  */
+
+#define NO_POWER 0
+
 /* Resistances to troubles */
 enum prop_types {
     FIRE_RES          =  1,

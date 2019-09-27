@@ -176,9 +176,9 @@ struct objclass {
 
 #define BONUS_TO_ALLSTATS BONUS_TO_STR | BONUS_TO_DEX | BONUS_TO_CON | BONUS_TO_INT | BONUS_TO_WIS | BONUS_TO_CHA
 
-#define SETS_FIXED_ATTRIBUTE 0x0200
-#define FIXED_IS_MAXIMUM 0x0400
-#define IGNORE_SPE 0x0800
+#define SETS_FIXED_ATTRIBUTE 0x1000
+#define FIXED_IS_MAXIMUM 0x2000
+#define IGNORE_SPE 0x4000
 
 
 /* weapons */
@@ -220,6 +220,7 @@ struct objclass {
 #define oc_spell_attribute oc_oc4		/* books: spell primary casting attribute */
 #define oc_spell_range oc_oc5			/* books: spell range */
 #define oc_spell_radius oc_oc6			/* books: spell radius */
+/* oc_oc7 unused */
 #define oc_spell_dmg_dice oc_wsdice		/* books: spell damage no of dice */
 #define oc_spell_dmg_dicesize oc_wsdam	/* books: spell damage size of dice */
 #define oc_spell_dmg_plus oc_wsdmgplus	/* books: spell damage constant added */
@@ -228,7 +229,7 @@ struct objclass {
 #define oc_spell_dur_plus oc_wldmgplus	/* books: spell duration constant added */
 
 	int oc_dir_subtype;				/* spells: ID for type of ray or immediate effect, weapons: damage type */
-	int oc_material_components;		/* spells: ID for material component list for a spell or to make the item (if recipe is known) */
+	int oc_material_components;		/* spells: ID for material component list for a spell or to make the item (if recipe is known), other items: ID of components produced when breaking */
 	int oc_item_cooldown;			/* cooldown before the item can be used / applied / zapped / read etc. again */
 	int oc_item_level;				/* item level, to be used with loot tables */
 
@@ -236,6 +237,7 @@ struct objclass {
 	unsigned long oc_flags;			/* E.g. if indestructible or disintegration resistant */
 	unsigned long oc_flags2;		/* More flags */
 	unsigned long oc_flags3;		/* Even more flags */
+
 
 /* oc_dir_subtypes for spells */
 #define RAY_WND_MAGIC_MISSILE 0 

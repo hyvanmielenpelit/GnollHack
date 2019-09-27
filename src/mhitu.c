@@ -1013,7 +1013,12 @@ struct monst *mon;
 
 	for (o = is_you ? invent : mon->minvent; o; o = o->nobj) {
         /* a_magic_cancellation_level field is only applicable for armor (which must be worn), this should exclude spellbooks and wands, which use oc_oc2 for something else */
-        if ((o->owornmask & (W_ARMOR | W_ACCESSORY)) != 0L)
+		/* omit W_SWAPWEP+W_QUIVER; W_ART+W_ARTI handled by protects() */
+		wearmask = W_ARMOR | W_ACCESSORY;
+		if (o->oclass == WEAPON_CLASS || is_weptool(o))
+			wearmask |= W_WEP;
+
+		if ((o->owornmask & wearmask) || (objects[o->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED))
 		{
             armpro = objects[o->otyp].a_magic_cancellation_level;
             mc += armpro; //New system, add all mc's together
@@ -1024,21 +1029,14 @@ struct monst *mon;
 					mc += o->spe;
 			}
         }
-
-        /* omit W_SWAPWEP+W_QUIVER; W_ART+W_ARTI handled by protects() */
-        wearmask = W_ARMOR | W_ACCESSORY;
-        if (o->oclass == WEAPON_CLASS || is_weptool(o))
-            wearmask |= W_WEP;
-		if (protects(o, ((o->owornmask & wearmask) != 0L) ? TRUE : FALSE))
-			mc++; // gotprot = TRUE;
     }
 
     if (mon->data == &mons[PM_HIGH_PRIEST])
 		mc = mc + 2;
 	else if (mon->data == &mons[PM_HIGH_PRIEST] || mon->data == &mons[PM_ALIGNED_PRIEST] || is_minion(mon->data))
 		mc++;
-	else if ((is_you && ((HProtection && u.ublessed > 0) || u.uspellprot)))
-		mc++;
+	else if ((is_you && (Protection || u.uspellprot > 0)))
+		mc += max(1, u.uspellprot);
 
     return mc;
 }

@@ -82,7 +82,8 @@ NEARDATA struct objclass objects[] =
 {
 /* dummy object[0] -- description [2nd arg] *must* be NULL */
 OBJECT(OBJ("strange object", None), None, None, \
-       BITS(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, P_NONE, 0), 0, 0, 0, ILLOBJ_CLASS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
+       BITS(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, P_NONE, 0), \
+	   NO_POWER, NO_POWER, NO_POWER, ILLOBJ_CLASS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
 	   0, 0, 0, 0, 0, 0, 0, \
 	   0, 0, \
 	   0, 0, 0, 0, \
@@ -107,7 +108,7 @@ OBJECT(OBJ("strange object", None), None, None, \
 #define PROJECTILE(name,desc,  kn,prob,wt,cost,  dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,  hitbon,  metal,sub,color,  flags,flags2,flags3) \
     OBJECT(OBJ(name,desc), None, None,   \
            BITS(kn, 1, 1, 0, 0, 1, 0, 0, 0, 0, PIERCE, sub, metal), \
-           0, 0, 0, WEAPON_CLASS, prob, 0, wt, cost, \
+           NO_POWER, NO_POWER, NO_POWER, WEAPON_CLASS, prob, 0, wt, cost, \
 		   sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, \
 		   hitbon, 0, 0, 0, 0, 0, 0, \
 		   wt, color, \
@@ -165,19 +166,19 @@ WEAPON("dart", None,
        1, 1, 0, 50,	1, 2, 
 	   AD_PHYS,	1, 2, 0, 1, 3, 0,
 	   2, 0, 0, 0, 0, 0, 0,
-	   0, 0, 0, P, -P_DART, IRON, HI_METAL, 
+	   NO_POWER, NO_POWER, NO_POWER, P, -P_DART, IRON, HI_METAL,
 	   O1_THROWN_WEAPON, O2_NONE, O3_NONE, PERMITTED_ALL),
 WEAPON("shuriken", "throwing star",
        0, 1, 0, 25, 1, 6,
 	   AD_PHYS, 1, 5, 0, 1, 8, 0, 
 	   2, 0, 0, 0, 0, 0, 0,
-	   0, 0, 0, P, -P_SHURIKEN, IRON, HI_METAL, 
+	   NO_POWER, NO_POWER, NO_POWER, P, -P_SHURIKEN, IRON, HI_METAL,
 	   O1_THROWN_WEAPON, O2_NONE, O3_NONE, PERMITTED_ALL),
 WEAPON("boomerang", None,
        1, 1, 0, 15, 5, 20,  
 	   AD_PHYS, 1, 9, 0, 1, 9, 0, 
 	   0, 0, 0, 0, 0, 0, 0, 
-	   0, 0, 0, 0, -P_BOOMERANG, WOOD, HI_WOOD,
+	   NO_POWER, NO_POWER, NO_POWER, 0, -P_BOOMERANG, WOOD, HI_WOOD,
 	   O1_THROWN_WEAPON | O1_RETURNS_TO_HAND_AFTER_THROWING, O2_NONE, O3_NONE, PERMITTED_ALL),
 
 /* spears [note: javelin used to have a separate skill from spears,
@@ -192,38 +193,38 @@ WEAPON("elven spear", "runed spear",
 WEAPON("orcish spear", "crude spear",
        0, 1, 0, 13,  30,   3,	AD_PHYS,	1, 5, 0, 1, 8, 0,	0, -55, 0, 0, 0, 0, 0,		0, 0, 0, P, P_SPEAR, IRON, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 WEAPON("dwarvish spear", "stout spear",
-       0, 1, 0, 12,  35,   3, AD_PHYS, 1, 8, 0, 1, 8, 0, 0, -50, 0, 0, 0, 0, 0, 0, 0, 0, P,   P_SPEAR, IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+       0, 1, 0, 12,  35,   3, AD_PHYS, 1, 8, 0, 1, 8, 0, 0, -50, 0, 0, 0, 0, 0,				0, 0, 0, P,   P_SPEAR, IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 WEAPON("silver spear", None,
-       1, 1, 0,  2,  36,  40, AD_PHYS, 1, 6, 0,  1, 8, 0, 0, -60, 0, 0, 0, 0, 0, 0, 0, 0, P,   P_SPEAR, SILVER, HI_SILVER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+       1, 1, 0,  2,  36,  40, AD_PHYS, 1, 6, 0,  1, 8, 0, 0, -60, 0, 0, 0, 0, 0,			0, 0, 0, P,   P_SPEAR, SILVER, HI_SILVER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 WEAPON("javelin", "throwing spear",
-       0, 0, 0, 10,  20,   3, AD_PHYS, 1, 6, 0, 1, 6, 0, 0, -100, 0, 0, 0, 0, 0, 0, 0, 0, P,   P_SPEAR, IRON, HI_METAL, O1_THROWN_WEAPON, O2_NONE, O3_NONE, PERMITTED_ALL),
+       0, 0, 0, 10,  20,   3, AD_PHYS, 1, 6, 0, 1, 6, 0, 0, -100, 0, 0, 0, 0, 0,			0, 0, 0, P,   P_SPEAR, IRON, HI_METAL, O1_THROWN_WEAPON, O2_NONE, O3_NONE, PERMITTED_ALL),
 WEAPON("javelin of returning", "throwing spear",
-       0, 1, 0, 5,  20,   3, AD_PHYS, 1, 6, 0, 1, 6, 0, 0, -100, 0, 0, 0, 0, 0, 0, 0, 0, P,   P_SPEAR, IRON, HI_METAL, O1_THROWN_WEAPON | O1_WEIGHT_DOES_NOT_REDUCE_RANGE | O1_RETURNS_TO_HAND_AFTER_THROWING, O2_NONE, O3_NONE, PERMITTED_ALL),
+       0, 1, 0, 5,  20,   3, AD_PHYS, 1, 6, 0, 1, 6, 0, 0, -100, 0, 0, 0, 0, 0,				0, 0, 0, P,   P_SPEAR, IRON, HI_METAL, O1_THROWN_WEAPON | O1_WEIGHT_DOES_NOT_REDUCE_RANGE | O1_RETURNS_TO_HAND_AFTER_THROWING, O2_NONE, O3_NONE, PERMITTED_ALL),
 
 /* spearish; doesn't stack, not intended to be thrown */
 WEAPON("trident", None,
-       1, 0, 0,  8,  25,   5, AD_PHYS, 1,  6, 1, 3,  4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, P,   P_TRIDENT, IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+       1, 0, 0,  8,  25,   5, AD_PHYS, 1,  6, 1, 3,  4, 0, 0, 0, 0, 0, 0, 0, 0,				0, 0, 0, P,   P_TRIDENT, IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
         /* +1 small, +2d4 large */
 
 /* blades; all stack */
 WEAPON("dagger", None,
-       1, 1, 0, 24,  10,   4, AD_PHYS, 1, 4, 0, 1,  3, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, P,   P_DAGGER, IRON, HI_METAL, O1_THROWN_WEAPON, O2_NONE, O3_NONE, PERMITTED_ALL),
+       1, 1, 0, 24,  10,   4, AD_PHYS, 1, 4, 0, 1,  3, 0, 2, 0, 0, 0, 0, 0, 0,				0, 0, 0, P,   P_DAGGER, IRON, HI_METAL, O1_THROWN_WEAPON, O2_NONE, O3_NONE, PERMITTED_ALL),
 WEAPON("elven dagger", "runed dagger",
-       0, 1, 0, 10,  10,   4, AD_PHYS, 1, 5, 0, 1, 3, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, P,   P_DAGGER, WOOD, HI_WOOD, O1_THROWN_WEAPON, O2_NONE, O3_NONE, PERMITTED_ALL),
+       0, 1, 0, 10,  10,   4, AD_PHYS, 1, 5, 0, 1, 3, 0, 2, 0, 0, 0, 0, 0, 0,				0, 0, 0, P,   P_DAGGER, WOOD, HI_WOOD, O1_THROWN_WEAPON, O2_NONE, O3_NONE, PERMITTED_ALL),
 WEAPON("orcish dagger", "crude dagger",
-       0, 1, 0, 12,  10,   4, AD_PHYS, 1, 3, 0, 1,  3, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, P,   P_DAGGER, IRON, CLR_BLACK, O1_THROWN_WEAPON, O2_NONE, O3_NONE, PERMITTED_ALL),
+       0, 1, 0, 12,  10,   4, AD_PHYS, 1, 3, 0, 1,  3, 0, 2, 0, 0, 0, 0, 0, 0,				0, 0, 0, P,   P_DAGGER, IRON, CLR_BLACK, O1_THROWN_WEAPON, O2_NONE, O3_NONE, PERMITTED_ALL),
 WEAPON("bone dagger", None,
-       1, 1, 0, 6,  10,   4, AD_PHYS, 1, 3, 0, 1,  3, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, P,   P_DAGGER, BONE, CLR_WHITE, O1_THROWN_WEAPON, O2_NONE, O3_NONE, PERMITTED_ALL),
+       1, 1, 0, 6,  10,   4, AD_PHYS, 1, 3, 0, 1,  3, 0, 2, 0, 0, 0, 0, 0, 0,				0, 0, 0, P,   P_DAGGER, BONE, CLR_WHITE, O1_THROWN_WEAPON, O2_NONE, O3_NONE, PERMITTED_ALL),
 WEAPON("silver dagger", None,
-       1, 1, 0,  3,  12,  40, AD_PHYS, 1, 4, 0, 1,  3, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, P,   P_DAGGER, SILVER, HI_SILVER, O1_THROWN_WEAPON, O2_NONE, O3_NONE, PERMITTED_ALL),
+       1, 1, 0,  3,  12,  40, AD_PHYS, 1, 4, 0, 1,  3, 0, 2, 0, 0, 0, 0, 0, 0,				0, 0, 0, P,   P_DAGGER, SILVER, HI_SILVER, O1_THROWN_WEAPON, O2_NONE, O3_NONE, PERMITTED_ALL),
 WEAPON("athame", None,
-       1, 1, 0,  0,  10,   4, AD_PHYS, 1, 4, 0, 1,  3, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, S,   P_DAGGER, IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+       1, 1, 0,  0,  10,   4, AD_PHYS, 1, 4, 0, 1,  3, 0, 2, 0, 0, 0, 0, 0, 0,				0, 0, 0, S,   P_DAGGER, IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 WEAPON("scalpel", None,
-       1, 1, 0,  0,   5,   6, AD_PHYS, 1, 3, 0, 1, 3, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, S,   P_KNIFE, METAL, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+       1, 1, 0,  0,   5,   6, AD_PHYS, 1, 3, 0, 1, 3, 0, 2, 0, 0, 0, 0, 0, 0,				0, 0, 0, S,   P_KNIFE, METAL, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 WEAPON("knife", None,
-       1, 1, 0, 20,   5,   4, AD_PHYS, 1, 3, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, P|S, P_KNIFE, IRON, HI_METAL, O1_THROWN_WEAPON, O2_NONE, O3_NONE, PERMITTED_ALL),
+       1, 1, 0, 20,   5,   4, AD_PHYS, 1, 3, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0,				0, 0, 0, P|S, P_KNIFE, IRON, HI_METAL, O1_THROWN_WEAPON, O2_NONE, O3_NONE, PERMITTED_ALL),
 WEAPON("stiletto", None,
-       1, 1, 0,  5,   5,   4, AD_PHYS, 1, 3, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, P|S, P_KNIFE, IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+       1, 1, 0,  5,   5,   4, AD_PHYS, 1, 3, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0,				0, 0, 0, P|S, P_KNIFE, IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 /* 3.6: worm teeth and crysknives now stack;
    when a stack of teeth is enchanted at once, they fuse into one crysknife;
    when a stack of crysknives drops, the whole stack reverts to teeth */
@@ -572,7 +573,7 @@ CLOAK("leather cloak", None,
       1, 0,				 0, 0, 0, 8,  0, 15, 40,  9, 1, 0, 0, 0, 0, 0, LEATHER, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 /* with shuffled appearances... */
 CLOAK("cloak of protection", "tattered cape",
-      0, 1, PROTECTION, 0, 0, 9, 0, 10, 250,  7, 3, 0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      0, 1, NO_POWER, 0, 0, 9, 0, 10, 250,  7, 3, 0, 0, 0, 0, 0, CLOTH, HI_CLOTH, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
         /* cloak of protection is now the only item conferring MC 3 */
 CLOAK("cloak of invisibility", "opera cloak",
       0, 1,      INVIS, 0, 0, 9, 0, 10, 250,  9, 1, 0, 0, 0, 0, 0, CLOTH, CLR_BRIGHT_MAGENTA, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
@@ -589,7 +590,7 @@ CLOAK("cloak of displacement", "piece of cloth",
 ROBE("robe", "old robe", //STARTMARKER 1 & 2
 	0, 0, 0,		  0, 0, 10, 1, 20,  25,  10, 2, 0, 0, 0, 0, 0, CLOTH, CLR_RED, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ROBE("robe of protection", "golden ornamental robe",
-	0, 1, PROTECTION, 0, 0, 10, 1, 25, 400,  7, 3, 0, 0, 0, 0, 0, CLOTH, HI_GOLD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	0, 1, NO_POWER, 0, 0, 10, 1, 25, 400,  7, 3, 0, 0, 0, 0, 0, CLOTH, HI_GOLD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ROBE("robe of magic resistance", "silvery ornamental robe",
 	0, 1, ANTIMAGIC,  0, 0, 9, 1, 25, 400,  9, 2, 0, 0, 0, 0, 0, CLOTH, HI_SILVER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ROBE("gown of the archbishops", "shining purple robe",
@@ -615,7 +616,7 @@ ROBE("mummy wrapping", None, //ENDMARKER 1
 BRACERS("leather bracers", "old bracers", //STARTMARKER 1 & 2
 	0, 0, 0,		  0, 0, 10, 1, 10,   5, 9, 0, 0, 0, 0, 0, 0, CLOTH, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 BRACERS("bracers of defense", "runed bracers",
-	0, 1, PROTECTION, 0, 0, 10, 1, 10, 300, 7, 2, 0, 0, 0, 0, 0, CLOTH, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	0, 1, NO_POWER, 0, 0, 10, 1, 10, 300, 7, 2, 0, 0, 0, 0, 0, CLOTH, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 BRACERS("bracers of archery", "deerskin bracers",
 	0, 1, 0,		  0, 0, 10, 1, 10, 300, 9, 0, 0, 0, 0, 0, 4, CLOTH, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 BRACERS("bracers of spell casting", "shining bracers",
@@ -719,11 +720,7 @@ RING("increase accuracy", "clay",
 RING("increase damage", "coral",
      0, 0, 0, 150, 1, 1, 4, 0, 0, BONUS_TO_DAMAGE, 0, 0, MINERAL, CLR_ORANGE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("protection", "black onyx",
-     PROTECTION, 0, 0, 100, 1, 1, 7, 0, 0, BONUS_TO_AC | BONUS_TO_MC, 0, 0, MINERAL, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-        /* 'PROTECTION' intrinsic enhances MC from worn armor by +1,
-           regardless of ring's enchantment; wearing a second ring of
-           protection (or even one ring of protection combined with
-           cloak of protection) doesn't give a second MC boost */
+	NO_POWER, 0, 0, 100, 1, 1, 7, 0, 0, BONUS_TO_AC | BONUS_TO_MC, 0, 0, MINERAL, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("regeneration", "moonstone",
      REGENERATION, 0, 0, 200, 1, 0,  6, 0, 0, 0, 0, 0, MINERAL, HI_MINERAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("replenishment", "crystal",
@@ -819,7 +816,7 @@ OBJECT(OBJ("Amulet of Yendor", /* note: description == name */
            power, power2, power3,  MISCELLANEOUS_CLASS, prob, 0, wt, cost,  0, 0, 0, 0, 0, 0, 0, 0, manabonus, hpbonus, bonusattrs, abon, splcastpen, nut, color, 0, 0, 0, 0, powconfermask, flags, flags2, flags3)
 MISCELLANEOUSITEM("brooch of shielding", "brooch",	MISC_MULTIPLE_PERMITTED, None, None,
 	0, 1, 0, 0, 40, 150, 5,
-	PROTECTION, 0, 0, 0, 0, BONUS_TO_AC | BONUS_TO_MC, 2, 0,
+	NO_POWER, 0, 0, 0, 0, BONUS_TO_MC, 6, 0,
 	20, GOLD, HI_GOLD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("nose ring of bull strength", "nose ring", MISC_NOSERING, "on nose", None,
 	0, 1, 0, 0, 50, 200, 50, //STARTMARKER FOR NOSE RINGS
@@ -839,11 +836,11 @@ MISCELLANEOUSITEM("golden earrings", None, MISC_EARRINGS, None, None,
 	50, GOLD, HI_GOLD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_GENDER_FEMALE),
 MISCELLANEOUSITEM("ioun stone of protection", "ioun stone", MISC_IOUN_STONE, "orbiting head", None,
 	0, 1, 0, 0, 20, 200, 50, //STARTMARKER FOR IOUNSTONES
-	PROTECTION, 0, 0, 0, 0, 0, 0, 0,
+	NO_POWER, NO_POWER, NO_POWER, 0, 0, BONUS_TO_MC, 4, 0,
 	50, MINERAL, CLR_RED, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("ioun stone of spell mastery", "ioun stone", MISC_IOUN_STONE, "orbiting head", None,
 	0, 1, 0, 0, 20, 200, 50,
-	0, 0, 0, 50, 0, 0, 0, -10,
+	0, 0, 0, 50, 0, 0, 0, -20,
 	50, MINERAL, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("ioun stone of magic resistance", "ioun stone", MISC_IOUN_STONE, "orbiting head", None,
 	0, 1, 0, 0, 20, 200, 50,
