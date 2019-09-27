@@ -140,8 +140,11 @@ struct objclass {
 
     short oc_prob;            /* probability, used in mkobj() */
     unsigned short oc_weight; /* encumbrance (1 oz = 1/16 lb.) previously (1 cn = 0.1 lb.) */
-    short oc_cost;            /* base cost in shops */
-    /* Check the AD&D rules!  The FIRST is small monster damage. */
+	unsigned short oc_nutrition; /* food value */
+
+	short oc_cost;            /* base cost in shops */
+    
+							  /* Check the AD&D rules!  The FIRST is small monster damage. */
     /* for weapons, and tools, rocks, and gems useful as weapons */
 	int oc_wsdice, oc_wsdam, oc_wsdmgplus; /* small monster damage, also used for spell damage */
 	int oc_wldice, oc_wldam, oc_wldmgplus; /* large monster damage, also used for duration for spells */
@@ -151,12 +154,14 @@ struct objclass {
 	int oc_oc4; /* Used for spell attributes; other items: hit point bonus */
 	int oc_oc5; /* Used for spell range; non-spellbooks: specification of attributes or other properties item gives bonuses (abon) to using otmp->spe */
 	int oc_oc6; /* Used for spell radius; non-spellbooks: 0 => spe is used, otherise fixed bonus */
+	int oc_oc7; /* Used for spell casting penalty */
 
 /* general*/
 #define oc_mana_bonus oc_oc3	/* non-spellbooks: mana pool bonus: Fixed points unless O1_MANA_PERCENTAGE_BONUS is specified */
 #define oc_hp_bonus oc_oc4	/* non-spellbooks: hit point bonus: Fixed points unless O1_HP_PERCENTAGE_BONUS is specified */
 #define oc_bonus_attributes oc_oc5	/* non-spellbooks: gives bonuses using spe / oc_oc6 to attributes and properties */
 #define oc_attribute_bonus oc_oc6	/* non-spellbooks: 0 => spe is used, otherise fixed bonus */
+#define oc_spell_casting_penalty oc_oc7		/* non-spells/wands: spell casting penalty when worn */
 
 #define BONUS_TO_STR 0x0001
 #define BONUS_TO_DEX 0x0002
@@ -167,6 +172,7 @@ struct objclass {
 #define BONUS_TO_DAMAGE 0x0040
 #define BONUS_TO_HIT 0x0080
 #define BONUS_TO_AC 0x0100
+#define BONUS_TO_MC 0x0200
 
 #define BONUS_TO_ALLSTATS BONUS_TO_STR | BONUS_TO_DEX | BONUS_TO_CON | BONUS_TO_INT | BONUS_TO_WIS | BONUS_TO_CHA
 
@@ -176,6 +182,7 @@ struct objclass {
 
 
 /* weapons */
+#define oc_damagetype oc_dir_subtype	/* Type of damage caused by the (magic) weapon, the same as for monster attacks */
 #define oc_skill oc_subtyp		/* Skills of weapons, spellbooks, tools, gems */
 #define oc_hitbon oc_oc1		/* weapons: "to hit" bonus */
 #define oc_weapon_range oc_oc2	/* launchers: range for ammo, others throw range: >0 Fixed range, <0 Percentage of STR */
@@ -183,6 +190,7 @@ struct objclass {
 /* oc_oc4 hit point bonus */
 /* oc_oc5 attributes giving bonus to using spe / oc_oc6 to attributes and properties */
 /* oc_oc6 modifier to oc_oc5: 0 => spe is used, otherise fixed bonus */
+/* oc_oc7 spell casting penalty */
 
 /* armor */
 #define oc_armor_category oc_subtyp						/* armor: (enum obj_armor_types) */
@@ -192,6 +200,7 @@ struct objclass {
 /* oc_oc4 hit point bonus */
 /* oc_oc5 attributes giving bonus to using spe / oc_oc6 to attributes and properties */
 /* oc_oc6 modifier to oc_oc5: 0 => spe is used, otherise fixed bonus */
+/* oc_oc7 spell casting penalty */
 
 /* comestibles and reagents (and other edibles) */
 #define oc_edible_subtype oc_oc1		/* edibles: is rotten, poisoned, et*/
@@ -218,10 +227,17 @@ struct objclass {
 #define oc_spell_dur_dicesize oc_wldam	/* books: spell duration size of dice */
 #define oc_spell_dur_plus oc_wldmgplus	/* books: spell duration constant added */
 
-    unsigned short oc_nutrition; /* food value */
+	int oc_dir_subtype;				/* spells: ID for type of ray or immediate effect, weapons: damage type */
+	int oc_material_components;		/* spells: ID for material component list for a spell or to make the item (if recipe is known) */
+	int oc_item_cooldown;			/* cooldown before the item can be used / applied / zapped / read etc. again */
+	int oc_item_level;				/* item level, to be used with loot tables */
 
-	long oc_dir_subtype; /* spells: ID for type of ray or immediate effect, long because used also for item flags */
+	unsigned long oc_power_permissions; /* roles, races, genders, and alignments that the item's powers are conferred to */
+	unsigned long oc_flags;			/* E.g. if indestructible or disintegration resistant */
+	unsigned long oc_flags2;		/* More flags */
+	unsigned long oc_flags3;		/* Even more flags */
 
+/* oc_dir_subtypes for spells */
 #define RAY_WND_MAGIC_MISSILE 0 
 #define RAY_WND_FIRE 1 
 #define RAY_WND_COLD 2 
@@ -246,15 +262,6 @@ struct objclass {
 #define RAY_DIGGING 111 
 #define RAY_EVAPORATION 112 
 
-	int oc_material_components;		/* spells: ID for material component list for a spell or to make the item (if recipe is known); long because may be used for extra flags */
-
-#define oc_nonspellwand_confer_mask oc_dir_subtype							/* non-spells/wands: roles, races, genders, and alignments that the item's powers are conferred to */
-#define oc_nonspellwand_spell_casting_penalty oc_material_components		/* non-spells/wands: spell casting penalty when worn */
-
-	int oc_item_cooldown;			/* cooldown before the item can be used / applied / zapped / read etc. again */
-	int oc_item_level;				/* item level, to be used with loot tables */
-	unsigned long oc_flags;			/* E.g. if indestructible or disintegration resistant */
-	unsigned long oc_flags2;		/* More flags */
 
 /* Item resistances -- General: cannot be overriden */
 #define O1_NONE 0x00000000 
@@ -323,8 +330,8 @@ struct objclass {
 #define O2_RESTR 0x00200000  /* item is restricted - can't be named */
 #define O2_INTEL 0x00400000  /* item is self-willed - intelligent */
 #define O2_SPEAK 0x00800008  /* item can speak (not implemented) */
-// impemented in powers - SPFX_SEEK 0x00000010L   /* item helps you search for things */
-// impemented in powers - SPFX_WARN 0x00000020L   /* item warns you of danger */
+// seems obsolete - SPFX_SEEK 0x00000010L   /* item helps you search for things */
+// implemented in powers - SPFX_WARN 0x00000020L   /* item warns you of danger */
 // impemented in attacks as attack type - SPFX_ATTK 0x00000040L   /* item has a special attack (attk) */
 // impemented in powers as resistances -  SPFX_DEFN 0x00000080L   /* item has a special defence (defn) */
 #define O2_DRLI 0x01000000   /* drains a level from monsters */
@@ -349,6 +356,8 @@ struct objclass {
 // impemented in item flags -  SPFX_REFLECT 0x04000000L /* Reflection */
 // impemented in item flags -  SPFX_PROTECT 0x08000000L /* Protection */
 
+/* Flags 3 */
+#define O3_NONE 0x00000000
 
 
 

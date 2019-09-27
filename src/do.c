@@ -413,9 +413,9 @@ register struct obj* obj;
 	}
 
 	if (objects[otyp].oc_name_known && objects[otyp].oc_class != SPBOOK_CLASS && objects[otyp].oc_class != WAND_CLASS &&
-		(objects[otyp].oc_class == ARMOR_CLASS || objects[otyp].oc_nonspellwand_spell_casting_penalty != 0))
+		(objects[otyp].oc_class == ARMOR_CLASS || objects[otyp].oc_spell_casting_penalty != 0))
 	{
-		int splcaster = objects[otyp].oc_nonspellwand_spell_casting_penalty;
+		int splcaster = objects[otyp].oc_spell_casting_penalty;
 
 		Sprintf(buf2, "%s%d%%", splcaster < 0 ? "+" : "", -splcaster * 5);
 		if (splcaster < 0)
@@ -580,7 +580,7 @@ register struct obj* obj;
 					}
 					else if (j == 6)
 					{
-						for (int k = 0; k < 9; k++)
+						for (int k = 0; k < 10; k++)
 						{
 							strcpy(buf2, "");
 							int stat = objects[otyp].oc_attribute_bonus;
@@ -672,6 +672,12 @@ register struct obj* obj;
 
 								Sprintf(buf2, "Grants %s%d bonus to hit", stat >= 0 ? "+" : "", stat);
 							}
+							if (k == 9 && prop & BONUS_TO_MC)
+							{
+								powercnt++;
+
+								Sprintf(buf2, "Grants %s%d bonus to magic cancellation", stat >= 0 ? "+" : "", stat);
+							}
 
 							if (strcmp(buf2, "") != 0) // Something else than ""
 							{
@@ -704,7 +710,7 @@ register struct obj* obj;
 			}
 
 			/* Power confer limitations */
-			if (objects[otyp].oc_nonspellwand_confer_mask)
+			if (objects[otyp].oc_power_permissions)
 			{
 				powercnt = 0;
 
@@ -712,161 +718,161 @@ register struct obj* obj;
 				txt = buf;
 				putstr(datawin, 0, txt);
 
-				if (objects[otyp].oc_nonspellwand_confer_mask & PERMITTED_ROLE_ARCHEOLOGIST)
+				if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_ARCHEOLOGIST)
 				{
 					powercnt++;
 					Sprintf(buf, " %2d - Archeologists", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_nonspellwand_confer_mask & PERMITTED_ROLE_BARBARIAN)
+				if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_BARBARIAN)
 				{
 					powercnt++;
 					Sprintf(buf, " %2d - Barbarians", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_nonspellwand_confer_mask & PERMITTED_ROLE_CAVEMAN)
+				if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_CAVEMAN)
 				{
 					powercnt++;
 					Sprintf(buf, " %2d - Cave(wo)men", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_nonspellwand_confer_mask & PERMITTED_ROLE_HEALER)
+				if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_HEALER)
 				{
 					powercnt++;
 					Sprintf(buf, " %2d - Healers", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_nonspellwand_confer_mask & PERMITTED_ROLE_KNIGHT)
+				if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_KNIGHT)
 				{
 					powercnt++;
 					Sprintf(buf, " %2d - Knights", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_nonspellwand_confer_mask & PERMITTED_ROLE_MONK)
+				if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_MONK)
 				{
 					powercnt++;
 					Sprintf(buf, " %2d - Monks", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_nonspellwand_confer_mask & PERMITTED_ROLE_PRIEST)
+				if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_PRIEST)
 				{
 					powercnt++;
 					Sprintf(buf, " %2d - Priests", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_nonspellwand_confer_mask & PERMITTED_ROLE_RANGER)
+				if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_RANGER)
 				{
 					powercnt++;
 					Sprintf(buf, " %2d - Rangers", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_nonspellwand_confer_mask & PERMITTED_ROLE_ROGUE)
+				if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_ROGUE)
 				{
 					powercnt++;
 					Sprintf(buf, " %2d - Rogues", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_nonspellwand_confer_mask & PERMITTED_ROLE_SAMURAI)
+				if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_SAMURAI)
 				{
 					powercnt++;
 					Sprintf(buf, " %2d - Samurais", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_nonspellwand_confer_mask & PERMITTED_ROLE_TOURIST)
+				if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_TOURIST)
 				{
 					powercnt++;
 					Sprintf(buf, " %2d - Tourists", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_nonspellwand_confer_mask & PERMITTED_ROLE_VALKYRIE)
+				if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_VALKYRIE)
 				{
 					powercnt++;
 					Sprintf(buf, " %2d - Valkyries", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_nonspellwand_confer_mask & PERMITTED_ROLE_WIZARD)
+				if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_WIZARD)
 				{
 					powercnt++;
 					Sprintf(buf, " %2d - Wizards", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_nonspellwand_confer_mask & PERMITTED_RACE_DWARF)
+				if (objects[otyp].oc_power_permissions & PERMITTED_RACE_DWARF)
 				{
 					powercnt++;
 					Sprintf(buf, " %2d - Dwarves", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_nonspellwand_confer_mask & PERMITTED_RACE_ELF)
+				if (objects[otyp].oc_power_permissions & PERMITTED_RACE_ELF)
 				{
 					powercnt++;
 					Sprintf(buf, " %2d - Elves", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_nonspellwand_confer_mask & PERMITTED_RACE_GNOLL)
+				if (objects[otyp].oc_power_permissions & PERMITTED_RACE_GNOLL)
 				{
 					powercnt++;
 					Sprintf(buf, " %2d - Gnolls", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_nonspellwand_confer_mask & PERMITTED_RACE_HUMAN)
+				if (objects[otyp].oc_power_permissions & PERMITTED_RACE_HUMAN)
 				{
 					powercnt++;
 					Sprintf(buf, " %2d - Humans", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_nonspellwand_confer_mask & PERMITTED_RACE_ORC)
+				if (objects[otyp].oc_power_permissions & PERMITTED_RACE_ORC)
 				{
 					powercnt++;
 					Sprintf(buf, " %2d - Orcs", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_nonspellwand_confer_mask & PERMITTED_GENDER_FEMALE)
+				if (objects[otyp].oc_power_permissions & PERMITTED_GENDER_FEMALE)
 				{
 					powercnt++;
 					Sprintf(buf, " %2d - Females", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_nonspellwand_confer_mask & PERMITTED_GENDER_MALE)
+				if (objects[otyp].oc_power_permissions & PERMITTED_GENDER_MALE)
 				{
 					powercnt++;
 					Sprintf(buf, " %2d - Males", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_nonspellwand_confer_mask & PERMITTED_ALIGNMENT_CHAOTIC)
+				if (objects[otyp].oc_power_permissions & PERMITTED_ALIGNMENT_CHAOTIC)
 				{
 					powercnt++;
 					Sprintf(buf, " %2d - Chaotic", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_nonspellwand_confer_mask & PERMITTED_ALIGNMENT_LAWFUL)
+				if (objects[otyp].oc_power_permissions & PERMITTED_ALIGNMENT_LAWFUL)
 				{
 					powercnt++;
 					Sprintf(buf, " %2d - Lawful", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
-				if (objects[otyp].oc_nonspellwand_confer_mask & PERMITTED_ALIGNMENT_NEUTRAL)
+				if (objects[otyp].oc_power_permissions & PERMITTED_ALIGNMENT_NEUTRAL)
 				{
 					powercnt++;
 					Sprintf(buf, " %2d - Neutral", powercnt);

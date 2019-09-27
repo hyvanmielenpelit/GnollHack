@@ -1017,6 +1017,12 @@ struct monst *mon;
 		{
             armpro = objects[o->otyp].a_magic_cancellation_level;
             mc += armpro; //New system, add all mc's together
+			if (objects[o->otyp].oc_bonus_attributes & BONUS_TO_MC)
+			{
+				mc += objects[o->otyp].oc_attribute_bonus;
+				if (!(objects[o->otyp].oc_bonus_attributes & IGNORE_SPE))
+					mc += o->spe;
+			}
         }
 
         /* omit W_SWAPWEP+W_QUIVER; W_ART+W_ARTI handled by protects() */

@@ -2996,41 +2996,41 @@ int spell;
 	if (armorpenalty)
 	{
 		if (uarm)
-			splcaster += objects[uarm->otyp].oc_nonspellwand_spell_casting_penalty;
+			splcaster += objects[uarm->otyp].oc_spell_casting_penalty;
 		if (uarms)
-			splcaster += objects[uarms->otyp].oc_nonspellwand_spell_casting_penalty;
+			splcaster += objects[uarms->otyp].oc_spell_casting_penalty;
 		if (uarmh)
-			splcaster += objects[uarmh->otyp].oc_nonspellwand_spell_casting_penalty;
+			splcaster += objects[uarmh->otyp].oc_spell_casting_penalty;
 		if (uarmg)
-			splcaster += objects[uarmg->otyp].oc_nonspellwand_spell_casting_penalty;
+			splcaster += objects[uarmg->otyp].oc_spell_casting_penalty;
 		if (uarmf)
-			splcaster += objects[uarmf->otyp].oc_nonspellwand_spell_casting_penalty;
+			splcaster += objects[uarmf->otyp].oc_spell_casting_penalty;
 		if (uarmu)
-			splcaster += objects[uarmu->otyp].oc_nonspellwand_spell_casting_penalty;
+			splcaster += objects[uarmu->otyp].oc_spell_casting_penalty;
 		if (uarmo)
-			splcaster += objects[uarmo->otyp].oc_nonspellwand_spell_casting_penalty;
+			splcaster += objects[uarmo->otyp].oc_spell_casting_penalty;
 		if (uarmb)
-			splcaster += objects[uarmb->otyp].oc_nonspellwand_spell_casting_penalty;
+			splcaster += objects[uarmb->otyp].oc_spell_casting_penalty;
 		if (umisc)
-			splcaster += objects[umisc->otyp].oc_nonspellwand_spell_casting_penalty;
+			splcaster += objects[umisc->otyp].oc_spell_casting_penalty;
 		if (umisc2)
-			splcaster += objects[umisc2->otyp].oc_nonspellwand_spell_casting_penalty;
+			splcaster += objects[umisc2->otyp].oc_spell_casting_penalty;
 		if (umisc3)
-			splcaster += objects[umisc3->otyp].oc_nonspellwand_spell_casting_penalty;
+			splcaster += objects[umisc3->otyp].oc_spell_casting_penalty;
 		if (umisc4)
-			splcaster += objects[umisc4->otyp].oc_nonspellwand_spell_casting_penalty;
+			splcaster += objects[umisc4->otyp].oc_spell_casting_penalty;
 		if (umisc5)
-			splcaster += objects[umisc5->otyp].oc_nonspellwand_spell_casting_penalty;
+			splcaster += objects[umisc5->otyp].oc_spell_casting_penalty;
 		if (uamul)
-			splcaster += objects[uamul->otyp].oc_nonspellwand_spell_casting_penalty;
+			splcaster += objects[uamul->otyp].oc_spell_casting_penalty;
 		if (uleft)
-			splcaster += objects[uleft->otyp].oc_nonspellwand_spell_casting_penalty;
+			splcaster += objects[uleft->otyp].oc_spell_casting_penalty;
 		if (uright)
-			splcaster += objects[uright->otyp].oc_nonspellwand_spell_casting_penalty;
+			splcaster += objects[uright->otyp].oc_spell_casting_penalty;
 		if (ublindf)
-			splcaster += objects[ublindf->otyp].oc_nonspellwand_spell_casting_penalty;
+			splcaster += objects[ublindf->otyp].oc_spell_casting_penalty;
 		if (uwep)
-			splcaster += objects[uwep->otyp].oc_nonspellwand_spell_casting_penalty;
+			splcaster += objects[uwep->otyp].oc_spell_casting_penalty;
 		/*
 		if (uarm && is_metallic(uarm) && !(objects[uarm->otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY))
 			splcaster += urole.spelarmr / (objects[uarm->otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY ? 2 : 1);
