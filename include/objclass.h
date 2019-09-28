@@ -233,11 +233,14 @@ struct objclass {
 	int oc_item_cooldown;			/* cooldown before the item can be used / applied / zapped / read etc. again */
 	int oc_item_level;				/* item level, to be used with loot tables */
 
-	unsigned long oc_power_permissions; /* roles, races, genders, and alignments that the item's powers are conferred to */
 	unsigned long oc_flags;			/* E.g. if indestructible or disintegration resistant */
 	unsigned long oc_flags2;		/* More flags */
 	unsigned long oc_flags3;		/* Even more flags */
 
+	unsigned long oc_power_permissions; /* roles, races, genders, and alignments that the item's powers are conferred to */
+	unsigned long oc_target_permissions; /* symbol, M1 flag, M2 flag, M3 flag, etc. for which extra damage is deal to */
+	int oc_baseitem;					/* Filled by item connects: Base item for a magic item or an artifact */
+	int oc_invokeitem;					/* Filled by item connects: Item effect when invoked, special effect if negative, 0 not invokable */
 
 /* oc_dir_subtypes for spells */
 #define RAY_WND_MAGIC_MISSILE 0 
@@ -339,6 +342,7 @@ struct objclass {
 #define O2_DRLI 0x01000000   /* drains a level from monsters */
 // impemented in powers -  SPFX_SEARCH 0x00000200L /* helps searching */
 #define O2_BEHEAD 0x02000000 /* beheads monsters */
+#define O2_DALIGN 0x04000000  /* attack bonus on non-aligned monsters  */
 // impemented in powers - SPFX_HALRES 0x00000800L /* blocks hallucinations */
 // impemented in powers - SPFX_ESP 0x00001000L    /* ESP (like amulet of ESP) */
 // impemented in powers - SPFX_STLTH 0x00002000L  /* Stealth */
@@ -348,22 +352,21 @@ struct objclass {
 // impemented in powers -  SPFX_HPHDAM 0x00020000L                /* 1/2 physical damage (on player) in combat */
 // impemented in powers -  SPFX_TCTRL 0x00040000L /* Teleportation Control */
 // impemented in item flags - SPFX_LUCK 0x00080000L  /* Increase Luck (like Luckstone) */
-#define O2_DMONS 0x04000000 /* attack bonus on one monster type */
-#define O2_DCLAS 0x08000000 /* attack bonus on monsters w/ symbol mtype */
-#define O2_DFLAG1 0x10000000  /* attack bonus on monsters w/ mflags1 flag */
-#define O2_DFLAG2 0x20000000  /* attack bonus on monsters w/ mflags2 flag */
-#define O2_DALIGN 0x40000000  /* attack bonus on non-aligned monsters  */
-#define O2_DBONUS 0x80F00000  /* attack bonus mask */
+// #define O2_DMONS 0x04000000 /* attack bonus on one monster type */
+// #define O2_DCLAS 0x08000000 /* attack bonus on monsters w/ symbol mtype */
+#define O2_TARGET_PERMISSION_IS_M1_FLAG 0x10000000 /* Note: if no flag, then default is a monster symbol */
+#define O2_TARGET_PERMISSION_IS_M2_FLAG 0x20000000
+#define O2_TARGET_PERMISSION_IS_M3_FLAG 0x30000000 /* Note: Two other flags combined*/
+#define O2_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS 0x40000000
+//#define O2_DFLAG1 0x10000000  /* attack bonus on monsters w/ mflags1 flag */
+//#define O2_DFLAG2 0x20000000  /* attack bonus on monsters w/ mflags2 flag */
+//#define O2_DFLAG3 0x40000000  /* attack bonus on monsters w/ mflags3 flag */
 // impemented in item flags -  SPFX_XRAY 0x02000000L    /* gives X-RAY vision to player */
 // impemented in item flags -  SPFX_REFLECT 0x04000000L /* Reflection */
 // impemented in item flags -  SPFX_PROTECT 0x08000000L /* Protection */
 
 /* Flags 3 */
 #define O3_NONE 0x00000000
-
-
-
-
 
 
 
@@ -409,6 +412,9 @@ struct objclass {
 #define PERMITTED_GENDER_MASK (PERMITTED_GENDER_MALE | PERMITTED_GENDER_FEMALE)
 
 #define PERMITTED_CHARACTER_MASK (PERMITTED_RACE_MASK | PERMITTED_ROLE_MASK | PERMITTED_ALIGNMENT_MASK | PERMITTED_GENDER_MASK)
+
+/* Permitted target mask */
+#define ALL_TARGETS				0x00000000
 
 };
 

@@ -342,6 +342,19 @@ register struct obj* obj;
 		txt = buf;
 		putstr(datawin, 0, txt);
 
+
+		/* Damage - Silver*/
+		if (objects[otyp].oc_material == SILVER)
+		{
+			Sprintf(buf, "Silver damage bonus:    ");
+			maindiceprinted = TRUE;
+			Sprintf(plusbuf, "%dd%d", 1, 20);
+			Strcat(buf, plusbuf);
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+
+
 		if(objects[otyp].oc_hitbon > 0)
 	 		Sprintf(buf, "To hit bonus:           +%d", objects[otyp].oc_hitbon);
 		else if (objects[otyp].oc_hitbon < 0)

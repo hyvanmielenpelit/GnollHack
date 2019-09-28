@@ -756,19 +756,22 @@ Bracers_on(VOID_ARGS)
 {
 	/* no shirt currently requires special handling when put on, but we
 	   keep this uncommented in case somebody adds a new one which does */
+
+	/*
 	switch (uarmb->otyp) {
 	case LEATHER_BRACERS:
 	case BRACERS_OF_ARCHERY:
+	case BRACERS_OF_SPELL_CASTING:
+	case BRACERS_OF_MAGIC_RESISTANCE:
 		break;
 	case BRACERS_OF_DEFENSE:
 		makeknown(uarmb->otyp);
 		break;
-	case BRACERS_OF_MAGIC_RESISTANCE:
-		break;
 	default:
 		impossible(unknown_type, c_bracers, uarmb->otyp);
 	}
-	uarmb->known = 1; /* shirt's +/- evident because of status line AC */
+	*/
+	uarmb->known = 1;
 	return 0;
 }
 
@@ -779,15 +782,20 @@ Bracers_off(VOID_ARGS)
 
 	/* no shirt currently requires special handling when taken off, but we
 	   keep this uncommented in case somebody adds a new one which does */
+
+	/*
 	switch (uarmb->otyp) {
 	case LEATHER_BRACERS:
 	case BRACERS_OF_DEFENSE:
 	case BRACERS_OF_ARCHERY:
+	case BRACERS_OF_SPELL_CASTING:
 	case BRACERS_OF_MAGIC_RESISTANCE:
+		break;
 		break;
 	default:
 		impossible(unknown_type, c_bracers, uarmb->otyp);
 	}
+	*/
 
 	setworn((struct obj*) 0, W_ARMB);
 	context.takeoff.cancelled_don = FALSE;

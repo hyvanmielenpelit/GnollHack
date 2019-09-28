@@ -1018,7 +1018,7 @@ struct monst *mon;
 		if (o->oclass == WEAPON_CLASS || is_weptool(o))
 			wearmask |= W_WEP;
 
-		if ((o->owornmask & wearmask) || (objects[o->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED))
+		if ((o->owornmask & wearmask) || (objects[o->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED) && (!is_you || !inappropriate_character_type(o)))
 		{
             armpro = objects[o->otyp].a_magic_cancellation_level;
             mc += armpro; //New system, add all mc's together
