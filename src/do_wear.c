@@ -2539,35 +2539,42 @@ find_mc()
 void
 find_ac()
 {
-    int uac = mons[u.umonnum].ac; /* base armor class for current form */
+	int uac = mons[u.umonnum].ac; /* base armor class for current form */
 
-    /* armor class from worn gear */
-    if (uarm)
-        uac -= ARM_BONUS(uarm);
-    if (uarmc)
-        uac -= ARM_BONUS(uarmc);
-    if (uarmh)
-        uac -= ARM_BONUS(uarmh);
-    if (uarmf)
-        uac -= ARM_BONUS(uarmf);
-    if (uarms)
-        uac -= ARM_BONUS(uarms);
-    if (uarmg)
-        uac -= ARM_BONUS(uarmg);
-    if (uarmu)
-        uac -= ARM_BONUS(uarmu);
+	/* armor class from worn gear */
+	if (uarm)
+		uac -= ARM_BONUS(uarm);
+	if (uarmc)
+		uac -= ARM_BONUS(uarmc);
+	if (uarmh)
+		uac -= ARM_BONUS(uarmh);
+	if (uarmf)
+		uac -= ARM_BONUS(uarmf);
+	if (uarms)
+		uac -= ARM_BONUS(uarms);
+	if (uarmg)
+		uac -= ARM_BONUS(uarmg);
+	if (uarmu)
+		uac -= ARM_BONUS(uarmu);
 	if (uarmo)
 		uac -= ARM_BONUS(uarmo);
 	if (uarmb)
 		uac -= ARM_BONUS(uarmb);
-	
+
 	/* Kludge removed by JG -- Now in u.uacbonus */
 	/*
 	if (uleft && uleft->otyp == RIN_PROTECTION)
-        uac -= uleft->spe;
-    if (uright && uright->otyp == RIN_PROTECTION)
-        uac -= uright->spe;
+		uac -= uleft->spe;
+	if (uright && uright->otyp == RIN_PROTECTION)
+		uac -= uright->spe;
 	*/
+
+	/* A wielded weapon can give AC */
+	if(uwep && (objects[uwep->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
+	{
+		uac -= ARM_BONUS(uwep);
+	}
+
 
 	//DEX Bonus
 	uac -= dexterity_ac_bonus(ACURR(A_DEX));

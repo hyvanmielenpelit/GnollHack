@@ -93,6 +93,9 @@ register struct obj *obj;
      */
     setworn(obj, W_WEP);
 
+	if (obj && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
+		obj->known = 1;
+
     if (uwep == obj && artifact_light(olduwep) && olduwep->lamplit) {
         end_burn(olduwep, FALSE);
         if (!Blind)
@@ -308,6 +311,8 @@ dowield()
         setuswapwep(oldwep);
     untwoweapon();
 
+	updateabon();
+	update_carried_item_extrinsics();
 	updatemaxen();
 	updatemaxhp();
 

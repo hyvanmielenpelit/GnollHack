@@ -346,7 +346,7 @@ register struct obj* obj;
 		/* Damage - Silver*/
 		if (objects[otyp].oc_material == SILVER)
 		{
-			Sprintf(buf, "Silver damage bonus:    ");
+			Sprintf(buf, "Silver bonus damage:    ");
 			maindiceprinted = TRUE;
 			Sprintf(plusbuf, "%dd%d", 1, 20);
 			Strcat(buf, plusbuf);
@@ -355,15 +355,28 @@ register struct obj* obj;
 		}
 
 
-		if(objects[otyp].oc_hitbon > 0)
-	 		Sprintf(buf, "To hit bonus:           +%d", objects[otyp].oc_hitbon);
-		else if (objects[otyp].oc_hitbon < 0)
-			Sprintf(buf, "To hit bonus:           %d", objects[otyp].oc_hitbon);
+		if (objects[otyp].oc_hitbonus != 0)
+		{
+			if (objects[otyp].oc_hitbonus > 0)
+				Sprintf(buf, "To hit bonus:           +%d", objects[otyp].oc_hitbonus);
+			else if (objects[otyp].oc_hitbonus < 0)
+				Sprintf(buf, "To hit bonus:           %d", objects[otyp].oc_hitbonus);
+
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+		if (objects[otyp].oc_name_known && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
+		{
+			Sprintf(buf2, "%d", 10 - objects[otyp].oc_armor_class);
+			Sprintf(buf, "Base armor class:       %s", buf2);
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
 
 	}
 	else if (objects[otyp].oc_class == ARMOR_CLASS)
 	{
-		Sprintf(buf2, "%d", 10 - objects[otyp].a_ac);
+		Sprintf(buf2, "%d", 10 - objects[otyp].oc_armor_class);
 		Sprintf(buf, "Base armor class:       %s", buf2);
 		txt = buf;
 		putstr(datawin, 0, txt);
@@ -371,7 +384,7 @@ register struct obj* obj;
 		if (objects[otyp].oc_name_known)
 		{
 			/* magic cancellation */
-			Sprintf(buf2, "%s%d", objects[otyp].a_magic_cancellation_level >= 0 ? "+" : "", objects[otyp].a_magic_cancellation_level);
+			Sprintf(buf2, "%s%d", objects[otyp].oc_magic_cancellation >= 0 ? "+" : "", objects[otyp].oc_magic_cancellation);
 			Sprintf(buf, "Magic cancellation:     %s", buf2);
 			txt = buf;
 			putstr(datawin, 0, txt);
@@ -455,9 +468,10 @@ register struct obj* obj;
 			{
 				Sprintf(bonusbuf, " (%s%d to damage)", obj->spe >= 0 ? "+" : "", obj->spe);
 			}
-			else if (obj->oclass == ARMOR_CLASS)
+
+			if (obj->oclass == ARMOR_CLASS || (objects[otyp].oc_name_known && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)))
 			{
-				Sprintf(bonusbuf, " (%s%d %s to AC)", obj->spe <= 0 ? "+" : "", -obj->spe, obj->spe >= 0 ? "bonus" : "penalty");
+				Sprintf(eos(bonusbuf), " (%s%d %s to AC)", obj->spe <= 0 ? "+" : "", -obj->spe, obj->spe >= 0 ? "bonus" : "penalty");
 			}
 
 			Sprintf(buf, "Enchantment status:     %s%d%s", obj->spe >= 0 ? "+" : "", obj->spe, bonusbuf);
@@ -466,7 +480,7 @@ register struct obj* obj;
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
-	if (obj->rknown && (obj->oeroded || obj->oeroded2 || obj->oerodeproof))
+	if (obj->oeroded || obj->oeroded2 || (obj->rknown && obj->oerodeproof))
 	{
 		char erodebuf[BUFSZ] = "";
 		char penaltybuf[BUFSZ] = "";
@@ -480,12 +494,13 @@ register struct obj* obj;
 			if (obj->oclass == WEAPON_CLASS || is_weptool(obj))
 			{
 				penalty = greatest_erosion(obj);
-				Sprintf(penaltybuf, "(%d to damage)", -penalty);
+				Sprintf(penaltybuf, "(%d to damage) ", -penalty);
 			}
-			else if (obj->oclass == ARMOR_CLASS)
+
+			if (obj->oclass == ARMOR_CLASS || (objects[otyp].oc_name_known && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)))
 			{
-				penalty = min(greatest_erosion(obj), objects[obj->otyp].a_ac);
-				Sprintf(penaltybuf, "(+%d penalty to AC)", penalty);
+				penalty = min(greatest_erosion(obj), objects[obj->otyp].oc_armor_class);
+				Sprintf(eos(penaltybuf), "(+%d penalty to AC)", penalty);
 			}
 		}
 		Sprintf(buf, "Erosion status:         %s%s", erodebuf, penaltybuf);
@@ -896,7 +911,7 @@ register struct obj* obj;
 		}
 
 		/* Item properties */
-		if (objects[otyp].oc_flags & ~(O1_NONE | O1_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED | O1_CONFERS_LUCK
+		if (objects[otyp].oc_flags & ~(O1_THROWN_WEAPON | O1_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED | O1_CONFERS_LUCK
 			| O1_WAND_LIKE_TOOL | O1_NON_SPELL_SPELLBOOK | O1_EDIBLE_NONFOOD))
 		{
 			int powercnt = 0;
@@ -1001,6 +1016,13 @@ register struct obj* obj;
 			{
 				powercnt++;
 				Sprintf(buf, " %2d - Can be specially enchanted", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Is armor when wielded", powercnt);
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}

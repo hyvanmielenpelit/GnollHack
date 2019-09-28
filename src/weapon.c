@@ -151,37 +151,37 @@ struct obj* launcher;
 
 	/* Ammunition range */
 	if (!ammo && launcher && is_launcher(launcher)) {
-		if(objects[launcher->otyp].oc_weapon_range > 0)
-			baserange = objects[launcher->otyp].oc_weapon_range;										/* Crossbows and the like */
-		else if (objects[launcher->otyp].oc_weapon_range < 0)
-			baserange = max(1, (int)((ACURRSTR * -objects[launcher->otyp].oc_weapon_range) /100));		/* Bows */
+		if(objects[launcher->otyp].oc_range > 0)
+			baserange = objects[launcher->otyp].oc_range;										/* Crossbows and the like */
+		else if (objects[launcher->otyp].oc_range < 0)
+			baserange = max(1, (int)((ACURRSTR * -objects[launcher->otyp].oc_range) /100));		/* Bows */
 
 		/* No more info supplied */
 		range = baserange;
 	}
 	else if (ammo && is_ammo(ammo) && launcher && ammo_and_launcher(ammo, launcher)) {
 			thrown = FALSE;
-			if (objects[launcher->otyp].oc_weapon_range > 0)
-				baserange = objects[launcher->otyp].oc_weapon_range;										/* Crossbows and the like */
-			else if (objects[launcher->otyp].oc_weapon_range < 0)
-				baserange = max(1, (int)((ACURRSTR * -objects[launcher->otyp].oc_weapon_range) / 100));		/* Bows */
+			if (objects[launcher->otyp].oc_range > 0)
+				baserange = objects[launcher->otyp].oc_range;										/* Crossbows and the like */
+			else if (objects[launcher->otyp].oc_range < 0)
+				baserange = max(1, (int)((ACURRSTR * -objects[launcher->otyp].oc_range) / 100));		/* Bows */
 
 			range = baserange;
 			if(!(objects[launcher->otyp].oc_flags & O1_WEIGHT_DOES_NOT_REDUCE_RANGE || objects[ammo->otyp].oc_flags & O1_WEIGHT_DOES_NOT_REDUCE_RANGE))
-				(int)(ammo->owt / 100);
+				range = range - (int)(ammo->owt / 100);
 	}
 	else if(ammo) //Normal thrown weapons are half distance
 	{
 		boolean overriden = FALSE;
 
-		/* oc_weapon_range can be used to override usual throwing range for non-launchers */
-		if (!is_launcher(ammo) && objects[ammo->otyp].oc_weapon_range != 0)
+		/* oc_range can be used to override usual throwing range for non-launchers */
+		if (!is_launcher(ammo) && objects[ammo->otyp].oc_range != 0)
 		{
 			overriden = TRUE;
-			if (objects[ammo->otyp].oc_weapon_range > 0)
-				baserange = objects[ammo->otyp].oc_weapon_range;										/* Crossbows and the like */
-			else if (objects[ammo->otyp].oc_weapon_range < 0)
-				baserange = max(1, (int)((ACURRSTR * -objects[ammo->otyp].oc_weapon_range) / 100));		/* Bows */
+			if (objects[ammo->otyp].oc_range > 0)
+				baserange = objects[ammo->otyp].oc_range;										/* Crossbows and the like */
+			else if (objects[ammo->otyp].oc_range < 0)
+				baserange = max(1, (int)((ACURRSTR * -objects[ammo->otyp].oc_range) / 100));		/* Bows */
 		}
 
 		if(!overriden)
@@ -248,9 +248,7 @@ struct obj* otmp;
 	if (Is_weapon)
 		tmp += otmp->spe;
 
-	/* Put weapon specific "to hit" bonuses in below: */
-	if(otmp->oclass != SPBOOK_CLASS && otmp->oclass != WAND_CLASS) /* spellbooks and wands use oc_oc1 for something else */
-		tmp += objects[otmp->otyp].oc_hitbon;
+	tmp += objects[otmp->otyp].oc_hitbonus;
 
 	return tmp;
 
@@ -1354,13 +1352,14 @@ boolean verbose;
 
 /* copy the skill level name into the given buffer */
 char *
-skill_level_name(skill, buf)
+skill_level_name(skill, buf, ismax)
 int skill;
 char *buf;
+boolean ismax;
 {
     const char *ptr;
 
-    switch (P_SKILL(skill)) {
+    switch (ismax ? P_MAX_SKILL(skill) : P_SKILL(skill)) {
     case P_UNSKILLED:
         ptr = "Unskilled";
         break;
@@ -1535,11 +1534,25 @@ enhance_weapon_skill()
 
         /* start with a legend if any entries will be annotated
            with "*" or "#" below */
-        if (eventually_advance > 0 || maxxed_cnt > 0) {
+		if (!speedy)
+		{
+			any = zeroany;
+
+			Sprintf(buf, "Skill slot%s available: %d",
+				plur(u.weapon_slots), u.weapon_slots);
+
+			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf,
+				MENU_UNSELECTED);
+
+			strcpy(buf, "");
+			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf,
+				MENU_UNSELECTED);
+		}
+
+		if (eventually_advance > 0 || maxxed_cnt > 0) {
             any = zeroany;
             if (eventually_advance > 0) {
-                Sprintf(buf, "(Skill%s flagged by \"*\" may be enhanced %s.)",
-                        plur(eventually_advance),
+                Sprintf(buf, "*: Can be enhanced %s.",
                         (u.ulevel < MAXULEV)
                             ? "when you're more experienced"
                             : "if skill slots become available");
@@ -1547,9 +1560,8 @@ enhance_weapon_skill()
                          MENU_UNSELECTED);
             }
             if (maxxed_cnt > 0) {
-                Sprintf(buf,
-                 "(Skill%s flagged by \"#\" cannot be enhanced any further.)",
-                        plur(maxxed_cnt));
+                Sprintf(buf, "#: Cannot be enhanced further.");
+
                 add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf,
                          MENU_UNSELECTED);
             }
@@ -1561,7 +1573,30 @@ enhance_weapon_skill()
            selectable.  List the miscellaneous skills first.
            Possible future enhancement:  list spell skills before
            weapon skills for spellcaster roles. */
-        for (pass = 0; pass < SIZE(skill_ranges); pass++)
+		longest++;
+
+		char headerbuf[BUFSZ] = "";
+		any = zeroany;
+		if (wizard) {
+			if (!iflags.menu_tab_sep)
+				Sprintf(headerbuf, " %s%-*s %-12s %-12s %5s (%s)", "",
+					longest, "Skill", "Current", "Maximum", "Point",
+					"Next");
+			else
+				Sprintf(headerbuf, " %s%s\t%s\t%s\t%5s (%4s)", "", "Skill", "Current", "Maximum", "Point",
+					"Next");
+		}
+		else {
+			if (!iflags.menu_tab_sep)
+				Sprintf(headerbuf, " %s %-*s %-12s %-12s", "", longest, "Skill", "Current", "Maximum");
+			else
+				Sprintf(headerbuf, " %s%s\t%s\t%s", "", "Skill", "Current", "Maximum");
+		}
+
+		add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings,
+			headerbuf, MENU_UNSELECTED);
+		
+		for (pass = 0; pass < SIZE(skill_ranges); pass++)
             for (i = skill_ranges[pass].first; i <= skill_ranges[pass].last;
                  i++) {
                 /* Print headings for skill types */
@@ -1597,28 +1632,31 @@ enhance_weapon_skill()
                         (to_advance + eventually_advance + maxxed_cnt > 0)
                             ? "    "
                             : "";
-                (void) skill_level_name(i, sklnambuf);
+                (void) skill_level_name(i, sklnambuf, FALSE);
+				char skillmaxbuf[BUFSZ] = "";
+				(void)skill_level_name(i, skillmaxbuf, TRUE);
 
 				char skillnamebuf[BUFSZ] = "";
 				strcpy(skillnamebuf, P_NAME(i));
 				*skillnamebuf = highc(*skillnamebuf);
 
-                if (wizard) {
+
+				if (wizard) {
                     if (!iflags.menu_tab_sep)
-                        Sprintf(buf, " %s%-*s %-12s %5d(%4d)", prefix,
-                                longest, skillnamebuf, sklnambuf, P_ADVANCE(i),
+                        Sprintf(buf, " %s%-*s %-12s %-12s %5d (%d)", prefix,
+                                longest, skillnamebuf, sklnambuf, skillmaxbuf, P_ADVANCE(i),
                                 practice_needed_to_advance(P_SKILL(i)));
                     else
-                        Sprintf(buf, " %s%s\t%s\t%5d(%4d)", prefix, skillnamebuf,
-                                sklnambuf, P_ADVANCE(i),
+                        Sprintf(buf, " %s%s\t%s\t%s\t%5d (%d)", prefix, skillnamebuf, 
+                                sklnambuf, skillmaxbuf, P_ADVANCE(i),
                                 practice_needed_to_advance(P_SKILL(i)));
                 } else {
                     if (!iflags.menu_tab_sep)
-                        Sprintf(buf, " %s %-*s [%s]", prefix, longest,
-							skillnamebuf, sklnambuf);
+                        Sprintf(buf, " %s %-*s %-12s %-12s", prefix, longest,
+							skillnamebuf, sklnambuf, skillmaxbuf);
                     else
-                        Sprintf(buf, " %s%s\t[%s]", prefix, skillnamebuf,
-                                sklnambuf);
+                        Sprintf(buf, " %s%s\t%s\t%s", prefix, skillnamebuf,
+                                sklnambuf, skillmaxbuf);
                 }
                 any.a_int = can_advance(i, speedy) ? i + 1 : 0;
                 add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf,
@@ -1627,9 +1665,6 @@ enhance_weapon_skill()
 
         Strcpy(buf, (to_advance > 0) ? "Pick a skill to advance:"
                                      : "Current skills:");
-        if (wizard && !speedy)
-            Sprintf(eos(buf), "  (%d slot%s available)", u.weapon_slots,
-                    plur(u.weapon_slots));
         end_menu(win, buf);
         n = select_menu(win, to_advance ? PICK_ONE : PICK_NONE, &selected);
         destroy_nhwindow(win);

@@ -146,22 +146,28 @@ struct objclass {
     
 							  /* Check the AD&D rules!  The FIRST is small monster damage. */
     /* for weapons, and tools, rocks, and gems useful as weapons */
-	int oc_wsdice, oc_wsdam, oc_wsdmgplus; /* small monster damage, also used for spell damage */
-	int oc_wldice, oc_wldam, oc_wldmgplus; /* large monster damage, also used for duration for spells */
-	int oc_oc1;	/* Used for spell cooldown; weapons: to-hit, armors: ac */
-	int oc_oc2; /* Used for spell level; weapons: launch or throw range */
-	int oc_oc3; /* Used for spell mana cost; other items: mana pool bonus */
-	int oc_oc4; /* Used for spell attributes; other items: hit point bonus */
-	int oc_oc5; /* Used for spell range; non-spellbooks: specification of attributes or other properties item gives bonuses (abon) to using otmp->spe */
-	int oc_oc6; /* Used for spell radius; non-spellbooks: 0 => spe is used, otherise fixed bonus */
-	int oc_oc7; /* Used for spell casting penalty */
+	int oc_wsdice, oc_wsdam, oc_wsdmgplus;	/* small monster damage, also used for spell damage */
+	int oc_wldice, oc_wldam, oc_wldmgplus;	/* large monster damage, also used for duration for spells */
+	int oc_hitbonus;						/* weapons: "to hit" bonus */
+	int oc_range;							/* launchers: range for ammo, others throw range: >0 Fixed range, <0 Percentage of STR */
+
+	/* general purpose */
+	int oc_oc1;		/* Used for spell cooldown; weapons and armors: ac bonus */
+	int oc_oc2;		/* Used for spell level; weapons and armors: mc bonus */
+	int oc_oc3;		/* Used for spell mana cost; other items: mana pool bonus */
+	int oc_oc4;		/* Used for spell attributes; other items: hit point bonus */
+	int oc_oc5;		/* Used for spell range; non-spellbooks: specification of attributes or other properties item gives bonuses (abon) to using otmp->spe */
+	int oc_oc6;		/* Used for spell radius; non-spellbooks: 0 => spe is used, otherise fixed bonus */
+	int oc_oc7;		/* Used for spell casting penalty */
 
 /* general*/
-#define oc_mana_bonus oc_oc3	/* non-spellbooks: mana pool bonus: Fixed points unless O1_MANA_PERCENTAGE_BONUS is specified */
-#define oc_hp_bonus oc_oc4	/* non-spellbooks: hit point bonus: Fixed points unless O1_HP_PERCENTAGE_BONUS is specified */
-#define oc_bonus_attributes oc_oc5	/* non-spellbooks: gives bonuses using spe / oc_oc6 to attributes and properties */
-#define oc_attribute_bonus oc_oc6	/* non-spellbooks: 0 => spe is used, otherise fixed bonus */
-#define oc_spell_casting_penalty oc_oc7		/* non-spells/wands: spell casting penalty when worn */
+#define oc_armor_class oc_oc1						/* weapons and armor: AC used in ARM_BONUS in do.c */
+#define oc_magic_cancellation oc_oc2				/* weapons and armor: MC, i.e., resistance level to magical attacks */
+#define oc_mana_bonus oc_oc3						/* non-spellbooks: mana pool bonus: Fixed points unless O1_MANA_PERCENTAGE_BONUS is specified */
+#define oc_hp_bonus oc_oc4							/* non-spellbooks: hit point bonus: Fixed points unless O1_HP_PERCENTAGE_BONUS is specified */
+#define oc_bonus_attributes oc_oc5					/* non-spellbooks: gives bonuses using spe / oc_oc6 to attributes and properties */
+#define oc_attribute_bonus oc_oc6					/* non-spellbooks: 0 => spe is used, otherise fixed bonus */
+#define oc_spell_casting_penalty oc_oc7				/* non-spells/wands: spell casting penalty when worn */
 
 #define BONUS_TO_STR 0x0001
 #define BONUS_TO_DEX 0x0002
@@ -184,18 +190,15 @@ struct objclass {
 /* weapons */
 #define oc_damagetype oc_dir_subtype	/* Type of damage caused by the (magic) weapon, the same as for monster attacks */
 #define oc_skill oc_subtyp		/* Skills of weapons, spellbooks, tools, gems */
-#define oc_hitbon oc_oc1		/* weapons: "to hit" bonus */
-#define oc_weapon_range oc_oc2	/* launchers: range for ammo, others throw range: >0 Fixed range, <0 Percentage of STR */
-/* oc_oc3 mana pool bonus */
+/* oc_oc1 AC bonus, to make wielded objects consistent with armors, but a wielded object needs to be a weapon */
+/* oc_oc2 MC bonus, to make wielded objects consistent with armors, but a wielded object needs to be a weapon */
 /* oc_oc4 hit point bonus */
 /* oc_oc5 attributes giving bonus to using spe / oc_oc6 to attributes and properties */
 /* oc_oc6 modifier to oc_oc5: 0 => spe is used, otherise fixed bonus */
 /* oc_oc7 spell casting penalty */
 
 /* armor */
-#define oc_armor_category oc_subtyp						/* armor: (enum obj_armor_types) */
-#define a_ac oc_oc1										/* armor class, used in ARM_BONUS in do.c */
-#define a_magic_cancellation_level oc_oc2				/* armor: magic cancellation, i.e., resistance level to magical attacks */
+#define oc_armor_category oc_subtyp					/* armor: (enum obj_armor_types) */
 /* oc_oc3 mana pool bonus */
 /* oc_oc4 hit point bonus */
 /* oc_oc5 attributes giving bonus to using spe / oc_oc6 to attributes and properties */
@@ -297,13 +300,14 @@ struct objclass {
 #define O1_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED 0x00400000			/* if deathenchantable item, then death, otherwise lightning*/
 
 /* General flags -- General: cannot be overriden */
+#define O1_IS_ARMOR_WHEN_WIELDED 0x00800000								/* acts as an armor when wielded giving AC using oc_armor_class, which must be specified */
 #define O1_THROWN_WEAPON 0x01000000										/* says "Thrown weapon" instead of "Melee weapon", default range is larger, can use throwrange data value */
 #define O1_WEIGHT_DOES_NOT_REDUCE_RANGE 0x02000000						/* the object magically flies when thrown, ignoring its weight */
 #define O1_RETURNS_TO_HAND_AFTER_THROWING 0x04000000					/* the object returns to the owner's hand after throwing */
 #define O1_CAN_BE_THROWN_ONLY_IF_WIELDED 0x08000000						/* has to be wielded to be thrown, e.g., Mjollnir */
 #define O1_WAND_LIKE_TOOL 0x10000000									/* apply is the same as zap, uses spellbook/wand paramters and flags instead of normal flags */
 #define O1_EDIBLE_NONFOOD 0x20000000
-#define O1_NON_SPELL_SPELLBOOK 0x40000000  /* uses non-spellbook flags and other non-spellbook stats */
+#define O1_NON_SPELL_SPELLBOOK 0x40000000								/* uses non-spellbook flags and other non-spellbook stats */
 #define O1_NOT_CURSEABLE 0x80000000
 
 

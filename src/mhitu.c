@@ -1012,7 +1012,7 @@ struct monst *mon;
 	boolean is_you = (mon == &youmonst);
 
 	for (o = is_you ? invent : mon->minvent; o; o = o->nobj) {
-        /* a_magic_cancellation_level field is only applicable for armor (which must be worn), this should exclude spellbooks and wands, which use oc_oc2 for something else */
+        /* oc_magic_cancellation field is only applicable for armor (which must be worn), this should exclude spellbooks and wands, which use oc_oc2 for something else */
 		/* omit W_SWAPWEP+W_QUIVER; W_ART+W_ARTI handled by protects() */
 		wearmask = W_ARMOR | W_ACCESSORY;
 		if (o->oclass == WEAPON_CLASS || is_weptool(o))
@@ -1020,8 +1020,9 @@ struct monst *mon;
 
 		if ((o->owornmask & wearmask) || (objects[o->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED) && (!is_you || !inappropriate_character_type(o)))
 		{
-            armpro = objects[o->otyp].a_magic_cancellation_level;
-            mc += armpro; //New system, add all mc's together
+			armpro = objects[o->otyp].oc_magic_cancellation;
+			mc += armpro;
+
 			if (objects[o->otyp].oc_bonus_attributes & BONUS_TO_MC)
 			{
 				mc += objects[o->otyp].oc_attribute_bonus;
