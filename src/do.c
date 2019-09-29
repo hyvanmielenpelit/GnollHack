@@ -318,7 +318,7 @@ register struct obj* obj;
 		if (objects[otyp].oc_name_known && (objects[otyp].oc_flags3 & O3_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
 		{
 			/* Damage - Doubled */
-			Sprintf(eos(buf), " x 2");
+			Sprintf(eos(buf), " (x2)");
 		}
 		txt = buf;
 		putstr(datawin, 0, txt);
@@ -347,7 +347,7 @@ register struct obj* obj;
 		if (objects[otyp].oc_name_known && (objects[otyp].oc_flags3 & O3_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
 		{
 			/* Damage - Doubled */
-			Sprintf(eos(buf), " x 2");
+			Sprintf(eos(buf), " (x2)");
 		}
 
 		txt = buf;
@@ -781,6 +781,8 @@ register struct obj* obj;
 					}
 				}
 			}
+
+			/* Power-like flags here */
 			if (objects[otyp].oc_flags & O1_CONFERS_LUCK)
 			{
 				powercnt++;
@@ -788,6 +790,29 @@ register struct obj* obj;
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
+			if (objects[otyp].oc_flags3 & O3_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Deals double damage on hit", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (objects[otyp].oc_flags3 & O3_BEHEAD)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Beheads target on hit", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (objects[otyp].oc_flags3 & O3_DRLI)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Drains life on hit", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+
+
 
 			/* Power confer limitations */
 			if (objects[otyp].oc_power_permissions)
@@ -815,7 +840,7 @@ register struct obj* obj;
 				if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_CAVEMAN)
 				{
 					powercnt++;
-					Sprintf(buf, " %2d - Cave(wo)men", powercnt);
+					Sprintf(buf, " %2d - Cavemen and cavewomen", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
@@ -843,7 +868,7 @@ register struct obj* obj;
 				if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_PRIEST)
 				{
 					powercnt++;
-					Sprintf(buf, " %2d - Priests", powercnt);
+					Sprintf(buf, " %2d - Priests and priestesses", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
@@ -962,6 +987,149 @@ register struct obj* obj;
 			}
 		}
 
+
+		/* Target permissions */
+		if (objects[otyp].oc_target_permissions != ALL_TARGETS || (objects[otyp].oc_flags3 & (O3_PERMTTED_TARGET_CHAOTIC | O3_PERMTTED_TARGET_NEUTRAL | O3_PERMTTED_TARGET_LAWFUL)))
+		{
+			int powercnt = 0;
+
+			Sprintf(buf, "Permitted targets:");
+			txt = buf;
+			putstr(datawin, 0, txt);
+
+			/* Flags here */
+			if (objects[otyp].oc_target_permissions != ALL_TARGETS)
+			{
+				if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M1_FLAG)
+				{
+					if (objects[otyp].oc_target_permissions & M1_AMORPHOUS)
+					{
+						powercnt++;
+						Sprintf(buf, " %2d - Amorphous beings", powercnt);
+						txt = buf;
+						putstr(datawin, 0, txt);
+					}
+					if (objects[otyp].oc_target_permissions & M1_AMPHIBIOUS)
+					{
+						powercnt++;
+						Sprintf(buf, " %2d - Amphibious beings", powercnt);
+						txt = buf;
+						putstr(datawin, 0, txt);
+					}
+					if (objects[otyp].oc_target_permissions & M1_HUMANOID)
+					{
+						powercnt++;
+						Sprintf(buf, " %2d - Humanoids", powercnt);
+						txt = buf;
+						putstr(datawin, 0, txt);
+					}
+					if (objects[otyp].oc_target_permissions & M1_ANIMAL)
+					{
+						powercnt++;
+						Sprintf(buf, " %2d - Animals", powercnt);
+						txt = buf;
+						putstr(datawin, 0, txt);
+					}
+				}
+				else if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M2_FLAG)
+				{
+					if (objects[otyp].oc_target_permissions & M2_DEMON)
+					{
+						powercnt++;
+						Sprintf(buf, " %2d - Demons", powercnt);
+						txt = buf;
+						putstr(datawin, 0, txt);
+					}
+					if (objects[otyp].oc_target_permissions & M2_DWARF)
+					{
+						powercnt++;
+						Sprintf(buf, " %2d - Dwarves", powercnt);
+						txt = buf;
+						putstr(datawin, 0, txt);
+					}
+					if (objects[otyp].oc_target_permissions & M2_ELF)
+					{
+						powercnt++;
+						Sprintf(buf, " %2d - Elves", powercnt);
+						txt = buf;
+						putstr(datawin, 0, txt);
+					}
+					if (objects[otyp].oc_target_permissions & M2_GIANT)
+					{
+						powercnt++;
+						Sprintf(buf, " %2d - Giants", powercnt);
+						txt = buf;
+						putstr(datawin, 0, txt);
+					}
+					if (objects[otyp].oc_target_permissions & M2_GNOLL)
+					{
+						powercnt++;
+						Sprintf(buf, " %2d - Gnolls", powercnt);
+						txt = buf;
+						putstr(datawin, 0, txt);
+					}
+					if (objects[otyp].oc_target_permissions & M2_HUMAN)
+					{
+						powercnt++;
+						Sprintf(buf, " %2d - Human beings", powercnt);
+						txt = buf;
+						putstr(datawin, 0, txt);
+					}
+					if (objects[otyp].oc_target_permissions & M2_ORC)
+					{
+						powercnt++;
+						Sprintf(buf, " %2d - Orcs", powercnt);
+						txt = buf;
+						putstr(datawin, 0, txt);
+					}
+					if (objects[otyp].oc_target_permissions & M2_UNDEAD)
+					{
+						powercnt++;
+						Sprintf(buf, " %2d - Undead", powercnt);
+						txt = buf;
+						putstr(datawin, 0, txt);
+					}
+				}
+				else if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M3_FLAG)
+				{
+					//Nothing here yet
+				}
+				else if (objects[otyp].oc_target_permissions > 0 && objects[otyp].oc_target_permissions < MAXMCLASSES)
+				{
+					char monsymbuf[BUFSZ];
+					strcpy(monsymbuf, def_monsyms[objects[otyp].oc_target_permissions].explain);
+					*monsymbuf = highc(*monsymbuf);
+
+					Sprintf(buf, " %2d - %s", powercnt, monsymbuf);
+					txt = buf;
+					putstr(datawin, 0, txt);
+				}
+			}
+
+			if (objects[otyp].oc_flags3 & O3_PERMTTED_TARGET_CHAOTIC)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Chaotic creatures", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (objects[otyp].oc_flags3 & O3_PERMTTED_TARGET_NEUTRAL)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Neutral creatures", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (objects[otyp].oc_flags3 & O3_PERMTTED_TARGET_LAWFUL)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Lawful creatures", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+
+		}
+
 		/* Item properties */
 		if (objects[otyp].oc_flags & ~(O1_THROWN_WEAPON | O1_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED | O1_GENERATED_BLESSED | O1_CONFERS_LUCK
 			| O1_WAND_LIKE_TOOL | O1_NON_SPELL_SPELLBOOK | O1_EDIBLE_NONFOOD))
@@ -1075,6 +1243,13 @@ register struct obj* obj;
 			{
 				powercnt++;
 				Sprintf(buf, " %2d - Is armor when wielded", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (objects[otyp].oc_flags2 & O2_SHINES_MAGICAL_LIGHT)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Shines magical light when wielded", powercnt);
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}

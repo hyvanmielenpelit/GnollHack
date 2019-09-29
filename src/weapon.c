@@ -1542,7 +1542,8 @@ enhance_weapon_skill()
     do {
         /* find longest available skill name, count those that can advance */
         to_advance = eventually_advance = maxxed_cnt = 0;
-        for (longest = 0, i = 0; i < P_NUM_SKILLS; i++) {
+        for (longest = 0, i = 0; i < P_NUM_SKILLS; i++)
+		{
             if (P_RESTRICTED(i))
                 continue;
             if ((len = strlen(P_NAME(i))) > longest)
@@ -1575,9 +1576,11 @@ enhance_weapon_skill()
 				MENU_UNSELECTED);
 		}
 
-		if (eventually_advance > 0 || maxxed_cnt > 0) {
+		if (eventually_advance > 0 || maxxed_cnt > 0)
+		{
             any = zeroany;
-            if (eventually_advance > 0) {
+            if (eventually_advance > 0)
+			{
                 Sprintf(buf, "*: Can be enhanced %s.",
                         (u.ulevel < MAXULEV)
                             ? "when you're more experienced"
@@ -1585,7 +1588,8 @@ enhance_weapon_skill()
                 add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf,
                          MENU_UNSELECTED);
             }
-            if (maxxed_cnt > 0) {
+            if (maxxed_cnt > 0)
+			{
                 Sprintf(buf, "#: Cannot be enhanced further.");
 
                 add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf,
@@ -1603,20 +1607,26 @@ enhance_weapon_skill()
 
 		char headerbuf[BUFSZ] = "";
 		any = zeroany;
+		prefix =
+			(to_advance + eventually_advance + maxxed_cnt > 0)
+			? "    "
+			: "";
+
 		if (wizard) {
 			if (!iflags.menu_tab_sep)
-				Sprintf(headerbuf, " %s%-*s %-12s %-12s %5s (%s)", "",
+				Sprintf(headerbuf, " %s%-*s %-12s %-12s %5s (%s)", prefix,
 					longest, "Skill", "Current", "Maximum", "Point",
 					"Next");
 			else
-				Sprintf(headerbuf, " %s%s\t%s\t%s\t%5s (%4s)", "", "Skill", "Current", "Maximum", "Point",
+				Sprintf(headerbuf, " %s%s\t%s\t%s\t%5s (%4s)", prefix, "Skill", "Current", "Maximum", "Point",
 					"Next");
 		}
-		else {
+		else
+		{
 			if (!iflags.menu_tab_sep)
-				Sprintf(headerbuf, " %s %-*s %-12s %-12s", "", longest, "Skill", "Current", "Maximum");
+				Sprintf(headerbuf, " %s %-*s %-12s %-12s", prefix, longest, "Skill", "Current", "Maximum");
 			else
-				Sprintf(headerbuf, " %s%s\t%s\t%s", "", "Skill", "Current", "Maximum");
+				Sprintf(headerbuf, " %s%s\t%s\t%s", prefix, "Skill", "Current", "Maximum");
 		}
 
 		add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings,
