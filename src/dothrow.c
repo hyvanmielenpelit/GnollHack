@@ -993,7 +993,7 @@ boolean hitsroof;
         return FALSE;
     } else { /* neither potion nor other breaking object */
         boolean less_damage = uarmh && is_metallic(uarmh), artimsg = FALSE;
-        int dmg = is_launcher(obj) ? d(1, 2) : dmgval(obj, &youmonst);
+        int dmg = is_launcher(obj) ? d(1, 2) : dmgval(obj, &youmonst, &youmonst);
 
         if (obj->oartifact)
             /* need a fake die roll here; rn1(18,2) avoids 1 and 20 */
@@ -1446,7 +1446,7 @@ boolean mon_notices;
     default:
         if (obj->oclass == WEAPON_CLASS || is_weptool(obj)
             || obj->oclass == GEM_CLASS)
-            tmp += hitval(obj, mon);
+            tmp += hitval(obj, mon, (struct monst *)0);
         break;
     }
     return tmp;
@@ -1639,7 +1639,7 @@ register struct obj *obj; /* thrownobj or kickedobj or uwep */
             if (!ammo_and_launcher(obj, uwep)) {
                 tmp -= 4;
             } else {
-				tmp += hitval(uwep, mon);	//tmp += uwep->spe - greatest_erosion(uwep);
+				tmp += hitval(uwep, mon, &youmonst);	//tmp += uwep->spe - greatest_erosion(uwep);
                 tmp += weapon_hit_bonus(uwep); //Players get skill bonuses
 //                if (uwep->oartifact)
 //                    tmp += spec_abon(uwep, mon);

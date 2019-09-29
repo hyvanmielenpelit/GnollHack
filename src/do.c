@@ -1526,7 +1526,7 @@ const char *verb;
 						if (is_launcher(obj))
 							damage = d(1, 2);
 						else
-							damage = dmgval(obj, mtmp);
+							damage = dmgval(obj, mtmp, &youmonst);
 
                         mtmp->mhp -= damage;
                         if (DEADMONSTER(mtmp)) {

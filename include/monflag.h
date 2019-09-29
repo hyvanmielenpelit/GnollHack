@@ -169,6 +169,11 @@
 #define M3_RANDOM_CORPSE 0x00004000		/* leaves a corpse at random intervals */
 #define M3_NO_CORPSE 0x00008000			/* leaves no corpse */
 
+#define M3_WIZARD 0x00010000			/* monster can use wizard items */
+#define M3_PRIEST 0x00020000			/* monster can use priest items */
+#define M3_KNIGHT 0x00040000			/* monster can use knight items */
+#define M3_HEALER 0x00080000			/* monster can use healer items */
+
 #define MZ_TINY 0          /* < 2' */
 #define MZ_SMALL 1         /* 2-4' */
 #define MZ_MEDIUM 2        /* 4-7' */

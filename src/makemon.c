@@ -407,9 +407,11 @@ register struct monst *mtmp;
     case S_ANGEL:
         if (humanoid(ptr)) {
             /* create minion stuff; can't use mongets */
+			
 			int weaptype = LONG_SWORD;
 			int artifacttype = ART_SUNSWORD;
-			switch (rn2(2))
+			
+			switch (rn2(3))
 			{
 			case 0:
 				weaptype = LONG_SWORD;
@@ -418,6 +420,9 @@ register struct monst *mtmp;
 			case 1:
 				weaptype = SILVER_LONG_SWORD;
 				artifacttype = ART_DEMONBANE;
+			case 2:
+				weaptype = LONG_SWORD_OF_HOLY_VENGEANCE;
+				artifacttype = 0;
 				break;
 			default:
 				break;
@@ -425,12 +430,12 @@ register struct monst *mtmp;
             otmp = mksobj(weaptype, FALSE, FALSE, FALSE);
 
             /* maybe make it special */
-            if (!rn2(20) || is_lord(ptr))
-                otmp = oname(otmp,
-                             artiname(artifacttype));
+            if (artifacttype > 0 && (!rn2(20) || is_lord(ptr)))
+                otmp = oname(otmp, artiname(artifacttype));
+
             bless(otmp);
             otmp->oerodeproof = TRUE;
-            spe2 = rn2(4);
+            spe2 = rnd(4);
             otmp->spe = max(otmp->spe, spe2);
             (void) mpickobj(mtmp, otmp);
 

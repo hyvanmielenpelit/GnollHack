@@ -96,7 +96,7 @@ register struct obj *obj;
 	if (obj && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
 		obj->known = 1;
 
-    if (uwep == obj && artifact_light(olduwep) && olduwep->lamplit) {
+    if (uwep == obj && olduwep && (artifact_light(olduwep) || (objects[olduwep->otyp].oc_flags2 & O2_SHINES_MAGICAL_LIGHT)) && olduwep->lamplit) {
         end_burn(olduwep, FALSE);
         if (!Blind)
             pline("%s shining.", Tobjnam(olduwep, "stop"));
@@ -204,7 +204,7 @@ struct obj *wep;
         /* KMH -- Talking artifacts are finally implemented */
         arti_speak(wep);
 
-        if (artifact_light(wep) && !wep->lamplit) {
+        if (wep && (artifact_light(wep) || ((objects[wep->otyp].oc_flags2 & O2_SHINES_MAGICAL_LIGHT) && !inappropriate_monster_character_type(&youmonst, wep))) && !wep->lamplit) {
             begin_burn(wep, FALSE);
             if (!Blind)
                 pline("%s to shine %s!", Tobjnam(wep, "begin"),
@@ -693,7 +693,7 @@ void
 uwepgone()
 {
     if (uwep) {
-        if (artifact_light(uwep) && uwep->lamplit) {
+        if ((artifact_light(uwep) || (objects[uwep->otyp].oc_flags2 & O2_SHINES_MAGICAL_LIGHT)) && uwep->lamplit) {
             end_burn(uwep, FALSE);
             if (!Blind)
                 pline("%s shining.", Tobjnam(uwep, "stop"));

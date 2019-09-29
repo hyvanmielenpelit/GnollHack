@@ -2045,7 +2045,7 @@ boolean confused, helmet_protects, byu, skip_uswallow;
     if (!amorphous(youmonst.data) && !Passes_walls
         && !noncorporeal(youmonst.data) && !unsolid(youmonst.data)) {
         You("are hit by %s!", doname(otmp2));
-        dmg = dmgval(otmp2, &youmonst) * otmp2->quan;
+        dmg = dmgval(otmp2, &youmonst, (struct monst*)0) * otmp2->quan;
         if (uarmh && helmet_protects) {
             if (is_metallic(uarmh)) {
                 pline("Fortunately, you are wearing a hard helmet.");
@@ -2099,7 +2099,7 @@ boolean confused, byu;
                      s_suffix(mon_nam(mtmp)), mbodypart(mtmp, STOMACH),
                      body_part(HEAD));
 
-        mdmg = dmgval(otmp2, mtmp) * otmp2->quan;
+        mdmg = dmgval(otmp2, mtmp, (struct monst*)0) * otmp2->quan;
         if (helmet) {
             if (is_metallic(helmet)) {
                 if (canspotmon(mtmp))
@@ -2242,7 +2242,7 @@ struct obj *obj;
             if (u.uswallow) {
                 pline("It seems even darker in here than before.");
             } else {
-                if (uwep && artifact_light(uwep) && uwep->lamplit)
+                if (uwep && (artifact_light(uwep) || (objects[uwep->otyp].oc_flags2 & O2_SHINES_MAGICAL_LIGHT)) && uwep->lamplit)
                     pline("Suddenly, the only light left comes from %s!",
                           the(xname(uwep)));
                 else

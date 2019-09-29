@@ -231,7 +231,7 @@ int x, y;
 
         otmp->owornmask = 0L;
         /* lamps don't go out when dropped */
-        if ((cont || artifact_light(otmp)) && obj_is_burning(otmp))
+        if ((cont || (artifact_light(otmp) || (objects[otmp->otyp].oc_flags2 & O2_SHINES_MAGICAL_LIGHT)) && obj_is_burning(otmp)))
             end_burn(otmp, TRUE); /* smother in statue */
 
         if (otmp->otyp == SLIME_MOLD)

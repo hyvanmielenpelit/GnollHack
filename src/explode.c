@@ -742,7 +742,7 @@ struct obj *obj; /* only scatter this obj        */
                         hitvalu = 8 + stmp->obj->spe;
                         if (bigmonst(youmonst.data))
                             hitvalu++;
-                        hitu = thitu(hitvalu, dmgval(stmp->obj, &youmonst),
+                        hitu = thitu(hitvalu, dmgval(stmp->obj, &youmonst, (struct monst*)0),
                                      &stmp->obj, (char *) 0);
                         if (!stmp->obj)
                             stmp->stopped = TRUE;

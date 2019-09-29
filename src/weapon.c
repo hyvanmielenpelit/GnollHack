@@ -254,9 +254,10 @@ struct obj* otmp;
 
 }
 int
-hitval(otmp, mon)
+hitval(otmp, mon, mattacker)
 struct obj *otmp;
 struct monst *mon;
+struct monst* mattacker;
 {
     int tmp = 0;
     struct permonst *ptr = mon->data;
@@ -310,7 +311,7 @@ struct monst *mon;
  * AD&D consistency was kept, but most of these don't exist in AD&D anyway.
  *
  * Second edition AD&D came out a few years later; luckily it used the same
- * table.  As of this writing (1999), third edition is in progreGnollHacknot
+ * table.  As of this writing (1999), third edition is in progress, not
  * released.  Let's see if the weapon table stays the same.  --KAA
  * October 2000: It didn't.  Oh, well.
  */
@@ -320,9 +321,10 @@ struct monst *mon;
  *      of "otmp" against the monster.
  */
 int
-dmgval(otmp, mon)
+dmgval(otmp, mon, mattacker)
 struct obj *otmp;
 struct monst *mon;
+struct monst* mattacker;
 {
 	if (!otmp || !mon)
 		return 0;
@@ -351,8 +353,8 @@ struct monst *mon;
         if (tmp < 0)
             tmp = 0;
 
-		if (!inappropriate_character_type(otmp)
-			&& (objects[otyp].oc_target_permissions == PERMITTED_ALL && ((objects[otyp].oc_flags3 & (O3_PERMTTED_TARGET_CHAOTIC | O3_PERMTTED_TARGET_NEUTRAL | O3_PERMTTED_TARGET_LAWFUL)) == 0) || (
+		if ((!mattacker ? (objects[otyp].oc_power_permissions == PERMITTED_ALL) : !inappropriate_monster_character_type(mattacker, otmp))
+			&& (objects[otyp].oc_target_permissions == ALL_TARGETS && ((objects[otyp].oc_flags3 & (O3_PERMTTED_TARGET_CHAOTIC | O3_PERMTTED_TARGET_NEUTRAL | O3_PERMTTED_TARGET_LAWFUL)) == 0) || (
 			((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M1_FLAG) && (ptr->mflags1 & objects[otyp].oc_target_permissions))
 				|| ((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M2_FLAG) && (ptr->mflags2 & objects[otyp].oc_target_permissions))
 				|| ((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M3_FLAG) && (ptr->mflags3 & objects[otyp].oc_target_permissions))
@@ -405,7 +407,7 @@ struct monst *mon;
             bonus += rnd(4);
         if (objects[otyp].oc_material == SILVER && mon_hates_silver(mon))
             bonus += rnd(20);
-        if (artifact_light(otmp) && otmp->lamplit && hates_light(ptr))
+        if ((artifact_light(otmp) || (objects[otmp->otyp].oc_flags2 & O2_SHINES_MAGICAL_LIGHT)) && otmp->lamplit && hates_light(ptr))
             bonus += rnd(8);
 
         /* if the weapon is going to get a double damage bonus, adjust
@@ -729,12 +731,13 @@ struct obj *obj;
 static const NEARDATA short hwep[] = {
     CORPSE, /* cockatrice corpse */
 	BLACK_BLADE_OF_DISINTEGRATION,
-    TSURUGI, RUNESWORD, TRIPLE_HEADED_FLAIL, DWARVISH_MATTOCK, TWO_HANDED_SWORD, BATTLE_AXE,
+    TSURUGI, RUNESWORD, LONG_SWORD_OF_HOLY_VENGEANCE, LONG_SWORD_OF_DEFENSE,
+	TRIPLE_HEADED_FLAIL, DWARVISH_MATTOCK, TWO_HANDED_SWORD, BATTLE_AXE,
     KATANA, DOUBLE_HEADED_FLAIL, UNICORN_HORN, CRYSKNIFE, TRIDENT, SILVER_LONG_SWORD, LONG_SWORD, ELVEN_BROADSWORD,
     BROADSWORD, SCIMITAR, SILVER_SABER, SILVER_MACE, INFERNAL_JAGGED_TOOTHED_CLUB, INFERNAL_ANCUS, MORNING_STAR, ELVEN_SHORT_SWORD,
-    DWARVISH_SHORT_SWORD, SHORT_SWORD, ORCISH_SHORT_SWORD, MACE, AXE,
+    DWARVISH_SHORT_SWORD, SHORT_SWORD, ORCISH_SHORT_SWORD, SILVER_MACE, MACE, AXE,
     DWARVISH_SPEAR, SILVER_SPEAR, ELVEN_SPEAR, SPEAR, ORCISH_SPEAR, FLAIL,
-    BULLWHIP, QUARTERSTAFF, JAVELIN, AKLYS, CLUB, PICK_AXE, RUBBER_HOSE,
+    BULLWHIP, QUARTERSTAFF, JAVELIN_OF_RETURNING, JAVELIN, AKLYS, CLUB, PICK_AXE, RUBBER_HOSE,
     WAR_HAMMER, SILVER_DAGGER, ELVEN_DAGGER, DAGGER, ORCISH_DAGGER, ATHAME,
     SCALPEL, KNIFE, WORM_TOOTH
 };
@@ -974,7 +977,7 @@ register struct monst *mon;
                 obj->bknown = 1;
             }
         }
-        if (artifact_light(obj) && !obj->lamplit) {
+        if (obj && (artifact_light(obj) || ((objects[obj->otyp].oc_flags2 & O2_SHINES_MAGICAL_LIGHT) && !inappropriate_monster_character_type(mon, obj))) && !obj->lamplit) {
             begin_burn(obj, FALSE);
             if (canseemon(mon))
                 pline("%s %s in %s %s!", Tobjnam(obj, "shine"),
@@ -2105,7 +2108,7 @@ register struct obj *obj;
 {
     if (!obj)
         return;
-    if (artifact_light(obj) && obj->lamplit) {
+    if ((artifact_light(obj) || (objects[obj->otyp].oc_flags2 & O2_SHINES_MAGICAL_LIGHT)) && obj->lamplit) {
         end_burn(obj, FALSE);
         if (canseemon(mon))
             pline("%s in %s %s %s shining.", The(xname(obj)),

@@ -758,6 +758,104 @@ struct obj* uitem;
 }
 
 
+boolean
+inappropriate_monster_character_type(monster, uitem)
+struct monst* monster;
+struct obj* uitem;
+{
+	if (!uitem)
+		return TRUE;
+
+	int otyp = uitem->otyp;
+	if (!monster)
+	{
+		if (objects[otyp].oc_power_permissions == PERMITTED_ALL)
+			return FALSE;
+		else
+			return TRUE;
+	}
+
+	if (monster == &youmonst)
+		return inappropriate_character_type(uitem);
+
+	/* We have now an item and a monster that is not you */
+	if (objects[otyp].oc_power_permissions != 0)
+	{
+		if (objects[otyp].oc_power_permissions & PERMITTED_GENDER_MASK)
+		{
+			if (
+				((objects[otyp].oc_power_permissions & PERMITTED_GENDER_FEMALE) && monster->female)
+				|| ((objects[otyp].oc_power_permissions & PERMITTED_GENDER_MALE) && !monster->female)
+				)
+			{
+				// Ok
+			}
+			else
+			{
+				return TRUE;
+			}
+		}
+		if (objects[otyp].oc_power_permissions & PERMITTED_RACE_MASK)
+		{
+			if (
+				((objects[otyp].oc_power_permissions & PERMITTED_RACE_HUMAN) && (monster->data->mflags2 & M2_HUMAN))
+				|| ((objects[otyp].oc_power_permissions & PERMITTED_RACE_ELF) && (monster->data->mflags2 & M2_ELF))
+				|| ((objects[otyp].oc_power_permissions & PERMITTED_RACE_DWARF) && (monster->data->mflags2 & M2_DWARF))
+				|| ((objects[otyp].oc_power_permissions & PERMITTED_RACE_GNOLL) && (monster->data->mflags2 & M2_GNOLL))
+				|| ((objects[otyp].oc_power_permissions & PERMITTED_RACE_ORC) && (monster->data->mflags2 & M2_ORC))
+				)
+			{
+				// Ok
+			}
+			else
+			{
+				return TRUE;
+			}
+		}
+		if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_MASK)
+		{
+			if (
+				((objects[otyp].oc_power_permissions & PERMITTED_ROLE_ARCHEOLOGIST) && monsndx(monster->data) == PM_ARCHEOLOGIST)
+				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_BARBARIAN) && monsndx(monster->data) == PM_BARBARIAN)
+				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_CAVEMAN) && (monsndx(monster->data) == PM_CAVEMAN || monsndx(monster->data) == PM_CAVEWOMAN))
+				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_HEALER) && (monsndx(monster->data) == PM_HEALER || (monster->data->mflags3 & M3_HEALER)))
+				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_KNIGHT) && (monsndx(monster->data) == PM_KNIGHT || (monster->data->mflags3 & M3_KNIGHT)))
+				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_MONK) && (monsndx(monster->data) == PM_MONK || monsndx(monster->data) == PM_MASTER_KAEN))
+				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_PRIEST) && (monsndx(monster->data) == PM_PRIEST || monsndx(monster->data) == PM_PRIESTESS || monster->ispriest || (monster->data->mflags3 & M3_PRIEST)))
+				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_TOURIST) && (monsndx(monster->data) == PM_TOURIST || monsndx(monster->data) == PM_TWOFLOWER))
+				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_VALKYRIE) && monsndx(monster->data) == PM_VALKYRIE)
+				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_WIZARD) && (monsndx(monster->data) == PM_WIZARD || (monster->data->mflags3 & M3_WIZARD)))
+				)
+			{
+				// Ok
+			}
+			else
+			{
+				return TRUE;
+			}
+		}
+		if (objects[otyp].oc_power_permissions & PERMITTED_ALIGNMENT_MASK)
+		{
+			if (
+				((objects[otyp].oc_power_permissions & PERMITTED_ALIGNMENT_LAWFUL) && monster->malign > 0)
+				|| ((objects[otyp].oc_power_permissions & PERMITTED_ALIGNMENT_NEUTRAL) && monster->malign == 0)
+				|| ((objects[otyp].oc_power_permissions & PERMITTED_ALIGNMENT_CHAOTIC) && monster->malign < 0)
+				)
+			{
+				// Ok
+			}
+			else
+			{
+				return TRUE;
+			}
+		}
+	}
+
+	return FALSE;
+}
+
+
+
 
 /* there has just been an inventory change affecting a luck-granting item */
 void

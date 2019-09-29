@@ -762,7 +762,7 @@ register struct monst *mtmp;
 	                    mon_currwep = MON_WEP(mtmp);
 
 					if (mon_currwep) {
-                        hittmp = hitval(mon_currwep, &youmonst);
+                        hittmp = hitval(mon_currwep, &youmonst, mtmp);
                         tmp += hittmp;
                         mswings(mtmp, mon_currwep);
                     }
@@ -1018,7 +1018,8 @@ struct monst *mon;
 		if (o->oclass == WEAPON_CLASS || is_weptool(o))
 			wearmask |= W_WEP;
 
-		if ((o->owornmask & wearmask) || (objects[o->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED) && (!is_you || !inappropriate_character_type(o)))
+		if ((o->owornmask & wearmask) || (objects[o->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED) 
+			&& !inappropriate_monster_character_type(mon, o))
 		{
 			armpro = objects[o->otyp].oc_magic_cancellation;
 			mc += armpro;
@@ -1173,7 +1174,7 @@ register struct obj* omonwep;
 		if (is_launcher(mweapon))
 			dmg += d(1, 2);
 		else
-			dmg += dmgval(mweapon, &youmonst);
+			dmg += dmgval(mweapon, &youmonst, mtmp);
 
 	}
 	else

@@ -314,7 +314,7 @@ int *attk_count, *role_roll_penalty;
      */
     if (aatyp == AT_WEAP || aatyp == AT_CLAW) {
         if (weapon)
-            tmp += hitval(weapon, mtmp);
+            tmp += hitval(weapon, mtmp, &youmonst);
         tmp += weapon_hit_bonus(weapon);
     } else if (aatyp == AT_KICK && martial_bonus()) {
         tmp += weapon_hit_bonus((struct obj *) 0);
@@ -726,7 +726,7 @@ int dieroll;
         if (barehand_silver_rings > 0)
             silvermsg = TRUE;
     } else {
-        if (!(artifact_light(obj) && obj->lamplit))
+        if (!((artifact_light(obj) || (objects[obj->otyp].oc_flags2 & O2_SHINES_MAGICAL_LIGHT)) && obj->lamplit))
             Strcpy(saved_oname, cxname(obj));
         else
             Strcpy(saved_oname, bare_artifactname(obj));
@@ -774,7 +774,7 @@ int dieroll;
 				if (is_launcher(obj))
 					tmp = d(1, 2);
 				else
-	                tmp = dmgval(obj, mon);
+	                tmp = dmgval(obj, mon, &youmonst);
                 /* a minimal hit doesn't exercise proficiency */
                 valid_weapon_attack = (tmp > 1);
                 if (!valid_weapon_attack || mon == u.ustuck || u.twoweap
@@ -836,7 +836,7 @@ int dieroll;
                     silvermsg = TRUE;
                     silverobj = TRUE;
                 }
-                if (artifact_light(obj) && obj->lamplit
+                if ((artifact_light(obj) || (objects[obj->otyp].oc_flags2 & O2_SHINES_MAGICAL_LIGHT)) && obj->lamplit
                     && mon_hates_light(mon))
                     lightobj = TRUE;
                 if (u.usteed && !thrown && tmp > 0
@@ -886,7 +886,7 @@ int dieroll;
                 case BOULDER:         /* 1d20 */
                 case HEAVY_IRON_BALL: /* 1d25 */
                 case IRON_CHAIN:      /* 1d4+1 */
-                    tmp = dmgval(obj, mon);
+                    tmp = dmgval(obj, mon, &youmonst);
                     break;
 				case MIRROR:
 				case MAGIC_MIRROR:
@@ -1060,7 +1060,7 @@ int dieroll;
                         tmp = 0;
                     } else {
                         Your("venom burns %s!", mon_nam(mon));
-                        tmp = dmgval(obj, mon);
+                        tmp = dmgval(obj, mon, &youmonst);
                     }
                     if (thrown)
                         obfree(obj, (struct obj *) 0);
@@ -1129,7 +1129,7 @@ int dieroll;
 				tmp += dbon(); //Normal bows get full strength bonus
 
 			//All bows get bow's enchantment bonus and damage
-			tmp += dmgval(uwep, mon);
+			tmp += dmgval(uwep, mon, &youmonst);
 
 			//Bracers give extra +2 damage, blessed even +3 + their bonus
 			if (uarmb && uarmb->otyp == BRACERS_OF_ARCHERY)
@@ -1907,7 +1907,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 		if (is_launcher(mweapon))
 			tmp = d(1, 2);
 		else
-			tmp += dmgval(mweapon, mdef);
+			tmp += dmgval(mweapon, mdef, &youmonst);
 	}
 	else
 	{

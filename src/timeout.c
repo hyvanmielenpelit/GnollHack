@@ -1688,7 +1688,7 @@ boolean already_lit;
     long turns = 0;
     boolean do_timer = TRUE;
 
-    if (obj->age == 0 && obj->otyp != MAGIC_LAMP && !artifact_light(obj))
+    if (obj->age == 0 && obj->otyp != MAGIC_LAMP && !artifact_light(obj) &&!(objects[obj->otyp].oc_flags2 & O2_SHINES_MAGICAL_LIGHT))
         return;
 
     switch (obj->otyp) {
@@ -1734,7 +1734,7 @@ boolean already_lit;
 
     default:
         /* [ALI] Support artifact light sources */
-        if (artifact_light(obj)) {
+        if (artifact_light(obj) || ((objects[obj->otyp].oc_flags2 & O2_SHINES_MAGICAL_LIGHT))) {
             obj->lamplit = 1;
             do_timer = FALSE;
             radius = arti_light_radius(obj);
@@ -1783,7 +1783,7 @@ boolean timer_attached;
         return;
     }
 
-    if (obj->otyp == MAGIC_LAMP || artifact_light(obj))
+    if (obj->otyp == MAGIC_LAMP || artifact_light(obj) || (objects[obj->otyp].oc_flags2 & O2_SHINES_MAGICAL_LIGHT))
         timer_attached = FALSE;
 
     if (!timer_attached) {

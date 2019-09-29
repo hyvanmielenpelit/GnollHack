@@ -385,7 +385,7 @@ register struct monst *magr, *mdef;
             if (otmp) {
                 if (vis)
                     mswingsm(magr, mdef, otmp);
-                tmp += hitval(otmp, mdef);
+                tmp += hitval(otmp, mdef, magr);
 			}
             /*FALLTHRU*/
         case AT_CLAW:
@@ -832,7 +832,7 @@ register struct attack *mattk;
 		if (is_launcher(mweapon))
 			tmp += d(1, 2);
 		else
-			tmp += dmgval(mweapon, mdef);
+			tmp += dmgval(mweapon, mdef, magr);
 	}
 	else
 	{
@@ -957,7 +957,7 @@ register struct attack *mattk;
                 if (otmp->otyp == CORPSE
                     && touch_petrifies(&mons[otmp->corpsenm]))
                     goto do_stone;
-                //tmp += dmgval(otmp, mdef);
+                //tmp += dmgval(otmp, mdef,magr);
 				//tmp += mdbon(magr);
 
 				if (tmp < 1) /* is this necessary?  mhitu.c has it... */

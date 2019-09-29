@@ -1713,7 +1713,7 @@ boolean
 artifact_light(obj)
 struct obj *obj;
 {
-    return (boolean) (obj && ((get_artifact(obj) && obj->oartifact == ART_SUNSWORD) || ((objects[obj->otyp].oc_flags2 & O2_SHINES_MAGICAL_LIGHT) && !inappropriate_character_type(obj) )));
+    return (boolean) (obj && ((get_artifact(obj) && obj->oartifact == ART_SUNSWORD)));
 }
 
 /* KMH -- Talking artifacts are finally implemented */

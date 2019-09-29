@@ -351,7 +351,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 				tmp -= 4;
 			}
 			else {
-				tmp += hitval(mon_launcher, mtmp);
+				tmp += hitval(mon_launcher, mtmp, (struct monst*)0);
 				//tmp += weapon_hit_bonus(uwep);  //Monsters do not get skill-based to-hit bonuses
 
 				//Penalty for shooting short range
@@ -397,10 +397,10 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 		if (is_launcher(otmp))
 			damage = d(1, 2);
 		else
-			damage = dmgval(otmp, mtmp);
+			damage = dmgval(otmp, mtmp, (struct monst*)0);
 
 		if (otmp && mon_launcher && ammo_and_launcher(otmp, mon_launcher)) {
-			damage += dmgval(mon_launcher, mtmp);
+			damage += dmgval(mon_launcher, mtmp, (struct monst*)0);
 			//Add strength damage, no skill damage
 			if (mon_launcher->otyp == CROSSBOW) {
 				damage += 3;
@@ -730,7 +730,7 @@ struct obj *obj;         /* missile (or stack providing it) */
 				if (is_launcher(singleobj))
 					dam = d(1, 2);
 				else
-					dam = dmgval(singleobj, &youmonst);
+					dam = dmgval(singleobj, &youmonst, mon);
 
 				mindistance = distmin(u.ux, u.uy, mon->mx, mon->my);
                 hitv = 3 - mindistance;
@@ -774,10 +774,10 @@ struct obj *obj;         /* missile (or stack providing it) */
 					{
 						//Fitting ammo gets launcher's hitval and dmgval and str damage bonus if bow, fixed for crossbows
 						//LAUNCHER HITVAL
-						hitv += hitval(MON_WEP(mon), &youmonst); //MON_WEP(mon)->spe - greatest_erosion(MON_WEP(mon));
+						hitv += hitval(MON_WEP(mon), &youmonst, mon); //MON_WEP(mon)->spe - greatest_erosion(MON_WEP(mon));
 						//hitv += weapon_hit_bonus(MON_WEP(mon)); //Monsters do not get skill bonuses
 						//LAUNCHER DMGVAL
-						dam += dmgval(MON_WEP(mon), &youmonst);
+						dam += dmgval(MON_WEP(mon), &youmonst, mon);
 
 						//Give strength damage bonus
 						if (MON_WEP(mon)->otyp == CROSSBOW) {
@@ -807,7 +807,7 @@ struct obj *obj;         /* missile (or stack providing it) */
 
 				if (bigmonst(youmonst.data))
                     hitv++;
-                hitv += 10 + hitval(singleobj, &youmonst);
+                hitv += 10 + hitval(singleobj, &youmonst, mon);
 				hitv += mon->m_lev;
 				if (dam < 1)
                     dam = 1;
@@ -1142,14 +1142,14 @@ struct monst *mtmp;
 		if (is_launcher(otmp))
 			dam = d(1, 2);
 		else
-			dam = dmgval(otmp, &youmonst);
+			dam = dmgval(otmp, &youmonst, mtmp);
 
         hitv = 3 - distmin(u.ux, u.uy, mtmp->mx, mtmp->my);
         if (hitv < -4)
             hitv = -4;
         if (bigmonst(youmonst.data))
             hitv++;
-        hitv += 10 + hitval(otmp, &youmonst);
+        hitv += 10 + hitval(otmp, &youmonst, mtmp);
 		hitv += mtmp->m_lev;
 		hitv += mabon(mtmp); // since a pole, str & dex to hit bonus
 		dam += mdbon(mtmp); // strength damage bonus
