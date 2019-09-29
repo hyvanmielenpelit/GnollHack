@@ -315,6 +315,11 @@ register struct obj* obj;
 			Sprintf(plusbuf, "%d", objects[otyp].oc_wsdmgplus);
 			Strcat(buf, plusbuf);
 		}
+		if (objects[otyp].oc_name_known && (objects[otyp].oc_flags3 & O3_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
+		{
+			/* Damage - Doubled */
+			Sprintf(eos(buf), " x 2");
+		}
 		txt = buf;
 		putstr(datawin, 0, txt);
 
@@ -339,8 +344,45 @@ register struct obj* obj;
 			Sprintf(plusbuf, "%d", objects[otyp].oc_wldmgplus);
 			Strcat(buf, plusbuf);
 		}
+		if (objects[otyp].oc_name_known && (objects[otyp].oc_flags3 & O3_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
+		{
+			/* Damage - Doubled */
+			Sprintf(eos(buf), " x 2");
+		}
+
 		txt = buf;
 		putstr(datawin, 0, txt);
+
+
+		if (objects[otyp].oc_name_known && ((objects[otyp].oc_wedice > 0 && objects[otyp].oc_wedam > 0) || objects[otyp].oc_wedmgplus != 0))
+		{
+			/* Damage - Extra */
+			maindiceprinted = FALSE;
+			Sprintf(buf, "Special damage:         ");
+
+			if (objects[otyp].oc_wedice > 0 && objects[otyp].oc_wedam > 0)
+			{
+				maindiceprinted = TRUE;
+				Sprintf(plusbuf, "%dd%d", objects[otyp].oc_wedice, objects[otyp].oc_wedam);
+				Strcat(buf, plusbuf);
+			}
+
+			if (objects[otyp].oc_wedmgplus != 0)
+			{
+				if (maindiceprinted && objects[otyp].oc_wedmgplus > 0)
+				{
+					Sprintf(plusbuf, "+");
+					Strcat(buf, plusbuf);
+				}
+				Sprintf(plusbuf, "%d", objects[otyp].oc_wedmgplus);
+				Strcat(buf, plusbuf);
+			}
+
+
+
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
 
 
 		/* Damage - Silver*/
@@ -470,7 +512,13 @@ register struct obj* obj;
 			char bonusbuf[BUFSZ] = "";
 			if (obj->oclass == WEAPON_CLASS || is_weptool(obj))
 			{
-				Sprintf(bonusbuf, " (%s%d to damage)", obj->spe >= 0 ? "+" : "", obj->spe);
+				int enchplus = obj->spe;
+				if (objects[otyp].oc_name_known && (objects[otyp].oc_flags3 & O3_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
+				{
+					enchplus *= 2;
+				}
+
+				Sprintf(bonusbuf, " (%s%d to damage)", enchplus >= 0 ? "+" : "", enchplus);
 			}
 
 			if (obj->oclass == ARMOR_CLASS || (objects[otyp].oc_name_known && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)))

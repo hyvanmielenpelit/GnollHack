@@ -283,20 +283,20 @@ struct obj {
 #define Has_contents(o)                                \
     (/* (Is_container(o) || (o)->otyp == STATUE) && */ \
      (o)->cobj != (struct obj *) 0)
-#define Is_container(o) (objects[o->otyp].oc_flags2 & O2_CONTAINER)
-#define Is_box(o) (objects[o->otyp].oc_flags2 & O2_CONTAINER_BOX)
+#define Is_container(o) (boolean)(objects[o->otyp].oc_flags2 & O2_CONTAINER)
+#define Is_box(o) (boolean)(objects[o->otyp].oc_flags2 & O2_CONTAINER_BOX)
 #define Is_mbag(o) \
-	(objects[o->otyp].oc_flags2 & O2_CONTAINER_MAGIC_BAG)
+	(boolean)(objects[o->otyp].oc_flags2 & O2_CONTAINER_MAGIC_BAG)
 #define Is_weight_changing_bag(o) \
-	(objects[o->otyp].oc_flags2 & O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG)
+	(boolean)(objects[o->otyp].oc_flags2 & O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG)
 #define SchroedingersBox(o) ((o)->otyp == LARGE_BOX && (o)->spe == 1)
 
 /* dragon gear */
 #define is_dragon_scales(obj) \
-	(is_dragon_obj(obj) && (objects[obj->otyp].oc_flags2 & O2_MONSTER_SCALES))
+	(is_dragon_obj(obj) && (boolean)(objects[obj->otyp].oc_flags2 & O2_MONSTER_SCALES))
     //((obj)->otyp >= GRAY_DRAGON_SCALES && (obj)->otyp <= YELLOW_DRAGON_SCALES)
 #define is_dragon_mail(obj)                \
-	(is_dragon_obj(obj) && (objects[obj->otyp].oc_flags2 & O2_MONSTER_SCALE_MAIL))
+	(is_dragon_obj(obj) && (boolean)(objects[obj->otyp].oc_flags2 & O2_MONSTER_SCALE_MAIL))
 //    ((obj)->otyp >= GRAY_DRAGON_SCALE_MAIL \
 //     && (obj)->otyp <= YELLOW_DRAGON_SCALE_MAIL)
 #define is_dragon_scale_armor(obj) \
@@ -313,24 +313,24 @@ struct obj {
 
 /* Elven gear */
 #define is_elven_weapon(otmp)                                             \
-    (otmp->oclass == WEAPON_CLASS && is_elven_obj(otmp))
+    (boolean)(otmp->oclass == WEAPON_CLASS && is_elven_obj(otmp))
 #define is_elven_obj(otmp) \
-	(objects[otmp->otyp].oc_flags2 & O2_ELVEN_ITEM)
+	(boolean)(objects[otmp->otyp].oc_flags2 & O2_ELVEN_ITEM)
 
 /* Orcish gear */
 #define is_orcish_obj(otmp)                                           \
-    (objects[otmp->otyp].oc_flags2 & O2_ORCISH_ITEM)
+    (boolean)(objects[otmp->otyp].oc_flags2 & O2_ORCISH_ITEM)
 
 /* Dwarvish gear */
 #define is_dwarvish_obj(otmp)                                  \
-    (objects[otmp->otyp].oc_flags2 & O2_DWARVEN_ITEM)
+    (boolean)(objects[otmp->otyp].oc_flags2 & O2_DWARVEN_ITEM)
 
 /* Gnomish gear */
 #define is_gnollish_obj(otmp) (objects[otmp->otyp].oc_flags2 & O2_GNOLLISH_ITEM)
 
 /* Light sources */
 #define Is_candle(otmp) \
-	(objects[otmp->otyp].oc_flags2 & O2_CANDLE)
+	(boolean)(objects[otmp->otyp].oc_flags2 & O2_CANDLE)
 
 #define MAX_OIL_IN_FLASK 400 /* maximum amount of oil in a potion of oil */
 

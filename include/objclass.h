@@ -146,8 +146,11 @@ struct objclass {
     
 							  /* Check the AD&D rules!  The FIRST is small monster damage. */
     /* for weapons, and tools, rocks, and gems useful as weapons */
+	int oc_damagetype;						/* Type of damage caused by the (magic) weapon, the same as for monster attacks */
 	int oc_wsdice, oc_wsdam, oc_wsdmgplus;	/* small monster damage, also used for spell damage */
 	int oc_wldice, oc_wldam, oc_wldmgplus;	/* large monster damage, also used for duration for spells */
+	int oc_extra_damagetype;				/* Type of extra damage caused by the (magic) weapon */
+	int oc_wedice, oc_wedam, oc_wedmgplus;	/* extra damage used as a special effect influenced by target permissions mask */
 	int oc_hitbonus;						/* weapons: "to hit" bonus */
 	int oc_range;							/* launchers: range for ammo, others throw range: >0 Fixed range, <0 Percentage of STR */
 
@@ -188,7 +191,6 @@ struct objclass {
 
 
 /* weapons */
-#define oc_damagetype oc_dir_subtype	/* Type of damage caused by the (magic) weapon, the same as for monster attacks */
 #define oc_skill oc_subtyp		/* Skills of weapons, spellbooks, tools, gems */
 /* oc_oc1 AC bonus, to make wielded objects consistent with armors, but a wielded object needs to be a weapon */
 /* oc_oc2 MC bonus, to make wielded objects consistent with armors, but a wielded object needs to be a weapon */
@@ -242,7 +244,6 @@ struct objclass {
 
 	unsigned long oc_power_permissions; /* roles, races, genders, and alignments that the item's powers are conferred to */
 	unsigned long oc_target_permissions; /* symbol, M1 flag, M2 flag, M3 flag, etc. for which extra damage is deal to */
-	int oc_baseitem;					/* Filled by item connects: Base item for a magic item or an artifact */
 	int oc_invokeitem;					/* Filled by item connects: Item effect when invoked, special effect if negative, 0 not invokable */
 
 /* oc_dir_subtypes for spells */
@@ -347,9 +348,9 @@ struct objclass {
 #define O3_DALIGN 0x00000040  /* attack bonus on non-aligned monsters  */
 #define O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS 0x00000080
 #define O3_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS 0x00000100
-#define O3_DEALS_DOUBLE_DAMAGE_TO_LAWFUL_TARGETS 0x00000200
-#define O3_DEALS_DOUBLE_DAMAGE_TO_NEUTRAL_TARGETS 0x00000400
-#define O3_DEALS_DOUBLE_DAMAGE_TO_CHAOTIC_TARGETS 0x00000800
+#define O3_PERMTTED_TARGET_LAWFUL 0x00000200
+#define O3_PERMTTED_TARGET_NEUTRAL 0x00000400
+#define O3_PERMTTED_TARGET_CHAOTIC 0x00000800
 
 #define O3_SPELL_EXPLOSION_EFFECT 0x01000000
 #define O3_SPELL_BYPASSES_MAGIC_RESISTANCE 0x02000000

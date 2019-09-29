@@ -351,25 +351,28 @@ struct monst *mon;
         if (tmp < 0)
             tmp = 0;
 
-		if (
-			!inappropriate_character_type(otmp) &&
-			(
-			((objects[otyp].oc_flags3 & O3_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS)
-				&& (
-				((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M1_FLAG) && (ptr->mflags1 & objects[otyp].oc_target_permissions))
-					|| ((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M2_FLAG) && (ptr->mflags2 & objects[otyp].oc_target_permissions))
-					|| ((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M3_FLAG) && (ptr->mflags3 & objects[otyp].oc_target_permissions))
-					|| ((objects[otyp].oc_flags3 & ~(O3_TARGET_PERMISSION_IS_M1_FLAG | O3_TARGET_PERMISSION_IS_M2_FLAG | O3_TARGET_PERMISSION_IS_M3_FLAG)) && (ptr->mlet == objects[otyp].oc_target_permissions))
-					))
-			|| ((objects[otyp].oc_flags3 & O3_DEALS_DOUBLE_DAMAGE_TO_CHAOTIC_TARGETS) && mon->malign < 0)
-			|| ((objects[otyp].oc_flags3 & O3_DEALS_DOUBLE_DAMAGE_TO_NEUTRAL_TARGETS) && mon->malign == 0)
-			|| ((objects[otyp].oc_flags3 & O3_DEALS_DOUBLE_DAMAGE_TO_LAWFUL_TARGETS) && mon->malign > 0)
-			)
-
-			)
+		if (!inappropriate_character_type(otmp)
+			&& (objects[otyp].oc_target_permissions == PERMITTED_ALL && ((objects[otyp].oc_flags3 & (O3_PERMTTED_TARGET_CHAOTIC | O3_PERMTTED_TARGET_NEUTRAL | O3_PERMTTED_TARGET_LAWFUL)) == 0) || (
+			((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M1_FLAG) && (ptr->mflags1 & objects[otyp].oc_target_permissions))
+				|| ((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M2_FLAG) && (ptr->mflags2 & objects[otyp].oc_target_permissions))
+				|| ((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M3_FLAG) && (ptr->mflags3 & objects[otyp].oc_target_permissions))
+				|| ((objects[otyp].oc_flags3 & ~(O3_TARGET_PERMISSION_IS_M1_FLAG | O3_TARGET_PERMISSION_IS_M2_FLAG | O3_TARGET_PERMISSION_IS_M3_FLAG)) && (ptr->mlet == objects[otyp].oc_target_permissions))
+				|| ((objects[otyp].oc_flags3 & O3_PERMTTED_TARGET_CHAOTIC) && mon->malign < 0)
+				|| ((objects[otyp].oc_flags3 & O3_PERMTTED_TARGET_NEUTRAL) && mon->malign == 0)
+				|| ((objects[otyp].oc_flags3 & O3_PERMTTED_TARGET_LAWFUL) && mon->malign > 0)
+				)
+			))
 		{
-			tmp *= 2;
+			if (objects[otyp].oc_wedam > 0 && objects[otyp].oc_wedice > 0)
+				tmp += d(objects[otyp].oc_wedice, objects[otyp].oc_wedam);
+			tmp += objects[otyp].oc_wedmgplus;
+		
+			if(objects[otyp].oc_flags3 & O3_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS)
+				tmp *= 2;
+
 		}
+
+
     }
 
     if (objects[otyp].oc_material <= LEATHER && thick_skinned(ptr))
