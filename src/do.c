@@ -358,7 +358,7 @@ register struct obj* obj;
 		{
 			/* Damage - Extra */
 			maindiceprinted = FALSE;
-			Sprintf(buf, "Special damage:         ");
+			Sprintf(buf, "Extra damage:           ");
 
 			if (objects[otyp].oc_wedice > 0 && objects[otyp].oc_wedam > 0)
 			{

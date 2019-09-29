@@ -211,6 +211,12 @@ typedef struct sortloot_item Loot;
                      || (context.warntype.species                            \
                          && (context.warntype.species == (mon)->data))))
 
+#define MATCH_WARN_UNDEAD(mon)                                               \
+    (Undead_warning && (mon->data->mflags2 & M2_UNDEAD)) 
+
+#define MATCH_WARN_DEMON(mon)                                               \
+    (Demon_warning && (mon->data->mflags2 & M2_DEMON)) 
+
 #include "trap.h"
 #include "flag.h"
 #include "rm.h"

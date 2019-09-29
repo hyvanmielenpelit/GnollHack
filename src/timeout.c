@@ -66,8 +66,8 @@ const struct propname {
 	{ HUNGER, "voracious hunger" },
 	{ TELEPAT, "telepathic" },
 	{ WARNING, "warning" },
-	{ WARN_OF_MON, "warn: monster type or class" },
-	{ WARN_UNDEAD, "warn: undead" },
+	{ WARN_OF_MON, "warning of monster type or class" },
+	{ WARN_UNDEAD, "warning of undead" },
 	{ SEARCHING, "searching" },
 	{ INFRAVISION, "infravision" },
 	{ ADORNED, "adorned (+/- Cha)" },
@@ -103,6 +103,7 @@ const struct propname {
 	{ FLASH_RES, "flash resistance" },
 	{ EYE_PROTECTION, "protection from eye damage" },
 	{ BRAIN_PROTECTION, "protection from brain damage" },
+	{ WARN_DEMON, "warning of demon" },
 	{ LAUGHING, "laughing uncontrollably" },
 	{  0, 0 },
 };
@@ -700,7 +701,10 @@ nh_timeout()
                     }
                 }
                 break;
-            case PASSES_WALLS:
+			case WARN_UNDEAD:
+			case WARN_DEMON:
+				break;
+			case PASSES_WALLS:
                 if (!Passes_walls) {
                     if (stuck_in_wall())
                         You_feel("hemmed in again.");

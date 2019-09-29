@@ -2630,7 +2630,9 @@ int final;
     }
     if (Undead_warning)
         you_are("warned of undead", from_what(WARN_UNDEAD));
-    if (Searching)
+	if (Demon_warning)
+		you_are("warned of demons", from_what(WARN_DEMON));
+	if (Searching)
         you_have("automatic searching", from_what(SEARCHING));
     if (Clairvoyant)
         you_are("clairvoyant", from_what(CLAIRVOYANT));

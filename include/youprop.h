@@ -187,7 +187,12 @@
 #define Warn_of_mon (HWarn_of_mon || EWarn_of_mon)
 
 #define HUndead_warning u.uprops[WARN_UNDEAD].intrinsic
-#define Undead_warning (HUndead_warning)
+#define EUndead_warning u.uprops[WARN_UNDEAD].extrinsic
+#define Undead_warning (HUndead_warning || EUndead_warning)
+
+#define HDemon_warning u.uprops[WARN_DEMON].intrinsic
+#define EDemon_warning u.uprops[WARN_DEMON].extrinsic
+#define Demon_warning (HDemon_warning || EDemon_warning)
 
 #define HSearching u.uprops[SEARCHING].intrinsic
 #define ESearching u.uprops[SEARCHING].extrinsic
