@@ -396,7 +396,7 @@ int psflags;
     char buf[BUFSZ] = DUMMY;
     int old_light, new_light, mntmp, class, tryct;
     boolean forcecontrol = (psflags == 1), monsterpoly = (psflags == 2),
-            draconian = (uarm && Is_dragon_armor(uarm)),
+            draconian = (uarm && is_dragon_scale_armor(uarm)),
             iswere = (u.ulycn >= LOW_PM), isvamp = is_vampire(youmonst.data),
             controllable_poly = Polymorph_control && !(Stunned || Unaware);
 
@@ -499,7 +499,7 @@ int psflags;
             mntmp = armor_to_dragon(uarm->otyp);
             if (!(mvitals[mntmp].mvflags & G_GENOD)) {
                 /* allow G_EXTINCT */
-                if (Is_dragon_scales(uarm)) {
+                if (is_dragon_scales(uarm)) {
                     /* dragon scales remain intact as uskin */
                     You("merge with your scaly armor.");
                 } else { /* dragon scale mail */

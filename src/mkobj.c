@@ -917,6 +917,7 @@ boolean makingboxcontents;
 	otmp->corpsenm = NON_PM;
 	otmp->special_enchantment = 0;
 	otmp->cooldownleft = 0;
+	otmp->blessed = (objects[otmp->otyp].oc_flags& O1_GENERATED_BLESSED) ? 1 : 0;
 
     if (init) {
         switch (let) {
@@ -924,7 +925,7 @@ boolean makingboxcontents;
             otmp->quan = is_multigen(otmp) ? (long) rn1(6, 6) : 1L;
             if (!rn2(11)) {
                 otmp->spe = rne(3);
-                otmp->blessed = rn2(2);
+                otmp->blessed = (objects[otmp->otyp].oc_flags & O1_GENERATED_BLESSED) ? 1 : rn2(2);
             } else if (!rn2(10)) {
                 curse(otmp);
                 otmp->spe = -rne(3);
@@ -1155,7 +1156,7 @@ boolean makingboxcontents;
                 curse(otmp);
                 otmp->spe = -rne(3);
             } else if (!rn2(10)) {
-                otmp->blessed = rn2(2);
+                otmp->blessed = (objects[otmp->otyp].oc_flags & O1_GENERATED_BLESSED) ? 1 : rn2(2);
                 otmp->spe = rne(3);
             } else
                 blessorcurse(otmp, 10);
@@ -2904,7 +2905,7 @@ struct obj *obj;
                 what = "armor";
             /* 3.6: dragon scale mail reverts to dragon scales when
                becoming embedded in poly'd hero's skin */
-            if (embedded && !Is_dragon_scales(obj))
+            if (embedded && !is_dragon_scales(obj))
                 what = "skin";
         } else if (owornmask & W_WEAPON) {
             /* monsters don't maintain alternate weapon or quiver */

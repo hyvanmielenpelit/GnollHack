@@ -383,8 +383,12 @@ register struct obj* obj;
 
 		if (objects[otyp].oc_name_known)
 		{
+			int mc = objects[otyp].oc_magic_cancellation;
+			if (objects[otyp].oc_flags & O1_SPE_AFFECTS_MC)
+				mc+= obj->spe;
+
 			/* magic cancellation */
-			Sprintf(buf2, "%s%d", objects[otyp].oc_magic_cancellation >= 0 ? "+" : "", objects[otyp].oc_magic_cancellation);
+			Sprintf(buf2, "%s%d", mc >= 0 ? "+" : "", mc);
 			Sprintf(buf, "Magic cancellation:     %s", buf2);
 			txt = buf;
 			putstr(datawin, 0, txt);
@@ -911,7 +915,7 @@ register struct obj* obj;
 		}
 
 		/* Item properties */
-		if (objects[otyp].oc_flags & ~(O1_THROWN_WEAPON | O1_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED | O1_CONFERS_LUCK
+		if (objects[otyp].oc_flags & ~(O1_THROWN_WEAPON | O1_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED | O1_GENERATED_BLESSED | O1_CONFERS_LUCK
 			| O1_WAND_LIKE_TOOL | O1_NON_SPELL_SPELLBOOK | O1_EDIBLE_NONFOOD))
 		{
 			int powercnt = 0;
@@ -1086,7 +1090,7 @@ register struct obj* obj;
 			strcpy(buf2, "Effect in selected direction");
 			break;
 		case RAY:
-			if (objects[otyp].oc_flags & O1_SPELL_EXPLOSION_EFFECT)
+			if (objects[otyp].oc_flags3 & O3_SPELL_EXPLOSION_EFFECT)
 				strcpy(buf2, "Ray that explodes on hit");
 			else
 				strcpy(buf2, "Ray in selected direction");
@@ -1265,7 +1269,7 @@ register struct obj* obj;
 	}
 
 	/* Flags */
-	if (objects[otyp].oc_flags & O1_SPELL_BYPASSES_MAGIC_RESISTANCE)
+	if (objects[otyp].oc_flags3 & O3_SPELL_BYPASSES_MAGIC_RESISTANCE)
 	{
 		Sprintf(buf, "Other:        %s", "Bypasses magic resistance");
 		txt = buf;

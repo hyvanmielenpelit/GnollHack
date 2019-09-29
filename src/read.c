@@ -949,7 +949,7 @@ struct obj *sobj;
             make_happy_shk(mtmp, FALSE);
 		else if (!resist(mtmp, sobj, 0, 0, NOTELL))
 		{
-			if (sobj && !(objects[sobj->otyp].oc_flags & O1_SPELL_IS_NONREVERSIBLE_PERMANENT))
+			if (sobj && !(objects[sobj->otyp].oc_flags3 & O3_SPELL_IS_NONREVERSIBLE_PERMANENT))
 			{
 				/* Charm can be dispelled and is non-permanent if timer > 0 */
 				mtmp->morigpeaceful = mtmp->mpeaceful;
@@ -1132,7 +1132,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 			: sblessed
 			? rnd(3 - otmp->spe / 3)
 			: 1;
-		if (s >= 0 && Is_dragon_scales(otmp)) {
+		if (s >= 0 && is_dragon_scales(otmp)) {
 			/* dragon scales get turned into dragon scale mail */
 			pline("%s merges and hardens!", Yname2(otmp));
 			setworn((struct obj*) 0, W_ARM);

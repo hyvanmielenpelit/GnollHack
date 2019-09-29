@@ -1514,6 +1514,7 @@ updateabon()
 	u.udaminc = 0;
 	u.uhitinc = 0;
 	u.uacbonus = 0;
+	u.umcbonus = 0;
 
 	/* add them back again */
 	for (uitem = invent; uitem; uitem = uitem->nobj)
@@ -1642,6 +1643,13 @@ updateabon()
 							u.uacbonus += uitem->spe;
 						else
 							u.uacbonus += objects[otyp].oc_attribute_bonus;
+					}
+					else if (i == A_MAX + 3)
+					{
+						if (objects[otyp].oc_attribute_bonus == 0 && objects[otyp].oc_charged)
+							u.umcbonus += uitem->spe;
+						else
+							u.umcbonus += objects[otyp].oc_attribute_bonus;
 					}
 				}
 			}

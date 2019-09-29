@@ -282,14 +282,13 @@ struct objclass {
 #define O1_RUST_RESISTANT 0x00000040
 #define O1_CORROSION_RESISTANT 0x00000080
 
-/* Spellbook / wand flags */
-#define O1_SPELL_EXPLOSION_EFFECT 0x00000100
-#define O1_SPELL_BYPASSES_MAGIC_RESISTANCE 0x00000200
-#define O1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY 0x00000400
-#define O1_SPELL_IS_NONREVERSIBLE_PERMANENT 0x00000800
+#define O1_SPE_AFFECTS_MC 0x00000100									/* +X of the item influences also its MC */
+#define O1_IS_ARMOR_WHEN_WIELDED 0x00000200								/* acts as an armor when wielded giving AC using oc_armor_class, which must be specified */
+#define O1_INVOKABLE 0x00000400								
+#define O1_APPLIABLE 0x00000800								
+#define O1_READABLE 0x00001000								
+#define O1_EDIBLE_NONFOOD 0x00002000
 
-/* Non-spellbook / non-wand flags */
-#define O1_SPECIAL_ENCHANTABLE 0x00004000
 #define O1_MANA_PERCENTAGE_BONUS 0x00008000
 #define O1_HP_PERCENTAGE_BONUS 0x00010000
 #define O1_BECOMES_CURSED_WHEN_WORN 0x00020000
@@ -298,15 +297,14 @@ struct objclass {
 #define O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED 0x00100000
 #define O1_CANNOT_BE_DROPPED_IF_CURSED 0x00200000
 #define O1_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED 0x00400000			/* if deathenchantable item, then death, otherwise lightning*/
+#define O1_GENERATED_BLESSED 0x00800000									
 
-/* General flags -- General: cannot be overriden */
-#define O1_IS_ARMOR_WHEN_WIELDED 0x00800000								/* acts as an armor when wielded giving AC using oc_armor_class, which must be specified */
 #define O1_THROWN_WEAPON 0x01000000										/* says "Thrown weapon" instead of "Melee weapon", default range is larger, can use throwrange data value */
 #define O1_WEIGHT_DOES_NOT_REDUCE_RANGE 0x02000000						/* the object magically flies when thrown, ignoring its weight */
 #define O1_RETURNS_TO_HAND_AFTER_THROWING 0x04000000					/* the object returns to the owner's hand after throwing */
 #define O1_CAN_BE_THROWN_ONLY_IF_WIELDED 0x08000000						/* has to be wielded to be thrown, e.g., Mjollnir */
 #define O1_WAND_LIKE_TOOL 0x10000000									/* apply is the same as zap, uses spellbook/wand paramters and flags instead of normal flags */
-#define O1_EDIBLE_NONFOOD 0x20000000
+#define O1_SPECIAL_ENCHANTABLE 0x20000000
 #define O1_NON_SPELL_SPELLBOOK 0x40000000								/* uses non-spellbook flags and other non-spellbook stats */
 #define O1_NOT_CURSEABLE 0x80000000
 
@@ -319,58 +317,51 @@ struct objclass {
 #define O2_GNOLLISH_ITEM 0x00000008
 #define O2_DRAGON_ITEM 0x00000010
 #define O2_DEMON_ITEM 0x00000020
+#define O2_ANGELIC_ITEM 0x00000040
 
 #define O2_CONTAINER 0x00000100	
 #define O2_CONTAINER_BOX 0x00000200	
-#define O2_CONTAINER_EXPLOSIVE_MAGIC_BAG 0x00000400	
+#define O2_CONTAINER_MAGIC_BAG 0x00000400	
 #define O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG 0x00000800
 
-#define O2_DRAGON_SCALES 0x00001000	
-#define O2_DRAGON_SCALE_MAIL 0x00002000
+#define O2_MONSTER_SCALES 0x00001000	
+#define O2_MONSTER_SCALE_MAIL 0x00002000
 #define O2_CANDLE 0x00004000	
-#define O2_RELATIVE_AGE 0x00008000	
+#define O2_SHINES_MAGICAL_LIGHT 0x00008000	
 #define O2_IGNITABLE 0x00010000	
-#define O2_READABLE 0x00020000	
-#define O2_GRAYSTONE 0x00040000	
-#define O2_FLIMSY 0x00080000	
+#define O2_RELATIVE_AGE 0x00020000	
+
+#define O2_GRAYSTONE 0x00080000	
+#define O2_FLIMSY 0x00100000	
+
 
 /* Artifact flags - to do: Attack type, half physical and spell damage, bonus to monsters only */
-#define O2_NOGEN 0x00100000  /* item is special, bequeathed by gods */
-#define O2_RESTR 0x00200000  /* item is restricted - can't be named */
-#define O2_INTEL 0x00400000  /* item is self-willed - intelligent */
-#define O2_SPEAK 0x00800008  /* item can speak (not implemented) */
-// seems obsolete - SPFX_SEEK 0x00000010L   /* item helps you search for things */
-// implemented in powers - SPFX_WARN 0x00000020L   /* item warns you of danger */
-// impemented in attacks as attack type - SPFX_ATTK 0x00000040L   /* item has a special attack (attk) */
-// impemented in powers as resistances -  SPFX_DEFN 0x00000080L   /* item has a special defence (defn) */
-#define O2_DRLI 0x01000000   /* drains a level from monsters */
-// impemented in powers -  SPFX_SEARCH 0x00000200L /* helps searching */
-#define O2_BEHEAD 0x02000000 /* beheads monsters */
-#define O2_DALIGN 0x04000000  /* attack bonus on non-aligned monsters  */
-// impemented in powers - SPFX_HALRES 0x00000800L /* blocks hallucinations */
-// impemented in powers - SPFX_ESP 0x00001000L    /* ESP (like amulet of ESP) */
-// impemented in powers - SPFX_STLTH 0x00002000L  /* Stealth */
-// impemented in powers - SPFX_REGEN 0x00004000L  /* Regeneration */
-// impemented in powers - SPFX_EREGEN 0x00008000L /* Energy Regeneration */
-// impemented in powers - SPFX_HSPDAM 0x00010000L /* 1/2 spell damage (on player) in combat */
-// impemented in powers -  SPFX_HPHDAM 0x00020000L                /* 1/2 physical damage (on player) in combat */
-// impemented in powers -  SPFX_TCTRL 0x00040000L /* Teleportation Control */
-// impemented in item flags - SPFX_LUCK 0x00080000L  /* Increase Luck (like Luckstone) */
-// #define O2_DMONS 0x04000000 /* attack bonus on one monster type */
-// #define O2_DCLAS 0x08000000 /* attack bonus on monsters w/ symbol mtype */
-#define O2_TARGET_PERMISSION_IS_M1_FLAG 0x10000000 /* Note: if no flag, then default is a monster symbol */
-#define O2_TARGET_PERMISSION_IS_M2_FLAG 0x20000000
-#define O2_TARGET_PERMISSION_IS_M3_FLAG 0x30000000 /* Note: Two other flags combined*/
-#define O2_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS 0x40000000
-//#define O2_DFLAG1 0x10000000  /* attack bonus on monsters w/ mflags1 flag */
-//#define O2_DFLAG2 0x20000000  /* attack bonus on monsters w/ mflags2 flag */
-//#define O2_DFLAG3 0x40000000  /* attack bonus on monsters w/ mflags3 flag */
-// impemented in item flags -  SPFX_XRAY 0x02000000L    /* gives X-RAY vision to player */
-// impemented in item flags -  SPFX_REFLECT 0x04000000L /* Reflection */
-// impemented in item flags -  SPFX_PROTECT 0x08000000L /* Protection */
-
 /* Flags 3 */
 #define O3_NONE 0x00000000
+#define O3_NOGEN 0x00000001  /* item is special, bequeathed by gods */
+#define O3_RESTR 0x00000002  /* item is restricted - can't be named */
+#define O3_INTEL 0x00000004  /* item is self-willed - intelligent */
+#define O3_SPEAK 0x00000008  /* item can speak (not implemented) */
+#define O3_DRLI 0x00000010   /* drains a level from monsters */
+#define O3_BEHEAD 0x00000020 /* beheads monsters */
+#define O3_DALIGN 0x00000040  /* attack bonus on non-aligned monsters  */
+#define O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS 0x00000080
+#define O3_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS 0x00000100
+#define O3_DEALS_DOUBLE_DAMAGE_TO_LAWFUL_TARGETS 0x00000200
+#define O3_DEALS_DOUBLE_DAMAGE_TO_NEUTRAL_TARGETS 0x00000400
+#define O3_DEALS_DOUBLE_DAMAGE_TO_CHAOTIC_TARGETS 0x00000800
+
+#define O3_SPELL_EXPLOSION_EFFECT 0x01000000
+#define O3_SPELL_BYPASSES_MAGIC_RESISTANCE 0x02000000
+#define O3_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY 0x04000000
+#define O3_SPELL_IS_NONREVERSIBLE_PERMANENT 0x08000000
+
+#define O3_TARGET_PERMISSION_IS_M1_FLAG 0x10000000 /* Note: if no flag, then default is a monster symbol */
+#define O3_TARGET_PERMISSION_IS_M2_FLAG 0x20000000
+#define O3_TARGET_PERMISSION_IS_M3_FLAG 0x40000000 
+
+
+
 
 
 

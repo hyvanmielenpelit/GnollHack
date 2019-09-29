@@ -1022,7 +1022,10 @@ struct monst *mon;
 		{
 			armpro = objects[o->otyp].oc_magic_cancellation;
 			mc += armpro;
+			if (objects[o->otyp].oc_flags & O1_SPE_AFFECTS_MC)
+				mc += o->spe;
 
+			/* Note u.umcbonus is not being used at the moment, even though it contains appropriate bonuses for you */
 			if (objects[o->otyp].oc_bonus_attributes & BONUS_TO_MC)
 			{
 				mc += objects[o->otyp].oc_attribute_bonus;

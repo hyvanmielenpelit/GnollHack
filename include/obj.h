@@ -257,19 +257,13 @@ struct obj {
 #define is_suit(otmp) \
     (otmp->oclass == ARMOR_CLASS && objects[otmp->otyp].oc_armor_category == ARM_SUIT)
 #define is_elven_armor(otmp)                                              \
-    ((otmp)->otyp == ELVEN_LEATHER_HELM                                   \
-     || (otmp)->otyp == ELVEN_MITHRIL_COAT || (otmp)->otyp == ELVEN_CLOAK \
-     || (otmp)->otyp == ELVEN_SHIELD || (otmp)->otyp == ELVEN_BOOTS)
+    (otmp->oclass == ARMOR_CLASS && is_elven_obj(otmp))
 #define is_orcish_armor(otmp)                                            \
-    ((otmp)->otyp == ORCISH_HELM || (otmp)->otyp == ORCISH_CHAIN_MAIL    \
-     || (otmp)->otyp == ORCISH_RING_MAIL || (otmp)->otyp == ORCISH_CLOAK \
-     || (otmp)->otyp == URUK_HAI_SHIELD || (otmp)->otyp == ORCISH_SHIELD)
+    (otmp->oclass == ARMOR_CLASS && is_orcish_obj(otmp))
 #define is_dwarvish_armor(otmp)               \
-    ((otmp)->otyp == DWARVISH_IRON_HELM       \
-     || (otmp)->otyp == DWARVISH_MITHRIL_COAT \
-     || (otmp)->otyp == DWARVISH_CLOAK        \
-     || (otmp)->otyp == DWARVISH_ROUNDSHIELD)
-#define is_gnomish_armor(otmp) (FALSE)
+    (otmp->oclass == ARMOR_CLASS && is_dwarvish_obj(otmp))
+#define is_gnollish_armor(otmp) \
+	(otmp->oclass == ARMOR_CLASS && is_gnollish_obj(otmp))
 
 /* Eggs and other food */
 #define MAX_EGG_HATCH_TIME 200 /* longest an egg can remain unhatched */
@@ -289,91 +283,86 @@ struct obj {
 #define Has_contents(o)                                \
     (/* (Is_container(o) || (o)->otyp == STATUE) && */ \
      (o)->cobj != (struct obj *) 0)
-#define Is_container(o) ((o)->otyp >= LARGE_BOX && (o)->otyp <= BAG_OF_TRICKS)
-#define Is_box(otmp) (otmp->otyp == LARGE_BOX || otmp->otyp == CHEST)
+#define Is_container(o) (objects[o->otyp].oc_flags2 & O2_CONTAINER)
+#define Is_box(o) (objects[o->otyp].oc_flags2 & O2_CONTAINER_BOX)
 #define Is_mbag(o) \
-	((o)->otyp >= BAG_OF_HOLDING && (o)->otyp <= BAG_OF_TRICKS)
+	(objects[o->otyp].oc_flags2 & O2_CONTAINER_MAGIC_BAG)
 #define Is_weight_changing_bag(o) \
-	((o)->otyp >= BAG_OF_HOLDING && (o)->otyp <= BAG_OF_TREASURE_HAULING)
+	(objects[o->otyp].oc_flags2 & O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG)
 #define SchroedingersBox(o) ((o)->otyp == LARGE_BOX && (o)->spe == 1)
 
 /* dragon gear */
-#define Is_dragon_scales(obj) \
-    ((obj)->otyp >= GRAY_DRAGON_SCALES && (obj)->otyp <= YELLOW_DRAGON_SCALES)
-#define Is_dragon_mail(obj)                \
-    ((obj)->otyp >= GRAY_DRAGON_SCALE_MAIL \
-     && (obj)->otyp <= YELLOW_DRAGON_SCALE_MAIL)
-#define Is_dragon_armor(obj) (Is_dragon_scales(obj) || Is_dragon_mail(obj))
+#define is_dragon_scales(obj) \
+	(is_dragon_obj(obj) && (objects[obj->otyp].oc_flags2 & O2_MONSTER_SCALES))
+    //((obj)->otyp >= GRAY_DRAGON_SCALES && (obj)->otyp <= YELLOW_DRAGON_SCALES)
+#define is_dragon_mail(obj)                \
+	(is_dragon_obj(obj) && (objects[obj->otyp].oc_flags2 & O2_MONSTER_SCALE_MAIL))
+//    ((obj)->otyp >= GRAY_DRAGON_SCALE_MAIL \
+//     && (obj)->otyp <= YELLOW_DRAGON_SCALE_MAIL)
+#define is_dragon_scale_armor(obj) \
+	(is_dragon_scales(obj) || is_dragon_mail(obj))
 #define Dragon_scales_to_pm(obj) \
     &mons[PM_GRAY_DRAGON + (obj)->otyp - GRAY_DRAGON_SCALES]
 #define Dragon_mail_to_pm(obj) \
     &mons[PM_GRAY_DRAGON + (obj)->otyp - GRAY_DRAGON_SCALE_MAIL]
 #define Dragon_to_scales(pm) (GRAY_DRAGON_SCALES + (pm - mons))
 
+#define is_dragon_armor(obj) \
+	(obj->oclass == ARMOR_CLASS && is_dragon_obj(obj))
+#define is_dragon_obj(obj) (objects[obj->otyp].oc_flags2 & O2_DRAGON_ITEM)
+
 /* Elven gear */
 #define is_elven_weapon(otmp)                                             \
-    ((otmp)->otyp == ELVEN_ARROW || (otmp)->otyp == ELVEN_SPEAR           \
-     || (otmp)->otyp == ELVEN_DAGGER || (otmp)->otyp == ELVEN_SHORT_SWORD \
-     || (otmp)->otyp == ELVEN_BROADSWORD || (otmp)->otyp == ELVEN_LONG_BOW)
-#define is_elven_obj(otmp) (is_elven_armor(otmp) || is_elven_weapon(otmp))
+    (otmp->oclass == WEAPON_CLASS && is_elven_obj(otmp))
+#define is_elven_obj(otmp) \
+	(objects[otmp->otyp].oc_flags2 & O2_ELVEN_ITEM)
 
 /* Orcish gear */
 #define is_orcish_obj(otmp)                                           \
-    (is_orcish_armor(otmp) || (otmp)->otyp == ORCISH_ARROW            \
-     || (otmp)->otyp == ORCISH_SPEAR || (otmp)->otyp == ORCISH_DAGGER \
-     || (otmp)->otyp == ORCISH_SHORT_SWORD || (otmp)->otyp == ORCISH_SHORT_BOW)
+    (objects[otmp->otyp].oc_flags2 & O2_ORCISH_ITEM)
 
 /* Dwarvish gear */
 #define is_dwarvish_obj(otmp)                                  \
-    (is_dwarvish_armor(otmp) || (otmp)->otyp == DWARVISH_SPEAR \
-     || (otmp)->otyp == DWARVISH_SHORT_SWORD                   \
-     || (otmp)->otyp == DWARVISH_MATTOCK)
+    (objects[otmp->otyp].oc_flags2 & O2_DWARVEN_ITEM)
 
 /* Gnomish gear */
-#define is_gnomish_obj(otmp) (is_gnomish_armor(otmp))
+#define is_gnollish_obj(otmp) (objects[otmp->otyp].oc_flags2 & O2_GNOLLISH_ITEM)
 
 /* Light sources */
 #define Is_candle(otmp) \
-    (otmp->otyp == TALLOW_CANDLE || otmp->otyp == WAX_CANDLE)
+	(objects[otmp->otyp].oc_flags2 & O2_CANDLE)
+
 #define MAX_OIL_IN_FLASK 400 /* maximum amount of oil in a potion of oil */
 
 /* MAGIC_LAMP intentionally excluded below */
 /* age field of this is relative age rather than absolute */
 #define age_is_relative(otmp)                                       \
-    ((otmp)->otyp == BRASS_LANTERN || (otmp)->otyp == OIL_LAMP      \
-     || (otmp)->otyp == CANDELABRUM_OF_INVOCATION                   \
-     || (otmp)->otyp == TALLOW_CANDLE || (otmp)->otyp == WAX_CANDLE \
-     || (otmp)->otyp == POT_OIL)
+    (objects[otmp->otyp].oc_flags2 & O2_RELATIVE_AGE)
 /* object can be ignited */
 #define ignitable(otmp)                                             \
-    ((otmp)->otyp == BRASS_LANTERN || (otmp)->otyp == OIL_LAMP      \
-     || (otmp)->otyp == CANDELABRUM_OF_INVOCATION                   \
-     || (otmp)->otyp == TALLOW_CANDLE || (otmp)->otyp == WAX_CANDLE \
-     || (otmp)->otyp == POT_OIL)
+    (objects[otmp->otyp].oc_flags2 & O2_IGNITABLE)
 
 /* things that can be read */
 #define is_readable(otmp)                                                    \
-    ((otmp)->otyp == FORTUNE_COOKIE || (otmp)->otyp == T_SHIRT               \
-     || (otmp)->otyp == ALCHEMY_SMOCK || (otmp)->otyp == CREDIT_CARD         \
-     || (otmp)->otyp == CAN_OF_GREASE || (otmp)->otyp == MAGIC_MARKER        \
-     || (otmp)->oclass == COIN_CLASS || (otmp)->oartifact == ART_ORB_OF_FATE \
-     || (otmp)->otyp == CANDY_BAR)
+    (objects[otmp->otyp].oc_flags & O1_READABLE || otmp->oartifact == ART_ORB_OF_FATE)
 
 /* special stones */
 #define is_graystone(obj)                                 \
-    ((obj)->otyp >= LUCKSTONE && (obj)->otyp <= FLINT)
+    (objects[obj->otyp].oc_flags2 & O2_GRAYSTONE)
 
 /* misc helpers, simple enough to be macros */
 #define is_flimsy(otmp)                           \
     (objects[(otmp)->otyp].oc_material <= LEATHER \
-     || (otmp)->otyp == RUBBER_HOSE)
+     || (objects[otmp->otyp].oc_flags2 & O2_FLIMSY))
 #define is_plural(o) \
     ((o)->quan != 1L                                                    \
      /* "the Eyes of the Overworld" are plural, but                     \
         "a pair of lenses named the Eyes of the Overworld" is not */    \
      || ((o)->oartifact == ART_EYES_OF_THE_OVERWORLD                    \
          && !undiscovered_artifact(ART_EYES_OF_THE_OVERWORLD)))
-#define pair_of(o) ((o)->otyp == LENSES || is_gloves(o) || is_boots(o) || is_bracers(o))
+#define pair_of(o) ((o->oclass == MISCELLANEOUS_CLASS && \
+	(objects[o->otyp].oc_subtyp == MISC_LENSES || objects[o->otyp].oc_subtyp == MISC_EARRINGS || objects[o->otyp].oc_subtyp == MISC_PANTS)) \
+	 || is_gloves(o) || is_boots(o) || is_bracers(o))
 
 /* 'PRIZE' values override obj->corpsenm so prizes mustn't be object types
    which use that field for monster type (or other overloaded purpose) */

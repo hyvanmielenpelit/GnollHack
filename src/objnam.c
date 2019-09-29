@@ -4308,9 +4308,9 @@ struct obj *suit;
     const char *suitnm, *esuitp;
 
     if (suit) {
-        if (Is_dragon_mail(suit))
+        if (is_dragon_mail(suit))
             return "dragon mail"; /* <color> dragon scale mail */
-        else if (Is_dragon_scales(suit))
+        else if (is_dragon_scales(suit))
             return "dragon scales";
         suitnm = OBJ_NAME(objects[suit->otyp]);
         esuitp = eos((char *) suitnm);
