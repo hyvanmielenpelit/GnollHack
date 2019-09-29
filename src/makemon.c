@@ -753,124 +753,130 @@ register struct monst *mtmp;
      *  Soldiers get armour & rations - armour approximates their ac.
      *  Nymphs may get mirror or potion of object detection.
      */
-    switch (ptr->mlet) {
-    case S_HUMAN:
-        if (is_mercenary(ptr)) {
-            register int mac;
+	switch (ptr->mlet) {
+	case S_HUMAN:
+		if (is_mercenary(ptr)) {
+			register int mac;
 
-            switch (monsndx(ptr)) {
-            case PM_GUARD:
-                mac = -1;
-                break;
-            case PM_SOLDIER:
-                mac = 3;
-                break;
-            case PM_SERGEANT:
-                mac = 0;
-                break;
-            case PM_LIEUTENANT:
-                mac = -2;
-                break;
-            case PM_CAPTAIN:
-                mac = -3;
-                break;
-            case PM_WATCHMAN:
-                mac = 3;
-                break;
-            case PM_WATCH_CAPTAIN:
-                mac = -2;
-                break;
-            default:
-                impossible("odd mercenary %d?", monsndx(ptr));
-                mac = 0;
-                break;
-            }
+			switch (monsndx(ptr)) {
+			case PM_GUARD:
+				mac = -1;
+				break;
+			case PM_SOLDIER:
+				mac = 3;
+				break;
+			case PM_SERGEANT:
+				mac = 0;
+				break;
+			case PM_LIEUTENANT:
+				mac = -2;
+				break;
+			case PM_CAPTAIN:
+				mac = -3;
+				break;
+			case PM_WATCHMAN:
+				mac = 3;
+				break;
+			case PM_WATCH_CAPTAIN:
+				mac = -2;
+				break;
+			default:
+				impossible("odd mercenary %d?", monsndx(ptr));
+				mac = 0;
+				break;
+			}
 
-            if (mac < -1 && rn2(5))
-                mac += 7 + mongets(mtmp, (rn2(5)) ? PLATE_MAIL
-                                                  : CRYSTAL_PLATE_MAIL);
-            else if (mac < 3 && rn2(5))
-                mac +=
-                    6 + mongets(mtmp, (rn2(3)) ? SPLINT_MAIL : BANDED_MAIL);
-            else if (rn2(5))
-                mac += 3 + mongets(mtmp, (rn2(3)) ? RING_MAIL
-                                                  : STUDDED_LEATHER_ARMOR);
-            else
-                mac += 2 + mongets(mtmp, LEATHER_ARMOR);
+			if (mac < -1 && rn2(5))
+				mac += 7 + mongets(mtmp, (rn2(5)) ? PLATE_MAIL
+					: CRYSTAL_PLATE_MAIL);
+			else if (mac < 3 && rn2(5))
+				mac +=
+				6 + mongets(mtmp, (rn2(3)) ? SPLINT_MAIL : BANDED_MAIL);
+			else if (rn2(5))
+				mac += 3 + mongets(mtmp, (rn2(3)) ? RING_MAIL
+					: STUDDED_LEATHER_ARMOR);
+			else
+				mac += 2 + mongets(mtmp, LEATHER_ARMOR);
 
-            if (mac < 10 && rn2(3))
-                mac += 1 + mongets(mtmp, HELMET);
-            else if (mac < 10 && rn2(2))
-                mac += 1 + mongets(mtmp, DENTED_POT);
-            if (mac < 10 && rn2(3))
-                mac += 1 + mongets(mtmp, SMALL_SHIELD);
-            else if (mac < 10 && rn2(2))
-                mac += 2 + mongets(mtmp, LARGE_SHIELD);
-            if (mac < 10 && rn2(3))
-                mac += 1 + mongets(mtmp, LOW_BOOTS);
-            else if (mac < 10 && rn2(2))
-                mac += 2 + mongets(mtmp, HIGH_BOOTS);
-            if (mac < 10 && rn2(3))
-                mac += 1 + mongets(mtmp, LEATHER_GLOVES);
-            else if (mac < 10 && rn2(2))
-                mac += 1 + mongets(mtmp, LEATHER_CLOAK);
+			if (mac < 10 && rn2(3))
+				mac += 1 + mongets(mtmp, HELMET);
+			else if (mac < 10 && rn2(2))
+				mac += 1 + mongets(mtmp, DENTED_POT);
+			if (mac < 10 && rn2(3))
+				mac += 1 + mongets(mtmp, SMALL_SHIELD);
+			else if (mac < 10 && rn2(2))
+				mac += 2 + mongets(mtmp, LARGE_SHIELD);
+			if (mac < 10 && rn2(3))
+				mac += 1 + mongets(mtmp, LOW_BOOTS);
+			else if (mac < 10 && rn2(2))
+				mac += 2 + mongets(mtmp, HIGH_BOOTS);
+			if (mac < 10 && rn2(3))
+				mac += 1 + mongets(mtmp, LEATHER_GLOVES);
+			else if (mac < 10 && rn2(2))
+				mac += 1 + mongets(mtmp, LEATHER_CLOAK);
 
-            nhUse(mac); /* suppress 'dead increment' from static analyzer */
+			nhUse(mac); /* suppress 'dead increment' from static analyzer */
 
-            if (ptr == &mons[PM_WATCH_CAPTAIN]) {
-                ; /* better weapon rather than extra gear here */
-            } else if (ptr == &mons[PM_WATCHMAN]) {
-                if (rn2(3)) /* most watchmen carry a whistle */
-                    (void) mongets(mtmp, TIN_WHISTLE);
-            } else if (ptr == &mons[PM_GUARD]) {
-                /* if hero teleports out of a vault while being confronted
-                   by the vault's guard, there is a shrill whistling sound,
-                   so guard evidently carries a cursed whistle */
-                otmp = mksobj(TIN_WHISTLE, TRUE, FALSE, FALSE);
-                curse(otmp);
-                (void) mpickobj(mtmp, otmp);
-            } else { /* soldiers and their officers */
-                if (!rn2(3))
-                    (void) mongets(mtmp, K_RATION);
-                if (!rn2(2))
-                    (void) mongets(mtmp, C_RATION);
-                if (ptr != &mons[PM_SOLDIER] && !rn2(3))
-                    (void) mongets(mtmp, BUGLE);
-            }
-        } else if (ptr == &mons[PM_SHOPKEEPER]) {
-            (void) mongets(mtmp, SKELETON_KEY);
-            switch (rn2(4)) {
-            /* MAJOR fall through ... */
-            case 0:
-                (void) mongets(mtmp, WAN_MAGIC_MISSILE);
-                /*FALLTHRU*/
-            case 1:
-                (void) mongets(mtmp, POT_EXTRA_HEALING);
-                /*FALLTHRU*/
-            case 2:
-                (void) mongets(mtmp, POT_HEALING);
-                /*FALLTHRU*/
-            case 3:
-                (void) mongets(mtmp, WAN_STRIKING);
-            }
-        } else if (ptr->msound == MS_PRIEST
-                   || quest_mon_represents_role(ptr, PM_PRIEST)) {
-            (void) mongets(mtmp, rn2(7) ? ROBE
-                                        : rn2(3) ? CLOAK_OF_PROTECTION
-                                                 : CLOAK_OF_MAGIC_RESISTANCE);
-            (void) mongets(mtmp, SMALL_SHIELD);
-            mkmonmoney(mtmp, (long) rn1(10, 20));
-        } else if (quest_mon_represents_role(ptr, PM_MONK)) {
-            (void) mongets(mtmp, rn2(11) ? ROBE : CLOAK_OF_MAGIC_RESISTANCE);
-        }
-        break;
-    case S_NYMPH:
-        if (!rn2(2))
-            (void) mongets(mtmp, MIRROR);
-        if (!rn2(2))
-            (void) mongets(mtmp, POT_OBJECT_DETECTION);
-        break;
-    case S_GIANT:
+			if (ptr == &mons[PM_WATCH_CAPTAIN]) {
+				; /* better weapon rather than extra gear here */
+			}
+			else if (ptr == &mons[PM_WATCHMAN]) {
+				if (rn2(3)) /* most watchmen carry a whistle */
+					(void)mongets(mtmp, TIN_WHISTLE);
+			}
+			else if (ptr == &mons[PM_GUARD]) {
+				/* if hero teleports out of a vault while being confronted
+				   by the vault's guard, there is a shrill whistling sound,
+				   so guard evidently carries a cursed whistle */
+				otmp = mksobj(TIN_WHISTLE, TRUE, FALSE, FALSE);
+				curse(otmp);
+				(void)mpickobj(mtmp, otmp);
+			}
+			else { /* soldiers and their officers */
+				if (!rn2(3))
+					(void)mongets(mtmp, K_RATION);
+				if (!rn2(2))
+					(void)mongets(mtmp, C_RATION);
+				if (ptr != &mons[PM_SOLDIER] && !rn2(3))
+					(void)mongets(mtmp, BUGLE);
+			}
+		}
+		else if (ptr == &mons[PM_SHOPKEEPER]) {
+			(void)mongets(mtmp, SKELETON_KEY);
+			switch (rn2(4)) {
+				/* MAJOR fall through ... */
+			case 0:
+				(void)mongets(mtmp, WAN_MAGIC_MISSILE);
+				/*FALLTHRU*/
+			case 1:
+				(void)mongets(mtmp, POT_EXTRA_HEALING);
+				/*FALLTHRU*/
+			case 2:
+				(void)mongets(mtmp, POT_HEALING);
+				/*FALLTHRU*/
+			case 3:
+				(void)mongets(mtmp, WAN_STRIKING);
+			}
+		}
+		else if (ptr->msound == MS_PRIEST
+			|| quest_mon_represents_role(ptr, PM_PRIEST)) {
+			(void)mongets(mtmp, rn2(7) ? ROBE
+				: rn2(3) ? CLOAK_OF_PROTECTION
+				: CLOAK_OF_MAGIC_RESISTANCE);
+			(void)mongets(mtmp, SMALL_SHIELD);
+			mkmonmoney(mtmp, (long)rn1(10, 20));
+		}
+		else if (quest_mon_represents_role(ptr, PM_MONK)) {
+			(void)mongets(mtmp, rn2(11) ? ROBE : CLOAK_OF_MAGIC_RESISTANCE);
+		}
+		break;
+	case S_NYMPH:
+		if (!rn2(2))
+			(void)mongets(mtmp, MIRROR);
+		if (!rn2(2))
+			(void)mongets(mtmp, POT_OBJECT_DETECTION);
+		break;
+	case S_GIANT:
 		if (ptr == &mons[PM_MINOTAUR])
 		{
 			if (!rn2(3) || (in_mklev && Is_earthlevel(&u.uz)))
@@ -893,26 +899,27 @@ register struct monst *mtmp;
 				(void)mpickobj(mtmp, otmp);
 			}
 
-		} else if (is_giant(ptr)) {
-            for (cnt = rn2((int) (mtmp->m_lev / 2)); cnt; cnt--) {
-                otmp = mksobj(rnd_class(DILITHIUM_CRYSTAL, LUCKSTONE - 1),
-                              FALSE, FALSE, FALSE);
-                otmp->quan = (long) rn1(2, 3);
-                otmp->owt = weight(otmp);
-                (void) mpickobj(mtmp, otmp);
-            }
-        }
-        break;
-    case S_WRAITH:
-        if (ptr == &mons[PM_NAZGUL]) {
-            otmp = mksobj(RIN_INVISIBILITY, FALSE, FALSE, FALSE);
-            curse(otmp);
-            (void) mpickobj(mtmp, otmp);
-        }
-        break;
+		}
+		else if (is_giant(ptr)) {
+			for (cnt = rn2((int)(mtmp->m_lev / 2)); cnt; cnt--) {
+				otmp = mksobj(rnd_class(DILITHIUM_CRYSTAL, LUCKSTONE - 1),
+					FALSE, FALSE, FALSE);
+				otmp->quan = (long)rn1(2, 3);
+				otmp->owt = weight(otmp);
+				(void)mpickobj(mtmp, otmp);
+			}
+		}
+		break;
+	case S_WRAITH:
+		if (ptr == &mons[PM_NAZGUL]) {
+			otmp = mksobj(RIN_INVISIBILITY, FALSE, FALSE, FALSE);
+			curse(otmp);
+			(void)mpickobj(mtmp, otmp);
+		}
+		break;
 	case S_VAMPIRE:
 		if (ptr == &mons[PM_VAMPIRE_MAGE]) {
-			if(!rnd(7))
+			if (!rnd(7))
 				(void)mongets(mtmp, RIN_REPLENISHMENT);
 			if (!rnd(20))
 				(void)mongets(mtmp, ROBE_OF_THE_ARCHMAGI);
@@ -937,16 +944,16 @@ register struct monst *mtmp;
 	case S_LICH:
 		//Weapons
 		if (ptr == &mons[PM_MASTER_LICH] && !rn2(13))
-            (void) mongets(mtmp, (rn2(7) ? ATHAME : WAN_NOTHING));
-        else if (ptr == &mons[PM_ARCH_LICH] && !rn2(3)) {
-            otmp = mksobj(rn2(3) ? ATHAME : QUARTERSTAFF, TRUE,
-                          rn2(13) ? FALSE : TRUE, FALSE);
-            if (otmp->spe < 2)
-                otmp->spe = rnd(3);
-            if (!rn2(4))
-                otmp->oerodeproof = 1;
-            (void) mpickobj(mtmp, otmp);
-        }
+			(void)mongets(mtmp, (rn2(7) ? ATHAME : WAN_NOTHING));
+		else if (ptr == &mons[PM_ARCH_LICH] && !rn2(3)) {
+			otmp = mksobj(rn2(3) ? ATHAME : QUARTERSTAFF, TRUE,
+				rn2(13) ? FALSE : TRUE, FALSE);
+			if (otmp->spe < 2)
+				otmp->spe = rnd(3);
+			if (!rn2(4))
+				otmp->oerodeproof = 1;
+			(void)mpickobj(mtmp, otmp);
+		}
 
 		//Bracers
 		if (!rn2(4))
@@ -964,7 +971,7 @@ register struct monst *mtmp;
 		//Some spellbooks
 		if (ptr == &mons[PM_ARCH_LICH])
 			n = 2 + rnd(3); // 3...5
-		else if(ptr == &mons[PM_MASTER_LICH])
+		else if (ptr == &mons[PM_MASTER_LICH])
 			n = 1 + rnd(3); // 2...4
 		else
 			n = rnd(3); // 1...3
@@ -1001,57 +1008,99 @@ register struct monst *mtmp;
 
 		break;
 	case S_KOBOLD:
+		/* All kobolds have candles, which they are burning */
+		otmp = mksobj(rn2(4) ? TALLOW_CANDLE : WAX_CANDLE, TRUE, FALSE, FALSE);
+		otmp->quan = 1;
+		otmp->owt = weight(otmp);
+		if (!mpickobj(mtmp, otmp) && !levl[mtmp->mx][mtmp->my].lit)
+			begin_burn(otmp, FALSE);
+
+		/* Some of them have a back-up candle */
+		if (!rn2(4) || (!rn2(2) && (ptr == &mons[PM_LARGE_KOBOLD] || ptr == &mons[PM_KOBOLD_SHAMAN])))
+		{
+			otmp = mksobj(rn2(4) ? TALLOW_CANDLE : WAX_CANDLE, TRUE, FALSE, FALSE);
+			otmp->quan = 1;
+			otmp->owt = weight(otmp);
+			(void)mpickobj(mtmp, otmp);
+		}
+
+		/* Kobold lords have lots of candles */
+		if (ptr == &mons[PM_KOBOLD_LORD])
+		{
+			/* Maybe more than one as a back-up */
+			otmp = mksobj(rn2(4) ? TALLOW_CANDLE : WAX_CANDLE, TRUE, FALSE, FALSE);
+			(void)mpickobj(mtmp, otmp);
+		}
+
 		if (ptr == &mons[PM_KOBOLD_SHAMAN])
 		{
+			/* Maybe an additional candle */
 			if (!rn2(2))
+			{
+				otmp = mksobj(rn2(4) ? TALLOW_CANDLE : WAX_CANDLE, TRUE, FALSE, FALSE);
+				otmp->quan = 1;
+				otmp->owt = weight(otmp);
+				(void)mpickobj(mtmp, otmp);
+			}
+
+			/* Some random reagants */
+			int n = rnd(3);
+			while (n--)
+				(void)mongets(mtmp, randomreagent(TRUE, 0));
+
+			/* Some spellbooks */
+			n = rnd(2);
+			while (n--)
 			{
 				otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
 				(void)mpickobj(mtmp, otmp);
 			}
 		}
+
 		break;
 	case S_MUMMY:
-        if (rn2(7))
-            (void) mongets(mtmp, MUMMY_WRAPPING);
-        break;
-    case S_QUANTMECH:
+		if (rn2(7))
+			(void)mongets(mtmp, MUMMY_WRAPPING);
+		break;
+	case S_QUANTMECH:
 		if (!rn2(2))
 		{
 			otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
 			(void)mpickobj(mtmp, otmp);
 		}
 		if (!rn2(20)) {
-            struct obj *catcorpse;
+			struct obj* catcorpse;
 
-            otmp = mksobj(LARGE_BOX, FALSE, FALSE, FALSE);
-            /* we used to just set the flag, which resulted in weight()
-               treating the box as being heavier by the weight of a cat;
-               now we include a cat corpse that won't rot; when opening or
-               disclosing the box's contents, the corpse might be revived,
-               otherwise it's given a rot timer; weight is now ordinary */
-            if ((catcorpse = mksobj(CORPSE, TRUE, FALSE, FALSE)) != 0) {
-                otmp->spe = 1; /* flag for special SchroedingersBox */
-                set_corpsenm(catcorpse, PM_HOUSECAT);
-                (void) stop_timer(ROT_CORPSE, obj_to_any(catcorpse));
-                add_to_container(otmp, catcorpse);
-                otmp->owt = weight(otmp);
-            }
-            (void) mpickobj(mtmp, otmp);
-        }
-        break;
-    case S_LEPRECHAUN:
-        mkmonmoney(mtmp, (long) d(level_difficulty(), 30));
-        break;
-    case S_DEMON:
-        /* moved here from m_initweap() because these don't
-           have AT_WEAP so m_initweap() is not called for them */
-        if (ptr == &mons[PM_ICE_DEVIL] && !rn2(4)) {
-            (void) mongets(mtmp, SPEAR);
-        } else if (ptr == &mons[PM_ASMODEUS]) {
-            (void) mongets(mtmp, WAN_COLD);
-            (void) mongets(mtmp, WAN_FIRE);
-        }
-        break;
+			otmp = mksobj(LARGE_BOX, FALSE, FALSE, FALSE);
+			/* we used to just set the flag, which resulted in weight()
+			   treating the box as being heavier by the weight of a cat;
+			   now we include a cat corpse that won't rot; when opening or
+			   disclosing the box's contents, the corpse might be revived,
+			   otherwise it's given a rot timer; weight is now ordinary */
+			if ((catcorpse = mksobj(CORPSE, TRUE, FALSE, FALSE)) != 0) {
+				otmp->spe = 1; /* flag for special SchroedingersBox */
+				set_corpsenm(catcorpse, PM_HOUSECAT);
+				(void)stop_timer(ROT_CORPSE, obj_to_any(catcorpse));
+				add_to_container(otmp, catcorpse);
+				otmp->owt = weight(otmp);
+			}
+			(void)mpickobj(mtmp, otmp);
+		}
+		break;
+	case S_LEPRECHAUN:
+		mkmonmoney(mtmp, (long)d(level_difficulty(), 30));
+		break;
+	case S_DEMON:
+		/* moved here from m_initweap() because these don't
+		   have AT_WEAP so m_initweap() is not called for them */
+		if (ptr == &mons[PM_ICE_DEVIL] && !rn2(4)) {
+			(void)mongets(mtmp, SPEAR);
+		}
+		else if (ptr == &mons[PM_ASMODEUS]) {
+			(void)mongets(mtmp, WAN_COLD);
+			(void)mongets(mtmp, WAN_FIRE);
+		}
+		break;
 	case S_ORC:
 		if (ptr == &mons[PM_ORC_SHAMAN])
 		{
@@ -1063,9 +1112,9 @@ register struct monst *mtmp;
 		}
 		break;
 	case S_GNOLL:
-		if(ptr == &mons[PM_FLIND])
+		if (ptr == &mons[PM_FLIND])
 		{
-			if(!rn2(3))
+			if (!rn2(3))
 				(void)mongets(mtmp, WAN_LIGHTNING);
 		}
 		else if (ptr == &mons[PM_FLIND_LORD])
@@ -1075,54 +1124,52 @@ register struct monst *mtmp;
 		}
 		else if (ptr == &mons[PM_GNOLL_WARDEN])
 		{
-			if(!rn2(2))
-			{
-				int n = 0;
-				n = rn2(3); //0...2
+				int n = rn2(3);
 				while (n--)
 					(void)mongets(mtmp, randomreagent(FALSE, 0));
-			}
-			if (!rn2(2))
-			{
-				otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
-				(void)mpickobj(mtmp, otmp);
-			}
-			if (!rn2(6))
-				(void)mongets(mtmp, WAN_MAGIC_MISSILE);
-		}
-		else if (ptr == &mons[PM_GNOLL] || ptr == &mons[PM_GNOLL_LORD] || ptr == &mons[PM_GNOLL_KING])
-		{
-			//Get nothing
-		}
-		else
-		{
-			if (ptr == &mons[PM_GNOMISH_WIZARD])
-			{
-				if (!rn2(2))
-				{
-					int n = 0;
-					n = rn2(3); //0...2
-					while (n--)
-						(void)mongets(mtmp, randomreagent(TRUE, 0));
-				}
-				if (!rn2(2))
+
+				n = rn2(2);
+				while (n--)
 				{
 					otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
 					(void)mpickobj(mtmp, otmp);
 				}
 
-				if(!rn2(6))
-					(void)mongets(mtmp, WAN_CREATE_MONSTER);
-			}
-			if (!rn2((In_mines(&u.uz) && in_mklev) ? 20 : 60)) {
-				otmp = mksobj(rn2(4) ? TALLOW_CANDLE : WAX_CANDLE, TRUE, FALSE, FALSE);
-				otmp->quan = 1;
-				otmp->owt = weight(otmp);
-				if (!mpickobj(mtmp, otmp) && !levl[mtmp->mx][mtmp->my].lit)
-					begin_burn(otmp, FALSE);
-			}
+				if (!rn2(6))
+					(void)mongets(mtmp, WAN_MAGIC_MISSILE);
 		}
-        break;
+		else if (ptr == &mons[PM_GNOLL] || ptr == &mons[PM_GNOLL_LORD] || ptr == &mons[PM_GNOLL_KING])
+		{
+			//Get nothing
+		}
+		break;
+
+	case S_GNOME:
+		if (ptr == &mons[PM_GNOMISH_WIZARD])
+		{
+			int n = 0;
+			n = rnd(3);
+			while (n--)
+				(void)mongets(mtmp, randomreagent(TRUE, 0));
+
+			n = rn2(2);
+			while (n--)
+			{
+				otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
+				(void)mpickobj(mtmp, otmp);
+			}
+
+			if (!rn2(6))
+				(void)mongets(mtmp, WAN_CREATE_MONSTER);
+		}
+		if (!rn2((In_mines(&u.uz) && in_mklev) ? 20 : 60)) {
+			otmp = mksobj(rn2(4) ? TALLOW_CANDLE : WAX_CANDLE, TRUE, FALSE, FALSE);
+			otmp->quan = 1;
+			otmp->owt = weight(otmp);
+			if (!mpickobj(mtmp, otmp) && !levl[mtmp->mx][mtmp->my].lit)
+				begin_burn(otmp, FALSE);
+		}
+	    break;
     default:
         break;
     }
