@@ -349,6 +349,10 @@ struct obj {
 /* special stones */
 #define is_graystone(obj)                                 \
     (objects[obj->otyp].oc_flags2 & O2_GRAYSTONE)
+#define is_rock(obj)                                 \
+    (objects[obj->otyp].oc_flags2 & O2_ROCK)
+#define is_ore(obj)                                 \
+    (objects[obj->otyp].oc_flags2 & O2_ORE)
 
 /* misc helpers, simple enough to be macros */
 #define is_flimsy(otmp)                           \

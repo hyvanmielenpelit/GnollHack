@@ -992,7 +992,7 @@ register int after;
                 /* monsters may pick rocks up, but won't go out of their way
                    to grab them; this might hamper sling wielders, but it cuts
                    down on move overhead by filtering out most common item */
-                if (otmp->otyp == ROCK)
+                if (is_rock(otmp))
                     continue;
                 xx = otmp->ox;
                 yy = otmp->oy;

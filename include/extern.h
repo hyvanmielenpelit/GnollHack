@@ -1483,6 +1483,7 @@ E boolean FDECL(vamp_stone, (struct monst *));
 E void FDECL(m_detach, (struct monst*, struct permonst*));
 E int NDECL(randomtruegem);
 E int FDECL(randomreagent, (boolean, int));
+E int NDECL(randomore);
 
 
 /* ### mondata.c ### */

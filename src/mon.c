@@ -842,6 +842,35 @@ int reagentstyle; //0 = all, 1 = priest only, 2 = all but no priest
 }
 
 
+
+int
+randomore()
+{
+	int otyp = 0;
+	int totalprob = 0;
+
+	for (int i = NUGGET_OF_IRON_ORE; i <= NUGGET_OF_MITHRIL_ORE; i++)
+	{
+		totalprob += max(1, objects[i].oc_prob);
+	}
+
+	int roll = rn2(totalprob);
+	int probcount = 0;
+	int oreid = 0;
+
+	for (int i = NUGGET_OF_IRON_ORE; i <= NUGGET_OF_MITHRIL_ORE; i++)
+	{
+		probcount += max(1, objects[i].oc_prob);
+		if (probcount > roll)
+		{
+			oreid = i;
+			break;
+		}
+	}
+
+	return oreid;
+}
+
 /* check mtmp and water/lava for compatibility, 0 (survived), 1 (died) */
 int
 minliquid(mtmp)

@@ -3987,7 +3987,7 @@ struct obj *no_wish;
     if (cnt > 0 && objects[typ].oc_merge
         && (wizard || cnt < rnd(6) || (cnt <= 7 && Is_candle(otmp))
             || (cnt <= 20 && ((oclass == WEAPON_CLASS && is_ammo(otmp))
-                              || typ == ROCK || typ == STONE_PEBBLE || typ == CLAY_PEBBLE || is_missile(otmp)))))
+                              || is_rock(otmp) || is_missile(otmp)))))
         otmp->quan = (long) cnt;
 
 	if (oclass == GEM_CLASS && !wizard)

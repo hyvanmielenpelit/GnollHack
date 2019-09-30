@@ -4118,7 +4118,7 @@ struct obj **pobj; /* object tossed/used, set to NULL
         bhitpos.y = u.uy;
     }
 
-    if (weapon == THROWN_WEAPON && obj && (obj->otyp == ROCK || obj->otyp == STONE_PEBBLE || obj->otyp == CLAY_PEBBLE)) {
+    if (weapon == THROWN_WEAPON && obj && is_rock(obj)) {
         skiprange(range, &skiprange_start, &skiprange_end);
         allow_skip = !rn2(3);
     }

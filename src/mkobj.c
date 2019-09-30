@@ -448,7 +448,7 @@ struct obj *box;
                 otmp->quan = (long) (rnd(level_difficulty() + 2) * rnd(75));
                 otmp->owt = weight(otmp);
             } else
-                while (otmp->otyp == ROCK || otmp->otyp == STONE_PEBBLE || otmp->otyp == CLAY_PEBBLE) {
+                while (is_rock(otmp)) {
                     otmp->otyp = rnd_class(DILITHIUM_CRYSTAL, JINXSTONE);
                     if (otmp->quan > 2L)
                         otmp->quan = 1L;
@@ -1036,7 +1036,7 @@ boolean makingboxcontents;
             otmp->corpsenm = 0; /* LOADSTONE hack */
             if (objects[otmp->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED)
                 curse(otmp);
-            else if (otmp->otyp == ROCK || otmp->otyp == STONE_PEBBLE || otmp->otyp == CLAY_PEBBLE)
+            else if (is_rock(otmp))
                 otmp->quan = (long) rn1(6, 6);
             else if (otmp->otyp != LUCKSTONE && !rn2(6))
                 otmp->quan = 2L;

@@ -2034,7 +2034,7 @@ boolean *dealloced;
     obj_extract_self(otmp);
 
     under_ice = is_ice(otmp->ox, otmp->oy);
-    if (otmp->otyp == ROCK && !under_ice) {
+    if ((is_rock(otmp) || is_ore(otmp)) && !under_ice) {
         /* merges into burying material */
         if (dealloced)
             *dealloced = TRUE;

@@ -1695,11 +1695,25 @@ ROCK("touchstone", "gray",
 ROCK("flint", "gray",      //Gray stone end marker 
 	0, 0, 0,				0,  10,  10,  1, 1, 8, 0, 1, 8, 0, 0, 10, 7, MINERAL, CLR_GRAY, O1_THROWN_WEAPON, O2_GRAYSTONE, O3_NONE, PERMITTED_ALL),
 ROCK("rock", None,         
-	0, 0, 0,				1,  50,  10,  0, 1, 6, 0, 1, 6, 0, 0, 10, 7, MINERAL, CLR_GRAY, O1_THROWN_WEAPON, O2_NONE, O3_NONE, PERMITTED_ALL),
+	0, 0, 0,				1,  30,  10,  0, 1, 6, 0, 1, 6, 0, 0, 10, 7, MINERAL, CLR_GRAY, O1_THROWN_WEAPON, O2_ROCK, O3_NONE, PERMITTED_ALL),
 ROCK("stone pebble", None,         
-	0, 0, 0,				1,  30,  2,  0, 1, 4, 0, 1, 4, 0, 0, 10, 7, MINERAL, CLR_GRAY, O1_THROWN_WEAPON, O2_NONE, O3_NONE, PERMITTED_ALL),
+	0, 0, 0,				1,  20, 2, 0, 1, 4, 0, 1, 4, 0, 0, 10, 7, MINERAL, CLR_GRAY, O1_THROWN_WEAPON, O2_ROCK, O3_NONE, PERMITTED_ALL),
 ROCK("clay pebble", None,         
-	0, 0, 0,				1,  10,  2,  0, 1, 3, 0, 1, 3, 0, 0, 10, 7, MINERAL, CLR_BROWN, O1_THROWN_WEAPON, O2_NONE, O3_NONE, PERMITTED_ALL),
+	0, 0, 0,				1,10,   2, 0, 1, 3, 0, 1, 3, 0, 0, 10, 7, MINERAL, CLR_BROWN, O1_THROWN_WEAPON, O2_ROCK, O3_NONE, PERMITTED_ALL),
+ROCK("nugget of iron ore", None,         //Ore startmarker
+	0, 0, 0,				1, 10, 320,    1, 1, 3, 0, 1, 3, 0, 0, 10, 7, IRON, HI_METAL, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
+ROCK("nugget of copper ore", None,
+	0, 0, 0,				1,  9, 160,    2, 1, 3, 0, 1, 3, 0, 0, 10, 7, COPPER, HI_GOLD, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
+ROCK("nugget of silver ore", None,
+	0, 0, 0,				1,  5,  32,    5, 1, 3, 0, 1, 3, 0, 0, 10, 7, SILVER, HI_SILVER, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
+ROCK("nugget of gold ore", None,
+	0, 0, 0,				1,  3,  16,   25, 1, 3, 0, 1, 3, 0, 0, 10, 7, GOLD, HI_GOLD, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
+ROCK("nugget of platinum ore", None,
+	0, 0, 0,				1,  2,   8,   50, 1, 3, 0, 1, 3, 0, 0, 10, 7, PLATINUM, HI_SILVER, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
+ROCK("nugget of mithril ore", None,		//Ore endmarker
+	0, 0, 0,				1,  1,   4,  100, 1, 3, 0, 1, 3, 0, 0, 10, 7, MITHRIL, HI_SILVER, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
+
+
 #undef GEM
 #undef ROCK
 
@@ -1751,7 +1765,7 @@ OBJECT(OBJ("acid venom", "splash of venom"), None, None,
 	REAGENT("sprig of wolfsbane",		125, 1, 2, 10, VEGGY, EDIBLE_POISONOUS,	40, CLR_GREEN, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
 	REAGENT("clove of garlic",			125, 1, 2, 10, VEGGY, EDIBLE_NORMAL,	40, CLR_WHITE, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
 
-	REAGENT("feather",			125, 0, 1, 10, ORGANIC, 0,				10, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* STARTMARKER 1&2 */
+	REAGENT("feather",					125, 0, 1, 10, ORGANIC, 0,				10, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* STARTMARKER 1&2 */
 
 #undef REAGENT
 

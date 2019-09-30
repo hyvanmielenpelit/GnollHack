@@ -941,13 +941,14 @@ boolean skip_lvl_checks;
                 && (!In_mines(&u.uz) || sp->flags.town))))
         return;
 
+	/* note: gold can now generate any type of minerals, but not gold coins*/
     /* basic level-related probabilities */
     if (goldprob < 0)
-        goldprob = 20 + depth(&u.uz) / 3;
+        goldprob = 60 + depth(&u.uz); //Tripled from original
     if (gemprob < 0)
-        gemprob = goldprob / 4;
-
-    /* mines have ***MORE*** goodies - otherwise why mine? */
+        gemprob = goldprob / 8;  //Halved from original
+	
+	/* mines have ***MORE*** goodies - otherwise why mine? */
     if (!skip_lvl_checks) {
         if (In_mines(&u.uz)) {
             goldprob *= 2;
@@ -978,27 +979,27 @@ boolean skip_lvl_checks;
                        && levl[x + 1][y + 1].typ == STONE
                        && levl[x - 1][y + 1].typ == STONE) {
                 if (rn2(1000) < goldprob) {
-                    if ((otmp = mksobj(GOLD_PIECE, FALSE, FALSE, FALSE)) != 0) {
+                    if ((otmp = mksobj(randomore(), FALSE, FALSE, FALSE)) != 0) {
                         otmp->ox = x, otmp->oy = y;
-                        otmp->quan = 1L + rnd(goldprob * 3);
+						otmp->quan = 1L; //+ rnd(goldprob * 3);
                         otmp->owt = weight(otmp);
-                        if (!rn2(3))
-                            add_to_buried(otmp);
-                        else
-                            place_object(otmp, x, y);
+                        //if (!rn2(3)) //Note: It would be too difficult to find without object detection
+                        //    add_to_buried(otmp);
+                        //else
+                        place_object(otmp, x, y);
                     }
                 }
                 if (rn2(1000) < gemprob) {
                     for (cnt = rnd(2 + dunlev(&u.uz) / 3); cnt > 0; cnt--)
                         if ((otmp = mkobj(GEM_CLASS, FALSE, FALSE)) != 0) {
-                            if (otmp->otyp == ROCK || otmp->otyp == STONE_PEBBLE || otmp->otyp == CLAY_PEBBLE) {
+                            if (is_rock(otmp)) {
                                 dealloc_obj(otmp); /* discard it */
                             } else {
                                 otmp->ox = x, otmp->oy = y;
-                                if (!rn2(3))
-                                    add_to_buried(otmp);
-                                else
-                                    place_object(otmp, x, y);
+                                //if (!rn2(3))
+                                //    add_to_buried(otmp);
+                                //else
+                                place_object(otmp, x, y);
                             }
                         }
                 }

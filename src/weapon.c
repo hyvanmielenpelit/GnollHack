@@ -105,7 +105,7 @@ struct obj *obj;
         break;
     case P_SLING:
         if (is_ammo(obj))
-            descr = (obj->otyp == ROCK || obj->otyp == STONE_PEBBLE || obj->otyp == CLAY_PEBBLE || is_graystone(obj))
+            descr = (is_rock(obj) || is_graystone(obj))
                         ? "stone"
                         /* avoid "rock"; what about known glass? */
                         : (obj->oclass == GEM_CLASS)

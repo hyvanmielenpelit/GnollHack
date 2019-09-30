@@ -690,7 +690,7 @@ struct monst *mtmp;
     }
     if (rn2(1000) < gemprob) {
         if ((otmp = mkobj(GEM_CLASS, FALSE, FALSE)) != 0) {
-            if (otmp->otyp == ROCK || otmp->otyp == STONE_PEBBLE || otmp->otyp == CLAY_PEBBLE)
+            if (is_rock(otmp))
                 dealloc_obj(otmp);
             else
                 add_to_minv(mtmp, otmp);

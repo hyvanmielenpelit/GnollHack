@@ -333,7 +333,10 @@ struct objclass {
 #define O2_RELATIVE_AGE 0x00020000	
 
 #define O2_GRAYSTONE 0x00080000	
-#define O2_FLIMSY 0x00100000	
+#define O2_ROCK 0x00100000	
+#define O2_ORE 0x00200000	
+
+#define O2_FLIMSY 0x00400000	
 
 
 /* Artifact flags - to do: Attack type, half physical and spell damage, bonus to monsters only */

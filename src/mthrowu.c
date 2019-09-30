@@ -140,7 +140,7 @@ int x, y;
     if (obj->otyp == CREAM_PIE || obj->oclass == VENOM_CLASS
         || (ohit && obj->otyp == EGG))
         create = 0;
-    else if (ohit && (is_multigen(obj) || obj->otyp == ROCK))
+    else if (ohit && (is_multigen(obj) || is_rock(obj)))
         create = !rn2(3);
     else
         create = 1;

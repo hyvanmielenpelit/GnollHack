@@ -277,10 +277,10 @@ struct materialcomponentlist matlists[] =
 	},
 
 	{ SPE_CREATE_IRON_GOLEM,
-	"Iron chain, spider silk, wolfsbane",
+	"3 nuggets of iron, spider silk, wolfsbane",
 	1,
 		{
-			{IRON_CHAIN, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS}, 
+			{NUGGET_OF_IRON_ORE, NOT_APPLICABLE, 3, MATCOMP_NO_FLAGS}, 
 			{THREAD_OF_SPIDER_SILK, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS}, 
 			{SPRIG_OF_WOLFSBANE, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
 			NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
@@ -288,10 +288,10 @@ struct materialcomponentlist matlists[] =
 	},
 
 	{ SPE_CREATE_SILVER_GOLEM,
-	"10 silver sling-bullets, spider silk, ginseng",
+	"3 nuggets of silver, spider silk, ginseng",
 	1,
 		{
-			{SILVER_SLING_BULLET, NOT_APPLICABLE, 10, MATCOMP_NO_FLAGS},
+			{NUGGET_OF_SILVER_ORE, NOT_APPLICABLE, 3, MATCOMP_NO_FLAGS},
 			{THREAD_OF_SPIDER_SILK, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
 			{GINSENG_ROOT, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
 			NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP

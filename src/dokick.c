@@ -1409,7 +1409,7 @@ xchar dlev;          /* if !0 send to dlev near player */
         }
     }
 
-    isrock = (missile && missile->otyp == ROCK);
+    isrock = (missile && is_rock(missile));
     oct = dct = 0L;
     for (obj = level.objects[x][y]; obj; obj = obj2) {
         obj2 = obj->nexthere;
