@@ -3339,7 +3339,7 @@ struct ext_func_tab extcmdlist[] = {
     { '\0', "migratemons", "migrate N random monsters",
             wiz_migrate_mons, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
 #endif
-    { M('m'), "monster", "use monster's special ability",
+    { 'A'/*M('m')*/, "ability", "use ability or skill",
             domonability, IFBURIED | AUTOCOMPLETE },
 	{ 'N', "name", "name a monster or an object",
             docallcmd, IFBURIED | AUTOCOMPLETE },
@@ -3410,7 +3410,7 @@ struct ext_func_tab extcmdlist[] = {
     },
     { 'x', "swap", "swap wielded and secondary weapons", doswapweapon },
     { 'T', "takeoff", "take off one piece of armor", dotakeoff },
-    { 'A', "takeoffall", "remove all armor", doddoremarm },
+    { M('t')/*'A'*/, "takeoffall", "remove all armor", doddoremarm },
     { C('t'), "teleport", "teleport around the level", dotelecmd, IFBURIED },
     { '\0', "terrain", "show map without obstructions",
             doterrain, IFBURIED | AUTOCOMPLETE },

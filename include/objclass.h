@@ -284,11 +284,12 @@ struct objclass {
 #define O1_CORROSION_RESISTANT 0x00000080
 
 #define O1_SPE_AFFECTS_MC 0x00000100									/* +X of the item influences also its MC */
-#define O1_IS_ARMOR_WHEN_WIELDED 0x00000200								/* acts as an armor when wielded giving AC using oc_armor_class, which must be specified */
+#define O1_IS_ARMOR_WHEN_WIELDED 0x00000200								/* for non-armors: acts as an armor when wielded giving AC using oc_armor_class, which must be specified */
 #define O1_INVOKABLE 0x00000400								
 #define O1_APPLIABLE 0x00000800								
 #define O1_READABLE 0x00001000								
-#define O1_EDIBLE_NONFOOD 0x00002000
+#define O1_WIELDABLE 0x00002000											/* can be wielded in a weapon slot */								
+#define O1_EDIBLE_NONFOOD 0x00004000
 
 #define O1_MANA_PERCENTAGE_BONUS 0x00008000
 #define O1_HP_PERCENTAGE_BONUS 0x00010000

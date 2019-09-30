@@ -120,15 +120,17 @@ struct prop {
 
 #define W_ARMOR (W_ARM | W_ARMC | W_ARMH | W_ARMS | W_ARMG | W_ARMF | W_ARMU | W_ARMO | W_ARMB)
 /* Weapons and artifacts */
-#define W_WEP 0x00000200L     /* Wielded weapon */
-#define W_QUIVER 0x00000400L  /* Quiver for (f)iring ammo */
-#define W_SWAPWEP 0x00000800L /* Secondary weapon */
+#define W_WEP		0x00000200L     /* Wielded weapon */
+#define W_QUIVER	0x00000400L		/* Quiver for (f)iring ammo */
+#define W_SWAPWEP	0x00000800L		/* Secondary weapon */
 
-#define W_WEAPON (W_WEP | W_SWAPWEP | W_QUIVER)
-#define W_ART 0x00001000L     /* Carrying artifact (not really worn) */
-#define W_ARTI 0x00002000L    /* Invoked artifact  (not really worn) */
-/* 0x00004000 unused */
-/* 0x00008000 unused */
+#define W_WEP2		0x00001000L		/* Wielded weapon 2 */
+#define W_WEP3		0x00002000L		/* Wielded weapon 3 */
+#define W_WEP4		0x00004000L		/* Wielded weapon 4 */
+#define W_WEP5		0x00008000L		/* Wielded weapon 5 */
+
+#define W_WIELDED_WEAPON (W_WEP | W_WEP2 | W_WEP3 | W_WEP4 | W_WEP5)
+#define W_WEAPON (W_WIELDED_WEAPON | W_SWAPWEP | W_QUIVER)
 
 /* Amulets, rings, tools, and other items */
 #define W_AMUL 0x00010000L    /* Amulet */
@@ -144,19 +146,19 @@ struct prop {
 #define W_CHAIN 0x00400000L  /* Punishment chain */
 
 	/* new accessories*/
-#define W_MISC  0x00800000L	  /* Special decorative item, such as a belt, a brooch, bracelet, nose ring */
-#define W_MISC2 0x01000000L   /* Special decorative item, such as a belt, a brooch, bracelet, nose ring */
-#define W_MISC3 0x02000000L   /* Special decorative item, such as a belt, a brooch, bracelet, nose ring */
-#define W_MISC4 0x04000000L	  /* Special decorative item, such as a belt, a brooch, bracelet, nose ring */
-#define W_MISC5 0x08000000L	  /* Special decorative item, such as a belt, a brooch, bracelet, nose ring */
+#define W_MISC  0x00800000L	  /* Special miscellaneous item, such as a belt, a brooch, bracelet, nose ring */
+#define W_MISC2 0x01000000L   /* Special miscellaneous item, such as a belt, a brooch, bracelet, nose ring */
+#define W_MISC3 0x02000000L   /* Special miscellaneous item, such as a belt, a brooch, bracelet, nose ring */
+#define W_MISC4 0x04000000L	  /* Special miscellaneous item, such as a belt, a brooch, bracelet, nose ring */
+#define W_MISC5 0x08000000L	  /* Special miscellaneous item, such as a belt, a brooch, bracelet, nose ring */
 
 #define W_MISCITEMS (W_MISC  | W_MISC2 | W_MISC3 | W_MISC4 | W_MISC5)
 #define W_ACCESSORY (W_RING | W_AMUL | W_MISCITEMS | W_BLINDFOLD)
 
-/* Carried */
-/*0x10000000 unused */
+/* Special */
+#define W_ART 0x10000000L     /* Carrying artifact (not really worn) */
 /*0x20000000 used by I_SPECIAL */
-/*0x40000000 unused */
+#define W_ARTI 0x40000000L    /* Invoked artifact  (not really worn) */
 #define W_CARRIED 0x80000000L  /* Carried */
 
     /*** Property is blocked by an object ***/
