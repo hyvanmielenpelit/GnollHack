@@ -408,25 +408,26 @@ register struct monst *mtmp;
         if (humanoid(ptr)) {
             /* create minion stuff; can't use mongets */
 			
-			int weaptype = LONG_SWORD;
-			int artifacttype = ART_SUNSWORD;
+			int weaptype = LONG_SWORD_OF_HOLY_VENGEANCE;
+			int artifacttype = 0;
 			
-			switch (rn2(3))
+			if (!rn2(4))
 			{
-			case 0:
-				weaptype = LONG_SWORD;
-				artifacttype = ART_SUNSWORD;
-				break;
-			case 1:
-				weaptype = SILVER_LONG_SWORD;
-				artifacttype = ART_DEMONBANE;
-			case 2:
-				weaptype = LONG_SWORD_OF_HOLY_VENGEANCE;
-				artifacttype = 0;
-				break;
-			default:
-				break;
+				switch (rn2(2))
+				{
+				case 0:
+					weaptype = LONG_SWORD;
+					artifacttype = ART_SUNSWORD;
+					break;
+				case 1:
+					weaptype = SILVER_LONG_SWORD;
+					artifacttype = ART_DEMONBANE;
+					break;
+				default:
+					break;
+				}
 			}
+
             otmp = mksobj(weaptype, FALSE, FALSE, FALSE);
 
             /* maybe make it special */
