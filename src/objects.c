@@ -1701,17 +1701,17 @@ ROCK("stone pebble", None,
 ROCK("clay pebble", None,         
 	0, 0, 0,				1,10,   2, 0, 1, 3, 0, 1, 3, 0, 0, 10, 7, MINERAL, CLR_BROWN, O1_THROWN_WEAPON, O2_ROCK, O3_NONE, PERMITTED_ALL),
 ROCK("nugget of iron ore", None,         //Ore startmarker
-	0, 0, 0,				1, 10, 320,    1, 1, 3, 0, 1, 3, 0, 0, 10, 7, IRON, HI_METAL, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
+	0, 0, 0,				1, 10,  16,    1, 1, 3, 0, 1, 3, 0, 0, 10, 7, IRON, HI_METAL, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
 ROCK("nugget of copper ore", None,
-	0, 0, 0,				1,  9, 160,    2, 1, 3, 0, 1, 3, 0, 0, 10, 7, COPPER, HI_GOLD, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
+	0, 0, 0,				1,  9,  16,    2, 1, 3, 0, 1, 3, 0, 0, 10, 7, COPPER, HI_GOLD, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
 ROCK("nugget of silver ore", None,
-	0, 0, 0,				1,  5,  32,    5, 1, 3, 0, 1, 3, 0, 0, 10, 7, SILVER, HI_SILVER, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
+	0, 0, 0,				1,  5,  16,    5, 1, 3, 0, 1, 3, 0, 0, 10, 7, SILVER, HI_SILVER, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
 ROCK("nugget of gold ore", None,
 	0, 0, 0,				1,  3,  16,   25, 1, 3, 0, 1, 3, 0, 0, 10, 7, GOLD, HI_GOLD, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
 ROCK("nugget of platinum ore", None,
-	0, 0, 0,				1,  2,   8,   50, 1, 3, 0, 1, 3, 0, 0, 10, 7, PLATINUM, HI_SILVER, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
+	0, 0, 0,				1,  2,  16,   50, 1, 3, 0, 1, 3, 0, 0, 10, 7, PLATINUM, HI_SILVER, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
 ROCK("nugget of mithril ore", None,		//Ore endmarker
-	0, 0, 0,				1,  1,   4,  100, 1, 3, 0, 1, 3, 0, 0, 10, 7, MITHRIL, HI_SILVER, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
+	0, 0, 0,				1,  1,  16,  100, 1, 3, 0, 1, 3, 0, 0, 10, 7, MITHRIL, HI_SILVER, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
 
 
 #undef GEM

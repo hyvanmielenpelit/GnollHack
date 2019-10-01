@@ -2781,7 +2781,7 @@ int *spell_no;
 	else
 	{
 		if (!iflags.menu_tab_sep) {
-			Sprintf(buf, "%-20s     Level %-13s Mana Stat Fail Cool Casts", "    Name",
+			Sprintf(buf, "%-24s     Level %-13s Mana Stat Fail Cool Casts", "    Name",
 				"Category");
 		}
 		else {
@@ -2797,9 +2797,9 @@ int *spell_no;
 
 			if (!iflags.menu_tab_sep) {
 				if (spellknow(splnum) <= 0)
-					strcpy(fmt, "%-20s  %s");
+					strcpy(fmt, "%-24s  %s");
 				else
-					strcpy(fmt, "%-20s  %s   %-13s %4d  %s %3d%% %4d  %4s");
+					strcpy(fmt, "%-24s  %s   %-13s %4d  %s %3d%% %4d  %4s");
 				//		fmt = "%-20s  %2d   %-12s %4d %3d%% %8s";
 			}
 			else {
