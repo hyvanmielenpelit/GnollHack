@@ -613,6 +613,7 @@ clear_level_structures()
     level.flags.has_morgue = level.flags.graveyard = 0;
     level.flags.has_beehive = 0;
 	level.flags.has_library = 0;
+	level.flags.has_garden = 0;
 	level.flags.has_barracks = 0;
     level.flags.has_temple = 0;
     level.flags.has_swamp = 0;
@@ -762,7 +763,7 @@ makelevel()
         else if (u_depth > 1 && u_depth < depth(&medusa_level)
                  && nroom >= room_threshold && rn2(u_depth) < 3)
             mkroom(SHOPBASE);
-        else if (u_depth > 4 && !rn2(6))
+		else if (u_depth > 4 && !rn2(6))
             mkroom(COURT);
         else if (u_depth > 5 && !rn2(8)
                  && !(mvitals[PM_LEPRECHAUN].mvflags & G_GONE))
@@ -788,7 +789,12 @@ makelevel()
         else if (u_depth > 16 && !rn2(8)
                  && !(mvitals[PM_COCKATRICE].mvflags & G_GONE))
             mkroom(COCKNEST);
-    }
+
+		if (u_depth > 2 && !rn2(3))
+			mkroom(GARDEN);
+
+	}
+
 
  skip0:
     /* Place multi-dungeon branch. */

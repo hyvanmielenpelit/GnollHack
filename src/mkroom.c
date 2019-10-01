@@ -19,7 +19,7 @@
 
 STATIC_DCL boolean FDECL(isbig, (struct mkroom *));
 STATIC_DCL struct mkroom *FDECL(pick_room, (BOOLEAN_P));
-STATIC_DCL void NDECL(mkshop), FDECL(mkzoo, (int)), NDECL(mkswamp);
+STATIC_DCL void NDECL(mkshop), FDECL(mkzoo, (int)), NDECL(mkswamp), NDECL(mkgarden);
 STATIC_DCL void NDECL(mktemple);
 STATIC_DCL coord *FDECL(shrine_pos, (int));
 STATIC_DCL struct permonst *NDECL(morguemon);
@@ -72,7 +72,10 @@ int roomtype;
         case SWAMP:
             mkswamp();
             break;
-        case TEMPLE:
+		case GARDEN:
+			mkgarden();
+			break;
+		case TEMPLE:
             mktemple();
             break;
         case LEPREHALL:
@@ -145,7 +148,11 @@ mkshop()
                 mkswamp();
                 return;
             }
-            for (i = 0; shtypes[i].name; i++)
+			if (*ep == 'g' || *ep == 'G') { // Garden gnomes
+				mkgarden();
+				return;
+			}
+			for (i = 0; shtypes[i].name; i++)
                 if (*ep == def_oc_syms[(int) shtypes[i].symb].sym)
                     goto gottype;
             if (*ep == 'g' || *ep == 'G')
@@ -529,6 +536,9 @@ struct mkroom *sroom;
 	case LIBRARY:
 		level.flags.has_beehive = 1;
 		break;
+	case GARDEN:
+		level.flags.has_garden = 1;
+		break;
 	}
 }
 
@@ -695,6 +705,118 @@ mkswamp() /* Michiel Huisjes & Fred de Wilde */
                 }
         level.flags.has_swamp = 1;
     }
+}
+
+
+STATIC_OVL void
+mkgarden() 
+{
+	register struct mkroom* sroom = (struct mkroom*)0;
+	register int sx, sy, i;
+
+	for (i = 0; i < nroom; i++) { /* turn up to 1 rooms gardenlike */
+		sroom = &rooms[rn2(nroom)];
+		if (sroom->hx < 0 || sroom->rtype != OROOM || has_upstairs(sroom)
+			|| has_dnstairs(sroom))
+			continue;
+		else
+			break;
+	}
+
+	if (!sroom)
+		return;
+
+	/* satisfied; make a garden */
+	sroom->rtype = GARDEN;
+	for (sx = sroom->lx; sx <= sroom->hx; sx++)
+	{
+		for (sy = sroom->ly; sy <= sroom->hy; sy++)
+		{
+			if (!OBJ_AT(sx, sy) && !MON_AT(sx, sy) && !t_at(sx, sy)
+				&& !nexttodoor(sx, sy) && !rn2(5))
+			{
+				levl[sx][sy].typ = TREE;
+			}
+			else
+			{
+				/* Buried items */
+				if (!rn2(2))
+				{
+					int itemtype = MANDRAKE_ROOT;
+
+					switch (rn2(4))
+					{
+					case 0:
+						itemtype = MANDRAKE_ROOT;
+						break;
+					case 1:
+						itemtype = GINSENG_ROOT;
+						break;
+					case 2:
+						itemtype = CARROT;
+						break;
+					case 3:
+						itemtype = CLOVE_OF_GARLIC;
+						break;
+					default:
+						break;
+					}
+					struct obj* otmp = mksobj(itemtype, TRUE, FALSE, FALSE);
+					if (otmp)
+					{
+						otmp->ox = sx;
+						otmp->oy = sy;
+						add_to_buried(otmp);
+					}
+				}
+
+				/* Non-buried items */
+				if (!rn2(2))
+				{
+					int itemtype = SPRIG_OF_WOLFSBANE;
+
+					switch (rn2(5))
+					{
+					case 0:
+						itemtype = SPRIG_OF_WOLFSBANE;
+						break;
+					case 1:
+						itemtype = CLOVE_OF_GARLIC;
+						break;
+					case 2:
+						itemtype = APPLE;
+						break;
+					case 3:
+						itemtype = PEAR;
+						break;
+					case 4:
+						itemtype = MELON;
+						break;
+					default:
+						break;
+					}
+					(void)mksobj_at(itemtype, sx, sy, TRUE, FALSE);
+				}
+
+				if (!rn2(4))
+				{
+					// Garden gnome
+					struct monst* mon = makemon(&mons[!rn2(4) && level_difficulty() > 4 ? PM_GNOME_LORD : PM_GNOME], sx, sy, NO_MM_FLAGS);
+					mon->mpeaceful = 1;
+					mon->msleeping = 1;
+				}
+				else if (!rn2(6))
+				{
+					//Sleepy ogre
+					struct monst* mon = makemon(&mons[!rn2(4) && level_difficulty() > 8 ? PM_OGRE_LORD : PM_OGRE], sx, sy, NO_MM_FLAGS);
+					mon->msleeping = 1;
+				}
+			}
+
+		}
+	}
+	level.flags.has_garden = 1;
+	
 }
 
 STATIC_OVL coord *

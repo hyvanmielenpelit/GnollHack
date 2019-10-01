@@ -59,6 +59,7 @@ enum roomtype_types {
     VAULT,      /* contains piles of gold */
     BEEHIVE,    /* contains killer bees and royal jelly */
 	LIBRARY,    /* contains bookshelves with scrolls and spellbooks and magic-using monsters such as liches */
+	GARDEN,     /* herbs etc. */
 	MORGUE,     /* contains corpses, undead and ghosts */
     BARRACKS,   /* contains soldiers and their gear */
     ZOO,        /* floor covered with treasure and monsters */
@@ -74,7 +75,8 @@ enum roomtype_types {
     WEAPONSHOP,
     FOODSHOP,
     RINGSHOP,
-    WANDSHOP,
+	REAGENTSHOP,
+	WANDSHOP,
     TOOLSHOP,
     BOOKSHOP,
     FODDERSHOP, /* health food store */

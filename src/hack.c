@@ -2446,6 +2446,9 @@ register boolean newlev;
         case BEEHIVE:
             You("enter a giant beehive!");
             break;
+		case GARDEN:
+			You("enter a lovely underground garden!");
+			break;
 		case LIBRARY:
 			You("enter a library!");
 			break;
@@ -2515,6 +2518,9 @@ register boolean newlev;
                     break;
 				case LIBRARY:
 					level.flags.has_library = 0;
+					break;
+				case GARDEN:
+					level.flags.has_garden = 0;
 					break;
 				}
             }

@@ -2474,6 +2474,7 @@ boolean prefilled;
         case ZOO:
         case BEEHIVE:
 		case LIBRARY:
+		case GARDEN:
 		case ANTHOLE:
         case COCKNEST:
         case LEPREHALL:
@@ -2499,6 +2500,9 @@ boolean prefilled;
     case BEEHIVE:
         level.flags.has_beehive = TRUE;
         break;
+	case GARDEN:
+		level.flags.has_garden = TRUE;
+		break;
 	case LIBRARY:
 		level.flags.has_library = TRUE;
 		break;

@@ -1208,6 +1208,8 @@ wiz_map_levltyp(VOID_ARGS)
             Strcat(dsc, " barracks");
         if (level.flags.has_beehive)
             Strcat(dsc, " hive");
+		if (level.flags.has_garden)
+			Strcat(dsc, " garden");
 		if (level.flags.has_library)
 			Strcat(dsc, " library");
 		if (level.flags.has_swamp)
