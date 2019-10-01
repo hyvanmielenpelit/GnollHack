@@ -2555,6 +2555,8 @@ int *spell_no;
     start_menu(tmpwin);
     any = zeroany; /* zero out all bits */
 
+
+
     /*
      * The correct spacing of the columns when not using
      * tab separation depends on the following:
@@ -2565,6 +2567,7 @@ int *spell_no;
 	if (splaction == SPELLMENU_DETAILS)
 	{
 		int maxlen = 15;
+		int maxnamelen = 0;
 
 		for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
 		{
@@ -2576,11 +2579,21 @@ int *spell_no;
 				desclen = strlen(nodesc);
 			if (desclen > maxlen)
 				maxlen = desclen;
+
+			int namelen = 0;
+			namelen = strlen(spellname(splnum));
+			if (namelen > maxnamelen)
+				maxnamelen = namelen;
+
 		}
 
 		int extraspaces = maxlen - 15;
 		if (extraspaces > 42)
 			extraspaces = 42;
+
+		int extraleftforname = 42 - extraspaces;
+		int namelength = max(10, min(maxnamelen, 20 + extraleftforname));
+
 
 		char spacebuf[BUFSZ] = "";
 
@@ -2588,7 +2601,8 @@ int *spell_no;
 			Strcat(spacebuf, " ");
 
 		if (!iflags.menu_tab_sep) {
-			Sprintf(buf, "%-24s  Description    %s", "    Name", spacebuf);
+			Sprintf(fmt, "%%-%ds  Description    %%s", namelength + 4);
+			Sprintf(buf, fmt, "    Name", spacebuf);
 		}
 		else {
 			Sprintf(buf, "Name\tDescription");
@@ -2603,7 +2617,7 @@ int *spell_no;
 			char categorybuf[BUFSZ] = "";
 
 			if (!iflags.menu_tab_sep) {
-				strcpy(fmt, "%-20s  %s");
+				Sprintf(fmt, "%%-%ds  %%s", namelength);
 			}
 			else {
 				strcpy(fmt, "%s\t%s");
@@ -2612,16 +2626,8 @@ int *spell_no;
 			Sprintf(fullname, "%s", spellname(splnum));
 
 			//Spell name
-			if (strlen(fullname) > (size_t)(20))
-				strncpy(shortenedname, fullname, (size_t)(20));
-			else
-				strcpy(shortenedname, fullname);
-
-			Sprintf(fullname, "%s", spellname(splnum));
-
-			//Spell name
-			if (strlen(fullname) > (size_t)(20))
-				strncpy(shortenedname, fullname, (size_t)(20));
+			if (strlen(fullname) > (size_t)(namelength))
+				strncpy(shortenedname, fullname, (size_t)(namelength));
 			else
 				strcpy(shortenedname, fullname);
 
@@ -2660,19 +2666,27 @@ int *spell_no;
 	else if (splaction == SPELLMENU_PREPARE)
 	{
 		int maxlen = 23;
+		int maxnamelen = 0;
 
 		for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
 		{
 			int desclen = 0;
+			int namelen = 0;
 			splnum = !spl_orderindx ? i : spl_orderindx[i];
 			desclen = strlen(matlists[spellmatcomp(splnum)].description_short);
+			namelen = strlen(spellname(splnum));
 			if (desclen > maxlen)
 				maxlen = desclen;
+			if (namelen > maxnamelen)
+				maxnamelen = namelen;
 		}
 
 		int extraspaces = maxlen - 23;
 		if (extraspaces > 14)
 			extraspaces = 14;
+
+		int extraleftforname = 14 - extraspaces;
+		int namelength = max(10, min(maxnamelen, 20 + extraleftforname));
 
 		char spacebuf[BUFSZ] = "";
 		
@@ -2680,7 +2694,8 @@ int *spell_no;
 			Strcat(spacebuf, " ");
 
 		if (!iflags.menu_tab_sep) {
-			Sprintf(buf, "%-24s Casts  Adds  Material components    %s", "    Name", spacebuf);
+			Sprintf(fmt, "%%-%ds  Casts  Adds  Material components    %%s", namelength + 4);
+			Sprintf(buf, fmt, "    Name", spacebuf);
 		}
 		else {
 			Sprintf(buf, "Name\tCasts\tAdds\tMaterial components");
@@ -2692,12 +2707,12 @@ int *spell_no;
 
 			if (!iflags.menu_tab_sep) {
 				if(spellknow(splnum) <= 0)
-					strcpy(fmt, "%-20s  %s");
+					Sprintf(fmt, "%%-%ds  %%s", namelength);
 				else
 				{
 					char lengthbuf[BUFSZ] = "";
 					Sprintf(lengthbuf, "%ds", 23 + extraspaces);
-					strcpy(fmt, "%-20s  %5s %4s  %-");
+					Sprintf(fmt, "%%-%ds  %%5s  %%4s  %%-", namelength);
 					Strcat(fmt, lengthbuf);
 					//fmt = "%-20s  %s   %5s  %-35s";
 					//		fmt = "%-20s  %2d   %-12s %4d %3d%% %9s";
@@ -2719,8 +2734,8 @@ int *spell_no;
 
 			strcpy(fullname, spellname(splnum));
 
-			if (strlen(fullname) > 20)
-				strncpy(shortenedname, fullname, 20);
+			if (strlen(fullname) > (size_t)namelength)
+				strncpy(shortenedname, fullname, namelength);
 			else
 				strcpy(shortenedname, fullname);
 
@@ -2780,8 +2795,24 @@ int *spell_no;
 	}
 	else
 	{
+
+		int maxnamelen = 0;
+
+		for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
+		{
+			int namelen = 0;
+			splnum = !spl_orderindx ? i : spl_orderindx[i];
+			namelen = strlen(spellname(splnum));
+			if (namelen > maxnamelen)
+				maxnamelen = namelen;
+		}
+
+		int namelength = max(10, min(maxnamelen, 27));
+
+
 		if (!iflags.menu_tab_sep) {
-			Sprintf(buf, "%-24s     Level %-13s Mana Stat Fail Cool Casts", "    Name",
+			Sprintf(fmt, "%%-%ds     Level %%-13s Mana Stat Fail Cool Casts", namelength);
+			Sprintf(buf, fmt, "    Name",
 				"Category");
 		}
 		else {
@@ -2797,9 +2828,9 @@ int *spell_no;
 
 			if (!iflags.menu_tab_sep) {
 				if (spellknow(splnum) <= 0)
-					strcpy(fmt, "%-24s  %s");
+					Sprintf(fmt, "%%-%ds  %%s", namelength);
 				else
-					strcpy(fmt, "%-24s  %s   %-13s %4d  %s %3d%% %4d  %4s");
+					Sprintf(fmt, "%%-%ds  %%s   %%-13s %%4d  %%s %%3d%%%% %%4d  %%4s", namelength);
 				//		fmt = "%-20s  %2d   %-12s %4d %3d%% %8s";
 			}
 			else {
@@ -2814,8 +2845,8 @@ int *spell_no;
 				spellname(splnum));
 
 			//Spell name
-			if (strlen(fullname) > (size_t)(spellcooldownleft(splnum) > 0 ? 19 : 20))
-				strncpy(shortenedname, fullname, (size_t)(spellcooldownleft(splnum) > 0 ? 19 : 20));
+			if (strlen(fullname) > (size_t)(spellcooldownleft(splnum) > 0 ? namelength-1 : namelength))
+				strncpy(shortenedname, fullname, (size_t)(spellcooldownleft(splnum) > 0 ? namelength-1 : namelength));
 			else
 				strcpy(shortenedname, fullname);
 

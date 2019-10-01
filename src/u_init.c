@@ -319,7 +319,7 @@ static struct inv_sub {
 	{ NON_PM, STRANGE_OBJECT, STRANGE_OBJECT }
 };
 
-static const struct def_skill Skill_A[] = {
+static const struct def_skill Skill_A_Max[] = {
     { P_DAGGER, P_BASIC },
     { P_KNIFE, P_BASIC },
     { P_PICK_AXE, P_EXPERT },
@@ -344,7 +344,16 @@ static const struct def_skill Skill_A[] = {
 	{ P_DISARM_TRAP, P_SKILLED },
 	{ P_NONE, 0 }
 };
-static const struct def_skill Skill_B[] = {
+static const struct def_skill Skill_A_Init[] = {
+	{ P_WHIP, P_BASIC },
+	{ P_DIVINATION_SPELL, P_BASIC },
+	{ P_NONE, 0 }
+};
+
+
+
+
+static const struct def_skill Skill_B_Max[] = {
     { P_DAGGER, P_BASIC },
     { P_AXE, P_EXPERT },
     { P_PICK_AXE, P_SKILLED },
@@ -371,7 +380,14 @@ static const struct def_skill Skill_B[] = {
 	{ P_DISARM_TRAP, P_SKILLED },
 	{ P_NONE, 0 }
 };
-static const struct def_skill Skill_C[] = {
+static const struct def_skill Skill_B_Init[] = {
+	{ P_AXE, P_BASIC },
+	{ P_SHORT_SWORD, P_BASIC },
+	{ P_TWO_HANDED_SWORD, P_BASIC },
+	{ P_BARE_HANDED_COMBAT, P_BASIC },
+	{ P_NONE, 0 }
+};
+static const struct def_skill Skill_C_Max[] = {
     { P_DAGGER, P_BASIC },
     { P_KNIFE, P_SKILLED },
     { P_AXE, P_SKILLED },
@@ -395,7 +411,18 @@ static const struct def_skill Skill_C[] = {
 	{ P_DISARM_TRAP, P_BASIC },
 	{ P_NONE, 0 }
 };
-static const struct def_skill Skill_H[] = {
+static const struct def_skill Skill_C_Init[] = {
+	{ P_CLUB, P_SKILLED },
+	{ P_QUARTERSTAFF, P_BASIC },
+	{ P_SPEAR, P_BASIC },
+	{ P_SLING, P_BASIC },
+	{ P_BOOMERANG, P_BASIC },
+	{ P_BARE_HANDED_COMBAT, P_BASIC },
+	{ P_NONE, 0 }
+};
+
+
+static const struct def_skill Skill_H_Max[] = {
     { P_DAGGER, P_SKILLED },
     { P_KNIFE, P_EXPERT },
     { P_SHORT_SWORD, P_SKILLED },
@@ -418,7 +445,17 @@ static const struct def_skill Skill_H[] = {
 	{ P_DISARM_TRAP, P_SKILLED },
 	{ P_NONE, 0 }
 };
-static const struct def_skill Skill_K[] = {
+static const struct def_skill Skill_H_Init[] = {
+	{ P_KNIFE, P_BASIC },
+	{ P_QUARTERSTAFF, P_BASIC },
+	{ P_UNICORN_HORN, P_BASIC },
+	{ P_HEALING_SPELL, P_SKILLED },
+	{ P_NONE, 0 }
+};
+
+
+
+static const struct def_skill Skill_K_Max[] = {
     { P_DAGGER, P_BASIC },
     { P_KNIFE, P_BASIC },
     { P_AXE, P_SKILLED },
@@ -450,7 +487,19 @@ static const struct def_skill Skill_K[] = {
 	{ P_DISARM_TRAP, P_BASIC },
 	{ P_NONE, 0 }
 };
-static const struct def_skill Skill_Mon[] = {
+
+static const struct def_skill Skill_K_Init[] = {
+	{ P_SHORT_SWORD, P_BASIC },
+	{ P_BROAD_SWORD, P_BASIC },
+	{ P_LONG_SWORD, P_BASIC },
+	{ P_TWO_HANDED_SWORD, P_BASIC },
+	{ P_LANCE, P_BASIC },
+	{ P_RIDING, P_BASIC },
+	{ P_NONE, 0 }
+};
+
+
+static const struct def_skill Skill_Monk_Max[] = {
     { P_QUARTERSTAFF, P_BASIC },
     { P_SPEAR, P_BASIC },
     { P_CROSSBOW, P_BASIC },
@@ -467,7 +516,14 @@ static const struct def_skill Skill_Mon[] = {
 	{ P_DISARM_TRAP, P_BASIC },
 	{ P_NONE, 0 }
 };
-static const struct def_skill Skill_P[] = {
+static const struct def_skill Skill_Monk_Init[] = {
+	{ P_MARTIAL_ARTS, P_SKILLED },
+	{ P_HEALING_SPELL, P_BASIC },
+	{ P_NONE, 0 }
+};
+
+
+static const struct def_skill Skill_P_Max[] = {
     { P_CLUB, P_EXPERT },
     { P_MACE, P_EXPERT },
     { P_MORNING_STAR, P_EXPERT },
@@ -494,7 +550,24 @@ static const struct def_skill Skill_P[] = {
 	{ P_BARE_HANDED_COMBAT, P_BASIC },
     { P_NONE, 0 }
 };
-static const struct def_skill Skill_R[] = {
+
+static const struct def_skill Skill_P_Init_Chaotic[] = {
+	{ P_MACE, P_BASIC },
+	{ P_MORNING_STAR, P_BASIC },
+	{ P_CLERIC_SPELL, P_BASIC },
+	{ P_NECROMANCY_SPELL, P_BASIC },
+	{ P_NONE, 0 }
+};
+static const struct def_skill Skill_P_Init_NonChaotic[] = {
+	{ P_MACE, P_BASIC },
+	{ P_FLAIL, P_BASIC },
+	{ P_HEALING_SPELL, P_BASIC },
+	{ P_CLERIC_SPELL, P_BASIC },
+	{ P_NONE, 0 }
+};
+
+
+static const struct def_skill Skill_Rogue_Max[] = {
     { P_DAGGER, P_EXPERT },
     { P_KNIFE, P_EXPERT },
     { P_SHORT_SWORD, P_EXPERT },
@@ -522,7 +595,16 @@ static const struct def_skill Skill_R[] = {
 	{ P_DISARM_TRAP, P_EXPERT },
 	{ P_NONE, 0 }
 };
-static const struct def_skill Skill_Ran[] = {
+static const struct def_skill Skill_Rogue_Init[] = {
+	{ P_DAGGER, P_BASIC },
+	{ P_SHORT_SWORD, P_BASIC },
+	{ P_CROSSBOW, P_BASIC },
+	{ P_DART, P_BASIC },
+	{ P_DISARM_TRAP, P_BASIC },
+	{ P_NONE, 0 }
+};
+
+static const struct def_skill Skill_Ranger_Max[] = {
     { P_DAGGER, P_EXPERT },
     { P_KNIFE, P_SKILLED },
     { P_AXE, P_SKILLED },
@@ -552,20 +634,30 @@ static const struct def_skill Skill_Ran[] = {
 	{ P_DISARM_TRAP, P_EXPERT },
 	{ P_NONE, 0 }
 };
-static const struct def_skill Skill_S[] = {
+static const struct def_skill Skill_Ranger_Init[] = {
+	{ P_DAGGER, P_BASIC },
+	{ P_SPEAR, P_BASIC },
+	{ P_BOW, P_BASIC },
+	{ P_CROSSBOW, P_BASIC },
+	{ P_DISARM_TRAP, P_BASIC },
+	{ P_NONE, 0 }
+};
+
+
+static const struct def_skill Skill_S_Max[] = {
     { P_DAGGER, P_BASIC },
     { P_KNIFE, P_SKILLED },
     { P_SHORT_SWORD, P_EXPERT },
     { P_BROAD_SWORD, P_SKILLED },
     { P_LONG_SWORD, P_EXPERT },
     { P_TWO_HANDED_SWORD, P_EXPERT },
-    { P_SCIMITAR, P_BASIC },
-    { P_SABER, P_BASIC },
+    { P_SCIMITAR, P_SKILLED },
+    { P_SABER, P_SKILLED },
     { P_FLAIL, P_SKILLED },
-    { P_QUARTERSTAFF, P_BASIC },
-    { P_POLEARMS, P_SKILLED },
+    { P_QUARTERSTAFF, P_EXPERT },
+    { P_POLEARMS, P_EXPERT },
     { P_SPEAR, P_SKILLED },
-    { P_LANCE, P_SKILLED },
+    { P_LANCE, P_BASIC },
     { P_BOW, P_EXPERT },
     { P_SHURIKEN, P_EXPERT },
     { P_ARCANE_SPELL, P_BASIC },
@@ -577,7 +669,17 @@ static const struct def_skill Skill_S[] = {
 	{ P_DISARM_TRAP, P_BASIC },
 	{ P_NONE, 0 }
 };
-static const struct def_skill Skill_T[] = {
+static const struct def_skill Skill_S_Init[] = {
+	{ P_LONG_SWORD, P_BASIC },
+	{ P_TWO_HANDED_SWORD, P_BASIC },
+	{ P_SHURIKEN, P_BASIC },
+	{ P_QUARTERSTAFF, P_BASIC },
+	{ P_POLEARMS, P_BASIC },
+	{ P_MARTIAL_ARTS, P_BASIC },
+	{ P_NONE, 0 }
+};
+
+static const struct def_skill Skill_T_Max[] = {
     { P_DAGGER, P_EXPERT },
     { P_KNIFE, P_SKILLED },
     { P_AXE, P_BASIC },
@@ -614,7 +716,13 @@ static const struct def_skill Skill_T[] = {
 	{ P_DISARM_TRAP, P_SKILLED },
 	{ P_NONE, 0 }
 };
-static const struct def_skill Skill_V[] = {
+static const struct def_skill Skill_T_Init[] = {
+	{ P_DART, P_BASIC },
+	{ P_NONE, 0 }
+};
+
+
+static const struct def_skill Skill_V_Max[] = {
     { P_DAGGER, P_EXPERT },
     { P_AXE, P_EXPERT },
     { P_PICK_AXE, P_SKILLED },
@@ -639,7 +747,19 @@ static const struct def_skill Skill_V[] = {
 	{ P_DISARM_TRAP, P_SKILLED },
 	{ P_NONE, 0 }
 };
-static const struct def_skill Skill_W[] = {
+
+static const struct def_skill Skill_V_Init[] = {
+	{ P_DAGGER, P_BASIC },
+	{ P_AXE, P_BASIC },
+	{ P_SHORT_SWORD, P_BASIC },
+	{ P_BROAD_SWORD, P_BASIC },
+	{ P_LONG_SWORD, P_BASIC },
+	{ P_HAMMER, P_BASIC },
+	{ P_BARE_HANDED_COMBAT, P_BASIC },
+	{ P_NONE, 0 }
+};
+
+static const struct def_skill Skill_W_Max[] = {
     { P_DAGGER, P_EXPERT },
     { P_KNIFE, P_SKILLED },
     { P_AXE, P_SKILLED },
@@ -666,6 +786,18 @@ static const struct def_skill Skill_W[] = {
 	{ P_DISARM_TRAP, P_BASIC },
 	{ P_NONE, 0 }
 };
+
+static const struct def_skill Skill_W_Init_Chaotic[] = {
+	{ P_ARCANE_SPELL, P_BASIC },
+	{ P_NECROMANCY_SPELL, P_BASIC },
+	{ P_NONE, 0 }
+};
+static const struct def_skill Skill_W_Init_NonChaotic[] = {
+	{ P_ARCANE_SPELL, P_BASIC },
+	{ P_ENCHANTMENT_SPELL, P_BASIC },
+	{ P_NONE, 0 }
+};
+
 
 STATIC_OVL void
 knows_object(obj)
@@ -797,7 +929,7 @@ u_init()
 		knows_object(SACK);
 		knows_object(BACKPACK);
         knows_object(TOUCHSTONE);
-        skill_init(Skill_A);
+        skill_init(Skill_A_Init, Skill_A_Max);
         break;
     case PM_BARBARIAN:
         if (rn2(100) >= 50) { /* see above comment */
@@ -809,12 +941,12 @@ u_init()
             ini_inv(Lamp);
         knows_class(WEAPON_CLASS);
         knows_class(ARMOR_CLASS);
-        skill_init(Skill_B);
+        skill_init(Skill_B_Init, Skill_B_Max);
         break;
     case PM_CAVEMAN:
         Cave_man[C_AMMO].trquan = rn1(11, 10); /* 10..20 */
         ini_inv(Cave_man);
-        skill_init(Skill_C);
+        skill_init(Skill_C_Init, Skill_C_Max);
         break;
     case PM_HEALER:
         u.umoney0 = rn1(1000, 1001);
@@ -825,7 +957,7 @@ u_init()
 		knows_object(POT_EXTRA_HEALING);
 		knows_object(POT_GREATER_HEALING);
 		knows_object(POT_FULL_HEALING);
-        skill_init(Skill_H);
+        skill_init(Skill_H_Init, Skill_H_Max);
         break;
     case PM_KNIGHT:
         ini_inv(Knight);
@@ -833,7 +965,7 @@ u_init()
         knows_class(ARMOR_CLASS);
         /* give knights chess-like mobility--idea from wooledge@..cwru.edu */
         HJumping |= FROMOUTSIDE;
-        skill_init(Skill_K);
+        skill_init(Skill_K_Init, Skill_K_Max);
         break;
     case PM_MONK: {
         static short M_spell[] = { SPE_HEALING, SPE_PROTECTION, SPE_SLEEP };
@@ -847,7 +979,7 @@ u_init()
         knows_class(ARMOR_CLASS);
         /* sufficiently martial-arts oriented item to ignore language issue */
         knows_object(SHURIKEN);
-        skill_init(Skill_Mon);
+        skill_init(Skill_Monk_Init, Skill_Monk_Max);
         break;
     }
     case PM_PRIEST:
@@ -871,8 +1003,11 @@ u_init()
 			}
 		}
         knows_object(POT_WATER);
-        skill_init(Skill_P);
-        /* KMH, conduct --
+		if(u.ualign.type == A_CHAOTIC)
+	        skill_init(Skill_P_Init_Chaotic, Skill_P_Max);
+		else
+			skill_init(Skill_P_Init_NonChaotic, Skill_P_Max);
+		/* KMH, conduct --
          * Some may claim that this isn't agnostic, since they
          * are literally "priests" and they have holy water.
          * But we don't count it as such.  Purists can always
@@ -894,7 +1029,7 @@ u_init()
 		else
 			ini_inv(LightningArrow);
 
-        skill_init(Skill_Ran);
+        skill_init(Skill_Ranger_Init, Skill_Ranger_Max);
         break;
     case PM_ROGUE:
         Rogue[R_DAGGERS].trquan = rn1(5, 6);
@@ -904,7 +1039,7 @@ u_init()
             ini_inv(Blindfold);
         knows_object(SACK);
 		knows_object(BAG_OF_TREASURE_HAULING);
-		skill_init(Skill_R);
+		skill_init(Skill_Rogue_Init, Skill_Rogue_Max);
         break;
     case PM_SAMURAI:
         Samurai[S_ARROWS].trquan = rn1(20, 26);
@@ -913,7 +1048,7 @@ u_init()
             ini_inv(Blindfold);
         knows_class(WEAPON_CLASS);
         knows_class(ARMOR_CLASS);
-        skill_init(Skill_S);
+        skill_init(Skill_S_Init, Skill_S_Max);
         break;
     case PM_TOURIST:
 		u.umoney0 = 300 + rnd(700);
@@ -934,7 +1069,7 @@ u_init()
             ini_inv(Leash);
         else if (!rn2(25))
             ini_inv(Magicmarker);
-        skill_init(Skill_T);
+        skill_init(Skill_T_Init, Skill_T_Max);
 		knows_object(EXPENSIVE_HANDBAG);
 		knows_object(LEATHER_BAG);
 		break;
@@ -944,7 +1079,7 @@ u_init()
             ini_inv(Lamp);
         knows_class(WEAPON_CLASS);
         knows_class(ARMOR_CLASS);
-        skill_init(Skill_V);
+        skill_init(Skill_V_Init, Skill_V_Max);
         break;
     case PM_WIZARD:
         ini_inv(Wizard);
@@ -966,7 +1101,11 @@ u_init()
 			}
 		}
 
-		skill_init(Skill_W);
+		if (u.ualign.type == A_CHAOTIC)
+			skill_init(Skill_W_Init_Chaotic, Skill_W_Max);
+		else
+			skill_init(Skill_W_Init_NonChaotic, Skill_W_Max);
+
         break;
 
     default: /* impossible */
@@ -1096,43 +1235,43 @@ int otyp;
 
     switch (Role_switch) {
     case PM_ARCHEOLOGIST:
-        skills = Skill_A;
+        skills = Skill_A_Max;
         break;
     case PM_BARBARIAN:
-        skills = Skill_B;
+        skills = Skill_B_Max;
         break;
     case PM_CAVEMAN:
-        skills = Skill_C;
+        skills = Skill_C_Max;
         break;
     case PM_HEALER:
-        skills = Skill_H;
+        skills = Skill_H_Max;
         break;
     case PM_KNIGHT:
-        skills = Skill_K;
+        skills = Skill_K_Max;
         break;
     case PM_MONK:
-        skills = Skill_Mon;
+        skills = Skill_Monk_Max;
         break;
     case PM_PRIEST:
-        skills = Skill_P;
+        skills = Skill_P_Max;
         break;
     case PM_RANGER:
-        skills = Skill_Ran;
+        skills = Skill_Ranger_Max;
         break;
     case PM_ROGUE:
-        skills = Skill_R;
+        skills = Skill_Rogue_Max;
         break;
     case PM_SAMURAI:
-        skills = Skill_S;
+        skills = Skill_S_Max;
         break;
     case PM_TOURIST:
-        skills = Skill_T;
+        skills = Skill_T_Max;
         break;
     case PM_VALKYRIE:
-        skills = Skill_V;
+        skills = Skill_V_Max;
         break;
     case PM_WIZARD:
-        skills = Skill_W;
+        skills = Skill_W_Max;
         break;
     default:
         skills = 0; /* lint suppression */

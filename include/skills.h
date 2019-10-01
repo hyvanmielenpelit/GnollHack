@@ -132,7 +132,7 @@ struct skills {
 /* Initial skill matrix structure; used in u_init.c and weapon.c */
 struct def_skill {
     xchar skill;
-    xchar skmax;
+    xchar sklvl;
 };
 
 #endif /* SKILLS_H */

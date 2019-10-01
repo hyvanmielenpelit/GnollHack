@@ -2034,11 +2034,12 @@ struct obj *weapon;
  * maximums.
  */
 void
-skill_init(class_skill)
-const struct def_skill *class_skill;
+skill_init(class_skill_initial, class_skill_max)
+const struct def_skill *class_skill_initial;
+const struct def_skill* class_skill_max;
 {
     struct obj *obj;
-    int skmax, skill;
+    int sklvl, skill;
 
     /* initialize skill array; by default, everything is restricted */
     for (skill = 0; skill < P_NUM_SKILLS; skill++) {
@@ -2047,50 +2048,72 @@ const struct def_skill *class_skill;
         P_ADVANCE(skill) = 0;
     }
 
-    /* Set skill for all weapons in inventory to be basic */
-    for (obj = invent; obj; obj = obj->nobj) {
-        /* don't give skill just because of carried ammo, wait until
-           we see the relevant launcher (prevents an archeologist's
-           touchstone from inadvertently providing skill in sling) */
-        if (is_ammo(obj))
-            continue;
-
-        skill = weapon_type(obj);
-        if (skill != P_NONE)
-            P_SKILL(skill) = P_BASIC;
-    }
-
-    /* set skills for magic */
-    if (Role_if(PM_HEALER) || Role_if(PM_MONK)) {
-        P_SKILL(P_HEALING_SPELL) = P_BASIC;
-    } else if (Role_if(PM_PRIEST)) {
-        P_SKILL(P_CLERIC_SPELL) = P_BASIC;
-    } else if (Role_if(PM_WIZARD)) {
-        P_SKILL(P_ARCANE_SPELL) = P_BASIC;
-        P_SKILL(P_ENCHANTMENT_SPELL) = P_BASIC;
-    }
-
     /* walk through array to set skill maximums */
-    for (; class_skill->skill != P_NONE; class_skill++) {
-        skmax = class_skill->skmax;
-        skill = class_skill->skill;
+    for (; class_skill_max->skill != P_NONE; class_skill_max++) {
+        sklvl = class_skill_max->sklvl;
+        skill = class_skill_max->skill;
 
-        P_MAX_SKILL(skill) = skmax;
+        P_MAX_SKILL(skill) = sklvl;
         if (P_SKILL(skill) == P_ISRESTRICTED) /* skill pre-set */
             P_SKILL(skill) = P_UNSKILLED;
     }
 
-    /* High potential fighters already know how to use their hands. */
-    if (P_MAX_SKILL(P_BARE_HANDED_COMBAT) > P_EXPERT)
-        P_SKILL(P_BARE_HANDED_COMBAT) = P_BASIC;
 
-    /* Roles that start with a horse know how to ride it */
-    if (urole.petnum == PM_PONY)
-        P_SKILL(P_RIDING) = P_BASIC;
+	/* walk through array to set skill initial levels */
+	for (; class_skill_initial->skill != P_NONE; class_skill_initial++) {
+		sklvl = class_skill_initial->sklvl;
+		skill = class_skill_initial->skill;
+
+		if(P_MAX_SKILL(skill) != P_ISRESTRICTED)
+			P_SKILL(skill) = min(P_MAX_SKILL(skill), sklvl);
+	}
+
+
+	/* Set skill for all weapons in inventory to be basic */
+	for (obj = invent; obj; obj = obj->nobj) {
+		/* don't give skill just because of carried ammo, wait until
+		   we see the relevant launcher (prevents an archeologist's
+		   touchstone from inadvertently providing skill in sling) */
+		if (is_ammo(obj))
+			continue;
+
+		skill = weapon_type(obj);
+		if (skill != P_NONE && P_SKILL(skill) < P_BASIC && P_MAX_SKILL(skill) != P_ISRESTRICTED)
+			P_SKILL(skill) = min(P_MAX_SKILL(skill), P_BASIC);
+	}
+
+#if 0
+	/* High potential fighters already know how to use their hands. */
+	if (P_MAX_SKILL(P_BARE_HANDED_COMBAT) > P_EXPERT)
+		P_SKILL(P_BARE_HANDED_COMBAT) = P_BASIC;
+
+	/* Roles that start with a horse know how to ride it */
+	if (urole.petnum == PM_PONY)
+		P_SKILL(P_RIDING) = P_BASIC;
 
 	/* Rogues and rangers know how to disarm traps */
 	if (Role_if(PM_ROGUE) || Role_if(PM_RANGER))
 		P_SKILL(P_DISARM_TRAP) = P_BASIC;
+
+
+	/* set skills for magic */
+	if (Role_if(PM_HEALER) || Role_if(PM_MONK)) {
+		P_SKILL(P_HEALING_SPELL) = P_BASIC;
+	}
+	else if (Role_if(PM_PRIEST))
+	{
+		if (u.ualign.type == A_CHAOTIC)
+			P_SKILL(P_NECROMANCY_SPELL) = P_BASIC;
+		else
+			P_SKILL(P_HEALING_SPELL) = P_BASIC;
+
+		P_SKILL(P_CLERIC_SPELL) = P_BASIC;
+	}
+	else if (Role_if(PM_WIZARD)) {
+		P_SKILL(P_ARCANE_SPELL) = P_BASIC;
+		P_SKILL(P_ENCHANTMENT_SPELL) = P_BASIC;
+	}
+#endif
 
 	/*
      * Make sure we haven't missed setting the max on a skill
