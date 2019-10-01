@@ -2847,7 +2847,10 @@ int rtype;
     case BOOKSHOP:
         str = "bookstore";
         break;
-    case FODDERSHOP:
+	case REAGENTSHOP:
+		str = "reagent shop";
+		break;
+	case FODDERSHOP:
         str = "health food store";
         break;
     case CANDLESHOP:
