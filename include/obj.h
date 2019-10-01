@@ -283,20 +283,20 @@ struct obj {
 #define Has_contents(o)                                \
     (/* (Is_container(o) || (o)->otyp == STATUE) && */ \
      (o)->cobj != (struct obj *) 0)
-#define Is_container(o) (objects[o->otyp].oc_flags2 & O2_CONTAINER)
-#define Is_box(o) (objects[o->otyp].oc_flags2 & O2_CONTAINER_BOX)
+#define Is_container(o) ((objects[o->otyp].oc_flags2 & O2_CONTAINER) != 0)
+#define Is_box(o) ((objects[o->otyp].oc_flags2 & O2_CONTAINER_BOX) != 0)
 #define Is_mbag(o) \
-	(objects[o->otyp].oc_flags2 & O2_CONTAINER_MAGIC_BAG)
+	((objects[o->otyp].oc_flags2 & O2_CONTAINER_MAGIC_BAG) != 0)
 #define Is_weight_changing_bag(o) \
-	(objects[o->otyp].oc_flags2 & O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG)
+	((objects[o->otyp].oc_flags2 & O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG) != 0)
 #define SchroedingersBox(o) ((o)->otyp == LARGE_BOX && (o)->spe == 1)
 
 /* dragon gear */
 #define is_dragon_scales(obj) \
-	(is_dragon_obj(obj) && (boolean)(objects[obj->otyp].oc_flags2 & O2_MONSTER_SCALES))
+	(is_dragon_obj(obj) && (objects[obj->otyp].oc_flags2 & O2_MONSTER_SCALES))
     //((obj)->otyp >= GRAY_DRAGON_SCALES && (obj)->otyp <= YELLOW_DRAGON_SCALES)
 #define is_dragon_mail(obj)                \
-	(is_dragon_obj(obj) && (boolean)(objects[obj->otyp].oc_flags2 & O2_MONSTER_SCALE_MAIL))
+	(is_dragon_obj(obj) && (objects[obj->otyp].oc_flags2 & O2_MONSTER_SCALE_MAIL))
 //    ((obj)->otyp >= GRAY_DRAGON_SCALE_MAIL \
 //     && (obj)->otyp <= YELLOW_DRAGON_SCALE_MAIL)
 #define is_dragon_scale_armor(obj) \
@@ -309,38 +309,38 @@ struct obj {
 
 #define is_dragon_armor(obj) \
 	(obj->oclass == ARMOR_CLASS && is_dragon_obj(obj))
-#define is_dragon_obj(obj) (objects[obj->otyp].oc_flags2 & O2_DRAGON_ITEM)
+#define is_dragon_obj(obj) ((objects[obj->otyp].oc_flags2 & O2_DRAGON_ITEM) != 0)
 
 /* Elven gear */
 #define is_elven_weapon(otmp)                                             \
-    (boolean)(otmp->oclass == WEAPON_CLASS && is_elven_obj(otmp))
+    (otmp->oclass == WEAPON_CLASS && is_elven_obj(otmp))
 #define is_elven_obj(otmp) \
-	(boolean)(objects[otmp->otyp].oc_flags2 & O2_ELVEN_ITEM)
+	((objects[otmp->otyp].oc_flags2 & O2_ELVEN_ITEM) != 0)
 
 /* Orcish gear */
 #define is_orcish_obj(otmp)                                           \
-    (boolean)(objects[otmp->otyp].oc_flags2 & O2_ORCISH_ITEM)
+    ((objects[otmp->otyp].oc_flags2 & O2_ORCISH_ITEM) != 0)
 
 /* Dwarvish gear */
 #define is_dwarvish_obj(otmp)                                  \
-    (boolean)(objects[otmp->otyp].oc_flags2 & O2_DWARVEN_ITEM)
+    ((objects[otmp->otyp].oc_flags2 & O2_DWARVEN_ITEM) != 0)
 
 /* Gnomish gear */
-#define is_gnollish_obj(otmp) (objects[otmp->otyp].oc_flags2 & O2_GNOLLISH_ITEM)
+#define is_gnollish_obj(otmp) ((objects[otmp->otyp].oc_flags2 & O2_GNOLLISH_ITEM) != 0)
 
 /* Light sources */
 #define Is_candle(otmp) \
-	(boolean)(objects[otmp->otyp].oc_flags2 & O2_CANDLE)
+	((objects[otmp->otyp].oc_flags2 & O2_CANDLE) != 0)
 
 #define MAX_OIL_IN_FLASK 400 /* maximum amount of oil in a potion of oil */
 
 /* MAGIC_LAMP intentionally excluded below */
 /* age field of this is relative age rather than absolute */
 #define age_is_relative(otmp)                                       \
-    (objects[otmp->otyp].oc_flags2 & O2_RELATIVE_AGE)
+    ((objects[otmp->otyp].oc_flags2 & O2_RELATIVE_AGE) != 0)
 /* object can be ignited */
 #define ignitable(otmp)                                             \
-    (objects[otmp->otyp].oc_flags2 & O2_IGNITABLE)
+    ((objects[otmp->otyp].oc_flags2 & O2_IGNITABLE) != 0)
 
 /* things that can be read */
 #define is_readable(otmp)                                                    \
@@ -348,11 +348,11 @@ struct obj {
 
 /* special stones */
 #define is_graystone(obj)                                 \
-    (objects[obj->otyp].oc_flags2 & O2_GRAYSTONE)
+    ((objects[obj->otyp].oc_flags2 & O2_GRAYSTONE) != 0)
 #define is_rock(obj)                                 \
-    (objects[obj->otyp].oc_flags2 & O2_ROCK)
+    ((objects[obj->otyp].oc_flags2 & O2_ROCK) != 0)
 #define is_ore(obj)                                 \
-    (objects[obj->otyp].oc_flags2 & O2_ORE)
+    ((objects[obj->otyp].oc_flags2 & O2_ORE) != 0)
 
 /* misc helpers, simple enough to be macros */
 #define is_flimsy(otmp)                           \

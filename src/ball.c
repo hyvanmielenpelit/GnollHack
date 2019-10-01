@@ -38,7 +38,7 @@ ballfall()
     boolean gets_hit;
 
     gets_hit = (((uball->ox != u.ux) || (uball->oy != u.uy))
-                && ((uwep == uball) ? FALSE : (boolean) rn2(5)));
+                && ((uwep == uball) ? FALSE : rn2(5) != 0));
     ballrelease(TRUE);
     if (gets_hit) {
         int dmg = rn1(7, 25);

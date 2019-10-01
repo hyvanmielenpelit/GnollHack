@@ -707,7 +707,7 @@ int *fail_reason;
             /* avoid charging for Manlobbi's statue of Manlobbi
                if stone-to-flesh is used on petrified shopkeep */
             && mon != shkp)
-            (void) stolen_value(statue, x, y, (boolean) shkp->mpeaceful,
+            (void) stolen_value(statue, x, y, (boolean) shkp->mpeaceful != 0,
                                 FALSE);
 
         if (historic) {
@@ -5137,7 +5137,7 @@ boolean disarm;
             Sprintf(buf, "exploding %s", xname(obj));
 
             if (costly)
-                loss += stolen_value(obj, ox, oy, (boolean) shkp->mpeaceful,
+                loss += stolen_value(obj, ox, oy, (boolean) shkp->mpeaceful != 0,
                                      TRUE);
             delete_contents(obj);
             /* unpunish() in advance if either ball or chain (or both)
@@ -5151,7 +5151,7 @@ boolean disarm;
                 otmp2 = otmp->nexthere;
                 if (costly)
                     loss += stolen_value(otmp, otmp->ox, otmp->oy,
-                                         (boolean) shkp->mpeaceful, TRUE);
+                                         (boolean) shkp->mpeaceful != 0, TRUE);
                 delobj(otmp);
             }
             wake_nearby();

@@ -847,7 +847,7 @@ struct mkroom *sroom;
 {
     struct monst *mtmp = sroom->resident;
 
-    return !mtmp ? FALSE : (boolean) inhishop(mtmp);
+    return !mtmp ? FALSE : (boolean) inhishop(mtmp) != 0;
 }
 
 STATIC_OVL struct bill_x *
