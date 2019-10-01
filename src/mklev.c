@@ -790,7 +790,7 @@ makelevel()
                  && !(mvitals[PM_COCKATRICE].mvflags & G_GONE))
             mkroom(COCKNEST);
 
-		if (u_depth > 2 && !rn2(3))
+		if (u_depth > 2 && !rn2(4))
 			mkroom(GARDEN);
 
 	}
@@ -816,6 +816,25 @@ makelevel()
 		if(tries < 10) {
 			mkaltar(croom);
 			altarsplaced = 1;
+		}
+
+		tries = 0;
+		do {
+			croom = &rooms[rn2(nroom)];
+			tries++;
+		} while (croom->rtype != OROOM || tries == 10);
+
+		if (tries < 10) {
+			do {
+				x = somex(croom);
+				y = somey(croom);
+			} while (!IS_ROOM(levl[x][y].typ) && !rn2(40));
+			if (!(IS_POOL(levl[x][y].typ)
+				|| IS_FURNITURE(levl[x][y].typ)))
+			{
+				struct obj* otmp = mksobj_at(AXE, x, y, FALSE,FALSE);
+				uncurse(otmp);
+			}
 		}
 	}
 

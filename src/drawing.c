@@ -161,6 +161,7 @@ const struct symdef defsyms[MAXPCHARS] = {
        { '#', "iron bars", C(HI_METAL) },            /* bars */
        { '#', "tree", C(CLR_GREEN) },                /* tree */
        { '.', "floor of a room", C(CLR_GRAY) },      /* room */
+	   { '.', "grass", C(CLR_GREEN) },      /* grass */
 /*20*/ { '.', "dark part of a room", C(CLR_BLACK) }, /* dark room */
        { '#', "corridor", C(CLR_GRAY) },             /* dark corr */
        { '#', "lit corridor", C(CLR_GRAY) },   /* lit corr (see mapglyph.c) */

@@ -1665,7 +1665,10 @@ xchar x, y;
     case ROOM:
         idx = S_room;
         break;
-    case CORR:
+	case GRASS:
+		idx = S_grass;
+		break;
+	case CORR:
         idx = (ptr->waslit || flags.lit_corridor) ? S_litcorr : S_corr;
         break;
     case HWALL:
@@ -1865,7 +1868,10 @@ xchar x, y;
         case ROOM:
            idx = S_room;
            break;
-        case CORR:
+		case GRASS:
+			idx = S_grass;
+			break;
+		case CORR:
            idx = (lev->waslit || flags.lit_corridor) ? S_litcorr : S_corr;
            break;
         case ICE:

@@ -739,6 +739,7 @@ mkgarden()
 			}
 			else
 			{
+				levl[sx][sy].typ = GRASS;
 				/* Buried items */
 				if (!rn2(2))
 				{
@@ -798,17 +799,17 @@ mkgarden()
 					(void)mksobj_at(itemtype, sx, sy, TRUE, FALSE);
 				}
 
-				if (!rn2(4))
+				if (!rn2(12))
 				{
 					// Garden gnome
-					struct monst* mon = makemon(&mons[!rn2(4) && level_difficulty() > 4 ? PM_GNOME_LORD : PM_GNOME], sx, sy, NO_MM_FLAGS);
+					struct monst* mon = makemon(&mons[!rn2(5) && level_difficulty() > 6 ? PM_GNOME_LORD : PM_GNOME], sx, sy, NO_MM_FLAGS);
 					mon->mpeaceful = 1;
 					mon->msleeping = 1;
 				}
-				else if (!rn2(6))
+				else if (!rn2(20))
 				{
 					//Sleepy ogre
-					struct monst* mon = makemon(&mons[!rn2(4) && level_difficulty() > 8 ? PM_OGRE_LORD : PM_OGRE], sx, sy, NO_MM_FLAGS);
+					struct monst* mon = makemon(&mons[!rn2(5) && level_difficulty() > 10 ? PM_OGRE_LORD : PM_OGRE], sx, sy, NO_MM_FLAGS);
 					mon->msleeping = 1;
 				}
 			}
