@@ -124,13 +124,14 @@ struct prop {
 #define W_QUIVER	0x00000400L		/* Quiver for (f)iring ammo */
 #define W_SWAPWEP	0x00000800L		/* Secondary weapon */
 
-#define W_WEP2		0x00001000L		/* Wielded weapon 2 */
-#define W_WEP3		0x00002000L		/* Wielded weapon 3 */
-#define W_WEP4		0x00004000L		/* Wielded weapon 4 */
-#define W_WEP5		0x00008000L		/* Wielded weapon 5 */
+#define W_WEP2		0x00001000L		/* Wielded weapon 2 / Extra shield */
+#define W_WEP3		0x00002000L		/* Wielded weapon 3 / Extra shield */
+#define W_WEP4		0x00004000L		/* Wielded weapon 4 / Extra shield */
+#define W_WEP5		0x00008000L		/* Wielded weapon 5 / Extra shield */
 
 #define W_WIELDED_WEAPON (W_WEP | W_WEP2 | W_WEP3 | W_WEP4 | W_WEP5)
 #define W_WEAPON (W_WIELDED_WEAPON | W_SWAPWEP | W_QUIVER)
+#define W_WIELDED_WEAPON_OR_SHIELD (W_WIELDED_WEAPON | W_ARMS)
 
 /* Amulets, rings, tools, and other items */
 #define W_AMUL 0x00010000L    /* Amulet */

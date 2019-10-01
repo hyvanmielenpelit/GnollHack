@@ -283,12 +283,12 @@ struct obj {
 #define Has_contents(o)                                \
     (/* (Is_container(o) || (o)->otyp == STATUE) && */ \
      (o)->cobj != (struct obj *) 0)
-#define Is_container(o) (boolean)(objects[o->otyp].oc_flags2 & O2_CONTAINER)
-#define Is_box(o) (boolean)(objects[o->otyp].oc_flags2 & O2_CONTAINER_BOX)
+#define Is_container(o) (objects[o->otyp].oc_flags2 & O2_CONTAINER)
+#define Is_box(o) (objects[o->otyp].oc_flags2 & O2_CONTAINER_BOX)
 #define Is_mbag(o) \
-	(boolean)(objects[o->otyp].oc_flags2 & O2_CONTAINER_MAGIC_BAG)
+	(objects[o->otyp].oc_flags2 & O2_CONTAINER_MAGIC_BAG)
 #define Is_weight_changing_bag(o) \
-	(boolean)(objects[o->otyp].oc_flags2 & O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG)
+	(objects[o->otyp].oc_flags2 & O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG)
 #define SchroedingersBox(o) ((o)->otyp == LARGE_BOX && (o)->spe == 1)
 
 /* dragon gear */
