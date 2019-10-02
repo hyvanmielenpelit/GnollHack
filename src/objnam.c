@@ -153,7 +153,7 @@ register int otyp;
             Strcpy(buf, dn ? dn : actualn);
             if (ocl->oc_class == GEM_CLASS)
                 Strcat(buf,
-                       (ocl->oc_material == MINERAL) ? " stone" : " gem");
+                       (ocl->oc_material == MAT_MINERAL) ? " stone" : " gem");
             if (un)
                 Sprintf(eos(buf), " called %s", un);
         }
@@ -687,7 +687,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             Sprintf(buf, "%s ring", dn);
         break;
     case GEM_CLASS: {
-        const char *rock = (ocl->oc_material == MINERAL) ? "stone" : "gem";
+        const char *rock = (ocl->oc_material == MAT_MINERAL) ? "stone" : "gem";
 
         if (!dknown) {
             Strcpy(buf, rock);
@@ -4175,7 +4175,7 @@ struct obj *no_wish;
 				otmp->special_enchantment = special_enchantment;
 			else
 				otmp->special_enchantment = 0;
-		if(otmp->special_enchantment == DEATH_ENCHANTMENT && !(objects[otmp->otyp].oc_material == BONE || objects[otmp->otyp].oc_material == GLASS))
+		if(otmp->special_enchantment == DEATH_ENCHANTMENT && !(objects[otmp->otyp].oc_material == MAT_BONE || objects[otmp->otyp].oc_material == MAT_GLASS))
 			otmp->special_enchantment = LIGHTNING_ENCHANTMENT;
 	}
 	/* empty for containers rather than for tins */

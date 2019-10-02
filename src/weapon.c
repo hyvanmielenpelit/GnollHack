@@ -377,7 +377,7 @@ struct monst* mattacker;
 
     }
 
-    if (objects[otyp].oc_material <= LEATHER && thick_skinned(ptr))
+    if (objects[otyp].oc_material <= MAT_LEATHER && thick_skinned(ptr))
         /* thick skinned/scaled creatures don't feel it */
         tmp = 0;
     if (ptr == &mons[PM_SHADE] && !shade_glare(otmp))
@@ -405,7 +405,7 @@ struct monst* mattacker;
             bonus += rnd(4);
         if (is_axe(otmp) && is_wooden(ptr))
             bonus += rnd(4);
-        if (objects[otyp].oc_material == SILVER && mon_hates_silver(mon))
+        if (objects[otyp].oc_material == MAT_SILVER && mon_hates_silver(mon))
             bonus += rnd(20);
         if ((artifact_light(otmp) || (objects[otmp->otyp].oc_flags2 & O2_SHINES_MAGICAL_LIGHT)) && otmp->lamplit && hates_light(ptr))
             bonus += rnd(8);
@@ -475,7 +475,7 @@ long *silverhit_p; /* output flag mask for silver bonus */
            scales refer to color, not material) and the only way to hit
            with one--aside from throwing--is to wield it and perform a
            weapon hit, but we include a general check here */
-        if (objects[obj->otyp].oc_material == SILVER
+        if (objects[obj->otyp].oc_material == MAT_SILVER
             && mon_hates_silver(mdef)) {
             bonus += rnd(20);
             silverhit |= armask;
@@ -484,14 +484,14 @@ long *silverhit_p; /* output flag mask for silver bonus */
     /* when no gloves we check for silver rings (blessed rings ignored) */
     } else if ((left_ring || right_ring) && magr == &youmonst) {
         if (left_ring && uleft) {
-            if (objects[uleft->otyp].oc_material == SILVER
+            if (objects[uleft->otyp].oc_material == MAT_SILVER
                 && mon_hates_silver(mdef)) {
                 bonus += rnd(20);
                 silverhit |= W_RINGL;
             }
         }
         if (right_ring && uright) {
-            if (objects[uright->otyp].oc_material == SILVER
+            if (objects[uright->otyp].oc_material == MAT_SILVER
                 && mon_hates_silver(mdef)) {
                 /* two silver rings don't give double silver damage
                    but 'silverhit' messages might be adjusted for them */
@@ -521,8 +521,8 @@ long silverhit;
         rtyp = ((uright && (silverhit & W_RINGR) != 0L)
                 ? uright->otyp : STRANGE_OBJECT);
     boolean both,
-        l_ag = (objects[ltyp].oc_material == SILVER && uleft->dknown),
-        r_ag = (objects[rtyp].oc_material == SILVER && uright->dknown);
+        l_ag = (objects[ltyp].oc_material == MAT_SILVER && uleft->dknown),
+        r_ag = (objects[rtyp].oc_material == MAT_SILVER && uright->dknown);
 
     if ((silverhit & (W_RINGL | W_RINGR)) != 0L) {
         /* plural if both the same type (so not multi_claw and both rings
@@ -623,7 +623,7 @@ register struct monst *mtmp;
             if ((((strongmonst(mtmp->data) || mtmp->data->str >= 14)
                   && (mtmp->misc_worn_check & W_ARMS) == 0)
                  || !objects[pwep[i]].oc_bimanual)
-                && (objects[pwep[i]].oc_material != SILVER
+                && (objects[pwep[i]].oc_material != MAT_SILVER
                     || !mon_hates_silver(mtmp))) {
                 if ((otmp = oselect(mtmp, pwep[i])) != 0
                     && (otmp == mwep || !mweponly)) {
@@ -772,7 +772,7 @@ register struct monst *mtmp;
             && !resists_ston(mtmp))
             continue;
         if (((strong && !wearing_shield) || !objects[hwep[i]].oc_bimanual)
-            && (objects[hwep[i]].oc_material != SILVER
+            && (objects[hwep[i]].oc_material != MAT_SILVER
                 || !mon_hates_silver(mtmp)))
             Oselect(hwep[i]);
     }
@@ -806,7 +806,7 @@ int handindex;
 	//Is in hwep table, extra hands do not use two-handed weapons for simplicity (maybe too weak)
 	for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
 		if (otmp != MON_WEP(mtmp) && !objects[otmp->otyp].oc_bimanual
-			&& !(objects[otmp->otyp].oc_material == SILVER && mon_hates_silver(mtmp)) && otmp->otyp != CORPSE)
+			&& !(objects[otmp->otyp].oc_material == MAT_SILVER && mon_hates_silver(mtmp)) && otmp->otyp != CORPSE)
 		{
 			//Suitable weapons are in hwep array
 			for (int i = 0; i < SIZE(hwep); i++) {

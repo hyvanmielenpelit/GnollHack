@@ -3805,7 +3805,7 @@ boolean enable;
  *              BL_MASK_FLY             0x00000800L
  *              BL_MASK_RIDE            0x00001000L
  *      -- The value passed for BL_GOLD usually includes an encoded leading
- *         symbol for GOLD "\GXXXXNNNN:nnn". If the window port needs to use
+ *         symbol for MAT_GOLD "\GXXXXNNNN:nnn". If the window port needs to use
  *         the textual gold amount without the leading "$:" the port will
  *         have to skip past ':' in the passed "ptr" for the BL_GOLD case.
  *      -- color is an unsigned int.

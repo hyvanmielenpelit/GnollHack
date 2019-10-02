@@ -105,7 +105,7 @@ const char *name; /* if null, then format `*objp' */
 				else
 					You("are hit by %s for %d damage%s", onm, dam, exclam(dam));
 			}
-			if (obj && objects[obj->otyp].oc_material == SILVER
+			if (obj && objects[obj->otyp].oc_material == MAT_SILVER
                 && Hate_silver) {
                 /* extra damage already applied by dmgval() */
                 pline_The("silver sears your flesh!");
@@ -518,7 +518,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 
 			}
 		}
-		if (objects[otmp->otyp].oc_material == SILVER
+		if (objects[otmp->otyp].oc_material == MAT_SILVER
             && mon_hates_silver(mtmp)) {
             if (vis)
                 pline_The("silver sears %s flesh!", s_suffix(mon_nam(mtmp)));
@@ -1377,8 +1377,8 @@ boolean your_fault, from_invent;
     else if (obj_type == BOULDER || obj_type == HEAVY_IRON_BALL)
         pline("Whang!");
     else if (otmp->oclass == COIN_CLASS
-             || objects[obj_type].oc_material == GOLD
-             || objects[obj_type].oc_material == SILVER)
+             || objects[obj_type].oc_material == MAT_GOLD
+             || objects[obj_type].oc_material == MAT_SILVER)
         pline("Clink!");
     else
         pline("Clonk!");

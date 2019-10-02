@@ -747,7 +747,7 @@ int dieroll;
                     tmp = 0;
                 else
                     tmp = rnd(2);
-                if (objects[obj->otyp].oc_material == SILVER
+                if (objects[obj->otyp].oc_material == MAT_SILVER
                     && mon_hates_silver(mon)) {
                     silvermsg = TRUE;
                     silverobj = TRUE;
@@ -831,7 +831,7 @@ int dieroll;
                         return TRUE;
                     hittxt = TRUE;
                 }
-                if (objects[obj->otyp].oc_material == SILVER
+                if (objects[obj->otyp].oc_material == MAT_SILVER
                     && mon_hates_silver(mon)) {
                     silvermsg = TRUE;
                     silverobj = TRUE;
@@ -1091,7 +1091,7 @@ int dieroll;
                      * Things like silver wands can arrive here so
                      * so we need another silver check.
                      */
-                    if (objects[obj->otyp].oc_material == SILVER
+                    if (objects[obj->otyp].oc_material == MAT_SILVER
                         && mon_hates_silver(mon)) {
                         tmp += rnd(20);
                         silvermsg = TRUE;
@@ -1234,17 +1234,19 @@ int dieroll;
 			break;
 		case DEATH_ENCHANTMENT:
 			if (resists_death(mon) || is_not_living(mon->data) || is_demon(mon->data) || is_vampshifter(mon))
+			{
 				needenchantmsg = -obj->special_enchantment;
+			}
 			else
 			{
 				needenchantmsg = 0; //Since gets killed message
 				tmp = mon->mhp + 1;
 				hide_damage_amount = TRUE;
+				enchantkilled = TRUE;
 			}
 			obj->special_enchantment = 0;
 			/* defer "obj is no longer enchanted" until after hit message */
 			unenchantmsg = TRUE;
-			enchantkilled = TRUE;
 			break;
 		default:
 			break;
@@ -1358,9 +1360,9 @@ int dieroll;
         /* iron weapon using melee or polearm hit [3.6.1: metal weapon too;
            also allow either or both weapons to cause split when twoweap] */
         && obj && (obj == uwep || (u.twoweap && obj == uswapwep))
-        && ((objects[obj->otyp].oc_material == IRON
+        && ((objects[obj->otyp].oc_material == MAT_IRON
              /* allow scalpel and tsurugi to split puddings */
-             || objects[obj->otyp].oc_material == METAL)
+             || objects[obj->otyp].oc_material == MAT_METAL)
             /* but not bashing with darts, arrows or ya */
             && !(is_ammo(obj) || is_missile(obj)))
         && hand_to_hand) {
@@ -1460,7 +1462,7 @@ int dieroll;
 
 	boolean objectshatters = FALSE;
 	/* message for shattering blades and objects here */
-	if (obj && objects[obj->otyp].oc_material == GLASS 
+	if (obj && objects[obj->otyp].oc_material == MAT_GLASS 
 		&& !(objects[obj->otyp].oc_flags & O1_INDESTRUCTIBLE)
 		&& !is_quest_artifact(obj)
 		&& !obj->oartifact
@@ -1666,7 +1668,7 @@ struct obj *obj;
         || obj->otyp == MIRROR          /* silver in the reflective surface */
 		|| obj->otyp == MAGIC_MIRROR          /* silver in the reflective surface */
 		|| obj->otyp == CLOVE_OF_GARLIC /* causes shades to flee */
-        || objects[obj->otyp].oc_material == SILVER)
+        || objects[obj->otyp].oc_material == MAT_SILVER)
         return TRUE;
     return FALSE;
 }
@@ -2726,7 +2728,7 @@ register struct monst *mon;
                      || is_missile(uswapwep)) /* dart, shuriken, boomerang */
                 /* and not two-handed and not incapable of being wielded */
                 && !bimanual(uswapwep)
-                && !(objects[uswapwep->otyp].oc_material == SILVER
+                && !(objects[uswapwep->otyp].oc_material == MAT_SILVER
                      && Hate_silver))
                 altwep = !altwep; /* toggle for next attack */
             weapon = *originalweapon;

@@ -2767,7 +2767,7 @@ do_objs()
         case AMULET_CLASS:
             /* avoid trouble with stupid C preprocessors */
             Fprintf(ofp, "#define\t");
-            if (objects[i].oc_material == PLASTIC) {
+            if (objects[i].oc_material == MAT_PLASTIC) {
                 Fprintf(ofp, "FAKE_AMULET_OF_YENDOR\t%d\n", i);
                 prefix = -1;
                 break;
@@ -2775,7 +2775,7 @@ do_objs()
             break;
         case GEM_CLASS:
             /* avoid trouble with stupid C preprocessors */
-            if (objects[i].oc_material == GLASS) {
+            if (objects[i].oc_material == MAT_GLASS) {
                 Fprintf(ofp, "/* #define\t%s\t%d */\n", objnam, i);
                 prefix = -1;
                 break;

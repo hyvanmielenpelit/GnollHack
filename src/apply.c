@@ -2932,7 +2932,7 @@ struct obj *tstone;
             return;
         } else {
             /* either a ring or the touchstone was not effective */
-            if (objects[obj->otyp].oc_material == GLASS) {
+            if (objects[obj->otyp].oc_material == MAT_GLASS) {
                 do_scratch = TRUE;
                 break;
             }
@@ -2942,26 +2942,26 @@ struct obj *tstone;
 
     default:
         switch (objects[obj->otyp].oc_material) {
-        case CLOTH:
+        case MAT_CLOTH:
             pline("%s a little more polished now.", Tobjnam(tstone, "look"));
             return;
-        case LIQUID:
+        case MAT_LIQUID:
             if (!obj->known) /* note: not "whetstone" */
                 You("must think this is a wetstone, do you?");
             else
                 pline("%s a little wetter now.", Tobjnam(tstone, "are"));
             return;
-        case WAX:
+        case MAT_WAX:
             streak_color = "waxy";
             break; /* okay even if not touchstone */
-        case WOOD:
+        case MAT_WOOD:
             streak_color = "wooden";
             break; /* okay even if not touchstone */
-        case GOLD:
+        case MAT_GOLD:
             do_scratch = TRUE; /* scratching and streaks */
             streak_color = "golden";
             break;
-        case SILVER:
+        case MAT_SILVER:
             do_scratch = TRUE; /* scratching and streaks */
             streak_color = "silvery";
             break;
@@ -4231,9 +4231,10 @@ doapply()
         break;
     case PICK_AXE:
     case DWARVISH_MATTOCK:
-        res = use_pick_axe(obj);
+	case SHOVEL:
+		res = use_pick_axe(obj);
         break;
-    case TINNING_KIT:
+	case TINNING_KIT:
         use_tinning_kit(obj);
         break;
     case LEASH:

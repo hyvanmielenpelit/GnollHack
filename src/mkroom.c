@@ -733,7 +733,7 @@ mkgarden()
 		for (sy = sroom->ly; sy <= sroom->hy; sy++)
 		{
 			if (!OBJ_AT(sx, sy) && !MON_AT(sx, sy) && !t_at(sx, sy)
-				&& !nexttodoor(sx, sy) && !rn2(5))
+				&& !nexttodoor(sx, sy) && !nexttotree(sx, sy) && !rn2(3))
 			{
 				levl[sx][sy].typ = TREE;
 			}
@@ -744,20 +744,25 @@ mkgarden()
 				if (!rn2(2))
 				{
 					int itemtype = MANDRAKE_ROOT;
+					int quan = 1;
 
 					switch (rn2(4))
 					{
 					case 0:
 						itemtype = MANDRAKE_ROOT;
+						quan = rnd(2);
 						break;
 					case 1:
 						itemtype = GINSENG_ROOT;
+						quan = rnd(3);
 						break;
 					case 2:
 						itemtype = CARROT;
+						quan = rnd(5);
 						break;
 					case 3:
 						itemtype = CLOVE_OF_GARLIC;
+						quan = rnd(2);
 						break;
 					default:
 						break;
@@ -765,6 +770,8 @@ mkgarden()
 					struct obj* otmp = mksobj(itemtype, TRUE, FALSE, FALSE);
 					if (otmp)
 					{
+						otmp->quan = quan;
+						otmp->owt = weight(otmp);
 						otmp->ox = sx;
 						otmp->oy = sy;
 						add_to_buried(otmp);
@@ -775,28 +782,39 @@ mkgarden()
 				if (!rn2(2))
 				{
 					int itemtype = SPRIG_OF_WOLFSBANE;
+					int quan = 1;
 
 					switch (rn2(5))
 					{
 					case 0:
 						itemtype = SPRIG_OF_WOLFSBANE;
+						quan = rnd(3);
 						break;
 					case 1:
 						itemtype = CLOVE_OF_GARLIC;
+						quan = rnd(2);
 						break;
 					case 2:
 						itemtype = APPLE;
+						quan = rnd(5);
 						break;
 					case 3:
 						itemtype = PEAR;
+						quan = rnd(5);
 						break;
 					case 4:
 						itemtype = MELON;
+						quan = rnd(2);
 						break;
 					default:
 						break;
 					}
-					(void)mksobj_at(itemtype, sx, sy, TRUE, FALSE);
+					struct obj* otmp = mksobj_at(itemtype, sx, sy, TRUE, FALSE);
+					if (otmp)
+					{
+						otmp->quan = quan;
+						otmp->owt = weight(otmp);
+					}
 				}
 
 				if (!rn2(12))
@@ -886,6 +904,24 @@ register int sx, sy;
 }
 
 boolean
+nexttotree(sx, sy)
+register int sx, sy;
+{
+	register int dx, dy;
+	register struct rm* lev;
+
+	for (dx = -1; dx <= 1; dx++)
+		for (dy = -1; dy <= 1; dy++) {
+			if (!isok(sx + dx, sy + dy))
+				continue;
+			lev = &levl[sx + dx][sy + dy];
+			if (lev->typ == TREE)
+				return TRUE;
+		}
+	return FALSE;
+}
+
+boolean
 has_dnstairs(sroom)
 register struct mkroom *sroom;
 {
@@ -928,6 +964,19 @@ xchar x, y;
 {
     return (boolean) (x >= croom->lx - 1 && x <= croom->hx + 1
                       && y >= croom->ly - 1 && y <= croom->hy + 1);
+}
+
+struct mkroom* which_room(x, y)
+xchar x, y;
+{
+	struct mkroom* sroom = (struct mkroom*)0;
+
+	for (int i = 0; i < nroom; i++) { /* turn up to 1 rooms gardenlike */
+		sroom = &rooms[i];
+		if (inside_room(sroom, x, y))
+			break;
+	}
+	return sroom;
 }
 
 boolean

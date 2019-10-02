@@ -818,6 +818,7 @@ makelevel()
 			altarsplaced = 1;
 		}
 
+		/*
 		tries = 0;
 		do {
 			croom = &rooms[rn2(nroom)];
@@ -836,6 +837,7 @@ makelevel()
 				uncurse(otmp);
 			}
 		}
+		*/
 	}
 
 	for (croom = rooms; croom->hx > 0; croom++) {

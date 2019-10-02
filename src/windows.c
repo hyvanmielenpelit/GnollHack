@@ -1089,7 +1089,7 @@ unsigned long *colormasks UNUSED;
     curs(WIN_STATUS, 1, 0);
     putstr(WIN_STATUS, 0, newbot1);
     curs(WIN_STATUS, 1, 1);
-    putmixed(WIN_STATUS, 0, newbot2); /* putmixed() due to GOLD glyph */
+    putmixed(WIN_STATUS, 0, newbot2); /* putmixed() due to MAT_GOLD glyph */
 }
 
 STATIC_VAR struct window_procs dumplog_windowprocs_backup;

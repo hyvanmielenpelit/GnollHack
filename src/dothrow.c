@@ -293,7 +293,7 @@ autoquiver()
                    || (otmp->otyp == FLINT
                        && objects[otmp->otyp].oc_name_known)
                    || (otmp->oclass == GEM_CLASS
-                       && objects[otmp->otyp].oc_material == GLASS
+                       && objects[otmp->otyp].oc_material == MAT_GLASS
                        && objects[otmp->otyp].oc_name_known)) {
             if (uslinging())
                 oammo = otmp;
@@ -1007,7 +1007,7 @@ boolean hitsroof;
             else if (dmg > 6)
                 dmg = 6;
             if (youmonst.data == &mons[PM_SHADE]
-                && objects[obj->otyp].oc_material != SILVER)
+                && objects[obj->otyp].oc_material != MAT_SILVER)
                 dmg = 0;
         }
         if (dmg > 1 && less_damage)
@@ -1798,7 +1798,7 @@ register struct obj *obj;
 {
     char buf[BUFSZ];
     boolean is_buddy = sgn(mon->data->maligntyp) == sgn(u.ualign.type);
-    boolean is_gem = objects[obj->otyp].oc_material == GEMSTONE;
+    boolean is_gem = objects[obj->otyp].oc_material == MAT_GEMSTONE;
     int ret = 0;
     static NEARDATA const char nogood[] = " is not interested in your junk.";
     static NEARDATA const char acceptgift[] = " accepts your gift.";
@@ -2050,7 +2050,7 @@ struct obj *obj;
 {
     if (obj_resists(obj, 1, 99))
         return 0;
-    if (objects[obj->otyp].oc_material == GLASS && !obj->oartifact
+    if (objects[obj->otyp].oc_material == MAT_GLASS && !obj->oartifact
         && obj->oclass != GEM_CLASS)
         return 1;
     switch (obj->oclass == POTION_CLASS ? POT_WATER : obj->otyp) {

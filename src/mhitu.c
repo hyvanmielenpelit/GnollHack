@@ -1315,7 +1315,7 @@ register struct obj* omonwep;
 
 				if (!dmg)
                     break;
-                if (objects[otmp->otyp].oc_material == SILVER
+                if (objects[otmp->otyp].oc_material == MAT_SILVER
                     && Hate_silver) {
                     pline_The("silver sears your flesh!");
                     exercise(A_CON, FALSE);
@@ -1329,9 +1329,9 @@ register struct obj* omonwep;
                 if (tmp < 1)
                     tmp = 1;
                 if (u.mh - tmp > 1
-                    && (objects[otmp->otyp].oc_material == IRON
+                    && (objects[otmp->otyp].oc_material == MAT_IRON
                         /* relevant 'metal' objects are scalpel and tsurugi */
-                        || objects[otmp->otyp].oc_material == METAL)
+                        || objects[otmp->otyp].oc_material == MAT_METAL)
                     && (u.umonnum == PM_BLACK_PUDDING
                         || u.umonnum == PM_BROWN_PUDDING)) {
                     if (tmp > 1)

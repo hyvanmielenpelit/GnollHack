@@ -415,7 +415,7 @@ xchar x, y; /* coordinates where object was before the impact, not after */
         const char *result = (char *) 0;
 
         otmp2 = otmp->nobj;
-        if (objects[otmp->otyp].oc_material == GLASS
+        if (objects[otmp->otyp].oc_material == MAT_GLASS
             && otmp->oclass != GEM_CLASS && !obj_resists(otmp, 33, 100)) {
             result = "shatter";
         } else if (otmp->otyp == EGG && !rn2(3)) {
@@ -1571,7 +1571,7 @@ boolean shop_floor_obj;
     if (breaktest(otmp)) {
         const char *result;
 
-        if (objects[otmp->otyp].oc_material == GLASS
+        if (objects[otmp->otyp].oc_material == MAT_GLASS
             || otmp->otyp == EXPENSIVE_CAMERA) {
             if (otmp->otyp == MIRROR || otmp->otyp == MAGIC_MIRROR)
                 change_luck(-2);

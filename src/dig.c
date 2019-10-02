@@ -397,9 +397,19 @@ dig(VOID_ARGS)
             }
             if (IS_TREE(lev->typ)) {
                 digtxt = "You cut down the tree.";
-                lev->typ = ROOM, lev->flags = 0;
-                if (!rn2(5))
-                    (void) rnd_treefruit_at(dpx, dpy);
+				struct mkroom* r = which_room(dpx, dpy);
+				if (r && r->rtype == GARDEN)
+					lev->typ = GRASS;
+				else
+					lev->typ = ROOM;
+
+				lev->flags = 0;
+				if (rn2(4))
+				{
+					struct obj* otmp = rnd_treefruit_at(dpx, dpy);
+					otmp->quan = rnd(16) + 4;
+					otmp->owt = weight(otmp);
+				}
             } else {
                 digtxt = "You succeed in cutting away some rock.";
                 lev->typ = CORR, lev->flags = 0;
@@ -963,6 +973,7 @@ struct obj *obj;
     char *dsp, dirsyms[12], qbuf[BUFSZ];
     boolean ispick;
     int rx, ry, downok, res = 0;
+	boolean isshovel = (obj && (obj->otyp == SHOVEL));
 
     /* Check tool */
     if (obj != uwep) {
@@ -981,6 +992,27 @@ struct obj *obj;
               !res ? "Unfortunately," : "But", verb);
         return res;
     }
+
+	if (isshovel)
+	{
+		if(!can_reach_floor(FALSE))
+		{
+			pline("You cannot reach the floor.");
+			return res;
+		}
+		else if (!(levl[u.ux][u.uy].typ == GRASS || IS_GRAVE(levl[u.ux][u.uy].typ)))
+		{
+			pline("It is too hard to dig here with a shovel.");
+			return res;
+		}
+		else
+		{
+			u.dx = 0;
+			u.dy = 0;
+			u.dz = 1;
+			return use_pick_axe2(obj);
+		}
+	}
 
     /* construct list of directions to show player for likely choices */
     downok = !!can_reach_floor(FALSE);
@@ -1031,6 +1063,7 @@ struct obj *obj;
     int dig_target;
     boolean ispick = is_pick(obj);
     const char *verbing = ispick ? "digging" : "chopping";
+	boolean isshovel = (obj && (obj->otyp == SHOVEL));
 
     if (u.uswallow && attack(u.ustuck)) {
         ; /* return 1 */
@@ -1318,10 +1351,21 @@ register struct monst *mtmp;
         } else {
             here->typ = DOOR, here->doormask = D_NODOOR;
         }
-    } else if (IS_TREE(here->typ)) {
-        here->typ = ROOM, here->flags = 0;
-        if (pile && pile < 5)
-            (void) rnd_treefruit_at(mtmp->mx, mtmp->my);
+    } else if (IS_TREE(here->typ))
+	{
+		struct mkroom* r = which_room(mtmp->mx, mtmp->my);
+		if (r && r->rtype == GARDEN)
+			here->typ = GRASS;
+		else
+			here->typ = ROOM;
+
+		here->flags = 0;
+		if (pile && pile < 5)
+		{
+			struct obj* otmp = rnd_treefruit_at(mtmp->mx, mtmp->my);
+			otmp->quan = rnd(16) + 4;
+			otmp->owt = weight(otmp);
+		}
     } else {
         here->typ = CORR, here->flags = 0;
         if (pile && pile < 5)

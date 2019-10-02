@@ -3023,7 +3023,7 @@ status_update(int fldindex, genericptr_t ptr, int chg, int percent, int color, u
                         BL_MASK_FLY             0x00000800L
                         BL_MASK_RIDE            0x00001000L
                 -- The value passed for BL_GOLD includes an encoded leading
-                   symbol for GOLD "\GXXXXNNNN:nnn". If window port needs
+                   symbol for MAT_GOLD "\GXXXXNNNN:nnn". If window port needs
                    textual gold amount without the leading "$:" the port will
                    have to skip past ':' in passed "ptr" for the BL_GOLD case.
                 -- color is the color that the GnollHack core is telling you to

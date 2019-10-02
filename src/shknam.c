@@ -463,7 +463,7 @@ int otyp; /* used iff obj is null */
     }
 
     if (oclass == FOOD_CLASS) {
-        if (objects[otyp].oc_material == VEGGY || otyp == EGG)
+        if (objects[otyp].oc_material == MAT_VEGGY || otyp == EGG)
             return TRUE;
         if (otyp == TIN && corpsenm == NON_PM) /* implies obj is non-null */
             return (boolean) (obj->spe == 1); /* 0 = empty, 1 = spinach */

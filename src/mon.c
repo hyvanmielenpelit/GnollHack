@@ -25,7 +25,7 @@ STATIC_DCL int FDECL(pickvampshape, (struct monst *));
 STATIC_DCL boolean FDECL(isspecmon, (struct monst *));
 STATIC_DCL boolean FDECL(validspecmon, (struct monst *, int));
 STATIC_DCL struct permonst *FDECL(accept_newcham_form, (int));
-STATIC_DCL struct obj *FDECL(make_corpse, (struct monst *, unsigned));
+STATIC_DCL struct obj *FDECL(make_corpse, (struct monst *, unsigned, BOOLEAN_P));
 STATIC_DCL void FDECL(lifesaved_monster, (struct monst *));
 
 /* note: duplicated in dog.c */
@@ -291,9 +291,10 @@ int mndx;
  * etc....
  */
 STATIC_OVL struct obj *
-make_corpse(mtmp, corpseflags)
+make_corpse(mtmp, corpseflags, createcorpse)
 register struct monst *mtmp;
 unsigned corpseflags;
+boolean createcorpse;
 {
     register struct permonst *mdat = mtmp->data;
     int num;
@@ -305,7 +306,25 @@ unsigned corpseflags;
     boolean burythem = ((corpstatflags & CORPSTAT_BURIED) != 0);
 	int oneinchance = 0;
 	int basemonsterindex = 0;
+	
+	/* Monsters that create death items with or without the corpse */
+	switch (mndx)
+	{
+	case PM_SKELETON:
+	case PM_SKELETAL_MAGE:
+	case PM_SKELETON_WARRIOR:
+	case PM_SKELETON_LORD:
+		obj = mksobj_at(BONE, x, y, TRUE, FALSE);
+		obj->quan = rnd(2 + (mndx == PM_SKELETON_LORD ? 1 : 0));
+		obj->owt = weight(obj);
+		break;
+	default:
+		break;
+	}
+	if (!createcorpse)
+		return (struct obj*)0;
 
+	/* Monsters that create death items only with the corpse */
 	switch (mndx) {
 	case PM_SILVER_DRAGON_HATCHLING:
 	case PM_RED_DRAGON_HATCHLING:
@@ -771,7 +790,7 @@ int reagentstyle; //0 = all, 1 = priest only, 2 = all but no priest
 		return randomtruegem();
 	else
 	{
-		switch (rn2(12))
+		switch (rn2(13))
 		{
 		case 0:
 			if(reagentstyle == 2)
@@ -832,6 +851,9 @@ int reagentstyle; //0 = all, 1 = priest only, 2 = all but no priest
 			break;
 		case 11:
 			otyp = FEATHER;
+			break;
+		case 12:
+			otyp = BONE;
 			break;
 		default:
 			otyp = CLOVE_OF_GARLIC;
@@ -1510,7 +1532,7 @@ register struct monst *mtmp;
         if (cansee(mtmp->mx, mtmp->my)) {
             if (flags.verbose && !mtmp->isgd)
                 pline("%s picks up some %s.", Monnam(mtmp),
-                      mat_idx == GOLD ? "gold" : "money");
+                      mat_idx == MAT_GOLD ? "gold" : "money");
             newsym(mtmp->mx, mtmp->my);
         }
     }
@@ -1657,7 +1679,7 @@ struct obj *otmp;
         return 0;
     if (otyp == CORPSE && is_rider(&mons[otmp->corpsenm]))
         return 0;
-    if (objects[otyp].oc_material == SILVER && mon_hates_silver(mtmp)
+    if (objects[otyp].oc_material == MAT_SILVER && mon_hates_silver(mtmp)
         && (otyp != BELL_OF_OPENING || !is_covetous(mdat)))
         return 0;
 
@@ -2551,9 +2573,8 @@ register struct monst *mdef;
     if (!DEADMONSTER(mdef))
         return; /* lifesaved */
 
-    if (corpse_chance(mdef, (struct monst *) 0, FALSE)
-        && (accessible(mdef->mx, mdef->my) || is_pool(mdef->mx, mdef->my)))
-        (void) make_corpse(mdef, CORPSTAT_NONE);
+    if ((accessible(mdef->mx, mdef->my) || is_pool(mdef->mx, mdef->my)))
+        (void) make_corpse(mdef, CORPSTAT_NONE, corpse_chance(mdef, (struct monst*) 0, FALSE));
 }
 
 /* monster disappears, not dies */
@@ -2859,9 +2880,11 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
         }
 
         /* corpse--none if hero was inside the monster */
-        if (!wasinside && corpse_chance(mtmp, (struct monst *) 0, FALSE)) {
-            cadaver = make_corpse(mtmp, burycorpse ? CORPSTAT_BURIED
-                                                   : CORPSTAT_NONE);
+        if (!wasinside) {
+            cadaver = make_corpse(mtmp,
+				burycorpse ? CORPSTAT_BURIED : CORPSTAT_NONE,
+				corpse_chance(mtmp, (struct monst*) 0, FALSE)
+			);
             if (burycorpse && cadaver && cansee(x, y) && !mtmp->minvis
                 && cadaver->where == OBJ_BURIED && !nomsg) {
                 pline("%s corpse ends up buried.", s_suffix(Monnam(mtmp)));

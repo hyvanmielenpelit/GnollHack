@@ -386,7 +386,7 @@ register struct obj* obj;
 
 
 		/* Damage - Silver*/
-		if (objects[otyp].oc_material == SILVER)
+		if (objects[otyp].oc_material == MAT_SILVER)
 		{
 			Sprintf(buf, "Silver bonus damage:    ");
 			maindiceprinted = TRUE;
@@ -1131,7 +1131,7 @@ register struct obj* obj;
 		}
 
 		/* Item properties */
-		if (objects[otyp].oc_flags & ~(O1_THROWN_WEAPON | O1_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED | O1_GENERATED_BLESSED | O1_CONFERS_LUCK
+		if (objects[otyp].oc_flags & ~(O1_THROWN_WEAPON | O1_CONFERS_LUCK
 			| O1_WAND_LIKE_TOOL | O1_NON_SPELL_SPELLBOOK | O1_EDIBLE_NONFOOD))
 		{
 			int powercnt = 0;

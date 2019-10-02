@@ -107,6 +107,9 @@ register struct obj *obj;
         && !Has_contents(obj))
         return TRUE;
 
+	if (obj->otyp == MAT_BONE)
+		;
+
     /* return (boolean) !!index(comestibles, obj->oclass); */
     return (boolean) (obj->oclass == FOOD_CLASS || objects[obj->otyp].oc_flags & O1_EDIBLE_NONFOOD);
 }
@@ -2219,7 +2222,7 @@ eatspecial()
         vault_gd_watching(GD_EATGOLD);
         return;
     }
-    if (objects[otmp->otyp].oc_material == PAPER) {
+    if (objects[otmp->otyp].oc_material == MAT_PAPER) {
 #ifdef MAIL
         if (otmp->otyp == SCR_MAIL)
             /* no nutrition */
@@ -2290,7 +2293,7 @@ struct obj *otmp;
 {
     if (otmp->oclass == FOOD_CLASS)
         return "food";
-    if (otmp->oclass == GEM_CLASS && objects[otmp->otyp].oc_material == GLASS
+    if (otmp->oclass == GEM_CLASS && objects[otmp->otyp].oc_material == MAT_GLASS
         && otmp->dknown)
         makeknown(otmp->otyp);
     return foodwords[objects[otmp->otyp].oc_material];
@@ -2523,8 +2526,8 @@ struct obj *otmp;
      * Breaks conduct, but otherwise safe.
      */
     if (!u.uconduct.unvegan && !maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL))
-        && ((material == LEATHER || material == BONE
-             || material == DRAGON_HIDE || material == WAX)
+        && ((material == MAT_LEATHER || material == MAT_BONE
+             || material == MAT_DRAGON_HIDE || material == MAT_WAX)
             || (cadaver && !vegan(&mons[mnum])))) {
         Sprintf(buf, "%s foul and unfamiliar to you.  %s", foodsmell,
                 eat_it_anyway);
@@ -2534,8 +2537,8 @@ struct obj *otmp;
             return 2;
     }
     if (!u.uconduct.unvegetarian && !maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL))
-        && ((material == LEATHER || material == BONE
-             || material == DRAGON_HIDE)
+        && ((material == MAT_LEATHER || material == MAT_BONE
+             || material == MAT_DRAGON_HIDE)
             || (cadaver && !vegetarian(&mons[mnum])))) {
         Sprintf(buf, "%s unfamiliar to you.  %s", foodsmell, eat_it_anyway);
         if (yn_function(buf, ynchars, 'n') == 'n')
@@ -2683,18 +2686,18 @@ doeat()
         context.victual.eating = TRUE; /* needed for lesshungry() */
 
         material = objects[otmp->otyp].oc_material;
-        if (material == LEATHER || material == BONE
-            || material == DRAGON_HIDE) {
+        if (material == MAT_LEATHER || material == MAT_BONE
+            || material == MAT_DRAGON_HIDE) {
             u.uconduct.unvegan++;
             violated_vegetarian();
-        } else if (material == WAX)
+        } else if (material == MAT_WAX)
             u.uconduct.unvegan++;
         u.uconduct.food++;
 
         if (otmp->cursed) {
             (void) rottenfood(otmp);
             nodelicious = TRUE;
-        } else if (objects[otmp->otyp].oc_material == PAPER)
+        } else if (objects[otmp->otyp].oc_material == MAT_PAPER)
             nodelicious = TRUE;
 
         if (otmp->oclass == WEAPON_CLASS && otmp->opoisoned) {
@@ -2769,12 +2772,12 @@ doeat()
             dont_start = TRUE;
         /* if not used up, eatcorpse sets up reqtime and may modify oeaten */
     } else {
-        /* No checks for WAX, LEATHER, BONE, DRAGON_HIDE.  These are
+        /* No checks for MAT_WAX, MAT_LEATHER, MAT_BONE, MAT_DRAGON_HIDE.  These are
          * all handled in the != FOOD_CLASS case, above.
          */
         switch (objects[otmp->otyp].oc_material) {
-		case ORGANIC:
-		case FLESH:
+		case MAT_ORGANIC:
+		case MAT_FLESH:
             u.uconduct.unvegan++;
             if (otmp->otyp != EGG) {
                 violated_vegetarian();

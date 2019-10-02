@@ -10,31 +10,31 @@
    (liquid potion inside glass bottle, metal arrowhead on wooden shaft)
    and object definitions only specify one type on a best-fit basis */
 enum obj_material_types {
-    LIQUID      =  1, /* currently only for venom */  /* Organics start here */
-    WAX         =  2,
-    VEGGY       =  3, /* foodstuffs */
-	FLESH       =  4, /*   ditto    */
-	ORGANIC		=  5, /* non-veggy, non-flesh organic material, e.g. bat guano, feathers */
-	PAPER       =  6,
-    CLOTH       =  7,
-	SILK		=  8,
-	LEATHER     =  9,
-    WOOD        = 10, /* Organics stop here */
-    BONE        = 11,
-    DRAGON_HIDE = 12, /* not leather! */
-    IRON        = 13, /* Fe - includes steel */
-    METAL       = 14, /* Sn, &c. */
-    COPPER      = 15, /* Cu - includes brass */
-    SILVER      = 16, /* Ag */
-    GOLD        = 17, /* Au */
-    PLATINUM    = 18, /* Pt */
-    MITHRIL     = 19,
-    PLASTIC     = 20,
-    GLASS       = 21,
-    GEMSTONE    = 22,
-    MINERAL     = 23,
-	PLANARRIFT	= 24,
-	FORCEFIELD  = 25
+    MAT_LIQUID      =  1, /* currently only for venom */  /* Organics start here */
+    MAT_WAX         =  2,
+    MAT_VEGGY       =  3, /* foodstuffs */
+	MAT_FLESH       =  4, /*   ditto    */
+	MAT_ORGANIC		=  5, /* non-veggy, non-flesh organic material, e.g. bat guano, feathers */
+	MAT_PAPER       =  6,
+    MAT_CLOTH       =  7,
+	MAT_SILK		=  8,
+	MAT_LEATHER     =  9,
+    MAT_WOOD        = 10, /* Organics stop here */
+    MAT_BONE		= 11,
+    MAT_DRAGON_HIDE = 12, /* not leather! */
+    MAT_IRON        = 13, /* Fe - includes steel */
+    MAT_METAL       = 14, /* Sn, &c. */
+    MAT_COPPER      = 15, /* Cu - includes brass */
+    MAT_SILVER      = 16, /* Ag */
+    MAT_GOLD        = 17, /* Au */
+    MAT_PLATINUM    = 18, /* Pt */
+    MAT_MITHRIL     = 19,
+    MAT_PLASTIC     = 20,
+    MAT_GLASS       = 21,
+    MAT_GEMSTONE    = 22,
+    MAT_MINERAL     = 23,
+	MAT_PLANARRIFT	= 24,
+	MAT_FORCEFIELD  = 25
 };
 
 enum obj_armor_types {
@@ -111,19 +111,19 @@ struct objclass {
 
     Bitfield(oc_material, 5); /* one of obj_material_types */
 
-#define is_organic(otmp) (objects[otmp->otyp].oc_material <= WOOD)
+#define is_organic(otmp) (objects[otmp->otyp].oc_material <= MAT_WOOD)
 #define is_metallic(otmp)                    \
-    (objects[otmp->otyp].oc_material >= IRON \
-     && objects[otmp->otyp].oc_material <= MITHRIL)
+    (objects[otmp->otyp].oc_material >= MAT_IRON \
+     && objects[otmp->otyp].oc_material <= MAT_MITHRIL)
 
 /* primary damage: fire/rust/--- */
 /* is_flammable(otmp), is_rottable(otmp) in mkobj.c */
-#define is_rustprone(otmp) (objects[otmp->otyp].oc_material == IRON)
+#define is_rustprone(otmp) (objects[otmp->otyp].oc_material == MAT_IRON)
 
 /* secondary damage: rot/acid/acid */
 #define is_corrodeable(otmp)                   \
-    (objects[otmp->otyp].oc_material == COPPER \
-     || objects[otmp->otyp].oc_material == IRON)
+    (objects[otmp->otyp].oc_material == MAT_COPPER \
+     || objects[otmp->otyp].oc_material == MAT_IRON)
 
 #define is_damageable(otmp)                                        \
     (is_rustprone(otmp) || is_flammable(otmp) || is_rottable(otmp) \
@@ -290,16 +290,16 @@ struct objclass {
 #define O1_READABLE 0x00001000								
 #define O1_WIELDABLE 0x00002000											/* can be wielded in a weapon slot */								
 #define O1_EDIBLE_NONFOOD 0x00004000
+#define O1_EDIBLE_BY_BONE_EATERS 0x00008000
 
-#define O1_MANA_PERCENTAGE_BONUS 0x00008000
-#define O1_HP_PERCENTAGE_BONUS 0x00010000
-#define O1_BECOMES_CURSED_WHEN_WORN 0x00020000
-#define O1_CONFERS_LUCK 0x00040000
-#define O1_CONFERS_POWERS_WHEN_CARRIED 0x00080000
-#define O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED 0x00100000
-#define O1_CANNOT_BE_DROPPED_IF_CURSED 0x00200000
-#define O1_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED 0x00400000			/* if deathenchantable item, then death, otherwise lightning*/
-#define O1_GENERATED_BLESSED 0x00800000									
+#define O1_MANA_PERCENTAGE_BONUS 0x00010000
+#define O1_HP_PERCENTAGE_BONUS 0x00020000
+#define O1_BECOMES_CURSED_WHEN_WORN 0x00040000
+#define O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED 0x00080000
+#define O1_CANNOT_BE_DROPPED_IF_CURSED 0x00100000
+
+#define O1_CONFERS_LUCK 0x00200000
+#define O1_CONFERS_POWERS_WHEN_CARRIED 0x00400000
 
 #define O1_THROWN_WEAPON 0x01000000										/* says "Thrown weapon" instead of "Melee weapon", default range is larger, can use throwrange data value */
 #define O1_WEIGHT_DOES_NOT_REDUCE_RANGE 0x02000000						/* the object magically flies when thrown, ignoring its weight */
@@ -339,6 +339,8 @@ struct objclass {
 
 #define O2_FLIMSY 0x00400000	
 
+#define O2_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED 0x10000000			/* if deathenchantable item, then death, otherwise lightning*/
+#define O2_GENERATED_BLESSED 0x20000000									
 
 /* Artifact flags - to do: Attack type, half physical and spell damage, bonus to monsters only */
 /* Flags 3 */

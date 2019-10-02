@@ -917,7 +917,7 @@ boolean makingboxcontents;
 	otmp->corpsenm = NON_PM;
 	otmp->special_enchantment = 0;
 	otmp->cooldownleft = 0;
-	otmp->blessed = (objects[otmp->otyp].oc_flags& O1_GENERATED_BLESSED) ? 1 : 0;
+	otmp->blessed = (objects[otmp->otyp].oc_flags2 & O2_GENERATED_BLESSED) ? 1 : 0;
 
     if (init) {
         switch (let) {
@@ -925,17 +925,17 @@ boolean makingboxcontents;
             otmp->quan = is_multigen(otmp) ? (long) rn1(6, 6) : 1L;
             if (!rn2(11)) {
                 otmp->spe = rne(3);
-                otmp->blessed = (objects[otmp->otyp].oc_flags & O1_GENERATED_BLESSED) ? 1 : rn2(2);
+                otmp->blessed = (objects[otmp->otyp].oc_flags2 & O2_GENERATED_BLESSED) ? 1 : rn2(2);
             } else if (!rn2(10)) {
                 curse(otmp);
                 otmp->spe = -rne(3);
             } else
                 blessorcurse(otmp, 10);
-            if (is_poisonable(otmp) && !rn2(100) && !(objects[otmp->otyp].oc_flags & O1_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED))
+            if (is_poisonable(otmp) && !rn2(100) && !(objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED))
                 otmp->opoisoned = 1;
-			else if (is_specialenchantable(otmp) && ((objects[otmp->otyp].oc_flags & O1_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED) || (is_multigen(otmp) ? !rn2(40) : !rn2(100))))
+			else if (is_specialenchantable(otmp) && ((objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED) || (is_multigen(otmp) ? !rn2(40) : !rn2(100))))
 			{
-				if (is_deathenchantable(otmp) && ((objects[otmp->otyp].oc_flags & O1_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED) || !rn2(5)))
+				if (is_deathenchantable(otmp) && ((objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED) || !rn2(5)))
 				{
 					otmp->special_enchantment = DEATH_ENCHANTMENT;
 					if (is_multigen(otmp))
@@ -945,7 +945,7 @@ boolean makingboxcontents;
 				}
 				else
 				{
-					otmp->special_enchantment = (objects[otmp->otyp].oc_flags & O1_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED) ? LIGHTNING_ENCHANTMENT : rnd(3);
+					otmp->special_enchantment = (objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED) ? LIGHTNING_ENCHANTMENT : rnd(3);
 					if (is_multigen(otmp))
 					{
 						switch (otmp->special_enchantment)
@@ -1156,7 +1156,7 @@ boolean makingboxcontents;
                 curse(otmp);
                 otmp->spe = -rne(3);
             } else if (!rn2(10)) {
-                otmp->blessed = (objects[otmp->otyp].oc_flags & O1_GENERATED_BLESSED) ? 1 : rn2(2);
+                otmp->blessed = (objects[otmp->otyp].oc_flags2 & O2_GENERATED_BLESSED) ? 1 : rn2(2);
                 otmp->spe = rne(3);
             } else
                 blessorcurse(otmp, 10);
@@ -1666,11 +1666,11 @@ register struct obj *obj;
 				&& (contents->oclass == COIN_CLASS || contents->oclass == GEM_CLASS
 					|| contents->oclass == RING_CLASS || contents->oclass == AMULET_CLASS
 					|| contents->oclass == MISCELLANEOUS_CLASS
-					|| objects[contents->otyp].oc_material == SILVER
-					|| objects[contents->otyp].oc_material == GOLD
-					|| objects[contents->otyp].oc_material == PLATINUM
-					|| objects[contents->otyp].oc_material == MITHRIL
-					|| objects[contents->otyp].oc_material == GEMSTONE
+					|| objects[contents->otyp].oc_material == MAT_SILVER
+					|| objects[contents->otyp].oc_material == MAT_GOLD
+					|| objects[contents->otyp].oc_material == MAT_PLATINUM
+					|| objects[contents->otyp].oc_material == MAT_MITHRIL
+					|| objects[contents->otyp].oc_material == MAT_GEMSTONE
 					))
 				cwt += obj->cursed ? (weight(contents) * 2) : obj->blessed ? ((weight(contents) + 31) / 32)
 				: ((weight(contents) + 15) / 16);
@@ -1957,7 +1957,7 @@ register struct obj *otmp;
     if (objects[otyp].oc_flags & O1_FIRE_RESISTANT || objects[otyp].oc_oprop == FIRE_RES || objects[otyp].oc_oprop2 == FIRE_RES || objects[otyp].oc_oprop3 == FIRE_RES || otyp == WAN_FIRE)
         return FALSE;
 
-    return (boolean) ((omat <= WOOD && omat != LIQUID) || omat == PLASTIC);
+    return (boolean) ((omat <= MAT_WOOD && omat != MAT_LIQUID) || omat == MAT_PLASTIC);
 }
 
 boolean
@@ -1966,8 +1966,8 @@ register struct obj *otmp;
 {
     int otyp = otmp->otyp;
 
-    return (boolean) (objects[otyp].oc_material <= WOOD
-                      && objects[otyp].oc_material != LIQUID);
+    return (boolean) (objects[otyp].oc_material <= MAT_WOOD
+                      && objects[otyp].oc_material != MAT_LIQUID);
 }
 
 /*

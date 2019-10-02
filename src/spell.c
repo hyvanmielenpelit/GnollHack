@@ -848,9 +848,13 @@ int booktype;
 STATIC_OVL void
 cast_protection()
 {
-    int l = u.ulevel, loglev = 0,
-        gain, natac = u.uac + u.uspellprot;
-    /* note: u.uspellprot is subtracted when find_ac() factors it into u.uac,
+
+	int gain = 4;
+#if 0
+	int l = u.ulevel, loglev = 0,
+		gain, natac = u.uac + u.uspellprot;
+
+	/* note: u.uspellprot is subtracted when find_ac() factors it into u.uac,
        so adding here factors it back out
        (versions prior to 3.6 had this backwards) */
 
@@ -883,6 +887,8 @@ cast_protection()
      */
     natac = (10 - natac) / 10; /* convert to positive and scale down */
     gain = loglev - (int) u.uspellprot / (4 - min(3, natac));
+#endif
+
 
     if (gain > 0) {
         if (!Blind) {
@@ -914,13 +920,12 @@ cast_protection()
                           atmosphere, an(hgolden));
             }
         }
-        u.uspellprot += gain;
-        u.uspmtime = d(objects[SPE_PROTECTION].oc_spell_dur_dice, objects[SPE_PROTECTION].oc_spell_dur_dicesize) + objects[SPE_PROTECTION].oc_spell_dur_plus
-			* (P_SKILL(spell_skilltype(SPE_PROTECTION)) == P_EXPERT)
-                        ? 3 :(P_SKILL(spell_skilltype(SPE_PROTECTION)) == P_SKILLED)
-                        ? 2 : 1;
-        if (!u.usptime)
+		u.uspellprot = gain; //+= gain;
+		u.uspmtime = d(objects[SPE_PROTECTION].oc_spell_dur_dice, objects[SPE_PROTECTION].oc_spell_dur_dicesize) + objects[SPE_PROTECTION].oc_spell_dur_plus;
+
+		if (!u.usptime)
             u.usptime = u.uspmtime;
+
         find_ac();
 		find_mc();
 	} else {

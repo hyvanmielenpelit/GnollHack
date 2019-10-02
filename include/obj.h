@@ -227,7 +227,7 @@ struct obj {
 #define is_specialenchantable(otmp)                                            \
 	(otmp->oclass == WEAPON_CLASS || objects[otmp->otyp].oc_flags & O1_SPECIAL_ENCHANTABLE)
 #define is_deathenchantable(otmp)                                            \
-    (objects[otmp->otyp].oc_material == BONE || objects[otmp->otyp].oc_material == GLASS)
+    (objects[otmp->otyp].oc_material == MAT_BONE || objects[otmp->otyp].oc_material == MAT_GLASS)
 
 
 /* Armor */
@@ -356,7 +356,7 @@ struct obj {
 
 /* misc helpers, simple enough to be macros */
 #define is_flimsy(otmp)                           \
-    (objects[(otmp)->otyp].oc_material <= LEATHER \
+    (objects[(otmp)->otyp].oc_material <= MAT_LEATHER \
      || (objects[otmp->otyp].oc_flags2 & O2_FLIMSY))
 #define is_plural(o) \
     ((o)->quan != 1L                                                    \
@@ -385,7 +385,7 @@ struct obj {
 /* true for gems/rocks that should have " stone" appended to their names */
 #define GemStone(typ)                                                  \
     (typ == FLINT                                                      \
-     || (objects[typ].oc_material == GEMSTONE                          \
+     || (objects[typ].oc_material == MAT_GEMSTONE                          \
          && (typ != DILITHIUM_CRYSTAL && typ != RUBY && typ != DIAMOND \
              && typ != SAPPHIRE && typ != BLACK_OPAL && typ != EMERALD \
              && typ != OPAL && typ != PEARL && typ != BLACK_PEARL)))

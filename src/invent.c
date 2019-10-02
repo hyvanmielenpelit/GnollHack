@@ -186,13 +186,13 @@ struct obj *obj;
          *  8) seen rocks ("rock").
          */
         switch (objects[obj->otyp].oc_material) {
-        case GEMSTONE:
+        case MAT_GEMSTONE:
             k = !seen ? 1 : !discovered ? 2 : 3;
             break;
-        case GLASS:
+        case MAT_GLASS:
             k = !seen ? 1 : !discovered ? 2 : 4;
             break;
-        default: /* MINERAL */
+        default: /* MAT_MINERAL */
             k = !seen ? 5 : (obj->otyp != ROCK) ? (!discovered ? 6 : 7) : 8;
             break;
         }

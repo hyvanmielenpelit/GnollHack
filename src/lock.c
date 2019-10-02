@@ -1091,22 +1091,22 @@ struct obj *otmp;
     thing = singular(otmp, xname);
     Blinded = save_Blinded;
     switch (objects[otmp->otyp].oc_material) {
-    case PAPER:
+    case MAT_PAPER:
         disposition = "is torn to shreds";
         break;
-    case WAX:
+    case MAT_WAX:
         disposition = "is crushed";
         break;
-    case VEGGY:
+    case MAT_VEGGY:
         disposition = "is pulped";
         break;
-    case FLESH:
+    case MAT_FLESH:
         disposition = "is mashed";
         break;
-    case GLASS:
+    case MAT_GLASS:
         disposition = "shatters";
         break;
-    case WOOD:
+    case MAT_WOOD:
         disposition = "splinters to fragments";
         break;
     default:

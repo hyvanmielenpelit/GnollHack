@@ -1392,58 +1392,61 @@ int okind;
 
     /* some of these choices are arbitrary */
     switch (okind) {
-    case IRON:
-    case METAL:
-    case MITHRIL:
+    case MAT_IRON:
+    case MAT_METAL:
+	case MAT_COPPER:
+	case MAT_PLATINUM:
+	case MAT_MITHRIL:
         pm_index = PM_IRON_GOLEM;
         material = "metal ";
         break;
-    case COPPER:
-    case SILVER:
-    case PLATINUM:
-	case MINERAL:
+	case MAT_SILVER:
+		pm_index = PM_SILVER_GOLEM;
+		material = "silver ";
+		break;
+	case MAT_MINERAL:
         pm_index = rn2(2) ? PM_STONE_GOLEM : PM_CLAY_GOLEM;
         material = "lithic ";
         break;
     case 0:
-    case FLESH:
+    case MAT_FLESH:
         /* there is no flesh type, but all food is type 0, so we use it */
         pm_index = PM_FLESH_GOLEM;
         material = "organic ";
         break;
-    case WOOD:
+    case MAT_WOOD:
         pm_index = PM_WOOD_GOLEM;
         material = "wood ";
         break;
-    case LEATHER:
+    case MAT_LEATHER:
         pm_index = PM_LEATHER_GOLEM;
         material = "leather ";
         break;
-    case CLOTH:
+    case MAT_CLOTH:
         pm_index = PM_ROPE_GOLEM;
         material = "cloth ";
         break;
-    case BONE:
+    case MAT_BONE:
         pm_index = PM_SKELETON; /* nearest thing to "bone golem" */
         material = "bony ";
         break;
-	case PLANARRIFT:
+	case MAT_PLANARRIFT:
 		pm_index = PM_BLACK_LIGHT; /* nearest thing to "planar rift golem" */
 		material = "void ";
 		break;
-	case GOLD:
+	case MAT_GOLD:
         pm_index = PM_GOLD_GOLEM;
         material = "gold ";
         break;
-    case GLASS:
+    case MAT_GLASS:
         pm_index = PM_GLASS_GOLEM;
         material = "glassy ";
         break;
-    case PAPER:
+    case MAT_PAPER:
         pm_index = PM_PAPER_GOLEM;
         material = "paper ";
         break;
-	case GEMSTONE:
+	case MAT_GEMSTONE:
 		pm_index = PM_GEMSTONE_GOLEM;
 		material = "gemstone ";
 		break;
@@ -1698,8 +1701,8 @@ int id;
 
     case GEM_CLASS:
         if (otmp->quan > (long) rnd(4)
-            && objects[obj->otyp].oc_material == MINERAL
-            && objects[otmp->otyp].oc_material != MINERAL) {
+            && objects[obj->otyp].oc_material == MAT_MINERAL
+            && objects[otmp->otyp].oc_material != MAT_MINERAL) {
             otmp->otyp = ROCK; /* transmutation backfired */
             otmp->quan /= 2L;  /* some material has been lost */
         }
@@ -1809,8 +1812,8 @@ struct obj *obj;
     xchar oox, ooy;
     boolean smell = FALSE, golem_xform = FALSE;
 
-    if (objects[obj->otyp].oc_material != MINERAL
-        && objects[obj->otyp].oc_material != GEMSTONE)
+    if (objects[obj->otyp].oc_material != MAT_MINERAL
+        && objects[obj->otyp].oc_material != MAT_GEMSTONE)
         return 0;
     /* Heart of Ahriman usually resists; ordinary items rarely do */
     if (obj_resists(obj, 2, 98))
