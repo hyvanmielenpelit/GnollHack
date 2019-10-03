@@ -1487,6 +1487,12 @@ int dieroll;
 			extradmg += d(objects[obj->otyp].oc_wedice, objects[obj->otyp].oc_wedam);
 		extradmg += objects[obj->otyp].oc_wedmgplus;
 
+		if(objects[obj->otyp].oc_flags3 & O3_SPE_AFFECTS_ABILITIES)
+			extradmg += obj->spe;
+
+		if(extradmg < 0)
+			extradmg = 0;
+
 		mon->mhpmax -= extradmg;
 		if (mon->mhp > mon->mhpmax)
 			mon->mhp = mon->mhpmax;
@@ -1507,6 +1513,12 @@ int dieroll;
 		if (objects[obj->otyp].oc_wedam > 0 && objects[obj->otyp].oc_wedice > 0)
 			extradmg += d(objects[obj->otyp].oc_wedice, objects[obj->otyp].oc_wedam);
 		extradmg += objects[obj->otyp].oc_wedmgplus;
+
+		if (objects[obj->otyp].oc_flags3 & O3_SPE_AFFECTS_ABILITIES)
+			extradmg += obj->spe;
+
+		if (extradmg < 0)
+			extradmg = 0;
 
 		if (Upolyd)
 		{
