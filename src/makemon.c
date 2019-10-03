@@ -408,7 +408,7 @@ register struct monst *mtmp;
         if (humanoid(ptr)) {
             /* create minion stuff; can't use mongets */
 			
-			int weaptype = LONG_SWORD_OF_HOLY_VENGEANCE;
+			int weaptype = SWORD_OF_HOLY_VENGEANCE;
 			int artifacttype = 0;
 			
 			if (!rn2(4))

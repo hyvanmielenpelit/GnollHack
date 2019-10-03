@@ -344,24 +344,29 @@ struct objclass {
 
 /* Artifact flags - to do: Attack type, half physical and spell damage, bonus to monsters only */
 /* Flags 3 */
-#define O3_NONE 0x00000000
-#define O3_NOGEN 0x00000001  /* item is special, bequeathed by gods */
-#define O3_RESTR 0x00000002  /* item is restricted - can't be named */
-#define O3_INTEL 0x00000004  /* item is self-willed - intelligent */
-#define O3_SPEAK 0x00000008  /* item can speak (not implemented) */
-#define O3_DRLI 0x00000010   /* drains a level from monsters */
-#define O3_BEHEAD 0x00000020 /* beheads monsters */
-#define O3_DALIGN 0x00000040  /* attack bonus on non-aligned monsters  */
-#define O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS 0x00000080
-#define O3_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS 0x00000100
-#define O3_PERMTTED_TARGET_LAWFUL 0x00000200
-#define O3_PERMTTED_TARGET_NEUTRAL 0x00000400
-#define O3_PERMTTED_TARGET_CHAOTIC 0x00000800
+#define O3_NONE				0x00000000
+#define O3_NOGEN			0x00000001  /* item is special, bequeathed by gods */
+#define O3_RESTRICTED		0x00000002  /* item is restricted - can't be named */
+#define O3_INTELLIGENT		0x00000004  /* item is self-willed - intelligent */
+#define O3_SPEAK			0x00000008  /* item can speak (not implemented) */
+#define O3_LEVEL_DRAIN		0x00000010   /* drains a level from monsters */
+#define O3_WOUNDING			0x00000020   /* extra damage caused is permanent damage */
+#define O3_LIFE_LEECH		0x00000040   /* heals hit points equal to the extra damage caused */
+#define O3_SHARPNESS		0x00000080 /* causes a critical hit on at a 5% chance, causing quadruple normal damage */
+#define O3_VORPAL			0x00000100 /* beheads monsters */
 
-#define O3_SPELL_EXPLOSION_EFFECT 0x01000000
-#define O3_SPELL_BYPASSES_MAGIC_RESISTANCE 0x02000000
-#define O3_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY 0x04000000
-#define O3_SPELL_IS_NONREVERSIBLE_PERMANENT 0x08000000
+#define O3_DALIGN										0x00010000  /* attack bonus on non-aligned monsters  */
+#define O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS		0x00020000
+#define O3_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS		0x00040000
+
+#define O3_PERMTTED_TARGET_LAWFUL	0x00100000
+#define O3_PERMTTED_TARGET_NEUTRAL	0x00200000
+#define O3_PERMTTED_TARGET_CHAOTIC	0x00400000
+
+#define O3_SPELL_EXPLOSION_EFFECT				0x01000000
+#define O3_SPELL_BYPASSES_MAGIC_RESISTANCE		0x02000000
+#define O3_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY	0x04000000
+#define O3_SPELL_IS_NONREVERSIBLE_PERMANENT		0x08000000
 
 #define O3_TARGET_PERMISSION_IS_M1_FLAG 0x10000000 /* Note: if no flag, then default is a monster symbol */
 #define O3_TARGET_PERMISSION_IS_M2_FLAG 0x20000000

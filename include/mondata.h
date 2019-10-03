@@ -94,6 +94,7 @@
 #define carnivorous(ptr) (((ptr)->mflags1 & M1_CARNIVORE) != 0L)
 #define herbivorous(ptr) (((ptr)->mflags1 & M1_HERBIVORE) != 0L)
 #define metallivorous(ptr) (((ptr)->mflags1 & M1_METALLIVORE) != 0L)
+
 #define polyok(ptr) (((ptr)->mflags2 & M2_NOPOLY) == 0L)
 #define is_shapeshifter(ptr) (((ptr)->mflags2 & M2_SHAPESHIFTER) != 0L)
 #define is_undead(ptr) (((ptr)->mflags2 & M2_UNDEAD) != 0L)

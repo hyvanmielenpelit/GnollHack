@@ -398,7 +398,7 @@ dig(VOID_ARGS)
             if (IS_TREE(lev->typ)) {
                 digtxt = "You cut down the tree.";
 				struct mkroom* r = which_room(dpx, dpy);
-				if (r && r->rtype == GARDEN)
+				if (r && r->orig_rtype == GARDEN)
 					lev->typ = GRASS;
 				else
 					lev->typ = ROOM;
@@ -1354,7 +1354,7 @@ register struct monst *mtmp;
     } else if (IS_TREE(here->typ))
 	{
 		struct mkroom* r = which_room(mtmp->mx, mtmp->my);
-		if (r && r->rtype == GARDEN)
+		if (r && r->orig_rtype == GARDEN)
 			here->typ = GRASS;
 		else
 			here->typ = ROOM;

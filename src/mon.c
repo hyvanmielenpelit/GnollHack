@@ -311,9 +311,9 @@ boolean createcorpse;
 	switch (mndx)
 	{
 	case PM_SKELETON:
-	case PM_SKELETAL_MAGE:
 	case PM_SKELETON_WARRIOR:
 	case PM_SKELETON_LORD:
+	case PM_SKELETON_KING:
 		obj = mksobj_at(BONE, x, y, TRUE, FALSE);
 		obj->quan = rnd(2 + (mndx == PM_SKELETON_LORD ? 1 : 0));
 		obj->owt = weight(obj);

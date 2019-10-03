@@ -353,24 +353,17 @@ struct monst* mattacker;
         if (tmp < 0)
             tmp = 0;
 
-		if ((!mattacker ? (objects[otyp].oc_power_permissions == PERMITTED_ALL) : !inappropriate_monster_character_type(mattacker, otmp))
-			&& (objects[otyp].oc_target_permissions == ALL_TARGETS && ((objects[otyp].oc_flags3 & (O3_PERMTTED_TARGET_CHAOTIC | O3_PERMTTED_TARGET_NEUTRAL | O3_PERMTTED_TARGET_LAWFUL)) == 0) || (
-			((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M1_FLAG) && (ptr->mflags1 & objects[otyp].oc_target_permissions))
-				|| ((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M2_FLAG) && (ptr->mflags2 & objects[otyp].oc_target_permissions))
-				|| ((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M3_FLAG) && (ptr->mflags3 & objects[otyp].oc_target_permissions))
-				|| ((objects[otyp].oc_flags3 & ~(O3_TARGET_PERMISSION_IS_M1_FLAG | O3_TARGET_PERMISSION_IS_M2_FLAG | O3_TARGET_PERMISSION_IS_M3_FLAG)) && (ptr->mlet == objects[otyp].oc_target_permissions))
-				|| ((objects[otyp].oc_flags3 & O3_PERMTTED_TARGET_CHAOTIC) && mon->malign < 0)
-				|| ((objects[otyp].oc_flags3 & O3_PERMTTED_TARGET_NEUTRAL) && mon->malign == 0)
-				|| ((objects[otyp].oc_flags3 & O3_PERMTTED_TARGET_LAWFUL) && mon->malign > 0)
-				)
-			))
+		if (eligible_for_extra_damage(otmp,mon,mattacker))
 		{
+			int extradmg = 0;
 			if (objects[otyp].oc_wedam > 0 && objects[otyp].oc_wedice > 0)
-				tmp += d(objects[otyp].oc_wedice, objects[otyp].oc_wedam);
-			tmp += objects[otyp].oc_wedmgplus;
+				extradmg += d(objects[otyp].oc_wedice, objects[otyp].oc_wedam);
+			extradmg += objects[otyp].oc_wedmgplus;
 		
 			if(objects[otyp].oc_flags3 & O3_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS)
-				tmp *= 2;
+				extradmg += tmp;
+
+			tmp += extradmg;
 
 		}
 
@@ -430,6 +423,31 @@ struct monst* mattacker;
     }
 
     return  tmp;
+}
+
+boolean
+eligible_for_extra_damage(otmp, mon, mattacker)
+struct obj* otmp;
+struct monst* mon;
+struct monst* mattacker;
+{
+	int otyp = otmp->otyp;
+	struct permonst* ptr = mon->data;
+
+	if ((!mattacker ? (objects[otyp].oc_power_permissions == PERMITTED_ALL) : !inappropriate_monster_character_type(mattacker, otmp))
+		&& (objects[otyp].oc_target_permissions == ALL_TARGETS && ((objects[otyp].oc_flags3 & (O3_PERMTTED_TARGET_CHAOTIC | O3_PERMTTED_TARGET_NEUTRAL | O3_PERMTTED_TARGET_LAWFUL)) == 0) || (
+		((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M1_FLAG) && (ptr->mflags1 & objects[otyp].oc_target_permissions))
+			|| ((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M2_FLAG) && (ptr->mflags2 & objects[otyp].oc_target_permissions))
+			|| ((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M3_FLAG) && (ptr->mflags3 & objects[otyp].oc_target_permissions))
+			|| ((objects[otyp].oc_flags3 & ~(O3_TARGET_PERMISSION_IS_M1_FLAG | O3_TARGET_PERMISSION_IS_M2_FLAG | O3_TARGET_PERMISSION_IS_M3_FLAG)) && (ptr->mlet == objects[otyp].oc_target_permissions))
+			|| ((objects[otyp].oc_flags3 & O3_PERMTTED_TARGET_CHAOTIC) && mon->malign < 0)
+			|| ((objects[otyp].oc_flags3 & O3_PERMTTED_TARGET_NEUTRAL) && mon->malign == 0)
+			|| ((objects[otyp].oc_flags3 & O3_PERMTTED_TARGET_LAWFUL) && mon->malign > 0)
+			)
+			))
+		return TRUE;
+	else
+		return FALSE;
 }
 
 /* check whether blessed and/or silver damage applies for *non-weapon* hit;
@@ -731,7 +749,7 @@ struct obj *obj;
 static const NEARDATA short hwep[] = {
     CORPSE, /* cockatrice corpse */
 	BLACK_BLADE_OF_DISINTEGRATION,
-    TSURUGI, RUNESWORD, LONG_SWORD_OF_HOLY_VENGEANCE, LONG_SWORD_OF_DEFENSE,
+    TSURUGI, RUNESWORD, SWORD_OF_HOLY_VENGEANCE, SWORD_OF_DEFENSE,
 	TRIPLE_HEADED_FLAIL, DWARVISH_MATTOCK, TWO_HANDED_SWORD, BATTLE_AXE,
     KATANA, DOUBLE_HEADED_FLAIL, UNICORN_HORN, CRYSKNIFE, TRIDENT, SILVER_LONG_SWORD, LONG_SWORD, ELVEN_BROADSWORD,
     BROADSWORD, SCIMITAR, SILVER_SABER, SILVER_MACE, INFERNAL_JAGGED_TOOTHED_CLUB, INFERNAL_ANCUS, MORNING_STAR, ELVEN_SHORT_SWORD,

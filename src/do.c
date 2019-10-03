@@ -797,17 +797,31 @@ register struct obj* obj;
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
-			if (objects[otyp].oc_flags3 & O3_BEHEAD)
+			if (objects[otyp].oc_flags3 & O3_VORPAL)
 			{
 				powercnt++;
 				Sprintf(buf, " %2d - Beheads target on hit", powercnt);
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
-			if (objects[otyp].oc_flags3 & O3_DRLI)
+			if (objects[otyp].oc_flags3 & O3_LEVEL_DRAIN)
 			{
 				powercnt++;
-				Sprintf(buf, " %2d - Drains life on hit", powercnt);
+				Sprintf(buf, " %2d - Drains a level on hit", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (objects[otyp].oc_flags3 & O3_LIFE_LEECH)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Transfers hit points to the wielder on hit", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (objects[otyp].oc_flags3 & O3_WOUNDING)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Reduces hit points permanently on hit", powercnt);
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
@@ -1132,7 +1146,7 @@ register struct obj* obj;
 
 		/* Item properties */
 		if (objects[otyp].oc_flags & ~(O1_THROWN_WEAPON | O1_CONFERS_LUCK
-			| O1_WAND_LIKE_TOOL | O1_NON_SPELL_SPELLBOOK | O1_EDIBLE_NONFOOD))
+			| O1_WAND_LIKE_TOOL | O1_NON_SPELL_SPELLBOOK | O1_EDIBLE_NONFOOD | O1_EDIBLE_BY_BONE_EATERS))
 		{
 			int powercnt = 0;
 
