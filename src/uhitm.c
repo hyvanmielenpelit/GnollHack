@@ -1494,10 +1494,8 @@ int dieroll;
 		if (extradmg > 0)
 		{
 			char* whom = mon_nam(mon);
-			char woundingobjbuf[BUFSZ];
-
 			if (canspotmon(mon)) {
-					pline(woundingobjbuf, "%s deeply into %s!", Yobjnam2(obj,"cut"), whom);
+					pline("%s deeply into %s!", Yobjnam2(obj,"cut"), whom);
 			}
 		}
 	}
@@ -1526,10 +1524,8 @@ int dieroll;
 		if (extradmg > 0)
 		{
 			char* whom = mon_nam(mon);
-			char leechbuf[BUFSZ];
-
 			if (canspotmon(mon)) {
-				pline(leechbuf, "%s the life energy from %s!", Yobjnam2(obj, "leech"), whom);
+				pline("%s the life energy from %s!", Yobjnam2(obj, "leech"), whom);
 			}
 		}
 	}
