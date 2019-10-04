@@ -2068,12 +2068,12 @@ struct permonst _mons2[] = {
 	/* Nazguls are something between corporeal and non-corporeal*/
     MON("Nazgul", S_WRAITH, LVL(13, 12, 0, 25, -17),
         (G_GENO | G_NOCORPSE | 1),
-        A(ATTK(AT_WEAP, AD_DRLI, 1, 4, 0), ATTK(AT_BREA, AD_SLEE, 2, 25, 0),
-          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+			A(ATTK(AT_WEAP, AD_DRLI, 1, 4, 0), ATTK(AT_WEAP, AD_DRLI, 1, 4, 0),
+			ATTK(AT_BREA, AD_SLEE, 2, 25, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 0, MS_SPELL, MZ_HUMAN), STATS(18+100, 17, 19, 15, 11, 6), MR_COLD | MR_SLEEP | MR_POISON,
         0, M1_BREATHLESS | M1_HUMANOID,
         M2_NOPOLY | M2_UNDEAD | M2_STALK | M2_HOSTILE | M2_MALE | M2_COLLECT, 
-		M3_NONCORPOREAL, 17, HI_LORD),
+		M3_NONCORPOREAL | M3_MULTIWEAPON, 17, HI_LORD),
     /*
      * Xorn
      */

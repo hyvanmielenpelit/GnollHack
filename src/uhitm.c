@@ -1483,13 +1483,18 @@ int dieroll;
 	if (obj && (objects[obj->otyp].oc_flags3 & O3_WOUNDING) && eligible_for_extra_damage(obj, mon, &youmonst) && !is_rider(mon->data))
 	{
 		int extradmg = 0;
-		if (objects[obj->otyp].oc_wedam > 0 && objects[obj->otyp].oc_wedice > 0)
-			extradmg += d(objects[obj->otyp].oc_wedice, objects[obj->otyp].oc_wedam);
-		extradmg += objects[obj->otyp].oc_wedmgplus;
 
-		if(objects[obj->otyp].oc_flags3 & O3_SPE_AFFECTS_ABILITIES)
-			extradmg += obj->spe;
+		if (objects[obj->otyp].oc_flags3 & O3_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
+			extradmg = damagedealt;
+		else
+		{
+			if (objects[obj->otyp].oc_wedam > 0 && objects[obj->otyp].oc_wedice > 0)
+				extradmg += d(objects[obj->otyp].oc_wedice, objects[obj->otyp].oc_wedam);
+			extradmg += objects[obj->otyp].oc_wedmgplus;
 
+			if (objects[obj->otyp].oc_flags3 & O3_SPE_AFFECTS_ABILITIES)
+				extradmg += obj->spe;
+		}
 		if(extradmg < 0)
 			extradmg = 0;
 
@@ -1510,13 +1515,19 @@ int dieroll;
 	if (obj && (objects[obj->otyp].oc_flags3 & O3_LIFE_LEECH) && eligible_for_extra_damage(obj, mon, &youmonst) && !is_rider(mon->data) && !is_not_living(mon->data))
 	{
 		int extradmg = 0;
-		if (objects[obj->otyp].oc_wedam > 0 && objects[obj->otyp].oc_wedice > 0)
-			extradmg += d(objects[obj->otyp].oc_wedice, objects[obj->otyp].oc_wedam);
-		extradmg += objects[obj->otyp].oc_wedmgplus;
 
-		if (objects[obj->otyp].oc_flags3 & O3_SPE_AFFECTS_ABILITIES)
-			extradmg += obj->spe;
 
+		if (objects[obj->otyp].oc_flags3 & O3_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
+			extradmg = damagedealt;
+		else
+		{
+			if (objects[obj->otyp].oc_wedam > 0 && objects[obj->otyp].oc_wedice > 0)
+				extradmg += d(objects[obj->otyp].oc_wedice, objects[obj->otyp].oc_wedam);
+			extradmg += objects[obj->otyp].oc_wedmgplus;
+
+			if (objects[obj->otyp].oc_flags3 & O3_SPE_AFFECTS_ABILITIES)
+				extradmg += obj->spe;
+		}
 		if (extradmg < 0)
 			extradmg = 0;
 

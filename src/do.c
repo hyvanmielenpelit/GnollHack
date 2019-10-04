@@ -320,6 +320,21 @@ register struct obj* obj;
 			/* Damage - Doubled */
 			Sprintf(eos(buf), " (x2)");
 		}
+		if (objects[otyp].oc_flags3 & O3_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
+		{
+			if (objects[otyp].oc_flags3 & O3_WOUNDING)
+			{
+				Sprintf(plusbuf, " (permanent)");
+				Strcat(buf, plusbuf);
+			}
+
+			if (objects[otyp].oc_flags3 & O3_LIFE_LEECH)
+			{
+				Sprintf(plusbuf, " (confers HP)");
+				Strcat(buf, plusbuf);
+			}
+		}
+
 		txt = buf;
 		putstr(datawin, 0, txt);
 
@@ -350,6 +365,21 @@ register struct obj* obj;
 			Sprintf(eos(buf), " (x2)");
 		}
 
+		if(objects[otyp].oc_flags3 & O3_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
+		{
+			if (objects[otyp].oc_flags3 & O3_WOUNDING)
+			{
+				Sprintf(plusbuf, " (permanent)");
+				Strcat(buf, plusbuf);
+			}
+
+			if (objects[otyp].oc_flags3 & O3_LIFE_LEECH)
+			{
+				Sprintf(plusbuf, " (confers HP)");
+				Strcat(buf, plusbuf);
+			}
+		}
+
 		txt = buf;
 		putstr(datawin, 0, txt);
 
@@ -378,7 +408,17 @@ register struct obj* obj;
 				Strcat(buf, plusbuf);
 			}
 
+			if (objects[otyp].oc_flags3 & O3_WOUNDING)
+			{
+				Sprintf(plusbuf, " (permanent)");
+				Strcat(buf, plusbuf);
+			}
 
+			if (objects[otyp].oc_flags3 & O3_LIFE_LEECH)
+			{
+				Sprintf(plusbuf, " (confers HP)");
+				Strcat(buf, plusbuf);
+			}
 
 			txt = buf;
 			putstr(datawin, 0, txt);

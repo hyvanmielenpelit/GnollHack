@@ -1426,6 +1426,70 @@ register struct attack *mattk;
     if (!tmp)
         return res;
 
+	/* Wounding */
+	if (mweapon && (objects[mweapon->otyp].oc_flags3 & O3_WOUNDING) && eligible_for_extra_damage(mweapon, mdef, magr) && !is_rider(mdef->data))
+	{
+		int extradmg = 0;
+		if (objects[mweapon->otyp].oc_flags3 & O3_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
+			extradmg = tmp;
+		else
+		{
+			if (objects[mweapon->otyp].oc_wedam > 0 && objects[mweapon->otyp].oc_wedice > 0)
+				extradmg += d(objects[mweapon->otyp].oc_wedice, objects[mweapon->otyp].oc_wedam);
+			extradmg += objects[mweapon->otyp].oc_wedmgplus;
+
+			if (objects[mweapon->otyp].oc_flags3 & O3_SPE_AFFECTS_ABILITIES)
+				extradmg += mweapon->spe;
+
+			if (extradmg < 0)
+				extradmg = 0;
+		}
+		mdef->mhpmax -= extradmg;
+		if (mdef->mhp > mdef->mhpmax)
+			mdef->mhp = mdef->mhpmax;
+
+		if (extradmg > 0)
+		{
+			if (canspotmon(mdef) && canspotmon(magr))
+			{
+				pline("%s's %s %s deeply into %s!", Monnam(magr), cxname(mweapon), otense(mweapon, "cut"), mon_nam(mdef));
+			}
+		}
+	}
+
+	/* Life drain */
+	if (mweapon && (objects[mweapon->otyp].oc_flags3 & O3_LIFE_LEECH) && eligible_for_extra_damage(mweapon, mdef, magr) && !is_rider(mdef->data) && !is_not_living(mdef->data))
+	{
+		int extradmg = 0;
+		if (objects[mweapon->otyp].oc_flags3 & O3_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
+			extradmg = tmp;
+		else
+		{
+			if (objects[mweapon->otyp].oc_wedam > 0 && objects[mweapon->otyp].oc_wedice > 0)
+				extradmg += d(objects[mweapon->otyp].oc_wedice, objects[mweapon->otyp].oc_wedam);
+			extradmg += objects[mweapon->otyp].oc_wedmgplus;
+
+			if (objects[mweapon->otyp].oc_flags3 & O3_SPE_AFFECTS_ABILITIES)
+				extradmg += obj->spe;
+		}
+		if (extradmg < 0)
+			extradmg = 0;
+
+		magr->mhp += extradmg;
+		if (magr->mhp > magr->mhpmax)
+			magr->mhp = magr->mhpmax;
+
+		if (extradmg > 0)
+		{
+			if (canspotmon(mdef) && canspotmon(magr))
+			{
+				pline("%s's %s %s life energy from %s!", Monnam(magr), cxname(mweapon), otense(mweapon, "leech"), mon_nam(mdef));
+			}
+		}
+	}
+
+
+
 	//Reduce HP
 	mdef->mhp -= tmp;
     if (DEADMONSTER(mdef)) {

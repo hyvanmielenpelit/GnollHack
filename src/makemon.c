@@ -582,9 +582,11 @@ register struct monst *mtmp;
         }
         break;
     case S_WRAITH:
-        (void) mongets(mtmp, KNIFE);
-        (void) mongets(mtmp, LONG_SWORD);
-        break;
+		if (ptr == &mons[PM_NAZGUL]) {
+			(void)mongets(mtmp, MORGUL_BLADE);
+			(void)mongets(mtmp, SWORD_OF_LIFE_DRAINING);
+		}
+		break;
     case S_ZOMBIE:
         if (!rn2(4))
             (void) mongets(mtmp, LEATHER_ARMOR);
@@ -918,6 +920,9 @@ register struct monst *mtmp;
 		break;
 	case S_WRAITH:
 		if (ptr == &mons[PM_NAZGUL]) {
+			otmp = mksobj(MORGUL_BLADE, FALSE, FALSE, FALSE);
+			(void)mpickobj(mtmp, otmp);
+
 			otmp = mksobj(RIN_INVISIBILITY, FALSE, FALSE, FALSE);
 			curse(otmp);
 			(void)mpickobj(mtmp, otmp);

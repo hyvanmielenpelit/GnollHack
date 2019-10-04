@@ -2027,16 +2027,76 @@ register struct obj* omonwep;
 		dmg  = 0; //Black blade does not do ordinary damage to disintegrateable monsters, to resistant monsters it inflicts normal damage
 	}
 	
+	int permdmg2 = 0;
+
+	/* Wounding */
+	if (mattk->aatyp == AT_WEAP && omonwep && (objects[omonwep->otyp].oc_flags3 & O3_WOUNDING) && eligible_for_extra_damage(omonwep, &youmonst, mtmp))
+	{
+		int extradmg = 0;
+		if (objects[omonwep->otyp].oc_flags3 & O3_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
+			extradmg = dmg;
+		else
+		{
+			if (objects[omonwep->otyp].oc_wedam > 0 && objects[omonwep->otyp].oc_wedice > 0)
+				extradmg += d(objects[omonwep->otyp].oc_wedice, objects[omonwep->otyp].oc_wedam);
+
+			extradmg += objects[omonwep->otyp].oc_wedmgplus;
+
+			if (objects[omonwep->otyp].oc_flags3 & O3_SPE_AFFECTS_ABILITIES)
+				extradmg += omonwep->spe;
+		}
+
+		if (extradmg < 0)
+			extradmg = 0;
+
+		permdmg2 = extradmg;
+
+		if (extradmg > 0)
+		{
+			pline("%s's %s %s you deeply!", Monnam(mtmp), cxname(omonwep), otense (omonwep, "cut"));
+		}
+	}
+
+	/* Life drain */
+	if (mattk->aatyp == AT_WEAP && omonwep && (objects[omonwep->otyp].oc_flags3 & O3_LIFE_LEECH) && eligible_for_extra_damage(omonwep, &youmonst, mtmp) && !is_not_living(youmonst.data))
+	{
+		int extradmg = 0;
+		if (objects[omonwep->otyp].oc_flags3 & O3_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
+			extradmg = dmg;
+		else
+		{
+
+			if (objects[omonwep->otyp].oc_wedam > 0 && objects[omonwep->otyp].oc_wedice > 0)
+				extradmg += d(objects[omonwep->otyp].oc_wedice, objects[omonwep->otyp].oc_wedam);
+			extradmg += objects[omonwep->otyp].oc_wedmgplus;
+
+			if (objects[omonwep->otyp].oc_flags3 & O3_SPE_AFFECTS_ABILITIES)
+				extradmg += omonwep->spe;
+		}
+		if (extradmg < 0)
+			extradmg = 0;
+
+		mtmp->mhp += extradmg;
+		if (mtmp->mhp > mtmp->mhpmax)
+			mtmp->mhp = mtmp->mhpmax;
+
+		if (extradmg > 0)
+		{
+			pline("%s's %s %s your life energy!", Monnam(mtmp), cxname(omonwep), otense(omonwep, "leech"));
+		}
+	}
+
 	int oldumort = u.umortality;
 
 	if (Invulnerable)
 	{
 		dmg = 0;
 		permdmg = 0;
+		permdmg2 = 0;
 	}
 
 	if (dmg) {
-		if (permdmg) { /* Death's life force drain */
+		if (permdmg > 0) { /* Death's life force drain */
 			int lowerlimit, * hpmax_p;
 			/*
 			 * Apply some of the damage to permanent hit points:
@@ -2056,20 +2116,51 @@ register struct obj* omonwep;
 				permdmg += dmg / 4;
 
 			if (Upolyd) {
-				hpmax_p = &u.mhmax;
+				hpmax_p = &u.basemhmax;
 				/* [can't use youmonst.m_lev] */
 				lowerlimit = min((int)youmonst.data->mlevel, u.ulevel);
 			}
 			else {
-				hpmax_p = &u.uhpmax;
+				hpmax_p = &u.ubasehpmax;
 				lowerlimit = u.ulevel;
 			}
 			if (*hpmax_p - permdmg > lowerlimit)
 				* hpmax_p -= permdmg;
 			else if (*hpmax_p > lowerlimit)
 				* hpmax_p = lowerlimit;
+
+			updatemaxhp();
+			if (Upolyd)
+			{
+				if (u.mh > u.mhmax)
+					u.mh = u.mhmax;
+			}
+			else
+			{
+				if (u.uhp > u.uhpmax)
+					u.uhp = u.uhpmax;
+			}
 			/* else unlikely...
 			 * already at or below minimum threshold; do nothing */
+			context.botl = 1;
+		}
+
+		if (permdmg2 > 0)
+		{
+			if (Upolyd)
+			{
+				u.basemhmax -= permdmg2;
+				updatemaxhp();
+				if (u.mh > u.mhmax)
+					u.mh = u.mhmax;
+			}
+			else
+			{
+				u.ubasehpmax -= permdmg2;
+				updatemaxhp();
+				if (u.uhp > u.uhpmax)
+					u.uhp = u.uhpmax;
+			}
 			context.botl = 1;
 		}
 
