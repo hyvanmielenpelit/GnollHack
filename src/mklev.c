@@ -11,7 +11,7 @@
 
 STATIC_DCL void FDECL(mkfount, (int, struct mkroom *));
 STATIC_DCL void FDECL(mksink, (struct mkroom *));
-STATIC_DCL void FDECL(mkaltar, (struct mkroom *));
+STATIC_DCL void FDECL(mkaltar, (struct mkroom *, BOOLEAN_P));
 STATIC_DCL void FDECL(mkgrave, (struct mkroom *));
 STATIC_DCL void NDECL(makevtele);
 STATIC_DCL void NDECL(clear_level_structures);
@@ -849,7 +849,7 @@ makelevel()
 
 		if (startingroom || (!rn2(chance) && altarsplaced == 0 && u_depth > 3))
 		{
-			mkaltar(croom);
+			mkaltar(croom, startingroom);
 			altarsplaced++;
 		}
 
@@ -1671,8 +1671,9 @@ struct mkroom *croom;
 }
 
 STATIC_OVL void
-mkaltar(croom)
+mkaltar(croom, match_player_alignment)
 struct mkroom *croom;
+boolean match_player_alignment;
 {
     coord m;
     register int tryct = 0;
@@ -1691,8 +1692,12 @@ struct mkroom *croom;
     /* Put an altar at m.x, m.y */
     levl[m.x][m.y].typ = ALTAR;
 
-    /* -1 - A_CHAOTIC, 0 - A_NEUTRAL, 1 - A_LAWFUL */
-    al = rn2((int) A_LAWFUL + 2) - 1;
+	/* -1 - A_CHAOTIC, 0 - A_NEUTRAL, 1 - A_LAWFUL */
+	if (match_player_alignment)
+		al = u.ualign.type;
+	else
+	    al = rn2((int) A_LAWFUL + 2) - 1;
+
     levl[m.x][m.y].altarmask = Align2amask(al);
 }
 
