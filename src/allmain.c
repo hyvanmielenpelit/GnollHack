@@ -635,6 +635,7 @@ newgame()
     /* quest_init();  --  Now part of role_init() */
 
     mklev();
+	struct mkroom* croom = upstairs_room;
     u_on_upstairs();
     if (wizard)
         obj_delivery(FALSE); /* finish wizkit */

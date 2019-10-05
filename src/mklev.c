@@ -711,6 +711,7 @@ makelevel()
             croom++;
     }
 
+	/* Level 1 up stairs is a special stair case, sstairs*/
     if (u.uz.dlevel != 1) {
         xchar sx, sy;
         do {
@@ -808,16 +809,64 @@ makelevel()
 
 	if (u_depth == 1)
 	{
-		do {
-			croom = &rooms[rn2(nroom)];
-			tries++;
-		} while (croom->rtype != OROOM || tries == 10);
-
-		if(tries < 10) {
-			mkaltar(croom);
-			altarsplaced = 1;
+		boolean found = FALSE;
+		for (int i = 0; i < nroom; i++) {
+			croom = &rooms[i];
+			if (inside_room(croom, sstairs.sx, sstairs.sy))
+			{
+				found = TRUE;
+				break;
+			}
 		}
 
+		tries = 0;
+		if(!found)
+		{
+			do {
+				croom = &rooms[rn2(nroom)];
+				tries++;
+			} while (croom->rtype != OROOM || tries == 10);
+		}
+	
+		/* The initial altar */
+		if (tries < 10) {
+			mkaltar(croom);
+			altarsplaced = 1;
+
+			/* Make stash */
+			int tryct = 0;
+			do {
+				x = somex(croom);
+				y = somey(croom);
+			} while (tryct <= 20 && !occupied(x, y) && !(IS_ROOM(levl[x][y].typ) || IS_POOL(levl[x][y].typ)
+				|| IS_FURNITURE(levl[x][y].typ) || !IS_ALTAR(levl[x][y].typ)));
+
+			struct obj* stash = mksobj_at(CHEST, x, y, FALSE, FALSE);
+			stash->olocked = FALSE;
+			stash->otrapped = FALSE;
+			char namebuf[BUFSZ];
+			Sprintf(namebuf, "%s's stash", plname);
+			stash = oname(stash, namebuf);
+
+			struct obj* otmp = (struct obj*)0;
+
+			if(!carrying(AXE) && !carrying(BATTLE_AXE))
+			{
+				otmp = mksobj(AXE, FALSE, FALSE, FALSE);
+				uncurse(otmp);
+				(void)add_to_container(stash, otmp);
+			}
+
+			otmp = mksobj(SCR_IDENTIFY, FALSE, FALSE, FALSE);
+			(void)add_to_container(stash, otmp);
+
+			otmp = mkobj(FOOD_CLASS, FALSE, FALSE);
+			(void)add_to_container(stash, otmp);
+
+			otmp = mkobj(SCROLL_CLASS, FALSE, FALSE);
+			(void)add_to_container(stash, otmp);
+
+		}
 		/*
 		tries = 0;
 		do {
