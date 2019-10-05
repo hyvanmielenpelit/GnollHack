@@ -1427,7 +1427,7 @@ int okind;
         material = "cloth ";
         break;
     case MAT_BONE:
-        pm_index = PM_SKELETON; /* nearest thing to "bone golem" */
+        pm_index = PM_BONE_GOLEM;
         material = "bony ";
         break;
 	case MAT_PLANARRIFT:

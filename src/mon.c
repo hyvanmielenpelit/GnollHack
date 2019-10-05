@@ -539,9 +539,15 @@ boolean createcorpse;
 			obj = mksobj_at((LAST_GEM + rnd(9)), x, y, TRUE, FALSE);
 		free_mname(mtmp);
 		break;
+	case PM_BONE_GOLEM:
+		num = rnd(8) + 4;
+		while (num--)
+			obj = mksobj_at(BONE, x, y, TRUE, FALSE);
+		free_mname(mtmp);
+		break;
 	case PM_SILVER_GOLEM:
-		obj = mksobj_at(SILVER_SLING_BULLET, x, y, FALSE, FALSE);
-		obj->quan = (long)(rn2(20) + 20);
+		obj = mksobj_at(NUGGET_OF_SILVER_ORE, x, y, FALSE, FALSE);
+		obj->quan = (long)(rn2(20) + 5);
 		obj->owt = weight(obj);
 		free_mname(mtmp);
 		break;
@@ -616,10 +622,23 @@ boolean createcorpse;
 		break;
 	}
     case PM_GOLD_GOLEM:
+	{
         /* Good luck gives more coins */
-        obj = mkgold((long) (200 - rnl(101)), x, y);
-        free_mname(mtmp);
-        break;
+		boolean goldcreated = FALSE;
+		if(!rn2(2))
+		{
+			obj = mkgold((long) (200 - rnl(101)), x, y);
+			goldcreated = TRUE;
+		}
+		if (!goldcreated || !rn2(2))
+		{
+			obj = mksobj_at(NUGGET_OF_GOLD_ORE, x, y, FALSE, FALSE);
+			obj->quan = (long)(rnd(10));
+			obj->owt = weight(obj);
+		}
+		free_mname(mtmp);
+		break;
+	}
     case PM_PAPER_GOLEM:
         num = rnd(4);
         while (num--)
