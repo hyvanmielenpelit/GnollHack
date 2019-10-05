@@ -671,8 +671,8 @@ boolean creation;
     /* give mummies a chance to wear their wrappings
      * and let skeletons wear their initial armor */
     if (mindless(mon->data)
-        && (!creation || (mon->data->mlet != S_MUMMY
-                          && mon->data != &mons[PM_SKELETON])))
+        && (!creation || !(mon->data->mlet == S_GREATER_UNDEAD
+                          || mon->data->mlet == S_LESSER_UNDEAD)))
         return;
 
     m_dowear_type(mon, W_AMUL, creation, FALSE);

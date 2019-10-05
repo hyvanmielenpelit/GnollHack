@@ -397,7 +397,7 @@ OBJECT:random,random
 # The resident nasty
 MONSTER:('&',"Orcus"),(33,15)
 # And its preferred companions
-MONSTER:('Z',"human zombie"),(32,15)
+MONSTER:('z',"human zombie"),(32,15)
 MONSTER:(' ',"shade"),(32,14)
 MONSTER:(' ',"shade"),(32,16)
 MONSTER:('V',"vampire"),(35,16)
@@ -405,24 +405,24 @@ MONSTER:('V',"vampire"),(35,14)
 MONSTER:('V',"vampire lord"),(36,14)
 MONSTER:('V',"vampire lord"),(36,15)
 # Randomly placed companions
-MONSTER:('Z',"skeleton"),random
-MONSTER:('Z',"skeleton"),random
-MONSTER:('Z',"skeleton"),random
-MONSTER:('Z',"skeleton"),random
-MONSTER:('Z',"skeleton"),random
+MONSTER:('z',"skeleton warrior"),random
+MONSTER:('z',"skeleton warrior"),random
+MONSTER:('z',"skeleton warrior"),random
+MONSTER:('z',"skeleton lord"),random
+MONSTER:('z',"skeleton king"),random
 MONSTER:(' ',"shade"),random
 MONSTER:(' ',"shade"),random
 MONSTER:(' ',"shade"),random
 MONSTER:(' ',"shade"),random
-MONSTER:('Z',"giant zombie"),random
-MONSTER:('Z',"giant zombie"),random
-MONSTER:('Z',"giant zombie"),random
-MONSTER:('Z',"ettin zombie"),random
-MONSTER:('Z',"ettin zombie"),random
-MONSTER:('Z',"ettin zombie"),random
-MONSTER:('Z',"human zombie"),random
-MONSTER:('Z',"human zombie"),random
-MONSTER:('Z',"human zombie"),random
+MONSTER:('z',"giant zombie"),random
+MONSTER:('z',"giant zombie"),random
+MONSTER:('z',"giant zombie"),random
+MONSTER:('z',"ettin zombie"),random
+MONSTER:('z',"ettin zombie"),random
+MONSTER:('z',"ettin zombie"),random
+MONSTER:('z',"human zombie"),random
+MONSTER:('z',"human zombie"),random
+MONSTER:('z',"human zombie"),random
 MONSTER:('V',"vampire"),random
 MONSTER:('V',"vampire"),random
 MONSTER:('V',"vampire"),random

@@ -515,7 +515,7 @@ int how;
      */
     if (mptr->mlet == S_WRAITH)
         u.ugrave_arise = PM_WRAITH;
-    else if (mptr->mlet == S_MUMMY && urace.mummynum != NON_PM)
+    else if (mptr->mlet == S_GREATER_UNDEAD && urace.mummynum != NON_PM)
         u.ugrave_arise = urace.mummynum;
     else if (mptr->mlet == S_VAMPIRE && Race_if(PM_HUMAN))
         u.ugrave_arise = PM_VAMPIRE;
@@ -1790,10 +1790,10 @@ const genericptr vptr2;
            an inappropriate result when mlet2 is greater than mlet1,
            so force our copies (mcls1, mcls2) to be signed */
         mcls1 = (schar) mons[indx1].mlet, mcls2 = (schar) mons[indx2].mlet;
-        /* S_ANT through S_ZRUTY correspond to lowercase monster classes,
-           S_ANGEL through S_ZOMBIE correspond to uppercase, and various
+        /* S_ANT through S_LESSER_UNDEAD correspond to lowercase monster classes,
+           S_ANGEL through S_GREATER_UNDEAD correspond to uppercase, and various
            punctuation characters are used for classes beyond those */
-        if (mcls1 > S_ZOMBIE && mcls2 > S_ZOMBIE) {
+        if (mcls1 > S_GREATER_UNDEAD && mcls2 > S_GREATER_UNDEAD) {
             /* force a specific order to the punctuation classes that's
                different from the internal order;
                internal order is ok if neither or just one is punctuation
@@ -1803,9 +1803,9 @@ const genericptr vptr2;
             };
 
             if ((punct = index(punctclasses, mcls1)) != 0)
-                mcls1 = (schar) (S_ZOMBIE + 1 + (int) (punct - punctclasses));
+                mcls1 = (schar) (S_LESSER_UNDEAD + 1 + (int) (punct - punctclasses));
             if ((punct = index(punctclasses, mcls2)) != 0)
-                mcls2 = (schar) (S_ZOMBIE + 1 + (int) (punct - punctclasses));
+                mcls2 = (schar) (S_GREATER_UNDEAD + 1 + (int) (punct - punctclasses));
         }
         res = mcls1 - mcls2; /* class */
         if (res == 0) {

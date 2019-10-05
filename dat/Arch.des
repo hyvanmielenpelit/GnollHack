@@ -98,15 +98,15 @@ TRAP:random,random
 TRAP:random,random
 # Monsters on siege duty.
 MONSTER: 'S',(60,09)
-MONSTER: 'M',(60,10)
+MONSTER: 'Z',(60,10)
 MONSTER: 'S',(60,11)
 MONSTER: 'S',(60,12)
-MONSTER: 'M',(60,13)
+MONSTER: 'Z',(60,13)
 MONSTER: 'S',(61,10)
 MONSTER: 'S',(61,11)
 MONSTER: 'S',(61,12)
 MONSTER: 'S',(30,03)
-MONSTER: 'M',(20,17)
+MONSTER: 'Z',(20,17)
 MONSTER: 'S',(67,02)
 MONSTER: 'S',(10,19)
 
@@ -247,15 +247,15 @@ MONSTER:'S',random
 MONSTER:'S',random
 MONSTER:'S',random
 MONSTER:'S',random
-MONSTER:'M',random
-MONSTER:('M',"human mummy"),random
-MONSTER:('M',"human mummy"),random
-MONSTER:('M',"human mummy"),random
-MONSTER:('M',"human mummy"),random
-MONSTER:('M',"human mummy"),random
-MONSTER:('M',"human mummy"),random
-MONSTER:('M',"human mummy"),random
-MONSTER:'M',random
+MONSTER:'Z',random
+MONSTER:('Z',"human mummy"),random
+MONSTER:('Z',"human mummy"),random
+MONSTER:('Z',"human mummy"),random
+MONSTER:('Z',"human mummy"),random
+MONSTER:('Z',"human mummy"),random
+MONSTER:('Z',"human mummy"),random
+MONSTER:('Z',"human mummy"),random
+MONSTER:'Z',random
 
 #
 #	The "goal" level for the quest.
@@ -364,15 +364,15 @@ MONSTER:'S',random
 MONSTER:'S',random
 MONSTER:'S',random
 MONSTER:'S',random
-MONSTER:('M',"human mummy"),random
-MONSTER:('M',"human mummy"),random
-MONSTER:('M',"human mummy"),random
-MONSTER:('M',"human mummy"),random
-MONSTER:('M',"human mummy"),random
-MONSTER:('M',"human mummy"),random
-MONSTER:('M',"human mummy"),random
-MONSTER:('M',"human mummy"),random
-MONSTER:'M',random
+MONSTER:('Z',"human mummy"),random
+MONSTER:('Z',"human mummy"),random
+MONSTER:('Z',"human mummy"),random
+MONSTER:('Z',"human mummy"),random
+MONSTER:('Z',"human mummy"),random
+MONSTER:('Z',"human mummy"),random
+MONSTER:('Z',"human mummy"),random
+MONSTER:('Z',"human mummy"),random
+MONSTER:'Z',random
 
 #
 #	The "fill" levels for the quest.
@@ -409,7 +409,7 @@ ROOM: "ordinary" , random, random, random, random {
   OBJECT: random, random
   TRAP: random, random
   MONSTER: 'S', random
-  MONSTER: ('M', "human mummy"), random
+  MONSTER: ('Z', "human mummy"), random
 }
 
 ROOM: "ordinary" , random, random, random, random {
@@ -432,20 +432,20 @@ LEVEL: "Arc-filb"
 ROOM: "ordinary" , random, random, random, random {
   STAIR: random, up
   OBJECT: random,random
-  MONSTER: 'M', random
+  MONSTER: 'Z', random
 }
 
 ROOM: "ordinary" , random, random, random, random {
   OBJECT: random, random
   OBJECT: random,random
-  MONSTER: 'M', random
+  MONSTER: 'Z', random
 }
 
 ROOM: "ordinary" , random, random, random, random {
   OBJECT: random, random
   TRAP: random, random
   OBJECT: random,random
-  MONSTER: 'M', random
+  MONSTER: 'Z', random
 }
 
 ROOM: "ordinary" , random, random, random, random {
@@ -453,7 +453,7 @@ ROOM: "ordinary" , random, random, random, random {
   OBJECT: random, random
   TRAP: random, random
   MONSTER: 'S', random
-  MONSTER: ('M', "human mummy"), random
+  MONSTER: ('Z', "human mummy"), random
 }
 
 ROOM: "ordinary" , random, random, random, random {

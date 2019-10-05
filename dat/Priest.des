@@ -89,18 +89,18 @@ TRAP:random,random
 TRAP:random,random
 TRAP:random,random
 # Monsters on siege duty.
-MONSTER: ('Z',"human zombie"),(37,01)
-MONSTER: ('Z',"human zombie"),(37,18)
-MONSTER: ('Z',"human zombie"),(03,03)
-MONSTER: ('Z',"human zombie"),(65,04)
-MONSTER: ('Z',"human zombie"),(12,11)
-MONSTER: ('Z',"human zombie"),(60,12)
-MONSTER: ('Z',"human zombie"),(14,08)
-MONSTER: ('Z',"human zombie"),(55,00)
-MONSTER: ('Z',"human zombie"),(18,18)
-MONSTER: ('Z',"human zombie"),(59,10)
-MONSTER: ('Z',"human zombie"),(13,09)
-MONSTER: ('Z',"human zombie"),(01,17)
+MONSTER: ('z',"human zombie"),(37,01)
+MONSTER: ('z',"human zombie"),(37,18)
+MONSTER: ('z',"human zombie"),(03,03)
+MONSTER: ('z',"human zombie"),(65,04)
+MONSTER: ('z',"human zombie"),(12,11)
+MONSTER: ('z',"human zombie"),(60,12)
+MONSTER: ('z',"human zombie"),(14,08)
+MONSTER: ('z',"human zombie"),(55,00)
+MONSTER: ('z',"human zombie"),(18,18)
+MONSTER: ('z',"human zombie"),(59,10)
+MONSTER: ('z',"human zombie"),(13,09)
+MONSTER: ('z',"human zombie"),(01,17)
 
 #
 #	The "locate" level for the quest.
@@ -233,24 +233,24 @@ TRAP:random,random
 TRAP:random,random
 # Random monsters.
 MONSTER:('&',"Nalzok"),$place[0]
-MONSTER:('Z',"human zombie"),random
-MONSTER:('Z',"human zombie"),random
-MONSTER:('Z',"human zombie"),random
-MONSTER:('Z',"human zombie"),random
-MONSTER:('Z',"human zombie"),random
-MONSTER:('Z',"human zombie"),random
-MONSTER:('Z',"human zombie"),random
-MONSTER:('Z',"human zombie"),random
-MONSTER:('Z',"human zombie"),random
-MONSTER:('Z',"human zombie"),random
-MONSTER:('Z',"human zombie"),random
-MONSTER:('Z',"human zombie"),random
-MONSTER:('Z',"human zombie"),random
-MONSTER:('Z',"human zombie"),random
-MONSTER:('Z',"human zombie"),random
-MONSTER:('Z',"human zombie"),random
-MONSTER:'Z',random
-MONSTER:'Z',random
+MONSTER:('z',"human zombie"),random
+MONSTER:('z',"human zombie"),random
+MONSTER:('z',"human zombie"),random
+MONSTER:('z',"human zombie"),random
+MONSTER:('z',"human zombie"),random
+MONSTER:('z',"human zombie"),random
+MONSTER:('z',"human zombie"),random
+MONSTER:('z',"human zombie"),random
+MONSTER:('z',"human zombie"),random
+MONSTER:('z',"human zombie"),random
+MONSTER:('z',"human zombie"),random
+MONSTER:('z',"human zombie"),random
+MONSTER:('z',"human zombie"),random
+MONSTER:('z',"human zombie"),random
+MONSTER:('z',"human zombie"),random
+MONSTER:('z',"human zombie"),random
+MONSTER:'z',random
+MONSTER:'z',random
 MONSTER:('W',"wraith"),random
 MONSTER:('W',"wraith"),random
 MONSTER:('W',"wraith"),random
@@ -275,7 +275,7 @@ LEVEL: "Pri-fila"
 ROOM: "ordinary" , random, random, random, random {
   STAIR: random, up
   OBJECT: random,random
-  MONSTER: ('Z', "human zombie"), random
+  MONSTER: ('z', "human zombie"), random
 }
 
 ROOM: "ordinary" , random, random, random, random {
@@ -287,7 +287,7 @@ ROOM: "ordinary" , random, random, random, random {
   OBJECT: random, random
   TRAP: random, random
   OBJECT: random,random
-  MONSTER: ('Z', "human zombie"), random
+  MONSTER: ('z', "human zombie"), random
 }
 
 ROOM: "morgue" , random, random, random, random {
@@ -315,7 +315,7 @@ LEVEL: "Pri-filb"
 ROOM: "ordinary" , random, random, random, random {
   STAIR: random, up
   OBJECT: random,random
-  MONSTER: ('Z', "human zombie"), random
+  MONSTER: ('z', "human zombie"), random
   MONSTER: ('W', "wraith"), random
 }
 
@@ -329,7 +329,7 @@ ROOM: "ordinary" , random, random, random, random {
   OBJECT: random, random
   TRAP: random, random
   OBJECT: random,random
-  MONSTER: ('Z', "human zombie"), random
+  MONSTER: ('z', "human zombie"), random
   MONSTER: ('W', "wraith"), random
 }
 
@@ -344,7 +344,7 @@ ROOM: "ordinary" , random, random, random, random {
   OBJECT: random, random
   OBJECT: random, random
   TRAP: random, random
-  MONSTER: ('Z', "human zombie"), random
+  MONSTER: ('z', "human zombie"), random
   MONSTER: ('W', "wraith"), random
 }
 

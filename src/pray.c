@@ -2045,9 +2045,9 @@ doturn()
                     xlev += 2; /*FALLTHRU*/
                 case S_WRAITH:
                     xlev += 2; /*FALLTHRU*/
-                case S_MUMMY:
+                case S_GREATER_UNDEAD: /* Mummies */
                     xlev += 2; /*FALLTHRU*/
-                case S_ZOMBIE:
+                case S_LESSER_UNDEAD:
                     if (u.ulevel >= xlev && !resist(mtmp, (struct obj*)0, u.ulevel, 0, NOTELL)) {
                         if (u.ualign.type == A_CHAOTIC) {
                             mtmp->mpeaceful = 1;

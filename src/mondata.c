@@ -600,10 +600,10 @@ struct permonst *pm1, *pm2;
     if (is_demon(pm1))
         return is_demon(pm2);
     if (is_undead(pm1)) {
-        if (let1 == S_ZOMBIE)
-            return (let2 == S_ZOMBIE);
-        if (let1 == S_MUMMY)
-            return (let2 == S_MUMMY);
+        if (let1 == S_LESSER_UNDEAD)
+            return (let2 == S_LESSER_UNDEAD);
+        if (let1 == S_GREATER_UNDEAD)
+            return (let2 == S_GREATER_UNDEAD);
         if (let1 == S_VAMPIRE)
             return (let2 == S_VAMPIRE);
         if (let1 == S_LICH)

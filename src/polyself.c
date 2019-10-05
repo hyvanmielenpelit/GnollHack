@@ -1813,7 +1813,7 @@ int part;
     /* claw attacks are overloaded in mons[]; most humanoids with
        such attacks should still reference hands rather than claws */
     static const char not_claws[] = {
-        S_HUMAN,     S_MUMMY,   S_ZOMBIE, S_ANGEL, S_NYMPH, S_LEPRECHAUN,
+        S_HUMAN,     S_LESSER_UNDEAD,   S_GREATER_UNDEAD, S_ANGEL, S_NYMPH, S_LEPRECHAUN,
         S_QUANTMECH, S_VAMPIRE, S_ORC,    S_GIANT, /* quest nemeses */
         '\0' /* string terminator; assert( S_xxx != 0 ); */
     };

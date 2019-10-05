@@ -48,7 +48,7 @@ const struct Role roles[] = {
       NON_PM,
       PM_HUMAN_MUMMY,
       S_SNAKE,
-      S_MUMMY,
+      S_GREATER_UNDEAD,
       ART_ORB_OF_DETECTION,
       MH_HUMAN | MH_DWARF | ROLE_MALE | ROLE_FEMALE | ROLE_LAWFUL
           | ROLE_NEUTRAL,
@@ -297,7 +297,7 @@ const struct Role roles[] = {
       PM_NALZOK,
       PM_HUMAN_ZOMBIE,
       PM_WRAITH,
-      S_ZOMBIE,
+      S_LESSER_UNDEAD,
       S_WRAITH,
       ART_MITRE_OF_HOLINESS,
       MH_HUMAN | MH_ELF | MH_GNOLL | ROLE_MALE | ROLE_FEMALE | ROLE_LAWFUL | ROLE_NEUTRAL

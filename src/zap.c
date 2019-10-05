@@ -976,7 +976,7 @@ int animateintomon;
             if (mtmp->cham == PM_DOPPELGANGER) {
                 /* change shape to match the corpse */
                 (void) newcham(mtmp, mptr, FALSE, FALSE);
-            } else if (mtmp->data->mlet == S_ZOMBIE) {
+            } else if (mtmp->data->mlet == S_LESSER_UNDEAD) {
                 mtmp->mhp = mtmp->mhpmax = 100;
                 mon_adjust_speed(mtmp, 2, (struct obj *) 0); /* MFAST */
             }

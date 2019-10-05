@@ -37,7 +37,7 @@ enum mon_class_types {
     S_WORM       = 23, /* w */
     S_XAN        = 24, /* x */
     S_LIGHT      = 25, /* y: yellow light, black light */
-    S_ZRUTY      = 26, /* z */
+    S_LESSER_UNDEAD      = 26, /* z */
     S_ANGEL      = 27, /* A */
     S_BAT        = 28, /* B */
     S_CENTAUR    = 29, /* C */
@@ -50,7 +50,7 @@ enum mon_class_types {
     S_JABBERWOCK = 36, /* J */
     S_KOP        = 37, /* K */
     S_LICH       = 38, /* L */
-    S_MUMMY      = 39, /* M */
+    S_MODRON      = 39, /* M */
     S_NAGA       = 40, /* N */
     S_OGRE       = 41, /* O */
     S_PUDDING    = 42, /* P */
@@ -63,7 +63,7 @@ enum mon_class_types {
     S_WRAITH     = 49, /* W */
     S_XORN       = 50, /* X */
     S_YETI       = 51, /* Y: includes owlbear, monkey */
-    S_ZOMBIE     = 52, /* Z */
+    S_GREATER_UNDEAD     = 52, /* Z */
     S_HUMAN      = 53, /* @ */
     S_GHOST      = 54, /* <space> */
     S_GOLEM      = 55, /* ' */
@@ -108,7 +108,7 @@ enum mon_class_types {
 #define DEF_WORM        'w'
 #define DEF_XAN         'x'
 #define DEF_LIGHT       'y'
-#define DEF_ZRUTY       'z'
+#define DEF_LESSER_UNDEAD       'z'
 #define DEF_ANGEL       'A'
 #define DEF_BAT         'B'
 #define DEF_CENTAUR     'C'
@@ -120,7 +120,7 @@ enum mon_class_types {
 #define DEF_JABBERWOCK  'J'
 #define DEF_KOP         'K'
 #define DEF_LICH        'L'
-#define DEF_MUMMY       'M'
+#define DEF_MODRON       'M'
 #define DEF_NAGA        'N'
 #define DEF_OGRE        'O'
 #define DEF_PUDDING     'P'
@@ -133,7 +133,7 @@ enum mon_class_types {
 #define DEF_WRAITH      'W'
 #define DEF_XORN        'X'
 #define DEF_YETI        'Y'
-#define DEF_ZOMBIE      'Z'
+#define DEF_GREATER_UNDEAD      'Z'
 #define DEF_HUMAN       '@'
 #define DEF_GHOST       ' '
 #define DEF_GOLEM       '\''

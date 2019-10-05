@@ -587,7 +587,7 @@ register struct monst *mtmp;
 			(void)mongets(mtmp, SWORD_OF_LIFE_DRAINING);
 		}
 		break;
-    case S_ZOMBIE:
+    case S_LESSER_UNDEAD:
         if (!rn2(4))
             (void) mongets(mtmp, LEATHER_ARMOR);
         if (!rn2(4))
@@ -1069,7 +1069,7 @@ register struct monst *mtmp;
 		}
 
 		break;
-	case S_MUMMY:
+	case S_GREATER_UNDEAD:
 		if (rn2(7))
 			(void)mongets(mtmp, MUMMY_WRAPPING);
 		break;
@@ -1845,7 +1845,29 @@ int mndx;
      */
 
     /* assert(MAXMONNO < 255); */
-    return (mndx == PM_NAZGUL ? 9 : mndx == PM_ERINYS ? 3 : MAXMONNO);
+	int blimit = MAXMONNO;
+	switch (mndx)
+	{
+	case PM_NAZGUL:
+		blimit = 9;
+		break;
+	case PM_QUINTON:
+		blimit = 25;
+		break;
+	case PM_QUARTON:
+		blimit = 16;
+		break;
+	case PM_TERTIAN:
+		blimit = 9;
+		break;
+	case PM_SECUNDUS:
+		blimit = 4;
+		break;
+	default:
+		break;
+	}
+	
+	return blimit;
 }
 
 /* used for wand/scroll/spell of create monster */

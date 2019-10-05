@@ -1652,7 +1652,7 @@ struct monst *mtmp;
         maxload = 1;
 	*/
 
-	carrcap = 50 * (youmonst.data->str + youmonst.data->con) + 50;
+	carrcap = 50 * (mtmp->mstr + mtmp->mcon) + 50;
 	if (mtmp->data->mlet == S_NYMPH)
 		carrcap = MAX_CARR_CAP;
 	else if (mtmp->data->msize == MZ_TINY)
@@ -4556,7 +4556,7 @@ struct permonst *mdat;
                     (mndx == PM_PONY) ? "n" : " strong");
                 msg_given = TRUE;
                 break;
-            case S_ZOMBIE:
+            case S_LESSER_UNDEAD:
                 You("smell rotting flesh.");
                 msg_given = TRUE;
                 break;

@@ -3073,8 +3073,8 @@ register struct monst *mon;
                     Your("attempt to surround %s is harmless.", mon_nam(mon));
                 else {
                     sum[i] = gulpum(mon, mattk);
-                    if (sum[i] == 2 && (mon->data->mlet == S_ZOMBIE
-                                        || mon->data->mlet == S_MUMMY)
+                    if (sum[i] == 2 && (mon->data->mlet == S_GREATER_UNDEAD
+                                        || mon->data->mlet == S_LESSER_UNDEAD)
                         && rn2(5) && !Sick_resistance && !Invulnerable) {
                         You_feel("%ssick.", (Sick) ? "very " : "");
                         mdamageu(mon, rnd(8));

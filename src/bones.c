@@ -439,7 +439,7 @@ struct obj *corpse;
         drop_upon_death(mtmp, (struct obj *) 0, u.ux, u.uy);
         /* 'mtmp' now has hero's inventory; if 'mtmp' is a mummy, give it
            a wrapping unless already carrying one */
-        if (mtmp->data->mlet == S_MUMMY && !m_carrying(mtmp, MUMMY_WRAPPING))
+        if (mtmp->data->mlet == S_GREATER_UNDEAD && !m_carrying(mtmp, MUMMY_WRAPPING))
             (void) mongets(mtmp, MUMMY_WRAPPING);
         m_dowear(mtmp, TRUE);
     }

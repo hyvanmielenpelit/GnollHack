@@ -586,7 +586,7 @@ morguemon()
 
     return ((i < 20) ? &mons[PM_GHOST]
                      : (i < 40) ? &mons[PM_WRAITH]
-                                : mkclass(S_ZOMBIE, 0));
+                                : mkclass(S_LESSER_UNDEAD, 0));
 }
 
 
