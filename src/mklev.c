@@ -807,91 +807,14 @@ makelevel()
 	register int tries = 0;
 	register int u_depth = depth(&u.uz);
 
-	if (u_depth == 1)
-	{
-		boolean found = FALSE;
-		for (int i = 0; i < nroom; i++) {
-			croom = &rooms[i];
-			if (inside_room(croom, sstairs.sx, sstairs.sy))
-			{
-				found = TRUE;
-				break;
-			}
-		}
 
-		tries = 0;
-		if(!found)
-		{
-			do {
-				croom = &rooms[rn2(nroom)];
-				tries++;
-			} while (croom->rtype != OROOM || tries == 10);
-		}
-	
-		/* The initial altar */
-		if (tries < 10) {
-			mkaltar(croom);
-			altarsplaced = 1;
 
-			/* Make stash */
-			int tryct = 0;
-			do {
-				x = somex(croom);
-				y = somey(croom);
-			} while (tryct <= 20 && !occupied(x, y) && !(IS_ROOM(levl[x][y].typ) || IS_POOL(levl[x][y].typ)
-				|| IS_FURNITURE(levl[x][y].typ) || !IS_ALTAR(levl[x][y].typ)));
-
-			struct obj* stash = mksobj_at(CHEST, x, y, FALSE, FALSE);
-			stash->olocked = FALSE;
-			stash->otrapped = FALSE;
-			char namebuf[BUFSZ];
-			Sprintf(namebuf, "%s's stash", plname);
-			stash = oname(stash, namebuf);
-
-			struct obj* otmp = (struct obj*)0;
-
-			if(!carrying(AXE) && !carrying(BATTLE_AXE))
-			{
-				otmp = mksobj(AXE, FALSE, FALSE, FALSE);
-				uncurse(otmp);
-				(void)add_to_container(stash, otmp);
-			}
-
-			otmp = mksobj(SCR_IDENTIFY, FALSE, FALSE, FALSE);
-			(void)add_to_container(stash, otmp);
-
-			otmp = mkobj(FOOD_CLASS, FALSE, FALSE);
-			(void)add_to_container(stash, otmp);
-
-			otmp = mkobj(SCROLL_CLASS, FALSE, FALSE);
-			(void)add_to_container(stash, otmp);
-
-		}
-		/*
-		tries = 0;
-		do {
-			croom = &rooms[rn2(nroom)];
-			tries++;
-		} while (croom->rtype != OROOM || tries == 10);
-
-		if (tries < 10) {
-			do {
-				x = somex(croom);
-				y = somey(croom);
-			} while (!IS_ROOM(levl[x][y].typ) && !rn2(40));
-			if (!(IS_POOL(levl[x][y].typ)
-				|| IS_FURNITURE(levl[x][y].typ)))
-			{
-				struct obj* otmp = mksobj_at(AXE, x, y, FALSE,FALSE);
-				uncurse(otmp);
-			}
-		}
-		*/
-	}
-
+	/* Put items and other stuff in the rooms */
 	for (croom = rooms; croom->hx > 0; croom++) {
         if (croom->rtype != OROOM)
             continue;
+
+		boolean startingroom = (u_depth == 1 && inside_room(croom, sstairs.sx, sstairs.sy));
 
         /* put a sleeping monster inside */
         /* Note: monster may be on the stairs. This cannot be
@@ -911,7 +834,7 @@ makelevel()
         x = 8 - (level_difficulty() / 6);
         if (x <= 1)
             x = 2;
-        while (!rn2(x))
+        while (!rn2(x) && !startingroom)
             mktrap(0, 0, croom, (coord *) 0);
         if (!rn2(3))
             (void) mkgold(0L, somex(croom), somey(croom));
@@ -924,10 +847,50 @@ makelevel()
 
 		chance = 45;
 
-		if (!rn2(chance) && altarsplaced == 0 && u_depth > 3)	{
+		if (startingroom || (!rn2(chance) && altarsplaced == 0 && u_depth > 3))
+		{
 			mkaltar(croom);
 			altarsplaced++;
 		}
+
+		if(startingroom)
+		{
+			/* Make stash */
+			int tryct = 0;
+			do {
+				x = somex(croom);
+				y = somey(croom);
+			} while (tryct <= 20 && !occupied(x, y) && !(IS_ROOM(levl[x][y].typ) || IS_POOL(levl[x][y].typ)
+				|| IS_FURNITURE(levl[x][y].typ) || !IS_ALTAR(levl[x][y].typ)));
+
+			struct obj* stash = mksobj_at(CHEST, x, y, FALSE, FALSE);
+			stash->olocked = FALSE;
+			stash->otrapped = FALSE;
+			char namebuf[BUFSZ];
+			Sprintf(namebuf, "%s's stash", plname);
+			stash = oname(stash, namebuf);
+
+			struct obj* otmp = (struct obj*)0;
+
+			if (!carrying(AXE) && !carrying(BATTLE_AXE))
+			{
+				otmp = mksobj(AXE, FALSE, FALSE, FALSE);
+				uncurse(otmp);
+				(void)add_to_container(stash, otmp);
+			}
+
+			otmp = mksobj(SCR_IDENTIFY, FALSE, FALSE, FALSE);
+			(void)add_to_container(stash, otmp);
+
+			otmp = mkobj(FOOD_CLASS, FALSE, FALSE);
+			(void)add_to_container(stash, otmp);
+
+			otmp = mkobj(SCROLL_CLASS, FALSE, FALSE);
+			(void)add_to_container(stash, otmp);
+
+		}
+
+
         x = 80 - (depth(&u.uz) * 2);
         if (x < 2)
             x = 2;
@@ -944,7 +907,7 @@ makelevel()
          *  of rooms; about 5 - 7.5% for 2 boxes, least likely
          *  when few rooms; chance for 3 or more is negligible.
          */
-        if (!rn2(nroom * 5 / 2))
+        if (!startingroom && !rn2(nroom * 5 / 2))
             (void) mksobj_at((rn2(3)) ? LARGE_BOX : CHEST, somex(croom),
                              somey(croom), TRUE, FALSE);
 
