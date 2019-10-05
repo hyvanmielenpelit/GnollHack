@@ -130,6 +130,10 @@ struct monst {
     Bitfield(isgd, 1);      /* is guard */
     Bitfield(ispriest, 1);  /* is an aligned priest or high priest */
 	Bitfield(issummoned, 1);  /* is a summoned monster */
+	Bitfield(disregards_enemy_strength, 1); /* does the monster attack enemies of strength */
+	Bitfield(disregards_own_health, 1); /* does the monster attack even when health is low */
+	Bitfield(hasbloodlust, 1); /* attacks also peaceful */
+	Bitfield(ispacifist, 1); /* does not attack peaceful */
 
     Bitfield(iswiz, 1);     /* is the Wizard of Yendor */
     Bitfield(wormno, 5);    /* at most 31 worms on any level */

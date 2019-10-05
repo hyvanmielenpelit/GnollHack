@@ -750,7 +750,7 @@ struct monst *mtmp, *mtarg;
             return score;
         }
         /* Is the monster peaceful or tame? */
-        if (/*mtarg->mpeaceful ||*/ mtarg->mtame || mtarg == &youmonst) {
+        if ((mtarg->mpeaceful && mtmp->ispacifist) || mtarg->mtame || mtarg == &youmonst) {
             /* Pets will never be targeted */
             score -= 3000L;
             return score;
@@ -764,7 +764,7 @@ struct monst *mtmp, *mtarg;
         if (!mtarg->mpeaceful)
             score += 10;
         /* Is the monster passive? Don't waste energy on it, if so */
-        if (mtarg->data->mattk[0].aatyp == AT_NONE)
+        if (!mtmp->hasbloodlust && mtarg->data->mattk[0].aatyp == AT_NONE)
             score -= 1000;
         /* Even weak pets with breath attacks shouldn't take on very
            low-level monsters. Wasting breath on lichens is ridiculous. */
@@ -790,7 +790,7 @@ struct monst *mtmp, *mtarg;
         }
         /* And pets will hesitate to attack vastly stronger foes.
            This penalty will be discarded if master's in trouble. */
-        if (mtarg->m_lev > mtmp_lev + 4L)
+        if (!mtmp->disregards_enemy_strength && mtarg->m_lev > mtmp_lev + 4L)
             score -= (mtarg->m_lev - mtmp_lev) * 20L;
         /* All things being the same, go for the beefiest monster. This
            bonus should not be large enough to override the pet's aversion
@@ -1004,16 +1004,17 @@ int after; /* this is extra fast monster movement */
             int mstatus;
             register struct monst *mtmp2 = m_at(nx, ny);
 
-            if ((int) mtmp2->m_lev >= (int) mtmp->m_lev + 2
+            if ((!mtmp->disregards_enemy_strength && (int) mtmp2->m_lev >= (int) mtmp->m_lev + 2)
                 || (mtmp2->data == &mons[PM_FLOATING_EYE] && rn2(10)
                     && mtmp->mcansee && haseyes(mtmp->data) && mtmp2->mcansee
                     && (perceives(mtmp->data) || !mtmp2->minvis))
                 || (mtmp2->data == &mons[PM_GELATINOUS_CUBE] && rn2(10))
-                || (max_passive_dmg(mtmp2, mtmp) >= mtmp->mhp)
-                || ((mtmp->mhp * 4 < mtmp->mhpmax
+                || (mtmp2->mtame && !Conflict)
+				|| (max_passive_dmg(mtmp2, mtmp) >= mtmp->mhp)
+				|| (((!mtmp->disregards_own_health && mtmp->mhp * 4 < mtmp->mhpmax)
                      || mtmp2->data->msound == MS_GUARDIAN
-                     || mtmp2->data->msound == MS_LEADER) && mtmp2->mpeaceful
-                    && !Conflict)
+                     || mtmp2->data->msound == MS_LEADER || mtmp->ispacifist) && mtmp2->mpeaceful
+                    && !Conflict && !mtmp->hasbloodlust)
                 || (touch_petrifies(mtmp2->data) && !resists_ston(mtmp)))
                 continue;
 
@@ -1075,7 +1076,7 @@ int after; /* this is extra fast monster movement */
 
         /* dog eschews cursed objects, but likes dog food */
         /* (minion isn't interested; `cursemsg' stays FALSE) */
-        if (has_edog)
+        if (has_edog && !mtmp->issummoned)
             for (obj = level.objects[nx][ny]; obj; obj = obj->nexthere) {
                 if (obj->cursed) {
                     cursemsg[i] = TRUE;
