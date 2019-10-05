@@ -1363,6 +1363,8 @@ SPELL("summon demon",	  "tenebrous", None, "Summons a demon for a duration",
 	P_CONJURATION_SPELL,		 5,  5,	       300, 7,100, A_AVG_INT_CHA, 0, 0, 1, NODIR, 0, 0, 0, 0, 1, 20, 280, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
 SPELL("call Demogorgon",  "eldritch", "some aeon-old prayer", "Calls the Prince of Demons from the Abyss",
 	P_CONJURATION_SPELL,		 5, 20,		   400,9,200, A_AVG_INT_WIS_CHA, 0, 0, 1, NODIR, 0, 0, 0, 0, 2, 100, 200, HI_PAPER, O1_NONE, O2_NONE, O3_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY),
+SPELL("call hierarch modron",  "spherical", "some aeon-old prayer", "Calls a hierarch modron",
+	P_CONJURATION_SPELL,		 0,  5,		   300, 5, 50, A_MAX_INT_WIS_CHA, 0, 0, 1, NODIR, 0, 0, 0, 0, 1, 20, 280, HI_PAPER, O1_NONE, O2_NONE, O3_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY),
 
 SPELL("guardian angel",	  "wing-patterned", None, "Summons a guardian angel for a duration",
 	P_CLERIC_SPELL,				 5,  5,		   300, 4, 30, A_WIS, 0, 0, 1, NODIR, 0, 0, 0, 0, 1, 20, 280, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
@@ -1772,7 +1774,8 @@ OBJECT(OBJ("acid venom", "splash of venom"), None, None,
 	REAGENT("fungal spore",				125, 1, 1, 10, MAT_ORGANIC, EDIBLE_NORMAL,	 1, CLR_GRAY, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
 	REAGENT("sprig of wolfsbane",		125, 1, 2, 10, MAT_VEGGY, EDIBLE_POISONOUS,	40, CLR_GREEN, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
 	REAGENT("clove of garlic",			125, 1, 2, 10, MAT_VEGGY, EDIBLE_NORMAL,	40, CLR_WHITE, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
-	REAGENT("bone",						125, 1, 2, 10, MAT_ORGANIC, EDIBLE_NORMAL,				40, CLR_WHITE, O1_EDIBLE_BY_BONE_EATERS, O2_NONE, O3_NONE, PERMITTED_ALL),
+	REAGENT("bone",						125, 1, 2, 10, MAT_ORGANIC, EDIBLE_NORMAL,	40, CLR_WHITE, O1_EDIBLE_BY_BONE_EATERS, O2_NONE, O3_NONE, PERMITTED_ALL),
+	REAGENT("perfectly spherical copper ball", 0, 1, 80, 100, MAT_COPPER,	0,		160, HI_GOLD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 
 	REAGENT("feather",					125, 0, 1, 10, MAT_ORGANIC, 0,				10, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* STARTMARKER 1&2 */
 

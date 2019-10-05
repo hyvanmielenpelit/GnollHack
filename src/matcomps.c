@@ -329,6 +329,16 @@ struct materialcomponentlist matlists[] =
 		}
 	},
 
+	{ SPE_CALL_HIERARCH_MODRON,
+	"Perfectly spherical copper ball",
+	5,
+		{
+			{PERFECTLY_SPHERICAL_COPPER_BALL, NOT_APPLICABLE, 1, MATCOMP_NOT_CURSED},
+			NO_MATCOMP,
+			NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
+		}
+	},
+
 	{ SPE_DIVINE_MOUNT,
 	"Opal, apple",
 	3,

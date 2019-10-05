@@ -61,7 +61,7 @@ E struct dgn_topology { /* special dungeon levels for speed */
     d_level d_baalzebub_level; /* unused */
     d_level d_asmodeus_level;  /* unused */
     d_level d_portal_level;    /* only in goto_level() [do.c] */
-    d_level d_sanctum_level;
+	d_level d_sanctum_level;
     d_level d_earth_level;
     d_level d_water_level;
     d_level d_fire_level;
@@ -69,8 +69,9 @@ E struct dgn_topology { /* special dungeon levels for speed */
     d_level d_astral_level;
     xchar d_tower_dnum;
     xchar d_sokoban_dnum;
-    xchar d_mines_dnum, d_quest_dnum;
-    d_level d_qstart_level, d_qlocate_level, d_nemesis_level;
+	xchar d_mines_dnum, d_quest_dnum, d_modron_dnum;
+	d_level d_modron_level;
+	d_level d_qstart_level, d_qlocate_level, d_nemesis_level;
     d_level d_knox_level;
     d_level d_mineend_level;
     d_level d_sokoend_level;
@@ -100,6 +101,8 @@ E struct dgn_topology { /* special dungeon levels for speed */
 #define tower_dnum              (dungeon_topology.d_tower_dnum)
 #define sokoban_dnum            (dungeon_topology.d_sokoban_dnum)
 #define mines_dnum              (dungeon_topology.d_mines_dnum)
+#define modron_dnum             (dungeon_topology.d_modron_dnum)
+#define modron_level            (dungeon_topology.d_modron_level)
 #define quest_dnum              (dungeon_topology.d_quest_dnum)
 #define qstart_level            (dungeon_topology.d_qstart_level)
 #define qlocate_level           (dungeon_topology.d_qlocate_level)

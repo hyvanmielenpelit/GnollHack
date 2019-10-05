@@ -2421,6 +2421,9 @@ register struct obj *obj;
 		verbalize("By the deluge of this blood sacrifice, come forth and walk this plane once more!");
 		summondemogorgon(obj->otyp);
 		break;
+	case SPE_CALL_HIERARCH_MODRON:
+		(void)summoncreature(obj->otyp, (rn2(100) < (u.ulevel - 1) * 1) ? PM_TERTIAN : (rn2(100) < (u.ulevel - 1) * 5) ? PM_QUARTON : PM_QUINTON, "%s appears in a cloud of smoke.", TRUE, TRUE);
+		break;
 	case SPE_GUARDIAN_ANGEL:
 		(void)summoncreature(obj->otyp, (rn2(100) < (u.ulevel - 1) * 1) ? PM_ARCHON : (rn2(100) < (u.ulevel - 1) * 5) ? PM_ANGEL : PM_ALEAX, "%s descends from the heavens.", TRUE, TRUE);
 		break;

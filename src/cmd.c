@@ -1250,7 +1250,9 @@ wiz_map_levltyp(VOID_ARGS)
             Strcat(dsc, " sokoban");
         else if (u.uz.dnum == quest_dnum)
             Strcat(dsc, " quest");
-        else if (Is_knox(&u.uz))
+		else if (u.uz.dnum == modron_dnum)
+			Strcat(dsc, " modron");
+		else if (Is_knox(&u.uz))
             Strcat(dsc, " ludios");
         else if (u.uz.dnum == 1)
             Strcat(dsc, " gehennom");
