@@ -823,7 +823,8 @@ boolean deserted;
 	/* make sure no doorways without doors, and no trapped doors, in shops */
     sx = doors[sroom->fdoor].x;
     sy = doors[sroom->fdoor].y;
-    if (levl[sx][sy].doormask == D_NODOOR && !deserted) {
+    if (levl[sx][sy].doormask == D_NODOOR && (!deserted || !rn2(2)))
+	{
         levl[sx][sy].doormask = D_ISOPEN;
         newsym(sx, sy);
     }

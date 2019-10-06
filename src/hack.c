@@ -2450,7 +2450,7 @@ register boolean newlev;
 			You("enter a lovely underground garden!");
 			break;
 		case DESERTEDSHOP:
-			pline("This shop seems to have been deserted long ago.");
+			You("enter a shop that has been deserted a long time ago!");
 			break;
 		case LIBRARY:
 			You("enter a library!");
