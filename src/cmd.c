@@ -2065,7 +2065,10 @@ int final;
     Sprintf(buf, "%d", u.uac);
     enl_msg("Your armor class ", "is ", "was ", buf, "");
 
-    /* gold; similar to doprgold(#seegold) but without shop billing info;
+	Sprintf(buf, "%d (%d%% chance)", u.umc, magic_negation_percentage(u.umc));
+	enl_msg("Your magic cancellation ", "is ", "was ", buf, "");
+
+	/* gold; similar to doprgold(#seegold) but without shop billing info;
        same amount as shown on status line which ignores container contents */
     {
         static const char Your_wallet[] = "Your wallet ";
@@ -2790,9 +2793,6 @@ int final;
             armpro = SIZE(mc_types) - 1;
         you_are(mc_types[armpro], "");
 #endif
-		char mcbuf[BUFSZ] = "";
-		Sprintf(mcbuf,"level %d magic cancellation (%d%% chance)", armpro, magic_negation_percentage(armpro));
-		you_have(mcbuf, "");
     }
     if (Half_physical_damage)
         enlght_halfdmg(HALF_PHDAM, final);

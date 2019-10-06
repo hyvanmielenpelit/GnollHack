@@ -864,7 +864,7 @@ makelevel()
 				x = somex(croom);
 				y = somey(croom);
 			} while (tryct <= 20 && !occupied(x, y) && !(IS_ROOM(levl[x][y].typ) || IS_POOL(levl[x][y].typ)
-				|| IS_FURNITURE(levl[x][y].typ) || !IS_ALTAR(levl[x][y].typ) || (x == sstairs.sx && y == sstairs.sy)));
+				|| IS_FURNITURE(levl[x][y].typ) || IS_ALTAR(levl[x][y].typ) || (x == sstairs.sx && y == sstairs.sy)));
 
 			struct obj* stash = mksobj_at(CHEST, x, y, FALSE, FALSE);
 			stash->olocked = FALSE;
@@ -881,6 +881,14 @@ makelevel()
 				uncurse(otmp);
 				(void)add_to_container(stash, otmp);
 			}
+			else
+			{
+				otmp = mksobj(GOLD_PIECE, FALSE, FALSE, FALSE);
+				otmp->quan = rnd(200);
+				otmp->owt = weight(otmp);
+				(void)add_to_container(stash, otmp);
+			}
+
 
 			otmp = mksobj(SCR_IDENTIFY, FALSE, FALSE, FALSE);
 			(void)add_to_container(stash, otmp);

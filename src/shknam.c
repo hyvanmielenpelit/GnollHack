@@ -532,7 +532,6 @@ boolean deserted;
     struct permonst *ptr;
     int atype;
 
-    /* 3.6 tribute */
 	if (deserted && mkspecl)
 	{
 		if (!MON_AT(sx, sy)
@@ -552,6 +551,7 @@ boolean deserted;
 	}
 	else
 	{
+		/* 3.6 tribute */
 		if (mkspecl && (!strcmp(shp->name, "rare books")
 						|| !strcmp(shp->name, "second-hand bookstore"))) {
 			struct obj *novel = mksobj_at(SPE_NOVEL, sx, sy, FALSE, FALSE);

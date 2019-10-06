@@ -2778,6 +2778,9 @@ register struct obj *obj;
 	case WAN_IDENTIFY:
 		if (invent)
 		{
+			if(!objects[obj->otyp].oc_name_known)
+				pline("This is a wand of identify.");
+
 			known = TRUE;
 			identify_pack(1, FALSE);
 		}
