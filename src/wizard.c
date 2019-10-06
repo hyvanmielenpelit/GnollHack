@@ -559,6 +559,7 @@ struct monst *summoner;
     } else {
         count = 0;
         s_cls = summoner ? summoner->data->mlet : 0;
+		/*
 		if (summoner)
 		{
 			if(summoner == &youmonst)
@@ -568,12 +569,15 @@ struct monst *summoner;
 		}
 		else
 			tmp = max(1, u.ulevel / 3);
+			*/
+
+		tmp = 1;
 
 		/* if we don't have a casting monster, nasties appear around hero,
            otherwise they'll appear around spot summoner thinks she's at */
         bypos.x = u.ux;
         bypos.y = u.uy;
-        for (i = rnd(tmp); i > 0 && count < MAXNASTIES; --i)
+        for (i = tmp /* rnd(tmp)*/; i > 0 && count < MAXNASTIES; --i)
             /* Of the 42 nasties[], 10 are lawful, 14 are chaotic,
              * and 18 are neutral.
              *

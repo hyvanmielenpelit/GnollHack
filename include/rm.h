@@ -566,6 +566,7 @@ struct levelflags {
     Bitfield(has_temple, 1);
 	Bitfield(has_library, 1);
 	Bitfield(has_garden, 1);
+	Bitfield(has_desertedshop, 1);
 
     Bitfield(has_swamp, 1);
     Bitfield(noteleport, 1);

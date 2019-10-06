@@ -158,6 +158,7 @@
 #define is_multiweaponmonster(ptr) (((ptr)->mflags3 & M3_MULTIWEAPON) != 0L)
 #define leaves_corpses_randomly(ptr) (((ptr)->mflags3 & M3_RANDOM_CORPSE) != 0L)
 #define leaves_no_corpse(ptr) (((ptr)->mflags3 & M3_NO_CORPSE) != 0L)
+#define is_modron(ptr) (((ptr)->mflags3 & M3_MODRON) != 0L)
 
 
 #define is_mplayer(ptr) \

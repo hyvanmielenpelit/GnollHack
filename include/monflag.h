@@ -163,7 +163,7 @@
 
 #define M3_DISPLACES 0x00000400			/* moves monsters out of its way */
 #define M3_NONCORPOREAL 0x00000800      /* is noncorporeal, different from unsolid in the sense that
-									    a unsolid monster can be disintegrated, but noncorporeal not*/
+									    an unsolid monster can be disintegrated, but noncorporeal not */
 #define M3_NONLIVING 0x00001000			/* is nonliving, such as a golem or other construct or a vortex (unaffected by death attacks)*/
 #define M3_MULTIWEAPON 0x00002000		/* fights with more than one weapon (i.e., the wielded weapon), if available*/
 #define M3_RANDOM_CORPSE 0x00004000		/* leaves a corpse at random intervals */
@@ -173,6 +173,9 @@
 #define M3_PRIEST 0x00020000			/* monster can use priest items */
 #define M3_KNIGHT 0x00040000			/* monster can use knight items */
 #define M3_HEALER 0x00080000			/* monster can use healer items */
+
+#define M3_MODRON 0x00100000			/* is a modron */
+
 
 #define MZ_TINY 0          /* < 2' */
 #define MZ_SMALL 1         /* 2-4' */

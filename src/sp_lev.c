@@ -2458,7 +2458,7 @@ boolean prefilled;
 
         /* Shop ? */
         if (croom->rtype >= SHOPBASE) {
-            stock_room(croom->rtype - SHOPBASE, croom);
+            stock_room(croom->rtype - SHOPBASE, croom, FALSE);
             level.flags.has_shop = TRUE;
             return;
         }

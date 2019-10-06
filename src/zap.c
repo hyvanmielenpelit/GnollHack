@@ -5611,6 +5611,7 @@ short exploding_wand_typ;
     /* regular door absorbs remaining zap range, possibly gets destroyed */
     if (closed_door(x, y)) {
         int new_doormask = -1;
+		boolean createsplinters = FALSE;
         const char *see_txt = 0, *sense_txt = 0, *hear_txt = 0;
 
         rangemod = -1000;
@@ -5639,6 +5640,7 @@ short exploding_wand_typ;
             new_doormask = D_BROKEN;
             see_txt = "The door splinters!";
             hear_txt = "crackling.";
+			createsplinters = TRUE;
             break;
         default:
 //        def_case:
@@ -5681,6 +5683,14 @@ short exploding_wand_typ;
                 You1(sense_txt);
             } else if (hear_txt)
                 You_hear1(hear_txt);
+
+			if (createsplinters)
+			{
+				struct obj* otmp = mksobj_at(PIECE_OF_WOOD, x, y, FALSE, FALSE);
+				otmp->quan = d(2, 4);
+				otmp->owt = weight(otmp);
+			}
+
             if (picking_at(x, y)) {
                 stop_occupation();
                 reset_pick();

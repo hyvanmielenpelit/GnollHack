@@ -12,7 +12,7 @@ STATIC_DCL boolean FDECL(veggy_item, (struct obj * obj, int));
 STATIC_DCL int NDECL(shkveg);
 STATIC_DCL void FDECL(mkveggy_at, (int, int));
 STATIC_DCL void FDECL(mkshobj_at, (const struct shclass *, int, int,
-                                   BOOLEAN_P));
+                                   BOOLEAN_P, BOOLEAN_P));
 STATIC_DCL void FDECL(nameshk, (struct monst *, const char *const *));
 STATIC_DCL int FDECL(shkinit, (const struct shclass *, struct mkroom *));
 
@@ -522,34 +522,56 @@ int sx, sy;
 
 /* make an object of the appropriate type for a shop square */
 STATIC_OVL void
-mkshobj_at(shp, sx, sy, mkspecl)
+mkshobj_at(shp, sx, sy, mkspecl, deserted)
 const struct shclass *shp;
 int sx, sy;
 boolean mkspecl;
+boolean deserted;
 {
     struct monst *mtmp;
     struct permonst *ptr;
     int atype;
 
     /* 3.6 tribute */
-    if (mkspecl && (!strcmp(shp->name, "rare books")
-                    || !strcmp(shp->name, "second-hand bookstore"))) {
-        struct obj *novel = mksobj_at(SPE_NOVEL, sx, sy, FALSE, FALSE);
+	if (deserted && mkspecl)
+	{
+		if (!MON_AT(sx, sy)
+			&& (mtmp = makemon(&mons[PM_GIANT_MIMIC], sx, sy, NO_MM_FLAGS)) != 0) {
+			/* note: makemon will set the mimic symbol to a shop item */
+			if (rn2(10) >= depth(&u.uz)) {
+				mtmp->m_ap_type = M_AP_OBJECT;
+				mtmp->mappearance = STRANGE_OBJECT;
+			}
+			(void)mongets(mtmp, WAN_IDENTIFY);
+		}
+		else
+		{
+			struct obj* otmp = mksobj_at(WAN_IDENTIFY, sx, sy, TRUE, FALSE);
+		}
+		return;
+	}
+	else
+	{
+		if (mkspecl && (!strcmp(shp->name, "rare books")
+						|| !strcmp(shp->name, "second-hand bookstore"))) {
+			struct obj *novel = mksobj_at(SPE_NOVEL, sx, sy, FALSE, FALSE);
 
-        if (novel)
-            context.tribute.bookstock = TRUE;
-        return;
-    }
-
-    if (rn2(100) < depth(&u.uz) && !MON_AT(sx, sy)
+			if (novel)
+				context.tribute.bookstock = TRUE;
+			return;
+		}
+	}
+    if ((!deserted && rn2(100) < depth(&u.uz) && !MON_AT(sx, sy)
         && (ptr = mkclass(S_MIMIC, 0)) != 0
-        && (mtmp = makemon(ptr, sx, sy, NO_MM_FLAGS)) != 0) {
+        && (mtmp = makemon(ptr, sx, sy, NO_MM_FLAGS)) != 0) || (deserted && !rn2(4) && !MON_AT(sx, sy)
+			&& (ptr = mkclass(S_MIMIC, 0)) != 0
+			&& (mtmp = makemon(ptr, sx, sy, NO_MM_FLAGS)) != 0)) {
         /* note: makemon will set the mimic symbol to a shop item */
         if (rn2(10) >= depth(&u.uz)) {
             mtmp->m_ap_type = M_AP_OBJECT;
             mtmp->mappearance = STRANGE_OBJECT;
         }
-    } else {
+    } else if(!deserted || !rn2(2)) {
         atype = get_shop_item((int) (shp - shtypes));
         if (atype == VEGETARIAN_CLASS)
             mkveggy_at(sx, sy);
@@ -559,6 +581,7 @@ boolean mkspecl;
             (void) mkobj_at(atype, sx, sy, TRUE);
     }
 }
+
 
 /* extract a shopkeeper name for the given shop type */
 STATIC_OVL void
@@ -773,9 +796,10 @@ int rmno, sh, sx,sy;
 
 /* stock a newly-created room with objects */
 void
-stock_room(shp_indx, sroom)
+stock_room(shp_indx, sroom, deserted)
 int shp_indx;
 register struct mkroom *sroom;
+boolean deserted;
 {
     /*
      * Someday soon we'll dispatch on the shdist field of shclass to do
@@ -783,20 +807,23 @@ register struct mkroom *sroom;
      * shop-style placement (all squares except a row nearest the first
      * door get objects).
      */
-    int sx, sy, sh;
+    int sx = 0, sy = 0, sh = 0;
     int stockcount = 0, specialspot = 0;
     char buf[BUFSZ];
     int rmno = (int) ((sroom - rooms) + ROOMOFFSET);
     const struct shclass *shp = &shtypes[shp_indx];
 
     /* first, try to place a shopkeeper in the room */
-    if ((sh = shkinit(shp, sroom)) < 0)
-        return;
+	if(!deserted)
+	{
+		if ((sh = shkinit(shp, sroom)) < 0)
+			return;
+	}
 
-    /* make sure no doorways without doors, and no trapped doors, in shops */
+	/* make sure no doorways without doors, and no trapped doors, in shops */
     sx = doors[sroom->fdoor].x;
     sy = doors[sroom->fdoor].y;
-    if (levl[sx][sy].doormask == D_NODOOR) {
+    if (levl[sx][sy].doormask == D_NODOOR && !deserted) {
         levl[sx][sy].doormask = D_ISOPEN;
         newsym(sx, sy);
     }
@@ -805,7 +832,7 @@ register struct mkroom *sroom;
         newsym(sx, sy);
     }
     if (levl[sx][sy].doormask & D_TRAPPED)
-        levl[sx][sy].doormask = D_LOCKED;
+        levl[sx][sy].doormask = deserted? D_ISOPEN : D_LOCKED;
 
     if (levl[sx][sy].doormask == D_LOCKED) {
         register int m = sx, n = sy;
@@ -822,14 +849,14 @@ register struct mkroom *sroom;
         make_engr_at(m, n, buf, 0L, DUST);
     }
 
-    if (context.tribute.enabled && !context.tribute.bookstock) {
+    if (deserted || (context.tribute.enabled && !context.tribute.bookstock)) {
         /*
          * Out of the number of spots where we're actually
          * going to put stuff, randomly single out one in particular.
          */
         for (sx = sroom->lx; sx <= sroom->hx; sx++)
             for (sy = sroom->ly; sy <= sroom->hy; sy++)
-                if (stock_room_goodpos(sroom, rmno, sh, sx,sy))
+                if (deserted || stock_room_goodpos(sroom, rmno, sh, sx,sy))
                     stockcount++;
         specialspot = rnd(stockcount);
         stockcount = 0;
@@ -837,10 +864,10 @@ register struct mkroom *sroom;
 
     for (sx = sroom->lx; sx <= sroom->hx; sx++)
         for (sy = sroom->ly; sy <= sroom->hy; sy++)
-            if (stock_room_goodpos(sroom, rmno, sh, sx,sy)) {
+            if (deserted || stock_room_goodpos(sroom, rmno, sh, sx,sy)) {
                 stockcount++;
                 mkshobj_at(shp, sx, sy,
-                           ((stockcount) && (stockcount == specialspot)));
+                           ((stockcount) && (stockcount == specialspot)), deserted);
             }
 
     /*
@@ -848,7 +875,10 @@ register struct mkroom *sroom;
      * monsters will sit on top of objects and not the other way around.
      */
 
-    level.flags.has_shop = TRUE;
+	if(deserted)
+		level.flags.has_desertedshop = TRUE;
+	else
+		level.flags.has_shop = TRUE;
 }
 
 /* does shkp's shop stock this item type? */

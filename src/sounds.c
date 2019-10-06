@@ -249,6 +249,28 @@ dosounds()
         }
         return;
     }
+
+	if (level.flags.has_desertedshop && !rn2(200))
+	{
+		for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
+			if (DEADMONSTER(mtmp))
+				continue;
+			if (mon_in_room(mtmp, DESERTEDSHOP))
+			{
+				if (hallu)
+					pline("For a moment, you thought you heard Neiman and Marcus arguing!");
+				else
+				{
+					if (!rn2(2))
+						pline("For a moment, you thought you heard someone cursing.");
+					else
+						You("hear a faint chime but then it fades.");
+				}
+				return;
+			}
+		}
+	}
+
     if (level.flags.has_temple && !rn2(200)
         && !(Is_astralevel(&u.uz) || Is_sanctum(&u.uz))) {
         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {

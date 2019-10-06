@@ -761,7 +761,10 @@ makelevel()
 
         if (wizard && nh_getenv("SHOPTYPE"))
             mkroom(SHOPBASE);
-        else if (u_depth > 1 && u_depth < depth(&medusa_level)
+		else if (u_depth > depth(&oracle_level) && u_depth <= min(depth(&medusa_level), depth(&oracle_level) + 4) && !context.made_deserted_shop
+			&& (nroom >= room_threshold && (rn2(4)) || (u_depth < depth(&medusa_level) && u_depth >= depth(&oracle_level) + 4) ))
+			mkroom(DESERTEDSHOP);
+		else if (u_depth > 1 && u_depth < depth(&medusa_level)
                  && nroom >= room_threshold && rn2(u_depth) < 3)
             mkroom(SHOPBASE);
 		else if (u_depth > 4 && !rn2(6))

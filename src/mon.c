@@ -310,6 +310,8 @@ boolean createcorpse;
 	/* Monsters that create death items with or without the corpse */
 	switch (mndx)
 	{
+	case PM_ETTIN_SKELETON:
+	case PM_GIANT_SKELETON:
 	case PM_SKELETON:
 	case PM_SKELETON_WARRIOR:
 	case PM_SKELETON_LORD:
@@ -571,7 +573,7 @@ boolean createcorpse;
 	case PM_WOOD_GOLEM:
 		num = d(2, 4);
 		while (num--) {
-			obj = mksobj_at(QUARTERSTAFF, x, y, TRUE, FALSE);
+			obj = mksobj_at(PIECE_OF_WOOD, x, y, TRUE, FALSE);
 		}
 		free_mname(mtmp);
 		break;

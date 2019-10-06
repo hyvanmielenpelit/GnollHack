@@ -2345,7 +2345,7 @@ E char *FDECL(Shk_Your, (char *, struct obj *));
 
 E void FDECL(neweshk, (struct monst *));
 E void FDECL(free_eshk, (struct monst *));
-E void FDECL(stock_room, (int, struct mkroom *));
+E void FDECL(stock_room, (int, struct mkroom *, BOOLEAN_P));
 E boolean FDECL(saleable, (struct monst *, struct obj *));
 E int FDECL(get_shop_item, (int));
 E char *FDECL(Shknam, (struct monst *));

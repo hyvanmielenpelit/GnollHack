@@ -404,7 +404,14 @@ dig(VOID_ARGS)
 					lev->typ = ROOM;
 
 				lev->flags = 0;
-				if (rn2(4))
+
+				/* Wood */
+				struct obj* otmp = mksobj_at(PIECE_OF_WOOD, dpx, dpy, FALSE, FALSE);
+				otmp->quan = d(2, 6);
+				otmp->owt = weight(otmp);
+
+				/* Possibly some fruits */
+				if (!rn2(3))
 				{
 					struct obj* otmp = rnd_treefruit_at(dpx, dpy);
 					otmp->quan = rnd(16) + 4;

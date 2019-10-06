@@ -123,7 +123,8 @@ struct context_info {
     boolean forcefight;
     boolean nopick; /* do not pickup objects (as when running) */
     boolean made_amulet;
-    boolean mon_moving; /* monsters' turn to move */
+	boolean made_deserted_shop;
+	boolean mon_moving; /* monsters' turn to move */
     boolean move;
     boolean mv;
     boolean bypasses;    /* bypass flag is set on at least one fobj */

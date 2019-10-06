@@ -33,8 +33,9 @@ enum obj_material_types {
     MAT_GLASS       = 21,
     MAT_GEMSTONE    = 22,
     MAT_MINERAL     = 23,
-	MAT_PLANARRIFT	= 24,
-	MAT_FORCEFIELD  = 25
+	MAT_MODRONITE	= 24,
+	MAT_PLANARRIFT	= 25,
+	MAT_FORCEFIELD  = 26
 };
 
 enum obj_armor_types {
@@ -320,6 +321,7 @@ struct objclass {
 #define O2_DRAGON_ITEM 0x00000010
 #define O2_DEMON_ITEM 0x00000020
 #define O2_ANGELIC_ITEM 0x00000040
+#define O2_MODRON_ITEM 0x00000080
 
 #define O2_CONTAINER 0x00000100	
 #define O2_CONTAINER_BOX 0x00000200	

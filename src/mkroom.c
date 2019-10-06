@@ -19,7 +19,7 @@
 
 STATIC_DCL boolean FDECL(isbig, (struct mkroom *));
 STATIC_DCL struct mkroom *FDECL(pick_room, (BOOLEAN_P));
-STATIC_DCL void NDECL(mkshop), FDECL(mkzoo, (int)), NDECL(mkswamp), NDECL(mkgarden);
+STATIC_DCL void NDECL(mkshop), NDECL(mkdesertedshop), FDECL(mkzoo, (int)), NDECL(mkswamp), NDECL(mkgarden);
 STATIC_DCL void NDECL(mktemple);
 STATIC_DCL coord *FDECL(shrine_pos, (int));
 STATIC_DCL struct permonst *NDECL(morguemon);
@@ -87,7 +87,10 @@ int roomtype;
         case ANTHOLE:
             mkzoo(ANTHOLE);
             break;
-        default:
+		case DESERTEDSHOP:
+			mkdesertedshop();
+			break;
+		default:
             impossible("Tried to make a room of type %d.", roomtype);
         }
 }
@@ -152,6 +155,10 @@ mkshop()
 				mkgarden();
 				return;
 			}
+			if (*ep == 'd' || *ep == 'D') {
+				mkdesertedshop();
+				return;
+			}
 			for (i = 0; shtypes[i].name; i++)
                 if (*ep == def_oc_syms[(int) shtypes[i].symb].sym)
                     goto gottype;
@@ -214,7 +221,72 @@ gottype:
 #endif
 
     /* stock the room with a shopkeeper and artifacts */
-    stock_room(i, sroom);
+    stock_room(i, sroom, FALSE);
+}
+
+
+
+STATIC_OVL void
+mkdesertedshop()
+{
+	register struct mkroom* sroom;
+	int i = -1;
+	char* ep = (char*)0; /* (init == lint suppression) */
+
+	for (sroom = &rooms[0];; sroom++) {
+		if (sroom->hx < 0)
+			return;
+		if (sroom - rooms >= nroom) {
+			pline("rooms not closed by -1?");
+			return;
+		}
+		if (sroom->rtype != OROOM)
+			continue;
+		if (has_dnstairs(sroom) || has_upstairs(sroom))
+			continue;
+		if ((wizard && ep && sroom->doorct != 0) || sroom->doorct == 1)
+			break;
+	}
+
+	/* Lights are off, scary */
+	if (sroom->rlit) {
+		int x, y;
+
+		for (x = sroom->lx - 1; x <= sroom->hx + 1; x++)
+			for (y = sroom->ly - 1; y <= sroom->hy + 1; y++)
+				levl[x][y].lit = 0;
+		sroom->rlit = 0;
+	}
+			
+
+	if (i < 0) { /* shoptype not yet determined */
+		register int j;
+
+		/* pick a shop type at random */
+		for (j = rnd(100), i = 0; (j -= shtypes[i].prob) > 0; i++)
+			continue;
+
+		/* big rooms cannot be wand or book shops,
+			* - so make them general stores
+			*/
+		if (isbig(sroom) && (shtypes[i].symb == WAND_CLASS
+			|| shtypes[i].symb == SPBOOK_CLASS))
+			i = 0;
+	}
+
+	/* Change temporarily to so mimics look correct */
+	sroom->rtype = SHOPBASE + i;
+
+	/* set room bits before stocking the shop */
+	topologize(sroom);
+
+	/* stock the room with a shopkeeper and artifacts */
+	stock_room(i, sroom, TRUE);
+
+	context.made_deserted_shop = 1;
+
+	/* Change back to get the right message */
+	sroom->rtype = DESERTEDSHOP;
 }
 
 /* pick an unused room, preferably with only one door */

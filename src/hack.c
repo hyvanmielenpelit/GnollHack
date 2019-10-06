@@ -2449,6 +2449,9 @@ register boolean newlev;
 		case GARDEN:
 			You("enter a lovely underground garden!");
 			break;
+		case DESERTEDSHOP:
+			pline("This shop seems to have been deserted long ago.");
+			break;
 		case LIBRARY:
 			You("enter a library!");
 			break;
@@ -2521,6 +2524,9 @@ register boolean newlev;
 					break;
 				case GARDEN:
 					level.flags.has_garden = 0;
+					break;
+				case DESERTEDSHOP:
+					level.flags.has_desertedshop = 0;
 					break;
 				}
             }
