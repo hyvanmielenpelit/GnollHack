@@ -310,14 +310,19 @@ boolean createcorpse;
 	/* Monsters that create death items with or without the corpse */
 	switch (mndx)
 	{
-	case PM_ETTIN_SKELETON:
-	case PM_GIANT_SKELETON:
 	case PM_SKELETON:
 	case PM_SKELETON_WARRIOR:
 	case PM_SKELETON_LORD:
 	case PM_SKELETON_KING:
 		obj = mksobj_at(BONE, x, y, TRUE, FALSE);
 		obj->quan = rnd(2 + (mndx == PM_SKELETON_LORD ? 1 : 0));
+		obj->owt = weight(obj);
+		obj = mksobj_at(HUMAN_SKULL, x, y, TRUE, FALSE);
+		break;
+	case PM_ETTIN_SKELETON:
+	case PM_GIANT_SKELETON:
+		obj = mksobj_at(BONE, x, y, TRUE, FALSE);
+		obj->quan = rnd(4);
 		obj->owt = weight(obj);
 		break;
 	default:
@@ -811,7 +816,7 @@ int reagentstyle; //0 = all, 1 = priest only, 2 = all but no priest
 		return randomtruegem();
 	else
 	{
-		switch (rn2(13))
+		switch (rn2(15))
 		{
 		case 0:
 			if(reagentstyle == 2)
@@ -875,6 +880,12 @@ int reagentstyle; //0 = all, 1 = priest only, 2 = all but no priest
 			break;
 		case 12:
 			otyp = BONE;
+			break;
+		case 13:
+			otyp = HUMAN_SKULL;
+			break;
+		case 14:
+			otyp = PIECE_OF_WOOD;
 			break;
 		default:
 			otyp = CLOVE_OF_GARLIC;

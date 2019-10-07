@@ -28,14 +28,16 @@ enum obj_material_types {
     MAT_SILVER      = 16, /* Ag */
     MAT_GOLD        = 17, /* Au */
     MAT_PLATINUM    = 18, /* Pt */
-    MAT_MITHRIL     = 19,
-    MAT_PLASTIC     = 20,
-    MAT_GLASS       = 21,
-    MAT_GEMSTONE    = 22,
-    MAT_MINERAL     = 23,
-	MAT_MODRONITE	= 24,
-	MAT_PLANARRIFT	= 25,
-	MAT_FORCEFIELD  = 26
+	MAT_ORICHALCUM	= 19,
+	MAT_ADAMANTINE  = 20,
+	MAT_MITHRIL     = 21,
+    MAT_PLASTIC     = 22,
+    MAT_GLASS       = 23,
+    MAT_GEMSTONE    = 24,
+    MAT_MINERAL     = 25,
+	MAT_MODRONITE	= 26,
+	MAT_PLANARRIFT	= 27,
+	MAT_FORCEFIELD  = 28
 };
 
 enum obj_armor_types {
@@ -195,6 +197,7 @@ struct objclass {
 #define oc_skill oc_subtyp		/* Skills of weapons, spellbooks, tools, gems */
 /* oc_oc1 AC bonus, to make wielded objects consistent with armors, but a wielded object needs to be a weapon */
 /* oc_oc2 MC bonus, to make wielded objects consistent with armors, but a wielded object needs to be a weapon */
+/* oc_oc3 mana pool bonus */
 /* oc_oc4 hit point bonus */
 /* oc_oc5 attributes giving bonus to using spe / oc_oc6 to attributes and properties */
 /* oc_oc6 modifier to oc_oc5: 0 => spe is used, otherise fixed bonus */
@@ -202,6 +205,8 @@ struct objclass {
 
 /* armor */
 #define oc_armor_category oc_subtyp					/* armor: (enum obj_armor_types) */
+/* oc_oc1 AC bonus */
+/* oc_oc2 MC bonus */
 /* oc_oc3 mana pool bonus */
 /* oc_oc4 hit point bonus */
 /* oc_oc5 attributes giving bonus to using spe / oc_oc6 to attributes and properties */

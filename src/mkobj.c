@@ -1670,6 +1670,7 @@ register struct obj *obj;
 					|| objects[contents->otyp].oc_material == MAT_GOLD
 					|| objects[contents->otyp].oc_material == MAT_PLATINUM
 					|| objects[contents->otyp].oc_material == MAT_MITHRIL
+					|| objects[contents->otyp].oc_material == MAT_ADAMANTINE
 					|| objects[contents->otyp].oc_material == MAT_GEMSTONE
 					))
 				cwt += obj->cursed ? (weight(contents) * 2) : obj->blessed ? ((weight(contents) + 31) / 32)

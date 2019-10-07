@@ -1398,6 +1398,8 @@ int okind;
     case MAT_METAL:
 	case MAT_COPPER:
 	case MAT_PLATINUM:
+	case MAT_ORICHALCUM:
+	case MAT_ADAMANTINE:
 	case MAT_MITHRIL:
         pm_index = PM_IRON_GOLEM;
         material = "metal ";
@@ -1451,6 +1453,10 @@ int okind;
 	case MAT_GEMSTONE:
 		pm_index = PM_GEMSTONE_GOLEM;
 		material = "gemstone ";
+		break;
+	case MAT_MODRONITE:
+		pm_index = PM_PENTADRONE;
+		material = "modronite ";
 		break;
 	default:
         /* if all else fails... */
