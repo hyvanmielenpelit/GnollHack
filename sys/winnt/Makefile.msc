@@ -710,6 +710,9 @@ $(O)sp_lev.tag: $(O)utility.tag $(DAT)\bigroom.des  $(DAT)\castle.des \
 	$(U)levcomp endgame.des
 	$(U)levcomp gehennom.des
 	$(U)levcomp knox.des
+	$(U)levcomp modron1.des
+	$(U)levcomp modron2.des
+	$(U)levcomp modron3.des
 	$(U)levcomp mines.des
 	$(U)levcomp medusa.des
 	$(U)levcomp oracle.des

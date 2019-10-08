@@ -69,11 +69,13 @@ E struct dgn_topology { /* special dungeon levels for speed */
     d_level d_astral_level;
     xchar d_tower_dnum;
     xchar d_sokoban_dnum;
-	xchar d_mines_dnum, d_quest_dnum, d_modron_dnum;
-	d_level d_modron_level;
+	xchar d_mines_dnum, d_quest_dnum;
 	d_level d_qstart_level, d_qlocate_level, d_nemesis_level;
     d_level d_knox_level;
-    d_level d_mineend_level;
+	d_level d_modron1_level;
+	d_level d_modron2_level;
+	d_level d_modron3_level;
+	d_level d_mineend_level;
     d_level d_sokoend_level;
 } dungeon_topology;
 /* macros for accessing the dungeon levels by their old names */
@@ -101,13 +103,14 @@ E struct dgn_topology { /* special dungeon levels for speed */
 #define tower_dnum              (dungeon_topology.d_tower_dnum)
 #define sokoban_dnum            (dungeon_topology.d_sokoban_dnum)
 #define mines_dnum              (dungeon_topology.d_mines_dnum)
-#define modron_dnum             (dungeon_topology.d_modron_dnum)
-#define modron_level            (dungeon_topology.d_modron_level)
 #define quest_dnum              (dungeon_topology.d_quest_dnum)
 #define qstart_level            (dungeon_topology.d_qstart_level)
 #define qlocate_level           (dungeon_topology.d_qlocate_level)
 #define nemesis_level           (dungeon_topology.d_nemesis_level)
 #define knox_level              (dungeon_topology.d_knox_level)
+#define modron1_level           (dungeon_topology.d_modron1_level)
+#define modron2_level           (dungeon_topology.d_modron2_level)
+#define modron3_level           (dungeon_topology.d_modron3_level)
 #define mineend_level           (dungeon_topology.d_mineend_level)
 #define sokoend_level           (dungeon_topology.d_sokoend_level)
 /* clang-format on */
@@ -247,7 +250,9 @@ E NEARDATA struct obj *invent, *uarm, *uarmc, *uarmh, *uarms, *uarmg, *uarmf,
 	*uarmo, /* over-wear, so to speak */
 	*uarmb, /* bracers */
 	*umisc, *umisc2, *umisc3, *umisc4, *umisc5, /* miscellaneous */
-	*uskin, *uamul, *uleft, *uright, *ublindf, *uwep, *uswapwep, *uquiver;
+	*uskin, *uamul, *uleft, *uright, *ublindf, *uwep, *uswapwep, * uswapwep2, *uquiver;
+
+#define uwep2 uarms
 
 E NEARDATA struct obj *uchain; /* defined only when punished */
 E NEARDATA struct obj *uball;

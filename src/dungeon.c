@@ -690,7 +690,10 @@ struct level_map {
 				  { "fire", &fire_level },
                   { "juiblex", &juiblex_level },
                   { "knox", &knox_level },
-                  { "medusa", &medusa_level },
+				  { "modron1", &modron1_level },
+				  { "modron2", &modron2_level },
+				  { "modron3", &modron3_level },
+				  { "medusa", &medusa_level },
                   { "oracle", &oracle_level },
                   { "orcus", &orcus_level },
                   { "rogue", &rogue_level },
@@ -705,7 +708,6 @@ struct level_map {
                   { X_START, &qstart_level },
                   { X_LOCATE, &qlocate_level },
                   { X_GOAL, &nemesis_level },
-				  { "modron-strt", &modron_level },
 				  { "", (d_level *) 0 } };
 
 /* initialize the "dungeon" structs */
