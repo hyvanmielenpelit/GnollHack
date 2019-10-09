@@ -3,7 +3,7 @@
 #	Copyright (c) 1992 by Izchak Miller
 # NetHack may be freely redistributed.  See license for details.
 #
-MAZE:"modron1",' '
+MAZE:"modron2",' '
 FLAGS: noteleport
 GEOMETRY:center,center
 # Fort's entry is via a secret door rather than a drawbridge;
@@ -136,13 +136,13 @@ MONSTER:'M',(33,14)
 # The corner rooms treasures
 OBJECT:('9',"modronite dodecahedron"),(19,06)
 OBJECT:('9',"modronite icosahedron"),(20,06)
-OBJECT:('9',"modronite monopone"),(21,06)
+OBJECT:('9',"modronite monopole"),(21,06)
 OBJECT:('9',"modronite octahedron"),(19,13)
 OBJECT:('9',"modronite tetrahedron"),(20,13)
 OBJECT:('9',"modronite ball"),(21,13)
 OBJECT:('9',"modronite icosahedron"),(46,06)
-OBJECT:('9',"modronite monopone"),(47,06)
+OBJECT:('9',"modronite monopole"),(47,06)
 OBJECT:('9',"modronite icosahedron"),(48,06)
 OBJECT:('9',"modronite dodecahedron"),(46,13)
 OBJECT:('9',"modronite octahedron"),(47,13)
-OBJECT:('*',"modronite ball"),(48,13)
+OBJECT:('9',"modronite ball"),(48,13)

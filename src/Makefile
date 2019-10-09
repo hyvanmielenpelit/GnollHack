@@ -40,6 +40,7 @@
 #
 #-----------------------------------------------------------------------------------------
 #=========================================================================================
+echo starting GnollHack makefile
 
 #---------------------------------------------------------------
 # 1. Where do you want the game to be built (which folder)?
@@ -696,11 +697,13 @@ recover: $(U)recover.exe
 	if exist $(U)recover.exe copy $(U)recover.exe  $(GAMEDIR)
 	if exist $(DOC)\recover.txt copy $(DOC)\recover.txt $(GAMEDIR)\recover.txt
 
+echo compiling special levels
 $(O)sp_lev.tag: $(O)utility.tag $(DAT)\bigroom.des  $(DAT)\castle.des \
 	$(DAT)\endgame.des $(DAT)\gehennom.des $(DAT)\knox.des   \
 	$(DAT)\medusa.des  $(DAT)\oracle.des   $(DAT)\tower.des  \
 	$(DAT)\yendor.des  $(DAT)\arch.des     $(DAT)\barb.des   \
 	$(DAT)\caveman.des $(DAT)\healer.des   $(DAT)\knight.des \
+	$(DAT)\modron1.des $(DAT)\modron2.des  $(DAT)\modron3.des \
 	$(DAT)\monk.des    $(DAT)\priest.des   $(DAT)\ranger.des \
 	$(DAT)\rogue.des   $(DAT)\samurai.des  $(DAT)\sokoban.des \
 	$(DAT)\tourist.des $(DAT)\valkyrie.des $(DAT)\wizard.des
@@ -721,6 +724,9 @@ $(O)sp_lev.tag: $(O)utility.tag $(DAT)\bigroom.des  $(DAT)\castle.des \
 	$(U)levcomp caveman.des
 	$(U)levcomp healer.des
 	$(U)levcomp knight.des
+	$(U)levcomp modron1.des
+	$(U)levcomp modron2.des
+	$(U)levcomp modron3.des
 	$(U)levcomp monk.des
 	$(U)levcomp priest.des
 	$(U)levcomp ranger.des
@@ -1314,6 +1320,7 @@ spotless: clean
 	if exist $(DAT)\knox.lev	 del $(DAT)\knox.lev
 	if exist $(DAT)\medusa-?.lev	 del $(DAT)\medusa-?.lev
 	if exist $(DAT)\mine*.lev	 del $(DAT)\mine*.lev
+	if exist $(DAT)\modron*.lev	 del $(DAT)\modron*.lev
 	if exist $(DAT)\options		 del $(DAT)\options
 	if exist $(DAT)\ttyoptions	 del $(DAT)\ttyoptions
 	if exist $(DAT)\guioptions	 del $(DAT)\guioptions

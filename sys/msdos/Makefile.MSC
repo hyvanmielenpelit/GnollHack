@@ -419,6 +419,9 @@ $(O)sp_lev.tag: $(O)utility.tag $(SPLEVDES)
 	$(U)lev_comp endgame.des
 	$(U)lev_comp gehennom.des
 	$(U)lev_comp knox.des
+	$(U)lev_comp modron1.des
+	$(U)lev_comp modron2.des
+	$(U)lev_comp modron3.des
 	$(U)lev_comp mines.des
 	$(U)lev_comp medusa.des
 	$(U)lev_comp oracle.des
