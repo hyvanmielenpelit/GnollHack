@@ -470,6 +470,8 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 			|| objects[obj->otyp].oc_subtyp == MISC_LENSES
 			|| objects[obj->otyp].oc_subtyp == MISC_PANTS
 			|| objects[obj->otyp].oc_subtyp == MISC_BRACERS
+			|| objects[obj->otyp].oc_subtyp == MISC_WINGS
+			|| objects[obj->otyp].oc_subtyp == MISC_EXTRA_ARMS
 			))
             Strcpy(buf, "pair of ");
         else if (is_wet_towel(obj))

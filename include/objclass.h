@@ -67,13 +67,14 @@ enum obj_miscellaneous_types {
 	MISC_BELT = 11,			
 	MISC_LENSES = 12,		/* alternative implementation of eyeglasses */
 	MISC_BLINDFOLD = 13,	/* alternative implementation of blindfold */
-	MISC_SCARF = 14
+	MISC_SCARF = 14,
+	MISC_EXTRA_ARMS = 15
 };
 
 static const char* misc_type_names[] = {
 	"", "set of wings", "pair of pants", "skirt", "wrist watch",
 	"nose ring", "headband", "pair of earrings",
-	"ioun stone", "bracelet", "pair of bracers", "belt", "pair of eyeglasses", "blindfold", "scarf",
+	"ioun stone", "bracelet", "pair of bracers", "belt", "pair of eyeglasses", "blindfold", "scarf", "set of extra arms",
 };
 
 struct objclass {
