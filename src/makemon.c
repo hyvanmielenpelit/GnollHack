@@ -1593,8 +1593,8 @@ int mmflags;
                  /* in Sokoban, don't accept a giant on first try;
                     after that, boulder carriers are fair game */
                  && ((tryct == 1 && throws_rocks(ptr) && In_sokoban(&u.uz))
-					 || (tryct <= 20 && In_mines(&u.uz) && (ptr == &mons[PM_MIND_FLAYER] || ptr == &mons[PM_MASTER_MIND_FLAYER]) || ptr == &mons[PM_WINGED_GARGOYLE] || ptr == &mons[PM_GARGOYLE] || ptr == &mons[PM_GREMLIN]))
-                     || !goodpos(x, y, &fakemon, gpflags));
+					 || (tryct <= 20 && In_mines(&u.uz) && (ptr == &mons[PM_MIND_FLAYER] || ptr == &mons[PM_MASTER_MIND_FLAYER]) || ptr == &mons[PM_WINGED_GARGOYLE] || ptr == &mons[PM_GARGOYLE] || ptr == &mons[PM_GREMLIN])
+                     || !goodpos(x, y, &fakemon, gpflags)));
         mndx = monsndx(ptr);
     }
     (void) propagate(mndx, countbirth, FALSE);

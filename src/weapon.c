@@ -811,14 +811,15 @@ int handindex;
 	boolean wearing_shield = (mtmp->misc_worn_check & W_ARMS) != 0;
 	int weaponindex = 1; //Start with second hand, if free
 
-	if(!mtmp)
+	/* If the monster has not wielded a weapon, then all weapons are unwielded */
+	if(!mtmp || !MON_WEP(mtmp))
 		return (struct obj*) 0;
 
-	if (MON_WEP(mtmp) && (handindex == 1 || (handindex ==2 && (objects[MON_WEP(mtmp)->otyp].oc_bimanual || wearing_shield))))
+	if ((handindex == 1 || (handindex ==2 && (objects[MON_WEP(mtmp)->otyp].oc_bimanual || wearing_shield))))
 		return MON_WEP(mtmp);
 
 	//Never select MON_WEP otherwise select weaponindex'th first suitable weapon, if none, then return 0
-	if (objects[MON_WEP(mtmp)->otyp].oc_bimanual || wearing_shield)
+	if (MON_WEP(mtmp) && objects[MON_WEP(mtmp)->otyp].oc_bimanual || wearing_shield)
 		weaponindex++; //Second hand is not free, previously returned MON_WEP
 
 	//Is in hwep table, extra hands do not use two-handed weapons for simplicity (maybe too weak)
