@@ -556,6 +556,7 @@ static const struct def_skill Skill_P_Init_Chaotic[] = {
 	{ P_MORNING_STAR, P_BASIC },
 	{ P_CLERIC_SPELL, P_BASIC },
 	{ P_NECROMANCY_SPELL, P_BASIC },
+	{ P_HEALING_SPELL, P_BASIC },
 	{ P_NONE, 0 }
 };
 static const struct def_skill Skill_P_Init_NonChaotic[] = {
@@ -563,6 +564,7 @@ static const struct def_skill Skill_P_Init_NonChaotic[] = {
 	{ P_FLAIL, P_BASIC },
 	{ P_HEALING_SPELL, P_BASIC },
 	{ P_CLERIC_SPELL, P_BASIC },
+	{ P_ABJURATION_SPELL, P_BASIC },
 	{ P_NONE, 0 }
 };
 

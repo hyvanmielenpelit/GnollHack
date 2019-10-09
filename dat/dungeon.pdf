@@ -24,6 +24,7 @@ DESCRIPTION:	mazelike
 DESCRIPTION:	hellish
 ALIGNMENT:	noalign
 BRANCH:		"Vlad's Tower" @ (9, 5) up
+BRANCH:		"modron3" @ (7, 5) portal
 LEVEL:		"valley" "V" @ (1, 0)
 LEVEL:		"sanctum" "none" @ (-1, 0)
 LEVEL:		"juiblex" "J" @ (4, 4)
@@ -62,20 +63,20 @@ DESCRIPTION:	mazelike
 ALIGNMENT:	unaligned
 LEVEL:		"knox" "K" @ (-1, 0)
 
-DUNGEON:	"Modron 1" "M" (1, 0)
+DUNGEON:	"modron1" "M" (1, 0)
 DESCRIPTION:	mazelike
 ALIGNMENT:	unaligned
 LEVEL:		"modron1" "M" @ (-1, 0)
 
-DUNGEON:	"Modron 2" "N" (1, 0)
+DUNGEON:	"modron2" "N" (1, 0)
 DESCRIPTION:	mazelike
 ALIGNMENT:	unaligned
 LEVEL:		"modron2" "N" @ (-1, 0)
 
-DUNGEON:	"Modron 3" "O" (1, 0)
+DUNGEON:	"modron3" "P" (1, 0)
 DESCRIPTION:	mazelike
 ALIGNMENT:	unaligned
-LEVEL:		"modron3" "O" @ (-1, 0)
+LEVEL:		"modron3" "P" @ (-1, 0)
 
 DUNGEON:	"Vlad's Tower" "T" (3, 0)
 PROTOFILE:	"tower"
