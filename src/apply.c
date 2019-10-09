@@ -2924,8 +2924,8 @@ struct obj *tstone;
             do_scratch = TRUE;
         } else if (obj->oclass == GEM_CLASS
                    && (tstone->blessed
-                       || (!tstone->cursed && (Role_if(PM_ARCHEOLOGIST)
-                                               || Race_if(PM_GNOME))))) {
+                       || (!tstone->cursed /*&& (Role_if(PM_ARCHEOLOGIST)
+                                               || Race_if(PM_GNOME))*/ ))) {
             makeknown(TOUCHSTONE);
             makeknown(obj->otyp);
             prinv((char *) 0, obj, 0L);

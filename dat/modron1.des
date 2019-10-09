@@ -38,7 +38,7 @@ BRANCH:(08,16,08,16),(0,0,0,0)
 TELEPORT_REGION:(06,15,09,16),(0,0,0,0),up
 TELEPORT_REGION:(06,15,09,16),(0,0,0,0),down
 
-MONSTER:('M',"quarton"),(43,10),hostile
+MONSTER:('M',"modron quarton"),(43,10),hostile
 
 IF [50%] {
    TERRAIN:(47,09), 'S'
@@ -67,41 +67,41 @@ DOOR:closed,(04,03)
 DOOR:closed,(04,09)
 
 # Welcoming committee
-MONSTER:('M',"monodrone"),(07,13)
-MONSTER:('M',"monodrone"),(05,13)
-MONSTER:('M',"monodrone"),(06,12)
-MONSTER:('M',"monodrone"),(06,13)
-MONSTER:('M',"duodrone"),(09,12)
-MONSTER:('M',"duodrone"),(10,12)
-MONSTER:('M',"duodrone"),(11,13)
-MONSTER:('M',"duodrone"),(10,13)
+MONSTER:('M',"modron monodrone"),(07,13)
+MONSTER:('M',"modron monodrone"),(05,13)
+MONSTER:('M',"modron monodrone"),(06,12)
+MONSTER:('M',"modron monodrone"),(06,13)
+MONSTER:('M',"modron duodrone"),(09,12)
+MONSTER:('M',"modron duodrone"),(10,12)
+MONSTER:('M',"modron duodrone"),(11,13)
+MONSTER:('M',"modron duodrone"),(10,13)
 
 # Modrons guarding the fort
-MONSTER:('M',"monodrone"),(12,14)
-MONSTER:('M',"monodrone"),(12,13)
-MONSTER:('M',"monodrone"),(11,10)
-MONSTER:('M',"monodrone"),(13,02)
-MONSTER:('M',"duodrone"),(14,03)
-MONSTER:('M',"duodrone"),(20,02)
-MONSTER:('M',"duodrone"),(30,02)
-MONSTER:('M',"duodrone"),(40,02)
-MONSTER:('M',"tridrone"),(30,16)
-MONSTER:('M',"tridrone"),(32,16)
-MONSTER:('M',"tridrone"),(40,16)
-MONSTER:('M',"tridrone"),(54,16)
-MONSTER:('M',"quadrone"),(54,14)
-MONSTER:('M',"quadrone"),(54,13)
-MONSTER:('M',"quadrone"),(57,10)
-MONSTER:('M',"quadrone"),(57,09)
+MONSTER:('M',"modron monodrone"),(12,14)
+MONSTER:('M',"modron monodrone"),(12,13)
+MONSTER:('M',"modron monodrone"),(11,10)
+MONSTER:('M',"modron monodrone"),(13,02)
+MONSTER:('M',"modron duodrone"),(14,03)
+MONSTER:('M',"modron duodrone"),(20,02)
+MONSTER:('M',"modron duodrone"),(30,02)
+MONSTER:('M',"modron duodrone"),(40,02)
+MONSTER:('M',"modron tridrone"),(30,16)
+MONSTER:('M',"modron tridrone"),(32,16)
+MONSTER:('M',"modron tridrone"),(40,16)
+MONSTER:('M',"modron tridrone"),(54,16)
+MONSTER:('M',"modron quadrone"),(54,14)
+MONSTER:('M',"modron quadrone"),(54,13)
+MONSTER:('M',"modron quadrone"),(57,10)
+MONSTER:('M',"modron quadrone"),(57,09)
 
 # Pentadrone
-MONSTER:('M',"pentadrone"),(03,01)
+MONSTER:('M',"modron pentadrone"),(03,01)
 
 # Four modrons guarding each side
-MONSTER:('M',"quinton"),(18,09)
-MONSTER:('M',"quinton"),(49,10)
-MONSTER:('M',"quinton"),(33,05)
-MONSTER:('M',"quinton"),(33,14)
+MONSTER:('M',"modron quinton"),(18,09)
+MONSTER:('M',"modron quinton"),(49,10)
+MONSTER:('M',"modron quinton"),(33,05)
+MONSTER:('M',"modron quinton"),(33,14)
 
 # The corner rooms treasures
 OBJECT:('9',"modronite dodecahedron"),(19,06)

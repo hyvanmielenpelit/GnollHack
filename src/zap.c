@@ -1455,7 +1455,7 @@ int okind;
 		material = "gemstone ";
 		break;
 	case MAT_MODRONITE:
-		pm_index = PM_PENTADRONE;
+		pm_index = PM_MODRON_PENTADRONE;
 		material = "modronite ";
 		break;
 	default:
@@ -2430,7 +2430,7 @@ register struct obj *obj;
 		summondemogorgon(obj->otyp);
 		break;
 	case SPE_CALL_HIERARCH_MODRON:
-		(void)summoncreature(obj->otyp, (rn2(100) < (u.ulevel - 1) * 1) ? PM_TERTIAN : (rn2(100) < (u.ulevel - 1) * 5) ? PM_QUARTON : PM_QUINTON, "%s appears in a cloud of smoke.", TRUE, TRUE, TRUE, TRUE, FALSE, FALSE);
+		(void)summoncreature(obj->otyp, (rn2(100) < (u.ulevel - 1) * 1) ? PM_MODRON_TERTIAN : (rn2(100) < (u.ulevel - 1) * 5) ? PM_MODRON_QUARTON : PM_MODRON_QUINTON, "%s appears in a cloud of smoke.", TRUE, TRUE, TRUE, TRUE, FALSE, FALSE);
 		break;
 	case SPE_GUARDIAN_ANGEL:
 		(void)summoncreature(obj->otyp, (rn2(100) < (u.ulevel - 1) * 1) ? PM_ARCHON : (rn2(100) < (u.ulevel - 1) * 5) ? PM_ANGEL : PM_ALEAX, "%s descends from the heavens.", TRUE, TRUE, TRUE, TRUE, FALSE, TRUE);

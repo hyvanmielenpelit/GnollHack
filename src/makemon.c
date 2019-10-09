@@ -1851,16 +1851,16 @@ int mndx;
 	case PM_NAZGUL:
 		blimit = 9;
 		break;
-	case PM_QUINTON:
+	case PM_MODRON_QUINTON:
 		blimit = 25;
 		break;
-	case PM_QUARTON:
+	case PM_MODRON_QUARTON:
 		blimit = 16;
 		break;
-	case PM_TERTIAN:
+	case PM_MODRON_TERTIAN:
 		blimit = 9;
 		break;
-	case PM_SECUNDUS:
+	case PM_MODRON_SECUNDUS:
 		blimit = 4;
 		break;
 	default:
