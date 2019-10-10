@@ -2210,14 +2210,24 @@ register struct obj *obj;
             weldmsg(obj);
             return 0;
         }
-        setuwep((struct obj *) 0);
+        setuwep((struct obj *) 0, W_WEP);
     }
-    if (obj == uquiver) {
+	if (obj == uarms) {
+		if (welded(uarms)) {
+			weldmsg(obj);
+			return 0;
+		}
+		setuwep((struct obj*) 0, W_WEP2);
+	}
+	if (obj == uquiver) {
         setuqwep((struct obj *) 0);
     }
     if (obj == uswapwep) {
-        setuswapwep((struct obj *) 0);
+        setuswapwep((struct obj *) 0, W_SWAPWEP);
     }
+	if (obj == uswapwep2) {
+		setuswapwep((struct obj*) 0, W_SWAPWEP2);
+	}
 
     if (u.uswallow) {
         /* barrier between you and the floor */
@@ -2297,11 +2307,15 @@ struct obj *obj;
 boolean with_impact;
 {
     if (obj == uwep)
-        setuwep((struct obj *) 0);
-    if (obj == uquiver)
+        setuwep((struct obj *) 0, W_WEP);
+	if (obj == uarms)
+		setuwep((struct obj*) 0, W_WEP2);
+	if (obj == uquiver)
         setuqwep((struct obj *) 0);
     if (obj == uswapwep)
-        setuswapwep((struct obj *) 0);
+        setuswapwep((struct obj *) 0, W_SWAPWEP);
+	if (obj == uswapwep2)
+		setuswapwep((struct obj*) 0, W_SWAPWEP2);
 
     if (!u.uswallow && flooreffects(obj, u.ux, u.uy, "drop"))
         return;

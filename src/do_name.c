@@ -1293,8 +1293,8 @@ const char *name;
         artifact_exists(obj, name, TRUE);
     if (obj->oartifact) {
         /* can't dual-wield with artifact as secondary weapon */
-        if (obj == uswapwep)
-            untwoweapon();
+        //if (obj == uswapwep)
+        //    untwoweapon();
         /* activate warning if you've just named your weapon "Sting" */
         if (obj == uwep)
             set_artifact_intrinsic(obj, TRUE, W_WEP);

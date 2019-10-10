@@ -677,7 +677,7 @@ unsigned int *stuckid, *steedid;
        applied or wielded it, so be conservative and assume the former */
     otmp = uwep;   /* `uwep' usually init'd by setworn() in loop above */
     uwep = 0;      /* clear it and have setuwep() reinit */
-    setuwep(otmp); /* (don't need any null check here) */
+    setuwep(otmp, W_WEP); /* (don't need any null check here) */
     if (!uwep || uwep->otyp == PICK_AXE || uwep->otyp == GRAPPLING_HOOK)
         unweapon = TRUE;
 

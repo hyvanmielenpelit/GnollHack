@@ -2172,21 +2172,42 @@ register struct obj *obj;
     } else if (obj->otyp == LEASH && obj->leashmon != 0) {
         pline("%s attached to your pet.", Tobjnam(obj, "are"));
         return 0;
-    } else if (obj == uwep) {
+    }
+	else if (obj == uwep) {
         if (welded(obj)) {
             weldmsg(obj);
             return 0;
         }
-        setuwep((struct obj *) 0);
+        setuwep((struct obj *) 0, W_WEP);
         /* This uwep check is obsolete.  It dates to 3.0 and earlier when
          * unwielding Firebrand would be fatal in hell if hero had no other
          * fire resistance.  Life-saving would force it to be re-wielded.
          */
         if (uwep)
             return 0; /* unwielded, died, rewielded */
-    } else if (obj == uswapwep) {
-        setuswapwep((struct obj *) 0);
-    } else if (obj == uquiver) {
+    }
+	else if (u.twoweap && obj == uarms) {
+		if (welded(obj)) {
+			weldmsg(obj);
+			return 0;
+		}
+		setuwep((struct obj*) 0, W_WEP2);
+		/* This uwep check is obsolete.  It dates to 3.0 and earlier when
+		 * unwielding Firebrand would be fatal in hell if hero had no other
+		 * fire resistance.  Life-saving would force it to be re-wielded.
+		 */
+		if (uarms)
+			return 0; /* unwielded, died, rewielded */
+	}
+	else if (obj == uswapwep)
+	{
+        setuswapwep((struct obj *) 0, W_SWAPWEP);
+    }
+	else if (obj == uswapwep2)
+	{
+		setuswapwep((struct obj*) 0, W_SWAPWEP2);
+	}
+	else if (obj == uquiver) {
         setuqwep((struct obj *) 0);
     }
 

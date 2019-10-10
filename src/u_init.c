@@ -1569,10 +1569,14 @@ register struct trobj *trop;
             if (is_ammo(obj) || is_missile(obj)) {
                 if (!uquiver)
                     setuqwep(obj);
-            } else if (!uwep && (!uarms || !bimanual(obj))) {
-                setuwep(obj);
-            } else if (!uswapwep) {
-                setuswapwep(obj);
+            }
+			else if (!uwep && (!uarms || !bimanual(obj)))
+			{
+                setuwep(obj, W_WEP);
+            }
+			else if (!uswapwep)
+			{
+                setuswapwep(obj, W_SWAPWEP);
             }
         }
         if (obj->oclass == SPBOOK_CLASS && obj->otyp != SPE_BLANK_PAPER)

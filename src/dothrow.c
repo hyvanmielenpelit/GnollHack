@@ -1148,7 +1148,7 @@ boolean twoweap; /* used to restore twoweapon mode if wielded weapon returns */
             (void) encumber_msg();
             if (obj->owornmask & W_QUIVER) /* in case addinv() autoquivered */
                 setuqwep((struct obj *) 0);
-            setuwep(obj);
+            setuwep(obj, W_WEP);
             u.twoweap = twoweap;
         } else if (u.dz < 0) {
             (void) toss_up(obj, rn2(5) && !Underwater);
@@ -1259,7 +1259,7 @@ boolean twoweap; /* used to restore twoweapon mode if wielded weapon returns */
             /* in case addinv() autoquivered */
             if (thrownobj->owornmask & W_QUIVER)
                 setuqwep((struct obj *) 0);
-            setuwep(thrownobj);
+            setuwep(thrownobj, W_WEP);
         } else {
             /* ball is not picked up by monster */
             if (obj != uball)
@@ -1280,7 +1280,7 @@ boolean twoweap; /* used to restore twoweapon mode if wielded weapon returns */
                 if (!impaired) // && rn2(100))
 				{
 					/* if uwep, more things need to be done than otherwise */
-					if(wep_mask & W_WEP) // (objects[obj->otyp].oc_flags& O1_CAN_BE_THROWN_ONLY_IF_WIELDED) ||
+					if(wep_mask & W_WIELDED_WEAPON) // (objects[obj->otyp].oc_flags& O1_CAN_BE_THROWN_ONLY_IF_WIELDED) ||
 					{
 						pline("%s to your hand!", Tobjnam(obj, "return"));
 						obj = addinv(obj);
@@ -1289,7 +1289,7 @@ boolean twoweap; /* used to restore twoweapon mode if wielded weapon returns */
 						   if obj is quivered, remove it before wielding */
 						if (obj->owornmask & W_QUIVER)
 							setuqwep((struct obj *) 0);
-						setuwep(obj);
+						setuwep(obj, wep_mask);
 						u.twoweap = twoweap;
 					}
 					else
@@ -1304,9 +1304,13 @@ boolean twoweap; /* used to restore twoweapon mode if wielded weapon returns */
 
 						/* Wields if necessary */
 						if ((wep_mask & W_SWAPWEP))
-							setuswapwep(obj);
+							setuswapwep(obj, W_SWAPWEP);
+						else if ((wep_mask & W_SWAPWEP2))
+							setuswapwep(obj, W_SWAPWEP2);
 						else if ((wep_mask & W_WEP))
-							setuwep(obj);
+							setuwep(obj, W_WEP);
+						else if ((wep_mask & W_WEP2))
+							setuwep(obj, W_WEP2);
 					}
                     if (cansee(bhitpos.x, bhitpos.y))
                         newsym(bhitpos.x, bhitpos.y);

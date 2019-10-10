@@ -113,8 +113,8 @@ struct monst *victim;
                 (void) burn_dmg(item, "shirt");
             return TRUE;
         case 2:
-            item = hitting_u ? uarms : which_armor(victim, W_ARMS);
-            if (!burn_dmg(item, "wooden shield"))
+            item = hitting_u ? uarms : which_armor(victim, W_SECONDARY_HAND);
+            if (!burn_dmg(item, (item && (item->owornmask & W_ARMS) ? "wooden shield" : "wooden weapon")))
                 continue;
             break;
         case 3:
@@ -2333,8 +2333,8 @@ register struct monst *mtmp;
                 if (in_sight)
                     pline("%s %s's left %s!", A_gush_of_water_hits,
                           mon_nam(mtmp), mbodypart(mtmp, ARM));
-                target = which_armor(mtmp, W_ARMS);
-                if (water_damage(target, "shield", TRUE) != ER_NOTHING)
+                target = which_armor(mtmp, W_SECONDARY_HAND);
+                if (water_damage(target, (target && (target->owornmask & W_ARMS) ? "shield" : "secondary weapon"), TRUE) != ER_NOTHING)
                     break;
                 target = MON_WEP(mtmp);
                 if (target && bimanual(target))

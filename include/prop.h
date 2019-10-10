@@ -135,6 +135,8 @@ struct prop {
 #define W_SWAP_WEAPON (W_SWAPWEP | W_SWAPWEP2)
 #define W_WEAPON (W_WIELDED_WEAPON | W_SWAP_WEAPON | W_QUIVER)
 
+#define W_SECONDARY_HAND (W_ARMS | W_WEP2)
+
 /* Amulets, rings, tools, and other items */
 #define W_AMUL 0x00010000L    /* Amulet */
 #define W_RINGL 0x00020000L   /* Left ring */

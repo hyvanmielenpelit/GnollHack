@@ -2900,9 +2900,9 @@ E void FDECL(set_ulycn, (int));
 
 /* ### wield.c ### */
 
-E void FDECL(setuwep, (struct obj *));
+E void FDECL(setuwep, (struct obj *, long));
 E void FDECL(setuqwep, (struct obj *));
-E void FDECL(setuswapwep, (struct obj *));
+E void FDECL(setuswapwep, (struct obj *, long));
 E int NDECL(dowield);
 E int NDECL(doswapweapon);
 E int NDECL(dowieldquiver);

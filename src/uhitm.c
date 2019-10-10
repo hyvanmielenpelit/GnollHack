@@ -70,7 +70,7 @@ int hurt;
             }
             break;
         case 2:
-            target = which_armor(mdef, W_ARMS);
+            target = which_armor(mdef, W_SECONDARY_HAND);
             if (!target
                 || erode_obj(target, xname(target), hurt, EF_GREASE)
                        == ER_NOTHING)
@@ -408,8 +408,8 @@ register struct monst *mtmp;
         || overexertion())
         goto atk_done;
 
-    if (u.twoweap && !can_twoweapon())
-        untwoweapon();
+    //if (u.twoweap && !can_twoweapon())
+    //    untwoweapon();
 
     if (unweapon) {
         unweapon = FALSE;
@@ -872,7 +872,7 @@ int dieroll;
 			if (obj->quan > 1L)
 				obj = splitobj(obj, 1L);
 			else
-				setuwep((struct obj*) 0);
+				setuwep((struct obj*) 0, W_WEP);
 			freeinv(obj);
 			potionhit(mon, obj,
 				hand_to_hand ? POTHIT_HERO_BASH : POTHIT_HERO_THROW);

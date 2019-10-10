@@ -210,8 +210,8 @@ const char *fmt, *arg;
         done(GENOCIDED);
     }
 
-    if (u.twoweap && !could_twoweap(youmonst.data))
-        untwoweapon();
+    //if (u.twoweap && !could_twoweap(youmonst.data))
+    //    untwoweapon();
 
     if (u.utrap && u.utraptype == TT_PIT) {
         set_utrap(rn1(6, 2), TT_PIT); /* time to escape resets */
@@ -1192,9 +1192,9 @@ int alone;
 
             if (updateinv)
                 update_inventory();
-        } else if (!could_twoweap(youmonst.data)) {
+        } /*else if (!could_twoweap(youmonst.data)) {
             untwoweapon();
-        }
+        }*/
     }
 }
 

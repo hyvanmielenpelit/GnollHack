@@ -250,7 +250,7 @@ E NEARDATA struct obj *invent, *uarm, *uarmc, *uarmh, *uarms, *uarmg, *uarmf,
 	*uarmo, /* over-wear, so to speak */
 	*uarmb, /* bracers */
 	*umisc, *umisc2, *umisc3, *umisc4, *umisc5, /* miscellaneous */
-	*uskin, *uamul, *uleft, *uright, *ublindf, *uwep, *uswapwep, * uswapwep2, *uquiver;
+	*uskin, *uamul, *uleft, *uright, *ublindf, *uwep, *uswapwep, *uswapwep2, *uquiver;
 
 #define uwep2 uarms
 

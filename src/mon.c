@@ -1817,9 +1817,9 @@ long flag;
         } else {
             rockok = (m_carrying(mon, PICK_AXE)
                       || (m_carrying(mon, DWARVISH_MATTOCK)
-                          && !which_armor(mon, W_ARMS)));
+                          && !which_armor(mon, W_SECONDARY_HAND)));
             treeok = (m_carrying(mon, AXE) || (m_carrying(mon, BATTLE_AXE)
-                                               && !which_armor(mon, W_ARMS)));
+                                               && !which_armor(mon, W_SECONDARY_HAND)));
         }
         if (rockok || treeok)
             thrudoor = TRUE;

@@ -600,7 +600,7 @@ Shield_on(VOID_ARGS)
 int
 Shield_off(VOID_ARGS)
 {
-    context.takeoff.mask &= ~W_ARMS;
+    context.takeoff.mask &= ~W_SECONDARY_HAND; //~W_ARMS
 
     /* no shield currently requires special handling when taken off, but we
        keep this uncommented in case somebody adds a new one which does */
@@ -893,10 +893,14 @@ Amulet_on()
     /* make sure amulet isn't wielded; can't use remove_worn_item()
        here because it has already been set worn in amulet slot */
     if (uamul == uwep)
-        setuwep((struct obj *) 0);
-    else if (uamul == uswapwep)
-        setuswapwep((struct obj *) 0);
-    else if (uamul == uquiver)
+        setuwep((struct obj *) 0, W_WEP);
+	else if (uamul == uarms)
+		setuwep((struct obj*) 0, W_WEP2);
+	else if (uamul == uswapwep)
+        setuswapwep((struct obj *) 0, W_SWAPWEP);
+	else if (uamul == uswapwep2)
+		setuswapwep((struct obj*) 0, W_SWAPWEP2);
+	else if (uamul == uquiver)
         setuqwep((struct obj *) 0);
 
     switch (uamul->otyp) {
@@ -1077,10 +1081,14 @@ register struct obj *obj;
     /* make sure ring isn't wielded; can't use remove_worn_item()
        here because it has already been set worn in a ring slot */
     if (obj == uwep)
-        setuwep((struct obj *) 0);
-    else if (obj == uswapwep)
-        setuswapwep((struct obj *) 0);
-    else if (obj == uquiver)
+        setuwep((struct obj *) 0, W_WEP);
+	else if (obj == uarms)
+		setuwep((struct obj*) 0, W_WEP2);
+	else if (obj == uswapwep)
+        setuswapwep((struct obj *) 0, W_SWAPWEP);
+	else if (obj == uswapwep2)
+		setuswapwep((struct obj*) 0, W_SWAPWEP2);
+	else if (obj == uquiver)
         setuqwep((struct obj *) 0);
 
     /* only mask out W_RING when we don't have both
@@ -2103,8 +2111,13 @@ boolean noisy;
     } else if (is_shield(otmp)) {
         if (uarms) {
             if (noisy)
-                already_wearing(an(c_shield));
-            err++;
+			{
+				if ((uarms->owornmask & W_ARMS))
+					already_wearing(an(c_shield));
+				else
+					You("are already holding something else in your left hand.");
+			}
+			err++;
         } else if (uwep && bimanual(uwep)) {
             if (noisy)
                 You("cannot wear a shield while wielding a two-handed %s.",
@@ -2256,7 +2269,8 @@ struct obj *obj;
         already_wearing(c_that_);
         return 0;
     }
-    armor = (obj->oclass == ARMOR_CLASS);
+
+	armor = (obj->oclass == ARMOR_CLASS);
     ring = (obj->oclass == RING_CLASS || obj->otyp == MEAT_RING);
     eyewear = (obj->otyp == BLINDFOLD || obj->otyp == TOWEL);
     /* checks which are performed prior to actually touching the item */
@@ -2650,7 +2664,7 @@ glibr()
              otense(otmp, "slip"), which, hand);
         xfl++;
         wastwoweap = TRUE;
-        setuswapwep((struct obj *) 0); /* clears u.twoweap */
+        setuswapwep((struct obj *) 0, W_SWAPWEP); /* clears u.twoweap */
         if (canletgo(otmp, ""))
             dropx(otmp);
     }
@@ -2685,7 +2699,7 @@ glibr()
               otense(otmp, "slip"), which, hand);
         /* xfl++; */
         otmp->quan = savequan;
-        setuwep((struct obj *) 0);
+        setuwep((struct obj *) 0, W_WEP);
         if (canletgo(otmp, ""))
             dropx(otmp);
     }
@@ -2907,17 +2921,35 @@ do_takeoff()
     struct takeoff_info *doff = &context.takeoff;
 
     context.takeoff.mask |= I_SPECIAL; /* set flag for cancel_doff() */
-    if (doff->what == W_WEP) {
+    if (doff->what == W_WEP)
+	{
         if (!cursed(uwep)) {
-            setuwep((struct obj *) 0);
+            setuwep((struct obj *) 0, W_WEP);
             You("are empty %s.", body_part(HANDED));
-            u.twoweap = FALSE;
+            //u.twoweap = FALSE;
         }
-    } else if (doff->what == W_SWAPWEP) {
-        setuswapwep((struct obj *) 0);
+    }
+	else if (doff->what == W_WEP2)
+	{
+		if (!cursed(uarms)) {
+			setuwep((struct obj*) 0, W_WEP2);
+			You("are empty %s.", body_part(HANDED));
+			//u.twoweap = FALSE;
+		}
+	}
+	else if (doff->what == W_SWAPWEP)
+	{
+        setuswapwep((struct obj *) 0, W_SWAPWEP);
         You("no longer have a second weapon readied.");
-        u.twoweap = FALSE;
-    } else if (doff->what == W_QUIVER) {
+        //u.twoweap = FALSE;
+    }
+	else if (doff->what == W_SWAPWEP2)
+	{
+		setuswapwep((struct obj*) 0, W_SWAPWEP2);
+		You("no longer have a second weapon readied.");
+		//u.twoweap = FALSE;
+	}
+	else if (doff->what == W_QUIVER) {
         setuqwep((struct obj *) 0);
         You("no longer have ammunition readied.");
     } else if (doff->what == WORN_ARMOR) {

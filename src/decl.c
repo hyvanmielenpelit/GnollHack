@@ -151,7 +151,8 @@ NEARDATA struct obj
     *invent = (struct obj *) 0,
     *uwep = (struct obj *) 0, *uarm = (struct obj *) 0,
     *uswapwep = (struct obj *) 0,
-    *uquiver = (struct obj *) 0,       /* quiver */
+	*uswapwep2 = (struct obj*) 0,
+	*uquiver = (struct obj *) 0,       /* quiver */
     *uarmu = (struct obj *) 0,     /* under-wear, so to speak */
     *uarmo = (struct obj *) 0,     /* over-wear, so to speak */
 	*uarmb = (struct obj*) 0,     /* bracers */

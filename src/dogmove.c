@@ -57,7 +57,7 @@ struct monst *mon;
         switch (obj->otyp) {
         case DWARVISH_MATTOCK:
             /* reject mattock if couldn't wield it */
-            if (which_armor(mon, W_ARMS))
+            if (which_armor(mon, W_SECONDARY_HAND))
                 break;
             /* keep mattock in preference to pick unless pick is already
                wielded or is an artifact and mattock isn't */

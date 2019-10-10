@@ -1602,7 +1602,7 @@ domove_core()
             if (obj->quan > 1L)
                 obj = splitobj(obj, 1L);
             else
-                setuwep((struct obj *)0);
+                setuwep((struct obj *)0, W_WEP);
             freeinv(obj);
         }
         hit_bars(&obj, u.ux, u.uy, x, y, TRUE, TRUE);

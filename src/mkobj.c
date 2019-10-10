@@ -2740,7 +2740,7 @@ struct obj *obj;
 {
 #if defined(BETA) || defined(DEBUG)
     static unsigned long wearbits[] = {
-        W_ARM,    W_ARMC,   W_ARMH,    W_ARMS, W_ARMG,  W_ARMF,  W_ARMU,
+        W_ARM,    W_ARMC,   W_ARMH,    W_SECONDARY_HAND, W_ARMG,  W_ARMF,  W_ARMU, //W_ARMS
         W_WEP,    W_QUIVER, W_SWAPWEP, W_AMUL, W_RINGL, W_RINGR, W_BLINDFOLD,
         W_SADDLE, W_BALL,   W_CHAIN,   0
         /* [W_ART,W_ARTI are property bits for items which aren't worn] */

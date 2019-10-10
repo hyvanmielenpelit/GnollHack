@@ -1753,17 +1753,35 @@ int id;
             new_wornmask = wearslot(otmp) & old_wornmask;
             remove_worn_item(obj, TRUE);
             /* if the new form can be worn in the same slot, make it so */
-            if ((new_wornmask & W_WEP) != 0L) {
+            if ((new_wornmask & W_WEP) != 0L)
+			{
                 if (was_twohanded || !bimanual(otmp) || !uarms)
-                    setuwep(otmp);
+                    setuwep(otmp, W_WEP);
                 if (was_twoweap && uwep && !bimanual(uwep))
                     u.twoweap = TRUE;
-            } else if ((new_wornmask & W_SWAPWEP) != 0L) {
+            }
+			else if ((new_wornmask & W_WEP2) != 0L)
+			{
+				if (was_twohanded || !bimanual(otmp) || !uwep)
+					setuwep(otmp, W_WEP2);
+				if (was_twoweap && uarms && !bimanual(uwep))
+					u.twoweap = TRUE;
+			}
+			else if ((new_wornmask & W_SWAPWEP) != 0L)
+			{
                 if (was_twohanded || !bimanual(otmp))
-                    setuswapwep(otmp);
+                    setuswapwep(otmp, W_SWAPWEP);
                 if (was_twoweap && uswapwep)
                     u.twoweap = TRUE;
-            } else if ((new_wornmask & W_QUIVER) != 0L) {
+            }
+			else if ((new_wornmask & W_SWAPWEP2) != 0L)
+			{
+				if (was_twohanded || !bimanual(otmp))
+					setuswapwep(otmp, W_SWAPWEP2);
+				if (was_twoweap && uswapwep2)
+					u.twoweap = TRUE;
+			}
+			else if ((new_wornmask & W_QUIVER) != 0L) {
                 setuqwep(otmp);
             } else if (new_wornmask) {
                 setworn(otmp, new_wornmask);

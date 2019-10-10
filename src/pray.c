@@ -654,7 +654,7 @@ aligntyp resp_god;
         /* disintegrate shield and body armor before disintegrating
          * the impudent mortal, like black dragon breath -3.
          */
-        if (uarms && !(EReflecting & W_ARMS)
+        if (uarms && uarms->oclass == ARMOR_CLASS && uarms->owornmask & W_ARMS && !(EReflecting & W_ARMS)
             && !(EDisint_resistance & W_ARMS))
             (void) destroy_arm(uarms);
         if (uarmc && !(EReflecting & W_ARMC)

@@ -2458,7 +2458,7 @@ int final;
     /* two-weaponing implies hands (can't be polymorphed) and
        a weapon or wep-tool (not other odd stuff) in each hand */
     } else if (u.twoweap) {
-        you_are("wielding two weapons at once", "");
+        you_are("engaged in two-weapon fighting", "");
     /* report most weapons by their skill class (so a katana will be
        described as a long sword, for instance; mattock and hook are
        exceptions), or wielded non-weapon item by its object class */

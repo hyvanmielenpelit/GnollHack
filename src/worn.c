@@ -25,8 +25,10 @@ const struct worn {
              { W_RINGL, &uleft },
              { W_RINGR, &uright },
              { W_WEP, &uwep },
-             { W_SWAPWEP, &uswapwep },
-             { W_QUIVER, &uquiver },
+			 { W_WEP2, &uarms },
+			 { W_SWAPWEP, &uswapwep },
+			 { W_SWAPWEP2, &uswapwep2 },
+			 { W_QUIVER, &uquiver },
              { W_AMUL, &uamul },
 			 { W_MISC, &umisc },
 			 { W_MISC2, &umisc2 },
@@ -78,8 +80,6 @@ long mask;
 
 				/* If old object remove wornmask */
                 if (oobj) {
-                    if (u.twoweap && (oobj->owornmask & (W_WEP | W_SWAPWEP)))
-                        u.twoweap = 0;
                     oobj->owornmask &= ~wp->w_mask;
 
 					/* leave as "x = x <op> y", here and below, for broken
@@ -245,8 +245,6 @@ register struct obj *obj;
 	int oldac = u.uac;
 	int oldmc = u.umc;
 
-    if (obj == uwep || obj == uswapwep)
-        u.twoweap = 0;
 	for (wp = worn; wp->w_mask; wp++)
 	{
 		if (obj == *(wp->w_obj)) {
@@ -382,7 +380,9 @@ struct obj *obj;
         res = W_WEP | W_SWAPWEP;
         if (objects[otyp].oc_merge)
             res |= W_QUIVER;
-        break;
+		if (u.twoweap)
+			res |= W_WEP2 | W_SWAPWEP2;
+		break;
     case TOOL_CLASS:
         if (otyp == BLINDFOLD || otyp == TOWEL)
             res = W_BLINDFOLD; /* WORN_BLINDF */
@@ -861,8 +861,12 @@ long flag;
 			return uarmo;
 		case W_ARMH:
             return uarmh;
-        case W_ARMS:
-            return uarms;
+		case W_SECONDARY_HAND:
+			return uarms;
+		case W_WEP2:
+			return (uarms && (uarms->owornmask & W_WEP2) ? uarms : (struct obj*)0);
+		case W_ARMS:
+			return (uarms && (uarms->owornmask & W_ARMS) ? uarms : (struct obj*)0);
 		case W_ARMB:
 			return uarmb;
 		case W_ARMG:

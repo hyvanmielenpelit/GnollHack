@@ -1246,8 +1246,12 @@ unsigned doname_flags;
     }
 
     if ((obj->owornmask & W_WEP) && !mrg_to_wielded) {
-        if (obj->quan != 1L) {
-            Strcat(bp, " (wielded)");
+        if (obj->quan != 1L)
+		{
+			if(u.twoweap)
+				Strcat(bp, " (wielded in right hand)");
+			else
+	            Strcat(bp, " (wielded)");
         } else {
             const char *hand_s = body_part(HAND);
 
@@ -1255,8 +1259,8 @@ unsigned doname_flags;
                 hand_s = makeplural(hand_s);
             /* note: Sting's glow message, if added, will insert text
                in front of "(weapon in hand)"'s closing paren */
-            Sprintf(eos(bp), " (%sweapon in %s)",
-                    (obj->otyp == AKLYS) ? "tethered " : "", hand_s);
+            Sprintf(eos(bp), " (%sweapon in %s%s)",
+                    (obj->otyp == AKLYS) ? "tethered " : "", u.twoweap && !bimanual(obj) ? "right " : "", hand_s);
 
             if (warn_obj_cnt && obj == uwep && (EWarn_of_mon & W_WEP) != 0L) {
                 if (!Blind) /* we know bp[] ends with ')'; overwrite that */
@@ -1266,13 +1270,52 @@ unsigned doname_flags;
             }
         }
     }
+
+	if ((obj->owornmask & W_WEP2) && !mrg_to_wielded) {
+		if (obj->quan != 1L)
+		{
+			if (u.twoweap)
+				Strcat(bp, " (wielded in left hand)");
+			else
+				Strcat(bp, " (also wielded)");
+		}
+		else {
+			const char* hand_s = body_part(HAND);
+
+			if (bimanual(obj))
+				hand_s = makeplural(hand_s);
+			/* note: Sting's glow message, if added, will insert text
+			   in front of "(weapon in hand)"'s closing paren */
+			Sprintf(eos(bp), " (%s%sweapon in %s%s)", !u.twoweap ? "unused " : "",
+				(obj->otyp == AKLYS) ? "tethered " : "", !bimanual(obj) ? (u.twoweap ? "left " : "another ") : "", hand_s);
+
+			if (warn_obj_cnt && obj == uwep && (EWarn_of_mon & W_WEP2) != 0L) {
+				if (!Blind) /* we know bp[] ends with ')'; overwrite that */
+					Sprintf(eos(bp) - 1, ", %s %s)",
+						glow_verb(warn_obj_cnt, TRUE),
+						glow_color(obj->oartifact));
+			}
+		}
+	}
+
     if (obj->owornmask & W_SWAPWEP) {
         if (u.twoweap)
-            Sprintf(eos(bp), " (wielded in other %s)", body_part(HAND));
-        else
-            Strcat(bp, " (alternate weapon; not wielded)");
+			Strcat(bp, " (readied as alternate right hand weapon)");
+		else
+            Strcat(bp, " (readied as alternate weapon)");
     }
-    if (obj->owornmask & W_QUIVER) {
+	if (obj->owornmask & W_SWAPWEP2) {
+		if (is_shield(obj))
+			Strcat(bp, " (readied)");
+		else
+		{
+			if (u.twoweap)
+				Strcat(bp, " (readied as alternate left hand weapon)");
+			else
+				Strcat(bp, " (readied as another alternate weapon)");
+		}
+	}
+	if (obj->owornmask & W_QUIVER) {
         switch (obj->oclass) {
         case WEAPON_CLASS:
             if (is_ammo(obj)) {
