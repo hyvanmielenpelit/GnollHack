@@ -1088,7 +1088,9 @@ unsigned doname_flags;
 		}
 		break;
 	case ARMOR_CLASS:
-        if (obj->owornmask & W_ARMOR)
+		if (u.twoweap && (obj->owornmask & W_SECONDARY_HAND) && (objects[obj->otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED))
+			Strcat(bp, " (being worn; weapon in left hand)");
+        else if (obj->owornmask & W_ARMOR)
             Strcat(bp, (obj == uskin) ? " (embedded in your skin)"
                        /* in case of perm_invent update while Wear/Takeoff
                           is in progress; check doffing() before donning()

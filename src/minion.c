@@ -59,7 +59,7 @@ struct monst *mon;
     if (mon) {
         ptr = mon->data;
 
-        if (uwep && uwep->oartifact == ART_DEMONBANE && is_demon(ptr)) {
+        if (((uwep && uwep->oartifact == ART_DEMONBANE) || (uarms && uarms->oartifact == ART_DEMONBANE)) && is_demon(ptr)) {
             if (canseemon(mon))
                 pline("%s looks puzzled for a moment.", Monnam(mon));
             return 0;
@@ -519,7 +519,8 @@ register struct monst *mtmp;
 {
     long cash, demand, offer;
 
-    if (uwep && (uwep->oartifact == ART_EXCALIBUR || uwep->oartifact == ART_DEMONBANE)) {
+    if ((uwep && (uwep->oartifact == ART_EXCALIBUR || uwep->oartifact == ART_DEMONBANE))
+		|| (uarms && (uarms->oartifact == ART_EXCALIBUR || uarms->oartifact == ART_DEMONBANE))) {
         pline("%s looks very angry.", Amonnam(mtmp));
         mtmp->mpeaceful = mtmp->mtame = 0;
         set_malign(mtmp);
@@ -564,7 +565,8 @@ register struct monst *mtmp;
 
 		pline("%s speaks.", Amonnam(mtmp));
 
-		if ((u.ualign.type == A_CHAOTIC && (u.ualign.record >= 14 || !(2-rnl(3)))) || (u.ualign.type == A_NEUTRAL && !rnl(3)) || (uwep && uwep->oartifact == ART_HOWLING_FLAIL))
+		if ((u.ualign.type == A_CHAOTIC && (u.ualign.record >= 14 || !(2-rnl(3)))) || (u.ualign.type == A_NEUTRAL && !rnl(3))
+			|| ((uwep && uwep->oartifact == ART_HOWLING_FLAIL) || (uarms && uarms->oartifact == ART_HOWLING_FLAIL)))
 		{
 			verbalize("You have pleased me, my minion. I will grant one wish!");
 			/* give a wish and discard the monster (mtmp set to null) */

@@ -1555,10 +1555,6 @@ register struct obj *otmp;
 	{
 		if (otmp == uwep && bimanual(uwep))
 			reset_remarm();
-		/* rules at top of wield.c state that twoweapon cannot be done
-		   with cursed alternate weapon */
-		if (otmp == uswapwep && u.twoweap)
-			drop_uswapwep();
 		/* some cursed items need immediate updating */
 		if (carried(otmp) && confers_luck(otmp)) {
 			set_moreluck();
@@ -2853,17 +2849,25 @@ struct obj *obj;
             break;
         case W_WEP:
             if (obj != uwep)
-                what = "primary weapon";
+                what = u.twoweap ? "right hand weapon" : "primary weapon";
             break;
-        case W_QUIVER:
+		case W_WEP2:
+			if (obj != uarms)
+				what = u.twoweap ? "left hand weapon" : "secondary weapon";
+			break;
+		case W_QUIVER:
             if (obj != uquiver)
                 what = "quiver";
             break;
         case W_SWAPWEP:
             if (obj != uswapwep)
-                what = u.twoweap ? "secondary weapon" : "alternate weapon";
+                what = u.twoweap ? "right hand alternate weapon" : "alternate weapon";
             break;
-        case W_AMUL:
+		case W_SWAPWEP2:
+			if (obj != uswapwep2)
+				what = u.twoweap ? "left hand alternate weapon" : "another alternate weapon";
+			break;
+		case W_AMUL:
             if (obj != uamul)
                 what = "amulet";
             break;

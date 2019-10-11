@@ -1581,7 +1581,7 @@ const char* headertext;
                  && (otmp->owornmask & W_WEP))
 #endif
              || (!strcmp(word, "ready")    /* exclude when wielded... */
-                 && ((otmp == uwep || (otmp == uswapwep && u.twoweap))
+                 && ((otmp == uwep || (otmp == uarms && u.twoweap))
                      && otmp->quan == 1L)) /* ...unless more than one */
              || ((!strcmp(word, "dip") || !strcmp(word, "grease"))
                  && inaccessible_equipment(otmp, (const char *) 0, FALSE))
@@ -2013,7 +2013,7 @@ int show_weights;
     int itemcount;
     int oletct, iletct, unpaid, oc_of_sym;
     char sym, *ip, olets[MAXOCLASSES + 5], ilets[MAXOCLASSES + 10];
-    char extra_removeables[3 + 1]; /* uwep,uswapwep,uquiver */
+    char extra_removeables[5 + 1]; /* uwep,uswapwep,uquiver */
     char buf[BUFSZ] = DUMMY, qbuf[QBUFSZ];
 
     if (!invent) {
@@ -2087,9 +2087,13 @@ int show_weights;
            [any duplicate entries in extra_removeables[] won't matter] */
         if (uwep)
             (void) strkitten(extra_removeables, uwep->oclass);
-        if (uswapwep)
+		if (uarms)
+			(void)strkitten(extra_removeables, uarms->oclass);
+		if (uswapwep)
             (void) strkitten(extra_removeables, uswapwep->oclass);
-        if (uquiver)
+		if (uswapwep2)
+			(void)strkitten(extra_removeables, uswapwep2->oclass);
+		if (uquiver)
             (void) strkitten(extra_removeables, uquiver->oclass);
     }
 
@@ -2108,7 +2112,7 @@ int show_weights;
             } else if (oc_of_sym == ARMOR_CLASS && !wearing_armor()) {
                 noarmor(FALSE);
                 return 0;
-            } else if (oc_of_sym == WEAPON_CLASS && !uwep && !uswapwep
+            } else if (oc_of_sym == WEAPON_CLASS && !uwep && !uarms && !uswapwep && !uswapwep2
                        && !uquiver) {
                 You("are not wielding anything.");
                 return 0;
@@ -4004,12 +4008,16 @@ doprgold()
 int
 doprwep()
 {
-    if (!uwep) {
+    if ((!u.twoweap && !uwep) || (u.twoweap && !uwep && !uarms))
+	{
         You("are empty %s.", body_part(HANDED));
-    } else {
-        prinv((char *) 0, uwep, 0L);
-        if (u.twoweap)
-            prinv((char *) 0, uswapwep, 0L);
+    }
+	else
+	{
+		if(uwep)
+	        prinv((char *) 0, uwep, 0L);
+        if (u.twoweap && uarms)
+            prinv((char *) 0, uarms, 0L);
     }
     return 0;
 }

@@ -315,7 +315,7 @@ boolean talk;
 void
 toggle_blindness()
 {
-    boolean Stinging = (uwep && (EWarn_of_mon & W_WEP) != 0L);
+    boolean Stinging = (uwep && (EWarn_of_mon & W_WEP) != 0L) || (uarms && (EWarn_of_mon & W_WEP2) != 0L);
 
     /* blindness has just been toggled */
     context.botl = TRUE; /* status conditions need update */
@@ -337,8 +337,11 @@ toggle_blindness()
      * "stops" message matches the most recent "Sting is ..." one.
      */
     if (Stinging)
-        Sting_effects(-1);
-    /* update dknown flag for inventory picked up while blind */
+	{
+        Sting_effects(uwep, -1);
+		Sting_effects(uarms, -1);
+	}
+	/* update dknown flag for inventory picked up while blind */
     if (!Blind)
         learn_unseen_invent();
 }

@@ -241,9 +241,13 @@ boolean unchain_ball; /* whether to unpunish or just unwield */
     } else if (obj->owornmask & W_WEAPON) {
         if (obj == uwep)
             uwepgone();
-        if (obj == uswapwep)
+		if (obj == uarms)
+			uwep2gone();
+		if (obj == uswapwep)
             uswapwepgone();
-        if (obj == uquiver)
+		if (obj == uswapwep2)
+			uswapwep2gone();
+		if (obj == uquiver)
             uqwepgone();
     }
 
@@ -359,7 +363,7 @@ gotobj:
            (ignores loadstones; the !can_carry() check will catch those) */
         if (otmp == uball)
             ostuck = TRUE; /* effectively worn; curse is implicit */
-        else if (otmp == uquiver || (otmp == uswapwep && !u.twoweap))
+        else if (otmp == uquiver || otmp == uswapwep || otmp == uswapwep2)
             ostuck = FALSE; /* not really worn; curse doesn't matter */
         else
             ostuck = ((otmp->cursed && otmp->owornmask)
@@ -592,12 +596,15 @@ struct monst *mtmp;
             remove_worn_item(uarm, FALSE);
         if ((otmp == uarmg || ((otmp == uright || otmp == uleft) && uarmg))
             && uwep) {
-            /* gloves are about to be unworn; unwield weapon(s) first */
-            if (u.twoweap)    /* remove_worn_item(uswapwep) indirectly */
-                remove_worn_item(uswapwep, FALSE); /* clears u.twoweap */
+            /* gloves are about to be unworn; unwield weapon first */
             remove_worn_item(uwep, FALSE);
         }
-        if ((otmp == uright || otmp == uleft) && uarmg)
+		if ((otmp == uarmg || ((otmp == uright || otmp == uleft) && uarmg))
+			&& uarms) {
+			/* gloves are about to be unworn; unwield shields & left hand weapon */
+			remove_worn_item(uarms, FALSE);
+		}
+		if ((otmp == uright || otmp == uleft) && uarmg)
             /* calls Gloves_off() to handle wielded cockatrice corpse */
             remove_worn_item(uarmg, FALSE);
 

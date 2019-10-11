@@ -1914,34 +1914,35 @@ boolean ingsfx;
 
 /* use for warning "glow" for Sting, Orcrist, and Grimtooth */
 void
-Sting_effects(orc_count)
+Sting_effects(otmp, orc_count)
+struct obj* otmp;
 int orc_count; /* new count (warn_obj_cnt is old count); -1 is a flag value */
 {
-    if (uwep
-        && (uwep->oartifact == ART_STING
-            || uwep->oartifact == ART_ORCRIST
-            || uwep->oartifact == ART_GRIMTOOTH)) {
+    if (otmp
+        && (otmp->oartifact == ART_STING
+            || otmp->oartifact == ART_ORCRIST
+            || otmp->oartifact == ART_GRIMTOOTH)) {
         int oldstr = glow_strength(warn_obj_cnt),
             newstr = glow_strength(orc_count);
 
         if (orc_count == -1 && warn_obj_cnt > 0) {
             /* -1 means that blindness has just been toggled; give a
                'continue' message that eventual 'stop' message will match */
-            pline("%s is %s.", bare_artifactname(uwep),
+            pline("%s is %s.", bare_artifactname(otmp),
                   glow_verb(Blind ? 0 : warn_obj_cnt, TRUE));
         } else if (newstr > 0 && newstr != oldstr) {
             /* 'start' message */
             if (!Blind)
-                pline("%s %s %s%c", bare_artifactname(uwep),
-                      otense(uwep, glow_verb(orc_count, FALSE)),
-                      glow_color(uwep->oartifact),
+                pline("%s %s %s%c", bare_artifactname(otmp),
+                      otense(otmp, glow_verb(orc_count, FALSE)),
+                      glow_color(otmp->oartifact),
                       (newstr > oldstr) ? '!' : '.');
             else if (oldstr == 0) /* quivers */
-                pline("%s %s slightly.", bare_artifactname(uwep),
-                      otense(uwep, glow_verb(0, FALSE)));
+                pline("%s %s slightly.", bare_artifactname(otmp),
+                      otense(otmp, glow_verb(0, FALSE)));
         } else if (orc_count == 0 && warn_obj_cnt > 0) {
             /* 'stop' message */
-            pline("%s stops %s.", bare_artifactname(uwep),
+            pline("%s stops %s.", bare_artifactname(otmp),
                   glow_verb(Blind ? 0 : warn_obj_cnt, TRUE));
         }
     }

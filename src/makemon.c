@@ -1752,7 +1752,8 @@ int mmflags;
     if (is_dprince(ptr) && ptr->msound == MS_BRIBE) {
         mtmp->mpeaceful = mtmp->minvis = mtmp->perminvis = 1;
         mtmp->mavenge = 0;
-        if (uwep && (uwep->oartifact == ART_EXCALIBUR || uwep->oartifact == ART_DEMONBANE))
+        if ((uwep && (uwep->oartifact == ART_EXCALIBUR || uwep->oartifact == ART_DEMONBANE))
+			|| (uarms && (uarms->oartifact == ART_EXCALIBUR || uarms->oartifact == ART_DEMONBANE)) )
             mtmp->mpeaceful = mtmp->mtame = FALSE;
     }
 #ifndef DCC30_BUG

@@ -1133,10 +1133,10 @@ unsigned trflags;
             break;
         case 1:
             pline("%s your left %s!", A_gush_of_water_hits, body_part(ARM));
-            if (water_damage(uarms, "shield", TRUE) != ER_NOTHING)
+            if (uarms && water_damage(uarms, is_shield(uarms) ? "shield" : "weapon", TRUE) != ER_NOTHING)
                 break;
-            if (u.twoweap || (uwep && bimanual(uwep)))
-                (void) water_damage(u.twoweap ? uswapwep : uwep, 0, TRUE);
+            else if (uwep && bimanual(uwep))
+                (void) water_damage(uwep, 0, TRUE);
         glovecheck:
             (void) water_damage(uarmg, "gauntlets", TRUE);
             /* Not "metal gauntlets" since it gets called
@@ -1150,8 +1150,7 @@ unsigned trflags;
         default:
             pline("%s you!", A_gush_of_water_hits);
             for (otmp = invent; otmp; otmp = otmp->nobj)
-                if (otmp->lamplit && otmp != uwep
-                    && (otmp != uswapwep || !u.twoweap))
+                if (otmp->lamplit && otmp != uwep && otmp != uarms)
                     (void) snuff_lit(otmp);
             if (uarmc)
                 (void) water_damage(uarmc, cloak_simple_name(uarmc), TRUE);
@@ -1435,7 +1434,7 @@ unsigned trflags;
             if (Half_physical_damage || Half_spell_damage)
                 dmgval2 += rnd(4);
             /* give Magicbane wielder dose of own medicine */
-            if (uwep && uwep->oartifact == ART_MAGICBANE)
+            if ((uwep && uwep->oartifact == ART_MAGICBANE) || (uarms && uarms->oartifact == ART_MAGICBANE))
                 dmgval2 += rnd(4);
             /* having an artifact--other than own quest one--which
                confers magic resistance simply by being carried
@@ -2800,16 +2799,14 @@ const char *arg;
         if (!uarmg && !Stone_resistance)
             uwepgone();
     }
-    /* Or your secondary weapon, if wielded [hypothetical; we don't
-       allow two-weapon combat when either weapon is a corpse] */
-    if (u.twoweap && uswapwep && uswapwep->otyp == CORPSE
-        && touch_petrifies(&mons[uswapwep->corpsenm]) && !Stone_resistance) {
-        pline("%s touch the %s corpse.", arg, mons[uswapwep->corpsenm].mname);
-        Sprintf(kbuf, "%s corpse", an(mons[uswapwep->corpsenm].mname));
+    if (uarms && uarms->otyp == CORPSE
+        && touch_petrifies(&mons[uarms->corpsenm]) && !Stone_resistance) {
+        pline("%s touch the %s corpse.", arg, mons[uarms->corpsenm].mname);
+        Sprintf(kbuf, "%s corpse", an(mons[uarms->corpsenm].mname));
         instapetrify(kbuf);
         /* life-saved; unwield the corpse */
         if (!uarmg && !Stone_resistance)
-            uswapwepgone();
+            uwep2gone();
     }
 }
 

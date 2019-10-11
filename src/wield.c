@@ -110,11 +110,10 @@ long mask;
         if (!Blind)
             pline("%s shining.", Tobjnam(olduwep, "stop"));
     }
-    if (uwep == obj
-        && ((uwep && uwep->oartifact == ART_OGRESMASHER)
-            || (olduwep && olduwep->oartifact == ART_OGRESMASHER)))
-        context.botl = 1;
-    /* Note: Explicitly wielding a pick-axe will not give a "bashing"
+	
+	context.botl = 1;
+	
+	/* Note: Explicitly wielding a pick-axe will not give a "bashing"
      * message.  Wielding one via 'a'pplying it will.
      * 3.2.2:  Wielding arbitrary objects will give bashing message too.
      */
@@ -400,8 +399,12 @@ dowield()
 		/* Handle no object, or object in other slot */
 		if (wep == &zeroobj)
 			wep = (struct obj*) 0;
-		else if (wep == uswapwep || wep == uswapwep2)
+		else if (bimanual(wep) && (wep == uswapwep || wep == uswapwep2))
 			return doswapweapon();
+		else if (wep == uswapwep)
+			return dosingleswapweapon(W_WEP);
+		else if (wep == uswapwep2)
+			return dosingleswapweapon(W_WEP2);
 		else if (wep == uquiver)
 			setuqwep((struct obj*) 0);
 		else if (wep->owornmask & (W_ARMOR | W_ACCESSORY | W_SADDLE)) {
@@ -446,8 +449,12 @@ dowield()
 		/* Handle no object, or object in other slot */
 		if (wep == &zeroobj)
 			wep = (struct obj *) 0;
-		else if (wep == uswapwep)
+		else if (bimanual(wep) && (wep == uswapwep || wep == uswapwep2))
 			return doswapweapon();
+		else if (wep == uswapwep)
+			return dosingleswapweapon(W_WEP);
+		else if (wep == uswapwep2)
+			return dosingleswapweapon(W_WEP2);
 		else if (wep == uquiver)
 			setuqwep((struct obj *) 0);
 		else if (wep->owornmask & (W_ARMOR | W_ACCESSORY | W_SADDLE)) {
@@ -470,6 +477,93 @@ dowield()
 
     return result;
 }
+
+int
+dosingleswapweapon(mask)
+long mask;
+{
+	register struct obj *oldwep, * oldswap;
+	register struct obj *wep = (struct obj*)0, *altwep = (struct obj*)0, *swapwep = (struct obj*)0, *altswapwep = (struct obj*)0;
+	int result = 0;
+
+	if (mask == W_WEP)
+	{
+		wep = uwep;
+		altwep = uarms;
+		swapwep = uswapwep;
+		altswapwep = uswapwep2;
+	}
+	else
+	{
+		wep = uarms;
+		altwep = uwep;
+		swapwep = uswapwep2;
+		altswapwep = uswapwep;
+	}
+
+	/* May we attempt this? */
+	multi = 0;
+	if (cantwield(youmonst.data)) {
+		pline("Don't be ridiculous!");
+		return 0;
+	}
+
+	if (wep && wep->cursed && swapwep)
+	{
+		weldmsg(wep);
+		return 0;
+	}
+
+	if (wep && altwep && swapwep && bimanual(swapwep))
+	{
+		You("cannot swap to a two-handed weapon while holding something in the other hand.");
+		return 0;
+	}
+
+	/* Unwield your current secondary weapon */
+	oldwep = wep;
+	oldswap = swapwep;
+	if(mask == W_WEP)
+	{
+		setuswapwep((struct obj*)0, W_SWAPWEP);
+		result = ready_weapon(oldswap, W_WEP);
+		/* Set your new secondary weapon */
+		if (uwep == oldwep) {
+			/* Wield failed for some reason */
+			setuswapwep(oldswap, W_SWAPWEP);
+		}
+		else
+		{
+			setuswapwep(oldwep, W_SWAPWEP);
+			if (uswapwep)
+				prinv((char*)0, uswapwep, 0L);
+			else
+				You("have no right hand alternate weapon readied.");
+		}
+	}
+	else
+	{
+		setuswapwep((struct obj*)0, W_SWAPWEP2);
+		result = ready_weapon(oldswap, W_WEP2);
+		/* Set your new secondary weapon */
+		if (uarms == oldwep) {
+			/* Wield failed for some reason */
+			setuswapwep(oldswap, W_SWAPWEP2);
+		}
+		else {
+			setuswapwep(oldwep, W_SWAPWEP2);
+			if (uswapwep2)
+				prinv((char*)0, uswapwep2, 0L);
+			else
+				You("have no left hand alternate weapon readied.");
+		}
+	}
+
+	//Do not take a turn
+	return 0; // result;
+
+}
+
 
 int
 doswapweapon()
@@ -523,7 +617,7 @@ doswapweapon()
 			if (uswapwep)
 				prinv((char*)0, uswapwep, 0L);
 			else
-				You("have no right-hand alternate weapon readied.");
+				You("have no right hand alternate weapon readied.");
 		}
 		if (uarms == oldwep2) {
 			/* Wield failed for some reason */
@@ -534,7 +628,7 @@ doswapweapon()
 			if (uswapwep2)
 				prinv((char*)0, uswapwep2, 0L);
 			else
-				You("have no left-hand alternate weapon readied.");
+				You("have no left hand alternate weapon readied.");
 		}
 	}
 	else
@@ -567,28 +661,29 @@ doswapweapon()
 			if (uswapwep)
 				prinv((char *) 0, uswapwep, 0L);
 			else
-				You("have no right-hand alternate weapon readied.");
+				You("have no right hand alternate weapon readied.");
 		}
 
-		if (oldswap2)
+		if (oldswap2 && !(uwep && (bimanual(uwep) || bimanual(oldswap2))))
 		{
 			if (is_shield(oldswap2))
 				setworn(oldswap2, W_ARMS);
 			else if (erodeable_wep(oldswap2))
 				ready_weapon(oldswap2, W_WEP2);
+
+			if (uarms == oldwep2) {
+				/* Wield failed for some reason */
+				setuswapwep(oldswap2, W_SWAPWEP2);
+			}
+			else {
+				setuswapwep(oldwep2, W_SWAPWEP2);
+				if (uswapwep2)
+					prinv((char*)0, uswapwep2, 0L);
+				else
+					You("have no left hand alternate weapon readied.");
+			}
 		}
 
-		if (uarms == oldwep2) {
-			/* Wield failed for some reason */
-			setuswapwep(oldswap2, W_SWAPWEP2);
-		}
-		else {
-			setuswapwep(oldwep2, W_SWAPWEP2);
-			if (uswapwep2)
-				prinv((char*)0, uswapwep2, 0L);
-			else
-				You("have no left-hand alternate weapon readied.");
-		}
 
 		//if (u.twoweap && !can_twoweapon())
 		//	untwoweapon();
@@ -912,14 +1007,29 @@ const char *verb; /* "rub",&c */
 
     if (uquiver == obj)
         setuqwep((struct obj *) 0);
-    if (uswapwep == obj) {
-        (void) doswapweapon();
+	else if (bimanual(obj) && uswapwep == obj)
+	{
+		(void)doswapweapon();
+		/* doswapweapon might fail */
+		if (uswapwep == obj)
+			return FALSE;
+	}
+	else if (bimanual(obj) && uswapwep2 == obj)
+	{
+		(void)doswapweapon();
+		/* doswapweapon might fail */
+		if (uswapwep2 == obj)
+			return FALSE;
+	}
+	else if (uswapwep == obj)
+	{
+        (void) dosingleswapweapon(W_WEP);
         /* doswapweapon might fail */
         if (uswapwep == obj)
             return FALSE;
     }
 	else if (uswapwep2 == obj) {
-		(void)doswapweapon();
+		(void)dosingleswapweapon(W_WEP2);
 		/* doswapweapon might fail */
 		if (uswapwep2 == obj)
 			return FALSE;
@@ -947,9 +1057,12 @@ const char *verb; /* "rub",&c */
     return TRUE;
 }
 
+
+/* obsolete */
 int
 can_twoweapon()
 {
+#if 0
     struct obj *otmp;
 
 #define NOT_WEAPON(obj) (!is_weptool(obj) && obj->oclass != WEAPON_CLASS)
@@ -984,6 +1097,7 @@ can_twoweapon()
         drop_uswapwep();
     } else
         return TRUE;
+#endif
     return FALSE;
 }
 
@@ -1045,6 +1159,21 @@ uwepgone()
 }
 
 void
+uwep2gone()
+{
+	if (uarms) {
+		if ((artifact_light(uarms) || (objects[uarms->otyp].oc_flags2 & O2_SHINES_MAGICAL_LIGHT)) && uarms->lamplit) {
+			end_burn(uarms, FALSE);
+			if (!Blind)
+				pline("%s shining.", Tobjnam(uarms, "stop"));
+		}
+		setworn((struct obj*) 0, W_SECONDARY_HAND);
+		unweapon = TRUE;
+		update_inventory();
+	}
+}
+
+void
 uswapwepgone()
 {
     if (uswapwep) {
@@ -1052,6 +1181,16 @@ uswapwepgone()
         update_inventory();
     }
 }
+
+void
+uswapwep2gone()
+{
+	if (uswapwep2) {
+		setworn((struct obj*) 0, W_SWAPWEP2);
+		update_inventory();
+	}
+}
+
 
 void
 uqwepgone()

@@ -1701,7 +1701,7 @@ struct monst *mtmp;
             /* don't bother if it can't work (this doesn't
                prevent cursed weapons from being targetted) */
             && (canletgo(uwep, "")
-                || (u.twoweap && canletgo(uswapwep, "")))) {
+                || (u.twoweap && uarms && canletgo(uarms, "")))) {
             m.misc = obj;
             m.has_misc = MUSE_BULLWHIP;
         }
@@ -1915,8 +1915,8 @@ struct monst *mtmp;
             char the_weapon[BUFSZ];
 
             if (!obj || !canletgo(obj, "")
-                || (u.twoweap && canletgo(uswapwep, "") && rn2(2)))
-                obj = uswapwep;
+                || (u.twoweap && uarms && canletgo(uarms, "") && rn2(2)))
+                obj = uarms;
             if (!obj)
                 break; /* shouldn't happen after find_misc() */
 

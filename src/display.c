@@ -1254,8 +1254,9 @@ see_monsters()
      * Make Sting glow blue or stop glowing if required.
      */
     if (new_warn_obj_cnt != warn_obj_cnt) {
-        Sting_effects(new_warn_obj_cnt);
-        warn_obj_cnt = new_warn_obj_cnt;
+        Sting_effects(uwep, new_warn_obj_cnt);
+		Sting_effects(uarms, new_warn_obj_cnt);
+		warn_obj_cnt = new_warn_obj_cnt;
     }
 
     /* when mounted, hero's location gets caught by monster loop */

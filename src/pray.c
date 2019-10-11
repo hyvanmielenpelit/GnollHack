@@ -339,9 +339,12 @@ worst_cursed_item()
     /* if weapon wasn't handled above, do it now */
     } else if (welded(uwep)) { /* weapon */
         otmp = uwep;
-    /* active secondary weapon even though it isn't welded */
-    } else if (uswapwep && uswapwep->cursed && u.twoweap) {
-        otmp = uswapwep;
+	}
+	else if (welded(uarms)) { /* weapon */
+		otmp = uarms;
+		/* active secondary weapon even though it isn't welded */
+	} else if (uarms && uarms->cursed && u.twoweap) {
+        otmp = uarms;
     /* all worn items ought to be handled by now */
     } else {
         for (otmp = invent; otmp; otmp = otmp->nobj) {
@@ -818,14 +821,14 @@ gcrownu()
         break;
     case A_NEUTRAL:
         u.uevent.uhand_of_elbereth = 2;
-        in_hand = (uwep && uwep->oartifact == ART_VORPAL_BLADE);
+        in_hand = (uwep && uwep->oartifact == ART_VORPAL_BLADE) || (uarms && uarms->oartifact == ART_VORPAL_BLADE);
         already_exists =
             exist_artifact(LONG_SWORD, artiname(ART_VORPAL_BLADE));
         verbalize("Thou shalt be my Envoy of Balance!");
         break;
     case A_CHAOTIC:
         u.uevent.uhand_of_elbereth = 3;
-        in_hand = (uwep && uwep->oartifact == ART_STORMBRINGER);
+        in_hand = (uwep && uwep->oartifact == ART_STORMBRINGER) || (uarms && uarms->oartifact == ART_STORMBRINGER);
         already_exists =
             exist_artifact(RUNESWORD, artiname(ART_STORMBRINGER));
         verbalize("Thou art chosen to %s for My Glory!",
@@ -839,7 +842,9 @@ gcrownu()
     if (Role_if(PM_WIZARD)
         && (!uwep || (uwep->oartifact != ART_VORPAL_BLADE
                       && uwep->oartifact != ART_STORMBRINGER))
-        && !carrying(SPE_FINGER_OF_DEATH)) {
+		&& (!uarms || (uarms->oartifact != ART_VORPAL_BLADE
+			&& uarms->oartifact != ART_STORMBRINGER))
+		&& !carrying(SPE_FINGER_OF_DEATH)) {
         class_gift = SPE_FINGER_OF_DEATH;
     make_splbk:
         obj = mksobj(class_gift, TRUE, FALSE, FALSE);

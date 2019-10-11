@@ -3987,8 +3987,7 @@ register int fall;
 
         for (obj = invent; obj; obj = obj2) {
             obj2 = obj->nobj;
-            if ((obj->owornmask & ~(W_SWAPWEP | W_QUIVER)) != 0
-                || (obj == uswapwep && u.twoweap)
+            if ((obj->owornmask & ~(W_SWAPWEP | W_SWAPWEP2 | W_QUIVER)) != 0
                 || (obj->otyp == LEASH && obj->leashmon))
                 continue;
             if (obj == current_wand)

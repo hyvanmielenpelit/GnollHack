@@ -394,7 +394,7 @@ boolean
 can_track(ptr)
 register struct permonst *ptr;
 {
-    if (uwep && uwep->oartifact == ART_EXCALIBUR)
+    if ((uwep && uwep->oartifact == ART_EXCALIBUR) || (uarms && uarms->oartifact == ART_EXCALIBUR))
         return TRUE;
     else
         return (boolean) haseyes(ptr);

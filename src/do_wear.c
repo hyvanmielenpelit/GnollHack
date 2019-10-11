@@ -515,7 +515,7 @@ boolean voluntary; /* taking gloves off on purpose? */
 
     if (!obj || obj->otyp != CORPSE)
         return;
-    if (obj != uwep && (obj != uswapwep || !u.twoweap))
+    if (obj != uwep && obj != uarms)
         return;
 
     if (touch_petrifies(&mons[obj->corpsenm]) && !Stone_resistance) {
@@ -568,8 +568,8 @@ Gloves_off(VOID_ARGS)
     /* KMH -- ...or your secondary weapon when you're wielding it
        [This case can't actually happen; twoweapon mode won't
        engage if a corpse has been set up as the alternate weapon.] */
-    if (u.twoweap && uswapwep && uswapwep->otyp == CORPSE)
-        wielding_corpse(uswapwep, on_purpose);
+    if (uarms && uarms->otyp == CORPSE)
+        wielding_corpse(uarms, on_purpose);
 
 	return 0;
 }
@@ -589,7 +589,8 @@ Shield_on(VOID_ARGS)
     case DWARVISH_ROUNDSHIELD:
     case LARGE_SHIELD:
     case SHIELD_OF_REFLECTION:
-        break;
+	case SPIKED_SHIELD:
+		break;
     default:
         impossible(unknown_type, c_shield, uarms->otyp);
     }
@@ -612,12 +613,13 @@ Shield_off(VOID_ARGS)
     case DWARVISH_ROUNDSHIELD:
     case LARGE_SHIELD:
     case SHIELD_OF_REFLECTION:
-        break;
+	case SPIKED_SHIELD:
+		break;
     default:
         impossible(unknown_type, c_shield, uarms->otyp);
     }
 
-    setworn((struct obj *) 0, W_ARMS);
+    setworn((struct obj *) 0, W_SECONDARY_HAND);
 	context.takeoff.cancelled_don = FALSE;
 	return 0;
 }
@@ -1602,9 +1604,11 @@ struct obj *otmp;
         result = (what == WORN_BLINDF);
     else if (otmp == uwep)
         result = (what == W_WEP);
-    else if (otmp == uswapwep)
+	else if (otmp == uswapwep)
         result = (what == W_SWAPWEP);
-    else if (otmp == uquiver)
+	else if (otmp == uswapwep2)
+		result = (what == W_SWAPWEP2);
+	else if (otmp == uquiver)
         result = (what == W_QUIVER);
 
     return result;
@@ -2648,14 +2652,14 @@ glibr()
         }
     }
 
-    otmp = uswapwep;
-    if (u.twoweap && otmp) {
+    otmp = uarms;
+    if (u.twoweap && otmp && !welded(otmp)) {
         /* secondary weapon doesn't need nearly as much handling as
            primary; when in two-weapon mode, we know it's one-handed
            with something else in the other hand and also that it's
            a weapon or weptool rather than something unusual, plus
            we don't need to compare its type with the primary */
-        otherwep = is_sword(otmp) ? c_sword : weapon_descr(otmp);
+        otherwep = is_shield(otmp) ? "shield" : is_sword(otmp) ? c_sword : weapon_descr(otmp);
         if (otmp->quan > 1L)
             otherwep = makeplural(otherwep);
         hand = body_part(HAND);
@@ -2664,7 +2668,7 @@ glibr()
              otense(otmp, "slip"), which, hand);
         xfl++;
         wastwoweap = TRUE;
-        setuswapwep((struct obj *) 0, W_SWAPWEP); /* clears u.twoweap */
+        setuwep((struct obj *) 0, otmp->owornmask);
         if (canletgo(otmp, ""))
             dropx(otmp);
     }
@@ -2857,7 +2861,7 @@ register struct obj *otmp;
         }
     }
     /* basic curse check */
-    if (otmp == uquiver || (otmp == uswapwep && !u.twoweap)) {
+    if (otmp == uquiver || otmp == uswapwep || otmp == uswapwep2) {
         ; /* some items can be removed even when cursed */
     } else {
         /* otherwise, this is fundamental */
@@ -2905,7 +2909,9 @@ register struct obj *otmp;
         context.takeoff.mask |= W_WEP;
     else if (otmp == uswapwep)
         context.takeoff.mask |= W_SWAPWEP;
-    else if (otmp == uquiver)
+	else if (otmp == uswapwep2)
+		context.takeoff.mask |= W_SWAPWEP2;
+	else if (otmp == uquiver)
         context.takeoff.mask |= W_QUIVER;
 
     else

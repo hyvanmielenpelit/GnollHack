@@ -2164,7 +2164,7 @@ canletgo(obj, word)
 struct obj *obj;
 const char *word;
 {
-	if (obj->owornmask & (W_ARMOR | W_ACCESSORY)) {
+	if (obj->owornmask & ((W_ARMOR & ~W_ARMS) | W_ACCESSORY)) {
 		if (*word)
 			Norep("You cannot %s %s you are wearing.", word, something);
 		return FALSE;
@@ -2217,7 +2217,7 @@ register struct obj *obj;
 			weldmsg(obj);
 			return 0;
 		}
-		setuwep((struct obj*) 0, W_WEP2);
+		setuwep((struct obj*) 0, obj->owornmask);
 	}
 	if (obj == uquiver) {
         setuqwep((struct obj *) 0);
@@ -2309,7 +2309,7 @@ boolean with_impact;
     if (obj == uwep)
         setuwep((struct obj *) 0, W_WEP);
 	if (obj == uarms)
-		setuwep((struct obj*) 0, W_WEP2);
+		setuwep((struct obj*) 0, uarms->owornmask);
 	if (obj == uquiver)
         setuqwep((struct obj *) 0);
     if (obj == uswapwep)

@@ -2267,10 +2267,14 @@ eatspecial()
 
     if (otmp == uwep && otmp->quan == 1L)
         uwepgone();
-    if (otmp == uquiver && otmp->quan == 1L)
+	if (otmp == uarms && otmp->quan == 1L)
+		uwep2gone();
+	if (otmp == uquiver && otmp->quan == 1L)
         uqwepgone();
     if (otmp == uswapwep && otmp->quan == 1L)
         uswapwepgone();
+	if (otmp == uswapwep2 && otmp->quan == 1L)
+		uswapwep2gone();
 
     if (otmp == uball)
         unpunish();

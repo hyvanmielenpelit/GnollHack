@@ -1570,11 +1570,11 @@ register struct trobj *trop;
                 if (!uquiver)
                     setuqwep(obj);
             }
-			else if (!uwep && (!uarms || !bimanual(obj)))
+			else if (!uwep && (!uarms || !bimanual(obj)) && !is_launcher(obj))
 			{
                 setuwep(obj, W_WEP);
             }
-			else if (!uswapwep)
+			else if (!uswapwep && is_launcher(obj))
 			{
                 setuswapwep(obj, W_SWAPWEP);
             }

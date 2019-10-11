@@ -956,7 +956,10 @@ int animateintomon;
             x = xy.x, y = xy.y;
     }
 
-    if ((mons[montype].mlet == S_EEL && !IS_POOL(levl[x][y].typ)) || (mons[montype].mlet == S_TROLL && uwep && uwep->oartifact == ART_TROLLSBANE)) {
+    if ((mons[montype].mlet == S_EEL && !IS_POOL(levl[x][y].typ)) || (mons[montype].mlet == S_TROLL 
+		&& ((uwep && uwep->oartifact == ART_TROLLSBANE) || (uarms && uarms->oartifact == ART_TROLLSBANE))
+		)) 
+	{
         if (by_hero && cansee(x, y))
             pline("%s twitches feebly.",
                 upstart(corpse_xname(corpse, (const char *) 0, CXN_PFX_THE)));
@@ -1757,29 +1760,21 @@ int id;
 			{
                 if (was_twohanded || !bimanual(otmp) || !uarms)
                     setuwep(otmp, W_WEP);
-                if (was_twoweap && uwep && !bimanual(uwep))
-                    u.twoweap = TRUE;
             }
 			else if ((new_wornmask & W_WEP2) != 0L)
 			{
 				if (was_twohanded || !bimanual(otmp) || !uwep)
 					setuwep(otmp, W_WEP2);
-				if (was_twoweap && uarms && !bimanual(uwep))
-					u.twoweap = TRUE;
 			}
 			else if ((new_wornmask & W_SWAPWEP) != 0L)
 			{
-                if (was_twohanded || !bimanual(otmp))
+                if (was_twohanded || !bimanual(otmp) || !uswapwep2)
                     setuswapwep(otmp, W_SWAPWEP);
-                if (was_twoweap && uswapwep)
-                    u.twoweap = TRUE;
             }
 			else if ((new_wornmask & W_SWAPWEP2) != 0L)
 			{
-				if (was_twohanded || !bimanual(otmp))
+				if (was_twohanded || !bimanual(otmp) || !uswapwep)
 					setuswapwep(otmp, W_SWAPWEP2);
-				if (was_twoweap && uswapwep2)
-					u.twoweap = TRUE;
 			}
 			else if ((new_wornmask & W_QUIVER) != 0L) {
                 setuqwep(otmp);
@@ -4835,8 +4830,8 @@ xchar sx, sy;
         /* using two weapons at once makes both of them more vulnerable */
         if (!rn2(u.twoweap ? 3 : 6))
             acid_damage(uwep);
-        if (u.twoweap && !rn2(3))
-            acid_damage(uswapwep);
+        if (u.twoweap && uarms && !rn2(3))
+            acid_damage(uarms);
         if (!rn2(6))
             erode_armor(&youmonst, ERODE_CORRODE);
         break;

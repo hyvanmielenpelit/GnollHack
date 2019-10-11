@@ -48,8 +48,41 @@ enum obj_armor_types {
     ARM_BOOTS  = 4,
     ARM_CLOAK  = 5,
     ARM_SHIRT  = 6,
-	ARM_ROBE = 7,
+	ARM_ROBE	= 7,
 	ARM_BRACERS = 8
+};
+
+enum obj_weapon_types {
+	WEP_SWORD = 0,
+	WEP_DAGGER = 1,
+	WEP_MACE = 2,
+	WEP_FLAIL = 3,
+	WEP_STAFF = 4,
+	WEP_HAMMER = 5,
+	WEP_AXE = 6,
+	WEP_SPEAR = 7,
+	WEP_POLEARM = 8,
+	WEP_CLUB = 9,
+	WEP_TRIDENT = 10,
+	WEP_DART = 11,
+	WEP_SHURIKEN = 12,
+	WEP_JAVELIN = 13,
+	WEP_BOOMERANG = 14,
+	WEP_BOW = 15,
+	WEP_CROSSBOW = 16,
+	WEP_SLING = 17,
+	WEP_ARROW = 18,
+	WEP_QUARREL = 19,
+	WEP_SLING_BULLET = 20,
+	WEP_PICK_AXE = 21,
+	WEP_UNICORN_HORN = 22,
+	WEP_HORN = 23,
+	WEP_TOOTH = 24,
+	WEP_KNIFE= 25,
+	WEP_SHOVEL = 26,
+	WEP_HOOK = 27,
+	WEP_LANCE = 28,
+	WEP_WHIP = 28
 };
 
 enum obj_miscellaneous_types {
@@ -135,8 +168,9 @@ struct objclass {
 
     /* 3 free bits */
 
-    schar oc_subtyp;
-    uchar oc_oprop, oc_oprop2, oc_oprop3; /* properties (invis, &c.) conveyed */
+    schar oc_subtyp;		 /* armors: armor category, miscellaneous magic items: subclass, etc.*/
+	schar oc_skill;			 /* Skills of weapons, spellbooks, tools, gems */
+	uchar oc_oprop, oc_oprop2, oc_oprop3; /* properties (invis, &c.) conveyed */
 	
 	char  oc_class; /* object class (enum obj_class_types) */
     schar oc_delay; /* delay when using such an object */
@@ -195,7 +229,6 @@ struct objclass {
 
 
 /* weapons */
-#define oc_skill oc_subtyp		/* Skills of weapons, spellbooks, tools, gems */
 /* oc_oc1 AC bonus, to make wielded objects consistent with armors, but a wielded object needs to be a weapon */
 /* oc_oc2 MC bonus, to make wielded objects consistent with armors, but a wielded object needs to be a weapon */
 /* oc_oc3 mana pool bonus */
@@ -291,22 +324,23 @@ struct objclass {
 #define O1_CORROSION_RESISTANT 0x00000080
 
 #define O1_SPE_AFFECTS_MC 0x00000100									/* +X of the item influences also its MC */
-#define O1_IS_ARMOR_WHEN_WIELDED 0x00000200								/* for non-armors: acts as an armor when wielded giving AC using oc_armor_class, which must be specified */
-#define O1_INVOKABLE 0x00000400								
-#define O1_APPLIABLE 0x00000800								
-#define O1_READABLE 0x00001000								
-#define O1_WIELDABLE 0x00002000											/* can be wielded in a weapon slot */								
-#define O1_EDIBLE_NONFOOD 0x00004000
-#define O1_EDIBLE_BY_BONE_EATERS 0x00008000
+#define O1_IS_ARMOR_WHEN_WIELDED 0x00000200								/* acts as an armor when wielded giving AC using oc_armor_class, which must be specified */
+#define O1_IS_WEAPON_WHEN_WIELDED 0x00000400							/* acts as a weapon when wielded (or worn in shield slot in two-weapon fighting) using damage statistics */
+#define O1_INVOKABLE 0x00000800								
+#define O1_APPLIABLE 0x00001000								
+#define O1_READABLE 0x00002000								
+#define O1_WIELDABLE 0x00004000											/* can be wielded in a weapon slot */								
+#define O1_EDIBLE_NONFOOD 0x00008000
+#define O1_EDIBLE_BY_BONE_EATERS 0x00010000
 
-#define O1_MANA_PERCENTAGE_BONUS 0x00010000
-#define O1_HP_PERCENTAGE_BONUS 0x00020000
-#define O1_BECOMES_CURSED_WHEN_WORN 0x00040000
-#define O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED 0x00080000
-#define O1_CANNOT_BE_DROPPED_IF_CURSED 0x00100000
+#define O1_MANA_PERCENTAGE_BONUS 0x00020000
+#define O1_HP_PERCENTAGE_BONUS 0x00040000
+#define O1_BECOMES_CURSED_WHEN_WORN 0x00080000
+#define O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED 0x00100000
+#define O1_CANNOT_BE_DROPPED_IF_CURSED 0x00200000
 
-#define O1_CONFERS_LUCK 0x00200000
-#define O1_CONFERS_POWERS_WHEN_CARRIED 0x00400000
+#define O1_CONFERS_LUCK 0x00400000
+#define O1_CONFERS_POWERS_WHEN_CARRIED 0x00800000
 
 #define O1_THROWN_WEAPON 0x01000000										/* says "Thrown weapon" instead of "Melee weapon", default range is larger, can use throwrange data value */
 #define O1_WEIGHT_DOES_NOT_REDUCE_RANGE 0x02000000						/* the object magically flies when thrown, ignoring its weight */

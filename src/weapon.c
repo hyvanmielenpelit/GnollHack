@@ -243,7 +243,7 @@ struct obj* otmp;
 		return 0;
 
 	int tmp = 0;
-	boolean Is_weapon = (otmp->oclass == WEAPON_CLASS || is_weptool(otmp));
+	boolean Is_weapon = (otmp->oclass == WEAPON_CLASS || is_weptool(otmp) || (objects[otmp->otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED));
 
 	if (Is_weapon)
 		tmp += otmp->spe;
@@ -261,7 +261,7 @@ struct monst* mattacker;
 {
     int tmp = 0;
     struct permonst *ptr = mon->data;
-	boolean Is_weapon = (otmp->oclass == WEAPON_CLASS || is_weptool(otmp));
+	boolean Is_weapon = (otmp->oclass == WEAPON_CLASS || is_weptool(otmp) || (objects[otmp->otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED));
 
 	tmp += basehitval(otmp);
 
@@ -331,7 +331,7 @@ struct monst* mattacker;
 
     int tmp = 0, otyp = otmp->otyp;
     struct permonst *ptr = mon->data;
-    boolean Is_weapon = (otmp->oclass == WEAPON_CLASS || is_weptool(otmp));
+    boolean Is_weapon = (otmp->oclass == WEAPON_CLASS || is_weptool(otmp) || (objects[otmp->otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED));
 
     if (otyp == CREAM_PIE)
         return 0;
@@ -1873,7 +1873,7 @@ struct obj *weapon;
     wep_type = weapon_type(weapon);
     /* use two weapon skill only if attacking with one of the wielded weapons
      */
-    type = (u.twoweap && (weapon == uwep || weapon == uswapwep))
+    type = (u.twoweap && (weapon == uwep || weapon == uarms))
                ? P_TWO_WEAPON_COMBAT
                : wep_type;
     if (type == P_NONE) {
@@ -1898,7 +1898,7 @@ struct obj *weapon;
         }
     } else if (type == P_TWO_WEAPON_COMBAT) {
         skill = P_SKILL(P_TWO_WEAPON_COMBAT);
-        if (P_SKILL(wep_type) < skill)
+        if (wep_type != P_NONE && P_SKILL(wep_type) < skill)
             skill = P_SKILL(wep_type);
         switch (skill) {
         default:
@@ -1967,7 +1967,7 @@ struct obj *weapon;
     wep_type = weapon_type(weapon);
     /* use two weapon skill only if attacking with one of the wielded weapons
      */
-    type = (u.twoweap && (weapon == uwep || weapon == uswapwep))
+    type = (u.twoweap && (weapon == uwep || weapon == uarms))
                ? P_TWO_WEAPON_COMBAT
                : wep_type;
     if (type == P_NONE) {

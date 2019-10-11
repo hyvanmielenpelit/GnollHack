@@ -2236,10 +2236,22 @@ long timeout;
         if (obj == uwep) {
             uwepgone(); /* now bare handed */
             stop_occupation();
-        } else if (obj == uswapwep) {
-            uswapwepgone();
+		}
+		else if (obj == uarms) {
+			uwep2gone();
+			stop_occupation();
+		}
+		else if (obj == uswapwep)
+		{
+			uswapwepgone();
+			stop_occupation();
+		}
+		else if (obj == uswapwep2)
+		{
+            uswapwep2gone();
             stop_occupation();
-        } else if (obj == uquiver) {
+		}
+		else if (obj == uquiver) {
             uqwepgone();
             stop_occupation();
         }

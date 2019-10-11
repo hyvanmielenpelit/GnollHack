@@ -631,16 +631,17 @@ struct attack *uattk;
     /* second attack for two-weapon combat; won't occur if Stormbringer
        overrode confirmation (assumes Stormbringer is primary weapon)
        or if the monster was killed or knocked to different location */
-    if (u.twoweap && !override_confirmation && malive && m_at(x, y) == mon) {
-        tmp = find_roll_to_hit(mon, uattk->aatyp, uswapwep, &attknum,
+    if (u.twoweap && !override_confirmation && malive && m_at(x, y) == mon)
+	{
+        tmp = find_roll_to_hit(mon, uattk->aatyp, uarms, &attknum,
                                &armorpenalty);
         dieroll = rnd(20);
         mhit = (tmp > dieroll || u.uswallow);
-        malive = known_hitum(mon, uswapwep, &mhit, tmp, armorpenalty, uattk,
+        malive = known_hitum(mon, uarms, &mhit, tmp, armorpenalty, uattk,
                              dieroll);
         /* second passive counter-attack only occurs if second attack hits */
         if (mhit)
-            (void) passive(mon, uswapwep, mhit, malive, AT_WEAP, !uswapwep);
+            (void) passive(mon, uarms, mhit, malive, AT_WEAP, !uarms);
     }
     return malive;
 }
@@ -731,7 +732,7 @@ int dieroll;
 			Strcpy(saved_oname, cxname(obj));
 		else
 			Strcpy(saved_oname, bare_artifactname(obj));
-		if (obj->oclass == WEAPON_CLASS || is_weptool(obj)
+		if (obj->oclass == WEAPON_CLASS || is_weptool(obj) || (objects[obj->otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED)
 			|| obj->oclass == GEM_CLASS) {
 			/* is it not a melee weapon? */
 			if (/* if you strike with a bow... */
@@ -755,7 +756,7 @@ int dieroll;
 					/* if it will already inflict dmg, make it worse */
 					tmp += rnd((tmp) ? 20 : 10);
 				}
-				if (!thrown && obj == uwep && obj->otyp == BOOMERANG
+				if (!thrown && (obj == uwep || obj == uarms) && obj->otyp == BOOMERANG
 					&& rnl(4) == 4 - 1) {
 					boolean more_than_1 = (obj->quan > 1L);
 
@@ -763,7 +764,12 @@ int dieroll;
 						mon_nam(mon), more_than_1 ? "one of " : "",
 						yname(obj));
 					if (!more_than_1)
-						uwepgone(); /* set unweapon */
+					{
+						if(obj == uwep)
+							uwepgone(); /* set unweapon */
+						else if (obj == uarms)
+							uwep2gone(); /* set unweapon */
+					}
 					useup(obj);
 					if (!more_than_1)
 						obj = (struct obj*) 0;
@@ -772,7 +778,8 @@ int dieroll;
 						tmp++;
 				}
 			}
-			else {
+			else
+			{
 				if (is_launcher(obj))
 					tmp = d(1, 2);
 				else
@@ -1308,6 +1315,8 @@ int dieroll;
 			u.twoweap = FALSE; /* untwoweapon() is too verbose here */
 			if (obj == uwep)
 				uwepgone(); /* set unweapon */
+			if (obj == uarms)
+				uwep2gone(); /* set unweapon */
 			/* minor side-effect: broken lance won't split puddings */
 			useup(obj);
 			obj = 0;
@@ -1376,7 +1385,7 @@ int dieroll;
 		&& mon->mhp > 1 && !mon->mcancelled
 		/* iron weapon using melee or polearm hit [3.6.1: metal weapon too;
 		   also allow either or both weapons to cause split when twoweap] */
-		&& obj && (obj == uwep || (u.twoweap && obj == uswapwep))
+		&& obj && (obj == uwep || obj == uarms)
 		&& ((objects[obj->otyp].oc_material == MAT_IRON
 			/* allow scalpel and tsurugi to split puddings */
 			|| objects[obj->otyp].oc_material == MAT_METAL)
@@ -1721,6 +1730,8 @@ int dieroll;
 		{
 			if (obj == uwep)
 				uwepgone(); /* set unweapon */
+			else if (obj == uarms)
+				uwep2gone(); /* set unweapon */
 			useupall(obj);
 			obj = 0;
 		}
@@ -1823,7 +1834,7 @@ struct obj *obj;   /* weapon */
     if (Fumbling || Stunned)
         return 0;
     /* sanity check; lance must be wielded in order to joust */
-    if (obj != uwep && (obj != uswapwep || !u.twoweap))
+    if (obj != uwep && obj != uarms)
         return 0;
 
     /* if using two weapons, use worse of lance and two-weapon skills */
@@ -2804,25 +2815,11 @@ register struct monst *mon;
             /* approximate two-weapon mode; known_hitum() -> hmon() -> &c
                might destroy the weapon argument, but it might also already
                be Null, and we want to track that for passive() */
-            originalweapon = (altwep && uswapwep) ? &uswapwep : &uwep;
-            if (uswapwep /* set up 'altwep' flag for next iteration */
+            originalweapon = (altwep && uarms && u.twoweap) ? &uarms : &uwep;
+            if (u.twoweap && uarms /* set up 'altwep' flag for next iteration */
                 /* only consider seconary when wielding one-handed primary */
-                && uwep && (uwep->oclass == WEAPON_CLASS || is_weptool(uwep))
                 && !bimanual(uwep)
-                /* only switch if not wearing shield and not at artifact;
-                   shield limitation is iffy since still get extra swings
-                   if polyform has them, but it matches twoweap behavior;
-                   twoweap also only allows primary to be an artifact, so
-                   if alternate weapon is one, don't use it */
-                && !uarms && !uswapwep->oartifact
-                /* only switch to uswapwep if it's a weapon */
-                && (uswapwep->oclass == WEAPON_CLASS || is_weptool(uswapwep))
-                /* only switch if uswapwep is not bow, arrows, or darts */
-                && !(is_launcher(uswapwep) || is_ammo(uswapwep)
-                     || is_missile(uswapwep)) /* dart, shuriken, boomerang */
-                /* and not two-handed and not incapable of being wielded */
-                && !bimanual(uswapwep)
-                && !(objects[uswapwep->otyp].oc_material == MAT_SILVER
+                && !(objects[uarms->otyp].oc_material == MAT_SILVER
                      && Hate_silver))
                 altwep = !altwep; /* toggle for next attack */
             weapon = *originalweapon;
@@ -3125,13 +3122,6 @@ register struct monst *mon;
         /* don't use sum[i] beyond this point;
            'i' will be out of bounds if we get here via 'goto' */
  passivedone:
-        /* when using dual weapons, cursed secondary weapon doesn't weld,
-           it gets dropped; do the same when multiple AT_WEAP attacks
-           simulate twoweap */
-        if (uswapwep && weapon == uswapwep && weapon->cursed) {
-            drop_uswapwep();
-            break; /* don't proceed with additional attacks */
-        }
         /* stop attacking if defender has died;
            needed to defer this until after uswapwep->cursed check */
         if (DEADMONSTER(mon))
@@ -3393,7 +3383,7 @@ struct attack *mattk;     /* null means we find one internally */
     /* [this first bit is obsolete; we're not called with Null anymore] */
     /* if caller hasn't specified an object, use uwep, uswapwep or uarmg */
     if (!obj) {
-        obj = (u.twoweap && uswapwep && !rn2(2)) ? uswapwep : uwep;
+        obj = (u.twoweap && uarms && !rn2(2)) ? uarms : uwep;
         if (!obj && mattk->adtyp == AD_ENCH)
             obj = uarmg; /* no weapon? then must be gloves */
         if (!obj)

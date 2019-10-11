@@ -1147,7 +1147,7 @@ int alone;
 {
     struct obj *otmp;
     const char *what, *which, *whichtoo;
-    boolean candropwep, candropswapwep, updateinv = TRUE;
+    boolean candropwep, candropwep2, updateinv = TRUE;
 
     if (uwep) {
         /* !alone check below is currently superfluous but in the
@@ -1156,17 +1156,17 @@ int alone;
          */
         if (!alone || cantwield(youmonst.data)) {
             candropwep = canletgo(uwep, "");
-            candropswapwep = !u.twoweap || canletgo(uswapwep, "");
+			candropwep2 = uarms && canletgo(uarms, "");
             if (alone) {
-                what = (candropwep && candropswapwep) ? "drop" : "release";
+                what = (candropwep && candropwep2) ? "drop" : "release";
                 which = is_sword(uwep) ? "sword" : weapon_descr(uwep);
-                if (u.twoweap) {
-                    whichtoo =
-                        is_sword(uswapwep) ? "sword" : weapon_descr(uswapwep);
+                if (u.twoweap && uarms) {
+                    whichtoo = is_shield(uarms) ? "shield" :
+                        is_sword(uarms) ? "sword" : weapon_descr(uarms);
                     if (strcmp(which, whichtoo))
                         which = "weapon";
                 }
-                if (uwep->quan != 1L || u.twoweap)
+                if (uwep->quan != 1L || (u.twoweap && uwep && uarms))
                     which = makeplural(which);
 
                 You("find you must %s %s %s!", what,
@@ -1176,11 +1176,11 @@ int alone;
                then don't drop it or explicitly update inventory; leave
                those actions to caller (or caller's caller, &c) */
             if (u.twoweap) {
-                otmp = uswapwep;
-                uswapwepgone();
+                otmp = uarms;
+                uwep2gone();
                 if (otmp->in_use)
                     updateinv = FALSE;
-                else if (candropswapwep)
+                else if (candropwep2)
                     dropx(otmp);
             }
             otmp = uwep;
