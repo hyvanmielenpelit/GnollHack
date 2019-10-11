@@ -639,7 +639,7 @@ register struct monst *mtmp;
              * All monsters can wield the remaining weapons.
              */
             if ((((strongmonst(mtmp->data) || mtmp->data->str >= 14)
-                  && (mtmp->misc_worn_check & W_SECONDARY_HAND) == 0)
+                  && (mtmp->misc_worn_check & W_ARMS) == 0)
                  || !objects[pwep[i]].oc_bimanual)
                 && (objects[pwep[i]].oc_material != MAT_SILVER
                     || !mon_hates_silver(mtmp))) {
@@ -768,7 +768,7 @@ register struct monst *mtmp;
     register struct obj *otmp;
     register int i;
     boolean strong = (strongmonst(mtmp->data) || mtmp->data->str >= 13);
-    boolean wearing_shield = (mtmp->misc_worn_check & W_SECONDARY_HAND) != 0;
+    boolean wearing_shield = (mtmp->misc_worn_check & W_ARMS) != 0;
 
     /* prefer artifacts to everything else */
     for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
@@ -808,7 +808,7 @@ int handindex;
 {
 	register struct obj* otmp;
 	boolean strong = (strongmonst(mtmp->data) || mtmp->data->str >= 13);
-	boolean wearing_shield = (mtmp->misc_worn_check & W_SECONDARY_HAND) != 0;
+	boolean wearing_shield = (mtmp->misc_worn_check & W_ARMS) != 0;
 	int weaponindex = 1; //Start with second hand, if free
 
 	/* If the monster has not wielded a weapon, then all weapons are unwielded */
@@ -922,13 +922,13 @@ register struct monst *mon;
     case NEED_PICK_AXE:
         obj = m_carrying(mon, PICK_AXE);
         /* KMH -- allow other picks */
-        if (!obj && !which_armor(mon, W_SECONDARY_HAND))
+        if (!obj && !which_armor(mon, W_ARMS))
             obj = m_carrying(mon, DWARVISH_MATTOCK);
         break;
     case NEED_AXE:
         /* currently, only 2 types of axe */
         obj = m_carrying(mon, BATTLE_AXE);
-        if (!obj || which_armor(mon, W_SECONDARY_HAND))
+        if (!obj || which_armor(mon, W_ARMS))
             obj = m_carrying(mon, AXE);
         break;
     case NEED_PICK_OR_AXE:
@@ -936,7 +936,7 @@ register struct monst *mon;
         obj = m_carrying(mon, DWARVISH_MATTOCK);
         if (!obj)
             obj = m_carrying(mon, BATTLE_AXE);
-        if (!obj || which_armor(mon, W_SECONDARY_HAND)) {
+        if (!obj || which_armor(mon, W_ARMS)) {
             obj = m_carrying(mon, PICK_AXE);
             if (!obj)
                 obj = m_carrying(mon, AXE);

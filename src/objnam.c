@@ -1088,7 +1088,7 @@ unsigned doname_flags;
 		}
 		break;
 	case ARMOR_CLASS:
-		if (u.twoweap && (obj->owornmask & W_SECONDARY_HAND) && (objects[obj->otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED))
+		if (u.twoweap && (obj->owornmask & W_ARMS) && (objects[obj->otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED))
 			Strcat(bp, " (being worn; weapon in left hand)");
         else if (obj->owornmask & W_ARMOR)
             Strcat(bp, (obj == uskin) ? " (embedded in your skin)"
@@ -1273,7 +1273,7 @@ unsigned doname_flags;
         }
     }
 
-	if ((obj->owornmask & W_WEP2) && !mrg_to_wielded) {
+	if ((obj->owornmask & W_WEP2) && obj->oclass != ARMOR_CLASS && !mrg_to_wielded) {
 		if (obj->quan != 1L)
 		{
 			if (u.twoweap)
@@ -1301,17 +1301,17 @@ unsigned doname_flags;
 	}
 
     if (obj->owornmask & W_SWAPWEP) {
-        if (u.twoweap)
+        if (u.twoweap && !bimanual(obj))
 			Strcat(bp, " (readied as alternate right hand weapon)");
 		else
             Strcat(bp, " (readied as alternate weapon)");
     }
 	if (obj->owornmask & W_SWAPWEP2) {
 		if (is_shield(obj))
-			Strcat(bp, " (readied)");
+			Strcat(bp, " (readied as shield)");
 		else
 		{
-			if (u.twoweap)
+			if (u.twoweap && !bimanual(obj))
 				Strcat(bp, " (readied as alternate left hand weapon)");
 			else
 				Strcat(bp, " (readied as another alternate weapon)");

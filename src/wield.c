@@ -117,13 +117,28 @@ long mask;
      * message.  Wielding one via 'a'pplying it will.
      * 3.2.2:  Wielding arbitrary objects will give bashing message too.
      */
-    if (obj) {
-        unweapon = (obj->oclass == WEAPON_CLASS)
-                       ? is_launcher(obj) || is_ammo(obj) || is_missile(obj)
-                             || (is_pole(obj) && !u.usteed)
-                       : !is_weptool(obj) && !is_wet_towel(obj);
+	boolean unweapon1 = FALSE;
+	boolean unweapon2 = FALSE;
+
+	if (uwep) {
+        unweapon1 = (uwep->oclass == WEAPON_CLASS)
+                       ? is_launcher(uwep) || is_ammo(uwep) || is_missile(uwep)
+                             || (is_pole(uwep) && !u.usteed)
+                       : !is_weptool(uwep) && !is_wet_towel(uwep);
     } else
-        unweapon = TRUE; /* for "bare hands" message */
+        unweapon1 = TRUE; /* for "bare hands" message */
+
+	if (u.twoweap && uarms) {
+		unweapon2 = (uarms->oclass == WEAPON_CLASS)
+			? is_launcher(uarms) || is_ammo(uarms) || is_missile(uarms)
+			|| (is_pole(uarms) && !u.usteed)
+			: !is_weptool(uarms) && !is_wet_towel(uarms);
+	}
+	else
+		unweapon2 = TRUE; /* for "bare hands" message */
+
+	unweapon = unweapon1 && unweapon2;
+
 }
 
 STATIC_OVL boolean
@@ -537,7 +552,7 @@ long mask;
 			setuswapwep(oldwep, W_SWAPWEP);
 			if (uswapwep)
 				prinv((char*)0, uswapwep, 0L);
-			else
+			else if (!(uswapwep2 && bimanual(uswapwep2)))
 				You("have no right hand alternate weapon readied.");
 		}
 	}
@@ -554,7 +569,7 @@ long mask;
 			setuswapwep(oldwep, W_SWAPWEP2);
 			if (uswapwep2)
 				prinv((char*)0, uswapwep2, 0L);
-			else
+			else if (!(uswapwep && bimanual(uswapwep)))
 				You("have no left hand alternate weapon readied.");
 		}
 	}
@@ -599,36 +614,48 @@ doswapweapon()
 		setuswapwep((struct obj*) 0, W_SWAPWEP2);
 
 		/* Unwield your current weapons */
-		setuwep((struct obj*) 0, W_WEP);
-		setuwep((struct obj*) 0, W_WEP2);
+		if(oldwep)
+			setuwep((struct obj*) 0, W_WEP);
+		if(oldwep2)
+			setuwep((struct obj*) 0, W_WEP2);
 
 		/* Set your new primary weapon */
-		result = ready_weapon(oldswap, W_WEP);
-		result2 = ready_weapon(oldswap2, W_WEP2);
+		if(oldswap)
+			result = ready_weapon(oldswap, W_WEP);
+		if(oldswap2)
+			result2 = ready_weapon(oldswap2, W_WEP2);
 
 		/* Set your new secondary weapon */
 		if (uwep == oldwep) {
 			/* Wield failed for some reason */
-			setuswapwep(oldswap, W_SWAPWEP);
+			if(oldswap)
+				setuswapwep(oldswap, W_SWAPWEP);
 		}
 		else
 		{
-			setuswapwep(oldwep, W_SWAPWEP);
-			if (uswapwep)
-				prinv((char*)0, uswapwep, 0L);
-			else
-				You("have no right hand alternate weapon readied.");
+			if(oldwep)
+			{
+				setuswapwep(oldwep, W_SWAPWEP);
+				if (uswapwep)
+					prinv((char*)0, uswapwep, 0L);
+				else if (!(uswapwep2 && bimanual(uswapwep2)))
+					You("have no right hand alternate weapon readied.");
+			}
 		}
 		if (uarms == oldwep2) {
 			/* Wield failed for some reason */
 			setuswapwep(oldswap2, W_SWAPWEP2);
 		}
-		else {
-			setuswapwep(oldwep2, W_SWAPWEP2);
-			if (uswapwep2)
-				prinv((char*)0, uswapwep2, 0L);
-			else
-				You("have no left hand alternate weapon readied.");
+		else
+		{
+			if (oldwep2)
+			{
+				setuswapwep(oldwep2, W_SWAPWEP2);
+				if (uswapwep2)
+					prinv((char*)0, uswapwep2, 0L);
+				else if (!(uswapwep && bimanual(uswapwep)))
+					You("have no left hand alternate weapon readied.");
+			}
 		}
 	}
 	else
@@ -650,6 +677,18 @@ doswapweapon()
 		setuswapwep((struct obj*)0, W_SWAPWEP);
 		setuswapwep((struct obj*)0, W_SWAPWEP2);
 
+		/* Unwield your current weapons / shields */
+		if(oldwep)
+			setuwep((struct obj*) 0, W_WEP);
+	
+		if (oldwep2)
+		{
+			if (is_shield(oldwep2))
+				remove_worn_item(oldwep2, FALSE);
+			else
+				setuwep((struct obj*) 0, W_WEP2);
+		}
+
 		/* Set your new primary weapon */
 		result = ready_weapon(oldswap, W_WEP);
 		/* Set your new secondary weapon */
@@ -660,14 +699,28 @@ doswapweapon()
 			setuswapwep(oldwep, W_SWAPWEP);
 			if (uswapwep)
 				prinv((char *) 0, uswapwep, 0L);
-			else
-				You("have no right hand alternate weapon readied.");
+			else if (!(uswapwep2 && bimanual(uswapwep2)))
+				You("have no alternate weapon readied.");
+
+			if(oldwep2 && !oldswap2)
+			{
+				setuswapwep(oldwep2, W_SWAPWEP2);
+				if (uswapwep2)
+					prinv((char*)0, uswapwep2, 0L);
+				else if (!(uswapwep && bimanual(uswapwep)))
+					You("have no alternate shield readied.");
+
+			}
 		}
 
 		if (oldswap2 && !(uwep && (bimanual(uwep) || bimanual(oldswap2))))
 		{
 			if (is_shield(oldswap2))
+			{
 				setworn(oldswap2, W_ARMS);
+				if (uarms)
+					prinv((char*)0, uarms, 0L);
+			}
 			else if (erodeable_wep(oldswap2))
 				ready_weapon(oldswap2, W_WEP2);
 
@@ -679,8 +732,8 @@ doswapweapon()
 				setuswapwep(oldwep2, W_SWAPWEP2);
 				if (uswapwep2)
 					prinv((char*)0, uswapwep2, 0L);
-				else
-					You("have no left hand alternate weapon readied.");
+				else if(!(uswapwep && bimanual(uswapwep)))
+					You("have no alternate shield readied.");
 			}
 		}
 
@@ -1167,7 +1220,7 @@ uwep2gone()
 			if (!Blind)
 				pline("%s shining.", Tobjnam(uarms, "stop"));
 		}
-		setworn((struct obj*) 0, W_SECONDARY_HAND);
+		setworn((struct obj*) 0, W_ARMS);
 		unweapon = TRUE;
 		update_inventory();
 	}

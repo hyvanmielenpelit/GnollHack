@@ -1096,8 +1096,16 @@ break_armor()
             dropx(otmp);
         }
         if ((otmp = uarms) != 0) {
-            You("can no longer hold your shield!");
-            (void) Shield_off();
+			if(is_shield(otmp))
+			{
+				You("can no longer hold your shield!");
+				(void) Shield_off();
+			}
+			else
+			{
+				You("can no longer hold your %s!", cxname(otmp));
+				remove_worn_item(otmp, FALSE);
+			}
             dropx(otmp);
         }
         if ((otmp = uarmh) != 0) {

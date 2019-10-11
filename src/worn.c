@@ -25,7 +25,6 @@ const struct worn {
              { W_RINGL, &uleft },
              { W_RINGR, &uright },
              { W_WEP, &uwep },
-			 { W_WEP2, &uarms },
 			 { W_SWAPWEP, &uswapwep },
 			 { W_SWAPWEP2, &uswapwep2 },
 			 { W_QUIVER, &uquiver },
@@ -861,12 +860,8 @@ long flag;
 			return uarmo;
 		case W_ARMH:
             return uarmh;
-		case W_SECONDARY_HAND:
-			return uarms;
-		case W_WEP2:
-			return (uarms && (uarms->owornmask & W_WEP2) ? uarms : (struct obj*)0);
 		case W_ARMS:
-			return (uarms && (uarms->owornmask & W_ARMS) ? uarms : (struct obj*)0);
+			return (uarms && (uarms->oclass == ARMOR_CLASS) ? uarms : (struct obj*)0);
 		case W_ARMB:
 			return uarmb;
 		case W_ARMG:

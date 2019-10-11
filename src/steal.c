@@ -223,7 +223,7 @@ boolean unchain_ball; /* whether to unpunish or just unwield */
 			(void) Bracers_off();
 		else if (obj == uarmh)
             (void) Helmet_off();
-        else if (obj == uarms)
+        else if (obj == uarms && is_shield(obj))
             (void) Shield_off();
         else if (obj == uarmu)
             (void) Shirt_off();

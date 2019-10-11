@@ -70,7 +70,7 @@ int hurt;
             }
             break;
         case 2:
-            target = which_armor(mdef, W_SECONDARY_HAND);
+            target = which_armor(mdef, W_ARMS);
             if (!target
                 || erode_obj(target, xname(target), hurt, EF_GREASE)
                        == ER_NOTHING)

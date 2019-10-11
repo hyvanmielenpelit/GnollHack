@@ -2736,7 +2736,7 @@ struct obj *obj;
 {
 #if defined(BETA) || defined(DEBUG)
     static unsigned long wearbits[] = {
-        W_ARM,    W_ARMC,   W_ARMH,    W_SECONDARY_HAND, W_ARMG,  W_ARMF,  W_ARMU, //W_ARMS
+        W_ARM,    W_ARMC,   W_ARMH,    W_ARMS, W_ARMG,  W_ARMF,  W_ARMU,
         W_WEP,    W_QUIVER, W_SWAPWEP, W_AMUL, W_RINGL, W_RINGR, W_BLINDFOLD,
         W_SADDLE, W_BALL,   W_CHAIN,   0
         /* [W_ART,W_ARTI are property bits for items which aren't worn] */
@@ -2808,8 +2808,13 @@ struct obj *obj;
                 what = "helm";
             break;
         case W_ARMS:
-            if (obj != uarms)
-                what = "shield";
+			if (obj != uarms)
+			{
+				if(is_shield(obj))
+					what = "shield";
+				else
+					what = u.twoweap ? "left hand weapon" : "secondary weapon";
+			}
             break;
         case W_ARMG:
             if (obj != uarmg)
@@ -2851,10 +2856,6 @@ struct obj *obj;
             if (obj != uwep)
                 what = u.twoweap ? "right hand weapon" : "primary weapon";
             break;
-		case W_WEP2:
-			if (obj != uarms)
-				what = u.twoweap ? "left hand weapon" : "secondary weapon";
-			break;
 		case W_QUIVER:
             if (obj != uquiver)
                 what = "quiver";

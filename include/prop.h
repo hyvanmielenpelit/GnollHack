@@ -123,7 +123,7 @@ struct prop {
 
 /* Weapons */
 #define W_WEP		0x00000200L     /* Wielded weapon in the primary hand */
-#define W_WEP2		0x00000400L		/* Wielded weapon in the secondary hand (uses the same hand as W_ARMS) */
+#define W_WEP2		W_ARMS			/* Wielded weapon in the secondary hand (uses the same hand as W_ARMS) */
 #define W_QUIVER	0x00000800L		/* Quiver for (f)iring ammo */
 #define W_SWAPWEP	0x00001000L		/* Alternate weapon in the primary hand */
 #define W_SWAPWEP2	0x00002000L		/* Alternate weapon/shield in the secondary hand */
@@ -134,8 +134,6 @@ struct prop {
 #define W_WIELDED_WEAPON (W_WEP | W_WEP2)
 #define W_SWAP_WEAPON (W_SWAPWEP | W_SWAPWEP2)
 #define W_WEAPON (W_WIELDED_WEAPON | W_SWAP_WEAPON | W_QUIVER)
-
-#define W_SECONDARY_HAND (W_ARMS | W_WEP2)
 
 /* Amulets, rings, tools, and other items */
 #define W_AMUL 0x00010000L    /* Amulet */

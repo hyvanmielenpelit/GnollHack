@@ -601,7 +601,7 @@ Shield_on(VOID_ARGS)
 int
 Shield_off(VOID_ARGS)
 {
-    context.takeoff.mask &= ~W_SECONDARY_HAND; //~W_ARMS
+    context.takeoff.mask &= ~W_ARMS;
 
     /* no shield currently requires special handling when taken off, but we
        keep this uncommented in case somebody adds a new one which does */
@@ -619,7 +619,7 @@ Shield_off(VOID_ARGS)
         impossible(unknown_type, c_shield, uarms->otyp);
     }
 
-    setworn((struct obj *) 0, W_SECONDARY_HAND);
+    setworn((struct obj *) 0, W_ARMS);
 	context.takeoff.cancelled_don = FALSE;
 	return 0;
 }
@@ -1515,7 +1515,7 @@ struct obj *obj; /* if null, do all worn items; otherwise just obj itself */
         (void) Gloves_on();
     if (!obj ? uarmh != 0 : (obj == uarmh))
         (void) Helmet_on();
-    if (!obj ? uarms != 0 : (obj == uarms))
+    if (!obj ? uarms != 0 : (obj == uarms && obj->oclass == ARMOR_CLASS && objects[obj->otyp].oc_armor_category == ARM_SHIELD))
         (void) Shield_on();
 
     initial_don = FALSE;
@@ -1548,7 +1548,7 @@ struct obj *otmp;
 		result = (afternmv == Bracers_on);
 	else if (otmp == uarmg)
         result = (afternmv == Gloves_on);
-    else if (otmp == uarms)
+    else if (otmp == uarms && otmp->oclass == ARMOR_CLASS && objects[otmp->otyp].oc_armor_category == ARM_SHIELD)
         result = (afternmv == Shield_on);
 
     return result;
@@ -1581,7 +1581,7 @@ struct obj *otmp;
 		result = (afternmv == Bracers_off || what == WORN_BRACERS);
 	else if (otmp == uarmg)
         result = (afternmv == Gloves_off || what == WORN_GLOVES);
-    else if (otmp == uarms)
+    else if (otmp == uarms && is_shield(otmp))
         result = (afternmv == Shield_off || what == WORN_SHIELD);
     /* these 1-turn items don't need 'afternmv' checks */
     else if (otmp == uamul)
@@ -1604,6 +1604,8 @@ struct obj *otmp;
         result = (what == WORN_BLINDF);
     else if (otmp == uwep)
         result = (what == W_WEP);
+	else if (otmp == uarms)
+		result = (what == W_WEP2);
 	else if (otmp == uswapwep)
         result = (what == W_SWAPWEP);
 	else if (otmp == uswapwep2)
@@ -2116,7 +2118,7 @@ boolean noisy;
         if (uarms) {
             if (noisy)
 			{
-				if ((uarms->owornmask & W_ARMS))
+				if (is_shield(uarms))
 					already_wearing(an(c_shield));
 				else
 					You("are already holding something else in your left hand.");
@@ -2128,10 +2130,6 @@ boolean noisy;
                     is_sword(uwep) ? c_sword : (uwep->otyp == BATTLE_AXE)
                                                    ? c_axe
                                                    : c_weapon);
-            err++;
-        } else if (u.twoweap) {
-            if (noisy)
-                You("cannot wear a shield while wielding two weapons.");
             err++;
         } else
             *mask = W_ARMS;
@@ -2424,7 +2422,7 @@ struct obj *obj;
             afternmv = Gloves_on;
         else if (obj == uarmf)
             afternmv = Boots_on;
-        else if (obj == uarms)
+        else if (obj == uarms && obj->oclass == ARMOR_CLASS && objects[obj->otyp].oc_armor_category == ARM_SHIELD)
             afternmv = Shield_on;
         else if (obj == uarmc)
             afternmv = Cloak_on;
@@ -3014,7 +3012,7 @@ do_takeoff()
             (void) Helmet_off();
     } else if (doff->what == WORN_SHIELD) {
         otmp = uarms;
-        if (!cursed(otmp))
+        if (!cursed(otmp) && is_shield(otmp))
             (void) Shield_off();
     } else if (doff->what == WORN_SHIRT) {
         otmp = uarmu;
@@ -3313,7 +3311,7 @@ register struct obj *atmp;
         (void) Boots_off();
         useup(otmp);
 	}
-	else if (DESTROY_ARM(uarms)) {
+	else if (DESTROY_ARM(uarms) && is_shield(otmp)) {
         if (donning(otmp))
             cancel_don();
         Your("shield crumbles away!");
