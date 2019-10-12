@@ -477,6 +477,13 @@ dowield()
 			return 0;
 		}
 
+		if (wep && bimanual(wep) && uarms && !is_shield(uarms) && !welded(uarms))
+		{
+			/* Automate the unwield to assist the player */
+			/* If weapon is bimanual and you have an unused secondardy weapon in hand, unwield it */
+			remove_worn_item(uarms, FALSE);
+		}
+
 		/* Set your new primary weapon */
 		oldwep = uwep;
 		result = ready_weapon(wep, W_WEP);
