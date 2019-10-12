@@ -120,7 +120,7 @@ long mask;
 	update_unweapon();
 }
 
-boolean
+void
 update_unweapon()
 {
 	boolean unweapon1 = FALSE;

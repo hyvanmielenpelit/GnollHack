@@ -865,6 +865,13 @@ register struct obj* obj;
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
+			if (objects[otyp].oc_flags3 & O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Prevents revival of permitted targets", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
 
 
 
@@ -1154,6 +1161,7 @@ register struct obj* obj;
 					strcpy(monsymbuf, def_monsyms[objects[otyp].oc_target_permissions].explain);
 					*monsymbuf = highc(*monsymbuf);
 
+					powercnt++;
 					Sprintf(buf, " %2d - %s", powercnt, monsymbuf);
 					txt = buf;
 					putstr(datawin, 0, txt);

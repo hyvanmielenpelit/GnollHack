@@ -956,9 +956,9 @@ int animateintomon;
             x = xy.x, y = xy.y;
     }
 
-    if ((mons[montype].mlet == S_EEL && !IS_POOL(levl[x][y].typ)) || (mons[montype].mlet == S_TROLL 
-		&& ((uwep && uwep->oartifact == ART_TROLLSBANE) || (uarms && uarms->oartifact == ART_TROLLSBANE))
-		)) 
+    if ((mons[montype].mlet == S_EEL && !IS_POOL(levl[x][y].typ)) 
+		|| (mons[montype].mlet == S_TROLL && ((uwep && uwep->oartifact == ART_TROLLSBANE) || (uarms && uarms->oartifact == ART_TROLLSBANE)))
+		|| item_prevents_revival(montype)) 
 	{
         if (by_hero && cansee(x, y))
             pline("%s twitches feebly.",
@@ -1123,6 +1123,76 @@ int animateintomon;
     }
 
     return mtmp;
+}
+
+
+boolean
+item_prevents_revival(montype)
+int montype;
+{
+	struct obj* uitem;
+
+	//Add then extrinsics from all carried items
+	for (uitem = invent; uitem; uitem = uitem->nobj)
+	{
+		if (!object_uses_spellbook_wand_flags_and_properties(uitem)
+			&& (
+			(uitem == uwep && (is_shield(uitem) || is_weapon(uitem)))
+				|| uitem == uarm
+				|| uitem == uarmc
+				|| uitem == uarmh
+				|| (uitem == uarms && (is_shield(uitem) || is_weapon(uitem)))
+				|| uitem == uarmg
+				|| uitem == uarmf
+				|| uitem == uarmu
+				|| uitem == uarmo
+				|| uitem == uarmb
+				|| uitem == umisc
+				|| uitem == umisc2
+				|| uitem == umisc3
+				|| uitem == umisc4
+				|| uitem == umisc5
+				|| uitem == uamul
+				|| uitem == uright
+				|| uitem == uleft
+				|| objects[uitem->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED))
+		{
+			int otyp = uitem->otyp;
+			if (inappropriate_character_type(uitem))
+			{
+				continue;
+			}
+			if (objects[otyp].oc_flags3 & O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS)
+			{
+				if (objects[otyp].oc_target_permissions == ALL_TARGETS)
+					return TRUE;
+
+				if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M1_FLAG)
+				{
+					if (mons[montype].mflags1 & objects[otyp].oc_target_permissions)
+						return TRUE;
+				}
+				else if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M2_FLAG)
+				{
+					if (mons[montype].mflags2 & objects[otyp].oc_target_permissions)
+						return TRUE;
+				}
+				else if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M3_FLAG)
+				{
+					if (mons[montype].mflags3 & objects[otyp].oc_target_permissions)
+						return TRUE;
+				}
+				else
+				{
+					if (mons[montype].mlet == objects[otyp].oc_target_permissions)
+						return TRUE;
+				}
+			}
+
+		}
+	}
+
+	return FALSE;
 }
 
 STATIC_OVL void

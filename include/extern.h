@@ -2922,7 +2922,7 @@ E int FDECL(welded, (struct obj *));
 E void FDECL(weldmsg, (struct obj *));
 E void FDECL(setmnotwielded, (struct monst *, struct obj *));
 E boolean FDECL(mwelded, (struct obj *));
-E boolean NDECL(update_unweapon);
+E void NDECL(update_unweapon);
 
 /* ### windows.c ### */
 
@@ -3086,7 +3086,7 @@ E void FDECL(summondemogorgon, (int));
 E void NDECL(armageddon);
 E void NDECL(timestop);
 E void FDECL(disintegrate_mon, (struct monst*, int, const char*));
-
+E boolean FDECL(item_prevents_revival, (int));
 
 #endif /* !MAKEDEFS_C && !LEV_LEX_C */
 

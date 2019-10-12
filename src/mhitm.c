@@ -1445,8 +1445,8 @@ register struct attack *mattk;
 				extradmg = 0;
 		}
 		mdef->mhpmax -= extradmg;
-		if (mdef->mhp > mdef->mhpmax)
-			mdef->mhp = mdef->mhpmax;
+		if (mdef->mhpmax < 0)
+			mdef->mhpmax = 0;
 
 		if (extradmg > 0)
 		{
@@ -1492,6 +1492,12 @@ register struct attack *mattk;
 
 	//Reduce HP
 	mdef->mhp -= tmp;
+
+	//Adjust further if mhpmax is smaller
+	if (mdef->mhp > mdef->mhpmax)
+		mdef->mhp = mdef->mhpmax;
+
+
     if (DEADMONSTER(mdef)) {
 		if (poisondamage && mdef->mhp > -poisondamage && vis && canspotmon(mdef))
 			pline_The("poison was deadly...");

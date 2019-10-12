@@ -396,8 +396,9 @@ struct objclass {
 #define O3_LIFE_LEECH		0x00000040  /* heals hit points equal to the extra damage caused */
 #define O3_SHARPNESS		0x00000080	/* causes a critical hit on at a 5% chance, causing quadruple normal damage */
 #define O3_VORPAL			0x00000100	/* beheads monsters */
-#define O3_SPE_AFFECTS_ABILITIES				0x00000200 /* add spe to special abilities */
-#define O3_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA		0x00000400 /* abilities such as wounding and life leech are based on full caused damage, not just extra damage */
+#define O3_SPE_AFFECTS_ABILITIES					0x00000200 /* add spe to special abilities */
+#define O3_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA			0x00000400 /* abilities such as wounding and life leech are based on full caused damage, not just extra damage */
+#define O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS	0x00000800 /* wielding or wearing prohibits the revival of permitted targets */
 
 #define O3_DALIGN										0x00010000  /* attack bonus on non-aligned monsters  */
 #define O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS		0x00020000

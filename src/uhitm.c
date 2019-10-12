@@ -1510,9 +1510,16 @@ int dieroll;
 			extradmg = 0;
 
 		mon->mhpmax -= extradmg;
+		if (mon->mhpmax < 0)
+			mon->mhpmax = 0;
+
 		if (mon->mhp > mon->mhpmax)
 			mon->mhp = mon->mhpmax;
 
+		if (DEADMONSTER(mon))
+		{
+			destroyed = TRUE;
+		}
 		if (extradmg > 0)
 		{
 			char* whom = mon_nam(mon);
