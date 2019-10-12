@@ -1593,7 +1593,7 @@ int mmflags;
                  /* in Sokoban, don't accept a giant on first try;
                     after that, boulder carriers are fair game */
                  && ((tryct == 1 && throws_rocks(ptr) && In_sokoban(&u.uz))
-					 || (tryct <= 20 && In_mines(&u.uz) && (ptr == &mons[PM_MIND_FLAYER] || ptr == &mons[PM_MASTER_MIND_FLAYER]) || ptr == &mons[PM_WINGED_GARGOYLE] || ptr == &mons[PM_GARGOYLE] || ptr == &mons[PM_GREMLIN])
+					 || (tryct <= 20 && In_mines(&u.uz) && (ptr == &mons[PM_MIND_FLAYER] || ptr == &mons[PM_MASTER_MIND_FLAYER] || ptr == &mons[PM_WINGED_GARGOYLE] || ptr == &mons[PM_GARGOYLE] || ptr == &mons[PM_GREMLIN]))
                      || !goodpos(x, y, &fakemon, gpflags)));
         mndx = monsndx(ptr);
     }
@@ -2101,10 +2101,17 @@ aligntyp atyp;
 {
     register int first, last, num = 0;
     int k, nums[SPECIAL_PM + 1]; /* +1: insurance for final return value */
-    int maxmlev, mask = (G_NOGEN | G_UNIQ) & ~spc;
+    int minmlev, maxmlev, mask = (G_NOGEN | G_UNIQ) & ~spc;
+	int zlevel = 0;
 
     (void) memset((genericptr_t) nums, 0, sizeof nums);
-    maxmlev = level_difficulty() >> 1;
+
+	zlevel = level_difficulty();
+	/* determine the level of the weakest monster to make. */
+	minmlev = zlevel / 6;
+	/* determine the level of the strongest monster to make. */
+	maxmlev = (zlevel + u.ulevel) / 2;
+
     if (class < 1 || class >= MAXMCLASSES) {
         impossible("mkclass called with bad class!");
         return (struct permonst *) 0;
@@ -2115,10 +2122,22 @@ aligntyp atyp;
      *                  SPECIAL_PM is long worm tail and separates the
      *                  regular monsters from the exceptions.
      */
-    for (first = LOW_PM; first < SPECIAL_PM; first++)
-        if (mons[first].mlet == class)
-            break;
-    if (first == SPECIAL_PM) {
+	first = 0;
+    for (int firstindex = LOW_PM; firstindex < SPECIAL_PM; firstindex++)
+        if (mons[firstindex].mlet == class)
+		{
+			if(first == 0)
+				first = firstindex;
+
+			if(!tooweak(firstindex,minmlev))
+			{
+				first = firstindex;
+				break;
+			}
+		}
+
+    if (first == 0) //SPECIAL_PM)
+	{
         impossible("mkclass found no class %d monsters", class);
         return (struct permonst *) 0;
     }
@@ -2136,17 +2155,16 @@ aligntyp atyp;
                'num' implies last > first so mons[last-1] is safe);
                sometimes accept it even if high difficulty */
             if (num && toostrong(last, maxmlev)
-                && mons[last].difficulty > mons[last - 1].difficulty
-                && rn2(2))
+                && mons[last].difficulty > mons[last - 1].difficulty)
                 break;
             if ((k = (mons[last].geno & G_FREQ)) > 0) {
                 /* skew towards lower value monsters at lower exp. levels
                    (this used to be done in the next loop, but that didn't
                    work well when multiple species had the same level and
                    were followed by one that was past the bias threshold;
-                   cited example was sucubus and incubus, where the bias
+                   cited example was succubus and incubus, where the bias
                    against picking the next demon resulted in incubus
-                   being picked nearly twice as often as sucubus);
+                   being picked nearly twice as often as succubus);
                    we need the '+1' in case the entire set is too high
                    level (really low level hero) */
                 nums[last] = k + 1 - (adj_lev(&mons[last]) > (u.ulevel * 2));

@@ -132,6 +132,7 @@ struct context_info {
     boolean botlx;       /* print an entirely new bottom line */
     boolean door_opened; /* set to true if door was opened during test_move */
 	boolean time_stopped; /* time has been stopped*/
+	boolean multishot_target_killed;
 	struct dig_info digging;
     struct victual_info victual;
     struct tin_info tin;

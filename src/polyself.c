@@ -1304,7 +1304,7 @@ dospit()
             break;
         }
         otmp->spe = 1; /* to indicate it's yours */
-        throwit(otmp, 0L, FALSE);
+        throwit(otmp, 0L);
     }
     return 1;
 }

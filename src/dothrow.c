@@ -40,7 +40,7 @@ int shotlimit;
     int multishot;
     schar skill;
     long wep_mask;
-    boolean twoweap, weakmultishot;
+    boolean weakmultishot;
 
     /* ask "in what direction?" */
     if (!getdir((char *) 0)) {
@@ -204,8 +204,9 @@ int shotlimit;
     wep_mask = obj->owornmask;
     m_shot.o = obj->otyp;
     m_shot.n = multishot;
-    for (m_shot.i = 1; m_shot.i <= m_shot.n; m_shot.i++) {
-        twoweap = u.twoweap;
+    for (m_shot.i = 1; m_shot.i <= m_shot.n; m_shot.i++) 
+	{
+		context.multishot_target_killed = FALSE;
         /* split this object off from its slot if necessary */
         if (obj->quan > 1L) {
             otmp = splitobj(obj, 1L);
@@ -215,7 +216,12 @@ int shotlimit;
                 remove_worn_item(otmp, FALSE);
         }
         freeinv(otmp);
-        throwit(otmp, wep_mask, twoweap);
+        throwit(otmp, wep_mask);
+		if (context.multishot_target_killed == TRUE)
+		{
+			context.multishot_target_killed = FALSE;
+			break;
+		}
     }
     m_shot.n = m_shot.i = 0;
     m_shot.o = STRANGE_OBJECT;
@@ -1078,16 +1084,15 @@ struct obj *obj;
 
 /* throw an object, NB: obj may be consumed in the process */
 void
-throwit(obj, wep_mask, twoweap)
+throwit(obj, wep_mask)
 struct obj *obj;
-long wep_mask; /* used to re-equip returning boomerang */
-boolean twoweap; /* used to restore twoweapon mode if wielded weapon returns */
+long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Javelin of Returning */
 {
     register struct monst *mon;
     register int range, urange;
     boolean impaired = (Confusion || Stunned || Blind
                                      || Hallucination || Fumbling);
-    boolean tethered_weapon = (obj->otyp == AKLYS && (wep_mask & W_WEP) != 0);
+    boolean tethered_weapon = (obj->otyp == AKLYS && (wep_mask & W_WIELDED_WEAPON) != 0);
 
     notonhead = FALSE; /* reset potentially stale value */
     if ((obj->cursed || obj->greased) && (u.dx || u.dy) && !rn2(7)) {
@@ -1141,16 +1146,22 @@ boolean twoweap; /* used to restore twoweapon mode if wielded weapon returns */
                aklys must we wielded as primary to return when thrown */
             && (((objects[obj->otyp].oc_flags & O1_RETURNS_TO_HAND_AFTER_THROWING) && !((objects[obj->otyp].oc_flags & O1_CAN_BE_THROWN_ONLY_IF_WIELDED) && 1)  && !inappropriate_character_type(obj))
                 || tethered_weapon)
-            && !impaired) {
-            pline("%s the %s and returns to your hand!", Tobjnam(obj, "hit"),
-                  ceiling(u.ux, u.uy));
+            && !impaired)
+		{
+			if(wep_mask & W_WIELDED_WEAPON)
+				pline("%s the %s and returns to your hand!", Tobjnam(obj, "hit"),
+					  ceiling(u.ux, u.uy));
+			else
+				pline("%s the %s and returns to you!", Tobjnam(obj, "hit"),
+					ceiling(u.ux, u.uy));
+
             obj = addinv(obj);
             (void) encumber_msg();
             if (obj->owornmask & W_QUIVER) /* in case addinv() autoquivered */
                 setuqwep((struct obj *) 0);
-            setuwep(obj, W_WEP);
-            u.twoweap = twoweap;
-        } else if (u.dz < 0) {
+            if(wep_mask)
+				setuwep(obj, wep_mask);
+		} else if (u.dz < 0) {
             (void) toss_up(obj, rn2(5) && !Underwater);
         } else if (u.dz > 0 && u.usteed && obj->oclass == POTION_CLASS
                    && rn2(6)) {
@@ -1173,14 +1184,12 @@ boolean twoweap; /* used to restore twoweapon mode if wielded weapon returns */
             (void) encumber_msg();
             if (wep_mask && !(obj->owornmask & wep_mask)) {
                 setworn(obj, wep_mask);
-                u.twoweap = twoweap;
             }
             thrownobj = (struct obj *) 0;
             return;
         }
     } else {
-        /* crossbow range is independent of strength */
-		//urange your moving in a weightless levitation situation
+		/* urange your moving in a weightless levitation situation */
 		if (is_ammo(obj) && uwep && ammo_and_launcher(obj, uwep))
 			range = weapon_range(obj, uwep);
 		else
@@ -1234,6 +1243,9 @@ boolean twoweap; /* used to restore twoweapon mode if wielded weapon returns */
         (void) snuff_candle(obj);
         notonhead = (bhitpos.x != mon->mx || bhitpos.y != mon->my);
         obj_gone = thitmonst(mon, obj);
+		if (mon && DEADMONSTER(mon))
+			context.multishot_target_killed = TRUE;
+
         /* Monster may have been tamed; this frees old mon */
         mon = m_at(bhitpos.x, bhitpos.y);
 
@@ -1290,7 +1302,6 @@ boolean twoweap; /* used to restore twoweapon mode if wielded weapon returns */
 						if (obj->owornmask & W_QUIVER)
 							setuqwep((struct obj *) 0);
 						setuwep(obj, wep_mask);
-						u.twoweap = twoweap;
 					}
 					else
 					{
