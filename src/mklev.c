@@ -863,8 +863,9 @@ makelevel()
 			do {
 				x = somex(croom);
 				y = somey(croom);
-			} while (tryct <= 20 && !occupied(x, y) && !(IS_ROOM(levl[x][y].typ) || IS_POOL(levl[x][y].typ)
-				|| IS_FURNITURE(levl[x][y].typ) || IS_ALTAR(levl[x][y].typ) || (x == sstairs.sx && y == sstairs.sy)));
+			} while (tryct <= 20 && (occupied(x, y) || !(IS_ROOM(levl[x][y].typ) || IS_POOL(levl[x][y].typ))
+				|| IS_FURNITURE(levl[x][y].typ) || IS_ALTAR(levl[x][y].typ) || (x == sstairs.sx && y == sstairs.sy)
+				));
 
 			struct obj* stash = mksobj_at(CHEST, x, y, FALSE, FALSE);
 			stash->olocked = FALSE;
