@@ -999,7 +999,7 @@ boolean hitsroof;
         return FALSE;
     } else { /* neither potion nor other breaking object */
         boolean less_damage = uarmh && is_metallic(uarmh), artimsg = FALSE;
-        int dmg = is_launcher(obj) ? d(1, 2) : dmgval(obj, &youmonst, &youmonst);
+        int dmg = is_launcher(obj) ? d(1, 2) : totaldmgval(obj, &youmonst, &youmonst);
 
         if (obj->oartifact)
             /* need a fake die roll here; rn1(18,2) avoids 1 and 20 */

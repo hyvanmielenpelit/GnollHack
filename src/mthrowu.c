@@ -397,10 +397,10 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 		if (is_launcher(otmp))
 			damage = d(1, 2);
 		else
-			damage = dmgval(otmp, mtmp, (struct monst*)0);
+			damage = totaldmgval(otmp, mtmp, (struct monst*)0);
 
 		if (otmp && mon_launcher && ammo_and_launcher(otmp, mon_launcher)) {
-			damage += dmgval(mon_launcher, mtmp, (struct monst*)0);
+			damage += totaldmgval(mon_launcher, mtmp, (struct monst*)0);
 			//Add strength damage, no skill damage
 			if (mon_launcher->otyp == CROSSBOW) {
 				damage += 3;
@@ -730,7 +730,7 @@ struct obj *obj;         /* missile (or stack providing it) */
 				if (is_launcher(singleobj))
 					dam = d(1, 2);
 				else
-					dam = dmgval(singleobj, &youmonst, mon);
+					dam = totaldmgval(singleobj, &youmonst, mon);
 
 				mindistance = distmin(u.ux, u.uy, mon->mx, mon->my);
                 hitv = 3 - mindistance;
@@ -777,7 +777,7 @@ struct obj *obj;         /* missile (or stack providing it) */
 						hitv += hitval(MON_WEP(mon), &youmonst, mon); //MON_WEP(mon)->spe - greatest_erosion(MON_WEP(mon));
 						//hitv += weapon_hit_bonus(MON_WEP(mon)); //Monsters do not get skill bonuses
 						//LAUNCHER DMGVAL
-						dam += dmgval(MON_WEP(mon), &youmonst, mon);
+						dam += totaldmgval(MON_WEP(mon), &youmonst, mon);
 
 						//Give strength damage bonus
 						if (MON_WEP(mon)->otyp == CROSSBOW) {
@@ -1142,7 +1142,7 @@ struct monst *mtmp;
 		if (is_launcher(otmp))
 			dam = d(1, 2);
 		else
-			dam = dmgval(otmp, &youmonst, mtmp);
+			dam = totaldmgval(otmp, &youmonst, mtmp);
 
         hitv = 3 - distmin(u.ux, u.uy, mtmp->mx, mtmp->my);
         if (hitv < -4)

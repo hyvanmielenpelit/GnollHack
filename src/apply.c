@@ -3347,7 +3347,7 @@ struct obj *obj;
                         int hitu, hitvalu;
 
                         hitvalu = 8 + otmp->spe;
-                        hitu = thitu(hitvalu, dmgval(otmp, &youmonst, mtmp),
+                        hitu = thitu(hitvalu, totaldmgval(otmp, &youmonst, mtmp),
                                      &otmp, (char *)0);
                         if (hitu) {
                             pline_The("%s hits you as you try to snatch it!",

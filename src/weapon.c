@@ -353,6 +353,7 @@ struct monst* mattacker;
         if (tmp < 0)
             tmp = 0;
 
+		/*
 		if (eligible_for_extra_damage(otmp,mon,mattacker))
 		{
 			int extradmg = 0;
@@ -366,7 +367,7 @@ struct monst* mattacker;
 			tmp += extradmg;
 
 		}
-
+		*/
 
     }
 
@@ -423,6 +424,50 @@ struct monst* mattacker;
     }
 
     return  tmp;
+}
+
+
+int
+totaldmgval(otmp, mon, mattacker)
+struct obj* otmp;
+struct monst* mon;
+struct monst* mattacker;
+{
+	int basedmg = dmgval(otmp, mon, mattacker);
+	int edmg = extradmgval(otmp, mon, mattacker, basedmg);
+
+	return basedmg + edmg;
+}
+
+int
+extradmgval(otmp, mon, mattacker, basedmg)
+struct obj* otmp;
+struct monst* mon;
+struct monst* mattacker;
+int basedmg;
+{
+	if (!otmp || !mon)
+		return 0;
+
+	int tmp = basedmg, otyp = otmp->otyp;
+
+	if (eligible_for_extra_damage(otmp, mon, mattacker))
+	{
+		int extradmg = 0;
+		if (objects[otyp].oc_wedam > 0 && objects[otyp].oc_wedice > 0)
+			extradmg += d(objects[otyp].oc_wedice, objects[otyp].oc_wedam);
+		extradmg += objects[otyp].oc_wedmgplus;
+
+		if (objects[otyp].oc_flags3 & O3_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS)
+			extradmg += tmp;
+
+		tmp += extradmg;
+	}
+
+	if (tmp < 0)
+		tmp = 0;
+
+	return tmp;
 }
 
 boolean
@@ -1850,9 +1895,13 @@ struct obj *obj;
 
     if (!obj)
         return P_BARE_HANDED_COMBAT; /* Not using a weapon */
+
+	/* JG -- Now all items have a skill */
+	/*
     if (obj->oclass != WEAPON_CLASS && obj->oclass != TOOL_CLASS
         && obj->oclass != GEM_CLASS)
-        return P_NONE; /* Not a weapon, weapon-tool, or ammo */
+        return P_NONE;*/
+	/* Not a weapon, weapon-tool, or ammo */
     type = objects[obj->otyp].oc_skill;
     return (type < 0) ? -type : type;
 }

@@ -823,7 +823,7 @@ register struct attack *mattk;
     boolean cancelled;
 	int poisondamage = 0;
 
-	int tmp = 0;
+	int tmp = 0, extratmp = 0;
 
 	struct obj* mweapon = MON_WEP(magr);
 
@@ -832,7 +832,11 @@ register struct attack *mattk;
 		if (is_launcher(mweapon))
 			tmp += d(1, 2);
 		else
+		{
 			tmp += dmgval(mweapon, mdef, magr);
+			extratmp = extradmgval(mweapon, mdef, magr, tmp);
+			tmp += extratmp;
+		}
 	}
 	else
 	{
@@ -1429,21 +1433,10 @@ register struct attack *mattk;
 	/* Wounding */
 	if (mweapon && (objects[mweapon->otyp].oc_flags3 & O3_WOUNDING) && eligible_for_extra_damage(mweapon, mdef, magr) && !is_rider(mdef->data))
 	{
-		int extradmg = 0;
+		int extradmg = extratmp;
 		if (objects[mweapon->otyp].oc_flags3 & O3_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
 			extradmg = tmp;
-		else
-		{
-			if (objects[mweapon->otyp].oc_wedam > 0 && objects[mweapon->otyp].oc_wedice > 0)
-				extradmg += d(objects[mweapon->otyp].oc_wedice, objects[mweapon->otyp].oc_wedam);
-			extradmg += objects[mweapon->otyp].oc_wedmgplus;
 
-			if (objects[mweapon->otyp].oc_flags3 & O3_SPE_AFFECTS_ABILITIES)
-				extradmg += mweapon->spe;
-
-			if (extradmg < 0)
-				extradmg = 0;
-		}
 		mdef->mhpmax -= extradmg;
 		if (mdef->mhpmax < 0)
 			mdef->mhpmax = 0;
@@ -1460,20 +1453,9 @@ register struct attack *mattk;
 	/* Life drain */
 	if (mweapon && (objects[mweapon->otyp].oc_flags3 & O3_LIFE_LEECH) && eligible_for_extra_damage(mweapon, mdef, magr) && !is_rider(mdef->data) && !is_not_living(mdef->data))
 	{
-		int extradmg = 0;
+		int extradmg = extratmp;
 		if (objects[mweapon->otyp].oc_flags3 & O3_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
 			extradmg = tmp;
-		else
-		{
-			if (objects[mweapon->otyp].oc_wedam > 0 && objects[mweapon->otyp].oc_wedice > 0)
-				extradmg += d(objects[mweapon->otyp].oc_wedice, objects[mweapon->otyp].oc_wedam);
-			extradmg += objects[mweapon->otyp].oc_wedmgplus;
-
-			if (objects[mweapon->otyp].oc_flags3 & O3_SPE_AFFECTS_ABILITIES)
-				extradmg += obj->spe;
-		}
-		if (extradmg < 0)
-			extradmg = 0;
 
 		magr->mhp += extradmg;
 		if (magr->mhp > magr->mhpmax)

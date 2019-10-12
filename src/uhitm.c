@@ -674,7 +674,7 @@ struct obj *obj;
 int thrown; /* HMON_xxx (0 => hand-to-hand, other => ranged) */
 int dieroll;
 {
-	int tmp;
+	int tmp = 0, extratmp = 0;
 	struct permonst* mdat = mon->data;
 	int barehand_silver_rings = 0;
 	/* The basic reason we need all these booleans is that we don't want
@@ -783,6 +783,10 @@ int dieroll;
 					tmp = d(1, 2);
 				else
 					tmp = dmgval(obj, mon, &youmonst);
+
+				extratmp = extradmgval(obj, mon, &youmonst, tmp);
+				tmp += extratmp;
+
 				/* a minimal hit doesn't exercise proficiency */
 				valid_weapon_attack = (tmp > 1);
 				if (!valid_weapon_attack || mon == u.ustuck || u.twoweap
@@ -900,6 +904,8 @@ int dieroll;
 				case HEAVY_IRON_BALL: /* 1d25 */
 				case IRON_CHAIN:      /* 1d4+1 */
 					tmp = dmgval(obj, mon, &youmonst);
+					extratmp = extradmgval(obj, mon, &youmonst, tmp);
+					tmp += extratmp;
 					break;
 				case MIRROR:
 				case MAGIC_MIRROR:
@@ -1084,6 +1090,8 @@ int dieroll;
 					else {
 						Your("venom burns %s!", mon_nam(mon));
 						tmp = dmgval(obj, mon, &youmonst);
+						extratmp = extradmgval(obj, mon, &youmonst, tmp);
+						tmp += extratmp;
 					}
 					if (thrown)
 						obfree(obj, (struct obj*) 0);
@@ -1153,6 +1161,8 @@ int dieroll;
 
 			//All bows get bow's enchantment bonus and damage
 			tmp += dmgval(uwep, mon, &youmonst);
+			extratmp = extradmgval(uwep, mon, &youmonst, tmp);
+			tmp += extratmp;
 
 			//Bracers give extra +2 damage, blessed even +3 + their bonus
 			if (uarmb && uarmb->otyp == BRACERS_OF_ARCHERY)
@@ -1493,21 +1503,9 @@ int dieroll;
 	/* Wounding */
 	if (obj && (objects[obj->otyp].oc_flags3 & O3_WOUNDING) && eligible_for_extra_damage(obj, mon, &youmonst) && !is_rider(mon->data))
 	{
-		int extradmg = 0;
-
+		int extradmg = extratmp;
 		if (objects[obj->otyp].oc_flags3 & O3_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
-			extradmg = damagedealt;
-		else
-		{
-			if (objects[obj->otyp].oc_wedam > 0 && objects[obj->otyp].oc_wedice > 0)
-				extradmg += d(objects[obj->otyp].oc_wedice, objects[obj->otyp].oc_wedam);
-			extradmg += objects[obj->otyp].oc_wedmgplus;
-
-			if (objects[obj->otyp].oc_flags3 & O3_SPE_AFFECTS_ABILITIES)
-				extradmg += obj->spe;
-		}
-		if(extradmg < 0)
-			extradmg = 0;
+			extradmg = tmp;
 
 		mon->mhpmax -= extradmg;
 		if (mon->mhpmax < 0)
@@ -1532,22 +1530,9 @@ int dieroll;
 	/* Life drain */
 	if (obj && (objects[obj->otyp].oc_flags3 & O3_LIFE_LEECH) && eligible_for_extra_damage(obj, mon, &youmonst) && !is_rider(mon->data) && !is_not_living(mon->data))
 	{
-		int extradmg = 0;
-
-
+		int extradmg = extratmp;
 		if (objects[obj->otyp].oc_flags3 & O3_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
-			extradmg = damagedealt;
-		else
-		{
-			if (objects[obj->otyp].oc_wedam > 0 && objects[obj->otyp].oc_wedice > 0)
-				extradmg += d(objects[obj->otyp].oc_wedice, objects[obj->otyp].oc_wedam);
-			extradmg += objects[obj->otyp].oc_wedmgplus;
-
-			if (objects[obj->otyp].oc_flags3 & O3_SPE_AFFECTS_ABILITIES)
-				extradmg += obj->spe;
-		}
-		if (extradmg < 0)
-			extradmg = 0;
+			extradmg = tmp;
 
 		if (Upolyd)
 		{
@@ -2013,7 +1998,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
     struct obj *mongold;
 	int chance = 0, poisondamage = 0;
 
-	int tmp = 0;
+	int tmp = 0, extratmp = 0;
 	
 	/*  First determine the base damage done */
 	struct obj* mweapon = uwep;
@@ -2024,6 +2009,9 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 			tmp = d(1, 2);
 		else
 			tmp += dmgval(mweapon, mdef, &youmonst);
+
+		extratmp = extradmgval(mweapon, mdef, &youmonst, tmp);
+		tmp += extratmp;
 	}
 	else
 	{

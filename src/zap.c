@@ -4528,7 +4528,9 @@ int dx, dy;
         if (bhitpos.x == u.ux && bhitpos.y == u.uy) { /* ct == 9 */
             if (Fumbling || rn2(20) >= ACURR(A_DEX)) {
                 /* we hit ourselves */
-                (void) thitu(10 + obj->spe, dmgval(obj, &youmonst, (struct monst*)0), &obj,
+				int dmg = dmgval(obj, &youmonst, (struct monst*)0);
+				int extradmg = extradmgval(obj, &youmonst, (struct monst*)0, dmg);
+                (void) thitu(10 + obj->spe, dmg + extradmg, &obj,
                              "boomerang");
                 endmultishot(TRUE);
                 break;

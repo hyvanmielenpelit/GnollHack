@@ -2843,6 +2843,8 @@ E int FDECL(weapon_range, (struct obj*, struct obj*));
 E int FDECL(basehitval, (struct obj*));
 E int FDECL(hitval, (struct obj *, struct monst *, struct monst*));
 E int FDECL(dmgval, (struct obj *, struct monst *, struct monst*));
+E int FDECL(extradmgval, (struct obj*, struct monst*, struct monst*, int));
+E int FDECL(totaldmgval, (struct obj*, struct monst*, struct monst*));
 E boolean FDECL(eligible_for_extra_damage, (struct obj*, struct monst*, struct monst*));
 E int FDECL(special_dmgval, (struct monst *, struct monst *, long, long *));
 E void FDECL(silver_sears, (struct monst *, struct monst *, long));

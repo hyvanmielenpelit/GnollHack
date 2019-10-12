@@ -974,7 +974,7 @@ unsigned trflags;
         otmp = t_missile(ARROW, trap);
         if (u.usteed && !rn2(2) && steedintrap(trap, otmp)) {
             ; /* nothing */
-        } else if (thitu(8, dmgval(otmp, &youmonst, (struct monst*)0), &otmp, "arrow")) {
+        } else if (thitu(8, totaldmgval(otmp, &youmonst, (struct monst*)0), &otmp, "arrow")) {
             if (otmp)
                 obfree(otmp, (struct obj *) 0);
         } else {
@@ -1002,7 +1002,7 @@ unsigned trflags;
         oldumort = u.umortality;
         if (u.usteed && !rn2(2) && steedintrap(trap, otmp)) {
             ; /* nothing */
-        } else if (thitu(7, dmgval(otmp, &youmonst, (struct monst*)0), &otmp, "little dart")) {
+        } else if (thitu(7, totaldmgval(otmp, &youmonst, (struct monst*)0), &otmp, "little dart")) {
             if (otmp) {
                 if (otmp->opoisoned)
                     poisoned("dart", A_CON, "little dart",
@@ -1878,7 +1878,7 @@ int style;
         } else if (bhitpos.x == u.ux && bhitpos.y == u.uy) {
             if (multi)
                 nomul(0);
-            if (thitu(9 + singleobj->spe, dmgval(singleobj, &youmonst, (struct monst*)0),
+            if (thitu(9 + singleobj->spe, totaldmgval(singleobj, &youmonst, (struct monst*)0),
                       &singleobj, (char *) 0))
                 stop_occupation();
         }
@@ -5478,9 +5478,9 @@ boolean nocorpse;
 			if (is_launcher(obj))
 				dam = d(1, 2);
 			else
-				dam = dmgval(obj, mon, (struct monst*)0);
+				dam = totaldmgval(obj, mon, (struct monst*)0);
 
-            if (dam < 1)
+			if (dam < 1)
                 dam = 1;
         }
         mon->mhp -= dam;
