@@ -1836,9 +1836,18 @@ struct obj *obj;
     /* none of armoroff()/Ring_/Amulet/Blindf_off() use context.takeoff.mask */
     reset_remarm();
 
-    if (obj->owornmask & W_ARMOR) {
+	if (obj->owornmask & W_ARMS)
+	{
+		if (is_shield(obj))
+			(void)armoroff(obj);
+		else
+			remove_worn_item(obj, FALSE);
+	} 
+	else if (obj->owornmask & W_ARMOR) 
+	{
         (void) armoroff(obj);
-    } else if (obj == uright || obj == uleft) {
+    }
+	else if (obj == uright || obj == uleft) {
         /* Sometimes we want to give the off_msg before removing and
          * sometimes after; for instance, "you were wearing a moonstone
          * ring (on right hand)" is desired but "you were wearing a
@@ -2566,8 +2575,8 @@ find_ac()
 		uac -= ARM_BONUS(uarmh);
 	if (uarmf)
 		uac -= ARM_BONUS(uarmf);
-	if (uarms)
-		uac -= ARM_BONUS(uarms);
+	if (uarms && (is_shield(uarms) || (objects[uarms->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)))
+		uac -= ARM_BONUS(uarms); /* Only a shield and a wielded weapon can give AC; exclude wielded other armor types */
 	if (uarmg)
 		uac -= ARM_BONUS(uarmg);
 	if (uarmu)
@@ -2585,8 +2594,8 @@ find_ac()
 		uac -= uright->spe;
 	*/
 
-	/* A wielded weapon can give AC */
-	if(uwep && (objects[uwep->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
+	/* A wielded weapon can give AC, also a wielded shield (in right hand) */
+	if(uwep && (is_shield(uwep) || (objects[uwep->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)))
 	{
 		uac -= ARM_BONUS(uwep);
 	}

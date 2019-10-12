@@ -1579,9 +1579,11 @@ register struct trobj *trop;
                 setuswapwep(obj, W_SWAPWEP);
             }
         }
-        if (obj->oclass == SPBOOK_CLASS && obj->otyp != SPE_BLANK_PAPER)
-            initialspell(obj);
-
+		if (obj->oclass == SPBOOK_CLASS && obj->otyp != SPE_BLANK_PAPER)
+		{
+			initialspell(obj);
+			useup(obj);
+		}
 #if !defined(PYRAMID_BUG) && !defined(MAC)
         if (--trop->trquan)
             continue; /* make a similar object */

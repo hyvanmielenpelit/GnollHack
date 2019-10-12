@@ -117,16 +117,23 @@ long mask;
      * message.  Wielding one via 'a'pplying it will.
      * 3.2.2:  Wielding arbitrary objects will give bashing message too.
      */
+	update_unweapon();
+}
+
+boolean
+update_unweapon()
+{
 	boolean unweapon1 = FALSE;
 	boolean unweapon2 = FALSE;
 
 	if (uwep) {
-        unweapon1 = (uwep->oclass == WEAPON_CLASS)
-                       ? is_launcher(uwep) || is_ammo(uwep) || is_missile(uwep)
-                             || (is_pole(uwep) && !u.usteed)
-                       : !is_weptool(uwep) && !is_wet_towel(uwep);
-    } else
-        unweapon1 = TRUE; /* for "bare hands" message */
+		unweapon1 = (uwep->oclass == WEAPON_CLASS)
+			? is_launcher(uwep) || is_ammo(uwep) || is_missile(uwep)
+			|| (is_pole(uwep) && !u.usteed)
+			: !is_weptool(uwep) && !is_wet_towel(uwep);
+	}
+	else
+		unweapon1 = TRUE; /* for "bare hands" message */
 
 	if (u.twoweap && uarms) {
 		unweapon2 = (uarms->oclass == WEAPON_CLASS)
@@ -138,6 +145,7 @@ long mask;
 		unweapon2 = TRUE; /* for "bare hands" message */
 
 	unweapon = unweapon1 && unweapon2;
+
 
 }
 
@@ -321,8 +329,6 @@ dowield()
 			return 0;
 		else if (wep == uwep || wep == uarms) {
 			You("are already wielding that!");
-			if (is_weptool(wep) || is_wet_towel(wep))
-				unweapon = FALSE; /* [see setuwep()] */
 			return 0;
 		}
 
@@ -361,7 +367,7 @@ dowield()
 		else if (bimanual(wep)) {
 			mask = W_WEP;
 		}
-		else if (uwep) {
+		else if (uwep && !uarms) {
 			if (bimanual(uwep))
 			{
 				You("cannot wield another weapon while wielding a two-handed weapon.");
@@ -369,7 +375,7 @@ dowield()
 			}
 			mask = W_WEP2;
 		}
-		else if (uarms) {
+		else if (uarms && !uwep) {
 			if (bimanual(uarms))
 			{
 				You("cannot wield another weapon while wielding a two-handed weapon.");
@@ -451,8 +457,6 @@ dowield()
 			return 0;
 		else if (wep == uwep) {
 			You("are already wielding that!");
-			if (is_weptool(wep) || is_wet_towel(wep))
-				unweapon = FALSE; /* [see setuwep()] */
 			return 0;
 		} else if (welded(uwep)) {
 			weldmsg(uwep);
@@ -1213,7 +1217,7 @@ uwepgone()
                 pline("%s shining.", Tobjnam(uwep, "stop"));
         }
         setworn((struct obj *) 0, W_WEP);
-        unweapon = TRUE;
+		update_unweapon();
         update_inventory();
     }
 }
@@ -1228,7 +1232,7 @@ uwep2gone()
 				pline("%s shining.", Tobjnam(uarms, "stop"));
 		}
 		setworn((struct obj*) 0, W_ARMS);
-		unweapon = TRUE;
+		update_unweapon();
 		update_inventory();
 	}
 }

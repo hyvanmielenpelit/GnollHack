@@ -357,9 +357,12 @@ boolean force;      /* Quietly force this animal */
             You("and %s take flight together.", mon_nam(mtmp));
     }
     /* setuwep handles polearms differently when you're mounted */
+	update_unweapon();
+	/*
     if (uwep && is_pole(uwep))
         unweapon = FALSE;
-    u.usteed = mtmp;
+    */
+	u.usteed = mtmp;
     remove_monster(mtmp->mx, mtmp->my);
     teleds(mtmp->mx, mtmp->my, TRUE);
     context.botl = TRUE;
@@ -690,9 +693,12 @@ int reason; /* Player was thrown off etc. */
     } else
         context.botl = TRUE;
     /* polearms behave differently when not mounted */
+	update_unweapon();
+	/*
     if (uwep && is_pole(uwep))
         unweapon = TRUE;
-    return;
+    */
+	return;
 }
 
 /* when attempting to saddle or mount a sleeping steed, try to wake it up

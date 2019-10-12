@@ -628,10 +628,10 @@ struct attack *uattk;
         wep_was_destroyed = TRUE;
     (void) passive(mon, uwep, mhit, malive, AT_WEAP, wep_was_destroyed);
 
-    /* second attack for two-weapon combat; won't occur if Stormbringer
+    /* second attack for two-weapon combat; FOLLOWING IS OBSOLETE/JG: won't occur if Stormbringer
        overrode confirmation (assumes Stormbringer is primary weapon)
        or if the monster was killed or knocked to different location */
-    if (u.twoweap && !override_confirmation && malive && m_at(x, y) == mon)
+    if (u.twoweap && !(uwep && bimanual(uwep)) && malive && m_at(x, y) == mon) //&& !override_confirmation 
 	{
         tmp = find_roll_to_hit(mon, uattk->aatyp, uarms, &attknum,
                                &armorpenalty);
@@ -732,8 +732,7 @@ int dieroll;
 			Strcpy(saved_oname, cxname(obj));
 		else
 			Strcpy(saved_oname, bare_artifactname(obj));
-		if (obj->oclass == WEAPON_CLASS || is_weptool(obj) || (objects[obj->otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED)
-			|| obj->oclass == GEM_CLASS) {
+		if (is_weapon(obj) || obj->oclass == GEM_CLASS) {
 			/* is it not a melee weapon? */
 			if (/* if you strike with a bow... */
 				is_launcher(obj)
@@ -962,8 +961,11 @@ int dieroll;
 					hittxt = TRUE; /* message always given */
 					/* egg is always either used up or transformed, so next
 					   hand-to-hand attack should yield a "bashing" mesg */
+					update_unweapon();
+					/*
 					if (obj == uwep)
 						unweapon = TRUE;
+					*/
 					if (obj->spe && obj->corpsenm >= LOW_PM) {
 						if (obj->quan < 5L)
 							change_luck((schar)-(obj->quan));

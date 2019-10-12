@@ -571,11 +571,11 @@ update_carried_item_extrinsics()
 	{
 		if (!object_uses_spellbook_wand_flags_and_properties(uitem)
 			&& (
-			(uitem == uwep && (uitem->oclass == WEAPON_CLASS || is_weptool(uitem)))
+			(uitem == uwep && (is_shield(uitem) || is_weapon(uitem)))
 			|| uitem == uarm
 			|| uitem == uarmc
 			|| uitem == uarmh
-			|| uitem == uarms
+			|| (uitem == uarms && (is_shield(uitem) || is_weapon(uitem)))
 			|| uitem == uarmg
 			|| uitem == uarmf
 			|| uitem == uarmu
@@ -1542,11 +1542,11 @@ boolean addconstitutionbonus;
 		otyp = uitem->otyp;
 		if (!object_uses_spellbook_wand_flags_and_properties(uitem)
 			&& objects[otyp].oc_hp_bonus > 0 && (
-			(uitem == uwep && (uitem->oclass == WEAPON_CLASS || is_weptool(uitem)))
+			(uitem == uwep && (is_shield(uitem) || is_weapon(uitem)))
 			|| uitem == uarm
 			|| uitem == uarmc
 			|| uitem == uarmh
-			|| uitem == uarms
+			|| (uitem == uarms && (is_shield(uitem) || is_weapon(uitem)))
 			|| uitem == uarmg
 			|| uitem == uarmf
 			|| uitem == uarmu
@@ -1620,11 +1620,11 @@ updateabon()
 		otyp = uitem->otyp;
 		if (!object_uses_spellbook_wand_flags_and_properties(uitem)
 			&& (
-			(uitem == uwep && (uitem->oclass == WEAPON_CLASS || is_weptool(uitem)))
+			(uitem == uwep && (is_shield(uitem) || is_weapon(uitem)))
 			|| uitem == uarm
 			|| uitem == uarmc
 			|| uitem == uarmh
-			|| uitem == uarms
+			|| (uitem == uarms && (is_shield(uitem) || is_weapon(uitem)))
 			|| uitem == uarmg
 			|| uitem == uarmf
 			|| uitem == uarmu

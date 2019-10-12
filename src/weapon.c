@@ -243,7 +243,7 @@ struct obj* otmp;
 		return 0;
 
 	int tmp = 0;
-	boolean Is_weapon = (otmp->oclass == WEAPON_CLASS || is_weptool(otmp) || (objects[otmp->otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED));
+	boolean Is_weapon = is_weapon(otmp);
 
 	if (Is_weapon)
 		tmp += otmp->spe;
@@ -261,7 +261,7 @@ struct monst* mattacker;
 {
     int tmp = 0;
     struct permonst *ptr = mon->data;
-	boolean Is_weapon = (otmp->oclass == WEAPON_CLASS || is_weptool(otmp) || (objects[otmp->otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED));
+	boolean Is_weapon = is_weapon(otmp);
 
 	tmp += basehitval(otmp);
 
@@ -331,7 +331,7 @@ struct monst* mattacker;
 
     int tmp = 0, otyp = otmp->otyp;
     struct permonst *ptr = mon->data;
-    boolean Is_weapon = (otmp->oclass == WEAPON_CLASS || is_weptool(otmp) || (objects[otmp->otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED));
+	boolean Is_weapon = is_weapon(otmp);
 
     if (otyp == CREAM_PIE)
         return 0;
@@ -1362,8 +1362,11 @@ boolean verbose;
 
     /* if hero is wielding this towel, don't give "you begin bashing
        with your wet towel" message on next attack with it */
+	update_unweapon();
+	/*
     if (obj == uwep)
         unweapon = !is_wet_towel(obj);
+	*/
 }
 
 /* decrease a towel's wetness */
@@ -1391,8 +1394,11 @@ boolean verbose;
 
     /* if hero is wielding this towel and it is now dry, give "you begin
        bashing with your towel" message on next attack with it */
+	update_unweapon();
+	/*
     if (obj == uwep)
         unweapon = !is_wet_towel(obj);
+	*/
 }
 
 /* copy the skill level name into the given buffer */
@@ -1873,12 +1879,15 @@ struct obj *weapon;
     wep_type = weapon_type(weapon);
     /* use two weapon skill only if attacking with one of the wielded weapons
      */
-    type = (u.twoweap && (weapon == uwep || weapon == uarms))
+    type = (u.twoweap && (!weapon || (weapon && !bimanual(weapon) && (weapon == uwep || weapon == uarms))))
                ? P_TWO_WEAPON_COMBAT
                : wep_type;
-    if (type == P_NONE) {
+    if (type == P_NONE)
+	{
         bonus = 0;
-    } else if (type <= P_LAST_WEAPON) {
+    }
+	else if (type <= P_LAST_WEAPON)
+	{
         switch (P_SKILL(type)) {
         default:
             impossible(bad_skill, P_SKILL(type)); /* fall through */
@@ -1967,7 +1976,7 @@ struct obj *weapon;
     wep_type = weapon_type(weapon);
     /* use two weapon skill only if attacking with one of the wielded weapons
      */
-    type = (u.twoweap && (weapon == uwep || weapon == uarms))
+    type = (u.twoweap && (!weapon || (weapon && !bimanual(weapon) && (weapon == uwep || weapon == uarms))))
                ? P_TWO_WEAPON_COMBAT
                : wep_type;
     if (type == P_NONE) {

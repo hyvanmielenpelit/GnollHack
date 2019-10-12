@@ -348,6 +348,7 @@ learn(VOID_ARGS)
     char splname[BUFSZ];
     boolean costly = TRUE;
     struct obj *book = context.spbook.book;
+	boolean learnsuccess = FALSE;
 
     /* JDS: lenses give 50% faster reading; 33% smaller read time */
     if (context.spbook.delay && Enhanced_vision && rn2(2))
@@ -381,19 +382,27 @@ learn(VOID_ARGS)
         if (spellid(i) == booktype || spellid(i) == NO_SPELL)
             break;
 
-    if (i == MAXSPELL) {
+    if (i == MAXSPELL)
+	{
         impossible("Too many spells memorized!");
-    } else if (spellid(i) == booktype) {
+    }
+	else if (spellid(i) == booktype)
+	{
         /* normal book can be read and re-read a total of 4 times */
-        if (book->spestudied > MAX_SPELL_STUDY) {
+        if (book->spestudied > MAX_SPELL_STUDY)
+		{
             pline("This spellbook is too faint to be read any more.");
             book->otyp = booktype = SPE_BLANK_PAPER;
             /* reset spestudied as if polymorph had taken place */
             book->spestudied = rn2(book->spestudied);
-        } else if (spellknow(i) > KEEN / 10) {
+        }
+		else if (spellknow(i) > KEEN / 10)
+		{
             You("know %s quite well already.", splname);
             costly = FALSE;
-        } else { /* spellknow(i) <= KEEN/10 */
+        }
+		else
+		{ /* spellknow(i) <= KEEN/10 */
             Your("knowledge of %s is %s.", splname,
                  spellknow(i) ? "keener" : "restored");
             incrnknow(i, 1);
@@ -403,7 +412,9 @@ learn(VOID_ARGS)
         /* make book become known even when spell is already
            known, in case amnesia made you forget the book */
         makeknown((int) booktype);
-    } else { /* (spellid(i) == NO_SPELL) */
+    }
+	else
+	{ /* (spellid(i) == NO_SPELL) */
         /* for a normal book, spestudied will be zero, but for
            a polymorphed one, spestudied will be non-zero and
            one less reading is available than when re-learning */
@@ -427,6 +438,7 @@ learn(VOID_ARGS)
 			incrnknow(i, 1);
             book->spestudied++;
             You(i > 0 ? "add %s to your repertoire." : "learn %s.", splname);
+			learnsuccess = TRUE;
         }
         makeknown((int) booktype);
     }
@@ -441,7 +453,14 @@ learn(VOID_ARGS)
     }
     if (costly)
         check_unpaid(book);
-    context.spbook.book = 0;
+
+	if (learnsuccess)
+	{
+		pline_The("spellbook crumbles to dust.");
+		useup(book);
+	}
+
+	context.spbook.book = 0;
     context.spbook.o_id = 0;
     return 0;
 }
@@ -483,7 +502,7 @@ register struct obj *spellbook;
 			{
 				if (objects[spellbook->otyp].oc_flags3 & O3_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY)
 				{
-					if(!objects[spellbook->otyp].oc_content_desc || objects[spellbook->otyp].oc_content_desc == "")
+					if(!objects[spellbook->otyp].oc_content_desc || strcmp(objects[spellbook->otyp].oc_content_desc, "") == 0)
 						Sprintf(buf, "The topic of %s is unclear. Read it?", the(cxname(spellbook)));
 					else
 						Sprintf(buf, "This spellbook contains %s. Read it?", objects[spellbook->otyp].oc_content_desc);
@@ -584,9 +603,12 @@ register struct obj *spellbook;
         /* Books are often wiser than their readers (Rus.) */
         spellbook->in_use = TRUE;
         if (!spellbook->blessed && spellbook->otyp != SPE_BOOK_OF_THE_DEAD) {
-            if (spellbook->cursed) {
+            if (spellbook->cursed)
+			{
                 too_hard = TRUE;
-            } else {
+            }
+			else
+			{
 
 				/* uncursed - chance to fail */
 				int read_ability = attribute_value_for_spellbook(spellbook->otyp)
@@ -616,8 +638,12 @@ register struct obj *spellbook;
             }
         }
 
-        if (too_hard) {
-            boolean gone = cursed_book(spellbook);
+        if (too_hard)
+		{
+			boolean gone = FALSE;
+			
+			if(!rn2(2) && spellbook->cursed)
+				gone = cursed_book(spellbook);
 
             nomul(context.spbook.delay); /* study time */
             multi_reason = "reading a book";
@@ -633,8 +659,11 @@ register struct obj *spellbook;
             } else
                 spellbook->in_use = FALSE;
             return 1;
-        } else if (confused) {
-            if (!confused_book(spellbook)) {
+        } 
+		else if (confused) 
+		{
+            if (!confused_book(spellbook))
+			{
                 spellbook->in_use = FALSE;
             }
             nomul(context.spbook.delay);

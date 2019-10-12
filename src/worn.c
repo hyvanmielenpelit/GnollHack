@@ -861,7 +861,7 @@ long flag;
 		case W_ARMH:
             return uarmh;
 		case W_ARMS:
-			return (uarms && (uarms->oclass == ARMOR_CLASS) ? uarms : (struct obj*)0);
+			return ((uarms && is_shield(uarms)) ? uarms : (struct obj*)0);
 		case W_ARMB:
 			return uarmb;
 		case W_ARMG:

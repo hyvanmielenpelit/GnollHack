@@ -1088,8 +1088,40 @@ unsigned doname_flags;
 		}
 		break;
 	case ARMOR_CLASS:
-		if (u.twoweap && (obj->owornmask & W_ARMS) && (objects[obj->otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED))
-			Strcat(bp, " (being worn; weapon in left hand)");
+		if (obj->owornmask & W_ARMS)
+		{
+			if(is_shield(obj))
+			{
+				if (u.twoweap)
+				{
+					if ((objects[obj->otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED))
+						Strcat(bp, " (being worn; weapon in left hand)");
+					else
+						Strcat(bp, " (being worn; wielded in left hand)");
+				}
+				else
+				{
+					Strcat(bp, " (being worn)");
+				}
+			}
+			else
+			{
+				if (u.twoweap)
+				{
+					if ((objects[obj->otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED))
+						Strcat(bp, " (weapon in left hand)");
+					else
+						Strcat(bp, " (wielded in left hand)");
+				}
+				else
+				{
+					if ((objects[obj->otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED))
+						Strcat(bp, " (unused weapon in another hand)");
+					else
+						Strcat(bp, " (wielded in another hand)");
+				}
+			}
+		}
         else if (obj->owornmask & W_ARMOR)
             Strcat(bp, (obj == uskin) ? " (embedded in your skin)"
                        /* in case of perm_invent update while Wear/Takeoff

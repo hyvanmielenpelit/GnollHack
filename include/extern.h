@@ -2922,6 +2922,7 @@ E int FDECL(welded, (struct obj *));
 E void FDECL(weldmsg, (struct obj *));
 E void FDECL(setmnotwielded, (struct monst *, struct obj *));
 E boolean FDECL(mwelded, (struct obj *));
+E boolean NDECL(update_unweapon);
 
 /* ### windows.c ### */
 

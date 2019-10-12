@@ -225,9 +225,11 @@ boolean unchain_ball; /* whether to unpunish or just unwield */
             (void) Helmet_off();
         else if (obj == uarms && is_shield(obj))
             (void) Shield_off();
-        else if (obj == uarmu)
+		else if (obj == uarms && is_weapon(obj))
+			uwep2gone();
+		else if (obj == uarmu)
             (void) Shirt_off();
-        /* catchall -- should never happen */
+        /* catchall -- should never happen, except for uarms with non-shields & non-weapons */
         else
             setworn((struct obj *) 0, obj->owornmask & W_ARMOR);
     } else if (obj->owornmask & W_AMUL) {

@@ -794,7 +794,7 @@ makelevel()
                  && !(mvitals[PM_COCKATRICE].mvflags & G_GONE))
             mkroom(COCKNEST);
 
-		if (u_depth > 2 && !rn2(4))
+		if (u_depth > 2 && !rn2(5))
 			mkroom(GARDEN);
 
 	}
