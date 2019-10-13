@@ -526,6 +526,8 @@ struct monst *mon;
     if (mon_warning(mon)) {
         tmp = (int) (mon->m_lev / 4);    /* match display.h */
         wl = (tmp > WARNCOUNT - 1) ? WARNCOUNT - 1 : tmp;
+		if (wl < 1)
+			wl = 1;
     }
     return wl;
 }
@@ -1237,6 +1239,9 @@ see_monsters()
 {
     register struct monst *mon;
     int new_warn_obj_cnt = 0;
+	int new_orc_warn_obj_cnt = 0;
+	int new_demon_warn_obj_cnt = 0;
+	int new_undead_warn_obj_cnt = 0;
 
     if (defer_see_monsters)
         return;
@@ -1249,15 +1254,99 @@ see_monsters()
             see_wsegs(mon);
         if (Warn_of_mon && (context.warntype.obj & mon->data->mflags2) != 0L)
             new_warn_obj_cnt++;
-    }
+		if (Orc_warning && (mon->data->mflags2 & M2_ORC) != 0L)
+			new_orc_warn_obj_cnt++;
+		if (Demon_warning && (mon->data->mflags2 & M2_DEMON) != 0L)
+			new_demon_warn_obj_cnt++;
+		if (Undead_warning && (mon->data->mflags2 & M2_UNDEAD) != 0L)
+			new_undead_warn_obj_cnt++;
+	}
+
+
     /*
-     * Make Sting glow blue or stop glowing if required.
+     * Make Sting and other similar objects glow blue or stop glowing if required.
      */
-    if (new_warn_obj_cnt != warn_obj_cnt) {
-        Sting_effects(uwep, new_warn_obj_cnt);
-		Sting_effects(uarms, new_warn_obj_cnt);
-		warn_obj_cnt = new_warn_obj_cnt;
-    }
+	struct obj* uitem;
+ 	for (uitem = invent; uitem; uitem = uitem->nobj)
+	{
+		if (!object_uses_spellbook_wand_flags_and_properties(uitem)
+			&& (
+			(uitem == uwep && (is_shield(uitem) || is_weapon(uitem)))
+				|| uitem == uarm
+				|| uitem == uarmc
+				|| uitem == uarmh
+				|| (uitem == uarms && (is_shield(uitem) || is_weapon(uitem)))
+				|| uitem == uarmg
+				|| uitem == uarmf
+				|| uitem == uarmu
+				|| uitem == uarmo
+				|| uitem == uarmb
+				|| uitem == umisc
+				|| uitem == umisc2
+				|| uitem == umisc3
+				|| uitem == umisc4
+				|| uitem == umisc5
+				|| uitem == uamul
+				|| uitem == uright
+				|| uitem == uleft
+				|| objects[uitem->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED))
+		{
+			int otyp = uitem->otyp;
+			if (inappropriate_character_type(uitem))
+			{
+				continue;
+			}
+
+			if (uitem->oartifact
+				&& (uitem->oartifact == ART_STING
+					|| uitem->oartifact == ART_ORCRIST
+					|| uitem->oartifact == ART_GRIMTOOTH
+					))
+			{
+				int old_count = uitem->detectioncount;
+				if (new_warn_obj_cnt != uitem->detectioncount)
+					Sting_effects(uitem, new_warn_obj_cnt);
+
+				uitem->detectioncount = new_warn_obj_cnt;
+			}
+			else if (
+				objects[otyp].oc_oprop == WARN_ORC
+				|| objects[otyp].oc_oprop2 == WARN_ORC
+				|| objects[otyp].oc_oprop3 == WARN_ORC
+				|| objects[otyp].oc_oprop == WARN_DEMON
+				|| objects[otyp].oc_oprop2 == WARN_DEMON
+				|| objects[otyp].oc_oprop3 == WARN_DEMON
+				|| objects[otyp].oc_oprop == WARN_UNDEAD
+				|| objects[otyp].oc_oprop2 == WARN_UNDEAD
+				|| objects[otyp].oc_oprop3 == WARN_UNDEAD
+				)
+			{
+				int old_count = uitem->detectioncount;
+				int new_count = 0;
+				if (objects[otyp].oc_oprop == WARN_ORC
+					|| objects[otyp].oc_oprop2 == WARN_ORC
+					|| objects[otyp].oc_oprop3 == WARN_ORC)
+					new_count += new_orc_warn_obj_cnt;
+
+				if (objects[otyp].oc_oprop == WARN_DEMON
+					|| objects[otyp].oc_oprop2 == WARN_DEMON
+					|| objects[otyp].oc_oprop3 == WARN_DEMON)
+					new_count += new_demon_warn_obj_cnt;
+
+				if (objects[otyp].oc_oprop == WARN_UNDEAD
+					|| objects[otyp].oc_oprop2 == WARN_UNDEAD
+					|| objects[otyp].oc_oprop3 == WARN_UNDEAD)
+					new_count += new_undead_warn_obj_cnt;
+
+				if (new_count != uitem->detectioncount)
+					Sting_effects(uitem, new_count);
+
+				uitem->detectioncount = new_count;
+			}
+		}
+	}
+
+
 
     /* when mounted, hero's location gets caught by monster loop */
     if (!u.usteed)

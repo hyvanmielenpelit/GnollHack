@@ -47,8 +47,12 @@
  */
 
 #define mon_warning(mon)                                                 \
-    ((Warning || (Undead_warning && mon->data->mflags2 & M2_UNDEAD) || (Orc_warning && mon->data->mflags2 & M2_ORC) || (Demon_warning && mon->data->mflags2 & M2_DEMON)) && !(mon)->mpeaceful && (distu((mon)->mx, (mon)->my) < 100) \
-     && (((int) ((mon)->m_lev / 4)) >= context.warnlevel))
+    ((Warning || \
+		(Undead_warning && mon->data->mflags2 & M2_UNDEAD) \
+		|| (Orc_warning && mon->data->mflags2 & M2_ORC) \
+		|| (Demon_warning && mon->data->mflags2 & M2_DEMON)) && !(mon)->mpeaceful && (distu((mon)->mx, (mon)->my) < 100))
+
+/*     && (((int) ((mon)->m_lev / 4)) >= context.warnlevel)) */
 
 /*
  * mon_visible()

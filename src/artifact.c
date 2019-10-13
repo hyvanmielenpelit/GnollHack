@@ -1916,34 +1916,59 @@ boolean ingsfx;
 void
 Sting_effects(otmp, orc_count)
 struct obj* otmp;
-int orc_count; /* new count (warn_obj_cnt is old count); -1 is a flag value */
+int orc_count; /* new count, new count is in the items; OBSOLETE: (warn_obj_cnt is old count); -1 is a flag value */
 {
     if (otmp
         && (otmp->oartifact == ART_STING
             || otmp->oartifact == ART_ORCRIST
-            || otmp->oartifact == ART_GRIMTOOTH)) {
-        int oldstr = glow_strength(warn_obj_cnt),
+            || otmp->oartifact == ART_GRIMTOOTH
+			|| objects[otmp->otyp].oc_oprop == WARN_ORC
+			|| objects[otmp->otyp].oc_oprop2 == WARN_ORC
+			|| objects[otmp->otyp].oc_oprop3 == WARN_ORC
+			|| objects[otmp->otyp].oc_oprop == WARN_DEMON
+			|| objects[otmp->otyp].oc_oprop2 == WARN_DEMON
+			|| objects[otmp->otyp].oc_oprop3 == WARN_DEMON
+			|| objects[otmp->otyp].oc_oprop == WARN_UNDEAD
+			|| objects[otmp->otyp].oc_oprop2 == WARN_UNDEAD
+			|| objects[otmp->otyp].oc_oprop3 == WARN_UNDEAD
+			)) {
+        int oldstr = glow_strength(otmp->detectioncount),
             newstr = glow_strength(orc_count);
 
-        if (orc_count == -1 && warn_obj_cnt > 0) {
+		char colorbuf[BUFSZ] = "red";
+		if (otmp->oartifact)
+			strcpy(colorbuf, glow_color(otmp->oartifact));
+		else if (objects[otmp->otyp].oc_flags2 & O2_FLICKER_COLOR_WHITE)
+			strcpy(colorbuf, "white");
+		else if (objects[otmp->otyp].oc_flags2 & O2_FLICKER_COLOR_BLUE)
+			strcpy(colorbuf, "blue");
+
+
+		char weapbuf[BUFSZ] = "";
+		if(otmp->oartifact)
+			strcpy(weapbuf, bare_artifactname(otmp));
+		else
+			Sprintf(weapbuf, "Your %s", cxname(otmp));
+
+        if (orc_count == -1 && otmp->detectioncount > 0) {
             /* -1 means that blindness has just been toggled; give a
                'continue' message that eventual 'stop' message will match */
-            pline("%s is %s.", bare_artifactname(otmp),
-                  glow_verb(Blind ? 0 : warn_obj_cnt, TRUE));
+            pline("%s is %s.", weapbuf,
+                  glow_verb(Blind ? 0 : otmp->detectioncount, TRUE));
         } else if (newstr > 0 && newstr != oldstr) {
             /* 'start' message */
             if (!Blind)
-                pline("%s %s %s%c", bare_artifactname(otmp),
+                pline("%s %s %s%c", weapbuf,
                       otense(otmp, glow_verb(orc_count, FALSE)),
-                      glow_color(otmp->oartifact),
+					  colorbuf,
                       (newstr > oldstr) ? '!' : '.');
             else if (oldstr == 0) /* quivers */
-                pline("%s %s slightly.", bare_artifactname(otmp),
+                pline("%s %s slightly.", weapbuf,
                       otense(otmp, glow_verb(0, FALSE)));
-        } else if (orc_count == 0 && warn_obj_cnt > 0) {
+        } else if (orc_count == 0 && otmp->detectioncount > 0) {
             /* 'stop' message */
-            pline("%s stops %s.", bare_artifactname(otmp),
-                  glow_verb(Blind ? 0 : warn_obj_cnt, TRUE));
+            pline("%s stops %s.", weapbuf,
+                  glow_verb(Blind ? 0 : otmp->detectioncount, TRUE));
         }
     }
 }

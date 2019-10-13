@@ -39,7 +39,7 @@ E NEARDATA int occtime;
 
 #define WARNCOUNT 6 /* number of different warning levels */
 E nhsym warnsyms[WARNCOUNT];
-E NEARDATA int warn_obj_cnt; /* count of monsters meeting criteria */
+//E NEARDATA int warn_obj_cnt; /* count of monsters meeting criteria */
 
 E int x_maze_max, y_maze_max;
 E int otg_temp;

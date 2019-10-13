@@ -127,7 +127,8 @@ struct obj {
     long age;               /* creation date */
     long owornmask;
 	int cooldownleft;	   /* item cooldown left before it can be used again*/
-    struct oextra *oextra; /* pointer to oextra struct */
+	int detectioncount;    /* monsters detected for WARN_ORC and other similar properties */
+	struct oextra *oextra; /* pointer to oextra struct */
 };
 
 #define newobj() (struct obj *) alloc(sizeof(struct obj))

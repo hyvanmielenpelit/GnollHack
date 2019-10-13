@@ -1295,17 +1295,9 @@ unsigned doname_flags;
 	            Strcat(bp, " (wielded)");
         } else {
 
-            /* note: Sting's glow message, if added, will insert text
-               in front of "(weapon in hand)"'s closing paren */
             Sprintf(eos(bp), " (%sweapon in %s%s)",
                     (obj->otyp == AKLYS) ? "tethered " : "", u.twoweap && !bimanual(obj) ? "right " : "", bimanual(obj)? hands_s : hand_s);
 
-            if (warn_obj_cnt && obj == uwep && (EWarn_of_mon & W_WEP) != 0L) {
-                if (!Blind) /* we know bp[] ends with ')'; overwrite that */
-                    Sprintf(eos(bp) - 1, ", %s %s)",
-                            glow_verb(warn_obj_cnt, TRUE),
-                            glow_color(obj->oartifact));
-            }
         }
     }
 
@@ -1329,13 +1321,6 @@ unsigned doname_flags;
 				(!bimanual(obj) ? (u.twoweap ? "left " : "another ") : ""), 
 				(bimanual(obj) ? hands_s : hand_s)
 			);
-
-			if (warn_obj_cnt && obj == uwep && (EWarn_of_mon & W_WEP2) != 0L) {
-				if (!Blind) /* we know bp[] ends with ')'; overwrite that */
-					Sprintf(eos(bp) - 1, ", %s %s)",
-						glow_verb(warn_obj_cnt, TRUE),
-						glow_color(obj->oartifact));
-			}
 		}
 	}
 
@@ -1387,6 +1372,7 @@ unsigned doname_flags;
             Strcat(bp, " (at the ready)");
         }
     }
+
     /* treat 'restoring' like suppress_price because shopkeeper and
        bill might not be available yet while restore is in progress */
     if (iflags.suppress_price || restoring) {
@@ -1422,8 +1408,26 @@ unsigned doname_flags;
 
 	bp = strprepend(bp, prefix);
 
+	/* Mark if cooling down */
 	if (obj->cooldownleft > 0)
 		Strcat(bp, " (cooling down)");
+
+	/* Mark if glowing when detected something */
+	if (obj->detectioncount > 0)
+	{
+		char colorbuf[BUFSZ] = "red";
+		if (obj->oartifact)
+			strcpy(colorbuf, glow_color(obj->oartifact));
+		else if (objects[obj->otyp].oc_flags2 & O2_FLICKER_COLOR_WHITE)
+			strcpy(colorbuf, "white");
+		else if (objects[obj->otyp].oc_flags2 & O2_FLICKER_COLOR_BLUE)
+			strcpy(colorbuf, "blue");
+
+		if (!Blind)
+			Sprintf(eos(bp), " (%s %s)",
+				glow_verb(obj->detectioncount, TRUE),
+				colorbuf);
+	}
 
 
 	//Weights

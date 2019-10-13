@@ -315,7 +315,7 @@ boolean talk;
 void
 toggle_blindness()
 {
-    boolean Stinging = (uwep && (EWarn_of_mon & W_WEP) != 0L) || (uarms && (EWarn_of_mon & W_WEP2) != 0L);
+    boolean Stinging = (uwep && (EWarn_of_mon & W_WEP) != 0L) || (uarms && (EWarn_of_mon & W_WEP2) != 0L) || (uwep && (Orc_warning & W_WEP) != 0L) || (uarms && (Orc_warning & W_WEP2) != 0L);
 
     /* blindness has just been toggled */
     context.botl = TRUE; /* status conditions need update */

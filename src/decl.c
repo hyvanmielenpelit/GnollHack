@@ -42,7 +42,7 @@ struct dgn_topology dungeon_topology = { DUMMY };
 
 struct q_score quest_status = DUMMY;
 
-NEARDATA int warn_obj_cnt = 0;
+//NEARDATA int warn_obj_cnt = 0;
 NEARDATA int smeq[MAXNROFROOMS + 1] = DUMMY;
 NEARDATA int doorindex = 0;
 NEARDATA char *save_cm = 0;
