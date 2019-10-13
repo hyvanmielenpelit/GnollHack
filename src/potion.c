@@ -315,9 +315,46 @@ boolean talk;
 void
 toggle_blindness()
 {
-    boolean Stinging = (uwep && (EWarn_of_mon & W_WEP) != 0L) || (uarms && (EWarn_of_mon & W_WEP2) != 0L) || (uwep && (Orc_warning & W_WEP) != 0L) || (uarms && (Orc_warning & W_WEP2) != 0L);
+	boolean Stinging = ((EWarn_of_mon & W_WEP) != 0L) || ((EWarn_of_mon & W_WEP2) != 0L);
 
-    /* blindness has just been toggled */
+	boolean visionrecalcneeded = FALSE;
+	struct obj* uitem;
+	for (uitem = invent; uitem; uitem = uitem->nobj)
+	{
+		if (!object_uses_spellbook_wand_flags_and_properties(uitem)
+			&& (
+			(uitem == uwep && (is_shield(uitem) || is_weapon(uitem)))
+				|| uitem == uarm
+				|| uitem == uarmc
+				|| uitem == uarmh
+				|| (uitem == uarms && (is_shield(uitem) || is_weapon(uitem)))
+				|| uitem == uarmg
+				|| uitem == uarmf
+				|| uitem == uarmu
+				|| uitem == uarmo
+				|| uitem == uarmb
+				|| uitem == umisc
+				|| uitem == umisc2
+				|| uitem == umisc3
+				|| uitem == umisc4
+				|| uitem == umisc5
+				|| uitem == uamul
+				|| uitem == uright
+				|| uitem == uleft
+				|| objects[uitem->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED))
+		{
+			int otyp = uitem->otyp;
+			if (inappropriate_character_type(uitem))
+			{
+				continue;
+			}
+			Sting_effects(uitem, -1);
+			visionrecalcneeded = TRUE;
+		}
+	}
+
+	/* Note this is a kludge that works only with wielded weapons; */
+	/* blindness has just been toggled */
     context.botl = TRUE; /* status conditions need update */
     vision_full_recalc = 1; /* vision has changed */
     /* this vision recalculation used to be deferred until moveloop(),
@@ -326,7 +363,7 @@ toggle_blindness()
        and then a secret door; hero was blinded by vapors but then got the
        message "a door appears in the wall" because wall spot was IN_SIGHT) */
     vision_recalc(0);
-    if (Blind_telepat || Unblind_telepat || Infravision || Stinging)
+    if (Blind_telepat || Unblind_telepat || Infravision || Stinging || visionrecalcneeded)
         see_monsters(); /* also counts EWarn_of_mon monsters */
     /*
      * Avoid either of the sequences
@@ -335,12 +372,9 @@ toggle_blindness()
      * by giving "Sting is quivering" when becoming blind or
      * "Sting is glowing" when regaining sight so that the eventual
      * "stops" message matches the most recent "Sting is ..." one.
-     */
-    if (Stinging)
-	{
-        Sting_effects(uwep, -1);
-		Sting_effects(uarms, -1);
-	}
+     */	
+
+
 	/* update dknown flag for inventory picked up while blind */
     if (!Blind)
         learn_unseen_invent();

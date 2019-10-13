@@ -1933,6 +1933,67 @@ boolean ingsfx;
     return resbuf;
 }
 
+boolean
+item_has_specific_monster_warning(otmp)
+struct obj* otmp;
+{
+	if (!otmp)
+		return FALSE;
+
+	int otyp = otmp->otyp;
+
+	boolean res = (
+		objects[otyp].oc_oprop == WARN_ORC
+		|| objects[otyp].oc_oprop2 == WARN_ORC
+		|| objects[otyp].oc_oprop3 == WARN_ORC
+
+		|| objects[otyp].oc_oprop == WARN_DEMON
+		|| objects[otyp].oc_oprop2 == WARN_DEMON
+		|| objects[otyp].oc_oprop3 == WARN_DEMON
+
+		|| objects[otyp].oc_oprop == WARN_UNDEAD
+		|| objects[otyp].oc_oprop2 == WARN_UNDEAD
+		|| objects[otyp].oc_oprop3 == WARN_UNDEAD
+
+		|| objects[otyp].oc_oprop == WARN_TROLL
+		|| objects[otyp].oc_oprop2 == WARN_TROLL
+		|| objects[otyp].oc_oprop3 == WARN_TROLL
+
+		|| objects[otyp].oc_oprop == WARN_GIANT
+		|| objects[otyp].oc_oprop2 == WARN_GIANT
+		|| objects[otyp].oc_oprop3 == WARN_GIANT
+
+		|| objects[otyp].oc_oprop == WARN_DRAGON
+		|| objects[otyp].oc_oprop2 == WARN_DRAGON
+		|| objects[otyp].oc_oprop3 == WARN_DRAGON
+
+		|| objects[otyp].oc_oprop == WARN_ELF
+		|| objects[otyp].oc_oprop2 == WARN_ELF
+		|| objects[otyp].oc_oprop3 == WARN_ELF
+
+		|| objects[otyp].oc_oprop == WARN_DWARF
+		|| objects[otyp].oc_oprop2 == WARN_DWARF
+		|| objects[otyp].oc_oprop3 == WARN_DWARF
+
+		|| objects[otyp].oc_oprop == WARN_GNOLL
+		|| objects[otyp].oc_oprop2 == WARN_GNOLL
+		|| objects[otyp].oc_oprop3 == WARN_GNOLL
+
+		|| objects[otyp].oc_oprop == WARN_HUMAN
+		|| objects[otyp].oc_oprop2 == WARN_HUMAN
+		|| objects[otyp].oc_oprop3 == WARN_HUMAN
+
+		|| objects[otyp].oc_oprop == WARN_WERE
+		|| objects[otyp].oc_oprop2 == WARN_WERE
+		|| objects[otyp].oc_oprop3 == WARN_WERE
+
+		|| objects[otyp].oc_oprop == WARN_ANGEL
+		|| objects[otyp].oc_oprop2 == WARN_ANGEL
+		|| objects[otyp].oc_oprop3 == WARN_ANGEL);
+
+	return res;
+}
+
 /* use for warning "glow" for Sting, Orcrist, and Grimtooth */
 void
 Sting_effects(otmp, orc_count)
@@ -1948,54 +2009,9 @@ int orc_count; /* new count, new count is in the items; OBSOLETE: (warn_obj_cnt 
         && (otmp->oartifact == ART_STING
             || otmp->oartifact == ART_ORCRIST
             || otmp->oartifact == ART_GRIMTOOTH
-			|| objects[otyp].oc_oprop == WARN_ORC
-			|| objects[otyp].oc_oprop2 == WARN_ORC
-			|| objects[otyp].oc_oprop3 == WARN_ORC
-
-			|| objects[otyp].oc_oprop == WARN_DEMON
-			|| objects[otyp].oc_oprop2 == WARN_DEMON
-			|| objects[otyp].oc_oprop3 == WARN_DEMON
-
-			|| objects[otyp].oc_oprop == WARN_UNDEAD
-			|| objects[otyp].oc_oprop2 == WARN_UNDEAD
-			|| objects[otyp].oc_oprop3 == WARN_UNDEAD
-
-			|| objects[otyp].oc_oprop == WARN_TROLL
-			|| objects[otyp].oc_oprop2 == WARN_TROLL
-			|| objects[otyp].oc_oprop3 == WARN_TROLL
-
-			|| objects[otyp].oc_oprop == WARN_GIANT
-			|| objects[otyp].oc_oprop2 == WARN_GIANT
-			|| objects[otyp].oc_oprop3 == WARN_GIANT
-
-			|| objects[otyp].oc_oprop == WARN_DRAGON
-			|| objects[otyp].oc_oprop2 == WARN_DRAGON
-			|| objects[otyp].oc_oprop3 == WARN_DRAGON
-
-			|| objects[otyp].oc_oprop == WARN_ELF
-			|| objects[otyp].oc_oprop2 == WARN_ELF
-			|| objects[otyp].oc_oprop3 == WARN_ELF
-
-			|| objects[otyp].oc_oprop == WARN_DWARF
-			|| objects[otyp].oc_oprop2 == WARN_DWARF
-			|| objects[otyp].oc_oprop3 == WARN_DWARF
-
-			|| objects[otyp].oc_oprop == WARN_GNOLL
-			|| objects[otyp].oc_oprop2 == WARN_GNOLL
-			|| objects[otyp].oc_oprop3 == WARN_GNOLL
-
-			|| objects[otyp].oc_oprop == WARN_HUMAN
-			|| objects[otyp].oc_oprop2 == WARN_HUMAN
-			|| objects[otyp].oc_oprop3 == WARN_HUMAN
-
-			|| objects[otyp].oc_oprop == WARN_WERE
-			|| objects[otyp].oc_oprop2 == WARN_WERE
-			|| objects[otyp].oc_oprop3 == WARN_WERE
-
-			|| objects[otyp].oc_oprop == WARN_ANGEL
-			|| objects[otyp].oc_oprop2 == WARN_ANGEL
-			|| objects[otyp].oc_oprop3 == WARN_ANGEL
-			)) {
+			|| item_has_specific_monster_warning(otmp)
+			)) 
+	{
         int oldstr = glow_strength(otmp->detectioncount),
             newstr = glow_strength(orc_count);
 
