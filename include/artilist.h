@@ -160,10 +160,6 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
       PHYS(5, 0), DFNS(AD_BLND), NO_CARY, 0, A_LAWFUL, NON_PM, NON_PM, 1500L,
       NO_COLOR),
 
-	A("Mace of Disruption", SILVER_MACE, (SPFX_RESTR | SPFX_WARN | SPFX_DFLAG2), 0, M2_UNDEAD,
-		PHYS(5, 0), DFNS(AD_DRLI), NO_CARY, 0, A_LAWFUL, NON_PM, NON_PM, 3000L,
-		NO_COLOR),
-
 		/*
      *      The artifacts for the quest dungeon, all self-willed.
      */

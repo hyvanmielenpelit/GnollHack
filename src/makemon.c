@@ -648,7 +648,7 @@ register struct monst *mtmp;
 					break;
 				case 5:
 					weaptype = SILVER_MACE;
-					artifacttype = ART_MACE_OF_DISRUPTION;
+					artifacttype = 0;
 					break;
 				default:
 					break;
