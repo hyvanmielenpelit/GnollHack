@@ -348,8 +348,11 @@ toggle_blindness()
 			{
 				continue;
 			}
-			Sting_effects(uitem, -1);
-			visionrecalcneeded = TRUE;
+			if(item_has_specific_monster_warning(uitem) || uitem->oartifact == ART_STING || uitem->oartifact == ART_ORCRIST || uitem->oartifact == ART_GRIMTOOTH)
+			{
+				Sting_effects(uitem, -1);
+				visionrecalcneeded = TRUE;
+			}
 		}
 	}
 
