@@ -255,6 +255,17 @@ register struct monst *mtmp;
 			(void)mongets(mtmp, HEAVY_CROSSBOW);
 			m_initthrow(mtmp, GNOLLISH_QUARREL, 21+rnd(10), !rn2(5), 0);
 			break;
+		case PM_FLIND:
+			if (!rn2(2))
+				(void)mongets(mtmp, FLINDBAR);
+			else if (!rn2(15))
+				(void)mongets(mtmp, TRIPLE_HEADED_FLAIL);
+			else
+				(void)mongets(mtmp, DOUBLE_HEADED_FLAIL);
+			break;
+		case PM_FLIND_LORD:
+			(void)mongets(mtmp, FLINDBAR);
+			break;
 		default:
 			break;
 		}

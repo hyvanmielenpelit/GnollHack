@@ -415,11 +415,20 @@ WEAPON("halberd", "angled poleaxe",
 		0, 0, 0, 0, 60, 100, AD_PHYS, 1, 6, 1, 1, 6, 1, AD_PHYS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, B, WEP_CLUB, P_CLUB, MAT_WOOD, CLR_BLACK, O1_NONE, O2_DEMON_ITEM, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 	WEAPON("rubber hose", None,
 		1, 0, 0, 0, 20, 3, AD_PHYS, 1, 4, 0, 1, 3, 0, AD_PHYS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, B, WEP_WHIP, P_WHIP, MAT_PLASTIC, CLR_BROWN, O1_NONE, O2_FLIMSY, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
-	WEAPON("quarterstaff", "staff",
+	
+	/* Staffs */
+	WEAPON("quarterstaff", "wooden staff",
 		0, 0, 1, 11, 30, 5, AD_PHYS, 1, 6, 0, 1, 6, 0, AD_PHYS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, B, WEP_STAFF, P_QUARTERSTAFF, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
-	WEAPON("staff of the magi", "staff",
-		0, 0, 1, 4, 30, 500, AD_PHYS, 1, 6, 0, 1, 6, 0, AD_ELEC, 2, 6, 0, 0, 0, 0, 0, 50, 0, 0, 0, 0, 0, 0, 0, B, WEP_STAFF, P_QUARTERSTAFF, MAT_WOOD, HI_WOOD, O1_MANA_PERCENTAGE_BONUS | O1_FIRE_RESISTANT | O1_LIGHTNING_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
-	/* two-piece */
+	WEAPON("flindbar", "iron staff",
+		0, 0, 1, 0, 160, 5, AD_PHYS, 2, 10, 0, 3, 10, 0, AD_PHYS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, B, WEP_STAFF, P_QUARTERSTAFF, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
+	WEAPON("staff of the magi", "wooden staff",
+		0, 0, 1, 4, 30, 500, 
+		AD_PHYS, 1, 6, 0, 1, 6, 0, AD_ELEC, 2, 6, 0, 
+		0, 0, 0, 0, 50, 0, 0, 0, 0, 
+		NO_POWER, NO_POWER, NO_POWER, B, WEP_STAFF, P_QUARTERSTAFF, MAT_WOOD, HI_WOOD,
+		O1_MANA_PERCENTAGE_BONUS | O1_FIRE_RESISTANT | O1_LIGHTNING_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
+	
+		/* two-piece */
 	WEAPON("aklys", "thonged club",
 		0, 0, 0, 8, 15, 4, AD_PHYS, 1, 6, 0, 1, 3, 0, AD_PHYS, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, B, WEP_CLUB, P_CLUB, MAT_IRON, HI_METAL, O1_THROWN_WEAPON | O1_RETURNS_TO_HAND_AFTER_THROWING, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 WEAPON("flail", None,
