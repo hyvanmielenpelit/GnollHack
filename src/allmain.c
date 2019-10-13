@@ -286,7 +286,7 @@ boolean resuming;
 
                     if (Searching && multi >= 0)
                         (void) dosearch0(1);
-                    if (Warning || Undead_warning || Demon_warning)
+                    if (Warning || Undead_warning || Demon_warning || Orc_warning)
                         warnreveal();
                     mkot_trap_warn();
                     dosounds();
@@ -372,7 +372,7 @@ boolean resuming;
                     swallowed(0);
             } else if (Blind_telepat || Unblind_telepat) {
                 see_monsters();
-            } else if (Warning || Warn_of_mon || Undead_warning || Demon_warning)
+            } else if (Warning || Warn_of_mon || Undead_warning || Demon_warning || Orc_warning)
                 see_monsters();
 
             if (vision_full_recalc)

@@ -103,7 +103,8 @@ const struct propname {
 	{ FLASH_RES, "flash resistance" },
 	{ EYE_PROTECTION, "protection from eye damage" },
 	{ BRAIN_PROTECTION, "protection from brain damage" },
-	{ WARN_DEMON, "warning of demon" },
+	{ WARN_DEMON, "warning of demons" },
+	{ WARN_ORC, "warning of orcs" },
 	{ LAUGHING, "laughing uncontrollably" },
 	{  0, 0 },
 };
@@ -703,6 +704,7 @@ nh_timeout()
                 break;
 			case WARN_UNDEAD:
 			case WARN_DEMON:
+			case WARN_ORC:
 				break;
 			case PASSES_WALLS:
                 if (!Passes_walls) {

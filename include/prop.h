@@ -98,7 +98,8 @@ enum prop_types {
 	EYE_PROTECTION	  = 74,
 	BRAIN_PROTECTION  = 75,
 	WARN_DEMON		  = 76,
-	LAUGHING		  = 77 //KEEP THIS LAST
+	WARN_ORC		  = 77,
+	LAUGHING		  = 78 //KEEP THIS LAST
 };
 #define LAST_PROP (LAUGHING)
 

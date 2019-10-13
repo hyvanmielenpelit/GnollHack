@@ -2637,6 +2637,8 @@ int final;
         you_are("warned of undead", from_what(WARN_UNDEAD));
 	if (Demon_warning)
 		you_are("warned of demons", from_what(WARN_DEMON));
+	if (Orc_warning)
+		you_are("warned of orcs", from_what(WARN_ORC));
 	if (Searching)
         you_have("automatic searching", from_what(SEARCHING));
     if (Clairvoyant)

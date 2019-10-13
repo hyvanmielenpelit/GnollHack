@@ -194,6 +194,10 @@
 #define EDemon_warning u.uprops[WARN_DEMON].extrinsic
 #define Demon_warning (HDemon_warning || EDemon_warning)
 
+#define HOrc_warning u.uprops[WARN_ORC].intrinsic
+#define EOrc_warning u.uprops[WARN_ORC].extrinsic
+#define Orc_warning (HOrc_warning || EOrc_warning)
+
 #define HSearching u.uprops[SEARCHING].intrinsic
 #define ESearching u.uprops[SEARCHING].extrinsic
 #define Searching (HSearching || ESearching)
