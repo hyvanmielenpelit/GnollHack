@@ -105,6 +105,15 @@ const struct propname {
 	{ BRAIN_PROTECTION, "protection from brain damage" },
 	{ WARN_DEMON, "warning of demons" },
 	{ WARN_ORC, "warning of orcs" },
+	{ WARN_TROLL, "warning of trolls" },
+	{ WARN_GIANT, "warning of giants" },
+	{ WARN_DRAGON, "warning of dragons" },
+	{ WARN_ELF, "warning of elves" },
+	{ WARN_DWARF, "warning of dwarves" },
+	{ WARN_GNOLL, "warning of gnolls" },
+	{ WARN_HUMAN, "warning of human beings" },
+	{ WARN_WERE, "warning of were-creatures" },
+	{ WARN_ANGEL, "warning of angels" },
 	{ LAUGHING, "laughing uncontrollably" },
 	{  0, 0 },
 };
@@ -705,6 +714,18 @@ nh_timeout()
 			case WARN_UNDEAD:
 			case WARN_DEMON:
 			case WARN_ORC:
+
+			case WARN_TROLL:
+			case WARN_GIANT:
+			case WARN_DRAGON:
+
+			case WARN_ELF:
+			case WARN_DWARF:
+			case WARN_GNOLL:
+
+			case WARN_HUMAN:
+			case WARN_WERE:
+			case WARN_ANGEL:
 				break;
 			case PASSES_WALLS:
                 if (!Passes_walls) {

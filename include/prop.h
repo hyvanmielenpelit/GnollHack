@@ -99,7 +99,16 @@ enum prop_types {
 	BRAIN_PROTECTION  = 75,
 	WARN_DEMON		  = 76,
 	WARN_ORC		  = 77,
-	LAUGHING		  = 78 //KEEP THIS LAST
+	WARN_TROLL		  = 78,
+	WARN_GIANT		  = 79,
+	WARN_DRAGON		  = 80,
+	WARN_ELF		  = 81,
+	WARN_DWARF		  = 82,
+	WARN_GNOLL		  = 83,
+	WARN_HUMAN		  = 84,
+	WARN_WERE		  = 85,
+	WARN_ANGEL		  = 86,
+	LAUGHING		  = 87 //KEEP THIS LAST
 };
 #define LAST_PROP (LAUGHING)
 

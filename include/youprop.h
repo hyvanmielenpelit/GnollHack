@@ -198,6 +198,47 @@
 #define EOrc_warning u.uprops[WARN_ORC].extrinsic
 #define Orc_warning (HOrc_warning || EOrc_warning)
 
+#define HTroll_warning u.uprops[WARN_TROLL].intrinsic
+#define ETroll_warning u.uprops[WARN_TROLL].extrinsic
+#define Troll_warning (HTroll_warning || ETroll_warning)
+
+#define HGiant_warning u.uprops[WARN_GIANT].intrinsic
+#define EGiant_warning u.uprops[WARN_GIANT].extrinsic
+#define Giant_warning (HGiant_warning || EGiant_warning)
+
+#define HDragon_warning u.uprops[WARN_DRAGON].intrinsic
+#define EDragon_warning u.uprops[WARN_DRAGON].extrinsic
+#define Dragon_warning (HDragon_warning || EDragon_warning)
+
+#define HElf_warning u.uprops[WARN_ELF].intrinsic
+#define EElf_warning u.uprops[WARN_ELF].extrinsic
+#define Elf_warning (HElf_warning || EElf_warning)
+
+#define HDwarf_warning u.uprops[WARN_DWARF].intrinsic
+#define EDwarf_warning u.uprops[WARN_DWARF].extrinsic
+#define Dwarf_warning (HDwarf_warning || EDwarf_warning)
+
+#define HGnoll_warning u.uprops[WARN_GNOLL].intrinsic
+#define EGnoll_warning u.uprops[WARN_GNOLL].extrinsic
+#define Gnoll_warning (HGnoll_warning || EGnoll_warning)
+
+#define HHuman_warning u.uprops[WARN_HUMAN].intrinsic
+#define EHuman_warning u.uprops[WARN_HUMAN].extrinsic
+#define Human_warning (HHuman_warning || EHuman_warning)
+
+#define HWere_warning u.uprops[WARN_WERE].intrinsic
+#define EWere_warning u.uprops[WARN_WERE].extrinsic
+#define Were_warning (HWere_warning || EWere_warning)
+
+#define HAngel_warning u.uprops[WARN_ANGEL].intrinsic
+#define EAngel_warning u.uprops[WARN_ANGEL].extrinsic
+#define Angel_warning (HAngel_warning || EAngel_warning)
+
+#define Any_warning (Undead_warning || Demon_warning || Orc_warning || Troll_warning \
+					|| Giant_warning || Dragon_warning || Elf_warning || Dwarf_warning \
+					|| Gnoll_warning || Human_warning || Were_warning || Angel_warning)
+
+
 #define HSearching u.uprops[SEARCHING].intrinsic
 #define ESearching u.uprops[SEARCHING].extrinsic
 #define Searching (HSearching || ESearching)

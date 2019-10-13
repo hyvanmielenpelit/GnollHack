@@ -655,59 +655,80 @@ touch_artifact(obj, mon)
 struct obj *obj;
 struct monst *mon;
 {
-    register const struct artifact *oart = get_artifact(obj);
-    boolean badclass, badalign, self_willed, yours;
+	if (!obj || !mon)
+		return 1;
 
-    touch_blasted = FALSE;
-    if (!oart)
-        return 1;
+	register const struct artifact* oart = get_artifact(obj);
+	boolean badclass = FALSE, badalign = FALSE, badappropriate = FALSE, self_willed, yours;
 
-    yours = (mon == &youmonst);
-    /* all quest artifacts are self-willed; if this ever changes, `badclass'
-       will have to be extended to explicitly include quest artifacts */
-    self_willed = ((oart->spfx & SPFX_INTEL) != 0);
-    if (yours) {
-        badclass = self_willed
-                   && ((oart->role != NON_PM && !Role_if(oart->role))
-                       || (oart->race != NON_PM && !Race_if(oart->race)));
-        badalign = ((oart->spfx & SPFX_RESTR) != 0
-                    && oart->alignment != A_NONE
-                    && (oart->alignment != u.ualign.type
-                        || u.ualign.record < 0));
-    } else if (!is_covetous(mon->data) && !is_mplayer(mon->data)) {
-        badclass = self_willed && oart->role != NON_PM
-                   && oart != &artilist[ART_EXCALIBUR];
-        badalign = (oart->spfx & SPFX_RESTR) && oart->alignment != A_NONE
-                   && (oart->alignment != mon_aligntyp(mon));
-    } else { /* an M3_WANTSxxx monster or a fake player */
-        /* special monsters trying to take the Amulet, invocation tools or
-           quest item can touch anything except `spec_applies' artifacts */
-        badclass = badalign = FALSE;
+	touch_blasted = FALSE;
+	if (!oart && !(objects[obj->otyp].oc_flags3 & O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS))
+		return 1;
+
+	yours = (mon == &youmonst);
+	/* all quest artifacts are self-willed; if this ever changes, `badclass'
+	   will have to be extended to explicitly include quest artifacts */
+	if (oart)
+	{
+		self_willed = ((oart->spfx & SPFX_INTEL) != 0);
+		if (yours) {
+			badclass = self_willed
+				&& ((oart->role != NON_PM && !Role_if(oart->role))
+					|| (oart->race != NON_PM && !Race_if(oart->race)));
+			badalign = ((oart->spfx & SPFX_RESTR) != 0
+				&& oart->alignment != A_NONE
+				&& (oart->alignment != u.ualign.type
+					|| u.ualign.record < 0));
+		}
+		else if (!is_covetous(mon->data) && !is_mplayer(mon->data)) {
+			badclass = self_willed && oart->role != NON_PM
+				&& oart != &artilist[ART_EXCALIBUR];
+			badalign = (oart->spfx & SPFX_RESTR) && oart->alignment != A_NONE
+				&& (oart->alignment != mon_aligntyp(mon));
+
+		}
+		else { /* an M3_WANTSxxx monster or a fake player */
+		 /* special monsters trying to take the Amulet, invocation tools or
+			quest item can touch anything except `spec_applies' artifacts */
+			badclass = badalign = FALSE;
+		}
+		/* weapons which attack specific categories of monsters are
+		   bad for them even if their alignments happen to match */
+		if (!badalign)
+			badalign = bane_applies(oart, mon);
+	}
+
+	if (objects[obj->otyp].oc_flags3 & O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS)
+		badappropriate = inappropriate_monster_character_type(mon, obj);
+	
+	if (badappropriate || (((badclass || badalign) && self_willed)
+			|| (badalign && (!yours || !rn2(4)))))
+	{
+			int dmg = 0, tmp = 0;
+			char buf[BUFSZ];
+
+			if (!yours)
+				return 0;
+			if(oart)
+				You("are blasted by %s power!", s_suffix(the(xname(obj))));
+			else
+				You("are shocked by %s enchantment!", s_suffix(the(xname(obj))));
+
+			touch_blasted = TRUE;
+			if (badappropriate)
+				dmg = totaldmgval(obj, &youmonst, &youmonst);
+			if(badclass || badalign)
+				dmg += d((Antimagic ? 2 : 4), (self_willed ? 10 : 4));
+			/* add half (maybe quarter) of the usual silver damage bonus */
+			if (objects[obj->otyp].oc_material == MAT_SILVER && Hate_silver)
+				tmp = rnd(10), dmg += Maybe_Half_Phys(tmp);
+			Sprintf(buf, "touching %s", (oart ? oart->name : an(cxname(obj))));
+			losehp(dmg, buf, KILLED_BY); /* magic damage, not physical */
+			exercise(A_WIS, FALSE);
     }
-    /* weapons which attack specific categories of monsters are
-       bad for them even if their alignments happen to match */
-    if (!badalign)
-        badalign = bane_applies(oart, mon);
 
-    if (((badclass || badalign) && self_willed)
-        || (badalign && (!yours || !rn2(4)))) {
-        int dmg, tmp;
-        char buf[BUFSZ];
 
-        if (!yours)
-            return 0;
-        You("are blasted by %s power!", s_suffix(the(xname(obj))));
-        touch_blasted = TRUE;
-        dmg = d((Antimagic ? 2 : 4), (self_willed ? 10 : 4));
-        /* add half (maybe quarter) of the usual silver damage bonus */
-        if (objects[obj->otyp].oc_material == MAT_SILVER && Hate_silver)
-            tmp = rnd(10), dmg += Maybe_Half_Phys(tmp);
-        Sprintf(buf, "touching %s", oart->name);
-        losehp(dmg, buf, KILLED_BY); /* magic damage, not physical */
-        exercise(A_WIS, FALSE);
-    }
-
-    /* can pick it up unless you're totally non-synch'd with the artifact */
+	/* can pick it up unless you're totally non-synch'd with the artifact */
     if (badclass && badalign && self_willed) {
         if (yours) {
             if (!carried(obj))
@@ -1918,19 +1939,62 @@ Sting_effects(otmp, orc_count)
 struct obj* otmp;
 int orc_count; /* new count, new count is in the items; OBSOLETE: (warn_obj_cnt is old count); -1 is a flag value */
 {
+	if (!otmp)
+		return;
+
+	int otyp = otmp->otyp;
+
     if (otmp
         && (otmp->oartifact == ART_STING
             || otmp->oartifact == ART_ORCRIST
             || otmp->oartifact == ART_GRIMTOOTH
-			|| objects[otmp->otyp].oc_oprop == WARN_ORC
-			|| objects[otmp->otyp].oc_oprop2 == WARN_ORC
-			|| objects[otmp->otyp].oc_oprop3 == WARN_ORC
-			|| objects[otmp->otyp].oc_oprop == WARN_DEMON
-			|| objects[otmp->otyp].oc_oprop2 == WARN_DEMON
-			|| objects[otmp->otyp].oc_oprop3 == WARN_DEMON
-			|| objects[otmp->otyp].oc_oprop == WARN_UNDEAD
-			|| objects[otmp->otyp].oc_oprop2 == WARN_UNDEAD
-			|| objects[otmp->otyp].oc_oprop3 == WARN_UNDEAD
+			|| objects[otyp].oc_oprop == WARN_ORC
+			|| objects[otyp].oc_oprop2 == WARN_ORC
+			|| objects[otyp].oc_oprop3 == WARN_ORC
+
+			|| objects[otyp].oc_oprop == WARN_DEMON
+			|| objects[otyp].oc_oprop2 == WARN_DEMON
+			|| objects[otyp].oc_oprop3 == WARN_DEMON
+
+			|| objects[otyp].oc_oprop == WARN_UNDEAD
+			|| objects[otyp].oc_oprop2 == WARN_UNDEAD
+			|| objects[otyp].oc_oprop3 == WARN_UNDEAD
+
+			|| objects[otyp].oc_oprop == WARN_TROLL
+			|| objects[otyp].oc_oprop2 == WARN_TROLL
+			|| objects[otyp].oc_oprop3 == WARN_TROLL
+
+			|| objects[otyp].oc_oprop == WARN_GIANT
+			|| objects[otyp].oc_oprop2 == WARN_GIANT
+			|| objects[otyp].oc_oprop3 == WARN_GIANT
+
+			|| objects[otyp].oc_oprop == WARN_DRAGON
+			|| objects[otyp].oc_oprop2 == WARN_DRAGON
+			|| objects[otyp].oc_oprop3 == WARN_DRAGON
+
+			|| objects[otyp].oc_oprop == WARN_ELF
+			|| objects[otyp].oc_oprop2 == WARN_ELF
+			|| objects[otyp].oc_oprop3 == WARN_ELF
+
+			|| objects[otyp].oc_oprop == WARN_DWARF
+			|| objects[otyp].oc_oprop2 == WARN_DWARF
+			|| objects[otyp].oc_oprop3 == WARN_DWARF
+
+			|| objects[otyp].oc_oprop == WARN_GNOLL
+			|| objects[otyp].oc_oprop2 == WARN_GNOLL
+			|| objects[otyp].oc_oprop3 == WARN_GNOLL
+
+			|| objects[otyp].oc_oprop == WARN_HUMAN
+			|| objects[otyp].oc_oprop2 == WARN_HUMAN
+			|| objects[otyp].oc_oprop3 == WARN_HUMAN
+
+			|| objects[otyp].oc_oprop == WARN_WERE
+			|| objects[otyp].oc_oprop2 == WARN_WERE
+			|| objects[otyp].oc_oprop3 == WARN_WERE
+
+			|| objects[otyp].oc_oprop == WARN_ANGEL
+			|| objects[otyp].oc_oprop2 == WARN_ANGEL
+			|| objects[otyp].oc_oprop3 == WARN_ANGEL
 			)) {
         int oldstr = glow_strength(otmp->detectioncount),
             newstr = glow_strength(orc_count);
@@ -1938,6 +2002,8 @@ int orc_count; /* new count, new count is in the items; OBSOLETE: (warn_obj_cnt 
 		char colorbuf[BUFSZ] = "red";
 		if (otmp->oartifact)
 			strcpy(colorbuf, glow_color(otmp->oartifact));
+		else if ((objects[otmp->otyp].oc_flags2 & O2_FLICKER_COLOR_WHITE) && (objects[otmp->otyp].oc_flags2 & O2_FLICKER_COLOR_BLUE))
+			strcpy(colorbuf, "black");
 		else if (objects[otmp->otyp].oc_flags2 & O2_FLICKER_COLOR_WHITE)
 			strcpy(colorbuf, "white");
 		else if (objects[otmp->otyp].oc_flags2 & O2_FLICKER_COLOR_BLUE)

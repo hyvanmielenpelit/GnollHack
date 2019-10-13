@@ -1418,6 +1418,8 @@ unsigned doname_flags;
 		char colorbuf[BUFSZ] = "red";
 		if (obj->oartifact)
 			strcpy(colorbuf, glow_color(obj->oartifact));
+		else if ((objects[obj->otyp].oc_flags2 & O2_FLICKER_COLOR_WHITE) && (objects[obj->otyp].oc_flags2 & O2_FLICKER_COLOR_BLUE))
+			strcpy(colorbuf, "black");
 		else if (objects[obj->otyp].oc_flags2 & O2_FLICKER_COLOR_WHITE)
 			strcpy(colorbuf, "white");
 		else if (objects[obj->otyp].oc_flags2 & O2_FLICKER_COLOR_BLUE)

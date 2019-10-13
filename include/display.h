@@ -49,8 +49,18 @@
 #define mon_warning(mon)                                                 \
     ((Warning || \
 		(Undead_warning && mon->data->mflags2 & M2_UNDEAD) \
+		|| (Demon_warning && mon->data->mflags2 & M2_DEMON) \
 		|| (Orc_warning && mon->data->mflags2 & M2_ORC) \
-		|| (Demon_warning && mon->data->mflags2 & M2_DEMON)) && !(mon)->mpeaceful && (distu((mon)->mx, (mon)->my) < 100))
+		|| (Troll_warning && mon->data->mlet == S_TROLL) \
+		|| (Giant_warning && mon->data->mflags2 & M2_GIANT) \
+		|| (Dragon_warning && mon->data->mlet == S_DRAGON) \
+		|| (Elf_warning && mon->data->mflags2 & M2_ELF) \
+		|| (Dwarf_warning && mon->data->mflags2 & M2_DWARF) \
+		|| (Gnoll_warning && mon->data->mflags2 & M2_GNOLL) \
+		|| (Human_warning && mon->data->mflags2 & M2_HUMAN) \
+		|| (Were_warning && mon->data->mflags2 & M2_WERE) \
+		|| (Angel_warning && mon->data->mlet == S_ANGEL) \
+	) && !(mon)->mpeaceful && (distu((mon)->mx, (mon)->my) < 100))
 
 /*     && (((int) ((mon)->m_lev / 4)) >= context.warnlevel)) */
 

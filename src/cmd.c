@@ -2639,6 +2639,24 @@ int final;
 		you_are("warned of demons", from_what(WARN_DEMON));
 	if (Orc_warning)
 		you_are("warned of orcs", from_what(WARN_ORC));
+	if (Troll_warning)
+		you_are("warned of trolls", from_what(WARN_TROLL));
+	if (Giant_warning)
+		you_are("warned of giants", from_what(WARN_GIANT));
+	if (Dragon_warning)
+		you_are("warned of dragons", from_what(WARN_DRAGON));
+	if (Elf_warning)
+		you_are("warned of elves", from_what(WARN_ELF));
+	if (Dwarf_warning)
+		you_are("warned of dwarves", from_what(WARN_DWARF));
+	if (Gnoll_warning)
+		you_are("warned of gnolls", from_what(WARN_GNOLL));
+	if (Human_warning)
+		you_are("warned of human beings", from_what(WARN_HUMAN));
+	if (Were_warning)
+		you_are("warned of were-creatures", from_what(WARN_WERE));
+	if (Angel_warning)
+		you_are("warned of angels", from_what(WARN_ANGEL));
 	if (Searching)
         you_have("automatic searching", from_what(SEARCHING));
     if (Clairvoyant)

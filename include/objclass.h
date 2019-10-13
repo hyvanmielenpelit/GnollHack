@@ -374,6 +374,7 @@ struct objclass {
 #define O2_SHINES_MAGICAL_LIGHT 0x00008000	
 #define O2_FLICKER_COLOR_WHITE 0x00010000	
 #define O2_FLICKER_COLOR_BLUE 0x00020000	
+#define O2_FLICKER_COLOR_BLACK (O2_FLICKER_COLOR_WHITE | O2_FLICKER_COLOR_BLUE)	
 #define O2_IGNITABLE 0x00040000	
 #define O2_RELATIVE_AGE 0x00080000	
 
@@ -389,21 +390,21 @@ struct objclass {
 /* Artifact flags - to do: Attack type, half physical and spell damage, bonus to monsters only */
 /* Flags 3 */
 #define O3_NONE				0x00000000
-#define O3_NOGEN			0x00000001  /* item is special, bequeathed by gods */
-#define O3_RESTRICTED		0x00000002  /* item is restricted - can't be named */
-#define O3_INTELLIGENT		0x00000004  /* item is self-willed - intelligent */
-#define O3_SPEAK			0x00000008  /* item can speak (not implemented) */
-#define O3_LEVEL_DRAIN		0x00000010  /* drains a level from monsters */
+#define O3_NOGEN			0x00000001  /* TODO: item is special, bequeathed by gods */
+#define O3_RESTRICTED		0x00000002  /* TODO: item is restricted - can't be named */
+#define O3_INTELLIGENT		0x00000004  /* TODO: item is self-willed - intelligent */
+#define O3_SPEAK			0x00000008  /* TODO: item can speak (not implemented) */
+#define O3_LEVEL_DRAIN		0x00000010  /* TODO: drains a level from monsters */
 #define O3_WOUNDING			0x00000020  /* extra damage caused is permanent damage */
 #define O3_LIFE_LEECH		0x00000040  /* heals hit points equal to the extra damage caused */
-#define O3_SHARPNESS		0x00000080	/* causes a critical hit on at a 5% chance, causing quadruple normal damage */
-#define O3_VORPAL			0x00000100	/* beheads monsters */
+#define O3_SHARPNESS		0x00000080	/* TODO: causes a critical hit on at a 5% chance, causing quadruple normal damage */
+#define O3_VORPAL			0x00000100	/* TODO: beheads monsters */
 #define O3_SPE_AFFECTS_ABILITIES					0x00000200 /* add spe to special abilities */
 #define O3_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA			0x00000400 /* abilities such as wounding and life leech are based on full caused damage, not just extra damage */
 #define O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS	0x00000800 /* wielding or wearing prohibits the revival of permitted targets */
 
 #define O3_DALIGN										0x00010000  /* attack bonus on non-aligned monsters  */
-#define O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS		0x00020000
+#define O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS		0x00020000	/* deals damage when wielded like artifacts */
 #define O3_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS		0x00040000
 
 #define O3_PERMTTED_TARGET_LAWFUL	0x00100000
