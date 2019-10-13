@@ -484,7 +484,7 @@ struct monst* mattacker;
 		((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M1_FLAG) && (ptr->mflags1 & objects[otyp].oc_target_permissions))
 			|| ((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M2_FLAG) && (ptr->mflags2 & objects[otyp].oc_target_permissions))
 			|| ((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M3_FLAG) && (ptr->mflags3 & objects[otyp].oc_target_permissions))
-			|| ((objects[otyp].oc_flags3 & ~(O3_TARGET_PERMISSION_IS_M1_FLAG | O3_TARGET_PERMISSION_IS_M2_FLAG | O3_TARGET_PERMISSION_IS_M3_FLAG)) && (ptr->mlet == objects[otyp].oc_target_permissions))
+			|| (((objects[otyp].oc_flags3 & (O3_TARGET_PERMISSION_IS_M1_FLAG | O3_TARGET_PERMISSION_IS_M2_FLAG | O3_TARGET_PERMISSION_IS_M3_FLAG)) == 0) && (ptr->mlet == objects[otyp].oc_target_permissions))
 			|| ((objects[otyp].oc_flags3 & O3_PERMTTED_TARGET_CHAOTIC) && mon->malign < 0)
 			|| ((objects[otyp].oc_flags3 & O3_PERMTTED_TARGET_NEUTRAL) && mon->malign == 0)
 			|| ((objects[otyp].oc_flags3 & O3_PERMTTED_TARGET_LAWFUL) && mon->malign > 0)
