@@ -423,10 +423,10 @@ WEAPON("halberd", "angled poleaxe",
 	WEAPON("aklys", "thonged club",
 		0, 0, 0, 8, 15, 4, AD_PHYS, 1, 6, 0, 1, 3, 0, AD_PHYS, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, B, WEP_CLUB, P_CLUB, MAT_IRON, HI_METAL, O1_THROWN_WEAPON | O1_RETURNS_TO_HAND_AFTER_THROWING, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 WEAPON("flail", None,
-       1, 0, 0, 40,  35,   4, AD_PHYS, 1, 6, 1, 2, 4, 0, AD_PHYS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, B, WEP_FLAIL, P_FLAIL, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
+       1, 0, 0, 37,  35,   4, AD_PHYS, 1, 6, 1, 2, 4, 0, AD_PHYS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, B, WEP_FLAIL, P_FLAIL, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 	/* +1 small, +1d4 large */
 WEAPON("double-headed flail", None,
-	   1, 0, 0,  0,  55, 250, AD_PHYS, 1, 10, 1, 3, 4, 0, AD_PHYS, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, B, WEP_FLAIL, P_FLAIL, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
+	   1, 0, 0, 3, 55, 250, AD_PHYS, 1, 10, 1, 3, 4, 0, AD_PHYS, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, B, WEP_FLAIL, P_FLAIL, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 	/* one-handed, flail damage x c. 1.5, -1 hit bonus (difficult to wield)*/
 WEAPON("triple-headed flail", None,
 	   1, 0, 0, 0, 70, 1000, AD_PHYS, 2, 6, 2, 4, 4, 0, AD_PHYS, 0, 0, 0, -2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, B, WEP_FLAIL, P_FLAIL, MAT_IRON, HI_METAL, O1_NONE, O2_DEMON_ITEM, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
@@ -505,10 +505,10 @@ BOW("heavy crossbow", None,					1, 1, 10, 200, 150, AD_PHYS, 1, 8, 0, 1, 8, 0, A
 #define WEAPONSHIELD(name,desc,kn,prob,wt,cost,\
 			dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,\
 			hitbon,throwrange,acbon,mcbon,manabon,hpbon,bonusattrs,abon,splcastpen,\
-			power,power2,power3,typ,sub,skill,metal,color,\
+			power,power2,power3,typ,skill,metal,color,\
 			flags,flags2,flags3,powconfermask,permittedtargets) \
     OBJECT(OBJ(name,desc), None, None,                                         \
-           BITS(kn, 0, 1, 0, 0, 1, 0, 0, 0, 0, typ, sub, skill, metal),  \
+           BITS(kn, 0, 1, 0, 0, 1, 0, 0, 0, 0, typ, ARM_SHIELD, skill, metal),  \
            power, power2, power3, ARMOR_CLASS, prob, 0, wt, cost, \
 		   dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, \
 		   hitbon, throwrange, acbon, mcbon, manabon, hpbon, bonusattrs, abon, splcastpen, \
@@ -732,7 +732,7 @@ SHIELD("shield of reflection", "polished silver shield",
        0, 1, 0, REFLECTING, 0, 0, 3, 0, 70, 750, 8, 0, 0, 0, 0, 0, 10, MAT_SILVER, HI_SILVER, O1_RUST_RESISTANT | O1_CORROSION_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
 
 WEAPONSHIELD("spiked shield", None,
-       1, 5, 15, 50, AD_PHYS, 1, 4, 0, 1,  4, 0, AD_PHYS, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, PIERCE, ARM_SHIELD, P_SPEAR, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
+       1, 5, 15, 50, AD_PHYS, 1, 4, 0, 1,  4, 0, AD_PHYS, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, PIERCE, P_SPEAR, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 
 /* gloves */
 /* These have their color but not material shuffled, so the MAT_IRON must
