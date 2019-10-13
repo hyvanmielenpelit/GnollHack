@@ -1095,9 +1095,9 @@ unsigned doname_flags;
 				if (u.twoweap)
 				{
 					if ((objects[obj->otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED))
-						Strcat(bp, " (being worn; weapon in left hand)");
+						Sprintf(eos(bp), " (being worn; weapon in left %s)", body_part(HAND));
 					else
-						Strcat(bp, " (being worn; wielded in left hand)");
+						Sprintf(eos(bp), " (being worn; wielded in left %s)", body_part(HAND));
 				}
 				else
 				{
@@ -1109,16 +1109,16 @@ unsigned doname_flags;
 				if (u.twoweap)
 				{
 					if ((objects[obj->otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED))
-						Strcat(bp, " (weapon in left hand)");
+						Sprintf(eos(bp), " (weapon in left %s)", body_part(HAND));
 					else
-						Strcat(bp, " (wielded in left hand)");
+						Sprintf(eos(bp), " (wielded in left %s)", body_part(HAND));
 				}
 				else
 				{
 					if ((objects[obj->otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED))
-						Strcat(bp, " (unused weapon in another hand)");
+						Sprintf(eos(bp), " (unused weapon in another %s)", body_part(HAND));
 					else
-						Strcat(bp, " (wielded in another hand)");
+						Sprintf(eos(bp), " (wielded in another %s)", body_part(HAND));
 				}
 			}
 		}
@@ -1279,22 +1279,26 @@ unsigned doname_flags;
         break;
     }
 
-    if ((obj->owornmask & W_WEP) && !mrg_to_wielded) {
-        if (obj->quan != 1L)
+	const char* hand_s = body_part(HAND);
+	const char* hands_s = makeplural(hand_s);
+	if ((obj->owornmask & W_WEP) && !mrg_to_wielded) {
+        if (obj->quan != 1L || !is_weapon(obj))
 		{
-			if(u.twoweap)
-				Strcat(bp, " (wielded in right hand)");
+			if (u.twoweap)
+			{
+				if(bimanual(obj))
+					Sprintf(eos(bp), " (wielded in %s)", hands_s);
+				else
+					Sprintf(eos(bp), " (wielded in right %s)", hand_s);
+			}
 			else
 	            Strcat(bp, " (wielded)");
         } else {
-            const char *hand_s = body_part(HAND);
 
-            if (bimanual(obj))
-                hand_s = makeplural(hand_s);
             /* note: Sting's glow message, if added, will insert text
                in front of "(weapon in hand)"'s closing paren */
             Sprintf(eos(bp), " (%sweapon in %s%s)",
-                    (obj->otyp == AKLYS) ? "tethered " : "", u.twoweap && !bimanual(obj) ? "right " : "", hand_s);
+                    (obj->otyp == AKLYS) ? "tethered " : "", u.twoweap && !bimanual(obj) ? "right " : "", bimanual(obj)? hands_s : hand_s);
 
             if (warn_obj_cnt && obj == uwep && (EWarn_of_mon & W_WEP) != 0L) {
                 if (!Blind) /* we know bp[] ends with ')'; overwrite that */
@@ -1306,22 +1310,25 @@ unsigned doname_flags;
     }
 
 	if ((obj->owornmask & W_WEP2) && obj->oclass != ARMOR_CLASS && !mrg_to_wielded) {
-		if (obj->quan != 1L)
+		if (obj->quan != 1L || !is_weapon(obj))
 		{
 			if (u.twoweap)
-				Strcat(bp, " (wielded in left hand)");
+				if (bimanual(obj))
+					Sprintf(eos(bp), " (wielded in %s)", hands_s);
+				else
+					Sprintf(eos(bp), " (wielded in left %s)", hand_s);
 			else
 				Strcat(bp, " (also wielded)");
 		}
 		else {
-			const char* hand_s = body_part(HAND);
-
-			if (bimanual(obj))
-				hand_s = makeplural(hand_s);
 			/* note: Sting's glow message, if added, will insert text
 			   in front of "(weapon in hand)"'s closing paren */
-			Sprintf(eos(bp), " (%s%sweapon in %s%s)", !u.twoweap ? "unused " : "",
-				(obj->otyp == AKLYS) ? "tethered " : "", !bimanual(obj) ? (u.twoweap ? "left " : "another ") : "", hand_s);
+			Sprintf(eos(bp), " (%s%sweapon in %s%s)",
+				(!u.twoweap ? "unused " : ""),
+				((obj->otyp == AKLYS) ? "tethered " : ""),
+				(!bimanual(obj) ? (u.twoweap ? "left " : "another ") : ""), 
+				(bimanual(obj) ? hands_s : hand_s)
+			);
 
 			if (warn_obj_cnt && obj == uwep && (EWarn_of_mon & W_WEP2) != 0L) {
 				if (!Blind) /* we know bp[] ends with ')'; overwrite that */
@@ -1334,7 +1341,7 @@ unsigned doname_flags;
 
     if (obj->owornmask & W_SWAPWEP) {
         if (u.twoweap && !bimanual(obj))
-			Strcat(bp, " (readied as alternate right hand weapon)");
+			Sprintf(eos(bp), " (readied as alternate right %s weapon)", hand_s);
 		else
             Strcat(bp, " (readied as alternate weapon)");
     }
@@ -1344,7 +1351,7 @@ unsigned doname_flags;
 		else
 		{
 			if (u.twoweap && !bimanual(obj))
-				Strcat(bp, " (readied as alternate left hand weapon)");
+				Sprintf(eos(bp), " (readied as alternate left %s weapon)", hand_s);
 			else
 				Strcat(bp, " (readied as another alternate weapon)");
 		}

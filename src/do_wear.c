@@ -2130,7 +2130,7 @@ boolean noisy;
 				if (is_shield(uarms))
 					already_wearing(an(c_shield));
 				else
-					You("are already holding something else in your left hand.");
+					You("are already holding something else in your left %s.", body_part(HAND));
 			}
 			err++;
         } else if (uwep && bimanual(uwep)) {

@@ -604,7 +604,7 @@ update_carried_item_extrinsics()
 			else if (uitem == uarmh)
 				bit = W_ARMH;
 			else if (uitem == uarms)
-				bit = uitem->owornmask;// W_ARMS;
+				bit = W_ARMS;
 			else if (uitem == uarmg)
 				bit = W_ARMG;
 			else if (uitem == uarmf)
@@ -631,6 +631,8 @@ update_carried_item_extrinsics()
 				bit = W_RINGR;
 			else if (uitem == uleft)
 				bit = W_RINGL;
+			else if (uitem == uwep)
+				bit = W_WEP;
 			else
 				bit = W_CARRIED;
 

@@ -2167,14 +2167,55 @@ const char *fmt, *str;
     /* Check from outermost to innermost objects */
     if (EReflecting & W_ARMS) {
         if (fmt && str) {
-            pline(fmt, str, "shield");
-            makeknown(SHIELD_OF_REFLECTION);
+			if (uarms)
+			{
+				if(is_shield(uarms))
+				{
+					if (u.twoweap)
+						pline(fmt, str, "left hand shield");
+					else
+						pline(fmt, str, "shield");
+					makeknown(uarms->otyp);
+				}
+				else if(is_weapon(uarms))
+				{
+					pline(fmt, str, "left hand weapon");
+				}
+				else
+				{
+					pline(fmt, str, "left hand item");
+				}
+			}
         }
         return TRUE;
     } else if (EReflecting & W_WEP) {
         /* Due to wielded artifact weapon */
-        if (fmt && str)
-            pline(fmt, str, "weapon");
+		if (fmt && str)
+		{
+			if (uwep)
+			{
+				if (is_shield(uwep))
+				{
+					pline(fmt, str, "right hand shield");
+					makeknown(uwep->otyp);
+				}
+				else if (is_weapon(uwep))
+				{
+					if(u.twoweap)
+						pline(fmt, str, "right hand weapon");
+					else
+						pline(fmt, str, "weapon");
+				}
+				else
+				{
+					if (u.twoweap)
+						pline(fmt, str, "right hand item");
+					else
+						pline(fmt, str, "wielded item");
+				}
+			}
+
+		}
         return TRUE;
     } else if (EReflecting & W_AMUL) {
         if (fmt && str) {

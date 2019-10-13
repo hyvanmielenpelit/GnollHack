@@ -1149,8 +1149,8 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
             && !impaired)
 		{
 			if(wep_mask & W_WIELDED_WEAPON)
-				pline("%s the %s and returns to your hand!", Tobjnam(obj, "hit"),
-					  ceiling(u.ux, u.uy));
+				pline("%s the %s and returns to your %s!", Tobjnam(obj, "hit"),
+					  ceiling(u.ux, u.uy), body_part(HAND));
 			else
 				pline("%s the %s and returns to you!", Tobjnam(obj, "hit"),
 					ceiling(u.ux, u.uy));
@@ -1265,7 +1265,7 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
     } else if (u.uswallow) {
         if (tethered_weapon) {
             tmp_at(DISP_END, 0);
-            pline("%s returns to your hand!", The(xname(thrownobj)));
+            pline("%s returns to your %s!", The(xname(thrownobj)), body_part(HAND));
             thrownobj = addinv(thrownobj);
             (void) encumber_msg();
             /* in case addinv() autoquivered */
@@ -1294,7 +1294,7 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
 					/* if uwep, more things need to be done than otherwise */
 					if(wep_mask & W_WIELDED_WEAPON) // (objects[obj->otyp].oc_flags& O1_CAN_BE_THROWN_ONLY_IF_WIELDED) ||
 					{
-						pline("%s to your hand!", Tobjnam(obj, "return"));
+						pline("%s to your %s!", Tobjnam(obj, "return"), body_part(HAND));
 						obj = addinv(obj);
 						(void) encumber_msg();
 						/* addinv autoquivers an aklys if quiver is empty;
