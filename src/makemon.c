@@ -457,8 +457,32 @@ register struct monst *mtmp;
                 (void) mongets(mtmp, DAGGER);
                 break;
             case 1:
-                (void) mongets(mtmp, ELVEN_DAGGER);
-                break;
+			{
+				int weaptype = ELVEN_DAGGER;
+				int artifacttype = 0;
+
+				if (!rn2(20))
+				{
+					artifacttype = ART_STING;
+
+				}
+
+				otmp = mksobj(weaptype, FALSE, FALSE, FALSE);
+
+				/* maybe make it special */
+				if (artifacttype > 0)
+				{
+					otmp = oname(otmp, artiname(artifacttype));
+					if(otmp->oartifact)
+					{
+						otmp->oerodeproof = TRUE;
+						spe2 = rnd(4);
+						otmp->spe = max(otmp->spe, spe2);
+					}
+				}
+				(void)mpickobj(mtmp, otmp);
+				break;
+			}
             case 2:
                 (void) mongets(mtmp, SLING);
                 break;
