@@ -170,6 +170,11 @@ register struct obj* obj;
 	{
 		strcpy(buf2, armor_class_simple_name(obj));
 		*buf2 = highc(*buf2);
+
+		if (is_weapon(obj))
+		{
+			strcat(buf2, ", Melee weapon");
+		}
 	}
 	else if (objects[otyp].oc_class == MISCELLANEOUS_CLASS && objects[otyp].oc_subtyp > MISC_MULTIPLE_PERMITTED)
 	{
@@ -236,7 +241,7 @@ register struct obj* obj;
 	putstr(datawin, 0, txt);
 
 
-	if (objects[otyp].oc_class == WEAPON_CLASS)
+	if (is_weapon(obj))
 	{
 		char plusbuf[BUFSZ];
 		boolean maindiceprinted = FALSE;
@@ -447,16 +452,9 @@ register struct obj* obj;
 			txt = buf;
 			putstr(datawin, 0, txt);
 		}
-		if (objects[otyp].oc_name_known && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
-		{
-			Sprintf(buf2, "%d", 10 - objects[otyp].oc_armor_class);
-			Sprintf(buf, "Base armor class:       %s", buf2);
-			txt = buf;
-			putstr(datawin, 0, txt);
-		}
-
 	}
-	else if (objects[otyp].oc_class == ARMOR_CLASS)
+
+	if (objects[otyp].oc_class == ARMOR_CLASS || (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
 	{
 		Sprintf(buf2, "%d", 10 - objects[otyp].oc_armor_class);
 		Sprintf(buf, "Base armor class:       %s", buf2);
@@ -478,7 +476,8 @@ register struct obj* obj;
 		}
 
 	}
-	else if (objects[otyp].oc_class == WAND_CLASS || (objects[otyp].oc_class == TOOL_CLASS && (objects[otyp].oc_flags & O1_WAND_LIKE_TOOL)))
+
+	if (objects[otyp].oc_class == WAND_CLASS || (objects[otyp].oc_class == TOOL_CLASS && (objects[otyp].oc_flags & O1_WAND_LIKE_TOOL)))
 	{
 		if (objects[otyp].oc_name_known)
 		{
@@ -525,7 +524,7 @@ register struct obj* obj;
 	}
 
 	if (objects[otyp].oc_name_known && objects[otyp].oc_class != SPBOOK_CLASS && objects[otyp].oc_class != WAND_CLASS &&
-		(objects[otyp].oc_class == ARMOR_CLASS || objects[otyp].oc_spell_casting_penalty != 0))
+		(objects[otyp].oc_class == ARMOR_CLASS || (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || objects[otyp].oc_spell_casting_penalty != 0))
 	{
 		int splcaster = objects[otyp].oc_spell_casting_penalty;
 
@@ -1305,6 +1304,13 @@ register struct obj* obj;
 			{
 				powercnt++;
 				Sprintf(buf, " %2d - Is armor when wielded", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (objects[otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Is weapon when wielded", powercnt);
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}

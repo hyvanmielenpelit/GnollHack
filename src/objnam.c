@@ -4481,6 +4481,8 @@ struct obj* item;
 		return "boots";
 	else if (is_bracers(item))
 		return "bracers";
+	else if (is_shield(item))
+		return "shield";
 
 	return "armor";
 }
