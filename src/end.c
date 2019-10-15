@@ -1871,6 +1871,14 @@ dovanquished()
     return 0;
 }
 
+/* #killedmonsters command */
+int
+dokilledmonsters()
+{
+	list_vanquished('y', FALSE);
+	return 0;
+}
+
 /* high priests aren't unique but are flagged as such to simplify something */
 #define UniqCritterIndx(mndx) ((mons[mndx].geno & G_UNIQ) \
                                && mndx != PM_HIGH_PRIEST)
