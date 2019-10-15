@@ -836,6 +836,21 @@ dospelldescriptions()
 	return 0;
 }
 
+
+/* the ('C') command -- craft an item */
+int
+docraft()
+{
+	/*
+	int spell_no;
+
+	if (getspell(&spell_no, 2))
+		return spelldescription(spell_no);
+	*/
+	return 0;
+}
+
+
 STATIC_OVL const char *
 spelltypemnemonic(skill)
 int skill;

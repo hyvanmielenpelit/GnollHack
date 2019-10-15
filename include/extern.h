@@ -2415,6 +2415,7 @@ E void FDECL(book_substitution, (struct obj *, struct obj *));
 E void NDECL(age_spells);
 E int NDECL(docast);
 E int NDECL(dospelldescriptions);
+E int NDECL(docraft);
 E int FDECL(spell_skilltype, (int));
 E int FDECL(spelleffects, (int, BOOLEAN_P));
 E int FDECL(spelldescription, (int));
