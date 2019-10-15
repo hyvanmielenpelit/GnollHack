@@ -1479,7 +1479,7 @@ SPELL("slow monster",    "light green", None, "Slows down the target",
 SPELL("wizard lock",     "dark green", None, "Locks the target door",
       P_TRANSMUTATION_SPELL,	10,  3,			 0, -1, 3, A_INT, 12, 0, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, CLR_GREEN, O1_NONE, O2_NONE, O3_NONE),
 SPELL("create monster",  "turquoise", None, "Creates a random monster",
-      P_CLERIC_SPELL,			10,  3,			 0, 3, 30, A_AVG_INT_WIS_CHA, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_BRIGHT_CYAN, O1_NONE, O2_NONE, O3_NONE),
+      P_CONJURATION_SPELL,		10,  3,			 0, 3, 30, A_AVG_INT_WIS_CHA, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_BRIGHT_CYAN, O1_NONE, O2_NONE, O3_NONE),
 SPELL("detect food",     "cyan", None, "Detects the location of all comestibles",
       P_DIVINATION_SPELL,		10,  3,			 0, -1, 4, A_MAX_INT_WIS, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, CLR_CYAN, O1_NONE, O2_NONE, O3_NONE),
 
