@@ -1014,7 +1014,7 @@ struct monst *mon;
 	for (o = is_you ? invent : mon->minvent; o; o = o->nobj) {
         /* oc_magic_cancellation field is only applicable for armor (which must be worn), this should exclude spellbooks and wands, which use oc_oc2 for something else */
 		/* omit W_SWAPWEP+W_QUIVER; W_ART+W_ARTI handled by protects() */
-		wearmask = (W_ARMOR && ~W_ARMS) | W_ACCESSORY;
+		wearmask = (W_ARMOR & ~W_ARMS) | W_ACCESSORY;
 
 		if (is_shield(o) || is_weapon(o) || (objects[o->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
 			wearmask |= (W_WEP | W_ARMS);
