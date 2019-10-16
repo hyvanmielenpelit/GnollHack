@@ -154,7 +154,7 @@
 #define M3_WAITFORU 0x00000040  /* waits to see you or get attacked */
 #define M3_CLOSE 0x00000080     /* lets you close unless attacked */
 
-#define M3_COVETOUS 0x0000001f /* wants something */
+#define M3_COVETOUS 0x0000000f /* wants something (earlier the same as WANTSALL) */
 #define M3_WAITMASK 0x000000c0 /* waiting... */
 
 /* Infravision is currently implemented for players only */
