@@ -1160,8 +1160,9 @@ int dieroll;
 				tmp += dbon(); //Normal bows get full strength bonus
 
 			//All bows get bow's enchantment bonus and damage
-			tmp += dmgval(uwep, mon, &youmonst);
-			extratmp = extradmgval(uwep, mon, &youmonst, tmp);
+			int basedmg = dmgval(uwep, mon, &youmonst);
+			tmp += basedmg;
+			extratmp = extradmgval(uwep, mon, &youmonst, basedmg);
 			tmp += extratmp;
 
 			//Bracers give extra +2 damage, blessed even +3 + their bonus

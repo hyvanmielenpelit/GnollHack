@@ -449,7 +449,7 @@ int basedmg;
 	if (!otmp || !mon)
 		return 0;
 
-	int tmp = basedmg, otyp = otmp->otyp;
+	int tmp = 0, otyp = otmp->otyp;
 
 	if (eligible_for_extra_damage(otmp, mon, mattacker))
 	{
@@ -459,7 +459,7 @@ int basedmg;
 		extradmg += objects[otyp].oc_wedmgplus;
 
 		if (objects[otyp].oc_flags3 & O3_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS)
-			extradmg += tmp;
+			extradmg += basedmg;
 
 		tmp += extradmg;
 	}
