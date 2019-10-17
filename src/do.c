@@ -241,20 +241,23 @@ register struct obj* obj;
 	putstr(datawin, 0, txt);
 
 
-	if (is_weapon(obj))
+	if (is_weapon(obj) || objects[obj->otyp].oc_class == GEM_CLASS)
 	{
 		char plusbuf[BUFSZ];
 		boolean maindiceprinted = FALSE;
 
-		/* Single or two-handed */
-		if (bimanual(obj))
-			strcpy(buf2, "Two-handed");
-		else
-			strcpy(buf2, "Single-handed");
+		if (!is_ammo(obj))
+		{
+			/* Single or two-handed */
+			if (bimanual(obj))
+				strcpy(buf2, "Two-handed");
+			else
+				strcpy(buf2, "Single-handed");
 
-		Sprintf(buf, "Hands to use:           %s", buf2);
-		txt = buf;
-		putstr(datawin, 0, txt);
+			Sprintf(buf, "Hands to use:           %s", buf2);
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
 
 		/* Skill */
 		strcpy(buf2, weapon_descr(obj));

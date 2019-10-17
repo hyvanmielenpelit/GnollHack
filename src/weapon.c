@@ -336,7 +336,7 @@ struct monst* mattacker;
     if (otyp == CREAM_PIE)
         return 0;
 	
-	if(Is_weapon)
+	if(Is_weapon || objects[otyp].oc_class == GEM_CLASS)
 	{
 		if (bigmonst(ptr)) {
 			if (objects[otyp].oc_wldam > 0 && objects[otyp].oc_wldice > 0)

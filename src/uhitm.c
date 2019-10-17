@@ -1422,7 +1422,7 @@ int dieroll;
 		&& (1 == 1 //!destroyed
 			|| (thrown && m_shot.n > 1 && m_shot.o == obj->otyp))) {
 		if (thrown)
-			hit(mshot_xname(obj), mon, exclam(destroyed ? 100 : tmp), destroyed ? -1 : tmp);
+			hit(mshot_xname(obj), mon, exclam(destroyed ? 100 : tmp), hide_damage_amount ? -1 : tmp);
 		else if (!hide_damage_amount && damagedealt > 0) {
 			if (!flags.verbose)
 				You("hit it for %d damage.", damagedealt);
