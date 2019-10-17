@@ -2122,6 +2122,8 @@ register struct obj* omonwep;
 			context.botl = 1;
 		}
 
+		mdamageu(mtmp, dmg);
+
 		if (permdmg2 > 0)
 		{
 			if (Upolyd)
@@ -2141,7 +2143,6 @@ register struct obj* omonwep;
 			context.botl = 1;
 		}
 
-        mdamageu(mtmp, dmg);
     }
 
 	//Add special enchantments

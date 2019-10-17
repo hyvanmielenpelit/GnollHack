@@ -1584,10 +1584,18 @@ void
 updatemaxhp()
 {
 	u.uhpmax = u.ubasehpmax + hpmaxadjustment(TRUE);
+
+	if (u.uhpmax < 1)
+		u.uhpmax = 1;
+
 	if (u.uhp > u.uhpmax)
 		u.uhp = u.uhpmax;
 
 	u.mhmax = u.basemhmax + hpmaxadjustment(FALSE); //Monsters do not get CON bonus from hpadjustment, since their base hitpoints include consitution bonus +hpmaxadjustment();
+
+	if (u.mhmax < 1)
+		u.mhmax = 1;
+
 	if (u.mh > u.mhmax)
 		u.mh = u.mhmax;
 

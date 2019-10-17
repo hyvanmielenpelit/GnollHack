@@ -1438,8 +1438,8 @@ register struct attack *mattk;
 			extradmg = tmp;
 
 		mdef->mhpmax -= extradmg;
-		if (mdef->mhpmax < 0)
-			mdef->mhpmax = 0;
+		if (mdef->mhpmax < 1)
+			mdef->mhpmax = 1;
 
 		if (extradmg > 0)
 		{

@@ -1509,8 +1509,8 @@ int dieroll;
 			extradmg = tmp;
 
 		mon->mhpmax -= extradmg;
-		if (mon->mhpmax < 0)
-			mon->mhpmax = 0;
+		if (mon->mhpmax < 1)
+			mon->mhpmax = 1;
 
 		if (mon->mhp > mon->mhpmax)
 			mon->mhp = mon->mhpmax;
