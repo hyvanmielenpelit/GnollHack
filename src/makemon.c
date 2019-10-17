@@ -2157,7 +2157,7 @@ aligntyp atyp;
      *                  SPECIAL_PM is long worm tail and separates the
      *                  regular monsters from the exceptions.
      */
-	first = 0;
+	first = NON_PM;
     for (int firstindex = LOW_PM; firstindex < SPECIAL_PM; firstindex++)
         if (mons[firstindex].mlet == class)
 		{
@@ -2171,7 +2171,7 @@ aligntyp atyp;
 			}
 		}
 
-    if (first == 0) //SPECIAL_PM)
+    if (first == NON_PM) //SPECIAL_PM)
 	{
         impossible("mkclass found no class %d monsters", class);
         return (struct permonst *) 0;

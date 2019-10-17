@@ -535,7 +535,7 @@ boolean deserted;
 	if (deserted && mkspecl)
 	{
 		if (!MON_AT(sx, sy)
-			&& (mtmp = makemon(&mons[PM_GIANT_MIMIC], sx, sy, NO_MM_FLAGS)) != 0) {
+			&& (mtmp = makemon(&mons[PM_GARGANTUAN_MIMIC], sx, sy, NO_MM_FLAGS)) != 0) {
 			/* note: makemon will set the mimic symbol to a shop item */
 			if (rn2(10) >= depth(&u.uz)) {
 				mtmp->m_ap_type = M_AP_OBJECT;

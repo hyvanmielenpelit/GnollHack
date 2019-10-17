@@ -665,6 +665,14 @@ NEARDATA struct permonst mons[] = {
             | M1_NOEYES | M1_NOHEAD | M1_NOLIMBS | M1_THICK_HIDE
             | M1_CARNIVORE,
         M2_HOSTILE, 0, 11, HI_LORD),
+    MON("Gargantuan Mimic", S_MIMIC, LVL(10, 6, 4, 30, 0), (G_NOGEN | G_UNIQ),
+        A(ATTK(AT_CLAW, AD_STCK, 3, 8, 0), ATTK(AT_CLAW, AD_STCK, 3, 8, 0), NO_ATTK,
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(1000, 600, MS_SILENT, MZ_HUGE), STATS(STR19(19), 9, 20, 11, 9, 1), MR_ACID, 0,
+        M1_CLING | M1_BREATHLESS | M1_AMORPHOUS | M1_HIDE | M1_ANIMAL
+            | M1_NOEYES | M1_NOHEAD | M1_NOLIMBS | M1_THICK_HIDE
+            | M1_CARNIVORE,
+        M2_HOSTILE, 0, 17, CLR_GREEN),
     /*
      * nymphs
      */
