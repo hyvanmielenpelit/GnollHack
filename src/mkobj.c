@@ -917,23 +917,24 @@ boolean makingboxcontents;
 	otmp->corpsenm = NON_PM;
 	otmp->special_enchantment = 0;
 	otmp->cooldownleft = 0;
-	otmp->blessed = (objects[otmp->otyp].oc_flags2 & O2_GENERATED_BLESSED) ? 1 : 0;
+	otmp->blessed = 0;
 
     if (init) {
         switch (let) {
         case WEAPON_CLASS:
             otmp->quan = is_multigen(otmp) ? (long) rn1(6, 6) : 1L;
-            if (!rn2(11)) {
+            if (!rn2(11) && !is_cursed_magic_item(otmp))
+			{
                 otmp->spe = rne(3);
-                otmp->blessed = (objects[otmp->otyp].oc_flags2 & O2_GENERATED_BLESSED) ? 1 : rn2(2);
-            } else if (!rn2(10)) {
+                otmp->blessed = rn2(2);
+            } else if (!rn2(10) || is_cursed_magic_item(otmp)) {
                 curse(otmp);
                 otmp->spe = -rne(3);
             } else
                 blessorcurse(otmp, 10);
             if (is_poisonable(otmp) && !rn2(100) && !(objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED))
                 otmp->opoisoned = 1;
-			else if (is_specialenchantable(otmp) && ((objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED) || (is_multigen(otmp) ? !rn2(40) : !rn2(100))))
+			else if (is_specialenchantable(otmp) && ((objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED) || (is_multigen(otmp) ? !rn2(40) : !rn2(160))))
 			{
 				if (is_deathenchantable(otmp) && ((objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED) || !rn2(5)))
 				{
@@ -1034,9 +1035,7 @@ boolean makingboxcontents;
             break;
         case GEM_CLASS:
             otmp->corpsenm = 0; /* LOADSTONE hack */
-            if (objects[otmp->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED)
-                curse(otmp);
-            else if (is_rock(otmp))
+			if (is_rock(otmp))
                 otmp->quan = (long) rn1(6, 6);
             else if (otmp->otyp != LUCKSTONE && !rn2(6))
                 otmp->quan = 2L;
@@ -1123,9 +1122,7 @@ boolean makingboxcontents;
         case AMULET_CLASS:
             if (otmp->otyp == AMULET_OF_YENDOR)
                 context.made_amulet = TRUE;
-            if (rn2(10) && (otmp->otyp == AMULET_OF_STRANGULATION
-                            || otmp->otyp == AMULET_OF_CHANGE
-                            || otmp->otyp == AMULET_OF_RESTFUL_SLEEP)) {
+            if (rn2(10) && (is_cursed_magic_item(otmp))) {
                 curse(otmp);
             } else
                 blessorcurse(otmp, 10);
@@ -1148,11 +1145,7 @@ boolean makingboxcontents;
             break;
         case ARMOR_CLASS:
             if (rn2(10)
-                && (otmp->otyp == FUMBLE_BOOTS
-                    || otmp->otyp == LEVITATION_BOOTS
-                    || otmp->otyp == HELM_OF_OPPOSITE_ALIGNMENT
-                    || otmp->otyp == GAUNTLETS_OF_FUMBLING
-					|| otmp->otyp == SHIRT_OF_UNCONTROLLABLE_LAUGHTER|| !rn2(11))) {
+                && (is_cursed_magic_item(otmp) || !rn2(11))) {
                 curse(otmp);
                 otmp->spe = -rne(3);
             } else if (!rn2(10)) {
@@ -1219,10 +1212,7 @@ boolean makingboxcontents;
                 /* negative rings are usually cursed */
                 if (otmp->spe < 0 && rn2(5))
                     curse(otmp);
-            } else if (rn2(10) && (otmp->otyp == RIN_TELEPORTATION
-                                   || otmp->otyp == RIN_POLYMORPH
-                                   || otmp->otyp == RIN_AGGRAVATE_MONSTER
-                                   || otmp->otyp == RIN_HUNGER || !rn2(9))) {
+            } else if (rn2(10) && (is_cursed_magic_item(otmp) || !rn2(9))) {
                 curse(otmp);
             }
             break;
@@ -1245,7 +1235,7 @@ boolean makingboxcontents;
 				if (otmp->spe < 0 && rn2(5))
 					curse(otmp);
 			}
-			else if (rn2(10) && (otmp->otyp == STRANGE_OBJECT || !rn2(9))) {
+			else if (rn2(10) && (is_cursed_magic_item(otmp) || !rn2(9))) {
 				curse(otmp);
 			}
 			break;
@@ -1267,6 +1257,16 @@ boolean makingboxcontents;
             return (struct obj *) 0;
         }
     }
+
+	/* Blessed or cursed */
+	if (is_generated_blessed(otmp))
+	{
+		otmp->cursed = 0;
+		otmp->blessed = 1;
+	}
+	else if (is_generated_cursed(otmp))
+		curse(otmp);
+
 
     /* some things must get done (corpsenm, timers) even if init = 0 */
     switch ((otmp->oclass == POTION_CLASS && otmp->otyp != POT_OIL)

@@ -385,7 +385,9 @@ struct objclass {
 #define O2_FLIMSY 0x00800000	
 
 #define O2_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED 0x10000000			/* if deathenchantable item, then death, otherwise lightning*/
-#define O2_GENERATED_BLESSED 0x20000000									
+#define O2_GENERATED_BLESSED 0x20000000									/* Always generated blessed */									
+#define O2_GENERATED_CURSED 0x40000000									/* Always generated cursed */								
+#define O2_CURSED_MAGIC_ITEM 0x80000000									/* The effect of the item is negative; typically 90% chance of being cursed */									
 
 /* Artifact flags - to do: Attack type, half physical and spell damage, bonus to monsters only */
 /* Flags 3 */

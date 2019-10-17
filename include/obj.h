@@ -229,9 +229,18 @@ struct obj {
 #define any_quest_artifact(o) ((o)->oartifact >= ART_ORB_OF_DETECTION)
 
 #define is_specialenchantable(otmp)                                            \
-	(otmp->oclass == WEAPON_CLASS || objects[otmp->otyp].oc_flags & O1_SPECIAL_ENCHANTABLE)
+	((otmp->oclass == WEAPON_CLASS && !is_launcher(otmp)) || objects[otmp->otyp].oc_flags & O1_SPECIAL_ENCHANTABLE)
 #define is_deathenchantable(otmp)                                            \
     (objects[otmp->otyp].oc_material == MAT_BONE || objects[otmp->otyp].oc_material == MAT_GLASS)
+
+#define is_cursed_magic_item(otmp)                                            \
+	(objects[otmp->otyp].oc_flags2 & O2_CURSED_MAGIC_ITEM)
+
+#define is_generated_cursed(otmp)                                            \
+	(objects[otmp->otyp].oc_flags2 & O2_GENERATED_CURSED)
+
+#define is_generated_blessed(otmp)                                            \
+	(objects[otmp->otyp].oc_flags2 & O2_GENERATED_BLESSED)
 
 
 /* Armor */
