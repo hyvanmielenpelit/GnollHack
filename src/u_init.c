@@ -1536,6 +1536,11 @@ register struct trobj *trop;
                 setworn(obj, W_ARM);
         }
 
+		if (obj->oclass == AMULET_CLASS && !uamul)
+		{
+			setworn(obj, W_AMUL);
+		}
+
 		if (obj->oclass == MISCELLANEOUS_CLASS && !(umisc && umisc2 && umisc3 && umisc4 && umisc5))
 		{
 			if (objects[obj->otyp].oc_subtyp != MISC_MULTIPLE_PERMITTED &&
