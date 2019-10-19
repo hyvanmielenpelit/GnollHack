@@ -920,7 +920,7 @@ unsigned long *colormasks UNUSED;
 
     static enum statusfields fieldorder[][17] = {
         /* line one */
-        { BL_TITLE, BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH, BL_ALIGN,
+        { BL_TITLE, BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH, //BL_ALIGN,
           BL_SCORE, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH,
           BL_FLUSH },
         /* line two, default order */

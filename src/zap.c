@@ -2800,7 +2800,7 @@ register struct obj *obj;
 	}
 	case SPE_CREATE_DRACOLICH:
 	{
-		You("successfully permormed the necromatic magic.");
+		You("successfully permormed the necromantic magic.");
 		int zombietype;
 		int monstcount = 0;
 		int hatchlingcount = 0;
@@ -2819,7 +2819,10 @@ register struct obj *obj;
 				{
 					if ((sobj->corpsenm >= PM_GRAY_DRAGON && sobj->corpsenm <= PM_ANCIENT_YELLOW_DRAGON) || sobj->corpsenm == PM_CHROMATIC_DRAGON)
 					{
-						zombietype = PM_DRACOLICH;
+						if(sobj->corpsenm == PM_CHROMATIC_DRAGON)
+							zombietype = PM_ELDER_DRACOLICH;
+						else
+							zombietype = PM_DRACOLICH;
 
 						if (animate_corpse(sobj, zombietype))
 							monstcount++;

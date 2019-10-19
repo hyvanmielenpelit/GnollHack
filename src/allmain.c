@@ -293,7 +293,7 @@ boolean resuming;
                     do_storms();
                     gethungry();
                     //age_spells();
-                    exerchk();
+					//exerchk();  /* exercise system has been deactivated -- JG */
                     invault();
                     if (u.uhave.amulet)
                         amulet();

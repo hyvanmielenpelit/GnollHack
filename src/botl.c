@@ -147,7 +147,7 @@ do_statusline2()
     if (Upolyd)
         Sprintf(expr, "HD:%d", mons[u.umonnum].mlevel);
     else if (flags.showexp)
-        Sprintf(expr, "Xp:%u/%-1ld", u.ulevel, u.uexp);
+        Sprintf(expr, "XP:%u/%-1ld", u.ulevel, u.uexp);
     else
         Sprintf(expr, "Exp:%u", u.ulevel);
     xln = strlen(expr);
@@ -523,13 +523,13 @@ STATIC_VAR struct istat_s initblstats[MAXBLSTATS] = {
     INIT_BLSTAT("intelligence", " In:%s", ANY_INT, 10, BL_IN),
     INIT_BLSTAT("wisdom", " Wi:%s", ANY_INT, 10, BL_WI),
     INIT_BLSTAT("charisma", " Ch:%s", ANY_INT, 10, BL_CH),
-    INIT_BLSTAT("alignment", " %s", ANY_STR, 40, BL_ALIGN),
+//    INIT_BLSTAT("alignment", " %s", ANY_STR, 40, BL_ALIGN),
     INIT_BLSTAT("score", " S:%s", ANY_LONG, 20, BL_SCORE),
     INIT_BLSTAT("carrying-capacity", " %s", ANY_INT, 20, BL_CAP),
 //    INIT_BLSTAT("gold", " %s", ANY_LONG, 30, BL_GOLD),
     INIT_BLSTATP("power", " Pw:%s", ANY_INT, 10, BL_ENEMAX, BL_ENE),
     INIT_BLSTAT("power-max", "(%s)", ANY_INT, 10, BL_ENEMAX),
-    INIT_BLSTAT("experience-level", " Xp:%s", ANY_INT, 10, BL_XP),
+    INIT_BLSTAT("experience-level", " XP:%s", ANY_INT, 10, BL_XP),
 	INIT_BLSTAT("skill-availability", " %s", ANY_INT, 10, BL_SKILL),
 	INIT_BLSTAT("armor-class", " AC:%s", ANY_INT, 10, BL_AC),
 	INIT_BLSTAT("magic-cancellation-level", " MC:%s", ANY_INT, 10, BL_MC_LVL),
@@ -628,12 +628,13 @@ bot_via_windowport()
     blstats[idx][BL_CH].a.a_int = ACURR(A_CHA);
 
     /* Alignment */
+	/* // Note: Moved to character description page 
     Strcpy(blstats[idx][BL_ALIGN].val, (u.ualign.type == A_CHAOTIC)
                                           ? "Chaotic"
                                           : (u.ualign.type == A_NEUTRAL)
                                                ? "Neutral"
                                                : "Lawful");
-
+	*/
     /* Score */
     blstats[idx][BL_SCORE].a.a_long =
 #ifdef SCORE_ON_BOTL
@@ -2040,10 +2041,10 @@ boolean from_configfile;
                                          &kidx)) {
             txt = enc_stat[kidx];
             txtval = TRUE;
-        } else if (fld == BL_ALIGN
+/*        } else if (fld == BL_ALIGN
                    && is_fld_arrayvalues(s[sidx], aligntxt, 0, 3, &kidx)) {
             txt = aligntxt[kidx];
-            txtval = TRUE;
+            txtval = TRUE;*/
         } else if (fld == BL_HUNGER
                    && is_fld_arrayvalues(s[sidx], hutxt,
                                          SATIATED, STARVED + 1, &kidx)) {
@@ -3275,7 +3276,7 @@ choose_value:
 
         Sprintf(qry_buf, "%s %s text value to match:",
                 (fld == BL_CAP
-                 || fld == BL_ALIGN
+          //       || fld == BL_ALIGN
                  || fld == BL_HUNGER
 				|| fld == BL_SKILL
 				|| fld == BL_TITLE) ? "Choose" : "Enter",
@@ -3290,7 +3291,7 @@ choose_value:
 
             hilite.rel = TXT_VALUE;
             Strcpy(hilite.textmatch, enc_stat[rv]);
-        } else if (fld == BL_ALIGN) {
+ /*       } else if (fld == BL_ALIGN) {
             static const char *aligntxt[] = { "chaotic", "neutral", "lawful" };
             int rv = query_arrayvalue(qry_buf,
                                       aligntxt, 0, 2 + 1);
@@ -3299,7 +3300,7 @@ choose_value:
                 goto choose_behavior;
 
             hilite.rel = TXT_VALUE;
-            Strcpy(hilite.textmatch, aligntxt[rv]);
+            Strcpy(hilite.textmatch, aligntxt[rv]);*/
         } else if (fld == BL_HUNGER) {
             static const char *hutxt[] = { "Satiated", (char *) 0, "Hungry",
                                            "Weak", "Fainting", "Fainted",

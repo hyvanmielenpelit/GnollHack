@@ -38,7 +38,7 @@ enum statusfields {
     BL_FLUSH = -1,           /* Finished cycling through bot fields */
     BL_TITLE = 0,
     BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH,  /* 1..6 */
-    BL_ALIGN, BL_SCORE, BL_CAP, BL_ENE, BL_ENEMAX, /* 7..12 */ // BL_GOLD,
+    BL_SCORE, BL_CAP, BL_ENE, BL_ENEMAX, /* 7..12 */ // BL_GOLD, BL_ALIGN, 
     BL_XP, BL_SKILL, BL_AC, BL_MC_LVL, BL_MC_PCT, BL_HD, BL_TIME, BL_HUNGER, BL_HP, /* 13..20 */
     BL_HPMAX, BL_LEVELDESC, BL_EXP, BL_CONDITION, /* 21..24 */
     MAXBLSTATS /* [25] */

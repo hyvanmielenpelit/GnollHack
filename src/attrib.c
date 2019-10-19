@@ -197,7 +197,7 @@ int msgflg; /* positive => no message, zero => message, and */
     if (msgflg <= 0)
         You_feel("%s%s!", (incr > 1 || incr < -1) ? "very " : "", attrstr);
 	context.botl = TRUE;
-	//Check if AC needs to be updated
+	/* Check if AC and MC need to be updated */
 	find_ac();
 	find_mc();
 	if (program_state.in_moveloop && (ndx == A_STR || ndx == A_CON))
@@ -906,6 +906,9 @@ exercise(i, inc_or_dec)
 int i;
 boolean inc_or_dec;
 {
+	/* exercise system has been deactivated -- JG */
+	return;
+
     debugpline0("Exercise:");
     if (i == A_INT || i == A_CHA)
         return; /* can't exercise these */
