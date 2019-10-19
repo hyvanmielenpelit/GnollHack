@@ -404,10 +404,12 @@ boolean createcorpse;
 	case PM_CAVE_SPIDER:
 	case PM_GIANT_SPIDER:
 	case PM_PHASE_SPIDER:
-		obj = mksobj_at(THREAD_OF_SPIDER_SILK, x, y, TRUE, FALSE);
-		obj->quan = (mndx == PM_PHASE_SPIDER ? rnd(6) + 2 : mndx == PM_GIANT_SPIDER ? rnd(4) + 1 : rnd(2));
-		obj->owt = weight(obj);
-		goto default_1;
+		if(mndx != PM_CAVE_SPIDER || !rn2(2))
+		{
+			obj = mksobj_at(THREAD_OF_SPIDER_SILK, x, y, TRUE, FALSE);
+			obj->quan = (mndx == PM_PHASE_SPIDER ? rnd(3) : mndx == PM_GIANT_SPIDER ? rnd(2) : 1);
+			obj->owt = weight(obj);
+		}
 		goto default_1;
 	case PM_ROC:
 	case PM_RAVEN:
@@ -576,7 +578,7 @@ boolean createcorpse;
 		free_mname(mtmp);
 		break;
 	case PM_WOOD_GOLEM:
-		num = d(2, 4);
+		num = d(1, 3);
 		while (num--) {
 			obj = mksobj_at(PIECE_OF_WOOD, x, y, TRUE, FALSE);
 		}

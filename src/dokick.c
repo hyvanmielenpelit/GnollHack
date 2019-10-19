@@ -1288,7 +1288,7 @@ dokick()
             maploc->doormask = D_NODOOR;
 
 			struct obj* otmp = mksobj_at(PIECE_OF_WOOD, x, y, FALSE, FALSE);
-			otmp->quan = rnd(4);
+			otmp->quan = rnd(2);
 			otmp->owt = weight(otmp);
 
         } else {

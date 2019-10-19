@@ -5781,7 +5781,7 @@ short exploding_wand_typ;
 			if (createsplinters)
 			{
 				struct obj* otmp = mksobj_at(PIECE_OF_WOOD, x, y, FALSE, FALSE);
-				otmp->quan = d(2, 4);
+				otmp->quan = d(1, 2);
 				otmp->owt = weight(otmp);
 			}
 
