@@ -2155,21 +2155,26 @@ register struct obj *obj;
         Norep("You cannot %s %s you are wearing.",
               Icebox ? "refrigerate" : "stash", something);
         return 0;
-    } else if ((objects[obj->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && obj->cursed) {
+    }
+	else if ((objects[obj->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && obj->cursed) {
         obj->bknown = 1;
         pline_The("%s%s won't leave your person.", is_graystone(obj) ? "The stone" : "The item", plur(obj->quan));
         return 0;
-    } else if (obj->otyp == AMULET_OF_YENDOR
+    }
+	else if (obj->otyp == AMULET_OF_YENDOR
                || obj->otyp == CANDELABRUM_OF_INVOCATION
                || obj->otyp == BELL_OF_OPENING
-               || obj->otyp == SPE_BOOK_OF_THE_DEAD) {
+               || obj->otyp == SPE_BOOK_OF_THE_DEAD)
+	{
         /* Prohibit Amulets in containers; if you allow it, monsters can't
          * steal them.  It also becomes a pain to check to see if someone
          * has the Amulet.  Ditto for the Candelabrum, the Bell and the Book.
          */
         pline("%s cannot be confined in such trappings.", The(xname(obj)));
         return 0;
-    } else if (obj->otyp == LEASH && obj->leashmon != 0) {
+    }
+	else if (obj->otyp == LEASH && obj->leashmon != 0)
+	{
         pline("%s attached to your pet.", Tobjnam(obj, "are"));
         return 0;
     }
@@ -2227,6 +2232,15 @@ register struct obj *obj;
         You("cannot fit %s into %s.", buf, the(xname(current_container)));
         return 0;
     }
+
+	/* Prompt if trying to put a container in a container (possibly by mistake) */
+	if (Is_container(obj))
+	{
+		char qbuf[BUFSZ], c;
+		Sprintf(qbuf, "You are putting %s into %s. Continue?", the(xname(obj)), the(xname(current_container)));
+		if ((c = yn_function(qbuf, ynqchars, 'n')) != 'y')
+			return 0;
+	}
 
     freeinv(obj);
 
