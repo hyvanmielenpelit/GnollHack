@@ -1991,7 +1991,7 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
                         && (ttmp->ttyp != WEB
                             || (!amorphous(mdat) && !webmaker(mdat)
                                 && !is_whirly(mdat) && !unsolid(mdat)))
-                        && (ttmp->ttyp != ANTI_MAGIC || !resists_magm(mon))) {
+                        && (ttmp->ttyp != ANTI_MAGIC || !is_magic_resistant(mon))) {
                         if (!(flag & ALLOW_TRAPS)) {
                             if (mon->mtrapseen & (1L << (ttmp->ttyp - 1)))
                                 continue;

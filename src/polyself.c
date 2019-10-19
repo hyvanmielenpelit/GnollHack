@@ -69,7 +69,7 @@ set_uasmon()
         PROPSET(DRAIN_RES, resists_drli(&youmonst));
         uwep = save_uwep;
     }
-    /* resists_magm() takes wielded, worn, and carried equipment into
+    /* is_magic_resistant() takes wielded, worn, and carried equipment into
        into account; cheat and duplicate its monster-specific part */
     PROPSET(ANTIMAGIC, (dmgtype(mdat, AD_MAGM)
                         || mdat == &mons[PM_GRAY_DRAGON_HATCHLING]

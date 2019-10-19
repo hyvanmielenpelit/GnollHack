@@ -109,9 +109,9 @@ struct monst *mon;
     return (boolean) (wep && wep->oartifact && defends(AD_DRLI, wep));
 }
 
-/* True if monster is magic-missile (actually, general magic) resistant */
+/* True if monster is magic resistant */
 boolean
-resists_magm(mon)
+is_magic_resistant(mon)
 struct monst *mon;
 {
     struct permonst *ptr = mon->data;
@@ -119,7 +119,7 @@ struct monst *mon;
     long slotmask;
     struct obj *o;
 
-    if (resists_magicmissile(mon))
+    if (resists_magicmissile(mon) || resists_magic(mon))
         return TRUE;
 
 	/* check for magic resistance granted by wielded weapon */
@@ -1017,7 +1017,8 @@ static const short grownups[][2] = {
     { PM_GUARDIAN_NAGA_HATCHLING, PM_GUARDIAN_NAGA },
     { PM_SMALL_MIMIC, PM_LARGE_MIMIC },
     { PM_LARGE_MIMIC, PM_GIANT_MIMIC },
-    { PM_BABY_LONG_WORM, PM_LONG_WORM },
+	{ PM_GIANT_MIMIC, PM_CHAOS_MIMIC },
+	{ PM_BABY_LONG_WORM, PM_LONG_WORM },
     { PM_BABY_PURPLE_WORM, PM_PURPLE_WORM },
     { PM_BABY_CROCODILE, PM_CROCODILE },
     { PM_SOLDIER, PM_SERGEANT },

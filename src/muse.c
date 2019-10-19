@@ -1240,7 +1240,7 @@ register struct obj *otmp;
                 pline_The("wand misses you.");
             stop_occupation();
             nomul(0);
-        } else if (resists_magm(mtmp)) {
+        } else if (resists_magicmissile(mtmp) || is_magic_resistant(mtmp)) {
             shieldeff(mtmp->mx, mtmp->my);
             pline("Boing!");
         } else if (rnd(20) < 10 + find_mac(mtmp)) {

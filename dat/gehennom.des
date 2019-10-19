@@ -402,7 +402,7 @@ MONSTER:(' ',"shade"),(32,14)
 MONSTER:(' ',"shade"),(32,16)
 MONSTER:('V',"vampire"),(35,16)
 MONSTER:('V',"vampire"),(35,14)
-MONSTER:('V',"vampire lord"),(36,14)
+MONSTER:('V',"vampire mage"),(36,14)
 MONSTER:('V',"vampire lord"),(36,15)
 # Randomly placed companions
 MONSTER:('z',"skeleton warrior"),random
@@ -426,7 +426,7 @@ MONSTER:('z',"human zombie"),random
 MONSTER:('V',"vampire"),random
 MONSTER:('V',"vampire"),random
 MONSTER:('V',"vampire"),random
-MONSTER:('V',"vampire lord"),random
+MONSTER:('V',"vampire mage"),random
 MONSTER:('V',"vampire lord"),random
 # A few more for the party
 MONSTER:random,random

@@ -1500,10 +1500,9 @@ E boolean FDECL(attacktype, (struct permonst *, int));
 E boolean FDECL(noattacks, (struct permonst *));
 E boolean FDECL(poly_when_stoned, (struct permonst *));
 E boolean FDECL(resists_drli, (struct monst *));
-E boolean FDECL(resists_magm, (struct monst *));
+E boolean FDECL(is_magic_resistant, (struct monst *));
 E boolean FDECL(resists_blnd, (struct monst *));
-E boolean
-FDECL(can_blnd, (struct monst *, struct monst *, UCHAR_P, struct obj *));
+E boolean FDECL(can_blnd, (struct monst *, struct monst *, UCHAR_P, struct obj *));
 E boolean FDECL(ranged_attk, (struct permonst *));
 E boolean FDECL(hates_silver, (struct permonst *));
 E boolean FDECL(mon_hates_silver, (struct monst *));

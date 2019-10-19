@@ -57,7 +57,8 @@
 #define MR_STONE 0x00000080L  /* resists petrification */
 #define MR_DEATH 0x00000100L  /* resists death */
 #define MR_LYCANTHROPY 0x00000200L  /* resists lycanthropy */
-#define MR_MAGICMISSILE 0x00000400L  /* resists lycanthropy */
+#define MR_MAGICMISSILE 0x00000400L  /* resists magic missiles */
+#define MR_MAGIC 0x00000800L  /* resists magic */
 /* other resistances: magic, sickness */
 /* other conveyances: teleport, teleport control, telepathy */
 

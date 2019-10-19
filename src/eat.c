@@ -1101,6 +1101,9 @@ int pm;
     case PM_BAT:
         make_stunned((HStun & TIMEOUT) + 30L, FALSE);
         break;
+	case PM_CHAOS_MIMIC:
+		tmp += 5;
+		/*FALLTHRU*/
 	case PM_GARGANTUAN_MIMIC:
 		tmp += 5;
 		/*FALLTHRU*/

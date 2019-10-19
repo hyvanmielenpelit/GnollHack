@@ -160,7 +160,7 @@ struct obj *otmp;
         reveal_invis = TRUE;
         if (disguised_mimic)
             seemimic(mtmp);
-        if (resists_magm(mtmp) || Invulnerable) { /* match effect on player */
+        if (resists_magicmissile(mtmp) || is_magic_resistant(mtmp) || Invulnerable) { /* match effect on player */
             shieldeff(mtmp->mx, mtmp->my);
             pline("Boing!");
             break; /* skip makeknown */
@@ -374,7 +374,7 @@ struct obj *otmp;
             /* if a long worm has mcorpsenm set, it was polymophed by
                the current zap and shouldn't be affected if hit again */
             ;
-        } else if (resists_magm(mtmp)) {
+        } else if (is_magic_resistant(mtmp)) {
             /* magic missile resistance protects from polymorph traps, so make
                it guard against involuntary polymorph attacks too... */
             shieldeff(mtmp->mx, mtmp->my);
@@ -4591,7 +4591,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 
     switch (abstype) {
     case ZT_MAGIC_MISSILE:
-        if (resists_magm(mon)) {
+        if (resists_magicmissile(mon) || is_magic_resistant(mon)) {
             sho_shieldeff = TRUE;
 			tmp = 0;
             break;
@@ -4679,7 +4679,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 			break;
 		}
 		if (is_not_living(mon->data) || is_demon(mon->data)
-			|| is_vampshifter(mon) || resists_magm(mon)) {
+			|| is_vampshifter(mon) || resists_death(mon) || is_magic_resistant(mon)) {
 			/* similar to player */
 			sho_shieldeff = TRUE;
 			tmp = 0;

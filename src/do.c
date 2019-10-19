@@ -62,7 +62,7 @@ docharacterstatistics()
 
 	/* Gender */
 	strcpy(buf2, flags.female ? "Female" : "Male");
-	Sprintf(buf, "Gender:                 %s", buf2);
+	Sprintf(buf, "Gender:             %s", buf2);
 	if (Upolyd && u.mfemale != flags.female)
 	{
 		Sprintf(eos(buf), " (pre-polymorph %s)", u.mfemale ? "female" : "male");
@@ -77,7 +77,7 @@ docharacterstatistics()
 		? "Neutral"
 		: "Lawful");
 	*buf2 = highc(*buf2);
-	Sprintf(buf, "Alignment:              %s", buf2);
+	Sprintf(buf, "Alignment:          %s", buf2);
 	txt = buf;
 	putstr(datawin, 0, txt);
 
@@ -85,7 +85,7 @@ docharacterstatistics()
 	/* Race */
 	strcpy(buf2, urace.noun);
 	*buf2 = highc(*buf2);
-	Sprintf(buf, "Race:                   %s", buf2);
+	Sprintf(buf, "Race:               %s", buf2);
 	if (Upolyd)
 	{
 		Sprintf(eos(buf), " (polymorphed into %s)", mons[u.umonnum].mname);
@@ -96,14 +96,14 @@ docharacterstatistics()
 	/* Role */
 	strcpy(buf2, (flags.female && urole.name.f) ? urole.name.f : urole.name.m);
 	*buf2 = highc(*buf2);
-	Sprintf(buf, "Role:                   %s", buf2);
+	Sprintf(buf, "Role:               %s", buf2);
 	txt = buf;
 	putstr(datawin, 0, txt);
 
 	/* Level */
 	strcpy(buf2, rank());
 	*buf2 = highc(*buf2);
-	Sprintf(buf, "Level:                  %d", u.ulevel);
+	Sprintf(buf, "Level:              %d", u.ulevel);
 	if (u.ulevelmax > u.ulevel)
 	{
 		Sprintf(buf3, "%s (max reached %d)", buf, u.ulevelmax);
@@ -117,14 +117,14 @@ docharacterstatistics()
 	/* Rank */
 	strcpy(buf2, rank());
 	*buf2 = highc(*buf2);
-	Sprintf(buf, "Rank:                   %s", buf2);
+	Sprintf(buf, "Rank:               %s", buf2);
 	txt = buf;
 	putstr(datawin, 0, txt);
 
 	/* Experience */
 	strcpy(buf2, rank());
 	*buf2 = highc(*buf2);
-	Sprintf(buf, "Experience (XP):        %d", u.uexp);
+	Sprintf(buf, "Experience (XP):    %d", u.uexp);
 
 	txt = buf;
 	putstr(datawin, 0, txt);
@@ -134,7 +134,7 @@ docharacterstatistics()
 		int ulvl = (int)u.ulevel;
 		long exp_for_nxt_lvl = newuexp(ulvl);
 
-		Sprintf(buf, "XP for next level:      %d", exp_for_nxt_lvl);
+		Sprintf(buf, "XP for next level:  %d", exp_for_nxt_lvl);
 
 		txt = buf;
 		putstr(datawin, 0, txt);
@@ -142,7 +142,7 @@ docharacterstatistics()
 
 
 	/* God */
-	Sprintf(buf, "God:                    %s", u_gname());
+	Sprintf(buf, "God:                %s", u_gname());
 	txt = buf;
 	putstr(datawin, 0, txt);
 
