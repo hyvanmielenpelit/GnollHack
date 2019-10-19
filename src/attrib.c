@@ -248,6 +248,7 @@ register int num;
     (void) adjattrib(A_STR, -num, 1);
 }
 
+
 static const struct poison_effect_message {
     void VDECL((*delivery_func), (const char *, ...));
     const char *effect_msg;

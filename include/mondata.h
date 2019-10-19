@@ -35,6 +35,19 @@
 #define resists_magic(mon) \
     ((((mon)->data->mresists | (mon)->mextrinsics) & MR_MAGIC) != 0)
 
+#define confers_strength(ptr) \
+    (((ptr)->mconveys & MR_STRENGTH) != 0)
+#define confers_dexterity(mon) \
+    (((ptr)->mconveys & MR_DEXTERITY) != 0)
+#define confers_constitution(mon) \
+    (((ptr)->mconveys & MR_CONSTITUTION) != 0)
+#define confers_intelligence(mon) \
+    (((ptr)->mconveys & MR_INTELLIGENCE) != 0)
+#define confers_wisdom(mon) \
+    (((ptr)->mconveys & MR_WISDOM) != 0)
+#define confers_charisma(mon) \
+    (((ptr)->mconveys & MR_CHARISMA) != 0)
+
 #define is_lminion(mon) \
     (is_minion((mon)->data) && mon_aligntyp(mon) == A_LAWFUL)
 #define is_flyer(ptr) (((ptr)->mflags1 & M1_FLY) != 0L)
@@ -85,10 +98,9 @@
 #define can_teleport(ptr) (((ptr)->mflags1 & M1_TPORT) != 0L)
 #define control_teleport(ptr) (((ptr)->mflags1 & M1_TPORT_CNTRL) != 0L)
 #define blind_telepathic(ptr)                                                \
-    ((ptr) == &mons[PM_FLOATING_EYE])
+     (((ptr)->mflags3 & M3_BLIND_TELEPATHIC) != 0L)
 #define unblind_telepathic(ptr)                                                \
-    ((ptr) == &mons[PM_MIND_FLAYER] \
-     || (ptr) == &mons[PM_MASTER_MIND_FLAYER])
+     (((ptr)->mflags3 & M3_UNBLIND_TELEPATHIC) != 0L)
 #define telepathic(ptr) unblind_telepathic(ptr) 
 #define is_armed(ptr) attacktype(ptr, AT_WEAP)
 #define acidic(ptr) (((ptr)->mflags1 & M1_ACID) != 0L)

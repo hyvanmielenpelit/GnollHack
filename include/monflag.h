@@ -56,9 +56,22 @@
 #define MR_ACID 0x00000040L   /* resists acid */
 #define MR_STONE 0x00000080L  /* resists petrification */
 #define MR_DEATH 0x00000100L  /* resists death */
-#define MR_LYCANTHROPY 0x00000200L  /* resists lycanthropy */
-#define MR_MAGICMISSILE 0x00000400L  /* resists magic missiles */
-#define MR_MAGIC 0x00000800L  /* resists magic */
+#define MR_LYCANTHROPY 0x00000200L		/* resists lycanthropy */
+#define MR_MAGICMISSILE 0x00000400L		/* resists magic missiles */
+#define MR_MAGIC 0x00000800L			/* resists magic */
+
+#define MR_STRENGTH 0x00001000L			/* confers strength */
+#define MR_DEXTERITY 0x00002000L		/* confers dexterity */
+#define MR_CONSTITUTION 0x00004000L		/* confers constitution */
+#define MR_INTELLIGENCE 0x00008000L		/* confers intelligence */
+#define MR_WISDOM 0x00010000L			/* confers wisdom */
+#define MR_CHARISMA 0x00020000L			/* confers charisma */
+
+#define MR_TELEPORT 0x00040000L			/* confers teleportiis */
+#define MR_TELEPORT_CONTROL 0x00080000L	/* confers teleport control */
+#define MR_BLIND_TELEPATHY 0x00100000L	/* confers blind telepathy */
+#define MR_TELEPATHY 0x00200000L		/* confers telepathy */
+
 /* other resistances: magic, sickness */
 /* other conveyances: teleport, teleport control, telepathy */
 
@@ -175,7 +188,10 @@
 #define M3_KNIGHT 0x00040000			/* monster can use knight items */
 #define M3_HEALER 0x00080000			/* monster can use healer items */
 
-#define M3_MODRON 0x00100000			/* is a modron */
+#define M3_MODRON 0x00100000				/* is a modron */
+#define M3_BLIND_TELEPATHIC 0x00200000		/* is blind telepathic */
+#define M3_UNBLIND_TELEPATHIC 0x00400000		/* is telepathic */
+#define M3_TELEPATHIC M3_UNBLIND_TELEPATHIC		/* is telepathic */
 
 
 #define MZ_TINY 0          /* < 2' */

@@ -847,19 +847,19 @@ register struct permonst *ptr;
         ifdebugresist("can get poison resistance");
         break;
     case TELEPORT:
-        res = can_teleport(ptr);
-        ifdebugresist("can get teleport");
+		res = (ptr->mconveys & MR_TELEPORT) != 0;
+		ifdebugresist("can get teleport");
         break;
     case TELEPORT_CONTROL:
-        res = control_teleport(ptr);
-        ifdebugresist("can get teleport control");
+		res = (ptr->mconveys & MR_TELEPORT_CONTROL) != 0;
+		ifdebugresist("can get teleport control");
         break;
     case BLIND_TELEPAT:
-        res = blind_telepathic(ptr);
-        ifdebugresist("can get blind-telepathy");
+		res = (ptr->mconveys & MR_BLIND_TELEPATHY) != 0;
+		ifdebugresist("can get blind-telepathy");
         break;
 	case TELEPAT:
-		res = unblind_telepathic(ptr);
+		res = (ptr->mconveys & MR_TELEPATHY) != 0;
 		ifdebugresist("can get telepathy");
 		break;
 	default:
@@ -1102,10 +1102,10 @@ int pm;
         make_stunned((HStun & TIMEOUT) + 30L, FALSE);
         break;
 	case PM_CHAOS_MIMIC:
-		tmp += 5;
+		tmp += 10;
 		/*FALLTHRU*/
 	case PM_GARGANTUAN_MIMIC:
-		tmp += 5;
+		tmp += 10;
 		/*FALLTHRU*/
 	case PM_GIANT_MIMIC:
         tmp += 10;
@@ -1175,6 +1175,7 @@ int pm;
         debugpline0("using attrcurse to strip an intrinsic");
         attrcurse();
         break;
+#if 0
     case PM_MIND_FLAYER:
     case PM_MASTER_MIND_FLAYER:
         if (ABASE(A_INT) < ATTRMAX(A_INT)) {
@@ -1187,6 +1188,7 @@ int pm;
             pline("For some reason, that tasted bland.");
         }
     /*FALLTHRU*/
+#endif
     default:
         check_intrinsics = TRUE;
         break;
@@ -1195,8 +1197,13 @@ int pm;
     /* possibly convey an intrinsic */
     if (check_intrinsics) {
         struct permonst *ptr = &mons[pm];
-        boolean conveys_STR = is_giant(ptr);
-        int i, count;
+        boolean conveys_STR = confers_strength(ptr);
+		boolean conveys_DEX = confers_dexterity(ptr);
+		boolean conveys_CON = confers_constitution(ptr);
+		boolean conveys_INT = confers_intelligence(ptr);
+		boolean conveys_WIS = confers_wisdom(ptr);
+		boolean conveys_CHA = confers_charisma(ptr);
+		int i, count;
 
         if (dmgtype(ptr, AD_STUN) || dmgtype(ptr, AD_HALU)
             || pm == PM_VIOLET_FUNGUS) {
@@ -1214,12 +1221,103 @@ int pm;
          */
         count = 0; /* number of possible intrinsics */
         tmp = 0;   /* which one we will try to give */
-        if (conveys_STR) {
+
+		int mdifficulty = ptr->difficulty;
+		int percent = 1;
+
+		if (ptr->mlet == S_NYMPH)
+			percent = 33;
+		else if (mdifficulty >= 3)
+		{
+			if (ptr->mlet == S_OGRE || ptr->mlet == S_TROLL || ptr->mlet == S_GIANT)
+				mdifficulty += 3;
+
+			percent = min(100, percent + max(0, mdifficulty - 2) * 1);
+			percent = min(100, percent + max(0, mdifficulty - 4) * 1);
+			percent = min(100, percent + max(0, mdifficulty - 5) * 1);
+			percent = min(100, percent + max(0, mdifficulty - 6) * 1);
+			percent = min(100, percent + max(0, mdifficulty - 7) * 1);
+			percent = min(100, percent + max(0, mdifficulty - 8) * 1);
+			percent = min(100, percent + max(0, mdifficulty - 9) * 1);
+			percent = min(100, percent + max(0, mdifficulty - 10) * 2);
+			percent = min(100, percent + max(0, mdifficulty - 12) * 5);
+		}
+		/*
+		1 = 1
+		2 = 1
+		3 = 2
+		4 = 3
+		5 = 5
+		6 = 8
+		7 = 12
+		8 = 17
+		9 = 23
+		10 = 30
+		11 = 40
+		12 = 50
+		13 = 65
+		14 = 80
+		15 = 95
+		16 = 100
+		*/
+
+        if (conveys_STR && rn2(100) < percent) {
             count = 1;
             tmp = -1; /* use -1 as fake prop index for STR */
             debugpline1("\"Intrinsic\" strength, %d", tmp);
         }
-        for (i = 1; i <= LAST_PROP; i++) {
+
+		if (conveys_DEX && rn2(100) < percent) {
+			if (count == 0 || !rn2(2))
+			{
+				count = 1;
+				tmp = -2;
+				debugpline1("\"Intrinsic\" dexterity, %d", tmp);
+			}
+		}
+
+		if (conveys_CON && rn2(100) < percent)
+		{
+			if (count == 0 || !rn2(2))
+			{
+				count = 1;
+				tmp = -3;
+				debugpline1("\"Intrinsic\" constitution, %d", tmp);
+			}
+		}
+
+		if (conveys_INT && rn2(100) < percent)
+		{
+			if (count == 0 || !rn2(2))
+			{
+				count = 1;
+				tmp = -4;
+				debugpline1("\"Intrinsic\" intelligence, %d", tmp);
+			}
+		}
+		
+		if (conveys_WIS && rn2(100) < percent)
+		{
+			if (count == 0 || !rn2(2))
+			{
+				count = 1;
+				tmp = -5;
+				debugpline1("\"Intrinsic\" wisdom, %d", tmp);
+			}
+		}
+
+		if (conveys_CHA && rn2(100) < percent)
+		{
+			if (count == 0 || !rn2(2))
+			{
+				count = 1;
+				tmp = -6;
+				debugpline1("\"Intrinsic\" charisma, %d", tmp);
+			}
+		}
+
+		
+		for (i = 1; i <= LAST_PROP; i++) {
             if (!intrinsic_possible(i, ptr))
                 continue;
             ++count;
@@ -1232,13 +1330,21 @@ int pm;
                 tmp = i;
             }
         }
-        /* if strength is the only candidate, give it 50% chance */
-        if (conveys_STR && count == 1 && !rn2(2))
-            tmp = 0;
-        /* if something was chosen, give it now (givit() might fail) */
+
+		/* if something was chosen, give it now (givit() might fail) */
         if (tmp == -1)
             gainstr((struct obj *) 0, 0, TRUE);
-        else if (tmp > 0)
+		else if (tmp == -2)
+			(void)adjattrib(A_DEX, 1, -1);
+		else if (tmp == -3)
+			(void)adjattrib(A_CON, 1, -1);
+		else if (tmp == -4)
+			(void)adjattrib(A_INT, 1, -1);
+		else if (tmp == -5)
+			(void)adjattrib(A_WIS, 1, -1);
+		else if (tmp == -6)
+			(void)adjattrib(A_CHA, 1, -1);
+		else if (tmp > 0)
             givit(tmp, ptr);
     } /* check_intrinsics */
 
