@@ -14,7 +14,6 @@ const char *const enc_stat[] = { "",         "Burdened",  "Stressed",
                                  "Strained", "Overtaxed", "Overloaded" };
 
 STATIC_OVL NEARDATA int mrank_sz = 0; /* loaded by max_rank_sz (from u_init) */
-STATIC_DCL const char *NDECL(rank);
 STATIC_DCL void NDECL(bot_via_windowport);
 STATIC_DCL void NDECL(stat_update_time);
 
@@ -320,7 +319,7 @@ boolean female;
     return "Player";
 }
 
-STATIC_OVL const char *
+const char *
 rank()
 {
     return rank_of(u.ulevel, Role_switch, flags.female);

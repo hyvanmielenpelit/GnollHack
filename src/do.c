@@ -42,8 +42,121 @@ dodrop()
     return result;
 }
 
-static NEARDATA const char item_description_objects[] = { ALL_CLASSES, ALLOW_NONE, 0 };
 
+/* the M('y') command - Character statistics */
+int
+docharacterstatistics()
+{
+	winid datawin = WIN_ERR;
+	datawin = create_nhwindow(NHW_MENU);
+
+	char buf[BUFSZ];
+	char buf2[BUFSZ];
+	char buf3[BUFSZ];
+	const char* txt;
+
+	/* Name */
+	strcpy(buf, plname);
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	/* Gender */
+	strcpy(buf2, flags.female ? "Female" : "Male");
+	Sprintf(buf, "Gender:                 %s", buf2);
+	if (Upolyd && u.mfemale != flags.female)
+	{
+		Sprintf(eos(buf), " (pre-polymorph %s)", u.mfemale ? "female" : "male");
+	}
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	/* Alignment */
+	Strcpy(buf2, (u.ualign.type == A_CHAOTIC)
+		? "Chaotic"
+		: (u.ualign.type == A_NEUTRAL)
+		? "Neutral"
+		: "Lawful");
+	*buf2 = highc(*buf2);
+	Sprintf(buf, "Alignment:              %s", buf2);
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+
+	/* Race */
+	strcpy(buf2, urace.noun);
+	*buf2 = highc(*buf2);
+	Sprintf(buf, "Race:                   %s", buf2);
+	if (Upolyd)
+	{
+		Sprintf(eos(buf), " (polymorphed into %s)", mons[u.umonnum].mname);
+	}
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	/* Role */
+	strcpy(buf2, (flags.female && urole.name.f) ? urole.name.f : urole.name.m);
+	*buf2 = highc(*buf2);
+	Sprintf(buf, "Role:                   %s", buf2);
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	/* Level */
+	strcpy(buf2, rank());
+	*buf2 = highc(*buf2);
+	Sprintf(buf, "Level:                  %d", u.ulevel);
+	if (u.ulevelmax > u.ulevel)
+	{
+		Sprintf(buf3, "%s (max reached %d)", buf, u.ulevelmax);
+	}
+	else
+		strcpy(buf3, buf);
+
+	txt = buf3;
+	putstr(datawin, 0, txt);
+
+	/* Rank */
+	strcpy(buf2, rank());
+	*buf2 = highc(*buf2);
+	Sprintf(buf, "Rank:                   %s", buf2);
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	/* Experience */
+	strcpy(buf2, rank());
+	*buf2 = highc(*buf2);
+	Sprintf(buf, "Experience (XP):        %d", u.uexp);
+
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	if (u.ulevel < 30)
+	{
+		int ulvl = (int)u.ulevel;
+		long exp_for_nxt_lvl = newuexp(ulvl);
+
+		Sprintf(buf, "XP for next level:      %d", exp_for_nxt_lvl);
+
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+
+	/* God */
+	Sprintf(buf, "God:                    %s", u_gname());
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+
+
+	display_nhwindow(datawin, FALSE);
+	destroy_nhwindow(datawin), datawin = WIN_ERR;
+
+	return 0;
+}
+
+
+
+static NEARDATA const char item_description_objects[] = { ALL_CLASSES, ALLOW_NONE, 0 };
 
 /* the M('x') command - Item descriptions*/
 int

@@ -164,6 +164,7 @@ E int NDECL(getbones);
 
 /* ### botl.c ### */
 
+E const char* NDECL(rank);
 E char *NDECL(do_statusline1);
 E void NDECL(check_gold_symbol);
 E char *NDECL(do_statusline2);
@@ -394,6 +395,7 @@ E int NDECL(wipeoff);
 #endif
 E int NDECL(dodrop);
 E int NDECL(doitemdescriptions);
+E int NDECL(docharacterstatistics);
 E boolean FDECL(boulder_hits_pool, (struct obj *, int, int, BOOLEAN_P));
 E boolean FDECL(flooreffects, (struct obj *, int, int, const char *));
 E void FDECL(doaltarobj, (struct obj *));
