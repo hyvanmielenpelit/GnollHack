@@ -1732,59 +1732,62 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 		allowall[0] = ALL_CLASSES;
 		allowall[1] = '\0';
 		if (invent && !confused) {
-			otmp = getobj(allowall, (otyp == SPE_BLESS ? "bless" : "curs"), 0, "");
-			if (otyp == SPE_BLESS) {
-				if (otmp->cursed) {
-					func = uncurse;
-					glowcolor = NH_AMBER;
-					costchange = COST_UNCURS;
+			otmp = getobj(allowall, (otyp == SPE_BLESS ? "bless" : "curse"), 0, "");
+			if (otmp)
+			{
+				if (otyp == SPE_BLESS) {
+					if (otmp->cursed) {
+						func = uncurse;
+						glowcolor = NH_AMBER;
+						costchange = COST_UNCURS;
+					}
+					else if (!otmp->blessed) {
+						func = bless;
+						glowcolor = NH_LIGHT_BLUE;
+						costchange = COST_alter;
+						altfmt = TRUE; /* "with a <color> aura" */
+					}
 				}
-				else if (!otmp->blessed) {
-					func = bless;
-					glowcolor = NH_LIGHT_BLUE;
-					costchange = COST_alter;
-					altfmt = TRUE; /* "with a <color> aura" */
+				else  { //Curse
+					if (otmp->blessed) {
+						func = unbless;
+						glowcolor = "brown";
+						costchange = COST_UNBLSS;
+					}
+					else if (!otmp->cursed) {
+						func = curse;
+						glowcolor = NH_BLACK;
+						costchange = COST_alter;
+						altfmt = TRUE;
+					}
 				}
-			}
-			else  { //Curse
-				if (otmp->blessed) {
-					func = unbless;
-					glowcolor = "brown";
-					costchange = COST_UNBLSS;
+				if (func) {
+					/* give feedback before altering the target object;
+					   this used to set obj->bknown even when not seeing
+					   the effect; now hero has to see the glow, and bknown
+					   is cleared instead of set if perception is distorted */
+					glowcolor = hcolor(glowcolor);
+					if (altfmt)
+						pline("%s with %s aura.", Yobjnam2(otmp, "glow"), an(glowcolor));
+					else
+						pline("%s %s.", Yobjnam2(otmp, "glow"), glowcolor);
+					iflags.last_msg = PLNMSG_OBJ_GLOWS;
+					otmp->bknown = !Hallucination;
+					/* potions of water are the only shop goods whose price depends
+					   on their curse/bless state */
+					if (otmp->unpaid && otmp->otyp == POT_WATER) {
+						if (costchange == COST_alter)
+							/* added blessing or cursing; update shop
+							   bill to reflect item's new higher price */
+							alter_cost(otmp, 0L);
+						else if (costchange != COST_none)
+							/* removed blessing or cursing; you
+							   degraded it, now you'll have to buy it... */
+							costly_alteration(otmp, costchange);
+					}
+					/* finally, change curse/bless state */
+					(*func)(otmp);
 				}
-				else if (!otmp->cursed) {
-					func = curse;
-					glowcolor = NH_BLACK;
-					costchange = COST_alter;
-					altfmt = TRUE;
-				}
-			}
-			if (func) {
-				/* give feedback before altering the target object;
-				   this used to set obj->bknown even when not seeing
-				   the effect; now hero has to see the glow, and bknown
-				   is cleared instead of set if perception is distorted */
-				glowcolor = hcolor(glowcolor);
-				if (altfmt)
-					pline("%s with %s aura.", Yobjnam2(otmp, "glow"), an(glowcolor));
-				else
-					pline("%s %s.", Yobjnam2(otmp, "glow"), glowcolor);
-				iflags.last_msg = PLNMSG_OBJ_GLOWS;
-				otmp->bknown = !Hallucination;
-				/* potions of water are the only shop goods whose price depends
-				   on their curse/bless state */
-				if (otmp->unpaid && otmp->otyp == POT_WATER) {
-					if (costchange == COST_alter)
-						/* added blessing or cursing; update shop
-						   bill to reflect item's new higher price */
-						alter_cost(otmp, 0L);
-					else if (costchange != COST_none)
-						/* removed blessing or cursing; you
-						   degraded it, now you'll have to buy it... */
-						costly_alteration(otmp, costchange);
-				}
-				/* finally, change curse/bless state */
-				(*func)(otmp);
 			}
 		}
 		else
