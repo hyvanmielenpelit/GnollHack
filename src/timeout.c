@@ -114,6 +114,7 @@ const struct propname {
 	{ WARN_HUMAN, "warning of human beings" },
 	{ WARN_WERE, "warning of were-creatures" },
 	{ WARN_ANGEL, "warning of angels" },
+	{ CHARM_RES, "charm resistance" },
 	{ LAUGHING, "laughing uncontrollably" },
 	{  0, 0 },
 };
@@ -838,6 +839,10 @@ nh_timeout()
 				if (!Death_resistance)
 					Your("soul's silver cord feels thinner than before.");
 				break;
+			case CHARM_RES:
+				if (!Charm_resistance)
+					You_feel("less certain of your own motivations.");
+				break;
 			case LYCANTHROPY_RES:
 				if (!Lycanthropy_resistance)
 					You("feel that your immunity to lycanthropy is gone.");
@@ -944,6 +949,9 @@ nh_timeout()
 				break;
 			case DEATH_RES:
 				Your("soul's silver cord is starting to feel a bit thinner than before.");
+				break;
+			case CHARM_RES:
+				You("are starting to feel a bit less certain of your own motivations.");
 				break;
 			case LYCANTHROPY_RES:
 				You("are starting to feel a bit less protected from lycanthropy.");

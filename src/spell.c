@@ -2085,6 +2085,9 @@ int otyp;
 		case DEATH_RES:
 			Your("soul's silver cord feels thicker than before.");
 			break;
+		case CHARM_RES:
+			You_feel("more firm about your own motivations.");
+			break;
 		case LYCANTHROPY_RES:
 			You_feel("more protected from lycanthropy.");
 			break;

@@ -577,6 +577,7 @@ boolean on, silently;
         case SLEEP_RES:
         case DISINT_RES:
 		case DEATH_RES:
+		case CHARM_RES:
 		case SHOCK_RES:
         case POISON_RES:
         case ACID_RES:

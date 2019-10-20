@@ -1252,6 +1252,7 @@ E struct attack *FDECL(getmattk, (struct monst *, struct monst *,
                                   int, int *, struct attack *));
 E int FDECL(mattacku, (struct monst *));
 E boolean FDECL(check_magic_cancellation_success, (struct monst*, int));
+E boolean FDECL(check_ability_resistance_success, (struct monst*, int, int));
 E int FDECL(magic_negation, (struct monst *));
 E int FDECL(magic_negation_percentage, (int));
 E boolean NDECL(gulp_blnd_check);

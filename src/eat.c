@@ -959,6 +959,16 @@ register struct permonst *ptr;
 			HDeath_resistance |= FROMOUTSIDE;
 		}
 		break;
+	case CHARM_RES: /* charm resistance */
+		debugpline0("Trying to give charm resistance");
+		if (!(HCharm_resistance & FROMOUTSIDE)) {
+			if (Hallucination)
+				pline("The machinations of the world suddenly make more sense to you!");
+			else
+				You_feel("more firm about your own motivations!");
+			HCharm_resistance |= FROMOUTSIDE;
+		}
+		break;
 	case LYCANTHROPY_RES: /* immunity to lycanthropy */
 		debugpline0("Trying to give immunity to lycanthropy");
 		if (!(HLycanthropy_resistance & FROMOUTSIDE)) {

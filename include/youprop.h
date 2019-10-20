@@ -64,6 +64,12 @@
 #define EDrain_resistance u.uprops[DRAIN_RES].extrinsic
 #define Drain_resistance (HDrain_resistance || EDrain_resistance)
 
+#define HCharm_resistance u.uprops[CHARM_RES].intrinsic
+#define ECharm_resistance u.uprops[CHARM_RES].extrinsic
+#define Charm_resistance (HCharm_resistance || ECharm_resistance)
+
+
+
 /* Hxxx due to FROMFORM only */
 #define HAntimagic u.uprops[ANTIMAGIC].intrinsic
 #define EAntimagic u.uprops[ANTIMAGIC].extrinsic

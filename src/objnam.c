@@ -1135,13 +1135,13 @@ unsigned doname_flags;
 			{
 				if((obj == uarm && context.suit_yielding_ac_bonus && context.suit_yielding_mc_bonus)
 					|| (obj == uarmo && context.robe_yielding_ac_bonus && context.robe_yielding_mc_bonus))
-					Strcat(bp, "; AC and MC");
+					Strcat(bp, "; superior");
 				else if((obj == uarm && context.suit_yielding_ac_bonus)
 					|| (obj == uarmo && context.robe_yielding_ac_bonus))
-					Strcat(bp, "; AC");
+					Strcat(bp, "; better AC");
 				else if ((obj == uarm && context.suit_yielding_mc_bonus)
 					|| (obj == uarmo && context.robe_yielding_mc_bonus))
-					Strcat(bp, "; MC");
+					Strcat(bp, "; better MC");
 				else
 					Strcat(bp, "; inferior");
 			}

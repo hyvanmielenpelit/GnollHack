@@ -57,6 +57,7 @@ set_uasmon()
     PROPSET(SLEEP_RES, resists_sleep(&youmonst));
     PROPSET(DISINT_RES, resists_disint(&youmonst));
 	PROPSET(DEATH_RES, resists_death(&youmonst));
+	PROPSET(CHARM_RES, resists_charm(&youmonst));
 	PROPSET(SHOCK_RES, resists_elec(&youmonst));
     PROPSET(POISON_RES, resists_poison(&youmonst));
     PROPSET(ACID_RES, resists_acid(&youmonst));

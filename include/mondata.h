@@ -34,6 +34,8 @@
     ((((mon)->data->mresists | (mon)->mextrinsics) & MR_MAGICMISSILE) != 0)
 #define resists_magic(mon) \
     ((((mon)->data->mresists | (mon)->mextrinsics) & MR_MAGIC) != 0)
+#define resists_charm(mon) \
+    ((((mon)->data->mresists | (mon)->mextrinsics) & MR_CHARM) != 0)
 
 #define confers_strength(ptr) \
     (((ptr)->mconveys & MR_STRENGTH) != 0)

@@ -1002,11 +1002,190 @@ struct attack *mattk;
 }
 
 boolean
+check_ability_resistance_success(mtmp, ability, adjustment_to_roll)
+struct monst* mtmp;
+int ability;
+int adjustment_to_roll;
+{
+	if (!mtmp)
+		return;
+
+	int ability_score = 0;
+	int str = 0;
+	int dex = 0;
+	int con = 0;
+	int intl = 0;
+	int wis = 0;
+	int cha = 0;
+
+	if (mtmp == &youmonst)
+	{
+		str = ACURRSTR;
+		dex = ACURR(A_DEX);
+		con = ACURR(A_CON);
+		intl = ACURR(A_INT);
+		wis = ACURR(A_WIS);
+		cha = ACURR(A_CHA);
+	}
+	else
+	{
+		str = (mtmp->mstr <= 18 ? mtmp->mstr : (mtmp->mstr > STR18(100) ? mtmp->mstr - 100 : 18));
+		dex = mtmp->mdex;
+		con = mtmp->mcon;
+		intl = mtmp->mint;
+		wis = mtmp->mwis;
+		cha = mtmp->mcha;
+	}
+
+	switch (ability)
+	{
+	case A_STR:
+		ability_score = str;
+		break;
+	case A_DEX:
+		ability_score = dex;
+		break;
+	case A_CON:
+		ability_score = con;
+		break;
+	case A_INT:
+		ability_score = intl;
+		break;
+	case A_WIS:
+		ability_score = wis;
+		break;
+	case A_CHA:
+		ability_score = cha;
+		break;
+	case A_MAX_INT_WIS:
+		ability_score = max(intl, wis);
+		break;
+	case A_MAX_INT_CHA:
+		ability_score = max(intl, cha);
+		break;
+	case A_MAX_WIS_CHA:
+		ability_score = max(wis, cha);
+		break;
+	case A_MAX_INT_WIS_CHA:
+		ability_score = max(max(intl, wis), cha);
+		break;
+	case A_AVG_INT_WIS:
+		ability_score = (intl + wis) / 2;
+		break;
+	case A_AVG_INT_CHA:
+		ability_score = (intl + wis) / 2;
+		break;
+	case A_AVG_WIS_CHA:
+		ability_score = (wis + cha) / 2;
+		break;
+	case A_AVG_INT_WIS_CHA:
+		ability_score = (intl + wis + cha) / 3;
+		break;
+	default:
+		break;
+	}
+
+	int adjscore = ability_score + adjustment_to_roll;
+	int percentage = 0;
+
+	if (adjscore < 1)
+		percentage = 0;
+	else if (adjscore > 25)
+		percentage = 100;
+	else
+	{
+		switch (adjscore)
+		{
+		case 1:
+			percentage = 1;
+			break;
+		case 2:
+			percentage = 2;
+			break;
+		case 3:
+			percentage = 3;
+			break;
+		case 4:
+			percentage = 4;
+			break;
+		case 5:
+			percentage = 5;
+			break;
+		case 6:
+			percentage = 7;
+			break;
+		case 7:
+			percentage = 10;
+			break;
+		case 8:
+			percentage = 15;
+			break;
+		case 9:
+			percentage = 20;
+			break;
+		case 10:
+			percentage = 30;
+			break;
+		case 11:
+			percentage = 40;
+			break;
+		case 12:
+			percentage = 50;
+			break;
+		case 13:
+			percentage = 55;
+			break;
+		case 14:
+			percentage = 60;
+			break;
+		case 15:
+			percentage = 65;
+			break;
+		case 16:
+			percentage = 70;
+			break;
+		case 17:
+			percentage = 75;
+			break;
+		case 18:
+			percentage = 80;
+			break;
+		case 19:
+			percentage = 84;
+			break;
+		case 20:
+			percentage = 87;
+			break;
+		case 21:
+			percentage = 90;
+			break;
+		case 22:
+			percentage = 93;
+			break;
+		case 23:
+			percentage = 95;
+			break;
+		case 24:
+			percentage = 97;
+			break;
+		case 25:
+			percentage = 99;
+			break;
+		default:
+			break;
+		}
+	}
+	boolean success = (rn2(100) < percentage);
+	return success;
+}
+
+
+boolean
 check_magic_cancellation_success(mtmp, adjustment_to_roll)
 struct monst* mtmp;
 int adjustment_to_roll;
 {
-	boolean success = (rn2(100) < magic_negation_percentage(u.umc + adjustment_to_roll));
+	boolean success = (rn2(100) < magic_negation_percentage(((mtmp == &youmonst) ? u.umc: magic_negation(mtmp)) + adjustment_to_roll));
 	return success;
 }
 

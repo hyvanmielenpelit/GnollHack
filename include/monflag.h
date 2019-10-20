@@ -59,18 +59,19 @@
 #define MR_LYCANTHROPY 0x00000200L		/* resists lycanthropy */
 #define MR_MAGICMISSILE 0x00000400L		/* resists magic missiles */
 #define MR_MAGIC 0x00000800L			/* resists magic */
+#define MR_CHARM 0x00001000L			/* resists charm */
 
-#define MR_STRENGTH 0x00001000L			/* confers strength */
-#define MR_DEXTERITY 0x00002000L		/* confers dexterity */
-#define MR_CONSTITUTION 0x00004000L		/* confers constitution */
-#define MR_INTELLIGENCE 0x00008000L		/* confers intelligence */
-#define MR_WISDOM 0x00010000L			/* confers wisdom */
-#define MR_CHARISMA 0x00020000L			/* confers charisma */
+#define MR_STRENGTH 0x00010000L			/* confers strength */
+#define MR_DEXTERITY 0x00020000L		/* confers dexterity */
+#define MR_CONSTITUTION 0x00040000L		/* confers constitution */
+#define MR_INTELLIGENCE 0x00080000L		/* confers intelligence */
+#define MR_WISDOM 0x00100000L			/* confers wisdom */
+#define MR_CHARISMA 0x00200000L			/* confers charisma */
 
-#define MR_TELEPORT 0x00040000L			/* confers teleportiis */
-#define MR_TELEPORT_CONTROL 0x00080000L	/* confers teleport control */
-#define MR_BLIND_TELEPATHY 0x00100000L	/* confers blind telepathy */
-#define MR_TELEPATHY 0x00200000L		/* confers telepathy */
+#define MR_TELEPORT 0x00400000L			/* confers teleportiis */
+#define MR_TELEPORT_CONTROL 0x00800000L	/* confers teleport control */
+#define MR_BLIND_TELEPATHY 0x01000000L	/* confers blind telepathy */
+#define MR_TELEPATHY 0x02000000L		/* confers telepathy */
 
 /* other resistances: magic, sickness */
 /* other conveyances: teleport, teleport control, telepathy */

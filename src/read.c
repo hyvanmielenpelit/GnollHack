@@ -945,19 +945,27 @@ struct obj *sobj;
         if (was_peaceful && !mtmp->mpeaceful)
             return -1;
     } else {
-        if (mtmp->isshk)
-            make_happy_shk(mtmp, FALSE);
-		else if (!resist(mtmp, sobj, 0, 0, NOTELL))
+		if (mtmp->isshk)
+			make_happy_shk(mtmp, FALSE);
+		else if (!resists_charm(mtmp) && !resist(mtmp, sobj, 0, 0, NOTELL) && !check_ability_resistance_success(mtmp, A_WIS, objects[sobj->otyp].oc_spell_saving_throw_adjustment))
 		{
-			if (sobj && !(objects[sobj->otyp].oc_flags3 & O3_SPELL_IS_NONREVERSIBLE_PERMANENT))
+			if (tamedog(mtmp, (struct obj*) 0))
 			{
-				/* Charm can be dispelled and is non-permanent if timer > 0 */
-				mtmp->morigpeaceful = mtmp->mpeaceful;
-				mtmp->morigtame = mtmp->mtame;
-				mtmp->mcharmed = 1;
-				mtmp->mcharmed_timer = d(objects[sobj->otyp].oc_spell_dur_dice, objects[sobj->otyp].oc_spell_dur_dicesize) + objects[sobj->otyp].oc_spell_dur_plus;
+				if (sobj && !(objects[sobj->otyp].oc_flags3 & O3_SPELL_IS_NONREVERSIBLE_PERMANENT))
+				{
+					/* Charm can be dispelled and is non-permanent if timer > 0 */
+					mtmp->morigpeaceful = was_peaceful;
+					mtmp->morigtame = was_tame;
+					mtmp->mcharmed = 1;
+					mtmp->mcharmed_timer = d(objects[sobj->otyp].oc_spell_dur_dice, objects[sobj->otyp].oc_spell_dur_dicesize) + objects[sobj->otyp].oc_spell_dur_plus;
+				}
 			}
-			(void)tamedog(mtmp, (struct obj*) 0);
+
+		}
+		else
+		{
+			shieldeff(mtmp->mx, mtmp->my);
+			pline("%s resists!", Monnam(mtmp));
 		}
         if ((!was_peaceful && mtmp->mpeaceful) || (!was_tame && mtmp->mtame))
             return 1;

@@ -2561,6 +2561,8 @@ int final;
         you_are("shock resistant", from_what(SHOCK_RES));
 	if (Death_resistance)
 		you_are("death resistant", from_what(DEATH_RES));
+	if (Charm_resistance)
+		you_are("charm resistant", from_what(CHARM_RES));
 	if (Lycanthropy_resistance)
 		you_are("immune to lycanthropy", from_what(LYCANTHROPY_RES));
 	if (Curse_resistance)
