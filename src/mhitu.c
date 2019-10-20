@@ -918,7 +918,7 @@ register struct monst *mtmp;
 						}
 						else
 						{
-							if (!rn2(2))
+							if (!rn2(2) || !canseemon(mtmp) || !m_carrying(mtmp, WAN_DEATH))
 								pline("%s laughs at you!", Monnam(mtmp));
 							else
 								pline("%s swings his wand menacingly.", Monnam(mtmp));
@@ -1006,7 +1006,7 @@ check_magic_cancellation_success(mtmp, adjustment_to_roll)
 struct monst* mtmp;
 int adjustment_to_roll;
 {
-	boolean success = (rn2(100) < magic_negation_percentage(magic_negation(mtmp) + adjustment_to_roll));
+	boolean success = (rn2(100) < magic_negation_percentage(u.umc + adjustment_to_roll));
 	return success;
 }
 
@@ -1023,6 +1023,12 @@ struct monst *mon;
     int mc = mons[mon->mnum].mc; /* base magic cancellation for current form */
 	boolean is_you = (mon == &youmonst);
 
+	int item_mc_bonus = 0;
+
+	int suit_mc_bonus = 0;
+	int robe_mc_bonus = 0;
+	int combined_mc_bonus = 0;
+
 	for (o = is_you ? invent : mon->minvent; o; o = o->nobj) {
         /* oc_magic_cancellation field is only applicable for armor (which must be worn), this should exclude spellbooks and wands, which use oc_oc2 for something else */
 		/* omit W_SWAPWEP+W_QUIVER; W_ART+W_ARTI handled by protects() */
@@ -1034,23 +1040,37 @@ struct monst *mon;
 		if ((o->owornmask & wearmask) || (objects[o->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED) 
 			&& !inappropriate_monster_character_type(mon, o))
 		{
+			item_mc_bonus = 0;
 			if (objects[o->otyp].oc_flags & O1_EROSION_DOES_NOT_AFFECT_MC)
-				mc += objects[o->otyp].oc_magic_cancellation;
+				item_mc_bonus += objects[o->otyp].oc_magic_cancellation;
 			else
-				mc += max(0, objects[o->otyp].oc_magic_cancellation - (int)greatest_erosion(o));
+				item_mc_bonus += max(0, objects[o->otyp].oc_magic_cancellation - (int)greatest_erosion(o));
 
 			if (objects[o->otyp].oc_flags & O1_SPE_AFFECTS_MC)
-				mc += o->spe;
+				item_mc_bonus += o->spe;
 
 			/* Note u.umcbonus is not being used at the moment, even though it contains appropriate bonuses for you */
 			if (objects[o->otyp].oc_bonus_attributes & BONUS_TO_MC)
 			{
-				mc += objects[o->otyp].oc_attribute_bonus;
+				item_mc_bonus += objects[o->otyp].oc_attribute_bonus;
 				if (!(objects[o->otyp].oc_bonus_attributes & IGNORE_SPE))
-					mc += o->spe;
+					item_mc_bonus += o->spe;
 			}
-        }
+
+			if (o == uarm)
+				suit_mc_bonus = item_mc_bonus;
+			else if (o == uarmo)
+				robe_mc_bonus = item_mc_bonus;
+			else
+				mc += item_mc_bonus;
+		}
     }
+	/* Finally, add greated of suit and robe MC bonus */
+
+	combined_mc_bonus = max(suit_mc_bonus, robe_mc_bonus);
+	mc += combined_mc_bonus;
+	context.suit_yielding_mc_bonus = (suit_mc_bonus == combined_mc_bonus);
+	context.robe_yielding_mc_bonus = (robe_mc_bonus == combined_mc_bonus);
 
 	if ((is_you && (Protection || u.uspellprot > 0)))
 		mc += max(1, u.uspellprot);
@@ -1234,8 +1254,8 @@ register struct obj* omonwep;
      *  Use uncancelled when cancellation factor takes into account certain
      *  armor's special magic protection.  Otherwise just use !mtmp->mcancelled.
      */
-    //armpro = magic_negation(&youmonst);
-	uncancelled = !mtmp->mcancelled && !check_magic_cancellation_success(&youmonst, 0); // (rn2(100) >= magic_negation_percentage(armpro)); //(rn2(10) >= 3 * armpro);
+
+	uncancelled = !mtmp->mcancelled && !check_magic_cancellation_success(&youmonst, 0);
 
     permdmg = 0;
 
@@ -1314,7 +1334,7 @@ register struct obj* omonwep;
                         goto do_stone;
                 }
 
-				/*Negative AC reduces damage*/
+				/* Negative AC reduces damage */
 				if (dmg && u.uac < 0) {
 					dmg -= rnd(-u.uac);
 					if (dmg < 1)

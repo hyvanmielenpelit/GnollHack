@@ -1123,13 +1123,30 @@ unsigned doname_flags;
 			}
 		}
         else if (obj->owornmask & W_ARMOR)
-            Strcat(bp, (obj == uskin) ? " (embedded in your skin)"
+		{
+            Strcat(bp, (obj == uskin) ? " (embedded in your skin"
                        /* in case of perm_invent update while Wear/Takeoff
                           is in progress; check doffing() before donning()
                           because donning() returns True for both cases */
-                       : doffing(obj) ? " (being doffed)"
-                         : donning(obj) ? " (being donned)"
-                           : " (being worn)");
+                       : doffing(obj) ? " (being doffed"
+                         : donning(obj) ? " (being donned"
+                           : " (being worn");
+			if (uarm && uarmo && (obj == uarm || obj == uarmo))
+			{
+				if((obj == uarm && context.suit_yielding_ac_bonus && context.suit_yielding_mc_bonus)
+					|| (obj == uarmo && context.robe_yielding_ac_bonus && context.robe_yielding_mc_bonus))
+					Strcat(bp, "; AC and MC");
+				else if((obj == uarm && context.suit_yielding_ac_bonus)
+					|| (obj == uarmo && context.robe_yielding_ac_bonus))
+					Strcat(bp, "; AC");
+				else if ((obj == uarm && context.suit_yielding_mc_bonus)
+					|| (obj == uarmo && context.robe_yielding_mc_bonus))
+					Strcat(bp, "; MC");
+				else
+					Strcat(bp, "; inferior");
+			}
+			Strcat(bp, ")");
+		}
         /*FALLTHRU*/
     case WEAPON_CLASS:
         if (ispoisoned)

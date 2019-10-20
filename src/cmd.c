@@ -2800,9 +2800,9 @@ int final;
         if (prot)
             you_have(enlght_combatinc("defense", prot, final, buf), "");
     }
-    if ((armpro = magic_negation(&youmonst)) > 0) {
-        /* magic cancellation factor, conferred by worn armor */
 #if 0
+	if ((armpro = u.umc) > 0) {
+        /* magic cancellation factor, conferred by worn armor */
         static const char *const mc_types[] = {
             "" /*ordinary*/, "warded", "guarded", "protected",
         };
@@ -2810,9 +2810,9 @@ int final;
         if (armpro >= SIZE(mc_types))
             armpro = SIZE(mc_types) - 1;
         you_are(mc_types[armpro], "");
-#endif
     }
-    if (Half_physical_damage)
+#endif
+	if (Half_physical_damage)
         enlght_halfdmg(HALF_PHDAM, final);
     if (Half_spell_damage)
         enlght_halfdmg(HALF_SPDAM, final);

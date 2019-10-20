@@ -2565,10 +2565,21 @@ void
 find_ac()
 {
 	int uac = mons[u.umonnum].ac; /* base armor class for current form */
+	int suit_ac_bonus = 0;
+	int robe_ac_bonus = 0;
+	int combined_ac_bonus = 0;
 
 	/* armor class from worn gear */
 	if (uarm)
-		uac -= ARM_AC_BONUS(uarm);
+		suit_ac_bonus = ARM_AC_BONUS(uarm);
+	if (uarmo)
+		robe_ac_bonus = ARM_AC_BONUS(uarmo);
+
+	combined_ac_bonus = max(suit_ac_bonus, robe_ac_bonus);
+	uac -= combined_ac_bonus;
+	context.suit_yielding_ac_bonus = (suit_ac_bonus == combined_ac_bonus);
+	context.robe_yielding_ac_bonus = (robe_ac_bonus == combined_ac_bonus);
+
 	if (uarmc)
 		uac -= ARM_AC_BONUS(uarmc);
 	if (uarmh)
@@ -2581,8 +2592,6 @@ find_ac()
 		uac -= ARM_AC_BONUS(uarmg);
 	if (uarmu)
 		uac -= ARM_AC_BONUS(uarmu);
-	if (uarmo)
-		uac -= ARM_AC_BONUS(uarmo);
 	if (uarmb)
 		uac -= ARM_AC_BONUS(uarmb);
 	if (uwep && (is_shield(uwep) || is_weapon(uwep)))

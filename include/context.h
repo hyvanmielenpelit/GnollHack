@@ -133,6 +133,10 @@ struct context_info {
     boolean door_opened; /* set to true if door was opened during test_move */
 	boolean time_stopped; /* time has been stopped*/
 	boolean multishot_target_killed;
+	boolean suit_yielding_ac_bonus;
+	boolean suit_yielding_mc_bonus;
+	boolean robe_yielding_ac_bonus;
+	boolean robe_yielding_mc_bonus;
 	struct dig_info digging;
     struct victual_info victual;
     struct tin_info tin;
