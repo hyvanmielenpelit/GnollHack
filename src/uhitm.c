@@ -935,7 +935,7 @@ int dieroll;
 								obj->dknown ? CXN_PFX_THE
 								: CXN_ARTICLE));
 						obj->dknown = 1;
-						if (!munstone(mon, TRUE))
+						if (!munstone(mon, TRUE) && !check_magic_cancellation_success(mon, 0))
 							minstapetrify(mon, TRUE);
 						if (resists_ston(mon))
 							break;
@@ -1852,10 +1852,6 @@ struct obj *obj;   /* weapon */
 /*
  * Send in a demon pet for the hero.  Exercise wisdom.
  *
- * This function used to be inline to damageum(), but the Metrowerks compiler
- * (DR4 and DR4.5) screws up with an internal error 5 "Expression Too
- * Complex."
- * Pulling it out makes it work.
  */
 STATIC_OVL void
 demonpet()
@@ -1864,12 +1860,19 @@ demonpet()
     struct permonst *pm;
     struct monst *dtmp;
 
-    //pline("Some hell-p has arrived!");
     i = !rn2(6) ? ndemon(u.ualign.type) : NON_PM;
     pm = i != NON_PM ? &mons[i] : youmonst.data;
 	if ((dtmp = makemon(pm, u.ux, u.uy, NO_MM_FLAGS)) != 0)
 	{
 		(void)tamedog(dtmp, (struct obj*) 0);
+
+		dtmp->issummoned = TRUE;
+		dtmp->disregards_enemy_strength = TRUE;
+		dtmp->disregards_own_health = FALSE;
+		dtmp->hasbloodlust = TRUE;
+		dtmp->summonduration = d(objects[SPE_SUMMON_DEMON].oc_spell_dur_dice, objects[SPE_SUMMON_DEMON].oc_spell_dur_dicesize) + objects[SPE_SUMMON_DEMON].oc_spell_dur_plus;
+		begin_summontimer(dtmp);
+
 		if (canseemon(dtmp))
 		{
 			if (is_demon(dtmp->data))
@@ -1994,7 +1997,6 @@ register struct attack *mattk;
 int specialdmg; /* blessed and/or silver bonus against various things */
 {
     register struct permonst *pd = mdef->data;
-    int armpro;
     boolean negated;
     struct obj *mongold;
 	int chance = 0, poisondamage = 0;
@@ -2030,9 +2032,9 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 			tmp += dbon() / 2;
 	}
 
-    armpro = magic_negation(mdef);
+    //armpro = magic_negation(mdef);
     /* since hero can't be cancelled, only defender's armor applies */
-	negated = (rn2(100) < magic_negation_percentage(armpro));  //!(rn2(10) >= 3 * armpro);
+	negated = check_magic_cancellation_success(mdef, 0);// (rn2(100) < magic_negation_percentage(armpro));  //!(rn2(10) >= 3 * armpro);
 
     switch (mattk->adtyp) {
     case AD_STUN:
@@ -2154,7 +2156,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
             tmp = 0;
         break;
     case AD_STON:
-        if (!munstone(mdef, TRUE))
+        if (!negated && !munstone(mdef, TRUE))
             minstapetrify(mdef, TRUE);
         tmp = 0;
         break;

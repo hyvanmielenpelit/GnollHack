@@ -686,26 +686,26 @@ CLOAK("cloak of displacement", "piece of cloth",
 /* robes and gowns */
 /* with shuffled appearances... */
 ROBE("robe", "old robe", //STARTMARKER 1 & 2
-	0, 0, 0,		  0, 0, 10, 1, 20,  25,  10, 2, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_RED, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	0, 0, NO_POWER, NO_POWER, NO_POWER, 10, 1, 20,  25,  10, 2, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_RED, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ROBE("robe of protection", "golden ornamental robe",
-	0, 1, NO_POWER, 0, 0, 10, 1, 25, 400,  7, 5, 0, 0, 0, 0, 0, MAT_CLOTH, HI_GOLD, O1_SPE_AFFECTS_MC, O2_NONE, O3_NONE, PERMITTED_ALL),
+	0, 1, NO_POWER, NO_POWER, NO_POWER, 10, 1, 25, 400,  7, 5, 0, 0, 0, 0, 0, MAT_CLOTH, HI_GOLD, O1_SPE_AFFECTS_MC, O2_NONE, O3_NONE, PERMITTED_ALL),
 ROBE("robe of magic resistance", "silvery ornamental robe",
-	0, 1, ANTIMAGIC,  0, 0, 9, 1, 25, 400,  9, 2, 0, 0, 0, 0, 0, MAT_CLOTH, HI_SILVER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	0, 1, ANTIMAGIC, NO_POWER, NO_POWER, 9, 1, 25, 400,  9, 4, 0, 0, 0, 0, 0, MAT_CLOTH, HI_SILVER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ROBE("gown of the archbishops", "shining purple robe",
 	0, 1, CURSE_RES, DEATH_RES, DRAIN_RES, 5, 2, 30, 400,  9, 3,15, 15, 0, 0, 0, MAT_CLOTH, HI_ZAP, O1_NOT_CURSEABLE | O1_HP_PERCENTAGE_BONUS | O1_MANA_PERCENTAGE_BONUS, O2_GENERATED_BLESSED, O3_NONE, PERMITTED_ALL),
 ROBE("robe of the archmagi", "shining blue robe",
-	0, 1, 0,		   0, 0, 5, 2, 30, 400,  9, 3, 0, 0, BONUS_TO_INT | SETS_FIXED_ATTRIBUTE, 20, 0, MAT_CLOTH, HI_ZAP, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	0, 1, NO_POWER, NO_POWER, NO_POWER, 5, 2, 30, 400,  9, 3, 0, 0, BONUS_TO_INT | SETS_FIXED_ATTRIBUTE, 20, 0, MAT_CLOTH, HI_ZAP, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ROBE("robe of starry wisdom", "shining black robe", //ENDMARKER 2
-	0, 1, 0,		   0, 0, 5, 2, 30, 400,  9, 3, 0, 0, BONUS_TO_WIS | SETS_FIXED_ATTRIBUTE, 20, 0, MAT_CLOTH, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	0, 1, NO_POWER, NO_POWER, NO_POWER, 5, 2, 30, 400,  9, 3, 0, 0, BONUS_TO_WIS | SETS_FIXED_ATTRIBUTE, 20, 0, MAT_CLOTH, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 /* without shuffled appearances... */
 ROBE("bathrobe", "soft cotton robe",
-	0, 0, 0,		   0, 0, 6, 1, 25,   5, 10, 0, 0, 0, 0, 0, 2, MAT_CLOTH, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	0, 0, NO_POWER, NO_POWER, NO_POWER, 6, 1, 25,   5, 10, 0, 0, 0, 0, 0, 2, MAT_CLOTH, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ROBE("clerical gown", None,
-	1, 0, 0,		   0, 0, 6, 1, 15,  25, 10, 2, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_BLACK, O1_NONE, O2_GENERATED_BLESSED, O3_NONE, PERMITTED_ALL),
+	1, 0, NO_POWER, NO_POWER, NO_POWER, 6, 1, 15,  25, 10, 2, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_BLACK, O1_NONE, O2_GENERATED_BLESSED, O3_NONE, PERMITTED_ALL),
 ROBE("gnollish haircloth robe", "crude robe",
-	0, 0, 0,		   0, 0, 6, 1, 30,  10,  9, 1, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_BROWN, O1_NONE, O2_GNOLLISH_ITEM, O3_NONE, PERMITTED_ALL),
+	0, 0, NO_POWER, NO_POWER, NO_POWER, 6, 1, 30,  10,  9, 1, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_BROWN, O1_NONE, O2_GNOLLISH_ITEM, O3_NONE, PERMITTED_ALL),
 ROBE("mummy wrapping", None, //ENDMARKER 1
-	1, 0, 0,		   0, 0, 0, 0,  3,   2, 10, 1, 0, 0, 0, 0, 4, MAT_CLOTH, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	1, 0, NO_POWER, NO_POWER, NO_POWER, 0, 0,  3,   2, 10, 1, 0, 0, 0, 0, 4, MAT_CLOTH, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 	/* worn mummy wrapping blocks invisibility */
 
 

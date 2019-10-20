@@ -819,7 +819,7 @@ register struct attack *mattk;
     struct obj *obj;
     char buf[BUFSZ];
     struct permonst *pa = magr->data, *pd = mdef->data;
-    int armpro, num,res = MM_MISS;
+    int num,res = MM_MISS;
     boolean cancelled;
 	int poisondamage = 0;
 
@@ -882,8 +882,8 @@ register struct attack *mattk;
     }
 
     /* cancellation factor is the same as when attacking the hero */
-    armpro = magic_negation(mdef);
-	cancelled = magr->mcancelled || (rn2(100) < magic_negation_percentage(armpro));  //!(rn2(10) >= 3 * armpro);
+    //armpro = magic_negation(mdef);
+	cancelled = magr->mcancelled || check_magic_cancellation_success(mdef, 0); //(rn2(100) < magic_negation_percentage(armpro));  //!(rn2(10) >= 3 * armpro);
 
     switch (mattk->adtyp) {
     case AD_DGST:
@@ -1108,7 +1108,7 @@ register struct attack *mattk;
         tmp = 0;
         break;
     case AD_STON:
-        if (magr->mcancelled)
+        if (cancelled) //changed to respect MC
             break;
  do_stone:
         /* may die from the acid if it eats a stone-curing corpse */

@@ -1001,14 +1001,26 @@ struct attack *mattk;
     return FALSE;
 }
 
+boolean
+check_magic_cancellation_success(mtmp, adjustment_to_roll)
+struct monst* mtmp;
+int adjustment_to_roll;
+{
+	boolean success = (rn2(100) < magic_negation_percentage(magic_negation(mtmp) + adjustment_to_roll));
+	return success;
+}
+
 /* armor that sufficiently covers the body might be able to block magic */
 int
 magic_negation(mon)
 struct monst *mon;
 {
+	if (!mon)
+		return 0;
+
     struct obj *o;
     long wearmask;
-    int mc = 0;
+    int mc = mons[mon->mnum].mc; /* base magic cancellation for current form */
 	boolean is_you = (mon == &youmonst);
 
 	for (o = is_you ? invent : mon->minvent; o; o = o->nobj) {
@@ -1040,11 +1052,7 @@ struct monst *mon;
         }
     }
 
-    if (mon->data == &mons[PM_HIGH_PRIEST])
-		mc = mc + 2;
-	else if (mon->data == &mons[PM_HIGH_PRIEST] || mon->data == &mons[PM_ALIGNED_PRIEST] || is_minion(mon->data))
-		mc++;
-	else if ((is_you && (Protection || u.uspellprot > 0)))
+	if ((is_you && (Protection || u.uspellprot > 0)))
 		mc += max(1, u.uspellprot);
 
     return mc;
@@ -1147,7 +1155,7 @@ register struct obj* omonwep;
 {
     struct permonst *mdat = mtmp->data;
     int uncancelled, ptmp;
-	int dmg = 0, extradmg = 0, armpro, permdmg, tmphp;
+	int dmg = 0, extradmg = 0, permdmg, tmphp;
     char buf[BUFSZ];
     struct permonst *olduasmon = youmonst.data;
     int res;
@@ -1226,8 +1234,8 @@ register struct obj* omonwep;
      *  Use uncancelled when cancellation factor takes into account certain
      *  armor's special magic protection.  Otherwise just use !mtmp->mcancelled.
      */
-    armpro = magic_negation(&youmonst);
-	uncancelled = !mtmp->mcancelled && (rn2(100) >= magic_negation_percentage(armpro)); //(rn2(10) >= 3 * armpro);
+    //armpro = magic_negation(&youmonst);
+	uncancelled = !mtmp->mcancelled && !check_magic_cancellation_success(&youmonst, 0); // (rn2(100) >= magic_negation_percentage(armpro)); //(rn2(10) >= 3 * armpro);
 
     permdmg = 0;
 
@@ -1561,15 +1569,20 @@ register struct obj* omonwep;
     }
     case AD_STON: /* cockatrice */
         hitmsg(mtmp, mattk, dmg);
-        if (!rn2(3)) {
-            if (!uncancelled) {
+        if (!rn2(2)) //Used to be rn2(3); every second attack petrifies 
+		{
+            if (!uncancelled) //Needs to bypass MC
+			{
                 if (!Deaf)
                     You_hear("a cough from %s!", mon_nam(mtmp));
-            } else {
+            } 
+			else
+			{
                 if (!Deaf)
                     You_hear("%s hissing!", s_suffix(mon_nam(mtmp)));
-                if (!rn2(10)
-                    || (flags.moonphase == NEW_MOON && !have_lizard())) {
+                if (!rn2(2) //Used to be rn2(10); every second attack that bypassed MC petrifies
+                    || (flags.moonphase == NEW_MOON && !have_lizard())) 
+				{
  do_stone:
                     if (!Stoned && !Stone_resistance
                         && !(poly_when_stoned(youmonst.data)
@@ -1592,11 +1605,11 @@ register struct obj* omonwep;
         break;
     case AD_STCK:
         hitmsg(mtmp, mattk, dmg);
-        if (uncancelled && !u.ustuck && !sticks(youmonst.data))
+        if (!mtmp->mcancelled && !u.ustuck && !sticks(youmonst.data))
             u.ustuck = mtmp;
         break;
     case AD_WRAP:
-        if ((uncancelled || u.ustuck == mtmp) && !sticks(youmonst.data)) {
+        if ((!mtmp->mcancelled || u.ustuck == mtmp) && !sticks(youmonst.data)) {
             if (!u.ustuck && !rn2(10)) {
                 if (u_slip_free(mtmp, mattk)) {
                     dmg = 0;
@@ -1887,7 +1900,7 @@ register struct obj* omonwep;
 
 		break;
     case AD_ACID:
-		if (uncancelled && !rn2(3))
+		if (!mtmp->mcancelled && !rn2(3))
             if (Acid_resistance) {
 				hitmsg(mtmp, mattk, -1);
 				pline("You're covered in %s, but it seems harmless.",
@@ -1927,17 +1940,22 @@ register struct obj* omonwep;
         dmg = 0;
         break;
     case AD_DETH:
+	{
         pline("%s reaches out with its deadly touch.", Monnam(mtmp));
         if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance) {
             /* Still does normal damage */
             pline("Was that the touch of death?");
             break;
         }
+		int mcadj = 0;
         switch (rn2(20)) {
         case 19:
+			mcadj -= 4;
         case 18:
-        case 17:
-            if (!Antimagic) {
+			mcadj -= 4;
+		case 17:
+			mcadj -= 4;
+			if (!Antimagic && !check_magic_cancellation_success(&youmonst, mcadj)) {
                 killer.format = KILLED_BY_AN;
                 Strcpy(killer.name, "touch of death");
                 done(DIED);
@@ -1961,6 +1979,7 @@ register struct obj* omonwep;
             break;
         }
         break;
+	}
     case AD_PEST:
         pline("%s reaches out, and you feel fever and chills. You lose %d hit points.", Monnam(mtmp), dmg);
 		(void) diseasemu(mdat); /* plus the normal damage */

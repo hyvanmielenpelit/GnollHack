@@ -45,7 +45,8 @@ struct permonst {
     schar mlevel,               /* base monster level */
         mmove,                  /* move speed */
         ac,                     /* (base) armor class */
-        mr;                     /* (base) magic resistance */
+		mc,                     /* (base) magic cancellation (against magical and supernatural touch attacks) */
+		mr;                     /* (base) magic resistance (against all other magic) */
     aligntyp maligntyp;         /* basic monster alignment */
     unsigned short geno;        /* creation/geno mask value */
     struct attack mattk[NATTK]; /* attacks matrix */
