@@ -1055,71 +1055,80 @@ int
 magic_negation_percentage(mclevel)
 int mclevel;
 {
-	if (mclevel < 0)
+	if (mclevel <= 0)
 		return 0;
+	if (mclevel > 20)
+		return 100;
 
 	int mcpercentage = 0;
-	if (mclevel > 15)
+
+	switch (mclevel)
 	{
+	case 1:
+		mcpercentage = 10;
+		break;
+	case 2:
+		mcpercentage = 20;
+		break;
+	case 3:
+		mcpercentage = 30;
+		break;
+	case 4:
+		mcpercentage = 40;
+		break;
+	case 5:
+		mcpercentage = 50;
+		break;
+	case 6:
+		mcpercentage = 60;
+		break;
+	case 7:
+		mcpercentage = 65;
+		break;
+	case 8:
+		mcpercentage = 70;
+		break;
+	case 9:
+		mcpercentage = 75;
+		break;
+	case 10:
+		mcpercentage = 80;
+		break;
+	case 11:
+		mcpercentage = 84;
+		break;
+	case 12:
+		mcpercentage = 87;
+		break;
+	case 13:
+		mcpercentage = 90;
+		break;
+	case 14:
+		mcpercentage = 93;
+		break;
+	case 15:
+		mcpercentage = 95;
+		break;
+	case 16:
+		mcpercentage = 96;
+		break;
+	case 17:
+		mcpercentage = 97;
+		break;
+	case 18:
+		mcpercentage = 98;
+		break;
+	case 19:
+		mcpercentage = 99;
+		break;
+	case 20:
 		mcpercentage = 100;
+		break;
+	default:
+		mcpercentage = 0;
+		break;
 	}
-	else
-	{
-		switch (mclevel)
-		{
-		case 0:
-			mcpercentage = 0;
-			break;
-		case 1:
-			mcpercentage = 25;
-			break;
-		case 2:
-			mcpercentage = 50;
-			break;
-		case 3:
-			mcpercentage = 66;
-			break;
-		case 4:
-			mcpercentage = 75;
-			break;
-		case 5:
-			mcpercentage = 80;
-			break;
-		case 6:
-			mcpercentage = 84;
-			break;
-		case 7:
-			mcpercentage = 87;
-			break;
-		case 8:
-			mcpercentage = 90;
-			break;
-		case 9:
-			mcpercentage = 93;
-			break;
-		case 10:
-			mcpercentage = 95;
-			break;
-		case 11:
-			mcpercentage = 96;
-			break;
-		case 12:
-			mcpercentage = 97;
-			break;
-		case 13:
-			mcpercentage = 98;
-			break;
-		case 14:
-			mcpercentage = 99;
-			break;
-		case 15:
-			mcpercentage = 100;
-			break;
-		default:
-			mcpercentage = 0;
-			break;
-		}
-	}
+
 	return mcpercentage;
 }
 
