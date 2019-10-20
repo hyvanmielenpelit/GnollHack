@@ -1229,7 +1229,7 @@ int pm;
 			percent = 33;
 		else if (mdifficulty >= 3)
 		{
-			if (ptr->mlet == S_OGRE || ptr->mlet == S_TROLL || ptr->mlet == S_GIANT)
+			if (ptr->mlet == S_GIANT)
 				mdifficulty += 3;
 
 			percent = min(100, percent + max(0, mdifficulty - 2) * 1);

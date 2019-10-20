@@ -1519,7 +1519,7 @@ register struct obj* omonwep;
         if (u.usteed || Levitation || Flying) {
             pline("%s tries to reach your %s %s!", Monst_name, sidestr, leg);
             dmg = 0;
-        } else if (mtmp->mcancelled) {
+        } else if (!uncancelled) {
             pline("%s nuzzles against your %s %s!", Monnam(mtmp),
                   sidestr, leg);
             dmg = 0;
@@ -1550,7 +1550,7 @@ register struct obj* omonwep;
     case AD_STON: /* cockatrice */
         hitmsg(mtmp, mattk, dmg);
         if (!rn2(3)) {
-            if (mtmp->mcancelled) {
+            if (!uncancelled) {
                 if (!Deaf)
                     You_hear("a cough from %s!", mon_nam(mtmp));
             } else {
@@ -1584,7 +1584,7 @@ register struct obj* omonwep;
             u.ustuck = mtmp;
         break;
     case AD_WRAP:
-        if ((!mtmp->mcancelled || u.ustuck == mtmp) && !sticks(youmonst.data)) {
+        if ((uncancelled || u.ustuck == mtmp) && !sticks(youmonst.data)) {
             if (!u.ustuck && !rn2(10)) {
                 if (u_slip_free(mtmp, mattk)) {
                     dmg = 0;
@@ -1636,13 +1636,13 @@ register struct obj* omonwep;
         hitmsg(mtmp, mattk, dmg);
         if (youmonst.data->mlet == mdat->mlet)
             break;
-        if (!mtmp->mcancelled)
+        if (uncancelled)
             stealgold(mtmp);
         break;
 
     case AD_SSEX:
         if (SYSOPT_SEDUCE) {
-            if (could_seduce(mtmp, &youmonst, mattk) == 1 && !mtmp->mcancelled)
+            if (could_seduce(mtmp, &youmonst, mattk) == 1 && uncancelled)
                 if (doseduce(mtmp))
                     return 3;
             break;
@@ -1652,7 +1652,7 @@ register struct obj* omonwep;
     case AD_SEDU:
         if (is_animal(mtmp->data)) {
             hitmsg(mtmp, mattk, -1);
-            if (mtmp->mcancelled)
+            if (!uncancelled)
                 break;
             /* Continue below */
         } else if (dmgtype(youmonst.data, AD_SEDU)
@@ -1668,7 +1668,7 @@ register struct obj* omonwep;
             if (!tele_restrict(mtmp))
                 (void) rloc(mtmp, TRUE);
             return 3;
-        } else if (mtmp->mcancelled) {
+        } else if (!uncancelled) {
             if (!Blind)
                 pline("%s tries to %s you, but you seem %s.",
                       Adjmonnam(mtmp, "plain"),
@@ -1866,7 +1866,7 @@ register struct obj* omonwep;
         }
         break;
     case AD_STUN:
-		if (!mtmp->mcancelled && !rn2(4)) {
+		if (uncancelled && !rn2(4)) {
 			hitmsg(mtmp, mattk, dmg / 2);
 			make_stunned((HStun & TIMEOUT) + (long) dmg, TRUE);
             dmg /= 2;
@@ -1875,7 +1875,7 @@ register struct obj* omonwep;
 
 		break;
     case AD_ACID:
-		if (!mtmp->mcancelled && !rn2(3))
+		if (uncancelled && !rn2(3))
             if (Acid_resistance) {
 				hitmsg(mtmp, mattk, -1);
 				pline("You're covered in %s, but it seems harmless.",
