@@ -537,8 +537,16 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
             }
         }
         if (otmp->otyp == EGG && touch_petrifies(&mons[otmp->corpsenm])) {
-            if (!munstone(mtmp, TRUE))
-                minstapetrify(mtmp, TRUE);
+			if (check_magic_cancellation_success(mtmp, 0))
+			{
+				shieldeff(mtmp->mx, mtmp->my);
+				pline("%s resists!", Monnam(mtmp));
+			}
+			else
+			{
+				if (!munstone(mtmp, TRUE))
+					minstapetrify(mtmp, TRUE);
+			}
             if (resists_ston(mtmp))
                 damage = 0;
         }

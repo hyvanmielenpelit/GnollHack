@@ -935,8 +935,16 @@ int dieroll;
 								obj->dknown ? CXN_PFX_THE
 								: CXN_ARTICLE));
 						obj->dknown = 1;
-						if (!munstone(mon, TRUE) && !check_magic_cancellation_success(mon, 0))
-							minstapetrify(mon, TRUE);
+						if (check_magic_cancellation_success(mon, 0))
+						{
+							shieldeff(mon->mx, mon->my);
+							pline("%s resists!", Monnam(mon));
+						}
+						else
+						{
+							if (!munstone(mon, TRUE))
+								minstapetrify(mon, TRUE);
+						}
 						if (resists_ston(mon))
 							break;
 						/* note: hp may be <= 0 even if munstoned==TRUE */
@@ -989,8 +997,16 @@ int dieroll;
 							plur(cnt));
 						obj->known = 1; /* (not much point...) */
 						useup_eggs(obj);
-						if (!munstone(mon, TRUE))
-							minstapetrify(mon, TRUE);
+						if (check_magic_cancellation_success(mon, 0))
+						{
+							shieldeff(mon->mx, mon->my);
+							pline("%s resists!", Monnam(mon));
+						}
+						else
+						{
+							if (!munstone(mon, TRUE))
+								minstapetrify(mon, TRUE);
+						}
 						if (resists_ston(mon))
 							break;
 						return (boolean)(!DEADMONSTER(mon));
