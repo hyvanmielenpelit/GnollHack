@@ -1569,7 +1569,7 @@ register struct obj* omonwep;
     }
     case AD_STON: /* cockatrice */
         hitmsg(mtmp, mattk, dmg);
-        if (!rn2(2)) //Used to be rn2(3); every second attack petrifies 
+        if (!rn2(3))
 		{
             if (!uncancelled) //Needs to bypass MC
 			{
@@ -1580,25 +1580,21 @@ register struct obj* omonwep;
 			{
                 if (!Deaf)
                     You_hear("%s hissing!", s_suffix(mon_nam(mtmp)));
-                if (!rn2(2) //Used to be rn2(10); every second attack that bypassed MC petrifies
-                    || (flags.moonphase == NEW_MOON && !have_lizard())) 
-				{
  do_stone:
-                    if (!Stoned && !Stone_resistance
-                        && !(poly_when_stoned(youmonst.data)
-                             && polymon(PM_STONE_GOLEM))) {
-                        int kformat = KILLED_BY_AN;
-                        const char *kname = mtmp->data->mname;
+                if (!Stoned && !Stone_resistance
+                    && !(poly_when_stoned(youmonst.data)
+                            && polymon(PM_STONE_GOLEM))) {
+                    int kformat = KILLED_BY_AN;
+                    const char *kname = mtmp->data->mname;
 
-                        if (mtmp->data->geno & G_UNIQ) {
-                            if (!type_is_pname(mtmp->data))
-                                kname = the(kname);
-                            kformat = KILLED_BY;
-                        }
-                        make_stoned(5L, (char *) 0, kformat, kname);
-                        return 1;
-                        /* done_in_by(mtmp, STONING); */
+                    if (mtmp->data->geno & G_UNIQ) {
+                        if (!type_is_pname(mtmp->data))
+                            kname = the(kname);
+                        kformat = KILLED_BY;
                     }
+                    make_stoned(5L, (char *) 0, kformat, kname);
+                    return 1;
+                    /* done_in_by(mtmp, STONING); */
                 }
             }
         }
