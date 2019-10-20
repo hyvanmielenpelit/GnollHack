@@ -631,8 +631,8 @@ register struct monst *mon;
 
     for (obj = mon->minvent; obj; obj = obj->nobj) {
         if (obj->owornmask & mwflags)
-            base -= ARM_BONUS(obj);
-        /* since ARM_BONUS is positive, subtracting it increases AC */
+            base -= ARM_AC_BONUS(obj);
+        /* since ARM_AC_BONUS is positive, subtracting it increases AC */
     }
     return base;
 }
@@ -785,8 +785,8 @@ boolean racialexception;
          * it would forget spe and once again think the object is better
          * than what it already has.
          */
-        if (best && (ARM_BONUS(best) + extra_pref(mon, best)
-                     >= ARM_BONUS(obj) + extra_pref(mon, obj)))
+        if (best && (ARM_AC_BONUS(best) + extra_pref(mon, best)
+                     >= ARM_AC_BONUS(obj) + extra_pref(mon, obj)))
             continue;
         best = obj;
     }

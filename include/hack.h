@@ -496,9 +496,14 @@ enum bodypart_types {
 #endif
 #define plur(x) (((x) == 1) ? "" : "s")
 
-#define ARM_BONUS(obj)                      \
+#define ARM_AC_BONUS(obj)                      \
     (objects[(obj)->otyp].oc_armor_class + (obj)->spe \
      - min((int) greatest_erosion(obj), objects[(obj)->otyp].oc_armor_class))
+
+#define ARM_MC_BONUS(obj)                      \
+    (objects[(obj)->otyp].oc_magic_cancellation + (objects[o->otyp].oc_flags & O1_SPE_AFFECTS_MC ? (obj)->spe : 0) \
+     - (objects[o->otyp].oc_flags & O1_EROSION_DOES_NOT_AFFECT_MC ? 0 : min((int) greatest_erosion(obj), objects[(obj)->otyp].oc_magic_cancellation)))
+
 
 #define uarmhbon 4 /* Metal helmets interfere with the mind */
 #define uarmgbon 6 /* Casting channels through the hands */

@@ -1008,7 +1008,7 @@ struct monst *mon;
 {
     struct obj *o;
     long wearmask;
-    int armpro, mc = 0;
+    int mc = 0;
 	boolean is_you = (mon == &youmonst);
 
 	for (o = is_you ? invent : mon->minvent; o; o = o->nobj) {
@@ -1022,8 +1022,11 @@ struct monst *mon;
 		if ((o->owornmask & wearmask) || (objects[o->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED) 
 			&& !inappropriate_monster_character_type(mon, o))
 		{
-			armpro = objects[o->otyp].oc_magic_cancellation;
-			mc += armpro;
+			if (objects[o->otyp].oc_flags & O1_EROSION_DOES_NOT_AFFECT_MC)
+				mc += objects[o->otyp].oc_magic_cancellation;
+			else
+				mc += max(0, objects[o->otyp].oc_magic_cancellation - (int)greatest_erosion(o));
+
 			if (objects[o->otyp].oc_flags & O1_SPE_AFFECTS_MC)
 				mc += o->spe;
 

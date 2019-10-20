@@ -202,7 +202,7 @@ struct objclass {
 	int oc_oc7;		/* Used for spell casting penalty */
 
 /* general*/
-#define oc_armor_class oc_oc1						/* weapons and armor: AC used in ARM_BONUS in do.c */
+#define oc_armor_class oc_oc1						/* weapons and armor: AC used in ARM_AC_BONUS in do.c */
 #define oc_magic_cancellation oc_oc2				/* weapons and armor: MC, i.e., resistance level to magical attacks */
 #define oc_mana_bonus oc_oc3						/* non-spellbooks: mana pool bonus: Fixed points unless O1_MANA_PERCENTAGE_BONUS is specified */
 #define oc_hp_bonus oc_oc4							/* non-spellbooks: hit point bonus: Fixed points unless O1_HP_PERCENTAGE_BONUS is specified */
@@ -313,81 +313,79 @@ struct objclass {
 
 
 /* Item resistances -- General: cannot be overriden */
-#define O1_NONE 0x00000000 
-#define O1_INDESTRUCTIBLE 0x00000001 
-#define O1_DISINTEGRATION_RESISTANT 0x00000002 
-#define O1_FIRE_RESISTANT 0x00000004 
-#define O1_COLD_RESISTANT 0x00000008 
-#define O1_LIGHTNING_RESISTANT 0x00000010
-#define O1_POLYMORPH_RESISTANT 0x00000020
-#define O1_RUST_RESISTANT 0x00000040
-#define O1_CORROSION_RESISTANT 0x00000080
+#define O1_NONE								0x00000000 
+#define O1_INDESTRUCTIBLE					0x00000001 
+#define O1_DISINTEGRATION_RESISTANT			0x00000002 
+#define O1_FIRE_RESISTANT					0x00000004 
+#define O1_COLD_RESISTANT					0x00000008 
+#define O1_LIGHTNING_RESISTANT				0x00000010
+#define O1_POLYMORPH_RESISTANT				0x00000020
+#define O1_RUST_RESISTANT					0x00000040
+#define O1_CORROSION_RESISTANT				0x00000080
 
-#define O1_SPE_AFFECTS_MC 0x00000100									/* +X of the item influences also its MC */
-#define O1_IS_ARMOR_WHEN_WIELDED 0x00000200								/* acts as an armor when wielded giving AC using oc_armor_class, which must be specified */
-#define O1_IS_WEAPON_WHEN_WIELDED 0x00000400							/* acts as a weapon when wielded (or worn in shield slot in two-weapon fighting) using damage statistics */
-#define O1_INVOKABLE 0x00000800								
-#define O1_APPLIABLE 0x00001000								
-#define O1_READABLE 0x00002000								
-#define O1_WIELDABLE 0x00004000											/* can be wielded in a weapon slot */								
-#define O1_EDIBLE_NONFOOD 0x00008000
-#define O1_EDIBLE_BY_BONE_EATERS 0x00010000
+#define O1_SPE_AFFECTS_MC					0x00000100			/* +X of the item influences also its MC */
+#define O1_EROSION_DOES_NOT_AFFECT_MC		0x00000200			/* erosion level does not affect the item's MC */
+#define O1_IS_ARMOR_WHEN_WIELDED			0x00000400			/* acts as an armor when wielded giving AC using oc_armor_class, which must be specified */
+#define O1_IS_WEAPON_WHEN_WIELDED			0x00000800			/* acts as a weapon when wielded (or worn in shield slot in two-weapon fighting) using damage statistics */
+#define O1_READABLE							0x00002000								
+#define O1_EDIBLE_NONFOOD					0x00008000
+#define O1_EDIBLE_BY_BONE_EATERS			0x00010000
 
-#define O1_MANA_PERCENTAGE_BONUS 0x00020000
-#define O1_HP_PERCENTAGE_BONUS 0x00040000
-#define O1_BECOMES_CURSED_WHEN_WORN 0x00080000
+#define O1_MANA_PERCENTAGE_BONUS			0x00020000
+#define O1_HP_PERCENTAGE_BONUS				0x00040000
+#define O1_BECOMES_CURSED_WHEN_WORN			0x00080000
 #define O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED 0x00100000
-#define O1_CANNOT_BE_DROPPED_IF_CURSED 0x00200000
+#define O1_CANNOT_BE_DROPPED_IF_CURSED		0x00200000
 
-#define O1_CONFERS_LUCK 0x00400000
-#define O1_CONFERS_POWERS_WHEN_CARRIED 0x00800000
+#define O1_CONFERS_LUCK						0x00400000
+#define O1_CONFERS_POWERS_WHEN_CARRIED		0x00800000
 
-#define O1_THROWN_WEAPON 0x01000000										/* says "Thrown weapon" instead of "Melee weapon", default range is larger, can use throwrange data value */
-#define O1_WEIGHT_DOES_NOT_REDUCE_RANGE 0x02000000						/* the object magically flies when thrown, ignoring its weight */
-#define O1_RETURNS_TO_HAND_AFTER_THROWING 0x04000000					/* the object returns to the owner's hand after throwing */
-#define O1_CAN_BE_THROWN_ONLY_IF_WIELDED 0x08000000						/* has to be wielded to be thrown, e.g., Mjollnir */
-#define O1_WAND_LIKE_TOOL 0x10000000									/* apply is the same as zap, uses spellbook/wand paramters and flags instead of normal flags */
-#define O1_SPECIAL_ENCHANTABLE 0x20000000
-#define O1_NON_SPELL_SPELLBOOK 0x40000000								/* uses non-spellbook flags and other non-spellbook stats */
-#define O1_NOT_CURSEABLE 0x80000000
+#define O1_THROWN_WEAPON					0x01000000										/* says "Thrown weapon" instead of "Melee weapon", default range is larger, can use throwrange data value */
+#define O1_WEIGHT_DOES_NOT_REDUCE_RANGE		0x02000000						/* the object magically flies when thrown, ignoring its weight */
+#define O1_RETURNS_TO_HAND_AFTER_THROWING	0x04000000					/* the object returns to the owner's hand after throwing */
+#define O1_CAN_BE_THROWN_ONLY_IF_WIELDED	0x08000000						/* has to be wielded to be thrown, e.g., Mjollnir */
+#define O1_WAND_LIKE_TOOL					0x10000000									/* apply is the same as zap, uses spellbook/wand paramters and flags instead of normal flags */
+#define O1_SPECIAL_ENCHANTABLE				0x20000000
+#define O1_NON_SPELL_SPELLBOOK				0x40000000								/* uses non-spellbook flags and other non-spellbook stats */
+#define O1_NOT_CURSEABLE					0x80000000
 
 
 /* Flags 2 */
-#define O2_NONE 0x00000000
-#define O2_ELVEN_ITEM 0x00000001
-#define O2_DWARVEN_ITEM 0x00000002
-#define O2_ORCISH_ITEM 0x00000004
-#define O2_GNOLLISH_ITEM 0x00000008
-#define O2_DRAGON_ITEM 0x00000010
-#define O2_DEMON_ITEM 0x00000020
-#define O2_ANGELIC_ITEM 0x00000040
-#define O2_MODRON_ITEM 0x00000080
+#define O2_NONE					0x00000000
+#define O2_ELVEN_ITEM			0x00000001
+#define O2_DWARVEN_ITEM			0x00000002
+#define O2_ORCISH_ITEM			0x00000004
+#define O2_GNOLLISH_ITEM		0x00000008
+#define O2_DRAGON_ITEM			0x00000010
+#define O2_DEMON_ITEM			0x00000020
+#define O2_ANGELIC_ITEM			0x00000040
+#define O2_MODRON_ITEM			0x00000080
 
-#define O2_CONTAINER 0x00000100	
-#define O2_CONTAINER_BOX 0x00000200	
-#define O2_CONTAINER_MAGIC_BAG 0x00000400	
+#define O2_CONTAINER			0x00000100	
+#define O2_CONTAINER_BOX		0x00000200	
+#define O2_CONTAINER_MAGIC_BAG	0x00000400	
 #define O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG 0x00000800
 
-#define O2_MONSTER_SCALES 0x00001000	
-#define O2_MONSTER_SCALE_MAIL 0x00002000
-#define O2_CANDLE 0x00004000	
+#define O2_MONSTER_SCALES		0x00001000	
+#define O2_MONSTER_SCALE_MAIL	0x00002000
+#define O2_CANDLE				0x00004000	
 #define O2_SHINES_MAGICAL_LIGHT 0x00008000	
-#define O2_FLICKER_COLOR_WHITE 0x00010000	
-#define O2_FLICKER_COLOR_BLUE 0x00020000	
+#define O2_FLICKER_COLOR_WHITE	0x00010000	
+#define O2_FLICKER_COLOR_BLUE	0x00020000	
 #define O2_FLICKER_COLOR_BLACK (O2_FLICKER_COLOR_WHITE | O2_FLICKER_COLOR_BLUE)	
-#define O2_IGNITABLE 0x00040000	
-#define O2_RELATIVE_AGE 0x00080000	
+#define O2_IGNITABLE			0x00040000	
+#define O2_RELATIVE_AGE			0x00080000	
 
-#define O2_GRAYSTONE 0x00100000	
-#define O2_ROCK 0x00200000	
-#define O2_ORE 0x00400000	
+#define O2_GRAYSTONE			0x00100000	
+#define O2_ROCK					0x00200000	
+#define O2_ORE					0x00400000	
 
-#define O2_FLIMSY 0x00800000	
+#define O2_FLIMSY				0x00800000	
 
 #define O2_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED 0x10000000			/* if deathenchantable item, then death, otherwise lightning*/
-#define O2_GENERATED_BLESSED 0x20000000									/* Always generated blessed */									
-#define O2_GENERATED_CURSED 0x40000000									/* Always generated cursed */								
-#define O2_CURSED_MAGIC_ITEM 0x80000000									/* The effect of the item is negative; typically 90% chance of being cursed */									
+#define O2_GENERATED_BLESSED	0x20000000								/* Always generated blessed */									
+#define O2_GENERATED_CURSED		0x40000000								/* Always generated cursed */								
+#define O2_CURSED_MAGIC_ITEM	0x80000000								/* The effect of the item is negative; typically 90% chance of being cursed */									
 
 /* Artifact flags - to do: Attack type, half physical and spell damage, bonus to monsters only */
 /* Flags 3 */
@@ -405,13 +403,20 @@ struct objclass {
 #define O3_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA			0x00000400 /* abilities such as wounding and life leech are based on full caused damage, not just extra damage */
 #define O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS	0x00000800 /* wielding or wearing prohibits the revival of permitted targets */
 
+#define O3_INVOKABLE		0x00001000	/* can be invoked using invoke command */
+#define O3_APPLIABLE		0x00002000	/* can be applied as a tool */
+#define O3_WIELDABLE		0x00004000	/* can be wielded in a weapon slot */
+/* Another slot for O3_-ABLE flag */
+
 #define O3_DALIGN										0x00010000  /* attack bonus on non-aligned monsters  */
 #define O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS		0x00020000	/* deals damage when wielded like artifacts */
 #define O3_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS		0x00040000
+/* One flag slot here */
 
 #define O3_PERMTTED_TARGET_LAWFUL	0x00100000
 #define O3_PERMTTED_TARGET_NEUTRAL	0x00200000
 #define O3_PERMTTED_TARGET_CHAOTIC	0x00400000
+/* One flag slot here */
 
 #define O3_SPELL_EXPLOSION_EFFECT				0x01000000
 #define O3_SPELL_BYPASSES_MAGIC_RESISTANCE		0x02000000

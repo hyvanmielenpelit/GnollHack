@@ -2555,8 +2555,8 @@ doputon()
 void
 find_mc()
 {
-
 	u.umc = magic_negation(&youmonst);
+	context.botl = 1;
 }
 
 
@@ -2568,23 +2568,26 @@ find_ac()
 
 	/* armor class from worn gear */
 	if (uarm)
-		uac -= ARM_BONUS(uarm);
+		uac -= ARM_AC_BONUS(uarm);
 	if (uarmc)
-		uac -= ARM_BONUS(uarmc);
+		uac -= ARM_AC_BONUS(uarmc);
 	if (uarmh)
-		uac -= ARM_BONUS(uarmh);
+		uac -= ARM_AC_BONUS(uarmh);
 	if (uarmf)
-		uac -= ARM_BONUS(uarmf);
-	if (uarms && (is_shield(uarms) || (objects[uarms->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)))
-		uac -= ARM_BONUS(uarms); /* Only a shield and a wielded weapon can give AC; exclude wielded other armor types */
+		uac -= ARM_AC_BONUS(uarmf);
+	if (uarms && (is_shield(uarms) || is_weapon(uarms)))
+		uac -= ARM_AC_BONUS(uarms); /* Only a shield and a wielded weapon can give AC; exclude wielded other armor types */
 	if (uarmg)
-		uac -= ARM_BONUS(uarmg);
+		uac -= ARM_AC_BONUS(uarmg);
 	if (uarmu)
-		uac -= ARM_BONUS(uarmu);
+		uac -= ARM_AC_BONUS(uarmu);
 	if (uarmo)
-		uac -= ARM_BONUS(uarmo);
+		uac -= ARM_AC_BONUS(uarmo);
 	if (uarmb)
-		uac -= ARM_BONUS(uarmb);
+		uac -= ARM_AC_BONUS(uarmb);
+	if (uwep && (is_shield(uwep) || is_weapon(uwep)))
+		uac -= ARM_AC_BONUS(uwep); /* A wielded weapon can give AC, also a wielded shield (in right hand) */
+
 
 	/* Kludge removed by JG -- Now in u.uacbonus */
 	/*
@@ -2594,17 +2597,10 @@ find_ac()
 		uac -= uright->spe;
 	*/
 
-	/* A wielded weapon can give AC, also a wielded shield (in right hand) */
-	if(uwep && (is_shield(uwep) || (objects[uwep->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)))
-	{
-		uac -= ARM_BONUS(uwep);
-	}
-
-
-	//DEX Bonus
+	/* DEX Bonus */
 	uac -= dexterity_ac_bonus(ACURR(A_DEX));
 	
-	//Intrinsic and extrinsic AC Bonus
+	/* Intrinsic and extrinsic AC Bonus */
 	uac -= u.ubaseacbonus;
 	uac -= u.uacbonus;
 
