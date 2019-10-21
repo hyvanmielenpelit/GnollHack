@@ -3561,7 +3561,7 @@ int spell;
 		int otyp = spellid(spell);
 		int skill = spell_skilltype(otyp);
 
-		use_skill(skill, max(spellev(spell) + 2, 1));
+		use_skill(skill, max(spellev(spell) + 2, 1) * addedamount);
 
 	}
 

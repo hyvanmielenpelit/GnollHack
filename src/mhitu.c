@@ -1008,7 +1008,7 @@ int ability;
 int adjustment_to_roll;
 {
 	if (!mtmp)
-		return;
+		return FALSE;
 
 	int ability_score = 0;
 	int str = 0;

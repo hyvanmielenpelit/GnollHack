@@ -2517,7 +2517,7 @@ int final;
 {
     static NEARDATA const char if_surroundings_permitted[] =
         " if surroundings permitted";
-    int ltmp, armpro;
+    int ltmp;
     char buf[BUFSZ];
 
     /*\
