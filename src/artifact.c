@@ -1430,6 +1430,351 @@ int dieroll; /* needed for Magicbane and vorpal blades */
     return FALSE;
 }
 
+/* Function used when someone attacks someone else with an artifact-like
+ * weapon.  
+ * Returns extra damage caused, to be added to damage caused by caller (so it can be displayed correctly), if any caused; -1 means that the caller has to kill mdef
+ */
+int
+pseudo_artifact_hit(magr, mdef, otmp, extradmg, dieroll)
+struct monst* magr, * mdef;
+struct obj* otmp;
+int dieroll; /* needed for Magicbane and vorpal blades */
+{
+	if (!otmp || !magr || !mdef)
+		return 0;
+
+	if (!eligible_for_extra_damage(otmp, mdef, magr))
+		return 0;
+
+	if (inappropriate_monster_character_type(magr, otmp))
+		return 0;
+
+	boolean youattack = (magr == &youmonst);
+	boolean youdefend = (mdef == &youmonst);
+	boolean vis = (!youattack && magr && cansee(magr->mx, magr->my))
+		|| (!youdefend && cansee(mdef->mx, mdef->my))
+		|| (youattack && u.uswallow && mdef == u.ustuck && !Blind);
+	boolean realizes_damage;
+	boolean extradamagedone = (extradmg > 0);
+	static const char you[] = "you";
+	char hittee[BUFSZ];
+
+	Strcpy(hittee, youdefend ? you : mon_nam(mdef));
+
+	/* The following takes care of most of the damage, but not all--
+	 * the exception being for level draining, which is specially
+	 * handled.  Messages are done in this function, however.
+	 */
+
+	if (youattack && youdefend) {
+		impossible("attacking yourself with weapon?");
+		return 0;
+	}
+
+	realizes_damage = (youdefend || vis
+		/* feel the effect even if not seen */
+		|| (youattack && mdef == u.ustuck));
+
+	/* the four basic attacks: fire, cold, shock and missiles will implemented elsewhere */
+	if (objects[otmp->otyp].oc_damagetype == AD_FIRE || (extradamagedone && objects[otmp->otyp].oc_extra_damagetype == AD_FIRE))
+	{
+		if (realizes_damage)
+			pline("%s %s %s%c",
+				The(xname(otmp)),
+				(mdef->data == &mons[PM_WATER_ELEMENTAL])
+				? "vaporizes part of"
+				: "burns",
+				hittee, '!');
+		if (!rn2(4))
+			(void)destroy_mitem(mdef, POTION_CLASS, AD_FIRE);
+		if (!rn2(4))
+			(void)destroy_mitem(mdef, SCROLL_CLASS, AD_FIRE);
+		if (!rn2(7))
+			(void)destroy_mitem(mdef, SPBOOK_CLASS, AD_FIRE);
+		if (youdefend && Slimed)
+			burn_away_slime();
+	}
+	if (objects[otmp->otyp].oc_damagetype == AD_COLD || (extradamagedone && objects[otmp->otyp].oc_extra_damagetype == AD_COLD)) {
+		if (realizes_damage)
+			pline("%s %s %s%c", The(xname(otmp)),
+				"freezes", hittee,
+				'!');
+		if (!rn2(4))
+			(void)destroy_mitem(mdef, POTION_CLASS, AD_COLD);
+	}
+	if (objects[otmp->otyp].oc_damagetype == AD_ELEC || (extradamagedone && objects[otmp->otyp].oc_extra_damagetype == AD_ELEC)) {
+		if (realizes_damage)
+			pline("The electrical energies of %s jolt %s%c", the(xname(otmp)),
+				hittee, '!');
+		wake_nearto(mdef->mx, mdef->my, 4 * 4);
+		if (!rn2(5))
+			(void)destroy_mitem(mdef, RING_CLASS, AD_ELEC);
+		if (!rn2(5))
+			(void)destroy_mitem(mdef, WAND_CLASS, AD_ELEC);
+	}
+
+	/* We really want "on a natural 20" but GnollHack does it in */
+	/* reverse from AD&D. */
+	if ((objects[otmp->otyp].oc_flags3 & O3_BISECT) == O3_BISECT)
+	{
+		if (dieroll == 1)
+		{
+			if (youattack && u.uswallow && mdef == u.ustuck) {
+				You("slice %s wide open!", mon_nam(mdef));
+				return -1;
+			}
+			if (!youdefend) 
+			{
+				if (noncorporeal(mdef->data) || amorphous(mdef->data)) {
+					pline("%s through %s body.", Yobjnam2(otmp, "cut"),
+						s_suffix(mon_nam(mdef)));
+					return 0;
+				}
+				/* allow normal cutworm() call to add extra damage */
+				if (notonhead)
+					return 0;
+
+				if (bigmonst(mdef->data))
+				{
+					int damagedone = mdef->mhpmax / 2;
+					if (damagedone < 1)
+						damagedone = 1;
+
+					int res = damagedone;
+
+					mdef->mhpmax -= damagedone;
+					if (mdef->mhpmax < 1)
+						mdef->mhpmax = 1, res = -1;
+
+					pline("%s slices a part of %s off!", The(xname(otmp)),
+						mon_nam(mdef));
+					otmp->dknown = TRUE;
+					return res;
+				}
+
+				pline("%s cuts %s in half!", The(xname(otmp)), mon_nam(mdef));
+				otmp->dknown = TRUE;
+				return -1;
+			}
+			else 
+			{
+				if (noncorporeal(youmonst.data) || amorphous(youmonst.data)) {
+					pline("%s slices through your body.", The(xname(otmp)));
+					return 0;
+				}
+
+				if (bigmonst(youmonst.data)) 
+				{
+					int res = 0;
+					if (Upolyd)
+					{
+						int damagedone = u.mhmax / 2;
+						if (damagedone < 1)
+							damagedone = 1;
+
+						res = damagedone;
+
+						u.basemhmax -= damagedone;
+						u.mhmax -= damagedone;
+						if (u.mhmax < 1)
+							u.mhmax = 1, res = -1;
+						if (u.basemhmax < 1)
+							u.mhmax = 1;
+					}
+					else
+					{
+						int damagedone = u.uhpmax / 2;
+						if (damagedone < 1)
+							damagedone = 1;
+
+						res = damagedone;
+
+						u.ubasehpmax -= damagedone;
+						u.uhpmax -= damagedone;
+						if (u.uhpmax < 1)
+							u.uhpmax = 1, res = -1;
+						if (u.ubasehpmax < 1)
+							u.ubasehpmax = 1;
+
+					}
+					pline("%s slices a part of %s off!", The(xname(otmp)), "you");
+					otmp->dknown = TRUE;
+					return res;
+				}
+
+				/* Players with negative AC's take less damage instead
+				 * of just not getting hit.  We must add a large enough
+				 * value to the damage so that this reduction in
+				 * damage does not prevent death.
+				 */
+				pline("%s cuts you in half!", The(xname(otmp)));
+				otmp->dknown = TRUE;
+				return -1;
+			}
+		}
+	}
+	else if (objects[otmp->otyp].oc_flags3 & O3_SHARPNESS
+		&& (dieroll == 1 || dieroll == 2))
+	{
+		if (!youdefend) 
+		{
+			if (noncorporeal(mdef->data) || amorphous(mdef->data)) {
+				pline("%s through %s %s.", Yobjnam2(otmp, "slice"),
+					s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
+				return 0;
+			}
+			int damagedone = mdef->mhpmax / 4;
+			if (damagedone < 1)
+				damagedone = 1;
+
+			int res = damagedone;
+
+			mdef->mhpmax -= damagedone;
+			if (mdef->mhpmax < 1)
+				mdef->mhpmax = 1, res = -1;
+
+			pline("%s slices a part of %s off!", The(xname(otmp)),
+				mon_nam(mdef));
+			otmp->dknown = TRUE;
+			return res;
+		}
+		else 
+		{
+			int res = 0;
+			if (noncorporeal(youmonst.data) || amorphous(youmonst.data)) {
+				pline("%s slices through your %s.", The(xname(otmp)),
+					body_part(NECK));
+				return 0;
+			}
+			if (Upolyd)
+			{
+				int damagedone = u.mhmax / 4;
+				if (damagedone < 1)
+					damagedone = 1;
+
+				res = damagedone;
+
+				u.basemhmax -= damagedone;
+				u.mhmax -= damagedone;
+				if (u.mhmax < 1)
+					u.mhmax = 1, res = -1;
+				if (u.basemhmax < 1)
+					u.mhmax = 1;
+			}
+			else
+			{
+				int damagedone = u.uhpmax / 4;
+				if (damagedone < 1)
+					damagedone = 1;
+
+				res = damagedone;
+
+				u.ubasehpmax -= damagedone;
+				u.uhpmax -= damagedone;
+				if (u.uhpmax < 1)
+					u.uhpmax = 1, res = -1;
+				if (u.ubasehpmax < 1)
+					u.ubasehpmax = 1;
+
+			}
+			pline("%s slices a part of %s off!", The(xname(otmp)), "you");
+			otmp->dknown = TRUE;
+			return res;
+		}
+	}
+	else if (objects[otmp->otyp].oc_flags3 & O3_VORPAL
+		&& (dieroll == 1 || mdef->data == &mons[PM_JABBERWOCK]))
+	{
+		static const char* const behead_msg[2] = { "%s beheads %s!",
+													"%s decapitates %s!" };
+
+		if (youattack && u.uswallow && mdef == u.ustuck)
+			return 0;
+		if (!youdefend) {
+			if (!has_head(mdef->data) || notonhead || u.uswallow) {
+				if (youattack)
+					pline("Somehow, you miss %s wildly.", mon_nam(mdef));
+				else if (vis)
+					pline("Somehow, %s misses wildly.", mon_nam(magr));
+				return 0;
+			}
+			if (noncorporeal(mdef->data) || amorphous(mdef->data)) {
+				pline("%s through %s %s.", Yobjnam2(otmp, "slice"),
+					s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
+				return 0;
+			}
+			pline(behead_msg[rn2(SIZE(behead_msg))], The(xname(otmp)),
+				mon_nam(mdef));
+			if (Hallucination && !flags.female)
+				pline("Good job Henry, but that wasn't Anne.");
+			otmp->dknown = TRUE;
+			return -1;
+		}
+		else
+		{
+			if (!has_head(youmonst.data)) 
+			{
+				pline("Somehow, %s misses you wildly.", (magr ? mon_nam(magr) : the(xname(otmp))) );
+				return 0;
+			}
+			if (noncorporeal(youmonst.data) || amorphous(youmonst.data)) {
+				pline("%s slices through your %s.", The(xname(otmp)),
+					body_part(NECK));
+				return 0;
+			}
+			pline(behead_msg[rn2(SIZE(behead_msg))], The(xname(otmp)), "you");
+			otmp->dknown = TRUE;
+			/* Should amulets fall off? */
+			return -1;
+		}
+	}
+
+	if (objects[otmp->otyp].oc_flags3 & O3_LEVEL_DRAIN) 
+	{
+		/* some non-living creatures (golems, vortices) are
+		   vulnerable to life drain effects */
+		const char* life = is_not_living(mdef->data) ? "animating force" : "life energy";
+
+		if (!youdefend) 
+		{
+			int res = 0;
+			if (vis)
+			{
+				pline("%s draws the %s from %s!",
+					The(distant_name(otmp, xname)), life,
+					mon_nam(mdef));
+			}
+			if (mdef->m_lev == 0) 
+			{
+				return -1;
+			}
+			else {
+				int drain = monhp_per_lvl(mdef);
+				res = drain;
+				mdef->mhpmax -= drain;
+				if (mdef->mhpmax < 1)
+					mdef->mhpmax = 1, res = -1;
+				mdef->m_lev--;
+				/* non-artifact level drain does not heal */
+			}
+			return res;
+		}
+		else 
+		{ /* youdefend */
+			if (Blind)
+				You_feel("an %s drain your %s!",
+					"object",
+					life);
+			else
+				pline("%s drains your %s!", The(distant_name(otmp, xname)),
+					life);
+			losexp("level drain");
+			return 0;
+		}
+	}
+	return 0;
+}
+
 static NEARDATA const char recharge_type[] = { ALLOW_COUNT, ALL_CLASSES, 0 };
 static NEARDATA const char invoke_types[] = { ALL_CLASSES, 0 };
 /* #invoke: an "ugly check" filters out most objects */

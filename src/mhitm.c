@@ -971,6 +971,16 @@ register struct attack *mattk;
                         return (MM_DEF_DIED
                                 | (grow_up(magr, mdef) ? 0 : MM_AGR_DIED));
                 }
+				int special_hit_dmg = pseudo_artifact_hit(magr, mdef, otmp, extratmp, dieroll);
+				if (special_hit_dmg == -1)
+				{
+					tmp += 2 * mdef->mhp + 200;
+				}
+				else if (special_hit_dmg > 0)
+				{
+					tmp += special_hit_dmg;
+				}
+
                 if (tmp)
                     rustm(mdef, otmp);
             }

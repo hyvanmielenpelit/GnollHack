@@ -394,19 +394,20 @@ struct objclass {
 #define O3_RESTRICTED		0x00000002  /* TODO: item is restricted - can't be named */
 #define O3_INTELLIGENT		0x00000004  /* TODO: item is self-willed - intelligent */
 #define O3_SPEAK			0x00000008  /* TODO: item can speak (not implemented) */
-#define O3_LEVEL_DRAIN		0x00000010  /* TODO: drains a level from monsters */
+#define O3_LEVEL_DRAIN		0x00000010  /* drains a level from monsters */
 #define O3_WOUNDING			0x00000020  /* extra damage caused is permanent damage */
 #define O3_LIFE_LEECH		0x00000040  /* heals hit points equal to the extra damage caused */
-#define O3_SHARPNESS		0x00000080	/* TODO: causes a critical hit on at a 5% chance, causing quadruple normal damage */
-#define O3_VORPAL			0x00000100	/* TODO: beheads monsters */
+#define O3_SHARPNESS		0x00000080	/* 2/20 chance of the monster losing 50% of maximum hit points */
+#define O3_VORPAL			0x00000100	/* 1/20 chance of the monster being beheaded */
+#define O3_BISECT (O3_SHARPNESS | O3_VORPAL) /* 1/20 chance of a small monster being bisected and a big monster losing 50% of maximum hit points */
 #define O3_SPE_AFFECTS_ABILITIES					0x00000200 /* add spe to special abilities */
 #define O3_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA			0x00000400 /* abilities such as wounding and life leech are based on full caused damage, not just extra damage */
 #define O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS	0x00000800 /* wielding or wearing prohibits the revival of permitted targets */
+#define O3_PREVENTS_SUMMONING_BY_PERMITTED_TARGETS	0x00001000 /* TODO: wielding or wearing prohibits summoning by permitted targets */
 
-#define O3_INVOKABLE		0x00001000	/* can be invoked using invoke command */
-#define O3_APPLIABLE		0x00002000	/* can be applied as a tool */
-#define O3_WIELDABLE		0x00004000	/* can be wielded in a weapon slot */
-/* Another slot for O3_-ABLE flag */
+#define O3_INVOKABLE		0x00002000	/* can be invoked using invoke command */
+#define O3_APPLIABLE		0x00004000	/* can be applied as a tool */
+#define O3_WIELDABLE		0x00008000	/* can be wielded in a weapon slot */
 
 #define O3_DALIGN										0x00010000  /* attack bonus on non-aligned monsters  */
 #define O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS		0x00020000	/* deals damage when wielded like artifacts */

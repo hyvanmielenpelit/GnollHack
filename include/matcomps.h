@@ -26,9 +26,10 @@ struct materialcomponent {
 #define MAX_MATERIALS 10
 
 struct materialcomponentlist {
-	int spell_objectid; //Used to link the list with the appropriate spell, one spell can have many, but first we use only the first
-	char* description_short; //Used for mixing menu, when selecting the spell
-	int spellsgained; //How many spells do you get for these material components
+	int spell_objectid;			/* Used to link the list with the appropriate spell, one spell can have many, but first we use only the first */
+	char* description_short;	/* Used for mixing menu, when selecting the spell */
+	int created_objectid;		/* Used for recipes to indicate the object created */
+	int spellsgained;			/* How many spells do you get for these material components */
 	struct materialcomponent matcomp[MAX_MATERIALS];
 };
 

@@ -727,7 +727,8 @@ int dieroll;
 		if (barehand_silver_rings > 0)
 			silvermsg = TRUE;
 	}
-	else {
+	else 
+	{
 		if (!((artifact_light(obj) || (objects[obj->otyp].oc_flags2 & O2_SHINES_MAGICAL_LIGHT)) && obj->lamplit))
 			Strcpy(saved_oname, cxname(obj));
 		else
@@ -844,6 +845,17 @@ int dieroll;
 					if (tmp == 0)
 						return TRUE;
 					hittxt = TRUE;
+				}
+				int special_hit_dmg = pseudo_artifact_hit(&youmonst, mon, obj, extratmp, dieroll);
+				if (special_hit_dmg == -1)
+				{
+					tmp += 2 * mon->mhp + 200;
+					hide_damage_amount = TRUE;
+					hittxt = TRUE; /* This means that hit text is already given */
+				}
+				else if(special_hit_dmg > 0)
+				{
+					tmp += special_hit_dmg;
 				}
 				if (objects[obj->otyp].oc_material == MAT_SILVER
 					&& mon_hates_silver(mon)) {

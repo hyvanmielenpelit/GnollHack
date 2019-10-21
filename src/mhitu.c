@@ -1528,12 +1528,28 @@ register struct obj* omonwep;
 						dmg = (dmg + 1) / 2;
 				}
 
+
 				if (Invulnerable)
 					dmg = 0;
 
+				boolean hittxt = FALSE;
+
+				hittxt = (otmp->oartifact
+					&& artifact_hit(mtmp, &youmonst, otmp, &dmg, dieroll));
+
+				int special_hit_dmg = pseudo_artifact_hit(mtmp, &youmonst, otmp, extradmg, dieroll);
+				if (special_hit_dmg == -1)
+				{
+					dmg += 2 * (Upolyd ? u.mh : u.uhp) + 200;
+					hittxt = TRUE; /* This means that hit text is already given */
+				}
+				else if (special_hit_dmg > 0)
+				{
+					dmg += special_hit_dmg;
+				}
+
 				//Finally, display damage caused
-				if (!(otmp->oartifact
-					&& artifact_hit(mtmp, &youmonst, otmp, &dmg, dieroll)))
+				if(!hittxt)
 					hitmsg(mtmp, mattk, dmg);
 
 				if (!dmg)
