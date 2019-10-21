@@ -397,7 +397,7 @@ struct objclass {
 #define O3_LEVEL_DRAIN		0x00000010  /* drains a level from monsters */
 #define O3_WOUNDING			0x00000020  /* extra damage caused is permanent damage */
 #define O3_LIFE_LEECH		0x00000040  /* heals hit points equal to the extra damage caused */
-#define O3_SHARPNESS		0x00000080	/* 2/20 chance of the monster losing 50% of maximum hit points */
+#define O3_SHARPNESS		0x00000080	/* 2/20 chance of the monster losing 25% of maximum hit points */
 #define O3_VORPAL			0x00000100	/* 1/20 chance of the monster being beheaded */
 #define O3_BISECT (O3_SHARPNESS | O3_VORPAL) /* 1/20 chance of a small monster being bisected and a big monster losing 50% of maximum hit points */
 #define O3_SPE_AFFECTS_ABILITIES					0x00000200 /* add spe to special abilities */
