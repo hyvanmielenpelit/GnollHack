@@ -1133,17 +1133,23 @@ unsigned doname_flags;
                            : " (being worn");
 			if (uarm && uarmo && (obj == uarm || obj == uarmo))
 			{
-				if((obj == uarm && context.suit_yielding_ac_bonus && context.suit_yielding_mc_bonus)
-					|| (obj == uarmo && context.robe_yielding_ac_bonus && context.robe_yielding_mc_bonus))
-					Strcat(bp, "; superior");
-				else if((obj == uarm && context.suit_yielding_ac_bonus)
-					|| (obj == uarmo && context.robe_yielding_ac_bonus))
-					Strcat(bp, "; better AC");
-				else if ((obj == uarm && context.suit_yielding_mc_bonus)
-					|| (obj == uarmo && context.robe_yielding_mc_bonus))
-					Strcat(bp, "; better MC");
-				else
+				boolean ac_tied = (context.suit_yielding_ac_bonus && context.robe_yielding_ac_bonus);
+				boolean mc_tied = (context.suit_yielding_mc_bonus && context.robe_yielding_mc_bonus);
+
+				if(ac_tied && mc_tied)
+					Strcat(bp, "; tied");
+				else if ((obj == uarm && (!context.suit_yielding_ac_bonus || ac_tied) && (!context.suit_yielding_mc_bonus || mc_tied))
+					|| (obj == uarmo && (!context.robe_yielding_ac_bonus || ac_tied) && (!context.robe_yielding_mc_bonus || mc_tied)))
 					Strcat(bp, "; inferior");
+				else if ((obj == uarm && (!context.robe_yielding_ac_bonus || ac_tied) && (!context.robe_yielding_mc_bonus || mc_tied))
+					|| (obj == uarmo && (!context.suit_yielding_ac_bonus || ac_tied) && (!context.suit_yielding_mc_bonus || mc_tied)))
+					Strcat(bp, "");
+				else if((obj == uarm && context.suit_yielding_ac_bonus && !ac_tied)
+					|| (obj == uarmo && context.robe_yielding_ac_bonus && !ac_tied))
+					Strcat(bp, "; better AC");
+				else if ((obj == uarm && context.suit_yielding_mc_bonus && !mc_tied)
+					|| (obj == uarmo && context.robe_yielding_mc_bonus && !mc_tied))
+					Strcat(bp, "; better MC");
 			}
 			Strcat(bp, ")");
 		}

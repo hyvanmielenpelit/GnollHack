@@ -253,6 +253,10 @@ register int exper, rexp;
         u.uexp = newexp;
         if (flags.showexp)
             context.botl = TRUE;
+		
+		if(newexp - oldexp == exper)
+			You("gain %d experience point%s.", exper, exper == 1 ? "" : "s");
+
     }
     /* newrexp will always differ from oldrexp unless they're LONG_MAX */
     if (newrexp != oldrexp) {
