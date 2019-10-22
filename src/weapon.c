@@ -461,8 +461,27 @@ int basedmg;
 
 	int tmp = 0, otyp = otmp->otyp;
 	boolean youdefend = (mon == &youmonst);
+	boolean extra_is_critical = FALSE;
+	boolean criticalstrikesucceeded = FALSE;
 
-	if (eligible_for_extra_damage(otmp, mon, mattacker))
+	if ((objects[otmp->otyp].oc_aflags & AFLAGS_CRITICAL_STRIKE) && !(objects[otmp->otyp].oc_aflags & AFLAGS_CRITICAL_STRIKE_IS_DEADLY))
+	{
+		extra_is_critical = TRUE;
+		if (
+			((objects[otmp->otyp].oc_aflags & AFLAGS_CRITICAL_STRIKE_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mon, mattacker))
+			&& ((objects[otmp->otyp].oc_aflags & AFLAGS_CRITICAL_STRIKE_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(mattacker, otmp))
+			)
+		{
+			if (rn2(100) < objects[otmp->otyp].oc_dir_subtype)
+				criticalstrikesucceeded = TRUE;
+		}
+	}
+
+	if ((extra_is_critical && criticalstrikesucceeded) ||
+		(!extra_is_critical && (
+		((objects[otmp->otyp].oc_aflags & AFLAGS_EXTRA_DAMAGE_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mon, mattacker))
+			&& ((objects[otmp->otyp].oc_aflags & AFLAGS_EXTRA_DAMAGE_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(mattacker, otmp))
+			)))
 	{
 		if (
 			(objects[otyp].oc_extra_damagetype == AD_FIRE && (youdefend ? Fire_resistance : resists_fire(mon)))
@@ -472,16 +491,27 @@ int basedmg;
 			tmp += 0;
 		else
 		{
+
 			int extradmg = 0;
 			if (objects[otyp].oc_wedam > 0 && objects[otyp].oc_wedice > 0)
 				extradmg += d(objects[otyp].oc_wedice, objects[otyp].oc_wedam);
 			extradmg += objects[otyp].oc_wedmgplus;
 
-			if (objects[otyp].oc_aflags & AFLAGS_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS)
-				extradmg += basedmg;
-
 			tmp += extradmg;
 		}
+	}
+
+	/* Double damage uses the main damage type */
+	if (
+		(objects[otyp].oc_damagetype == AD_FIRE && (youdefend ? Fire_resistance : resists_fire(mon)))
+		|| (objects[otyp].oc_damagetype == AD_COLD && (youdefend ? Cold_resistance : resists_cold(mon)))
+		|| (objects[otyp].oc_damagetype == AD_ELEC && (youdefend ? Shock_resistance : resists_elec(mon)))
+		)
+		tmp += 0;
+	else
+	{
+		if ((objects[otyp].oc_aflags & AFLAGS_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS) && eligible_for_extra_damage(otmp, mon, mattacker))
+			tmp += basedmg;
 	}
 
 	if (tmp < 0)

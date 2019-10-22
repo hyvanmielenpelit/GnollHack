@@ -193,19 +193,40 @@ struct objclass {
 
 /* Attack flags for weapons, armor, weapon-like tools, and miscellaneous items */
 #define AFLAGS_NONE				0x00000000
-#define AFLAGS_STUN				0x00000008  /* stuns target */
-#define AFLAGS_LEVEL_DRAIN		0x00000010  /* drains a level from monsters */
-#define AFLAGS_WOUNDING			0x00000020  /* extra damage caused is permanent damage */
-#define AFLAGS_LIFE_LEECH		0x00000040  /* heals hit points equal to the extra damage caused */
-#define AFLAGS_SHARPNESS		0x00000080	/* 2/20 chance of the monster losing 25% of maximum hit points */
-#define AFLAGS_VORPAL			0x00000100	/* 1/20 chance of the monster being beheaded */
-#define AFLAGS_BISECT (AFLAGS_SHARPNESS | AFLAGS_VORPAL) /* 1/20 chance of a small monster being bisected and a big monster losing 50% of maximum hit points */
-#define AFLAGS_MAGIC_MISSILE_STRIKE	0x00000200  /* showers the target with magic missiles */
-#define AFLAGS_DALIGN				0x00000400  /* attack bonus on non-aligned monsters  */
+#define AFLAGS_CRITICAL_STRIKE	0x00000001  /* extra damage is caused only by chance determined by oc_dir_subtype */
+#define AFLAGS_CRITICAL_STRIKE_IS_DEADLY				0x00000002  /* successful critical strike causes lethal damage */
+#define AFLAGS_CRITICAL_STRIKE_DISRESPECTS_TARGETS		0x00000004  /* successful critical strike causes lethal damage */
+#define AFLAGS_CRITICAL_STRIKE_DISRESPECTS_CHARACTERS	0x00000008  /* successful critical strike causes lethal damage */
 
-#define AFLAGS_SPE_AFFECTS_ABILITIES  0x01000000 /* add spe to special abilities such as wounding */
-#define AFLAGS_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA			0x02000000 /* abilities such as wounding and life leech are based on full caused damage, not just extra damage */
-#define AFLAGS_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS		0x04000000
+#define AFLAGS_LEVEL_DRAIN		0x00000010  /* drains a level from monsters */
+#define AFLAGS_LEVEL_DRAIN_DISRESPECTS_TARGETS		0x00000020  /* successful critical strike causes lethal damage */
+#define AFLAGS_LEVEL_DRAIN_DISRESPECTS_CHARACTERS	0x00000040  /* successful critical strike causes lethal damage */
+
+#define AFLAGS_WOUNDING			0x00000080  /* extra damage caused is permanent damage */
+#define AFLAGS_WOUNDING_DISRESPECTS_TARGETS		0x00000100  /* successful critical strike causes lethal damage */
+#define AFLAGS_WOUNDING_DISRESPECTS_CHARACTERS	0x00000200  /* successful critical strike causes lethal damage */
+
+#define AFLAGS_LIFE_LEECH		0x00000400  /* heals hit points equal to the extra damage caused */
+#define AFLAGS_LIFE_LEECH_DISRESPECTS_TARGETS		0x00000800  /* successful critical strike causes lethal damage */
+#define AFLAGS_LIFE_LEECH_DISRESPECTS_CHARACTERS	0x00001000  /* successful critical strike causes lethal damage */
+
+#define AFLAGS_SHARPNESS		0x00002000	/* 2/20 chance of the monster losing 25% of maximum hit points */
+#define AFLAGS_VORPAL			0x00004000	/* 1/20 chance of the monster being beheaded */
+#define AFLAGS_BISECT (AFLAGS_SHARPNESS | AFLAGS_VORPAL) /* 1/20 chance of a small monster being bisected and a big monster losing 50% of maximum hit points */
+#define AFLAGS_VORPAL_LIKE_DOUBLE_CHANCE_FOR_PERMITTED_TARGETS	0x00008000
+#define AFLAGS_VORPAL_LIKE_DISRESPECTS_TARGETS					0x00010000
+#define AFLAGS_VORPAL_LIKE_DISRESPECTS_CHARACTERS				0x00020000
+
+#define AFLAGS_MAGIC_MISSILE_STRIKE							0x00040000  /* showers the target with magic missiles */
+#define AFLAGS_DALIGN										0x00080000  /* attack bonus on non-aligned monsters  */
+#define AFLAGS_STUN											0x00100000  /* stuns target */
+
+#define AFLAGS_EXTRA_DAMAGE_DISRESPECTS_TARGETS		0x01000000  /* successful critical strike causes lethal damage */
+#define AFLAGS_EXTRA_DAMAGE_DISRESPECTS_CHARACTERS	0x02000000  /* successful critical strike causes lethal damage */
+
+#define AFLAGS_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA				0x10000000 /* abilities such as wounding and life leech are based on full caused damage, not just extra damage */
+#define AFLAGS_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS		0x20000000
+
 
 /* Spell flags for spells, scrolls, potions, spell-like tools, and wands */
 #define SFLAGS_NONE 0x00000000
@@ -419,10 +440,12 @@ struct objclass {
 /* Flags 3 */
 #define O3_NONE				0x00000000
 #define O3_NOWISH			0x00000001  /* item is special, it cannot be wished for */
-#define O3_SPEAK			0x00000008  /* TODO: item can speak (not implemented) */
-#define O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS	0x00000800 /* wielding or wearing prohibits the revival of permitted targets */
-#define O3_PREVENTS_SUMMONING_BY_PERMITTED_TARGETS	0x00001000 /* TODO: wielding or wearing prohibits summoning by permitted targets */
-#define O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS		0x00020000	/* deals damage when wielded like artifacts */
+#define O3_POWER_1_DISRESPECTS_CHARACTERS			0x00000002 
+#define O3_POWER_2_DISRESPECTS_CHARACTERS			0x00000004 
+#define O3_POWER_3_DISRESPECTS_CHARACTERS			0x00000008 
+#define O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS	0x00000100 /* wielding or wearing prohibits the revival of permitted targets */
+#define O3_PREVENTS_SUMMONING_BY_PERMITTED_TARGETS	0x00000200 /* TODO: wielding or wearing prohibits summoning by permitted targets */
+#define O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS	0x00000400	/* deals damage when wielded like artifacts */
 
 #define O3_INVOKABLE		0x00002000	/* can be invoked using invoke command */
 #define O3_APPLIABLE		0x00004000	/* can be applied as a tool */

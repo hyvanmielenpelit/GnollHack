@@ -1443,12 +1443,6 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 	if (!otmp || !magr || !mdef)
 		return 0;
 
-	if (!eligible_for_extra_damage(otmp, mdef, magr))
-		return 0;
-
-	if (inappropriate_monster_character_type(magr, otmp))
-		return 0;
-
 	boolean youattack = (magr == &youmonst);
 	boolean youdefend = (mdef == &youmonst);
 	boolean vis = (!youattack && magr && cansee(magr->mx, magr->my))
@@ -1534,7 +1528,11 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 	/* reverse from AD&D. */
 	if ((objects[otmp->otyp].oc_aflags & AFLAGS_BISECT) == AFLAGS_BISECT)
 	{
-		if (dieroll == 1)
+		if (
+			((objects[otmp->otyp].oc_aflags & AFLAGS_VORPAL_LIKE_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mdef, magr))
+		 && ((objects[otmp->otyp].oc_aflags & AFLAGS_VORPAL_LIKE_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
+		 && (dieroll <= (objects[otmp->otyp].oc_aflags & AFLAGS_VORPAL_LIKE_DOUBLE_CHANCE_FOR_PERMITTED_TARGETS ? 2 : 1))
+			)
 		{
 			if (youattack && u.uswallow && mdef == u.ustuck) {
 				You("slice %s wide open!", mon_nam(mdef));
@@ -1625,117 +1623,129 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 			}
 		}
 	}
-	else if (objects[otmp->otyp].oc_aflags & AFLAGS_SHARPNESS
-		&& (dieroll == 1 || dieroll == 2))
+	else if (objects[otmp->otyp].oc_aflags & AFLAGS_SHARPNESS)
 	{
-		if (!youdefend) 
+		if (
+			((objects[otmp->otyp].oc_aflags & AFLAGS_VORPAL_LIKE_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mdef, magr))
+			&& ((objects[otmp->otyp].oc_aflags & AFLAGS_VORPAL_LIKE_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
+			&& (dieroll <= (objects[otmp->otyp].oc_aflags & AFLAGS_VORPAL_LIKE_DOUBLE_CHANCE_FOR_PERMITTED_TARGETS ? 4 : 2))
+			)
 		{
-			if (noncorporeal(mdef->data) || amorphous(mdef->data)) {
-				pline("%s through %s %s.", Yobjnam2(otmp, "slice"),
-					s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
-			}
-			else
+			if (!youdefend) 
 			{
-				int damagedone = mdef->mhpmax / 4;
-				if (damagedone < 1)
-					damagedone = 1;
-
-				totaldamagedone += damagedone;
-
-				mdef->mhpmax -= damagedone;
-				if (mdef->mhpmax < 1)
-					mdef->mhpmax = 1, lethaldamage = TRUE;
-
-				pline("%s slices a part of %s off!", The(xname(otmp)),
-					mon_nam(mdef));
-				otmp->dknown = TRUE;
-			}
-		}
-		else 
-		{
-			if (noncorporeal(youmonst.data) || amorphous(youmonst.data)) {
-				pline("%s slices through your %s.", The(xname(otmp)),
-					body_part(NECK));
-			}
-			else
-			{
-				if (Upolyd)
+				if (noncorporeal(mdef->data) || amorphous(mdef->data)) {
+					pline("%s through %s %s.", Yobjnam2(otmp, "slice"),
+						s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
+				}
+				else
 				{
-					int damagedone = u.mhmax / 4;
+					int damagedone = mdef->mhpmax / 4;
 					if (damagedone < 1)
 						damagedone = 1;
 
 					totaldamagedone += damagedone;
 
-					u.basemhmax -= damagedone;
-					u.mhmax -= damagedone;
-					if (u.mhmax < 1)
-						u.mhmax = 1, lethaldamage = TRUE;
-					if (u.basemhmax < 1)
-						u.mhmax = 1;
+					mdef->mhpmax -= damagedone;
+					if (mdef->mhpmax < 1)
+						mdef->mhpmax = 1, lethaldamage = TRUE;
+
+					pline("%s slices a part of %s off!", The(xname(otmp)),
+						mon_nam(mdef));
+					otmp->dknown = TRUE;
+				}
+			}
+			else 
+			{
+				if (noncorporeal(youmonst.data) || amorphous(youmonst.data)) {
+					pline("%s slices through your %s.", The(xname(otmp)),
+						body_part(NECK));
 				}
 				else
 				{
-					int damagedone = u.uhpmax / 4;
-					if (damagedone < 1)
-						damagedone = 1;
+					if (Upolyd)
+					{
+						int damagedone = u.mhmax / 4;
+						if (damagedone < 1)
+							damagedone = 1;
 
-					u.uhpmax -= damagedone;
-					if (u.uhpmax < 1)
-						u.uhpmax = 1, lethaldamage = TRUE;
-					if (u.ubasehpmax < 1)
-						u.ubasehpmax = 1;
+						totaldamagedone += damagedone;
 
+						u.basemhmax -= damagedone;
+						u.mhmax -= damagedone;
+						if (u.mhmax < 1)
+							u.mhmax = 1, lethaldamage = TRUE;
+						if (u.basemhmax < 1)
+							u.mhmax = 1;
+					}
+					else
+					{
+						int damagedone = u.uhpmax / 4;
+						if (damagedone < 1)
+							damagedone = 1;
+
+						u.uhpmax -= damagedone;
+						if (u.uhpmax < 1)
+							u.uhpmax = 1, lethaldamage = TRUE;
+						if (u.ubasehpmax < 1)
+							u.ubasehpmax = 1;
+
+					}
+					pline("%s slices a part of %s off!", The(xname(otmp)), "you");
+					otmp->dknown = TRUE;
 				}
-				pline("%s slices a part of %s off!", The(xname(otmp)), "you");
-				otmp->dknown = TRUE;
 			}
 		}
 	}
-	else if (objects[otmp->otyp].oc_aflags & AFLAGS_VORPAL
-		&& (dieroll == 1 || mdef->data == &mons[PM_JABBERWOCK]))
+	else if (objects[otmp->otyp].oc_aflags & AFLAGS_VORPAL)
 	{
-		static const char* const behead_msg[2] = { "%s beheads %s!",
-													"%s decapitates %s!" };
+	if (
+		((objects[otmp->otyp].oc_aflags & AFLAGS_VORPAL_LIKE_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mdef, magr))
+		&& ((objects[otmp->otyp].oc_aflags & AFLAGS_VORPAL_LIKE_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
+		&& (dieroll <= (objects[otmp->otyp].oc_aflags & AFLAGS_VORPAL_LIKE_DOUBLE_CHANCE_FOR_PERMITTED_TARGETS ? 2 : 1))
+		)
+	{
+			static const char* const behead_msg[2] = { "%s beheads %s!",
+														"%s decapitates %s!" };
 
-		if (youattack && u.uswallow && mdef == u.ustuck)
-			;
-		else if (!youdefend) {
-			if (!has_head(mdef->data) || notonhead || u.uswallow) {
-				if (youattack)
-					pline("Somehow, you miss %s wildly.", mon_nam(mdef));
-				else if (vis)
-					pline("Somehow, %s misses wildly.", mon_nam(magr));
-			}
-			else if (noncorporeal(mdef->data) || amorphous(mdef->data)) {
-				pline("%s through %s %s.", Yobjnam2(otmp, "slice"),
-					s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
-			}
-			else
-			{
-				pline(behead_msg[rn2(SIZE(behead_msg))], The(xname(otmp)),
-					mon_nam(mdef));
-				if (Hallucination && !flags.female)
-					pline("Good job Henry, but that wasn't Anne.");
-				otmp->dknown = TRUE;
-				lethaldamage = TRUE;
-			}
-		}
-		else
-		{
-			if (!has_head(youmonst.data)) 
-			{
-				pline("Somehow, %s misses you wildly.", (magr ? mon_nam(magr) : the(xname(otmp))) );
-			}
-			else if (noncorporeal(youmonst.data) || amorphous(youmonst.data)) {
-				pline("%s slices through your %s.", The(xname(otmp)),
-					body_part(NECK));
+			if (youattack && u.uswallow && mdef == u.ustuck)
+				;
+			else if (!youdefend) {
+				if (!has_head(mdef->data) || notonhead || u.uswallow) {
+					if (youattack)
+						pline("Somehow, you miss %s wildly.", mon_nam(mdef));
+					else if (vis)
+						pline("Somehow, %s misses wildly.", mon_nam(magr));
+				}
+				else if (noncorporeal(mdef->data) || amorphous(mdef->data)) {
+					pline("%s through %s %s.", Yobjnam2(otmp, "slice"),
+						s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
+				}
+				else
+				{
+					pline(behead_msg[rn2(SIZE(behead_msg))], The(xname(otmp)),
+						mon_nam(mdef));
+					if (Hallucination && !flags.female)
+						pline("Good job Henry, but that wasn't Anne.");
+					otmp->dknown = TRUE;
+					lethaldamage = TRUE;
+				}
 			}
 			else
 			{
-				pline(behead_msg[rn2(SIZE(behead_msg))], The(xname(otmp)), "you");
-				otmp->dknown = TRUE;
-				lethaldamage = TRUE;
+				if (!has_head(youmonst.data)) 
+				{
+					pline("Somehow, %s misses you wildly.", (magr ? mon_nam(magr) : the(xname(otmp))) );
+				}
+				else if (noncorporeal(youmonst.data) || amorphous(youmonst.data)) {
+					pline("%s slices through your %s.", The(xname(otmp)),
+						body_part(NECK));
+				}
+				else
+				{
+					pline(behead_msg[rn2(SIZE(behead_msg))], The(xname(otmp)), "you");
+					otmp->dknown = TRUE;
+					lethaldamage = TRUE;
+				}
 			}
 		}
 	}
@@ -1743,44 +1753,68 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 
 	if (objects[otmp->otyp].oc_aflags & AFLAGS_LEVEL_DRAIN) 
 	{
-		/* some non-living creatures (golems, vortices) are
-		   vulnerable to life drain effects */
-		const char* life = is_not_living(mdef->data) ? "animating force" : "life energy";
-
-		if (!youdefend) 
+		if (
+			((objects[otmp->otyp].oc_aflags & AFLAGS_LEVEL_DRAIN_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mdef, magr))
+			&& ((objects[otmp->otyp].oc_aflags & AFLAGS_LEVEL_DRAIN_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
+			)
 		{
-			if (vis)
-			{
-				pline("%s draws the %s from %s!",
-					The(distant_name(otmp, xname)), life,
-					mon_nam(mdef));
-			}
+			/* some non-living creatures (golems, vortices) are
+			   vulnerable to life drain effects */
+			const char* life = is_not_living(mdef->data) ? "animating force" : "life energy";
 
-			if (mdef->m_lev == 0) 
+			if (!youdefend) 
 			{
-				lethaldamage = TRUE;
+				if (vis)
+				{
+					pline("%s draws the %s from %s!",
+						The(distant_name(otmp, xname)), life,
+						mon_nam(mdef));
+				}
+
+				if (mdef->m_lev == 0) 
+				{
+					lethaldamage = TRUE;
+				}
+				else 
+				{
+					int drain = monhp_per_lvl(mdef);
+					totaldamagedone += drain;
+					mdef->mhpmax -= drain;
+					if (mdef->mhpmax < 1)
+						mdef->mhpmax = 1, lethaldamage = TRUE;
+					mdef->m_lev--;
+					/* non-artifact level drain does not heal */
+				}
 			}
 			else 
-			{
-				int drain = monhp_per_lvl(mdef);
-				totaldamagedone += drain;
-				mdef->mhpmax -= drain;
-				if (mdef->mhpmax < 1)
-					mdef->mhpmax = 1, lethaldamage = TRUE;
-				mdef->m_lev--;
-				/* non-artifact level drain does not heal */
+			{ /* youdefend */
+				if (Blind)
+					You_feel("an %s drain your %s!",
+						"object",
+						life);
+				else
+					pline("%s drains your %s!", The(distant_name(otmp, xname)),
+						life);
+				losexp("level drain");
 			}
 		}
-		else 
-		{ /* youdefend */
-			if (Blind)
-				You_feel("an %s drain your %s!",
-					"object",
-					life);
-			else
-				pline("%s drains your %s!", The(distant_name(otmp, xname)),
-					life);
-			losexp("level drain");
+	}
+
+	if ((objects[otmp->otyp].oc_aflags & AFLAGS_CRITICAL_STRIKE) && (objects[otmp->otyp].oc_aflags & AFLAGS_CRITICAL_STRIKE_IS_DEADLY))
+	{
+		if (
+			((objects[otmp->otyp].oc_aflags & AFLAGS_CRITICAL_STRIKE_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mdef, magr))
+			&& ((objects[otmp->otyp].oc_aflags & AFLAGS_CRITICAL_STRIKE_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
+			)
+		{
+			if (rn2(100) < objects[otmp->otyp].oc_dir_subtype)
+			{
+				lethaldamage = TRUE;
+				if(is_living(mdef->data))
+					pline("%s strikes %s dead!", The(xname(otmp)), "you");
+				else
+					pline("%s strikes %s down!", The(xname(otmp)), "you");
+			}
 		}
 	}
 	return (lethaldamage ? -1 : totaldamagedone);

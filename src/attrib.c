@@ -593,9 +593,10 @@ update_carried_item_extrinsics()
 			|| objects[uitem->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED))
 		{
 			int otyp = uitem->otyp;
+			boolean inappr = FALSE;
 			if (inappropriate_character_type(uitem))
 			{
-				continue;
+				inappr = TRUE;
 			}
 			int bit = 0;
 			if (uitem == uarm)
@@ -638,20 +639,20 @@ update_carried_item_extrinsics()
 				bit = W_CARRIED;
 
 			/* Properties conferred by item */
-			if (objects[otyp].oc_oprop >= 0)
+			if (objects[otyp].oc_oprop >= 0 && (!inappr || (objects[otyp].oc_flags3 & O3_POWER_1_DISRESPECTS_CHARACTERS)))
 				u.uprops[objects[otyp].oc_oprop].extrinsic |= bit;//W_CARRIED;
-			if (objects[otyp].oc_oprop2 >= 0)
+			if (objects[otyp].oc_oprop2 >= 0 && (!inappr || (objects[otyp].oc_flags3 & O3_POWER_2_DISRESPECTS_CHARACTERS)))
 				u.uprops[objects[otyp].oc_oprop2].extrinsic |= bit;//W_CARRIED;
-			if (objects[otyp].oc_oprop3 >= 0)
+			if (objects[otyp].oc_oprop3 >= 0 && (!inappr || (objects[otyp].oc_flags3 & O3_POWER_3_DISRESPECTS_CHARACTERS)))
 				u.uprops[objects[otyp].oc_oprop3].extrinsic |= bit;//W_CARRIED;
 
 			int p = 0;
 			/* Properties blocked by item */
-			if ((p = w_blocks(uitem, bit)) != 0)
+			if (!inappr && (p = w_blocks(uitem, bit)) != 0)
 				u.uprops[p].blocked |= bit;
 
 			/* add artifact intrinsics */
-			if (uitem->oartifact)
+			if (!inappr && uitem->oartifact)
 				set_artifact_intrinsic(uitem, 1, bit);
 
 		}
