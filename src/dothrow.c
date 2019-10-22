@@ -367,7 +367,13 @@ dofire()
      * and alt-wielded item is excluded because switching slots
      * would end two-weapon combat even if throw gets aborted.]
      */
-    if (!ok_to_throw(&shotlimit))
+	if (!uwep || !is_launcher(uwep))
+	{
+		You("are not wielding a ranged weapon that fires ammunition.");
+		return 0;
+	}
+
+	if (!ok_to_throw(&shotlimit))
         return 0;
 
     if ((obj = uquiver) == 0) {
