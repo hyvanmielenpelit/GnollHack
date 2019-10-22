@@ -500,7 +500,7 @@ register struct obj *spellbook;
 		{
 			if (!objects[spellbook->otyp].oc_name_known)
 			{
-				if (objects[spellbook->otyp].oc_flags3 & O3_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY)
+				if (objects[spellbook->otyp].oc_aflags & SFLAGS_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY)
 				{
 					if(!objects[spellbook->otyp].oc_content_desc || strcmp(objects[spellbook->otyp].oc_content_desc, "") == 0)
 						Sprintf(buf, "The topic of %s is unclear. Read it?", the(cxname(spellbook)));
@@ -1178,7 +1178,7 @@ int spell;
 			strcpy(buf2, "Effect in selected direction");
 			break;
 		case RAY:
-			if(objects[booktype].oc_flags3 & O3_SPELL_EXPLOSION_EFFECT)
+			if(objects[booktype].oc_aflags & SFLAGS_SPELL_EXPLOSION_EFFECT)
 				strcpy(buf2, "Ray that explodes on hit");
 			else
 				strcpy(buf2, "Ray in selected direction");
@@ -1357,7 +1357,7 @@ int spell;
 	}
 
 	/* Flags */
-	if (objects[booktype].oc_flags3 & O3_SPELL_BYPASSES_MAGIC_RESISTANCE)
+	if (objects[booktype].oc_aflags & SFLAGS_SPELL_BYPASSES_MAGIC_RESISTANCE)
 	{
 		Sprintf(buf, "Other:        %s", "Bypasses magic resistance");
 		txt = buf;

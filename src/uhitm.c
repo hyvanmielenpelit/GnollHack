@@ -1530,10 +1530,10 @@ int dieroll;
 	}
 
 	/* Wounding */
-	if (obj && (objects[obj->otyp].oc_flags3 & O3_WOUNDING) && eligible_for_extra_damage(obj, mon, &youmonst) && !is_rider(mon->data))
+	if (obj && (objects[obj->otyp].oc_aflags & AFLAGS_WOUNDING) && eligible_for_extra_damage(obj, mon, &youmonst) && !is_rider(mon->data))
 	{
 		int extradmg = extratmp;
-		if (objects[obj->otyp].oc_flags3 & O3_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
+		if (objects[obj->otyp].oc_aflags & AFLAGS_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
 			extradmg = tmp;
 
 		mon->mhpmax -= extradmg;
@@ -1557,10 +1557,10 @@ int dieroll;
 	}
 
 	/* Life drain */
-	if (obj && (objects[obj->otyp].oc_flags3 & O3_LIFE_LEECH) && eligible_for_extra_damage(obj, mon, &youmonst) && !is_rider(mon->data) && !is_not_living(mon->data))
+	if (obj && (objects[obj->otyp].oc_aflags & AFLAGS_LIFE_LEECH) && eligible_for_extra_damage(obj, mon, &youmonst) && !is_rider(mon->data) && !is_not_living(mon->data))
 	{
 		int extradmg = extratmp;
-		if (objects[obj->otyp].oc_flags3 & O3_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
+		if (objects[obj->otyp].oc_aflags & AFLAGS_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
 			extradmg = tmp;
 
 		if (Upolyd)

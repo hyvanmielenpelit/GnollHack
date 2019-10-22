@@ -1440,10 +1440,10 @@ register struct attack *mattk;
         return res;
 
 	/* Wounding */
-	if (mweapon && (objects[mweapon->otyp].oc_flags3 & O3_WOUNDING) && eligible_for_extra_damage(mweapon, mdef, magr) && !is_rider(mdef->data))
+	if ((objects[mweapon->otyp].oc_aflags & AFLAGS_WOUNDING) && eligible_for_extra_damage(mweapon, mdef, magr) && !is_rider(mdef->data))
 	{
 		int extradmg = extratmp;
-		if (objects[mweapon->otyp].oc_flags3 & O3_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
+		if (objects[mweapon->otyp].oc_aflags & AFLAGS_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
 			extradmg = tmp;
 
 		mdef->mhpmax -= extradmg;
@@ -1460,10 +1460,10 @@ register struct attack *mattk;
 	}
 
 	/* Life drain */
-	if (mweapon && (objects[mweapon->otyp].oc_flags3 & O3_LIFE_LEECH) && eligible_for_extra_damage(mweapon, mdef, magr) && !is_rider(mdef->data) && !is_not_living(mdef->data))
+	if (mweapon && (objects[mweapon->otyp].oc_aflags & AFLAGS_LIFE_LEECH) && eligible_for_extra_damage(mweapon, mdef, magr) && !is_rider(mdef->data) && !is_not_living(mdef->data))
 	{
 		int extradmg = extratmp;
-		if (objects[mweapon->otyp].oc_flags3 & O3_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
+		if (objects[mweapon->otyp].oc_aflags & AFLAGS_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
 			extradmg = tmp;
 
 		magr->mhp += extradmg;

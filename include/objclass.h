@@ -189,6 +189,32 @@ struct objclass {
 	int oc_wldice, oc_wldam, oc_wldmgplus;	/* large monster damage, also used for duration for spells */
 	int oc_extra_damagetype;				/* Type of extra damage caused by the (magic) weapon */
 	int oc_wedice, oc_wedam, oc_wedmgplus;	/* extra damage used as a special effect influenced by target permissions mask */
+	long oc_aflags;							/* attack related flags, e.g. whether the attack is vorpal */
+
+/* Attack flags for weapons, armor, weapon-like tools, and miscellaneous items */
+#define AFLAGS_NONE				0x00000000
+#define AFLAGS_STUN				0x00000008  /* stuns target */
+#define AFLAGS_LEVEL_DRAIN		0x00000010  /* drains a level from monsters */
+#define AFLAGS_WOUNDING			0x00000020  /* extra damage caused is permanent damage */
+#define AFLAGS_LIFE_LEECH		0x00000040  /* heals hit points equal to the extra damage caused */
+#define AFLAGS_SHARPNESS		0x00000080	/* 2/20 chance of the monster losing 25% of maximum hit points */
+#define AFLAGS_VORPAL			0x00000100	/* 1/20 chance of the monster being beheaded */
+#define AFLAGS_BISECT (AFLAGS_SHARPNESS | AFLAGS_VORPAL) /* 1/20 chance of a small monster being bisected and a big monster losing 50% of maximum hit points */
+#define AFLAGS_MAGIC_MISSILE_STRIKE	0x00000200  /* showers the target with magic missiles */
+#define AFLAGS_DALIGN				0x00000400  /* attack bonus on non-aligned monsters  */
+
+#define AFLAGS_SPE_AFFECTS_ABILITIES  0x01000000 /* add spe to special abilities such as wounding */
+#define AFLAGS_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA			0x02000000 /* abilities such as wounding and life leech are based on full caused damage, not just extra damage */
+#define AFLAGS_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS		0x04000000
+
+/* Spell flags for spells, scrolls, potions, spell-like tools, and wands */
+#define SFLAGS_NONE 0x00000000
+#define SFLAGS_SPELL_EXPLOSION_EFFECT				0x00000001
+#define SFLAGS_SPELL_BYPASSES_MAGIC_RESISTANCE		0x00000002
+#define SFLAGS_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY	0x00000004
+#define SFLAGS_SPELL_IS_NONREVERSIBLE_PERMANENT		0x00000008
+
+
 	int oc_hitbonus;						/* weapons: "to hit" bonus */
 	int oc_range;							/* launchers: range for ammo, others throw range: >0 Fixed range, <0 Percentage of STR */
 
@@ -200,6 +226,7 @@ struct objclass {
 	int oc_oc5;		/* Used for spell range; non-spellbooks: specification of attributes or other properties item gives bonuses (abon) to using otmp->spe */
 	int oc_oc6;		/* Used for spell radius; non-spellbooks: 0 => spe is used, otherise fixed bonus */
 	int oc_oc7;		/* Used for spell casting penalty */
+	int oc_oc8;		/* Used for multishot strength */
 
 /* general*/
 #define oc_armor_class oc_oc1						/* weapons and armor: AC used in ARM_AC_BONUS in do.c */
@@ -209,6 +236,7 @@ struct objclass {
 #define oc_bonus_attributes oc_oc5					/* non-spellbooks: gives bonuses using spe / oc_oc6 to attributes and properties */
 #define oc_attribute_bonus oc_oc6					/* non-spellbooks: 0 => spe is used, otherise fixed bonus */
 #define oc_spell_casting_penalty oc_oc7				/* non-spells/wands: spell casting penalty when worn */
+#define oc_multishot_str oc_oc8						/* strength required for launcher multishot */
 
 #define BONUS_TO_STR 0x0001
 #define BONUS_TO_DEX 0x0002
@@ -390,39 +418,22 @@ struct objclass {
 /* Artifact flags - to do: Attack type, half physical and spell damage, bonus to monsters only */
 /* Flags 3 */
 #define O3_NONE				0x00000000
-#define O3_NOGEN			0x00000001  /* item is special, it cannot be wished for */
-#define O3_RESTRICTED		0x00000002  /* TODO: item is restricted - can't be named */
-#define O3_INTELLIGENT		0x00000004  /* TODO: item is self-willed - intelligent */
+#define O3_NOWISH			0x00000001  /* item is special, it cannot be wished for */
 #define O3_SPEAK			0x00000008  /* TODO: item can speak (not implemented) */
-#define O3_LEVEL_DRAIN		0x00000010  /* drains a level from monsters */
-#define O3_WOUNDING			0x00000020  /* extra damage caused is permanent damage */
-#define O3_LIFE_LEECH		0x00000040  /* heals hit points equal to the extra damage caused */
-#define O3_SHARPNESS		0x00000080	/* 2/20 chance of the monster losing 25% of maximum hit points */
-#define O3_VORPAL			0x00000100	/* 1/20 chance of the monster being beheaded */
-#define O3_BISECT (O3_SHARPNESS | O3_VORPAL) /* 1/20 chance of a small monster being bisected and a big monster losing 50% of maximum hit points */
-#define O3_SPE_AFFECTS_ABILITIES					0x00000200 /* add spe to special abilities */
-#define O3_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA			0x00000400 /* abilities such as wounding and life leech are based on full caused damage, not just extra damage */
 #define O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS	0x00000800 /* wielding or wearing prohibits the revival of permitted targets */
 #define O3_PREVENTS_SUMMONING_BY_PERMITTED_TARGETS	0x00001000 /* TODO: wielding or wearing prohibits summoning by permitted targets */
+#define O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS		0x00020000	/* deals damage when wielded like artifacts */
 
 #define O3_INVOKABLE		0x00002000	/* can be invoked using invoke command */
 #define O3_APPLIABLE		0x00004000	/* can be applied as a tool */
 #define O3_WIELDABLE		0x00008000	/* can be wielded in a weapon slot */
 
-#define O3_DALIGN										0x00010000  /* attack bonus on non-aligned monsters  */
-#define O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS		0x00020000	/* deals damage when wielded like artifacts */
-#define O3_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS		0x00040000
 /* One flag slot here */
 
 #define O3_PERMTTED_TARGET_LAWFUL	0x00100000
 #define O3_PERMTTED_TARGET_NEUTRAL	0x00200000
 #define O3_PERMTTED_TARGET_CHAOTIC	0x00400000
 /* One flag slot here */
-
-#define O3_SPELL_EXPLOSION_EFFECT				0x01000000
-#define O3_SPELL_BYPASSES_MAGIC_RESISTANCE		0x02000000
-#define O3_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY	0x04000000
-#define O3_SPELL_IS_NONREVERSIBLE_PERMANENT		0x08000000
 
 #define O3_TARGET_PERMISSION_IS_M1_FLAG 0x10000000 /* Note: if no flag, then default is a monster symbol */
 #define O3_TARGET_PERMISSION_IS_M2_FLAG 0x20000000

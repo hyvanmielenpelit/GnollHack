@@ -493,7 +493,15 @@ dowield()
 		result = ready_weapon(wep, W_WEP);
 		if (flags.pushweapon && oldwep && uwep != oldwep)
 			setuswapwep(oldwep, W_SWAPWEP);
-		//untwoweapon();
+
+		if (uwep && (!oldwep || uwep != oldwep) && is_launcher(uwep) && P_SKILL(objects[uwep->otyp].oc_skill) >= P_SKILLED)
+		{
+			/* The player should be able to fire multishots */
+			if (ACURR(A_STR) < objects[uwep->otyp].oc_multishot_str)
+			{
+				pline("%s requires the strength of %s or more to fire multiple times.", The(xname(uwep)), get_strength_string(objects[uwep->otyp].oc_multishot_str));
+			}
+		}
 	}
 
 	updateabon();
@@ -511,6 +519,7 @@ long mask;
 	register struct obj *oldwep, * oldswap;
 	register struct obj *wep = (struct obj*)0, *altwep = (struct obj*)0, *swapwep = (struct obj*)0, *altswapwep = (struct obj*)0;
 	int result = 0;
+	struct obj* oldweapon = uwep;
 
 	if (mask == W_WEP)
 	{
@@ -585,6 +594,15 @@ long mask;
 		}
 	}
 
+	if (mask == W_WEP && uwep && (!oldweapon || uwep != oldweapon) && is_launcher(uwep) && P_SKILL(objects[uwep->otyp].oc_skill) >= P_SKILLED)
+	{
+		/* The player should be able to fire multishots */
+		if (ACURR(A_STR) < objects[uwep->otyp].oc_multishot_str)
+		{
+			pline("%s requires the strength of %s or more to fire multiple times.", The(xname(uwep)), get_strength_string(objects[uwep->otyp].oc_multishot_str));
+		}
+	}
+
 	//Do not take a turn
 	return 0; // result;
 
@@ -598,6 +616,8 @@ doswapweapon()
 	register struct obj* oldwep2, * oldswap2;
 	int result = 0;
 	int result2 = 0;
+
+	struct obj* oldweapon = uwep;
 
     /* May we attempt this? */
     multi = 0;
@@ -748,10 +768,17 @@ doswapweapon()
 			}
 		}
 
-
-		//if (u.twoweap && !can_twoweapon())
-		//	untwoweapon();
 	}
+
+	if (uwep && (!oldweapon || uwep != oldweapon) && is_launcher(uwep) && P_SKILL(objects[uwep->otyp].oc_skill) >= P_SKILLED)
+	{
+		/* The player should be able to fire multishots */
+		if (ACURR(A_STR) < objects[uwep->otyp].oc_multishot_str)
+		{
+			pline("%s requires the strength of %s or more to fire multiple times.", The(xname(uwep)), get_strength_string(objects[uwep->otyp].oc_multishot_str));
+		}
+	}
+
 	//Do not take a turn
 	return 0; // result;
 }

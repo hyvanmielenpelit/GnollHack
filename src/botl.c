@@ -17,23 +17,32 @@ STATIC_OVL NEARDATA int mrank_sz = 0; /* loaded by max_rank_sz (from u_init) */
 STATIC_DCL void NDECL(bot_via_windowport);
 STATIC_DCL void NDECL(stat_update_time);
 
-static char *
+char*
+get_strength_string(st)
+int st;
+{
+	static char buf[32];
+
+	if (st > 18) {
+		if (st > STR18(100))
+			Sprintf(buf, "%2d", st - 100);
+		else if (st < STR18(100))
+			Sprintf(buf, "18/%02d", st - 18);
+		else
+			Sprintf(buf, "18/**");
+	}
+	else
+		Sprintf(buf, "%-1d", st);
+
+	return buf;
+}
+
+
+char *
 get_strength_str()
 {
-    static char buf[32];
     int st = ACURR(A_STR);
-
-    if (st > 18) {
-        if (st > STR18(100))
-            Sprintf(buf, "%2d", st - 100);
-        else if (st < STR18(100))
-            Sprintf(buf, "18/%02d", st - 18);
-        else
-            Sprintf(buf, "18/**");
-    } else
-        Sprintf(buf, "%-1d", st);
-
-    return buf;
+	return get_strength_string(st);
 }
 
 void

@@ -164,6 +164,7 @@ E int NDECL(getbones);
 
 /* ### botl.c ### */
 
+E char* FDECL(get_strength_string, (int));
 E const char* NDECL(rank);
 E char *NDECL(do_statusline1);
 E void NDECL(check_gold_symbol);

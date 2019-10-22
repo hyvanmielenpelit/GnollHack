@@ -951,7 +951,7 @@ struct obj *sobj;
 		{
 			if (tamedog(mtmp, (struct obj*) 0))
 			{
-				if (sobj && !(objects[sobj->otyp].oc_flags3 & O3_SPELL_IS_NONREVERSIBLE_PERMANENT))
+				if (sobj && !(objects[sobj->otyp].oc_aflags & SFLAGS_SPELL_IS_NONREVERSIBLE_PERMANENT))
 				{
 					/* Charm can be dispelled and is non-permanent if timer > 0 */
 					mtmp->morigpeaceful = was_peaceful;

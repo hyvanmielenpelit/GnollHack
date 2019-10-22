@@ -172,12 +172,17 @@ int shotlimit;
         /* crossbows are slow to load and probably shouldn't allow multiple
            shots at all, but that would result in players never using them;
            instead, high strength is necessary to load and shoot quickly */
-		if (multishot > 1 && skill == -P_CROSSBOW && obj && uwep
-			&& ammo_and_launcher(obj, uwep)
-			&& (ACURRSTR < (uwep->otyp == HEAVY_CROSSBOW ? 18 : uwep->otyp == CROSSBOW ? 14: 9))) //(Race_if(PM_GNOLL) ? 16 : 18))
+		if (multishot > 1)
 		{
-			multishot = 1;
-			multishotrndextra = 0;
+			if (
+				(obj && uwep && ammo_and_launcher(obj, uwep)
+				&& (ACURR(A_STR) < objects[uwep->otyp].oc_multishot_str))
+					|| (obj && throwing_weapon(obj) && objects[obj->otyp].oc_multishot_str > 0 && ACURR(A_STR) < objects[obj->otyp].oc_multishot_str)
+					)
+			{
+				multishot = 1;
+				multishotrndextra = 0;
+			}
 		}
 
 		if(multishotrndextra > 0)

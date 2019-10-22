@@ -332,23 +332,33 @@ struct monst* mattacker;
     int tmp = 0, otyp = otmp->otyp;
     struct permonst *ptr = mon->data;
 	boolean Is_weapon = is_weapon(otmp);
+	boolean youdefend = (mon == &youmonst);
 
     if (otyp == CREAM_PIE)
         return 0;
 	
 	if(Is_weapon || objects[otyp].oc_class == GEM_CLASS)
 	{
-		if (bigmonst(ptr)) {
-			if (objects[otyp].oc_wldam > 0 && objects[otyp].oc_wldice > 0)
-				tmp += d(objects[otyp].oc_wldice, objects[otyp].oc_wldam);
-			tmp += objects[otyp].oc_wldmgplus;
+		if (
+			(objects[otyp].oc_damagetype == AD_FIRE && (youdefend ? Fire_resistance : resists_fire(mon)))
+			|| (objects[otyp].oc_damagetype == AD_COLD && (youdefend ? Cold_resistance : resists_cold(mon)))
+			|| (objects[otyp].oc_damagetype == AD_ELEC && (youdefend ? Shock_resistance : resists_elec(mon)))
+			)
+			tmp += 0;
+		else
+		{ 
+			if (bigmonst(ptr)) {
+				if (objects[otyp].oc_wldam > 0 && objects[otyp].oc_wldice > 0)
+					tmp += d(objects[otyp].oc_wldice, objects[otyp].oc_wldam);
+				tmp += objects[otyp].oc_wldmgplus;
+			}
+			else {
+				if (objects[otyp].oc_wsdam > 0 && objects[otyp].oc_wsdice > 0)
+					tmp += d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam);
+				tmp += objects[otyp].oc_wsdmgplus;
+			}
+			tmp += otmp->spe;
 		}
-		else {
-			if (objects[otyp].oc_wsdam > 0 && objects[otyp].oc_wsdice > 0)
-				tmp += d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam);
-			tmp += objects[otyp].oc_wsdmgplus;
-		}
-        tmp += otmp->spe;
         /* negative enchantment mustn't produce negative damage */
         if (tmp < 0)
             tmp = 0;
@@ -450,18 +460,28 @@ int basedmg;
 		return 0;
 
 	int tmp = 0, otyp = otmp->otyp;
+	boolean youdefend = (mon == &youmonst);
 
 	if (eligible_for_extra_damage(otmp, mon, mattacker))
 	{
-		int extradmg = 0;
-		if (objects[otyp].oc_wedam > 0 && objects[otyp].oc_wedice > 0)
-			extradmg += d(objects[otyp].oc_wedice, objects[otyp].oc_wedam);
-		extradmg += objects[otyp].oc_wedmgplus;
+		if (
+			(objects[otyp].oc_extra_damagetype == AD_FIRE && (youdefend ? Fire_resistance : resists_fire(mon)))
+			|| (objects[otyp].oc_extra_damagetype == AD_COLD && (youdefend ? Cold_resistance : resists_cold(mon)))
+			|| (objects[otyp].oc_extra_damagetype == AD_ELEC && (youdefend ? Shock_resistance : resists_elec(mon)))
+			)
+			tmp += 0;
+		else
+		{
+			int extradmg = 0;
+			if (objects[otyp].oc_wedam > 0 && objects[otyp].oc_wedice > 0)
+				extradmg += d(objects[otyp].oc_wedice, objects[otyp].oc_wedam);
+			extradmg += objects[otyp].oc_wedmgplus;
 
-		if (objects[otyp].oc_flags3 & O3_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS)
-			extradmg += basedmg;
+			if (objects[otyp].oc_aflags & AFLAGS_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS)
+				extradmg += basedmg;
 
-		tmp += extradmg;
+			tmp += extradmg;
+		}
 	}
 
 	if (tmp < 0)

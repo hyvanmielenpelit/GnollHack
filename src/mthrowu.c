@@ -242,11 +242,10 @@ struct obj *otmp, *mwep;
                 && mwep->otyp == CROSSBOW))
             multishot++;*/
 
-		boolean crossbowing = (!otmp && !mwep && ammo_and_launcher(otmp, mwep)
-			&& weapon_type(mwep) == P_CROSSBOW);
-
-		if (!strongmonst(mtmp->data) && crossbowing)
-			multishot = 1; //Only strong monsters multishoot with crossbows 
+		if ((otmp && mwep && ammo_and_launcher(otmp, mwep) && mtmp->mstr < objects[mwep->otyp].oc_multishot_str)
+			|| (otmp && throwing_weapon(otmp) && mtmp->mstr < objects[otmp->otyp].oc_multishot_str)
+			)
+			multishot = 1;
 
     }
 

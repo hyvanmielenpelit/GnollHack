@@ -4085,7 +4085,7 @@ struct obj *no_wish;
             break;
         default:
             /* catch any other non-wishable objects (venom) */
-            if (objects[typ].oc_nowish)
+            if (objects[typ].oc_nowish || (objects[typ].oc_flags3 & O3_NOWISH))
                 return (struct obj *) 0;
             break;
         }
@@ -4360,7 +4360,7 @@ struct obj *no_wish;
 
     /* more wishing abuse: don't allow wishing for certain artifacts */
     /* and make them pay; charge them for the wish anyway! */
-    if ((is_quest_artifact(otmp) || (objects[otmp->otyp].oc_flags3 & O3_NOGEN)
+    if ((is_quest_artifact(otmp)
          || (otmp->oartifact && rn2(nartifact_exist()) > 1)) && !wizard) 
 	{
         artifact_exists(otmp, safe_oname(otmp), FALSE);
