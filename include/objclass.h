@@ -443,9 +443,14 @@ struct objclass {
 #define O3_POWER_1_DISRESPECTS_CHARACTERS			0x00000002 
 #define O3_POWER_2_DISRESPECTS_CHARACTERS			0x00000004 
 #define O3_POWER_3_DISRESPECTS_CHARACTERS			0x00000008 
-#define O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS	0x00000100 /* wielding or wearing prohibits the revival of permitted targets */
-#define O3_PREVENTS_SUMMONING_BY_PERMITTED_TARGETS	0x00000200 /* TODO: wielding or wearing prohibits summoning by permitted targets */
-#define O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS	0x00000400	/* deals damage when wielded like artifacts */
+#define O3_HP_BONUS_DISRESPECTS_CHARACTERS			0x00000010
+#define O3_MANA_BONUS_DISRESPECTS_CHARACTERS		0x00000020
+#define O3_ATTRIBUTE_BONUS_DISRESPECTS_CHARACTERS	0x00000040
+#define O3_LUCK_DISRESPECTS_CHARACTERS				0x00000080
+
+#define O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS	0x00000400 /* wielding or wearing prohibits the revival of permitted targets */
+#define O3_PREVENTS_SUMMONING_BY_PERMITTED_TARGETS	0x00000800 /* TODO: wielding or wearing prohibits summoning by permitted targets */
+#define O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS	0x00001000	/* deals damage when wielded like artifacts */
 
 #define O3_INVOKABLE		0x00002000	/* can be invoked using invoke command */
 #define O3_APPLIABLE		0x00004000	/* can be applied as a tool */

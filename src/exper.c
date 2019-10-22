@@ -109,7 +109,7 @@ enmaxadjustment()
 			|| objects[otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED
 			))
 		{
-			if (inappropriate_character_type(uitem))
+			if (inappropriate_character_type(uitem) && !(objects[otyp].oc_flags3 & O3_MANA_BONUS_DISRESPECTS_CHARACTERS))
 			{
 				continue;
 			}

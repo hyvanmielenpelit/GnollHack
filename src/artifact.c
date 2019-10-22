@@ -307,7 +307,7 @@ struct obj *obj;
 	/* might as well check for this too */
 	if (obj->otyp == LUCKSTONE)
 		return TRUE;
-	if (objects[obj->otyp].oc_flags & O1_CONFERS_LUCK)
+	if (objects[obj->otyp].oc_flags & O1_CONFERS_LUCK && (objects[obj->otyp].oc_flags3 & O3_LUCK_DISRESPECTS_CHARACTERS || !inappropriate_character_type(obj)))
 		return TRUE;
 
     return (boolean) (obj->oartifact && spec_ability(obj, SPFX_LUCK));

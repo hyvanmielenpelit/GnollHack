@@ -1570,7 +1570,7 @@ boolean addconstitutionbonus;
 			|| objects[otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED
 			))
 		{
-			if (inappropriate_character_type(uitem))
+			if (inappropriate_character_type(uitem) && !(objects[otyp].oc_flags3 & O3_HP_BONUS_DISRESPECTS_CHARACTERS))
 			{
 				continue;
 			}
@@ -1656,7 +1656,7 @@ updateabon()
 			|| objects[otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED
 			))
 		{
-			if (inappropriate_character_type(uitem))
+			if (inappropriate_character_type(uitem) && !(objects[otyp].oc_flags3 & O3_ATTRIBUTE_BONUS_DISRESPECTS_CHARACTERS))
 			{
 				continue;
 			}
