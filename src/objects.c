@@ -246,7 +246,7 @@ WEAPON("throwing axe", None,
        1, 0, 0, 10,  50,   8, AD_PHYS, 1, 6, 0, 1, 6, 0, AD_PHYS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, S, WEP_AXE, P_AXE, MAT_IRON, HI_METAL, O1_THROWN_WEAPON, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 WEAPON("battle-axe", "double-headed axe",       /* "double-bitted"? */
        0, 0, 1, 8, 100,  40, AD_PHYS, 2, 6, 1, 3, 4, 1, AD_PHYS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, S, WEP_AXE, P_AXE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
-WEAPON("vorpal battle-axe", " runed double-headed axe",       /* "double-bitted"? */
+WEAPON("battle-axe of cleaving", " runed double-headed axe",       /* "double-bitted"? */
        0, 0, 1, 2, 100, 4000, AD_PHYS, 2, 6, 1, 3, 4, 1, AD_PHYS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, S, WEP_AXE, P_AXE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_BISECT, PERMITTED_ALL, ALL_TARGETS),
 
 /* swords */
@@ -425,7 +425,13 @@ WEAPON("halberd", "angled poleaxe",
 	WEAPON("war hammer", None,
 		1, 0, 0, 11, 50, 5, AD_PHYS, 1, 6, 1, 1, 6, 0, AD_PHYS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, B, WEP_HAMMER, P_HAMMER, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 	WEAPON("heavy war hammer", None, /* Base object for Mjollnir*/
-		1, 0, 0, 0, 100, 1000, AD_PHYS, 1, 8, 1, 1, 8, 0, AD_PHYS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, B, WEP_HAMMER, P_HAMMER, MAT_IRON, HI_METAL, O1_THROWN_WEAPON | O1_WEIGHT_DOES_NOT_REDUCE_RANGE | O1_RETURNS_TO_HAND_AFTER_THROWING | O1_CAN_BE_THROWN_ONLY_IF_WIELDED, O2_NONE, O3_NONE, PERMITTED_ROLE_VALKYRIE, ALL_TARGETS),
+		1, 0, 0, 0, 100, 1000, AD_PHYS, 1, 8, 1, 1, 8, 0, AD_PHYS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, B, WEP_HAMMER, P_HAMMER, MAT_IRON, HI_METAL, O1_THROWN_WEAPON | O1_WEIGHT_DOES_NOT_REDUCE_RANGE | O1_RETURNS_TO_HAND_AFTER_THROWING | O1_CAN_BE_THROWN_ONLY_IF_WIELDED, O2_NONE, O3_NOGEN, PERMITTED_ROLE_VALKYRIE, ALL_TARGETS),
+	WEAPON("sturdy war hammer", None, /* Base object for Ogresmasher*/
+		1, 0, 0, 0, 100, 500, 
+		AD_PHYS, 1, 8, 1, 1, 8, 0, AD_PHYS, 0, 0, 0, 
+		0, 0, 0, 0, 0, 0, BONUS_TO_CON | SETS_FIXED_ATTRIBUTE, 25, 0, 
+		NO_POWER, NO_POWER, NO_POWER, B, WEP_HAMMER, P_HAMMER, MAT_IRON, HI_METAL, 
+		O1_NONE, O2_NONE, O3_NOGEN | O3_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS, PERMITTED_ALL, S_OGRE),
 	WEAPON("hammer of gnoll slaying", "runed war hammer",
 		0, 0, 0, 2, 50, 500,
 		AD_PHYS, 1, 6, 0, 1, 6, 0, AD_PHYS, 1, 12, 0,
@@ -919,6 +925,7 @@ AMULET("amulet of mana",		        "convex",  50,  0, 0, 0, 75, 0, 0, 0, 0, O1_NO
 AMULET("demon blood talisman",	   "tetrahedral",  25,  0, 0, 0, 100, 0, 0, 0, 0, O1_MANA_PERCENTAGE_BONUS, O2_NONE, O3_NONE, PERMITTED_ALL), //doubles mana capacity
 AMULET("periapt of vitality",	        "linear",  50,  0, 0, 0, 0, 25, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 AMULET("amulet of magical breathing", "octagonal", 65,  MAGICAL_BREATHING, 0, 0, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+AMULET("amulet",					"cylindrical",  0,  NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* Base item for artifact amulets */
 /* fixed descriptions; description duplication is deliberate;
  * fake one must come before real one because selection for
  * description shuffling stops when a non-magic amulet is encountered
@@ -1038,7 +1045,7 @@ MISCELLANEOUSITEM("goggles of eye protection", "goggles", MISC_LENSES, None, Non
 	EYE_PROTECTION, NO_POWER, NO_POWER, 0, 0, 0, 0, 0,
 	20, MAT_PLASTIC, HI_GLASS, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("expensive watch", None, MISC_WRIST_WATCH, "on left wrist", None,
-	1, 0, 0, 0, 50, 200, 50,
+	1, 0, 0, 0, 50, 200, 6,
 	NO_POWER, NO_POWER, NO_POWER, 0, 0, BONUS_TO_CHA, 1, 0,
 	50, MAT_GOLD, HI_GOLD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_GENDER_MALE),
 MISCELLANEOUSITEM("leather belt", "belt", MISC_BELT, None, None,
@@ -1539,7 +1546,7 @@ SPELL("mass domination", "fractal-patterned", "some long-forgotten arcane magic"
 
 SPELL("haste self",      "purple", None, "Increases the movement and attack speed of the caster",
       P_MOVEMENT_SPELL,			10,  4,			 0, 3, 30, A_INT, 0, 0, 0, 1, NODIR, 0, 0, 0, 0, 1, 10, 100, CLR_MAGENTA, O1_NONE, O2_NONE, O3_NONE),
-SPELL("detect unseen",   "violet", None, "Enables the caster to see invisible monsters",
+SPELL("detect unseen",   "violet", None, "Enables the caster to see invisible monsters and secret doors",
       P_DIVINATION_SPELL,		10,  4,			 0, 1, 10, A_WIS, 0, 0, 0, 1, NODIR, 0, 0, 0, 0, 5, 10, 100, CLR_MAGENTA, O1_NONE, O2_NONE, O3_NONE),
 SPELL("levitation",      "tan", None, "Raises the caster off the ground",
       P_MOVEMENT_SPELL,			10,  4,			 0, 2, 15, A_INT, 0, 0, 0, 1, NODIR, 0, 0, 0, 0, 5, 10, 140, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE),

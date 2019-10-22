@@ -393,7 +393,7 @@ const char *name;
        Bug fix:  don't name multiple elven daggers "Sting".
      */
     for (a = artilist + 1; a->otyp; a++) {
-        if (!sametype[a->otyp])
+        if (!sametype[a->otyp] && !sametype[a->maskotyp])
             continue;
         aname = a->name;
         if (!strncmpi(aname, "the ", 4))

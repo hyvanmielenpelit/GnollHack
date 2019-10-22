@@ -126,12 +126,10 @@ int shotlimit;
         case P_EXPERT:
 			if (!weakmultishot)
 				multishot++;
-			/*FALLTHRU*/
 			break;
         case P_SKILLED:
 			if (!weakmultishot)
 				multishotrndextra++;
-			/*FALLTHRU*/
 			break;
         default: /* basic or unskilled: no bonus */
             break;

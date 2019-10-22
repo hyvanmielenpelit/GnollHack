@@ -4,6 +4,8 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
+#include "artifact.h"
+#include "artilist.h"
 
 /* "an uncursed greased partly eaten guardian naga hatchling [corpse]" */
 #define PREFIX 80 /* (56) */
@@ -391,7 +393,7 @@ register struct obj *obj;
 unsigned cxn_flags; /* bitmask of CXN_xxx values */
 {
     register char *buf;
-    register int typ = obj->otyp;
+    register int typ = ((obj->oartifact && artilist[obj->oartifact].maskotyp != STRANGE_OBJECT) ? artilist[obj->oartifact].maskotyp : obj->otyp);
     register struct objclass *ocl = &objects[typ];
     int nn = ocl->oc_name_known, omndx = obj->corpsenm;
     const char *actualn = OBJ_NAME(*ocl);
@@ -4358,8 +4360,9 @@ struct obj *no_wish;
 
     /* more wishing abuse: don't allow wishing for certain artifacts */
     /* and make them pay; charge them for the wish anyway! */
-    if ((is_quest_artifact(otmp)
-         || (otmp->oartifact && rn2(nartifact_exist()) > 1)) && !wizard) {
+    if ((is_quest_artifact(otmp) || (objects[otmp->otyp].oc_flags3 & O3_NOGEN)
+         || (otmp->oartifact && rn2(nartifact_exist()) > 1)) && !wizard) 
+	{
         artifact_exists(otmp, safe_oname(otmp), FALSE);
         obfree(otmp, (struct obj *) 0);
         otmp = (struct obj *) &zeroobj;

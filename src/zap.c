@@ -2848,8 +2848,21 @@ register struct obj *obj;
 		}
 		break;
 	}	
+
+	case SPE_DETECT_UNSEEN:
+	{
+		int msg = Invisible && !Blind;
+		int duration = d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_dicesize) + objects[obj->otyp].oc_spell_dur_plus;
+		incr_itimeout(&HSee_invisible, duration);
+		set_mimic_blocking(); /* do special mimic handling */
+		see_monsters();       /* see invisible monsters */
+		newsym(u.ux, u.uy);   /* see yourself! */
+		if (msg && !Blind) {  /* Blind possible if polymorphed */
+			You("can see through yourself, but you are visible!");
+		}
+	}
+	/* FALLTHRU */
 	case WAN_SECRET_DOOR_DETECTION:
-    case SPE_DETECT_UNSEEN:
         if (!findit())
             return;
         if (!Blind)

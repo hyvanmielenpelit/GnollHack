@@ -390,7 +390,7 @@ struct objclass {
 /* Artifact flags - to do: Attack type, half physical and spell damage, bonus to monsters only */
 /* Flags 3 */
 #define O3_NONE				0x00000000
-#define O3_NOGEN			0x00000001  /* TODO: item is special, bequeathed by gods */
+#define O3_NOGEN			0x00000001  /* item is special, it cannot be wished for */
 #define O3_RESTRICTED		0x00000002  /* TODO: item is restricted - can't be named */
 #define O3_INTELLIGENT		0x00000004  /* TODO: item is self-willed - intelligent */
 #define O3_SPEAK			0x00000008  /* TODO: item can speak (not implemented) */

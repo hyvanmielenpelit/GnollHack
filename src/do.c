@@ -6,6 +6,8 @@
 /* Contains code for 'd', 'D' (drop), '>', '<' (up, down) */
 
 #include "hack.h"
+#include "artifact.h"
+#include "artilist.h"
 #include "lev.h"
 
 STATIC_DCL void FDECL(trycall, (struct obj *));
@@ -223,6 +225,12 @@ register struct obj* obj;
 	datawin = create_nhwindow(NHW_MENU);
 
 	int otyp = obj->otyp;
+	if (obj->oartifact && artilist[obj->oartifact].maskotyp != STRANGE_OBJECT)
+	{
+		if (!obj->known) //!objects[obj->otyp].oc_name_known)
+			otyp = artilist[obj->oartifact].maskotyp;
+	}
+
 	char buf[BUFSZ];
 	char buf2[BUFSZ];
 	char buf3[BUFSZ];
