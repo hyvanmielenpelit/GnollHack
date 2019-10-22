@@ -2920,12 +2920,16 @@ dozap()
 {
     register struct obj *obj;
     int damage;
+	boolean taketurn = TRUE;
 
     if (check_capacity((char *) 0))
         return 0;
     obj = getobj(zap_syms, "zap", 0, "");
     if (!obj)
         return 0;
+
+	if (obj->otyp == WAN_PROBING)
+		taketurn = FALSE;
 
 	if (obj->cooldownleft > 0)
 	{
@@ -2941,7 +2945,7 @@ dozap()
     else if (obj->cursed && !rn2(WAND_BACKFIRE_CHANCE)) {
         backfire(obj); /* the wand blows up in your face! */
         exercise(A_STR, FALSE);
-        return 1;
+        return taketurn;
     } else if (!(objects[obj->otyp].oc_dir == NODIR) && !getdir((char *) 0)) {
         if (!Blind)
             pline("%s glows and fades.", The(xname(obj)));
@@ -2971,7 +2975,7 @@ dozap()
         useup(obj);
     }
     update_inventory(); /* maybe used a charge */
-    return 1;
+    return taketurn;
 }
 
 int
