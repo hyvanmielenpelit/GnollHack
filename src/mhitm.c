@@ -1440,7 +1440,7 @@ register struct attack *mattk;
         return res;
 
 	/* Wounding */
-	if ((objects[mweapon->otyp].oc_aflags & AFLAGS_WOUNDING) && eligible_for_extra_damage(mweapon, mdef, magr) && !is_rider(mdef->data))
+	if (mweapon && (objects[mweapon->otyp].oc_aflags & AFLAGS_WOUNDING) && eligible_for_extra_damage(mweapon, mdef, magr) && !is_rider(mdef->data))
 	{
 		int extradmg = extratmp;
 		if (objects[mweapon->otyp].oc_aflags & AFLAGS_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)

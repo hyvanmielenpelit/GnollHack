@@ -82,21 +82,37 @@ docharacterstatistics()
 	/* Race */
 	strcpy(buf2, urace.noun);
 	*buf2 = highc(*buf2);
-	Sprintf(buf, "Race:        %s", buf2);
 	if (Upolyd)
-	{
-		Sprintf(eos(buf), " (polymorphed into %s)", mons[u.umonnum].mname);
-	}
+		Sprintf(buf, "Original race:     %s", buf2);
+	else
+		Sprintf(buf, "Race:              %s", buf2);
+
 	txt = buf;
 	putstr(datawin, 0, txt);
 
+	if (Upolyd)
+	{
+		strcpy(buf2, mons[u.umonnum].mname);
+		*buf2 = highc(*buf2);
+		Sprintf(buf, "Polymorphed into:  %s", buf2);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+
 	/* Gender */
-	strcpy(buf2, flags.female ? "Female" : "Male");
-	Sprintf(buf, "Gender:      %s", buf2);
 	if (Upolyd && u.mfemale != flags.female)
 	{
-		Sprintf(eos(buf), " (pre-polymorph %s)", u.mfemale ? "female" : "male");
+		Sprintf(buf, "Original gender:   %s", u.mfemale ? "female" : "male");
+		txt = buf;
+		putstr(datawin, 0, txt);
 	}
+
+	strcpy(buf2, flags.female ? "Female" : "Male");
+	if (Upolyd && u.mfemale != flags.female)
+		Sprintf(buf, "Current gender:    %s", buf2);
+	else
+		Sprintf(buf, "Gender:            %s", buf2);
 	txt = buf;
 	putstr(datawin, 0, txt);
 
@@ -107,17 +123,17 @@ docharacterstatistics()
 		? "Neutral"
 		: "Lawful");
 	*buf2 = highc(*buf2);
-	Sprintf(buf, "Alignment:   %s", buf2);
+	Sprintf(buf, "Alignment:         %s", buf2);
 	txt = buf;
 	putstr(datawin, 0, txt);
 
 	/* God */
-	Sprintf(buf, "God:         %s", u_gname());
+	Sprintf(buf, "God:               %s", u_gname());
 	txt = buf;
 	putstr(datawin, 0, txt);
 
 	/* Experience */
-	Sprintf(buf, "Experience:  %d", u.uexp);
+	Sprintf(buf, "Experience:        %d", u.uexp);
 
 	if (u.ulevel < 30)
 	{
@@ -132,7 +148,7 @@ docharacterstatistics()
 	/* Max level */
 	if (u.ulevel != u.ulevelmax)
 	{
-		Sprintf(buf, "Max level:   %d", u.ulevelmax);
+		Sprintf(buf, "Maximum level:     %d", u.ulevelmax);
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
@@ -411,7 +427,6 @@ register struct obj* obj;
 		txt = buf;
 		putstr(datawin, 0, txt);
 
-
 		/* Damage - Small */
 		Sprintf(buf, "Base damage - Small:    ");
 
@@ -500,9 +515,23 @@ register struct obj* obj;
 		txt = buf;
 		putstr(datawin, 0, txt);
 
+		/* Damage type - Main */
+		if (objects[otyp].oc_damagetype != AD_PHYS)
+		{
+			char* dmgttext = get_damage_type_text(objects[otyp].oc_damagetype);
+			if (strcmp(dmgttext, "") != 0)
+			{
+				Sprintf(buf, "Damage type:            %s", dmgttext);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+		}
+
+
 
 		if (objects[otyp].oc_name_known && ((objects[otyp].oc_wedice > 0 && objects[otyp].oc_wedam > 0) || objects[otyp].oc_wedmgplus != 0))
 		{
+
 			/* Damage - Extra */
 			maindiceprinted = FALSE;
 			Sprintf(buf, "Extra damage:           ");
@@ -539,6 +568,20 @@ register struct obj* obj;
 
 			txt = buf;
 			putstr(datawin, 0, txt);
+
+			/* Damage type - Extra */
+			if (objects[otyp].oc_extra_damagetype != AD_PHYS)
+			{
+				char* dmgttext = get_damage_type_text(objects[otyp].oc_extra_damagetype);
+				if (strcmp(dmgttext, "") != 0)
+				{
+					Sprintf(buf, "Extra damage type:      %s", dmgttext);
+					txt = buf;
+					putstr(datawin, 0, txt);
+				}
+			}
+
+
 		}
 
 
@@ -1743,6 +1786,31 @@ register struct obj* obj;
 	return 0;
 }
 
+char* get_damage_type_text(damagetype)
+int damagetype;
+{
+	static char buf[BUFSZ] = "";
+	
+	switch (damagetype)
+	{
+	case AD_PHYS:
+		strcpy(buf, "Physical");
+		break;
+	case AD_FIRE:
+		strcpy(buf, "Fire");
+		break;
+	case AD_COLD:
+		strcpy(buf, "Cold");
+		break;
+	case AD_ELEC:
+		strcpy(buf, "Electricity");
+		break;
+	default:
+		break;
+	}
+
+	return buf;
+}
 
 /* Called when a boulder is dropped, thrown, or pushed.  If it ends up
  * in a pool, it either fills the pool up or sinks away.  In either case,

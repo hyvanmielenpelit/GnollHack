@@ -397,6 +397,7 @@ E int NDECL(wipeoff);
 E int NDECL(dodrop);
 E int NDECL(doitemdescriptions);
 E int NDECL(docharacterstatistics);
+E char* FDECL(get_damage_type_text, (int));
 E boolean FDECL(boulder_hits_pool, (struct obj *, int, int, BOOLEAN_P));
 E boolean FDECL(flooreffects, (struct obj *, int, int, const char *));
 E void FDECL(doaltarobj, (struct obj *));
