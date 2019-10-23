@@ -3843,10 +3843,12 @@ register int timex;
      * Caller is also responsible for adjusting messages.
      */
 
+	/*
     if (!Wounded_legs) {
         ATEMP(A_DEX)--;
         context.botl = 1;
     }
+	*/
 
     if (!Wounded_legs || (HWounded_legs & TIMEOUT))
         HWounded_legs = timex;
@@ -3859,10 +3861,14 @@ heal_legs(how)
 int how; /* 0: ordinary, 1: dismounting steed, 2: limbs turn to stone */
 {
     if (Wounded_legs) {
+		
+		/* Moved to updateabon */
+		/*
         if (ATEMP(A_DEX) < 0) {
             ATEMP(A_DEX)++;
             context.botl = 1;
         }
+		*/
 
         /* when mounted, wounded legs applies to the steed;
            during petrification countdown, "your limbs turn to stone"

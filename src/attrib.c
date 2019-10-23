@@ -1629,6 +1629,10 @@ updateabon()
 	u.uacbonus = 0;
 	u.umcbonus = 0;
 
+	/* Set wounded legs here */
+	if (Wounded_legs)
+		ABON(A_DEX) = -1;
+
 	/* add them back again */
 	for (uitem = invent; uitem; uitem = uitem->nobj)
 	{
