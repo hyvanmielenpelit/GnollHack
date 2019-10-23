@@ -1574,13 +1574,13 @@ register struct obj *obj; /* thrownobj or kickedobj or uwep */
 			if (mindistance <= 1) {
 				switch (objects[uwep->otyp].oc_skill) {
 				case P_BOW:
-					tmp -= 10;
+					tmp -= 20;
 					break;
 				case P_CROSSBOW:
-					tmp -= 8;
+					tmp -= 16;
 					break;
 				default:
-					tmp -= 10;
+					tmp -= 20;
 					break;
 				}
 			}

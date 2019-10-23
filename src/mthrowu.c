@@ -759,13 +759,13 @@ struct obj *obj;         /* missile (or stack providing it) */
 					{
 						switch (objects[MON_WEP(mon)->otyp].oc_skill) {
 						case P_BOW:
-							hitv -= 10;
+							hitv -= 20;
 							break;
 						case P_CROSSBOW:
-							hitv -= 8;
+							hitv -= 16;
 							break;
 						default:
-							hitv -= 10;
+							hitv -= 20;
 							break;
 						}
 						//Bracers here, if need be
