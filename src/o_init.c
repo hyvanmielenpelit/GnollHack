@@ -224,13 +224,18 @@ int *lo_p, *hi_p; /* output: range that item belongs among */
 		else if (otyp >= SHIRT_OF_UNCONTROLLABLE_LAUGHTER && otyp <= T_SHIRT)
 			* lo_p = SHIRT_OF_UNCONTROLLABLE_LAUGHTER, * hi_p = T_SHIRT;
 		break;
-    case POTION_CLASS:
+	case MISCELLANEOUS_CLASS:
+		if (otyp >= IOUN_STONE_OF_PROTECTION && otyp <= IOUN_STONE_OF_SUSTENANCE)
+			*lo_p = IOUN_STONE_OF_PROTECTION, * hi_p = IOUN_STONE_OF_SUSTENANCE;
+		else if (otyp >= LEATHER_BELT && otyp <= BELT_OF_STORM_GIANT_STRENGTH)
+			*lo_p = LEATHER_BELT, * hi_p = BELT_OF_STORM_GIANT_STRENGTH;
+		break;
+	case POTION_CLASS:
         /* potion of water has the only fixed description */
         *lo_p = bases[POTION_CLASS];
         *hi_p = POT_WATER - 1;
         break;
     case AMULET_CLASS:
-	case MISCELLANEOUS_CLASS:
 	case SCROLL_CLASS:
     case SPBOOK_CLASS:
         /* exclude non-magic types and also unique ones */
@@ -250,7 +255,7 @@ int *lo_p, *hi_p; /* output: range that item belongs among */
             continue;
         *hi_p = i - 1;
         break;
-    }
+	}
 
     /* artifact checking might ask about item which isn't part of any range
        but fell within the classes that do have ranges specified above */
@@ -266,11 +271,11 @@ shuffle_all()
     /* entire classes; obj_shuffle_range() handles their exceptions */
     static char shuffle_classes[] = {
         AMULET_CLASS, POTION_CLASS, RING_CLASS,  SCROLL_CLASS,
-        SPBOOK_CLASS, WAND_CLASS, VENOM_CLASS, REAGENT_CLASS,  //Odd "," in the end, do we need this?
+        SPBOOK_CLASS, WAND_CLASS, VENOM_CLASS,  
     };
     /* armor sub-class type ranges (one item from each group) */
     static short shuffle_types[] = {
-        HELMET, LEATHER_GLOVES, SHIRT_OF_UNCONTROLLABLE_LAUGHTER, CLOAK_OF_PROTECTION, SPEED_BOOTS, ROBE, LEATHER_BRACERS, LEATHER_BELT
+        HELMET, LEATHER_GLOVES, SHIRT_OF_UNCONTROLLABLE_LAUGHTER, CLOAK_OF_PROTECTION, SPEED_BOOTS, ROBE, LEATHER_BRACERS, IOUN_STONE_OF_PROTECTION, LEATHER_BELT
     };
     int first, last, idx;
 

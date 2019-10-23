@@ -1075,12 +1075,21 @@ unsigned doname_flags;
 	case MISCELLANEOUS_CLASS:
 		if (obj->owornmask & W_MISCITEMS)
 		{
-			if(!objects[obj->otyp].oc_content_desc)
+			if(strcmp(misc_type_worn_texts[objects[obj->otyp].oc_subtyp], "") == 0)
 				Strcat(bp, " (being worn)");
 			else
 			{
+				char replacetxt[BUFSZ] = "";
+				strcpy(replacetxt, misc_type_worn_texts[objects[obj->otyp].oc_subtyp]);
+
+				/* special replacement for some types */
+				if(objects[obj->otyp].oc_subtyp == MISC_IOUN_STONE)
+					Sprintf(replacetxt, "orbiting %s", body_part(HEAD));
+				if (objects[obj->otyp].oc_subtyp == MISC_NOSERING)
+					Sprintf(replacetxt, "on %s", body_part(NOSE));
+
 				Strcat(bp, " (");
-				Strcat(bp, objects[obj->otyp].oc_content_desc);
+				Strcat(bp, replacetxt);
 				Strcat(bp, ")");
 			}
 		}

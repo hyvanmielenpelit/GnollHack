@@ -110,6 +110,13 @@ static const char* misc_type_names[] = {
 	"ioun stone", "bracelet", "pair of bracers", "belt", "pair of eyeglasses", "blindfold", "scarf", "set of extra arms",
 };
 
+static const char* misc_type_worn_texts[] = {
+	"", "attached to back", "", "", "on left wrist",
+	"on nose", "", "",
+	"orbiting head", "", "", "", "", "", "", "attached to body",
+};
+
+
 struct objclass {
     short oc_name_idx;              /* index of actual name */
     short oc_descr_idx;             /* description when name unknown */
