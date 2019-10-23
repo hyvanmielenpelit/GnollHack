@@ -1559,6 +1559,14 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 
 					pline("%s slices a part of %s off!", The(xname(otmp)),
 						mon_nam(mdef));
+					if (Hallucination && !lethaldamage)
+					{
+						pline("But %s retorts:", mon_nam(mdef));
+						if (rn2(2))
+							verbalize("Hah! It's just a scratch.");
+						else
+							verbalize("Hah! It's just a flesh wound.");
+					}
 					otmp->dknown = TRUE;
 				}
 				else
@@ -1651,6 +1659,14 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 
 					pline("%s slices a part of %s off!", The(xname(otmp)),
 						mon_nam(mdef));
+					if (Hallucination && !lethaldamage)
+					{
+						pline("But %s retorts:", mon_nam(mdef));
+						if(rn2(2))
+							verbalize("Hah! It's just a scratch.");
+						else
+							verbalize("Hah! It's just a flesh wound.");
+					}
 					otmp->dknown = TRUE;
 				}
 			}
