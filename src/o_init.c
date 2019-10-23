@@ -229,6 +229,8 @@ int *lo_p, *hi_p; /* output: range that item belongs among */
 			*lo_p = IOUN_STONE_OF_PROTECTION, * hi_p = IOUN_STONE_OF_SUSTENANCE;
 		else if (otyp >= LEATHER_BELT && otyp <= BELT_OF_STORM_GIANT_STRENGTH)
 			*lo_p = LEATHER_BELT, * hi_p = BELT_OF_STORM_GIANT_STRENGTH;
+		else if (otyp >= NOSE_RING_OF_BULL_STRENGTH && otyp <= NOSE_RING_OF_CEREBRAL_SAFEGUARDING)
+			*lo_p = NOSE_RING_OF_BULL_STRENGTH, * hi_p = NOSE_RING_OF_CEREBRAL_SAFEGUARDING;
 		break;
 	case POTION_CLASS:
         /* potion of water has the only fixed description */
@@ -275,21 +277,29 @@ shuffle_all()
     };
     /* armor sub-class type ranges (one item from each group) */
     static short shuffle_types[] = {
-        HELMET, LEATHER_GLOVES, SHIRT_OF_UNCONTROLLABLE_LAUGHTER, CLOAK_OF_PROTECTION, SPEED_BOOTS, ROBE, LEATHER_BRACERS, IOUN_STONE_OF_PROTECTION, LEATHER_BELT
+        HELMET, LEATHER_GLOVES, SHIRT_OF_UNCONTROLLABLE_LAUGHTER, CLOAK_OF_PROTECTION, SPEED_BOOTS,
     };
-    int first, last, idx;
+	static short shuffle_types_with_material[] = {
+		 ROBE, LEATHER_BRACERS, NOSE_RING_OF_BULL_STRENGTH, IOUN_STONE_OF_PROTECTION, LEATHER_BELT
+	};
+	int first, last, idx;
 
     /* do whole classes (amulets, &c) */
     for (idx = 0; idx < SIZE(shuffle_classes); idx++) {
         obj_shuffle_range(bases[(int) shuffle_classes[idx]], &first, &last);
         shuffle(first, last, TRUE);
     }
-    /* do type ranges (helms, &c) */
+    /* do type ranges (helms, &c) without materials */
     for (idx = 0; idx < SIZE(shuffle_types); idx++) {
         obj_shuffle_range(shuffle_types[idx], &first, &last);
         shuffle(first, last, FALSE);
     }
-    return;
+	/* do type ranges with materials */
+	for (idx = 0; idx < SIZE(shuffle_types_with_material); idx++) {
+		obj_shuffle_range(shuffle_types_with_material[idx], &first, &last);
+		shuffle(first, last, TRUE);
+	}
+	return;
 }
 
 /* find the object index for snow boots; used [once] by slippery ice code */
