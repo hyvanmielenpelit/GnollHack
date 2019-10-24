@@ -416,8 +416,35 @@ register struct monst *magr, *mdef;
 			dieroll = rnd(20 + i);
             strike = (tmp > dieroll);
 
-            if (strike) {
-                res[i] = hitmm(magr, mdef, mattk);
+			if (strike) {
+				res[i] = hitmm(magr, mdef, mattk);
+
+				/* Check if the weapon shatters */
+								/* Check if the object should shatter */
+				struct obj* omonwep = MON_WEP(magr);
+
+				if (omonwep && omonwep->where == OBJ_MINVENT && objects[omonwep->otyp].oc_material == MAT_GLASS
+					&& !(objects[omonwep->otyp].oc_flags & O1_INDESTRUCTIBLE)
+					&& !is_quest_artifact(omonwep)
+					&& !omonwep->oartifact
+					)
+				{
+					/* Shattering is done below, here just the message*/
+					if (omonwep->quan == 1)
+						pline("%s %s shatters from the blow!", s_suffix(Monnam(magr)), xname(omonwep));
+					else
+						pline("One of %s %s shatters from the blow!", s_suffix(mon_nam(magr)), xname(omonwep));
+
+					m_useup(magr, omonwep);
+				}
+				else if (omonwep && (objects[omonwep->otyp].oc_aflags & AFLAGS_ITEM_VANISHES_ON_HIT))
+				{
+					if(omonwep->where == OBJ_MINVENT)
+						m_useup(magr, omonwep);
+					else if (omonwep->where == OBJ_FREE)
+						obfree(omonwep, (struct obj*)0);
+
+				}
                 if ((mdef->data == &mons[PM_BLACK_PUDDING]
                      || mdef->data == &mons[PM_BROWN_PUDDING])
                     && (otmp && (objects[otmp->otyp].oc_material == MAT_IRON
@@ -822,6 +849,9 @@ register struct attack *mattk;
     int num,res = MM_MISS;
     boolean cancelled;
 	int poisondamage = 0;
+	boolean isdisintegrated = FALSE;
+	boolean hittxtalreadydisplayed = FALSE;
+	boolean objectshatters = FALSE;
 
 	int tmp = 0, extratmp = 0;
 
@@ -972,14 +1002,19 @@ register struct attack *mattk;
                                 | (grow_up(magr, mdef) ? 0 : MM_AGR_DIED));
                 }
 				int special_hit_dmg = pseudo_artifact_hit(magr, mdef, otmp, extratmp, dieroll);
-				if (special_hit_dmg == -1)
+				if (special_hit_dmg < 0)
 				{
+					hittxtalreadydisplayed = TRUE;
 					tmp += 2 * mdef->mhp + 200;
+					if (special_hit_dmg == -2)
+						isdisintegrated = TRUE;
 				}
 				else if (special_hit_dmg > 0)
 				{
 					tmp += special_hit_dmg;
 				}
+
+				/* Check if the object shatters */
 
                 if (tmp)
                     rustm(mdef, otmp);
@@ -1440,7 +1475,7 @@ register struct attack *mattk;
         return res;
 
 	/* Wounding */
-	if (mweapon && (objects[mweapon->otyp].oc_aflags & AFLAGS_WOUNDING) && eligible_for_extra_damage(mweapon, mdef, magr) && !is_rider(mdef->data))
+	if (mweapon && !isdisintegrated && (objects[mweapon->otyp].oc_aflags & AFLAGS_WOUNDING) && eligible_for_extra_damage(mweapon, mdef, magr) && !is_rider(mdef->data))
 	{
 		int extradmg = extratmp;
 		if (objects[mweapon->otyp].oc_aflags & AFLAGS_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
@@ -1460,7 +1495,7 @@ register struct attack *mattk;
 	}
 
 	/* Life drain */
-	if (mweapon && (objects[mweapon->otyp].oc_aflags & AFLAGS_LIFE_LEECH) && eligible_for_extra_damage(mweapon, mdef, magr) && !is_rider(mdef->data) && !is_not_living(mdef->data))
+	if (mweapon && !isdisintegrated && (objects[mweapon->otyp].oc_aflags & AFLAGS_LIFE_LEECH) && eligible_for_extra_damage(mweapon, mdef, magr) && !is_rider(mdef->data) && !is_not_living(mdef->data))
 	{
 		int extradmg = extratmp;
 		if (objects[mweapon->otyp].oc_aflags & AFLAGS_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
@@ -1490,7 +1525,7 @@ register struct attack *mattk;
 
 
     if (DEADMONSTER(mdef)) {
-		if (poisondamage && mdef->mhp > -poisondamage && vis && canspotmon(mdef))
+		if (poisondamage && mdef->mhp > -poisondamage && vis && canspotmon(mdef) && !isdisintegrated)
 			pline_The("poison was deadly...");
 
 		if (m_at(mdef->mx, mdef->my) == magr) { /* see gulpmm() */
@@ -1499,7 +1534,10 @@ register struct attack *mattk;
             place_monster(mdef, mdef->mx, mdef->my);
             mdef->mhp = 0;
         }
-        monkilled(mdef, "", (int) mattk->adtyp);
+		if (isdisintegrated)
+			disintegrate_mon(mdef, 1, mweapon ? xname(mweapon) : mon_nam(magr));
+		else
+	        monkilled(mdef, "", (int) mattk->adtyp);
         if (!DEADMONSTER(mdef))
             return res; /* mdef lifesaved */
         else if (res == MM_AGR_DIED)

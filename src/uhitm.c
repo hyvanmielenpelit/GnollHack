@@ -697,6 +697,7 @@ int dieroll;
 		/* not grapnels; applied implies uwep */
 		|| (thrown == HMON_APPLIED && is_pole(uwep)));
 	boolean hide_damage_amount = FALSE;
+	boolean isdisintegrated = FALSE;
 
 	int jousting = 0;
 	long silverhit = 0L;
@@ -847,9 +848,11 @@ int dieroll;
 					hittxt = TRUE;
 				}
 				int special_hit_dmg = pseudo_artifact_hit(&youmonst, mon, obj, extratmp, dieroll);
-				if (special_hit_dmg == -1)
+				if (special_hit_dmg < 0)
 				{
 					tmp += 2 * mon->mhp + 200;
+					if (special_hit_dmg == -2)
+						isdisintegrated = TRUE;
 					hide_damage_amount = TRUE;
 					hittxt = TRUE; /* This means that hit text is already given */
 				}
@@ -1217,7 +1220,7 @@ int dieroll;
 		use_skill(wtype, 1);
 	}
 
-	if (ispoisoned) {
+	if (ispoisoned && !isdisintegrated) {
 		int nopoison = (10 - (obj->owt / 10));
 
 		if (nopoison < 2)
@@ -1252,7 +1255,7 @@ int dieroll;
 		}
 	}
 
-	if (obj && obj->special_enchantment > 0) {
+	if (obj && obj->special_enchantment > 0 && !isdisintegrated) {
 		switch (obj->special_enchantment)
 		{
 		case COLD_ENCHANTMENT:
@@ -1347,7 +1350,7 @@ int dieroll;
 		}
 	}
 
-	if (jousting) {
+	if (jousting && !isdisintegrated) {
 		tmp += d(2, (obj == uwep) ? 10 : 2); /* [was in dmgval()] */
 		You("joust %s%s", mon_nam(mon), canseemon(mon) ? exclam(tmp) : ".");
 		if (jousting < 0) {
@@ -1619,18 +1622,20 @@ int dieroll;
 	boolean bladedisintegratedmon = FALSE;
 	if (obj && obj->otyp == BLACK_BLADE_OF_DISINTEGRATION && !DEADMONSTER(mon))
 	{
-		struct obj* otmp = (struct obj*) 0, *otmp2 = (struct obj*) 0;
+		struct obj* otmp2 = (struct obj*) 0;
 
 		if (resists_disint(mon) || noncorporeal(mon->data)) {
 			shieldeff(mon->mx, mon->my);
 		}
 		else if (mon->misc_worn_check & W_ARMS) {
 			/* destroy shield; victim survives */
-			otmp = which_armor(mon, W_ARMS);
+			if ((otmp2 = which_armor(mon, W_ARMS)) != 0)
+				m_useup(mon, otmp2);
 		}
 		else if (mon->misc_worn_check & W_ARM) {
 			/* destroy body armor, also cloak if present */
-			otmp = which_armor(mon, W_ARM);
+			if ((otmp2 = which_armor(mon, W_ARM)) != 0)
+				m_useup(mon, otmp2);
 			if ((otmp2 = which_armor(mon, W_ARMC)) != 0)
 				m_useup(mon, otmp2);
 			if ((otmp2 = which_armor(mon, W_ARMO)) != 0)
@@ -1665,17 +1670,17 @@ int dieroll;
 			}
 
 		}
-		if (mon && !DEADMONSTER(mon) && otmp) {
+		if (mon && !DEADMONSTER(mon) && otmp2) {
 			/* some armor was destroyed*/
 			if (canseemon(mon))
 				pline("%s %s is disintegrated!",
 					s_suffix(Monnam(mon)),
-					distant_name(otmp, xname));
-			m_useup(mon, otmp);
+					distant_name(otmp2, xname));
+			m_useup(mon, otmp2);
 		}
 	}
 
-	if (!bladedisintegratedmon && mon)
+	if (!bladedisintegratedmon && !isdisintegrated && mon)
 	{
 
 		if (needpoismsg)
@@ -1732,7 +1737,12 @@ int dieroll;
 			destroyed = TRUE; /* return FALSE; */
 		} else if (destroyed) {
 			if (!already_killed)
-				killed(mon); /* takes care of most messages */
+			{
+				if (isdisintegrated)
+					disintegrate_mon(mon, 1, xname(obj));
+				else
+					killed(mon); /* takes care of most messages */
+			}
 		} else if (u.umconf && hand_to_hand) {
 			nohandglow(mon);
 			if (!mon->mconf && !resist(mon, (struct obj*) 0, 8, 0, NOTELL)) {
@@ -1745,18 +1755,33 @@ int dieroll;
 
 	}
 
-	if (obj && objectshatters)
+	if (obj && (objectshatters || (objects[obj->otyp].oc_aflags & AFLAGS_ITEM_VANISHES_ON_HIT)))
 	{
-		if(obj->quan > 1)
-			useup(obj);
-		else
+		if (obj->where == OBJ_INVENT)
 		{
-			if (obj == uwep)
-				uwepgone(); /* set unweapon */
-			else if (obj == uarms)
-				uwep2gone(); /* set unweapon */
-			useupall(obj);
-			obj = 0;
+			if (obj->quan > 1)
+				useup(obj);
+			else
+			{
+				if (obj == uwep)
+					uwepgone(); /* set unweapon */
+				else if (obj == uarms)
+					uwep2gone(); /* set unweapon */
+				useupall(obj);
+				obj = 0;
+			}
+		}
+		else if (obj->where == OBJ_FLOOR)
+		{
+			/* in case MON_AT+enexto for invisible mon */
+			int x = obj->ox, y = obj->oy;
+			/* not useupf(), which charges */
+			delobj(obj);
+			newsym(x, y);
+		}
+		else if (obj->where == OBJ_FREE)
+		{
+			obfree(obj, (struct obj*)0);
 		}
 		update_inventory();
 	}

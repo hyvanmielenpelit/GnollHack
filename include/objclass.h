@@ -202,12 +202,13 @@ struct objclass {
 #define AFLAGS_NONE				0x00000000
 #define AFLAGS_CRITICAL_STRIKE	0x00000001  /* extra damage is caused only by chance determined by oc_dir_subtype */
 #define AFLAGS_CRITICAL_STRIKE_IS_DEADLY				0x00000002  /* successful critical strike causes lethal damage */
-#define AFLAGS_CRITICAL_STRIKE_DISRESPECTS_TARGETS		0x00000004  /* successful critical strike causes lethal damage */
-#define AFLAGS_CRITICAL_STRIKE_DISRESPECTS_CHARACTERS	0x00000008  /* successful critical strike causes lethal damage */
-
-#define AFLAGS_LEVEL_DRAIN		0x00000010  /* drains a level from monsters */
-#define AFLAGS_LEVEL_DRAIN_DISRESPECTS_TARGETS		0x00000020  /* successful critical strike causes lethal damage */
-#define AFLAGS_LEVEL_DRAIN_DISRESPECTS_CHARACTERS	0x00000040  /* successful critical strike causes lethal damage */
+#define AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK	0x00000004  /* lethal damage is death magic */
+#define AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK	0x00000008  /* lethal damage is disintegration */
+#define AFLAGS_DEADLY_CRITICAL_STRIKE_USES_EXTRA_DAMAGE_TYPE (AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK | AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK)  
+   /* lethal damage is of extra damage type; note that normal critical strike always follows extra_damagetype */
+#define AFLAGS_CRITICAL_STRIKE_DISRESPECTS_TARGETS		0x00000010  /* successful critical strike causes lethal damage */
+#define AFLAGS_CRITICAL_STRIKE_DISRESPECTS_CHARACTERS	0x00000020  /* successful critical strike causes lethal damage */
+/* One more ciritcal strike flag here */
 
 #define AFLAGS_WOUNDING			0x00000080  /* extra damage caused is permanent damage */
 #define AFLAGS_WOUNDING_DISRESPECTS_TARGETS		0x00000100  /* successful critical strike causes lethal damage */
@@ -221,18 +222,26 @@ struct objclass {
 #define AFLAGS_VORPAL			0x00004000	/* 1/20 chance of the monster being beheaded */
 #define AFLAGS_BISECT (AFLAGS_SHARPNESS | AFLAGS_VORPAL) /* 1/20 chance of a small monster being bisected and a big monster losing 50% of maximum hit points */
 #define AFLAGS_VORPAL_LIKE_DOUBLE_CHANCE_FOR_PERMITTED_TARGETS	0x00008000
-#define AFLAGS_VORPAL_LIKE_DISRESPECTS_TARGETS					0x00010000
-#define AFLAGS_VORPAL_LIKE_DISRESPECTS_CHARACTERS				0x00020000
+#define AFLAGS_VORPAL_LIKE_DISRESPECTS_TARGETS				0x00010000
+#define AFLAGS_VORPAL_LIKE_DISRESPECTS_CHARACTERS			0x00020000
 
-#define AFLAGS_MAGIC_MISSILE_STRIKE							0x00040000  /* showers the target with magic missiles */
-#define AFLAGS_DALIGN										0x00080000  /* attack bonus on non-aligned monsters  */
-#define AFLAGS_STUN											0x00100000  /* stuns target */
+#define AFLAGS_LEVEL_DRAIN									0x00040000  /* drains a level from monsters */
+#define AFLAGS_LEVEL_DRAIN_DISRESPECTS_TARGETS				0x00080000  /* successful critical strike causes lethal damage */
+#define AFLAGS_LEVEL_DRAIN_DISRESPECTS_CHARACTERS			0x00100000  /* successful critical strike causes lethal damage */
 
-#define AFLAGS_EXTRA_DAMAGE_DISRESPECTS_TARGETS		0x01000000  /* successful critical strike causes lethal damage */
-#define AFLAGS_EXTRA_DAMAGE_DISRESPECTS_CHARACTERS	0x02000000  /* successful critical strike causes lethal damage */
+#define AFLAGS_STUN											0x00200000  /* stuns target */
+#define AFLAGS_STUN_DISRESPECTS_TARGETS						0x00400000  /* successful critical strike causes lethal damage */
+#define AFLAGS_STUN_DISRESPECTS_CHARACTERS					0x00800000  /* successful critical strike causes lethal damage */
+
+#define AFLAGS_MAGIC_MISSILE_STRIKE							0x01000000  /* showers the target with magic missiles */
+#define AFLAGS_DALIGN										0x02000000  /* TODO: attack bonus on non-aligned monsters  */
+
+#define AFLAGS_EXTRA_DAMAGE_DISRESPECTS_TARGETS				0x04000000  /* successful critical strike causes lethal damage */
+#define AFLAGS_EXTRA_DAMAGE_DISRESPECTS_CHARACTERS			0x08000000  /* successful critical strike causes lethal damage */
 
 #define AFLAGS_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA				0x10000000 /* abilities such as wounding and life leech are based on full caused damage, not just extra damage */
 #define AFLAGS_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS		0x20000000
+#define AFLAGS_ITEM_VANISHES_ON_HIT							0x40000000
 
 
 /* Spell flags for spells, scrolls, potions, spell-like tools, and wands */
@@ -330,6 +339,7 @@ struct objclass {
 #define oc_spell_dur_plus oc_wldmgplus	/* books: spell duration constant added */
 
 	int oc_dir_subtype;				/* spells: ID for type of ray or immediate effect, weapons: damage type */
+
 	int oc_material_components;		/* spells: ID for material component list for a spell or to make the item (if recipe is known), other items: ID of components produced when breaking */
 	int oc_item_cooldown;			/* cooldown before the item can be used / applied / zapped / read etc. again */
 	int oc_item_level;				/* item level, to be used with loot tables */
@@ -340,7 +350,7 @@ struct objclass {
 
 	unsigned long oc_power_permissions; /* roles, races, genders, and alignments that the item's powers are conferred to */
 	unsigned long oc_target_permissions; /* symbol, M1 flag, M2 flag, M3 flag, etc. for which extra damage is deal to */
-	int oc_invokeitem;					/* Filled by item connects: Item effect when invoked, special effect if negative, 0 not invokable */
+	int oc_critical_strike_percentage;	/* Percentage to be used with critical strike; can be used for other purposes for non-weapons, too */
 
 /* oc_dir_subtypes for spells */
 #define RAY_WND_MAGIC_MISSILE 0 
@@ -447,9 +457,9 @@ struct objclass {
 /* Flags 3 */
 #define O3_NONE				0x00000000
 #define O3_NOWISH			0x00000001  /* item is special, it cannot be wished for */
-#define O3_POWER_1_DISRESPECTS_CHARACTERS			0x00000002 
-#define O3_POWER_2_DISRESPECTS_CHARACTERS			0x00000004 
-#define O3_POWER_3_DISRESPECTS_CHARACTERS			0x00000008 
+#define O3_POWER_1_DISRESPECTS_CHARACTERS			0x00000002  /* Do not use with WARN_OF_XXXX powers */
+#define O3_POWER_2_DISRESPECTS_CHARACTERS			0x00000004  /* Do not use with WARN_OF_XXXX powers */
+#define O3_POWER_3_DISRESPECTS_CHARACTERS			0x00000008  /* Do not use with WARN_OF_XXXX powers */
 #define O3_HP_BONUS_DISRESPECTS_CHARACTERS			0x00000010
 #define O3_MANA_BONUS_DISRESPECTS_CHARACTERS		0x00000020
 #define O3_ATTRIBUTE_BONUS_DISRESPECTS_CHARACTERS	0x00000040

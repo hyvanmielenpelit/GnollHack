@@ -472,7 +472,7 @@ int basedmg;
 			&& ((objects[otmp->otyp].oc_aflags & AFLAGS_CRITICAL_STRIKE_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(mattacker, otmp))
 			)
 		{
-			if (rn2(100) < objects[otmp->otyp].oc_dir_subtype)
+			if (rn2(100) < objects[otmp->otyp].oc_critical_strike_percentage)
 				criticalstrikesucceeded = TRUE;
 		}
 	}

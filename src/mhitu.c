@@ -1358,6 +1358,7 @@ register struct obj* omonwep;
     char buf[BUFSZ];
     struct permonst *olduasmon = youmonst.data;
     int res;
+	boolean objectshatters = FALSE;
 
     if (!canspotmon(mtmp))
         map_invisible(mtmp->mx, mtmp->my);
@@ -1551,6 +1552,22 @@ register struct obj* omonwep;
 				//Finally, display damage caused
 				if(!hittxt)
 					hitmsg(mtmp, mattk, dmg);
+
+				/* Check if the object should shatter */
+				if (omonwep && objects[omonwep->otyp].oc_material == MAT_GLASS
+					&& !(objects[omonwep->otyp].oc_flags & O1_INDESTRUCTIBLE)
+					&& !is_quest_artifact(omonwep)
+					&& !omonwep->oartifact
+					)
+				{
+					/* Shattering is done below, here just the message*/
+					objectshatters = TRUE;
+					if (omonwep->quan == 1)
+						pline("%s %s shatters from the blow!", s_suffix(Monnam(mtmp)), xname(omonwep));
+					else
+						pline("One of %s %s shatters from the blow!", s_suffix(mon_nam(mtmp)), xname(omonwep));
+				}
+
 
 				if (!dmg)
                     break;
@@ -2450,6 +2467,20 @@ register struct obj* omonwep;
 				break;
 			}
 		}
+	}
+
+	if (omonwep && (objectshatters || (objects[omonwep->otyp].oc_aflags & AFLAGS_ITEM_VANISHES_ON_HIT)))
+	{
+		if(omonwep->where == OBJ_MINVENT)
+			m_useup(mtmp, omonwep);
+		else if (omonwep->where == OBJ_FLOOR)
+		{
+			int x = omonwep->ox, y = omonwep->oy;
+			delobj(omonwep);
+			newsym(x, y);
+		}
+		else if (omonwep->where == OBJ_FREE)
+			obfree(omonwep, (struct obj*)0);
 	}
 
     if (dmg)

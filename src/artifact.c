@@ -1454,6 +1454,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 	char hittee[BUFSZ];
 	int totaldamagedone = 0;
 	boolean lethaldamage = FALSE;
+	boolean isdisintegrated = FALSE;
 
 	Strcpy(hittee, youdefend ? you : mon_nam(mdef));
 
@@ -1823,17 +1824,163 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 			&& ((objects[otmp->otyp].oc_aflags & AFLAGS_CRITICAL_STRIKE_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
 			)
 		{
-			if (rn2(100) < objects[otmp->otyp].oc_dir_subtype)
+			if (rn2(100) < objects[otmp->otyp].oc_critical_strike_percentage)
 			{
-				lethaldamage = TRUE;
-				if(is_living(mdef->data))
-					pline("%s strikes %s dead!", The(xname(otmp)), "you");
+				if (
+					((objects[otmp->otyp].oc_aflags & AFLAGS_DEADLY_CRITICAL_STRIKE_USES_EXTRA_DAMAGE_TYPE) == AFLAGS_DEADLY_CRITICAL_STRIKE_USES_EXTRA_DAMAGE_TYPE
+					&& ((objects[otmp->otyp].oc_extra_damagetype == AD_FIRE && (youdefend ? Fire_resistance : resists_fire(mdef)))
+						|| (objects[otmp->otyp].oc_extra_damagetype == AD_COLD && (youdefend ? Cold_resistance : resists_cold(mdef)))
+						|| (objects[otmp->otyp].oc_extra_damagetype == AD_ELEC && (youdefend ? Shock_resistance : resists_elec(mdef)))))
+					||
+					((objects[otmp->otyp].oc_aflags & AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK) == AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK
+						&& ((youdefend ? Death_resistance : resists_death(mdef)) || is_not_living(mdef->data) || is_demon(mdef->data) || is_vampshifter(mdef)))
+					||
+					((objects[otmp->otyp].oc_aflags & AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK) == AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK
+						&& ((youdefend ? (Disint_resistance || Invulnerable) : resists_disint(mdef)) || noncorporeal(mdef->data)))
+					)
+				{
+					if (!youdefend)
+					{
+						shieldeff(mdef->mx, mdef->my);
+						pline("%s is unaffected!", Monnam(mdef));
+					}
+					else
+					{
+						shieldeff(u.ux, u.uy);
+						You("are unaffected!");
+					}
+				}
 				else
-					pline("%s strikes %s down!", The(xname(otmp)), "you");
+				{
+					if ((objects[otmp->otyp].oc_aflags & AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK) == AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK)
+					{
+
+						if (!youdefend)
+						{
+							pline("%s hits %s.", The(xname(otmp)), mon_nam(mdef));
+							struct obj* otmp2 = (struct obj*) 0;
+
+							if (resists_disint(mdef) || noncorporeal(mdef->data)) {
+								shieldeff(mdef->mx, mdef->my);
+							}
+							else if (mdef->misc_worn_check & W_ARMS) {
+								/* destroy shield; victim survives */
+								if ((otmp2 = which_armor(mdef, W_ARMS)) != 0)
+									m_useup(mdef, otmp2);
+							}
+							else if (mdef->misc_worn_check & W_ARM) {
+								/* destroy body armor, also cloak if present */
+								if ((otmp2 = which_armor(mdef, W_ARM)) != 0)
+									m_useup(mdef, otmp2);
+								if ((otmp2 = which_armor(mdef, W_ARMC)) != 0)
+									m_useup(mdef, otmp2);
+								if ((otmp2 = which_armor(mdef, W_ARMO)) != 0)
+									m_useup(mdef, otmp2);
+							}
+							else {
+								/* no body armor, victim dies; destroy cloak
+									and shirt now in case target gets life-saved */
+								if ((otmp2 = which_armor(mdef, W_ARMC)) != 0)
+									m_useup(mdef, otmp2);
+								if ((otmp2 = which_armor(mdef, W_ARMU)) != 0)
+									m_useup(mdef, otmp2);
+								if ((otmp2 = which_armor(mdef, W_ARMO)) != 0)
+									m_useup(mdef, otmp2);
+
+								if (is_rider(mdef->data)) {
+									if (canseemon(mdef)) {
+										pline("%s disintegrates.", Monnam(mdef));
+										pline("%s body reintegrates before your %s!",
+											s_suffix(Monnam(mdef)),
+											(eyecount(youmonst.data) == 1)
+											? body_part(EYE)
+											: makeplural(body_part(EYE)));
+										pline("%s resurrects!", Monnam(mdef));
+									}
+									mdef->mhp = mdef->mhpmax;
+								}
+								else { /* disintegration */
+									//disintegrate_mon(mdef, 1, xname(otmp));
+									lethaldamage = TRUE;
+									isdisintegrated = TRUE;
+									pline("%s is disintegrated!", Monnam(mdef));
+								}
+							}
+						}
+						else
+						{
+							pline("%s hits you.", The(xname(otmp)));
+							if (Disint_resistance || noncorporeal(youmonst.data) || Invulnerable) {					// if (abstyp == ZT_BREATH(ZT_DISINTEGRATION)) {
+								You("are not disintegrated.");
+							}
+							else if (uarms) {
+								/* destroy shield; other possessions are safe */
+								(void)destroy_arm(uarms);
+							}
+							else if (uarm) {
+								/* destroy suit; if present, cloak and robe go too */
+								if (uarmc)
+									(void)destroy_arm(uarmc);
+								if (uarmo)
+									(void)destroy_arm(uarmo);
+								(void)destroy_arm(uarm);
+							}
+							else
+							{
+								/* no shield or suit, you're dead; wipe out cloak
+									and/or shirt in case of life-saving or bones */
+								if (uarmc)
+									(void)destroy_arm(uarmc);
+								if (uarmo)
+									(void)destroy_arm(uarmo);
+								if (uarmu)
+									(void)destroy_arm(uarmu);
+								//killer.format = KILLED_BY_AN;
+								//Strcpy(killer.name, killer_xname(otmp));
+								/* when killed by disintegration breath, don't leave corpse */
+								//u.ugrave_arise = -3;
+								//done(DIED);
+								lethaldamage = TRUE;
+								isdisintegrated = TRUE;
+								pline("You are disintegrated!");
+							}
+						}
+					}
+					else if ((objects[otmp->otyp].oc_aflags & AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK) == AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK)
+					{
+						lethaldamage = TRUE;
+						if (!youdefend)
+						{
+							pline("%s hits %s. The magic is deadly...", The(xname(otmp)), mon_nam(mdef));
+						}
+						else
+						{
+							pline("%s hits you. The magic is deadly...", The(xname(otmp)));
+						}
+					}
+					else
+					{
+						lethaldamage = TRUE;
+						if (!youdefend)
+						{
+							if (is_living(mdef->data))
+								pline("%s strikes %s dead!", The(xname(otmp)), mon_nam(mdef));
+							else
+								pline("%s strikes %s down!", The(xname(otmp)), mon_nam(mdef));
+						}
+						else
+						{
+							if (is_living(mdef->data))
+								pline("%s strikes you dead!", The(xname(otmp)));
+							else
+								pline("%s strikes you down!", The(xname(otmp)));
+						}
+					}
+				}
 			}
 		}
 	}
-	return (lethaldamage ? -1 : totaldamagedone);
+	return (isdisintegrated ? -2 : lethaldamage ? -1 : totaldamagedone);
 }
 
 static NEARDATA const char recharge_type[] = { ALLOW_COUNT, ALL_CLASSES, 0 };

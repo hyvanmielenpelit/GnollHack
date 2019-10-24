@@ -137,7 +137,13 @@ int x, y;
     struct monst *mtmp;
     struct trap *t;
 
-    if (obj->otyp == CREAM_PIE || obj->oclass == VENOM_CLASS
+    if (obj->otyp == CREAM_PIE 
+		|| (objects[obj->otyp].oc_aflags & AFLAGS_ITEM_VANISHES_ON_HIT) 
+		|| (objects[obj->otyp].oc_material == MAT_GLASS
+		&& !(objects[obj->otyp].oc_flags & O1_INDESTRUCTIBLE)
+		&& !is_quest_artifact(obj)
+		&& !obj->oartifact)
+		|| obj->oclass == VENOM_CLASS
         || (ohit && obj->otyp == EGG))
         create = 0;
     else if (ohit && (is_multigen(obj) || is_rock(obj)))
@@ -891,8 +897,9 @@ struct obj *obj;         /* missile (or stack providing it) */
                 }
             }
             stop_occupation();
-            if (hitu) {
-                (void) drop_throw(singleobj, hitu, u.ux, u.uy);
+            if (hitu)
+			{
+				(void) drop_throw(singleobj, hitu, u.ux, u.uy);
                 break;
             }
         }
@@ -1165,6 +1172,7 @@ struct monst *mtmp;
             dam = 1;
 
         (void) thitu(hitv, dam, &otmp, (char *) 0);
+
         stop_occupation();
         return;
     }
