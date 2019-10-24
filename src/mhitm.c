@@ -1336,7 +1336,7 @@ register struct attack *mattk;
     case AD_SSEX:
     case AD_SITM: /* for now these are the same */
     case AD_SEDU:
-        if (magr->mcancelled)
+        if (magr->mcancelled || check_magic_cancellation_success(mdef, -5))
             break;
         /* find an object to steal, non-cursed if magr is tame */
         for (obj = mdef->minvent; obj; obj = obj->nobj)

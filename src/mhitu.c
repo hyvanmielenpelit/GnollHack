@@ -1903,9 +1903,12 @@ register struct obj* omonwep;
         /*FALLTHRU*/
     case AD_SITM: /* for now these are the same */
     case AD_SEDU:
+	{
+		boolean nymphcancelled = mtmp->mcancelled || check_magic_cancellation_success(&youmonst, -5);
+
         if (is_animal(mtmp->data)) {
             hitmsg(mtmp, mattk, -1);
-            if (!uncancelled)
+            if (nymphcancelled)
                 break;
             /* Continue below */
         } else if (dmgtype(youmonst.data, AD_SEDU)
@@ -1921,13 +1924,14 @@ register struct obj* omonwep;
             if (!tele_restrict(mtmp))
                 (void) rloc(mtmp, TRUE);
             return 3;
-        } else if (!uncancelled) {
+        } else if (nymphcancelled) {
             if (!Blind)
                 pline("%s tries to %s you, but you seem %s.",
                       Adjmonnam(mtmp, "plain"),
                       flags.female ? "charm" : "seduce",
                       flags.female ? "unaffected" : "uninterested");
-            if (rn2(3)) {
+            if (rn2(3)) 
+			{
                 if (!tele_restrict(mtmp))
                     (void) rloc(mtmp, TRUE);
                 return 3;
@@ -1952,7 +1956,7 @@ register struct obj* omonwep;
             return 3;
         }
         break;
-
+	}
     case AD_SAMU:
         hitmsg(mtmp, mattk, dmg);
         /* when the Wizard or quest nemesis hits, there's a 1/20 chance

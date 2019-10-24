@@ -2225,7 +2225,8 @@ int specialdmg; /* blessed and/or silver bonus against various things */
     case AD_SSEX:
     case AD_SEDU:
     case AD_SITM:
-        steal_it(mdef, mattk);
+        if(!check_magic_cancellation_success(mdef, -5))
+			steal_it(mdef, mattk);
         tmp = 0;
         break;
     case AD_SGLD:
