@@ -196,15 +196,36 @@ struct obj *otmp, *mwep;
                ? matching_launcher(otmp, mwep)
                /* otherwise any stackable (non-ammo) weapon */
                : otmp->oclass == WEAPON_CLASS)
-        && !mtmp->mconf) {
-        /* Assumes lords are skilled, princes are expert */
-		if (is_prince(mtmp->data))
-			multishot += 1;
-		else if (is_lord(mtmp->data))
-			multishotrndextra += 1;
-        /* fake players treated as skilled (regardless of role limits) */
-        else if (is_mplayer(mtmp->data))
-			multishotrndextra += 1;
+        && !mtmp->mconf) 
+	{
+		if (objects[mwep->otyp].oc_multishot_count > 1)
+		{
+			int skilllevel = 0;
+			boolean multishotok = TRUE;
+			/* Assumes lords are skilled, princes are expert */
+			if (is_prince(mtmp->data))
+				skilllevel = P_EXPERT;
+			else if (is_lord(mtmp->data))
+				skilllevel = P_SKILLED;
+			/* fake players treated as skilled (regardless of role limits) */
+			else if (is_mplayer(mtmp->data))
+				skilllevel = P_SKILLED;
+
+			if ((objects[mwep->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_EXPERT_SKILL) == O3_MULTISHOT_REQUIRES_EXPERT_SKILL && skilllevel < P_EXPERT)
+				multishotok = FALSE;
+			else if ((objects[mwep->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_SKILLED_SKILL) == O3_MULTISHOT_REQUIRES_SKILLED_SKILL && skilllevel < P_SKILLED)
+				multishotok = FALSE;
+			else if ((objects[mwep->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_BASIC_SKILL) == O3_MULTISHOT_REQUIRES_BASIC_SKILL && skilllevel < P_BASIC)
+				multishotok = FALSE;
+
+			if(multishotok)
+			{
+				if (objects[mwep->otyp].oc_flags3 & O3_MULTISHOT_IS_RANDOM)
+					multishotrndextra = objects[mwep->otyp].oc_multishot_count - 1;
+				else
+					multishot = objects[mwep->otyp].oc_multishot_count;
+			}
+		}
 
         /* this portion is different from hero multishot; from slash'em?
          */
@@ -248,11 +269,12 @@ struct obj *otmp, *mwep;
                 && mwep->otyp == CROSSBOW))
             multishot++;*/
 
+		/*
 		if ((otmp && mwep && ammo_and_launcher(otmp, mwep) && mtmp->mstr < objects[mwep->otyp].oc_multishot_str)
 			|| (otmp && throwing_weapon(otmp) && mtmp->mstr < objects[otmp->otyp].oc_multishot_str)
 			)
 			multishot = 1;
-
+		*/
     }
 
     if (otmp->quan < multishot)
@@ -404,9 +426,17 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 		else
 			damage = totaldmgval(otmp, mtmp, (struct monst*)0);
 
-		if (otmp && mon_launcher && ammo_and_launcher(otmp, mon_launcher)) {
+		if (otmp && mon_launcher && ammo_and_launcher(otmp, mon_launcher)) 
+		{
 			damage += totaldmgval(mon_launcher, mtmp, (struct monst*)0);
+
 			//Add strength damage, no skill damage
+			if (objects[mon_launcher->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_STRENGTH)
+				damage += objects[mon_launcher->otyp].oc_fixed_damage_bonus;
+			else
+				damage += archer ? mdbon(archer) : 0;
+
+			/*
 			if (mon_launcher->otyp == CROSSBOW) {
 				damage += 3;
 			}
@@ -416,10 +446,14 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 			else if (mon_launcher->otyp == HAND_CROSSBOW) {
 				damage += 0;
 			}
+			else if (mon_launcher->otyp == REPEATING_CROSSBOW) {
+				damage += 0;
+			}
 			else {
 				if(archer)
 					damage += mdbon(archer);
 			}
+			*/
 			//Bracers here, if need be
 		}
 
@@ -793,6 +827,12 @@ struct obj *obj;         /* missile (or stack providing it) */
 						dam += totaldmgval(MON_WEP(mon), &youmonst, mon);
 
 						//Give strength damage bonus
+						if (objects[MON_WEP(mon)->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_STRENGTH)
+							dam += objects[MON_WEP(mon)->otyp].oc_fixed_damage_bonus;
+						else 
+							dam += mdbon(mon);
+
+						/*
 						if (MON_WEP(mon)->otyp == CROSSBOW) {
 							dam += 3;
 						}
@@ -802,9 +842,13 @@ struct obj *obj;         /* missile (or stack providing it) */
 						else if (MON_WEP(mon)->otyp == HAND_CROSSBOW) {
 							dam += 0;
 						}
+						else if (MON_WEP(mon)->otyp == REPEATING_CROSSBOW) {
+							dam += 0;
+						}
 						else {
 							dam += mdbon(mon);
 						}
+						*/
 					}
 					else
 					{

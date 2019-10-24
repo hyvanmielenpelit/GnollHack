@@ -122,6 +122,7 @@ int shotlimit;
                          || Fumbling || ACURR(A_DEX) <= 6);
 
         /* Bonus if the player is proficient in this weapon... */
+		/*
         switch (P_SKILL(weapon_type(obj))) {
         case P_EXPERT:
 			if (!weakmultishot)
@@ -131,9 +132,38 @@ int shotlimit;
 			if (!weakmultishot)
 				multishotrndextra++;
 			break;
-        default: /* basic or unskilled: no bonus */
+        default:
             break;
         }
+		*/
+
+		struct obj* otmpmulti = (struct obj*)0;
+		if(obj && is_ammo(obj) && uwep && matching_launcher(obj, uwep))
+			otmpmulti = uwep;
+		else if(obj)
+			otmpmulti = obj;
+
+		if (otmpmulti && objects[otmpmulti->otyp].oc_multishot_count > 1)
+		{
+			int skilllevel = P_SKILL(weapon_type(otmpmulti));
+			boolean multishotok = TRUE;
+
+			if ((objects[otmpmulti->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_EXPERT_SKILL) == O3_MULTISHOT_REQUIRES_EXPERT_SKILL && skilllevel < P_EXPERT)
+				multishotok = FALSE;
+			else if ((objects[otmpmulti->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_SKILLED_SKILL) == O3_MULTISHOT_REQUIRES_SKILLED_SKILL && skilllevel < P_SKILLED)
+				multishotok = FALSE;
+			else if ((objects[otmpmulti->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_BASIC_SKILL) == O3_MULTISHOT_REQUIRES_BASIC_SKILL && skilllevel < P_BASIC)
+				multishotok = FALSE;
+
+			if (multishotok)
+			{
+				if (objects[otmpmulti->otyp].oc_flags3 & O3_MULTISHOT_IS_RANDOM)
+					multishotrndextra = objects[otmpmulti->otyp].oc_multishot_count - 1;
+				else
+					multishot = objects[otmpmulti->otyp].oc_multishot_count;
+			}
+		}
+
         /* ...or is using a special weapon for their role... */
         switch (Role_switch) {
         case PM_MONK:
@@ -172,6 +202,8 @@ int shotlimit;
         /* crossbows are slow to load and probably shouldn't allow multiple
            shots at all, but that would result in players never using them;
            instead, high strength is necessary to load and shoot quickly */
+
+		/*
 		if (multishot > 1)
 		{
 			if (
@@ -184,6 +216,7 @@ int shotlimit;
 				multishotrndextra = 0;
 			}
 		}
+		*/
 
 		if(multishotrndextra > 0)
 	        multishot += rn2(multishotrndextra + 1); //add random amount;

@@ -1180,15 +1180,25 @@ int dieroll;
 			else
 				tmp += dbon();
 		}
-		else if (obj && uwep && ammo_and_launcher(obj, uwep)) {
+		else if (obj && uwep && ammo_and_launcher(obj, uwep)) 
+		{
+			if (objects[uwep->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_STRENGTH)
+				tmp += objects[uwep->otyp].oc_fixed_damage_bonus;
+			else
+				tmp += dbon();
+
+			/*
 			if (uwep->otyp == CROSSBOW)
 				tmp += 3; // Light crossbows get +3 bonus, (heavy) crossbows get 18/00 strength bonus
 			else if (uwep->otyp == HEAVY_CROSSBOW)
 				tmp += 6;
 			else if (uwep->otyp == HAND_CROSSBOW)
 				tmp += 0;
+			else if (uwep->otyp == REPEATING_CROSSBOW)
+				tmp += 0;
 			else
 				tmp += dbon(); //Normal bows get full strength bonus
+			*/
 
 			//All bows get bow's enchantment bonus and damage
 			int basedmg = dmgval(uwep, mon, &youmonst);

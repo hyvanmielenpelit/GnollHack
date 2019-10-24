@@ -6,6 +6,42 @@
 #ifndef OBJCLASS_H
 #define OBJCLASS_H
 
+enum multigen_types {
+	MULTIGEN_SINGLE		= 0,
+	MULTIGEN_1D2		= 1,
+	MULTIGEN_1D3		= 2,
+	MULTIGEN_1D4		= 3,
+	MULTIGEN_1D6		= 4,
+	MULTIGEN_1D8		= 5,
+	MULTIGEN_1D10		= 6,
+	MULTIGEN_2D6		= 7,
+	MULTIGEN_3D6		= 8,
+	MULTIGEN_4D6		= 9,
+	MULTIGEN_5D6		= 10,
+	MULTIGEN_6D6		= 11,
+	MULTIGEN_1D6_1		= 12,
+	MULTIGEN_1D6_2		= 13,
+	MULTIGEN_1D6_3		= 14,
+	MULTIGEN_1D6_4		= 15,
+	MULTIGEN_1D6_5		= 16,
+	MULTIGEN_1D6_6		= 17,
+	MULTIGEN_2D6_1		= 18,
+	MULTIGEN_2D6_2		= 19,
+	MULTIGEN_2D6_3		= 20,
+	MULTIGEN_2D6_4		= 21,
+	MULTIGEN_2D6_5		= 22,
+	MULTIGEN_2D6_6		= 23,
+	MULTIGEN_1D2_1		= 24,
+	MULTIGEN_1D3_1		= 25,
+	MULTIGEN_1D4_1		= 26,
+	MULTIGEN_1D2_2		= 27,
+	MULTIGEN_1D3_2		= 28,
+	MULTIGEN_1D4_2		= 29,
+	MULTIGEN_1D3_3		= 30,
+	MULTIGEN_1D4_3		= 31,
+	MULTIGEN_1D4_4		= 32
+};
+
 /* [misnamed] definition of a type of object; many objects are composites
    (liquid potion inside glass bottle, metal arrowhead on wooden shaft)
    and object definitions only specify one type on a best-fit basis */
@@ -253,6 +289,7 @@ struct objclass {
 
 
 	int oc_hitbonus;						/* weapons: "to hit" bonus */
+	int oc_fixed_damage_bonus;				/* fixed strength-based damage bonus for crossbows */
 	int oc_range;							/* launchers: range for ammo, others throw range: >0 Fixed range, <0 Percentage of STR */
 
 	/* general purpose */
@@ -273,7 +310,7 @@ struct objclass {
 #define oc_bonus_attributes oc_oc5					/* non-spellbooks: gives bonuses using spe / oc_oc6 to attributes and properties */
 #define oc_attribute_bonus oc_oc6					/* non-spellbooks: 0 => spe is used, otherise fixed bonus */
 #define oc_spell_casting_penalty oc_oc7				/* non-spells/wands: spell casting penalty when worn */
-#define oc_multishot_str oc_oc8						/* strength required for launcher multishot */
+#define oc_multishot_count oc_oc8					/* number of multishots provided by the launcher */
 
 #define BONUS_TO_STR 0x0001
 #define BONUS_TO_DEX 0x0002
@@ -301,6 +338,7 @@ struct objclass {
 /* oc_oc5 attributes giving bonus to using spe / oc_oc6 to attributes and properties */
 /* oc_oc6 modifier to oc_oc5: 0 => spe is used, otherise fixed bonus */
 /* oc_oc7 spell casting penalty */
+/* oc_oc8 multishot count */
 
 /* armor */
 #define oc_armor_category oc_subtyp					/* armor: (enum obj_armor_types) */
@@ -311,6 +349,7 @@ struct objclass {
 /* oc_oc5 attributes giving bonus to using spe / oc_oc6 to attributes and properties */
 /* oc_oc6 modifier to oc_oc5: 0 => spe is used, otherise fixed bonus */
 /* oc_oc7 spell casting penalty */
+/* oc_oc8 multishot count */
 
 /* comestibles and reagents (and other edibles) */
 #define oc_edible_subtype oc_oc1		/* edibles: is rotten, poisoned, et*/
@@ -350,7 +389,8 @@ struct objclass {
 
 	unsigned long oc_power_permissions; /* roles, races, genders, and alignments that the item's powers are conferred to */
 	unsigned long oc_target_permissions; /* symbol, M1 flag, M2 flag, M3 flag, etc. for which extra damage is deal to */
-	int oc_critical_strike_percentage;	/* Percentage to be used with critical strike; can be used for other purposes for non-weapons, too */
+	int oc_critical_strike_percentage;	/* percentage to be used with critical strike; can be used for other purposes for non-weapons, too */
+	int oc_multigen_type;				/* class number multi multigen_type */
 
 /* oc_dir_subtypes for spells */
 #define RAY_WND_MAGIC_MISSILE 0 
@@ -465,24 +505,28 @@ struct objclass {
 #define O3_ATTRIBUTE_BONUS_DISRESPECTS_CHARACTERS	0x00000040
 #define O3_LUCK_DISRESPECTS_CHARACTERS				0x00000080
 
-#define O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS	0x00000400 /* wielding or wearing prohibits the revival of permitted targets */
-#define O3_PREVENTS_SUMMONING_BY_PERMITTED_TARGETS	0x00000800 /* TODO: wielding or wearing prohibits summoning by permitted targets */
-#define O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS	0x00001000	/* deals damage when wielded like artifacts */
+#define O3_MULTISHOT_IS_RANDOM						0x00000100
+#define O3_MULTISHOT_REQUIRES_BASIC_SKILL			0x00000200
+#define O3_MULTISHOT_REQUIRES_SKILLED_SKILL			0x00000400
+#define O3_MULTISHOT_REQUIRES_EXPERT_SKILL			(O3_MULTISHOT_REQUIRES_BASIC_SKILL | O3_MULTISHOT_REQUIRES_SKILLED_SKILL)
 
-#define O3_INVOKABLE		0x00002000	/* can be invoked using invoke command */
-#define O3_APPLIABLE		0x00004000	/* can be applied as a tool */
-#define O3_WIELDABLE		0x00008000	/* can be wielded in a weapon slot */
+#define O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS	0x00000800 /* wielding or wearing prohibits the revival of permitted targets */
+#define O3_PREVENTS_SUMMONING_BY_PERMITTED_TARGETS	0x00001000 /* TODO: wielding or wearing prohibits summoning by permitted targets */
+#define O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS	0x00002000	/* deals damage when wielded like artifacts */
 
-/* One flag slot here */
+#define O3_INVOKABLE		0x00000400	/* can be invoked using invoke command */
+#define O3_APPLIABLE		0x00000800	/* can be applied as a tool */
+#define O3_WIELDABLE		0x00001000	/* can be wielded in a weapon slot */
 
-#define O3_PERMTTED_TARGET_LAWFUL	0x00100000
-#define O3_PERMTTED_TARGET_NEUTRAL	0x00200000
-#define O3_PERMTTED_TARGET_CHAOTIC	0x00400000
-/* One flag slot here */
+#define O3_PERMTTED_TARGET_LAWFUL	0x00200000
+#define O3_PERMTTED_TARGET_NEUTRAL	0x00400000
+#define O3_PERMTTED_TARGET_CHAOTIC	0x00800000
 
 #define O3_TARGET_PERMISSION_IS_M1_FLAG 0x10000000 /* Note: if no flag, then default is a monster symbol */
 #define O3_TARGET_PERMISSION_IS_M2_FLAG 0x20000000
 #define O3_TARGET_PERMISSION_IS_M3_FLAG 0x40000000 
+
+#define O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_STRENGTH 0x80000000 
 
 
 

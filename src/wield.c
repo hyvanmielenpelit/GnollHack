@@ -494,6 +494,7 @@ dowield()
 		if (flags.pushweapon && oldwep && uwep != oldwep)
 			setuswapwep(oldwep, W_SWAPWEP);
 
+#if 0
 		if (uwep && (!oldwep || uwep != oldwep) && is_launcher(uwep) && P_SKILL(objects[uwep->otyp].oc_skill) >= P_SKILLED)
 		{
 			/* The player should be able to fire multishots */
@@ -502,6 +503,7 @@ dowield()
 				pline("%s requires the strength of %s or more to fire multiple times.", The(xname(uwep)), get_strength_string(objects[uwep->otyp].oc_multishot_str));
 			}
 		}
+#endif
 	}
 
 	updateabon();
@@ -594,6 +596,7 @@ long mask;
 		}
 	}
 
+#if 0
 	if (mask == W_WEP && uwep && (!oldweapon || uwep != oldweapon) && is_launcher(uwep) && P_SKILL(objects[uwep->otyp].oc_skill) >= P_SKILLED)
 	{
 		/* The player should be able to fire multishots */
@@ -602,6 +605,7 @@ long mask;
 			pline("%s requires the strength of %s or more to fire multiple times.", The(xname(uwep)), get_strength_string(objects[uwep->otyp].oc_multishot_str));
 		}
 	}
+#endif
 
 	//Do not take a turn
 	return 0; // result;
@@ -770,6 +774,7 @@ doswapweapon()
 
 	}
 
+#if 0
 	if (uwep && (!oldweapon || uwep != oldweapon) && is_launcher(uwep) && P_SKILL(objects[uwep->otyp].oc_skill) >= P_SKILLED)
 	{
 		/* The player should be able to fire multishots */
@@ -778,6 +783,7 @@ doswapweapon()
 			pline("%s requires the strength of %s or more to fire multiple times.", The(xname(uwep)), get_strength_string(objects[uwep->otyp].oc_multishot_str));
 		}
 	}
+#endif
 
 	//Do not take a turn
 	return 0; // result;

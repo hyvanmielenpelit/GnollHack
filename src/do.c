@@ -394,6 +394,20 @@ register struct obj* obj;
 		int baserange = 0;
 
 		/* Ammunition range */
+		if (objects[obj->otyp].oc_multishot_count > 1) {
+
+			Sprintf(buf, "Shots per round:        %s%d", (objects[obj->otyp].oc_flags3& O3_MULTISHOT_IS_RANDOM) ? "Up to " : "", objects[obj->otyp].oc_multishot_count);
+			if((objects[obj->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_EXPERT_SKILL) == O3_MULTISHOT_REQUIRES_EXPERT_SKILL)
+				Sprintf(eos(buf), " (requires expert skill)");
+			else if ((objects[obj->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_SKILLED_SKILL) == O3_MULTISHOT_REQUIRES_SKILLED_SKILL)
+				Sprintf(eos(buf), " (requires skilled skill)");
+			else if ((objects[obj->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_BASIC_SKILL) == O3_MULTISHOT_REQUIRES_BASIC_SKILL)
+				Sprintf(eos(buf), " (requires basic skill)");
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+
+		/* Ammunition range */
 		if (is_launcher(obj)) {
 
 			baserange = weapon_range((struct obj*)0, obj);
@@ -596,6 +610,15 @@ register struct obj* obj;
 			putstr(datawin, 0, txt);
 		}
 
+		/* Fixed damage bonus */
+		if (is_launcher(obj) && (objects[otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_STRENGTH)) 
+		{
+
+			Sprintf(buf, "Fixed damage bonus:     %s%d (instead of strength)", 
+				objects[otyp].oc_fixed_damage_bonus >= 0 ? "+" : "", objects[otyp].oc_fixed_damage_bonus);
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
 
 		if (objects[otyp].oc_hitbonus != 0)
 		{

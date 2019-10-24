@@ -47,6 +47,7 @@
 #define MS_WERE 38      /* lycanthrope in human form */
 #define MS_BOAST 39     /* giants */
 
+#define MR_NONE 0x00000000L
 #define MR_FIRE 0x00000001L   /* resists fire */
 #define MR_COLD 0x00000002L   /* resists cold */
 #define MR_SLEEP 0x00000004L  /* resists sleep */
@@ -86,6 +87,7 @@
 #define MR2_FUMBLING 0x00400000L  /* clumsy */
 #define MR2_LAUGHING 0x00800000L  /* laughing uncontrollably */
 
+#define M1_NONE 0x00000000
 #define M1_FLY 0x00000001L         /* can fly or float */
 #define M1_SWIM 0x00000002L        /* can traverse water */
 #define M1_AMORPHOUS 0x00000004L   /* can flow under doors */
@@ -124,6 +126,7 @@
 #define M1_METALLIVORE 0x80000000L /* eats metal */
 #endif
 
+#define M2_NONE 0x00000000
 #define M2_NOPOLY 0x00000001L       /* players mayn't poly into one */
 #define M2_UNDEAD 0x00000002L       /* is walking dead */
 #define M2_WERE 0x00000004L         /* is a lycanthrope */
@@ -160,6 +163,7 @@
 #define M2_MAGIC 0x80000000L /* picks up magic items */
 #endif
 
+#define M3_NONE 0x00000000
 #define M3_WANTSAMUL 0x00000001 /* would like to steal the amulet */
 #define M3_WANTSBELL 0x00000002 /* wants the bell */
 #define M3_WANTSBOOK 0x00000004 /* wants the book */

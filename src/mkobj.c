@@ -919,10 +919,14 @@ boolean makingboxcontents;
 	otmp->cooldownleft = 0;
 	otmp->blessed = 0;
 
-    if (init) {
-        switch (let) {
+    if (init) 
+	{
+		if(objects[otmp->otyp].oc_merge && !objects[otmp->otyp].oc_unique)
+			otmp->quan = get_multigen_quan(objects[otmp->otyp].oc_multigen_type);
+
+		switch (let) {
         case WEAPON_CLASS:
-            otmp->quan = is_multigen(otmp) ? (long) rn1(6, 6) : 1L;
+			otmp->quan = get_multigen_quan(objects[otmp->otyp].oc_multigen_type);// is_multigen(otmp) ? (long) rn1(6, 6) : 1L;
             if (!rn2(11) && !is_cursed_magic_item(otmp))
 			{
                 otmp->spe = rne(3);
@@ -1324,6 +1328,119 @@ boolean makingboxcontents;
     return otmp;
 }
 
+
+int 
+get_multigen_quan(multigen_index)
+int multigen_index;
+{
+	int quan = 1;
+
+	switch (multigen_index)
+	{
+	case MULTIGEN_SINGLE:
+		quan = 1;
+		break;
+	case MULTIGEN_1D2:
+		quan = rnd(2);
+		break;
+	case MULTIGEN_1D3:
+		quan = rnd(3);
+		break;
+	case MULTIGEN_1D4:
+		quan = rnd(4);
+		break;
+	case MULTIGEN_1D6:
+		quan = rnd(6);
+		break;
+	case MULTIGEN_1D8:
+		quan = rnd(8);
+		break;
+	case MULTIGEN_1D10:
+		quan = rnd(10);
+		break;
+	case MULTIGEN_2D6:
+		quan = d(2, 6);
+		break;
+	case MULTIGEN_3D6:
+		quan = d(3, 6);
+		break;
+	case MULTIGEN_4D6:
+		quan = d(4, 6);
+		break;
+	case MULTIGEN_5D6:
+		quan = d(5, 6);
+		break;
+	case MULTIGEN_6D6:
+		quan = d(6, 6);
+		break;
+	case MULTIGEN_1D6_1:
+		quan = rnd(6) + 1;
+		break;
+	case MULTIGEN_1D6_2:
+		quan = rnd(6) + 2;
+		break;
+	case MULTIGEN_1D6_3:
+		quan = rnd(6) + 3;
+		break;
+	case MULTIGEN_1D6_4:
+		quan = rnd(6) + 4;
+		break;
+	case MULTIGEN_1D6_5:
+		quan = rnd(6) + 5;
+		break;
+	case MULTIGEN_1D6_6:
+		quan = rnd(6) + 6;
+		break;
+	case MULTIGEN_2D6_1:
+		quan = d(2, 6) + 1;
+		break;
+	case MULTIGEN_2D6_2:
+		quan = d(2, 6) + 2;
+		break;
+	case MULTIGEN_2D6_3:
+		quan = d(2, 6) + 3;
+		break;
+	case MULTIGEN_2D6_4:
+		quan = d(2, 6) + 4;
+		break;
+	case MULTIGEN_2D6_5:
+		quan = d(2, 6) + 5;
+		break;
+	case MULTIGEN_2D6_6:
+		quan = d(2, 6) + 6;
+		break;
+	case MULTIGEN_1D2_1:
+		quan = rnd(2) + 1;
+		break;
+	case MULTIGEN_1D3_1:
+		quan = rnd(3) + 1;
+		break;
+	case MULTIGEN_1D4_1:
+		quan = rnd(4) + 1;
+		break;
+	case MULTIGEN_1D2_2:
+		quan = rnd(2) + 2;
+		break;
+	case MULTIGEN_1D3_2:
+		quan = rnd(3) + 2;
+		break;
+	case MULTIGEN_1D3_3:
+		quan = rnd(3) + 3;
+		break;
+	case MULTIGEN_1D4_2:
+		quan = rnd(4) + 2;
+		break;
+	case MULTIGEN_1D4_3:
+		quan = rnd(4) + 3;
+		break;
+	case MULTIGEN_1D4_4:
+		quan = rnd(4) + 4;
+		break;
+	default:
+		break;
+	}
+	return quan;
+}
 /*
  * Several areas of the code made direct reassignments
  * to obj->corpsenm. Because some special handling is

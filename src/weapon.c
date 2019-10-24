@@ -793,6 +793,8 @@ register struct monst *mtmp;
             case P_CROSSBOW:
 				propellor = oselect(mtmp, HEAVY_CROSSBOW);
 				if (!propellor)
+					propellor = oselect(mtmp, REPEATING_CROSSBOW);
+				if (!propellor)
 					propellor = oselect(mtmp, CROSSBOW);
 				if (!propellor)
 					propellor = oselect(mtmp, HAND_CROSSBOW);

@@ -1928,33 +1928,33 @@ struct permonst _mons2[] = {
         SIZ(500, 100, MS_MUMBLE, MZ_LARGE), STATS(18 + 31, 15, 14, 11, 12, 9), MR_FIRE | MR_POISON,
         MR_FIRE | MR_POISON | MR_WISDOM,
         M1_NOLIMBS | M1_SLITHY | M1_THICK_HIDE | M1_NOTAKE | M1_OMNIVORE,
-        0, M3_INFRAVISIBLE, 4, CLR_RED),
+		M2_NONE, M3_INFRAVISIBLE, 4, CLR_RED),
     MON("black naga hatchling", S_NAGA, LVL(3, 10, 6, 0, 0, 0), G_GENO,
         A(ATTK(AT_BITE, AD_PHYS, 1, 4, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(500, 100, MS_MUMBLE, MZ_LARGE), STATS(18 + 31, 15, 14, 11, 12, 9), MR_POISON | MR_ACID | MR_STONE,
         MR_POISON | MR_STONE | MR_WISDOM, M1_NOLIMBS | M1_SLITHY | M1_THICK_HIDE | M1_ACID
                                   | M1_NOTAKE | M1_CARNIVORE,
-        0, 0, 4, CLR_BLACK),
+		M2_NONE, M3_NONE, 4, CLR_BLACK),
     MON("golden naga hatchling", S_NAGA, LVL(3, 10, 6, 0, 0, 0), G_GENO,
         A(ATTK(AT_BITE, AD_PHYS, 1, 4, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(500, 100, MS_MUMBLE, MZ_LARGE), STATS(18 + 31, 15, 14, 11, 12, 9), MR_POISON, MR_POISON | MR_WISDOM,
         M1_NOLIMBS | M1_SLITHY | M1_THICK_HIDE | M1_NOTAKE | M1_OMNIVORE,
-        0, 0, 4, HI_GOLD),
+		M2_NONE, M3_NONE, 4, HI_GOLD),
     MON("guardian naga hatchling", S_NAGA, LVL(3, 10, 6, 0, 0, 0), G_GENO,
         A(ATTK(AT_BITE, AD_PHYS, 1, 4, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(500, 100, MS_MUMBLE, MZ_LARGE), STATS(18 + 31, 15, 14, 11, 12, 9), MR_POISON, MR_POISON | MR_WISDOM,
         M1_NOLIMBS | M1_SLITHY | M1_THICK_HIDE | M1_NOTAKE | M1_OMNIVORE,
-        0, 0, 4, CLR_GREEN),
+		M2_NONE, M3_NONE, 4, CLR_GREEN),
     MON("red naga", S_NAGA, LVL(6, 12, 4, 0, 0, -4), (G_GENO | 1),
         A(ATTK(AT_BITE, AD_PHYS, 2, 4, 0), ATTK(AT_BREA, AD_FIRE, 2, 6, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(2600, 400, MS_MUMBLE, MZ_HUGE), STATS(STR18(100), 16, 17, 15, 17, 14), MR_FIRE | MR_POISON,
         MR_FIRE | MR_POISON | MR_WISDOM, M1_NOLIMBS | M1_SLITHY | M1_THICK_HIDE
                                  | M1_OVIPAROUS | M1_NOTAKE | M1_OMNIVORE,
-        0, M3_INFRAVISIBLE, 8, CLR_RED),
+		M2_NONE, M3_INFRAVISIBLE, 8, CLR_RED),
     MON("black naga", S_NAGA, LVL(8, 14, 2, 1, 10, 4), (G_GENO | 1),
         A(ATTK(AT_BITE, AD_PHYS, 2, 6, 0), ATTK(AT_SPIT, AD_ACID, 0, 0, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -1962,21 +1962,21 @@ struct permonst _mons2[] = {
         MR_POISON | MR_STONE | MR_WISDOM,
         M1_NOLIMBS | M1_SLITHY | M1_THICK_HIDE | M1_OVIPAROUS | M1_ACID
             | M1_NOTAKE | M1_CARNIVORE,
-        0, 0, 10, CLR_BLACK),
+		M2_NONE, M3_NONE, 10, CLR_BLACK),
     MON("golden naga", S_NAGA, LVL(10, 14, 2, 8, 70, 5), (G_GENO | 1),
         A(ATTK(AT_BITE, AD_PHYS, 2, 6, 0), ATTK(AT_MAGC, AD_SPEL, 4, 6, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(2600, 400, MS_MUMBLE, MZ_HUGE), STATS(STR19(19), 16, 18, 15, 18, 15), MR_POISON, MR_POISON | MR_WISDOM,
         M1_NOLIMBS | M1_SLITHY | M1_THICK_HIDE | M1_OVIPAROUS | M1_NOTAKE
             | M1_OMNIVORE,
-        0, 0, 13, HI_GOLD),
+		M2_NONE, M3_NONE, 13, HI_GOLD),
     MON("guardian naga", S_NAGA, LVL(12, 16, 0, 12, 50, 7), (G_GENO | 1),
         A(ATTK(AT_BITE, AD_PLYS, 1, 6, 0), ATTK(AT_SPIT, AD_DRST, 1, 6, 0),
           ATTK(AT_HUGS, AD_PHYS, 2, 4, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(2600, 400, MS_MUMBLE, MZ_HUGE), STATS(STR19(19), 16, 18, 16, 20, 16), MR_POISON, MR_POISON | MR_WISDOM,
         M1_NOLIMBS | M1_SLITHY | M1_THICK_HIDE | M1_OVIPAROUS | M1_POIS
             | M1_NOTAKE | M1_OMNIVORE,
-        0, 0, 16, CLR_GREEN),
+        M2_NONE, M3_NONE, 16, CLR_GREEN),
     /*
      * Ogres
      */
@@ -2035,7 +2035,7 @@ struct permonst _mons2[] = {
         MR_FIRE | MR_COLD | MR_POISON,
         M1_BREATHLESS | M1_AMORPHOUS | M1_NOEYES | M1_NOLIMBS | M1_NOHEAD
             | M1_MINDLESS | M1_OMNIVORE | M1_ACID,
-        M2_HOSTILE | M2_NEUTER, 0, 4, CLR_GRAY),
+        M2_HOSTILE | M2_NEUTER, M3_NONE, 4, CLR_GRAY),
     MON("brown pudding", S_PUDDING, LVL(5, 3, 8, 12, 0, 0),
         (G_GENO | G_NOCORPSE | 1), A(ATTK(AT_BITE, AD_DCAY, 0, 0, 0), NO_ATTK,
                                      NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -2044,7 +2044,7 @@ struct permonst _mons2[] = {
         MR_COLD | MR_ELEC | MR_POISON,
         M1_BREATHLESS | M1_AMORPHOUS | M1_NOEYES | M1_NOLIMBS | M1_NOHEAD
             | M1_MINDLESS | M1_OMNIVORE | M1_ACID,
-        M2_HOSTILE | M2_NEUTER, 0, 6, CLR_BROWN),
+        M2_HOSTILE | M2_NEUTER, M3_NONE, 6, CLR_BROWN),
     MON("green slime", S_PUDDING, LVL(6, 6, 6, 14, 0, 0),
         (G_HELL | G_GENO | G_NOCORPSE | 1),
         A(ATTK(AT_TUCH, AD_SLIM, 1, 4, 0), ATTK(AT_NONE, AD_SLIM, 0, 0, 0), NO_ATTK,
@@ -2053,7 +2053,7 @@ struct permonst _mons2[] = {
         MR_COLD | MR_ELEC | MR_POISON | MR_ACID | MR_STONE, 0,
         M1_BREATHLESS | M1_AMORPHOUS | M1_NOEYES | M1_NOLIMBS | M1_NOHEAD
             | M1_MINDLESS | M1_OMNIVORE | M1_ACID | M1_POIS,
-        M2_HOSTILE | M2_NEUTER, 0, 8, CLR_GREEN),
+        M2_HOSTILE | M2_NEUTER, M3_NONE, 8, CLR_GREEN),
     MON("black pudding", S_PUDDING, LVL(10, 6, 6, 16, 0, 0),
         (G_GENO | G_NOCORPSE | 1),
         A(ATTK(AT_BITE, AD_CORR, 3, 8, 0), ATTK(AT_NONE, AD_CORR, 0, 0, 0), NO_ATTK,
@@ -2063,7 +2063,7 @@ struct permonst _mons2[] = {
         MR_COLD | MR_ELEC | MR_POISON,
         M1_BREATHLESS | M1_AMORPHOUS | M1_NOEYES | M1_NOLIMBS | M1_NOHEAD
             | M1_MINDLESS | M1_OMNIVORE | M1_ACID,
-        M2_HOSTILE | M2_NEUTER, 0, 12, CLR_BLACK),
+        M2_HOSTILE | M2_NEUTER, M3_NONE, 12, CLR_BLACK),
     /*
      * Quantum mechanics
      */
@@ -2097,14 +2097,14 @@ struct permonst _mons2[] = {
         SIZ(50, 60, MS_HISS, MZ_TINY), STATS(1, 10, 2, 2, 2, 1), 0, MR_DEXTERITY,
         M1_SWIM | M1_CONCEAL | M1_NOLIMBS | M1_ANIMAL | M1_SLITHY
             | M1_OVIPAROUS | M1_CARNIVORE | M1_NOTAKE,
-        0, 0, 3, CLR_GREEN),
+		M2_NONE, M3_NONE, 3, CLR_GREEN),
     MON("snake", S_SNAKE, LVL(4, 15, 3, 0, 0, 0), (G_GENO | 2),
         A(ATTK(AT_BITE, AD_DRST, 1, 6, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(100, 80, MS_HISS, MZ_SMALL), STATS(6, 11, 6, 2, 2, 1), MR_POISON, MR_POISON | MR_DEXTERITY,
         M1_SWIM | M1_CONCEAL | M1_NOLIMBS | M1_ANIMAL | M1_SLITHY | M1_POIS
             | M1_OVIPAROUS | M1_CARNIVORE | M1_NOTAKE,
-        M2_HOSTILE, 0, 6, CLR_BROWN),
+        M2_HOSTILE, M3_NONE, 6, CLR_BROWN),
     MON("water moccasin", S_SNAKE, LVL(4, 15, 3, 0, 0, 0),
         (G_GENO | G_NOGEN | G_LGROUP),
         A(ATTK(AT_BITE, AD_DRST, 1, 6, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
@@ -2112,7 +2112,7 @@ struct permonst _mons2[] = {
         SIZ(150, 80, MS_HISS, MZ_SMALL), STATS(7, 12, 7, 2, 2, 1), MR_POISON, MR_POISON | MR_DEXTERITY,
         M1_SWIM | M1_CONCEAL | M1_NOLIMBS | M1_ANIMAL | M1_SLITHY | M1_POIS
             | M1_CARNIVORE | M1_OVIPAROUS | M1_NOTAKE,
-        M2_HOSTILE, 0, 7, CLR_RED),
+        M2_HOSTILE, M3_NONE, 7, CLR_RED),
     MON("python", S_SNAKE, LVL(6, 3, 5, 0, 0, 0), (G_GENO | 1),
         A(ATTK(AT_BITE, AD_PHYS, 1, 4, 0), ATTK(AT_TUCH, AD_PHYS, 0, 0, 0),
           ATTK(AT_HUGS, AD_WRAP, 1, 4, 0), ATTK(AT_HUGS, AD_PHYS, 2, 4, 0), NO_ATTK,
@@ -2134,7 +2134,7 @@ struct permonst _mons2[] = {
         SIZ(250, 100, MS_HISS, MZ_MEDIUM), STATS(9, 15, 9, 2, 2, 1), MR_POISON, MR_POISON | MR_DEXTERITY,
         M1_SWIM | M1_CONCEAL | M1_NOLIMBS | M1_ANIMAL | M1_SLITHY | M1_POIS
             | M1_CARNIVORE | M1_OVIPAROUS | M1_NOTAKE,
-        M2_HOSTILE, 0, 10, CLR_BLUE),
+		M2_HOSTILE, M3_NONE, 10, CLR_BLUE),
     /*
      * Trolls
      */
@@ -2241,7 +2241,7 @@ struct permonst _mons2[] = {
           ATTK(AT_CLAW, AD_PHYS, 1, 4, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1200, 0, MS_SPELL, MZ_HUMAN), STATS(17, 11, 14, 8, 8, 3), MR_COLD | MR_SLEEP | MR_POISON, 0,
         M1_BREATHLESS | M1_HUMANOID,
-        M2_UNDEAD | M2_STALK | M2_HOSTILE | M2_COLLECT, M3_RANDOM_CORPSE, 7, CLR_GRAY),
+        M2_UNDEAD | M2_STALK | M2_HOSTILE | M2_COLLECT, M3_NONE, 7, CLR_GRAY),
 	/* wraiths are non-corporeal*/
     MON("wraith", S_WRAITH, LVL(6, 12, 4, 6, 15, -6), (G_GENO | 2),
         A(ATTK(AT_TUCH, AD_DRLI, 1, 6, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
@@ -2249,7 +2249,7 @@ struct permonst _mons2[] = {
         SIZ(0, 0, MS_SILENT, MZ_HUMAN), STATS(8, 11, 8, 8, 8, 3),
         MR_COLD | MR_SLEEP | MR_POISON | MR_STONE, 0,
         M1_BREATHLESS | M1_FLY | M1_HUMANOID | M1_UNSOLID,
-        M2_UNDEAD | M2_STALK | M2_HOSTILE, M3_NONCORPOREAL, 8, CLR_BLACK),
+        M2_UNDEAD | M2_STALK | M2_HOSTILE, M3_NONCORPOREAL | M3_RANDOM_CORPSE, 8, CLR_BLACK),
 	/* Nazguls are something between corporeal and non-corporeal*/
     MON("Nazgul", S_WRAITH, LVL(16, 12, 0, 12, 25, -17),
         (G_GENO | G_NOCORPSE | 1),
