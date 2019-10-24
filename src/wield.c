@@ -1304,8 +1304,9 @@ untwoweapon()
 }
 
 int
-chwepon(otmp, amount)
+chwepon(otmp, weapon, amount)
 register struct obj *otmp;
+register struct obj* weapon;
 register int amount;
 {
     const char *color = hcolor((amount < 0) ? NH_BLACK : NH_BLUE);
@@ -1313,19 +1314,19 @@ register int amount;
     boolean multiple;
     int otyp = STRANGE_OBJECT;
 
-    if (!uwep || (uwep->oclass != WEAPON_CLASS && !is_weptool(uwep))) {
+    if (!weapon || (weapon->oclass != WEAPON_CLASS && !is_weptool(weapon))) {
         char buf[BUFSZ];
 
-        if (amount >= 0 && uwep && will_weld(uwep)) { /* cursed tin opener */
+        if (amount >= 0 && weapon && will_weld(weapon)) { /* cursed tin opener */
             if (!Blind) {
                 Sprintf(buf, "%s with %s aura.",
-                        Yobjnam2(uwep, "glow"), an(hcolor(NH_AMBER)));
-                uwep->bknown = !Hallucination;
+                        Yobjnam2(weapon, "glow"), an(hcolor(NH_AMBER)));
+                weapon->bknown = !Hallucination;
             } else {
                 /* cursed tin opener is wielded in right hand */
                 Sprintf(buf, "Your right %s tingles.", body_part(HAND));
             }
-            uncurse(uwep);
+            uncurse(weapon);
             update_inventory();
         } else {
             Sprintf(buf, "Your %s %s.", makeplural(body_part(HAND)),
@@ -1339,38 +1340,38 @@ register int amount;
     if (otmp && otmp->oclass == SCROLL_CLASS)
         otyp = otmp->otyp;
 
-    if (uwep->otyp == WORM_TOOTH && amount >= 0) {
-        multiple = (uwep->quan > 1L);
+    if (weapon->otyp == WORM_TOOTH && amount >= 0) {
+        multiple = (weapon->quan > 1L);
         /* order: message, transformation, shop handling */
-        Your("%s %s much sharper now.", simpleonames(uwep),
+        Your("%s %s much sharper now.", simpleonames(weapon),
              multiple ? "fuse, and become" : "is");
-        uwep->otyp = CRYSKNIFE;
-        uwep->oerodeproof = 0;
+        weapon->otyp = CRYSKNIFE;
+        weapon->oerodeproof = 0;
         if (multiple) {
-            uwep->quan = 1L;
-            uwep->owt = weight(uwep);
+            weapon->quan = 1L;
+            weapon->owt = weight(weapon);
         }
-        if (uwep->cursed)
-            uncurse(uwep);
+        if (weapon->cursed)
+            uncurse(weapon);
         /* update shop bill to reflect new higher value */
-        if (uwep->unpaid)
-            alter_cost(uwep, 0L);
+        if (weapon->unpaid)
+            alter_cost(weapon, 0L);
         if (otyp != STRANGE_OBJECT)
             makeknown(otyp);
         if (multiple)
             encumber_msg();
         return 1;
-    } else if (uwep->otyp == CRYSKNIFE && amount < 0) {
-        multiple = (uwep->quan > 1L);
+    } else if (weapon->otyp == CRYSKNIFE && amount < 0) {
+        multiple = (weapon->quan > 1L);
         /* order matters: message, shop handling, transformation */
-        Your("%s %s much duller now.", simpleonames(uwep),
+        Your("%s %s much duller now.", simpleonames(weapon),
              multiple ? "fuse, and become" : "is");
-        costly_alteration(uwep, COST_DEGRD); /* DECHNT? other? */
-        uwep->otyp = WORM_TOOTH;
-        uwep->oerodeproof = 0;
+        costly_alteration(weapon, COST_DEGRD); /* DECHNT? other? */
+        weapon->otyp = WORM_TOOTH;
+        weapon->oerodeproof = 0;
         if (multiple) {
-            uwep->quan = 1L;
-            uwep->owt = weight(uwep);
+            weapon->quan = 1L;
+            weapon->owt = weight(weapon);
         }
         if (otyp != STRANGE_OBJECT && otmp->bknown)
             makeknown(otyp);
@@ -1379,44 +1380,44 @@ register int amount;
         return 1;
     }
 
-    if (has_oname(uwep))
-        wepname = ONAME(uwep);
-    if (amount < 0 && uwep->oartifact && restrict_name(uwep, wepname)) {
+    if (has_oname(weapon))
+        wepname = ONAME(weapon);
+    if (amount < 0 && weapon->oartifact && restrict_name(weapon, wepname)) {
         if (!Blind)
-            pline("%s %s.", Yobjnam2(uwep, "faintly glow"), color);
+            pline("%s %s.", Yobjnam2(weapon, "faintly glow"), color);
         return 1;
     }
-    /* there is a (soft) upper and lower limit to uwep->spe */
-    if (((uwep->spe > 5 && amount >= 0) || (uwep->spe < -5 && amount < 0))
+    /* there is a (soft) upper and lower limit to weapon->spe */
+    if (((weapon->spe > 5 && amount >= 0) || (weapon->spe < -5 && amount < 0))
         && rn2(3)) {
         if (!Blind)
             pline("%s %s for a while and then %s.",
-                  Yobjnam2(uwep, "violently glow"), color,
-                  otense(uwep, "evaporate"));
+                  Yobjnam2(weapon, "violently glow"), color,
+                  otense(weapon, "evaporate"));
         else
-            pline("%s.", Yobjnam2(uwep, "evaporate"));
+            pline("%s.", Yobjnam2(weapon, "evaporate"));
 
-        useupall(uwep); /* let all of them disappear */
+        useupall(weapon); /* let all of them disappear */
         return 1;
     }
     if (!Blind) {
         xtime = (amount * amount == 1) ? "moment" : "while";
         pline("%s %s for a %s.",
-              Yobjnam2(uwep, amount == 0 ? "violently glow" : "glow"), color,
+              Yobjnam2(weapon, amount == 0 ? "violently glow" : "glow"), color,
               xtime);
-        if (otyp != STRANGE_OBJECT && uwep->known
+        if (otyp != STRANGE_OBJECT && weapon->known
             && (amount > 0 || (amount < 0 && otmp->bknown)))
             makeknown(otyp);
     }
     if (amount < 0)
-        costly_alteration(uwep, COST_DECHNT);
-    uwep->spe += amount;
+        costly_alteration(weapon, COST_DECHNT);
+    weapon->spe += amount;
     if (amount > 0) {
-        if (uwep->cursed)
-            uncurse(uwep);
+        if (weapon->cursed)
+            uncurse(weapon);
         /* update shop bill to reflect new higher price */
-        if (uwep->unpaid)
-            alter_cost(uwep, 0L);
+        if (weapon->unpaid)
+            alter_cost(weapon, 0L);
     }
 
     /*
@@ -1424,16 +1425,16 @@ register int amount;
      * addition adverse reaction on Magicbane whose effects are
      * spe dependent.  Give an obscure clue here.
      */
-    if (uwep->oartifact == ART_MAGICBANE && uwep->spe >= 0) {
+    if (weapon->oartifact == ART_MAGICBANE && weapon->spe >= 0) {
         Your("right %s %sches!", body_part(HAND),
-             (((amount > 1) && (uwep->spe > 1)) ? "flin" : "it"));
+             (((amount > 1) && (weapon->spe > 1)) ? "flin" : "it"));
     }
 
     /* an elven magic clue, cookie@keebler */
     /* elven weapons vibrate warningly when enchanted beyond a limit */
-    if ((uwep->spe > 5)
-        && (is_elven_weapon(uwep) || uwep->oartifact || !rn2(7)))
-        pline("%s unexpectedly.", Yobjnam2(uwep, "suddenly vibrate"));
+    if ((weapon->spe > 5)
+        && (is_elven_weapon(weapon) || weapon->oartifact || !rn2(7)))
+        pline("%s unexpectedly.", Yobjnam2(weapon, "suddenly vibrate"));
 
     return 1;
 }

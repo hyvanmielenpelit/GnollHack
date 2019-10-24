@@ -1067,7 +1067,25 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 		boolean special_armor;
 		boolean same_color;
 
-		otmp = some_armor(&youmonst);
+		const char enchant_armor_objects[] = { ALL_CLASSES, ARMOR_CLASS, 0 };
+
+		if (otyp == SPE_PROTECT_ARMOR || otyp == SPE_ENCHANT_ARMOR)
+		{
+			otmp = getobj(enchant_armor_objects, otyp == SPE_ENCHANT_ARMOR ? "enchant" : "protect", 0, "");
+			if (!otmp)
+				return 0;
+
+			if(otmp && otmp->oclass != ARMOR_CLASS)
+			{
+				pline(!Blind
+					? "%s then fades."
+					: "%s warm for a moment.", Yobjnam2(otmp, !Blind ? "glow" : "feel"));
+				sobj = 0;
+				break;
+			}
+		}
+		else
+			otmp = some_armor(&youmonst);
 	enchantarmor:
 		if (!otmp) {
 			strange_feeling(sobj, !Blind
@@ -1429,41 +1447,63 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 	case SPE_PROTECT_WEAPON:
 	case SPE_ENCHANT_WEAPON:
 	case SCR_ENCHANT_WEAPON:
+	{
 		/* [What about twoweapon mode?  Proofing/repairing/enchanting both
 		   would be too powerful, but shouldn't we choose randomly between
 		   primary and secondary instead of always acting on primary?] */
-		if ((confused || otyp == SPE_PROTECT_WEAPON) && uwep
-			&& erosion_matters(uwep) && uwep->oclass != ARMOR_CLASS) {
-			old_erodeproof = (uwep->oerodeproof != 0);
+		const char enchant_weapon_objects[] = { ALL_CLASSES, WEAPON_CLASS, 0 };
+
+		if (otyp == SPE_PROTECT_WEAPON || otyp == SPE_ENCHANT_WEAPON)
+		{
+			otmp = getobj(enchant_weapon_objects, otyp == SPE_ENCHANT_WEAPON ? "enchant" : "protect", 0, "");
+			if (!otmp)
+				return 0;
+
+			if (otmp && (!erosion_matters(otmp) || otmp->oclass == ARMOR_CLASS))
+			{
+				pline(!Blind
+					? "%s then fades."
+					: "%s warm for a moment.", Yobjnam2(otmp, !Blind ? "glow" : "feel"));
+				sobj = 0;
+				break;
+			}
+
+		}
+		else
+			otmp = uwep;
+
+		if ((confused || otyp == SPE_PROTECT_WEAPON) && otmp
+			&& erosion_matters(otmp) && otmp->oclass != ARMOR_CLASS) {
+			old_erodeproof = (otmp->oerodeproof != 0);
 			new_erodeproof = !scursed;
-			uwep->oerodeproof = 0; /* for messages */
+			otmp->oerodeproof = 0; /* for messages */
 			if (Blind) {
-				uwep->rknown = FALSE;
+				otmp->rknown = FALSE;
 				Your("weapon feels warm for a moment.");
 			}
 			else {
-				uwep->rknown = TRUE;
-				pline("%s covered by a %s %s %s!", Yobjnam2(uwep, "are"),
+				otmp->rknown = TRUE;
+				pline("%s covered by a %s %s %s!", Yobjnam2(otmp, "are"),
 					scursed ? "mottled" : "shimmering",
 					hcolor(scursed ? NH_PURPLE : NH_GOLDEN),
 					scursed ? "glow" : "shield");
 			}
-			if (new_erodeproof && (uwep->oeroded || uwep->oeroded2)) {
-				uwep->oeroded = uwep->oeroded2 = 0;
+			if (new_erodeproof && (otmp->oeroded || otmp->oeroded2)) {
+				otmp->oeroded = otmp->oeroded2 = 0;
 				pline("%s as good as new!",
-					Yobjnam2(uwep, Blind ? "feel" : "look"));
+					Yobjnam2(otmp, Blind ? "feel" : "look"));
 			}
 			if (old_erodeproof && !new_erodeproof) {
 				/* restore old_erodeproof before shop charges */
-				uwep->oerodeproof = 1;
-				costly_alteration(uwep, COST_DEGRD);
+				otmp->oerodeproof = 1;
+				costly_alteration(otmp, COST_DEGRD);
 			}
-			uwep->oerodeproof = new_erodeproof ? 1 : 0;
+			otmp->oerodeproof = new_erodeproof ? 1 : 0;
 			break;
 		}
 		else if (otyp == SPE_PROTECT_WEAPON)
 		{
-			if (uwep)
+			if (otmp)
 				You_feel("as if your weapon is warmer than normal, but then it passes.");
 			else
 				You("experience a passing feeling of warmth.");
@@ -1471,13 +1511,14 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 			break;
 		}
 
-		if (!chwepon(sobj, scursed ? -1
-			: !uwep ? 1
-			: (uwep->spe >= 9) ? !rn2(uwep->spe)
-			: sblessed ? rnd(3 - uwep->spe / 3)
+		if (!chwepon(sobj, otmp, scursed ? -1
+			: !otmp ? 1
+			: (otmp->spe >= 9) ? !rn2(otmp->spe)
+			: sblessed ? rnd(3 - otmp->spe / 3)
 			: 1))
 			sobj = 0; /* nothing enchanted: strange_feeling -> useup */
 		break;
+	}
 	case SCR_TAMING:
 	case SPE_SPHERE_OF_CHARMING:
 	case SPE_SPHERE_OF_DOMINATION:

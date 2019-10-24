@@ -1105,7 +1105,8 @@ int pm;
         newsym(u.ux, u.uy);
         /*FALLTHRU*/
     case PM_YELLOW_LIGHT:
-    case PM_GIANT_BAT:
+	case PM_HELL_BAT:
+	case PM_GIANT_BAT:
         make_stunned((HStun & TIMEOUT) + 30L, FALSE);
         /*FALLTHRU*/
     case PM_BAT:

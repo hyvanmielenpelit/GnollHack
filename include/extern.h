@@ -2927,7 +2927,7 @@ E void NDECL(uswapwepgone);
 E void NDECL(uswapwep2gone);
 E void NDECL(uqwepgone);
 E void NDECL(untwoweapon);
-E int FDECL(chwepon, (struct obj *, int));
+E int FDECL(chwepon, (struct obj *, struct obj*, int));
 E int FDECL(welded, (struct obj *));
 E void FDECL(weldmsg, (struct obj *));
 E void FDECL(setmnotwielded, (struct monst *, struct obj *));
