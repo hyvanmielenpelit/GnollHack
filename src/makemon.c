@@ -2050,6 +2050,10 @@ rndmonst()
         minmlev = zlevel / 6;
         /* determine the level of the strongest monster to make. */
         maxmlev = (zlevel + u.ulevel) / 2;
+
+		if (!In_mines(&u.uz) && zlevel > 5)
+			maxmlev += (zlevel - 5 + 1) / 2;
+
         upper = Is_rogue_level(&u.uz);
         elemlevel = In_endgame(&u.uz) && !Is_astralevel(&u.uz);
 
