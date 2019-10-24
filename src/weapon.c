@@ -1582,7 +1582,7 @@ boolean speedy;
         return TRUE;
 
     return (boolean) ((int) P_ADVANCE(skill)
-                      >= practice_needed_to_advance(P_SKILL(skill))
+                      >= practice_needed_to_advance(skill, P_SKILL(skill))
                       && u.weapon_slots >= slots_required(skill));
 }
 
@@ -1597,7 +1597,7 @@ int skill;
         return FALSE;
 
     return (boolean) ((int) P_ADVANCE(skill)
-                      >= practice_needed_to_advance(P_SKILL(skill)));
+                      >= practice_needed_to_advance(skill, P_SKILL(skill)));
 }
 
 /* return true if this skill has reached its maximum and there's been enough
@@ -1611,7 +1611,7 @@ int skill;
 
     return (boolean) (P_SKILL(skill) >= P_MAX_SKILL(skill)
                       && ((int) P_ADVANCE(skill)
-                          >= practice_needed_to_advance(P_SKILL(skill))));
+                          >= practice_needed_to_advance(skill, P_SKILL(skill))));
 }
 
 STATIC_OVL void
@@ -1803,11 +1803,11 @@ enhance_weapon_skill()
                     if (!iflags.menu_tab_sep)
                         Sprintf(buf, " %s%-*s %-12s %-12s %5d (%d)", prefix,
                                 longest, skillnamebuf, sklnambuf, skillmaxbuf, P_ADVANCE(i),
-                                practice_needed_to_advance(P_SKILL(i)));
+                                practice_needed_to_advance(i, P_SKILL(i)));
                     else
                         Sprintf(buf, " %s%s\t%s\t%s\t%5d (%d)", prefix, skillnamebuf, 
                                 sklnambuf, skillmaxbuf, P_ADVANCE(i),
-                                practice_needed_to_advance(P_SKILL(i)));
+                                practice_needed_to_advance(i, P_SKILL(i)));
                 } else {
                     if (!iflags.menu_tab_sep)
                         Sprintf(buf, " %s %-*s %-12s %-12s", prefix, longest,
@@ -2254,7 +2254,7 @@ const struct def_skill* class_skill_max;
                 impossible("skill_init: curr > max: %s", P_NAME(skill));
                 P_MAX_SKILL(skill) = P_SKILL(skill);
             }
-            P_ADVANCE(skill) = practice_needed_to_advance(P_SKILL(skill) - 1);
+            P_ADVANCE(skill) = practice_needed_to_advance(skill, P_SKILL(skill) - 1);
         }
     }
 

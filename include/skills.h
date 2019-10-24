@@ -113,7 +113,9 @@ enum skill_levels {
     P_GRAND_MASTER = 6  /* ditto */
 };
 
-#define practice_needed_to_advance(level) ((level) * (level) *20)
+#define is_magic_skill(skill) (skill >= P_ARCANE_SPELL && skill <= P_NECROMANCY_SPELL)
+#define practice_needed_to_advance_for_normal_skill(level) ((level) * (level) *20)
+#define practice_needed_to_advance(skill, level) ((is_magic_skill(skill) ? 3 : 1) * practice_needed_to_advance_for_normal_skill(level))
 
 /* The hero's skill in various weapons. */
 struct skills {
