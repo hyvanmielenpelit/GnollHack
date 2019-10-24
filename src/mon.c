@@ -306,6 +306,7 @@ boolean createcorpse;
     boolean burythem = ((corpstatflags & CORPSTAT_BURIED) != 0);
 	int oneinchance = 0;
 	int basemonsterindex = 0;
+	int sporequan = 0;
 	
 	/* Monsters that create death items with or without the corpse */
 	switch (mndx)
@@ -419,37 +420,37 @@ boolean createcorpse;
 	case PM_COUATL:
 	case PM_ALEAX:
 	case PM_ARCHON:
-		if (!mtmp->mrevived || (mtmp->mrevived && !rn2(10)))
+		if ((!mtmp->mrevived && !rn2(2)) || (mtmp->mrevived && !rn2(10)))
 		{
 			obj = mksobj_at(FEATHER, x, y, TRUE, FALSE);
 			switch (mndx)
 			{
 			case PM_ROC:
-				obj->quan = rnd(8) + 3;
+				obj->quan = rnd(3) + 1;
 				break;
 			case PM_RAVEN:
 				break;
-				obj->quan = rnd(3);
+				obj->quan = rnd(2);
 			case PM_COCKATRICE:
-				obj->quan = rnd(4);
+				obj->quan = 1;
 				break;
 			case PM_CHICKATRICE:
-				obj->quan = rnd(3);
+				obj->quan = 1;
 				break;
 			case PM_COUATL:
-				obj->quan = rnd(4) + 1;
+				obj->quan = rnd(2);
 				break;
 			case PM_ALEAX:
-				obj->quan = rnd(5) + 1;
+				obj->quan = rnd(3);
 				break;
 			case PM_PHOENIX:
-				obj->quan = rnd(6) + 2;
+				obj->quan = rnd(2);
 				break;
 			case PM_ARCHON:
-				obj->quan = rnd(10) + 4;
+				obj->quan = rnd(4) + 1;
 				break;
 			default:
-				obj->quan = rnd(3);
+				obj->quan = rnd(2);
 				break;
 			}
 			obj->owt = weight(obj);
@@ -462,16 +463,23 @@ boolean createcorpse;
 		obj->quan = (mndx == PM_VAMPIRE_BAT ? rnd(4) : mndx == PM_GIANT_BAT ? rnd(3) : rnd(2));
 		obj->owt = weight(obj);
 		goto default_1;
+	case PM_SHRIEKER:
+	case PM_VIOLET_FUNGUS:
+		sporequan++;
 	case PM_BROWN_MOLD:
 	case PM_YELLOW_MOLD:
 	case PM_GREEN_MOLD:
 	case PM_RED_MOLD:
-	case PM_SHRIEKER:
-	case PM_VIOLET_FUNGUS:
-		obj = mksobj_at(FUNGAL_SPORE, x, y, TRUE, FALSE);
-		obj->quan = rnd(4);
-		obj->owt = weight(obj);
+	{
+		sporequan++;
+		if(!rn2(2))
+		{
+			obj = mksobj_at(FUNGAL_SPORE, x, y, TRUE, FALSE);
+			obj->quan = sporequan > 1 ? rnd(sporequan) : 1;
+			obj->owt = weight(obj);
+		}
 		goto default_1;
+	}
 	case PM_VAMPIRE:
 	case PM_VAMPIRE_MAGE:
 	case PM_VAMPIRE_LORD:

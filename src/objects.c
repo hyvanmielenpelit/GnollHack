@@ -1611,7 +1611,7 @@ SPELL("polymorph",        "silver-plated", None, "Polymorphs monsters and items 
 SPELL("teleport away",    "gold-plated", None, "Teleports the caster to a random location on the level",
       P_MOVEMENT_SPELL,			10,  6,			 5, 4, 30, A_INT, 0, 0, 0, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, SFLAGS_NONE, HI_GOLD, O1_NONE, O2_NONE, O3_NONE),
 SPELL("create familiar",  "glittering", None, "Creates a tame monster",
-      P_CLERIC_SPELL,			10,  7,			 0, 4, 30, A_AVG_INT_WIS_CHA, 0, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, SFLAGS_NONE, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE),
+      P_CONJURATION_SPELL,			10,  1,			 0, 1, 10, A_AVG_INT_WIS_CHA, 0, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, SFLAGS_NONE, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE),
 SPELL("cancellation",     "shining", None, "Prohibits the target from using magic or magical attacks",
       P_TRANSMUTATION_SPELL,	10,  8,			 0, 5, 50, A_INT, 8, 0, 0, 1, IMMEDIATE, 0, 0, 0, 0, 1, 20, 30, SFLAGS_SPELL_BYPASSES_MAGIC_RESISTANCE, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE),
 SPELL("protection",       "dull", None, "The caster gains protection, increasing AC and MC",

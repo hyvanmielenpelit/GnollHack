@@ -996,9 +996,9 @@ boolean skip_lvl_checks;
 	/* note: gold can now generate any type of minerals, but not gold coins*/
     /* basic level-related probabilities */
     if (goldprob < 0)
-        goldprob = 60 + depth(&u.uz); //Tripled from original
+        goldprob = 30 + depth(&u.uz) / 2; //1.5x from original
     if (gemprob < 0)
-        gemprob = goldprob / 8;  //Halved from original
+        gemprob = goldprob / 4;
 	
 	/* mines have ***MORE*** goodies - otherwise why mine? */
     if (!skip_lvl_checks) {
@@ -1035,9 +1035,9 @@ boolean skip_lvl_checks;
                         otmp->ox = x, otmp->oy = y;
 						otmp->quan = 1L; //+ rnd(goldprob * 3);
                         otmp->owt = weight(otmp);
-                        //if (!rn2(3)) //Note: It would be too difficult to find without object detection
-                        //    add_to_buried(otmp);
-                        //else
+                        /* if (!rn2(3)) //Note: It would be too difficult to find without object detection
+                            add_to_buried(otmp);
+                        else */
                         place_object(otmp, x, y);
                     }
                 }
@@ -1048,9 +1048,9 @@ boolean skip_lvl_checks;
                                 dealloc_obj(otmp); /* discard it */
                             } else {
                                 otmp->ox = x, otmp->oy = y;
-                                //if (!rn2(3))
-                                //    add_to_buried(otmp);
-                                //else
+                                /* if (!rn2(3))
+                                    add_to_buried(otmp);
+                                else */
                                 place_object(otmp, x, y);
                             }
                         }
