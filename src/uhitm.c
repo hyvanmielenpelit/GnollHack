@@ -1182,7 +1182,7 @@ int dieroll;
 		}
 		else if (obj && uwep && ammo_and_launcher(obj, uwep)) 
 		{
-			if (objects[uwep->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_STRENGTH)
+			if (objects[uwep->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH)
 				tmp += objects[uwep->otyp].oc_fixed_damage_bonus;
 			else
 				tmp += dbon();

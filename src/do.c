@@ -611,7 +611,7 @@ register struct obj* obj;
 		}
 
 		/* Fixed damage bonus */
-		if (is_launcher(obj) && (objects[otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_STRENGTH)) 
+		if (is_launcher(obj) && (objects[otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH)) 
 		{
 
 			Sprintf(buf, "Fixed damage bonus:     %s%d (instead of strength)", 

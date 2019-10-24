@@ -431,7 +431,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 			damage += totaldmgval(mon_launcher, mtmp, (struct monst*)0);
 
 			//Add strength damage, no skill damage
-			if (objects[mon_launcher->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_STRENGTH)
+			if (objects[mon_launcher->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH)
 				damage += objects[mon_launcher->otyp].oc_fixed_damage_bonus;
 			else
 				damage += archer ? mdbon(archer) : 0;
@@ -827,7 +827,7 @@ struct obj *obj;         /* missile (or stack providing it) */
 						dam += totaldmgval(MON_WEP(mon), &youmonst, mon);
 
 						//Give strength damage bonus
-						if (objects[MON_WEP(mon)->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_STRENGTH)
+						if (objects[MON_WEP(mon)->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH)
 							dam += objects[MON_WEP(mon)->otyp].oc_fixed_damage_bonus;
 						else 
 							dam += mdbon(mon);
