@@ -241,7 +241,9 @@ struct objclass {
 #define AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK	0x00000004  /* lethal damage is death magic */
 #define AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK	0x00000008  /* lethal damage is disintegration */
 #define AFLAGS_DEADLY_CRITICAL_STRIKE_USES_EXTRA_DAMAGE_TYPE (AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK | AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK)  
-   /* lethal damage is of extra damage type; note that normal critical strike always follows extra_damagetype */
+#define AFLAGS_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK (AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK | AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK)  
+
+/* lethal damage is of extra damage type; note that normal critical strike always follows extra_damagetype */
 #define AFLAGS_CRITICAL_STRIKE_DISRESPECTS_TARGETS		0x00000010  /* successful critical strike causes lethal damage */
 #define AFLAGS_CRITICAL_STRIKE_DISRESPECTS_CHARACTERS	0x00000020  /* successful critical strike causes lethal damage */
 /* One more ciritcal strike flag here */
@@ -257,6 +259,8 @@ struct objclass {
 #define AFLAGS_SHARPNESS		0x00002000	/* 2/20 chance of the monster losing 25% of maximum hit points */
 #define AFLAGS_VORPAL			0x00004000	/* 1/20 chance of the monster being beheaded */
 #define AFLAGS_BISECT (AFLAGS_SHARPNESS | AFLAGS_VORPAL) /* 1/20 chance of a small monster being bisected and a big monster losing 50% of maximum hit points */
+#define AFLAGS_SVB_MASK (AFLAGS_SHARPNESS | AFLAGS_VORPAL)
+
 #define AFLAGS_VORPAL_LIKE_DOUBLE_CHANCE_FOR_PERMITTED_TARGETS	0x00008000
 #define AFLAGS_VORPAL_LIKE_DISRESPECTS_TARGETS				0x00010000
 #define AFLAGS_VORPAL_LIKE_DISRESPECTS_CHARACTERS			0x00020000
@@ -479,6 +483,7 @@ struct objclass {
 #define O2_FLICKER_COLOR_WHITE	0x00010000	
 #define O2_FLICKER_COLOR_BLUE	0x00020000	
 #define O2_FLICKER_COLOR_BLACK (O2_FLICKER_COLOR_WHITE | O2_FLICKER_COLOR_BLUE)	
+#define O2_FLICKER_COLOR_MASK (O2_FLICKER_COLOR_WHITE | O2_FLICKER_COLOR_BLUE)	
 #define O2_IGNITABLE			0x00040000	
 #define O2_RELATIVE_AGE			0x00080000	
 
@@ -509,7 +514,7 @@ struct objclass {
 #define O3_MULTISHOT_REQUIRES_BASIC_SKILL			0x00000200
 #define O3_MULTISHOT_REQUIRES_SKILLED_SKILL			0x00000400
 #define O3_MULTISHOT_REQUIRES_EXPERT_SKILL			(O3_MULTISHOT_REQUIRES_BASIC_SKILL | O3_MULTISHOT_REQUIRES_SKILLED_SKILL)
-
+#define O3_MULTISHOT_REQUIRES_SKILL_MASK			(O3_MULTISHOT_REQUIRES_BASIC_SKILL | O3_MULTISHOT_REQUIRES_SKILLED_SKILL)
 #define O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS	0x00000800 /* wielding or wearing prohibits the revival of permitted targets */
 #define O3_PREVENTS_SUMMONING_BY_PERMITTED_TARGETS	0x00001000 /* TODO: wielding or wearing prohibits summoning by permitted targets */
 #define O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS	0x00002000	/* deals damage when wielded like artifacts */

@@ -1527,7 +1527,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 
 	/* We really want "on a natural 20" but GnollHack does it in */
 	/* reverse from AD&D. */
-	if ((objects[otmp->otyp].oc_aflags & AFLAGS_BISECT) == AFLAGS_BISECT)
+	if ((objects[otmp->otyp].oc_aflags & AFLAGS_SVB_MASK) == AFLAGS_BISECT)
 	{
 		if (
 			((objects[otmp->otyp].oc_aflags & AFLAGS_VORPAL_LIKE_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mdef, magr))
@@ -1632,7 +1632,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 			}
 		}
 	}
-	else if (objects[otmp->otyp].oc_aflags & AFLAGS_SHARPNESS)
+	else if ((objects[otmp->otyp].oc_aflags & AFLAGS_SVB_MASK) == AFLAGS_SHARPNESS)
 	{
 		if (
 			((objects[otmp->otyp].oc_aflags & AFLAGS_VORPAL_LIKE_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mdef, magr))
@@ -1713,7 +1713,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 			}
 		}
 	}
-	else if (objects[otmp->otyp].oc_aflags & AFLAGS_VORPAL)
+	else if ((objects[otmp->otyp].oc_aflags & AFLAGS_SVB_MASK) == AFLAGS_VORPAL)
 	{
 	if (
 		((objects[otmp->otyp].oc_aflags & AFLAGS_VORPAL_LIKE_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mdef, magr))
@@ -1827,15 +1827,15 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 			if (rn2(100) < objects[otmp->otyp].oc_critical_strike_percentage)
 			{
 				if (
-					((objects[otmp->otyp].oc_aflags & AFLAGS_DEADLY_CRITICAL_STRIKE_USES_EXTRA_DAMAGE_TYPE) == AFLAGS_DEADLY_CRITICAL_STRIKE_USES_EXTRA_DAMAGE_TYPE
+					((objects[otmp->otyp].oc_aflags & AFLAGS_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == AFLAGS_DEADLY_CRITICAL_STRIKE_USES_EXTRA_DAMAGE_TYPE
 					&& ((objects[otmp->otyp].oc_extra_damagetype == AD_FIRE && (youdefend ? Fire_resistance : resists_fire(mdef)))
 						|| (objects[otmp->otyp].oc_extra_damagetype == AD_COLD && (youdefend ? Cold_resistance : resists_cold(mdef)))
 						|| (objects[otmp->otyp].oc_extra_damagetype == AD_ELEC && (youdefend ? Shock_resistance : resists_elec(mdef)))))
 					||
-					((objects[otmp->otyp].oc_aflags & AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK) == AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK
+					((objects[otmp->otyp].oc_aflags & AFLAGS_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK
 						&& ((youdefend ? Death_resistance : resists_death(mdef)) || is_not_living(mdef->data) || is_demon(mdef->data) || is_vampshifter(mdef)))
 					||
-					((objects[otmp->otyp].oc_aflags & AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK) == AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK
+					((objects[otmp->otyp].oc_aflags & AFLAGS_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK
 						&& ((youdefend ? (Disint_resistance || Invulnerable) : resists_disint(mdef)) || noncorporeal(mdef->data)))
 					)
 				{
@@ -1852,7 +1852,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 				}
 				else
 				{
-					if ((objects[otmp->otyp].oc_aflags & AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK) == AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK)
+					if ((objects[otmp->otyp].oc_aflags & AFLAGS_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK)
 					{
 
 						if (!youdefend)
@@ -1946,7 +1946,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 							}
 						}
 					}
-					else if ((objects[otmp->otyp].oc_aflags & AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK) == AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK)
+					else if ((objects[otmp->otyp].oc_aflags & AFLAGS_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK)
 					{
 						lethaldamage = TRUE;
 						if (!youdefend)
@@ -2571,11 +2571,11 @@ int orc_count; /* new count, new count is in the items; OBSOLETE: (warn_obj_cnt 
 		char colorbuf[BUFSZ] = "red";
 		if (otmp->oartifact)
 			strcpy(colorbuf, glow_color(otmp->oartifact));
-		else if ((objects[otmp->otyp].oc_flags2 & O2_FLICKER_COLOR_WHITE) && (objects[otmp->otyp].oc_flags2 & O2_FLICKER_COLOR_BLUE))
+		else if ((objects[otmp->otyp].oc_flags2 & O2_FLICKER_COLOR_MASK) == O2_FLICKER_COLOR_BLACK)
 			strcpy(colorbuf, "black");
-		else if (objects[otmp->otyp].oc_flags2 & O2_FLICKER_COLOR_WHITE)
+		else if ((objects[otmp->otyp].oc_flags2 & O2_FLICKER_COLOR_MASK) == O2_FLICKER_COLOR_WHITE)
 			strcpy(colorbuf, "white");
-		else if (objects[otmp->otyp].oc_flags2 & O2_FLICKER_COLOR_BLUE)
+		else if ((objects[otmp->otyp].oc_flags2 & O2_FLICKER_COLOR_MASK) == O2_FLICKER_COLOR_BLUE)
 			strcpy(colorbuf, "blue");
 
 

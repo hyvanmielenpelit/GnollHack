@@ -397,11 +397,11 @@ register struct obj* obj;
 		if (objects[obj->otyp].oc_multishot_count > 1) {
 
 			Sprintf(buf, "Shots per round:        %s%d", (objects[obj->otyp].oc_flags3& O3_MULTISHOT_IS_RANDOM) ? "Up to " : "", objects[obj->otyp].oc_multishot_count);
-			if((objects[obj->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_EXPERT_SKILL) == O3_MULTISHOT_REQUIRES_EXPERT_SKILL)
+			if((objects[obj->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_SKILL_MASK) == O3_MULTISHOT_REQUIRES_EXPERT_SKILL)
 				Sprintf(eos(buf), " (requires expert skill)");
-			else if ((objects[obj->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_SKILLED_SKILL) == O3_MULTISHOT_REQUIRES_SKILLED_SKILL)
+			else if ((objects[obj->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_SKILL_MASK) == O3_MULTISHOT_REQUIRES_SKILLED_SKILL)
 				Sprintf(eos(buf), " (requires skilled skill)");
-			else if ((objects[obj->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_BASIC_SKILL) == O3_MULTISHOT_REQUIRES_BASIC_SKILL)
+			else if ((objects[obj->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_SKILL_MASK) == O3_MULTISHOT_REQUIRES_BASIC_SKILL)
 				Sprintf(eos(buf), " (requires basic skill)");
 			txt = buf;
 			putstr(datawin, 0, txt);
