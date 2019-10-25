@@ -25,8 +25,8 @@ struct icp {
     char iclass; /* item class */
 };
 
-static const struct icp mkobjprobs[] = { { 8, WEAPON_CLASS },
-                                         { 8, ARMOR_CLASS },
+static const struct icp mkobjprobs[] = { { 9, WEAPON_CLASS },
+                                         { 9, ARMOR_CLASS },
                                          { 18, FOOD_CLASS },
                                          { 5, TOOL_CLASS },
                                          { 5, GEM_CLASS },
@@ -35,8 +35,8 @@ static const struct icp mkobjprobs[] = { { 8, WEAPON_CLASS },
                                          { 12, SPBOOK_CLASS },
                                          { 2, WAND_CLASS },
                                          { 4, RING_CLASS },
-										 { 8, REAGENT_CLASS },
-										 { 4, MISCELLANEOUS_CLASS },
+										 { 7, REAGENT_CLASS },
+										 { 3, MISCELLANEOUS_CLASS },
 										 { 2, AMULET_CLASS } };
 
 static const struct icp boxiprobs[] = { { 12, GEM_CLASS },
@@ -44,11 +44,11 @@ static const struct icp boxiprobs[] = { { 12, GEM_CLASS },
                                         { 10, POTION_CLASS },
                                         { 12, SCROLL_CLASS },
                                         { 16, SPBOOK_CLASS },
-                                        { 8, COIN_CLASS },
+                                        { 10, COIN_CLASS },
                                         { 12, WAND_CLASS },
                                         { 6, RING_CLASS },
 										{ 4, REAGENT_CLASS },
-   									    { 6, MISCELLANEOUS_CLASS },
+   									    { 4, MISCELLANEOUS_CLASS },
 										{ 2, AMULET_CLASS } };
 
 static const struct icp rogueprobs[] = { { 12, WEAPON_CLASS },
@@ -59,18 +59,18 @@ static const struct icp rogueprobs[] = { { 12, WEAPON_CLASS },
                                          { 5, WAND_CLASS },
                                          { 5, RING_CLASS } };
 
-static const struct icp hellprobs[] = { { 14, WEAPON_CLASS },
-                                        { 14, ARMOR_CLASS },
-                                        { 14, FOOD_CLASS },
+static const struct icp hellprobs[] = { { 15, WEAPON_CLASS },
+                                        { 15, ARMOR_CLASS },
+                                        { 15, FOOD_CLASS },
                                         { 12, TOOL_CLASS },
-                                        { 8, GEM_CLASS },
+                                        { 9, GEM_CLASS },
                                         { 1, POTION_CLASS },
                                         { 1, SCROLL_CLASS },
 										{ 8, REAGENT_CLASS },
 										{ 8, WAND_CLASS },
                                         { 8, RING_CLASS },
-										{ 8, MISCELLANEOUS_CLASS },
-										{ 4, AMULET_CLASS } };
+										{ 5, MISCELLANEOUS_CLASS },
+										{ 3, AMULET_CLASS } };
 
 struct oextra *
 newoextra()
