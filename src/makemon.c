@@ -2029,60 +2029,78 @@ rndmonst()
         return ptr;
 
     if (rndmonst_state.choice_count < 0) { /* need to recalculate */
-        int zlevel, minmlev, maxmlev;
+        int zlevel, minmlev, maxmlev, midmlev;
         boolean elemlevel;
         boolean upper;
 
-        rndmonst_state.choice_count = 0;
-        /* look for first common monster */
-        for (mndx = LOW_PM; mndx < SPECIAL_PM; mndx++) {
-            if (!uncommon(mndx))
-                break;
-            rndmonst_state.mchoices[mndx] = 0;
-        }
-        if (mndx == SPECIAL_PM) {
-            /* evidently they've all been exterminated */
-            debugpline0("rndmonst: no common mons!");
-            return (struct permonst *) 0;
-        } /* else `mndx' now ready for use below */
-        zlevel = level_difficulty();
-        /* determine the level of the weakest monster to make. */
-        minmlev = zlevel / 6;
-        /* determine the level of the strongest monster to make. */
-        maxmlev = (zlevel + u.ulevel) / 2;
+		for (int i = 1; i <= 3; i++)
+		{
+			rndmonst_state.choice_count = 0;
+			/* look for first common monster */
+			for (mndx = LOW_PM; mndx < SPECIAL_PM; mndx++) {
+				if (!uncommon(mndx))
+					break;
+				rndmonst_state.mchoices[mndx] = 0;
+			}
+			if (mndx == SPECIAL_PM) {
+				/* evidently they've all been exterminated */
+				debugpline0("rndmonst: no common mons!");
+				return (struct permonst *) 0;
+			} /* else `mndx' now ready for use below */
+			zlevel = level_difficulty();
 
-		if (!In_mines(&u.uz) && zlevel > 5)
-			maxmlev += (zlevel - 5 + 1) / 2;
+			/* determine the level of the weakest monster to make. */
+			/* determine the level of the strongest monster to make. */
+			if (i == 1)
+			{
+				/* Try first with a tighter range */
+				midmlev = (zlevel * 2 + u.ulevel) / 3;
+				maxmlev = (zlevel * 2 + u.ulevel) / 2;
+				minmlev = max(0, midmlev - (maxmlev - midmlev)); //equates to midmlev/2 = (2z+u)/6
+			}
+			else if (i == 2)
+			{
+				minmlev = (zlevel * 2 + u.ulevel) / 12;
+				maxmlev = (zlevel * 2 + u.ulevel) / 2;
+			}
+			else
+			{
+				minmlev = 0;
+				maxmlev = (zlevel * 2 + u.ulevel);
+			}
 
-        upper = Is_rogue_level(&u.uz);
-        elemlevel = In_endgame(&u.uz) && !Is_astralevel(&u.uz);
+			upper = Is_rogue_level(&u.uz);
+			elemlevel = In_endgame(&u.uz) && !Is_astralevel(&u.uz);
 
-        /*
-         * Find out how many monsters exist in the range we have selected.
-         */
-        for ( ; mndx < SPECIAL_PM; mndx++) { /* (`mndx' initialized above) */
-            ptr = &mons[mndx];
-            rndmonst_state.mchoices[mndx] = 0;
-            if (tooweak(mndx, minmlev) || toostrong(mndx, maxmlev))
-                continue;
-            if (upper && !isupper((uchar) def_monsyms[(int) ptr->mlet].sym))
-                continue;
-            if (elemlevel && wrong_elem_type(ptr))
-                continue;
-            if (uncommon(mndx))
-                continue;
-            if (Inhell && (ptr->geno & G_NOHELL))
-                continue;
-            ct = (int) (ptr->geno & G_FREQ) + align_shift(ptr);
-            if (ct < 0 || ct > 127)
-                panic("rndmonst: bad count [#%d: %d]", mndx, ct);
-            rndmonst_state.choice_count += ct;
-            rndmonst_state.mchoices[mndx] = (char) ct;
-        }
-        /*
-         *      Possible modification:  if choice_count is "too low",
-         *      expand minmlev..maxmlev range and try again.
-         */
+			/*
+			 * Find out how many monsters exist in the range we have selected.
+			 */
+			for ( ; mndx < SPECIAL_PM; mndx++) { /* (`mndx' initialized above) */
+				ptr = &mons[mndx];
+				rndmonst_state.mchoices[mndx] = 0;
+				if (tooweak(mndx, minmlev) || toostrong(mndx, maxmlev))
+					continue;
+				if (upper && !isupper((uchar) def_monsyms[(int) ptr->mlet].sym))
+					continue;
+				if (elemlevel && wrong_elem_type(ptr))
+					continue;
+				if (uncommon(mndx))
+					continue;
+				if (Inhell && (ptr->geno & G_NOHELL))
+					continue;
+				ct = (int) (ptr->geno & G_FREQ) + align_shift(ptr);
+				if (ct < 0 || ct > 127)
+					panic("rndmonst: bad count [#%d: %d]", mndx, ct);
+				rndmonst_state.choice_count += ct;
+				rndmonst_state.mchoices[mndx] = (char) ct;
+			}
+			/*
+			 *      Possible modification:  if choice_count is "too low",
+			 *      expand minmlev..maxmlev range and try again.
+			 */
+			if (rndmonst_state.choice_count > 0)
+				break;
+		}
     } /* choice_count+mchoices[] recalc */
 
     if (rndmonst_state.choice_count <= 0) {
