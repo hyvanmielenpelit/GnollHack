@@ -326,8 +326,9 @@
      && !BFlying)
 /* May touch surface; does not override any others */
 
+#define HWwalking u.uprops[WWALKING].intrinsic
 #define EWwalking u.uprops[WWALKING].extrinsic
-#define Wwalking (EWwalking && !Is_waterlevel(&u.uz))
+#define Wwalking ((EWwalking || HWwalking) && !Is_waterlevel(&u.uz))
 /* Don't get wet, can't go under water; overrides others except levitation */
 /* Wwalking is meaningless on water level */
 
@@ -339,12 +340,13 @@
 
 #define HMagical_breathing u.uprops[MAGICAL_BREATHING].intrinsic
 #define EMagical_breathing u.uprops[MAGICAL_BREATHING].extrinsic
+#define Magical_breathing (EMagical_breathing || HMagical_breathing)
 #define Amphibious \
-    (HMagical_breathing || EMagical_breathing || amphibious(youmonst.data))
+    (Magical_breathing || amphibious(youmonst.data))
 /* Get wet, may go under surface */
 
 #define Breathless \
-    (HMagical_breathing || EMagical_breathing || breathless(youmonst.data))
+    (Magical_breathing || breathless(youmonst.data))
 
 #define Underwater (u.uinwater)
 /* Note that Underwater and u.uinwater are both used in code.

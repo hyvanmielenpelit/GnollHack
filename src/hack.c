@@ -1483,6 +1483,49 @@ domove_core()
                 nomul(0);
         }
 
+		if (is_pool_or_lava(x, y) && levl[x][y].seenv && !Confusion && !Hallucination)
+		{
+			if (
+				(is_pool(x, y) && 
+					(Wwalking 
+						|| Amphibious 
+						|| Breathless
+						|| Swimming
+						|| Flying 
+						|| Levitation
+						|| is_swimmer(youmonst.data)
+						|| is_flyer(youmonst.data)
+						|| is_floater(youmonst.data)
+					)
+				)
+				|| 
+				(is_lava(x, y) && 
+					(Levitation 
+						|| Flying
+						|| likes_lava(youmonst.data)
+						|| is_flyer(youmonst.data)
+					)
+				)
+			)
+			{
+				/* Survives, so no question*/
+			}
+			else
+			{
+				/* If blind, you still get the question */
+
+				char ynqbuf[BUFSZ] = "";
+				Sprintf(ynqbuf, "Are you sure you want to enter the %s?", is_pool(x, y) ? "pool" : is_lava(x, y) ? "lava" : "location");
+
+				char ans = ynq(ynqbuf);
+				if (ans != 'y')
+				{
+					nomul(0);
+					return;
+				}
+			}
+		}
+
         if (u.ustuck && (x != u.ustuck->mx || y != u.ustuck->my)) {
             if (distu(u.ustuck->mx, u.ustuck->my) > 2) {
                 /* perhaps it fled (or was teleported or ... ) */
