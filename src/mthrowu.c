@@ -198,7 +198,15 @@ struct obj *otmp, *mwep;
                : otmp->oclass == WEAPON_CLASS)
         && !mtmp->mconf) 
 	{
-		if (objects[mwep->otyp].oc_multishot_count > 1)
+
+		struct obj* otmpmulti = (struct obj*)0;
+		if (otmp && is_ammo(otmp) && mwep && matching_launcher(otmp, mwep))
+			otmpmulti = mwep;
+		else if (otmp)
+			otmpmulti = otmp;
+
+
+		if (otmpmulti && objects[otmpmulti->otyp].oc_multishot_count > 1)
 		{
 			int skilllevel = 0;
 			boolean multishotok = TRUE;
@@ -211,19 +219,19 @@ struct obj *otmp, *mwep;
 			else if (is_mplayer(mtmp->data))
 				skilllevel = P_SKILLED;
 
-			if ((objects[mwep->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_SKILL_MASK) == O3_MULTISHOT_REQUIRES_EXPERT_SKILL && skilllevel < P_EXPERT)
+			if ((objects[otmpmulti->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_SKILL_MASK) == O3_MULTISHOT_REQUIRES_EXPERT_SKILL && skilllevel < P_EXPERT)
 				multishotok = FALSE;
-			else if ((objects[mwep->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_SKILL_MASK) == O3_MULTISHOT_REQUIRES_SKILLED_SKILL && skilllevel < P_SKILLED)
+			else if ((objects[otmpmulti->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_SKILL_MASK) == O3_MULTISHOT_REQUIRES_SKILLED_SKILL && skilllevel < P_SKILLED)
 				multishotok = FALSE;
-			else if ((objects[mwep->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_SKILL_MASK) == O3_MULTISHOT_REQUIRES_BASIC_SKILL && skilllevel < P_BASIC)
+			else if ((objects[otmpmulti->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_SKILL_MASK) == O3_MULTISHOT_REQUIRES_BASIC_SKILL && skilllevel < P_BASIC)
 				multishotok = FALSE;
 
 			if(multishotok)
 			{
-				if (objects[mwep->otyp].oc_flags3 & O3_MULTISHOT_IS_RANDOM)
-					multishotrndextra = objects[mwep->otyp].oc_multishot_count - 1;
+				if (objects[otmpmulti->otyp].oc_flags3 & O3_MULTISHOT_IS_RANDOM)
+					multishotrndextra = objects[otmpmulti->otyp].oc_multishot_count - 1;
 				else
-					multishot = objects[mwep->otyp].oc_multishot_count;
+					multishot = objects[otmpmulti->otyp].oc_multishot_count;
 			}
 		}
 
