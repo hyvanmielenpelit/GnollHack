@@ -3068,6 +3068,8 @@ static const struct alt_spellings {
 	{ "mandrake", MANDRAKE_ROOT },
 	{ "wolfsbane", SPRIG_OF_WOLFSBANE },
 	{ "garlic", CLOVE_OF_GARLIC },
+	{ "sulfurous ash", PINCH_OF_SULFUROUS_ASH },
+	{ "ash", PINCH_OF_SULFUROUS_ASH },
 	{ "ring of death resistance", RIN_LIFE_PROTECTION },
 	{ "ring of protection from shape shifters", RIN_PROTECTION_FROM_SHAPE_CHANGERS },
 	{ "belt of giant strength", BELT_OF_HILL_GIANT_STRENGTH },

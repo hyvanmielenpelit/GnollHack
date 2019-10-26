@@ -34,7 +34,7 @@ STATIC_PTR int NDECL(Shield_on);
 STATIC_PTR int NDECL(Shirt_on);
 STATIC_PTR int NDECL(Robe_on);
 STATIC_PTR int NDECL(Bracers_on);
-STATIC_PTR int FDECL(MiscellaneousItem_on, (struct obj*));
+STATIC_PTR int FDECL(MiscellaneousItem_on, (struct obj*, long));
 STATIC_DCL void NDECL(Amulet_on);
 STATIC_DCL void FDECL(Ring_off_or_gone, (struct obj *, BOOLEAN_P));
 STATIC_PTR int FDECL(select_off, (struct obj *));
@@ -805,11 +805,18 @@ Bracers_off(VOID_ARGS)
 }
 
 STATIC_PTR int
-MiscellaneousItem_on(ud)
+MiscellaneousItem_on(ud, wearslotmask)
 struct obj* ud;
+long wearslotmask;
 {
+	/* Wear slot mask added to find out the situation before wearing */
 	if (!ud)
 		return 0;
+
+	boolean hadhallucination = Hallucination;
+
+	if (wearslotmask != 0)
+		setworn(ud, wearslotmask);
 
 	if (objects[ud->otyp].oc_subtyp == MISC_IOUN_STONE)
 	{
@@ -820,6 +827,15 @@ struct obj* ud;
 		if (!Levitation)
 			pline("You attach %s to your back and start to fly.", the(cxname(ud)));
 	}
+	else if (ud->otyp == EYEGLASSES_OF_HALLUCINATION)
+	{
+		if (Hallucination && !hadhallucination)
+		{
+			makeknown(ud->otyp);
+			pline("Oh wow! Everything %s so cosmic!", (!Blind) ? "looks" : "feels");
+		}
+	}
+
 	return 0;
 }
 
@@ -830,12 +846,10 @@ struct obj* ud;
 	if (!ud)
 		return 0;
 
+	boolean hadhallucination = Hallucination;
 	long bit = ud->owornmask & W_MISCITEMS;
 
 	context.takeoff.mask &= ~bit;
-	/* no shirt currently requires special handling when taken off, but we
-	   keep this uncommented in case somebody adds a new one which does */
-
 	setworn((struct obj*) 0, bit);
 	context.takeoff.cancelled_don = FALSE;
 
@@ -847,6 +861,27 @@ struct obj* ud;
 	{
 		if (!Levitation)
 			pline("You stop flying%s.", !Is_airlevel(&u.uz) ? " and land down" : "");
+	}
+	else if (ud->otyp == EYEGLASSES_OF_HALLUCINATION)
+	{
+		if (hadhallucination && !Hallucination)
+		{
+			eatmupdate();
+			if (u.uswallow) {
+				swallowed(0); /* redraw swallow display */
+			}
+			else {
+				/* The see_* routines should be called *before* the pline. */
+				see_monsters();
+				see_objects();
+				see_traps();
+			}
+
+			update_inventory();
+			context.botl = TRUE;
+			makeknown(ud->otyp);
+			pline("Everything %s SO boring now.", (!Blind) ? "looks" : "feels");
+		}
 	}
 
 	return 0;
@@ -1489,15 +1524,15 @@ struct obj *obj; /* if null, do all worn items; otherwise just obj itself */
     if (!obj ? uamul != 0 : (obj == uamul))
         (void) Amulet_on();
 	if (!obj ? umisc != 0 : (obj == umisc))
-		(void)MiscellaneousItem_on(umisc);
+		(void)MiscellaneousItem_on(umisc, 0);
 	if (!obj ? umisc2 != 0 : (obj == umisc2))
-		(void)MiscellaneousItem_on(umisc2);
+		(void)MiscellaneousItem_on(umisc2, 0);
 	if (!obj ? umisc3 != 0 : (obj == umisc3))
-		(void)MiscellaneousItem_on(umisc3);
+		(void)MiscellaneousItem_on(umisc3, 0);
 	if (!obj ? umisc4 != 0 : (obj == umisc4))
-		(void)MiscellaneousItem_on(umisc4);
+		(void)MiscellaneousItem_on(umisc4, 0);
 	if (!obj ? umisc5 != 0 : (obj == umisc5))
-		(void)MiscellaneousItem_on(umisc5);
+		(void)MiscellaneousItem_on(umisc5, 0);
 
     if (!obj ? uarmu != 0 : (obj == uarmu))
         (void) Shirt_on();
@@ -2468,33 +2503,28 @@ struct obj *obj;
 		} else if (obj->oclass == MISCELLANEOUS_CLASS) {
 			if(!umisc)
 			{
-				setworn(obj, W_MISC);
-				MiscellaneousItem_on(umisc);
+				MiscellaneousItem_on(obj, W_MISC);
 				give_feedback = (umisc != 0);
 			}
 			else if (!umisc2)
 			{
-				setworn(obj, W_MISC2);
-				MiscellaneousItem_on(umisc2);
+				MiscellaneousItem_on(obj, W_MISC2);
 				give_feedback = (umisc2 != 0);
 			}
 			else if (!umisc3)
 			{
-				setworn(obj, W_MISC3);
-				MiscellaneousItem_on(umisc3);
+				MiscellaneousItem_on(obj, W_MISC3);
 				give_feedback = (umisc3 != 0);
 			}
 			else if (!umisc4)
 			{
-				setworn(obj, W_MISC4);
-				MiscellaneousItem_on(umisc4);
+				MiscellaneousItem_on(obj, W_MISC4);
 				give_feedback = (umisc4 != 0);
 			}
 			else
 			{
 				//Must be available
-				setworn(obj, W_MISC5);
-				MiscellaneousItem_on(umisc5);
+				MiscellaneousItem_on(obj, W_MISC5);
 				give_feedback = (umisc5 != 0);
 			}
 		} else if (eyewear) {

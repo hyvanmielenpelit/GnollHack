@@ -121,12 +121,12 @@
 #define Glib u.uprops[GLIB].intrinsic
 #define Slimed u.uprops[SLIMED].intrinsic /* [Tom] */
 
-/* Hallucination is solely a timeout */
 #define HHallucination u.uprops[HALLUC].intrinsic
+#define EHallucination u.uprops[HALLUC].extrinsic
 #define HHalluc_resistance u.uprops[HALLUC_RES].intrinsic
 #define EHalluc_resistance u.uprops[HALLUC_RES].extrinsic
 #define Halluc_resistance (HHalluc_resistance || EHalluc_resistance)
-#define Hallucination (HHallucination && !Halluc_resistance)
+#define Hallucination ((HHallucination || EHallucination) && !Halluc_resistance)
 
 /* Timeout, plus a worn mask */
 #define HDeaf u.uprops[DEAF].intrinsic

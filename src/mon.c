@@ -828,7 +828,7 @@ int reagentstyle; //0 = all, 1 = priest only, 2 = all but no priest
 		return randomtruegem();
 	else
 	{
-		switch (rn2(15))
+		switch (rn2(16))
 		{
 		case 0:
 			if(reagentstyle == 2)
@@ -867,7 +867,7 @@ int reagentstyle; //0 = all, 1 = priest only, 2 = all but no priest
 			if (reagentstyle == 2)
 				otyp = BONE_DAGGER;
 			else
-				otyp = POT_WATER;
+				otyp = PINCH_OF_SULFUROUS_ASH;
 			break;
 		case 8:
 			if (reagentstyle == 1)
@@ -898,6 +898,9 @@ int reagentstyle; //0 = all, 1 = priest only, 2 = all but no priest
 			break;
 		case 14:
 			otyp = PIECE_OF_WOOD;
+			break;
+		case 15:
+			otyp = PINCH_OF_SULFUROUS_ASH;
 			break;
 		default:
 			otyp = CLOVE_OF_GARLIC;

@@ -64,6 +64,7 @@ static int p_type; /* (-1)-3: (-1)=really naughty, 3=really good */
  * order to have the values be meaningful.
  */
 
+#define TROUBLE_CURSED_EYEGLASSES_OF_HALLUCINATION 15
 #define TROUBLE_STONED 14
 #define TROUBLE_SLIMED 13
 #define TROUBLE_STRANGLED 12
@@ -211,6 +212,14 @@ in_trouble()
         return TROUBLE_COLLAPSING;
     if (stuck_in_wall())
         return TROUBLE_STUCK_IN_WALL;
+
+	if (Cursed_obj(umisc, EYEGLASSES_OF_HALLUCINATION)
+		|| Cursed_obj(umisc2, EYEGLASSES_OF_HALLUCINATION)
+		|| Cursed_obj(umisc3, EYEGLASSES_OF_HALLUCINATION)
+		|| Cursed_obj(umisc4, EYEGLASSES_OF_HALLUCINATION)
+		|| Cursed_obj(umisc5, EYEGLASSES_OF_HALLUCINATION))
+		return TROUBLE_CURSED_EYEGLASSES_OF_HALLUCINATION;
+
     if (Cursed_obj(uarmf, LEVITATION_BOOTS)
         || stuck_ring(uleft, RIN_LEVITATION)
         || stuck_ring(uright, RIN_LEVITATION))
@@ -494,7 +503,14 @@ int trouble;
     case TROUBLE_CURSED_BLINDFOLD:
         otmp = ublindf;
         goto decurse;
-    case TROUBLE_LYCANTHROPE:
+	case TROUBLE_CURSED_EYEGLASSES_OF_HALLUCINATION:
+		otmp = (umisc->otyp == EYEGLASSES_OF_HALLUCINATION ? umisc :
+			umisc2->otyp == EYEGLASSES_OF_HALLUCINATION ? umisc2 :
+			umisc3->otyp == EYEGLASSES_OF_HALLUCINATION ? umisc3 :
+			umisc4->otyp == EYEGLASSES_OF_HALLUCINATION ? umisc4 :
+			umisc5->otyp == EYEGLASSES_OF_HALLUCINATION ? umisc5 : (struct obj*)0);
+		goto decurse;
+	case TROUBLE_LYCANTHROPE:
         you_unwere(TRUE);
         break;
     /*

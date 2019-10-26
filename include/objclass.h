@@ -293,7 +293,7 @@ struct objclass {
 
 
 	int oc_hitbonus;						/* weapons: "to hit" bonus */
-	int oc_fixed_damage_bonus;				/* fixed strength-based damage bonus for crossbows; O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH must be on */
+	int oc_fixed_damage_bonus;				/* fixed strength-based damage bonus for crossbows; O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH must be on; can be used for other purposes for a spellbook flag */
 	int oc_range;							/* launchers: range for ammo, others throw range: >0 Fixed range, <0 Percentage of STR */
 
 	/* general purpose */
@@ -394,7 +394,7 @@ struct objclass {
 
 	unsigned long oc_power_permissions; /* roles, races, genders, and alignments that the item's powers are conferred to */
 	unsigned long oc_target_permissions; /* symbol, M1 flag, M2 flag, M3 flag, etc. for which extra damage is deal to */
-	int oc_critical_strike_percentage;	/* percentage to be used with critical strike; can be used for other purposes for non-weapons, too */
+	int oc_critical_strike_percentage;	/* percentage to be used with A1_CRITICAL_STRIKE; can be used for other purposes for a S1_ flag, too */
 	int oc_multigen_type;				/* class number multi multigen_type */
 
 /* oc_dir_subtypes for spells */
