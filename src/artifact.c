@@ -890,7 +890,8 @@ int tmp;
         spec_dbon_applies = spec_applies(weap, mon);
 
     if (spec_dbon_applies)
-        return (weap->attk.damn > 0 && weap->attk.damd > 0) ? d((int)weap->attk.damn, (int) weap->attk.damd) + (int)weap->attk.damp : max(tmp, 1);
+        return (weap->attk.damd > 0) ? (rnd((int) weap->attk.damd) + (int)weap->attk.damp) : max(tmp, 1);
+	/* (weap->attk.damn > 0 && weap->attk.damd > 0) ? (weap->attk.damn > 0 && weap->attk.damd > 0) ? d((int)weap->attk.damn, (int) weap->attk.damd) + (int)weap->attk.damp */
     return 0;
 }
 
