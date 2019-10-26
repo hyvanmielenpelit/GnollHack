@@ -307,6 +307,7 @@ boolean createcorpse;
 	int oneinchance = 0;
 	int basemonsterindex = 0;
 	int sporequan = 0;
+	boolean additionalash = 0;
 	
 	/* Monsters that create death items with or without the corpse */
 	switch (mndx)
@@ -323,8 +324,32 @@ boolean createcorpse;
 	case PM_ETTIN_SKELETON:
 	case PM_GIANT_SKELETON:
 		obj = mksobj_at(BONE, x, y, TRUE, FALSE);
-		obj->quan = rnd(4);
+		obj->quan = rnd(3);
 		obj->owt = weight(obj);
+		break;
+	case PM_ANCIENT_RED_DRAGON:
+		additionalash++;
+	case PM_RED_DRAGON:
+	case PM_HELL_BAT:
+	case PM_PHOENIX:
+		additionalash++;
+	case PM_FIRE_VORTEX:
+	case PM_SALAMANDER:
+	case PM_FIRE_ELEMENTAL:
+	case PM_FIRE_GIANT:
+		additionalash++;
+	case PM_FIRE_ANT:
+	case PM_RED_NAGA_HATCHLING:
+	case PM_RED_DRAGON_HATCHLING:
+		if ((!mtmp->mrevived && !rn2(2)) || (mtmp->mrevived && !rn2(10)))
+		{
+			obj = mksobj_at(PINCH_OF_SULFUROUS_ASH, x, y, TRUE, FALSE);
+			if(additionalash > 1)
+				obj->quan = rnd(1+additionalash);
+			else
+				obj->quan = 1;
+			obj->owt = weight(obj);
+		}
 		break;
 	default:
 		break;
@@ -828,6 +853,9 @@ int reagentstyle; //0 = all, 1 = priest only, 2 = all but no priest
 		return randomtruegem();
 	else
 	{
+		if (Inhell && !rn2(4))
+			return PINCH_OF_SULFUROUS_ASH;
+
 		switch (rn2(16))
 		{
 		case 0:

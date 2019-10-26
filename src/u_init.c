@@ -1090,19 +1090,6 @@ u_init()
         if (!rn2(5))
             ini_inv(Blindfold);
 
-		n = 2 + rn2(4); //2...5
-		for (int i = 0; i < n; i++)
-		{
-			otmp = mksobj(randomreagent(FALSE, 2), TRUE, FALSE, FALSE);
-			if (otmp)
-			{
-				makeknown(otmp->oclass);
-				otmp->known = 1;
-				otmp->dknown = otmp->bknown = otmp->rknown = 1;
-				otmp = addinv(otmp);
-			}
-		}
-
 		if (u.ualign.type == A_CHAOTIC)
 			skill_init(Skill_W_Init_Chaotic, Skill_W_Max);
 		else
@@ -1463,6 +1450,42 @@ register struct trobj *trop;
 				(void)add_to_container(obj, mksobj(TOWEL, TRUE, FALSE, TRUE));
 				makeknown(BATHROBE);
 				obj->owt = weight(obj);
+			}
+		}
+		/* Set sack contents*/
+		if (otyp == BAG_OF_WIZARDRY)
+		{
+			if (Role_if(PM_WIZARD))
+			{
+				/* Add one sulfur, as it is rare */
+				struct obj* otmp = (struct obj*)0;
+				otmp = mksobj(PINCH_OF_SULFUROUS_ASH, TRUE, FALSE, TRUE);
+				otmp->known = 1;
+				otmp->dknown = otmp->bknown = otmp->rknown = 1;
+				(void)add_to_container(obj, otmp);
+
+				/* Add arrows for magic arrow */
+				otmp = mksobj(ARROW, TRUE, FALSE, TRUE);
+				otmp->known = 1;
+				otmp->dknown = otmp->bknown = otmp->rknown = 1;
+				(void)add_to_container(obj, otmp);
+
+				int n = 2 + rn2(4); //2...5
+				for (int i = 0; i < n; i++)
+				{
+					struct obj* otmp = mksobj(randomreagent(FALSE, 2), TRUE, FALSE, FALSE);
+					if (otmp)
+					{
+						makeknown(otmp->otyp);
+						otmp->known = 1;
+						otmp->dknown = otmp->bknown = otmp->rknown = 1;
+						(void)add_to_container(obj, otmp);
+					}
+				}
+
+				/* Last update bag weight */
+				obj->owt = weight(obj);
+
 			}
 		}
 
