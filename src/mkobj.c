@@ -25,9 +25,9 @@ struct icp {
     char iclass; /* item class */
 };
 
-static const struct icp mkobjprobs[] = { { 9, WEAPON_CLASS },
-                                         { 9, ARMOR_CLASS },
-                                         { 18, FOOD_CLASS },
+static const struct icp mkobjprobs[] = { { 12, WEAPON_CLASS },
+                                         { 12, ARMOR_CLASS },
+                                         { 12, FOOD_CLASS },
                                          { 5, TOOL_CLASS },
                                          { 5, GEM_CLASS },
                                          { 12, POTION_CLASS },
