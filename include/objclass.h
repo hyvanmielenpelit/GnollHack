@@ -235,65 +235,65 @@ struct objclass {
 	long oc_aflags;							/* attack related flags, e.g. whether the attack is vorpal */
 
 /* Attack flags for weapons, armor, weapon-like tools, and miscellaneous items */
-#define AFLAGS_NONE				0x00000000
-#define AFLAGS_CRITICAL_STRIKE	0x00000001  /* extra damage is caused only by chance determined by oc_dir_subtype */
-#define AFLAGS_CRITICAL_STRIKE_IS_DEADLY				0x00000002  /* successful critical strike causes lethal damage */
-#define AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK	0x00000004  /* lethal damage is death magic */
-#define AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK	0x00000008  /* lethal damage is disintegration */
-#define AFLAGS_DEADLY_CRITICAL_STRIKE_USES_EXTRA_DAMAGE_TYPE (AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK | AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK)  
-#define AFLAGS_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK (AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK | AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK)  
+#define A1_NONE				0x00000000
+#define A1_CRITICAL_STRIKE	0x00000001  /* extra damage is caused only by chance determined by oc_critical_strike_percentage */
+#define A1_CRITICAL_STRIKE_IS_DEADLY				0x00000002  
+		/* successful critical strike causes lethal damage. If this flag is on, critical strike is considered not to be connected with extra damage; rather, it is treated similarly to vorpal attack */
+#define A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK	0x00000004  /* lethal damage is death magic */
+#define A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK	0x00000008  /* lethal damage is disintegration */
+#define A1_DEADLY_CRITICAL_STRIKE_USES_EXTRA_DAMAGE_TYPE (A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK | A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK)  
+		/* lethal damage is of extra damage type; note that normal critical strike always follows extra_damagetype */
+#define A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK (A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK | A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK)  
+#define A1_CRITICAL_STRIKE_DISRESPECTS_TARGETS		0x00000010  /* successful critical strike causes lethal damage */
+#define A1_CRITICAL_STRIKE_DISRESPECTS_CHARACTERS	0x00000020  /* successful critical strike causes lethal damage */
+/* One more critical strike flag here */
 
-/* lethal damage is of extra damage type; note that normal critical strike always follows extra_damagetype */
-#define AFLAGS_CRITICAL_STRIKE_DISRESPECTS_TARGETS		0x00000010  /* successful critical strike causes lethal damage */
-#define AFLAGS_CRITICAL_STRIKE_DISRESPECTS_CHARACTERS	0x00000020  /* successful critical strike causes lethal damage */
-/* One more ciritcal strike flag here */
+#define A1_WOUNDING			0x00000080  /* extra damage caused is permanent damage */
+#define A1_WOUNDING_DISRESPECTS_TARGETS		0x00000100  /* successful critical strike causes lethal damage */
+#define A1_WOUNDING_DISRESPECTS_CHARACTERS	0x00000200  /* successful critical strike causes lethal damage */
 
-#define AFLAGS_WOUNDING			0x00000080  /* extra damage caused is permanent damage */
-#define AFLAGS_WOUNDING_DISRESPECTS_TARGETS		0x00000100  /* successful critical strike causes lethal damage */
-#define AFLAGS_WOUNDING_DISRESPECTS_CHARACTERS	0x00000200  /* successful critical strike causes lethal damage */
+#define A1_LIFE_LEECH		0x00000400  /* heals hit points equal to the extra damage caused */
+#define A1_LIFE_LEECH_DISRESPECTS_TARGETS		0x00000800  /* successful critical strike causes lethal damage */
+#define A1_LIFE_LEECH_DISRESPECTS_CHARACTERS	0x00001000  /* successful critical strike causes lethal damage */
 
-#define AFLAGS_LIFE_LEECH		0x00000400  /* heals hit points equal to the extra damage caused */
-#define AFLAGS_LIFE_LEECH_DISRESPECTS_TARGETS		0x00000800  /* successful critical strike causes lethal damage */
-#define AFLAGS_LIFE_LEECH_DISRESPECTS_CHARACTERS	0x00001000  /* successful critical strike causes lethal damage */
+#define A1_SHARPNESS		0x00002000	/* 2/20 chance of the monster losing 25% of maximum hit points */
+#define A1_VORPAL			0x00004000	/* 1/20 chance of the monster being beheaded */
+#define A1_BISECT (A1_SHARPNESS | A1_VORPAL) /* 1/20 chance of a small monster being bisected and a big monster losing 50% of maximum hit points */
+#define A1_SVB_MASK (A1_SHARPNESS | A1_VORPAL)
 
-#define AFLAGS_SHARPNESS		0x00002000	/* 2/20 chance of the monster losing 25% of maximum hit points */
-#define AFLAGS_VORPAL			0x00004000	/* 1/20 chance of the monster being beheaded */
-#define AFLAGS_BISECT (AFLAGS_SHARPNESS | AFLAGS_VORPAL) /* 1/20 chance of a small monster being bisected and a big monster losing 50% of maximum hit points */
-#define AFLAGS_SVB_MASK (AFLAGS_SHARPNESS | AFLAGS_VORPAL)
+#define A1_VORPAL_LIKE_DOUBLE_CHANCE_FOR_PERMITTED_TARGETS	0x00008000
+#define A1_VORPAL_LIKE_DISRESPECTS_TARGETS				0x00010000
+#define A1_VORPAL_LIKE_DISRESPECTS_CHARACTERS			0x00020000
 
-#define AFLAGS_VORPAL_LIKE_DOUBLE_CHANCE_FOR_PERMITTED_TARGETS	0x00008000
-#define AFLAGS_VORPAL_LIKE_DISRESPECTS_TARGETS				0x00010000
-#define AFLAGS_VORPAL_LIKE_DISRESPECTS_CHARACTERS			0x00020000
+#define A1_LEVEL_DRAIN									0x00040000  /* drains a level from monsters */
+#define A1_LEVEL_DRAIN_DISRESPECTS_TARGETS				0x00080000  /* successful critical strike causes lethal damage */
+#define A1_LEVEL_DRAIN_DISRESPECTS_CHARACTERS			0x00100000  /* successful critical strike causes lethal damage */
 
-#define AFLAGS_LEVEL_DRAIN									0x00040000  /* drains a level from monsters */
-#define AFLAGS_LEVEL_DRAIN_DISRESPECTS_TARGETS				0x00080000  /* successful critical strike causes lethal damage */
-#define AFLAGS_LEVEL_DRAIN_DISRESPECTS_CHARACTERS			0x00100000  /* successful critical strike causes lethal damage */
+#define A1_STUN											0x00200000  /* stuns target */
+#define A1_STUN_DISRESPECTS_TARGETS						0x00400000  /* successful critical strike causes lethal damage */
+#define A1_STUN_DISRESPECTS_CHARACTERS					0x00800000  /* successful critical strike causes lethal damage */
 
-#define AFLAGS_STUN											0x00200000  /* stuns target */
-#define AFLAGS_STUN_DISRESPECTS_TARGETS						0x00400000  /* successful critical strike causes lethal damage */
-#define AFLAGS_STUN_DISRESPECTS_CHARACTERS					0x00800000  /* successful critical strike causes lethal damage */
+#define A1_MAGIC_MISSILE_STRIKE							0x01000000  /* showers the target with magic missiles */
+/* One slot is free here */
 
-#define AFLAGS_MAGIC_MISSILE_STRIKE							0x01000000  /* showers the target with magic missiles */
-#define AFLAGS_DALIGN										0x02000000  /* TODO: attack bonus on non-aligned monsters  */
+#define A1_EXTRA_DAMAGE_DISRESPECTS_TARGETS				0x04000000  /* successful critical strike causes lethal damage */
+#define A1_EXTRA_DAMAGE_DISRESPECTS_CHARACTERS			0x08000000  /* successful critical strike causes lethal damage */
 
-#define AFLAGS_EXTRA_DAMAGE_DISRESPECTS_TARGETS				0x04000000  /* successful critical strike causes lethal damage */
-#define AFLAGS_EXTRA_DAMAGE_DISRESPECTS_CHARACTERS			0x08000000  /* successful critical strike causes lethal damage */
-
-#define AFLAGS_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA				0x10000000 /* abilities such as wounding and life leech are based on full caused damage, not just extra damage */
-#define AFLAGS_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS		0x20000000
-#define AFLAGS_ITEM_VANISHES_ON_HIT							0x40000000
+#define A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA				0x10000000 /* abilities such as wounding and life leech are based on full caused damage, not just extra damage */
+#define A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS		0x20000000
+#define A1_ITEM_VANISHES_ON_HIT							0x40000000
 
 
 /* Spell flags for spells, scrolls, potions, spell-like tools, and wands */
-#define SFLAGS_NONE 0x00000000
-#define SFLAGS_SPELL_EXPLOSION_EFFECT				0x00000001
-#define SFLAGS_SPELL_BYPASSES_MAGIC_RESISTANCE		0x00000002
-#define SFLAGS_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY	0x00000004
-#define SFLAGS_SPELL_IS_NONREVERSIBLE_PERMANENT		0x00000008
+#define S1_NONE 0x00000000
+#define S1_SPELL_EXPLOSION_EFFECT				0x00000001
+#define S1_SPELL_BYPASSES_MAGIC_RESISTANCE		0x00000002
+#define S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY	0x00000004
+#define S1_SPELL_IS_NONREVERSIBLE_PERMANENT		0x00000008
 
 
 	int oc_hitbonus;						/* weapons: "to hit" bonus */
-	int oc_fixed_damage_bonus;				/* fixed strength-based damage bonus for crossbows */
+	int oc_fixed_damage_bonus;				/* fixed strength-based damage bonus for crossbows; O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH must be on */
 	int oc_range;							/* launchers: range for ammo, others throw range: >0 Fixed range, <0 Percentage of STR */
 
 	/* general purpose */
@@ -304,7 +304,7 @@ struct objclass {
 	int oc_oc5;		/* Used for spell range; non-spellbooks: specification of attributes or other properties item gives bonuses (abon) to using otmp->spe */
 	int oc_oc6;		/* Used for spell radius; non-spellbooks: 0 => spe is used, otherise fixed bonus */
 	int oc_oc7;		/* Used for spell casting penalty */
-	int oc_oc8;		/* Used for multishot strength */
+	int oc_oc8;		/* Used for multishot count */
 
 /* general*/
 #define oc_armor_class oc_oc1						/* weapons and armor: AC used in ARM_AC_BONUS in do.c */
@@ -374,6 +374,7 @@ struct objclass {
 #define oc_spell_range oc_oc5			/* books: spell range */
 #define oc_spell_radius oc_oc6			/* books: spell radius */
 #define oc_spell_saving_throw_adjustment oc_oc7	/* books: spell saving throw adjustment */
+/* oc_oc8 unused; saving throw type? */
 #define oc_spell_dmg_dice oc_wsdice		/* books: spell damage no of dice */
 #define oc_spell_dmg_dicesize oc_wsdam	/* books: spell damage size of dice */
 #define oc_spell_dmg_plus oc_wsdmgplus	/* books: spell damage constant added */

@@ -138,7 +138,7 @@ int x, y;
     struct trap *t;
 
     if (obj->otyp == CREAM_PIE 
-		|| (objects[obj->otyp].oc_aflags & AFLAGS_ITEM_VANISHES_ON_HIT) 
+		|| (objects[obj->otyp].oc_aflags & A1_ITEM_VANISHES_ON_HIT) 
 		|| (objects[obj->otyp].oc_material == MAT_GLASS
 		&& !(objects[obj->otyp].oc_flags & O1_INDESTRUCTIBLE)
 		&& !is_quest_artifact(obj)

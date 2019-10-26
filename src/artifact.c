@@ -1527,12 +1527,12 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 
 	/* We really want "on a natural 20" but GnollHack does it in */
 	/* reverse from AD&D. */
-	if ((objects[otmp->otyp].oc_aflags & AFLAGS_SVB_MASK) == AFLAGS_BISECT)
+	if ((objects[otmp->otyp].oc_aflags & A1_SVB_MASK) == A1_BISECT)
 	{
 		if (
-			((objects[otmp->otyp].oc_aflags & AFLAGS_VORPAL_LIKE_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mdef, magr))
-		 && ((objects[otmp->otyp].oc_aflags & AFLAGS_VORPAL_LIKE_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
-		 && (dieroll <= (objects[otmp->otyp].oc_aflags & AFLAGS_VORPAL_LIKE_DOUBLE_CHANCE_FOR_PERMITTED_TARGETS ? 2 : 1))
+			((objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mdef, magr))
+		 && ((objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
+		 && (dieroll <= (objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DOUBLE_CHANCE_FOR_PERMITTED_TARGETS ? 2 : 1))
 			)
 		{
 			if (youattack && u.uswallow && mdef == u.ustuck) {
@@ -1632,12 +1632,12 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 			}
 		}
 	}
-	else if ((objects[otmp->otyp].oc_aflags & AFLAGS_SVB_MASK) == AFLAGS_SHARPNESS)
+	else if ((objects[otmp->otyp].oc_aflags & A1_SVB_MASK) == A1_SHARPNESS)
 	{
 		if (
-			((objects[otmp->otyp].oc_aflags & AFLAGS_VORPAL_LIKE_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mdef, magr))
-			&& ((objects[otmp->otyp].oc_aflags & AFLAGS_VORPAL_LIKE_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
-			&& (dieroll <= (objects[otmp->otyp].oc_aflags & AFLAGS_VORPAL_LIKE_DOUBLE_CHANCE_FOR_PERMITTED_TARGETS ? 4 : 2))
+			((objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mdef, magr))
+			&& ((objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
+			&& (dieroll <= (objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DOUBLE_CHANCE_FOR_PERMITTED_TARGETS ? 4 : 2))
 			)
 		{
 			if (!youdefend) 
@@ -1713,12 +1713,12 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 			}
 		}
 	}
-	else if ((objects[otmp->otyp].oc_aflags & AFLAGS_SVB_MASK) == AFLAGS_VORPAL)
+	else if ((objects[otmp->otyp].oc_aflags & A1_SVB_MASK) == A1_VORPAL)
 	{
 	if (
-		((objects[otmp->otyp].oc_aflags & AFLAGS_VORPAL_LIKE_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mdef, magr))
-		&& ((objects[otmp->otyp].oc_aflags & AFLAGS_VORPAL_LIKE_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
-		&& (dieroll <= (objects[otmp->otyp].oc_aflags & AFLAGS_VORPAL_LIKE_DOUBLE_CHANCE_FOR_PERMITTED_TARGETS ? 2 : 1))
+		((objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mdef, magr))
+		&& ((objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
+		&& (dieroll <= (objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DOUBLE_CHANCE_FOR_PERMITTED_TARGETS ? 2 : 1))
 		)
 	{
 			static const char* const behead_msg[2] = { "%s beheads %s!",
@@ -1768,11 +1768,11 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 	}
 
 
-	if (objects[otmp->otyp].oc_aflags & AFLAGS_LEVEL_DRAIN) 
+	if (objects[otmp->otyp].oc_aflags & A1_LEVEL_DRAIN) 
 	{
 		if (
-			((objects[otmp->otyp].oc_aflags & AFLAGS_LEVEL_DRAIN_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mdef, magr))
-			&& ((objects[otmp->otyp].oc_aflags & AFLAGS_LEVEL_DRAIN_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
+			((objects[otmp->otyp].oc_aflags & A1_LEVEL_DRAIN_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mdef, magr))
+			&& ((objects[otmp->otyp].oc_aflags & A1_LEVEL_DRAIN_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
 			)
 		{
 			/* some non-living creatures (golems, vortices) are
@@ -1817,25 +1817,25 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 		}
 	}
 
-	if ((objects[otmp->otyp].oc_aflags & AFLAGS_CRITICAL_STRIKE) && (objects[otmp->otyp].oc_aflags & AFLAGS_CRITICAL_STRIKE_IS_DEADLY))
+	if ((objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE) && (objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_IS_DEADLY))
 	{
 		if (
-			((objects[otmp->otyp].oc_aflags & AFLAGS_CRITICAL_STRIKE_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mdef, magr))
-			&& ((objects[otmp->otyp].oc_aflags & AFLAGS_CRITICAL_STRIKE_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
+			((objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mdef, magr))
+			&& ((objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
 			)
 		{
 			if (rn2(100) < objects[otmp->otyp].oc_critical_strike_percentage)
 			{
 				if (
-					((objects[otmp->otyp].oc_aflags & AFLAGS_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == AFLAGS_DEADLY_CRITICAL_STRIKE_USES_EXTRA_DAMAGE_TYPE
+					((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_USES_EXTRA_DAMAGE_TYPE
 					&& ((objects[otmp->otyp].oc_extra_damagetype == AD_FIRE && (youdefend ? Fire_resistance : resists_fire(mdef)))
 						|| (objects[otmp->otyp].oc_extra_damagetype == AD_COLD && (youdefend ? Cold_resistance : resists_cold(mdef)))
 						|| (objects[otmp->otyp].oc_extra_damagetype == AD_ELEC && (youdefend ? Shock_resistance : resists_elec(mdef)))))
 					||
-					((objects[otmp->otyp].oc_aflags & AFLAGS_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK
+					((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK
 						&& ((youdefend ? Death_resistance : resists_death(mdef)) || is_not_living(mdef->data) || is_demon(mdef->data) || is_vampshifter(mdef)))
 					||
-					((objects[otmp->otyp].oc_aflags & AFLAGS_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK
+					((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK
 						&& ((youdefend ? (Disint_resistance || Invulnerable) : resists_disint(mdef)) || noncorporeal(mdef->data)))
 					)
 				{
@@ -1852,7 +1852,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 				}
 				else
 				{
-					if ((objects[otmp->otyp].oc_aflags & AFLAGS_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK)
+					if ((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK)
 					{
 
 						if (!youdefend)
@@ -1946,7 +1946,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 							}
 						}
 					}
-					else if ((objects[otmp->otyp].oc_aflags & AFLAGS_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == AFLAGS_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK)
+					else if ((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK)
 					{
 						lethaldamage = TRUE;
 						if (!youdefend)

@@ -3702,7 +3702,7 @@ int duration;
 
 	if (youdefend)
 	{
-		if (objects[obj->otyp].oc_aflags & SFLAGS_SPELL_BYPASSES_MAGIC_RESISTANCE)
+		if (objects[obj->otyp].oc_aflags & S1_SPELL_BYPASSES_MAGIC_RESISTANCE)
 			; //OK;
 		else if (!youattack && Antimagic)
 			return FALSE; /* resisted cancellation */
@@ -3711,7 +3711,7 @@ int duration;
 	}
 	else
 	{
-		if (objects[obj->otyp].oc_aflags & SFLAGS_SPELL_BYPASSES_MAGIC_RESISTANCE)
+		if (objects[obj->otyp].oc_aflags & S1_SPELL_BYPASSES_MAGIC_RESISTANCE)
 			; //OK;
 		else if (resist(mdef, obj, 0, 0, TELL))
 			return FALSE;
@@ -5111,7 +5111,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
 
 	//Define if explosion effect
 	boolean isexplosioneffect = FALSE;
-	if (origobj && objects[origobj->otyp].oc_aflags & SFLAGS_SPELL_EXPLOSION_EFFECT) // (type == ZT_SPELL(ZT_FIRE));
+	if (origobj && objects[origobj->otyp].oc_aflags & S1_SPELL_EXPLOSION_EFFECT) // (type == ZT_SPELL(ZT_FIRE));
 		isexplosioneffect = TRUE;
 
     /* if its a Hero Spell then get its SPE_TYPE */
@@ -6293,7 +6293,7 @@ int damage, tell;
 	if (oclass == RING_CLASS && !damage && !tell && is_mplayer(mtmp->data))
         return 1;
 
-	if (otmp && objects[otmp->otyp].oc_aflags & SFLAGS_SPELL_BYPASSES_MAGIC_RESISTANCE)
+	if (otmp && objects[otmp->otyp].oc_aflags & S1_SPELL_BYPASSES_MAGIC_RESISTANCE)
 		resisted = FALSE;
 	else
 	{

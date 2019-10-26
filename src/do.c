@@ -461,20 +461,20 @@ register struct obj* obj;
 			Sprintf(plusbuf, "%d", objects[otyp].oc_wsdmgplus);
 			Strcat(buf, plusbuf);
 		}
-		if (objects[otyp].oc_name_known && (objects[otyp].oc_aflags & AFLAGS_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
+		if (objects[otyp].oc_name_known && (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
 		{
 			/* Damage - Doubled */
 			Sprintf(eos(buf), " (x2)");
 		}
-		if (objects[otyp].oc_aflags & AFLAGS_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
+		if (objects[otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
 		{
-			if (objects[otyp].oc_aflags & AFLAGS_WOUNDING)
+			if (objects[otyp].oc_aflags & A1_WOUNDING)
 			{
 				Sprintf(plusbuf, " (permanent)");
 				Strcat(buf, plusbuf);
 			}
 
-			if (objects[otyp].oc_aflags & AFLAGS_LIFE_LEECH)
+			if (objects[otyp].oc_aflags & A1_LIFE_LEECH)
 			{
 				Sprintf(plusbuf, " (confers HP)");
 				Strcat(buf, plusbuf);
@@ -505,21 +505,21 @@ register struct obj* obj;
 			Sprintf(plusbuf, "%d", objects[otyp].oc_wldmgplus);
 			Strcat(buf, plusbuf);
 		}
-		if (objects[otyp].oc_name_known && (objects[otyp].oc_aflags & AFLAGS_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
+		if (objects[otyp].oc_name_known && (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
 		{
 			/* Damage - Doubled */
 			Sprintf(eos(buf), " (x2)");
 		}
 
-		if(objects[otyp].oc_aflags & AFLAGS_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
+		if(objects[otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
 		{
-			if (objects[otyp].oc_aflags & AFLAGS_WOUNDING)
+			if (objects[otyp].oc_aflags & A1_WOUNDING)
 			{
 				Sprintf(plusbuf, " (permanent)");
 				Strcat(buf, plusbuf);
 			}
 
-			if (objects[otyp].oc_aflags & AFLAGS_LIFE_LEECH)
+			if (objects[otyp].oc_aflags & A1_LIFE_LEECH)
 			{
 				Sprintf(plusbuf, " (confers HP)");
 				Strcat(buf, plusbuf);
@@ -568,13 +568,13 @@ register struct obj* obj;
 				Strcat(buf, plusbuf);
 			}
 
-			if (objects[otyp].oc_aflags & AFLAGS_WOUNDING)
+			if (objects[otyp].oc_aflags & A1_WOUNDING)
 			{
 				Sprintf(plusbuf, " (permanent)");
 				Strcat(buf, plusbuf);
 			}
 
-			if (objects[otyp].oc_aflags & AFLAGS_LIFE_LEECH)
+			if (objects[otyp].oc_aflags & A1_LIFE_LEECH)
 			{
 				Sprintf(plusbuf, " (confers HP)");
 				Strcat(buf, plusbuf);
@@ -730,7 +730,7 @@ register struct obj* obj;
 			if (obj->oclass == WEAPON_CLASS || is_weptool(obj))
 			{
 				int enchplus = obj->spe;
-				if (objects[otyp].oc_name_known && (objects[otyp].oc_aflags & AFLAGS_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
+				if (objects[otyp].oc_name_known && (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
 				{
 					enchplus *= 2;
 				}
@@ -1007,35 +1007,35 @@ register struct obj* obj;
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
-			if (objects[otyp].oc_aflags & AFLAGS_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS)
+			if (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS)
 			{
 				powercnt++;
 				Sprintf(buf, " %2d - Deals double damage on hit", powercnt);
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
-			if (objects[otyp].oc_aflags & AFLAGS_VORPAL)
+			if (objects[otyp].oc_aflags & A1_VORPAL)
 			{
 				powercnt++;
 				Sprintf(buf, " %2d - Beheads target on hit", powercnt);
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
-			if (objects[otyp].oc_aflags & AFLAGS_LEVEL_DRAIN)
+			if (objects[otyp].oc_aflags & A1_LEVEL_DRAIN)
 			{
 				powercnt++;
 				Sprintf(buf, " %2d - Drains a level on hit", powercnt);
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
-			if (objects[otyp].oc_aflags & AFLAGS_LIFE_LEECH)
+			if (objects[otyp].oc_aflags & A1_LIFE_LEECH)
 			{
 				powercnt++;
 				Sprintf(buf, " %2d - Transfers hit points to the wielder on hit", powercnt);
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
-			if (objects[otyp].oc_aflags & AFLAGS_WOUNDING)
+			if (objects[otyp].oc_aflags & A1_WOUNDING)
 			{
 				powercnt++;
 				Sprintf(buf, " %2d - Reduces hit points permanently on hit", powercnt);

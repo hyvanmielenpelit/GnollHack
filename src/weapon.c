@@ -464,12 +464,12 @@ int basedmg;
 	boolean extra_is_critical = FALSE;
 	boolean criticalstrikesucceeded = FALSE;
 
-	if ((objects[otmp->otyp].oc_aflags & AFLAGS_CRITICAL_STRIKE) && !(objects[otmp->otyp].oc_aflags & AFLAGS_CRITICAL_STRIKE_IS_DEADLY))
+	if ((objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE) && !(objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_IS_DEADLY))
 	{
 		extra_is_critical = TRUE;
 		if (
-			((objects[otmp->otyp].oc_aflags & AFLAGS_CRITICAL_STRIKE_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mon, mattacker))
-			&& ((objects[otmp->otyp].oc_aflags & AFLAGS_CRITICAL_STRIKE_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(mattacker, otmp))
+			((objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mon, mattacker))
+			&& ((objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(mattacker, otmp))
 			)
 		{
 			if (rn2(100) < objects[otmp->otyp].oc_critical_strike_percentage)
@@ -479,8 +479,8 @@ int basedmg;
 
 	if ((extra_is_critical && criticalstrikesucceeded) ||
 		(!extra_is_critical && (
-		((objects[otmp->otyp].oc_aflags & AFLAGS_EXTRA_DAMAGE_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mon, mattacker))
-			&& ((objects[otmp->otyp].oc_aflags & AFLAGS_EXTRA_DAMAGE_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(mattacker, otmp))
+		((objects[otmp->otyp].oc_aflags & A1_EXTRA_DAMAGE_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mon, mattacker))
+			&& ((objects[otmp->otyp].oc_aflags & A1_EXTRA_DAMAGE_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(mattacker, otmp))
 			)))
 	{
 		if (
@@ -510,7 +510,7 @@ int basedmg;
 		tmp += 0;
 	else
 	{
-		if ((objects[otyp].oc_aflags & AFLAGS_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS) && eligible_for_extra_damage(otmp, mon, mattacker))
+		if ((objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS) && eligible_for_extra_damage(otmp, mon, mattacker))
 			tmp += basedmg;
 	}
 

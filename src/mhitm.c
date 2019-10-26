@@ -437,7 +437,7 @@ register struct monst *magr, *mdef;
 
 					m_useup(magr, omonwep);
 				}
-				else if (omonwep && (objects[omonwep->otyp].oc_aflags & AFLAGS_ITEM_VANISHES_ON_HIT))
+				else if (omonwep && (objects[omonwep->otyp].oc_aflags & A1_ITEM_VANISHES_ON_HIT))
 				{
 					if(omonwep->where == OBJ_MINVENT)
 						m_useup(magr, omonwep);
@@ -1475,10 +1475,10 @@ register struct attack *mattk;
         return res;
 
 	/* Wounding */
-	if (mweapon && !isdisintegrated && (objects[mweapon->otyp].oc_aflags & AFLAGS_WOUNDING) && eligible_for_extra_damage(mweapon, mdef, magr) && !is_rider(mdef->data))
+	if (mweapon && !isdisintegrated && (objects[mweapon->otyp].oc_aflags & A1_WOUNDING) && eligible_for_extra_damage(mweapon, mdef, magr) && !is_rider(mdef->data))
 	{
 		int extradmg = extratmp;
-		if (objects[mweapon->otyp].oc_aflags & AFLAGS_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
+		if (objects[mweapon->otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
 			extradmg = tmp;
 
 		mdef->mhpmax -= extradmg;
@@ -1495,10 +1495,10 @@ register struct attack *mattk;
 	}
 
 	/* Life drain */
-	if (mweapon && !isdisintegrated && (objects[mweapon->otyp].oc_aflags & AFLAGS_LIFE_LEECH) && eligible_for_extra_damage(mweapon, mdef, magr) && !is_rider(mdef->data) && !is_not_living(mdef->data))
+	if (mweapon && !isdisintegrated && (objects[mweapon->otyp].oc_aflags & A1_LIFE_LEECH) && eligible_for_extra_damage(mweapon, mdef, magr) && !is_rider(mdef->data) && !is_not_living(mdef->data))
 	{
 		int extradmg = extratmp;
-		if (objects[mweapon->otyp].oc_aflags & AFLAGS_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
+		if (objects[mweapon->otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
 			extradmg = tmp;
 
 		magr->mhp += extradmg;
