@@ -209,23 +209,18 @@ register struct obj *obj; /* if unpaid, then thrown or kicked by hero */
 int x, y; /* dog's starting location, might be different from current */
 boolean devour;
 {
-    register struct edog *edog = EDOG(mtmp);
-    boolean poly, grow, heal, eyes, slimer, deadmimic;
-    int nutrit;
-    long oprice;
-    char objnambuf[BUFSZ];
+	register struct edog* edog = EDOG(mtmp);
+	boolean poly, grow, heal, eyes, slimer, deadmimic;
+	int nutrit;
+	long oprice;
+	char objnambuf[BUFSZ];
 
-    objnambuf[0] = '\0';
-    if (edog->hungrytime < monstermoves)
-        edog->hungrytime = monstermoves;
-    nutrit = dog_nutrition(mtmp, obj);
+	objnambuf[0] = '\0';
+	if (edog->hungrytime < monstermoves)
+		edog->hungrytime = monstermoves;
+	nutrit = dog_nutrition(mtmp, obj);
 
-    deadmimic = (obj->otyp == CORPSE && (obj->corpsenm == PM_SMALL_MIMIC
-                                         || obj->corpsenm == PM_LARGE_MIMIC
-                                         || obj->corpsenm == PM_GIANT_MIMIC
-								 		 || obj->corpsenm == PM_GARGANTUAN_MIMIC
-										 || obj->corpsenm == PM_CHAOS_MIMIC
-		));
+	deadmimic = (obj->otyp == CORPSE && obj->corpsenm >= LOW_PM && mons[obj->corpsenm].mlet == S_MIMIC);
     slimer = (obj->otyp == CORPSE && obj->corpsenm == PM_GREEN_SLIME);
     poly = polyfodder(obj);
     grow = mlevelgain(obj);

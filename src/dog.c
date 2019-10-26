@@ -760,10 +760,16 @@ register struct obj *obj;
 
         if (obj->otyp == CORPSE && is_rider(fptr))
             return TABU;
+
         if ((obj->otyp == CORPSE || obj->otyp == EGG) && touch_petrifies(fptr)
             && !resists_ston(mon))
             return POISON;
-        if (!carni && !herbi)
+
+		if ((obj->otyp == CORPSE || obj->otyp == EGG) &&
+			(polyfodder(obj) || obj->corpsenm == PM_GREEN_SLIME || (obj->corpsenm >= LOW_PM && mons[obj->corpsenm].mlet == S_MIMIC)))
+			return POISON;
+
+		if (!carni && !herbi)
             return obj->cursed ? UNDEF : APPORT;
 
         /* a starving pet will eat almost anything */
