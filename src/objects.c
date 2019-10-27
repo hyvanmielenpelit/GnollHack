@@ -694,16 +694,16 @@ ARMOR("force field armor", "armor-shaped force field",
 
 /* shirts */
 ARMOR("Hawaiian shirt", None, //STARTMARKER 1
-    1, 0, 0, 0,			 0, 0, 8, 0, 5,  5, 10, 1, 0, 0, 0, 0, 0, ARM_SHIRT, P_NONE, MAT_CLOTH, CLR_MAGENTA, O1_READABLE, O2_NONE, O3_NONE, PERMITTED_ALL),
+    1, 0, 0, 0,			 0, 0, 8, 0, 5,  5, 10, 1, 0, 0, 0, 0, 0, ARM_SHIRT, P_NONE, MAT_CLOTH, CLR_MAGENTA, O1_NONE, O2_NONE, O3_READABLE, PERMITTED_ALL),
 /* with shuffled appearances... */
 ARMOR("shirt of uncontrollable laughter", "funny T-shirt", //STARTMARKER 2
-    0, 1, 0,  LAUGHING,  0, 0, 6, 0, 5, 50, 10, 1, 0, 0, 0, 0, 6, ARM_SHIRT, P_NONE, MAT_CLOTH, CLR_BLUE, O1_READABLE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
+    0, 1, 0,  LAUGHING,  0, 0, 6, 0, 5, 50, 10, 1, 0, 0, 0, 0, 6, ARM_SHIRT, P_NONE, MAT_CLOTH, CLR_BLUE, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_READABLE, PERMITTED_ALL),
 ARMOR("shirt of comeliness", "black T-shirt",
-	0, 1, 0, 0,			 0, 0, 6, 0, 5, 50, 10, 1, 0, 0, BONUS_TO_CHA, 0, 0, ARM_SHIRT, P_NONE, MAT_CLOTH, CLR_BLACK, O1_READABLE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	0, 1, 0, 0,			 0, 0, 6, 0, 5, 50, 10, 1, 0, 0, BONUS_TO_CHA, 0, 0, ARM_SHIRT, P_NONE, MAT_CLOTH, CLR_BLACK, O1_NONE, O2_NONE, O3_READABLE, PERMITTED_ALL),
 ARMOR("shirt of sound mindedness", "green T-shirt", 
-	0, 1, 0, HALLUC_RES, 0, 0, 6, 0, 5, 50, 10, 1, 0, 0, 0, 0, -2, ARM_SHIRT, P_NONE, MAT_CLOTH, CLR_GREEN, O1_READABLE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	0, 1, 0, HALLUC_RES, 0, 0, 6, 0, 5, 50, 10, 1, 0, 0, 0, 0, -2, ARM_SHIRT, P_NONE, MAT_CLOTH, CLR_GREEN, O1_NONE, O2_NONE, O3_READABLE, PERMITTED_ALL),
 ARMOR("T-shirt", "old T-shirt",//ENDMARKER 1 & 2
-    0, 0, 0, 0,			 0, 0, 4, 0, 5,  2, 10, 1, 0, 0, 0, 0, 0, ARM_SHIRT, P_NONE, MAT_CLOTH, CLR_WHITE, O1_READABLE, O2_NONE, O3_NONE, PERMITTED_ALL),
+    0, 0, 0, 0,			 0, 0, 4, 0, 5,  2, 10, 1, 0, 0, 0, 0, 0, ARM_SHIRT, P_NONE, MAT_CLOTH, CLR_WHITE, O1_NONE, O2_NONE, O3_READABLE, PERMITTED_ALL),
 
 
 /* cloaks */
@@ -716,7 +716,7 @@ CLOAK("dwarvish cloak", "hooded cloak",
 CLOAK("oilskin cloak", "slippery cloak",
       0, 0,				 0, 0, 0, 8,  0, 10, 50,  9, 2, 0, 0, 0, 0, 0, MAT_CLOTH, HI_CLOTH, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 CLOAK("alchemy smock", "apron",
-      0, 1, POISON_RES, 0, 0, 9, 0, 10, 50,  9, 1, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_WHITE, O1_READABLE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      0, 1, POISON_RES, 0, 0, 9, 0, 10, 50,  9, 1, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_WHITE, O1_NONE, O2_NONE, O3_READABLE, PERMITTED_ALL),
 CLOAK("leather cloak", None,
       1, 0,				 0, 0, 0, 8,  0, 15, 40,  9, 1, 0, 0, 0, 0, 0, MAT_LEATHER, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 /* with shuffled appearances... */
@@ -1188,7 +1188,7 @@ CONTAINER("bag of tricks", "bag", None,
 /* lock opening tools */
 TOOL("skeleton key",       "key", 0, 0, 0, 0, 80,  2, 10, 0, 0, 0, 0, 0, 0, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 TOOL("lock pick",           None, 1, 0, 0, 0, 60,  2, 20, 0, 0, 0, 0, 0, 0, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-TOOL("credit card",         None, 1, 0, 0, 0, 15,  1, 10, 0, 0, 0, 0, 0, 0, MAT_PLASTIC, CLR_WHITE, O1_READABLE, O2_NONE, O3_NONE, PERMITTED_ALL),
+TOOL("credit card",         None, 1, 0, 0, 0, 15,  1, 10, 0, 0, 0, 0, 0, 0, MAT_PLASTIC, CLR_WHITE, O1_NONE, O2_NONE, O3_READABLE, PERMITTED_ALL),
 /* light sources */
 TOOL("tallow candle",   "candle", 0, 1, 0, 0, 20,  1, 10, 0, 0, 0, 0, 0, 0, MAT_WAX, CLR_WHITE, O1_NONE, O2_CANDLE | O2_IGNITABLE | O2_RELATIVE_AGE, O3_NONE, PERMITTED_ALL),
 TOOL("wax candle",      "candle", 0, 1, 0, 0,  5,  1, 20, 0, 0, 0, 0, 0, 0, MAT_WAX, CLR_WHITE, O1_NONE, O2_CANDLE | O2_IGNITABLE | O2_RELATIVE_AGE, O3_NONE, PERMITTED_ALL),
@@ -1208,10 +1208,10 @@ TOOL("leash",               None, 1, 0, 0, 0, 50, 12, 20, 0, 0, 0, 0, 0, 0, MAT_
 TOOL("stethoscope",         None, 1, 0, 0, 0, 25,  4, 75, 0, 0, 0, 0, 0, 0, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 TOOL("tinning kit",         None, 1, 0, 0, 1, 15,100, 30, 0, 0, 0, 0, 0, 0, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 TOOL("tin opener",          None, 1, 0, 0, 0, 30,  4, 30, 0, 0, 0, 0, 0, 0, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-TOOL("can of grease",       None, 1, 0, 0, 1, 15, 15, 20, 0, 0, 0, 0, 0, 0, MAT_IRON, HI_METAL, O1_READABLE, O2_NONE, O3_NONE, PERMITTED_ALL),
+TOOL("can of grease",       None, 1, 0, 0, 1, 15, 15, 20, 0, 0, 0, 0, 0, 0, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_READABLE, PERMITTED_ALL),
 TOOL("figurine",            None, 1, 0, 1, 0, 25, 50, 80, 0, 0, 0, 0, 0, 0, MAT_MINERAL, HI_MINERAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
         /* monster type specified by obj->corpsenm */
-TOOL("magic marker",        None, 1, 0, 1, 1, 15,  2, 50, 0, 0, 0, 0, 0, 0, MAT_PLASTIC, CLR_RED, O1_READABLE, O2_NONE, O3_NONE, PERMITTED_ALL),
+TOOL("magic marker",        None, 1, 0, 1, 1, 15,  2, 50, 0, 0, 0, 0, 0, 0, MAT_PLASTIC, CLR_RED, O1_NONE, O2_NONE, O3_READABLE, PERMITTED_ALL),
 /* traps */
 TOOL("land mine",           None, 1, 0, 0, 0, 0, 300,180, 0, 0, 0, 0, 0, 0, MAT_IRON, CLR_RED, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 TOOL("beartrap",            None, 1, 0, 0, 0, 0, 200, 60, 0, 0, 0, 0, 0, 0, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
@@ -1314,8 +1314,8 @@ FOOD("slime mold",           75, MULTIGEN_SINGLE, 1,  5, 0, MAT_VEGGY, 250, HI_O
 /* people food */
 FOOD("lump of royal jelly",   0, MULTIGEN_SINGLE, 1,  2, 0, MAT_VEGGY, 200, CLR_YELLOW, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 FOOD("cream pie",            25, MULTIGEN_SINGLE, 1, 10, 0, MAT_VEGGY, 100, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("candy bar",            15, MULTIGEN_SINGLE, 1,  2, 0, MAT_VEGGY, 100, CLR_BROWN, O1_READABLE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("fortune cookie",       49, MULTIGEN_SINGLE, 1,  1, 0, MAT_VEGGY,  40, CLR_YELLOW, O1_READABLE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("candy bar",            15, MULTIGEN_SINGLE, 1,  2, 0, MAT_VEGGY, 100, CLR_BROWN, O1_NONE, O2_NONE, O3_READABLE, PERMITTED_ALL),
+FOOD("fortune cookie",       49, MULTIGEN_SINGLE, 1,  1, 0, MAT_VEGGY,  40, CLR_YELLOW, O1_NONE, O2_NONE, O3_READABLE, PERMITTED_ALL),
 FOOD("pancake",              30, MULTIGEN_SINGLE, 2,  2, 0, MAT_VEGGY, 200, CLR_YELLOW, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 FOOD("lembas wafer",         30, MULTIGEN_SINGLE, 2,  5, 0, MAT_VEGGY, 800, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 FOOD("cram ration",          30, MULTIGEN_SINGLE, 3, 15, 0, MAT_VEGGY, 600, HI_ORGANIC, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
@@ -1817,7 +1817,7 @@ WAND(None,            "jeweled",  0, 150, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NO
            0, 0, 0, COIN_CLASS, prob, MULTIGEN_SINGLE, 0, 1, worth, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
-		   0, HI_GOLD, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_READABLE, O2_NONE, O3_NONE)
+		   0, HI_GOLD, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_NONE, O2_NONE, O3_READABLE)
 COIN("gold piece", 1000, MAT_GOLD, 1),
 #undef COIN
 

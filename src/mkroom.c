@@ -332,7 +332,7 @@ mk_zoo_thronemon(x,y)
 int x,y;
 {
     int i = rnd(level_difficulty());
-    int pm = (i > 8) ? PM_OGRE_KING
+    int pm = (i > 12) ? PM_OGRE_KING
         : (i > 6) ? PM_ELVENKING
 		: (i > 4) ? PM_GNOLL_KING
 		: (i > 2) ? PM_DWARF_KING

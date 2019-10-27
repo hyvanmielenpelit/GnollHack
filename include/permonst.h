@@ -21,6 +21,7 @@
 struct attack {
     uchar aatyp;
     uchar adtyp, damn, damd, damp;
+	int mcadj; /* MC and saving throw adjustment*/
 };
 
 /*	Max # of attacks for any given monster.

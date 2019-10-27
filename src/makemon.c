@@ -599,7 +599,7 @@ register struct monst *mtmp;
 		}
 		else
 		{
-			if (!rn2(mm == PM_OGRE_KING ? 3 : mm == PM_OGRE_LORD ? 6 : 12))
+			if (!rn2(mm == PM_OGRE_KING ? 3 : mm == PM_OGRE_LORD || mm == PM_OGRE_OVERLORD ? 6 : 12))
 				(void)mongets(mtmp, BATTLE_AXE);
 			else
 				(void)mongets(mtmp, CLUB);

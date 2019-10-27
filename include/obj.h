@@ -361,7 +361,7 @@ struct obj {
 
 /* things that can be read */
 #define is_readable(otmp)                                                    \
-    (objects[otmp->otyp].oc_flags & O1_READABLE || otmp->oartifact == ART_ORB_OF_FATE)
+    (objects[otmp->otyp].oc_flags3 & O3_READABLE || otmp->oartifact == ART_ORB_OF_FATE)
 
 /* special stones */
 #define is_graystone(obj)                                 \

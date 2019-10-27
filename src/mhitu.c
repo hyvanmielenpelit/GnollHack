@@ -795,7 +795,7 @@ register struct monst *mtmp;
 				{
 					/*  Special demon handling code */
 					if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
-						int chance = mattk->damp;
+						int chance = mattk->mcadj;
 						if (!mtmp->mcancelled && rn2(100) < chance)
 						{
 							pline("%s gates in some help.", Monnam(mtmp));
@@ -869,7 +869,7 @@ register struct monst *mtmp;
 				{
 					/*  Special gnoll handling code */
 					if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
-						int chance = mattk->damp;
+						int chance = mattk->mcadj;
 						if (!mtmp->mcancelled && rn2(100) < chance)
 						{
 							pline("%s summons some gnolls!", Monnam(mtmp));
@@ -889,7 +889,7 @@ register struct monst *mtmp;
 				{
 					/*  Special gnoll handling code */
 					if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
-						int chance = mattk->damp;
+						int chance = mattk->mcadj;
 						if (!mtmp->mcancelled && rn2(100) < chance)
 						{
 							pline("%s summons some ghouls!", Monnam(mtmp));
@@ -909,7 +909,7 @@ register struct monst *mtmp;
 				{
 					/*  Special gnoll handling code */
 					if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
-						int chance = mattk->damp;
+						int chance = mattk->mcadj;
 						if (!mtmp->mcancelled && rn2(100) < chance)
 						{
 							pline("%s summons some undead!", Monnam(mtmp));
@@ -1435,7 +1435,7 @@ register struct obj* omonwep;
      *  armor's special magic protection.  Otherwise just use !mtmp->mcancelled.
      */
 
-	uncancelled = !mtmp->mcancelled && !check_magic_cancellation_success(&youmonst, 0);
+	uncancelled = !mtmp->mcancelled && !check_magic_cancellation_success(&youmonst, mattk->mcadj);
 
     permdmg = 0;
 
@@ -1754,7 +1754,8 @@ register struct obj* omonwep;
         break;
     case AD_DRLI:
 		hitmsg(mtmp, mattk, dmg);
-		if (uncancelled && !rn2(3) && !Drain_resistance) {
+		if (uncancelled && !Drain_resistance) //!rn2(3) && 
+		{
             losexp("life drainage");
         }
 		break;
@@ -1904,7 +1905,7 @@ register struct obj* omonwep;
     case AD_SITM: /* for now these are the same */
     case AD_SEDU:
 	{
-		boolean nymphcancelled = mtmp->mcancelled || check_magic_cancellation_success(&youmonst, -5);
+		boolean nymphcancelled = !uncancelled;
 
         if (is_animal(mtmp->data)) {
             hitmsg(mtmp, mattk, -1);

@@ -2099,7 +2099,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 	}
 
     /* since hero can't be cancelled, only defender's armor applies */
-	negated = check_magic_cancellation_success(mdef, 0);
+	negated = check_magic_cancellation_success(mdef, mattk->mcadj);
 
     switch (mattk->adtyp) {
     case AD_STUN:
@@ -2298,7 +2298,8 @@ int specialdmg; /* blessed and/or silver bonus against various things */
         tmp = 0;
         break;
     case AD_DRLI:
-        if (!negated && !rn2(3) && !resists_drli(mdef)) {
+        if (!negated && !resists_drli(mdef)) //!rn2(3) && 
+		{
             int xtmp = d(2, 6);
 
             pline("%s suddenly seems weaker!", Monnam(mdef));

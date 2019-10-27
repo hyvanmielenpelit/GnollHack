@@ -193,8 +193,8 @@ boolean foundyou;
 	int  ml = 0;
 	
 	//Assumes that attack type is AT_MAGC when this function is called
-	if(mattk->damp > 0)
-		ml = mattk->damp;
+	if(mattk->mcadj > 0)
+		ml = mattk->mcadj;
 	else
 		ml = mtmp->m_lev;
 

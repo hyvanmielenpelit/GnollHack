@@ -1813,7 +1813,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 				else
 					pline("%s drains your %s!", The(distant_name(otmp, xname)),
 						life);
-				losexp("level drain");
+				losexp("life drainage");
 			}
 		}
 	}
