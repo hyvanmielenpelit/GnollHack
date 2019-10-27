@@ -1476,7 +1476,15 @@ register struct attack *mattk;
         return res;
 
 	/* Wounding */
-	if (mweapon && !isdisintegrated && (objects[mweapon->otyp].oc_aflags & A1_WOUNDING) && eligible_for_extra_damage(mweapon, mdef, magr) && !is_rider(mdef->data))
+	if (mweapon && !isdisintegrated && (objects[mweapon->otyp].oc_aflags & A1_WOUNDING) && 
+		eligible_for_extra_damage(mweapon, mdef, magr) && !is_rider(mdef->data)
+		&& (
+		((objects[mweapon->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+			&& rn2(100) < objects[mweapon->otyp].oc_critical_strike_percentage)
+			||
+			(!(objects[mweapon->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES))
+			)
+		)
 	{
 		int extradmg = extratmp;
 		if (objects[mweapon->otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
@@ -1496,7 +1504,15 @@ register struct attack *mattk;
 	}
 
 	/* Life drain */
-	if (mweapon && !isdisintegrated && (objects[mweapon->otyp].oc_aflags & A1_LIFE_LEECH) && eligible_for_extra_damage(mweapon, mdef, magr) && !is_rider(mdef->data) && !is_not_living(mdef->data))
+	if (mweapon && !isdisintegrated && (objects[mweapon->otyp].oc_aflags & A1_LIFE_LEECH) && eligible_for_extra_damage(mweapon, mdef, magr)
+		&& !is_rider(mdef->data) && !is_not_living(mdef->data)
+		&& (
+		((objects[mweapon->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+			&& rn2(100) < objects[mweapon->otyp].oc_critical_strike_percentage)
+			||
+			(!(objects[mweapon->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES))
+			)
+		)
 	{
 		int extradmg = extratmp;
 		if (objects[mweapon->otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)

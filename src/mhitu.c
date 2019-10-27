@@ -2302,7 +2302,14 @@ register struct obj* omonwep;
 	int permdmg2 = 0;
 
 	/* Wounding */
-	if (mattk->aatyp == AT_WEAP && omonwep && (objects[omonwep->otyp].oc_aflags & A1_WOUNDING) && eligible_for_extra_damage(omonwep, &youmonst, mtmp))
+	if (mattk->aatyp == AT_WEAP && omonwep && (objects[omonwep->otyp].oc_aflags & A1_WOUNDING) && eligible_for_extra_damage(omonwep, &youmonst, mtmp)
+		&& (
+		((objects[omonwep->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+			&& rn2(100) < objects[omonwep->otyp].oc_critical_strike_percentage)
+			||
+			(!(objects[omonwep->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES))
+			)
+		)
 	{
 		if (objects[omonwep->otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
 			extradmg = dmg;
@@ -2316,7 +2323,15 @@ register struct obj* omonwep;
 	}
 
 	/* Life drain */
-	if (mattk->aatyp == AT_WEAP && omonwep && (objects[omonwep->otyp].oc_aflags & A1_LIFE_LEECH) && eligible_for_extra_damage(omonwep, &youmonst, mtmp) && !is_not_living(youmonst.data))
+	if (mattk->aatyp == AT_WEAP && omonwep && (objects[omonwep->otyp].oc_aflags & A1_LIFE_LEECH) && eligible_for_extra_damage(omonwep, &youmonst, mtmp)
+		&& !is_not_living(youmonst.data)
+		&& (
+		((objects[omonwep->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+			&& rn2(100) < objects[omonwep->otyp].oc_critical_strike_percentage)
+			||
+			(!(objects[omonwep->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES))
+			)
+		)
 	{
 		if (objects[omonwep->otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
 			extradmg = dmg;

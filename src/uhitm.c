@@ -1548,7 +1548,15 @@ int dieroll;
 	}
 
 	/* Wounding */
-	if (obj && (objects[obj->otyp].oc_aflags & A1_WOUNDING) && eligible_for_extra_damage(obj, mon, &youmonst) && !is_rider(mon->data))
+	if (obj && (objects[obj->otyp].oc_aflags & A1_WOUNDING) && eligible_for_extra_damage(obj, mon, &youmonst)
+		&& !is_rider(mon->data)
+		&& (
+		((objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+			&& rn2(100) < objects[obj->otyp].oc_critical_strike_percentage)
+			||
+			(!(objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES))
+			)
+		)
 	{
 		int extradmg = extratmp;
 		if (objects[obj->otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
@@ -1575,7 +1583,15 @@ int dieroll;
 	}
 
 	/* Life drain */
-	if (obj && (objects[obj->otyp].oc_aflags & A1_LIFE_LEECH) && eligible_for_extra_damage(obj, mon, &youmonst) && !is_rider(mon->data) && !is_not_living(mon->data))
+	if (obj && (objects[obj->otyp].oc_aflags & A1_LIFE_LEECH) && eligible_for_extra_damage(obj, mon, &youmonst) && !is_rider(mon->data)
+		&& !is_not_living(mon->data)
+		&& (
+		((objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+			&& rn2(100) < objects[obj->otyp].oc_critical_strike_percentage)
+			||
+			(!(objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES))
+			)
+		)
 	{
 		int extradmg = extratmp;
 		if (objects[obj->otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)

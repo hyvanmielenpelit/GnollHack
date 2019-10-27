@@ -1456,6 +1456,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 	int totaldamagedone = 0;
 	boolean lethaldamage = FALSE;
 	boolean isdisintegrated = FALSE;
+	int criticalstrikeroll = rn2(100);
 
 	Strcpy(hittee, youdefend ? you : mon_nam(mdef));
 
@@ -1533,8 +1534,14 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 		if (
 			((objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mdef, magr))
 		 && ((objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
-		 && (dieroll <= (objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DOUBLE_CHANCE_FOR_PERMITTED_TARGETS ? 2 : 1))
+		 && (
+			  ((objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+			   && criticalstrikeroll < objects[otmp->otyp].oc_critical_strike_percentage * (objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DOUBLE_CHANCE_FOR_PERMITTED_TARGETS ? 2 : 1))
+			 ||
+			 (!(objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES) 
+			  && dieroll <= (objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DOUBLE_CHANCE_FOR_PERMITTED_TARGETS ? 2 : 1))
 			)
+		 )
 		{
 			if (youattack && u.uswallow && mdef == u.ustuck) {
 				You("slice %s wide open!", mon_nam(mdef));
@@ -1638,7 +1645,13 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 		if (
 			((objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mdef, magr))
 			&& ((objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
-			&& (dieroll <= (objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DOUBLE_CHANCE_FOR_PERMITTED_TARGETS ? 4 : 2))
+			&& (
+			((objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+				&& criticalstrikeroll < objects[otmp->otyp].oc_critical_strike_percentage * (objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DOUBLE_CHANCE_FOR_PERMITTED_TARGETS ? 2 : 1))
+				||
+				(!(objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+					&& dieroll <= (objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DOUBLE_CHANCE_FOR_PERMITTED_TARGETS ? 4 : 2))
+				)
 			)
 		{
 			if (!youdefend) 
@@ -1719,7 +1732,13 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 	if (
 		((objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mdef, magr))
 		&& ((objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
-		&& (dieroll <= (objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DOUBLE_CHANCE_FOR_PERMITTED_TARGETS ? 2 : 1))
+		&& (
+		((objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+			&& criticalstrikeroll < objects[otmp->otyp].oc_critical_strike_percentage * (objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DOUBLE_CHANCE_FOR_PERMITTED_TARGETS ? 2 : 1))
+			||
+			(!(objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+				&& dieroll <= (objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DOUBLE_CHANCE_FOR_PERMITTED_TARGETS ? 2 : 1))
+			)
 		)
 	{
 			static const char* const behead_msg[2] = { "%s beheads %s!",
@@ -1771,9 +1790,15 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 
 	if (objects[otmp->otyp].oc_aflags & A1_LEVEL_DRAIN) 
 	{
-		if (
+		if (!is_rider(mdef->data) && !is_undead(mdef->data) && //Demons are affected
 			((objects[otmp->otyp].oc_aflags & A1_LEVEL_DRAIN_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mdef, magr))
 			&& ((objects[otmp->otyp].oc_aflags & A1_LEVEL_DRAIN_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
+			&& (
+			((objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+				&& criticalstrikeroll < objects[otmp->otyp].oc_critical_strike_percentage)
+				||
+				(!(objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES))
+				)
 			)
 		{
 			/* some non-living creatures (golems, vortices) are
@@ -1825,7 +1850,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 			&& ((objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
 			)
 		{
-			if (rn2(100) < objects[otmp->otyp].oc_critical_strike_percentage)
+			if (criticalstrikeroll < objects[otmp->otyp].oc_critical_strike_percentage)
 			{
 				if (
 					((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_USES_EXTRA_DAMAGE_TYPE

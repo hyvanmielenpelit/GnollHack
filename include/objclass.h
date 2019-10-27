@@ -246,7 +246,7 @@ struct objclass {
 #define A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK (A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK | A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK)  
 #define A1_CRITICAL_STRIKE_DISRESPECTS_TARGETS		0x00000010  /* successful critical strike causes lethal damage */
 #define A1_CRITICAL_STRIKE_DISRESPECTS_CHARACTERS	0x00000020  /* successful critical strike causes lethal damage */
-/* One more critical strike flag here */
+#define A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES	0x00000040  /* All other special types use critical strike probability instead of being certain or using their own standard probability */
 
 #define A1_WOUNDING			0x00000080  /* extra damage caused is permanent damage */
 #define A1_WOUNDING_DISRESPECTS_TARGETS		0x00000100  /* successful critical strike causes lethal damage */
