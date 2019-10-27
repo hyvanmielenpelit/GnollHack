@@ -1535,10 +1535,12 @@ register struct attack *mattk;
             place_monster(mdef, mdef->mx, mdef->my);
             mdef->mhp = 0;
         }
+
 		if (isdisintegrated)
-			disintegrate_mon(mdef, 1, mweapon ? xname(mweapon) : mon_nam(magr));
+			disintegrate_mon(mdef, -1, mweapon ? xname(mweapon) : mon_nam(magr));
 		else
-	        monkilled(mdef, "", (int) mattk->adtyp);
+			monkilled(mdef, "", (int) mattk->adtyp);
+
         if (!DEADMONSTER(mdef))
             return res; /* mdef lifesaved */
         else if (res == MM_AGR_DIED)

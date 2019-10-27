@@ -1904,7 +1904,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 									//disintegrate_mon(mdef, 1, xname(otmp));
 									lethaldamage = TRUE;
 									isdisintegrated = TRUE;
-									pline("%s is disintegrated!", Monnam(mdef));
+									//pline("%s is disintegrated!", Monnam(mdef));
 								}
 							}
 						}
@@ -1943,7 +1943,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 								//done(DIED);
 								lethaldamage = TRUE;
 								isdisintegrated = TRUE;
-								pline("You are disintegrated!");
+								//pline("You are disintegrated!");
 							}
 						}
 					}

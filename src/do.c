@@ -537,6 +537,7 @@ register struct obj* obj;
 		if (objects[otyp].oc_damagetype != AD_PHYS)
 		{
 			char* dmgttext = get_damage_type_text(objects[otyp].oc_damagetype);
+			*dmgttext = highc(*dmgttext);
 			if (strcmp(dmgttext, "") != 0)
 			{
 				Sprintf(buf, "Damage type:            %s", dmgttext);
@@ -591,6 +592,7 @@ register struct obj* obj;
 			if (objects[otyp].oc_extra_damagetype != AD_PHYS)
 			{
 				char* dmgttext = get_damage_type_text(objects[otyp].oc_extra_damagetype);
+				*dmgttext = highc(*dmgttext);
 				if (strcmp(dmgttext, "") != 0)
 				{
 					Sprintf(buf, "Extra damage type:      %s", dmgttext);
@@ -813,6 +815,7 @@ register struct obj* obj;
 			|| objects[otyp].oc_mana_bonus > 0 
 			|| objects[otyp].oc_hp_bonus > 0
 			|| objects[otyp].oc_bonus_attributes > 0
+			|| objects[otyp].oc_aflags > 0
 			|| objects[otyp].oc_flags & O1_CONFERS_LUCK)
 		{
 			Sprintf(buf, "Conferred powers:");
@@ -1018,10 +1021,41 @@ register struct obj* obj;
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
-			if (objects[otyp].oc_aflags & A1_VORPAL)
+			if ((objects[otyp].oc_aflags & A1_SVB_MASK) == A1_VORPAL)
 			{
 				powercnt++;
 				Sprintf(buf, " %2d - Beheads target on hit", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if ((objects[otyp].oc_aflags & A1_SVB_MASK) == A1_BISECT)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Besects target on hit", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if ((objects[otyp].oc_aflags & A1_SVB_MASK) == A1_SHARPNESS)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - 10%% chance of permanent damage equal to 25%% of target's maximum hit points", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if ((objects[otyp].oc_aflags & A1_CRITICAL_STRIKE) && (objects[otyp].oc_aflags & A1_CRITICAL_STRIKE_IS_DEADLY))
+			{
+				powercnt++;
+				int critchance = objects[otyp].oc_critical_strike_percentage;
+				char chancebuf[BUFSZ] = "";
+				Sprintf(chancebuf, " at %d%% chance", critchance);
+				if((objects[otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK)
+					Sprintf(buf, " %2d - Disintegrates the target on hit%s", powercnt, critchance < 100 ? chancebuf : "");
+				else if ((objects[otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK)
+					Sprintf(buf, " %2d - Slays the target on hit%s", powercnt, critchance < 100 ? chancebuf : "");
+				else
+					Sprintf(buf, " %2d - Causes lethal %s damage to the target %s", powercnt,
+						get_damage_type_text((objects[otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_USES_EXTRA_DAMAGE_TYPE) ? objects[otyp].oc_extra_damagetype : AD_PHYS), 
+						critchance < 100 ? chancebuf : "");
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
@@ -1821,16 +1855,16 @@ int damagetype;
 	switch (damagetype)
 	{
 	case AD_PHYS:
-		strcpy(buf, "Physical");
+		strcpy(buf, "physical");
 		break;
 	case AD_FIRE:
-		strcpy(buf, "Fire");
+		strcpy(buf, "fire");
 		break;
 	case AD_COLD:
-		strcpy(buf, "Cold");
+		strcpy(buf, "cold");
 		break;
 	case AD_ELEC:
-		strcpy(buf, "Electricity");
+		strcpy(buf, "electrical");
 		break;
 	default:
 		break;

@@ -1405,12 +1405,14 @@ int dieroll;
 		}
 	}
 
+#if 0
 	//Black blade adjustment for disintegrateable creatures - No damage
 	if (obj && obj->otyp == BLACK_BLADE_OF_DISINTEGRATION && !(resists_disint(mon) || noncorporeal(mon->data)))
 	{
 		tmp = 0;
 		hide_damage_amount = TRUE;
 	}
+#endif
 
 	int damagedealt = tmp;
 
@@ -1631,6 +1633,7 @@ int dieroll;
        (via 'thrownobj'; if swallowed, it gets added to engulfer's
        minvent and might merge with a stack that's already there)] */
 	
+#if 0
 	//Black Blade effect
 	boolean bladedisintegratedmon = FALSE;
 	if (obj && obj->otyp == BLACK_BLADE_OF_DISINTEGRATION && !DEADMONSTER(mon))
@@ -1692,8 +1695,9 @@ int dieroll;
 			m_useup(mon, otmp2);
 		}
 	}
+#endif
 
-	if (!bladedisintegratedmon && !isdisintegrated && mon)
+	if (mon)
 	{
 
 		if (needpoismsg)

@@ -2727,12 +2727,7 @@ struct obj* obj;
 					break;
 				}
 
-#define oresist_disintegration(obj)                                       \
-    (objects[obj->otyp].oc_flags & (O1_DISINTEGRATION_RESISTANT | O1_INDESTRUCTIBLE) || objects[obj->otyp].oc_oprop == DISINT_RES \
-	 || objects[obj->otyp].oc_oprop2 == DISINT_RES  || objects[obj->otyp].oc_oprop3 == DISINT_RES || obj_resists(obj, 5, 50) \
-     || is_quest_artifact(obj) || obj->otyp == AMULET_OF_LIFE_SAVING)
-
-				if (oresist_disintegration(otmp)) {
+				if (oresist_disintegration(otmp) || obj->otyp == AMULET_OF_LIFE_SAVING) {
 					if (!Blind)
 					{
 						suggestnamingwand = TRUE;

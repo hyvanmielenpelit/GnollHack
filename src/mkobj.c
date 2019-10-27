@@ -1276,20 +1276,6 @@ boolean makingboxcontents;
     switch ((otmp->oclass == POTION_CLASS && otmp->otyp != POT_OIL)
             ? POT_WATER
             : otmp->otyp) {
-	case BLACK_BLADE_OF_DISINTEGRATION:
-		otmp->age = d(objects[SPE_BLACK_BLADE_OF_DISASTER].oc_spell_dur_dice, objects[SPE_BLACK_BLADE_OF_DISASTER].oc_spell_dur_dicesize) + objects[SPE_BLACK_BLADE_OF_DISASTER].oc_spell_dur_plus;
-		otmp->nomerge = 1;
-		begin_existence(otmp);
-		break;
-	case FORCE_FIELD_ARMOR:
-		i1 = objects[SPE_MAGE_ARMOR].oc_spell_dur_dice;
-		i2 = objects[SPE_MAGE_ARMOR].oc_spell_dur_dicesize;
-		i3 = objects[SPE_MAGE_ARMOR].oc_spell_dur_plus;
-
-		otmp->age = d(objects[SPE_MAGE_ARMOR].oc_spell_dur_dice, objects[SPE_MAGE_ARMOR].oc_spell_dur_dicesize) + objects[SPE_MAGE_ARMOR].oc_spell_dur_plus;
-		otmp->nomerge = 1;
-		begin_existence(otmp);
-		break;
 	case CORPSE:
         if (otmp->corpsenm == NON_PM) {
             otmp->corpsenm = undead_to_corpse(rndmonnum());

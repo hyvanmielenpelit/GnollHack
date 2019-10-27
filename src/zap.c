@@ -2403,12 +2403,12 @@ register struct obj *obj;
 		verbalize("Sword of Cold and Darkness, free yourself from the heaven's bonds.");
 		verbalize("Become one with my power, one with my body, and let us walk the path of destruction together!");
 		pline("A sword-shaped planar rift forms before you!");
-		summonblackblade();
+		summonblackblade(obj);
 		break;
 	case SPE_MAGE_ARMOR:
 		known = TRUE;
 		pline("An armor-shaped force field forms before you!");
-		summonmagearmor();
+		summonmagearmor(obj);
 		break;
 	case SPE_ARMAGEDDON:
 		known = TRUE;
@@ -5019,7 +5019,7 @@ int type; /* either hero cast spell type or 0 */
 void //STATIC_OVL 
 disintegrate_mon(mon, type, fltxt)
 struct monst *mon;
-int type; /* hero vs other */
+int type; /* hero vs other */ /* 100 == disintegrate just items and caller takes care of the killing and messaging*/
 const char *fltxt;
 {
 	if (!mon)
@@ -5033,16 +5033,15 @@ const char *fltxt;
         else
             hit(fltxt, mon, "!", -1);
     }
-
-/* note: worn amulet of life saving must be preserved in order to operate */
-#define oresist_disintegration(obj)                                       \
-    (objects[obj->otyp].oc_flags & O1_DISINTEGRATION_RESISTANT || objects[obj->otyp].oc_flags & O1_INDESTRUCTIBLE || objects[obj->otyp].oc_oprop == DISINT_RES  || objects[obj->otyp].oc_oprop2 == DISINT_RES || objects[obj->otyp].oc_oprop3 == DISINT_RES || obj_resists(obj, 5, 50) \
-     || is_quest_artifact(obj) || obj == m_amulet || obj->otyp == BLACK_BLADE_OF_DISINTEGRATION)
-
-    for (otmp = mon->minvent; otmp; otmp = otmp2) {
+	
+    for (otmp = mon->minvent; otmp; otmp = otmp2) 
+	{
         otmp2 = otmp->nobj;
-        if (!oresist_disintegration(otmp)) {
-            if (otmp->owornmask) {
+		/* note: worn amulet of life saving must be preserved in order to operate */
+		if (!oresist_disintegration(otmp) && otmp != m_amulet) 
+		{
+            if (otmp->owornmask) 
+			{
                 /* in case monster's life gets saved */
                 mon->misc_worn_check &= ~otmp->owornmask;
                 if (otmp->owornmask & W_WEP)
@@ -5056,12 +5055,10 @@ const char *fltxt;
         }
     }
 
-#undef oresist_disintegration
-
-    if (type < 0)
-        monkilled(mon, (char *) 0, -AD_RBRE);
-    else
-        xkilled(mon, XKILL_NOMSG | XKILL_NOCORPSE);
+	if (type < 0)
+		monkilled(mon, (char*)0, -AD_RBRE);
+	else
+		xkilled(mon, XKILL_NOMSG | XKILL_NOCORPSE);
 }
 
 void
@@ -6489,12 +6486,29 @@ retry:
 }
 
 void
-summonblackblade()
+summonblackblade(spell_otmp)
+struct obj* spell_otmp;
 {
+	summonitem(spell_otmp, BLACK_BLADE_OF_DISINTEGRATION);
+}
+
+void
+summonitem(spell_otmp, otyp)
+struct obj* spell_otmp;
+int otyp;
+{
+	if (!spell_otmp)
+		return;
+
 	struct obj* otmp;
 
-	otmp = mksobj(BLACK_BLADE_OF_DISINTEGRATION, FALSE, FALSE, FALSE);
-	if (otmp && otmp != &zeroobj) {
+	otmp = mksobj(otyp, FALSE, FALSE, FALSE);
+	if (otmp && otmp != &zeroobj) 
+	{
+		otmp->age = d(objects[spell_otmp->otyp].oc_spell_dur_dice, objects[spell_otmp->otyp].oc_spell_dur_dicesize) + objects[spell_otmp->otyp].oc_spell_dur_plus;
+		otmp->nomerge = 1;
+		begin_existence(otmp);
+		
 		const char
 			* verb = ((Is_airlevel(&u.uz) || u.uinwater) ? "slip" : "drop"),
 			* oops_msg = (u.uswallow
@@ -6513,27 +6527,10 @@ summonblackblade()
 }
 
 void
-summonmagearmor()
+summonmagearmor(spell_otmp)
+struct obj* spell_otmp;
 {
-	struct obj* otmp;
-
-	otmp = mksobj(FORCE_FIELD_ARMOR, FALSE, FALSE, FALSE);
-	if (otmp && otmp != &zeroobj) {
-		const char
-			* verb = ((Is_airlevel(&u.uz) || u.uinwater) ? "slip" : "drop"),
-			* oops_msg = (u.uswallow
-				? "Oops!  %s out of your reach!"
-				: (Is_airlevel(&u.uz) || Is_waterlevel(&u.uz)
-					|| levl[u.ux][u.uy].typ < IRONBARS
-					|| levl[u.ux][u.uy].typ >= ICE)
-				? "Oops!  %s away from you!"
-				: "Oops!  %s to the floor!");
-
-		/* The(aobjnam()) is safe since otmp is unidentified -dlc */
-		(void)hold_another_object(otmp, oops_msg,
-			The(aobjnam(otmp, verb)),
-			(const char*)0);
-	}
+	summonitem(spell_otmp, FORCE_FIELD_ARMOR);
 }
 
 struct monst*

@@ -1359,6 +1359,7 @@ register struct obj* omonwep;
     struct permonst *olduasmon = youmonst.data;
     int res;
 	boolean objectshatters = FALSE;
+	boolean isdisintegrated = FALSE;
 
     if (!canspotmon(mtmp))
         map_invisible(mtmp->mx, mtmp->my);
@@ -1539,9 +1540,10 @@ register struct obj* omonwep;
 					&& artifact_hit(mtmp, &youmonst, otmp, &dmg, dieroll));
 
 				int special_hit_dmg = pseudo_artifact_hit(mtmp, &youmonst, otmp, extradmg, dieroll);
-				if (special_hit_dmg == -1)
+				if (special_hit_dmg < 0)
 				{
 					dmg += 2 * (Upolyd ? u.mh : u.uhp) + 200;
+					isdisintegrated = TRUE;
 					hittxt = TRUE; /* This means that hit text is already given */
 				}
 				else if (special_hit_dmg > 0)
@@ -2289,12 +2291,14 @@ register struct obj* omonwep;
         dmg = 0;
     }
 
+#if 0
 	//Black blade damage adjustment
 	if (mattk->aatyp == AT_WEAP && omonwep && omonwep->otyp == BLACK_BLADE_OF_DISINTEGRATION &&
 		!(Disint_resistance || noncorporeal(youmonst.data) || Invulnerable)) {
 		dmg  = 0; //Black blade does not do ordinary damage to disintegrateable monsters, to resistant monsters it inflicts normal damage
 	}
-	
+#endif
+
 	int permdmg2 = 0;
 
 	/* Wounding */
@@ -2411,6 +2415,7 @@ register struct obj* omonwep;
 
 	//Add special enchantments
 	if (mattk->aatyp == AT_WEAP && omonwep) {
+#if 0
 		if (omonwep->otyp == BLACK_BLADE_OF_DISINTEGRATION)
 		{
 			if (Disint_resistance || noncorporeal(youmonst.data) || Invulnerable) {					// if (abstyp == ZT_BREATH(ZT_DISINTEGRATION)) {
@@ -2445,6 +2450,7 @@ register struct obj* omonwep;
 				done(DIED);
 			}
 		}
+#endif
 		if (omonwep->special_enchantment > 0)
 		{
 			char onmbuf[BUFSZ], knmbuf[BUFSZ];
