@@ -2319,14 +2319,14 @@ struct obj *otmp;
             choke(otmp);
             break;
         case AMULET_OF_RESTFUL_SLEEP: { /* another bad idea! */
-            long newnap = (long) rnd(100), oldnap = (HSleepy & TIMEOUT);
+            //long newnap = (long) rnd(100), oldnap = (HSleepy & TIMEOUT);
 
             if (!(HSleepy & FROMOUTSIDE))
                 accessory_has_effect(otmp);
             HSleepy |= FROMOUTSIDE;
             /* might also be wearing one; use shorter of two timeouts */
-            if (newnap < oldnap || oldnap == 0L)
-                HSleepy = (HSleepy & ~TIMEOUT) | newnap;
+            //if (newnap < oldnap || oldnap == 0L)
+            //    HSleepy = (HSleepy & ~TIMEOUT) | newnap;
             break;
         }
         case RIN_SUSTAIN_ABILITY:

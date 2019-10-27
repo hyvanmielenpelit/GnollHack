@@ -176,7 +176,8 @@ Boots_on(VOID_ARGS)
     case SPEED_BOOTS:
         /* Speed boots are still better than intrinsic speed, */
         /* though not better than potion speed */
-        if (!oldprop && !(HFast & TIMEOUT)) {
+        if (!oldprop && !(HFast & TIMEOUT)) 
+		{
             makeknown(uarmf->otyp);
             You_feel("yourself speed up%s.",
                      (oldprop || HFast) ? " a bit more" : "");
@@ -186,8 +187,10 @@ Boots_on(VOID_ARGS)
         toggle_stealth(uarmf, oldprop, TRUE);
         break;
     case FUMBLE_BOOTS:
+		/*
         if (!oldprop && !(HFumbling & ~TIMEOUT))
             incr_itimeout(&HFumbling, rnd(20));
+			*/
         break;
     case LEVITATION_BOOTS:
         if (!oldprop && !HLevitation && !(BLevitation & FROMOUTSIDE)) {
@@ -218,6 +221,7 @@ Boots_off(VOID_ARGS)
      * must do a setworn() _before_ the levitation case.
      */
     setworn((struct obj *) 0, W_ARMF);
+
     switch (otyp) {
     case SPEED_BOOTS:
         if (!Very_fast && !context.takeoff.cancelled_don) {
@@ -241,8 +245,8 @@ Boots_off(VOID_ARGS)
         toggle_stealth(otmp, oldprop, FALSE);
         break;
     case FUMBLE_BOOTS:
-        if (!oldprop && !(HFumbling & ~TIMEOUT))
-            HFumbling = EFumbling = 0;
+        //if (!EFumbling && !(HFumbling & ~TIMEOUT))
+        //    HFumbling =  0;
         break;
     case LEVITATION_BOOTS:
         if (!oldprop && !HLevitation && !(BLevitation & FROMOUTSIDE)
@@ -273,6 +277,8 @@ Cloak_on(VOID_ARGS)
 {
     long oldprop =
         u.uprops[objects[uarmc->otyp].oc_oprop].extrinsic & ~WORN_CLOAK;
+
+	//boolean wasinvisble = Invis;
 
     switch (uarmc->otyp) {
     case ORCISH_CLOAK:
@@ -320,11 +326,13 @@ Cloak_off(VOID_ARGS)
     struct obj *otmp = uarmc;
     int otyp = otmp->otyp;
     long oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_CLOAK;
+	boolean wasinvisible = Invis;
 
     context.takeoff.mask &= ~W_ARMC;
     /* For mummy wrapping, taking it off first resets `Invisible'. */
     setworn((struct obj *) 0, W_ARMC);
 	context.takeoff.cancelled_don = FALSE;
+
     switch (otyp) {
     case ORCISH_CLOAK:
     case DWARVISH_CLOAK:
@@ -341,7 +349,7 @@ Cloak_off(VOID_ARGS)
         toggle_displacement(otmp, oldprop, FALSE);
         break;
     case CLOAK_OF_INVISIBILITY:
-        if (!(u.uprops[INVIS].extrinsic & ~WORN_CLOAK) && !HInvis && !Blind) {
+        if (!wasinvisible && Invis && !Blind) {
             makeknown(CLOAK_OF_INVISIBILITY);
             newsym(u.ux, u.uy);
             pline("Suddenly you can %s.",
@@ -378,13 +386,6 @@ Helmet_on(VOID_ARGS)
         //adj_abon(uarmh, uarmh->spe);
         break;
     case CORNUTHAUM:
-        /* people think marked wizards know what they're talking
-         * about, but it takes trained arrogance to pull it off,
-         * and the actual enchantment of the hat is irrelevant.
-         */
-        ABON(A_CHA) += (Role_if(PM_WIZARD) ? 1 : -1);
-        context.botl = 1;
-        makeknown(uarmh->otyp);
         break;
     case HELM_OF_OPPOSITE_ALIGNMENT:
         /* changing alignment can toggle off active artifact
@@ -425,8 +426,6 @@ Helmet_on(VOID_ARGS)
         }
         break;
 	case TINFOIL_HAT_OF_MIND_SHIELDING:
-		if (!(u.uprops[ODD_IDEAS].extrinsic & ~WORN_HELMET) && !(HOddIdeas & ~TIMEOUT))
-			incr_itimeout(&HOddIdeas, 150 + rnd(100));
 		break;
 	default:
         impossible(unknown_type, c_helmet, uarmh->otyp);
@@ -454,10 +453,6 @@ Helmet_off(VOID_ARGS)
         context.botl = 1;
         break;
     case CORNUTHAUM:
-        if (!context.takeoff.cancelled_don) {
-            ABON(A_CHA) += (Role_if(PM_WIZARD) ? -1 : 1);
-            context.botl = 1;
-        }
         break;
     case HELM_OF_TELEPATHY:
         /* need to update ability before calling see_monsters() */
@@ -475,14 +470,14 @@ Helmet_off(VOID_ARGS)
         uchangealign(u.ualignbase[A_CURRENT], 2);
         break;
 	case TINFOIL_HAT_OF_MIND_SHIELDING:
-		if (!(u.uprops[ODD_IDEAS].extrinsic & ~WORN_HELMET) && !(HLaughing & ~TIMEOUT))
-			HLaughing = ELaughing = 0;
 		break;
 	default:
         impossible(unknown_type, c_helmet, uarmh->otyp);
     }
-    setworn((struct obj *) 0, W_ARMH);
-    context.takeoff.cancelled_don = FALSE;
+
+	setworn((struct obj *) 0, W_ARMH);
+
+	context.takeoff.cancelled_don = FALSE;
 	return 0;
 }
 
@@ -494,8 +489,10 @@ Gloves_on(VOID_ARGS)
     case LEATHER_GLOVES:
         break;
     case GAUNTLETS_OF_FUMBLING:
+		/*
         if (!(u.uprops[FUMBLING].extrinsic & ~WORN_GLOVES) && !(HFumbling & ~TIMEOUT))
             incr_itimeout(&HFumbling, rnd(20));
+			*/
         break;
     case GAUNTLETS_OF_OGRE_POWER:
         break;
@@ -538,9 +535,6 @@ boolean voluntary; /* taking gloves off on purpose? */
 int
 Gloves_off(VOID_ARGS)
 {
-    long oldprop =
-        u.uprops[objects[uarmg->otyp].oc_oprop].extrinsic & ~WORN_GLOVES;
-	
 	boolean on_purpose = !context.mon_moving && !uarmg->in_use;
 
     context.takeoff.mask &= ~W_ARMG;
@@ -550,8 +544,8 @@ Gloves_off(VOID_ARGS)
 	case GLOVES_OF_SPELL_CASTING:
 		break;
     case GAUNTLETS_OF_FUMBLING:
-        if (!(u.uprops[FUMBLING].extrinsic & ~WORN_GLOVES) && !(HFumbling & ~TIMEOUT))
-            HFumbling = EFumbling = 0;
+        //if (!EFumbling && !(HFumbling & ~TIMEOUT))
+        //    HFumbling = 0;
         break;
     case GAUNTLETS_OF_OGRE_POWER:
         break;
@@ -562,7 +556,9 @@ Gloves_off(VOID_ARGS)
     default:
         impossible(unknown_type, c_gloves, uarmg->otyp);
     }
-    setworn((struct obj *) 0, W_ARMG);
+
+	setworn((struct obj*) 0, W_ARMG);
+
     context.takeoff.cancelled_don = FALSE;
     (void) encumber_msg(); /* immediate feedback for GoP */
 
@@ -636,10 +632,12 @@ Shirt_on(VOID_ARGS)
        keep this uncommented in case somebody adds a new one which does */
     switch (uarmu->otyp) {
 	case SHIRT_OF_UNCONTROLLABLE_LAUGHTER:
+		/* Laughing will start automatically if timer is zero */
+		/*
 		if (!(u.uprops[LAUGHING].extrinsic & ~WORN_SHIRT) && !(HLaughing & ~TIMEOUT))
 			incr_itimeout(&HLaughing, rnd(20));
 		break;
-
+		*/
 	case SHIRT_OF_SOUND_MINDEDNESS:
 	case HAWAIIAN_SHIRT:
     case T_SHIRT:
@@ -661,15 +659,16 @@ Shirt_off(VOID_ARGS)
 	struct obj* otmp = uarmu;
 	int otyp = otmp->otyp;
 	long oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_SHIRT;
-
     context.takeoff.mask &= ~W_ARMU;
 
     /* no shirt currently requires special handling when taken off, but we
        keep this uncommented in case somebody adds a new one which does */
-    switch (uarmu->otyp) {
+	
+	switch (uarmu->otyp) {
 	case SHIRT_OF_UNCONTROLLABLE_LAUGHTER:
-		if (!oldprop && !(HLaughing & ~TIMEOUT))
-			HLaughing = ELaughing = 0;
+		/* Clear off laughing immediately */
+		//if (!ELaughing && !(HLaughing & ~TIMEOUT))
+		//	HLaughing = 0; //Must be zero, since the player is not laughing
 		break;
 	case SHIRT_OF_SOUND_MINDEDNESS:
 	case HAWAIIAN_SHIRT:
@@ -683,7 +682,8 @@ Shirt_off(VOID_ARGS)
         impossible(unknown_type, c_shirt, uarmu->otyp);
     }
 
-    setworn((struct obj *) 0, W_ARMU);
+	setworn((struct obj*) 0, W_ARMU);
+
 	context.takeoff.cancelled_don = FALSE;
 	return 0;
 }
@@ -885,7 +885,6 @@ struct obj* ud;
 			pline("Everything %s SO boring now.", (!Blind) ? "looks" : "feels");
 		}
 	}
-
 	return 0;
 }
 
@@ -987,12 +986,12 @@ Amulet_on()
         }
         break;
     case AMULET_OF_RESTFUL_SLEEP: {
-        long newnap = (long) rnd(100), oldnap = (HSleepy & TIMEOUT);
+        //long newnap = (long) rnd(100), oldnap = (HSleepy & TIMEOUT);
 
         /* avoid clobbering FROMOUTSIDE bit, which might have
            gotten set by previously eating one of these amulets */
-        if (newnap < oldnap || oldnap == 0L)
-            HSleepy = (HSleepy & ~TIMEOUT) | newnap;
+        //if (newnap < oldnap || oldnap == 0L)
+        //    HSleepy = (HSleepy & ~TIMEOUT) | newnap;
     } break;
 	case AMULET_OF_MANA:
 	case DEMON_BLOOD_TALISMAN:
@@ -1051,10 +1050,10 @@ Amulet_off()
         }
         break;
     case AMULET_OF_RESTFUL_SLEEP:
-        setworn((struct obj *) 0, W_AMUL);
+        //setworn((struct obj *) 0, W_AMUL);
         /* HSleepy = 0L; -- avoid clobbering FROMOUTSIDE bit */
-        if (!ESleepy && !(HSleepy & ~TIMEOUT))
-            HSleepy &= ~TIMEOUT; /* clear timeout bits */
+        //if (!ESleepy && !(HSleepy & ~TIMEOUT))
+        //    HSleepy &= ~TIMEOUT; /* clear timeout bits */
         return;
     case AMULET_OF_YENDOR:
         break;

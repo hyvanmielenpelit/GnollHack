@@ -5100,7 +5100,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
     int spell_type;
 	int zaptype = 0;
 
-	if (abstype >= ZT_DEATH)
+	if (abstype > ZT_DEATH)
 		zaptype = ZT_DISINTEGRATION;
 	else
 		zaptype = abstype;

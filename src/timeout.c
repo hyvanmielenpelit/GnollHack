@@ -583,138 +583,146 @@ nh_timeout()
 
 
     was_flying = Flying;
-    for (upp = u.uprops; upp < u.uprops + SIZE(u.uprops); upp++)
-        if ((upp->intrinsic & TIMEOUT) && !(--upp->intrinsic & TIMEOUT)) {
-            kptr = find_delayed_killer((int) (upp - u.uprops));
-            switch (upp - u.uprops) {
-            case STONED:
-                if (kptr && kptr->name[0]) {
-                    killer.format = kptr->format;
-                    Strcpy(killer.name, kptr->name);
-                } else {
-                    killer.format = NO_KILLER_PREFIX;
-                    Strcpy(killer.name, "killed by petrification");
-                }
-                dealloc_killer(kptr);
-                /* (unlike sliming, you aren't changing form here) */
-                done(STONING);
-                break;
-            case SLIMED:
-                slimed_to_death(kptr); /* done(TURNED_SLIME) */
-                break;
-            case VOMITING:
-                make_vomiting(0L, TRUE);
-                break;
-            case SICK:
-                You("die from your illness.");
-                if (kptr && kptr->name[0]) {
-                    killer.format = kptr->format;
-                    Strcpy(killer.name, kptr->name);
-                } else {
-                    killer.format = KILLED_BY_AN;
-                    killer.name[0] = 0; /* take the default */
-                }
-                dealloc_killer(kptr);
+	for (upp = u.uprops; upp < u.uprops + SIZE(u.uprops); upp++)
+	{
+		int extratime = 0;
+		if ((upp->intrinsic & TIMEOUT) && !(--upp->intrinsic & TIMEOUT))
+		{
+			kptr = find_delayed_killer((int)(upp - u.uprops));
+			switch (upp - u.uprops) {
+			case STONED:
+				if (kptr && kptr->name[0]) {
+					killer.format = kptr->format;
+					Strcpy(killer.name, kptr->name);
+				}
+				else {
+					killer.format = NO_KILLER_PREFIX;
+					Strcpy(killer.name, "killed by petrification");
+				}
+				dealloc_killer(kptr);
+				/* (unlike sliming, you aren't changing form here) */
+				done(STONING);
+				break;
+			case SLIMED:
+				slimed_to_death(kptr); /* done(TURNED_SLIME) */
+				break;
+			case VOMITING:
+				make_vomiting(0L, TRUE);
+				break;
+			case SICK:
+				You("die from your illness.");
+				if (kptr && kptr->name[0]) {
+					killer.format = kptr->format;
+					Strcpy(killer.name, kptr->name);
+				}
+				else {
+					killer.format = KILLED_BY_AN;
+					killer.name[0] = 0; /* take the default */
+				}
+				dealloc_killer(kptr);
 
-                if ((m_idx = name_to_mon(killer.name)) >= LOW_PM) {
-                    if (type_is_pname(&mons[m_idx])) {
-                        killer.format = KILLED_BY;
-                    } else if (mons[m_idx].geno & G_UNIQ) {
-                        Strcpy(killer.name, the(killer.name));
-                        killer.format = KILLED_BY;
-                    }
-                }
-                u.usick_type = 0;
-                done(POISONING);
-                break;
-            case FAST:
-                if (!Very_fast)
-                    You_feel("yourself slowing down%s.",
-                             Fast ? " a bit" : "");
-                break;
-            case CONFUSION:
-                /* So make_confused works properly */
-                set_itimeout(&HConfusion, 1L);
-                make_confused(0L, TRUE);
-                if (!Confusion)
-                    stop_occupation();
-                break;
-            case STUNNED:
-                set_itimeout(&HStun, 1L);
-                make_stunned(0L, TRUE);
-                if (!Stunned)
-                    stop_occupation();
-                break;
-            case BLINDED:
-                set_itimeout(&Blinded, 1L);
-                make_blinded(0L, TRUE);
-                if (!Blind)
-                    stop_occupation();
-                break;
-            case DEAF:
-                set_itimeout(&HDeaf, 1L);
-                make_deaf(0L, TRUE);
-                context.botl = TRUE;
-                if (!Deaf)
-                    stop_occupation();
-                break;
-            case INVIS:
-                newsym(u.ux, u.uy);
-                if (!Invis && !BInvis && !Blind) {
-                    You(!See_invisible
-                            ? "are no longer invisible."
-                            : "can no longer see through yourself.");
-                    stop_occupation();
-                }
-                break;
-            case SEE_INVIS:
-                set_mimic_blocking(); /* do special mimic handling */
-                see_monsters();       /* make invis mons appear */
-                newsym(u.ux, u.uy);   /* make self appear */
-                stop_occupation();
-                break;
-            case WOUNDED_LEGS:
-                heal_legs(0);
-                stop_occupation();
-                break;
-            case HALLUC:
-                set_itimeout(&HHallucination, 1L);
-                (void) make_hallucinated(0L, TRUE, 0L);
-                if (!Hallucination)
-                    stop_occupation();
-                break;
-            case SLEEPY:
-                if (unconscious() || Sleep_resistance) {
-                    incr_itimeout(&HSleepy, rnd(100));
-                } else if (Sleepy) {
-                    You("fall asleep.");
-                    sleeptime = rnd(20);
-                    fall_asleep(-sleeptime, TRUE);
-                    incr_itimeout(&HSleepy, sleeptime + rnd(100));
-                }
-                break;
-            case LEVITATION:
-                (void) float_down(I_SPECIAL | TIMEOUT, 0L);
-                break;
-            case FLYING:
-                /* timed Flying is via #wizintrinsic only */
-                if (was_flying && !Flying) {
-                    context.botl = 1;
-                    You("land.");
-                    spoteffects(TRUE);
-                }
-                break;
-            case WARN_OF_MON:
-                /* timed Warn_of_mon is via #wizintrinsic only */
-                if (!Warn_of_mon) {
-                    context.warntype.speciesidx = NON_PM;
-                    if (context.warntype.species) {
-                        You("are no longer warned about %s.",
-                            makeplural(context.warntype.species->mname));
-                        context.warntype.species = (struct permonst *) 0;
-                    }
-                }
-                break;
+				if ((m_idx = name_to_mon(killer.name)) >= LOW_PM) {
+					if (type_is_pname(&mons[m_idx])) {
+						killer.format = KILLED_BY;
+					}
+					else if (mons[m_idx].geno & G_UNIQ) {
+						Strcpy(killer.name, the(killer.name));
+						killer.format = KILLED_BY;
+					}
+				}
+				u.usick_type = 0;
+				done(POISONING);
+				break;
+			case FAST:
+				if (!Very_fast)
+					You_feel("yourself slowing down%s.",
+						Fast ? " a bit" : "");
+				break;
+			case CONFUSION:
+				/* So make_confused works properly */
+				set_itimeout(&HConfusion, 1L);
+				make_confused(0L, TRUE);
+				if (!Confusion)
+					stop_occupation();
+				break;
+			case STUNNED:
+				set_itimeout(&HStun, 1L);
+				make_stunned(0L, TRUE);
+				if (!Stunned)
+					stop_occupation();
+				break;
+			case BLINDED:
+				set_itimeout(&Blinded, 1L);
+				make_blinded(0L, TRUE);
+				if (!Blind)
+					stop_occupation();
+				break;
+			case DEAF:
+				set_itimeout(&HDeaf, 1L);
+				make_deaf(0L, TRUE);
+				context.botl = TRUE;
+				if (!Deaf)
+					stop_occupation();
+				break;
+			case INVIS:
+				newsym(u.ux, u.uy);
+				if (!Invis && !BInvis && !Blind) {
+					You(!See_invisible
+						? "are no longer invisible."
+						: "can no longer see through yourself.");
+					stop_occupation();
+				}
+				break;
+			case SEE_INVIS:
+				set_mimic_blocking(); /* do special mimic handling */
+				see_monsters();       /* make invis mons appear */
+				newsym(u.ux, u.uy);   /* make self appear */
+				stop_occupation();
+				break;
+			case WOUNDED_LEGS:
+				heal_legs(0);
+				stop_occupation();
+				break;
+			case HALLUC:
+				set_itimeout(&HHallucination, 1L);
+				(void)make_hallucinated(0L, TRUE, 0L);
+				if (!Hallucination)
+					stop_occupation();
+				break;
+			case SLEEPY:
+				if (unconscious() || Sleep_resistance) {
+					//incr_itimeout(&HSleepy, rnd(100));
+				}
+				else if (Sleepy) {
+					You("fall asleep.");
+					sleeptime = rnd(20);
+					fall_asleep(-sleeptime, TRUE);
+					extratime = sleeptime;
+					//incr_itimeout(&HSleepy, sleeptime + rnd(100));
+				}
+				break;
+			case LEVITATION:
+				(void)float_down(I_SPECIAL | TIMEOUT, 0L);
+				break;
+			case FLYING:
+				/* timed Flying is via #wizintrinsic only */
+				if (was_flying && !Flying) {
+					context.botl = 1;
+					You("land.");
+					spoteffects(TRUE);
+				}
+				break;
+			case WARN_OF_MON:
+				/* timed Warn_of_mon is via #wizintrinsic only */
+				if (!Warn_of_mon) {
+					context.warntype.speciesidx = NON_PM;
+					if (context.warntype.species) {
+						You("are no longer warned about %s.",
+							makeplural(context.warntype.species->mname));
+						context.warntype.species = (struct permonst*) 0;
+					}
+				}
+				break;
 			case WARN_UNDEAD:
 			case WARN_DEMON:
 			case WARN_ORC:
@@ -732,70 +740,70 @@ nh_timeout()
 			case WARN_ANGEL:
 				break;
 			case PASSES_WALLS:
-                if (!Passes_walls) {
-                    if (stuck_in_wall())
-                        You_feel("hemmed in again.");
-                    else
-                        pline("You're back to your %s self again.",
-                              !Upolyd ? "normal" : "unusual");
-                }
-                break;
-            case STRANGLED:
-                killer.format = KILLED_BY;
-                Strcpy(killer.name,
-                       (u.uburied) ? "suffocation" : "strangulation");
-                done(DIED);
-                /* must be declining to die in explore|wizard mode;
-                   treat like being cured of strangulation by prayer */
-                if (uamul && uamul->otyp == AMULET_OF_STRANGULATION) {
-                    Your("amulet vanishes!");
-                    useup(uamul);
-                }
-                break;
-            case FUMBLING:
-                /* call this only when a move took place.  */
-                /* otherwise handle fumbling msgs locally. */
-                if (u.umoved && !Levitation) {
-                    slip_or_trip();
-                    nomul(-2);
-                    multi_reason = "fumbling";
-                    nomovemsg = "";
-                    /* The more you are carrying the more likely you
-                     * are to make noise when you fumble.  Adjustments
-                     * to this number must be thoroughly play tested.
-                     */
-                    if ((inv_weight() > -500)) {
-                        You("make a lot of noise!");
-                        wake_nearby();
-                    }
-                }
-                /* from outside means slippery ice; don't reset
-                   counter if that's the only fumble reason */
-                HFumbling &= ~FROMOUTSIDE;
-                if (Fumbling)
-                    incr_itimeout(&HFumbling, rnd(20));
-                break;
+				if (!Passes_walls) {
+					if (stuck_in_wall())
+						You_feel("hemmed in again.");
+					else
+						pline("You're back to your %s self again.",
+							!Upolyd ? "normal" : "unusual");
+				}
+				break;
+			case STRANGLED:
+				killer.format = KILLED_BY;
+				Strcpy(killer.name,
+					(u.uburied) ? "suffocation" : "strangulation");
+				done(DIED);
+				/* must be declining to die in explore|wizard mode;
+				   treat like being cured of strangulation by prayer */
+				if (uamul && uamul->otyp == AMULET_OF_STRANGULATION) {
+					Your("amulet vanishes!");
+					useup(uamul);
+				}
+				break;
+			case FUMBLING:
+				/* call this only when a move took place.  */
+				/* otherwise handle fumbling msgs locally. */
+				if (u.umoved && !Levitation) {
+					slip_or_trip();
+					nomul(-2);
+					multi_reason = "fumbling";
+					nomovemsg = "";
+					/* The more you are carrying the more likely you
+					 * are to make noise when you fumble.  Adjustments
+					 * to this number must be thoroughly play tested.
+					 */
+					if ((inv_weight() > -500)) {
+						You("make a lot of noise!");
+						wake_nearby();
+					}
+				}
+				/* from outside means slippery ice; don't reset
+				   counter if that's the only fumble reason */
+				HFumbling &= ~FROMOUTSIDE;
+				//if (Fumbling)
+				//	incr_itimeout(&HFumbling, rnd(20));
+				break;
 			case LAUGHING:
 				laugh_uncontrollably();
 				nomul(-1);
 				multi_reason = "laughing";
 				wake_nearby();
-				if (Laughing)
-					incr_itimeout(&HLaughing, rnd(20));
+				//if (Laughing)
+				//	incr_itimeout(&HLaughing, rnd(20));
 				break;
 			case ODD_IDEAS:
 				get_odd_idea();
 				nomul(0);
 				multi_reason = "getting visionary ideas";
-				if (OddIdeas)
-					incr_itimeout(&HOddIdeas, 150 + rnd(100));
-				break;			
+				//if (OddIdeas)
+				//	incr_itimeout(&HOddIdeas, 150 + rnd(100));
+				break;
 			case REFLECTING:
 				if (!Reflecting)
 					Your("skin feels less reflecting than before.");
 				break;
 			case FIRE_RES:
-				if(!Fire_resistance)
+				if (!Fire_resistance)
 					Your("skin feels more prone to burning than before.");
 				break;
 			case COLD_RES:
@@ -866,7 +874,7 @@ nh_timeout()
 				if (!Detect_monsters)
 					You_feel("less sensitive to the presence of monsters than before.");
 				see_monsters();
-                break;
+				break;
 			case BLIND_TELEPAT:
 				if (!Blind_telepat)
 					You_feel("less telepathic when blind.");
@@ -894,7 +902,7 @@ nh_timeout()
 					Your("neighborhood feels less quarrelsome than before.");
 				break;
 			}
-        }
+		}
 		else if ((upp->intrinsic & TIMEOUT) && ((upp->intrinsic & TIMEOUT) == 3))
 		{
 			// Early warning
@@ -995,6 +1003,14 @@ nh_timeout()
 				break;
 			}
 		}
+
+		/* Finally, add time to recurring intrinsics */
+		if ((upp->intrinsic & TIMEOUT) == 0 && upp->recurring && (upp->extrinsic || (upp->intrinsic & ~TIMEOUT)))
+		{
+			incr_itimeout(&upp->intrinsic, extratime + upp->recurring_constant + (upp->recurring_random > 1 ? rnd(upp->recurring_random) : 0));
+		}
+	}
+
     run_timers();
 }
 

@@ -891,6 +891,24 @@ register struct obj* obj;
 							if (objects[otyp].oc_charged && !(prop & IGNORE_SPE))
 								stat += obj->spe;
 
+							char raisebuf[BUFSZ];
+							if (prop & FIXED_IS_MAXIMUM)
+								strcpy(raisebuf, "Lowers");
+							else
+								strcpy(raisebuf, "Raises");
+
+							char grantbuf[BUFSZ];
+							if (stat < 0)
+								strcpy(raisebuf, "Causes");
+							else
+								strcpy(raisebuf, "Grants");
+
+							char bonusbuf[BUFSZ];
+							if (stat < 0)
+								strcpy(raisebuf, "penalty");
+							else
+								strcpy(raisebuf, "bonus");
+
 							if (k == 0 && prop & BONUS_TO_STR)
 							{
 								powercnt++;
@@ -908,79 +926,79 @@ register struct obj* obj;
 										Sprintf(strbuf, "18/**");
 									else
 										Sprintf(strbuf, "%d", stat - 100);
-									Sprintf(buf2, "Raises strength to %s", strbuf);
+									Sprintf(buf2, "%s strength to %s", raisebuf, strbuf);
 								}
 								else
-									Sprintf(buf2, "Grants %s%d bonus to strength", stat >= 0 ? "+" : "", stat);
+									Sprintf(buf2, "%s %s%d %s to strength", grantbuf, stat >= 0 ? "+" : "", stat, bonusbuf);
 							}
 							if (k == 1 && prop & BONUS_TO_DEX)
 							{
 								powercnt++;
 
 								if (prop & SETS_FIXED_ATTRIBUTE)
-									Sprintf(buf2, "Raises dexterity to %d", stat);
+									Sprintf(buf2, "%s dexterity to %d", raisebuf, stat);
 								else
-									Sprintf(buf2, "Grants %s%d bonus to dexterity", stat >= 0 ? "+" : "", stat);
+									Sprintf(buf2, "%s %s%d %s to dexterity", grantbuf, stat >= 0 ? "+" : "", stat, bonusbuf);
 							}
 							if (k == 2 && prop & BONUS_TO_CON)
 							{
 								powercnt++;
 
 								if (prop & SETS_FIXED_ATTRIBUTE)
-									Sprintf(buf2, "Raises constitution to %d", stat);
+									Sprintf(buf2, "%s constitution to %d", raisebuf, stat);
 								else
-									Sprintf(buf2, "Grants %s%d bonus to constitution", stat >= 0 ? "+" : "", stat);
+									Sprintf(buf2, "%s %s%d %s to constitution", grantbuf, stat >= 0 ? "+" : "", stat, bonusbuf);
 							}
 							if (k == 3 && prop & BONUS_TO_INT)
 							{
 								powercnt++;
 
 								if (prop & SETS_FIXED_ATTRIBUTE)
-									Sprintf(buf2, "Raises intelligence to %d", stat);
+									Sprintf(buf2, "%s intelligence to %d", raisebuf, stat);
 								else
-									Sprintf(buf2, "Grants %s%d bonus to intelligence", stat >= 0 ? "+" : "", stat);
+									Sprintf(buf2, "%s %s%d %s to intelligence", grantbuf, stat >= 0 ? "+" : "", stat, bonusbuf);
 							}
 							if (k == 4 && prop & BONUS_TO_WIS)
 							{
 								powercnt++;
 
 								if (prop & SETS_FIXED_ATTRIBUTE)
-									Sprintf(buf2, "Raises wisdom to %d", stat);
+									Sprintf(buf2, "%s wisdom to %d", raisebuf, stat);
 								else
-									Sprintf(buf2, "Grants %s%d bonus to wisdom", stat >= 0 ? "+" : "", stat);
+									Sprintf(buf2, "%s %s%d %s to wisdom", grantbuf, stat >= 0 ? "+" : "", stat, bonusbuf);
 							}
 							if (k == 5 && prop & BONUS_TO_CHA)
 							{
 								powercnt++;
 
 								if (prop & SETS_FIXED_ATTRIBUTE)
-									Sprintf(buf2, "Raises charisma to %d", stat);
+									Sprintf(buf2, "%s charisma to %d", raisebuf, stat);
 								else
-									Sprintf(buf2, "Grants %s%d bonus to charisma", stat >= 0 ? "+" : "", stat);
+									Sprintf(buf2, "%s %s%d %s to charisma", grantbuf, stat >= 0 ? "+" : "", stat, bonusbuf);
 							}
 							if (k == 6 && prop & BONUS_TO_AC)
 							{
 								powercnt++;
 
-								Sprintf(buf2, "Grants %s%d bonus to armor class", stat >= 0 ? "+" : "", stat);
+								Sprintf(buf2, "%s %s%d %s to armor class", grantbuf, stat >= 0 ? "+" : "", stat, bonusbuf);
 							}
 							if (k == 7 && prop & BONUS_TO_DAMAGE)
 							{
 								powercnt++;
 
-								Sprintf(buf2, "Grants %s%d bonus to damage", stat >= 0 ? "+" : "", stat);
+								Sprintf(buf2, "%s %s%d %s to damage", grantbuf, stat >= 0 ? "+" : "", stat, bonusbuf);
 							}
 							if (k == 8 && prop & BONUS_TO_HIT)
 							{
 								powercnt++;
 
-								Sprintf(buf2, "Grants %s%d bonus to hit", stat >= 0 ? "+" : "", stat);
+								Sprintf(buf2, "%s %s%d %s to hit", grantbuf, stat >= 0 ? "+" : "", stat, bonusbuf);
 							}
 							if (k == 9 && prop & BONUS_TO_MC)
 							{
 								powercnt++;
 
-								Sprintf(buf2, "Grants %s%d bonus to magic cancellation", stat >= 0 ? "+" : "", stat);
+								Sprintf(buf2, "%s %s%d %s to magic cancellation", grantbuf, stat >= 0 ? "+" : "", stat, bonusbuf);
 							}
 
 							if (strcmp(buf2, "") != 0) // Something else than ""

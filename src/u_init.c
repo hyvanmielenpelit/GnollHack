@@ -823,6 +823,26 @@ register char sym;
 }
 
 void
+props_init()
+{
+	u.uprops[LAUGHING].recurring = TRUE;
+	u.uprops[LAUGHING].recurring_constant = 0;
+	u.uprops[LAUGHING].recurring_random = 20;
+
+	u.uprops[FUMBLING].recurring = TRUE;
+	u.uprops[FUMBLING].recurring_constant = 0;
+	u.uprops[FUMBLING].recurring_random = 20;
+
+	u.uprops[ODD_IDEAS].recurring = TRUE;
+	u.uprops[ODD_IDEAS].recurring_constant = 150;
+	u.uprops[ODD_IDEAS].recurring_random = 100;
+
+	u.uprops[SLEEPY].recurring = TRUE;
+	u.uprops[SLEEPY].recurring_constant = 0;
+	u.uprops[SLEEPY].recurring_random = 100;
+}
+
+void
 u_init()
 {
     register int i;
@@ -860,6 +880,7 @@ u_init()
     u.uz.dnum = u.uz0.dnum = 0;
     u.utotype = 0;
 #endif /* 0 */
+	props_init();
 
     u.uz.dlevel = 1;
     u.uz0.dlevel = 0;
@@ -1310,17 +1331,14 @@ register struct trobj *trop;
                    || otyp == nocreate4 || otyp == RIN_LEVITATION
                    || otyp == AMULET_OF_LIFE_SAVING
                    /* 'useless' items */
-                   || otyp == AMULET_OF_RESTFUL_SLEEP
-                   || otyp == AMULET_OF_STRANGULATION
-                   || otyp == AMULET_OF_CHANGE
+				   || objects[otyp].oc_flags2 & O2_CURSED_MAGIC_ITEM
+				   || objects[otyp].oc_flags2 & O2_GENERATED_CURSED
                    || otyp == POT_HALLUCINATION
                    || otyp == POT_ACID
                    || otyp == SCR_AMNESIA
                    || otyp == SCR_FIRE
                    || otyp == SCR_BLANK_PAPER
                    || otyp == SPE_BLANK_PAPER
-                   || otyp == RIN_AGGRAVATE_MONSTER
-                   || otyp == RIN_HUNGER
                    || otyp == WAN_NOTHING
                    /* orcs start with poison resistance */
                    || (otyp == RIN_POISON_RESISTANCE && Race_if(PM_ORC))

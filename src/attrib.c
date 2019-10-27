@@ -658,37 +658,17 @@ update_carried_item_extrinsics()
 		}
 	}
 
-	if (EFumbling) //Item is causing fumbling, then add HFumbling timer
+	/* Check if any of the recurring properties should be cleared out */
+	for (int i = 0; i <= LAST_PROP; i++)
 	{
-		if ((HFumbling & TIMEOUT) == 0)
-			incr_itimeout(&HFumbling, rnd(20));
-	}
-	else if((HFumbling & ~TIMEOUT) == 0) //No innate fumbling
-	{
-		HFumbling = 0; // Clearer than &= ~TIMEOUT;
-	}
+		struct prop *upp = &u.uprops[i];
 
-	if (ELaughing) //Item is causing laughing, then add HLaughing timer
-	{
-		if ((HLaughing & TIMEOUT) == 0)
-			incr_itimeout(&HLaughing, rnd(20));
+		if ((upp->intrinsic & TIMEOUT) > 0 && upp->recurring && !(upp->extrinsic || (upp->intrinsic & ~TIMEOUT)))
+		{
+			upp->intrinsic = 0;
+		}
 	}
-	else if ((HLaughing & ~TIMEOUT) == 0) //No innate laughing
-	{
-		if ((HLaughing & TIMEOUT) > 0)
-			HLaughing = 0; // Clearer than &= ~TIMEOUT;
-	}
-
-	if (EOddIdeas) //Item is causing odd ideas, then add HOddIdeas timer
-	{
-		if ((HOddIdeas & TIMEOUT) == 0)
-			incr_itimeout(&HOddIdeas, rnd(20));
-	}
-	else if ((HOddIdeas & ~TIMEOUT) == 0) //No innate laughing
-	{
-		if ((HOddIdeas & TIMEOUT) > 0)
-			HOddIdeas = 0; // Clearer than &= ~TIMEOUT;
-	}
+	/* New recurring properties will be set by nh_timeout */
 }
 
 boolean

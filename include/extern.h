@@ -2621,6 +2621,7 @@ E void NDECL(sokoban_guilt);
 /* ### u_init.c ### */
 
 E void NDECL(u_init);
+E void NDECL(props_init);
 
 /* ### uhitm.c ### */
 
