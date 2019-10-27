@@ -547,6 +547,7 @@ boolean on, silently;
         /* properties which maybe should have an effect but don't */
         case DISPLACED:
 		case FUMBLING:
+		case ODD_IDEAS:
 		case LAUGHING:
         case JUMPING:
         case PROTECTION:
@@ -578,6 +579,7 @@ boolean on, silently;
         case DISINT_RES:
 		case DEATH_RES:
 		case CHARM_RES:
+		case MIND_SHIELDING:
 		case SHOCK_RES:
         case POISON_RES:
         case ACID_RES:

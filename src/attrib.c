@@ -679,6 +679,16 @@ update_carried_item_extrinsics()
 			HLaughing = 0; // Clearer than &= ~TIMEOUT;
 	}
 
+	if (EOddIdeas) //Item is causing odd ideas, then add HOddIdeas timer
+	{
+		if ((HOddIdeas & TIMEOUT) == 0)
+			incr_itimeout(&HOddIdeas, rnd(20));
+	}
+	else if ((HOddIdeas & ~TIMEOUT) == 0) //No innate laughing
+	{
+		if ((HOddIdeas & TIMEOUT) > 0)
+			HOddIdeas = 0; // Clearer than &= ~TIMEOUT;
+	}
 }
 
 boolean

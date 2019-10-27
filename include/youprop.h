@@ -68,6 +68,9 @@
 #define ECharm_resistance u.uprops[CHARM_RES].extrinsic
 #define Charm_resistance (HCharm_resistance || ECharm_resistance)
 
+#define HMind_shielding u.uprops[MIND_SHIELDING].intrinsic
+#define EMind_shielding u.uprops[MIND_SHIELDING].extrinsic
+#define Mind_shielding (HMind_shielding || EMind_shielding)
 
 
 /* Hxxx due to FROMFORM only */
@@ -156,6 +159,10 @@
 #define HLaughing u.uprops[LAUGHING].intrinsic
 #define ELaughing u.uprops[LAUGHING].extrinsic
 #define Laughing (HLaughing || ELaughing)
+
+#define HOddIdeas u.uprops[ODD_IDEAS].intrinsic
+#define EOddIdeas u.uprops[ODD_IDEAS].extrinsic
+#define OddIdeas (HOddIdeas || EOddIdeas)
 
 #define HWounded_legs u.uprops[WOUNDED_LEGS].intrinsic
 #define EWounded_legs u.uprops[WOUNDED_LEGS].extrinsic

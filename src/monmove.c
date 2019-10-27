@@ -506,7 +506,9 @@ register struct monst *mtmp;
         if (mtmp->mpeaceful
             && (!Conflict || resist(mtmp, (struct obj*) 0, 5, 0, 0))) {
             pline("It feels quite soothing.");
-        } else if (!u.uinvulnerable && !Invulnerable) {
+        } 
+		else if (!u.uinvulnerable && !Invulnerable && !Mind_shielding) 
+		{
             register boolean m_sen = sensemon(mtmp);
 
             if (m_sen || ((Blind_telepat || Unblind_telepat) && rn2(2)) || !rn2(10)) {
@@ -520,6 +522,11 @@ register struct monst *mtmp;
                 losehp(dmg, "psychic blast", KILLED_BY_AN);
             }
         }
+		else
+		{
+			You("are unaffected.");
+		}
+
         for (m2 = fmon; m2; m2 = nmon) {
             nmon = m2->nmon;
             if (DEADMONSTER(m2))

@@ -137,6 +137,7 @@ struct context_info {
 	boolean suit_yielding_mc_bonus;
 	boolean robe_yielding_ac_bonus;
 	boolean robe_yielding_mc_bonus;
+	int oddideacnt;
 	struct dig_info digging;
     struct victual_info victual;
     struct tin_info tin;

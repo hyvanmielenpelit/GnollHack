@@ -2389,6 +2389,10 @@ int final;
 		if (magic || cause_known(LAUGHING))
 			enl_msg(You_, "laugh uncontrollably", "laughed uncontrollably", "", from_what(LAUGHING));
 	}
+	if (OddIdeas) {
+		if (magic || cause_known(ODD_IDEAS))
+			enl_msg(You_, "get visionary ideas", "got visionary ideas", "", from_what(ODD_IDEAS));
+	}
 	if (Sleepy) {
         if (magic || cause_known(SLEEPY)) {
             Strcpy(buf, from_what(SLEEPY));
@@ -2563,6 +2567,8 @@ int final;
 		you_are("death resistant", from_what(DEATH_RES));
 	if (Charm_resistance)
 		you_are("charm resistant", from_what(CHARM_RES));
+	if (Mind_shielding)
+		you_are("mind-shielded", from_what(MIND_SHIELDING));
 	if (Lycanthropy_resistance)
 		you_are("immune to lycanthropy", from_what(LYCANTHROPY_RES));
 	if (Curse_resistance)

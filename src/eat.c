@@ -969,6 +969,16 @@ register struct permonst *ptr;
 			HCharm_resistance |= FROMOUTSIDE;
 		}
 		break;
+	case MIND_SHIELDING: /* mind shielding */
+		debugpline0("Trying to give mind shielding");
+		if (!(HMind_shielding & FROMOUTSIDE)) {
+			if (Hallucination)
+				pline("You finally feel secure from those tentacled monstrosities!");
+			else
+				You_feel("shielded against mental detection!");
+			HMind_shielding |= FROMOUTSIDE;
+		}
+		break;
 	case LYCANTHROPY_RES: /* immunity to lycanthropy */
 		debugpline0("Trying to give immunity to lycanthropy");
 		if (!(HLycanthropy_resistance & FROMOUTSIDE)) {

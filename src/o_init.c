@@ -237,6 +237,8 @@ int *lo_p, *hi_p; /* output: range that item belongs among */
 			*lo_p = NOSE_RING_OF_BULL_STRENGTH, * hi_p = NOSE_RING_OF_CEREBRAL_SAFEGUARDING;
 		else if (otyp >= LENSES && otyp <= EYEGLASSES_OF_SEE_INVISIBLE)
 			*lo_p = LENSES, * hi_p = EYEGLASSES_OF_SEE_INVISIBLE;
+		else if (otyp >= GOGGLES_OF_NIGHT && otyp <= GOGGLES_OF_EYE_PROTECTION)
+			*lo_p = GOGGLES_OF_NIGHT, * hi_p = GOGGLES_OF_EYE_PROTECTION;
 		break;
 	case POTION_CLASS:
         /* potion of water has the only fixed description */
@@ -286,7 +288,7 @@ shuffle_all()
         HELMET, LEATHER_GLOVES, SHIRT_OF_UNCONTROLLABLE_LAUGHTER, CLOAK_OF_PROTECTION, SPEED_BOOTS, SWORD_OF_DEFENSE,
     };
 	static short shuffle_types_with_material[] = {
-		 ROBE, LEATHER_BRACERS, NOSE_RING_OF_BULL_STRENGTH, IOUN_STONE_OF_PROTECTION, LENSES, LEATHER_BELT
+		 ROBE, LEATHER_BRACERS, NOSE_RING_OF_BULL_STRENGTH, IOUN_STONE_OF_PROTECTION, LENSES, GOGGLES_OF_NIGHT, LEATHER_BELT
 	};
 	int first, last, idx;
 

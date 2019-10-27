@@ -293,7 +293,7 @@ Cloak_on(VOID_ARGS)
     case CLOAK_OF_INVISIBILITY:
         /* since cloak of invisibility was worn, we know mummy wrapping
            wasn't, so no need to check `oldprop' against blocked */
-        if (!oldprop && !HInvis && !Blind) {
+        if (!(u.uprops[INVIS].extrinsic & ~WORN_CLOAK) && !HInvis && !Blind) {
             makeknown(uarmc->otyp);
             newsym(u.ux, u.uy);
             pline("Suddenly you can%s yourself.",
@@ -341,7 +341,7 @@ Cloak_off(VOID_ARGS)
         toggle_displacement(otmp, oldprop, FALSE);
         break;
     case CLOAK_OF_INVISIBILITY:
-        if (!oldprop && !HInvis && !Blind) {
+        if (!(u.uprops[INVIS].extrinsic & ~WORN_CLOAK) && !HInvis && !Blind) {
             makeknown(CLOAK_OF_INVISIBILITY);
             newsym(u.ux, u.uy);
             pline("Suddenly you can %s.",
@@ -424,7 +424,11 @@ Helmet_on(VOID_ARGS)
                          : "giddy");
         }
         break;
-    default:
+	case TINFOIL_HAT_OF_MIND_SHIELDING:
+		if (!(u.uprops[ODD_IDEAS].extrinsic & ~WORN_HELMET) && !(HOddIdeas & ~TIMEOUT))
+			incr_itimeout(&HOddIdeas, 150 + rnd(100));
+		break;
+	default:
         impossible(unknown_type, c_helmet, uarmh->otyp);
     }
     uarmh->known = 1; /* helmet's +/- evident because of status line AC */
@@ -470,7 +474,11 @@ Helmet_off(VOID_ARGS)
            dropped or destroyed here */
         uchangealign(u.ualignbase[A_CURRENT], 2);
         break;
-    default:
+	case TINFOIL_HAT_OF_MIND_SHIELDING:
+		if (!(u.uprops[ODD_IDEAS].extrinsic & ~WORN_HELMET) && !(HLaughing & ~TIMEOUT))
+			HLaughing = ELaughing = 0;
+		break;
+	default:
         impossible(unknown_type, c_helmet, uarmh->otyp);
     }
     setworn((struct obj *) 0, W_ARMH);
@@ -482,14 +490,11 @@ STATIC_PTR
 int
 Gloves_on(VOID_ARGS)
 {
-    long oldprop =
-        u.uprops[objects[uarmg->otyp].oc_oprop].extrinsic & ~WORN_GLOVES;
-
     switch (uarmg->otyp) {
     case LEATHER_GLOVES:
         break;
     case GAUNTLETS_OF_FUMBLING:
-        if (!oldprop && !(HFumbling & ~TIMEOUT))
+        if (!(u.uprops[FUMBLING].extrinsic & ~WORN_GLOVES) && !(HFumbling & ~TIMEOUT))
             incr_itimeout(&HFumbling, rnd(20));
         break;
     case GAUNTLETS_OF_OGRE_POWER:
@@ -545,7 +550,7 @@ Gloves_off(VOID_ARGS)
 	case GLOVES_OF_SPELL_CASTING:
 		break;
     case GAUNTLETS_OF_FUMBLING:
-        if (!oldprop && !(HFumbling & ~TIMEOUT))
+        if (!(u.uprops[FUMBLING].extrinsic & ~WORN_GLOVES) && !(HFumbling & ~TIMEOUT))
             HFumbling = EFumbling = 0;
         break;
     case GAUNTLETS_OF_OGRE_POWER:
@@ -627,14 +632,11 @@ Shield_off(VOID_ARGS)
 STATIC_PTR int
 Shirt_on(VOID_ARGS)
 {
-	long oldprop =
-		u.uprops[objects[uarmu->otyp].oc_oprop].extrinsic & ~WORN_SHIRT;
-
     /* no shirt currently requires special handling when put on, but we
        keep this uncommented in case somebody adds a new one which does */
     switch (uarmu->otyp) {
 	case SHIRT_OF_UNCONTROLLABLE_LAUGHTER:
-		if (!oldprop && !(HLaughing & ~TIMEOUT))
+		if (!(u.uprops[LAUGHING].extrinsic & ~WORN_SHIRT) && !(HLaughing & ~TIMEOUT))
 			incr_itimeout(&HLaughing, rnd(20));
 		break;
 

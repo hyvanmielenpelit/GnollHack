@@ -2088,6 +2088,9 @@ int otyp;
 		case CHARM_RES:
 			You_feel("more firm about your own motivations.");
 			break;
+		case MIND_SHIELDING:
+			You_feel("shielded from mental detection.");
+			break;
 		case LYCANTHROPY_RES:
 			You_feel("more protected from lycanthropy.");
 			break;

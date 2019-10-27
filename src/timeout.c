@@ -14,6 +14,7 @@ STATIC_DCL void NDECL(slime_dialogue);
 STATIC_DCL void FDECL(slimed_to_death, (struct kinfo *));
 STATIC_DCL void NDECL(slip_or_trip);
 STATIC_DCL void NDECL(laugh_uncontrollably);
+STATIC_DCL void NDECL(get_odd_idea);
 STATIC_DCL void FDECL(see_lamp_flicker, (struct obj *, const char *));
 STATIC_DCL void FDECL(lantern_message, (struct obj *));
 STATIC_DCL void FDECL(cleanup_burn, (ANY_P *, long));
@@ -115,6 +116,8 @@ const struct propname {
 	{ WARN_WERE, "warning of were-creatures" },
 	{ WARN_ANGEL, "warning of angels" },
 	{ CHARM_RES, "charm resistance" },
+	{ MIND_SHIELDING, "mind shielding" },
+	{ ODD_IDEAS, "visionary ideas" },
 	{ LAUGHING, "laughing uncontrollably" },
 	{  0, 0 },
 };
@@ -773,20 +776,20 @@ nh_timeout()
                     incr_itimeout(&HFumbling, rnd(20));
                 break;
 			case LAUGHING:
-				/* call this only when a move took place.  */
-				/* otherwise handle laughing msgs locally. */
-				if (u.umoved) {
-					laugh_uncontrollably();
-					nomul(-1);
-					multi_reason = "laughing";
-					wake_nearby();
-				}
-				/* from outside means slippery ice; don't reset
-				   counter if that's the only fumble reason */
-				//HLaughing &= ~FROMOUTSIDE;
+				laugh_uncontrollably();
+				nomul(-1);
+				multi_reason = "laughing";
+				wake_nearby();
 				if (Laughing)
 					incr_itimeout(&HLaughing, rnd(20));
 				break;
+			case ODD_IDEAS:
+				get_odd_idea();
+				nomul(0);
+				multi_reason = "getting visionary ideas";
+				if (OddIdeas)
+					incr_itimeout(&HOddIdeas, 150 + rnd(100));
+				break;			
 			case REFLECTING:
 				if (!Reflecting)
 					Your("skin feels less reflecting than before.");
@@ -842,6 +845,10 @@ nh_timeout()
 			case CHARM_RES:
 				if (!Charm_resistance)
 					You_feel("less certain of your own motivations.");
+				break;
+			case MIND_SHIELDING:
+				if (!Mind_shielding)
+					You_feel("unprotected from mental detection.");
 				break;
 			case LYCANTHROPY_RES:
 				if (!Lycanthropy_resistance)
@@ -952,6 +959,9 @@ nh_timeout()
 				break;
 			case CHARM_RES:
 				You("are starting to feel a bit less certain of your own motivations.");
+				break;
+			case MIND_SHIELDING:
+				You("are starting to feel a bit less protected from mental detection.");
 				break;
 			case LYCANTHROPY_RES:
 				You("are starting to feel a bit less protected from lycanthropy.");
@@ -1356,6 +1366,42 @@ laugh_uncontrollably()
 			You("giggle at some funny thoughts.");
 			break;
 		}
+}
+
+/* give a fumble message */
+STATIC_OVL void
+get_odd_idea()
+{
+	context.oddideacnt++;
+	switch (context.oddideacnt)
+	{
+	case 1:
+		You("are suddenly sure that the government is controlled by...");
+		pline("...squid-faced, brain-sucking aliens from inside the hollow earth.");
+		break;
+	case 2:
+		You("suddenly feel as if strange beings shaped like... ");
+		pline("...platonic solids are trying to contact you telepathically.");
+		break;
+	case 3:
+		You("suddenly feel unsecure of your deposits with the gnomish bankers.");
+		break;
+	case 4:
+		You("are suddenly even more conviced that the government is controlled by...");
+		pline("...squid-faced, brain-sucking aliens from inside the hollow earth.");
+		break;
+	case 5:
+		You("suddenly feel like strange beings shaped like...");
+		pline("...platonic solids are trying to contact you telepathically again.");
+		break;
+	case 6:
+		You("suddenly feel more unsecure of the stability of the gnomish banking system.");
+		context.oddideacnt = 3;
+		break;
+	default:
+		You("suddenly feel somewhat paranoid.");
+		break;
+	}
 }
 
 /* Print a lamp flicker message with tailer. */
