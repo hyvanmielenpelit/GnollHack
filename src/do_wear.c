@@ -815,6 +815,17 @@ long wearslotmask;
 	if (!ud)
 		return 0;
 
+	if (ud == uwep)
+		setuwep((struct obj*) 0, W_WEP);
+	else if (ud == uarms)
+		setuwep((struct obj*) 0, W_WEP2);
+	else if (ud == uswapwep)
+		setuswapwep((struct obj*) 0, W_SWAPWEP);
+	else if (ud == uswapwep2)
+		setuswapwep((struct obj*) 0, W_SWAPWEP2);
+	else if (ud == uquiver)
+		setuqwep((struct obj*) 0);
+
 	boolean hadhallucination = Hallucination;
 
 	if (wearslotmask != 0)
