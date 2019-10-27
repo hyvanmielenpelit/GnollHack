@@ -856,7 +856,7 @@ int reagentstyle; //0 = all, 1 = priest only, 2 = all but no priest
 		if (Inhell && !rn2(4))
 			return PINCH_OF_SULFUROUS_ASH;
 
-		switch (rn2(16))
+		switch (rn2(15))
 		{
 		case 0:
 			if(reagentstyle == 2)
@@ -892,16 +892,13 @@ int reagentstyle; //0 = all, 1 = priest only, 2 = all but no priest
 				otyp = CLUMP_OF_BAT_GUANO;
 			break;
 		case 7:
-			if (reagentstyle == 2)
-				otyp = BONE_DAGGER;
-			else
-				otyp = PINCH_OF_SULFUROUS_ASH;
+			otyp = PINCH_OF_SULFUROUS_ASH;
 			break;
 		case 8:
 			if (reagentstyle == 1)
 				otyp = CLOVE_OF_GARLIC;
 			else
-				otyp = BONE_DAGGER;
+				otyp = BONE;
 			break;
 		case 9:
 			if (reagentstyle == 2)
@@ -926,9 +923,6 @@ int reagentstyle; //0 = all, 1 = priest only, 2 = all but no priest
 			break;
 		case 14:
 			otyp = PIECE_OF_WOOD;
-			break;
-		case 15:
-			otyp = PINCH_OF_SULFUROUS_ASH;
 			break;
 		default:
 			otyp = CLOVE_OF_GARLIC;
