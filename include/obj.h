@@ -288,7 +288,7 @@ struct obj {
     ((monstermoves - (egg)->age) > (2 * MAX_EGG_HATCH_TIME))
 #define ofood(o) ((o)->otyp == CORPSE || (o)->otyp == EGG || (o)->otyp == TIN)
 #define polyfodder(obj) (ofood(obj) && pm_to_cham((obj)->corpsenm) != NON_PM)
-#define mlevelgain(obj) (ofood(obj) && (obj)->corpsenm == PM_WRAITH)
+#define mlevelgain(obj) (ofood(obj) && ((obj)->corpsenm == PM_WRAITH || (obj)->corpsenm == PM_SPECTRE || (obj)->corpsenm == PM_KING_WRAITH))
 #define mhealup(obj) (ofood(obj) && (obj)->corpsenm == PM_NURSE)
 #define Is_pudding(o)                                                 \
     (o->otyp == GLOB_OF_GRAY_OOZE || o->otyp == GLOB_OF_BROWN_PUDDING \

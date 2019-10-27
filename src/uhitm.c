@@ -478,9 +478,12 @@ int dieroll;
             Your("bloodthirsty blade attacks!");
     }
 
-    if (!*mhit) {
+    if (!*mhit)
+	{
         missum(mon, uattk, (rollneeded + armorpenalty > dieroll));
-    } else {
+    }
+	else
+	{
         int oldhp = mon->mhp;
         long oldweaphit = u.uconduct.weaphit;
 

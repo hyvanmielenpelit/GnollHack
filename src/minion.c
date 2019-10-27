@@ -339,7 +339,7 @@ orcus_undead_summon()
 	struct monst* mtmp2 = (struct monst*) 0;
 
 	while (cnt > 0) {
-		int roll = rn2(20);
+		int roll = rn2(22);
 		dtype = NON_PM;
 
 		switch (roll)
@@ -401,6 +401,12 @@ orcus_undead_summon()
 			break;
 		case 19:
 			dtype = PM_DWARF_MUMMY;
+			break;
+		case 20:
+			dtype = PM_SPECTRE;
+			break;
+		case 21:
+			dtype = PM_KING_WRAITH;
 			break;
 		default:
 			break;

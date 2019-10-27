@@ -1070,7 +1070,9 @@ int pm;
             }
         }
         break;
-    case PM_WRAITH:
+	case PM_WRAITH:
+	case PM_SPECTRE:
+	case PM_KING_WRAITH:
         pluslvl(FALSE);
         break;
     case PM_HUMAN_WERERAT:

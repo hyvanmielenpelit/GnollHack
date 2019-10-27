@@ -40,7 +40,7 @@ int shotlimit;
     int multishot;
     schar skill;
     long wep_mask;
-    boolean weakmultishot;
+    //boolean weakmultishot;
 
     /* ask "in what direction?" */
     if (!getdir((char *) 0)) {
@@ -112,15 +112,16 @@ int shotlimit;
         /* ammo requires corresponding launcher be wielded */
         && (is_ammo(obj) ? matching_launcher(obj, uwep)
                          /* otherwise any stackable (non-ammo) weapon */
-                         : obj->oclass == WEAPON_CLASS)
-        && !(Confusion || Stunned)) {
+                         : (obj->oclass == WEAPON_CLASS && !is_launcher(obj)))
+        && !(Confusion || Stunned)) 
+	{
+#if 0
         /* some roles don't get a volley bonus until becoming expert */
         weakmultishot = (Role_if(PM_WIZARD) || Role_if(PM_PRIEST)
                          || (Role_if(PM_HEALER) && skill != P_KNIFE)
                          || (Role_if(PM_TOURIST) && skill != -P_DART)
                          /* poor dexterity also inhibits multishot */
                          || Fumbling || ACURR(A_DEX) <= 6);
-
         /* Bonus if the player is proficient in this weapon... */
 		/*
         switch (P_SKILL(weapon_type(obj))) {
@@ -136,6 +137,7 @@ int shotlimit;
             break;
         }
 		*/
+#endif
 
 		struct obj* otmpmulti = (struct obj*)0;
 		if(obj && is_ammo(obj) && uwep && matching_launcher(obj, uwep))
@@ -164,6 +166,7 @@ int shotlimit;
 			}
 		}
 
+#if 0
         /* ...or is using a special weapon for their role... */
         switch (Role_switch) {
         case PM_MONK:
@@ -217,6 +220,7 @@ int shotlimit;
 			}
 		}
 		*/
+#endif
 
 		if(multishotrndextra > 0)
 	        multishot += rn2(multishotrndextra + 1); //add random amount;

@@ -210,6 +210,7 @@ struct obj *otmp, *mwep;
 		{
 			int skilllevel = 0;
 			boolean multishotok = TRUE;
+
 			/* Assumes lords are skilled, princes are expert */
 			if (is_prince(mtmp->data))
 				skilllevel = P_EXPERT;
@@ -218,6 +219,23 @@ struct obj *otmp, *mwep;
 			/* fake players treated as skilled (regardless of role limits) */
 			else if (is_mplayer(mtmp->data))
 				skilllevel = P_SKILLED;
+
+			/* Monks and ninjas are also assumed to be experts in certain weapons */
+			switch (monsndx(mtmp->data)) 
+			{
+			case PM_MONK:
+				if (skill == -P_SHURIKEN)
+					skilllevel = P_EXPERT;
+				break;
+			case PM_NINJA:
+				if (skill == -P_SHURIKEN || skill == -P_DART)
+					skilllevel = P_EXPERT;
+				else if (otmp->otyp == YA && mwep->otyp == YUMI)
+					skilllevel = P_EXPERT;
+				break;
+			default:
+				break;
+			}
 
 			if ((objects[otmpmulti->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_SKILL_MASK) == O3_MULTISHOT_REQUIRES_EXPERT_SKILL && skilllevel < P_EXPERT)
 				multishotok = FALSE;
@@ -235,6 +253,11 @@ struct obj *otmp, *mwep;
 			}
 		}
 
+		/* Some randomness */
+		if (multishotrndextra > 0)
+			multishot += rn2(multishotrndextra + 1);
+
+
         /* this portion is different from hero multishot; from slash'em?
          */
         /* Elven Craftsmanship makes for light, quick bows */
@@ -247,26 +270,9 @@ struct obj *otmp, *mwep;
         if (ammo_and_launcher(otmp, mwep) && mwep->spe > 1)
             multishot += (long) rounddiv(mwep->spe, 3);*/
 
-		/* Some randomness */
-		if(multishotrndextra > 0)
-			multishot += rn2(multishotrndextra + 1);
 		/* 1/3 of launcher enchantment */
 
         /* class bonus */
-        switch (monsndx(mtmp->data)) {
-        case PM_MONK: /* allow higher volley count */
-            if (skill == -P_SHURIKEN)
-                multishot++;
-            break;
-        case PM_NINJA:
-            if (skill == -P_SHURIKEN || skill == -P_DART)
-                multishot++;
-            else if (otmp->otyp == YA && mwep->otyp == YUMI)
-                multishot++;
-            break;
-        default:
-            break;
-        }
         /* racial bonus */
 		/*
         if ((is_elf(mtmp->data) && otmp->otyp == ELVEN_ARROW

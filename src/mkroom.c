@@ -642,14 +642,24 @@ morguemon()
 {
     register int i = rn2(100), hd = rn2(level_difficulty());
 
-    if (hd > 10 && i < 10) {
+	if (hd > 15 && i < 3)
+		return &mons[PM_KING_WRAITH];
+	else if (hd > 10 && i < 10) 
+	{
         if (Inhell || In_endgame(&u.uz)) {
             return mkclass(S_DEMON, 0);
-        } else {
-            int ndemon_res = ndemon(A_NONE);
-            if (ndemon_res != NON_PM)
-                return &mons[ndemon_res];
-            /* else do what? As is, it will drop to ghost/wraith/zombie */
+        } 
+		else 
+		{
+			if(!rn2(2))
+				return &mons[PM_SPECTRE];
+			else
+			{
+				int ndemon_res = ndemon(A_NONE);
+				if (ndemon_res != NON_PM)
+					return &mons[ndemon_res];
+				/* else do what? As is, it will drop to ghost/wraith/zombie */
+			}
         }
     }
 
@@ -658,7 +668,7 @@ morguemon()
 
     return ((i < 20) ? &mons[PM_GHOST]
                      : (i < 40) ? &mons[PM_WRAITH]
-                                : mkclass(S_LESSER_UNDEAD, 0));
+						: mkclass(S_LESSER_UNDEAD, 0));
 }
 
 

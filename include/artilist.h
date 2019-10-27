@@ -139,10 +139,10 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
       NO_COLOR),
 
 	A("Howling Flail", FLAIL, FLAIL, (SPFX_RESTR | SPFX_LUCK), 0, 0,
-		PHYS(5, 0), NO_DFNS, NO_CARY, 0, A_CHAOTIC, NON_PM, NON_PM, 6000L,
+		PHYS(5, 6), NO_DFNS, NO_CARY, 0, A_CHAOTIC, NON_PM, NON_PM, 6000L,
 		NO_COLOR),
 
-		/*
+	/*
      *      Two problems:  1) doesn't let trolls regenerate heads,
      *      2) doesn't give unusual message for 2-headed monsters (but
      *      allowing those at all causes more problems than worth the effort).

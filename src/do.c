@@ -396,7 +396,11 @@ register struct obj* obj;
 		/* Ammunition range */
 		if (objects[obj->otyp].oc_multishot_count > 1) {
 
-			Sprintf(buf, "Shots per round:        %s%d", (objects[obj->otyp].oc_flags3& O3_MULTISHOT_IS_RANDOM) ? "Up to " : "", objects[obj->otyp].oc_multishot_count);
+			Sprintf(buf, "%s  %s%d", 
+				is_launcher(obj) ? "Shots per round:      " : 
+				throwing_weapon(obj) ? "Throws per round:     " : "Attacks per round:     ",
+				(objects[obj->otyp].oc_flags3& O3_MULTISHOT_IS_RANDOM) ? "Up to " : "", objects[obj->otyp].oc_multishot_count);
+
 			if((objects[obj->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_SKILL_MASK) == O3_MULTISHOT_REQUIRES_EXPERT_SKILL)
 				Sprintf(eos(buf), " (requires expert skill)");
 			else if ((objects[obj->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_SKILL_MASK) == O3_MULTISHOT_REQUIRES_SKILLED_SKILL)
@@ -2549,7 +2553,7 @@ boolean with_impact;
                 could_petrify = touch_petrifies(&mons[obj->corpsenm]);
                 could_poly = polyfodder(obj);
                 could_slime = (obj->corpsenm == PM_GREEN_SLIME);
-                could_grow = (obj->corpsenm == PM_WRAITH);
+                could_grow = (obj->corpsenm == PM_WRAITH || obj->corpsenm == PM_SPECTRE || obj->corpsenm == PM_KING_WRAITH);
                 could_heal = (obj->corpsenm == PM_NURSE);
             }
             if (is_unpaid(obj))

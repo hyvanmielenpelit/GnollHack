@@ -1543,18 +1543,26 @@ register struct attack *mattk;
         else if (res == MM_AGR_DIED)
             return (MM_DEF_DIED | MM_AGR_DIED);
 
-        if (mattk->adtyp == AD_DGST) {
+        if (mattk->adtyp == AD_DGST) 
+		{
             /* various checks similar to dog_eat and meatobj.
              * after monkilled() to provide better message ordering */
-            if (mdef->cham >= LOW_PM) {
+            if (mdef->cham >= LOW_PM)
+			{
                 (void) newcham(magr, (struct permonst *) 0, FALSE, TRUE);
-            } else if (pd == &mons[PM_GREEN_SLIME] && !slimeproof(pa)) {
+            }
+			else if (pd == &mons[PM_GREEN_SLIME] && !slimeproof(pa)) 
+			{
                 (void) newcham(magr, &mons[PM_GREEN_SLIME], FALSE, TRUE);
-            } else if (pd == &mons[PM_WRAITH]) {
+            }
+			else if (pd == &mons[PM_WRAITH] || pd == &mons[PM_SPECTRE] || pd == &mons[PM_KING_WRAITH])
+			{
                 (void) grow_up(magr, (struct monst *) 0);
                 /* don't grow up twice */
                 return (MM_DEF_DIED | (!DEADMONSTER(magr) ? 0 : MM_AGR_DIED));
-            } else if (pd == &mons[PM_NURSE]) {
+            }
+			else if (pd == &mons[PM_NURSE])
+			{
                 magr->mhp = magr->mhpmax;
             }
         }
