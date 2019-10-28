@@ -155,6 +155,7 @@ STATIC_PTR int NDECL(wiz_smell);
 STATIC_PTR int NDECL(wiz_intrinsic);
 STATIC_PTR int NDECL(wiz_show_wmodes);
 STATIC_DCL void NDECL(wiz_map_levltyp);
+STATIC_DCL int NDECL(wiz_save_monsters);
 STATIC_DCL void NDECL(wiz_levltyp_legend);
 #if defined(__BORLANDC__) && !defined(_WIN32)
 extern void FDECL(show_borlandc_stats, (winid));
@@ -1278,6 +1279,146 @@ wiz_map_levltyp(VOID_ARGS)
     destroy_nhwindow(win);
     return;
 }
+
+/* M('m') command - save monster list */
+STATIC_PTR int
+wiz_save_monsters(VOID_ARGS) /* Save a csv file for monsters */
+{
+	if (wizard) 
+	{
+		pline("Starting writing monsters.csv...");
+		const char* fq_save = "monsters.csv";
+		int fd;
+
+		(void)remove(fq_save);
+
+		fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
+
+		char buf[BUFSIZ] = "";
+
+		Sprintf(buf, "Name,Level,Move,AC,MC,MR,Alignment,GenoFlags,");
+		write(fd, buf, strlen(buf));
+		for (int j = 0; j < NATTK; j++)
+		{
+			Sprintf(buf, "Attack%d,Type,DmgType,DiceNum,DieSize,DmgPlus,MCAdj,", j+1);
+			write(fd, buf, strlen(buf));
+
+		}
+
+		Sprintf(buf, ",CorpseWeight,Nutrition,SoundType,Size,STR,DEX,CON,INT,WIS,CHA,");
+		write(fd, buf, strlen(buf));
+
+		Sprintf(buf, "MResists,");
+		write(fd, buf, strlen(buf));
+		for (int j = 0; j < 32; j++)
+		{
+			Sprintf(buf, "%d,", j+1);
+			write(fd, buf, strlen(buf));
+		}
+		Sprintf(buf, "MConveys,");
+		write(fd, buf, strlen(buf));
+		for (int j = 0; j < 32; j++)
+		{
+			Sprintf(buf, "%d,", j + 1);
+			write(fd, buf, strlen(buf));
+		}
+		Sprintf(buf, "MFlags1,");
+		write(fd, buf, strlen(buf));
+		for (int j = 0; j < 32; j++)
+		{
+			Sprintf(buf, "%d,", j + 1);
+			write(fd, buf, strlen(buf));
+		}
+		Sprintf(buf, "MFlags2,");
+		write(fd, buf, strlen(buf));
+		for (int j = 0; j < 32; j++)
+		{
+			Sprintf(buf, "%d,", j + 1);
+			write(fd, buf, strlen(buf));
+		}
+		Sprintf(buf, "MFlags3,");
+		write(fd, buf, strlen(buf));
+		for (int j = 0; j < 32; j++)
+		{
+			Sprintf(buf, "%d,", j + 1);
+			write(fd, buf, strlen(buf));
+		}
+		Sprintf(buf, ",Difficulty,Color\n");
+		write(fd, buf, strlen(buf));
+
+		for (int i = LOW_PM; i < NUMMONS; i++)
+		{
+			char letbuf[BUFSZ] = "";
+			Sprintf(buf, "%s,%d,%d,%d,%d,%d,%d,%d,",
+				mons[i].mname, 
+				(int)mons[i].mlevel, (int)mons[i].mmove, 
+				(int)mons[i].ac, (int)mons[i].mc, (int)mons[i].mr, 
+				(int)mons[i].maligntyp, (int)mons[i].geno);
+			write(fd, buf, strlen(buf));
+			for (int j = 0; j < NATTK; j++)
+			{
+				Sprintf(buf, ",%d,%d,%d,%d,%d,%d,", 
+					mons[i].mattk[j].aatyp, mons[i].mattk[j].adtyp, 
+					mons[i].mattk[j].damn, mons[i].mattk[j].damd, mons[i].mattk[j].damp, 
+					mons[i].mattk[j].mcadj);
+				write(fd, buf, strlen(buf));
+			}
+
+			Sprintf(buf, ",%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,", 
+				mons[i].cwt, mons[i].cnutrit, mons[i].msound, mons[i].msize, 
+				mons[i].str, mons[i].dex, mons[i].con, mons[i].intl, mons[i].wis, mons[i].cha);
+			write(fd, buf, strlen(buf));
+
+			Sprintf(buf, ",");
+			write(fd, buf, strlen(buf));
+			for (int j = 0; j < 32; j++)
+			{
+				Sprintf(buf, "%d,", (mons[i].mresists & (1L << j)) ? 1 : 0);
+				write(fd, buf, strlen(buf));
+			}
+			Sprintf(buf, ",");
+			write(fd, buf, strlen(buf));
+			for (int j = 0; j < 32; j++)
+			{
+				Sprintf(buf, "%d,", (mons[i].mconveys & (1L << j)) ? 1 : 0);
+				write(fd, buf, strlen(buf));
+			}
+			Sprintf(buf, ",");
+			write(fd, buf, strlen(buf));
+			for (int j = 0; j < 32; j++)
+			{
+				Sprintf(buf, "%d,", (mons[i].mflags1 & (1L << j)) ? 1 : 0);
+				write(fd, buf, strlen(buf));
+			}
+			Sprintf(buf, ",");
+			write(fd, buf, strlen(buf));
+			for (int j = 0; j < 32; j++)
+			{
+				Sprintf(buf, "%d,", (mons[i].mflags2 & (1L << j)) ? 1 : 0);
+				write(fd, buf, strlen(buf));
+			}
+			Sprintf(buf, ",");
+			write(fd, buf, strlen(buf));
+			for (int j = 0; j < 32; j++)
+			{
+				Sprintf(buf, "%d,", (mons[i].mflags3 & (1L << j)) ? 1 : 0);
+				write(fd, buf, strlen(buf));
+			}
+			Sprintf(buf, ",%d,%d\n",
+				mons[i].difficulty, mons[i].mcolor);
+			write(fd, buf, strlen(buf));
+
+		}
+		close(fd);
+
+		pline("Done!");
+	}
+	else
+		pline(unavailcmd, visctrl((int)cmd_from_func(wiz_save_monsters)));
+	return 0;
+}
+
+
 
 /* temporary? hack, since level type codes aren't the same as screen
    symbols and only the latter have easily accessible descriptions */
@@ -3495,6 +3636,8 @@ struct ext_func_tab extcmdlist[] = {
             wiz_makemap, IFBURIED | WIZMODECMD },
     { C('f'), "wizmap", "map the level",
             wiz_map, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
+    { M('m'), "wizsavemonsters", "save monsters into a file",
+            wiz_save_monsters, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { '\0', "wizrumorcheck", "verify rumor boundaries",
             wiz_rumor_check, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { '\0', "wizsmell", "smell monster",
