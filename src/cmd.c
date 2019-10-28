@@ -1343,8 +1343,12 @@ wiz_save_monsters(VOID_ARGS) /* Save a csv file for monsters */
 			Sprintf(buf, "%d,", j + 1);
 			write(fd, buf, strlen(buf));
 		}
-		Sprintf(buf, ",Difficulty,Color\n");
+		Sprintf(buf, ",Difficulty,Color,");
 		write(fd, buf, strlen(buf));
+
+		Sprintf(buf, ",STR-ToHit-Bonus,STR-DmgBonus,DEX-ToHit-Bonus,DEX-AC-Bonus,CON-HP-Bonus\n");
+		write(fd, buf, strlen(buf));
+
 
 		for (int i = LOW_PM; i < NUMMONS; i++)
 		{
@@ -1404,8 +1408,11 @@ wiz_save_monsters(VOID_ARGS) /* Save a csv file for monsters */
 				Sprintf(buf, "%d,", (mons[i].mflags3 & (1L << j)) ? 1 : 0);
 				write(fd, buf, strlen(buf));
 			}
-			Sprintf(buf, ",%d,%d\n",
+			Sprintf(buf, ",%d,%d,",
 				mons[i].difficulty, mons[i].mcolor);
+			write(fd, buf, strlen(buf));
+			Sprintf(buf, ",%d,%d,%d,%d,%d\n",
+				strength_tohit_bonus(mons[i].str), strength_damage_bonus(mons[i].str), dexterity_tohit_bonus(mons[i].dex), dexterity_ac_bonus(mons[i].dex),constitution_hp_bonus(mons[i].con));
 			write(fd, buf, strlen(buf));
 
 		}
