@@ -1799,6 +1799,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 				||
 				(!(objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES))
 				)
+			&& check_magic_cancellation_success(mdef, -otmp->spe)
 			)
 		{
 			/* some non-living creatures (golems, vortices) are

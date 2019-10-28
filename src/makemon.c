@@ -642,7 +642,7 @@ register struct monst *mtmp;
     case S_WRAITH:
 		if (ptr == &mons[PM_NAZGUL]) {
 			(void)mongets(mtmp, MORGUL_BLADE);
-			(void)mongets(mtmp, SWORD_OF_LIFE_DRAINING);
+			(void)mongets(mtmp, SWORD_OF_LIFE_STEALING);
 		}
 		break;
     case S_LESSER_UNDEAD:

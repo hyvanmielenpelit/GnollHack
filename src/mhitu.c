@@ -1898,7 +1898,7 @@ register struct obj* omonwep;
 
     case AD_SSEX:
         if (SYSOPT_SEDUCE) {
-            if (could_seduce(mtmp, &youmonst, mattk) == 1 && uncancelled)
+            if (could_seduce(mtmp, &youmonst, mattk) == 1 && uncancelled && !resists_charm(&youmonst) && !Charm_resistance)
                 if (doseduce(mtmp))
                     return 3;
             break;
@@ -1909,16 +1909,19 @@ register struct obj* omonwep;
 	{
 		boolean nymphcancelled = !uncancelled;
 
-        if (is_animal(mtmp->data)) {
+        if (is_animal(mtmp->data))
+		{
             hitmsg(mtmp, mattk, -1);
             if (nymphcancelled)
                 break;
             /* Continue below */
-        } else if (dmgtype(youmonst.data, AD_SEDU)
+        } 
+		else if (dmgtype(youmonst.data, AD_SEDU)
                    /* !SYSOPT_SEDUCE: when hero is attacking and AD_SSEX
                       is disabled, it would be changed to another damage
                       type, but when defending, it remains as-is */
-                   || dmgtype(youmonst.data, AD_SSEX)) {
+                   || dmgtype(youmonst.data, AD_SSEX))
+		{
             pline("%s %s.", Monnam(mtmp),
                   Deaf ? "says something but you can't hear it"
                        : mtmp->minvent
@@ -1927,7 +1930,9 @@ register struct obj* omonwep;
             if (!tele_restrict(mtmp))
                 (void) rloc(mtmp, TRUE);
             return 3;
-        } else if (nymphcancelled) {
+        } 
+		else if (nymphcancelled || resists_charm(&youmonst) || Charm_resistance) 
+		{
             if (!Blind)
                 pline("%s tries to %s you, but you seem %s.",
                       Adjmonnam(mtmp, "plain"),

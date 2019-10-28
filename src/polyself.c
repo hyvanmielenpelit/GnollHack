@@ -398,6 +398,13 @@ int psflags;
     int old_light, new_light, mntmp, class, tryct;
     boolean forcecontrol = (psflags == 1), monsterpoly = (psflags == 2),
             draconian = (uarm && is_dragon_scale_armor(uarm)),
+			bullheaded =
+				((umisc && umisc->otyp == NOSE_RING_OF_BULLHEADEDNESS)
+					|| (umisc2 && umisc2->otyp == NOSE_RING_OF_BULLHEADEDNESS)
+					|| (umisc3 && umisc3->otyp == NOSE_RING_OF_BULLHEADEDNESS)
+					|| (umisc4 && umisc4->otyp == NOSE_RING_OF_BULLHEADEDNESS)
+					|| (umisc5 && umisc5->otyp == NOSE_RING_OF_BULLHEADEDNESS)
+					),
             iswere = (u.ulycn >= LOW_PM), isvamp = is_vampire(youmonst.data),
             controllable_poly = Polymorph_control && !(Stunned || Unaware);
 
@@ -406,7 +413,7 @@ int psflags;
         return;
     }
     /* being Stunned|Unaware doesn't negate this aspect of Poly_control */
-    if (!Polymorph_control && !forcecontrol && !draconian && !iswere
+    if (!Polymorph_control && !forcecontrol && !draconian && !bullheaded && !iswere
         && !isvamp) {
         if (rn2(20) > ACURR(A_CON)) {
             You1(shudder_for_moment);
@@ -490,12 +497,17 @@ int psflags;
         /* allow skin merging, even when polymorph is controlled */
         if (draconian && (tryct <= 0 || mntmp == armor_to_dragon(uarm->otyp)))
             goto do_merge;
-        if (isvamp && (tryct <= 0 || mntmp == PM_WOLF || mntmp == PM_FOG_CLOUD
+		if (bullheaded && (tryct <= 0 || mntmp == PM_MINOTAUR))
+			goto do_minotaur;
+		if (isvamp && (tryct <= 0 || mntmp == PM_WOLF || mntmp == PM_FOG_CLOUD
                        || is_bat(&mons[mntmp])))
             goto do_vampyr;
-    } else if (draconian || iswere || isvamp) {
+    } 
+	else if (draconian || bullheaded || iswere || isvamp) 
+	{
         /* special changes that don't require polyok() */
-        if (draconian) {
+        if (draconian)
+		{
         do_merge:
             mntmp = armor_to_dragon(uarm->otyp);
             if (!(mvitals[mntmp].mvflags & G_GENOD)) {
@@ -530,19 +542,29 @@ int psflags;
                 uskin->owornmask |= I_SPECIAL;
                 update_inventory();
             }
-        } else if (iswere) {
+        } 
+		else if (bullheaded)
+		{
+		do_minotaur:
+			mntmp = PM_MINOTAUR;
+		}
+		else if (iswere)
+		{
         do_shift:
             if (Upolyd && were_beastie(mntmp) != u.ulycn)
                 mntmp = PM_HUMAN; /* Illegal; force newman() */
             else
                 mntmp = u.ulycn;
-        } else if (isvamp) {
+        }
+		else if (isvamp) 
+		{
         do_vampyr:
             if (mntmp < LOW_PM || (mons[mntmp].geno & G_UNIQ))
                 mntmp = (youmonst.data != &mons[PM_VAMPIRE] && !rn2(10))
                             ? PM_WOLF
                             : !rn2(4) ? PM_FOG_CLOUD : PM_VAMPIRE_BAT;
-            if (controllable_poly) {
+            if (controllable_poly) 
+			{
                 Sprintf(buf, "Become %s?", an(mons[mntmp].mname));
                 if (yn(buf) != 'y')
                     return;
