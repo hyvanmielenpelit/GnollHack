@@ -1320,10 +1320,12 @@ int propidx; /* special cases can have negative values */
     /*
      * Restrict the source of the attributes just to debug mode for now
      */
-    if (wizard) {
+    if (wizard)
+	{
         static NEARDATA const char because_of[] = " because of %s";
 
-        if (propidx >= 0) {
+        if (propidx >= 0) 
+		{
             char *p;
             struct obj *obj = (struct obj *) 0;
             int innateness = is_innate(propidx);

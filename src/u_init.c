@@ -1204,8 +1204,11 @@ u_init()
         ini_inv(Money);
     u.umoney0 += hidden_gold(); /* in case sack has gold in it */
 
-	find_ac();     /* get initial ac value */
+	/* //OBSOLETE, DONE BELOW
+	find_ac();     
 	find_mc();
+	*/
+
 	/*
      *  Do we really need this?
      */
@@ -1230,6 +1233,12 @@ u_init()
 
 	//Check if any skill can be advanced
 	update_can_advance_any_skill();
+
+	/* Run initial stats */
+	update_carried_item_extrinsics();
+	updateabon();
+	updatemaxen();
+	updatemaxhp();
 
 
     return;

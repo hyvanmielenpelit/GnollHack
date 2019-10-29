@@ -64,21 +64,27 @@ long mask;
 	int oldac = u.uac;
 	int oldmc = u.umc;
 
-    if ((mask & (W_ARM | I_SPECIAL)) == (W_ARM | I_SPECIAL)) {
+    if ((mask & (W_ARM | I_SPECIAL)) == (W_ARM | I_SPECIAL))
+	{
         /* restoring saved game; no properties are conferred via skin */
         uskin = obj;
         /* assert( !uarm ); */
-    } else {
+    } 
+	else
+	{
         if ((mask & W_ARMOR))
             u.uroleplay.nudist = FALSE;
         for (wp = worn; wp->w_mask; wp++)
-            if (wp->w_mask & mask) {
+		{
+            if (wp->w_mask & mask) 
+			{
                 oobj = *(wp->w_obj);
                 if (oobj && !(oobj->owornmask & wp->w_mask))
                     impossible("Setworn: mask = %ld.", wp->w_mask);
 
 				/* If old object remove wornmask */
-                if (oobj) {
+                if (oobj) 
+				{
                     oobj->owornmask &= ~wp->w_mask;
 
 					/* leave as "x = x <op> y", here and below, for broken
@@ -109,7 +115,8 @@ long mask;
 
 				/* Set new object worn */
                 *(wp->w_obj) = obj;
-                if (obj) {
+                if (obj) 
+				{
                     obj->owornmask |= wp->w_mask;
 
 
@@ -142,6 +149,7 @@ long mask;
 					*/
                 }
             }
+		}
     }
 
 	boolean needbecomecursedmsg = FALSE;
@@ -156,7 +164,8 @@ long mask;
 	updatemaxen();
 	updatemaxhp();
 
-	if (obj || oobj)
+	/* Note that this does not work for weapons if there is an old weapon, since we do not know whether the change was caused by the old or the new weapon */
+	if ((obj && !oobj) || (oobj && !obj))
 	{
 		if ((
 			u.uenmax != oldmanamax

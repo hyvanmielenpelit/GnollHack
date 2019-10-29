@@ -2636,6 +2636,7 @@ find_ac()
 		uac -= ARM_AC_BONUS(uarmu);
 	if (uarmb)
 		uac -= ARM_AC_BONUS(uarmb);
+
 	if (uwep && (is_shield(uwep) || is_weapon(uwep)))
 		uac -= ARM_AC_BONUS(uwep); /* A wielded weapon can give AC, also a wielded shield (in right hand) */
 

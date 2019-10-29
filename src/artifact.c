@@ -1824,7 +1824,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 				(!(objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
 					&& 1)
 				)
-			&& check_magic_cancellation_success(mdef, -otmp->spe)
+			&& !check_magic_cancellation_success(mdef, -otmp->spe)
 			)
 		{
 			/* some non-living creatures (golems, vortices) are
@@ -2454,21 +2454,24 @@ long *abil;
     uchar dtyp;
     unsigned long spfx;
     long wornbits;
+	/*
     long wornmask = (W_ARM | W_ARMC | W_ARMH | W_ARMS
                      | W_ARMG | W_ARMF | W_ARMU | W_ARMO | W_ARMB | W_MISC | W_MISC2 | W_MISC3 | W_MISC4 | W_MISC5
-                     | W_AMUL | W_RINGL | W_RINGR | W_BLINDFOLD
+                     | W_AMUL | W_RINGL | W_RINGR | W_BLINDFOLD | W_WEP
                      | W_ART | W_ARTI);
-
+	*/
     //if (u.twoweap)
     //    wornmask |= W_SWAPWEP;
     
 	dtyp = abil_to_adtyp(abil);
     spfx = abil_to_spfx(abil);
-    wornbits = (wornmask & *abil);
+	wornbits = *abil; // (wornmask&* abil);
 
-    for (obj = invent; obj; obj = obj->nobj) {
+    for (obj = invent; obj; obj = obj->nobj) 
+	{
         if (obj->oartifact
-            && (abil != &EWarn_of_mon || context.warntype.obj)) {
+            && (abil != &EWarn_of_mon || context.warntype.obj))
+		{
             const struct artifact *art = get_artifact(obj);
 
             if (art) {
@@ -2490,7 +2493,7 @@ long *abil;
         }
 
 		/* check worn */
-		if (wornbits && wornbits == (wornmask & obj->owornmask))
+		if (wornbits & obj->owornmask) //wornbits &&  == (wornmask & 
             return obj;
     }
     return (struct obj *) 0;
