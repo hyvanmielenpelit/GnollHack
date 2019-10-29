@@ -2,8 +2,8 @@
 #ifndef PM_H
 #define PM_H
 
-#define	PM_GIANT_BEETLE	0
-#define	PM_GIANT_ANT	1
+#define	PM_GIANT_ANT	0
+#define	PM_GIANT_BEETLE	1
 #define	PM_KILLER_BEE	2
 #define	PM_FIRE_ANT	3
 #define	PM_QUEEN_BEE	4
