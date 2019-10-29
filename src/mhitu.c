@@ -2310,9 +2310,16 @@ register struct obj* omonwep;
 	if (mattk->aatyp == AT_WEAP && omonwep && (objects[omonwep->otyp].oc_aflags & A1_WOUNDING) && eligible_for_extra_damage(omonwep, &youmonst, mtmp)
 		&& (
 		((objects[omonwep->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
-			&& rn2(100) < objects[omonwep->otyp].oc_critical_strike_percentage)
+			&& (
+			((objects[omonwep->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+				&& dieroll <= objects[omonwep->otyp].oc_critical_strike_percentage)
+				||
+				(!(objects[omonwep->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+					&& rn2(100) < objects[omonwep->otyp].oc_critical_strike_percentage))
+			)
 			||
-			(!(objects[omonwep->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES))
+			(!(objects[omonwep->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+				&& 1)
 			)
 		)
 	{
@@ -2329,12 +2336,18 @@ register struct obj* omonwep;
 
 	/* Life drain */
 	if (mattk->aatyp == AT_WEAP && omonwep && (objects[omonwep->otyp].oc_aflags & A1_LIFE_LEECH) && eligible_for_extra_damage(omonwep, &youmonst, mtmp)
-		&& !is_not_living(youmonst.data)
 		&& (
 		((objects[omonwep->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
-			&& rn2(100) < objects[omonwep->otyp].oc_critical_strike_percentage)
+			&& (
+			((objects[omonwep->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+				&& dieroll <= objects[omonwep->otyp].oc_critical_strike_percentage)
+				||
+				(!(objects[omonwep->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+					&& rn2(100) < objects[omonwep->otyp].oc_critical_strike_percentage))
+			)
 			||
-			(!(objects[omonwep->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES))
+			(!(objects[omonwep->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+				&& 1)
 			)
 		)
 	{
@@ -2500,7 +2513,14 @@ register struct obj* omonwep;
 		}
 	}
 
-	if (omonwep && (objectshatters || (objects[omonwep->otyp].oc_aflags & A1_ITEM_VANISHES_ON_HIT)))
+	if (omonwep && (objectshatters || 
+		(objects[omonwep->otyp].oc_aflags & A1_ITEM_VANISHES_ON_HIT
+			&& (
+				!(objects[omonwep->otyp].oc_aflags & A1_ITEM_VANISHES_ONLY_IF_PERMITTED_TARGET)
+				|| ((objects[omonwep->otyp].oc_aflags & A1_ITEM_VANISHES_ONLY_IF_PERMITTED_TARGET) && eligible_for_extra_damage(omonwep, &youmonst, mtmp))
+				)
+		)
+	))
 	{
 		if(omonwep->where == OBJ_MINVENT)
 			m_useup(mtmp, omonwep);

@@ -1552,9 +1552,16 @@ int dieroll;
 		&& !is_rider(mon->data)
 		&& (
 		((objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
-			&& rn2(100) < objects[obj->otyp].oc_critical_strike_percentage)
+			&& (
+			((objects[obj->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+				&& dieroll <= objects[obj->otyp].oc_critical_strike_percentage)
+				||
+				(!(objects[obj->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+					&& rn2(100) < objects[obj->otyp].oc_critical_strike_percentage))
+			)
 			||
-			(!(objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES))
+			(!(objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+				&& 1)
 			)
 		)
 	{
@@ -1587,9 +1594,16 @@ int dieroll;
 		&& !is_not_living(mon->data)
 		&& (
 		((objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
-			&& rn2(100) < objects[obj->otyp].oc_critical_strike_percentage)
+			&& (
+			((objects[obj->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+				&& dieroll <= objects[obj->otyp].oc_critical_strike_percentage)
+				||
+				(!(objects[obj->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+					&& rn2(100) < objects[obj->otyp].oc_critical_strike_percentage))
+			)
 			||
-			(!(objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES))
+			(!(objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+				&& 1)
 			)
 		)
 	{
@@ -1788,7 +1802,14 @@ int dieroll;
 
 	}
 
-	if (obj && (objectshatters || (objects[obj->otyp].oc_aflags & A1_ITEM_VANISHES_ON_HIT)))
+	if (obj && (objectshatters || (
+		(objects[obj->otyp].oc_aflags & A1_ITEM_VANISHES_ON_HIT)
+		&& (
+			!(objects[obj->otyp].oc_aflags & A1_ITEM_VANISHES_ONLY_IF_PERMITTED_TARGET)
+			|| ((objects[obj->otyp].oc_aflags & A1_ITEM_VANISHES_ONLY_IF_PERMITTED_TARGET) && eligible_for_extra_damage(obj, mon, &youmonst))
+		   )
+		)
+	 ))
 	{
 		if (obj->where == OBJ_INVENT)
 		{

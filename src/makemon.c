@@ -1448,7 +1448,8 @@ int mndx;
     struct permonst *ptr = &mons[mndx];
 
     mon->m_lev = adj_lev(ptr);
-    if (is_golem(ptr)) {
+    if (is_golem(ptr)) 
+	{
         mon->mhpmax = mon->mhp = golemhp(mndx);
     } else if (is_rider(ptr)) {
         /* we want low HP, but a high mlevel so they can attack well */

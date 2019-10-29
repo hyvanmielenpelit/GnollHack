@@ -1536,10 +1536,16 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 		 && ((objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
 		 && (
 			  ((objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
-			   && criticalstrikeroll < objects[otmp->otyp].oc_critical_strike_percentage * (objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DOUBLE_CHANCE_FOR_PERMITTED_TARGETS ? 2 : 1))
+			   && (
+				   ((objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL) 
+					   && dieroll <= objects[otmp->otyp].oc_critical_strike_percentage)
+				   ||
+				   (!(objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL) 
+					   && criticalstrikeroll < objects[otmp->otyp].oc_critical_strike_percentage))
+				  )
 			 ||
 			 (!(objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES) 
-			  && dieroll <= (objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DOUBLE_CHANCE_FOR_PERMITTED_TARGETS ? 2 : 1))
+			  && dieroll <= 1)
 			)
 		 )
 		{
@@ -1647,10 +1653,16 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 			&& ((objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
 			&& (
 			((objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
-				&& criticalstrikeroll < objects[otmp->otyp].oc_critical_strike_percentage * (objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DOUBLE_CHANCE_FOR_PERMITTED_TARGETS ? 2 : 1))
+				&& (
+				((objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+					&& dieroll <= objects[otmp->otyp].oc_critical_strike_percentage)
+					||
+					(!(objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+						&& criticalstrikeroll < objects[otmp->otyp].oc_critical_strike_percentage))
+				)
 				||
 				(!(objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
-					&& dieroll <= (objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DOUBLE_CHANCE_FOR_PERMITTED_TARGETS ? 4 : 2))
+					&& dieroll <= 2)
 				)
 			)
 		{
@@ -1734,10 +1746,16 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 		&& ((objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
 		&& (
 		((objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
-			&& criticalstrikeroll < objects[otmp->otyp].oc_critical_strike_percentage * (objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DOUBLE_CHANCE_FOR_PERMITTED_TARGETS ? 2 : 1))
+			&& (
+			((objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+				&& dieroll <= objects[otmp->otyp].oc_critical_strike_percentage)
+				||
+				(!(objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+					&& criticalstrikeroll < objects[otmp->otyp].oc_critical_strike_percentage))
+			)
 			||
 			(!(objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
-				&& dieroll <= (objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DOUBLE_CHANCE_FOR_PERMITTED_TARGETS ? 2 : 1))
+				&& dieroll <= 1)
 			)
 		)
 	{
@@ -1795,9 +1813,16 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 			&& ((objects[otmp->otyp].oc_aflags & A1_LEVEL_DRAIN_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
 			&& (
 			((objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
-				&& criticalstrikeroll < objects[otmp->otyp].oc_critical_strike_percentage)
+				&& (
+				((objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+					&& dieroll <= objects[otmp->otyp].oc_critical_strike_percentage)
+					||
+					(!(objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+						&& criticalstrikeroll < objects[otmp->otyp].oc_critical_strike_percentage))
+				)
 				||
-				(!(objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES))
+				(!(objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+					&& 1)
 				)
 			&& check_magic_cancellation_success(mdef, -otmp->spe)
 			)

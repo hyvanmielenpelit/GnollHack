@@ -153,8 +153,9 @@ register int nk;
     register struct permonst *ptr = mtmp->data;
     int i, tmp, tmp2;
 
-    tmp = 1 + mtmp->m_lev * mtmp->m_lev;
+    tmp = 1 + ptr->difficulty * ptr->difficulty; //mtmp->m_lev * mtmp->m_lev;
 
+#if 0
     /*  For higher ac values, give extra experience */
     if ((i = find_mac(mtmp)) < 3)
         tmp += (7 - i) * ((i < 0) ? 2 : 1);
@@ -201,6 +202,7 @@ register int nk;
     /*  For higher level monsters, an additional bonus is given */
     if (mtmp->m_lev > 8)
         tmp += 50;
+#endif
 
 #ifdef MAIL
     /* Mail daemons put up no fight. */

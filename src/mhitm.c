@@ -437,7 +437,12 @@ register struct monst *magr, *mdef;
 
 					m_useup(magr, omonwep);
 				}
-				else if (omonwep && (objects[omonwep->otyp].oc_aflags & A1_ITEM_VANISHES_ON_HIT))
+				else if (omonwep && (objects[omonwep->otyp].oc_aflags & A1_ITEM_VANISHES_ON_HIT)
+					&& (
+						!(objects[omonwep->otyp].oc_aflags & A1_ITEM_VANISHES_ONLY_IF_PERMITTED_TARGET)
+						|| ((objects[omonwep->otyp].oc_aflags & A1_ITEM_VANISHES_ONLY_IF_PERMITTED_TARGET) && eligible_for_extra_damage(omonwep, mdef, magr))
+					   )
+					)
 				{
 					if(omonwep->where == OBJ_MINVENT)
 						m_useup(magr, omonwep);
@@ -1479,10 +1484,17 @@ register struct attack *mattk;
 	if (mweapon && !isdisintegrated && (objects[mweapon->otyp].oc_aflags & A1_WOUNDING) && 
 		eligible_for_extra_damage(mweapon, mdef, magr) && !is_rider(mdef->data)
 		&& (
-		((objects[mweapon->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
-			&& rn2(100) < objects[mweapon->otyp].oc_critical_strike_percentage)
+		((objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+			&& (
+			((objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+				&& dieroll <= objects[otmp->otyp].oc_critical_strike_percentage)
+				||
+				(!(objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+					&& rn2(100) < objects[otmp->otyp].oc_critical_strike_percentage))
+			)
 			||
-			(!(objects[mweapon->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES))
+			(!(objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+				&& 1)
 			)
 		)
 	{
@@ -1503,14 +1515,21 @@ register struct attack *mattk;
 		}
 	}
 
-	/* Life drain */
+	/* Life leech */
 	if (mweapon && !isdisintegrated && (objects[mweapon->otyp].oc_aflags & A1_LIFE_LEECH) && eligible_for_extra_damage(mweapon, mdef, magr)
 		&& !is_rider(mdef->data) && !is_not_living(mdef->data)
 		&& (
-		((objects[mweapon->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
-			&& rn2(100) < objects[mweapon->otyp].oc_critical_strike_percentage)
+		((objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+			&& (
+			((objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+				&& dieroll <= objects[otmp->otyp].oc_critical_strike_percentage)
+				||
+				(!(objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+					&& rn2(100) < objects[otmp->otyp].oc_critical_strike_percentage))
+			)
 			||
-			(!(objects[mweapon->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES))
+			(!(objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+				&& 1)
 			)
 		)
 	{

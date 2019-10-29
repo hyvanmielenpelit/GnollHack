@@ -247,41 +247,41 @@ struct objclass {
 #define A1_CRITICAL_STRIKE_DISRESPECTS_TARGETS		0x00000010  /* successful critical strike causes lethal damage */
 #define A1_CRITICAL_STRIKE_DISRESPECTS_CHARACTERS	0x00000020  /* successful critical strike causes lethal damage */
 #define A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES	0x00000040  /* All other special types use critical strike probability instead of being certain or using their own standard probability */
+#define A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL	0x00000080  /* The number specified by oc_critical_strike_percentage is a die roll on d20 (X or less, e.g., 1 = 5% chance or 2 = 10% chance on any attack regardless of actual hit chance) */
 
-#define A1_WOUNDING			0x00000080  /* extra damage caused is permanent damage */
-#define A1_WOUNDING_DISRESPECTS_TARGETS		0x00000100  /* successful critical strike causes lethal damage */
-#define A1_WOUNDING_DISRESPECTS_CHARACTERS	0x00000200  /* successful critical strike causes lethal damage */
+#define A1_WOUNDING								0x00000100  /* extra damage caused is permanent damage */
+#define A1_WOUNDING_DISRESPECTS_TARGETS			0x00000200  /* successful critical strike causes lethal damage */
+#define A1_WOUNDING_DISRESPECTS_CHARACTERS		0x00000400  /* successful critical strike causes lethal damage */
 
-#define A1_LIFE_LEECH		0x00000400  /* heals hit points equal to the extra damage caused */
-#define A1_LIFE_LEECH_DISRESPECTS_TARGETS		0x00000800  /* successful critical strike causes lethal damage */
-#define A1_LIFE_LEECH_DISRESPECTS_CHARACTERS	0x00001000  /* successful critical strike causes lethal damage */
+#define A1_LIFE_LEECH							0x00000800  /* heals hit points equal to the extra damage caused */
+#define A1_LIFE_LEECH_DISRESPECTS_TARGETS		0x00001000  /* successful critical strike causes lethal damage */
+#define A1_LIFE_LEECH_DISRESPECTS_CHARACTERS	0x00002000  /* successful critical strike causes lethal damage */
 
-#define A1_SHARPNESS		0x00002000	/* 2/20 chance of the monster losing 25% of maximum hit points */
-#define A1_VORPAL			0x00004000	/* 1/20 chance of the monster being beheaded */
+#define A1_SHARPNESS							0x00004000	/* 2/20 chance of the monster losing 25% of maximum hit points */
+#define A1_VORPAL								0x00008000	/* 1/20 chance of the monster being beheaded */
 #define A1_BISECT (A1_SHARPNESS | A1_VORPAL) /* 1/20 chance of a small monster being bisected and a big monster losing 50% of maximum hit points */
 #define A1_SVB_MASK (A1_SHARPNESS | A1_VORPAL)
+#define A1_VORPAL_LIKE_DISRESPECTS_TARGETS					0x00010000
+#define A1_VORPAL_LIKE_DISRESPECTS_CHARACTERS				0x00020000
 
-#define A1_VORPAL_LIKE_DOUBLE_CHANCE_FOR_PERMITTED_TARGETS	0x00008000
-#define A1_VORPAL_LIKE_DISRESPECTS_TARGETS				0x00010000
-#define A1_VORPAL_LIKE_DISRESPECTS_CHARACTERS			0x00020000
+#define A1_LEVEL_DRAIN										0x00040000  /* drains a level from monsters */
+#define A1_LEVEL_DRAIN_DISRESPECTS_TARGETS					0x00080000  
+#define A1_LEVEL_DRAIN_DISRESPECTS_CHARACTERS				0x00100000  
 
-#define A1_LEVEL_DRAIN									0x00040000  /* drains a level from monsters */
-#define A1_LEVEL_DRAIN_DISRESPECTS_TARGETS				0x00080000  /* successful critical strike causes lethal damage */
-#define A1_LEVEL_DRAIN_DISRESPECTS_CHARACTERS			0x00100000  /* successful critical strike causes lethal damage */
+#define A1_STUN												0x00200000  /* stuns target */
+#define A1_STUN_DISRESPECTS_TARGETS							0x00400000  
+#define A1_STUN_DISRESPECTS_CHARACTERS						0x00800000  
 
-#define A1_STUN											0x00200000  /* stuns target */
-#define A1_STUN_DISRESPECTS_TARGETS						0x00400000  /* successful critical strike causes lethal damage */
-#define A1_STUN_DISRESPECTS_CHARACTERS					0x00800000  /* successful critical strike causes lethal damage */
+#define A1_MAGIC_MISSILE_STRIKE								0x01000000  /* showers the target with magic missiles */
+/* One bit here */
 
-#define A1_MAGIC_MISSILE_STRIKE							0x01000000  /* showers the target with magic missiles */
-/* One slot is free here */
+#define A1_EXTRA_DAMAGE_DISRESPECTS_TARGETS					0x04000000  
+#define A1_EXTRA_DAMAGE_DISRESPECTS_CHARACTERS				0x08000000  
 
-#define A1_EXTRA_DAMAGE_DISRESPECTS_TARGETS				0x04000000  /* successful critical strike causes lethal damage */
-#define A1_EXTRA_DAMAGE_DISRESPECTS_CHARACTERS			0x08000000  /* successful critical strike causes lethal damage */
-
-#define A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA				0x10000000 /* abilities such as wounding and life leech are based on full caused damage, not just extra damage */
-#define A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS		0x20000000
-#define A1_ITEM_VANISHES_ON_HIT							0x40000000
+#define A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA					0x10000000 /* abilities such as wounding and life leech are based on full caused damage, not just extra damage */
+#define A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS			0x20000000
+#define A1_ITEM_VANISHES_ON_HIT								0x40000000
+#define A1_ITEM_VANISHES_ONLY_IF_PERMITTED_TARGET			0x80000000
 
 
 /* Spell flags for spells, scrolls, potions, spell-like tools, and wands */
