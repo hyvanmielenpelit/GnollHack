@@ -333,14 +333,19 @@ boolean createcorpse;
 	case PM_HELL_BAT:
 	case PM_PHOENIX:
 		additionalash++;
+	case PM_RED_NAGA:
 	case PM_FIRE_VORTEX:
 	case PM_SALAMANDER:
 	case PM_FIRE_ELEMENTAL:
+	case PM_PYROLISK:
 	case PM_FIRE_GIANT:
+	case PM_HELL_HOUND:
 		additionalash++;
 	case PM_FIRE_ANT:
 	case PM_RED_NAGA_HATCHLING:
 	case PM_RED_DRAGON_HATCHLING:
+	case PM_RED_MOLD:
+	case PM_HELL_HOUND_PUP:
 		if ((!mtmp->mrevived && !rn2(2)) || (mtmp->mrevived && !rn2(10)))
 		{
 			obj = mksobj_at(PINCH_OF_SULFUROUS_ASH, x, y, TRUE, FALSE);
