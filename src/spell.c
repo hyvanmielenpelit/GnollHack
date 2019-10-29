@@ -618,15 +618,28 @@ register struct obj *spellbook;
 					- 2 * objects[booktype].oc_spell_level
 					+ (Enhanced_vision ? 2 : 0);
 
-                /* only wizards know if a spell is too difficult */
-                if (Role_if(PM_WIZARD) && read_ability < 20 && !confused) {
+                if (read_ability < 20 && !confused) //Role_if(PM_WIZARD) && 
+				{
                     char qbuf[QBUFSZ];
+					char descbuf[BUFSZ] = "difficult";
 
-                    Sprintf(qbuf,
-                    "This spellbook is %s%sdifficult to comprehend. Continue?",
-							(perusetext ? "still " : ""),
-                            (read_ability < 12 ? "very " : ""));
-                    if (yn(qbuf) != 'y') {
+					if (read_ability <= 0)
+						Sprintf(descbuf, "%sseems impossible", perusetext ? "still " : "");
+					else if (read_ability <= 4)
+						Sprintf(descbuf, "is %svery difficult", perusetext ? "still " : "");
+					else if (read_ability <= 8)
+						Sprintf(descbuf, "is %sdifficult", perusetext ? "still " : "");
+					else if (read_ability <= 12)
+						Sprintf(descbuf, "%sseems rather difficult", perusetext ? "still " : "");
+					else if (read_ability <= 16)
+						Sprintf(descbuf, "seems somewhat easy");
+					else
+						Sprintf(descbuf, "seems easy");
+
+					Sprintf(qbuf, "This spellbook %s to comprehend. Continue?", descbuf);
+
+                    if (yn(qbuf) != 'y') 
+					{
                         spellbook->in_use = FALSE;
                         return 1;
                     }
