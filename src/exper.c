@@ -14,11 +14,42 @@ long
 newuexp(lev)
 int lev;
 {
-    if (lev < 10)
+	if (lev <= 0)
+		return 0;
+
+	long total_level_exp = 0;
+	double multiplier = 1;
+
+	for(int i = 1; i <= lev; i++)
+	{
+		double levd = (double)i;
+		double monst_exp_cur_lvl = 1 + levd * levd;
+		double monst_exp_prev_lvl = 1 + (levd - 1) * (levd - 1);
+		double avg_monst_exp = (monst_exp_cur_lvl + monst_exp_prev_lvl) / 2;
+
+		double monsters_to_be_killed = 10;
+		double base = 1.14174;
+		//double exponent = levd - 5;
+
+		if (levd > 5)
+			multiplier = multiplier * base; // pow(base, exponent);
+
+		monsters_to_be_killed = monsters_to_be_killed * multiplier;
+
+		double exp_needed = avg_monst_exp * monsters_to_be_killed;
+		long exp_needed_long = ((long)(exp_needed / 10) + 1) * 10; // Round up to the closest 10
+		total_level_exp += exp_needed_long;
+	}
+
+	return total_level_exp;
+
+	/*
+	if (lev < 10)
         return (10L * (1L << lev));
     if (lev < 20)
         return (10000L * (1L << (lev - 10)));
     return (10000000L * ((long) (lev - 19)));
+	*/
 }
 
 STATIC_OVL int

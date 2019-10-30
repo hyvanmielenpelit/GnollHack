@@ -334,10 +334,10 @@ struct savefile_info {
 #define MAXSTAIRS 1   /* max # of special stairways in a dungeon */
 #define ALIGNWEIGHT 4 /* generation weight of alignment */
 
-#define MAXULEV 30 /* max character experience level */
+#define MAXULEV 36 /* max character experience level */
 
-#define MAXMONNO 120 /* extinct monst after this number created */
-#define MHPMAX 500   /* maximum monster hp */
+#define MAXMONNO 240 /* extinct monst after this number created (JG -- doubled) */
+#define MHPMAX 500   /* maximum monster hp (JG -- seems to apply only to worms...) */
 
 /* PANICTRACE: Always defined for BETA but only for supported platforms. */
 #ifdef UNIX

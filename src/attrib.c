@@ -103,7 +103,7 @@ static const struct innate {
                  { 1, &HPoison_resistance, "", "" },
                  { 0, 0, 0, 0 } },
 
-	gnl_abil[] = { { 1, &HPoison_resistance, "", "" },
+  gnl_abil[] = { { 1, &HPoison_resistance, "", "" },
 				   { 0, 0, 0, 0 } },
 
   hum_abil[] = { { 0, 0, 0, 0 } };
@@ -1427,9 +1427,15 @@ int oldlevel, newlevel;
         rabil = orc_abil;
         break;
 	case PM_HUMAN:
-    case PM_DWARF:
-    case PM_GNOLL:
-    default:
+		rabil = hum_abil;
+		break;
+	case PM_DWARF:
+		rabil = dwa_abil;
+		break;
+	case PM_GNOLL:
+		rabil = gnl_abil;
+		break;
+	default:
         rabil = 0;
         break;
     }

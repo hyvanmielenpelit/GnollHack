@@ -138,11 +138,7 @@ int x, y;
     struct trap *t;
 
     if (obj->otyp == CREAM_PIE 
-		|| ((objects[obj->otyp].oc_aflags & A1_ITEM_VANISHES_ON_HIT) 
-			&& (
-				!(objects[obj->otyp].oc_aflags & A1_ITEM_VANISHES_ONLY_IF_PERMITTED_TARGET)
-				|| ((objects[obj->otyp].oc_aflags & A1_ITEM_VANISHES_ONLY_IF_PERMITTED_TARGET) && eligible_for_extra_damage(obj, &youmonst, (struct obj*)0))
-				)
+		|| ((objects[obj->otyp].oc_aflags & A1_ITEM_VANISHES_ON_HIT) // The item vanishes here always, because we cannot check appropriateness properly
 			)
 		|| (objects[obj->otyp].oc_material == MAT_GLASS
 		&& !(objects[obj->otyp].oc_flags & O1_INDESTRUCTIBLE)
