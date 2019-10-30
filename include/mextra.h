@@ -166,7 +166,8 @@ struct edog {
     int abuse;                /* track abuses to this pet */
     int revivals;             /* count pet deaths */
     int mhpmax_penalty;       /* while starving, points reduced */
-    Bitfield(killed_by_u, 1); /* you attempted to kill him */
+	int chastised;			  /* has a shopkeeper told the dog off; this is duration while the pet remembers being chastised */
+	Bitfield(killed_by_u, 1); /* you attempted to kill him */
 };
 
 /***

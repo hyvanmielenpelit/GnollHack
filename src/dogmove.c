@@ -442,24 +442,62 @@ int udist;
 
             carryamt = can_carry(mtmp, obj);
             if (carryamt > 0 && !obj->cursed && !mtmp->issummoned
-                && could_reach_item(mtmp, obj->ox, obj->oy)) {
-                if (rn2(20) < edog->apport + 3) {
-                    if (rn2(udist) || !rn2(edog->apport)) {
-                        otmp = obj;
-                        if (carryamt != obj->quan)
-                            otmp = splitobj(obj, carryamt);
-                        if (cansee(omx, omy) && flags.verbose)
-                            pline("%s picks up %s.", Monnam(mtmp),
-                                  distant_name(otmp, doname));
-                        obj_extract_self(otmp);
-                        newsym(omx, omy);
-                        (void) mpickobj(mtmp, otmp);
-                        if (attacktype(mtmp->data, AT_WEAP)
-                            && mtmp->weapon_check == NEED_WEAPON) {
-                            mtmp->weapon_check = NEED_HTH_WEAPON;
-                            (void) mon_wield_item(mtmp);
-                        }
-                        m_dowear(mtmp, FALSE);
+                && could_reach_item(mtmp, obj->ox, obj->oy))
+			{
+                if (rn2(20) < edog->apport + 3)
+				{
+                    if (rn2(udist) || !rn2(edog->apport)) 
+					{
+						struct monst* shkp = (struct monst*)0;
+						if (obj && obj->unpaid || (obj->where == OBJ_FLOOR && !obj->no_charge && costly_spot(omx, omy)))
+						{
+							shkp = shop_keeper(inside_shop(omx, omy));
+							char shopkeeper_name[BUFSZ] = "";
+							if (shkp)
+							{
+								strcpy(shopkeeper_name, shkname(shkp));
+								if (!edog->chastised)
+								{
+									edog->chastised = 20 + rn2(1000);
+									if (cansee(omx, omy) && flags.verbose)
+									{
+										pline("%s tries to pick up %s.", Monnam(mtmp),
+											distant_name(obj, doname));
+
+										pline("However, %s glances at %s menacingly.", shopkeeper_name,
+											mon_nam(mtmp));
+
+										verbalize("Drop that, now!");
+
+										pline("%s drops %s.", Monnam(mtmp),
+											the(cxname(obj)));
+									}
+								}
+							}
+						}
+
+						if(!shkp)
+						{
+							otmp = obj;
+							if (carryamt != obj->quan)
+								otmp = splitobj(obj, carryamt);
+
+							if (cansee(omx, omy) && flags.verbose)
+								pline("%s picks up %s.", Monnam(mtmp),
+									  distant_name(otmp, doname));
+							
+							obj_extract_self(otmp);
+							newsym(omx, omy);
+							(void) mpickobj(mtmp, otmp);
+							
+							if (attacktype(mtmp->data, AT_WEAP)
+								&& mtmp->weapon_check == NEED_WEAPON)
+							{
+								mtmp->weapon_check = NEED_HTH_WEAPON;
+								(void) mon_wield_item(mtmp);
+							}
+							m_dowear(mtmp, FALSE);
+						}
                     }
                 }
             }
@@ -908,7 +946,12 @@ int after; /* this is extra fast monster movement */
     cursemsg[0] = FALSE; /* lint suppression */
     info[0] = 0;         /* ditto */
 
-    if (has_edog) {
+    if (has_edog)
+	{
+		if (edog->chastised > 0)
+		{
+			edog->chastised--;
+		}
         j = dog_invent(mtmp, edog, udist);
         if (j == 2)
             return 2; /* died */

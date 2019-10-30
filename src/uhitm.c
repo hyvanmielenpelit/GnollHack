@@ -1628,7 +1628,7 @@ int dieroll;
 		{
 			char* whom = mon_nam(mon);
 			if (canspotmon(mon)) {
-				pline("%s the life energy from %s!", Yobjnam2(obj, "leech"), whom);
+				pline("%s the life energy from %s to you!", Yobjnam2(obj, "leech"), whom);
 			}
 		}
 	}

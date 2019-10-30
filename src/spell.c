@@ -483,7 +483,11 @@ register struct obj *spellbook;
 	boolean takeround = 0;
 	boolean perusetext = 0;
 
-	if (!(context.spbook.delay && spellbook == context.spbook.book) && spellbook->otyp != SPE_BLANK_PAPER)
+	if (!(context.spbook.delay && spellbook == context.spbook.book)
+		&& !(objects[spellbook->otyp].oc_flags & O1_NON_SPELL_SPELLBOOK)
+		&& spellbook->otyp != SPE_BLANK_PAPER
+		&& spellbook->otyp != SPE_BOOK_OF_THE_DEAD
+		&& spellbook->otyp != SPE_NOVEL)
 	{
 		strcpy(namebuf, OBJ_NAME(objects[booktype]));
 		strcpy(Namebuf2, OBJ_NAME(objects[booktype]));
@@ -569,7 +573,9 @@ register struct obj *spellbook;
         && booktype != SPE_BLANK_PAPER) {
         You("continue your efforts to %s.",
             (booktype == SPE_NOVEL) ? "read the novel" : "memorize the spell");
-    } else {
+    } 
+	else 
+	{
         /* KMH -- Simplified this code */
         if (booktype == SPE_BLANK_PAPER) {
             pline("This spellbook is all blank.");
@@ -578,16 +584,19 @@ register struct obj *spellbook;
         }
 
         /* 3.6 tribute */
-        if (booktype == SPE_NOVEL) {
+        if (booktype == SPE_NOVEL) 
+		{
             /* Obtain current Terry Pratchett book title */
             const char *tribtitle = noveltitle(&spellbook->novelidx);
 
             if (read_tribute("books", tribtitle, 0, (char *) 0, 0,
-                             spellbook->o_id)) {
+                             spellbook->o_id))
+			{
                 u.uconduct.literate++;
                 check_unpaid(spellbook);
                 makeknown(booktype);
-                if (!u.uevent.read_tribute) {
+                if (!u.uevent.read_tribute) 
+				{
                     /* give bonus of 20 xp and 4*20+0 pts */
                     more_experienced(20, 0);
                     newexplevel();

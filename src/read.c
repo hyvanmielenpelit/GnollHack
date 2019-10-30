@@ -372,11 +372,13 @@ doread()
         && scroll->otyp != SPE_NOVEL)
         u.uconduct.literate++;
 
-    if (scroll->oclass == SPBOOK_CLASS) {
+    if (scroll->oclass == SPBOOK_CLASS)
+	{
         return study_book(scroll);
     }
     scroll->in_use = TRUE; /* scroll, not spellbook, now being read */
-    if (scroll->otyp != SCR_BLANK_PAPER) {
+    if (scroll->otyp != SCR_BLANK_PAPER)
+	{
         boolean silently = !can_chant(&youmonst);
 
         /* a few scroll feedback messages describe something happening

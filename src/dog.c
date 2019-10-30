@@ -753,8 +753,9 @@ register struct obj *obj;
     if (is_quest_artifact(obj) || obj_resists(obj, 0, 95))
         return obj->cursed ? TABU : APPORT;
 
-    switch (obj->oclass) {
-    case FOOD_CLASS:
+    switch (obj->oclass) 
+	{
+	case FOOD_CLASS:
         if (obj->otyp == CORPSE || obj->otyp == TIN || obj->otyp == EGG)
             fptr = &mons[obj->corpsenm];
 
@@ -848,6 +849,12 @@ register struct obj *obj;
             return (obj->otyp > SLIME_MOLD) ? (carni ? ACCFOOD : MANFOOD)
                                             : (herbi ? ACCFOOD : MANFOOD);
         }
+	case REAGENT_CLASS:
+	{
+		if (carni && objects[obj->otyp].oc_material == MAT_BONE && (objects[obj->otyp].oc_flags & O1_EDIBLE_BY_BONE_EATERS))
+			return CADAVER;
+		break;
+	}
     default:
         if (obj->otyp == AMULET_OF_STRANGULATION
             || obj->otyp == RIN_SLOW_DIGESTION)
