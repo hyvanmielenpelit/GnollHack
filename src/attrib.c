@@ -1626,6 +1626,7 @@ updateabon()
 	u.uhitinc = 0;
 	u.uacbonus = 0;
 	u.umcbonus = 0;
+	u.uspellcastingbonus = 0;
 
 	/* Set wounded legs here */
 	if (Wounded_legs)
@@ -1663,7 +1664,7 @@ updateabon()
 				continue;
 			}
 
-			for (int i = 0; i < A_MAX+4; i++)
+			for (int i = 0; i < A_MAX+5; i++)
 			{
 				int bit = 0;
 				switch (i)
@@ -1697,6 +1698,9 @@ updateabon()
 					break;
 				case A_MAX + 3:
 					bit = BONUS_TO_MC;
+					break;
+				case A_MAX + 4:
+					bit = BONUS_TO_SPELL_CASTING;
 					break;
 				default:
 					bit = 0;
@@ -1765,6 +1769,13 @@ updateabon()
 							u.umcbonus += uitem->spe;
 						else
 							u.umcbonus += objects[otyp].oc_attribute_bonus;
+					}
+					else if (i == A_MAX + 4)
+					{
+						if (objects[otyp].oc_attribute_bonus == 0 && objects[otyp].oc_charged)
+							u.uspellcastingbonus += uitem->spe;
+						else
+							u.uspellcastingbonus += objects[otyp].oc_attribute_bonus;
 					}
 				}
 			}

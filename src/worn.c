@@ -177,9 +177,9 @@ long mask;
 			|| ACURR(A_WIS) != oldwis
 			|| ACURR(A_CHA) != oldcha
 			|| (obj && obj->oclass != ARMOR_CLASS && u.uac != oldac)
-			|| (obj && obj->oclass != ARMOR_CLASS && u.umc != oldmc)
+			|| (obj && obj->oclass != ARMOR_CLASS && obj->oclass != WEAPON_CLASS && u.umc != oldmc)
 			|| (!obj && oobj && oobj->oclass != ARMOR_CLASS && u.uac != oldac)
-			|| (!obj && oobj && oobj->oclass != ARMOR_CLASS && u.umc != oldmc)
+			|| (!obj && oobj && oobj->oclass != ARMOR_CLASS && oobj->oclass != WEAPON_CLASS && u.umc != oldmc)
 			)) // this should identify all objects giving hp or mana or stats or non-armors giving ac or mc
 		{
 			if (obj)
@@ -302,7 +302,7 @@ register struct obj *obj;
 			|| ACURR(A_WIS) != oldwis
 			|| ACURR(A_CHA) != oldcha
 			|| (obj->oclass != ARMOR_CLASS && u.uac != oldac)
-			|| (obj->oclass != ARMOR_CLASS && u.umc != oldmc)
+			|| (obj->oclass != ARMOR_CLASS && obj->oclass != WEAPON_CLASS && u.umc != oldmc)
 			)) // this should identify all objects giving hp or mana or stats or ac
 		{
 			if (obj->oclass == RING_CLASS || obj->oclass == MISCELLANEOUS_CLASS) //Observable ring

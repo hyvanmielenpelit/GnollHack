@@ -373,6 +373,7 @@ struct you {
     schar udaminc;
 	schar uacbonus;
 	schar umcbonus;
+	schar uspellcastingbonus;
 	schar uac;				 /* current armor class */
 	schar umc;				 /* current magic cancellation */
 	uchar uspellprot;        /* protection by SPE_PROTECTION */

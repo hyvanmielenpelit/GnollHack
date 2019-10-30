@@ -3157,6 +3157,8 @@ int spell;
     if (spellid(spell) == urole.spelspec)
         splcaster += urole.spelsbon;
 
+	splcaster -= u.uspellcastingbonus; /* This is a bonus, not a penalty */
+
     /* `healing spell' bonus */
 	/*
     if (spellid(spell) == SPE_HEALING || spellid(spell) == SPE_EXTRA_HEALING || spellid(spell) == SPE_GREATER_HEALING || spellid(spell) == SPE_FULL_HEALING

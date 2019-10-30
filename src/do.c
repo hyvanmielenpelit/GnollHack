@@ -884,7 +884,7 @@ register struct obj* obj;
 					}
 					else if (j == 6)
 					{
-						for (int k = 0; k < 10; k++)
+						for (int k = 0; k < 11; k++)
 						{
 							strcpy(buf2, "");
 							int stat = objects[otyp].oc_attribute_bonus;
@@ -899,15 +899,15 @@ register struct obj* obj;
 
 							char grantbuf[BUFSZ];
 							if (stat < 0)
-								strcpy(raisebuf, "Causes");
+								strcpy(grantbuf, "Causes");
 							else
-								strcpy(raisebuf, "Grants");
+								strcpy(grantbuf, "Grants");
 
 							char bonusbuf[BUFSZ];
 							if (stat < 0)
-								strcpy(raisebuf, "penalty");
+								strcpy(bonusbuf, "penalty");
 							else
-								strcpy(raisebuf, "bonus");
+								strcpy(bonusbuf, "bonus");
 
 							if (k == 0 && prop & BONUS_TO_STR)
 							{
@@ -999,6 +999,12 @@ register struct obj* obj;
 								powercnt++;
 
 								Sprintf(buf2, "%s %s%d %s to magic cancellation", grantbuf, stat >= 0 ? "+" : "", stat, bonusbuf);
+							}
+							if (k == 10 && prop & BONUS_TO_SPELL_CASTING)
+							{
+								powercnt++;
+
+								Sprintf(buf2, "%s %s%d%% %s to spell casting", grantbuf, stat >= 0 ? "+" : "", stat * 5, bonusbuf);
 							}
 
 							if (strcmp(buf2, "") != 0) // Something else than ""
