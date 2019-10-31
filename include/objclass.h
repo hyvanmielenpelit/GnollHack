@@ -134,22 +134,23 @@ enum obj_miscellaneous_types {
 	MISC_BRACELET = 9,
 	MISC_BRACERS = 10,		/* alternative implementation of bracers */
 	MISC_BELT = 11,			
-	MISC_LENSES = 12,		/* alternative implementation of eyeglasses */
+	MISC_EYEGLASSES = 12,		
 	MISC_BLINDFOLD = 13,	/* alternative implementation of blindfold */
 	MISC_SCARF = 14,
-	MISC_EXTRA_ARMS = 15
+	MISC_EXTRA_ARMS = 15,
+	MISC_BROOCH = 16
 };
 
 static const char* misc_type_names[] = {
 	"", "set of wings", "pair of pants", "skirt", "wrist watch",
 	"nose ring", "headband", "pair of earrings",
-	"ioun stone", "bracelet", "pair of bracers", "belt", "pair of eyeglasses", "blindfold", "scarf", "set of extra arms",
+	"ioun stone", "bracelet", "pair of bracers", "belt", "pair of eyeglasses", "blindfold", "scarf", "set of extra arms", "brooch",
 };
 
 static const char* misc_type_worn_texts[] = {
 	"", "attached to back", "", "", "on left wrist",
 	"on nose", "", "",
-	"orbiting head", "", "", "", "", "", "", "attached to body",
+	"orbiting head", "", "", "", "", "", "", "attached to body", "",
 };
 
 
@@ -293,6 +294,7 @@ struct objclass {
 
 
 	int oc_hitbonus;						/* weapons: "to hit" bonus */
+	int oc_mc_adjustment;					/* weapons: adjustment to any MC checks; spells and wands: MC adjustment */
 	int oc_fixed_damage_bonus;				/* fixed strength-based damage bonus for crossbows; O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH must be on; can be used for other purposes for a spellbook flag */
 	int oc_range;							/* launchers: range for ammo, others throw range: >0 Fixed range, <0 Percentage of STR */
 
@@ -374,8 +376,9 @@ struct objclass {
 #define oc_spell_attribute oc_oc4		/* books: spell primary casting attribute */
 #define oc_spell_range oc_oc5			/* books: spell range */
 #define oc_spell_radius oc_oc6			/* books: spell radius */
-#define oc_spell_saving_throw_adjustment oc_oc7	/* books: spell saving throw adjustment */
-/* oc_oc8 unused; saving throw type? */
+/* oc_oc7 unused */
+/* oc_oc8 unused */
+#define oc_spell_saving_throw_adjustment oc_mc_adjustment	/* books: spell saving throw adjustment */
 #define oc_spell_dmg_dice oc_wsdice		/* books: spell damage no of dice */
 #define oc_spell_dmg_dicesize oc_wsdam	/* books: spell damage size of dice */
 #define oc_spell_dmg_plus oc_wsdmgplus	/* books: spell damage constant added */
@@ -441,7 +444,7 @@ struct objclass {
 #define O1_EROSION_DOES_NOT_AFFECT_AC		0x00000800			/* erosion level does not affect the item's MC */
 #define O1_IS_ARMOR_WHEN_WIELDED			0x00001000			/* acts as an armor when wielded giving AC using oc_armor_class, which must be specified */
 #define O1_IS_WEAPON_WHEN_WIELDED			0x00002000			/* acts as a weapon when wielded (or worn in shield slot in two-weapon fighting) using damage statistics */
-	/* 0x00004000 free */
+#define O1_SPE_AFFECTS_MC_ADJUSTMENT		0x00004000			/* +X of the item influences also its MC adjustment (i.e., saving throw penalty for attacks) */
 
 #define O1_EDIBLE_NONFOOD					0x00008000
 #define O1_EDIBLE_BY_BONE_EATERS			0x00010000

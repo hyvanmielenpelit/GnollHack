@@ -334,8 +334,6 @@ const char *drainer; /* cause of death, if drain should be fatal */
     }
     num = (int) u.uhpinc[u.ulevel];
     u.ubasehpmax -= num;
-    if (u.ubasehpmax < 1)
-        u.ubasehpmax = 1;
     u.uhp -= num;
 	updatemaxhp();
 	

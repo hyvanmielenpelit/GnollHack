@@ -317,7 +317,7 @@ newman()
      * and the extra got multiplied by 2 or 3.  Repeat the level
      * drain and polyself steps until out of lifesaving capability.)
      */
-    hpmax = u.uhpmax;
+    hpmax = u.ubasehpmax;
     for (i = 0; i < oldlvl; i++)
         hpmax -= (int) u.uhpinc[i];
     /* hpmax * rn1(4,8) / 10; 0.95*hpmax on average */
@@ -329,7 +329,7 @@ newman()
     /* retain same proportion for current HP; u.uhp * hpmax / u.uhpmax */
 	int oldhpmax = u.uhpmax;
     u.ubasehpmax = hpmax;
-	u.uhpmax = u.ubasehpmax + hpmaxadjustment(TRUE);
+	updatemaxhp();
 	u.uhp = rounddiv((long)u.uhp * (long)oldhpmax, u.uhpmax);
 	/*
      * Do the same for spell power.

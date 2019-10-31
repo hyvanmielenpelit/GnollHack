@@ -1360,6 +1360,7 @@ register struct obj* omonwep;
     int res;
 	boolean objectshatters = FALSE;
 	boolean isdisintegrated = FALSE;
+	int critstrikeroll = rn2(100);
 
     if (!canspotmon(mtmp))
         map_invisible(mtmp->mx, mtmp->my);
@@ -1539,7 +1540,7 @@ register struct obj* omonwep;
 				hittxt = (otmp->oartifact
 					&& artifact_hit(mtmp, &youmonst, otmp, &dmg, dieroll));
 
-				int special_hit_dmg = pseudo_artifact_hit(mtmp, &youmonst, otmp, extradmg, dieroll);
+				int special_hit_dmg = pseudo_artifact_hit(mtmp, &youmonst, otmp, extradmg, dieroll, critstrikeroll);
 				if (special_hit_dmg < 0)
 				{
 					dmg += 2 * (Upolyd ? u.mh : u.uhp) + 200;
@@ -2315,7 +2316,7 @@ register struct obj* omonwep;
 				&& dieroll <= objects[omonwep->otyp].oc_critical_strike_percentage)
 				||
 				(!(objects[omonwep->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-					&& rn2(100) < objects[omonwep->otyp].oc_critical_strike_percentage))
+					&& critstrikeroll < objects[omonwep->otyp].oc_critical_strike_percentage))
 			)
 			||
 			(!(objects[omonwep->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
@@ -2343,7 +2344,7 @@ register struct obj* omonwep;
 				&& dieroll <= objects[omonwep->otyp].oc_critical_strike_percentage)
 				||
 				(!(objects[omonwep->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-					&& rn2(100) < objects[omonwep->otyp].oc_critical_strike_percentage))
+					&& critstrikeroll < objects[omonwep->otyp].oc_critical_strike_percentage))
 			)
 			||
 			(!(objects[omonwep->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)

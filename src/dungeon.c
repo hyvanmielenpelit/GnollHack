@@ -1585,11 +1585,16 @@ level_difficulty()
 {
     int res;
 
-    if (In_endgame(&u.uz)) {
-        res = depth(&sanctum_level) + u.ulevel / 2;
-    } else if (u.uhave.amulet) {
-        res = deepest_lev_reached(FALSE);
-    } else {
+    if (In_endgame(&u.uz))
+	{
+        res = 2 * depth(&sanctum_level); //ulevel removed, depth doubled from before
+    } 
+	else if (u.uhave.amulet) 
+	{
+        res = 2 * deepest_lev_reached(FALSE) - depth(&u.uz);
+    } 
+	else
+	{
         res = depth(&u.uz);
         /* depth() is the number of elevation units (levels) below
            the theoretical surface; in a builds-up branch, that value

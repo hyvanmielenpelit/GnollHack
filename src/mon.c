@@ -445,6 +445,7 @@ boolean createcorpse;
 	case PM_ROC:
 	case PM_RAVEN:
 	case PM_PHOENIX:
+	case PM_HARPY:
 	case PM_COCKATRICE:
 	case PM_CHICKATRICE:
 	case PM_COUATL:
@@ -458,9 +459,10 @@ boolean createcorpse;
 			case PM_ROC:
 				obj->quan = rnd(3) + 1;
 				break;
+			case PM_HARPY:
 			case PM_RAVEN:
-				break;
 				obj->quan = rnd(2);
+				break;
 			case PM_COCKATRICE:
 				obj->quan = 1;
 				break;

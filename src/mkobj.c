@@ -1500,6 +1500,7 @@ struct obj *body;
 #define TAINT_AGE (50L)        /* age when corpses go bad */
 #define TROLL_REVIVE_CHANCE 37 /* 1/37 chance for 50 turns ~ 75% chance */
 #define PHOENIX_REVIVE_CHANCE 25
+#define GENERAL_REVIVE_CHANCE 40 /* 1/40 chance for 50 turns ~ 70% chance */
 #define ROT_AGE (250L)         /* age when corpses rot away */
 
     /* lizards and lichen don't rot or revive */
@@ -1515,38 +1516,55 @@ struct obj *body;
         when = ROT_AGE - corpse_age;
     when += (long) (rnz(rot_adjust) - rot_adjust);
 
-    if (is_rider(&mons[body->corpsenm])) {
-        /*
-         * Riders always revive.  They have a 1/3 chance per turn
-         * of reviving after 12 turns.  Always revive by 500.
-         */
-        action = REVIVE_MON;
-        for (when = 12L; when < 500L; when++)
-            if (!rn2(3))
-                break;
-
-    } 
-	else if (body->corpsenm == PM_PHOENIX && !body->norevive)
+	if (mons[body->corpsenm].mflags3 & M3_REVIVES_FROM_DEAD)
 	{
-		/*
-		 * Phoenixes always revive.  They have a 1/4 chance per turn
-		 * of reviving after 20 turns.  Always revive by 500.
-		 */
-		action = REVIVE_MON;
-		for (when = 7L; when < 500L; when++)
-			if (!rn2(PHOENIX_REVIVE_CHANCE))
-				break;
+		if (is_rider(&mons[body->corpsenm])) {
+			/*
+			 * Riders always revive.  They have a 1/3 chance per turn
+			 * of reviving after 12 turns.  Always revive by 500.
+			 */
+			action = REVIVE_MON;
+			for (when = 12L; when < 500L; when++)
+				if (!rn2(3))
+					break;
 
+		}
+		else if (body->corpsenm == PM_PHOENIX && !body->norevive)
+		{
+			/*
+			 * Phoenixes always revive.  They have a 1/4 chance per turn
+			 * of reviving after 20 turns.  Always revive by 500.
+			 */
+			action = REVIVE_MON;
+			for (when = 7L; when < 500L; when++)
+				if (!rn2(PHOENIX_REVIVE_CHANCE))
+					break;
+
+		}
+		else if (mons[body->corpsenm].mlet == S_TROLL && !body->norevive) 
+		{
+			long age;
+			for (age = 2; age <= TAINT_AGE; age++)
+				if (!rn2(TROLL_REVIVE_CHANCE)) 
+				{ /* troll revives */
+					action = REVIVE_MON;
+					when = age;
+					break;
+				}
+		}
+		else if(!body->norevive)
+		{
+			/* Base case here for all other monsters */
+			long age;
+			for (age = 2; age <= TAINT_AGE; age++)
+				if (!rn2(GENERAL_REVIVE_CHANCE))
+				{ /* monster revives */
+					action = REVIVE_MON;
+					when = age;
+					break;
+				}
+		}
 	}
-	else if (mons[body->corpsenm].mlet == S_TROLL && !body->norevive) {
-        long age;
-        for (age = 2; age <= TAINT_AGE; age++)
-            if (!rn2(TROLL_REVIVE_CHANCE)) { /* troll revives */
-                action = REVIVE_MON;
-                when = age;
-                break;
-            }
-    }
 
     if (body->norevive)
         body->norevive = 0;

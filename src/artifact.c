@@ -1436,10 +1436,11 @@ int dieroll; /* needed for Magicbane and vorpal blades */
  * Returns extra damage caused, to be added to damage caused by caller (so it can be displayed correctly), if any caused; -1 means that the caller has to kill mdef
  */
 int
-pseudo_artifact_hit(magr, mdef, otmp, extradmg, dieroll)
+pseudo_artifact_hit(magr, mdef, otmp, extradmg, dieroll, critstrikeroll)
 struct monst* magr, * mdef;
 struct obj* otmp;
 int dieroll; /* needed for Magicbane and vorpal blades */
+int critstrikeroll; /* need to synchronize critical strike based abilities */
 {
 	if (!otmp || !magr || !mdef)
 		return 0;
@@ -1456,7 +1457,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 	int totaldamagedone = 0;
 	boolean lethaldamage = FALSE;
 	boolean isdisintegrated = FALSE;
-	int criticalstrikeroll = rn2(100);
+	int criticalstrikeroll = critstrikeroll;
 
 	Strcpy(hittee, youdefend ? you : mon_nam(mdef));
 
@@ -1568,10 +1569,14 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 						damagedone = 1;
 
 					totaldamagedone += damagedone;
-					mdef->mhpmax -= damagedone;
-					if (mdef->mhpmax < 1)
-						mdef->mhpmax = 1, lethaldamage = TRUE;
 
+					if(!(mons[mdef->mnum].mflags3 & M3_REGENERATES_LOST_BODY_PARTS))
+					{
+						/* Max HP does not go down if the creature can regenerate the lost body part */
+						mdef->mhpmax -= damagedone;
+						if (mdef->mhpmax < 1)
+							mdef->mhpmax = 1, lethaldamage = TRUE;
+					}
 					pline("%s slices a part of %s off!", The(xname(otmp)),
 						mon_nam(mdef));
 					if (Hallucination && !lethaldamage)
@@ -1606,12 +1611,14 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 
 						totaldamagedone += damagedone;
 
-						u.basemhmax -= damagedone;
-						u.mhmax -= damagedone;
-						if (u.mhmax < 1)
-							u.mhmax = 1, lethaldamage =TRUE;
-						if (u.basemhmax < 1)
-							u.mhmax = 1;
+						if (!(youmonst.data->mflags3 & M3_REGENERATES_LOST_BODY_PARTS))
+						{
+							/* Max HP does not go down if the creature can regenerate the lost body part */
+							u.basemhmax -= damagedone;
+							u.mhmax -= damagedone;
+							if (u.mhmax < 1)
+								u.mhmax = 1, lethaldamage = TRUE;
+						}
 					}
 					else
 					{
@@ -1621,12 +1628,14 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 
 						totaldamagedone += damagedone;
 
-						u.ubasehpmax -= damagedone;
-						u.uhpmax -= damagedone;
-						if (u.uhpmax < 1)
-							u.uhpmax = 1, lethaldamage = TRUE;
-						if (u.ubasehpmax < 1)
-							u.ubasehpmax = 1;
+						if (!(youmonst.data->mflags3 & M3_REGENERATES_LOST_BODY_PARTS))
+						{
+							/* Max HP does not go down if the creature can regenerate the lost body part */
+							u.ubasehpmax -= damagedone;
+							u.uhpmax -= damagedone;
+							if (u.uhpmax < 1)
+								u.uhpmax = 1, lethaldamage = TRUE;
+						}
 
 					}
 					pline("%s slices a part of %s off!", The(xname(otmp)), "you");
@@ -1680,10 +1689,13 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 
 					totaldamagedone += damagedone;
 
-					mdef->mhpmax -= damagedone;
-					if (mdef->mhpmax < 1)
-						mdef->mhpmax = 1, lethaldamage = TRUE;
-
+					if (!(mons[mdef->mnum].mflags3 & M3_REGENERATES_LOST_BODY_PARTS))
+					{
+						/* Max HP does not go down if the creature can regenerate the lost body part */
+						mdef->mhpmax -= damagedone;
+						if (mdef->mhpmax < 1)
+							mdef->mhpmax = 1, lethaldamage = TRUE;
+					}
 					pline("%s slices a part of %s off!", The(xname(otmp)),
 						mon_nam(mdef));
 					if (Hallucination && !lethaldamage)
@@ -1713,12 +1725,14 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 
 						totaldamagedone += damagedone;
 
-						u.basemhmax -= damagedone;
-						u.mhmax -= damagedone;
-						if (u.mhmax < 1)
-							u.mhmax = 1, lethaldamage = TRUE;
-						if (u.basemhmax < 1)
-							u.mhmax = 1;
+						if (!(youmonst.data->mflags3 & M3_REGENERATES_LOST_BODY_PARTS))
+						{
+							/* Max HP does not go down if the creature can regenerate the lost body part */
+							u.basemhmax -= damagedone;
+							u.mhmax -= damagedone;
+							if (u.mhmax < 1)
+								u.mhmax = 1, lethaldamage = TRUE;
+						}
 					}
 					else
 					{
@@ -1726,12 +1740,15 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 						if (damagedone < 1)
 							damagedone = 1;
 
-						u.uhpmax -= damagedone;
-						if (u.uhpmax < 1)
-							u.uhpmax = 1, lethaldamage = TRUE;
-						if (u.ubasehpmax < 1)
-							u.ubasehpmax = 1;
+						totaldamagedone += damagedone;
 
+						if (!(youmonst.data->mflags3 & M3_REGENERATES_LOST_BODY_PARTS))
+						{
+							/* Max HP does not go down if the creature can regenerate the lost body part */
+							u.uhpmax -= damagedone;
+							if (u.uhpmax < 1)
+								u.uhpmax = 1, lethaldamage = TRUE;
+						}
 					}
 					pline("%s slices a part of %s off!", The(xname(otmp)), "you");
 					otmp->dknown = TRUE;
@@ -1824,7 +1841,8 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 				(!(objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
 					&& 1)
 				)
-			&& !check_magic_cancellation_success(mdef, -otmp->spe)
+			&& !check_magic_cancellation_success(mdef, 
+				objects[otmp->otyp].oc_mc_adjustment + (objects[otmp->otyp].oc_flags & O1_SPE_AFFECTS_MC_ADJUSTMENT  ? -otmp->spe : 0))
 			)
 		{
 			/* some non-living creatures (golems, vortices) are

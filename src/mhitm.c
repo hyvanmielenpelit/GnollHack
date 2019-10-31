@@ -857,6 +857,7 @@ register struct attack *mattk;
 	boolean isdisintegrated = FALSE;
 	boolean hittxtalreadydisplayed = FALSE;
 	boolean objectshatters = FALSE;
+	int critstrikeroll = rn2(100);
 
 	int tmp = 0, extratmp = 0;
 
@@ -1006,7 +1007,7 @@ register struct attack *mattk;
                         return (MM_DEF_DIED
                                 | (grow_up(magr, mdef) ? 0 : MM_AGR_DIED));
                 }
-				int special_hit_dmg = pseudo_artifact_hit(magr, mdef, otmp, extratmp, dieroll);
+				int special_hit_dmg = pseudo_artifact_hit(magr, mdef, otmp, extratmp, dieroll, critstrikeroll);
 				if (special_hit_dmg < 0)
 				{
 					hittxtalreadydisplayed = TRUE;
@@ -1490,7 +1491,7 @@ register struct attack *mattk;
 				&& dieroll <= objects[otmp->otyp].oc_critical_strike_percentage)
 				||
 				(!(objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-					&& rn2(100) < objects[otmp->otyp].oc_critical_strike_percentage))
+					&& critstrikeroll < objects[otmp->otyp].oc_critical_strike_percentage))
 			)
 			||
 			(!(objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
@@ -1525,7 +1526,7 @@ register struct attack *mattk;
 				&& dieroll <= objects[otmp->otyp].oc_critical_strike_percentage)
 				||
 				(!(objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-					&& rn2(100) < objects[otmp->otyp].oc_critical_strike_percentage))
+					&& critstrikeroll < objects[otmp->otyp].oc_critical_strike_percentage))
 			)
 			||
 			(!(objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)

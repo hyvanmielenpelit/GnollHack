@@ -701,6 +701,7 @@ int dieroll;
 		|| (thrown == HMON_APPLIED && is_pole(uwep)));
 	boolean hide_damage_amount = FALSE;
 	boolean isdisintegrated = FALSE;
+	int critstrikeroll = rn2(100);
 
 	int jousting = 0;
 	long silverhit = 0L;
@@ -850,7 +851,7 @@ int dieroll;
 						return TRUE;
 					hittxt = TRUE;
 				}
-				int special_hit_dmg = pseudo_artifact_hit(&youmonst, mon, obj, extratmp, dieroll);
+				int special_hit_dmg = pseudo_artifact_hit(&youmonst, mon, obj, extratmp, dieroll, critstrikeroll);
 				if (special_hit_dmg < 0)
 				{
 					tmp += 2 * mon->mhp + 200;
@@ -1557,7 +1558,7 @@ int dieroll;
 				&& dieroll <= objects[obj->otyp].oc_critical_strike_percentage)
 				||
 				(!(objects[obj->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-					&& rn2(100) < objects[obj->otyp].oc_critical_strike_percentage))
+					&& critstrikeroll < objects[obj->otyp].oc_critical_strike_percentage))
 			)
 			||
 			(!(objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
@@ -1599,7 +1600,7 @@ int dieroll;
 				&& dieroll <= objects[obj->otyp].oc_critical_strike_percentage)
 				||
 				(!(objects[obj->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-					&& rn2(100) < objects[obj->otyp].oc_critical_strike_percentage))
+					&& critstrikeroll < objects[obj->otyp].oc_critical_strike_percentage))
 			)
 			||
 			(!(objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)

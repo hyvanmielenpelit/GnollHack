@@ -572,6 +572,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 
 			}
 		}
+
 		if (objects[otmp->otyp].oc_material == MAT_SILVER
             && mon_hates_silver(mtmp)) {
             if (vis)
@@ -579,6 +580,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
             else if (verbose && !target)
                 pline("Its flesh is seared!");
         }
+
         if (otmp->otyp == ACID_VENOM && cansee(mtmp->mx, mtmp->my)) {
             if (resists_acid(mtmp)) {
                 if (vis || (verbose && !target))
@@ -590,7 +592,9 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
                     pline("It is burned!");
             }
         }
-        if (otmp->otyp == EGG && touch_petrifies(&mons[otmp->corpsenm])) {
+
+        if (otmp->otyp == EGG && touch_petrifies(&mons[otmp->corpsenm])) 
+		{
 			if (check_magic_cancellation_success(mtmp, 0))
 			{
 				shieldeff(mtmp->mx, mtmp->my);
@@ -605,9 +609,11 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
                 damage = 0;
         }
 
-        if (!DEADMONSTER(mtmp)) { /* might already be dead (if petrified) */
+        if (!DEADMONSTER(mtmp))
+		{ /* might already be dead (if petrified) */
             mtmp->mhp -= damage;
-            if (DEADMONSTER(mtmp)) {
+            if (DEADMONSTER(mtmp))
+			{
 				if (poisondamage && mtmp->mhp > -poisondamage && vis)
 					pline_The("poison was deadly...");
 				if (vis || (verbose && !target))
@@ -629,7 +635,8 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
             && can_blnd((struct monst *) 0, mtmp,
                         (uchar) ((otmp->otyp == BLINDING_VENOM) ? AT_SPIT
                                                                 : AT_WEAP),
-                        otmp)) {
+                        otmp)) 
+		{
             if (vis && mtmp->mcansee)
                 pline("%s is blinded by %s.", Monnam(mtmp), the(xname(otmp)));
             mtmp->mcansee = 0;
@@ -640,7 +647,9 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
         }
 
         objgone = drop_throw(otmp, 1, bhitpos.x, bhitpos.y);
-        if (!objgone && range == -1) { /* special case */
+
+        if (!objgone && range == -1)
+		{ /* special case */
             obj_extract_self(otmp);    /* free it for motion again */
             return 0;
         }
@@ -724,7 +733,8 @@ struct obj *obj;         /* missile (or stack providing it) */
         }
     }
 
-    if (MT_FLIGHTCHECK(TRUE)) {
+    if (MT_FLIGHTCHECK(TRUE)) 
+	{
         (void) drop_throw(singleobj, 0, bhitpos.x, bhitpos.y);
         return;
     }
@@ -736,7 +746,9 @@ struct obj *obj;         /* missile (or stack providing it) */
      */
     if (sym)
         tmp_at(DISP_FLASH, obj_to_glyph(singleobj, rn2_on_display_rng));
-    while (range-- > 0) { /* Actually the loop is always exited by break */
+    
+	while (range-- > 0)
+	{ /* Actually the loop is always exited by break */
         bhitpos.x += dx;
         bhitpos.y += dy;
         if ((mtmp = m_at(bhitpos.x, bhitpos.y)) != 0) {
@@ -885,7 +897,9 @@ struct obj *obj;         /* missile (or stack providing it) */
                     dam = 1;
                 hitu = thitu(hitv, dam, &singleobj, (char *) 0);
             }
-            if (hitu && singleobj->opoisoned && is_poisonable(singleobj)) {
+
+            if (hitu && singleobj->opoisoned && is_poisonable(singleobj))
+			{
                 char onmbuf[BUFSZ], knmbuf[BUFSZ];
 
                 Strcpy(onmbuf, xname(singleobj));
@@ -895,7 +909,9 @@ struct obj *obj;         /* missile (or stack providing it) */
                             poison is limited to attrib loss */
                          (u.umortality > oldumort) ? 0 : 10, TRUE);
             }
-			if (hitu && singleobj->special_enchantment) {
+
+			if (hitu && singleobj->special_enchantment)
+			{
 				char onmbuf[BUFSZ], knmbuf[BUFSZ];
 
 				Strcpy(onmbuf, xname(singleobj));
@@ -924,11 +940,14 @@ struct obj *obj;         /* missile (or stack providing it) */
 					break;
 				}
 			}
+
+
 			if (hitu && can_blnd((struct monst *) 0, &youmonst,
                                  (uchar) ((singleobj->otyp == BLINDING_VENOM)
                                              ? AT_SPIT
                                              : AT_WEAP),
-                                 singleobj)) {
+                                 singleobj))
+			{
                 blindinc = rnd(25);
                 if (singleobj->otyp == CREAM_PIE) {
                     if (!Blind)
@@ -962,8 +981,10 @@ struct obj *obj;         /* missile (or stack providing it) */
                 break;
             }
         }
+
         if (!range /* reached end of path */
-            || MT_FLIGHTCHECK(FALSE)) {
+            || MT_FLIGHTCHECK(FALSE)) 
+		{
             if (singleobj) { /* hits_bars might have destroyed it */
                 if (m_shot.n > 1
                     && (!mesg_given || bhitpos.x != u.ux || bhitpos.y != u.uy)
@@ -974,15 +995,19 @@ struct obj *obj;         /* missile (or stack providing it) */
             }
             break;
         }
+
         tmp_at(bhitpos.x, bhitpos.y);
         delay_output();
     }
+
     tmp_at(bhitpos.x, bhitpos.y);
     delay_output();
-    tmp_at(DISP_END, 0);
+    
+	tmp_at(DISP_END, 0);
     mesg_given = 0; /* reset */
 
-    if (blindinc) {
+    if (blindinc) 
+	{
         u.ucreamed += blindinc;
         make_blinded(Blinded + (long) blindinc, FALSE);
         if (!Blind)

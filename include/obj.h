@@ -387,7 +387,7 @@ struct obj {
      || ((o)->oartifact == ART_EYES_OF_THE_OVERWORLD                    \
          && !undiscovered_artifact(ART_EYES_OF_THE_OVERWORLD)))
 #define pair_of(o) ((o->oclass == MISCELLANEOUS_CLASS && \
-	(objects[o->otyp].oc_subtyp == MISC_LENSES || objects[o->otyp].oc_subtyp == MISC_EARRINGS || objects[o->otyp].oc_subtyp == MISC_PANTS || objects[o->otyp].oc_subtyp == MISC_WINGS || objects[o->otyp].oc_subtyp == MISC_EXTRA_ARMS)) \
+	(objects[o->otyp].oc_subtyp == MISC_EYEGLASSES || objects[o->otyp].oc_subtyp == MISC_EARRINGS || objects[o->otyp].oc_subtyp == MISC_PANTS || objects[o->otyp].oc_subtyp == MISC_WINGS || objects[o->otyp].oc_subtyp == MISC_EXTRA_ARMS)) \
 	 || is_gloves(o) || is_boots(o) || is_bracers(o))
 
 /* 'PRIZE' values override obj->corpsenm so prizes mustn't be object types

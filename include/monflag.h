@@ -197,6 +197,8 @@
 #define M3_BLIND_TELEPATHIC 0x00200000		/* is blind telepathic */
 #define M3_UNBLIND_TELEPATHIC 0x00400000		/* is telepathic */
 #define M3_TELEPATHIC M3_UNBLIND_TELEPATHIC		/* is telepathic */
+#define M3_REGENERATES_LOST_BODY_PARTS 0x00800000		/* does not lose max hitpoint because of sharpness or bisection */
+#define M3_REVIVES_FROM_DEAD 0x01000000		/* is resurrects itself after a while */
 
 
 #define MZ_TINY 0          /* < 2' */

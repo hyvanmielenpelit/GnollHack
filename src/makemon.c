@@ -2055,19 +2055,19 @@ rndmonst()
 			if (i == 1)
 			{
 				/* Try first with a tighter range */
-				midmlev = (zlevel * 2 + u.ulevel) / 3;
-				maxmlev = (zlevel * 2 + u.ulevel) * (u.uhave.amulet ? 3 : 1) / 2;
+				midmlev = (zlevel * 2 + u.ulevel) / (3 * (In_endgame(&u.uz) ? 3 : u.uhave.amulet ? 2 : 1));
+				maxmlev = (zlevel * 2 + u.ulevel)  / 2;
 				minmlev = max(0, midmlev - (maxmlev - midmlev)); //equates to midmlev/2 = (2z+c)/6
 			}
 			else if (i == 2)
 			{
-				minmlev = (zlevel * 2 + u.ulevel) / 12;
-				maxmlev = (zlevel * 2 + u.ulevel) * (u.uhave.amulet ? 3 : 1) / 2;
+				minmlev = (zlevel * 2 + u.ulevel) / (12 * (In_endgame(&u.uz) ? 3 : u.uhave.amulet ? 2 : 1));
+				maxmlev = (zlevel * 2 + u.ulevel) / 2;
 			}
 			else
 			{
 				minmlev = 0;
-				maxmlev = (zlevel * 2 + u.ulevel) * (u.uhave.amulet ? 3 : 1);
+				maxmlev = (zlevel * 2 + u.ulevel);
 			}
 
 			upper = Is_rogue_level(&u.uz);

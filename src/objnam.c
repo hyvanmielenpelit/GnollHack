@@ -469,7 +469,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 
 		if (obj->oclass == MISCELLANEOUS_CLASS && (
 			objects[obj->otyp].oc_subtyp == MISC_EARRINGS
-			|| objects[obj->otyp].oc_subtyp == MISC_LENSES
+			|| objects[obj->otyp].oc_subtyp == MISC_EYEGLASSES
 			|| objects[obj->otyp].oc_subtyp == MISC_PANTS
 			|| objects[obj->otyp].oc_subtyp == MISC_BRACERS
 			|| objects[obj->otyp].oc_subtyp == MISC_WINGS

@@ -194,9 +194,8 @@ static struct trobj Valkyrie[] = {
 	{ SACK, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
 	{ 0, 0, 0, 0, 0, 0 }
 };
-static struct trobj Wizard[] = {
-#define W_MULTSTART 2
-#define W_MULTEND 6
+static struct trobj Wizard[] = 
+{
     { QUARTERSTAFF, 1, WEAPON_CLASS, 1, 1, 0 },
 	{ CLOAK_OF_MAGIC_RESISTANCE, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
 	{ ROBE, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
@@ -205,6 +204,22 @@ static struct trobj Wizard[] = {
     { UNDEF_TYP, UNDEF_SPE, RING_CLASS, 2, UNDEF_BLESS, 0 },
     { UNDEF_TYP, UNDEF_SPE, POTION_CLASS, 3, UNDEF_BLESS, 0 },
     { UNDEF_TYP, UNDEF_SPE, SCROLL_CLASS, 3, UNDEF_BLESS, 0 },
+	{ SPE_MAGIC_ARROW, 0, SPBOOK_CLASS, 1, 1, 0 },
+	{ UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, UNDEF_BLESS, 0 },
+	{ UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, UNDEF_BLESS, 0 },
+	{ UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, UNDEF_BLESS, 0 },
+	{ 0, 0, 0, 0, 0, 0 }
+};
+static struct trobj WizardAlternate[] = 
+{
+	{ STAFF_OF_FROST, 1, WEAPON_CLASS, 1, 1, 0 },
+	{ LEATHER_CLOAK, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
+	{ ROBE, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
+	{ BAG_OF_WIZARDRY, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
+	{ UNDEF_TYP, UNDEF_SPE, WAND_CLASS, 1, UNDEF_BLESS, 0 },
+	{ UNDEF_TYP, UNDEF_SPE, RING_CLASS, 2, UNDEF_BLESS, 0 },
+	{ UNDEF_TYP, UNDEF_SPE, POTION_CLASS, 3, UNDEF_BLESS, 0 },
+	{ UNDEF_TYP, UNDEF_SPE, SCROLL_CLASS, 3, UNDEF_BLESS, 0 },
 	{ SPE_MAGIC_ARROW, 0, SPBOOK_CLASS, 1, 1, 0 },
 	{ UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, UNDEF_BLESS, 0 },
 	{ UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, UNDEF_BLESS, 0 },
@@ -909,8 +924,10 @@ u_init()
 	max_rank_sz(); /* set max str size for class ranks */
 
 	//With level and attributes known, calculate hp and maxhp, en, and maxen
-	u.uhp = u.uhpmax = u.ubasehpmax + hpmaxadjustment(TRUE);
-	u.uen = u.uenmax = u.ubaseenmax + enmaxadjustment();
+	updatemaxhp();
+	updatemaxen();
+	u.uhp = u.uhpmax;
+	u.uen = u.uenmax;
 
 	init_uhunger();
     for (i = 0; i <= MAXSPELL; i++)
@@ -1105,7 +1122,7 @@ u_init()
         skill_init(Skill_V_Init, Skill_V_Max);
         break;
     case PM_WIZARD:
-        ini_inv(Wizard);
+        ini_inv(!rn2(2) ? Wizard : WizardAlternate);
         if (!rn2(5))
             ini_inv(Magicmarker);
         if (!rn2(5))
