@@ -949,7 +949,7 @@ register struct monst *mtmp;
 				(void)mongets(mtmp, WAN_DIGGING);
 
 			if (!rn2(4))
-				(void)mongets(mtmp, rn2(4) ? NOSE_RING_OF_BULL_STRENGTH : NOSE_RING_OF_CEREBRAL_SAFEGUARDING);
+				(void)mongets(mtmp, !rn2(2) ? NOSE_RING_OF_BULL_STRENGTH : NOSE_RING_OF_BULLHEADEDNESS);
 		}
 		else if (ptr == &mons[PM_TITAN]) {
 			//Reagents
