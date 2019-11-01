@@ -27,28 +27,28 @@ struct icp {
 
 static const struct icp mkobjprobs[] = { { 12, WEAPON_CLASS },
                                          { 12, ARMOR_CLASS },
-                                         { 12, FOOD_CLASS },
+                                         { 11, FOOD_CLASS },
                                          { 5, TOOL_CLASS },
                                          { 5, GEM_CLASS },
                                          { 12, POTION_CLASS },
                                          { 12, SCROLL_CLASS },
-                                         { 12, SPBOOK_CLASS },
+                                         { 11, SPBOOK_CLASS },
                                          { 2, WAND_CLASS },
-                                         { 4, RING_CLASS },
-										 { 7, REAGENT_CLASS },
-										 { 3, MISCELLANEOUS_CLASS },
+                                         { 5, RING_CLASS },
+										 { 6, REAGENT_CLASS },
+										 { 5, MISCELLANEOUS_CLASS },
 										 { 2, AMULET_CLASS } };
 
 static const struct icp boxiprobs[] = { { 12, GEM_CLASS },
                                         { 12, FOOD_CLASS },
                                         { 10, POTION_CLASS },
                                         { 12, SCROLL_CLASS },
-                                        { 16, SPBOOK_CLASS },
+                                        { 14, SPBOOK_CLASS },
                                         { 10, COIN_CLASS },
                                         { 12, WAND_CLASS },
                                         { 6, RING_CLASS },
 										{ 4, REAGENT_CLASS },
-   									    { 4, MISCELLANEOUS_CLASS },
+   									    { 6, MISCELLANEOUS_CLASS },
 										{ 2, AMULET_CLASS } };
 
 static const struct icp rogueprobs[] = { { 12, WEAPON_CLASS },
@@ -61,16 +61,16 @@ static const struct icp rogueprobs[] = { { 12, WEAPON_CLASS },
 
 static const struct icp hellprobs[] = { { 15, WEAPON_CLASS },
                                         { 15, ARMOR_CLASS },
-                                        { 15, FOOD_CLASS },
+                                        { 12, FOOD_CLASS },
                                         { 12, TOOL_CLASS },
-                                        { 9, GEM_CLASS },
+                                        { 8, GEM_CLASS },
                                         { 1, POTION_CLASS },
                                         { 1, SCROLL_CLASS },
 										{ 8, REAGENT_CLASS },
 										{ 8, WAND_CLASS },
                                         { 8, RING_CLASS },
-										{ 5, MISCELLANEOUS_CLASS },
-										{ 3, AMULET_CLASS } };
+										{ 8, MISCELLANEOUS_CLASS },
+										{ 4, AMULET_CLASS } };
 
 struct oextra *
 newoextra()

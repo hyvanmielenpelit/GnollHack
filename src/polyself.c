@@ -810,6 +810,7 @@ int mntmp;
             dismount_steed(DISMOUNT_POLY);
     }
 
+	/*
     if (flags.verbose) {
         static const char use_thec[] = "Use the command #%s to %s.";
         static const char monsterc[] = "monster";
@@ -834,7 +835,7 @@ int mntmp;
             pline(use_thec, monsterc, "use your horn");
         if (is_mind_flayer(youmonst.data))
             pline(use_thec, monsterc, "emit a mental blast");
-        if (youmonst.data->msound == MS_SHRIEK) /* worthless, actually */
+        if (youmonst.data->msound == MS_SHRIEK)
             pline(use_thec, monsterc, "shriek");
         if (is_vampire(youmonst.data))
             pline(use_thec, monsterc, "change shape");
@@ -846,7 +847,7 @@ int mntmp;
                   eggs_in_water(youmonst.data) ?
                       "spawn in the water" : "lay an egg");
     }
-
+	*/
     /* you now know what an egg of your type looks like */
     if (lays_eggs(youmonst.data)) {
         learn_egg_type(u.umonnum);
@@ -1704,6 +1705,86 @@ dopoly()
     }
     return 1;
 }
+
+int
+dodryfountain()
+{
+	if (IS_FOUNTAIN(levl[u.ux][u.uy].typ)) {
+		if (split_mon(&youmonst, (struct monst*) 0))
+			dryup(u.ux, u.uy, TRUE);
+		return 1;
+	}
+	else
+		There("is no fountain here.");
+
+	return 0;
+}
+
+int
+douseunicornhorn()
+{
+	use_unicorn_horn((struct obj*) 0);
+	return 1;
+}
+
+int
+doshriek()
+{
+	You("shriek.");
+	if (u.uburied)
+		pline("Unfortunately sound does not carry well through rock.");
+	else
+		aggravate();
+	return 1;
+}
+
+int
+dolayegg()
+{
+	struct obj* uegg;
+
+	if (!flags.female)
+	{
+		pline("%s can't lay eggs!",
+			Hallucination
+			? "You may think you are a platypus, but a male still"
+			: "Males");
+		return 0;
+	}
+	else if (u.uhunger < (int)objects[EGG].oc_nutrition)
+	{
+		You("don't have enough energy to lay an egg.");
+		return 0;
+	}
+	else if (eggs_in_water(youmonst.data))
+	{
+		if (!(Underwater || Is_waterlevel(&u.uz)))
+		{
+			pline("A splash tetra you are not.");
+			return 0;
+		}
+		if (Upolyd &&
+			(youmonst.data == &mons[PM_GIANT_EEL]
+				|| youmonst.data == &mons[PM_ELECTRIC_EEL]))
+		{
+			You("yearn for the Sargasso Sea.");
+			return 0;
+		}
+	}
+	uegg = mksobj(EGG, FALSE, FALSE, FALSE);
+	uegg->spe = 1;
+	uegg->quan = 1L;
+	uegg->owt = weight(uegg);
+	/* this sets hatch timers if appropriate */
+	set_corpsenm(uegg, egg_type_from_parent(u.umonnum, FALSE));
+	uegg->known = uegg->dknown = 1;
+	You("%s an egg.", eggs_in_water(youmonst.data) ? "spawn" : "lay");
+	dropy(uegg);
+	stackobj(uegg);
+	morehungry((int)objects[EGG].oc_nutrition);
+	return 1;
+}
+
 
 int
 domindblast()

@@ -87,6 +87,14 @@ docharacterstatistics()
 	else
 		Sprintf(buf, "Race:              %s", buf2);
 
+	/* Gender */
+	if (Upolyd && u.mfemale != flags.female)
+	{
+		Sprintf(buf, "Original gender:   %s", u.mfemale ? "Female" : "Male");
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
 	txt = buf;
 	putstr(datawin, 0, txt);
 
@@ -100,17 +108,9 @@ docharacterstatistics()
 	}
 
 
-	/* Gender */
-	if (Upolyd && u.mfemale != flags.female)
-	{
-		Sprintf(buf, "Original gender:   %s", u.mfemale ? "female" : "male");
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-
 	strcpy(buf2, flags.female ? "Female" : "Male");
 	if (Upolyd && u.mfemale != flags.female)
-		Sprintf(buf, "Current gender:    %s", buf2);
+		Sprintf(buf, "Polymorph gender:  %s", buf2);
 	else
 		Sprintf(buf, "Gender:            %s", buf2);
 	txt = buf;

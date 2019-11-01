@@ -201,6 +201,7 @@ E void FDECL(random_response, (char *, int));
 E int NDECL(rnd_extcmd_idx);
 E int NDECL(doconduct);
 E int NDECL(domonability);
+E int NDECL(doability);
 E char FDECL(cmd_from_func, (int NDECL((*))));
 E boolean FDECL(redraw_cmd, (CHAR_P));
 #ifdef USE_TRAMPOLI
@@ -1990,6 +1991,10 @@ E int NDECL(dogaze);
 E int NDECL(dohide);
 E int NDECL(dopoly);
 E int NDECL(domindblast);
+E int NDECL(dodryfountain);
+E int NDECL(douseunicornhorn);
+E int NDECL(doshriek);
+E int NDECL(dolayegg);
 E void NDECL(uunstick);
 E void FDECL(skinback, (BOOLEAN_P));
 E const char *FDECL(mbodypart, (struct monst *, int));

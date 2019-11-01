@@ -683,6 +683,342 @@ extcmd_via_menu()
 }
 #endif /* TTY_GRAPHICS */
 
+int
+doability(VOID_ARGS)
+{
+	int i = '\0';
+
+	menu_item* pick_list = (menu_item*)0;
+	winid win;
+	anything any;
+
+	any = zeroany;
+	win = create_nhwindow(NHW_MENU);
+	start_menu(win);
+		
+
+#define MAXABILITYNUM 100
+
+	struct available_ability 
+	{
+		int charnum;
+		char name[BUFSZ];
+		int (*function_ptr)();
+	};
+	struct available_ability available_ability_list[MAXABILITYNUM];
+	int abilitynum = 0;
+
+	any = zeroany;
+	add_menu(win, NO_GLYPH, &any,
+		0, 0, iflags.menu_headings,
+		"Skill-Based Abilities            ", MENU_UNSELECTED);
+
+	/* Craft */
+	/*
+	strcpy(available_ability_list[abilitynum].name, "Craft");
+	available_ability_list[abilitynum].function_ptr = &docraft;
+	available_ability_list[abilitynum].charnum = 'a' + abilitynum;
+
+	any = zeroany;
+	any.a_char = available_ability_list[abilitynum].charnum;
+
+	add_menu(win, NO_GLYPH, &any,
+		any.a_char, 0, ATR_NONE,
+		available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+	abilitynum++;
+	*/
+
+	/* Ride */
+	strcpy(available_ability_list[abilitynum].name, "Ride");
+	available_ability_list[abilitynum].function_ptr = &doride;
+	available_ability_list[abilitynum].charnum = 'a' + abilitynum;
+
+	any = zeroany;
+	any.a_char = available_ability_list[abilitynum].charnum;
+
+	add_menu(win, NO_GLYPH, &any,
+		any.a_char, 0, ATR_NONE,
+		available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+	abilitynum++;
+
+	/* Untrap */
+	strcpy(available_ability_list[abilitynum].name, "Untrap");
+	available_ability_list[abilitynum].function_ptr = &dountrap;
+	available_ability_list[abilitynum].charnum = 'a' + abilitynum;
+
+	any = zeroany;
+	any.a_char = available_ability_list[abilitynum].charnum;
+
+	add_menu(win, NO_GLYPH, &any,
+		any.a_char, 0, ATR_NONE,
+		available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+	abilitynum++;
+
+
+	/* Monster abilities */
+	if (can_breathe(youmonst.data)
+		|| attacktype(youmonst.data, AT_SPIT) 
+		|| youmonst.data->mlet == S_NYMPH 
+		|| attacktype(youmonst.data, AT_GAZE) 
+		|| is_were(youmonst.data)
+		|| webmaker(youmonst.data)
+		|| is_hider(youmonst.data)
+		|| is_mind_flayer(youmonst.data)
+		|| u.umonnum == PM_GREMLIN
+		|| is_unicorn(youmonst.data)
+		|| youmonst.data->msound == MS_SHRIEK
+		|| youmonst.data->mlet == S_VAMPIRE
+		|| lays_eggs(youmonst.data)
+		)
+	{
+		any = zeroany;
+		add_menu(win, NO_GLYPH, &any,
+			0, 0, iflags.menu_headings,
+			"Monster Abilities                ", MENU_UNSELECTED);
+		    
+		if (can_breathe(youmonst.data))
+		{
+			strcpy(available_ability_list[abilitynum].name, "Use breath weapon");
+			available_ability_list[abilitynum].function_ptr = &dobreathe;
+			available_ability_list[abilitynum].charnum = 'a' + abilitynum;
+
+			any = zeroany;
+			any.a_char = available_ability_list[abilitynum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+			abilitynum++;
+		}
+
+		if (attacktype(youmonst.data, AT_SPIT))
+		{
+			strcpy(available_ability_list[abilitynum].name, "Spit");
+			available_ability_list[abilitynum].function_ptr = &dospit;
+			available_ability_list[abilitynum].charnum = 'a' + abilitynum;
+
+			any = zeroany;
+			any.a_char = available_ability_list[abilitynum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+			abilitynum++;
+		}
+
+		if (youmonst.data->mlet == S_NYMPH)
+		{
+			strcpy(available_ability_list[abilitynum].name, "Remove chained items");
+			available_ability_list[abilitynum].function_ptr = &doremove;
+			available_ability_list[abilitynum].charnum = 'a' + abilitynum;
+
+			any = zeroany;
+			any.a_char = available_ability_list[abilitynum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+			abilitynum++;
+		}
+
+		if (attacktype(youmonst.data, AT_GAZE))
+		{
+			strcpy(available_ability_list[abilitynum].name, "Gaze");
+			available_ability_list[abilitynum].function_ptr = &dogaze;
+			available_ability_list[abilitynum].charnum = 'a' + abilitynum;
+
+			any = zeroany;
+			any.a_char = available_ability_list[abilitynum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+			abilitynum++;
+		}
+
+		if (is_were(youmonst.data))
+		{
+			strcpy(available_ability_list[abilitynum].name, "Summon monsters");
+			available_ability_list[abilitynum].function_ptr = &dosummon;
+			available_ability_list[abilitynum].charnum = 'a' + abilitynum;
+
+			any = zeroany;
+			any.a_char = available_ability_list[abilitynum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+			abilitynum++;
+		}
+
+		if (webmaker(youmonst.data))
+		{
+			strcpy(available_ability_list[abilitynum].name, "Spin web");
+			available_ability_list[abilitynum].function_ptr = &dospinweb;
+			available_ability_list[abilitynum].charnum = 'a' + abilitynum;
+
+			any = zeroany;
+			any.a_char = available_ability_list[abilitynum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+			abilitynum++;
+		}
+
+		if (is_hider(youmonst.data))
+		{
+			strcpy(available_ability_list[abilitynum].name, "Hide");
+			available_ability_list[abilitynum].function_ptr = &dohide;
+			available_ability_list[abilitynum].charnum = 'a' + abilitynum;
+
+			any = zeroany;
+			any.a_char = available_ability_list[abilitynum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+			abilitynum++;
+		}
+
+		if (is_mind_flayer(youmonst.data))
+		{
+			strcpy(available_ability_list[abilitynum].name, "Project a mind blast");
+			available_ability_list[abilitynum].function_ptr = &domindblast;
+			available_ability_list[abilitynum].charnum = 'a' + abilitynum;
+
+			any = zeroany;
+			any.a_char = available_ability_list[abilitynum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+			abilitynum++;
+		}
+
+		if (u.umonnum == PM_GREMLIN)
+		{
+			strcpy(available_ability_list[abilitynum].name, "Dry a fountain");
+			available_ability_list[abilitynum].function_ptr = &dodryfountain;
+			available_ability_list[abilitynum].charnum = 'a' + abilitynum;
+
+			any = zeroany;
+			any.a_char = available_ability_list[abilitynum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+			abilitynum++;
+		}
+
+		if (is_unicorn(youmonst.data))
+		{
+			strcpy(available_ability_list[abilitynum].name, "Use your horn");
+			available_ability_list[abilitynum].function_ptr = &douseunicornhorn;
+			available_ability_list[abilitynum].charnum = 'a' + abilitynum;
+
+			any = zeroany;
+			any.a_char = available_ability_list[abilitynum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+			abilitynum++;
+		}
+
+		if (youmonst.data->msound == MS_SHRIEK)
+		{
+			strcpy(available_ability_list[abilitynum].name, "Shriek");
+			available_ability_list[abilitynum].function_ptr = &doshriek;
+			available_ability_list[abilitynum].charnum = 'a' + abilitynum;
+
+			any = zeroany;
+			any.a_char = available_ability_list[abilitynum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+			abilitynum++;
+		}
+
+		if (youmonst.data->mlet == S_VAMPIRE)
+		{
+			strcpy(available_ability_list[abilitynum].name, "Assume another form");
+			available_ability_list[abilitynum].function_ptr = &dopoly;
+			available_ability_list[abilitynum].charnum = 'a' + abilitynum;
+
+			any = zeroany;
+			any.a_char = available_ability_list[abilitynum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+			abilitynum++;
+		}
+
+		if (lays_eggs(youmonst.data) && flags.female)
+		{
+			Sprintf(available_ability_list[abilitynum].name, "%s an egg", eggs_in_water(youmonst.data) ? "Spawn" : "Lay");
+			available_ability_list[abilitynum].function_ptr = &dolayegg;
+			available_ability_list[abilitynum].charnum = 'a' + abilitynum;
+
+			any = zeroany;
+			any.a_char = available_ability_list[abilitynum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+			abilitynum++;
+		}
+	}
+
+	if (abilitynum <= 0)
+	{
+		You("don't have any special abilities.");
+		return 0;
+	}
+
+	end_menu(win, "Which ability do you want to use?");
+
+	if (select_menu(win, PICK_ONE, &pick_list) > 0) {
+		i = pick_list->item.a_char;
+		free((genericptr_t)pick_list);
+	}
+	destroy_nhwindow(win);
+
+	if (i == '\0')
+		return 0;
+
+	int res = 0;
+	for (int j = 0; j < abilitynum; j++)
+	{
+		if (available_ability_list[j].charnum == i)
+		{
+			if(i != '\0')
+				res = (available_ability_list[j].function_ptr)();
+			break;
+		}
+	}
+
+	return res;
+}
+
 /* #monster command - use special monster ability while polymorphed */
 int
 domonability(VOID_ARGS)
@@ -3471,7 +3807,7 @@ struct ext_func_tab extcmdlist[] = {
 	{ C('b'), "break", "break something", dobreak, IFBURIED | AUTOCOMPLETE },
 	{ C('c'), "call", "call (name) something", docallcmd, IFBURIED | AUTOCOMPLETE },
     { 'Z', "cast", "zap (cast) a spell", docast, IFBURIED },
-	{ 'C', "craft", "craft an item", docraft },
+	{ '\0'/*'C'*/, "craft", "craft an item", docraft },
 	{ M('x'), "examine", "item description", doitemdescriptions, IFBURIED | AUTOCOMPLETE },
 	{ M('y'), "you", "character description", docharacterstatistics, IFBURIED | AUTOCOMPLETE },
 	{ M('z'), "spelldetails", "spell description", dospelldescriptions, IFBURIED | AUTOCOMPLETE },
@@ -3520,7 +3856,7 @@ struct ext_func_tab extcmdlist[] = {
             wiz_migrate_mons, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
 #endif
     { 'A'/*M('m')*/, "ability", "use ability or skill",
-            domonability, IFBURIED | AUTOCOMPLETE },
+            doability, IFBURIED | AUTOCOMPLETE },
 	{ 'N', "name", "name a monster or an object",
             docallcmd, IFBURIED | AUTOCOMPLETE },
     { M('o'), "offer", "offer a sacrifice to the gods",
