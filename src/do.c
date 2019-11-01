@@ -135,7 +135,7 @@ docharacterstatistics()
 	/* Experience */
 	Sprintf(buf, "Experience:        %d", u.uexp);
 
-	if (u.ulevel < 30)
+	if (u.ulevel < MAXULEV)
 	{
 		int ulvl = (int)u.ulevel;
 		long exp_for_nxt_lvl = newuexp(ulvl);
