@@ -186,6 +186,15 @@ register int nk;
 
     tmp = 1 + ptr->difficulty * ptr->difficulty; //mtmp->m_lev * mtmp->m_lev;
 
+	if (ptr->difficulty >= 100)
+		tmp = (tmp / 100) * 100;
+	else if (ptr->difficulty >= 50)
+		tmp = (tmp / 50) * 50;
+	else if (ptr->difficulty >= 10)
+		tmp = (tmp / 10) * 10;
+	else if (ptr->difficulty >= 5)
+		tmp = (tmp / 5) * 5;
+
 #if 0
     /*  For higher ac values, give extra experience */
     if ((i = find_mac(mtmp)) < 3)
