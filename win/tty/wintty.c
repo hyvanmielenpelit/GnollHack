@@ -2026,7 +2026,9 @@ struct WinDesc *cw;
 
         switch (morc) {
         case '0':
-            /* special case: '0' is also the default ball class */
+		case '8':
+		case '9':
+			/* special case: '0' is also the default ball class */
             if (!counting && index(gacc, morc))
                 goto group_accel;
             /* fall through to count the zero */
@@ -2038,8 +2040,6 @@ struct WinDesc *cw;
         case '5':
         case '6':
         case '7':
-        case '8':
-        case '9':
             count = (count * 10L) + (long) (morc - '0');
             /*
              * It is debatable whether we should allow 0 to

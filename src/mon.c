@@ -508,7 +508,7 @@ boolean createcorpse;
 		sporequan++;
 		if(!rn2(2))
 		{
-			obj = mksobj_at(FUNGAL_SPORE, x, y, TRUE, FALSE);
+			obj = mksobj_at(HEAP_OF_FUNGAL_SPORES, x, y, TRUE, FALSE);
 			obj->quan = sporequan > 1 ? rnd(sporequan) : 1;
 			obj->owt = weight(obj);
 		}
@@ -917,7 +917,7 @@ int reagentstyle; //0 = all, 1 = priest only, 2 = all but no priest
 			if (reagentstyle == 1)
 				otyp = SPRIG_OF_WOLFSBANE;
 			else
-				otyp = FUNGAL_SPORE;
+				otyp = HEAP_OF_FUNGAL_SPORES;
 			break;
 		case 11:
 			otyp = FEATHER;

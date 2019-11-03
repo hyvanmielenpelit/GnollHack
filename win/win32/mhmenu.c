@@ -1440,7 +1440,7 @@ onListChar(HWND hWnd, HWND hwndList, WORD ch)
     accelerator:
     default:
         if (strchr(data->menu.gacc, ch)
-            && !(ch == '0' && data->menu.counting)) {
+            && !((ch == '0' || ch == '9' || ch == '8') && data->menu.counting)) {
             /* matched a group accelerator */
             if (data->how == PICK_ANY || data->how == PICK_ONE) {
                 reset_menu_count(hwndList, data);
@@ -1476,7 +1476,7 @@ onListChar(HWND hWnd, HWND hwndList, WORD ch)
                     count = 0;
                 count *= 10L;
                 count += (int) (ch - '0');
-                if (count != 0) /* ignore leading zeros */ {
+                if (count != 0 && count != 9 && count != 8) /* ignore leading zeros */ {
                     data->menu.counting = TRUE;
                     data->menu.items[i].count = min(100000, count);
                     ListView_RedrawItems(hwndList, i,
