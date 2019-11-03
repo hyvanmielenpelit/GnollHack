@@ -1714,7 +1714,7 @@ int mmflags;
         mtmp->mtrapseen = ~0;
 
     place_monster(mtmp, x, y);
-    mtmp->mcansee = mtmp->mcanmove = TRUE;
+    mtmp->mcansee = mtmp->mcanmove = mtmp->mwantstomove = TRUE;
     mtmp->mpeaceful = (mmflags & MM_ANGRY) ? FALSE : peace_minded(ptr);
 
     switch (ptr->mlet) {

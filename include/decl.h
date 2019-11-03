@@ -179,6 +179,8 @@ E const char ynqchars[];
 E const char ynaqchars[];
 E const char ynNaqchars[];
 E const char ciqchars[];
+E const char bcqchars[];
+E const char fnqchars[];
 E NEARDATA long yn_number;
 
 E const char disclosure_options[];

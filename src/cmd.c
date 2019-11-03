@@ -988,15 +988,19 @@ doability(VOID_ARGS)
 		}
 	}
 
-	if (abilitynum <= 0)
-	{
-		You("don't have any special abilities.");
-		return 0;
-	}
 
 	end_menu(win, "Which ability do you want to use?");
 
-	if (select_menu(win, PICK_ONE, &pick_list) > 0) {
+
+	if (abilitynum <= 0)
+	{
+		You("don't have any special abilities.");
+		destroy_nhwindow(win);
+		return 0;
+	}
+
+	if (select_menu(win, PICK_ONE, &pick_list) > 0) 
+	{
 		i = pick_list->item.a_char;
 		free((genericptr_t)pick_list);
 	}

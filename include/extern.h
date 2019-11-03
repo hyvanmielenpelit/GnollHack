@@ -555,6 +555,7 @@ E int FDECL(dog_move, (struct monst *, int));
 E void FDECL(wantdoor, (int, int, genericptr_t));
 #endif
 E void FDECL(finish_meating, (struct monst *));
+E boolean FDECL(could_reach_item, (struct monst*, XCHAR_P, XCHAR_P));
 
 /* ### dokick.c ### */
 
@@ -2250,6 +2251,8 @@ E void FDECL(outoracle, (BOOLEAN_P, BOOLEAN_P));
 E void FDECL(save_oracles, (int, int));
 E void FDECL(restore_oracles, (int));
 E int FDECL(doconsult, (struct monst *));
+E int FDECL(do_oracle_identify, (struct monst*));
+E int FDECL(do_oracle_enlightenment, (struct monst*));
 E void NDECL(rumor_check);
 
 /* ### save.c ### */
@@ -2365,6 +2368,7 @@ E char *FDECL(Shknam, (struct monst *));
 E char *FDECL(shkname, (struct monst *));
 E boolean FDECL(shkname_is_pname, (struct monst *));
 E boolean FDECL(is_izchak, (struct monst *, BOOLEAN_P));
+E const char* FDECL(shoptypename, (int));
 
 /* ### sit.c ### */
 

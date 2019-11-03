@@ -1191,7 +1191,9 @@ mcalcdistress()
             mtmp->mcansee = 1;
         if (mtmp->mfrozen && !--mtmp->mfrozen)
             mtmp->mcanmove = 1;
-        if (mtmp->mflee_timer && !--mtmp->mflee_timer)
+		if (mtmp->mstaying && !--mtmp->mstaying)
+			mtmp->mwantstomove = 1;
+		if (mtmp->mflee_timer && !--mtmp->mflee_timer)
             mtmp->mflee = 0;
 		if (mtmp->mcancelled_timer && !--mtmp->mcancelled_timer)
 			mtmp->mcancelled = 0;
@@ -2403,7 +2405,9 @@ struct monst *mtmp;
         surviver = !(mvitals[monsndx(mtmp->data)].mvflags & G_GENOD);
         mtmp->mcanmove = 1;
         mtmp->mfrozen = 0;
-        if (mtmp->mtame && !mtmp->isminion) {
+		mtmp->mwantstomove = 1;
+		mtmp->mstaying = 0;
+		if (mtmp->mtame && !mtmp->isminion) {
             wary_dog(mtmp, !surviver);
         }
         if (mtmp->mhpmax <= 0)
@@ -2459,7 +2463,9 @@ register struct monst *mtmp;
                     spec_death ? "reconstitutes" : "transforms");
             mtmp->mcanmove = 1;
             mtmp->mfrozen = 0;
-            if (mtmp->mhpmax <= 0)
+			mtmp->mwantstomove = 1;
+			mtmp->mstaying = 0;
+			if (mtmp->mhpmax <= 0)
                 mtmp->mhpmax = 10;
             mtmp->mhp = mtmp->mhpmax;
             /* mtmp==u.ustuck can happen if previously a fog cloud
@@ -3078,7 +3084,9 @@ struct monst *mtmp;
                     surface(x,y));
             mtmp->mcanmove = 1;
             mtmp->mfrozen = 0;
-            if (mtmp->mhpmax <= 0)
+			mtmp->mwantstomove = 1;
+			mtmp->mstaying = 0;
+			if (mtmp->mhpmax <= 0)
                 mtmp->mhpmax = 10;
             mtmp->mhp = mtmp->mhpmax;
             /* this can happen if previously a fog cloud */

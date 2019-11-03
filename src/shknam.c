@@ -984,6 +984,15 @@ struct monst *mtmp;
     return nam;
 }
 
+
+const char*
+shoptypename(shoptype)
+int shoptype;
+{
+	const char* shopname = shtypes[shoptype - SHOPBASE].name;
+	return shopname;
+}
+
 boolean
 shkname_is_pname(mtmp)
 struct monst *mtmp;

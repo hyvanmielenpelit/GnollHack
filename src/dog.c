@@ -506,7 +506,13 @@ long nmv; /* number of moves */
         else
             mtmp->mfrozen -= imv;
     }
-    if (mtmp->mflee_timer) {
+	if (mtmp->mstaying) {
+		if (imv >= (int)mtmp->mstaying)
+			mtmp->mstaying = 1;
+		else
+			mtmp->mstaying -= imv;
+	}
+	if (mtmp->mflee_timer) {
         if (imv >= (int) mtmp->mflee_timer)
             mtmp->mflee_timer = 1;
         else
@@ -594,8 +600,10 @@ boolean pets_only; /* true for ascension or final escape */
             mtmp->meating = 0;
             mtmp->msleeping = 0;
             mtmp->mfrozen = 0;
-            mtmp->mcanmove = 1;
-        }
+			mtmp->mstaying = 0;
+			mtmp->mcanmove = 1;
+			mtmp->mwantstomove = 1;
+		}
         if (((monnear(mtmp, u.ux, u.uy) && levl_follower(mtmp))
              /* the wiz will level t-port from anywhere to chase
                 the amulet; if you don't have it, will chase you

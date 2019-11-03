@@ -363,6 +363,8 @@ typedef struct sortloot_item Loot;
 #define nyNaq(query) yn_function(query, ynNaqchars, 'n')
 #define ynNaq(query) yn_function(query, ynNaqchars, 'y')
 #define ciq(query) yn_function(query, ciqchars, 'q')
+#define bcq(query) yn_function(query, bcqchars, 'q')
+#define fnq(query) yn_function(query, fnqchars, 'q')
 
 /* Macros for scatter */
 #define VIS_EFFECTS 0x01 /* display visual effects */

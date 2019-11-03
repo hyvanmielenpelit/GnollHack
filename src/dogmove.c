@@ -18,7 +18,6 @@ STATIC_DCL struct monst *FDECL(best_target, (struct monst *));
 STATIC_DCL long FDECL(score_targ, (struct monst *, struct monst *));
 STATIC_DCL boolean FDECL(can_reach_location, (struct monst *, XCHAR_P,
                                               XCHAR_P, XCHAR_P, XCHAR_P));
-STATIC_DCL boolean FDECL(could_reach_item, (struct monst *, XCHAR_P, XCHAR_P));
 STATIC_DCL void FDECL(quickmimic, (struct monst *));
 
 /* pick a carried item for pet to drop */
@@ -406,7 +405,7 @@ int udist;
     register int omx, omy, carryamt = 0;
     struct obj *obj, *otmp;
 
-    if (mtmp->msleeping || !mtmp->mcanmove)
+    if (mtmp->msleeping || !mtmp->mcanmove || !mtmp->mwantstomove)
         return 0;
 
     omx = mtmp->mx;
@@ -1224,91 +1223,95 @@ int after; /* this is extra fast monster movement */
         }
     }
 
- newdogpos:
-    if (nix != omx || niy != omy) {
-        boolean wasseen;
+newdogpos:
+	if(mtmp->mwantstomove)
+	{
+		if (nix != omx || niy != omy) 
+		{
+			boolean wasseen;
 
-        if (info[chi] & ALLOW_U) {
-            if (mtmp->mleashed) { /* play it safe */
-                pline("%s breaks loose of %s leash!", Monnam(mtmp),
-                      mhis(mtmp));
-                m_unleash(mtmp, FALSE);
-            }
-            (void) mattacku(mtmp);
-            return 0;
-        }
-        if (!m_in_out_region(mtmp, nix, niy))
-            return 1;
-        if (m_digweapon_check(mtmp, nix,niy))
-            return 0;
+			if (info[chi] & ALLOW_U) {
+				if (mtmp->mleashed) { /* play it safe */
+					pline("%s breaks loose of %s leash!", Monnam(mtmp),
+						  mhis(mtmp));
+					m_unleash(mtmp, FALSE);
+				}
+				(void) mattacku(mtmp);
+				return 0;
+			}
+			if (!m_in_out_region(mtmp, nix, niy))
+				return 1;
+			if (m_digweapon_check(mtmp, nix,niy))
+				return 0;
 
-        /* insert a worm_move() if worms ever begin to eat things */
-        wasseen = canseemon(mtmp);
-        remove_monster(omx, omy);
-        place_monster(mtmp, nix, niy);
-        if (cursemsg[chi] && (wasseen || canseemon(mtmp))) {
-            /* describe top item of pile, not necessarily cursed item itself;
-               don't use glyph_at() here--it would return the pet but we want
-               to know whether an object is remembered at this map location */
-            struct obj *o = (!Hallucination && level.flags.hero_memory
-                             && glyph_is_object(levl[nix][niy].glyph))
-                               ? vobj_at(nix, niy) : 0;
-            const char *what = o ? distant_name(o, doname) : something;
+			/* insert a worm_move() if worms ever begin to eat things */
+			wasseen = canseemon(mtmp);
+			remove_monster(omx, omy);
+			place_monster(mtmp, nix, niy);
+			if (cursemsg[chi] && (wasseen || canseemon(mtmp))) {
+				/* describe top item of pile, not necessarily cursed item itself;
+				   don't use glyph_at() here--it would return the pet but we want
+				   to know whether an object is remembered at this map location */
+				struct obj *o = (!Hallucination && level.flags.hero_memory
+								 && glyph_is_object(levl[nix][niy].glyph))
+								   ? vobj_at(nix, niy) : 0;
+				const char *what = o ? distant_name(o, doname) : something;
 
-            pline("%s %s reluctantly over %s.", noit_Monnam(mtmp),
-                  vtense((char *) 0, locomotion(mtmp->data, "step")), what);
-        }
-        for (j = MTSZ - 1; j > 0; j--)
-            mtmp->mtrack[j] = mtmp->mtrack[j - 1];
-        mtmp->mtrack[0].x = omx;
-        mtmp->mtrack[0].y = omy;
-        /* We have to know if the pet's going to do a combined eat and
-         * move before moving it, but it can't eat until after being
-         * moved.  Thus the do_eat flag.
-         */
-        if (do_eat) {
-            if (dog_eat(mtmp, obj, omx, omy, FALSE) == 2)
-                return 2;
-        }
-    } else if (mtmp->mleashed && distu(omx, omy) > 4) {
-        /* an incredible kludge, but the only way to keep pooch near
-         * after it spends time eating or in a trap, etc.
-         */
-        coord cc;
+				pline("%s %s reluctantly over %s.", noit_Monnam(mtmp),
+					  vtense((char *) 0, locomotion(mtmp->data, "step")), what);
+			}
+			for (j = MTSZ - 1; j > 0; j--)
+				mtmp->mtrack[j] = mtmp->mtrack[j - 1];
+			mtmp->mtrack[0].x = omx;
+			mtmp->mtrack[0].y = omy;
+			/* We have to know if the pet's going to do a combined eat and
+			 * move before moving it, but it can't eat until after being
+			 * moved.  Thus the do_eat flag.
+			 */
+			if (do_eat) {
+				if (dog_eat(mtmp, obj, omx, omy, FALSE) == 2)
+					return 2;
+			}
+		} else if (mtmp->mleashed && distu(omx, omy) > 4) {
+			/* an incredible kludge, but the only way to keep pooch near
+			 * after it spends time eating or in a trap, etc.
+			 */
+			coord cc;
 
-        nx = sgn(omx - u.ux);
-        ny = sgn(omy - u.uy);
-        cc.x = u.ux + nx;
-        cc.y = u.uy + ny;
-        if (goodpos(cc.x, cc.y, mtmp, 0))
-            goto dognext;
+			nx = sgn(omx - u.ux);
+			ny = sgn(omy - u.uy);
+			cc.x = u.ux + nx;
+			cc.y = u.uy + ny;
+			if (goodpos(cc.x, cc.y, mtmp, 0))
+				goto dognext;
 
-        i = xytod(nx, ny);
-        for (j = (i + 7) % 8; j < (i + 1) % 8; j++) {
-            dtoxy(&cc, j);
-            if (goodpos(cc.x, cc.y, mtmp, 0))
-                goto dognext;
-        }
-        for (j = (i + 6) % 8; j < (i + 2) % 8; j++) {
-            dtoxy(&cc, j);
-            if (goodpos(cc.x, cc.y, mtmp, 0))
-                goto dognext;
-        }
-        cc.x = mtmp->mx;
-        cc.y = mtmp->my;
- dognext:
-        if (!m_in_out_region(mtmp, nix, niy))
-            return 1;
-        remove_monster(mtmp->mx, mtmp->my);
-        place_monster(mtmp, cc.x, cc.y);
-        newsym(cc.x, cc.y);
-        set_apparxy(mtmp);
-    }
+			i = xytod(nx, ny);
+			for (j = (i + 7) % 8; j < (i + 1) % 8; j++) {
+				dtoxy(&cc, j);
+				if (goodpos(cc.x, cc.y, mtmp, 0))
+					goto dognext;
+			}
+			for (j = (i + 6) % 8; j < (i + 2) % 8; j++) {
+				dtoxy(&cc, j);
+				if (goodpos(cc.x, cc.y, mtmp, 0))
+					goto dognext;
+			}
+			cc.x = mtmp->mx;
+			cc.y = mtmp->my;
+		dognext:
+			if (!m_in_out_region(mtmp, nix, niy))
+				return 1;
+			remove_monster(mtmp->mx, mtmp->my);
+			place_monster(mtmp, cc.x, cc.y);
+			newsym(cc.x, cc.y);
+			set_apparxy(mtmp);
+		}
+	}
     return 1;
 }
 
 /* check if a monster could pick up objects from a location */
-STATIC_OVL boolean
+boolean
 could_reach_item(mon, nx, ny)
 struct monst *mon;
 xchar nx, ny;

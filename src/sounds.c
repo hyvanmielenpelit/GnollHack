@@ -7,6 +7,22 @@
 STATIC_DCL boolean FDECL(mon_is_gecko, (struct monst *));
 STATIC_DCL int FDECL(domonnoise, (struct monst *));
 STATIC_DCL int NDECL(dochat);
+STATIC_DCL int FDECL(do_chat_whoareyou, (struct monst*));
+STATIC_DCL int FDECL(do_chat_pet_sit, (struct monst*));
+STATIC_DCL int FDECL(do_chat_pet_givepaw, (struct monst*));
+STATIC_DCL int FDECL(do_chat_pet_stay, (struct monst*));
+STATIC_DCL int FDECL(do_chat_pet_follow, (struct monst*));
+STATIC_DCL int FDECL(do_chat_pet_dropitems, (struct monst*));
+STATIC_DCL int FDECL(do_chat_pet_pickitems, (struct monst*));
+STATIC_DCL int FDECL(do_chat_oracle_consult, (struct monst*));
+STATIC_DCL int FDECL(do_chat_oracle_identify, (struct monst*));
+STATIC_DCL int FDECL(do_chat_oracle_enlightenment, (struct monst*));
+STATIC_DCL int FDECL(do_chat_priest_blesscurse, (struct monst*));
+STATIC_DCL int FDECL(do_chat_priest_healing, (struct monst*));
+STATIC_DCL int FDECL(do_chat_priest_chat, (struct monst*));
+STATIC_DCL int FDECL(do_chat_shk_pricequote, (struct monst*));
+STATIC_DCL int FDECL(do_chat_shk_chat, (struct monst*));
+STATIC_DCL int FDECL(do_chat_quest_chat, (struct monst*));
 STATIC_DCL int FDECL(mon_in_room, (struct monst *, int));
 
 /* this easily could be a macro, but it might overtax dumb compilers */
@@ -554,11 +570,11 @@ register struct monst *mtmp;
     int msound = ptr->msound;
 
     /* presumably nearness and sleep checks have already been made */
-    if (Deaf)
-        return 0;
-    if (is_silent(ptr))
-        return 0;
-
+	if (Deaf)
+	{
+		You("cannot hear anything.");
+		return 0;
+	}
     /* leader might be poly'd; if he can still speak, give leader speech */
     if (mtmp->m_id == quest_status.leader_m_id && msound > MS_ANIMAL)
         msound = MS_LEADER;
@@ -581,17 +597,58 @@ register struct monst *mtmp;
         map_invisible(mtmp->mx, mtmp->my);
 
     switch (msound) {
-    case MS_ORACLE:
-        return doconsult(mtmp);
+	case MS_SILENT:
+		pline_msg = "does not respond.";
+		break;
+	case MS_ORACLE:
+		if (mtmp->mpeaceful)
+			Sprintf(verbuf, "Welcome to Delphi, adventurer!");
+		else
+			Sprintf(verbuf, "Begone, you fool!");
+		verbl_msg = verbuf;
+		break;
+		//return doconsult(mtmp);
     case MS_PRIEST:
-        priest_talk(mtmp);
-        break;
+		if(mtmp->mpeaceful)
+			Sprintf(verbuf, "Welcome to the temple of %s, adventurer!", (mtmp->ispriest && mtmp->mextra && mtmp->mextra->epri) ? align_gname(mtmp->mextra->epri->shralign) : "our almighty god");
+		else
+			Sprintf(verbuf, "You shall perish by the divine hand of %s!", (mtmp->ispriest && mtmp->mextra && mtmp->mextra->epri) ? align_gname(mtmp->mextra->epri->shralign) : "our almighty god");
+		verbl_msg = verbuf;
+		break;
+		//priest_talk(mtmp);
     case MS_LEADER:
     case MS_NEMESIS:
     case MS_GUARDIAN:
         quest_chat(mtmp);
         break;
     case MS_SELL: /* pitch, pay, total */
+		Sprintf(verbuf, "Welcome, adventurer!");
+		if (mtmp->isshk)
+		{
+			register struct eshk* eshkp = (struct eshk*)0;
+			if (mtmp->mextra && mtmp->mextra->eshk)
+				eshkp = mtmp->mextra->eshk;
+
+			if (eshkp)
+			{
+				char shopbuf[BUFSZ] = "";
+				Sprintf(shopbuf, "my %s", shoptypename(eshkp->shoptype));
+				if (mtmp->mpeaceful)
+					Sprintf(verbuf, "Welcome to %s, adventurer!", shopbuf);
+				else
+					Sprintf(verbuf, "You rotten thief!");
+			}
+		}
+		else
+		{
+			if (mtmp->mpeaceful)
+				Sprintf(verbuf, "Welcome, adventurer!");
+			else
+				Sprintf(verbuf, "You rotten thief!");
+		}
+		verbl_msg = verbuf;
+
+#if 0
         if (!Hallucination || (mtmp->isshk && !rn2(2))) {
             shk_chat(mtmp);
         } else {
@@ -601,6 +658,7 @@ register struct monst *mtmp;
                     currency(15L)); /* "zorkmids" */
             verbl_msg = verbuf;
         }
+#endif
         break;
     case MS_VAMPIRE: {
         /* vampire messages are varied by tameness, peacefulness, and time of
@@ -989,6 +1047,9 @@ register struct monst *mtmp;
             verbl_msg = "Who do you think you are, War?";
         break;
     } /* case MS_RIDER */
+	default:
+		pline_msg = "does not respond.";
+		break;
     } /* switch */
 
     if (pline_msg) {
@@ -1046,18 +1107,6 @@ dochat()
     if (Deaf) {
         pline("How can you hold a conversation when you cannot hear?");
         return 0;
-    }
-
-    if (!Blind && (otmp = shop_object(u.ux, u.uy)) != (struct obj *) 0) {
-        /* standing on something in a shop and chatting causes the shopkeeper
-           to describe the price(s).  This can inhibit other chatting inside
-           a shop, but that shouldn't matter much.  shop_object() returns an
-           object iff inside a shop and the shopkeeper is present and willing
-           (not angry) and able (not asleep) to speak and the position
-           contains any objects other than just gold.
-        */
-        price_quote(otmp);
-        return 1;
     }
 
     if (!getdir("Talk to whom? (in what direction)")) {
@@ -1135,8 +1184,853 @@ dochat()
         return 0;
     }
 
-    return domonnoise(mtmp);
+
+	/* Finally, generate the actual chat menu */
+	struct permonst* ptr = mtmp->data;
+	int msound = ptr->msound;
+
+	/* leader might be poly'd; if he can still speak, give leader speech */
+	if (mtmp->m_id == quest_status.leader_m_id && msound > MS_ANIMAL)
+		msound = MS_LEADER;
+	/* make sure it's your role's quest guardian; adjust if not */
+	else if (msound == MS_GUARDIAN && ptr != &mons[urole.guardnum])
+		msound = mons[genus(monsndx(ptr), 1)].msound;
+	/* some normally non-speaking types can/will speak if hero is similar */
+	else if (msound == MS_ORC         /* note: MS_ORC is same as MS_GRUNT */
+		&& (same_race(ptr, youmonst.data)           /* current form, */
+			|| same_race(ptr, &mons[Race_switch]))) /* unpoly'd form */
+		msound = MS_HUMANOID;
+	/* silliness, with slight chance to interfere with shopping */
+	else if (Hallucination && mon_is_gecko(mtmp))
+		msound = MS_SELL;
+
+	/* be sure to do this before talking; the monster might teleport away, in
+	 * which case we want to check its pre-teleport position
+	 */
+	if (!canspotmon(mtmp))
+		map_invisible(mtmp->mx, mtmp->my);
+
+
+	int i = '\0';
+
+	menu_item* pick_list = (menu_item*)0;
+	winid win;
+	anything any;
+
+	any = zeroany;
+	win = create_nhwindow(NHW_MENU);
+	start_menu(win);
+
+
+#define MAXCHATNUM 100
+
+	struct available_chat_item
+	{
+		int charnum;
+		char name[BUFSZ];
+		int (*function_ptr)();
+	};
+	struct available_chat_item available_chat_list[MAXCHATNUM];
+	int chatnum = 0;
+
+	any = zeroany;
+
+	/* Hello! This is the old chat, i.e., domonnoise function */
+	strcpy(available_chat_list[chatnum].name, "\"Hello there!\"");
+	available_chat_list[chatnum].function_ptr = &domonnoise;
+	available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+	any = zeroany;
+	any.a_char = available_chat_list[chatnum].charnum;
+
+	add_menu(win, NO_GLYPH, &any,
+		any.a_char, 0, ATR_NONE,
+		available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+	chatnum++;
+
+	if(msound >= MS_IMITATE)
+	{
+		/* Who are you? */
+		strcpy(available_chat_list[chatnum].name, "\"Who are you?\"");
+		available_chat_list[chatnum].function_ptr = &do_chat_whoareyou;
+		available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+		any = zeroany;
+		any.a_char = available_chat_list[chatnum].charnum;
+
+		add_menu(win, NO_GLYPH, &any,
+			any.a_char, 0, ATR_NONE,
+			available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+		chatnum++;
+	}
+
+	/* Tame dog and cat commands */
+	if (has_edog(mtmp) && mtmp->mtame)
+	{
+		if(mtmp->data->mlet == S_DOG)
+		{
+			strcpy(available_chat_list[chatnum].name, "\"Sit!\"");
+			available_chat_list[chatnum].function_ptr = &do_chat_pet_sit;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+		}
+		if (mtmp->data->mlet == S_DOG)
+		{
+			strcpy(available_chat_list[chatnum].name, "\"Give paw!\"");
+			available_chat_list[chatnum].function_ptr = &do_chat_pet_givepaw;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+		}
+
+		strcpy(available_chat_list[chatnum].name, "\"Stay!\"");
+		available_chat_list[chatnum].function_ptr = &do_chat_pet_stay;
+		available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+		any = zeroany;
+		any.a_char = available_chat_list[chatnum].charnum;
+
+		add_menu(win, NO_GLYPH, &any,
+			any.a_char, 0, ATR_NONE,
+			available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+		chatnum++;
+
+		strcpy(available_chat_list[chatnum].name, "\"Follow!\"");
+		available_chat_list[chatnum].function_ptr = &do_chat_pet_follow;
+		available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+		any = zeroany;
+		any.a_char = available_chat_list[chatnum].charnum;
+
+		add_menu(win, NO_GLYPH, &any,
+			any.a_char, 0, ATR_NONE,
+			available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+		chatnum++;
+
+		if (mtmp->minvent && !mtmp->issummoned)
+		{
+			strcpy(available_chat_list[chatnum].name, "\"Drop your items!\"");
+			available_chat_list[chatnum].function_ptr = &do_chat_pet_dropitems;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+		}
+
+		if (OBJ_AT(mtmp->mx, mtmp->my) && !mtmp->issummoned)
+		{
+			
+			strcpy(available_chat_list[chatnum].name, "\"Pick the items on the ground!\"");
+			available_chat_list[chatnum].function_ptr = &do_chat_pet_pickitems;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+		}
+
+	}
+
+	/* Oracle */
+	if (msound == MS_ORACLE)
+	{
+		strcpy(available_chat_list[chatnum].name, "Consultation");
+		available_chat_list[chatnum].function_ptr = &do_chat_oracle_consult;
+		available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+		any = zeroany;
+		any.a_char = available_chat_list[chatnum].charnum;
+
+		add_menu(win, NO_GLYPH, &any,
+			any.a_char, 0, ATR_NONE,
+			available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+		chatnum++;
+
+		strcpy(available_chat_list[chatnum].name, "Identify items");
+		available_chat_list[chatnum].function_ptr = &do_chat_oracle_identify;
+		available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+		any = zeroany;
+		any.a_char = available_chat_list[chatnum].charnum;
+
+		add_menu(win, NO_GLYPH, &any,
+			any.a_char, 0, ATR_NONE,
+			available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+		chatnum++;
+
+		strcpy(available_chat_list[chatnum].name, "Englightenment");
+		available_chat_list[chatnum].function_ptr = &do_chat_oracle_enlightenment;
+		available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+		any = zeroany;
+		any.a_char = available_chat_list[chatnum].charnum;
+
+		add_menu(win, NO_GLYPH, &any,
+			any.a_char, 0, ATR_NONE,
+			available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+		chatnum++;
+	}
+
+	/* Priest */
+	if (msound == MS_PRIEST || mtmp->ispriest)
+	{
+		strcpy(available_chat_list[chatnum].name, "Healing");
+		available_chat_list[chatnum].function_ptr = &do_chat_priest_healing;
+		available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+		any = zeroany;
+		any.a_char = available_chat_list[chatnum].charnum;
+
+		add_menu(win, NO_GLYPH, &any,
+			any.a_char, 0, ATR_NONE,
+			available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+		chatnum++;
+
+		strcpy(available_chat_list[chatnum].name, "Bless or curse an item");
+		available_chat_list[chatnum].function_ptr = &do_chat_priest_blesscurse;
+		available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+		any = zeroany;
+		any.a_char = available_chat_list[chatnum].charnum;
+
+		add_menu(win, NO_GLYPH, &any,
+			any.a_char, 0, ATR_NONE,
+			available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+		chatnum++;
+
+		strcpy(available_chat_list[chatnum].name, "Contribution to the temple");
+		available_chat_list[chatnum].function_ptr = &do_chat_priest_chat;
+		available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+		any = zeroany;
+		any.a_char = available_chat_list[chatnum].charnum;
+
+		add_menu(win, NO_GLYPH, &any,
+			any.a_char, 0, ATR_NONE,
+			available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+		chatnum++;
+
+	}
+
+	/* Quest */
+	if (msound == MS_LEADER || msound == MS_GUARDIAN || msound == MS_NEMESIS)
+	{
+		strcpy(available_chat_list[chatnum].name, "Talk about your quest");
+		available_chat_list[chatnum].function_ptr = &do_chat_quest_chat;
+		available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+		any = zeroany;
+		any.a_char = available_chat_list[chatnum].charnum;
+
+		add_menu(win, NO_GLYPH, &any,
+			any.a_char, 0, ATR_NONE,
+			available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+		chatnum++;
+
+	}
+
+	/* Shopkeeper */
+	if (msound == MS_SELL || mtmp->isshk)
+	{
+		strcpy(available_chat_list[chatnum].name, "\"How is your business?\"");
+		available_chat_list[chatnum].function_ptr = &do_chat_shk_chat;
+		available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+		any = zeroany;
+		any.a_char = available_chat_list[chatnum].charnum;
+
+		add_menu(win, NO_GLYPH, &any,
+			any.a_char, 0, ATR_NONE,
+			available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+		chatnum++;
+
+		if (!Blind && (otmp = shop_object(u.ux, u.uy)) != (struct obj*) 0) 
+		{
+			/* standing on something in a shop and chatting causes the shopkeeper
+			   to describe the price(s).  This can inhibit other chatting inside
+			   a shop, but that shouldn't matter much.  shop_object() returns an
+			   object iff inside a shop and the shopkeeper is present and willing
+			   (not angry) and able (not asleep) to speak and the position
+			   contains any objects other than just gold.
+			*/
+			strcpy(available_chat_list[chatnum].name, "Quote items");
+			available_chat_list[chatnum].function_ptr = &do_chat_shk_pricequote;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+		}
+	}
+
+
+	end_menu(win, "What do you want to say?");
+
+
+	if (chatnum <= 0)
+	{
+		You("don't have anything to talk about.");
+		destroy_nhwindow(win);
+		return 0;
+	}
+
+
+	/* Now generate the menu */
+	if (select_menu(win, PICK_ONE, &pick_list) > 0) 
+	{
+		i = pick_list->item.a_char;
+		free((genericptr_t)pick_list);
+	}
+	destroy_nhwindow(win);
+
+	if (i == '\0')
+		return 0;
+
+	int res = 0;
+	for (int j = 0; j < chatnum; j++)
+	{
+		if (available_chat_list[j].charnum == i)
+		{
+			if (i != '\0')
+				res = (available_chat_list[j].function_ptr)(mtmp);
+			break;
+		}
+	}
+
+	return res;
+
 }
+
+
+STATIC_OVL int
+do_chat_whoareyou(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp)
+		return 0;
+
+	char ansbuf[BUFSZ] = "";
+	int msound = mtmp->data->msound;
+
+	if (mtmp->isshk)
+	{
+		register struct eshk* eshkp = (struct eshk*)0;
+		if (mtmp->mextra && mtmp->mextra->eshk)
+			eshkp = mtmp->mextra->eshk;
+
+		Sprintf(ansbuf, "My name is %s.", shkname(mtmp));
+
+		if (eshkp)
+		{
+			char shopbuf[BUFSZ] = "";
+			Sprintf(shopbuf, "this %s", shoptypename(eshkp->shoptype));
+			Sprintf(eos(ansbuf), " I run %s.", shopbuf);
+		}
+	
+		verbalize(ansbuf);
+	}
+	else if (mtmp->ispriest || msound == MS_PRIEST)
+	{
+		Sprintf(ansbuf, "I am %s.", mon_nam(mtmp));
+		verbalize(ansbuf);
+	}
+	else if (mtmp->mnum == PM_ORACLE || msound == MS_ORACLE)
+	{
+		Sprintf(ansbuf, "I am the Oracle of Delphi.");
+		verbalize(ansbuf);
+	}
+	else if (mtmp->m_id == quest_status.leader_m_id && msound > MS_ANIMAL)
+	{
+		Sprintf(ansbuf, "I am %s, your quest leader.", mon_nam(mtmp));
+		verbalize(ansbuf);
+
+	}
+	else if (msound == MS_GUARDIAN)
+	{
+		if(mtmp->mnum == urole.guardnum)
+			Sprintf(ansbuf, "I am your quest guardian.");
+		else
+			Sprintf(ansbuf, "I am a quest guardian.");
+
+		verbalize(ansbuf);
+	}
+	else if (msound == MS_NEMESIS)
+	{
+		Sprintf(ansbuf, "I am %s, your quest nemesis. Tremble before me!", mon_nam(mtmp));
+		verbalize(ansbuf);
+	}
+	else
+	{
+		domonnoise(mtmp);
+	}
+
+	return 1;
+}
+
+
+STATIC_OVL int
+do_chat_pet_sit(mtmp)
+struct monst* mtmp;
+{
+	if (mtmp->mtame > 5 || (mtmp->mtame > 0 && rn2(mtmp->mtame + 1)))
+	{
+		pline("%s sits down!", Monnam(mtmp));
+		mtmp->mstaying = 2+ rn2(5);
+		mtmp->mwantstomove = 0;
+	}
+	else
+		pline("%s stares at you but does nothing.", Monnam(mtmp));
+
+	return 1;
+}
+
+
+STATIC_OVL int
+do_chat_pet_givepaw(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp)
+		return 0;
+
+	boolean givepawsuccess = FALSE;
+	if (mtmp->mtame >= 1 && mtmp->mtame <= 4)
+		givepawsuccess = !rn2(6 - mtmp->mtame);
+	else if (mtmp->mtame >= 5)
+		givepawsuccess = TRUE;
+
+	if(givepawsuccess)
+	{
+		pline("%s gives you the paw!", Monnam(mtmp));
+		if (mtmp->mtame < 5)
+			mtmp->mtame++;
+	}
+	else
+		pline("%s stares at you but does nothing.", Monnam(mtmp));
+
+	return 1;
+}
+
+
+STATIC_OVL int
+do_chat_pet_stay(mtmp)
+struct monst* mtmp;
+{
+	if (mtmp->mtame > 5 || (mtmp->mtame > 0 && rn2(mtmp->mtame + 1)))
+	{
+		pline("%s sits down and looks determined not to move anywhere.", Monnam(mtmp));
+		mtmp->mstaying = 25 + rn2(20);
+		mtmp->mwantstomove = 0;
+	}
+	else
+		pline("%s stares at you but does nothing.", Monnam(mtmp));
+
+	return 1;
+}
+
+
+STATIC_OVL int
+do_chat_pet_follow(mtmp)
+struct monst* mtmp;
+{
+	if (mtmp->mtame > 0 && mtmp->mstaying)
+	{
+		pline("%s stands up and seems ready to follow you!", Monnam(mtmp));
+		mtmp->mstaying = 0;
+		mtmp->mwantstomove = 1;
+	}
+	else
+		pline("%s stares at you but does nothing.", Monnam(mtmp));
+
+	return 1;
+}
+
+
+STATIC_OVL int
+do_chat_pet_dropitems(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp)
+		return 0;
+
+	struct edog* edog = (struct edog*)0;
+	boolean has_edog = !mtmp->isminion;
+
+	int omx = mtmp->mx;
+	int omy = mtmp->my;
+	int udist = distu(omx, omy);
+
+	if(mtmp->mextra && mtmp->mextra->edog)
+		edog = mtmp->mextra->edog;
+
+	if(has_edog && edog && droppables(mtmp))
+	{
+		relobj(mtmp, (int)mtmp->minvis, TRUE);
+		if (edog->apport > 1)
+			edog->apport--;
+		edog->dropdist = udist;
+		edog->droptime = monstermoves;
+	}
+	else
+	{
+		pline("%s stares at you but does nothing.", Monnam(mtmp));
+	}
+
+
+	return 1;
+}
+
+STATIC_OVL int
+do_chat_pet_pickitems(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp)
+		return 0;
+
+	struct edog* edog = (struct edog*)0;
+	boolean has_edog = !mtmp->isminion;
+
+	int omx = mtmp->mx;
+	int omy = mtmp->my;
+	int udist = distu(omx, omy);
+
+	if (mtmp->mextra && mtmp->mextra->edog)
+		edog = mtmp->mextra->edog;
+
+
+	if (has_edog && edog)
+	{
+		int itemspicked = 0;
+		boolean chastised = FALSE;
+		struct obj* obj = level.objects[omx][omy];
+		for (int i = 0; obj && i < 20; i++, obj = level.objects[omx][omy])
+		{
+			int carryamt = can_carry(mtmp, obj);
+			if (carryamt > 0 && !obj->cursed && !mtmp->issummoned
+				&& could_reach_item(mtmp, obj->ox, obj->oy))
+			{
+				struct monst* shkp = (struct monst*)0;
+				if (obj && obj->unpaid || (obj->where == OBJ_FLOOR && !obj->no_charge && costly_spot(omx, omy)))
+				{
+					shkp = shop_keeper(inside_shop(omx, omy));
+					char shopkeeper_name[BUFSZ] = "";
+					if (shkp)
+					{
+						strcpy(shopkeeper_name, shkname(shkp));
+						if (!edog->chastised)
+						{
+							edog->chastised = 20 + rn2(1000);
+							if (cansee(omx, omy) && flags.verbose)
+							{
+								pline("%s tries to pick up %s.", Monnam(mtmp),
+									distant_name(obj, doname));
+
+								pline("However, %s glances at %s menacingly.", shopkeeper_name,
+									mon_nam(mtmp));
+
+								verbalize("Drop that, now!");
+
+								pline("%s drops %s.", Monnam(mtmp),
+									the(cxname(obj)));
+								chastised = TRUE;
+							}
+						}
+					}
+				}
+
+				if (!shkp)
+				{
+					struct obj* otmp = obj;
+					if (carryamt != obj->quan)
+						otmp = splitobj(obj, carryamt);
+
+					if (cansee(omx, omy) && flags.verbose)
+						pline("%s picks up %s.", Monnam(mtmp),
+							distant_name(otmp, doname));
+
+					obj_extract_self(otmp);
+					newsym(omx, omy);
+					(void)mpickobj(mtmp, otmp);
+					itemspicked++;
+				}
+			}
+		}
+		if(itemspicked == 0 && !chastised)
+		{
+			pline("%s stares at you but does nothing.", Monnam(mtmp));
+		}
+	}
+	else
+	{
+		pline("%s stares at you but does nothing.", Monnam(mtmp));
+	}
+
+
+	return 1;
+}
+
+
+
+STATIC_OVL int
+do_chat_oracle_consult(mtmp)
+struct monst* mtmp;
+{
+	return doconsult(mtmp);
+}
+
+STATIC_OVL int
+do_chat_oracle_identify(mtmp)
+struct monst* mtmp;
+{
+	return do_oracle_identify(mtmp);
+}
+
+STATIC_OVL int
+do_chat_oracle_enlightenment(mtmp)
+struct monst* mtmp;
+{
+	return do_oracle_enlightenment(mtmp);
+}
+
+
+STATIC_OVL int
+do_chat_priest_blesscurse(mtmp)
+struct monst* mtmp;
+{
+
+	long umoney = money_cnt(invent);
+	int u_pay, bless_cost = 200 + 10 * u.ulevel, curse_cost = 100 + 5 * u.ulevel;
+	int priest_action = 0;
+	char qbuf[QBUFSZ];
+
+	if (!mtmp) {
+		There("is no one here to talk to.");
+		return 0;
+	}
+	else if (!mtmp->mpeaceful) 
+	{
+		pline("%s is in no mood for doing any services.", Monnam(mtmp));
+		return 0;
+	}
+	else if (!umoney) 
+	{
+		You("have no money.");
+		return 0;
+	}
+
+	Sprintf(qbuf, "\"Would you like to bless an item?\" (%d %s)", bless_cost, currency((long)bless_cost));
+	switch (ynq(qbuf)) {
+	default:
+	case 'q':
+		return 0;
+	case 'y':
+			if (umoney < (long)bless_cost) {
+				You("don't have enough money for that!");
+				return 0;
+			}
+			u_pay = bless_cost;
+			priest_action = 1;
+			break;
+		break;
+	case 'n':
+		Sprintf(qbuf, "\"Then would you like to curse one?\" (%d %s)",
+			curse_cost, currency((long)curse_cost));
+		if (yn(qbuf) != 'y')
+			return 0;
+		if (umoney < (long)curse_cost)
+		{
+			You("don't have enough money for that!");
+			return 0;
+		}
+		u_pay = curse_cost;
+		priest_action = 2;
+		break;
+	}
+
+
+	money2mon(mtmp, (long)u_pay);
+	context.botl = 1;
+
+	int otyp = SPE_CURSE;
+
+	switch (priest_action) {
+	case 1: /* bless */
+		otyp = SPE_BLESS;
+		break;
+	case 2: /* curse */
+		otyp = SPE_CURSE;
+		break;
+	default:
+		break;
+	}
+
+	struct obj* pseudo = mksobj(otyp, FALSE, FALSE, FALSE);
+	pseudo->blessed = pseudo->cursed = 0;
+	pseudo->quan = 20L; /* do not let useup get it */
+	seffects(pseudo);
+	obfree(pseudo, (struct obj*)0);
+
+	return 1;
+}
+
+
+STATIC_OVL int
+do_chat_priest_healing(mtmp)
+struct monst* mtmp;
+{
+
+	long umoney = money_cnt(invent);
+	int u_pay, fullhealing_cost = 250 + 5 * u.ulevel, extrahealing_cost = 50;
+	int priest_action = 0;
+	char qbuf[QBUFSZ];
+
+	if (!mtmp) 
+	{
+		There("is no one here to talk to.");
+		return 0;
+	}
+	else if (!mtmp->mpeaceful)
+	{
+		pline("%s is in no mood for doing any services.", Monnam(mtmp));
+		return 0;
+	}
+	else if (!umoney)
+	{
+		You("have no money.");
+		return 0;
+	}
+
+	Sprintf(qbuf, "\"Would you like to have a full healing?\" (%d %s)", fullhealing_cost, currency((long)fullhealing_cost));
+	switch (ynq(qbuf)) {
+	default:
+	case 'q':
+		return 0;
+	case 'y':
+		if (umoney < (long)fullhealing_cost) {
+			You("don't have enough money for that!");
+			return 0;
+		}
+		u_pay = fullhealing_cost;
+		priest_action = 1;
+		break;
+		break;
+	case 'n':
+		Sprintf(qbuf, "\"Then would you like to have a normal one?\" (%d %s)",
+			extrahealing_cost, currency((long)extrahealing_cost));
+		if (yn(qbuf) != 'y')
+			return 0;
+		if (umoney < (long)extrahealing_cost)
+		{
+			You("don't have enough money for that!");
+			return 0;
+		}
+		u_pay = extrahealing_cost;
+		priest_action = 2;
+		break;
+	}
+	money2mon(mtmp, (long)u_pay);
+	context.botl = 1;
+
+	int otyp = POT_HEALING;
+
+	switch (priest_action) {
+	case 1: 
+		otyp = POT_FULL_HEALING;
+		break;
+	case 2: 
+		otyp = POT_EXTRA_HEALING;
+		break;
+	default:
+		break;
+	}
+
+	struct obj* pseudo = mksobj(otyp, FALSE, FALSE, FALSE);
+	pseudo->blessed = pseudo->cursed = 0;
+	pseudo->quan = 20L; /* do not let useup get it */
+	peffects(pseudo);
+	obfree(pseudo, (struct obj*)0);
+
+	return 1;
+}
+
+STATIC_OVL int
+do_chat_priest_chat(mtmp)
+struct monst* mtmp;
+{
+	priest_talk(mtmp);
+	return 1;
+}
+
+
+STATIC_OVL int
+do_chat_shk_pricequote(mtmp)
+struct monst* mtmp;
+{
+	struct obj* otmp = shop_object(u.ux, u.uy);
+	if(otmp)
+		price_quote(otmp);
+
+	return 1;
+}
+
+STATIC_OVL int
+do_chat_shk_chat(mtmp)
+struct monst* mtmp;
+{
+	shk_chat(mtmp);
+	return 1;
+}
+
+STATIC_OVL int
+do_chat_quest_chat(mtmp)
+struct monst* mtmp;
+{
+	quest_chat(mtmp);
+	return 1;
+}
+
 
 #ifdef USER_SOUNDS
 

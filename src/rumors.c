@@ -487,8 +487,6 @@ struct monst *oracl;
     long umoney;
 	int u_pay, minor_cost = 50, major_cost = 500 + 50 * u.ulevel;
 	int unid_cnt = count_unidentified(invent);
-	int minor_id_cost = 175 + 15 * u.ulevel;
-	int major_id_cost = minor_id_cost * 3;
 	int oracleaction = 0;
 	int add_xpts;
     char qbuf[QBUFSZ];
@@ -507,76 +505,36 @@ struct monst *oracl;
         return 0;
     }
 
-	Sprintf(qbuf, "\"Dost thou desire a consultation or identification?\"");
-	switch (ciq(qbuf)) {
+	Sprintf(qbuf, "\"Wilt thou settle for a minor consultation?\" (%d %s)",
+		minor_cost, currency((long)minor_cost));
+	switch (ynq(qbuf)) {
 	default:
 	case 'q':
 		return 0;
-	case 'c':
-		Sprintf(qbuf, "\"Wilt thou settle for a minor consultation?\" (%d %s)",
-			minor_cost, currency((long)minor_cost));
-		switch (ynq(qbuf)) {
-		default:
-		case 'q':
+	case 'y':
+		if (umoney < (long)minor_cost) {
+			You("don't even have enough money for that!");
 			return 0;
-		case 'y':
-			if (umoney < (long)minor_cost) {
-				You("don't even have enough money for that!");
-				return 0;
-			}
-			u_pay = minor_cost;
-			oracleaction = 1;
-			break;
-		case 'n':
-			if (umoney <= (long)minor_cost /* don't even ask */
-				|| (oracle_cnt == 1 || oracle_flg < 0))
-				return 0;
-			Sprintf(qbuf, "\"Then dost thou desire a major one?\" (%d %s)",
-				major_cost, currency((long)major_cost));
-			if (yn(qbuf) != 'y')
-				return 0;
-			u_pay = (umoney < (long)major_cost) ? (int)umoney : major_cost;
-			oracleaction = 2;
-			break;
 		}
+		u_pay = minor_cost;
+		oracleaction = 1;
 		break;
-	case 'i':
-		Sprintf(qbuf, "\"Wilt thou settle for a standard identification?\" (%d %s)",
-			minor_id_cost, currency((long)minor_id_cost));
-		switch (ynq(qbuf)) {
-		default:
-		case 'q':
+	case 'n':
+		if (umoney <= (long)minor_cost /* don't even ask */
+			|| (oracle_cnt == 1 || oracle_flg < 0))
 			return 0;
-		case 'y':
-			if (umoney < (long)minor_id_cost) {
-				You("don't even have enough money for that!");
-				return 0;
-			}
-			u_pay = minor_id_cost;
-			oracleaction = 3;
-			break;
-		case 'n':
-			Sprintf(qbuf, "\"Then dost thou desire an improved one?\" (%d %s)",
-				major_id_cost, currency((long)major_id_cost));
-			if (yn(qbuf) != 'y')
-				return 0;
-			if (umoney < (long)major_id_cost) {
-				You("don't even have enough money for that!");
-				return 0;
-			}
-			u_pay = major_id_cost;
-			oracleaction = 4;
-			break;
-		}
+		Sprintf(qbuf, "\"Then dost thou desire a major one?\" (%d %s)",
+			major_cost, currency((long)major_cost));
+		if (yn(qbuf) != 'y')
+			return 0;
+		u_pay = (umoney < (long)major_cost) ? (int)umoney : major_cost;
+		oracleaction = 2;
 		break;
 	}
+
     money2mon(oracl, (long) u_pay);
     context.botl = 1;
     add_xpts = 0; /* first oracle of each type gives experience points */
-
-	int majoridnum = rn1(2,4);
-	if (!rn2(4))
-		majoridnum = 0;
 
 	boolean cheapskate;
 
@@ -598,12 +556,6 @@ struct monst *oracl;
 		u.uevent.major_oracle = TRUE;
 		exercise(A_WIS, !cheapskate);
 		break;
-	case 3:
-		identify_pack(1, FALSE);
-		break;
-	case 4:
-		identify_pack(majoridnum, FALSE);
-		break;
 	default:
 		break;
 	}
@@ -614,6 +566,130 @@ struct monst *oracl;
     }
     return 1;
 }
+
+int
+do_oracle_identify(oracl)
+struct monst* oracl;
+{
+	long umoney;
+	int u_pay;
+	int unid_cnt = count_unidentified(invent);
+	int minor_id_cost = 175 + 15 * u.ulevel;
+	int major_id_cost = minor_id_cost * 3;
+	int oracleaction = 0;
+	char qbuf[QBUFSZ];
+
+	multi = 0;
+	umoney = money_cnt(invent);
+
+	if (!oracl) {
+		There("is no one here to identify items.");
+		return 0;
+	}
+	else if (!oracl->mpeaceful) {
+		pline("%s is in no mood for identification.", Monnam(oracl));
+		return 0;
+	}
+	else if (!umoney) {
+		You("have no money.");
+		return 0;
+	}
+
+	Sprintf(qbuf, "\"Wilt thou settle for a standard identification?\" (%d %s)",
+		minor_id_cost, currency((long)minor_id_cost));
+	switch (ynq(qbuf)) {
+	default:
+	case 'q':
+		return 0;
+	case 'y':
+		if (umoney < (long)minor_id_cost) {
+			You("don't even have enough money for that!");
+			return 0;
+		}
+		u_pay = minor_id_cost;
+		oracleaction = 3;
+		break;
+	case 'n':
+		Sprintf(qbuf, "\"Then dost thou desire an improved one?\" (%d %s)",
+			major_id_cost, currency((long)major_id_cost));
+		if (yn(qbuf) != 'y')
+			return 0;
+		if (umoney < (long)major_id_cost) {
+			You("don't have enough money for that!");
+			return 0;
+		}
+		u_pay = major_id_cost;
+		oracleaction = 4;
+		break;
+	}
+
+	money2mon(oracl, (long)u_pay);
+	context.botl = 1;
+
+	int majoridnum = rn1(2, 4);
+	if (!rn2(4))
+		majoridnum = 0;
+
+	switch (oracleaction) {
+	case 3:
+		identify_pack(1, FALSE);
+		break;
+	case 4:
+		identify_pack(majoridnum, FALSE);
+		break;
+	default:
+		break;
+	}
+
+	return 1;
+}
+
+int
+do_oracle_enlightenment(oracl)
+struct monst* oracl;
+{
+	long umoney;
+	int u_pay, enl_cost = 75;
+	char qbuf[QBUFSZ];
+
+	multi = 0;
+	umoney = money_cnt(invent);
+
+	if (!oracl) {
+		There("is no one here to enlighten you.");
+		return 0;
+	}
+	else if (!oracl->mpeaceful) {
+		pline("%s is in no mood for enlightenment.", Monnam(oracl));
+		return 0;
+	}
+	else if (!umoney) {
+		You("have no money.");
+		return 0;
+	}
+
+	Sprintf(qbuf, "\"Dost thou desire to enlighten yourself?\" (%d %s)",
+		enl_cost, currency((long)enl_cost));
+	if (yn(qbuf) != 'y')
+		return 0;
+
+	if (umoney < (long)enl_cost) {
+		You("don't have enough money for that!");
+		return 0;
+	}
+	u_pay = enl_cost;
+
+	money2mon(oracl, (long)u_pay);
+	context.botl = 1;
+
+	/* enlightenment */
+	You_feel("self-knowledgeable...");
+	display_nhwindow(WIN_MESSAGE, FALSE);
+	enlightenment(MAGICENLIGHTENMENT, ENL_GAMEINPROGRESS);
+
+	return 1;
+}
+
 
 STATIC_OVL void
 couldnt_open_file(filename)
