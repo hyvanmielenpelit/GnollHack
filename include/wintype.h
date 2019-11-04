@@ -105,6 +105,7 @@ typedef struct mi {
 #define MENU_UNSELECT_PAGE      '\\'
 #define MENU_INVERT_PAGE        '~'
 #define MENU_SEARCH             ':'
+#define MENU_START_COUNT        '#'
 /* clang-format on */
 
 #endif /* WINTYPE_H */

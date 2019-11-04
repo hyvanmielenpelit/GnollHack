@@ -2057,7 +2057,11 @@ struct WinDesc *cw;
                 reset_count = FALSE;
             }
             break;
-        case '\033': /* cancel - from counting or loop */
+		case MENU_START_COUNT: /* start counting explicitly */
+			counting = TRUE;
+			reset_count = FALSE;
+			break;
+		case '\033': /* cancel - from counting or loop */
             if (!counting) {
                 /* deselect everything */
                 for (curr = cw->mlist; curr; curr = curr->next) {
