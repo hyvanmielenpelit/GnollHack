@@ -1243,6 +1243,21 @@ register struct monst *mtmp;
         break;
     }
 
+	switch (monsndx(ptr))
+	{
+	case PM_GOBLIN_KING:
+	case PM_OGRE_KING:
+	case PM_DWARF_KING:
+	case PM_ELVENKING:
+	case PM_GNOLL_KING:
+	case PM_GNOME_KING:
+		if (!rn2(3))
+			(void)mongets(mtmp, !rn2(25) ? CROWN_OF_RULERSHIP : CROWN);
+		break;
+	default:
+		break;
+	}
+
     /* ordinary soldiers rarely have access to magic (or gold :-) */
     if (ptr == &mons[PM_SOLDIER] && rn2(13))
         return;

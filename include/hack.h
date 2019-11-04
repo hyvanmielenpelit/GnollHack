@@ -507,10 +507,6 @@ enum bodypart_types {
      - (objects[(obj)->otyp].oc_flags & O1_EROSION_DOES_NOT_AFFECT_MC ? 0 : min((int) greatest_erosion(obj), objects[(obj)->otyp].oc_magic_cancellation)))
 
 
-#define uarmhbon 4 /* Metal helmets interfere with the mind */
-#define uarmgbon 6 /* Casting channels through the hands */
-#define uarmfbon 2 /* All metal interferes to some degree */
-
 #define makeknown(x) discover_object((x), TRUE, TRUE)
 #define distu(xx, yy) dist2((int)(xx), (int)(yy), (int) u.ux, (int) u.uy)
 #define onlineu(xx, yy) online2((int)(xx), (int)(yy), (int) u.ux, (int) u.uy)
@@ -560,6 +556,7 @@ enum bodypart_types {
 #define DEVTEAM_URL "http://www.gnollhack.com"
 
 #include "matcomps.h"
+#include "encounter.h"
 
 
 #endif /* HACK_H */

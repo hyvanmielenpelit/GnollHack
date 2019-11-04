@@ -590,6 +590,7 @@ E boolean FDECL(walk_path, (coord *, coord *,
 E boolean FDECL(hurtle_jump, (genericptr_t, int, int));
 E boolean FDECL(hurtle_step, (genericptr_t, int, int));
 
+E void FDECL(get_multishot_stats, (struct monst*, struct obj*, struct obj*, BOOLEAN_P, int*, int*));
 
 
 /* ### do_wear.c ### */
@@ -743,6 +744,12 @@ E char *FDECL(build_english_list, (char *));
 #if defined(PANICTRACE) && !defined(NO_SIGNAL)
 E void FDECL(panictrace_setsignals, (BOOLEAN_P));
 #endif
+
+
+/* ### encounter.c ### */
+
+E void NDECL(encounter_init);
+
 
 /* ### engrave.c ### */
 

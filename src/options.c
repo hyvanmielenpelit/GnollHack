@@ -739,7 +739,7 @@ initoptions_init()
     iflags.msg_history = 20;
     /* msg_window has conflicting defaults for multi-interface binary */
 #ifdef TTY_GRAPHICS
-    iflags.prevmsg_window = 's';
+    iflags.prevmsg_window = 'f';
 #else
 #ifdef CURSES_GRAPHICS
     iflags.prevmsg_window = 'r';

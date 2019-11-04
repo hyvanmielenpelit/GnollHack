@@ -1400,7 +1400,7 @@ get_odd_idea()
 		pline("...platonic solids are trying to contact you telepathically.");
 		break;
 	case 3:
-		You("suddenly feel unsecure of your deposits with the gnomish bankers.");
+		You("suddenly feel that the radiation inside the dungeon is getting stronger.");
 		break;
 	case 4:
 		You("are suddenly even more conviced that the government is controlled by...");
@@ -1411,7 +1411,7 @@ get_odd_idea()
 		pline("...platonic solids are trying to contact you telepathically again.");
 		break;
 	case 6:
-		You("suddenly feel more unsecure of the stability of the gnomish banking system.");
+		You("are suddenly feel that the radiation inside the dungeon is getting even stronger.");
 		context.oddideacnt = 3;
 		break;
 	default:

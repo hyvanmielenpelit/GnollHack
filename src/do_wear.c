@@ -377,7 +377,9 @@ Helmet_on(VOID_ARGS)
     case DENTED_POT:
     case ELVEN_LEATHER_HELM:
     case DWARVISH_IRON_HELM:
-    case ORCISH_HELM:
+	case CROWN:
+	case CROWN_OF_RULERSHIP:
+	case ORCISH_HELM:
 	case GNOLLISH_HOOD:
 	case COTTON_HOOD:
 	case HELM_OF_TELEPATHY:
@@ -445,7 +447,9 @@ Helmet_off(VOID_ARGS)
     case DENTED_POT:
     case ELVEN_LEATHER_HELM:
     case DWARVISH_IRON_HELM:
-    case ORCISH_HELM:
+	case CROWN:
+	case CROWN_OF_RULERSHIP:
+	case ORCISH_HELM:
 	case GNOLLISH_HOOD:
 	case COTTON_HOOD:
 		break;

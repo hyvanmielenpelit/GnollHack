@@ -607,44 +607,94 @@ hitum(mon, uattk)
 struct monst *mon;
 struct attack *uattk;
 {
-    boolean malive, wep_was_destroyed = FALSE;
+    boolean malive = TRUE, wep_was_destroyed = FALSE;
     struct obj *wepbefore = uwep;
 	int armorpenalty, attknum = 0, x = u.ux + u.dx, y = u.uy + u.dy;
+	int multistrike = 1;
+	int multistrikernd = 0;
 
-	//DETERMINE IF YOU HIT THE MONSTER
-	int tmp = find_roll_to_hit(mon, uattk->aatyp, uwep, &attknum, &armorpenalty);
-    int dieroll = rnd(20);
-    int mhit = (tmp > dieroll || u.uswallow);
-
-    /* Cleaver attacks three spots, 'mon' and one on either side of 'mon';
-       it can't be part of dual-wielding but we guard against that anyway;
-       cleave return value reflects status of primary target ('mon') */
-    if (uwep && uwep->oartifact == ART_CLEAVER && !u.twoweap
-        && !u.uswallow && !u.ustuck && !NODIAG(u.umonnum))
-        return hitum_cleave(mon, uattk);
-
-    if (tmp > dieroll)
-        exercise(A_DEX, TRUE);
-    /* bhitpos is set up by caller */
-    malive = known_hitum(mon, uwep, &mhit, tmp, armorpenalty, uattk, dieroll);
-    if (wepbefore && !uwep)
-        wep_was_destroyed = TRUE;
-    (void) passive(mon, uwep, mhit, malive, AT_WEAP, wep_was_destroyed);
-
-    /* second attack for two-weapon combat; FOLLOWING IS OBSOLETE/JG: won't occur if Stormbringer
-       overrode confirmation (assumes Stormbringer is primary weapon)
-       or if the monster was killed or knocked to different location */
-    if (u.twoweap && !(uwep && bimanual(uwep)) && malive && m_at(x, y) == mon) //&& !override_confirmation 
+	if (uwep)
 	{
-        tmp = find_roll_to_hit(mon, uattk->aatyp, uarms, &attknum,
-                               &armorpenalty);
-        dieroll = rnd(20);
-        mhit = (tmp > dieroll || u.uswallow);
-        malive = known_hitum(mon, uarms, &mhit, tmp, armorpenalty, uattk,
-                             dieroll);
-        /* second passive counter-attack only occurs if second attack hits */
-        if (mhit)
-            (void) passive(mon, uarms, mhit, malive, AT_WEAP, !uarms);
+		get_multishot_stats(&youmonst, uwep, uwep, FALSE, &multistrike, &multistrikernd);
+
+		if (multistrikernd > 0)
+			multistrike += rn2(multistrikernd + 1);
+	}
+
+	for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
+	{
+		if (strikeindex > 0 && uwep)
+			pline("%s %s!", Yobjnam2(uwep, "strike"), strikeindex == 1 ? "a second time" : strikeindex == 2 ? "a third time" : "once more");
+
+		//DETERMINE IF YOU HIT THE MONSTER
+		int tmp = find_roll_to_hit(mon, uattk->aatyp, uwep, &attknum, &armorpenalty);
+		int dieroll = rnd(20);
+		int mhit = (tmp > dieroll || u.uswallow);
+
+		/* Cleaver attacks three spots, 'mon' and one on either side of 'mon';
+		   it can't be part of dual-wielding but we guard against that anyway;
+		   cleave return value reflects status of primary target ('mon') */
+		if (uwep && uwep->oartifact == ART_CLEAVER && !u.twoweap
+			&& !u.uswallow && !u.ustuck && !NODIAG(u.umonnum))
+			return hitum_cleave(mon, uattk);
+
+		if (tmp > dieroll)
+			exercise(A_DEX, TRUE);
+		/* bhitpos is set up by caller */
+		malive = known_hitum(mon, uwep, &mhit, tmp, armorpenalty, uattk, dieroll);
+		if (wepbefore && !uwep)
+			wep_was_destroyed = TRUE;
+		(void)passive(mon, uwep, mhit, malive, AT_WEAP, wep_was_destroyed);
+
+		if (!malive || m_at(x, y) != mon || wep_was_destroyed)
+			break;
+	}
+
+	/* second attack for two-weapon combat; FOLLOWING IS OBSOLETE/JG: won't occur if Stormbringer
+	   overrode confirmation (assumes Stormbringer is primary weapon)
+	   or if the monster was killed or knocked to different location */
+	wep_was_destroyed = FALSE;
+	wepbefore = uarms;
+
+	if (u.twoweap && !(uwep && bimanual(uwep)) && malive && m_at(x, y) == mon) //&& !override_confirmation 
+	{
+		if (uarms && is_weapon(uarms))
+			You("strike with your left-hand weapon.");
+		else
+			You("strike with your left hand.");
+
+		int multistrike2 = 1;
+		int multistrikernd2 = 0;
+
+		if (uarms)
+		{
+			get_multishot_stats(&youmonst, uarms, uarms, FALSE, &multistrike2, &multistrikernd2);
+
+			if (multistrikernd2 > 0)
+				multistrike += rn2(multistrikernd + 1);
+		}
+		for (int strike2index = 0; strike2index < multistrike2; strike2index++)
+		{
+
+			if (strike2index > 0 && uarms)
+				pline("%s %s!", Yobjnam2(uarms, "strike"), strike2index == 1 ? "a second time" : strike2index == 2 ? "a third time" : "once more");
+
+			int tmp = find_roll_to_hit(mon, uattk->aatyp, uarms, &attknum,
+				&armorpenalty);
+			int dieroll = rnd(20);
+			int mhit = (tmp > dieroll || u.uswallow);
+			malive = known_hitum(mon, uarms, &mhit, tmp, armorpenalty, uattk,
+				dieroll);
+			/* second passive counter-attack only occurs if second attack hits */
+			if (mhit)
+				(void)passive(mon, uarms, mhit, malive, AT_WEAP, !uarms);
+
+			if (wepbefore && !uarms)
+				wep_was_destroyed = TRUE;
+
+			if (!malive || m_at(x, y) != mon || wep_was_destroyed)
+				break;
+		}
     }
     return malive;
 }
@@ -2879,7 +2929,7 @@ register struct monst *mon;
 {
     struct attack *mattk, alt_attk;
     struct obj *weapon, **originalweapon;
-    boolean altwep = FALSE, weapon_used = FALSE, odd_claw = TRUE;
+    boolean altwep = FALSE, weapon_used = FALSE, weapon2_used = FALSE, odd_claw = TRUE;
     int i, tmp, armorpenalty, sum[NATTK], nsum = 0, dhit = 0, attknum = 0;
     int dieroll, multi_claw = 0;
 
@@ -2916,6 +2966,10 @@ register struct monst *mon;
              * the use of most special abilities, either.
              * If monster has multiple claw attacks, only one can use weapon.
              */
+
+			if(weapon_used)
+				weapon2_used = TRUE;
+
             weapon_used = TRUE;
             /* Potential problem: if the monster gets multiple weapon attacks,
              * we currently allow the player to get each of these as a weapon
@@ -2935,41 +2989,70 @@ register struct monst *mon;
             if (!weapon) /* no need to go beyond no-gloves to rings; not ...*/
                 originalweapon = &uarmg; /*... subject to erosion damage */
 
-            tmp = find_roll_to_hit(mon, AT_WEAP, weapon, &attknum,
-                                   &armorpenalty);
-            dieroll = rnd(20);
-            dhit = (tmp > dieroll || u.uswallow);
-            /* caller must set bhitpos */
-			//DAMAGE IS DONE HERE FOR WEAPON
-            if (!known_hitum(mon, weapon, &dhit, tmp,
-                             armorpenalty, mattk, dieroll)) {
-                /* enemy dead, before any special abilities used */
-                sum[i] = 2;
-                break;
-            } else
-                sum[i] = dhit;
-            /* originalweapon points to an equipment slot which might
-               now be empty if the weapon was destroyed during the hit;
-               passive(,weapon,...) won't call passive_obj() in that case */
-            weapon = *originalweapon; /* might receive passive erosion */
-            /* might be a worm that gets cut in half; if so, early return */
-            if (m_at(u.ux + u.dx, u.uy + u.dy) != mon) {
-                i = NATTK; /* skip additional attacks */
-                /* proceed with uswapwep->cursed check, then exit loop */
-                goto passivedone;
-            }
-            /* Do not print "You hit" message; known_hitum already did it. */
-            if (dhit && mattk->adtyp != AD_SPEL && mattk->adtyp != AD_PHYS)
-				sum[i] = damageum(mon, mattk, 0); //SPECIAL EFFECTS ARE DONE HERE FOR SPECIALS AFTER HITUM
+			int multistrike = 1;
+			int multistrikernd = 0;
+
+			if (weapon)
+			{
+				get_multishot_stats(&youmonst, weapon, weapon, FALSE, &multistrike, &multistrikernd);
+
+				if (multistrikernd > 0)
+					multistrike += rn2(multistrikernd + 1);
+			}
+
+			for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
+			{
+				if (strikeindex > 0 && weapon)
+					pline("%s %s!", Yobjnam2(weapon, "strike"), strikeindex == 1 ? "a second time" : strikeindex == 2 ? "a third time" : "once more");
+
+
+				tmp = find_roll_to_hit(mon, AT_WEAP, weapon, &attknum,
+					&armorpenalty);
+				dieroll = rnd(20);
+				dhit = (tmp > dieroll || u.uswallow);
+				/* caller must set bhitpos */
+				//DAMAGE IS DONE HERE FOR WEAPON
+				if (!known_hitum(mon, weapon, &dhit, tmp,
+					armorpenalty, mattk, dieroll)) {
+					/* enemy dead, before any special abilities used */
+					sum[i] = 2;
+					break; // This used to be switch break, but works still by getting out of for loop
+				}
+				else
+					sum[i] = dhit;
+				/* originalweapon points to an equipment slot which might
+				   now be empty if the weapon was destroyed during the hit;
+				   passive(,weapon,...) won't call passive_obj() in that case */
+				weapon = *originalweapon; /* might receive passive erosion */
+				/* might be a worm that gets cut in half; if so, early return */
+				if (m_at(u.ux + u.dx, u.uy + u.dy) != mon) {
+					i = NATTK; /* skip additional attacks */
+					/* proceed with uswapwep->cursed check, then exit loop */
+					goto passivedone;
+				}
+				/* Do not print "You hit" message; known_hitum already did it. */
+				if (dhit && mattk->adtyp != AD_SPEL && mattk->adtyp != AD_PHYS)
+					sum[i] = damageum(mon, mattk, 0); //SPECIAL EFFECTS ARE DONE HERE FOR SPECIALS AFTER HITUM
+			}
             break;
         case AT_CLAW:
             if (uwep && !cantwield(youmonst.data) && !weapon_used)
                 goto use_weapon;
-            /*FALLTHRU*/
+			if (uarms && u.twoweap && !cantwield(youmonst.data) && weapon_used && !weapon2_used)
+			{
+				weapon2_used = TRUE;
+				goto use_weapon;
+			}
+			/*FALLTHRU*/
         case AT_TUCH:
             if (uwep && youmonst.data->mlet == S_LICH && !weapon_used)
                 goto use_weapon;
-            /*FALLTHRU*/
+			if (uarms && u.twoweap && youmonst.data->mlet == S_LICH && weapon_used && !weapon2_used)
+			{
+				weapon2_used = TRUE;
+				goto use_weapon;
+			}
+			/*FALLTHRU*/
 		case AT_SMMN:
 			sum[i] = damageum(mon, mattk, 0); //SPECIAL EFFECTS ARE DONE HERE FOR SPECIALS AFTER HITUM
 			break;

@@ -634,6 +634,8 @@ newgame()
     load_qtlist();          /* load up the quest text info */
     /* quest_init();  --  Now part of role_init() */
 
+	encounter_init();		/* initialize encounters and force linkage */
+
     mklev();
 	struct mkroom* croom = upstairs_room;
     u_on_upstairs();

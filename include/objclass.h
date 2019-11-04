@@ -42,6 +42,105 @@ enum multigen_types {
 	MULTIGEN_1D4_4		= 32
 };
 
+enum multishot_types {
+	MULTISHOT_NONE = 0,
+	MULTISHOT_LAUNCHER_1D2_NOSKILL = 1,
+	MULTISHOT_LAUNCHER_2_NOSKILL = 2,
+	MULTISHOT_LAUNCHER_1D2_1_NOSKILL = 3,
+	MULTISHOT_LAUNCHER_3_NOSKILL = 4,
+	MULTISHOT_LAUNCHER_1D3_NOSKILL = 5,
+	MULTISHOT_THROWN_1D2_NOSKILL = 6,
+	MULTISHOT_THROWN_2_NOSKILL = 7,
+	MULTISHOT_THROWN_1D2_1_NOSKILL = 8,
+	MULTISHOT_THROWN_3_NOSKILL = 9,
+	MULTISHOT_THROWN_1D3_NOSKILL = 10,
+	MULTISHOT_MELEE_1D2_NOSKILL = 11,
+	MULTISHOT_MELEE_2_NOSKILL = 12,
+	MULTISHOT_MELEE_1D2_1_NOSKILL = 13,
+	MULTISHOT_MELEE_3_NOSKILL = 14,
+	MULTISHOT_MELEE_1D3_NOSKILL = 15,
+	MULTISHOT_LAUNCHER_1D2_BASIC = 16, /* NOSKILL = no multishot */
+	MULTISHOT_THROWN_1D2_BASIC = 17,
+	MULTISHOT_MELEE_1D2_BASIC = 18,
+	MULTISHOT_LAUNCHER_2_SKILLED_1D2_BASIC = 19,
+	MULTISHOT_THROWN_2_SKILLED_1D2_BASIC = 20,
+	MULTISHOT_MELEE_2_SKILLED_1D2_BASIC = 21,
+	MULTISHOT_LAUNCHER_1D2_1_EXPERT_2_SKILLED_1D2_BASIC = 22,
+	MULTISHOT_THROWN_1D2_1_EXPERT_2_SKILLED_1D2_BASIC = 23,
+	MULTISHOT_MELEE_1D2_1_EXPERT_2_SKILLED_1D2_BASIC = 24,
+	MULTISHOT_LAUNCHER_3_EXPERT_2_SKILLED_1D2_BASIC = 25,
+	MULTISHOT_THROWN_3_EXPERT_2_SKILLED_1D2_BASIC = 26,
+	MULTISHOT_MELEE_3_EXPERT_2_SKILLED_1D2_BASIC = 27,
+	MULTISHOT_LAUNCHER_4_EXPERT_3_SKILLED_2_BASIC = 28,
+	MULTISHOT_THROWN_4_EXPERT_3_SKILLED_2_BASIC = 29,
+	MULTISHOT_MELEE_4_EXPERT_3_SKILLED_2_BASIC = 30,
+	MULTISHOT_LAUNCHER_1D2_SKILLED = 31, /* NOSKILL and BASIC = no multishot */
+	MULTISHOT_THROWN_1D2_SKILLED = 32,
+	MULTISHOT_MELEE_1D2_SKILLED = 33,
+	MULTISHOT_LAUNCHER_2_EXPERT_1D2_SKILLED = 34,
+	MULTISHOT_THROWN_2_EXPERT_1D2_SKILLED = 35,
+	MULTISHOT_MELEE_2_EXPERT_1D2_SKILLED = 36,
+	MULTISHOT_LAUNCHER_3_EXPERT_2_SKILLED = 37,
+	MULTISHOT_THROWN_3_EXPERT_2_SKILLED = 38,
+	MULTISHOT_MELEE_3_EXPERT_2_SKILLED = 39,
+	MULTISHOT_LAUNCHER_1D2_EXPERT = 40, /* NOSKILL and BASIC = no multishot */
+	MULTISHOT_THROWN_1D2_EXPERT = 41,
+	MULTISHOT_MELEE_1D2_EXPERT = 42,
+	MULTISHOT_LAUNCHER_2_EXPERT = 43, /* NOSKILL, BASIC, and SKILLED = no multishot */
+	MULTISHOT_THROWN_2_EXPERT = 44,
+	MULTISHOT_MELEE_2_EXPERT = 45,
+	MULTISHOT_LAUNCHER_2_BASIC = 46,
+	MULTISHOT_LAUNCHER_2_SKILLED = 47,
+	MULTISHOT_THROWN_2_BASIC = 48,
+	MULTISHOT_THROWN_2_SKILLED = 49,
+	MULTISHOT_MELEE_2_BASIC = 50,
+	MULTISHOT_MELEE_2_SKILLED = 51
+};
+
+static const char* multishot_style_names[] = {
+	"None", 
+	"1d2 when firing", "2 when firing", "1d2+1 when firing", "3 when firing", "1d3 when firing",
+	"1d2 when thrown", "2 when thrown", "1d2+1 when thrown", "3 when thrown", "1d3 when thrown",
+	"1d2 in melee", "2 in melee", "1d2+1 in melee", "3 in melee", "1d3 in melee",
+	"1d2 when firing with basic skill",
+	"1d2 when thrown with basic skill",
+	"1d2 in melee with basic skill",
+	"2 when firing with basic skill",
+	"2 when thrown with basic skill",
+	"2 in melee with basic skill",
+	"1d2/2/1d2+1 by skill level when firing",
+	"1d2/2/1d2+1 by skill level when thrown",
+	"1d2/2/1d2+1 by skill level in melee",
+	"1d2/2/3 by skill level when firing",
+	"1d2/2/3 by skill level when thrown",
+	"1d2/2/3 by skill level in melee",
+	"2/3/4 by skill level when firing",
+	"2/3/4 by skill level when thrown",
+	"2/3/4 by skill level in melee",
+	"1d2 when firing with skilled skill",
+	"1d2 when thrown with skilled skill",
+	"1d2 in melee with skilled skill",
+	"1/1d2/2 by skill level when firing",
+	"1/1d2/2 by skill level when thrown",
+	"1/1d2/2 by skill level in melee",
+	"1/2/3 by skill level when firing",
+	"1/2/3 by skill level when thrown",
+	"1/2/3 by skill level in melee",
+	"1d2 when firing with expert skill",
+	"1d2 when thrown with expert skill",
+	"1d2 in melee with expert skill",
+	"2 when firing with expert skill",
+	"2 when thrown with expert skill",
+	"2 in melee with expert skill",
+	"2 when firing with basic skill",
+	"2 when firing with skilled skill",
+	"2 when thrown with basic skill",
+	"2 when thrown with skilled skill",
+	"2 in melee with basic skill",
+	"2 in melee with skilled skill",
+};
+
+
 /* [misnamed] definition of a type of object; many objects are composites
    (liquid potion inside glass bottle, metal arrowhead on wooden shaft)
    and object definitions only specify one type on a best-fit basis */
@@ -316,7 +415,7 @@ struct objclass {
 #define oc_bonus_attributes oc_oc5					/* non-spellbooks: gives bonuses using spe / oc_oc6 to attributes and properties */
 #define oc_attribute_bonus oc_oc6					/* non-spellbooks: 0 => spe is used, otherise fixed bonus */
 #define oc_spell_casting_penalty oc_oc7				/* non-spells/wands: spell casting penalty when worn */
-#define oc_multishot_count oc_oc8					/* number of multishots provided by the launcher */
+#define oc_multishot_style oc_oc8					/* multishot style specifying when the weapon can multishot and how many times */
 
 #define BONUS_TO_STR 0x0001
 #define BONUS_TO_DEX 0x0002
@@ -345,7 +444,7 @@ struct objclass {
 /* oc_oc5 attributes giving bonus to using spe / oc_oc6 to attributes and properties */
 /* oc_oc6 modifier to oc_oc5: 0 => spe is used, otherise fixed bonus */
 /* oc_oc7 spell casting penalty */
-/* oc_oc8 multishot count */
+/* oc_oc8 multishot style */
 
 /* armor */
 #define oc_armor_category oc_subtyp					/* armor: (enum obj_armor_types) */
@@ -356,7 +455,7 @@ struct objclass {
 /* oc_oc5 attributes giving bonus to using spe / oc_oc6 to attributes and properties */
 /* oc_oc6 modifier to oc_oc5: 0 => spe is used, otherise fixed bonus */
 /* oc_oc7 spell casting penalty */
-/* oc_oc8 multishot count */
+/* oc_oc8 multishot style */
 
 /* comestibles and reagents (and other edibles) */
 #define oc_edible_subtype oc_oc1		/* edibles: is rotten, poisoned, et*/
@@ -517,12 +616,6 @@ struct objclass {
 #define O3_MANA_BONUS_DISRESPECTS_CHARACTERS		0x00000020
 #define O3_ATTRIBUTE_BONUS_DISRESPECTS_CHARACTERS	0x00000040
 #define O3_LUCK_DISRESPECTS_CHARACTERS				0x00000080
-
-#define O3_MULTISHOT_IS_RANDOM						0x00000100
-#define O3_MULTISHOT_REQUIRES_BASIC_SKILL			0x00000200
-#define O3_MULTISHOT_REQUIRES_SKILLED_SKILL			0x00000400
-#define O3_MULTISHOT_REQUIRES_EXPERT_SKILL			(O3_MULTISHOT_REQUIRES_BASIC_SKILL | O3_MULTISHOT_REQUIRES_SKILLED_SKILL)
-#define O3_MULTISHOT_REQUIRES_SKILL_MASK			(O3_MULTISHOT_REQUIRES_BASIC_SKILL | O3_MULTISHOT_REQUIRES_SKILLED_SKILL)
 
 #define O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS	0x00000800 /* wielding or wearing prohibits the revival of permitted targets */
 #define O3_PREVENTS_SUMMONING_BY_PERMITTED_TARGETS	0x00001000 /* TODO: wielding or wearing prohibits summoning by permitted targets */

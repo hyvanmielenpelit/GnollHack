@@ -505,10 +505,9 @@ boolean createcorpse;
 	case PM_RED_MOLD:
 	{
 		sporequan++;
-		sporequan++;
 		if(!rn2(2))
 		{
-			obj = mksobj_at(HEAP_OF_FUNGAL_SPORES, x, y, TRUE, FALSE);
+			obj = mksobj_at(HEAP_OF_SPORAL_POWDER, x, y, TRUE, FALSE);
 			obj->quan = sporequan > 1 ? rnd(sporequan) : 1;
 			obj->owt = weight(obj);
 		}
@@ -917,7 +916,7 @@ int reagentstyle; //0 = all, 1 = priest only, 2 = all but no priest
 			if (reagentstyle == 1)
 				otyp = SPRIG_OF_WOLFSBANE;
 			else
-				otyp = HEAP_OF_FUNGAL_SPORES;
+				otyp = HEAP_OF_SPORAL_POWDER;
 			break;
 		case 11:
 			otyp = FEATHER;
@@ -2639,7 +2638,7 @@ boolean was_swallowed; /* digestion */
 
 	if(leaves_corpses_randomly(mdat))
 	{
-		tmp = 2 + ((mdat->geno & G_FREQ) < 2) + verysmall(mdat);
+		tmp = 5; // +((mdat->geno & G_FREQ) < 2); // +verysmall(mdat);
 		return (boolean)!rn2(tmp);
 	}
 

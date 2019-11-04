@@ -394,19 +394,20 @@ register struct obj* obj;
 		int baserange = 0;
 
 		/* Ammunition range */
-		if (objects[obj->otyp].oc_multishot_count > 1) {
+		if (objects[obj->otyp].oc_multishot_style > 0) {
 
-			Sprintf(buf, "%s  %s%d", 
+			Sprintf(buf, "%s  %s", 
 				is_launcher(obj) ? "Shots per round:      " : 
-				throwing_weapon(obj) ? "Throws per round:     " : "Attacks per round:     ",
-				(objects[obj->otyp].oc_flags3& O3_MULTISHOT_IS_RANDOM) ? "Up to " : "", objects[obj->otyp].oc_multishot_count);
-
+				throwing_weapon(obj) ? "Throws per round:     " : "Attacks per round:    ", multishot_style_names[objects[obj->otyp].oc_multishot_style]);
+			/*
 			if((objects[obj->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_SKILL_MASK) == O3_MULTISHOT_REQUIRES_EXPERT_SKILL)
 				Sprintf(eos(buf), " (requires expert skill)");
 			else if ((objects[obj->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_SKILL_MASK) == O3_MULTISHOT_REQUIRES_SKILLED_SKILL)
 				Sprintf(eos(buf), " (requires skilled skill)");
 			else if ((objects[obj->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_SKILL_MASK) == O3_MULTISHOT_REQUIRES_BASIC_SKILL)
 				Sprintf(eos(buf), " (requires basic skill)");
+			*/
+
 			txt = buf;
 			putstr(datawin, 0, txt);
 		}

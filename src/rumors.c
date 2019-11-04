@@ -649,7 +649,7 @@ do_oracle_enlightenment(oracl)
 struct monst* oracl;
 {
 	long umoney;
-	int u_pay, enl_cost = 75;
+	int u_pay, enl_cost = objects[POT_ENLIGHTENMENT].oc_cost + 5 * u.ulevel;
 	char qbuf[QBUFSZ];
 
 	multi = 0;

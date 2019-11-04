@@ -1187,6 +1187,9 @@ u_init()
 		/*Gnolls can smell simple potions*/
 		knows_object(POT_FRUIT_JUICE);
 		knows_object(POT_BOOZE);
+		P_MAX_SKILL(P_FLAIL) = P_EXPERT;
+		if(P_MAX_SKILL(P_CROSSBOW) < P_SKILLED)
+			P_MAX_SKILL(P_CROSSBOW) = P_SKILLED;
 		break;
 
     case PM_ORC:
