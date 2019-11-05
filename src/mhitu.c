@@ -748,30 +748,55 @@ register struct monst *mtmp;
                  * wields when 2 spaces away, but it can be
                  * teleported or whatever....
                  */
-                if (mtmp->weapon_check == NEED_WEAPON || !MON_WEP(mtmp)) {
+                if (mtmp->weapon_check == NEED_WEAPON || !MON_WEP(mtmp)) 
+				{
                     mtmp->weapon_check = NEED_HTH_WEAPON;
                     /* mon_wield_item resets weapon_check as appropriate */
                     if (mon_wield_item(mtmp) != 0)
                         break;
                 }
-                if (foundyou) {
+                if (foundyou)
+				{
 					weaponattackcount++;
 					if(is_multiweaponmonster(mtmp->data))
 						mon_currwep = select_multiweapon_nth_hwep(mtmp, weaponattackcount);
 					else
 	                    mon_currwep = MON_WEP(mtmp);
 
-					if (mon_currwep) {
+					int multistrike = 1;
+					int multistrikernd = 0;
+
+					if (mon_currwep) 
+					{
                         hittmp = hitval(mon_currwep, &youmonst, mtmp);
                         tmp += hittmp;
-                        mswings(mtmp, mon_currwep);
+
+						get_multishot_stats(mtmp, mon_currwep, mon_currwep, FALSE, &multistrike, &multistrikernd);
+
                     }
-					//TO-HIT IS DONE HERE
-                    if (tmp > (j = dieroll = rnd(20 + i)))
-                        sum[i] = hitmu(mtmp, mattk, mon_currwep);
-                    else
-                        missmu(mtmp, (tmp == j), mattk);
-                } else {
+
+					if (multistrikernd > 0)
+						multistrike += rn2(multistrikernd + 1);
+
+					for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
+					{
+						if (mon_currwep)
+						{
+							if (strikeindex == 0)
+								mswings(mtmp, mon_currwep);
+							else
+								pline("%s %s %s!", s_suffix(Monnam(mtmp)), aobjnam(mon_currwep, "strike"), strikeindex == 1 ? "a second time" : strikeindex == 2 ? "a third time" : "once more");
+						}
+							
+						//TO-HIT IS DONE HERE
+						if (tmp > (j = dieroll = rnd(20 + i)))
+							sum[i] = hitmu(mtmp, mattk, mon_currwep);
+						else
+							missmu(mtmp, (tmp == j), mattk);
+					}
+                } 
+				else
+				{
                     wildmiss(mtmp, mattk);
                     /* skip any remaining non-spell attacks */
                     skipnonmagc = TRUE;
@@ -1391,7 +1416,7 @@ register struct obj* omonwep;
 	dmg = 0;
     /*  First determine the base damage done */
 	struct obj* mweapon = omonwep; // MON_WEP(mtmp);
-	if (mweapon && mattk->aatyp == AT_WEAP)
+	if (mweapon)
 	{
 		//Use weapon damage
 		if (is_launcher(mweapon))
@@ -1414,11 +1439,12 @@ register struct obj* omonwep;
 	//Get damage bonus in both cases if physical
 	if(mattk->adtyp == AD_PHYS || mattk->adtyp == AD_DRIN)
 	{
-		if(mattk->aatyp == AT_WEAP || mattk->aatyp == AT_HUGS)
+		if(omonwep || mattk->aatyp == AT_WEAP || mattk->aatyp == AT_HUGS)
 			dmg += mdbon(mtmp);
 		else
 			dmg += mdbon(mtmp) / 2;
 	}
+
 	//Let's add this even if a weapon is being used
     if ((is_undead(mdat) || is_vampshifter(mtmp)) && midnight())
 	{

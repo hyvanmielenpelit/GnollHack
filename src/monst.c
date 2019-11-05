@@ -2938,7 +2938,7 @@ struct permonst _mons2[] = {
         106, HI_LORD),
     MON("Yeenoghu", S_DEMON, LVL(56, 18, -5, 17, 80, -15),
         (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
-        A(ATTK(AT_WEAP, AD_PHYS, 3, 6, 0, 0), ATTK(AT_WEAP, AD_CONF, 2, 8, 0, 0),
+        A(ATTK(AT_WEAP, AD_PHYS, 3, 6, 0, 0), ATTK(AT_CLAW, AD_CONF, 2, 8, 0, 0),
           ATTK(AT_CLAW, AD_PLYS, 1, 6, 0, 0), ATTK(AT_MAGC, AD_MAGM, 2, 6, 0, 0),
 		  ATTK(AT_SMMN, AD_DMNS, 0, 0, 0, 10), ATTK(AT_SMMN, AD_GNOL, 0, 0, 0, 30),
 		  ATTK(AT_SMMN, AD_GHUL, 0, 0, 0, 15), NO_ATTK),

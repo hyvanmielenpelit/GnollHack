@@ -16,16 +16,14 @@ static const char brief_feeling[] =
     "have a %s feeling for a moment, then it passes.";
 
 STATIC_DCL char *FDECL(mon_nam_too, (char *, struct monst *, struct monst *));
-STATIC_DCL int FDECL(hitmm, (struct monst *, struct monst *,
-                             struct attack *));
+STATIC_DCL int FDECL(hitmm, (struct monst *, struct monst *, struct attack *, struct obj*));
 STATIC_DCL int FDECL(gazemm, (struct monst *, struct monst *,
                               struct attack *));
 STATIC_DCL int FDECL(gulpmm, (struct monst *, struct monst *,
                               struct attack *));
 STATIC_DCL int FDECL(explmm, (struct monst *, struct monst *,
                               struct attack *));
-STATIC_DCL int FDECL(mdamagem, (struct monst *, struct monst *,
-                                struct attack *));
+STATIC_DCL int FDECL(mdamagem, (struct monst *, struct monst *, struct attack *, struct obj*));
 STATIC_DCL void FDECL(mswingsm, (struct monst *, struct monst *,
                                  struct obj *));
 STATIC_DCL void FDECL(noises, (struct monst *, struct attack *));
@@ -355,6 +353,8 @@ register struct monst *magr, *mdef;
      */
     magr->mlstmv = monstermoves;
 
+	int weaponattackcount = 0;
+
 	int tmp2 = tmp;
     /* Now perform all attacks for the monster. */
     for (i = 0; i < NATTK; i++) {
@@ -380,12 +380,27 @@ register struct monst *magr, *mdef;
                     return 0;
             }
             possibly_unwield(magr, FALSE);
-            otmp = MON_WEP(magr);
+//            otmp = MON_WEP(magr);
 
-            if (otmp) {
+			weaponattackcount++;
+			if (is_multiweaponmonster(magr->data))
+				otmp = select_multiweapon_nth_hwep(magr, weaponattackcount);
+			else
+				otmp = MON_WEP(magr);
+
+			int multistrike = 1;
+			int multistrikernd = 0;
+
+            if (otmp) 
+			{
                 if (vis)
                     mswingsm(magr, mdef, otmp);
                 tmp += hitval(otmp, mdef, magr);
+
+				get_multishot_stats(magr, otmp, otmp, FALSE, &multistrike, &multistrikernd);
+
+				if (multistrikernd > 0)
+					multistrike += rn2(multistrikernd + 1);
 			}
             /*FALLTHRU*/
         case AT_CLAW:
@@ -411,71 +426,93 @@ register struct monst *magr, *mdef;
 
 			//Give strength and dexerity bonus to hit
 			tmp += mabon(magr);
-			
-			//TO-HIT IS DETERMINED HERE
-			dieroll = rnd(20 + i);
-            strike = (tmp > dieroll);
 
-			if (strike) {
-				res[i] = hitmm(magr, mdef, mattk);
+			int mdef_x = mdef->mx;
+			int mdef_y = mdef->my;
 
-				/* Check if the weapon shatters */
-								/* Check if the object should shatter */
-				struct obj* omonwep = MON_WEP(magr);
+			for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
+			{
+				boolean endforloop = FALSE;
 
-				if (omonwep && omonwep->where == OBJ_MINVENT && objects[omonwep->otyp].oc_material == MAT_GLASS
-					&& !(objects[omonwep->otyp].oc_flags & O1_INDESTRUCTIBLE)
-					&& !is_quest_artifact(omonwep)
-					&& !omonwep->oartifact
-					)
+				if (otmp)
 				{
-					/* Shattering is done below, here just the message*/
-					if (omonwep->quan == 1)
-						pline("%s %s shatters from the blow!", s_suffix(Monnam(magr)), xname(omonwep));
+					if (strikeindex == 0)
+						; //Swinging message is already done above
 					else
-						pline("One of %s %s shatters from the blow!", s_suffix(mon_nam(magr)), xname(omonwep));
-
-					m_useup(magr, omonwep);
+						pline("%s %s %s!", s_suffix(Monnam(magr)), aobjnam(otmp, "strike"), strikeindex == 1 ? "a second time" : strikeindex == 2 ? "a third time" : "once more");
 				}
-				else if (omonwep && (objects[omonwep->otyp].oc_aflags & A1_ITEM_VANISHES_ON_HIT)
-					&& (
-						!(objects[omonwep->otyp].oc_aflags & A1_ITEM_VANISHES_ONLY_IF_PERMITTED_TARGET)
-						|| ((objects[omonwep->otyp].oc_aflags & A1_ITEM_VANISHES_ONLY_IF_PERMITTED_TARGET) && eligible_for_extra_damage(omonwep, mdef, magr))
-					   )
-					)
+
+				//TO-HIT IS DETERMINED HERE
+				dieroll = rnd(20 + i);
+				strike = (tmp > dieroll);
+
+				if (strike)
 				{
-					if(omonwep->where == OBJ_MINVENT)
+					struct obj* omonwep = otmp;
+					res[i] = hitmm(magr, mdef, mattk, otmp);
+
+					/* Check if the weapon shatters */
+					/* Check if the object should shatter */
+
+					if (omonwep && omonwep->where == OBJ_MINVENT && objects[omonwep->otyp].oc_material == MAT_GLASS
+						&& !(objects[omonwep->otyp].oc_flags & O1_INDESTRUCTIBLE)
+						&& !is_quest_artifact(omonwep)
+						&& !omonwep->oartifact
+						)
+					{
+						/* Shattering is done below, here just the message*/
+						if (omonwep->quan == 1)
+							pline("%s %s shatters from the blow!", s_suffix(Monnam(magr)), xname(omonwep));
+						else
+							pline("One of %s %s shatters from the blow!", s_suffix(mon_nam(magr)), xname(omonwep));
+
 						m_useup(magr, omonwep);
-					else if (omonwep->where == OBJ_FREE)
-						obfree(omonwep, (struct obj*)0);
+						endforloop = TRUE;
+					}
+					else if (omonwep && (objects[omonwep->otyp].oc_aflags & A1_ITEM_VANISHES_ON_HIT)
+						&& (
+							!(objects[omonwep->otyp].oc_aflags & A1_ITEM_VANISHES_ONLY_IF_PERMITTED_TARGET)
+							|| ((objects[omonwep->otyp].oc_aflags & A1_ITEM_VANISHES_ONLY_IF_PERMITTED_TARGET) && eligible_for_extra_damage(omonwep, mdef, magr))
+							)
+						)
+					{
+						if (omonwep->where == OBJ_MINVENT)
+							m_useup(magr, omonwep);
+						else if (omonwep->where == OBJ_FREE)
+							obfree(omonwep, (struct obj*)0);
+						endforloop = TRUE;
+					}
+					if ((mdef->data == &mons[PM_BLACK_PUDDING]
+						|| mdef->data == &mons[PM_BROWN_PUDDING])
+						&& (otmp && (objects[otmp->otyp].oc_material == MAT_IRON
+							|| objects[otmp->otyp].oc_material == MAT_METAL))
+						&& mdef->mhp > 1
+						&& !mdef->mcancelled) {
+						struct monst* mclone;
+						if ((mclone = clone_mon(mdef, 0, 0)) != 0) {
+							if (vis && canspotmon(mdef)) {
+								char buf[BUFSZ];
 
+								Strcpy(buf, Monnam(mdef));
+								pline("%s divides as %s hits it!", buf,
+									mon_nam(magr));
+							}
+							mintrap(mclone);
+						}
+					}
 				}
-                if ((mdef->data == &mons[PM_BLACK_PUDDING]
-                     || mdef->data == &mons[PM_BROWN_PUDDING])
-                    && (otmp && (objects[otmp->otyp].oc_material == MAT_IRON
-                                 || objects[otmp->otyp].oc_material == MAT_METAL))
-                    && mdef->mhp > 1
-                    && !mdef->mcancelled) {
-                    struct monst *mclone;
-                    if ((mclone = clone_mon(mdef, 0, 0)) != 0) {
-                        if (vis && canspotmon(mdef)) {
-                            char buf[BUFSZ];
+				else
+					missmm(magr, mdef, mattk);
 
-                            Strcpy(buf, Monnam(mdef));
-                            pline("%s divides as %s hits it!", buf,
-                                  mon_nam(magr));
-                        }
-                        mintrap(mclone);
-                    }
-                }
-            } else
-                missmm(magr, mdef, mattk);
+				if(endforloop || DEADMONSTER(mdef) || DEADMONSTER(magr) || m_at(mdef_x, mdef_y) != mdef)
+					break;
+			}
             break;
 
         case AT_HUGS: /* automatic if prev two attacks succeed */
             strike = (i >= 2 && res[i - 1] == MM_HIT && res[i - 2] == MM_HIT);
             if (strike)
-                res[i] = hitmm(magr, mdef, mattk);
+                res[i] = hitmm(magr, mdef, mattk, (struct obj*)0);
 
             break;
 
@@ -570,9 +607,10 @@ register struct monst *magr, *mdef;
 
 /* Returns the result of mdamagem(). */
 STATIC_OVL int
-hitmm(magr, mdef, mattk)
+hitmm(magr, mdef, mattk, omonwep)
 register struct monst *magr, *mdef;
 struct attack *mattk;
+struct obj* omonwep;
 {
     if (vis) {
         int compat;
@@ -625,7 +663,7 @@ struct attack *mattk;
     } else
         noises(magr, mattk);
 
-    return mdamagem(magr, mdef, mattk);
+    return mdamagem(magr, mdef, mattk, omonwep);
 }
 
 /* Returns the same values as mdamagem(). */
@@ -679,7 +717,7 @@ struct attack *mattk;
         }
     }
 
-    return mdamagem(magr, mdef, mattk);
+    return mdamagem(magr, mdef, mattk, (struct obj*)0);
 }
 
 /* return True if magr is allowed to swallow mdef, False otherwise */
@@ -770,7 +808,7 @@ register struct attack *mattk;
     newsym(ax, ay); /* erase old position */
     newsym(dx, dy); /* update new position */
 
-    status = mdamagem(magr, mdef, mattk);
+    status = mdamagem(magr, mdef, mattk, (struct obj*)0);
 
     if ((status & (MM_AGR_DIED | MM_DEF_DIED))
         == (MM_AGR_DIED | MM_DEF_DIED)) {
@@ -818,7 +856,7 @@ struct attack *mattk;
     else
         noises(magr, mattk);
 
-    result = mdamagem(magr, mdef, mattk);
+    result = mdamagem(magr, mdef, mattk, (struct obj*)0);
 
     /* Kill off aggressor if it didn't die. */
     if (!(result & MM_AGR_DIED)) {
@@ -844,9 +882,10 @@ struct attack *mattk;
  *  See comment at top of mattackm(), for return values.
  */
 STATIC_OVL int
-mdamagem(magr, mdef, mattk)
+mdamagem(magr, mdef, mattk, omonwep)
 register struct monst *magr, *mdef;
 register struct attack *mattk;
+register struct obj* omonwep;
 {
     struct obj *obj;
     char buf[BUFSZ];
@@ -861,9 +900,9 @@ register struct attack *mattk;
 
 	int tmp = 0, extratmp = 0;
 
-	struct obj* mweapon = MON_WEP(magr);
+	struct obj* mweapon = omonwep; // MON_WEP(magr);
 
-	if (mweapon && mattk->aatyp == AT_WEAP)
+	if (mweapon)
 	{
 		if (is_launcher(mweapon))
 			tmp += d(1, 2);
@@ -884,7 +923,7 @@ register struct attack *mattk;
 	//Damage bonus is obtained in any case
 	if (mattk->adtyp == AD_PHYS || mattk->adtyp == AD_DRIN)
 	{
-		if (mattk->aatyp == AT_WEAP || mattk->aatyp == AT_HUGS)
+		if (omonwep || mattk->aatyp == AT_WEAP || mattk->aatyp == AT_HUGS)
 			tmp += mdbon(magr);
 		else
 			tmp += mdbon(magr) / 2;
