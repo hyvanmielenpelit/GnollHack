@@ -82,87 +82,126 @@ NEARDATA struct objdescr obj_descr[] =
 NEARDATA struct objclass objects[] =
 #endif
 {
-/* dummy object[0] -- description [2nd arg] *must* be NULL */
-OBJECT(OBJ("strange object", None), None, None, \
-       BITS(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, P_NONE, 0), \
-	   NO_POWER, NO_POWER, NO_POWER, ILLOBJ_CLASS, 0, MULTIGEN_SINGLE, 0, 0, 0, \
-	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
-	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
-	   0, 0, \
-	   0, 0, 0, 0, \
-	   PERMITTED_ALL, ALL_TARGETS, O1_NONE, O2_NONE, O3_NONE),
-
-/* weapons ... */
-#define WEAPON(name,desc,nmkn,mrg,mgc,bi,prob,multigen,wt,cost,\
-			dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,critpct, \
-			hitbon,mcadj,throwrange,acbon,mcbon,manabon,hpbon,bonusattrs,abon,splcastpen,multicount,\
-			power,power2,power3,typ,sub,skill,metal,color,\
-			flags,flags2,flags3,powconfermask,permittedtargets) \
-    OBJECT(OBJ(name,desc), None, None,                                         \
-           BITS(nmkn, mrg, 1, 0, mgc, 1, 0, 0, bi, 0, typ, sub, skill, metal),  \
-           power, power2, power3, WEAPON_CLASS, prob, multigen, 0, wt, cost, \
-		   dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, critpct, \
-		   hitbon, mcadj, 0, throwrange, acbon, mcbon, manabon, hpbon, bonusattrs, abon, splcastpen, multicount, \
-		   wt, color, \
+	/* dummy object[0] -- description [2nd arg] *must* be NULL */
+	OBJECT(OBJ("strange object", None), None, None, \
+		   BITS(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, P_NONE, 0), \
+		   NO_POWER, NO_POWER, NO_POWER, ILLOBJ_CLASS, 0, MULTIGEN_SINGLE, 0, 0, 0, \
+		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
+		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
+		   0, 0, \
 		   0, 0, 0, 0, \
-		   powconfermask,permittedtargets, flags, flags2, flags3)
+		   PERMITTED_ALL, ALL_TARGETS, O1_NONE, O2_NONE, O3_NONE),
+
+	/* weapons ... */
+	#define WEAPON(name,desc,nmkn,mrg,mgc,bi,prob,multigen,wt,cost,\
+				dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,critpct, \
+				hitbon,mcadj,throwrange,acbon,mcbon,manabon,hpbon,bonusattrs,abon,splcastpen,multicount,\
+				power,power2,power3,typ,sub,skill,metal,color,\
+				flags,flags2,flags3,powconfermask,permittedtargets) \
+	    OBJECT(OBJ(name,desc), None, None,                                         \
+	           BITS(nmkn, mrg, 1, 0, mgc, 1, 0, 0, bi, 0, typ, sub, skill, metal),  \
+	           power, power2, power3, WEAPON_CLASS, prob, multigen, 0, wt, cost, \
+			   dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, critpct, \
+			   hitbon, mcadj, 0, throwrange, acbon, mcbon, manabon, hpbon, bonusattrs, abon, splcastpen, multicount, \
+			   wt, color, \
+			   0, 0, 0, 0, \
+			   powconfermask,permittedtargets, flags, flags2, flags3)
 
 
-#define PROJECTILE(name,desc,  nmkn,mgc,prob,multigen,wt,cost,  dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,critpct,  hitbon,mcadj,  metal,sub,launcher_sub,skill,color,  flags,flags2,flags3, permittedtargets) \
-    OBJECT(OBJ(name,desc), None, None,   \
-           BITS(nmkn, 1, 1, 0, mgc, 1, 0, 0, 0, 0, PIERCE, sub, skill, metal), \
-           NO_POWER, NO_POWER, NO_POWER, WEAPON_CLASS, prob, multigen, 0, wt, cost, \
-		   dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, critpct, \
-		   hitbon, mcadj, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
-		   wt, color, \
-		   launcher_sub, 0, 0, 0, \
-		   PERMITTED_ALL, permittedtargets, flags, flags2, flags3)
+	#define PROJECTILE(name,desc,  nmkn,mgc,prob,multigen,wt,cost,  dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,critpct,  hitbon,mcadj,  metal,sub,launcher_sub,skill,color,  flags,flags2,flags3, permittedtargets) \
+	    OBJECT(OBJ(name,desc), None, None,   \
+	           BITS(nmkn, 1, 1, 0, mgc, 1, 0, 0, 0, 0, PIERCE, sub, skill, metal), \
+	           NO_POWER, NO_POWER, NO_POWER, WEAPON_CLASS, prob, multigen, 0, wt, cost, \
+			   dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, critpct, \
+			   hitbon, mcadj, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
+			   wt, color, \
+			   launcher_sub, 0, 0, 0, \
+			   PERMITTED_ALL, permittedtargets, flags, flags2, flags3)
 
 
-#define BOW(name,desc,nmkn,mgc,bi,prob,multigen,wt,cost,dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,critpct,hitbon,mcadj,fixeddmgbon,launchrange,manabon,hpbon,bonusattrs,abon,splcastpen,multicount,power,power2,power3,metal,sub,skill,color,flags,flags2,flags3,powconfermask,permittedtargets) \
-    OBJECT(OBJ(name,desc), None, None,                                         \
-           BITS(nmkn, 0, 1, 0, mgc, 1, 0, 0, bi, 0, 0, sub, skill, metal),      \
-           power, power2, power3, WEAPON_CLASS, prob, multigen, 0, wt, cost,                            \
-           dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, critpct, \
-		   hitbon, mcadj, fixeddmgbon, launchrange, 0, 0, manabon, hpbon, bonusattrs, abon, splcastpen, multicount,  \
-		   color, wt, \
-		   0, 0, 0, 0, \
-		   powconfermask, permittedtargets, flags, flags2, flags3)
+	#define BOW(name,desc,nmkn,mgc,bi,prob,multigen,wt,cost,dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,critpct,hitbon,mcadj,fixeddmgbon,launchrange,manabon,hpbon,bonusattrs,abon,splcastpen,multicount,power,power2,power3,metal,sub,skill,color,flags,flags2,flags3,powconfermask,permittedtargets) \
+	    OBJECT(OBJ(name,desc), None, None,                                         \
+	           BITS(nmkn, 0, 1, 0, mgc, 1, 0, 0, bi, 0, 0, sub, skill, metal),      \
+	           power, power2, power3, WEAPON_CLASS, prob, multigen, 0, wt, cost,                            \
+	           dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, critpct, \
+			   hitbon, mcadj, fixeddmgbon, launchrange, 0, 0, manabon, hpbon, bonusattrs, abon, splcastpen, multicount,  \
+			   color, wt, \
+			   0, 0, 0, 0, \
+			   powconfermask, permittedtargets, flags, flags2, flags3)
 
-/* Note: for weapons that don't do an even die of damage (ex. 2-7 or 3-18)
-   the extra damage is added on in weapon.c, not here! */
+	/* Note: for weapons that don't do an even die of damage (ex. 2-7 or 3-18)
+	   the extra damage is added on in weapon.c, not here! */
 
-#define P PIERCE
-#define S SLASH
-#define B WHACK
+	#define P PIERCE
+	#define S SLASH
+	#define B WHACK
 
 /* missiles; materiel reflects the arrowhead, not the shaft */
 PROJECTILE("arrow", None,
-           1, 0, 38, MULTIGEN_1D6_5, 1, 2, AD_PHYS,	1, 6, 0,   1, 6, 0,		 AD_PHYS,	0, 0, 0, A1_NONE, 0, 0, 0, MAT_IRON, WEP_ARROW, WEP_BOW, -P_BOW, HI_METAL, O1_NONE, O2_NONE, O3_NONE, ALL_TARGETS),
+	1, 0, 38, MULTIGEN_1D6_5, 1, 2,
+	AD_PHYS, 1, 6, 0, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,
+	0, 0, MAT_IRON, WEP_ARROW, WEP_BOW, -P_BOW, HI_METAL, 
+	O1_NONE, O2_NONE, O3_NONE, ALL_TARGETS),
 PROJECTILE("elven arrow", "runed arrow",
-           0, 0, 20, MULTIGEN_1D6_5, 1, 2, AD_PHYS,	1, 7, 0,	1, 6, 0,	 AD_PHYS,	0, 0, 0, A1_NONE, 0, 0, 0, MAT_WOOD, WEP_ARROW, WEP_BOW, -P_BOW, HI_WOOD, O1_NONE, O2_ELVEN_ITEM, O3_NONE, ALL_TARGETS),
+	0, 0, 20, MULTIGEN_1D6_5, 1, 2, 
+	AD_PHYS, 1, 7, 0, 1, 6, 0,	 AD_PHYS,	0, 0, 0, A1_NONE, 0, 
+	0, 0, MAT_WOOD, WEP_ARROW, WEP_BOW, -P_BOW, HI_WOOD, 
+	O1_NONE, O2_ELVEN_ITEM, O3_NONE, ALL_TARGETS),
 PROJECTILE("orcish arrow", "crude arrow",
-           0, 0, 20, MULTIGEN_2D6_3, 1, 2, AD_PHYS,	1, 5, 0,	1, 6, 0,	 AD_PHYS,	0, 0, 0, A1_NONE, 0, 0, 0, MAT_IRON, WEP_ARROW, WEP_BOW, -P_BOW, CLR_BLACK, O1_NONE, O2_ORCISH_ITEM, O3_NONE, ALL_TARGETS),
+	0, 0, 20, MULTIGEN_2D6_3, 1, 2, 
+	AD_PHYS, 1, 5, 0, 1, 6, 0, AD_PHYS,	0, 0, 0, A1_NONE, 0, 
+	0, 0, MAT_IRON, WEP_ARROW, WEP_BOW, -P_BOW, CLR_BLACK, 
+	O1_NONE, O2_ORCISH_ITEM, O3_NONE, ALL_TARGETS),
 PROJECTILE("silver arrow", None,
-           1, 0, 8, MULTIGEN_1D4, 1, 5,  AD_PHYS,	1, 6, 0,	1, 6, 0,	 AD_PHYS,	0, 0, 0, A1_NONE, 0, 0, 0, MAT_SILVER, WEP_ARROW, WEP_BOW, -P_BOW, HI_SILVER, O1_NONE, O2_NONE, O3_NONE, ALL_TARGETS),
+	1, 0, 8, MULTIGEN_1D4, 1, 5,  
+	AD_PHYS, 1, 6, 0, 1, 6, 0, AD_PHYS,	0, 0, 0, A1_NONE, 0, 
+	0, 0, MAT_SILVER, WEP_ARROW, WEP_BOW, -P_BOW, HI_SILVER, 
+	O1_NONE, O2_NONE, O3_NONE, ALL_TARGETS),
 PROJECTILE("ya", "bamboo arrow",
-           0, 0, 11, MULTIGEN_1D6_5, 1, 4, AD_PHYS,	1, 7, 0,	1, 7, 0,	 AD_PHYS,	0, 0, 0, A1_NONE, 0, 1, 0, MAT_METAL, WEP_ARROW, WEP_BOW, -P_BOW, HI_METAL, O1_NONE, O2_NONE, O3_NONE, ALL_TARGETS),
+	0, 0, 11, MULTIGEN_1D6_5, 1, 4, 
+	AD_PHYS, 1, 7, 0, 1, 7, 0, AD_PHYS,	0, 0, 0, A1_NONE, 0, 
+	1, 0, MAT_METAL, WEP_ARROW, WEP_BOW, -P_BOW, HI_METAL, 
+	O1_NONE, O2_NONE, O3_NONE, ALL_TARGETS),
 PROJECTILE("bone arrow", None,
-           1, 0, 10, MULTIGEN_1D6, 1, 6, AD_PHYS,	1, 4, 0,	1, 5, 0,	 AD_PHYS,	0, 0, 0, A1_NONE, 0, 0, 0, MAT_BONE, WEP_ARROW, WEP_BOW, -P_BOW, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, ALL_TARGETS),
+	1, 0, 10, MULTIGEN_1D6, 1, 6, 
+	AD_PHYS, 1, 4, 0, 1, 5, 0, AD_PHYS,	0, 0, 0, A1_NONE, 0, 
+	0, 0, MAT_BONE, WEP_ARROW, WEP_BOW, -P_BOW, CLR_WHITE, 
+	O1_NONE, O2_NONE, O3_NONE, ALL_TARGETS),
 PROJECTILE("crossbow bolt", None,
-           1, 0, 35, MULTIGEN_1D6_5, 1, 2, AD_PHYS,	1, 3, 1,	1, 4, 1,	 AD_PHYS,	0, 0, 0, A1_NONE, 0, 0, 0, MAT_IRON, WEP_QUARREL, WEP_CROSSBOW, -P_CROSSBOW, HI_METAL, O1_NONE, O2_NONE, O3_NONE, ALL_TARGETS), //1d3+1 //1d4+1
+	1, 0, 35, MULTIGEN_1D6_5, 1, 2, 
+	AD_PHYS, 1, 3, 1, 1, 4, 1, AD_PHYS,	0, 0, 0, A1_NONE, 0, 
+	0, 0, MAT_IRON, WEP_QUARREL, WEP_CROSSBOW, -P_CROSSBOW, HI_METAL, 
+	O1_NONE, O2_NONE, O3_NONE, ALL_TARGETS), //1d3+1 //1d4+1
 PROJECTILE("gnollish quarrel", "crude crossbow bolt",
-           0, 0, 15, MULTIGEN_2D6_3, 1, 2, AD_PHYS,	1, 2, 1,	1, 3, 1,	 AD_PHYS,	0, 0, 0, A1_NONE, 0, 0, 0, MAT_IRON, WEP_QUARREL, WEP_CROSSBOW, -P_CROSSBOW, HI_METAL, O1_NONE, O2_GNOLLISH_ITEM, O3_NONE, ALL_TARGETS), //1d2+1 //1d3+1
+	0, 0, 15, MULTIGEN_2D6_3, 1, 2, 
+	AD_PHYS, 1, 2, 1, 1, 3, 1, AD_PHYS,	0, 0, 0, A1_NONE, 0, 
+	0, 0, MAT_IRON, WEP_QUARREL, WEP_CROSSBOW, -P_CROSSBOW, HI_METAL, 
+	O1_NONE, O2_GNOLLISH_ITEM, O3_NONE, ALL_TARGETS), //1d2+1 //1d3+1
 PROJECTILE("silver crossbow bolt", None,
-           1, 0, 8, MULTIGEN_1D6_5, 1, 2, AD_PHYS,		1, 3, 1,	1, 4, 1,	 AD_PHYS,	0, 0, 0, A1_NONE, 0, 0, 0, MAT_SILVER, WEP_QUARREL, WEP_CROSSBOW, -P_CROSSBOW, HI_METAL, O1_NONE, O2_NONE, O3_NONE, ALL_TARGETS), //1d3+1 //1d4+1
+	1, 0, 8, MULTIGEN_1D6_5, 1, 2, 
+	AD_PHYS, 1, 3, 1, 1, 4, 1, AD_PHYS,	0, 0, 0, A1_NONE, 0, 
+	0, 0, MAT_SILVER, WEP_QUARREL, WEP_CROSSBOW, -P_CROSSBOW, HI_METAL, 
+	O1_NONE, O2_NONE, O3_NONE, ALL_TARGETS), //1d3+1 //1d4+1
 PROJECTILE("bone quarrel", None,
-           1, 0, 10, MULTIGEN_1D6, 1, 2, AD_PHYS,	1, 2, 0,	1, 3, 0,	 AD_PHYS,	0, 0, 0, A1_NONE, 0, 0, 0, MAT_BONE, WEP_QUARREL, WEP_CROSSBOW, -P_CROSSBOW, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, ALL_TARGETS), //1d2 //1d3
+	1, 0, 10, MULTIGEN_1D6, 1, 2, 
+	AD_PHYS, 1, 2, 0, 1, 3, 0, AD_PHYS,	0, 0, 0, A1_NONE, 0, 
+	0, 0, MAT_BONE, WEP_QUARREL, WEP_CROSSBOW, -P_CROSSBOW, CLR_WHITE, 
+	O1_NONE, O2_NONE, O3_NONE, ALL_TARGETS), //1d2 //1d3
 PROJECTILE("leaden sling-bullet", None,
-           1, 0, 10, MULTIGEN_1D6_2, 2, 2, AD_PHYS,	1, 6, 0,	1, 8, 0,	 AD_PHYS,	0, 0, 0, A1_NONE, 0, 0, 0, MAT_METAL, WEP_SLING_BULLET, WEP_SLING, -P_SLING, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, ALL_TARGETS),
+	1, 0, 10, MULTIGEN_1D6_2, 2, 2, 
+	AD_PHYS, 1, 6, 0, 1, 8, 0, AD_PHYS,	0, 0, 0, A1_NONE, 0, 
+	0, 0, MAT_METAL, WEP_SLING_BULLET, WEP_SLING, -P_SLING, CLR_GRAY, 
+	O1_NONE, O2_NONE, O3_NONE, ALL_TARGETS),
 PROJECTILE("iron sling-bullet", None,
-           1, 0, 5, MULTIGEN_1D6_2, 2, 2, AD_PHYS,	1, 8, 0,	1, 10, 0,	 AD_PHYS,	0, 0, 0, A1_NONE, 0, 0, 0, MAT_IRON, WEP_SLING_BULLET, WEP_SLING, -P_SLING, HI_METAL, O1_NONE, O2_NONE, O3_NONE, ALL_TARGETS),
+	1, 0, 5, MULTIGEN_1D6_2, 2, 2, 
+	AD_PHYS, 1, 8, 0, 1, 10, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
+	0, 0, MAT_IRON, WEP_SLING_BULLET, WEP_SLING, -P_SLING, HI_METAL, 
+	O1_NONE, O2_NONE, O3_NONE, ALL_TARGETS),
 PROJECTILE("silver sling-bullet", None,
-           1, 0, 5, MULTIGEN_1D4, 2, 2, AD_PHYS,	1, 7, 0,	1, 9, 0,	 AD_PHYS,	0, 0, 0, A1_NONE, 0, 0, 0, MAT_SILVER, WEP_SLING_BULLET, WEP_SLING, -P_SLING, HI_SILVER, O1_NONE, O2_NONE, O3_NONE, ALL_TARGETS),
+	1, 0, 5, MULTIGEN_1D4, 2, 2, 
+	AD_PHYS, 1, 7, 0, 1, 9, 0, AD_PHYS,	0, 0, 0, A1_NONE, 0, 
+	0, 0, MAT_SILVER, WEP_SLING_BULLET, WEP_SLING, -P_SLING, HI_SILVER, 
+	O1_NONE, O2_NONE, O3_NONE, ALL_TARGETS),
 PROJECTILE("arrow of dragon slaying", "black arrow",
 	0, 1, 2, MULTIGEN_SINGLE, 1, 100,
 	AD_PHYS, 1, 6, 0,  1, 6, 0,  AD_PHYS, 0, 0, 0, 
@@ -172,13 +211,13 @@ PROJECTILE("arrow of dragon slaying", "black arrow",
 
 /* missiles that don't use a launcher */
 WEAPON("dart", None,
-       1, 1, 0, 0, 50, MULTIGEN_SINGLE, 1, 2,
+       1, 1, 0, 0, 50, MULTIGEN_1D10, 1, 2,
 	   AD_PHYS,	1, 2, 0, 1, 3, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,
 	   2, 0, 0, 0, 0, 0, 0, 0, 0, 0, MULTISHOT_THROWN_2_EXPERT_1D2_SKILLED,
 	   NO_POWER, NO_POWER, NO_POWER, P, WEP_DART, -P_DART, MAT_IRON, HI_METAL,
 	   O1_THROWN_WEAPON, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 WEAPON("shuriken", "throwing star",
-       0, 1, 0, 0, 25, MULTIGEN_SINGLE, 1, 6,
+       0, 1, 0, 0, 25, MULTIGEN_1D8, 1, 6,
 	   AD_PHYS, 1, 5, 0, 1, 8, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,
 	   2, 0, 0, 0, 0, 0, 0, 0, 0, 0, MULTISHOT_THROWN_2_EXPERT_1D2_SKILLED,
 	   NO_POWER, NO_POWER, NO_POWER, P, WEP_SHURIKEN, -P_SHURIKEN, MAT_IRON, HI_METAL,
@@ -227,7 +266,7 @@ WEAPON("bone dagger", None,
 WEAPON("silver dagger", None,
        1, 1, 0, 0, 3, MULTIGEN_SINGLE, 12,  40, AD_PHYS, 1, 4, 0, 1,  3, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, P, WEP_DAGGER, P_DAGGER, MAT_SILVER, HI_SILVER, O1_THROWN_WEAPON, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 WEAPON("Morgul blade", "black dagger",
-	   0, 0, 1, 0, 0, MULTIGEN_SINGLE, 10, 100,  AD_PHYS, 1, 4, 0, 1, 3, 0, AD_PHYS, 1, 3, 1, A1_WOUNDING, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, P, WEP_DAGGER, P_DAGGER, MAT_IRON, CLR_BLACK, O1_THROWN_WEAPON, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
+	   0, 0, 1, 0, 0, MULTIGEN_SINGLE, 10, 100,  AD_PHYS, 1, 4, 0, 1, 3, 0, AD_PHYS, 1, 3, 1, A1_WOUNDING, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, P, WEP_DAGGER, P_DAGGER, MAT_IRON, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 WEAPON("main-gauche", None,
        1, 1, 0, 0, 4, MULTIGEN_SINGLE, 10,   4, AD_PHYS, 1, 4, 0, 1,  3, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, P, WEP_DAGGER, P_DAGGER, MAT_IRON, HI_METAL, O1_IS_ARMOR_WHEN_WIELDED, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 WEAPON("athame", None,
@@ -2080,16 +2119,16 @@ OBJECT(OBJ("acid venom", "splash of venom"), None, None,
 
 	REAGENT("thread of spider silk",	 50, MULTIGEN_SINGLE, 0, 1, 10, MAT_SILK, 0,					 2, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* STARTMARKER 1&2 */
 
-	REAGENT("clump of bat guano",		100, MULTIGEN_SINGLE, 2, 2,  10, MAT_ORGANIC, EDIBLE_ROTTEN,	20, CLR_BROWN, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
-	REAGENT("ginseng root",				150, MULTIGEN_SINGLE, 1, 3,  10, MAT_VEGGY, EDIBLE_NORMAL,	40, CLR_BROWN, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
-	REAGENT("mandrake root",			 50, MULTIGEN_SINGLE, 1, 3,  10, MAT_VEGGY, EDIBLE_NORMAL,	40, CLR_MAGENTA, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
-	REAGENT("heap of sporal powder",	 50, MULTIGEN_SINGLE, 1, 1,  10, MAT_ORGANIC, EDIBLE_NORMAL,	 1, CLR_GRAY, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
-	REAGENT("sprig of wolfsbane",		100, MULTIGEN_SINGLE, 1, 1,  10, MAT_VEGGY, EDIBLE_POISONOUS,	40, CLR_GREEN, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
-	REAGENT("clove of garlic",			100, MULTIGEN_SINGLE, 1, 1,  10, MAT_VEGGY, EDIBLE_NORMAL,	40, CLR_WHITE, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
-	REAGENT("bone",						100, MULTIGEN_SINGLE, 1, 16, 10, MAT_BONE, EDIBLE_NORMAL,		40, CLR_WHITE, O1_EDIBLE_BY_BONE_EATERS, O2_NONE, O3_NONE, PERMITTED_ALL),
-	REAGENT("human skull",				 50, MULTIGEN_SINGLE, 1, 32, 10, MAT_BONE, EDIBLE_NORMAL,		40, CLR_WHITE, O1_EDIBLE_BY_BONE_EATERS, O2_NONE, O3_NONE, PERMITTED_ALL),
-	REAGENT("piece of wood",			100, MULTIGEN_SINGLE, 1, 16, 10, MAT_WOOD, 0,		40, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-	REAGENT("pinch of sulfurous ash",	100, MULTIGEN_SINGLE, 1, 1,  10, MAT_MINERAL, 0,		40, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	REAGENT("clump of bat guano",		100, MULTIGEN_SINGLE, 2, 2,  10, MAT_ORGANIC, EDIBLE_ROTTEN, 20, CLR_BROWN, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
+	REAGENT("ginseng root",				150, MULTIGEN_SINGLE, 1, 3,  10, MAT_VEGGY, EDIBLE_NORMAL, 40, CLR_BROWN, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
+	REAGENT("mandrake root",			 50, MULTIGEN_SINGLE, 1, 3,  10, MAT_VEGGY, EDIBLE_NORMAL, 40, CLR_MAGENTA, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
+	REAGENT("heap of sporal powder",	 50, MULTIGEN_SINGLE, 1, 1,  10, MAT_ORGANIC, EDIBLE_NORMAL, 1, CLR_GRAY, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
+	REAGENT("sprig of wolfsbane",		100, MULTIGEN_SINGLE, 1, 1,  10, MAT_VEGGY, EDIBLE_POISONOUS, 40, CLR_GREEN, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
+	REAGENT("clove of garlic",			100, MULTIGEN_SINGLE, 1, 1,  10, MAT_VEGGY, EDIBLE_NORMAL, 40, CLR_WHITE, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
+	REAGENT("bone",						100, MULTIGEN_SINGLE, 1, 16, 10, MAT_BONE, EDIBLE_NORMAL, 40, CLR_WHITE, O1_EDIBLE_BY_BONE_EATERS, O2_NONE, O3_NONE, PERMITTED_ALL),
+	REAGENT("human skull",				 50, MULTIGEN_SINGLE, 1, 32, 10, MAT_BONE, EDIBLE_NORMAL, 40, CLR_WHITE, O1_EDIBLE_BY_BONE_EATERS, O2_NONE, O3_NONE, PERMITTED_ALL),
+	REAGENT("piece of wood",			100, MULTIGEN_SINGLE, 1, 16, 10, MAT_WOOD, 0, 40, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	REAGENT("pinch of sulfurous ash",	100, MULTIGEN_SINGLE, 1, 1,  10, MAT_MINERAL, 0, 40, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 
 	REAGENT("modronite ball",			  0, MULTIGEN_SINGLE, 1, 42, 100, MAT_MODRONITE, 0, 160, CLR_CYAN, O1_NONE, O2_MODRON_ITEM, O3_NONE, PERMITTED_ALL),
 	REAGENT("modronite monopole",		  0, MULTIGEN_SINGLE, 1, 42, 100, MAT_MODRONITE, 0, 160, CLR_CYAN, O1_NONE, O2_MODRON_ITEM, O3_NONE, PERMITTED_ALL),
@@ -2099,7 +2138,7 @@ OBJECT(OBJ("acid venom", "splash of venom"), None, None,
 	REAGENT("modronite dodecahedron",	  0, MULTIGEN_SINGLE, 1, 42, 100, MAT_MODRONITE, 0, 160, CLR_CYAN, O1_NONE, O2_MODRON_ITEM, O3_NONE, PERMITTED_ALL),
 	REAGENT("modronite icosahedron",	  0, MULTIGEN_SINGLE, 1, 42, 100, MAT_MODRONITE, 0, 160, CLR_CYAN, O1_NONE, O2_MODRON_ITEM, O3_NONE, PERMITTED_ALL),
 
-	REAGENT("feather",					50, MULTIGEN_SINGLE, 0, 1, 10, MAT_ORGANIC, 0,				10, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* STARTMARKER 1&2 */
+	REAGENT("feather",					50, MULTIGEN_SINGLE, 0, 1, 10, MAT_ORGANIC, 0, 10, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* STARTMARKER 1&2 */
 
 #undef REAGENT
 

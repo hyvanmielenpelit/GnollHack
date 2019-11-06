@@ -179,6 +179,7 @@ STATIC_PTR int NDECL(wiz_show_stats);
 STATIC_DCL boolean FDECL(accept_menu_prefix, (int NDECL((*))));
 STATIC_PTR int NDECL(wiz_rumor_check);
 STATIC_PTR int NDECL(doattributes);
+STATIC_PTR int NDECL(docommandmenu);
 
 STATIC_DCL void FDECL(enlght_out, (const char *));
 STATIC_DCL void FDECL(enlght_line, (const char *, const char *, const char *,
@@ -3615,6 +3616,78 @@ doattributes(VOID_ARGS)
     return 0;
 }
 
+/* M('c') command */
+STATIC_PTR int
+docommandmenu(VOID_ARGS)
+{
+	register const struct ext_func_tab* efp;
+	winid menuwin;
+	menu_item* selected = (menu_item*)0;
+	int n = 0;
+	size_t maxcommandlength = 0;
+
+	for (efp = extcmdlist; efp->ef_txt; efp++)
+	{
+		if ((efp->flags & CMD_NOT_AVAILABLE) != 0 || (efp->flags & INCMDMENU) == 0)
+			continue;
+
+		if (strlen(efp->ef_txt) > maxcommandlength)
+			maxcommandlength = strlen(efp->ef_txt);
+	}
+
+	menuwin = create_nhwindow(NHW_MENU);
+
+	start_menu(menuwin);
+
+	anything any;
+
+	for (efp = extcmdlist; efp->ef_txt; efp++) 
+	{
+		any = zeroany;
+		char descbuf[BUFSZ] = "";
+		char cmdbuf[BUFSZ] = "";
+		char buf[BUFSZ] = "";
+		int cmdchar = 'a' + n;
+		size_t cmdlen = 0;
+
+		any.a_nfunc = efp->ef_funct;
+
+		strcpy(cmdbuf, efp->ef_txt);
+		cmdlen = strlen(cmdbuf);
+		if (cmdlen < maxcommandlength)
+		{
+			for (size_t i = 0; i < (maxcommandlength - cmdlen); i++)
+				Sprintf(eos(cmdbuf), " ");
+		}
+
+		if ((efp->flags & CMD_NOT_AVAILABLE) != 0 || (efp->flags & INCMDMENU) == 0)
+			continue;
+
+		strcpy(descbuf, efp->ef_desc);
+		*descbuf = highc(*descbuf);
+
+		Sprintf(buf, "%s  %s", cmdbuf, descbuf);
+
+		add_menu(menuwin, NO_GLYPH, &any, cmdchar, 0, ATR_NONE,
+			buf, MENU_UNSELECTED);
+		n++;
+	}
+
+	end_menu(menuwin, "Choose an action:");
+	n = select_menu(menuwin, PICK_ONE, &selected);
+	if (n > 0) 
+	{
+		if (selected->item.a_nfunc)
+		{
+			(void)(selected->item.a_nfunc)();
+		}
+		free((genericptr_t)selected);
+	}
+
+	destroy_nhwindow(menuwin);
+	return 0;
+}
+
 void
 youhiding(via_enlghtmt, msgflag)
 boolean via_enlghtmt; /* englightment line vs topl message */
@@ -3804,47 +3877,45 @@ struct ext_func_tab extcmdlist[] = {
             donamelevel, IFBURIED | AUTOCOMPLETE },
     { 'a', "apply", "apply (use) a tool (pick-axe, key, lamp...)",
             doapply },
-    { C('s'), "attributes", "show your attributes",
-            doattributes, IFBURIED },
-    { '@', "autopickup", "toggle the pickup option on/off",
+	{ 'A', "ability", "use ability or skill",
+			doability, IFBURIED | AUTOCOMPLETE },
+	{ C('y'), "attributes", "show your attributes",
+			doattributes, IFBURIED | INCMDMENU },
+	{ '@', "autopickup", "toggle the pickup option on/off",
             dotogglepickup, IFBURIED },
-	{ C('b'), "break", "break something", dobreak, IFBURIED | AUTOCOMPLETE },
-	{ C('c'), "call", "call (name) something", docallcmd, IFBURIED | AUTOCOMPLETE },
-    { 'Z', "cast", "zap (cast) a spell", docast, IFBURIED },
+	{ C('b'), "break", "break something", dobreak, IFBURIED | AUTOCOMPLETE | INCMDMENU },
 	{ '\0'/*'C'*/, "craft", "craft an item", docraft },
-	{ M('x'), "examine", "item description", doitemdescriptions, IFBURIED | AUTOCOMPLETE },
-	{ M('y'), "you", "character description", docharacterstatistics, IFBURIED | AUTOCOMPLETE },
-	{ M('z'), "spelldetails", "spell description", dospelldescriptions, IFBURIED | AUTOCOMPLETE },
-	{ M('c'), "chat", "talk to someone", dotalk, IFBURIED | AUTOCOMPLETE },
     { 'c', "close", "close a door", doclose },
-    { M('C'), "conduct", "list voluntary challenges you have maintained",
-            doconduct, IFBURIED | AUTOCOMPLETE },
-    { M('d'), "dip", "dip an object into something", dodip, AUTOCOMPLETE },
+	{ 'C', "chat", "talk to someone", dotalk, IFBURIED | AUTOCOMPLETE },
+	{ C('c'), "call", "call (name) something", docallcmd, IFBURIED | AUTOCOMPLETE },
+	{ M('c'), "commands", "list of additional actions",
+			docommandmenu, IFBURIED | GENERALCMD | AUTOCOMPLETE },
+	{ '\0' /*M('c')*/, "conduct", "list voluntary challenges you have maintained",
+            doconduct, IFBURIED | AUTOCOMPLETE | INCMDMENU },
+    { M('d'), "dip", "dip an object into something", dodip, AUTOCOMPLETE | INCMDMENU },
     { '>', "down", "go down a staircase", dodown },
     { 'd', "drop", "drop an item", dodrop },
     { 'D', "droptype", "drop specific item types", doddrop },
     { 'e', "eat", "eat something", doeat },
-    { 'E', "engrave", "engrave writing on the floor", doengrave },
+    { 'E', "engrave", "engrave writing on the floor", doengrave, INCMDMENU },
     { M('e'), "enhance", "advance or check weapon and spell skills",
             enhance_weapon_skill, IFBURIED | AUTOCOMPLETE },
-    { '\0', "exploremode", "enter explore (discovery) mode",
+	{ '\0', "exploremode", "enter explore (discovery) mode",
             enter_explore_mode, IFBURIED },
     { 'f', "fire", "fire ammunition from quiver", dofire },
-	{ M('f'), "force", "force a lock", doforce, AUTOCOMPLETE },
+	{ M('f'), "force", "force a lock", doforce, AUTOCOMPLETE | INCMDMENU },
 	{ ';', "glance", "show what type of thing a map symbol corresponds to",
             doquickwhatis, IFBURIED | GENERALCMD },
     { '?', "help", "give a help message", dohelp, IFBURIED | GENERALCMD },
     { '\0', "herecmdmenu", "show menu of commands you can do here",
             doherecmdmenu, IFBURIED },
-    { 'V', "history", "show long version and game history",
-            dohistory, IFBURIED | GENERALCMD },
     { 'i', "inventory", "show your inventory", ddoinv, IFBURIED },
     { 'I', "inventtype", "inventory specific item types",
             dotypeinv, IFBURIED },
     { M('i'), "invoke", "invoke an object's special powers",
-            doinvoke, IFBURIED | AUTOCOMPLETE },
-    { M('j'), "jump", "jump to another location", dojump, AUTOCOMPLETE },
-    { C('d'), "kick", "kick something", dokick },
+            doinvoke, IFBURIED | AUTOCOMPLETE | INCMDMENU },
+    { M('j'), "jump", "jump to another location", dojump, AUTOCOMPLETE | INCMDMENU },
+    { C('d'), "kick", "kick something", dokick, INCMDMENU },
     { '\\', "known", "show what object types have been discovered",
             dodiscovered, IFBURIED | GENERALCMD },
     { '`', "knownclass", "show discovered types for one class of objects",
@@ -3854,22 +3925,24 @@ struct ext_func_tab extcmdlist[] = {
     { '\0', "lightsources", "show mobile light sources",
             wiz_light_sources, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { ':', "look", "look at what is here", dolook, IFBURIED },
-    { M('l'), "loot", "loot a box on the floor", doloot, AUTOCOMPLETE },
+	{ M('k'), "killed", "list killed monsters",
+			dokilledmonsters, IFBURIED | AUTOCOMPLETE | INCMDMENU },
+	{ M('l'), "loot", "loot a box on the floor", doloot, AUTOCOMPLETE },
 #ifdef DEBUG_MIGRATING_MONS
     { '\0', "migratemons", "migrate N random monsters",
             wiz_migrate_mons, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
 #endif
-    { 'A'/*M('m')*/, "ability", "use ability or skill",
+    { M('m'), "monster ability", "use monster ability or skill",
             doability, IFBURIED | AUTOCOMPLETE },
 	{ 'N', "name", "name a monster or an object",
-            docallcmd, IFBURIED | AUTOCOMPLETE },
+            docallcmd, IFBURIED | AUTOCOMPLETE | INCMDMENU },
     { M('o'), "offer", "offer a sacrifice to the gods",
-            dosacrifice, AUTOCOMPLETE },
+            dosacrifice, AUTOCOMPLETE | INCMDMENU },
     { 'o', "open", "open a door", doopen },
     { 'O', "options", "show option settings, possibly change them",
             doset, IFBURIED | GENERALCMD },
     { C('o'), "overview", "show a summary of the explored dungeon",
-            dooverview, IFBURIED | AUTOCOMPLETE },
+            dooverview, IFBURIED | AUTOCOMPLETE | INCMDMENU },
     { '\0', "panic", "test panic routine (fatal to game)",
             wiz_panic, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { 'p', "pay", "pay your shopping bill", dopay },
@@ -3877,7 +3950,7 @@ struct ext_func_tab extcmdlist[] = {
     { '\0', "polyself", "polymorph self",
             wiz_polyself, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { M('p'), "pray", "pray to the gods for help",
-            dopray, IFBURIED | AUTOCOMPLETE },
+            dopray, IFBURIED | AUTOCOMPLETE | INCMDMENU },
     { C('p'), "prevmsg", "view recent game messages",
             doprev_message, IFBURIED | GENERALCMD },
     { 'P', "puton", "put on an accessory (ring, amulet, etc)", doputon },
@@ -3890,12 +3963,12 @@ struct ext_func_tab extcmdlist[] = {
     { 'R', "remove", "remove an accessory (ring, amulet, etc)", doremring },
     { M('R'), "ride", "mount or dismount a saddled steed",
             doride, AUTOCOMPLETE },
-    { M('r'), "rub", "rub a lamp or a stone", dorub, AUTOCOMPLETE },
-    { 'S', "save", "save the game and exit", dosave, IFBURIED | GENERALCMD },
+    { M('r'), "rub", "rub a lamp or a stone", dorub, AUTOCOMPLETE | INCMDMENU },
     { 's', "search", "search for traps and secret doors",
             dosearch, IFBURIED, "searching" },
-	{ 'X', "mix", "prepare a spell from material components",
-			domix, AUTOCOMPLETE },
+	{ 'S', "skill", "view and advance skills",
+			enhance_weapon_skill, IFBURIED | AUTOCOMPLETE },
+    { M('s'), "save", "save the game and exit", dosave, IFBURIED | GENERALCMD },
 	{ '*', "seeall", "show all equipment in use", doprinuse, IFBURIED },
     { AMULET_SYM, "seeamulet", "show the amulet currently worn",
             dopramulet, IFBURIED },
@@ -3919,7 +3992,7 @@ struct ext_func_tab extcmdlist[] = {
                        | CMD_NOT_AVAILABLE
 #endif /* SHELL */
     },
-    { M('s'), "sit", "sit down", dosit, AUTOCOMPLETE },
+    { C('s'), "sit", "sit down", dosit, AUTOCOMPLETE | INCMDMENU },
     { '\0', "stats", "show memory statistics",
             wiz_show_stats, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { C('z'), "suspend", "suspend the game",
@@ -3928,8 +4001,8 @@ struct ext_func_tab extcmdlist[] = {
                             | CMD_NOT_AVAILABLE
 #endif /* SUSPEND */
     },
-    { 'x', "swap", "swap wielded and secondary weapons", doswapweapon },
-    { 'T', "takeoff", "take off one piece of armor", dotakeoff },
+
+	{ 'T', "takeoff", "take off one piece of armor", dotakeoff },
     { M('t')/*'A'*/, "takeoffall", "remove all armor", doddoremarm },
     { C('t'), "teleport", "teleport around the level", dotelecmd, IFBURIED },
     { '\0', "terrain", "show map without obstructions",
@@ -3940,22 +4013,22 @@ struct ext_func_tab extcmdlist[] = {
     { 't', "throw", "throw something", dothrow },
     { '\0', "timeout", "look at timeout queue and hero's timed intrinsics",
             wiz_timeout_queue, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
-    { M('T'), "tip", "empty a container", dotip, AUTOCOMPLETE },
+    { M('T'), "tip", "empty a container", dotip, AUTOCOMPLETE | INCMDMENU },
     { '_', "travel", "travel to a specific location on the map", dotravel },
  //   { M('t'), "turn", "turn undead away", doturn, IFBURIED | AUTOCOMPLETE }, //Replaced by holy symbol
     { C('x'), "twoweapon", "toggle two-weapon combat",
-            dotwoweapon, AUTOCOMPLETE },
+            dotwoweapon, AUTOCOMPLETE | INCMDMENU },
     { M('u'), "untrap", "untrap something", dountrap, AUTOCOMPLETE },
     { '<', "up", "go up a staircase", doup },
-	{ M('k'), "killedmonsters", "list vanquished monsters",
-			dokilledmonsters, IFBURIED | AUTOCOMPLETE },
 	{ '\0', "vanquished", "list vanquished monsters",
             dovanquished, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { M('v'), "version",
             "list compile time options for this version of GnollHack",
             doextversion, IFBURIED | AUTOCOMPLETE | GENERALCMD },
     { 'v', "versionshort", "show version", doversion, IFBURIED | GENERALCMD },
-    { '\0', "vision", "show vision array",
+	{ 'V', "history", "show long version and game history",
+			dohistory, IFBURIED | GENERALCMD },
+	{ '\0', "vision", "show vision array",
             wiz_show_vision, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { '.', "wait", "rest one move while doing nothing",
             donull, IFBURIED, "waiting" },
@@ -3964,7 +4037,17 @@ struct ext_func_tab extcmdlist[] = {
     { '/', "whatis", "show what type of thing a symbol corresponds to",
             dowhatis, IFBURIED | GENERALCMD },
     { 'w', "wield", "wield (put in use) a weapon", dowield },
-    { M('w'), "wipe", "wipe off your face", dowipe, AUTOCOMPLETE },
+    { M('w'), "wipe", "wipe off your face", dowipe, AUTOCOMPLETE | INCMDMENU },
+	{ 'x', "swap", "swap wielded and secondary weapons", doswapweapon, INCMDMENU },
+	{ 'X', "mix", "prepare a spell from material components",
+			domix, AUTOCOMPLETE },
+	{ M('x'), "examine", "describe an item", doitemdescriptions, IFBURIED | AUTOCOMPLETE | INCMDMENU },
+	{ M('y'), "you", "describe your character", docharacterstatistics, IFBURIED | AUTOCOMPLETE | INCMDMENU },
+	{ 'z', "zap", "zap a wand", dozap },
+	{ 'Z', "cast", "zap (cast) a spell", docast, IFBURIED },
+	{ M('z'), "spelldetails", "describe a spell you know", dospelldescriptions, IFBURIED | AUTOCOMPLETE | INCMDMENU },
+
+
 #ifdef DEBUG
     { '\0', "wizbury", "bury objs under and around you",
             wiz_debug_cmd_bury, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
@@ -3995,7 +4078,6 @@ struct ext_func_tab extcmdlist[] = {
             wiz_wish, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { '\0', "wmode", "show wall modes",
             wiz_show_wmodes, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
-    { 'z', "zap", "zap a wand", dozap },
     { '\0', (char *) 0, (char *) 0, donull, 0, (char *) 0 } /* sentinel */
 };
 

@@ -1210,7 +1210,6 @@ dochat()
 	if (!canspotmon(mtmp))
 		map_invisible(mtmp->mx, mtmp->my);
 
-
 	int i = '\0';
 
 	menu_item* pick_list = (menu_item*)0;

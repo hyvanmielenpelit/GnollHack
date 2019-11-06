@@ -730,7 +730,7 @@ register struct monst *mtmp;
 			otmp = mksobj(TRIPLE_HEADED_FLAIL, FALSE, FALSE, FALSE);
 			//bless(otmp);
 			otmp->oerodeproof = TRUE;
-			spe2 = 2+rn2(2);
+			spe2 = 2 + rnd(2);
 			otmp->spe = max(otmp->spe, spe2);
 			(void)mpickobj(mtmp, otmp);
 			break;
