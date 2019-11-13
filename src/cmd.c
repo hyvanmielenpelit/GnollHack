@@ -3625,6 +3625,7 @@ docommandmenu(VOID_ARGS)
 	menu_item* selected = (menu_item*)0;
 	int n = 0;
 	size_t maxcommandlength = 0;
+	size_t maxdesclength = 0;
 
 	for (efp = extcmdlist; efp->ef_txt; efp++)
 	{
@@ -3633,6 +3634,9 @@ docommandmenu(VOID_ARGS)
 
 		if (strlen(efp->ef_txt) > maxcommandlength)
 			maxcommandlength = strlen(efp->ef_txt);
+
+		if (strlen(efp->ef_desc) > maxdesclength)
+			maxdesclength = strlen(efp->ef_desc);
 	}
 
 	menuwin = create_nhwindow(NHW_MENU);
@@ -3644,6 +3648,7 @@ docommandmenu(VOID_ARGS)
 	for (efp = extcmdlist; efp->ef_txt; efp++) 
 	{
 		any = zeroany;
+		char shortcutbuf[BUFSZ] = "";
 		char descbuf[BUFSZ] = "";
 		char cmdbuf[BUFSZ] = "";
 		char buf[BUFSZ] = "";
@@ -3666,7 +3671,25 @@ docommandmenu(VOID_ARGS)
 		strcpy(descbuf, efp->ef_desc);
 		*descbuf = highc(*descbuf);
 
-		Sprintf(buf, "%s  %s", cmdbuf, descbuf);
+		size_t desclen = 0;
+		desclen = strlen(descbuf);
+		if (desclen < maxdesclength)
+		{
+			for (size_t i = 0; i < (maxdesclength - desclen); i++)
+				Sprintf(eos(descbuf), " ");
+		}
+
+		uchar altmask = 0x80;
+		uchar ctrlmask = 0x20 | 0x40;
+
+		if (efp->key != '\0')
+			Sprintf(shortcutbuf, "  (%s%c)",
+			(efp->key & ctrlmask) == 0 ? "Ctrl-" : (efp->key & altmask) == altmask ? "Alt-" : "",
+				(efp->key & ctrlmask) == 0 ? efp->key | ctrlmask : (efp->key & altmask) == altmask ? efp->key & ~altmask : efp->key);
+		else
+			Sprintf(shortcutbuf, "");
+
+		Sprintf(buf, "%s  %s%s", cmdbuf, descbuf, shortcutbuf);
 
 		add_menu(menuwin, NO_GLYPH, &any, cmdchar, 0, ATR_NONE,
 			buf, MENU_UNSELECTED);
