@@ -555,6 +555,7 @@ enum bodypart_types {
 #define DEVTEAM_EMAIL "gnollhack@hyvanmielenpelit.fi"
 #define DEVTEAM_URL "http://www.gnollhack.com"
 
+#define ENCOUNTER_ONE_IN_CHANCE 3
 #include "matcomps.h"
 #include "encounter.h"
 

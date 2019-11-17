@@ -6,11 +6,11 @@
 #include "hack.h"
 
 struct trobj {
-    short trotyp;
-    schar trspe;
-    char trclass;
-    Bitfield(trquan, 6);
-    Bitfield(trbless, 2);
+	short trotyp;
+	schar trspe;
+	char trclass;
+	Bitfield(trquan, 6);
+	Bitfield(trbless, 2);
 	int special_enchantment;
 };
 

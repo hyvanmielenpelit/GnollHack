@@ -122,12 +122,20 @@ boolean resuming;
                     /* occasionally add another monster; since this takes
                        place after movement has been allotted, the new
                        monster effectively loses its first turn */
-                    if (!rn2(u.uevent.udemigod ? 25
-                             : (depth(&u.uz) > depth(&stronghold_level)) ? 50
-                               : 70))
-                        (void) makemon((struct permonst *) 0, 0, 0,
-                                       NO_MM_FLAGS);
-
+					if (!rn2(u.uevent.udemigod ? 25
+						: (depth(&u.uz) > depth(&stronghold_level)) ? 50
+						: 70))
+					{
+						if (!rn2(ENCOUNTER_ONE_IN_CHANCE))
+						{
+							randomize_encounter(0, 0);
+						}
+						else
+						{
+							(void)makemon((struct permonst*) 0, 0, 0,
+								NO_MM_FLAGS);
+						}
+					}
                     /* calculate how much time passed. */
                     if (u.usteed && u.umoved) {
                         /* your speed doesn't augment steed's speed */

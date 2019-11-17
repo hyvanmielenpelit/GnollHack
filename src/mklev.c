@@ -829,10 +829,17 @@ makelevel()
         if (u.uhave.amulet || !rn2(3)) {
             x = somex(croom);
             y = somey(croom);
-            tmonst = makemon((struct permonst *) 0, x, y, MM_NOGRP);
-            if (tmonst && (tmonst->data == &mons[PM_GIANT_SPIDER] || (tmonst->data == &mons[PM_PHASE_SPIDER] && !rn2(2)))
-                && !occupied(x, y))
-                (void) maketrap(x, y, WEB);
+			if (!rn2(ENCOUNTER_ONE_IN_CHANCE))
+			{
+				randomize_encounter(x, y);
+			}
+			else
+			{
+				tmonst = makemon((struct permonst *) 0, x, y, MM_NOGRP);
+				if (tmonst && (tmonst->data == &mons[PM_GIANT_SPIDER] || (tmonst->data == &mons[PM_PHASE_SPIDER] && !rn2(2)))
+					&& !occupied(x, y))
+					(void) maketrap(x, y, WEB);
+			}
         }
         /* put traps and mimics inside */
         x = 8 - (level_difficulty() / 6);

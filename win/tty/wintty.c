@@ -220,7 +220,8 @@ static const char default_menu_cmds[] = {
     MENU_FIRST_PAGE,    MENU_LAST_PAGE,   MENU_NEXT_PAGE,
     MENU_PREVIOUS_PAGE, MENU_SELECT_ALL,  MENU_UNSELECT_ALL,
     MENU_INVERT_ALL,    MENU_SELECT_PAGE, MENU_UNSELECT_PAGE,
-    MENU_INVERT_PAGE,   MENU_SEARCH,      0 /* null terminator */
+    MENU_INVERT_PAGE,   MENU_SEARCH,	  MENU_START_COUNT,
+	0 /* null terminator */
 };
 
 #ifdef TTY_TILES_ESCCODES

@@ -749,6 +749,8 @@ E void FDECL(panictrace_setsignals, (BOOLEAN_P));
 /* ### encounter.c ### */
 
 E void NDECL(encounter_init);
+E void FDECL(randomize_encounter, (int, int));
+E void FDECL(create_encounter, (int, int, int));
 
 
 /* ### engrave.c ### */
