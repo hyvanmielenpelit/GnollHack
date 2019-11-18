@@ -4,7 +4,7 @@
 
 #include "hack.h"
 
-#define NORANDOMIZEDITEM { 0, 0, 0, 0, 0 }
+#define NORANDOMIZEDITEM { 0, 0, 0, 0, 0, 0 }
 #define NORANDOMIZEDALTERNATIVES { { NORANDOMIZEDITEM, NORANDOMIZEDITEM, NORANDOMIZEDITEM, NORANDOMIZEDITEM, NORANDOMIZEDITEM } }
 #define NOMONSTERITEMS { NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES }
 #define NOMONSTERALTERNATIVE { 0, 0, 0, 0, 0, NOMONSTERITEMS }
@@ -32,7 +32,9 @@ struct encounterdef encounter_definitions[] =
 	{
 		{
 			/* Monster 1 */
-			{ { { PM_OGRE_LORD, 1, 1, 0, 100, NOMONSTERITEMS },
+			{ { { PM_OGRE_LORD, 1, 1, 0, 100, 
+					{ { { { INFERNAL_JAGGED_TOOTHED_CLUB, 0, 1, 3, 0, 50 }, { BATTLE_AXE, ART_CLEAVER, 2, 2, 0, 50 }, NORANDOMIZEDITEM, NORANDOMIZEDITEM, NORANDOMIZEDITEM } },
+					  NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES } },
 			NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
 			/* Monster 2 */
 			{ { { PM_OGRE, 2, 6, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
@@ -57,7 +59,6 @@ STATIC_DCL void FDECL(write_encounter_monsterdata, (int, int, int*, int*, double
 STATIC_DCL void FDECL(calculate_encounter_difficulty, (int));
 
 
-/* dummy routine used to force linkage */
 void
 encounter_init()
 {
@@ -76,6 +77,7 @@ encounter_init()
 	/* Write 'spanned' encounter data */
 	for (int i = 1; encounter_definitions[i].probability > 0; i++)
 	{
+		encountermonsternum = 0;
 		write_encounter_monsterdata(i, 0, &encountermonsternum, &encounternum, encounter_definitions[i].probability / 100);
 	}
 
@@ -160,8 +162,13 @@ double encprob;
 					break;
 
 				encounter_list[*(active_encounter_index_ptr)].encounter_monsters[*active_encounter_monster_index_ptr].permonstid = pmid;
-				encounter_list[*(active_encounter_index_ptr)].encounter_monsters[*active_encounter_monster_index_ptr].miflags = 0;
-				/* Add items here */
+				encounter_list[*(active_encounter_index_ptr)].encounter_monsters[*active_encounter_monster_index_ptr].miflags = 
+					encounter_definitions[encounter_definition_index].encounter_monster_types[monster_type_index].random_encounter_monsters[rnd_monster_index].mflags;
+				for(int k = 0; k < MAX_MONSTER_ITEMS; k++)
+				{
+					encounter_list[*(active_encounter_index_ptr)].encounter_monsters[*active_encounter_monster_index_ptr].monster_items[k] = 
+						encounter_definitions[encounter_definition_index].encounter_monster_types[monster_type_index].random_encounter_monsters[rnd_monster_index].monster_items[k];
+				}
 
 				/* Move to next free monster slot */
 				(*active_encounter_monster_index_ptr) = (*active_encounter_monster_index_ptr) + 1;
@@ -272,7 +279,7 @@ int x, y;
 		for (int j = 1; j < MAX_ENCOUNTERS; j++)
 		{
 			if (
-				(encounter_list[j].difficulty_point_estimate >= minmlev && encounter_list[j].difficulty_point_estimate <= maxmlev)
+				(encounter_list[j].difficulty_min >= minmlev && encounter_list[j].difficulty_min <= maxmlev)
 				|| (encounter_list[j].difficulty_min >= minmlev && (encounter_list[j].difficulty_min <= maxmlev && !rn2(4)))
 			   )
 				encounter_list[j].insearch = TRUE, totalselectedprob += encounter_list[j].probability;
@@ -318,15 +325,122 @@ void
 create_encounter(selected_encounter, x, y)
 int selected_encounter, x, y;
 {
+	/* Calculate experience first */
+	long encounter_experience = 1 + encounter_list[selected_encounter].difficulty_point_estimate * encounter_list[selected_encounter].difficulty_point_estimate;
+	long total_monster_experience = 0;
+	//long total_monster_difficulty = 0;
+
 	for (int i = 0; i < MAX_ENCOUNTER_MONSTERS; i++)
 	{
 		int pmid = encounter_list[selected_encounter].encounter_monsters[i].permonstid;
 		if (pmid == NON_PM)
 			break;
 
-		struct monst* mon = makemon(&mons[pmid], x, y, MM_NOGRP);
+		total_monster_experience += 1 + mons[pmid].difficulty * mons[pmid].difficulty;
+		//total_monster_difficulty += mons[pmid].difficulty;
+	}
 
-		/* Add items here */
+	long xpdiff = encounter_experience - total_monster_experience;
+	if (xpdiff < 0)
+		xpdiff = 0;
+
+	int nx = x, ny = y;
+	for (int i = 0; i < MAX_ENCOUNTER_MONSTERS; i++)
+	{
+		int pmid = encounter_list[selected_encounter].encounter_monsters[i].permonstid;
+		if (pmid == NON_PM)
+			break;
+
+		/*
+		int nx, ny, tryct = 0;
+		boolean good;
+		do {
+			nx = x + -1 - tryct/10 + rn2(3 + tryct / 5);
+			ny = y + -1 - tryct / 10 + rn2(3 + tryct / 5);
+			
+			good = isok(nx, ny) && !occupied(nx, ny) &&
+				((!in_mklev && cansee(nx, ny)) ? FALSE
+				: goodpos(nx, ny, (struct monst*)0, 0));
+		} while ((++tryct < 50) && !good);
+
+		*/
+
+		struct monst* mon = (struct monst*)0;
+		mon = makemon(&mons[pmid], nx, ny, MM_NOGRP | MM_ADJACENTOK);
+
+		if(mon)
+		{
+			if (nx == 0 && ny == 0)
+			{
+				nx = mon->mx;
+				ny = mon->my;
+			}
+
+
+			long monster_experience = 1 + mons[pmid].difficulty * mons[pmid].difficulty;
+
+			if(xpdiff > 0 && total_monster_experience > 0)
+				mon->extra_encounter_xp = (xpdiff * monster_experience) / total_monster_experience;
+
+			for (int j = 0; j < MAX_MONSTER_ITEMS; j++)
+			{
+				int roll = rn2(100);
+				int selected_item = -1;
+				int totalprob = 0;
+				for (int k = 0; k < MAX_MONSTER_RANDOM_ITEM_ALTERNATIVES; k++)
+				{
+					totalprob += encounter_list[selected_encounter].encounter_monsters[i].monster_items[j].random_monster_items[k].probability;
+					if (totalprob >= roll)
+					{
+						selected_item = k;
+						break;
+					}
+				}
+
+				if (totalprob == 0)
+					break;
+
+				if (selected_item > -1)
+				{
+					int otyp = encounter_list[selected_encounter].encounter_monsters[i].monster_items[j].random_monster_items[selected_item].otyp;
+					int oartifact = encounter_list[selected_encounter].encounter_monsters[i].monster_items[j].random_monster_items[selected_item].oartifact;
+					long flags = encounter_list[selected_encounter].encounter_monsters[i].monster_items[j].random_monster_items[selected_item].iflags;
+					if (otyp > STRANGE_OBJECT)
+					{
+						struct obj* otmp = mksobj(otyp, !!(flags & MI_INITIALIZE), !!(flags & MI_ALLOW_ARTIFACTS), FALSE);
+
+						if (otmp)
+						{
+							/* Make it into the artifact */
+							if (oartifact > 0)
+								otmp = oname(otmp, artiname(oartifact));
+
+							if (flags & MI_BLESSED)
+								bless(otmp);
+							else if (flags & MI_CURSED)
+								curse(otmp);
+							else if (flags & MI_UNCURSED)
+								otmp->blessed = otmp->cursed = 0;
+
+							if (flags & MI_ERODEPROOF)
+								otmp->oerodeproof = TRUE;
+
+							if (!(flags & MI_IGNORE_SPE))
+							{
+								int spe = encounter_list[selected_encounter].encounter_monsters[i].monster_items[j].random_monster_items[selected_item].spe_constant;
+
+								if (encounter_list[selected_encounter].encounter_monsters[i].monster_items[j].random_monster_items[selected_item].spe_random > 0)
+									spe += rn2(1 + encounter_list[selected_encounter].encounter_monsters[i].monster_items[j].random_monster_items[selected_item].spe_random);
+
+								otmp->spe = spe;
+							}
+
+							(void)mpickobj(mon, otmp);
+						}
+					}
+				}
+			}
+		}
 	}
 }
 

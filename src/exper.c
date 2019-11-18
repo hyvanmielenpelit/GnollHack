@@ -212,6 +212,7 @@ register int nk;
     int i, tmp, tmp2;
 
     tmp = 1 + ptr->difficulty * ptr->difficulty; //mtmp->m_lev * mtmp->m_lev;
+	tmp += mtmp->extra_encounter_xp;
 
 	if (ptr->difficulty >= 100)
 		tmp = (tmp / 100) * 100;

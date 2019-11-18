@@ -14,11 +14,20 @@
 
 struct monsteritemdef {
 	int otyp;
+	int oartifact;
 	int spe_constant;
 	int spe_random;
 	long iflags;
-	double probability;
+	int probability;
 };
+
+#define MI_BLESSED 0x00000001
+#define MI_CURSED 0x00000002
+#define MI_UNCURSED 0x00000004
+#define MI_ERODEPROOF 0x00000008
+#define MI_IGNORE_SPE 0x00000010
+#define MI_INITIALIZE 0x00000020
+#define MI_ALLOW_ARTIFACTS 0x00000040
 
 struct monsterrandomizeditem {
 	struct monsteritemdef random_monster_items[MAX_MONSTER_RANDOM_ITEM_ALTERNATIVES];
@@ -46,16 +55,9 @@ struct encounterdef {
 
 
 
-struct monster_item {
-	int otyp;
-	int spe;
-	long iiflags;
-};
-
-
 struct encounter_monster {
 	int permonstid;
-	struct monster_item monster_items[MAX_MONSTER_ITEMS];
+	struct monsterrandomizeditem monster_items[MAX_MONSTER_ITEMS];
 	long miflags;
 };
 
