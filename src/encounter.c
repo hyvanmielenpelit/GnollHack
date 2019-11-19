@@ -21,7 +21,7 @@ struct encounterdef encounter_definitions[] =
 			{ { { PM_GIANT_SPIDER, 1, 1, 0, 100, NOMONSTERITEMS },
 			NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
 			/* Monster 2 */
-			{ { { PM_CAVE_SPIDER, 2, 6, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			{ { { PM_CAVE_SPIDER, 0, 6, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
 			NORANDOMIZEDMONSTER,
 			NORANDOMIZEDMONSTER,
 			NORANDOMIZEDMONSTER
@@ -29,11 +29,100 @@ struct encounterdef encounter_definitions[] =
 		10,
 		0
 	},
+
+	{
+		{
+			/* Monster 1 */
+			{ { { PM_WINTER_WOLF, 1, 1, 0, 100, NOMONSTERITEMS },
+			NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			/* Monster 2 */
+			{ { { PM_WINTER_WOLF_CUB, 2, 3, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			NORANDOMIZEDMONSTER,
+			NORANDOMIZEDMONSTER,
+			NORANDOMIZEDMONSTER
+		},
+		10,
+		0
+	},
+
+	{
+		{
+			/* Monster 1 */
+			{ { { PM_WARG, 1, 1, 0, 100, NOMONSTERITEMS },
+			NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			/* Monster 2 */
+			{ { { PM_WOLF, 2, 8, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			NORANDOMIZEDMONSTER,
+			NORANDOMIZEDMONSTER,
+			NORANDOMIZEDMONSTER
+		},
+		10,
+		0
+	},
+
+	{
+		{
+			/* Monster 1 */
+			{ { { PM_QUEEN_BEE, 1, 0, 0, 100, NOMONSTERITEMS },
+			NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			/* Monster 2 */
+			{ { { PM_KILLER_BEE, 4, 6, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			NORANDOMIZEDMONSTER,
+			NORANDOMIZEDMONSTER,
+			NORANDOMIZEDMONSTER
+		},
+		10,
+		0
+	},
+
+	{
+		{
+			/* Monster 1 */
+			{ { { PM_GIANT_RAT, 1, 4, 0, 50, NOMONSTERITEMS },
+			{ PM_RABID_RAT, 1, 4, 0, 50, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			/* Monster 2 */
+			{ { { PM_SEWER_RAT, 6, 6, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			NORANDOMIZEDMONSTER,
+			NORANDOMIZEDMONSTER,
+			NORANDOMIZEDMONSTER
+		},
+		10,
+		0
+	},
+
+	{
+		{
+			/* Monster 1 */
+			{ { { PM_SOLDIER_ANT, 2, 8, 0, 100, NOMONSTERITEMS },
+			NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			NORANDOMIZEDMONSTER,
+			NORANDOMIZEDMONSTER,
+			NORANDOMIZEDMONSTER,
+			NORANDOMIZEDMONSTER
+		},
+		10,
+		0
+	},
+
+	{
+		{
+			/* Monster 1 */
+			{ { { PM_FIRE_ANT, 3, 8, 0, 100, NOMONSTERITEMS },
+			NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			NORANDOMIZEDMONSTER,
+			NORANDOMIZEDMONSTER,
+			NORANDOMIZEDMONSTER,
+			NORANDOMIZEDMONSTER
+		},
+		10,
+		0
+	},
+
 	{
 		{
 			/* Monster 1 */
 			{ { { PM_OGRE_LORD, 1, 1, 0, 100, 
-					{ { { { INFERNAL_JAGGED_TOOTHED_CLUB, 0, 1, 3, 0, 50 }, { BATTLE_AXE, ART_CLEAVER, 2, 2, 0, 50 }, NORANDOMIZEDITEM, NORANDOMIZEDITEM, NORANDOMIZEDITEM } },
+					{ { { { INFERNAL_JAGGED_TOOTHED_CLUB, 0, 1, 3, 0, 50 }, { BATTLE_AXE, 0, 1, 2, 0, 50 }, NORANDOMIZEDITEM, NORANDOMIZEDITEM, NORANDOMIZEDITEM } },
 					  NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES } },
 			NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
 			/* Monster 2 */
@@ -45,12 +134,67 @@ struct encounterdef encounter_definitions[] =
 		10,
 		0
 	},
+
+	{
+		{
+			/* Monster 1 */
+			{ { { PM_ORC_CAPTAIN, 1, 1, 0, 100,
+					{ { { { TWO_HANDED_SWORD, 0, 1, 3, 0, 50 }, { BATTLE_AXE, 0, 1, 2, 0, 50 }, NORANDOMIZEDITEM, NORANDOMIZEDITEM, NORANDOMIZEDITEM } },
+					  NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES } },
+			NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			/* Monster 2 */
+			{ { { PM_HILL_ORC, 4, 6, 0, 40, NOMONSTERITEMS }, { PM_MORDOR_ORC, 4, 6, 0, 30, NOMONSTERITEMS }, { PM_URUK_HAI, 4, 6, 0, 30, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			{ { { PM_ORC_SHAMAN, 0, 2, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			NORANDOMIZEDMONSTER,
+			NORANDOMIZEDMONSTER
+		},
+		30,
+		0
+	},
+
+	{
+		{
+			/* Monster 1 */
+			{ { { PM_GOBLIN_KING, 1, 0, 0, 100,
+					{ { { { CLUB, 0, 1, 3, 0, 50 }, { BATTLE_AXE, 0, 1, 2, 0, 50 }, NORANDOMIZEDITEM, NORANDOMIZEDITEM, NORANDOMIZEDITEM } },
+					  NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES } },
+			NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			/* Monster 2 */
+			{ { { PM_HOBGOBLIN, 0, 4, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			/* Monster 3 */
+			{ { { PM_GOBLIN, 4, 6, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			NORANDOMIZEDMONSTER,
+			NORANDOMIZEDMONSTER
+		},
+		30,
+		0
+	},
+
+	{
+		{
+			/* Monster 1 */
+			{ { { PM_GNOLL_KING, 0, 1, 0, 100,
+					{ { { { FLAIL, 0, 1, 3, 0, 50 }, { DOUBLE_HEADED_FLAIL, 0, 1, 2, 0, 50 }, NORANDOMIZEDITEM, NORANDOMIZEDITEM, NORANDOMIZEDITEM } },
+					  NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES } },
+			NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			/* Monster 2 */
+			{ { { PM_GNOLL_LORD, 0, 2, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			/* Monster 3 */
+			{ { { PM_GNOLL, 3, 5, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			/* Monster 4 */
+			{ { { PM_GNOLL_WARDEN, 0, 2, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			NORANDOMIZEDMONSTER
+		},
+		30,
+		0
+	},
+			
 	NOENCOUNTER,
 };
 
 
 static struct encounter zeroencounter = { 0 };
-#define MAX_ENCOUNTERS 1000
+#define MAX_ENCOUNTERS 2048
 static struct encounter encounter_list[MAX_ENCOUNTERS];
 
 void encounter_init();
@@ -126,7 +270,9 @@ double encprob;
 
 		if (numrnd == 0 && numconst == 0)
 		{
-			encounter_list[*active_encounter_index_ptr].probability = encprob * 100;
+			if(encounter_list[*active_encounter_index_ptr].probability == 0)
+				encounter_list[*active_encounter_index_ptr].probability = encprob * 100;
+
 			break;
 		}
 
@@ -195,6 +341,10 @@ void
 calculate_encounter_difficulty(encounter_index)
 int encounter_index;
 {
+	if (encounter_index == 48)
+	{
+		int y = 1;
+	}
 	long maxdifficulty = 0;
 	long mindifficulty = 0;
 	long totaldifficulty = 0;
@@ -206,13 +356,16 @@ int encounter_index;
 		if (pmid == NON_PM)
 			break;
 
-		totaldifficulty += (long)mons[pmid].difficulty;
-		totalsquareddifficulty += (long)mons[pmid].difficulty * (long)mons[pmid].difficulty;
+		totaldifficulty += (long)mons[pmid].difficulty + i % 2; //Add 1 every other time, kludge for accounting for level 0 monsters
+		totalsquareddifficulty += 1 + (long)mons[pmid].difficulty * (long)mons[pmid].difficulty; // Add 1 to account for level 0 monsters
 
 	}
 
 	maxdifficulty = totaldifficulty;
 	mindifficulty = (long)sqrt((double)totalsquareddifficulty);
+	if (maxdifficulty < mindifficulty)
+		maxdifficulty = mindifficulty;
+
 	encounter_list[encounter_index].difficulty_max = (int)maxdifficulty;
 	encounter_list[encounter_index].difficulty_min = (int)mindifficulty;
 
@@ -278,13 +431,30 @@ int x, y;
 		}
 		for (int j = 1; j < MAX_ENCOUNTERS; j++)
 		{
+			encounter_list[j].insearch = FALSE;
+
+			if ((encounter_list[j].eflags & ED_ONLY_ONCE) && encounter_list[j].appear_count != 0)
+				continue;
+
+			if ((encounter_list[j].eflags & ED_NOHELL) && Inhell)
+				continue;
+
+			if ((encounter_list[j].eflags & ED_HELL_ONLY) && !Inhell)
+				continue;
+
+			if ((encounter_list[j].eflags & ED_NOMINES) && In_mines(&u.uz))
+				continue;
+
+			if ((encounter_list[j].eflags & ED_MINES_ONLY) && !In_mines(&u.uz))
+				continue;
+
+
 			if (
 				(encounter_list[j].difficulty_min >= minmlev && encounter_list[j].difficulty_min <= maxmlev)
 				|| (encounter_list[j].difficulty_min >= minmlev && (encounter_list[j].difficulty_min <= maxmlev && !rn2(4)))
 			   )
 				encounter_list[j].insearch = TRUE, totalselectedprob += encounter_list[j].probability;
-			else
-				encounter_list[j].insearch = FALSE;
+
 		}
 		if (totalselectedprob > 0)
 			break;
@@ -310,6 +480,7 @@ int x, y;
 
 	if (selected_encounter > 0)
 	{
+		encounter_list[selected_encounter].appear_count += 1;
 		create_encounter(selected_encounter, x, y);
 	}
 	else
@@ -328,7 +499,7 @@ int selected_encounter, x, y;
 	/* Calculate experience first */
 	long encounter_experience = 1 + encounter_list[selected_encounter].difficulty_point_estimate * encounter_list[selected_encounter].difficulty_point_estimate;
 	long total_monster_experience = 0;
-	//long total_monster_difficulty = 0;
+	long total_monster_difficulty = 0;
 
 	for (int i = 0; i < MAX_ENCOUNTER_MONSTERS; i++)
 	{
@@ -337,7 +508,7 @@ int selected_encounter, x, y;
 			break;
 
 		total_monster_experience += 1 + mons[pmid].difficulty * mons[pmid].difficulty;
-		//total_monster_difficulty += mons[pmid].difficulty;
+		total_monster_difficulty += mons[pmid].difficulty;
 	}
 
 	long xpdiff = encounter_experience - total_monster_experience;
@@ -376,11 +547,11 @@ int selected_encounter, x, y;
 				ny = mon->my;
 			}
 
-
-			long monster_experience = 1 + mons[pmid].difficulty * mons[pmid].difficulty;
-
-			if(xpdiff > 0 && total_monster_experience > 0)
-				mon->extra_encounter_xp = (xpdiff * monster_experience) / total_monster_experience;
+			int monster_difficulty = mons[pmid].difficulty;
+			long monster_experience = 1 + monster_difficulty * monster_difficulty;
+			
+			if(xpdiff > 0 && total_monster_difficulty > 0)
+				mon->extra_encounter_xp = (xpdiff * monster_difficulty) / total_monster_difficulty;
 
 			for (int j = 0; j < MAX_MONSTER_ITEMS; j++)
 			{

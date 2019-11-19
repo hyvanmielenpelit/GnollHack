@@ -53,6 +53,12 @@ struct encounterdef {
 	long eflags;
 };
 
+#define ED_NOHELL 0x00000001
+#define ED_HELL_ONLY 0x00000002
+#define ED_NOMINES 0x00000004
+#define ED_MINES_ONLY 0x00000008
+
+#define ED_ONLY_ONCE 0x80000000
 
 
 struct encounter_monster {
@@ -69,7 +75,8 @@ struct encounter {
 	int difficulty_max;
 	double probability;
 	boolean insearch;
-	long eiflags;
+	int appear_count;
+	long eflags;
 };
 
 
