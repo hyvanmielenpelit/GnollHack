@@ -121,7 +121,7 @@ struct encounterdef encounter_definitions[] =
 	{
 		{
 			/* Monster 1 */
-			{ { { PM_JACKAL, 2, 4, 0, 100, NOMONSTERITEMS },
+			{ { { PM_JACKAL, 2, 2, 0, 100, NOMONSTERITEMS },
 			NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
 			NORANDOMIZEDMONSTER,
 			NORANDOMIZEDMONSTER,
@@ -132,6 +132,19 @@ struct encounterdef encounter_definitions[] =
 		0
 	},
 
+	{
+		{
+			/* Monster 1 */
+			{ { { PM_HYENA, 2, 6, 0, 100, NOMONSTERITEMS },
+			NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			NORANDOMIZEDMONSTER,
+			NORANDOMIZEDMONSTER,
+			NORANDOMIZEDMONSTER,
+			NORANDOMIZEDMONSTER
+		},
+		10,
+		0
+	},
 
 	{
 		{
@@ -217,7 +230,7 @@ struct encounterdef encounter_definitions[] =
 			{ { { PM_GNOLL, 2, 4, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
 			/* Monster 4 */
 			{ { { PM_GNOLL_WARDEN, 0, 2, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
-			NORANDOMIZEDMONSTER
+			{ { { PM_HYENA, 0, 4, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  }
 		},
 		30,
 		0
@@ -543,6 +556,8 @@ int selected_encounter, x, y;
 		if (pmid == NON_PM)
 			break;
 
+		if (mvitals[pmid].mvflags & G_GONE)
+			continue;
 		if (upper && !isupper((uchar)def_monsyms[(int)mons[pmid].mlet].sym))
 			continue;
 		if (elemlevel && wrong_elem_type(&mons[pmid]))
@@ -567,6 +582,8 @@ int selected_encounter, x, y;
 		if (pmid == NON_PM)
 			break;
 
+		if (mvitals[pmid].mvflags & G_GONE)
+			continue;
 		if (upper && !isupper((uchar)def_monsyms[(int)mons[pmid].mlet].sym))
 			continue;
 		if (elemlevel && wrong_elem_type(&mons[pmid]))

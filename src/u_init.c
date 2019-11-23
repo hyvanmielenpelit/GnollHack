@@ -255,19 +255,19 @@ static struct trobj Wishing[] = { { WAN_WISHING, 3, WAND_CLASS, 1, 0, 0 },
 static struct trobj Money[] = { { GOLD_PIECE, 0, COIN_CLASS, 1, 0, 0 },
                                 { 0, 0, 0, 0, 0, 0 } };
 
-static struct trobj DeathQuarrel[] = { { BONE_QUARREL, UNDEF_SPE, WEAPON_CLASS,
+static struct trobj DeathQuarrel[] = { { BONE_QUARREL, 0, WEAPON_CLASS,
 										1, 0, DEATH_ENCHANTMENT },
 								{ 0, 0, 0, 0, 0, 0 } };
-static struct trobj LightningQuarrel[] = { { GNOLLISH_QUARREL, UNDEF_SPE, WEAPON_CLASS,
+static struct trobj LightningQuarrel[] = { { GNOLLISH_QUARREL, 0, WEAPON_CLASS,
 										2, 0, LIGHTNING_ENCHANTMENT },
 								{ 0, 0, 0, 0, 0, 0 } };
-static struct trobj LightningArrow[] = { { ARROW, UNDEF_SPE, WEAPON_CLASS,
+static struct trobj LightningArrow[] = { { ARROW, 0, WEAPON_CLASS,
 										2, 0, LIGHTNING_ENCHANTMENT },
 								{ 0, 0, 0, 0, 0, 0 } };
-static struct trobj LightningElvenArrow[] = { { ELVEN_ARROW, UNDEF_SPE, WEAPON_CLASS,
+static struct trobj LightningElvenArrow[] = { { ELVEN_ARROW, 0, WEAPON_CLASS,
 										2, 0, LIGHTNING_ENCHANTMENT },
 								{ 0, 0, 0, 0, 0, 0 } };
-static struct trobj LightningOrcishArrow[] = { { ORCISH_ARROW, UNDEF_SPE, WEAPON_CLASS,
+static struct trobj LightningOrcishArrow[] = { { ORCISH_ARROW, 0, WEAPON_CLASS,
 										2, 0, LIGHTNING_ENCHANTMENT },
 								{ 0, 0, 0, 0, 0, 0 } };
 

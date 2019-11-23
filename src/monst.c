@@ -195,7 +195,7 @@ NEARDATA struct permonst mons[] = {
         M1_ANIMAL | M1_NOHANDS | M1_OMNIVORE | M1_OVIPAROUS, M2_HOSTILE,
         M3_INFRAVISIBLE, 9, CLR_YELLOW),
     /*
-     * dogs & other canines
+     * dogs & other canines + hyenas
      */
     MON("jackal", S_DOG, LVL(0, 12, 7, 0, 0, 0), (G_GENO | G_SGROUP | 3),
         A(ATTK(AT_BITE, AD_PHYS, 1, 2, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
@@ -214,7 +214,7 @@ NEARDATA struct permonst mons[] = {
 		NO_ATTK, NO_ATTK, NO_ATTK),
 		SIZ(300, 250, MS_BARK, MZ_SMALL), STATS(6, 9, 9, 2, 2, 1), 0, 0,
 		M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE, M2_HOSTILE, M3_INFRAVISIBLE,
-		2, CLR_ORANGE),
+		2, CLR_GRAY),
     MON("little dog", S_DOG, LVL(2, 18, 6, 0, 0, 0), (G_GENO | 1),
         A(ATTK(AT_BITE, AD_PHYS, 1, 6, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
@@ -248,7 +248,7 @@ NEARDATA struct permonst mons[] = {
     MON("wolf", S_DOG, LVL(5, 12, 4, 0, 0, 0), (G_GENO | G_SGROUP | 2),
         A(ATTK(AT_BITE, AD_PHYS, 2, 4, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(500, 250, MS_BARK, MZ_MEDIUM), STATS(12, 9, 15, 2, 2, 1), 0, 0,
+        SIZ(500, 250, MS_BARK, MZ_MEDIUM), STATS(15, 9, 16, 2, 2, 1), 0, 0,
         M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE, M2_HOSTILE, M3_INFRAVISIBLE,
         5, CLR_GRAY),
     MON("winter wolf cub", S_DOG, LVL(5, 12, 4, 0, 0, -5),
@@ -257,6 +257,12 @@ NEARDATA struct permonst mons[] = {
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(250, 200, MS_BARK, MZ_SMALL), STATS(6, 9, 9, 2, 2, 1), MR_COLD, MR_COLD,
         M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE, M2_HOSTILE, 0, 6, CLR_CYAN),
+    MON("hyena", S_DOG, LVL(6, 12, 4, 0, 0, 0), (G_GENO | G_LGROUP | 2),
+        A(ATTK(AT_BITE, AD_PHYS, 2, 4, 2, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
+          NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(500, 250, MS_BARK, MZ_MEDIUM), STATS(16, 9, 15, 2, 2, 1), 0, 0,
+        M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE, M2_HOSTILE, M3_INFRAVISIBLE,
+        6, CLR_ORANGE),
     MON("warg", S_DOG, LVL(7, 12, 4, 0, 0, -5), (G_GENO | G_SGROUP | 2),
         A(ATTK(AT_BITE, AD_PHYS, 2, 6, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
