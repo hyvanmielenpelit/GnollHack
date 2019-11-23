@@ -1621,7 +1621,7 @@ wiz_map_levltyp(VOID_ARGS)
     return;
 }
 
-/* M('m') command - save monster list */
+/* Save monster list */
 STATIC_PTR int
 wiz_save_monsters(VOID_ARGS) /* Save a csv file for monsters */
 {
@@ -1765,6 +1765,8 @@ wiz_save_monsters(VOID_ARGS) /* Save a csv file for monsters */
 		pline(unavailcmd, visctrl((int)cmd_from_func(wiz_save_monsters)));
 	return 0;
 }
+
+
 
 
 
@@ -4091,7 +4093,9 @@ struct ext_func_tab extcmdlist[] = {
             wiz_map, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { '\0', "wizsavemonsters", "save monsters into a file",
             wiz_save_monsters, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
-    { '\0', "wizrumorcheck", "verify rumor boundaries",
+	{ '\0', "wizsaveencounters", "save monsters into a file",
+			wiz_save_encounters, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
+	{ '\0', "wizrumorcheck", "verify rumor boundaries",
             wiz_rumor_check, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { '\0', "wizsmell", "smell monster",
             wiz_smell, IFBURIED | AUTOCOMPLETE | WIZMODECMD },

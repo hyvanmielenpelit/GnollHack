@@ -846,7 +846,7 @@ NEARDATA struct permonst mons[] = {
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(30, 30, MS_SQEEK, MZ_TINY), STATS(3, 9, 3, 2, 2, 1), 0, 0,
         M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE, M2_HOSTILE, M3_INFRAVISIBLE,
-        1, HI_LORD),
+        1, CLR_RED),
     MON("rabid rat", S_RODENT, LVL(2, 12, 6, 0, 0, 0), (G_GENO | 1),
         A(ATTK(AT_BITE, AD_DRCO, 2, 4, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
@@ -860,7 +860,7 @@ NEARDATA struct permonst mons[] = {
         M1_TUNNEL /*LOGGING*/ | M1_ANIMAL | M1_NOHANDS | M1_SWIM
             | M1_HERBIVORE,
         /* In reality, they tunnel instead of cutting lumber.  Oh, well. */
-        M2_WANDER | M2_HOSTILE, M3_INFRAVISIBLE, 2, CLR_RED),
+        M2_WANDER | M2_HOSTILE, M3_INFRAVISIBLE, 2, CLR_ORANGE),
     MON("rock mole", S_RODENT, LVL(3, 3, 0, 0, 20, 0), (G_GENO | 2),
         A(ATTK(AT_BITE, AD_PHYS, 1, 6, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),

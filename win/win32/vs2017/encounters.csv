@@ -1,0 +1,278 @@
+#,DifMin,DefPoint,DefMax,Probability,1,Monster,2,Monster,3,Monster,4,Monster,5,Monster,6,Monster,7,Monster,8,Monster,9,Monster,10,Monster,11,Monster,12,Monster,13,Monster,14,Monster,15,Monster,16,Monster,17,Monster,18,Monster,19,Monster,20,Monster,21,Monster,22,Monster,23,Monster,24,Monster,25,Monster,26,Monster,27,Monster,28,Monster,29,Monster,30,Monster,31,Monster,32,Monster,33,Monster,34,Monster,35,Monster,36,Monster,37,Monster,38,Monster,39,Monster,40,Monster,41,Monster,42,Monster,43,Monster,44,Monster,45,Monster,46,Monster,47,Monster,48,Monster,49,Monster,50,Monster,51,Monster,52,Monster,53,Monster,54,Monster,55,Monster,56,Monster,57,Monster,58,Monster,59,Monster,60,Monster,61,Monster,62,Monster,63,Monster,64,Monster,65,Monster,66,Monster,67,Monster,68,Monster,69,Monster,70,Monster,71,Monster,72,Monster,73,Monster,74,Monster,75,Monster,76,Monster,77,Monster,78,Monster,79,Monster,80,Monster,81,Monster,82,Monster,83,Monster,84,Monster,85,Monster,86,Monster,87,Monster,88,Monster,89,Monster,90,Monster,91,Monster,92,Monster,93,Monster,94,Monster,95,Monster,96,Monster,97,Monster,98,Monster,99,Monster,100,Monster,101,Monster,102,Monster,103,Monster,104,Monster,105,Monster,106,Monster,107,Monster,108,Monster,109,Monster,110,Monster,111,Monster,112,Monster,113,Monster,114,Monster,115,Monster,116,Monster,117,Monster,118,Monster,119,Monster,120,Monster,121,Monster,122,Monster,123,Monster,124,Monster,125,Monster,126,Monster,127,Monster,128,Monster,129,Monster,130,Monster,131,Monster,132,Monster,133,Monster,134,Monster,135,Monster,136,Monster,137,Monster,138,Monster,139,Monster,140,Monster,141,Monster,142,Monster,143,Monster,144,Monster,145,Monster,146,Monster,147,Monster,148,Monster,149,Monster,150,Monster,151,Monster,152,Monster,153,Monster,154,Monster,155,Monster,156,Monster,157,Monster,158,Monster,159,Monster,160,Monster,161,Monster,162,Monster,163,Monster,164,Monster,165,Monster,166,Monster,167,Monster,168,Monster,169,Monster,170,Monster,171,Monster,172,Monster,173,Monster,174,Monster,175,Monster,176,Monster,177,Monster,178,Monster,179,Monster,180,Monster,181,Monster,182,Monster,183,Monster,184,Monster,185,Monster,186,Monster,187,Monster,188,Monster,189,Monster,190,Monster,191,Monster,192,Monster,193,Monster,194,Monster,195,Monster,196,Monster,197,Monster,198,Monster,199,Monster,200,Monster,201,Monster,202,Monster,203,Monster,204,Monster,205,Monster,206,Monster,207,Monster,208,Monster,209,Monster,210,Monster,211,Monster,212,Monster,213,Monster,214,Monster,215,Monster,216,Monster,217,Monster,218,Monster,219,Monster,220,Monster,221,Monster,222,Monster,223,Monster,224,Monster,225,Monster,226,Monster,227,Monster,228,Monster,229,Monster,230,Monster,231,Monster,232,Monster,233,Monster,234,Monster,235,Monster,236,Monster,237,Monster,238,Monster,239,Monster,240,Monster,241,Monster,242,Monster,243,Monster,244,Monster,245,Monster,246,Monster,247,Monster,248,Monster,249,Monster,250,Monster,251,Monster,252,Monster,253,Monster,254,Monster,255,Monster,256,Monster,257,Monster,258,Monster,259,Monster,260,Monster,261,Monster,262,Monster,263,Monster,264,Monster,265,Monster,266,Monster,267,Monster,268,Monster,269,Monster,270,Monster,271,Monster,272,Monster,273,Monster,274,Monster,275,Monster,276,Monster,277,Monster,278,Monster,279,Monster,280,Monster,281,Monster,282,Monster,283,Monster,284,Monster,285,Monster,286,Monster,287,Monster,288,Monster,289,Monster,290,Monster,291,Monster,292,Monster,293,Monster,294,Monster,295,Monster,296,Monster,297,Monster,298,Monster,299,Monster,300,Monster,301,Monster,302,Monster,303,Monster,304,Monster,305,Monster,306,Monster,307,Monster,308,Monster,309,Monster,310,Monster,311,Monster,312,Monster,313,Monster,314,Monster,315,Monster,316,Monster,317,Monster,318,Monster,319,Monster,320,Monster,321,Monster,322,Monster,323,Monster,324,Monster,325,Monster,326,Monster,327,Monster,328,Monster,329,Monster,330,Monster,331,Monster,332,Monster,333,Monster,334,Monster,335,Monster,336,Monster,337,Monster,338,Monster,339,Monster,340,Monster,341,Monster,342,Monster,343,Monster,344,Monster,345,Monster,346,Monster,347,Monster,348,Monster,349,Monster,350,Monster,351,Monster,352,Monster,353,Monster,354,Monster,355,Monster,356,Monster,357,Monster,358,Monster,359,Monster,360,Monster,361,Monster,362,Monster,363,Monster,364,Monster,365,Monster,366,Monster,367,Monster,368,Monster,369,Monster,370,Monster,371,Monster,372,Monster,373,Monster,374,Monster,375,Monster,376,Monster,377,Monster,378,Monster,379,Monster,380,Monster,381,Monster,382,Monster,383,Monster,384,Monster,385,Monster,386,Monster,387,Monster,388,Monster,389,Monster,390,Monster,391,Monster,392,Monster,393,Monster,394,Monster,395,Monster,396,Monster,397,Monster,398,Monster,399,Monster,400,Monster,401,Monster,402,Monster,403,Monster,404,Monster,405,Monster,406,Monster,407,Monster,408,Monster,409,Monster,410,Monster,411,Monster,412,Monster,413,Monster,414,Monster,415,Monster,416,Monster,417,Monster,418,Monster,419,Monster,420,Monster,421,Monster,422,Monster,423,Monster,424,Monster,425,Monster,426,Monster,427,Monster,428,Monster,429,Monster,430,Monster,431,Monster,432,Monster,433,Monster,434,Monster,435,Monster,436,Monster,437,Monster,438,Monster,439,Monster,440,Monster,441,Monster,442,Monster,443,Monster,444,Monster,445,Monster,446,Monster,447,Monster,448,Monster,449,Monster,450,Monster,451,Monster,452,Monster,453,Monster,454,Monster,455,Monster,456,Monster,457,Monster,458,Monster,459,Monster,460,Monster,461,Monster,462,Monster,463,Monster,464,Monster,465,Monster,466,Monster,467,Monster,468,Monster,469,Monster,470,Monster,471,Monster,472,Monster,473,Monster,474,Monster,475,Monster,476,Monster,477,Monster,478,Monster,479,Monster,480,Monster,481,Monster,482,Monster,483,Monster,484,Monster,485,Monster,486,Monster,487,Monster,488,Monster,489,Monster,490,Monster,491,Monster,492,Monster,493,Monster,494,Monster,495,Monster,496,Monster,497,Monster,498,Monster,499,Monster,500,Monster,501,Monster,502,Monster,503,Monster,504,Monster,505,Monster,506,Monster,507,Monster,508,Monster,509,Monster,510,Monster,511,Monster,512,Monster,513,Monster,514,Monster,515,Monster,516,Monster,517,Monster,518,Monster,519,Monster,520,Monster,521,Monster,522,Monster,523,Monster,524,Monster,525,Monster,526,Monster,527,Monster,528,Monster,529,Monster,530,Monster,531,Monster,532,Monster,533,Monster,534,Monster,535,Monster,536,Monster,537,Monster,538,Monster,539,Monster,540,Monster,541,Monster,542,Monster,543,Monster,544,Monster,545,Monster,546,Monster,547,Monster,548,Monster,549,Monster,550,Monster,551,Monster,552,Monster,553,Monster,554,Monster,555,Monster,556,Monster,557,Monster,558,Monster,559,Monster,560,Monster,561,Monster,562,Monster,563,Monster,564,Monster,565,Monster,566,Monster,567,Monster,568,Monster,569,Monster,570,Monster,571,Monster,572,Monster,573,Monster,574,Monster,575,Monster,576,Monster,577,Monster,578,Monster,579,Monster,580,Monster,581,Monster,582,Monster,583,Monster,584,Monster,585,Monster,586,Monster,587,Monster,588,Monster,589,Monster,590,Monster,591,Monster,592,Monster,593,Monster,594,Monster,595,Monster,596,Monster,597,Monster,598,Monster,599,Monster,600,Monster,601,Monster,602,Monster,603,Monster,604,Monster,605,Monster,606,Monster,607,Monster,608,Monster,609,Monster,610,Monster,611,Monster,612,Monster,613,Monster,614,Monster,615,Monster,616,Monster,617,Monster,618,Monster,619,Monster,620,Monster,621,Monster,622,Monster,623,Monster,624,Monster,625,Monster,626,Monster,627,Monster,628,Monster,629,Monster,630,Monster,631,Monster,632,Monster,633,Monster,634,Monster,635,Monster,636,Monster,637,Monster,638,Monster,639,Monster,640,Monster,641,Monster,642,Monster,643,Monster,644,Monster,645,Monster,646,Monster,647,Monster,648,Monster,649,Monster,650,Monster,651,Monster,652,Monster,653,Monster,654,Monster,655,Monster,656,Monster,657,Monster,658,Monster,659,Monster,660,Monster,661,Monster,662,Monster,663,Monster,664,Monster,665,Monster,666,Monster,667,Monster,668,Monster,669,Monster,670,Monster,671,Monster,672,Monster,673,Monster,674,Monster,675,Monster,676,Monster,677,Monster,678,Monster,679,Monster,680,Monster,681,Monster,682,Monster,683,Monster,684,Monster,685,Monster,686,Monster,687,Monster,688,Monster,689,Monster,690,Monster,691,Monster,692,Monster,693,Monster,694,Monster,695,Monster,696,Monster,697,Monster,698,Monster,699,Monster,700,Monster,701,Monster,702,Monster,703,Monster,704,Monster,705,Monster,706,Monster,707,Monster,708,Monster,709,Monster,710,Monster,711,Monster,712,Monster,713,Monster,714,Monster,715,Monster,716,Monster,717,Monster,718,Monster,719,Monster,720,Monster,721,Monster,722,Monster,723,Monster,724,Monster,725,Monster,726,Monster,727,Monster,728,Monster,729,Monster,730,Monster,731,Monster,732,Monster,733,Monster,734,Monster,735,Monster,736,Monster,737,Monster,738,Monster,739,Monster,740,Monster,741,Monster,742,Monster,743,Monster,744,Monster,745,Monster,746,Monster,747,Monster,748,Monster,749,Monster,750,Monster,751,Monster,752,Monster,753,Monster,754,Monster,755,Monster,756,Monster,757,Monster,758,Monster,759,Monster,760,Monster,761,Monster,762,Monster,763,Monster,764,Monster,765,Monster,766,Monster,767,Monster,768,Monster,769,Monster,770,Monster,771,Monster,772,Monster,773,Monster,774,Monster,775,Monster,776,Monster,777,Monster,778,Monster,779,Monster,780,Monster,781,Monster,782,Monster,783,Monster,784,Monster,785,Monster,786,Monster,787,Monster,788,Monster,789,Monster,790,Monster,791,Monster,792,Monster,793,Monster,794,Monster,795,Monster,796,Monster,797,Monster,798,Monster,799,Monster,800,Monster,801,Monster,802,Monster,803,Monster,804,Monster,805,Monster,806,Monster,807,Monster,808,Monster,809,Monster,810,Monster,811,Monster,812,Monster,813,Monster,814,Monster,815,Monster,816,Monster,817,Monster,818,Monster,819,Monster,820,Monster,821,Monster,822,Monster,823,Monster,824,Monster,825,Monster,826,Monster,827,Monster,828,Monster,829,Monster,830,Monster,831,Monster,832,Monster,833,Monster,834,Monster,835,Monster,836,Monster,837,Monster,838,Monster,839,Monster,840,Monster,841,Monster,842,Monster,843,Monster,844,Monster,845,Monster,846,Monster,847,Monster,848,Monster,849,Monster,850,Monster,851,Monster,852,Monster,853,Monster,854,Monster,855,Monster,856,Monster,857,Monster,858,Monster,859,Monster,860,Monster,861,Monster,862,Monster,863,Monster,864,Monster,865,Monster,866,Monster,867,Monster,868,Monster,869,Monster,870,Monster,871,Monster,872,Monster,873,Monster,874,Monster,875,Monster,876,Monster,877,Monster,878,Monster,879,Monster,880,Monster,881,Monster,882,Monster,883,Monster,884,Monster,885,Monster,886,Monster,887,Monster,888,Monster,889,Monster,890,Monster,891,Monster,892,Monster,893,Monster,894,Monster,895,Monster,896,Monster,897,Monster,898,Monster,899,Monster,900,Monster,901,Monster,902,Monster,903,Monster,904,Monster,905,Monster,906,Monster,907,Monster,908,Monster,909,Monster,910,Monster,911,Monster,912,Monster,913,Monster,914,Monster,915,Monster,916,Monster,917,Monster,918,Monster,919,Monster,920,Monster,921,Monster,922,Monster,923,Monster,924,Monster,925,Monster,926,Monster,927,Monster,928,Monster,929,Monster,930,Monster,931,Monster,932,Monster,933,Monster,934,Monster,935,Monster,936,Monster,937,Monster,938,Monster,939,Monster,940,Monster,941,Monster,942,Monster,943,Monster,944,Monster,945,Monster,946,Monster,947,Monster,948,Monster,949,Monster,950,Monster,951,Monster,952,Monster,953,Monster,954,Monster,955,Monster,956,Monster,957,Monster,958,Monster,959,Monster,960,Monster,961,Monster,962,Monster,963,Monster,964,Monster,965,Monster,966,Monster,967,Monster,968,Monster,969,Monster,970,Monster,971,Monster,972,Monster,973,Monster,974,Monster,975,Monster,976,Monster,977,Monster,978,Monster,979,Monster,980,Monster,981,Monster,982,Monster,983,Monster,984,Monster,985,Monster,986,Monster,987,Monster,988,Monster,989,Monster,990,Monster,991,Monster,992,Monster,993,Monster,994,Monster,995,Monster,996,Monster,997,Monster,998,Monster,999,Monster,1000,Monster,1001,Monster,1002,Monster,1003,Monster,1004,Monster,1005,Monster,1006,Monster,1007,Monster,1008,Monster,1009,Monster,1010,Monster,1011,Monster,1012,Monster,1013,Monster,1014,Monster,1015,Monster,1016,Monster,1017,Monster,1018,Monster,1019,Monster,1020,Monster,1021,Monster,1022,Monster,1023,Monster,1024,Monster,1025,Monster,1026,Monster,1027,Monster,1028,Monster,1029,Monster,1030,Monster,1031,Monster,1032,Monster,1033,Monster,1034,Monster,1035,Monster,1036,Monster,1037,Monster,1038,Monster,1039,Monster,1040,Monster,1041,Monster,1042,Monster,1043,Monster,1044,Monster,1045,Monster,1046,Monster,1047,Monster,1048,Monster,1049,Monster,1050,Monster,1051,Monster,1052,Monster,1053,Monster,1054,Monster,1055,Monster,1056,Monster,1057,Monster,1058,Monster,1059,Monster,1060,Monster,1061,Monster,1062,Monster,1063,Monster,1064,Monster,1065,Monster,1066,Monster,1067,Monster,1068,Monster,1069,Monster,1070,Monster,1071,Monster,1072,Monster,1073,Monster,1074,Monster,1075,Monster,1076,Monster,1077,Monster,1078,Monster,1079,Monster,1080,Monster,1081,Monster,1082,Monster,1083,Monster,1084,Monster,1085,Monster,1086,Monster,1087,Monster,1088,Monster,1089,Monster,1090,Monster,1091,Monster,1092,Monster,1093,Monster,1094,Monster,1095,Monster,1096,Monster,1097,Monster,1098,Monster,1099,Monster,1100,Monster,1101,Monster,1102,Monster,1103,Monster,1104,Monster,1105,Monster,1106,Monster,1107,Monster,1108,Monster,1109,Monster,1110,Monster,1111,Monster,1112,Monster,1113,Monster,1114,Monster,1115,Monster,1116,Monster,1117,Monster,1118,Monster,1119,Monster,1120,Monster,1121,Monster,1122,Monster,1123,Monster,1124,Monster,1125,Monster,1126,Monster,1127,Monster,1128,Monster,1129,Monster,1130,Monster,1131,Monster,1132,Monster,1133,Monster,1134,Monster,1135,Monster,1136,Monster,1137,Monster,1138,Monster,1139,Monster,1140,Monster,1141,Monster,1142,Monster,1143,Monster,1144,Monster,1145,Monster,1146,Monster,1147,Monster,1148,Monster,1149,Monster,1150,Monster,1151,Monster,1152,Monster,1153,Monster,1154,Monster,1155,Monster,1156,Monster,1157,Monster,1158,Monster,1159,Monster,1160,Monster,1161,Monster,1162,Monster,1163,Monster,1164,Monster,1165,Monster,1166,Monster,1167,Monster,1168,Monster,1169,Monster,1170,Monster,1171,Monster,1172,Monster,1173,Monster,1174,Monster,1175,Monster,1176,Monster,1177,Monster,1178,Monster,1179,Monster,1180,Monster,1181,Monster,1182,Monster,1183,Monster,1184,Monster,1185,Monster,1186,Monster,1187,Monster,1188,Monster,1189,Monster,1190,Monster,1191,Monster,1192,Monster,1193,Monster,1194,Monster,1195,Monster,1196,Monster,1197,Monster,1198,Monster,1199,Monster,1200,Monster,1201,Monster,1202,Monster,1203,Monster,1204,Monster,1205,Monster,1206,Monster,1207,Monster,1208,Monster,1209,Monster,1210,Monster,1211,Monster,1212,Monster,1213,Monster,1214,Monster,1215,Monster,1216,Monster,1217,Monster,1218,Monster,1219,Monster,1220,Monster,1221,Monster,1222,Monster,1223,Monster,1224,Monster,1225,Monster,1226,Monster,1227,Monster,1228,Monster,1229,Monster,1230,Monster,1231,Monster,1232,Monster,1233,Monster,1234,Monster,1235,Monster,1236,Monster,1237,Monster,1238,Monster,1239,Monster,1240,Monster,1241,Monster,1242,Monster,1243,Monster,1244,Monster,1245,Monster,1246,Monster,1247,Monster,1248,Monster,1249,Monster,1250,Monster,1251,Monster,1252,Monster,1253,Monster,1254,Monster,1255,Monster,1256,Monster,1257,Monster,1258,Monster,1259,Monster,1260,Monster,1261,Monster,1262,Monster,1263,Monster,1264,Monster,1265,Monster,1266,Monster,1267,Monster,1268,Monster,1269,Monster,1270,Monster,1271,Monster,1272,Monster,1273,Monster,1274,Monster,1275,Monster,1276,Monster,1277,Monster,1278,Monster,1279,Monster,1280,Monster,1281,Monster,1282,Monster,1283,Monster,1284,Monster,1285,Monster,1286,Monster,1287,Monster,1288,Monster,1289,Monster,1290,Monster,1291,Monster,1292,Monster,1293,Monster,1294,Monster,1295,Monster,1296,Monster,1297,Monster,1298,Monster,1299,Monster,1300,Monster,1301,Monster,1302,Monster,1303,Monster,1304,Monster,1305,Monster,1306,Monster,1307,Monster,1308,Monster,1309,Monster,1310,Monster,1311,Monster,1312,Monster,1313,Monster,1314,Monster,1315,Monster,1316,Monster,1317,Monster,1318,Monster,1319,Monster,1320,Monster,1321,Monster,1322,Monster,1323,Monster,1324,Monster,1325,Monster,1326,Monster,1327,Monster,1328,Monster,1329,Monster,1330,Monster,1331,Monster,1332,Monster,1333,Monster,1334,Monster,1335,Monster,1336,Monster,1337,Monster,1338,Monster,1339,Monster,1340,Monster,1341,Monster,1342,Monster,1343,Monster,1344,Monster,1345,Monster,1346,Monster,1347,Monster,1348,Monster,1349,Monster,1350,Monster,1351,Monster,1352,Monster,1353,Monster,1354,Monster,1355,Monster,1356,Monster,1357,Monster,1358,Monster,1359,Monster,1360,Monster,1361,Monster,1362,Monster,1363,Monster,1364,Monster,1365,Monster,1366,Monster,1367,Monster,1368,Monster,1369,Monster,1370,Monster,1371,Monster,1372,Monster,1373,Monster,1374,Monster,1375,Monster,1376,Monster,1377,Monster,1378,Monster,1379,Monster,1380,Monster,1381,Monster,1382,Monster,1383,Monster,1384,Monster,1385,Monster,1386,Monster,1387,Monster,1388,Monster,1389,Monster,1390,Monster,1391,Monster,1392,Monster,1393,Monster,1394,Monster,1395,Monster,1396,Monster,1397,Monster,1398,Monster,1399,Monster,1400,Monster,1401,Monster,1402,Monster,1403,Monster,1404,Monster,1405,Monster,1406,Monster,1407,Monster,1408,Monster,1409,Monster,1410,Monster,1411,Monster,1412,Monster,1413,Monster,1414,Monster,1415,Monster,1416,Monster,1417,Monster,1418,Monster,1419,Monster,1420,Monster,1421,Monster,1422,Monster,1423,Monster,1424,Monster,1425,Monster,1426,Monster,1427,Monster,1428,Monster,1429,Monster,1430,Monster,1431,Monster,1432,Monster,1433,Monster,1434,Monster,1435,Monster,1436,Monster,1437,Monster,1438,Monster,1439,Monster,1440,Monster,1441,Monster,1442,Monster,1443,Monster,1444,Monster,1445,Monster,1446,Monster,1447,Monster,1448,Monster,1449,Monster,1450,Monster,1451,Monster,1452,Monster,1453,Monster,1454,Monster,1455,Monster,1456,Monster,1457,Monster,1458,Monster,1459,Monster,1460,Monster,1461,Monster,1462,Monster,1463,Monster,1464,Monster,1465,Monster,1466,Monster,1467,Monster,1468,Monster,1469,Monster,1470,Monster,1471,Monster,1472,Monster,1473,Monster,1474,Monster,1475,Monster,1476,Monster,1477,Monster,1478,Monster,1479,Monster,1480,Monster,1481,Monster,1482,Monster,1483,Monster,1484,Monster,1485,Monster,1486,Monster,1487,Monster,1488,Monster,1489,Monster,1490,Monster,1491,Monster,1492,Monster,1493,Monster,1494,Monster,1495,Monster,1496,Monster,1497,Monster,1498,Monster,1499,Monster,1500,Monster,1501,Monster,1502,Monster,1503,Monster,1504,Monster,1505,Monster,1506,Monster,1507,Monster,1508,Monster,1509,Monster,1510,Monster,1511,Monster,1512,Monster,1513,Monster,1514,Monster,1515,Monster,1516,Monster,1517,Monster,1518,Monster,1519,Monster,1520,Monster,1521,Monster,1522,Monster,1523,Monster,1524,Monster,1525,Monster,1526,Monster,1527,Monster,1528,Monster,1529,Monster,1530,Monster,1531,Monster,1532,Monster,1533,Monster,1534,Monster,1535,Monster,1536,Monster,1537,Monster,1538,Monster,1539,Monster,1540,Monster,1541,Monster,1542,Monster,1543,Monster,1544,Monster,1545,Monster,1546,Monster,1547,Monster,1548,Monster,1549,Monster,1550,Monster,1551,Monster,1552,Monster,1553,Monster,1554,Monster,1555,Monster,1556,Monster,1557,Monster,1558,Monster,1559,Monster,1560,Monster,1561,Monster,1562,Monster,1563,Monster,1564,Monster,1565,Monster,1566,Monster,1567,Monster,1568,Monster,1569,Monster,1570,Monster,1571,Monster,1572,Monster,1573,Monster,1574,Monster,1575,Monster,1576,Monster,1577,Monster,1578,Monster,1579,Monster,1580,Monster,1581,Monster,1582,Monster,1583,Monster,1584,Monster,1585,Monster,1586,Monster,1587,Monster,1588,Monster,1589,Monster,1590,Monster,1591,Monster,1592,Monster,1593,Monster,1594,Monster,1595,Monster,1596,Monster,1597,Monster,1598,Monster,1599,Monster,1600,Monster,1601,Monster,1602,Monster,1603,Monster,1604,Monster,1605,Monster,1606,Monster,1607,Monster,1608,Monster,1609,Monster,1610,Monster,1611,Monster,1612,Monster,1613,Monster,1614,Monster,1615,Monster,1616,Monster,1617,Monster,1618,Monster,1619,Monster,1620,Monster,1621,Monster,1622,Monster,1623,Monster,1624,Monster,1625,Monster,1626,Monster,1627,Monster,1628,Monster,1629,Monster,1630,Monster,1631,Monster,1632,Monster,1633,Monster,1634,Monster,1635,Monster,1636,Monster,1637,Monster,1638,Monster,1639,Monster,1640,Monster,1641,Monster,1642,Monster,1643,Monster,1644,Monster,1645,Monster,1646,Monster,1647,Monster,1648,Monster,1649,Monster,1650,Monster,1651,Monster,1652,Monster,1653,Monster,1654,Monster,1655,Monster,1656,Monster,1657,Monster,1658,Monster,1659,Monster,1660,Monster,1661,Monster,1662,Monster,1663,Monster,1664,Monster,1665,Monster,1666,Monster,1667,Monster,1668,Monster,1669,Monster,1670,Monster,1671,Monster,1672,Monster,1673,Monster,1674,Monster,1675,Monster,1676,Monster,1677,Monster,1678,Monster,1679,Monster,1680,Monster,1681,Monster,1682,Monster,1683,Monster,1684,Monster,1685,Monster,1686,Monster,1687,Monster,1688,Monster,1689,Monster,1690,Monster,1691,Monster,1692,Monster,1693,Monster,1694,Monster,1695,Monster,1696,Monster,1697,Monster,1698,Monster,1699,Monster,1700,Monster,1701,Monster,1702,Monster,1703,Monster,1704,Monster,1705,Monster,1706,Monster,1707,Monster,1708,Monster,1709,Monster,1710,Monster,1711,Monster,1712,Monster,1713,Monster,1714,Monster,1715,Monster,1716,Monster,1717,Monster,1718,Monster,1719,Monster,1720,Monster,1721,Monster,1722,Monster,1723,Monster,1724,Monster,1725,Monster,1726,Monster,1727,Monster,1728,Monster,1729,Monster,1730,Monster,1731,Monster,1732,Monster,1733,Monster,1734,Monster,1735,Monster,1736,Monster,1737,Monster,1738,Monster,1739,Monster,1740,Monster,1741,Monster,1742,Monster,1743,Monster,1744,Monster,1745,Monster,1746,Monster,1747,Monster,1748,Monster,1749,Monster,1750,Monster,1751,Monster,1752,Monster,1753,Monster,1754,Monster,1755,Monster,1756,Monster,1757,Monster,1758,Monster,1759,Monster,1760,Monster,1761,Monster,1762,Monster,1763,Monster,1764,Monster,1765,Monster,1766,Monster,1767,Monster,1768,Monster,1769,Monster,1770,Monster,1771,Monster,1772,Monster,1773,Monster,1774,Monster,1775,Monster,1776,Monster,1777,Monster,1778,Monster,1779,Monster,1780,Monster,1781,Monster,1782,Monster,1783,Monster,1784,Monster,1785,Monster,1786,Monster,1787,Monster,1788,Monster,1789,Monster,1790,Monster,1791,Monster,1792,Monster,1793,Monster,1794,Monster,1795,Monster,1796,Monster,1797,Monster,1798,Monster,1799,Monster,1800,Monster,1801,Monster,1802,Monster,1803,Monster,1804,Monster,1805,Monster,1806,Monster,1807,Monster,1808,Monster,1809,Monster,1810,Monster,1811,Monster,1812,Monster,1813,Monster,1814,Monster,1815,Monster,1816,Monster,1817,Monster,1818,Monster,1819,Monster,1820,Monster,1821,Monster,1822,Monster,1823,Monster,1824,Monster,1825,Monster,1826,Monster,1827,Monster,1828,Monster,1829,Monster,1830,Monster,1831,Monster,1832,Monster,1833,Monster,1834,Monster,1835,Monster,1836,Monster,1837,Monster,1838,Monster,1839,Monster,1840,Monster,1841,Monster,1842,Monster,1843,Monster,1844,Monster,1845,Monster,1846,Monster,1847,Monster,1848,Monster,1849,Monster,1850,Monster,1851,Monster,1852,Monster,1853,Monster,1854,Monster,1855,Monster,1856,Monster,1857,Monster,1858,Monster,1859,Monster,1860,Monster,1861,Monster,1862,Monster,1863,Monster,1864,Monster,1865,Monster,1866,Monster,1867,Monster,1868,Monster,1869,Monster,1870,Monster,1871,Monster,1872,Monster,1873,Monster,1874,Monster,1875,Monster,1876,Monster,1877,Monster,1878,Monster,1879,Monster,1880,Monster,1881,Monster,1882,Monster,1883,Monster,1884,Monster,1885,Monster,1886,Monster,1887,Monster,1888,Monster,1889,Monster,1890,Monster,1891,Monster,1892,Monster,1893,Monster,1894,Monster,1895,Monster,1896,Monster,1897,Monster,1898,Monster,1899,Monster,1900,Monster,1901,Monster,1902,Monster,1903,Monster,1904,Monster,1905,Monster,1906,Monster,1907,Monster,1908,Monster,1909,Monster,1910,Monster,1911,Monster,1912,Monster,1913,Monster,1914,Monster,1915,Monster,1916,Monster,1917,Monster,1918,Monster,1919,Monster,1920,Monster,1921,Monster,1922,Monster,1923,Monster,1924,Monster,1925,Monster,1926,Monster,1927,Monster,1928,Monster,1929,Monster,1930,Monster,1931,Monster,1932,Monster,1933,Monster,1934,Monster,1935,Monster,1936,Monster,1937,Monster,1938,Monster,1939,Monster,1940,Monster,1941,Monster,1942,Monster,1943,Monster,1944,Monster,1945,Monster,1946,Monster,1947,Monster,1948,Monster,1949,Monster,1950,Monster,1951,Monster,1952,Monster,1953,Monster,1954,Monster,1955,Monster,1956,Monster,1957,Monster,1958,Monster,1959,Monster,1960,Monster,1961,Monster,1962,Monster,1963,Monster,1964,Monster,1965,Monster,1966,Monster,1967,Monster,1968,Monster,1969,Monster,1970,Monster,1971,Monster,1972,Monster,1973,Monster,1974,Monster,1975,Monster,1976,Monster,1977,Monster,1978,Monster,1979,Monster,1980,Monster,1981,Monster,1982,Monster,1983,Monster,1984,Monster,1985,Monster,1986,Monster,1987,Monster,1988,Monster,1989,Monster,1990,Monster,1991,Monster,1992,Monster,1993,Monster,1994,Monster,1995,Monster,1996,Monster,1997,Monster,1998,Monster,1999,Monster,2000,Monster,2001,Monster,2002,Monster,2003,Monster,2004,Monster,2005,Monster,2006,Monster,2007,Monster,2008,Monster,2009,Monster,2010,Monster,2011,Monster,2012,Monster,2013,Monster,2014,Monster,2015,Monster,2016,Monster,2017,Monster,2018,Monster,2019,Monster,2020,Monster,2021,Monster,2022,Monster,2023,Monster,2024,Monster,2025,Monster,2026,Monster,2027,Monster,2028,Monster,2029,Monster,2030,Monster,2031,Monster,2032,Monster,2033,Monster,2034,Monster,2035,Monster,2036,Monster,2037,Monster,2038,Monster,2039,Monster,2040,Monster,2041,Monster,2042,Monster,2043,Monster,2044,Monster,2045,Monster,2046,Monster,2047,Monster,2048,Monster0,8,8,8,0.833333,0,giant spider
+1,8,8,9,0.833333,0,giant spider,1,cave spider
+2,8,9,10,0.833333,0,giant spider,1,cave spider,2,cave spider
+3,8,9,11,0.833333,0,giant spider,1,cave spider,2,cave spider,3,cave spider
+4,8,10,12,0.833333,0,giant spider,1,cave spider,2,cave spider,3,cave spider,4,cave spider
+5,8,10,13,0.833333,0,giant spider,1,cave spider,2,cave spider,3,cave spider,4,cave spider,5,cave spider
+6,11,13,16,0.833333,0,giant spider,1,giant spider
+7,11,14,17,0.833333,0,giant spider,1,giant spider,2,cave spider
+8,11,15,18,0.833333,0,giant spider,1,giant spider,2,cave spider,3,cave spider
+9,11,15,19,0.833333,0,giant spider,1,giant spider,2,cave spider,3,cave spider,4,cave spider
+10,11,16,20,0.833333,0,giant spider,1,giant spider,2,cave spider,3,cave spider,4,cave spider,5,cave spider
+11,11,16,21,0.833333,0,giant spider,1,giant spider,2,cave spider,3,cave spider,4,cave spider,5,cave spider,6,cave spider
+12,11,16,20,1.250000,0,winter wolf,1,winter wolf cub,2,winter wolf cub
+13,13,20,26,1.250000,0,winter wolf,1,winter wolf cub,2,winter wolf cub,3,winter wolf cub
+14,14,24,32,1.250000,0,winter wolf,1,winter wolf cub,2,winter wolf cub,3,winter wolf cub,4,winter wolf cub
+15,15,29,38,1.250000,0,winter wolf,1,winter wolf cub,2,winter wolf cub,3,winter wolf cub,4,winter wolf cub,5,winter wolf cub
+16,14,22,28,1.250000,0,winter wolf,1,winter wolf,2,winter wolf cub,3,winter wolf cub
+17,15,26,34,1.250000,0,winter wolf,1,winter wolf,2,winter wolf cub,3,winter wolf cub,4,winter wolf cub
+18,16,30,40,1.250000,0,winter wolf,1,winter wolf,2,winter wolf cub,3,winter wolf cub,4,winter wolf cub,5,winter wolf cub
+19,17,34,46,1.250000,0,winter wolf,1,winter wolf,2,winter wolf cub,3,winter wolf cub,4,winter wolf cub,5,winter wolf cub,6,winter wolf cub
+20,9,13,17,1.000000,0,warg,1,wolf,2,wolf
+21,11,17,22,1.000000,0,warg,1,wolf,2,wolf,3,wolf
+22,12,20,27,1.000000,0,warg,1,wolf,2,wolf,3,wolf,4,wolf
+23,13,24,32,1.000000,0,warg,1,wolf,2,wolf,3,wolf,4,wolf,5,wolf
+24,14,28,37,1.000000,0,warg,1,wolf,2,wolf,3,wolf,4,wolf,5,wolf,6,wolf
+25,12,19,24,1.000000,0,warg,1,warg,2,wolf,3,wolf
+26,13,22,29,1.000000,0,warg,1,warg,2,wolf,3,wolf,4,wolf
+27,14,26,34,1.000000,0,warg,1,warg,2,wolf,3,wolf,4,wolf,5,wolf
+28,14,29,39,1.000000,0,warg,1,warg,2,wolf,3,wolf,4,wolf,5,wolf,6,wolf
+29,15,33,44,1.000000,0,warg,1,warg,2,wolf,3,wolf,4,wolf,5,wolf,6,wolf,7,wolf
+30,12,21,28,1.428571,0,queen bee,1,killer bee,2,killer bee,3,killer bee,4,killer bee
+31,13,25,33,1.428571,0,queen bee,1,killer bee,2,killer bee,3,killer bee,4,killer bee,5,killer bee
+32,14,28,38,1.428571,0,queen bee,1,killer bee,2,killer bee,3,killer bee,4,killer bee,5,killer bee,6,killer bee
+33,15,32,43,1.428571,0,queen bee,1,killer bee,2,killer bee,3,killer bee,4,killer bee,5,killer bee,6,killer bee,7,killer bee
+34,16,35,48,1.428571,0,queen bee,1,killer bee,2,killer bee,3,killer bee,4,killer bee,5,killer bee,6,killer bee,7,killer bee,8,killer bee
+35,17,39,53,1.428571,0,queen bee,1,killer bee,2,killer bee,3,killer bee,4,killer bee,5,killer bee,6,killer bee,7,killer bee,8,killer bee,9,killer bee
+36,17,42,58,1.428571,0,queen bee,1,killer bee,2,killer bee,3,killer bee,4,killer bee,5,killer bee,6,killer bee,7,killer bee,8,killer bee,9,killer bee,10,killer bee
+37,1,1,3,0.416667,0,giant rat,1,sewer rat,2,sewer rat
+38,2,2,4,0.416667,0,giant rat,1,sewer rat,2,sewer rat,3,sewer rat
+39,2,2,5,0.416667,0,giant rat,1,sewer rat,2,sewer rat,3,sewer rat,4,sewer rat
+40,2,2,6,0.416667,0,giant rat,1,sewer rat,2,sewer rat,3,sewer rat,4,sewer rat,5,sewer rat
+41,2,2,4,0.416667,0,giant rat,1,giant rat,2,sewer rat,3,sewer rat
+42,2,3,5,0.416667,0,giant rat,1,giant rat,2,sewer rat,3,sewer rat,4,sewer rat
+43,2,3,6,0.416667,0,giant rat,1,giant rat,2,sewer rat,3,sewer rat,4,sewer rat,5,sewer rat
+44,2,3,7,0.416667,0,giant rat,1,giant rat,2,sewer rat,3,sewer rat,4,sewer rat,5,sewer rat,6,sewer rat
+45,2,3,5,0.416667,0,giant rat,1,giant rat,2,giant rat,3,sewer rat,4,sewer rat
+46,2,3,6,0.416667,0,giant rat,1,giant rat,2,giant rat,3,sewer rat,4,sewer rat,5,sewer rat
+47,2,4,7,0.416667,0,giant rat,1,giant rat,2,giant rat,3,sewer rat,4,sewer rat,5,sewer rat,6,sewer rat
+48,3,7,12,0.416667,0,giant rat,1,giant rat,2,giant rat,3,sewer rat,4,sewer rat,5,sewer rat,6,sewer rat,7,sewer rat,8,rabid rat,9,sewer rat,10,sewer rat
+49,3,7,13,0.416667,0,giant rat,1,giant rat,2,giant rat,3,sewer rat,4,sewer rat,5,sewer rat,6,sewer rat,7,sewer rat,8,rabid rat,9,sewer rat,10,sewer rat,11,sewer rat
+50,4,7,14,0.416667,0,giant rat,1,giant rat,2,giant rat,3,sewer rat,4,sewer rat,5,sewer rat,6,sewer rat,7,sewer rat,8,rabid rat,9,sewer rat,10,sewer rat,11,sewer rat,12,sewer rat
+51,4,8,15,0.416667,0,giant rat,1,giant rat,2,giant rat,3,sewer rat,4,sewer rat,5,sewer rat,6,sewer rat,7,sewer rat,8,rabid rat,9,sewer rat,10,sewer rat,11,sewer rat,12,sewer rat,13,sewer rat
+52,3,4,6,0.416667,0,rabid rat,1,rabid rat,2,sewer rat,3,sewer rat
+53,3,4,7,0.416667,0,rabid rat,1,rabid rat,2,sewer rat,3,sewer rat,4,sewer rat
+54,3,5,8,0.416667,0,rabid rat,1,rabid rat,2,sewer rat,3,sewer rat,4,sewer rat,5,sewer rat
+55,3,5,9,0.416667,0,rabid rat,1,rabid rat,2,sewer rat,3,sewer rat,4,sewer rat,5,sewer rat,6,sewer rat
+56,3,6,8,0.416667,0,rabid rat,1,rabid rat,2,rabid rat,3,sewer rat,4,sewer rat
+57,3,6,9,0.416667,0,rabid rat,1,rabid rat,2,rabid rat,3,sewer rat,4,sewer rat,5,sewer rat
+58,4,6,10,0.416667,0,rabid rat,1,rabid rat,2,rabid rat,3,sewer rat,4,sewer rat,5,sewer rat,6,sewer rat
+59,4,7,11,0.416667,0,rabid rat,1,rabid rat,2,rabid rat,3,sewer rat,4,sewer rat,5,sewer rat,6,sewer rat,7,sewer rat
+60,11,13,16,1.666667,0,soldier ant,1,soldier ant
+61,13,19,24,1.666667,0,soldier ant,1,soldier ant,2,soldier ant
+62,16,25,32,1.666667,0,soldier ant,1,soldier ant,2,soldier ant,3,soldier ant
+63,17,30,40,1.666667,0,soldier ant,1,soldier ant,2,soldier ant,3,soldier ant,4,soldier ant
+64,19,36,48,1.666667,0,soldier ant,1,soldier ant,2,soldier ant,3,soldier ant,4,soldier ant,5,soldier ant
+65,21,42,56,1.666667,0,soldier ant,1,soldier ant,2,soldier ant,3,soldier ant,4,soldier ant,5,soldier ant,6,soldier ant
+66,10,14,18,1.666667,0,fire ant,1,fire ant,2,fire ant
+67,12,18,24,1.666667,0,fire ant,1,fire ant,2,fire ant,3,fire ant
+68,13,23,30,1.666667,0,fire ant,1,fire ant,2,fire ant,3,fire ant,4,fire ant
+69,14,27,36,1.666667,0,fire ant,1,fire ant,2,fire ant,3,fire ant,4,fire ant,5,fire ant
+70,15,31,42,1.666667,0,fire ant,1,fire ant,2,fire ant,3,fire ant,4,fire ant,5,fire ant,6,fire ant
+71,16,36,48,1.666667,0,fire ant,1,fire ant,2,fire ant,3,fire ant,4,fire ant,5,fire ant,6,fire ant,7,fire ant
+72,16,22,28,1.000000,0,ogre lord,1,ogre,2,ogre
+73,18,28,36,1.000000,0,ogre lord,1,ogre,2,ogre,3,ogre
+74,20,34,44,1.000000,0,ogre lord,1,ogre,2,ogre,3,ogre,4,ogre
+75,21,39,52,1.000000,0,ogre lord,1,ogre,2,ogre,3,ogre,4,ogre,5,ogre
+76,22,45,60,1.000000,0,ogre lord,1,ogre,2,ogre,3,ogre,4,ogre,5,ogre,6,ogre
+77,20,31,40,1.000000,0,ogre lord,1,ogre lord,2,ogre,3,ogre
+78,21,37,48,1.000000,0,ogre lord,1,ogre lord,2,ogre,3,ogre,4,ogre
+79,23,42,56,1.000000,0,ogre lord,1,ogre lord,2,ogre,3,ogre,4,ogre,5,ogre
+80,24,48,64,1.000000,0,ogre lord,1,ogre lord,2,ogre,3,ogre,4,ogre,5,ogre,6,ogre
+81,25,54,72,1.000000,0,ogre lord,1,ogre lord,2,ogre,3,ogre,4,ogre,5,ogre,6,ogre,7,ogre
+82,10,16,20,0.400000,0,orc-captain,1,hill orc,2,hill orc,3,hill orc
+83,12,20,26,0.400000,0,orc-captain,1,hill orc,2,hill orc,3,hill orc,4,orc shaman
+84,13,24,32,0.400000,0,orc-captain,1,hill orc,2,hill orc,3,hill orc,4,orc shaman,5,orc shaman
+85,11,18,24,0.400000,0,orc-captain,1,hill orc,2,hill orc,3,hill orc,4,hill orc
+86,12,23,30,0.400000,0,orc-captain,1,hill orc,2,hill orc,3,hill orc,4,hill orc,5,orc shaman
+87,14,27,36,0.400000,0,orc-captain,1,hill orc,2,hill orc,3,hill orc,4,hill orc,5,orc shaman,6,orc shaman
+88,12,21,28,0.400000,0,orc-captain,1,hill orc,2,hill orc,3,hill orc,4,hill orc,5,hill orc
+89,13,25,34,0.400000,0,orc-captain,1,hill orc,2,hill orc,3,hill orc,4,hill orc,5,hill orc,6,orc shaman
+90,14,30,40,0.400000,0,orc-captain,1,hill orc,2,hill orc,3,hill orc,4,hill orc,5,hill orc,6,orc shaman,7,orc shaman
+91,12,24,32,0.400000,0,orc-captain,1,hill orc,2,hill orc,3,hill orc,4,hill orc,5,hill orc,6,hill orc
+92,14,28,38,0.400000,0,orc-captain,1,hill orc,2,hill orc,3,hill orc,4,hill orc,5,hill orc,6,hill orc,7,orc shaman
+93,15,32,44,0.400000,0,orc-captain,1,hill orc,2,hill orc,3,hill orc,4,hill orc,5,hill orc,6,hill orc,7,orc shaman,8,orc shaman
+94,13,27,36,0.400000,0,orc-captain,1,hill orc,2,hill orc,3,hill orc,4,hill orc,5,hill orc,6,hill orc,7,hill orc
+95,14,31,42,0.400000,0,orc-captain,1,hill orc,2,hill orc,3,hill orc,4,hill orc,5,hill orc,6,hill orc,7,hill orc,8,orc shaman
+96,17,46,63,0.400000,0,orc-captain,1,hill orc,2,hill orc,3,hill orc,4,hill orc,5,hill orc,6,hill orc,7,hill orc,8,orc shaman,9,orc shaman,10,Mordor orc,11,Mordor orc,12,Mordor orc
+97,18,50,69,0.400000,0,orc-captain,1,hill orc,2,hill orc,3,hill orc,4,hill orc,5,hill orc,6,hill orc,7,hill orc,8,orc shaman,9,orc shaman,10,Mordor orc,11,Mordor orc,12,Mordor orc,13,orc shaman
+98,19,54,75,0.400000,0,orc-captain,1,hill orc,2,hill orc,3,hill orc,4,hill orc,5,hill orc,6,hill orc,7,hill orc,8,orc shaman,9,orc shaman,10,Mordor orc,11,Mordor orc,12,Mordor orc,13,orc shaman,14,orc shaman
+99,12,21,28,0.300000,0,orc-captain,1,Mordor orc,2,Mordor orc,3,Mordor orc,4,Mordor orc
+100,14,26,34,0.300000,0,orc-captain,1,Mordor orc,2,Mordor orc,3,Mordor orc,4,Mordor orc,5,orc shaman
+101,15,30,40,0.300000,0,orc-captain,1,Mordor orc,2,Mordor orc,3,Mordor orc,4,Mordor orc,5,orc shaman,6,orc shaman
+102,13,25,33,0.300000,0,orc-captain,1,Mordor orc,2,Mordor orc,3,Mordor orc,4,Mordor orc,5,Mordor orc
+103,15,29,39,0.300000,0,orc-captain,1,Mordor orc,2,Mordor orc,3,Mordor orc,4,Mordor orc,5,Mordor orc,6,orc shaman
+104,16,33,45,0.300000,0,orc-captain,1,Mordor orc,2,Mordor orc,3,Mordor orc,4,Mordor orc,5,Mordor orc,6,orc shaman,7,orc shaman
+105,14,28,38,0.300000,0,orc-captain,1,Mordor orc,2,Mordor orc,3,Mordor orc,4,Mordor orc,5,Mordor orc,6,Mordor orc
+106,15,33,44,0.300000,0,orc-captain,1,Mordor orc,2,Mordor orc,3,Mordor orc,4,Mordor orc,5,Mordor orc,6,Mordor orc,7,orc shaman
+107,16,37,50,0.300000,0,orc-captain,1,Mordor orc,2,Mordor orc,3,Mordor orc,4,Mordor orc,5,Mordor orc,6,Mordor orc,7,orc shaman,8,orc shaman
+108,15,32,43,0.300000,0,orc-captain,1,Mordor orc,2,Mordor orc,3,Mordor orc,4,Mordor orc,5,Mordor orc,6,Mordor orc,7,Mordor orc
+109,16,36,49,0.300000,0,orc-captain,1,Mordor orc,2,Mordor orc,3,Mordor orc,4,Mordor orc,5,Mordor orc,6,Mordor orc,7,Mordor orc,8,orc shaman
+110,21,55,76,0.300000,0,orc-captain,1,Mordor orc,2,Mordor orc,3,Mordor orc,4,Mordor orc,5,Mordor orc,6,Mordor orc,7,Mordor orc,8,orc shaman,9,orc shaman,10,Uruk-hai,11,Uruk-hai,12,Uruk-hai
+111,22,60,82,0.300000,0,orc-captain,1,Mordor orc,2,Mordor orc,3,Mordor orc,4,Mordor orc,5,Mordor orc,6,Mordor orc,7,Mordor orc,8,orc shaman,9,orc shaman,10,Uruk-hai,11,Uruk-hai,12,Uruk-hai,13,orc shaman
+112,23,64,88,0.300000,0,orc-captain,1,Mordor orc,2,Mordor orc,3,Mordor orc,4,Mordor orc,5,Mordor orc,6,Mordor orc,7,Mordor orc,8,orc shaman,9,orc shaman,10,Uruk-hai,11,Uruk-hai,12,Uruk-hai,13,orc shaman,14,orc shaman
+113,16,27,36,0.300000,0,orc-captain,1,Uruk-hai,2,Uruk-hai,3,Uruk-hai,4,Uruk-hai
+114,17,32,42,0.300000,0,orc-captain,1,Uruk-hai,2,Uruk-hai,3,Uruk-hai,4,Uruk-hai,5,orc shaman
+115,18,36,48,0.300000,0,orc-captain,1,Uruk-hai,2,Uruk-hai,3,Uruk-hai,4,Uruk-hai,5,orc shaman,6,orc shaman
+116,17,32,43,0.300000,0,orc-captain,1,Uruk-hai,2,Uruk-hai,3,Uruk-hai,4,Uruk-hai,5,Uruk-hai
+117,18,37,49,0.300000,0,orc-captain,1,Uruk-hai,2,Uruk-hai,3,Uruk-hai,4,Uruk-hai,5,Uruk-hai,6,orc shaman
+118,19,41,55,0.300000,0,orc-captain,1,Uruk-hai,2,Uruk-hai,3,Uruk-hai,4,Uruk-hai,5,Uruk-hai,6,orc shaman,7,orc shaman
+119,18,37,50,0.300000,0,orc-captain,1,Uruk-hai,2,Uruk-hai,3,Uruk-hai,4,Uruk-hai,5,Uruk-hai,6,Uruk-hai
+120,19,42,56,0.300000,0,orc-captain,1,Uruk-hai,2,Uruk-hai,3,Uruk-hai,4,Uruk-hai,5,Uruk-hai,6,Uruk-hai,7,orc shaman
+121,20,46,62,0.300000,0,orc-captain,1,Uruk-hai,2,Uruk-hai,3,Uruk-hai,4,Uruk-hai,5,Uruk-hai,6,Uruk-hai,7,orc shaman,8,orc shaman
+122,20,42,57,0.300000,0,orc-captain,1,Uruk-hai,2,Uruk-hai,3,Uruk-hai,4,Uruk-hai,5,Uruk-hai,6,Uruk-hai,7,Uruk-hai
+123,21,46,63,0.300000,0,orc-captain,1,Uruk-hai,2,Uruk-hai,3,Uruk-hai,4,Uruk-hai,5,Uruk-hai,6,Uruk-hai,7,Uruk-hai,8,orc shaman
+124,21,51,69,0.300000,0,orc-captain,1,Uruk-hai,2,Uruk-hai,3,Uruk-hai,4,Uruk-hai,5,Uruk-hai,6,Uruk-hai,7,Uruk-hai,8,orc shaman,9,orc shaman
+125,13,21,28,0.400000,0,orc-captain,1,orc-captain,2,hill orc,3,hill orc,4,hill orc
+126,14,26,34,0.400000,0,orc-captain,1,orc-captain,2,hill orc,3,hill orc,4,hill orc,5,orc shaman
+127,15,30,40,0.400000,0,orc-captain,1,orc-captain,2,hill orc,3,hill orc,4,hill orc,5,orc shaman,6,orc shaman
+128,13,24,32,0.400000,0,orc-captain,1,orc-captain,2,hill orc,3,hill orc,4,hill orc,5,hill orc
+129,15,28,38,0.400000,0,orc-captain,1,orc-captain,2,hill orc,3,hill orc,4,hill orc,5,hill orc,6,orc shaman
+130,16,33,44,0.400000,0,orc-captain,1,orc-captain,2,hill orc,3,hill orc,4,hill orc,5,hill orc,6,orc shaman,7,orc shaman
+131,14,27,36,0.400000,0,orc-captain,1,orc-captain,2,hill orc,3,hill orc,4,hill orc,5,hill orc,6,hill orc
+132,15,31,42,0.400000,0,orc-captain,1,orc-captain,2,hill orc,3,hill orc,4,hill orc,5,hill orc,6,hill orc,7,orc shaman
+133,16,35,48,0.400000,0,orc-captain,1,orc-captain,2,hill orc,3,hill orc,4,hill orc,5,hill orc,6,hill orc,7,orc shaman,8,orc shaman
+134,14,30,40,0.400000,0,orc-captain,1,orc-captain,2,hill orc,3,hill orc,4,hill orc,5,hill orc,6,hill orc,7,hill orc
+135,16,34,46,0.400000,0,orc-captain,1,orc-captain,2,hill orc,3,hill orc,4,hill orc,5,hill orc,6,hill orc,7,hill orc,8,orc shaman
+136,17,38,52,0.400000,0,orc-captain,1,orc-captain,2,hill orc,3,hill orc,4,hill orc,5,hill orc,6,hill orc,7,hill orc,8,orc shaman,9,orc shaman
+137,15,32,44,0.400000,0,orc-captain,1,orc-captain,2,hill orc,3,hill orc,4,hill orc,5,hill orc,6,hill orc,7,hill orc,8,hill orc
+138,16,37,50,0.400000,0,orc-captain,1,orc-captain,2,hill orc,3,hill orc,4,hill orc,5,hill orc,6,hill orc,7,hill orc,8,hill orc,9,orc shaman
+139,19,52,71,0.400000,0,orc-captain,1,orc-captain,2,hill orc,3,hill orc,4,hill orc,5,hill orc,6,hill orc,7,hill orc,8,hill orc,9,orc shaman,10,orc shaman,11,Mordor orc,12,Mordor orc,13,Mordor orc
+140,20,56,77,0.400000,0,orc-captain,1,orc-captain,2,hill orc,3,hill orc,4,hill orc,5,hill orc,6,hill orc,7,hill orc,8,hill orc,9,orc shaman,10,orc shaman,11,Mordor orc,12,Mordor orc,13,Mordor orc,14,orc shaman
+141,21,60,83,0.400000,0,orc-captain,1,orc-captain,2,hill orc,3,hill orc,4,hill orc,5,hill orc,6,hill orc,7,hill orc,8,hill orc,9,orc shaman,10,orc shaman,11,Mordor orc,12,Mordor orc,13,Mordor orc,14,orc shaman,15,orc shaman
+142,15,27,36,0.300000,0,orc-captain,1,orc-captain,2,Mordor orc,3,Mordor orc,4,Mordor orc,5,Mordor orc
+143,16,31,42,0.300000,0,orc-captain,1,orc-captain,2,Mordor orc,3,Mordor orc,4,Mordor orc,5,Mordor orc,6,orc shaman
+144,17,36,48,0.300000,0,orc-captain,1,orc-captain,2,Mordor orc,3,Mordor orc,4,Mordor orc,5,Mordor orc,6,orc shaman,7,orc shaman
+145,15,31,41,0.300000,0,orc-captain,1,orc-captain,2,Mordor orc,3,Mordor orc,4,Mordor orc,5,Mordor orc,6,Mordor orc
+146,17,35,47,0.300000,0,orc-captain,1,orc-captain,2,Mordor orc,3,Mordor orc,4,Mordor orc,5,Mordor orc,6,Mordor orc,7,orc shaman
+147,18,39,53,0.300000,0,orc-captain,1,orc-captain,2,Mordor orc,3,Mordor orc,4,Mordor orc,5,Mordor orc,6,Mordor orc,7,orc shaman,8,orc shaman
+148,16,34,46,0.300000,0,orc-captain,1,orc-captain,2,Mordor orc,3,Mordor orc,4,Mordor orc,5,Mordor orc,6,Mordor orc,7,Mordor orc
+149,17,38,52,0.300000,0,orc-captain,1,orc-captain,2,Mordor orc,3,Mordor orc,4,Mordor orc,5,Mordor orc,6,Mordor orc,7,Mordor orc,8,orc shaman
+150,18,43,58,0.300000,0,orc-captain,1,orc-captain,2,Mordor orc,3,Mordor orc,4,Mordor orc,5,Mordor orc,6,Mordor orc,7,Mordor orc,8,orc shaman,9,orc shaman
+151,17,38,51,0.300000,0,orc-captain,1,orc-captain,2,Mordor orc,3,Mordor orc,4,Mordor orc,5,Mordor orc,6,Mordor orc,7,Mordor orc,8,Mordor orc
+152,18,42,57,0.300000,0,orc-captain,1,orc-captain,2,Mordor orc,3,Mordor orc,4,Mordor orc,5,Mordor orc,6,Mordor orc,7,Mordor orc,8,Mordor orc,9,orc shaman
+153,22,61,84,0.300000,0,orc-captain,1,orc-captain,2,Mordor orc,3,Mordor orc,4,Mordor orc,5,Mordor orc,6,Mordor orc,7,Mordor orc,8,Mordor orc,9,orc shaman,10,orc shaman,11,Uruk-hai,12,Uruk-hai,13,Uruk-hai
+154,23,65,90,0.300000,0,orc-captain,1,orc-captain,2,Mordor orc,3,Mordor orc,4,Mordor orc,5,Mordor orc,6,Mordor orc,7,Mordor orc,8,Mordor orc,9,orc shaman,10,orc shaman,11,Uruk-hai,12,Uruk-hai,13,Uruk-hai,14,orc shaman
+155,24,70,96,0.300000,0,orc-captain,1,orc-captain,2,Mordor orc,3,Mordor orc,4,Mordor orc,5,Mordor orc,6,Mordor orc,7,Mordor orc,8,Mordor orc,9,orc shaman,10,orc shaman,11,Uruk-hai,12,Uruk-hai,13,Uruk-hai,14,orc shaman,15,orc shaman
+156,18,33,44,0.300000,0,orc-captain,1,orc-captain,2,Uruk-hai,3,Uruk-hai,4,Uruk-hai,5,Uruk-hai
+157,18,37,50,0.300000,0,orc-captain,1,orc-captain,2,Uruk-hai,3,Uruk-hai,4,Uruk-hai,5,Uruk-hai,6,orc shaman
+158,19,42,56,0.300000,0,orc-captain,1,orc-captain,2,Uruk-hai,3,Uruk-hai,4,Uruk-hai,5,Uruk-hai,6,orc shaman,7,orc shaman
+159,19,38,51,0.300000,0,orc-captain,1,orc-captain,2,Uruk-hai,3,Uruk-hai,4,Uruk-hai,5,Uruk-hai,6,Uruk-hai
+160,20,42,57,0.300000,0,orc-captain,1,orc-captain,2,Uruk-hai,3,Uruk-hai,4,Uruk-hai,5,Uruk-hai,6,Uruk-hai,7,orc shaman
+161,21,46,63,0.300000,0,orc-captain,1,orc-captain,2,Uruk-hai,3,Uruk-hai,4,Uruk-hai,5,Uruk-hai,6,Uruk-hai,7,orc shaman,8,orc shaman
+162,20,43,58,0.300000,0,orc-captain,1,orc-captain,2,Uruk-hai,3,Uruk-hai,4,Uruk-hai,5,Uruk-hai,6,Uruk-hai,7,Uruk-hai
+163,21,47,64,0.300000,0,orc-captain,1,orc-captain,2,Uruk-hai,3,Uruk-hai,4,Uruk-hai,5,Uruk-hai,6,Uruk-hai,7,Uruk-hai,8,orc shaman
+164,22,51,70,0.300000,0,orc-captain,1,orc-captain,2,Uruk-hai,3,Uruk-hai,4,Uruk-hai,5,Uruk-hai,6,Uruk-hai,7,Uruk-hai,8,orc shaman,9,orc shaman
+165,21,48,65,0.300000,0,orc-captain,1,orc-captain,2,Uruk-hai,3,Uruk-hai,4,Uruk-hai,5,Uruk-hai,6,Uruk-hai,7,Uruk-hai,8,Uruk-hai
+166,22,52,71,0.300000,0,orc-captain,1,orc-captain,2,Uruk-hai,3,Uruk-hai,4,Uruk-hai,5,Uruk-hai,6,Uruk-hai,7,Uruk-hai,8,Uruk-hai,9,orc shaman
+167,23,56,77,0.300000,0,orc-captain,1,orc-captain,2,Uruk-hai,3,Uruk-hai,4,Uruk-hai,5,Uruk-hai,6,Uruk-hai,7,Uruk-hai,8,Uruk-hai,9,orc shaman,10,orc shaman
+168,9,10,12,1.500000,0,goblin king,1,goblin,2,goblin,3,goblin
+169,9,11,13,1.500000,0,goblin king,1,goblin,2,goblin,3,goblin,4,goblin
+170,9,11,14,1.500000,0,goblin king,1,goblin,2,goblin,3,goblin,4,goblin,5,goblin
+171,9,12,15,1.500000,0,goblin king,1,goblin,2,goblin,3,goblin,4,goblin,5,goblin,6,goblin
+172,9,13,16,1.500000,0,goblin king,1,goblin,2,goblin,3,goblin,4,goblin,5,goblin,6,goblin,7,goblin
+173,9,11,14,1.500000,0,goblin king,1,hobgoblin,2,goblin,3,goblin,4,goblin
+174,9,12,15,1.500000,0,goblin king,1,hobgoblin,2,goblin,3,goblin,4,goblin,5,goblin
+175,9,13,16,1.500000,0,goblin king,1,hobgoblin,2,goblin,3,goblin,4,goblin,5,goblin,6,goblin
+176,9,13,17,1.500000,0,goblin king,1,hobgoblin,2,goblin,3,goblin,4,goblin,5,goblin,6,goblin,7,goblin
+177,9,14,18,1.500000,0,goblin king,1,hobgoblin,2,goblin,3,goblin,4,goblin,5,goblin,6,goblin,7,goblin,8,goblin
+178,9,13,16,1.500000,0,goblin king,1,hobgoblin,2,hobgoblin,3,goblin,4,goblin,5,goblin
+179,9,13,17,1.500000,0,goblin king,1,hobgoblin,2,hobgoblin,3,goblin,4,goblin,5,goblin,6,goblin
+180,9,14,18,1.500000,0,goblin king,1,hobgoblin,2,hobgoblin,3,goblin,4,goblin,5,goblin,6,goblin,7,goblin
+181,9,15,19,1.500000,0,goblin king,1,hobgoblin,2,hobgoblin,3,goblin,4,goblin,5,goblin,6,goblin,7,goblin,8,goblin
+182,9,15,20,1.500000,0,goblin king,1,hobgoblin,2,hobgoblin,3,goblin,4,goblin,5,goblin,6,goblin,7,goblin,8,goblin,9,goblin
+183,9,14,18,1.500000,0,goblin king,1,hobgoblin,2,hobgoblin,3,hobgoblin,4,goblin,5,goblin,6,goblin
+184,9,15,19,1.500000,0,goblin king,1,hobgoblin,2,hobgoblin,3,hobgoblin,4,goblin,5,goblin,6,goblin,7,goblin
+185,9,15,20,1.500000,0,goblin king,1,hobgoblin,2,hobgoblin,3,hobgoblin,4,goblin,5,goblin,6,goblin,7,goblin,8,goblin
+186,9,16,21,1.500000,0,goblin king,1,hobgoblin,2,hobgoblin,3,hobgoblin,4,goblin,5,goblin,6,goblin,7,goblin,8,goblin,9,goblin
+187,10,17,22,1.500000,0,goblin king,1,hobgoblin,2,hobgoblin,3,hobgoblin,4,goblin,5,goblin,6,goblin,7,goblin,8,goblin,9,goblin,10,goblin
+188,5,6,8,0.333333,0,gnoll,1,gnoll
+189,9,13,16,0.333333,0,gnoll,1,gnoll,2,gnoll warden
+190,12,19,24,0.333333,0,gnoll,1,gnoll,2,gnoll warden,3,gnoll warden
+191,6,9,12,0.333333,0,gnoll,1,gnoll,2,gnoll
+192,10,16,20,0.333333,0,gnoll,1,gnoll,2,gnoll,3,gnoll warden
+193,13,21,28,0.333333,0,gnoll,1,gnoll,2,gnoll,3,gnoll warden,4,gnoll warden
+194,8,12,16,0.333333,0,gnoll,1,gnoll,2,gnoll,3,gnoll
+195,11,18,24,0.333333,0,gnoll,1,gnoll,2,gnoll,3,gnoll,4,gnoll warden
+196,13,24,32,0.333333,0,gnoll,1,gnoll,2,gnoll,3,gnoll,4,gnoll warden,5,gnoll warden
+197,8,15,20,0.333333,0,gnoll,1,gnoll,2,gnoll,3,gnoll,4,gnoll
+198,12,21,28,0.333333,0,gnoll,1,gnoll,2,gnoll,3,gnoll,4,gnoll,5,gnoll warden
+199,14,27,36,0.333333,0,gnoll,1,gnoll,2,gnoll,3,gnoll,4,gnoll,5,gnoll warden,6,gnoll warden
+200,9,18,24,0.333333,0,gnoll,1,gnoll,2,gnoll,3,gnoll,4,gnoll,5,gnoll
+201,12,24,32,0.333333,0,gnoll,1,gnoll,2,gnoll,3,gnoll,4,gnoll,5,gnoll,6,gnoll warden
+202,14,30,40,0.333333,0,gnoll,1,gnoll,2,gnoll,3,gnoll,4,gnoll,5,gnoll,6,gnoll warden,7,gnoll warden
+203,8,11,14,0.333333,0,gnoll lord,1,gnoll,2,gnoll
+204,11,17,22,0.333333,0,gnoll lord,1,gnoll,2,gnoll,3,gnoll warden
+205,14,23,30,0.333333,0,gnoll lord,1,gnoll,2,gnoll,3,gnoll warden,4,gnoll warden
+206,9,14,18,0.333333,0,gnoll lord,1,gnoll,2,gnoll,3,gnoll
+207,12,20,26,0.333333,0,gnoll lord,1,gnoll,2,gnoll,3,gnoll,4,gnoll warden
+208,14,26,34,0.333333,0,gnoll lord,1,gnoll,2,gnoll,3,gnoll,4,gnoll warden,5,gnoll warden
+209,10,17,22,0.333333,0,gnoll lord,1,gnoll,2,gnoll,3,gnoll,4,gnoll
+210,12,23,30,0.333333,0,gnoll lord,1,gnoll,2,gnoll,3,gnoll,4,gnoll,5,gnoll warden
+211,15,28,38,0.333333,0,gnoll lord,1,gnoll,2,gnoll,3,gnoll,4,gnoll,5,gnoll warden,6,gnoll warden
+212,10,19,26,0.333333,0,gnoll lord,1,gnoll,2,gnoll,3,gnoll,4,gnoll,5,gnoll
+213,13,25,34,0.333333,0,gnoll lord,1,gnoll,2,gnoll,3,gnoll,4,gnoll,5,gnoll,6,gnoll warden
+214,15,31,42,0.333333,0,gnoll lord,1,gnoll,2,gnoll,3,gnoll,4,gnoll,5,gnoll,6,gnoll warden,7,gnoll warden
+215,11,22,30,0.333333,0,gnoll lord,1,gnoll,2,gnoll,3,gnoll,4,gnoll,5,gnoll,6,gnoll
+216,14,28,38,0.333333,0,gnoll lord,1,gnoll,2,gnoll,3,gnoll,4,gnoll,5,gnoll,6,gnoll,7,gnoll warden
+217,16,34,46,0.333333,0,gnoll lord,1,gnoll,2,gnoll,3,gnoll,4,gnoll,5,gnoll,6,gnoll,7,gnoll warden,8,gnoll warden
+218,10,15,20,0.333333,0,gnoll lord,1,gnoll lord,2,gnoll,3,gnoll
+219,12,21,28,0.333333,0,gnoll lord,1,gnoll lord,2,gnoll,3,gnoll,4,gnoll warden
+220,15,27,36,0.333333,0,gnoll lord,1,gnoll lord,2,gnoll,3,gnoll,4,gnoll warden,5,gnoll warden
+221,10,18,24,0.333333,0,gnoll lord,1,gnoll lord,2,gnoll,3,gnoll,4,gnoll
+222,13,24,32,0.333333,0,gnoll lord,1,gnoll lord,2,gnoll,3,gnoll,4,gnoll,5,gnoll warden
+223,15,30,40,0.333333,0,gnoll lord,1,gnoll lord,2,gnoll,3,gnoll,4,gnoll,5,gnoll warden,6,gnoll warden
+224,11,21,28,0.333333,0,gnoll lord,1,gnoll lord,2,gnoll,3,gnoll,4,gnoll,5,gnoll
+225,14,27,36,0.333333,0,gnoll lord,1,gnoll lord,2,gnoll,3,gnoll,4,gnoll,5,gnoll,6,gnoll warden
+226,16,33,44,0.333333,0,gnoll lord,1,gnoll lord,2,gnoll,3,gnoll,4,gnoll,5,gnoll,6,gnoll warden,7,gnoll warden
+227,12,24,32,0.333333,0,gnoll lord,1,gnoll lord,2,gnoll,3,gnoll,4,gnoll,5,gnoll,6,gnoll
+228,14,30,40,0.333333,0,gnoll lord,1,gnoll lord,2,gnoll,3,gnoll,4,gnoll,5,gnoll,6,gnoll,7,gnoll warden
+229,16,35,48,0.333333,0,gnoll lord,1,gnoll lord,2,gnoll,3,gnoll,4,gnoll,5,gnoll,6,gnoll,7,gnoll warden,8,gnoll warden
+230,12,27,36,0.333333,0,gnoll lord,1,gnoll lord,2,gnoll,3,gnoll,4,gnoll,5,gnoll,6,gnoll,7,gnoll
+231,15,32,44,0.333333,0,gnoll lord,1,gnoll lord,2,gnoll,3,gnoll,4,gnoll,5,gnoll,6,gnoll,7,gnoll,8,gnoll warden
+232,17,38,52,0.333333,0,gnoll lord,1,gnoll lord,2,gnoll,3,gnoll,4,gnoll,5,gnoll,6,gnoll,7,gnoll,8,gnoll warden,9,gnoll warden
+233,14,17,21,0.333333,0,gnoll king,1,gnoll,2,gnoll
+234,16,23,29,0.333333,0,gnoll king,1,gnoll,2,gnoll,3,gnoll warden
+235,18,29,37,0.333333,0,gnoll king,1,gnoll,2,gnoll,3,gnoll warden,4,gnoll warden
+236,14,20,25,0.333333,0,gnoll king,1,gnoll,2,gnoll,3,gnoll
+237,16,26,33,0.333333,0,gnoll king,1,gnoll,2,gnoll,3,gnoll,4,gnoll warden
+238,18,31,41,0.333333,0,gnoll king,1,gnoll,2,gnoll,3,gnoll,4,gnoll warden,5,gnoll warden
+239,15,23,29,0.333333,0,gnoll king,1,gnoll,2,gnoll,3,gnoll,4,gnoll
+240,17,28,37,0.333333,0,gnoll king,1,gnoll,2,gnoll,3,gnoll,4,gnoll,5,gnoll warden
+241,19,34,45,0.333333,0,gnoll king,1,gnoll,2,gnoll,3,gnoll,4,gnoll,5,gnoll warden,6,gnoll warden
+242,15,25,33,0.333333,0,gnoll king,1,gnoll,2,gnoll,3,gnoll,4,gnoll,5,gnoll
+243,17,31,41,0.333333,0,gnoll king,1,gnoll,2,gnoll,3,gnoll,4,gnoll,5,gnoll,6,gnoll warden
+244,19,37,49,0.333333,0,gnoll king,1,gnoll,2,gnoll,3,gnoll,4,gnoll,5,gnoll,6,gnoll warden,7,gnoll warden
+245,16,28,37,0.333333,0,gnoll king,1,gnoll,2,gnoll,3,gnoll,4,gnoll,5,gnoll,6,gnoll
+246,18,34,45,0.333333,0,gnoll king,1,gnoll,2,gnoll,3,gnoll,4,gnoll,5,gnoll,6,gnoll,7,gnoll warden
+247,19,40,53,0.333333,0,gnoll king,1,gnoll,2,gnoll,3,gnoll,4,gnoll,5,gnoll,6,gnoll,7,gnoll warden,8,gnoll warden
+248,15,21,27,0.333333,0,gnoll king,1,gnoll lord,2,gnoll,3,gnoll
+249,17,27,35,0.333333,0,gnoll king,1,gnoll lord,2,gnoll,3,gnoll,4,gnoll warden
+250,19,33,43,0.333333,0,gnoll king,1,gnoll lord,2,gnoll,3,gnoll,4,gnoll warden,5,gnoll warden
+251,15,24,31,0.333333,0,gnoll king,1,gnoll lord,2,gnoll,3,gnoll,4,gnoll
+252,17,30,39,0.333333,0,gnoll king,1,gnoll lord,2,gnoll,3,gnoll,4,gnoll,5,gnoll warden
+253,19,35,47,0.333333,0,gnoll king,1,gnoll lord,2,gnoll,3,gnoll,4,gnoll,5,gnoll warden,6,gnoll warden
+254,16,27,35,0.333333,0,gnoll king,1,gnoll lord,2,gnoll,3,gnoll,4,gnoll,5,gnoll
+255,18,33,43,0.333333,0,gnoll king,1,gnoll lord,2,gnoll,3,gnoll,4,gnoll,5,gnoll,6,gnoll warden
+256,19,38,51,0.333333,0,gnoll king,1,gnoll lord,2,gnoll,3,gnoll,4,gnoll,5,gnoll,6,gnoll warden,7,gnoll warden
+257,16,30,39,0.333333,0,gnoll king,1,gnoll lord,2,gnoll,3,gnoll,4,gnoll,5,gnoll,6,gnoll
+258,18,35,47,0.333333,0,gnoll king,1,gnoll lord,2,gnoll,3,gnoll,4,gnoll,5,gnoll,6,gnoll,7,gnoll warden
+259,20,41,55,0.333333,0,gnoll king,1,gnoll lord,2,gnoll,3,gnoll,4,gnoll,5,gnoll,6,gnoll,7,gnoll warden,8,gnoll warden
+260,17,32,43,0.333333,0,gnoll king,1,gnoll lord,2,gnoll,3,gnoll,4,gnoll,5,gnoll,6,gnoll,7,gnoll
+261,19,38,51,0.333333,0,gnoll king,1,gnoll lord,2,gnoll,3,gnoll,4,gnoll,5,gnoll,6,gnoll,7,gnoll,8,gnoll warden
+262,20,44,59,0.333333,0,gnoll king,1,gnoll lord,2,gnoll,3,gnoll,4,gnoll,5,gnoll,6,gnoll,7,gnoll,8,gnoll warden,9,gnoll warden
+263,16,26,33,0.333333,0,gnoll king,1,gnoll lord,2,gnoll lord,3,gnoll,4,gnoll
+264,18,31,41,0.333333,0,gnoll king,1,gnoll lord,2,gnoll lord,3,gnoll,4,gnoll,5,gnoll warden
+265,20,37,49,0.333333,0,gnoll king,1,gnoll lord,2,gnoll lord,3,gnoll,4,gnoll,5,gnoll warden,6,gnoll warden
+266,17,28,37,0.333333,0,gnoll king,1,gnoll lord,2,gnoll lord,3,gnoll,4,gnoll,5,gnoll
+267,18,34,45,0.333333,0,gnoll king,1,gnoll lord,2,gnoll lord,3,gnoll,4,gnoll,5,gnoll,6,gnoll warden
+268,20,40,53,0.333333,0,gnoll king,1,gnoll lord,2,gnoll lord,3,gnoll,4,gnoll,5,gnoll,6,gnoll warden,7,gnoll warden
+269,17,31,41,0.333333,0,gnoll king,1,gnoll lord,2,gnoll lord,3,gnoll,4,gnoll,5,gnoll,6,gnoll
+270,19,37,49,0.333333,0,gnoll king,1,gnoll lord,2,gnoll lord,3,gnoll,4,gnoll,5,gnoll,6,gnoll,7,gnoll warden
+271,20,42,57,0.333333,0,gnoll king,1,gnoll lord,2,gnoll lord,3,gnoll,4,gnoll,5,gnoll,6,gnoll,7,gnoll warden,8,gnoll warden
+272,17,34,45,0.333333,0,gnoll king,1,gnoll lord,2,gnoll lord,3,gnoll,4,gnoll,5,gnoll,6,gnoll,7,gnoll
+273,19,39,53,0.333333,0,gnoll king,1,gnoll lord,2,gnoll lord,3,gnoll,4,gnoll,5,gnoll,6,gnoll,7,gnoll,8,gnoll warden
+274,21,45,61,0.333333,0,gnoll king,1,gnoll lord,2,gnoll lord,3,gnoll,4,gnoll,5,gnoll,6,gnoll,7,gnoll,8,gnoll warden,9,gnoll warden
+275,18,37,49,0.333333,0,gnoll king,1,gnoll lord,2,gnoll lord,3,gnoll,4,gnoll,5,gnoll,6,gnoll,7,gnoll,8,gnoll
+276,20,42,57,0.333333,0,gnoll king,1,gnoll lord,2,gnoll lord,3,gnoll,4,gnoll,5,gnoll,6,gnoll,7,gnoll,8,gnoll,9,gnoll warden
+277,21,48,65,0.333333,0,gnoll king,1,gnoll lord,2,gnoll lord,3,gnoll,4,gnoll,5,gnoll,6,gnoll,7,gnoll,8,gnoll,9,gnoll warden,10,gnoll warden

@@ -717,6 +717,15 @@ E int FDECL(tin_variety_txt, (char *, int *));
 E void FDECL(tin_details, (struct obj *, int, char *));
 E boolean FDECL(Popeye, (int));
 
+
+/* ### encounter.c ### */
+
+E void NDECL(encounter_init);
+E void FDECL(randomize_encounter, (int, int));
+E void FDECL(create_encounter, (int, int, int));
+E int NDECL(wiz_save_encounters);
+
+
 /* ### end.c ### */
 
 E void FDECL(done1, (int));
@@ -745,12 +754,6 @@ E char *FDECL(build_english_list, (char *));
 E void FDECL(panictrace_setsignals, (BOOLEAN_P));
 #endif
 
-
-/* ### encounter.c ### */
-
-E void NDECL(encounter_init);
-E void FDECL(randomize_encounter, (int, int));
-E void FDECL(create_encounter, (int, int, int));
 
 
 /* ### engrave.c ### */

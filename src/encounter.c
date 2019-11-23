@@ -21,7 +21,7 @@ struct encounterdef encounter_definitions[] =
 			{ { { PM_GIANT_SPIDER, 1, 1, 0, 100, NOMONSTERITEMS },
 			NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
 			/* Monster 2 */
-			{ { { PM_CAVE_SPIDER, 0, 6, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			{ { { PM_CAVE_SPIDER, 0, 5, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
 			NORANDOMIZEDMONSTER,
 			NORANDOMIZEDMONSTER,
 			NORANDOMIZEDMONSTER
@@ -51,7 +51,7 @@ struct encounterdef encounter_definitions[] =
 			{ { { PM_WARG, 1, 1, 0, 100, NOMONSTERITEMS },
 			NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
 			/* Monster 2 */
-			{ { { PM_WOLF, 2, 8, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			{ { { PM_WOLF, 2, 4, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
 			NORANDOMIZEDMONSTER,
 			NORANDOMIZEDMONSTER,
 			NORANDOMIZEDMONSTER
@@ -78,10 +78,10 @@ struct encounterdef encounter_definitions[] =
 	{
 		{
 			/* Monster 1 */
-			{ { { PM_GIANT_RAT, 1, 4, 0, 50, NOMONSTERITEMS },
-			{ PM_RABID_RAT, 1, 4, 0, 50, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			{ { { PM_GIANT_RAT, 1, 2, 0, 50, NOMONSTERITEMS },
+			{ PM_RABID_RAT, 1, 2, 0, 50, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
 			/* Monster 2 */
-			{ { { PM_SEWER_RAT, 6, 6, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			{ { { PM_SEWER_RAT, 2, 3, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
 			NORANDOMIZEDMONSTER,
 			NORANDOMIZEDMONSTER,
 			NORANDOMIZEDMONSTER
@@ -93,7 +93,7 @@ struct encounterdef encounter_definitions[] =
 	{
 		{
 			/* Monster 1 */
-			{ { { PM_SOLDIER_ANT, 2, 8, 0, 100, NOMONSTERITEMS },
+			{ { { PM_SOLDIER_ANT, 2, 5, 0, 100, NOMONSTERITEMS },
 			NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
 			NORANDOMIZEDMONSTER,
 			NORANDOMIZEDMONSTER,
@@ -107,7 +107,7 @@ struct encounterdef encounter_definitions[] =
 	{
 		{
 			/* Monster 1 */
-			{ { { PM_FIRE_ANT, 3, 8, 0, 100, NOMONSTERITEMS },
+			{ { { PM_FIRE_ANT, 3, 5, 0, 100, NOMONSTERITEMS },
 			NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
 			NORANDOMIZEDMONSTER,
 			NORANDOMIZEDMONSTER,
@@ -122,11 +122,11 @@ struct encounterdef encounter_definitions[] =
 		{
 			/* Monster 1 */
 			{ { { PM_OGRE_LORD, 1, 1, 0, 100, 
-					{ { { { INFERNAL_JAGGED_TOOTHED_CLUB, 0, 1, 3, 0, 50 }, { BATTLE_AXE, 0, 1, 2, 0, 50 }, NORANDOMIZEDITEM, NORANDOMIZEDITEM, NORANDOMIZEDITEM } },
+					{ { { { CLUB, 0, 0, 2, 0, 50 }, { BATTLE_AXE, 0, 1, 2, 0, 50 }, NORANDOMIZEDITEM, NORANDOMIZEDITEM, NORANDOMIZEDITEM } },
 					  NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES } },
 			NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
 			/* Monster 2 */
-			{ { { PM_OGRE, 2, 6, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			{ { { PM_OGRE, 2, 4, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
 			NORANDOMIZEDMONSTER, 
 			NORANDOMIZEDMONSTER, 
 			NORANDOMIZEDMONSTER 
@@ -143,7 +143,7 @@ struct encounterdef encounter_definitions[] =
 					  NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES } },
 			NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
 			/* Monster 2 */
-			{ { { PM_HILL_ORC, 4, 6, 0, 40, NOMONSTERITEMS }, { PM_MORDOR_ORC, 4, 6, 0, 30, NOMONSTERITEMS }, { PM_URUK_HAI, 4, 6, 0, 30, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			{ { { PM_HILL_ORC, 3, 4, 0, 40, NOMONSTERITEMS }, { PM_MORDOR_ORC, 3, 4, 0, 30, NOMONSTERITEMS }, { PM_URUK_HAI, 3, 4, 0, 30, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
 			{ { { PM_ORC_SHAMAN, 0, 2, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
 			NORANDOMIZEDMONSTER,
 			NORANDOMIZEDMONSTER
@@ -160,9 +160,9 @@ struct encounterdef encounter_definitions[] =
 					  NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES } },
 			NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
 			/* Monster 2 */
-			{ { { PM_HOBGOBLIN, 0, 4, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			{ { { PM_HOBGOBLIN, 0, 3, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
 			/* Monster 3 */
-			{ { { PM_GOBLIN, 4, 6, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			{ { { PM_GOBLIN, 3, 4, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
 			NORANDOMIZEDMONSTER,
 			NORANDOMIZEDMONSTER
 		},
@@ -180,7 +180,7 @@ struct encounterdef encounter_definitions[] =
 			/* Monster 2 */
 			{ { { PM_GNOLL_LORD, 0, 2, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
 			/* Monster 3 */
-			{ { { PM_GNOLL, 3, 5, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			{ { { PM_GNOLL, 2, 4, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
 			/* Monster 4 */
 			{ { { PM_GNOLL_WARDEN, 0, 2, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
 			NORANDOMIZEDMONSTER
@@ -223,6 +223,7 @@ encounter_init()
 	{
 		encountermonsternum = 0;
 		write_encounter_monsterdata(i, 0, &encountermonsternum, &encounternum, encounter_definitions[i].probability / 100);
+		encounternum++;
 	}
 
 	/* Calculate encounter difficulties */
@@ -267,6 +268,7 @@ double encprob;
 		int pmid = encounter_definitions[encounter_definition_index].encounter_monster_types[monster_type_index].random_encounter_monsters[rnd_monster_index].permonstid;
 
 		double monster_type_probability = encounter_definitions[encounter_definition_index].encounter_monster_types[monster_type_index].random_encounter_monsters[rnd_monster_index].probability / 100;
+		*active_encounter_monster_index_ptr = orig_monster_index;
 
 		if (numrnd == 0 && numconst == 0)
 		{
@@ -291,7 +293,8 @@ double encprob;
 					return;
 
 				/* Copy the data from the original encounter as a basis for the new encounter */
-				encounter_list[*active_encounter_index_ptr] = base_encounter;
+				if(monster_type_index > 0)
+					encounter_list[*active_encounter_index_ptr] = base_encounter;
 
 				/* Set the encounter monster pointer to the original value */
 				(*active_encounter_monster_index_ptr) = orig_monster_index;
@@ -341,10 +344,7 @@ void
 calculate_encounter_difficulty(encounter_index)
 int encounter_index;
 {
-	if (encounter_index == 48)
-	{
-		int y = 1;
-	}
+
 	long maxdifficulty = 0;
 	long mindifficulty = 0;
 	long totaldifficulty = 0;
@@ -355,14 +355,14 @@ int encounter_index;
 		int pmid = encounter_list[encounter_index].encounter_monsters[i].permonstid;
 		if (pmid == NON_PM)
 			break;
-
-		totaldifficulty += (long)mons[pmid].difficulty + i % 2; //Add 1 every other time, kludge for accounting for level 0 monsters
-		totalsquareddifficulty += 1 + (long)mons[pmid].difficulty * (long)mons[pmid].difficulty; // Add 1 to account for level 0 monsters
+		int monster_difficulty = max(1, mons[pmid].difficulty); // Treat level 0 monsters as level 1
+		totaldifficulty += (long)monster_difficulty;
+		totalsquareddifficulty += (long)monster_difficulty * (long)monster_difficulty;
 
 	}
 
 	maxdifficulty = totaldifficulty;
-	mindifficulty = (long)sqrt((double)totalsquareddifficulty);
+	mindifficulty = (long)round(sqrt((double)totalsquareddifficulty));
 	if (maxdifficulty < mindifficulty)
 		maxdifficulty = mindifficulty;
 
@@ -391,7 +391,7 @@ int encounter_index;
 	}
 
 	combatvalue = sum * (double)totaldifficulty;
-	difficulty_point_estimate = sqrt(combatvalue);
+	difficulty_point_estimate = round(sqrt(combatvalue));
 
 	encounter_list[encounter_index].difficulty_point_estimate = (int)difficulty_point_estimate;
 }
@@ -408,7 +408,7 @@ int x, y;
 	/* Select encounters of an appropriate level */
 	int zlevel = level_difficulty();
 
-	for (int i = 1; i <= 3; i++)
+	for (int i = 1; i <= 1; i++)
 	{
 		int midmlev = 0, maxmlev = 0, minmlev = 0;
 		totalselectedprob = 0;
@@ -450,8 +450,7 @@ int x, y;
 
 
 			if (
-				(encounter_list[j].difficulty_min >= minmlev && encounter_list[j].difficulty_min <= maxmlev)
-				|| (encounter_list[j].difficulty_min >= minmlev && (encounter_list[j].difficulty_min <= maxmlev && !rn2(4)))
+				(encounter_list[j].difficulty_point_estimate >= minmlev && encounter_list[j].difficulty_point_estimate <= maxmlev)
 			   )
 				encounter_list[j].insearch = TRUE, totalselectedprob += encounter_list[j].probability;
 
@@ -613,6 +612,71 @@ int selected_encounter, x, y;
 			}
 		}
 	}
+}
+
+
+/* Save encounter list */
+int
+wiz_save_encounters(VOID_ARGS) /* Save a csv file for encounters */
+{
+	if (wizard)
+	{
+		pline("Starting writing encounters.csv...");
+		const char* fq_save = "encounters.csv";
+		int fd;
+
+		(void)remove(fq_save);
+
+		fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
+
+		char buf[BUFSIZ] = "";
+
+		Sprintf(buf, "#,DifMin,DefPoint,DefMax,Probability");
+		write(fd, buf, strlen(buf));
+		for (int j = 0; j < MAX_ENCOUNTERS; j++)
+		{
+			Sprintf(buf, ",%d,Monster", j + 1);
+			write(fd, buf, strlen(buf));
+
+		}
+
+
+
+		for (int i = 0; i < MAX_ENCOUNTERS; i++)
+		{
+			if (encounter_list[i].probability == 0)
+				break;
+
+			char letbuf[BUFSZ] = "";
+			Sprintf(buf, "%d,%d,%d,%d,%f",
+				i,
+				encounter_list[i].difficulty_min,
+				encounter_list[i].difficulty_point_estimate,
+				encounter_list[i].difficulty_max,
+				encounter_list[i].probability
+					);
+			write(fd, buf, strlen(buf));
+			for (int j = 0; j < MAX_ENCOUNTER_MONSTERS; j++)
+			{
+				if (encounter_list[i].encounter_monsters[j].permonstid == NON_PM)
+					break;
+				Sprintf(buf, ",%d,%s",
+					j+1,
+					mons[encounter_list[i].encounter_monsters[j].permonstid].mname
+				);
+				write(fd, buf, strlen(buf));
+			}
+			Sprintf(buf, "\n");
+			write(fd, buf, strlen(buf));
+		}
+		close(fd);
+
+		pline("Done!");
+	}
+	else
+		pline("Command unavailable.");
+
+	return 0;
 }
 
 
