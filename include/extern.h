@@ -1232,6 +1232,7 @@ E void FDECL(mkmonmoney, (struct monst *, long));
 E int FDECL(bagotricks, (struct obj *, BOOLEAN_P, int *));
 E boolean FDECL(propagate, (int, BOOLEAN_P, BOOLEAN_P));
 E boolean FDECL(usmellmon, (struct permonst *));
+E boolean FDECL(wrong_elem_type, (struct permonst*));
 
 /* ### mapglyph.c ### */
 

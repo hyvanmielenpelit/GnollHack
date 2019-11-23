@@ -17,7 +17,6 @@
 STATIC_DCL boolean FDECL(uncommon, (int));
 STATIC_DCL int FDECL(align_shift, (struct permonst *));
 STATIC_DCL boolean FDECL(mk_gen_ok, (int, int, int));
-STATIC_DCL boolean FDECL(wrong_elem_type, (struct permonst *));
 STATIC_DCL void FDECL(m_initgrp, (struct monst *, int, int, int, int));
 STATIC_DCL void FDECL(m_initthrow, (struct monst *, int, int, boolean, int));
 STATIC_DCL void FDECL(m_initweap, (struct monst *));
@@ -51,7 +50,7 @@ struct permonst *ptr;
 /*
  * Return true if the given monster cannot exist on this elemental level.
  */
-STATIC_OVL boolean
+boolean
 wrong_elem_type(ptr)
 struct permonst *ptr;
 {
@@ -1863,7 +1862,7 @@ int mmflags;
                               : eminp->renegade;
     }
     set_malign(mtmp); /* having finished peaceful changes */
-    if (anymon && !(mmflags & MM_NOGRP)) {
+    if (anymon && !(mmflags & MM_NOGRP) && 0) { //Small and large groups deactivated due to new encounter system -- JG
         if ((ptr->geno & G_SGROUP) && rn2(2)) {
             m_initsgrp(mtmp, mtmp->mx, mtmp->my, mmflags);
         } else if (ptr->geno & G_LGROUP) {

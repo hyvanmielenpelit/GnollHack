@@ -126,7 +126,7 @@ boolean resuming;
 						: (depth(&u.uz) > depth(&stronghold_level)) ? 50
 						: 70))
 					{
-						if (!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !rn2(ENCOUNTER_ONE_IN_CHANCE))
+						if (!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && !rn2(ENCOUNTER_ONE_IN_CHANCE))
 						{
 							randomize_encounter(0, 0);
 						}

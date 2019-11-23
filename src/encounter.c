@@ -121,6 +121,21 @@ struct encounterdef encounter_definitions[] =
 	{
 		{
 			/* Monster 1 */
+			{ { { PM_JACKAL, 2, 4, 0, 100, NOMONSTERITEMS },
+			NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			NORANDOMIZEDMONSTER,
+			NORANDOMIZEDMONSTER,
+			NORANDOMIZEDMONSTER,
+			NORANDOMIZEDMONSTER
+		},
+		10,
+		0
+	},
+
+
+	{
+		{
+			/* Monster 1 */
 			{ { { PM_OGRE_LORD, 1, 1, 0, 100, 
 					{ { { { CLUB, 0, 0, 2, 0, 50 }, { BATTLE_AXE, 0, 1, 2, 0, 50 }, NORANDOMIZEDITEM, NORANDOMIZEDITEM, NORANDOMIZEDITEM } },
 					  NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES } },
@@ -155,8 +170,8 @@ struct encounterdef encounter_definitions[] =
 	{
 		{
 			/* Monster 1 */
-			{ { { PM_GOBLIN_KING, 1, 0, 0, 100,
-					{ { { { CLUB, 0, 1, 3, 0, 50 }, { BATTLE_AXE, 0, 1, 2, 0, 50 }, NORANDOMIZEDITEM, NORANDOMIZEDITEM, NORANDOMIZEDITEM } },
+			{ { { PM_GOBLIN_KING, 0, 1, 0, 100,
+					{ { { { CLUB, 0, 1, 2, 0, 30 }, { BATTLE_AXE, 0, 1, 2, 0, 30 }, { ORCISH_SHORT_SWORD, 0, 1, 2, 0, 40 }, NORANDOMIZEDITEM, NORANDOMIZEDITEM } },
 					  NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES } },
 			NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
 			/* Monster 2 */
@@ -164,6 +179,25 @@ struct encounterdef encounter_definitions[] =
 			/* Monster 3 */
 			{ { { PM_GOBLIN, 3, 4, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
 			NORANDOMIZEDMONSTER,
+			NORANDOMIZEDMONSTER
+		},
+		30,
+		0
+	},
+
+	{
+		{
+			/* Monster 1 */
+			{ { { PM_KOBOLD_LORD, 0, 1, 0, 100,
+					{ { { { DAGGER, 0, 0, 2, 0, 50 }, { SHORT_SWORD, 0, 0, 2, 0, 50 }, NORANDOMIZEDITEM, NORANDOMIZEDITEM, NORANDOMIZEDITEM } },
+					  NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES } },
+			NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			/* Monster 2 */
+			{ { { PM_LARGE_KOBOLD, 0, 3, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			/* Monster 3 */
+			{ { { PM_KOBOLD, 2, 3, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+			/* Monster 4 */
+			{ { { PM_KOBOLD_SHAMAN, 0, 2, 0, 100, NOMONSTERITEMS }, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
 			NORANDOMIZEDMONSTER
 		},
 		30,
@@ -500,11 +534,23 @@ int selected_encounter, x, y;
 	long total_monster_experience = 0;
 	long total_monster_difficulty = 0;
 
+	boolean upper = Is_rogue_level(&u.uz);
+	boolean elemlevel = In_endgame(&u.uz) && !Is_astralevel(&u.uz);
+
 	for (int i = 0; i < MAX_ENCOUNTER_MONSTERS; i++)
 	{
 		int pmid = encounter_list[selected_encounter].encounter_monsters[i].permonstid;
 		if (pmid == NON_PM)
 			break;
+
+		if (upper && !isupper((uchar)def_monsyms[(int)mons[pmid].mlet].sym))
+			continue;
+		if (elemlevel && wrong_elem_type(&mons[pmid]))
+			continue;
+		if (Inhell && mons[pmid].geno & G_NOHELL)
+			continue;
+		if (!Inhell && mons[pmid].geno & G_HELL)
+			continue;
 
 		total_monster_experience += 1 + mons[pmid].difficulty * mons[pmid].difficulty;
 		total_monster_difficulty += mons[pmid].difficulty;
@@ -521,19 +567,14 @@ int selected_encounter, x, y;
 		if (pmid == NON_PM)
 			break;
 
-		/*
-		int nx, ny, tryct = 0;
-		boolean good;
-		do {
-			nx = x + -1 - tryct/10 + rn2(3 + tryct / 5);
-			ny = y + -1 - tryct / 10 + rn2(3 + tryct / 5);
-			
-			good = isok(nx, ny) && !occupied(nx, ny) &&
-				((!in_mklev && cansee(nx, ny)) ? FALSE
-				: goodpos(nx, ny, (struct monst*)0, 0));
-		} while ((++tryct < 50) && !good);
-
-		*/
+		if (upper && !isupper((uchar)def_monsyms[(int)mons[pmid].mlet].sym))
+			continue;
+		if (elemlevel && wrong_elem_type(&mons[pmid]))
+			continue;
+		if (Inhell && mons[pmid].geno & G_NOHELL)
+			continue;
+		if (!Inhell && mons[pmid].geno & G_HELL)
+			continue;
 
 		struct monst* mon = (struct monst*)0;
 		mon = makemon(&mons[pmid], nx, ny, MM_NOGRP | MM_ADJACENTOK);
@@ -631,7 +672,7 @@ wiz_save_encounters(VOID_ARGS) /* Save a csv file for encounters */
 
 		char buf[BUFSIZ] = "";
 
-		Sprintf(buf, "#,DifMin,DefPoint,DefMax,Probability");
+		Sprintf(buf, "#,DifMin,DifPoint,DifMax,Probability");
 		write(fd, buf, strlen(buf));
 		for (int j = 0; j < MAX_ENCOUNTERS; j++)
 		{
