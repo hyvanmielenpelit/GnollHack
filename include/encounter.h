@@ -38,6 +38,7 @@ struct encountermonsterdef {
 	int permonstid;
 	int generatednumber_constant;
 	int generatednumber_random;
+	int namelistid;
 	long mflags;
 	double probability;
 	struct monsterrandomizeditem monster_items[MAX_MONSTER_ITEMS];
@@ -64,6 +65,7 @@ struct encounterdef {
 struct encounter_monster {
 	int permonstid;
 	struct monsterrandomizeditem monster_items[MAX_MONSTER_ITEMS];
+	int namelistid;
 	long miflags;
 };
 
