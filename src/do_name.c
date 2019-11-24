@@ -1750,7 +1750,14 @@ boolean called;
             name_at_start = TRUE;
         } else {
             Strcat(buf, name);
-            name_at_start = TRUE;
+			if(!mtmp->mtame)
+			{
+				Strcat(buf, " the ");
+				if (do_invis)
+					Strcat(buf, "invisible ");
+				Strcat(buf, pm_name);
+			}
+			name_at_start = TRUE;
         }
     } else if (is_mplayer(mdat) && !In_endgame(&u.uz)) {
         char pbuf[BUFSZ];

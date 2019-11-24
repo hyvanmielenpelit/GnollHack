@@ -111,9 +111,6 @@ register struct obj *obj;
 	boolean isgnoll = is_gnoll(youmonst.data);
 	boolean isorc = is_orc(youmonst.data);
 
-	if ((objects[obj->otyp].oc_flags & O1_EDIBLE_BY_BONE_EATERS) && (Race_if(PM_GNOLL) || Race_if(PM_ORC)))
-		return TRUE;
-
     /* return (boolean) !!index(comestibles, obj->oclass); */
     return (boolean) (obj->oclass == FOOD_CLASS || objects[obj->otyp].oc_flags & O1_EDIBLE_NONFOOD);
 }
@@ -2799,7 +2796,7 @@ doeat()
             docall(otmp);
         return 1;
     }
-    if (otmp->oclass != FOOD_CLASS && !(objects[otmp->otyp].oc_flags & O1_EDIBLE_NONFOOD) && !((objects[otmp->otyp].oc_flags & O1_EDIBLE_BY_BONE_EATERS) && (Race_if(PM_GNOLL) || Race_if(PM_ORC)))) {
+    if (otmp->oclass != FOOD_CLASS && !(objects[otmp->otyp].oc_flags & O1_EDIBLE_NONFOOD)) {
         int material;
 
         context.victual.reqtime = 1;

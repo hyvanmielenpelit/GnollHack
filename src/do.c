@@ -1434,7 +1434,7 @@ register struct obj* obj;
 
 		/* Item properties */
 		if (objects[otyp].oc_flags & ~(O1_THROWN_WEAPON | O1_CONFERS_LUCK
-			| O1_WAND_LIKE_TOOL | O1_NON_SPELL_SPELLBOOK | O1_EDIBLE_NONFOOD | O1_EDIBLE_BY_BONE_EATERS))
+			| O1_WAND_LIKE_TOOL | O1_NON_SPELL_SPELLBOOK | O1_EDIBLE_NONFOOD))
 		{
 			int powercnt = 0;
 

@@ -546,7 +546,7 @@ struct objclass {
 #define O1_SPE_AFFECTS_MC_ADJUSTMENT		0x00004000			/* +X of the item influences also its MC adjustment (i.e., saving throw penalty for attacks) */
 
 #define O1_EDIBLE_NONFOOD					0x00008000
-#define O1_EDIBLE_BY_BONE_EATERS			0x00010000
+/* slot free */
 
 #define O1_MANA_PERCENTAGE_BONUS			0x00020000
 #define O1_HP_PERCENTAGE_BONUS				0x00040000

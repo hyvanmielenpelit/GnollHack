@@ -859,8 +859,7 @@ register struct obj *obj;
         }
 	case REAGENT_CLASS:
 	{
-		if (carni && objects[obj->otyp].oc_material == MAT_BONE && (objects[obj->otyp].oc_flags & O1_EDIBLE_BY_BONE_EATERS))
-			return CADAVER;
+		//Nothing
 	}
     default:
         if (obj->otyp == AMULET_OF_STRANGULATION
