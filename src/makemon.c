@@ -1077,23 +1077,18 @@ register struct monst *mtmp;
 		break;
 	case S_KOBOLD:
 		/* All kobolds have candles, which they are burning */
-		otmp = mksobj(rn2(4) ? TALLOW_CANDLE : WAX_CANDLE, TRUE, FALSE, FALSE);
-		otmp->quan = 1;
-		otmp->owt = weight(otmp);
-		if (!mpickobj(mtmp, otmp) && !levl[mtmp->mx][mtmp->my].lit)
-			begin_burn(otmp, FALSE);
-
 		/* Some of them have a back-up candle */
-		if (!rn2(4) || (!rn2(2) && (ptr == &mons[PM_LARGE_KOBOLD] || ptr == &mons[PM_KOBOLD_SHAMAN])))
+		if (!rn2(2))
 		{
 			otmp = mksobj(rn2(4) ? TALLOW_CANDLE : WAX_CANDLE, TRUE, FALSE, FALSE);
 			otmp->quan = 1;
 			otmp->owt = weight(otmp);
-			(void)mpickobj(mtmp, otmp);
+			if (!mpickobj(mtmp, otmp) && !levl[mtmp->mx][mtmp->my].lit)
+				begin_burn(otmp, FALSE);
 		}
 
 		/* Kobold lords have lots of candles */
-		if (ptr == &mons[PM_KOBOLD_LORD])
+		if (ptr == &mons[PM_KOBOLD_LORD] || (!rn2(4) && (ptr == &mons[PM_LARGE_KOBOLD] || ptr == &mons[PM_KOBOLD_SHAMAN])))
 		{
 			/* Maybe more than one as a back-up */
 			otmp = mksobj(rn2(4) ? TALLOW_CANDLE : WAX_CANDLE, TRUE, FALSE, FALSE);
@@ -1102,22 +1097,13 @@ register struct monst *mtmp;
 
 		if (ptr == &mons[PM_KOBOLD_SHAMAN])
 		{
-			/* Maybe an additional candle */
-			if (!rn2(2))
-			{
-				otmp = mksobj(rn2(4) ? TALLOW_CANDLE : WAX_CANDLE, TRUE, FALSE, FALSE);
-				otmp->quan = 1;
-				otmp->owt = weight(otmp);
-				(void)mpickobj(mtmp, otmp);
-			}
-
 			/* Some random reagants */
-			int n = rnd(3);
+			int n = rn2(3);
 			while (n--)
 				(void)mongets(mtmp, randomreagent(TRUE, 0));
 
 			/* Some spellbooks */
-			n = rnd(2);
+			n = rn2(2);
 			while (n--)
 			{
 				otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);

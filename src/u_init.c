@@ -1492,9 +1492,9 @@ register struct trobj *trop;
 		{
 			if (Role_if(PM_TOURIST))
 			{
-				(void)add_to_container(obj, mksobj(BATHROBE, TRUE, FALSE, TRUE));
-				(void)add_to_container(obj, mksobj(COTTON_SLIPPERS, TRUE, FALSE, TRUE));
-				(void)add_to_container(obj, mksobj(TOWEL, TRUE, FALSE, TRUE));
+				(void)add_to_container(obj, mksobj(BATHROBE, FALSE, FALSE, TRUE));
+				(void)add_to_container(obj, mksobj(COTTON_SLIPPERS, FALSE, FALSE, TRUE));
+				(void)add_to_container(obj, mksobj(TOWEL, FALSE, FALSE, TRUE));
 				makeknown(BATHROBE);
 				obj->owt = weight(obj);
 			}

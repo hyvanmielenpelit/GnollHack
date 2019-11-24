@@ -113,7 +113,7 @@ NEARDATA struct permonst mons[] = {
         SIZ(10, 10, MS_SILENT, MZ_TINY), STATS(9, 9, 9, 1, 1, 1), 0, 0,
         M1_ANIMAL | M1_NOHANDS | M1_OVIPAROUS | M1_CARNIVORE, M2_HOSTILE, 0,
         4, CLR_BROWN),
-	MON("killer bee", S_ANT, LVL(1, 18, -1, 0, 0, 0), (G_GENO | G_LGROUP | 2),
+	MON("killer bee", S_ANT, LVL(1, 18, -1, 0, 0, 0), (G_GENO | G_NOGEN | G_LGROUP | 2),
         A(ATTK(AT_STNG, AD_DRST, 1, 3, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1, 5, MS_BUZZ, MZ_TINY), STATS(1, 18, 1, 1, 1, 1), MR_POISON, MR_POISON,
