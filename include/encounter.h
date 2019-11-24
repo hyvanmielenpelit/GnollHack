@@ -67,11 +67,11 @@ struct encounter_monster {
 	long miflags;
 };
 
-
+#define MAX_ENCOUNTER_ATTACKING_MONSTERS 8
 struct encounter {
 	struct encounter_monster encounter_monsters[MAX_ENCOUNTER_MONSTERS];
 	int difficulty_min;
-	int difficulty_point_estimate;
+	int difficulty_point_estimate[MAX_ENCOUNTER_ATTACKING_MONSTERS + 1];
 	int difficulty_max;
 	double probability;
 	boolean insearch;

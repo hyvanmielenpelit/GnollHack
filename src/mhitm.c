@@ -363,7 +363,10 @@ register struct monst *magr, *mdef;
         mattk = getmattk(magr, mdef, i, res, &alt_attk);
         otmp = (struct obj *) 0;
         attk = 1;
-        switch (mattk->aatyp) {
+		int multistrike = 1;
+		int multistrikernd = 0;
+
+		switch (mattk->aatyp) {
         case AT_WEAP: /* "hand to hand" attacks */
             if (distmin(magr->mx, magr->my, mdef->mx, mdef->my) > 1) {
                 /* D: Do a ranged attack here! */
@@ -387,9 +390,6 @@ register struct monst *magr, *mdef;
 				otmp = select_multiweapon_nth_hwep(magr, weaponattackcount);
 			else
 				otmp = MON_WEP(magr);
-
-			int multistrike = 1;
-			int multistrikernd = 0;
 
             if (otmp) 
 			{

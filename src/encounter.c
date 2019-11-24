@@ -264,7 +264,7 @@ static struct encounter encounter_list[MAX_ENCOUNTERS];
 void encounter_init();
 
 STATIC_DCL void FDECL(write_encounter_monsterdata, (int, int, int*, int*, double));
-STATIC_DCL void FDECL(calculate_encounter_difficulty, (int));
+STATIC_DCL void FDECL(calculate_encounter_difficulty, (int, int));
 
 
 void
@@ -291,12 +291,15 @@ encounter_init()
 	}
 
 	/* Calculate encounter difficulties */
-	for (int i = 0; i < MAX_ENCOUNTERS; i++)
+	for (int attk_mon_num = 1; attk_mon_num <= MAX_ENCOUNTER_ATTACKING_MONSTERS; attk_mon_num++)
 	{
-		if (encounter_list[i].probability == 0)
-			break;
+		for (int i = 0; i < MAX_ENCOUNTERS; i++)
+		{
+			if (encounter_list[i].probability == 0)
+				break;
 
-		calculate_encounter_difficulty(i);
+			calculate_encounter_difficulty(i, attk_mon_num);
+		}
 	}
 
     return;
@@ -405,8 +408,9 @@ double encprob;
 
 STATIC_OVL
 void
-calculate_encounter_difficulty(encounter_index)
+calculate_encounter_difficulty(encounter_index, max_attk_monsters)
 int encounter_index;
+int max_attk_monsters;
 {
 
 	long maxdifficulty = 0;
@@ -434,10 +438,37 @@ int encounter_index;
 	encounter_list[encounter_index].difficulty_min = (int)mindifficulty;
 
 	/* Calculate Tommi's point estimate */
-	/* This currently assumes that encounter definitions list monsters in descending order of difficulty; otherwise, they need to be sorted into descending order */
-	double sum = 0;
+	/* This currently assumes that encounter definitions list monsters in descending order of difficulty,
+	 * or at least in the order they are assumed to be killed in combet;
+	 * otherwise, they need to be sorted into descending order 
+	 */
+	int max_attacking_monsters = max_attk_monsters;
 	double combatvalue = 0;
 	double difficulty_point_estimate = 0;
+
+	for (int i = 0; i < MAX_ENCOUNTER_MONSTERS; i++)
+	{
+		int pmid = encounter_list[encounter_index].encounter_monsters[i].permonstid;
+		if (pmid == NON_PM)
+			break;
+
+		int current_monster_difficulty = max(1, mons[pmid].difficulty);
+
+		double ehp = (double)current_monster_difficulty;
+		double dptu = 0;
+		for (int j = i; j < MAX_ENCOUNTER_MONSTERS && j <= i + max_attacking_monsters ; j++)
+		{
+			int dpmid = encounter_list[encounter_index].encounter_monsters[j].permonstid;
+			if (dpmid == NON_PM)
+				break;
+			int dptu_monster_difficulty = max(1, mons[dpmid].difficulty);
+			dptu += (double)dptu_monster_difficulty;
+		}
+		combatvalue += dptu * ehp;
+	}
+
+#if 0
+	double sum = 0;
 	long totaldifficulty_of_removed_monsters = 0;
 
 	for (int i = 0; i < MAX_ENCOUNTER_MONSTERS; i++)
@@ -446,7 +477,7 @@ int encounter_index;
 		if (pmid == NON_PM)
 			break;
 
-		int current_monster_difficulty = mons[pmid].difficulty;
+		int current_monster_difficulty = max(1, mons[pmid].difficulty);
 
 		sum += ((double)totaldifficulty - (double)totaldifficulty_of_removed_monsters) * ((double)current_monster_difficulty / (double)totaldifficulty);
 
@@ -455,9 +486,11 @@ int encounter_index;
 	}
 
 	combatvalue = sum * (double)totaldifficulty;
+#endif
+
 	difficulty_point_estimate = round(sqrt(combatvalue));
 
-	encounter_list[encounter_index].difficulty_point_estimate = (int)difficulty_point_estimate;
+	encounter_list[encounter_index].difficulty_point_estimate[max_attk_monsters] = (int)difficulty_point_estimate;
 }
 
 
@@ -468,6 +501,12 @@ int x, y;
 	double totalrollprob = 0;
 	int selected_encounter = 0;
 	double totalselectedprob = 0;
+
+	int max_attk_monsters = 2;
+	if (Is_bigroom(&u.uz))
+		max_attk_monsters = 5;
+	else if (In_mines(&u.uz))
+		max_attk_monsters = 3;
 
 	/* Select encounters of an appropriate level */
 	int zlevel = level_difficulty();
@@ -514,7 +553,7 @@ int x, y;
 
 
 			if (
-				(encounter_list[j].difficulty_point_estimate >= minmlev && encounter_list[j].difficulty_point_estimate <= maxmlev)
+				(encounter_list[j].difficulty_point_estimate[max_attk_monsters] >= minmlev && encounter_list[j].difficulty_point_estimate[max_attk_monsters] <= maxmlev)
 			   )
 				encounter_list[j].insearch = TRUE, totalselectedprob += encounter_list[j].probability;
 
@@ -559,8 +598,14 @@ void
 create_encounter(selected_encounter, x, y)
 int selected_encounter, x, y;
 {
+	int max_attk_monsters = 2;
+	if (Is_bigroom(&u.uz))
+		max_attk_monsters = 5;
+	else if (In_mines(&u.uz))
+		max_attk_monsters = 3;
+
 	/* Calculate experience first */
-	long encounter_experience = 1 + encounter_list[selected_encounter].difficulty_point_estimate * encounter_list[selected_encounter].difficulty_point_estimate;
+	long encounter_experience = 1 + encounter_list[selected_encounter].difficulty_point_estimate[max_attk_monsters] * encounter_list[selected_encounter].difficulty_point_estimate[max_attk_monsters];
 	long total_monster_experience = 0;
 	long total_monster_difficulty = 0;
 
@@ -706,8 +751,18 @@ wiz_save_encounters(VOID_ARGS) /* Save a csv file for encounters */
 
 		char buf[BUFSIZ] = "";
 
-		Sprintf(buf, "#,DifMin,DifPoint,DifMax,Probability");
+		Sprintf(buf, "#,DifMin");
 		write(fd, buf, strlen(buf));
+		for (int j = 1; j <= MAX_ENCOUNTER_ATTACKING_MONSTERS; j++)
+		{
+			Sprintf(buf, ",DifP%d", j);
+			write(fd, buf, strlen(buf));
+
+		}
+		Sprintf(buf, ",DifMax,Probability");
+		write(fd, buf, strlen(buf));
+
+
 		for (int j = 0; j < MAX_ENCOUNTERS; j++)
 		{
 			Sprintf(buf, ",%d,Monster", j + 1);
@@ -722,15 +777,23 @@ wiz_save_encounters(VOID_ARGS) /* Save a csv file for encounters */
 			if (encounter_list[i].probability == 0)
 				break;
 
-			char letbuf[BUFSZ] = "";
-			Sprintf(buf, "%d,%d,%d,%d,%f",
-				i,
-				encounter_list[i].difficulty_min,
-				encounter_list[i].difficulty_point_estimate,
+			Sprintf(buf, "%d,%d", i, encounter_list[i].difficulty_min);
+			write(fd, buf, strlen(buf));
+
+			for (int j = 1; j <= MAX_ENCOUNTER_ATTACKING_MONSTERS; j++)
+			{
+				Sprintf(buf, ",%d", encounter_list[i].difficulty_point_estimate[j]);
+				write(fd, buf, strlen(buf));
+			}
+
+			Sprintf(buf, ",%d,%f",
 				encounter_list[i].difficulty_max,
 				encounter_list[i].probability
-					);
+			);
 			write(fd, buf, strlen(buf));
+
+
+
 			for (int j = 0; j < MAX_ENCOUNTER_MONSTERS; j++)
 			{
 				if (encounter_list[i].encounter_monsters[j].permonstid == NON_PM)

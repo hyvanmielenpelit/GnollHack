@@ -1040,7 +1040,10 @@ int after; /* this is extra fast monster movement */
         if (!has_edog && (j = distu(nx, ny)) > 16 && j >= udist)
             continue;
 
-        if ((info[i] & ALLOW_M) && MON_AT(nx, ny)) {
+		boolean allowres;
+		boolean monatres;
+        if ((allowres = !!(info[i] & ALLOW_M)) && (monatres = MON_AT(nx, ny))) 
+		{
             int mstatus;
             register struct monst *mtmp2 = m_at(nx, ny);
 
