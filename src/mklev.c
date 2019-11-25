@@ -535,7 +535,7 @@ int trap_type;
                 if (rn2(7))
 				{
 					int u_depth = depth(&u.uz);
-					if (u_depth >= 2 && u_depth <= 4 && !context.made_orc_and_a_pie && !rn2(2))
+					if (u_depth >= 2 && u_depth <= 4 && !context.made_orc_and_a_pie && !rn2(3))
 					{
 						dosdoor(xx, yy, aroom, DOOR, D_LOCKED);
 						struct monst* mon = makemon(&mons[PM_ORC], xx, yy + dy, MM_MAX_HP);
@@ -560,7 +560,7 @@ int trap_type;
 							add_to_container(box, pie);
 						}
 					}
-					else if (u_depth >= 5 && u_depth <= 10 && !context.made_orc_and_a_pie2 && !rn2(4))
+					else if (u_depth >= 5 && u_depth <= 10 && !context.made_orc_and_a_pie2 && !rn2(5))
 					{
 						dosdoor(xx, yy, aroom, DOOR, D_LOCKED);
 						struct monst* mon = makemon(&mons[PM_ORC_CAPTAIN], xx, yy + dy, MM_MAX_HP);
