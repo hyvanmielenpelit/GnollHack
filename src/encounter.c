@@ -1150,20 +1150,55 @@ int selected_encounter, x, y;
 					if (!namelists[nlid][j] || namelists[nlid][j] == '\0' || strcmp(namelists[nlid][j], "\0") == 0 || strcmp(namelists[nlid][j], "") == 0)
 						break;
 
+					char* bp;
+					char testbuf[BUFSIZ] = "";
+					Sprintf(testbuf, "|%s|", namelists[nlid][j]);
+					if ((bp = strstri(context.used_names, testbuf)) != 0)
+						continue;
+
 					listnamecnt++;
 				}
 
 				if(listnamecnt > 0)
 				{
-					int roll = rn2(listnamecnt);
+					int roll = listnamecnt == 1 ? 0 : rn2(listnamecnt);
+					int selectedindex = -1;
 					char buf[BUFSZ] = "";
-					strcpy(buf, namelists[nlid][roll]);
-					if (!(
-						!namelists[nlid][roll] 
-						|| namelists[nlid][roll] == '\0' 
-						|| strcmp(namelists[nlid][roll], "\0") == 0 
-						|| strcmp(namelists[nlid][roll], "") == 0))
-						(void)christen_monst(mon, buf);
+					char* bp;
+					char testbuf[BUFSIZ] = "";
+					int k = 0;
+					boolean allused = FALSE;
+
+					for(int k = 0; k <= roll; k++)
+					{
+						do
+						{
+							selectedindex++;
+							if (selectedindex >= MAX_NAMELIST_NAMES)
+							{
+								allused = TRUE; 
+								break;
+							}
+							Sprintf(testbuf, "|%s|", namelists[nlid][selectedindex]);
+						} while ((bp = strstri(context.used_names, testbuf)) != 0);
+
+						if (allused)
+							break;
+					} 
+
+					if(!allused && selectedindex >= 0 && selectedindex < MAX_NAMELIST_NAMES)
+					{
+						strcpy(buf, namelists[nlid][selectedindex]);
+						if (!(
+							!namelists[nlid][selectedindex]
+							|| namelists[nlid][selectedindex] == '\0'
+							|| strcmp(namelists[nlid][selectedindex], "\0") == 0
+							|| strcmp(namelists[nlid][selectedindex], "") == 0))
+						{
+							(void)christen_monst(mon, buf);
+							Sprintf(eos(context.used_names), "%s|", buf);
+						}
+					}
 				}
 
 			}

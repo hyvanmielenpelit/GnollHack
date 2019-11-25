@@ -316,16 +316,23 @@ boolean createcorpse;
 	case PM_SKELETON_WARRIOR:
 	case PM_SKELETON_LORD:
 	case PM_SKELETON_KING:
-		obj = mksobj_at(BONE, x, y, TRUE, FALSE);
-		obj->quan = rnd(2 + (mndx == PM_SKELETON_LORD ? 1 : 0));
-		obj->owt = weight(obj);
-		obj = mksobj_at(HUMAN_SKULL, x, y, TRUE, FALSE);
+		if (!rn2(2))
+		{
+			obj = mksobj_at(BONE, x, y, TRUE, FALSE);
+			obj->quan = rnd(2 + (mndx == PM_SKELETON_LORD ? 1 : 0));
+			obj->owt = weight(obj);
+		}
+		if(!rn2(2))
+			obj = mksobj_at(HUMAN_SKULL, x, y, TRUE, FALSE);
 		break;
 	case PM_ETTIN_SKELETON:
 	case PM_GIANT_SKELETON:
-		obj = mksobj_at(BONE, x, y, TRUE, FALSE);
-		obj->quan = rnd(3);
-		obj->owt = weight(obj);
+		if(!rn2(2))
+		{
+			obj = mksobj_at(BONE, x, y, TRUE, FALSE);
+			obj->quan = rnd(3);
+			obj->owt = weight(obj);
+		}
 		break;
 	case PM_ANCIENT_RED_DRAGON:
 		additionalash++;

@@ -126,6 +126,7 @@ struct context_info {
 	boolean made_deserted_shop;
 	boolean made_orc_and_a_pie;
 	boolean made_orc_and_a_pie2;
+	char used_names[BUFSIZ * 32];
 	boolean mon_moving; /* monsters' turn to move */
     boolean move;
     boolean mv;
@@ -133,7 +134,7 @@ struct context_info {
     boolean botl;        /* partially redo status line */
     boolean botlx;       /* print an entirely new bottom line */
     boolean door_opened; /* set to true if door was opened during test_move */
-	boolean time_stopped; /* time has been stopped*/
+	boolean time_stopped; /* time has been stopped */
 	boolean multishot_target_killed;
 	boolean suit_yielding_ac_bonus;
 	boolean suit_yielding_mc_bonus;
