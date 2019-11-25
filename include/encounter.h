@@ -44,6 +44,10 @@ struct encountermonsterdef {
 	struct monsterrandomizeditem monster_items[MAX_MONSTER_ITEMS];
 };
 
+#define EM_IGNORE_APPEARANCE_FLAGS 0x00000001
+#define EM_MAXIMUM_HIT_POINTS 0x00000002
+
+
 struct randomizedencountermonsterdef {
 	struct encountermonsterdef random_encounter_monsters[MAX_RANDOM_MONSTER_ALTERNATIVES];
 };
@@ -58,6 +62,7 @@ struct encounterdef {
 #define ED_HELL_ONLY 0x00000002
 #define ED_NOMINES 0x00000004
 #define ED_MINES_ONLY 0x00000008
+#define ED_IGNORE_MONSTER_APPEARANCE_FLAGS 0x00000010
 
 #define ED_ONLY_ONCE 0x80000000
 
@@ -66,7 +71,7 @@ struct encounter_monster {
 	int permonstid;
 	struct monsterrandomizeditem monster_items[MAX_MONSTER_ITEMS];
 	int namelistid;
-	long miflags;
+	long mflags;
 };
 
 #define MAX_ENCOUNTER_ATTACKING_MONSTERS 8

@@ -1749,14 +1749,18 @@ boolean called;
             article = ARTICLE_NONE;
             name_at_start = TRUE;
         } else {
-            Strcat(buf, name);
-			if(!mtmp->mtame)
+			char tmpbuf[BUFSIZ] = "";
+			strcpy(tmpbuf, buf);
+			if (!mtmp->mtame)
 			{
-				Strcat(buf, " the ");
-				if (do_invis)
-					Strcat(buf, "invisible ");
-				Strcat(buf, pm_name);
+				if ((bp = strstri(name, " the ")) != 0)
+					Sprintf(buf, "%s%s %s", tmpbuf, pm_name, name);
+				else
+					Sprintf(buf, "%s%s the %s", tmpbuf, name, pm_name);
 			}
+			else
+				Sprintf(buf, "%s%s", tmpbuf, name);
+
 			name_at_start = TRUE;
         }
     } else if (is_mplayer(mdat) && !In_endgame(&u.uz)) {
