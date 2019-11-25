@@ -550,7 +550,7 @@ struct encounterdef encounter_definitions[] =
 			NORANDOMIZEDMONSTER,
 			NORANDOMIZEDMONSTER
 		},
-		30000,
+		10,
 		ED_IGNORE_MONSTER_APPEARANCE_FLAGS
 	},
 
