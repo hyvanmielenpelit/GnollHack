@@ -414,7 +414,7 @@ struct rm {
     int glyph;               /* what the hero thinks is there */
     schar typ;               /* what is really there */
     uchar seenv;             /* seen vector */
-    Bitfield(flags, 5);      /* extra information for typ */
+    uchar flags;			/* extra information for typ */
     Bitfield(horizontal, 1); /* wall/door/etc is horiz. (more typ info) */
     Bitfield(lit, 1);        /* speed hack for lit rooms */
     Bitfield(waslit, 1);     /* remember if a location was lit */

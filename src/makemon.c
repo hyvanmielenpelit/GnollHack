@@ -1441,13 +1441,16 @@ struct monst *mon;
 /* set up a new monster's initial level and hit points;
    used by newcham() as well as by makemon() */
 void
-newmonhp(mon, mndx)
+newmonhp(mon, mndx, maxhp)
 struct monst *mon;
 int mndx;
+boolean maxhp;
 {
     struct permonst *ptr = &mons[mndx];
 
     mon->m_lev = adj_lev(ptr);
+	boolean dragonmaxhp = !!(ptr->mlet == S_DRAGON && mndx >= PM_GRAY_DRAGON && In_endgame(&u.uz));
+
     if (is_golem(ptr)) 
 	{
         mon->mhpmax = mon->mhp = golemhp(mndx);
@@ -1462,22 +1465,13 @@ int mndx;
 		//ABOVE is obsolete, since hp's are now ints
 //		mon->mhpmax = mon->mhp = 2 * (ptr->mlevel - 6);
 //        mon->m_lev = mon->mhp / 4; /* approximation */
-    } else if (ptr->mlet == S_DRAGON && mndx >= PM_GRAY_DRAGON) {
-        /* adult dragons */
-		int dragonhp = (int)(In_endgame(&u.uz)
-			? (8 * mon->m_lev + mon->m_lev * constitution_hp_bonus(mon->mcon))
-			: (d((int)mon->m_lev, 8) + mon->m_lev * constitution_hp_bonus(mon->mcon)));
-		if (dragonhp < 1)
-			dragonhp = 1;
-		mon->mhpmax = mon->mhp = dragonhp;
-             //4 * mon->m_lev + 
-    } else if (!mon->m_lev) {
-		int hp = rnd(4) + constitution_hp_bonus(mon->mcon) / 2;
+    } else if (mon->m_lev <= 0) {
+		int hp = (maxhp || dragonmaxhp ? 4 : rnd(4)) + constitution_hp_bonus(mon->mcon) / 2;
 		if (hp < 1)
 			hp = 1;
 		mon->mhpmax = mon->mhp = hp;
     } else {
-		int hp = d((int)mon->m_lev, 8) + mon->m_lev * constitution_hp_bonus(mon->mcon);
+		int hp = (maxhp || dragonmaxhp ? (int)mon->m_lev * 8 : d((int)mon->m_lev, 8)) + mon->m_lev * constitution_hp_bonus(mon->mcon);
 		if (hp < 1)
 			hp = 1;
 		mon->mhpmax = mon->mhp = hp;
@@ -1691,7 +1685,7 @@ int mmflags;
 	mtmp->mcha = ptr->cha;
 	
 	/* set up level and hit points */
-	newmonhp(mtmp, mndx);
+	newmonhp(mtmp, mndx, !!(mmflags & MM_MAX_HP));
 
 	if (is_female(ptr))
         mtmp->female = TRUE;
@@ -1704,7 +1698,11 @@ int mmflags;
         mtmp->female = quest_status.ldrgend;
     else if (ptr->msound == MS_NEMESIS && quest_info(MS_NEMESIS) == mndx)
         mtmp->female = quest_status.nemgend;
-    else
+	else if (mmflags & MM_MALE)
+		mtmp->female = FALSE;
+	else if (mmflags & MM_FEMALE)
+		mtmp->female = TRUE;
+	else
         mtmp->female = rn2(2); /* ignored for neuters */
 
     if (In_sokoban(&u.uz) && !mindless(ptr)) /* know about traps here */

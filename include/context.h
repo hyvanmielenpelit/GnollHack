@@ -124,6 +124,8 @@ struct context_info {
     boolean nopick; /* do not pickup objects (as when running) */
     boolean made_amulet;
 	boolean made_deserted_shop;
+	boolean made_orc_and_a_pie;
+	boolean made_orc_and_a_pie2;
 	boolean mon_moving; /* monsters' turn to move */
     boolean move;
     boolean mv;

@@ -1206,7 +1206,7 @@ E void FDECL(dealloc_monst, (struct monst *));
 E boolean FDECL(is_home_elemental, (struct permonst *));
 E struct monst *FDECL(clone_mon, (struct monst *, XCHAR_P, XCHAR_P));
 E int FDECL(monhp_per_lvl, (struct monst *));
-E void FDECL(newmonhp, (struct monst *, int));
+E void FDECL(newmonhp, (struct monst *, int, BOOLEAN_P));
 E struct mextra *NDECL(newmextra);
 E void FDECL(copy_mextra, (struct monst *, struct monst *));
 E void FDECL(dealloc_mextra, (struct monst *));

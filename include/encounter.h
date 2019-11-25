@@ -46,6 +46,8 @@ struct encountermonsterdef {
 
 #define EM_IGNORE_APPEARANCE_FLAGS 0x00000001
 #define EM_MAXIMUM_HIT_POINTS 0x00000002
+#define EM_FORCE_MALE 0x00000010
+#define EM_FORCE_FEMALE 0x00000020
 
 
 struct randomizedencountermonsterdef {

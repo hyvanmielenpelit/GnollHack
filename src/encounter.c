@@ -14,7 +14,7 @@ static char namelists[][MAX_NAMELIST_NAMES][BUFSIZ] = {
 	{"", "", "", "",},
 	{"Urok", "Golluk", "Grimsh", "Urum",},
 	{"Deimos", "Kangaxx", "Lyran", "Karlat", "Vongoethe",},
-	{"Acererak the Mad", "Vecna the Mad", "Zhengyi the Mad", "Jymahna the Mad", "Rhangaun the Mad", "Priamon Rakesk the Mad", "Shangalar the Black", "Kartak Spellseer the Mad",},
+	{"Acererak ", "Vecna", "Zhengyi", "Jymahna", "Rhangaun", "Priamon Rakesk", "Shangalar the Black", "Kartak Spellseer",},
 	{ 0 }
 };
 
@@ -1112,8 +1112,16 @@ int selected_encounter, x, y;
 				continue;
 		}
 
+		int extraflags = 0;
+		if (encounter_list[selected_encounter].encounter_monsters[i].mflags & EM_MAXIMUM_HIT_POINTS)
+			extraflags |= MM_MAX_HP;
+		if (encounter_list[selected_encounter].encounter_monsters[i].mflags & EM_FORCE_MALE)
+			extraflags |= MM_MALE;
+		if (encounter_list[selected_encounter].encounter_monsters[i].mflags & EM_FORCE_FEMALE)
+			extraflags |= MM_FEMALE;
+
 		struct monst* mon = (struct monst*)0;
-		mon = makemon(&mons[pmid], nx, ny, MM_NOGRP | MM_ADJACENTOK);
+		mon = makemon(&mons[pmid], nx, ny, MM_NOGRP | MM_ADJACENTOK | extraflags);
 
 		if(mon)
 		{

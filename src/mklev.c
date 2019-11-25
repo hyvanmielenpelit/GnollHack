@@ -24,7 +24,7 @@ STATIC_DCL void FDECL(makeniche, (int));
 STATIC_DCL void NDECL(make_niches);
 STATIC_PTR int FDECL(CFDECLSPEC do_comp, (const genericptr,
                                           const genericptr));
-STATIC_DCL void FDECL(dosdoor, (XCHAR_P, XCHAR_P, struct mkroom *, int));
+STATIC_DCL void FDECL(dosdoor, (XCHAR_P, XCHAR_P, struct mkroom *, int, uchar));
 STATIC_DCL void FDECL(join, (int, int, BOOLEAN_P));
 STATIC_DCL void FDECL(do_room_or_subroom, (struct mkroom *, int, int,
                                            int, int, BOOLEAN_P,
@@ -381,10 +381,11 @@ register struct mkroom *aroom;
 }
 
 STATIC_OVL void
-dosdoor(x, y, aroom, type)
+dosdoor(x, y, aroom, type, dmask)
 register xchar x, y;
 struct mkroom *aroom;
 int type;
+uchar dmask;
 {
     boolean shdoor = *in_rooms(x, y, SHOPBASE) ? TRUE : FALSE;
 
@@ -392,27 +393,35 @@ int type;
         type = DOOR;
     levl[x][y].typ = type;
     if (type == DOOR) {
-        if (!rn2(3)) { /* is it a locked door, closed, or a doorway? */
-            if (!rn2(5))
-                levl[x][y].doormask = D_ISOPEN;
-            else if (!rn2(6))
-                levl[x][y].doormask = D_LOCKED;
-            else
-                levl[x][y].doormask = D_CLOSED;
+		if (dmask != 0)
+		{
+			levl[x][y].doormask = dmask;
+		}
+		else
+		{
+			if (!rn2(3)) { /* is it a locked door, closed, or a doorway? */
+				if (!rn2(5))
+					levl[x][y].doormask = D_ISOPEN;
+				else if (!rn2(6))
+					levl[x][y].doormask = D_LOCKED;
+				else
+					levl[x][y].doormask = D_CLOSED;
 
-            if (levl[x][y].doormask != D_ISOPEN && !shdoor
-                && level_difficulty() >= 5 && !rn2(25))
-                levl[x][y].doormask |= D_TRAPPED;
-        } else {
+				if (levl[x][y].doormask != D_ISOPEN && !shdoor
+					&& level_difficulty() >= 5 && !rn2(25))
+					levl[x][y].doormask |= D_TRAPPED;
+			}
+			else {
 #ifdef STUPID
-            if (shdoor)
-                levl[x][y].doormask = D_ISOPEN;
-            else
-                levl[x][y].doormask = D_NODOOR;
+				if (shdoor)
+					levl[x][y].doormask = D_ISOPEN;
+				else
+					levl[x][y].doormask = D_NODOOR;
 #else
-            levl[x][y].doormask = (shdoor ? D_ISOPEN : D_NODOOR);
+				levl[x][y].doormask = (shdoor ? D_ISOPEN : D_NODOOR);
 #endif
-        }
+			}
+		}
 
         /* also done in roguecorr(); doing it here first prevents
            making mimics in place of trapped doors on rogue level */
@@ -520,11 +529,73 @@ int trap_type;
                         }
                     }
                 }
-                dosdoor(xx, yy, aroom, SDOOR);
+                dosdoor(xx, yy, aroom, SDOOR, 0);
             } else {
                 rm->typ = CORR;
                 if (rn2(7))
-                    dosdoor(xx, yy, aroom, rn2(5) ? SDOOR : DOOR);
+				{
+					int u_depth = depth(&u.uz);
+					if (u_depth >= 2 && u_depth <= 4 && !context.made_orc_and_a_pie && !rn2(2))
+					{
+						dosdoor(xx, yy, aroom, DOOR, D_LOCKED);
+						struct monst* mon = makemon(&mons[PM_ORC], xx, yy + dy, MM_MAX_HP);
+						if (mon)
+						{
+							context.made_orc_and_a_pie = TRUE;
+							if (!m_carrying(mon, ORCISH_CHAIN_MAIL))
+								mongets(mon, ORCISH_CHAIN_MAIL);
+							if (!m_carrying(mon, ORCISH_HELM))
+								mongets(mon, ORCISH_HELM);
+							if (!m_carrying(mon, ORCISH_CLOAK))
+								mongets(mon, ORCISH_CLOAK);
+							if (!m_carrying(mon, ORCISH_DAGGER))
+								mongets(mon, ORCISH_DAGGER);
+							if (!m_carrying(mon, ORCISH_SHIELD))
+								mongets(mon, ORCISH_SHIELD);
+							if (!m_carrying(mon, ORCISH_SHORT_SWORD))
+								mongets(mon, ORCISH_SHORT_SWORD);
+							m_dowear(mon, TRUE);
+							struct obj* box = mksobj_at(LARGE_BOX, xx, yy + dy, FALSE, FALSE);
+							struct obj* pie = mksobj(CREAM_PIE, FALSE, FALSE, FALSE);
+							add_to_container(box, pie);
+						}
+					}
+					else if (u_depth >= 5 && u_depth <= 10 && !context.made_orc_and_a_pie2 && !rn2(4))
+					{
+						dosdoor(xx, yy, aroom, DOOR, D_LOCKED);
+						struct monst* mon = makemon(&mons[PM_ORC_CAPTAIN], xx, yy + dy, MM_MAX_HP);
+						if (mon)
+						{
+							context.made_orc_and_a_pie2 = TRUE;
+							if (!m_carrying(mon, ORCISH_CHAIN_MAIL))
+								mongets(mon, ORCISH_CHAIN_MAIL);
+							if(!m_carrying(mon,ORCISH_HELM)) 
+								mongets(mon, ORCISH_HELM);
+							if (!m_carrying(mon, ORCISH_CLOAK))
+								mongets(mon, ORCISH_CLOAK);
+							if (!m_carrying(mon, ORCISH_DAGGER))
+								mongets(mon, ORCISH_DAGGER);
+							if (!m_carrying(mon, ORCISH_SHIELD))
+								mongets(mon, ORCISH_SHIELD);
+							if (!m_carrying(mon, ORCISH_SHORT_SWORD))
+								mongets(mon, ORCISH_SHORT_SWORD);
+
+							m_dowear(mon, TRUE);
+							mongets(mon, CREAM_PIE);
+							struct obj* box = mksobj_at(LARGE_BOX, xx, yy + dy, FALSE, FALSE);
+							struct obj* pie = mksobj(CREAM_PIE, FALSE, FALSE, FALSE);
+							pie->quan = 4 + rnd(8);
+							pie->owt = weight(pie);
+							add_to_container(box, pie);
+							struct obj* pot = mksobj(POT_GAIN_ABILITY, FALSE, FALSE, FALSE);
+							bless(pot);
+							add_to_container(box, pot);
+						}
+					}
+					else
+						dosdoor(xx, yy, aroom, rn2(5) ? SDOOR : DOOR, 0);
+
+				}
                 else {
                     /* inaccessible niches occasionally have iron bars */
                     if (!rn2(5) && IS_WALL(levl[xx][yy].typ)) {
@@ -1327,7 +1398,7 @@ struct mkroom *aroom;
         return;
     }
 
-    dosdoor(x, y, aroom, rn2(8) ? DOOR : SDOOR);
+    dosdoor(x, y, aroom, rn2(8) ? DOOR : SDOOR, 0);
 }
 
 boolean
@@ -1563,50 +1634,59 @@ coord *tm;
             /* 20% chance of placing an additional item, recursively */
         } while (!rn2(5));
 
-        /* Place a corpse. */
-        switch (rn2(15)) {
-        case 0:
-            /* elf corpses are the rarest as they're the most useful */
-            victim_mnum = PM_ELF;
-            /* elven adventurers get sleep resistance early; so don't
-               generate elf corpses on sleeping gas traps unless a)
-               we're on dlvl 2 (1 is impossible) and b) we pass a coin
-               flip */
-            if (kind == SLP_GAS_TRAP && !(lvl <= 2 && rn2(2)))
-                victim_mnum = PM_HUMAN;
-            break;
-        case 1: case 2:
-            victim_mnum = PM_DWARF;
-            break;
-        case 3: case 4: case 5:
-            victim_mnum = PM_ORC;
-            break;
-        case 6: case 7: case 8: case 9:
-            /* more common as they could have come from the Mines */
-            victim_mnum = PM_GNOME;
-            /* 10% chance of a candle too */
-            if (!rn2(10)) {
-                otmp = mksobj(rn2(4) ? TALLOW_CANDLE : WAX_CANDLE,
-                              TRUE, FALSE, FALSE);
-                otmp->quan = 1;
-                otmp->blessed = 0;
-				if (objects[otmp->otyp].oc_flags & O1_NOT_CURSEABLE)
-					otmp->cursed = 0;
-				else
-					otmp->cursed = 1;
-                otmp->owt = weight(otmp);
-                place_object(otmp, m.x, m.y);
-            }
-            break;
-        default:
-            /* the most common race */
-            victim_mnum = PM_HUMAN;
-            break;
-        }
-        otmp = mkcorpstat(CORPSE, NULL, &mons[victim_mnum], m.x, m.y,
-                          CORPSTAT_INIT);
-        if (otmp)
-            otmp->age -= 51; /* died too long ago to eat */
+		if (!rn2(4))
+		{
+			if(!rn2(2))
+			{
+				struct obj* skull = mksobj_at(HUMAN_SKULL, m.x, m.y, FALSE, FALSE);
+			}
+			struct obj* bones = mksobj_at(BONE, m.x, m.y, FALSE, FALSE);
+			bones->quan = rnd(4);
+			bones->owt = weight(bones);
+		}
+		else
+		{
+			/* Place a corpse. */
+			switch (rn2(15)) {
+			case 0:
+				/* elf corpses are the rarest as they're the most useful */
+				victim_mnum = PM_ELF;
+				/* elven adventurers get sleep resistance early; so don't
+				   generate elf corpses on sleeping gas traps unless a)
+				   we're on dlvl 2 (1 is impossible) and b) we pass a coin
+				   flip */
+				if (kind == SLP_GAS_TRAP && !(lvl <= 2 && rn2(2)))
+					victim_mnum = PM_HUMAN;
+				break;
+			case 1: case 2:
+				victim_mnum = PM_DWARF;
+				break;
+			case 3: case 4: case 5:
+				victim_mnum = PM_ORC;
+				break;
+			case 6: case 7: case 8: case 9:
+				/* more common as they could have come from the Mines */
+				victim_mnum = PM_GNOME;
+				/* 10% chance of a candle too */
+				if (!rn2(10)) {
+					otmp = mksobj(rn2(4) ? TALLOW_CANDLE : WAX_CANDLE,
+								  TRUE, FALSE, FALSE);
+					curse(otmp);
+					otmp->quan = 1;
+					otmp->owt = weight(otmp);
+					place_object(otmp, m.x, m.y);
+				}
+				break;
+			default:
+				/* the most common race */
+				victim_mnum = PM_HUMAN;
+				break;
+			}
+			otmp = mkcorpstat(CORPSE, NULL, &mons[victim_mnum], m.x, m.y,
+							  CORPSTAT_INIT);
+			if (otmp)
+				otmp->age -= 51; /* died too long ago to eat */
+		}
     }
 }
 
