@@ -1619,9 +1619,9 @@ SPELL("ice storm",		  "mithril-plated", None, "Conjures a storm of cold",
       P_ARCANE_SPELL,			5,  7,			 2, 6, 75, A_INT, 14, 0, 0, 1, RAY, RAY_COLD, 4, 10, 8, 0, 0, 0, S1_SPELL_EXPLOSION_EFFECT, HI_SILVER, O1_COLD_RESISTANT, O2_NONE, O3_NONE),
 
 SPELL("sleep",				"mottled", None, "Shoots a sleep ray",
-      P_ENCHANTMENT_SPELL,		10,  1,			20, 1, 10, A_CHA, 12, 0, 0, 1, RAY, RAY_SLEEP, 0, 0, 0, 2, 6, 7, S1_NONE, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
+      P_ENCHANTMENT_SPELL,		10,  1,			20, 5, 50, A_CHA, 12, 0, 0, 1, RAY, RAY_SLEEP, 0, 0, 0, 2, 6, 7, S1_NONE, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
 SPELL("mass sleep",         "obtuse", None, "Causes nearby monsters fall asleep",
-      P_ENCHANTMENT_SPELL,		 5,  5,			30, 5, 50, A_CHA, 0, 6, 0, 1, NODIR, 0, 0, 0, 0, 4, 6, 14, S1_NONE, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
+      P_ENCHANTMENT_SPELL,		 5,  5,			30, 7, 100, A_CHA, 0, 6, 0, 1, NODIR, 0, 0, 0, 0, 4, 6, 14, S1_NONE, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
 
 SPELL("disintegrate",	  "stained", None, "Shoots a disintegration ray",
       P_ARCANE_SPELL,			 5, 12,			 4, 10,300, A_INT, 8, 0, 0, 1, RAY, RAY_DISINTEGRATION, 0, 0, 0, 0, 0, 0, S1_NONE, HI_PAPER, O1_DISINTEGRATION_RESISTANT, O2_NONE, O3_NONE),
