@@ -502,6 +502,13 @@ int psflags;
 		if (isvamp && (tryct <= 0 || mntmp == PM_WOLF || mntmp == PM_FOG_CLOUD
                        || is_bat(&mons[mntmp])))
             goto do_vampyr;
+
+		if (!forcecontrol && mntmp >= LOW_PM && mons[mntmp].difficulty > u.ulevel * 2)
+		{
+			/* Control fails -- Randomize instead */
+			pline("Oops! That form was too difficult for your polymorph control!");
+			mntmp = NON_PM;
+		}
     } 
 	else if (draconian || bullheaded || iswere || isvamp) 
 	{

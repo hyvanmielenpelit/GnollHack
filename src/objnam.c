@@ -4089,7 +4089,7 @@ struct obj *no_wish;
         oclass = objects[typ].oc_class;
 
     /* handle some objects that are only allowed in wizard mode */
-    if (typ && !wizard) {
+    if (typ && (!wizard || (wizard && yn("That item is nonwishable. Force it anyway?") != 'y'))) {
         switch (typ) {
         case AMULET_OF_YENDOR:
             typ = FAKE_AMULET_OF_YENDOR;
