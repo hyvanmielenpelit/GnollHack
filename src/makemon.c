@@ -1237,7 +1237,7 @@ register struct monst *mtmp;
 	case PM_GNOLL_KING:
 	case PM_GNOME_KING:
 		if (!rn2(3))
-			(void)mongets(mtmp, !rn2(25) ? CROWN_OF_RULERSHIP : CROWN);
+			(void)mongets(mtmp, !rn2(25) ? CROWN_OF_RULERSHIP : DUCAL_CROWN);
 		break;
 	default:
 		break;

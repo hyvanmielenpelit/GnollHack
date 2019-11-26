@@ -683,11 +683,11 @@ HELM("tinfoil hat of mind shielding", "thin metal hat",
     0, 1, MIND_SHIELDING, CHARM_RES, ODD_IDEAS,
 	3, 1, 6, 80, 10, 1, 0, 0, BONUS_TO_INT | BONUS_TO_WIS, -2, 6, MAT_METAL, HI_METAL, 
 	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-HELM("crown", "golden crown", //STARTMARKER FOR SHUFFLED CROWNS
+HELM("ducal crown", "golden crown", //STARTMARKER FOR SHUFFLED CROWNS & CROWN WISH RANGE
     0, 1, NO_POWER, NO_POWER, NO_POWER,
-	3, 1, 20, 1000, 10, 0, 0, 0, BONUS_TO_CHA, 20, 0, MAT_GOLD, HI_GOLD,
+	3, 1, 20, 1000, 10, 0, 0, 0, 0, 0, 0, MAT_GOLD, HI_GOLD,
 	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-HELM("crown of rulership", "ornamental crown", //ENDMARKER FOR SHUFFLED CROWNS
+HELM("crown of rulership", "ornamental crown", //ENDMARKER FOR SHUFFLED CROWNS & CROWN WISH RANGE
     0, 1, NO_POWER, NO_POWER, NO_POWER,
 	3, 1, 20, 5000, 10, 0, 0, 0, BONUS_TO_CHA | SETS_FIXED_ATTRIBUTE, 20, 0, MAT_GOLD, HI_GOLD, 
 	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
@@ -913,7 +913,11 @@ SHIELD("shield of reflection", "polished silver shield",
        0, 1, 0, REFLECTING, 0, 0, 3, 0, 70, 750, 8, 0, 0, 0, 0, 0, 10, MAT_SILVER, HI_SILVER, O1_RUST_RESISTANT | O1_CORROSION_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
 
 WEAPONSHIELD("spiked shield", None,
-       1, 5, 15, 50, AD_PHYS, 1, 4, 0, 1, 4, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, PIERCE, P_SPEAR, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
+	1, 5, 15, 50, 
+	AD_PHYS, 1, 4, 0, 1, 4, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,
+	0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 
+	0, 0, 0, PIERCE, P_SPEAR, MAT_IRON, HI_METAL, 
+	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 
 /* gloves */
 /* These have their color but not material shuffled, so the MAT_IRON must
@@ -1102,7 +1106,7 @@ OBJECT(OBJ("Amulet of Yendor", /* note: description == name */
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, manabonus, hpbonus, bonusattrs, abon, splcastpen, 0, \
 		   nut, color, 0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
-MISCELLANEOUSITEM("brooch of shielding", "golden brooch",	MISC_BROOCH, None, None,
+MISCELLANEOUSITEM("brooch of shielding", "golden brooch", MISC_BROOCH, None, None,
 	0, 1, 0, 0, 50, 150, 5,
 	NO_POWER, 0, 0, 0, 0, BONUS_TO_MC, 5, 0,
 	20, MAT_GOLD, HI_GOLD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
@@ -2125,8 +2129,8 @@ OBJECT(OBJ("acid venom", "splash of venom"), None, None,
 	REAGENT("heap of sporal powder",	 50, MULTIGEN_SINGLE, 1, 1,  10, MAT_ORGANIC, EDIBLE_NORMAL, 1, CLR_GRAY, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
 	REAGENT("sprig of wolfsbane",		100, MULTIGEN_SINGLE, 1, 1,  10, MAT_VEGGY, EDIBLE_POISONOUS, 40, CLR_GREEN, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
 	REAGENT("clove of garlic",			100, MULTIGEN_SINGLE, 1, 1,  10, MAT_VEGGY, EDIBLE_NORMAL, 40, CLR_WHITE, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
-	REAGENT("bone",						100, MULTIGEN_SINGLE, 1, 16, 10, MAT_BONE, EDIBLE_NORMAL, 40, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-	REAGENT("human skull",				 50, MULTIGEN_SINGLE, 1, 32, 10, MAT_BONE, EDIBLE_NORMAL, 40, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	REAGENT("bone",						100, MULTIGEN_SINGLE, 1, 16, 10, MAT_BONE, 0, 40, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	REAGENT("human skull",				 50, MULTIGEN_SINGLE, 1, 32, 10, MAT_BONE, 0, 40, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 	REAGENT("piece of wood",			100, MULTIGEN_SINGLE, 1, 16, 10, MAT_WOOD, 0, 40, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 	REAGENT("pinch of sulfurous ash",	100, MULTIGEN_SINGLE, 1, 1,  10, MAT_MINERAL, 0, 40, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 
