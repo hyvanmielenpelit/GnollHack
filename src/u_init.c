@@ -1360,7 +1360,7 @@ register struct trobj *trop;
                    || otyp == nocreate4 || otyp == RIN_LEVITATION
                    || otyp == AMULET_OF_LIFE_SAVING
                    /* 'useless' items */
-				   || objects[otyp].oc_flags2 & O2_CURSED_MAGIC_ITEM
+				   || is_cursed_magic_item(obj)
 				   || objects[otyp].oc_flags2 & O2_GENERATED_CURSED
                    || otyp == POT_HALLUCINATION
                    || otyp == POT_ACID

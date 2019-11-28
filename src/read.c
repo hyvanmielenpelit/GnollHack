@@ -1733,7 +1733,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
         if (confused || scursed) {
             level_tele();
         } else {
-            known = scrolltele(sobj);
+            known = scrolltele(sobj, (struct coord *)0);
         }
         break;
     case SCR_GOLD_DETECTION:

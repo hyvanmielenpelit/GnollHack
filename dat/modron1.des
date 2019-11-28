@@ -17,7 +17,7 @@ MAP
 |--------S--------|....|.......|....|.......-------.........-------........|
 |.....|...........S....|.......|....|...........S...|--S--|...S............|
 |.....|...........|....|.......|....|...........|...|.....|...|............|
-|.....S...........|--------S----S---|...........|...S.....S...|............|
+|.....|...........|--------S----S---|...........|...S.....S...|............|
 |.....|...........|......|..........|...........|...|.....|...|............|
 |.....|...........S......|..........|...........S...|--S--|...S............|
 |--------S--------|......|..........S......--------.........--------.......|
@@ -37,22 +37,13 @@ BRANCH:(03,09,03,09),(0,0,0,0)
 TELEPORT_REGION:(01,07,05,11),(0,0,0,0),up
 TELEPORT_REGION:(01,07,05,11),(0,0,0,0),down
 
-MONSTER:('M',"modron quinton"),(55,09),hostile
+# The special entrace portal
+TRAP:"octahedral portal", (05,09)
 
-# IF [50%] {
-#   TERRAIN:(47,09), 'S'
-#   TERRAIN:(47,10), '|'
-#}
-#   Vault entrance also varies
-#IF [50%] {
-#   TERRAIN:(36,09), '|'
-#   TERRAIN:(36,10), 'S'
-#}
-#   Corner towers
-# REGION:(19,06,21,06),lit,"ordinary"
-# REGION:(46,06,48,06),lit,"ordinary"
-# REGION:(19,13,21,13),lit,"ordinary"
-# REGION:(46,13,48,13),lit,"ordinary"
+
+#   Lighted areas
+REGION:(01,07,17,11),lit,"ordinary"
+
 
 # Doors
 # DOOR:open,(63,05)
@@ -75,19 +66,29 @@ MONSTER:('M',"modron duodrone"),(11,08)
 MONSTER:('M',"modron duodrone"),(11,11)
 MONSTER:('M',"modron duodrone"),(12,09)
 
-# Modrons guarding the fort
-# MONSTER:('M',"modron monodrone"),(12,14)
-# MONSTER:('M',"modron monodrone"),(12,13)
-# MONSTER:('M',"modron monodrone"),(11,10)
-# MONSTER:('M',"modron monodrone"),(13,02)
-# MONSTER:('M',"modron duodrone"),(14,03)
-# MONSTER:('M',"modron duodrone"),(20,02)
-# MONSTER:('M',"modron duodrone"),(30,02)
-# MONSTER:('M',"modron duodrone"),(40,02)
-# MONSTER:('M',"modron tridrone"),(30,16)
-# MONSTER:('M',"modron tridrone"),(32,16)
-# MONSTER:('M',"modron tridrone"),(40,16)
-# MONSTER:('M',"modron tridrone"),(54,16)
+# Modrons guarding the upper room near entrance
+MONSTER:('M',"modron monodrone"),(02,02)
+MONSTER:('M',"modron monodrone"),(03,02)
+MONSTER:('M',"modron monodrone"),(04,02)
+MONSTER:('M',"modron monodrone"),(05,02)
+MONSTER:('M',"modron duodrone"),(02,03)
+MONSTER:('M',"modron duodrone"),(03,03)
+MONSTER:('M',"modron duodrone"),(04,03)
+MONSTER:('M',"modron duodrone"),(04,03)
+MONSTER:('M',"modron tridrone"),(02,04)
+MONSTER:('M',"modron tridrone"),(02,04)
+
+# Modrons guarding the lower room near entrance
+MONSTER:('M',"modron monodrone"),(02,14)
+MONSTER:('M',"modron monodrone"),(03,14)
+MONSTER:('M',"modron monodrone"),(04,14)
+MONSTER:('M',"modron monodrone"),(05,14)
+MONSTER:('M',"modron duodrone"),(02,15)
+MONSTER:('M',"modron duodrone"),(03,15)
+MONSTER:('M',"modron duodrone"),(04,15)
+MONSTER:('M',"modron duodrone"),(04,15)
+MONSTER:('M',"modron tridrone"),(02,16)
+MONSTER:('M',"modron tridrone"),(02,16)
 
 # Quadrone
 MONSTER:('M',"modron quadrone"),(47,15)
@@ -104,7 +105,13 @@ MONSTER:('M',"modron pentadrone"),(55,15)
 # Quinton in the middle
 MONSTER:('M',"modron quinton"),(55,09)
 
-# The corner rooms treasures
+# Items
+OBJECT:('9',"modronite ball"),(01,07)
+OBJECT:('9',"modronite ball"),(12,09)
+OBJECT:('9',"modronite octahedron"),(05,07)
+
+OBJECT:('9',"modronite dodecahedron"),(55,09)
+
 # OBJECT:('9',"modronite dodecahedron"),(19,06)
 # OBJECT:('9',"modronite icosahedron"),(20,06)
 # OBJECT:('9',"modronite monopole"),(21,06)
@@ -114,6 +121,5 @@ MONSTER:('M',"modron quinton"),(55,09)
 # OBJECT:('9',"modronite icosahedron"),(46,06)
 # OBJECT:('9',"modronite monopole"),(47,06)
 # OBJECT:('9',"modronite icosahedron"),(48,06)
-# OBJECT:('9',"modronite dodecahedron"),(46,13)
 # OBJECT:('9',"modronite octahedron"),(47,13)
 # OBJECT:('9',"modronite ball"),(48,13)

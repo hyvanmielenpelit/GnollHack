@@ -172,7 +172,8 @@ static struct {
                    { "anti magic", ANTI_MAGIC },
                    { "polymorph", POLY_TRAP },
                    { "vibrating square", VIBRATING_SQUARE },
-                   { 0, 0 } };
+				   { "octahedral portal", MODRON_OCTAHEDRAL_PORTAL },
+				   { 0, 0 } };
 
 static struct {
     const char *name;

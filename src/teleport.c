@@ -512,6 +512,89 @@ struct obj *scroll;
     return result;
 }
 
+boolean
+modronportaltele(ttmp, mtmp, x, y)
+struct trap* ttmp;
+struct monst* mtmp;
+int x;
+int y;
+{
+	if (!mtmp)
+		return FALSE;
+
+	struct obj* otmp = (struct obj*)0;
+	if (ttmp->ttyp == MODRON_OCTAHEDRAL_PORTAL)
+	{
+		if (mtmp == &youmonst)
+			otmp = carrying(MODRONITE_OCTAHEDRON);
+		else
+			otmp = m_carrying(mtmp, MODRONITE_OCTAHEDRON);
+
+		if (!otmp)
+		{
+			if (mtmp == &youmonst)
+				pline("Blue glimmer surrounds you for a while but nothing else happens.");
+			else if (canseemon(mtmp))
+				pline("Blue glimmer flashes around %s.", mon_nam(mtmp));
+			return FALSE;
+		}
+		else
+		{
+			/* Code to use usable items, if need be -- Now no items are used when accessing the portal */
+		}
+	}
+	else
+		return FALSE; //Not a modron portal
+
+	if (!otmp) /* The modronite key must be selected */
+		return FALSE;
+
+	/* Now do the teleport */
+	int nux= x, nuy = y;
+	int tcnt = 0;
+	if(!teleok(x, y, FALSE))
+	{
+		do {
+			if (tcnt < 50)
+			{
+				nux = x - 1 + rn2(3);
+				nuy = y - 1 + rn2(3);
+			}
+			else
+			{
+				nux = x - 2 + rn2(5);
+				nuy = y - 2 + rn2(5);
+			}
+		} while (!goodpos(nux, nuy, mtmp, 0) || !teleok(nux, nuy, (boolean)(tcnt > 200)) && ++tcnt <= 400);
+	}
+	if (tcnt <= 400)
+	{
+		if (mtmp == &youmonst || mtmp == u.usteed)
+		{
+			pline("Blue light envelops %s!", yname(otmp));
+			pline("You feel your essence unsolidifying...");
+			pline("You reemerge at a new location!");
+			teleds(nux, nuy, TRUE);
+		}
+		else
+		{
+			rloc_to(mtmp, nux, nuy);
+			pline("%s disappears in a flash of blue light.", Monnam(mtmp));
+		}
+		return TRUE;
+	}
+	else
+	{
+		if (mtmp == &youmonst)
+			pline("Blue glimmer surrounds you for a while but nothing else happens.");
+		else if (canseemon(mtmp))
+			pline("Blue glimmer flashes around %s.", mon_nam(mtmp));
+		return FALSE;
+	}
+	return FALSE;
+}
+
+
 /* ^T command; 'm ^T' == choose among several teleport modes */
 int
 dotelecmd()

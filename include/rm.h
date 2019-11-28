@@ -184,48 +184,49 @@ enum screen_symbols {
     S_anti_magic_trap      = 62+1,
     S_polymorph_trap       = 63+1,
     S_vibrating_square     = 64+1, /* for display rather than any trap effect */
+	S_octagonal_portal	   = 65+1,
 
 /* end traps+1, begin special effects */
 
-    S_vbeam     = 65+1, /* The 4 zap beam symbols.  Do NOT separate. */
-    S_hbeam     = 66+1, /* To change order or add+1, see function      */
-    S_lslant    = 67+1, /* zapdir_to_glyph() in display.c.           */
-    S_rslant    = 68+1,
-    S_digbeam   = 69+1, /* dig beam symbol */
-    S_flashbeam = 70+1, /* camera flash symbol */
-    S_boomleft  = 71+1, /* thrown boomerang+1, open left+1, e.g ')'    */
-    S_boomright = 72+1, /* thrown boomerang+1, open right+1, e.g. '('  */
-    S_ss1       = 73+1, /* 4 magic shield ("resistance sparkle") glyphs */
-    S_ss2       = 74+1,
-    S_ss3       = 75+1,
-    S_ss4       = 76+1,
-    S_poisoncloud = 77+1,
-    S_goodpos   = 78+1, /* valid position for targeting via getpos() */
+    S_vbeam     = 65+2, /* The 4 zap beam symbols.  Do NOT separate. */
+    S_hbeam     = 66+2, /* To change order or add+2, see function      */
+    S_lslant    = 67+2, /* zapdir_to_glyph() in display.c.           */
+    S_rslant    = 68+2,
+    S_digbeam   = 69+2, /* dig beam symbol */
+    S_flashbeam = 70+2, /* camera flash symbol */
+    S_boomleft  = 71+2, /* thrown boomerang+2, open left+2, e.g ')'    */
+    S_boomright = 72+2, /* thrown boomerang+2, open right+2, e.g. '('  */
+    S_ss1       = 73+2, /* 4 magic shield ("resistance sparkle") glyphs */
+    S_ss2       = 74+2,
+    S_ss3       = 75+2,
+    S_ss4       = 76+2,
+    S_poisoncloud = 77+2,
+    S_goodpos   = 78+2, /* valid position for targeting via getpos() */
 
-/* The 8 swallow symbols.  Do NOT separate.  To change order or add+1, */
+/* The 8 swallow symbols.  Do NOT separate.  To change order or add+2, */
 /* see the function swallow_to_glyph() in display.c.                 */
-    S_sw_tl     = 79+1, /* swallow top left [1]             */
-    S_sw_tc     = 80+1, /* swallow top center [2]    Order: */
-    S_sw_tr     = 81+1, /* swallow top right [3]            */
-    S_sw_ml     = 82+1, /* swallow middle left [4]   1 2 3  */
-    S_sw_mr     = 83+1, /* swallow middle right [6]  4 5 6  */
-    S_sw_bl     = 84+1, /* swallow bottom left [7]   7 8 9  */
-    S_sw_bc     = 85+1, /* swallow bottom center [8]        */
-    S_sw_br     = 86+1, /* swallow bottom right [9]         */
+    S_sw_tl     = 79+2, /* swallow top left [1]             */
+    S_sw_tc     = 80+2, /* swallow top center [2]    Order: */
+    S_sw_tr     = 81+2, /* swallow top right [3]            */
+    S_sw_ml     = 82+2, /* swallow middle left [4]   1 2 3  */
+    S_sw_mr     = 83+2, /* swallow middle right [6]  4 5 6  */
+    S_sw_bl     = 84+2, /* swallow bottom left [7]   7 8 9  */
+    S_sw_bc     = 85+2, /* swallow bottom center [8]        */
+    S_sw_br     = 86+2, /* swallow bottom right [9]         */
 
-    S_explode1  = 87+1, /* explosion top left               */
-    S_explode2  = 88+1, /* explosion top center             */
-    S_explode3  = 89+1, /* explosion top right        Ex.   */
-    S_explode4  = 90+1, /* explosion middle left            */
-    S_explode5  = 91+1, /* explosion middle center    /-\   */
-    S_explode6  = 92+1, /* explosion middle right     |@|   */
-    S_explode7  = 93+1, /* explosion bottom left      \-/   */
-    S_explode8  = 94+1, /* explosion bottom center          */
-    S_explode9  = 95+1, /* explosion bottom right           */
+    S_explode1  = 87+2, /* explosion top left               */
+    S_explode2  = 88+2, /* explosion top center             */
+    S_explode3  = 89+2, /* explosion top right        Ex.   */
+    S_explode4  = 90+2, /* explosion middle left            */
+    S_explode5  = 91+2, /* explosion middle center    /-\   */
+    S_explode6  = 92+2, /* explosion middle right     |@|   */
+    S_explode7  = 93+2, /* explosion bottom left      \-/   */
+    S_explode8  = 94+2, /* explosion bottom center          */
+    S_explode9  = 95+2, /* explosion bottom right           */
 
 /* end effects */
 
-    MAXPCHARS   = 97  /* maximum number of mapped characters */
+    MAXPCHARS   = 98  /* maximum number of mapped characters */
 };
 
 #define MAXDCHARS (S_water - S_stone + 1) /* mapped dungeon characters */

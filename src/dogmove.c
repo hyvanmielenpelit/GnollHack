@@ -785,7 +785,7 @@ struct monst *mtmp, *mtarg;
             return score;
         }
         /* Is the monster peaceful or tame? */
-        if ((mtarg->mpeaceful && 1 /*mtmp->ispacifist*/) || mtarg->mtame || mtarg == &youmonst) {
+        if ((mtarg->mpeaceful && !mtmp->hasbloodlust /*mtmp->ispacifist*/) || mtarg->mtame || mtarg == &youmonst) {
             /* Pets will never be targeted */
             score -= 3000L;
             return score;
@@ -1056,7 +1056,7 @@ int after; /* this is extra fast monster movement */
 				|| (max_passive_dmg(mtmp2, mtmp) >= mtmp->mhp)
 				|| (((!mtmp->disregards_own_health && mtmp->mhp * 4 < mtmp->mhpmax)
                      || mtmp2->data->msound == MS_GUARDIAN
-                     || mtmp2->data->msound == MS_LEADER || 1 /*mtmp->ispacifist*/) && mtmp2->mpeaceful
+                     || mtmp2->data->msound == MS_LEADER || !mtmp->hasbloodlust /*mtmp->ispacifist*/) && mtmp2->mpeaceful
                     && !Conflict && !mtmp->hasbloodlust)
                 || (touch_petrifies(mtmp2->data) && !resists_ston(mtmp)))
                 continue;

@@ -1461,7 +1461,8 @@ coord *tm;
             kind = rnd(TRAPNUM - 1);
             /* reject "too hard" traps */
             switch (kind) {
-            case MAGIC_PORTAL:
+			case MODRON_OCTAHEDRAL_PORTAL:
+			case MAGIC_PORTAL:
             case VIBRATING_SQUARE:
                 kind = NO_TRAP;
                 break;

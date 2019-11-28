@@ -1561,6 +1561,11 @@ unsigned trflags;
          * square for future reference */
         break;
 
+	case MODRON_OCTAHEDRAL_PORTAL:
+		feeltrap(trap);
+		(void)modronportaltele(trap, &youmonst, u.ux + 5, u.uy + 0);
+		break;
+
     default:
         feeltrap(trap);
         impossible("You hit a trap of type %u", trap->ttyp);
@@ -2731,7 +2736,10 @@ register struct monst *mtmp;
                 }
             }
             break;
-        default:
+		case MODRON_OCTAHEDRAL_PORTAL:
+			modronportaltele(trap, mtmp, mtmp->mx + 5, mtmp->my);
+			break;
+		default:
             impossible("Some monster encountered a strange trap of type %d.",
                        tt);
         }
@@ -4418,6 +4426,7 @@ struct trap* ttmp;
 				   "anti-magic trap",
 				   "polymorph trap",
 				   "vibrating square",
+				   "octahedral magic portal",
 				   0 };
 
 /*
