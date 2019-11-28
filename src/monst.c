@@ -2289,7 +2289,7 @@ struct permonst _mons2[] = {
         MR_COLD | MR_SLEEP | MR_POISON | MR_STONE, 0,
         M1_BREATHLESS | M1_FLY | M1_HUMANOID | M1_UNSOLID,
         M2_UNDEAD | M2_STALK | M2_HOSTILE, M3_NONCORPOREAL | M3_RANDOM_CORPSE, 31, HI_GOLD),
-	/* Nazguls are something between corporeal and non-corporeal*/
+	/* Nazguls are something between corporeal and non-corporeal */
     MON("Nazgul", S_WRAITH, LVL(24, 12, 0, 15, 60, -17),
         (G_GENO | G_NOCORPSE | 1),
 			A(ATTK(AT_WEAP, AD_DRLI, 3, 6, 0, -6), ATTK(AT_WEAP, AD_DRLI, 3, 6, 0, -6),

@@ -136,7 +136,7 @@ struct monst {
 	Bitfield(disregards_enemy_strength, 1);		/* the monster attacks too strong enemies */
 	Bitfield(disregards_own_health, 1);			/* the monster attacks even when its health is low */
 	Bitfield(hasbloodlust, 1);					/* attacks also peaceful */
-	Bitfield(ispacifist, 1);					/* does not attack peaceful */
+	Bitfield(ispacifist, 1);					/* does not attack peaceful, NOW DEACTIVATED, APPLIES TO ALL */
 
     Bitfield(iswiz, 1);     /* is the Wizard of Yendor */
     Bitfield(wormno, 5);    /* at most 31 worms on any level */

@@ -449,28 +449,36 @@ int psflags;
             }
             class = 0;
             mntmp = name_to_mon(buf);
-            if (mntmp < LOW_PM) {
+
+            if (mntmp < LOW_PM) 
+			{
             by_class:
                 class = name_to_monclass(buf, &mntmp);
                 if (class && mntmp == NON_PM)
                     mntmp = mkclass_poly(class);
             }
-            if (mntmp < LOW_PM) {
+
+            if (mntmp < LOW_PM)
+			{
                 if (!class)
                     pline("I've never heard of such monsters.");
                 else
                     You_cant("polymorph into any of those.");
-            } else if (iswere && (were_beastie(mntmp) == u.ulycn
+            } 
+			else if (iswere && (were_beastie(mntmp) == u.ulycn
                                   || mntmp == counter_were(u.ulycn)
-                                  || (Upolyd && mntmp == PM_HUMAN))) {
+                                  || (Upolyd && mntmp == PM_HUMAN))) 
+			{
                 goto do_shift;
                 /* Note:  humans are illegal as monsters, but an
                  * illegal monster forces newman(), which is what we
                  * want if they specified a human.... */
-            } else if (!polyok(&mons[mntmp])
+            } 
+			else if (!polyok(&mons[mntmp])
                        && !(mntmp == PM_HUMAN || your_race(&mons[mntmp])
                             || mntmp == urole.malenum
-                            || mntmp == urole.femalenum)) {
+                            || mntmp == urole.femalenum))
+			{
                 const char *pm_name;
 
                 /* mkclass_poly() can pick a !polyok()
@@ -489,8 +497,17 @@ int psflags;
                 else if (!type_is_pname(&mons[mntmp]))
                     pm_name = an(pm_name);
                 You_cant("polymorph into %s.", pm_name);
-            } else
-                break;
+			}
+			else
+			{
+				if (mons[mntmp].difficulty > max(5, u.ulevel * 2))
+				{
+					if (yn("This form may be too difficult for your polymorph control. Continue?") == 'y')
+						break;
+				}
+				else
+					break;
+			}
         } while (--tryct > 0);
         if (!tryct)
             pline1(thats_enough_tries);
@@ -503,7 +520,7 @@ int psflags;
                        || is_bat(&mons[mntmp])))
             goto do_vampyr;
 
-		if (!forcecontrol && mntmp >= LOW_PM && mons[mntmp].difficulty > u.ulevel * 2)
+		if (!forcecontrol && mntmp >= LOW_PM && (mons[mntmp].difficulty > max(5, u.ulevel * 3) || (!rn2(2) && mons[mntmp].difficulty > max(5, u.ulevel * 2))))
 		{
 			/* Control fails -- Randomize instead */
 			pline("Oops! That form was too difficult for your polymorph control!");

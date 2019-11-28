@@ -1,118 +1,119 @@
-# NetHack 3.6	modron1.des	$NHDT-Date: 1547343821 2019/01/13 01:43:41 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.13 $
-#	Copyright (c) 1989 by Jean-Christophe Collet
-#	Copyright (c) 1992 by Izchak Miller
-# NetHack may be freely redistributed.  See license for details.
+# GnollHack 4.0	modron1.des	$NHDT-Date: 1547343821 2019/01/13 01:43:41 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.13 $
+#	Copyright (c) 2019 by Janne Gustafsson
+# GnollHack may be freely redistributed.  See license for details.
 #
 MAZE:"modron1",' '
 FLAGS: noteleport
 GEOMETRY:center,center
-# Fort's entry is via a secret door rather than a drawbridge;
-# the moat must be manually circumvented.
+# 
+# 
 MAP
 ----------------------------------------------------------------------------
-| |........|...............................................................|
-| |........|.................................................------------..|
-| --S----S--.................................................|..........|..|
-|   #   |........}}}}}}}....................}}}}}}}..........|..........|..|
-|   #   |........}-----}....................}-----}..........--+--+--...|..|
-|   # ---........}|...|}}}}}}}}}}}}}}}}}}}}}}|...|}.................|...|..|
-|   # |..........}---S------------------------S---}.................|...|..|
-|   # |..........}}}|...............|..........|}}}.................+...|..|
-| --S--............}|...............S..........|}...................|...|..|
-| |................}|...............|..........S}...................|...|..|
-| |..............}}}|...............|..........|}}}.................+...|..|
-| |..............}---S------------------------S---}.................|...|..|
-| |..............}|...|}}}}}}}}}}}}}}}}}}}}}}|...|}.................|...|..|
-| |..............}-----}....................}-----}..........--+--+--...|..|
-| |..............}}}}}}}....................}}}}}}}..........|..........|..|
-| |..........................................................|..........|..|
-| -----------................................................------------..|
-|           |..............................................................|
+|.................|.........|...|...|.......|.....S.........S.....|........|
+|.................S.........|...|...|.......|.....|.........|.....|........|
+|.................|.........|...|...|.......S.....|.........|.....S........|
+|.................|-----S-----S---S-|.......|.....|.........|.....|........|
+|.................|....|.......|....|.......|.....|S-------S|.....|........|
+|--------S--------|....|.......|....|.......-------.........-------........|
+|.....|...........S....|.......|....|...........S...|--S--|...S............|
+|.....|...........|....|.......|....|...........|...|.....|...|............|
+|.....S...........|--------S----S---|...........|...S.....S...|............|
+|.....|...........|......|..........|...........|...|.....|...|............|
+|.....|...........S......|..........|...........S...|--S--|...S............|
+|--------S--------|......|..........S......--------.........--------.......|
+|.................|......|..........|......|......|S-------S|......|.......|
+|.................|......|..........|......|......|.........|......|.......|
+|.................|---------------S-|......S......|.........|......S.......|
+|.................|.........|...|...|......|......|.........|......|.......|
+|.................S.........|...|...|......|......|.........|......|.......|
+|.................|.........|...S...|......|......S.........S......|.......|
 ----------------------------------------------------------------------------
 ENDMAP
 # Non diggable walls
 NON_DIGGABLE:(00,00,75,19)
 # Portal arrival point
-BRANCH:(08,16,08,16),(0,0,0,0)
+BRANCH:(03,09,03,09),(0,0,0,0)
 # accessible via ^V in wizard mode; arrive near the portal
-TELEPORT_REGION:(06,15,09,16),(0,0,0,0),up
-TELEPORT_REGION:(06,15,09,16),(0,0,0,0),down
+TELEPORT_REGION:(01,07,05,11),(0,0,0,0),up
+TELEPORT_REGION:(01,07,05,11),(0,0,0,0),down
 
-MONSTER:('M',"modron quarton"),(43,10),hostile
+MONSTER:('M',"modron quinton"),(55,09),hostile
 
-IF [50%] {
-   TERRAIN:(47,09), 'S'
-   TERRAIN:(47,10), '|'
-}
+# IF [50%] {
+#   TERRAIN:(47,09), 'S'
+#   TERRAIN:(47,10), '|'
+#}
 #   Vault entrance also varies
-IF [50%] {
-   TERRAIN:(36,09), '|'
-   TERRAIN:(36,10), 'S'
-}
+#IF [50%] {
+#   TERRAIN:(36,09), '|'
+#   TERRAIN:(36,10), 'S'
+#}
 #   Corner towers
-REGION:(19,06,21,06),lit,"ordinary"
-REGION:(46,06,48,06),lit,"ordinary"
-REGION:(19,13,21,13),lit,"ordinary"
-REGION:(46,13,48,13),lit,"ordinary"
+# REGION:(19,06,21,06),lit,"ordinary"
+# REGION:(46,06,48,06),lit,"ordinary"
+# REGION:(19,13,21,13),lit,"ordinary"
+# REGION:(46,13,48,13),lit,"ordinary"
 
 # Doors
-DOOR:open,(63,05)
-DOOR:open,(66,05)
-DOOR:open,(68,08)
-DOOR:locked,(08,11)
-DOOR:open,(68,11)
-DOOR:closed,(63,14)
-DOOR:closed,(66,14)
-DOOR:closed,(04,03)
-DOOR:closed,(04,09)
+# DOOR:open,(63,05)
+# DOOR:open,(66,05)
+# DOOR:open,(68,08)
+# DOOR:locked,(08,11)
+# DOOR:open,(68,11)
+# DOOR:closed,(63,14)
+# DOOR:closed,(66,14)
+# DOOR:closed,(04,03)
+# DOOR:closed,(04,09)
 
 # Welcoming committee
-MONSTER:('M',"modron monodrone"),(07,13)
-MONSTER:('M',"modron monodrone"),(05,13)
-MONSTER:('M',"modron monodrone"),(06,12)
-MONSTER:('M',"modron monodrone"),(06,13)
-MONSTER:('M',"modron duodrone"),(09,12)
-MONSTER:('M',"modron duodrone"),(10,12)
-MONSTER:('M',"modron duodrone"),(11,13)
-MONSTER:('M',"modron duodrone"),(10,13)
+MONSTER:('M',"modron monodrone"),(09,09)
+MONSTER:('M',"modron monodrone"),(08,09)
+MONSTER:('M',"modron monodrone"),(10,09)
+MONSTER:('M',"modron monodrone"),(09,10)
+MONSTER:('M',"modron duodrone"),(11,09)
+MONSTER:('M',"modron duodrone"),(11,08)
+MONSTER:('M',"modron duodrone"),(11,11)
+MONSTER:('M',"modron duodrone"),(12,09)
 
 # Modrons guarding the fort
-MONSTER:('M',"modron monodrone"),(12,14)
-MONSTER:('M',"modron monodrone"),(12,13)
-MONSTER:('M',"modron monodrone"),(11,10)
-MONSTER:('M',"modron monodrone"),(13,02)
-MONSTER:('M',"modron duodrone"),(14,03)
-MONSTER:('M',"modron duodrone"),(20,02)
-MONSTER:('M',"modron duodrone"),(30,02)
-MONSTER:('M',"modron duodrone"),(40,02)
-MONSTER:('M',"modron tridrone"),(30,16)
-MONSTER:('M',"modron tridrone"),(32,16)
-MONSTER:('M',"modron tridrone"),(40,16)
-MONSTER:('M',"modron tridrone"),(54,16)
-MONSTER:('M',"modron quadrone"),(54,14)
-MONSTER:('M',"modron quadrone"),(54,13)
-MONSTER:('M',"modron quadrone"),(57,10)
-MONSTER:('M',"modron quadrone"),(57,09)
+# MONSTER:('M',"modron monodrone"),(12,14)
+# MONSTER:('M',"modron monodrone"),(12,13)
+# MONSTER:('M',"modron monodrone"),(11,10)
+# MONSTER:('M',"modron monodrone"),(13,02)
+# MONSTER:('M',"modron duodrone"),(14,03)
+# MONSTER:('M',"modron duodrone"),(20,02)
+# MONSTER:('M',"modron duodrone"),(30,02)
+# MONSTER:('M',"modron duodrone"),(40,02)
+# MONSTER:('M',"modron tridrone"),(30,16)
+# MONSTER:('M',"modron tridrone"),(32,16)
+# MONSTER:('M',"modron tridrone"),(40,16)
+# MONSTER:('M',"modron tridrone"),(54,16)
+
+# Quadrone
+MONSTER:('M',"modron quadrone"),(47,15)
+MONSTER:('M',"modron quadrone"),(47,03)
+MONSTER:('M',"modron quadrone"),(63,03)
+MONSTER:('M',"modron quadrone"),(63,15)
 
 # Pentadrone
-MONSTER:('M',"modron pentadrone"),(03,01)
+MONSTER:('M',"modron pentadrone"),(50,09)
+MONSTER:('M',"modron pentadrone"),(60,09)
+MONSTER:('M',"modron pentadrone"),(55,03)
+MONSTER:('M',"modron pentadrone"),(55,15)
 
-# Four modrons guarding each side
-MONSTER:('M',"modron quinton"),(18,09)
-MONSTER:('M',"modron quinton"),(49,10)
-MONSTER:('M',"modron quinton"),(33,05)
-MONSTER:('M',"modron quinton"),(33,14)
+# Quinton in the middle
+MONSTER:('M',"modron quinton"),(55,09)
 
 # The corner rooms treasures
-OBJECT:('9',"modronite dodecahedron"),(19,06)
-OBJECT:('9',"modronite icosahedron"),(20,06)
-OBJECT:('9',"modronite monopole"),(21,06)
-OBJECT:('9',"modronite octahedron"),(19,13)
-OBJECT:('9',"modronite tetrahedron"),(20,13)
-OBJECT:('9',"modronite ball"),(21,13)
-OBJECT:('9',"modronite icosahedron"),(46,06)
-OBJECT:('9',"modronite monopole"),(47,06)
-OBJECT:('9',"modronite icosahedron"),(48,06)
-OBJECT:('9',"modronite dodecahedron"),(46,13)
-OBJECT:('9',"modronite octahedron"),(47,13)
-OBJECT:('9',"modronite ball"),(48,13)
+# OBJECT:('9',"modronite dodecahedron"),(19,06)
+# OBJECT:('9',"modronite icosahedron"),(20,06)
+# OBJECT:('9',"modronite monopole"),(21,06)
+# OBJECT:('9',"modronite octahedron"),(19,13)
+# OBJECT:('9',"modronite tetrahedron"),(20,13)
+# OBJECT:('9',"modronite ball"),(21,13)
+# OBJECT:('9',"modronite icosahedron"),(46,06)
+# OBJECT:('9',"modronite monopole"),(47,06)
+# OBJECT:('9',"modronite icosahedron"),(48,06)
+# OBJECT:('9',"modronite dodecahedron"),(46,13)
+# OBJECT:('9',"modronite octahedron"),(47,13)
+# OBJECT:('9',"modronite ball"),(48,13)
