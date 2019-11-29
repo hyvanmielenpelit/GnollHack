@@ -499,9 +499,12 @@ boolean createcorpse;
 	case PM_VAMPIRE_BAT:
 	case PM_GIANT_BAT:
 	case PM_HELL_BAT:
-		obj = mksobj_at(CLUMP_OF_BAT_GUANO, x, y, TRUE, FALSE);
-		obj->quan = (mndx == PM_HELL_BAT ? rnd(4) : mndx == PM_VAMPIRE_BAT ? rnd(3) : mndx == PM_GIANT_BAT ? rnd(2) : 1);
-		obj->owt = weight(obj);
+		if(!rn2(2))
+		{
+			obj = mksobj_at(CLUMP_OF_BAT_GUANO, x, y, TRUE, FALSE);
+			obj->quan = (mndx == PM_HELL_BAT ? rnd(3) : mndx == PM_VAMPIRE_BAT ? rnd(2) : mndx == PM_GIANT_BAT ? 1 : 1);
+			obj->owt = weight(obj);
+		}
 		goto default_1;
 	case PM_SHRIEKER:
 	case PM_VIOLET_FUNGUS:
