@@ -1808,6 +1808,26 @@ dosacrifice()
                     otmp->oerodeproof = TRUE;
                     at_your_feet("An object");
                     dropy(otmp);
+					if (is_launcher(otmp))
+					{
+						struct obj* otmp2 = (struct obj*)0;
+						if (objects[otmp->otyp].oc_skill == P_BOW)
+							otmp2 = mksobj(SILVER_ARROW, FALSE, FALSE, FALSE);
+						else if(objects[otmp->otyp].oc_skill == P_CROSSBOW)
+							otmp2 = mksobj(SILVER_CROSSBOW_BOLT, FALSE, FALSE, FALSE);
+						else if (objects[otmp->otyp].oc_skill == P_SLING)
+							otmp2 = mksobj(SILVER_SLING_BULLET, FALSE, FALSE, FALSE);
+
+						if (otmp2)
+						{
+							otmp2->quan = 50;
+							otmp2->oerodeproof = TRUE;
+							bless(otmp2);
+							otmp2->spe = rn2(4);
+							otmp2->owt = weight(otmp2);
+							dropy(otmp2);
+						}
+					}
                     godvoice(u.ualign.type, "Use my gift wisely!");
                     u.ugifts++;
                     u.ublesscnt = rnz(300 + (50 * nartifacts));

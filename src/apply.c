@@ -1356,8 +1356,46 @@ struct obj **optr;
     }
 
     otmp = carrying(CANDELABRUM_OF_INVOCATION);
-    if (!otmp || otmp->spe == 7) {
-        use_lamp(obj);
+	if (!otmp || otmp->spe == 7)
+	{
+		boolean objsplitted = FALSE;
+		struct obj* lightedcandle = (struct obj*)0;
+		char qbuf[BUFSIZ] = "";
+		Sprintf(qbuf, "%s only one?", obj->lamplit ? "Snuff out" : "Light");
+
+		if (obj->quan > 1L && yn(qbuf) == 'y') {
+			objsplitted = TRUE;
+			if (!carried(obj))
+			{
+				(void)splitobj(obj, obj->quan - 1);
+				lightedcandle = obj;
+			}
+			else
+				lightedcandle = splitobj(obj, 1);
+			debugpline0("split object,");
+		}
+		else
+			lightedcandle = obj;
+
+		if (lightedcandle && carried(lightedcandle) && objsplitted) {
+			freeinv(lightedcandle);
+			if (inv_cnt(FALSE) >= 52) {
+				sellobj_state(SELL_DONTSELL);
+				dropy(lightedcandle);
+				sellobj_state(SELL_NORMAL);
+			}
+			else
+			{
+				lightedcandle->nomerge = 1; /* used to prevent merge */
+				lightedcandle = addinv(lightedcandle);
+			}
+		}
+
+		if (lightedcandle)
+		{
+			use_lamp(lightedcandle);
+			lightedcandle->nomerge = 0;
+		}
         return;
     }
 
@@ -1540,7 +1578,7 @@ struct obj *obj;
             pline("%s flame%s %s%s", s_suffix(Yname2(obj)), plur(obj->quan),
                   otense(obj, "burn"), Blind ? "." : " brightly!");
             if (obj->unpaid && costly_spot(u.ux, u.uy)
-                && obj->age == 20L * (long) objects[obj->otyp].oc_cost) {
+                && obj->age == 30L * (long) objects[obj->otyp].oc_cost) {
                 const char *ithem = (obj->quan > 1L) ? "them" : "it";
 
                 verbalize("You burn %s, you bought %s!", ithem, ithem);

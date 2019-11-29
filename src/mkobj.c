@@ -1051,7 +1051,7 @@ boolean makingboxcontents;
             case TALLOW_CANDLE:
             case WAX_CANDLE:
                 otmp->spe = 1;
-                otmp->age = 20L * /* 400 or 200 */
+                otmp->age = 30L * /* 600 or 300 */
                             (long) objects[otmp->otyp].oc_cost;
                 otmp->lamplit = 0;
                 otmp->quan = 1L + (long) (rn2(2) ? rn2(7) : 0);

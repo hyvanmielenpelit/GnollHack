@@ -678,6 +678,8 @@ nh_timeout()
 				see_monsters();       /* make invis mons appear */
 				newsym(u.ux, u.uy);   /* make self appear */
 				stop_occupation();
+				if (!See_invisible)
+					You("are no longer able to see invisibile monsters.");
 				break;
 			case WOUNDED_LEGS:
 				heal_legs(0);
@@ -913,93 +915,96 @@ nh_timeout()
 						Fast ? " a bit" : "");
 				break;
 			case INVIS:
-				You("are starting to feel a bit more visible.");
+				You("are starting to feel more visible.");
+				break;
+			case SEE_INVIS:
+				Your("vision of invisible monsters is becoming less clear.");
 				break;
 			case LEVITATION:
-				You("are starting to feel a bit less buoyant.");
+				You("are starting to feel less buoyant.");
 				break;
 			case FLYING:
 				/* timed Flying is via #wizintrinsic only */
-				You("are starting to feel a bit less aerial.");
+				You("are starting to feel less aerial.");
 				break;
 			case PASSES_WALLS:
 				pline("You're starting to get back to your %s self again.",
 					!Upolyd ? "normal" : "unusual");
 				break;
 			case REFLECTING:
-				Your("skin is starting to feel a bit less reflecting than before.");
+				Your("skin is starting to feel less reflecting than before.");
 				break;
 			case FIRE_RES:
-				Your("skin is starting to feel a bit more prone to burning than before.");
+				Your("skin is starting to feel more prone to burning than before.");
 				break;
 			case COLD_RES:
-				Your("skin is starting to feel a bit more prone to frostbites than before.");
+				Your("skin is starting to feel more prone to frostbites than before.");
 				break;
 			case SHOCK_RES:
-				Your("skin is starting to feel a bit more prone to electricity than before.");
+				Your("skin is starting to feel more prone to electricity than before.");
 				break;
 			case DISINT_RES:
-				Your("body is starting to feel a bit less firm than before.");
+				Your("body is starting to feel less firm than before.");
 				break;
 			case POISON_RES:
-				You("are starting to feel a bit less healthy than before.");
+				You("are starting to feel less healthy than before.");
 				break;
 			case ACID_RES:
-				Your("skin is starting to feel a bit more prone to acid than before.");
+				Your("skin is starting to feel more prone to acid than before.");
 				break;
 			case STONE_RES:
-				Your("skin is starting to feel a bit less limb than before.");
+				Your("skin is starting to feel less limb than before.");
 				break;
 			case DRAIN_RES:
-				You("are starting to feel a bit more suspectible to draining than before.");
+				You("are starting to feel more suspectible to draining than before.");
 				break;
 			case SICK_RES:
-				You("are starting to feel a bit more bothered by bugs.");
+				You("are starting to feel more bothered by bugs.");
 				break;
 			case INVULNERABLE:
-				Your("skin is starting to feel a bit more prone to damage than before.");
+				Your("skin is starting to feel more prone to damage than before.");
 				break;
 			case ANTIMAGIC:
-				You("are starting to feel a bit less protected from magic.");
+				You("are starting to feel less protected from magic.");
 				break;
 			case DEATH_RES:
-				Your("soul's silver cord is starting to feel a bit thinner than before.");
+				Your("soul's silver cord is starting to feel thinner than before.");
 				break;
 			case CHARM_RES:
-				You("are starting to feel a bit less certain of your own motivations.");
+				You("are starting to feel less certain of your own motivations.");
 				break;
 			case MIND_SHIELDING:
-				You("are starting to feel a bit less protected from mental detection.");
+				You("are starting to feel less protected from mental detection.");
 				break;
 			case LYCANTHROPY_RES:
-				You("are starting to feel a bit less protected from lycanthropy.");
+				You("are starting to feel less protected from lycanthropy.");
 				break;
 			case CURSE_RES:
-				You("are starting to feel a bit less protected from curses.");
+				You("are starting to feel less protected from curses.");
 				break;
 			case LIFESAVED:
-				You("are starting to feel a bit more mortal than before.");
+				You("are starting to feel more mortal than before.");
 				break;
 			case DETECT_MONSTERS:
-				You("are starting to feel a bit less sensitive to the presence of monsters than before.");
+				You("are starting to feel less sensitive to the presence of monsters than before.");
 				break;
 			case BLIND_TELEPAT:
-				You("are starting to feel a bit less telepathic when blind than before.");
+				You("are starting to feel less telepathic when blind than before.");
 				break;
 			case TELEPAT:
-				You("are starting to feel a bit less telepathic than before.");
+				You("are starting to feel less telepathic than before.");
 				break;
 			case WWALKING:
-				You("are starting to feel a bit less able to walk on water than before.");
+				You("are starting to feel less able to walk on water than before.");
 				break;
 			case MAGICAL_BREATHING:
-				You("are starting to feel a bit less able to breathe in water than before.");
+				You("are starting to feel less able to breathe in water than before.");
 				break;
 			case DISPLACED:
 				Your("mirror image is starting to vanish.");
 				break;
 			case CONFLICT:
-				Your("neighborhood is starting to feel a bit less quarrelsome than before.");
+				Your("neighborhood is starting to feel less quarrelsome than before.");
 				break;
 			}
 		}

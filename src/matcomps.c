@@ -778,7 +778,7 @@ struct materialcomponentlist matlists[] =
 	},
 
 	{ SPE_CONFUSE_MONSTER,
-	"Sprig of wolfsbane, fungal powder",
+	"Sprig of wolfsbane, sporal powder",
 	STRANGE_OBJECT,
 	10,
 		{
@@ -849,6 +849,17 @@ struct materialcomponentlist matlists[] =
 	5,
 		{
 			{CARROT, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
+			NO_MATCOMP,
+			NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
+		}
+	},
+
+	{ SPE_DETECT_UNSEEN,
+	"Heap of sporal powder",
+	STRANGE_OBJECT,
+	3,
+		{
+			{HEAP_OF_SPORAL_POWDER, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
 			NO_MATCOMP,
 			NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
 		}

@@ -1242,7 +1242,7 @@ unsigned doname_flags;
         } else if (obj->otyp == OIL_LAMP || obj->otyp == MAGIC_LAMP
                    || obj->otyp == BRASS_LANTERN || Is_candle(obj)) {
             if (Is_candle(obj)
-                && obj->age < 20L * (long) objects[obj->otyp].oc_cost)
+                && obj->age < 30L * (long) objects[obj->otyp].oc_cost)
                 Strcat(prefix, "partly used ");
             if (obj->lamplit)
                 Strcat(bp, " (lit)");

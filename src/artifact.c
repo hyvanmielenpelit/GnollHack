@@ -344,7 +344,7 @@ struct obj *obj;
         return TRUE;
     /* non-silver artifacts with bonus against undead also are effective */
     arti = get_artifact(obj);
-    if (arti && (arti->spfx & SPFX_DFLAG2) && arti->mtype == M2_UNDEAD)
+    if (arti && (arti->spfx & SPFX_DFLAG2) && (arti->mtype & M2_UNDEAD))
         return TRUE;
     /* [if there was anything with special bonus against noncorporeals,
        it would be effective too] */
@@ -889,10 +889,15 @@ int tmp;
     else
         spec_dbon_applies = spec_applies(weap, mon);
 
-    if (spec_dbon_applies)
-        return (weap->attk.damd > 0) ? (rnd((int) weap->attk.damd) + (int)weap->attk.damp) : max(tmp, 1);
-	/* (weap->attk.damn > 0 && weap->attk.damd > 0) ? (weap->attk.damn > 0 && weap->attk.damd > 0) ? d((int)weap->attk.damn, (int) weap->attk.damd) + (int)weap->attk.damp */
-    return 0;
+	if (spec_dbon_applies)
+	{
+		if (weap->attk.damd > 0)
+			return rnd((int)weap->attk.damd) + (int)weap->attk.damp;
+		else if(weap->attk.damd < 0)
+			return max(-weap->attk.damd * tmp, 0);
+	}
+
+	return 0;
 }
 
 /* add identified artifact to discoveries list */

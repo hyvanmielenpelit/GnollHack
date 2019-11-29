@@ -2178,7 +2178,7 @@ boolean unpaid_only;
                 && otmp->oclass != BALL_CLASS
                 && !(otmp->oclass == FOOD_CLASS && otmp->oeaten)
                 && !(Is_candle(otmp)
-                     && otmp->age < 20L * (long) objects[otmp->otyp].oc_cost))
+                     && otmp->age < 30L * (long) objects[otmp->otyp].oc_cost))
                 price += set_cost(otmp, shkp);
         } else {
             /* no_charge is only set for floor items (including
@@ -3118,7 +3118,7 @@ xchar x, y;
         || obj->oclass == BALL_CLASS || obj->oclass == CHAIN_CLASS
         || offer == 0L || (obj->oclass == FOOD_CLASS && obj->oeaten)
         || (Is_candle(obj)
-            && obj->age < 20L * (long) objects[obj->otyp].oc_cost)) {
+            && obj->age < 30L * (long) objects[obj->otyp].oc_cost)) {
         pline("%s seems uninterested%s.", Shknam(shkp),
               cgold ? " in the rest" : "");
         if (container)
@@ -3374,7 +3374,7 @@ boolean shk_buying;
         break;
     case TOOL_CLASS:
         if (Is_candle(obj)
-            && obj->age < 20L * (long) objects[obj->otyp].oc_cost)
+            && obj->age < 30L * (long) objects[obj->otyp].oc_cost)
             tmp /= 2L;
         break;
     }
