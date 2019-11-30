@@ -25,6 +25,7 @@ STATIC_DCL boolean FDECL(only_here, (struct obj *));
 STATIC_DCL void FDECL(compactify, (char *));
 STATIC_DCL boolean FDECL(taking_off, (const char *));
 STATIC_DCL boolean FDECL(putting_on, (const char *));
+STATIC_DCL boolean FDECL(trading_items, (const char*));
 STATIC_PTR int FDECL(ckvalidcat, (struct obj *));
 STATIC_PTR int FDECL(ckunpaid, (struct obj *));
 STATIC_PTR char *FDECL(safeq_xprname, (struct obj *));
@@ -1480,6 +1481,15 @@ const char *action;
     return !strcmp(action, "wear") || !strcmp(action, "put on");
 }
 
+
+STATIC_OVL boolean
+trading_items(action)
+const char* action;
+{
+	return !strcmp(action, "buy") || !strcmp(action, "trade");
+}
+
+
 /*
  * getobj returns:
  *      struct obj *xxx:        object to do something with.
@@ -1576,6 +1586,8 @@ const char* headertext;
                  && !(otmp->owornmask & (W_ARMOR | W_ACCESSORY)))
              || (putting_on(word) /* exclude if already worn */
                  && (otmp->owornmask & (W_ARMOR | W_ACCESSORY)))
+             || (trading_items(word) /* exclude if already worn and unpaid items */
+                 && ((otmp->owornmask & (W_ARMOR | W_ACCESSORY)) || otmp->unpaid))
 #if 0 /* 3.4.1 -- include currently wielded weapon among 'wield' choices */
              || (!strcmp(word, "wield")
                  && (otmp->owornmask & W_WEP))

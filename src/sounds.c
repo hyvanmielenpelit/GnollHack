@@ -14,6 +14,8 @@ STATIC_DCL int FDECL(do_chat_pet_stay, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_follow, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_dropitems, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_pickitems, (struct monst*));
+STATIC_DCL int FDECL(do_chat_buy_items, (struct monst*));
+STATIC_DCL int FDECL(count_sellable_items, (struct monst*));
 STATIC_DCL int FDECL(do_chat_oracle_consult, (struct monst*));
 STATIC_DCL int FDECL(do_chat_oracle_identify, (struct monst*));
 STATIC_DCL int FDECL(do_chat_oracle_enlightenment, (struct monst*));
@@ -1360,6 +1362,24 @@ dochat()
 
 	}
 
+	/* Peaceful monster with sellable items */
+	if (mtmp->mpeaceful && mtmp->minvent && count_sellable_items(mtmp) > 0)
+	{
+		strcpy(available_chat_list[chatnum].name, "Buy items");
+		available_chat_list[chatnum].function_ptr = &do_chat_buy_items;
+		available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+		any = zeroany;
+		any.a_char = available_chat_list[chatnum].charnum;
+
+		add_menu(win, NO_GLYPH, &any,
+			any.a_char, 0, ATR_NONE,
+			available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+		chatnum++;
+
+	}
+
 	/* Oracle */
 	if (msound == MS_ORACLE)
 	{
@@ -1811,6 +1831,31 @@ struct monst* mtmp;
 }
 
 
+STATIC_OVL int
+do_chat_buy_items(mtmp)
+struct monst* mtmp;
+{
+	int result = 0;
+
+
+	return 1;
+}
+
+STATIC_OVL int
+count_sellable_items(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp || !mtmp->minvent)
+		return 0;
+
+	int cnt = 0;
+	for (struct obj* otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
+	{
+		if (!otmp->owornmask)
+			cnt++;
+	}
+	return cnt;
+}
 
 STATIC_OVL int
 do_chat_oracle_consult(mtmp)

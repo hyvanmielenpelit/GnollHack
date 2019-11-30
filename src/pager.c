@@ -309,6 +309,9 @@ int x, y;
     if (mtmp->mundetected || M_AP_TYPE(mtmp))
         mhidden_description(mtmp, FALSE, eos(buf));
 
+	if(mtmp->mtame)
+		Sprintf(eos(buf), ", %d/%d HP", mtmp->mhp, mtmp->mhpmax);
+
     if (monbuf) {
         unsigned how_seen = howmonseen(mtmp);
 

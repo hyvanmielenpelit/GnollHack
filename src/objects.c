@@ -423,13 +423,13 @@ WEAPON("silver long sword", None,
 /* polearms */
 /* spear-type */
 WEAPON("partisan", "vulgar polearm",
-	0, 0, 0, 1, 5, MULTIGEN_SINGLE, 80, 10, AD_PHYS, 1, 6, 0, 1, 6, 1, AD_PHYS, 0, 0, 0, A1_NONE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, P, WEP_POLEARM, P_POLEARMS, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
+	0, 0, 0, 1, 4, MULTIGEN_SINGLE, 80, 10, AD_PHYS, 1, 6, 0, 1, 6, 1, AD_PHYS, 0, 0, 0, A1_NONE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, P, WEP_POLEARM, P_POLEARMS, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 	/* +1 large */
 	WEAPON("ranseur", "hilted polearm",
-		0, 0, 0, 1, 5, MULTIGEN_SINGLE, 50, 6, AD_PHYS, 2, 4, 0, 2, 4, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, P, WEP_POLEARM, P_POLEARMS, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
+		0, 0, 0, 1, 4, MULTIGEN_SINGLE, 50, 6, AD_PHYS, 2, 4, 0, 2, 4, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, P, WEP_POLEARM, P_POLEARMS, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 	/* +d4 both */
 	WEAPON("spetum", "forked polearm",
-		0, 0, 0, 1, 5, MULTIGEN_SINGLE, 50, 6, AD_PHYS, 1, 5, 1, 2, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, P, WEP_POLEARM, P_POLEARMS, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
+		0, 0, 0, 1, 4, MULTIGEN_SINGLE, 50, 6, AD_PHYS, 1, 5, 1, 2, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, P, WEP_POLEARM, P_POLEARMS, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 	/* +1 small, +d6 large */
 	WEAPON("glaive", "single-edged polearm",
 		0, 0, 0, 1, 8, MULTIGEN_SINGLE, 75, 6, AD_PHYS, 1, 6, 0, 1, 10, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, S, WEP_POLEARM, P_POLEARMS, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
@@ -438,13 +438,13 @@ WEAPON("partisan", "vulgar polearm",
 	/* +2d10 when jousting with lance as primary weapon */
 /* axe-type */
 WEAPON("halberd", "angled poleaxe",
-	0, 0, 0, 1, 8, MULTIGEN_SINGLE, 150, 10, AD_PHYS, 1, 10, 0, 2, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, P | S, WEP_POLEARM, P_POLEARMS, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
+	0, 0, 0, 1, 7, MULTIGEN_SINGLE, 150, 10, AD_PHYS, 1, 10, 0, 2, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, P | S, WEP_POLEARM, P_POLEARMS, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 	/* +1d6 large */
 	WEAPON("bardiche", "long poleaxe",
-		0, 0, 0, 1, 4, MULTIGEN_SINGLE, 120, 7, AD_PHYS, 2, 4, 0, 3, 4, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, S, WEP_POLEARM, P_POLEARMS, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
+		0, 0, 0, 1, 3, MULTIGEN_SINGLE, 120, 7, AD_PHYS, 2, 4, 0, 3, 4, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, S, WEP_POLEARM, P_POLEARMS, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 	/* +1d4 small, +2d4 large */
 	WEAPON("voulge", "pole cleaver",
-		0, 0, 0, 1, 4, MULTIGEN_SINGLE, 125, 5, AD_PHYS, 2, 4, 0, 2, 4, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, S, WEP_POLEARM, P_POLEARMS, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
+		0, 0, 0, 1, 3, MULTIGEN_SINGLE, 125, 5, AD_PHYS, 2, 4, 0, 2, 4, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, S, WEP_POLEARM, P_POLEARMS, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 	/* +d4 both */
 	WEAPON("dwarvish mattock", "broad pick",
 		0, 0, 0, 1, 13, MULTIGEN_SINGLE, 120, 50, AD_PHYS, 1, 12, 0, 3, 6, 1, AD_PHYS, 0, 0, 0, A1_NONE, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, B, WEP_PICK_AXE, P_PICK_AXE, MAT_IRON, HI_METAL, O1_NONE, O2_DWARVEN_ITEM, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
@@ -455,16 +455,16 @@ WEAPON("halberd", "angled poleaxe",
 		0, 0, 0, 1, 2, MULTIGEN_SINGLE, 80, 5, AD_PHYS, 2, 4, 0, 1, 8, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, S, WEP_POLEARM, P_POLEARMS, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 	/* +1d4 small */
 	WEAPON("bill-guisarme", "hooked polearm",
-		0, 0, 0, 1, 4, MULTIGEN_SINGLE, 120, 7, AD_PHYS, 2, 4, 0, 1, 10, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, P | S, WEP_POLEARM, P_POLEARMS, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
+		0, 0, 0, 1, 3, MULTIGEN_SINGLE, 120, 7, AD_PHYS, 2, 4, 0, 1, 10, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, P | S, WEP_POLEARM, P_POLEARMS, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 	/* +1d4 small */
 	WEAPON("infernal ancus", "black ornamental hooked polearm",
 		0, 0, 1, 0, 0, MULTIGEN_SINGLE, 100, 100, AD_PHYS, 1, 6, 1, 1, 8, 1, AD_PHYS, 0, 0, 0, A1_NONE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, P | S, WEP_POLEARM, P_POLEARMS, MAT_IRON, CLR_BLACK, O1_NONE, O2_DEMON_ITEM, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 	/* other */
 	WEAPON("lucern hammer", "pronged polearm",
-		0, 0, 0, 1, 5, MULTIGEN_SINGLE, 150, 7, AD_PHYS, 2, 4, 0, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, B | P, WEP_POLEARM, P_POLEARMS, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
+		0, 0, 0, 1, 4, MULTIGEN_SINGLE, 150, 7, AD_PHYS, 2, 4, 0, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, B | P, WEP_POLEARM, P_POLEARMS, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 	/* +1d4 small */
 	WEAPON("bec de corbin", "beaked polearm",
-		0, 0, 0, 1, 4, MULTIGEN_SINGLE, 100, 1, AD_PHYS, 1, 8, 1, 1, 8, 6, AD_PHYS, 0, 0, 0, A1_NONE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, B | P, WEP_POLEARM, P_POLEARMS, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
+		0, 0, 0, 1, 3, MULTIGEN_SINGLE, 100, 1, AD_PHYS, 1, 8, 1, 1, 8, 6, AD_PHYS, 0, 0, 0, A1_NONE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, B | P, WEP_POLEARM, P_POLEARMS, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 
 	/* bludgeons */
 	WEAPON("mace", None,
@@ -500,9 +500,9 @@ WEAPON("halberd", "angled poleaxe",
 
 	WEAPON("war hammer", None,
 		1, 0, 0, 0, 11, MULTIGEN_SINGLE, 50, 5, AD_PHYS, 1, 6, 1, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, B, WEP_HAMMER, P_HAMMER, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
-	WEAPON("heavy war hammer", None, /* Base object for Mjollnir*/
+	WEAPON("heavy war hammer", None, /* Base object for Mjollnir */
 		1, 0, 1, 0, 0, MULTIGEN_SINGLE, 100, 1000, AD_PHYS, 1, 8, 1, 1, 8, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, B, WEP_HAMMER, P_HAMMER, MAT_IRON, HI_METAL, O1_THROWN_WEAPON | O1_WEIGHT_DOES_NOT_REDUCE_RANGE | O1_RETURNS_TO_HAND_AFTER_THROWING | O1_CAN_BE_THROWN_ONLY_IF_WIELDED, O2_NONE, O3_NOWISH, PERMITTED_ROLE_VALKYRIE, ALL_TARGETS),
-	WEAPON("sturdy war hammer", None, /* Base object for Ogresmasher*/
+	WEAPON("sturdy war hammer", None, /* Base object for Ogresmasher */
 		1, 0, 1, 0, 0, MULTIGEN_SINGLE, 100, 500,
 		AD_PHYS, 1, 8, 1, 1, 8, 0, AD_PHYS, 0, 0, 0, A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS, 0,
 		0, 0, 0, 0, 0, 0, 0, BONUS_TO_CON | SETS_FIXED_ATTRIBUTE, 25, 0, 0,
@@ -526,14 +526,14 @@ WEAPON("halberd", "angled poleaxe",
 		0, 0, 0, 1, 0, MULTIGEN_SINGLE, 160, 5, AD_PHYS, 2, 10, 0, 3, 10, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, B, WEP_STAFF, P_QUARTERSTAFF, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 	WEAPON("quarterstaff", "wooden staff",
 		0, 0, 0, 1, 11, MULTIGEN_SINGLE, 30, 5, AD_PHYS, 1, 6, 0, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, B, WEP_STAFF, P_QUARTERSTAFF, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
-	WEAPON("staff of the magi", "runed staff", //STARTMARKER FOR SHUFFLED STAVES
+	WEAPON("staff of the magi", "runed staff", //STARTMARKER FOR SHUFFLED STAFFS
 		0, 0, 1, 1, 3, MULTIGEN_SINGLE, 30, 1500,
 		AD_PHYS, 1, 6, 0, 1, 6, 0, AD_ELEC, 2, 6, 0, A1_NONE, 0,
 		0, 0, 0, 0, 0, 50, 0, BONUS_TO_SPELL_CASTING, 20, 0, 0,
 		NO_POWER, NO_POWER, NO_POWER, B, WEP_STAFF, P_QUARTERSTAFF, MAT_WOOD, HI_WOOD,
 		O1_MANA_PERCENTAGE_BONUS | O1_COLD_RESISTANT | O1_FIRE_RESISTANT | O1_LIGHTNING_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ROLE_WIZARD, ALL_TARGETS),
 	WEAPON("staff of fire", "ornamental staff",
-		0, 0, 1, 1, 4, MULTIGEN_SINGLE, 30, 1000,
+		0, 0, 1, 1, 5, MULTIGEN_SINGLE, 30, 1000,
 		AD_PHYS, 1, 6, 0, 1, 6, 0, AD_FIRE, 2, 6, 0, A1_NONE, 0,
 		0, 0, 0, 0, 0, 0, 0, 0, 0, -8, 0,
 		FIRE_RES, NO_POWER, NO_POWER, B, WEP_STAFF, P_QUARTERSTAFF, MAT_WOOD, HI_WOOD,
@@ -545,12 +545,18 @@ WEAPON("halberd", "angled poleaxe",
 		COLD_RES, NO_POWER, NO_POWER, B, WEP_STAFF, P_QUARTERSTAFF, MAT_WOOD, HI_WOOD,
 		O1_COLD_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 	WEAPON("staff of thunder and lightning", "forked staff",
-		0, 0, 1, 1, 2, MULTIGEN_SINGLE, 30, 1500,
+		0, 0, 1, 1, 3, MULTIGEN_SINGLE, 30, 1500,
 		AD_PHYS, 1, 6, 0, 1, 6, 0, AD_ELEC, 3, 6, 0, A1_NONE, 0,
 		0, 0, 0, 0, 0, 0, 0, 0, 0, -12, 0,
 		SHOCK_RES, NO_POWER, NO_POWER, B, WEP_STAFF, P_QUARTERSTAFF, MAT_WOOD, HI_WOOD,
 		O1_LIGHTNING_RESISTANT | O1_SPE_AFFECTS_MC, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
-	WEAPON("staff of withering", "twisted staff", //ENDMARKER FOR SHUFFLED STAVES
+	WEAPON("staff of life", "serpent-entwined staff",
+		0, 0, 1, 1, 7, MULTIGEN_SINGLE, 30, 750,
+		AD_PHYS, 1, 6, 0, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		DRAIN_RES, DEATH_RES, REGENERATION, B, WEP_STAFF, P_QUARTERSTAFF, MAT_WOOD, HI_WOOD,
+		O1_NONE, O2_NONE, O3_TARGET_PERMISSION_IS_M2_FLAG, PERMITTED_ALL, M2_UNDEAD),
+	WEAPON("staff of withering", "twisted staff", //ENDMARKER FOR SHUFFLED STAFFS
 		0, 0, 1, 1, 3, MULTIGEN_SINGLE, 30, 1500,
 		AD_PHYS, 1, 6, 0, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_LEVEL_DRAIN, 0,
 		0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -2057,25 +2063,25 @@ ROCK("flint", "gray",      //Gray stone end marker
 ROCK("rock", None,         
 	0, 0, 0,				1,  30,  10,  0, 1, 6, 0, 1, 6, 0, 0, 10, 7, MAT_MINERAL, CLR_GRAY, O1_THROWN_WEAPON, O2_ROCK, O3_NONE, PERMITTED_ALL),
 ROCK("stone pebble", None,         
-	0, 0, 0,				1,  20, 2, 0, 1, 4, 0, 1, 4, 0, 0, 10, 7, MAT_MINERAL, CLR_GRAY, O1_THROWN_WEAPON, O2_ROCK, O3_NONE, PERMITTED_ALL),
+	0, 0, 0,				1,  15,	  2, 0, 1, 4, 0, 1, 4, 0, 0, 10, 7, MAT_MINERAL, CLR_GRAY, O1_THROWN_WEAPON, O2_ROCK, O3_NONE, PERMITTED_ALL),
 ROCK("clay pebble", None,         
-	0, 0, 0,				1,10,   2, 0, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_MINERAL, CLR_BROWN, O1_THROWN_WEAPON, O2_ROCK, O3_NONE, PERMITTED_ALL),
+	0, 0, 0,				1,	10,   2, 0, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_MINERAL, CLR_BROWN, O1_THROWN_WEAPON, O2_ROCK, O3_NONE, PERMITTED_ALL),
 ROCK("nugget of iron ore", None,         //Ore startmarker
-	0, 0, 0,				1, 10,  16,    1, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_IRON, HI_METAL, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
+	0, 0, 0,				1,	10,  16,    1, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_IRON, HI_METAL, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
 ROCK("nugget of copper ore", None,
-	0, 0, 0,				1,  9,  16,    2, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_COPPER, HI_GOLD, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
+	0, 0, 0,				1,   9,  16,    2, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_COPPER, HI_GOLD, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
 ROCK("nugget of silver ore", None,
-	0, 0, 0,				1,  5,  16,    5, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_SILVER, HI_SILVER, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
+	0, 0, 0,				1,   5,  16,    5, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_SILVER, HI_SILVER, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
 ROCK("nugget of gold ore", None,
-	0, 0, 0,				1,  3,  16,   25, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_GOLD, HI_GOLD, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
+	0, 0, 0,				1,   4,  16,   25, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_GOLD, HI_GOLD, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
 ROCK("nugget of platinum ore", None,
-	0, 0, 0,				1,  2,  16,   50, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_PLATINUM, HI_SILVER, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
+	0, 0, 0,				1,   3,  16,   50, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_PLATINUM, HI_SILVER, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
 ROCK("nugget of orichalcum ore", None,
-	0, 0, 0,				1,  1,  16,  200, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_ORICHALCUM, HI_SILVER, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
+	0, 0, 0,				1,   2,  16,  200, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_ORICHALCUM, HI_SILVER, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
 ROCK("nugget of adamantine ore", None,
-	0, 0, 0,				1,  1,  16,  150, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_ADAMANTINE, HI_SILVER, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
+	0, 0, 0,				1,   2,  16,  150, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_ADAMANTINE, HI_SILVER, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
 ROCK("nugget of mithril ore", None,		//Ore endmarker
-	0, 0, 0,				1,  1,  16,  100, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_MITHRIL, HI_SILVER, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
+	0, 0, 0,				1,   2,  16,  100, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_MITHRIL, HI_SILVER, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
 
 
 #undef GEM

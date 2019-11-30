@@ -19,8 +19,8 @@
  */
 
 struct attack {
-    uchar aatyp;
-    uchar adtyp, damn, damd, damp;
+    uchar aatyp, adtyp;
+    int damn, damd, damp;
 	int mcadj; /* MC and saving throw adjustment*/
 };
 
