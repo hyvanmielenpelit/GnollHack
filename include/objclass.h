@@ -320,8 +320,8 @@ struct objclass {
     uchar oc_color; /* color of the object */
 
     short oc_prob;            /* probability, used in mkobj() */
-    int oc_weight; /* encumbrance (1 oz = 1/16 lb.) previously (1 cn = 0.1 lb.) */
-	int oc_nutrition; /* food value */
+    unsigned int oc_weight; /* encumbrance (1 oz = 1/16 lb.) previously (1 cn = 0.1 lb.) */
+	unsigned int oc_nutrition; /* food value */
 
 	int oc_cost;            /* base cost in shops */
     

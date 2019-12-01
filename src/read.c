@@ -1733,7 +1733,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
         if (confused || scursed) {
             level_tele();
         } else {
-            known = scrolltele(sobj, (struct coord *)0);
+            known = scrolltele(sobj);
         }
         break;
     case SCR_GOLD_DETECTION:
@@ -1768,7 +1768,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
             if (cval == 1 && sblessed && Luck > 0)
                 ++cval;
         }
-        if (invent && !confused) {
+		if (invent && !confused) {
             identify_pack(cval, !already_known);
         } else if (otyp == SPE_IDENTIFY) {
             /* when casting a spell we know we're not confused,

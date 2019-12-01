@@ -1590,6 +1590,10 @@ struct obj *otmp;
     /* gold doesn't have any interesting attributes [yet?] */
     if (otmp->oclass == COIN_CLASS)
         return FALSE; /* always fully ID'd */
+
+	if (context.shop_identify_type > RANDOM_CLASS && otmp->oclass != context.shop_identify_type)
+		return FALSE;
+
     /* check fundamental ID hallmarks first */
     if (!otmp->known || !otmp->dknown
 #ifdef MAIL

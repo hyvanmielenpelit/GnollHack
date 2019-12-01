@@ -2317,34 +2317,60 @@ aligntyp atyp;
     (void) memset((genericptr_t) nums, 0, sizeof nums);
 
 	zlevel = level_difficulty();
-	/* determine the level of the weakest monster to make. */
-	minmlev = zlevel / 6;
-	/* determine the level of the strongest monster to make. */
-	maxmlev = (zlevel + u.ulevel) / 2;
 
-    if (class < 1 || class >= MAXMCLASSES) {
-        impossible("mkclass called with bad class!");
-        return (struct permonst *) 0;
-    }
-    /*  Assumption #1:  monsters of a given class are contiguous in the
-     *                  mons[] array.  Player monsters and quest denizens
-     *                  are an exception; mkclass() won't pick them.
-     *                  SPECIAL_PM is long worm tail and separates the
-     *                  regular monsters from the exceptions.
-     */
-	first = NON_PM;
-    for (int firstindex = LOW_PM; firstindex < SPECIAL_PM; firstindex++)
-        if (mons[firstindex].mlet == class)
+	for(int i = 1; i <= 3; i++)
+	{
+		if(i == 1)
 		{
-			if(first == 0)
-				first = firstindex;
-
-			if(!tooweak(firstindex,minmlev))
-			{
-				first = firstindex;
-				break;
-			}
+			/* determine the level of the weakest monster to make. */
+			minmlev = (zlevel * 2 + u.ulevel) / 6;
+			/* determine the level of the strongest monster to make. */
+			maxmlev = (zlevel * 2 + u.ulevel) / 3;
 		}
+		else if (i == 2)
+		{
+			/* determine the level of the weakest monster to make. */
+			minmlev = (zlevel * 2 + u.ulevel) / 12;
+			/* determine the level of the strongest monster to make. */
+			maxmlev = (zlevel * 2 + u.ulevel) * 2;
+		}
+		else
+		{
+			/* determine the level of the weakest monster to make. */
+			minmlev = 0;
+			/* determine the level of the strongest monster to make. */
+			maxmlev = (zlevel * 2 + u.ulevel);
+		}
+
+		if (class < 1 || class >= MAXMCLASSES) {
+			impossible("mkclass called with bad class!");
+			return (struct permonst *) 0;
+		}
+		/*  Assumption #1:  monsters of a given class are contiguous in the
+		 *                  mons[] array.  Player monsters and quest denizens
+		 *                  are an exception; mkclass() won't pick them.
+		 *                  SPECIAL_PM is long worm tail and separates the
+		 *                  regular monsters from the exceptions.
+		 */
+		first = NON_PM;
+		boolean foundfirst = FALSE;
+		for (int firstindex = LOW_PM; firstindex < SPECIAL_PM; firstindex++)
+			if (mons[firstindex].mlet == class)
+			{
+				if(first == 0)
+					first = firstindex;
+
+				if(!tooweak(firstindex,minmlev))
+				{
+					first = firstindex;
+					foundfirst = TRUE;
+					break;
+				}
+			}
+
+		if (foundfirst)
+			break;
+	}
 
     if (first == NON_PM) //SPECIAL_PM)
 	{
@@ -2664,6 +2690,8 @@ int type;
 		return 70;
 	case PM_IRON_GOLEM:
         return 80;
+	case PM_BONE_GOLEM:
+		return 90;
 	case PM_SILVER_GOLEM:
 		return 160;
 	default:

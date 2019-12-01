@@ -127,6 +127,7 @@ struct context_info {
 	boolean made_orc_and_a_pie;
 	boolean made_orc_and_a_pie2;
 	char used_names[BUFSIZ * 32];
+	int shop_identify_type;
 	boolean mon_moving; /* monsters' turn to move */
     boolean move;
     boolean mv;

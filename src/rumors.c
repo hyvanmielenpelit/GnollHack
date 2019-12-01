@@ -573,14 +573,15 @@ struct monst* oracl;
 {
 	long umoney;
 	int u_pay;
-	int unid_cnt = count_unidentified(invent);
-	int minor_id_cost = 175 + 15 * u.ulevel;
-	int major_id_cost = minor_id_cost * 3;
-	int oracleaction = 0;
+	//int unid_cnt = count_unidentified(invent);
+	int minor_id_cost = 150 + 10 * u.ulevel; // 175 + 15 * u.ulevel;
+	//int major_id_cost = minor_id_cost * 3;
+	//int oracleaction = 0;
 	char qbuf[QBUFSZ];
 
 	multi = 0;
 	umoney = money_cnt(invent);
+
 
 	if (!oracl) {
 		There("is no one here to identify items.");
@@ -595,20 +596,22 @@ struct monst* oracl;
 		return 0;
 	}
 
-	Sprintf(qbuf, "\"Wilt thou settle for a standard identification?\" (%d %s)",
+	Sprintf(qbuf, "\"Dost thou desire an identification?\" (%d %s)",
 		minor_id_cost, currency((long)minor_id_cost));
 	switch (ynq(qbuf)) {
 	default:
+	case 'n':
 	case 'q':
 		return 0;
 	case 'y':
 		if (umoney < (long)minor_id_cost) {
-			You("don't even have enough money for that!");
+			You("don't have enough money for that!");
 			return 0;
 		}
 		u_pay = minor_id_cost;
-		oracleaction = 3;
+		//oracleaction = 3;
 		break;
+/*
 	case 'n':
 		Sprintf(qbuf, "\"Then dost thou desire an improved one?\" (%d %s)",
 			major_id_cost, currency((long)major_id_cost));
@@ -621,11 +624,14 @@ struct monst* oracl;
 		u_pay = major_id_cost;
 		oracleaction = 4;
 		break;
+*/
 	}
 
 	money2mon(oracl, (long)u_pay);
 	context.botl = 1;
+	identify_pack(1, FALSE);
 
+	/*
 	int majoridnum = rn1(2, 4);
 	if (!rn2(4))
 		majoridnum = 0;
@@ -640,6 +646,7 @@ struct monst* oracl;
 	default:
 		break;
 	}
+	*/
 
 	return 1;
 }

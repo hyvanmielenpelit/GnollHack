@@ -24,8 +24,13 @@ STATIC_DCL int FDECL(do_chat_priest_healing, (struct monst*));
 STATIC_DCL int FDECL(do_chat_priest_chat, (struct monst*));
 STATIC_DCL int FDECL(do_chat_shk_pricequote, (struct monst*));
 STATIC_DCL int FDECL(do_chat_shk_chat, (struct monst*));
+STATIC_DCL int FDECL(do_chat_shk_identify, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quest_chat, (struct monst*));
 STATIC_DCL int FDECL(mon_in_room, (struct monst *, int));
+
+extern const struct shclass shtypes[]; /* defined in shknam.c */
+
+
 
 /* this easily could be a macro, but it might overtax dumb compilers */
 STATIC_OVL int
@@ -1516,7 +1521,7 @@ dochat()
 	/* Shopkeeper */
 	if (msound == MS_SELL || mtmp->isshk)
 	{
-		strcpy(available_chat_list[chatnum].name, "\"How is your business?\"");
+		strcpy(available_chat_list[chatnum].name, "Ask about the business");
 		available_chat_list[chatnum].function_ptr = &do_chat_shk_chat;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -1528,6 +1533,29 @@ dochat()
 			available_chat_list[chatnum].name, MENU_UNSELECTED);
 
 		chatnum++;
+
+		int shp_indx = 0;
+		if(mtmp->mextra && ESHK(mtmp))
+		{
+			shp_indx = ESHK(mtmp)->shoptype - SHOPBASE;
+			const struct shclass* shp = &shtypes[shp_indx];
+			char itembuf[BUFSIZ] = "";
+			strcpy(itembuf, shp->symb == RANDOM_CLASS ? "an item" : an(def_oc_syms[shp->symb].explain));
+			
+			Sprintf(available_chat_list[chatnum].name, "Identify %s", itembuf);
+			available_chat_list[chatnum].function_ptr = &do_chat_shk_identify;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+		}
+
 
 		if (!Blind && (otmp = shop_object(u.ux, u.uy)) != (struct obj*) 0) 
 		{
@@ -1590,6 +1618,7 @@ dochat()
 	return res;
 
 }
+
 
 
 STATIC_OVL int
@@ -1879,7 +1908,7 @@ struct monst* mtmp;
 	int cnt = 0;
 	for (struct obj* otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
 	{
-		if (!otmp->owornmask)
+		if (!otmp->owornmask && otmp->oclass == COIN_CLASS)
 			cnt++;
 	}
 	return cnt;
@@ -2094,6 +2123,64 @@ struct monst* mtmp;
 	shk_chat(mtmp);
 	return 1;
 }
+
+STATIC_OVL int
+do_chat_shk_identify(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp || !mtmp->mextra || !mtmp->mextra->eshk)
+		return 0;
+
+	long umoney;
+	int u_pay;
+	int minor_id_cost = ESHK(mtmp)->shoptype == SHOPBASE ? 150 + 10 * u.ulevel : 75 + 5 * u.ulevel;
+	char qbuf[QBUFSZ];
+
+	multi = 0;
+	umoney = money_cnt(invent);
+
+
+	if (!mtmp) {
+		There("is no one here to identify items.");
+		return 0;
+	}
+	else if (!mtmp->mpeaceful) {
+		pline("%s is in no mood for identification.", Monnam(mtmp));
+		return 0;
+	}
+	else if (!umoney) {
+		You("have no money.");
+		return 0;
+	}
+
+	Sprintf(qbuf, "\"Would you like to identify %s?\" (%d %s)",
+		ESHK(mtmp)->shoptype == SHOPBASE ? "an item" : an(def_oc_syms[shtypes[ESHK(mtmp)->shoptype - SHOPBASE].symb].explain), minor_id_cost, currency((long)minor_id_cost));
+
+	switch (ynq(qbuf)) {
+	default:
+	case 'q':
+		return 0;
+	case 'y':
+		if (umoney < (long)minor_id_cost) {
+			You("don't have enough money for that!");
+			return 0;
+		}
+		u_pay = minor_id_cost;
+		break;
+	}
+
+	money2mon(mtmp, (long)u_pay);
+	context.botl = 1;
+
+	context.shop_identify_type = shtypes[ESHK(mtmp)->shoptype - SHOPBASE].symb;
+
+	identify_pack(1, FALSE);
+
+	context.shop_identify_type = 0;
+
+	return 1; 
+}
+
 
 STATIC_OVL int
 do_chat_quest_chat(mtmp)

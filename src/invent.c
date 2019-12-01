@@ -2874,7 +2874,7 @@ nextclass:
             for (i = 0; i < n; ++i) {
                 otmp = selected[i].item.a_obj;
                 if (otmp == &wizid_fakeobj) {
-                    identify_pack(0, FALSE);
+					identify_pack(0, FALSE);
                 } else {
                     if (not_fully_identified(otmp))
                         (void) identify(otmp);
