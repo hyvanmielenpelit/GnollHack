@@ -1554,6 +1554,8 @@ wiz_map_levltyp(VOID_ARGS)
 			Strcat(dsc, " garden");
 		if (level.flags.has_library)
 			Strcat(dsc, " library");
+		if (level.flags.has_dragonlair)
+			Strcat(dsc, " dragonlair");
 		if (level.flags.has_swamp)
             Strcat(dsc, " swamp");
         /* level flags */

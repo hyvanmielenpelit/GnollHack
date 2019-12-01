@@ -2498,6 +2498,9 @@ register boolean newlev;
 		case LIBRARY:
 			You("enter a library!");
 			break;
+		case DRAGONLAIR:
+			You("enter a dragon lair!");
+			break;
 		case COCKNEST:
             You("enter a disgusting nest!");
             break;
@@ -2564,6 +2567,9 @@ register boolean newlev;
                     break;
 				case LIBRARY:
 					level.flags.has_library = 0;
+					break;
+				case DRAGONLAIR:
+					level.flags.has_dragonlair = 0;
 					break;
 				case GARDEN:
 					level.flags.has_garden = 0;

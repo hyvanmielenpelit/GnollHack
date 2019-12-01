@@ -685,6 +685,7 @@ clear_level_structures()
     level.flags.has_morgue = level.flags.graveyard = 0;
     level.flags.has_beehive = 0;
 	level.flags.has_library = 0;
+	level.flags.has_dragonlair = 0;
 	level.flags.has_garden = 0;
 	level.flags.has_barracks = 0;
     level.flags.has_temple = 0;
@@ -839,25 +840,25 @@ makelevel()
 		else if (u_depth > 1 && u_depth < depth(&medusa_level)
                  && nroom >= room_threshold && rn2(u_depth) < 3)
             mkroom(SHOPBASE);
-		else if (u_depth > 4 && !rn2(6))
-            mkroom(COURT);
-        else if (u_depth > 5 && !rn2(8)
+        else if (u_depth > 4 && u_depth < 15 && !rn2(8)
                  && !(mvitals[PM_LEPRECHAUN].mvflags & G_GONE))
             mkroom(LEPREHALL);
-        else if (u_depth > 6 && !rn2(7))
+		else if (u_depth > 5 && u_depth < 16 && !rn2(6))
             mkroom(ZOO);
+		else if (u_depth > 6 && u_depth < 21 && !rn2(6))
+			mkroom(COURT);
 		else if (u_depth > 7 && !rn2(7))
 			mkroom(LIBRARY);
-		else if (u_depth > 8 && !rn2(5))
+		else if (u_depth > 8 && !rn2(6))
             mkroom(TEMPLE);
-        else if (u_depth > 9 && !rn2(5)
+        else if (u_depth > 9 && u_depth < 20 && !rn2(6)
                  && !(mvitals[PM_KILLER_BEE].mvflags & G_GONE))
             mkroom(BEEHIVE);
-        else if (u_depth > 11 && !rn2(6))
+		else if (u_depth > 10 && u_depth < 21 && !rn2(8) && antholemon())
+			mkroom(ANTHOLE);
+		else if (u_depth > 11 && !rn2(6))
             mkroom(MORGUE);
-        else if (u_depth > 12 && !rn2(8) && antholemon())
-            mkroom(ANTHOLE);
-        else if (u_depth > 14 && !rn2(4)
+        else if (u_depth > 14 && !rn2(6)
                  && !(mvitals[PM_SOLDIER].mvflags & G_GONE))
             mkroom(BARRACKS);
         else if (u_depth > 15 && !rn2(6))
@@ -865,6 +866,8 @@ makelevel()
         else if (u_depth > 16 && !rn2(8)
                  && !(mvitals[PM_COCKATRICE].mvflags & G_GONE))
             mkroom(COCKNEST);
+		else if (u_depth > 20 && !rn2(5))
+			mkroom(DRAGONLAIR);
 
 		if (u_depth > 2 && !rn2(5))
 			mkroom(GARDEN);

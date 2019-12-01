@@ -188,6 +188,34 @@ dosounds()
 		}
 	}
 
+	if (level.flags.has_dragonlair && !rn2(200)) {
+		for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
+			if (DEADMONSTER(mtmp))
+				continue;
+			if ((mtmp->data->mlet == S_DRAGON)
+				&& mon_in_room(mtmp, DRAGONLAIR)) {
+				switch (rn2(2) + hallu) {
+				case 0:
+					if (mtmp->msleeping)
+						You_feel("ominiously threatened.");
+					else
+						You_hear("coins being assembled.");
+					break;
+				case 1:
+					if(mtmp->msleeping)
+						You_hear("loud snoring.");
+					else
+						You_hear("a loud roar.");
+					break;
+				case 2:
+					You_hear("somebody claiming to be fire and death.");
+					break;
+				}
+				return;
+			}
+		}
+	}
+
     if (level.flags.has_morgue && !rn2(200)) {
         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
             if (DEADMONSTER(mtmp))

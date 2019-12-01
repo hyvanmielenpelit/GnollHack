@@ -19,7 +19,7 @@
 
 STATIC_DCL boolean FDECL(isbig, (struct mkroom *));
 STATIC_DCL struct mkroom *FDECL(pick_room, (BOOLEAN_P));
-STATIC_DCL void NDECL(mkshop), NDECL(mkdesertedshop), FDECL(mkzoo, (int)), NDECL(mkswamp), NDECL(mkgarden);
+STATIC_DCL void NDECL(mkshop), NDECL(mkdesertedshop), FDECL(mkzoo, (int)), NDECL(mkswamp), NDECL(mkgarden), NDECL(mkdragonlair);
 STATIC_DCL void NDECL(mktemple);
 STATIC_DCL coord *FDECL(shrine_pos, (int));
 STATIC_DCL struct permonst *NDECL(morguemon);
@@ -62,6 +62,9 @@ int roomtype;
             break;
 		case LIBRARY:
 			mkzoo(LIBRARY);
+			break;
+		case DRAGONLAIR:
+			mkdragonlair();
 			break;
 		case MORGUE:
             mkzoo(MORGUE);
@@ -119,8 +122,12 @@ mkshop()
                 mkzoo(BEEHIVE);
                 return;
             }
-			if (*ep == 'k' || *ep == 'K') { //Kirjasto is library in Finnish
+			if (*ep == 'k' || *ep == 'K') { // Kirjasto is library in Finnish -- JG
 				mkzoo(LIBRARY);
+				return;
+			}
+			if (*ep == 'd' || *ep == 'D') {
+				mkdragonlair();
 				return;
 			}
 			if (*ep == 't' || *ep == 'T' || *ep == '\\') {
@@ -155,7 +162,7 @@ mkshop()
 				mkgarden();
 				return;
 			}
-			if (*ep == 'd' || *ep == 'D') {
+			if (*ep == 'p' || *ep == 'P') { // shoP
 				mkdesertedshop();
 				return;
 			}
@@ -606,10 +613,7 @@ struct mkroom *sroom;
         level.flags.has_beehive = 1;
         break;
 	case LIBRARY:
-		level.flags.has_beehive = 1;
-		break;
-	case GARDEN:
-		level.flags.has_garden = 1;
+		level.flags.has_library = 1;
 		break;
 	}
 }
@@ -903,14 +907,18 @@ mkgarden()
 				{
 					// Garden gnome
 					struct monst* mon = makemon(&mons[!rn2(5) && level_difficulty() > 6 ? PM_GNOME_LORD : PM_GNOME], sx, sy, NO_MM_FLAGS);
-					mon->mpeaceful = 1;
-					mon->msleeping = 1;
+					if(mon)
+					{
+						mon->mpeaceful = 1;
+						mon->msleeping = 1;
+					}
 				}
 				else if (!rn2(20))
 				{
 					//Sleepy ogre
 					struct monst* mon = makemon(&mons[!rn2(5) && level_difficulty() > 10 ? PM_OGRE_LORD : PM_OGRE], sx, sy, NO_MM_FLAGS);
-					mon->msleeping = 1;
+					if(mon)
+						mon->msleeping = 1;
 				}
 			}
 
@@ -918,6 +926,173 @@ mkgarden()
 	}
 	level.flags.has_garden = 1;
 	
+}
+
+STATIC_OVL void
+mkdragonlair()
+{
+	register struct mkroom* sroom = (struct mkroom*)0;
+	register int sx, sy, i;
+
+	for (i = 0; i < nroom; i++) { /* turn up to 1 rooms into a dragon lair */
+		sroom = &rooms[rn2(nroom)];
+		if (sroom->hx < 0 || sroom->rtype != OROOM || has_upstairs(sroom)
+			|| has_dnstairs(sroom))
+			continue;
+		else
+			break;
+	}
+
+	if (!sroom)
+		return;
+
+	/* satisfied; make a dragon lair */
+	sroom->rtype = DRAGONLAIR;
+
+	coord c = { 0 };
+	int dragons[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	int maxdragons = (sroom->hx - sroom->lx + 1) * (sroom->hy - sroom->ly + 1);
+	int dragonindex = 0;
+
+	if (!rn2(3))
+	{
+		dragons[0] = PM_ANCIENT_GRAY_DRAGON + rn2(9);
+	}
+	else
+	{
+		int dragontype = rn2(9);
+		int adults = min(maxdragons, rnd(2));
+		int hatchlings = min(maxdragons - adults, 1 + rnd(4));
+		for (int i = 1; i <= adults; i++)
+		{
+			dragons[dragonindex] = PM_GRAY_DRAGON + dragontype;
+			dragonindex++;
+		}
+		for (int i = 1; i <= hatchlings; i++)
+		{
+			dragons[dragonindex] = PM_GRAY_DRAGON_HATCHLING + dragontype;
+			dragonindex++;
+		}
+	}
+	for (int i = 0; i < dragonindex; i++)
+	{
+		int trycnt = 0;
+		int sx = 0;
+		int sy = 0;
+		for(int trycnt = 0; trycnt < 100; trycnt++)
+		{
+			boolean success = somexy(sroom, &c);
+			if (!success)
+				continue;
+
+			sx = c.x;
+			sy = c.y;
+			
+			if (trycnt < 50 && !MON_AT(sx, sy) && !t_at(sx, sy))
+				break;
+			else if (!MON_AT(sx, sy))
+				break;
+		}
+		if (trycnt < 100)
+		{
+			if(dragons[i] > 0)
+			{
+				struct monst* mon = makemon(&mons[dragons[i]], sx, sy, NO_MM_FLAGS);
+				if(mon)
+					mon->msleeping = 1;
+			}
+
+			struct obj* otmp = mksobj_at(GOLD_PIECE, sx, sy, FALSE, FALSE);
+			if (otmp)
+			{
+				if(dragons[i] >= PM_GRAY_DRAGON_HATCHLING && dragons[i] <= PM_YELLOW_DRAGON_HATCHLING)
+					otmp->quan = 100 + rn2(201);
+				else if (dragons[i] >= PM_GRAY_DRAGON && dragons[i] <= PM_YELLOW_DRAGON)
+					otmp->quan = 1000 + rn2(2001);
+				else if (dragons[i] >= PM_ANCIENT_GRAY_DRAGON && dragons[i] <= PM_ANCIENT_YELLOW_DRAGON)
+					otmp->quan = 3000 + rn2(4001);
+				otmp->owt = weight(otmp);
+			}
+			if (dragons[i] >= PM_ANCIENT_GRAY_DRAGON && dragons[i] <= PM_ANCIENT_YELLOW_DRAGON)
+			{
+				/* Ancient dragons have 5-10 true gems */
+				int gemcnt = 5 + rn2(6);
+				for (int i = 0; i < gemcnt; i++)
+				{
+					struct obj* otmp = mksobj_at(randomtruegem(), sx, sy, FALSE, FALSE);
+				}
+
+				/* Ancient dragons have 1-6 other items */
+				int itemcnt = rnd(6);
+				for (int i = 0; i < itemcnt; i++)
+				{
+					struct obj* otmp = mkobj_at(0, sx, sy, FALSE);
+				}
+
+			}
+			else if (dragons[i] >= PM_GRAY_DRAGON && dragons[i] <= PM_YELLOW_DRAGON)
+			{
+				/* Adult dragons have 0-5 gems */
+				int gemcnt = rn2(6);
+				for (int i = 0; i < gemcnt; i++)
+				{
+					struct obj* otmp = mkobj_at(GEM_CLASS, sx, sy, FALSE);
+				}
+
+				/* Adult dragons have 0-3 other items */
+				int itemcnt = rn2(4);
+				for (int i = 0; i < itemcnt; i++)
+				{
+					struct obj* otmp = mkobj_at(0, sx, sy, FALSE);
+				}
+			}
+			else if (dragons[i] >= PM_GRAY_DRAGON_HATCHLING && dragons[i] <= PM_YELLOW_DRAGON_HATCHLING)
+			{
+				/* Hatchlings dragons have 0-2 gems */
+				int gemcnt = rn2(3);
+				for (int i = 0; i < gemcnt; i++)
+				{
+					struct obj* otmp = mkobj_at(GEM_CLASS, sx, sy, FALSE);
+				}
+
+				/* Adult dragons have 0-1 other items */
+				int itemcnt = rn2(2);
+				for (int i = 0; i < itemcnt; i++)
+				{
+					struct obj* otmp = mkobj_at(0, sx, sy, FALSE);
+				}
+			}
+		}
+	}
+
+	for (sx = sroom->lx; sx <= sroom->hx; sx++)
+	{
+		for (sy = sroom->ly; sy <= sroom->hy; sy++)
+		{
+			if(rn2(5))
+			{
+				struct obj* otmp = mksobj_at(GOLD_PIECE, sx, sy, TRUE, FALSE);
+				if (otmp)
+				{
+					otmp->quan = 5 + rn2(101);
+					otmp->owt = weight(otmp);
+				}
+			}
+
+			if(!rn2(3))
+			{
+				struct obj* otmp2 = mkobj_at(GEM_CLASS, sx, sy, FALSE);
+			}
+
+			if (!rn2(4))
+			{
+				struct obj* otmp2 = mkobj_at(0, sx, sy, FALSE);
+			}
+		}
+	}
+
+	level.flags.has_dragonlair = 1;
+
 }
 
 STATIC_OVL coord *
