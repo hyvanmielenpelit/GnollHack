@@ -371,8 +371,8 @@ gotobj:
             ostuck = ((otmp->cursed && otmp->owornmask)
                       /* nymphs can steal rings from under
                          cursed weapon but animals can't */
-                      || (otmp == uright && welded(uwep))
-                      || (otmp == uleft && welded(uwep) && bimanual(uwep)));
+                      || (otmp == uright && welded(uwep, &youmonst))
+                      || (otmp == uleft && welded(uwep, &youmonst) && bimanual(uwep)));
 
         if (ostuck || can_carry(mtmp, otmp) == 0) {
             static const char *const how[] = { "steal", "snatch", "grab",

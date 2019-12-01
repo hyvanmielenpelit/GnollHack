@@ -3275,7 +3275,7 @@ struct monst *mon;
        interrupt that activity now */
     (void) stop_donning((struct obj *) 0);
     /* don't try to take off gloves if cursed weapon blocks them */
-    if (welded(uwep))
+    if (welded(uwep, &youmonst))
         tried_gloves = 1;
 
     for (ring = invent; ring; ring = nring) {

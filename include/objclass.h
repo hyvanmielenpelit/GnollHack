@@ -257,8 +257,8 @@ struct objclass {
     short oc_name_idx;              /* index of actual name */
     short oc_descr_idx;             /* description when name unknown */
     char *oc_uname;                 /* called by user */
-	char* oc_content_desc;          /* high-level books: description of contents */
-	char* oc_short_description;     /* spellbooks: one line summary of what the spell does; longer description is in encyclopedia */
+	const char* oc_content_desc;    /* high-level books: description of contents */
+	const char* oc_short_description; /* spellbooks: one line summary of what the spell does; longer description is in encyclopedia */
 	Bitfield(oc_name_known, 1);     /* discovered */
     Bitfield(oc_merge, 1);          /* merge otherwise equal objects */
     Bitfield(oc_uses_known, 1);     /* obj->known affects full description;
@@ -320,10 +320,10 @@ struct objclass {
     uchar oc_color; /* color of the object */
 
     short oc_prob;            /* probability, used in mkobj() */
-    unsigned short oc_weight; /* encumbrance (1 oz = 1/16 lb.) previously (1 cn = 0.1 lb.) */
-	unsigned short oc_nutrition; /* food value */
+    int oc_weight; /* encumbrance (1 oz = 1/16 lb.) previously (1 cn = 0.1 lb.) */
+	int oc_nutrition; /* food value */
 
-	short oc_cost;            /* base cost in shops */
+	int oc_cost;            /* base cost in shops */
     
 							  /* Check the AD&D rules!  The FIRST is small monster damage. */
     /* for weapons, and tools, rocks, and gems useful as weapons */
@@ -546,24 +546,24 @@ struct objclass {
 #define O1_SPE_AFFECTS_MC_ADJUSTMENT		0x00004000			/* +X of the item influences also its MC adjustment (i.e., saving throw penalty for attacks) */
 
 #define O1_EDIBLE_NONFOOD					0x00008000
-/* slot free */
 
-#define O1_MANA_PERCENTAGE_BONUS			0x00020000
-#define O1_HP_PERCENTAGE_BONUS				0x00040000
-#define O1_BECOMES_CURSED_WHEN_WORN			0x00080000
-#define O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED 0x00100000
-#define O1_CANNOT_BE_DROPPED_IF_CURSED		0x00200000
+#define O1_MANA_PERCENTAGE_BONUS			0x00010000
+#define O1_HP_PERCENTAGE_BONUS				0x00020000
+#define O1_BECOMES_CURSED_WHEN_WORN			0x00040000
+#define O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED 0x00080000
+#define O1_CANNOT_BE_DROPPED_IF_CURSED		0x00100000
 
-#define O1_CONFERS_LUCK						0x00400000
+#define O1_CONFERS_LUCK						0x00200000			/* Adds one positive luck bonus; these need to be flags instead of props because they stack */
+#define O1_CONFERS_UNLUCK					0x00400000			/* Adds one negative luck bonus (the same as cursed luckstone) */
 #define O1_CONFERS_POWERS_WHEN_CARRIED		0x00800000
 
-#define O1_THROWN_WEAPON					0x01000000										/* says "Thrown weapon" instead of "Melee weapon", default range is larger, can use throwrange data value */
-#define O1_WEIGHT_DOES_NOT_REDUCE_RANGE		0x02000000						/* the object magically flies when thrown, ignoring its weight */
-#define O1_RETURNS_TO_HAND_AFTER_THROWING	0x04000000					/* the object returns to the owner's hand after throwing */
-#define O1_CAN_BE_THROWN_ONLY_IF_WIELDED	0x08000000						/* has to be wielded to be thrown, e.g., Mjollnir */
-#define O1_WAND_LIKE_TOOL					0x10000000									/* apply is the same as zap, uses spellbook/wand paramters and flags instead of normal flags */
+#define O1_THROWN_WEAPON					0x01000000			/* says "Thrown weapon" instead of "Melee weapon", default range is larger, can use throwrange data value */
+#define O1_WEIGHT_DOES_NOT_REDUCE_RANGE		0x02000000			/* the object magically flies when thrown, ignoring its weight */
+#define O1_RETURNS_TO_HAND_AFTER_THROWING	0x04000000			/* the object returns to the owner's hand after throwing */
+#define O1_CAN_BE_THROWN_ONLY_IF_WIELDED	0x08000000			/* has to be wielded to be thrown, e.g., Mjollnir */
+#define O1_WAND_LIKE_TOOL					0x10000000			/* apply is the same as zap, uses spellbook/wand paramters and flags instead of normal flags */
 #define O1_SPECIAL_ENCHANTABLE				0x20000000
-#define O1_NON_SPELL_SPELLBOOK				0x40000000								/* uses non-spellbook flags and other non-spellbook stats */
+#define O1_NON_SPELL_SPELLBOOK				0x40000000			/* uses non-spellbook flags and other non-spellbook stats */
 #define O1_NOT_CURSEABLE					0x80000000
 
 
@@ -577,22 +577,22 @@ struct objclass {
 #define O2_DEMON_ITEM			0x00000020
 #define O2_ANGELIC_ITEM			0x00000040
 #define O2_MODRON_ITEM			0x00000080
+#define O2_GNOMISH_ITEM			0x00000100
+	/* free bit */
 
-#define O2_CONTAINER			0x00000100	
-#define O2_CONTAINER_BOX		0x00000200	
-#define O2_CONTAINER_MAGIC_BAG	0x00000400	
-#define O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG 0x00000800
+#define O2_CONTAINER			0x00000400	
+#define O2_CONTAINER_BOX		0x00000800	
+#define O2_CONTAINER_MAGIC_BAG	0x00001000	
+#define O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG 0x00002000
 
-#define O2_MONSTER_SCALES		0x00001000	
-#define O2_MONSTER_SCALE_MAIL	0x00002000
-#define O2_CANDLE				0x00004000	
-#define O2_SHINES_MAGICAL_LIGHT 0x00008000	
-#define O2_FLICKER_COLOR_WHITE	0x00010000	
-#define O2_FLICKER_COLOR_BLUE	0x00020000	
+#define O2_MONSTER_SCALES		0x00004000	
+#define O2_MONSTER_SCALE_MAIL	0x00008000
+#define O2_CANDLE				0x00010000	
+#define O2_SHINES_MAGICAL_LIGHT 0x00020000	
+#define O2_FLICKER_COLOR_WHITE	0x00040000	
+#define O2_FLICKER_COLOR_BLUE	0x00080000	
 #define O2_FLICKER_COLOR_BLACK (O2_FLICKER_COLOR_WHITE | O2_FLICKER_COLOR_BLUE)	
 #define O2_FLICKER_COLOR_MASK (O2_FLICKER_COLOR_WHITE | O2_FLICKER_COLOR_BLUE)	
-#define O2_IGNITABLE			0x00040000	
-#define O2_RELATIVE_AGE			0x00080000	
 
 #define O2_GRAYSTONE			0x00100000	
 #define O2_ROCK					0x00200000	
@@ -625,6 +625,8 @@ struct objclass {
 #define O3_APPLIABLE								0x00000800	/* can be applied as a tool */
 #define O3_WIELDABLE								0x00001000	/* can be wielded in a weapon slot */
 #define O3_READABLE									0x00002000	/* can be read */								
+#define O3_IGNITABLE								0x00004000	
+#define O3_RELATIVE_AGE								0x00008000	
 
 
 #define O3_PERMTTED_TARGET_LAWFUL	0x00200000

@@ -273,7 +273,7 @@ dig(VOID_ARGS)
     if (Fumbling && !rn2(3)) {
         switch (rn2(3)) {
         case 0:
-            if (!welded(uwep)) {
+            if (!welded(uwep, &youmonst)) {
                 You("fumble and drop %s.", yname(uwep));
                 dropx(uwep);
             } else {

@@ -304,13 +304,23 @@ boolean
 confers_luck(obj)
 struct obj *obj;
 {
-	/* might as well check for this too */
-	if (obj->otyp == LUCKSTONE)
-		return TRUE;
-	if (objects[obj->otyp].oc_flags & O1_CONFERS_LUCK && (objects[obj->otyp].oc_flags3 & O3_LUCK_DISRESPECTS_CHARACTERS || !inappropriate_character_type(obj)))
+	if (objects[obj->otyp].oc_flags & O1_CONFERS_LUCK
+		&& (objects[obj->otyp].oc_flags3 & O3_LUCK_DISRESPECTS_CHARACTERS || !inappropriate_character_type(obj)))
 		return TRUE;
 
     return (boolean) (obj->oartifact && spec_ability(obj, SPFX_LUCK));
+}
+
+/* used so that callers don't need to known about SPFX_ codes */
+boolean
+confers_unluck(obj)
+struct obj* obj;
+{
+	if (objects[obj->otyp].oc_flags & O1_CONFERS_UNLUCK
+		&& (objects[obj->otyp].oc_flags3 & O3_LUCK_DISRESPECTS_CHARACTERS || !inappropriate_character_type(obj)))
+		return TRUE;
+
+	return FALSE;
 }
 
 /* used to check whether a monster is getting reflection from an artifact */

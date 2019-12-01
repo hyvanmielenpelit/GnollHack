@@ -1188,7 +1188,8 @@ struct obj *obj;
 
     if (objects[obj->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED) {
         curse(obj);
-    } else if (confers_luck(obj)) {
+    } 
+	if (confers_luck(obj) || confers_unluck(obj)) {
         set_moreluck();
         context.botl = 1;
     } else if (obj->otyp == FIGURINE && obj->timed) {
@@ -1462,7 +1463,7 @@ splittable(obj)
 struct obj *obj;
 {
     return !(((objects[obj->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && obj->cursed)
-             || (obj == uwep && welded(uwep)));
+             || (obj == uwep && welded(uwep, &youmonst)));
 }
 
 /* match the prompt for either 'T' or 'R' command */

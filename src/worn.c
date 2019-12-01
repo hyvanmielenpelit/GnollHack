@@ -559,7 +559,7 @@ boolean on, silently;
 		case ODD_IDEAS:
 		case LAUGHING:
         case JUMPING:
-        case PROTECTION:
+		case PROTECTION:
             break;
         default:
             if (which <= 8) { /* 1 thru 8 correspond to MR_xxx mask values */

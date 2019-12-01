@@ -2770,7 +2770,7 @@ doeat()
          * or wearing cursed rings which were rustproofed, but guard
          * against the possibility just in case.
          */
-        if (welded(otmp) || (otmp->cursed && (otmp->owornmask & W_RING))) {
+        if (welded(otmp, &youmonst) || (otmp->cursed && (otmp->owornmask & W_RING))) {
             otmp->bknown = 1; /* for ring; welded() does this for weapon */
             You("spit out %s.", the(xname(otmp)));
         } else {

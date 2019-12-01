@@ -2179,7 +2179,7 @@ register struct obj *obj;
         return 0;
     }
 	else if (obj == uwep) {
-        if (welded(obj)) {
+        if (welded(obj, &youmonst)) {
             weldmsg(obj);
             return 0;
         }
@@ -2192,7 +2192,7 @@ register struct obj *obj;
             return 0; /* unwielded, died, rewielded */
     }
 	else if (u.twoweap && obj == uarms) {
-		if (welded(obj)) {
+		if (welded(obj, &youmonst)) {
 			weldmsg(obj);
 			return 0;
 		}

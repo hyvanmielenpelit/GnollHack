@@ -817,7 +817,9 @@ register struct obj* obj;
 			|| objects[otyp].oc_hp_bonus > 0
 			|| objects[otyp].oc_bonus_attributes > 0
 			|| objects[otyp].oc_aflags > 0
-			|| objects[otyp].oc_flags & O1_CONFERS_LUCK)
+			|| objects[otyp].oc_flags & O1_CONFERS_LUCK
+			|| objects[otyp].oc_flags & O1_CONFERS_UNLUCK
+			)
 		{
 			Sprintf(buf, "Conferred powers:");
 			txt = buf;
@@ -1036,6 +1038,13 @@ register struct obj* obj;
 			{
 				powercnt++;
 				Sprintf(buf, " %2d - Confers luck", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (objects[otyp].oc_flags & O1_CONFERS_UNLUCK)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Confers bad luck", powercnt);
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
@@ -1433,7 +1442,7 @@ register struct obj* obj;
 		}
 
 		/* Item properties */
-		if (objects[otyp].oc_flags & ~(O1_THROWN_WEAPON | O1_CONFERS_LUCK
+		if (objects[otyp].oc_flags & ~(O1_THROWN_WEAPON | O1_CONFERS_LUCK | O1_CONFERS_UNLUCK
 			| O1_WAND_LIKE_TOOL | O1_NON_SPELL_SPELLBOOK | O1_EDIBLE_NONFOOD))
 		{
 			int powercnt = 0;
@@ -2202,14 +2211,14 @@ register struct obj *obj;
     if (!canletgo(obj, "drop"))
         return 0;
     if (obj == uwep) {
-        if (welded(uwep)) {
+        if (welded(uwep, &youmonst)) {
             weldmsg(obj);
             return 0;
         }
         setuwep((struct obj *) 0, W_WEP);
     }
 	if (obj == uarms) {
-		if (welded(uarms)) {
+		if (welded(uarms, &youmonst)) {
 			weldmsg(obj);
 			return 0;
 		}
@@ -2522,7 +2531,7 @@ int retry;
                 /* found next selected invent item */
                 cnt = pick_list[i].count;
                 if (cnt < otmp->quan) {
-                    if (welded(otmp)) {
+                    if (welded(otmp, &youmonst)) {
                         ; /* don't split */
                     } else if ((objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && otmp->cursed) {
                         /* same kludge as getobj(), for canletgo()'s use */

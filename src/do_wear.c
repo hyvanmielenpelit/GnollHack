@@ -1984,7 +1984,7 @@ register struct obj *otmp;
         return 0;
     }
     /* Curses, like chickens, come home to roost. */
-    if ((otmp == uwep) ? welded(otmp) : (int) otmp->cursed) {
+    if ((otmp == uwep) ? welded(otmp, &youmonst) : (int) otmp->cursed) {
         boolean use_plural = (is_boots(otmp) || is_gloves(otmp) || is_bracers(otmp)
                                || otmp->quan > 1L);
 
@@ -2151,7 +2151,7 @@ boolean noisy;
         return 0;
     }
 
-    if (welded(uwep) && bimanual(uwep) && (is_suit(otmp) || is_robe(otmp) || is_shirt(otmp))) {
+    if (welded(uwep, &youmonst) && bimanual(uwep) && (is_suit(otmp) || is_robe(otmp) || is_shirt(otmp))) {
         if (noisy)
             You("cannot do that while holding your %s.",
                 is_sword(uwep) ? c_sword : c_weapon);
@@ -2238,7 +2238,7 @@ boolean noisy;
             if (noisy)
                 already_wearing(c_gloves);
             err++;
-        } else if (welded(uwep)) {
+        } else if (welded(uwep, &youmonst)) {
             if (noisy)
                 You("cannot wear gloves over your %s.",
                     is_sword(uwep) ? c_sword : c_weapon);
@@ -2403,7 +2403,7 @@ struct obj *obj;
             }
             if (uwep) {
                 res = !uwep->bknown; /* check this before calling welded() */
-                if ((mask == RIGHT_RING || bimanual(uwep)) && welded(uwep)) {
+                if ((mask == RIGHT_RING || bimanual(uwep)) && welded(uwep, &youmonst)) {
                     const char *hand = body_part(HAND);
 
                     /* welded will set bknown */
@@ -2694,8 +2694,8 @@ glibr()
     const char *otherwep = 0, *thiswep, *which, *hand;
 
     leftfall = (uleft && !uleft->cursed
-                && (!uwep || !welded(uwep) || !bimanual(uwep)));
-    rightfall = (uright && !uright->cursed && (!welded(uwep)));
+                && (!uwep || !welded(uwep, &youmonst) || !bimanual(uwep)));
+    rightfall = (uright && !uright->cursed && (!welded(uwep, &youmonst)));
     if (!uarmg && (leftfall || rightfall) && !nolimbs(youmonst.data)) {
         /* changed so cursed rings don't fall off, GAN 10/30/86 */
         Your("%s off your %s.",
@@ -2716,7 +2716,7 @@ glibr()
     }
 
     otmp = uarms;
-    if (u.twoweap && otmp && !welded(otmp)) {
+    if (u.twoweap && otmp && !welded(otmp, &youmonst)) {
         /* secondary weapon doesn't need nearly as much handling as
            primary; when in two-weapon mode, we know it's one-handed
            with something else in the other hand and also that it's
@@ -2736,7 +2736,7 @@ glibr()
             dropx(otmp);
     }
     otmp = uwep;
-    if (otmp && !welded(otmp)) {
+    if (otmp && !welded(otmp, &youmonst)) {
         long savequan = otmp->quan;
 
         /* nice wording if both weapons are the same type */
@@ -2821,7 +2821,7 @@ int otyp;
         if (nolimbs(youmonst.data) && uamul
             && uamul->otyp == AMULET_OF_UNCHANGING && uamul->cursed)
             return uamul;
-        if (welded(uwep) && (ring == uright || bimanual(uwep)))
+        if (welded(uwep, &youmonst) && (ring == uright || bimanual(uwep)))
             return uwep;
         if (uarmg && uarmg->cursed)
             return uarmg;
@@ -2860,7 +2860,7 @@ register struct obj *otmp;
             return 0;
         }
         why = 0; /* the item which prevents ring removal */
-        if (welded(uwep) && (otmp == uright || bimanual(uwep))) {
+        if (welded(uwep, &youmonst) && (otmp == uright || bimanual(uwep))) {
             Sprintf(buf, "free a weapon %s", body_part(HAND));
             why = uwep;
         } else if (uarmg && uarmg->cursed) {
@@ -2875,7 +2875,7 @@ register struct obj *otmp;
     }
     /* special glove checks */
     if (otmp == uarmg) {
-        if (welded(uwep)) {
+        if (welded(uwep, &youmonst)) {
             You("are unable to take off your %s while wielding that %s.",
                 c_gloves, is_sword(uwep) ? c_sword : c_weapon);
             uwep->bknown = TRUE;
@@ -2910,7 +2910,7 @@ register struct obj *otmp;
 		} else if (otmp == uarmu && uarm && uarm->cursed) {
             Sprintf(buf, "remove your %s", c_suit);
             why = uarm;
-        } else if (welded(uwep) && bimanual(uwep)) {
+        } else if (welded(uwep, &youmonst) && bimanual(uwep)) {
             Sprintf(buf, "release your %s",
                     is_sword(uwep) ? c_sword : (uwep->otyp == BATTLE_AXE)
                                                    ? c_axe

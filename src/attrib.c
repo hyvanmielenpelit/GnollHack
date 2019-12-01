@@ -512,6 +512,7 @@ boolean parameter; /* So I can't think up of a good name.  So sue me. --KAA */
     register long bonchance = 0;
 
     for (otmp = invent; otmp; otmp = otmp->nobj)
+	{
         if (confers_luck(otmp) && carried_object_confers_powers(otmp))
 		{
             if (otmp->cursed)
@@ -521,6 +522,11 @@ boolean parameter; /* So I can't think up of a good name.  So sue me. --KAA */
             else if (parameter)
                 bonchance += otmp->quan;
         }
+		else if (confers_unluck(otmp) && carried_object_confers_powers(otmp))
+		{
+			bonchance -= otmp->quan;
+		}
+	}
 
     return sgn((int) bonchance);
 }
@@ -536,15 +542,7 @@ struct obj* otmp;
 		|| (otmp->oclass == MISCELLANEOUS_CLASS && (otmp->owornmask & W_MISCITEMS))
 		|| (otmp->oclass == TOOL_CLASS && (otmp->owornmask & W_BLINDFOLD || (is_weptool(otmp) && otmp->owornmask & W_WEP)))
 		|| (objects[otmp->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED))
-		&&
-		!inappropriate_character_type(otmp);
-}
-
-boolean
-object_confers_powers(otmp)
-struct obj* otmp;
-{
-	return carried(otmp) && carried_object_confers_powers(otmp);
+		;
 }
 
 boolean
@@ -857,7 +855,7 @@ set_moreluck()
 {
     int luckbon = stone_luck(TRUE);
 
-    if (!luckbon && !carrying(LUCKSTONE))
+    if (!luckbon)
         u.moreluck = 0;
     else if (luckbon >= 0)
         u.moreluck = LUCKADD;

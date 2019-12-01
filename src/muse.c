@@ -1934,7 +1934,7 @@ struct monst *mtmp;
             }
             pline("%s wraps around %s you're wielding!", The_whip,
                   the_weapon);
-            if (welded(obj)) {
+            if (welded(obj, &youmonst)) {
                 pline("%s welded to your %s%c",
                       !is_plural(obj) ? "It is" : "They are", hand,
                       !obj->bknown ? '!' : '.');
@@ -2446,7 +2446,7 @@ struct monst *mon;
         return FALSE;
 
     mwep = MON_WEP(mon);
-    welded_wep = mwep && mwelded(mwep);
+    welded_wep = mwep && mwelded(mwep, mon);
     /* this is different from the player; tin opener or dagger doesn't
        have to be wielded, and knife can be used instead of dagger */
     for (obj = mon->minvent; obj; obj = obj->nobj) {

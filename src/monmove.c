@@ -745,7 +745,7 @@ xchar nix,niy;
     if (!Is_rogue_level(&u.uz))
         can_tunnel = tunnels(mtmp->data);
 
-    if (can_tunnel && needspick(mtmp->data) && !mwelded(mw_tmp)
+    if (can_tunnel && needspick(mtmp->data) && !mwelded(mw_tmp, mtmp)
         && (may_dig(nix, niy) || closed_door(nix, niy))) {
         /* may_dig() is either IS_STWALL or IS_TREE */
         if (closed_door(nix, niy)) {

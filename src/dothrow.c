@@ -95,7 +95,7 @@ int shotlimit;
         Sprintf(killer.name, "throwing %s bare-handed", killer_xname(obj));
         instapetrify(killer.name);
     }
-    if (welded(obj)) {
+    if (welded(obj, &youmonst)) {
         weldmsg(obj);
         return 1;
     }

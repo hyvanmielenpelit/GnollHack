@@ -62,8 +62,8 @@ STATIC_DCL int FDECL(ready_weapon, (struct obj *, long));
      || (optr)->otyp == HEAVY_IRON_BALL || (optr)->otyp == IRON_CHAIN)
 
 /* used by welded(), and also while wielding */
-#define will_weld(optr) \
-    ((optr)->cursed && (erodeable_wep(optr) || (optr)->otyp == TIN_OPENER))
+#define will_weld(optr, mptr) \
+    ((optr)->cursed && (erodeable_wep(optr) || (optr)->otyp == TIN_OPENER) && !((mptr)->data->mflags2 & (M2_DEMON | M2_UNDEAD)))
 
 /*** Functions that place a given item in a slot ***/
 /* Proper usage includes:
@@ -208,7 +208,7 @@ long mask;
     } else {
         /* Weapon WILL be wielded after this point */
         res++;
-        if (will_weld(wep)) {
+        if (will_weld(wep, &youmonst)) {
             const char *tmp = xname(wep), *thestr = "The ";
 
             if (strncmp(tmp, thestr, 4) && !strncmp(The(tmp), thestr, 4))
@@ -403,13 +403,13 @@ dowield()
 				}
 			} while (!mask);
 		}
-		if ((mask == W_WEP || bimanual(wep)) && uwep && welded(uwep)) {
+		if ((mask == W_WEP || bimanual(wep)) && uwep && welded(uwep, &youmonst)) {
 			weldmsg(uwep);
 			/* previously interrupted armor removal mustn't be resumed */
 			reset_remarm();
 			return 0;
 		}
-		if ((mask == W_WEP2 || bimanual(wep)) && uarms && welded(uarms))
+		if ((mask == W_WEP2 || bimanual(wep)) && uarms && welded(uarms, &youmonst))
 		{
 			weldmsg(uarms);
 			/* previously interrupted armor removal mustn't be resumed */
@@ -458,7 +458,7 @@ dowield()
 		else if (wep == uwep) {
 			You("are already wielding that!");
 			return 0;
-		} else if (welded(uwep)) {
+		} else if (welded(uwep, &youmonst)) {
 			weldmsg(uwep);
 			/* previously interrupted armor removal mustn't be resumed */
 			reset_remarm();
@@ -481,7 +481,7 @@ dowield()
 			return 0;
 		}
 
-		if (wep && bimanual(wep) && uarms && !is_shield(uarms) && !welded(uarms))
+		if (wep && bimanual(wep) && uarms && !is_shield(uarms) && !welded(uarms, &youmonst))
 		{
 			/* Automate the unwield to assist the player */
 			/* If weapon is bimanual and you have an unused secondardy weapon in hand, unwield it */
@@ -631,11 +631,11 @@ doswapweapon()
     }
 	if (u.twoweap)
 	{
-		if (uwep && welded(uwep)) {
+		if (uwep && welded(uwep, &youmonst)) {
 			weldmsg(uwep);
 			return 0;
 		}
-		if (uarms && welded(uarms)) {
+		if (uarms && welded(uarms, &youmonst)) {
 			weldmsg(uarms);
 			return 0;
 		}
@@ -695,7 +695,7 @@ doswapweapon()
 	}
 	else
 	{
-		if (welded(uwep)) {
+		if (welded(uwep, &youmonst)) {
 			weldmsg(uwep);
 			return 0;
 		}
@@ -848,7 +848,7 @@ dowieldquiver()
 	else if (newquiver == uwep) {
         int weld_res = !uwep->bknown;
 
-        if (welded(uwep)) {
+        if (welded(uwep, &youmonst)) {
             weldmsg(uwep);
             reset_remarm(); /* same as dowield() */
             return weld_res;
@@ -892,7 +892,7 @@ dowieldquiver()
 	{
 		int weld_res = !uarms->bknown;
 
-		if (welded(uarms)) {
+		if (welded(uarms, &youmonst)) {
 			weldmsg(uarms);
 			reset_remarm(); /* same as dowield() */
 			return weld_res;
@@ -1075,7 +1075,7 @@ const char *verb; /* "rub",&c */
                  more_than_1 ? "them" : "it");
         return FALSE;
     }
-    if (welded(uwep)) {
+    if (welded(uwep, &youmonst)) {
         if (flags.verbose) {
             const char *hand = body_part(HAND);
 
@@ -1134,7 +1134,7 @@ const char *verb; /* "rub",&c */
 	else {
         struct obj *oldwep = uwep;
 
-        if (will_weld(obj)) {
+        if (will_weld(obj, &youmonst)) {
             /* hope none of ready_weapon()'s early returns apply here... */
             (void) ready_weapon(obj, W_WEP);
         } else {
@@ -1323,7 +1323,7 @@ register int amount;
     if (!weapon || (weapon->oclass != WEAPON_CLASS && !is_weptool(weapon))) {
         char buf[BUFSZ];
 
-        if (amount >= 0 && weapon && will_weld(weapon)) { /* cursed tin opener */
+        if (amount >= 0 && weapon && will_weld(weapon, &youmonst)) { /* cursed tin opener */
             if (!Blind) {
                 Sprintf(buf, "%s with %s aura.",
                         Yobjnam2(weapon, "glow"), an(hcolor(NH_AMBER)));
@@ -1446,10 +1446,11 @@ register int amount;
 }
 
 int
-welded(obj)
+welded(obj, mon)
 register struct obj *obj;
+register struct monst* mon;
 {
-    if (obj && (obj == uwep || obj == uarms) && will_weld(obj)) {
+    if (obj && mon && (obj == uwep || obj == uarms) && will_weld(obj, mon)) {
         obj->bknown = TRUE;
         return 1;
     }
@@ -1471,11 +1472,12 @@ register struct obj *obj;
 
 /* test whether monster's wielded weapon is stuck to hand/paw/whatever */
 boolean
-mwelded(obj)
+mwelded(obj, mon)
 struct obj *obj;
+struct monst* mon;
 {
     /* caller is responsible for making sure this is a monster's item */
-    if (obj && (obj->owornmask & W_WEP) && will_weld(obj))
+    if (obj && mon && (obj->owornmask & W_WEP) && will_weld(obj, mon)) /* cursed objects won't weld for demons and undead */
         return TRUE;
     return FALSE;
 }

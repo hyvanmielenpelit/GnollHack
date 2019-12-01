@@ -286,6 +286,8 @@ struct obj {
     (otmp->oclass == ARMOR_CLASS && is_dwarvish_obj(otmp))
 #define is_gnollish_armor(otmp) \
 	(otmp->oclass == ARMOR_CLASS && is_gnollish_obj(otmp))
+#define is_gnomish_armor(otmp) \
+	(otmp->oclass == ARMOR_CLASS && is_gnomish_obj(otmp))
 
 /* Eggs and other food */
 #define MAX_EGG_HATCH_TIME 200 /* longest an egg can remain unhatched */
@@ -348,6 +350,9 @@ struct obj {
     ((objects[otmp->otyp].oc_flags2 & O2_DWARVEN_ITEM) != 0)
 
 /* Gnomish gear */
+#define is_gnomish_obj(otmp) ((objects[otmp->otyp].oc_flags2 & O2_GNOMISH_ITEM) != 0)
+
+/* Gnollish gear */
 #define is_gnollish_obj(otmp) ((objects[otmp->otyp].oc_flags2 & O2_GNOLLISH_ITEM) != 0)
 
 /* Light sources */
@@ -359,10 +364,10 @@ struct obj {
 /* MAGIC_LAMP intentionally excluded below */
 /* age field of this is relative age rather than absolute */
 #define age_is_relative(otmp)                                       \
-    ((objects[otmp->otyp].oc_flags2 & O2_RELATIVE_AGE) != 0)
+    ((objects[otmp->otyp].oc_flags3 & O3_RELATIVE_AGE) != 0)
 /* object can be ignited */
 #define ignitable(otmp)                                             \
-    ((objects[otmp->otyp].oc_flags2 & O2_IGNITABLE) != 0)
+    ((objects[otmp->otyp].oc_flags3 & O3_IGNITABLE) != 0)
 
 /* things that can be read */
 #define is_readable(otmp)                                                    \

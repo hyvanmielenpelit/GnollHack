@@ -236,18 +236,27 @@ struct obj* launcher;
  *      hitval returns an integer representing the "to hit" bonuses
  *      of "otmp" against the monster.
  */
-int basehitval(otmp)
+int basehitval(otmp, mon, mattacker)
 struct obj* otmp;
+struct monst* mon;
+struct monst* mattacker;
 {
-	if (!otmp)
+	if (!otmp || !mon)
 		return 0;
 
 	int tmp = 0;
 	boolean Is_weapon = is_weapon(otmp);
 
-	if (Is_weapon)
-		tmp += otmp->spe;
-
+	if(mattacker && mattacker->data->mflags2 & (M2_DEMON | M2_UNDEAD) && otmp->cursed)
+	{ 
+		if (Is_weapon)
+			tmp += abs(otmp->spe);
+	}
+	else
+	{
+		if (Is_weapon)
+			tmp += otmp->spe;
+	}
 	tmp += objects[otmp->otyp].oc_hitbonus;
 
 	return tmp;
@@ -261,9 +270,9 @@ struct monst* mattacker;
 {
     int tmp = 0;
     struct permonst *ptr = mon->data;
-	boolean Is_weapon = is_weapon(otmp);
+	boolean Is_weapon = is_weapon(otmp, mon);
 
-	tmp += basehitval(otmp);
+	tmp += basehitval(otmp, mon, mattacker);
 
     /* Put weapon vs. monster type "to hit" bonuses in below: */
 
@@ -357,7 +366,11 @@ struct monst* mattacker;
 					tmp += d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam);
 				tmp += objects[otyp].oc_wsdmgplus;
 			}
-			tmp += otmp->spe;
+
+			if (mattacker && mattacker->data->mflags2 & (M2_DEMON | M2_UNDEAD) && otmp->cursed)
+				tmp += abs(otmp->spe);
+			else
+				tmp += otmp->spe;
 		}
         /* negative enchantment mustn't produce negative damage */
         if (tmp < 0)
@@ -407,7 +420,10 @@ struct monst* mattacker;
         if (otmp->blessed
             && (is_undead(ptr) || is_demon(ptr) || is_vampshifter(mon)))
             bonus += rnd(4);
-        if (is_axe(otmp) && is_wooden(ptr))
+		if (otmp->cursed
+			&& (is_angel(ptr)))
+			bonus += rnd(4);
+		if (is_axe(otmp) && is_wooden(ptr))
             bonus += rnd(4);
         if (objects[otyp].oc_material == MAT_SILVER && mon_hates_silver(mon))
             bonus += rnd(20);
@@ -725,7 +741,7 @@ register struct monst *mtmp;
      */
     mwep = MON_WEP(mtmp);
     /* NO_WEAPON_WANTED means we already tried to wield and failed */
-    mweponly = (mwelded(mwep) && mtmp->weapon_check == NO_WEAPON_WANTED);
+    mweponly = (mwelded(mwep, mtmp) && mtmp->weapon_check == NO_WEAPON_WANTED);
     if (dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) <= 13
         && couldsee(mtmp->mx, mtmp->my)) {
         for (i = 0; i < SIZE(pwep); i++) {
@@ -799,7 +815,7 @@ register struct monst *mtmp;
 				if (!propellor)
 					propellor = oselect(mtmp, HAND_CROSSBOW);
 			}
-            if ((otmp = MON_WEP(mtmp)) && mwelded(otmp) && otmp != propellor
+            if ((otmp = MON_WEP(mtmp)) && mwelded(otmp, mtmp) && otmp != propellor
                 && mtmp->weapon_check == NO_WEAPON_WANTED)
                 propellor = 0;
         }
@@ -815,7 +831,7 @@ register struct monst *mtmp;
             if (!(objects[rwep[i]].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED)) {
                 /* Don't throw a cursed weapon-in-hand or an artifact */
                 if ((otmp = oselect(mtmp, rwep[i])) && !otmp->oartifact
-                    && !(otmp == MON_WEP(mtmp) && mwelded(otmp)))
+                    && !(otmp == MON_WEP(mtmp) && mwelded(otmp, mtmp)))
                     return otmp;
             } else
                 for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
@@ -994,7 +1010,7 @@ boolean polyspot;
      * polymorphed into little monster.  But it's not quite clear how to
      * handle this anyway....
      */
-    if (!(mwelded(mw_tmp) && mon->weapon_check == NO_WEAPON_WANTED))
+    if (!(mwelded(mw_tmp, mon) && mon->weapon_check == NO_WEAPON_WANTED))
         mon->weapon_check = NEED_WEAPON;
     return;
 }
@@ -1060,7 +1076,7 @@ register struct monst *mon;
          * can know it's cursed and needn't even bother trying.
          * Still....
          */
-        if (mw_tmp && mwelded(mw_tmp)) {
+        if (mw_tmp && mwelded(mw_tmp, mon)) {
             if (canseemon(mon)) {
                 char welded_buf[BUFSZ];
                 const char *mon_hand = mbodypart(mon, HAND);
@@ -1089,7 +1105,7 @@ register struct monst *mon;
         mon->weapon_check = NEED_WEAPON;
         if (canseemon(mon)) {
             pline("%s wields %s!", Monnam(mon), doname(obj));
-            if (mwelded(mw_tmp)) {
+            if (mwelded(mw_tmp, mon)) {
                 pline("%s %s to %s %s!", Tobjnam(obj, "weld"),
                       is_plural(obj) ? "themselves" : "itself",
                       s_suffix(mon_nam(mon)), mbodypart(mon, HAND));

@@ -424,7 +424,7 @@ int x, y;
 int
 freehand()
 {
-    return (!uwep || !welded(uwep)
+    return (!uwep || !welded(uwep, &youmonst)
             || (!bimanual(uwep) && (!uarms || !uarms->cursed)));
 }
 

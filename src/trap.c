@@ -3735,7 +3735,7 @@ boolean *lostsome;
                       || obj == uarmf || obj == uarmu || obj == uarmo || obj == uarmb
 					  || obj == umisc || obj == umisc2 || obj == umisc3 || obj == umisc4 || obj == umisc5
                       || (obj->cursed && (obj == uarmh || obj == uarms))
-                      || welded(obj)))
+                      || welded(obj, &youmonst)))
                     otmp = obj;
                 /* reached the mark and found some stuff to drop? */
                 if (--i < 0 && otmp)
@@ -3952,7 +3952,7 @@ dountrap()
         pline("You'll have to let go of %s first.", mon_nam(u.ustuck));
         return 0;
     }
-    if (u.ustuck || (welded(uwep) && bimanual(uwep))) {
+    if (u.ustuck || (welded(uwep, &youmonst) && bimanual(uwep))) {
         Your("%s seem to be too busy for that.", makeplural(body_part(HAND)));
         return 0;
     }

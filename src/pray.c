@@ -228,7 +228,7 @@ in_trouble()
         /* for bag/box access [cf use_container()]...
            make sure it's a case that we know how to handle;
            otherwise "fix all troubles" would get stuck in a loop */
-        if (welded(uwep))
+        if (welded(uwep, &youmonst))
             return TROUBLE_UNUSEABLE_HANDS;
         if (Upolyd && nohands(youmonst.data)
             && (!Unchanging || ((otmp = unchanger()) != 0 && otmp->cursed)))
@@ -299,7 +299,7 @@ worst_cursed_item()
 
 	/* weapon takes precedence if it is interfering
        with taking off a ring or putting on a shield */
-    if (welded(uwep) && (uright || bimanual(uwep))) { /* weapon */
+    if (welded(uwep, &youmonst) && (uright || bimanual(uwep))) { /* weapon */
         otmp = uwep;
     /* gloves come next, due to rings */
     } else if (uarmg && uarmg->cursed) { /* gloves */
@@ -346,10 +346,10 @@ worst_cursed_item()
     } else if (ublindf && ublindf->cursed) { /* eyewear */
         otmp = ublindf; /* must be non-blinding lenses */
     /* if weapon wasn't handled above, do it now */
-    } else if (welded(uwep)) { /* weapon */
+    } else if (welded(uwep, &youmonst)) { /* weapon */
         otmp = uwep;
 	}
-	else if (welded(uarms)) { /* weapon */
+	else if (welded(uarms, &youmonst)) { /* weapon */
 		otmp = uarms;
 		/* active secondary weapon even though it isn't welded */
 	} else if (uarms && uarms->cursed && u.twoweap) {
@@ -484,7 +484,7 @@ int trouble;
         }
         goto decurse;
     case TROUBLE_UNUSEABLE_HANDS:
-        if (welded(uwep)) {
+        if (welded(uwep, &youmonst)) {
             otmp = uwep;
             goto decurse;
         }
@@ -1066,7 +1066,7 @@ aligntyp g_align;
         case 0:
             break;
         case 1:
-            if (uwep && (welded(uwep) || uwep->oclass == WEAPON_CLASS
+            if (uwep && (welded(uwep, &youmonst) || uwep->oclass == WEAPON_CLASS
                          || is_weptool(uwep))) {
                 char repair_buf[BUFSZ];
 
