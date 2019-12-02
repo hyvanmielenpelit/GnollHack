@@ -1397,7 +1397,7 @@ dochat()
 	}
 
 	/* Peaceful monster with sellable items */
-	if (mtmp->mpeaceful && !mtmp->mtame
+	if (mtmp->mpeaceful && !(mtmp->mtame && !mtmp->ispartymember)
 		&& !mtmp->isshk 
 		&& !mtmp->ispriest
 		&& msound != MS_ORACLE
@@ -1473,7 +1473,7 @@ dochat()
 
 		chatnum++;
 
-		strcpy(available_chat_list[chatnum].name, "Ask for provision of englightenment");
+		strcpy(available_chat_list[chatnum].name, "Ask for englightenment");
 		available_chat_list[chatnum].function_ptr = &do_chat_oracle_enlightenment;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
 
