@@ -26,6 +26,7 @@ STATIC_DCL int FDECL(do_chat_priest_chat, (struct monst*));
 STATIC_DCL int FDECL(do_chat_shk_pricequote, (struct monst*));
 STATIC_DCL int FDECL(do_chat_shk_chat, (struct monst*));
 STATIC_DCL int FDECL(do_chat_shk_identify, (struct monst*));
+STATIC_DCL int FDECL(do_chat_watchman_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quest_chat, (struct monst*));
 STATIC_DCL int FDECL(mon_in_room, (struct monst *, int));
 
@@ -1399,8 +1400,11 @@ dochat()
 	/* Peaceful monster with sellable items */
 	if (mtmp->mpeaceful && !(mtmp->mtame && !mtmp->ispartymember)
 		&& !mtmp->isshk 
+		&& !mtmp->isgd
 		&& !mtmp->ispriest
+		&& !is_watch(mtmp->data)
 		&& msound != MS_ORACLE
+		&& msound != MS_ARREST
 		&& !(msound == MS_LEADER || msound == MS_GUARDIAN || msound == MS_NEMESIS)
 		&& mtmp->minvent && count_sellable_items(mtmp) > 0)
 	{
@@ -1424,8 +1428,11 @@ dochat()
 		&& (mtmp->data->mflags3 & M3_CHAT_CAN_JOIN_PARTY)
 		&& !(mtmp->data->geno & G_UNIQ)
 		&& !mtmp->isshk
+		&& !mtmp->isgd
+		&& !is_watch(mtmp->data)
 		&& !mtmp->ispriest
 		&& msound != MS_ORACLE
+		&& msound != MS_ARREST
 		&& !(msound == MS_LEADER || msound == MS_GUARDIAN || msound == MS_NEMESIS)
 		)
 	{
@@ -1612,7 +1619,28 @@ dochat()
 		}
 	}
 
+	/* Watchmen */
+	if (is_watch(mtmp->data))
+	{
+		if(!mtmp->mpeaceful)
+		{
+			strcpy(available_chat_list[chatnum].name, "Ask for reconciliation");
+			available_chat_list[chatnum].function_ptr = &do_chat_watchman_reconciliation;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
 
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+		}
+	}
+
+
+	/* Finish the menu */
 	end_menu(win, "What do you want to say?");
 
 
@@ -1688,6 +1716,36 @@ struct monst* mtmp;
 	{
 		Sprintf(ansbuf, "I am the Oracle of Delphi.");
 		verbalize(ansbuf);
+	}
+	else if (msound == MS_ARREST)
+	{
+		if(!mtmp->mpeaceful)
+		{
+			Sprintf(ansbuf, "Hah, I'm the DoDDP officer who is going to arrest you, scum!");
+			verbalize(ansbuf);
+		}
+		else
+		{
+			Sprintf(ansbuf, "I work for the DoDDP.");
+			verbalize(ansbuf);
+		}
+	}
+	else if (is_watch(mtmp->data))
+	{
+		if (!mtmp->mpeaceful)
+		{
+			if(uwep && is_weapon(uwep))
+				Sprintf(ansbuf, "Hah, drop your weapon first, scum!");
+			else
+				Sprintf(ansbuf, "The question is who are you, scum?");
+
+			verbalize(ansbuf);
+		}
+		else
+		{
+			Sprintf(ansbuf, "I am a local %s.", mtmp->data->mname);
+			verbalize(ansbuf);
+		}
 	}
 	else if (mtmp->m_id == quest_status.leader_m_id && msound > MS_ANIMAL)
 	{
@@ -2282,6 +2340,64 @@ struct monst* mtmp;
 
 	return 1; 
 }
+
+STATIC_OVL int
+do_chat_watchman_reconciliation(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp)
+		return 0;
+
+	long umoney;
+	long u_pay;
+	long reconcile_cost = 500;
+	char qbuf[QBUFSZ];
+
+	multi = 0;
+	umoney = money_cnt(invent);
+
+
+	if (!mtmp) {
+		There("is no one here to talk to.");
+		return 0;
+	}
+	else if (mvitals[PM_WATCHMAN].died > 0 || mvitals[PM_WATCH_CAPTAIN].died > 0) {
+		pline("You will hang for your crimes, scum!", Monnam(mtmp));
+		return 0;
+	}
+	else if (mtmp->mhp < (3 * mtmp->mhpmax) / 4) {
+		pline("%s is in no mood for talking.", Monnam(mtmp));
+		return 0;
+	}
+
+	Sprintf(qbuf, "\"We can drop the case for %d %s. Agree?\"", reconcile_cost, currency(reconcile_cost));
+
+	switch (ynq(qbuf)) {
+	default:
+	case 'q':
+		return 0;
+	case 'y':
+		if (umoney < (long)reconcile_cost) {
+			You("don't have enough money for that!");
+			return 0;
+		}
+		u_pay = reconcile_cost;
+		break;
+	}
+
+	money2mon(mtmp, u_pay);
+	context.botl = 1;
+
+	pacify_guards();
+
+	if(mtmp->mpeaceful)
+		pline("\"Fine, it's alright now. Be more careful next time.\"");
+	else
+		pline("\"On second thought, maybe I'll hang you anyway.\"");
+
+	return 1; 
+}
+
 
 
 STATIC_OVL int
