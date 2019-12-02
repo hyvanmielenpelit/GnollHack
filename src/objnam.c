@@ -4075,10 +4075,10 @@ struct obj *no_wish;
 
     if (!oclass && !typ) {
         if (!strncmpi(bp, "polearm", 7)) {
-            typ = rnd_otyp_by_wpnskill(P_POLEARMS);
+            typ = rnd_otyp_by_wpnskill(P_POLEARM);
             goto typfnd;
         } else if (!strncmpi(bp, "hammer", 6)) {
-            typ = rnd_otyp_by_wpnskill(P_HAMMER);
+            typ = rnd_otyp_by_wpnskill(P_BLUDGEONING_WEAPON);
             goto typfnd;
         }
     }

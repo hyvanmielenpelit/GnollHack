@@ -217,7 +217,10 @@ enum obj_weapon_types {
 	WEP_SHOVEL = 26,
 	WEP_HOOK = 27,
 	WEP_LANCE = 28,
-	WEP_WHIP = 28
+	WEP_MORNING_STAR = 29,
+	WEP_HOSE = 30,
+	WEP_SPIKED_CLUB = 31,
+	WEP_WHIP = 32
 };
 
 enum obj_miscellaneous_types {
@@ -311,7 +314,7 @@ struct objclass {
 
     /* 3 free bits */
 
-    schar oc_subtyp;		 /* armors: armor category, miscellaneous magic items: subclass, etc.*/
+    schar oc_subtyp;		 /* armors: armor category, weapons: weapon category, miscellaneous magic items: subclass, etc.*/
 	schar oc_skill;			 /* Skills of weapons, spellbooks, tools, gems */
 	uchar oc_oprop, oc_oprop2, oc_oprop3; /* properties (invis, &c.) conveyed */
 	

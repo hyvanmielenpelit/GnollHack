@@ -21,62 +21,67 @@ enum p_skills {
  * Update weapon.c if you amend any skills.
  * Also used for oc_subtyp.
  */
-    P_DAGGER             =  1,
+ /*
     P_KNIFE              =  2,
-    P_AXE                =  3,
-    P_PICK_AXE           =  4,
-    P_SHORT_SWORD        =  5,
-    P_BROAD_SWORD        =  6,
-    P_LONG_SWORD         =  7,
-    P_TWO_HANDED_SWORD   =  8,
-    P_SCIMITAR           =  9,
-    P_SABER              = 10,
-    P_CLUB               = 11, /* Heavy-shafted bludgeon */
-    P_MACE               = 12,
-    P_MORNING_STAR       = 13, /* Spiked bludgeon */
-    P_FLAIL              = 14, /* Two pieces hinged or chained together */
-    P_HAMMER             = 15, /* Heavy head on the end */
-    P_QUARTERSTAFF       = 16, /* Long-shafted bludgeon */
-    P_POLEARMS           = 17, /* attack two or three steps away */
-    P_SPEAR              = 18, /* includes javelin */
-    P_TRIDENT            = 19,
-    P_LANCE              = 20,
-    P_BOW                = 21, /* launchers */
-    P_SLING              = 22,
-    P_CROSSBOW           = 23,
-    P_DART               = 24, /* hand-thrown missiles */
-    P_SHURIKEN           = 25,
-    P_BOOMERANG          = 26,
-    P_WHIP               = 27, /* flexible, one-handed */
-    P_UNICORN_HORN       = 28, /* last weapon, two-handed */
+	P_SHORT_SWORD        =  5,
+	P_BROAD_SWORD        =  6,
+	P_LONG_SWORD         =  7,
+	P_TWO_HANDED_SWORD   =  8,
+	P_SCIMITAR           =  9,
+	P_SABER              = 10,
+	P_MACE               = 12,
+	P_MORNING_STAR       = 13,
+	P_HAMMER			 = 15,
+	P_TRIDENT            = 19,
+	P_LANCE              = 20,
+	P_DART               = 24,
+	P_SHURIKEN			 = 25,
+	P_BOOMERANG			 = 26,
+	P_UNICORN_HORN       = 28,
+	*/
+
+    P_DAGGER             =  1,
+    P_AXE                =  2,
+    P_PICK_AXE           =  3,
+    P_SWORD				 =  4,
+    P_BLUDGEONING_WEAPON =  5, /* Heavy-shafted bludgeon */
+    P_FLAIL              =  6, /* Two pieces hinged or chained together */
+    P_QUARTERSTAFF       =  7, /* Long-shafted bludgeon */
+    P_POLEARM            =  8, /* attack two or three steps away */
+    P_SPEAR              =  9, /* includes javelin */
+    P_BOW                = 10, /* launchers */
+    P_SLING              = 11,
+    P_CROSSBOW           = 12,
+    P_THROWN_WEAPON      = 13, /* hand-thrown missiles */
+    P_WHIP               = 14, /* flexible, one-handed */
 
     /* Spell Skills added by Larry Stewart-Zerba */
-    P_ARCANE_SPELL       = 29,
-	P_CLERIC_SPELL		 = 30,
-	P_HEALING_SPELL      = 31,
-    P_DIVINATION_SPELL   = 32,
-	P_ABJURATION_SPELL	 = 33,
-    P_MOVEMENT_SPELL     = 34,
-    P_TRANSMUTATION_SPELL= 35,
-	P_ENCHANTMENT_SPELL  = 36,
-	P_CONJURATION_SPELL  = 37,
-	P_NECROMANCY_SPELL	 = 38,
+    P_ARCANE_SPELL       = 15,
+	P_CLERIC_SPELL		 = 16,
+	P_HEALING_SPELL      = 17,
+    P_DIVINATION_SPELL   = 18,
+	P_ABJURATION_SPELL	 = 19,
+    P_MOVEMENT_SPELL     = 20,
+    P_TRANSMUTATION_SPELL= 21,
+	P_ENCHANTMENT_SPELL  = 22,
+	P_CONJURATION_SPELL  = 23,
+	P_NECROMANCY_SPELL	 = 24,
 
     /* Other types of combat */
-    P_BARE_HANDED_COMBAT = 39, /* actually weaponless; gloves are ok */
-    P_TWO_WEAPON_COMBAT  = 40, /* pair of weapons, one in each hand */
+    P_BARE_HANDED_COMBAT = 25, /* actually weaponless; gloves are ok */
+    P_TWO_WEAPON_COMBAT  = 26, /* pair of weapons, one in each hand */
 
 	/* Non-combat skills */
-	P_RIDING = 41,				/* How well you control your steed */
-	P_DISARM_TRAP = 42,			/* disarming traps */
+	P_RIDING			 = 27,	/* how well you control your steed */
+	P_DISARM_TRAP		 = 28,	/* disarming traps */
 	
-	P_NUM_SKILLS         = 43
+	P_NUM_SKILLS         = 29
 };
 
 #define P_MARTIAL_ARTS P_BARE_HANDED_COMBAT /* Role distinguishes */
 
 #define P_FIRST_WEAPON P_DAGGER
-#define P_LAST_WEAPON P_UNICORN_HORN
+#define P_LAST_WEAPON P_WHIP
 
 #define P_FIRST_SPELL P_ARCANE_SPELL
 #define P_LAST_SPELL P_NECROMANCY_SPELL

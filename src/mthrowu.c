@@ -228,11 +228,11 @@ struct obj *otmp, *mwep;
 			switch (monsndx(mtmp->data)) 
 			{
 			case PM_MONK:
-				if (skill == -P_SHURIKEN)
+				if (skill == -P_THROWN_WEAPON)
 					skilllevel = P_EXPERT;
 				break;
 			case PM_NINJA:
-				if (skill == -P_SHURIKEN || skill == -P_DART)
+				if (skill == -P_THROWN_WEAPON)
 					skilllevel = P_EXPERT;
 				else if (otmp->otyp == YA && mwep->otyp == YUMI)
 					skilllevel = P_EXPERT;
@@ -1504,9 +1504,8 @@ int whodidit;   /* 1==hero, 0=other, -1==just check whether it'll pass thru */
             int oskill = objects[obj_type].oc_skill;
 
             hits = (oskill != -P_BOW && oskill != -P_CROSSBOW
-                    && oskill != -P_DART && oskill != -P_SHURIKEN
-                    && oskill != P_SPEAR
-                    && oskill != P_KNIFE); /* but not dagger */
+                    && oskill != -P_THROWN_WEAPON
+                    && oskill != P_SPEAR); /* but not dagger */
             break;
         }
         case ARMOR_CLASS:

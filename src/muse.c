@@ -2456,8 +2456,7 @@ struct monst *mon;
 
         if (obj->otyp == TIN_OPENER
             || (obj->oclass == WEAPON_CLASS
-                && (objects[obj->otyp].oc_skill == P_DAGGER
-                    || objects[obj->otyp].oc_skill == P_KNIFE)))
+                && (objects[obj->otyp].oc_skill == P_DAGGER)))
             return TRUE;
     }
     return FALSE;

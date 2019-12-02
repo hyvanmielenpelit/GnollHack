@@ -896,7 +896,7 @@ gcrownu()
                 u.ugifts++;
         }
         /* acquire Excalibur's skill regardless of weapon or gift */
-        unrestrict_weapon_skill(P_LONG_SWORD);
+        unrestrict_weapon_skill(P_SWORD);
         if (obj && obj->oartifact == ART_EXCALIBUR)
             discover_artifact(ART_EXCALIBUR);
         break;
@@ -915,7 +915,7 @@ gcrownu()
             u.ugifts++;
         }
         /* acquire Vorpal Blade's skill regardless of weapon or gift */
-        unrestrict_weapon_skill(P_LONG_SWORD);
+        unrestrict_weapon_skill(P_SWORD);
         if (obj && obj->oartifact == ART_VORPAL_BLADE)
             discover_artifact(ART_VORPAL_BLADE);
         break;
@@ -937,7 +937,7 @@ gcrownu()
             u.ugifts++;
         }
         /* acquire Stormbringer's skill regardless of weapon or gift */
-        unrestrict_weapon_skill(P_BROAD_SWORD);
+        unrestrict_weapon_skill(P_SWORD);
         if (obj && obj->oartifact == ART_STORMBRINGER)
             discover_artifact(ART_STORMBRINGER);
         break;

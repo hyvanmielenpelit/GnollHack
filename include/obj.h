@@ -174,7 +174,7 @@ struct obj {
 #define is_blade(otmp)                           \
     (otmp->oclass == WEAPON_CLASS                \
      && objects[otmp->otyp].oc_skill >= P_DAGGER \
-     && objects[otmp->otyp].oc_skill <= P_SABER)
+     && objects[otmp->otyp].oc_skill <= P_SWORD)
 #define is_axe(otmp)                                              \
     ((otmp->oclass == WEAPON_CLASS || otmp->oclass == TOOL_CLASS) \
      && objects[otmp->otyp].oc_skill == P_AXE)
@@ -183,12 +183,10 @@ struct obj {
      && objects[otmp->otyp].oc_skill == P_PICK_AXE)
 #define is_sword(otmp)                                \
     (otmp->oclass == WEAPON_CLASS                     \
-     && objects[otmp->otyp].oc_skill >= P_SHORT_SWORD \
-     && objects[otmp->otyp].oc_skill <= P_SABER)
+     && objects[otmp->otyp].oc_skill == P_SWORD)
 #define is_pole(otmp)                                             \
     ((otmp->oclass == WEAPON_CLASS || otmp->oclass == TOOL_CLASS) \
-     && (objects[otmp->otyp].oc_skill == P_POLEARMS               \
-         || objects[otmp->otyp].oc_skill == P_LANCE))
+     && (objects[otmp->otyp].oc_skill == P_POLEARM))
 #define is_spear(otmp) \
     (otmp->oclass == WEAPON_CLASS && objects[otmp->otyp].oc_skill == P_SPEAR)
 #define is_launcher(otmp)                                                  \
@@ -203,8 +201,7 @@ struct obj {
 #define ammo_and_launcher(a, l) (is_ammo(a) && matching_launcher(a, l))
 #define is_missile(otmp)                                          \
     ((otmp->oclass == WEAPON_CLASS || otmp->oclass == TOOL_CLASS) \
-     && objects[otmp->otyp].oc_skill >= -P_BOOMERANG              \
-     && objects[otmp->otyp].oc_skill <= -P_DART)
+     && objects[otmp->otyp].oc_skill == -P_THROWN_WEAPON)
 #define is_weptool(o) \
     ((o)->oclass == TOOL_CLASS && objects[(o)->otyp].oc_skill != P_NONE)
         /* towel is not a weptool:  spe isn't an enchantment, cursed towel
@@ -218,16 +215,10 @@ struct obj {
 #define is_multigen(otmp)                           \
 	(objects[otmp->otyp].oc_multigen_type > MULTIGEN_SINGLE)
 
-/*
-(otmp->oclass == WEAPON_CLASS               \
-	 && objects[otmp->otyp].oc_merge                  \
-     && objects[otmp->otyp].oc_skill >= -P_SHURIKEN \
-     && objects[otmp->otyp].oc_skill <= -P_BOW) */
-
 #define is_poisonable(otmp)                         \
     (otmp->oclass == WEAPON_CLASS                   \
-     && objects[otmp->otyp].oc_skill >= -P_SHURIKEN \
-     && objects[otmp->otyp].oc_skill <= -P_BOW)
+     && objects[otmp->otyp].oc_skill >= -P_THROWN_WEAPON \
+     && objects[otmp->otyp].oc_skill <= -P_BOW && objects[otmp->otyp].oc_dir > WHACK)
 #define uslinging() (uwep && objects[uwep->otyp].oc_skill == P_SLING)
 /* 'is_quest_artifact()' only applies to the current role's artifact */
 #define any_quest_artifact(o) ((o)->oartifact >= ART_ORB_OF_DETECTION)

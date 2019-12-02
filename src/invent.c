@@ -121,7 +121,7 @@ struct obj *obj;
         k = objects[otyp].oc_skill;
         k = (k < 0) ? ((k >= -P_CROSSBOW && k <= -P_BOW) ? 1 : 3)
                     : ((k >= P_BOW && k <= P_CROSSBOW) ? 2
-                       : (k == P_SPEAR || k == P_DAGGER || k == P_KNIFE) ? 4
+                       : (k == P_SPEAR || k == P_DAGGER) ? 4
                           : !is_pole(obj) ? 5 : 6);
         break;
     case TOOL_CLASS:

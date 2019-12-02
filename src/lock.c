@@ -542,7 +542,7 @@ doforce()
         || ((uwep->oclass == WEAPON_CLASS || is_weptool(uwep))
                ? (objects[uwep->otyp].oc_skill < P_DAGGER
                   || objects[uwep->otyp].oc_skill == P_FLAIL
-                  || objects[uwep->otyp].oc_skill > P_LANCE)
+                  || objects[uwep->otyp].oc_skill >= P_BOW)
                : uwep->oclass != ROCK_CLASS)) {
         You_cant("force anything %s weapon.",
                  !uwep ? "when not wielding a"

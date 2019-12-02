@@ -118,7 +118,7 @@ int shotlimit;
 #if 0
         /* some roles don't get a volley bonus until becoming expert */
         weakmultishot = (Role_if(PM_WIZARD) || Role_if(PM_PRIEST)
-                         || (Role_if(PM_HEALER) && skill != P_KNIFE)
+                         || (Role_if(PM_HEALER) && skill != P_DAGGER)
                          || (Role_if(PM_TOURIST) && skill != -P_DART)
                          /* poor dexterity also inhibits multishot */
                          || Fumbling || ACURR(A_DEX) <= 6);
@@ -175,7 +175,7 @@ int shotlimit;
         switch (Role_switch) {
         case PM_MONK:
             /* allow higher volley count despite skill limitation */
-            if (skill == -P_SHURIKEN && !weakmultishot)
+            if (skill == -P_THROWN_WEAPON && !weakmultishot)
                 multishot++;
             break;
         default:
@@ -2090,7 +2090,7 @@ register struct obj *obj; /* thrownobj or kickedobj or uwep */
                when thrown; projectiles aren't among the types of weapon
                that hmon() might have destroyed so obj is intact */
             if (objects[otyp].oc_skill < P_NONE
-                && objects[otyp].oc_skill > -P_BOOMERANG
+                && objects[otyp].oc_skill >= -P_THROWN_WEAPON
                 && !objects[otyp].oc_magic) {
                 /* we were breaking 2/3 of everything unconditionally.
                  * we still don't want anything to survive unconditionally,

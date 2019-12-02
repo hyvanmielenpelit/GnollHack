@@ -21,7 +21,7 @@ STATIC_DCL void FDECL(skill_advance, (int));
 #define PN_BARE_HANDED (-1) /* includes martial arts */
 #define PN_TWO_WEAPONS (-2)
 #define PN_RIDING (-3)
-#define PN_POLEARMS (-4)
+#define PN_POLEARM (-4)
 #define PN_SABER (-5)
 #define PN_HAMMER (-6)
 #define PN_WHIP (-7)
@@ -36,13 +36,15 @@ STATIC_DCL void FDECL(skill_advance, (int));
 #define PN_CONJURATION_SPELL (-16)
 #define PN_NECROMANCY_SPELL (-17)
 #define PN_DISARM_TRAP (-18)
+#define PN_SWORD (-19)
+#define PN_BLUDGEONING_WEAPON (-20)
+#define PN_THROWN_WEAPON (-21)
 
 
 STATIC_VAR NEARDATA const short skill_names_indices[P_NUM_SKILLS] = {
-    0, DAGGER, KNIFE, AXE, PICK_AXE, SHORT_SWORD, BROADSWORD, LONG_SWORD,
-    TWO_HANDED_SWORD, SCIMITAR, PN_SABER, CLUB, MACE, MORNING_STAR, FLAIL,
-    PN_HAMMER, QUARTERSTAFF, PN_POLEARMS, SPEAR, TRIDENT, LANCE, BOW, SLING,
-    CROSSBOW, DART, SHURIKEN, BOOMERANG, PN_WHIP, UNICORN_HORN,
+    0, DAGGER, AXE, PICK_AXE, PN_SWORD, PN_BLUDGEONING_WEAPON, FLAIL,
+    QUARTERSTAFF, PN_POLEARM, SPEAR, BOW, SLING,
+    CROSSBOW, PN_THROWN_WEAPON, PN_WHIP,
     PN_ARCANE_SPELL, PN_CLERIC_SPELL, PN_HEALING_SPELL, PN_DIVINATION_SPELL,
     PN_ABJURATION_SPELL, PN_MOVEMENT_SPELL, PN_TRANSMUTATION_SPELL, PN_ENCHANTMENT_SPELL, PN_CONJURATION_SPELL, PN_NECROMANCY_SPELL,
     PN_BARE_HANDED, PN_TWO_WEAPONS, PN_RIDING, PN_DISARM_TRAP
@@ -51,9 +53,10 @@ STATIC_VAR NEARDATA const short skill_names_indices[P_NUM_SKILLS] = {
 /* note: entry [0] isn't used */
 STATIC_VAR NEARDATA const char *const odd_skill_names[] = {
     "no skill", "bare hands", /* use barehands_or_martial[] instead */
-    "two weapon combat", "riding", "polearms", "saber", "hammer", "whip",
+    "two weapon combat", "riding", "polearm", "saber", "hammer", "whip",
     "arcane spells", "clerical spells", "healing spells", "divination spells", "abjuration spells",
-	"movement spells", "transmutation spells", "enchantment spells", "conjuration spells", "necromancy spells", "disarm trap",
+	"movement spells", "transmutation spells", "enchantment spells", "conjuration spells", "necromancy spells", "disarm trap", "sword",
+	"bludgeoning weapon", "thrown weapon",
 };
 /* indexed vis `is_martial() */
 STATIC_VAR NEARDATA const char *const barehands_or_martial[] = {

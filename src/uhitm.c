@@ -923,7 +923,7 @@ int dieroll;
 					&& mon_hates_light(mon))
 					lightobj = TRUE;
 				if (u.usteed && !thrown && tmp > 0
-					&& weapon_type(obj) == P_LANCE && mon != u.ustuck) {
+					&& obj && objects[obj->otyp].oc_subtyp == WEP_LANCE && mon != u.ustuck) {
 					jousting = joust(mon, obj);
 					/* exercise skill even for minimal damage hits */
 					if (jousting)
