@@ -1202,6 +1202,8 @@ mcalcdistress()
             mtmp->mcanmove = 1;
 		if (mtmp->mstaying && !--mtmp->mstaying)
 			mtmp->mwantstomove = 1;
+		if (mtmp->mcarrying && !--mtmp->mcarrying)
+			mtmp->mwantstodrop = 1;
 		if (mtmp->mflee_timer && !--mtmp->mflee_timer)
             mtmp->mflee = 0;
 		if (mtmp->mcancelled_timer && !--mtmp->mcancelled_timer)
@@ -2416,6 +2418,8 @@ struct monst *mtmp;
         mtmp->mfrozen = 0;
 		mtmp->mwantstomove = 1;
 		mtmp->mstaying = 0;
+		mtmp->mcarrying = 0;
+		mtmp->mwantstodrop = 1;
 		if (mtmp->mtame && !mtmp->isminion) {
             wary_dog(mtmp, !surviver);
         }
@@ -2474,6 +2478,8 @@ register struct monst *mtmp;
             mtmp->mfrozen = 0;
 			mtmp->mwantstomove = 1;
 			mtmp->mstaying = 0;
+			mtmp->mcarrying = 0;
+			mtmp->mwantstodrop = 1;
 			if (mtmp->mhpmax <= 0)
                 mtmp->mhpmax = 10;
             mtmp->mhp = mtmp->mhpmax;
@@ -3095,6 +3101,8 @@ struct monst *mtmp;
             mtmp->mfrozen = 0;
 			mtmp->mwantstomove = 1;
 			mtmp->mstaying = 0;
+			mtmp->mcarrying = 0;
+			mtmp->mwantstodrop = 1;
 			if (mtmp->mhpmax <= 0)
                 mtmp->mhpmax = 10;
             mtmp->mhp = mtmp->mhpmax;

@@ -416,7 +416,7 @@ int udist;
      * Use udist+1 so steed won't cause divide by zero.
      */
     if (droppables(mtmp)) {
-        if (!rn2(udist + 1) || !rn2(edog->apport))
+        if ((!rn2(udist + 1) || !rn2(edog->apport)) && mtmp->mwantstodrop)
             if (rn2(10) < edog->apport) {
                 relobj(mtmp, (int) mtmp->minvis, TRUE);
                 if (edog->apport > 1)

@@ -519,6 +519,12 @@ long nmv; /* number of moves */
 		else
 			mtmp->mstaying -= imv;
 	}
+	if (mtmp->mcarrying) {
+		if (imv >= (int)mtmp->mcarrying)
+			mtmp->mcarrying = 1;
+		else
+			mtmp->mcarrying -= imv;
+	}
 	if (mtmp->mflee_timer) {
         if (imv >= (int) mtmp->mflee_timer)
             mtmp->mflee_timer = 1;
@@ -614,8 +620,10 @@ boolean pets_only; /* true for ascension or final escape */
             mtmp->msleeping = 0;
             mtmp->mfrozen = 0;
 			mtmp->mstaying = 0;
+			mtmp->mcarrying = 0;
 			mtmp->mcanmove = 1;
 			mtmp->mwantstomove = 1;
+			mtmp->mwantstodrop = 1;
 		}
         if (((monnear(mtmp, u.ux, u.uy) && levl_follower(mtmp))
              /* the wiz will level t-port from anywhere to chase

@@ -124,6 +124,9 @@ struct monst {
 	Bitfield(mstaying, 7);	/* commanded to stay in place, similar to frozen, but commanded */
 	Bitfield(mwantstomove, 1);  /* mon wants to move, not staying in place */
 
+	Bitfield(mcarrying, 7);	
+	Bitfield(mwantstodrop, 1);
+
 	Bitfield(mconf, 1);     /* confused */
     Bitfield(mpeaceful, 1); /* does not attack unprovoked */
     Bitfield(mtrapped, 1);  /* trapped in a pit, web or bear trap */

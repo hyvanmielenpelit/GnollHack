@@ -1202,6 +1202,15 @@ dochat()
         || M_AP_TYPE(mtmp) == M_AP_OBJECT)
         return 0;
 
+	/* Non-speaking monster */
+	if (!(mtmp->data->mflags3 & M3_SPEAKING) && !mtmp->mtame)
+	{
+		if (canspotmon(mtmp))
+			pline("%s does not seem to be of the type that engages in conversation.", Monnam(mtmp));
+
+		return 0;
+	}
+
     /* sleeping monsters won't talk, except priests (who wake up) */
     if ((!mtmp->mcanmove || mtmp->msleeping) && !mtmp->ispriest) {
         /* If it is unseen, the player can't tell the difference between
@@ -1336,7 +1345,13 @@ dochat()
 			chatnum++;
 		}
 
-		strcpy(available_chat_list[chatnum].name, "Command to stay put");
+		if (mtmp->data->mflags1 & M1_ANIMAL)
+			strcpy(available_chat_list[chatnum].name, "Command to stay put");
+		else if (mtmp->data->mflags3 & M3_SPEAKING)
+			strcpy(available_chat_list[chatnum].name, "Command to hold position");
+		else
+			strcpy(available_chat_list[chatnum].name, "Command to hold position");
+
 		available_chat_list[chatnum].function_ptr = &do_chat_pet_stay;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -1349,7 +1364,13 @@ dochat()
 
 		chatnum++;
 
-		strcpy(available_chat_list[chatnum].name, "Command to follow");
+		if (mtmp->data->mflags1 & M1_ANIMAL)
+			strcpy(available_chat_list[chatnum].name, "Command to follow");
+		else if (mtmp->data->mflags3 & M3_SPEAKING)
+			strcpy(available_chat_list[chatnum].name, "Command to stop holding position");
+		else
+			strcpy(available_chat_list[chatnum].name, "Command to stop holding position");
+
 		available_chat_list[chatnum].function_ptr = &do_chat_pet_follow;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -1721,12 +1742,12 @@ struct monst* mtmp;
 	{
 		if(!mtmp->mpeaceful)
 		{
-			Sprintf(ansbuf, "Hah, I'm the DoDDP officer who is going to arrest you, scum!");
+			Sprintf(ansbuf, "Hah, I'm the DoDPD officer who is going to arrest you, scum!");
 			verbalize(ansbuf);
 		}
 		else
 		{
-			Sprintf(ansbuf, "I work for the DoDDP.");
+			Sprintf(ansbuf, "I work for the DoDPD.");
 			verbalize(ansbuf);
 		}
 	}
@@ -1872,6 +1893,8 @@ struct monst* mtmp;
 
 	if(has_edog && edog && droppables(mtmp))
 	{
+		mtmp->mcarrying= 0;
+		mtmp->mwantstodrop = 1;
 		relobj(mtmp, (int)mtmp->minvis, TRUE);
 		if (edog->apport > 1)
 			edog->apport--;
@@ -1959,6 +1982,8 @@ struct monst* mtmp;
 					newsym(omx, omy);
 					(void)mpickobj(mtmp, otmp);
 					itemspicked++;
+					mtmp->mcarrying = 25+ rn2(20);
+					mtmp->mwantstodrop = 0;
 				}
 			}
 		}
