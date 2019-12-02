@@ -10,7 +10,7 @@
 #define MAX_MONSTER_RANDOM_ITEM_ALTERNATIVES 5
 #define MAX_RANDOM_MONSTER_ALTERNATIVES 5
 #define MAX_ENCOUNTER_MONSTER_TYPES 5
-#define MAX_ENCOUNTER_MONSTERS 50
+#define MAX_ENCOUNTER_MONSTERS 25
 
 struct monsteritemdef {
 	int otyp;
@@ -84,9 +84,8 @@ struct encounter {
 	int difficulty_max;
 	double probability;
 	boolean insearch;
-	int appear_count;
+	int encounterdefid;
 	long eflags;
 };
-
 
 #endif /* ENCOUNTER_H */

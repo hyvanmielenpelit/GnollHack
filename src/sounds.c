@@ -15,6 +15,7 @@ STATIC_DCL int FDECL(do_chat_pet_follow, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_dropitems, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_pickitems, (struct monst*));
 STATIC_DCL int FDECL(do_chat_buy_items, (struct monst*));
+STATIC_DCL int FDECL(do_chat_join_party, (struct monst*));
 STATIC_DCL int FDECL(count_sellable_items, (struct monst*));
 STATIC_DCL int FDECL(do_chat_oracle_consult, (struct monst*));
 STATIC_DCL int FDECL(do_chat_oracle_identify, (struct monst*));
@@ -1396,7 +1397,12 @@ dochat()
 	}
 
 	/* Peaceful monster with sellable items */
-	if (mtmp->mpeaceful && mtmp->minvent && count_sellable_items(mtmp) > 0)
+	if (mtmp->mpeaceful 
+		&& !mtmp->isshk 
+		&& !mtmp->ispriest
+		&& msound != MS_ORACLE
+		&& !(msound == MS_LEADER || msound == MS_GUARDIAN || msound == MS_NEMESIS)
+		&& mtmp->minvent && count_sellable_items(mtmp) > 0)
 	{
 		strcpy(available_chat_list[chatnum].name, "Buy items");
 		available_chat_list[chatnum].function_ptr = &do_chat_buy_items;
@@ -1412,6 +1418,31 @@ dochat()
 		chatnum++;
 
 	}
+
+	/* Ask a suitable (speaking) peaceful monster to join */
+	if (mtmp->mpeaceful
+		&& (mtmp->data->mflags3 & M3_CHAT_CAN_JOIN_PARTY)
+		&& !(mtmp->data->geno & G_UNIQ)
+		&& !mtmp->isshk
+		&& !mtmp->ispriest
+		&& msound != MS_ORACLE
+		&& !(msound == MS_LEADER || msound == MS_GUARDIAN || msound == MS_NEMESIS)
+		)
+	{
+		strcpy(available_chat_list[chatnum].name, "Join the party");
+		available_chat_list[chatnum].function_ptr = &do_chat_join_party;
+		available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+		any = zeroany;
+		any.a_char = available_chat_list[chatnum].charnum;
+
+		add_menu(win, NO_GLYPH, &any,
+			any.a_char, 0, ATR_NONE,
+			available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+		chatnum++;
+	}
+
 
 	/* Oracle */
 	if (msound == MS_ORACLE)
@@ -1897,6 +1928,18 @@ struct monst* mtmp;
 
 	return 1;
 }
+
+
+STATIC_OVL int
+do_chat_join_party(mtmp)
+struct monst* mtmp;
+{
+	int result = 0;
+
+
+	return 1;
+}
+
 
 STATIC_OVL int
 count_sellable_items(mtmp)

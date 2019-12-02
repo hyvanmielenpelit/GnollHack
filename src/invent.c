@@ -1896,7 +1896,9 @@ const char* headertext;
         break;
     }
     if (!allowall && let && !index(let, otmp->oclass)
-        && !(usegold && otmp->oclass == COIN_CLASS)) {
+        && !(usegold && otmp->oclass == COIN_CLASS)
+		&& !(!strcmp(word, "read") && (objects[otmp->otyp].oc_flags3 & O3_READABLE))
+		) {
         silly_thing(word, otmp);
         return (struct obj *) 0;
     }

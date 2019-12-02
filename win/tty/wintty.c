@@ -1991,7 +1991,7 @@ struct WinDesc *cw;
                     cl_end();
                 }
             }
-
+			
             /* set extra chars.. */
             Strcat(resp, default_menu_cmds);
             Strcat(resp, " ");                  /* next page or end */

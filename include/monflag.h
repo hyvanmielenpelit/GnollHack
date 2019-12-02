@@ -199,6 +199,7 @@
 #define M3_TELEPATHIC M3_UNBLIND_TELEPATHIC		/* is telepathic */
 #define M3_REGENERATES_LOST_BODY_PARTS 0x00800000		/* does not lose max hitpoint because of sharpness or bisection */
 #define M3_REVIVES_FROM_DEAD 0x01000000		/* is resurrects itself after a while */
+#define M3_CHAT_CAN_JOIN_PARTY 0x02000000		/* can join the player's party */
 
 
 #define MZ_TINY 0          /* < 2' */

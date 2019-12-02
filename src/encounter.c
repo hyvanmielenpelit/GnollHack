@@ -9,12 +9,14 @@
 #define NAMELIST_GOBLIN_KING 1
 #define NAMELIST_LICH 2
 #define NAMELIST_ARCH_LICH 3
+#define NAMELIST_LICH_KING 4
 
-static char namelists[][MAX_NAMELIST_NAMES][BUFSIZ] = {
+static const char namelists[][MAX_NAMELIST_NAMES][BUFSIZ] = {
 	{"", "", "", "",},
 	{"Urok", "Golluk", "Grimsh", "Urum",},
 	{"Deimos", "Kangaxx", "Lyran", "Karlat", "Vongoethe",},
 	{"Acererak ", "Vecna", "Zhengyi", "Jymahna", "Rhangaun", "Priamon Rakesk", "Shangalar the Black", "Kartak Spellseer",},
+	{"Ner'zhul", "Arthas Menethil", "Bolvar Fordragon",},
 	{ 0 }
 };
 
@@ -28,6 +30,8 @@ static char namelists[][MAX_NAMELIST_NAMES][BUFSIZ] = {
 #define NOMONSTERS { NORANDOMIZEDMONSTER, NORANDOMIZEDMONSTER, NORANDOMIZEDMONSTER, NORANDOMIZEDMONSTER, NORANDOMIZEDMONSTER }
 #define NOENCOUNTER { NOMONSTERS, 0, 0 }
 
+
+/* Note: The number of encounter definitions is limited to 256 in context.encounter_appeared. This should be plenty and if more is needed, change the number there -- JG */
 struct encounterdef encounter_definitions[] =
 {
 	NOENCOUNTER,
@@ -400,7 +404,7 @@ struct encounterdef encounter_definitions[] =
 			/* Monster 1 */
 			{ { { PM_BAT, 0, 4, 0, 0, 100, NOMONSTERITEMS },
 			NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
-			/* Monster 1 */
+			/* Monster 2 */
 			{ { { PM_BAT, 2, 4, 0, 0, 100, NOMONSTERITEMS },
 			NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
 			NORANDOMIZEDMONSTER,
@@ -1004,7 +1008,8 @@ double encprob;
 	if (!active_encounter_index_ptr || !active_encounter_monster_index_ptr)
 		return;
 
-	encounter_list[*(active_encounter_index_ptr)].eflags = encounter_definitions[encounter_definition_index].eflags;
+	encounter_list[*active_encounter_index_ptr].eflags = encounter_definitions[encounter_definition_index].eflags;
+	encounter_list[*active_encounter_index_ptr].encounterdefid = encounter_definition_index;
 
 	int orig_encounter_index = 0;
 	int orig_monster_index = 0;
@@ -1040,6 +1045,10 @@ double encprob;
 			{
 				/* Move to a new encounter slot */
 				(*active_encounter_index_ptr) = (*active_encounter_index_ptr) + 1;
+
+				/* Write eflags and encounter definition index just in case */
+				encounter_list[*active_encounter_index_ptr].eflags = encounter_definitions[encounter_definition_index].eflags;
+				encounter_list[*active_encounter_index_ptr].encounterdefid = encounter_definition_index;
 
 				/* Check whether there is space to write new encounters, if not, exit */
 				if (*active_encounter_index_ptr >= MAX_ENCOUNTERS)
@@ -1224,7 +1233,7 @@ int x, y;
 		{
 			encounter_list[j].insearch = FALSE;
 
-			if ((encounter_list[j].eflags & ED_ONLY_ONCE) && encounter_list[j].appear_count != 0)
+			if ((encounter_list[j].eflags & ED_ONLY_ONCE) && context.encounter_appeared[encounter_list[j].encounterdefid] == TRUE)
 				continue;
 
 			if ((encounter_list[j].eflags & ED_NOHELL) && Inhell)
@@ -1270,7 +1279,7 @@ int x, y;
 
 	if (selected_encounter > 0)
 	{
-		encounter_list[selected_encounter].appear_count += 1;
+		context.encounter_appeared[encounter_list[selected_encounter].encounterdefid] = TRUE;
 		create_encounter(selected_encounter, x, y);
 	}
 	else

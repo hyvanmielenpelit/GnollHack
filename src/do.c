@@ -729,7 +729,7 @@ register struct obj* obj;
 	{
 		strcpy(buf, "");
 
-		if(objects[otyp].oc_class == WAND_CLASS || objects[otyp].oc_class == TOOL_CLASS)
+		if(objects[otyp].oc_class == WAND_CLASS || (objects[otyp].oc_class == TOOL_CLASS && !is_weptool(obj)))
 			Sprintf(buf, "Charges left:           %d", obj->spe);
 		else
 		{

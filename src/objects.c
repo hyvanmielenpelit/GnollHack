@@ -1641,9 +1641,9 @@ SPELL("fire storm",       "crimson", None, "Conjures a storm of fire",
 SPELL("meteor swarm",     "oval-patterned", None, "Shoots 2d2+1 exploding meteors",
       P_ARCANE_SPELL,			 5, 10,			 6, 9,200, A_INT, 18, 0, 0, 1, RAY, RAY_FIRE, 8, 6, 0, 2, 2, 1, S1_SPELL_EXPLOSION_EFFECT, CLR_RED, O1_FIRE_RESISTANT, O2_NONE, O3_NONE),
 SPELL("cone of cold",     "dog eared", None, "Shoots a ray of cold",
-      P_ARCANE_SPELL,			10,  6,			 0, 5, 50, A_INT, 12, 0, 0, 1, RAY, RAY_COLD, 15, 6, 0, 0, 0, 0, S1_NONE, HI_PAPER, O1_COLD_RESISTANT, O2_NONE, O3_NONE),
+      P_ARCANE_SPELL,			 5,  6,			 0, 5, 50, A_INT, 12, 0, 0, 1, RAY, RAY_COLD, 15, 6, 0, 0, 0, 0, S1_NONE, HI_PAPER, O1_COLD_RESISTANT, O2_NONE, O3_NONE),
 SPELL("ice storm",		  "mithril-plated", None, "Conjures a storm of cold",
-      P_ARCANE_SPELL,			5,  7,			 2, 6, 75, A_INT, 14, 0, 0, 1, RAY, RAY_COLD, 4, 10, 8, 0, 0, 0, S1_SPELL_EXPLOSION_EFFECT, HI_SILVER, O1_COLD_RESISTANT, O2_NONE, O3_NONE),
+      P_ARCANE_SPELL,			 5,  7,			 2, 6, 75, A_INT, 14, 0, 0, 1, RAY, RAY_COLD, 4, 10, 8, 0, 0, 0, S1_SPELL_EXPLOSION_EFFECT, HI_SILVER, O1_COLD_RESISTANT, O2_NONE, O3_NONE),
 
 SPELL("sleep",				"mottled", None, "Shoots a sleep ray",
       P_ENCHANTMENT_SPELL,		10,  1,			20, 5, 50, A_CHA, 12, 0, 0, 1, RAY, RAY_SLEEP, 0, 0, 0, 2, 6, 7, S1_NONE, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
@@ -1669,7 +1669,7 @@ SPELL("power word blind",   "anomalous", None, "Blinds the target", //Note monst
     P_ARCANE_SPELL,				 5,  3,			 0, 4, 30, A_INT, 8, 0, 0, 1, IMMEDIATE, 0, 0, 0, 0, 5, 10, 50, S1_NONE, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
 
 SPELL("holy word",			"antediluvian", None, "Stuns, blinds, and kills nearby enemies",
-	P_CLERIC_SPELL,				5,  6,			 0, 8,150, A_WIS, 0, 5, 0, 1, NODIR, 0, 0, 0, 0, 5, 10, 50, S1_NONE, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
+	P_CLERIC_SPELL,				 5,  6,			 0, 8,150, A_WIS, 0, 5, 0, 1, NODIR, 0, 0, 0, 0, 5, 10, 50, S1_NONE, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
 
 SPELL("animate air",	  "wave-patterned", None, "Summons an air elemental for a duration",
 	P_CONJURATION_SPELL,		10,  3,			15, 7,100, A_INT, 0, 0, 0, 1, NODIR, 0, 0, 0, 0, 1, 20, 30, S1_NONE, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
@@ -1701,10 +1701,12 @@ SPELL("create silver golem", "silvery", None, "Creates a permanent silver golem"
 
 SPELL("summon demon",	  "tenebrous", None, "Summons a demon for a duration",
 	P_CONJURATION_SPELL,		 5,  5,	       300, 7,100, A_AVG_INT_CHA, 0, 0, 0, 1, NODIR, 0, 0, 0, 0, 1, 20, 280, S1_NONE, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
+SPELL("faithful hound",	  "canine-patterned", None, "Summons a permanent faithful large dog",
+	P_CONJURATION_SPELL,		 5,  3,	       300, 4,30, A_MAX_INT_WIS_CHA, 0, 0, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NONE, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
 SPELL("call Demogorgon",  "eldritch", "some aeon-old prayer", "Calls the Prince of Demons from the Abyss",
 	P_CONJURATION_SPELL,		 5, 20,		   400,9,200, A_AVG_INT_WIS_CHA, 0, 0, 0, 1, NODIR, 0, 0, 0, 0, 2, 100, 200, S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
 SPELL("call hierarch modron",  "spherical", "some aeon-old prayer", "Calls a hierarch modron",
-	P_CONJURATION_SPELL,		 0,  5,		   300, 5, 50, A_MAX_INT_WIS_CHA, 0, 0, 0, 1, NODIR, 0, 0, 0, 0, 1, 20, 280, S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
+	P_CONJURATION_SPELL,		 0,  5,		   300, 5, 50, A_AVG_INT_WIS_CHA, 0, 0, 0, 1, NODIR, 0, 0, 0, 0, 1, 20, 280, S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
 
 SPELL("guardian angel",	  "wing-patterned", None, "Summons a guardian angel for a duration",
 	P_CLERIC_SPELL,				 5,  5,		   300, 4, 30, A_WIS, 0, 0, 0, 1, NODIR, 0, 0, 0, 0, 1, 20, 280, S1_NONE, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),

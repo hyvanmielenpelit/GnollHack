@@ -2512,16 +2512,24 @@ register struct obj *obj;
 		verbalize("By the deluge of this blood sacrifice, come forth and walk this plane once more!");
 		summondemogorgon(obj->otyp);
 		break;
+	case SPE_FAITHFUL_HOUND:
+		mtmp = summoncreature(obj->otyp, PM_LARGE_DOG, "%s appears out of nowhere.", FALSE, FALSE, FALSE, FALSE, FALSE, FALSE);
+		if(mtmp)
+			mtmp->isfaithful = 1;
+		break;
 	case SPE_CALL_HIERARCH_MODRON:
 		(void)summoncreature(obj->otyp, (rn2(100) < (u.ulevel - 1) * 1) ? PM_MODRON_TERTIAN : (rn2(100) < (u.ulevel - 1) * 5) ? PM_MODRON_QUARTON : PM_MODRON_QUINTON, "%s appears in a cloud of smoke.", TRUE, TRUE, TRUE, TRUE, FALSE, FALSE);
 		break;
 	case SPE_GUARDIAN_ANGEL:
-		(void)summoncreature(obj->otyp, (rn2(100) < (u.ulevel - 1) * 1) ? PM_ARCHON : (rn2(100) < (u.ulevel - 1) * 5) ? PM_ANGEL : PM_ALEAX, "%s descends from the heavens.", TRUE, TRUE, TRUE, TRUE, FALSE, TRUE);
+		mtmp = summoncreature(obj->otyp, (rn2(100) < (u.ulevel - 1) * 1) ? PM_ARCHON : (rn2(100) < (u.ulevel - 1) * 5) ? PM_ANGEL : PM_ALEAX, "%s descends from the heavens.", TRUE, TRUE, TRUE, TRUE, FALSE, TRUE);
+		if (mtmp)
+			mtmp->isfaithful = 1;
 		break;
 	case SPE_DIVINE_MOUNT:
 		mtmp = summoncreature(obj->otyp, PM_KI_RIN, "%s appears before you.", TRUE, TRUE, TRUE, TRUE, FALSE, TRUE);
 		if (mtmp)
 		{
+			mtmp->isfaithful = 1;
 			otmp = mksobj(SADDLE, TRUE, FALSE, FALSE);
 			if (otmp)
 			{
@@ -2553,6 +2561,7 @@ register struct obj *obj;
 			mtmp = summoncreature(obj->otyp, monstid, "", TRUE, TRUE, TRUE, TRUE, FALSE, TRUE);
 			if (mtmp)
 			{
+				mtmp->isfaithful = 1;
 				if (monstid == PM_ARCHON)
 					archoncount++;
 				else if (monstid == PM_ANGEL)
@@ -6555,9 +6564,15 @@ boolean pacifist;
 		mon->hasbloodlust = bloodlust;
 		mon->ispacifist = pacifist;
 		(void)tamedog(mon, (struct obj*) 0);
-		mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_dicesize) + objects[spl_otyp].oc_spell_dur_plus;
+
+		if((objects[spl_otyp].oc_spell_dur_dice > 1 && objects[spl_otyp].oc_spell_dur_dicesize > 1) || objects[spl_otyp].oc_spell_dur_plus)
+			mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_dicesize) + objects[spl_otyp].oc_spell_dur_plus;
+		else
+			mon->summonduration = 0;
+
 		if(mon->summonduration > 0) //Otherwise, permanent
 			begin_summontimer(mon);
+
 		if(strcmp(message_fmt, "") != 0) //Strings do not match
 			pline(message_fmt, capitalize ? Amonnam(mon) : a_monnam(mon)); //"%s appears in a puff of smoke!"
 	}

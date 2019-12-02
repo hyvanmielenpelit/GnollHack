@@ -183,9 +183,11 @@ makedog()
 			if (Role_if(PM_CAVEMAN))
 				petname = "Slasher"; /* The Warrior */
 			if (Role_if(PM_SAMURAI))
-				petname = "Hachi"; /* Shibuya Station */
+				petname = "Hachiko"; /* Shibuya Station */
 			if (Role_if(PM_BARBARIAN))
 				petname = "Idefix"; /* Obelix */
+			if (Role_if(PM_TOURIST))
+				petname = "Pepe";	/* Finnish Welsh springer spaniel */
 			if (Role_if(PM_RANGER))
 				petname = "Sirius"; /* Orion's dog */
 		}
@@ -196,7 +198,10 @@ makedog()
     if (!mtmp)
         return ((struct monst *) 0); /* pets were genocided */
 
-    context.startingpet_mid = mtmp->m_id;
+	if (pettype == PM_LITTLE_DOG && Role_if(PM_SAMURAI))
+		mtmp->isfaithful = 1; /* Hachiko is well-known for its faithfulness -- JG */
+
+	context.startingpet_mid = mtmp->m_id;
     /* Horses already wear a saddle */
     if (pettype == PM_PONY && !!(otmp = mksobj(SADDLE, TRUE, FALSE, FALSE))) {
         otmp->dknown = otmp->bknown = otmp->rknown = 1;
@@ -538,7 +543,7 @@ long nmv; /* number of moves */
         mtmp->mspec_used -= imv;
 
     /* reduce tameness for every 150 moves you are separated */
-    if (mtmp->mtame) {
+    if (mtmp->mtame && !mtmp->isfaithful) {
         int wilder = (imv + 75) / 150;
         if (mtmp->mtame > wilder)
             mtmp->mtame -= wilder; /* less tame */

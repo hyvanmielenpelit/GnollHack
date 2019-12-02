@@ -211,7 +211,7 @@ doread()
             u.uconduct.literate++;
         useup(scroll);
         return 1;
-    } else if (scroll->otyp == T_SHIRT || scroll->otyp == ALCHEMY_SMOCK) {
+    } else if (objects[scroll->otyp].oc_armor_category == ARM_SHIRT || scroll->otyp == ALCHEMY_SMOCK) {
         char buf[BUFSZ], *mesg;
         const char *endpunct;
 
@@ -220,26 +220,51 @@ doread()
             return 0;
         }
         /* can't read shirt worn under suit (under cloak is ok though) */
-        if (scroll->otyp == T_SHIRT && (uarm || uarmo) && scroll == uarmu) {
+        if (objects[scroll->otyp].oc_armor_category == ARM_SHIRT && (uarm || uarmo) && scroll == uarmu) {
             pline("%s shirt is obscured by %s%s.",
-                  scroll->unpaid ? "That" : "Your", shk_your(buf, uarm),
+                  scroll->unpaid ? "That" : "Your", shk_your(buf, uarmo ? uarmo : uarm),
                   uarmo ? robe_simple_name(uarmo) : suit_simple_name(uarm));
             return 0;
         }
         u.uconduct.literate++;
         /* populate 'buf[]' */
-        mesg = (scroll->otyp == T_SHIRT) ? tshirt_text(scroll, buf)
-                                         : apron_text(scroll, buf);
-        endpunct = "";
-        if (flags.verbose) {
-            int ln = (int) strlen(mesg);
+		if (scroll->otyp == SHIRT_OF_SOUND_MINDEDNESS)
+		{
+			pline("This T-shirt has the words \"Sound Mind Games\" emblazoned upon it in large friendly letters.");
+			if (!objects[scroll->otyp].oc_name_known)
+			{
+				makeknown(scroll->otyp);
+				prinv((char*)0, scroll, 0L);
+			}
+		}
+		else if (scroll->otyp == SHIRT_OF_UNCONTROLLABLE_LAUGHTER)
+		{
+			pline("This T-shirt has a message of incomparable hilarity emblazoned upon it.");
+			if (!objects[scroll->otyp].oc_name_known)
+			{
+				makeknown(scroll->otyp);
+				prinv((char*)0, scroll, 0L);
+			}
+		}
+		else if (scroll->otyp == SHIRT_OF_COMELINESS || scroll->otyp == HAWAIIAN_SHIRT)
+		{
+			pline("There is no text on this T-shirt.");
+		}
+		else
+		{
+			mesg = (scroll->otyp == ALCHEMY_SMOCK) ? apron_text(scroll, buf)
+				: tshirt_text(scroll, buf);
+			endpunct = "";
+			if (flags.verbose) {
+				int ln = (int)strlen(mesg);
 
-            /* we will be displaying a sentence; need ending punctuation */
-            if (ln > 0 && !index(".!?", mesg[ln - 1]))
-                endpunct = ".";
-            pline("It reads:");
-        }
-        pline("\"%s\"%s", mesg, endpunct);
+				/* we will be displaying a sentence; need ending punctuation */
+				if (ln > 0 && !index(".!?", mesg[ln - 1]))
+					endpunct = ".";
+				pline("It reads:");
+			}
+			pline("\"%s\"%s", mesg, endpunct);
+		}
         return 1;
     } else if (scroll->otyp == CREDIT_CARD) {
         static const char *card_msgs[] = {
