@@ -138,6 +138,7 @@ struct monst {
 	Bitfield(hasbloodlust, 1);					/* attacks also peaceful */
 	Bitfield(ispacifist, 1);					/* does not attack peaceful, NOW DEACTIVATED, APPLIES TO ALL */
 	Bitfield(isfaithful, 1);					/* being separate from the owner does not reduce tameness */
+	Bitfield(ispartymember, 1);					/* a peaceful monster that has joined your party (e.g., does not give you the money or items back from its inventory) */
 
     Bitfield(iswiz, 1);     /* is the Wizard of Yendor */
     Bitfield(wormno, 5);    /* at most 31 worms on any level */

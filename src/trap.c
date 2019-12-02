@@ -653,7 +653,8 @@ int *fail_reason;
         /* trap always releases hostile monster */
         mon->mtame = 0; /* (might be petrified pet tossed onto trap) */
         mon->mpeaceful = 0;
-        set_malign(mon);
+		mon->ispartymember = FALSE;
+		set_malign(mon);
     }
 
     comes_to_life = !canspotmon(mon)
@@ -3295,7 +3296,7 @@ domagictrap()
                         continue;
                     mtmp = m_at(u.ux + i, u.uy + j);
                     if (mtmp)
-                        (void) tamedog(mtmp, (struct obj *) 0);
+                        (void) tamedog(mtmp, (struct obj *) 0, FALSE);
                 }
             break;
         }

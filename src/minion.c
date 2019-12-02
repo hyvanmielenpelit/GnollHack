@@ -529,7 +529,10 @@ register struct monst *mtmp;
 		|| (uarms && (uarms->oartifact == ART_EXCALIBUR || uarms->oartifact == ART_DEMONBANE))) {
         pline("%s looks very angry.", Amonnam(mtmp));
         mtmp->mpeaceful = mtmp->mtame = 0;
-        set_malign(mtmp);
+		if (!mtmp->mtame)
+			mtmp->ispartymember = FALSE;
+
+		set_malign(mtmp);
         newsym(mtmp->mx, mtmp->my);
         return 0;
     }

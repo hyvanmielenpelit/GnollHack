@@ -440,7 +440,7 @@ int udist;
                 return dog_eat(mtmp, obj, omx, omy, FALSE);
 
             carryamt = can_carry(mtmp, obj);
-            if (carryamt > 0 && !obj->cursed && !mtmp->issummoned && !Is_container(obj)
+            if (carryamt > 0 && !obj->cursed && !mtmp->issummoned && !mtmp->ispartymember && !Is_container(obj)
                 && could_reach_item(mtmp, obj->ox, obj->oy))
 			{
                 if (rn2(20) < edog->apport + 3)
@@ -1119,7 +1119,7 @@ int after; /* this is extra fast monster movement */
 
         /* dog eschews cursed objects, but likes dog food */
         /* (minion isn't interested; `cursemsg' stays FALSE) */
-        if (has_edog && !mtmp->issummoned)
+        if (has_edog && !mtmp->issummoned && !mtmp->ispartymember)
             for (obj = level.objects[nx][ny]; obj; obj = obj->nexthere) {
                 if (obj->cursed) {
                     cursemsg[i] = TRUE;

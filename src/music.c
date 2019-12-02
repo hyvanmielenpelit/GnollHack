@@ -218,7 +218,7 @@ int distance;
 
     if (u.uswallow) {
         if (!resist(u.ustuck, (struct obj*)0, 8, 0, NOTELL))
-            (void) tamedog(u.ustuck, (struct obj *) 0);
+            (void) tamedog(u.ustuck, (struct obj *) 0, FALSE);
     } else {
         for (mtmp = fmon; mtmp; mtmp = mtmp2) {
             mtmp2 = mtmp->nmon;
@@ -227,7 +227,7 @@ int distance;
 
             if (distu(mtmp->mx, mtmp->my) <= distance) {
                 if (!resist(mtmp, (struct obj*)0, 8, 0, NOTELL))
-                    (void) tamedog(mtmp, (struct obj *) 0);
+                    (void) tamedog(mtmp, (struct obj *) 0, FALSE);
             }
         }
     }

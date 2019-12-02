@@ -629,7 +629,9 @@ int spellnum;
                 && (mtmp2 = makemon(pm, bypos.x, bypos.y, MM_ANGRY)) != 0) {
                 success = TRUE;
                 mtmp2->msleeping = mtmp2->mpeaceful = mtmp2->mtame = 0;
-                set_malign(mtmp2);
+				if (!mtmp2->mtame)
+					mtmp2->ispartymember = FALSE;
+				set_malign(mtmp2);
             }
         }
         newseen = monster_census(TRUE);

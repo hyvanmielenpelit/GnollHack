@@ -2157,7 +2157,7 @@ register struct obj *obj; /* thrownobj or kickedobj or uwep */
 
     } else if (befriend_with_obj(mon->data, obj)
                || (mon->mtame && dogfood(mon, obj) <= ACCFOOD)) {
-        if (tamedog(mon, obj)) {
+        if (tamedog(mon, obj, FALSE)) {
             return 1; /* obj is gone */
         } else {
             tmiss(obj, mon, FALSE);

@@ -976,7 +976,7 @@ struct obj *sobj;
 			make_happy_shk(mtmp, FALSE);
 		else if (!resists_charm(mtmp) && !resist(mtmp, sobj, 0, 0, NOTELL) && !check_ability_resistance_success(mtmp, A_WIS, objects[sobj->otyp].oc_spell_saving_throw_adjustment))
 		{
-			if (tamedog(mtmp, (struct obj*) 0))
+			if (tamedog(mtmp, (struct obj*) 0, FALSE))
 			{
 				if (sobj && !(objects[sobj->otyp].oc_aflags & S1_SPELL_IS_NONREVERSIBLE_PERMANENT))
 				{
@@ -2931,7 +2931,7 @@ struct _create_particular_data *d;
         if (d->fem != -1 && !is_male(mtmp->data) && !is_female(mtmp->data))
             mtmp->female = d->fem; /* ignored for is_neuter() */
         if (d->maketame) {
-            (void) tamedog(mtmp, (struct obj *) 0);
+            (void) tamedog(mtmp, (struct obj *) 0, TRUE);
         } else if (d->makepeaceful || d->makehostile) {
             mtmp->mtame = 0; /* sanity precaution */
             mtmp->mpeaceful = d->makepeaceful ? 1 : 0;

@@ -1122,7 +1122,7 @@ long timeout;
                    while it's in your inventory */
                 if ((yours && !silent)
                     || (carried(egg) && mon->data->mlet == S_DRAGON)) {
-                    if (tamedog(mon, (struct obj *) 0)) {
+                    if (tamedog(mon, (struct obj *) 0, FALSE)) {
                         if (carried(egg) && mon->data->mlet != S_DRAGON)
                             mon->mtame = 20;
                     }

@@ -687,7 +687,9 @@ register struct monst *roamer;
 
     if (EMIN(roamer)->min_align != u.ualign.type) {
         roamer->mpeaceful = roamer->mtame = 0;
-        set_malign(roamer);
+		if (!roamer->mtame)
+			roamer->ispartymember = FALSE;
+		set_malign(roamer);
     }
     newsym(roamer->mx, roamer->my);
 }

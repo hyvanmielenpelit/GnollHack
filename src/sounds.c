@@ -1306,7 +1306,7 @@ dochat()
 	{
 		if(mtmp->data->mlet == S_DOG)
 		{
-			strcpy(available_chat_list[chatnum].name, "\"Sit!\"");
+			strcpy(available_chat_list[chatnum].name, "Command to sit down");
 			available_chat_list[chatnum].function_ptr = &do_chat_pet_sit;
 			available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -1321,7 +1321,7 @@ dochat()
 		}
 		if (mtmp->data->mlet == S_DOG)
 		{
-			strcpy(available_chat_list[chatnum].name, "\"Give paw!\"");
+			strcpy(available_chat_list[chatnum].name, "Command to give paw");
 			available_chat_list[chatnum].function_ptr = &do_chat_pet_givepaw;
 			available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -1335,7 +1335,7 @@ dochat()
 			chatnum++;
 		}
 
-		strcpy(available_chat_list[chatnum].name, "\"Stay!\"");
+		strcpy(available_chat_list[chatnum].name, "Command to stay put");
 		available_chat_list[chatnum].function_ptr = &do_chat_pet_stay;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -1348,7 +1348,7 @@ dochat()
 
 		chatnum++;
 
-		strcpy(available_chat_list[chatnum].name, "\"Follow!\"");
+		strcpy(available_chat_list[chatnum].name, "Command to follow");
 		available_chat_list[chatnum].function_ptr = &do_chat_pet_follow;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -1361,9 +1361,9 @@ dochat()
 
 		chatnum++;
 
-		if (mtmp->minvent && !mtmp->issummoned)
+		if (mtmp->minvent && !mtmp->issummoned && !mtmp->ispartymember)
 		{
-			strcpy(available_chat_list[chatnum].name, "\"Drop your items!\"");
+			strcpy(available_chat_list[chatnum].name, "Command to drop items");
 			available_chat_list[chatnum].function_ptr = &do_chat_pet_dropitems;
 			available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -1377,10 +1377,10 @@ dochat()
 			chatnum++;
 		}
 
-		if (OBJ_AT(mtmp->mx, mtmp->my) && !mtmp->issummoned)
+		if (OBJ_AT(mtmp->mx, mtmp->my) && !mtmp->issummoned && !mtmp->ispartymember)
 		{
 			
-			strcpy(available_chat_list[chatnum].name, "\"Pick the items on the ground!\"");
+			strcpy(available_chat_list[chatnum].name, "Command to pick the items on the ground");
 			available_chat_list[chatnum].function_ptr = &do_chat_pet_pickitems;
 			available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -1397,14 +1397,14 @@ dochat()
 	}
 
 	/* Peaceful monster with sellable items */
-	if (mtmp->mpeaceful 
+	if (mtmp->mpeaceful && !mtmp->mtame
 		&& !mtmp->isshk 
 		&& !mtmp->ispriest
 		&& msound != MS_ORACLE
 		&& !(msound == MS_LEADER || msound == MS_GUARDIAN || msound == MS_NEMESIS)
 		&& mtmp->minvent && count_sellable_items(mtmp) > 0)
 	{
-		strcpy(available_chat_list[chatnum].name, "Buy items");
+		strcpy(available_chat_list[chatnum].name, "Check items for sale");
 		available_chat_list[chatnum].function_ptr = &do_chat_buy_items;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -1420,7 +1420,7 @@ dochat()
 	}
 
 	/* Ask a suitable (speaking) peaceful monster to join */
-	if (mtmp->mpeaceful
+	if (mtmp->mpeaceful && !mtmp->mtame
 		&& (mtmp->data->mflags3 & M3_CHAT_CAN_JOIN_PARTY)
 		&& !(mtmp->data->geno & G_UNIQ)
 		&& !mtmp->isshk
@@ -1429,7 +1429,7 @@ dochat()
 		&& !(msound == MS_LEADER || msound == MS_GUARDIAN || msound == MS_NEMESIS)
 		)
 	{
-		strcpy(available_chat_list[chatnum].name, "Join the party");
+		strcpy(available_chat_list[chatnum].name, "Ask if able to join the party");
 		available_chat_list[chatnum].function_ptr = &do_chat_join_party;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -1447,7 +1447,7 @@ dochat()
 	/* Oracle */
 	if (msound == MS_ORACLE)
 	{
-		strcpy(available_chat_list[chatnum].name, "Consultation");
+		strcpy(available_chat_list[chatnum].name, "Ask for a consultation");
 		available_chat_list[chatnum].function_ptr = &do_chat_oracle_consult;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -1460,7 +1460,7 @@ dochat()
 
 		chatnum++;
 
-		strcpy(available_chat_list[chatnum].name, "Identify items");
+		strcpy(available_chat_list[chatnum].name, "Ask for identification of an item");
 		available_chat_list[chatnum].function_ptr = &do_chat_oracle_identify;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -1473,7 +1473,7 @@ dochat()
 
 		chatnum++;
 
-		strcpy(available_chat_list[chatnum].name, "Englightenment");
+		strcpy(available_chat_list[chatnum].name, "Ask for provision of englightenment");
 		available_chat_list[chatnum].function_ptr = &do_chat_oracle_enlightenment;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -1490,7 +1490,7 @@ dochat()
 	/* Priest */
 	if (msound == MS_PRIEST || mtmp->ispriest)
 	{
-		strcpy(available_chat_list[chatnum].name, "Healing");
+		strcpy(available_chat_list[chatnum].name, "Ask for healing");
 		available_chat_list[chatnum].function_ptr = &do_chat_priest_healing;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -1503,7 +1503,7 @@ dochat()
 
 		chatnum++;
 
-		strcpy(available_chat_list[chatnum].name, "Bless or curse an item");
+		strcpy(available_chat_list[chatnum].name, "Ask for blessing or cursing an item");
 		available_chat_list[chatnum].function_ptr = &do_chat_priest_blesscurse;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -1516,7 +1516,7 @@ dochat()
 
 		chatnum++;
 
-		strcpy(available_chat_list[chatnum].name, "Contribution to the temple");
+		strcpy(available_chat_list[chatnum].name, "Chat about a monetary contribution to the temple");
 		available_chat_list[chatnum].function_ptr = &do_chat_priest_chat;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -1552,7 +1552,7 @@ dochat()
 	/* Shopkeeper */
 	if (msound == MS_SELL || mtmp->isshk)
 	{
-		strcpy(available_chat_list[chatnum].name, "Ask about the business");
+		strcpy(available_chat_list[chatnum].name, "Ask about the state of business");
 		available_chat_list[chatnum].function_ptr = &do_chat_shk_chat;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -1597,7 +1597,7 @@ dochat()
 			   (not angry) and able (not asleep) to speak and the position
 			   contains any objects other than just gold.
 			*/
-			strcpy(available_chat_list[chatnum].name, "Quote items");
+			strcpy(available_chat_list[chatnum].name, "Ask for quotation of items");
 			available_chat_list[chatnum].function_ptr = &do_chat_shk_pricequote;
 			available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -1855,7 +1855,7 @@ struct monst* mtmp;
 		for (int i = 0; obj && i < 20; i++, obj = level.objects[omx][omy])
 		{
 			int carryamt = can_carry(mtmp, obj);
-			if (carryamt > 0 && !obj->cursed && !mtmp->issummoned
+			if (carryamt > 0 && !obj->cursed && !mtmp->issummoned && !mtmp->ispartymember
 				&& could_reach_item(mtmp, obj->ox, obj->oy))
 			{
 				struct monst* shkp = (struct monst*)0;
@@ -1934,10 +1934,69 @@ STATIC_OVL int
 do_chat_join_party(mtmp)
 struct monst* mtmp;
 {
-	int result = 0;
+	if (!mtmp)
+		return 0;
+
+	long umoney;
+	int u_pay;
+	long join_cost = 90 + 10 * mtmp->data->difficulty * mtmp->data->difficulty;
+	char qbuf[QBUFSZ];
+
+	multi = 0;
+	umoney = money_cnt(invent);
 
 
-	return 1;
+	if (!mtmp) {
+		There("is no one here to talk to.");
+		return 0;
+	}
+	else if (!mtmp->mpeaceful) {
+		pline("%s is in no mood for joining.", Monnam(mtmp));
+		return 0;
+	}
+	else if (mtmp->mtame) {
+		if(mtmp->ispartymember)
+			pline("%s is already in your party.", Monnam(mtmp));
+		else
+			pline("%s is already following you.", Monnam(mtmp));
+		return 0;
+	}
+	/*
+	else if (!umoney) {
+		You("have no money.");
+		return 0;
+	}
+	*/
+	pline("%s looks at you and replies:", Monnam(mtmp));
+	Sprintf(qbuf, "\"I can join you for a fee of %d %s. Is this acceptable?\"", join_cost, currency(join_cost));
+
+	switch (ynq(qbuf)) {
+	default:
+	case 'q':
+		return 0;
+	case 'y':
+		if (umoney < (long)join_cost) {
+			You("don't have enough money for that!");
+			return 0;
+		}
+		u_pay = join_cost;
+		break;
+	}
+
+	money2mon(mtmp, (long)u_pay);
+	context.botl = 1;
+
+	boolean success = tamedog(mtmp, (struct obj*)0, TRUE);
+	if (success)
+	{
+		mtmp->ispartymember = TRUE;
+		pline("%s joins your party!", Monnam(mtmp));
+	}
+	else if(!mtmp->mtame)
+	{
+		pline("%s takes your money but refuses join your party after all!", Monnam(mtmp));
+	}
+	return 1; 
 }
 
 

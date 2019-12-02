@@ -270,7 +270,7 @@ struct monst* mattacker;
 {
     int tmp = 0;
     struct permonst *ptr = mon->data;
-	boolean Is_weapon = is_weapon(otmp, mon);
+	boolean Is_weapon = is_weapon(otmp);
 
 	tmp += basehitval(otmp, mon, mattacker);
 

@@ -1312,7 +1312,8 @@ boolean ghostly;
 
             mtmp->m_id = 0;
             mtmp->mpeaceful = mtmp->mtame = 0; /* pet's owner died! */
-        }
+			mtmp->ispartymember = FALSE;
+		}
         if (ghostly && has_omid(otmp)) {
             (void) memcpy((genericptr_t) &oldid, (genericptr_t) OMID(otmp),
                           sizeof(oldid));

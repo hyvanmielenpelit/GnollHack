@@ -772,6 +772,10 @@ register xchar x, y;
                     /* tameness eventually drops to 1 here (never 0) */
                     if (mtmp->mtame && rn2(mtmp->mtame))
                         mtmp->mtame--;
+
+					if (!mtmp->mtame)
+						mtmp->ispartymember = FALSE;
+
                 }
             } else {
                 if (um_dist(mtmp->mx, mtmp->my, 5)) {
@@ -1061,7 +1065,7 @@ struct obj* otmp;
 					if (mtmp->m_lev <= 10 && mtmp->m_lev < u.ulevel && rn2(100) < (percentchance - 100))
 					{
 						You("successfully take control of %s.", the(mon_nam(mtmp)));
-						(void)tamedog(mtmp, (struct obj*) 0);
+						(void)tamedog(mtmp, (struct obj*) 0, FALSE);
 					}
 					else
 					{

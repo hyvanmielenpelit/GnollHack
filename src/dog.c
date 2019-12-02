@@ -28,6 +28,7 @@ struct monst *mtmp;
         EDOG(mtmp) = (struct edog *) 0;
     }
     mtmp->mtame = 0;
+	mtmp->ispartymember = 0;
 }
 
 void
@@ -36,7 +37,8 @@ register struct monst *mtmp;
 {
     mtmp->mtame = is_domestic(mtmp->data) ? 10 : 5;
     mtmp->mpeaceful = 1;
-    mtmp->mavenge = 0;
+	mtmp->ispartymember = 0;
+	mtmp->mavenge = 0;
     set_malign(mtmp); /* recalc alignment now that it's tamed */
     mtmp->mleashed = 0;
     mtmp->meating = 0;
@@ -551,6 +553,9 @@ long nmv; /* number of moves */
             mtmp->mtame = 0; /* untame */
         else
             mtmp->mtame = mtmp->mpeaceful = 0; /* hostile! */
+
+		if (!mtmp->mtame)
+			mtmp->ispartymember = FALSE;
     }
     /* check to see if it would have died as a pet; if so, go wild instead
      * of dying the next time we call dog_move()
@@ -562,7 +567,10 @@ long nmv; /* number of moves */
         if ((monstermoves > edog->hungrytime + 500 && mtmp->mhp < 3)
             || (monstermoves > edog->hungrytime + 750))
             mtmp->mtame = mtmp->mpeaceful = 0;
-    }
+
+		if(!mtmp->mtame)
+			mtmp->ispartymember = 0;
+	}
 
     if (!mtmp->mtame && mtmp->mleashed) {
         /* leashed monsters should always be with hero, consequently
@@ -728,7 +736,9 @@ coord *cc;   /* optional destination coordinates */
 
     if (mtmp->mleashed) {
         mtmp->mtame--;
-        m_unleash(mtmp, TRUE);
+		if (!mtmp->mtame)
+			mtmp->ispartymember = 0;
+		m_unleash(mtmp, TRUE);
     }
     relmon(mtmp, &migrating_mons); /* move it from map to migrating_mons */
 
@@ -896,19 +906,20 @@ register struct obj *obj;
  * succeeded.
  */
 boolean
-tamedog(mtmp, obj)
+tamedog(mtmp, obj, forcetaming)
 register struct monst *mtmp;
 register struct obj *obj;
+boolean forcetaming;
 {
     /* The Wiz, Medusa and the quest nemeses aren't even made peaceful. */
-    if (mtmp->iswiz || mtmp->data == &mons[PM_MEDUSA]
+    if (!mtmp || mtmp->iswiz || mtmp->data == &mons[PM_MEDUSA]
         || (mtmp->data->mflags3 & M3_WANTSARTI))
         return FALSE;
 
     /* worst case, at least it'll be peaceful. */
     mtmp->mpeaceful = 1;
     set_malign(mtmp);
-    if (flags.moonphase == FULL_MOON && night() && rn2(6) && obj
+    if (!forcetaming && flags.moonphase == FULL_MOON && night() && rn2(6) && obj
         && mtmp->data->mlet == S_DOG)
         return FALSE;
 
@@ -952,12 +963,12 @@ register struct obj *obj;
             return FALSE;
     }
 
-    if (mtmp->mtame || !mtmp->mcanmove
+    if (mtmp->mtame ||  (mtmp->data->geno & G_UNIQ) /* Unique monsters cannot be tamed -- JG */
         /* monsters with conflicting structures cannot be tamed */
         || mtmp->isshk || mtmp->isgd || mtmp->ispriest || mtmp->isminion
-        || is_covetous(mtmp->data) || is_human(mtmp->data)
+        || (!forcetaming && (!mtmp->mcanmove || is_covetous(mtmp->data) || is_human(mtmp->data)
         || (is_demon(mtmp->data) && !is_demon(youmonst.data))
-        || (obj && dogfood(mtmp, obj) >= MANFOOD))
+        || (obj && dogfood(mtmp, obj) >= MANFOOD))))
         return FALSE;
 
     if (mtmp->m_id == quest_status.leader_m_id)
@@ -1014,7 +1025,9 @@ boolean was_dead;
 
     if (edog && (edog->killed_by_u == 1 || edog->abuse > 2)) {
         mtmp->mpeaceful = mtmp->mtame = 0;
-        if (edog->abuse >= 0 && edog->abuse < 10)
+		if (!mtmp->mtame)
+			mtmp->ispartymember = 0;
+		if (edog->abuse >= 0 && edog->abuse < 10)
             if (!rn2(edog->abuse + 1))
                 mtmp->mpeaceful = 1;
         if (!quietly && cansee(mtmp->mx, mtmp->my)) {
@@ -1074,7 +1087,10 @@ struct monst *mtmp;
     else
         mtmp->mtame--;
 
-    if (mtmp->mtame && !mtmp->isminion)
+	if (!mtmp->mtame)
+		mtmp->ispartymember = FALSE;
+	
+	if (mtmp->mtame && !mtmp->isminion)
         EDOG(mtmp)->abuse++;
 
     if (!mtmp->mtame && mtmp->mleashed)

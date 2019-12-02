@@ -764,7 +764,7 @@ boolean is_pet; /* If true, pet should keep wielded/worn items */
 
 	while ((otmp = (is_pet ? droppables(mtmp) : mtmp->minvent)) != 0) {
         obj_extract_self(otmp);
-		if (mtmp->issummoned  // Summoned monsters take their possessions with them, except central artifacts
+		if ((mtmp->issummoned || mtmp->ispartymember) // Summoned and joined monsters take their possessions with them, except central artifacts
 			&& otmp->otyp != AMULET_OF_YENDOR
 			&& otmp->otyp != CANDELABRUM_OF_INVOCATION
 			&& otmp->otyp != SPE_BOOK_OF_THE_DEAD

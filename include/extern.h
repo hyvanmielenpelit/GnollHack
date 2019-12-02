@@ -541,7 +541,7 @@ E void FDECL(mon_catchup_elapsed_time, (struct monst *, long));
 E void FDECL(keepdogs, (BOOLEAN_P));
 E void FDECL(migrate_to_level, (struct monst *, XCHAR_P, XCHAR_P, coord *));
 E int FDECL(dogfood, (struct monst *, struct obj *));
-E boolean FDECL(tamedog, (struct monst *, struct obj *));
+E boolean FDECL(tamedog, (struct monst *, struct obj *, BOOLEAN_P));
 E void FDECL(abuse_dog, (struct monst *));
 E void FDECL(wary_dog, (struct monst *, BOOLEAN_P));
 
@@ -3116,7 +3116,7 @@ E void NDECL(makewish);
 E void FDECL(summonitem, (struct obj*, int));
 E void FDECL(summonblackblade, (struct obj*));
 E void FDECL(summonmagearmor, (struct obj*));
-E struct monst* FDECL(summoncreature, (int, int, char *, boolean, boolean, boolean, boolean, boolean, boolean));
+E struct monst* FDECL(summoncreature, (int, int, char *, boolean, boolean, boolean, boolean, boolean, boolean, boolean));
 E void FDECL(summondemon, (int));
 E void FDECL(summondemogorgon, (int));
 E void NDECL(armageddon);

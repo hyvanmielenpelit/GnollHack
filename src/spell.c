@@ -309,7 +309,7 @@ struct obj *book2;
                         if (mtmp->mtame < 20)
                             mtmp->mtame++;
                     } else
-                        (void) tamedog(mtmp, (struct obj *) 0);
+                        (void) tamedog(mtmp, (struct obj *) 0, FALSE);
                 else
                     monflee(mtmp, 0, FALSE, TRUE);
             }

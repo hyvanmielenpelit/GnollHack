@@ -453,8 +453,11 @@ struct obj *corpse;
         resetobjs(mtmp->minvent, FALSE);
         /* do not zero out m_ids for bones levels any more */
         mtmp->mlstmv = 0L;
-        if (mtmp->mtame)
-            mtmp->mtame = mtmp->mpeaceful = 0;
+		if (mtmp->mtame)
+		{
+			mtmp->mtame = mtmp->mpeaceful = 0;
+			mtmp->ispartymember = FALSE;
+		}
     }
     for (ttmp = ftrap; ttmp; ttmp = ttmp->ntrap) {
         ttmp->madeby_u = 0;
