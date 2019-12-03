@@ -1314,7 +1314,7 @@ dochat()
 	/* Tame dog and cat commands */
 	if (has_edog(mtmp) && mtmp->mtame)
 	{
-		if(mtmp->data->mlet == S_DOG)
+		if(mtmp->data->mlet == S_DOG && !mtmp->mstaying && mtmp->mwantstomove)
 		{
 			strcpy(available_chat_list[chatnum].name, "Command to sit down");
 			available_chat_list[chatnum].function_ptr = &do_chat_pet_sit;
@@ -1345,45 +1345,53 @@ dochat()
 			chatnum++;
 		}
 
-		if (mtmp->data->mflags1 & M1_ANIMAL)
-			strcpy(available_chat_list[chatnum].name, "Command to stay put");
-		else if (mtmp->data->mflags3 & M3_SPEAKING)
-			strcpy(available_chat_list[chatnum].name, "Command to hold position");
-		else
-			strcpy(available_chat_list[chatnum].name, "Command to hold position");
+		if (!mtmp->mstaying && mtmp->mwantstomove)
+		{
 
-		available_chat_list[chatnum].function_ptr = &do_chat_pet_stay;
-		available_chat_list[chatnum].charnum = 'a' + chatnum;
+			if (mtmp->data->mflags1 & M1_ANIMAL)
+				strcpy(available_chat_list[chatnum].name, "Command to stay put");
+			else if (mtmp->data->mflags3 & M3_SPEAKING)
+				strcpy(available_chat_list[chatnum].name, "Command to hold position");
+			else
+				strcpy(available_chat_list[chatnum].name, "Command to hold position");
 
-		any = zeroany;
-		any.a_char = available_chat_list[chatnum].charnum;
+			available_chat_list[chatnum].function_ptr = &do_chat_pet_stay;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
 
-		add_menu(win, NO_GLYPH, &any,
-			any.a_char, 0, ATR_NONE,
-			available_chat_list[chatnum].name, MENU_UNSELECTED);
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
 
-		chatnum++;
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
 
-		if (mtmp->data->mflags1 & M1_ANIMAL)
-			strcpy(available_chat_list[chatnum].name, "Command to follow");
-		else if (mtmp->data->mflags3 & M3_SPEAKING)
-			strcpy(available_chat_list[chatnum].name, "Command to stop holding position");
-		else
-			strcpy(available_chat_list[chatnum].name, "Command to stop holding position");
+			chatnum++;
+		}
 
-		available_chat_list[chatnum].function_ptr = &do_chat_pet_follow;
-		available_chat_list[chatnum].charnum = 'a' + chatnum;
 
-		any = zeroany;
-		any.a_char = available_chat_list[chatnum].charnum;
+		if(mtmp->mstaying || !mtmp->mwantstomove)
+		{
+			if (mtmp->data->mflags1 & M1_ANIMAL)
+				strcpy(available_chat_list[chatnum].name, "Command to follow");
+			else if (mtmp->data->mflags3 & M3_SPEAKING)
+				strcpy(available_chat_list[chatnum].name, "Command to stop holding position");
+			else
+				strcpy(available_chat_list[chatnum].name, "Command to stop holding position");
 
-		add_menu(win, NO_GLYPH, &any,
-			any.a_char, 0, ATR_NONE,
-			available_chat_list[chatnum].name, MENU_UNSELECTED);
+			available_chat_list[chatnum].function_ptr = &do_chat_pet_follow;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
 
-		chatnum++;
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
 
-		if (mtmp->minvent && !mtmp->issummoned && !mtmp->ispartymember)
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+		}
+
+		if (mtmp->minvent && droppables(mtmp) && !mtmp->issummoned && !mtmp->ispartymember)
 		{
 			strcpy(available_chat_list[chatnum].name, "Command to drop items");
 			available_chat_list[chatnum].function_ptr = &do_chat_pet_dropitems;
@@ -1846,7 +1854,15 @@ struct monst* mtmp;
 {
 	if (mtmp->mtame > 5 || (mtmp->mtame > 0 && rn2(mtmp->mtame + 1)))
 	{
-		pline("%s sits down and looks determined not to move anywhere.", Monnam(mtmp));
+		if (mtmp->data->mlet == S_UNICORN)
+			pline("%s looks determined not to move anywhere.", Monnam(mtmp));
+		else if (mtmp->data->mflags1 & M1_ANIMAL)
+			pline("%s sits down and looks determined not to move anywhere.", Monnam(mtmp));
+		else if (mtmp->data->mflags3 & M3_SPEAKING)
+			pline("%s starts to hold its position.", Monnam(mtmp));
+		else
+			pline("%s starts to hold its position.", Monnam(mtmp));
+
 		mtmp->mstaying = 25 + rn2(20);
 		mtmp->mwantstomove = 0;
 	}
@@ -1863,7 +1879,15 @@ struct monst* mtmp;
 {
 	if (mtmp->mtame > 0 && mtmp->mstaying)
 	{
-		pline("%s stands up and seems ready to follow you!", Monnam(mtmp));
+		if (mtmp->data->mlet == S_UNICORN)
+			pline("%s seems ready to follow you.", Monnam(mtmp));
+		else if (mtmp->data->mflags1 & M1_ANIMAL)
+			pline("%s stands up and seems ready to follow you!", Monnam(mtmp));
+		else if (mtmp->data->mflags3 & M3_SPEAKING)
+			pline("%s stops holding its position.", Monnam(mtmp));
+		else
+			pline("%s stops holding its position.", Monnam(mtmp));
+
 		mtmp->mstaying = 0;
 		mtmp->mwantstomove = 1;
 	}
