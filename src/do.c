@@ -153,6 +153,138 @@ docharacterstatistics()
 		putstr(datawin, 0, txt);
 	}
 
+	/* Max attributes */
+	Sprintf(buf, "Maximum attribute scores:");
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	Sprintf(buf, "  St:%s Dx:%d Co:%d In:%d Wi:%d Ch:%d", get_strength_string(urace.attrmax[A_STR]),
+		urace.attrmax[A_DEX], urace.attrmax[A_CON], urace.attrmax[A_INT], urace.attrmax[A_WIS], urace.attrmax[A_CHA]);
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+
+	/* Current intrinsics */
+	Sprintf(buf, "Intrinsic abilities:");
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	extern const struct propname {
+		int prop_num;
+		const char* prop_name;
+	} propertynames[]; /* timeout.c */
+
+	int intrinsic_count = 0;
+	for (int i = 1; i <= LAST_PROP; i++)
+	{
+		long innate_intrinsic = u.uprops[i].intrinsic & (INTRINSIC | FROM_FORM);
+		if (innate_intrinsic)
+		{
+			intrinsic_count++;
+
+			char buf2[BUFSIZ] = "";
+			char buf3[BUFSIZ] = "";
+
+			for (int j = 0; propertynames[j].prop_num; j++)
+			{
+				if (propertynames[j].prop_num == i)
+				{
+					strcpy(buf2, propertynames[j].prop_name);
+					*buf2 = highc(*buf2);
+					break;
+				}
+			}
+
+			if (innate_intrinsic & FROM_RACE)
+			{
+				Sprintf(buf3, "race");
+			}
+			else if (innate_intrinsic & FROM_ROLE)
+			{
+				if(strcmp(buf3, ""))
+					Sprintf(eos(buf3), ", ");
+
+				Sprintf(eos(buf3), "role");
+			}
+			else if (innate_intrinsic & FROM_ACQUIRED)
+			{
+				if (strcmp(buf3, ""))
+					Sprintf(eos(buf3), ", ");
+
+				Sprintf(eos(buf3), "acquired");
+			}
+			else if (innate_intrinsic & FROM_FORM)
+			{
+				if (strcmp(buf3, ""))
+					Sprintf(eos(buf3), ", ");
+
+				Sprintf(eos(buf3), "polymorphed form");
+			}
+
+			if (strcmp(buf3, ""))
+				*buf3 = highc(*buf3);
+
+			Sprintf(buf, " %2d - %s (%s)", intrinsic_count, buf2, buf3);
+			txt = buf;
+			putstr(datawin, 0, txt);
+
+
+		}
+	}
+	if (intrinsic_count == 0)
+	{
+		Sprintf(buf, " (None)");
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+
+
+	/* Level-up intrinsics */
+	for(int i = 1; i <= 2; i++)
+	{
+		Sprintf(buf, "Abilities to be acquired from %s:", i == 1 ? "race" : "role");
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+		const struct innate* intrinsic_ability = (i == 1 ? race_abil(urace.malenum) : role_abil(urole.malenum));
+		int abil_count = 0;
+		int table_index = 0;
+		if (intrinsic_ability)
+		{
+			while (intrinsic_ability[table_index].ulevel > 0)
+			{
+				if (intrinsic_ability[table_index].ulevel > u.ulevel&& intrinsic_ability[table_index].propid > 0)
+				{
+					abil_count++;
+
+					char buf2[BUFSIZ] = "";
+
+					for (int j = 0; propertynames[j].prop_num; j++)
+					{
+						if (propertynames[j].prop_num == intrinsic_ability[table_index].propid)
+						{
+							strcpy(buf2, propertynames[j].prop_name);
+							*buf2 = highc(*buf2);
+							break;
+						}
+					}
+					Sprintf(buf, " Level %2d - %s", intrinsic_ability[table_index].ulevel, buf2);
+					txt = buf;
+					putstr(datawin, 0, txt);
+				}
+				table_index++;
+			}
+		}
+		if (abil_count == 0)
+		{
+			Sprintf(buf, " (None)");
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+	}
+
+
 
 	display_nhwindow(datawin, FALSE);
 	destroy_nhwindow(datawin), datawin = WIN_ERR;
@@ -1122,6 +1254,13 @@ register struct obj* obj;
 				putstr(datawin, 0, txt);
 			}
 
+			if (powercnt == 0)
+			{
+				Sprintf(buf, " (None)");
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+
 
 
 			/* Power confer limitations */
@@ -1294,6 +1433,13 @@ register struct obj* obj;
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
+				if (powercnt == 0)
+				{
+					Sprintf(buf, " (None)");
+					txt = buf;
+					putstr(datawin, 0, txt);
+				}
+
 			}
 		}
 
@@ -1438,6 +1584,13 @@ register struct obj* obj;
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
+			if (powercnt == 0)
+			{
+				Sprintf(buf, " (None)");
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+
 
 		}
 
@@ -1568,6 +1721,12 @@ register struct obj* obj;
 			{
 				powercnt++;
 				Sprintf(buf, " %2d - Shines magical light when wielded", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (powercnt == 0)
+			{
+				Sprintf(buf, " (None)");
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}

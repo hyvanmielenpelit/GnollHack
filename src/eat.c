@@ -704,7 +704,7 @@ boolean allowmsg;
                 You("have a bad feeling deep inside.");
             You("cannibal!  You will regret this!");
         }
-        HAggravate_monster |= FROMOUTSIDE;
+        HAggravate_monster |= FROM_ACQUIRED;
         change_luck(-rn1(4, 2)); /* -5..-2 */
         return TRUE;
     }
@@ -740,7 +740,7 @@ register int pm;
         /* cannibals are allowed to eat domestic animals without penalty */
         if (!CANNIBAL_ALLOWED()) {
             You_feel("that eating the %s was a bad idea.", mons[pm].mname);
-            HAggravate_monster |= FROMOUTSIDE;
+            HAggravate_monster |= FROM_ACQUIRED;
         }
         break;
     case PM_LIZARD:
@@ -910,120 +910,120 @@ register struct permonst *ptr;
     switch (type) {
     case FIRE_RES:
         debugpline0("Trying to give fire resistance");
-        if (!(HFire_resistance & FROMOUTSIDE)) {
+        if (!(HFire_resistance & FROM_ACQUIRED)) {
             You(Hallucination ? "be chillin'." : "feel a momentary chill.");
-            HFire_resistance |= FROMOUTSIDE;
+            HFire_resistance |= FROM_ACQUIRED;
         }
         break;
     case SLEEP_RES:
         debugpline0("Trying to give sleep resistance");
-        if (!(HSleep_resistance & FROMOUTSIDE)) {
+        if (!(HSleep_resistance & FROM_ACQUIRED)) {
             You_feel("wide awake.");
-            HSleep_resistance |= FROMOUTSIDE;
+            HSleep_resistance |= FROM_ACQUIRED;
         }
         break;
     case COLD_RES:
         debugpline0("Trying to give cold resistance");
-        if (!(HCold_resistance & FROMOUTSIDE)) {
+        if (!(HCold_resistance & FROM_ACQUIRED)) {
             You_feel("full of hot air.");
-            HCold_resistance |= FROMOUTSIDE;
+            HCold_resistance |= FROM_ACQUIRED;
         }
         break;
     case DISINT_RES:
         debugpline0("Trying to give disintegration resistance");
-        if (!(HDisint_resistance & FROMOUTSIDE)) {
+        if (!(HDisint_resistance & FROM_ACQUIRED)) {
             You_feel(Hallucination ? "totally together, man." : "very firm.");
-            HDisint_resistance |= FROMOUTSIDE;
+            HDisint_resistance |= FROM_ACQUIRED;
         }
         break;
     case SHOCK_RES: /* shock (electricity) resistance */
         debugpline0("Trying to give shock resistance");
-        if (!(HShock_resistance & FROMOUTSIDE)) {
+        if (!(HShock_resistance & FROM_ACQUIRED)) {
             if (Hallucination)
                 You_feel("grounded in reality.");
             else
                 Your("health currently feels amplified!");
-            HShock_resistance |= FROMOUTSIDE;
+            HShock_resistance |= FROM_ACQUIRED;
         }
         break;
 	case DEATH_RES: /* death resistance */
 		debugpline0("Trying to give death resistance");
-		if (!(HDeath_resistance & FROMOUTSIDE)) {
+		if (!(HDeath_resistance & FROM_ACQUIRED)) {
 			if (Hallucination)
 				You_feel("immortal!");
 			else
 				Your("life force feels firmer!");
-			HDeath_resistance |= FROMOUTSIDE;
+			HDeath_resistance |= FROM_ACQUIRED;
 		}
 		break;
 	case CHARM_RES: /* charm resistance */
 		debugpline0("Trying to give charm resistance");
-		if (!(HCharm_resistance & FROMOUTSIDE)) {
+		if (!(HCharm_resistance & FROM_ACQUIRED)) {
 			if (Hallucination)
 				pline("The machinations of the world suddenly make more sense to you!");
 			else
 				You_feel("more firm about your own motivations!");
-			HCharm_resistance |= FROMOUTSIDE;
+			HCharm_resistance |= FROM_ACQUIRED;
 		}
 		break;
 	case MIND_SHIELDING: /* mind shielding */
 		debugpline0("Trying to give mind shielding");
-		if (!(HMind_shielding & FROMOUTSIDE)) {
+		if (!(HMind_shielding & FROM_ACQUIRED)) {
 			if (Hallucination)
 				pline("You finally feel secure from those tentacled monstrosities!");
 			else
 				You_feel("shielded against mental detection!");
-			HMind_shielding |= FROMOUTSIDE;
+			HMind_shielding |= FROM_ACQUIRED;
 		}
 		break;
 	case LYCANTHROPY_RES: /* immunity to lycanthropy */
 		debugpline0("Trying to give immunity to lycanthropy");
-		if (!(HLycanthropy_resistance & FROMOUTSIDE)) {
+		if (!(HLycanthropy_resistance & FROM_ACQUIRED)) {
 			if (Hallucination)
 				You_feel("bugs do not bother you!");
 			else
 				You("are protected against lycathropy!");
-			HLycanthropy_resistance |= FROMOUTSIDE;
+			HLycanthropy_resistance |= FROM_ACQUIRED;
 		}
 		break;
 	case CURSE_RES: /* protection from curses */
 		debugpline0("Trying to give protection from curses");
-		if (!(HCurse_resistance & FROMOUTSIDE)) {
+		if (!(HCurse_resistance & FROM_ACQUIRED)) {
 			if (Hallucination)
 				You_feel("auras are suddenly a bit less bothersome to you!");
 			else
 				You("are protected against curses!");
-			HCurse_resistance |= FROMOUTSIDE;
+			HCurse_resistance |= FROM_ACQUIRED;
 		}
 		break;
 	case POISON_RES:
         debugpline0("Trying to give poison resistance");
-        if (!(HPoison_resistance & FROMOUTSIDE)) {
+        if (!(HPoison_resistance & FROM_ACQUIRED)) {
             You_feel(Poison_resistance ? "especially healthy." : "healthy.");
-            HPoison_resistance |= FROMOUTSIDE;
+            HPoison_resistance |= FROM_ACQUIRED;
         }
         break;
     case TELEPORT:
         debugpline0("Trying to give teleport");
-        if (!(HTeleportation & FROMOUTSIDE)) {
+        if (!(HTeleportation & FROM_ACQUIRED)) {
             You_feel(Hallucination ? "diffuse." : "very jumpy.");
-            HTeleportation |= FROMOUTSIDE;
+            HTeleportation |= FROM_ACQUIRED;
         }
         break;
     case TELEPORT_CONTROL:
         debugpline0("Trying to give teleport control");
-        if (!(HTeleport_control & FROMOUTSIDE)) {
+        if (!(HTeleport_control & FROM_ACQUIRED)) {
             You_feel(Hallucination ? "centered in your personal space."
                                    : "in control of yourself.");
-            HTeleport_control |= FROMOUTSIDE;
+            HTeleport_control |= FROM_ACQUIRED;
         }
         break;
     case BLIND_TELEPAT:
         debugpline0("Trying to give blind-telepathy");
-        if (!(HBlind_telepat & FROMOUTSIDE)) {
+        if (!(HBlind_telepat & FROM_ACQUIRED)) {
             You_feel(Hallucination ? "in touch with the cosmos."
                                    : "a strange mental acuity.");
-            HBlind_telepat |= FROMOUTSIDE;
+            HBlind_telepat |= FROM_ACQUIRED;
             /* If blind, make sure monsters show up. */
             if (Blind)
                 see_monsters();
@@ -1031,10 +1031,10 @@ register struct permonst *ptr;
         break;
 	case TELEPAT:
 		debugpline0("Trying to give telepathy");
-		if (!(HTelepat & FROMOUTSIDE)) {
+		if (!(HTelepat & FROM_ACQUIRED)) {
 			You_feel(Hallucination ? "in touch with the cosmos."
 				: "a peculiar mental acuity.");
-			HTelepat |= FROMOUTSIDE;
+			HTelepat |= FROM_ACQUIRED;
 			see_monsters();
 		}
 		break;
@@ -1108,8 +1108,8 @@ int pm;
         } else {
             if (!(HInvis & INTRINSIC))
                 You_feel("hidden!");
-            HInvis |= FROMOUTSIDE;
-            HSee_invisible |= FROMOUTSIDE;
+            HInvis |= FROM_ACQUIRED;
+            HSee_invisible |= FROM_ACQUIRED;
         }
         newsym(u.ux, u.uy);
         /*FALLTHRU*/
@@ -1169,7 +1169,7 @@ int pm;
             HFast &= ~INTRINSIC;
             You("seem slower.");
         } else {
-            HFast |= FROMOUTSIDE;
+            HFast |= FROM_ACQUIRED;
             You("seem faster.");
         }
         break;
@@ -2191,10 +2191,10 @@ struct obj *otmp;
             if (!objects[typ].oc_oprop)
                 break; /* should never happen */
 
-            if (!(u.uprops[objects[typ].oc_oprop].intrinsic & FROMOUTSIDE))
+            if (!(u.uprops[objects[typ].oc_oprop].intrinsic & FROM_ACQUIRED))
                 accessory_has_effect(otmp);
 
-            u.uprops[objects[typ].oc_oprop].intrinsic |= FROMOUTSIDE;
+            u.uprops[objects[typ].oc_oprop].intrinsic |= FROM_ACQUIRED;
 
             switch (typ) {
             case RIN_SEE_INVISIBLE:
@@ -2220,7 +2220,7 @@ struct obj *otmp;
                 rescham();
                 break;
             case RIN_LEVITATION:
-                /* undo the `.intrinsic |= FROMOUTSIDE' done above */
+                /* undo the `.intrinsic |= FROM_ACQUIRED' done above */
                 u.uprops[LEVITATION].intrinsic = oldprop;
                 if (!Levitation) {
                     float_up();
@@ -2280,7 +2280,7 @@ struct obj *otmp;
             break;
         case RIN_PROTECTION:
             accessory_has_effect(otmp);
-            HProtection |= FROMOUTSIDE;
+            HProtection |= FROM_ACQUIRED;
 			u.ubaseacbonus = (schar)bounded_increase((int)u.ubaseacbonus, otmp->spe,
 				RIN_PROTECTION);
 			//u.ublessed = bounded_increase(u.ublessed, otmp->spe,
@@ -2289,11 +2289,11 @@ struct obj *otmp;
             break;
         case RIN_FREE_ACTION:
             /* Give sleep resistance instead */
-            if (!(HSleep_resistance & FROMOUTSIDE))
+            if (!(HSleep_resistance & FROM_ACQUIRED))
                 accessory_has_effect(otmp);
             if (!Sleep_resistance)
                 You_feel("wide awake.");
-            HSleep_resistance |= FROMOUTSIDE;
+            HSleep_resistance |= FROM_ACQUIRED;
             break;
         case AMULET_OF_CHANGE:
             accessory_has_effect(otmp);
@@ -2318,9 +2318,9 @@ struct obj *otmp;
         case AMULET_OF_RESTFUL_SLEEP: { /* another bad idea! */
             //long newnap = (long) rnd(100), oldnap = (HSleepy & TIMEOUT);
 
-            if (!(HSleepy & FROMOUTSIDE))
+            if (!(HSleepy & FROM_ACQUIRED))
                 accessory_has_effect(otmp);
-            HSleepy |= FROMOUTSIDE;
+            HSleepy |= FROM_ACQUIRED;
             /* might also be wearing one; use shorter of two timeouts */
             //if (newnap < oldnap || oldnap == 0L)
             //    HSleepy = (HSleepy & ~TIMEOUT) | newnap;
@@ -3105,7 +3105,7 @@ gethungry()
 
     if (moves % 2) { /* odd turns */
         /* Regeneration uses up food, unless due to an artifact */
-        if ((HRegeneration & ~FROMFORM)
+        if ((HRegeneration & ~FROM_FORM)
             || (ERegeneration & ~(W_ARTI | W_WEP)))
             u.uhunger--;
         if (near_capacity() > SLT_ENCUMBER)

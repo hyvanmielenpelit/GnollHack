@@ -2151,36 +2151,36 @@ OBJECT(OBJ("acid venom", "splash of venom"), None, None,
         /* +d6 small or large */
 
 /* Reagents here, which do not belong to any class, includes also all other odd non-food objects with no other apparent purpose*/
-#define REAGENT(name, prob, multigen, eatdelay, wt, cost, material, ediblesubtype, nutrition, color, flags, flags2, flags3, powconfermask)         \
-    OBJECT(OBJ(name, None), None, None,                                      \
-           BITS(1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, P_NONE, material), \
+#define REAGENT(name, desc, known, prob, multigen, eatdelay, wt, cost, material, ediblesubtype, nutrition, color, flags, flags2, flags3, powconfermask)         \
+    OBJECT(OBJ(name, desc), None, None,                                      \
+           BITS(known, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, P_NONE, material), \
 		   0, 0, 0, REAGENT_CLASS, prob, multigen, eatdelay, wt, cost, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, ediblesubtype, 0, 0, 0, 0, 0, 0, 0, \
            nutrition, color, 0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
 
-	REAGENT("thread of spider silk",	 50, MULTIGEN_SINGLE, 0, 1, 10, MAT_SILK, 0,					 2, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* STARTMARKER 1&2 */
+	REAGENT("thread of spider silk", None, 1,	50, MULTIGEN_SINGLE, 0, 1, 10, MAT_SILK, 0,					 2, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* STARTMARKER 1&2 */
 
-	REAGENT("clump of bat guano",		100, MULTIGEN_SINGLE, 2, 2,  10, MAT_ORGANIC, EDIBLE_ROTTEN, 20, CLR_BROWN, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
-	REAGENT("ginseng root",				150, MULTIGEN_SINGLE, 1, 3,  10, MAT_VEGGY, EDIBLE_NORMAL, 40, CLR_BROWN, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
-	REAGENT("mandrake root",			 50, MULTIGEN_SINGLE, 1, 3,  10, MAT_VEGGY, EDIBLE_NORMAL, 40, CLR_MAGENTA, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
-	REAGENT("heap of sporal powder",	 50, MULTIGEN_SINGLE, 1, 1,  10, MAT_ORGANIC, EDIBLE_NORMAL, 1, CLR_GRAY, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
-	REAGENT("sprig of wolfsbane",		100, MULTIGEN_SINGLE, 1, 1,  10, MAT_VEGGY, EDIBLE_POISONOUS, 40, CLR_GREEN, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
-	REAGENT("clove of garlic",			100, MULTIGEN_SINGLE, 1, 1,  10, MAT_VEGGY, EDIBLE_NORMAL, 40, CLR_WHITE, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
-	REAGENT("bone",						100, MULTIGEN_SINGLE, 1, 16, 10, MAT_BONE, 0, 40, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-	REAGENT("human skull",				 50, MULTIGEN_SINGLE, 1, 32, 10, MAT_BONE, 0, 40, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-	REAGENT("piece of wood",			100, MULTIGEN_SINGLE, 1, 16, 10, MAT_WOOD, 0, 40, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-	REAGENT("pinch of sulfurous ash",	100, MULTIGEN_SINGLE, 1, 1,  10, MAT_MINERAL, 0, 40, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	REAGENT("clump of bat guano", None, 1,	100, MULTIGEN_SINGLE, 2, 2,  10, MAT_ORGANIC, EDIBLE_ROTTEN, 20, CLR_BROWN, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
+	REAGENT("ginseng root", None, 1, 150, MULTIGEN_SINGLE, 1, 3,  10, MAT_VEGGY, EDIBLE_NORMAL, 40, CLR_BROWN, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
+	REAGENT("mandrake root", None, 1, 50, MULTIGEN_SINGLE, 1, 3,  10, MAT_VEGGY, EDIBLE_NORMAL, 40, CLR_MAGENTA, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
+	REAGENT("heap of sporal powder", None, 1, 50, MULTIGEN_SINGLE, 1, 1,  10, MAT_ORGANIC, EDIBLE_NORMAL, 1, CLR_GRAY, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
+	REAGENT("sprig of wolfsbane", None, 1, 100, MULTIGEN_SINGLE, 1, 1,  10, MAT_VEGGY, EDIBLE_POISONOUS, 40, CLR_GREEN, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
+	REAGENT("clove of garlic", None, 1, 100, MULTIGEN_SINGLE, 1, 1,  10, MAT_VEGGY, EDIBLE_NORMAL, 40, CLR_WHITE, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
+	REAGENT("bone", None, 1, 100, MULTIGEN_SINGLE, 1, 16, 10, MAT_BONE, 0, 40, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	REAGENT("human skull", None, 1, 50, MULTIGEN_SINGLE, 1, 32, 10, MAT_BONE, 0, 40, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	REAGENT("piece of wood", None, 1, 100, MULTIGEN_SINGLE, 1, 16, 10, MAT_WOOD, 0, 40, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	REAGENT("pinch of sulfurous ash", None, 1, 100, MULTIGEN_SINGLE, 1, 1,  10, MAT_MINERAL, 0, 40, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 
-	REAGENT("modronite ball",			  0, MULTIGEN_SINGLE, 1, 42, 100, MAT_MODRONITE, 0, 160, CLR_CYAN, O1_NONE, O2_MODRON_ITEM, O3_NONE, PERMITTED_ALL),
-	REAGENT("modronite monopole",		  0, MULTIGEN_SINGLE, 1, 42, 100, MAT_MODRONITE, 0, 160, CLR_CYAN, O1_NONE, O2_MODRON_ITEM, O3_NONE, PERMITTED_ALL),
-	REAGENT("modronite tetrahedron",	  0, MULTIGEN_SINGLE, 1, 42, 100, MAT_MODRONITE, 0, 160, CLR_CYAN, O1_NONE, O2_MODRON_ITEM, O3_NONE, PERMITTED_ALL),
-	REAGENT("modronite cube",			  0, MULTIGEN_SINGLE, 1, 42, 100, MAT_MODRONITE, 0, 160, CLR_CYAN, O1_NONE, O2_MODRON_ITEM, O3_NONE, PERMITTED_ALL),
-	REAGENT("modronite octahedron",		  0, MULTIGEN_SINGLE, 1, 42, 100, MAT_MODRONITE, 0, 160, CLR_CYAN, O1_NONE, O2_MODRON_ITEM, O3_NONE, PERMITTED_ALL),
-	REAGENT("modronite dodecahedron",	  0, MULTIGEN_SINGLE, 1, 42, 100, MAT_MODRONITE, 0, 160, CLR_CYAN, O1_NONE, O2_MODRON_ITEM, O3_NONE, PERMITTED_ALL),
-	REAGENT("modronite icosahedron",	  0, MULTIGEN_SINGLE, 1, 42, 100, MAT_MODRONITE, 0, 160, CLR_CYAN, O1_NONE, O2_MODRON_ITEM, O3_NONE, PERMITTED_ALL),
+	REAGENT("modronite ball", "alien ball-shaped object",						0, 0, MULTIGEN_SINGLE, 1, 16, 100, MAT_MODRONITE, 0, 160, CLR_CYAN, O1_NONE, O2_MODRON_ITEM, O3_NONE, PERMITTED_ALL),
+	REAGENT("modronite monopole", "alien pole-shaped object",					0, 0, MULTIGEN_SINGLE, 1, 16, 100, MAT_MODRONITE, 0, 160, CLR_CYAN, O1_NONE, O2_MODRON_ITEM, O3_NONE, PERMITTED_ALL),
+	REAGENT("modronite tetrahedron", "alien pyramidal object",					0, 0, MULTIGEN_SINGLE, 1, 16, 100, MAT_MODRONITE, 0, 160, CLR_CYAN, O1_NONE, O2_MODRON_ITEM, O3_NONE, PERMITTED_ALL),
+	REAGENT("modronite cube", "alien cubic object",								0, 0, MULTIGEN_SINGLE, 1, 16, 100, MAT_MODRONITE, 0, 160, CLR_CYAN, O1_NONE, O2_MODRON_ITEM, O3_NONE, PERMITTED_ALL),
+	REAGENT("modronite octahedron", "alien eight-faced polyhedral object",		0, 0, MULTIGEN_SINGLE, 1, 16, 100, MAT_MODRONITE, 0, 160, CLR_CYAN, O1_NONE, O2_MODRON_ITEM, O3_NONE, PERMITTED_ALL),
+	REAGENT("modronite dodecahedron", "alien twelve-faced polyhedral object",	0, 0, MULTIGEN_SINGLE, 1, 16, 100, MAT_MODRONITE, 0, 160, CLR_CYAN, O1_NONE, O2_MODRON_ITEM, O3_NONE, PERMITTED_ALL),
+	REAGENT("modronite icosahedron", "alien twenty-faced polyhedral object",	0, 0, MULTIGEN_SINGLE, 1, 16, 100, MAT_MODRONITE, 0, 160, CLR_CYAN, O1_NONE, O2_MODRON_ITEM, O3_NONE, PERMITTED_ALL),
 
-	REAGENT("feather",					50, MULTIGEN_SINGLE, 0, 1, 10, MAT_ORGANIC, 0, 10, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* STARTMARKER 1&2 */
+	REAGENT("feather", None, 1, 50, MULTIGEN_SINGLE, 0, 1, 10, MAT_ORGANIC, 0, 10, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* STARTMARKER 1&2 */
 
 #undef REAGENT
 

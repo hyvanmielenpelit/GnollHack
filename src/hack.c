@@ -540,7 +540,7 @@ dosinkfall()
     register struct obj *obj;
     int dmg;
     boolean lev_boots = (uarmf && uarmf->otyp == LEVITATION_BOOTS),
-            innate_lev = ((HLevitation & (FROMOUTSIDE | FROMFORM)) != 0L),
+            innate_lev = ((HLevitation & (FROM_ACQUIRED | FROM_FORM)) != 0L),
             /* to handle being chained to buried iron ball, trying to
                levitate but being blocked, then moving onto adjacent sink;
                no need to worry about being blocked by terrain because we
@@ -1411,13 +1411,13 @@ domove_core()
                 || is_clinger(youmonst.data) || is_whirly(youmonst.data)) {
                 on_ice = FALSE;
             } else if (!rn2(Cold_resistance ? 3 : 2)) {
-                HFumbling |= FROMOUTSIDE;
+                HFumbling |= FROM_ACQUIRED;
                 HFumbling &= ~TIMEOUT;
                 HFumbling += 1; /* slip on next move */
             }
         }
-        if (!on_ice && (HFumbling & FROMOUTSIDE))
-            HFumbling &= ~FROMOUTSIDE;
+        if (!on_ice && (HFumbling & FROM_ACQUIRED))
+            HFumbling &= ~FROM_ACQUIRED;
 
         x = u.ux + u.dx;
         y = u.uy + u.dy;
@@ -2034,9 +2034,9 @@ switch_terrain()
         /* called from spoteffects(), stop levitating but skip float_down() */
         if (Levitation)
             You_cant("levitate in here.");
-        BLevitation |= FROMOUTSIDE;
+        BLevitation |= FROM_ACQUIRED;
     } else if (BLevitation) {
-        BLevitation &= ~FROMOUTSIDE;
+        BLevitation &= ~FROM_ACQUIRED;
         /* we're probably levitating now; if not, we must be chained
            to a buried iron ball so get float_up() feedback for that */
         if (Levitation || BLevitation)
@@ -2046,9 +2046,9 @@ switch_terrain()
     if (blocklev) {
         if (Flying)
             You_cant("fly in here.");
-        BFlying |= FROMOUTSIDE;
+        BFlying |= FROM_ACQUIRED;
     } else if (BFlying) {
-        BFlying &= ~FROMOUTSIDE;
+        BFlying &= ~FROM_ACQUIRED;
         float_vs_flight(); /* maybe toggle (BFlying & I_SPECIAL) */
         /* [minor bug: we don't know whether this is beginning flight or
            resuming it; that could be tracked so that this message could

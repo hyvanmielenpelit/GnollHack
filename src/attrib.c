@@ -19,101 +19,100 @@ const char
     *const attrname[] = { "strength", "intelligence", "wisdom",
                           "dexterity", "constitution", "charisma" };
 
-static const struct innate {
-    schar ulevel;
-    long *ability;
-    const char *gainstr, *losestr;
-} arc_abil[] = { { 1, &(HStealth), "", "" },
-                 { 1, &(HFast), "", "" },
-                 { 10, &(HSearching), "perceptive", "" },
+static const struct innate 
+  arc_abil[] = { { 1, STEALTH, "", "" }, /* &(HStealth) */
+                 { 1, FAST, "", "" },
+                 { 10, SEARCHING, "perceptive", "" },
                  { 0, 0, 0, 0 } },
 
-  bar_abil[] = { { 1, &(HPoison_resistance), "", "" },
-                 { 7, &(HFast), "quick", "slow" },
-                 { 15, &(HStealth), "stealthy", "" },
+  bar_abil[] = { { 1, POISON_RES, "", "" },
+                 { 7, FAST, "quick", "slow" },
+                 { 15, STEALTH, "stealthy", "" },
                  { 0, 0, 0, 0 } },
 
-  cav_abil[] = { { 7, &(HFast), "quick", "slow" },
-                 { 15, &(HWarning), "sensitive", "" },
+  cav_abil[] = { { 7, FAST, "quick", "slow" },
+                 { 15, WARNING, "sensitive", "" },
                  { 0, 0, 0, 0 } },
 
-  hea_abil[] = { { 1, &(HPoison_resistance), "", "" },
-                 { 15, &(HWarning), "sensitive", "" },
+  hea_abil[] = { { 1, POISON_RES, "", "" },
+                 { 15, WARNING, "sensitive", "" },
                  { 0, 0, 0, 0 } },
 
-  kni_abil[] = { { 7, &(HFast), "quick", "slow" }, { 0, 0, 0, 0 } },
+  kni_abil[] = { { 7, FAST, "quick", "slow" }, { 0, 0, 0, 0 } },
 
-  mon_abil[] = { { 1, &(HFast), "", "" },
-                 { 1, &(HSleep_resistance), "", "" },
-                 { 1, &(HSee_invisible), "", "" },
-                 { 3, &(HPoison_resistance), "healthy", "" },
-                 { 5, &(HStealth), "stealthy", "" },
-                 { 7, &(HWarning), "sensitive", "" },
-                 { 9, &(HSearching), "perceptive", "unaware" },
-                 { 11, &(HFire_resistance), "cool", "warmer" },
-                 { 13, &(HCold_resistance), "warm", "cooler" },
-                 { 15, &(HShock_resistance), "insulated", "conductive" },
-                 { 17, &(HTeleport_control), "controlled", "uncontrolled" },
-				 { 19, &(HDeath_resistance), "less mortal", "more mortal" },
-				 { 21, &(HLycanthropy_resistance), "less suspectible to lycanthropy", "more suspectible to lycanthropy" },
+  mon_abil[] = { { 1, FAST, "", "" },
+                 { 1, SLEEP_RES, "", "" },
+                 { 1, SEE_INVIS, "", "" },
+                 { 3, POISON_RES, "healthy", "" },
+                 { 5, STEALTH, "stealthy", "" },
+                 { 7, WARNING, "sensitive", "" },
+                 { 9, SEARCHING, "perceptive", "unaware" },
+                 { 11, FIRE_RES, "cool", "warmer" },
+                 { 13, COLD_RES, "warm", "cooler" },
+                 { 15, SHOCK_RES, "insulated", "conductive" },
+                 { 17, TELEPORT_CONTROL, "controlled", "uncontrolled" },
+				 { 19, DEATH_RES, "less mortal", "more mortal" },
+				 { 21, LYCANTHROPY_RES, "less suspectible to lycanthropy", "more suspectible to lycanthropy" },
 				 { 0, 0, 0, 0 } },
 
-  pri_abil[] = { { 15, &(HWarning), "sensitive", "" },
-                 { 20, &(HFire_resistance), "cool", "warmer" },
+  pri_abil[] = { { 15, WARNING, "sensitive", "" },
+                 { 20, FIRE_RES, "cool", "warmer" },
                  { 0, 0, 0, 0 } },
 
-  ran_abil[] = { { 1, &(HSearching), "", "" },
-                 { 7, &(HStealth), "stealthy", "" },
-                 { 15, &(HSee_invisible), "", "" },
+  ran_abil[] = { { 1, SEARCHING, "", "" },
+                 { 7, STEALTH, "stealthy", "" },
+                 { 15, SEE_INVIS, "", "" },
                  { 0, 0, 0, 0 } },
 
-  rog_abil[] = { { 1, &(HStealth), "", "" },
-                 { 10, &(HSearching), "perceptive", "" },
+  rog_abil[] = { { 1, STEALTH, "", "" },
+                 { 10, SEARCHING, "perceptive", "" },
                  { 0, 0, 0, 0 } },
 
-  sam_abil[] = { { 1, &(HFast), "", "" },
-                 { 15, &(HStealth), "stealthy", "" },
+  sam_abil[] = { { 1, FAST, "", "" },
+                 { 15, STEALTH, "stealthy", "" },
                  { 0, 0, 0, 0 } },
 
-  tou_abil[] = { { 10, &(HSearching), "perceptive", "" },
-                 { 20, &(HPoison_resistance), "hardy", "" },
+  tou_abil[] = { { 10, SEARCHING, "perceptive", "" },
+                 { 20, POISON_RES, "hardy", "" },
                  { 0, 0, 0, 0 } },
 
-  val_abil[] = { { 1, &(HCold_resistance), "", "" },
-                 { 1, &(HStealth), "", "" },
-                 { 7, &(HFast), "quick", "slow" },
+  val_abil[] = { { 1, COLD_RES, "", "" },
+                 { 1, STEALTH, "", "" },
+                 { 7, FAST, "quick", "slow" },
                  { 0, 0, 0, 0 } },
 
-  wiz_abil[] = { { 15, &(HWarning), "sensitive", "" },
-                 { 17, &(HTeleport_control), "controlled", "uncontrolled" },
+  wiz_abil[] = { { 15, WARNING, "sensitive", "" },
+                 { 17, TELEPORT_CONTROL, "controlled", "uncontrolled" },
                  { 0, 0, 0, 0 } },
 
   /* Intrinsics conferred by race */
-  dwa_abil[] = { { 1, &HInfravision, "", "" },
+  dwa_abil[] = { { 1, INFRAVISION, "", "" },
                  { 0, 0, 0, 0 } },
 
-  elf_abil[] = { { 1, &HInfravision, "", "" },
-                 { 4, &HSleep_resistance, "awake", "tired" },
+  elf_abil[] = { { 1, INFRAVISION, "", "" },
+                 { 4, SLEEP_RES, "awake", "tired" },
                  { 0, 0, 0, 0 } },
 
-  gno_abil[] = { { 1, &HInfravision, "", "" },
+  gno_abil[] = { { 1, INFRAVISION, "", "" },
                  { 0, 0, 0, 0 } },
 
-  orc_abil[] = { { 1, &HInfravision, "", "" },
-                 { 1, &HPoison_resistance, "", "" },
+  orc_abil[] = { { 1, INFRAVISION, "", "" },
+                 { 1, POISON_RES, "", "" },
                  { 0, 0, 0, 0 } },
 
-  gnl_abil[] = { { 1, &HPoison_resistance, "", "" },
+  gnl_abil[] = { { 1, POISON_RES, "", "" },
 				   { 0, 0, 0, 0 } },
 
   hum_abil[] = { { 0, 0, 0, 0 } };
 
 
 STATIC_DCL void NDECL(exerper);
-STATIC_DCL void FDECL(postadjabil, (long *));
-STATIC_DCL const struct innate *FDECL(role_abil, (int));
+STATIC_DCL void FDECL(postadjabil, (int));
+
+#if 0
 STATIC_DCL const struct innate *FDECL(check_innate_abil, (long *, long));
 STATIC_DCL int FDECL(innately, (long *));
+#endif
 
 /* adjust an attribute; return TRUE if change is made, FALSE otherwise */
 boolean
@@ -1181,19 +1180,20 @@ redist_attr()
 
 STATIC_OVL
 void
-postadjabil(ability)
-long *ability;
+postadjabil(propid)
+int propid;
 {
-    if (!ability)
+    if (!propid)
         return;
-    if (ability == &(HWarning) || ability == &(HSee_invisible))
+    if (propid == WARNING|| propid == SEE_INVIS)
         see_monsters();
 }
 
-STATIC_OVL const struct innate *
+const struct innate *
 role_abil(r)
 int r;
 {
+	/*
     const struct {
         short role;
         const struct innate *abil;
@@ -1218,7 +1218,88 @@ int r;
     for (i = 0; roleabils[i].abil && roleabils[i].role != r; i++)
         continue;
     return roleabils[i].abil;
+	*/
+
+
+	const struct innate* abil = (struct innate*)0;
+	switch (r) {
+	case PM_ARCHEOLOGIST:
+		abil = arc_abil;
+		break;
+	case PM_BARBARIAN:
+		abil = bar_abil;
+		break;
+	case PM_CAVEMAN:
+		abil = cav_abil;
+		break;
+	case PM_HEALER:
+		abil = hea_abil;
+		break;
+	case PM_KNIGHT:
+		abil = kni_abil;
+		break;
+	case PM_MONK:
+		abil = mon_abil;
+		break;
+	case PM_PRIEST:
+		abil = pri_abil;
+		break;
+	case PM_RANGER:
+		abil = ran_abil;
+		break;
+	case PM_ROGUE:
+		abil = rog_abil;
+		break;
+	case PM_SAMURAI:
+		abil = sam_abil;
+		break;
+	case PM_TOURIST:
+		abil = tou_abil;
+		break;
+	case PM_VALKYRIE:
+		abil = val_abil;
+		break;
+	case PM_WIZARD:
+		abil = wiz_abil;
+		break;
+	default:
+		break;
+	}
+
+	return abil;
+
 }
+
+const struct innate*
+race_abil(r)
+int r;
+{
+	const struct innate* rabil = (struct innate*)0;
+	switch (r) {
+	case PM_ELF:
+		rabil = elf_abil;
+		break;
+	case PM_ORC:
+		rabil = orc_abil;
+		break;
+	case PM_HUMAN:
+		rabil = hum_abil;
+		break;
+	case PM_DWARF:
+		rabil = dwa_abil;
+		break;
+	case PM_GNOLL:
+		rabil = gnl_abil;
+		break;
+	default:
+		break;
+	}
+
+	return rabil;
+}
+
+
+#if 0
 
 STATIC_OVL const struct innate *
 check_innate_abil(ability, frommask)
@@ -1227,9 +1308,9 @@ long frommask;
 {
     const struct innate *abil = 0;
 
-    if (frommask == FROMEXPER)
+    if (frommask == FROM_ROLE)
         abil = role_abil(Role_switch);
-    else if (frommask == FROMRACE)
+    else if (frommask == FROM_RACE)
         switch (Race_switch) {
         case PM_DWARF:
             abil = dwa_abil;
@@ -1250,23 +1331,27 @@ long frommask;
             break;
         }
 
-    while (abil && abil->ability) {
-        if ((abil->ability == ability) && (u.ulevel >= abil->ulevel))
+	while (abil && abil->propid && &u.uprops[abil->propid].intrinsic ) {
+        if ((&u.uprops[abil->propid].intrinsic == ability) && (u.ulevel >= abil->ulevel))
             return abil;
         abil++;
     }
     return (struct innate *) 0;
 }
 
-/* reasons for innate ability */
-#define FROM_NONE 0
-#define FROM_ROLE 1 /* from experience at level 1 */
-#define FROM_RACE 2
-#define FROM_INTR 3 /* intrinsically (eating some corpse or prayer reward) */
-#define FROM_EXP  4 /* from experience for some level > 1 */
-#define FROM_FORM 5
-#define FROM_LYCN 6
+#endif
 
+
+/* reasons for innate ability */
+#define A_FROM_NONE 0
+#define A_FROM_ROLE 1 /* from experience at level 1 */
+#define A_FROM_RACE 2
+#define A_FROM_INTR 3 /* intrinsically (eating some corpse or prayer reward) */
+#define A_FROM_EXP  4 /* from experience for some level > 1 */
+#define A_FROM_FORM 5
+#define A_FROM_LYCN 6
+
+#if 0
 /* check whether particular ability has been obtained via innate attribute */
 STATIC_OVL int
 innately(ability)
@@ -1274,38 +1359,45 @@ long *ability;
 {
     const struct innate *iptr;
 
-    if ((iptr = check_innate_abil(ability, FROMEXPER)) != 0)
-        return (iptr->ulevel == 1) ? FROM_ROLE : FROM_EXP;
-    if ((iptr = check_innate_abil(ability, FROMRACE)) != 0)
-        return FROM_RACE;
-    if ((*ability & FROMOUTSIDE) != 0L)
-        return FROM_INTR;
-    if ((*ability & FROMFORM) != 0L)
-        return FROM_FORM;
-    return FROM_NONE;
+    if ((iptr = check_innate_abil(ability, FROM_ROLE)) != 0)
+        return (iptr->ulevel == 1) ? A_FROM_ROLE : A_FROM_EXP;
+    if ((iptr = check_innate_abil(ability, FROM_RACE)) != 0)
+        return A_FROM_RACE;
+    if ((*ability & FROM_ACQUIRED) != 0L)
+        return A_FROM_INTR;
+    if ((*ability & FROM_FORM) != 0L)
+        return A_FROM_FORM;
+    return A_FROM_NONE;
 }
+#endif
 
 int
 is_innate(propidx)
 int propidx;
 {
-    int innateness;
+    //int innateness;
 
     /* innately() would report FROM_FORM for this; caller wants specificity */
     if (propidx == DRAIN_RES && u.ulycn >= LOW_PM)
-        return FROM_LYCN;
+        return A_FROM_LYCN;
     if (propidx == FAST && Very_fast)
-        return FROM_NONE; /* can't become very fast innately */
-    if ((innateness = innately(&u.uprops[propidx].intrinsic)) != FROM_NONE)
-        return innateness;
+        return A_FROM_NONE; /* can't become very fast innately */
+    //if ((innateness = innately(&u.uprops[propidx].intrinsic)) != FROM_NONE)
+    //    return innateness;
+	if (u.uprops[propidx].intrinsic & FROM_RACE)
+		return A_FROM_RACE;
+	if (u.uprops[propidx].intrinsic & FROM_ROLE)
+		return A_FROM_ROLE;
+	if (u.uprops[propidx].intrinsic & FROM_FORM)
+		return A_FROM_FORM;
     if (propidx == JUMPING && Role_if(PM_KNIGHT)
         /* knight has intrinsic jumping, but extrinsic is more versatile so
            ignore innateness if equipment is going to claim responsibility */
         && !u.uprops[propidx].extrinsic)
-        return FROM_ROLE;
+        return A_FROM_ROLE;
     if (propidx == BLINDED && !haseyes(youmonst.data))
-        return FROM_FORM;
-    return FROM_NONE;
+        return A_FROM_FORM;
+    return A_FROM_NONE;
 }
 
 char *
@@ -1344,15 +1436,15 @@ int propidx; /* special cases can have negative values */
              */
             if (propidx == BLINDED && u.uroleplay.blind)
                 Sprintf(buf, " from birth");
-            else if (innateness == FROM_ROLE || innateness == FROM_RACE)
+            else if (innateness == A_FROM_ROLE || innateness == A_FROM_RACE)
                 Strcpy(buf, " innately");
-            else if (innateness == FROM_INTR) /* [].intrinsic & FROMOUTSIDE */
+            else if (innateness == A_FROM_INTR) /* [].intrinsic & FROM_ACQUIRED */
                 Strcpy(buf, " intrinsically");
-            else if (innateness == FROM_EXP)
+            else if (innateness == A_FROM_EXP)
                 Strcpy(buf, " because of your experience");
-            else if (innateness == FROM_LYCN)
+            else if (innateness == A_FROM_LYCN)
                 Strcpy(buf, " due to your lycanthropy");
-            else if (innateness == FROM_FORM)
+            else if (innateness == A_FROM_FORM)
                 Strcpy(buf, " from current creature form");
             else if (propidx == FAST && Very_fast)
                 Sprintf(buf, because_of,
@@ -1413,68 +1505,49 @@ adjabil(oldlevel, newlevel)
 int oldlevel, newlevel;
 {
     register const struct innate *abil, *rabil;
-    long prevabil, mask = FROMEXPER;
+    long prevabil, mask = FROM_ROLE;
 
     abil = role_abil(Role_switch);
-
-    switch (Race_switch) {
-    case PM_ELF:
-        rabil = elf_abil;
-        break;
-    case PM_ORC:
-        rabil = orc_abil;
-        break;
-	case PM_HUMAN:
-		rabil = hum_abil;
-		break;
-	case PM_DWARF:
-		rabil = dwa_abil;
-		break;
-	case PM_GNOLL:
-		rabil = gnl_abil;
-		break;
-	default:
-        rabil = 0;
-        break;
-    }
+	rabil = race_abil(Race_switch);
 
     while (abil || rabil) {
         /* Have we finished with the intrinsics list? */
-        if (!abil || !abil->ability) {
+        if (!abil || !abil->propid) {
             /* Try the race intrinsics */
-            if (!rabil || !rabil->ability)
+            if (!rabil || !rabil->propid)
                 break;
             abil = rabil;
             rabil = 0;
-            mask = FROMRACE;
+            mask = FROM_RACE;
         }
-        prevabil = *(abil->ability);
+		
+		prevabil = u.uprops[abil->propid].intrinsic; // *(abil->ability);
         if (oldlevel < abil->ulevel && newlevel >= abil->ulevel) {
             /* Abilities gained at level 1 can never be lost
              * via level loss, only via means that remove _any_
              * sort of ability.  A "gain" of such an ability from
              * an outside source is devoid of meaning, so we set
-             * FROMOUTSIDE to avoid such gains.
+             * FROM_ACQUIRED to avoid such gains.
              */
             if (abil->ulevel == 1)
-                *(abil->ability) |= (mask | FROMOUTSIDE);
+				u.uprops[abil->propid].intrinsic |= (mask | FROM_ACQUIRED);
             else
-                *(abil->ability) |= mask;
-            if (!(*(abil->ability) & INTRINSIC & ~mask)) {
+				u.uprops[abil->propid].intrinsic |= mask;
+            if (!(u.uprops[abil->propid].intrinsic & INTRINSIC & ~mask)) {
                 if (*(abil->gainstr))
                     You_feel("%s!", abil->gainstr);
             }
         } else if (oldlevel >= abil->ulevel && newlevel < abil->ulevel) {
-            *(abil->ability) &= ~mask;
-            if (!(*(abil->ability) & INTRINSIC)) {
+			u.uprops[abil->propid].intrinsic &= ~mask;
+            if (!(u.uprops[abil->propid].intrinsic & INTRINSIC)) {
                 if (*(abil->losestr))
                     You_feel("%s!", abil->losestr);
                 else if (*(abil->gainstr))
                     You_feel("less %s!", abil->gainstr);
             }
         }
-        if (prevabil != *(abil->ability)) /* it changed */
-            postadjabil(abil->ability);
+        if (prevabil != u.uprops[abil->propid].intrinsic) /* it changed */
+            postadjabil(abil->propid);
         abil++;
     }
 

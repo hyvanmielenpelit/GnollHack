@@ -818,14 +818,14 @@ gcrownu()
     int sp_no;
 #define ok_wep(o) ((o) && ((o)->oclass == WEAPON_CLASS || is_weptool(o)))
 
-    HSee_invisible |= FROMOUTSIDE;
-    HFire_resistance |= FROMOUTSIDE;
-    HCold_resistance |= FROMOUTSIDE;
-    HShock_resistance |= FROMOUTSIDE;
-	HDeath_resistance |= FROMOUTSIDE;
-	HLycanthropy_resistance |= FROMOUTSIDE;
-	HSleep_resistance |= FROMOUTSIDE;
-    HPoison_resistance |= FROMOUTSIDE;
+    HSee_invisible |= FROM_ACQUIRED;
+    HFire_resistance |= FROM_ACQUIRED;
+    HCold_resistance |= FROM_ACQUIRED;
+    HShock_resistance |= FROM_ACQUIRED;
+	HDeath_resistance |= FROM_ACQUIRED;
+	HLycanthropy_resistance |= FROM_ACQUIRED;
+	HSleep_resistance |= FROM_ACQUIRED;
+    HPoison_resistance |= FROM_ACQUIRED;
     godvoice(u.ualign.type, (char *) 0);
 
     obj = ok_wep(uwep) ? uwep : 0;
@@ -1205,19 +1205,19 @@ aligntyp g_align;
             godvoice(u.ualign.type,
                      "Thou hast pleased me with thy progress,");
             if (!(HTelepat & INTRINSIC)) {
-                HTelepat |= FROMOUTSIDE;
+                HTelepat |= FROM_ACQUIRED;
                 pline(msg, "Telepathy");
                 if (Blind)
                     see_monsters();
             } else if (!(HFast & INTRINSIC)) {
-                HFast |= FROMOUTSIDE;
+                HFast |= FROM_ACQUIRED;
                 pline(msg, "Speed");
             } else if (!(HStealth & INTRINSIC)) {
-                HStealth |= FROMOUTSIDE;
+                HStealth |= FROM_ACQUIRED;
                 pline(msg, "Stealth");
             } else {
                 if (!(HProtection & INTRINSIC)) {
-                    HProtection |= FROMOUTSIDE;
+                    HProtection |= FROM_ACQUIRED;
                     if (!u.ublessed)
                         u.ublessed = rn1(3, 2);
                 } else
@@ -1506,7 +1506,7 @@ dosacrifice()
             pline("So this is how you repay loyalty?");
             adjalign(-3);
             value = -1;
-            HAggravate_monster |= FROMOUTSIDE;
+            HAggravate_monster |= FROM_ACQUIRED;
         } else if (is_undead(ptr)) { /* Not demons--no demon corpses */
             if (u.ualign.type != A_CHAOTIC)
                 value += 1;

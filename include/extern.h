@@ -139,6 +139,9 @@ E void FDECL(adjalign, (int));
 E int FDECL(is_innate, (int));
 E char *FDECL(from_what, (int));
 E void FDECL(uchangealign, (int, int));
+E const struct innate* FDECL(race_abil, (int));
+E const struct innate* FDECL(role_abil, (int));
+
 
 /* ### ball.c ### */
 
@@ -650,6 +653,10 @@ E boolean FDECL(Can_rise_up, (int, int, d_level *));
 E boolean FDECL(has_ceiling, (d_level *));
 E boolean FDECL(In_quest, (d_level *));
 E boolean FDECL(In_mines, (d_level *));
+E boolean FDECL(In_modron_level, (d_level*));
+E boolean FDECL(In_modron_level_1, (d_level*));
+E boolean FDECL(In_modron_level_2, (d_level*));
+E boolean FDECL(In_modron_level_3, (d_level*));
 E branch *FDECL(dungeon_branch, (const char *));
 E boolean FDECL(at_dgn_entrance, (const char *));
 E boolean FDECL(In_hell, (d_level *));

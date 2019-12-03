@@ -147,9 +147,10 @@ struct Role {
     /*** Spell statistics (from spell.c) ***/
     int spelbase; /* base spellcasting penalty */
     int spelheal; /* penalty (-bonus) for healing spells */
-    int spelshld; /* penalty for wearing any shield */
-    int spelarmr; /* penalty for wearing metal armour */
-    int spelstat; /* which stat (A_) is used */
+
+    int spelshld; /* OBSOLETE: penalty for wearing any shield */
+    int spelarmr; /* OBSOLETE: penalty for wearing metal armour */
+    int spelstat; /* OBSOLETE: which stat (A_) is used */
     int spelspec; /* spell (SPE_) the class excels at */
     int spelsbon; /* penalty (-bonus) for that spell */
 

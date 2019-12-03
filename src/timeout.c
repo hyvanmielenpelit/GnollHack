@@ -781,7 +781,7 @@ nh_timeout()
 				}
 				/* from outside means slippery ice; don't reset
 				   counter if that's the only fumble reason */
-				HFumbling &= ~FROMOUTSIDE;
+				HFumbling &= ~FROM_ACQUIRED;
 				//if (Fumbling)
 				//	incr_itimeout(&HFumbling, rnd(20));
 				break;

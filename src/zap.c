@@ -3177,7 +3177,7 @@ boolean ordinary;
             break;
         }
         if (ordinary || !rn2(10)) { /* permanent */
-            HInvis |= FROMOUTSIDE;
+            HInvis |= FROM_ACQUIRED;
         } else { /* temporary */
             incr_itimeout(&HInvis, d(obj->spe, 250));
         }
@@ -3199,7 +3199,7 @@ boolean ordinary;
                 Your("quickness feels more natural.");
             exercise(A_DEX, TRUE);
         }
-        HFast |= FROMOUTSIDE;
+        HFast |= FROM_ACQUIRED;
         break;
 
     case WAN_SLEEP:

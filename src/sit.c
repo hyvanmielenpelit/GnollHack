@@ -275,7 +275,7 @@ dosit()
 				else 
 				{
                     Your("vision becomes clear.");
-                    HSee_invisible |= FROMOUTSIDE;
+                    HSee_invisible |= FROM_ACQUIRED;
                     newsym(u.ux, u.uy);
                 }
                 break;

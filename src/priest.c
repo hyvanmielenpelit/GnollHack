@@ -622,7 +622,7 @@ register struct monst *priest;
                            && (u.ublessed < 9 || !rn2(u.ublessed))))) {
             verbalize("Thy devotion has been rewarded.");
             if (!(HProtection & INTRINSIC)) {
-                HProtection |= FROMOUTSIDE;
+                HProtection |= FROM_ACQUIRED;
                 if (!u.ublessed)
                     u.ublessed = rn1(3, 2);
             } else

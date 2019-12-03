@@ -763,7 +763,7 @@ register struct obj *otmp;
             self_invis_message();
         }
         if (otmp->blessed)
-            HInvis |= FROMOUTSIDE;
+            HInvis |= FROM_ACQUIRED;
         else
             incr_itimeout(&HInvis, otmp->oclass == POTION_CLASS ? rn1(15, 31) : duration);
         newsym(u.ux, u.uy); /* update position */
@@ -798,7 +798,7 @@ register struct obj *otmp;
             make_blinded(0L, TRUE);
         }
         if (otmp->blessed)
-            HSee_invisible |= FROMOUTSIDE;
+            HSee_invisible |= FROM_ACQUIRED;
         else
             incr_itimeout(&HSee_invisible, otmp->oclass == POTION_CLASS ? rn1(100, 750) : duration);
         set_mimic_blocking(); /* do special mimic handling */

@@ -193,7 +193,7 @@ Boots_on(VOID_ARGS)
 			*/
         break;
     case LEVITATION_BOOTS:
-        if (!oldprop && !HLevitation && !(BLevitation & FROMOUTSIDE)) {
+        if (!oldprop && !HLevitation && !(BLevitation & FROM_ACQUIRED)) {
             makeknown(uarmf->otyp);
             float_up();
             if (Levitation)
@@ -249,7 +249,7 @@ Boots_off(VOID_ARGS)
         //    HFumbling =  0;
         break;
     case LEVITATION_BOOTS:
-        if (!oldprop && !HLevitation && !(BLevitation & FROMOUTSIDE)
+        if (!oldprop && !HLevitation && !(BLevitation & FROM_ACQUIRED)
             && !context.takeoff.cancelled_don) {
             (void) float_down(0L, 0L);
             makeknown(otyp);
@@ -1007,7 +1007,7 @@ Amulet_on()
     case AMULET_OF_RESTFUL_SLEEP: {
         //long newnap = (long) rnd(100), oldnap = (HSleepy & TIMEOUT);
 
-        /* avoid clobbering FROMOUTSIDE bit, which might have
+        /* avoid clobbering FROM_ACQUIRED bit, which might have
            gotten set by previously eating one of these amulets */
         //if (newnap < oldnap || oldnap == 0L)
         //    HSleepy = (HSleepy & ~TIMEOUT) | newnap;
@@ -1070,7 +1070,7 @@ Amulet_off()
         break;
     case AMULET_OF_RESTFUL_SLEEP:
         //setworn((struct obj *) 0, W_AMUL);
-        /* HSleepy = 0L; -- avoid clobbering FROMOUTSIDE bit */
+        /* HSleepy = 0L; -- avoid clobbering FROM_ACQUIRED bit */
         //if (!ESleepy && !(HSleepy & ~TIMEOUT))
         //    HSleepy &= ~TIMEOUT; /* clear timeout bits */
         return;
@@ -1199,7 +1199,7 @@ register struct obj *obj;
         }
         break;
     case RIN_LEVITATION:
-        if (!oldprop && !HLevitation && !(BLevitation & FROMOUTSIDE)) {
+        if (!oldprop && !HLevitation && !(BLevitation & FROM_ACQUIRED)) {
             float_up();
             learnring(obj, TRUE);
             if (Levitation)
@@ -1358,7 +1358,7 @@ boolean gone;
         }
         break;
     case RIN_LEVITATION:
-        if (!(BLevitation & FROMOUTSIDE)) {
+        if (!(BLevitation & FROM_ACQUIRED)) {
             (void) float_down(0L, 0L);
             if (!Levitation)
                 learnring(obj, TRUE);

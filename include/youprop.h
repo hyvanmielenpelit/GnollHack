@@ -16,7 +16,7 @@
  * EXxx refers to extrinsic bitfields from worn objects.
  * BXxx refers to the cause of the property being blocked.
  * Xxx refers to any source, including polymorph forms.
- * [Post-3.4.3: HXxx now includes a FROMFORM bit to handle
+ * [Post-3.4.3: HXxx now includes a FROM_FORM bit to handle
  * intrinsic conferred by being polymorphed.]
  */
 
@@ -73,7 +73,7 @@
 #define Mind_shielding (HMind_shielding || EMind_shielding)
 
 
-/* Hxxx due to FROMFORM only */
+/* Hxxx due to FROM_FORM only */
 #define HAntimagic u.uprops[ANTIMAGIC].intrinsic
 #define EAntimagic u.uprops[ANTIMAGIC].extrinsic
 #define Antimagic (HAntimagic || EAntimagic)
@@ -313,7 +313,7 @@
 #define HLevitation u.uprops[LEVITATION].intrinsic
 #define ELevitation u.uprops[LEVITATION].extrinsic
 /* BLevitation has I_SPECIAL set if trapped in the floor,
-   FROMOUTSIDE set if inside solid rock (or in water on Plane of Water) */
+   FROM_ACQUIRED set if inside solid rock (or in water on Plane of Water) */
 #define BLevitation u.uprops[LEVITATION].blocked
 #define Levitation ((HLevitation || ELevitation) && !BLevitation)
 /* Can't touch surface, can't go under water; overrides all others */
@@ -326,7 +326,7 @@
 #define HFlying u.uprops[FLYING].intrinsic
 #define EFlying u.uprops[FLYING].extrinsic
 /* BFlying has I_SPECIAL set if levitating or trapped in the floor or both,
-   FROMOUTSIDE set if inside solid rock (or in water on Plane of Water) */
+   FROM_ACQUIRED set if inside solid rock (or in water on Plane of Water) */
 #define BFlying u.uprops[FLYING].blocked
 #define Flying                                                      \
     ((HFlying || EFlying || (u.usteed && is_flyer(u.usteed->data))) \

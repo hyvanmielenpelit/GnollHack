@@ -156,9 +156,9 @@ do_statusline2()
     if (Upolyd)
         Sprintf(expr, "HD:%d", mons[u.umonnum].mlevel);
     else if (flags.showexp)
-        Sprintf(expr, "XP:%u/%-1ld", u.ulevel, u.uexp);
+        Sprintf(expr, "XL:%u/%-1ld", u.ulevel, u.uexp);
     else
-        Sprintf(expr, "Exp:%u", u.ulevel);
+        Sprintf(expr, "XL:%u", u.ulevel);
     xln = strlen(expr);
 
     /* time/move counter */
@@ -538,7 +538,7 @@ STATIC_VAR struct istat_s initblstats[MAXBLSTATS] = {
 //    INIT_BLSTAT("gold", " %s", ANY_LONG, 30, BL_GOLD),
     INIT_BLSTATP("power", " Pw:%s", ANY_INT, 10, BL_ENEMAX, BL_ENE),
     INIT_BLSTAT("power-max", "(%s)", ANY_INT, 10, BL_ENEMAX),
-    INIT_BLSTAT("experience-level", " XP:%s", ANY_INT, 10, BL_XP),
+    INIT_BLSTAT("experience-level", " XL:%s", ANY_INT, 10, BL_XP),
 	INIT_BLSTAT("skill-availability", " %s", ANY_INT, 10, BL_SKILL),
 	INIT_BLSTAT("armor-class", " AC:%s", ANY_INT, 10, BL_AC),
 	INIT_BLSTAT("magic-cancellation-level", " MC:%s", ANY_INT, 10, BL_MC_LVL),

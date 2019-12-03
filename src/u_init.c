@@ -902,7 +902,7 @@ u_init()
         knows_class(WEAPON_CLASS);
         knows_class(ARMOR_CLASS);
         /* give knights chess-like mobility--idea from wooledge@..cwru.edu */
-        HJumping |= FROMOUTSIDE;
+        HJumping |= FROM_ACQUIRED;
         skill_init(Skill_K_Init, Skill_K_Max);
         break;
     case PM_MONK: {

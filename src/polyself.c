@@ -47,9 +47,9 @@ set_uasmon()
 #define PROPSET(PropIndx, ON)                          \
     do {                                               \
         if (ON)                                        \
-            u.uprops[PropIndx].intrinsic |= FROMFORM;  \
+            u.uprops[PropIndx].intrinsic |= FROM_FORM;  \
         else                                           \
-            u.uprops[PropIndx].intrinsic &= ~FROMFORM; \
+            u.uprops[PropIndx].intrinsic &= ~FROM_FORM; \
     } while (0)
 
     PROPSET(FIRE_RES, resists_fire(&youmonst));
@@ -2132,7 +2132,7 @@ polysense()
     context.warntype.speciesidx = NON_PM;
     context.warntype.species = 0;
     context.warntype.polyd = 0;
-    HWarn_of_mon &= ~FROMRACE;
+    HWarn_of_mon &= ~FROM_RACE;
 
     switch (u.umonnum) {
     case PM_PURPLE_WORM:
@@ -2142,13 +2142,13 @@ polysense()
 	case PM_VAMPIRE_MAGE:
 	case PM_VAMPIRE_LORD:
         context.warntype.polyd = M2_HUMAN | M2_ELF;
-        HWarn_of_mon |= FROMRACE;
+        HWarn_of_mon |= FROM_RACE;
         return;
     }
     if (warnidx >= LOW_PM) {
         context.warntype.speciesidx = warnidx;
         context.warntype.species = &mons[warnidx];
-        HWarn_of_mon |= FROMRACE;
+        HWarn_of_mon |= FROM_RACE;
     }
 }
 

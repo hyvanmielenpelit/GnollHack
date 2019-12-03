@@ -3226,7 +3226,7 @@ int final;
                (or both if chained to buried iron ball and have
                moved one step into solid rock somehow) */
             boolean trapped = (save_BLev & I_SPECIAL) != 0L,
-                    terrain = (save_BLev & FROMOUTSIDE) != 0L;
+                    terrain = (save_BLev & FROM_ACQUIRED) != 0L;
 
             Sprintf(buf, "%s%s%s",
                     trapped ? " if not trapped" : "",
@@ -3255,7 +3255,7 @@ int final;
                              might also be blocking levitation so flight
                              would still be blocked after escaping trap */
                           ? " if you weren't trapped"
-                          : (save_BFly == FROMOUTSIDE)
+                          : (save_BFly == FROM_ACQUIRED)
                              ? if_surroundings_permitted
                              /* two or more of levitation, surroundings,
                                 and being trapped in the floor */
