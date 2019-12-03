@@ -153,6 +153,12 @@ docharacterstatistics()
 		putstr(datawin, 0, txt);
 	}
 
+	/* Empty line */
+	Sprintf(buf, "");
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+
 	/* Max attributes */
 	Sprintf(buf, "Maximum attribute scores:");
 	txt = buf;
@@ -162,6 +168,76 @@ docharacterstatistics()
 		urace.attrmax[A_DEX], urace.attrmax[A_CON], urace.attrmax[A_INT], urace.attrmax[A_WIS], urace.attrmax[A_CHA]);
 	txt = buf;
 	putstr(datawin, 0, txt);
+
+	/* Race, role and alignment traits */
+	Sprintf(buf, "Character traits:");
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	int trait_count = 0;
+
+	for (int i = 0; i < MAX_TRAIT_DESCRIPTIONS; i++)
+	{
+		if (urace.trait_descriptions[i] && strcmp(urace.trait_descriptions[i], ""))
+		{
+			trait_count++;
+
+			char buf2[BUFSIZ] = "";
+
+			strcpy(buf2, urace.trait_descriptions[i]);
+			*buf2 = highc(*buf2);
+
+			Sprintf(buf, " %2d - %s (Race)", trait_count, buf2);
+			txt = buf;
+			putstr(datawin, 0, txt);
+
+		}
+		else
+			break;
+	}
+
+	for (int i = 0; i < MAX_TRAIT_DESCRIPTIONS; i++)
+	{
+		if (urole.trait_descriptions[i] && strcmp(urole.trait_descriptions[i], ""))
+		{
+			trait_count++;
+
+			char buf2[BUFSIZ] = "";
+
+			strcpy(buf2, urole.trait_descriptions[i]);
+			*buf2 = highc(*buf2);
+
+			Sprintf(buf, " %2d - %s (Role)", trait_count, buf2);
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+		else
+			break;
+	}
+
+	if (u.ualign.type == A_LAWFUL || u.ualign.type == A_NEUTRAL)
+	{
+		trait_count++;
+		Sprintf(buf, " %2d - Loses telepathy and luck if commits murder (Alignment)", trait_count);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (u.ualign.type == A_CHAOTIC)
+	{
+		trait_count++;
+		Sprintf(buf, " %2d - Can sacrifice own race (Alignment)", trait_count);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (trait_count == 0)
+	{
+		Sprintf(buf, " (None)");
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
 
 
 	/* Current intrinsics */

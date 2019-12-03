@@ -101,6 +101,8 @@ struct u_roleplay {
     long numbones;  /* # of bones files loaded  */
 };
 
+#define MAX_TRAIT_DESCRIPTIONS 5
+
 /*** Unified structure containing role information ***/
 struct Role {
     /*** Strings that name various things ***/
@@ -110,7 +112,7 @@ struct Role {
     const char *filecode;           /* abbreviation for use in file names */
     const char *homebase; /* quest leader's location (from questpgr.c) */
     const char *intermed; /* quest intermediate goal (from questpgr.c) */
-
+	const char *trait_descriptions[MAX_TRAIT_DESCRIPTIONS]; /* Up to five descriptions of various role advantages and disadvantages */
     /*** Indices of important monsters and objects ***/
     short malenum, /* index (PM_) as a male (botl.c) */
         femalenum, /* ...or as a female (NON_PM == same) */
@@ -176,7 +178,6 @@ extern struct Role urole;
    as well as for character class */
 #define ROLE_NONE (-1)
 #define ROLE_RANDOM (-2)
-
 /*** Unified structure specifying race information ***/
 
 struct Race {
@@ -186,6 +187,8 @@ struct Race {
     const char *coll;           /* collective ("humanity", "elvenkind") */
     const char *filecode;       /* code for filenames */
     struct RoleName individual; /* individual as a noun ("man", "elf") */
+
+	const char *trait_descriptions[MAX_TRAIT_DESCRIPTIONS]; /* Up to five descriptions of various race advantages and disadvantages */
 
     /*** Indices of important monsters and objects ***/
     short malenum, /* PM_ as a male monster */

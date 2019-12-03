@@ -43,7 +43,7 @@ const struct propname {
 	{ TELEPORT, "teleporting" },
 	{ POLYMORPH, "polymorphing" },
 	{ LEVITATION, "levitating" },
-	{ FAST, "very fast" }, /* timed 'FAST' is very fast */
+	{ FAST, "fast" }, /* timed 'FAST' is very fast */
 	{ CLAIRVOYANT, "clairvoyant" },
 	{ DETECT_MONSTERS, "monster detection" },
 	{ SEE_INVIS, "see invisible" },
