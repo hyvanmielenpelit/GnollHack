@@ -365,6 +365,12 @@ attempt_restore:
         if (discover)
             You("are in non-scoring discovery mode.");
     }
+	else
+	{
+		/* Call initializations that are part of newgame here when resuming a saved game */
+		encounter_init();
+		/* matcomps do not need to be initialized, because they have been saved as part of objects array */
+	}
 
 	//	iflags.debug_fuzzer = TRUE;
 

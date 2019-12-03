@@ -32,11 +32,11 @@ boolean resuming;
 
     /* Note:  these initializers don't do anything except guarantee that
             we're linked properly.
-    */
+	   Necessary initializers are called just before move loop in windmain.c and newgame -- JG			
+	*/
     decl_init();
     monst_init();
     objects_init();
-	//matcomps_init();
 
     /* if a save file created in normal mode is now being restored in
        explore mode, treat it as normal restore followed by 'X' command
