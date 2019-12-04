@@ -2761,10 +2761,10 @@ int *spell_no;
 		}
 
 		int extraspaces = maxlen - 23;
-		if (extraspaces > 14)
-			extraspaces = 14;
+		if (extraspaces > 16)
+			extraspaces = 16;
 
-		int extraleftforname = 14 - extraspaces;
+		int extraleftforname = 16 - extraspaces;
 		int namelength = max(10, min(maxnamelen, 20 + extraleftforname));
 
 		char spacebuf[BUFSZ] = "";
@@ -2772,11 +2772,13 @@ int *spell_no;
 		for (i = 0; i < extraspaces; i++)
 			Strcat(spacebuf, " ");
 
-		if (!iflags.menu_tab_sep) {
+		if (!iflags.menu_tab_sep) 
+		{
 			Sprintf(fmt, "%%-%ds  Casts  Adds  Material components    %%s", namelength + 4);
 			Sprintf(buf, fmt, "    Name", spacebuf);
 		}
-		else {
+		else 
+		{
 			Sprintf(buf, "Name\tCasts\tAdds\tMaterial components");
 		}
 		add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, buf,
@@ -2846,8 +2848,8 @@ int *spell_no;
 
 			strcpy(fullmatcompdesc, matlists[spellmatcomp(splnum)].description_short);
 
-			if (strlen(fullmatcompdesc) > 37)
-				strncpy(shortenedmatcompdesc, fullmatcompdesc, 37);
+			if (strlen(fullmatcompdesc) > 39)
+				strncpy(shortenedmatcompdesc, fullmatcompdesc, 39);
 			else
 				strcpy(shortenedmatcompdesc, fullmatcompdesc);
 
