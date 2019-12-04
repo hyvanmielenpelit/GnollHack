@@ -2133,34 +2133,58 @@ struct monst* mtmp;
 	win = create_nhwindow(NHW_MENU);
 	start_menu(win);
 
+	
+	static char def_srt_order[MAXOCLASSES] = {
+	COIN_CLASS, AMULET_CLASS, MISCELLANEOUS_CLASS, RING_CLASS, WAND_CLASS, POTION_CLASS,
+	SCROLL_CLASS, SPBOOK_CLASS, GEM_CLASS, FOOD_CLASS, REAGENT_CLASS, TOOL_CLASS,
+	WEAPON_CLASS, ARMOR_CLASS, ROCK_CLASS, BALL_CLASS, CHAIN_CLASS, 0,
+	};
 
-	for (struct obj* otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
+	const char* classorder = flags.sortpack ? flags.inv_order : def_srt_order;
+
+	for(int i = 0; i < MAXOCLASSES; i++)
 	{
-		if (m_sellable_item(otmp, mtmp))
+		char oclass = classorder[i];
+		boolean madeheader = FALSE;
+
+		for (struct obj* otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
 		{
-			any = zeroany;
-			char itembuf[BUFSIZ] = "";
-			Sprintf(itembuf, "%s", doname(otmp));
+			if ((!flags.sortpack || (flags.sortpack && otmp->oclass == oclass)) && m_sellable_item(otmp, mtmp))
+			{
+				if (flags.sortpack && !madeheader)
+				{
+					madeheader = TRUE;
+					any = zeroany;
 
-			long price = get_cost_of_monster_item(otmp, mtmp);
-			if (price > 0L)
-				Sprintf(eos(itembuf), " (%s, %ld %s)", "for sale", price, currency(price));
-			else
-				Strcat(itembuf, " (no charge)");
+					add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings,
+						get_class_name(oclass), MENU_UNSELECTED);
+				}
 
-			any.a_obj = otmp;
-			char let = 'a' + sellable_item_count;
-			char accel = def_oc_syms[(int)otmp->oclass].sym;
+				any = zeroany;
+				char itembuf[BUFSIZ] = "";
+				Sprintf(itembuf, "%s", doname(otmp));
 
-			add_menu(win, NO_GLYPH, &any,
-				let, accel, ATR_NONE,
-				itembuf, MENU_UNSELECTED);
+				long price = get_cost_of_monster_item(otmp, mtmp);
+				if (price > 0L)
+					Sprintf(eos(itembuf), " (%s, %ld %s)", "for sale", price, currency(price));
+				else
+					Strcat(itembuf, " (no charge)");
 
-			sellable_item_count++;
+				any.a_obj = otmp;
+				char let = 'a' + sellable_item_count;
+				char accel = def_oc_syms[(int)otmp->oclass].sym;
 
+				add_menu(win, NO_GLYPH, &any,
+					let, accel, ATR_NONE,
+					itembuf, MENU_UNSELECTED);
+
+				sellable_item_count++;
+
+			}
 		}
+		if (!flags.sortpack)
+			break;
 	}
-
 
 	/* Finish the menu */
 	end_menu(win, "What do you want to buy?");

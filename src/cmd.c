@@ -2511,7 +2511,7 @@ basics_enlightenment(mode, final)
 int mode UNUSED;
 int final;
 {
-    static char Power[] = "mana (spell power)";
+    static char Power[] = "mana";
     char buf[BUFSZ];
     int pw = u.uen, hp = (Upolyd ? u.mh : u.uhp),
         pwmax = u.uenmax, hpmax = (Upolyd ? u.mhmax : u.uhpmax);
@@ -2523,7 +2523,7 @@ int final;
         hp = 0;
     /* "1 out of 1" rather than "all" if max is only 1; should never happen */
     if (hp == hpmax && hpmax > 1)
-        Sprintf(buf, "all %d hit points", hpmax);
+        Sprintf(buf, "%d hit points in total", hpmax);
     else
         Sprintf(buf, "%d out of %d hit point%s", hp, hpmax, plur(hpmax));
     you_have(buf, "");
@@ -2532,7 +2532,7 @@ int final;
     if (pwmax == 0 || (pw == pwmax && pwmax == 2)) /* both: "all 2" is silly */
         Sprintf(buf, "%s %s", !pwmax ? "no" : "both", Power);
     else if (pw == pwmax && pwmax > 2)
-        Sprintf(buf, "all %d %s", pwmax, Power);
+        Sprintf(buf, "%d %s in total", pwmax, Power);
     else
         Sprintf(buf, "%d out of %d %s", pw, pwmax, Power);
     you_have(buf, "");
@@ -2683,6 +2683,49 @@ int mode, final, attrindx;
         if (acurrent != abase || abase != apeak || interesting_alimit)
             Strcat(valubuf, ")");
     }
+
+	if (attrindx == A_STR)
+	{
+		int currstr = ACURR(A_STR);
+		int tohitbonus_constant = (currstr <= STR18(100) ? strength_tohit_bonus(min(18, currstr)) : strength_tohit_bonus(currstr));
+		int tohitbonus_random = ((currstr > 18 && currstr <= STR18(100)) ? 1 : 0);
+		int dmgbonus_constant = (currstr <= STR18(100) ? strength_damage_bonus(min(18, currstr)) : strength_damage_bonus(currstr));
+		int dmgbonus_random = ((currstr > 18 && currstr <= STR18(100)) ? 2 : 0);
+		int random_chance = ((currstr > 18 && currstr <= STR18(100)) ? currstr - 18 : 0);
+		char tohitbuf[BUFSIZ] = "";
+		char dmgbuf[BUFSIZ] = "";
+
+		Sprintf(tohitbuf, "-%d", tohitbonus_constant + tohitbonus_random);
+		Sprintf(dmgbuf, "-%d", dmgbonus_constant + dmgbonus_random);
+
+		Sprintf(eos(valubuf), ": %s%d%s to-hit %s and %s%d%s damage %s", 
+			tohitbonus_constant >= 0 ? "+" : "",
+			tohitbonus_constant,
+			tohitbonus_random ? tohitbuf : "",
+			tohitbonus_constant >= 0 ? "bonus" : "penalty",
+			dmgbonus_constant >= 0 ? "+" : "",
+			dmgbonus_constant,
+			dmgbonus_random ? dmgbuf : "",
+			dmgbonus_constant >= 0 ? "bonus" : "penalty"
+			);
+	}
+	else if (attrindx == A_DEX)
+	{
+		int tohitbonus = dexterity_tohit_bonus(ACURR(A_DEX));
+		int acbonus = -dexterity_ac_bonus(ACURR(A_DEX));
+
+		Sprintf(eos(valubuf), ": %s%d to-hit %s and %s%d AC %s",
+			tohitbonus >= 0 ? "+" : "", tohitbonus, tohitbonus >= 0 ? "bonus" : "penalty",
+			acbonus >= 0 ? "+" : "", acbonus, acbonus <= 0 ? "bonus" : "penalty");
+	}
+	else if (attrindx == A_CON)
+	{
+		int hpbonus = constitution_hp_bonus(ACURR(A_CON));
+
+		Sprintf(eos(valubuf), ": %s%d HP %s per level",
+			hpbonus >= 0 ? "+" : "", hpbonus, hpbonus >= 0 ? "bonus" : "penalty");
+	}
+
     enl_msg(subjbuf, "is ", "was ", valubuf, "");
 }
 

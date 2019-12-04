@@ -1191,8 +1191,12 @@ int str;
 		sbon = max(-2, (str - 6) / 4);
 	else
 	{
-		if (str <= STR18(100) && rn2(100) < str - 18)
-			sbon = 4;
+		if (str <= STR18(100))
+		{
+			sbon = 3;
+			if (rn2(100) < str - 18)
+				sbon++;
+		}
 		else if (str == STR19(19))
 			sbon = 5;
 		else if (str == STR19(20))

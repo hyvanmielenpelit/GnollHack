@@ -102,8 +102,8 @@ struct obj *obj;
             armcat[ARM_SHIELD] = 4; /* [1] */
             armcat[ARM_CLOAK]  = 5; /* [5] */
             armcat[ARM_SHIRT]  = 6; /* [6] */
-			armcat[ARM_ROBE] = 7; /* [7] */
-			armcat[ARM_BRACERS] = 8; /* [8] */
+			armcat[ARM_ROBE]   = 7; /* [7] */
+			armcat[ARM_BRACERS]= 8; /* [8] */
 			armcat[ARM_SUIT]   = 9; /* [0] */
             armcat[9]          = 10; /* sanity protection */
         }
@@ -4268,6 +4268,14 @@ boolean unpaid, showsym;
     }
     return invbuf;
 }
+
+char*
+get_class_name(oclass)
+char oclass;
+{
+	return names[oclass];
+}
+
 
 /* release the static buffer used by let_to_name() */
 void
