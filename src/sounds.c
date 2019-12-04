@@ -16,13 +16,13 @@ STATIC_DCL int FDECL(do_chat_pet_dropitems, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_pickitems, (struct monst*));
 STATIC_DCL int FDECL(do_chat_buy_items, (struct monst*));
 STATIC_DCL int FDECL(do_chat_join_party, (struct monst*));
-STATIC_DCL int FDECL(count_sellable_items, (struct monst*));
 STATIC_DCL int FDECL(do_chat_oracle_consult, (struct monst*));
 STATIC_DCL int FDECL(do_chat_oracle_identify, (struct monst*));
 STATIC_DCL int FDECL(do_chat_oracle_enlightenment, (struct monst*));
 STATIC_DCL int FDECL(do_chat_priest_blesscurse, (struct monst*));
 STATIC_DCL int FDECL(do_chat_priest_healing, (struct monst*));
 STATIC_DCL int FDECL(do_chat_priest_chat, (struct monst*));
+STATIC_DCL int FDECL(do_chat_shk_payitems, (struct monst*));
 STATIC_DCL int FDECL(do_chat_shk_pricequote, (struct monst*));
 STATIC_DCL int FDECL(do_chat_shk_chat, (struct monst*));
 STATIC_DCL int FDECL(do_chat_shk_identify, (struct monst*));
@@ -1601,6 +1601,23 @@ dochat()
 
 		chatnum++;
 
+		if(invent && count_unpaid(invent))
+		{
+			strcpy(available_chat_list[chatnum].name, "Pay items");
+			available_chat_list[chatnum].function_ptr = &do_chat_shk_payitems;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+		}
+
+
 		int shp_indx = 0;
 		if(mtmp->mextra && ESHK(mtmp))
 		{
@@ -2026,16 +2043,6 @@ struct monst* mtmp;
 }
 
 
-STATIC_OVL int
-do_chat_buy_items(mtmp)
-struct monst* mtmp;
-{
-	int result = 0;
-
-
-	return 1;
-}
-
 
 STATIC_OVL int
 do_chat_join_party(mtmp)
@@ -2087,24 +2094,235 @@ struct monst* mtmp;
 			return 0;
 		}
 		u_pay = join_cost;
+
+		money2mon(mtmp, (long)u_pay);
+		context.botl = 1;
+
+		boolean success = tamedog(mtmp, (struct obj*)0, TRUE);
+		if (success)
+		{
+			mtmp->ispartymember = TRUE;
+			pline("%s joins your party!", Monnam(mtmp));
+		}
+		else if (!mtmp->mtame)
+		{
+			pline("%s takes your money but refuses join your party after all!", Monnam(mtmp));
+		}
+		return 1;
+
 		break;
 	}
 
-	money2mon(mtmp, (long)u_pay);
-	context.botl = 1;
-
-	boolean success = tamedog(mtmp, (struct obj*)0, TRUE);
-	if (success)
-	{
-		mtmp->ispartymember = TRUE;
-		pline("%s joins your party!", Monnam(mtmp));
-	}
-	else if(!mtmp->mtame)
-	{
-		pline("%s takes your money but refuses join your party after all!", Monnam(mtmp));
-	}
-	return 1; 
+	return 0; 
 }
+
+
+
+STATIC_OVL int
+do_chat_buy_items(mtmp)
+struct monst* mtmp;
+{
+	int result = 0;
+
+	int sellable_item_count = 0;
+
+	menu_item* pick_list = (menu_item*)0;
+	winid win;
+	anything any;
+
+	any = zeroany;
+	win = create_nhwindow(NHW_MENU);
+	start_menu(win);
+
+
+	for (struct obj* otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
+	{
+		if (m_sellable_item(mtmp, otmp))
+		{
+			any = zeroany;
+			char itembuf[BUFSIZ] = "";
+			Sprintf(itembuf, "%s", doname(otmp));
+
+			long price = get_cost_of_monster_item(mtmp, otmp);
+			if (price > 0L)
+				Sprintf(eos(itembuf), " (%s, %ld %s)", "for sale", price, currency(price));
+			else
+				Strcat(itembuf, " (no charge)");
+
+			any.a_obj = otmp;
+			char let = 'a' + sellable_item_count;
+			char accel = def_oc_syms[(int)otmp->oclass].sym;
+
+			add_menu(win, NO_GLYPH, &any,
+				let, accel, ATR_NONE,
+				itembuf, MENU_UNSELECTED);
+
+			sellable_item_count++;
+
+		}
+	}
+
+
+	/* Finish the menu */
+	end_menu(win, "What do you want to buy?");
+
+
+	if (sellable_item_count <= 0)
+	{
+		pline("%s doesn't have anything to sell..", Monnam(mtmp));
+		destroy_nhwindow(win);
+		return 0;
+	}
+
+
+
+	/* Now generate the menu */
+	int pick_count = 0;
+	int buy_count = 0;
+	if ((pick_count = select_menu(win, PICK_ANY, &pick_list)) > 0)
+	{
+		boolean itemized = TRUE;
+		if (pick_count > 1)
+			itemized = (yn("Itemized billing?") == 'y');
+
+		for (int i = 0; i < pick_count; i++)
+		{
+			struct obj* item_to_buy = pick_list[i].item.a_obj;
+			if (item_to_buy)
+			{
+				long item_cost = get_cost_of_monster_item(mtmp, item_to_buy);
+				
+				long umoney = money_cnt(invent);
+				char qbuf[QBUFSZ];
+				boolean bought = FALSE;
+
+				if(itemized)
+				{
+					boolean doforbreak = FALSE;
+					if(item_cost)
+						Sprintf(qbuf, "Buy %s for %ld %s?", cxname(item_to_buy), item_cost, currency(item_cost));
+					else
+						Sprintf(qbuf, "Take %s for no charge?", cxname(item_to_buy));
+
+					switch (ynq(qbuf)) 
+					{
+					default:
+					case 'q':
+						doforbreak = TRUE;
+						if (buy_count > 0)
+							result = 1;
+						else
+							result = 0;
+					case 'y':
+						if (umoney < (long)item_cost) {
+							You("don't have enough money for that!");
+							break; /* switch break */
+						}
+						bought = TRUE;
+						break;
+					}
+					if (doforbreak)
+						break;
+				}
+				else
+				{
+					if (umoney < (long)item_cost) {
+						You("don't have enough money for %s!", cxname(item_to_buy));
+						if (buy_count > 0)
+							result = 1;
+						else
+							result = 0;
+						break; /* for break */
+					}
+					bought = TRUE;
+
+					if (item_cost)
+						Sprintf(qbuf, "bought %s for %ld %s.", cxname(item_to_buy), item_cost, currency(item_cost));
+					else
+						Sprintf(qbuf, "took %s for no charge.", cxname(item_to_buy));
+
+					You(qbuf);
+				}
+
+				if (bought)
+				{
+					money2mon(mtmp, (long)item_cost);
+					obj_extract_self(item_to_buy);
+					hold_another_object(item_to_buy, "Oops!  %s out of your grasp!",
+						The(aobjnam(item_to_buy, "slip")),
+						(const char*)0);
+					buy_count++;
+				}
+			}
+		}
+
+		free((genericptr_t)pick_list);
+		destroy_nhwindow(win);
+
+		if (mtmp->mpeaceful && buy_count > 0) 
+		{
+			if (!Deaf && (mtmp->data->mflags3 & M3_SPEAKING))
+				verbalize("Thank you for the purchase!");
+			else
+				pline("%s nods appreciatively at you for the purchase!",
+					Monnam(mtmp));
+		}
+
+		if (buy_count > 0)
+			return 1;
+		else
+			return 0;
+	}
+	else
+		return 0;
+
+}
+
+
+/* Returns the price of an arbitrary item in the shop,
+   0 if the item doesn't belong to a shopkeeper or hero is not in the shop. */
+long
+get_cost_of_monster_item(mtmp, obj)
+register struct monst* mtmp;
+register struct obj* obj;
+{            
+	struct obj* top;
+	long cost = 0L;
+
+	for (top = obj; top->where == OBJ_CONTAINED; top = top->ocontainer)
+		continue;
+
+	cost = obj->quan * get_cost(obj, mtmp);
+
+	if (Has_contents(obj))
+		cost += m_contained_cost(obj, mtmp);
+
+	return cost;
+}
+
+
+long
+m_contained_cost(obj, mtmp)
+struct obj* obj;
+struct monst* mtmp;
+{
+	long price = 0;
+	register struct obj* otmp, * top;
+
+	for (top = obj; top->where == OBJ_CONTAINED; top = top->ocontainer)
+		continue;
+
+	/* price of contained objects; "top" container handled by caller */
+	for (otmp = obj->cobj; otmp; otmp = otmp->nobj) {
+		price += get_cost(otmp, mtmp) * otmp->quan;
+
+		if (Has_contents(otmp))
+			price += m_contained_cost(otmp, mtmp);
+	}
+
+	return price;
+}
+
 
 
 STATIC_OVL int
@@ -2117,11 +2335,35 @@ struct monst* mtmp;
 	int cnt = 0;
 	for (struct obj* otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
 	{
-		if (!otmp->owornmask && otmp->oclass == COIN_CLASS)
+		if (m_sellable_item(mtmp, otmp))
 			cnt++;
 	}
 	return cnt;
 }
+
+boolean
+m_sellable_item(mtmp, otmp)
+struct monst* mtmp; 
+struct obj* otmp;
+{
+	if (!otmp->owornmask
+		&& otmp->oclass != COIN_CLASS
+		&& !(
+			(otmp->cursed && (objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED))
+			|| (otmp->otyp == AMULET_OF_YENDOR && (mtmp->data->mflags3 & M3_WANTSAMUL))
+			|| (otmp->otyp == BELL_OF_OPENING && (mtmp->data->mflags3 & M3_WANTSBELL))
+			|| (otmp->otyp == SPE_BOOK_OF_THE_DEAD && (mtmp->data->mflags3 & M3_WANTSBOOK))
+			|| (otmp->otyp == CANDELABRUM_OF_INVOCATION && (mtmp->data->mflags3 & M3_WANTSCAND))
+			|| (is_quest_artifact(otmp) && (mtmp->data->mflags3 & M3_WANTSARTI))
+			)
+		)
+		return TRUE;
+	else
+		return FALSE;
+}
+
+
+
 
 STATIC_OVL int
 do_chat_oracle_consult(mtmp)
@@ -2311,6 +2553,23 @@ struct monst* mtmp;
 {
 	priest_talk(mtmp);
 	return 1;
+}
+
+
+STATIC_OVL int
+do_chat_shk_payitems(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp)
+		return 0;
+
+	if (mtmp->isshk)
+		return dopay();
+	else
+	{
+		pline("%s is not a shopkeeper.", Monnam(mtmp));
+		return 0;
+	}
 }
 
 

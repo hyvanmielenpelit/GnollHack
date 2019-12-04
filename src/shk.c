@@ -42,7 +42,6 @@ STATIC_DCL void FDECL(clear_unpaid_obj, (struct monst *, struct obj *));
 STATIC_DCL void FDECL(clear_unpaid, (struct monst *, struct obj *));
 STATIC_DCL long FDECL(check_credit, (long, struct monst *));
 STATIC_DCL void FDECL(pay, (long, struct monst *));
-STATIC_DCL long FDECL(get_cost, (struct obj *, struct monst *));
 STATIC_DCL long FDECL(set_cost, (struct obj *, struct monst *));
 STATIC_DCL const char *FDECL(shk_embellish, (struct obj *, long));
 STATIC_DCL long FDECL(cost_per_charge, (struct monst *, struct obj *,
@@ -2035,7 +2034,7 @@ unsigned oid;
 }
 
 /* calculate the value that the shk will charge for [one of] an object */
-STATIC_OVL long
+long
 get_cost(obj, shkp)
 register struct obj *obj;
 register struct monst *shkp; /* if angry, impose a surcharge */
@@ -2044,6 +2043,8 @@ register struct monst *shkp; /* if angry, impose a surcharge */
          /* used to perform a single calculation even when multiple
             adjustments (unID'd, dunce/tourist, charisma) are made */
         multiplier = 1L, divisor = 1L;
+
+	boolean shkp_is_shopkeeper = (shkp && shkp->isshk && shkp->mextra && ESHK(shkp));
 
     if (!tmp)
         tmp = 5L;
@@ -2137,7 +2138,7 @@ register struct monst *shkp; /* if angry, impose a surcharge */
 
     /* anger surcharge should match rile_shk's, so we do it separately
        from the multiplier/divisor calculation */
-    if (shkp && ESHK(shkp)->surcharge)
+    if (shkp_is_shopkeeper && ESHK(shkp)->surcharge)
         tmp += (tmp + 2L) / 3L;
     return tmp;
 }

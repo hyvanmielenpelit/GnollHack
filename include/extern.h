@@ -2377,6 +2377,7 @@ E boolean FDECL(block_door, (XCHAR_P, XCHAR_P));
 E boolean FDECL(block_entry, (XCHAR_P, XCHAR_P));
 E char *FDECL(shk_your, (char *, struct obj *));
 E char *FDECL(Shk_Your, (char *, struct obj *));
+E long FDECL(get_cost, (struct obj*, struct monst*));
 
 /* ### shknam.c ### */
 
@@ -2411,6 +2412,10 @@ E int NDECL(dotalk);
 E int FDECL(add_sound_mapping, (const char *));
 E void FDECL(play_sound_for_message, (const char *));
 #endif
+E int FDECL(count_sellable_items, (struct monst*));
+E boolean FDECL(m_sellable_item, (struct monst*, struct obj*));
+E long FDECL(get_cost_of_monster_item, (struct monst*, struct obj*));
+E long FDECL(m_contained_cost, (struct monst*, struct obj*));
 
 /* ### sys.c ### */
 
