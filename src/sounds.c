@@ -2123,7 +2123,6 @@ do_chat_buy_items(mtmp)
 struct monst* mtmp;
 {
 	int result = 0;
-
 	int sellable_item_count = 0;
 
 	menu_item* pick_list = (menu_item*)0;
@@ -2137,13 +2136,13 @@ struct monst* mtmp;
 
 	for (struct obj* otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
 	{
-		if (m_sellable_item(mtmp, otmp))
+		if (m_sellable_item(otmp, mtmp))
 		{
 			any = zeroany;
 			char itembuf[BUFSIZ] = "";
 			Sprintf(itembuf, "%s", doname(otmp));
 
-			long price = get_cost_of_monster_item(mtmp, otmp);
+			long price = get_cost_of_monster_item(otmp, mtmp);
 			if (price > 0L)
 				Sprintf(eos(itembuf), " (%s, %ld %s)", "for sale", price, currency(price));
 			else
@@ -2173,7 +2172,14 @@ struct monst* mtmp;
 		destroy_nhwindow(win);
 		return 0;
 	}
-
+	else
+	{
+		if (!Deaf && (mtmp->data->mflags3 & M3_SPEAKING))
+			verbalize("Hello, adventurer! I have the following items for sale:");
+		else
+			pline("%s shows you the items that are for sale.",
+				Monnam(mtmp));
+	}
 
 
 	/* Now generate the menu */
@@ -2190,7 +2196,7 @@ struct monst* mtmp;
 			struct obj* item_to_buy = pick_list[i].item.a_obj;
 			if (item_to_buy)
 			{
-				long item_cost = get_cost_of_monster_item(mtmp, item_to_buy);
+				long item_cost = get_cost_of_monster_item(item_to_buy, mtmp);
 				
 				long umoney = money_cnt(invent);
 				char qbuf[QBUFSZ];
@@ -2236,16 +2242,17 @@ struct monst* mtmp;
 					}
 					bought = TRUE;
 
+				}
+
+				if (bought)
+				{
 					if (item_cost)
 						Sprintf(qbuf, "bought %s for %ld %s.", cxname(item_to_buy), item_cost, currency(item_cost));
 					else
 						Sprintf(qbuf, "took %s for no charge.", cxname(item_to_buy));
 
 					You(qbuf);
-				}
 
-				if (bought)
-				{
 					money2mon(mtmp, (long)item_cost);
 					obj_extract_self(item_to_buy);
 					hold_another_object(item_to_buy, "Oops!  %s out of your grasp!",
@@ -2282,9 +2289,9 @@ struct monst* mtmp;
 /* Returns the price of an arbitrary item in the shop,
    0 if the item doesn't belong to a shopkeeper or hero is not in the shop. */
 long
-get_cost_of_monster_item(mtmp, obj)
-register struct monst* mtmp;
+get_cost_of_monster_item(obj, mtmp)
 register struct obj* obj;
+register struct monst* mtmp;
 {            
 	struct obj* top;
 	long cost = 0L;
@@ -2335,16 +2342,16 @@ struct monst* mtmp;
 	int cnt = 0;
 	for (struct obj* otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
 	{
-		if (m_sellable_item(mtmp, otmp))
+		if (m_sellable_item(otmp, mtmp))
 			cnt++;
 	}
 	return cnt;
 }
 
 boolean
-m_sellable_item(mtmp, otmp)
-struct monst* mtmp; 
+m_sellable_item(otmp, mtmp)
 struct obj* otmp;
+struct monst* mtmp;
 {
 	if (!otmp->owornmask
 		&& otmp->oclass != COIN_CLASS

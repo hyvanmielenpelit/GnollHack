@@ -2413,9 +2413,9 @@ E int FDECL(add_sound_mapping, (const char *));
 E void FDECL(play_sound_for_message, (const char *));
 #endif
 E int FDECL(count_sellable_items, (struct monst*));
-E boolean FDECL(m_sellable_item, (struct monst*, struct obj*));
-E long FDECL(get_cost_of_monster_item, (struct monst*, struct obj*));
-E long FDECL(m_contained_cost, (struct monst*, struct obj*));
+E boolean FDECL(m_sellable_item, (struct obj*, struct monst*));
+E long FDECL(get_cost_of_monster_item, (struct obj*, struct monst*));
+E long FDECL(m_contained_cost, (struct obj*, struct monst*));
 
 /* ### sys.c ### */
 

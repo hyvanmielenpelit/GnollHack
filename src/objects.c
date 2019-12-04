@@ -1404,7 +1404,7 @@ WEPTOOL("pick-axe", None,
 WEPTOOL("shovel", None,
         1, 0, 0, 5, 60,  20,  1, 5, 0, 1, 3, 0, A1_NONE, 0, SLASH, 0, WEP_SHOVEL, P_PICK_AXE, 0, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 WEPTOOL("grappling hook", "iron hook",
-        0, 0, 0,  5,  30,  50,  1, 2, 0, 1, 6, 0, A1_NONE, 0, WHACK, 0, WEP_HOOK, P_FLAIL, 0, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+        0, 0, 0,  5,  30,  50,  1, 2, 0, 1, 6, 0, A1_NONE, 0, WHACK, 0, WEP_HOOK, P_THROWN_WEAPON, 0, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 WEPTOOL("unicorn horn", None,
         1, 1, 1,  0,  20, 100, 1, 12, 0, 1, 12, 0, A1_NONE, 0, PIERCE, 0, WEP_UNICORN_HORN, P_SPEAR, 100, MAT_BONE, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
         /* 3.4.1: unicorn horn left classified as "magic" */

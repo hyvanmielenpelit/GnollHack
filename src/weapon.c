@@ -126,6 +126,7 @@ struct obj *obj;
         if (is_ammo(obj))
             descr = "bolt";
         break;
+#if 0
     case P_FLAIL:
         if (obj->otyp == GRAPPLING_HOOK)
             descr = "hook";
@@ -135,6 +136,7 @@ struct obj *obj;
         if (obj->otyp == DWARVISH_MATTOCK)
             descr = "mattock";
         break;
+#endif
     default:
         break;
     }
@@ -1185,33 +1187,27 @@ int strength_tohit_bonus(str)
 int str;
 {
 	int sbon = 0;
-	if (str < 6)
-		sbon = -2;
-	else if (str < 8)
-		sbon = -1;
-	else if (str < 17)
-		sbon = 0;
-	else if (str <= STR18(50))
-		sbon = 1; /* up to 18/50 */
-	else if (str < STR18(100))
-		sbon = 2;
-	else if (str == STR18(100))
-		sbon = 3;
-	else if (str == STR19(19))
-		sbon = 3;
-	else if (str == STR19(20))
-		sbon = 4;
-	else if (str == STR19(21))
-		sbon = 4;
-	else if (str == STR19(22))
-		sbon = 5;
-	else if (str == STR19(23))
-		sbon = 5;
-	else if (str == STR19(24))
-		sbon = 6;
+	if (str <= 18)
+		sbon = max(-2, (str - 6) / 4);
 	else
-		sbon = 6;
-
+	{
+		if (str <= STR18(100) && rn2(100) < str - 18)
+			sbon = 4;
+		else if (str == STR19(19))
+			sbon = 5;
+		else if (str == STR19(20))
+			sbon = 5;
+		else if (str == STR19(21))
+			sbon = 6;
+		else if (str == STR19(22))
+			sbon = 6;
+		else if (str == STR19(23))
+			sbon = 7;
+		else if (str == STR19(24))
+			sbon = 7;
+		else
+			sbon = 8;
+	}
 	return sbon;
 }
 
@@ -1236,36 +1232,35 @@ int
 strength_damage_bonus(str)
 int str;
 {
-	if (str < 6)
-		return -1;
-	else if (str < 16)
-		return 0;
-	else if (str < 18)
-		return 1;
-	else if (str == 18)
-		return 2; /* up to 18 */
-	else if (str <= STR18(75))
-		return 3; /* up to 18/75 */
-	else if (str <= STR18(90))
-		return 4; /* up to 18/90 */
-	else if (str < STR18(100))
-		return 5; /* up to 18/99 */
-	else if (str == STR18(100))
-		return 6; /* up to 18/00 */
-	else if (str == STR19(19))
-		return 7; /* up to 19 */
-	else if (str == STR19(20))
-		return 8; /* up to 20 */
-	else if (str == STR19(21))
-		return 9; /* up to 21 */
-	else if (str == STR19(22))
-		return 10; /* up to 22 */
-	else if (str == STR19(23))
-		return 11; /* up to 23 */
-	else if (str == STR19(24))
-		return 12; /* up to 24 */
+	int sbon = 0;
+	if (str <= 18)
+		sbon = max(-2, (str - 5) / 2);
 	else
-		return 13;
+	{
+		sbon = 6;
+		if (str <= STR18(100))
+		{
+			if (rn2(100) < str - 18)
+				sbon++;
+			if (rn2(100) < str - 18)
+				sbon++;
+		}
+		else if (str == STR19(19))
+			sbon = 9; /* up to 19 */
+		else if (str == STR19(20))
+			sbon = 10; /* up to 20 */
+		else if (str == STR19(21))
+			sbon = 11; /* up to 21 */
+		else if (str == STR19(22))
+			sbon = 12; /* up to 22 */
+		else if (str == STR19(23))
+			sbon = 13; /* up to 23 */
+		else if (str == STR19(24))
+			sbon = 14; /* up to 24 */
+		else
+			sbon = 15;
+	}
+	return sbon;
 
 }
 /* monster damage bonus for strength*/
@@ -1398,58 +1393,19 @@ int
 dexterity_ac_bonus(dex)
 int dex;
 {
-	if (dex < 1)
-		return -5;
-	else if (dex < 7)
-		return -7 + dex;
-	else if (dex < 14)
-		return 0;
-	else if (dex <= 25)
-		return dex - 14;
-	else
-		return 11;
+	return max(-3, (min(25, dex) - 8) / 2);
 }
 
 int dexterity_tohit_bonus(dex)
 int dex;
 {
-	int sbon = 0;
-
-	if (dex < 4)
-		sbon = -3;
-	else if (dex < 6)
-		sbon = -2;
-	else if (dex < 8)
-		sbon = -1;
-	else if (dex < 14)
-		sbon = 0;
-	else if (dex == 14)
-		sbon = 1;
-	else if (dex <= 25)
-		sbon = (dex - 13) / 2;
-	else
-		sbon = 6;
-
-	return sbon;
+	return max(-3, (min(25, dex) - 9) / 2);
 }
 
 int constitution_hp_bonus(con)
 int con;
 {
-	int sbon = 0;
-
-	if (con <= 3)
-		sbon = -2;
-	else if (con <= 6)
-		sbon = -1;
-	else if (con < 15)
-		sbon = 0;
-	else if (con <= 25)
-		sbon = (con - 14);
-	else
-		sbon = 11;
-
-	return sbon;
+	return  max(-2, (min(25, con) - 7) / 2);
 }
 
 
