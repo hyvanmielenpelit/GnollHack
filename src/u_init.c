@@ -73,7 +73,10 @@ static struct trobj Healer[] = {
     { SPE_HEALING, 0, SPBOOK_CLASS, 1, 1, 0 },
     { SPE_EXTRA_HEALING, 0, SPBOOK_CLASS, 1, 1, 0 },
     { SPE_STONE_TO_FLESH, 0, SPBOOK_CLASS, 1, 1, 0 },
-    { APPLE, 0, FOOD_CLASS, 5, 0, 0 },
+	{ GINSENG_ROOT, 0, SPBOOK_CLASS, 3, 0, 0 },
+	{ GINSENG_ROOT, 0, SPBOOK_CLASS, 1, 1, 0 },
+	{ CLOVE_OF_GARLIC, 0, SPBOOK_CLASS, 2, 0, 0 },
+	{ APPLE, 0, FOOD_CLASS, 5, 0, 0 },
 	{ LEATHER_BAG, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
 	{ 0, 0, 0, 0, 0, 0 }
 };
@@ -113,8 +116,8 @@ static struct trobj Priest[] = {
     { SMALL_SHIELD, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
 	{ HOLY_SYMBOL, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 }, //Blessed holy symbol is even more powerful
 	{ POT_WATER, 0, POTION_CLASS, 4, 1, 0 }, /* holy water */
-//    { CLOVE_OF_GARLIC, 0, FOOD_CLASS, 1, 0, 0 }, //Randomized reagents instead
-//    { SPRIG_OF_WOLFSBANE, 0, FOOD_CLASS, 1, 0, 0 }, //Randomized reagents instead
+	{ CLOVE_OF_GARLIC, 0, FOOD_CLASS, 1, 0, 0 },
+	{ SPRIG_OF_WOLFSBANE, 0, FOOD_CLASS, 1, 0, 0 },
     { UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 2, UNDEF_BLESS, 0 },
 	{ UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 2, UNDEF_BLESS, 0 },
 	{ LEATHER_BAG, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
@@ -848,7 +851,6 @@ u_init()
     u.xray_range = -1;
 
 	int n = 0;
-	struct obj* otmp;
 
     /*** Role-specific initializations ***/
     switch (Role_switch) {
@@ -927,19 +929,6 @@ u_init()
         else if (!rn2(10))
             ini_inv(Lamp);
 
-		n = 2+rn2(4); //2...5
-
-		for (int i = 0; i < n; i++)
-		{
-			otmp = mksobj(randomreagent(FALSE, 1), TRUE, FALSE, FALSE);
-			if (otmp)
-			{
-				makeknown(otmp->oclass);
-				otmp->known = 1;
-				otmp->dknown = otmp->bknown = otmp->rknown = 1;
-				otmp = addinv(otmp);
-			}
-		}
         knows_object(POT_WATER);
 		if(u.ualign.type == A_CHAOTIC)
 	        skill_init(Skill_P_Init_Chaotic, Skill_P_Max);
@@ -1386,9 +1375,9 @@ register struct trobj *trop;
 		}
 
 		/* Set sack contents*/
-		if (otyp == LEATHER_BAG || otyp == EXPENSIVE_HANDBAG)
+		if (Role_if(PM_TOURIST))
 		{
-			if (Role_if(PM_TOURIST))
+			if (otyp == LEATHER_BAG || otyp == EXPENSIVE_HANDBAG)
 			{
 				(void)add_to_container(obj, mksobj(BATHROBE, FALSE, FALSE, TRUE));
 				(void)add_to_container(obj, mksobj(COTTON_SLIPPERS, FALSE, FALSE, TRUE));
@@ -1397,10 +1386,9 @@ register struct trobj *trop;
 				obj->owt = weight(obj);
 			}
 		}
-		/* Set sack contents*/
-		if (otyp == BAG_OF_WIZARDRY)
+		else if (Role_if(PM_WIZARD))
 		{
-			if (Role_if(PM_WIZARD))
+			if (otyp == BAG_OF_WIZARDRY)
 			{
 				/* Add one sulfur, as it is rare */
 				struct obj* otmp = (struct obj*)0;
@@ -1419,6 +1407,35 @@ register struct trobj *trop;
 				for (int i = 0; i < n; i++)
 				{
 					struct obj* otmp = mksobj(randomreagent(FALSE, 2), TRUE, FALSE, FALSE);
+					if (otmp)
+					{
+						makeknown(otmp->otyp);
+						otmp->known = 1;
+						otmp->dknown = otmp->bknown = otmp->rknown = 1;
+						(void)add_to_container(obj, otmp);
+					}
+				}
+
+				/* Last update bag weight */
+				obj->owt = weight(obj);
+
+			}
+		}
+		else if (Role_if(PM_HEALER) || Role_if(PM_PRIEST))
+		{
+			if (otyp == LEATHER_BAG)
+			{
+				/* Add one ginseng */
+				struct obj* otmp = (struct obj*)0;
+				otmp = mksobj(GINSENG_ROOT, TRUE, FALSE, TRUE);
+				otmp->known = 1;
+				otmp->dknown = otmp->bknown = otmp->rknown = 1;
+				(void)add_to_container(obj, otmp);
+
+				int n = 1 + rn2(4); //1...3
+				for (int i = 0; i < n; i++)
+				{
+					struct obj* otmp = mkobj(REAGENT_CLASS, FALSE, TRUE);
 					if (otmp)
 					{
 						makeknown(otmp->otyp);
