@@ -2082,7 +2082,7 @@ struct monst* mtmp;
 	}
 	*/
 	pline("%s looks at you and replies:", Monnam(mtmp));
-	Sprintf(qbuf, "\"I can join you for a fee of %d %s. Is this acceptable?\"", join_cost, currency(join_cost));
+	Sprintf(qbuf, "\"I can join you for a fee of %d %s. Acceptable?\"", join_cost, currency(join_cost));
 
 	switch (ynq(qbuf)) {
 	default:
