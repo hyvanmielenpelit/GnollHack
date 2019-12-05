@@ -97,7 +97,7 @@ boolean resuming;
 
             do { /* hero can't move this turn loop */
                 wtcap = encumber_msg();
-
+				context.hungry_message_displayed = FALSE;
                 context.mon_moving = TRUE;
                 do {
                     monscanmove = movemon();
@@ -178,8 +178,9 @@ boolean resuming;
                         youmonst.movement = 0;
                     settrack();
 
-                    monstermoves++;
+					monstermoves++;
                     moves++;
+					context.hungry_message_displayed = FALSE;
 
                     /********************************/
                     /* once-per-turn things go here */

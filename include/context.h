@@ -130,6 +130,7 @@ struct context_info {
 	boolean encounter_appeared[256];
 	int shop_identify_type;
 	boolean mon_moving; /* monsters' turn to move */
+	boolean hungry_message_displayed;
     boolean move;
     boolean mv;
     boolean bypasses;    /* bypass flag is set on at least one fobj */

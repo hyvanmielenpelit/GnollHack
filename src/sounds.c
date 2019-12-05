@@ -2880,6 +2880,9 @@ int shtype_index;
 
 	for (int i = 0; i < SIZE(shtypes[shtype_index].iprobs); i++)
 	{
+		if (shtypes[shtype_index].iprobs[i].iprob == 0)
+			break;
+
 		if (shtypes[shtype_index].iprobs[i].itype == RANDOM_CLASS)
 		{
 			return TRUE;
@@ -2899,9 +2902,6 @@ int shtype_index;
 			if (otmp->otyp == -shtypes[shtype_index].iprobs[i].itype)
 				return TRUE;
 		}
-
-		if (shtypes[shtype_index].iprobs[i].iprob == 0)
-			break;
 	}
 	return FALSE;
 }

@@ -309,9 +309,17 @@ int x, y;
     if (mtmp->mundetected || M_AP_TYPE(mtmp))
         mhidden_description(mtmp, FALSE, eos(buf));
 
-	if(mtmp->mtame)
+	if (mtmp->mtame)
+	{
 		Sprintf(eos(buf), ", %d/%d HP", mtmp->mhp, mtmp->mhpmax);
-
+		if (has_edog(mtmp))
+		{
+			if (monstermoves > EDOG(mtmp)->hungrytime)
+				Sprintf(eos(buf), ", hungry");
+			else if (monstermoves > EDOG(mtmp)->hungrytime + 500)
+				Sprintf(eos(buf), ", starving");
+		}
+	}
     if (monbuf) {
         unsigned how_seen = howmonseen(mtmp);
 

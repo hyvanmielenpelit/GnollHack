@@ -355,29 +355,35 @@ dog_hunger(mtmp, edog)
 struct monst *mtmp;
 struct edog *edog;
 {
-    if (monstermoves > edog->hungrytime + 500) {
-        if (!carnivorous(mtmp->data) && !herbivorous(mtmp->data)) {
-            edog->hungrytime = monstermoves + 500;
-            /* but not too high; it might polymorph */
-        } else if (!edog->mhpmax_penalty) {
-            /* starving pets are limited in healing */
-            int newmhpmax = mtmp->mhpmax / 3;
-            mtmp->mconf = 1;
-            edog->mhpmax_penalty = mtmp->mhpmax - newmhpmax;
-            mtmp->mhpmax = newmhpmax;
-            if (mtmp->mhp > mtmp->mhpmax)
-                mtmp->mhp = mtmp->mhpmax;
-            if (DEADMONSTER(mtmp))
-                goto dog_died;
-            if (cansee(mtmp->mx, mtmp->my))
-                pline("%s is confused from hunger.", Monnam(mtmp));
-            else if (couldsee(mtmp->mx, mtmp->my))
-                beg(mtmp);
-            else
-                You_feel("worried about %s.", y_monnam(mtmp));
-            stop_occupation();
-        } else if (monstermoves > edog->hungrytime + 750
-                   || DEADMONSTER(mtmp)) {
+    if (monstermoves >= edog->hungrytime + 500) 
+	{
+		if (!carnivorous(mtmp->data) && !herbivorous(mtmp->data))
+		{
+			edog->hungrytime = monstermoves + 500;
+			/* but not too high; it might polymorph */
+		}
+		else if (!edog->mhpmax_penalty)
+		{
+			/* starving pets are limited in healing */
+			int newmhpmax = mtmp->mhpmax / 3;
+			mtmp->mconf = 1;
+			edog->mhpmax_penalty = mtmp->mhpmax - newmhpmax;
+			mtmp->mhpmax = newmhpmax;
+			if (mtmp->mhp > mtmp->mhpmax)
+				mtmp->mhp = mtmp->mhpmax;
+			if (DEADMONSTER(mtmp))
+				goto dog_died;
+			if (cansee(mtmp->mx, mtmp->my))
+				pline("%s is confused from hunger.", Monnam(mtmp));
+			else if (couldsee(mtmp->mx, mtmp->my))
+				beg(mtmp);
+			else
+				You_feel("worried about %s.", y_monnam(mtmp));
+			stop_occupation();
+		}
+		else if (monstermoves >= edog->hungrytime + 750
+                   || DEADMONSTER(mtmp)) 
+		{
  dog_died:
             if (mtmp->mleashed && mtmp != u.usteed)
                 Your("leash goes slack.");
@@ -389,7 +395,32 @@ struct edog *edog;
             mondied(mtmp);
             return  TRUE;
         }
-    }
+		else if (context.hungry_message_displayed == FALSE && (monstermoves - edog->hungrytime + 500) % 50 == 0)
+		{
+			context.hungry_message_displayed = TRUE;
+			if (cansee(mtmp->mx, mtmp->my))
+				pline("%s is %s from hunger.", Monnam(mtmp), 
+					monstermoves >= edog->hungrytime + 700 ? "getting more crazed" : monstermoves >= edog->hungrytime + 650 ? "crazed" : monstermoves >= edog->hungrytime + 550 ? "getting more confused" : "confused");
+			else if (couldsee(mtmp->mx, mtmp->my))
+				beg(mtmp);
+			else
+				You_feel("worried about %s.", y_monnam(mtmp));
+			stop_occupation();
+		}
+	}
+	else if (monstermoves >= edog->hungrytime)
+	{
+		if (context.hungry_message_displayed == FALSE && (monstermoves - edog->hungrytime) % 100 == 0)
+		{
+			context.hungry_message_displayed = TRUE;
+			if (cansee(mtmp->mx, mtmp->my))
+				pline("%s seems %shungry.", Monnam(mtmp), monstermoves >= edog->hungrytime + 400 ? "extremely " : monstermoves >= edog->hungrytime + 200 ? "very " : "");
+			else if (couldsee(mtmp->mx, mtmp->my))
+				beg(mtmp);
+			stop_occupation();
+		}
+	}
+
     return FALSE;
 }
 
