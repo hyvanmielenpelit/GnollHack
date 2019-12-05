@@ -175,7 +175,7 @@ makedog()
         /* All of these names were for dogs. */
 		if (Race_if(PM_GNOLL))
 		{
-			if(!rn2(2))
+			if(!rn2(2))				 /* Warcraft III: Dwarf Campaign Chapter 3 -- JG */
 				petname = "Spot";
 			else
 				petname = "Rover";
@@ -187,11 +187,11 @@ makedog()
 			if (Role_if(PM_SAMURAI))
 				petname = "Hachiko"; /* Shibuya Station */
 			if (Role_if(PM_BARBARIAN))
-				petname = "Idefix"; /* Obelix */
+				petname = "Idefix";  /* Obelix */
 			if (Role_if(PM_TOURIST))
-				petname = "Pepe";	/* Finnish Welsh springer spaniel */
+				petname = "Pepe";	 /* Tribute to a Finnish Welsh springer spaniel -- JG */
 			if (Role_if(PM_RANGER))
-				petname = "Sirius"; /* Orion's dog */
+				petname = "Sirius";  /* Orion's dog */
 		}
 	}
 

@@ -2103,7 +2103,7 @@ static winid en_win = WIN_ERR;
 static boolean en_via_menu = FALSE;
 static const char You_[] = "You ", are[] = "are ", were[] = "were ",
                   have[] = "have ", had[] = "had ", can[] = "can ",
-                  could[] = "could ";
+                  could[] = "could ", cannot[] = "cannot ", could_not[] = "could_not ";
 static const char have_been[] = "have been ", have_never[] = "have never ",
                   never[] = "never ";
 
@@ -2112,6 +2112,7 @@ static const char have_been[] = "have been ", have_never[] = "have never ",
 #define you_are(attr, ps) enl_msg(You_, are, were, attr, ps)
 #define you_have(attr, ps) enl_msg(You_, have, had, attr, ps)
 #define you_can(attr, ps) enl_msg(You_, can, could, attr, ps)
+#define you_cannot(attr, ps) enl_msg(You_, cannot, could_not, attr, ps)
 #define you_have_been(goodthing) enl_msg(You_, have_been, were, goodthing, "")
 #define you_have_never(badthing) \
     enl_msg(You_, have_never, never, badthing, "")
@@ -3467,12 +3468,16 @@ int final;
             Sprintf(buf, "%s%ssafely pray%s", can_pray(FALSE) ? "" : "not ",
                     final ? "have " : "", final ? "ed" : "");
 #else
-            Sprintf(buf, "%ssafely pray", can_pray(FALSE) ? "" : "not ");
+            Sprintf(buf, "safely pray");
 #endif
             if (wizard)
                 Sprintf(eos(buf), " (%d)", u.ublesscnt);
-            you_can(buf, "");
-        }
+
+			if(can_pray(FALSE))
+	            you_can(buf, "");
+			else
+				you_cannot(buf, "");
+		}
     }
 
 #ifdef DEBUG

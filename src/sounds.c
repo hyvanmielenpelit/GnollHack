@@ -20,8 +20,10 @@ STATIC_DCL int FDECL(do_chat_oracle_consult, (struct monst*));
 STATIC_DCL int FDECL(do_chat_oracle_identify, (struct monst*));
 STATIC_DCL int FDECL(do_chat_oracle_enlightenment, (struct monst*));
 STATIC_DCL int FDECL(do_chat_priest_blesscurse, (struct monst*));
-STATIC_DCL int FDECL(do_chat_priest_healing, (struct monst*));
+STATIC_DCL int FDECL(do_chat_priest_full_healing, (struct monst*));
+STATIC_DCL int FDECL(do_chat_priest_normal_healing, (struct monst*));
 STATIC_DCL int FDECL(do_chat_priest_chat, (struct monst*));
+STATIC_DCL int FDECL(do_chat_priest_divination, (struct monst*));
 STATIC_DCL int FDECL(do_chat_shk_payitems, (struct monst*));
 STATIC_DCL int FDECL(do_chat_shk_pricequote, (struct monst*));
 STATIC_DCL int FDECL(do_chat_shk_chat, (struct monst*));
@@ -1526,8 +1528,21 @@ dochat()
 	/* Priest */
 	if (msound == MS_PRIEST || mtmp->ispriest)
 	{
-		strcpy(available_chat_list[chatnum].name, "Ask for healing");
-		available_chat_list[chatnum].function_ptr = &do_chat_priest_healing;
+		strcpy(available_chat_list[chatnum].name, "Ask for standard healing");
+		available_chat_list[chatnum].function_ptr = &do_chat_priest_normal_healing;
+		available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+		any = zeroany;
+		any.a_char = available_chat_list[chatnum].charnum;
+
+		add_menu(win, NO_GLYPH, &any,
+			any.a_char, 0, ATR_NONE,
+			available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+		chatnum++;
+
+		strcpy(available_chat_list[chatnum].name, "Ask for full healing");
+		available_chat_list[chatnum].function_ptr = &do_chat_priest_full_healing;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
 
 		any = zeroany;
@@ -1552,6 +1567,20 @@ dochat()
 
 		chatnum++;
 
+		strcpy(available_chat_list[chatnum].name, "Ask for divination");
+		available_chat_list[chatnum].function_ptr = &do_chat_priest_divination;
+		available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+		any = zeroany;
+		any.a_char = available_chat_list[chatnum].charnum;
+
+		add_menu(win, NO_GLYPH, &any,
+			any.a_char, 0, ATR_NONE,
+			available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+		chatnum++;
+
+
 		strcpy(available_chat_list[chatnum].name, "Chat about a monetary contribution to the temple");
 		available_chat_list[chatnum].function_ptr = &do_chat_priest_chat;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
@@ -1565,6 +1594,36 @@ dochat()
 
 		chatnum++;
 
+	}
+	else if (mtmp->data->mflags3 & M3_PRIEST)
+	{
+		/* Non-priest monster priests here */
+		strcpy(available_chat_list[chatnum].name, "Ask for healing");
+		available_chat_list[chatnum].function_ptr = &do_chat_priest_normal_healing;
+		available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+		any = zeroany;
+		any.a_char = available_chat_list[chatnum].charnum;
+
+		add_menu(win, NO_GLYPH, &any,
+			any.a_char, 0, ATR_NONE,
+			available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+		chatnum++;
+
+
+		strcpy(available_chat_list[chatnum].name, "Ask for divination");
+		available_chat_list[chatnum].function_ptr = &do_chat_priest_divination;
+		available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+		any = zeroany;
+		any.a_char = available_chat_list[chatnum].charnum;
+
+		add_menu(win, NO_GLYPH, &any,
+			any.a_char, 0, ATR_NONE,
+			available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+		chatnum++;
 	}
 
 	/* Quest */
@@ -2081,9 +2140,16 @@ struct monst* mtmp;
 		return 0;
 	}
 	*/
-	pline("%s looks at you and replies:", Monnam(mtmp));
-	Sprintf(qbuf, "\"I can join you for a fee of %d %s. Acceptable?\"", join_cost, currency(join_cost));
-
+	if (is_undead(mtmp->data) || is_demon(mtmp->data) || (mtmp->data->maligntyp < 0 && mtmp->data->difficulty > 10) )
+	{
+		pline("%s first %s, but then says:", Monnam(mtmp), mtmp->data->msound == MS_MUMBLE ? "mumbles incomprehensibly" : "chuckles");
+		Sprintf(qbuf, "\"You shall pay me a tribute of %d %s.\" Do you yield to this demand?", join_cost, currency(join_cost));
+	}
+	else
+	{
+		pline("%s looks at you and replies:", Monnam(mtmp));
+		Sprintf(qbuf, "\"I can join you for a fee of %d %s. Acceptable?\"", join_cost, currency(join_cost));
+	}
 	switch (ynq(qbuf)) {
 	default:
 	case 'q':
@@ -2141,11 +2207,21 @@ struct monst* mtmp;
 	};
 
 	const char* classorder = flags.sortpack ? flags.inv_order : def_srt_order;
+	boolean classhasitems[MAXOCLASSES] = { 0 };
+
+	for (struct obj* otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
+	{
+		if (otmp->oclass > ILLOBJ_CLASS)
+			classhasitems[otmp->oclass] = TRUE;
+	}
 
 	for(int i = 0; i < MAXOCLASSES; i++)
 	{
 		char oclass = classorder[i];
 		boolean madeheader = FALSE;
+
+		if (flags.sortpack && !classhasitems[oclass])
+			continue;
 
 		for (struct obj* otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
 		{
@@ -2198,11 +2274,15 @@ struct monst* mtmp;
 	}
 	else
 	{
-		if (!Deaf && (mtmp->data->mflags3 & M3_SPEAKING))
-			verbalize("Hello, adventurer! I have the following items for sale:");
+		if (!Deaf && (is_undead(mtmp->data) || is_demon(mtmp->data) || (mtmp->data->maligntyp < 0 && mtmp->data->difficulty > 10) ))
+		{
+			verbalize("%sI'm willing to trade the following items.", is_undead(mtmp->data) || is_demon(mtmp->data) ? "Greetings, mortal. " : "");
+			verbalize("But be quick, my patience is limited.");
+		}
+		else if (!Deaf && (mtmp->data->mflags3 & M3_SPEAKING))
+			verbalize("Hello, adventurer! May I interest you in these fine items:");
 		else
-			pline("%s shows you the items that are for sale.",
-				Monnam(mtmp));
+			pline("%s shows you the items that are for sale.", Monnam(mtmp));
 	}
 
 
@@ -2292,11 +2372,12 @@ struct monst* mtmp;
 
 		if (mtmp->mpeaceful && buy_count > 0) 
 		{
-			if (!Deaf && (mtmp->data->mflags3 & M3_SPEAKING))
+			if (!Deaf && (is_undead(mtmp->data) || is_demon(mtmp->data) || (mtmp->data->maligntyp < 0 && mtmp->data->difficulty > 10)))
+				verbalize("Use your purchase well!");
+			else if (!Deaf && (mtmp->data->mflags3 & M3_SPEAKING))
 				verbalize("Thank you for the purchase!");
 			else
-				pline("%s nods appreciatively at you for the purchase!",
-					Monnam(mtmp));
+				pline("%s nods appreciatively at you for the purchase!", Monnam(mtmp));
 		}
 
 		if (buy_count > 0)
@@ -2500,13 +2581,12 @@ struct monst* mtmp;
 
 
 STATIC_OVL int
-do_chat_priest_healing(mtmp)
+do_chat_priest_normal_healing(mtmp)
 struct monst* mtmp;
 {
 
 	long umoney = money_cnt(invent);
-	int u_pay, fullhealing_cost = 250 + 5 * u.ulevel, extrahealing_cost = 50;
-	int priest_action = 0;
+	int u_pay, extrahealing_cost = 50;
 	char qbuf[QBUFSZ];
 
 	if (!mtmp) 
@@ -2525,49 +2605,24 @@ struct monst* mtmp;
 		return 0;
 	}
 
-	Sprintf(qbuf, "\"Would you like to have a full healing?\" (%d %s)", fullhealing_cost, currency((long)fullhealing_cost));
+	Sprintf(qbuf, "\"Would you like to have a standard healing?\" (%d %s)", extrahealing_cost, currency((long)extrahealing_cost));
 	switch (ynq(qbuf)) {
 	default:
+	case 'n':
 	case 'q':
 		return 0;
 	case 'y':
-		if (umoney < (long)fullhealing_cost) {
-			You("don't have enough money for that!");
-			return 0;
-		}
-		u_pay = fullhealing_cost;
-		priest_action = 1;
-		break;
-		break;
-	case 'n':
-		Sprintf(qbuf, "\"Then would you like to have a normal one?\" (%d %s)",
-			extrahealing_cost, currency((long)extrahealing_cost));
-		if (yn(qbuf) != 'y')
-			return 0;
-		if (umoney < (long)extrahealing_cost)
-		{
+		if (umoney < (long)extrahealing_cost) {
 			You("don't have enough money for that!");
 			return 0;
 		}
 		u_pay = extrahealing_cost;
-		priest_action = 2;
 		break;
 	}
 	money2mon(mtmp, (long)u_pay);
 	context.botl = 1;
 
-	int otyp = POT_HEALING;
-
-	switch (priest_action) {
-	case 1: 
-		otyp = POT_FULL_HEALING;
-		break;
-	case 2: 
-		otyp = POT_EXTRA_HEALING;
-		break;
-	default:
-		break;
-	}
+	int otyp = POT_EXTRA_HEALING;
 
 	struct obj* pseudo = mksobj(otyp, FALSE, FALSE, FALSE);
 	pseudo->blessed = pseudo->cursed = 0;
@@ -2579,12 +2634,148 @@ struct monst* mtmp;
 }
 
 STATIC_OVL int
+do_chat_priest_full_healing(mtmp)
+struct monst* mtmp;
+{
+
+	long umoney = money_cnt(invent);
+	int u_pay, fullhealing_cost = 250 + 5 * u.ulevel;
+	char qbuf[QBUFSZ];
+
+	if (!mtmp)
+	{
+		There("is no one here to talk to.");
+		return 0;
+	}
+	else if (!mtmp->mpeaceful)
+	{
+		pline("%s is in no mood for doing any services.", Monnam(mtmp));
+		return 0;
+	}
+	else if (!umoney)
+	{
+		You("have no money.");
+		return 0;
+	}
+
+	Sprintf(qbuf, "\"Would you like to have a full healing?\" (%d %s)", fullhealing_cost, currency((long)fullhealing_cost));
+	switch (ynq(qbuf)) {
+	default:
+	case 'n':
+	case 'q':
+		return 0;
+	case 'y':
+		if (umoney < (long)fullhealing_cost) {
+			You("don't have enough money for that!");
+			return 0;
+		}
+		u_pay = fullhealing_cost;
+		break;
+	}
+	money2mon(mtmp, (long)u_pay);
+	context.botl = 1;
+
+	int otyp = POT_FULL_HEALING;
+
+	struct obj* pseudo = mksobj(otyp, FALSE, FALSE, FALSE);
+	pseudo->blessed = pseudo->cursed = 0;
+	pseudo->quan = 20L; /* do not let useup get it */
+	peffects(pseudo);
+	obfree(pseudo, (struct obj*)0);
+
+	return 1;
+}
+
+
+STATIC_OVL int
 do_chat_priest_chat(mtmp)
 struct monst* mtmp;
 {
 	priest_talk(mtmp);
 	return 1;
 }
+
+STATIC_OVL int
+do_chat_priest_divination(mtmp)
+struct monst* mtmp;
+{
+	long umoney = money_cnt(invent);
+	int u_pay, divination_cost = 25;
+	char qbuf[QBUFSZ];
+
+	if (!mtmp)
+	{
+		There("is no one here to talk to.");
+		return 0;
+	}
+	else if (!mtmp->mpeaceful)
+	{
+		pline("%s is in no mood for doing any divination.", Monnam(mtmp));
+		return 0;
+	}
+	else if (!umoney)
+	{
+		You("have no money.");
+		return 0;
+	}
+
+	Sprintf(qbuf, "\"Would you like to see your fortune?\" (%d %s)", divination_cost, currency((long)divination_cost));
+	switch (ynq(qbuf)) {
+	default:
+	case 'n':
+	case 'q':
+		return 0;
+	case 'y':
+		if (umoney < (long)divination_cost) {
+			You("don't have enough money for that!");
+			return 0;
+		}
+		u_pay = divination_cost;
+		break;
+	}
+	money2mon(mtmp, (long)u_pay);
+	context.botl = 1;
+
+	verbalize("Very well, then. Let's see what your fortune is like.");
+
+	if (can_pray(FALSE))
+		verbalize("First, I see that you can safely pray.");
+	else
+	{
+		verbalize("First, you should know that you cannot safely pray.");
+
+		if (u.ugangr)
+			verbalize("I see that %s is %sangry with you.", u_gname(), u.ugangr > 6 ? "extremely " : u.ugangr > 3 ? "very " : "");
+
+		if (u.ublesscnt > 0)
+		{
+			verbalize("For your prayer conduct, the number %d appears before me.", u.ublesscnt / 10 + 1);
+
+			if (u.ublesscnt > 300)
+				verbalize("I can see that %s is quite tired of your constant whining.", u_gname());
+
+			verbalize("Thus, %s wait %sbefore bothering %s again.",
+				u.ublesscnt >= 50 ? "it would be wise to" : "you must",
+				u.ublesscnt < 50 ? "a little longer " : u.ublesscnt > 200 ? "a long time " : "",
+				u_gname());
+		}
+	}
+
+	if (Luck < 0)
+		verbalize("For your fortune, I see a number of %d. That is not good, for it is %s unlucky number.",
+			abs(Luck), abs(Luck) >= 10 ? "an extremely" : abs(Luck) >= 5 ? "a very" : "an");
+	else if(Luck > 0)
+		verbalize("For your fortune, I see a number of %d. That is good, for it is %s lucky number.",
+			Luck, Luck >= 10 ? "an extremely" : Luck >= 5 ? "a very" : "a");
+	else
+		verbalize("For your fortune, my vision is neutral.");
+
+	verbalize("That's all for now. Thank you for your interest in divine matters.");
+
+	return 1;
+}
+
+
 
 
 STATIC_OVL int
