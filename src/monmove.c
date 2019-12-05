@@ -141,7 +141,8 @@ struct monst *mtmp;
      * inside their own shop, priests inside their own temple */
     if (mtmp->iswiz || is_lminion(mtmp) || mtmp->data == &mons[PM_ANGEL]
         || is_rider(mtmp->data)
-        || (mtmp->isshk && inhishop(mtmp))
+		|| mindless(mtmp->data)
+		|| (mtmp->isshk && inhishop(mtmp))
         || (mtmp->ispriest && inhistemple(mtmp)))
         return FALSE;
 

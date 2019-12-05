@@ -31,33 +31,44 @@ static const struct innate
                  { 0, 0, 0, 0 } },
 
   cav_abil[] = { { 7, FAST, "quick", "slow" },
-                 { 15, WARNING, "sensitive", "" },
-                 { 0, 0, 0, 0 } },
+                 { 10, WARN_TROLL, "sensitive to trolls", "" },
+				 { 15, WARN_GIANT, "sensitive to giants", "" },
+				 { 20, WARN_DRAGON, "sensitive to dragons", "" },
+				 { 0, 0, 0, 0 } },
 
   hea_abil[] = { { 1, POISON_RES, "", "" },
-                 { 15, WARNING, "sensitive", "" },
+				 { 10, SLEEP_RES, "awake", "tired" },
+				 { 15, BRAIN_PROTECTION, "hard-brained", "" },
+				 { 20, DEATH_RES, "less mortal", "more mortal" },
+				 { 25, REGENERATION, "regenerative", "" },
                  { 0, 0, 0, 0 } },
 
-  kni_abil[] = { { 7, FAST, "quick", "slow" }, { 0, 0, 0, 0 } },
+  kni_abil[] = { { 7, FAST, "quick", "slow" },
+				 { 15, WARN_UNDEAD, "sensitive to undead", "" },
+				 { 20, WARN_DEMON, "sensitive to demons", "" },
+				 { 25, CURSE_RES, "holy", "less holy" },
+				 { 0, 0, 0, 0 } },
 
   mon_abil[] = { { 1, FAST, "", "" },
                  { 1, SLEEP_RES, "", "" },
                  { 1, SEE_INVIS, "", "" },
-                 { 3, POISON_RES, "healthy", "" },
-                 { 5, STEALTH, "stealthy", "" },
-                 { 7, WARNING, "sensitive", "" },
-                 { 9, SEARCHING, "perceptive", "unaware" },
-                 { 11, FIRE_RES, "cool", "warmer" },
-                 { 13, COLD_RES, "warm", "cooler" },
-                 { 15, SHOCK_RES, "insulated", "conductive" },
-                 { 17, TELEPORT_CONTROL, "controlled", "uncontrolled" },
-				 { 19, DEATH_RES, "less mortal", "more mortal" },
-				 { 21, LYCANTHROPY_RES, "less suspectible to lycanthropy", "more suspectible to lycanthropy" },
+				 { 4, SICK_RES, "healthy", "" },
+				 { 7, POISON_RES, "even healthier", "" },
+                 { 10, STEALTH, "stealthy", "" },
+                 { 13, SEARCHING, "perceptive", "unaware" },
+                 { 16, FIRE_RES, "cool", "warmer" },
+                 { 19, COLD_RES, "warm", "cooler" },
+                 { 22, SHOCK_RES, "insulated", "conductive" },
+                 { 25, TELEPORT_CONTROL, "controlled", "uncontrolled" },
+				 { 28, DEATH_RES, "less mortal", "more mortal" },
 				 { 0, 0, 0, 0 } },
 
-  pri_abil[] = { { 15, WARNING, "sensitive", "" },
-                 { 20, FIRE_RES, "cool", "warmer" },
-                 { 0, 0, 0, 0 } },
+  pri_abil[] = { { 12, WARN_UNDEAD, "sensitive to undead", "" },
+                 { 15, WARN_DEMON, "sensitive to demons", "" },
+				 { 18, WARN_ANGEL, "sensitive to angels", "" },
+				 { 21, CURSE_RES, "holy", "less holy" },
+				 { 24, DEATH_RES, "less mortal", "more mortal" },
+				 { 0, 0, 0, 0 } },
 
   ran_abil[] = { { 1, SEARCHING, "", "" },
                  { 7, STEALTH, "stealthy", "" },
@@ -73,17 +84,21 @@ static const struct innate
                  { 0, 0, 0, 0 } },
 
   tou_abil[] = { { 10, SEARCHING, "perceptive", "" },
-                 { 20, POISON_RES, "hardy", "" },
-                 { 0, 0, 0, 0 } },
+				 { 15, SICK_RES, "healthy", "" },
+				 { 20, POISON_RES, "hardy", "" },
+				 { 25, SEE_INVIS, "", "" },
+				 { 0, 0, 0, 0 } },
 
   val_abil[] = { { 1, COLD_RES, "", "" },
                  { 1, STEALTH, "", "" },
                  { 7, FAST, "quick", "slow" },
-                 { 0, 0, 0, 0 } },
+				 { 15, SHOCK_RES, "insulated", "conductive" },
+				 { 0, 0, 0, 0 } },
 
-  wiz_abil[] = { { 15, WARNING, "sensitive", "" },
-                 { 17, TELEPORT_CONTROL, "controlled", "uncontrolled" },
-                 { 0, 0, 0, 0 } },
+  wiz_abil[] = { { 15, ENHANCED_VISION, "studious", "" },
+                 { 20, TELEPORT_CONTROL, "controlled", "uncontrolled" },
+				 { 25, POLYMORPH_CONTROL, "more controlled", "more uncontrolled" },
+				 { 0, 0, 0, 0 } },
 
   /* Intrinsics conferred by race */
   dwa_abil[] = { { 1, INFRAVISION, "", "" },
@@ -1375,26 +1390,18 @@ int
 is_innate(propidx)
 int propidx;
 {
-    //int innateness;
-
-    /* innately() would report FROM_FORM for this; caller wants specificity */
-    if (propidx == DRAIN_RES && u.ulycn >= LOW_PM)
-        return A_FROM_LYCN;
-    if (propidx == FAST && Very_fast)
-        return A_FROM_NONE; /* can't become very fast innately */
-    //if ((innateness = innately(&u.uprops[propidx].intrinsic)) != FROM_NONE)
-    //    return innateness;
 	if (u.uprops[propidx].intrinsic & FROM_RACE)
 		return A_FROM_RACE;
 	if (u.uprops[propidx].intrinsic & FROM_ROLE)
 		return A_FROM_ROLE;
 	if (u.uprops[propidx].intrinsic & FROM_FORM)
 		return A_FROM_FORM;
-    if (propidx == JUMPING && Role_if(PM_KNIGHT)
-        /* knight has intrinsic jumping, but extrinsic is more versatile so
-           ignore innateness if equipment is going to claim responsibility */
-        && !u.uprops[propidx].extrinsic)
-        return A_FROM_ROLE;
+
+	/* Special cases */
+	if (propidx == DRAIN_RES && u.ulycn >= LOW_PM)
+        return A_FROM_LYCN;
+    if (propidx == FAST && Very_fast)
+        return A_FROM_NONE; /* can't become very fast innately */
     if (propidx == BLINDED && !haseyes(youmonst.data))
         return A_FROM_FORM;
     return A_FROM_NONE;

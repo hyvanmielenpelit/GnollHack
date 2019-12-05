@@ -812,6 +812,8 @@ u_init()
     u.ulycn = NON_PM;
     set_uasmon();
 
+	u.carrying_capacity_level = UNENCUMBERED;
+
     u.ulevel = 0; /* set up some of the initial attributes */
 
 	u.ubasehpmax = newhp();
@@ -903,8 +905,6 @@ u_init()
         ini_inv(Knight);
         knows_class(WEAPON_CLASS);
         knows_class(ARMOR_CLASS);
-        /* give knights chess-like mobility--idea from wooledge@..cwru.edu */
-        HJumping |= FROM_ACQUIRED;
         skill_init(Skill_K_Init, Skill_K_Max);
         break;
     case PM_MONK: {

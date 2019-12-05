@@ -408,6 +408,7 @@ struct you {
     struct skills weapon_skills[P_NUM_SKILLS];
     boolean twoweap;         /* KMH -- Using two-weapon combat */
 	boolean canadvanceskill; /* Can advance skill */
+	int carrying_capacity_level;
 
 }; /* end of `struct you' */
 

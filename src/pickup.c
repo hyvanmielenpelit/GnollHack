@@ -1597,7 +1597,7 @@ struct obj *otmp;
 int
 encumber_msg()
 {
-    static int oldcap = UNENCUMBERED;
+    int oldcap = u.carrying_capacity_level;
     int newcap = near_capacity();
 
     if (oldcap < newcap) {
@@ -1637,7 +1637,7 @@ encumber_msg()
         context.botl = 1;
     }
 
-    oldcap = newcap;
+	u.carrying_capacity_level = newcap;
     return newcap;
 }
 
