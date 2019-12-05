@@ -1683,7 +1683,7 @@ dochat()
 			shp_indx = ESHK(mtmp)->shoptype - SHOPBASE;
 			const struct shclass* shp = &shtypes[shp_indx];
 			char itembuf[BUFSIZ] = "";
-			strcpy(itembuf, shp->symb == RANDOM_CLASS ? "an item" : an(def_oc_syms[shp->symb].explain));
+			strcpy(itembuf, shp->identified_item_description);
 			
 			Sprintf(available_chat_list[chatnum].name, "Identify %s", itembuf);
 			available_chat_list[chatnum].function_ptr = &do_chat_shk_identify;
@@ -2843,8 +2843,7 @@ struct monst* mtmp;
 		return 0;
 	}
 
-	Sprintf(qbuf, "\"Would you like to identify %s?\" (%d %s)",
-		ESHK(mtmp)->shoptype == SHOPBASE ? "an item" : an(def_oc_syms[shtypes[ESHK(mtmp)->shoptype - SHOPBASE].symb].explain), minor_id_cost, currency((long)minor_id_cost));
+	Sprintf(qbuf, "\"Would you like to identify %s?\" (%d %s)", shtypes[ESHK(mtmp)->shoptype - SHOPBASE].identified_item_description, minor_id_cost, currency((long)minor_id_cost));
 
 	switch (ynq(qbuf)) {
 	default:
@@ -2862,13 +2861,49 @@ struct monst* mtmp;
 	money2mon(mtmp, (long)u_pay);
 	context.botl = 1;
 
-	context.shop_identify_type = shtypes[ESHK(mtmp)->shoptype - SHOPBASE].symb;
+	context.shop_identify_type = ESHK(mtmp)->shoptype - SHOPBASE + 1; // shtypes[ESHK(mtmp)->shoptype - SHOPBASE].symb;
 
 	identify_pack(1, FALSE);
 
 	context.shop_identify_type = 0;
 
 	return 1; 
+}
+
+boolean
+is_shop_item_type(otmp, shtype_index)
+struct obj* otmp;
+int shtype_index;
+{
+	if (!otmp)
+		return FALSE;
+
+	for (int i = 0; i < SIZE(shtypes[shtype_index].iprobs); i++)
+	{
+		if (shtypes[shtype_index].iprobs[i].itype == RANDOM_CLASS)
+		{
+			return TRUE;
+		}
+		else if (shtypes[shtype_index].iprobs[i].itype > 0)
+		{
+			if (shtypes[shtype_index].iprobs[i].itype == VEGETARIAN_CLASS)
+			{
+				if (veggy_item(otmp, 0))
+					return TRUE;
+			}
+			else if (otmp->oclass == shtypes[shtype_index].iprobs[i].itype)
+				return TRUE;
+		}
+		else if (shtypes[shtype_index].iprobs[i].itype < 0)
+		{
+			if (otmp->otyp == -shtypes[shtype_index].iprobs[i].itype)
+				return TRUE;
+		}
+
+		if (shtypes[shtype_index].iprobs[i].iprob == 0)
+			break;
+	}
+	return FALSE;
 }
 
 STATIC_OVL int

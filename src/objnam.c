@@ -1591,7 +1591,7 @@ struct obj *otmp;
     if (otmp->oclass == COIN_CLASS)
         return FALSE; /* always fully ID'd */
 
-	if (context.shop_identify_type > RANDOM_CLASS && otmp->oclass != context.shop_identify_type)
+	if (context.shop_identify_type > 0 && !is_shop_item_type(otmp, context.shop_identify_type - 1))
 		return FALSE;
 
     /* check fundamental ID hallmarks first */

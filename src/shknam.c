@@ -8,15 +8,12 @@
 #include "hack.h"
 
 STATIC_DCL boolean FDECL(stock_room_goodpos, (struct mkroom *, int, int, int, int));
-STATIC_DCL boolean FDECL(veggy_item, (struct obj * obj, int));
 STATIC_DCL int NDECL(shkveg);
 STATIC_DCL void FDECL(mkveggy_at, (int, int));
 STATIC_DCL void FDECL(mkshobj_at, (const struct shclass *, int, int,
                                    BOOLEAN_P, BOOLEAN_P));
 STATIC_DCL void FDECL(nameshk, (struct monst *, const char *const *));
 STATIC_DCL int FDECL(shkinit, (const struct shclass *, struct mkroom *));
-
-#define VEGETARIAN_CLASS (MAXOCLASSES + 1)
 
 /*
  *  Name prefix codes:
@@ -214,6 +211,7 @@ static const char *const shkhealthfoods[] = {
 const struct shclass shtypes[] = {
     { "general store",
       RANDOM_CLASS,
+	  "an item",
       39,
       D_SHOP,
       { { 100, RANDOM_CLASS },
@@ -229,7 +227,8 @@ const struct shclass shtypes[] = {
       shkgeneral },
     { "used armor dealership",
       ARMOR_CLASS,
-      14,
+	  "a piece of armor or weapon",
+	  14,
       D_SHOP,
       { { 90, ARMOR_CLASS },
         { 10, WEAPON_CLASS },
@@ -244,7 +243,8 @@ const struct shclass shtypes[] = {
       shkarmors },
     { "second-hand bookstore",
       SCROLL_CLASS,
-      10,
+	  "a scroll or spellbook",
+	  10,
       D_SHOP,
       { { 90, SCROLL_CLASS },
         { 10, SPBOOK_CLASS },
@@ -259,7 +259,8 @@ const struct shclass shtypes[] = {
       shkbooks },
     { "liquor emporium",
       POTION_CLASS,
-      10,
+	  "a potion",
+	  10,
       D_SHOP,
       { { 100, POTION_CLASS },
 		{ 0, 0 },
@@ -274,7 +275,8 @@ const struct shclass shtypes[] = {
       shkliquors },
     { "antique weapons outlet",
       WEAPON_CLASS,
-      5,
+	  "a weapon or piece of armor",
+	  5,
       D_SHOP,
       { { 90, WEAPON_CLASS },
         { 10, ARMOR_CLASS },
@@ -289,7 +291,8 @@ const struct shclass shtypes[] = {
       shkweapons },
     { "delicatessen",
       FOOD_CLASS,
-      5,
+	  "a food item",
+	  5,
       D_SHOP,
       { { 83, FOOD_CLASS },
         { 5, -POT_FRUIT_JUICE },
@@ -304,7 +307,8 @@ const struct shclass shtypes[] = {
       shkfoods },
     { "jewelers",
       RING_CLASS,
-      3,
+	  "a ring, gem, or amulet",
+	  3,
       D_SHOP,
       { { 85, RING_CLASS },
         { 10, GEM_CLASS },
@@ -319,7 +323,8 @@ const struct shclass shtypes[] = {
       shkrings },
     { "quality apparel and accessories",
       WAND_CLASS,
-      3,
+	  "a wand or apparel",
+	  3,
       D_SHOP,
       { { 90, WAND_CLASS },
         { 5, -LEATHER_GLOVES },
@@ -334,7 +339,8 @@ const struct shclass shtypes[] = {
       shkwands },
     { "hardware store",
       TOOL_CLASS,
-      3,
+	  "a tool",
+	  3,
       D_SHOP,
       { { 100, TOOL_CLASS },
         { 0, 0 },
@@ -349,7 +355,8 @@ const struct shclass shtypes[] = {
       shktools },
 	{ "rare books",
       SPBOOK_CLASS,
-      3,
+	  "a spellbook or scroll",
+	  3,
       D_SHOP,
       { { 90, SPBOOK_CLASS },
         { 10, SCROLL_CLASS },
@@ -364,6 +371,7 @@ const struct shclass shtypes[] = {
       shkbooks },
 	{ "quality reagents and components",
 		REAGENT_CLASS,
+	    "a reagent or gem",
 		3,
 		D_SHOP,
 		{ { 55, REAGENT_CLASS },
@@ -379,7 +387,8 @@ const struct shclass shtypes[] = {
 		shkreagents },
 	{ "health food store",
       FOOD_CLASS,
-      2,
+	  "a health food item",
+	  2,
       D_SHOP,
       { { 67, VEGETARIAN_CLASS },
         { 20, -POT_FRUIT_JUICE },
@@ -398,7 +407,8 @@ const struct shclass shtypes[] = {
      */
     { "lighting store",
       TOOL_CLASS,
-      0,
+	  "a lighting item",
+	  0,
       D_SHOP,
       { { 30, -WAX_CANDLE },
         { 48, -TALLOW_CANDLE },
@@ -414,6 +424,7 @@ const struct shclass shtypes[] = {
 		  /* sentinel */
     { (char *) 0,
       0,
+	  (char*)0,
       0,
       0,
       { { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 } },
@@ -443,7 +454,7 @@ init_shop_selection()
 
 /* decide whether an object or object type is considered vegetarian;
    for types, items which might go either way are assumed to be veggy */
-STATIC_OVL boolean
+boolean
 veggy_item(obj, otyp)
 struct obj *obj;
 int otyp; /* used iff obj is null */

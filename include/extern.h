@@ -2392,6 +2392,8 @@ E char *FDECL(shkname, (struct monst *));
 E boolean FDECL(shkname_is_pname, (struct monst *));
 E boolean FDECL(is_izchak, (struct monst *, BOOLEAN_P));
 E const char* FDECL(shoptypename, (int));
+E boolean FDECL(veggy_item, (struct obj* obj, int));
+
 
 /* ### sit.c ### */
 
@@ -2417,6 +2419,7 @@ E int FDECL(count_sellable_items, (struct monst*));
 E boolean FDECL(m_sellable_item, (struct obj*, struct monst*));
 E long FDECL(get_cost_of_monster_item, (struct obj*, struct monst*));
 E long FDECL(m_contained_cost, (struct obj*, struct monst*));
+E boolean FDECL(is_shop_item_type, (struct obj*, int));
 
 /* ### sys.c ### */
 
