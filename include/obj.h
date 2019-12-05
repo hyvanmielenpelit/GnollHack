@@ -365,12 +365,19 @@ struct obj {
     (objects[otmp->otyp].oc_flags3 & O3_READABLE || otmp->oartifact == ART_ORB_OF_FATE)
 
 /* special stones */
+#define is_graystone_otyp(otyp)                                 \
+    ((objects[otyp].oc_flags2 & O2_GRAYSTONE) != 0)
+#define is_rock_otyp(otyp)                                 \
+    ((objects[otyp].oc_flags2 & O2_ROCK) != 0)
+#define is_ore_otyp(otyp)                                 \
+    ((objects[otyp].oc_flags2 & O2_ORE) != 0)
+
 #define is_graystone(obj)                                 \
-    ((objects[obj->otyp].oc_flags2 & O2_GRAYSTONE) != 0)
+    (is_graystone_otyp((obj)->otyp))
 #define is_rock(obj)                                 \
-    ((objects[obj->otyp].oc_flags2 & O2_ROCK) != 0)
+    (is_rock_otyp((obj)->otyp))
 #define is_ore(obj)                                 \
-    ((objects[obj->otyp].oc_flags2 & O2_ORE) != 0)
+    (is_ore_otyp((obj)->otyp))
 
 /* misc helpers, simple enough to be macros */
 #define is_flimsy(otmp)                           \

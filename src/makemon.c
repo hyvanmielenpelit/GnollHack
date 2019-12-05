@@ -1167,16 +1167,25 @@ register struct monst *mtmp;
 		{
 			if (!rn2(2))
 				(void)mongetsgold(mtmp, 5 + rn2(26));
+
+			if (!rn2(6))
+				(void)mongets(mtmp, WAN_ORE_DETECTION);
 		}
 		else if (ptr == &mons[PM_DWARF_LORD])
 		{
 			if (!rn2(2))
 				(void)mongetsgold(mtmp, 10 + rn2(51));
+
+			if (!rn2(5))
+				(void)mongets(mtmp, WAN_ORE_DETECTION);
 		}
 		else if (ptr == &mons[PM_DWARF_KING])
 		{
 			if (!rn2(2))
 				(void)mongetsgold(mtmp, 100 + rn2(401));
+
+			if (!rn2(4))
+				(void)mongets(mtmp, WAN_ORE_DETECTION);
 		}
 		else if (ptr == &mons[PM_BUGBEAR])
 		{

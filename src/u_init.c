@@ -255,6 +255,8 @@ static struct trobj Towel[] = { { TOWEL, 0, TOOL_CLASS, 1, 0, 0 },
                                 { 0, 0, 0, 0, 0, 0 } };
 static struct trobj Wishing[] = { { WAN_WISHING, 3, WAND_CLASS, 1, 0, 0 },
                                   { 0, 0, 0, 0, 0, 0 } };
+static struct trobj OreDetection[] = { { WAN_ORE_DETECTION, UNDEF_SPE, WAND_CLASS, 1, 0, 0 },
+								  { 0, 0, 0, 0, 0, 0 } };
 static struct trobj Money[] = { { GOLD_PIECE, 0, COIN_CLASS, 1, 0, 0 },
                                 { 0, 0, 0, 0, 0, 0 } };
 
@@ -1061,7 +1063,9 @@ u_init()
 
     case PM_DWARF:
         /* Dwarves can recognize all dwarvish objects */
-        knows_object(DWARVISH_SPEAR);
+		if (!rn2(6))
+			ini_inv(OreDetection);
+		knows_object(DWARVISH_SPEAR);
         knows_object(DWARVISH_SHORT_SWORD);
         knows_object(DWARVISH_MATTOCK);
         knows_object(DWARVISH_IRON_HELM);
