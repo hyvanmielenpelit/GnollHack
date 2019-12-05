@@ -787,7 +787,7 @@ aligntyp resp_god;
         god_zaps_you(resp_god);
         break;
     }
-    u.ublesscnt = rnz(300);
+    u.ublesscnt = Role_if(PM_PRIEST) ? rnz(150) : rnz(300);
     return;
 }
 
@@ -1268,13 +1268,13 @@ aligntyp g_align;
             break;
         }
 
-	u.ublesscnt = Role_if(PM_PRIEST) ? rnz(200) : rnz(350);
+	u.ublesscnt = Role_if(PM_PRIEST) ? rnz(175) : rnz(350);
 
     kick_on_butt = u.uevent.udemigod ? 1 : 0;
     if (u.uevent.uhand_of_elbereth)
         kick_on_butt++;
     if (kick_on_butt)
-        u.ublesscnt += kick_on_butt * rnz(1000);
+        u.ublesscnt += kick_on_butt * (Role_if(PM_PRIEST) ? rnz(500) : rnz(1000));
 
     return;
 }
@@ -1680,7 +1680,7 @@ dosacrifice()
                     uchangealign(altaralign, 0);
                     /* Beware, Conversion is costly */
                     change_luck(-3);
-                    u.ublesscnt += 300;
+                    u.ublesscnt += Role_if(PM_PRIEST) ? 150 : 300;
                 } else {
                     u.ugangr += 3;
                     adjalign(-5);
@@ -1771,7 +1771,7 @@ dosacrifice()
             adjalign(value);
             You_feel("partially absolved.");
         } else if (u.ublesscnt > 0) {
-            u.ublesscnt -= ((value * (u.ualign.type == A_CHAOTIC ? 500 : 300))
+            u.ublesscnt -= ((value * (u.ualign.type == A_CHAOTIC ? 500 : 300) / (Role_if(PM_PRIEST) ? 2 : 1))
                             / MAXVALUE);
             if (u.ublesscnt < 0)
                 u.ublesscnt = 0;
@@ -1831,7 +1831,7 @@ dosacrifice()
 					}
                     godvoice(u.ualign.type, "Use my gift wisely!");
                     u.ugifts++;
-                    u.ublesscnt = rnz(300 + (50 * nartifacts));
+                    u.ublesscnt = Role_if(PM_PRIEST) ? rnz(150 + (25 * nartifacts)) : rnz(300 + (50 * nartifacts));
                     exercise(A_WIS, TRUE);
                     /* make sure we can use this weapon */
                     unrestrict_weapon_skill(weapon_type(otmp));
@@ -1983,7 +1983,7 @@ prayer_done() /* M. Stephenson (1.0.3b) */
     if (p_type == 0) {
         if (on_altar() && u.ualign.type != alignment)
             (void) water_prayer(FALSE);
-        u.ublesscnt += rnz(250);
+        u.ublesscnt += Role_if(PM_PRIEST) ? rnz(125) : rnz(250);
         change_luck(-3);
         gods_upset(u.ualign.type);
     } else if (p_type == 1) {
@@ -1993,7 +1993,7 @@ prayer_done() /* M. Stephenson (1.0.3b) */
     } else if (p_type == 2) {
         if (water_prayer(FALSE)) {
             /* attempted water prayer on a non-coaligned altar */
-            u.ublesscnt += rnz(250);
+            u.ublesscnt += Role_if(PM_PRIEST) ? rnz(125) : rnz(250);
             change_luck(-3);
             gods_upset(u.ualign.type);
         } else

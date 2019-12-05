@@ -216,6 +216,7 @@ register int x;
 }
 
 /* rnz: everyone's favorite! */
+/* Note: expected value of rnz(i) is 2i -- JG */
 int
 rnz(i)
 int i;

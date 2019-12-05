@@ -1796,7 +1796,7 @@ struct obj *otmp;
                     glomper = TRUE;
                     break;
                 }
-        if ((mtmp->data->mflags1 & M1_NOHANDS) && !glomper)
+        if (nohands(mtmp->data) && !glomper)
             return 1;
     }
 

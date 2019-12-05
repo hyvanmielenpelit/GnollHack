@@ -100,7 +100,7 @@ static const struct innate
                  { 1, POISON_RES, "", "" },
                  { 0, 0, 0, 0 } },
 
-  gnl_abil[] = { { 1, POISON_RES, "", "" },
+  gnl_abil[] = { { 1, LYCANTHROPY_RES, "", "" },
 				   { 0, 0, 0, 0 } },
 
   hum_abil[] = { { 0, 0, 0, 0 } };
