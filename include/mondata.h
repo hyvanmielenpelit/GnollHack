@@ -218,7 +218,7 @@
     ((ptr) == &mons[PM_COCKATRICE] || (ptr) == &mons[PM_CHICKATRICE])
 
 #define is_mind_flayer(ptr) \
-    ((ptr) == &mons[PM_MIND_FLAYER] || (ptr) == &mons[PM_MASTER_MIND_FLAYER])
+    ((ptr) == &mons[PM_MIND_FLAYER] || (ptr) == &mons[PM_MASTER_MIND_FLAYER] || (ptr) == &mons[PM_ILLITHILICH])
 
 #define is_mimic(ptr) \
     ((ptr->mlet == S_MIMIC)

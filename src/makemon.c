@@ -1124,7 +1124,27 @@ register struct monst *mtmp;
 	case S_HUMANOID:
 		//Some spellbooks
 		n = 0;
-		if (ptr == &mons[PM_MASTER_MIND_FLAYER])
+		if (ptr == &mons[PM_ILLITHILICH])
+		{
+			//Bracers
+			if (!rn2(4))
+				(void)mongets(mtmp, rn2(2) ? BRACERS_OF_DEFENSE : BRACERS_OF_MAGIC_RESISTANCE);
+
+			//Ring
+			if (!rn2(4))
+				(void)mongets(mtmp, RIN_REPLENISHMENT);
+
+			//Reagents
+			n = rnd(3) + 2;
+			while (n--)
+				(void)mongets(mtmp, randomreagent(TRUE, 2));
+
+			if (!rn2(4))
+				(void)mongetsgold(mtmp, 100 + rn2(1001));
+
+			n = 2 + rn2(3); // 2...4
+		}
+		else if (ptr == &mons[PM_MASTER_MIND_FLAYER])
 		{
 			if (!rn2(4))
 				(void)mongetsgold(mtmp, 100 + rn2(1001));

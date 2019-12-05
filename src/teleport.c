@@ -469,7 +469,7 @@ struct obj *scroll;
         if (!wizard || yn("Override?") != 'y')
             return FALSE;
     }
-    if ((Teleport_control && !Stunned) || wizard) {
+    if ((Teleport_control && !Stunned) || (wizard && yn("Enforce teleport control?") == 'y')) {
         if (unconscious()) {
             pline("Being unconscious, you cannot control your teleport.");
         } else {
@@ -839,7 +839,8 @@ level_tele()
         You_feel("very disoriented for a moment.");
         return;
     }
-    if ((Teleport_control && !Stunned) || wizard) {
+    if ((Teleport_control && !Stunned) || (wizard && yn("Enforce teleport control?") == 'y')) 
+	{
         char qbuf[BUFSZ];
         int trycnt = 0;
 
