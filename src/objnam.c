@@ -691,7 +691,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             Sprintf(buf, "%s ring", dn);
         break;
     case GEM_CLASS: {
-        const char *rock = is_ore(obj) ? "nugget of ore" : is_graystone(obj) ? "gray stone" : (ocl->oc_material == MAT_MINERAL) ? "stone" : "gem";
+        const char *rock = is_ore(obj) ? "nugget of ore" : is_graystone(obj) ? "stone" : (ocl->oc_material == MAT_MINERAL) ? "stone" : "gem";
 
         if (!dknown) {
             Strcpy(buf, rock);

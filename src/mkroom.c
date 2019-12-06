@@ -827,12 +827,12 @@ mkgarden()
 			{
 				levl[sx][sy].typ = GRASS;
 				/* Buried items */
-				if (!rn2(2))
+				if (!rn2(4))
 				{
 					int itemtype = MANDRAKE_ROOT;
 					int quan = 1;
 
-					switch (rn2(4))
+					switch (rn2(3))
 					{
 					case 0:
 						itemtype = MANDRAKE_ROOT;
@@ -845,10 +845,6 @@ mkgarden()
 					case 2:
 						itemtype = CARROT;
 						quan = rnd(5);
-						break;
-					case 3:
-						itemtype = CLOVE_OF_GARLIC;
-						quan = rnd(2);
 						break;
 					default:
 						break;
@@ -865,32 +861,36 @@ mkgarden()
 				}
 
 				/* Non-buried items */
-				if (!rn2(2))
+				if (!rn2(4))
 				{
 					int itemtype = SPRIG_OF_WOLFSBANE;
 					int quan = 1;
 
-					switch (rn2(5))
+					switch (rn2(9))
 					{
 					case 0:
-						itemtype = SPRIG_OF_WOLFSBANE;
-						quan = rnd(3);
-						break;
 					case 1:
 						itemtype = CLOVE_OF_GARLIC;
 						quan = rnd(2);
 						break;
 					case 2:
+					case 3:
 						itemtype = APPLE;
 						quan = rnd(5);
 						break;
-					case 3:
+					case 4:
+					case 5:
 						itemtype = PEAR;
 						quan = rnd(5);
 						break;
-					case 4:
+					case 6:
+					case 7:
 						itemtype = MELON;
 						quan = rnd(2);
+						break;
+					case 8:
+						itemtype = SPRIG_OF_WOLFSBANE;
+						quan = rnd(3);
 						break;
 					default:
 						break;

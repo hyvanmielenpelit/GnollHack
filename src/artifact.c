@@ -2620,6 +2620,10 @@ struct obj* otmp;
 		|| objects[otyp].oc_oprop2 == WARN_GNOLL
 		|| objects[otyp].oc_oprop3 == WARN_GNOLL
 
+		|| objects[otyp].oc_oprop == WARN_OGRE
+		|| objects[otyp].oc_oprop2 == WARN_OGRE
+		|| objects[otyp].oc_oprop3 == WARN_OGRE
+
 		|| objects[otyp].oc_oprop == WARN_HUMAN
 		|| objects[otyp].oc_oprop2 == WARN_HUMAN
 		|| objects[otyp].oc_oprop3 == WARN_HUMAN
@@ -2657,14 +2661,21 @@ int orc_count; /* new count, new count is in the items; OBSOLETE: (warn_obj_cnt 
             newstr = glow_strength(orc_count);
 
 		char colorbuf[BUFSZ] = "red";
+
 		if (otmp->oartifact)
 			strcpy(colorbuf, glow_color(otmp->oartifact));
-		else if ((objects[otmp->otyp].oc_flags2 & O2_FLICKER_COLOR_MASK) == O2_FLICKER_COLOR_BLACK)
-			strcpy(colorbuf, "black");
-		else if ((objects[otmp->otyp].oc_flags2 & O2_FLICKER_COLOR_MASK) == O2_FLICKER_COLOR_WHITE)
-			strcpy(colorbuf, "white");
-		else if ((objects[otmp->otyp].oc_flags2 & O2_FLICKER_COLOR_MASK) == O2_FLICKER_COLOR_BLUE)
-			strcpy(colorbuf, "blue");
+
+		if (!otmp->oartifact || strcmp(colorbuf, "no color") == 0)
+		{
+			if ((objects[otmp->otyp].oc_flags2 & O2_FLICKER_COLOR_MASK) == O2_FLICKER_COLOR_BLACK)
+				strcpy(colorbuf, "black");
+			else if ((objects[otmp->otyp].oc_flags2 & O2_FLICKER_COLOR_MASK) == O2_FLICKER_COLOR_WHITE)
+				strcpy(colorbuf, "white");
+			else if ((objects[otmp->otyp].oc_flags2 & O2_FLICKER_COLOR_MASK) == O2_FLICKER_COLOR_BLUE)
+				strcpy(colorbuf, "blue");
+			else
+				strcpy(colorbuf, "red");
+		}
 
 
 		char weapbuf[BUFSZ] = "";

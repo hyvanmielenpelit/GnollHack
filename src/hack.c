@@ -1483,7 +1483,7 @@ domove_core()
                 nomul(0);
         }
 
-		if (is_pool_or_lava(x, y) && levl[x][y].seenv && !Confusion && !Hallucination)
+		if (is_pool_or_lava(x, y) && levl[x][y].seenv && !Stunned && !Confusion && !Hallucination && !m_at(x, y))
 		{
 			if (
 				(is_pool(x, y) && 

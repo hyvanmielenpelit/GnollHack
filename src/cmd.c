@@ -3196,6 +3196,8 @@ int final;
 		you_are("warned of dwarves", from_what(WARN_DWARF));
 	if (Gnoll_warning)
 		you_are("warned of gnolls", from_what(WARN_GNOLL));
+	if (Ogre_warning)
+		you_are("warned of ogres", from_what(WARN_OGRE));
 	if (Human_warning)
 		you_are("warned of human beings", from_what(WARN_HUMAN));
 	if (Were_warning)

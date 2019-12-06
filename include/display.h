@@ -60,6 +60,7 @@
 		|| (Human_warning && mon->data->mflags2 & M2_HUMAN) \
 		|| (Were_warning && mon->data->mflags2 & M2_WERE) \
 		|| (Angel_warning && mon->data->mlet == S_ANGEL) \
+		|| (Ogre_warning && mon->data->mlet == S_OGRE) \
 	) && !(mon)->mpeaceful && (distu((mon)->mx, (mon)->my) < 100))
 
 /*     && (((int) ((mon)->m_lev / 4)) >= context.warnlevel)) */

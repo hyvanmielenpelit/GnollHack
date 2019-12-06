@@ -1102,6 +1102,9 @@ register struct obj* obj;
 							if (objects[otyp].oc_charged && !(prop & IGNORE_SPE))
 								stat += obj->spe;
 
+							if(prop & SETS_FIXED_ATTRIBUTE)
+								stat = min(25, max(1, stat));
+
 							char raisebuf[BUFSZ];
 							if (prop & FIXED_IS_MAXIMUM)
 								strcpy(raisebuf, "Lowers");

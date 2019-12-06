@@ -115,6 +115,7 @@ const struct propname {
 	{ WARN_HUMAN, "warning of human beings" },
 	{ WARN_WERE, "warning of were-creatures" },
 	{ WARN_ANGEL, "warning of angels" },
+	{ WARN_OGRE, "warning of ogres" },
 	{ CHARM_RES, "charm resistance" },
 	{ MIND_SHIELDING, "mind shielding" },
 	{ ODD_IDEAS, "visionary ideas" },
@@ -740,6 +741,8 @@ nh_timeout()
 			case WARN_HUMAN:
 			case WARN_WERE:
 			case WARN_ANGEL:
+
+			case WARN_OGRE:
 				break;
 			case PASSES_WALLS:
 				if (!Passes_walls) {
