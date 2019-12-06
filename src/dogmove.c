@@ -129,7 +129,19 @@ struct monst* mon;
 		if (obj->oclass == ARMOR_CLASS || obj->oclass == AMULET_CLASS || obj->oclass == MISCELLANEOUS_CLASS || obj->oclass == RING_CLASS)
 		{
 			if ((obj->owornmask & (W_ARMOR | W_ACCESSORY)) == 0)
+			{
+				if ((is_suit(obj) || is_robe(obj) || is_shirt(obj)) && cantweararm(mon->data))
+					continue;
+				if ((is_cloak(obj)) && (cantweararm(mon->data) && mon->data->msize != MZ_SMALL))
+					continue;
+				if ((obj->oclass == AMULET_CLASS || is_helmet(obj)) && !has_head(mon->data))
+					continue;
+				if ((obj->oclass == RING_CLASS || is_gloves(obj) || is_bracers(obj)) && nohands(mon->data))
+					continue;
+				if ((is_boots(obj)) && nolimbs(mon->data))
+					continue;
 				return obj;
+			}
 		}
 	}
 

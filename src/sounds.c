@@ -1470,7 +1470,7 @@ dochat()
 		chatnum++;
 	}
 
-	if (mtmp->mtame && mtmp->minvent && !cantweararm(mtmp->data)) /*  && !mtmp->issummoned */
+	if (mtmp->mtame && mtmp->minvent) /*  && !mtmp->issummoned */
 	{
 		if(m_has_wearable_armor_or_accessory(mtmp))
 		{
