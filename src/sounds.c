@@ -12,8 +12,17 @@ STATIC_DCL int FDECL(do_chat_pet_sit, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_givepaw, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_stay, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_follow, (struct monst*));
+STATIC_DCL int FDECL(do_chat_pet_display_inventory, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_dropitems, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_pickitems, (struct monst*));
+STATIC_DCL int FDECL(do_chat_pet_giveitems, (struct monst*));
+STATIC_DCL int FDECL(do_chat_pet_dowear, (struct monst*));
+STATIC_DCL int FDECL(do_chat_pet_dotakeoff, (struct monst*));
+STATIC_DCL int FDECL(do_chat_pet_dowield_hth, (struct monst*));
+STATIC_DCL int FDECL(do_chat_pet_dowield_ranged, (struct monst*));
+STATIC_DCL int FDECL(do_chat_pet_dowield_pickaxe, (struct monst*));
+STATIC_DCL int FDECL(do_chat_pet_dowield_axe, (struct monst*));
+STATIC_DCL int FDECL(do_chat_pet_dounwield, (struct monst*));
 STATIC_DCL int FDECL(do_chat_buy_items, (struct monst*));
 STATIC_DCL int FDECL(do_chat_join_party, (struct monst*));
 STATIC_DCL int FDECL(do_chat_oracle_consult, (struct monst*));
@@ -1316,7 +1325,7 @@ dochat()
 	/* Tame dog and cat commands */
 	if (has_edog(mtmp) && mtmp->mtame)
 	{
-		if(mtmp->data->mlet == S_DOG && !mtmp->mstaying && mtmp->mwantstomove)
+		if (mtmp->data->mlet == S_DOG && !mtmp->mstaying && mtmp->mwantstomove)
 		{
 			strcpy(available_chat_list[chatnum].name, "Command to sit down");
 			available_chat_list[chatnum].function_ptr = &do_chat_pet_sit;
@@ -1371,7 +1380,7 @@ dochat()
 		}
 
 
-		if(mtmp->mstaying || !mtmp->mwantstomove)
+		if (mtmp->mstaying || !mtmp->mwantstomove)
 		{
 			if (mtmp->data->mflags1 & M1_ANIMAL)
 				strcpy(available_chat_list[chatnum].name, "Command to follow");
@@ -1381,6 +1390,23 @@ dochat()
 				strcpy(available_chat_list[chatnum].name, "Command to stop holding position");
 
 			available_chat_list[chatnum].function_ptr = &do_chat_pet_follow;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+		}
+
+
+		if (mtmp->minvent)
+		{
+			strcpy(available_chat_list[chatnum].name, "Display inventory");
+			available_chat_list[chatnum].function_ptr = &do_chat_pet_display_inventory;
 			available_chat_list[chatnum].charnum = 'a' + chatnum;
 
 			any = zeroany;
@@ -1426,6 +1452,136 @@ dochat()
 			chatnum++;
 		}
 
+	}
+
+	if (mtmp->mtame && invent) /*  && !mtmp->issummoned */
+	{
+		Sprintf(available_chat_list[chatnum].name, "Give items to %s", mon_nam(mtmp));
+		available_chat_list[chatnum].function_ptr = &do_chat_pet_giveitems;
+		available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+		any = zeroany;
+		any.a_char = available_chat_list[chatnum].charnum;
+
+		add_menu(win, NO_GLYPH, &any,
+			any.a_char, 0, ATR_NONE,
+			available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+		chatnum++;
+	}
+
+	if (mtmp->mtame && mtmp->minvent && !cantweararm(mtmp->data)) /*  && !mtmp->issummoned */
+	{
+		if(m_has_wearable_armor_or_accessory(mtmp))
+		{
+			Sprintf(available_chat_list[chatnum].name, "Ask to wear a piece of armor or accessory");
+			available_chat_list[chatnum].function_ptr = &do_chat_pet_dowear;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+		}
+
+		if (m_has_worn_armor_or_accessory(mtmp))
+		{
+			Sprintf(available_chat_list[chatnum].name, "Ask to take off a piece of armor or accessory");
+			available_chat_list[chatnum].function_ptr = &do_chat_pet_dotakeoff;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+		}
+	}
+
+	if (mtmp->mtame && mtmp->minvent && !nohands(mtmp->data) && attacktype(mtmp->data, AT_WEAP)) /*  && !mtmp->issummoned */
+	{
+		if (select_hwep(mtmp))
+		{
+			Sprintf(available_chat_list[chatnum].name, "Ask to wield a hand-to-hand weapon");
+			available_chat_list[chatnum].function_ptr = &do_chat_pet_dowield_hth;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+		}
+		if (select_rwep(mtmp) && !(MON_WEP(mtmp) && is_launcher(MON_WEP(mtmp))))
+		{
+			Sprintf(available_chat_list[chatnum].name, "Ask to wield a ranged weapon");
+			available_chat_list[chatnum].function_ptr = &do_chat_pet_dowield_ranged;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+		}
+
+		if (m_carrying(mtmp, PICK_AXE) && !(MON_WEP(mtmp) && MON_WEP(mtmp)->otyp == PICK_AXE))
+		{
+			Sprintf(available_chat_list[chatnum].name, "Ask to wield a pick axe");
+			available_chat_list[chatnum].function_ptr = &do_chat_pet_dowield_pickaxe;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+		}
+		if(m_carrying(mtmp, AXE) || ((m_carrying(mtmp, BATTLE_AXE) || m_carrying(mtmp, BATTLE_AXE_OF_CLEAVING)) && !which_armor(mtmp, W_ARMS)))
+		{
+			Sprintf(available_chat_list[chatnum].name, "Ask to wield an axe");
+			available_chat_list[chatnum].function_ptr = &do_chat_pet_dowield_axe;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+		}
+		if(MON_WEP(mtmp))
+		{
+			Sprintf(available_chat_list[chatnum].name, "Ask to unwield the current weapon");
+			available_chat_list[chatnum].function_ptr = &do_chat_pet_dounwield;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+		}
 	}
 
 	/* Peaceful monster with sellable items */
@@ -1973,6 +2129,16 @@ struct monst* mtmp;
 	return 1;
 }
 
+STATIC_OVL int
+do_chat_pet_display_inventory(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp)
+		return 0;
+
+	display_monster_inventory(mtmp);
+	return 0;
+}
 
 STATIC_OVL int
 do_chat_pet_dropitems(mtmp)
@@ -1995,7 +2161,7 @@ struct monst* mtmp;
 	{
 		mtmp->mcarrying= 0;
 		mtmp->mwantstodrop = 1;
-		relobj(mtmp, (int)mtmp->minvis, TRUE);
+		mdrop_droppable_objs(mtmp);
 		if (edog->apport > 1)
 			edog->apport--;
 		edog->dropdist = udist;
@@ -2082,7 +2248,7 @@ struct monst* mtmp;
 					newsym(omx, omy);
 					(void)mpickobj(mtmp, otmp);
 					itemspicked++;
-					mtmp->mcarrying = 25+ rn2(20);
+					mtmp->mcarrying = 25 + rn2(20);
 					mtmp->mwantstodrop = 0;
 				}
 			}
@@ -2098,6 +2264,275 @@ struct monst* mtmp;
 	}
 
 
+	return 1;
+}
+
+
+STATIC_OVL int
+do_chat_pet_giveitems(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp)
+		return 0;
+
+	int n, i, n_given = 0;
+	long cnt;
+	struct obj* otmp, * otmp2;
+	menu_item* pick_list;
+
+	char qbuf[BUFSIZ] = "";
+	Sprintf(qbuf, "What would you like to give to %s?", mon_nam(mtmp));
+
+	/* should coordinate with perm invent, maybe not show worn items */
+	n = query_objlist(qbuf, &invent,
+		(USE_INVLET | INVORDER_SORT), &pick_list, PICK_ANY,
+		allow_all, 3);
+	if (n > 0) 
+	{
+		bypass_objlist(invent, TRUE);
+		for (i = 0; i < n; i++) {
+			otmp = pick_list[i].item.a_obj;
+			
+			for (otmp2 = invent; otmp2; otmp2 = otmp2->nobj)
+				if (otmp2 == otmp)
+					break;
+			if (!otmp2 || !otmp2->bypass)
+				continue;
+			
+			/* found next selected invent item */
+			cnt = pick_list[i].count;
+			if (cnt < otmp->quan) {
+				if (welded(otmp, &youmonst)) {
+					; /* don't split */
+				}
+				else if ((objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && otmp->cursed) {
+					/* same kludge as getobj(), for canletgo()'s use */
+					otmp->corpsenm = (int)cnt; /* don't split */
+				}
+				else {
+					otmp = splitobj(otmp, cnt);
+				}
+			}
+			/* Give here */
+			if(otmp)
+			{
+				if (otmp->owornmask & (W_ARMOR | W_ACCESSORY))
+				{
+					You("cannot give %s to %s. You are wearing it.", doname(otmp), mon_nam(mtmp));
+				}
+				else
+				{
+					if (release_item_from_hero_inventory(otmp))
+					{
+						n_given++;
+						(void)mpickobj(mtmp, otmp);
+						if (flags.verbose)
+							You("give %s to %s.", doname(otmp), mon_nam(mtmp));
+					}
+				}
+			}
+		}
+		bypass_objlist(invent, FALSE); /* reset invent to normal */
+		free((genericptr_t)pick_list);
+	}
+	
+	return (n_given > 0);
+}
+
+
+int
+release_item_from_hero_inventory(obj)
+struct obj* obj;
+{
+	if (!obj)
+		return 0;
+	if (!canletgo(obj, "give"))
+		return 0;
+	if (obj == uwep) 
+	{
+		if (welded(uwep, &youmonst)) 
+		{
+			weldmsg(obj);
+			return 0;
+		}
+		setuwep((struct obj*) 0, W_WEP);
+	}
+	if (obj == uarms) {
+		if (welded(uarms, &youmonst)) 
+		{
+			weldmsg(obj);
+			return 0;
+		}
+		setuwep((struct obj*) 0, W_ARMS);
+	}
+	if (obj == uquiver) 
+	{
+		setuqwep((struct obj*) 0);
+	}
+	if (obj == uswapwep) 
+	{
+		setuswapwep((struct obj*) 0, W_SWAPWEP);
+	}
+	if (obj == uswapwep2) 
+	{
+		setuswapwep((struct obj*) 0, W_SWAPWEP2);
+	}
+
+	if (obj->oclass == COIN_CLASS)
+		context.botl = 1;
+
+	freeinv(obj);
+
+	return 1;
+}
+
+STATIC_OVL int
+do_chat_pet_dowear(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp)
+		return 0;
+
+	m_dowear(mtmp, FALSE);
+	return 1;
+}
+
+STATIC_OVL int
+do_chat_pet_dotakeoff(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp)
+		return 0;
+	boolean issaddle = FALSE;
+	struct obj* otmp = (struct obj*)0;
+
+	otmp = which_armor(mtmp, W_ARMC);
+	if(!otmp)
+		otmp = which_armor(mtmp, W_ARMO);
+	if (!otmp)
+		otmp = which_armor(mtmp, W_ARM);
+	if (!otmp)
+		otmp = which_armor(mtmp, W_ARMU);
+	if (!otmp)
+		otmp = which_armor(mtmp, W_ARMS);
+	if (!otmp)
+		otmp = which_armor(mtmp, W_ARMH);
+	if (!otmp)
+		otmp = which_armor(mtmp, W_ARMG);
+	if (!otmp)
+		otmp = which_armor(mtmp, W_ARMF);
+	if (!otmp)
+		otmp = which_armor(mtmp, W_ARMB);
+	if (!otmp)
+		otmp = which_armor(mtmp, W_AMUL);
+	if (!otmp)
+	{
+		otmp = which_armor(mtmp, W_SADDLE);
+		issaddle = TRUE;
+	}
+
+	if(otmp->owornmask)
+	{
+		if (otmp->cursed)
+		{
+			if (otmp->owornmask & W_SADDLE)
+				You("try to remove %s from %s, but you can't. It's cursed!", cxname(otmp), mon_nam(mtmp));
+			else
+				pline("%s tries to takes off %s, but can't. It's cursed!", Monnam(mtmp), cxname(otmp));
+
+			otmp->bknown = TRUE;
+		}
+		else
+		{
+			mtmp->misc_worn_check &= ~otmp->owornmask;
+			otmp->owornmask = 0L;
+
+			update_mon_intrinsics(mtmp, otmp, FALSE, FALSE);
+
+			if(otmp->owornmask & W_SADDLE)
+				You("remove %s from %s.", cxname(otmp), mon_nam(mtmp));
+			else
+				pline("%s takes off %s.", Monnam(mtmp), cxname(otmp));
+		}
+	}
+
+	return 1;
+}
+
+STATIC_OVL int
+do_chat_pet_dowield_hth(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp)
+		return 0;
+
+	mtmp->weapon_check = NEED_HTH_WEAPON;
+
+	boolean wielded = mon_wield_item(mtmp, TRUE);
+	return wielded;
+}
+
+STATIC_OVL int
+do_chat_pet_dowield_ranged(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp)
+		return 0;
+
+	mtmp->weapon_check = NEED_RANGED_WEAPON;
+	boolean wielded = mon_wield_item(mtmp, TRUE);
+	return wielded;
+}
+
+STATIC_OVL int
+do_chat_pet_dowield_pickaxe(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp)
+		return 0;
+
+	mtmp->weapon_check = NEED_PICK_AXE;
+	boolean wielded = mon_wield_item(mtmp, TRUE);
+	return wielded;
+
+}
+
+STATIC_OVL int
+do_chat_pet_dowield_axe(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp)
+		return 0;
+
+	mtmp->weapon_check = NEED_AXE;
+	boolean wielded = mon_wield_item(mtmp, TRUE);
+	return wielded;
+
+}
+
+STATIC_OVL int
+do_chat_pet_dounwield(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp)
+		return 0;
+
+	struct obj* mwep = MON_WEP(mtmp);
+
+	if (mwep)
+	{
+		if (mwelded(mwep, mtmp))
+		{
+			pline("%s tries to unwield %s, but can't. It's cursed!", Monnam(mtmp), cxname(mwep));
+			mwep->bknown = TRUE;
+		}
+		else
+		{
+			setmnotwielded(mtmp, mwep);
+			mtmp->weapon_check = NEED_WEAPON;
+			pline("%s unwields %s.", Monnam(mtmp), cxname(mwep));
+		}
+	}
 	return 1;
 }
 

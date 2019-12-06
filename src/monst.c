@@ -557,7 +557,7 @@ NEARDATA struct permonst mons[] = {
         (G_HELL | G_GENO | G_NOCORPSE | 1),
         A(ATTK(AT_TUCH, AD_COLD, 3, 8, 0, 0), ATTK(AT_TENT, AD_DRIN, 2, 1, 0, -4),
           ATTK(AT_TENT, AD_DRIN, 2, 1, 0, -4), ATTK(AT_TENT, AD_DRIN, 2, 1, 0, -4),
-          ATTK(AT_TENT, AD_DRIN, 2, 1, 0, -4), ATTK(AT_TENT, AD_DRIN, 2, 1, 0, -4), 
+          ATTK(AT_TENT, AD_DRIN, 2, 1, 0, -4), ATTK(AT_TENT, AD_DRIN, 2, 1, 0, -4),
 		  ATTK(AT_MAGC, AD_SPEL, 0, 0, 0, 0), NO_ATTK),
         SIZ(1250, 100, MS_HISS, MZ_HUMAN), STATS(18, 18, 19, 24, 18, 8), 
 		MR_FIRE | MR_COLD | MR_SLEEP | MR_POISON, 

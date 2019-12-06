@@ -752,7 +752,7 @@ register struct monst *mtmp;
 				{
                     mtmp->weapon_check = NEED_HTH_WEAPON;
                     /* mon_wield_item resets weapon_check as appropriate */
-                    if (mon_wield_item(mtmp) != 0)
+                    if (mon_wield_item(mtmp, FALSE) != 0)
                         break;
                 }
                 if (foundyou)

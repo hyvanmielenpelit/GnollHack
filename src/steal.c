@@ -812,4 +812,23 @@ boolean is_pet; /* If true, pet should keep wielded/worn items */
         newsym(omx, omy);
 }
 
+
+/* drop all objects the pet is carrying */
+void
+mdrop_droppable_objs(mtmp)
+struct monst* mtmp;
+{
+	struct obj* otmp;
+	int omx = mtmp->mx, omy = mtmp->my;
+
+	while ((otmp = droppables(mtmp)) != 0)
+	{
+		obj_extract_self(otmp);
+		mdrop_obj(mtmp, otmp, flags.verbose);
+	}
+
+	if (cansee(omx, omy))
+		newsym(omx, omy);
+}
+
 /*steal.c*/

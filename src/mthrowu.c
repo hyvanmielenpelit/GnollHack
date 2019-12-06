@@ -1033,7 +1033,7 @@ struct monst *mtmp, *mtarg;
     if (mtmp->weapon_check == NEED_WEAPON || !MON_WEP(mtmp)) {
         mtmp->weapon_check = NEED_RANGED_WEAPON;
         /* mon_wield_item resets weapon_check as appropriate */
-        if (mon_wield_item(mtmp) != 0)
+        if (mon_wield_item(mtmp, FALSE) != 0)
             return 0;
     }
 
@@ -1216,7 +1216,7 @@ struct monst *mtmp;
     if (mtmp->weapon_check == NEED_WEAPON || !MON_WEP(mtmp)) {
         mtmp->weapon_check = NEED_RANGED_WEAPON;
         /* mon_wield_item resets weapon_check as appropriate */
-        if (mon_wield_item(mtmp) != 0)
+        if (mon_wield_item(mtmp, FALSE) != 0)
             return;
     }
 

@@ -1024,14 +1024,20 @@ boolean polyspot;
  * Returns 1 if the monster took time to do it, 0 if it did not.
  */
 int
-mon_wield_item(mon)
+mon_wield_item(mon, verbose_fail)
 register struct monst *mon;
+boolean verbose_fail;
 {
     struct obj *obj;
 
     /* This case actually should never happen */
-    if (mon->weapon_check == NO_WEAPON_WANTED)
-        return 0;
+	if (mon->weapon_check == NO_WEAPON_WANTED)
+	{
+		if(verbose_fail)
+			pline("%s does not want to wield a weapon.", Monnam(mon));
+
+		return 0;
+	}
     switch (mon->weapon_check) {
     case NEED_HTH_WEAPON:
         obj = select_hwep(mon);
@@ -1049,7 +1055,9 @@ register struct monst *mon;
     case NEED_AXE:
         /* currently, only 2 types of axe */
         obj = m_carrying(mon, BATTLE_AXE);
-        if (!obj || which_armor(mon, W_ARMS))
+		if (!obj)
+			obj = m_carrying(mon, BATTLE_AXE_OF_CLEAVING);
+		if (!obj || which_armor(mon, W_ARMS))
             obj = m_carrying(mon, AXE);
         break;
     case NEED_PICK_OR_AXE:
@@ -1073,8 +1081,16 @@ register struct monst *mon;
 
         if (mw_tmp && mw_tmp->otyp == obj->otyp) {
             /* already wielding it */
-            mon->weapon_check = NEED_WEAPON;
-            return 0;
+			if (verbose_fail)
+				pline("%s is already wielding %s.", Monnam(mon), 
+					mon->weapon_check == NEED_HTH_WEAPON ? "a hand-to-hand weapon" : 
+					mon->weapon_check == NEED_RANGED_WEAPON ? "a ranged weapon" : 
+					mon->weapon_check == NEED_AXE ? "an axe" :
+					mon->weapon_check == NEED_PICK_AXE ? "a pick axe" :
+					mon->weapon_check == NEED_PICK_OR_AXE ? "a pick or axe" : "a weapon"
+				);
+			mon->weapon_check = NEED_WEAPON;
+			return 0;
         }
         /* Actually, this isn't necessary--as soon as the monster
          * wields the weapon, the weapon welds itself, so the monster
@@ -1127,6 +1143,10 @@ register struct monst *mon;
         obj->owornmask = W_WEP;
         return 1;
     }
+
+	if (verbose_fail)
+		pline("%s cannot find a weapon to wield.", Monnam(mon));
+
     mon->weapon_check = NEED_WEAPON;
     return 0;
 }

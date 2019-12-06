@@ -431,6 +431,7 @@ struct monst *mon;
     }
 }
 
+
 void
 mon_adjust_speed(mon, adjust, obj)
 struct monst *mon;
@@ -507,6 +508,7 @@ struct obj *obj; /* item to make known if effect can be seen */
             learnwand(obj);
     }
 }
+
 
 /* armor put on or taken off; might be magical variety
    [TODO: rename to 'update_mon_extrinsics()' and change all callers...] */
@@ -630,6 +632,7 @@ boolean on, silently;
         newsym(mon->mx, mon->my);
 }
 
+
 int
 find_mac(mon)
 register struct monst *mon;
@@ -648,6 +651,7 @@ register struct monst *mon;
     }
     return base;
 }
+
 
 /*
  * weapons are handled separately;
@@ -686,25 +690,45 @@ boolean creation;
                           || mon->data->mlet == S_LESSER_UNDEAD)))
         return;
 
-    m_dowear_type(mon, W_AMUL, creation, FALSE);
-    /* can't put on shirt if already wearing suit */
-    if (!cantweararm(mon->data) && !(mon->misc_worn_check & W_ARM))
-        m_dowear_type(mon, W_ARMU, creation, FALSE);
-    /* treating small as a special case allows
-       hobbits, gnomes, and kobolds to wear cloaks */
-    if (!cantweararm(mon->data) || mon->data->msize == MZ_SMALL)
-        m_dowear_type(mon, W_ARMC, creation, FALSE);
-    m_dowear_type(mon, W_ARMH, creation, FALSE);
-    if (!MON_WEP(mon) || !bimanual(MON_WEP(mon)))
+	/* Main armor */
+	if (!cantweararm(mon->data) && !(mon->misc_worn_check & (W_ARM | W_ARMC | W_ARMO)))
+		m_dowear_type(mon, W_ARMU, creation, FALSE);
+
+	if(!(mon->misc_worn_check & (W_ARMC | W_ARMO)))
+	{
+		if (!cantweararm(mon->data))
+			m_dowear_type(mon, W_ARM, creation, FALSE);
+		else
+			m_dowear_type(mon, W_ARM, creation, RACE_EXCEPTION);
+
+	}
+
+	if (!cantweararm(mon->data) && !(mon->misc_worn_check & W_ARMC))
+		m_dowear_type(mon, W_ARMO, creation, FALSE);
+
+	if (!cantweararm(mon->data) || mon->data->msize == MZ_SMALL)
+		m_dowear_type(mon, W_ARMC, creation, FALSE);
+
+
+	/* Other armor types */
+	if (has_head(mon->data))
+		m_dowear_type(mon, W_ARMH, creation, FALSE);
+    if (!nohands(mon->data) && (!MON_WEP(mon) || !bimanual(MON_WEP(mon))))
         m_dowear_type(mon, W_ARMS, creation, FALSE);
-    m_dowear_type(mon, W_ARMG, creation, FALSE);
-    if (!slithy(mon->data) && mon->data->mlet != S_CENTAUR)
+	if (!nohands(mon->data) && !(MON_WEP(mon) && mwelded(MON_WEP(mon), mon)))
+		m_dowear_type(mon, W_ARMG, creation, FALSE);
+    if (!nolimbs(mon->data) && !slithy(mon->data) && mon->data->mlet != S_CENTAUR)
         m_dowear_type(mon, W_ARMF, creation, FALSE);
-    if (!cantweararm(mon->data))
-        m_dowear_type(mon, W_ARM, creation, FALSE);
-    else
-        m_dowear_type(mon, W_ARM, creation, RACE_EXCEPTION);
+	if (!nolimbs(mon->data))
+		m_dowear_type(mon, W_ARMB, creation, FALSE);
+
+
+	/* Accessories */
+	if (has_head(mon->data))
+		m_dowear_type(mon, W_AMUL, creation, FALSE);
+
 }
+
 
 STATIC_OVL void
 m_dowear_type(mon, flag, creation, racialexception)
@@ -857,6 +881,7 @@ outer_break:
 }
 #undef RACE_EXCEPTION
 
+
 struct obj *
 which_armor(mon, flag)
 struct monst *mon;
@@ -896,6 +921,7 @@ long flag;
     }
 }
 
+
 /* remove an item of armor and then drop it */
 STATIC_OVL void
 m_lose_armor(mon, obj)
@@ -912,6 +938,7 @@ struct obj *obj;
     /* call stackobj() if we ever drop anything that can merge */
     newsym(mon->mx, mon->my);
 }
+
 
 /* all objects with their bypass bit set should now be reset to normal */
 void
@@ -976,6 +1003,7 @@ clear_bypasses()
     context.bypasses = FALSE;
 }
 
+
 void
 bypass_obj(obj)
 struct obj *obj;
@@ -983,6 +1011,7 @@ struct obj *obj;
     obj->bypass = 1;
     context.bypasses = TRUE;
 }
+
 
 /* set or clear the bypass bit in a list of objects */
 void
@@ -997,6 +1026,7 @@ boolean on; /* TRUE => set, FALSE => clear */
         objchain = objchain->nobj;
     }
 }
+
 
 /* return the first object without its bypass bit set; set that bit
    before returning so that successive calls will find further objects */
@@ -1013,6 +1043,7 @@ struct obj *objchain;
     }
     return objchain;
 }
+
 
 /* like nxt_unbypassed_obj() but operates on sortloot_item array rather
    than an object linked list; the array contains obj==Null terminator;
@@ -1037,6 +1068,7 @@ struct obj *listhead;
     }
     return obj;
 }
+
 
 void
 mon_break_armor(mon, polyspot)
@@ -1198,6 +1230,7 @@ boolean polyspot;
     return;
 }
 
+
 /* bias a monster's preferences towards armor that has special benefits. */
 STATIC_OVL int
 extra_pref(mon, obj)
@@ -1213,6 +1246,7 @@ struct obj *obj;
     }
     return 0;
 }
+
 
 /*
  * Exceptions to things based on race.

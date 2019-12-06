@@ -118,6 +118,42 @@ struct monst *mon;
     return (struct obj *) 0; /* don't drop anything */
 }
 
+
+
+struct obj*
+m_has_wearable_armor_or_accessory(mon)
+struct monst* mon;
+{
+	for (struct obj* obj = mon->minvent; obj; obj = obj->nobj) 
+	{
+		if (obj->oclass == ARMOR_CLASS || obj->oclass == AMULET_CLASS || obj->oclass == MISCELLANEOUS_CLASS || obj->oclass == RING_CLASS)
+		{
+			if ((obj->owornmask & (W_ARMOR | W_ACCESSORY)) == 0)
+				return obj;
+		}
+	}
+
+	return (struct obj*) 0;
+}
+
+struct obj*
+m_has_worn_armor_or_accessory(mon)
+struct monst* mon;
+{
+	for (struct obj* obj = mon->minvent; obj; obj = obj->nobj)
+	{
+		if (obj->oclass == ARMOR_CLASS || obj->oclass == AMULET_CLASS || obj->oclass == MISCELLANEOUS_CLASS || obj->oclass == RING_CLASS)
+		{
+			if ((obj->owornmask & (W_ARMOR | W_ACCESSORY)) != 0)
+				return obj;
+		}
+	}
+
+	return (struct obj*) 0;
+}
+
+
+
 static NEARDATA const char nofetch[] = { BALL_CLASS, CHAIN_CLASS, ROCK_CLASS,
                                          0 };
 
@@ -446,16 +482,20 @@ int udist;
      * Note: if apport == 1 then our behaviour is independent of udist.
      * Use udist+1 so steed won't cause divide by zero.
      */
-    if (droppables(mtmp)) {
-        if ((!rn2(udist + 1) || !rn2(edog->apport)) && mtmp->mwantstodrop)
-            if (rn2(10) < edog->apport) {
-                relobj(mtmp, (int) mtmp->minvis, TRUE);
+    if (droppables(mtmp)) 
+	{
+        if ((!rn2(udist + 1) || !rn2(edog->apport)) && mtmp->mwantstodrop && !mtmp->ispartymember)
+            if (rn2(10) < edog->apport) 
+			{
+                mdrop_droppable_objs(mtmp);
                 if (edog->apport > 1)
                     edog->apport--;
                 edog->dropdist = udist; /* hpscdi!jon */
                 edog->droptime = monstermoves;
             }
-    } else {
+    } 
+	else 
+	{
         if ((obj = level.objects[omx][omy]) != 0
             && !index(nofetch, obj->oclass)
 #ifdef MAIL
@@ -524,7 +564,7 @@ int udist;
 								&& mtmp->weapon_check == NEED_WEAPON)
 							{
 								mtmp->weapon_check = NEED_HTH_WEAPON;
-								(void) mon_wield_item(mtmp);
+								(void) mon_wield_item(mtmp, FALSE);
 							}
 							m_dowear(mtmp, FALSE);
 						}

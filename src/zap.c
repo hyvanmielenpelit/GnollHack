@@ -642,27 +642,36 @@ void
 probe_monster(mtmp)
 struct monst *mtmp;
 {
-    struct obj *otmp;
-
     mstatusline(mtmp);
     if (notonhead)
         return; /* don't show minvent for long worm tail */
 
-    if (mtmp->minvent) {
-        for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
-            otmp->dknown = 1; /* treat as "seen" */
-            if (Is_container(otmp) || otmp->otyp == STATUE) {
-                otmp->lknown = 1;
-                if (!SchroedingersBox(otmp))
-                    otmp->cknown = 1;
-            }
-        }
-        (void) display_minventory(mtmp, MINV_ALL | MINV_NOLET | PICK_NONE,
-                                  (char *) 0);
-    } else {
-        pline("%s is not carrying anything%s.", noit_Monnam(mtmp),
-              (u.uswallow && mtmp == u.ustuck) ? " besides you" : "");
-    }
+	display_monster_inventory(mtmp);
+}
+
+void
+display_monster_inventory(mtmp)
+struct monst* mtmp;
+{
+	struct obj* otmp;
+
+	if (mtmp->minvent) {
+		for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
+			otmp->dknown = 1; /* treat as "seen" */
+			if (Is_container(otmp) || otmp->otyp == STATUE) {
+				otmp->lknown = 1;
+				if (!SchroedingersBox(otmp))
+					otmp->cknown = 1;
+			}
+		}
+		(void)display_minventory(mtmp, MINV_ALL | MINV_NOLET | PICK_NONE,
+			(char*)0);
+	}
+	else {
+		pline("%s is not carrying anything%s.", noit_Monnam(mtmp),
+			(u.uswallow && mtmp == u.ustuck) ? " besides you" : "");
+	}
+
 }
 
 /*

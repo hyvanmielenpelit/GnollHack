@@ -379,7 +379,7 @@ register struct monst *magr, *mdef;
             }
             if (magr->weapon_check == NEED_WEAPON || !MON_WEP(magr)) {
                 magr->weapon_check = NEED_HTH_WEAPON;
-                if (mon_wield_item(magr) != 0)
+                if (mon_wield_item(magr, FALSE) != 0)
                     return 0;
             }
             possibly_unwield(magr, FALSE);

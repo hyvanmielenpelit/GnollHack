@@ -551,6 +551,8 @@ E void FDECL(wary_dog, (struct monst *, BOOLEAN_P));
 /* ### dogmove.c ### */
 
 E struct obj *FDECL(droppables, (struct monst *));
+E struct obj* FDECL(m_has_wearable_armor_or_accessory, (struct monst*));
+E struct obj* FDECL(m_has_worn_armor_or_accessory, (struct monst*));
 E int FDECL(dog_nutrition, (struct monst *, struct obj *));
 E int FDECL(dog_eat, (struct monst *, struct obj *, int, int, BOOLEAN_P));
 E int FDECL(dog_move, (struct monst *, int));
@@ -2420,6 +2422,7 @@ E boolean FDECL(m_sellable_item, (struct obj*, struct monst*));
 E long FDECL(get_cost_of_monster_item, (struct obj*, struct monst*));
 E long FDECL(m_contained_cost, (struct obj*, struct monst*));
 E boolean FDECL(is_shop_item_type, (struct obj*, int));
+E int FDECL(release_item_from_hero_inventory, (struct obj*));
 
 /* ### sys.c ### */
 
@@ -2491,6 +2494,7 @@ E void FDECL(maybe_absorb_item, (struct monst *, struct obj *, int, int));
 E void FDECL(mdrop_obj, (struct monst *, struct obj *, BOOLEAN_P));
 E void FDECL(mdrop_special_objs, (struct monst *));
 E void FDECL(relobj, (struct monst *, int, BOOLEAN_P));
+E void FDECL(mdrop_droppable_objs, (struct monst*));
 E struct obj *FDECL(findgold, (struct obj *));
 E struct obj* FDECL(findobjecttype, (struct obj*, int));
 
@@ -2904,7 +2908,7 @@ E struct obj *FDECL(select_hwep, (struct monst *));
 E struct obj* FDECL(select_multiweapon_nth_hwep, (struct monst*, int));
 E void FDECL(possibly_unwield, (struct monst *, BOOLEAN_P));
 E void FDECL(mwepgone, (struct monst *));
-E int FDECL(mon_wield_item, (struct monst *));
+E int FDECL(mon_wield_item, (struct monst *, BOOLEAN_P));
 E int NDECL(abon);
 E int NDECL(ranged_abon);
 E int NDECL(dbon);
@@ -3046,6 +3050,7 @@ E boolean FDECL(worm_known, (struct monst *));
 E boolean FDECL(worm_cross, (int, int, int, int));
 E int FDECL(wseg_at, (struct monst *, int, int));
 
+
 /* ### worn.c ### */
 
 E void FDECL(setworn, (struct obj *, long));
@@ -3076,6 +3081,7 @@ E int FDECL(dowrite, (struct obj *));
 E void FDECL(learnwand, (struct obj *));
 E int FDECL(bhitm, (struct monst *, struct obj *));
 E void FDECL(probe_monster, (struct monst *));
+E void FDECL(display_monster_inventory, (struct monst*));
 E boolean FDECL(get_obj_location, (struct obj *, xchar *, xchar *, int));
 E boolean FDECL(get_mon_location, (struct monst *, xchar *, xchar *, int));
 E struct monst *FDECL(get_container_location,
