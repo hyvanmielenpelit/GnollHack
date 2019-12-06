@@ -1425,9 +1425,12 @@ unsigned trflags;
         /* hero without magic resistance loses spell energy,
            hero with magic resistance takes damage instead;
            possibly non-intuitive but useful for play balance */
-        if (!Antimagic) {
-            drain_en(rnd(u.ulevel) + 1);
-        } else {
+        if (!Antimagic) 
+		{
+            drain_en(-1);
+        } 
+		else
+		{
             int dmgval2 = rnd(4), hp = Upolyd ? u.mh : u.uhp;
 
             /* Half_XXX_damage has opposite its usual effect (approx)
@@ -3916,10 +3919,19 @@ void
 drain_en(n)
 int n;
 {
-    if (!u.uenmax) {
+    if (!u.uenmax) 
+	{
         /* energy is completely gone */
         You_feel("momentarily lethargic.");
-    } else {
+    } 
+	else if (n == -1)
+	{
+		You_feel("your magical energy drain away!");
+		u.uen = 0;
+		context.botl = 1;
+	}
+	else 
+	{
         /* throttle further loss a bit when there's not much left to lose */
         if (n > u.uenmax || n > u.ulevel)
             n = rnd(n);
