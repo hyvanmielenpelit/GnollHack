@@ -908,7 +908,7 @@ mkgarden()
 					// Garden gnome as statue (with a conical hat)
 					maketrap(sx, sy, STATUE_TRAP, !rn2(15) ? PM_GNOME_KING : !rn2(5) ? PM_GNOME_LORD : PM_GNOME, TRAPFLAG_GARDEN_GNOME_ITEMS);
 				}
-				else if (!rn2(20))
+				else if (!rn2(8))
 				{
 					//Sleepy ogre
 					struct permonst* pm = mkclass(S_OGRE, 0);
