@@ -349,8 +349,12 @@ struct obj {
 #define is_gnollish_obj(otmp) ((objects[otmp->otyp].oc_flags2 & O2_GNOLLISH_ITEM) != 0)
 
 /* Light sources */
-#define Is_candle(otmp) \
+#define is_candle(otmp) \
 	((objects[otmp->otyp].oc_flags2 & O2_CANDLE) != 0)
+
+/* Wand-like tools */
+#define is_wand_like_tool(otmp) \
+	((objects[(otmp)->otyp].oc_flags & O1_WAND_LIKE_TOOL) != 0)
 
 #define MAX_OIL_IN_FLASK 400 /* maximum amount of oil in a potion of oil */
 

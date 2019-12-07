@@ -1459,7 +1459,7 @@ boolean
 snuff_candle(otmp)
 struct obj *otmp;
 {
-    boolean candle = Is_candle(otmp);
+    boolean candle = is_candle(otmp);
 
     if ((candle || otmp->otyp == CANDELABRUM_OF_INVOCATION)
         && otmp->lamplit) {
@@ -1556,12 +1556,12 @@ struct obj *obj;
         return;
     }
     if (Underwater) {
-        pline(!Is_candle(obj) ? "This is not a diving lamp"
+        pline(!is_candle(obj) ? "This is not a diving lamp"
                               : "Sorry, fire and water don't mix.");
         return;
     }
     /* magic lamps with an spe == 0 (wished for) cannot be lit */
-    if ((!Is_candle(obj) && obj->age == 0)
+    if ((!is_candle(obj) && obj->age == 0)
         || (obj->otyp == MAGIC_LAMP && obj->spe == 0)) {
         if (obj->otyp == BRASS_LANTERN)
             Your("lamp has run out of power.");
@@ -2668,7 +2668,7 @@ struct obj* obj;
 					(void)erode_obj(otmp, xname(otmp), ERODE_BURN,
 						EF_GREASE | EF_VERBOSE);
 				}
-				else if (Is_candle(otmp))
+				else if (is_candle(otmp))
 				{
 					wandknown = TRUE;
 					if (!otmp->lamplit)

@@ -907,11 +907,6 @@ mkgarden()
 				{
 					// Garden gnome as statue (with a conical hat)
 					maketrap(sx, sy, STATUE_TRAP, !rn2(15) ? PM_GNOME_KING : !rn2(5) ? PM_GNOME_LORD : PM_GNOME, TRAP_STATUE_ITEM_CONICAL_HAT);
-					struct monst* mon = makemon(&mons[!rn2(5) && level_difficulty() > 6 ? PM_GNOME_LORD : PM_GNOME], sx, sy, NO_MM_FLAGS);
-					if(mon)
-					{
-						mon->msleeping = 1;
-					}
 				}
 				else if (!rn2(20))
 				{

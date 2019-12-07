@@ -1394,15 +1394,15 @@ register struct trobj *trop;
 		{
 			if (otyp == BAG_OF_WIZARDRY)
 			{
-				/* Add one sulfur, as it is rare */
+				/* Add one sulfur */
 				struct obj* otmp = (struct obj*)0;
-				otmp = mksobj(PINCH_OF_SULFUROUS_ASH, TRUE, FALSE, TRUE);
+				otmp = mksobj(PINCH_OF_SULFUROUS_ASH, FALSE, FALSE, TRUE);
 				otmp->known = 1;
 				otmp->dknown = otmp->bknown = otmp->rknown = 1;
 				(void)add_to_container(obj, otmp);
 
 				/* Add arrows for magic arrow */
-				otmp = mksobj(ARROW, TRUE, FALSE, TRUE);
+				otmp = mksobj(ARROW, FALSE, FALSE, TRUE);
 				otmp->known = 1;
 				otmp->dknown = otmp->bknown = otmp->rknown = 1;
 				(void)add_to_container(obj, otmp);
@@ -1410,7 +1410,7 @@ register struct trobj *trop;
 				int n = 2 + rn2(4); //2...5
 				for (int i = 0; i < n; i++)
 				{
-					struct obj* otmp = mksobj(randomreagent(FALSE, 2), TRUE, FALSE, FALSE);
+					struct obj* otmp = mksobj(randomreagent(FALSE, 2), FALSE, FALSE, FALSE);
 					if (otmp)
 					{
 						makeknown(otmp->otyp);
@@ -1431,7 +1431,7 @@ register struct trobj *trop;
 			{
 				/* Add one ginseng */
 				struct obj* otmp = (struct obj*)0;
-				otmp = mksobj(GINSENG_ROOT, TRUE, FALSE, TRUE);
+				otmp = mksobj(GINSENG_ROOT, FALSE, FALSE, TRUE);
 				otmp->known = 1;
 				otmp->dknown = otmp->bknown = otmp->rknown = 1;
 				(void)add_to_container(obj, otmp);

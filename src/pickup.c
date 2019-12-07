@@ -3111,7 +3111,7 @@ dotip()
         return 1;
     }
     /* assorted other cases */
-    if (Is_candle(cobj) && cobj->lamplit) {
+    if (is_candle(cobj) && cobj->lamplit) {
         /* note "wax" even for tallow candles to avoid giving away info */
         spillage = "wax";
     } else if ((cobj->otyp == POT_OIL && cobj->lamplit)

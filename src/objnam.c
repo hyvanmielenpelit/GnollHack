@@ -1242,11 +1242,11 @@ unsigned doname_flags;
             break;
         } 
 		else if (obj->otyp == OIL_LAMP || obj->otyp == MAGIC_LAMP
-                   || obj->otyp == BRASS_LANTERN || Is_candle(obj)) 
+                   || obj->otyp == BRASS_LANTERN || is_candle(obj)) 
 		{
-            if ((Is_candle(obj) && obj->otyp != MAGIC_CANDLE
+            if ((is_candle(obj) && obj->otyp != MAGIC_CANDLE
                 && obj->age < 30L * (long) objects[obj->otyp].oc_cost)
-				|| (obj->otyp == MAGIC_CANDLE && obj->spe != 1)
+				|| (obj->otyp == MAGIC_CANDLE && obj->spe < 2)
 				)
                 Strcat(prefix, "partly used ");
             if (obj->lamplit)
@@ -4140,7 +4140,7 @@ struct obj *no_wish;
     typ = otmp->otyp, oclass = otmp->oclass; /* what we actually got */
 
     if (islit && (typ == OIL_LAMP || typ == MAGIC_LAMP || typ == BRASS_LANTERN
-                  || Is_candle(otmp) || typ == POT_OIL)) 
+                  || is_candle(otmp) || typ == POT_OIL)) 
 	{
         place_object(otmp, u.ux, u.uy); /* make it viable light source */
         begin_burn(otmp, FALSE);
@@ -4149,7 +4149,7 @@ struct obj *no_wish;
 
     /* if player specified a reasonable count, maybe honor it */
     if (cnt > 0 && objects[typ].oc_merge
-        && (wizard || cnt < rnd(6) || (cnt <= 7 && Is_candle(otmp))
+        && (wizard || cnt < rnd(6) || (cnt <= 7 && is_candle(otmp))
             || (cnt <= 20 && ((oclass == WEAPON_CLASS && is_ammo(otmp))
                               || is_rock(otmp) || is_missile(otmp)))))
         otmp->quan = (long) cnt;

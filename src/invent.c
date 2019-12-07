@@ -3969,7 +3969,7 @@ register struct obj *otmp, *obj;
 
     /* allow candle merging only if their ages are close */
     /* see begin_burn() for a reference for the magic "25" */
-    if (Is_candle(obj) && obj->age / 25 != otmp->age / 25)
+    if (is_candle(obj) && obj->age / 25 != otmp->age / 25)
         return FALSE;
 
     /* burning potions of oil never merge */

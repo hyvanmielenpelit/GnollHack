@@ -870,7 +870,7 @@ register struct obj* obj;
 
 	}
 
-	if (objects[otyp].oc_class == WAND_CLASS || (objects[otyp].oc_class == TOOL_CLASS && (objects[otyp].oc_flags & O1_WAND_LIKE_TOOL)))
+	if (objects[otyp].oc_class == WAND_CLASS || (objects[otyp].oc_class == TOOL_CLASS && is_wand_like_tool(obj)))
 	{
 		if (objects[otyp].oc_name_known)
 		{
@@ -937,7 +937,7 @@ register struct obj* obj;
 	{
 		strcpy(buf, "");
 
-		if(objects[otyp].oc_class == WAND_CLASS || (objects[otyp].oc_class == TOOL_CLASS && !is_weptool(obj)))
+		if(objects[otyp].oc_class == WAND_CLASS || (objects[otyp].oc_class == TOOL_CLASS && is_wand_like_tool(obj)))
 			Sprintf(buf, "Charges left:           %d", obj->spe);
 		else
 		{
@@ -950,7 +950,7 @@ register struct obj* obj;
 					enchplus *= 2;
 				}
 
-				Sprintf(bonusbuf, " (%s%d to damage)", enchplus >= 0 ? "+" : "", enchplus);
+				Sprintf(bonusbuf, " (%s%d to hit and damage)", enchplus >= 0 ? "+" : "", enchplus);
 			}
 
 			if (obj->oclass == ARMOR_CLASS || (objects[otyp].oc_name_known && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)))

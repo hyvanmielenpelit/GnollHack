@@ -204,34 +204,7 @@ register struct monst *mtmp;
      */
     switch (ptr->mlet) {
 	case S_GNOME:
-		if (mm == PM_GNOMISH_WIZARD)
-		{
-			if (!rn2(4))
-			{
-				if(!rn2(10))
-					(void)mongets(mtmp, CORNUTHAUM);
-				else if(!rn2(20))
-					(void)mongets(mtmp, DUNCE_CAP);
-				else
-					(void)mongets(mtmp, GNOMISH_FELT_HAT);
-			}
-		}
-		else
-		{
-			if (!rn2(4))
-			{
-				if (!rn2(20))
-					(void)mongets(mtmp, DUNCE_CAP);
-				else
-					(void)mongets(mtmp, GNOMISH_FELT_HAT);
-			}
-		}
-		switch (mm) {
-		case PM_GNOMISH_WIZARD:
-			if (!rn2(3))
-				(void)mongets(mtmp, DAGGER);
-			break;
-		}
+		/* Moved to init_inv to account for gnomish bankers */
 		break;
 	case S_GNOLL:
 		switch (mm) {
@@ -1194,7 +1167,7 @@ register struct monst *mtmp;
 			if (!rn2(2))
 				(void)mongetsgold(mtmp, 5 + rn2(26));
 
-			if (!rn2(14))
+			if (!rn2(20))
 				(void)mongets(mtmp, WAN_ORE_DETECTION);
 		}
 		else if (ptr == &mons[PM_DWARF_LORD])
@@ -1202,7 +1175,7 @@ register struct monst *mtmp;
 			if (!rn2(2))
 				(void)mongetsgold(mtmp, 10 + rn2(51));
 
-			if (!rn2(10))
+			if (!rn2(15))
 				(void)mongets(mtmp, WAN_ORE_DETECTION);
 		}
 		else if (ptr == &mons[PM_DWARF_KING])
@@ -1210,7 +1183,7 @@ register struct monst *mtmp;
 			if (!rn2(2))
 				(void)mongetsgold(mtmp, 100 + rn2(401));
 
-			if (!rn2(6))
+			if (!rn2(10))
 				(void)mongets(mtmp, WAN_ORE_DETECTION);
 		}
 		else if (ptr == &mons[PM_BUGBEAR])
@@ -1363,16 +1336,53 @@ register struct monst *mtmp;
 	case S_GNOME:
 		if (!rn2(50)) /* Gnomish banker */
 		{
-			(void)mongetsgold(mtmp, ptr == &mons[PM_GNOME_KING] ? rn2(1501) + 1000 : ptr == &mons[PM_GNOME_LORD] ? rn2(751) + 500 : rn2(376) + 250);
+			struct obj* sack = mksobj(!rn2(20) ? BAG_OF_TREASURE_HAULING : SACK, FALSE, FALSE, FALSE);
+			(void)mpickobj(mtmp, sack);
+			otmp = mksobj(GOLD_PIECE, FALSE, FALSE, FALSE);
+			otmp->quan =  ptr == &mons[PM_GNOME_KING] ? rn2(1501) + 1000 : ptr == &mons[PM_GNOME_LORD] ? rn2(751) + 500 : rn2(376) + 250;
+			otmp->owt = weight(otmp);
+			(void)add_to_container(sack, otmp);
+			sack->owt = weight(sack);
+
+			(void)mongets(mtmp, SILK_TOP_HAT);
 			(void)mongets(mtmp, TAILORED_SILK_ROBE);
 			if(!rn2(4))
 				(void)mongets(mtmp, CREDIT_CARD);
-			if (!rn2(20))
-				(void)mongets(mtmp, HEADBAND_OF_INTELLECT);
 		}
-		else if (!rn2(3))
-			(void)mongetsgold(mtmp, ptr == &mons[PM_GNOME_KING] ? rn2(301) + 100 : ptr == &mons[PM_GNOME_LORD] ? 10 + rn2(31) : 5 + rn2(16));
+		else /* Normal gnome */
+		{
+			if (!rn2(3))
+				(void)mongetsgold(mtmp, ptr == &mons[PM_GNOME_KING] ? rn2(301) + 100 : ptr == &mons[PM_GNOME_LORD] ? 10 + rn2(31) : 5 + rn2(16));
 
+			if (mtmp->mnum == PM_GNOMISH_WIZARD)
+			{
+				if (!rn2(4))
+				{
+					if (!rn2(10))
+						(void)mongets(mtmp, CORNUTHAUM);
+					else if (!rn2(20))
+						(void)mongets(mtmp, DUNCE_CAP);
+					else
+						(void)mongets(mtmp, GNOMISH_FELT_HAT);
+				}
+			}
+			else
+			{
+				if (!rn2(4))
+				{
+					if (!rn2(20))
+						(void)mongets(mtmp, DUNCE_CAP);
+					else
+						(void)mongets(mtmp, GNOMISH_FELT_HAT);
+				}
+			}
+			switch (mtmp->mnum) {
+			case PM_GNOMISH_WIZARD:
+				if (!rn2(3))
+					(void)mongets(mtmp, DAGGER);
+				break;
+			}
+		}
 		if (ptr == &mons[PM_GNOMISH_WIZARD])
 		{
 			int n = 0;
@@ -1390,7 +1400,8 @@ register struct monst *mtmp;
 			if (!rn2(6))
 				(void)mongets(mtmp, WAN_CREATE_MONSTER);
 		}
-		if (!rn2((In_mines(&u.uz) && in_mklev) ? 20 : 60)) {
+		if (!rn2((In_mines(&u.uz) && in_mklev) ? 20 : 60)) 
+		{
 			otmp = mksobj(rn2(4) ? TALLOW_CANDLE : WAX_CANDLE, TRUE, FALSE, FALSE);
 			otmp->quan = 1;
 			otmp->owt = weight(otmp);
@@ -1419,8 +1430,7 @@ register struct monst *mtmp;
 	case PM_DWARF_KING:
 	case PM_ELVENKING:
 	case PM_GNOLL_KING:
-	case PM_GNOME_KING:
-		if (!rn2(3) && !m_carrying(mtmp, CROWN_OF_RULERSHIP) && !m_carrying(mtmp, DUCAL_CROWN) && !m_carrying(mtmp, DUNCE_CAP) && !m_carrying(mtmp, CORNUTHAUM) && !m_carrying(mtmp, GNOMISH_FELT_HAT))
+		if (!rn2(3) && !m_carrying(mtmp, CROWN_OF_RULERSHIP) && !m_carrying(mtmp, DUCAL_CROWN))
 			(void)mongets(mtmp, !rn2(25) ? CROWN_OF_RULERSHIP : DUCAL_CROWN);
 		break;
 	default:

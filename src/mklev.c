@@ -590,6 +590,7 @@ int trap_type;
 							struct obj* pot = mksobj(POT_GAIN_ABILITY, FALSE, FALSE, FALSE);
 							bless(pot);
 							add_to_container(box, pot);
+							box->owt = weight(box);
 						}
 					}
 					else
@@ -981,6 +982,7 @@ makelevel()
 
 			otmp = mkobj(SCROLL_CLASS, FALSE, FALSE);
 			(void)add_to_container(stash, otmp);
+			stash->owt = weight(stash);
 
 		}
 

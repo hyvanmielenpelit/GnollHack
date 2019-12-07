@@ -1494,7 +1494,7 @@ long timeout;
             if (menorah) {
                 obj->spe = 0; /* no more candles */
                 obj->owt = weight(obj);
-            } else if (Is_candle(obj) || obj->otyp == POT_OIL) {
+            } else if (is_candle(obj) || obj->otyp == POT_OIL) {
                 /* get rid of candles and burning oil potions;
                    we know this object isn't carried by hero,
                    nor is it migrating */
@@ -1799,8 +1799,8 @@ boolean already_lit;
         break;
 	case MAGIC_CANDLE:
 		obj->lamplit = 1;
-		if (obj->spe == 1)
-			obj->spe = 2;
+		if (obj->spe == 2)
+			obj->spe = 1;
 
 		do_timer = FALSE;
 		break;

@@ -592,7 +592,7 @@ struct obj *src, *dest;
              */
             new_ls = (light_source *) alloc(sizeof(light_source));
             *new_ls = *ls;
-            if (Is_candle(src)) {
+            if (is_candle(src)) {
                 /* split candles may emit less light than original group */
                 ls->range = candle_light_range(src);
                 new_ls->range = candle_light_range(dest);
@@ -660,7 +660,7 @@ struct obj *obj;
          *          7 candles, range 4 (bright).
          */
         radius = (obj->spe < 4) ? 2 : (obj->spe < 7) ? 3 : 4;
-    } else if (Is_candle(obj)) {
+    } else if (is_candle(obj)) {
         /*
          *      Range is incremented by powers of 7 so that it will take
          *      wizard mode quantities of candles to get more light than

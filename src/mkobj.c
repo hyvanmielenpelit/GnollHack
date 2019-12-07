@@ -784,7 +784,7 @@ register struct obj *otmp;
     copy_oextra(dummy, otmp);
     if (has_omid(dummy))
         free_omid(dummy); /* only one association with m_id*/
-    if (Is_candle(dummy))
+    if (is_candle(dummy))
         dummy->lamplit = 0;
     dummy->owornmask = 0L; /* dummy object is not worn */
     addtobill(dummy, FALSE, TRUE, TRUE);
@@ -1065,12 +1065,16 @@ boolean makingboxcontents;
                 blessorcurse(otmp, 5);
                 break;
 			case MAGIC_CANDLE:
-			case MAGIC_LAMP:
-                otmp->spe = 1;
+                otmp->spe = 2;
                 otmp->lamplit = 0;
                 blessorcurse(otmp, 2);
                 break;
-            case CHEST:
+			case MAGIC_LAMP:
+				otmp->spe = 1;
+				otmp->lamplit = 0;
+				blessorcurse(otmp, 2);
+				break;
+			case CHEST:
             case LARGE_BOX:
                 otmp->olocked = !!(rn2(5));
                 otmp->otrapped = !(rn2(10));
@@ -2070,7 +2074,7 @@ register struct obj *otmp;
      * they can't get fire damage and it makes no sense for them to be
      * fireproofed.
      */
-    if (Is_candle(otmp))
+    if (is_candle(otmp))
         return FALSE;
 
     if (objects[otyp].oc_flags & O1_FIRE_RESISTANT || objects[otyp].oc_oprop == FIRE_RES || objects[otyp].oc_oprop2 == FIRE_RES || objects[otyp].oc_oprop3 == FIRE_RES || otyp == WAN_FIRE)

@@ -2178,7 +2178,7 @@ boolean unpaid_only;
             if (saleable(shkp, otmp) && !otmp->unpaid
                 && otmp->oclass != BALL_CLASS
                 && !(otmp->oclass == FOOD_CLASS && otmp->oeaten)
-                && !(Is_candle(otmp)
+                && !(is_candle(otmp)
                      && otmp->age < 30L * (long) objects[otmp->otyp].oc_cost))
                 price += set_cost(otmp, shkp);
         } else {
@@ -3118,7 +3118,7 @@ xchar x, y;
     if ((!saleitem && !(container && cltmp > 0L)) || eshkp->billct == BILLSZ
         || obj->oclass == BALL_CLASS || obj->oclass == CHAIN_CLASS
         || offer == 0L || (obj->oclass == FOOD_CLASS && obj->oeaten)
-        || (Is_candle(obj)
+        || (is_candle(obj)
             && obj->age < 30L * (long) objects[obj->otyp].oc_cost)) {
         pline("%s seems uninterested%s.", Shknam(shkp),
               cgold ? " in the rest" : "");
@@ -3374,7 +3374,7 @@ boolean shk_buying;
             tmp += 10L * (long) obj->spe;
         break;
     case TOOL_CLASS:
-        if (Is_candle(obj)
+        if (is_candle(obj)
             && obj->age < 30L * (long) objects[obj->otyp].oc_cost)
             tmp /= 2L;
         break;
