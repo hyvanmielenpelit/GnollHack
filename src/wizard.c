@@ -269,7 +269,8 @@ register struct monst *mtmp;
 {
     unsigned long strat, dstrat;
 
-    if (!is_covetous(mtmp->data)
+	/* Covetous has been deactivated -- JG */
+    if (mtmp->mnum != PM_WIZARD_OF_YENDOR // !is_covetous(mtmp->data)
         /* perhaps a shopkeeper has been polymorphed into a master
            lich; we don't want it teleporting to the stairs to heal
            because that will leave its shop untended */
@@ -510,19 +511,33 @@ clonewiz()
 
 /* also used by newcham() */
 int
-pick_nasty()
+pick_nasty(summoner_level)
+int summoner_level;
 {
-    int res = nasties[rn2(SIZE(nasties))];
+	int res = NON_PM;
+	int roguetrycnt = 0;
 
-    /* To do?  Possibly should filter for appropriate forms when
-     * in the elemental planes or surrounded by water or lava.
-     *
-     * We want monsters represented by uppercase on rogue level,
-     * but we don't try very hard.
-     */
-    if (Is_rogue_level(&u.uz)
-        && !('A' <= mons[res].mlet && mons[res].mlet <= 'Z'))
-        res = nasties[rn2(SIZE(nasties))];
+	do
+	{
+		for(int tryct = 0; tryct < 50 && (res == NON_PM || (res >= NON_PM && mons[res].difficulty > (9 * summoner_level + 1) / 10)); tryct++)
+		{
+			res = nasties[rn2(SIZE(nasties))];
+		}
+
+		if(res == NON_PM)
+		{
+			struct permonst* pm = rndmonst();
+
+			if(pm)
+				res = monsndx(pm);
+		}
+		roguetrycnt++;
+	} while ((!Is_rogue_level(&u.uz) && res == NON_PM && roguetrycnt <= 5)
+		|| (Is_rogue_level(&u.uz) && (res == NON_PM || !('A' <= mons[res].mlet && mons[res].mlet <= 'Z')) && roguetrycnt <= 5));
+
+	/* Finally, if nothing, just pick something from the nasties list */
+	if (res == NON_PM)
+		res = nasties[rn2(SIZE(nasties))];
 
     return res;
 }
@@ -600,7 +615,7 @@ struct monst *summoner;
                  * higher--avoids chain summoners filling up the level.
                  */
                 do {
-                    makeindex = pick_nasty();
+                    makeindex = pick_nasty((summoner && summoner != &youmonst) ? summoner->data->difficulty : u.ulevel);
                     m_cls = mons[makeindex].mlet;
                 } while (summoner
                          && ((attacktype(&mons[makeindex], AT_MAGC)

@@ -1583,6 +1583,7 @@ struct monst *mon;
     struct permonst *ptr = mon->data;
     int hp = rnd(8) + constitution_hp_bonus(mon->mcon); /* default is d8 */
 
+#if 0
     /* like newmonhp, but home elementals are ignored, riders use normal d8 */
     if (is_golem(ptr)) {
         /* draining usually won't be applicable for these critters */
@@ -1594,7 +1595,9 @@ struct monst *mon;
         /* adult dragons; newmonhp() uses In_endgame(&u.uz) ? 8 : 4 + rnd(4)
          */
 //        hp = rnd(8) + constitution_hp_bonus(mon->mcon); /* 4..8 */
-    } else if (!mon->m_lev) {
+    } else 
+#endif		
+	if (!mon->m_lev) {
         /* level 0 monsters use 1d4 instead of Nd8 */
         hp = rnd(4) + constitution_hp_bonus(mon->mcon) / 2;
     }
@@ -1617,10 +1620,13 @@ boolean maxhp;
     mon->m_lev = adj_lev(ptr);
 	boolean dragonmaxhp = !!(ptr->mlet == S_DRAGON && mndx >= PM_GRAY_DRAGON && In_endgame(&u.uz));
 
+#if 0
+	/*
     if (is_golem(ptr)) 
 	{
         mon->mhpmax = mon->mhp = golemhp(mndx);
-    } else if (is_rider(ptr)) {
+    } else */
+	if (is_rider(ptr)) {
         /* we want low HP, but a high mlevel so they can attack well */
         mon->mhpmax = mon->mhp = d(10, 8);
  //   } else if (ptr->mlevel > 49) {
@@ -1631,7 +1637,9 @@ boolean maxhp;
 		//ABOVE is obsolete, since hp's are now ints
 //		mon->mhpmax = mon->mhp = 2 * (ptr->mlevel - 6);
 //        mon->m_lev = mon->mhp / 4; /* approximation */
-    } else if (mon->m_lev <= 0) {
+    } else 
+#endif
+	if (mon->m_lev <= 0) {
 		int hp = (maxhp || dragonmaxhp ? 4 : rnd(4)) + constitution_hp_bonus(mon->mcon) / 2;
 		if (hp < 1)
 			hp = 1;
@@ -1675,7 +1683,7 @@ coord *cc;
     do {
         nx = rn1(COLNO - 3, 2);
         ny = rn2(ROWNO);
-        good = (!in_mklev && cansee(nx,ny)) ? FALSE
+        good = (!in_mklev && (abs(u.ux - nx) <= 7 || abs(u.uy - ny) <= 5 || cansee(nx,ny))) ? FALSE
                                             : goodpos(nx, ny, mon, gpflags);
     } while ((++tryct < 50) && !good);
 

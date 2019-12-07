@@ -495,10 +495,12 @@ int dieroll;
            be knocked into a different location */
         notonhead = (mon->mx != bhitpos.x || mon->my != bhitpos.y);
         malive = hmon(mon, weapon, HMON_MELEE, dieroll);
-        if (malive) {
+        if (malive) 
+		{
             /* monster still alive */
-            if (!rn2(25) && mon->mhp < mon->mhpmax / 2
-                && !(u.uswallow && mon == u.ustuck)) {
+            if (!rn2(25) && mon->mhp < mon->mhpmax / 2 && !mindless(mon->data)
+                && !(u.uswallow && mon == u.ustuck)) 
+			{
                 /* maybe should regurgitate if swallowed? */
                 monflee(mon, !rn2(3) ? rnd(100) : 0, FALSE, TRUE);
 
@@ -507,7 +509,8 @@ int dieroll;
             }
             /* Vorpal Blade hit converted to miss */
             /* could be headless monster or worm tail */
-            if (mon->mhp == oldhp) {
+            if (mon->mhp == oldhp) 
+			{
                 *mhit = 0;
                 /* a miss does not break conduct */
                 u.uconduct.weaphit = oldweaphit;

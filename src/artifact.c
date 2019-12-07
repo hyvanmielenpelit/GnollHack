@@ -690,7 +690,7 @@ struct monst *mon;
 				&& (oart->alignment != u.ualign.type
 					|| u.ualign.record < 0));
 		}
-		else if (!is_covetous(mon->data) && !is_mplayer(mon->data)) {
+		else if (mon->mnum != PM_WIZARD_OF_YENDOR /*!is_covetous(mon->data)*/ && !is_mplayer(mon->data)) {
 			badclass = self_willed && oart->role != NON_PM
 				&& oart != &artilist[ART_EXCALIBUR];
 			badalign = (oart->spfx & SPFX_RESTR) && oart->alignment != A_NONE

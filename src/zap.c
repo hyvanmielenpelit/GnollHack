@@ -2645,14 +2645,14 @@ register struct obj *obj;
 		break;
 	case SPE_GREAT_YENDORIAN_SUMMONING: 
 	{
-		You("successfully cast Rodney's great summoning spell.");
+		You("successfully cast Rodney's Great Yendorian Summoning.");
 		int monstcount = 0;
 		int vismonstcount = 0;
 		struct monst* lastseenmon = (struct monst*)0;
 
 		for (int n = d(1, 3); n > 0; n--)
 		{
-			monstid = pick_nasty();
+			monstid = pick_nasty(u.ulevel);
 			mtmp = summoncreature(obj->otyp, monstid, "", TRUE, TRUE, TRUE, FALSE, TRUE, FALSE, FALSE);
 			if (mtmp)
 			{

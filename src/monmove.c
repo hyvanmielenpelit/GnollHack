@@ -857,7 +857,9 @@ register int after;
     }
 
     /* and the acquisitive monsters get special treatment */
-    if (is_covetous(ptr)) {
+	/* Covetous has been deactivated -- JG */
+    if (mtmp->mnum == PM_WIZARD_OF_YENDOR) // is_covetous(ptr))
+	{
         xchar tx = STRAT_GOALX(mtmp->mstrategy),
               ty = STRAT_GOALY(mtmp->mstrategy);
         struct monst *intruder = m_at(tx, ty);

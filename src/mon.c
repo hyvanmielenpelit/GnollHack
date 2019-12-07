@@ -1769,7 +1769,7 @@ struct obj *otmp;
     if (otyp == CORPSE && is_rider(&mons[otmp->corpsenm]))
         return 0;
     if (objects[otyp].oc_material == MAT_SILVER && mon_hates_silver(mtmp)
-        && (otyp != BELL_OF_OPENING || !is_covetous(mdat)))
+        && (otyp != BELL_OF_OPENING || !wants_bell(mdat)))
         return 0;
 
     /* hostile monsters who like gold will pick up the whole stack;
@@ -3897,7 +3897,7 @@ struct monst *mon;
     switch (mon->cham) {
     case PM_SANDESTIN:
         if (rn2(7))
-            mndx = pick_nasty();
+            mndx = pick_nasty(mon->data->difficulty);
         break;
     case PM_DOPPELGANGER:
         /*

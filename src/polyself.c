@@ -769,8 +769,8 @@ int mntmp;
 	int hp = 1;
     if (youmonst.data->mlet == S_DRAGON && mntmp >= PM_GRAY_DRAGON) {
         hp= (In_endgame(&u.uz) ? (8 * mlvl) : (d(mlvl, 8))) + constitution_hp_bonus(ACURR(A_CON)) * mlvl;
-    } else if (is_golem(youmonst.data)) {
-        hp = golemhp(mntmp);
+//    } else if (is_golem(youmonst.data)) {
+//        hp = golemhp(mntmp);
     } else {
         if (!mlvl)
 		{
