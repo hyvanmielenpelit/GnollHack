@@ -438,16 +438,25 @@ boolean force_it;
 void
 tele()
 {
-    (void) scrolltele((struct obj *) 0);
+    (void) scrolltele((struct obj *) 0, FALSE);
 }
+
+/* teleport the hero via some method other than scroll of teleport */
+void
+wiztele()
+{
+	(void)scrolltele((struct obj*) 0, TRUE);
+}
+
 
 /* teleport the hero; return true if scroll of teleportation should become
    discovered; teleds() will usually do the actual discovery, since the
    outcome sometimes depends upon destination and discovery needs to be
    performed before arrival, in case we land on another teleport scroll */
 boolean
-scrolltele(scroll)
+scrolltele(scroll, iswizcmd)
 struct obj *scroll;
+boolean iswizcmd;
 {
     coord cc;
     boolean result = FALSE; /* don't learn scroll */
@@ -469,7 +478,7 @@ struct obj *scroll;
         if (!wizard || yn("Override?") != 'y')
             return FALSE;
     }
-    if ((Teleport_control && !Stunned) || (wizard && yn("Enforce teleport control?") == 'y')) {
+    if ((Teleport_control && !Stunned) || (wizard && (iswizcmd || yn("Enforce teleport control?") == 'y'))) {
         if (unconscious()) {
             pline("Being unconscious, you cannot control your teleport.");
         } else {
@@ -809,8 +818,10 @@ boolean break_the_rules; /* True: wizard mode ^T */
     }
 
     if (next_to_u()) {
-        if (trap && trap_once)
-            vault_tele();
+		if (trap && trap_once)
+			vault_tele();
+		else if (break_the_rules)
+			wiztele();
         else
             tele();
         (void) next_to_u();
@@ -824,7 +835,8 @@ boolean break_the_rules; /* True: wizard mode ^T */
 }
 
 void
-level_tele()
+level_tele(iswizcmd)
+boolean iswizcmd;
 {
     register int newlev;
     d_level newlevel;
@@ -839,7 +851,7 @@ level_tele()
         You_feel("very disoriented for a moment.");
         return;
     }
-    if ((Teleport_control && !Stunned) || (wizard && yn("Enforce teleport control?") == 'y')) 
+    if ((Teleport_control && !Stunned) || (wizard && (iswizcmd || yn("Enforce teleport control?") == 'y'))) 
 	{
         char qbuf[BUFSZ];
         int trycnt = 0;
@@ -1153,7 +1165,7 @@ unsigned trflags;
         You("are momentarily disoriented.");
     deltrap(trap);
     newsym(u.ux, u.uy); /* get rid of trap symbol */
-    level_tele();
+    level_tele(FALSE);
 }
 
 /* check whether monster can arrive at location <x,y> via Tport (or fall) */

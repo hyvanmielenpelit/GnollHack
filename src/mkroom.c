@@ -906,12 +906,13 @@ mkgarden()
 				if (!rn2(8))
 				{
 					// Garden gnome as statue (with a conical hat)
-					maketrap(sx, sy, STATUE_TRAP, !rn2(15) ? PM_GNOME_KING : !rn2(5) ? PM_GNOME_LORD : PM_GNOME, TRAP_STATUE_ITEM_CONICAL_HAT);
+					maketrap(sx, sy, STATUE_TRAP, !rn2(15) ? PM_GNOME_KING : !rn2(5) ? PM_GNOME_LORD : PM_GNOME, TRAPFLAG_GARDEN_GNOME_ITEMS);
 				}
 				else if (!rn2(20))
 				{
 					//Sleepy ogre
-					struct monst* mon = makemon(&mons[!rn2(5) && level_difficulty() > 10 ? PM_OGRE_LORD : PM_OGRE], sx, sy, NO_MM_FLAGS);
+					struct permonst* pm = mkclass(S_OGRE, 0);
+					struct monst* mon = makemon(!pm ? (&mons[!rn2(5) && level_difficulty() > 10 ? PM_OGRE_LORD : PM_OGRE]) : pm, sx, sy, NO_MM_FLAGS);
 					if(mon)
 						mon->msleeping = 1;
 				}

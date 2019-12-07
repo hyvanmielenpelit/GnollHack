@@ -883,8 +883,8 @@ u_init()
         ini_inv(Barbarian);
         if (!rn2(6))
             ini_inv(Lamp);
-        knows_class(WEAPON_CLASS);
-        knows_class(ARMOR_CLASS);
+        //knows_class(WEAPON_CLASS);
+        //knows_class(ARMOR_CLASS);
         skill_init(Skill_B_Init, Skill_B_Max);
         break;
     case PM_CAVEMAN:
@@ -905,8 +905,8 @@ u_init()
         break;
     case PM_KNIGHT:
         ini_inv(Knight);
-        knows_class(WEAPON_CLASS);
-        knows_class(ARMOR_CLASS);
+        //knows_class(WEAPON_CLASS);
+        //knows_class(ARMOR_CLASS);
         skill_init(Skill_K_Init, Skill_K_Max);
         break;
     case PM_MONK: {
@@ -918,7 +918,7 @@ u_init()
             ini_inv(Magicmarker);
         else if (!rn2(10))
             ini_inv(Lamp);
-        knows_class(ARMOR_CLASS);
+        //knows_class(ARMOR_CLASS);
         /* sufficiently martial-arts oriented item to ignore language issue */
         knows_object(SHURIKEN);
         skill_init(Skill_Monk_Init, Skill_Monk_Max);
@@ -975,8 +975,8 @@ u_init()
         ini_inv(Samurai);
         if (!rn2(5))
             ini_inv(Blindfold);
-        knows_class(WEAPON_CLASS);
-        knows_class(ARMOR_CLASS);
+        //knows_class(WEAPON_CLASS);
+        //knows_class(ARMOR_CLASS);
         skill_init(Skill_S_Init, Skill_S_Max);
         break;
     case PM_TOURIST:
@@ -1006,8 +1006,8 @@ u_init()
         ini_inv(Valkyrie);
         if (!rn2(6))
             ini_inv(Lamp);
-        knows_class(WEAPON_CLASS);
-        knows_class(ARMOR_CLASS);
+        //knows_class(WEAPON_CLASS);
+        //knows_class(ARMOR_CLASS);
         skill_init(Skill_V_Init, Skill_V_Max);
         break;
     case PM_WIZARD:
@@ -1075,9 +1075,11 @@ u_init()
 		break;
 
     case PM_GNOLL:
-		/*Gnolls can smell simple potions*/
-		knows_object(POT_FRUIT_JUICE);
-		knows_object(POT_BOOZE);
+		knows_object(GNOLLISH_HAIRCLOTH_ROBE);
+		knows_object(GNOLLISH_HOOD);
+		knows_object(GNOLLISH_LEATHER_ARMOR);
+		knows_object(GNOLLISH_STUDDED_LEATHER_ARMOR);
+		knows_object(GNOLLISH_QUARREL);
 		P_MAX_SKILL(P_FLAIL) = P_EXPERT;
 		if(P_MAX_SKILL(P_CROSSBOW) < P_SKILLED)
 			P_MAX_SKILL(P_CROSSBOW) = P_SKILLED;

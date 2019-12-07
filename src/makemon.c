@@ -1343,9 +1343,14 @@ register struct monst *mtmp;
 			otmp->owt = weight(otmp);
 			(void)add_to_container(sack, otmp);
 			sack->owt = weight(sack);
-
-			(void)mongets(mtmp, SILK_TOP_HAT);
-			(void)mongets(mtmp, TAILORED_SILK_ROBE);
+			boolean gothat = FALSE;
+			if (!rn2(2))
+			{
+				(void)mongets(mtmp, SILK_TOP_HAT);
+				gothat = TRUE;
+			}
+			if (!gothat || !rn2(2))
+				(void)mongets(mtmp, TAILORED_SILK_ROBE);
 			if(!rn2(4))
 				(void)mongets(mtmp, CREDIT_CARD);
 		}
@@ -1358,10 +1363,8 @@ register struct monst *mtmp;
 			{
 				if (!rn2(4))
 				{
-					if (!rn2(10))
-						(void)mongets(mtmp, CORNUTHAUM);
-					else if (!rn2(20))
-						(void)mongets(mtmp, DUNCE_CAP);
+					if (!rn2(20))
+						(void)mongets(mtmp, !rn2(2) ? CORNUTHAUM : DUNCE_CAP);
 					else
 						(void)mongets(mtmp, GNOMISH_FELT_HAT);
 				}

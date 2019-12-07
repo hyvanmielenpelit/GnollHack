@@ -2194,7 +2194,7 @@ struct obj *obj;
             break;
         }
         case LEV_TELE:
-            level_tele();
+            level_tele(FALSE);
             break;
         case CREATE_PORTAL: {
             int i, num_ok_dungeons, last_ok_dungeon = 0;

@@ -1282,7 +1282,7 @@ STATIC_PTR int
 wiz_level_tele(VOID_ARGS)
 {
     if (wizard)
-        level_tele();
+        level_tele(TRUE);
     else
         pline(unavailcmd, visctrl((int) cmd_from_func(wiz_level_tele)));
     return 0;

@@ -388,7 +388,7 @@ long flags;
         struct obj *otmp, *statue;
         struct permonst *mptr;
         int trycount = 10;
-		boolean has_conical_hat = FALSE;
+		boolean has_hat = FALSE;
 
 		if(permonstid <= NON_PM)
 		{
@@ -411,13 +411,16 @@ long flags;
             otmp->owornmask = 0;
             obj_extract_self(otmp);
             (void) add_to_container(statue, otmp);
-			if (is_conical_hat(otmp))
-				has_conical_hat = TRUE;
+			if (is_helmet(otmp))
+				has_hat = TRUE;
         }
-		if (!has_conical_hat && (flags & TRAP_STATUE_ITEM_CONICAL_HAT))
+		if (!has_hat && (flags & TRAPFLAG_GARDEN_GNOME_ITEMS))
 		{
-			otmp = mksobj((!rn2(20) ? (!rn2(2) ? CORNUTHAUM : DUNCE_CAP) : GNOMISH_FELT_HAT), TRUE, FALSE, FALSE);
-			(void)add_to_container(statue, otmp);
+			if(!rn2(2))
+			{
+				otmp = mksobj((!rn2(20) ? (!rn2(2) ? CORNUTHAUM : DUNCE_CAP) : GNOMISH_FELT_HAT), TRUE, FALSE, FALSE);
+				(void)add_to_container(statue, otmp);
+			}
 		}
         statue->owt = weight(statue);
         mongone(mtmp);

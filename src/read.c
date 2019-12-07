@@ -1756,9 +1756,9 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
         break;
     case SCR_TELEPORTATION:
         if (confused || scursed) {
-            level_tele();
+            level_tele(FALSE);
         } else {
-            known = scrolltele(sobj);
+            known = scrolltele(sobj, FALSE);
         }
         break;
     case SCR_GOLD_DETECTION:

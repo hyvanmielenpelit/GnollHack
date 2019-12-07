@@ -389,6 +389,7 @@ Helmet_on(VOID_ARGS)
         break;
     case CORNUTHAUM:
 	case GNOMISH_FELT_HAT:
+	case SILK_TOP_HAT:
 		break;
     case HELM_OF_OPPOSITE_ALIGNMENT:
         /* changing alignment can toggle off active artifact
@@ -457,9 +458,10 @@ Helmet_off(VOID_ARGS)
     case DUNCE_CAP:
         context.botl = 1;
         break;
-	case GNOMISH_FELT_HAT:
 	case CORNUTHAUM:
-        break;
+	case GNOMISH_FELT_HAT:
+	case SILK_TOP_HAT:
+		break;
     case HELM_OF_TELEPATHY:
         /* need to update ability before calling see_monsters() */
         setworn((struct obj *) 0, W_ARMH);

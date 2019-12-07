@@ -88,7 +88,7 @@ enum trap_types {
 #define is_hole(ttyp)  ((ttyp) == HOLE || (ttyp) == TRAPDOOR)
 
 #define TRAP_NO_FLAGS 0x00000000
-#define TRAP_STATUE_ITEM_CONICAL_HAT 0x00000001
+#define TRAPFLAG_GARDEN_GNOME_ITEMS 0x00000001
 
 
 #endif /* TRAP_H */
