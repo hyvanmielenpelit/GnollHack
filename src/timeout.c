@@ -1789,16 +1789,22 @@ boolean already_lit;
     long turns = 0;
     boolean do_timer = TRUE;
 
-    if (obj->age == 0 && obj->otyp != MAGIC_LAMP && !artifact_light(obj) &&!(objects[obj->otyp].oc_flags2 & O2_SHINES_MAGICAL_LIGHT))
+    if (obj->age == 0 && obj->otyp != MAGIC_LAMP && obj->otyp != MAGIC_CANDLE && !artifact_light(obj) &&!(objects[obj->otyp].oc_flags2 & O2_SHINES_MAGICAL_LIGHT))
         return;
 
     switch (obj->otyp) {
-    case MAGIC_LAMP:
+	case MAGIC_LAMP:
         obj->lamplit = 1;
         do_timer = FALSE;
         break;
+	case MAGIC_CANDLE:
+		obj->lamplit = 1;
+		if (obj->spe == 1)
+			obj->spe = 2;
 
-    case POT_OIL:
+		do_timer = FALSE;
+		break;
+	case POT_OIL:
         turns = obj->age;
         if (obj->odiluted)
             turns = (3L * turns + 2L) / 4L;
@@ -1884,7 +1890,7 @@ boolean timer_attached;
         return;
     }
 
-    if (obj->otyp == MAGIC_LAMP || artifact_light(obj) || (objects[obj->otyp].oc_flags2 & O2_SHINES_MAGICAL_LIGHT))
+    if (obj->otyp == MAGIC_LAMP || obj->otyp == MAGIC_CANDLE || artifact_light(obj) || (objects[obj->otyp].oc_flags2 & O2_SHINES_MAGICAL_LIGHT))
         timer_attached = FALSE;
 
     if (!timer_attached) {

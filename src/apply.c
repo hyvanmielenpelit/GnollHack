@@ -1511,10 +1511,10 @@ struct obj *obj;
     xchar x, y;
 
     if (!obj->lamplit && (obj->otyp == MAGIC_LAMP || ignitable(obj))) {
-        if ((obj->otyp == MAGIC_LAMP
+        if ((obj->otyp == MAGIC_LAMP || obj->otyp == MAGIC_CANDLE
              || obj->otyp == CANDELABRUM_OF_INVOCATION) && obj->spe == 0)
             return FALSE;
-        else if (obj->otyp != MAGIC_LAMP && obj->age == 0)
+        else if (obj->otyp != MAGIC_LAMP && obj->otyp != MAGIC_CANDLE && obj->age == 0)
             return FALSE;
         if (!get_obj_location(obj, &x, &y, 0))
             return FALSE;
@@ -1569,20 +1569,26 @@ struct obj *obj;
             pline("This %s has no oil.", xname(obj));
         return;
     }
-    if (obj->cursed && !rn2(2)) {
+    if ((obj->cursed && !rn2(2)) || (obj->otyp == MAGIC_CANDLE && obj->spe == 0))
+	{
         if (!Blind)
             pline("%s for a moment, then %s.", Tobjnam(obj, "flicker"),
                   otense(obj, "die"));
-    } else {
+    } 
+	else
+	{
         if (obj->otyp == OIL_LAMP || obj->otyp == MAGIC_LAMP
-            || obj->otyp == BRASS_LANTERN) {
+            || obj->otyp == BRASS_LANTERN) 
+		{
             check_unpaid(obj);
             pline("%slamp is now on.", Shk_Your(buf, obj));
-        } else { /* candle(s) */
+        } 
+		else 
+		{ /* candle(s) */
             pline("%s flame%s %s%s", s_suffix(Yname2(obj)), plur(obj->quan),
                   otense(obj, "burn"), Blind ? "." : " brightly!");
             if (obj->unpaid && costly_spot(u.ux, u.uy)
-                && obj->age == 30L * (long) objects[obj->otyp].oc_cost) {
+                && (obj->age == 30L * (long) objects[obj->otyp].oc_cost || obj->otyp == MAGIC_CANDLE)) {
                 const char *ithem = (obj->quan > 1L) ? "them" : "it";
 
                 verbalize("You burn %s, you bought %s!", ithem, ithem);
@@ -3160,7 +3166,7 @@ set_trap()
         return 1; /* still busy */
 
     ttyp = (otmp->otyp == LAND_MINE) ? LANDMINE : BEAR_TRAP;
-    ttmp = maketrap(u.ux, u.uy, ttyp);
+    ttmp = maketrap(u.ux, u.uy, ttyp, NON_PM, TRAP_NO_FLAGS);
     if (ttmp) {
         ttmp->madeby_u = 1;
         feeltrap(ttmp);
@@ -4324,7 +4330,8 @@ doapply()
         break;
     case WAX_CANDLE:
     case TALLOW_CANDLE:
-        use_candle(&obj);
+	case MAGIC_CANDLE:
+		use_candle(&obj);
         break;
     case OIL_LAMP:
     case MAGIC_LAMP:

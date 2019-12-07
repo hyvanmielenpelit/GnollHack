@@ -203,12 +203,38 @@ register struct monst *mtmp;
      *          kops get clubs & cream pies.
      */
     switch (ptr->mlet) {
-	case S_GNOLL:
+	case S_GNOME:
+		if (mm == PM_GNOMISH_WIZARD)
+		{
+			if (!rn2(4))
+			{
+				if(!rn2(10))
+					(void)mongets(mtmp, CORNUTHAUM);
+				else if(!rn2(20))
+					(void)mongets(mtmp, DUNCE_CAP);
+				else
+					(void)mongets(mtmp, GNOMISH_FELT_HAT);
+			}
+		}
+		else
+		{
+			if (!rn2(4))
+			{
+				if (!rn2(20))
+					(void)mongets(mtmp, DUNCE_CAP);
+				else
+					(void)mongets(mtmp, GNOMISH_FELT_HAT);
+			}
+		}
 		switch (mm) {
 		case PM_GNOMISH_WIZARD:
 			if (!rn2(3))
 				(void)mongets(mtmp, DAGGER);
 			break;
+		}
+		break;
+	case S_GNOLL:
+		switch (mm) {
 		case PM_GNOLL_WARDEN:
 			if (rn2(7))
 				(void)mongets(mtmp, GNOLLISH_HAIRCLOTH_ROBE);
@@ -1220,10 +1246,10 @@ register struct monst *mtmp;
 
 
 		/* Kobold lords have lots of candles */
-		if (ptr == &mons[PM_KOBOLD_LORD] || (!rn2(4) && (ptr == &mons[PM_LARGE_KOBOLD] || ptr == &mons[PM_KOBOLD_SHAMAN])))
+		if (ptr == &mons[PM_KOBOLD_LORD] || (!rn2(4) && ptr == &mons[PM_KOBOLD_SHAMAN]))
 		{
 			/* Maybe more than one as a back-up */
-			otmp = mksobj(rn2(4) ? TALLOW_CANDLE : WAX_CANDLE, TRUE, FALSE, FALSE);
+			otmp = mksobj(!rn2(100) ? MAGIC_CANDLE : rn2(4) ? TALLOW_CANDLE : WAX_CANDLE, TRUE, FALSE, FALSE);
 			(void)mpickobj(mtmp, otmp);
 		}
 
@@ -1343,8 +1369,6 @@ register struct monst *mtmp;
 				(void)mongets(mtmp, CREDIT_CARD);
 			if (!rn2(20))
 				(void)mongets(mtmp, HEADBAND_OF_INTELLECT);
-			if (ptr == &mons[PM_GNOME_KING] && !rn2(20))
-				(void)mongets(mtmp, CROWN_OF_RULERSHIP);
 		}
 		else if (!rn2(3))
 			(void)mongetsgold(mtmp, ptr == &mons[PM_GNOME_KING] ? rn2(301) + 100 : ptr == &mons[PM_GNOME_LORD] ? 10 + rn2(31) : 5 + rn2(16));
@@ -1396,7 +1420,7 @@ register struct monst *mtmp;
 	case PM_ELVENKING:
 	case PM_GNOLL_KING:
 	case PM_GNOME_KING:
-		if (!rn2(3) && !m_carrying(mtmp, CROWN_OF_RULERSHIP) && !m_carrying(mtmp, DUCAL_CROWN))
+		if (!rn2(3) && !m_carrying(mtmp, CROWN_OF_RULERSHIP) && !m_carrying(mtmp, DUCAL_CROWN) && !m_carrying(mtmp, DUNCE_CAP) && !m_carrying(mtmp, CORNUTHAUM) && !m_carrying(mtmp, GNOMISH_FELT_HAT))
 			(void)mongets(mtmp, !rn2(25) ? CROWN_OF_RULERSHIP : DUCAL_CROWN);
 		break;
 	default:

@@ -733,7 +733,7 @@ struct monst *mtmp;
                           surface(mtmp->mx, mtmp->my));
             return 2;
         }
-        ttmp = maketrap(mtmp->mx, mtmp->my, HOLE);
+        ttmp = maketrap(mtmp->mx, mtmp->my, HOLE, NON_PM, TRAP_NO_FLAGS);
         if (!ttmp)
             return 2;
         seetrap(ttmp);

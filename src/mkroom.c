@@ -827,7 +827,7 @@ mkgarden()
 			{
 				levl[sx][sy].typ = GRASS;
 				/* Buried items */
-				if (!rn2(4))
+				if (!rn2(3))
 				{
 					int itemtype = MANDRAKE_ROOT;
 					int quan = 1;
@@ -861,7 +861,7 @@ mkgarden()
 				}
 
 				/* Non-buried items */
-				if (!rn2(4))
+				if (!rn2(3))
 				{
 					int itemtype = SPRIG_OF_WOLFSBANE;
 					int quan = 1;
@@ -903,13 +903,13 @@ mkgarden()
 					}
 				}
 
-				if (!rn2(12))
+				if (!rn2(8))
 				{
-					// Garden gnome
+					// Garden gnome as statue (with a conical hat)
+					maketrap(sx, sy, STATUE_TRAP, !rn2(15) ? PM_GNOME_KING : !rn2(5) ? PM_GNOME_LORD : PM_GNOME, TRAP_STATUE_ITEM_CONICAL_HAT);
 					struct monst* mon = makemon(&mons[!rn2(5) && level_difficulty() > 6 ? PM_GNOME_LORD : PM_GNOME], sx, sy, NO_MM_FLAGS);
 					if(mon)
 					{
-						mon->mpeaceful = 1;
 						mon->msleeping = 1;
 					}
 				}

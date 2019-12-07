@@ -594,7 +594,7 @@ fixup_special()
             for (y = croom->ly; y <= croom->hy; y++) {
                 (void) mkgold((long) rn1(300, 600), x, y);
                 if (!rn2(3) && !is_pool(x, y))
-                    (void) maketrap(x, y, rn2(3) ? LANDMINE : SPIKED_PIT);
+                    (void) maketrap(x, y, rn2(3) ? LANDMINE : SPIKED_PIT, NON_PM, TRAP_NO_FLAGS);
             }
     } else if (Role_if(PM_PRIEST) && In_quest(&u.uz)) {
         /* less chance for undead corpses (lured from lower morgues) */
@@ -1080,7 +1080,7 @@ const char *s;
                  || !SPACE_POS(levl[x][y].typ) || occupied(x, y));
         inv_pos.x = x;
         inv_pos.y = y;
-        maketrap(inv_pos.x, inv_pos.y, VIBRATING_SQUARE);
+        maketrap(inv_pos.x, inv_pos.y, VIBRATING_SQUARE, NON_PM, TRAP_NO_FLAGS);
 #undef INVPOS_X_MARGIN
 #undef INVPOS_Y_MARGIN
 #undef INVPOS_DISTANCE
@@ -1339,7 +1339,7 @@ xchar x, y, todnum, todlevel;
 {
     /* a portal "trap" must be matched by a
        portal in the destination dungeon/dlevel */
-    struct trap *ttmp = maketrap(x, y, MAGIC_PORTAL);
+    struct trap *ttmp = maketrap(x, y, MAGIC_PORTAL, NON_PM, TRAP_NO_FLAGS);
 
     if (!ttmp) {
         impossible("portal on top of portal??");

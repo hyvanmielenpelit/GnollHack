@@ -516,7 +516,7 @@ int trap_type;
                 if (trap_type) {
                     if (is_hole(trap_type) && !Can_fall_thru(&u.uz))
                         trap_type = ROCKTRAP;
-                    ttmp = maketrap(xx, yy + dy, trap_type);
+                    ttmp = maketrap(xx, yy + dy, trap_type, NON_PM, TRAP_NO_FLAGS);
                     if (ttmp) {
                         if (trap_type != ROCKTRAP)
                             ttmp->once = 1;
@@ -912,7 +912,7 @@ makelevel()
 				tmonst = makemon((struct permonst *) 0, x, y, MM_NOGRP);
 				if (tmonst && (tmonst->data == &mons[PM_GIANT_SPIDER] || (tmonst->data == &mons[PM_PHASE_SPIDER] && !rn2(2)))
 					&& !occupied(x, y))
-					(void) maketrap(x, y, WEB);
+					(void) maketrap(x, y, WEB, NON_PM, TRAP_NO_FLAGS);
 			}
         }
         /* put traps and mimics inside */
@@ -1532,7 +1532,7 @@ coord *tm;
                  || (avoid_boulder && sobj_at(BOULDER, m.x, m.y)));
     }
 
-    t = maketrap(m.x, m.y, kind);
+    t = maketrap(m.x, m.y, kind, NON_PM, TRAP_NO_FLAGS);
     /* we should always get type of trap we're asking for (occupied() test
        should prevent cases where that might not happen) but be paranoid */
     kind = t ? t->ttyp : NO_TRAP;
@@ -1974,7 +1974,7 @@ int dist;
         if (is_pool(x, y))
             break;
         lev->typ = ROOM;
-        ttmp = maketrap(x, y, FIRE_TRAP);
+        ttmp = maketrap(x, y, FIRE_TRAP, NON_PM, TRAP_NO_FLAGS);
         if (ttmp)
             ttmp->tseen = TRUE;
         break;

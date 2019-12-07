@@ -2686,7 +2686,7 @@ fill_empty_maze()
             if (sobj_at(BOULDER, mm.x, mm.y))
                 while (is_pit(trytrap) || is_hole(trytrap))
                     trytrap = rndtrap();
-            (void) maketrap(mm.x, mm.y, trytrap);
+            (void) maketrap(mm.x, mm.y, trytrap, NON_PM, TRAP_NO_FLAGS);
         }
     }
 }
@@ -4470,7 +4470,7 @@ struct opvar *ov;
         opvar_free(ov3);
         ov3 = opvar_clone(ov2);
         while (selection_rndcoord(ov3, &x, &y, TRUE)) {
-            if (maketrap(x,y, rn2(2) ? HOLE : TRAPDOOR))
+            if (maketrap(x,y, rn2(2) ? HOLE : TRAPDOOR, NON_PM, TRAP_NO_FLAGS))
                 goto gotitdone;
         }
     }

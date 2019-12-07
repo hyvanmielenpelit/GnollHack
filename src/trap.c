@@ -324,8 +324,9 @@ struct monst *victim;
 }
 
 struct trap *
-maketrap(x, y, typ)
-int x, y, typ;
+maketrap(x, y, typ, permonstid, flags)
+int x, y, typ, permonstid;
+long flags;
 {
     static union vlaunchinfo zero_vl;
     boolean oldplace;
@@ -387,11 +388,19 @@ int x, y, typ;
         struct obj *otmp, *statue;
         struct permonst *mptr;
         int trycount = 10;
+		boolean has_conical_hat = FALSE;
 
+		if(permonstid <= NON_PM)
+		{
         do { /* avoid ultimately hostile co-aligned unicorn */
             mptr = &mons[rndmonnum()];
         } while (--trycount > 0 && is_unicorn(mptr)
                  && sgn(u.ualign.type) == sgn(mptr->maligntyp));
+		}
+		else
+		{
+			mptr = &mons[permonstid];
+		}
         statue = mkcorpstat(STATUE, (struct monst *) 0, mptr, x, y,
                             CORPSTAT_NONE);
         mtmp = makemon(&mons[statue->corpsenm], 0, 0, MM_NOCOUNTBIRTH);
@@ -402,7 +411,14 @@ int x, y, typ;
             otmp->owornmask = 0;
             obj_extract_self(otmp);
             (void) add_to_container(statue, otmp);
+			if (is_conical_hat(otmp))
+				has_conical_hat = TRUE;
         }
+		if (!has_conical_hat && (flags & TRAP_STATUE_ITEM_CONICAL_HAT))
+		{
+			otmp = mksobj((!rn2(20) ? (!rn2(2) ? CORNUTHAUM : DUNCE_CAP) : GNOMISH_FELT_HAT), TRUE, FALSE, FALSE);
+			(void)add_to_container(statue, otmp);
+		}
         statue->owt = weight(statue);
         mongone(mtmp);
         break;
@@ -4240,7 +4256,7 @@ boolean force_failure;
                         killed(mtmp);
                 } else if (ttype == WEB) {
                     if (!webmaker(youmonst.data)) {
-                        struct trap *ttmp2 = maketrap(u.ux, u.uy, WEB);
+                        struct trap *ttmp2 = maketrap(u.ux, u.uy, WEB, NON_PM, TRAP_NO_FLAGS);
 
                         if (ttmp2) {
                             pline_The(

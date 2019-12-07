@@ -388,7 +388,8 @@ Helmet_on(VOID_ARGS)
         //adj_abon(uarmh, uarmh->spe);
         break;
     case CORNUTHAUM:
-        break;
+	case GNOMISH_FELT_HAT:
+		break;
     case HELM_OF_OPPOSITE_ALIGNMENT:
         /* changing alignment can toggle off active artifact
            properties, including levitation; uarmh could get
@@ -456,7 +457,8 @@ Helmet_off(VOID_ARGS)
     case DUNCE_CAP:
         context.botl = 1;
         break;
-    case CORNUTHAUM:
+	case GNOMISH_FELT_HAT:
+	case CORNUTHAUM:
         break;
     case HELM_OF_TELEPATHY:
         /* need to update ability before calling see_monsters() */

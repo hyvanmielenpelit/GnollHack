@@ -1050,21 +1050,22 @@ boolean makingboxcontents;
             switch (otmp->otyp) {
             case TALLOW_CANDLE:
             case WAX_CANDLE:
-                otmp->spe = 1;
+				otmp->spe = 1;
                 otmp->age = 30L * /* 600 or 300 */
                             (long) objects[otmp->otyp].oc_cost;
                 otmp->lamplit = 0;
                 otmp->quan = 1L + (long) (rn2(2) ? rn2(7) : 0);
                 blessorcurse(otmp, 5);
                 break;
-            case BRASS_LANTERN:
+			case BRASS_LANTERN:
             case OIL_LAMP:
                 otmp->spe = 1;
                 otmp->age = (long) rn1(500, 1000);
                 otmp->lamplit = 0;
                 blessorcurse(otmp, 5);
                 break;
-            case MAGIC_LAMP:
+			case MAGIC_CANDLE:
+			case MAGIC_LAMP:
                 otmp->spe = 1;
                 otmp->lamplit = 0;
                 blessorcurse(otmp, 2);

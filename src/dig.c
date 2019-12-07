@@ -610,7 +610,7 @@ int ttyp;
         Strcpy(surface_type, surface(x, y));
     shopdoor = IS_DOOR(lev->typ) && *in_rooms(x, y, SHOPBASE);
     oldobjs = level.objects[x][y];
-    ttmp = maketrap(x, y, ttyp);
+    ttmp = maketrap(x, y, ttyp, NON_PM, TRAP_NO_FLAGS);
     if (!ttmp)
         return;
     newobjs = level.objects[x][y];
@@ -1687,7 +1687,7 @@ struct obj* origobj;
 					lev->typ = ROOM, lev->flags = 0;
 					if (lev->typ == MOAT)
 					{
-						struct trap* t = maketrap(zx, zy, PIT);
+						struct trap* t = maketrap(zx, zy, PIT, NON_PM, TRAP_NO_FLAGS);
 						if (t)
 							t->tseen = 1;
 					}
@@ -1776,7 +1776,7 @@ struct obj* origobj;
 				lev->typ = ROOM, lev->flags = 0;
 				if (lev->typ == MOAT)
 				{
-					struct trap* t = maketrap(zx, zy, PIT);
+					struct trap* t = maketrap(zx, zy, PIT, NON_PM, TRAP_NO_FLAGS);
 					if (t)
 						t->tseen = 1;
 				}

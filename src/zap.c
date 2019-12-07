@@ -1274,7 +1274,8 @@ register struct obj *obj;
         if (obj->spe != ((obj->oclass == WAND_CLASS) ? -1 : 0)
             && otyp != WAN_CANCELLATION /* can't cancel cancellation */
             && otyp != MAGIC_LAMP /* cancelling doesn't remove djinni */
-            && otyp != CANDELABRUM_OF_INVOCATION) {
+			&& otyp != MAGIC_CANDLE
+			&& otyp != CANDELABRUM_OF_INVOCATION) {
             costly_alteration(obj, COST_CANCEL);
             obj->spe = (obj->oclass == WAND_CLASS) ? -1 : 0;
         }
@@ -5578,7 +5579,7 @@ short exploding_wand_typ;
             } else {
                 rangemod -= 3;
                 lev->typ = ROOM, lev->flags = 0;
-                t = maketrap(x, y, PIT);
+                t = maketrap(x, y, PIT, NON_PM, TRAP_NO_FLAGS);
                 if (t)
                     t->tseen = 1;
                 if (see_it)

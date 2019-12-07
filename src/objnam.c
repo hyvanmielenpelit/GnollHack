@@ -1231,7 +1231,8 @@ unsigned doname_flags;
             }
             break;
         }
-        if (obj->otyp == CANDELABRUM_OF_INVOCATION) {
+        if (obj->otyp == CANDELABRUM_OF_INVOCATION) 
+		{
             if (!obj->spe)
                 Strcpy(tmpbuf, "no");
             else
@@ -1239,10 +1240,14 @@ unsigned doname_flags;
             Sprintf(eos(bp), " (%s candle%s%s)", tmpbuf, plur(obj->spe),
                     !obj->lamplit ? " attached" : ", lit");
             break;
-        } else if (obj->otyp == OIL_LAMP || obj->otyp == MAGIC_LAMP
-                   || obj->otyp == BRASS_LANTERN || Is_candle(obj)) {
-            if (Is_candle(obj)
+        } 
+		else if (obj->otyp == OIL_LAMP || obj->otyp == MAGIC_LAMP
+                   || obj->otyp == BRASS_LANTERN || Is_candle(obj)) 
+		{
+            if ((Is_candle(obj) && obj->otyp != MAGIC_CANDLE
                 && obj->age < 30L * (long) objects[obj->otyp].oc_cost)
+				|| (obj->otyp == MAGIC_CANDLE && obj->spe != 1)
+				)
                 Strcat(prefix, "partly used ");
             if (obj->lamplit)
                 Strcat(bp, " (lit)");
@@ -2975,12 +2980,13 @@ struct o_range {
 STATIC_OVL NEARDATA const struct o_range o_ranges[] = {
     { "bag", TOOL_CLASS, SACK, BAG_OF_TRICKS },
     { "lamp", TOOL_CLASS, OIL_LAMP, MAGIC_LAMP },
-    { "candle", TOOL_CLASS, TALLOW_CANDLE, WAX_CANDLE },
+    { "candle", TOOL_CLASS, TALLOW_CANDLE, MAGIC_CANDLE },
     { "horn", TOOL_CLASS, TOOLED_HORN, HORN_OF_PLENTY },
     { "shield", ARMOR_CLASS, SMALL_SHIELD, SHIELD_OF_REFLECTION },
     { "hat", ARMOR_CLASS, FEDORA, DUNCE_CAP },
     { "helm", ARMOR_CLASS, ELVEN_LEATHER_HELM, HELM_OF_TELEPATHY },
 	{ "crown", ARMOR_CLASS, DUCAL_CROWN, CROWN_OF_RULERSHIP },
+	{ "conical hat", ARMOR_CLASS, CORNUTHAUM, GNOMISH_FELT_HAT },
 	{ "gloves", ARMOR_CLASS, LEATHER_GLOVES, GAUNTLETS_OF_DEXTERITY },
     { "gauntlets", ARMOR_CLASS, LEATHER_GLOVES, GAUNTLETS_OF_DEXTERITY },
     { "boots", ARMOR_CLASS, LOW_BOOTS, LEVITATION_BOOTS },
@@ -3973,7 +3979,7 @@ struct obj *no_wish;
             /* found it; avoid stupid mistakes */
             if (is_hole(trap) && !Can_fall_thru(&u.uz))
                 trap = ROCKTRAP;
-            if ((t = maketrap(x, y, trap)) != 0) {
+            if ((t = maketrap(x, y, trap, NON_PM, TRAP_NO_FLAGS)) != 0) {
                 trap = t->ttyp;
                 tname = defsyms[trap_to_defsym(trap)].explanation;
                 pline("%s%s.", An(tname),
@@ -4134,7 +4140,8 @@ struct obj *no_wish;
     typ = otmp->otyp, oclass = otmp->oclass; /* what we actually got */
 
     if (islit && (typ == OIL_LAMP || typ == MAGIC_LAMP || typ == BRASS_LANTERN
-                  || Is_candle(otmp) || typ == POT_OIL)) {
+                  || Is_candle(otmp) || typ == POT_OIL)) 
+	{
         place_object(otmp, u.ux, u.uy); /* make it viable light source */
         begin_burn(otmp, FALSE);
         obj_extract_self(otmp); /* now release it for caller's use */
