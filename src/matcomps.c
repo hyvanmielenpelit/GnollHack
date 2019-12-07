@@ -915,6 +915,17 @@ struct materialcomponentlist matlists[] =
 		}
 	},
 
+	{ SPE_PROTECTION_FROM_LIFE_DRAINING,
+	"Clove of garlic",
+	STRANGE_OBJECT,
+	3,
+		{
+			{CLOVE_OF_GARLIC, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
+			NO_MATCOMP,
+			NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
+		}
+	},
+
 	{ SPE_SLOW_MONSTER,
 	"Clump of bat guano",
 	STRANGE_OBJECT,
