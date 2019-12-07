@@ -52,7 +52,7 @@ static struct trobj Barbarian[] = {
 static struct trobj Cave_man[] = {
 #define C_AMMO 2
     { CLUB, 3, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
-    { SLING, 3, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
+    { SLING, 2, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
     { FLINT, 0, GEM_CLASS, 15, UNDEF_BLESS, 0 }, /* quan is variable */
     { STONE_PEBBLE, 0, GEM_CLASS, 3, 0, 0 },             /* yields 18..33 */
 	{ UNDEF_TYP, UNDEF_SPE, AMULET_CLASS, 1, UNDEF_BLESS, 0 },
@@ -128,11 +128,11 @@ static struct trobj Ranger[] = {
 #define RAN_TWO_ARROWS 2
 #define RAN_ZERO_ARROWS 3
 	{ DAGGER, 1, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
-	{ SHORT_BOW, 1, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
-    { ARROW, 2, WEAPON_CLASS, 15, UNDEF_BLESS, 0 },
+	{ SHORT_BOW, 0, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
+    { ARROW, 1, WEAPON_CLASS, 15, UNDEF_BLESS, 0 },
     { ARROW, 0, WEAPON_CLASS, 25, UNDEF_BLESS, 0 },
 	{ LEATHER_BRACERS, 0, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
-	{ CLOAK_OF_PROTECTION, 2, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
+	{ CLOAK_OF_PROTECTION, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
 	{ BACKPACK, 0, TOOL_CLASS, 1, 0, 0 },
 	{ CRAM_RATION, 0, FOOD_CLASS, 4, 0, 0 },
     { 0, 0, 0, 0, 0, 0 }
