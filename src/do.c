@@ -1004,12 +1004,12 @@ register struct obj* obj;
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
-	if (obj->special_enchantment)
+	if (obj->elemental_enchantment)
 	{
-		Sprintf(buf, "Special enchantment:    %s", obj->special_enchantment == FIRE_ENCHANTMENT ? "Fire-enchanted (+2d6 fire damage)" :
-			obj->special_enchantment == COLD_ENCHANTMENT ? "Cold-enchanted (+1d6 cold damage)" :
-			obj->special_enchantment == LIGHTNING_ENCHANTMENT ? "Lightning-enchanted (+4d6 lightning damage)" :
-			obj->special_enchantment == DEATH_ENCHANTMENT ? "Death-enchanted (kills on hit)" : "Unknown enchantment"
+		Sprintf(buf, "Special enchantment:    %s", obj->elemental_enchantment == FIRE_ENCHANTMENT ? "Fire-enchanted (+2d6 fire damage)" :
+			obj->elemental_enchantment == COLD_ENCHANTMENT ? "Cold-enchanted (+1d6 cold damage)" :
+			obj->elemental_enchantment == LIGHTNING_ENCHANTMENT ? "Lightning-enchanted (+3d6 lightning damage)" :
+			obj->elemental_enchantment == DEATH_ENCHANTMENT ? "Death-enchanted (kills on hit)" : "Unknown enchantment"
 		);
 		txt = buf;
 		putstr(datawin, 0, txt);
@@ -1332,6 +1332,13 @@ register struct obj* obj;
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
+			if (objects[otyp].oc_flags3 & O3_PREVENTS_SUMMONING_BY_PERMITTED_TARGETS)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Prevents summoning by permitted targets", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
 
 			if (powercnt == 0)
 			{
@@ -1624,6 +1631,13 @@ register struct obj* obj;
 						txt = buf;
 						putstr(datawin, 0, txt);
 					}
+					if (objects[otyp].oc_target_permissions & M2_WERE)
+					{
+						powercnt++;
+						Sprintf(buf, " %2d - Lycanthropes", powercnt);
+						txt = buf;
+						putstr(datawin, 0, txt);
+					}
 				}
 				else if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M3_FLAG)
 				{
@@ -1636,7 +1650,7 @@ register struct obj* obj;
 					*monsymbuf = highc(*monsymbuf);
 
 					powercnt++;
-					Sprintf(buf, " %2d - %s", powercnt, monsymbuf);
+					Sprintf(buf, " %2d - %s", powercnt, makeplural(monsymbuf));
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}

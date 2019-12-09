@@ -3200,8 +3200,8 @@ int final;
 		you_are("warned of ogres", from_what(WARN_OGRE));
 	if (Human_warning)
 		you_are("warned of human beings", from_what(WARN_HUMAN));
-	if (Were_warning)
-		you_are("warned of were-creatures", from_what(WARN_WERE));
+	if (Lycanthrope_warning)
+		you_are("warned of lycanthropes", from_what(WARN_LYCANTHROPE));
 	if (Angel_warning)
 		you_are("warned of angels", from_what(WARN_ANGEL));
 	if (Searching)

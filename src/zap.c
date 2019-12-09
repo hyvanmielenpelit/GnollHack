@@ -1204,6 +1204,76 @@ int montype;
 	return FALSE;
 }
 
+
+boolean
+item_prevents_summoning(montype)
+int montype;
+{
+	struct obj* uitem;
+
+	//Add then extrinsics from all carried items
+	for (uitem = invent; uitem; uitem = uitem->nobj)
+	{
+		if (!object_uses_spellbook_wand_flags_and_properties(uitem)
+			&& (
+			(uitem == uwep && (is_shield(uitem) || is_weapon(uitem)))
+				|| uitem == uarm
+				|| uitem == uarmc
+				|| uitem == uarmh
+				|| (uitem == uarms && (is_shield(uitem) || is_weapon(uitem)))
+				|| uitem == uarmg
+				|| uitem == uarmf
+				|| uitem == uarmu
+				|| uitem == uarmo
+				|| uitem == uarmb
+				|| uitem == umisc
+				|| uitem == umisc2
+				|| uitem == umisc3
+				|| uitem == umisc4
+				|| uitem == umisc5
+				|| uitem == uamul
+				|| uitem == uright
+				|| uitem == uleft
+				|| objects[uitem->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED))
+		{
+			int otyp = uitem->otyp;
+			if (inappropriate_character_type(uitem))
+			{
+				continue;
+			}
+			if (objects[otyp].oc_flags3 & O3_PREVENTS_SUMMONING_BY_PERMITTED_TARGETS)
+			{
+				if (objects[otyp].oc_target_permissions == ALL_TARGETS)
+					return TRUE;
+
+				if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M1_FLAG)
+				{
+					if (mons[montype].mflags1 & objects[otyp].oc_target_permissions)
+						return TRUE;
+				}
+				else if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M2_FLAG)
+				{
+					if (mons[montype].mflags2 & objects[otyp].oc_target_permissions)
+						return TRUE;
+				}
+				else if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M3_FLAG)
+				{
+					if (mons[montype].mflags3 & objects[otyp].oc_target_permissions)
+						return TRUE;
+				}
+				else
+				{
+					if (mons[montype].mlet == objects[otyp].oc_target_permissions)
+						return TRUE;
+				}
+			}
+
+		}
+	}
+
+	return FALSE;
+}
+
 STATIC_OVL void
 revive_egg(obj)
 struct obj *obj;
@@ -1312,7 +1382,7 @@ register struct obj *obj;
     }
     unbless(obj);
     uncurse(obj);
-	obj->special_enchantment = 0;
+	obj->elemental_enchantment = 0;
 	updateabon();
 	updatemaxen();
 	updatemaxhp();
@@ -1724,8 +1794,8 @@ int id;
     if (obj->opoisoned && is_poisonable(otmp))
         otmp->opoisoned = TRUE;
 
-	if (obj->special_enchantment > 0)
-		otmp->special_enchantment = 0; //Special enchantments do not get passed at the moment
+	if (obj->elemental_enchantment > 0)
+		otmp->elemental_enchantment = 0; //Special enchantments do not get passed at the moment
 
 	if (id == STRANGE_OBJECT && obj->otyp == CORPSE) {
         /* turn crocodile corpses into shoes */

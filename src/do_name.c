@@ -1434,7 +1434,7 @@ struct obj *obj;
     if (otemp.oclass == WEAPON_CLASS)
 	{
         otemp.opoisoned = 0; /* not poisoned */
-		otemp.special_enchantment = 0; /* not specially enchanted */
+		otemp.elemental_enchantment = 0; /* not specially enchanted */
 	}
 	else if (otemp.oclass == POTION_CLASS)
         otemp.odiluted = 0; /* not diluted */

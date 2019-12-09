@@ -106,7 +106,7 @@ enum prop_types {
 	WARN_DWARF		  = 82,
 	WARN_GNOLL		  = 83,
 	WARN_HUMAN		  = 84,
-	WARN_WERE		  = 85,
+	WARN_LYCANTHROPE		  = 85,
 	WARN_ANGEL		  = 86,
 	WARN_OGRE		  = 87,
 	CHARM_RES		  = 88,

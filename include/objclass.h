@@ -592,6 +592,7 @@ struct objclass {
 #define O2_MONSTER_SCALE_MAIL	0x00008000
 #define O2_CANDLE				0x00010000	
 #define O2_SHINES_MAGICAL_LIGHT 0x00020000	
+#define O2_FLICKER_COLOR_RED	O2_NONE	
 #define O2_FLICKER_COLOR_WHITE	0x00040000	
 #define O2_FLICKER_COLOR_BLUE	0x00080000	
 #define O2_FLICKER_COLOR_BLACK (O2_FLICKER_COLOR_WHITE | O2_FLICKER_COLOR_BLUE)	
@@ -611,7 +612,7 @@ struct objclass {
 /* Artifact flags - to do: Attack type, half physical and spell damage, bonus to monsters only */
 /* Flags 3 */
 #define O3_NONE										0x00000000
-#define O3_NOWISH									0x00000001  /* item is special, it cannot be wished for */
+#define O3_NO_WISH									0x00000001  /* item is special, it cannot be wished for */
 #define O3_POWER_1_DISRESPECTS_CHARACTERS			0x00000002  /* Do not use with WARN_OF_XXXX powers */
 #define O3_POWER_2_DISRESPECTS_CHARACTERS			0x00000004  /* Do not use with WARN_OF_XXXX powers */
 #define O3_POWER_3_DISRESPECTS_CHARACTERS			0x00000008  /* Do not use with WARN_OF_XXXX powers */
@@ -620,8 +621,8 @@ struct objclass {
 #define O3_ATTRIBUTE_BONUS_DISRESPECTS_CHARACTERS	0x00000040
 #define O3_LUCK_DISRESPECTS_CHARACTERS				0x00000080
 
-#define O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS	0x00000800 /* wielding or wearing prohibits the revival of permitted targets */
-#define O3_PREVENTS_SUMMONING_BY_PERMITTED_TARGETS	0x00001000 /* TODO: wielding or wearing prohibits summoning by permitted targets */
+#define O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS	0x00000800  /* wielding or wearing prohibits the revival of permitted targets */
+#define O3_PREVENTS_SUMMONING_BY_PERMITTED_TARGETS	0x00001000  /* wielding or wearing prohibits AD_XXXX-type innate summoning by permitted targets; the target can still summon using spells */
 #define O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS	0x00002000	/* deals damage when wielded like artifacts */
 
 #define O3_INVOKABLE								0x00000400	/* can be invoked using invoke command */

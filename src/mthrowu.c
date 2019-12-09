@@ -504,8 +504,8 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 				damage += poisondamage;
             }
         }
-		if (otmp->special_enchantment) {
-			switch(otmp->special_enchantment)
+		if (otmp->elemental_enchantment) {
+			switch(otmp->elemental_enchantment)
 			{
 			case COLD_ENCHANTMENT:
 				if (resists_cold(mtmp)) {
@@ -521,7 +521,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 					damage += rnd(6);
 				}
 				if (!rn2(10))
-					otmp->special_enchantment = 0;
+					otmp->elemental_enchantment = 0;
 				break;
 			case FIRE_ENCHANTMENT:
 				if (resists_fire(mtmp)) {
@@ -537,7 +537,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 					damage += d(2, 6);
 				}
 				if (!rn2(3))
-					otmp->special_enchantment = 0;
+					otmp->elemental_enchantment = 0;
 				break;
 			case LIGHTNING_ENCHANTMENT:
 				if (resists_elec(mtmp)) {
@@ -553,7 +553,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 
 					damage += d(4, 6);
 				}
-				otmp->special_enchantment = 0;
+				otmp->elemental_enchantment = 0;
 				break;
 			case DEATH_ENCHANTMENT:
 				if (resists_death(mtmp) || is_not_living(mtmp->data) || is_demon(mtmp->data) || is_vampshifter(mtmp)) {
@@ -568,7 +568,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 						pline("It is slain!");
 					damage = mtmp->mhp;
 				}
-				otmp->special_enchantment = 0;
+				otmp->elemental_enchantment = 0;
 				break;
 			default:
 				break;
@@ -913,7 +913,7 @@ struct obj *obj;         /* missile (or stack providing it) */
                          (u.umortality > oldumort) ? 0 : 10, TRUE);
             }
 
-			if (hitu && singleobj->special_enchantment)
+			if (hitu && singleobj->elemental_enchantment)
 			{
 				char onmbuf[BUFSZ], knmbuf[BUFSZ];
 
@@ -922,22 +922,25 @@ struct obj *obj;         /* missile (or stack providing it) */
 				
 				/* if damage triggered life-saving,
 				   major death magic is limited to minor death magic */
-				extra_enchantment_damage(onmbuf, singleobj->special_enchantment, knmbuf, (u.umortality > oldumort));
+				extra_enchantment_damage(onmbuf, singleobj->elemental_enchantment, knmbuf, (u.umortality > oldumort));
 			
 				//Remove special enchantment
-				switch (singleobj->special_enchantment)
+				switch (singleobj->elemental_enchantment)
 				{
 				case COLD_ENCHANTMENT:
-					if (!rn2(10))
-						singleobj->special_enchantment = 0;
+					if (is_ammo(singleobj) || throwing_weapon(singleobj) || objects[singleobj->otyp].oc_merge ? !rn2(10) : !rn2(50))
+						singleobj->elemental_enchantment = 0;
 					break;
 				case FIRE_ENCHANTMENT:
-					if (!rn2(3))
-						singleobj->special_enchantment = 0;
+					if (is_ammo(singleobj) || throwing_weapon(singleobj) || objects[singleobj->otyp].oc_merge ? !rn2(3) : !rn2(15))
+						singleobj->elemental_enchantment = 0;
 					break;
 				case LIGHTNING_ENCHANTMENT:
+					if (is_ammo(singleobj) || throwing_weapon(singleobj) || objects[singleobj->otyp].oc_merge ? 1 : !rn2(5))
+						singleobj->elemental_enchantment = 0;
+					break;
 				case DEATH_ENCHANTMENT:
-					singleobj->special_enchantment = 0;
+					singleobj->elemental_enchantment = 0;
 					break;
 				default:
 					break;

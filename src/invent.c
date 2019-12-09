@@ -3928,7 +3928,7 @@ register struct obj *otmp, *obj;
     if (obj->oclass == COIN_CLASS)
         return TRUE;
 
-    if (obj->unpaid != otmp->unpaid || obj->spe != otmp->spe || obj->special_enchantment != otmp->special_enchantment
+    if (obj->unpaid != otmp->unpaid || obj->spe != otmp->spe || obj->elemental_enchantment != otmp->elemental_enchantment
         || obj->cursed != otmp->cursed || obj->blessed != otmp->blessed
         || obj->no_charge != otmp->no_charge || obj->obroken != otmp->obroken
         || obj->otrapped != otmp->otrapped || obj->lamplit != otmp->lamplit

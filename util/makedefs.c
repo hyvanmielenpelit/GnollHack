@@ -2685,14 +2685,14 @@ do_questtxt()
     return;
 }
 
-static char temp[36];
+static char temp[42];
 
-static char *limit(name, pref) /* limit a name to 34 characters length */
+static char *limit(name, pref) /* limit a name to 40 characters length */
 char *name;
 int pref;
 {
-    (void) strncpy(temp, name, pref ? 30 : 34);
-    temp[pref ? 30 : 34] = 0;
+    (void) strncpy(temp, name, pref ? 36 : 40);
+    temp[pref ? 36 : 40] = 0;
     return temp;
 }
 

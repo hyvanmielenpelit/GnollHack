@@ -168,14 +168,14 @@ struct monst *mon;
 }
 
 
-/* Yeenoghu summons a gnoll */
+/* Yeenoghu summons gnolls */
 int
 yeenoghu_gnoll_summon()
 {
 	int dtype = NON_PM, cnt = 0, result = 0, census;
 	struct monst* mtmp = (struct monst*) 0;
 
-	cnt = d(1, 4);
+	cnt = d(1, 3);
 
 	/* some candidates can generate a group of monsters, so simple
 	   count of non-null makemon() result is not sufficient */
@@ -262,14 +262,14 @@ yeenoghu_gnoll_summon()
 	return result;
 }
 
-/* Yeenoghu summons a ghoul */
+/* Yeenoghu summons ghouls */
 int
 yeenoghu_ghoul_summon()
 {
 	int dtype = NON_PM, cnt = 0, result = 0, census;
 	struct monst* mtmp = (struct monst*) 0;
 
-	cnt = d(1, 4);
+	cnt = d(1, 3);
 
 	/* some candidates can generate a group of monsters, so simple
 	   count of non-null makemon() result is not sufficient */
@@ -329,7 +329,7 @@ orcus_undead_summon()
 	int dtype = NON_PM, cnt = 0, result = 0, census;
 	struct monst* mtmp = (struct monst*) 0;
 
-	cnt = d(2, 4);
+	cnt = d(2, 3);
 
 	/* some candidates can generate a group of monsters, so simple
 	   count of non-null makemon() result is not sufficient */

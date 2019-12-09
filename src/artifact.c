@@ -549,15 +549,20 @@ long wp_mask;
         else
             ESearching &= ~wp_mask;
     }
-    if (spfx & SPFX_HALRES) {
-        /* make_hallucinated must (re)set the mask itself to get
+    if (spfx & SPFX_HALRES) 
+	{
+		if (on)
+			EHalluc_resistance |= wp_mask;
+		else
+			EHalluc_resistance &= ~wp_mask;
+		//(void)make_hallucinated((long)!on, restoring ? FALSE : TRUE,
+		//	wp_mask);
+		/* make_hallucinated must (re)set the mask itself to get
          * the display right */
         /* restoring needed because this is the only artifact intrinsic
          * that can print a message--need to guard against being printed
          * when restoring a game
          */
-        (void) make_hallucinated((long) !on, restoring ? FALSE : TRUE,
-                                 wp_mask);
     }
     if (spfx & SPFX_ESP) {
         if (on)
@@ -892,10 +897,6 @@ int tmp;
     if (!weap || (weap->attk.adtyp == AD_PHYS /* check for `NO_ATTK' */
                   && weap->attk.damn == 0 && weap->attk.damd == 0))
         spec_dbon_applies = FALSE;
-    else if (otmp->oartifact == ART_GRIMTOOTH)
-        /* Grimtooth has SPFX settings to warn against elves but we want its
-           damage bonus to apply to all targets, so bypass spec_applies() */
-        spec_dbon_applies = TRUE;
     else
         spec_dbon_applies = spec_applies(weap, mon);
 
@@ -2628,9 +2629,9 @@ struct obj* otmp;
 		|| objects[otyp].oc_oprop2 == WARN_HUMAN
 		|| objects[otyp].oc_oprop3 == WARN_HUMAN
 
-		|| objects[otyp].oc_oprop == WARN_WERE
-		|| objects[otyp].oc_oprop2 == WARN_WERE
-		|| objects[otyp].oc_oprop3 == WARN_WERE
+		|| objects[otyp].oc_oprop == WARN_LYCANTHROPE
+		|| objects[otyp].oc_oprop2 == WARN_LYCANTHROPE
+		|| objects[otyp].oc_oprop3 == WARN_LYCANTHROPE
 
 		|| objects[otyp].oc_oprop == WARN_ANGEL
 		|| objects[otyp].oc_oprop2 == WARN_ANGEL

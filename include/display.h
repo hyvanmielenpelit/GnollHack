@@ -58,7 +58,7 @@
 		|| (Dwarf_warning && mon->data->mflags2 & M2_DWARF) \
 		|| (Gnoll_warning && mon->data->mflags2 & M2_GNOLL) \
 		|| (Human_warning && mon->data->mflags2 & M2_HUMAN) \
-		|| (Were_warning && mon->data->mflags2 & M2_WERE) \
+		|| (Lycanthrope_warning && mon->data->mflags2 & M2_WERE) \
 		|| (Angel_warning && mon->data->mlet == S_ANGEL) \
 		|| (Ogre_warning && mon->data->mlet == S_OGRE) \
 	) && !(mon)->mpeaceful && (distu((mon)->mx, (mon)->my) < 100))

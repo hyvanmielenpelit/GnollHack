@@ -11,7 +11,7 @@ struct trobj {
 	char trclass;
 	Bitfield(trquan, 6);
 	Bitfield(trbless, 2);
-	int special_enchantment;
+	int elemental_enchantment;
 };
 
 STATIC_DCL void FDECL(ini_inv, (struct trobj *));
@@ -1482,11 +1482,11 @@ register struct trobj *trop;
                 obj->spe = trop->trspe;
             if (trop->trbless != UNDEF_BLESS)
                 obj->blessed = trop->trbless;
-			if (trop->special_enchantment > 0)
-				obj->special_enchantment = trop->special_enchantment;
-			if (obj->special_enchantment == DEATH_ENCHANTMENT && u.ualign.type != A_CHAOTIC)
+			if (trop->elemental_enchantment > 0)
+				obj->elemental_enchantment = trop->elemental_enchantment;
+			if (obj->elemental_enchantment == DEATH_ENCHANTMENT && u.ualign.type != A_CHAOTIC)
 			{
-				obj->special_enchantment = LIGHTNING_ENCHANTMENT;
+				obj->elemental_enchantment = LIGHTNING_ENCHANTMENT;
 				if(is_ammo(obj))
 					obj->quan += rnd(2);
 			}

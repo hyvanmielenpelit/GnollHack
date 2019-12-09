@@ -341,15 +341,13 @@ boolean foundyou;
             dmg = d((int) mtmp->m_lev / 2 + 1, 6);
         break;
     case AD_SPEL: /* wizard spell */
-    case AD_CLRC: /* clerical spell */
-    {
-        if (mattk->adtyp == AD_SPEL)
-            cast_wizard_spell(mtmp, dmg, spellnum);
-        else
-            cast_cleric_spell(mtmp, dmg, spellnum);
+		cast_wizard_spell(mtmp, dmg, spellnum);
+		dmg = 0; /* done by the spell casting functions */
+		break;
+	case AD_CLRC: /* clerical spell */
+        cast_cleric_spell(mtmp, dmg, spellnum);
         dmg = 0; /* done by the spell casting functions */
         break;
-    }
     }
     if (dmg)
         mdamageu(mtmp, dmg);

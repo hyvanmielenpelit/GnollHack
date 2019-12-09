@@ -2586,13 +2586,13 @@ struct obj* obj;
 			switch (obj->otyp)
 			{
 			case WAN_DEATH:
-				if (is_specialenchantable(otmp) && is_deathenchantable(otmp))
+				if (is_elemental_enchantable(otmp) && is_deathenchantable(otmp))
 				{
 					wandknown = TRUE;
 					You("enchant %s with death magic.", yname(otmp));
-					otmp = special_enchant_quan(otmp, 3 + bcsign(obj) * 2, DEATH_ENCHANTMENT);
+					otmp = elemental_enchant_quan(otmp, 3 + bcsign(obj) * 2, DEATH_ENCHANTMENT);
 					prinv((char*)0, otmp, 0L);
-					//otmp->special_enchantment = DEATH_ENCHANTMENT;
+					//otmp->elemental_enchantment = DEATH_ENCHANTMENT;
 				}
 				else if (otmp->oclass == FOOD_CLASS)
 				{
@@ -2607,27 +2607,27 @@ struct obj* obj;
 				}
 				break;
 			case WAN_COLD:
-				if (otmp->special_enchantment == DEATH_ENCHANTMENT)
+				if (otmp->elemental_enchantment == DEATH_ENCHANTMENT)
 				{
 					suggestnamingwand = TRUE;
 					pline("%s in blue for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
 					break;
 				}
-				if (otmp->special_enchantment == FIRE_ENCHANTMENT)
+				if (otmp->elemental_enchantment == FIRE_ENCHANTMENT)
 				{
 					wandknown = TRUE;
 					pline("The cold energies of %s dispel the fire enchantment on %s.", the(xname(obj)), yname(otmp));
-					otmp->special_enchantment = 0;
+					otmp->elemental_enchantment = 0;
 					break;
 				}
 
-				if (is_specialenchantable(otmp))
+				if (is_elemental_enchantable(otmp))
 				{
 					wandknown = TRUE;
 					You("enchant %s with cold magic.", yname(otmp));
-					otmp = special_enchant_quan(otmp, 30 + bcsign(obj) * 15, COLD_ENCHANTMENT);
+					otmp = elemental_enchant_quan(otmp, 30 + bcsign(obj) * 15, COLD_ENCHANTMENT);
 					prinv((char*)0, otmp, 0L);
-					//otmp->special_enchantment = COLD_ENCHANTMENT;
+					//otmp->elemental_enchantment = COLD_ENCHANTMENT;
 				}
 				else if (otmp->oclass == POTION_CLASS)
 				{
@@ -2647,17 +2647,17 @@ struct obj* obj;
 				}
 				break;
 			case WAN_FIRE:
-				if (otmp->special_enchantment == DEATH_ENCHANTMENT)
+				if (otmp->elemental_enchantment == DEATH_ENCHANTMENT)
 				{
 					suggestnamingwand = TRUE;
 					pline("%s in red for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
 					break;
 				}
-				if (otmp->special_enchantment == COLD_ENCHANTMENT)
+				if (otmp->elemental_enchantment == COLD_ENCHANTMENT)
 				{
 					wandknown = TRUE;
 					pline("The fiery energies of %s dispel the cold enchantment on %s.", the(xname(obj)), yname(otmp));
-					otmp->special_enchantment = 0;
+					otmp->elemental_enchantment = 0;
 					break;
 				}
 
@@ -2679,13 +2679,13 @@ struct obj* obj;
 					else
 						pline("A flame eminates from %s, keeping %s alight.", yname(obj), yname(otmp));
 				}
-				else if(is_specialenchantable(otmp))
+				else if(is_elemental_enchantable(otmp))
 				{
 						wandknown = TRUE;
 						You("enchant %s with fire magic.", yname(otmp));
-						otmp = special_enchant_quan(otmp, 20 + bcsign(obj) * 10, FIRE_ENCHANTMENT);
+						otmp = elemental_enchant_quan(otmp, 20 + bcsign(obj) * 10, FIRE_ENCHANTMENT);
 						prinv((char*)0, otmp, 0L);
-						//otmp->special_enchantment = FIRE_ENCHANTMENT;
+						//otmp->elemental_enchantment = FIRE_ENCHANTMENT;
 				}
 				else if (otmp->oclass == POTION_CLASS || otmp->oclass == SCROLL_CLASS || otmp->oclass == SPBOOK_CLASS)
 				{
@@ -2705,19 +2705,19 @@ struct obj* obj;
 				}
 				break;
 			case WAN_LIGHTNING:
-				if (otmp->special_enchantment == DEATH_ENCHANTMENT)
+				if (otmp->elemental_enchantment == DEATH_ENCHANTMENT)
 				{
 					suggestnamingwand = TRUE;
 					pline("%s in blue for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
 					break;
 				}
-				if (is_specialenchantable(otmp))
+				if (is_elemental_enchantable(otmp))
 				{
 					wandknown = TRUE;
 					You("enchant %s with lightning magic.", yname(otmp));
-					otmp = special_enchant_quan(otmp, 10 + bcsign(obj) * 5, LIGHTNING_ENCHANTMENT);
+					otmp = elemental_enchant_quan(otmp, 10 + bcsign(obj) * 5, LIGHTNING_ENCHANTMENT);
 					prinv((char*)0, otmp, 0L);
-					//otmp->special_enchantment = LIGHTNING_ENCHANTMENT;
+					//otmp->elemental_enchantment = LIGHTNING_ENCHANTMENT;
 				}
 				else if (otmp->oclass == RING_CLASS || otmp->oclass == WAND_CLASS)
 				{
@@ -2745,7 +2745,7 @@ struct obj* obj;
 				}
 				break;
 			case WAN_CANCELLATION:
-				if (objects[otmp->otyp].oc_magic || otmp->spe > 0 || otmp->special_enchantment > 0 || otmp->blessed || otmp->cursed)
+				if (objects[otmp->otyp].oc_magic || otmp->spe > 0 || otmp->elemental_enchantment > 0 || otmp->blessed || otmp->cursed)
 				{
 					suggestnamingwand = TRUE;
 					pline("%s in gray for a while.", Tobjnam(otmp, "flicker"));
@@ -2862,7 +2862,7 @@ struct obj* obj;
 }
 
 struct obj*
-special_enchant_quan(otmp, quan, enchantmenttype)
+elemental_enchant_quan(otmp, quan, enchantmenttype)
 struct obj* otmp;
 int quan;
 int enchantmenttype;
@@ -2878,12 +2878,12 @@ int enchantmenttype;
 		debugpline0("split object,");
 	}
 
-	if (is_specialenchantable(otmp))
+	if (is_elemental_enchantable(otmp))
 	{
 		if (enchantmenttype == DEATH_ENCHANTMENT && !is_deathenchantable(otmp))
-			otmp->special_enchantment = LIGHTNING_ENCHANTMENT;
+			otmp->elemental_enchantment = LIGHTNING_ENCHANTMENT;
 		else
-			otmp->special_enchantment = enchantmenttype;
+			otmp->elemental_enchantment = enchantmenttype;
 	}
 
 	if (carried(otmp) && objsplitted) {
@@ -4464,21 +4464,21 @@ int arrowtype, quan; //ObjID and quantity
 			otmp->cursed = TRUE;
 			otmp->spe = -rnd(3);
 		}
-		if (bag->special_enchantment)
+		if (bag->elemental_enchantment)
 		{
-			if (bag->special_enchantment != DEATH_ENCHANTMENT || (bag->special_enchantment == DEATH_ENCHANTMENT && is_deathenchantable(otmp)))
-				otmp->special_enchantment = bag->special_enchantment;
+			if (bag->elemental_enchantment != DEATH_ENCHANTMENT || (bag->elemental_enchantment == DEATH_ENCHANTMENT && is_deathenchantable(otmp)))
+				otmp->elemental_enchantment = bag->elemental_enchantment;
 
-			if (otmp->special_enchantment == DEATH_ENCHANTMENT && quan > 2)
+			if (otmp->elemental_enchantment == DEATH_ENCHANTMENT && quan > 2)
 				otmp->quan = min(quan, rnd(2));
 
-			if (otmp->special_enchantment == LIGHTNING_ENCHANTMENT && quan > 3)
+			if (otmp->elemental_enchantment == LIGHTNING_ENCHANTMENT && quan > 3)
 				otmp->quan = min(quan, 2 + d(1, 3));
 
-			if (otmp->special_enchantment == FIRE_ENCHANTMENT && quan > 5)
+			if (otmp->elemental_enchantment == FIRE_ENCHANTMENT && quan > 5)
 				otmp->quan = min(quan, 4 + d(1, 6));
 
-			if (otmp->special_enchantment == COLD_ENCHANTMENT && quan > 10)
+			if (otmp->elemental_enchantment == COLD_ENCHANTMENT && quan > 10)
 				otmp->quan = min(quan, 8 + d(2, 6));
 
 			otmp->owt = weight(otmp);
@@ -4507,15 +4507,15 @@ int arrowtype, quan; //ObjID and quantity
 		pline("%s is empty.", The(cxname(bag)));
 	}
 
-	if (bag->special_enchantment)
+	if (bag->elemental_enchantment)
 	{
 		if (!rn2(3))
 		{
-			bag->special_enchantment = 0;
-			pline("%s no longer %s.", Yobjnam2(bag, "are"), bag->special_enchantment == FIRE_ENCHANTMENT ? "fire-enchanted" :
-				bag->special_enchantment == COLD_ENCHANTMENT ? "cold-enchanted" :
-				bag->special_enchantment == FIRE_ENCHANTMENT ? "lightning-enchanted" :
-				bag->special_enchantment == DEATH_ENCHANTMENT ? "death-enchanted" : "enchanted");
+			bag->elemental_enchantment = 0;
+			pline("%s no longer %s.", Yobjnam2(bag, "are"), bag->elemental_enchantment == FIRE_ENCHANTMENT ? "flaming" :
+				bag->elemental_enchantment == COLD_ENCHANTMENT ? "freezing" :
+				bag->elemental_enchantment == LIGHTNING_ENCHANTMENT ? "electrified" :
+				bag->elemental_enchantment == DEATH_ENCHANTMENT ? "deathly" : "enchanted");
 		}
 
 	}

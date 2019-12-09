@@ -95,7 +95,7 @@ struct obj {
 /* or accidental tripped rolling boulder trap */
 #define opoisoned otrapped /* object (weapon) is coated with poison */
 
-	int special_enchantment; /*cold, fire, lightning, or death-enchanted (0 = None, 1-4 Minor, 5-8 Major)*/
+	int elemental_enchantment; /* cold, fire, lightning, or deathly */
 
 #define COLD_ENCHANTMENT 1
 #define FIRE_ENCHANTMENT 2
@@ -223,7 +223,7 @@ struct obj {
 /* 'is_quest_artifact()' only applies to the current role's artifact */
 #define any_quest_artifact(o) ((o)->oartifact >= ART_ORB_OF_DETECTION)
 
-#define is_specialenchantable(otmp)                                            \
+#define is_elemental_enchantable(otmp)                                            \
 	((otmp->oclass == WEAPON_CLASS && !is_launcher(otmp)) || objects[otmp->otyp].oc_flags & O1_SPECIAL_ENCHANTABLE)
 #define is_deathenchantable(otmp)                                            \
     (objects[otmp->otyp].oc_material == MAT_BONE || objects[otmp->otyp].oc_material == MAT_GLASS)

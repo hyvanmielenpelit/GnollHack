@@ -2528,7 +2528,7 @@ struct permonst _mons2[] = {
         M2_HOSTILE | M2_COLLECT | M2_REFLECTING | M2_LORD, M3_NONLIVING | M3_MULTIWEAPON, 
 		95, DRAGON_SILVER),
     /*
-     * humans, including elves and were-critters
+     * humans, including elves and lycanthropes
      */
     MON("human", S_HUMAN, LVL(0, 12, 10, 0, 0, 0), G_NOGEN, /* for corpses */
         A(ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,

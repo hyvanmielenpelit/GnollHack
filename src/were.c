@@ -121,7 +121,7 @@ register struct monst *mon;
     possibly_unwield(mon, FALSE);
 }
 
-/* were-creature (even you) summons a horde */
+/* a lycanthrope (even you) summons a horde */
 int
 were_summon(ptr, yours, visible, genbuf)
 struct permonst *ptr;

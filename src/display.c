@@ -1288,7 +1288,7 @@ see_monsters()
 			new_ogre_warn_obj_cnt++;
 		if (Human_warning && (mon->data->mflags2 & M2_HUMAN) != 0L)
 			new_human_warn_obj_cnt++;
-		if (Were_warning && (mon->data->mflags2 & M2_WERE) != 0L)
+		if (Lycanthrope_warning && (mon->data->mflags2 & M2_WERE) != 0L)
 			new_were_warn_obj_cnt++;
 		if (Angel_warning && (mon->data->mlet == S_ANGEL))
 			new_angel_warn_obj_cnt++;
@@ -1400,9 +1400,9 @@ see_monsters()
 					|| objects[otyp].oc_oprop3 == WARN_HUMAN)
 					new_count += new_human_warn_obj_cnt;
 
-				if (objects[otyp].oc_oprop == WARN_WERE
-					|| objects[otyp].oc_oprop2 == WARN_WERE
-					|| objects[otyp].oc_oprop3 == WARN_WERE)
+				if (objects[otyp].oc_oprop == WARN_LYCANTHROPE
+					|| objects[otyp].oc_oprop2 == WARN_LYCANTHROPE
+					|| objects[otyp].oc_oprop3 == WARN_LYCANTHROPE)
 					new_count += new_were_warn_obj_cnt;
 
 				if (objects[otyp].oc_oprop == WARN_ANGEL

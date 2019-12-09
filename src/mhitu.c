@@ -821,7 +821,7 @@ register struct monst *mtmp;
 					/*  Special demon handling code */
 					if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
 						int chance = mattk->mcadj;
-						if (!mtmp->mcancelled && rn2(100) < chance)
+						if (!mtmp->mcancelled && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
 						{
 							pline("%s gates in some help.", Monnam(mtmp));
 							(void)msummon(mtmp);
@@ -850,7 +850,7 @@ register struct monst *mtmp;
 							new_were(mtmp);
 						mdat = mtmp->data;
 
-						if (!rn2(10) && !mtmp->mcancelled) {
+						if (!rn2(10) && !mtmp->mcancelled && !item_prevents_summoning(mtmp->mnum)) {
 							int numseen, numhelp;
 							char buf[BUFSZ], genericwere[BUFSZ];
 
@@ -895,7 +895,7 @@ register struct monst *mtmp;
 					/*  Special gnoll handling code */
 					if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
 						int chance = mattk->mcadj;
-						if (!mtmp->mcancelled && rn2(100) < chance)
+						if (!mtmp->mcancelled && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
 						{
 							pline("%s summons some gnolls!", Monnam(mtmp));
 							(void)yeenoghu_gnoll_summon();
@@ -915,7 +915,7 @@ register struct monst *mtmp;
 					/*  Special gnoll handling code */
 					if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
 						int chance = mattk->mcadj;
-						if (!mtmp->mcancelled && rn2(100) < chance)
+						if (!mtmp->mcancelled && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
 						{
 							pline("%s summons some ghouls!", Monnam(mtmp));
 							(void)yeenoghu_ghoul_summon();
@@ -935,7 +935,7 @@ register struct monst *mtmp;
 					/*  Special gnoll handling code */
 					if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
 						int chance = mattk->mcadj;
-						if (!mtmp->mcancelled && rn2(100) < chance)
+						if (!mtmp->mcancelled && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
 						{
 							pline("%s summons some undead!", Monnam(mtmp));
 							(void)orcus_undead_summon();
@@ -2511,30 +2511,31 @@ register struct obj* omonwep;
 			}
 		}
 #endif
-		if (omonwep->special_enchantment > 0)
+		if (omonwep->elemental_enchantment > 0)
 		{
 			char onmbuf[BUFSZ], knmbuf[BUFSZ];
 
 			Strcpy(onmbuf, xname(mweapon));
 			Strcpy(knmbuf, killer_xname(mweapon));
 
-			extra_enchantment_damage(onmbuf, omonwep->special_enchantment, knmbuf, (u.umortality > oldumort));
+			extra_enchantment_damage(onmbuf, omonwep->elemental_enchantment, knmbuf, (u.umortality > oldumort));
 
-			switch (omonwep->special_enchantment)
+			switch (omonwep->elemental_enchantment)
 			{
 			case COLD_ENCHANTMENT:
-				if (!rn2(10))
-					omonwep->special_enchantment = 0;
+				if (is_ammo(omonwep) || throwing_weapon(omonwep) || objects[omonwep->otyp].oc_merge ? !rn2(10) : !rn2(50))
+					omonwep->elemental_enchantment = 0;
 				break;
 			case FIRE_ENCHANTMENT:
-				if (!rn2(3))
-					omonwep->special_enchantment = 0;
+				if (is_ammo(omonwep) || throwing_weapon(omonwep) || objects[omonwep->otyp].oc_merge ? !rn2(3) : !rn2(15))
+					omonwep->elemental_enchantment = 0;
 				break;
 			case LIGHTNING_ENCHANTMENT:
-				omonwep->special_enchantment = 0;
+				if(is_ammo(omonwep) || throwing_weapon(omonwep) || objects[omonwep->otyp].oc_merge ? 1 : !rn2(5))
+					omonwep->elemental_enchantment = 0;
 				break;
 			case DEATH_ENCHANTMENT:
-				omonwep->special_enchantment = 0;
+				omonwep->elemental_enchantment = 0;
 				break;
 			}
 		}

@@ -113,7 +113,7 @@ const struct propname {
 	{ WARN_DWARF, "warning of dwarves" },
 	{ WARN_GNOLL, "warning of gnolls" },
 	{ WARN_HUMAN, "warning of human beings" },
-	{ WARN_WERE, "warning of were-creatures" },
+	{ WARN_LYCANTHROPE, "warning of lycanthropes" },
 	{ WARN_ANGEL, "warning of angels" },
 	{ WARN_OGRE, "warning of ogres" },
 	{ CHARM_RES, "charm resistance" },
@@ -739,7 +739,7 @@ nh_timeout()
 			case WARN_GNOLL:
 
 			case WARN_HUMAN:
-			case WARN_WERE:
+			case WARN_LYCANTHROPE:
 			case WARN_ANGEL:
 
 			case WARN_OGRE:

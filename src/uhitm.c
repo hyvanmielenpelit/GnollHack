@@ -1322,53 +1322,54 @@ int dieroll;
 		}
 	}
 
-	if (obj && obj->special_enchantment > 0 && !isdisintegrated) {
-		switch (obj->special_enchantment)
+	if (obj && obj->elemental_enchantment > 0 && !isdisintegrated) {
+		switch (obj->elemental_enchantment)
 		{
 		case COLD_ENCHANTMENT:
 			if (resists_cold(mon))
-				needenchantmsg = -obj->special_enchantment;
+				needenchantmsg = -obj->elemental_enchantment;
 			else
 			{
-				needenchantmsg = obj->special_enchantment;
+				needenchantmsg = obj->elemental_enchantment;
 				tmp += rnd(6);
 			}
-			if (!rn2(10)) {
-				obj->special_enchantment = 0;
+			if (is_ammo(obj) || throwing_weapon(obj) || objects[obj->otyp].oc_merge ? !rn2(10) : !rn2(50)) {
+				obj->elemental_enchantment = 0;
 				/* defer "obj is no longer enchanted" until after hit message */
 				unenchantmsg = TRUE;
 			}
 			break;
 		case FIRE_ENCHANTMENT:
 			if (resists_fire(mon))
-				needenchantmsg = -obj->special_enchantment;
+				needenchantmsg = -obj->elemental_enchantment;
 			else
 			{
-				needenchantmsg = obj->special_enchantment;
+				needenchantmsg = obj->elemental_enchantment;
 				tmp += d(2, 6);
 			}
-			if (!rn2(3)) {
-				obj->special_enchantment = 0;
+			if (is_ammo(obj) || throwing_weapon(obj) || objects[obj->otyp].oc_merge ? !rn2(3) : !rn2(15)) {
+				obj->elemental_enchantment = 0;
 				/* defer "obj is no longer enchanted" until after hit message */
 				unenchantmsg = TRUE;
 			}
 			break;
 		case LIGHTNING_ENCHANTMENT:
 			if (resists_elec(mon))
-				needenchantmsg = -obj->special_enchantment;
+				needenchantmsg = -obj->elemental_enchantment;
 			else
 			{
-				needenchantmsg = obj->special_enchantment;
-				tmp += d(4, 6);
+				needenchantmsg = obj->elemental_enchantment;
+				tmp += d(3, 6);
 			}
-			obj->special_enchantment = 0;
+			if(is_ammo(obj) || throwing_weapon(obj) || objects[obj->otyp].oc_merge ? 1 : !rn2(5))
+				obj->elemental_enchantment = 0;
 			/* defer "obj is no longer enchanted" until after hit message */
 			unenchantmsg = TRUE;
 			break;
 		case DEATH_ENCHANTMENT:
 			if (resists_death(mon) || is_not_living(mon->data) || is_demon(mon->data) || is_vampshifter(mon))
 			{
-				needenchantmsg = -obj->special_enchantment;
+				needenchantmsg = -obj->elemental_enchantment;
 			}
 			else
 			{
@@ -1377,7 +1378,7 @@ int dieroll;
 				hide_damage_amount = TRUE;
 				enchantkilled = TRUE;
 			}
-			obj->special_enchantment = 0;
+			obj->elemental_enchantment = 0;
 			/* defer "obj is no longer enchanted" until after hit message */
 			unenchantmsg = TRUE;
 			break;
@@ -1385,14 +1386,14 @@ int dieroll;
 			break;
 		}
 
-		if (obj->special_enchantment == DEATH_ENCHANTMENT)
+		if (obj->elemental_enchantment == DEATH_ENCHANTMENT)
 		{
 			if (Role_if(PM_SAMURAI)) {
-				You("dishonorably use a death-enchanted weapon!");
+				You("dishonorably use a deathly weapon!");
 				adjalign(-sgn(u.ualign.type));
 			}
 			else if (u.ualign.type == A_LAWFUL && u.ualign.record > -10) {
-				You_feel("like an evil coward for using a death-enchanted weapon.");
+				You_feel("like an evil coward for using a deathly weapon.");
 				adjalign(-1);
 			}
 		}

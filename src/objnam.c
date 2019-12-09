@@ -457,14 +457,14 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 	case REAGENT_CLASS:
 	case MISCELLANEOUS_CLASS:
 	case TOOL_CLASS:
-		if (obj->special_enchantment == COLD_ENCHANTMENT)
-			Strcat(buf, "cold-enchanted ");
-		else if (obj->special_enchantment == FIRE_ENCHANTMENT)
-			Strcat(buf, "fire-enchanted ");
-		else if (obj->special_enchantment == LIGHTNING_ENCHANTMENT)
-			Strcat(buf, "lightning-enchanted ");
-		else if (obj->special_enchantment == DEATH_ENCHANTMENT)
-			Strcat(buf, "death-enchanted ");
+		if (obj->elemental_enchantment == COLD_ENCHANTMENT)
+			Strcat(buf, "freezing ");
+		else if (obj->elemental_enchantment == FIRE_ENCHANTMENT)
+			Strcat(buf, "flaming ");
+		else if (obj->elemental_enchantment == LIGHTNING_ENCHANTMENT)
+			Strcat(buf, "electrified ");
+		else if (obj->elemental_enchantment == DEATH_ENCHANTMENT)
+			Strcat(buf, "deathly ");
 
 
 		if (obj->oclass == MISCELLANEOUS_CLASS && (
@@ -958,20 +958,20 @@ unsigned doname_flags;
         ispoisoned = TRUE;
     }
 
-	if (!strncmp(bp, "cold-enchanted ", 15) && obj->special_enchantment == COLD_ENCHANTMENT) {
-		bp += 15;
-		isenchanted = obj->special_enchantment;
-	} else if (!strncmp(bp, "fire-enchanted ", 15) && obj->special_enchantment == FIRE_ENCHANTMENT) {
-		bp += 15;
-		isenchanted = obj->special_enchantment;
+	if (!strncmp(bp, "freezing ", 9) && obj->elemental_enchantment == COLD_ENCHANTMENT) {
+		bp += 9;
+		isenchanted = obj->elemental_enchantment;
+	} else if (!strncmp(bp, "flaming ", 8) && obj->elemental_enchantment == FIRE_ENCHANTMENT) {
+		bp += 8;
+		isenchanted = obj->elemental_enchantment;
 	}
-	else if (!strncmp(bp, "lightning-enchanted ", 20) && obj->special_enchantment == LIGHTNING_ENCHANTMENT) {
-		bp += 20;
-		isenchanted = obj->special_enchantment;
+	else if (!strncmp(bp, "electrified ", 12) && obj->elemental_enchantment == LIGHTNING_ENCHANTMENT) {
+		bp += 12;
+		isenchanted = obj->elemental_enchantment;
 	}
-	else if (!strncmp(bp, "death-enchanted ", 16) && obj->special_enchantment == DEATH_ENCHANTMENT) {
-		bp += 16;
-		isenchanted = obj->special_enchantment;
+	else if (!strncmp(bp, "deathly ", 8) && obj->elemental_enchantment == DEATH_ENCHANTMENT) {
+		bp += 8;
+		isenchanted = obj->elemental_enchantment;
 	}
 
 
@@ -1173,16 +1173,16 @@ unsigned doname_flags;
 			switch (isenchanted)
 			{
 			case COLD_ENCHANTMENT:
-				Strcat(prefix, "cold-enchanted ");
+				Strcat(prefix, "freezing ");
 				break;
 			case FIRE_ENCHANTMENT:
-				Strcat(prefix, "fire-enchanted ");
+				Strcat(prefix, "flaming ");
 				break;
 			case LIGHTNING_ENCHANTMENT:
-				Strcat(prefix, "lightning-enchanted ");
+				Strcat(prefix, "electrified ");
 				break;
 			case DEATH_ENCHANTMENT:
-				Strcat(prefix, "death-enchanted ");
+				Strcat(prefix, "deathly ");
 				break;
 			default:
 				break;
@@ -1200,16 +1200,16 @@ unsigned doname_flags;
 			switch (isenchanted)
 			{
 			case COLD_ENCHANTMENT:
-				Strcat(prefix, "cold-enchanted ");
+				Strcat(prefix, "freezing ");
 				break;
 			case FIRE_ENCHANTMENT:
-				Strcat(prefix, "fire-enchanted ");
+				Strcat(prefix, "flaming ");
 				break;
 			case LIGHTNING_ENCHANTMENT:
-				Strcat(prefix, "lightning-enchanted ");
+				Strcat(prefix, "electrified ");
 				break;
 			case DEATH_ENCHANTMENT:
-				Strcat(prefix, "death-enchanted ");
+				Strcat(prefix, "deathly ");
 				break;
 			default:
 				break;
@@ -1457,13 +1457,18 @@ unsigned doname_flags;
 		char colorbuf[BUFSZ] = "red";
 		if (obj->oartifact)
 			strcpy(colorbuf, glow_color(obj->oartifact));
-		else if ((objects[obj->otyp].oc_flags2 & O2_FLICKER_COLOR_MASK) == O2_FLICKER_COLOR_BLACK)
-			strcpy(colorbuf, "black");
-		else if ((objects[obj->otyp].oc_flags2 & O2_FLICKER_COLOR_MASK) == O2_FLICKER_COLOR_WHITE)
-			strcpy(colorbuf, "white");
-		else if ((objects[obj->otyp].oc_flags2 & O2_FLICKER_COLOR_MASK) == O2_FLICKER_COLOR_BLUE)
-			strcpy(colorbuf, "blue");
 
+		if (!obj->oartifact || strcmp(colorbuf, "no color") == 0)
+		{
+			if ((objects[obj->otyp].oc_flags2 & O2_FLICKER_COLOR_MASK) == O2_FLICKER_COLOR_BLACK)
+				strcpy(colorbuf, "black");
+			else if ((objects[obj->otyp].oc_flags2 & O2_FLICKER_COLOR_MASK) == O2_FLICKER_COLOR_WHITE)
+				strcpy(colorbuf, "white");
+			else if ((objects[obj->otyp].oc_flags2 & O2_FLICKER_COLOR_MASK) == O2_FLICKER_COLOR_BLUE)
+				strcpy(colorbuf, "blue");
+			else
+				strcpy(colorbuf, "red");
+		}
 		if (!Blind)
 			Sprintf(eos(bp), " (%s %s)",
 				glow_verb(obj->detectioncount, TRUE),
@@ -3207,7 +3212,7 @@ struct obj *no_wish;
     int blessed, uncursed, iscursed, ispoisoned, isgreased;
     int eroded, eroded2, erodeproof, locked, unlocked, broken;
     int halfeaten, mntmp, contents;
-    int islit, unlabeled, ishistoric, isdiluted, trapped, special_enchantment;
+    int islit, unlabeled, ishistoric, isdiluted, trapped, elemental_enchantment;
     int tmp, tinv, tvariety;
     int wetness, gsize = 0;
     struct fruit *f;
@@ -3230,9 +3235,10 @@ struct obj *no_wish;
     char oclass;
     char *un, *dn, *actualn, *origbp = bp;
     const char *name = 0;
+	boolean isartifact = FALSE;
 
     cnt = spe = spesgn = typ = 0;
-    very = rechrg = blessed = uncursed = iscursed = ispoisoned = special_enchantment =
+    very = rechrg = blessed = uncursed = iscursed = ispoisoned = elemental_enchantment =
         isgreased = eroded = eroded2 = erodeproof = halfeaten =
         islit = unlabeled = ishistoric = isdiluted = trapped =
         locked = unlocked = broken = 0;
@@ -3318,21 +3324,21 @@ struct obj *no_wish;
             ispoisoned = 1;
             /* "trapped" recognized but not honored outside wizard mode */
 		}
-		else if (!strncmpi(bp, "cold-enchanted ", l = 15))
+		else if (!strncmpi(bp, "freezing ", l = 9))
 		{
-			special_enchantment = COLD_ENCHANTMENT;
+			elemental_enchantment = COLD_ENCHANTMENT;
 		}
-		else if (!strncmpi(bp, "fire-enchanted ", l = 15))
+		else if (!strncmpi(bp, "flaming ", l = 8))
 		{
-			special_enchantment = FIRE_ENCHANTMENT;
+			elemental_enchantment = FIRE_ENCHANTMENT;
 		}
-		else if (!strncmpi(bp, "lightning-enchanted ", l = 20))
+		else if (!strncmpi(bp, "electrified ", l = 12))
 		{
-			special_enchantment = LIGHTNING_ENCHANTMENT;
+			elemental_enchantment = LIGHTNING_ENCHANTMENT;
 		}
-		else if (!strncmpi(bp, "death-enchanted ", l = 16))
+		else if (!strncmpi(bp, "deathly ", l = 8))
 		{
-			special_enchantment = DEATH_ENCHANTMENT;
+			elemental_enchantment = DEATH_ENCHANTMENT;
 		}
 		else if (!strncmpi(bp, "trapped ", l = 8)) {
             trapped = 0; /* undo any previous "untrapped" */
@@ -3956,6 +3962,7 @@ struct obj *no_wish;
         name = artifact_name(actualn, &objtyp);
         if (name) {
             typ = objtyp;
+			isartifact = TRUE;
             goto typfnd;
         }
     }
@@ -4105,8 +4112,8 @@ struct obj *no_wish;
 		|| typ == BELL_OF_OPENING
 		|| typ == SPE_BOOK_OF_THE_DEAD
 		|| typ == MAGIC_LAMP
-		|| objects[typ].oc_nowish 
-		|| (objects[typ].oc_flags3 & O3_NOWISH)
+		|| (objects[typ].oc_nowish && !isartifact)
+		|| ((objects[typ].oc_flags3 & O3_NO_WISH) && !isartifact)
 		)
 		&& yn("That item is nonwishable. Force it anyway?") != 'y'))) {
         switch (typ) {
@@ -4127,7 +4134,7 @@ struct obj *no_wish;
             break;
         default:
             /* catch any other non-wishable objects (venom) */
-            if (objects[typ].oc_nowish || (objects[typ].oc_flags3 & O3_NOWISH))
+            if ((objects[typ].oc_nowish || (objects[typ].oc_flags3 & O3_NO_WISH)) && !isartifact)
                 return (struct obj *) 0;
             break;
         }
@@ -4333,14 +4340,14 @@ struct obj *no_wish;
             otmp->otrapped = (trapped == 1);
     }
 	/* set special enchantment */
-	if (special_enchantment) {
+	if (elemental_enchantment) {
 		if (otmp->oclass == WEAPON_CLASS)
 			if(Luck >= 0)
-				otmp->special_enchantment = special_enchantment;
+				otmp->elemental_enchantment = elemental_enchantment;
 			else
-				otmp->special_enchantment = 0;
-		if(otmp->special_enchantment == DEATH_ENCHANTMENT && !(objects[otmp->otyp].oc_material == MAT_BONE || objects[otmp->otyp].oc_material == MAT_GLASS))
-			otmp->special_enchantment = LIGHTNING_ENCHANTMENT;
+				otmp->elemental_enchantment = 0;
+		if(otmp->elemental_enchantment == DEATH_ENCHANTMENT && !(objects[otmp->otyp].oc_material == MAT_BONE || objects[otmp->otyp].oc_material == MAT_GLASS))
+			otmp->elemental_enchantment = LIGHTNING_ENCHANTMENT;
 	}
 	/* empty for containers rather than for tins */
     if (contents == EMPTY) {

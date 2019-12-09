@@ -144,11 +144,11 @@ int x, y, n, mmflags;
 
 STATIC_OVL
 void
-m_initthrow(mtmp, otyp, oquan_const, oquan_rnd, poisoned, special_enchantment)
+m_initthrow(mtmp, otyp, oquan_const, oquan_rnd, poisoned, elemental_enchantment)
 struct monst *mtmp;
 int otyp, oquan_const, oquan_rnd;
 boolean poisoned;
-int special_enchantment;
+int elemental_enchantment;
 {
     register struct obj *otmp;
 
@@ -158,7 +158,7 @@ int special_enchantment;
     otmp->owt = weight(otmp);
     if (is_poisonable(otmp) && poisoned)
         otmp->opoisoned = TRUE;
-	otmp->special_enchantment = special_enchantment;
+	otmp->elemental_enchantment = elemental_enchantment;
 	(void) mpickobj(mtmp, otmp);
 }
 
@@ -487,7 +487,7 @@ register struct monst *mtmp;
                 break;
             case 1:
 			{
-				int weaptype = ELVEN_DAGGER;
+				int weaptype = ELVEN_RUNEDAGGER;
 				int artifacttype = 0;
 
 				if (!rn2(20))

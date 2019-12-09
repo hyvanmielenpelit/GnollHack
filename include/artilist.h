@@ -50,36 +50,38 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
 
     A("Excalibur", LONG_SWORD, LONG_SWORD, (SPFX_NOGEN | SPFX_RESTR | SPFX_SEEK
                                 | SPFX_DEFN | SPFX_INTEL | SPFX_SEARCH),
-      0, 0, PHYS(5, 10), DRLI(0, 0), NO_CARY, 0, A_LAWFUL, PM_KNIGHT, NON_PM,
+      0, 0, PHYS(5, 20), DRLI(0, 0), NO_CARY, 0, A_LAWFUL, PM_KNIGHT, NON_PM,
       4000L, NO_COLOR),
     /*
-     *      Stormbringer only has a 2 because it can drain a level,
-     *      providing 8 more.
+     *      Stormbringer only has a 5 because it can drain a level,
+     *      providing 8 + CON bonus more.
      */
-    A("Stormbringer", RUNESWORD, RUNESWORD,
+    A("Stormbringer", RUNESWORD, ELVEN_BROADSWORD,
       (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN | SPFX_INTEL | SPFX_DRLI), 0, 0,
-      DRLI(5, 2), DRLI(0, 0), NO_CARY, 0, A_CHAOTIC, NON_PM, NON_PM, 8000L,
+      DRLI(5, 5), DRLI(0, 0), NO_CARY, 0, A_CHAOTIC, NON_PM, NON_PM, 8000L,
       NO_COLOR),
     /*
      *      Mjollnir will return to the hand of the wielder when thrown
      *      if the wielder is a Valkyrie wearing Gauntlets of Power.
      */
     A("Mjollnir", HEAVY_WAR_HAMMER, WAR_HAMMER, /* Mjo:llnir */
-      (SPFX_RESTR | SPFX_ATTK), 0, 0, ELEC(5, 24), NO_DFNS, NO_CARY, 0,
+      (SPFX_RESTR | SPFX_ATTK), 0, 0, ELEC(5, 30), NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, PM_VALKYRIE, NON_PM, 4000L, NO_COLOR),
 
+	/* Note: Battle axe of cleaving is different, it doubles the effect of Tsurugi of Muramasa --JG */
     A("Cleaver", BATTLE_AXE, BATTLE_AXE, SPFX_RESTR, 0, 0, PHYS(3, 6), NO_DFNS, NO_CARY,
       0, A_NEUTRAL, PM_BARBARIAN, NON_PM, 1500L, NO_COLOR),
 
     /*
      *      Grimtooth glows in warning when elves are present, but its
      *      damage bonus applies to all targets rather than just elves
-     *      (handled as special case in spec_dbon()).
+     *      (handled in the base weapon).
+	 *		Added +1d5/+1d20 bonus against elves to improve the artifact, still does 3d3 to all targets from the base weapon --JG
      */
-    A("Grimtooth", ORCISH_DAGGER, ORCISH_DAGGER, 
+    A("Grimtooth", ORNAMENTAL_ORCISH_DAGGER, ORCISH_DAGGER, 
 	  (SPFX_RESTR | SPFX_WARN | SPFX_DFLAG2),
-      0, M2_ELF, PHYS(2, 6), NO_DFNS,
-      NO_CARY, 0, A_CHAOTIC, NON_PM, PM_ORC, 300L, CLR_RED),
+      0, M2_ELF, PHYS(5, 20), NO_DFNS,
+      NO_CARY, 0, A_CHAOTIC, NON_PM, PM_ORC, 500L, CLR_RED),
     /*
      *      Orcrist and Sting have same alignment as elves.
      *
@@ -91,14 +93,14 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
       PHYS(5, ART_TRIPLE_DAMAGE), NO_DFNS, NO_CARY, 0, A_CHAOTIC, NON_PM, PM_ELF, 2000L,
       CLR_BRIGHT_BLUE), /* bright blue is actually light blue */
 
-    A("Sting", ELVEN_DAGGER, ELVEN_DAGGER, (SPFX_WARN | SPFX_DFLAG2), 0, M2_ORC, PHYS(5, ART_TRIPLE_DAMAGE),
-      NO_DFNS, NO_CARY, 0, A_CHAOTIC, NON_PM, PM_ELF, 800L, CLR_BRIGHT_BLUE),
+    A("Sting", ELVEN_RUNEDAGGER, ELVEN_DAGGER, (SPFX_WARN | SPFX_DFLAG2), 0, M2_ORC, 
+		PHYS(5, ART_DOUBLE_DAMAGE), NO_DFNS, NO_CARY, 0, A_CHAOTIC, NON_PM, PM_ELF, 1000L, CLR_BRIGHT_BLUE),
     /*
      *      Magicbane is a bit different!  Its magic fanfare
      *      unbalances victims in addition to doing some damage.
      */
     A("Magicbane", ATHAME, ATHAME, (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN), 0, 0,
-      STUN(3, 4), DFNS(AD_MAGM), NO_CARY, 0, A_NEUTRAL, PM_WIZARD, NON_PM,
+      STUN(3, 10), DFNS(AD_MAGM), NO_CARY, 0, A_NEUTRAL, PM_WIZARD, NON_PM,
       3500L, NO_COLOR),
 
     A("Frost Brand", LONG_SWORD, LONG_SWORD, (SPFX_RESTR | SPFX_ATTK | SPFX_DEFN), 0, 0,
@@ -114,12 +116,12 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
       PHYS(5, 20), NO_DFNS, NO_CARY, 0, A_NONE, NON_PM, NON_PM, 500L,
       NO_COLOR),
 
-    A("Demonbane", SILVER_LONG_SWORD, SILVER_LONG_SWORD, (SPFX_RESTR | SPFX_DFLAG2), 0, M2_DEMON,
-      PHYS(5, ART_TRIPLE_DAMAGE), NO_DFNS, NO_CARY, 0, A_LAWFUL, NON_PM, NON_PM, 2500L,
+    A("Demonbane", SWORD_OF_DEMON_SLAYING, SILVER_LONG_SWORD, (SPFX_RESTR | SPFX_DFLAG2), 0, M2_DEMON,
+      PHYS(5, 20), NO_DFNS, NO_CARY, 0, A_LAWFUL, NON_PM, NON_PM, 2500L,
       NO_COLOR),
 
-    A("Werebane", SILVER_SABER, SILVER_SABER, (SPFX_RESTR | SPFX_DFLAG2), 0, M2_WERE,
-      PHYS(5, ART_TRIPLE_DAMAGE), DFNS(AD_WERE), NO_CARY, 0, A_NONE, NON_PM, NON_PM, 1500L,
+    A("Werebane", SABER_OF_LYCANTHROPE_SLAYING, SILVER_SABER, (SPFX_RESTR | SPFX_DFLAG2), 0, M2_WERE,
+      PHYS(5, 20), DFNS(AD_WERE), NO_CARY, 0, A_NONE, NON_PM, NON_PM, 1500L,
       NO_COLOR),
 
     A("Grayswandir", SILVER_SABER, SILVER_SABER, (SPFX_RESTR | SPFX_HALRES), 0, 0,
@@ -127,23 +129,27 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
       NO_COLOR),
 
     A("Giantslayer", SWORD_OF_GIANT_SLAYING, LONG_SWORD, (SPFX_RESTR | SPFX_DFLAG2), 0, M2_GIANT,
-      PHYS(5, 20), NO_DFNS, NO_CARY, 0, A_NEUTRAL, NON_PM, NON_PM, 200L,
+      PHYS(5, 20), NO_DFNS, NO_CARY, 0, A_NEUTRAL, NON_PM, NON_PM, 500L,
       NO_COLOR),
 
     A("Ogresmasher", WAR_HAMMER_OF_OGRE_SLAYING, WAR_HAMMER, (SPFX_RESTR | SPFX_DCLAS), 0, S_OGRE,
-      PHYS(5, 20), NO_DFNS, NO_CARY, 0, A_NONE, NON_PM, NON_PM, 200L,
+      PHYS(5, 20), NO_DFNS, NO_CARY, 0, A_NONE, NON_PM, NON_PM, 500L,
       NO_COLOR),
 
-	A("Trollsbane", MORNING_STAR_OF_TROLL_SLAYING, MORNING_STAR, (SPFX_RESTR | SPFX_DCLAS), 0, S_TROLL,
-      PHYS(5, 20), NO_DFNS, NO_CARY, 0, A_NONE, NON_PM, NON_PM, 200L,
+	A("Trollsbane", MORNING_STAR_OF_TROLL_SLAYING, MORNING_STAR, (SPFX_RESTR | SPFX_REGEN | SPFX_DCLAS), 0, S_TROLL,
+      PHYS(5, 20), NO_DFNS, NO_CARY, 0, A_NONE, NON_PM, NON_PM, 500L,
+      NO_COLOR),
+
+	A("Gnollbane", WAR_HAMMER_OF_GNOLL_SLAYING, WAR_HAMMER, (SPFX_RESTR | SPFX_DFLAG2), 0, M2_GNOLL,
+      PHYS(5, 20), NO_DFNS, NO_CARY, 0, A_NONE, NON_PM, NON_PM, 500L,
       NO_COLOR),
 
 	A("Crossbow of the Gnoll Lords", REPEATING_HEAVY_CROSSBOW, REPEATING_HEAVY_CROSSBOW, (SPFX_RESTR | SPFX_STLTH), 0, 0,
-      PHYS(3, 3), NO_DFNS, NO_CARY, 0, A_NONE, NON_PM, NON_PM, 2000L,
+      PHYS(5, 5), NO_DFNS, NO_CARY, 0, A_NONE, NON_PM, NON_PM, 2000L,
       NO_COLOR),
 
-	A("Howling Flail", FLAIL, FLAIL, (SPFX_RESTR | SPFX_LUCK), 0, 0,
-		PHYS(5, 8), NO_DFNS, NO_CARY, 0, A_CHAOTIC, NON_PM, NON_PM, 6000L,
+	A("Howling Flail", RUNED_FLAIL, FLAIL, (SPFX_RESTR | SPFX_LUCK), 0, 0,
+		PHYS(5, 10), NO_DFNS, NO_CARY, 0, A_CHAOTIC, NON_PM, NON_PM, 6000L,
 		NO_COLOR),
 
 	/*
@@ -162,14 +168,15 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
      *                      --Koko, Lord high executioner of Titipu
      *                        (From Sir W.S. Gilbert's "The Mikado")
      */
-    A("Snickersnee", KATANA, KATANA, SPFX_RESTR, 0, 0, PHYS(0, 8), NO_DFNS, NO_CARY,
+    A("Snickersnee", KATANA, KATANA, SPFX_RESTR, 0, 0, 
+		PHYS(0, ART_DOUBLE_DAMAGE), NO_DFNS, NO_CARY,
       0, A_LAWFUL, PM_SAMURAI, NON_PM, 1200L, NO_COLOR),
 
     A("Sunsword", LONG_SWORD, LONG_SWORD, (SPFX_RESTR | SPFX_DFLAG2), 0, M2_UNDEAD | M2_DEMON,
       PHYS(5, ART_QUADRUPLE_DAMAGE), DFNS(AD_BLND), NO_CARY, 0, A_LAWFUL, NON_PM, NON_PM, 1500L,
       NO_COLOR),
 
-		/*
+	/*
      *      The artifacts for the quest dungeon, all self-willed.
      */
 
@@ -185,7 +192,8 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
       NON_PM, 2500L, NO_COLOR),
 
     A("The Sceptre of Might", MACE, MACE,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_DALIGN), 0, 0, PHYS(5, ART_DOUBLE_DAMAGE),
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_DALIGN), 0, 0, 
+		PHYS(5, ART_DOUBLE_DAMAGE),
       DFNS(AD_MAGM), NO_CARY, CONFLICT, A_LAWFUL, PM_CAVEMAN, NON_PM, 2500L,
       NO_COLOR),
 
@@ -220,7 +228,7 @@ A("The Palantir of Westernesse",        CRYSTAL_BALL, CRYSTAL_BALL,
 
     A("The Longbow of Diana", LONG_BOW, LONG_BOW,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_REFLECT), SPFX_ESP, 0,
-      PHYS(5, ART_DOUBLE_DAMAGE), NO_DFNS, NO_CARY, CREATE_AMMO, A_CHAOTIC, PM_RANGER, NON_PM,
+      PHYS(10, ART_DOUBLE_DAMAGE), NO_DFNS, NO_CARY, CREATE_AMMO, A_CHAOTIC, PM_RANGER, NON_PM,
       4000L, NO_COLOR),
 
     /* MKoT has an additional carry property if the Key is not cursed (for

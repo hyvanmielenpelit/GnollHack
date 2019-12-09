@@ -1949,12 +1949,12 @@ boolean atme;
 			switch (otyp)
 			{
 			case SPE_DEATH_ENCHANT_ITEM:
-				if (is_specialenchantable(otmp) && is_deathenchantable(otmp))
+				if (is_elemental_enchantable(otmp) && is_deathenchantable(otmp))
 				{
 					You("enchant %s with death magic.", yname(otmp));
-					otmp = special_enchant_quan(otmp, rnd(2), DEATH_ENCHANTMENT);
+					otmp = elemental_enchant_quan(otmp, rnd(2), DEATH_ENCHANTMENT);
 					prinv((char*)0, otmp, 0L);
-					//otmp->special_enchantment = DEATH_ENCHANTMENT;
+					//otmp->elemental_enchantment = DEATH_ENCHANTMENT;
 				}
 				else
 				{
@@ -1962,24 +1962,24 @@ boolean atme;
 				}
 				break;
 			case SPE_COLD_ENCHANT_ITEM:
-				if (otmp->special_enchantment == DEATH_ENCHANTMENT)
+				if (otmp->elemental_enchantment == DEATH_ENCHANTMENT)
 				{
 					pline("%s in blue for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
 					break;
 				}
-				if (otmp->special_enchantment == FIRE_ENCHANTMENT)
+				if (otmp->elemental_enchantment == FIRE_ENCHANTMENT)
 				{
-					pline("The cold energies dispel the fire enchantment on %s.", yname(otmp));
-					otmp->special_enchantment = 0;
+					pline("The cold energies dispel the flaming enchantment on %s.", yname(otmp));
+					otmp->elemental_enchantment = 0;
 					break;
 				}
 
-				if (is_specialenchantable(otmp))
+				if (is_elemental_enchantable(otmp))
 				{
-					You("enchant %s with cold magic.", yname(otmp));
-					otmp = special_enchant_quan(otmp, 20, COLD_ENCHANTMENT);
+					You("enchant %s with freezing magic.", yname(otmp));
+					otmp = elemental_enchant_quan(otmp, 20, COLD_ENCHANTMENT);
 					prinv((char*)0, otmp, 0L);
-					//otmp->special_enchantment = COLD_ENCHANTMENT;
+					//otmp->elemental_enchantment = COLD_ENCHANTMENT;
 				}
 				else
 				{
@@ -1987,24 +1987,24 @@ boolean atme;
 				}
 				break;
 			case SPE_FIRE_ENCHANT_ITEM:
-				if (otmp->special_enchantment == DEATH_ENCHANTMENT)
+				if (otmp->elemental_enchantment == DEATH_ENCHANTMENT)
 				{
 					pline("%s in red for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
 					break;
 				}
-				if (otmp->special_enchantment == COLD_ENCHANTMENT)
+				if (otmp->elemental_enchantment == COLD_ENCHANTMENT)
 				{
-					pline("The fiery energies dispel the cold enchantment on %s.", yname(otmp));
-					otmp->special_enchantment = 0;
+					pline("The fiery energies dispel the freezing enchantment on %s.", yname(otmp));
+					otmp->elemental_enchantment = 0;
 					break;
 				}
 
-				if (is_specialenchantable(otmp))
+				if (is_elemental_enchantable(otmp))
 				{
 					You("enchant %s with fire magic.", yname(otmp));
-					otmp = special_enchant_quan(otmp, 10, FIRE_ENCHANTMENT);
+					otmp = elemental_enchant_quan(otmp, 10, FIRE_ENCHANTMENT);
 					prinv((char*)0, otmp, 0L);
-					//otmp->special_enchantment = FIRE_ENCHANTMENT;
+					//otmp->elemental_enchantment = FIRE_ENCHANTMENT;
 				}
 				else
 				{
@@ -2012,17 +2012,17 @@ boolean atme;
 				}
 				break;
 			case SPE_LIGHTNING_ENCHANT_ITEM:
-				if (otmp->special_enchantment == DEATH_ENCHANTMENT)
+				if (otmp->elemental_enchantment == DEATH_ENCHANTMENT)
 				{
 					pline("%s in blue for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
 					break;
 				}
-				if (is_specialenchantable(otmp))
+				if (is_elemental_enchantable(otmp))
 				{
-					otmp = special_enchant_quan(otmp, 5, LIGHTNING_ENCHANTMENT);
+					otmp = elemental_enchant_quan(otmp, 5, LIGHTNING_ENCHANTMENT);
 					You("enchant %s with lightning magic.", yname(otmp));
 					prinv((char*)0, otmp, 0L);
-					//otmp->special_enchantment = LIGHTNING_ENCHANTMENT;
+					//otmp->elemental_enchantment = LIGHTNING_ENCHANTMENT;
 				}
 				else
 				{
@@ -3462,7 +3462,7 @@ int spell;
 		if ((mc->flags & MATCOMP_NOT_CURSED) && otmp->cursed)
 			acceptable = FALSE;
 
-		if ((mc->flags & MATCOMP_DEATH_ENCHANTMENT_REQUIRED) && otmp->special_enchantment != DEATH_ENCHANTMENT)
+		if ((mc->flags & MATCOMP_DEATH_ENCHANTMENT_REQUIRED) && otmp->elemental_enchantment != DEATH_ENCHANTMENT)
 			acceptable = FALSE;
 
 		if ((mc->objectid == CORPSE || mc->objectid == TIN || mc->objectid == EGG) && mc->monsterid >= 0 && mc->monsterid != otmp->corpsenm)
@@ -3648,7 +3648,7 @@ struct materialcomponent* mc;
 	//Correct type of component
 	Sprintf(buf2, "%s%s%s",
 		(mc->flags & MATCOMP_BLESSED_REQUIRED ? "blessed " : mc->flags & MATCOMP_CURSED_REQUIRED ? "cursed " : (mc->flags & MATCOMP_NOT_CURSED ? "noncursed " : "")),
-		(mc->flags & MATCOMP_DEATH_ENCHANTMENT_REQUIRED ? "death-enchanted " : ""),
+		(mc->flags & MATCOMP_DEATH_ENCHANTMENT_REQUIRED ? "deathly " : ""),
 		buf4);
 
 	//Indicate how many

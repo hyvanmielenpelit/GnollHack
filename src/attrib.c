@@ -405,7 +405,7 @@ boolean lifesavedalready;
 	//Effects
 	if(sptype == COLD_ENCHANTMENT)
 	{
-		pline("%s%s %s cold-enchanted!",
+		pline("%s%s %s freezing!",
 			isupper((uchar)* reason) ? "" : "The ", reason,
 			plural ? "were" : "was");
 		if (Cold_resistance || Invulnerable) {
@@ -428,7 +428,7 @@ boolean lifesavedalready;
 	}
 	else if (sptype == FIRE_ENCHANTMENT)
 	{
-		pline("%s%s %s fire-enchanted!",
+		pline("%s%s %s flaming!",
 			isupper((uchar)* reason) ? "" : "The ", reason,
 			plural ? "were" : "was");
 		if (Fire_resistance || Invulnerable) {
@@ -451,7 +451,7 @@ boolean lifesavedalready;
 	}
 	else if (sptype == LIGHTNING_ENCHANTMENT)
 	{
-		pline("%s%s %s lightning-enchanted!",
+		pline("%s%s %s electrified!",
 			isupper((uchar)* reason) ? "" : "The ", reason,
 			plural ? "were" : "was");
 		if (Shock_resistance || Invulnerable) {
@@ -462,13 +462,13 @@ boolean lifesavedalready;
 
 
 		if (sptype == LIGHTNING_ENCHANTMENT || Invulnerable) {
-			loss = d(4, 6);
+			loss = d(3, 6);
 			losehp(loss, pkiller, kprefix);
 		}
 		else
 		{
 			//Lightning bolt in a line!
-			loss = d(4, 6);
+			loss = d(3, 6);
 			losehp(loss, pkiller, kprefix); 
 		}
 	}

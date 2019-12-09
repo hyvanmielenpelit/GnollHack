@@ -244,9 +244,9 @@
 #define EHuman_warning u.uprops[WARN_HUMAN].extrinsic
 #define Human_warning (HHuman_warning || EHuman_warning)
 
-#define HWere_warning u.uprops[WARN_WERE].intrinsic
-#define EWere_warning u.uprops[WARN_WERE].extrinsic
-#define Were_warning (HWere_warning || EWere_warning)
+#define HLycanthrope_warning u.uprops[WARN_LYCANTHROPE].intrinsic
+#define ELycanthrope_warning u.uprops[WARN_LYCANTHROPE].extrinsic
+#define Lycanthrope_warning (HLycanthrope_warning || ELycanthrope_warning)
 
 #define HAngel_warning u.uprops[WARN_ANGEL].intrinsic
 #define EAngel_warning u.uprops[WARN_ANGEL].extrinsic
@@ -254,7 +254,7 @@
 
 #define Any_warning (Undead_warning || Demon_warning || Orc_warning || Troll_warning \
 					|| Giant_warning || Dragon_warning || Elf_warning || Dwarf_warning \
-					|| Gnoll_warning || Human_warning || Were_warning || Angel_warning || Ogre_warning)
+					|| Gnoll_warning || Human_warning || Lycanthrope_warning || Angel_warning || Ogre_warning)
 
 
 #define HSearching u.uprops[SEARCHING].intrinsic
