@@ -2926,7 +2926,7 @@ boolean ufound;
             break;
 
         case AD_HALU:
-            not_affected |= Blind || (u.umonnum == PM_BLACK_LIGHT
+            not_affected = Blind || Halluc_resistance || (u.umonnum == PM_BLACK_LIGHT
                                       || u.umonnum == PM_VIOLET_FUNGUS
                                       || dmgtype(youmonst.data, AD_STUN));
             if (!not_affected) {

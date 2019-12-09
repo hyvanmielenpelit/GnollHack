@@ -69,10 +69,12 @@
 #define MR_WISDOM 0x00100000L			/* confers wisdom */
 #define MR_CHARISMA 0x00200000L			/* confers charisma */
 
-#define MR_TELEPORT 0x00400000L			/* confers teleportiis */
-#define MR_TELEPORT_CONTROL 0x00800000L	/* confers teleport control */
-#define MR_BLIND_TELEPATHY 0x01000000L	/* confers blind telepathy */
-#define MR_TELEPATHY 0x02000000L		/* confers telepathy */
+#define MR_LEVEL_GAIN 0x00400000L		/* confers experience levels */
+
+#define MR_TELEPORT 0x00800000L			/* confers teleportiis */
+#define MR_TELEPORT_CONTROL 0x01000000L	/* confers teleport control */
+#define MR_BLIND_TELEPATHY 0x02000000L	/* confers blind telepathy */
+#define MR_TELEPATHY 0x04000000L		/* confers telepathy */
 
 /* other resistances: magic, sickness */
 /* other conveyances: teleport, teleport control, telepathy */
