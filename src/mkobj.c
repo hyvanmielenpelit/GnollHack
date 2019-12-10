@@ -1041,7 +1041,9 @@ boolean makingboxcontents;
             otmp->corpsenm = 0; /* LOADSTONE hack */
 			if (is_rock(otmp))
                 otmp->quan = (long) rn1(6, 6);
-            else if (otmp->otyp != LUCKSTONE && !rn2(6))
+			else if (otmp->otyp == FLINT)
+				otmp->quan = (long)rnd(30);
+			else if (otmp->otyp != LUCKSTONE && !rn2(6))
                 otmp->quan = 2L;
             else
                 otmp->quan = 1L;

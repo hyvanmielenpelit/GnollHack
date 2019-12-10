@@ -52,8 +52,8 @@ static struct trobj Barbarian[] = {
 static struct trobj Cave_man[] = {
 #define C_AMMO 2
     { CLUB, 3, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
-    { SLING, 2, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
-    { FLINT, 0, GEM_CLASS, 15, UNDEF_BLESS, 0 }, /* quan is variable */
+    { SLING, 1, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
+    { FLINT, 0, GEM_CLASS, 15, UNDEF_BLESS, 0 },
     { STONE_PEBBLE, 0, GEM_CLASS, 3, 0, 0 },             /* yields 18..33 */
 	{ UNDEF_TYP, UNDEF_SPE, AMULET_CLASS, 1, UNDEF_BLESS, 0 },
 	{ SACK, UNDEF_SPE, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
@@ -125,7 +125,7 @@ static struct trobj Priest[] = {
 };
 static struct trobj Ranger[] = {
 #define RAN_BOW 1
-#define RAN_TWO_ARROWS 2
+#define RAN_ONE_ARROWS 2
 #define RAN_ZERO_ARROWS 3
 	{ DAGGER, 1, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
 	{ SHORT_BOW, 0, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
@@ -945,7 +945,7 @@ u_init()
          */
         break;
     case PM_RANGER:
-        Ranger[RAN_TWO_ARROWS].trquan = rn1(11, 15);
+        Ranger[RAN_ONE_ARROWS].trquan = rn1(11, 15);
         Ranger[RAN_ZERO_ARROWS].trquan = rn1(25, 26);
         ini_inv(Ranger);
 
@@ -1474,8 +1474,7 @@ register struct trobj *trop;
             if (obj->oclass == WEAPON_CLASS || obj->oclass == TOOL_CLASS) {
                 obj->quan = (long) trop->trquan;
                 trop->trquan = 1;
-            } else if (obj->oclass == GEM_CLASS && is_graystone(obj)
-                       && obj->otyp != FLINT) {
+            } else if (obj->oclass == GEM_CLASS && is_graystone(obj)) {
                 obj->quan = 1L;
             }
             if (trop->trspe != UNDEF_SPE)
