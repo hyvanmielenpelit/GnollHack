@@ -1916,11 +1916,13 @@ int mmflags;
 	else
         mtmp->female = rn2(2); /* ignored for neuters */
 
-    if (In_sokoban(&u.uz) && !mindless(ptr)) /* know about traps here */
+    if ((In_sokoban(&u.uz) && !mindless(ptr)) || (ptr->mflags3 & M3_KNOWS_PITS_AND_HOLES)) /* know about traps here */
         mtmp->mtrapseen = (1L << (PIT - 1)) | (1L << (HOLE - 1));
     /* quest leader and nemesis both know about all trap types */
     if (ptr->msound == MS_LEADER || ptr->msound == MS_NEMESIS)
         mtmp->mtrapseen = ~0;
+	if (ptr->mflags3 & M3_KNOWS_TRAPS)
+		mtmp->mtrapseen = ~0;
 
     place_monster(mtmp, x, y);
     mtmp->mcansee = mtmp->mcanmove = mtmp->mwantstomove = mtmp->mwantstodrop = TRUE;

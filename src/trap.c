@@ -2218,7 +2218,7 @@ register struct monst *mtmp;
         if (!inescapable && ((mtmp->mtrapseen & (1 << (tt - 1))) != 0
                              || (tt == HOLE && !mindless(mptr)))) {
             /* it has been in such a trap - perhaps it escapes */
-            if (rn2(4))
+            if ((mtmp->data->mflags3 & (M3_KNOWS_PITS_AND_HOLES | M3_KNOWS_TRAPS)) || rn2(4))
                 return 0;
         } else {
             mtmp->mtrapseen |= (1 << (tt - 1));

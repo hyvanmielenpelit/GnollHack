@@ -913,7 +913,7 @@ NEARDATA struct permonst mons[] = {
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(50, 50, MS_SILENT, MZ_TINY), STATS(1, 15, 1, 2, 1, 1), MR_POISON, MR_POISON,
         M1_CONCEAL | M1_ANIMAL | M1_NOHANDS | M1_OVIPAROUS | M1_CARNIVORE,
-        M2_HOSTILE, 0, 1, CLR_GRAY),
+        M2_HOSTILE, M3_WEBMAKER, 1, CLR_GRAY),
     MON("scorpion", S_SPIDER, LVL(5, 15, 3, 0, 0, 0), (G_GENO | 2),
         A(ATTK(AT_CLAW, AD_PHYS, 1, 2, 0, 0), ATTK(AT_CLAW, AD_PHYS, 1, 2, 0, 0),
           ATTK(AT_STNG, AD_DRST, 1, 4, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -926,13 +926,13 @@ NEARDATA struct permonst mons[] = {
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(100, 100, MS_SILENT, MZ_LARGE), STATS(18, 19, 18, 3, 3, 1), MR_POISON, MR_POISON,
         M1_ANIMAL | M1_NOHANDS | M1_OVIPAROUS | M1_POIS | M1_CARNIVORE,
-        M2_HOSTILE, 0, 8, CLR_MAGENTA),
+        M2_HOSTILE, M3_WEBMAKER, 8, CLR_MAGENTA),
     MON("phase spider", S_SPIDER, LVL(12, 18, -5, 15, 50, 0), (G_GENO | 1),
         A(ATTK(AT_BITE, AD_DRST, 4, 6, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(100, 100, MS_SILENT, MZ_LARGE), STATS(18, 19, 18, 3, 3, 1), MR_POISON, MR_POISON | MR_TELEPORT | MR_TELEPORT_CONTROL,
         M1_ANIMAL | M1_NOHANDS | M1_OVIPAROUS | M1_POIS | M1_CARNIVORE | M1_TPORT,
-        M2_HOSTILE, 0, 19, CLR_BLUE),
+        M2_HOSTILE, M3_WEBMAKER, 19, CLR_BLUE),
     /*
      * trappers, lurkers, &c
      */
@@ -2196,12 +2196,29 @@ struct permonst _mons2[] = {
     /*
      * Umber hulk
      */
-    MON("umber hulk", S_UMBER, LVL(9, 6, 2, 12, 25, 0), (G_GENO | 2),
+    MON("umber hulk", S_UMBER, LVL(9, 6, 2, 12, 0, -9), (G_GENO | 2),
         A(ATTK(AT_CLAW, AD_PHYS, 3, 4, 0, 0), ATTK(AT_CLAW, AD_PHYS, 3, 4, 0, 0),
           ATTK(AT_BITE, AD_PHYS, 2, 5, 0, 0), ATTK(AT_GAZE, AD_CONF, 0, 0, 0, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(1200, 500, MS_SILENT, MZ_LARGE), STATS(STR18(100), 7, 15, 5, 5, 3), 0, 0, M1_TUNNEL | M1_CARNIVORE,
-        0, M3_INFRAVISIBLE, 12, CLR_BROWN),
+        SIZ(1800, 550, MS_SILENT, MZ_LARGE), STATS(STR18(100), 7, 15, 5, 5, 3), 0, 0, M1_TUNNEL | M1_CARNIVORE,
+        0, M3_INFRAVISIBLE | M3_INFRAVISION, 12, CLR_BROWN),
+    MON("otyugh", S_UMBER, LVL(8, 6, 3, 4, 0, 0), (G_GENO | 2),
+        A(ATTK(AT_TENT, AD_PHYS, 1, 8, 0, 0), ATTK(AT_TENT, AD_PHYS, 1, 8, 0, 0),
+          ATTK(AT_BITE, AD_DISE, 1, 4, 1, 1), NO_ATTK, NO_ATTK,
+          NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(1600, 500, MS_SILENT, MZ_LARGE), STATS(16, 12, 14, 8, 8, 1), 
+		MR_NONE, MR_NONE, 
+		M1_ANIMAL | M1_NOHEAD | M1_CARNIVORE | M1_SEE_INVIS,
+        M2_HOSTILE | M2_NASTY, 
+		M3_INFRAVISIBLE | M3_INFRAVISION | M3_KNOWS_PITS_AND_HOLES, 13, CLR_GREEN),
+    MON("neo-otyugh", S_UMBER, LVL(12, 6, 0, 8, 0, 0), (G_GENO | 2),
+        A(ATTK(AT_TENT, AD_PHYS, 2, 6, 0, 0), ATTK(AT_TENT, AD_PHYS, 2, 6, 0, 0),
+          ATTK(AT_BITE, AD_DISE, 1, 3, 0, -1), NO_ATTK, NO_ATTK,
+          NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(2000, 650, MS_SILENT, MZ_LARGE), STATS(STR18(50), 14, 18, 14, 14, 1),
+		MR_NONE, MR_NONE, M1_ANIMAL | M1_NOHEAD | M1_CARNIVORE | M1_THICK_HIDE | M1_SEE_INVIS,
+		M2_HOSTILE | M2_NASTY, 
+		M3_INFRAVISIBLE | M3_INFRAVISION | M3_KNOWS_PITS_AND_HOLES, 17, CLR_RED),
     /*
      * Vampires
      */
@@ -2915,7 +2932,7 @@ struct permonst _mons2[] = {
      */
     MON("Juiblex", S_DEMON, LVL(50, 3, -7, 18, 65, -15),
         (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
-        A(ATTK(AT_ENGL, AD_DISE, 4, 10, 0, -10), ATTK(AT_SPIT, AD_ACID, 3, 6, 0, 0),
+        A(ATTK(AT_ENGL, AD_DISE, 4, 10, 0, -12), ATTK(AT_SPIT, AD_ACID, 3, 6, 0, 0),
 		ATTK(AT_SMMN, AD_DMNS, 0, 0, 0, 25), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1500, 0, MS_GURGLE, MZ_LARGE), STATS(STR19(19), 13, 24, 15, 14, 4),
         MR_FIRE | MR_POISON | MR_ACID | MR_STONE, 0,
@@ -2989,7 +3006,7 @@ struct permonst _mons2[] = {
     MON("Demogorgon", S_DEMON, LVL(106, 15, -8, 19, 95, -20),
         (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
         A(ATTK(AT_MAGC, AD_SPEL, 8, 6, 0, 0), ATTK(AT_STNG, AD_DRLI, 1, 4, 0, -10),
-          ATTK(AT_CLAW, AD_DISE, 1, 6, 0, -10), ATTK(AT_CLAW, AD_DISE, 1, 6, 0, -10), ATTK(AT_SMMN, AD_DMNS, 0, 0, 0, 30),
+          ATTK(AT_CLAW, AD_DISE, 1, 6, 0, -18), ATTK(AT_CLAW, AD_DISE, 1, 6, 0, -18), ATTK(AT_SMMN, AD_DMNS, 0, 0, 0, 30),
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1500, 500, MS_GROWL, MZ_HUGE), STATS(STR19(24), 20, 24, 24, 23, 19), MR_FIRE | MR_POISON, 0,
         M1_FLY | M1_SEE_INVIS | M1_NOHANDS | M1_POIS,

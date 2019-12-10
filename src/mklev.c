@@ -911,9 +911,44 @@ makelevel()
 			else
 			{
 				tmonst = makemon((struct permonst *) 0, x, y, MM_NOGRP);
-				if (tmonst && (tmonst->data == &mons[PM_GIANT_SPIDER] || (tmonst->data == &mons[PM_PHASE_SPIDER] && !rn2(2)))
-					&& !occupied(x, y))
-					(void) maketrap(x, y, WEB, NON_PM, TRAP_NO_FLAGS);
+				if (tmonst && !occupied(x, y))
+				{
+					if (tmonst->data == &mons[PM_GIANT_SPIDER] || (tmonst->data == &mons[PM_PHASE_SPIDER] && !rn2(2)))
+						(void)maketrap(x, y, WEB, NON_PM, TRAP_NO_FLAGS);
+					else if (tmonst->data == &mons[PM_OTYUGH] || tmonst->data == &mons[PM_NEO_OTYUGH])
+					{
+						/* Otyugh lair */
+						(void)maketrap(x, y, PIT, NON_PM, TRAP_NO_FLAGS);
+						int itemnum = rnd(3) + 2;
+						for(int i = 0; i < itemnum;i++)
+						{
+							int itemtype = CLUMP_OF_BAT_GUANO;
+							switch (rn2(5))
+							{
+							case 0:
+							case 1:
+								itemtype = CLUMP_OF_BAT_GUANO;
+								break;
+							case 2:
+							case 3:
+								itemtype = BONE;
+								break;
+							case 4:
+								itemtype = HUMAN_SKULL;
+								break;
+							default:
+								break;
+							}
+							struct obj* pititem = mksobj_at(itemtype, x, y, FALSE, FALSE);
+						}
+
+						int itemnum2 = rn2(3) + (tmonst->data == &mons[PM_NEO_OTYUGH]) ? 1 : 0;
+						for (int i = 0; i < itemnum2; i++)
+						{
+							struct obj* pititem = mkobj_at(RANDOM_CLASS, x, y, TRUE);
+						}
+					}
+				}
 			}
         }
         /* put traps and mimics inside */

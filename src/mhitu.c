@@ -1462,8 +1462,8 @@ register struct obj* omonwep;
      *  Use uncancelled when cancellation factor takes into account certain
      *  armor's special magic protection.  Otherwise just use !mtmp->mcancelled.
      */
-
-	uncancelled = !mtmp->mcancelled && !check_magic_cancellation_success(&youmonst, mattk->mcadj);
+	boolean mcsuccess = check_magic_cancellation_success(&youmonst, mattk->mcadj);
+	uncancelled = !mtmp->mcancelled && !mcsuccess;
 
     permdmg = 0;
 
@@ -1635,9 +1635,16 @@ register struct obj* omonwep;
         }
         break;
     case AD_DISE:
-        if (!diseasemu(mdat))
-            dmg = 0;
+		if (Sick_resistance)
+			dmg = 0;
+
 		hitmsg(mtmp, mattk, dmg);
+
+		//Must now bypass your MC -- Demogorgon has high penalties for saving throw
+		if (!mcsuccess)
+		{
+			(void)diseasemu(mdat);
+		}
 		break;
     case AD_FIRE:
 		hitmsg(mtmp, mattk, -1);
