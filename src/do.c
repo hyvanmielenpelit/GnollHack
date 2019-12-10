@@ -472,11 +472,12 @@ register struct obj* obj;
 	putstr(datawin, 0, txt);
 
 	/* Type */
-	strcpy(buf2, def_oc_syms[obj->oclass].name);
-	*buf2 = highc(*buf2);
-	Sprintf(buf, "Class:                  %s", buf2);
-	txt = buf;
-	putstr(datawin, 0, txt);
+	strcpy(buf3, def_oc_syms[obj->oclass].name);
+	*buf3 = highc(*buf3);
+	//Sprintf(buf, "Class:                  %s", buf2);
+	Sprintf(buf, "%s", makesingular(buf3));
+	//txt = buf;
+	//putstr(datawin, 0, txt);
 
 	strcpy(buf2, "");
 	if (objects[otyp].oc_class == WEAPON_CLASS)
@@ -487,15 +488,15 @@ register struct obj* obj;
 		}
 		else if (is_launcher(obj))
 		{
-			strcpy(buf2, "Ranged weapon");
+			strcpy(buf2, "Ranged");
 		}
 		else if(objects[otyp].oc_flags & O1_THROWN_WEAPON)
 		{
-			strcpy(buf2, "Thrown weapon");
+			strcpy(buf2, "Thrown");
 		}
 		else
 		{
-			strcpy(buf2, "Melee weapon");
+			strcpy(buf2, "Melee");
 		}
 
 	}
@@ -523,10 +524,15 @@ register struct obj* obj;
 	}
 	if (strcmp(buf2, "") != 0)
 	{
-		Sprintf(buf, "Category:               %s", buf2);
-		txt = buf;
-		putstr(datawin, 0, txt);
+		//Sprintf(buf, "Category:               %s", buf2);
+		Sprintf(eos(buf), " - %s", buf2);
 	}
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	Sprintf(buf, "");
+	txt = buf;
+	putstr(datawin, 0, txt);
 
 	/* Weight */
 	double objweight = ((double)objects[otyp].oc_weight) / 16;
