@@ -1732,7 +1732,12 @@ coord *cc;
     do {
         nx = rn1(COLNO - 3, 2);
         ny = rn2(ROWNO);
-        good = (!in_mklev && (abs(u.ux - nx) <= 7 || abs(u.uy - ny) <= 5 || cansee(nx,ny))) ? FALSE
+		int o_ridx = levl[nx][ny].roomno - ROOMOFFSET;
+		boolean specialroom = FALSE;
+		if (o_ridx >= 0 && rooms[o_ridx].rtype != OROOM)
+			specialroom = TRUE;
+
+        good = (!in_mklev && (abs(u.ux - nx) <= 7 || abs(u.uy - ny) <= 5 || specialroom || cansee(nx,ny))) ? FALSE
                                             : goodpos(nx, ny, mon, gpflags);
     } while ((++tryct < 50) && !good);
 
