@@ -138,7 +138,8 @@ mswings(mtmp, otemp)
 struct monst *mtmp;
 struct obj *otemp;
 {
-    if (flags.verbose && !Blind && mon_visible(mtmp)) {
+    if (flags.verbose && !Blind && mon_visible(mtmp)) 
+	{
         pline("%s %s %s%s %s.", Monnam(mtmp),
               (objects[otemp->otyp].oc_dir & PIERCE) ? "thrusts" : "swings",
               (otemp->quan > 1L) ? "one of " : "", mhis(mtmp), xname(otemp));
@@ -650,7 +651,8 @@ register struct monst *mtmp;
 	int tmp2 = tmp;
 	int weaponattackcount = 0;
 
-    for (i = 0; i < NATTK; i++) {
+    for (i = 0; i < NATTK; i++) 
+	{
 		tmp = tmp2; // Revert hit bonus to original value
         sum[i] = 0;
         mon_currwep = (struct obj *)0;
@@ -667,16 +669,19 @@ register struct monst *mtmp;
         case AT_TUCH:
         case AT_BUTT:
         case AT_TENT:
-            if (!range2 && (!MON_WEP(mtmp) || mtmp->mconf || Conflict
-                            || !touch_petrifies(youmonst.data))) {
-                if (foundyou) {
-                    if (tmp > (j = rnd(20 + i))) {
-                        if (mattk->aatyp != AT_KICK
-                            || !thick_skinned(youmonst.data))
+            if (!range2 && (!MON_WEP(mtmp) || mtmp->mconf || Conflict || !touch_petrifies(youmonst.data))) 
+			{
+                if (foundyou) 
+				{
+                    if (tmp > (j = rnd(20 + i))) 
+					{
+                        if (mattk->aatyp != AT_KICK || !thick_skinned(youmonst.data))
                             sum[i] = hitmu(mtmp, mattk, (struct obj*) 0);
                     } else
                         missmu(mtmp, (tmp == j), mattk);
-                } else {
+                } 
+				else
+				{
                     wildmiss(mtmp, mattk);
                     /* skip any remaining non-spell attacks */
                     skipnonmagc = TRUE;
@@ -738,10 +743,13 @@ register struct monst *mtmp;
             /* Note: spitmu takes care of displacement */
             break;
         case AT_WEAP:
-            if (range2) {
+            if (range2) 
+			{
                 if (!Is_rogue_level(&u.uz))
                     thrwmu(mtmp);
-            } else {
+            }
+			else
+			{
                 int hittmp = 0;
 
                 /* Rare but not impossible.  Normally the monster
@@ -785,7 +793,11 @@ register struct monst *mtmp;
 							if (strikeindex == 0)
 								mswings(mtmp, mon_currwep);
 							else
-								pline("%s %s %s!", s_suffix(Monnam(mtmp)), aobjnam(mon_currwep, "strike"), strikeindex == 1 ? "a second time" : strikeindex == 2 ? "a third time" : "once more");
+								if (flags.verbose && !Blind && mon_visible(mtmp))
+								{
+									/* To be consistent with mswings */
+									pline("%s %s %s!", s_suffix(Monnam(mtmp)), aobjnam(mon_currwep, "strike"), strikeindex == 1 ? "a second time" : strikeindex == 2 ? "a third time" : "once more");
+								}
 						}
 							
 						//TO-HIT IS DONE HERE

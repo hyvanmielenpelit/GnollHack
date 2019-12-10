@@ -2194,7 +2194,7 @@ struct permonst _mons2[] = {
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_REGENERATES_LOST_BODY_PARTS | M3_REVIVES_FROM_DEAD | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY,
 		33, HI_LORD),
     /*
-     * Umber hulk
+     * Umber hulk and otyugh
      */
     MON("umber hulk", S_UMBER, LVL(9, 6, 2, 12, 0, -9), (G_GENO | 2),
         A(ATTK(AT_CLAW, AD_PHYS, 3, 4, 0, 0), ATTK(AT_CLAW, AD_PHYS, 3, 4, 0, 0),
@@ -2213,12 +2213,12 @@ struct permonst _mons2[] = {
 		M3_INFRAVISIBLE | M3_INFRAVISION | M3_KNOWS_PITS_AND_HOLES, 13, CLR_GREEN),
     MON("neo-otyugh", S_UMBER, LVL(12, 6, 0, 8, 0, 0), (G_GENO | 2),
         A(ATTK(AT_TENT, AD_PHYS, 2, 6, 0, 0), ATTK(AT_TENT, AD_PHYS, 2, 6, 0, 0),
-          ATTK(AT_BITE, AD_DISE, 1, 3, 0, -1), NO_ATTK, NO_ATTK,
+          ATTK(AT_HUGS, AD_PHYS, 2, 8, 0, 0), ATTK(AT_BITE, AD_DISE, 1, 6, 0, -1), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(2000, 650, MS_SILENT, MZ_LARGE), STATS(STR18(50), 14, 18, 14, 14, 1),
 		MR_NONE, MR_NONE, M1_ANIMAL | M1_NOHEAD | M1_CARNIVORE | M1_THICK_HIDE | M1_SEE_INVIS,
 		M2_HOSTILE | M2_NASTY, 
-		M3_INFRAVISIBLE | M3_INFRAVISION | M3_KNOWS_PITS_AND_HOLES, 17, CLR_RED),
+		M3_INFRAVISIBLE | M3_INFRAVISION | M3_KNOWS_PITS_AND_HOLES, 19, CLR_RED),
     /*
      * Vampires
      */
