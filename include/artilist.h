@@ -152,6 +152,10 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
 		PHYS(5, 10), NO_DFNS, NO_CARY, 0, A_CHAOTIC, NON_PM, NON_PM, 6000L,
 		NO_COLOR),
 
+	A("Wand of Orcus", MACE_OF_DEATH, MACE_OF_DEATH, (SPFX_NOGEN | SPFX_RESTR), 0, 0,
+		PHYS(5, 10), NO_DFNS, NO_CARY, WAND_OF_DEATH, A_CHAOTIC, NON_PM, NON_PM, 6000L,
+		NO_COLOR),
+
 	/*
      *      Two problems:  1) doesn't let trolls regenerate heads,
      *      2) doesn't give unusual message for 2-headed monsters (but

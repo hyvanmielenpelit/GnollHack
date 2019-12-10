@@ -2283,6 +2283,36 @@ struct obj *obj;
             nhUse(otmp);
             break;
         }
+		case WAND_OF_DEATH:
+		{
+			struct obj* pseudo = mksobj(SPE_FINGER_OF_DEATH, FALSE, FALSE, FALSE);
+			pseudo->blessed = pseudo->cursed = 0;
+			pseudo->quan = 20L; /* do not let useup get it */
+			int otyp = pseudo->otyp;
+			int damage = 0;
+
+			if (!getdir((char*)0)) 
+			{
+				pline1(Never_mind);
+				return 0;
+			}
+			if (!u.dx && !u.dy && !u.dz) 
+			{
+				if ((damage = zapyourself(pseudo, TRUE)) != 0) {
+					char buf[BUFSZ];
+
+					Sprintf(buf, "zapped %sself with %s", uhim(), cxname(obj));
+					losehp(damage, buf, NO_KILLER_PREFIX);
+				}
+			}
+			else
+			{
+				weffects(pseudo);
+			}
+
+			obfree(pseudo, (struct obj*) 0); /* now, get rid of it */
+			obj->cooldownleft = 100 + rnd(100);
+		}
         }
     } else {
         long eprop = (u.uprops[oart->inv_prop].extrinsic ^= W_ARTI),

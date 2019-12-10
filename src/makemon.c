@@ -723,8 +723,21 @@ register struct monst *mtmp;
             (void) mongets(mtmp, BROADSWORD);
             break;
         case PM_ORCUS:
-            (void) mongets(mtmp, WAN_DEATH); /* the Wand of Orcus */
-            break;
+		{
+			//(void) mongets(mtmp, WAN_DEATH); /* the Wand of Orcus */
+			int weaptype = MACE_OF_DEATH;
+			int artifacttype = ART_WAND_OF_ORCUS;
+			otmp = mksobj(weaptype, FALSE, FALSE, FALSE);
+			otmp = oname(otmp, artiname(artifacttype));
+
+			curse(otmp);
+			otmp->oerodeproof = TRUE;
+			spe2 = 2 + rnd(3);
+			otmp->spe = max(otmp->spe, spe2);
+			(void)mpickobj(mtmp, otmp);
+
+			break;
+		}
         case PM_HORNED_DEVIL:
             (void) mongets(mtmp, rn2(4) ? TRIDENT : BULLWHIP);
             break;
@@ -744,15 +757,14 @@ register struct monst *mtmp;
             (void) mongets(mtmp, WAN_STRIKING);
             break;
         case PM_YEENOGHU:
-//            (void) mongets(mtmp, FLAIL);
-			otmp = mksobj(TRIPLE_HEADED_FLAIL, FALSE, FALSE, FALSE);
-			//bless(otmp);
+			otmp = mksobj(TRIPLE_HEADED_FLAIL_OF_LIFE_DRAINING, FALSE, FALSE, FALSE);
+			curse(otmp);
 			otmp->oerodeproof = TRUE;
-			spe2 = 2 + rnd(2);
+			spe2 = 1 + rnd(3);
 			otmp->spe = max(otmp->spe, spe2);
 			(void)mpickobj(mtmp, otmp);
 			break;
-        }
+		}
         /* prevent djinn and mail daemons from leaving objects when
          * they vanish
          */

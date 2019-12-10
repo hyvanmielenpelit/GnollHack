@@ -176,13 +176,13 @@ enum obj_material_types {
 };
 
 enum obj_armor_types {
-    ARM_SUIT   = 0,
-    ARM_SHIELD = 1,        /* needed for special wear function */
-    ARM_HELM   = 2,
-    ARM_GLOVES = 3,
-    ARM_BOOTS  = 4,
-    ARM_CLOAK  = 5,
-    ARM_SHIRT  = 6,
+    ARM_SUIT    = 0,
+    ARM_SHIELD  = 1,        /* needed for special wear function */
+    ARM_HELM    = 2,
+    ARM_GLOVES  = 3,
+    ARM_BOOTS   = 4,
+    ARM_CLOAK   = 5,
+    ARM_SHIRT   = 6,
 	ARM_ROBE	= 7,
 	ARM_BRACERS = 8
 };
@@ -240,19 +240,20 @@ enum obj_miscellaneous_types {
 	MISC_BLINDFOLD = 13,	/* alternative implementation of blindfold */
 	MISC_SCARF = 14,
 	MISC_EXTRA_ARMS = 15,
-	MISC_BROOCH = 16
+	MISC_BROOCH = 16,
+	MISC_NECKTIE = 17
 };
 
 static const char* misc_type_names[] = {
 	"", "set of wings", "pair of pants", "skirt", "wrist watch",
 	"nose ring", "headband", "pair of earrings",
-	"ioun stone", "bracelet", "pair of bracers", "belt", "pair of eyeglasses", "blindfold", "scarf", "set of extra arms", "brooch",
+	"ioun stone", "bracelet", "pair of bracers", "belt", "pair of eyeglasses", "blindfold", "scarf", "set of extra arms", "brooch", "necktie",
 };
 
 static const char* misc_type_worn_texts[] = {
 	"", "attached to back", "", "", "on left wrist",
 	"on nose", "", "",
-	"orbiting head", "", "", "", "", "", "", "attached to body", "",
+	"orbiting head", "", "", "", "", "", "", "attached to body", "", ""
 };
 
 
