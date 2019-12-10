@@ -1841,8 +1841,10 @@ int critstrikeroll; /* need to synchronize critical strike based abilities */
 
 	if (objects[otmp->otyp].oc_aflags & A1_LEVEL_DRAIN) 
 	{
-		if (!is_rider(mdef->data) && !is_undead(mdef->data) && //Demons are affected
-			((objects[otmp->otyp].oc_aflags & A1_LEVEL_DRAIN_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mdef, magr))
+		if (!is_rider(mdef->data) && !is_undead(mdef->data) //Demons are affected
+			&& !(youdefend ? Drain_resistance : resists_drli(mdef))
+			&& !((objects[otmp->otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS) ? (youdefend ? Antimagic : resists_magic(mdef)) : 0)
+			&& ((objects[otmp->otyp].oc_aflags & A1_LEVEL_DRAIN_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mdef, magr))
 			&& ((objects[otmp->otyp].oc_aflags & A1_LEVEL_DRAIN_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
 			&& (
 			((objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
@@ -1857,8 +1859,8 @@ int critstrikeroll; /* need to synchronize critical strike based abilities */
 				(!(objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
 					&& 1)
 				)
-			&& !check_magic_cancellation_success(mdef, 
-				objects[otmp->otyp].oc_mc_adjustment + (objects[otmp->otyp].oc_flags & O1_SPE_AFFECTS_MC_ADJUSTMENT  ? -otmp->spe : 0))
+			&& ((objects[otmp->otyp].oc_aflags & A1_BYPASSES_MC) || !check_magic_cancellation_success(mdef,
+				objects[otmp->otyp].oc_mc_adjustment + (objects[otmp->otyp].oc_flags & O1_SPE_AFFECTS_MC_ADJUSTMENT  ? -otmp->spe : 0)))
 			)
 		{
 			/* some non-living creatures (golems, vortices) are
@@ -1915,14 +1917,23 @@ int critstrikeroll; /* need to synchronize critical strike based abilities */
 				if (
 					((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_USES_EXTRA_DAMAGE_TYPE
 					&& ((objects[otmp->otyp].oc_extra_damagetype == AD_FIRE && (youdefend ? Fire_resistance : resists_fire(mdef)))
+						|| ((objects[otmp->otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS) ? (youdefend ? Antimagic : resists_magic(mdef)) : 0)
 						|| (objects[otmp->otyp].oc_extra_damagetype == AD_COLD && (youdefend ? Cold_resistance : resists_cold(mdef)))
 						|| (objects[otmp->otyp].oc_extra_damagetype == AD_ELEC && (youdefend ? Shock_resistance : resists_elec(mdef)))))
 					||
 					((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK
-						&& ((youdefend ? Death_resistance : resists_death(mdef)) || is_not_living(mdef->data) || is_demon(mdef->data) || is_vampshifter(mdef)))
+						&& ((youdefend ? Death_resistance : resists_death(mdef)) || is_not_living(mdef->data) || is_demon(mdef->data) || is_vampshifter(mdef)
+							|| ((objects[otmp->otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS) ? (youdefend ? Antimagic : resists_magic(mdef)) : 0)
+							|| (!(objects[otmp->otyp].oc_aflags & A1_BYPASSES_MC) && check_magic_cancellation_success(mdef,
+								objects[otmp->otyp].oc_mc_adjustment + (objects[otmp->otyp].oc_flags & O1_SPE_AFFECTS_MC_ADJUSTMENT ? -otmp->spe : 0)))
+							))
 					||
 					((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK
-						&& ((youdefend ? (Disint_resistance || Invulnerable) : resists_disint(mdef)) || noncorporeal(mdef->data)))
+						&& ((youdefend ? (Disint_resistance || Invulnerable) : resists_disint(mdef)) || noncorporeal(mdef->data)
+							|| ((objects[otmp->otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS) ? (youdefend ? Antimagic : resists_magic(mdef)) : 0)
+							|| (!(objects[otmp->otyp].oc_aflags & A1_BYPASSES_MC) && check_magic_cancellation_success(mdef,
+								objects[otmp->otyp].oc_mc_adjustment + (objects[otmp->otyp].oc_flags & O1_SPE_AFFECTS_MC_ADJUSTMENT ? -otmp->spe : 0)))
+							))
 					)
 				{
 					if (!youdefend)
@@ -1946,15 +1957,19 @@ int critstrikeroll; /* need to synchronize critical strike based abilities */
 							pline("%s hits %s.", The(xname(otmp)), mon_nam(mdef));
 							struct obj* otmp2 = (struct obj*) 0;
 
-							if (resists_disint(mdef) || noncorporeal(mdef->data)) {
+							if (resists_disint(mdef) || noncorporeal(mdef->data))
+							{
+								/* should never go here */
 								shieldeff(mdef->mx, mdef->my);
 							}
-							else if (mdef->misc_worn_check & W_ARMS) {
+							else if (mdef->misc_worn_check & W_ARMS) 
+							{
 								/* destroy shield; victim survives */
 								if ((otmp2 = which_armor(mdef, W_ARMS)) != 0)
 									m_useup(mdef, otmp2);
 							}
-							else if (mdef->misc_worn_check & W_ARM) {
+							else if (mdef->misc_worn_check & W_ARM) 
+							{
 								/* destroy body armor, also cloak if present */
 								if ((otmp2 = which_armor(mdef, W_ARM)) != 0)
 									m_useup(mdef, otmp2);
@@ -1963,7 +1978,8 @@ int critstrikeroll; /* need to synchronize critical strike based abilities */
 								if ((otmp2 = which_armor(mdef, W_ARMO)) != 0)
 									m_useup(mdef, otmp2);
 							}
-							else {
+							else
+							{
 								/* no body armor, victim dies; destroy cloak
 									and shirt now in case target gets life-saved */
 								if ((otmp2 = which_armor(mdef, W_ARMC)) != 0)
@@ -1973,8 +1989,10 @@ int critstrikeroll; /* need to synchronize critical strike based abilities */
 								if ((otmp2 = which_armor(mdef, W_ARMO)) != 0)
 									m_useup(mdef, otmp2);
 
-								if (is_rider(mdef->data)) {
-									if (canseemon(mdef)) {
+								if (is_rider(mdef->data)) 
+								{
+									if (canseemon(mdef)) 
+									{
 										pline("%s disintegrates.", Monnam(mdef));
 										pline("%s body reintegrates before your %s!",
 											s_suffix(Monnam(mdef)),
@@ -1985,7 +2003,8 @@ int critstrikeroll; /* need to synchronize critical strike based abilities */
 									}
 									mdef->mhp = mdef->mhpmax;
 								}
-								else { /* disintegration */
+								else 
+								{ /* disintegration */
 									//disintegrate_mon(mdef, 1, xname(otmp));
 									lethaldamage = TRUE;
 									isdisintegrated = TRUE;
@@ -1996,7 +2015,11 @@ int critstrikeroll; /* need to synchronize critical strike based abilities */
 						else
 						{
 							pline("%s hits you.", The(xname(otmp)));
-							if (Disint_resistance || noncorporeal(youmonst.data) || Invulnerable) {					// if (abstyp == ZT_BREATH(ZT_DISINTEGRATION)) {
+							if (Disint_resistance || noncorporeal(youmonst.data) || Invulnerable
+								|| (!(objects[otmp->otyp].oc_aflags & A1_BYPASSES_MC) && check_magic_cancellation_success(mdef,
+									objects[otmp->otyp].oc_mc_adjustment + (objects[otmp->otyp].oc_flags & O1_SPE_AFFECTS_MC_ADJUSTMENT ? -otmp->spe : 0)))
+								) 
+							{					// if (abstyp == ZT_BREATH(ZT_DISINTEGRATION)) {
 								You("are not disintegrated.");
 							}
 							else if (uarms) {
@@ -2312,6 +2335,13 @@ struct obj *obj;
 
 			obfree(pseudo, (struct obj*) 0); /* now, get rid of it */
 			obj->cooldownleft = 100 + rnd(100);
+
+			/* Wand of Orcus may drain your life upon invocation */
+			if (!rn2(2))
+			{
+				pline("%s your life energy!", Tobjnam(obj, "draw"));
+				losexp("life drainage");
+			}
 		}
         }
     } else {

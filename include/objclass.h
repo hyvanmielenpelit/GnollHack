@@ -376,8 +376,8 @@ struct objclass {
 #define A1_STUN_DISRESPECTS_TARGETS							0x00400000  
 #define A1_STUN_DISRESPECTS_CHARACTERS						0x00800000  
 
-#define A1_MAGIC_MISSILE_STRIKE								0x01000000  /* showers the target with magic missiles */
-/* One bit here */
+#define A1_MAGIC_RESISTANCE_PROTECTS						0x01000000
+#define A1_BYPASSES_MC										0x02000000	/* No MC check */  
 
 #define A1_EXTRA_DAMAGE_DISRESPECTS_TARGETS					0x04000000  
 #define A1_EXTRA_DAMAGE_DISRESPECTS_CHARACTERS				0x08000000  
