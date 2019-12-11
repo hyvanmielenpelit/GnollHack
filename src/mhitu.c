@@ -756,8 +756,15 @@ register struct monst *mtmp;
                  * wields when 2 spaces away, but it can be
                  * teleported or whatever....
                  */
-                if (mtmp->weapon_check == NEED_WEAPON || !MON_WEP(mtmp)) 
+				boolean is_nonwelded_launcher = (MON_WEP(mtmp) && (is_launcher(MON_WEP(mtmp)) && !mwelded(MON_WEP(mtmp), mtmp)));
+
+                if (mtmp->weapon_check == NEED_WEAPON || !MON_WEP(mtmp) || is_nonwelded_launcher)
 				{
+					if (is_nonwelded_launcher && !select_hwep(mtmp))
+					{
+						pline("%s unwields %s.", Monnam(mtmp), the(cxname(MON_WEP(mtmp))));
+						setmnotwielded(mtmp, MON_WEP(mtmp));
+					}
                     mtmp->weapon_check = NEED_HTH_WEAPON;
                     /* mon_wield_item resets weapon_check as appropriate */
                     if (mon_wield_item(mtmp, FALSE) != 0)

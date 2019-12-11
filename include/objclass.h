@@ -223,6 +223,14 @@ enum obj_weapon_types {
 	WEP_WHIP = 32
 };
 
+static const char* weapon_type_names[] = {
+	"sword", "dagger", "mace", "flail", "staff", "hammer", "axe", "spear", "polearm",
+	"club", "trident", "dart", "shuriken", "javelin", "boomerang", "bow", "crossbow",
+	"sling", "arrow", "quarrel", "sling-bullet", "pick-axe", "unicorn horn", "horn", "tooth",
+	"knife", "shovel", "hook", "lance", "morning star", "hose", "spiked club", "whip",
+};
+
+
 enum obj_miscellaneous_types {
 	MISC_MULTIPLE_PERMITTED = 0,
 	MISC_WINGS = 1,       

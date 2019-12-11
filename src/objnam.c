@@ -3561,7 +3561,7 @@ struct obj *no_wish;
 			&& !strstri(bp, "wand ") && !strstri(bp, "spellbook ") && !strstri(bp, "bracers ")
 			&& !strstri(bp, "sword ") && !strstri(bp, "dagger ") && !strstri(bp, "arrow ")
 			&& !strstri(bp, "axe ") && !strstri(bp, "bolt ") && !strstri(bp, "quarrel ")
-			&& !strstri(bp, "mace ") && !strstri(bp, "flail ") && !strstri(bp, "hammer ")
+			&& !strstri(bp, "mace ") && !strstri(bp, "flail ") && !strstri(bp, "hammer ") && !strstri(bp, "morning star ")
 			&& !strstri(bp, "staff ") && !strstri(bp, "bow ") && !strstri(bp, "crossbow ")
 			&& !strstri(bp, "robe ") && !strstri(bp, "cloak ") && !strstri(bp, "gloves ")
 			&& !strstri(bp, "gauntlets ") && !strstri(bp, "belt ") && !strstri(bp, "girdle ")

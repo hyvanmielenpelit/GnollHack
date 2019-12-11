@@ -3032,7 +3032,7 @@ int final;
         /* "you have no/basic/expert/master/grand-master skill with <skill>"
            or "you are unskilled/skilled in <skill>" */
         Sprintf(buf, "%s %s %s", sklvlbuf,
-                hav ? "skill with" : "in", skill_name(wtype));
+                hav ? "skill with" : "in", skill_name(wtype, TRUE));
         if (can_advance(wtype, FALSE))
             Sprintf(eos(buf), " and %s that",
                     !final ? "can enhance" : "could have enhanced");

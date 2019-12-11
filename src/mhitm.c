@@ -377,7 +377,8 @@ register struct monst *magr, *mdef;
                     res[i] |= MM_AGR_DIED;
                 break;
             }
-            if (magr->weapon_check == NEED_WEAPON || !MON_WEP(magr)) {
+            if (magr->weapon_check == NEED_WEAPON || !MON_WEP(magr) || (is_launcher(MON_WEP(magr)) && !mwelded(MON_WEP(magr), magr)))
+			{
                 magr->weapon_check = NEED_HTH_WEAPON;
                 if (mon_wield_item(magr, FALSE) != 0)
                     return 0;
@@ -439,7 +440,14 @@ register struct monst *magr, *mdef;
 					if (strikeindex == 0)
 						; //Swinging message is already done above
 					else
-						pline("%s %s %s!", s_suffix(Monnam(magr)), aobjnam(otmp, "strike"), strikeindex == 1 ? "a second time" : strikeindex == 2 ? "a third time" : "once more");
+					{
+						if (flags.verbose && !Blind && mon_visible(magr))
+							pline("%s %s %s!", 
+								s_suffix(Monnam(magr)), 
+								aobjnam(otmp, "strike"), 
+								strikeindex == 1 ? "a second time" : strikeindex == 2 ? "a third time" : "once more");
+
+					}
 				}
 
 				//TO-HIT IS DETERMINED HERE
@@ -1741,7 +1749,8 @@ mswingsm(magr, mdef, otemp)
 struct monst *magr, *mdef;
 struct obj *otemp;
 {
-    if (flags.verbose && !Blind && mon_visible(magr)) {
+    if (flags.verbose && !Blind && mon_visible(magr)) 
+	{
         pline("%s %s %s%s %s at %s.", Monnam(magr),
               (objects[otemp->otyp].oc_dir & PIERCE) ? "thrusts" : "swings",
               (otemp->quan > 1L) ? "one of " : "", mhis(magr), xname(otemp),

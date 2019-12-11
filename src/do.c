@@ -478,13 +478,16 @@ register struct obj* obj;
 	Sprintf(buf, "%s", makesingular(buf3));
 	//txt = buf;
 	//putstr(datawin, 0, txt);
+	boolean hidemainclass = FALSE;
 
-	strcpy(buf2, "");
+	strcpy(buf2, ""); /* Prefix */
+	strcpy(buf3, ""); /* Postfix preceded by : */
 	if (objects[otyp].oc_class == WEAPON_CLASS)
 	{
 		if (is_ammo(obj))
 		{
 			strcpy(buf2, "Ammunition");
+			hidemainclass = TRUE;
 		}
 		else if (is_launcher(obj))
 		{
@@ -498,34 +501,83 @@ register struct obj* obj;
 		{
 			strcpy(buf2, "Melee");
 		}
-
+		strcpy(buf3, weapon_type_names[objects[otyp].oc_subtyp]);
+		*buf3 = highc(*buf3);
 	}
 	else if (objects[otyp].oc_class == ARMOR_CLASS)
 	{
-		strcpy(buf2, armor_class_simple_name(obj));
-		*buf2 = highc(*buf2);
+		strcpy(buf3, armor_class_simple_name(obj));
+		*buf3 = highc(*buf3);
 
 		if (is_weapon(obj))
 		{
-			strcat(buf2, ", Melee weapon");
+			strcat(buf3, ", Melee weapon");
 		}
 	}
 	else if (objects[otyp].oc_class == MISCELLANEOUS_CLASS && objects[otyp].oc_subtyp > MISC_MULTIPLE_PERMITTED)
 	{
-		strcpy(buf2, misc_type_names[objects[otyp].oc_subtyp]);
-		*buf2 = highc(*buf2);
+		strcpy(buf3, misc_type_names[objects[otyp].oc_subtyp]);
+		*buf3 = highc(*buf3);
 	}
 	else if (objects[otyp].oc_class == TOOL_CLASS)
 	{
 		if (is_weptool(obj))
 		{
-			strcpy(buf2, "Weapon tool");
+			strcpy(buf2, "Weapon-like");
+		}
+		if (is_wand_like_tool(obj))
+		{
+			strcpy(buf2, "Wand-like");
+		}
+		if (is_candle(obj))
+		{
+			strcpy(buf3, "Candle");
+		}
+		if (Is_container(obj))
+		{
+			strcpy(buf2, "Container");
+			hidemainclass = TRUE;
 		}
 	}
+	else if (objects[otyp].oc_class == AMULET_CLASS || objects[otyp].oc_class == RING_CLASS)
+	{
+		if (objects[otyp].oc_name_known)
+		{
+			if (objects[otyp].oc_magic)
+				strcpy(buf2, "Magical");
+		}
+	}
+	else if (objects[otyp].oc_class == GEM_CLASS)
+	{
+		/*
+		if (is_graystone(obj))
+		{
+			strcpy(buf3, "Gray stone");
+		}
+		if (is_rock(obj))
+		{
+			strcpy(buf3, "Rock");
+		}
+		if (is_ore(obj))
+		{
+			strcpy(buf3, "Ore");
+		}
+		*/
+	}
+
 	if (strcmp(buf2, "") != 0)
 	{
+		char buf4[BUFSIZ] = "";
+		strcpy(buf4, buf);
 		//Sprintf(buf, "Category:               %s", buf2);
-		Sprintf(eos(buf), " - %s", buf2);
+		if (hidemainclass)
+			strcpy(buf, buf2);
+		else
+			Sprintf(buf, "%s %s", buf2, buf4);
+	}
+	if (strcmp(buf3, "") != 0)
+	{
+		Sprintf(eos(buf), ": %s", buf3);
 	}
 	txt = buf;
 	putstr(datawin, 0, txt);
@@ -851,6 +903,18 @@ register struct obj* obj;
 			txt = buf;
 			putstr(datawin, 0, txt);
 		}
+	}
+
+	int mcadj = objects[otyp].oc_mc_adjustment + (objects[otyp].oc_flags & O1_SPE_AFFECTS_MC_ADJUSTMENT) ? obj->spe : 0;
+	if (objects[otyp].oc_mc_adjustment != 0 || mcadj != 0)
+	{
+		if (mcadj >= 0)
+			Sprintf(buf, "Target MC adjustment:   +%d", mcadj);
+		else
+			Sprintf(buf, "Target MC adjustment:   %d", mcadj);
+
+		txt = buf;
+		putstr(datawin, 0, txt);
 	}
 
 	if (objects[otyp].oc_class == ARMOR_CLASS || (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))

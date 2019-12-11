@@ -52,12 +52,21 @@ STATIC_VAR NEARDATA const short skill_names_indices[P_NUM_SKILLS] = {
 
 /* note: entry [0] isn't used */
 STATIC_VAR NEARDATA const char *const odd_skill_names[] = {
-    "no skill", "bare hands", /* use barehands_or_martial[] instead */
+    "no skill", "bare handed combat", /* use barehands_or_martial[] instead */
     "two weapon combat", "riding", "polearm", "saber", "hammer", "whip",
-    "arcane spells", "clerical spells", "healing spells", "divination spells", "abjuration spells",
-	"movement spells", "transmutation spells", "enchantment spells", "conjuration spells", "necromancy spells", "disarm trap", "sword",
+    "arcane spell", "clerical spell", "healing spell", "divination spell", "abjuration spell",
+	"movement spell", "transmutation spell", "enchantment spell", "conjuration spell", "necromancy spell", "disarm trap", "sword",
 	"bludgeoning weapon", "thrown weapon",
 };
+
+STATIC_VAR NEARDATA const char* const odd_skill_names_plural[] = {
+	"no skill", "bare handed combat", /* use barehands_or_martial[] instead */
+	"two weapon combat", "riding", "polearms", "sabers", "hammers", "whips",
+	"arcane spells", "clerical spells", "healing spells", "divination spells", "abjuration spells",
+	"movement spells", "transmutation spells", "enchantment spells", "conjuration spells", "necromancy spells", "disarm traps", "swords",
+	"bludgeoning weapons", "thrown weapons",
+};
+
 /* indexed vis `is_martial() */
 STATIC_VAR NEARDATA const char *const barehands_or_martial[] = {
     "bare handed combat", "martial arts"
@@ -69,6 +78,14 @@ STATIC_VAR NEARDATA const char *const barehands_or_martial[] = {
          : (type == P_BARE_HANDED_COMBAT)               \
                ? barehands_or_martial[martial_bonus()]  \
                : odd_skill_names[-skill_names_indices[type]])
+
+#define P_NAME_PLURAL(type)                                    \
+    ((skill_names_indices[type] > 0)                    \
+         ? makeplural(OBJ_NAME(objects[skill_names_indices[type]])) \
+         : (type == P_BARE_HANDED_COMBAT)               \
+               ? barehands_or_martial[martial_bonus()]  \
+               : odd_skill_names_plural[-skill_names_indices[type]])
+
 
 static NEARDATA const char kebabable[] = { S_XORN, S_DRAGON, S_JABBERWOCK,
                                            S_NAGA, S_GIANT,  '\0' };
@@ -140,7 +157,7 @@ struct obj *obj;
     default:
         break;
     }
-    return makesingular(descr);
+	return descr; // makesingular(descr); // Now singular by definition
 }
 
 int
@@ -1538,10 +1555,11 @@ boolean ismax;
 }
 
 const char *
-skill_name(skill)
+skill_name(skill, plural)
 int skill;
+boolean plural;
 {
-    return P_NAME(skill);
+    return plural ? P_NAME_PLURAL(skill) : P_NAME(skill);
 }
 
 /* return the # of slots required to advance the skill */
@@ -1626,7 +1644,7 @@ int skill;
     /* subtly change the advance message to indicate no more advancement */
     You("are now %s skilled in %s.",
         P_SKILL(skill) >= P_MAX_SKILL(skill) ? "most" : "more",
-        P_NAME(skill));
+        P_NAME_PLURAL(skill));
 	update_can_advance_any_skill();
 }
 
