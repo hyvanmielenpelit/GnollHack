@@ -1914,7 +1914,7 @@ int mmflags;
 	mtmp->mcha = ptr->cha;
 	
 	/* set up level and hit points */
-	newmonhp(mtmp, mndx, !!(mmflags & MM_MAX_HP), !!(mmflags& MM_NORMAL_HIT_DICE));
+	newmonhp(mtmp, mndx, !!(mmflags & MM_MAX_HP), !!(mmflags & MM_NORMAL_HIT_DICE));
 
 	if (is_female(ptr))
         mtmp->female = TRUE;
