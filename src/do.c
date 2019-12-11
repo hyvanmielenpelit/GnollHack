@@ -616,7 +616,7 @@ register struct obj* obj;
 		/* Nutritinal value */
 		if (is_edible(obj))
 		{
-			Sprintf(buf2, "%d units", objects[otyp].oc_nutrition);
+			Sprintf(buf2, "%d rounds", objects[otyp].oc_nutrition);
 
 			Sprintf(buf, "Nutritional value:      %s", buf2);
 			txt = buf;

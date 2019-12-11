@@ -987,36 +987,7 @@ register struct obj* omonwep;
         }
         if (flags.verbose && !Deaf)
             verbalize("Burrrrp!");
-        tmp = mdef->mhp;
-        /* Use up amulet of life saving */
-        if (!!(obj = mlifesaver(mdef)))
-            m_useup(mdef, obj);
-
-        /* Is a corpse for nutrition possible?  It may kill magr */
-        if (!corpse_chance(mdef, magr, TRUE) || DEADMONSTER(magr))
-            break;
-
-        /* Pets get nutrition from swallowing monster whole.
-         * No nutrition from G_NOCORPSE monster, eg, undead.
-         * DGST monsters don't die from undead corpses
-         */
-        num = monsndx(pd);
-        if (magr->mtame && !magr->isminion
-            && !(mvitals[num].mvflags & G_NOCORPSE)) {
-            struct obj *virtualcorpse = mksobj(CORPSE, FALSE, FALSE, FALSE);
-            int nutrit;
-
-            set_corpsenm(virtualcorpse, num);
-            nutrit = dog_nutrition(magr, virtualcorpse);
-            dealloc_obj(virtualcorpse);
-
-            /* only 50% nutrition, 25% of normal eating time */
-            if (magr->meating > 1)
-                magr->meating = (magr->meating + 3) / 4;
-            if (nutrit > 1)
-                nutrit /= 2;
-            EDOG(magr)->hungrytime += nutrit;
-        }
+		// mdef->mhp;
         break;
     case AD_STUN:
         if (magr->mcancelled)
@@ -1608,7 +1579,8 @@ register struct obj* omonwep;
 		mdef->mhp = mdef->mhpmax;
 
 
-    if (DEADMONSTER(mdef)) {
+    if (DEADMONSTER(mdef)) 
+	{
 		if (poisondamage && mdef->mhp > -poisondamage && vis && canspotmon(mdef) && !isdisintegrated)
 			pline_The("poison was deadly...");
 
@@ -1631,6 +1603,33 @@ register struct obj* omonwep;
 
         if (mattk->adtyp == AD_DGST) 
 		{
+			/* Is a corpse for nutrition possible?  It may kill magr */
+			//if (!corpse_chance(mdef, magr, TRUE) || DEADMONSTER(magr))
+			//	break;
+
+			/* Pets get nutrition from swallowing monster whole.
+			 * No nutrition from G_NOCORPSE monster, eg, undead.
+			 * DGST monsters don't die from undead corpses
+			 */
+			num = monsndx(pd);
+			if (magr->mtame && !magr->isminion
+				&& !(mvitals[num].mvflags & G_NOCORPSE)) 
+			{
+				struct obj* virtualcorpse = mksobj(CORPSE, FALSE, FALSE, FALSE);
+				int nutrit;
+
+				set_corpsenm(virtualcorpse, num);
+				nutrit = dog_nutrition(magr, virtualcorpse);
+				dealloc_obj(virtualcorpse);
+
+				/* only 50% nutrition, 25% of normal eating time */
+				if (magr->meating > 1)
+					magr->meating = (magr->meating + 3) / 4;
+				if (nutrit > 1)
+					nutrit /= 2;
+				EDOG(magr)->hungrytime += nutrit;
+			}
+
             /* various checks similar to dog_eat and meatobj.
              * after monkilled() to provide better message ordering */
             if (mdef->cham >= LOW_PM)
