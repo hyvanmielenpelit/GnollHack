@@ -4148,7 +4148,7 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
     hpn = mtmp->mhp;
     hpd = mtmp->mhpmax;
     /* set level and hit points */
-    newmonhp(mtmp, monsndx(mdat), FALSE);
+    newmonhp(mtmp, monsndx(mdat), FALSE, FALSE);
     /* new hp: same fraction of max as before */
 #ifndef LINT
     mtmp->mhp = (int) (((long) hpn * (long) mtmp->mhp) / (long) hpd);

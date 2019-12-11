@@ -1659,14 +1659,15 @@ struct monst *mon;
 /* set up a new monster's initial level and hit points;
    used by newcham() as well as by makemon() */
 void
-newmonhp(mon, mndx, maxhp)
+newmonhp(mon, mndx, maxhp, normalhd)
 struct monst *mon;
 int mndx;
 boolean maxhp;
+boolean normalhd;
 {
     struct permonst *ptr = &mons[mndx];
 
-    mon->m_lev = adj_lev(ptr);
+    mon->m_lev = normalhd ? ptr->mlevel : adj_lev(ptr);
 	boolean dragonmaxhp = !!(ptr->mlet == S_DRAGON && mndx >= PM_GRAY_DRAGON && In_endgame(&u.uz));
 
 #if 0
@@ -1913,7 +1914,7 @@ int mmflags;
 	mtmp->mcha = ptr->cha;
 	
 	/* set up level and hit points */
-	newmonhp(mtmp, mndx, !!(mmflags & MM_MAX_HP));
+	newmonhp(mtmp, mndx, !!(mmflags & MM_MAX_HP), !!(mmflags& MM_NORMAL_HIT_DICE));
 
 	if (is_female(ptr))
         mtmp->female = TRUE;

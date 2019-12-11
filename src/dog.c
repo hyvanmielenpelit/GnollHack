@@ -195,7 +195,7 @@ makedog()
 		}
 	}
 
-    mtmp = makemon(&mons[pettype], u.ux, u.uy, MM_EDOG);
+    mtmp = makemon(&mons[pettype], u.ux, u.uy, MM_EDOG | MM_NORMAL_HIT_DICE);
 
     if (!mtmp)
         return ((struct monst *) 0); /* pets were genocided */

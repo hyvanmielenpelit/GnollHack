@@ -274,9 +274,10 @@ typedef struct sortloot_item Loot;
 #define MM_EDOG   0x01000   /* add edog structure */
 #define MM_ASLEEP 0x02000   /* monsters should be generated asleep */
 #define MM_NOGRP  0x04000   /* suppress creation of monster groups */
-#define MM_MAX_HP  0x08000   /* suppress creation of monster groups */
-#define MM_MALE  0x10000   /* suppress creation of monster groups */
-#define MM_FEMALE  0x20000   /* suppress creation of monster groups */
+#define MM_MAX_HP  0x08000  /* maximum hit points */
+#define MM_MALE  0x10000    /* always male */
+#define MM_FEMALE  0x20000  /* always female */
+#define MM_NORMAL_HIT_DICE  0x40000  /* use normal hit dice */
 
 /* flags for make_corpse() and mkcorpstat() */
 #define CORPSTAT_NONE 0x00
