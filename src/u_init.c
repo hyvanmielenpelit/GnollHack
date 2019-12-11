@@ -1405,6 +1405,8 @@ register struct trobj *trop;
 
 				/* Add arrows for magic arrow */
 				otmp = mksobj(ARROW, FALSE, FALSE, TRUE);
+				otmp->quan = 2 + rnd(5);
+				otmp->owt = weight(otmp);
 				otmp->known = 1;
 				otmp->dknown = otmp->bknown = otmp->rknown = 1;
 				(void)add_to_container(obj, otmp);

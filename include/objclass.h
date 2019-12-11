@@ -487,7 +487,7 @@ struct objclass {
 #define oc_spell_attribute oc_oc4		/* books: spell primary casting attribute */
 #define oc_spell_range oc_oc5			/* books: spell range */
 #define oc_spell_radius oc_oc6			/* books: spell radius */
-/* oc_oc7 unused */
+#define oc_spell_skill_chance oc_oc7	/* books: % chance of gaining skill points upon casting, also % multiplier for mixing */
 /* oc_oc8 unused */
 #define oc_spell_saving_throw_adjustment oc_mc_adjustment	/* books: spell saving throw adjustment */
 #define oc_spell_dmg_dice oc_wsdice		/* books: spell damage no of dice */

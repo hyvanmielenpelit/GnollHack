@@ -27,6 +27,7 @@
 #define spellmatcomp(spell) spl_book[spell].sp_matcomp
 #define spellcooldownlength(spell) spl_book[spell].sp_cooldownlength
 #define spellcooldownleft(spell) spl_book[spell].sp_cooldownleft
+#define spellskillchance(spell) spl_book[spell].sp_skillchance
 #define spellname(spell) OBJ_NAME(objects[spellid(spell)])
 #define spellet(spell) \
     ((char) ((spell < 26) ? ('a' + spell) : ('A' + spell - 26)))
@@ -434,6 +435,7 @@ learn(VOID_ARGS)
 				spl_book[i].sp_amount = -1; //Infinite
 			spl_book[i].sp_cooldownlength = objects[booktype].oc_spell_cooldown;
 			spl_book[i].sp_cooldownleft = 0;
+			spl_book[i].sp_skillchance = objects[booktype].oc_spell_skill_chance;
 
 			incrnknow(i, 1);
             book->spestudied++;
@@ -1344,6 +1346,7 @@ int spell;
 				putstr(datawin, 0, txt);
 			}
 		}
+
 	}
 
 	/* Duration */
@@ -1377,6 +1380,11 @@ int spell;
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
+
+	/* Skill chance */
+	Sprintf(buf, "Skill chance: %d%%", objects[booktype].oc_spell_skill_chance);
+	txt = buf;
+	putstr(datawin, 0, txt);
 
 	/* Flags */
 	if (objects[booktype].oc_aflags & S1_SPELL_BYPASSES_MAGIC_RESISTANCE)
@@ -2040,7 +2048,8 @@ boolean atme;
     }
 
     /* gain skill for successful cast */
-    use_skill(skill, max(spellev(spell) + 2, 1));
+	if(rn2(100) < spellskillchance(spell))
+	    use_skill(skill, max(spellev(spell) + 2, 1));
 
     obfree(pseudo, (struct obj *) 0); /* now, get rid of it */
     return 1;
@@ -2292,6 +2301,7 @@ int what;
 			spl_book[i].sp_matcomp = objects[SPE_TELEPORT_AWAY].oc_material_components;
 			spl_book[i].sp_cooldownlength = objects[SPE_TELEPORT_AWAY].oc_spell_cooldown;
 			spl_book[i].sp_cooldownleft = 0;
+			spl_book[i].sp_skillchance = objects[SPE_TELEPORT_AWAY].oc_spell_skill_chance;
 			spl_book[i].sp_amount = -1; //Infinite??
 			spl_book[i].sp_know = KEEN;
             return REMOVESPELL; /* operation needed to reverse */
@@ -3355,6 +3365,7 @@ struct obj *obj;
 			spl_book[i].sp_amount = -1;
 		spl_book[i].sp_cooldownlength = objects[otyp].oc_spell_cooldown;
 		spl_book[i].sp_cooldownleft = 0;
+		spl_book[i].sp_skillchance = objects[otyp].oc_spell_skill_chance;
 
 		incrnknow(i, 0);
     }
@@ -3590,8 +3601,11 @@ int spell;
 		/* gain skill for successful preparation */
 		int otyp = spellid(spell);
 		int skill = spell_skilltype(otyp);
+		int skillchance = spellskillchance(spell);
+		int skillpoints = max(0, max(spellev(spell) + 2, 1) * addedamount * skillchance / 100);
 
-		use_skill(skill, max(spellev(spell) + 2, 1) * addedamount);
+		if(skillpoints > 0)	
+			use_skill(skill, skillpoints);
 
 	}
 

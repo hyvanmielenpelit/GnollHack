@@ -18,6 +18,7 @@ struct spell {
 	int sp_matcomp; /* matcompid, if any */
 	int sp_cooldownlength; /* cooldown length */
 	int sp_cooldownleft; /* cooldown turns left */
+	int sp_skillchance; /* % chance to get skill points upon casting */
 };
 
 /* levels of memory destruction with a scroll of amnesia */
