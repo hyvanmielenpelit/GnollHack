@@ -924,20 +924,15 @@ register struct obj* obj;
 		txt = buf;
 		putstr(datawin, 0, txt);
 
-		if (objects[otyp].oc_name_known)
-		{
-			int mc = objects[otyp].oc_magic_cancellation;
-			if (objects[otyp].oc_flags & O1_SPE_AFFECTS_MC)
-				mc+= obj->spe;
+		int mc = objects[otyp].oc_magic_cancellation;
+		//if (objects[otyp].oc_flags & O1_SPE_AFFECTS_MC)
+		//	mc+= obj->spe;
 
-			/* magic cancellation */
-			Sprintf(buf2, "%s%d", mc >= 0 ? "+" : "", mc);
-			Sprintf(buf, "Magic cancellation:     %s", buf2);
-			txt = buf;
-			putstr(datawin, 0, txt);
-
-		}
-
+		/* magic cancellation */
+		Sprintf(buf2, "%s%d", mc >= 0 ? "+" : "", mc);
+		Sprintf(buf, "Magic cancellation:     %s", buf2);
+		txt = buf;
+		putstr(datawin, 0, txt);
 	}
 
 	if (objects[otyp].oc_class == WAND_CLASS || (objects[otyp].oc_class == TOOL_CLASS && is_wand_like_tool(obj)))
@@ -1025,7 +1020,22 @@ register struct obj* obj;
 
 			if (obj->oclass == ARMOR_CLASS || (objects[otyp].oc_name_known && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)))
 			{
-				Sprintf(eos(bonusbuf), " (%s%d %s to AC)", obj->spe <= 0 ? "+" : "", -obj->spe, obj->spe >= 0 ? "bonus" : "penalty");
+				if (objects[otyp].oc_flags & O1_SPE_AFFECTS_MC)
+				{
+					Sprintf(eos(bonusbuf), " (%s%d to AC and %s%d to MC)", 
+						obj->spe <= 0 ? "+" : "",
+						-obj->spe,
+						obj->spe >= 0 ? "+" : "",
+						obj->spe
+					);
+				}
+				else
+				{
+					Sprintf(eos(bonusbuf), " (%s%d %s to AC)", 
+						obj->spe <= 0 ? "+" : "", 
+						-obj->spe,
+						obj->spe >= 0 ? "bonus" : "penalty");
+				}
 			}
 
 			Sprintf(buf, "Enchantment status:     %s%d%s", obj->spe >= 0 ? "+" : "", obj->spe, bonusbuf);
@@ -1076,10 +1086,10 @@ register struct obj* obj;
 	}
 	if (obj->elemental_enchantment)
 	{
-		Sprintf(buf, "Special enchantment:    %s", obj->elemental_enchantment == FIRE_ENCHANTMENT ? "Fire-enchanted (+2d6 fire damage)" :
-			obj->elemental_enchantment == COLD_ENCHANTMENT ? "Cold-enchanted (+1d6 cold damage)" :
-			obj->elemental_enchantment == LIGHTNING_ENCHANTMENT ? "Lightning-enchanted (+3d6 lightning damage)" :
-			obj->elemental_enchantment == DEATH_ENCHANTMENT ? "Death-enchanted (kills on hit)" : "Unknown enchantment"
+		Sprintf(buf, "Elemental enchantment:  %s", obj->elemental_enchantment == FIRE_ENCHANTMENT ? "Flaming (+2d6 fire damage)" :
+			obj->elemental_enchantment == COLD_ENCHANTMENT ? "Freezing (+1d6 cold damage)" :
+			obj->elemental_enchantment == LIGHTNING_ENCHANTMENT ? "Electrified (+3d6 lightning damage)" :
+			obj->elemental_enchantment == DEATH_ENCHANTMENT ? "Deathly (kills on hit)" : "Unknown enchantment"
 		);
 		txt = buf;
 		putstr(datawin, 0, txt);
