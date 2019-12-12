@@ -224,7 +224,7 @@ struct obj {
 #define any_quest_artifact(o) ((o)->oartifact >= ART_ORB_OF_DETECTION)
 
 #define is_elemental_enchantable(otmp)                                            \
-	((otmp->oclass == WEAPON_CLASS && !is_launcher(otmp)) || objects[otmp->otyp].oc_flags & O1_SPECIAL_ENCHANTABLE)
+	((otmp->oclass == WEAPON_CLASS && !is_launcher(otmp)) || objects[otmp->otyp].oc_flags3 & O3_ELEMENTAL_ENCHANTABLE)
 #define is_deathenchantable(otmp)                                            \
     (objects[otmp->otyp].oc_material == MAT_BONE || objects[otmp->otyp].oc_material == MAT_GLASS)
 

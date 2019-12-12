@@ -163,7 +163,8 @@ static struct trobj Samurai[] = {
 static struct trobj Tourist[] = {
 #define T_DARTS 0
 	{ DART, 2, WEAPON_CLASS, 25, UNDEF_BLESS, 0 }, /* quan is variable */
-    { POT_EXTRA_HEALING, 0, POTION_CLASS, 2, UNDEF_BLESS, 0 },
+	{ GOLF_CLUB, 1, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
+	{ POT_EXTRA_HEALING, 0, POTION_CLASS, 2, UNDEF_BLESS, 0 },
     { SCR_MAGIC_MAPPING, 0, SCROLL_CLASS, 4, UNDEF_BLESS, 0 },
     { HAWAIIAN_SHIRT, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
 	{ LEATHER_SANDALS, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
@@ -177,6 +178,7 @@ static struct trobj Tourist[] = {
 };
 static struct trobj TouristFemale[] = {
 	{ DART, 2, WEAPON_CLASS, 25, UNDEF_BLESS, 0 }, /* quan is variable */
+	{ GOLF_CLUB, 1, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
 	{ POT_EXTRA_HEALING, 0, POTION_CLASS, 2, UNDEF_BLESS, 0 },
 	{ SCR_MAGIC_MAPPING, 0, SCROLL_CLASS, 4, UNDEF_BLESS, 0 },
 	{ HAWAIIAN_SHIRT, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
@@ -1561,9 +1563,10 @@ register struct trobj *trop;
 		}
 
 
-        if (obj->oclass == WEAPON_CLASS || is_weptool(obj)
-            || otyp == TIN_OPENER || otyp == FLINT || is_rock(obj)) {
-            if (is_ammo(obj) || is_missile(obj)) {
+        if (obj->oclass == WEAPON_CLASS || is_weptool(obj) || otyp == TIN_OPENER || otyp == FLINT || is_rock(obj)) 
+		{
+            if (is_ammo(obj) || is_missile(obj)) 
+			{
                 if (!uquiver)
                     setuqwep(obj);
             }

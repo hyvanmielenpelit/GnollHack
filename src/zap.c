@@ -4316,7 +4316,8 @@ struct obj **pobj; /* object tossed/used, set to NULL
     boolean tethered_weapon = FALSE;
     int skiprange_start = 0, skiprange_end = 0, skipcount = 0;
 
-    if (weapon == KICKED_WEAPON) {
+    if (weapon == KICKED_WEAPON || weapon == GOLF_SWING)
+	{
         /* object starts one square in front of player */
         bhitpos.x = u.ux + ddx;
         bhitpos.y = u.uy + ddy;
@@ -4363,7 +4364,7 @@ struct obj **pobj; /* object tossed/used, set to NULL
         typ = levl[bhitpos.x][bhitpos.y].typ;
 
         /* iron bars will block anything big enough */
-        if ((weapon == THROWN_WEAPON || weapon == KICKED_WEAPON)
+        if ((weapon == THROWN_WEAPON || weapon == KICKED_WEAPON || weapon == GOLF_SWING)
             && typ == IRONBARS
             && hits_bars(pobj, x - ddx, y - ddy, bhitpos.x, bhitpos.y,
                          point_blank ? 0 : !rn2(5), 1)) {
@@ -4486,7 +4487,7 @@ struct obj **pobj; /* object tossed/used, set to NULL
             if (bhitpile(obj, fhito, bhitpos.x, bhitpos.y, 0))
                 range--;
         } else {
-            if (weapon == KICKED_WEAPON
+            if ((weapon == KICKED_WEAPON || weapon == GOLF_SWING)
                 && ((obj->oclass == COIN_CLASS
                      && OBJ_AT(bhitpos.x, bhitpos.y))
                     || ship_object(obj, bhitpos.x, bhitpos.y,
@@ -4532,7 +4533,7 @@ struct obj **pobj; /* object tossed/used, set to NULL
             tmp_at(bhitpos.x, bhitpos.y);
             delay_output();
             /* kicked objects fall in pools */
-            if ((weapon == KICKED_WEAPON)
+            if ((weapon == KICKED_WEAPON || weapon == GOLF_SWING)
                 && (is_pool(bhitpos.x, bhitpos.y)
                     || is_lava(bhitpos.x, bhitpos.y)))
                 break;

@@ -20,8 +20,7 @@ STATIC_DCL void FDECL(kickdmg, (struct monst *, BOOLEAN_P));
 STATIC_DCL boolean FDECL(maybe_kick_monster, (struct monst *,
                                               XCHAR_P, XCHAR_P));
 STATIC_DCL void FDECL(kick_monster, (struct monst *, XCHAR_P, XCHAR_P));
-STATIC_DCL int FDECL(kick_object, (XCHAR_P, XCHAR_P, char *));
-STATIC_DCL int FDECL(really_kick_object, (XCHAR_P, XCHAR_P));
+STATIC_DCL int FDECL(really_kick_object, (XCHAR_P, XCHAR_P, BOOLEAN_P));
 STATIC_DCL char *FDECL(kickstr, (char *, const char *));
 STATIC_DCL void FDECL(otransit_msg, (struct obj *, BOOLEAN_P, long));
 STATIC_DCL void FDECL(drop_to, (coord *, SCHAR_P));
@@ -458,10 +457,12 @@ xchar x, y; /* coordinates where object was before the impact, not after */
 }
 
 /* jacket around really_kick_object */
-STATIC_OVL int
-kick_object(x, y, kickobjnam)
+
+int
+kick_object(x, y, kickobjnam, is_golf_swing)
 xchar x, y;
 char *kickobjnam;
+boolean is_golf_swing;
 {
     int res = 0;
 
@@ -471,7 +472,7 @@ char *kickobjnam;
     if (kickedobj) {
         /* kick object; if doing is fatal, done() will clean up kickedobj */
         Strcpy(kickobjnam, killer_xname(kickedobj)); /* matters iff res==0 */
-        res = really_kick_object(x, y);
+        res = really_kick_object(x, y, is_golf_swing);
         kickedobj = (struct obj *) 0;
     }
     return res;
@@ -479,14 +480,17 @@ char *kickobjnam;
 
 /* guts of kick_object */
 STATIC_OVL int
-really_kick_object(x, y)
+really_kick_object(x, y, is_golf_swing)
 xchar x, y;
+boolean is_golf_swing;
 {
     int range;
     struct monst *mon, *shkp = 0;
     struct trap *trap;
     char bhitroom;
     boolean costly, isgold, slide = FALSE;
+	const char* verb = is_golf_swing ? "swing at" : "kick";
+	const char* noun = is_golf_swing ? "swing" : "kick";
 
     /* kickedobj should always be set due to conditions of call */
     if (!kickedobj || kickedobj->otyp == BOULDER || kickedobj == uball
@@ -494,13 +498,14 @@ xchar x, y;
         return 0;
 
     if ((trap = t_at(x, y)) != 0) {
-        if ((is_pit(trap->ttyp) && !Passes_walls) || trap->ttyp == WEB) {
+        if ((is_pit(trap->ttyp) && !Passes_walls) || trap->ttyp == WEB) 
+		{
             if (!trap->tseen)
                 find_trap(trap);
-            You_cant("kick %s that's in a %s!", something,
-                     Hallucination ? "tizzy"
-                         : (trap->ttyp == WEB) ? "web"
-                             : "pit");
+            You_cant("%s %s that's in a %s!", 
+				verb,
+				something,
+				Hallucination ? "tizzy" : (trap->ttyp == WEB) ? "web" : "pit");
             return 1;
         }
         if (trap->ttyp == STATUE_TRAP) {
@@ -510,46 +515,56 @@ xchar x, y;
     }
 
     if (Fumbling && !rn2(3)) {
-        Your("clumsy kick missed.");
+        Your("clumsy %s missed.", noun);
         return 1;
     }
 
     if (!uarmf && kickedobj->otyp == CORPSE
-        && touch_petrifies(&mons[kickedobj->corpsenm]) && !Stone_resistance) {
-        You("kick %s with your bare %s.",
-            corpse_xname(kickedobj, (const char *) 0, CXN_PFX_THE),
-            makeplural(body_part(FOOT)));
-        if (poly_when_stoned(youmonst.data) && polymon(PM_STONE_GOLEM)) {
-            ; /* hero has been transformed but kick continues */
-        } else {
-            /* normalize body shape here; foot, not body_part(FOOT) */
-            Sprintf(killer.name, "kicking %s barefoot",
-                    killer_xname(kickedobj));
-            instapetrify(killer.name);
-        }
+        && touch_petrifies(&mons[kickedobj->corpsenm]) && !Stone_resistance) 
+	{
+		if (is_golf_swing)
+		{
+			pline("Thump!");
+			return 1;
+		}
+		else
+		{
+			You("kick %s with your bare %s.",
+				corpse_xname(kickedobj, (const char*)0, CXN_PFX_THE),
+				makeplural(body_part(FOOT)));
+			if (poly_when_stoned(youmonst.data) && polymon(PM_STONE_GOLEM)) {
+				; /* hero has been transformed but kick continues */
+			}
+			else {
+				/* normalize body shape here; foot, not body_part(FOOT) */
+				Sprintf(killer.name, "kicking %s barefoot",
+					killer_xname(kickedobj));
+				instapetrify(killer.name);
+			}
+		}
     }
 
     isgold = (kickedobj->oclass == COIN_CLASS);
-    {
-        int k_owt = (int) kickedobj->owt;
 
-        /* for non-gold stack, 1 item will be split off below (unless an
-           early return occurs, so we aren't moving the split to here);
-           calculate the range for that 1 rather than for the whole stack */
-        if (kickedobj->quan > 1L && !isgold) {
-            long save_quan = kickedobj->quan;
+	int k_owt = (int) kickedobj->owt;
 
-            kickedobj->quan = 1L;
-            k_owt = weight(kickedobj);
-            kickedobj->quan = save_quan;
-        }
+    /* for non-gold stack, 1 item will be split off below (unless an
+        early return occurs, so we aren't moving the split to here);
+        calculate the range for that 1 rather than for the whole stack */
+    if (kickedobj->quan > 1L && !isgold)
+	{
+        long save_quan = kickedobj->quan;
 
-        /* range < 2 means the object will not move
-           (maybe dexterity should also figure here) */
-        range = ((int) ACURRSTR) / 2 - k_owt / 40;
+        kickedobj->quan = 1L;
+        k_owt = weight(kickedobj);
+        kickedobj->quan = save_quan;
     }
 
-    if (martial())
+    /* range < 2 means the object will not move
+        (maybe dexterity should also figure here) */
+    range = is_golf_swing ? ( ((int)ACURRSTR + ACURR(A_DEX) + (kickedobj->oclass == GEM_CLASS ? (throwing_weapon(kickedobj) ? 18 : 6) : 0)) / max(1, k_owt / 4) ) : ((int) ACURRSTR) / 2 - k_owt / 40;
+
+    if (martial() && !is_golf_swing)
         range += rnd(3);
 
     if (is_pool(x, y)) {
@@ -608,7 +623,14 @@ xchar x, y;
     }
 
     /* a box gets a chance of breaking open here */
-    if (Is_box(kickedobj)) {
+    if (Is_box(kickedobj)) 
+	{
+		if (is_golf_swing)
+		{
+			pline("Thump!");
+			return 1;
+		}
+
         boolean otrp = kickedobj->otrapped;
 
         if (range < 2)
@@ -683,7 +705,7 @@ xchar x, y;
     obj_extract_self(kickedobj);
     (void) snuff_candle(kickedobj);
     newsym(x, y);
-    mon = bhit(u.dx, u.dy, range, KICKED_WEAPON,
+    mon = bhit(u.dx, u.dy, range, is_golf_swing ? GOLF_SWING : KICKED_WEAPON,
                (int FDECL((*), (MONST_P, OBJ_P))) 0,
                (int FDECL((*), (OBJ_P, OBJ_P))) 0, &kickedobj);
     if (!kickedobj)
@@ -695,7 +717,7 @@ xchar x, y;
             return 1; /* alert shk caught it */
         notonhead = (mon->mx != bhitpos.x || mon->my != bhitpos.y);
         if (isgold ? ghitm(mon, kickedobj)      /* caught? */
-                   : thitmonst(mon, kickedobj)) /* hit && used up? */
+                   : thitmonst(mon, kickedobj, is_golf_swing)) /* hit && used up? */
             return 1;
     }
 
@@ -966,8 +988,10 @@ dokick()
     }
 
     if (OBJ_AT(x, y) && (!Levitation || Is_airlevel(&u.uz)
-                         || Is_waterlevel(&u.uz) || sobj_at(BOULDER, x, y))) {
-        if (kick_object(x, y, kickobjnam)) {
+                         || Is_waterlevel(&u.uz) || sobj_at(BOULDER, x, y))) 
+	{
+        if (kick_object(x, y, kickobjnam, FALSE)) 
+		{
             if (Is_airlevel(&u.uz))
                 hurtle(-u.dx, -u.dy, 1, TRUE); /* assume it's light */
             return 1;

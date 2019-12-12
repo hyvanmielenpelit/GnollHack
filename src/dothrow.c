@@ -1440,8 +1440,17 @@ boolean
 throwing_weapon(obj)
 struct obj *obj;
 {
-    return (boolean) (is_missile(obj) || (objects[obj->otyp].oc_flags & O1_THROWN_WEAPON));
+    return (boolean) (nonmelee_throwing_weapon(obj) || (objects[obj->otyp].oc_flags & O1_MELEE_AND_THROWN_WEAPON));
 }
+
+/* return true for weapon meant to be only thrown and cannot be used in melee */
+boolean
+nonmelee_throwing_weapon(obj)
+struct obj* obj;
+{
+	return (boolean)(is_missile(obj) || (objects[obj->otyp].oc_flags & O1_THROWN_WEAPON_ONLY));
+}
+
 
 /* the currently thrown object is returning to you (not for boomerangs) */
 STATIC_OVL void
@@ -1623,7 +1632,7 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
         }
         (void) snuff_candle(obj);
         notonhead = (bhitpos.x != mon->mx || bhitpos.y != mon->my);
-        obj_gone = thitmonst(mon, obj);
+        obj_gone = thitmonst(mon, obj, FALSE);
 		if (mon && DEADMONSTER(mon))
 			context.multishot_target_killed = TRUE;
 
@@ -1882,10 +1891,14 @@ boolean maybe_wakeup;
  * Also used for kicked objects and for polearms/grapnel applied at range.
  */
 int
-thitmonst(mon, obj)
+thitmonst(mon, obj, is_golf)
 register struct monst *mon;
 register struct obj *obj; /* thrownobj or kickedobj or uwep */
+register boolean is_golf;
 {
+	if (!mon || !obj)
+		return 0;
+
     register int tmp;     /* Base chance to hit */
     register int disttmp; /* distance modifier */
     int otyp = obj->otyp, hmode;
@@ -1893,7 +1906,7 @@ register struct obj *obj; /* thrownobj or kickedobj or uwep */
     int dieroll;
 
     hmode = (obj == uwep) ? HMON_APPLIED
-              : (obj == kickedobj) ? HMON_KICKED
+              : (obj == kickedobj) ? (is_golf ? HMON_GOLF : HMON_KICKED)
                 : HMON_THROWN;
 
     /* Differences from melee weapons:
@@ -1940,11 +1953,14 @@ register struct obj *obj; /* thrownobj or kickedobj or uwep */
 
 		//Bows have point black penalty
 		//OTHER BONUSES FROM BOW ARE GIVEN BELOW, THIS IS FOR POINT BLACK RANGE ONLY
-	if (hmode == HMON_THROWN) {
+	if (hmode == HMON_THROWN) 
+	{
 		if (obj && uwep && mon && ammo_and_launcher(obj, uwep))
 		{
-			if (mindistance <= 1) {
-				switch (objects[uwep->otyp].oc_skill) {
+			if (mindistance <= 1) 
+			{
+				switch (objects[uwep->otyp].oc_skill) 
+				{
 				case P_BOW:
 					tmp -= 20;
 					break;
@@ -1975,18 +1991,25 @@ register struct obj *obj; /* thrownobj or kickedobj or uwep */
         tmp++;
 
 	//Guaranteed hit
-    if (guaranteed_hit) {
+    if (guaranteed_hit) 
+	{
         tmp += 1000; /* Guaranteed hit */
     }
 
-    if (obj->oclass == GEM_CLASS && is_unicorn(mon->data)) {
-        if (mon->msleeping || !mon->mcanmove) {
+    if (obj->oclass == GEM_CLASS && is_unicorn(mon->data)) 
+	{
+        if (mon->msleeping || !mon->mcanmove) 
+		{
             tmiss(obj, mon, FALSE);
             return 0;
-        } else if (mon->mtame) {
+        } 
+		else if (mon->mtame) 
+		{
             pline("%s catches and drops %s.", Monnam(mon), the(xname(obj)));
             return 0;
-        } else {
+        } 
+		else 
+		{
             pline("%s catches %s.", Monnam(mon), the(xname(obj)));
             return gem_accept(mon, obj);
         }
@@ -1995,15 +2018,18 @@ register struct obj *obj; /* thrownobj or kickedobj or uwep */
     /* don't make game unwinnable if naive player throws artifact
        at leader... (kicked artifact is ok too; HMON_APPLIED could
        occur if quest artifact polearm or grapnel ever gets added) */
-    if (hmode != HMON_APPLIED && quest_arti_hits_leader(obj, mon)) {
+    if (hmode != HMON_APPLIED && quest_arti_hits_leader(obj, mon)) 
+	{
         /* AIS: changes to wakeup() means that it's now less inappropriate here
            than it used to be, but the manual version works just as well */
         mon->msleeping = 0;
         mon->mstrategy &= ~STRAT_WAITMASK;
 
-        if (mon->mcanmove) {
+        if (mon->mcanmove) 
+		{
             pline("%s catches %s.", Monnam(mon), the(xname(obj)));
-            if (mon->mpeaceful) {
+            if (mon->mpeaceful) 
+			{
                 boolean next2u = monnear(mon, u.ux, u.uy);
 
                 finish_quest(obj); /* acknowledge quest completion */
@@ -2013,7 +2039,9 @@ register struct obj *obj; /* thrownobj or kickedobj or uwep */
                     sho_obj_return_to_u(obj);
                 obj = addinv(obj); /* back into your inventory */
                 (void) encumber_msg();
-            } else {
+            } 
+			else 
+			{
                 /* angry leader caught it and isn't returning it */
                 if (*u.ushops || obj->unpaid) /* not very likely... */
                     check_shop_obj(obj, mon->mx, mon->my, FALSE);
@@ -2026,15 +2054,23 @@ register struct obj *obj; /* thrownobj or kickedobj or uwep */
 
     dieroll = rnd(20);
 
-    if (obj->oclass == WEAPON_CLASS || is_weptool(obj)
-        || obj->oclass == GEM_CLASS) {
-        if (hmode == HMON_KICKED) {
+	boolean is_golf_swing_with_stone = (hmode == HMON_GOLF && obj->oclass == GEM_CLASS);
+
+    if (obj->oclass == WEAPON_CLASS || is_weptool(obj) || obj->oclass == GEM_CLASS) 
+	{
+        if (hmode == HMON_KICKED)
+		{
             /* throwing adjustments and weapon skill bonus don't apply */
             tmp -= (is_ammo(obj) ? 5 : 3);
-        } else if (is_ammo(obj)) {
-            if (!ammo_and_launcher(obj, uwep)) {
+        } 
+		else if (is_ammo(obj) || is_golf_swing_with_stone)
+		{
+            if (!ammo_and_launcher(obj, uwep) && !is_golf_swing_with_stone)
+			{
                 tmp -= 4;
-            } else {
+            } 
+			else if (uwep)
+			{
 				tmp += hitval(uwep, mon, &youmonst);	//tmp += uwep->spe - greatest_erosion(uwep);
                 tmp += weapon_hit_bonus(uwep); //Players get skill bonuses
 //                if (uwep->oartifact)
@@ -2046,7 +2082,8 @@ register struct obj *obj; /* thrownobj or kickedobj or uwep */
                  */
                 if ((Race_if(PM_ELF) || Role_if(PM_SAMURAI))
                     && (!Upolyd || your_race(youmonst.data))
-                    && objects[uwep->otyp].oc_skill == P_BOW) {
+                    && objects[uwep->otyp].oc_skill == P_BOW) 
+				{
                     tmp++;
                     if (Race_if(PM_ELF) && uwep->otyp == ELVEN_LONG_BOW)
                         tmp++;
@@ -2054,7 +2091,9 @@ register struct obj *obj; /* thrownobj or kickedobj or uwep */
                         tmp++;
                 }
             }
-        } else { /* thrown non-ammo or applied polearm/grapnel */
+        } 
+		else 
+		{ /* thrown non-ammo or applied polearm/grapnel */
             if (throwing_weapon(obj)) /* meant to be thrown */
                 tmp += 2;
             else if (obj == thrownobj) /* not meant to be thrown */
@@ -2064,7 +2103,8 @@ register struct obj *obj; /* thrownobj or kickedobj or uwep */
             tmp += weapon_hit_bonus(obj);
         }
 
-        if (tmp >= dieroll) {
+        if (tmp >= dieroll) 
+		{
             boolean wasthrown = (thrownobj != 0),
                     /* remember weapon attribute; hmon() might destroy obj */
                     chopper = is_axe(obj);
@@ -2074,7 +2114,8 @@ register struct obj *obj; /* thrownobj or kickedobj or uwep */
                 u.uconduct.weaphit++;
 
 			//DAMAGE IS DONE HERE
-            if (hmon(mon, obj, hmode, dieroll)) { /* mon still alive */
+            if (hmon(mon, obj, hmode, dieroll)) 
+			{ /* mon still alive */
                 if (mon->wormno)
                     cutworm(mon, bhitpos.x, bhitpos.y, chopper);
             }
@@ -2091,7 +2132,8 @@ register struct obj *obj; /* thrownobj or kickedobj or uwep */
                that hmon() might have destroyed so obj is intact */
             if (objects[otyp].oc_skill < P_NONE
                 && objects[otyp].oc_skill >= -P_THROWN_WEAPON
-                && !objects[otyp].oc_magic) {
+                && !objects[otyp].oc_magic) 
+			{
                 /* we were breaking 2/3 of everything unconditionally.
                  * we still don't want anything to survive unconditionally,
                  * but we need ammo to stay around longer on average.
@@ -2107,7 +2149,8 @@ register struct obj *obj; /* thrownobj or kickedobj or uwep */
                 if (obj->blessed)
                     broken = 0;
 
-                if (broken) {
+                if (broken) 
+				{
                     if (*u.ushops || obj->unpaid)
                         check_shop_obj(obj, bhitpos.x, bhitpos.y, TRUE);
                     obfree(obj, (struct obj *) 0);
@@ -2115,63 +2158,87 @@ register struct obj *obj; /* thrownobj or kickedobj or uwep */
                 }
             }
             passive_obj(mon, obj, (struct attack *) 0);
-        } else {
+        } 
+		else
+		{
             tmiss(obj, mon, TRUE);
             if (hmode == HMON_APPLIED)
                 wakeup(mon, TRUE);
         }
 
-    } else if (otyp == HEAVY_IRON_BALL) {
+    } 
+	else if (otyp == HEAVY_IRON_BALL) 
+	{
         exercise(A_STR, TRUE);
-        if (tmp >= dieroll) {
+        if (tmp >= dieroll)
+		{
             int was_swallowed = guaranteed_hit;
 
             exercise(A_DEX, TRUE);
-            if (!hmon(mon, obj, hmode, dieroll)) { /* mon killed */
+            if (!hmon(mon, obj, hmode, dieroll)) 
+			{ /* mon killed */
                 if (was_swallowed && !u.uswallow && obj == uball)
                     return 1; /* already did placebc() */
             }
-        } else {
+        } 
+		else 
+		{
             tmiss(obj, mon, TRUE);
         }
 
-    } else if (otyp == BOULDER) {
+    } else if (otyp == BOULDER) 
+	{
         exercise(A_STR, TRUE);
-        if (tmp >= dieroll) {
+        if (tmp >= dieroll) 
+		{
             exercise(A_DEX, TRUE);
             (void) hmon(mon, obj, hmode, dieroll);
-        } else {
+        }
+		else 
+		{
             tmiss(obj, mon, TRUE);
         }
 
-    } else if ((otyp == EGG || otyp == CREAM_PIE || otyp == BLINDING_VENOM
-                || otyp == ACID_VENOM)
-               && (guaranteed_hit || ACURR(A_DEX) > rnd(25))) {
+    } 
+	else if ((otyp == EGG || otyp == CREAM_PIE || otyp == BLINDING_VENOM || otyp == ACID_VENOM)
+               && (guaranteed_hit || ACURR(A_DEX) > rnd(25)))
+	{
         (void) hmon(mon, obj, hmode, dieroll);
         return 1; /* hmon used it up */
 
-    } else if (obj->oclass == POTION_CLASS
-               && (guaranteed_hit || ACURR(A_DEX) > rnd(25))) {
+    } 
+	else if (obj->oclass == POTION_CLASS && (guaranteed_hit || ACURR(A_DEX) > rnd(25))) 
+	{
         potionhit(mon, obj, POTHIT_HERO_THROW);
         return 1;
 
-    } else if (befriend_with_obj(mon->data, obj)
-               || (mon->mtame && dogfood(mon, obj) <= ACCFOOD)) {
-        if (tamedog(mon, obj, FALSE)) {
+    } 
+	else if (befriend_with_obj(mon->data, obj)
+               || (mon->mtame && dogfood(mon, obj) <= ACCFOOD)) 
+	{
+        if (tamedog(mon, obj, FALSE)) 
+		{
             return 1; /* obj is gone */
-        } else {
+        } 
+		else 
+		{
             tmiss(obj, mon, FALSE);
             mon->msleeping = 0;
             mon->mstrategy &= ~STRAT_WAITMASK;
         }
-    } else if (guaranteed_hit) {
+    } 
+	else if (guaranteed_hit) 
+	{
         /* this assumes that guaranteed_hit is due to swallowing */
         wakeup(mon, TRUE);
-        if (obj->otyp == CORPSE && touch_petrifies(&mons[obj->corpsenm])) {
-            if (is_animal(u.ustuck->data)) {
+        if (obj->otyp == CORPSE && touch_petrifies(&mons[obj->corpsenm])) 
+		{
+            if (is_animal(u.ustuck->data)) 
+			{
                 minstapetrify(u.ustuck, TRUE);
                 /* Don't leave a cockatrice corpse available in a statue */
-                if (!u.uswallow) {
+                if (!u.uswallow) 
+				{
                     delobj(obj);
                     return 1;
                 }
@@ -2180,7 +2247,9 @@ register struct obj *obj; /* thrownobj or kickedobj or uwep */
         pline("%s into %s %s.", Tobjnam(obj, "vanish"),
               s_suffix(mon_nam(mon)),
               is_animal(u.ustuck->data) ? "entrails" : "currents");
-    } else {
+    } 
+	else 
+	{
         tmiss(obj, mon, TRUE);
     }
 

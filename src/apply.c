@@ -3632,7 +3632,7 @@ struct obj *obj;
         context.polearm.hitmon = mtmp;
         check_caitiff(mtmp);
         notonhead = (bhitpos.x != mtmp->mx || bhitpos.y != mtmp->my);
-        (void) thitmonst(mtmp, uwep);
+        (void) thitmonst(mtmp, uwep, FALSE);
     } else if (glyph_is_statue(glyph) /* might be hallucinatory */
                && sobj_at(STATUE, bhitpos.x, bhitpos.y)) {
         struct trap *t = t_at(bhitpos.x, bhitpos.y);
@@ -3817,7 +3817,7 @@ struct obj *obj;
             (void) attack_checks(mtmp, uwep);
             flags.confirm = save_confirm;
             check_caitiff(mtmp);
-            (void) thitmonst(mtmp, uwep);
+            (void) thitmonst(mtmp, uwep, FALSE);
             return 1;
         }
     /*FALLTHRU*/
@@ -4278,6 +4278,9 @@ doapply()
 	case SHOVEL:
 		res = use_pick_axe(obj);
         break;
+	case GOLF_CLUB:
+		res = use_golf_club(obj);
+		break;
 	case TINNING_KIT:
         use_tinning_kit(obj);
         break;
@@ -4524,6 +4527,291 @@ int arrowtype, quan; //ObjID and quantity
 		return otmp->quan;
 	else
 		return 0;
+}
+
+
+int
+use_golf_club(obj)
+struct obj* obj;
+{
+	int x, y;
+	int avrg_attrib;
+	int dmg = 0, glyph, oldglyph = -1;
+	register struct monst* mtmp;
+	boolean no_golf_swing = FALSE;
+	char kickobjnam[BUFSZ];
+
+	kickobjnam[0] = '\0';
+	if (!(uwep == obj && !uarms)) 
+	{
+		You("must wield %s first to use it, and have both hands free.", the(cxname(obj)));
+		no_golf_swing = TRUE;
+	}
+	else if (near_capacity() > SLT_ENCUMBER) 
+	{
+		Your("load is too heavy to balance yourself for a golf swing.");
+		no_golf_swing = TRUE;
+	}
+	else if (u.uinwater && !rn2(2)) 
+	{
+		Your("slow motion golf swing doesn't hit anything.");
+		no_golf_swing = TRUE;
+	}
+	else if (u.utrap) 
+	{
+		no_golf_swing = TRUE;
+		switch (u.utraptype) 
+		{
+		case TT_PIT:
+			if (!Passes_walls)
+				pline("There's not enough room for a golf swing down here.");
+			else
+				no_golf_swing = FALSE;
+			break;
+		case TT_WEB:
+			You_cant("move your %s!", makeplural(body_part(ARM)));
+			break;
+		default:
+			break;
+		}
+	}
+
+	if (no_golf_swing) 
+	{
+		/* ignore direction typed before player notices kick failed */
+		display_nhwindow(WIN_MESSAGE, TRUE); /* --More-- */
+		return 0;
+	}
+
+	if (!getdir((char*)0))
+		return 0;
+	if (!u.dx && !u.dy)
+		return 0;
+
+	x = u.ux + u.dx;
+	y = u.uy + u.dy;
+
+	/* KMH -- Kicking boots always succeed */
+	if (uarmf && uarmf->otyp == KICKING_BOOTS)
+		avrg_attrib = 99;
+	else
+		avrg_attrib = (ACURRSTR + ACURR(A_DEX) + ACURR(A_CON)) / 3;
+
+	if (u.uswallow) 
+	{
+		switch (rn2(3)) 
+		{
+		case 0:
+			You_cant("move your %s!", makeplural(body_part(ARM)));
+			break;
+		case 1:
+			if (is_animal(u.ustuck->data)) 
+			{
+				pline("%s burps loudly.", Monnam(u.ustuck));
+				break;
+			}
+			/*FALLTHRU*/
+		default:
+			Your("feeble swing has no effect.");
+			break;
+		}
+		return 1;
+	}
+	else if (u.utrap && u.utraptype == TT_PIT) {
+		/* must be Passes_walls */
+		You("swing at the side of the pit.");
+		return 1;
+	}
+	if (Levitation) {
+		int xx, yy;
+
+		xx = u.ux - u.dx;
+		yy = u.uy - u.dy;
+		/* doors can be opened while levitating, so they must be
+		 * reachable for bracing purposes
+		 * Possible extension: allow bracing against stuff on the side?
+		 */
+		if (isok(xx, yy) && !IS_ROCK(levl[xx][yy].typ)
+			&& !IS_DOOR(levl[xx][yy].typ)
+			&& (!Is_airlevel(&u.uz) || !OBJ_AT(xx, yy))) {
+			You("have nothing to brace yourself against.");
+			return 0;
+		}
+	}
+
+	mtmp = isok(x, y) ? m_at(x, y) : 0;
+	/* might not kick monster if it is hidden and becomes revealed,
+	   if it is peaceful and player declines to attack, or if the
+	   hero passes out due to encumbrance with low hp; context.move
+	   will be 1 unless player declines to kick peaceful monster */
+	if (mtmp) 
+	{
+		oldglyph = glyph_at(x, y);
+		if (!attack(mtmp))
+			return context.move;
+	}
+
+	wake_nearby();
+
+	if (!isok(x, y)) 
+	{
+		goto thump;
+	}
+	struct rm *maploc = &levl[x][y];
+
+	/*
+	 * The next five tests should stay in their present order:
+	 * monsters, pools, objects, non-doors, doors.
+	 *
+	 * [FIXME:  Monsters who are hidden underneath objects or
+	 * in pools should lead to hero kicking the concealment
+	 * rather than the monster, probably exposing the hidden
+	 * monster in the process.  And monsters who are hidden on
+	 * ceiling shouldn't be kickable (unless hero is flying?);
+	 * kicking toward them should just target whatever is on
+	 * the floor at that spot.]
+	 */
+
+	if (mtmp) 
+	{
+		/* save mtmp->data (for recoil) in case mtmp gets killed */
+		struct permonst* mdat = mtmp->data;
+
+		attack(mtmp);
+		glyph = glyph_at(x, y);
+		/* see comment in attack_checks() */
+		if (DEADMONSTER(mtmp)) { /* DEADMONSTER() */
+			/* if we mapped an invisible monster and immediately
+			   killed it, we don't want to forget what we thought
+			   was there before the kick */
+			if (glyph != oldglyph && glyph_is_invisible(glyph))
+				show_glyph(x, y, oldglyph);
+		}
+		else if (!canspotmon(mtmp)
+			/* check <x,y>; monster that evades kick by jumping
+			   to an unseen square doesn't leave an I behind */
+			&& mtmp->mx == x && mtmp->my == y
+			&& !glyph_is_invisible(glyph)
+			&& !(u.uswallow && mtmp == u.ustuck)) {
+			map_invisible(x, y);
+		}
+		/* recoil if floating */
+		if ((Is_airlevel(&u.uz) || Levitation) && context.move) {
+			int range;
+
+			range =
+				((int)youmonst.data->cwt + (weight_cap() + inv_weight()));
+			if (range < 1)
+				range = 1; /* divide by zero avoidance */
+			range = (3 * (int)mdat->cwt) / range;
+
+			if (range < 1)
+				range = 1;
+			hurtle(-u.dx, -u.dy, range, TRUE);
+		}
+		return 1;
+	}
+	(void)unmap_invisible(x, y);
+	if (is_pool(x, y) ^ !!u.uinwater) {
+		/* objects normally can't be removed from water by kicking */
+		You("splash some %s around.", hliquid("water"));
+		return 1;
+	}
+
+	if (OBJ_AT(x, y) && (!Levitation || Is_airlevel(&u.uz)
+		|| Is_waterlevel(&u.uz) || sobj_at(BOULDER, x, y))) 
+	{
+		if (kick_object(x, y, kickobjnam, TRUE)) 
+		{
+			if (Is_airlevel(&u.uz))
+				hurtle(-u.dx, -u.dy, 1, TRUE); /* assume it's light */
+			return 1;
+		}
+		return 1;
+	}
+
+	if (!IS_DOOR(maploc->typ)) 
+	{
+		if (maploc->typ == SDOOR) 
+		{
+			cvt_sdoor_to_door(maploc); /* ->typ = DOOR */
+			pline("Thump!  Your swing uncovers a secret door!");
+			return 1;
+		}
+		if (maploc->typ == SCORR) 
+		{
+			goto thump;
+		}
+		if (IS_THRONE(maploc->typ)) 
+		{
+			if (Levitation)
+				goto dumb;
+
+			goto thump;
+		}
+		if (IS_ALTAR(maploc->typ)) {
+			if (Levitation)
+				goto dumb;
+			You("swing your %s at %s.", cxname(obj), (Blind ? something : "the altar"));
+			altar_wrath(x, y);
+			return 1;
+		}
+		if (IS_FOUNTAIN(maploc->typ)) {
+			if (Levitation)
+				goto dumb;
+			You("swing at %s.", (Blind ? something : "the fountain"));
+			pline("%s wet.", Yobjnam2(obj, "get"));
+			return 1;
+		}
+		if (IS_GRAVE(maploc->typ)) {
+			if (Levitation)
+				goto dumb;
+			if (Role_if(PM_ARCHEOLOGIST) || Role_if(PM_SAMURAI)
+				|| ((u.ualign.type == A_LAWFUL) && (u.ualign.record > -10))) {
+				adjalign(-sgn(u.ualign.type));
+			}
+			goto thump;
+		}
+		if (maploc->typ == IRONBARS)
+		{
+			pline("Klunk!");
+			return 1;
+
+		}
+		if (IS_TREE(maploc->typ)) 
+		{
+			goto thump;
+		}
+		if (IS_SINK(maploc->typ)) 
+		{
+			pline("Klunk!");
+			return 1;
+		}
+		if (maploc->typ == STAIRS || maploc->typ == LADDER || IS_STWALL(maploc->typ))
+		{
+			if (!IS_STWALL(maploc->typ) && maploc->ladder == LA_DOWN)
+				goto dumb;
+
+			goto thump;
+		}
+		goto dumb;
+	}
+
+	if (maploc->doormask == D_ISOPEN || maploc->doormask == D_BROKEN || maploc->doormask == D_NODOOR) 
+	{
+	dumb:
+		You("swing at empty space.");
+		if (Blind)
+			feel_location(x, y);
+		return 1; /* uses a turn */
+	}
+
+	/* door is known to be CLOSED or LOCKED */
+	if (Blind)
+		feel_location(x, y); /* we know we hit it */
+thump:
+	pline("Thump!");
+	return 1;
 }
 
 /*apply.c*/

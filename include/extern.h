@@ -48,6 +48,7 @@ E boolean FDECL(snuff_candle, (struct obj *));
 E boolean FDECL(snuff_lit, (struct obj *));
 E boolean FDECL(catch_lit, (struct obj *));
 E void FDECL(use_unicorn_horn, (struct obj *));
+E int FDECL(use_golf_club, (struct obj*));
 E boolean FDECL(tinnable, (struct obj *));
 E void NDECL(reset_trapset);
 E void FDECL(fig_transform, (ANY_P *, long));
@@ -572,6 +573,7 @@ E void FDECL(obj_delivery, (BOOLEAN_P));
 E void FDECL(deliver_obj_to_mon, (struct monst *mtmp, int, unsigned long));
 E schar FDECL(down_gate, (XCHAR_P, XCHAR_P));
 E void FDECL(impact_drop, (struct obj *, XCHAR_P, XCHAR_P, XCHAR_P));
+E int FDECL(kick_object, (XCHAR_P, XCHAR_P, char *, BOOLEAN_P));
 
 /* ### dothrow.c ### */
 
@@ -582,9 +584,10 @@ E void FDECL(hitfloor, (struct obj *, BOOLEAN_P));
 E void FDECL(hurtle, (int, int, int, BOOLEAN_P));
 E void FDECL(mhurtle, (struct monst *, int, int, int));
 E boolean FDECL(throwing_weapon, (struct obj *));
+E boolean FDECL(nonmelee_throwing_weapon, (struct obj*));
 E void FDECL(throwit, (struct obj *, long));
 E int FDECL(omon_adj, (struct monst *, struct obj *, BOOLEAN_P));
-E int FDECL(thitmonst, (struct monst *, struct obj *));
+E int FDECL(thitmonst, (struct monst *, struct obj *, BOOLEAN_P));
 E int FDECL(hero_breaks, (struct obj *, XCHAR_P, XCHAR_P, BOOLEAN_P));
 E int FDECL(breaks, (struct obj *, XCHAR_P, XCHAR_P));
 E void FDECL(release_camera_demon, (struct obj *, XCHAR_P, XCHAR_P));

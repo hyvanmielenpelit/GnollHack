@@ -179,7 +179,8 @@ enum bhit_call_types {
     THROWN_TETHERED_WEAPON = 2,
     KICKED_WEAPON = 3,
     FLASHED_LIGHT = 4,
-    INVIS_BEAM    = 5
+    INVIS_BEAM    = 5,
+	GOLF_SWING	  = 6
 };
 
 /* attack mode for hmon() */
@@ -188,7 +189,8 @@ enum hmon_atkmode_types {
     HMON_THROWN  = 1, /* normal ranged (or spitting while poly'd) */
     HMON_KICKED  = 2, /* alternate ranged */
     HMON_APPLIED = 3, /* polearm, treated as ranged */
-    HMON_DRAGGED = 4  /* attached iron ball, pulled into mon */
+    HMON_DRAGGED = 4, /* attached iron ball, pulled into mon */
+	HMON_GOLF    = 5  /* alternate ranged */
 };
 
 /* sortloot() return type; needed before extern.h */

@@ -208,7 +208,7 @@ struct obj* launcher;
 
 		if(!overriden)
 		{
-			if(objects[ammo->otyp].oc_flags & O1_THROWN_WEAPON)
+			if(objects[ammo->otyp].oc_flags & O1_THROWN_WEAPON_ONLY)
 				baserange = (int)(ACURRSTR / 2);
 			else
 				baserange = (int)(ACURRSTR / 3);
@@ -219,7 +219,7 @@ struct obj* launcher;
 			range = baserange;
 		else
 		{
-			if (objects[ammo->otyp].oc_flags & O1_THROWN_WEAPON)
+			if (objects[ammo->otyp].oc_flags & O1_THROWN_WEAPON_ONLY)
 				range = baserange - (int)(ammo->owt / 100);
 			else
 				range = baserange - (int)(ammo->owt / 40);

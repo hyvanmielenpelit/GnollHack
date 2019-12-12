@@ -493,9 +493,13 @@ register struct obj* obj;
 		{
 			strcpy(buf2, "Ranged");
 		}
-		else if(objects[otyp].oc_flags & O1_THROWN_WEAPON)
+		else if(objects[otyp].oc_flags & O1_THROWN_WEAPON_ONLY)
 		{
 			strcpy(buf2, "Thrown");
+		}
+		else if (objects[otyp].oc_flags & O1_MELEE_AND_THROWN_WEAPON)
+		{
+			strcpy(buf2, "Melee and thrown");
 		}
 		else
 		{
@@ -664,7 +668,8 @@ register struct obj* obj;
 
 			Sprintf(buf, "%s  %s", 
 				is_launcher(obj) ? "Shots per round:      " : 
-				throwing_weapon(obj) ? "Throws per round:     " : "Attacks per round:    ", multishot_style_names[objects[obj->otyp].oc_multishot_style]);
+				nonmelee_throwing_weapon(obj) ? "Throws per round:     " : "Attacks per round:    ", 
+				multishot_style_names[objects[obj->otyp].oc_multishot_style]);
 			/*
 			if((objects[obj->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_SKILL_MASK) == O3_MULTISHOT_REQUIRES_EXPERT_SKILL)
 				Sprintf(eos(buf), " (requires expert skill)");
@@ -1768,7 +1773,7 @@ register struct obj* obj;
 		}
 
 		/* Item properties */
-		if (objects[otyp].oc_flags & ~(O1_THROWN_WEAPON | O1_CONFERS_LUCK | O1_CONFERS_UNLUCK
+		if (objects[otyp].oc_flags & ~(O1_THROWN_WEAPON_ONLY | O1_MELEE_AND_THROWN_WEAPON | O1_CONFERS_LUCK | O1_CONFERS_UNLUCK
 			| O1_WAND_LIKE_TOOL | O1_NON_SPELL_SPELLBOOK | O1_EDIBLE_NONFOOD))
 		{
 			int powercnt = 0;
@@ -1869,13 +1874,6 @@ register struct obj* obj;
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
-			if (objects[otyp].oc_flags & O1_SPECIAL_ENCHANTABLE)
-			{
-				powercnt++;
-				Sprintf(buf, " %2d - Can be specially enchanted", powercnt);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
 			if (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)
 			{
 				powercnt++;
@@ -1894,6 +1892,13 @@ register struct obj* obj;
 			{
 				powercnt++;
 				Sprintf(buf, " %2d - Shines magical light when wielded", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (objects[otyp].oc_flags3 & O3_ELEMENTAL_ENCHANTABLE)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Can be specially enchanted", powercnt);
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
