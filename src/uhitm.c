@@ -320,9 +320,9 @@ int *attk_count, *role_roll_penalty;
     if (aatyp == AT_WEAP || aatyp == AT_CLAW) {
         if (weapon)
             tmp += hitval(weapon, mtmp, &youmonst);
-        tmp += weapon_hit_bonus(weapon);
+        tmp += weapon_hit_bonus(weapon, FALSE);
     } else if (aatyp == AT_KICK && martial_bonus()) {
-        tmp += weapon_hit_bonus((struct obj *) 0);
+        tmp += weapon_hit_bonus((struct obj *) 0, FALSE);
     }
 
     return tmp;
@@ -760,6 +760,8 @@ int dieroll;
 	boolean hide_damage_amount = FALSE;
 	boolean isdisintegrated = FALSE;
 	int critstrikeroll = rn2(100);
+	boolean is_golf_swing_with_stone = (thrown == HMON_GOLF && obj && uwep && (obj->oclass == GEM_CLASS || objects[obj->otyp].oc_skill == -P_SLING) && uwep->otyp == GOLF_CLUB);
+
 
 	int jousting = 0;
 	long silverhit = 0L;
@@ -807,7 +809,7 @@ int dieroll;
 				/* or use a pole at short range and not mounted... */
 				|| (!thrown && !u.usteed && is_pole(obj))
 				/* or throw a missile without the proper bow... */
-				|| (is_ammo(obj) && (thrown != HMON_THROWN
+				|| (is_ammo(obj) && !is_golf_swing_with_stone && (thrown != HMON_THROWN
 					|| !ammo_and_launcher(obj, uwep)))) {
 				/* then do only 1-2 points of damage */
 				if (mdat == &mons[PM_SHADE] && !shade_glare(obj))
@@ -1262,16 +1264,15 @@ int dieroll;
 	/****** NOTE: perhaps obj is undefined!! (if !thrown && BOOMERANG)
 	 *      *OR* if attacking bare-handed!! */
 
-	if (get_dmg_bonus && tmp > 0) 
+	if (get_dmg_bonus && tmp > 0)
 	{
-		boolean is_golf_swing_with_stone = (thrown == HMON_GOLF && obj && uwep && obj->oclass == GEM_CLASS && uwep->otyp == GOLF_CLUB);
 		tmp += u.ubasedaminc;
 		tmp += u.udaminc;
 		/* If you throw using a propellor, you don't get a strength
 		 * bonus but you do get an increase-damage bonus.
 		 */
-		if (thrown != HMON_THROWN || !obj || !uwep
-			|| !ammo_and_launcher(obj, uwep)) 
+		if (!is_golf_swing_with_stone && (thrown != HMON_THROWN || !obj || !uwep
+			|| !ammo_and_launcher(obj, uwep))) 
 		{
 			if (thrown == HMON_THROWN)
 				tmp += tdbon();
@@ -1322,10 +1323,10 @@ int dieroll;
 		struct obj* wep;
 
 		/* to be valid a projectile must have had the correct projector */
-		wep = PROJECTILE(obj) ? uwep : obj;
-		tmp += weapon_dam_bonus(wep);
+		wep = (is_golf_swing_with_stone || PROJECTILE(obj)) ? uwep : obj;
+		tmp += weapon_dam_bonus(wep, is_golf_swing_with_stone);
 		/* [this assumes that `!thrown' implies wielded...] */
-		wtype = thrown ? weapon_type(wep) : uwep_skill_type();
+		wtype = is_golf_swing_with_stone? P_THROWN_WEAPON : thrown ? weapon_type(wep) : uwep_skill_type();
 		use_skill(wtype, 1);
 	}
 

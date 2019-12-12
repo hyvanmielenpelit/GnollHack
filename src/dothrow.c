@@ -2054,7 +2054,7 @@ register boolean is_golf;
 
     dieroll = rnd(20);
 
-	boolean is_golf_swing_with_stone = (hmode == HMON_GOLF && obj->oclass == GEM_CLASS);
+	boolean is_golf_swing_with_stone = (hmode == HMON_GOLF && (obj->oclass == GEM_CLASS || objects[obj->otyp].oc_skill == -P_SLING));
 
     if (obj->oclass == WEAPON_CLASS || is_weptool(obj) || obj->oclass == GEM_CLASS) 
 	{
@@ -2072,7 +2072,7 @@ register boolean is_golf;
 			else if (uwep)
 			{
 				tmp += hitval(uwep, mon, &youmonst);	//tmp += uwep->spe - greatest_erosion(uwep);
-                tmp += weapon_hit_bonus(uwep); //Players get skill bonuses
+                tmp += weapon_hit_bonus(uwep, is_golf_swing_with_stone); //Players get skill bonuses
 //                if (uwep->oartifact)
 //                    tmp += spec_abon(uwep, mon);
                 /*
@@ -2100,7 +2100,7 @@ register boolean is_golf;
                 tmp -= 2;
             /* we know we're dealing with a weapon or weptool handled
                by WEAPON_SKILLS once ammo objects have been excluded */
-            tmp += weapon_hit_bonus(obj);
+            tmp += weapon_hit_bonus(obj, is_golf_swing_with_stone);
         }
 
         if (tmp >= dieroll) 

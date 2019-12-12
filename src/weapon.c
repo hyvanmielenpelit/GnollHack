@@ -1991,8 +1991,9 @@ uwep_skill_type()
  * Treat restricted weapons as unskilled.
  */
 int
-weapon_hit_bonus(weapon)
+weapon_hit_bonus(weapon, use_thrown_weapon)
 struct obj *weapon;
+boolean use_thrown_weapon;
 {
     int type, wep_type, skill, bonus = 0;
     static const char bad_skill[] = "weapon_hit_bonus: bad skill %d";
@@ -2000,7 +2001,7 @@ struct obj *weapon;
     wep_type = weapon_type(weapon);
     /* use two weapon skill only if attacking with one of the wielded weapons
      */
-    type = (u.twoweap && (!weapon || (weapon && !bimanual(weapon) && (weapon == uwep || weapon == uarms))))
+    type = use_thrown_weapon ? P_THROWN_WEAPON : (u.twoweap && (!weapon || (weapon && !bimanual(weapon) && (weapon == uwep || weapon == uarms))))
                ? P_TWO_WEAPON_COMBAT
                : wep_type;
     if (type == P_NONE)
@@ -2089,15 +2090,16 @@ struct obj *weapon;
  * Treat restricted weapons as unskilled.
  */
 int
-weapon_dam_bonus(weapon)
+weapon_dam_bonus(weapon, use_thrown_weapon)
 struct obj *weapon;
+boolean use_thrown_weapon;
 {
     int type, wep_type, skill, bonus = 0;
 
     wep_type = weapon_type(weapon);
     /* use two weapon skill only if attacking with one of the wielded weapons
      */
-    type = (u.twoweap && (!weapon || (weapon && !bimanual(weapon) && (weapon == uwep || weapon == uarms))))
+    type = use_thrown_weapon ? P_THROWN_WEAPON : (u.twoweap && (!weapon || (weapon && !bimanual(weapon) && (weapon == uwep || weapon == uarms))))
                ? P_TWO_WEAPON_COMBAT
                : wep_type;
     if (type == P_NONE) {

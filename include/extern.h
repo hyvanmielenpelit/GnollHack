@@ -2942,8 +2942,8 @@ E void FDECL(add_weapon_skill, (int));
 E void FDECL(lose_weapon_skill, (int));
 E int FDECL(weapon_type, (struct obj *));
 E int NDECL(uwep_skill_type);
-E int FDECL(weapon_hit_bonus, (struct obj *));
-E int FDECL(weapon_dam_bonus, (struct obj *));
+E int FDECL(weapon_hit_bonus, (struct obj *, BOOLEAN_P));
+E int FDECL(weapon_dam_bonus, (struct obj *, BOOLEAN_P));
 E void FDECL(skill_init, (const struct def_skill*, const struct def_skill *));
 
 /* ### were.c ### */

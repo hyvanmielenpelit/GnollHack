@@ -499,7 +499,7 @@ register struct obj* obj;
 		}
 		else if (objects[otyp].oc_flags & O1_MELEE_AND_THROWN_WEAPON)
 		{
-			strcpy(buf2, "Melee and thrown");
+			strcpy(buf2, "Melee and Thrown");
 		}
 		else
 		{

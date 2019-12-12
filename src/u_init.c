@@ -632,7 +632,7 @@ static const struct def_skill Skill_T_Max[] = {
     { P_AXE, P_BASIC },
     { P_PICK_AXE, P_BASIC },
     { P_SWORD, P_EXPERT },
-    { P_BLUDGEONING_WEAPON, P_BASIC },
+    { P_BLUDGEONING_WEAPON, P_SKILLED },
     { P_FLAIL, P_BASIC },
     { P_QUARTERSTAFF, P_BASIC },
     { P_POLEARM, P_BASIC },
