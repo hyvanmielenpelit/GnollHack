@@ -4542,10 +4542,17 @@ struct obj* obj;
 	char kickobjnam[BUFSZ];
 
 	kickobjnam[0] = '\0';
-	if (!(uwep == obj && !uarms)) 
+	if (!uwep || !(uwep == obj && !uarms)) 
 	{
-		You("must wield %s first to use it, and have both hands free.", the(cxname(obj)));
 		no_golf_swing = TRUE;
+		if (!uwep || uwep != obj)
+		{
+			You("must wield %s first.", the(cxname(obj)));
+		}
+		else
+		{
+			You("must have both hands free to use %s.", the(cxname(obj)));
+		}
 	}
 	else if (near_capacity() > SLT_ENCUMBER) 
 	{

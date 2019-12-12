@@ -268,7 +268,7 @@ int *attk_count, *role_roll_penalty;
 
 	if (weapon && nonmelee_throwing_weapon(weapon))
 	{
-		You_feel("it is difficult to hit with %s in melee.", the(cxname(weapon)));
+		pline("It is very difficult to hit with %s in melee combat.", the(cxname(weapon)));
 		tmp -= 18;
 	}
     /* some actions should occur only once during multiple attacks */
