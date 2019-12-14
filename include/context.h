@@ -130,6 +130,7 @@ struct context_info {
 	boolean encounter_appeared[256];
 	int shop_identify_type;
 	boolean mon_moving; /* monsters' turn to move */
+	boolean mon_talking; /* a monster is talking this turn */
 	boolean hungry_message_displayed;
     boolean move;
     boolean mv;

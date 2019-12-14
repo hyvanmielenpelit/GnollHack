@@ -1214,7 +1214,7 @@ dochat()
         return 0;
 
 	/* Non-speaking monster */
-	if (!(mtmp->data->mflags3 & M3_SPEAKING) && !mtmp->mtame)
+	if (!is_speaking_monster(mtmp->data) && !mtmp->mtame)
 	{
 		if (canspotmon(mtmp))
 			pline("%s does not seem to be of the type that engages in conversation.", Monnam(mtmp));
@@ -1361,7 +1361,7 @@ dochat()
 
 			if (mtmp->data->mflags1 & M1_ANIMAL)
 				strcpy(available_chat_list[chatnum].name, "Command to stay put");
-			else if (mtmp->data->mflags3 & M3_SPEAKING)
+			else if (is_speaking_monster(mtmp->data))
 				strcpy(available_chat_list[chatnum].name, "Command to hold position");
 			else
 				strcpy(available_chat_list[chatnum].name, "Command to hold position");
@@ -1384,7 +1384,7 @@ dochat()
 		{
 			if (mtmp->data->mflags1 & M1_ANIMAL)
 				strcpy(available_chat_list[chatnum].name, "Command to follow");
-			else if (mtmp->data->mflags3 & M3_SPEAKING)
+			else if (is_speaking_monster(mtmp->data))
 				strcpy(available_chat_list[chatnum].name, "Command to stop holding position");
 			else
 				strcpy(available_chat_list[chatnum].name, "Command to stop holding position");
@@ -1930,7 +1930,12 @@ dochat()
 		if (available_chat_list[j].charnum == i)
 		{
 			if (i != '\0')
+			{
 				res = (available_chat_list[j].function_ptr)(mtmp);
+				if(mtmp->talkstate == 0)
+					mtmp->talkstate = 1;
+				mtmp->notalktimer = 100 + rnd(200);
+			}
 			break;
 		}
 	}
@@ -2090,7 +2095,7 @@ struct monst* mtmp;
 			pline("%s looks determined not to move anywhere.", Monnam(mtmp));
 		else if (mtmp->data->mflags1 & M1_ANIMAL)
 			pline("%s sits down and looks determined not to move anywhere.", Monnam(mtmp));
-		else if (mtmp->data->mflags3 & M3_SPEAKING)
+		else if (is_speaking_monster(mtmp->data))
 			pline("%s starts to hold its position.", Monnam(mtmp));
 		else
 			pline("%s starts to hold its position.", Monnam(mtmp));
@@ -2115,7 +2120,7 @@ struct monst* mtmp;
 			pline("%s seems ready to follow you.", Monnam(mtmp));
 		else if (mtmp->data->mflags1 & M1_ANIMAL)
 			pline("%s stands up and seems ready to follow you!", Monnam(mtmp));
-		else if (mtmp->data->mflags3 & M3_SPEAKING)
+		else if (is_speaking_monster(mtmp->data))
 			pline("%s stops holding its position.", Monnam(mtmp));
 		else
 			pline("%s stops holding its position.", Monnam(mtmp));
@@ -2714,7 +2719,7 @@ struct monst* mtmp;
 			verbalize("%sI'm willing to trade the following items.", is_undead(mtmp->data) || is_demon(mtmp->data) ? "Greetings, mortal. " : "");
 			verbalize("But be quick, my patience is limited.");
 		}
-		else if (!Deaf && (mtmp->data->mflags3 & M3_SPEAKING))
+		else if (!Deaf && is_speaking_monster(mtmp->data))
 			verbalize("Hello, adventurer! May I interest you in these fine items:");
 		else
 			pline("%s shows you the items that are for sale.", Monnam(mtmp));
@@ -2809,7 +2814,7 @@ struct monst* mtmp;
 		{
 			if (!Deaf && (is_undead(mtmp->data) || is_demon(mtmp->data) || (mtmp->data->maligntyp < 0 && mtmp->data->difficulty > 10)))
 				verbalize("Use your purchase well!");
-			else if (!Deaf && (mtmp->data->mflags3 & M3_SPEAKING))
+			else if (!Deaf && is_speaking_monster(mtmp->data))
 				verbalize("Thank you for the purchase!");
 			else
 				pline("%s nods appreciatively at you for the purchase!", Monnam(mtmp));
@@ -2872,7 +2877,7 @@ struct monst* mtmp;
 
 
 
-STATIC_OVL int
+int
 count_sellable_items(mtmp)
 struct monst* mtmp;
 {

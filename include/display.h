@@ -215,6 +215,9 @@
 
 /* Total number of cmap indices in the shield_static[] array. */
 #define SHIELD_COUNT 21
+/* Total number of object indices in the talk_static[] array. */
+#define TALK_COUNT 21
+
 #define BACKTRACK (-1)    /* flag for DISP_END to display each prior location */
 
 /*

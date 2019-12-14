@@ -1332,7 +1332,7 @@ dokick()
                     continue;
                 if (is_watch(mtmp->data) && couldsee(mtmp->mx, mtmp->my)
                     && mtmp->mpeaceful) {
-                    mon_yells(mtmp, "Halt, thief!  You're under arrest!");
+                    mon_yells(mtmp, "Halt, thief!  You're under arrest!", "yell", "angrily", FALSE);
                     (void) angry_guards(FALSE);
                     break;
                 }
@@ -1350,10 +1350,10 @@ dokick()
                     && couldsee(mtmp->mx, mtmp->my)) {
                     if (levl[x][y].looted & D_WARNED) {
                         mon_yells(mtmp,
-                                  "Halt, vandal!  You're under arrest!");
+                                  "Halt, vandal!  You're under arrest!", "yell", "angrily", FALSE);
                         (void) angry_guards(FALSE);
                     } else {
-                        mon_yells(mtmp, "Hey, stop damaging that door!");
+                        mon_yells(mtmp, "Hey, stop damaging that door!", "yell", "angrily", FALSE);
                         levl[x][y].looted |= D_WARNED;
                     }
                     break;

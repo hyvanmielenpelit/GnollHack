@@ -181,6 +181,7 @@ boolean resuming;
 					monstermoves++;
                     moves++;
 					context.hungry_message_displayed = FALSE;
+					context.mon_talking = FALSE;
 
                     /********************************/
                     /* once-per-turn things go here */

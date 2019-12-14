@@ -54,29 +54,119 @@ boolean for_unlocking; /* true => credit card ok, false => not ok */
 }
 
 void
-mon_yells(mon, shout)
+mon_yells(mon, shout, verb, adverb, usethe)
 struct monst *mon;
 const char *shout;
+const char* verb;
+const char* adverb;
+boolean usethe;
 {
-    if (Deaf) {
-        if (canspotmon(mon))
-            /* Sidenote on "A watchman angrily waves her arms!"
-             * Female being called watchman is correct (career name).
-             */
-            pline("%s angrily %s %s %s!",
-                Amonnam(mon),
-                nolimbs(mon->data) ? "shakes" : "waves",
+    if (Deaf)
+	{
+		if (canspotmon(mon))
+		{
+			/* Sidenote on "A watchman angrily waves her arms!"
+			 * Female being called watchman is correct (career name).
+			 */
+			char adjbuf[BUFSIZ] = "";
+			if (adverb && strcmp(adverb, "") != 0)
+				Sprintf(adjbuf, "%s ", adverb);
+			
+            pline("%s %s%s %s %s!",
+                usethe ? Monnam(mon) : Amonnam(mon),
+				adjbuf,
+				nohands(mon->data) ? "shakes" : "waves",
                 mhis(mon),
-                nolimbs(mon->data) ? mbodypart(mon, HEAD)
-                                   : makeplural(mbodypart(mon, ARM)));
-    } else {
+                nohands(mon->data) ? (has_head(mon->data) ? mbodypart(mon, HEAD) : "body") : makeplural(mbodypart(mon, ARM))
+			);
+		}
+
+    } 
+	else 
+	{
         if (canspotmon(mon))
-            pline("%s yells:", Amonnam(mon));
+            pline("%s %ss:", usethe ? Monnam(mon) : Amonnam(mon), verb);
         else
-            You_hear("someone yell:");
+            You_hear("someone %s:", verb);
         verbalize1(shout);
     }
 }
+
+
+void
+check_mon_talk(mon)
+struct monst* mon;
+{
+	if (!mon || !is_speaking_monster(mon->data) || mindless(mon->data) || mon->mstun || mon->mconf || mon->msleeping || mon->mtame)
+		return;
+
+	boolean mon_talked = FALSE;
+
+	if (!context.mon_talking)
+	{
+		if (!mon->notalktimer)
+		{
+			boolean speaks = FALSE;
+			int dist = distmin(mon->mx, mon->my, u.ux, u.uy);
+			if (dist <= 1)
+				speaks = TRUE;
+			else if (dist == 2)
+				speaks = !rn2(3);
+			else if (dist == 3)
+				speaks = !rn2(6);
+			else
+				speaks = !rn2(3*(dist-1));
+
+			if(m_canseeu(mon) && dist <= 4 && speaks)
+			{ 
+				/* Normal peaceful monster talk */
+				if(mon->mpeaceful && !is_undead(mon->data) && !is_demon(mon->data)
+					&& !mon->isshk && !mon->isgd && !mon->ispriest
+					&& !(mon->iswiz || mon->data == &mons[PM_MEDUSA]
+						|| mon->data->msound == MS_NEMESIS || mon->data->msound == MS_LEADER || mon->data->msound == MS_ORACLE
+						|| mon->data == &mons[PM_VLAD_THE_IMPALER]
+						|| (mon->data == &mons[PM_ORACLE]))
+					)
+				{
+					if(count_sellable_items(mon) > 0)
+					{
+						talkeff(mon->mx, mon->my);
+						switch (mon->talkstate)
+						{
+						case 0:
+							mon_yells(mon, "Hello, adventurer! How are you? I have some fine items for sale.", "say", "politely", TRUE);
+							break;
+						case 1:
+							mon_yells(mon, "Hello again, I still have some items for sale.", "say", "politely", TRUE);
+							break;
+						case 2:
+							mon_yells(mon, "How is your adventuring going? Would you still have interest in some items?", "say", "inquisitively", TRUE);
+							break;
+						case 3:
+							mon_yells(mon, "Hello there again! Any interest in my items?", "say", "politely", TRUE);
+							break;
+						default:
+							break;
+						}
+						mon_talked = TRUE;
+					}
+				}
+			}
+		}
+	}
+
+	if (mon_talked)
+	{
+		if (mon->talkstate == 3)
+			mon->talkstate--;
+		else
+			mon->talkstate++;
+
+		mon->notalktimer = 100 + rnd(200);
+		context.mon_talking = TRUE;
+	}
+}
+
 
 STATIC_OVL void
 watch_on_duty(mtmp)
@@ -90,10 +180,10 @@ register struct monst *mtmp;
             && (levl[x][y].doormask & D_LOCKED)) {
             if (couldsee(mtmp->mx, mtmp->my)) {
                 if (levl[x][y].looted & D_WARNED) {
-                    mon_yells(mtmp, "Halt, thief!  You're under arrest!");
+                    mon_yells(mtmp, "Halt, thief!  You're under arrest!", "yell", "angrily", FALSE);
                     (void) angry_guards(!!Deaf);
                 } else {
-                    mon_yells(mtmp, "Hey, stop picking that lock!");
+                    mon_yells(mtmp, "Hey, stop picking that lock!", "yell", "angrily", FALSE);
                     levl[x][y].looted |= D_WARNED;
                 }
                 stop_occupation();
@@ -469,6 +559,8 @@ register struct monst *mtmp;
         if (use_misc(mtmp) != 0)
             return 1;
     }
+
+	check_mon_talk(mtmp);
 
     /* Demonic Blackmail! */
     if (nearby && mdat->msound == MS_BRIBE && mtmp->mpeaceful && !mtmp->mtame

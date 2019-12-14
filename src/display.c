@@ -899,6 +899,31 @@ xchar x, y;
     }
 }
 
+void
+talkeff(x, y)
+xchar x, y;
+{
+	register int i;
+
+	if (!flags.sparkle)
+		return;
+	if (cansee(x, y)) { /* Don't see anything if can't see the location */
+		boolean showmon = FALSE;
+		for (i = 0; i < 10; i++) {
+			if (showmon)
+				newsym(x, y); /* restore the old information */
+			else
+				show_glyph(x, y, objnum_to_glyph(SCR_BLANK_PAPER)); /* talk_static[i]*/
+			flush_screen(1); /* make sure the glyph shows up */
+			delay_output();
+			delay_output();
+			showmon = !showmon;
+		}
+		newsym(x, y); /* restore the old information */
+	}
+}
+
+
 int
 tether_glyph(x, y)
 int x, y;

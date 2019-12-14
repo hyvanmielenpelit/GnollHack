@@ -175,6 +175,7 @@
 #define is_multiweaponmonster(ptr) (((ptr)->mflags3 & M3_MULTIWEAPON) != 0L)
 #define leaves_corpses_randomly(ptr) (((ptr)->mflags3 & M3_RANDOM_CORPSE) != 0L)
 #define corpse_crumbles_to_dust(ptr) (((ptr)->mflags3 & M3_CORPSE_CRUMBLES_TO_DUST) != 0L)
+#define is_speaking_monster(ptr) (((ptr)->mflags3 & M3_SPEAKING) != 0L)
 
 
 #define is_brave(ptr) (((ptr)->mflags4 & M4_BRAVE) != 0L)

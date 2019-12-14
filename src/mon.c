@@ -1220,6 +1220,8 @@ mcalcdistress()
 			mtmp->mpeaceful = mtmp->morigpeaceful;
 			mtmp->mtame = mtmp->morigtame;
 		}
+		if (mtmp->notalktimer > 0)
+			mtmp->notalktimer--;
 
         /* FIXME: mtmp->mlstmv ought to be updated here */
     }
