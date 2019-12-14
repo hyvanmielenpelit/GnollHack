@@ -370,7 +370,7 @@ boolean resuming;
 		updateabon();
 		updatemaxen();
 		updatemaxhp();
-		update_carried_item_extrinsics();
+		update_extrinsics();
         if (!context.mv || Blind) {
             /* redo monsters if hallu or wearing a helm of telepathy */
             if (Hallucination) { /* update screen randomly */

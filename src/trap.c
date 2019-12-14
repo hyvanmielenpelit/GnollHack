@@ -3847,6 +3847,7 @@ drown()
         vision_full_recalc = 1;
         return FALSE;
     }
+
     if ((Teleportation || can_teleport(youmonst.data)) && !Unaware
         && (Teleport_control || rn2(3) < Luck + 2)) {
         You("attempt a teleport spell."); /* utcsri!carroll */

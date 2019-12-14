@@ -106,13 +106,14 @@ enum prop_types {
 	WARN_DWARF		  = 82,
 	WARN_GNOLL		  = 83,
 	WARN_HUMAN		  = 84,
-	WARN_LYCANTHROPE		  = 85,
+	WARN_LYCANTHROPE  = 85,
 	WARN_ANGEL		  = 86,
 	WARN_OGRE		  = 87,
 	CHARM_RES		  = 88,
 	MIND_SHIELDING	  = 89,
 	ODD_IDEAS		  = 90,
-	LAUGHING		  = 91 //KEEP THIS LAST
+	AIRLESS_ENVIRONMENT		  = 91,
+	LAUGHING		  = 92 //KEEP THIS LAST
 };
 #define LAST_PROP (LAUGHING)
 
@@ -142,8 +143,8 @@ struct prop {
 #define W_SWAPWEP	0x00001000L		/* Alternate weapon in the primary hand */
 #define W_SWAPWEP2	0x00002000L		/* Alternate weapon/shield in the secondary hand */
 
-#define W_EXTRA1	0x00004000L		/* Extra */
-#define W_EXTRA2	0x00008000L		/* Extra */
+#define W_ENVIRONMENT 0x00004000L	/* Caused by environment, e.g., suffocation due to no air */
+#define W_EXTRA		0x00008000L		/* Extra for future use */
 
 #define W_WIELDED_WEAPON (W_WEP | W_WEP2)
 #define W_SWAP_WEAPON (W_SWAPWEP | W_SWAPWEP2)

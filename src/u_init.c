@@ -760,6 +760,14 @@ props_init()
 	u.uprops[SLEEPY].recurring = TRUE;
 	u.uprops[SLEEPY].recurring_constant = 0;
 	u.uprops[SLEEPY].recurring_random = 100;
+
+	u.uprops[STRANGLED].recurring = TRUE;
+	u.uprops[STRANGLED].recurring_constant = 6;
+	u.uprops[STRANGLED].recurring_random = 0;
+
+	u.uprops[AIRLESS_ENVIRONMENT].recurring = TRUE;
+	u.uprops[AIRLESS_ENVIRONMENT].recurring_constant = 6;
+	u.uprops[AIRLESS_ENVIRONMENT].recurring_random = 0;
 }
 
 void
@@ -1150,7 +1158,7 @@ u_init()
 	update_can_advance_any_skill();
 
 	/* Run initial stats */
-	update_carried_item_extrinsics();
+	update_extrinsics();
 	updateabon();
 	updatemaxen();
 	updatemaxhp();

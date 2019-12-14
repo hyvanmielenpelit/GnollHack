@@ -967,7 +967,9 @@ unsigned long *colormasks UNUSED;
                 Strcpy(nb = eos(nb), " Slime");
             if (cond & BL_MASK_STRNGL)
                 Strcpy(nb = eos(nb), " Strngl");
-            if (cond & BL_MASK_FOODPOIS)
+			if (cond & BL_MASK_SUFFOC)
+				Strcpy(nb = eos(nb), " Suffoc");
+			if (cond & BL_MASK_FOODPOIS)
                 Strcpy(nb = eos(nb), " FoodPois");
             if (cond & BL_MASK_TERMILL)
                 Strcpy(nb = eos(nb), " TermIll");

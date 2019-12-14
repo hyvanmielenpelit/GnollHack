@@ -2805,16 +2805,25 @@ int final;
     if (Slimed)
         you_are("turning into slime", "");
     if (Strangled) {
-        if (u.uburied) {
-            you_are("buried", "");
-        } else {
-            Strcpy(buf, "being strangled");
-            if (wizard)
-                Sprintf(eos(buf), " (%ld)", (Strangled & TIMEOUT));
-            you_are(buf, from_what(STRANGLED));
-        }
+        Strcpy(buf, "being strangled");
+        if (wizard)
+            Sprintf(eos(buf), " (%ld)", (Strangled & TIMEOUT));
+        you_are(buf, from_what(STRANGLED));
     }
-    if (Sick) {
+
+	if (u.uburied)
+	{
+		you_are("buried", "");
+	}
+	if (Airless_environment)
+	{
+		Strcpy(buf, "in an airless enviroment");
+			if (wizard)
+				Sprintf(eos(buf), " (%ld)", (HAirless_environment & TIMEOUT));
+			you_are(buf, from_what(AIRLESS_ENVIRONMENT));
+	}
+
+	if (Sick) {
         /* prayer lumps these together; botl puts Ill before FoodPois */
         if (u.usick_type & SICK_NONVOMITABLE)
             you_are("terminally sick from illness", "");

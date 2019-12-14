@@ -121,7 +121,7 @@ E boolean FDECL(carried_object_confers_powers, (struct obj*));
 E boolean FDECL(object_uses_spellbook_wand_flags_and_properties, (struct obj*));
 E boolean FDECL(inappropriate_character_type, (struct obj*));
 E boolean FDECL(inappropriate_monster_character_type, (struct monst*, struct obj*));
-E void NDECL(update_carried_item_extrinsics);
+E void NDECL(update_extrinsics);
 E void NDECL(set_moreluck);
 E void NDECL(restore_attrib);
 E void FDECL(exercise, (int, BOOLEAN_P));

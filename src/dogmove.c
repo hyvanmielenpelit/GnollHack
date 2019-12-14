@@ -1097,7 +1097,7 @@ int after; /* this is extra fast monster movement */
     for (i = 0; i < cnt; i++) {
         nx = poss[i].x;
         ny = poss[i].y;
-        if (MON_AT(nx, ny) && !((info[i] & ALLOW_M) || info[i] & ALLOW_MDISP))
+        if (MON_AT(nx, ny) && !((info[i] & ALLOW_M) || ((info[i] & ALLOW_TM) && m_at(nx, ny) && m_at(nx, ny)->mtame) || info[i] & ALLOW_MDISP))
             continue;
         if (cursed_object_at(nx, ny))
             continue;
@@ -1123,12 +1123,13 @@ int after; /* this is extra fast monster movement */
         if (!has_edog && (j = distu(nx, ny)) > 16 && j >= udist)
             continue;
 
-		boolean allowres;
-		boolean monatres;
-        if ((allowres = !!(info[i] & ALLOW_M)) && (monatres = MON_AT(nx, ny))) 
+		boolean monatres = MON_AT(nx, ny);
+		register struct monst* mtmp2 = m_at(nx, ny);
+		boolean allowres =((info[i] & ALLOW_M) && monatres) || ((info[i] & ALLOW_TM) && monatres && mtmp2 && mtmp2->mtame);
+
+		if (allowres)
 		{
             int mstatus;
-            register struct monst *mtmp2 = m_at(nx, ny);
 
             if ((!(mtmp->disregards_own_health || disregards_own_health(mtmp->data)) && (int) mtmp2->m_lev >= (int) mtmp->m_lev + 2)
                 || (mtmp2->data == &mons[PM_FLOATING_EYE] && rn2(10)

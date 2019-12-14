@@ -159,7 +159,7 @@ long mask;
 		curse(uarmh);
 	}
 
-	update_carried_item_extrinsics();
+	update_extrinsics();
 	updateabon();
 	updatemaxen();
 	updatemaxhp();
@@ -283,7 +283,7 @@ register struct obj *obj;
 		}
 	}
 
-	update_carried_item_extrinsics();
+	update_extrinsics();
 	updateabon();
 	updatemaxen();
 	updatemaxhp();

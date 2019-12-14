@@ -742,7 +742,9 @@ bot_via_windowport()
         blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_SLIME;
     if (Strangled)
         blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_STRNGL;
-    if (Sick && (u.usick_type & SICK_VOMITABLE) != 0)
+	if (Airless_environment && !Survives_without_air)
+		blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_SUFFOC;
+	if (Sick && (u.usick_type & SICK_VOMITABLE) != 0)
         blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_FOODPOIS;
     if (Sick && (u.usick_type & SICK_NONVOMITABLE) != 0)
         blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_TERMILL;
@@ -2253,7 +2255,8 @@ const struct condmap valid_conditions[] = {
     { "stone",    BL_MASK_STONE },
     { "slime",    BL_MASK_SLIME },
     { "strngl",   BL_MASK_STRNGL },
-    { "foodPois", BL_MASK_FOODPOIS },
+	{ "suffoc",   BL_MASK_SUFFOC },
+	{ "foodPois", BL_MASK_FOODPOIS },
     { "termIll",  BL_MASK_TERMILL },
     { "blind",    BL_MASK_BLIND },
     { "deaf",     BL_MASK_DEAF },
@@ -2269,10 +2272,11 @@ const struct condmap valid_conditions[] = {
 
 const struct condmap condition_aliases[] = {
     { "strangled",      BL_MASK_STRNGL },
-    { "all",            BL_MASK_STONE | BL_MASK_SLIME | BL_MASK_STRNGL
+	{ "suffocation",    BL_MASK_SUFFOC },
+	{ "all",            BL_MASK_STONE | BL_MASK_SLIME | BL_MASK_STRNGL
                         | BL_MASK_FOODPOIS | BL_MASK_TERMILL
                         | BL_MASK_BLIND | BL_MASK_DEAF | BL_MASK_STUN
-                        | BL_MASK_CONF | BL_MASK_HALLU
+                        | BL_MASK_CONF | BL_MASK_HALLU | BL_MASK_SUFFOC
                         | BL_MASK_LEV | BL_MASK_FLY | BL_MASK_RIDE },
     { "major_troubles", BL_MASK_STONE | BL_MASK_SLIME | BL_MASK_STRNGL
                         | BL_MASK_FOODPOIS | BL_MASK_TERMILL },

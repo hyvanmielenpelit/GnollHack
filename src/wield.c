@@ -507,7 +507,7 @@ dowield()
 	}
 
 	updateabon();
-	update_carried_item_extrinsics();
+	update_extrinsics();
 	updatemaxen();
 	updatemaxhp();
 

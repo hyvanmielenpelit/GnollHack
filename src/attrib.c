@@ -568,7 +568,7 @@ struct obj* uitem;
 }
 
 void
-update_carried_item_extrinsics()
+update_extrinsics()
 {
 	struct obj* uitem;
 
@@ -667,6 +667,22 @@ update_carried_item_extrinsics()
 			if (!inappr && uitem->oartifact)
 				set_artifact_intrinsic(uitem, 1, bit);
 
+		}
+	}
+
+	/* Check environment */
+	if(u.uburied)
+		u.uprops[AIRLESS_ENVIRONMENT].extrinsic |= W_ENVIRONMENT;
+
+	if (Underwater)
+		u.uprops[AIRLESS_ENVIRONMENT].extrinsic |= W_ENVIRONMENT;
+
+	if (u.ustuck)
+	{
+		struct monst* mtmp = u.ustuck;
+		if (is_pool(mtmp->mx, mtmp->my) && !Swimming && !Amphibious) 
+		{
+			u.uprops[AIRLESS_ENVIRONMENT].extrinsic |= W_ENVIRONMENT;
 		}
 	}
 
@@ -1441,28 +1457,32 @@ int propidx; /* special cases can have negative values */
              * There are exceptions.  Versatile jumping from spell or boots
              * takes priority over knight's innate but limited jumping.
              */
-            if (propidx == BLINDED && u.uroleplay.blind)
-                Sprintf(buf, " from birth");
-            else if (innateness == A_FROM_ROLE || innateness == A_FROM_RACE)
-                Strcpy(buf, " innately");
-            else if (innateness == A_FROM_INTR) /* [].intrinsic & FROM_ACQUIRED */
-                Strcpy(buf, " intrinsically");
-            else if (innateness == A_FROM_EXP)
-                Strcpy(buf, " because of your experience");
-            else if (innateness == A_FROM_LYCN)
-                Strcpy(buf, " due to your lycanthropy");
-            else if (innateness == A_FROM_FORM)
-                Strcpy(buf, " from current creature form");
-            else if (propidx == FAST && Very_fast)
-                Sprintf(buf, because_of,
-                        ((HFast & TIMEOUT) != 0L) ? "a potion or spell"
-                          : ((EFast & W_ARMF) != 0L && uarmf->dknown
-                             && objects[uarmf->otyp].oc_name_known)
-                              ? ysimple_name(uarmf) /* speed boots */
-                                : EFast ? "worn equipment"
-                                  : something);
-            else if (wizard
-                     && (obj = what_gives(&u.uprops[propidx].extrinsic)) != 0)
+			if (propidx == BLINDED && u.uroleplay.blind)
+				Sprintf(buf, " from birth");
+			else if (innateness == A_FROM_ROLE || innateness == A_FROM_RACE)
+				Strcpy(buf, " innately");
+			else if (innateness == A_FROM_INTR) /* [].intrinsic & FROM_ACQUIRED */
+				Strcpy(buf, " intrinsically");
+			else if (innateness == A_FROM_EXP)
+				Strcpy(buf, " because of your experience");
+			else if (innateness == A_FROM_LYCN)
+				Strcpy(buf, " due to your lycanthropy");
+			else if (innateness == A_FROM_FORM)
+				Strcpy(buf, " from current creature form");
+			else if (propidx == FAST && Very_fast)
+				Sprintf(buf, because_of,
+				((HFast & TIMEOUT) != 0L) ? "a potion or spell"
+					: ((EFast & W_ARMF) != 0L && uarmf->dknown
+						&& objects[uarmf->otyp].oc_name_known)
+					? ysimple_name(uarmf) /* speed boots */
+					: EFast ? "worn equipment"
+					: something);
+			else if (u.uprops[propidx].extrinsic & W_ENVIRONMENT)
+				Sprintf(buf, because_of, "your surroundings");
+			else if (
+				0 
+				|| ((obj = what_gives(&u.uprops[propidx].extrinsic)) != 0 && (wizard || objects[obj->otyp].oc_name_known))
+				)
                 Sprintf(buf, because_of, obj->oartifact
                                              ? bare_artifactname(obj)
                                              : ysimple_name(obj));

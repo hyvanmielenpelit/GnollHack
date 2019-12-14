@@ -877,7 +877,7 @@ struct obj *obj;
         set_moreluck();
     }
 
-	update_carried_item_extrinsics();
+	update_extrinsics();
 	updateabon();
 	updatemaxen();
 	updatemaxhp();
@@ -1181,7 +1181,7 @@ struct obj *obj;
         set_artifact_intrinsic(obj, 0, W_ART);
     }
 
-	update_carried_item_extrinsics();
+	update_extrinsics();
 	updateabon();
 	updatemaxen();
 	updatemaxhp();

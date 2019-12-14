@@ -57,17 +57,18 @@ enum relationships { NO_LTEQGT = -1,
 #define BL_MASK_STONE           0x00000001L
 #define BL_MASK_SLIME           0x00000002L
 #define BL_MASK_STRNGL          0x00000004L
-#define BL_MASK_FOODPOIS        0x00000008L
-#define BL_MASK_TERMILL         0x00000010L
-#define BL_MASK_BLIND           0x00000020L
-#define BL_MASK_DEAF            0x00000040L
-#define BL_MASK_STUN            0x00000080L
-#define BL_MASK_CONF            0x00000100L
-#define BL_MASK_HALLU           0x00000200L
-#define BL_MASK_LEV             0x00000400L
-#define BL_MASK_FLY             0x00000800L
-#define BL_MASK_RIDE            0x00001000L
-#define BL_MASK_BITS            13 /* number of mask bits that can be set */
+#define BL_MASK_SUFFOC          0x00000008L
+#define BL_MASK_FOODPOIS        0x00000010L
+#define BL_MASK_TERMILL         0x00000020L
+#define BL_MASK_BLIND           0x00000040L
+#define BL_MASK_DEAF            0x00000080L
+#define BL_MASK_STUN            0x00000100L
+#define BL_MASK_CONF            0x00000200L
+#define BL_MASK_HALLU           0x00000400L
+#define BL_MASK_LEV             0x00000800L
+#define BL_MASK_FLY             0x00001000L
+#define BL_MASK_RIDE            0x00002000L
+#define BL_MASK_BITS            14 /* number of mask bits that can be set */
 /* clang-format on */
 
 #define VIA_WINDOWPORT() \

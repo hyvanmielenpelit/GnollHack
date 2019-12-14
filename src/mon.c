@@ -1974,19 +1974,27 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
                         struct monst *mtmp2 = m_at(nx, ny);
                         long mmflag = flag | mm_aggression(mon, mtmp2);
 
-                        if (mmflag & ALLOW_M) {
+                        if (mmflag & ALLOW_M) 
+						{
                             info[cnt] |= ALLOW_M;
-                            if (mtmp2->mtame) {
-                                if (!(mmflag & ALLOW_TM))
-                                    continue;
-                                info[cnt] |= ALLOW_TM;
-                            }
-                        } else {
+                        }
+
+						
+						if (mmflag & ALLOW_TM)
+						{
+							if (!mtmp2->mtame)
+								continue;
+							info[cnt] |= ALLOW_TM;
+						}
+
+						if (!(mmflag & ALLOW_M))
+						{
                             mmflag = flag | mm_displacement(mon, mtmp2);
                             if (!(mmflag & ALLOW_MDISP))
                                 continue;
                             info[cnt] |= ALLOW_MDISP;
                         }
+
                     }
                     /* Note: ALLOW_SANCT only prevents movement, not
                        attack, into a temple. */
@@ -2097,14 +2105,14 @@ struct monst *magr, /* monster that is currently deciding where to move */
 		if(magr->mtame)
 			return ALLOW_M;
 		else
-			return ALLOW_M | ALLOW_TM;
+			return ALLOW_TM;
 	}
 
-	if (magr->mtame && !mdef->mpeaceful)
+	if (magr->mtame && (!mdef->mpeaceful || mon_has_bloodlust(mdef)))
 		return ALLOW_M ;
 
-	if (mdef->mtame && !magr->mpeaceful)
-		return ALLOW_M | ALLOW_TM;
+	if (mdef->mtame && !magr->mtame && (!magr->mpeaceful || mon_has_bloodlust(magr)))
+		return ALLOW_TM;
 
 	return 0L;
 }

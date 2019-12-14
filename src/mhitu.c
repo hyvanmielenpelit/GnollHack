@@ -1894,7 +1894,7 @@ register struct obj* omonwep;
         break;
     case AD_WRAP:
         if ((!mtmp->mcancelled || u.ustuck == mtmp) && !sticks(youmonst.data)) {
-            if (!u.ustuck && !rn2(10)) {
+            if (!u.ustuck && !rn2(2)) {
                 if (u_slip_free(mtmp, mattk)) {
                     dmg = 0;
                 } else {
@@ -1911,12 +1911,15 @@ register struct obj* omonwep;
                                    && !Is_medusa_level(&u.uz)
                                    && !Is_waterlevel(&u.uz);
 
-                    pline("%s drowns you...", Monnam(mtmp));
+                    pline("%s is drowning you!", Monnam(mtmp));
+					/* Drowning is now delayed death */
+					/*
                     killer.format = KILLED_BY_AN;
                     Sprintf(killer.name, "%s by %s",
                             moat ? "moat" : "pool of water",
                             an(mtmp->data->mname));
                     done(DROWNING);
+					*/
                 } else if (mattk->aatyp == AT_HUGS)
 					if(dmg)
 						You("are being crushed, sustaining %d damage.", dmg);
@@ -1933,7 +1936,7 @@ register struct obj* omonwep;
         break;
     case AD_WERE:
         hitmsg(mtmp, mattk, dmg);
-        if (uncancelled && !rn2(4) && u.ulycn == NON_PM
+        if (uncancelled /* && !rn2(4)*/ && u.ulycn == NON_PM
             && !Protection_from_shape_changers && !Lycanthropy_resistance && !defends(AD_WERE, uwep)) {
             You_feel("feverish.");
             exercise(A_CON, FALSE);

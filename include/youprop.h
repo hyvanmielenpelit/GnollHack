@@ -92,6 +92,7 @@
 
 #define Invulnerable u.uprops[INVULNERABLE].intrinsic /* [Tom] */
 
+
 /*** Troubles ***/
 /* Pseudo-property */
 #define Punished (uball != 0)
@@ -131,10 +132,15 @@
 #define Halluc_resistance (HHalluc_resistance || EHalluc_resistance)
 #define Hallucination ((HHallucination || EHallucination) && !Halluc_resistance)
 
+
 /* Timeout, plus a worn mask */
 #define HDeaf u.uprops[DEAF].intrinsic
 #define EDeaf u.uprops[DEAF].extrinsic
 #define Deaf (HDeaf || EDeaf)
+
+#define HAirless_environment u.uprops[AIRLESS_ENVIRONMENT].intrinsic
+#define EAirless_environment u.uprops[AIRLESS_ENVIRONMENT].extrinsic
+#define Airless_environment (HAirless_environment || EAirless_environment)
 
 #define HFumbling u.uprops[FUMBLING].intrinsic
 #define EFumbling u.uprops[FUMBLING].extrinsic
@@ -361,6 +367,9 @@
     (Magical_breathing || breathless(youmonst.data))
 
 #define Underwater (u.uinwater)
+
+#define Survives_without_air (!Underwater && Breathless) || (Underwater && (Amphibious || Swimming))
+
 /* Note that Underwater and u.uinwater are both used in code.
    The latter form is for later implementation of other in-water
    states, like swimming, wading, etc. */

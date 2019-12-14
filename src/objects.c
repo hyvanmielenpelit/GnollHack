@@ -772,7 +772,7 @@ WEAPON("mace of disruption", "runed silver mace",
 	O3_TARGET_PERMISSION_IS_M2_FLAG, 
 	PERMITTED_ALL, M2_UNDEAD | M2_DEMON),
 WEAPON("mace of death", "skull-headed obsidian mace", /* Also base weapon for Wand of Orcus */
-	0, 0, 1, 0, 2, MULTIGEN_SINGLE, 40, 4000, 
+	0, 0, 1, 0, 2, MULTIGEN_SINGLE, 40, 2000, 
 	AD_PHYS, 1, 6, 2, 1, 6, 1, AD_PHYS, 0, 0, 0, A1_CRITICAL_STRIKE | A1_CRITICAL_STRIKE_IS_DEADLY | A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK | A1_MAGIC_RESISTANCE_PROTECTS, 10, 
 	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, B, WEP_MACE, P_BLUDGEONING_WEAPON, MAT_BONE, CLR_BLACK, 

@@ -765,6 +765,20 @@ nh_timeout()
 					useup(uamul);
 				}
 				break;
+			case AIRLESS_ENVIRONMENT:
+			{
+				boolean drowned_by_monster = u.ustuck && is_pool(u.ustuck->mx, u.ustuck->my) && !Swimming && !Amphibious;
+				if (Survives_without_air)
+					;
+				else
+				{
+					You("%s.", Underwater || drowned_by_monster ? "drown" : "suffocate");
+					killer.format = KILLED_BY;
+					Strcpy(killer.name, Underwater || drowned_by_monster ? "drowning" : "suffocation");
+					done(Underwater || drowned_by_monster ? DROWNING : DIED);
+				}
+				break;
+			}
 			case FUMBLING:
 				/* call this only when a move took place.  */
 				/* otherwise handle fumbling msgs locally. */
@@ -1011,11 +1025,29 @@ nh_timeout()
 				break;
 			}
 		}
+		else if ((upp->intrinsic & TIMEOUT) > 0)
+		{
+			// Continuous warning
+			switch (upp - u.uprops) {
+			case STRANGLED:
+				You("are being strangled!");
+				break;
+			case AIRLESS_ENVIRONMENT:
+				if (!Survives_without_air)
+					You("cannot breathe!");
+				else
+					upp->intrinsic &= ~TIMEOUT; /* You can breathe, os clear the suffocation timeout -- It will be set to the full time value below */
+				break;
+			}
+		}
+
+		/* Needs to be called if e.g. amulet of strangulation vanished */
+		update_extrinsics();
 
 		/* Finally, add time to recurring intrinsics */
 		if ((upp->intrinsic & TIMEOUT) == 0 && upp->recurring && (upp->extrinsic || (upp->intrinsic & ~TIMEOUT)))
 		{
-			incr_itimeout(&upp->intrinsic, extratime + upp->recurring_constant + (upp->recurring_random > 1 ? rnd(upp->recurring_random) : 0));
+			incr_itimeout(&upp->intrinsic, extratime + upp->recurring_constant + (upp->recurring_random > 0 ? rn2(upp->recurring_random + 1) : 0));
 		}
 	}
 
