@@ -1218,6 +1218,7 @@ dotwoweapon()
         //You("switch to your primary weapon.");
 		You("stop two-weapon fighting.");
         u.twoweap = 0;
+		context.botl = TRUE;
         update_inventory();
         return 0;
     }
@@ -1228,7 +1229,8 @@ dotwoweapon()
         /* Success! */
         You("begin two-weapon fighting.");
         u.twoweap = 1;
-        update_inventory();
+		context.botl = TRUE;
+		update_inventory();
 		return 0; // (rnd(20) > ACURR(A_DEX));
     }
     return 0;

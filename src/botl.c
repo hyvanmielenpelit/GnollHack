@@ -539,6 +539,7 @@ STATIC_VAR struct istat_s initblstats[MAXBLSTATS] = {
     INIT_BLSTATP("power", " Pw:%s", ANY_INT, 10, BL_ENEMAX, BL_ENE),
     INIT_BLSTAT("power-max", "(%s)", ANY_INT, 10, BL_ENEMAX),
     INIT_BLSTAT("experience-level", " XL:%s", ANY_INT, 10, BL_XP),
+	INIT_BLSTAT("two-weapon-fighting", " %s", ANY_INT, 10, BL_2WEP),
 	INIT_BLSTAT("skill-availability", " %s", ANY_INT, 10, BL_SKILL),
 	INIT_BLSTAT("armor-class", " AC:%s", ANY_INT, 10, BL_AC),
 	INIT_BLSTAT("magic-cancellation-level", " MC:%s", ANY_INT, 10, BL_MC_LVL),
@@ -707,6 +708,12 @@ bot_via_windowport()
     /* Experience */
     blstats[idx][BL_XP].a.a_int = u.ulevel;
     blstats[idx][BL_EXP].a.a_long = u.uexp;
+
+	/* Two-weapon indicator */
+	blstats[idx][BL_2WEP].a.a_int = (int)u.twoweap;
+	Strcpy(blstats[idx][BL_2WEP].val,
+		(u.twoweap == TRUE) ? "2Weap" : "");
+	valset[BL_2WEP] = TRUE;
 
 	/* Skills */
 	blstats[idx][BL_SKILL].a.a_int = (int)u.canadvanceskill;
@@ -1977,6 +1984,7 @@ boolean from_configfile;
                                    "Fainting", "Fainted", "Starved" };
 
 	static const char* sktxt[] = { "", "Skill" };
+	static const char* twoweaptxt[] = { "", "2Weap" };
 
 	/* Examples:
         3.6.1:
@@ -2067,7 +2075,14 @@ boolean from_configfile;
 				0, 1 + 1, &kidx)) {
 			txt = sktxt[kidx];   /* store sktxt in any case */
 			txtval = TRUE;
-		} else if (!strcmpi(s[sidx], "changed")) {
+		}
+		else if (fld == BL_2WEP
+			&& is_fld_arrayvalues(s[sidx], twoweaptxt,
+				0, 1 + 1, &kidx)) {
+			txt = twoweaptxt[kidx];   /* store sktxt in any case */
+			txtval = TRUE;
+		}
+		else if (!strcmpi(s[sidx], "changed")) {
             changed = TRUE;
         } else if (is_ltgt_percentnumber(s[sidx])) {
             const char *op;
@@ -2930,7 +2945,7 @@ int fld;
         nopts++;
     }
 
-    if (fld != BL_CAP && fld != BL_HUNGER && fld != BL_SKILL
+    if (fld != BL_CAP && fld != BL_HUNGER && fld != BL_SKILL && fld != BL_2WEP
         && (at == ANY_INT || at == ANY_LONG)) {
         any = zeroany;
         any.a_int = onlybeh = BL_TH_VAL_ABSOLUTE;
@@ -2948,7 +2963,7 @@ int fld;
     }
 
     if (initblstats[fld].anytype == ANY_STR
-        || fld == BL_CAP || fld == BL_HUNGER || fld == BL_SKILL) {
+        || fld == BL_CAP || fld == BL_HUNGER || fld == BL_SKILL || fld == BL_2WEP) {
         any = zeroany;
         any.a_int = onlybeh = BL_TH_TEXTMATCH;
         Sprintf(buf, "%s text match", initblstats[fld].fldname);
@@ -3292,7 +3307,8 @@ choose_value:
           //       || fld == BL_ALIGN
                  || fld == BL_HUNGER
 				|| fld == BL_SKILL
-				|| fld == BL_TITLE) ? "Choose" : "Enter",
+					|| fld == BL_2WEP
+					|| fld == BL_TITLE) ? "Choose" : "Enter",
                 initblstats[fld].fldname);
         if (fld == BL_CAP) {
             int rv = query_arrayvalue(qry_buf,
@@ -3339,7 +3355,20 @@ choose_value:
 
 			hilite.rel = TXT_VALUE;
 			Strcpy(hilite.textmatch, sktxt[rv]);
-		} else if (fld == BL_TITLE) {
+		}
+		else if (fld == BL_2WEP) {
+			static const char* twoweaptxt[] = { (char*)0, "2Weap" };
+			int rv = query_arrayvalue(qry_buf,
+				twoweaptxt,
+				0, 1 + 1);
+
+			if (rv < 0)
+				goto choose_behavior;
+
+			hilite.rel = TXT_VALUE;
+			Strcpy(hilite.textmatch, twoweaptxt[rv]);
+		} 
+		else if (fld == BL_TITLE) {
             const char *rolelist[3 * 9 + 1];
             char mbuf[MAXVALWIDTH], fbuf[MAXVALWIDTH], obuf[MAXVALWIDTH];
             int i, j, rv;

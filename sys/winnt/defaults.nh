@@ -229,6 +229,9 @@ OPTIONS=hilite_status:hunger/satiated/yellow/hungry/orange/weak/red&bold/faintin
 ## Skill
 OPTIONS=hilite_status:skill-availability/skill/green
 
+## Skill
+OPTIONS=hilite_status:two-weapon-fighting/2weap/yellow
+
 ## Mental
 OPTIONS=hilite_status:condition/hallu/yellow
 OPTIONS=hilite_status:condition/conf/orange

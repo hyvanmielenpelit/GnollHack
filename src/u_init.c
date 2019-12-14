@@ -194,7 +194,7 @@ static struct trobj TouristFemale[] = {
 static struct trobj Valkyrie[] = {
     { LONG_SWORD, 1, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
     { DAGGER, 0, WEAPON_CLASS, 1, UNDEF_BLESS, COLD_ENCHANTMENT },
-    { SMALL_SHIELD, 3, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
+    { SPIKED_SHIELD, 3, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
     { FOOD_RATION, 0, FOOD_CLASS, 1, 0, 0 },
 	{ SACK, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
 	{ 0, 0, 0, 0, 0, 0 }
@@ -670,7 +670,7 @@ static const struct def_skill Skill_V_Max[] = {
     { P_ARCANE_SPELL, P_BASIC },
     { P_MOVEMENT_SPELL, P_BASIC },
     { P_RIDING, P_SKILLED },
-    { P_TWO_WEAPON_COMBAT, P_SKILLED },
+    { P_TWO_WEAPON_COMBAT, P_EXPERT },
     { P_BARE_HANDED_COMBAT, P_EXPERT },
 	{ P_DISARM_TRAP, P_SKILLED },
 	{ P_NONE, 0 }
@@ -682,6 +682,7 @@ static const struct def_skill Skill_V_Init[] = {
 	{ P_SWORD, P_BASIC },
 	{ P_BLUDGEONING_WEAPON, P_BASIC },
 	{ P_BARE_HANDED_COMBAT, P_BASIC },
+	{ P_TWO_WEAPON_COMBAT, P_BASIC },
 	{ P_NONE, 0 }
 };
 
