@@ -131,6 +131,7 @@
 #define is_demon(ptr) (((ptr)->mflags2 & M2_DEMON) != 0L)
 #define is_angel(ptr) ((ptr)->mlet == S_ANGEL)
 #define is_mercenary(ptr) (((ptr)->mflags2 & M2_MERC) != 0L)
+#define is_modron(ptr) (((ptr)->mflags2 & M2_MODRON) != 0L)
 #define is_male(ptr) (((ptr)->mflags2 & M2_MALE) != 0L)
 #define is_female(ptr) (((ptr)->mflags2 & M2_FEMALE) != 0L)
 #define is_neuter(ptr) (((ptr)->mflags2 & M2_NEUTER) != 0L)
@@ -142,7 +143,6 @@
 #define extra_nasty(ptr) (((ptr)->mflags2 & M2_NASTY) != 0L)
 /*#define strongmonst(ptr) (((ptr)->mflags2 & M2_STRONG) != 0L)*/
 #define strongmonst(ptr) (((ptr)->str) >= 17)
-#define is_reflecting(ptr) (((ptr)->mflags2 & M2_REFLECTING) != 0L)
 #define can_breathe(ptr) attacktype(ptr, AT_BREA)
 #define cantwield(ptr) (nohands(ptr) || verysmall(ptr))
 #define could_twoweap(ptr) ((ptr)->mattk[1].aatyp == AT_WEAP)
@@ -174,8 +174,18 @@
 #define is_nonliving(ptr) (((ptr)->mflags3 & M3_NONLIVING) != 0L)
 #define is_multiweaponmonster(ptr) (((ptr)->mflags3 & M3_MULTIWEAPON) != 0L)
 #define leaves_corpses_randomly(ptr) (((ptr)->mflags3 & M3_RANDOM_CORPSE) != 0L)
-#define leaves_no_corpse(ptr) (((ptr)->mflags3 & M3_NO_CORPSE) != 0L)
-#define is_modron(ptr) (((ptr)->mflags3 & M3_MODRON) != 0L)
+#define corpse_crumbles_to_dust(ptr) (((ptr)->mflags3 & M3_CORPSE_CRUMBLES_TO_DUST) != 0L)
+
+
+#define is_brave(ptr) (((ptr)->mflags4 & M4_BRAVE) != 0L)
+#define is_fearless(ptr) (((ptr)->mflags4 & M4_FEARLESS) != 0L)
+#define has_bloodlust(ptr) (((ptr)->mflags4 & M4_BLOODLUST) != 0L)
+#define disregards_own_health(ptr) (is_brave(ptr) || mindless(ptr))
+#define disregards_enemy_strength(ptr) (is_fearless(ptr) || mindless(ptr))
+#define is_reflecting(ptr) (((ptr)->mflags3 & M3_REFLECTING) != 0L)
+#define mon_has_bloodlust(mtmp) (has_bloodlust((mtmp)->data) || (mtmp)->hasbloodlust)
+#define mon_disregards_own_health(mtmp) (disregards_own_health((mtmp)->data) || (mtmp)->disregards_own_health)
+#define mon_disregards_enemy_strength(mtmp) (disregards_enemy_strength((mtmp)->data) || (mtmp)->disregards_enemy_strength)
 
 
 #define is_mplayer(ptr) \

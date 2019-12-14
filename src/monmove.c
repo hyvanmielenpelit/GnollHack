@@ -380,6 +380,9 @@ register struct monst *mtmp;
 
     mdat = mtmp->data;
 
+	if (mtmp->data == &mons[PM_VLAD_THE_IMPALER])
+		tmp = 0;
+
     if (mtmp->mstrategy & STRAT_ARRIVE) {
         int res = m_arrival(mtmp);
         if (res >= 0)
@@ -440,7 +443,7 @@ register struct monst *mtmp;
         mtmp->mflee = 0;
 
     /* cease conflict-induced swallow/grab if conflict has ended */
-    if (mtmp == u.ustuck && mtmp->mpeaceful && !mtmp->mconf && !Conflict) {
+    if (mtmp == u.ustuck && mtmp->mpeaceful && !mtmp->mconf && !(Conflict)) {
         release_hero(mtmp);
         return 0; /* uses up monster's turn */
     }
@@ -585,7 +588,7 @@ register struct monst *mtmp;
         || (mtmp->minvis && !rn2(3))
         || (mdat->mlet == S_LEPRECHAUN && !findgold(invent)
             && (findgold(mtmp->minvent) || rn2(2)))
-        || (is_wanderer(mdat) && !rn2(4)) || (Conflict && !mtmp->iswiz)
+        || (is_wanderer(mdat) && !rn2(4)) || ((Conflict || mon_has_bloodlust(mtmp)) && !mtmp->iswiz)
         || (!mtmp->mcansee && !rn2(4)) || mtmp->mpeaceful) {
         /* Possibly cast an undirected spell if not attacking you */
         /* note that most of the time castmu() will pick a directed
@@ -1091,10 +1094,14 @@ register int after;
     nix = omx;
     niy = omy;
     flag = 0L;
-    if (mtmp->mpeaceful && (!Conflict || resist(mtmp, (struct obj*)0, 5, 0, 0)))
+    if (mtmp->mpeaceful && (!(Conflict) || resist(mtmp, (struct obj*)0, 5, 0, 0)))
         flag |= (ALLOW_SANCT | ALLOW_SSM);
     else
+	{
         flag |= ALLOW_U;
+		flag |= ALLOW_M;
+		flag |= ALLOW_TM;
+	}
     if (is_minion(ptr) || is_rider(ptr))
         flag |= ALLOW_SANCT;
     /* unicorn may not be able to avoid hero on a noteleport level */

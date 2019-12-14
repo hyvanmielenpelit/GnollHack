@@ -138,12 +138,13 @@
 #define M2_GNOLL 0x00000040L        /* is a gnoll */
 #define M2_ORC 0x00000080L          /* is an orc */
 #define M2_DEMON 0x00000100L        /* is a demon */
-#define M2_MERC 0x00000200L         /* is a guard or soldier */
-#define M2_LORD 0x00000400L         /* is a lord to its kind */
-#define M2_PRINCE 0x00000800L       /* is an overlord to its kind */
-#define M2_MINION 0x00001000L       /* is a minion of a deity */
-#define M2_GIANT 0x00002000L        /* is a giant */
-#define M2_SHAPESHIFTER 0x00004000L /* is a shapeshifting species */
+#define M2_MODRON 0x00000200L		/* is a modron */
+#define M2_MERC 0x00000400L         /* is a guard or soldier */
+#define M2_LORD 0x00000800L         /* is a lord to its kind */
+#define M2_PRINCE 0x00001000L       /* is an overlord to its kind */
+#define M2_MINION 0x00002000L       /* is a minion of a deity */
+#define M2_GIANT 0x00004000L        /* is a giant */
+#define M2_SHAPESHIFTER 0x00008000L /* is a shapeshifting species */
 #define M2_MALE 0x00010000L         /* always male */
 #define M2_FEMALE 0x00020000L       /* always female */
 #define M2_NEUTER 0x00040000L       /* neither male nor female */
@@ -154,7 +155,7 @@
 #define M2_WANDER 0x00800000L       /* wanders randomly */
 #define M2_STALK 0x01000000L        /* follows you to other levels */
 #define M2_NASTY 0x02000000L        /* extra-nasty monster (more xp) */
-#define M2_REFLECTING 0x04000000L       /* strong (or big) monster */
+/* a bit is free */
 #define M2_ROCKTHROW 0x08000000L    /* throws boulders */
 #define M2_GREEDY 0x10000000L       /* likes gold */
 #define M2_JEWELS 0x20000000L       /* likes gems */
@@ -185,29 +186,40 @@
 #define M3_DISPLACES 0x00000400			/* moves monsters out of its way */
 #define M3_NONCORPOREAL 0x00000800      /* is noncorporeal, different from unsolid in the sense that
 									    an unsolid monster can be disintegrated, but noncorporeal not */
-#define M3_NONLIVING 0x00001000			/* is nonliving, such as a golem or other construct or a vortex (unaffected by death attacks)*/
-#define M3_MULTIWEAPON 0x00002000		/* fights with more than one weapon (i.e., the wielded weapon), if available*/
-#define M3_RANDOM_CORPSE 0x00004000		/* leaves a corpse at random intervals */
-#define M3_NO_CORPSE 0x00008000			/* leaves no corpse */
+#define M3_REFLECTING 0x00001000       /* strong (or big) monster */
+#define M3_NONLIVING 0x00002000			/* is nonliving, such as a golem or other construct or a vortex (unaffected by death attacks)*/
+#define M3_MULTIWEAPON 0x00004000		/* fights with more than one weapon (i.e., the wielded weapon), if available*/
+/* a bit is free */
 
 #define M3_WIZARD 0x00010000			/* monster can use wizard items */
 #define M3_PRIEST 0x00020000			/* monster can use priest items */
 #define M3_KNIGHT 0x00040000			/* monster can use knight items */
 #define M3_HEALER 0x00080000			/* monster can use healer items */
 
-#define M3_MODRON 0x00100000				/* is a modron */
-#define M3_BLIND_TELEPATHIC 0x00200000		/* is blind telepathic */
-#define M3_UNBLIND_TELEPATHIC 0x00400000		/* is telepathic */
+#define M3_BLIND_TELEPATHIC 0x00100000		/* is blind telepathic */
+#define M3_UNBLIND_TELEPATHIC 0x00200000		/* is telepathic */
 #define M3_TELEPATHIC M3_UNBLIND_TELEPATHIC		/* is telepathic */
-#define M3_REGENERATES_LOST_BODY_PARTS 0x00800000		/* does not lose max hitpoint because of sharpness or bisection */
-#define M3_REVIVES_FROM_DEAD 0x01000000		/* is resurrects itself after a while */
+#define M3_REGENERATES_LOST_BODY_PARTS 0x00400000		/* does not lose max hitpoint because of sharpness or bisection */
+#define M3_REVIVES_FROM_DEAD 0x00800000		/* is resurrects itself after a while */
 
-#define M3_SPEAKING					0x02000000		/* can be spoken to using the chat command */
-#define M3_CHAT_CAN_JOIN_PARTY		0x04000000		/* can join the player's party */
+#define M3_SPEAKING					0x01000000		/* can be spoken to using the chat command */
+#define M3_CHAT_CAN_JOIN_PARTY		0x02000000		/* can join the player's party */
 
-#define M3_WEBMAKER					0x08000000		/* is a webmaker */
-#define M3_KNOWS_TRAPS				0x10000000		/* is knows traps on the level */
-#define M3_KNOWS_PITS_AND_HOLES		0x20000000		/* is knows pits and holes on the level */
+#define M3_WEBMAKER					0x04000000		/* is a webmaker */
+#define M3_KNOWS_TRAPS				0x08000000		/* is knows traps on the level */
+#define M3_KNOWS_PITS_AND_HOLES		0x10000000		/* is knows pits and holes on the level */
+
+#define M3_RANDOM_CORPSE 0x20000000		/* leaves a corpse at random intervals */
+#define M3_CORPSE_CRUMBLES_TO_DUST 0x40000000		/* corpse crumbles to dust, also leaving no corpse */
+
+
+#define M4_NONE						0x00000000
+#define M4_BRAVE					0x00000001		/* disregards enemy strength */
+#define M4_FEARLESS					0x00000002		/* disregards own health */
+#define M4_BLOODLUST				0x00000004		/* attacks peaceful */
+
+
+
 
 
 #define MZ_TINY 0          /* < 2' */

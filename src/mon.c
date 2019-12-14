@@ -2081,10 +2081,32 @@ struct monst *magr, /* monster that is currently deciding where to move */
     if (magr->data == &mons[PM_PURPLE_WORM]
         && mdef->data == &mons[PM_SHRIEKER])
         return ALLOW_M | ALLOW_TM;
-    /* Various other combinations such as dog vs cat, cat vs rat, and
+	
+	if (is_demon(magr->data) && is_angel(mdef->data))
+		return ALLOW_M | ALLOW_TM;
+
+	if (is_angel(magr->data) && is_demon(mdef->data))
+		return ALLOW_M | ALLOW_TM;
+
+	/* Various other combinations such as dog vs cat, cat vs rat, and
        elf vs orc have been suggested.  For the time being we don't
        support those. */
-    return 0L;
+
+	if (mon_has_bloodlust(magr))
+	{
+		if(magr->mtame)
+			return ALLOW_M;
+		else
+			return ALLOW_M | ALLOW_TM;
+	}
+
+	if (magr->mtame && !mdef->mpeaceful)
+		return ALLOW_M ;
+
+	if (mdef->mtame && !magr->mpeaceful)
+		return ALLOW_M | ALLOW_TM;
+
+	return 0L;
 }
 
 /* Monster displacing another monster out of the way */
@@ -2597,7 +2619,7 @@ boolean was_swallowed; /* digestion */
     struct permonst *mdat = mon->data;
     int i, tmp;
 
-    if (leaves_no_corpse(mdat)) {
+    if (corpse_crumbles_to_dust(mdat)) {
         if (cansee(mon->mx, mon->my) && !was_swallowed)
             pline("%s body crumbles into dust.", s_suffix(Monnam(mon)));
         return FALSE;

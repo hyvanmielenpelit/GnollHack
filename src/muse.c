@@ -2284,6 +2284,16 @@ const char *fmt, *str;
 			pline(fmt, str, "item-induced force field");
 		return TRUE;
 	}
+	else if (EReflecting & W_ART) {
+	if (fmt && str)
+		pline(fmt, str, "artifact");
+	return TRUE;
+	}
+	else if (EReflecting & W_ARTI) {
+	if (fmt && str)
+		pline(fmt, str, "artifact-invoked force field");
+	return TRUE;
+	}
 	else if (EReflecting) {
 		if (fmt && str)
 			pline(fmt, str, "item");
