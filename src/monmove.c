@@ -124,6 +124,7 @@ struct monst* mon;
 					&& !mon->isshk && !mon->isgd && !mon->ispriest
 					&& !(mon->iswiz || mon->data == &mons[PM_MEDUSA]
 						|| mon->data->msound == MS_NEMESIS || mon->data->msound == MS_LEADER || mon->data->msound == MS_ORACLE
+						|| mon->data->msound == MS_GUARDIAN || mon->data->msound == MS_BRIBE
 						|| mon->data == &mons[PM_VLAD_THE_IMPALER]
 						|| (mon->data == &mons[PM_ORACLE]))
 					)
@@ -134,7 +135,7 @@ struct monst* mon;
 						switch (mon->talkstate)
 						{
 						case 0:
-							mon_yells(mon, "Hello, adventurer! How are you? I have some fine items for sale.", "say", "politely", TRUE);
+							mon_yells(mon, "Hello, adventurer! How are you? I have fine items for sale.", "say", "politely", TRUE);
 							break;
 						case 1:
 							mon_yells(mon, "Hello again, I still have some items for sale.", "say", "politely", TRUE);
