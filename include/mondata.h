@@ -176,6 +176,9 @@
 #define leaves_corpses_randomly(ptr) (((ptr)->mflags3 & M3_RANDOM_CORPSE) != 0L)
 #define corpse_crumbles_to_dust(ptr) (((ptr)->mflags3 & M3_CORPSE_CRUMBLES_TO_DUST) != 0L)
 #define is_speaking_monster(ptr) (((ptr)->mflags3 & M3_SPEAKING) != 0L)
+#define is_reflecting(ptr) (((ptr)->mflags3 & M3_REFLECTING) != 0L)
+#define is_constrictor(ptr) (((ptr)->mflags3 & M3_CONSTRICTOR) != 0L)
+#define hug_requires_two_previous_attacks(ptr) (((ptr)->mflags3 & M3_HUG_HITS_IF_TWO_FIRST_ATTACKS_SUCCEEDED) != 0L)
 
 
 #define is_brave(ptr) (((ptr)->mflags4 & M4_BRAVE) != 0L)
@@ -183,7 +186,6 @@
 #define has_bloodlust(ptr) (((ptr)->mflags4 & M4_BLOODLUST) != 0L)
 #define disregards_own_health(ptr) (is_brave(ptr) || mindless(ptr))
 #define disregards_enemy_strength(ptr) (is_fearless(ptr) || mindless(ptr))
-#define is_reflecting(ptr) (((ptr)->mflags3 & M3_REFLECTING) != 0L)
 #define mon_has_bloodlust(mtmp) (has_bloodlust((mtmp)->data) || (mtmp)->hasbloodlust)
 #define mon_disregards_own_health(mtmp) (disregards_own_health((mtmp)->data) || (mtmp)->disregards_own_health)
 #define mon_disregards_enemy_strength(mtmp) (disregards_enemy_strength((mtmp)->data) || (mtmp)->disregards_enemy_strength)

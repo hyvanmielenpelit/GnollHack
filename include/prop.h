@@ -144,7 +144,7 @@ struct prop {
 #define W_SWAPWEP2	0x00002000L		/* Alternate weapon/shield in the secondary hand */
 
 #define W_ENVIRONMENT 0x00004000L	/* Caused by environment, e.g., suffocation due to no air */
-#define W_EXTRA		0x00008000L		/* Extra for future use */
+#define W_STUCK		0x00008000L		/* A monster in u.ustuck had grabbed you and is e.g. constricting you */
 
 #define W_WIELDED_WEAPON (W_WEP | W_WEP2)
 #define W_SWAP_WEAPON (W_SWAPWEP | W_SWAPWEP2)

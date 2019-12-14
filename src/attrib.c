@@ -682,7 +682,11 @@ update_extrinsics()
 		struct monst* mtmp = u.ustuck;
 		if (is_pool(mtmp->mx, mtmp->my) && !Swimming && !Amphibious) 
 		{
-			u.uprops[AIRLESS_ENVIRONMENT].extrinsic |= W_ENVIRONMENT;
+			u.uprops[AIRLESS_ENVIRONMENT].extrinsic |= W_STUCK;
+		}
+		if (is_constrictor(mtmp->data))
+		{
+			u.uprops[STRANGLED].extrinsic |= W_STUCK;
 		}
 	}
 
@@ -1479,9 +1483,18 @@ int propidx; /* special cases can have negative values */
 					: something);
 			else if (u.uprops[propidx].extrinsic & W_ENVIRONMENT)
 				Sprintf(buf, because_of, "your surroundings");
+			else if (u.uprops[propidx].extrinsic & W_STUCK)
+			{
+				char ustuckbuf[BUFSIZ] = "";
+				if (u.ustuck)
+					Sprintf(ustuckbuf, "%s holding you", mon_nam(u.ustuck));
+				else
+					Sprintf(ustuckbuf, "%s", "the monster holding you");
+
+				Sprintf(buf, because_of, ustuckbuf);
+			}
 			else if (
-				0 
-				|| ((obj = what_gives(&u.uprops[propidx].extrinsic)) != 0 && (wizard || objects[obj->otyp].oc_name_known))
+				((obj = what_gives(&u.uprops[propidx].extrinsic)) != 0 && (wizard || objects[obj->otyp].oc_name_known))
 				)
                 Sprintf(buf, because_of, obj->oartifact
                                              ? bare_artifactname(obj)

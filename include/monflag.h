@@ -186,10 +186,10 @@
 #define M3_DISPLACES 0x00000400			/* moves monsters out of its way */
 #define M3_NONCORPOREAL 0x00000800      /* is noncorporeal, different from unsolid in the sense that
 									    an unsolid monster can be disintegrated, but noncorporeal not */
-#define M3_REFLECTING 0x00001000       /* strong (or big) monster */
+#define M3_REFLECTING 0x00001000        /* reflecting monster */
 #define M3_NONLIVING 0x00002000			/* is nonliving, such as a golem or other construct or a vortex (unaffected by death attacks)*/
 #define M3_MULTIWEAPON 0x00004000		/* fights with more than one weapon (i.e., the wielded weapon), if available*/
-/* a bit is free */
+#define M3_CONSTRICTOR 0x00008000       /* grabbing / sticking itself causes constriction */
 
 #define M3_WIZARD 0x00010000			/* monster can use wizard items */
 #define M3_PRIEST 0x00020000			/* monster can use priest items */
@@ -211,6 +211,7 @@
 
 #define M3_RANDOM_CORPSE 0x20000000		/* leaves a corpse at random intervals */
 #define M3_CORPSE_CRUMBLES_TO_DUST 0x40000000		/* corpse crumbles to dust, also leaving no corpse */
+#define M3_HUG_HITS_IF_TWO_FIRST_ATTACKS_SUCCEEDED 0x80000000		/* corpse crumbles to dust, also leaving no corpse */
 
 
 #define M4_NONE						0x00000000

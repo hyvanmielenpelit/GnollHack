@@ -2866,7 +2866,9 @@ struct monst *mtmp;
                 mtmp->mspec_used = rnd(2);
         }
         u.ustuck = 0;
-    }
+		update_extrinsics();
+		context.botl = TRUE;
+	}
 }
 
 void

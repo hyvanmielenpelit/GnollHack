@@ -691,7 +691,7 @@ register struct monst *mtmp;
 
         case AT_HUGS: /* automatic if prev two attacks succeed */
             /* Note: if displaced, prev attacks never succeeded */
-            if ((!range2 && i >= 2 && sum[i - 1] && sum[i - 2])
+            if ((!range2 && ((!hug_requires_two_previous_attacks(mtmp->data) && tmp > (j = rnd(20 + i))) || (hug_requires_two_previous_attacks(mtmp->data) && i >= 2 && sum[i - 1] && sum[i - 2])))
                 || mtmp == u.ustuck)
                 sum[i] = hitmu(mtmp, mattk, (struct obj*) 0);
             break;
@@ -1910,8 +1910,11 @@ register struct obj* omonwep;
 
 					if (is_pool(mtmp->mx, mtmp->my) && !Swimming && !Amphibious)
 						pline("%s is drowning you!", Monnam(mtmp));
+					else if (is_constrictor(mtmp->data))
+						pline("%s is constricting you to death!", Monnam(mtmp));
 
 					u.ustuck = mtmp;
+					context.botl = TRUE;
                 }
             } 
 			else if (u.ustuck == mtmp) 
@@ -1935,6 +1938,8 @@ register struct obj* omonwep;
                     done(DROWNING);
 					*/
                 } 
+				else if (is_constrictor(mtmp->data))
+					pline("%s is constricting you to death!", Monnam(mtmp));
 				else if (mattk->aatyp == AT_HUGS)
 					if(dmg)
 						You("are being crushed, sustaining %d damage.", dmg);
