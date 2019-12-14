@@ -97,7 +97,7 @@ void
 check_mon_talk(mon)
 struct monst* mon;
 {
-	if (!mon || !is_speaking_monster(mon->data) || mindless(mon->data) || mon->mstun || mon->mconf || mon->msleeping || mon->mtame)
+	if (!mon || DEADMONSTER(mon) || !is_speaking_monster(mon->data) || mindless(mon->data) || mon->mstun || mon->mconf || mon->msleeping || mon->mtame)
 		return;
 
 	boolean mon_talked = FALSE;
@@ -561,8 +561,6 @@ register struct monst *mtmp;
             return 1;
     }
 
-	check_mon_talk(mtmp);
-
     /* Demonic Blackmail! */
     if (nearby && mdat->msound == MS_BRIBE && mtmp->mpeaceful && !mtmp->mtame
         && !u.uswallow) {
@@ -739,7 +737,8 @@ register struct monst *mtmp;
                 if (distu(mtmp->mx, mtmp->my) > 2)
                     unstuck(mtmp);
             }
-            return 0;
+			check_mon_talk(mtmp);
+			return 0;
         case 2: /* monster died */
             return 1;
         }
@@ -757,6 +756,9 @@ register struct monst *mtmp;
         if (mtmp->wormno)
             wormhitu(mtmp);
     }
+
+	/* talking for normal monsters */
+	check_mon_talk(mtmp);
     /* special speeches for quest monsters */
     if (!mtmp->msleeping && mtmp->mcanmove && nearby)
         quest_talk(mtmp);
