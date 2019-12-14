@@ -1893,45 +1893,63 @@ register struct obj* omonwep;
             u.ustuck = mtmp;
         break;
     case AD_WRAP:
-        if ((!mtmp->mcancelled || u.ustuck == mtmp) && !sticks(youmonst.data)) {
-            if (!u.ustuck && !rn2(2)) {
-                if (u_slip_free(mtmp, mattk)) {
+        if ((!mtmp->mcancelled || u.ustuck == mtmp) && !sticks(youmonst.data)) 
+		{
+            if (!u.ustuck && !rn2(2)) 
+			{
+                if (u_slip_free(mtmp, mattk)) 
+				{
                     dmg = 0;
-                } else {
+                } 
+				else 
+				{
 					if(dmg)
-						pline("%s swings itself around you for %d damage!", Monnam(mtmp), dmg);
+						pline("%s swings itself around you. You sustain %d damage!", Monnam(mtmp), dmg);
 					else
 						pline("%s swings itself around you!", Monnam(mtmp));
+
+					if (is_pool(mtmp->mx, mtmp->my) && !Swimming && !Amphibious)
+						pline("%s is drowning you!", Monnam(mtmp));
+
 					u.ustuck = mtmp;
                 }
-            } else if (u.ustuck == mtmp) {
-                if (is_pool(mtmp->mx, mtmp->my) && !Swimming && !Amphibious) {
-                    boolean moat = (levl[mtmp->mx][mtmp->my].typ != POOL)
-                                   && (levl[mtmp->mx][mtmp->my].typ != WATER)
-                                   && !Is_medusa_level(&u.uz)
-                                   && !Is_waterlevel(&u.uz);
-
-                    pline("%s is drowning you!", Monnam(mtmp));
+            } 
+			else if (u.ustuck == mtmp) 
+			{
+                if (is_pool(mtmp->mx, mtmp->my) && !Swimming && !Amphibious)
+				{
 					/* Drowning is now delayed death */
+					pline("%s is drowning you!", Monnam(mtmp));
+
 					/*
-                    killer.format = KILLED_BY_AN;
+					boolean moat = (levl[mtmp->mx][mtmp->my].typ != POOL)
+								   && (levl[mtmp->mx][mtmp->my].typ != WATER)
+								   && !Is_medusa_level(&u.uz)
+								   && !Is_waterlevel(&u.uz);
+
+
+					killer.format = KILLED_BY_AN;
                     Sprintf(killer.name, "%s by %s",
                             moat ? "moat" : "pool of water",
                             an(mtmp->data->mname));
                     done(DROWNING);
 					*/
-                } else if (mattk->aatyp == AT_HUGS)
+                } 
+				else if (mattk->aatyp == AT_HUGS)
 					if(dmg)
 						You("are being crushed, sustaining %d damage.", dmg);
 					else
 						You("are being crushed, but sustain no damage.");
-            } else {
+            } 
+			else 
+			{
                 dmg = 0;
                 if (flags.verbose)
                     pline("%s brushes against your %s.", Monnam(mtmp),
                           body_part(LEG));
             }
-        } else
+        }
+		else
             dmg = 0;
         break;
     case AD_WERE:
