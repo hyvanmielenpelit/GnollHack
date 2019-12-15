@@ -121,7 +121,7 @@ struct monst* mon;
 			{ 
 				/* Normal peaceful monster talk */
 				if(mon->mpeaceful && !is_undead(mon->data) && !is_demon(mon->data)
-					&& !mon->isshk && !mon->isgd && !mon->ispriest
+					&& !mon->isshk && !mon->isgd && !mon->ispriest && !is_watch(mon->data) && !is_mercenary(mon->data)
 					&& !(mon->iswiz || mon->data == &mons[PM_MEDUSA]
 						|| mon->data->msound == MS_NEMESIS || mon->data->msound == MS_LEADER || mon->data->msound == MS_ORACLE
 						|| mon->data->msound == MS_GUARDIAN || mon->data->msound == MS_BRIBE
