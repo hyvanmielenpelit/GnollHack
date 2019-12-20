@@ -1946,16 +1946,18 @@ POTION("water",                 "clear",  0, 0, 92, 100, CLR_CYAN, O1_NONE, O2_N
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, sflags, 0, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
 		   6, HI_PAPER, 0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
-SCROLL("enchant armor",              "ZELGO MER",  1,  63,  80, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("enchant armor",              "ZELGO MER",  1,  60,  80, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SCROLL("destroy armor",         "JUYED AWK YACC",  1,  45, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("confuse monster",                 "NR 9",  1,  53, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("protect armor",				   "VEX DOL",  1,  33,  50, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("confuse monster",                 "NR 9",  1,  33, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SCROLL("scare monster",   "XIXAXA XOXAXA XUXAXA",  1,  35, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SCROLL("remove curse",             "PRATYAVAYAH",  1,  65,  80, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SCROLL("enchant weapon",         "DAIYEN FOOELS",  1,  80,  60, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("protect weapon",			   "ZEPH NI",  1,  30,  50, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SCROLL("create monster",       "LEP GEX VEN ZEA",  1,  45, 200, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SCROLL("taming",                   "PRIRUTSENIE",  1,  15, 200, S1_SPELL_IS_NONREVERSIBLE_PERMANENT, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SCROLL("genocide",                  "ELBIB YLOH",  1,  15, 300, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("light",                 "VERR YED HORRE",  1,  90,  50, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("light",                 "VERR YED HORRE",  1,  50,  50, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SCROLL("teleportation",        "VENZAR BORGAVVE",  1,  55, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SCROLL("gold detection",                 "THARR",  1,  33, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SCROLL("food detection",               "YUM YUM",  1,  25, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),

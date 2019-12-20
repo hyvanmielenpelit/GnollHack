@@ -1088,6 +1088,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 		break;
 #endif
 	case SPE_PROTECT_ARMOR:
+	case SCR_PROTECT_ARMOR:
 	case SPE_ENCHANT_ARMOR:
 	case SCR_ENCHANT_ARMOR: {
 		register schar s;
@@ -1123,7 +1124,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 			exercise(A_STR, !scursed);
 			break;
 		}
-		if (confused || otyp == SPE_PROTECT_ARMOR) {
+		if (confused || otyp == SPE_PROTECT_ARMOR || otyp == SCR_PROTECT_ARMOR) {
 			old_erodeproof = (otmp->oerodeproof != 0);
 			new_erodeproof = !scursed;
 			otmp->oerodeproof = 0; /* for messages */
@@ -1133,6 +1134,9 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 			}
 			else {
 				otmp->rknown = TRUE;
+				if (!confused && !scursed && otyp == SCR_PROTECT_ARMOR)
+					known = TRUE;
+
 				pline("%s covered by a %s %s %s!", Yobjnam2(otmp, "are"),
 					scursed ? "mottled" : "shimmering",
 					hcolor(scursed ? NH_BLACK : NH_GOLDEN),
@@ -1472,6 +1476,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 		 */
 		break;
 	case SPE_PROTECT_WEAPON:
+	case SCR_PROTECT_WEAPON:
 	case SPE_ENCHANT_WEAPON:
 	case SCR_ENCHANT_WEAPON:
 	{
@@ -1499,7 +1504,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 		else
 			otmp = uwep;
 
-		if ((confused || otyp == SPE_PROTECT_WEAPON) && otmp
+		if ((confused || otyp == SPE_PROTECT_WEAPON || otyp == SCR_PROTECT_WEAPON) && otmp
 			&& erosion_matters(otmp) && otmp->oclass != ARMOR_CLASS) {
 			old_erodeproof = (otmp->oerodeproof != 0);
 			new_erodeproof = !scursed;
@@ -1510,6 +1515,9 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 			}
 			else {
 				otmp->rknown = TRUE;
+				if (!confused && !scursed && otyp == SCR_PROTECT_WEAPON)
+					known = TRUE;
+
 				pline("%s covered by a %s %s %s!", Yobjnam2(otmp, "are"),
 					scursed ? "mottled" : "shimmering",
 					hcolor(scursed ? NH_PURPLE : NH_GOLDEN),
