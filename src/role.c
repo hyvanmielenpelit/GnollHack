@@ -267,8 +267,8 @@ const struct Role roles[] = {
       MH_HUMAN | ROLE_MALE | ROLE_FEMALE | ROLE_LAWFUL | ROLE_NEUTRAL
           | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
-      { 10, 7, 8, 8, 7, 7 },
-      { 25, 10, 20, 20, 15, 10 },
+      { 10, 7, 10, 10, 10, 10 },
+      { 20, 10, 20, 20, 20, 15 },
       /* Init   Lower  Higher */
       { 12, 0, 0, 8, 1, 1 }, /* Hit points */
       { 3, 3, 3, 3, 3, 3 }, /* Energy 1d4+2*/

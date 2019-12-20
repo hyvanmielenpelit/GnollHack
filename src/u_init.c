@@ -97,7 +97,8 @@ static struct trobj Monk[] = {
     { LEATHER_GLOVES, 2, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
     { ROBE, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
     { UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, 1, 0 },
-    { UNDEF_TYP, UNDEF_SPE, SCROLL_CLASS, 1, UNDEF_BLESS, 0 },
+	{ UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, 1, 0 },
+	{ UNDEF_TYP, UNDEF_SPE, SCROLL_CLASS, 1, UNDEF_BLESS, 0 },
     { POT_HEALING, 0, POTION_CLASS, 3, UNDEF_BLESS, 0 },
     { FOOD_RATION, 0, FOOD_CLASS, 3, 0, 0 },
     { APPLE, 0, FOOD_CLASS, 5, UNDEF_BLESS, 0 },
@@ -486,9 +487,9 @@ static const struct def_skill Skill_Monk_Max[] = {
 	{ P_ABJURATION_SPELL, P_EXPERT },
 	{ P_HEALING_SPELL, P_EXPERT },
     { P_DIVINATION_SPELL, P_BASIC },
-    { P_ENCHANTMENT_SPELL, P_BASIC },
+    { P_ENCHANTMENT_SPELL, P_SKILLED },
     { P_CLERIC_SPELL, P_SKILLED },
-    { P_MOVEMENT_SPELL, P_SKILLED },
+    { P_MOVEMENT_SPELL, P_EXPERT },
     { P_TRANSMUTATION_SPELL, P_BASIC },
     { P_MARTIAL_ARTS, P_GRAND_MASTER },
 	{ P_DISARM_TRAP, P_BASIC },
@@ -497,6 +498,9 @@ static const struct def_skill Skill_Monk_Max[] = {
 static const struct def_skill Skill_Monk_Init[] = {
 	{ P_MARTIAL_ARTS, P_SKILLED },
 	{ P_HEALING_SPELL, P_BASIC },
+	{ P_ENCHANTMENT_SPELL, P_BASIC },
+	{ P_MOVEMENT_SPELL, P_BASIC },
+	{ P_ABJURATION_SPELL, P_BASIC },
 	{ P_NONE, 0 }
 };
 
@@ -1302,6 +1306,11 @@ register struct trobj *trop;
 							   || objects[otyp].oc_spell_attribute == A_AVG_INT_WIS
 							   || objects[otyp].oc_spell_attribute == A_AVG_WIS_CHA
 							   || objects[otyp].oc_spell_attribute == A_AVG_INT_WIS_CHA
+							   ))
+						   || (Role_if(PM_MONK) && !(objects[otyp].oc_skill == P_ENCHANTMENT_SPELL
+							   || objects[otyp].oc_skill == P_HEALING_SPELL
+							   || objects[otyp].oc_skill == P_ABJURATION_SPELL
+							   || objects[otyp].oc_skill == P_MOVEMENT_SPELL
 							   ))
 						   ))) {
                 dealloc_obj(obj);
