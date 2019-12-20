@@ -51,16 +51,16 @@ static const struct innate
 
   mon_abil[] = { { 1, FAST, "", "" },
                  { 1, SLEEP_RES, "", "" },
-                 { 1, SEE_INVIS, "", "" },
-				 { 4, SICK_RES, "healthy", "" },
-				 { 7, POISON_RES, "even healthier", "" },
-                 { 10, STEALTH, "stealthy", "" },
-                 { 13, SEARCHING, "perceptive", "unaware" },
-                 { 16, FIRE_RES, "cool", "warmer" },
-                 { 19, COLD_RES, "warm", "cooler" },
-                 { 22, SHOCK_RES, "insulated", "conductive" },
+                 { 4, SEE_INVIS, "", "" },
+				 { 7, SICK_RES, "healthy", "" },
+				 { 10, JUMPING, "jumpy", "" },
+				 { 13, POISON_RES, "even healthier", "" },
+				 { 16, STEALTH, "stealthy", "" },
+                 { 19, SEARCHING, "perceptive", "unaware" },
+                 { 22, WARNING, "sensitive", "" },
                  { 25, TELEPORT_CONTROL, "controlled", "uncontrolled" },
-				 { 28, DEATH_RES, "less mortal", "more mortal" },
+				 { 28, POLYMORPH_CONTROL, "more controlled", "less controlled" },
+				 { 31, DEATH_RES, "less mortal", "more mortal" },
 				 { 0, 0, 0, 0 } },
 
   pri_abil[] = { { 12, WARN_UNDEAD, "sensitive to undead", "" },
@@ -97,7 +97,7 @@ static const struct innate
 
   wiz_abil[] = { { 15, ENHANCED_VISION, "studious", "" },
                  { 20, TELEPORT_CONTROL, "controlled", "uncontrolled" },
-				 { 25, POLYMORPH_CONTROL, "more controlled", "more uncontrolled" },
+				 { 25, POLYMORPH_CONTROL, "more controlled", "less controlled" },
 				 { 0, 0, 0, 0 } },
 
   /* Intrinsics conferred by race */
