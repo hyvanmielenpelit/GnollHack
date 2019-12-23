@@ -493,6 +493,7 @@ static const struct def_skill Skill_Monk_Max[] = {
     { P_TRANSMUTATION_SPELL, P_BASIC },
 	{ P_BARE_HANDED_COMBAT, P_EXPERT },
 	{ P_MARTIAL_ARTS, P_EXPERT },
+	{ P_TWO_WEAPON_COMBAT, P_EXPERT },
 	{ P_DISARM_TRAP, P_BASIC },
 	{ P_NONE, 0 }
 };

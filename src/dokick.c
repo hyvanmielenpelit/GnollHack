@@ -389,71 +389,92 @@ xchar x, y;
         return;
     }
 
+	int multistrike = 1;
+	int multistrikernd = 0;
 
-	int armorpenalty = 0, attknum = 0;
-	int tmp = find_roll_to_hit(mon, AT_KICK, uarmf, &attknum, &armorpenalty);
-	int weight_penalty = -calc_capacity(0);
-	int base_penalty = -2;
-	tmp += weight_penalty + base_penalty;
+	get_multishot_stats(&youmonst, (struct obj*)0, (struct obj*)0, FALSE, &multistrike, &multistrikernd);
 
-	if (Fumbling)
-		clumsy = TRUE;
-	else if (uarm && objects[uarm->otyp].oc_bulky && ACURR(A_DEX) < rnd(25))
-		clumsy = TRUE;
+	if (multistrikernd > 0)
+		multistrike += rn2(multistrikernd + 1);
 
-	if(clumsy)
-		tmp -= 4;
-
-	int dieroll = rnd(20);
-	boolean mhit = !!(tmp > dieroll || u.uswallow);
-
-	if(mhit)
+	for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
 	{
-		/* check if mon catches your kick */
-		if (!rn2(clumsy ? 3 : 4) && (clumsy || !bigmonst(mon->data))
-			&& mon->mcansee && !mon->mtrapped && !thick_skinned(mon->data)
-			&& mon->data->mlet != S_EEL && haseyes(mon->data) && mon->mcanmove
-			&& !mon->mstun && !mon->mconf && !mon->msleeping
-			&& mon->data->mmove >= 12)
+		char strikebuf[BUFSIZ] = "";
+		Sprintf(strikebuf, "You attack");
+
+		if (strikeindex > 0)
+			pline("%s %s!", strikebuf, strikeindex == 1 ? "a second time" : strikeindex == 2 ? "a third time" : "once more");
+
+
+		int armorpenalty = 0, attknum = 0;
+		int tmp = find_roll_to_hit(mon, AT_KICK, uarmf, &attknum, &armorpenalty);
+		int weight_penalty = -calc_capacity(0);
+		int base_penalty = -2;
+		tmp += weight_penalty + base_penalty;
+
+		if (Fumbling)
+			clumsy = TRUE;
+		else if (uarm && objects[uarm->otyp].oc_bulky && ACURR(A_DEX) < rnd(25))
+			clumsy = TRUE;
+
+		if (clumsy)
+			tmp -= 4;
+
+		int dieroll = rnd(20);
+		boolean mhit = !!(tmp > dieroll || u.uswallow);
+
+		if (mhit)
 		{
-			if (!nohands(mon->data) && !rn2(martial() ? 5 : 3))
+			/* check if mon catches your kick */
+			if (!rn2(clumsy ? 3 : 4) && (clumsy || !bigmonst(mon->data))
+				&& mon->mcansee && !mon->mtrapped && !thick_skinned(mon->data)
+				&& mon->data->mlet != S_EEL && haseyes(mon->data) && mon->mcanmove
+				&& !mon->mstun && !mon->mconf && !mon->msleeping
+				&& mon->data->mmove >= 12)
 			{
-				You("try to kick %s.", mon_nam(mon));
-				pline("However, %s blocks your %skick.", mon_nam(mon),
-					  clumsy ? "clumsy " : "");
-				(void) passive(mon, uarmf, FALSE, 1, AT_KICK, FALSE);
-				return;
-			} 
-			else
-			{
-				maybe_mnexto(mon);
-				if (mon->mx != x || mon->my != y) 
+				if (!nohands(mon->data) && !rn2(martial() ? 5 : 3))
 				{
-					You("kick %s.", mon_nam(mon));
-					(void) unmap_invisible(x, y);
-					pline("%s %s, %s evading your %skick.", Monnam(mon),
-						  (!level.flags.noteleport && can_teleport(mon->data))
-							  ? "teleports"
-							  : is_floater(mon->data)
-									? "floats"
-									: is_flyer(mon->data) ? "swoops"
-														  : (nolimbs(mon->data)
-															 || slithy(mon->data))
-																? "slides"
-																: "jumps",
-						  clumsy ? "easily" : "nimbly", clumsy ? "clumsy " : "");
-					(void) passive(mon, uarmf, FALSE, 1, AT_KICK, FALSE);
+					You("try to kick %s.", mon_nam(mon));
+					pline("However, %s blocks your %skick.", mon_nam(mon),
+						clumsy ? "clumsy " : "");
+					(void)passive(mon, uarmf, FALSE, 1, AT_KICK, FALSE);
 					return;
 				}
+				else
+				{
+					maybe_mnexto(mon);
+					if (mon->mx != x || mon->my != y)
+					{
+						You("kick %s.", mon_nam(mon));
+						(void)unmap_invisible(x, y);
+						pline("%s %s, %s evading your %skick.", Monnam(mon),
+							(!level.flags.noteleport && can_teleport(mon->data))
+							? "teleports"
+							: is_floater(mon->data)
+							? "floats"
+							: is_flyer(mon->data) ? "swoops"
+							: (nolimbs(mon->data)
+								|| slithy(mon->data))
+							? "slides"
+							: "jumps",
+							clumsy ? "easily" : "nimbly", clumsy ? "clumsy " : "");
+						(void)passive(mon, uarmf, FALSE, 1, AT_KICK, FALSE);
+						return;
+					}
+				}
 			}
+
+			/* now, do the damage */
+			kickdmg(mon, clumsy);
+		}
+		else
+		{
+			Your("kick misses %s.", mon_nam(mon));
 		}
 
-		/* now, do the damage */
-		kickdmg(mon, clumsy);
-	}
-	else
-	{
-		Your("kick misses %s.", mon_nam(mon));
+		if (!mon || DEADMONSTER(mon) || m_at(x, y) != mon)
+			break;
+
 	}
 }
 
