@@ -146,6 +146,7 @@ struct context_info {
 	boolean robe_yielding_mc_bonus;
 	int oddideacnt;
 	boolean bootkickmsgdisplayed;
+	boolean glovehitmsgdisplayed;
 	struct dig_info digging;
     struct victual_info victual;
     struct tin_info tin;

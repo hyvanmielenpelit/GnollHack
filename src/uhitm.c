@@ -794,7 +794,8 @@ int dieroll;
 			tmp = 0;
 		else
 		{
-			if (martial_bonus())
+			boolean martial_arts_applies = martial_bonus() && !(uarmg && is_metallic(uarmg));
+			if (martial_arts_applies)
 			{
 				/* bonus for martial arts */
 				switch (P_SKILL(P_MARTIAL_ARTS))
@@ -816,6 +817,23 @@ int dieroll;
 			{
 				/* normal bare-handed damage */
 				tmp = rnd(2);
+			}
+
+			if (martial_bonus() && !martial_arts_applies)
+			{
+				if (!context.glovehitmsgdisplayed)
+				{
+					You_feel("your gloves hinder the elegance of your strikes.");
+					context.glovehitmsgdisplayed = TRUE;
+				}
+			}
+			else
+			{
+				if (context.glovehitmsgdisplayed)
+				{
+					Your("strikes feel effortless.");
+					context.glovehitmsgdisplayed = FALSE;
+				}
 			}
 
 			if (uarmg)
