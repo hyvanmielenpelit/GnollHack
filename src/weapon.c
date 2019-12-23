@@ -2007,9 +2007,9 @@ uwep_skill_type()
  * Treat restricted weapons as unskilled.
  */
 int
-weapon_skill_hit_bonus(weapon, use_thrown_weapon)
+weapon_skill_hit_bonus(weapon, use_this_skill)
 struct obj *weapon;
-boolean use_thrown_weapon;
+int use_this_skill;
 {
     int bonus = 0;
     static const char bad_skill[] = "weapon_skill_hit_bonus: bad skill %d";
@@ -2017,7 +2017,7 @@ boolean use_thrown_weapon;
 	boolean Is_worn_gauntlets = (weapon && is_gloves(weapon) && (weapon->owornmask & W_ARMG));
 	boolean apply_martial_arts_bonus = ((!weapon && (!uarmg || (uarmg && !is_metallic(uarmg)))) || (Is_worn_gauntlets && !is_metallic(weapon)));
 	int wep_type = weapon_skill_type(weapon);
-    int type = use_thrown_weapon ? P_THROWN_WEAPON : wep_type;
+    int type = use_this_skill ? use_this_skill : wep_type;
 	
 	if (type == P_BARE_HANDED_COMBAT || Is_worn_gauntlets) 
 	{
@@ -2133,16 +2133,16 @@ boolean use_thrown_weapon;
  * Treat restricted weapons as unskilled.
  */
 int
-weapon_skill_dmg_bonus(weapon, use_thrown_weapon)
+weapon_skill_dmg_bonus(weapon, use_this_skill)
 struct obj *weapon;
-boolean use_thrown_weapon;
+int use_this_skill;
 {
     int bonus = 0;
 	boolean apply_two_weapon_bonus = (u.twoweap && (!weapon || (weapon && !bimanual(weapon) && (weapon == uwep || weapon == uarms))));
 	boolean Is_worn_gauntlets = (weapon && is_gloves(weapon) && (weapon->owornmask & W_ARMG));
 	boolean apply_martial_arts_bonus = ((!weapon && (!uarmg || (uarmg && !is_metallic(uarmg)))) || (Is_worn_gauntlets && !is_metallic(weapon)));
     int wep_type = weapon_skill_type(weapon);
-    int type = use_thrown_weapon ? P_THROWN_WEAPON : wep_type;
+    int type = use_this_skill > P_NONE ? use_this_skill : wep_type;
 
 	if (type == P_BARE_HANDED_COMBAT || Is_worn_gauntlets)
 	{

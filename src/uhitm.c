@@ -322,9 +322,9 @@ int *attk_count, *role_roll_penalty;
             tmp += weapon_to_hit_value(weapon, mtmp, &youmonst);
 		else if(uarmg)
 			tmp += weapon_to_hit_value(uarmg, mtmp, &youmonst);
-		tmp += weapon_skill_hit_bonus(weapon, FALSE);
+		tmp += weapon_skill_hit_bonus(weapon, P_NONE);
     } else if (aatyp == AT_KICK && martial_bonus()) {
-        tmp += weapon_skill_hit_bonus((struct obj *) 0, FALSE);
+        tmp += weapon_skill_hit_bonus((struct obj *) 0, P_NONE);
     }
 
     return tmp;
@@ -1406,7 +1406,7 @@ int dieroll;
 
 		/* to be valid a projectile must have had the correct projector */
 		wep = (is_golf_swing_with_stone || PROJECTILE(obj)) ? uwep : obj;
-		tmp += weapon_skill_dmg_bonus(wep, is_golf_swing_with_stone);
+		tmp += weapon_skill_dmg_bonus(wep, is_golf_swing_with_stone ? P_THROWN_WEAPON : P_NONE);
 		/* [this assumes that `!thrown' implies wielded...] */
 		wtype = is_golf_swing_with_stone ? P_THROWN_WEAPON :
 			!obj ? (P_SKILL(P_BARE_HANDED_COMBAT) < P_EXPERT ? P_BARE_HANDED_COMBAT : P_MARTIAL_ARTS) :

@@ -2121,7 +2121,7 @@ register boolean is_golf;
 			else if (uwep)
 			{
 				tmp += weapon_to_hit_value(uwep, mon, &youmonst);	//tmp += uwep->spe - greatest_erosion(uwep);
-                tmp += weapon_skill_hit_bonus(uwep, is_golf_swing_with_stone); //Players get skill bonuses
+                tmp += weapon_skill_hit_bonus(uwep, is_golf_swing_with_stone ? P_THROWN_WEAPON : P_NONE); //Players get skill bonuses
 //                if (uwep->oartifact)
 //                    tmp += spec_abon(uwep, mon);
                 /*
@@ -2149,7 +2149,7 @@ register boolean is_golf;
                 tmp -= 2;
             /* we know we're dealing with a weapon or weptool handled
                by WEAPON_SKILLS once ammo objects have been excluded */
-            tmp += weapon_skill_hit_bonus(obj, is_golf_swing_with_stone);
+            tmp += weapon_skill_hit_bonus(obj, is_golf_swing_with_stone ? P_THROWN_WEAPON : P_NONE);
         }
 
         if (tmp >= dieroll) 

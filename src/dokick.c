@@ -67,15 +67,15 @@ boolean clumsy;
 		switch (skillevel)
 		{
 		case P_BASIC:
-			basedmg = rnd(8);
+			basedmg = rnd(8) + 3;
 			strdmg = ((3 + extraquarters) * u_str_dmg_bonus()) / 4;
 			break;
 		case P_SKILLED:
-			basedmg = rnd(10);
+			basedmg = rnd(10) + 3;
 			strdmg = ((4 + extraquarters) * u_str_dmg_bonus()) / 4;
 			break;
 		case P_EXPERT:
-			basedmg = rnd(12);
+			basedmg = rnd(12) + 3;
 			strdmg = ((6 + extraquarters) * u_str_dmg_bonus()) / 4;
 			break;
 		default:
@@ -95,6 +95,7 @@ boolean clumsy;
 	if (uarmf)
 		dmg += weapon_dmg_value(uarmf, mon, &youmonst);
 	
+	dmg += weapon_skill_dmg_bonus(uarmf, P_MARTIAL_ARTS);
 
     /* excessive wt affects dex, so it affects dmg */
     if (clumsy)
