@@ -29,14 +29,14 @@ enum attrib_types {
 #define A_AVG_INT_WIS_CHA A_MAX + 7
 
 #define ABASE(x) (u.acurr.a[x])
-#define ABON(x) (u.abon.a[x])
+#define ABONUS(x) (u.abonus.a[x])
 #define AFIXMIN(x) (u.afixmin.a[x])
 #define AFIXMAX(x) (u.afixmax.a[x])
 #define AEXE(x) (u.aexe.a[x])
 #define ACURR(x) (acurr(x))
 #define ACURRSTR (acurrstr())
 /* should be: */
-/* #define ACURR(x) (ABON(x) + ATEMP(x) + (Upolyd  ? MBASE(x) : ABASE(x)) */
+/* #define ACURR(x) (ABONUS(x) + ATEMP(x) + (Upolyd  ? MBASE(x) : ABASE(x)) */
 #define MCURR(x) (u.macurr.a[x])
 #define AMAX(x) (u.amax.a[x])
 #define MMAX(x) (u.mamax.a[x])

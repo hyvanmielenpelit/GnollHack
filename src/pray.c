@@ -956,7 +956,7 @@ gcrownu()
         if (obj->spe < 1)
             obj->spe = 1;
         /* acquire skill in this weapon */
-        unrestrict_weapon_skill(weapon_type(obj));
+        unrestrict_weapon_skill(weapon_skill_type(obj));
     } else if (class_gift == STRANGE_OBJECT) {
         /* opportunity knocked, but there was nobody home... */
         You_feel("unworthy.");
@@ -1834,7 +1834,7 @@ dosacrifice()
                     u.ublesscnt = Role_if(PM_PRIEST) ? rnz(150 + (25 * nartifacts)) : rnz(300 + (50 * nartifacts));
                     exercise(A_WIS, TRUE);
                     /* make sure we can use this weapon */
-                    unrestrict_weapon_skill(weapon_type(otmp));
+                    unrestrict_weapon_skill(weapon_skill_type(otmp));
                     if (!Hallucination && !Blind) {
                         otmp->dknown = 1;
                         makeknown(otmp->otyp);

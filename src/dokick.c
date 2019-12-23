@@ -6,8 +6,8 @@
 
 #define is_bigfoot(x) ((x) == &mons[PM_SASQUATCH])
 #define martial()                                 \
-    (martial_bonus() || is_bigfoot(youmonst.data) \
-     || (uarmf && uarmf->otyp == KICKING_BOOTS))
+    ((martial_bonus() && (Magical_kicking || !(uarmf && is_metallic(uarmf)))) || is_bigfoot(youmonst.data) \
+     || Magical_kicking)
 
 static NEARDATA struct rm *maploc, nowhere;
 static NEARDATA const char *gate_str;
@@ -34,19 +34,79 @@ struct monst *mon;
 boolean clumsy;
 {
     int mdx, mdy;
-    int dmg = (ACURRSTR + ACURR(A_DEX) + ACURR(A_CON)) / 15;
-    int specialdmg, kick_skill = P_NONE;
+	int dmg = 0; // (ACURRSTR + ACURR(A_DEX) + ACURR(A_CON)) / 15;
+	int specialdmg;
     boolean trapkilled = FALSE;
+	boolean martial_arts_applies = martial_bonus() && (Magical_kicking || !(uarmf && is_metallic(uarmf)));
+	boolean jumpkicking = !!Jumping;
+	boolean effortlessly = FALSE;
 
-    if (uarmf && uarmf->otyp == KICKING_BOOTS)
-        dmg += 5;
+	if (!martial_arts_applies && martial_bonus())
+	{
+		if(!context.bootkickmsgdisplayed)
+		{
+			Your("boots are hindering the elegance of your kick.");
+			context.bootkickmsgdisplayed = TRUE;
+		}
+	}
+	else
+	{
+		if (context.bootkickmsgdisplayed)
+		{
+			effortlessly = TRUE;
+			context.bootkickmsgdisplayed = FALSE;
+		}
+	}
+
+	if (martial_arts_applies)
+	{
+		int skillevel = P_SKILL(P_MARTIAL_ARTS);
+		switch (skillevel)
+		{
+		case P_BASIC:
+			dmg += rnd(8);
+			if (Magical_kicking)
+				dmg += (5 * u_str_dmg_bonus()) / 4;
+			else
+				dmg += (3 * u_str_dmg_bonus()) / 4;
+			break;
+		case P_SKILLED:
+			dmg += rnd(10);
+			if (Magical_kicking)
+				dmg += (3 * u_str_dmg_bonus()) / 2;
+			else
+				dmg += u_str_dmg_bonus();
+			break;
+		case P_EXPERT:
+			dmg += rnd(12);
+			if (Magical_kicking)
+				dmg += 2 * u_str_dmg_bonus();
+			else
+				dmg += (3 * u_str_dmg_bonus()) / 2;
+			break;
+		default:
+			break;
+		}
+	}
+	else
+	{
+		dmg += rnd(3);
+		if (Magical_kicking)
+			dmg += u_str_dmg_bonus();
+		else
+			dmg += u_str_dmg_bonus() / 2;
+	}
+
+	if (uarmf)
+		dmg += weapon_dmg_value(uarmf, mon, &youmonst);
+	
 
     /* excessive wt affects dex, so it affects dmg */
     if (clumsy)
         dmg /= 2;
 
     /* kicking a dragon or an elephant will not harm it */
-    if (thick_skinned(mon->data))
+    if (thick_skinned(mon->data) && !Magical_kicking && P_SKILL(P_MARTIAL_ARTS) < P_SKILLED)
         dmg = 0;
 
     /* attacking a shade is normally useless */
@@ -62,7 +122,63 @@ boolean clumsy;
         return;
     }
 
-    if (M_AP_TYPE(mon))
+	dmg += u.ubasedaminc + u.udaminc; /* add ring(s) of increase damage */
+	char kickstylebuf[BUFSIZ] = "";
+	if (jumpkicking)
+		strcpy(kickstylebuf, !rn2(2) ? "jump-" : "fly-");
+	else if(martial_arts_applies)
+	{
+		switch (rn2(10))
+		{
+		case 0:
+			strcpy(kickstylebuf, "jump-");
+			break;
+		case 1:
+			strcpy(kickstylebuf, "fly-");
+			break;
+		case 2:
+			strcpy(kickstylebuf, "axe-");
+			break;
+		case 3:
+			strcpy(kickstylebuf, "hook-");
+			break;
+		case 4:
+			strcpy(kickstylebuf, "front-");
+			break;
+		case 5:
+			strcpy(kickstylebuf, "back-");
+			break;
+		case 6:
+			strcpy(kickstylebuf, "twist-");
+			break;
+		case 7:
+			strcpy(kickstylebuf, "spin-");
+			break;
+		case 8:
+			strcpy(kickstylebuf, "side-");
+			break;
+		case 9:
+			strcpy(kickstylebuf, "");
+			break;
+		default:
+			break;
+		}
+	}
+
+	char effbuf[BUFSIZ] = "";
+	if(effortlessly)
+		strcpy(effbuf, "effortlessly ");
+
+	if (dmg > 0)
+	{
+		You("%s%skick %s for %d damage.", effbuf, kickstylebuf, mon_nam(mon), dmg);
+	}
+	else
+	{
+		You("%s%skick %s for no damage.", effbuf, kickstylebuf, mon_nam(mon));
+	}
+
+	if (M_AP_TYPE(mon))
         seemimic(mon);
 
     check_caitiff(mon);
@@ -76,29 +192,79 @@ boolean clumsy;
             mon->mflee = 0;
     }
 
-    if (dmg > 0) {
-        /* convert potential damage to actual damage */
-        dmg = rnd(dmg);
-        if (martial()) {
-            if (dmg > 1)
-                kick_skill = P_MARTIAL_ARTS;
-            dmg += rn2(ACURR(A_DEX) / 2 + 1);
-        }
-        /* a good kick exercises your dex */
-        exercise(A_DEX, TRUE);
-    }
-    dmg += specialdmg; /* for blessed (or hypothetically, silver) boots */
-    if (uarmf)
-        dmg += uarmf->spe;
-    dmg += u.ubasedaminc + u.udaminc; /* add ring(s) of increase damage */
     if (dmg > 0)
         mon->mhp -= dmg;
-    if (!DEADMONSTER(mon) && martial() && !bigmonst(mon->data) && !rn2(3)
-        && mon->mcanmove && mon != u.ustuck && !mon->mtrapped) {
+
+
+	boolean kicksuccessful = FALSE;
+	boolean hurtles = FALSE;
+	boolean reels = FALSE;
+
+	if (!DEADMONSTER(mon) && !hugemonst(mon->data) && mon != u.ustuck && !mon->mtrapped)
+	{
+		if (Magical_kicking)
+		{
+			if (!rn2(2))
+				kicksuccessful = TRUE;
+		}
+		else if (martial_bonus())
+		{
+			int skilllevel = P_SKILL(P_MARTIAL_ARTS);
+			switch (skilllevel)
+			{
+			case P_BASIC:
+				if (!rn2(4))
+					kicksuccessful = TRUE;
+				break;
+			case P_SKILLED:
+				if (!rn2(3))
+					kicksuccessful = TRUE;
+				break;
+			case P_EXPERT:
+				if (!rn2(2))
+					kicksuccessful = TRUE;
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+	if (kicksuccessful)
+	{
+		int skilllevel = P_SKILL(P_MARTIAL_ARTS) + Jumping ? 1 : 0;
+		if (verysmall(mon->data) || mon->data->msize == MZ_SMALL)
+			hurtles = TRUE;
+		else if (!bigmonst(mon->data))
+		{
+			if ((skilllevel == P_BASIC && (rn2(2) || Magical_kicking)) || skilllevel >= P_SKILLED)
+				hurtles = TRUE;
+			else
+				reels = TRUE;
+		}
+		else if (!hugemonst(mon->data))
+		{
+			if(skilllevel >= P_EXPERT && (rn2(2) || Magical_kicking))
+				hurtles = TRUE;
+			else if (skilllevel == P_SKILLED && Magical_kicking && rn2(2))
+				hurtles = TRUE;
+			else if (skilllevel >= P_SKILLED)
+				reels = TRUE;
+		}
+	}
+
+	if(hurtles)
+	{
+		pline("%s hurtles backwards from the force of your kick!", Monnam(mon));
+		mhurtle(mon, u.dx, u.dy, 1);
+	}
+	else if (reels && mon->mcanmove) 
+	{
         /* see if the monster has a place to move into */
         mdx = mon->mx + u.dx;
         mdy = mon->my + u.dy;
-        if (goodpos(mdx, mdy, mon, 0)) {
+        if (goodpos(mdx, mdy, mon, 0)) 
+		{
             pline("%s reels from the blow.", Monnam(mon));
             if (m_in_out_region(mon, mdx, mdy)) {
                 remove_monster(mon->mx, mon->my);
@@ -116,9 +282,7 @@ boolean clumsy;
     if (DEADMONSTER(mon) && !trapkilled)
         killed(mon);
 
-    /* may bring up a dialog, so put this after all messages */
-    if (kick_skill != P_NONE) /* exercise proficiency */
-        use_skill(kick_skill, 1);
+    use_skill(P_MARTIAL_ARTS, 1);
 }
 
 STATIC_OVL boolean
@@ -149,7 +313,6 @@ struct monst *mon;
 xchar x, y;
 {
     boolean clumsy = FALSE;
-    int i, j;
 
     /* anger target even if wild miss will occur */
     setmangry(mon, TRUE);
@@ -165,7 +328,8 @@ xchar x, y;
     /* reveal hidden target even if kick ends up missing (note: being
        hidden doesn't affect chance to hit so neither does this reveal) */
     if (mon->mundetected
-        || (M_AP_TYPE(mon) && M_AP_TYPE(mon) != M_AP_MONSTER)) {
+        || (M_AP_TYPE(mon) && M_AP_TYPE(mon) != M_AP_MONSTER)) 
+	{
         if (M_AP_TYPE(mon))
             seemimic(mon);
         mon->mundetected = 0;
@@ -183,14 +347,16 @@ xchar x, y;
      * normally, getting all your attacks _including_ all your kicks.
      * If you have >1 kick attack, you get all of them.
      */
-    if (Upolyd && attacktype(youmonst.data, AT_KICK)) {
+    if (Upolyd && attacktype(youmonst.data, AT_KICK)) 
+	{
         struct attack *uattk;
         int sum, kickdieroll, armorpenalty, specialdmg,
             attknum = 0,
-            tmp = find_roll_to_hit(mon, AT_KICK, (struct obj *) 0, &attknum,
+            tmp = find_roll_to_hit(mon, AT_KICK, uarmf, &attknum,
                                    &armorpenalty);
 
-        for (i = 0; i < NATTK; i++) {
+        for (int i = 0; i < NATTK; i++)
+		{
             /* first of two kicks might have provoked counterattack
                that has incapacitated the hero (ie, floating eye) */
             if (multi < 0)
@@ -223,61 +389,72 @@ xchar x, y;
         return;
     }
 
-    i = -inv_weight();
-    j = weight_cap();
 
-    if (i < (j * 3) / 10) {
-        if (!rn2((i < j / 10) ? 2 : (i < j / 5) ? 3 : 4)) {
-            if (martial() && !rn2(2))
-                goto doit;
-            Your("clumsy kick does no damage.");
-            (void) passive(mon, uarmf, FALSE, 1, AT_KICK, FALSE);
-            return;
-        }
-        if (i < j / 10)
-            clumsy = TRUE;
-        else if (!rn2((i < j / 5) ? 2 : 3))
-            clumsy = TRUE;
-    }
+	int armorpenalty = 0, attknum = 0;
+	int tmp = find_roll_to_hit(mon, AT_KICK, uarmf, &attknum, &armorpenalty);
+	int weight_penalty = -calc_capacity(0);
+	int base_penalty = -2;
+	tmp += weight_penalty + base_penalty;
 
-    if (Fumbling)
-        clumsy = TRUE;
+	if (Fumbling)
+		clumsy = TRUE;
+	else if (uarm && objects[uarm->otyp].oc_bulky && ACURR(A_DEX) < rnd(25))
+		clumsy = TRUE;
 
-    else if (uarm && objects[uarm->otyp].oc_bulky && ACURR(A_DEX) < rnd(25))
-        clumsy = TRUE;
- doit:
-    You("kick %s.", mon_nam(mon));
-    if (!rn2(clumsy ? 3 : 4) && (clumsy || !bigmonst(mon->data))
-        && mon->mcansee && !mon->mtrapped && !thick_skinned(mon->data)
-        && mon->data->mlet != S_EEL && haseyes(mon->data) && mon->mcanmove
-        && !mon->mstun && !mon->mconf && !mon->msleeping
-        && mon->data->mmove >= 12) {
-        if (!nohands(mon->data) && !rn2(martial() ? 5 : 3)) {
-            pline("%s blocks your %skick.", Monnam(mon),
-                  clumsy ? "clumsy " : "");
-            (void) passive(mon, uarmf, FALSE, 1, AT_KICK, FALSE);
-            return;
-        } else {
-            maybe_mnexto(mon);
-            if (mon->mx != x || mon->my != y) {
-                (void) unmap_invisible(x, y);
-                pline("%s %s, %s evading your %skick.", Monnam(mon),
-                      (!level.flags.noteleport && can_teleport(mon->data))
-                          ? "teleports"
-                          : is_floater(mon->data)
-                                ? "floats"
-                                : is_flyer(mon->data) ? "swoops"
-                                                      : (nolimbs(mon->data)
-                                                         || slithy(mon->data))
-                                                            ? "slides"
-                                                            : "jumps",
-                      clumsy ? "easily" : "nimbly", clumsy ? "clumsy " : "");
-                (void) passive(mon, uarmf, FALSE, 1, AT_KICK, FALSE);
-                return;
-            }
-        }
-    }
-    kickdmg(mon, clumsy);
+	if(clumsy)
+		tmp -= 4;
+
+	int dieroll = rnd(20);
+	boolean mhit = !!(tmp > dieroll || u.uswallow);
+
+	if(mhit)
+	{
+		/* check if mon catches your kick */
+		if (!rn2(clumsy ? 3 : 4) && (clumsy || !bigmonst(mon->data))
+			&& mon->mcansee && !mon->mtrapped && !thick_skinned(mon->data)
+			&& mon->data->mlet != S_EEL && haseyes(mon->data) && mon->mcanmove
+			&& !mon->mstun && !mon->mconf && !mon->msleeping
+			&& mon->data->mmove >= 12)
+		{
+			if (!nohands(mon->data) && !rn2(martial() ? 5 : 3))
+			{
+				You("try to kick %s.", mon_nam(mon));
+				pline("However, %s blocks your %skick.", mon_nam(mon),
+					  clumsy ? "clumsy " : "");
+				(void) passive(mon, uarmf, FALSE, 1, AT_KICK, FALSE);
+				return;
+			} 
+			else
+			{
+				maybe_mnexto(mon);
+				if (mon->mx != x || mon->my != y) 
+				{
+					You("kick %s.", mon_nam(mon));
+					(void) unmap_invisible(x, y);
+					pline("%s %s, %s evading your %skick.", Monnam(mon),
+						  (!level.flags.noteleport && can_teleport(mon->data))
+							  ? "teleports"
+							  : is_floater(mon->data)
+									? "floats"
+									: is_flyer(mon->data) ? "swoops"
+														  : (nolimbs(mon->data)
+															 || slithy(mon->data))
+																? "slides"
+																: "jumps",
+						  clumsy ? "easily" : "nimbly", clumsy ? "clumsy " : "");
+					(void) passive(mon, uarmf, FALSE, 1, AT_KICK, FALSE);
+					return;
+				}
+			}
+		}
+
+		/* now, do the damage */
+		kickdmg(mon, clumsy);
+	}
+	else
+	{
+		Your("kick misses %s.", mon_nam(mon));
+	}
 }
 
 /*
@@ -800,21 +977,31 @@ dokick()
     char buf[BUFSZ], kickobjnam[BUFSZ];
 
     kickobjnam[0] = '\0';
-    if (nolimbs(youmonst.data) || slithy(youmonst.data)) {
+    if (nolimbs(youmonst.data) || slithy(youmonst.data)) 
+	{
         You("have no legs to kick with.");
         no_kick = TRUE;
-    } else if (verysmall(youmonst.data)) {
+    }
+	else if (verysmall(youmonst.data))
+	{
         You("are too small to do any kicking.");
         no_kick = TRUE;
-    } else if (u.usteed) {
-        if (yn_function("Kick your steed?", ynchars, 'y') == 'y') {
+    } 
+	else if (u.usteed) 
+	{
+        if (yn_function("Kick your steed?", ynchars, 'y') == 'y')
+		{
             You("kick %s.", mon_nam(u.usteed));
             kick_steed();
             return 1;
-        } else {
+        } 
+		else 
+		{
             return 0;
         }
-    } else if (Wounded_legs) {
+    } 
+	else if (Wounded_legs) 
+	{
         /* note: jump() has similar code */
         long wl = (EWounded_legs & BOTH_SIDES);
         const char *bp = body_part(LEG);
@@ -825,18 +1012,27 @@ dokick()
              (wl == LEFT_SIDE) ? "left " : (wl == RIGHT_SIDE) ? "right " : "",
              bp, (wl == BOTH_SIDES) ? "are" : "is");
         no_kick = TRUE;
-    } else if (near_capacity() > SLT_ENCUMBER) {
+    } 
+	else if (near_capacity() > SLT_ENCUMBER)
+	{
         Your("load is too heavy to balance yourself for a kick.");
         no_kick = TRUE;
-    } else if (youmonst.data->mlet == S_LIZARD) {
+    }
+	else if (youmonst.data->mlet == S_LIZARD) 
+	{
         Your("legs cannot kick effectively.");
         no_kick = TRUE;
-    } else if (u.uinwater && !rn2(2)) {
+    } 
+	else if (u.uinwater && !rn2(2)) 
+	{
         Your("slow motion kick doesn't hit anything.");
         no_kick = TRUE;
-    } else if (u.utrap) {
+    }
+	else if (u.utrap)
+	{
         no_kick = TRUE;
-        switch (u.utraptype) {
+        switch (u.utraptype)
+		{
         case TT_PIT:
             if (!Passes_walls)
                 pline("There's not enough room to kick down here.");
@@ -852,7 +1048,8 @@ dokick()
         }
     }
 
-    if (no_kick) {
+    if (no_kick) 
+	{
         /* ignore direction typed before player notices kick failed */
         display_nhwindow(WIN_MESSAGE, TRUE); /* --More-- */
         return 0;
@@ -867,18 +1064,24 @@ dokick()
     y = u.uy + u.dy;
 
     /* KMH -- Kicking boots always succeed */
-    if (uarmf && uarmf->otyp == KICKING_BOOTS)
+	/* JG  -- Martial artists always succeed */
+	if (Magical_kicking)
         avrg_attrib = 99;
-    else
+	else if (martial_bonus())
+		avrg_attrib = 99;
+	else
         avrg_attrib = (ACURRSTR + ACURR(A_DEX) + ACURR(A_CON)) / 3;
 
-    if (u.uswallow) {
-        switch (rn2(3)) {
+    if (u.uswallow) 
+	{
+        switch (rn2(3)) 
+		{
         case 0:
             You_cant("move your %s!", body_part(LEG));
             break;
         case 1:
-            if (is_animal(u.ustuck->data)) {
+            if (is_animal(u.ustuck->data))
+			{
                 pline("%s burps loudly.", Monnam(u.ustuck));
                 break;
             }
@@ -888,12 +1091,15 @@ dokick()
             break;
         }
         return 1;
-    } else if (u.utrap && u.utraptype == TT_PIT) {
+    } 
+	else if (u.utrap && u.utraptype == TT_PIT) 
+	{
         /* must be Passes_walls */
         You("kick at the side of the pit.");
         return 1;
     }
-    if (Levitation) {
+    if (Levitation) 
+	{
         int xx, yy;
 
         xx = u.ux - u.dx;
@@ -904,7 +1110,8 @@ dokick()
          */
         if (isok(xx, yy) && !IS_ROCK(levl[xx][yy].typ)
             && !IS_DOOR(levl[xx][yy].typ)
-            && (!Is_airlevel(&u.uz) || !OBJ_AT(xx, yy))) {
+            && (!Is_airlevel(&u.uz) || !OBJ_AT(xx, yy))) 
+		{
             You("have nothing to brace yourself against.");
             return 0;
         }
@@ -915,7 +1122,8 @@ dokick()
        if it is peaceful and player declines to attack, or if the
        hero passes out due to encumbrance with low hp; context.move
        will be 1 unless player declines to kick peaceful monster */
-    if (mtmp) {
+    if (mtmp)
+	{
         oldglyph = glyph_at(x, y);
         if (!maybe_kick_monster(mtmp, x, y))
             return context.move;
@@ -924,7 +1132,8 @@ dokick()
     wake_nearby();
     u_wipe_engr(2);
 
-    if (!isok(x, y)) {
+    if (!isok(x, y)) 
+	{
         maploc = &nowhere;
         goto ouch;
     }
@@ -943,7 +1152,8 @@ dokick()
      * the floor at that spot.]
      */
 
-    if (mtmp) {
+    if (mtmp)
+	{
         /* save mtmp->data (for recoil) in case mtmp gets killed */
         struct permonst *mdat = mtmp->data;
 

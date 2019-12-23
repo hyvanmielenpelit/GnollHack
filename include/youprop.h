@@ -298,6 +298,11 @@
 #define BStealth u.uprops[STEALTH].blocked
 #define Stealth ((HStealth || EStealth) && !BStealth)
 
+#define HMagical_kicking u.uprops[MAGICAL_KICKING].intrinsic
+#define EMagical_kicking u.uprops[MAGICAL_KICKING].extrinsic
+#define BMagical_kicking u.uprops[MAGICAL_KICKING].blocked
+#define Magical_kicking ((HMagical_kicking || EMagical_kicking) && !BMagical_kicking)
+
 #define HAggravate_monster u.uprops[AGGRAVATE_MONSTER].intrinsic
 #define EAggravate_monster u.uprops[AGGRAVATE_MONSTER].extrinsic
 #define Aggravate_monster (HAggravate_monster || EAggravate_monster)

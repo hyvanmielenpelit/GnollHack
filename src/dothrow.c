@@ -124,7 +124,7 @@ int shotlimit;
                          || Fumbling || ACURR(A_DEX) <= 6);
         /* Bonus if the player is proficient in this weapon... */
 		/*
-        switch (P_SKILL(weapon_type(obj))) {
+        switch (P_SKILL(weapon_skill_type(obj))) {
         case P_EXPERT:
 			if (!weakmultishot)
 				multishot++;
@@ -150,7 +150,7 @@ int shotlimit;
 
 		if (otmpmulti && objects[otmpmulti->otyp].oc_multishot_style > 1)
 		{
-			int skilllevel = P_SKILL(weapon_type(otmpmulti));
+			int skilllevel = P_SKILL(weapon_skill_type(otmpmulti));
 			boolean multishotok = TRUE;
 
 			/*
@@ -289,14 +289,63 @@ int* output_multishot_rnd;
 	*output_multishot_constant = 1;
 	*output_multishot_rnd = 0;
 
-	if (!magr || !otmp)
+	if (!magr)
 		return;
+
+	if (!otmp || otmp == uarmg)
+	{
+		int skilllevel = 0;
+		/* martial arts */
+		if (magr == &youmonst)
+		{
+			skilllevel = P_SKILL(P_MARTIAL_ARTS);
+		}
+		else
+		{
+			switch (magr->mnum)
+			{
+			case PM_MONK:
+				skilllevel = P_BASIC;
+				break;
+			case PM_NINJA:
+			case PM_ROSHI:
+			case PM_ABBOT:
+				skilllevel = P_SKILLED;
+				break;
+			case PM_GRAND_MASTER:
+			case PM_MASTER_KAEN:
+				skilllevel = P_EXPERT;
+				break;
+			default:
+				break;
+			}
+		}
+
+		switch (skilllevel)
+		{
+		case P_SKILLED:
+			*output_multishot_constant = 1;
+			*output_multishot_rnd = 1;
+			break;
+		case P_EXPERT:
+			*output_multishot_constant = 2;
+			*output_multishot_rnd = 0;
+			break;
+		default:
+			break;
+		}
+		return;
+	}
 
 	boolean isammo = is_ammo(otmp);
 	boolean matching = FALSE;
 	int skilllevel = 0;
 	int used_multishotstyle = 0; 
-	/* 1 = ammo with launcher (use launcher multishot stats for launching only), 2 = thrown (use thrown object's multishot stats for thrown only), 3 = melee (use weapon's multishot stats for melee only) */
+	/*
+	   1 = ammo with launcher (use launcher multishot stats for launching only),
+	   2 = thrown (use thrown object's multishot stats for thrown only),
+	   3 = melee (use weapon's multishot stats for melee only)
+	*/
 	/* E.g., if you hit in melee with a repeating crossbow, it does not give you multiple strikes */
 	struct obj* otmpmulti = (struct obj*)0;
 	otmpmulti = otmp; /* Unless launcher will be used */
@@ -312,7 +361,7 @@ int* output_multishot_rnd;
 	/* Find skill level */
 	if (magr == &youmonst)
 	{
-		skilllevel = P_SKILL(weapon_type(otmpmulti));
+		skilllevel = P_SKILL(weapon_skill_type(otmpmulti));
 	}
 	else
 	{
@@ -1380,7 +1429,7 @@ boolean hitsroof;
         return FALSE;
     } else { /* neither potion nor other breaking object */
         boolean less_damage = uarmh && is_metallic(uarmh), artimsg = FALSE;
-        int dmg = is_launcher(obj) ? d(1, 2) : totaldmgval(obj, &youmonst, &youmonst);
+        int dmg = is_launcher(obj) ? d(1, 2) : weapon_total_dmg_value(obj, &youmonst, &youmonst);
 
         if (obj->oartifact)
             /* need a fake die roll here; rn1(18,2) avoids 1 and 20 */
@@ -1851,7 +1900,7 @@ boolean mon_notices;
     default:
         if (obj->oclass == WEAPON_CLASS || is_weptool(obj)
             || obj->oclass == GEM_CLASS)
-            tmp += hitval(obj, mon, (struct monst *)0);
+            tmp += weapon_to_hit_value(obj, mon, (struct monst *)0);
         break;
     }
     return tmp;
@@ -1920,7 +1969,7 @@ register boolean is_golf;
      * Certain items which don't in themselves do damage ignore 'tmp'.
      * Distance and monster size affect chance to hit.
      */
-    tmp = -1 + Luck + ranged_abon() + find_mac(mon) + u.ubasehitinc + u.uhitinc
+    tmp = -1 + Luck + u_ranged_strdex_to_hit_bonus() + find_mac(mon) + u.ubasehitinc + u.uhitinc
           + maybe_polyd(youmonst.data->mlevel, u.ulevel);
 
     /* Modify to-hit depending on distance; but keep it sane.
@@ -1982,7 +2031,7 @@ register boolean is_golf;
 		}
 	}
 
-	//Bonus from hitval(obj) and other if monster is still etc.
+	//Bonus from weapon_to_hit_value(obj) and other if monster is still etc.
     tmp += omon_adj(mon, obj, TRUE);
 
 	//Elfs get a bonus
@@ -2071,8 +2120,8 @@ register boolean is_golf;
             } 
 			else if (uwep)
 			{
-				tmp += hitval(uwep, mon, &youmonst);	//tmp += uwep->spe - greatest_erosion(uwep);
-                tmp += weapon_hit_bonus(uwep, is_golf_swing_with_stone); //Players get skill bonuses
+				tmp += weapon_to_hit_value(uwep, mon, &youmonst);	//tmp += uwep->spe - greatest_erosion(uwep);
+                tmp += weapon_skill_hit_bonus(uwep, is_golf_swing_with_stone); //Players get skill bonuses
 //                if (uwep->oartifact)
 //                    tmp += spec_abon(uwep, mon);
                 /*
@@ -2100,7 +2149,7 @@ register boolean is_golf;
                 tmp -= 2;
             /* we know we're dealing with a weapon or weptool handled
                by WEAPON_SKILLS once ammo objects have been excluded */
-            tmp += weapon_hit_bonus(obj, is_golf_swing_with_stone);
+            tmp += weapon_skill_hit_bonus(obj, is_golf_swing_with_stone);
         }
 
         if (tmp >= dieroll) 

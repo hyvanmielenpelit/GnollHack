@@ -107,7 +107,7 @@ const char *name; /* if null, then format `*objp' */
 			}
 			if (obj && objects[obj->otyp].oc_material == MAT_SILVER
                 && Hate_silver) {
-                /* extra damage already applied by dmgval() */
+                /* extra damage already applied by weapon_dmg_value() */
                 pline_The("silver sears your flesh!");
                 exercise(A_CON, FALSE);
             }
@@ -396,8 +396,8 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 				tmp -= 4;
 			}
 			else {
-				tmp += hitval(mon_launcher, mtmp, (struct monst*)0);
-				//tmp += weapon_hit_bonus(uwep);  //Monsters do not get skill-based to-hit bonuses
+				tmp += weapon_to_hit_value(mon_launcher, mtmp, (struct monst*)0);
+				//tmp += weapon_skill_hit_bonus(uwep);  //Monsters do not get skill-based to-hit bonuses
 
 				//Penalty for shooting short range
 				if (archer && distmin(archer->mx, archer->my, mtmp->mx, mtmp->my) <= 1) {
@@ -442,17 +442,17 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 		if (is_launcher(otmp))
 			damage = d(1, 2);
 		else
-			damage = totaldmgval(otmp, mtmp, (struct monst*)0);
+			damage = weapon_total_dmg_value(otmp, mtmp, (struct monst*)0);
 
 		if (otmp && mon_launcher && ammo_and_launcher(otmp, mon_launcher)) 
 		{
-			damage += totaldmgval(mon_launcher, mtmp, (struct monst*)0);
+			damage += weapon_total_dmg_value(mon_launcher, mtmp, (struct monst*)0);
 
 			//Add strength damage, no skill damage
 			if (objects[mon_launcher->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH)
 				damage += objects[mon_launcher->otyp].oc_fixed_damage_bonus;
 			else
-				damage += archer ? mdbon(archer) : 0;
+				damage += archer ? m_str_dmg_bonus(archer) : 0;
 
 			/*
 			if (mon_launcher->otyp == CROSSBOW) {
@@ -469,7 +469,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 			}
 			else {
 				if(archer)
-					damage += mdbon(archer);
+					damage += m_str_dmg_bonus(archer);
 			}
 			*/
 			//Bracers here, if need be
@@ -807,7 +807,7 @@ struct obj *obj;         /* missile (or stack providing it) */
 				if (is_launcher(singleobj))
 					dam = d(1, 2);
 				else
-					dam = totaldmgval(singleobj, &youmonst, mon);
+					dam = weapon_total_dmg_value(singleobj, &youmonst, mon);
 
 				mindistance = distmin(u.ux, u.uy, mon->mx, mon->my);
                 hitv = 3 - mindistance;
@@ -842,25 +842,25 @@ struct obj *obj;         /* missile (or stack providing it) */
 					}
 				}
 				//All cases get dex ranged to-hit bonus
-				hitv += mrabon(mon);
+				hitv += m_ranged_strdex_to_hit_bonus(mon);
 
 				//Give bow damage bonuses
 				if(singleobj && is_ammo(singleobj))
 				{
 					if(MON_WEP(mon) && ammo_and_launcher(singleobj, MON_WEP(mon)))
 					{
-						//Fitting ammo gets launcher's hitval and dmgval and str damage bonus if bow, fixed for crossbows
+						//Fitting ammo gets launcher's weapon_to_hit_value and weapon_dmg_value and str damage bonus if bow, fixed for crossbows
 						//LAUNCHER HITVAL
-						hitv += hitval(MON_WEP(mon), &youmonst, mon); //MON_WEP(mon)->spe - greatest_erosion(MON_WEP(mon));
-						//hitv += weapon_hit_bonus(MON_WEP(mon)); //Monsters do not get skill bonuses
+						hitv += weapon_to_hit_value(MON_WEP(mon), &youmonst, mon); //MON_WEP(mon)->spe - greatest_erosion(MON_WEP(mon));
+						//hitv += weapon_skill_hit_bonus(MON_WEP(mon)); //Monsters do not get skill bonuses
 						//LAUNCHER DMGVAL
-						dam += totaldmgval(MON_WEP(mon), &youmonst, mon);
+						dam += weapon_total_dmg_value(MON_WEP(mon), &youmonst, mon);
 
 						//Give strength damage bonus
 						if (objects[MON_WEP(mon)->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH)
 							dam += objects[MON_WEP(mon)->otyp].oc_fixed_damage_bonus;
 						else 
-							dam += mdbon(mon);
+							dam += m_str_dmg_bonus(mon);
 
 						/*
 						if (MON_WEP(mon)->otyp == CROSSBOW) {
@@ -876,7 +876,7 @@ struct obj *obj;         /* missile (or stack providing it) */
 							dam += 0;
 						}
 						else {
-							dam += mdbon(mon);
+							dam += m_str_dmg_bonus(mon);
 						}
 						*/
 					}
@@ -889,12 +889,12 @@ struct obj *obj;         /* missile (or stack providing it) */
 				else
 				{
 					//Non-ammo (normal thrown weapon) gets damage bonus
-					dam += mtdbon(mon);
+					dam += m_thrown_str_dmg_bonus(mon);
 				}
 
 				if (bigmonst(youmonst.data))
                     hitv++;
-                hitv += 10 + hitval(singleobj, &youmonst, mon);
+                hitv += 10 + weapon_to_hit_value(singleobj, &youmonst, mon);
 				hitv += mon->m_lev;
 				if (dam < 1)
                     dam = 1;
@@ -1246,17 +1246,17 @@ struct monst *mtmp;
 		if (is_launcher(otmp))
 			dam = d(1, 2);
 		else
-			dam = totaldmgval(otmp, &youmonst, mtmp);
+			dam = weapon_total_dmg_value(otmp, &youmonst, mtmp);
 
         hitv = 3 - distmin(u.ux, u.uy, mtmp->mx, mtmp->my);
         if (hitv < -4)
             hitv = -4;
         if (bigmonst(youmonst.data))
             hitv++;
-        hitv += 10 + hitval(otmp, &youmonst, mtmp);
+        hitv += 10 + weapon_to_hit_value(otmp, &youmonst, mtmp);
 		hitv += mtmp->m_lev;
-		hitv += mabon(mtmp); // since a pole, str & dex to hit bonus
-		dam += mdbon(mtmp); // strength damage bonus
+		hitv += m_strdex_to_hit_bonus(mtmp); // since a pole, str & dex to hit bonus
+		dam += m_str_dmg_bonus(mtmp); // strength damage bonus
 
 		if (dam < 1)
             dam = 1;

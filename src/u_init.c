@@ -94,7 +94,7 @@ static struct trobj Knight[] = {
 };
 static struct trobj Monk[] = {
 #define M_BOOK 2
-    { LEATHER_GLOVES, 2, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
+    { LEATHER_GLOVES, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
     { ROBE, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
     { UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, 1, 0 },
 	{ UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, 1, 0 },
@@ -385,7 +385,7 @@ static const struct def_skill Skill_B_Max[] = {
     { P_MOVEMENT_SPELL, P_BASIC }, /* special spell is haste self */
     { P_RIDING, P_BASIC },
     { P_TWO_WEAPON_COMBAT, P_BASIC },
-    { P_BARE_HANDED_COMBAT, P_MASTER },
+    { P_BARE_HANDED_COMBAT, P_EXPERT },
 	{ P_DISARM_TRAP, P_SKILLED },
 	{ P_NONE, 0 }
 };
@@ -408,7 +408,7 @@ static const struct def_skill Skill_C_Max[] = {
     { P_SLING, P_EXPERT },
     { P_ARCANE_SPELL, P_BASIC },
     { P_TRANSMUTATION_SPELL, P_SKILLED },
-    { P_BARE_HANDED_COMBAT, P_MASTER },
+    { P_BARE_HANDED_COMBAT, P_EXPERT },
 	{ P_DISARM_TRAP, P_BASIC },
 	{ P_NONE, 0 }
 };
@@ -491,12 +491,14 @@ static const struct def_skill Skill_Monk_Max[] = {
     { P_CLERIC_SPELL, P_SKILLED },
     { P_MOVEMENT_SPELL, P_EXPERT },
     { P_TRANSMUTATION_SPELL, P_BASIC },
-    { P_MARTIAL_ARTS, P_GRAND_MASTER },
+	{ P_BARE_HANDED_COMBAT, P_EXPERT },
+	{ P_MARTIAL_ARTS, P_EXPERT },
 	{ P_DISARM_TRAP, P_BASIC },
 	{ P_NONE, 0 }
 };
 static const struct def_skill Skill_Monk_Init[] = {
-	{ P_MARTIAL_ARTS, P_SKILLED },
+	{ P_BARE_HANDED_COMBAT, P_EXPERT },
+	{ P_MARTIAL_ARTS, P_BASIC },
 	{ P_HEALING_SPELL, P_BASIC },
 	{ P_ENCHANTMENT_SPELL, P_BASIC },
 	{ P_MOVEMENT_SPELL, P_BASIC },
@@ -618,7 +620,8 @@ static const struct def_skill Skill_S_Max[] = {
     { P_CLERIC_SPELL, P_SKILLED },
     { P_RIDING, P_SKILLED },
     { P_TWO_WEAPON_COMBAT, P_EXPERT },
-    { P_MARTIAL_ARTS, P_MASTER },
+	{ P_BARE_HANDED_COMBAT, P_EXPERT },
+	{ P_MARTIAL_ARTS, P_SKILLED },
 	{ P_DISARM_TRAP, P_BASIC },
 	{ P_NONE, 0 }
 };
@@ -627,7 +630,7 @@ static const struct def_skill Skill_S_Init[] = {
 	{ P_THROWN_WEAPON, P_BASIC },
 	{ P_QUARTERSTAFF, P_BASIC },
 	{ P_POLEARM, P_BASIC },
-	{ P_MARTIAL_ARTS, P_BASIC },
+	{ P_BARE_HANDED_COMBAT, P_BASIC },
 	{ P_NONE, 0 }
 };
 

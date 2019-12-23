@@ -353,7 +353,7 @@ struct you {
     struct u_roleplay uroleplay;
     struct attribs acurr,       /* your current attributes (eg. str)*/
                     aexe,       /* for gain/loss via "exercise" */
-                    abon,       /* your bonus attributes (eg. str) */
+                    abonus,       /* your bonus attributes (eg. str) */
                     afixmin,    /* your fixed min attributes (eg. str), set by an item */
                     afixmax,    /* your fixed max attributes (eg. str), set by an item */
                     amax,       /* your max attributes (eg. str) */

@@ -636,12 +636,12 @@ register struct obj* obj;
 	putstr(datawin, 0, txt);
 
 
-	if (is_weapon(obj) || objects[obj->otyp].oc_class == GEM_CLASS)
+	if (is_weapon(obj) || ((is_gloves(obj) || is_boots(obj)) && objects[obj->otyp].oc_name_known) || objects[obj->otyp].oc_class == GEM_CLASS)
 	{
 		char plusbuf[BUFSZ];
 		boolean maindiceprinted = FALSE;
 
-		if (!is_ammo(obj))
+		if (!is_ammo(obj) && !is_gloves(obj) && !is_boots(obj))
 		{
 			/* Single or two-handed */
 			if (bimanual(obj))
@@ -655,11 +655,15 @@ register struct obj* obj;
 		}
 
 		/* Skill */
-		strcpy(buf2, weapon_descr(obj));
-		*buf2 = highc(*buf2);
-		Sprintf(buf, "Skill:                  %s", buf2);
-		txt = buf;
-		putstr(datawin, 0, txt);
+		if(objects[obj->otyp].oc_skill != P_NONE)
+		{
+			strcpy(buf2, weapon_descr(obj));
+			*buf2 = highc(*buf2);
+			Sprintf(buf, "Skill:                  %s", buf2);
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+
 
 		int baserange = 0;
 
@@ -696,117 +700,132 @@ register struct obj* obj;
 
 
 		/* Range and throw distance */
-		int range = 0;
-		boolean thrown = TRUE;
-			
-		/* Throw distance and fire distance for ammo */
-		if (is_ammo(obj) && uwep && ammo_and_launcher(obj, uwep))
+		if (!is_gloves(obj) && !is_boots(obj))
 		{
-			thrown = FALSE;
-			range = weapon_range(obj, uwep);
+			int range = 0;
+			boolean thrown = TRUE;
+
+			/* Throw distance and fire distance for ammo */
+			if (is_ammo(obj) && uwep && ammo_and_launcher(obj, uwep))
+			{
+				thrown = FALSE;
+				range = weapon_range(obj, uwep);
+			}
+			else
+				range = weapon_range(obj, (struct obj*)0);
+
+			Sprintf(buf2, "%d", max(1, range) * 5);
+			if(thrown)
+				Sprintf(buf, "Throw distance:         %s'", buf2);
+			else
+				Sprintf(buf, "Range when fired:       %s'", buf2);
+			txt = buf;
+			putstr(datawin, 0, txt);
+
 		}
-		else
-			range = weapon_range(obj, (struct obj*)0);
 
-
-		Sprintf(buf2, "%d", max(1, range) * 5);
-		if(thrown)
-			Sprintf(buf, "Throw distance:         %s'", buf2);
-		else
-			Sprintf(buf, "Range when fired:       %s'", buf2);
-		txt = buf;
-		putstr(datawin, 0, txt);
+		boolean printmaindmgtype = FALSE;
 
 		/* Damage - Small */
-		Sprintf(buf, "Base damage - Small:    ");
+		if((objects[otyp].oc_wsdice > 0 && objects[otyp].oc_wsdam > 0) || objects[otyp].oc_wsdmgplus != 0)
+		{
+			printmaindmgtype = TRUE;
+			Sprintf(buf, "Base damage - Small:    ");
 
-		if (objects[otyp].oc_wsdice > 0 && objects[otyp].oc_wsdam > 0)
-		{
-			maindiceprinted = TRUE;
-			Sprintf(plusbuf, "%dd%d", objects[otyp].oc_wsdice, objects[otyp].oc_wsdam);
-			Strcat(buf, plusbuf);
-		}
-
-		if (objects[otyp].oc_wsdmgplus != 0)
-		{
-			if (maindiceprinted && objects[otyp].oc_wsdmgplus > 0)
+			if (objects[otyp].oc_wsdice > 0 && objects[otyp].oc_wsdam > 0)
 			{
-				Sprintf(plusbuf, "+");
-				Strcat(buf, plusbuf);
-			}
-			Sprintf(plusbuf, "%d", objects[otyp].oc_wsdmgplus);
-			Strcat(buf, plusbuf);
-		}
-		if (objects[otyp].oc_name_known && (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
-		{
-			/* Damage - Doubled */
-			Sprintf(eos(buf), " (x2)");
-		}
-		if (objects[otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
-		{
-			if (objects[otyp].oc_aflags & A1_WOUNDING)
-			{
-				Sprintf(plusbuf, " (permanent)");
+				maindiceprinted = TRUE;
+				Sprintf(plusbuf, "%dd%d", objects[otyp].oc_wsdice, objects[otyp].oc_wsdam);
 				Strcat(buf, plusbuf);
 			}
 
-			if (objects[otyp].oc_aflags & A1_LIFE_LEECH)
+			if (objects[otyp].oc_wsdmgplus != 0)
 			{
-				Sprintf(plusbuf, " (confers HP)");
+				if (maindiceprinted && objects[otyp].oc_wsdmgplus > 0)
+				{
+					Sprintf(plusbuf, "+");
+					Strcat(buf, plusbuf);
+				}
+				Sprintf(plusbuf, "%d", objects[otyp].oc_wsdmgplus);
 				Strcat(buf, plusbuf);
 			}
+			if (objects[otyp].oc_name_known && (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
+			{
+				/* Damage - Doubled */
+				Sprintf(eos(buf), " (x2)");
+			}
+			if (objects[otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
+			{
+				if (objects[otyp].oc_aflags & A1_WOUNDING)
+				{
+					Sprintf(plusbuf, " (permanent)");
+					Strcat(buf, plusbuf);
+				}
+
+				if (objects[otyp].oc_aflags & A1_LIFE_LEECH)
+				{
+					Sprintf(plusbuf, " (confers HP)");
+					Strcat(buf, plusbuf);
+				}
+			}
+
+			txt = buf;
+			putstr(datawin, 0, txt);
+
 		}
 
-		txt = buf;
-		putstr(datawin, 0, txt);
 
 		/* Damage - Large */
-		maindiceprinted = FALSE;
-		Sprintf(buf, "Base damage - Large:    ");
-
-		if (objects[otyp].oc_wldice > 0 && objects[otyp].oc_wldam > 0)
+		if((objects[otyp].oc_wldice > 0 && objects[otyp].oc_wldam > 0) || objects[otyp].oc_wldmgplus != 0)
 		{
-			maindiceprinted = TRUE;
-			Sprintf(plusbuf, "%dd%d", objects[otyp].oc_wldice, objects[otyp].oc_wldam);
-			Strcat(buf, plusbuf);
-		}
+			printmaindmgtype = TRUE;
+			maindiceprinted = FALSE;
+			Sprintf(buf, "Base damage - Large:    ");
 
-		if (objects[otyp].oc_wldmgplus != 0)
-		{
-			if (maindiceprinted && objects[otyp].oc_wldmgplus > 0)
+			if (objects[otyp].oc_wldice > 0 && objects[otyp].oc_wldam > 0)
 			{
-				Sprintf(plusbuf, "+");
-				Strcat(buf, plusbuf);
-			}
-			Sprintf(plusbuf, "%d", objects[otyp].oc_wldmgplus);
-			Strcat(buf, plusbuf);
-		}
-		if (objects[otyp].oc_name_known && (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
-		{
-			/* Damage - Doubled */
-			Sprintf(eos(buf), " (x2)");
-		}
-
-		if(objects[otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
-		{
-			if (objects[otyp].oc_aflags & A1_WOUNDING)
-			{
-				Sprintf(plusbuf, " (permanent)");
+				maindiceprinted = TRUE;
+				Sprintf(plusbuf, "%dd%d", objects[otyp].oc_wldice, objects[otyp].oc_wldam);
 				Strcat(buf, plusbuf);
 			}
 
-			if (objects[otyp].oc_aflags & A1_LIFE_LEECH)
+			if (objects[otyp].oc_wldmgplus != 0)
 			{
-				Sprintf(plusbuf, " (confers HP)");
+				if (maindiceprinted && objects[otyp].oc_wldmgplus > 0)
+				{
+					Sprintf(plusbuf, "+");
+					Strcat(buf, plusbuf);
+				}
+				Sprintf(plusbuf, "%d", objects[otyp].oc_wldmgplus);
 				Strcat(buf, plusbuf);
 			}
-		}
+			if (objects[otyp].oc_name_known && (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
+			{
+				/* Damage - Doubled */
+				Sprintf(eos(buf), " (x2)");
+			}
 
-		txt = buf;
-		putstr(datawin, 0, txt);
+			if(objects[otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
+			{
+				if (objects[otyp].oc_aflags & A1_WOUNDING)
+				{
+					Sprintf(plusbuf, " (permanent)");
+					Strcat(buf, plusbuf);
+				}
+
+				if (objects[otyp].oc_aflags & A1_LIFE_LEECH)
+				{
+					Sprintf(plusbuf, " (confers HP)");
+					Strcat(buf, plusbuf);
+				}
+			}
+
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
 
 		/* Damage type - Main */
-		if (objects[otyp].oc_damagetype != AD_PHYS)
+		if (printmaindmgtype && objects[otyp].oc_damagetype != AD_PHYS)
 		{
 			char* dmgttext = get_damage_type_text(objects[otyp].oc_damagetype);
 			*dmgttext = highc(*dmgttext);
@@ -872,8 +891,6 @@ register struct obj* obj;
 					putstr(datawin, 0, txt);
 				}
 			}
-
-
 		}
 
 
@@ -1188,7 +1205,7 @@ register struct obj* obj;
 								stat += obj->spe;
 
 							if(prop & SETS_FIXED_ATTRIBUTE)
-								stat = min(25, max(1, stat));
+								stat = min((k == 0 ? STR19(25) : 25), max(1, stat));
 
 							char raisebuf[BUFSZ];
 							if (prop & FIXED_IS_MAXIMUM)
@@ -2097,7 +2114,7 @@ const char *verb;
 						if (is_launcher(obj))
 							damage = d(1, 2);
 						else
-							damage = totaldmgval(obj, mtmp, &youmonst);
+							damage = weapon_total_dmg_value(obj, mtmp, &youmonst);
 
                         mtmp->mhp -= damage;
                         if (DEADMONSTER(mtmp)) {

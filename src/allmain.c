@@ -367,7 +367,6 @@ boolean resuming;
         /****************************************/
 
         clear_splitobjs();
-        //find_ac(); //Called by update abon 
 		updateabon();
 		updatemaxen();
 		updatemaxhp();

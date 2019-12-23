@@ -432,7 +432,7 @@ struct objclass {
 	int oc_oc2;		/* Used for spell level; weapons and armors: mc bonus */
 	int oc_oc3;		/* Used for spell mana cost; other items: mana pool bonus */
 	int oc_oc4;		/* Used for spell attributes; other items: hit point bonus */
-	int oc_oc5;		/* Used for spell range; non-spellbooks: specification of attributes or other properties item gives bonuses (abon) to using otmp->spe */
+	int oc_oc5;		/* Used for spell range; non-spellbooks: specification of attributes or other properties item gives bonuses to using otmp->spe */
 	int oc_oc6;		/* Used for spell radius; non-spellbooks: 0 => spe is used, otherise fixed bonus */
 	int oc_oc7;		/* Used for spell casting penalty */
 	int oc_oc8;		/* Used for multishot count */

@@ -69,16 +69,17 @@ enum p_skills {
 
     /* Other types of combat */
     P_BARE_HANDED_COMBAT = 25, /* actually weaponless; gloves are ok */
-    P_TWO_WEAPON_COMBAT  = 26, /* pair of weapons, one in each hand */
+	P_MARTIAL_ARTS		 = 26, /* actually weaponless; gloves are ok */
+	P_TWO_WEAPON_COMBAT  = 27, /* pair of weapons, one in each hand */
 
 	/* Non-combat skills */
-	P_RIDING			 = 27,	/* how well you control your steed */
-	P_DISARM_TRAP		 = 28,	/* disarming traps */
+	P_RIDING			 = 28,	/* how well you control your steed */
+	P_DISARM_TRAP		 = 29,	/* disarming traps */
 	
-	P_NUM_SKILLS         = 29
+	P_NUM_SKILLS         = 30
 };
 
-#define P_MARTIAL_ARTS P_BARE_HANDED_COMBAT /* Role distinguishes */
+//#define P_MARTIAL_ARTS P_BARE_HANDED_COMBAT /* Role distinguishes */
 
 #define P_FIRST_WEAPON P_DAGGER
 #define P_LAST_WEAPON P_WHIP
@@ -91,9 +92,6 @@ enum p_skills {
 
 #define P_FIRST_NONCOMBAT P_RIDING
 #define P_LAST_NONCOMBAT P_DISARM_TRAP
-
-/* These roles qualify for a martial arts bonus */
-#define martial_bonus() (Role_if(PM_SAMURAI) || Role_if(PM_MONK))
 
 /*
  * These are the standard weapon skill levels.  It is important that
@@ -109,18 +107,14 @@ enum skill_levels {
        Heroes of Might and Magic (tm) and its sequels... */
     P_BASIC        = 2,
     P_SKILLED      = 3,
-    P_EXPERT       = 4,
-    /* when the skill system was adopted into GnollHack, levels beyond expert
-       were unnamed and just used numbers.  Devteam coined them Master and
-       Grand Master.  Sometime after that, Heroes of Might and Magic IV (tm)
-       was released and had two more levels which use these same names. */
-    P_MASTER       = 5, /* Unarmed combat/martial arts only */
-    P_GRAND_MASTER = 6  /* ditto */
+    P_EXPERT       = 4
 };
 
-#define is_magic_skill(skill) (skill >= P_ARCANE_SPELL && skill <= P_NECROMANCY_SPELL)
-#define practice_needed_to_advance_for_normal_skill(level) ((level) * (level) *20)
-#define practice_needed_to_advance(skill, level) ((is_magic_skill(skill) ? 3 : 1) * practice_needed_to_advance_for_normal_skill(level))
+#define is_magic_skill(skill) ((skill) >= P_ARCANE_SPELL && (skill) <= P_NECROMANCY_SPELL)
+#define is_martial_arts_skill(skill) ((skill) == P_MARTIAL_ARTS)
+#define practice_needed_to_advance_for_normal_skill(level) ((level) * (level) * 20)
+#define practice_needed_to_advance_for_martial_arts_skill(level) practice_needed_to_advance_for_normal_skill(level + 3)
+#define practice_needed_to_advance(skill, level) (is_martial_arts_skill(skill) ? practice_needed_to_advance_for_martial_arts_skill(level) : ((is_magic_skill(skill) ? 3 : 1) * practice_needed_to_advance_for_normal_skill(level)))
 
 /* The hero's skill in various weapons. */
 struct skills {
@@ -135,6 +129,10 @@ struct skills {
 #define P_RESTRICTED(type) (u.weapon_skills[type].skill == P_ISRESTRICTED)
 
 #define P_SKILL_LIMIT 60 /* Max number of skill advancements */
+
+/* These roles qualify for a martial arts bonus */
+#define martial_bonus() (P_SKILL(P_MARTIAL_ARTS) >= P_BASIC) // (Role_if(PM_SAMURAI) || Role_if(PM_MONK))
+
 
 /* Initial skill matrix structure; used in u_init.c and weapon.c */
 struct def_skill {

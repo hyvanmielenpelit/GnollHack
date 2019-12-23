@@ -3273,7 +3273,7 @@ struct obj *obj;
                 return 1;
             }
         }
-        dam = rnd(2) + dbon() + obj->spe;
+        dam = rnd(2) + u_str_dmg_bonus() + obj->spe;
         if (dam <= 0)
             dam = 1;
         You("hit your %s with your bullwhip.", body_part(FOOT));
@@ -3390,7 +3390,7 @@ struct obj *obj;
                         int hitu, hitvalu;
 
                         hitvalu = 8 + otmp->spe;
-                        hitu = thitu(hitvalu, totaldmgval(otmp, &youmonst, mtmp),
+                        hitu = thitu(hitvalu, weapon_total_dmg_value(otmp, &youmonst, mtmp),
                                      &otmp, (char *)0);
                         if (hitu) {
                             pline_The("%s hits you as you try to snatch it!",
@@ -4599,7 +4599,7 @@ struct obj* obj;
 	y = u.uy + u.dy;
 
 	/* KMH -- Kicking boots always succeed */
-	if (uarmf && uarmf->otyp == KICKING_BOOTS)
+	if (Magical_kicking)
 		avrg_attrib = 99;
 	else
 		avrg_attrib = (ACURRSTR + ACURR(A_DEX) + ACURR(A_CON)) / 3;

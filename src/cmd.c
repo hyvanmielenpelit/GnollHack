@@ -3258,7 +3258,9 @@ int final;
         you_are("displaced", from_what(DISPLACED));
     if (Stealth)
         you_are("stealthy", from_what(STEALTH));
-    if (Aggravate_monster)
+	if (Magical_kicking)
+		you_can("kick magically", from_what(MAGICAL_KICKING));
+	if (Aggravate_monster)
         enl_msg("You aggravate", "", "d", " monsters",
                 from_what(AGGRAVATE_MONSTER));
     if (Conflict)

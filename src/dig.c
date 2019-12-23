@@ -298,7 +298,7 @@ dig(VOID_ARGS)
     }
 
     context.digging.effort +=
-        10 + rn2(5) + abon() + uwep->spe - greatest_erosion(uwep) + u.ubasedaminc + u.udaminc;
+        10 + rn2(5) + u_strdex_to_hit_bonus() + uwep->spe - greatest_erosion(uwep) + u.ubasedaminc + u.udaminc;
     if (Race_if(PM_DWARF))
         context.digging.effort *= 2;
     if (context.digging.down) {
@@ -326,7 +326,7 @@ dig(VOID_ARGS)
         } else if (ttmp && ttmp->ttyp == BEAR_TRAP && u.utrap) {
             if (rnl(7) > (Fumbling ? 1 : 4)) {
                 char kbuf[BUFSZ];
-                int dmg = is_launcher(uwep) ? d(1, 2) : totaldmgval(uwep, &youmonst, &youmonst) + dbon();
+                int dmg = is_launcher(uwep) ? d(1, 2) : weapon_total_dmg_value(uwep, &youmonst, &youmonst) + u_str_dmg_bonus();
 
                 if (dmg < 1)
                     dmg = 1;
@@ -1085,7 +1085,7 @@ struct obj *obj;
         char buf[BUFSZ];
         int dam;
 
-        dam = rnd(2) + dbon() + obj->spe;
+        dam = rnd(2) + u_str_dmg_bonus() + obj->spe;
         if (dam <= 0)
             dam = 1;
         You("hit yourself with %s.", yname(uwep));

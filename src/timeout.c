@@ -119,6 +119,7 @@ const struct propname {
 	{ CHARM_RES, "charm resistance" },
 	{ MIND_SHIELDING, "mind shielding" },
 	{ ODD_IDEAS, "visionary ideas" },
+	{ MAGICAL_KICKING, "magical kicking" },
 	{ LAUGHING, "laughing uncontrollably" },
 	{  0, 0 },
 };

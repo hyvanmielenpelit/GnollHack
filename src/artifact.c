@@ -731,7 +731,7 @@ struct monst *mon;
 
 			touch_blasted = TRUE;
 			if (badappropriate)
-				dmg = totaldmgval(obj, &youmonst, &youmonst);
+				dmg = weapon_total_dmg_value(obj, &youmonst, &youmonst);
 			if(badclass || badalign)
 				dmg += d((Antimagic ? 2 : 4), (self_willed ? 10 : 4));
 			/* add half (maybe quarter) of the usual silver damage bonus */
@@ -1196,7 +1196,7 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
  * weapon.  Only adds the special (artifact) damage, and returns a 1 if it
  * did something special (in which case the caller won't print the normal
  * hit message).  This should be called once upon every artifact attack;
- * dmgval() no longer takes artifact bonuses into account.  Possible
+ * weapon_dmg_value() no longer takes artifact bonuses into account.  Possible
  * extension: change the killer so that when an orc kills you with
  * Stormbringer it's "killed by Stormbringer" instead of "killed by an orc".
  */

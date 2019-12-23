@@ -609,7 +609,7 @@ register struct monst *mtmp;
     /*  Work out the armor class differential   */
     tmp = AC_VALUE(u.uac) + 10; /* tmp ~= 0 - 20 */
     tmp += mtmp->m_lev;	//Add level to hit chance
-	tmp += mabon(mtmp); //Add monster's STR and DEX bonus, thrown weapons are dealt separately
+	tmp += m_strdex_to_hit_bonus(mtmp); //Add monster's STR and DEX bonus, thrown weapons are dealt separately
 	if (multi < 0)
         tmp += 4;
     if ((Invis && !perceives(mdat)) || !mtmp->mcansee)
@@ -783,7 +783,7 @@ register struct monst *mtmp;
 
 					if (mon_currwep) 
 					{
-                        hittmp = hitval(mon_currwep, &youmonst, mtmp);
+                        hittmp = weapon_to_hit_value(mon_currwep, &youmonst, mtmp);
                         tmp += hittmp;
 
 						get_multishot_stats(mtmp, mon_currwep, mon_currwep, FALSE, &multistrike, &multistrikernd);
@@ -1442,8 +1442,8 @@ register struct obj* omonwep;
 			dmg += d(1, 2);
 		else
 		{
-			dmg += dmgval(mweapon, &youmonst, mtmp);
-			extradmg += extradmgval(mweapon, &youmonst, mtmp, dmg);
+			dmg += weapon_dmg_value(mweapon, &youmonst, mtmp);
+			extradmg += weapon_extra_dmg_value(mweapon, &youmonst, mtmp, dmg);
 			dmg += extradmg;
 		}
 	}
@@ -1459,9 +1459,9 @@ register struct obj* omonwep;
 	if(mattk->adtyp == AD_PHYS || mattk->adtyp == AD_DRIN)
 	{
 		if(omonwep || mattk->aatyp == AT_WEAP || mattk->aatyp == AT_HUGS)
-			dmg += mdbon(mtmp);
+			dmg += m_str_dmg_bonus(mtmp);
 		else
-			dmg += mdbon(mtmp) / 2;
+			dmg += m_str_dmg_bonus(mtmp) / 2;
 	}
 
 	//Let's add this even if a weapon is being used
@@ -1491,7 +1491,7 @@ register struct obj* omonwep;
 	if ((mattk->adtyp == AD_PHYS && mattk->aatyp == AT_HUGS && !sticks(youmonst.data)) || mattk->adtyp == AD_DRIN)
 	{
 		/* Strength bonus*/
-		//dmg += mdbon(mtmp);
+		//dmg += m_str_dmg_bonus(mtmp);
 
 	}
 	else {

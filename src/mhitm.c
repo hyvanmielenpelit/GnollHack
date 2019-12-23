@@ -396,14 +396,16 @@ register struct monst *magr, *mdef;
 			{
                 if (vis)
                     mswingsm(magr, mdef, otmp);
-                tmp += hitval(otmp, mdef, magr);
+                tmp += weapon_to_hit_value(otmp, mdef, magr);
 
-				get_multishot_stats(magr, otmp, otmp, FALSE, &multistrike, &multistrikernd);
-
-				if (multistrikernd > 0)
-					multistrike += rn2(multistrikernd + 1);
 			}
-            /*FALLTHRU*/
+
+			get_multishot_stats(magr, otmp, otmp, FALSE, &multistrike, &multistrikernd);
+
+			if (multistrikernd > 0)
+				multistrike += rn2(multistrikernd + 1);
+
+			/*FALLTHRU*/
         case AT_CLAW:
         case AT_KICK:
         case AT_BITE:
@@ -426,7 +428,7 @@ register struct monst *magr, *mdef;
             }
 
 			//Give strength and dexerity bonus to hit
-			tmp += mabon(magr);
+			tmp += m_strdex_to_hit_bonus(magr);
 
 			int mdef_x = mdef->mx;
 			int mdef_y = mdef->my;
@@ -916,8 +918,8 @@ register struct obj* omonwep;
 			tmp += d(1, 2);
 		else
 		{
-			tmp += dmgval(mweapon, mdef, magr);
-			extratmp = extradmgval(mweapon, mdef, magr, tmp);
+			tmp += weapon_dmg_value(mweapon, mdef, magr);
+			extratmp = weapon_extra_dmg_value(mweapon, mdef, magr, tmp);
 			tmp += extratmp;
 		}
 	}
@@ -932,9 +934,9 @@ register struct obj* omonwep;
 	if (mattk->adtyp == AD_PHYS || mattk->adtyp == AD_DRIN)
 	{
 		if (omonwep || mattk->aatyp == AT_WEAP || mattk->aatyp == AT_HUGS)
-			tmp += mdbon(magr);
+			tmp += m_str_dmg_bonus(magr);
 		else
-			tmp += mdbon(magr) / 2;
+			tmp += m_str_dmg_bonus(magr) / 2;
 	}
 
     if ((touch_petrifies(pd) /* or flesh_petrifies() */
@@ -1014,8 +1016,8 @@ register struct obj* omonwep;
                 if (otmp->otyp == CORPSE
                     && touch_petrifies(&mons[otmp->corpsenm]))
                     goto do_stone;
-                //tmp += dmgval(otmp, mdef,magr);
-				//tmp += mdbon(magr);
+                //tmp += weapon_dmg_value(otmp, mdef,magr);
+				//tmp += m_str_dmg_bonus(magr);
 
 				if (tmp < 1) /* is this necessary?  mhitu.c has it... */
                     tmp = 1;

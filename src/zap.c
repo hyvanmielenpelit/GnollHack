@@ -4215,7 +4215,7 @@ int skill;
         /* Will change when print stuff below removed */
         hit_bon -= 0;
     else
-        /* Even increment for dextrous heroes (see weapon.c abon) */
+        /* Even increment for dextrous heroes (see weapon.c u_strdex_to_hit_bonus) */
         hit_bon += dex - 14;
 
     return hit_bon;
@@ -4637,8 +4637,8 @@ int dx, dy;
         if (bhitpos.x == u.ux && bhitpos.y == u.uy) { /* ct == 9 */
             if (Fumbling || rn2(20) >= ACURR(A_DEX)) {
                 /* we hit ourselves */
-				int dmg = dmgval(obj, &youmonst, (struct monst*)0);
-				int extradmg = extradmgval(obj, &youmonst, (struct monst*)0, dmg);
+				int dmg = weapon_dmg_value(obj, &youmonst, (struct monst*)0);
+				int extradmg = weapon_extra_dmg_value(obj, &youmonst, (struct monst*)0, dmg);
                 (void) thitu(10 + obj->spe, dmg + extradmg, &obj,
                              "boomerang");
                 endmultishot(TRUE);

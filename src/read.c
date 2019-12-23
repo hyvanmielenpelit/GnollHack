@@ -2131,7 +2131,7 @@ boolean confused, helmet_protects, byu, skip_uswallow;
     if (!amorphous(youmonst.data) && !Passes_walls
         && !noncorporeal(youmonst.data) && !unsolid(youmonst.data)) {
         You("are hit by %s!", doname(otmp2));
-        dmg = totaldmgval(otmp2, &youmonst, (struct monst*)0) * otmp2->quan;
+        dmg = weapon_total_dmg_value(otmp2, &youmonst, (struct monst*)0) * otmp2->quan;
         if (uarmh && helmet_protects) {
             if (is_metallic(uarmh)) {
                 pline("Fortunately, you are wearing a hard helmet.");
@@ -2185,7 +2185,7 @@ boolean confused, byu;
                      s_suffix(mon_nam(mtmp)), mbodypart(mtmp, STOMACH),
                      body_part(HEAD));
 
-        mdmg = totaldmgval(otmp2, mtmp, (struct monst*)0) * otmp2->quan;
+        mdmg = weapon_total_dmg_value(otmp2, mtmp, (struct monst*)0) * otmp2->quan;
         if (helmet) {
             if (is_metallic(helmet)) {
                 if (canspotmon(mtmp))

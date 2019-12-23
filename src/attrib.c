@@ -161,7 +161,7 @@ int msgflg; /* positive => no message, zero => message, and */
                 ABASE(ndx) = AMAX(ndx) = ATTRMAX(ndx);
         }
         attrstr = plusattr[ndx];
-        abonflg = (ABON(ndx) < 0);
+        abonflg = (ABONUS(ndx) < 0);
     } else { /* incr is negative */
         if (ABASE(ndx) < ATTRMIN(ndx)) {
             /*
@@ -188,7 +188,7 @@ int msgflg; /* positive => no message, zero => message, and */
                 AMAX(ndx) = ATTRMIN(ndx);
         }
         attrstr = minusattr[ndx];
-        abonflg = (ABON(ndx) > 0);
+        abonflg = (ABONUS(ndx) > 0);
     }
     if (ACURR(ndx) == old_acurr) {
         if (msgflg == 0 && flags.verbose) {
@@ -1729,7 +1729,7 @@ updateabon()
 	/* reset abons */
 	for (int i = 0; i < A_MAX; i++)
 	{
-		ABON(i) = 0;
+		ABONUS(i) = 0;
 		AFIXMIN(i) = 0;
 		AFIXMAX(i) = (i == A_STR ? STR19(25) : 25);
 	}
@@ -1741,7 +1741,7 @@ updateabon()
 
 	/* Set wounded legs here */
 	if (Wounded_legs)
-		ABON(A_DEX) = -1;
+		ABONUS(A_DEX) = -1;
 
 	/* add them back again */
 	for (uitem = invent; uitem; uitem = uitem->nobj)
@@ -1848,9 +1848,9 @@ updateabon()
 						else
 						{
 							if (objects[otyp].oc_attribute_bonus == 0 && objects[otyp].oc_charged)
-								ABON(i) += uitem->spe;
+								ABONUS(i) += uitem->spe;
 							else
-								ABON(i) += objects[otyp].oc_attribute_bonus;
+								ABONUS(i) += objects[otyp].oc_attribute_bonus;
 						}
 					}
 					else if (i == A_MAX + 0)
@@ -1903,7 +1903,7 @@ schar
 acurr(x)
 int x;
 {
-    register int tmp = (u.abon.a[x] + u.atemp.a[x] + u.acurr.a[x]);
+    register int tmp = (u.abonus.a[x] + u.atemp.a[x] + u.acurr.a[x]);
 	
 	if (u.afixmin.a[x] > 0 && u.afixmax.a[x] > 0 && u.afixmin.a[x] > u.afixmax.a[x])
 	{

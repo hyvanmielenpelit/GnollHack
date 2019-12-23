@@ -95,14 +95,14 @@ NEARDATA struct objclass objects[] =
 	/* weapons ... */
 	#define WEAPON(name,desc,nmkn,mrg,mgc,bi,prob,multigen,wt,cost,\
 				dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,critpct, \
-				hitbon,mcadj,throwrange,acbon,mcbon,manabon,hpbon,bonusattrs,abon,splcastpen,multicount,\
+				hitbon,mcadj,throwrange,acbon,mcbon,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,\
 				power,power2,power3,typ,sub,skill,metal,color,\
 				flags,flags2,flags3,powconfermask,permittedtargets) \
 	    OBJECT(OBJ(name,desc), None, None,                                         \
 	           BITS(nmkn, mrg, 1, 0, mgc, 1, 0, 0, bi, 0, typ, sub, skill, metal),  \
 	           power, power2, power3, WEAPON_CLASS, prob, multigen, 0, wt, cost, \
 			   dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, critpct, \
-			   hitbon, mcadj, 0, throwrange, acbon, mcbon, manabon, hpbon, bonusattrs, abon, splcastpen, multicount, \
+			   hitbon, mcadj, 0, throwrange, acbon, mcbon, manabon, hpbon, bonusattrs, attrbonus, splcastpen, multicount, \
 			   wt, color, \
 			   0, 0, 0, 0, \
 			   powconfermask,permittedtargets, flags, flags2, flags3)
@@ -119,12 +119,12 @@ NEARDATA struct objclass objects[] =
 			   PERMITTED_ALL, permittedtargets, flags, flags2, flags3)
 
 
-	#define BOW(name,desc,nmkn,mgc,bi,prob,multigen,wt,cost,dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,critpct,hitbon,mcadj,fixeddmgbon,launchrange,manabon,hpbon,bonusattrs,abon,splcastpen,multicount,power,power2,power3,metal,sub,skill,color,flags,flags2,flags3,powconfermask,permittedtargets) \
+	#define BOW(name,desc,nmkn,mgc,bi,prob,multigen,wt,cost,dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,critpct,hitbon,mcadj,fixeddmgbon,launchrange,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,power,power2,power3,metal,sub,skill,color,flags,flags2,flags3,powconfermask,permittedtargets) \
 	    OBJECT(OBJ(name,desc), None, None,                                         \
 	           BITS(nmkn, 0, 1, 0, mgc, 1, 0, 0, bi, 0, 0, sub, skill, metal),      \
 	           power, power2, power3, WEAPON_CLASS, prob, multigen, 0, wt, cost,                            \
 	           dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, critpct, \
-			   hitbon, mcadj, fixeddmgbon, launchrange, 0, 0, manabon, hpbon, bonusattrs, abon, splcastpen, multicount,  \
+			   hitbon, mcadj, fixeddmgbon, launchrange, 0, 0, manabon, hpbon, bonusattrs, attrbonus, splcastpen, multicount,  \
 			   color, wt, \
 			   0, 0, 0, 0, \
 			   powconfermask, permittedtargets, flags, flags2, flags3)
@@ -1007,53 +1007,82 @@ BOW("repeating heavy crossbow", None,		1, 0, 1, 1, MULTIGEN_SINGLE, 360, 1000,
          * Some creatures are vulnerable to MAT_SILVER.
          */
 #define ARMOR(name,desc,kn,mgc,blk,power,power2,power3,prob,delay,wt,  \
-              cost,ac,mgccancel,manabon,hpbon,bonusattrs,abon,splcastpen,sub,skill,metal,c,flags,flags2,flags3,powconfermask)                   \
+              cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,sub,skill,metal,c,flags,flags2,flags3,powconfermask)                   \
     OBJECT(OBJ(name, desc), None, None,                                       \
            BITS(kn, 0, 1, 0, mgc, 1, 0, 0, blk, 0, 0, sub, skill, metal),  \
            power, power2, power3, ARMOR_CLASS, prob, MULTIGEN_SINGLE, delay, wt, cost,                     \
            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
-		   0, 0, 0, 0, 10 - ac, mgccancel, manabon, hpbon, bonusattrs, abon, splcastpen, 0, \
+		   0, 0, 0, 0, 10 - ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, 0, \
 		   wt, c, \
 		   0, 0, 0, 0, \
 		   powconfermask, ALL_TARGETS, flags, flags2, flags3 )
-#define HELM(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,abon,splcastpen,metal,c,flags,flags2,flags3,powconfermask)  \
+#define HELM(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,flags,flags2,flags3,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, mgccancel, manabon, hpbon, bonusattrs, abon, splcastpen, ARM_HELM, P_NONE, metal, c, flags, flags2, flags3,powconfermask)
-#define CLOAK(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,abon,splcastpen,metal,c,flags,flags2,flags3,powconfermask)  \
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_HELM, P_NONE, metal, c, flags, flags2, flags3,powconfermask)
+#define CLOAK(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,flags,flags2,flags3,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, mgccancel, manabon, hpbon, bonusattrs, abon, splcastpen, ARM_CLOAK, P_NONE, metal, c, flags, flags2, flags3,powconfermask)
-#define SHIELD(name,desc,kn,mgc,blk,power,power2,power3,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,abon,splcastpen,metal,c,flags,flags2,flags3,powconfermask) \
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_CLOAK, P_NONE, metal, c, flags, flags2, flags3,powconfermask)
+#define SHIELD(name,desc,kn,mgc,blk,power,power2,power3,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,flags,flags2,flags3,powconfermask) \
     ARMOR(name, desc, kn, mgc, blk, power, power2, power3, prob, delay, wt, \
-          cost, ac, mgccancel, manabon, hpbon, bonusattrs, abon, splcastpen, ARM_SHIELD, P_NONE, metal, c, flags, flags2, flags3,powconfermask)
-#define GLOVES(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,abon,splcastpen,metal,c,flags,flags2,flags3,powconfermask)  \
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_SHIELD, P_NONE, metal, c, flags, flags2, flags3,powconfermask)
+#define GLOVES(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,flags,flags2,flags3,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, mgccancel, manabon, hpbon, bonusattrs, abon, splcastpen, ARM_GLOVES, P_NONE, metal, c, flags, flags2, flags3, powconfermask)
-#define BOOTS(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,abon,splcastpen,metal,c,flags,flags2,flags3,powconfermask)  \
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_GLOVES, P_NONE, metal, c, flags, flags2, flags3, powconfermask)
+#define BOOTS(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,flags,flags2,flags3,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, mgccancel, manabon, hpbon, bonusattrs, abon, splcastpen, ARM_BOOTS, P_NONE, metal, c, flags, flags2, flags3, powconfermask)
-#define SHIRT(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,abon,splcastpen,metal,c,flags,flags2,flags3,powconfermask)  \
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_BOOTS, P_NONE, metal, c, flags, flags2, flags3, powconfermask)
+#define SHIRT(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,flags,flags2,flags3,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, mgccancel, manabon, hpbon, bonusattrs, abon, splcastpen, ARM_SHIRT, P_NONE, metal, c, flags, flags2, flags3, powconfermask)
-#define ROBE(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,abon,splcastpen,metal,c,flags,flags2,flags3,powconfermask)  \
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_SHIRT, P_NONE, metal, c, flags, flags2, flags3, powconfermask)
+#define ROBE(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,flags,flags2,flags3,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, mgccancel, manabon, hpbon, bonusattrs, abon, splcastpen, ARM_ROBE, P_NONE, metal, c, flags, flags2, flags3, powconfermask)
-#define BRACERS(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,abon,splcastpen,metal,c,flags,flags2,flags3,powconfermask)  \
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_ROBE, P_NONE, metal, c, flags, flags2, flags3, powconfermask)
+#define BRACERS(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,flags,flags2,flags3,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
-          cost, ac, mgccancel, manabon, hpbon, bonusattrs, abon, splcastpen, ARM_BRACERS, P_NONE, metal, c, flags, flags2, flags3, powconfermask)
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_BRACERS, P_NONE, metal, c, flags, flags2, flags3, powconfermask)
 
-#define WEAPONSHIELD(name,desc,kn,prob,wt,cost,\
+/* note: acbon = 10 - ac used in ARMOR, i.e., 1 gives -1 AC bonus to the player */
+#define WEAPONSHIELD(name,desc,kn,mgc,prob,wt,cost,\
 			dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,critpct, \
-			hitbon,mcadj,throwrange,acbon,mcbon,manabon,hpbon,bonusattrs,abon,splcastpen,multicount,\
+			hitbon,mcadj,throwrange,acbon,mcbon,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,\
 			power,power2,power3,typ,skill,metal,color,\
 			flags,flags2,flags3,powconfermask,permittedtargets) \
     OBJECT(OBJ(name,desc), None, None,                                         \
-           BITS(kn, 0, 1, 0, 0, 1, 0, 0, 0, 0, typ, ARM_SHIELD, skill, metal),  \
+           BITS(kn, 0, 1, 0, mgc, 1, 0, 0, 0, 0, typ, ARM_SHIELD, skill, metal),  \
            power, power2, power3, ARMOR_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, \
 		   dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, critpct, \
-		   hitbon, mcadj, 0, throwrange, acbon, mcbon, manabon, hpbon, bonusattrs, abon, splcastpen, multicount, \
+		   hitbon, mcadj, 0, throwrange, acbon, mcbon, manabon, hpbon, bonusattrs, attrbonus, splcastpen, multicount, \
 		   wt, color, \
 		   0, 0, 0, 0, \
 		   powconfermask,permittedtargets, O1_IS_WEAPON_WHEN_WIELDED | flags, flags2, flags3)
+
+#define WEAPONBOOTS(name,desc,kn,mgc,delay,prob,wt,cost,\
+			dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,critpct, \
+			hitbon,mcadj,throwrange,acbon,mcbon,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,\
+			power,power2,power3,typ,metal,color,\
+			flags,flags2,flags3,powconfermask,permittedtargets) \
+    OBJECT(OBJ(name,desc), None, None,                                         \
+           BITS(kn, 0, 1, 0, mgc, 1, 0, 0, 0, 0, typ, ARM_BOOTS, P_MARTIAL_ARTS, metal),  \
+           power, power2, power3, ARMOR_CLASS, prob, MULTIGEN_SINGLE, delay, wt, cost, \
+		   dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, critpct, \
+		   hitbon, mcadj, 0, throwrange, acbon, mcbon, manabon, hpbon, bonusattrs, attrbonus, splcastpen, multicount, \
+		   wt, color, \
+		   0, 0, 0, 0, \
+		   powconfermask,permittedtargets, flags, flags2, flags3)
+
+#define WEAPONGLOVES(name,desc,kn,mgc,delay,prob,wt,cost,\
+			dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,critpct, \
+			hitbon,mcadj,throwrange,acbon,mcbon,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,\
+			power,power2,power3,typ,metal,color,\
+			flags,flags2,flags3,powconfermask,permittedtargets) \
+    OBJECT(OBJ(name,desc), None, None,                                         \
+           BITS(kn, 0, 1, 0, mgc, 1, 0, 0, 0, 0, typ, ARM_GLOVES, P_BARE_HANDED_COMBAT, metal),  \
+           power, power2, power3, ARMOR_CLASS, prob, MULTIGEN_SINGLE, delay, wt, cost, \
+		   dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, critpct, \
+		   hitbon, mcadj, 0, throwrange, acbon, mcbon, manabon, hpbon, bonusattrs, attrbonus, splcastpen, multicount, \
+		   wt, color, \
+		   0, 0, 0, 0, \
+		   powconfermask,permittedtargets, flags, flags2, flags3)
 
 
 /* helmets */
@@ -1141,9 +1170,9 @@ HELM("helm of telepathy", "visored helmet",
  *      (2) That the order of the dragon scale mail and dragon scales
  *          is the same as order of dragons defined in monst.c.
  */
-#define DRGN_ARMR(name,mgc,power,power2,power3,cost,ac,mc,manabon,hpbon,bonusattrs,abon,splcastpen,color,flags,flags2,flags3,powconfermask)  \
+#define DRGN_ARMR(name,mgc,power,power2,power3,cost,ac,mc,manabon,hpbon,bonusattrs,attrbonus,splcastpen,color,flags,flags2,flags3,powconfermask)  \
     ARMOR(name, None, 1, mgc, 1, power, power2, power3, 0, 5, 550,  \
-          cost, ac, mc, manabon, hpbon, bonusattrs, abon, splcastpen, ARM_SUIT, P_NONE, MAT_DRAGON_HIDE, color, flags, flags2, flags3, powconfermask)
+          cost, ac, mc, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_SUIT, P_NONE, MAT_DRAGON_HIDE, color, flags, flags2, flags3, powconfermask)
 /* 3.4.1: dragon scale mail reclassified as "magic" since magic is
    needed to create them */
 DRGN_ARMR("gray dragon scale mail",    1, ANTIMAGIC,  0, 0, 6000, 1, 4, 0, 0, 0, 0,  8, CLR_GRAY, O1_NONE, O2_DRAGON_ITEM | O2_MONSTER_SCALE_MAIL, O3_NONE, PERMITTED_ALL),
@@ -1198,11 +1227,11 @@ ARMOR("dwarvish mithril-coat", None,
 ARMOR("elven mithril-coat", None,
       1, 0, 0,			 0, 0, 0, 15, 1, 150, 250,  5, 4, 0, 0, 0, 0, 0, ARM_SUIT, P_NONE, MAT_MITHRIL, HI_SILVER, O1_RUST_RESISTANT | O1_CORROSION_RESISTANT, O2_ELVEN_ITEM, O3_NONE, PERMITTED_ALL),
 ARMOR("chain mail", None,
-      1, 0, 0,			 0, 0, 0, 40, 5, 480,  75,  5, 3, 0, 0, 0, 0, 8, ARM_SUIT, P_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      1, 0, 0,			 0, 0, 0, 35, 5, 480,  75,  5, 3, 0, 0, 0, 0, 8, ARM_SUIT, P_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ARMOR("orcish chain mail", "crude chain mail",
       0, 0, 0,			 0, 0, 0, 20, 5, 450,  40,  6, 3, 0, 0, 0, 0, 12, ARM_SUIT, P_NONE, MAT_IRON, CLR_BLACK, O1_NONE, O2_ORCISH_ITEM, O3_NONE, PERMITTED_ALL),
 ARMOR("scale mail", None,
-      1, 0, 0,			 0, 0, 0, 40, 5, 500,  45,  6, 3, 0, 0, 0, 0, 6, ARM_SUIT, P_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      1, 0, 0,			 0, 0, 0, 35, 5, 500,  45,  6, 3, 0, 0, 0, 0, 6, ARM_SUIT, P_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ARMOR("studded leather armor", None,
       1, 0, 0,			 0, 0, 0, 40, 3, 200,  15,  7, 3, 0, 0, 0, 0, 4, ARM_SUIT, P_NONE, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ARMOR("gnollish studded leather armor", "crude studded leather armor",
@@ -1325,8 +1354,8 @@ SHIELD("shield of reflection", "polished silver shield",
        0, 1, 0, REFLECTING, 0, 0, 3, 0, 70, 750, 8, 0, 0, 0, 0, 0, 10, MAT_SILVER, HI_SILVER, O1_RUST_RESISTANT | O1_CORROSION_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
 
 WEAPONSHIELD("spiked shield", None,
-	1, 5, 130, 50, 
-	AD_PHYS, 1, 4, 0, 1, 4, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,
+	1, 0, 5, 130, 50, 
+	AD_PHYS, 1, 6, 0, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,
 	0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, PIERCE, P_SPEAR, MAT_IRON, HI_METAL, 
 	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
@@ -1342,10 +1371,23 @@ GLOVES("gauntlets of fumbling", "padded gloves",
        0, 1, FUMBLING, 0, 0, 8, 1, 10, 100, 9, 0, 0, 0, 0, 0, 12, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
 GLOVES("gloves of spell casting", "deerskin gloves",
        0, 1,		0, 0, 0, 8, 1, 10, 100, 9, 0, 20, 0, BONUS_TO_SPELL_CASTING, 16, 0, MAT_LEATHER, HI_LEATHER, O1_MANA_PERCENTAGE_BONUS, O2_NONE, O3_NONE, PERMITTED_ALL),
-GLOVES("gauntlets of ogre power", "riding gloves",
-       0, 1,        0, 0, 0, 8, 1, 30, 100, 9, 0, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE | IGNORE_SPE, STR18(100), 6, MAT_IRON, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+WEAPONGLOVES("gauntlets of ogre power", "riding gloves",
+	0, 1, 1, 8, 30, 100,
+	AD_PHYS, 1, 2, 0, 1, 2, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,
+	0, 0, 0, 1, 0, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE | IGNORE_SPE, STR18(100), 6, 0,
+	0, 0, 0, WHACK, MAT_IRON, CLR_BROWN,
+	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 GLOVES("gauntlets of dexterity", "fencing gloves",
        0, 1,        0, 0, 0, 8, 1, 10, 100, 9, 0, 0, 0, BONUS_TO_DEX, 0, 0, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+
+/* without shuffled appearances */
+WEAPONGLOVES("spiked gauntlets", None,
+	1, 0, 1, 5, 30, 30,
+	AD_PHYS, 1, 4, 0, 1, 4, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,
+	0, 0, 0, 1, 0, 0, 0, 0, 0, 8, 0,
+	0, 0, 0, PIERCE, MAT_IRON, HI_METAL,
+	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
+
 
 /* boots */
 BOOTS("low boots", "walking shoes",
@@ -1367,13 +1409,28 @@ BOOTS("jumping boots", "hiking boots",
       0, 1,    JUMPING, 0, 0, 12, 2, 30, 50, 9, 0, 0, 0, 0, 0, 0, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 BOOTS("elven boots", "mud boots",
       0, 1,    STEALTH, 0, 0, 12, 2, 20,  8, 9, 0, 0, 0, 0, 0, 0, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_ELVEN_ITEM, O3_NONE, PERMITTED_ALL),
-BOOTS("kicking boots", "buckled boots",
-      0, 1,          0, 0, 0, 12, 2, 60,  8, 9, 0, 0, 0, 0, 0, 2, MAT_IRON, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-        /* CLR_BROWN for same reason as gauntlets of power */
+WEAPONBOOTS("kicking boots", "buckled boots",
+	0, 1, 2, 12, 60, 50,
+	AD_PHYS, 1, 6, 0, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,
+	0, 0, 0, 1, 0, 0, 0, 0, 0, 2, 0,
+	MAGICAL_KICKING, NO_POWER, NO_POWER, WHACK, MAT_IRON, CLR_BROWN,
+	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
+/* CLR_BROWN for same reason as gauntlets of power */
+
 BOOTS("fumble boots", "riding boots",
       0, 1,   FUMBLING, 0, 0, 12, 2, 30, 30, 9, 0, 0, 0, 0, 0, 4, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
 BOOTS("levitation boots", "snow boots",
       0, 1, LEVITATION, 0, 0, 12, 2, 15, 30, 9, 0, 0, 0, 0, 0, 0, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
+
+/* without shuffled appearances */
+WEAPONBOOTS("spiked boots", None,
+	1, 0, 2, 5, 60, 20,
+	AD_PHYS, 1, 4, 0, 1, 4, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,
+	0, 0, 0, 1, 0, 0, 0, 0, 0, 3, 0,
+	NO_POWER, NO_POWER, NO_POWER, PIERCE, MAT_IRON, HI_METAL,
+	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
+
+
 #undef HELM
 #undef CLOAK
 #undef SHIELD
@@ -1384,15 +1441,17 @@ BOOTS("levitation boots", "snow boots",
 #undef BOOTS
 #undef ARMOR
 #undef WEAPONSHIELD
+#undef WEAPONGLOVES
+#undef WEAPONBOOTS
 
 /* rings ... */
-#define RING(name,stone,power,power2,power3,cost,mgc,spec,mohs,manabon,hpbon,bonusattrs,abon,splcastpen,metal,color,flags,flags2,flags3,powconfermask) \
+#define RING(name,stone,power,power2,power3,cost,mgc,spec,mohs,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,color,flags,flags2,flags3,powconfermask) \
     OBJECT(OBJ(name, stone), None, None,                                         \
            BITS(0, 0, spec, 0, mgc, spec, 0, 0, 0,                    \
                 HARDGEM(mohs), 0, 0, P_NONE, metal),                     \
            power, power2, power3, RING_CLASS, 0, MULTIGEN_SINGLE, 0, 1, cost,  \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
-		   0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattrs,abon, splcastpen, 0, \
+		   0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattrs,attrbonus, splcastpen, 0, \
 		   15, color, 0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
 RING("adornment", "wooden",
      ADORNED, 0, 0, 100, 1, 1, 2, 0, 0, BONUS_TO_CHA, 0, 0, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
@@ -1469,12 +1528,12 @@ RING("protection from shape changers", "shiny",
 #undef RING
 
 /* amulets ... - THE Amulet comes last because it is special */
-#define AMULET(name,desc,prob,power,power2,power3,manabonus,hpbonus,bonusattrs,abon,splcastpen,flags,flags2,flags3,powconfermask) \
+#define AMULET(name,desc,prob,power,power2,power3,manabonus,hpbonus,bonusattrs,attrbonus,splcastpen,flags,flags2,flags3,powconfermask) \
     OBJECT(OBJ(name, desc), None, None,                                          \
            BITS(0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, P_NONE, MAT_IRON),        \
            power, power2, power3,  AMULET_CLASS, prob, MULTIGEN_SINGLE, 0, 5, 150, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
-		   0, 0, 0, 0, 0, 0, manabonus, hpbonus, bonusattrs, abon, splcastpen, 0, \
+		   0, 0, 0, 0, 0, 0, manabonus, hpbonus, bonusattrs, attrbonus, splcastpen, 0, \
 		   20, HI_METAL, 0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
 AMULET("amulet of ESP",                "circular", 90,	TELEPAT, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 AMULET("amulet of life saving",       "spherical", 75,  LIFESAVED, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
@@ -1511,12 +1570,12 @@ OBJECT(OBJ("Amulet of Yendor", /* note: description == name */
 #undef AMULET
 
 /* miscellaneous (magic) items */
-#define MISCELLANEOUSITEM(name,desc,sub,specialworntext,shortdesc,kn,magic,mergeable,charged,prob,cost,wt,power,power2,power3,manabonus,hpbonus,bonusattrs,abon,splcastpen,nut,material,color,flags,flags2,flags3,powconfermask) \
+#define MISCELLANEOUSITEM(name,desc,sub,specialworntext,shortdesc,kn,magic,mergeable,charged,prob,cost,wt,power,power2,power3,manabonus,hpbonus,bonusattrs,attrbonus,splcastpen,nut,material,color,flags,flags2,flags3,powconfermask) \
     OBJECT(OBJ(name, desc), specialworntext, shortdesc,                                          \
            BITS(kn, mergeable, charged, 0, magic, charged, 0, 0, 0, 0, 0, sub, 0, material),        \
            power, power2, power3,  MISCELLANEOUS_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost,  \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
-		   0, 0, 0, 0, 0, 0, manabonus, hpbonus, bonusattrs, abon, splcastpen, 0, \
+		   0, 0, 0, 0, 0, 0, manabonus, hpbonus, bonusattrs, attrbonus, splcastpen, 0, \
 		   nut, color, 0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
 MISCELLANEOUSITEM("brooch of shielding", "golden brooch", MISC_BROOCH, None, None,
 	0, 1, 0, 0, 50, 150, 5,
@@ -1672,12 +1731,12 @@ MISCELLANEOUSITEM("belt of storm giant strength", "rudimentary belt", MISC_BELT,
 
 /* tools ... */
 /* tools with weapon characteristics come last */
-#define TOOL(name,desc,kn,mrg,mgc,chg,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,abon,splcastpen,mat,color,flags,flags2,flags3,powconfermask) \
+#define TOOL(name,desc,kn,mrg,mgc,chg,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,splcastpen,mat,color,flags,flags2,flags3,powconfermask) \
     OBJECT(OBJ(name, desc), None, None,                                           \
            BITS(kn, mrg, chg, 0, mgc, chg, 0, 0, 0, 0, 0, 0, P_NONE, mat), \
            0, 0, 0, TOOL_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
-		   0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattr, abon, splcastpen, 0, \
+		   0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattr, attrbonus, splcastpen, 0, \
 		   wt, color, 0, 0, cooldown, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
 #define SPELLTOOL(name,desc,kn,mrg,mgc,chg,prob,wt,cost,dir,dirsubtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus,cooldown,mat,color,flags,flags2,flags3) \
     OBJECT(OBJ(name, desc), None, None,                                           \
@@ -1686,12 +1745,12 @@ MISCELLANEOUSITEM("belt of storm giant strength", "rudimentary belt", MISC_BELT,
 		   AD_PHYS, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
 		   wt, color, dirsubtype, 0, cooldown, 0, PERMITTED_ALL, ALL_TARGETS, O1_WAND_LIKE_TOOL | flags, flags2, flags3)
-#define CONTAINER(name,desc,shortdesc,kn,mgc,chg,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,abon,mat,color,flags,flags2,flags3,powconfermask) \
+#define CONTAINER(name,desc,shortdesc,kn,mgc,chg,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,mat,color,flags,flags2,flags3,powconfermask) \
     OBJECT(OBJ(name, desc), None, shortdesc,                                           \
            BITS(kn, 0, chg, 1, mgc, chg, 0, 0, 0, 0, 0, 0, P_NONE, mat),   \
            0, 0, 0, TOOL_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
-		   0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattr, abon, 0, 0, \
+		   0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattr, attrbonus, 0, 0, \
 		   wt, color, 0, 0, cooldown, 0, powconfermask, ALL_TARGETS, flags, O2_CONTAINER | flags2, flags3)
 #define WEPTOOL(name,desc,kn,mgc,bi,prob,wt,cost,sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, aflags, critpct, hitbon,splcastpen,sub,skill,cooldown,mat,clr,flags,flags2,flags3,powconfermask)\
     OBJECT(OBJ(name, desc), None, None,                                           \

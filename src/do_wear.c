@@ -166,7 +166,8 @@ Boots_on(VOID_ARGS)
 	case LEATHER_SANDALS:
 	case JUMPING_BOOTS:
     case KICKING_BOOTS:
-        break;
+	case SPIKED_BOOTS:
+		break;
     case WATER_WALKING_BOOTS:
         if (u.uinwater)
             spoteffects(TRUE);
@@ -264,7 +265,8 @@ Boots_off(VOID_ARGS)
 	case LEATHER_SANDALS:
 	case JUMPING_BOOTS:
     case KICKING_BOOTS:
-        break;
+	case SPIKED_BOOTS:
+		break;
     default:
         impossible(unknown_type, c_boots, otyp);
     }
@@ -424,7 +426,7 @@ Helmet_on(VOID_ARGS)
         } else {
             You_feel("%s.", /* track INT change; ignore WIS */
                      ACURR(A_INT)
-                             <= (ABASE(A_INT) + ABON(A_INT) + ATEMP(A_INT))
+                             <= (ABASE(A_INT) + ABONUS(A_INT) + ATEMP(A_INT))
                          ? "like sitting in a corner"
                          : "giddy");
         }
@@ -495,7 +497,8 @@ Gloves_on(VOID_ARGS)
 {
     switch (uarmg->otyp) {
     case LEATHER_GLOVES:
-        break;
+	case SPIKED_GAUNTLETS:
+		break;
     case GAUNTLETS_OF_FUMBLING:
 		/*
         if (!(u.uprops[FUMBLING].extrinsic & ~WORN_GLOVES) && !(HFumbling & ~TIMEOUT))
@@ -549,6 +552,7 @@ Gloves_off(VOID_ARGS)
 
     switch (uarmg->otyp) {
     case LEATHER_GLOVES:
+	case SPIKED_GAUNTLETS:
 	case GLOVES_OF_SPELL_CASTING:
 		break;
     case GAUNTLETS_OF_FUMBLING:
@@ -1233,7 +1237,7 @@ register struct obj *obj;
         which = A_CHA;
  adjust_attrib:
         //old_attrib = ACURR(which);
-        //ABON(which) += obj->spe;
+        //ABONUS(which) += obj->spe;
         //observable = (old_attrib != ACURR(which));
         /* if didn't change, usually means ring is +0 but might
            be because nonzero couldn't go below min or above max;
@@ -1247,12 +1251,12 @@ register struct obj *obj;
 	case RIN_POWER:
 	{
 		/*
-		ABON(A_STR) += obj->spe;
-		ABON(A_DEX) += obj->spe;
-		ABON(A_CON) += obj->spe;
-		ABON(A_INT) += obj->spe;
-		ABON(A_WIS) += obj->spe;
-		ABON(A_CHA) += obj->spe;
+		ABONUS(A_STR) += obj->spe;
+		ABONUS(A_DEX) += obj->spe;
+		ABONUS(A_CON) += obj->spe;
+		ABONUS(A_INT) += obj->spe;
+		ABONUS(A_WIS) += obj->spe;
+		ABONUS(A_CHA) += obj->spe;
 		*/
 		break;
 	}
@@ -1391,7 +1395,7 @@ boolean gone;
         which = A_CHA;
  adjust_attrib:
         old_attrib = ACURR(which);
-        //ABON(which) -= obj->spe;
+        //ABONUS(which) -= obj->spe;
 //        observable = (old_attrib != ACURR(which));
 //        /* same criteria as Ring_on() */
 //        if (observable || !extremeattr(which))
@@ -1401,12 +1405,12 @@ boolean gone;
 	case RIN_POWER:
 	{
 		/*
-		ABON(A_STR) -= obj->spe;
-		ABON(A_DEX) -= obj->spe;
-		ABON(A_CON) -= obj->spe;
-		ABON(A_INT) -= obj->spe;
-		ABON(A_WIS) -= obj->spe;
-		ABON(A_CHA) -= obj->spe;
+		ABONUS(A_STR) -= obj->spe;
+		ABONUS(A_DEX) -= obj->spe;
+		ABONUS(A_CON) -= obj->spe;
+		ABONUS(A_INT) -= obj->spe;
+		ABONUS(A_WIS) -= obj->spe;
+		ABONUS(A_CHA) -= obj->spe;
 		*/
 		break;
 	}
@@ -3406,22 +3410,22 @@ register schar delta;
     if (uarmg && uarmg == otmp && otmp->otyp == GAUNTLETS_OF_DEXTERITY) {
         if (delta) {
             makeknown(uarmg->otyp);
-            ABON(A_DEX) += (delta);
+            ABONUS(A_DEX) += (delta);
         }
         context.botl = 1;
     }
     if (uarmh && uarmh == otmp && otmp->otyp == HELM_OF_BRILLIANCE) {
         if (delta) {
             makeknown(uarmh->otyp);
-            ABON(A_INT) += (delta);
-            ABON(A_WIS) += (delta);
+            ABONUS(A_INT) += (delta);
+            ABONUS(A_WIS) += (delta);
         }
         context.botl = 1;
     }
 	if (uarmu && uarmu == otmp && otmp->otyp == SHIRT_OF_COMELINESS) {
 		if (delta) {
 			makeknown(uarmu->otyp);
-			ABON(A_CHA) += (delta);
+			ABONUS(A_CHA) += (delta);
 		}
 		context.botl = 1;
 	}

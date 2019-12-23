@@ -39,6 +39,7 @@ STATIC_DCL void FDECL(skill_advance, (int));
 #define PN_SWORD (-19)
 #define PN_BLUDGEONING_WEAPON (-20)
 #define PN_THROWN_WEAPON (-21)
+#define PN_MARTIAL_ARTS (-22)
 
 
 STATIC_VAR NEARDATA const short skill_names_indices[P_NUM_SKILLS] = {
@@ -47,7 +48,7 @@ STATIC_VAR NEARDATA const short skill_names_indices[P_NUM_SKILLS] = {
     CROSSBOW, PN_THROWN_WEAPON, PN_WHIP,
     PN_ARCANE_SPELL, PN_CLERIC_SPELL, PN_HEALING_SPELL, PN_DIVINATION_SPELL,
     PN_ABJURATION_SPELL, PN_MOVEMENT_SPELL, PN_TRANSMUTATION_SPELL, PN_ENCHANTMENT_SPELL, PN_CONJURATION_SPELL, PN_NECROMANCY_SPELL,
-    PN_BARE_HANDED, PN_TWO_WEAPONS, PN_RIDING, PN_DISARM_TRAP
+    PN_BARE_HANDED, PN_MARTIAL_ARTS, PN_TWO_WEAPONS, PN_RIDING, PN_DISARM_TRAP
 };
 
 /* note: entry [0] isn't used */
@@ -56,7 +57,7 @@ STATIC_VAR NEARDATA const char *const odd_skill_names[] = {
     "two weapon combat", "riding", "polearm", "saber", "hammer", "whip",
     "arcane spell", "clerical spell", "healing spell", "divination spell", "abjuration spell",
 	"movement spell", "transmutation spell", "enchantment spell", "conjuration spell", "necromancy spell", "disarm trap", "sword",
-	"bludgeoning weapon", "thrown weapon",
+	"bludgeoning weapon", "thrown weapon", "martial arts",
 };
 
 STATIC_VAR NEARDATA const char* const odd_skill_names_plural[] = {
@@ -64,26 +65,17 @@ STATIC_VAR NEARDATA const char* const odd_skill_names_plural[] = {
 	"two weapon combat", "riding", "polearms", "sabers", "hammers", "whips",
 	"arcane spells", "clerical spells", "healing spells", "divination spells", "abjuration spells",
 	"movement spells", "transmutation spells", "enchantment spells", "conjuration spells", "necromancy spells", "disarm traps", "swords",
-	"bludgeoning weapons", "thrown weapons",
-};
-
-/* indexed vis `is_martial() */
-STATIC_VAR NEARDATA const char *const barehands_or_martial[] = {
-    "bare handed combat", "martial arts"
+	"bludgeoning weapons", "thrown weapons", "martial arts",
 };
 
 #define P_NAME(type)                                    \
     ((skill_names_indices[type] > 0)                    \
          ? OBJ_NAME(objects[skill_names_indices[type]]) \
-         : (type == P_BARE_HANDED_COMBAT)               \
-               ? barehands_or_martial[martial_bonus()]  \
                : odd_skill_names[-skill_names_indices[type]])
 
 #define P_NAME_PLURAL(type)                                    \
     ((skill_names_indices[type] > 0)                    \
          ? makeplural(OBJ_NAME(objects[skill_names_indices[type]])) \
-         : (type == P_BARE_HANDED_COMBAT)               \
-               ? barehands_or_martial[martial_bonus()]  \
                : odd_skill_names_plural[-skill_names_indices[type]])
 
 
@@ -108,7 +100,7 @@ const char *
 weapon_descr(obj)
 struct obj *obj;
 {
-    int skill = weapon_type(obj);
+    int skill = weapon_skill_type(obj);
     const char *descr = P_NAME(skill);
 
     /* assorted special cases */
@@ -255,7 +247,7 @@ struct obj* launcher;
 
 
 /*
- *      hitval returns an integer representing the "to hit" bonuses
+ *      weapon_to_hit_value returns an integer representing the "to hit" bonuses
  *      of "otmp" against the monster.
  */
 int basehitval(otmp, mon, mattacker)
@@ -268,15 +260,16 @@ struct monst* mattacker;
 
 	int tmp = 0;
 	boolean Is_weapon = is_weapon(otmp);
+	boolean Is_worn_gauntlets = is_gloves(otmp) && (otmp->owornmask & W_ARMG);
 
 	if(mattacker && mattacker->data->mflags2 & (M2_DEMON | M2_UNDEAD) && otmp->cursed)
 	{ 
-		if (Is_weapon)
+		if (Is_weapon || Is_worn_gauntlets)
 			tmp += abs(otmp->spe);
 	}
 	else
 	{
-		if (Is_weapon)
+		if (Is_weapon || Is_worn_gauntlets)
 			tmp += otmp->spe;
 	}
 	tmp += objects[otmp->otyp].oc_hitbonus;
@@ -285,7 +278,7 @@ struct monst* mattacker;
 
 }
 int
-hitval(otmp, mon, mattacker)
+weapon_to_hit_value(otmp, mon, mattacker)
 struct obj *otmp;
 struct monst *mon;
 struct monst* mattacker;
@@ -335,7 +328,7 @@ struct monst* mattacker;
  * them in (leading to something of an imbalance towards weapons early in
  * alphabetical order).  The data structure still doesn't include fields that
  * fully allow the appropriate damage to be described (there's no way to say
- * 3d6 or 1d6+1) so we add on the extra damage in dmgval() if the weapon
+ * 3d6 or 1d6+1) so we add on the extra damage in weapon_dmg_value() if the weapon
  * doesn't do an exact die of damage.
  *
  * Of course new weapons were added later in the development of NetHack.  No
@@ -348,11 +341,11 @@ struct monst* mattacker;
  */
 
 /*
- *      dmgval returns an integer representing the damage bonuses
+ *      weapon_dmg_value returns an integer representing the damage bonuses
  *      of "otmp" against the monster.
  */
 int
-dmgval(otmp, mon, mattacker)
+weapon_dmg_value(otmp, mon, mattacker)
 struct obj *otmp;
 struct monst *mon;
 struct monst* mattacker;
@@ -363,12 +356,13 @@ struct monst* mattacker;
     int tmp = 0, otyp = otmp->otyp;
     struct permonst *ptr = mon->data;
 	boolean Is_weapon = is_weapon(otmp);
+	boolean Is_worn_gauntlets = is_gloves(otmp) && (otmp->owornmask & W_ARMG);
 	boolean youdefend = (mon == &youmonst);
 
     if (otyp == CREAM_PIE)
         return 0;
 	
-	if(Is_weapon || objects[otyp].oc_class == GEM_CLASS)
+	if(Is_weapon || Is_worn_gauntlets || objects[otyp].oc_class == GEM_CLASS)
 	{
 		if (
 			(objects[otyp].oc_damagetype == AD_FIRE && (youdefend ? Fire_resistance : resists_fire(mon)))
@@ -435,7 +429,7 @@ struct monst* mattacker;
     }
 
     /* Put weapon vs. monster type damage bonuses in below: */
-    if (Is_weapon || otmp->oclass == GEM_CLASS || otmp->oclass == BALL_CLASS
+    if (Is_weapon || Is_worn_gauntlets || otmp->oclass == GEM_CLASS || otmp->oclass == BALL_CLASS
         || otmp->oclass == CHAIN_CLASS) {
         int bonus = 0;
 
@@ -476,19 +470,19 @@ struct monst* mattacker;
 
 
 int
-totaldmgval(otmp, mon, mattacker)
+weapon_total_dmg_value(otmp, mon, mattacker)
 struct obj* otmp;
 struct monst* mon;
 struct monst* mattacker;
 {
-	int basedmg = dmgval(otmp, mon, mattacker);
-	int edmg = extradmgval(otmp, mon, mattacker, basedmg);
+	int basedmg = weapon_dmg_value(otmp, mon, mattacker);
+	int edmg = weapon_extra_dmg_value(otmp, mon, mattacker, basedmg);
 
 	return basedmg + edmg;
 }
 
 int
-extradmgval(otmp, mon, mattacker, basedmg)
+weapon_extra_dmg_value(otmp, mon, mattacker, basedmg)
 struct obj* otmp;
 struct monst* mon;
 struct monst* mattacker;
@@ -1183,7 +1177,7 @@ struct monst *mon;
 
 /* attack bonus for strength & dexterity */
 int
-abon()
+u_strdex_to_hit_bonus()
 {
     int sbon = 0;
     int str = ACURR(A_STR), dex = ACURR(A_DEX);
@@ -1203,7 +1197,7 @@ abon()
 
 /* attack bonus for dexterity only for ranged*/
 int
-ranged_abon()
+u_ranged_strdex_to_hit_bonus()
 {
 	int sbon = 0;
 	int str = ACURR(A_STR), dex = ACURR(A_DEX);
@@ -1254,7 +1248,7 @@ int str;
 
 /* damage bonus for strength */
 int
-dbon()
+u_str_dmg_bonus()
 {
     int str = ACURR(A_STR);
 
@@ -1263,9 +1257,9 @@ dbon()
 
 /* damage bonus for strength for thrown weapons (bows get full strength)*/
 int
-tdbon()
+u_thrown_str_dmg_bonus()
 {
-	return dbon() / 2;
+	return u_str_dmg_bonus() / 2;
 }
 
 
@@ -1306,7 +1300,7 @@ int str;
 }
 /* monster damage bonus for strength*/
 int
-mdbon(mon)
+m_str_dmg_bonus(mon)
 struct monst* mon;
 {
 	int bonus = 0;
@@ -1322,14 +1316,14 @@ struct monst* mon;
 
 /* monster damage bonus for strength for throw weapons (bows get full damage bonus)*/
 int
-mtdbon(mon)
+m_thrown_str_dmg_bonus(mon)
 struct monst* mon;
 {
 	int bonus = 0;
 
 	if (mon)
 	{
-		bonus += mdbon(mon) / 2;
+		bonus += m_str_dmg_bonus(mon) / 2;
 	}
 
 	return bonus;
@@ -1401,7 +1395,7 @@ struct monst* mon;
 
 /* monster to hit bonus for strength and dex*/
 int
-mabon(mon)
+m_strdex_to_hit_bonus(mon)
 struct monst* mon;
 {
 	int bonus = 0;
@@ -1417,7 +1411,7 @@ struct monst* mon;
 
 /* monster to hit bonus for dex only for ranged*/
 int
-mrabon(mon)
+m_ranged_strdex_to_hit_bonus(mon)
 struct monst* mon;
 {
 	int bonus = 0;
@@ -1540,12 +1534,14 @@ boolean ismax;
         ptr = "Expert";
         break;
     /* these are for unarmed combat/martial arts only */
+	/*
     case P_MASTER:
         ptr = "Master";
         break;
     case P_GRAND_MASTER:
         ptr = "Grand Master";
         break;
+	*/
     default:
         ptr = "Unknown";
         break;
@@ -1959,13 +1955,13 @@ int n; /* number of slots to lose; normally one */
 }
 
 int
-weapon_type(obj)
+weapon_skill_type(obj)
 struct obj *obj;
 {
     /* KMH -- now uses the object table */
     int type;
 
-    if (!obj)
+    if (!obj || (is_gloves(obj) && (obj->owornmask & W_ARMG)))
         return P_BARE_HANDED_COMBAT; /* Not using a weapon */
 
 	/* JG -- Now all items have a skill */
@@ -1983,7 +1979,7 @@ uwep_skill_type()
 {
     if (u.twoweap)
         return P_TWO_WEAPON_COMBAT;
-    return weapon_type(uwep);
+    return weapon_skill_type(uwep);
 }
 
 /*
@@ -1991,81 +1987,108 @@ uwep_skill_type()
  * Treat restricted weapons as unskilled.
  */
 int
-weapon_hit_bonus(weapon, use_thrown_weapon)
+weapon_skill_hit_bonus(weapon, use_thrown_weapon)
 struct obj *weapon;
 boolean use_thrown_weapon;
 {
-    int type, wep_type, skill, bonus = 0;
-    static const char bad_skill[] = "weapon_hit_bonus: bad skill %d";
+    int bonus = 0;
+    static const char bad_skill[] = "weapon_skill_hit_bonus: bad skill %d";
+	boolean apply_two_weapon_bonus = (u.twoweap && (!weapon || (weapon && !bimanual(weapon) && (weapon == uwep || weapon == uarms))));
+	boolean Is_worn_gauntlets = (weapon && is_gloves(weapon) && (weapon->owornmask & W_ARMG));
+	boolean apply_martial_arts_bonus = ((!weapon && (!uarmg || (uarmg && !is_metallic(uarmg)))) || (Is_worn_gauntlets && !is_metallic(weapon)));
+	int wep_type = weapon_skill_type(weapon);
+    int type = use_thrown_weapon ? P_THROWN_WEAPON : wep_type;
+	
+	if (type == P_BARE_HANDED_COMBAT || Is_worn_gauntlets) 
+	{
+		int type2 = type;
+		if (type == P_NONE || type == P_MARTIAL_ARTS)
+			type2 = P_BARE_HANDED_COMBAT;
 
-    wep_type = weapon_type(weapon);
-    /* use two weapon skill only if attacking with one of the wielded weapons
-     */
-    type = use_thrown_weapon ? P_THROWN_WEAPON : (u.twoweap && (!weapon || (weapon && !bimanual(weapon) && (weapon == uwep || weapon == uarms))))
-               ? P_TWO_WEAPON_COMBAT
-               : wep_type;
-    if (type == P_NONE)
+		bonus += max(P_SKILL(type2) - 1, 0) - 1; /* unskilled => 0 */
+		/* unskilled: -1, basic: +0, skilled: +1, expert: +2 */
+	/*
+	 *        b.h. m.a.
+	 * unskl:  +1  n/a
+	 * basic:  +1   +3
+	 * skild:  +2   +4
+	 * exprt:  +2   +5
+	 * mastr:  +3   +6
+	 * grand:  +3   +7
+	 bonus = P_SKILL(type);
+	 bonus = max(bonus, P_UNSKILLED) - 1;
+	 bonus = ((bonus + 2) * (martial_bonus() ? 2 : 1)) / 2;
+	 */
+	}
+	else if (type == P_NONE)
 	{
         bonus = 0;
     }
 	else if (type <= P_LAST_WEAPON)
 	{
-        switch (P_SKILL(type)) {
+        switch (P_SKILL(type)) 
+		{
         default:
             impossible(bad_skill, P_SKILL(type)); /* fall through */
         case P_ISRESTRICTED:
         case P_UNSKILLED:
-            bonus = -4;
+            bonus += -4;
             break;
         case P_BASIC:
-            bonus = 0;
+            bonus += 0;
             break;
         case P_SKILLED:
-            bonus = 2;
+            bonus += 2;
             break;
         case P_EXPERT:
-            bonus = 3;
+            bonus += 3;
             break;
         }
-    } else if (type == P_TWO_WEAPON_COMBAT) {
-        skill = P_SKILL(P_TWO_WEAPON_COMBAT);
+    } 
+
+
+	/* Two-weapon fighting */
+	if (apply_two_weapon_bonus) 
+	{
+        int skill = P_SKILL(P_TWO_WEAPON_COMBAT);
         if (wep_type != P_NONE && P_SKILL(wep_type) < skill)
             skill = P_SKILL(wep_type);
-        switch (skill) {
+        switch (skill) 
+		{
         default:
             impossible(bad_skill, skill); /* fall through */
         case P_ISRESTRICTED:
         case P_UNSKILLED:
-            bonus = -9;
+            bonus -= 9;
             break;
         case P_BASIC:
-            bonus = -7;
+            bonus -= 7;
             break;
         case P_SKILLED:
-            bonus = -5;
+            bonus -= 5;
             break;
         case P_EXPERT:
-            bonus = -3;
+            bonus -= 3;
             break;
         }
-    } else if (type == P_BARE_HANDED_COMBAT) {
-        /*
-         *        b.h. m.a.
-         * unskl:  +1  n/a
-         * basic:  +1   +3
-         * skild:  +2   +4
-         * exprt:  +2   +5
-         * mastr:  +3   +6
-         * grand:  +3   +7
-         */
-        bonus = P_SKILL(type);
-        bonus = max(bonus, P_UNSKILLED) - 1; /* unskilled => 0 */
-        bonus = ((bonus + 2) * (martial_bonus() ? 2 : 1)) / 2;
     }
 
+
+	/* Martial arts */
+	if (apply_martial_arts_bonus || type == P_MARTIAL_ARTS)
+	{
+        bonus += 2 * max(P_SKILL(P_MARTIAL_ARTS) - 1, 0); /* unskilled => 0 */
+		/* unskilled: +0, basic: +2, skilled: +4, expert: +6 */
+		/* total with expert in bare-handed combat: */
+		/* unskilled: +2, basic: +4, skilled: +6, expert: +8 */
+	}
+
+
     /* KMH -- It's harder to hit while you are riding */
-    if (u.usteed) {
-        switch (P_SKILL(P_RIDING)) {
+    if (u.usteed)
+	{
+        switch (P_SKILL(P_RIDING)) 
+		{
         case P_ISRESTRICTED:
         case P_UNSKILLED:
             bonus -= 2;
@@ -2090,77 +2113,103 @@ boolean use_thrown_weapon;
  * Treat restricted weapons as unskilled.
  */
 int
-weapon_dam_bonus(weapon, use_thrown_weapon)
+weapon_skill_dmg_bonus(weapon, use_thrown_weapon)
 struct obj *weapon;
 boolean use_thrown_weapon;
 {
-    int type, wep_type, skill, bonus = 0;
+    int bonus = 0;
+	boolean apply_two_weapon_bonus = (u.twoweap && (!weapon || (weapon && !bimanual(weapon) && (weapon == uwep || weapon == uarms))));
+	boolean Is_worn_gauntlets = (weapon && is_gloves(weapon) && (weapon->owornmask & W_ARMG));
+	boolean apply_martial_arts_bonus = ((!weapon && (!uarmg || (uarmg && !is_metallic(uarmg)))) || (Is_worn_gauntlets && !is_metallic(weapon)));
+    int wep_type = weapon_skill_type(weapon);
+    int type = use_thrown_weapon ? P_THROWN_WEAPON : wep_type;
 
-    wep_type = weapon_type(weapon);
-    /* use two weapon skill only if attacking with one of the wielded weapons
-     */
-    type = use_thrown_weapon ? P_THROWN_WEAPON : (u.twoweap && (!weapon || (weapon && !bimanual(weapon) && (weapon == uwep || weapon == uarms))))
-               ? P_TWO_WEAPON_COMBAT
-               : wep_type;
-    if (type == P_NONE) {
-        bonus = 0;
-    } else if (type <= P_LAST_WEAPON) {
-        switch (P_SKILL(type)) {
+	if (type == P_BARE_HANDED_COMBAT || Is_worn_gauntlets)
+	{
+		int type2 = type;
+		if (type == P_NONE || type == P_MARTIAL_ARTS)
+			type2 = P_BARE_HANDED_COMBAT;
+
+
+		bonus += max(P_SKILL(type2) - 1, 0); /* unskilled => 0 */
+		/*
+		 *        b.h. m.a.
+		 * unskl:   0  n/a
+		 * basic:  +1   +3
+		 * skild:  +1   +4
+		 * exprt:  +2   +6
+		 * mastr:  +2   +7
+		 * grand:  +3   +9
+		bonus = P_SKILL(type);
+		bonus = max(bonus, P_UNSKILLED) - 1;
+		bonus = ((bonus + 1) * (martial_bonus() ? 3 : 1)) / 2;
+		*/
+	}
+	else if (type == P_NONE)
+	{
+        bonus += 0;
+    } 
+	else if (type <= P_LAST_WEAPON) 
+	{
+        switch (P_SKILL(type)) 
+		{
         default:
-            impossible("weapon_dam_bonus: bad skill %d", P_SKILL(type));
+            impossible("weapon_skill_dmg_bonus: bad skill %d", P_SKILL(type));
         /* fall through */
         case P_ISRESTRICTED:
         case P_UNSKILLED:
-            bonus = -2;
+            bonus += -2;
             break;
         case P_BASIC:
-            bonus = 0;
+            bonus += 0;
             break;
         case P_SKILLED:
-            bonus = 1;
+            bonus += 1;
             break;
         case P_EXPERT:
-            bonus = 2;
+            bonus += 2;
             break;
         }
-    } else if (type == P_TWO_WEAPON_COMBAT) {
-        skill = P_SKILL(P_TWO_WEAPON_COMBAT);
+    } 
+
+	if (apply_two_weapon_bonus)
+	{
+        int skill = P_SKILL(P_TWO_WEAPON_COMBAT);
         if (P_SKILL(wep_type) < skill)
             skill = P_SKILL(wep_type);
-        switch (skill) {
+        switch (skill) 
+		{
         default:
         case P_ISRESTRICTED:
         case P_UNSKILLED:
-            bonus = -3;
+            bonus += -3;
             break;
         case P_BASIC:
-            bonus = -1;
+            bonus += -1;
             break;
         case P_SKILLED:
-            bonus = 0;
+            bonus += 0;
             break;
         case P_EXPERT:
-            bonus = 1;
+            bonus += 1;
             break;
         }
-    } else if (type == P_BARE_HANDED_COMBAT) {
-        /*
-         *        b.h. m.a.
-         * unskl:   0  n/a
-         * basic:  +1   +3
-         * skild:  +1   +4
-         * exprt:  +2   +6
-         * mastr:  +2   +7
-         * grand:  +3   +9
-         */
-        bonus = P_SKILL(type);
-        bonus = max(bonus, P_UNSKILLED) - 1; /* unskilled => 0 */
-        bonus = ((bonus + 1) * (martial_bonus() ? 3 : 1)) / 2;
-    }
+    } 
+
+	if (apply_martial_arts_bonus || type == P_MARTIAL_ARTS)
+	{
+		bonus += 2 * max(P_SKILL(P_MARTIAL_ARTS) - 1, 0); /* unskilled => 0 */
+		/* unskilled: +0, basic: +2, skilled: +4, expert: +6 */
+		/* total with expert in bare-handed combat: */
+		/* unskilled: +3, basic: +5, skilled: +7, expert: +9 */
+		/* note: damage is also increased by higher strength damage bonus */
+	}
 
     /* KMH -- Riding gives some thrusting damage */
-    if (u.usteed && type != P_TWO_WEAPON_COMBAT) {
-        switch (P_SKILL(P_RIDING)) {
+    if (u.usteed && type != P_TWO_WEAPON_COMBAT) 
+	{
+        switch (P_SKILL(P_RIDING)) 
+		{
         case P_ISRESTRICTED:
         case P_UNSKILLED:
             break;
@@ -2228,7 +2277,7 @@ const struct def_skill* class_skill_max;
 		if (is_ammo(obj))
 			continue;
 
-		skill = weapon_type(obj);
+		skill = weapon_skill_type(obj);
 		if (skill != P_NONE && P_SKILL(skill) < P_BASIC && P_MAX_SKILL(skill) != P_ISRESTRICTED)
 			P_SKILL(skill) = min(P_MAX_SKILL(skill), P_BASIC);
 	}

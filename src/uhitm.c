@@ -263,12 +263,12 @@ int *attk_count, *role_roll_penalty;
 
     *role_roll_penalty = 0; /* default is `none' */
 
-    tmp = 1 + Luck + abon() + find_mac(mtmp) + u.ubasehitinc + u.uhitinc
+    tmp = 1 + Luck + u_strdex_to_hit_bonus() + find_mac(mtmp) + u.ubasehitinc + u.uhitinc
           + maybe_polyd(youmonst.data->mlevel, u.ulevel);
 
 	if (weapon && nonmelee_throwing_weapon(weapon))
 	{
-		pline("It is very difficult to hit with %s in melee combat.", the(cxname(weapon)));
+		pline("It is complicated to hit with %s in melee combat.", the(cxname(weapon)));
 		tmp -= 18;
 	}
     /* some actions should occur only once during multiple attacks */
@@ -313,16 +313,18 @@ int *attk_count, *role_roll_penalty;
         tmp -= 3;
 
     /*
-     * hitval applies if making a weapon attack while wielding a weapon;
-     * weapon_hit_bonus applies if doing a weapon attack even bare-handed
+     * weapon_to_hit_value applies if making a weapon attack while wielding a weapon;
+     * weapon_skill_hit_bonus applies if doing a weapon attack even bare-handed
      * or if kicking as martial artist
      */
     if (aatyp == AT_WEAP || aatyp == AT_CLAW) {
         if (weapon)
-            tmp += hitval(weapon, mtmp, &youmonst);
-        tmp += weapon_hit_bonus(weapon, FALSE);
+            tmp += weapon_to_hit_value(weapon, mtmp, &youmonst);
+		else if(uarmg)
+			tmp += weapon_to_hit_value(uarmg, mtmp, &youmonst);
+		tmp += weapon_skill_hit_bonus(weapon, FALSE);
     } else if (aatyp == AT_KICK && martial_bonus()) {
-        tmp += weapon_hit_bonus((struct obj *) 0, FALSE);
+        tmp += weapon_skill_hit_bonus((struct obj *) 0, FALSE);
     }
 
     return tmp;
@@ -621,18 +623,23 @@ struct attack *uattk;
 	int multistrike = 1;
 	int multistrikernd = 0;
 
-	if (uwep)
-	{
-		get_multishot_stats(&youmonst, uwep, uwep, FALSE, &multistrike, &multistrikernd);
+	get_multishot_stats(&youmonst, uwep, uwep, FALSE, &multistrike, &multistrikernd);
 
-		if (multistrikernd > 0)
-			multistrike += rn2(multistrikernd + 1);
-	}
+	if (multistrikernd > 0)
+		multistrike += rn2(multistrikernd + 1);
 
 	for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
 	{
-		if (strikeindex > 0 && uwep)
-			pline("%s %s!", Yobjnam2(uwep, "strike"), strikeindex == 1 ? "a second time" : strikeindex == 2 ? "a third time" : "once more");
+		char strikebuf[BUFSIZ] = "";
+		if (uwep)
+			strcpy(strikebuf, Yobjnam2(uwep, "strike"));
+		else if (u.twoweap)
+			Sprintf(strikebuf, "You strike with your right %s", body_part(HAND));
+		else
+			Sprintf(strikebuf, "You strike");
+
+		if (strikeindex > 0)
+			pline("%s %s!", strikebuf, strikeindex == 1 ? "a second time" : strikeindex == 2 ? "a third time" : "once more");
 
 		//DETERMINE IF YOU HIT THE MONSTER
 		int tmp = find_roll_to_hit(mon, uattk->aatyp, uwep, &attknum, &armorpenalty);
@@ -669,23 +676,26 @@ struct attack *uattk;
 		if (uarms && is_weapon(uarms))
 			You("strike with your left-hand weapon.");
 		else
-			You("strike with your left hand.");
+			You("strike with your left %s.", body_part(HAND));
 
 		int multistrike2 = 1;
 		int multistrikernd2 = 0;
 
-		if (uarms)
-		{
-			get_multishot_stats(&youmonst, uarms, uarms, FALSE, &multistrike2, &multistrikernd2);
+		get_multishot_stats(&youmonst, uarms, uarms, FALSE, &multistrike2, &multistrikernd2);
 
-			if (multistrikernd2 > 0)
-				multistrike += rn2(multistrikernd + 1);
-		}
+		if (multistrikernd2 > 0)
+			multistrike += rn2(multistrikernd + 1);
+
 		for (int strike2index = 0; strike2index < multistrike2; strike2index++)
 		{
+			char strikebuf[BUFSIZ] = "";
+			if (uarms)
+				strcpy(strikebuf, Yobjnam2(uarms, "strike"));
+			else
+				Sprintf(strikebuf, "You strike with your left %s", body_part(HAND));
 
-			if (strike2index > 0 && uarms)
-				pline("%s %s!", Yobjnam2(uarms, "strike"), strike2index == 1 ? "a second time" : strike2index == 2 ? "a third time" : "once more");
+			if (strike2index > 0)
+				pline("%s %s!", strikebuf, strike2index == 1 ? "a second time" : strike2index == 2 ? "a third time" : "once more");
 
 			int tmp = find_roll_to_hit(mon, uattk->aatyp, uarms, &attknum,
 				&armorpenalty);
@@ -775,23 +785,58 @@ int dieroll;
 
 	wakeup(mon, TRUE);
 	if (!obj) 
-	{ /* attack with bare hands */
+	{ 
+		/* attack with bare hands */
+		/* All gloves give bonuses when fighting 'bare-handed'. -- JG
+		   So do silver rings.  Note:  rings are worn under gloves, so you don't
+		   get both bonuses, and two silver rings don't give double bonus. */
 		if (mdat == &mons[PM_SHADE])
 			tmp = 0;
-		else if (martial_bonus())
-			tmp = rnd(4); /* bonus for martial arts */
 		else
-			tmp = rnd(2);
+		{
+			if (martial_bonus())
+			{
+				/* bonus for martial arts */
+				switch (P_SKILL(P_MARTIAL_ARTS))
+				{
+				case P_BASIC:
+					tmp = rnd(4);
+					break;
+				case P_SKILLED:
+					tmp = rnd(6);
+					break;
+				case P_EXPERT:
+					tmp = rnd(8);
+					break;
+				default:
+					break;
+				}
+			}
+			else
+			{
+				/* normal bare-handed damage */
+				tmp = rnd(2);
+			}
+
+			if (uarmg)
+			{
+				/* gauntlets, no rings exposed */
+				tmp += weapon_dmg_value(uarmg, mon, &youmonst);
+				extratmp = weapon_extra_dmg_value(uarmg, mon, &youmonst, tmp);
+				tmp += extratmp;
+			}
+			else
+			{
+				/* no gauntlets, rings exposed */
+				tmp += special_dmgval(&youmonst, mon, (W_ARMG | W_RINGL | W_RINGR),
+					&silverhit);
+				barehand_silver_rings += (((silverhit & W_RINGL) ? 1 : 0)
+					+ ((silverhit & W_RINGR) ? 1 : 0));
+				if (barehand_silver_rings > 0)
+					silvermsg = TRUE;
+			}
+		}
 		valid_weapon_attack = (tmp > 1);
-		/* Blessed gloves give bonuses when fighting 'bare-handed'.  So do
-		   silver rings.  Note:  rings are worn under gloves, so you don't
-		   get both bonuses, and two silver rings don't give double bonus. */
-		tmp += special_dmgval(&youmonst, mon, (W_ARMG | W_RINGL | W_RINGR),
-			&silverhit);
-		barehand_silver_rings += (((silverhit & W_RINGL) ? 1 : 0)
-			+ ((silverhit & W_RINGR) ? 1 : 0));
-		if (barehand_silver_rings > 0)
-			silvermsg = TRUE;
 	}
 	else 
 	{
@@ -852,9 +897,9 @@ int dieroll;
 				if (is_launcher(obj))
 					tmp = d(1, 2);
 				else
-					tmp = dmgval(obj, mon, &youmonst);
+					tmp = weapon_dmg_value(obj, mon, &youmonst);
 
-				extratmp = extradmgval(obj, mon, &youmonst, tmp);
+				extratmp = weapon_extra_dmg_value(obj, mon, &youmonst, tmp);
 				tmp += extratmp;
 
 				/* a minimal hit doesn't exercise proficiency */
@@ -998,8 +1043,8 @@ int dieroll;
 				case BOULDER:         /* 1d20 */
 				case HEAVY_IRON_BALL: /* 1d25 */
 				case IRON_CHAIN:      /* 1d4+1 */
-					tmp = dmgval(obj, mon, &youmonst);
-					extratmp = extradmgval(obj, mon, &youmonst, tmp);
+					tmp = weapon_dmg_value(obj, mon, &youmonst);
+					extratmp = weapon_extra_dmg_value(obj, mon, &youmonst, tmp);
 					tmp += extratmp;
 					break;
 				case MIRROR:
@@ -1215,8 +1260,8 @@ int dieroll;
 					else 
 					{
 						Your("venom burns %s!", mon_nam(mon));
-						tmp = dmgval(obj, mon, &youmonst);
-						extratmp = extradmgval(obj, mon, &youmonst, tmp);
+						tmp = weapon_dmg_value(obj, mon, &youmonst);
+						extratmp = weapon_extra_dmg_value(obj, mon, &youmonst, tmp);
 						tmp += extratmp;
 					}
 					if (thrown)
@@ -1275,16 +1320,27 @@ int dieroll;
 			|| !ammo_and_launcher(obj, uwep))) 
 		{
 			if (thrown == HMON_THROWN)
-				tmp += tdbon();
+				tmp += u_thrown_str_dmg_bonus();
+			else if (!obj || obj == uarmg)
+			{
+				if(!martial_bonus() || (uarmg && is_metallic(uarmg)))
+					tmp += u_str_dmg_bonus() / 2;
+				else if(P_SKILL(P_MARTIAL_ARTS) == P_BASIC)
+					tmp += (3 * u_str_dmg_bonus()) / 4;
+				else if(P_SKILL(P_MARTIAL_ARTS) == P_SKILLED)
+					tmp += u_str_dmg_bonus();
+				else if (P_SKILL(P_MARTIAL_ARTS) == P_EXPERT)
+					tmp += (3 * u_str_dmg_bonus()) / 2;
+			}
 			else
-				tmp += dbon();
+				tmp += u_str_dmg_bonus();
 		}
 		else if ((obj && uwep && ammo_and_launcher(obj, uwep)) || is_golf_swing_with_stone)
 		{
 			if (objects[uwep->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH)
 				tmp += objects[uwep->otyp].oc_fixed_damage_bonus;
 			else
-				tmp += dbon();
+				tmp += u_str_dmg_bonus();
 
 			/*
 			if (uwep->otyp == CROSSBOW)
@@ -1296,13 +1352,13 @@ int dieroll;
 			else if (uwep->otyp == REPEATING_CROSSBOW)
 				tmp += 0;
 			else
-				tmp += dbon(); //Normal bows get full strength bonus
+				tmp += u_str_dmg_bonus(); //Normal bows get full strength bonus
 			*/
 
 			//All bows get bow's enchantment bonus and damage
-			int basedmg = dmgval(uwep, mon, &youmonst);
+			int basedmg = weapon_dmg_value(uwep, mon, &youmonst);
 			tmp += basedmg;
-			extratmp = extradmgval(uwep, mon, &youmonst, basedmg);
+			extratmp = weapon_extra_dmg_value(uwep, mon, &youmonst, basedmg);
 			tmp += extratmp;
 
 			//Bracers give extra +2 damage, blessed even +3 + their bonus
@@ -1313,7 +1369,7 @@ int dieroll;
 		else if (thrown == HMON_THROWN && obj && !is_ammo(obj))
 		{
 			//Thrown weapons get also damage bonus, but specific for thrown weapons
-			tmp += tdbon();
+			tmp += u_thrown_str_dmg_bonus();
 		}
 	}
 
@@ -1324,9 +1380,11 @@ int dieroll;
 
 		/* to be valid a projectile must have had the correct projector */
 		wep = (is_golf_swing_with_stone || PROJECTILE(obj)) ? uwep : obj;
-		tmp += weapon_dam_bonus(wep, is_golf_swing_with_stone);
+		tmp += weapon_skill_dmg_bonus(wep, is_golf_swing_with_stone);
 		/* [this assumes that `!thrown' implies wielded...] */
-		wtype = is_golf_swing_with_stone? P_THROWN_WEAPON : thrown ? weapon_type(wep) : uwep_skill_type();
+		wtype = is_golf_swing_with_stone ? P_THROWN_WEAPON :
+			!obj ? (P_SKILL(P_BARE_HANDED_COMBAT) < P_EXPERT ? P_BARE_HANDED_COMBAT : P_MARTIAL_ARTS) :
+			thrown ? weapon_skill_type(wep) : uwep_skill_type();
 		use_skill(wtype, 1);
 	}
 
@@ -1432,23 +1490,28 @@ int dieroll;
 
 		if (obj->elemental_enchantment == DEATH_ENCHANTMENT)
 		{
-			if (Role_if(PM_SAMURAI)) {
+			if (Role_if(PM_SAMURAI))
+			{
 				You("dishonorably use a deathly weapon!");
 				adjalign(-sgn(u.ualign.type));
 			}
-			else if (u.ualign.type == A_LAWFUL && u.ualign.record > -10) {
+			else if (u.ualign.type == A_LAWFUL && u.ualign.record > -10) 
+			{
 				You_feel("like an evil coward for using a deathly weapon.");
 				adjalign(-1);
 			}
 		}
 	}
 
-	if (tmp < 1) {
+	if (tmp < 1)
+	{
 		/* make sure that negative damage adjustment can't result
 		   in inadvertently boosting the victim's hit points */
 		tmp = 0;
-		if (mdat == &mons[PM_SHADE]) {
-			if (!hittxt) {
+		if (mdat == &mons[PM_SHADE]) 
+		{
+			if (!hittxt) 
+			{
 				const char* what = *unconventional ? unconventional : "attack";
 
 				Your("%s %s harmlessly through %s.", what,
@@ -1456,16 +1519,19 @@ int dieroll;
 				hittxt = TRUE;
 			}
 		}
-		else {
+		else 
+		{
 			if (get_dmg_bonus)
 				tmp = 1;
 		}
 	}
 
-	if (jousting && !isdisintegrated) {
-		tmp += d(2, (obj == uwep) ? 10 : 2); /* [was in dmgval()] */
+	if (jousting && !isdisintegrated) 
+	{
+		tmp += d(2, (obj == uwep) ? 10 : 2); /* [was in weapon_dmg_value()] */
 		You("joust %s%s", mon_nam(mon), canseemon(mon) ? exclam(tmp) : ".");
-		if (jousting < 0) {
+		if (jousting < 0) 
+		{
 			pline("%s shatters on impact!", Yname2(obj));
 			/* (must be either primary or secondary weapon to get here) */
 			u.twoweap = FALSE; /* untwoweapon() is too verbose here */
@@ -1478,7 +1544,8 @@ int dieroll;
 			obj = 0;
 		}
 		/* avoid migrating a dead monster */
-		if (mon->mhp > tmp) {
+		if (mon->mhp > tmp) 
+		{
 			mhurtle(mon, u.dx, u.dy, 1);
 			mdat = mon->data; /* in case of a polymorph trap */
 			if (DEADMONSTER(mon))
@@ -1486,15 +1553,18 @@ int dieroll;
 		}
 		hittxt = TRUE;
 	}
-	else if (unarmed && tmp > 1 && !thrown && !obj && !Upolyd) {
+	else if (unarmed && tmp > 1 && !thrown && !obj && !Upolyd) 
+	{
 		/* VERY small chance of stunning opponent if unarmed. */
-		if (rnd(100) < P_SKILL(P_BARE_HANDED_COMBAT) && !bigmonst(mdat)
-			&& !thick_skinned(mdat)) {
+		if (rnd(100) < 2 * P_SKILL(P_MARTIAL_ARTS) && !bigmonst(mdat)
+			&& !thick_skinned(mdat)) 
+		{
 			if (canspotmon(mon))
 				pline("%s %s from your powerful strike!", Monnam(mon),
 					makeplural(stagger(mon->data, "stagger")));
 			/* avoid migrating a dead monster */
-			if (mon->mhp > tmp) {
+			if (mon->mhp > tmp) 
+			{
 				mhurtle(mon, u.dx, u.dy, 1);
 				mdat = mon->data; /* in case of a polymorph trap */
 				if (DEADMONSTER(mon))
@@ -1970,7 +2040,7 @@ struct obj *obj;
      */
     if (obj->otyp == BOULDER
         || obj->otyp == HEAVY_IRON_BALL
-        || obj->otyp == IRON_CHAIN      /* dmgval handles those first three */
+        || obj->otyp == IRON_CHAIN      /* weapon_dmg_value handles those first three */
         || obj->otyp == MIRROR          /* silver in the reflective surface */
 		|| obj->otyp == MAGIC_MIRROR          /* silver in the reflective surface */
 		|| obj->otyp == CLOVE_OF_GARLIC /* causes shades to flee */
@@ -2039,7 +2109,7 @@ struct obj *obj;   /* weapon */
         return 0;
 
     /* if using two weapons, use worse of lance and two-weapon skills */
-    skill_rating = P_SKILL(weapon_type(obj)); /* lance skill */
+    skill_rating = P_SKILL(weapon_skill_type(obj)); /* lance skill */
     if (u.twoweap && P_SKILL(P_TWO_WEAPON_COMBAT) < skill_rating)
         skill_rating = P_SKILL(P_TWO_WEAPON_COMBAT);
     if (skill_rating == P_ISRESTRICTED)
@@ -2217,9 +2287,9 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 		if (is_launcher(mweapon))
 			tmp = d(1, 2);
 		else
-			tmp += dmgval(mweapon, mdef, &youmonst);
+			tmp += weapon_dmg_value(mweapon, mdef, &youmonst);
 
-		extratmp = extradmgval(mweapon, mdef, &youmonst, tmp);
+		extratmp = weapon_extra_dmg_value(mweapon, mdef, &youmonst, tmp);
 		tmp += extratmp;
 	}
 	else
@@ -2233,9 +2303,9 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 	if (mattk->adtyp == AD_PHYS || mattk->adtyp == AD_DRIN)
 	{
 		if (mattk->aatyp == AT_WEAP || mattk->aatyp == AT_HUGS)
-			tmp += dbon();
+			tmp += u_str_dmg_bonus();
 		else
-			tmp += dbon() / 2;
+			tmp += u_str_dmg_bonus() / 2;
 	}
 
     /* since hero can't be cancelled, only defender's armor applies */
@@ -3040,16 +3110,19 @@ register struct monst *mon;
 			int multistrike = 1;
 			int multistrikernd = 0;
 
-			if (weapon)
-			{
-				get_multishot_stats(&youmonst, weapon, weapon, FALSE, &multistrike, &multistrikernd);
+			get_multishot_stats(&youmonst, weapon, weapon, FALSE, &multistrike, &multistrikernd);
 
-				if (multistrikernd > 0)
-					multistrike += rn2(multistrikernd + 1);
-			}
+			if (multistrikernd > 0)
+				multistrike += rn2(multistrikernd + 1);
 
 			for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
 			{
+				char strikebuf[BUFSIZ] = "";
+				if (weapon)
+					strcpy(strikebuf, Yobjnam2(weapon, "strike"));
+				else
+					Sprintf(strikebuf, "You strike with the same %s", body_part(HAND));
+
 				if (strikeindex > 0 && weapon)
 					pline("%s %s!", Yobjnam2(weapon, "strike"), strikeindex == 1 ? "a second time" : strikeindex == 2 ? "a third time" : "once more");
 
