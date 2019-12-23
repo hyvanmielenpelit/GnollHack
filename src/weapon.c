@@ -2097,10 +2097,10 @@ int use_this_skill;
 	/* Martial arts */
 	if (apply_martial_arts_bonus || type == P_MARTIAL_ARTS)
 	{
-        bonus += 2 * max(P_SKILL(P_MARTIAL_ARTS) - 1, 0); /* unskilled => 0 */
-		/* unskilled: +0, basic: +2, skilled: +4, expert: +6 */
+        bonus += 1 * max(P_SKILL(P_MARTIAL_ARTS) - 1, 0); /* unskilled => 0 */
+		/* unskilled: +0, basic: +1, skilled: +2, expert: +3 */
 		/* total with expert in bare-handed combat: */
-		/* unskilled: +2, basic: +4, skilled: +6, expert: +8 */
+		/* unskilled: +2, basic: +3, skilled: +4, expert: +5 */
 	}
 
 
@@ -2218,10 +2218,10 @@ int use_this_skill;
 
 	if (apply_martial_arts_bonus || type == P_MARTIAL_ARTS)
 	{
-		bonus += 2 * max(P_SKILL(P_MARTIAL_ARTS) - 1, 0); /* unskilled => 0 */
-		/* unskilled: +0, basic: +2, skilled: +4, expert: +6 */
+		bonus += 1 * max(P_SKILL(P_MARTIAL_ARTS) - 1, 0); /* unskilled => 0 */
+		/* unskilled: +0, basic: +1, skilled: +2, expert: +3 */
 		/* total with expert in bare-handed combat: */
-		/* unskilled: +3, basic: +5, skilled: +7, expert: +9 */
+		/* unskilled: +3, basic: +4, skilled: +5, expert: +6 */
 		/* note: damage is also increased by higher strength damage bonus */
 	}
 
