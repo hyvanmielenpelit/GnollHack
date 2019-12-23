@@ -156,7 +156,8 @@ makedog()
     register struct monst *mtmp;
     register struct obj *otmp;
     const char *petname;
-    int pettype;
+	const char* petname_female = "";
+	int pettype;
     static int petname_used = 0;
 
     if (preferred_pet == 'n')
@@ -173,9 +174,11 @@ makedog()
     /* default pet names */
     if (!*petname && pettype == PM_LITTLE_DOG) {
         /* All of these names were for dogs. */
+		petname_female = rn2(2) ? "Fifi" : "Lassie";
+
 		if (Race_if(PM_GNOLL))
 		{
-			if(!rn2(2))				 /* Warcraft III: Dwarf Campaign Chapter 3 -- JG */
+			if(!rn2(2))						/* Warcraft III: Dwarf Campaign Chapter 3 -- JG */
 				petname = "Spot";
 			else
 				petname = "Rover";
@@ -183,15 +186,18 @@ makedog()
 		else
 		{
 			if (Role_if(PM_CAVEMAN))
-				petname = "Slasher"; /* The Warrior */
+				petname = "Slasher";		/* The Warrior */
 			if (Role_if(PM_SAMURAI))
-				petname = "Hachiko"; /* Shibuya Station */
+				petname = "Hachiko";		/* Shibuya Station */
 			if (Role_if(PM_BARBARIAN))
-				petname = "Idefix";  /* Obelix */
+				petname = "Idefix";			/* Obelix */
 			if (Role_if(PM_TOURIST))
-				petname = "Pepe";	 /* Tribute to a Finnish Welsh springer spaniel -- JG */
+			{
+				petname = "Pepe";			/* Tribute to a male Welsh springer spaniel -- JG */
+				petname_female = "Luna";	/* Tribute to a female Finnish Lapphund -- JG */
+			}
 			if (Role_if(PM_RANGER))
-				petname = "Sirius";  /* Orion's dog */
+				petname = "Sirius";			/* Orion's dog */
 		}
 	}
 
@@ -210,9 +216,13 @@ makedog()
         put_saddle_on_mon(otmp, mtmp);
     }
 
-    if (!petname_used++ && *petname)
-        mtmp = christen_monst(mtmp, petname);
-
+	if (!petname_used++)
+	{
+		if (*petname_female && mtmp->female)
+			mtmp = christen_monst(mtmp, petname_female);
+		else if (*petname)
+			mtmp = christen_monst(mtmp, petname);
+	}
     initedog(mtmp);
     return  mtmp;
 }

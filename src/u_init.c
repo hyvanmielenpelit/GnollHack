@@ -32,8 +32,9 @@ static struct trobj Archeologist[] = {
     { BULLWHIP, 2, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
     { LEATHER_JACKET, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
 	{ FEDORA, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-    { FOOD_RATION, 0, FOOD_CLASS, 3, 0, 0 },
-    { PICK_AXE, 2, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
+    { FOOD_RATION, 0, FOOD_CLASS, 1, 0, 0 },
+	{ HANDFUL_OF_NUTS, 0, FOOD_CLASS, 1, 0, 0 },
+	{ PICK_AXE, 2, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
     { TINNING_KIT, UNDEF_SPE, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
 	{ TOUCHSTONE, 0, GEM_CLASS, 1, 0, 0 },
     { BACKPACK, 0, TOOL_CLASS, 1, 0, 0 },
@@ -85,8 +86,8 @@ static struct trobj Knight[] = {
     { LANCE, 1, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
     { RING_MAIL, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
     { HELMET, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-    { APPLE, 0, FOOD_CLASS, 10, 0, 0 },
-    { CARROT, 0, FOOD_CLASS, 10, 0, 0 },
+    { APPLE, 0, FOOD_CLASS, 2, 0, 0 },
+    { CARROT, 0, FOOD_CLASS, 2, 0, 0 },
 	{ LEATHER_BAG, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
 	{ 0, 0, 0, 0, 0, 0 }
 };
@@ -98,10 +99,11 @@ static struct trobj Monk[] = {
 	{ UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, 1, 0 },
 	{ UNDEF_TYP, UNDEF_SPE, SCROLL_CLASS, 1, UNDEF_BLESS, 0 },
     { POT_HEALING, 0, POTION_CLASS, 3, UNDEF_BLESS, 0 },
-    { FOOD_RATION, 0, FOOD_CLASS, 3, 0, 0 },
-    { APPLE, 0, FOOD_CLASS, 5, UNDEF_BLESS, 0 },
-    { ORANGE, 0, FOOD_CLASS, 5, UNDEF_BLESS, 0 },
-    /* Yes, we know fortune cookies aren't really from China.  They were
+    { FOOD_RATION, 0, FOOD_CLASS, 1, 0, 0 },
+    { APPLE, 0, FOOD_CLASS, 1, UNDEF_BLESS, 0 },
+    { ORANGE, 0, FOOD_CLASS, 1, UNDEF_BLESS, 0 },
+	{ HANDFUL_OF_NUTS, 0, FOOD_CLASS, 1, UNDEF_BLESS, 0 },
+	/* Yes, we know fortune cookies aren't really from China.  They were
      * invented by George Jung in Los Angeles, California, USA in 1916.
      */
     { FORTUNE_COOKIE, 0, FOOD_CLASS, 3, UNDEF_BLESS, 0 },
@@ -1464,6 +1466,47 @@ register struct trobj *trop;
 				obj->owt = weight(obj);
 			}
 		}
+		else if (Role_if(PM_MONK))
+		{
+			if (otyp == ORIENTAL_SILK_SACK)
+			{
+				(void)add_to_container(obj, mksobj(APPLE, TRUE, FALSE, TRUE));
+				(void)add_to_container(obj, mksobj(APPLE, TRUE, FALSE, TRUE));
+				(void)add_to_container(obj, mksobj(APPLE, TRUE, FALSE, TRUE));
+				(void)add_to_container(obj, mksobj(APPLE, TRUE, FALSE, TRUE));
+				(void)add_to_container(obj, mksobj(APPLE, TRUE, FALSE, TRUE));
+				(void)add_to_container(obj, mksobj(ORANGE, TRUE, FALSE, TRUE));
+				(void)add_to_container(obj, mksobj(ORANGE, TRUE, FALSE, TRUE));
+				(void)add_to_container(obj, mksobj(ORANGE, TRUE, FALSE, TRUE));
+				(void)add_to_container(obj, mksobj(ORANGE, TRUE, FALSE, TRUE));
+				(void)add_to_container(obj, mksobj(ORANGE, TRUE, FALSE, TRUE));
+				(void)add_to_container(obj, mksobj(HANDFUL_OF_NUTS, TRUE, FALSE, TRUE));
+				if(!rn2(2))
+					(void)add_to_container(obj, mksobj(MELON, FALSE, FALSE, TRUE));
+				if (!rn2(2))
+					(void)add_to_container(obj, mksobj(FOOD_RATION, FALSE, FALSE, TRUE));
+				obj->owt = weight(obj);
+			}
+		}
+		else if (Role_if(PM_ARCHEOLOGIST))
+		{
+			if (otyp == BACKPACK)
+			{
+				(void)add_to_container(obj, mksobj(BANANA, TRUE, FALSE, TRUE));
+				(void)add_to_container(obj, mksobj(POT_WATER, FALSE, FALSE, TRUE));
+				(void)add_to_container(obj, mksobj(SCR_BLANK_PAPER, FALSE, FALSE, TRUE));
+				(void)add_to_container(obj, mksobj(SPE_BLANK_PAPER, FALSE, FALSE, TRUE));
+				(void)add_to_container(obj, mksobj(HANDFUL_OF_NUTS, TRUE, FALSE, TRUE));
+				if (!rn2(2))
+					(void)add_to_container(obj, mksobj(FOOD_RATION, FALSE, FALSE, TRUE));
+				if (!rn2(2))
+					(void)add_to_container(obj, mksobj(FOOD_RATION, FALSE, FALSE, TRUE));
+				knows_object(POT_WATER);
+				knows_object(SCR_BLANK_PAPER);
+				knows_object(SPE_BLANK_PAPER);
+				obj->owt = weight(obj);
+			}
+		}
 		else if (Role_if(PM_KNIGHT))
 		{
 			if (otyp == LEATHER_BAG)
@@ -1471,6 +1514,16 @@ register struct trobj *trop;
 				(void)add_to_container(obj, mksobj(SILVER_FORK, FALSE, FALSE, TRUE));
 				(void)add_to_container(obj, mksobj(SILVER_KNIFE, FALSE, FALSE, TRUE));
 				(void)add_to_container(obj, mksobj(FOOD_RATION, FALSE, FALSE, TRUE));
+				if(!rn2(2))
+					(void)add_to_container(obj, mksobj(FOOD_RATION, FALSE, FALSE, TRUE));
+				(void)add_to_container(obj, mksobj(APPLE, TRUE, FALSE, TRUE));
+				(void)add_to_container(obj, mksobj(APPLE, TRUE, FALSE, TRUE));
+				(void)add_to_container(obj, mksobj(APPLE, TRUE, FALSE, TRUE));
+				(void)add_to_container(obj, mksobj(APPLE, TRUE, FALSE, TRUE));
+				(void)add_to_container(obj, mksobj(APPLE, TRUE, FALSE, TRUE));
+				(void)add_to_container(obj, mksobj(CARROT, TRUE, FALSE, TRUE));
+				(void)add_to_container(obj, mksobj(CARROT, TRUE, FALSE, TRUE));
+				(void)add_to_container(obj, mksobj(CARROT, TRUE, FALSE, TRUE));
 				(void)add_to_container(obj, mksobj(POT_WATER, FALSE, FALSE, TRUE));
 				knows_object(POT_WATER);
 				obj->owt = weight(obj);
