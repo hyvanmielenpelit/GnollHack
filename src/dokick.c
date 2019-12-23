@@ -67,7 +67,7 @@ boolean clumsy;
 		switch (skillevel)
 		{
 		case P_BASIC:
-			basedmg = rnd(8) + 3;
+			basedmg = rnd(7) + 3;
 			strdmg = ((3 + extraquarters) * u_str_dmg_bonus()) / 4;
 			break;
 		case P_SKILLED:
@@ -75,7 +75,7 @@ boolean clumsy;
 			strdmg = ((4 + extraquarters) * u_str_dmg_bonus()) / 4;
 			break;
 		case P_EXPERT:
-			basedmg = rnd(12) + 3;
+			basedmg = rnd(13) + 3;
 			strdmg = ((6 + extraquarters) * u_str_dmg_bonus()) / 4;
 			break;
 		default:
