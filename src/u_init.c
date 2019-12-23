@@ -109,10 +109,8 @@ static struct trobj Monk[] = {
 	{ 0, 0, 0, 0, 0, 0 }
 };
 static struct trobj Priest[] = {
-//    { MACE, 2, WEAPON_CLASS, 1, 1, 0 }, //Now randomized
 	{ RING_MAIL, 0, ARMOR_CLASS, 1, 1, 0 },
 	{ CLERICAL_GOWN, 0, ARMOR_CLASS, 1, 1, 0 },
-//    { SMALL_SHIELD, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 }, //Now randomized
 	{ HOLY_SYMBOL, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 }, //Blessed holy symbol is even more powerful
 	{ POT_WATER, 0, POTION_CLASS, 4, 1, 0 }, /* holy water */
 	{ CLOVE_OF_GARLIC, 0, FOOD_CLASS, 1, 0, 0 },
@@ -193,7 +191,6 @@ static struct trobj TouristFemale[] = {
 static struct trobj Valkyrie[] = {
     { LONG_SWORD, 1, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
     { DAGGER, 0, WEAPON_CLASS, 1, UNDEF_BLESS, COLD_ENCHANTMENT },
-//    { SPIKED_SHIELD, 3, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
     { FOOD_RATION, 0, FOOD_CLASS, 1, 0, 0 },
 	{ SACK, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
 	{ 0, 0, 0, 0, 0, 0 }
@@ -338,6 +335,7 @@ static struct inv_sub {
 	{ PM_GNOLL, SCALPEL, BONE_DAGGER },
 	{ PM_GNOLL, DAGGER, BONE_DAGGER },
 	{ PM_GNOLL, MACE, FLAIL },
+	{ PM_GNOLL, SILVER_MACE, SILVER_FLAIL },
 	{ PM_GNOLL, CLUB, FLAIL },
 	{ PM_GNOLL, SHORT_BOW, CROSSBOW },
 	{ PM_GNOLL, LONG_BOW, CROSSBOW },

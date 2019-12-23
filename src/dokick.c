@@ -58,31 +58,25 @@ boolean clumsy;
 		}
 	}
 
+	int basedmg = 0;
+	int strdmg = 0;
+	int extraquarters = Magical_kicking ? 2 : 0;
 	if (martial_arts_applies)
 	{
 		int skillevel = P_SKILL(P_MARTIAL_ARTS);
 		switch (skillevel)
 		{
 		case P_BASIC:
-			dmg += rnd(8);
-			if (Magical_kicking)
-				dmg += (5 * u_str_dmg_bonus()) / 4;
-			else
-				dmg += (3 * u_str_dmg_bonus()) / 4;
+			basedmg = rnd(8);
+			strdmg = ((3 + extraquarters) * u_str_dmg_bonus()) / 4;
 			break;
 		case P_SKILLED:
-			dmg += rnd(10);
-			if (Magical_kicking)
-				dmg += (3 * u_str_dmg_bonus()) / 2;
-			else
-				dmg += u_str_dmg_bonus();
+			basedmg = rnd(10);
+			strdmg = ((4 + extraquarters) * u_str_dmg_bonus()) / 4;
 			break;
 		case P_EXPERT:
-			dmg += rnd(12);
-			if (Magical_kicking)
-				dmg += 2 * u_str_dmg_bonus();
-			else
-				dmg += (3 * u_str_dmg_bonus()) / 2;
+			basedmg = rnd(12);
+			strdmg = ((6 + extraquarters) * u_str_dmg_bonus()) / 4;
 			break;
 		default:
 			break;
@@ -90,12 +84,13 @@ boolean clumsy;
 	}
 	else
 	{
-		dmg += rnd(3);
+		basedmg = rnd(3);
 		if (Magical_kicking)
-			dmg += u_str_dmg_bonus();
+			strdmg = u_str_dmg_bonus();
 		else
-			dmg += u_str_dmg_bonus() / 2;
+			strdmg = u_str_dmg_bonus() / 2;
 	}
+	dmg += basedmg + strdmg;
 
 	if (uarmf)
 		dmg += weapon_dmg_value(uarmf, mon, &youmonst);
@@ -115,6 +110,7 @@ boolean clumsy;
 
 	long silverhit = 0;
     specialdmg = special_dmgval(&youmonst, mon, W_ARMF, &silverhit);
+	dmg += specialdmg;
 
     if (mon->data == &mons[PM_SHADE] && !specialdmg) {
         pline_The("%s.", kick_passes_thru);
@@ -124,6 +120,45 @@ boolean clumsy;
     }
 
 	dmg += u.ubasedaminc + u.udaminc; /* add ring(s) of increase damage */
+
+
+	boolean kicksuccessful = FALSE;
+
+	if (!hugemonst(mon->data) && mon != u.ustuck && !mon->mtrapped)
+	{
+		if (Magical_kicking)
+		{
+			if (!rn2(2))
+				kicksuccessful = TRUE;
+		}
+		else if (martial_bonus())
+		{
+			int skilllevel = P_SKILL(P_MARTIAL_ARTS);
+			switch (skilllevel)
+			{
+			case P_BASIC:
+				if (!rn2(4))
+					kicksuccessful = TRUE;
+				break;
+			case P_SKILLED:
+				if (!rn2(3))
+					kicksuccessful = TRUE;
+				break;
+			case P_EXPERT:
+				if (!rn2(2))
+					kicksuccessful = TRUE;
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+
+	if (kicksuccessful)
+		dmg += basedmg;
+
+
 	char kickstylebuf[BUFSIZ] = "";
 	if (jumpkicking)
 		strcpy(kickstylebuf, !rn2(2) ? "jump-" : "fly-");
@@ -180,7 +215,7 @@ boolean clumsy;
 	}
 
 	if (silverhit)
-		pline("Your silver boots sear %s!", mon_nam(mon));
+		pline("Your silver boots sear %s flesh!", s_suffix(mon_nam(mon)));
 
 	if (M_AP_TYPE(mon))
         seemimic(mon);
@@ -200,41 +235,10 @@ boolean clumsy;
         mon->mhp -= dmg;
 
 
-	boolean kicksuccessful = FALSE;
 	boolean hurtles = FALSE;
 	boolean reels = FALSE;
 
-	if (!DEADMONSTER(mon) && !hugemonst(mon->data) && mon != u.ustuck && !mon->mtrapped)
-	{
-		if (Magical_kicking)
-		{
-			if (!rn2(2))
-				kicksuccessful = TRUE;
-		}
-		else if (martial_bonus())
-		{
-			int skilllevel = P_SKILL(P_MARTIAL_ARTS);
-			switch (skilllevel)
-			{
-			case P_BASIC:
-				if (!rn2(4))
-					kicksuccessful = TRUE;
-				break;
-			case P_SKILLED:
-				if (!rn2(3))
-					kicksuccessful = TRUE;
-				break;
-			case P_EXPERT:
-				if (!rn2(2))
-					kicksuccessful = TRUE;
-				break;
-			default:
-				break;
-			}
-		}
-	}
-
-	if (kicksuccessful)
+	if (kicksuccessful && !DEADMONSTER(mon))
 	{
 		int skilllevel = P_SKILL(P_MARTIAL_ARTS) + Jumping ? 1 : 0;
 		if (verysmall(mon->data) || mon->data->msize == MZ_SMALL)

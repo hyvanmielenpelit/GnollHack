@@ -1689,7 +1689,8 @@ int dieroll;
 		char* whom = mon_nam(mon);
 		char silverobjbuf[BUFSZ];
 
-		if (canspotmon(mon)) {
+		if (canspotmon(mon)) 
+		{
 			if (barehand_silver_rings == 1)
 				fmt = "Your silver ring sears %s!";
 			else if (barehand_silver_rings == 2)
