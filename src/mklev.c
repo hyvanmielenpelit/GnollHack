@@ -870,7 +870,7 @@ makelevel()
 		else if (u_depth > 20 && !rn2(5))
 			mkroom(DRAGONLAIR);
 
-		if (u_depth > 2 && !rn2(5))
+		if (u_depth >= 2 && !rn2(4))
 			mkroom(GARDEN);
 
 	}
