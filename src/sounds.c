@@ -1667,7 +1667,7 @@ dochat()
 
 		chatnum++;
 
-		strcpy(available_chat_list[chatnum].name, "Ask for englightenment");
+		strcpy(available_chat_list[chatnum].name, "Ask for enlightenment");
 		available_chat_list[chatnum].function_ptr = &do_chat_oracle_enlightenment;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
 

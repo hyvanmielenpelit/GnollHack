@@ -3094,7 +3094,7 @@ int spell;
     /* Intrinsic and learned ability are combined to calculate
      * the probability of player's success at cast a given spell.
      */
-    int chance, splcaster, special, statused = A_INT;
+    int chance, splcaster, statused = A_INT;
 //    int difficulty;
     int skill;
 	boolean armorpenalty = TRUE;
@@ -3111,8 +3111,8 @@ int spell;
 		armorpenalty = FALSE;
 
     /* Calculate intrinsic ability (splcaster) */
-	splcaster = urole.spelbase;
-    special = urole.spelheal;
+	splcaster = 0; // urole.spelbase;
+    //special = urole.spelheal;
 	statused = attribute_value_for_spellbook(spellid(spell));
 
 	if (armorpenalty)
@@ -3153,18 +3153,6 @@ int spell;
 			splcaster += objects[ublindf->otyp].oc_spell_casting_penalty;
 		if (uwep)
 			splcaster += objects[uwep->otyp].oc_spell_casting_penalty;
-		/*
-		if (uarm && is_metallic(uarm) && !(objects[uarm->otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY))
-			splcaster += urole.spelarmr / (objects[uarm->otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY ? 2 : 1);
-		if (uarms && !(objects[uarms->otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY))
-			splcaster += urole.spelshld / (objects[uarms->otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY ? 2 : 1);
-		if (uarmh && is_metallic(uarmh) && !(objects[uarmh->otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY))
-			splcaster += uarmhbon / (objects[uarmh->otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY ? 2 : 1);
-		if (uarmg && is_metallic(uarmg) && !(objects[uarmg->otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY))
-			splcaster += uarmgbon / (objects[uarmg->otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY ? 2 : 1);
-		if (uarmf && is_metallic(uarmf) && !(objects[uarmf->otyp].oc_flags & O1_NO_SPELL_CASTING_PENALTY))
-			splcaster += uarmfbon / (objects[uarmf->otyp].oc_flags & O1_HALF_SPELL_CASTING_PENALTY ? 2 : 1);
-		*/
 	}
 
     if (spellid(spell) == urole.spelspec)
@@ -3191,7 +3179,7 @@ int spell;
     /* Players basic likelihood of being able to cast any spell
      * is based of their `magic' statistic. (Int or Wis)
      */
-	chance = -70;
+	chance = -40;
 	chance += 10 * statused;
 
     /*
