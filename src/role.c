@@ -252,7 +252,7 @@ const struct Role roles[] = {
       "Mon",
       "the Monastery of Chan-Sune",
       "the Monastery of the Earth-Lord",
-	  { "Vegetarianism", "-20 to-hit penalty when wearing an armor", "No staggering blow when wearing a shield or armor", "", ""},
+	  { "Vegetarianism", "-20 to-hit penalty when wearing a suit", "No staggering blow when wearing a shield or suit", "", ""},
 	  PM_MONK,
       NON_PM,
       NON_PM,
