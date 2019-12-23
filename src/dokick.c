@@ -113,7 +113,8 @@ boolean clumsy;
     if (mon->data == &mons[PM_SHADE])
         dmg = 0;
 
-    specialdmg = special_dmgval(&youmonst, mon, W_ARMF, (long *) 0);
+	long silverhit = 0;
+    specialdmg = special_dmgval(&youmonst, mon, W_ARMF, &silverhit);
 
     if (mon->data == &mons[PM_SHADE] && !specialdmg) {
         pline_The("%s.", kick_passes_thru);
@@ -177,6 +178,9 @@ boolean clumsy;
 	{
 		You("%s%skick %s for no damage.", effbuf, kickstylebuf, mon_nam(mon));
 	}
+
+	if (silverhit)
+		pline("Your silver boots sear %s!", mon_nam(mon));
 
 	if (M_AP_TYPE(mon))
         seemimic(mon);

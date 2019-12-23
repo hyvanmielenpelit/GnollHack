@@ -167,6 +167,7 @@ Boots_on(VOID_ARGS)
 	case JUMPING_BOOTS:
     case KICKING_BOOTS:
 	case SPIKED_BOOTS:
+	case SILVER_SHOES:
 		break;
     case WATER_WALKING_BOOTS:
         if (u.uinwater)
@@ -266,6 +267,7 @@ Boots_off(VOID_ARGS)
 	case JUMPING_BOOTS:
     case KICKING_BOOTS:
 	case SPIKED_BOOTS:
+	case SILVER_SHOES:
 		break;
     default:
         impossible(unknown_type, c_boots, otyp);
@@ -498,6 +500,7 @@ Gloves_on(VOID_ARGS)
     switch (uarmg->otyp) {
     case LEATHER_GLOVES:
 	case SPIKED_GAUNTLETS:
+	case SILVER_GAUNTLETS:
 		break;
     case GAUNTLETS_OF_FUMBLING:
 		/*
@@ -553,6 +556,7 @@ Gloves_off(VOID_ARGS)
     switch (uarmg->otyp) {
     case LEATHER_GLOVES:
 	case SPIKED_GAUNTLETS:
+	case SILVER_GAUNTLETS:
 	case GLOVES_OF_SPELL_CASTING:
 		break;
     case GAUNTLETS_OF_FUMBLING:
@@ -603,6 +607,7 @@ Shield_on(VOID_ARGS)
     case LARGE_SHIELD:
     case SHIELD_OF_REFLECTION:
 	case SPIKED_SHIELD:
+	case SPIKED_SILVER_SHIELD:
 		break;
     default:
         impossible(unknown_type, c_shield, uarms->otyp);
@@ -627,6 +632,7 @@ Shield_off(VOID_ARGS)
     case LARGE_SHIELD:
     case SHIELD_OF_REFLECTION:
 	case SPIKED_SHIELD:
+	case SPIKED_SILVER_SHIELD:
 		break;
     default:
         impossible(unknown_type, c_shield, uarms->otyp);

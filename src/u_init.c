@@ -85,8 +85,6 @@ static struct trobj Knight[] = {
     { LANCE, 1, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
     { RING_MAIL, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
     { HELMET, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-    { SMALL_SHIELD, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-    { LEATHER_GLOVES, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
     { APPLE, 0, FOOD_CLASS, 10, 0, 0 },
     { CARROT, 0, FOOD_CLASS, 10, 0, 0 },
 	{ LEATHER_BAG, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
@@ -111,10 +109,10 @@ static struct trobj Monk[] = {
 	{ 0, 0, 0, 0, 0, 0 }
 };
 static struct trobj Priest[] = {
-    { MACE, 2, WEAPON_CLASS, 1, 1, 0 },
+//    { MACE, 2, WEAPON_CLASS, 1, 1, 0 }, //Now randomized
 	{ RING_MAIL, 0, ARMOR_CLASS, 1, 1, 0 },
 	{ CLERICAL_GOWN, 0, ARMOR_CLASS, 1, 1, 0 },
-    { SMALL_SHIELD, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
+//    { SMALL_SHIELD, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 }, //Now randomized
 	{ HOLY_SYMBOL, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 }, //Blessed holy symbol is even more powerful
 	{ POT_WATER, 0, POTION_CLASS, 4, 1, 0 }, /* holy water */
 	{ CLOVE_OF_GARLIC, 0, FOOD_CLASS, 1, 0, 0 },
@@ -195,7 +193,7 @@ static struct trobj TouristFemale[] = {
 static struct trobj Valkyrie[] = {
     { LONG_SWORD, 1, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
     { DAGGER, 0, WEAPON_CLASS, 1, UNDEF_BLESS, COLD_ENCHANTMENT },
-    { SPIKED_SHIELD, 3, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
+//    { SPIKED_SHIELD, 3, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
     { FOOD_RATION, 0, FOOD_CLASS, 1, 0, 0 },
 	{ SACK, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
 	{ 0, 0, 0, 0, 0, 0 }
@@ -279,6 +277,28 @@ static struct trobj LightningOrcishArrow[] = { { ORCISH_ARROW, 0, WEAPON_CLASS,
 										2, 0, LIGHTNING_ENCHANTMENT },
 								{ 0, 0, 0, 0, 0, 0 } };
 
+static struct trobj PriestSilverMace[] = { { SILVER_MACE, 2, WEAPON_CLASS, 1, 1, 0 },
+								{ 0, 0, 0, 0, 0, 0 } };
+static struct trobj PriestNormalMace[] = { { MACE, 2, WEAPON_CLASS, 1, 1, 0 },
+								{ 0, 0, 0, 0, 0, 0 } };
+static struct trobj KnightSmallShield[] = { { SMALL_SHIELD, 0, ARMOR_CLASS, 1, 0, 0 },
+								{ 0, 0, 0, 0, 0, 0 } };
+static struct trobj KnightSpikedSilverShield[] = { { SPIKED_SILVER_SHIELD, 0, ARMOR_CLASS, 1, 0, 0 },
+								{ 0, 0, 0, 0, 0, 0 } };
+static struct trobj PriestSmallShield[] = { { SMALL_SHIELD, 0, ARMOR_CLASS, 1, 1, 0 },
+								{ 0, 0, 0, 0, 0, 0 } };
+static struct trobj PriestSpikedSilverShield[] = { { SPIKED_SILVER_SHIELD, 0, ARMOR_CLASS, 1, 1, 0 },
+								{ 0, 0, 0, 0, 0, 0 } };
+static struct trobj ValkyrieSpikedShield[] = { { SPIKED_SHIELD, 3, ARMOR_CLASS, 1, 0, 0 },
+								{ 0, 0, 0, 0, 0, 0 } };
+static struct trobj ValkyrieSpikedSilverShield[] = { { SPIKED_SILVER_SHIELD, 3, ARMOR_CLASS, 1, 0, 0 },
+								{ 0, 0, 0, 0, 0, 0 } };
+static struct trobj KnightLeatherGloves[] = { { LEATHER_GLOVES, 0, ARMOR_CLASS, 1, 0, 0 },
+								{ 0, 0, 0, 0, 0, 0 } };
+static struct trobj KnightSilverGauntlets[] = { { SILVER_GAUNTLETS, 0, ARMOR_CLASS, 1, 0, 0 },
+								{ 0, 0, 0, 0, 0, 0 } };
+static struct trobj PriestSilverGauntlets[] = { { SILVER_GAUNTLETS, 0, ARMOR_CLASS, 1, 1, 0 },
+								{ 0, 0, 0, 0, 0, 0 } };
 
 /* race-based substitutions for initial inventory;
    the weaker cloak for elven rangers is intentional--they shoot better */
@@ -924,6 +944,16 @@ u_init()
         break;
     case PM_KNIGHT:
         ini_inv(Knight);
+		if (!rn2(10))
+			ini_inv(KnightSpikedSilverShield);
+		else
+			ini_inv(KnightSmallShield);
+
+		if (!rn2(12))
+			ini_inv(KnightSilverGauntlets);
+		else
+			ini_inv(KnightLeatherGloves);
+
         //knows_class(WEAPON_CLASS);
         //knows_class(ARMOR_CLASS);
         skill_init(Skill_K_Init, Skill_K_Max);
@@ -944,8 +974,22 @@ u_init()
         break;
     }
     case PM_PRIEST:
+		if (!rn2(8))
+			ini_inv(PriestSilverMace);
+		else
+			ini_inv(PriestNormalMace);
+
         ini_inv(Priest);
-        if (!rn2(10))
+
+		if (!rn2(10))
+			ini_inv(PriestSpikedSilverShield);
+		else
+			ini_inv(PriestSmallShield);
+
+		if (!rn2(12))
+			ini_inv(PriestSilverGauntlets);
+
+		if (!rn2(10))
             ini_inv(Magicmarker);
         else if (!rn2(10))
             ini_inv(Lamp);
@@ -1023,6 +1067,12 @@ u_init()
 		break;
     case PM_VALKYRIE:
         ini_inv(Valkyrie);
+		if (!rn2(8))
+			ini_inv(ValkyrieSpikedSilverShield);
+		else
+			ini_inv(ValkyrieSpikedShield);
+
+
         if (!rn2(6))
             ini_inv(Lamp);
         //knows_class(WEAPON_CLASS);
@@ -1412,7 +1462,19 @@ register struct trobj *trop;
 				(void)add_to_container(obj, mksobj(BATHROBE, FALSE, FALSE, TRUE));
 				(void)add_to_container(obj, mksobj(COTTON_SLIPPERS, FALSE, FALSE, TRUE));
 				(void)add_to_container(obj, mksobj(TOWEL, FALSE, FALSE, TRUE));
-				makeknown(BATHROBE);
+				knows_object(BATHROBE);
+				obj->owt = weight(obj);
+			}
+		}
+		else if (Role_if(PM_KNIGHT))
+		{
+			if (otyp == LEATHER_BAG)
+			{
+				(void)add_to_container(obj, mksobj(SILVER_FORK, FALSE, FALSE, TRUE));
+				(void)add_to_container(obj, mksobj(SILVER_KNIFE, FALSE, FALSE, TRUE));
+				(void)add_to_container(obj, mksobj(FOOD_RATION, FALSE, FALSE, TRUE));
+				(void)add_to_container(obj, mksobj(POT_WATER, FALSE, FALSE, TRUE));
+				knows_object(POT_WATER);
 				obj->owt = weight(obj);
 			}
 		}
@@ -1441,7 +1503,7 @@ register struct trobj *trop;
 					struct obj* otmp = mksobj(randomreagent(FALSE, 2), FALSE, FALSE, FALSE);
 					if (otmp)
 					{
-						makeknown(otmp->otyp);
+						knows_object(otmp->otyp);
 						otmp->known = 1;
 						otmp->dknown = otmp->bknown = otmp->rknown = 1;
 						(void)add_to_container(obj, otmp);
@@ -1470,7 +1532,7 @@ register struct trobj *trop;
 					struct obj* otmp = mkobj(REAGENT_CLASS, FALSE, TRUE);
 					if (otmp)
 					{
-						makeknown(otmp->otyp);
+						knows_object(otmp->otyp);
 						otmp->known = 1;
 						otmp->dknown = otmp->bknown = otmp->rknown = 1;
 						(void)add_to_container(obj, otmp);

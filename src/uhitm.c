@@ -748,6 +748,8 @@ int dieroll;
 	int tmp = 0, extratmp = 0;
 	struct permonst* mdat = mon->data;
 	int barehand_silver_rings = 0;
+	boolean barehand_silver_gauntlets = 0;
+
 	/* The basic reason we need all these booleans is that we don't want
 	 * a "hit" message when a monster dies, so we have to know how much
 	 * damage it did _before_ outputting a hit message, but any messages
@@ -842,11 +844,17 @@ int dieroll;
 				tmp += weapon_dmg_value(uarmg, mon, &youmonst);
 				extratmp = weapon_extra_dmg_value(uarmg, mon, &youmonst, tmp);
 				tmp += extratmp;
+				/* silver gauntelts? */
+				tmp += special_dmgval(&youmonst, mon, W_ARMG,
+					&silverhit);
+				barehand_silver_gauntlets = !!(silverhit & W_ARMG);
+				if (barehand_silver_gauntlets)
+					silvermsg = TRUE;
 			}
 			else
 			{
 				/* no gauntlets, rings exposed */
-				tmp += special_dmgval(&youmonst, mon, (W_ARMG | W_RINGL | W_RINGR),
+				tmp += special_dmgval(&youmonst, mon, W_RING,
 					&silverhit);
 				barehand_silver_rings += (((silverhit & W_RINGL) ? 1 : 0)
 					+ ((silverhit & W_RINGR) ? 1 : 0));
@@ -1686,6 +1694,8 @@ int dieroll;
 				fmt = "Your silver ring sears %s!";
 			else if (barehand_silver_rings == 2)
 				fmt = "Your silver rings sear %s!";
+			else if (barehand_silver_gauntlets)
+				fmt = "Your silver gauntlets sear %s!";
 			else if (silverobj && saved_oname[0]) {
 				/* guard constructed format string against '%' in
 				   saved_oname[] from xname(via cxname()) */

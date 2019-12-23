@@ -588,13 +588,16 @@ long *silverhit_p; /* output flag mask for silver bonus */
 {
     struct obj *obj;
     struct permonst *ptr = mdef->data;
-    boolean left_ring = (armask & W_RINGL) ? TRUE : FALSE,
-            right_ring = (armask & W_RINGR) ? TRUE : FALSE;
+    boolean left_ring = !!(armask & W_RINGL),
+            right_ring = !!(armask & W_RINGR);
     long silverhit = 0L;
     int bonus = 0;
 
+	armask = armask & ~W_RING;
+
     obj = 0;
-    if (armask & (W_ARMC | W_ARM | W_ARMU)) {
+    if (armask & (W_ARMC | W_ARM | W_ARMU)) 
+	{
         if ((armask & W_ARMC) != 0L
             && (obj = which_armor(magr, W_ARMC)) != 0)
             armask = W_ARMC;
@@ -606,13 +609,23 @@ long *silverhit_p; /* output flag mask for silver bonus */
             armask = W_ARMU;
         else
             armask = 0L;
-    } else if (armask & (W_ARMG | W_RINGL | W_RINGR)) {
-        armask = ((obj = which_armor(magr, W_ARMG)) != 0) ?  W_ARMG : 0L;
-    } else {
+    } 
+	else if ((armask & W_ARMG) != 0L
+		&& (obj = which_armor(magr, W_ARMG)) != 0)
+		armask = W_ARMG;
+	else if ((armask & W_ARMF) != 0L
+		&& (obj = which_armor(magr, W_ARMF)) != 0)
+		armask = W_ARMF;
+	else if ((armask & W_ARMH) != 0L
+		&& (obj = which_armor(magr, W_ARMH)) != 0)
+		armask = W_ARMH;
+	else if (armask != 0)
+	{
         obj = which_armor(magr, armask);
     }
 
-    if (obj) {
+    if (obj) 
+	{
         if (obj->blessed
             && (is_undead(ptr) || is_demon(ptr) || is_vampshifter(mdef)))
             bonus += rnd(4);
@@ -621,23 +634,30 @@ long *silverhit_p; /* output flag mask for silver bonus */
            with one--aside from throwing--is to wield it and perform a
            weapon hit, but we include a general check here */
         if (objects[obj->otyp].oc_material == MAT_SILVER
-            && mon_hates_silver(mdef)) {
+            && mon_hates_silver(mdef)) 
+		{
             bonus += rnd(20);
             silverhit |= armask;
         }
 
     /* when no gloves we check for silver rings (blessed rings ignored) */
-    } else if ((left_ring || right_ring) && magr == &youmonst) {
-        if (left_ring && uleft) {
+    } 
+	else if ((left_ring || right_ring) && magr == &youmonst) 
+	{
+        if (left_ring && uleft) 
+		{
             if (objects[uleft->otyp].oc_material == MAT_SILVER
-                && mon_hates_silver(mdef)) {
+                && mon_hates_silver(mdef))
+			{
                 bonus += rnd(20);
                 silverhit |= W_RINGL;
             }
         }
-        if (right_ring && uright) {
+        if (right_ring && uright) 
+		{
             if (objects[uright->otyp].oc_material == MAT_SILVER
-                && mon_hates_silver(mdef)) {
+                && mon_hates_silver(mdef)) 
+			{
                 /* two silver rings don't give double silver damage
                    but 'silverhit' messages might be adjusted for them */
                 if (!(silverhit & W_RINGL))

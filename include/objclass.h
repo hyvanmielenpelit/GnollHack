@@ -236,7 +236,8 @@ enum obj_weapon_types {
 	WEP_HOOK = 45,
 	WEP_LANCE = 46,
 	WEP_HOSE = 47,
-	WEP_WHIP = 48
+	WEP_FORK = 48,
+	WEP_WHIP = 49
 };
 
 static const char* weapon_type_names[] = {
@@ -245,7 +246,7 @@ static const char* weapon_type_names[] = {
 	"hammer", "spiked hammer",  "staff", "rod", "spear", "javelin", "polearm", "trident",
 	"dart", "shuriken", "boomerang", "short bow", "long bow", "hand crossbow", "crossbow", "repeating crossbow", "sling",
 	"arrow", "quarrel", "sling-bullet", "pick-axe", "unicorn horn", "horn", "worm tooth",
-	"shovel", "hook", "lance", "hose", "whip",
+	"shovel", "hook", "lance", "hose", "fork", "whip",
 };
 
 
