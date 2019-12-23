@@ -442,7 +442,7 @@ boolean createcorpse;
 	case PM_CAVE_SPIDER:
 	case PM_GIANT_SPIDER:
 	case PM_PHASE_SPIDER:
-		if(mndx != PM_CAVE_SPIDER || !rn2(2))
+		if (mndx != PM_CAVE_SPIDER || !rn2(2))
 		{
 			obj = mksobj_at(THREAD_OF_SPIDER_SILK, x, y, TRUE, FALSE);
 			obj->quan = (mndx == PM_PHASE_SPIDER ? rnd(3) : mndx == PM_GIANT_SPIDER ? rnd(2) : 1);
@@ -499,7 +499,7 @@ boolean createcorpse;
 	case PM_VAMPIRE_BAT:
 	case PM_GIANT_BAT:
 	case PM_HELL_BAT:
-		if(mndx == PM_BAT ? !rn2(5) : mndx == PM_GIANT_BAT ? !rn2(4) : !rn2(3))
+		if (mndx == PM_BAT ? !rn2(5) : mndx == PM_GIANT_BAT ? !rn2(4) : !rn2(3))
 		{
 			obj = mksobj_at(CLUMP_OF_BAT_GUANO, x, y, TRUE, FALSE);
 			obj->quan = (mndx == PM_HELL_BAT ? rnd(2) : mndx == PM_VAMPIRE_BAT ? rnd(2) : mndx == PM_GIANT_BAT ? 1 : 1);
@@ -515,7 +515,7 @@ boolean createcorpse;
 	case PM_RED_MOLD:
 	{
 		sporequan++;
-		if(!rn2(2))
+		if (!rn2(2))
 		{
 			obj = mksobj_at(HEAP_OF_SPORAL_POWDER, x, y, TRUE, FALSE);
 			obj->quan = sporequan > 1 ? rnd(sporequan) : 1;
@@ -555,35 +555,25 @@ boolean createcorpse;
 		break;
 	case PM_IRON_GOLEM:
 	{
-		int objid = IRON_CHAIN;
-		num = d(2, 6);
-		while (num--)
+		if (!rn2(2))
 		{
-			switch (rn2(10))
+			obj = mksobj_at(NUGGET_OF_IRON_ORE, x, y, FALSE, FALSE);
+			obj->quan = (long)(rnd(2));
+			obj->owt = weight(obj);
+		}
+		if (!rn2(4))
+		{
+			int objid = NUGGET_OF_IRON_ORE;
+			switch (rn2(3))
 			{
 			case 0:
-			case 8:
 				objid = IRON_CHAIN;
 				break;
 			case 1:
-			case 7:
-			case 9:
-				objid = IRON_SLING_BULLET;
-				break;
-			case 2:
-				objid = CHAIN_MAIL;
-				break;
-			case 3:
-				objid = !rn2(10) ? (!rn2(4) ? FULL_PLATE_MAIL : FIELD_PLATE_MAIL) : PLATE_MAIL;
-				break;
-			case 4:
 				objid = IRON_SHOES;
 				break;
-			case 5:
+			case 2:
 				objid = HEAVY_IRON_BALL;
-				break;
-			case 6:
-				objid = DWARVISH_IRON_HELM;
 				break;
 			default:
 				break;
@@ -594,27 +584,39 @@ boolean createcorpse;
 		break;
 	}
 	case PM_GLASS_GOLEM:
-		num = d(2, 4); /* very low chance of creating all glass gems */
-		while (num--)
-			obj = mksobj_at((LAST_GEM + rnd(9)), x, y, TRUE, FALSE);
+		if (!rn2(2))
+		{
+			num = d(1, 6);
+			while (num--)
+				obj = mksobj_at((LAST_GEM + rnd(9)), x, y, TRUE, FALSE);
+		}
 		free_mname(mtmp);
 		break;
 	case PM_BONE_GOLEM:
-		num = rnd(8) + 4;
-		while (num--)
-			obj = mksobj_at(BONE, x, y, TRUE, FALSE);
+		if (!rn2(2))
+		{
+			obj = mksobj_at(BONE, x, y, FALSE, FALSE);
+			obj->quan = (long)(rnd(4));
+			obj->owt = weight(obj);
+		}
 		free_mname(mtmp);
 		break;
 	case PM_SILVER_GOLEM:
-		obj = mksobj_at(NUGGET_OF_SILVER_ORE, x, y, FALSE, FALSE);
-		obj->quan = (long)(rn2(20) + 5);
-		obj->owt = weight(obj);
+		if (!rn2(2))
+		{
+			obj = mksobj_at(NUGGET_OF_SILVER_ORE, x, y, FALSE, FALSE);
+			obj->quan = (long)(rnd(2));
+			obj->owt = weight(obj);
+		}
 		free_mname(mtmp);
 		break;
 	case PM_CLAY_GOLEM:
-		obj = mksobj_at(CLAY_PEBBLE, x, y, FALSE, FALSE);
-		obj->quan = (long)(rn2(20) + 50);
-		obj->owt = weight(obj);
+		if (!rn2(2))
+		{
+			obj = mksobj_at(CLAY_PEBBLE, x, y, FALSE, FALSE);
+			obj->quan = (long)(rnd(8) + 1);
+			obj->owt = weight(obj);
+		}
 		free_mname(mtmp);
 		break;
 	case PM_STONE_GOLEM:
@@ -623,60 +625,59 @@ boolean createcorpse;
 		obj =
 			mkcorpstat(STATUE, (struct monst *) 0, mdat, x, y, corpstatflags);
 		*/
-		obj = mksobj_at(STONE_PEBBLE, x, y, FALSE, FALSE);
-		obj->quan = (long)(rn2(20) + 50);
-		obj->owt = weight(obj);
+		if (!rn2(2))
+		{
+			obj = mksobj_at(STONE_PEBBLE, x, y, FALSE, FALSE);
+			obj->quan = (long)(rnd(8) + 1);
+			obj->owt = weight(obj);
+		}
 		free_mname(mtmp);
 		break;
 	case PM_WOOD_GOLEM:
-		num = d(1, 3);
-		while (num--) {
-			obj = mksobj_at(PIECE_OF_WOOD, x, y, TRUE, FALSE);
+		if (!rn2(2))
+		{
+			obj = mksobj_at(PIECE_OF_WOOD, x, y, FALSE, FALSE);
+			obj->quan = (long)(rnd(2));
+			obj->owt = weight(obj);
 		}
 		free_mname(mtmp);
 		break;
 	case PM_LEATHER_GOLEM:
 	{
-		int objid = LEATHER_ARMOR;
-		num = d(2, 4);
-		while (num--)
+		if(!rn2(2))
 		{
-			switch (rn2(10))
+			int objid = LEATHER_ARMOR;
+			num = d(1, 3);
+			while (num--)
 			{
-			case 0:
-				objid = LEATHER_ARMOR;
-				break;
-			case 1:
-				objid = LEATHER_BELT;
-				break;
-			case 2:
-				objid = LEATHER_BRACERS;
-				break;
-			case 3:
-				objid = GNOLLISH_LEATHER_ARMOR;
-				break;
-			case 4:
-				objid = GNOLLISH_HOOD;
-				break;
-			case 5:
-				objid = LEATHER_CLOAK;
-				break;
-			case 6:
-				objid = STUDDED_LEATHER_ARMOR;
-				break;
-			case 7:
-				objid = LEATHER_GLOVES;
-				break;
-			case 8:
-				objid = LEATHER_SANDALS;
-				break;
-			case 9:
-				objid = ELVEN_LEATHER_HELM;
-				break;
-			default:
-				break;
+				switch (rn2(7))
+				{
+				case 0:
+					objid = LEATHER_ARMOR;
+					break;
+				case 1:
+					objid = LEATHER_BELT;
+					break;
+				case 2:
+					objid = LEATHER_BRACERS;
+					break;
+				case 3:
+					objid = LEATHER_CLOAK;
+					break;
+				case 4:
+					objid = STUDDED_LEATHER_ARMOR;
+					break;
+				case 5:
+					objid = LEATHER_GLOVES;
+					break;
+				case 6:
+					objid = LEATHER_SANDALS;
+					break;
+				default:
+					break;
+				}
+				obj = mksobj_at(objid, x, y, TRUE, FALSE);
 			}
-			obj = mksobj_at(objid, x, y, TRUE, FALSE);
 		}
 		free_mname(mtmp);
 		break;
@@ -687,29 +688,35 @@ boolean createcorpse;
 		boolean goldcreated = FALSE;
 		if(!rn2(2))
 		{
-			obj = mkgold((long) (200 - rnl(101)), x, y);
+			obj = mkgold((long) (195 - rnl(101)), x, y);
 			goldcreated = TRUE;
 		}
 		if (!goldcreated || !rn2(2))
 		{
 			obj = mksobj_at(NUGGET_OF_GOLD_ORE, x, y, FALSE, FALSE);
-			obj->quan = (long)(rnd(10));
+			obj->quan = (long)(rnd(3));
 			obj->owt = weight(obj);
 		}
 		free_mname(mtmp);
 		break;
 	}
     case PM_PAPER_GOLEM:
-        num = rnd(4);
-        while (num--)
-            obj = mksobj_at(SCR_BLANK_PAPER, x, y, TRUE, FALSE);
+		if (!rn2(2))
+		{
+			num = rnd(2);
+			while (num--)
+				obj = mksobj_at(SCR_BLANK_PAPER, x, y, TRUE, FALSE);
+		}
         free_mname(mtmp);
         break;
 	case PM_GEMSTONE_GOLEM:
-		num = rnd(4);
-		while (num--)
+		if (!rn2(2))
 		{
-			obj = mksobj_at(randomtruegem(), x, y, TRUE, FALSE);
+			num = rnd(3);
+			while (num--)
+			{
+				obj = mksobj_at(randomtruegem(), x, y, TRUE, FALSE);
+			}
 		}
 		free_mname(mtmp);
 		break;
