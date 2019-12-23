@@ -763,7 +763,7 @@ const char *fillmsg;
     if (ttmp)
         (void) delfloortrap(ttmp);
     /* if any objects were frozen here, they're released now */
-    unearth_objs(x, y);
+    (void)unearth_objs(x, y, FALSE);
 
     if (fillmsg)
         pline(fillmsg, hliquid(typ == LAVAPOOL ? "lava" : "water"));
@@ -2150,27 +2150,39 @@ int x, y;
 }
 
 /* move objects from buriedobjlist to fobj/nexthere lists */
-void
-unearth_objs(x, y)
+int
+unearth_objs(x, y, verbose)
 int x, y;
+boolean verbose;
 {
     struct obj *otmp, *otmp2, *bball;
     coord cc;
+	int cnt = 0;
 
     debugpline2("unearth_objs: at <%d,%d>", x, y);
     cc.x = x;
     cc.y = y;
     bball = buried_ball(&cc);
-    for (otmp = level.buriedobjlist; otmp; otmp = otmp2) {
+    for (otmp = level.buriedobjlist; otmp; otmp = otmp2) 
+	{
         otmp2 = otmp->nobj;
-        if (otmp->ox == x && otmp->oy == y) {
-            if (bball && otmp == bball
-                && u.utrap && u.utraptype == TT_BURIEDBALL) {
-                buried_ball_to_punishment();
-            } else {
+        if (otmp->ox == x && otmp->oy == y) 
+		{
+			cnt++;
+			if (verbose)
+				You("find %s.", doname(otmp));
+
+			if (bball && otmp == bball
+                && u.utrap && u.utraptype == TT_BURIEDBALL) 
+			{
+				buried_ball_to_punishment();
+            }
+			else
+			{
                 obj_extract_self(otmp);
                 if (otmp->timed)
                     (void) stop_timer(ROT_ORGANIC, obj_to_any(otmp));
+
                 place_object(otmp, x, y);
                 stackobj(otmp);
             }
@@ -2178,6 +2190,7 @@ int x, y;
     }
     del_engr_at(x, y);
     newsym(x, y);
+	return cnt;
 }
 
 /*
@@ -2386,6 +2399,57 @@ wiz_debug_cmd_bury()
                 bury_objs(x, y);
     return 0;
 }
+
 #endif /* DEBUG */
+
+
+/* the C('d') command - Dig ground with hands or your weapon */
+int
+dodig()
+{
+	if (uwep && (uwep->otyp == PICK_AXE || uwep->otyp == DWARVISH_MATTOCK || uwep->otyp == SHOVEL))
+	{
+		u.dx = u.dy = 0;
+		u.dz = 1;
+		int res = use_pick_axe2(uwep);
+		return res;
+	}
+
+	char digbuf[BUFSIZ] = "";
+	if (uwep)
+		strcpy(digbuf, yname(uwep));
+	else
+		Sprintf(digbuf, "your %s", makeplural(body_part(HAND)));
+
+	if (!(levl[u.ux][u.uy].typ == GRASS || IS_GRAVE(levl[u.ux][u.uy].typ)))
+	{
+		pline("It is too hard to dig here with %s.", digbuf);
+		return 0;
+	}
+
+	if (IS_GRAVE(levl[u.ux][u.uy].typ))
+	{
+		You("dig the grave with %s.", digbuf);
+
+		coord cc;
+		cc.x = u.ux;
+		cc.y = u.uy;
+		dig_up_grave(&cc);
+		return 1;
+	}
+
+	/* Normal digging */
+	You("dig the ground with %s.", digbuf);
+
+	int itemsfound = unearth_objs(u.ux, u.uy, TRUE);
+	if (!itemsfound)
+	{
+		pline("However, you do not find anything.");
+	}
+	return 1;
+}
+
+
+
 
 /*dig.c*/

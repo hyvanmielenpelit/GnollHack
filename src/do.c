@@ -44,7 +44,6 @@ dodrop()
     return result;
 }
 
-
 /* the M('y') command - Character statistics */
 int
 docharacterstatistics()

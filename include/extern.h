@@ -318,6 +318,7 @@ E void FDECL(reveal_terrain, (int, int));
 
 /* ### dig.c ### */
 
+E int NDECL(dodig);
 E int FDECL(dig_typ, (struct obj *, XCHAR_P, XCHAR_P));
 E boolean NDECL(is_digging);
 #ifdef USE_TRAMPOLI
@@ -336,7 +337,7 @@ E void FDECL(zap_dig, (struct obj*));
 E void FDECL(zap_evaporation, (struct obj*));
 E struct obj *FDECL(bury_an_obj, (struct obj *, boolean *));
 E void FDECL(bury_objs, (int, int));
-E void FDECL(unearth_objs, (int, int));
+E int FDECL(unearth_objs, (int, int, BOOLEAN_P));
 E void FDECL(rot_organic, (ANY_P *, long));
 E void FDECL(rot_corpse, (ANY_P *, long));
 E struct obj *FDECL(buried_ball, (coord *));

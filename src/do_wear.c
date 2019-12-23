@@ -872,6 +872,10 @@ long wearslotmask;
 			pline("Oh wow! Everything %s so cosmic!", (!Blind) ? "looks" : "feels");
 		}
 	}
+	else if (ud->otyp == EYEGLASSES_OF_SEE_INVISIBLE)
+	{
+		see_monsters();
+	}
 
 	return 0;
 }
@@ -920,6 +924,11 @@ struct obj* ud;
 			pline("Everything %s SO boring now.", (!Blind) ? "looks" : "feels");
 		}
 	}
+	else if (ud->otyp == EYEGLASSES_OF_SEE_INVISIBLE)
+	{
+		see_monsters();
+	}
+
 	return 0;
 }
 
