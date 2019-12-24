@@ -23,7 +23,7 @@ OBJECT: '(', random
 OBJECT: random, random
 OBJECT: random, random
 OBJECT: random, random
-LOOP [2 + 1d4] {
+LOOP [1 + 1d3] {
     IF [40%] {
         OBJECT: ('%', "champignon"), random
     } ELSE {
