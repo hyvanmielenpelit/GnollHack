@@ -1356,7 +1356,7 @@ int dieroll;
 				else if(P_SKILL(P_MARTIAL_ARTS) == P_SKILLED)
 					tmp += u_str_dmg_bonus();
 				else if (P_SKILL(P_MARTIAL_ARTS) == P_EXPERT)
-					tmp += (3 * u_str_dmg_bonus()) / 2;
+					tmp += (5 * u_str_dmg_bonus()) / 4;
 			}
 			else
 				tmp += u_str_dmg_bonus();

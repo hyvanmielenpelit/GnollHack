@@ -60,7 +60,7 @@ boolean clumsy;
 
 	int basedmg = 0;
 	int strdmg = 0;
-	int extraquarters = Magical_kicking ? 2 : 0;
+	int extraquarters = Magical_kicking ? 1 : 0;
 	if (martial_arts_applies)
 	{
 		int skillevel = P_SKILL(P_MARTIAL_ARTS);
@@ -76,7 +76,7 @@ boolean clumsy;
 			break;
 		case P_EXPERT:
 			basedmg = rnd(13) + 3;
-			strdmg = ((6 + extraquarters) * u_str_dmg_bonus()) / 4;
+			strdmg = ((5 + extraquarters) * u_str_dmg_bonus()) / 4;
 			break;
 		default:
 			break;
@@ -85,10 +85,7 @@ boolean clumsy;
 	else
 	{
 		basedmg = rnd(3);
-		if (Magical_kicking)
-			strdmg = u_str_dmg_bonus();
-		else
-			strdmg = u_str_dmg_bonus() / 2;
+		strdmg = ((2 + extraquarters) * u_str_dmg_bonus()) / 4;
 	}
 	dmg += basedmg + strdmg;
 
@@ -157,7 +154,7 @@ boolean clumsy;
 
 
 	if (kicksuccessful)
-		dmg += basedmg;
+		dmg += basedmg / 2;
 
 
 	char kickstylebuf[BUFSIZ] = "";
