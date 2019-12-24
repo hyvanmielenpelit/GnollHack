@@ -3020,8 +3020,8 @@ doeat()
 	if (!objects[otmp->otyp].oc_name_known && (objects[otmp->otyp].oc_flags3 & O3_EATING_IDENTIFIES))
 	{
 		makeknown(otmp->otyp);
-		if(objects[otmp->otyp].oc_edible_subtype != EDIBLE_NORMAL)
-			pline("That was %s!", an(cxname_singular(otmp)));
+		//if(objects[otmp->otyp].oc_edible_subtype != EDIBLE_NORMAL)
+		pline("That was %s!", an(cxname_singular(otmp)));
 	}
 
     debugpline3(

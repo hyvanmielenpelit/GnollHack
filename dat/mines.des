@@ -24,7 +24,7 @@ OBJECT: random, random
 OBJECT: random, random
 OBJECT: random, random
 LOOP [1 + 1d3] {
-    IF [40%] {
+    IF [50%] {
         OBJECT: ('%', "champignon"), random
     } ELSE {
         IF [33%] {
@@ -1096,10 +1096,12 @@ OBJECT:random,random
 OBJECT:random,random
 OBJECT:('%', "magic mushroom"),random
 OBJECT:('%', "magic mushroom"),random
-OBJECT:('%', "magic mushroom"),random
+[50%]: OBJECT:('%', "magic mushroom"),random
 OBJECT:('%', "champignon"),random
 OBJECT:('%', "champignon"),random
-OBJECT:('%', "champignon"),random
+[50%]: OBJECT:('%', "champignon"),random
+OBJECT:('%', "death cap"),random
+[50%]: OBJECT:('%', "death cap"),random
 # Random traps
 TRAP:random,random
 TRAP:random,random
@@ -1207,10 +1209,12 @@ OBJECT:random,random
 OBJECT:random,random
 OBJECT:('%', "magic mushroom"),random
 OBJECT:('%', "magic mushroom"),random
-OBJECT:('%', "magic mushroom"),random
+[50%]: OBJECT:('%', "magic mushroom"),random
 OBJECT:('%', "champignon"),random
 OBJECT:('%', "champignon"),random
-OBJECT:('%', "champignon"),random
+[50%]: OBJECT:('%', "champignon"),random
+OBJECT:('%', "death cap"),random
+[50%]: OBJECT:('%', "death cap"),random
 TRAP:random,random
 TRAP:random,random
 TRAP:random,random
