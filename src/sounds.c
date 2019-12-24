@@ -1751,7 +1751,7 @@ dochat()
 		chatnum++;
 
 	}
-	else if (mtmp->data->mflags3 & M3_PRIEST)
+	else if ((mtmp->data->mflags3 & M3_PRIEST) && msound != MS_ORACLE)
 	{
 		/* Non-priest monster priests here */
 		strcpy(available_chat_list[chatnum].name, "Ask for healing");

@@ -544,9 +544,10 @@ int reason; /* Player was thrown off etc. */
             return;
         }
         if (!has_mname(mtmp)) {
-            pline("You've been through the dungeon on %s with no name.",
-                  an(mtmp->data->mname));
-            if (Hallucination)
+//            pline("You've been through the dungeon on %s with no name.",
+//                  an(mtmp->data->mname));
+			You("dismount %s.", mon_nam(mtmp));
+			if (Hallucination)
                 pline("It felt good to get out of the rain.");
         } else
             You("dismount %s.", mon_nam(mtmp));
