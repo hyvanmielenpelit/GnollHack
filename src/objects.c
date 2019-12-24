@@ -1302,7 +1302,7 @@ CLOAK("cloak of protection", "tattered cape",
       0, 1, NO_POWER, 0, 0, 9, 0, 10, 250,  7, 3, 0, 0, 0, 0, 0, MAT_CLOTH, HI_CLOTH, O1_SPE_AFFECTS_MC, O2_NONE, O3_NONE, PERMITTED_ALL),
         /* cloak of protection is now the only item conferring MC 3 */
 CLOAK("cloak of invisibility", "opera cloak",
-      0, 1,      INVIS, 0, 0, 9, 0, 10, 250,  9, 2, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_BRIGHT_MAGENTA, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      0, 1,      INVISIBILITY, 0, 0, 9, 0, 10, 250,  9, 2, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_BRIGHT_MAGENTA, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 CLOAK("cloak of magic resistance", "ornamental cope",
       0, 1,  ANTIMAGIC, 0, 0, 6, 0, 10, 250,  9, 2, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
         /*  'cope' is not a spelling mistake... leave it be */
@@ -1324,7 +1324,7 @@ ROBE("gown of the archbishops", "shining purple robe",
 ROBE("robe of powerlessness", "shining green robe",
 	0, 1, NO_POWER, NO_POWER, NO_POWER, 10, 1, 25, 400,  9, 2, 0, 0, BONUS_TO_STR | BONUS_TO_INT | SETS_FIXED_ATTRIBUTE | FIXED_IS_MAXIMUM | IGNORE_SPE, 3, 0, MAT_CLOTH, CLR_GREEN, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
 ROBE("robe of eyes", "star-patterned robe",
-	0, 1, INFRAVISION, SEE_INVIS, SEARCHING, 5, 1, 25, 400,  9, 3, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_CYAN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	0, 1, INFRAVISION, SEE_INVISIBILITY, SEARCHING, 5, 1, 25, 400,  9, 3, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_CYAN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ROBE("robe of the archmagi", "shining blue robe",
 	0, 1, NO_POWER, NO_POWER, NO_POWER, 5, 2, 30, 400,  9, 3, 0, 0, BONUS_TO_INT | SETS_FIXED_ATTRIBUTE, 20, 0, MAT_CLOTH, HI_ZAP, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ROBE("robe of starry wisdom", "shining black robe", //ENDMARKER 2
@@ -1339,7 +1339,7 @@ ROBE("tailored silk robe", "fine robe",
 ROBE("gnollish haircloth robe", "crude robe",
 	0, 0, NO_POWER, NO_POWER, NO_POWER, 6, 1, 30,  10,  9, 2, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_BROWN, O1_NONE, O2_GNOLLISH_ITEM, O3_NONE, PERMITTED_ALL),
 ROBE("mummy wrapping", None, //ENDMARKER 1
-	1, 0, NO_POWER, NO_POWER, NO_POWER, 0, 0,  3,   2, 10, 1, 0, 0, 0, 0, 4, MAT_CLOTH, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	1, 0, BLOCKS_INVISIBILITY, NO_POWER, NO_POWER, 0, 0,  3,   2, 10, 1, 0, 0, 0, 0, 4, MAT_CLOTH, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 	/* worn mummy wrapping blocks invisibility */
 
 
@@ -1566,9 +1566,9 @@ RING("polymorph", "ivory",
 RING("polymorph control", "emerald",
      POLYMORPH_CONTROL, 0, 0, 300, 1, 0,  8, 0, 0, 0, 0, 0, MAT_GEMSTONE, CLR_BRIGHT_GREEN, O1_POLYMORPH_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("invisibility", "wire",
-     INVIS, 0, 0, 150, 1, 0,  5, 0, 0, 0, 0, 0, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+     INVISIBILITY, 0, 0, 150, 1, 0,  5, 0, 0, 0, 0, 0, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("see invisible", "engagement",
-     SEE_INVIS, 0, 0, 150, 1, 0,  5, 0, 0, 0, 0, 0, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+     SEE_INVISIBILITY, 0, 0, 150, 1, 0,  5, 0, 0, 0, 0, 0, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("protection from shape changers", "shiny",
      PROT_FROM_SHAPE_CHANGERS, 0, 0, 100, 1, 0,  5, 0, 0, 0, 0, 0, MAT_IRON, CLR_BRIGHT_CYAN, O1_POLYMORPH_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
 #undef RING
@@ -1721,7 +1721,7 @@ MISCELLANEOUSITEM("eyeglasses of awkwardness", "square eyeglasses", MISC_EYEGLAS
 	20, MAT_GLASS, HI_GLASS, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("eyeglasses of see invisible", "round eyeglasses", MISC_EYEGLASSES, None, None,
 	0, 0, 0, 0, 40, 150, 3,  //ENDMARKER FOR SHUFFLED EYEGLASSES
-	SEE_INVIS, NO_POWER, NO_POWER, 0, 0, 0, 0, 0,
+	SEE_INVISIBILITY, NO_POWER, NO_POWER, 0, 0, 0, 0, 0,
 	20, MAT_GLASS, HI_GLASS, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("sunglasses", "shaded eyeglasses", MISC_EYEGLASSES, None, None,
 	0, 0, 0, 0, 30, 80, 3,   //ENDMARKER FOR EYEGLASSES WISH-CLASS
@@ -1934,13 +1934,14 @@ OBJECT(OBJ("Bell of Opening", "silver bell"), None, None,
 #undef WEPTOOL
 
 /* Comestibles ... */
-#define FOOD(name, prob, multigen, delay, wt, unk, tin, nutrition, color, flags, flags2, flags3, powconfermask)         \
-    OBJECT(OBJ(name, None), None, None,                                     \
-           BITS(1, 1, unk, 0, 0, 0, 0, 0, 0, 0, 0, 0, P_NONE, tin), \
+#define FOOD(name, desc, known, prob, multigen, delay, wt, unk, material, ediblesubtype, durdice, durdiesize, durplus, nutrition, color, flags, flags2, flags3, powconfermask)         \
+    OBJECT(OBJ(name, desc), None, None,                                     \
+           BITS(known, 1, unk, 0, 0, 0, 0, 0, 0, 0, 0, 0, P_NONE, material), \
 		   0, 0, 0, FOOD_CLASS, prob, multigen, delay, wt, nutrition / 20 + 5,  \
-		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
-		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
+		   0, 0, 0, 0, durdice, durdiesize, durplus, 0, 0, 0, 0, A1_NONE, 0, \
+		   0, 0, 0, 0, ediblesubtype, 0, 0, 0, 0, 0, 0, 0, \
            nutrition, color, 0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
+
 /* All types of food (except tins & corpses) must have a delay of at least 1.
  * Delay on corpses is computed and is weight dependant.
  * Domestic pets prefer tripe rations above all others.
@@ -1951,12 +1952,12 @@ OBJECT(OBJ("Bell of Opening", "silver bell"), None, None,
  * Meatballs/sticks/rings are only created from objects via stone to flesh.
  */
 /* meat */
-FOOD("tripe ration",        140, MULTIGEN_SINGLE, 2, 10, 0, MAT_FLESH, 200, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("corpse",                0, MULTIGEN_SINGLE, 1,  0, 0, MAT_FLESH,   0, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("egg",                  85, MULTIGEN_SINGLE, 1,  1, 1, MAT_FLESH,  80, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("meatball",              0, MULTIGEN_SINGLE, 1,  1, 0, MAT_FLESH,   5, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("meat stick",            0, MULTIGEN_SINGLE, 1,  1, 0, MAT_FLESH,   5, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("huge chunk of meat",    0, MULTIGEN_SINGLE, 20, 400, 0, MAT_FLESH,2000, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("tripe ration",		None, 1,	140, MULTIGEN_SINGLE, 2, 10, 0, MAT_FLESH, EDIBLE_NORMAL, 0, 0, 0, 200, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("corpse",				None, 1,	  0, MULTIGEN_SINGLE, 1,  0, 0, MAT_FLESH, EDIBLE_NORMAL, 0, 0, 0, 0, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("egg",					None, 1,	 85, MULTIGEN_SINGLE, 1,  1, 1, MAT_FLESH, EDIBLE_NORMAL, 0, 0, 0, 80, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("meatball",			None, 1,	  0, MULTIGEN_SINGLE, 1,  1, 0, MAT_FLESH, EDIBLE_NORMAL, 0, 0, 0, 5, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("meat stick",			None, 1,	  0, MULTIGEN_SINGLE, 1,  1, 0, MAT_FLESH, EDIBLE_NORMAL, 0, 0, 0, 5, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("huge chunk of meat",	None, 1,	  0, MULTIGEN_SINGLE, 20, 400, 0, MAT_FLESH, EDIBLE_NORMAL, 0, 0, 0, 2000, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 /* special case because it's not mergable */
 OBJECT(OBJ("meat ring", None), None, None,
        BITS(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, MAT_FLESH),
@@ -1966,40 +1967,52 @@ OBJECT(OBJ("meat ring", None), None, None,
 	   5, CLR_BROWN, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_NONE, O2_NONE, O3_NONE),
 /* pudding 'corpses' will turn into these and combine;
    must be in same order as the pudding monsters */
-FOOD("glob of gray ooze",     0, MULTIGEN_SINGLE, 2, 20, 0, MAT_FLESH,  20, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("glob of brown pudding", 0, MULTIGEN_SINGLE, 2, 20, 0, MAT_FLESH,  20, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("glob of green slime",   0, MULTIGEN_SINGLE, 2, 20, 0, MAT_FLESH,  20, CLR_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("glob of black pudding", 0, MULTIGEN_SINGLE, 2, 20, 0, MAT_FLESH,  20, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("glob of gray ooze",		"gray glob", 0,		0, MULTIGEN_SINGLE, 2, 20, 1, MAT_FLESH, EDIBLE_NORMAL, 0, 0, 0, 20, CLR_GRAY, O1_NONE, O2_NONE, O3_PUDDING, PERMITTED_ALL),
+FOOD("glob of brown pudding",	"brown glob", 0,	0, MULTIGEN_SINGLE, 2, 20, 1, MAT_FLESH, EDIBLE_NORMAL, 0, 0, 0, 20, CLR_BROWN, O1_NONE, O2_NONE, O3_PUDDING, PERMITTED_ALL),
+FOOD("glob of green slime",		"green glob", 0,	0, MULTIGEN_SINGLE, 2, 20, 1, MAT_FLESH, EDIBLE_NORMAL, 0, 0, 0, 20, CLR_GREEN, O1_NONE, O2_NONE, O3_PUDDING, PERMITTED_ALL),
+FOOD("glob of black pudding",	"black glob", 0,	0, MULTIGEN_SINGLE, 2, 20, 1, MAT_FLESH, EDIBLE_NORMAL, 0, 0, 0, 20, CLR_BLACK, O1_NONE, O2_NONE, O3_PUDDING, PERMITTED_ALL),
 
 /* fruits & veggies */
-FOOD("kelp frond",            0, MULTIGEN_SINGLE,	1,  1, 0, MAT_VEGGY,   30, CLR_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("eucalyptus leaf",       6, MULTIGEN_SINGLE,	1,  1, 0, MAT_VEGGY,   30, CLR_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("handful of nuts",		  6, MULTIGEN_1D6,		1,	2, 0, MAT_VEGGY,  100, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("apple",                10, MULTIGEN_1D2,		1,  5, 0, MAT_VEGGY,  150, CLR_RED, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("orange",               10, MULTIGEN_1D2,		1,  5, 0, MAT_VEGGY,  150, CLR_ORANGE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("pear",                 10, MULTIGEN_1D2,		1,  5, 0, MAT_VEGGY,  150, CLR_BRIGHT_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("melon",                10, MULTIGEN_SINGLE,	1,  80, 0, MAT_VEGGY, 800, CLR_BRIGHT_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("banana",               10, MULTIGEN_1D6,		1,  5, 0, MAT_VEGGY,  150, CLR_YELLOW, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("carrot",               10, MULTIGEN_1D3,		1,  3, 0, MAT_VEGGY,  100, CLR_ORANGE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("kelp frond", None, 1,		 0, MULTIGEN_SINGLE,	1,  1, 0, MAT_VEGGY, EDIBLE_NORMAL, 0, 0, 0, 30, CLR_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("eucalyptus leaf", None, 1, 6, MULTIGEN_SINGLE,	1,  1, 0, MAT_VEGGY, EDIBLE_NORMAL, 0, 0, 0, 30, CLR_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("handful of nuts", None, 1, 6, MULTIGEN_1D6,		1,	2, 0, MAT_VEGGY, EDIBLE_NORMAL, 0, 0, 0, 100, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("apple", None, 1,			10, MULTIGEN_1D2,		1,  5, 0, MAT_VEGGY, EDIBLE_NORMAL, 0, 0, 0, 150, CLR_RED, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("orange", None, 1,			10, MULTIGEN_1D2,		1,  5, 0, MAT_VEGGY, EDIBLE_NORMAL, 0, 0, 0, 150, CLR_ORANGE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("pear", None, 1,			10, MULTIGEN_1D2,		1,  5, 0, MAT_VEGGY, EDIBLE_NORMAL, 0, 0, 0, 150, CLR_BRIGHT_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("melon", None, 1,			10, MULTIGEN_SINGLE,	1,  80, 0, MAT_VEGGY, EDIBLE_NORMAL, 0, 0, 0, 800, CLR_BRIGHT_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("banana", None, 1,			10, MULTIGEN_1D6,		1,  5, 0, MAT_VEGGY, EDIBLE_NORMAL, 0, 0, 0, 150, CLR_YELLOW, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("carrot", None, 1,			10, MULTIGEN_1D3,		1,  3, 0, MAT_VEGGY, EDIBLE_NORMAL, 0, 0, 0, 100, CLR_ORANGE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+
+/* shuffled mushrooms */
+FOOD("champignon", "brown mushroom", 
+	0, 15, MULTIGEN_1D3,		1, 3, 1, MAT_VEGGY, EDIBLE_NORMAL, 0, 0, 0,			100, CLR_BROWN, O1_NONE, O2_NONE, O3_EATING_IDENTIFIES, PERMITTED_ALL),
+FOOD("fly agaris", "red mushroom", 
+	0, 5, MULTIGEN_1D3,		1, 3, 1, MAT_VEGGY, EDIBLE_POISONOUS, 0, 0, 0,			100, CLR_RED, O1_NONE, O2_NONE, O3_EATING_IDENTIFIES, PERMITTED_ALL),
+FOOD("death cap", "pale mushroom", 
+	0, 5, MULTIGEN_1D3,		1, 3, 1, MAT_VEGGY, EDIBLE_DEADLY_POISONOUS, 0, 0, 0,	100, CLR_WHITE, O1_NONE, O2_NONE, O3_EATING_IDENTIFIES, PERMITTED_ALL),
+FOOD("magic mushroom", "green mushroom", 
+	0, 5, MULTIGEN_1D3, 1, 3, 1, MAT_VEGGY, EDIBLE_HALLUCINATING, 1, 100, 100,		100, CLR_GREEN, O1_NONE, O2_NONE, O3_EATING_IDENTIFIES, PERMITTED_ALL),
+/* end of suffled mushrooms */
+
 /* name of slime mold is changed based on player's OPTION=fruit:something
    and bones data might have differently named ones from prior games */
-FOOD("slime mold",           75, MULTIGEN_SINGLE,	1,  5, 0, MAT_VEGGY, 300, HI_ORGANIC, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("slime mold", None, 1, 65, MULTIGEN_SINGLE,	1,  5, 0, MAT_VEGGY, EDIBLE_NORMAL, 0, 0, 0, 300, HI_ORGANIC, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 
 /* people food */
-FOOD("lump of royal jelly",   0, MULTIGEN_SINGLE,	1,  2, 0, MAT_VEGGY,  200, CLR_YELLOW, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("cream pie",            25, MULTIGEN_SINGLE,	1, 10, 0, MAT_VEGGY,  150, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("candy bar",            15, MULTIGEN_SINGLE,	1,  2, 0, MAT_VEGGY,  150, CLR_BROWN, O1_NONE, O2_NONE, O3_READABLE, PERMITTED_ALL),
-FOOD("fortune cookie",       43, MULTIGEN_SINGLE,	1,  1, 0, MAT_VEGGY,   50, CLR_YELLOW, O1_NONE, O2_NONE, O3_READABLE, PERMITTED_ALL),
-FOOD("pancake",              30, MULTIGEN_SINGLE,	2,  2, 0, MAT_VEGGY,  250, CLR_YELLOW, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("lembas wafer",         30, MULTIGEN_SINGLE,	2,  5, 0, MAT_VEGGY, 1000, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("cram ration",          30, MULTIGEN_SINGLE,	3, 15, 0, MAT_VEGGY,  900, HI_ORGANIC, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("food ration",         380, MULTIGEN_SINGLE,	5, 20, 0, MAT_VEGGY,  800, HI_ORGANIC, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("K-ration",              0, MULTIGEN_SINGLE,	1, 10, 0, MAT_VEGGY,  525, HI_ORGANIC, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("C-ration",              0, MULTIGEN_SINGLE,	1, 10, 0, MAT_VEGGY,  450, HI_ORGANIC, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("lump of royal jelly", None, 1, 0, MULTIGEN_SINGLE,	1,  2, 0, MAT_VEGGY, EDIBLE_NORMAL, 0, 0, 0, 200, CLR_YELLOW, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("cream pie", None, 1, 23, MULTIGEN_SINGLE,	1, 10, 0, MAT_VEGGY, EDIBLE_NORMAL, 0, 0, 0, 150, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("candy bar", None, 1, 15, MULTIGEN_SINGLE,	1,  2, 0, MAT_VEGGY, EDIBLE_NORMAL, 0, 0, 0, 150, CLR_BROWN, O1_NONE, O2_NONE, O3_READABLE, PERMITTED_ALL),
+FOOD("fortune cookie", None, 1, 30, MULTIGEN_SINGLE,	1,  1, 0, MAT_VEGGY, EDIBLE_NORMAL, 0, 0, 0, 50, CLR_YELLOW, O1_NONE, O2_NONE, O3_READABLE, PERMITTED_ALL),
+FOOD("pancake", None, 1, 25, MULTIGEN_SINGLE,	2,  2, 0, MAT_VEGGY, EDIBLE_NORMAL, 0, 0, 0, 250, CLR_YELLOW, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("lembas wafer", None, 1, 30, MULTIGEN_SINGLE,	2,  5, 0, MAT_VEGGY, EDIBLE_NORMAL, 0, 0, 0, 1000, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("cram ration", None, 1, 30, MULTIGEN_SINGLE,	3, 15, 0, MAT_VEGGY, EDIBLE_NORMAL, 0, 0, 0, 900, HI_ORGANIC, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("food ration", None, 1, 380, MULTIGEN_SINGLE,	5, 20, 0, MAT_VEGGY, EDIBLE_NORMAL, 0, 0, 0, 800, HI_ORGANIC, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("K-ration", None, 1, 0, MULTIGEN_SINGLE,	1, 10, 0, MAT_VEGGY, EDIBLE_NORMAL, 0, 0, 0, 525, HI_ORGANIC, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("C-ration", None, 1, 0, MULTIGEN_SINGLE,	1, 10, 0, MAT_VEGGY, EDIBLE_NORMAL, 0, 0, 0, 450, HI_ORGANIC, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 /* tins have type specified by obj->spe (+1 for spinach, other implies
    flesh; negative specifies preparation method {homemade,boiled,&c})
    and by obj->corpsenm (type of monster flesh) */
-FOOD("tin",                  75, MULTIGEN_SINGLE,	0, 10, 1, MAT_METAL,   0, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("tin", None, 1, 75, MULTIGEN_SINGLE,	0, 10, 1, MAT_METAL, EDIBLE_NORMAL, 0, 0, 0, 0, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 #undef FOOD
 
 /* potions ... */
@@ -2018,8 +2031,8 @@ POTION("paralysis",           "emerald",  1, 0, 42, 300, CLR_BRIGHT_GREEN, O1_NO
 POTION("speed",            "dark green",  1, FAST, 32, 200, CLR_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 POTION("levitation",             "cyan",  1, LEVITATION, 32, 200, CLR_CYAN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 POTION("hallucination",      "sky blue",  1, HALLUC, 40, 100, CLR_CYAN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-POTION("invisibility", "brilliant blue",  1, INVIS, 40, 150, CLR_BRIGHT_BLUE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-POTION("see invisible",       "magenta",  1, SEE_INVIS, 42, 50, CLR_MAGENTA, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("invisibility", "brilliant blue",  1, INVISIBILITY, 40, 150, CLR_BRIGHT_BLUE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("see invisible",       "magenta",  1, SEE_INVISIBILITY, 42, 50, CLR_MAGENTA, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 POTION("magic resistance",		 "gray",  1, ANTIMAGIC, 30, 100, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 POTION("healing",          "purple-red",  1, 0, 57, 100, CLR_MAGENTA, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 POTION("extra healing",          "puce",  1, 0, 47, 150, CLR_RED, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
@@ -2672,18 +2685,18 @@ OBJECT(OBJ("acid venom", "splash of venom"), None, None,
 		   0, 0, 0, 0, ediblesubtype, 0, 0, 0, 0, 0, 0, 0, \
            nutrition, color, 0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
 
-	REAGENT("thread of spider silk", None, 1,	50, MULTIGEN_SINGLE, 0, 1, 10, MAT_SILK, 0,					 2, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* STARTMARKER 1&2 */
+	REAGENT("thread of spider silk", None, 1,	50, MULTIGEN_1D3, 0, 1, 10, MAT_SILK, 0,					 2, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* STARTMARKER 1&2 */
 
-	REAGENT("clump of bat guano", None, 1,	100, MULTIGEN_SINGLE, 2, 2,  10, MAT_ORGANIC, EDIBLE_ROTTEN, 20, CLR_BROWN, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
+	REAGENT("clump of bat guano", None, 1,	100, MULTIGEN_1D3, 2, 2,  10, MAT_ORGANIC, EDIBLE_ROTTEN, 20, CLR_BROWN, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
 	REAGENT("ginseng root", None, 1, 150, MULTIGEN_1D3, 1, 3,  10, MAT_VEGGY, EDIBLE_NORMAL, 40, CLR_BROWN, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
 	REAGENT("mandrake root", None, 1, 50, MULTIGEN_1D3, 1, 3,  10, MAT_VEGGY, EDIBLE_NORMAL, 40, CLR_MAGENTA, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
 	REAGENT("heap of sporal powder", None, 1, 50, MULTIGEN_SINGLE, 1, 1,  10, MAT_ORGANIC, EDIBLE_NORMAL, 1, CLR_GRAY, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
 	REAGENT("sprig of wolfsbane", None, 1, 100, MULTIGEN_1D3, 1, 1,  10, MAT_VEGGY, EDIBLE_POISONOUS, 40, CLR_GREEN, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
 	REAGENT("clove of garlic", None, 1, 100, MULTIGEN_1D3, 1, 1,  10, MAT_VEGGY, EDIBLE_NORMAL, 40, CLR_WHITE, O1_EDIBLE_NONFOOD, O2_NONE, O3_NONE, PERMITTED_ALL),
-	REAGENT("bone", None, 1, 100, MULTIGEN_SINGLE, 1, 16, 10, MAT_BONE, 0, 40, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	REAGENT("bone", None, 1, 100, MULTIGEN_1D3, 1, 16, 10, MAT_BONE, 0, 40, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 	REAGENT("human skull", None, 1, 50, MULTIGEN_SINGLE, 1, 32, 10, MAT_BONE, 0, 40, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-	REAGENT("piece of wood", None, 1, 100, MULTIGEN_SINGLE, 1, 16, 10, MAT_WOOD, 0, 40, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-	REAGENT("pinch of sulfurous ash", None, 1, 100, MULTIGEN_SINGLE, 1, 1,  10, MAT_MINERAL, 0, 40, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	REAGENT("piece of wood", None, 1, 100, MULTIGEN_1D3, 1, 16, 10, MAT_WOOD, 0, 40, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	REAGENT("pinch of sulfurous ash", None, 1, 100, MULTIGEN_1D3, 1, 1,  10, MAT_MINERAL, 0, 40, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 
 	REAGENT("modronite ball", "alien ball-shaped object",						0, 0, MULTIGEN_SINGLE, 1, 16, 100, MAT_MODRONITE, 0, 160, CLR_CYAN, O1_NONE, O2_MODRON_ITEM, O3_NONE, PERMITTED_ALL),
 	REAGENT("modronite monopole", "alien pole-shaped object",					0, 0, MULTIGEN_SINGLE, 1, 16, 100, MAT_MODRONITE, 0, 160, CLR_CYAN, O1_NONE, O2_MODRON_ITEM, O3_NONE, PERMITTED_ALL),

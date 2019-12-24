@@ -1103,7 +1103,7 @@ int pm;
     case PM_STALKER:
         if (!Invis) {
             set_itimeout(&HInvis, (long) rn1(100, 50));
-            if (!Blind && !BInvis)
+            if (!Blind && !Blocks_Invisibility && !BInvis)
                 self_invis_message();
         } else {
             if (!(HInvis & INTRINSIC))
@@ -2208,7 +2208,7 @@ struct obj *otmp;
                 }
                 break;
             case RIN_INVISIBILITY:
-                if (!oldprop && !EInvis && !BInvis && !See_invisible
+                if (!oldprop && !EInvis && !BInvis && !Blocks_Invisibility && !See_invisible
                     && !Blind) {
                     newsym(u.ux, u.uy);
                     Your("body takes on a %s transparency...",
@@ -2596,7 +2596,7 @@ struct obj *otmp;
      * These problems with food should be checked in
      * order from most detrimental to least detrimental.
      */
-    if (cadaver && mnum != PM_ACID_BLOB && rotted > 5L && !Sick_resistance) {
+    if (objects[otmp->otyp].oc_edible_subtype == EDIBLE_TAINTED || (cadaver  && mnum != PM_ACID_BLOB && rotted > 5L && !Sick_resistance)) {
         /* Tainted meat */
         Sprintf(buf, "%s like %s could be tainted!  %s", foodsmell, it_or_they,
                 eat_it_anyway);
@@ -2605,7 +2605,7 @@ struct obj *otmp;
         else
             return 2;
     }
-    if (stoneorslime) {
+    if (objects[otmp->otyp].oc_edible_subtype == EDIBLE_HALLUCINATING || objects[otmp->otyp].oc_edible_subtype == EDIBLE_SICKENING || stoneorslime) {
         Sprintf(buf, "%s like %s could be something very dangerous!  %s",
                 foodsmell, it_or_they, eat_it_anyway);
         if (yn_function(buf, ynchars, 'n') == 'n')
@@ -2613,7 +2613,7 @@ struct obj *otmp;
         else
             return 2;
     }
-    if (otmp->orotten || (cadaver && rotted > 3L)) {
+    if (objects[otmp->otyp].oc_edible_subtype == EDIBLE_ROTTEN || otmp->orotten || (cadaver && rotted > 3L)) {
         /* Rotten */
         Sprintf(buf, "%s like %s could be rotten! %s",  foodsmell, it_or_they,
                 eat_it_anyway);
@@ -2622,7 +2622,7 @@ struct obj *otmp;
         else
             return 2;
     }
-    if (cadaver && poisonous(&mons[mnum]) && !Poison_resistance) {
+    if (objects[otmp->otyp].oc_edible_subtype == EDIBLE_POISONOUS || objects[otmp->otyp].oc_edible_subtype == EDIBLE_DEADLY_POISONOUS || (cadaver && poisonous(&mons[mnum]) && !Poison_resistance)) {
         /* poisonous */
         Sprintf(buf, "%s like %s might be poisonous!  %s", foodsmell,
                 it_or_they, eat_it_anyway);
@@ -2645,7 +2645,7 @@ struct obj *otmp;
         else
             return 2;
     }
-    if (cadaver && acidic(&mons[mnum]) && !Acid_resistance) {
+    if (objects[otmp->otyp].oc_edible_subtype == EDIBLE_ACIDIC || cadaver && acidic(&mons[mnum]) && !Acid_resistance) {
         Sprintf(buf, "%s rather acidic.  %s", foodsmell, eat_it_anyway);
         if (yn_function(buf, ynchars, 'n') == 'n')
             return 1;
@@ -2939,7 +2939,8 @@ doeat()
 			if (Sick_resistance) {
 				pline("It doesn't seem at all sickening, though...");
 			}
-			else {
+			else 
+			{
 				long sick_time;
 
 				sick_time = (long)rn1(10, 10);
@@ -2972,15 +2973,38 @@ doeat()
 				You("seem unaffected by the poison.");
 			consume_oeaten(otmp, 2); /* oeaten >>= 2 */
 		}
-		else if (objects[otmp->otyp].oc_edible_subtype == EDIBLE_SICKENING && !Sick_resistance) {
+		else if (objects[otmp->otyp].oc_edible_subtype == EDIBLE_DEADLY_POISONOUS) {
+			pline("Ecch - that must have been terribly poisonous!");
+			if (!Poison_resistance) {
+				losestr(d(2, 6));
+				losehp(d(5, 20), "poisonous food",
+					KILLED_BY_AN);
+			}
+			else
+				You("seem unaffected by the poison.");
+			consume_oeaten(otmp, 2); /* oeaten >>= 2 */
+		}
+		else if (objects[otmp->otyp].oc_edible_subtype == EDIBLE_SICKENING && !Sick_resistance)
+		{
 			You_feel("%ssick.", (Sick) ? "very " : "");
 			losehp(rnd(8), "sickening food", KILLED_BY_AN);
 			consume_oeaten(otmp, 2); /* oeaten >>= 2 */
-		} else if (otmp->otyp != FORTUNE_COOKIE
+		}
+		else if (objects[otmp->otyp].oc_edible_subtype == EDIBLE_HALLUCINATING && !Halluc_resistance)
+		{
+			int duration = d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_dicesize) + objects[otmp->otyp].oc_spell_dur_plus;
+
+			if(duration > 0)
+				(void)make_hallucinated(itimeout_incr(HHallucination, duration), TRUE, 0L);
+
+			consume_oeaten(otmp, 2); /* oeaten >>= 2 */
+		}
+		else if (otmp->otyp != FORTUNE_COOKIE
             && (otmp->cursed || otmp->orotten || objects[otmp->otyp].oc_edible_subtype == EDIBLE_ROTTEN || (!nonrotting_food(otmp->otyp)
                                  && (monstermoves - otmp->age)
                                         > (otmp->blessed ? 50L : 30L)
-                                 && (otmp->orotten || !rn2(7))))) {
+                                 && (otmp->orotten || !rn2(7))))) 
+		{
             if (rottenfood(otmp)) {
                 otmp->orotten = TRUE;
                 dont_start = TRUE;
@@ -2992,6 +3016,13 @@ doeat()
 
     /* re-calc the nutrition */
     basenutrit = (int) obj_nutrition(otmp);
+
+	if (!objects[otmp->otyp].oc_name_known && (objects[otmp->otyp].oc_flags3 & O3_EATING_IDENTIFIES))
+	{
+		makeknown(otmp->otyp);
+		if(objects[otmp->otyp].oc_edible_subtype != EDIBLE_NORMAL)
+			pline("That was %s!", an(cxname_singular(otmp)));
+	}
 
     debugpline3(
      "before rounddiv: victual.reqtime == %d, oeaten == %d, basenutrit == %d",

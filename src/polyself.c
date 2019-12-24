@@ -79,12 +79,12 @@ set_uasmon()
 
     PROPSET(STUNNED, (mdat == &mons[PM_STALKER] || is_bat(mdat)));
     PROPSET(HALLUC_RES, dmgtype(mdat, AD_HALU));
-    PROPSET(SEE_INVIS, perceives(mdat));
+    PROPSET(SEE_INVISIBILITY, perceives(mdat));
 	PROPSET(BLIND_TELEPAT, blind_telepathic(mdat));
 	PROPSET(TELEPAT, telepathic(mdat));
     /* note that Infravision uses mons[race] rather than usual mons[role] */
     PROPSET(INFRAVISION, infravision(Upolyd ? mdat : &mons[urace.malenum]));
-    PROPSET(INVIS, pm_invisible(mdat));
+    PROPSET(INVISIBILITY, pm_invisible(mdat));
     PROPSET(TELEPORT, can_teleport(mdat));
     PROPSET(TELEPORT_CONTROL, control_teleport(mdat));
     PROPSET(LEVITATION, is_floater(mdat));

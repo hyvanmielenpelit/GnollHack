@@ -23,6 +23,22 @@ OBJECT: '(', random
 OBJECT: random, random
 OBJECT: random, random
 OBJECT: random, random
+LOOP [2 + 1d4] {
+    IF [40%] {
+        OBJECT: ('%', "champignon"), random
+    } ELSE {
+        IF [33%] {
+           OBJECT: ('%', "fly agaris"), random
+        } ELSE {
+          IF [50%] {
+            OBJECT: ('%', "death cap"), random
+          } ELSE {
+            OBJECT: ('%', "magic mushroom"), random
+          }
+        }
+      }
+    }
+
 #
 MONSTER: ('g', "gnome"), random
 MONSTER: ('g', "gnome"), random
@@ -920,6 +936,12 @@ OBJECT:'*',random
 OBJECT:'*',random
 OBJECT:'(',random
 OBJECT:'(',random
+OBJECT:('%', "magic mushroom"),random
+OBJECT:('%', "magic mushroom"),random
+OBJECT:('%', "magic mushroom"),random
+OBJECT:('%', "champignon"),random
+OBJECT:('%', "champignon"),random
+OBJECT:('%', "champignon"),random
 OBJECT:random,random
 OBJECT:random,random
 OBJECT:random,random
@@ -1072,6 +1094,12 @@ OBJECT:'(',random
 OBJECT:random,random
 OBJECT:random,random
 OBJECT:random,random
+OBJECT:('%', "magic mushroom"),random
+OBJECT:('%', "magic mushroom"),random
+OBJECT:('%', "magic mushroom"),random
+OBJECT:('%', "champignon"),random
+OBJECT:('%', "champignon"),random
+OBJECT:('%', "champignon"),random
 # Random traps
 TRAP:random,random
 TRAP:random,random
@@ -1177,6 +1205,12 @@ OBJECT:'+',random
 OBJECT:random,random
 OBJECT:random,random
 OBJECT:random,random
+OBJECT:('%', "magic mushroom"),random
+OBJECT:('%', "magic mushroom"),random
+OBJECT:('%', "magic mushroom"),random
+OBJECT:('%', "champignon"),random
+OBJECT:('%', "champignon"),random
+OBJECT:('%', "champignon"),random
 TRAP:random,random
 TRAP:random,random
 TRAP:random,random

@@ -576,7 +576,20 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             break;
         }
 
-        Strcpy(buf, actualn);
+		if (!dknown)
+			Strcat(buf, dn);
+		else if (nn)
+			Strcat(buf, actualn);
+		else if (un) {
+			Strcat(buf, dn);
+			Strcat(buf, " called ");
+			Strcat(buf, un);
+		}
+		else
+			Strcat(buf, dn);
+
+
+        //Strcpy(buf, actualn);
         if (typ == TIN && known)
             tin_details(obj, omndx, buf);
         break;
@@ -3016,6 +3029,7 @@ STATIC_OVL NEARDATA const struct o_range o_ranges[] = {
 	{ "goggles", MISCELLANEOUS_CLASS, GOGGLES_OF_NIGHT, GOGGLES_OF_EYE_PROTECTION },
 	{ "gray stone", GEM_CLASS, LUCKSTONE, FLINT },
     { "grey stone", GEM_CLASS, LUCKSTONE, FLINT },
+	{ "mushroom", FOOD_CLASS, CHAMPIGNON, MAGIC_MUSHROOM },
 };
 
 /* alternate spellings; if the difference is only the presence or

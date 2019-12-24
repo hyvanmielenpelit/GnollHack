@@ -3254,9 +3254,9 @@ boolean ordinary;
 		/* have to test before changing HInvis but must change
          * HInvis before doing newsym().
          */
-        int msg = !Invis && !Blind && !BInvis;
+        int msg = !Invis && !Blind && !Blocks_Invisibility && !BInvis;
 
-        if (uarmo && BInvis && uarmo->otyp == MUMMY_WRAPPING) {
+        if (uarmo && Blocks_Invisibility && uarmo->otyp == MUMMY_WRAPPING) {
             /* A mummy wrapping absorbs it and protects you */
             You_feel("rather itchy under %s.", yname(uarmo));
             break;

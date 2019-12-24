@@ -880,7 +880,7 @@ int alter_type;
 
 static const char dknowns[] = { WAND_CLASS,   RING_CLASS, POTION_CLASS,
                                 SCROLL_CLASS, GEM_CLASS,  SPBOOK_CLASS,
-                                WEAPON_CLASS, TOOL_CLASS, 0 };
+                                WEAPON_CLASS, TOOL_CLASS, FOOD_CLASS, 0 };
 
 /* mksobj(): create a specific type of object */
 struct obj *

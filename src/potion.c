@@ -11,7 +11,6 @@ static NEARDATA int nothing, unkn;
 static NEARDATA const char beverages[] = { POTION_CLASS, 0 };
 
 STATIC_DCL long FDECL(itimeout, (long));
-STATIC_DCL long FDECL(itimeout_incr, (long, int));
 STATIC_DCL void NDECL(ghost_from_bottle);
 STATIC_DCL boolean
 FDECL(H2Opotion_dip, (struct obj *, struct obj *, BOOLEAN_P, const char *));
@@ -31,7 +30,7 @@ long val;
 }
 
 /* increment `old' by `incr' and force result to be valid intrinsic timeout */
-STATIC_OVL long
+long
 itimeout_incr(old, incr)
 long old;
 int incr;
@@ -751,13 +750,13 @@ register struct obj *otmp;
         break;
     case SPE_INVISIBILITY:
         /* spell cannot penetrate mummy wrapping */
-        if (uarmo && BInvis && uarmo->otyp == MUMMY_WRAPPING) {
+        if (uarmo && Blocks_Invisibility && uarmo->otyp == MUMMY_WRAPPING) {
             You_feel("rather itchy under %s.", yname(uarmo));
             break;
         }
         /* FALLTHRU */
     case POT_INVISIBILITY:
-        if (Invis || Blind || BInvis) {
+        if (Invis || Blind || Blocks_Invisibility || BInvis) {
             nothing++;
         } else {
             self_invis_message();

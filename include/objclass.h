@@ -497,6 +497,8 @@ struct objclass {
 #define EDIBLE_ACIDIC 3 
 #define EDIBLE_POISONOUS 4 
 #define EDIBLE_TAINTED 5 
+#define EDIBLE_HALLUCINATING 6 
+#define EDIBLE_DEADLY_POISONOUS 7 
 
 
 /* spells */
@@ -660,8 +662,8 @@ struct objclass {
 #define O3_IGNITABLE								0x00004000	
 #define O3_RELATIVE_AGE								0x00008000	
 #define O3_ELEMENTAL_ENCHANTABLE					0x00010000
-/* free bit */
-/* free bit */
+#define O3_PUDDING									0x00020000	
+#define O3_EATING_IDENTIFIES						0x00040000	
 /* free bit */
 /* free bit */
 

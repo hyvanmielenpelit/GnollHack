@@ -2384,8 +2384,8 @@ struct obj *obj;
             } else
                 (void) float_down(I_SPECIAL | TIMEOUT, W_ARTI);
             break;
-        case INVIS:
-            if (BInvis || Blind)
+        case INVISIBILITY:
+            if (Blocks_Invisibility || Blind)
                 goto nothing_special;
             newsym(u.ux, u.uy);
             if (on)

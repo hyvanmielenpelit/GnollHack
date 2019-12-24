@@ -137,8 +137,8 @@ struct obj {
 /* property blocking */
 /* This only allows for one blocking item per property */
 #define w_blocks(o, m) \
-    ((o->otyp == MUMMY_WRAPPING && ((m) & W_ARMC))                          \
-         ? INVIS                                                            \
+    ((o->otyp == MUMMY_WRAPPING && ((m) & W_ARMO))                          \
+         ? INVISIBILITY                                                            \
          : (o->otyp == CORNUTHAUM && ((m) & W_ARMH) && !Role_if(PM_WIZARD)) \
                ? CLAIRVOYANT                                                \
                : 0)
@@ -290,9 +290,7 @@ struct obj {
 #define polyfodder(obj) (ofood(obj) && pm_to_cham((obj)->corpsenm) != NON_PM)
 #define mlevelgain(obj) (ofood(obj) && (obj)->corpsenm >= LOW_PM && (mons[(obj)->corpsenm].mconveys & MR_LEVEL_GAIN))
 #define mhealup(obj) (ofood(obj) && (obj)->corpsenm == PM_NURSE)
-#define Is_pudding(o)                                                 \
-    (o->otyp == GLOB_OF_GRAY_OOZE || o->otyp == GLOB_OF_BROWN_PUDDING \
-     || o->otyp == GLOB_OF_GREEN_SLIME || o->otyp == GLOB_OF_BLACK_PUDDING)
+#define Is_pudding(o) (objects[(o)->otyp].oc_flags3 & O3_PUDDING)
 
 /* Containers */
 #define carried(o) ((o)->where == OBJ_INVENT)
@@ -331,22 +329,29 @@ struct obj {
 /* Elven gear */
 #define is_elven_weapon(otmp)                                             \
     (otmp->oclass == WEAPON_CLASS && is_elven_obj(otmp))
-#define is_elven_obj(otmp) \
-	((objects[otmp->otyp].oc_flags2 & O2_ELVEN_ITEM) != 0)
+#define is_elven_obj(otmp) ((objects[otmp->otyp].oc_flags2 & O2_ELVEN_ITEM) != 0)
 
 /* Orcish gear */
-#define is_orcish_obj(otmp)                                           \
-    ((objects[otmp->otyp].oc_flags2 & O2_ORCISH_ITEM) != 0)
+#define is_orcish_obj(otmp) ((objects[otmp->otyp].oc_flags2 & O2_ORCISH_ITEM) != 0)
 
 /* Dwarvish gear */
-#define is_dwarvish_obj(otmp)                                  \
-    ((objects[otmp->otyp].oc_flags2 & O2_DWARVEN_ITEM) != 0)
+#define is_dwarvish_obj(otmp) ((objects[otmp->otyp].oc_flags2 & O2_DWARVEN_ITEM) != 0)
 
 /* Gnomish gear */
 #define is_gnomish_obj(otmp) ((objects[otmp->otyp].oc_flags2 & O2_GNOMISH_ITEM) != 0)
 
 /* Gnollish gear */
 #define is_gnollish_obj(otmp) ((objects[otmp->otyp].oc_flags2 & O2_GNOLLISH_ITEM) != 0)
+
+/* Modron gear */
+#define is_modron_obj(otmp) ((objects[otmp->otyp].oc_flags2 & O2_MODRON_ITEM) != 0)
+
+/* Demon gear */
+#define is_demon_obj(otmp) ((objects[otmp->otyp].oc_flags2 & O2_DEMON_ITEM) != 0)
+
+/* Angel gear */
+#define is_angel_obj(otmp) ((objects[otmp->otyp].oc_flags2 & O2_ANGEL_ITEM) != 0)
+
 
 /* Light sources */
 #define is_candle(otmp) \

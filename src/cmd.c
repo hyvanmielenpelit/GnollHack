@@ -3140,10 +3140,10 @@ int final;
         you_can("see", from_what(-BLINDED)); /* Eyes of the Overworld */
     if (See_invisible) {
         if (!Blind)
-            enl_msg(You_, "see", "saw", " invisible", from_what(SEE_INVIS));
+            enl_msg(You_, "see", "saw", " invisible", from_what(SEE_INVISIBILITY));
         else
             enl_msg(You_, "will see", "would have seen",
-                    " invisible when not blind", from_what(SEE_INVIS));
+                    " invisible when not blind", from_what(SEE_INVISIBILITY));
     }
 	if (Enhanced_vision)
 		you_have("enhanced vision", from_what(ENHANCED_VISION));
@@ -3247,13 +3247,13 @@ int final;
         you_are(buf, from_what(ADORNED));
     }
     if (Invisible)
-        you_are("invisible", from_what(INVIS));
+        you_are("invisible", from_what(INVISIBILITY));
     else if (Invis)
-        you_are("invisible to others", from_what(INVIS));
+        you_are("invisible to others", from_what(INVISIBILITY));
     /* ordinarily "visible" is redundant; this is a special case for
        the situation when invisibility would be an expected attribute */
-    else if ((HInvis || EInvis) && BInvis)
-        you_are("visible", from_what(-INVIS));
+    else if ((HInvis || EInvis) && Blocks_Invisibility)
+        you_are("visible", from_what(-INVISIBILITY));
     if (Displaced)
         you_are("displaced", from_what(DISPLACED));
     if (Stealth)

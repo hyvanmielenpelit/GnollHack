@@ -529,7 +529,7 @@ boolean on, silently;
 
     if (on) {
         switch (which) {
-        case INVIS:
+        case INVISIBILITY:
             mon->minvis = !mon->invis_blkd;
             break;
         case FAST: {
@@ -574,7 +574,7 @@ boolean on, silently;
         }
     } else { /* off */
         switch (which) {
-        case INVIS:
+        case INVISIBILITY:
             mon->minvis = mon->perminvis;
             break;
         case FAST: {
@@ -617,7 +617,7 @@ boolean on, silently;
        However, since monsters don't wield armor, we don't have to guard
        against that and can get away with a blanket worn-mask value. */
     switch (w_blocks(obj, ~0L)) {
-    case INVIS:
+    case INVISIBILITY:
         mon->invis_blkd = on ? 1 : 0;
         mon->minvis = on ? 0 : mon->perminvis;
         break;

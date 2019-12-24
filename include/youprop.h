@@ -183,8 +183,8 @@
 #define Hunger (HHunger || EHunger)
 
 /*** Vision and senses ***/
-#define HSee_invisible u.uprops[SEE_INVIS].intrinsic
-#define ESee_invisible u.uprops[SEE_INVIS].extrinsic
+#define HSee_invisible u.uprops[SEE_INVISIBILITY].intrinsic
+#define ESee_invisible u.uprops[SEE_INVISIBILITY].extrinsic
 #define See_invisible (HSee_invisible || ESee_invisible)
 
 #define HTelepat u.uprops[TELEPAT].intrinsic
@@ -283,10 +283,15 @@
 /*** Appearance and behavior ***/
 #define Adornment u.uprops[ADORNED].extrinsic
 
-#define HInvis u.uprops[INVIS].intrinsic
-#define EInvis u.uprops[INVIS].extrinsic
-#define BInvis u.uprops[INVIS].blocked
-#define Invis ((HInvis || EInvis) && !BInvis)
+#define HBlocks_Invisibility u.uprops[BLOCKS_INVISIBILITY].intrinsic
+#define EBlocks_Invisibility u.uprops[BLOCKS_INVISIBILITY].extrinsic
+#define BBlocks_Invisibility u.uprops[BLOCKS_INVISIBILITY].blocked
+#define Blocks_Invisibility ((HBlocks_Invisibility || EBlocks_Invisibility) && !BBlocks_Invisibility)
+
+#define HInvis u.uprops[INVISIBILITY].intrinsic
+#define EInvis u.uprops[INVISIBILITY].extrinsic
+#define BInvis u.uprops[INVISIBILITY].blocked
+#define Invis ((HInvis || EInvis) && !BInvis && !Blocks_Invisibility)
 #define Invisible (Invis && !See_invisible)
 /* Note: invisibility also hides inventory and steed */
 

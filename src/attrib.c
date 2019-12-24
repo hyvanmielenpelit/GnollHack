@@ -51,7 +51,7 @@ static const struct innate
 
   mon_abil[] = { { 1, FAST, "", "" },
                  { 1, SLEEP_RES, "", "" },
-                 { 4, SEE_INVIS, "", "" },
+                 { 4, SEE_INVISIBILITY, "", "" },
 				 { 7, POISON_RES, "healthy", "" },
 				 { 10, JUMPING, "jumpy", "" },
 				 { 13, SICK_RES, "even healthier", "" },
@@ -72,7 +72,7 @@ static const struct innate
 
   ran_abil[] = { { 1, SEARCHING, "", "" },
                  { 7, STEALTH, "stealthy", "" },
-                 { 15, SEE_INVIS, "", "" },
+                 { 15, SEE_INVISIBILITY, "", "" },
                  { 0, 0, 0, 0 } },
 
   rog_abil[] = { { 1, STEALTH, "", "" },
@@ -86,7 +86,7 @@ static const struct innate
   tou_abil[] = { { 10, SEARCHING, "perceptive", "" },
 				 { 15, SICK_RES, "healthy", "" },
 				 { 20, POISON_RES, "hardy", "" },
-				 { 25, SEE_INVIS, "", "" },
+				 { 25, SEE_INVISIBILITY, "", "" },
 				 { 0, 0, 0, 0 } },
 
   val_abil[] = { { 1, COLD_RES, "", "" },
@@ -660,8 +660,8 @@ update_extrinsics()
 
 			int p = 0;
 			/* Properties blocked by item */
-			if (!inappr && (p = w_blocks(uitem, bit)) != 0)
-				u.uprops[p].blocked |= bit;
+			//if (!inappr && (p = w_blocks(uitem, bit)) != 0)
+			//	u.uprops[p].blocked |= bit;
 
 			/* add artifact intrinsics */
 			if (!inappr && uitem->oartifact)
@@ -1220,7 +1220,7 @@ int propid;
 {
     if (!propid)
         return;
-    if (propid == WARNING|| propid == SEE_INVIS)
+    if (propid == WARNING|| propid == SEE_INVISIBILITY)
         see_monsters();
 }
 
@@ -1523,8 +1523,8 @@ int propidx; /* special cases can have negative values */
                     && ublindf->oartifact == ART_EYES_OF_THE_OVERWORLD)
                     Sprintf(buf, because_of, bare_artifactname(ublindf));
                 break;
-            case INVIS:
-                if (u.uprops[INVIS].blocked & W_ARMO)
+            case INVISIBILITY:
+                if (u.uprops[INVISIBILITY].blocked & W_ARMO)
                     Sprintf(buf, because_of,
                             ysimple_name(uarmo)); /* mummy wrapping */
                 break;

@@ -2039,6 +2039,7 @@ E const char *NDECL(udeadinside);
 
 E void FDECL(set_itimeout, (long *, long));
 E void FDECL(incr_itimeout, (long *, int));
+E long FDECL(itimeout_incr, (long, int));
 E void FDECL(make_confused, (long, BOOLEAN_P));
 E void FDECL(make_stunned, (long, BOOLEAN_P));
 E void FDECL(make_sick, (long, const char *, BOOLEAN_P, int));

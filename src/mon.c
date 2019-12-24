@@ -357,7 +357,7 @@ boolean createcorpse;
 		{
 			obj = mksobj_at(PINCH_OF_SULFUROUS_ASH, x, y, TRUE, FALSE);
 			if(additionalash > 1)
-				obj->quan = rnd(1+additionalash);
+				obj->quan = rnd(2+additionalash);
 			else
 				obj->quan = 1;
 			obj->owt = weight(obj);
@@ -499,13 +499,18 @@ boolean createcorpse;
 	case PM_VAMPIRE_BAT:
 	case PM_GIANT_BAT:
 	case PM_HELL_BAT:
-		if (mndx == PM_BAT ? !rn2(5) : mndx == PM_GIANT_BAT ? !rn2(4) : !rn2(3))
+		if (mndx == PM_BAT ? !rn2(3) : mndx == PM_GIANT_BAT ? !rn2(2) : 1)
 		{
 			obj = mksobj_at(CLUMP_OF_BAT_GUANO, x, y, TRUE, FALSE);
-			obj->quan = (mndx == PM_HELL_BAT ? rnd(2) : mndx == PM_VAMPIRE_BAT ? rnd(2) : mndx == PM_GIANT_BAT ? 1 : 1);
+			obj->quan = (mndx == PM_HELL_BAT ? rnd(4) : mndx == PM_VAMPIRE_BAT ? rnd(3) : mndx == PM_GIANT_BAT ? rnd(2) : 1);
 			obj->owt = weight(obj);
 		}
 		goto default_1;
+	case PM_OCHRE_JELLY:
+		sporequan++;
+	case PM_SPOTTED_JELLY:
+	case PM_BLUE_JELLY:
+		sporequan++;
 	case PM_SHRIEKER:
 	case PM_VIOLET_FUNGUS:
 		sporequan++;

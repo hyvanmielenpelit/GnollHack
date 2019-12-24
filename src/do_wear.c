@@ -303,7 +303,7 @@ Cloak_on(VOID_ARGS)
     case CLOAK_OF_INVISIBILITY:
         /* since cloak of invisibility was worn, we know mummy wrapping
            wasn't, so no need to check `oldprop' against blocked */
-        if (!(u.uprops[INVIS].extrinsic & ~WORN_CLOAK) && !HInvis && !Blind) {
+        if (!(u.uprops[INVISIBILITY].extrinsic & ~WORN_CLOAK) && !HInvis && !Blocks_Invisibility && !Blind) {
             makeknown(uarmc->otyp);
             newsym(u.ux, u.uy);
             pline("Suddenly you can%s yourself.",
@@ -353,7 +353,8 @@ Cloak_off(VOID_ARGS)
         toggle_displacement(otmp, oldprop, FALSE);
         break;
     case CLOAK_OF_INVISIBILITY:
-        if (!wasinvisible && Invis && !Blind) {
+        if (wasinvisible && !Invis && !Blind) 
+		{
             makeknown(CLOAK_OF_INVISIBILITY);
             newsym(u.ux, u.uy);
             pline("Suddenly you can %s.",
@@ -728,7 +729,8 @@ Robe_on(VOID_ARGS)
 		break;
 	case MUMMY_WRAPPING:
 		/* Note: it's already being worn, so we have to cheat here. */
-		if ((HInvis || EInvis) && !Blind) {
+		if ((HInvis || EInvis) && !(BInvis & ~W_ARMO) && 
+			!HBlocks_Invisibility && !(EBlocks_Invisibility & ~W_ARMO) && !Blind && !Invis) {
 			newsym(u.ux, u.uy);
 			You("can %s!", See_invisible ? "no longer see through yourself"
 				: see_yourself);
@@ -744,11 +746,17 @@ Robe_on(VOID_ARGS)
 int
 Robe_off(VOID_ARGS)
 {
+	boolean wasinvisible = Invis;
+	struct obj* ud = uarmo;
+
 	context.takeoff.mask &= ~W_ARMO;
 
 	/* no shirt currently requires special handling when taken off, but we
 	   keep this uncommented in case somebody adds a new one which does */
-	switch (uarmo->otyp) {
+
+	setworn((struct obj*) 0, W_ARMO);
+
+	switch (ud->otyp) {
 	case ROBE:
 	case GNOLLISH_HAIRCLOTH_ROBE:
 	case CLERICAL_GOWN:
@@ -763,17 +771,16 @@ Robe_off(VOID_ARGS)
 	case ROBE_OF_THE_ARCHMAGI:
 		break;
 	case MUMMY_WRAPPING:
-		if (Invis && !Blind) {
+		if (!wasinvisible && Invis && !Blind) {
 			newsym(u.ux, u.uy);
 			You("can %s.", See_invisible ? "see through yourself"
 				: "no longer see yourself");
 		}
 		break;
 	default:
-		impossible(unknown_type, c_robe, uarmo->otyp);
+		impossible(unknown_type, c_robe, ud->otyp);
 	}
 
-	setworn((struct obj*) 0, W_ARMO);
 	context.takeoff.cancelled_don = FALSE;
 
 	return 0;
@@ -1217,7 +1224,7 @@ register struct obj *obj;
         }
         break;
     case RIN_INVISIBILITY:
-        if (!oldprop && !HInvis && !BInvis && !Blind) {
+        if (Invis && !oldprop && !HInvis && !BInvis && !Blocks_Invisibility && !Blind) {
             learnring(obj, TRUE);
             newsym(u.ux, u.uy);
             self_invis_message();
@@ -1375,7 +1382,8 @@ boolean gone;
         }
         break;
     case RIN_INVISIBILITY:
-        if (!Invis && !BInvis && !Blind) {
+        if (!Invis && !BInvis && !Blocks_Invisibility && !Blind)
+		{
             newsym(u.ux, u.uy);
             Your("body seems to unfade%s.",
                  See_invisible ? " completely" : "..");

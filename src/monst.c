@@ -2046,7 +2046,7 @@ struct permonst _mons2[] = {
      *
      * must be in the same order as the pudding globs in objects.c
      */
-    MON("gray ooze", S_PUDDING, LVL(3, 1, 8, 10, 0, 0), (G_GENO | G_NOCORPSE | 2),
+    MON("gray ooze", S_PUDDING, LVL(3, 1, 8, 10, 0, 0), (G_GENO | G_NOCORPSE | 2), /* STARTMARKER FOR GLOBS */
         A(ATTK(AT_BITE, AD_RUST, 2, 8, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(500, 250, MS_SILENT, MZ_MEDIUM), STATS(6, 7, 15, 1, 1, 1),
@@ -2073,7 +2073,7 @@ struct permonst _mons2[] = {
         M1_BREATHLESS | M1_AMORPHOUS | M1_NOEYES | M1_NOLIMBS | M1_NOHEAD
             | M1_MINDLESS | M1_OMNIVORE | M1_ACID | M1_POIS,
         M2_HOSTILE | M2_NEUTER, M3_REGENERATES_LOST_BODY_PARTS, M4_NONE, 11, CLR_GREEN),
-    MON("black pudding", S_PUDDING, LVL(10, 6, 6, 16, 0, 0),
+    MON("black pudding", S_PUDDING, LVL(10, 6, 6, 16, 0, 0),  /* ENDMARKER FOR GLOBS */
         (G_GENO | G_NOCORPSE | 1),
         A(ATTK(AT_BITE, AD_CORR, 3, 8, 0, 0), ATTK(AT_NONE, AD_CORR, 0, 0, 0, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),

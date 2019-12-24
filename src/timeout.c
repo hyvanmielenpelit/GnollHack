@@ -46,8 +46,8 @@ const struct propname {
 	{ FAST, "fast" }, /* timed 'FAST' is very fast */
 	{ CLAIRVOYANT, "clairvoyant" },
 	{ DETECT_MONSTERS, "monster detection" },
-	{ SEE_INVIS, "see invisible" },
-	{ INVIS, "invisible" },
+	{ SEE_INVISIBILITY, "see invisible" },
+	{ INVISIBILITY, "invisible" },
 	/* properties beyond here don't have timed values during normal play,
 	   so there's not much point in trying to order them sensibly;
 	   they're either on or off based on equipment, role, actions, &c */
@@ -666,16 +666,16 @@ nh_timeout()
 				if (!Deaf)
 					stop_occupation();
 				break;
-			case INVIS:
+			case INVISIBILITY:
 				newsym(u.ux, u.uy);
-				if (!Invis && !BInvis && !Blind) {
+				if (!Invis && !Blocks_Invisibility && !BInvis && !Blind) {
 					You(!See_invisible
 						? "are no longer invisible."
 						: "can no longer see through yourself.");
 					stop_occupation();
 				}
 				break;
-			case SEE_INVIS:
+			case SEE_INVISIBILITY:
 				set_mimic_blocking(); /* do special mimic handling */
 				see_monsters();       /* make invis mons appear */
 				newsym(u.ux, u.uy);   /* make self appear */
@@ -932,10 +932,10 @@ nh_timeout()
 					You_feel("you are starting to slow down%s.",
 						Fast ? " a bit" : "");
 				break;
-			case INVIS:
+			case INVISIBILITY:
 				You("are starting to feel more visible.");
 				break;
-			case SEE_INVIS:
+			case SEE_INVISIBILITY:
 				Your("vision of invisible monsters is becoming less clear.");
 				break;
 			case LEVITATION:
