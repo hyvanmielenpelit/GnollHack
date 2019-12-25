@@ -174,11 +174,11 @@ struct materialcomponentlist matlists[] =
 	},
 
 	{ SPE_TELEPORT_AWAY,
-		"Corpse of leprechaun",
+		"Heap of sporal powder",
 		STRANGE_OBJECT,
 		5,
 		{
-			{CORPSE, PM_LEPRECHAUN, 1, MATCOMP_NO_FLAGS},
+			{HEAP_OF_SPORAL_POWDER, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
 			NO_MATCOMP,
 			NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
 		}

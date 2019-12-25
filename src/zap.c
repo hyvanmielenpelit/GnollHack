@@ -3856,7 +3856,8 @@ boolean ordinary;
         }
         learn_it = TRUE;
         ustatusline();
-        break;
+		enlightenment(MAGICENLIGHTENMENT, ENL_GAMEINPROGRESS);
+		break;
     }
     case SPE_STONE_TO_FLESH: {
 		damage = 0;

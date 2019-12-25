@@ -2490,7 +2490,7 @@ WAND("cancellation", "platinum", 45, 200, 1, IMMEDIATE, 0, 10, 0, 0, 0, 0, 1, 20
 WAND("teleportation", "iridium", 45, 200, 1, IMMEDIATE, 0, 10, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_METAL, CLR_BRIGHT_CYAN, O1_NONE, O2_NONE, O3_NONE),
 WAND("opening",          "zinc", 25, 150, 1, IMMEDIATE, 0, 12, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_METAL, HI_METAL, O1_NONE, O2_NONE, O3_NONE),
 WAND("locking",      "aluminum", 25, 150, 1, IMMEDIATE, 0, 12, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_METAL, HI_METAL, O1_NONE, O2_NONE, O3_NONE),
-WAND("probing",       "uranium", 30, 150, 1, IMMEDIATE, 0, 12, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_METAL, HI_METAL, O1_NONE, O2_NONE, O3_NONE),
+WAND("probing",       "uranium", 30, 200, 1, IMMEDIATE, 0, 12, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_METAL, HI_METAL, O1_NONE, O2_NONE, O3_NONE),
 WAND("digging",          "iron", 50, 150, 1, RAY, RAY_WND_DIGGING,			10, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE),
 WAND("magic missile",   "steel", 50, 150, 1, RAY, RAY_WND_MAGIC_MISSILE,	12, 0, 3, 4, 0, 0, 0, 0, S1_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE),
 WAND("fire",        "hexagonal", 40, 175, 1, RAY, RAY_WND_FIRE,				 8, 0, 8, 6, 0, 0, 0, 0, S1_NONE, MAT_IRON, HI_METAL, O1_FIRE_RESISTANT, O2_NONE, O3_NONE),
