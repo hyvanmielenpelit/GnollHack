@@ -1087,7 +1087,8 @@ int after; /* this is extra fast monster movement */
     if (tunnels(mtmp->data)
         && !Is_rogue_level(&u.uz)) /* same restriction as m_move() */
         allowflags |= ALLOW_DIG;
-    cnt = mfndpos(mtmp, poss, info, allowflags);
+
+	cnt = mfndpos(mtmp, poss, info, allowflags);
 
     /* Normally dogs don't step on cursed items, but if they have no
      * other choice they will.  This requires checking ahead of time

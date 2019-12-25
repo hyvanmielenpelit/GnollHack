@@ -1994,18 +1994,14 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
                         }
 
 						
-						if (mmflag & ALLOW_TM)
+						if ((mmflag & ALLOW_TM) && !mtmp2->mtame)
 						{
-							if (!mtmp2->mtame)
-								continue;
 							info[cnt] |= ALLOW_TM;
 						}
 
-						if (!(mmflag & ALLOW_M))
+						mmflag |= mm_displacement(mon, mtmp2);
+						if (mmflag & ALLOW_MDISP)
 						{
-                            mmflag = flag | mm_displacement(mon, mtmp2);
-                            if (!(mmflag & ALLOW_MDISP))
-                                continue;
                             info[cnt] |= ALLOW_MDISP;
                         }
 
@@ -2015,25 +2011,21 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
                     if (level.flags.has_temple && *in_rooms(nx, ny, TEMPLE)
                         && !*in_rooms(x, y, TEMPLE)
                         && in_your_sanctuary((struct monst *) 0, nx, ny)) {
-                        if (!(flag & ALLOW_SANCT))
-                            continue;
-                        info[cnt] |= ALLOW_SANCT;
+                        if (flag & ALLOW_SANCT)
+	                        info[cnt] |= ALLOW_SANCT;
                     }
                 }
                 if (checkobj && sobj_at(CLOVE_OF_GARLIC, nx, ny)) {
                     if (flag & NOGARLIC)
-                        continue;
-                    info[cnt] |= NOGARLIC;
+	                    info[cnt] |= NOGARLIC;
                 }
                 if (checkobj && sobj_at(BOULDER, nx, ny)) {
-                    if (!(flag & ALLOW_ROCK))
-                        continue;
-                    info[cnt] |= ALLOW_ROCK;
+                    if (flag & ALLOW_ROCK)
+	                    info[cnt] |= ALLOW_ROCK;
                 }
                 if (monseeu && onlineu(nx, ny)) {
                     if (flag & NOTONL)
-                        continue;
-                    info[cnt] |= NOTONL;
+	                    info[cnt] |= NOTONL;
                 }
                 /* check for diagonal tight squeeze */
                 if (nx != x && ny != y && bad_rock(mdat, x, ny)
