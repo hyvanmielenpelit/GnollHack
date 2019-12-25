@@ -3337,7 +3337,7 @@ int final;
     /*** Physical attributes ***/
     if (Regeneration)
         enl_msg("You regenerate", "", "d", " hit points", from_what(REGENERATION));
-	if (Regeneration)
+	if (Energy_regeneration)
 		enl_msg("You regenerate", "", "d", " mana", from_what(ENERGY_REGENERATION));
 	if (Slow_digestion)
         you_have("slower digestion", from_what(SLOW_DIGESTION));
