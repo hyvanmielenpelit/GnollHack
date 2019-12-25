@@ -945,14 +945,15 @@ OBJECT:'*',random
 OBJECT:'(',random
 OBJECT:'(',random
 OBJECT:('%', "magic mushroom"),random
-[50%]: OBJECT:('%', "magic mushroom"),random
-OBJECT:('%', "champignon"),random
+[25%]: OBJECT:('%', "magic mushroom"),random
 [50%]: OBJECT:('%', "champignon"),random
+[25%]: OBJECT:('%', "champignon"),random
 OBJECT:('%', "death cap"),random
-[50%]: OBJECT:('%', "death cap"),random
+[25%]: OBJECT:('%', "death cap"),random
 OBJECT:('%', "healing mushroom"),random
 [50%]: OBJECT:('%', "healing mushroom"),random
-[50%]: OBJECT:('%', "mana mushroom"),random
+[25%]: OBJECT:('%', "mana mushroom"),random
+OBJECT:('%', "panther cap"),random
 
 OBJECT:random,random
 OBJECT:random,random
@@ -1107,14 +1108,15 @@ OBJECT:random,random
 OBJECT:random,random
 OBJECT:random,random
 OBJECT:('%', "magic mushroom"),random
-[50%]: OBJECT:('%', "magic mushroom"),random
-OBJECT:('%', "champignon"),random
+[25%]: OBJECT:('%', "magic mushroom"),random
 [50%]: OBJECT:('%', "champignon"),random
+[25%]: OBJECT:('%', "champignon"),random
 OBJECT:('%', "death cap"),random
-[50%]: OBJECT:('%', "death cap"),random
+[25%]: OBJECT:('%', "death cap"),random
 OBJECT:('%', "healing mushroom"),random
 [50%]: OBJECT:('%', "healing mushroom"),random
-[50%]: OBJECT:('%', "mana mushroom"),random
+[25%]: OBJECT:('%', "mana mushroom"),random
+OBJECT:('%', "panther cap"),random
 # Random traps
 TRAP:random,random
 TRAP:random,random
@@ -1221,14 +1223,15 @@ OBJECT:random,random
 OBJECT:random,random
 OBJECT:random,random
 OBJECT:('%', "magic mushroom"),random
-[50%]: OBJECT:('%', "magic mushroom"),random
-OBJECT:('%', "champignon"),random
+[25%]: OBJECT:('%', "magic mushroom"),random
 [50%]: OBJECT:('%', "champignon"),random
+[25%]: OBJECT:('%', "champignon"),random
 OBJECT:('%', "death cap"),random
-[50%]: OBJECT:('%', "death cap"),random
+[25%]: OBJECT:('%', "death cap"),random
 OBJECT:('%', "healing mushroom"),random
 [50%]: OBJECT:('%', "healing mushroom"),random
-[50%]: OBJECT:('%', "mana mushroom"),random
+[25%]: OBJECT:('%', "mana mushroom"),random
+OBJECT:('%', "panther cap"),random
 TRAP:random,random
 TRAP:random,random
 TRAP:random,random

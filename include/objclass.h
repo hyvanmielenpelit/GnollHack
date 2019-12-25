@@ -259,7 +259,7 @@ enum obj_food_types {
 	FOODTYPE_LEAF = 6,
 	FOODTYPE_KELP = 7,
 	FOODTYPE_BREAD = 8,
-	FOODTYPE_PASTRY = 9,
+	FOODTYPE_CAKE = 9,
 	FOODTYPE_CANDY = 10,
 	FOODTYPE_MUSHROOM = 11,
 	FOODTYPE_MOLD = 12,
@@ -273,7 +273,7 @@ enum obj_food_types {
 
 static const char* food_type_names[] = {
 	"general food", "ration", "fruit", "vegetable", "nuts", "seeds", "leaf", "kelp",  "bread",
-	"pastry", "candy", "mushroom", "mold", "glob", "egg", "meat", "jelly", "corpse",  "tin",
+	"cake", "candy", "mushroom", "mold", "glob", "egg", "meat", "jelly", "corpse",  "tin",
 };
 
 enum obj_miscellaneous_types {

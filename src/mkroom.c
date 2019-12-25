@@ -827,7 +827,7 @@ mkgarden()
 			{
 				levl[sx][sy].typ = GRASS;
 				/* Buried items */
-				if (!rn2(3))
+				if (rn2(100) < 42) /* Half-way between !rn2(2) and !rn2(3) */
 				{
 					int itemtype = MANDRAKE_ROOT;
 					int quan = 1;
@@ -836,15 +836,15 @@ mkgarden()
 					{
 					case 0:
 						itemtype = MANDRAKE_ROOT;
-						quan = rnd(2);
+						quan = 1 + !rn2(5) ? 1 : 0;
 						break;
 					case 1:
 						itemtype = GINSENG_ROOT;
-						quan = rnd(3);
+						quan = 1 + !rn2(3) ? 1 : 0 + !rn2(5) ? 1 : 0;
 						break;
 					case 2:
 						itemtype = CARROT;
-						quan = rnd(5);
+						quan = rnd(3);
 						break;
 					default:
 						break;
@@ -866,7 +866,7 @@ mkgarden()
 					int itemtype = SPRIG_OF_WOLFSBANE;
 					int quan = 1;
 
-					switch (rn2(14))
+					switch (rn2(16))
 					{
 					case 0:
 						itemtype = CLOVE_OF_GARLIC;
@@ -892,12 +892,9 @@ mkgarden()
 						break;
 					case 7:
 					case 8:
+					case 9:
 						itemtype = CHAMPIGNON;
 						quan = rnd(3);
-						break;
-					case 9:
-						itemtype = MANA_MUSHROOM;
-						quan = rnd(2);
 						break;
 					case 10:
 						itemtype = DEATH_CAP;
@@ -914,6 +911,14 @@ mkgarden()
 					case 13:
 						itemtype = HEALING_MUSHROOM;
 						quan = rnd(2);
+						break;
+					case 14:
+						itemtype = MANA_MUSHROOM;
+						quan = rnd(2);
+						break;
+					case 15:
+						itemtype = PANTHER_CAP;
+						quan = 1;
 						break;
 					default:
 						break;

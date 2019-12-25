@@ -1470,6 +1470,8 @@ register struct trobj *trop;
 		{
 			if (otyp == ORIENTAL_SILK_SACK)
 			{
+				(void)add_to_container(obj, mksobj(GINSENG_ROOT, TRUE, FALSE, TRUE));
+				(void)add_to_container(obj, mksobj(GINSENG_ROOT, TRUE, FALSE, TRUE));
 				(void)add_to_container(obj, mksobj(APPLE, TRUE, FALSE, TRUE));
 				(void)add_to_container(obj, mksobj(APPLE, TRUE, FALSE, TRUE));
 				(void)add_to_container(obj, mksobj(APPLE, TRUE, FALSE, TRUE));

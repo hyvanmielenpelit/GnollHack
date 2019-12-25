@@ -20,7 +20,8 @@ STATIC_DCL void NDECL(do_reset_eat);
 STATIC_DCL void FDECL(done_eating, (BOOLEAN_P));
 STATIC_DCL void FDECL(cprefx, (int));
 STATIC_DCL int FDECL(intrinsic_possible, (int, struct permonst *));
-STATIC_DCL void FDECL(givit, (int, struct permonst *));
+STATIC_DCL void FDECL(givit, (int, struct permonst *, int));
+STATIC_DCL void FDECL(temporary_givit, (int, int, int));
 STATIC_DCL void FDECL(cpostfx, (int));
 STATIC_DCL void FDECL(consume_tin, (const char *));
 STATIC_DCL void FDECL(start_tin, (struct obj *));
@@ -867,45 +868,86 @@ register struct permonst *ptr;
     return res;
 }
 
+STATIC_OVL void
+temporary_givit(type, duration, successpercentage)
+int type;
+int duration;
+int successpercentage;
+{
+	if (duration <= 0)
+		return;
+
+	if (successpercentage > 0 && rn2(100) >= successpercentage)
+		return; /* fail */
+
+	switch (type) {
+	case REGENERATION:
+		if (!Regeneration) 
+		{
+			You(Hallucination ? "feel strangely tickly." : "feel warm in your stomach.");
+		}
+		break;
+	case ENERGY_REGENERATION:
+		if (!Energy_regeneration)
+		{
+			You(Hallucination ? "feel oddly ticklish." : "feel replenished in your stomach.");
+		}
+		break;
+	default:
+		break;
+	}
+
+	incr_itimeout(&u.uprops[type].intrinsic, duration);
+}
+
 /* givit() tries to give you an intrinsic based on the monster's level
  * and what type of intrinsic it is trying to give you.
  */
 STATIC_OVL void
-givit(type, ptr)
+givit(type, ptr, successpercentage)
 int type;
 register struct permonst *ptr;
+int successpercentage;
 {
-    register int chance;
+	if (ptr)
+	{
+		register int chance;
 
-    debugpline1("Attempting to give intrinsic %d", type);
-    /* some intrinsics are easier to get than others */
-    switch (type) {
-    case POISON_RES:
-        if ((ptr == &mons[PM_KILLER_BEE] || ptr == &mons[PM_SCORPION])
-            && !rn2(4))
-            chance = 1;
-        else
-            chance = 15;
-        break;
-    case TELEPORT:
-        chance = 10;
-        break;
-    case TELEPORT_CONTROL:
-        chance = 12;
-        break;
-    case BLIND_TELEPAT:
-        chance = 1;
-        break;
-	case TELEPAT:
-		chance = 15;
-		break;
-	default:
-        chance = 15;
-        break;
-    }
+		debugpline1("Attempting to give intrinsic %d", type);
+		/* some intrinsics are easier to get than others */
+		switch (type) {
+		case POISON_RES:
+			if ((ptr == &mons[PM_KILLER_BEE] || ptr == &mons[PM_SCORPION])
+				&& !rn2(4))
+				chance = 1;
+			else
+				chance = 15;
+			break;
+		case TELEPORT:
+			chance = 10;
+			break;
+		case TELEPORT_CONTROL:
+			chance = 12;
+			break;
+		case BLIND_TELEPAT:
+			chance = 1;
+			break;
+		case TELEPAT:
+			chance = 15;
+			break;
+		default:
+			chance = 15;
+			break;
+		}
 
-    if (ptr->mlevel <= rn2(chance))
-        return; /* failed die roll */
+		if (ptr->mlevel <= rn2(chance))
+			return; /* failed die roll */
+	}
+	else if (successpercentage > 0)
+	{
+		if (rn2(100) >= successpercentage)
+			return; /* failed die roll */
+	}
 
     switch (type) {
     case FIRE_RES:
@@ -1365,7 +1407,7 @@ int pm;
 		else if (tmp == -6)
 			(void)adjattrib(A_CHA, 1, -1);
 		else if (tmp > 0)
-            givit(tmp, ptr);
+            givit(tmp, ptr, 0);
     } /* check_intrinsics */
 
     if (catch_lycanthropy >= LOW_PM && !Lycanthropy_resistance) {
@@ -2706,6 +2748,7 @@ doeat()
     struct obj *otmp;
     int basenutrit; /* nutrition of full item */
     boolean dont_start = FALSE, nodelicious = FALSE;
+	boolean hadhallucination = !!Hallucination;
 
     if (Strangled) {
         pline("If you can't breathe air, how can you consume solids?");
@@ -3018,29 +3061,29 @@ doeat()
 	if (objects[otmp->otyp].oc_oprop > 0)
 	{
 		if (duration > 0)
-			incr_itimeout(&u.uprops[objects[otmp->otyp].oc_oprop].intrinsic, duration);
+			temporary_givit(objects[otmp->otyp].oc_oprop, duration, objects[otmp->otyp].oc_critical_strike_percentage);
 		else
-			u.uprops[objects[otmp->otyp].oc_oprop].intrinsic |= FROM_ACQUIRED;
+			givit(objects[otmp->otyp].oc_oprop, (struct permonst*)0, objects[otmp->otyp].oc_critical_strike_percentage); // u.uprops[objects[otmp->otyp].oc_oprop].intrinsic |= FROM_ACQUIRED;
 	}
 	if (objects[otmp->otyp].oc_oprop2 > 0)
 	{
 		if (duration > 0)
-			incr_itimeout(&u.uprops[objects[otmp->otyp].oc_oprop2].intrinsic, duration);
+			temporary_givit(objects[otmp->otyp].oc_oprop2, duration, objects[otmp->otyp].oc_critical_strike_percentage);
 		else
-			u.uprops[objects[otmp->otyp].oc_oprop2].intrinsic |= FROM_ACQUIRED;
+			givit(objects[otmp->otyp].oc_oprop2, (struct permonst*)0, objects[otmp->otyp].oc_critical_strike_percentage); // u.uprops[objects[otmp->otyp].oc_oprop2].intrinsic |= FROM_ACQUIRED;
 	}
 	if (objects[otmp->otyp].oc_oprop3 > 0)
 	{
 		if (duration > 0)
-			incr_itimeout(&u.uprops[objects[otmp->otyp].oc_oprop3].intrinsic, duration);
+			temporary_givit(objects[otmp->otyp].oc_oprop3, duration, objects[otmp->otyp].oc_critical_strike_percentage);
 		else
-			u.uprops[objects[otmp->otyp].oc_oprop3].intrinsic |= FROM_ACQUIRED;
+			givit(objects[otmp->otyp].oc_oprop3, (struct permonst*)0, objects[otmp->otyp].oc_critical_strike_percentage); // u.uprops[objects[otmp->otyp].oc_oprop3].intrinsic |= FROM_ACQUIRED;
 	}
 
 	/* re-calc the nutrition */
     basenutrit = (int) obj_nutrition(otmp);
 
-	if (!objects[otmp->otyp].oc_name_known && (objects[otmp->otyp].oc_flags3 & O3_EATING_IDENTIFIES))
+	if (!objects[otmp->otyp].oc_name_known && (objects[otmp->otyp].oc_flags3 & O3_EATING_IDENTIFIES) && !hadhallucination)
 	{
 		makeknown(otmp->otyp);
 		//if(objects[otmp->otyp].oc_edible_subtype != EDIBLE_NORMAL)
