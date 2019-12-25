@@ -983,10 +983,17 @@ boolean forcetaming;
 
     if (mtmp->mtame ||  (mtmp->data->geno & G_UNIQ) /* Unique monsters cannot be tamed -- JG */
         /* monsters with conflicting structures cannot be tamed */
-        || mtmp->isshk || mtmp->isgd || mtmp->ispriest || mtmp->isminion
-        || (!forcetaming && (!mtmp->mcanmove || is_covetous(mtmp->data) || is_human(mtmp->data)
-        || (is_demon(mtmp->data) && !is_demon(youmonst.data))
-        || (obj && dogfood(mtmp, obj) >= MANFOOD))))
+        || mtmp->isshk || mtmp->isgd || mtmp->ispriest /* shopkeepers, guards, and priests cannot be forced to be tame for now -- JG */
+        || (!forcetaming && 
+			(!mtmp->mcanmove
+			|| mtmp->isminion /* minions can be tamed */
+			|| is_covetous(mtmp->data)
+			|| is_human(mtmp->data)
+			|| (is_demon(mtmp->data) && !is_demon(youmonst.data))
+			|| (obj && dogfood(mtmp, obj) >= MANFOOD)
+			)
+		   )
+	   )
         return FALSE;
 
     if (mtmp->m_id == quest_status.leader_m_id)

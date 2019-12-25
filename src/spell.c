@@ -3193,7 +3193,7 @@ int spell;
     //    (spellev(spell) - 1) * 4 - ((skill * 6) + ((u.ulevel - 1) * 2) + 0);
 
 	chance += -40 * spellev(spell);
-	chance += 40 * skill;
+	chance += 80 * skill;
 	chance += 20 * u.ulevel;
 	chance += -5 * splcaster;
 

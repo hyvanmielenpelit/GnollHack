@@ -155,15 +155,15 @@ boolean talk;
                 align_str(original_alignment));
         } else if (u.ualignbase[A_CURRENT] != original_alignment) {
             You("have converted.");
-        } else if (u.ualign.record < MIN_QUEST_ALIGN) {
+        }/* else if (u.ualign.record < MIN_QUEST_ALIGN) {
             You("are currently %d and require %d.", u.ualign.record,
                 MIN_QUEST_ALIGN);
             if (yn_function("adjust?", (char *) 0, 'y') == 'y')
                 u.ualign.record = MIN_QUEST_ALIGN;
-        }
+        }*/
     }
-    purity = (u.ualign.record >= MIN_QUEST_ALIGN
-              && u.ualign.type == original_alignment
+    purity = (/*u.ualign.record >= MIN_QUEST_ALIGN
+              &&*/ u.ualign.type == original_alignment
               && u.ualignbase[A_CURRENT] == original_alignment)
                  ? 1
                  : (u.ualignbase[A_CURRENT] != original_alignment) ? -1 : 0;
