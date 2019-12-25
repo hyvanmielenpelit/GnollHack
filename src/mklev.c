@@ -579,6 +579,10 @@ int trap_type;
 								mongets(mon, ORCISH_SHIELD);
 							if (!m_carrying(mon, ORCISH_SHORT_SWORD))
 								mongets(mon, ORCISH_SHORT_SWORD);
+							if (!m_carrying(mon, ORCISH_SHORT_BOW))
+								mongets(mon, ORCISH_SHORT_BOW);
+							if (!m_carrying(mon, ORCISH_ARROW))
+								m_initthrow(mon, ORCISH_ARROW, 10, 12, TRUE, 0);
 
 							m_dowear(mon, TRUE);
 							mongets(mon, CREAM_PIE);

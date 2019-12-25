@@ -60,23 +60,27 @@ boolean clumsy;
 
 	int basedmg = 0;
 	int strdmg = 0;
-	int extraquarters = Magical_kicking ? 1 : 0;
+	int extratenths = Magical_kicking ? 2 : 0;
 	if (martial_arts_applies)
 	{
-		int skillevel = P_SKILL(P_MARTIAL_ARTS);
-		switch (skillevel)
+		basedmg = rnd(8) + 3;
+		strdmg = ((10 + extratenths) * u_str_dmg_bonus()) / 10;
+		switch (P_SKILL(P_MARTIAL_ARTS))
 		{
 		case P_BASIC:
-			basedmg = rnd(7) + 3;
-			strdmg = ((3 + extraquarters) * u_str_dmg_bonus()) / 4;
+			basedmg = d(2, 4) + 3;
 			break;
 		case P_SKILLED:
-			basedmg = rnd(10) + 3;
-			strdmg = ((4 + extraquarters) * u_str_dmg_bonus()) / 4;
+			basedmg = d(2, 5) + 3;
 			break;
 		case P_EXPERT:
-			basedmg = rnd(13) + 3;
-			strdmg = ((5 + extraquarters) * u_str_dmg_bonus()) / 4;
+			basedmg = d(2, 6) + 3;
+			break;
+		case P_MASTER:
+			basedmg = d(2, 7) + 3;
+			break;
+		case P_GRAND_MASTER:
+			basedmg = d(2, 8) + 3;
 			break;
 		default:
 			break;
@@ -85,7 +89,7 @@ boolean clumsy;
 	else
 	{
 		basedmg = rnd(3);
-		strdmg = ((2 + extraquarters) * u_str_dmg_bonus()) / 4;
+		strdmg = ((5 + extratenths) * u_str_dmg_bonus()) / 10;
 	}
 	dmg += basedmg + strdmg;
 
@@ -99,7 +103,7 @@ boolean clumsy;
         dmg /= 2;
 
     /* kicking a dragon or an elephant will not harm it */
-    if (thick_skinned(mon->data) && !Magical_kicking && P_SKILL(P_MARTIAL_ARTS) < P_SKILLED)
+    if (thick_skinned(mon->data) && !Magical_kicking && P_SKILL(P_MARTIAL_ARTS) <= P_SKILLED)
         dmg = 0;
 
     /* attacking a shade is normally useless */
@@ -132,23 +136,8 @@ boolean clumsy;
 		else if (martial_bonus())
 		{
 			int skilllevel = P_SKILL(P_MARTIAL_ARTS);
-			switch (skilllevel)
-			{
-			case P_BASIC:
-				if (!rn2(4))
-					kicksuccessful = TRUE;
-				break;
-			case P_SKILLED:
-				if (!rn2(3))
-					kicksuccessful = TRUE;
-				break;
-			case P_EXPERT:
-				if (!rn2(2))
-					kicksuccessful = TRUE;
-				break;
-			default:
-				break;
-			}
+			if (!rn2(7 - skilllevel))
+				kicksuccessful = TRUE;
 		}
 	}
 
@@ -250,7 +239,9 @@ boolean clumsy;
 		}
 		else if (!hugemonst(mon->data))
 		{
-			if(skilllevel >= P_EXPERT && (rn2(2) || Magical_kicking))
+			if (skilllevel >= P_MASTER)
+				hurtles = TRUE;
+			else if(skilllevel >= P_EXPERT && (rn2(2) || Magical_kicking))
 				hurtles = TRUE;
 			else if (skilllevel == P_SKILLED && Magical_kicking && rn2(2))
 				hurtles = TRUE;

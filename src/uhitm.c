@@ -811,6 +811,12 @@ int dieroll;
 				case P_EXPERT:
 					tmp = rnd(8);
 					break;
+				case P_MASTER:
+					tmp = rnd(10);
+					break;
+				case P_GRAND_MASTER:
+					tmp = rnd(12);
+					break;
 				default:
 					break;
 				}
@@ -1351,12 +1357,8 @@ int dieroll;
 			{
 				if(!martial_bonus() || (uarmg && is_metallic(uarmg)))
 					tmp += u_str_dmg_bonus() / 2;
-				else if(P_SKILL(P_MARTIAL_ARTS) == P_BASIC)
-					tmp += (3 * u_str_dmg_bonus()) / 4;
-				else if(P_SKILL(P_MARTIAL_ARTS) == P_SKILLED)
+				else if(P_SKILL(P_MARTIAL_ARTS) >= P_BASIC)
 					tmp += u_str_dmg_bonus();
-				else if (P_SKILL(P_MARTIAL_ARTS) == P_EXPERT)
-					tmp += (5 * u_str_dmg_bonus()) / 4;
 			}
 			else
 				tmp += u_str_dmg_bonus();

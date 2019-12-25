@@ -18,7 +18,6 @@ STATIC_DCL boolean FDECL(uncommon, (int));
 STATIC_DCL int FDECL(align_shift, (struct permonst *));
 STATIC_DCL boolean FDECL(mk_gen_ok, (int, int, int));
 STATIC_DCL void FDECL(m_initgrp, (struct monst *, int, int, int, int));
-STATIC_DCL void FDECL(m_initthrow, (struct monst *, int, int, int, boolean, int));
 STATIC_DCL void FDECL(m_initweap, (struct monst *));
 STATIC_DCL void FDECL(m_initinv, (struct monst *));
 STATIC_DCL boolean FDECL(makemon_rnd_goodpos, (struct monst *,
@@ -142,7 +141,7 @@ int x, y, n, mmflags;
     }
 }
 
-STATIC_OVL
+
 void
 m_initthrow(mtmp, otyp, oquan_const, oquan_rnd, poisoned, elemental_enchantment)
 struct monst *mtmp;

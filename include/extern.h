@@ -1251,6 +1251,7 @@ E int FDECL(bagotricks, (struct obj *, BOOLEAN_P, int *));
 E boolean FDECL(propagate, (int, BOOLEAN_P, BOOLEAN_P));
 E boolean FDECL(usmellmon, (struct permonst *));
 E boolean FDECL(wrong_elem_type, (struct permonst*));
+E void FDECL(m_initthrow, (struct monst*, int, int, int, boolean, int));
 
 /* ### mapglyph.c ### */
 
@@ -3091,6 +3092,7 @@ E int FDECL(dowrite, (struct obj *));
 E void FDECL(learnwand, (struct obj *));
 E int FDECL(bhitm, (struct monst *, struct obj *));
 E void FDECL(probe_monster, (struct monst *));
+E void FDECL(display_monster_intrinsics, (struct monst*));
 E void FDECL(display_monster_inventory, (struct monst*));
 E boolean FDECL(get_obj_location, (struct obj *, xchar *, xchar *, int));
 E boolean FDECL(get_mon_location, (struct monst *, xchar *, xchar *, int));

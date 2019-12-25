@@ -646,8 +646,369 @@ struct monst *mtmp;
     if (notonhead)
         return; /* don't show minvent for long worm tail */
 
+	display_monster_intrinsics(mtmp);
 	display_monster_inventory(mtmp);
 }
+
+
+void display_monster_intrinsics(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp)
+		return;
+
+	winid datawin = WIN_ERR;
+
+	datawin = create_nhwindow(NHW_MENU);
+
+	char buf[BUFSZ];
+	const char* txt;
+
+	Sprintf(buf, "%s instrinsic abilities:", s_suffix(Monnam(mtmp)));
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	int abilcnt = 0;
+
+	if(resists_acid(mtmp))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Acid resistance", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+	if (resists_blnd(mtmp))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Immune to blindness", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+	if (resists_charm(mtmp))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Charm resistance", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+	if (resists_cold(mtmp))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Cold resistance", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+	if (resists_death(mtmp))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Death resistance", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+	if (resists_disint(mtmp))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Disintegration resistance", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+	if (resists_drli(mtmp))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Drain resistance", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+	if (resists_elec(mtmp))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Shock resistance", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+	if (resists_fire(mtmp))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Fire resistance", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+	if (resists_lycanthropy(mtmp))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Lycanthropy resistance", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+	if (resists_magic(mtmp))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Magic resistance", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+	if (resists_magicmissile(mtmp))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Magic missile resistance", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+	if (resists_poison(mtmp))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Poison resistance", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+	if (resists_sleep(mtmp))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Sleep resistance", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+	if (resists_ston(mtmp))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Petrification resistance", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+	if (can_teleport(mtmp->data))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Teleportation", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+	if (is_reflecting(mtmp->data))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Reflecting", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (!abilcnt)
+	{
+		strcpy(buf, " (None)");
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	Sprintf(buf, "Applicable classifications:");
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	abilcnt = 0;
+
+	if (is_shapeshifter(mtmp->data))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Shapeshifter", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (is_were(mtmp->data))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Lycanthrope", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (is_elf(mtmp->data))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Elf", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (is_dwarf(mtmp->data))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Dwarf", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (is_gnoll(mtmp->data))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Gnoll", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (is_orc(mtmp->data))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Orc", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (is_human(mtmp->data))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Human", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (is_giant(mtmp->data))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Giant", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (is_dragon(mtmp->data))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Dragon", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (mindless(mtmp->data))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Mindless", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (unsolid(mtmp->data))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Unsolid", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (noncorporeal(mtmp->data))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Noncorporeal", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (is_nonliving(mtmp->data))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Nonliving", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (passes_walls(mtmp->data))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Passes through walls", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (tunnels(mtmp->data))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Burrows through walls", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (is_undead(mtmp->data))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Undead", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (is_demon(mtmp->data))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Demon", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (is_vampire(mtmp->data))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Vampire", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (is_angel(mtmp->data))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Angel", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (is_modron(mtmp->data))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Modron", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (is_animal(mtmp->data))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Animal", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (is_modron(mtmp->data))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Modron", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (is_lord(mtmp->data))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Lord", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (is_prince(mtmp->data))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Prince", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (!abilcnt)
+	{
+		strcpy(buf, " (None)");
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+
+	display_nhwindow(datawin, FALSE);
+	destroy_nhwindow(datawin), datawin = WIN_ERR;
+
+
+}
+
 
 void
 display_monster_inventory(mtmp)

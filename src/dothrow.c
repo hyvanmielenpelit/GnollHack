@@ -305,16 +305,16 @@ int* output_multishot_rnd;
 			switch (magr->mnum)
 			{
 			case PM_MONK:
-				skilllevel = P_BASIC;
+				skilllevel = P_SKILLED;
 				break;
 			case PM_NINJA:
 			case PM_ROSHI:
 			case PM_ABBOT:
-				skilllevel = P_SKILLED;
+				skilllevel = P_EXPERT;
 				break;
 			case PM_GRAND_MASTER:
 			case PM_MASTER_KAEN:
-				skilllevel = P_EXPERT;
+				skilllevel = P_GRAND_MASTER;
 				break;
 			default:
 				break;
@@ -323,13 +323,26 @@ int* output_multishot_rnd;
 
 		switch (skilllevel)
 		{
+		case P_BASIC:
+			*output_multishot_constant = 1;
+			break;
 		case P_SKILLED:
 			*output_multishot_constant = 1;
-			*output_multishot_rnd = 1;
+			if (rn2(4) < 1)
+				(*output_multishot_constant)++;
 			break;
 		case P_EXPERT:
+			*output_multishot_constant = 1;
+			if (rn2(4) < 2)
+				(*output_multishot_constant)++;
+			break;
+		case P_MASTER:
+			*output_multishot_constant = 1;
+			if (rn2(4) < 3)
+				(*output_multishot_constant)++;
+			break;
+		case P_GRAND_MASTER:
 			*output_multishot_constant = 2;
-			*output_multishot_rnd = 0;
 			break;
 		default:
 			break;

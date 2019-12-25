@@ -107,7 +107,9 @@ enum skill_levels {
        Heroes of Might and Magic (tm) and its sequels... */
     P_BASIC        = 2,
     P_SKILLED      = 3,
-    P_EXPERT       = 4
+    P_EXPERT       = 4,
+	P_MASTER	   = 5,		/* Martial arts only */
+	P_GRAND_MASTER = 6		/* Martial arts only */
 };
 
 #define is_magic_skill(skill) ((skill) >= P_ARCANE_SPELL && (skill) <= P_NECROMANCY_SPELL)

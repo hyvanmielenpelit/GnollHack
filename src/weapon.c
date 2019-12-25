@@ -1554,14 +1554,12 @@ boolean ismax;
         ptr = "Expert";
         break;
     /* these are for unarmed combat/martial arts only */
-	/*
     case P_MASTER:
         ptr = "Master";
         break;
     case P_GRAND_MASTER:
         ptr = "Grand Master";
         break;
-	*/
     default:
         ptr = "Unknown";
         break;
@@ -1590,8 +1588,20 @@ int skill;
      *  basic -> skilled        2
      *  skilled -> expert       3
      */
-    if (skill <= P_LAST_WEAPON || skill == P_TWO_WEAPON_COMBAT)
-        return tmp;
+	 /* More slots used up for martial.
+	  *  unskilled -> basic      4
+	  *  basic -> skilled        5
+	  *  skilled -> expert       6
+	  *  expert -> master        7
+	  *  master -> grand master  8
+	  */
+	if (skill == P_MARTIAL_ARTS)
+		return tmp + 3;
+	
+//	if (skill <= P_LAST_WEAPON || skill == P_TWO_WEAPON_COMBAT)
+ //       return tmp;
+
+	return tmp;
 
     /* Fewer slots used up for unarmed or martial.
      *  unskilled -> basic      1
@@ -1600,7 +1610,7 @@ int skill;
      *  expert -> master        2
      *  master -> grand master  3
      */
-    return (tmp + 1) / 2;
+    //return (tmp + 1) / 2;
 }
 
 /* return true if this skill can be advanced */
