@@ -241,7 +241,7 @@ enum obj_weapon_types {
 };
 
 static const char* weapon_type_names[] = {
-	"short sword", "long sword", "two-handed sword", "bastard sword", "broadsword", "scimitar", "saber", "katana",  "tsurugi",
+	"short sword", "long sword", "two-handed sword", "broadsword", "bastard sword", "scimitar", "saber", "katana",  "tsurugi",
 	"axe", "throwing axe", "two-handed axe", "dagger", "knife", "mace", "spiked mace", "flail", "morning star", "club", "spiked club", 
 	"hammer", "spiked hammer",  "staff", "rod", "spear", "javelin", "polearm", "trident",
 	"dart", "shuriken", "boomerang", "short bow", "long bow", "hand crossbow", "crossbow", "repeating crossbow", "sling",
@@ -249,6 +249,32 @@ static const char* weapon_type_names[] = {
 	"shovel", "hook", "lance", "hose", "fork", "whip",
 };
 
+enum obj_food_types {
+	FOODTYPE_GENERAL = 0,
+	FOODTYPE_RATION = 1,
+	FOODTYPE_FRUIT = 2,
+	FOODTYPE_VEGETABLE = 3,
+	FOODTYPE_NUTS = 4,
+	FOODTYPE_SEEDS = 5,
+	FOODTYPE_LEAF = 6,
+	FOODTYPE_KELP = 7,
+	FOODTYPE_BREAD = 8,
+	FOODTYPE_PASTRY = 9,
+	FOODTYPE_CANDY = 10,
+	FOODTYPE_MUSHROOM = 11,
+	FOODTYPE_MOLD = 12,
+	FOODTYPE_GLOB = 13,
+	FOODTYPE_EGG = 14,
+	FOODTYPE_MEAT = 15,
+	FOODTYPE_JELLY = 16,
+	FOODTYPE_CORPSE = 17,
+	FOODTYPE_TIN = 18
+};
+
+static const char* food_type_names[] = {
+	"general food", "ration", "fruit", "vegetable", "nuts", "seeds", "leaf", "kelp",  "bread",
+	"pastry", "candy", "mushroom", "mold", "glob", "egg", "meat", "jelly", "corpse",  "tin",
+};
 
 enum obj_miscellaneous_types {
 	MISC_MULTIPLE_PERMITTED = 0,
@@ -662,8 +688,8 @@ struct objclass {
 #define O3_IGNITABLE								0x00004000	
 #define O3_RELATIVE_AGE								0x00008000	
 #define O3_ELEMENTAL_ENCHANTABLE					0x00010000
-#define O3_PUDDING									0x00020000	
-#define O3_EATING_IDENTIFIES						0x00040000	
+#define O3_EATING_IDENTIFIES						0x00020000	
+/* free bit */
 /* free bit */
 /* free bit */
 

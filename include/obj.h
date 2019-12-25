@@ -290,7 +290,7 @@ struct obj {
 #define polyfodder(obj) (ofood(obj) && pm_to_cham((obj)->corpsenm) != NON_PM)
 #define mlevelgain(obj) (ofood(obj) && (obj)->corpsenm >= LOW_PM && (mons[(obj)->corpsenm].mconveys & MR_LEVEL_GAIN))
 #define mhealup(obj) (ofood(obj) && (obj)->corpsenm == PM_NURSE)
-#define Is_pudding(o) (objects[(o)->otyp].oc_flags3 & O3_PUDDING)
+#define Is_pudding(o) ((o)->oclass == FOOD_CLASS && objects[(o)->otyp].oc_subtyp == FOODTYPE_GLOB)
 
 /* Containers */
 #define carried(o) ((o)->where == OBJ_INVENT)

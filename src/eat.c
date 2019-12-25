@@ -3014,7 +3014,30 @@ doeat()
 				fprefx(otmp);
     }
 
-    /* re-calc the nutrition */
+	int duration = d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_dicesize) + objects[otmp->otyp].oc_spell_dur_plus;
+	if (objects[otmp->otyp].oc_oprop > 0)
+	{
+		if (duration > 0)
+			incr_itimeout(&u.uprops[objects[otmp->otyp].oc_oprop].intrinsic, duration);
+		else
+			u.uprops[objects[otmp->otyp].oc_oprop].intrinsic |= FROM_ACQUIRED;
+	}
+	if (objects[otmp->otyp].oc_oprop2 > 0)
+	{
+		if (duration > 0)
+			incr_itimeout(&u.uprops[objects[otmp->otyp].oc_oprop2].intrinsic, duration);
+		else
+			u.uprops[objects[otmp->otyp].oc_oprop2].intrinsic |= FROM_ACQUIRED;
+	}
+	if (objects[otmp->otyp].oc_oprop3 > 0)
+	{
+		if (duration > 0)
+			incr_itimeout(&u.uprops[objects[otmp->otyp].oc_oprop3].intrinsic, duration);
+		else
+			u.uprops[objects[otmp->otyp].oc_oprop3].intrinsic |= FROM_ACQUIRED;
+	}
+
+	/* re-calc the nutrition */
     basenutrit = (int) obj_nutrition(otmp);
 
 	if (!objects[otmp->otyp].oc_name_known && (objects[otmp->otyp].oc_flags3 & O3_EATING_IDENTIFIES))
