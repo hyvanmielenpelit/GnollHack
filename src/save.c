@@ -987,6 +987,14 @@ struct obj *otmp;
         if (buflen > 0)
             bwrite(fd, (genericptr_t) ONAME(otmp), buflen);
 
+		if (UONAME(otmp))
+			buflen = strlen(UONAME(otmp)) + 1;
+		else
+			buflen = 0;
+		bwrite(fd, (genericptr_t)&buflen, sizeof buflen);
+		if (buflen > 0)
+			bwrite(fd, (genericptr_t)UONAME(otmp), buflen);
+
         /* defer to savemon() for this one */
         if (OMONST(otmp))
             savemon(fd, OMONST(otmp));
@@ -1085,7 +1093,15 @@ struct monst *mtmp;
         if (buflen > 0)
             bwrite(fd, (genericptr_t) MNAME(mtmp), buflen);
 
-        if (EGD(mtmp))
+		if (UMNAME(mtmp))
+			buflen = strlen(UMNAME(mtmp)) + 1;
+		else
+			buflen = 0;
+		bwrite(fd, (genericptr_t)&buflen, sizeof buflen);
+		if (buflen > 0)
+			bwrite(fd, (genericptr_t)UMNAME(mtmp), buflen);
+		
+		if (EGD(mtmp))
             buflen = sizeof(struct egd);
         else
             buflen = 0;

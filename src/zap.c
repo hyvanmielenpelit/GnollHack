@@ -1186,8 +1186,6 @@ boolean adjacentok; /* False: at obj's spot only, True: nearby is allowed */
         mtmp2->mblinded = 0;
         mtmp2->mstun = 0;
         mtmp2->mconf = 0;
-        /* when traits are for a shopeekper, dummy monster 'mtmp' won't
-           have necessary eshk data for replmon() -> replshk() */
         if (mtmp2->isshk) {
             neweshk(mtmp);
             *ESHK(mtmp) = *ESHK(mtmp2);
@@ -1451,6 +1449,7 @@ int animateintomon;
     }
 
     /* monster retains its name */
+	/* //This should come from OMONST -- JG
     if (has_oname(corpse) && !unique_corpstat(mtmp->data))
 	{
         mtmp = christen_monst(mtmp, ONAME(corpse));
@@ -1461,6 +1460,7 @@ int animateintomon;
 	{
 		mtmp = u_name_monst(mtmp, UONAME(corpse));
 	}
+	*/
 	/* partially eaten corpse yields wounded monster */
     if (corpse->oeaten)
         mtmp->mhp = eaten_stat(mtmp->mhp, corpse);

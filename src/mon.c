@@ -762,7 +762,8 @@ boolean createcorpse;
         } else {
             corpstatflags |= CORPSTAT_INIT;
             /* preserve the unique traits of some creatures */
-            obj = mkcorpstat(CORPSE, KEEPTRAITS(mtmp) ? mtmp : 0,
+			/* always keep traits if there is mextra -- JG */
+            obj = mkcorpstat(CORPSE, (mtmp->mextra || KEEPTRAITS(mtmp)) ? mtmp : 0,
                              mdat, x, y, corpstatflags);
             if (burythem) {
                 boolean dealloc;
@@ -785,12 +786,14 @@ boolean createcorpse;
     if (context.bypasses)
         bypass_obj(obj);
 
+	/* //Note:Corpse stats can be read from OMONST
     if (has_mname(mtmp))
         obj = oname(obj, MNAME(mtmp));
-
+	else if(mtmp->isshk && ESHK(mtmp))
+		obj = oname(obj, shkname(mtmp));
 	if (has_umname(mtmp))
 		obj = uoname(obj, UMNAME(mtmp));
-
+	*/
 	/*  Avoid "It was hidden under a green mold corpse!"
      *  during Blind combat. An unseen monster referred to as "it"
      *  could be killed and leave a corpse.  If a hider then hid
@@ -2818,8 +2821,8 @@ struct monst *mdef;
            so that saved monster traits won't retain any stale
            item-conferred attributes */
         otmp = mkcorpstat(STATUE, mdef, mdef->data, x, y, CORPSTAT_NONE);
-        if (has_mname(mdef))
-            otmp = oname(otmp, MNAME(mdef));
+        if (has_umname(mdef))
+            otmp = uoname(otmp, UMNAME(mdef));
         while ((obj = oldminvent) != 0) {
             oldminvent = obj->nobj;
             obj->nobj = 0; /* avoid merged-> obfree-> dealloc_obj-> panic */
@@ -2970,6 +2973,14 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
     if (mtmp->mtame && !mtmp->isminion)
         EDOG(mtmp)->killed_by_u = 1;
 
+	/* shopkeeper adds lost money in debit bill */
+	long shkmoney = 0;
+	if (mtmp->isshk && mtmp->mextra && ESHK(mtmp))
+	{
+		shkmoney += money_cnt(mtmp->minvent);
+		shkmoney += max(0, ESHK(mtmp)->robbed + ESHK(mtmp)->debit - ESHK(mtmp)->credit);
+	}
+
     if (wasinside && thrownobj && thrownobj != uball) {
         /* thrown object has killed hero's engulfer; add it to mon's
            inventory now so that it will be placed with mon's other
@@ -2990,7 +3001,13 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
         mondead(mtmp);
     disintegested = FALSE; /* reset */
 
-    if (!DEADMONSTER(mtmp)) { /* monster lifesaved */
+	/* shopkeeper adds lost money in debit bill in the case heor she is revived */
+	if (mtmp->isshk && mtmp->mextra && ESHK(mtmp))
+	{
+		ESHK(mtmp)->debit += shkmoney;
+	}
+	
+	if (!DEADMONSTER(mtmp)) { /* monster lifesaved */
         /* Cannot put the non-visible lifesaving message in
          * lifesaved_monster() since the message appears only when _you_
          * kill it (as opposed to visible lifesaving which always appears).

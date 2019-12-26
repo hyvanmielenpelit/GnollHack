@@ -735,7 +735,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         Sprintf(eos(buf), " with text \"%s\"", tshirt_text(obj, tmpbuf));
     }
 
-    if (has_oname(obj) && nknown && dknown) {
+	if (has_oname(obj) && nknown && dknown) {
         Strcat(buf, " named ");
  nameit:
         Strcat(buf, ONAME(obj));
@@ -750,6 +750,26 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 	}
     if (!strncmpi(buf, "the ", 4))
         buf += 4;
+
+	/* Corpse names from OMONST */
+	if (obj->oextra && OMONST(obj)) {
+		if(has_mname(OMONST(obj)) && OMONST(obj)->u_know_mname)
+		{
+			Strcat(buf, " that was named ");
+			Strcat(buf, MNAME(OMONST(obj)));
+		}
+		else if (OMONST(obj)->isshk && OMONST(obj)->mextra && ESHK(OMONST(obj)) && OMONST(obj)->u_know_mname)
+		{
+			Strcat(buf, " who was named ");
+			Strcat(buf, shkname(OMONST(obj)));
+		}
+		else if (has_umname(OMONST(obj)))
+		{
+			Strcat(buf, " that you called ");
+			Strcat(buf, UMNAME(OMONST(obj)));
+		}
+	}
+
     return buf;
 }
 

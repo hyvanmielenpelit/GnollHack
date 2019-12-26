@@ -940,10 +940,11 @@ char *
 Shknam(mtmp)
 struct monst *mtmp;
 {
-    char *nam = shkname(mtmp);
+	char* nam;
+	nam = shkname(mtmp);
 
     /* 'nam[]' is almost certainly already capitalized, but be sure */
-    nam[0] = highc(nam[0]);
+    *nam = highc(*nam);
     return nam;
 }
 
@@ -954,18 +955,20 @@ char *
 shkname(mtmp)
 struct monst *mtmp;
 {
-    char *nam;
+	static char nam[BUFSZ] = "shopkeeper";
+
     unsigned save_isshk = mtmp->isshk;
 
     mtmp->isshk = 0; /* don't want mon_nam() calling shkname() */
-    /* get a modifiable name buffer along with fallback result */
-    nam = noit_mon_nam(mtmp);
+	if (mtmp->data)
+		strcpy(nam, noit_mon_nam(mtmp));
+	/* get a modifiable name buffer along with fallback result */
     mtmp->isshk = save_isshk;
 
     if (!mtmp->isshk) {
-        impossible("shkname: \"%s\" is not a shopkeeper.", nam);
+		impossible("shkname: \"%s\" is not a shopkeeper.", nam);
     } else if (!has_eshk(mtmp)) {
-        panic("shkname: shopkeeper \"%s\" lacks 'eshk' data.", nam);
+		panic("shkname: shopkeeper \"%s\" lacks 'eshk' data.", nam);
     } else {
         const char *shknm = ESHK(mtmp)->shknam;
 

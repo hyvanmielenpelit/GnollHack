@@ -220,7 +220,7 @@ struct obj *obj;
 {
     struct obj saveo;
     boolean save_debug;
-    char *res, *save_oname;
+    char *res, *save_oname, * save_uoname;
 
     /*
      * Deal with things that xname() includes as a prefix.  We don't
@@ -232,7 +232,8 @@ struct obj *obj;
     saveo.spe = obj->spe;
     saveo.owt = obj->owt;
     save_oname = has_oname(obj) ? ONAME(obj) : 0;
-    save_debug = flags.debug;
+	save_uoname = has_uoname(obj) ? UONAME(obj) : 0;
+	save_debug = flags.debug;
     /* suppress "diluted" for potions and "holy/unholy" for water;
        sortloot() will deal with them using other criteria than name */
     if (obj->oclass == POTION_CLASS) {
@@ -250,9 +251,12 @@ struct obj *obj;
                            (five or fewer is "small", more than fifteen is
                            "large", in between has no prefix) */
     /* suppress user-assigned name */
-    if (save_oname && !obj->oartifact)
-        ONAME(obj) = 0;
-    /* avoid wizard mode formatting variations */
+    //if (save_oname && !obj->oartifact)
+    //    ONAME(obj) = 0;
+	if (save_uoname)
+		UONAME(obj) = 0;
+
+	/* avoid wizard mode formatting variations */
     if (wizard) { /* flags.debug */
         /* paranoia:  before toggling off wizard mode, guard against a
            panic in xname() producing a normal mode panic save file */
@@ -291,8 +295,10 @@ struct obj *obj;
                       : (obj->owt <= 500) ? "c"
                         : "d");
     }
-    if (save_oname && !obj->oartifact)
-        ONAME(obj) = save_oname;
+    //if (save_oname && !obj->oartifact)
+    //    ONAME(obj) = save_oname;
+	if (save_uoname)
+		UONAME(obj) = save_uoname;
 
     return res;
 }
@@ -730,9 +736,11 @@ struct obj **potmp, **pobj;
         /* and puddings!!!1!!one! */
         else if (!Is_pudding(otmp))
             otmp->owt += obj->owt;
-        if (!has_oname(otmp) && has_oname(obj))
+		if (!has_uoname(otmp) && has_uoname(obj))
+			otmp = *potmp = uoname(otmp, UONAME(obj));
+		if (!has_oname(otmp) && has_oname(obj))
             otmp = *potmp = oname(otmp, ONAME(obj));
-        obj_extract_self(obj);
+		obj_extract_self(obj);
 
         /* really should merge the timeouts */
         if (obj->lamplit)
@@ -4386,7 +4394,7 @@ doorganize() /* inventory organizer by Del Lamb */
     char lets[1 + 52 + 1 + 1]; /* room for '$a-zA-Z#\0' */
     char qbuf[QBUFSZ];
     char allowall[4]; /* { ALLOW_COUNT, ALL_CLASSES, 0, 0 } */
-    char *objname, *otmpname;
+    char *objname, *uobjname, *otmpname, *uotmpname;
     const char *adj_type;
     boolean ever_mind = FALSE, collect;
 
@@ -4516,6 +4524,7 @@ doorganize() /* inventory organizer by Del Lamb */
         /* it's tempting to pull this outside the loop, but merged() could
            free ONAME(obj) [via obfree()] and replace it with ONAME(otmp) */
         objname = has_oname(obj) ? ONAME(obj) : (char *) 0;
+		uobjname = has_uoname(obj) ? UONAME(obj) : (char*)0;
 
         if (collect) {
             /* Collecting: #adjust an inventory stack into its same slot;
@@ -4525,7 +4534,9 @@ doorganize() /* inventory organizer by Del Lamb */
                the 'from' stack (obj) with a name and candidate (otmp)
                without one, not unnamed 'from' with named candidate. */
             otmpname = has_oname(otmp) ? ONAME(otmp) : (char *) 0;
-            if ((!otmpname || (objname && !strcmp(objname, otmpname)))
+			uotmpname = has_uoname(otmp) ? UONAME(otmp) : (char*)0;
+			if ((!otmpname || (objname && !strcmp(objname, otmpname)))
+				&& (!uotmpname || (uobjname && !strcmp(uobjname, uotmpname)))
                 && merged(&otmp, &obj)) {
                 adj_type = "Merging:";
                 obj = otmp;
@@ -4542,12 +4553,12 @@ doorganize() /* inventory organizer by Del Lamb */
                 otmp->invlet = obj->invlet;
             } else {
                 /* strip 'from' name if it has one */
-                if (objname && !obj->oartifact)
-                    ONAME(obj) = (char *) 0;
+                if (uobjname) // && !obj->oartifact)
+                    UONAME(obj) = (char *) 0;
                 if (!mergable(otmp, obj)) {
                     /* won't merge; put 'from' name back */
-                    if (objname)
-                        ONAME(obj) = objname;
+                    if (uobjname)
+                        UONAME(obj) = uobjname;
                 } else {
                     /* will merge; discard 'from' name */
                     if (objname)

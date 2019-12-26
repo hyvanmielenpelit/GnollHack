@@ -126,6 +126,7 @@ struct context_info {
 	boolean made_deserted_shop;
 	boolean made_orc_and_a_pie;
 	boolean made_orc_and_a_pie2;
+	int made_shop_count;
 	char used_names[BUFSIZ * 32];
 	boolean encounter_appeared[256];
 	int shop_identify_type;

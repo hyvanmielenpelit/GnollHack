@@ -452,6 +452,7 @@ E void FDECL(new_uoname, (struct obj*, int));
 E void FDECL(free_uoname, (struct obj*));
 E const char* FDECL(safe_uoname, (struct obj*));
 E struct monst *FDECL(christen_monst, (struct monst *, const char *));
+E struct monst* FDECL(u_name_monst, (struct monst*, const char*));
 E struct obj *FDECL(oname, (struct obj *, const char *));
 E struct obj* FDECL(uoname, (struct obj*, const char*));
 E boolean FDECL(objtyp_is_callable, (int));
@@ -1447,7 +1448,7 @@ E void FDECL(pudding_merge_message, (struct obj *, struct obj *));
 
 /* ### mkroom.c ### */
 
-E void FDECL(mkroom, (int));
+E int FDECL(mkroom, (int));
 E void FDECL(fill_zoo, (struct mkroom *));
 E struct permonst *NDECL(antholemon);
 E boolean FDECL(nexttodoor, (int, int));
@@ -2437,6 +2438,7 @@ E long FDECL(get_cost_of_monster_item, (struct obj*, struct monst*));
 E long FDECL(m_contained_cost, (struct obj*, struct monst*));
 E boolean FDECL(is_shop_item_type, (struct obj*, int));
 E int FDECL(release_item_from_hero_inventory, (struct obj*));
+E int FDECL(ask_shk_reconciliation, (struct monst*));
 
 /* ### sys.c ### */
 

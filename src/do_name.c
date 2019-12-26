@@ -1279,8 +1279,11 @@ do_mname()
     } else if (mtmp->isshk
                && !(Deaf || mtmp->msleeping || !mtmp->mcanmove
                     || mtmp->data->msound <= MS_ANIMAL)) {
-        if (!alreadynamed(mtmp, monnambuf, buf))
-            verbalize("I'm %s, not %s.", shkname(mtmp), buf);
+		if (!alreadynamed(mtmp, monnambuf, buf))
+		{
+			mtmp->u_know_mname = 1;
+			verbalize("I'm %s, not %s.", shkname(mtmp), buf);
+		}
     } else if (mtmp->ispriest || mtmp->isminion || mtmp->isshk) {
         if (!alreadynamed(mtmp, monnambuf, buf))
             pline("%s will not accept the name %s.", upstart(monnambuf), buf);

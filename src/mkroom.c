@@ -19,8 +19,9 @@
 
 STATIC_DCL boolean FDECL(isbig, (struct mkroom *));
 STATIC_DCL struct mkroom *FDECL(pick_room, (BOOLEAN_P));
-STATIC_DCL void NDECL(mkshop), NDECL(mkdesertedshop), FDECL(mkzoo, (int)), NDECL(mkswamp), NDECL(mkgarden), NDECL(mkdragonlair);
-STATIC_DCL void NDECL(mktemple);
+STATIC_DCL int NDECL(mkshop), NDECL(mkdesertedshop);
+STATIC_DCL int FDECL(mkzoo, (int)), NDECL(mkswamp), NDECL(mkgarden), NDECL(mkdragonlair);
+STATIC_DCL int NDECL(mktemple);
 STATIC_DCL coord *FDECL(shrine_pos, (int));
 STATIC_DCL struct permonst *NDECL(morguemon);
 STATIC_DCL struct permonst *FDECL(librarymon, (int));
@@ -43,62 +44,64 @@ register struct mkroom *sroom;
 }
 
 /* make and stock a room of a given type */
-void
+int
 mkroom(roomtype)
 int roomtype;
 {
     if (roomtype >= SHOPBASE)
-        mkshop(); /* someday, we should be able to specify shop type */
+        return mkshop(); /* someday, we should be able to specify shop type */
     else
         switch (roomtype) {
         case COURT:
-            mkzoo(COURT);
+            return mkzoo(COURT);
             break;
         case ZOO:
-            mkzoo(ZOO);
+			return mkzoo(ZOO);
             break;
         case BEEHIVE:
-            mkzoo(BEEHIVE);
+			return mkzoo(BEEHIVE);
             break;
 		case LIBRARY:
-			mkzoo(LIBRARY);
+			return mkzoo(LIBRARY);
 			break;
 		case DRAGONLAIR:
 			mkdragonlair();
 			break;
 		case MORGUE:
-            mkzoo(MORGUE);
+			return mkzoo(MORGUE);
             break;
         case BARRACKS:
-            mkzoo(BARRACKS);
+			return mkzoo(BARRACKS);
             break;
         case SWAMP:
-            mkswamp();
+            return mkswamp();
             break;
 		case GARDEN:
-			mkgarden();
+			return mkgarden();
 			break;
 		case TEMPLE:
-            mktemple();
+			return mktemple();
             break;
         case LEPREHALL:
-            mkzoo(LEPREHALL);
+			return mkzoo(LEPREHALL);
             break;
         case COCKNEST:
-            mkzoo(COCKNEST);
+			return mkzoo(COCKNEST);
             break;
         case ANTHOLE:
-            mkzoo(ANTHOLE);
+			return mkzoo(ANTHOLE);
             break;
 		case DESERTEDSHOP:
-			mkdesertedshop();
+			return mkdesertedshop();
 			break;
 		default:
             impossible("Tried to make a room of type %d.", roomtype);
+			return 0;
         }
+	return 0;
 }
 
-STATIC_OVL void
+STATIC_OVL int
 mkshop()
 {
     register struct mkroom *sroom;
@@ -111,60 +114,47 @@ mkshop()
         ep = nh_getenv("SHOPTYPE");
         if (ep) {
             if (*ep == 'z' || *ep == 'Z') {
-                mkzoo(ZOO);
-                return;
+                return mkzoo(ZOO);
             }
             if (*ep == 'm' || *ep == 'M') {
-                mkzoo(MORGUE);
-                return;
-            }
+				return mkzoo(MORGUE);
+			}
             if (*ep == 'b' || *ep == 'B') {
-                mkzoo(BEEHIVE);
-                return;
-            }
+				return mkzoo(BEEHIVE);
+			}
 			if (*ep == 'k' || *ep == 'K') { // Kirjasto is library in Finnish -- JG
-				mkzoo(LIBRARY);
-				return;
+				return mkzoo(LIBRARY);
 			}
 			if (*ep == 'd' || *ep == 'D') {
-				mkdragonlair();
-				return;
+				return mkdragonlair();
+				return 1;
 			}
 			if (*ep == 't' || *ep == 'T' || *ep == '\\') {
-                mkzoo(COURT);
-                return;
-            }
+				return mkzoo(COURT);
+			}
             if (*ep == 's' || *ep == 'S') {
-                mkzoo(BARRACKS);
-                return;
-            }
+				return mkzoo(BARRACKS);
+			}
             if (*ep == 'a' || *ep == 'A') {
-                mkzoo(ANTHOLE);
-                return;
-            }
+				return mkzoo(ANTHOLE);
+			}
             if (*ep == 'c' || *ep == 'C') {
-                mkzoo(COCKNEST);
-                return;
-            }
+				return mkzoo(COCKNEST);
+			}
             if (*ep == 'l' || *ep == 'L') {
-                mkzoo(LEPREHALL);
-                return;
-            }
+				return mkzoo(LEPREHALL);
+			}
             if (*ep == '_') {
-                mktemple();
-                return;
-            }
+				return mktemple();
+			}
             if (*ep == '}') {
-                mkswamp();
-                return;
-            }
+				return mkswamp();
+			}
 			if (*ep == 'g' || *ep == 'G') { // Garden gnomes
-				mkgarden();
-				return;
+				return mkgarden();
 			}
 			if (*ep == 'p' || *ep == 'P') { // shoP
-				mkdesertedshop();
-				return;
+				return mkdesertedshop();
 			}
 			for (i = 0; shtypes[i].name; i++)
                 if (*ep == def_oc_syms[(int) shtypes[i].symb].sym)
@@ -183,10 +173,10 @@ gottype:
 #endif
     for (sroom = &rooms[0];; sroom++) {
         if (sroom->hx < 0)
-            return;
+            return 0;
         if (sroom - rooms >= nroom) {
             pline("rooms not closed by -1?");
-            return;
+            return 0;
         }
         if (sroom->rtype != OROOM)
             continue;
@@ -229,11 +219,13 @@ gottype:
 
     /* stock the room with a shopkeeper and artifacts */
     stock_room(i, sroom, FALSE);
+	context.made_shop_count++;
+	return 1;
 }
 
 
 
-STATIC_OVL void
+STATIC_OVL int
 mkdesertedshop()
 {
 	register struct mkroom* sroom;
@@ -242,10 +234,10 @@ mkdesertedshop()
 
 	for (sroom = &rooms[0];; sroom++) {
 		if (sroom->hx < 0)
-			return;
+			return 0;
 		if (sroom - rooms >= nroom) {
 			pline("rooms not closed by -1?");
-			return;
+			return 0;
 		}
 		if (sroom->rtype != OROOM)
 			continue;
@@ -294,6 +286,7 @@ mkdesertedshop()
 
 	/* Change back to get the right message */
 	sroom->rtype = DESERTEDSHOP;
+	return 1;
 }
 
 /* pick an unused room, preferably with only one door */
@@ -322,7 +315,7 @@ register boolean strict;
     return (struct mkroom *) 0;
 }
 
-STATIC_OVL void
+STATIC_OVL int
 mkzoo(type)
 int type;
 {
@@ -331,7 +324,9 @@ int type;
     if ((sroom = pick_room(FALSE)) != 0) {
         sroom->rtype = type;
         fill_zoo(sroom);
+		return 1;
     }
+	return 0;
 }
 
 void
@@ -616,6 +611,7 @@ struct mkroom *sroom;
 		level.flags.has_library = 1;
 		break;
 	}
+
 }
 
 /* make a swarm of undead around mm */
@@ -755,11 +751,12 @@ antholemon()
                                              : &mons[mtyp]);
 }
 
-STATIC_OVL void
+STATIC_OVL int
 mkswamp() /* Michiel Huisjes & Fred de Wilde */
 {
     register struct mkroom *sroom;
     register int sx, sy, i, eelct = 0;
+	int swampnumber = 0;
 
     for (i = 0; i < 5; i++) { /* turn up to 5 rooms swampy */
         sroom = &rooms[rn2(nroom)];
@@ -790,11 +787,13 @@ mkswamp() /* Michiel Huisjes & Fred de Wilde */
                                        NO_MM_FLAGS);
                 }
         level.flags.has_swamp = 1;
+		swampnumber++;
     }
+	return swampnumber;
 }
 
 
-STATIC_OVL void
+STATIC_OVL int
 mkgarden() 
 {
 	register struct mkroom* sroom = (struct mkroom*)0;
@@ -810,7 +809,7 @@ mkgarden()
 	}
 
 	if (!sroom)
-		return;
+		return 0;
 
 	/* satisfied; make a garden */
 	sroom->rtype = GARDEN;
@@ -949,10 +948,11 @@ mkgarden()
 		}
 	}
 	level.flags.has_garden = 1;
-	
+	return 1;
+
 }
 
-STATIC_OVL void
+STATIC_OVL int
 mkdragonlair()
 {
 	register struct mkroom* sroom = (struct mkroom*)0;
@@ -968,7 +968,7 @@ mkdragonlair()
 	}
 
 	if (!sroom)
-		return;
+		return 0;
 
 	/* satisfied; make a dragon lair */
 	sroom->rtype = DRAGONLAIR;
@@ -1116,7 +1116,7 @@ mkdragonlair()
 	}
 
 	level.flags.has_dragonlair = 1;
-
+	return 1;
 }
 
 STATIC_OVL coord *
@@ -1141,7 +1141,7 @@ int roomno;
     return &buf;
 }
 
-STATIC_OVL void
+STATIC_OVL int
 mktemple()
 {
     register struct mkroom *sroom;
@@ -1149,7 +1149,7 @@ mktemple()
     register struct rm *lev;
 
     if (!(sroom = pick_room(TRUE)))
-        return;
+        return 0;
 
     /* set up Priest and shrine */
     sroom->rtype = TEMPLE;
@@ -1164,6 +1164,7 @@ mktemple()
     priestini(&u.uz, sroom, shrine_spot->x, shrine_spot->y, FALSE);
     lev->altarmask |= AM_SHRINE;
     level.flags.has_temple = 1;
+	return 1;
 }
 
 boolean

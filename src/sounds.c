@@ -37,6 +37,7 @@ STATIC_DCL int FDECL(do_chat_shk_payitems, (struct monst*));
 STATIC_DCL int FDECL(do_chat_shk_pricequote, (struct monst*));
 STATIC_DCL int FDECL(do_chat_shk_chat, (struct monst*));
 STATIC_DCL int FDECL(do_chat_shk_identify, (struct monst*));
+STATIC_DCL int FDECL(do_chat_shk_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_watchman_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quest_chat, (struct monst*));
 STATIC_DCL int FDECL(mon_in_room, (struct monst *, int));
@@ -44,6 +45,18 @@ STATIC_DCL int FDECL(mon_in_room, (struct monst *, int));
 extern const struct shclass shtypes[]; /* defined in shknam.c */
 
 
+int
+ask_shk_reconciliation(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp || !mtmp->isshk || !mtmp->mextra || !ESHK(mtmp))
+		return 0;
+
+	You("try to appease %s by offering %s some compensation.", mon_nam(mtmp), mhim(mtmp));
+	pline("%s says:", Monnam(mtmp));
+	int res = do_chat_shk_reconciliation(mtmp);
+	return res;
+}
 
 /* this easily could be a macro, but it might overtax dumb compilers */
 STATIC_OVL int
@@ -1639,7 +1652,7 @@ dochat()
 
 
 	/* Oracle */
-	if (msound == MS_ORACLE)
+	if (mtmp->mpeaceful && msound == MS_ORACLE)
 	{
 		strcpy(available_chat_list[chatnum].name, "Ask for a consultation");
 		available_chat_list[chatnum].function_ptr = &do_chat_oracle_consult;
@@ -1682,7 +1695,7 @@ dochat()
 	}
 
 	/* Priest */
-	if (msound == MS_PRIEST || mtmp->ispriest)
+	if (mtmp->mpeaceful && (msound == MS_PRIEST || mtmp->ispriest))
 	{
 		strcpy(available_chat_list[chatnum].name, "Ask for standard healing");
 		available_chat_list[chatnum].function_ptr = &do_chat_priest_normal_healing;
@@ -1751,7 +1764,7 @@ dochat()
 		chatnum++;
 
 	}
-	else if ((mtmp->data->mflags3 & M3_PRIEST) && msound != MS_ORACLE)
+	else if (mtmp->mpeaceful && (mtmp->data->mflags3 & M3_PRIEST) && msound != MS_ORACLE)
 	{
 		/* Non-priest monster priests here */
 		strcpy(available_chat_list[chatnum].name, "Ask for healing");
@@ -1783,7 +1796,7 @@ dochat()
 	}
 
 	/* Quest */
-	if (msound == MS_LEADER || msound == MS_GUARDIAN || msound == MS_NEMESIS)
+	if ((mtmp->mpeaceful && (msound == MS_LEADER || msound == MS_GUARDIAN)) || msound == MS_NEMESIS)
 	{
 		strcpy(available_chat_list[chatnum].name, "Talk about your quest");
 		available_chat_list[chatnum].function_ptr = &do_chat_quest_chat;
@@ -1803,19 +1816,39 @@ dochat()
 	/* Shopkeeper */
 	if (msound == MS_SELL || mtmp->isshk)
 	{
-		strcpy(available_chat_list[chatnum].name, "Ask about the state of business");
-		available_chat_list[chatnum].function_ptr = &do_chat_shk_chat;
-		available_chat_list[chatnum].charnum = 'a' + chatnum;
+		if(1)
+		{
+			if(mtmp->mpeaceful)
+				strcpy(available_chat_list[chatnum].name, "Ask about the state of business");
+			else
+				Sprintf(available_chat_list[chatnum].name, "Ask about what's getting on %s nerves", mhis(mtmp));
+			available_chat_list[chatnum].function_ptr = &do_chat_shk_chat;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
 
-		any = zeroany;
-		any.a_char = available_chat_list[chatnum].charnum;
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
 
-		add_menu(win, NO_GLYPH, &any,
-			any.a_char, 0, ATR_NONE,
-			available_chat_list[chatnum].name, MENU_UNSELECTED);
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
 
-		chatnum++;
+			chatnum++;
+		}
+		if (!mtmp->mpeaceful)
+		{
+			strcpy(available_chat_list[chatnum].name, "Ask for reconciliation");
+			available_chat_list[chatnum].function_ptr = &do_chat_shk_reconciliation;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
 
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+		}
 		if(invent && count_unpaid(invent))
 		{
 			strcpy(available_chat_list[chatnum].name, "Pay items");
@@ -1834,7 +1867,7 @@ dochat()
 
 
 		int shp_indx = 0;
-		if(mtmp->mextra && ESHK(mtmp))
+		if(mtmp->mpeaceful && mtmp->mextra && ESHK(mtmp))
 		{
 			shp_indx = ESHK(mtmp)->shoptype - SHOPBASE;
 			const struct shclass* shp = &shtypes[shp_indx];
@@ -1856,7 +1889,7 @@ dochat()
 		}
 
 
-		if (!Blind && (otmp = shop_object(u.ux, u.uy)) != (struct obj*) 0) 
+		if (mtmp->mpeaceful && !Blind && (otmp = shop_object(u.ux, u.uy)) != (struct obj*) 0)
 		{
 			/* standing on something in a shop and chatting causes the shopkeeper
 			   to describe the price(s).  This can inhibit other chatting inside
@@ -3368,6 +3401,60 @@ int shtype_index;
 	}
 	return FALSE;
 }
+
+
+STATIC_OVL int
+do_chat_shk_reconciliation(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp || !mtmp->isshk || !mtmp->mextra || !ESHK(mtmp))
+		return 0;
+
+	long umoney;
+	long u_pay;
+	long reconcile_cost = 1000 + u.ulevel * 100 + (mtmp->mrevived ? u.ulevel * 100 : 0) + max(0, ESHK(mtmp)->robbed + ESHK(mtmp)->debit - ESHK(mtmp)->credit);
+	char qbuf[QBUFSZ];
+	
+	multi = 0;
+	umoney = money_cnt(invent);
+
+
+	if (!mtmp) {
+		There("is no one here to talk to.");
+		return 0;
+	}
+
+	Sprintf(qbuf, "\"You need to pay %d %s in compensation. Agree?\"", reconcile_cost, currency(reconcile_cost));
+
+	switch (ynq(qbuf)) {
+	default:
+	case 'q':
+		return 0;
+	case 'y':
+		if (umoney < (long)reconcile_cost) {
+			You("don't have enough money for that!");
+			return 0;
+		}
+		u_pay = reconcile_cost;
+		break;
+	}
+
+	money2mon(mtmp, u_pay);
+	context.botl = 1;
+
+	make_happy_shk(mtmp, FALSE);
+	long costapplyingtodebit = max(0, min(reconcile_cost - 1000, ESHK(mtmp)->debit));
+	ESHK(mtmp)->debit -= costapplyingtodebit;
+
+	if (mtmp->mpeaceful)
+		pline("\"That's a deal. Be more careful next time.\"");
+	else
+		pline("\"On second thought, maybe you should hang for your crimes anyway.\"");
+
+	return 1;
+}
+
+
 
 STATIC_OVL int
 do_chat_watchman_reconciliation(mtmp)

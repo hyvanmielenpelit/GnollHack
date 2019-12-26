@@ -591,9 +591,11 @@ char *enterstring;
     rt = rooms[*enterstring - ROOMOFFSET].rtype;
 
     if (ANGRY(shkp)) {
-        if (!Deaf && !muteshk(shkp))
-            verbalize("So, %s, you dare return to %s %s?!", plname,
-                      s_suffix(shkname(shkp)), shtypes[rt - SHOPBASE].name);
+		if (!Deaf && !muteshk(shkp))
+		{
+			verbalize("So, %s, you dare return to %s %s?!", plname,
+				s_suffix(shkname(shkp)), shtypes[rt - SHOPBASE].name);
+		}
         else
             pline("%s seems %s over your return to %s %s!",
                   Shknam(shkp), angrytexts[rn2(SIZE(angrytexts))],
@@ -606,13 +608,16 @@ char *enterstring;
             pline("%s is combing through %s inventory list.",
                   Shknam(shkp), noit_mhis(shkp));
     } else {
-        if (!Deaf && !muteshk(shkp))
-            verbalize("%s, %s!  Welcome%s to %s %s!", Hello(shkp), plname,
-                      eshkp->visitct++ ? " again" : "",
-                      s_suffix(shkname(shkp)), shtypes[rt - SHOPBASE].name);
+		if (!Deaf && !muteshk(shkp))
+		{
+			shkp->u_know_mname = 1;
+			verbalize("%s, %s!  Welcome%s to %s %s!", Hello(shkp), plname,
+				eshkp->visitct++ ? " again" : "",
+				s_suffix(shkname(shkp)), shtypes[rt - SHOPBASE].name);
+		}
         else
             You("enter %s %s%s!",
-                s_suffix(shkname(shkp)),
+				shkp->u_know_mname ? s_suffix(shkname(shkp)) : "the",
                 shtypes[rt - SHOPBASE].name,
                 eshkp->visitct++ ? " again" : "");
     }
@@ -1397,14 +1402,23 @@ dopay()
             /* shopkeeper is angry, but has not been robbed --
              * door broken, attacked, etc. */
             pline("%s is after your hide, not your money!", Shknam(shkp));
-            if (umoney < 1000L) {
-                if (!umoney)
-                    pline(no_money, stashed_gold ? " seem to" : "");
-                else
-                    pline(not_enough_money, noit_mhim(shkp));
-                return 1;
-            }
-            You("try to appease %s by giving %s 1000 gold pieces.",
+
+			if (!umoney)
+			{
+				pline(no_money, stashed_gold ? " seem to" : "");
+				return 1;
+			}
+			
+			(void)ask_shk_reconciliation(shkp);
+#if 0
+			if (umoney < 1000L) {
+				if (!umoney)
+					pline(no_money, stashed_gold ? " seem to" : "");
+				else
+					pline(not_enough_money, noit_mhim(shkp));
+				return 1;
+			}
+			You("try to appease %s by giving %s 1000 gold pieces.",
                 canspotmon(shkp)
                     ? x_monnam(shkp, ARTICLE_THE, "angry", 0, FALSE)
                     : shkname(shkp),
@@ -1414,6 +1428,7 @@ dopay()
                 make_happy_shk(shkp, FALSE);
             else
                 pline("But %s is as angry as ever.", shkname(shkp));
+#endif
         }
         return 1;
     }

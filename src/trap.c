@@ -659,13 +659,21 @@ int *fail_reason;
         mon->female = FALSE;
     else if (statue->spe & STATUE_FEMALE)
         mon->female = TRUE;
+
     /* if statue has been named, give same name to the monster */
+	/* //Applies only to nicknames, other stats are recovered from OMONST -- JG
 	if (has_oname(statue) && !unique_corpstat(mon->data))
 	{
 		mon = christen_monst(mon, ONAME(statue));
-		mon->u_know_mname = 1;
+		if(statue->nknown)
+			mon->u_know_mname = 1;
 	}
-    /* mimic statue becomes seen mimic; other hiders won't be hidden */
+	*/
+	if (has_uoname(statue) && !unique_corpstat(mon->data))
+	{
+		mon = u_name_monst(mon, UONAME(statue));
+	}
+	/* mimic statue becomes seen mimic; other hiders won't be hidden */
     if (M_AP_TYPE(mon))
         seemimic(mon);
     else
