@@ -26,7 +26,11 @@ OBJECT: random, random
 LOOP [1 + 1d2] {
     IF [50%] {
         IF [66%] {
-          OBJECT: ('%', "champignon"), random
+          IF [50%] {
+            OBJECT: ('%', "champignon"), random
+          } ELSE {
+            OBJECT: ('%', "chanterelle"), random
+          }
         } ELSE {
           IF [50%] {
             OBJECT: ('%', "mana mushroom"), random
@@ -36,7 +40,11 @@ LOOP [1 + 1d2] {
         }
     } ELSE {
         IF [33%] {
-           OBJECT: ('%', "fly agaris"), random
+          IF [50%] {
+            OBJECT: ('%', "fly agaris"), random
+          } ELSE {
+            OBJECT: ('%', "panther cap"), random
+          }
         } ELSE {
           IF [50%] {
             OBJECT: ('%', "death cap"), random
@@ -46,6 +54,9 @@ LOOP [1 + 1d2] {
         }
       }
     }
+
+[15%]: OBJECT: ('%', "penny bun"), random
+[10%]: OBJECT: ('%', "penny bun"), random
 
 #
 MONSTER: ('g', "gnome"), random

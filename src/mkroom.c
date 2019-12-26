@@ -890,9 +890,15 @@ mkgarden()
 						quan = rnd(2);
 						break;
 					case 7:
-					case 8:
-					case 9:
 						itemtype = CHAMPIGNON;
+						quan = rnd(3);
+						break;
+					case 8:
+						itemtype = PENNY_BUN;
+						quan = rnd(3);
+						break;
+					case 9:
+						itemtype = CHANTERELLE;
 						quan = rnd(3);
 						break;
 					case 10:
