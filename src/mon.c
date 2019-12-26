@@ -1986,25 +1986,30 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
                 } else {
                     if (MON_AT(nx, ny)) {
                         struct monst *mtmp2 = m_at(nx, ny);
-                        long mmflag = flag | mm_aggression(mon, mtmp2);
+						long mmagr = mm_aggression(mon, mtmp2);
+                        long mmflag = flag | mmagr;
+						long mmdispl = mm_displacement(mon, mtmp2);
+						mmflag |= mmdispl;
 
-                        if (mmflag & ALLOW_M) 
+						if (mtmp2)
 						{
-                            info[cnt] |= ALLOW_M;
-                        }
-
-						
-						if ((mmflag & ALLOW_TM) && !mtmp2->mtame)
-						{
-							info[cnt] |= ALLOW_TM;
+							if (!mtmp2->mtame)
+							{
+								if (mmflag & ALLOW_M)
+									info[cnt] |= ALLOW_M;
+								else if (mmflag & ALLOW_MDISP)
+									info[cnt] |= ALLOW_MDISP;
+								else
+									continue; /* cannot attack, cannot move to the square */
+							}
+							else
+							{
+								if (mmflag & ALLOW_TM)
+									info[cnt] |= ALLOW_TM;
+								else
+									continue; /* cannot attack, cannot move to the square */
+							}
 						}
-
-						mmflag |= mm_displacement(mon, mtmp2);
-						if (mmflag & ALLOW_MDISP)
-						{
-                            info[cnt] |= ALLOW_MDISP;
-                        }
-
                     }
                     /* Note: ALLOW_SANCT only prevents movement, not
                        attack, into a temple. */
@@ -2013,19 +2018,27 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
                         && in_your_sanctuary((struct monst *) 0, nx, ny)) {
                         if (flag & ALLOW_SANCT)
 	                        info[cnt] |= ALLOW_SANCT;
-                    }
+						else
+							continue;  /* cannot attack, cannot move to the square */
+					}
                 }
                 if (checkobj && sobj_at(CLOVE_OF_GARLIC, nx, ny)) {
-                    if (flag & NOGARLIC)
-	                    info[cnt] |= NOGARLIC;
+					if (flag & NOGARLIC)
+						continue;  /* cannot attack, cannot move to the square */
+					else
+		                info[cnt] |= NOGARLIC; /* indicates that there is a garlic in the square, but the creature shouldn't care */
                 }
                 if (checkobj && sobj_at(BOULDER, nx, ny)) {
-                    if (flag & ALLOW_ROCK)
-	                    info[cnt] |= ALLOW_ROCK;
+					if (flag & ALLOW_ROCK)
+						info[cnt] |= ALLOW_ROCK;
+					else
+						continue;  /* cannot attack, cannot move to the square */
                 }
                 if (monseeu && onlineu(nx, ny)) {
-                    if (flag & NOTONL)
-	                    info[cnt] |= NOTONL;
+					if (flag & NOTONL)
+						continue;  /* cannot move to the square */
+					else
+	                    info[cnt] |= NOTONL; /* indicates that the square is on the line, but the creature shouldn't care */
                 }
                 /* check for diagonal tight squeeze */
                 if (nx != x && ny != y && bad_rock(mdat, x, ny)
@@ -2108,17 +2121,9 @@ struct monst *magr, /* monster that is currently deciding where to move */
 
 	if (mon_has_bloodlust(magr))
 	{
-		if(magr->mtame)
+		if(mdef->mpeaceful && !mdef->mtame)
 			return ALLOW_M;
-		else
-			return ALLOW_TM;
 	}
-
-	if (magr->mtame && (!mdef->mpeaceful || mon_has_bloodlust(mdef)))
-		return ALLOW_M ;
-
-	if (mdef->mtame && !magr->mtame && (!magr->mpeaceful || mon_has_bloodlust(magr)))
-		return ALLOW_TM;
 
 	return 0L;
 }

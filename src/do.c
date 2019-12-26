@@ -4059,7 +4059,7 @@ final_level()
     create_mplayers(rn1(4, 3), TRUE);
 
     /* create a guardian angel next to player, if worthy */
-    gain_guardian_angel();
+    gain_guardian_angel(FALSE);
 }
 
 static char *dfr_pre_msg = 0,  /* pline() before level change */

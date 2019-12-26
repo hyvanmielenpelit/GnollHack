@@ -280,6 +280,7 @@ typedef struct sortloot_item Loot;
 #define MM_MALE  0x10000    /* always male */
 #define MM_FEMALE  0x20000  /* always female */
 #define MM_NORMAL_HIT_DICE  0x40000  /* use normal hit dice */
+#define MM_EMIN_COALIGNED  0x80000  /* minion is of the same alignment as player */
 
 /* flags for make_corpse() and mkcorpstat() */
 #define CORPSTAT_NONE 0x00

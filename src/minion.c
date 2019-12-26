@@ -796,7 +796,8 @@ struct monst *mon; /* if null, angel hasn't been created yet */
 
 /* just entered the Astral Plane; receive tame guardian angel if worthy */
 void
-gain_guardian_angel()
+gain_guardian_angel(fromspell)
+boolean fromspell;
 {
     struct monst *mtmp;
     struct obj *otmp;
@@ -804,12 +805,12 @@ gain_guardian_angel()
 
     Hear_again(); /* attempt to cure any deafness now (divine
                      message will be heard even if that fails) */
-    if (Conflict) {
+    if (!fromspell && Conflict) {
         pline("A voice booms:");
         verbalize("Thy desire for conflict shall be fulfilled!");
         /* send in some hostile angels instead */
         lose_guardian_angel((struct monst *) 0);
-    } else if (u.ualign.record > 8) { /* fervent */
+    } else if (fromspell || u.ualign.record > 8) { /* fervent */
         pline("A voice whispers:");
         verbalize("Thou hast been worthy of me!");
         mm.x = u.ux;
@@ -827,6 +828,7 @@ gain_guardian_angel()
              * call tamedog().
              */
             mtmp->mtame = 10;
+			newsym(mtmp->mx, mtmp->my);
             /* make him strong enough vs. endgame foes */
             mtmp->m_lev = rn1(8, 15);
             mtmp->mhp = mtmp->mhpmax =

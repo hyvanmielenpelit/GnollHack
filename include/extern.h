@@ -1315,7 +1315,7 @@ E int NDECL(llord);
 E int FDECL(ndemon, (ALIGNTYP_P));
 E int NDECL(lminion);
 E void FDECL(lose_guardian_angel, (struct monst *));
-E void NDECL(gain_guardian_angel);
+E void FDECL(gain_guardian_angel, (BOOLEAN_P));
 
 /* ### mklev.c ### */
 
@@ -3150,7 +3150,7 @@ E void NDECL(makewish);
 E void FDECL(summonitem, (struct obj*, int));
 E void FDECL(summonblackblade, (struct obj*));
 E void FDECL(summonmagearmor, (struct obj*));
-E struct monst* FDECL(summoncreature, (int, int, char *, boolean, boolean, boolean, boolean, boolean, boolean, boolean));
+E struct monst* FDECL(summoncreature, (int, int, char *, int, boolean, boolean, boolean, boolean, boolean, boolean, boolean));
 E void FDECL(summondemon, (int));
 E void FDECL(summondemogorgon, (int));
 E void NDECL(armageddon);

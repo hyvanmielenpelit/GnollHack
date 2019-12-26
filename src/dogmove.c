@@ -1059,7 +1059,7 @@ int after; /* this is extra fast monster movement */
     if (is_displacer(mtmp->data))
         allowflags |= ALLOW_MDISP;
     if (Conflict && !resist(mtmp, (struct obj*) 0, 5, 0, 0)) {
-        allowflags |= ALLOW_U;
+        allowflags |= (ALLOW_U  | ALLOW_TM);
         if (!has_edog) {
             /* Guardian angel refuses to be conflicted; rather,
              * it disappears, angrily, and sends in some nasties

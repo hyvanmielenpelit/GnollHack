@@ -1194,7 +1194,6 @@ register int after;
     else
 	{
         flag |= ALLOW_U;
-		flag |= ALLOW_M;
 		flag |= ALLOW_TM;
 	}
     if (is_minion(ptr) || is_rider(ptr))
@@ -1312,11 +1311,9 @@ register int after;
          * Pets get taken care of above and shouldn't reach this code.
          * Conflict gets handled even farther away (movemon()).
          */
-        if ((info[chi] & ALLOW_M) || (nix == mtmp->mux && niy == mtmp->muy)) {
-            struct monst *mtmp2;
-            int mstatus;
-
-            mtmp2 = m_at(nix, niy);
+		if ((info[chi] & (ALLOW_M | ALLOW_TM)) || (nix == mtmp->mux && niy == mtmp->muy)) {
+			struct monst* mtmp2 = m_at(nix, niy);
+			int mstatus;
 
             notonhead = mtmp2 && (nix != mtmp2->mx || niy != mtmp2->my);
             /* note: mstatus returns 0 if mtmp2 is nonexistent */

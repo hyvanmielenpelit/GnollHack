@@ -2069,7 +2069,7 @@ int mmflags;
         eminp = EMIN(mtmp);
 
         mtmp->isminion = 1;            /* make priest be a roamer */
-        eminp->min_align = rn2(3) - 1; /* no A_NONE */
+        eminp->min_align = (mmflags & MM_EMIN_COALIGNED) ? u.ualign.type : rn2(3) - 1; /* no A_NONE */
         eminp->renegade = (boolean) ((mmflags & MM_ANGRY) ? 1 : !rn2(3));
         mtmp->mpeaceful = (eminp->min_align == u.ualign.type)
                               ? !eminp->renegade

@@ -441,10 +441,10 @@ struct materialcomponentlist matlists[] =
 		}
 	},
 
-	{ SPE_GUARDIAN_ANGEL,
+	{ SPE_HEAVENLY_WARRIOR,
 	"Opal",
 	STRANGE_OBJECT,
-	3,
+	2,
 		{
 			{OPAL, NOT_APPLICABLE, 1, MATCOMP_NOT_CURSED},
 			NO_MATCOMP,
@@ -452,10 +452,21 @@ struct materialcomponentlist matlists[] =
 		}
 	},
 
+	{ SPE_GUARDIAN_ANGEL,
+	"Opal, feather",
+	STRANGE_OBJECT,
+	2,
+		{
+			{OPAL, NOT_APPLICABLE, 1, MATCOMP_NOT_CURSED},
+			{FEATHER, NOT_APPLICABLE, 1, MATCOMP_NOT_CURSED},
+			NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
+		}
+	},
+
 	{ SPE_CALL_HIERARCH_MODRON,
 	"Modronite cube",
 	STRANGE_OBJECT,
-	3,
+	2,
 		{
 			{MODRONITE_CUBE, NOT_APPLICABLE, 1, MATCOMP_NOT_CURSED},
 			NO_MATCOMP,
@@ -466,7 +477,7 @@ struct materialcomponentlist matlists[] =
 	{ SPE_DIVINE_MOUNT,
 	"Opal, apple",
 	STRANGE_OBJECT,
-	3,
+	2,
 		{
 			{OPAL, NOT_APPLICABLE, 1, MATCOMP_NOT_CURSED},
 			{APPLE, NOT_APPLICABLE, 1, MATCOMP_NOT_CURSED},

@@ -2874,28 +2874,28 @@ register struct obj *obj;
 		if (Is_waterlevel(&u.uz))
 			pline("Unfortunately, nothing happens.");
 		else
-			(void)summoncreature(obj->otyp, PM_AIR_ELEMENTAL, "The air around you starts to swirl and forms into %s.", FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE);
+			(void)summoncreature(obj->otyp, PM_AIR_ELEMENTAL, "The air around you starts to swirl and forms into %s.", NO_MM_FLAGS, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE);
 		break;
 	case SPE_ANIMATE_EARTH:
 		known = TRUE;
 		if (Is_waterlevel(&u.uz) || Is_airlevel(&u.uz))
 			pline("Unfortunately, nothing happens.");
 		else
-			(void)summoncreature(obj->otyp, PM_EARTH_ELEMENTAL, "The air starts to swirl around you and forms into %s.", FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE);
+			(void)summoncreature(obj->otyp, PM_EARTH_ELEMENTAL, "The air starts to swirl around you and forms into %s.", NO_MM_FLAGS, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE);
 		break;
 	case SPE_ANIMATE_FIRE:
 		known = TRUE;
 		if (Is_waterlevel(&u.uz))
 			pline("Unfortunately, nothing happens.");
 		else
-			(void)summoncreature(obj->otyp, PM_FIRE_ELEMENTAL, "A flickering flame appears out of thin air and forms into %s.", FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE);
+			(void)summoncreature(obj->otyp, PM_FIRE_ELEMENTAL, "A flickering flame appears out of thin air and forms into %s.", NO_MM_FLAGS, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE);
 		break;
 	case SPE_ANIMATE_WATER:
 		known = TRUE;
 		if (Inhell || Is_firelevel(&u.uz))
 			pline("Unfortunately, nothing happens.");
 		else
-			(void)summoncreature(obj->otyp, PM_WATER_ELEMENTAL, "Water condensates from thin air and forms into %s.", FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE);
+			(void)summoncreature(obj->otyp, PM_WATER_ELEMENTAL, "Water condensates from thin air and forms into %s.", NO_MM_FLAGS, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE);
 		break;
 	case SPE_CREATE_GOLD_GOLEM:
 	case SPE_CREATE_GLASS_GOLEM:
@@ -2939,7 +2939,7 @@ register struct obj *obj;
 			monstid = PM_STRAW_GOLEM;
 			break;
 		}
-		(void)summoncreature(obj->otyp, monstid, "%s forms before you.", TRUE, FALSE, TRUE, TRUE, FALSE, FALSE, FALSE);
+		(void)summoncreature(obj->otyp, monstid, "%s forms before you.", NO_MM_FLAGS, TRUE, FALSE, TRUE, TRUE, FALSE, FALSE, FALSE);
 		break;
 	case SPE_SUMMON_DEMON:
 		known = TRUE;
@@ -2954,16 +2954,20 @@ register struct obj *obj;
 		summondemogorgon(obj->otyp);
 		break;
 	case SPE_FAITHFUL_HOUND:
-		mtmp = summoncreature(obj->otyp, PM_LARGE_DOG, "%s appears out of nowhere.", TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE);
+		mtmp = summoncreature(obj->otyp, PM_LARGE_DOG, "%s appears out of nowhere.", NO_MM_FLAGS, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE);
 		break;
 	case SPE_CALL_HIERARCH_MODRON:
-		(void)summoncreature(obj->otyp, (rn2(100) < (u.ulevel - 1) * 1) ? PM_MODRON_TERTIAN : (rn2(100) < (u.ulevel - 1) * 5) ? PM_MODRON_QUARTON : PM_MODRON_QUINTON, "%s appears in a cloud of smoke.", TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE);
+		(void)summoncreature(obj->otyp, (rn2(100) < (u.ulevel - 1) * 1) ? PM_MODRON_TERTIAN : (rn2(100) < (u.ulevel - 1) * 5) ? PM_MODRON_QUARTON : PM_MODRON_QUINTON, "%s appears in a cloud of smoke.", NO_MM_FLAGS, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE);
 		break;
 	case SPE_GUARDIAN_ANGEL:
-		mtmp = summoncreature(obj->otyp, (rn2(100) < (u.ulevel - 1) * 1) ? PM_ARCHON : (rn2(100) < (u.ulevel - 1) * 5) ? PM_ANGEL : PM_ALEAX, "%s descends from the heavens.", TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
+		You("recite an ancient prayer to %s.", u_gname());
+		gain_guardian_angel(TRUE);
+		break;
+	case SPE_HEAVENLY_WARRIOR:
+		mtmp = summoncreature(obj->otyp, PM_ALEAX, "%s descends from the heavens.", MM_EMIN_COALIGNED, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
 		break;
 	case SPE_DIVINE_MOUNT:
-		mtmp = summoncreature(obj->otyp, PM_KI_RIN, "%s appears before you.", TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
+		mtmp = summoncreature(obj->otyp, PM_KI_RIN, "%s appears before you.", MM_EMIN_COALIGNED, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
 		if (mtmp)
 		{
 			otmp = mksobj(SADDLE, TRUE, FALSE, FALSE);
@@ -2994,7 +2998,7 @@ register struct obj *obj;
 				monstid = PM_ALEAX;
 				break;
 			}
-			mtmp = summoncreature(obj->otyp, monstid, "", TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
+			mtmp = summoncreature(obj->otyp, monstid, "", MM_EMIN_COALIGNED, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
 			if (mtmp)
 			{
 				if (monstid == PM_ARCHON)
@@ -3085,7 +3089,7 @@ register struct obj *obj;
 		for (int n = d(1, 3); n > 0; n--)
 		{
 			monstid = pick_nasty(u.ulevel);
-			mtmp = summoncreature(obj->otyp, monstid, "", TRUE, TRUE, TRUE, FALSE, TRUE, FALSE, FALSE);
+			mtmp = summoncreature(obj->otyp, monstid, "", NO_MM_FLAGS, TRUE, TRUE, TRUE, FALSE, TRUE, FALSE, FALSE);
 			if (mtmp)
 			{
 				monstcount++;
@@ -3119,7 +3123,7 @@ register struct obj *obj;
 		for (int n = d(2, 4); n > 0; n--)
 		{
 			monstid = PM_GHOUL;
-			mtmp = summoncreature(obj->otyp, monstid, "", TRUE, TRUE, TRUE, FALSE, TRUE, FALSE, FALSE);
+			mtmp = summoncreature(obj->otyp, monstid, "", NO_MM_FLAGS, TRUE, TRUE, TRUE, FALSE, TRUE, FALSE, FALSE);
 			if (mtmp)
 			{
 				monstcount++;
@@ -6985,9 +6989,10 @@ struct obj* spell_otmp;
 }
 
 struct monst*
-summoncreature(spl_otyp, monst_id, message_fmt, capitalize, markassummoned, disregardstrength, disregardhealth, bloodlust, pacifist, faithful)
+summoncreature(spl_otyp, monst_id, message_fmt, mmflags, capitalize, markassummoned, disregardstrength, disregardhealth, bloodlust, pacifist, faithful)
 int spl_otyp, monst_id;
 char* message_fmt; //input the summoning message with one %s, which is for the monster name
+int mmflags;
 boolean capitalize; //capitalize the monster name for %s
 boolean markassummoned; //mark as summoned
 boolean disregardstrength;
@@ -6998,7 +7003,7 @@ boolean faithful;
 {
 	struct monst* mon = (struct monst*)0;
 
-	mon = makemon(&mons[monst_id], u.ux, u.uy, NO_MINVENT | MM_NOCOUNTBIRTH);
+	mon = makemon(&mons[monst_id], u.ux, u.uy, MM_NOCOUNTBIRTH | mmflags);
 	if (mon)
 	{
 		mon->issummoned = markassummoned;
