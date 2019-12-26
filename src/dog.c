@@ -137,7 +137,15 @@ boolean quietly;
         }
         /* if figurine has been named, give same name to the monster */
         if (has_oname(otmp))
+		{
             mtmp = christen_monst(mtmp, ONAME(otmp));
+			if(otmp->nknown)
+				mtmp->u_know_mname = 1;
+		}
+		if (has_uoname(otmp))
+		{
+			mtmp = u_name_monst(mtmp, UONAME(otmp));
+		}
     }
     set_malign(mtmp); /* more alignment changes */
     newsym(mtmp->mx, mtmp->my);
@@ -212,7 +220,7 @@ makedog()
 	context.startingpet_mid = mtmp->m_id;
     /* Horses already wear a saddle */
     if (pettype == PM_PONY && !!(otmp = mksobj(SADDLE, TRUE, FALSE, FALSE))) {
-        otmp->dknown = otmp->bknown = otmp->rknown = 1;
+        otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
         put_saddle_on_mon(otmp, mtmp);
     }
 
@@ -222,6 +230,8 @@ makedog()
 			mtmp = christen_monst(mtmp, petname_female);
 		else if (*petname)
 			mtmp = christen_monst(mtmp, petname);
+
+		mtmp->u_know_mname = 1;
 	}
     initedog(mtmp);
     return  mtmp;

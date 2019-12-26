@@ -541,7 +541,7 @@ struct encounterdef encounter_definitions[] =
 	{
 		{
 			/* Monster 1 */
-			{ { { PM_ARCH_LICH, 1, 0, NAMELIST_ARCH_LICH, 0, 100, { 
+			{ { { PM_ARCH_LICH, 1, 0, NAMELIST_ARCH_LICH, EM_NAME_KNOWN, 100, {
 				{ { { STAFF_OF_THE_MAGI, 0, 0, 3, 0, 50 }, { STAFF_OF_THUNDER_AND_LIGHTNING, 0, 0, 3, 0, 25 }, { QUARTERSTAFF, 0, 0, 0, 0, 25 }, NORANDOMIZEDITEM, NORANDOMIZEDITEM } },
 				{ { { CLOAK_OF_MAGIC_RESISTANCE, 0, 0, 3, 0, 50 }, { CLOAK_OF_PROTECTION, 0, 0, 3, 0, 25 }, { LEATHER_CLOAK, 0, 0, 0, 0, 25 }, NORANDOMIZEDITEM, NORANDOMIZEDITEM } },
 				{ { { BRACERS_OF_DEFENSE, 0, 0, 3, 0, 50 }, { BRACERS_OF_SPELL_CASTING, 0, 0, 3, 0, 25 }, { LEATHER_BRACERS, 0, 0, 0, 0, 25 }, NORANDOMIZEDITEM, NORANDOMIZEDITEM } },
@@ -561,9 +561,9 @@ struct encounterdef encounter_definitions[] =
 	{
 		{
 			/* Monster 1 */
-			{ { { PM_LICH, 1, 0, NAMELIST_LICH, 0, 40, NOMONSTERITEMS },
-				{ PM_DEMILICH, 1, 0, NAMELIST_LICH, 0, 40, NOMONSTERITEMS },
-				{ PM_MASTER_LICH, 1, 0, NAMELIST_LICH, 0, 20, NOMONSTERITEMS },
+			{ { { PM_LICH, 1, 0, NAMELIST_LICH, EM_NAME_KNOWN, 40, NOMONSTERITEMS },
+				{ PM_DEMILICH, 1, 0, NAMELIST_LICH, EM_NAME_KNOWN, 40, NOMONSTERITEMS },
+				{ PM_MASTER_LICH, 1, 0, NAMELIST_LICH, EM_NAME_KNOWN, 20, NOMONSTERITEMS },
 			NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
 			NORANDOMIZEDMONSTER,
 			NORANDOMIZEDMONSTER,
@@ -611,7 +611,7 @@ struct encounterdef encounter_definitions[] =
 	{
 		{
 			/* Monster 1 */
-			{ { { PM_GOBLIN_KING, 0, 1, NAMELIST_GOBLIN_KING, 0, 100,
+			{ { { PM_GOBLIN_KING, 0, 1, NAMELIST_GOBLIN_KING, EM_NAME_KNOWN, 100,
 					{ { { { CLUB, 0, 1, 2, 0, 30 }, { BATTLE_AXE, 0, 1, 2, 0, 30 }, { ORCISH_SHORT_SWORD, 0, 1, 2, 0, 40 }, NORANDOMIZEDITEM, NORANDOMIZEDITEM } },
 					  NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES, NORANDOMIZEDALTERNATIVES } },
 			NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
@@ -1416,6 +1416,10 @@ int selected_encounter, x, y;
 			if(xpdiff > 0 && total_monster_difficulty > 0)
 				mon->extra_encounter_xp = (xpdiff * monster_difficulty) / total_monster_difficulty;
 
+			/* Force peaceful if need be */
+			if (encounter_list[selected_encounter].encounter_monsters[i].mflags & EM_FORCE_PEACEFUL)
+				mon->mpeaceful = 1;
+
 			/* Name monster */
 			if (encounter_list[selected_encounter].encounter_monsters[i].namelistid > 0 &&
 				!(mon->data->geno & G_UNIQ 
@@ -1475,6 +1479,8 @@ int selected_encounter, x, y;
 							|| strcmp(namelists[nlid][selectedindex], "") == 0))
 						{
 							(void)christen_monst(mon, buf);
+							if(encounter_list[selected_encounter].encounter_monsters[i].mflags & EM_NAME_KNOWN)
+								mon->u_know_mname = 1; /* They are famous enough! */
 							Sprintf(eos(context.used_names), "%s|", buf);
 						}
 					}

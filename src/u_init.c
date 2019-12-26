@@ -1539,7 +1539,7 @@ register struct trobj *trop;
 				struct obj* otmp = (struct obj*)0;
 				otmp = mksobj(PINCH_OF_SULFUROUS_ASH, FALSE, FALSE, TRUE);
 				otmp->known = 1;
-				otmp->dknown = otmp->bknown = otmp->rknown = 1;
+				otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
 				(void)add_to_container(obj, otmp);
 
 				/* Add arrows for magic arrow */
@@ -1547,7 +1547,7 @@ register struct trobj *trop;
 				otmp->quan = 2 + rnd(5);
 				otmp->owt = weight(otmp);
 				otmp->known = 1;
-				otmp->dknown = otmp->bknown = otmp->rknown = 1;
+				otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
 				(void)add_to_container(obj, otmp);
 
 				int n = 2 + rn2(4); //2...5
@@ -1558,7 +1558,7 @@ register struct trobj *trop;
 					{
 						knows_object(otmp->otyp);
 						otmp->known = 1;
-						otmp->dknown = otmp->bknown = otmp->rknown = 1;
+						otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
 						(void)add_to_container(obj, otmp);
 					}
 				}
@@ -1576,7 +1576,7 @@ register struct trobj *trop;
 				struct obj* otmp = (struct obj*)0;
 				otmp = mksobj(GINSENG_ROOT, FALSE, FALSE, TRUE);
 				otmp->known = 1;
-				otmp->dknown = otmp->bknown = otmp->rknown = 1;
+				otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
 				(void)add_to_container(obj, otmp);
 
 				int n = 1 + rn2(4); //1...3
@@ -1587,7 +1587,7 @@ register struct trobj *trop;
 					{
 						knows_object(otmp->otyp);
 						otmp->known = 1;
-						otmp->dknown = otmp->bknown = otmp->rknown = 1;
+						otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
 						(void)add_to_container(obj, otmp);
 					}
 				}
@@ -1604,7 +1604,7 @@ register struct trobj *trop;
         } else {
             if (objects[otyp].oc_uses_known)
                 obj->known = 1;
-            obj->dknown = obj->bknown = obj->rknown = 1;
+            obj->dknown = obj->bknown = obj->rknown = obj->nknown = 1;
             if (Is_container(obj) || obj->otyp == STATUE) {
                 obj->cknown = obj->lknown = 1;
                 obj->otrapped = 0;

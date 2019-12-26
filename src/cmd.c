@@ -2745,11 +2745,8 @@ int final;
                       && !(final == ENL_GAMEOVERDEAD
                            && !strcmp(killer.name, "riding accident")));
     const char *steedname = (!Riding ? (char *) 0
-                      : x_monnam(u.usteed,
-                                 u.usteed->mtame ? ARTICLE_YOUR : ARTICLE_THE,
-                                 (char *) 0,
-                                 (SUPPRESS_SADDLE | SUPPRESS_HALLUCINATION),
-                                 FALSE));
+                      : x_monnam(u.usteed, u.usteed->mtame ? ARTICLE_YOUR : ARTICLE_THE, (char *) 0,
+						(SUPPRESS_SADDLE | SUPPRESS_HALLUCINATION), FALSE));
 
     /*\
      * Status (many are abbreviated on bottom line; others are or
@@ -4436,7 +4433,9 @@ struct obj *otmp;
         sz += (int) sizeof (struct oextra);
         if (ONAME(otmp))
             sz += (int) strlen(ONAME(otmp)) + 1;
-        if (OMONST(otmp))
+		if (UONAME(otmp))
+			sz += (int)strlen(UONAME(otmp)) + 1;
+		if (OMONST(otmp))
             sz += size_monst(OMONST(otmp), FALSE);
         if (OMID(otmp))
             sz += (int) sizeof (unsigned);
@@ -4560,7 +4559,9 @@ boolean incl_wsegs;
         sz += (int) sizeof (struct mextra);
         if (MNAME(mtmp))
             sz += (int) strlen(MNAME(mtmp)) + 1;
-        if (EGD(mtmp))
+		if (UMNAME(mtmp))
+			sz += (int)strlen(UMNAME(mtmp)) + 1;
+		if (EGD(mtmp))
             sz += (int) sizeof (struct egd);
         if (EPRI(mtmp))
             sz += (int) sizeof (struct epri);
@@ -6047,8 +6048,7 @@ boolean doit;
     }
     if (u.usteed) { /* another movement choice */
         Sprintf(buf, "Dismount %s",
-                x_monnam(u.usteed, ARTICLE_THE, (char *) 0,
-                         SUPPRESS_SADDLE, FALSE));
+                x_monnam(u.usteed, ARTICLE_THE, (char *) 0, SUPPRESS_SADDLE, FALSE));
         add_herecmd_menuitem(win, doride, buf);
     }
 

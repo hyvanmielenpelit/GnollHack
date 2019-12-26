@@ -14,7 +14,7 @@ STATIC_DCL int FDECL(gloc_filter_floodfill_matcharea, (int, int));
 STATIC_DCL void FDECL(auto_describe, (int, int));
 STATIC_DCL void NDECL(do_mname);
 STATIC_DCL boolean FDECL(alreadynamed, (struct monst *, char *, char *));
-STATIC_DCL void FDECL(do_oname, (struct obj *));
+STATIC_DCL void FDECL(do_uoname, (struct obj *));
 STATIC_PTR char *FDECL(docall_xname, (struct obj *));
 STATIC_DCL void NDECL(namefloorobj);
 STATIC_DCL char *FDECL(bogusmon, (char *,char *));
@@ -1016,6 +1016,38 @@ struct monst *mon;
     }
 }
 
+/* allocate space for a monster's uname; removes old uname if there is one */
+void
+new_umname(mon, lth)
+struct monst* mon;
+int lth; /* desired length (caller handles adding 1 for terminator) */
+{
+	if (lth) {
+		/* allocate mextra if necessary; otherwise get rid of old name */
+		if (!mon->mextra)
+			mon->mextra = newmextra();
+		else
+			free_umname(mon); /* already has mextra, might also have name */
+		UMNAME(mon) = (char*)alloc((unsigned)lth);
+	}
+	else {
+		/* zero length: the new name is empty; get rid of the old name */
+		if (has_umname(mon))
+			free_umname(mon);
+	}
+}
+
+/* release a monster's uname; retains mextra even if all fields are now null */
+void
+free_umname(mon)
+struct monst* mon;
+{
+	if (has_umname(mon)) {
+		free((genericptr_t)UMNAME(mon));
+		UMNAME(mon) = (char*)0;
+	}
+}
+
 /* allocate space for an object's name; removes old name if there is one */
 void
 new_oname(obj, lth)
@@ -1061,6 +1093,54 @@ struct obj *obj;
     return "";
 }
 
+
+/* allocate space for an object's name; removes old name if there is one */
+void
+new_uoname(obj, lth)
+struct obj* obj;
+int lth; /* desired length (caller handles adding 1 for terminator) */
+{
+	if (lth) {
+		/* allocate oextra if necessary; otherwise get rid of old name */
+		if (!obj->oextra)
+			obj->oextra = newoextra();
+		else
+			free_uoname(obj); /* already has oextra, might also have name */
+		UONAME(obj) = (char*)alloc((unsigned)lth);
+	}
+	else {
+		/* zero length: the new name is empty; get rid of the old name */
+		if (has_uoname(obj))
+			free_uoname(obj);
+	}
+}
+
+/* release an object's name; retains oextra even if all fields are now null */
+void
+free_uoname(obj)
+struct obj* obj;
+{
+	if (has_uoname(obj)) {
+		free((genericptr_t)UONAME(obj));
+		UONAME(obj) = (char*)0;
+	}
+}
+
+/*  safe_oname() always returns a valid pointer to
+ *  a string, either the pointer to an object's name
+ *  if it has one, or a pointer to an empty string
+ *  if it doesn't.
+ */
+const char*
+safe_uoname(obj)
+struct obj* obj;
+{
+	if (has_uoname(obj))
+		return UONAME(obj);
+	return "";
+}
+
+
 /* historical note: this returns a monster pointer because it used to
    allocate a new bigger block of memory to hold the monster and its name */
 struct monst *
@@ -1079,9 +1159,31 @@ const char *name;
         buf[PL_PSIZ - 1] = '\0';
     }
     new_mname(mtmp, lth); /* removes old name if one is present */
+	free_umname(mtmp); /* remove uname if there is one */
     if (lth)
         Strcpy(MNAME(mtmp), name);
     return mtmp;
+}
+
+struct monst*
+u_name_monst(mtmp, name)
+struct monst* mtmp;
+const char* name;
+{
+	int lth;
+	char buf[PL_PSIZ];
+
+	/* dogname & catname are PL_PSIZ arrays; object names have same limit */
+	lth = (name && *name) ? ((int)strlen(name) + 1) : 0;
+	if (lth > PL_PSIZ) {
+		lth = PL_PSIZ;
+		name = strncpy(buf, name, PL_PSIZ - 1);
+		buf[PL_PSIZ - 1] = '\0';
+	}
+	new_umname(mtmp, lth); /* removes old name if one is present */
+	if (lth)
+		Strcpy(UMNAME(mtmp), name);
+	return mtmp;
 }
 
 /* check whether user-supplied name matches or nearly matches an unnameable
@@ -1182,8 +1284,24 @@ do_mname()
     } else if (mtmp->ispriest || mtmp->isminion || mtmp->isshk) {
         if (!alreadynamed(mtmp, monnambuf, buf))
             pline("%s will not accept the name %s.", upstart(monnambuf), buf);
-    } else
-        (void) christen_monst(mtmp, buf);
+    }
+	else if(!has_mname(mtmp) && mtmp->mpeaceful && is_animal(mtmp->data))
+	{
+		/* Peaceful animals can be christened, others do not accept your naming */
+		(void)christen_monst(mtmp, buf);
+		mtmp->u_know_mname = 1;
+	}
+	else if (has_mname(mtmp))
+	{
+		if(!mtmp->u_know_mname)
+			(void)u_name_monst(mtmp, buf);
+		else
+			pline("%s will not accept the name %s.", upstart(monnambuf), buf);
+	}
+	else
+	{
+		(void)u_name_monst(mtmp, buf);
+	}
 }
 
 STATIC_VAR int via_naming = 0;
@@ -1195,12 +1313,12 @@ STATIC_VAR int via_naming = 0;
  */
 STATIC_OVL
 void
-do_oname(obj)
+do_uoname(obj)
 register struct obj *obj;
 {
-    char *bufp, buf[BUFSZ] = DUMMY, bufcpy[BUFSZ], qbuf[QBUFSZ];
-    const char *aname;
-    short objtyp;
+	char buf[BUFSZ] = DUMMY, qbuf[QBUFSZ];
+	//char *bufp, buf[BUFSZ] = DUMMY, bufcpy[BUFSZ], qbuf[QBUFSZ];
+    //short objtyp;
 
     /* Do this now because there's no point in even asking for a name */
     if (obj->otyp == SPE_NOVEL) {
@@ -1217,6 +1335,7 @@ register struct obj *obj;
     /* strip leading and trailing spaces; unnames item if all spaces */
     (void) mungspaces(buf);
 
+#if 0
     /*
      * We don't violate illiteracy conduct here, although it is
      * arguable that we should for anything other than "X".  Doing so
@@ -1259,9 +1378,10 @@ register struct obj *obj;
            a valid artifact name */
         u.uconduct.literate++;
     }
-    ++via_naming; /* This ought to be an argument rather than a static... */
-    obj = oname(obj, buf);
-    --via_naming; /* ...but oname() is used in a lot of places, so defer. */
+#endif
+    //++via_naming; /* This ought to be an argument rather than a static... */
+    obj = uoname(obj, buf);
+    //--via_naming; /* ...but oname() is used in a lot of places, so defer. */
 }
 
 struct obj *
@@ -1309,6 +1429,30 @@ const char *name;
     if (carried(obj))
         update_inventory();
     return obj;
+}
+
+
+struct obj*
+uoname(obj, name)
+struct obj* obj;
+const char* name;
+{
+	int lth;
+	char buf[PL_PSIZ];
+
+	lth = *name ? (int)(strlen(name) + 1) : 0;
+	if (lth > PL_PSIZ) {
+		lth = PL_PSIZ;
+		name = strncpy(buf, name, PL_PSIZ - 1);
+		buf[PL_PSIZ - 1] = '\0';
+	}
+	new_uoname(obj, lth); /* removes old name if one is present */
+	if (lth)
+		Strcpy(UONAME(obj), name);
+
+	if (carried(obj))
+		update_inventory();
+	return obj;
 }
 
 static NEARDATA const char callable[] = {
@@ -1382,7 +1526,7 @@ docallcmd()
         allowall[1] = '\0';
         obj = getobj(allowall, "name", 0, "");
         if (obj)
-            do_oname(obj);
+            do_uoname(obj);
         break;
     case 'o': /* name a type of object in inventory */
         obj = getobj(callable, "call", 0, "");
@@ -1635,7 +1779,8 @@ boolean called;
     struct permonst *mdat = mtmp->data;
     const char *pm_name = mdat->mname;
     boolean do_hallu, do_invis, do_it, do_saddle, do_name;
-    boolean name_at_start, has_adjectives;
+    boolean name_at_start = FALSE, has_adjectives = FALSE;
+	/* note: uname is always at end */
     char *bp;
 
     if (program_state.gameover)
@@ -1690,8 +1835,10 @@ boolean called;
      * shopkeeper" or "Asidonhopo the blue dragon".  If hallucinating,
      * none of this applies.
      */
-    if (mtmp->isshk && !do_hallu) {
-        if (adjective && article == ARTICLE_THE) {
+    if (mtmp->isshk && !do_hallu) 
+	{
+        if (adjective && article == ARTICLE_THE) 
+		{
             /* pathological case: "the angry Asidonhopo the blue dragon"
                sounds silly */
             Strcpy(buf, "the ");
@@ -1721,34 +1868,39 @@ boolean called;
 
     /* Put the actual monster name or type into the buffer now */
     /* Be sure to remember whether the buffer starts with a name */
-    if (do_hallu) {
+    if (do_hallu) 
+	{
         char rnamecode;
         char *rname = rndmonnam(&rnamecode);
 
         Strcat(buf, rname);
         name_at_start = bogon_is_pname(rnamecode);
-    } else if (do_name && has_mname(mtmp)) {
-        char *name = MNAME(mtmp);
+    }
+	else if (do_name && has_mname(mtmp) && mtmp->u_know_mname)
+	{
+		char *name = MNAME(mtmp);
 
-        if (mdat == &mons[PM_GHOST]) {
-            Sprintf(eos(buf), "%s ghost", s_suffix(name));
-            name_at_start = TRUE;
-        } else if (called) {
-            Sprintf(eos(buf), "%s called %s", pm_name, name);
-            name_at_start = (boolean) type_is_pname(mdat);
-        } else if (is_mplayer(mdat) && (bp = strstri(name, " the ")) != 0) {
-            /* <name> the <adjective> <invisible> <saddled> <rank> */
-            char pbuf[BUFSZ];
+		if (mdat == &mons[PM_GHOST])
+		{
+			Sprintf(eos(buf), "%s ghost", s_suffix(name));
+			name_at_start = TRUE;
+		} 
+		else if (is_mplayer(mdat) && (bp = strstri(name, " the ")) != 0) 
+		{
+			/* <name> the <adjective> <invisible> <saddled> <rank> */
+			char pbuf[BUFSZ];
 
-            Strcpy(pbuf, name);
-            pbuf[bp - name + 5] = '\0'; /* adjectives right after " the " */
-            if (has_adjectives)
-                Strcat(pbuf, buf);
-            Strcat(pbuf, bp + 5); /* append the rest of the name */
-            Strcpy(buf, pbuf);
-            article = ARTICLE_NONE;
-            name_at_start = TRUE;
-        } else {
+			Strcpy(pbuf, name);
+			pbuf[bp - name + 5] = '\0'; /* adjectives right after " the " */
+			if (has_adjectives)
+				Strcat(pbuf, buf);
+			Strcat(pbuf, bp + 5); /* append the rest of the name */
+			Strcpy(buf, pbuf);
+			article = ARTICLE_NONE;
+			name_at_start = TRUE;
+		} 
+		else 
+		{
 			char tmpbuf[BUFSIZ] = "";
 			strcpy(tmpbuf, buf);
 			if (!mtmp->mtame)
@@ -1762,19 +1914,31 @@ boolean called;
 				Sprintf(buf, "%s%s", tmpbuf, name);
 
 			name_at_start = TRUE;
-        }
-    } else if (is_mplayer(mdat) && !In_endgame(&u.uz)) {
+		}
+	} 
+	else if (is_mplayer(mdat) && !In_endgame(&u.uz)) 
+	{
         char pbuf[BUFSZ];
 
         Strcpy(pbuf, rank_of((int) mtmp->m_lev, monsndx(mdat),
                              (boolean) mtmp->female != 0));
         Strcat(buf, lcase(pbuf));
         name_at_start = FALSE;
-    } else {
+    } 
+	else 
+	{
         Strcat(buf, pm_name);
         name_at_start = (boolean) type_is_pname(mdat);
     }
 
+	/* Append umname if has one -- called is now obsolete */
+	if (!(has_mname(mtmp) && mtmp->u_know_mname) &&/*called &&*/ has_umname(mtmp))
+	{
+		char* umname = UMNAME(mtmp);
+		Sprintf(eos(buf), " known as %s", umname);
+	}
+
+	/* Write article or your in start */
     if (name_at_start && (article == ARTICLE_YOUR || !has_adjectives)) {
         if (mdat == &mons[PM_WIZARD_OF_YENDOR])
             article = ARTICLE_THE;

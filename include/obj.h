@@ -21,7 +21,8 @@ union vptrs {
  */
 struct oextra {
     char *oname;          /* ptr to name of object */
-    struct monst *omonst; /* ptr to attached monst struct */
+	char* uoname;          /* ptr to name of object */
+	struct monst *omonst; /* ptr to attached monst struct */
     unsigned *omid;       /* ptr to m_id */
     long *olong;          /* ptr to misc long (temporary gold object) */
     char *omailcmd;       /* response_cmd for mail deliver */
@@ -114,7 +115,8 @@ struct obj {
     Bitfield(bypass, 1); /* mark this as an object to be skipped by bhito() */
     Bitfield(cknown, 1); /* contents of container assumed to be known */
     Bitfield(lknown, 1); /* locked/unlocked status is known */
-    /* 4 free bits */
+	Bitfield(nknown, 1); /* true name is known */
+	/* 4 free bits */
 
     int corpsenm;         /* type of corpse is mons[corpsenm] */
 #define leashmon corpsenm /* gets m_id of attached pet */
@@ -148,12 +150,14 @@ struct obj {
  */
 
 #define ONAME(o) ((o)->oextra->oname)
+#define UONAME(o) ((o)->oextra->uoname)
 #define OMID(o) ((o)->oextra->omid)
 #define OMONST(o) ((o)->oextra->omonst)
 #define OLONG(o) ((o)->oextra->olong)
 #define OMAILCMD(o) ((o)->oextra->omailcmd)
 
 #define has_oname(o) ((o)->oextra && ONAME(o))
+#define has_uoname(o) ((o)->oextra && UONAME(o))
 #define has_omid(o) ((o)->oextra && OMID(o))
 #define has_omonst(o) ((o)->oextra && OMONST(o))
 #define has_olong(o) ((o)->oextra && OLONG(o))

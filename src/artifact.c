@@ -1213,7 +1213,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                   || (!youdefend && cansee(mdef->mx, mdef->my))
                   || (youattack && u.uswallow && mdef == u.ustuck && !Blind);
     boolean realizes_damage;
-    const char *wepdesc;
+    char wepdesc[BUFSIZ] ="";
     static const char you[] = "you";
     char hittee[BUFSZ];
 
@@ -1299,21 +1299,26 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 
     /* We really want "on a natural 20" but GnollHack does it in */
     /* reverse from AD&D. */
-    if (spec_ability(otmp, SPFX_BEHEAD)) {
-        if (otmp->oartifact == ART_TSURUGI_OF_MURAMASA && dieroll == 1) {
-            wepdesc = "The razor-sharp blade";
+    if (spec_ability(otmp, SPFX_BEHEAD)) 
+	{
+        if (otmp->oartifact == ART_TSURUGI_OF_MURAMASA && dieroll == 1) 
+		{
+            strcpy(wepdesc, "The razor-sharp blade");
             /* not really beheading, but so close, why add another SPFX */
-            if (youattack && u.uswallow && mdef == u.ustuck) {
+            if (youattack && u.uswallow && mdef == u.ustuck) 
+			{
                 You("slice %s wide open!", mon_nam(mdef));
                 *dmgptr = 2 * mdef->mhp + FATAL_DAMAGE_MODIFIER;
                 return TRUE;
             }
-            if (!youdefend) {
+            if (!youdefend) 
+			{
                 /* allow normal cutworm() call to add extra damage */
                 if (notonhead)
                     return FALSE;
 
-                if (bigmonst(mdef->data)) {
+                if (bigmonst(mdef->data)) 
+				{
                     if (youattack)
                         You("slice deeply into %s!", mon_nam(mdef));
                     else if (vis)
@@ -1326,8 +1331,11 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                 pline("%s cuts %s in half!", wepdesc, mon_nam(mdef));
                 otmp->dknown = TRUE;
                 return TRUE;
-            } else {
-                if (bigmonst(youmonst.data)) {
+            } 
+			else
+			{
+                if (bigmonst(youmonst.data))
+				{
                     pline("%s cuts deeply into you!",
                           magr ? Monnam(magr) : wepdesc);
                     *dmgptr *= 2;
@@ -1344,14 +1352,16 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                 otmp->dknown = TRUE;
                 return TRUE;
             }
-        } else if (otmp->oartifact == ART_VORPAL_BLADE
-                   && (dieroll == 1 || mdef->data == &mons[PM_JABBERWOCK])) {
+        } 
+		else if (otmp->oartifact == ART_VORPAL_BLADE
+                   && (dieroll == 1 || mdef->data == &mons[PM_JABBERWOCK])) 
+		{
             static const char *const behead_msg[2] = { "%s beheads %s!",
                                                        "%s decapitates %s!" };
 
             if (youattack && u.uswallow && mdef == u.ustuck)
                 return FALSE;
-            wepdesc = artilist[ART_VORPAL_BLADE].name;
+			strcpy(wepdesc, cxname(otmp));
             if (!youdefend) {
                 if (!has_head(mdef->data) || notonhead || u.uswallow) {
                     if (youattack)
@@ -1361,39 +1371,44 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                     *dmgptr = 0;
                     return (boolean) (youattack || vis);
                 }
-                if (noncorporeal(mdef->data) || amorphous(mdef->data)) {
-                    pline("%s slices through %s %s.", wepdesc,
+                if (noncorporeal(mdef->data) || amorphous(mdef->data)) 
+				{
+                    pline("%s slices through %s %s.", The(wepdesc),
                           s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
                     return TRUE;
                 }
                 *dmgptr = 2 * mdef->mhp + FATAL_DAMAGE_MODIFIER;
-                pline(behead_msg[rn2(SIZE(behead_msg))], wepdesc,
+                pline(behead_msg[rn2(SIZE(behead_msg))], The(wepdesc),
                       mon_nam(mdef));
                 if (Hallucination && !flags.female)
                     pline("Good job Henry, but that wasn't Anne.");
                 otmp->dknown = TRUE;
                 return TRUE;
-            } else {
+            }
+			else
+			{
                 if (!has_head(youmonst.data)) {
                     pline("Somehow, %s misses you wildly.",
-                          magr ? mon_nam(magr) : wepdesc);
+                          magr ? mon_nam(magr) : the(wepdesc));
                     *dmgptr = 0;
                     return TRUE;
                 }
-                if (noncorporeal(youmonst.data) || amorphous(youmonst.data)) {
-                    pline("%s slices through your %s.", wepdesc,
+                if (noncorporeal(youmonst.data) || amorphous(youmonst.data))
+				{
+                    pline("%s slices through your %s.", The(wepdesc),
                           body_part(NECK));
                     return TRUE;
                 }
                 *dmgptr = 2 * (Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER;
-                pline(behead_msg[rn2(SIZE(behead_msg))], wepdesc, "you");
+                pline(behead_msg[rn2(SIZE(behead_msg))], The(wepdesc), "you");
                 otmp->dknown = TRUE;
                 /* Should amulets fall off? */
                 return TRUE;
             }
         }
     }
-    if (spec_ability(otmp, SPFX_DRLI)) {
+    if (spec_ability(otmp, SPFX_DRLI)) 
+	{
         /* some non-living creatures (golems, vortices) are
            vulnerable to life drain effects */
         const char *life = is_not_living(mdef->data) ? "animating force" : "life";

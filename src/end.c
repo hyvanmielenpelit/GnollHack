@@ -1031,7 +1031,7 @@ winid endwin;
                 nowrap_add(u.urexp, points);
             } else {
                 discover_object(otmp->otyp, TRUE, FALSE);
-                otmp->known = otmp->dknown = otmp->bknown = otmp->rknown = 1;
+                otmp->known = otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
                 /* assumes artifacts don't have quan > 1 */
                 Sprintf(pbuf, "%s%s (worth %ld %s and %ld points)",
                         the_unique_obj(otmp) ? "The " : "",
@@ -1286,7 +1286,7 @@ int how;
          */
         for (obj = invent; obj; obj = obj->nobj) {
             discover_object(obj->otyp, TRUE, FALSE);
-            obj->known = obj->bknown = obj->dknown = obj->rknown = 1;
+            obj->known = obj->bknown = obj->dknown = obj->rknown = obj->nknown = 1;
             if (Is_container(obj) || obj->otyp == STATUE)
                 obj->cknown = obj->lknown = 1;
             /* we resolve Schroedinger's cat now in case of both
@@ -1338,6 +1338,7 @@ int how;
                        : urace.malenum;
         }
         corpse = mk_named_object(CORPSE, &mons[mnum], u.ux, u.uy, plname);
+		corpse->nknown = 1;
         Sprintf(pbuf, "%s, ", plname);
         formatkiller(eos(pbuf), sizeof pbuf - strlen(pbuf), how, TRUE);
         make_grave(u.ux, u.uy, pbuf);
@@ -1653,7 +1654,7 @@ int show_weights;
                         if (identified) {
                             discover_object(obj->otyp, TRUE, FALSE);
                             obj->known = obj->bknown = obj->dknown
-                                = obj->rknown = 1;
+                                = obj->rknown = obj->nknown = 1;
                             if (Is_container(obj) || obj->otyp == STATUE)
                                 obj->cknown = obj->lknown = 1;
                         }

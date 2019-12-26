@@ -952,7 +952,7 @@ gcrownu()
         bless(obj);
         obj->oeroded = obj->oeroded2 = 0;
         obj->oerodeproof = TRUE;
-        obj->bknown = obj->rknown = TRUE;
+        obj->bknown = obj->rknown = obj->nknown = TRUE;
         if (obj->spe < 1)
             obj->spe = 1;
         /* acquire skill in this weapon */

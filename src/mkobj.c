@@ -79,7 +79,8 @@ newoextra()
 
     oextra = (struct oextra *) alloc(sizeof (struct oextra));
     oextra->oname = 0;
-    oextra->omonst = 0;
+	oextra->uoname = 0;
+	oextra->omonst = 0;
     oextra->omid = 0;
     oextra->olong = 0;
     oextra->omailcmd = 0;
@@ -95,7 +96,9 @@ struct obj *o;
     if (x) {
         if (x->oname)
             free((genericptr_t) x->oname);
-        if (x->omonst)
+		if (x->uoname)
+			free((genericptr_t)x->uoname);
+		if (x->omonst)
             free_omonst(o);     /* 'o' rather than 'x' */
         if (x->omid)
             free((genericptr_t) x->omid);
@@ -502,7 +505,9 @@ struct obj *obj2, *obj1;
         obj2->oextra = newoextra();
     if (has_oname(obj1))
         oname(obj2, ONAME(obj1));
-    if (has_omonst(obj1)) {
+	if (has_uoname(obj1))
+		uoname(obj2, UONAME(obj1));
+	if (has_omonst(obj1)) {
         if (!OMONST(obj2))
             newomonst(obj2);
         (void) memcpy((genericptr_t) OMONST(obj2),

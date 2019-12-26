@@ -1710,7 +1710,8 @@ newmextra()
 
     mextra = (struct mextra *) alloc(sizeof(struct mextra));
     mextra->mname = 0;
-    mextra->egd = 0;
+	mextra->umname = 0;
+	mextra->egd = 0;
     mextra->epri = 0;
     mextra->eshk = 0;
     mextra->emin = 0;

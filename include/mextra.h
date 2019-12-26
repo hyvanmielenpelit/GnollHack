@@ -175,7 +175,8 @@ struct edog {
  */
 struct mextra {
     char *mname;
-    struct egd *egd;
+	char *umname;
+	struct egd *egd;
     struct epri *epri;
     struct eshk *eshk;
     struct emin *emin;
@@ -184,6 +185,7 @@ struct mextra {
 };
 
 #define MNAME(mon) ((mon)->mextra->mname)
+#define UMNAME(mon) ((mon)->mextra->umname)
 #define EGD(mon) ((mon)->mextra->egd)
 #define EPRI(mon) ((mon)->mextra->epri)
 #define ESHK(mon) ((mon)->mextra->eshk)
@@ -192,6 +194,7 @@ struct mextra {
 #define MCORPSENM(mon) ((mon)->mextra->mcorpsenm)
 
 #define has_mname(mon) ((mon)->mextra && MNAME(mon))
+#define has_umname(mon) ((mon)->mextra && UMNAME(mon))
 #define has_egd(mon)   ((mon)->mextra && EGD(mon))
 #define has_epri(mon)  ((mon)->mextra && EPRI(mon))
 #define has_eshk(mon)  ((mon)->mextra && ESHK(mon))

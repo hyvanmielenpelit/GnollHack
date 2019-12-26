@@ -1970,12 +1970,18 @@ struct monst* mtmp;
 			Sprintf(shopbuf, "this %s", shoptypename(eshkp->shoptype));
 			Sprintf(eos(ansbuf), " I run %s.", shopbuf);
 		}
-	
 		verbalize(ansbuf);
+		mtmp->u_know_mname = 1;
 	}
 	else if (mtmp->ispriest || msound == MS_PRIEST)
 	{
-		Sprintf(ansbuf, "I am %s.", mon_nam(mtmp));
+		if (has_mname(mtmp))
+		{
+			Sprintf(ansbuf, "I am %s, %s.", MNAME(mtmp), mon_nam(mtmp));
+			mtmp->u_know_mname = 1;
+		}
+		else
+			Sprintf(ansbuf, "I am %s.", mon_nam(mtmp));
 		verbalize(ansbuf);
 	}
 	else if (mtmp->mnum == PM_ORACLE || msound == MS_ORACLE)
@@ -1987,12 +1993,12 @@ struct monst* mtmp;
 	{
 		if(!mtmp->mpeaceful)
 		{
-			Sprintf(ansbuf, "Hah, I'm the DoDPD officer who is going to arrest you, scum!");
+			Sprintf(ansbuf, "Hah, I'm the DDPD officer who is going to arrest you, scum!");
 			verbalize(ansbuf);
 		}
 		else
 		{
-			Sprintf(ansbuf, "I work for the DoDPD.");
+			Sprintf(ansbuf, "I work for the DDPD.");
 			verbalize(ansbuf);
 		}
 	}
@@ -2009,7 +2015,10 @@ struct monst* mtmp;
 		}
 		else
 		{
-			Sprintf(ansbuf, "I am a local %s.", mtmp->data->mname);
+			if (has_mname(mtmp))
+				Sprintf(ansbuf, "I am %s, a local %s.", MNAME(mtmp), mtmp->data->mname);
+			else
+				Sprintf(ansbuf, "I am a local %s.", mtmp->data->mname);
 			verbalize(ansbuf);
 		}
 	}
@@ -2021,10 +2030,17 @@ struct monst* mtmp;
 	}
 	else if (msound == MS_GUARDIAN)
 	{
+		char namebuf[BUFSIZ] = "";
+		if (has_mname(mtmp))
+		{
+			Sprintf(namebuf, "%s, ", MNAME(mtmp));
+			mtmp->u_know_mname = 1;
+		}
+
 		if(mtmp->mnum == urole.guardnum)
-			Sprintf(ansbuf, "I am your quest guardian.");
+			Sprintf(ansbuf, "I am %syour quest guardian.", namebuf);
 		else
-			Sprintf(ansbuf, "I am a quest guardian.");
+			Sprintf(ansbuf, "I am %sa quest guardian.", namebuf);
 
 		verbalize(ansbuf);
 	}
@@ -2033,9 +2049,16 @@ struct monst* mtmp;
 		Sprintf(ansbuf, "I am %s, your quest nemesis. Tremble before me!", mon_nam(mtmp));
 		verbalize(ansbuf);
 	}
+	else if (has_mname(mtmp))
+	{
+		Sprintf(ansbuf, "My name is %s.", MNAME(mtmp));
+		verbalize(ansbuf);
+		mtmp->u_know_mname = 1;
+	}
 	else
 	{
-		domonnoise(mtmp);
+		Sprintf(ansbuf, "My name is none of your business.");
+		verbalize(ansbuf);
 	}
 
 	return 1;

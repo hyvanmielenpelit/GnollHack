@@ -370,8 +370,7 @@ register struct obj *obj;
         return 0;
     }
     if ((mtmp = m_at(rx, ry)) != 0) {
-        const char *mnm = x_monnam(mtmp, ARTICLE_A, (const char *) 0,
-                                   SUPPRESS_IT | SUPPRESS_INVISIBLE, FALSE);
+        const char *mnm = x_monnam(mtmp, ARTICLE_A, (const char *) 0, SUPPRESS_IT | SUPPRESS_INVISIBLE, FALSE);
 
         /* bhitpos needed by mstatusline() iff mtmp is a long worm */
         bhitpos.x = rx, bhitpos.y = ry;

@@ -222,13 +222,19 @@ struct obj *otmp;
     if (otmp->oextra) {
         otmp->oextra = newoextra();
 
-        /* oname - object's name */
+        /* oname - object's true name */
         mread(fd, (genericptr_t) &buflen, sizeof(buflen));
         if (buflen > 0) { /* includes terminating '\0' */
             new_oname(otmp, buflen);
             mread(fd, (genericptr_t) ONAME(otmp), buflen);
         }
-        /* omonst - corpse or statue might retain full monster details */
+		/* uoname - object's user-specified name */
+		mread(fd, (genericptr_t)&buflen, sizeof(buflen));
+		if (buflen > 0) { /* includes terminating '\0' */
+			new_uoname(otmp, buflen);
+			mread(fd, (genericptr_t)UONAME(otmp), buflen);
+		}
+		/* omonst - corpse or statue might retain full monster details */
         mread(fd, (genericptr_t) &buflen, sizeof(buflen));
         if (buflen > 0) {
             newomonst(otmp);
@@ -368,7 +374,13 @@ struct monst *mtmp;
             new_mname(mtmp, buflen);
             mread(fd, (genericptr_t) MNAME(mtmp), buflen);
         }
-        /* egd - vault guard */
+		/* umname - monster's uname */
+		mread(fd, (genericptr_t)&buflen, sizeof(buflen));
+		if (buflen > 0) { /* includes terminating '\0' */
+			new_umname(mtmp, buflen);
+			mread(fd, (genericptr_t)UMNAME(mtmp), buflen);
+		}
+		/* egd - vault guard */
         mread(fd, (genericptr_t) &buflen, sizeof(buflen));
         if (buflen > 0) {
             newegd(mtmp);

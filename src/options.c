@@ -6346,7 +6346,9 @@ struct fruit *replace_fruit;
             copynchars(f->fname, pl_fruit, PL_FSIZ - 1);
             goto nonew;
         }
-    } else {
+    }
+	else
+	{
         /* not user_supplied, so assumed to be from bones (or orc gang) */
         copynchars(altname, str, PL_FSIZ - 1);
         sanitize_name(altname);

@@ -70,19 +70,29 @@ boolean restore;
         }
 
         if (restore) {
-            /* artifact bookkeeping needs to be done during
+			if (has_uoname(otmp))
+			{
+				sanitize_name(UONAME(otmp));
+			}
+			/* artifact bookkeeping needs to be done during
                restore; other fixups are done while saving */
-            if (otmp->oartifact) {
+			if (otmp->oartifact)
+			{
                 if (exist_artifact(otmp->otyp, safe_oname(otmp))
-                    || is_quest_artifact(otmp)) {
+                    || is_quest_artifact(otmp)) 
+				{
                     /* prevent duplicate--revert to ordinary obj */
                     otmp->oartifact = 0;
                     if (has_oname(otmp))
                         free_oname(otmp);
-                } else {
+                } 
+				else
+				{
                     artifact_exists(otmp, safe_oname(otmp), TRUE);
                 }
-            } else if (has_oname(otmp)) {
+            }
+			else if (has_oname(otmp)) 
+			{
                 sanitize_name(ONAME(otmp));
             }
         } else { /* saving */
@@ -94,7 +104,8 @@ boolean restore;
             otmp->rknown = 0;
             otmp->lknown = 0;
             otmp->cknown = 0;
-            otmp->invlet = 0;
+			otmp->nknown = 0;
+			otmp->invlet = 0;
             otmp->no_charge = 0;
             otmp->was_thrown = 0;
 
@@ -107,7 +118,8 @@ boolean restore;
                some manner; then we could just check the flag
                here and keep "real" names (dead pets, &c) while
                discarding player notes attached to statues.] */
-            if (has_oname(otmp)
+			free_uoname(otmp);
+			if (has_oname(otmp)
                 && !(otmp->oartifact || otmp->otyp == STATUE
                      || otmp->otyp == SPE_NOVEL
                      || (otmp->otyp == CORPSE
@@ -402,6 +414,7 @@ struct obj *corpse;
 
         /* embed your possessions in your statue */
         otmp = mk_named_object(STATUE, &mons[u.umonnum], u.ux, u.uy, plname);
+		otmp->nknown = 1;
 
         drop_upon_death((struct monst *) 0, otmp, u.ux, u.uy);
         if (!otmp)
@@ -415,6 +428,7 @@ struct obj *corpse;
          */
         in_mklev = TRUE;
         mtmp = makemon(&mons[PM_GHOST], u.ux, u.uy, MM_NONAME);
+		mtmp->u_know_mname = 1;
         in_mklev = FALSE;
         if (!mtmp)
             return;
@@ -432,6 +446,7 @@ struct obj *corpse;
             return;
         }
         mtmp = christen_monst(mtmp, plname);
+		mtmp->u_know_mname = 1;
         newsym(u.ux, u.uy);
         /* ["Your body rises from the dead as an <mname>..." used
            to be given here, but it has been moved to done() so that
@@ -629,7 +644,9 @@ getbones()
             for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
                 if (has_mname(mtmp))
                     sanitize_name(MNAME(mtmp));
-                if (mtmp->mhpmax == DEFUNCT_MONSTER) {
+				if (has_umname(mtmp))
+					sanitize_name(UMNAME(mtmp));
+				if (mtmp->mhpmax == DEFUNCT_MONSTER) {
                     if (wizard) {
                         debugpline1("Removing defunct monster %s from bones.",
                                     mtmp->data->mname);

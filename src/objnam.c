@@ -395,12 +395,14 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     register char *buf;
     register int typ = ((obj->oartifact && artilist[obj->oartifact].maskotyp != STRANGE_OBJECT) ? artilist[obj->oartifact].maskotyp : obj->otyp);
     register struct objclass *ocl = &objects[typ];
-    int nn = ocl->oc_name_known, omndx = obj->corpsenm;
+	int nn = obj->oartifact ? (obj->known || obj->nknown) : ocl->oc_name_known;
+	int omndx = obj->corpsenm;
     const char *actualn = OBJ_NAME(*ocl);
-    const char *dn = OBJ_DESCR(*ocl);
+	const char *dn = (obj->oartifact && artilist[obj->oartifact].desc && strcmp(artilist[obj->oartifact].desc, "")) ? artilist[obj->oartifact].desc : 
+		OBJ_DESCR(*ocl);
     const char *un = ocl->oc_uname;
-    boolean pluralize = (obj->quan != 1L) && !(cxn_flags & CXN_SINGULAR);
-    boolean known, dknown, bknown;
+	boolean pluralize = (obj->quan != 1L) && !(cxn_flags & CXN_SINGULAR);
+    boolean known, dknown, bknown, nknown;
 
     buf = nextobuf() + PREFIX; /* leave room for "17 -3 " */
     if (Role_if(PM_SAMURAI) && Japanese_item_name(typ))
@@ -425,13 +427,14 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         obj->bknown = TRUE;
 
     if (iflags.override_ID) {
-        known = dknown = bknown = TRUE;
+        known = dknown = bknown = nknown = TRUE;
         nn = 1;
     } else {
         known = obj->known;
         dknown = obj->dknown;
         bknown = obj->bknown;
-    }
+		nknown = obj->nknown;
+	}
 
     if (obj_is_pname(obj))
         goto nameit;
@@ -732,12 +735,19 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         Sprintf(eos(buf), " with text \"%s\"", tshirt_text(obj, tmpbuf));
     }
 
-    if (has_oname(obj) && dknown) {
+    if (has_oname(obj) && nknown && dknown) {
         Strcat(buf, " named ");
  nameit:
         Strcat(buf, ONAME(obj));
     }
-
+	else if (has_uoname(obj))
+	{
+		if(obj->otyp == CORPSE)
+			Strcat(buf, " known as "); /* corpses are not labeled */
+		else
+			Strcat(buf, " labeled ");
+		Strcat(buf, UONAME(obj));
+	}
     if (!strncmpi(buf, "the ", 4))
         buf += 4;
     return buf;
@@ -1632,7 +1642,9 @@ struct obj *otmp;
         return TRUE;
     if (otmp->oartifact && undiscovered_artifact(otmp->oartifact))
         return TRUE;
-    /* otmp->rknown is the only item of interest if we reach here */
+	if (!otmp->nknown && has_oname(otmp))
+		return TRUE;
+	/* otmp->rknown is the only item of interest if we reach here */
     /*
      *  Note:  if a revision ever allows scrolls to become fireproof or
      *  rings to become shockproof, this checking will need to be revised.
@@ -1770,7 +1782,10 @@ struct obj *obj;
 {
     struct obj save_obj;
     unsigned save_ocknown;
-    char *buf, *save_ocuname, *save_oname = (char *) 0;
+    char *buf, *save_ocuname, *save_uoname = (char *) 0;
+
+	if (!obj)
+		return "";
 
     /* bypass object twiddling for artifacts */
     if (obj->oartifact)
@@ -1780,8 +1795,8 @@ struct obj *obj;
        oextra structs other than oname don't matter here--since they
        aren't modified they don't need to be saved and restored */
     save_obj = *obj;
-    if (has_oname(obj))
-        save_oname = ONAME(obj);
+    if (has_uoname(obj))
+        save_uoname = UONAME(obj);
 
     /* killer name should be more specific than general xname; however, exact
        info like blessed/cursed and rustproof makes things be too verbose */
@@ -1797,9 +1812,10 @@ struct obj *obj;
        be redundant when it is, so suppress "poisoned" prefix */
     obj->opoisoned = 0;
     /* strip user-supplied name; artifacts keep theirs */
-    if (!obj->oartifact && save_oname)
-        ONAME(obj) = (char *) 0;
-    /* temporarily identify the type of object */
+    if (save_uoname)
+        UONAME(obj) = (char *) 0;
+
+	/* temporarily identify the type of object */
     save_ocknown = objects[obj->otyp].oc_name_known;
     objects[obj->otyp].oc_name_known = 1;
     save_ocuname = objects[obj->otyp].oc_uname;
@@ -1825,8 +1841,8 @@ struct obj *obj;
     objects[obj->otyp].oc_name_known = save_ocknown;
     objects[obj->otyp].oc_uname = save_ocuname;
     *obj = save_obj; /* restore object's core settings */
-    if (!obj->oartifact && save_oname)
-        ONAME(obj) = save_oname;
+    if (save_uoname)
+        UONAME(obj) = save_uoname;
 
     return buf;
 }
@@ -4414,13 +4430,19 @@ struct obj *no_wish;
             if (novelname)
                 name = novelname;
         }
-
-        otmp = oname(otmp, name);
-        /* name==aname => wished for artifact (otmp->oartifact => got it) */
-        if (otmp->oartifact || name == aname) {
-            otmp->quan = 1L;
-            u.uconduct.wisharti++; /* KMH, conduct */
-        }
+		if(name == aname)
+		{
+			otmp = oname(otmp, name);
+			/* name==aname => wished for artifact (otmp->oartifact => got it) */
+			if (otmp->oartifact) {
+				otmp->quan = 1L;
+				u.uconduct.wisharti++; /* KMH, conduct */
+			}
+		}
+		else
+		{
+			otmp = uoname(otmp, name);
+		}
     }
 
     /* more wishing abuse: don't allow wishing for certain artifacts */

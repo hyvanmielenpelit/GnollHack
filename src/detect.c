@@ -363,11 +363,8 @@ register struct obj *sobj;
                    "You feel worried about your future financial situation.");
             else if (steedgold)
                 Sprintf(buf, "You feel interested in %s financial situation.",
-                        s_suffix(x_monnam(u.usteed,
-                                          u.usteed->mtame ? ARTICLE_YOUR
-                                                          : ARTICLE_THE,
-                                          (char *) 0,
-                                          SUPPRESS_SADDLE, FALSE)));
+                        s_suffix(x_monnam(u.usteed, u.usteed->mtame ? ARTICLE_YOUR : ARTICLE_THE,
+                                          (char *) 0, SUPPRESS_SADDLE, FALSE)));
             else
                 Strcpy(buf, "You feel materially poor.");
 

@@ -1452,8 +1452,16 @@ int animateintomon;
 
     /* monster retains its name */
     if (has_oname(corpse) && !unique_corpstat(mtmp->data))
+	{
         mtmp = christen_monst(mtmp, ONAME(corpse));
-    /* partially eaten corpse yields wounded monster */
+		if(corpse->nknown)
+			mtmp->u_know_mname = 1;
+	}
+	if (has_uoname(corpse) && !unique_corpstat(mtmp->data))
+	{
+		mtmp = u_name_monst(mtmp, UONAME(corpse));
+	}
+	/* partially eaten corpse yields wounded monster */
     if (corpse->oeaten)
         mtmp->mhp = eaten_stat(mtmp->mhp, corpse);
     /* track that this monster was revived at least once */
@@ -2973,7 +2981,7 @@ register struct obj *obj;
 			otmp = mksobj(SADDLE, TRUE, FALSE, FALSE);
 			if (otmp)
 			{
-				otmp->dknown = otmp->bknown = otmp->rknown = 1;
+				otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
 				put_saddle_on_mon(otmp, mtmp);
 			}
 		}
@@ -6308,7 +6316,7 @@ register struct obj *obj; /* no texts here! */
     obj->oclass = GEM_CLASS;
     obj->quan = (long) rn1(60, 7);
     obj->owt = weight(obj);
-    obj->dknown = obj->bknown = obj->rknown = 0;
+    obj->dknown = obj->bknown = obj->rknown = obj->nknown = 0;
     obj->known = objects[obj->otyp].oc_uses_known ? 0 : 1;
     dealloc_oextra(obj);
 

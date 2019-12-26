@@ -660,8 +660,11 @@ int *fail_reason;
     else if (statue->spe & STATUE_FEMALE)
         mon->female = TRUE;
     /* if statue has been named, give same name to the monster */
-    if (has_oname(statue) && !unique_corpstat(mon->data))
-        mon = christen_monst(mon, ONAME(statue));
+	if (has_oname(statue) && !unique_corpstat(mon->data))
+	{
+		mon = christen_monst(mon, ONAME(statue));
+		mon->u_know_mname = 1;
+	}
     /* mimic statue becomes seen mimic; other hiders won't be hidden */
     if (M_AP_TYPE(mon))
         seemimic(mon);

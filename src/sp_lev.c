@@ -1651,9 +1651,11 @@ struct mkroom *croom;
         x = mtmp->mx, y = mtmp->my; /* sanity precaution */
         m->x = x, m->y = y;
         /* handle specific attributes for some special monsters */
-        if (m->name.str)
-            mtmp = christen_monst(mtmp, m->name.str);
-
+		if (m->name.str)
+		{
+			mtmp = christen_monst(mtmp, m->name.str);
+			mtmp->u_know_mname = 1; /* On special levels you know all generated monsters -- maybe should be specified later */
+		}
         /*
          * This doesn't complain if an attempt is made to give a
          * non-mimic/non-shapechanger an appearance or to give a

@@ -296,6 +296,9 @@ register struct monst *mtmp;
 unsigned corpseflags;
 boolean createcorpse;
 {
+	if (!mtmp)
+		return (struct obj*) 0;
+
     register struct permonst *mdat = mtmp->data;
     int num;
     struct obj *obj = (struct obj *) 0;
@@ -586,6 +589,7 @@ boolean createcorpse;
 			obj = mksobj_at(objid, x, y, TRUE, FALSE);
 		}
 		free_mname(mtmp);
+		free_umname(mtmp);
 		break;
 	}
 	case PM_GLASS_GOLEM:
@@ -596,6 +600,7 @@ boolean createcorpse;
 				obj = mksobj_at((LAST_GEM + rnd(9)), x, y, TRUE, FALSE);
 		}
 		free_mname(mtmp);
+		free_umname(mtmp);
 		break;
 	case PM_BONE_GOLEM:
 		if (!rn2(2))
@@ -605,6 +610,7 @@ boolean createcorpse;
 			obj->owt = weight(obj);
 		}
 		free_mname(mtmp);
+		free_umname(mtmp);
 		break;
 	case PM_SILVER_GOLEM:
 		if (!rn2(2))
@@ -614,6 +620,7 @@ boolean createcorpse;
 			obj->owt = weight(obj);
 		}
 		free_mname(mtmp);
+		free_umname(mtmp);
 		break;
 	case PM_CLAY_GOLEM:
 		if (!rn2(2))
@@ -623,6 +630,7 @@ boolean createcorpse;
 			obj->owt = weight(obj);
 		}
 		free_mname(mtmp);
+		free_umname(mtmp);
 		break;
 	case PM_STONE_GOLEM:
 		/*
@@ -637,6 +645,7 @@ boolean createcorpse;
 			obj->owt = weight(obj);
 		}
 		free_mname(mtmp);
+		free_umname(mtmp);
 		break;
 	case PM_WOOD_GOLEM:
 		if (!rn2(2))
@@ -646,6 +655,7 @@ boolean createcorpse;
 			obj->owt = weight(obj);
 		}
 		free_mname(mtmp);
+		free_umname(mtmp);
 		break;
 	case PM_LEATHER_GOLEM:
 	{
@@ -685,6 +695,7 @@ boolean createcorpse;
 			}
 		}
 		free_mname(mtmp);
+		free_umname(mtmp);
 		break;
 	}
     case PM_GOLD_GOLEM:
@@ -703,6 +714,7 @@ boolean createcorpse;
 			obj->owt = weight(obj);
 		}
 		free_mname(mtmp);
+		free_umname(mtmp);
 		break;
 	}
     case PM_PAPER_GOLEM:
@@ -713,7 +725,8 @@ boolean createcorpse;
 				obj = mksobj_at(SCR_BLANK_PAPER, x, y, TRUE, FALSE);
 		}
         free_mname(mtmp);
-        break;
+		free_umname(mtmp);
+		break;
 	case PM_GEMSTONE_GOLEM:
 		if (!rn2(2))
 		{
@@ -723,7 +736,6 @@ boolean createcorpse;
 				obj = mksobj_at(randomtruegem(), x, y, TRUE, FALSE);
 			}
 		}
-		free_mname(mtmp);
 		break;
 		/* expired puddings will congeal into a large blob;
        like dragons, relies on the order remaining consistent */
@@ -741,7 +753,8 @@ boolean createcorpse;
             obj = obj_meld(&obj, &otmp);
         }
         free_mname(mtmp);
-        return obj;
+		free_umname(mtmp);
+		return obj;
     default_1:
     default:
         if (mvitals[mndx].mvflags & G_NOCORPSE) {
@@ -763,6 +776,7 @@ boolean createcorpse;
     }
     /* All special cases should precede the G_NOCORPSE check */
 
+
     if (!obj)
         return (struct obj *) 0;
 
@@ -774,7 +788,10 @@ boolean createcorpse;
     if (has_mname(mtmp))
         obj = oname(obj, MNAME(mtmp));
 
-    /*  Avoid "It was hidden under a green mold corpse!"
+	if (has_umname(mtmp))
+		obj = uoname(obj, UMNAME(mtmp));
+
+	/*  Avoid "It was hidden under a green mold corpse!"
      *  during Blind combat. An unseen monster referred to as "it"
      *  could be killed and leave a corpse.  If a hider then hid
      *  underneath it, you could be told the corpse type of a
@@ -2302,7 +2319,11 @@ struct monst *mtmp2, *mtmp1;
         new_mname(mtmp2, (int) strlen(MNAME(mtmp1)) + 1);
         Strcpy(MNAME(mtmp2), MNAME(mtmp1));
     }
-    if (EGD(mtmp1)) {
+	if (UMNAME(mtmp1)) {
+		new_umname(mtmp2, (int)strlen(UMNAME(mtmp1)) + 1);
+		Strcpy(UMNAME(mtmp2), UMNAME(mtmp1));
+	}
+	if (EGD(mtmp1)) {
         if (!EGD(mtmp2))
             newegd(mtmp2);
         *EGD(mtmp2) = *EGD(mtmp1);
@@ -2340,7 +2361,9 @@ struct monst *m;
     if (x) {
         if (x->mname)
             free((genericptr_t) x->mname);
-        if (x->egd)
+		if (x->umname)
+			free((genericptr_t)x->umname);
+		if (x->egd)
             free((genericptr_t) x->egd);
         if (x->epri)
             free((genericptr_t) x->epri);

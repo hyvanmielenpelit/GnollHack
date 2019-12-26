@@ -711,8 +711,8 @@ const char *gang;
 
     otmp = mksobj_migr_to_species(otyp, (unsigned long) M2_ORC, FALSE, FALSE);
     if (otmp && gang) {
-        new_oname(otmp, strlen(gang) + 1); /* removes old name if present */
-        Strcpy(ONAME(otmp), gang);
+        new_uoname(otmp, strlen(gang) + 1); /* removes old name if present */
+        Strcpy(UONAME(otmp), gang);
         if (otyp >= TRIPE_RATION && otyp <= TIN) {
             if (otyp == SLIME_MOLD)
                 otmp->spe = fruitadd((char *) orcfruit[rn2(SIZE(orcfruit))],

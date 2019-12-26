@@ -2368,6 +2368,10 @@ struct obj *otmp;
     if (otmp->oartifact)
         discover_artifact((xchar) otmp->oartifact);
     otmp->known = otmp->dknown = otmp->bknown = otmp->rknown = 1;
+	
+	if (has_oname(otmp))
+		otmp->nknown = 1;
+
     if (Is_container(otmp) || otmp->otyp == STATUE)
         otmp->cknown = otmp->lknown = 1;
     if (otmp->otyp == EGG && otmp->corpsenm != NON_PM)
@@ -3980,7 +3984,7 @@ register struct obj *otmp, *obj;
     if (obj->unpaid && !same_price(obj, otmp))
         return FALSE;
 
-    /* if they have names, make sure they're the same */
+    /* if they have true names, make sure they're the same */
     objnamelth = strlen(safe_oname(obj));
     otmpnamelth = strlen(safe_oname(otmp));
     if ((objnamelth != otmpnamelth
@@ -3989,7 +3993,16 @@ register struct obj *otmp, *obj;
             && strncmp(ONAME(obj), ONAME(otmp), objnamelth)))
         return FALSE;
 
-    /* for the moment, any additional information is incompatible */
+	/* if they have user-specified names, make sure they're the same */
+	objnamelth = strlen(safe_uoname(obj));
+	otmpnamelth = strlen(safe_uoname(otmp));
+	if ((objnamelth != otmpnamelth
+		&& ((objnamelth && otmpnamelth) || obj->otyp == CORPSE))
+		|| (objnamelth && otmpnamelth
+			&& strncmp(UONAME(obj), UONAME(otmp), objnamelth)))
+		return FALSE;
+
+	/* for the moment, any additional information is incompatible */
     if (has_omonst(obj) || has_omid(obj) || has_olong(obj) || has_omonst(otmp)
         || has_omid(otmp) || has_olong(otmp))
         return FALSE;
@@ -4269,7 +4282,7 @@ boolean unpaid, showsym;
     return invbuf;
 }
 
-char*
+const char*
 get_class_name(oclass)
 char oclass;
 {
