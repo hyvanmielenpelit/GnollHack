@@ -2901,7 +2901,7 @@ struct monst *mtmp;
                 mtmp->mspec_used = rnd(2);
         }
         u.ustuck = 0;
-		update_extrinsics();
+		update_all_character_properties((struct obj*)0);
 		context.botl = TRUE;
 	}
 }

@@ -1080,6 +1080,7 @@ int spell;
 	extern const struct propname {
 		int prop_num;
 		const char* prop_name;
+		const char* prop_noun;
 	} propertynames[]; /* timeout.c */
 
 	/* Name */

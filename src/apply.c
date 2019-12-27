@@ -2646,6 +2646,14 @@ struct obj* obj;
 				}
 				break;
 			case WAN_FIRE:
+				if (otmp->oartifact == ART_ONE_RING)
+				{
+					wandknown = TRUE;
+					pline("Flames emerge from %s and engulf %s!", the(xname(obj)), yname(otmp));
+					read_the_one_ring(otmp);
+					break;
+				}
+
 				if (otmp->elemental_enchantment == DEATH_ENCHANTMENT)
 				{
 					suggestnamingwand = TRUE;

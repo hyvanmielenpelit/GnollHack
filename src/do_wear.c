@@ -195,6 +195,7 @@ Boots_on(VOID_ARGS)
 			*/
         break;
     case LEVITATION_BOOTS:
+#if 0
         if (!oldprop && !HLevitation && !(BLevitation & FROM_ACQUIRED)) {
             makeknown(uarmf->otyp);
             float_up();
@@ -203,6 +204,7 @@ Boots_on(VOID_ARGS)
         } else {
             float_vs_flight(); /* maybe toggle (BFlying & I_SPECIAL) */
         }
+#endif
         break;
     default:
         impossible(unknown_type, c_boots, uarmf->otyp);
@@ -251,6 +253,7 @@ Boots_off(VOID_ARGS)
         //    HFumbling =  0;
         break;
     case LEVITATION_BOOTS:
+#if 0
         if (!oldprop && !HLevitation && !(BLevitation & FROM_ACQUIRED)
             && !context.takeoff.cancelled_don) {
             (void) float_down(0L, 0L);
@@ -258,6 +261,7 @@ Boots_off(VOID_ARGS)
         } else {
             float_vs_flight(); /* maybe toggle (BFlying & I_SPECIAL) */
         }
+#endif
         break;
     case LOW_BOOTS:
     case IRON_SHOES:
@@ -301,6 +305,7 @@ Cloak_on(VOID_ARGS)
         toggle_displacement(uarmc, oldprop, TRUE);
         break;
     case CLOAK_OF_INVISIBILITY:
+#if 0
         /* since cloak of invisibility was worn, we know mummy wrapping
            wasn't, so no need to check `oldprop' against blocked */
         if (!(u.uprops[INVISIBILITY].extrinsic & ~WORN_CLOAK) && !HInvis && !Blocks_Invisibility && !Blind) {
@@ -309,6 +314,7 @@ Cloak_on(VOID_ARGS)
             pline("Suddenly you can%s yourself.",
                   See_invisible ? " see through" : "not see");
         }
+#endif
         break;
     case OILSKIN_CLOAK:
         pline("%s very tightly.", Tobjnam(uarmc, "fit"));
@@ -353,6 +359,7 @@ Cloak_off(VOID_ARGS)
         toggle_displacement(otmp, oldprop, FALSE);
         break;
     case CLOAK_OF_INVISIBILITY:
+#if 0
         if (wasinvisible && !Invis && !Blind) 
 		{
             makeknown(CLOAK_OF_INVISIBILITY);
@@ -361,6 +368,7 @@ Cloak_off(VOID_ARGS)
                   See_invisible ? "no longer see through yourself"
                                 : see_yourself);
         }
+#endif
         break;
     /* Alchemy smock gives poison _and_ acid resistance */
     case ALCHEMY_SMOCK:
@@ -468,10 +476,13 @@ Helmet_off(VOID_ARGS)
 	case SILK_TOP_HAT:
 		break;
     case HELM_OF_TELEPATHY:
+#if 0
         /* need to update ability before calling see_monsters() */
         setworn((struct obj *) 0, W_ARMH);
         see_monsters();
         return 0;
+#endif
+		break;
     case HELM_OF_BRILLIANCE:
 //        if (!context.takeoff.cancelled_don)
 //            adj_abon(uarmh, -uarmh->spe);
@@ -728,6 +739,7 @@ Robe_on(VOID_ARGS)
 	case ROBE_OF_THE_ARCHMAGI:
 		break;
 	case MUMMY_WRAPPING:
+#if 0
 		/* Note: it's already being worn, so we have to cheat here. */
 		if ((HInvis || EInvis) && !(BInvis & ~W_ARMO) && 
 			!HBlocks_Invisibility && !(EBlocks_Invisibility & ~W_ARMO) && !Blind && !Invis) {
@@ -735,6 +747,7 @@ Robe_on(VOID_ARGS)
 			You("can %s!", See_invisible ? "no longer see through yourself"
 				: see_yourself);
 		}
+#endif
 		break;
 	default:
 		impossible(unknown_type, c_robe, uarmo->otyp);
@@ -771,11 +784,13 @@ Robe_off(VOID_ARGS)
 	case ROBE_OF_THE_ARCHMAGI:
 		break;
 	case MUMMY_WRAPPING:
+#if 0
 		if (!wasinvisible && Invis && !Blind) {
 			newsym(u.ux, u.uy);
 			You("can %s.", See_invisible ? "see through yourself"
 				: "no longer see yourself");
 		}
+#endif
 		break;
 	default:
 		impossible(unknown_type, c_robe, ud->otyp);
@@ -859,17 +874,22 @@ long wearslotmask;
 
 	boolean hadhallucination = Hallucination;
 
-	if (wearslotmask != 0)
-		setworn(ud, wearslotmask);
-
 	if (objects[ud->otyp].oc_subtyp == MISC_IOUN_STONE)
 	{
 		pline("%s to the air and starts to orbit around your %s.", Tobjnam(ud, "rise"), body_part(HEAD));
 	}
-	else if (ud->otyp == WINGS_OF_FLYING)
+
+	if (wearslotmask != 0)
+		setworn(ud, wearslotmask);
+
+#if 0
+	if (ud->otyp == WINGS_OF_FLYING)
 	{
-		if (!Levitation)
+		if (!Levitation && Flying)
+		{
+			makeknown(ud->otyp);
 			pline("You attach %s to your back and start to fly.", the(cxname(ud)));
+		}
 	}
 	else if (ud->otyp == EYEGLASSES_OF_HALLUCINATION)
 	{
@@ -883,6 +903,7 @@ long wearslotmask;
 	{
 		see_monsters();
 	}
+#endif
 
 	return 0;
 }
@@ -905,6 +926,7 @@ struct obj* ud;
 	{
 		pline("%s orbiting around your %s.", Tobjnam(ud, "stop"), body_part(HEAD));
 	}
+#if 0
 	else if (ud->otyp == WINGS_OF_FLYING)
 	{
 		if (!Levitation)
@@ -935,6 +957,7 @@ struct obj* ud;
 	{
 		see_monsters();
 	}
+#endif
 
 	return 0;
 }
@@ -1062,11 +1085,13 @@ Amulet_off()
 
     switch (uamul->otyp) {
     case AMULET_OF_ESP:
-        /* need to update ability before calling see_monsters() */
+#if 0        
+		/* need to update ability before calling see_monsters() */
         setworn((struct obj *) 0, W_AMUL);
         see_monsters();
         return;
-    case AMULET_OF_LIFE_SAVING:
+#endif
+	case AMULET_OF_LIFE_SAVING:
     case AMULET_VERSUS_POISON:
     case AMULET_OF_REFLECTION:
     case AMULET_OF_CHANGE:
@@ -1077,7 +1102,8 @@ Amulet_off()
 	case DEMON_BLOOD_TALISMAN:
 		break;
     case AMULET_OF_MAGICAL_BREATHING:
-        if (Underwater) {
+#if 0
+		if (Underwater) {
             /* HMagical_breathing must be set off
                 before calling drown() */
             setworn((struct obj *) 0, W_AMUL);
@@ -1089,6 +1115,7 @@ Amulet_off()
             }
             return;
         }
+#endif
         break;
     case AMULET_OF_STRANGULATION:
         if (Strangled) {
@@ -1210,10 +1237,12 @@ register struct obj *obj;
         toggle_stealth(obj, oldprop, TRUE);
         break;
     case RIN_WARNING:
-        see_monsters();
+        //see_monsters();
         break;
-    case RIN_SEE_INVISIBLE:
-        /* can now see invisible monsters */
+	case RIN_SUPREME_POWER:
+	case RIN_SEE_INVISIBLE:
+#if 0
+		/* can now see invisible monsters */
         set_mimic_blocking(); /* do special mimic handling */
         see_monsters();
 
@@ -1222,15 +1251,19 @@ register struct obj *obj;
             pline("Suddenly you are transparent, but there!");
             learnring(obj, TRUE);
         }
+#endif
         break;
     case RIN_INVISIBILITY:
+#if 0
         if (Invis && !oldprop && !HInvis && !BInvis && !Blocks_Invisibility && !Blind) {
             learnring(obj, TRUE);
             newsym(u.ux, u.uy);
             self_invis_message();
         }
+#endif
         break;
-    case RIN_LEVITATION:
+	case RIN_LEVITATION:
+#if 0
         if (!oldprop && !HLevitation && !(BLevitation & FROM_ACQUIRED)) {
             float_up();
             learnring(obj, TRUE);
@@ -1239,6 +1272,7 @@ register struct obj *obj;
         } else {
             float_vs_flight(); /* maybe toggle (BFlying & I_SPECIAL) */
         }
+#endif
         break;
     case RIN_GAIN_STRENGTH:
         which = A_STR;
@@ -1366,10 +1400,12 @@ boolean gone;
         toggle_stealth(obj, (EStealth & ~mask), FALSE);
         break;
     case RIN_WARNING:
-        see_monsters();
+        //see_monsters();
         break;
-    case RIN_SEE_INVISIBLE:
-        /* Make invisible monsters go away */
+	case RIN_SUPREME_POWER:
+	case RIN_SEE_INVISIBLE:
+#if 0
+		/* Make invisible monsters go away */
         if (!See_invisible) {
             set_mimic_blocking(); /* do special mimic handling */
             see_monsters();
@@ -1380,17 +1416,20 @@ boolean gone;
             pline("Suddenly you cannot see yourself.");
             learnring(obj, TRUE);
         }
+#endif
         break;
     case RIN_INVISIBILITY:
-        if (!Invis && !BInvis && !Blocks_Invisibility && !Blind)
+#if 0        
+		if (!Invis && !BInvis && !Blocks_Invisibility && !Blind)
 		{
             newsym(u.ux, u.uy);
             Your("body seems to unfade%s.",
                  See_invisible ? " completely" : "..");
             learnring(obj, TRUE);
         }
-        break;
+		#endif        break;
     case RIN_LEVITATION:
+#if 0
         if (!(BLevitation & FROM_ACQUIRED)) {
             (void) float_down(0L, 0L);
             if (!Levitation)
@@ -1398,6 +1437,7 @@ boolean gone;
         } else {
             float_vs_flight(); /* maybe toggle (BFlying & I_SPECIAL) */
         }
+#endif
         break;
     case RIN_GAIN_STRENGTH:
         which = A_STR;

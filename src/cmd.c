@@ -1878,7 +1878,8 @@ wiz_intrinsic(VOID_ARGS)
         extern const struct propname {
             int prop_num;
             const char *prop_name;
-        } propertynames[]; /* timeout.c */
+			const char* prop_noun;
+		} propertynames[]; /* timeout.c */
         static const char wizintrinsic[] = "#wizintrinsic";
         static const char fmt[] = "You are%s %s.";
         winid win;

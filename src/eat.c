@@ -2239,7 +2239,8 @@ struct obj *otmp;
             u.uprops[objects[typ].oc_oprop].intrinsic |= FROM_ACQUIRED;
 
             switch (typ) {
-            case RIN_SEE_INVISIBLE:
+			case RIN_SUPREME_POWER:
+			case RIN_SEE_INVISIBLE:
                 set_mimic_blocking();
                 see_monsters();
                 if (Invis && !oldprop && !ESee_invisible
@@ -2248,7 +2249,10 @@ struct obj *otmp;
                     pline("Suddenly you can see yourself.");
                     makeknown(typ);
                 }
-                break;
+				if (typ != RIN_SUPREME_POWER)
+					break;
+				else
+					; /* FALLTHRU */
             case RIN_INVISIBILITY:
                 if (!oldprop && !EInvis && !BInvis && !Blocks_Invisibility && !See_invisible
                     && !Blind) {

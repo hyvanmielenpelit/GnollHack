@@ -247,6 +247,7 @@ docharacterstatistics()
 	extern const struct propname {
 		int prop_num;
 		const char* prop_name;
+		const char* prop_noun;
 	} propertynames[]; /* timeout.c */
 
 	int intrinsic_count = 0;
@@ -264,7 +265,7 @@ docharacterstatistics()
 			{
 				if (propertynames[j].prop_num == i)
 				{
-					strcpy(buf2, propertynames[j].prop_name);
+					strcpy(buf2, propertynames[j].prop_noun);
 					*buf2 = highc(*buf2);
 					break;
 				}
@@ -339,7 +340,7 @@ docharacterstatistics()
 					{
 						if (propertynames[j].prop_num == intrinsic_ability[table_index].propid)
 						{
-							strcpy(buf2, propertynames[j].prop_name);
+							strcpy(buf2, propertynames[j].prop_noun);
 							*buf2 = highc(*buf2);
 							break;
 						}
@@ -462,6 +463,7 @@ register struct obj* obj;
 	extern const struct propname {
 		int prop_num;
 		const char* prop_name;
+		const char* prop_noun;
 	} propertynames[]; /* timeout.c */
 
 	/* Name */
@@ -553,6 +555,8 @@ register struct obj* obj;
 		{
 			if (objects[otyp].oc_magic)
 				strcpy(buf2, "Magical");
+			else
+				strcpy(buf2, "Non-magical");
 		}
 	}
 	else if (objects[otyp].oc_class == GEM_CLASS)
@@ -587,6 +591,10 @@ register struct obj* obj;
 	{
 		Sprintf(eos(buf), ": %s", buf3);
 	}
+	if (obj->nknown && obj->known && obj->oartifact)
+	{
+		Sprintf(eos(buf), " - Artifact");
+	}
 	txt = buf;
 	putstr(datawin, 0, txt);
 
@@ -612,10 +620,10 @@ register struct obj* obj;
 	txt = buf;
 	putstr(datawin, 0, txt);
 
-	if(objects[otyp].oc_name_known)
+	if(objects[otyp].oc_name_known && !(obj->oartifact && !obj->nknown))
 	{
 		/* Gold value */
-		if(obj->oartifact && obj->known)
+		if(obj->oartifact && obj->nknown)
 			Sprintf(buf2, "%d gold", artilist[obj->oartifact].cost);
 		else
 			Sprintf(buf2, "%d gold", objects[otyp].oc_cost);
@@ -1125,7 +1133,7 @@ register struct obj* obj;
 	}
 
 	/* Various extra info is the item is known */
-	if (objects[otyp].oc_name_known	&& !object_uses_spellbook_wand_flags_and_properties(obj))
+	if (objects[otyp].oc_name_known	&& !object_uses_spellbook_wand_flags_and_properties(obj) && !(obj->oartifact && !obj->nknown))
 	{
 		if (objects[otyp].oc_oprop > 0
 			|| objects[otyp].oc_oprop2 > 0 
@@ -1174,7 +1182,7 @@ register struct obj* obj;
 						{
 							if (propertynames[j].prop_num == prop)
 							{
-								strcpy(buf2, propertynames[j].prop_name);
+								strcpy(buf2, propertynames[j].prop_noun);
 								*buf2 = highc(*buf2);
 								break;
 							}
@@ -1937,326 +1945,9 @@ register struct obj* obj;
 			}
 		}
 
-		/* Artifact powers */
-		if (obj->known && obj->oartifact > 0)
-		{
-			int powercnt = 0;
-			Sprintf(buf, "Artifact properties:");
-			txt = buf;
-			putstr(datawin, 0, txt);
-
-			char* alingstr = align_str(artilist[obj->oartifact].alignment);
-			powercnt++;
-			Sprintf(buf, " %2d - Alignment is %s", powercnt, alingstr);
-			txt = buf;
-			putstr(datawin, 0, txt);
-
-			if (artilist[obj->oartifact].role > NON_PM)
-			{
-				powercnt++;
-				Sprintf(buf, " %2d - Artifact is associated with %s", powercnt, makeplural(mons[artilist[obj->oartifact].role].mname));
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
-
-			if (artilist[obj->oartifact].race > NON_PM)
-			{
-				powercnt++;
-				Sprintf(buf, " %2d - Artifact is associated with %s", powercnt, makeplural(mons[artilist[obj->oartifact].race].mname));
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
-
-			if (artilist[obj->oartifact].attk.damd != 0)
-			{
-				char* dmgttext = get_damage_type_text(artilist[obj->oartifact].attk.adtyp);
-				*dmgttext = highc(*dmgttext);
-
-				char dmgbuf[BUFSIZ] = "";
-				if (artilist[obj->oartifact].attk.damd > 0)
-				{
-					Sprintf(dmgbuf, "Artifact damage bonus is 1d%d", artilist[obj->oartifact].attk.damd);
-					if (strcmp(dmgttext, "") != 0)
-					{
-						Sprintf(eos(dmgbuf), " (%s damage)", dmgttext);
-					}
-				}
-				else if (artilist[obj->oartifact].attk.damd == ART_DOUBLE_DAMAGE)
-					Sprintf(dmgbuf, "Artifact deals double normal damage");
-				else if (artilist[obj->oartifact].attk.damd == ART_TRIPLE_DAMAGE)
-					Sprintf(dmgbuf, "Artifact deals triple normal damage");
-				else if (artilist[obj->oartifact].attk.damd == ART_QUADRUPLE_DAMAGE)
-					Sprintf(dmgbuf, "Artifact deals quadruple normal damage");
-
-				powercnt++;
-				Sprintf(buf, " %2d - %s", powercnt, dmgbuf);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
-			if (artilist[obj->oartifact].attk.damn > 0)
-			{
-				powercnt++;
-				Sprintf(buf, " %2d - Artifact to-hit bonus is 1d%d", powercnt, artilist[obj->oartifact].attk.damn);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
-
-			if (artilist[obj->oartifact].defn.adtyp > 0)
-			{
-				char* defensetext = get_defense_type_text(artilist[obj->oartifact].defn.adtyp);
-				*defensetext = highc(*defensetext);
-
-				powercnt++;
-				if (is_weapon(obj))
-					Sprintf(buf, " %2d - %s when wielded", powercnt, defensetext);
-				else
-					Sprintf(buf, " %2d - %s when worn", powercnt, defensetext);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
-			if (artilist[obj->oartifact].cary.adtyp > 0)
-			{
-				char* defensetext = get_defense_type_text(artilist[obj->oartifact].cary.adtyp);
-				*defensetext = highc(*defensetext);
-
-				powercnt++;
-				Sprintf(buf, " %2d - %s when carried", powercnt, defensetext);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
-			if (artilist[obj->oartifact].inv_prop > 0)
-			{
-				char invoketext[BUFSIZ] = "";
-				if (artilist[obj->oartifact].inv_prop > LAST_PROP)
-				{
-					char* invprop = get_artifact_invoke_name(artilist[obj->oartifact].inv_prop);
-					*invprop = highc(*invprop);
-					strcpy(invoketext, invprop);
-				}
-				else
-				{
-					for (int j = 0; propertynames[j].prop_num; j++)
-					{
-						if (propertynames[j].prop_num == artilist[obj->oartifact].inv_prop)
-						{
-							strcpy(invoketext, propertynames[j].prop_name);
-							*buf2 = highc(*invoketext);
-							break;
-						}
-					}
-				}
-
-				powercnt++;
-				Sprintf(buf, " %2d - %s when invoked", powercnt, invoketext);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
-
-			for (int i = 1; i <= 2; i++)
-			{
-				unsigned long specialeffect = 0;
-				char endbuf[BUFSIZ] = "";
-				if (i == 1)
-				{
-					specialeffect = artilist[obj->oartifact].spfx;
-					if (is_weapon(obj))
-						strcpy(endbuf, "when wielded");
-					else
-						strcpy(endbuf, "when worn");
-				}
-				else
-				{
-					specialeffect = artilist[obj->oartifact].cspfx;
-					strcpy(endbuf, "when carried");
-				}
-				if (specialeffect & SPFX_SEEK)
-				{
-					powercnt++;
-					Sprintf(buf, " %2d - Seeking %s", powercnt, endbuf);
-					txt = buf;
-					putstr(datawin, 0, txt);
-				}
-				if (specialeffect & SPFX_SEARCH)
-				{
-					powercnt++;
-					Sprintf(buf, " %2d - Searching %s", powercnt, endbuf);
-					txt = buf;
-					putstr(datawin, 0, txt);
-				}
-				if (specialeffect & SPFX_BEHEAD)
-				{
-					powercnt++;
-					if (obj->oartifact == ART_TSURUGI_OF_MURAMASA)
-						Sprintf(buf, " %2d - May bisect target on hit", powercnt);
-					else
-						Sprintf(buf, " %2d - May beheads target on hit", powercnt);
-					txt = buf;
-					putstr(datawin, 0, txt);
-				}
-				if (specialeffect & SPFX_INTEL)
-				{
-					powercnt++;
-					Sprintf(buf, " %2d - Intelligent", powercnt);
-					txt = buf;
-					putstr(datawin, 0, txt);
-				}
-				if (specialeffect & SPFX_SPEAK)
-				{
-					powercnt++;
-					Sprintf(buf, " %2d - Speaking", powercnt);
-					txt = buf;
-					putstr(datawin, 0, txt);
-				}
-				if (specialeffect & SPFX_WARN)
-				{
-					powercnt++;
-					Sprintf(buf, " %2d - Warning %s", powercnt, endbuf);
-					txt = buf;
-					putstr(datawin, 0, txt);
-				}
-				if (specialeffect & SPFX_DRLI)
-				{
-					powercnt++;
-					Sprintf(buf, " %2d - Drains life levels on hit", powercnt);
-					txt = buf;
-					putstr(datawin, 0, txt);
-				}
-				if (specialeffect & SPFX_HALRES)
-				{
-					powercnt++;
-					Sprintf(buf, " %2d - Hallucination resistance %s", powercnt, endbuf);
-					txt = buf;
-					putstr(datawin, 0, txt);
-				}
-				if (specialeffect & SPFX_ESP)
-				{
-					powercnt++;
-					Sprintf(buf, " %2d - ESP %s", powercnt, endbuf);
-					txt = buf;
-					putstr(datawin, 0, txt);
-				}
-				if (specialeffect & SPFX_STLTH)
-				{
-					powercnt++;
-					Sprintf(buf, " %2d - Stealth %s", powercnt, endbuf);
-					txt = buf;
-					putstr(datawin, 0, txt);
-				}
-				if (specialeffect & SPFX_REGEN)
-				{
-					powercnt++;
-					Sprintf(buf, " %2d - Regeneration %s", powercnt, endbuf);
-					txt = buf;
-					putstr(datawin, 0, txt);
-				}
-				if (specialeffect & SPFX_STLTH)
-				{
-					powercnt++;
-					Sprintf(buf, " %2d - Mana regeneration %s", powercnt, endbuf);
-					txt = buf;
-					putstr(datawin, 0, txt);
-				}
-				if (specialeffect & SPFX_HSPDAM)
-				{
-					powercnt++;
-					Sprintf(buf, " %2d - Half spell damage %s", powercnt, endbuf);
-					txt = buf;
-					putstr(datawin, 0, txt);
-				}
-				if (specialeffect & SPFX_HPHDAM)
-				{
-					powercnt++;
-					Sprintf(buf, " %2d - Half physical damage %s", powercnt, endbuf);
-					txt = buf;
-					putstr(datawin, 0, txt);
-				}
-				if (specialeffect & SPFX_TCTRL)
-				{
-					powercnt++;
-					Sprintf(buf, " %2d - Teleport control %s", powercnt, endbuf);
-					txt = buf;
-					putstr(datawin, 0, txt);
-				}
-				if (specialeffect & SPFX_LUCK)
-				{
-					powercnt++;
-					Sprintf(buf, " %2d - Confers luck %s", powercnt, endbuf);
-					txt = buf;
-					putstr(datawin, 0, txt);
-				}
-				if (specialeffect & SPFX_XRAY)
-				{
-					powercnt++;
-					Sprintf(buf, " %2d - X-ray vision %s", powercnt, endbuf);
-					txt = buf;
-					putstr(datawin, 0, txt);
-				}
-				if (specialeffect & SPFX_REFLECT)
-				{
-					powercnt++;
-					Sprintf(buf, " %2d - Reflection %s", powercnt, endbuf);
-					txt = buf;
-					putstr(datawin, 0, txt);
-				}
-				if (specialeffect & SPFX_PROTECT)
-				{
-					powercnt++;
-					Sprintf(buf, " %2d - Protection %s", powercnt, endbuf);
-					txt = buf;
-					putstr(datawin, 0, txt);
-				}
-			}
-
-			if (artilist[obj->oartifact].mtype > 0)
-			{
-				char endbuf[BUFSIZ] = "";
-				if ((artilist[obj->oartifact].spfx & SPFX_DMONS) && artilist[obj->oartifact].mtype < NUMMONS)
-				{
-					strcpy(endbuf, mons[artilist[obj->oartifact].mtype].mname);
-				}
-				else if (artilist[obj->oartifact].spfx & SPFX_DFLAG1)
-				{
-				}
-				else if (artilist[obj->oartifact].spfx & SPFX_DFLAG2)
-				{
-					if (artilist[obj->oartifact].mtype == M2_DWARF)
-						strcpy(endbuf, "dwarves");
-					else if (artilist[obj->oartifact].mtype == M2_DEMON)
-						strcpy(endbuf, "demons");
-					else if (artilist[obj->oartifact].mtype == M2_ELF)
-						strcpy(endbuf, "elves");
-					else if (artilist[obj->oartifact].mtype == M2_GIANT)
-						strcpy(endbuf, "giants");
-					else if (artilist[obj->oartifact].mtype == M2_GNOLL)
-						strcpy(endbuf, "gnolls");
-					else if (artilist[obj->oartifact].mtype == M2_HUMAN)
-						strcpy(endbuf, "human beings");
-					else if (artilist[obj->oartifact].mtype == M2_MODRON)
-						strcpy(endbuf, "modrons");
-					else if (artilist[obj->oartifact].mtype == M2_ORC)
-						strcpy(endbuf, "orcs");
-					else if (artilist[obj->oartifact].mtype == M2_UNDEAD)
-						strcpy(endbuf, "undead creatures");
-					else if (artilist[obj->oartifact].mtype == M2_WERE)
-						strcpy(endbuf, "lycanthropes");
-				}
-				else if (artilist[obj->oartifact].spfx & SPFX_DCLAS && artilist[obj->oartifact].mtype < MAXMCLASSES)
-				{
-					strcpy(endbuf, def_monsyms[artilist[obj->oartifact].mtype].explain);
-				}
-				else if (artilist[obj->oartifact].spfx & SPFX_DALIGN)
-				{
-					strcpy(endbuf, "non-aligned creatures");
-				}
-				powercnt++;
-				Sprintf(buf, " %2d - Attack bonus applies to %s", powercnt, endbuf);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
-		}
 
 		/* Description*/
-		if (objects[otyp].oc_short_description)
+		if (objects[otyp].oc_short_description && !(obj->oartifact && obj->nknown))
 		{
 			/* One empty line here */
 			Sprintf(buf, "");
@@ -2267,6 +1958,339 @@ register struct obj* obj;
 			txt = buf;
 			putstr(datawin, 0, txt);
 			Sprintf(buf, objects[otyp].oc_short_description);
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+	}
+
+
+	/* Artifact powers */
+	if (obj->known && obj->nknown && obj->oartifact)
+	{
+		int powercnt = 0;
+		Sprintf(buf, "Artifact properties:");
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+		char* alingstr = align_str(artilist[obj->oartifact].alignment);
+		powercnt++;
+		Sprintf(buf, " %2d - Alignment is %s", powercnt, alingstr);
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+		if (artilist[obj->oartifact].role > NON_PM)
+		{
+			powercnt++;
+			Sprintf(buf, " %2d - Artifact is associated with %s", powercnt, makeplural(mons[artilist[obj->oartifact].role].mname));
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+
+		if (artilist[obj->oartifact].race > NON_PM)
+		{
+			powercnt++;
+			Sprintf(buf, " %2d - Artifact is associated with %s", powercnt, makeplural(mons[artilist[obj->oartifact].race].mname));
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+
+		if (artilist[obj->oartifact].attk.damd != 0)
+		{
+			char* dmgttext = get_damage_type_text(artilist[obj->oartifact].attk.adtyp);
+			*dmgttext = highc(*dmgttext);
+
+			char dmgbuf[BUFSIZ] = "";
+			if (artilist[obj->oartifact].attk.damd > 0)
+			{
+				Sprintf(dmgbuf, "Artifact damage bonus is 1d%d", artilist[obj->oartifact].attk.damd);
+				if (strcmp(dmgttext, "") != 0)
+				{
+					Sprintf(eos(dmgbuf), " (%s damage)", dmgttext);
+				}
+			}
+			else if (artilist[obj->oartifact].attk.damd == ART_DOUBLE_DAMAGE)
+				Sprintf(dmgbuf, "Artifact deals double normal damage");
+			else if (artilist[obj->oartifact].attk.damd == ART_TRIPLE_DAMAGE)
+				Sprintf(dmgbuf, "Artifact deals triple normal damage");
+			else if (artilist[obj->oartifact].attk.damd == ART_QUADRUPLE_DAMAGE)
+				Sprintf(dmgbuf, "Artifact deals quadruple normal damage");
+
+			powercnt++;
+			Sprintf(buf, " %2d - %s", powercnt, dmgbuf);
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+		if (artilist[obj->oartifact].attk.damn > 0)
+		{
+			powercnt++;
+			Sprintf(buf, " %2d - Artifact to-hit bonus is 1d%d", powercnt, artilist[obj->oartifact].attk.damn);
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+
+		if (artilist[obj->oartifact].defn.adtyp > 0)
+		{
+			char* defensetext = get_defense_type_text(artilist[obj->oartifact].defn.adtyp);
+			*defensetext = highc(*defensetext);
+
+			powercnt++;
+			if (is_weapon(obj))
+				Sprintf(buf, " %2d - %s when wielded", powercnt, defensetext);
+			else
+				Sprintf(buf, " %2d - %s when worn", powercnt, defensetext);
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+		if (artilist[obj->oartifact].cary.adtyp > 0)
+		{
+			char* defensetext = get_defense_type_text(artilist[obj->oartifact].cary.adtyp);
+			*defensetext = highc(*defensetext);
+
+			powercnt++;
+			Sprintf(buf, " %2d - %s when carried", powercnt, defensetext);
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+		if (artilist[obj->oartifact].inv_prop > 0)
+		{
+			char invoketext[BUFSIZ] = "";
+			if (artilist[obj->oartifact].inv_prop > LAST_PROP)
+			{
+				char* invprop = get_artifact_invoke_name(artilist[obj->oartifact].inv_prop);
+				*invprop = highc(*invprop);
+				strcpy(invoketext, invprop);
+			}
+			else
+			{
+				for (int j = 0; propertynames[j].prop_num; j++)
+				{
+					if (propertynames[j].prop_num == artilist[obj->oartifact].inv_prop)
+					{
+						strcpy(invoketext, propertynames[j].prop_noun);
+						*invoketext = highc(*invoketext);
+						break;
+					}
+				}
+			}
+
+			powercnt++;
+			Sprintf(buf, " %2d - %s when invoked", powercnt, invoketext);
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+
+		for (int i = 1; i <= 2; i++)
+		{
+			unsigned long specialeffect = 0;
+			char endbuf[BUFSIZ] = "";
+			if (i == 1)
+			{
+				specialeffect = artilist[obj->oartifact].spfx;
+				if (is_weapon(obj))
+					strcpy(endbuf, "when wielded");
+				else
+					strcpy(endbuf, "when worn");
+			}
+			else
+			{
+				specialeffect = artilist[obj->oartifact].cspfx;
+				strcpy(endbuf, "when carried");
+			}
+			if (specialeffect & SPFX_SEEK)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Seeking %s", powercnt, endbuf);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (specialeffect & SPFX_SEARCH)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Searching %s", powercnt, endbuf);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (specialeffect & SPFX_BEHEAD)
+			{
+				powercnt++;
+				if (obj->oartifact == ART_TSURUGI_OF_MURAMASA)
+					Sprintf(buf, " %2d - May bisect target on hit", powercnt);
+				else
+					Sprintf(buf, " %2d - May beheads target on hit", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (specialeffect & SPFX_INTEL)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Intelligent", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (specialeffect & SPFX_SPEAK)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Speaking", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (specialeffect & SPFX_WARN)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Warning %s", powercnt, endbuf);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (specialeffect & SPFX_DRLI)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Drains life levels on hit", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (specialeffect & SPFX_HALRES)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Hallucination resistance %s", powercnt, endbuf);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (specialeffect & SPFX_ESP)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - ESP %s", powercnt, endbuf);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (specialeffect & SPFX_STLTH)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Stealth %s", powercnt, endbuf);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (specialeffect & SPFX_REGEN)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Regeneration %s", powercnt, endbuf);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (specialeffect & SPFX_STLTH)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Mana regeneration %s", powercnt, endbuf);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (specialeffect & SPFX_HSPDAM)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Half spell damage %s", powercnt, endbuf);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (specialeffect & SPFX_HPHDAM)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Half physical damage %s", powercnt, endbuf);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (specialeffect & SPFX_TCTRL)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Teleport control %s", powercnt, endbuf);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (specialeffect & SPFX_LUCK)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Confers luck %s", powercnt, endbuf);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (specialeffect & SPFX_XRAY)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - X-ray vision %s", powercnt, endbuf);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (specialeffect & SPFX_REFLECT)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Reflection %s", powercnt, endbuf);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (specialeffect & SPFX_PROTECT)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Protection %s", powercnt, endbuf);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (specialeffect & SPFX_ONE_RING)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Aggravates monsters %s", powercnt, endbuf);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (specialeffect & SPFX_ONE_RING)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Confers bad luck %s", powercnt, endbuf);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+		}
+
+		if (artilist[obj->oartifact].mtype > 0)
+		{
+			char endbuf[BUFSIZ] = "";
+			if ((artilist[obj->oartifact].spfx & SPFX_DMONS) && artilist[obj->oartifact].mtype < NUMMONS)
+			{
+				strcpy(endbuf, mons[artilist[obj->oartifact].mtype].mname);
+			}
+			else if (artilist[obj->oartifact].spfx & SPFX_DFLAG1)
+			{
+			}
+			else if (artilist[obj->oartifact].spfx & SPFX_DFLAG2)
+			{
+				if (artilist[obj->oartifact].mtype == M2_DWARF)
+					strcpy(endbuf, "dwarves");
+				else if (artilist[obj->oartifact].mtype == M2_DEMON)
+					strcpy(endbuf, "demons");
+				else if (artilist[obj->oartifact].mtype == M2_ELF)
+					strcpy(endbuf, "elves");
+				else if (artilist[obj->oartifact].mtype == M2_GIANT)
+					strcpy(endbuf, "giants");
+				else if (artilist[obj->oartifact].mtype == M2_GNOLL)
+					strcpy(endbuf, "gnolls");
+				else if (artilist[obj->oartifact].mtype == M2_HUMAN)
+					strcpy(endbuf, "human beings");
+				else if (artilist[obj->oartifact].mtype == M2_MODRON)
+					strcpy(endbuf, "modrons");
+				else if (artilist[obj->oartifact].mtype == M2_ORC)
+					strcpy(endbuf, "orcs");
+				else if (artilist[obj->oartifact].mtype == M2_UNDEAD)
+					strcpy(endbuf, "undead creatures");
+				else if (artilist[obj->oartifact].mtype == M2_WERE)
+					strcpy(endbuf, "lycanthropes");
+			}
+			else if (artilist[obj->oartifact].spfx & SPFX_DCLAS && artilist[obj->oartifact].mtype < MAXMCLASSES)
+			{
+				strcpy(endbuf, def_monsyms[artilist[obj->oartifact].mtype].explain);
+			}
+			else if (artilist[obj->oartifact].spfx & SPFX_DALIGN)
+			{
+				strcpy(endbuf, "non-aligned creatures");
+			}
+			powercnt++;
+			Sprintf(buf, " %2d - Attack bonus applies to %s", powercnt, endbuf);
 			txt = buf;
 			putstr(datawin, 0, txt);
 		}

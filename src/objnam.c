@@ -397,7 +397,8 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     register struct objclass *ocl = &objects[typ];
 	int nn = obj->oartifact ? obj->nknown : ocl->oc_name_known;
 	int omndx = obj->corpsenm;
-    const char *actualn = (obj->oartifact && artilist[obj->oartifact].desc && strcmp(artilist[obj->oartifact].desc, "")) ? artilist[obj->oartifact].desc : 
+    const char *actualn = (obj->oclass != RING_CLASS && obj->oclass != WAND_CLASS && obj->oclass != POTION_CLASS && obj->oclass != SCROLL_CLASS && obj->oclass != SPBOOK_CLASS
+		&& obj->oartifact && artilist[obj->oartifact].desc && strcmp(artilist[obj->oartifact].desc, "")) ? artilist[obj->oartifact].desc :
 		OBJ_NAME(*ocl);
 	const char *dn = (obj->oartifact && artilist[obj->oartifact].desc && strcmp(artilist[obj->oartifact].desc, "")) ? artilist[obj->oartifact].desc : 
 		OBJ_DESCR(*ocl);
@@ -3772,6 +3773,8 @@ struct obj *no_wish;
         && strncmpi(bp, "food detection", 14)
         && strncmpi(bp, "ring mail", 9)
 		&& strncmpi(bp, "staff of withering", 18)
+		&& strncmpi(bp, "one ring", 8)
+		&& strncmpi(bp, "wand of orcus", 13)
 		&& strncmpi(bp, "studded leather armor", 21)
         && strncmpi(bp, "leather armor", 13)
         && strncmpi(bp, "tooled horn", 11)

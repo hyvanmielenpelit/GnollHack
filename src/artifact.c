@@ -313,11 +313,11 @@ boolean
 confers_luck(obj)
 struct obj *obj;
 {
-	if (objects[obj->otyp].oc_flags & O1_CONFERS_LUCK
-		&& (objects[obj->otyp].oc_flags3 & O3_LUCK_DISRESPECTS_CHARACTERS || !inappropriate_character_type(obj)))
+	if ((objects[obj->otyp].oc_flags & O1_CONFERS_LUCK
+		&& (objects[obj->otyp].oc_flags3 & O3_LUCK_DISRESPECTS_CHARACTERS || !inappropriate_character_type(obj))))
 		return TRUE;
 
-    return (boolean) (obj->oartifact && spec_ability(obj, SPFX_LUCK));
+    return FALSE;
 }
 
 /* used so that callers don't need to known about SPFX_ codes */
@@ -330,6 +330,22 @@ struct obj* obj;
 		return TRUE;
 
 	return FALSE;
+}
+
+/* obj is assumed to be carried */
+boolean
+artifact_confers_luck(obj)
+struct obj* obj;
+{
+	return (obj && obj->oartifact && ((obj->owornmask != 0 && (artilist[obj->oartifact].spfx & SPFX_LUCK)) || (artilist[obj->oartifact].cspfx & SPFX_LUCK)));
+}
+
+/* obj is assumed to be carried */
+boolean
+artifact_confers_unluck(obj)
+struct obj* obj;
+{
+	return (obj && obj->oartifact && ((obj->owornmask != 0 && (artilist[obj->oartifact].spfx & SPFX_ONE_RING)) || (artilist[obj->oartifact].cspfx & SPFX_ONE_RING)));
 }
 
 /* used to check whether a monster is getting reflection from an artifact */
@@ -558,7 +574,13 @@ long wp_mask;
         else
             ESearching &= ~wp_mask;
     }
-    if (spfx & SPFX_HALRES) 
+	if (spfx & SPFX_ONE_RING) {
+		if (on)
+			EAggravate_monster |= wp_mask;
+		else
+			EAggravate_monster &= ~wp_mask;
+	}
+	if (spfx & SPFX_HALRES)
 	{
 		if (on)
 			EHalluc_resistance |= wp_mask;
@@ -2375,25 +2397,31 @@ struct obj *obj;
 		}
         }
     } else {
-        long eprop = (u.uprops[oart->inv_prop].extrinsic ^= W_ARTI),
-             iprop = u.uprops[oart->inv_prop].intrinsic;
-        boolean on = (eprop & W_ARTI) != 0; /* true if prop just set */
+        //long eprop = (u.uprops[oart->inv_prop].extrinsic ^= W_ARTI),
+        //    iprop = u.uprops[oart->inv_prop].intrinsic;
+        boolean switch_on = (u.uprops[oart->inv_prop].extrinsic & W_ARTI) == 0;
 
-        if (on && obj->age > monstermoves) {
+        if (switch_on && obj->cooldownleft > 0) // obj->age > monstermoves)
+		{
             /* the artifact is tired :-) */
             u.uprops[oart->inv_prop].extrinsic ^= W_ARTI;
             You_feel("that %s %s ignoring you.", the(xname(obj)),
                      otense(obj, "are"));
             /* can't just keep repeatedly trying */
-            obj->age += (long) d(3, 10);
+            //obj->age += (long) d(3, 10);
+			obj->cooldownleft = d(3, 10);
             return 1;
-        } else if (!on) {
+        } else if (!switch_on) {
             /* when turning off property, determine downtime */
             /* arbitrary for now until we can tune this -dlc */
-            obj->age = monstermoves + rnz(100);
+            //obj->age = monstermoves + rnz(100);
+			obj->cooldownleft = rnz(100);
         }
 
-        if ((eprop & ~W_ARTI) || iprop) {
+		obj->invokeon = switch_on;
+
+
+        if ((u.uprops[oart->inv_prop].extrinsic & ~W_ARTI) || u.uprops[oart->inv_prop].intrinsic || u.uprops[oart->inv_prop].blocked) {
  nothing_special:
             /* you had the property from some other source too */
             if (carried(obj))
@@ -2402,23 +2430,25 @@ struct obj *obj;
         }
         switch (oart->inv_prop) {
         case CONFLICT:
-            if (on)
+            if (switch_on)
                 You_feel("like a rabble-rouser.");
             else
                 You_feel("the tension decrease around you.");
             break;
         case LEVITATION:
-            if (on) {
+			/* -- Now handled elsewhere automatically
+            if (switch_on) {
                 float_up();
                 spoteffects(FALSE);
             } else
                 (void) float_down(I_SPECIAL | TIMEOUT, W_ARTI);
-            break;
-        case INVISIBILITY:
+			*/
+			break;
+		case INVISIBILITY:
             if (Blocks_Invisibility || Blind)
                 goto nothing_special;
             newsym(u.ux, u.uy);
-            if (on)
+            if (switch_on)
                 Your("body takes on a %s transparency...",
                      Hallucination ? "normal" : "strange");
             else

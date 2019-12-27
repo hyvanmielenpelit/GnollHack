@@ -506,10 +506,7 @@ dowield()
 #endif
 	}
 
-	updateabon();
-	update_extrinsics();
-	updatemaxen();
-	updatemaxhp();
+	update_all_character_properties((struct obj*)0);
 
     return result;
 }

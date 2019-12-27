@@ -74,6 +74,8 @@ E boolean FDECL(arti_immune, (struct obj *, int));
 E boolean FDECL(spec_ability, (struct obj *, unsigned long));
 E boolean FDECL(confers_luck, (struct obj *));
 E boolean FDECL(confers_unluck, (struct obj*));
+E boolean FDECL(artifact_confers_luck, (struct obj*));
+E boolean FDECL(artifact_confers_unluck, (struct obj*));
 E boolean FDECL(arti_reflects, (struct obj *));
 E boolean FDECL(shade_glare, (struct obj *));
 E boolean FDECL(restrict_name, (struct obj *, const char *));
@@ -1039,6 +1041,7 @@ E int FDECL(ckunpaid, (struct obj *));
 #endif
 E void FDECL(addinv_core1, (struct obj *));
 E void FDECL(addinv_core2, (struct obj *));
+E void FDECL(update_all_character_properties, (struct obj*));
 E struct obj *FDECL(addinv, (struct obj *));
 E struct obj *FDECL(hold_another_object,
                     (struct obj *, const char *, const char *, const char *));
@@ -2183,7 +2186,7 @@ E void NDECL(unpunish);
 E boolean FDECL(cant_revive, (int *, BOOLEAN_P, struct obj *));
 E boolean NDECL(create_particular);
 E int FDECL(maybe_tame, (struct monst*, struct obj*));
-
+E void FDECL(read_the_one_ring, (struct obj*));
 
 /* ### rect.c ### */
 

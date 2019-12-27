@@ -161,17 +161,14 @@ long mask;
 		curse(uarmh);
 	}
 
-	update_extrinsics();
-	updateabon();
-	updatemaxen();
-	updatemaxhp();
-
 	/* Readying a weapon to quiver or swap weapon slot does not trigger artifact name discovery -- JG */
 	if ((mask & (W_WEP | W_WEP2 | W_ARMOR | W_ACCESSORY)) && obj && obj->oartifact && !obj->nknown && (artilist[obj->oartifact].spfx & (SPFX_FAMOUS | SPFX_NAME_KNOWN_WHEN_PICKED_UP | SPFX_NAME_KNOWN_WHEN_WORN_OR_WIELDED)))
 	{
 		pline("As you %s %s, you suddenly become aware that it is named %s!", (mask == W_WEP || (u.twoweap && mask == W_WEP2)) ? "wield" : "wear", the(cxname(obj)), bare_artifactname(obj));
 		obj->nknown = TRUE;
 	}
+
+	update_all_character_properties(obj);
 
 	/* Note that this does not work for weapons if there is an old weapon, since we do not know whether the change was caused by the old or the new weapon */
 	if ((obj && !oobj) || (oobj && !obj))
@@ -292,10 +289,7 @@ register struct obj *obj;
 		}
 	}
 
-	update_extrinsics();
-	updateabon();
-	updatemaxen();
-	updatemaxhp();
+	update_all_character_properties(obj);
 
 	//int curstr = ACURR(A_STR);
 

@@ -5,6 +5,8 @@
 /*  attribute modification routines. */
 
 #include "hack.h"
+#include "artifact.h"
+#include "artilist.h"
 #include <ctype.h>
 
 /* part of the output on gain or loss of attribute */
@@ -519,24 +521,25 @@ register schar n;
 }
 
 int
-stone_luck(parameter)
-boolean parameter; /* So I can't think up of a good name.  So sue me. --KAA */
+stone_luck(uncursed_confers_extra_luck)
+boolean uncursed_confers_extra_luck; /* So I can't think up of a good name.  So sue me. --KAA */
 {
     register struct obj *otmp;
     register long bonchance = 0;
 
     for (otmp = invent; otmp; otmp = otmp->nobj)
 	{
-        if (confers_luck(otmp) && carried_object_confers_powers(otmp))
+        if (artifact_confers_luck(otmp) || (confers_luck(otmp) && carried_object_confers_powers(otmp)))
 		{
             if (otmp->cursed)
                 bonchance -= otmp->quan;
             else if (otmp->blessed)
                 bonchance += otmp->quan;
-            else if (parameter)
+            else if (uncursed_confers_extra_luck)
                 bonchance += otmp->quan;
         }
-		else if (confers_unluck(otmp) && carried_object_confers_powers(otmp))
+		
+		if (artifact_confers_unluck(otmp) || (confers_unluck(otmp) && carried_object_confers_powers(otmp)))
 		{
 			bonchance -= otmp->quan;
 		}
@@ -663,11 +666,20 @@ update_extrinsics()
 			//if (!inappr && (p = w_blocks(uitem, bit)) != 0)
 			//	u.uprops[p].blocked |= bit;
 
-			/* add artifact intrinsics */
-			if (!inappr && uitem->oartifact)
-				set_artifact_intrinsic(uitem, 1, bit);
-
 		}
+
+		/* add artifact intrinsics */
+		if (uitem->oartifact)
+		{
+			set_artifact_intrinsic(uitem, 1, W_ART);
+
+			/* Invoked property if any */
+			if (artilist[uitem->oartifact].inv_prop > 0 && artilist[uitem->oartifact].inv_prop <= LAST_PROP && uitem->invokeon)
+			{
+				u.uprops[artilist[uitem->oartifact].inv_prop].extrinsic |= W_ARTI;
+			}
+		}
+
 	}
 
 	/* Check environment */
@@ -1892,6 +1904,7 @@ updateabon()
 			}
 		}
 	}
+	set_moreluck();
 	find_ac();
 	find_mc();
 	context.botl = 1;

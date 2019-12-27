@@ -1222,7 +1222,6 @@ u_init()
 	updatemaxen();
 	updatemaxhp();
 
-
     return;
 }
 

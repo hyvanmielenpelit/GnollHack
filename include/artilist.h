@@ -181,6 +181,10 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
     A("Sunsword", "glowing runed long sword", LONG_SWORD, LONG_SWORD, (SPFX_RESTR | SPFX_DFLAG2 | SPFX_NAME_KNOWN_WHEN_WORN_OR_WIELDED), 0, M2_UNDEAD | M2_DEMON,
       PHYS(5, ART_QUADRUPLE_DAMAGE), DFNS(AD_BLND), NO_CARY, 0, A_LAWFUL, NON_PM, NON_PM, 1500L,
       NO_COLOR, HI_GOLD),
+		  
+    A("The One Ring", "plain golden", RIN_SUPREME_POWER, RIN_SUPREME_POWER, (SPFX_RESTR | SPFX_INTEL), SPFX_ONE_RING, 0,
+		NO_ATTK, NO_DFNS, NO_CARY, CONFLICT, A_NONE, NON_PM, NON_PM, 10000L,
+      NO_COLOR, HI_GOLD),
 
 	/*
      *      The artifacts for the quest dungeon, all self-willed.
@@ -257,8 +261,8 @@ A("The Palantir of Westernesse",        CRYSTAL_BALL, CRYSTAL_BALL,
       CHARGE_OBJ, A_NEUTRAL, PM_TOURIST, NON_PM, 7000L, NO_COLOR, CLR_BLACK),
 
     A("The Orb of Fate", "ornamental crystal ball", CRYSTAL_BALL, CRYSTAL_BALL,
-      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_LUCK | SPFX_FAMOUS),
-      (SPFX_WARN | SPFX_HSPDAM | SPFX_HPHDAM), 0, NO_ATTK, NO_DFNS, NO_CARY,
+      (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_FAMOUS),
+      (SPFX_WARN | SPFX_HSPDAM | SPFX_HPHDAM | SPFX_LUCK), 0, NO_ATTK, NO_DFNS, NO_CARY,
       LEV_TELE, A_NEUTRAL, PM_VALKYRIE, NON_PM, 3500L, NO_COLOR, CLR_MAGENTA),
 
     A("The Eye of the Aethiopica", "eye-shaped amulet", AMULET_OF_ESP, AMULET,

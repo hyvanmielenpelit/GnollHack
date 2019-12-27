@@ -334,7 +334,11 @@ doread()
         pline("\"Odin.\"");
         u.uconduct.literate++;
         return 1;
-    } else if (scroll->otyp == CANDY_BAR) {
+	} else if (scroll->oartifact == ART_ONE_RING) {
+		pline("The ring is plain and featureless, but you somehow feel that there is more to it than that.");
+
+		return 1;
+	} else if (scroll->otyp == CANDY_BAR) {
         static const char *wrapper_msgs[] = {
             "Apollo",       /* Lost */
             "Moon Crunchy", /* South Park */
@@ -439,6 +443,31 @@ doread()
             useup(scroll);
     }
     return 1;
+}
+
+void
+read_the_one_ring(otmp)
+struct obj* otmp;
+{
+	if (otmp->oartifact != ART_ONE_RING)
+		return;
+
+	if (Blind)
+		pline("You feel that an inscription appears on %s, but you cannot see it.", the(cxname(otmp)));
+	else
+	{
+		pline("An inscription appears in %s in fiery letters:", the(cxname(otmp)));
+		verbalize("Ash nazg durbatuluk, ash nazg gimbatul,");
+		verbalize("Ash nazg thrakatuluk agh burzum-ishi krimpatul.");
+		pline("Huh. That was quite a tongue twister.");
+		if (!otmp->nknown)
+		{
+			otmp->nknown = TRUE;
+			if (carried(otmp))
+				prinv((char*)0, otmp, 0L);
+		}
+		u.uconduct.literate++;
+	}
 }
 
 STATIC_OVL void

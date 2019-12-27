@@ -1639,7 +1639,7 @@ register struct obj *otmp;
         old_light = arti_light_radius(otmp);
     otmp->cursed = 0;
     otmp->blessed = 1;
-    if (carried(otmp) && confers_luck(otmp))
+    if (carried(otmp) && (confers_luck(otmp) || confers_unluck(otmp)))
         set_moreluck();
     else if (Is_weight_changing_bag(otmp))
         otmp->owt = weight(otmp);
@@ -1659,7 +1659,7 @@ register struct obj *otmp;
     if (otmp->lamplit)
         old_light = arti_light_radius(otmp);
     otmp->blessed = 0;
-    if (carried(otmp) && confers_luck(otmp))
+    if (carried(otmp) && (confers_luck(otmp) || confers_unluck(otmp)))
         set_moreluck();
     else if (Is_weight_changing_bag(otmp))
         otmp->owt = weight(otmp);
@@ -1690,7 +1690,7 @@ register struct obj *otmp;
 		if (otmp == uwep && bimanual(uwep))
 			reset_remarm();
 		/* some cursed items need immediate updating */
-		if (carried(otmp) && confers_luck(otmp)) {
+		if (carried(otmp) && (confers_luck(otmp) || confers_unluck(otmp))) {
 			set_moreluck();
 		}
 		else if (Is_weight_changing_bag(otmp)) {
@@ -1721,7 +1721,7 @@ register struct obj *otmp;
     if (otmp->lamplit)
         old_light = arti_light_radius(otmp);
     otmp->cursed = 0;
-    if (carried(otmp) && confers_luck(otmp))
+    if (carried(otmp) && (confers_luck(otmp) || confers_unluck(otmp)))
         set_moreluck();
     else if (Is_weight_changing_bag(otmp))
         otmp->owt = weight(otmp);

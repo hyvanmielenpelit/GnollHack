@@ -866,6 +866,182 @@ struct obj *obj;
     }
 }
 
+void
+update_all_character_properties(otmp)
+struct obj* otmp; /* object to be identified if any state change happens */
+{
+	boolean state_change_detected = FALSE;
+	boolean was_flying = Flying;
+	boolean was_levitating = Levitation;
+	boolean was_invisible = Invis;
+	boolean was_blind = Levitation;
+	boolean saw_invisible = See_invisible;
+	boolean blocked_invisibility = Blocks_Invisibility;
+	boolean had_hallucination = Hallucination;
+	boolean was_telepathic = Telepat;
+	boolean was_blind_telepathic = Blind_telepat;
+	boolean had_magical_breathing = Magical_breathing;
+	boolean had_warning = Warning;
+
+	update_extrinsics();
+	updateabon();
+	updatemaxen();
+	updatemaxhp();
+
+
+	/* PROPERTY STATE TRANSITIONS */
+	/* Levitation and flying */
+	if ((was_flying || was_levitating) && !Flying && !Levitation)
+	{
+		state_change_detected = TRUE;
+		if(was_levitating)
+			float_down(0, 0);
+		else
+			pline("You stop flying%s.", !Is_airlevel(&u.uz) ? " and land down" : "");
+	}
+	else if (!(was_flying || was_levitating) && (Levitation || Flying))
+	{
+		float_vs_flight();
+		state_change_detected = TRUE;
+		if (Levitation)
+		{
+			float_up();
+			spoteffects(FALSE);
+		}
+		else
+		{
+			You("start flying.");
+		}
+	}
+
+
+	/* Hallucination */
+	if (Hallucination && !had_hallucination)
+	{
+		state_change_detected = TRUE;
+		pline("Oh wow! Everything %s so cosmic!", (!Blind) ? "looks" : "feels");
+	}
+	else if (!Hallucination && had_hallucination)
+	{
+		state_change_detected = TRUE;
+		eatmupdate();
+		if (u.uswallow) {
+			swallowed(0); /* redraw swallow display */
+		}
+		else {
+			/* The see_* routines should be called *before* the pline. */
+			see_monsters();
+			see_objects();
+			see_traps();
+		}
+
+		update_inventory();
+		context.botl = TRUE;
+		pline("Everything %s SO boring now.", (!Blind) ? "looks" : "feels");
+	}
+
+
+	/* Invisibility */
+	if (!Blind)
+	{
+		if (See_invisible && !saw_invisible)
+		{
+			/* can now see invisible monsters */
+			set_mimic_blocking(); /* do special mimic handling */
+			see_monsters();
+
+			if (Invis)
+			{
+				state_change_detected = TRUE;
+				if (was_invisible)
+				{
+					newsym(u.ux, u.uy);
+					pline("Suddenly you are transparent, but there!");
+				}
+				else
+				{
+					/* No change in symbol */
+					self_invis_message();
+				}
+			}
+		}
+		else if (!See_invisible && saw_invisible)
+		{
+			set_mimic_blocking(); /* do special mimic handling */
+			see_monsters();
+
+			if (Invis)
+			{
+				state_change_detected = TRUE;
+				newsym(u.ux, u.uy);
+				pline("Suddenly you cannot see yourself.");
+			}
+		}
+		else if (Blocks_Invisibility && !blocked_invisibility && !Invis && was_invisible)
+		{
+			state_change_detected = TRUE;
+			newsym(u.ux, u.uy);
+			You("can %s!", See_invisible ? "no longer see through yourself"
+				: "see yourself");
+		}
+		else if (!Blocks_Invisibility && blocked_invisibility && Invis && !was_invisible)
+		{
+			state_change_detected = TRUE;
+			newsym(u.ux, u.uy);
+			You("can %s.", See_invisible ? "see through yourself"
+				: "no longer see yourself");
+		}
+		else if (Invis && !was_invisible)
+		{
+			state_change_detected = TRUE;
+			newsym(u.ux, u.uy);
+			self_invis_message();
+		}
+		else if (!Invis && was_invisible)
+		{
+			state_change_detected = TRUE;
+			newsym(u.ux, u.uy);
+			Your("body seems to unfade%s.",
+				See_invisible ? " completely" : "..");
+		}
+	}
+
+
+	/* Telepathy, warning and blindness */
+	if ((Telepat && !was_telepathic)
+		|| (!Telepat && was_telepathic)
+		|| (Blind_telepat && !was_blind_telepathic)
+		|| (!Blind_telepat && was_blind_telepathic)
+		|| (Warning && !had_warning)
+		|| (!Warning && had_warning)
+		|| (Blind && !was_blind)
+		|| (!Blind && was_blind)
+		)
+	{
+		see_monsters();
+	}
+
+	/* Magical breathing*/
+	if(!Magical_breathing || had_magical_breathing)
+	{
+		if (Underwater) 
+		{
+			if (!breathless(youmonst.data) && !amphibious(youmonst.data) && !Swimming) 
+			{
+				state_change_detected = TRUE;
+				You("suddenly inhale an unhealthy amount of %s!",
+					hliquid("water"));
+				(void)drown();
+			}
+		}
+	}
+
+	if (otmp && state_change_detected)
+	{
+		makeknown(otmp->otyp);
+	}
+}
+
 /*
  * Adjust hero intrinsics as if this object was being added to the hero's
  * inventory.  Called _after_ the object has been added to the hero's
@@ -879,16 +1055,7 @@ void
 addinv_core2(obj)
 struct obj *obj;
 {
-    if (confers_luck(obj)) {
-        /* new luckstone must be in inventory by this point
-         * for correct calculation */
-        set_moreluck();
-    }
-
-	update_extrinsics();
-	updateabon();
-	updatemaxen();
-	updatemaxhp();
+	update_all_character_properties(obj);
 }
 
 /*
@@ -1189,18 +1356,13 @@ struct obj *obj;
         set_artifact_intrinsic(obj, 0, W_ART);
     }
 
-	update_extrinsics();
-	updateabon();
-	updatemaxen();
-	updatemaxhp();
+	if (objects[obj->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED) {
+		curse(obj);
+	}
 
-    if (objects[obj->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED) {
-        curse(obj);
-    } 
-	if (confers_luck(obj) || confers_unluck(obj)) {
-        set_moreluck();
-        context.botl = 1;
-    } else if (obj->otyp == FIGURINE && obj->timed) {
+	update_all_character_properties(obj);
+
+	if (obj->otyp == FIGURINE && obj->timed) {
         (void) stop_timer(FIG_TRANSFORM, obj_to_any(obj));
     }
 }

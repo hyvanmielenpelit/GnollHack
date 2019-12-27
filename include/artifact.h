@@ -10,7 +10,7 @@
 #define SPFX_NOGEN 0x00000001L  /* item is special, bequeathed by gods */
 #define SPFX_RESTR 0x00000002L  /* item is restricted - can't be named */
 #define SPFX_INTEL 0x00000004L  /* item is self-willed - intelligent */
-#define SPFX_SPEAK 0x00000008L  /* item can speak (not implemented) */
+#define SPFX_SPEAK 0x00000008L  /* item can speak (finally implemented) */
 #define SPFX_SEEK 0x00000010L   /* item helps you search for things */
 #define SPFX_WARN 0x00000020L   /* item warns you of danger */
 #define SPFX_ATTK 0x00000040L   /* item has a special attack (attk) */
@@ -44,6 +44,8 @@
 #define SPFX_FAMOUS 0x10000000L /* Name is always known */
 #define SPFX_NAME_KNOWN_WHEN_PICKED_UP 0x20000000L /* Ditto */
 #define SPFX_NAME_KNOWN_WHEN_WORN_OR_WIELDED 0x40000000L /* Ditto */
+
+#define SPFX_ONE_RING 0x80000000L /* Gives aggravate monster and brings bad luck */
 
 struct artifact {
     short otyp;

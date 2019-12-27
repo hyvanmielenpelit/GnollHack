@@ -130,6 +130,7 @@ struct obj {
     long owornmask;
 	int cooldownleft;	   /* item cooldown left before it can be used again*/
 	int detectioncount;    /* monsters detected for WARN_ORC and other similar properties */
+	boolean invokeon;      /* the object's / artifact's invoked ability is on */
 	struct oextra *oextra; /* pointer to oextra struct */
 };
 

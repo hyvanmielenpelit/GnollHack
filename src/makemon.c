@@ -519,7 +519,29 @@ register struct monst *mtmp;
                 (void) mongets(mtmp, ELVEN_MITHRIL_COAT);
             if (!rn2(10))
                 (void) mongets(mtmp, DWARVISH_CLOAK);
-        } else if (is_dwarf(ptr)) {
+			if (!rn2(100))
+			{
+				int ringtype = RIN_SUPREME_POWER;
+				int artifacttype = ART_ONE_RING;
+
+				otmp = mksobj(ringtype, FALSE, FALSE, FALSE);
+
+				if (otmp)
+				{
+					/* try to make it special */
+					otmp = oname(otmp, artiname(artifacttype));
+					if (otmp->oartifact)
+					{
+						(void)mpickobj(mtmp, otmp);
+					}
+					else
+					{
+						/* free object */
+						obfree(otmp, (struct obj*) 0);
+					}
+				}
+			}
+		} else if (is_dwarf(ptr)) {
             if (rn2(7))
                 (void) mongets(mtmp, DWARVISH_CLOAK);
             if (rn2(7))
@@ -1048,13 +1070,34 @@ register struct monst *mtmp;
 		break;
 	case S_WRAITH:
 		if (ptr == &mons[PM_NAZGUL]) {
-			otmp = mksobj(MORGUL_BLADE, FALSE, FALSE, FALSE);
-			curse(otmp);
-			(void)mpickobj(mtmp, otmp);
+			if (!rn2(20))
+			{
+				int ringtype = RIN_SUPREME_POWER;
+				int artifacttype = ART_ONE_RING;
 
-			otmp = mksobj(RIN_INVISIBILITY, FALSE, FALSE, FALSE);
-			curse(otmp);
-			(void)mpickobj(mtmp, otmp);
+				otmp = mksobj(ringtype, FALSE, FALSE, FALSE);
+
+				if (otmp)
+				{
+					/* try to make it special */
+					otmp = oname(otmp, artiname(artifacttype));
+					if (otmp->oartifact)
+					{
+						(void)mpickobj(mtmp, otmp);
+					}
+					else
+					{
+						/* free object */
+						obfree(otmp, (struct obj*) 0);
+					}
+				}
+			}
+			else if (!carrying(RIN_SUPREME_POWER))
+			{
+				otmp = mksobj(RIN_INVISIBILITY, FALSE, FALSE, FALSE);
+				curse(otmp);
+				(void)mpickobj(mtmp, otmp);
+			}
 		}
 		break;
 	case S_VAMPIRE:

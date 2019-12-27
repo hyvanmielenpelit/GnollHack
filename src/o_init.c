@@ -266,6 +266,9 @@ int *lo_p, *hi_p; /* output: range that item belongs among */
         *hi_p = i - 1;
         break;
 	case RING_CLASS:
+		if (otyp >= RIN_ADORNMENT && otyp <= RIN_PROTECTION_FROM_SHAPE_CHANGERS)
+			*lo_p = RIN_ADORNMENT, * hi_p = RIN_PROTECTION_FROM_SHAPE_CHANGERS;
+		break;
     case WAND_CLASS:
 	case REAGENT_CLASS:
 	case VENOM_CLASS:
@@ -290,7 +293,7 @@ shuffle_all()
 {
     /* entire classes; obj_shuffle_range() handles their exceptions */
     static char shuffle_classes[] = {
-        AMULET_CLASS, POTION_CLASS, RING_CLASS,  SCROLL_CLASS,
+        AMULET_CLASS, POTION_CLASS, SCROLL_CLASS,
         SPBOOK_CLASS, WAND_CLASS, VENOM_CLASS,  
     };
     /* armor sub-class type ranges (one item from each group) */
@@ -298,7 +301,9 @@ shuffle_all()
         HELMET, LEATHER_GLOVES, SHIRT_OF_UNCONTROLLABLE_LAUGHTER, CLOAK_OF_PROTECTION, SPEED_BOOTS, SWORD_OF_DEFENSE, STAFF_OF_THE_MAGI
     };
 	static short shuffle_types_with_material[] = {
-		 ROBE, LEATHER_BRACERS, NOSE_RING_OF_BULL_STRENGTH, IOUN_STONE_OF_PROTECTION, LENSES, GOGGLES_OF_NIGHT, LEATHER_BELT, DUCAL_CROWN, CORNUTHAUM, CHAMPIGNON
+		 ROBE, LEATHER_BRACERS, NOSE_RING_OF_BULL_STRENGTH, IOUN_STONE_OF_PROTECTION, 
+		 LENSES, GOGGLES_OF_NIGHT, LEATHER_BELT, DUCAL_CROWN, CORNUTHAUM, CHAMPIGNON, 
+		 RIN_ADORNMENT
 	};
 	int first, last, idx;
 
