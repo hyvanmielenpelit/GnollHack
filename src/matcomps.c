@@ -573,6 +573,17 @@ struct materialcomponentlist matlists[] =
 		}
 	},
 
+	{ SPE_CLAIRVOYANCE,
+	"Panther cap, sporal powder",
+	STRANGE_OBJECT,
+	3,
+		{
+			{PANTHER_CAP, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
+			{HEAP_OF_SPORAL_POWDER, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
+			NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
+		}
+	},
+
 	{ SPE_DETECT_TRAPS,
 	"Bat guano",
 	STRANGE_OBJECT,
@@ -1108,7 +1119,7 @@ struct materialcomponentlist matlists[] =
 	{ SPE_CURE_BLINDNESS,
 	"Ginseng root",
 	STRANGE_OBJECT,
-	5,
+	3,
 		{
 			{GINSENG_ROOT, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
 			NO_MATCOMP,

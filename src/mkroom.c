@@ -891,27 +891,27 @@ mkgarden()
 						break;
 					case 7:
 						itemtype = CHAMPIGNON;
-						quan = rnd(3);
+						quan = rnd(2);
 						break;
 					case 8:
 						itemtype = PENNY_BUN;
-						quan = rnd(3);
+						quan = rnd(2);
 						break;
 					case 9:
 						itemtype = CHANTERELLE;
-						quan = rnd(3);
+						quan = rnd(2);
 						break;
 					case 10:
 						itemtype = DEATH_CAP;
-						quan = rnd(3);
+						quan = rnd(2);
 						break;
 					case 11:
 						itemtype = FLY_AGARIS;
-						quan = rnd(3);
+						quan = rnd(2);
 						break;
 					case 12:
 						itemtype = MAGIC_MUSHROOM;
-						quan = rnd(3);
+						quan = rnd(2);
 						break;
 					case 13:
 						itemtype = HEALING_MUSHROOM;

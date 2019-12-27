@@ -46,7 +46,7 @@ LOOP [1 + 1d2] {
             OBJECT: ('%', "panther cap"), random
           }
         } ELSE {
-          IF [50%] {
+          IF [40%] {
             OBJECT: ('%', "death cap"), random
           } ELSE {
             OBJECT: ('%', "magic mushroom"), random

@@ -178,7 +178,7 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
 		PHYS(0, ART_DOUBLE_DAMAGE), NO_DFNS, NO_CARY,
       0, A_LAWFUL, PM_SAMURAI, NON_PM, 1200L, NO_COLOR),
 
-    A("Sunsword", "shining long sword", LONG_SWORD, LONG_SWORD, (SPFX_RESTR | SPFX_DFLAG2), 0, M2_UNDEAD | M2_DEMON,
+    A("Sunsword", "glowing runed long sword", LONG_SWORD, LONG_SWORD, (SPFX_RESTR | SPFX_DFLAG2), 0, M2_UNDEAD | M2_DEMON,
       PHYS(5, ART_QUADRUPLE_DAMAGE), DFNS(AD_BLND), NO_CARY, 0, A_LAWFUL, NON_PM, NON_PM, 1500L,
       NO_COLOR),
 

@@ -1572,22 +1572,18 @@ register struct trobj *trop;
 		{
 			if (otyp == LEATHER_BAG)
 			{
-				/* Add one ginseng */
-				struct obj* otmp = (struct obj*)0;
-				otmp = mksobj(GINSENG_ROOT, FALSE, FALSE, TRUE);
-				otmp->known = 1;
-				otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
-				(void)add_to_container(obj, otmp);
+				/* Add ginseng roots */
+				(void)add_to_container(obj, mksobj(GINSENG_ROOT, FALSE, FALSE, TRUE));
+				(void)add_to_container(obj, mksobj(GINSENG_ROOT, FALSE, FALSE, TRUE));
+				(void)add_to_container(obj, mksobj(GINSENG_ROOT, TRUE, FALSE, TRUE));
 
-				int n = 1 + rn2(4); //1...3
+				int n = rnd(3); //1...3
 				for (int i = 0; i < n; i++)
 				{
 					struct obj* otmp = mkobj(REAGENT_CLASS, FALSE, TRUE);
 					if (otmp)
 					{
 						knows_object(otmp->otyp);
-						otmp->known = 1;
-						otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
 						(void)add_to_container(obj, otmp);
 					}
 				}
