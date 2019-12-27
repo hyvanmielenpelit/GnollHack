@@ -1323,6 +1323,7 @@ boolean makingboxcontents;
     if (objects[otyp].oc_unique && !otmp->oartifact)
         otmp = mk_artifact(otmp, (aligntyp) A_NONE);
     otmp->owt = weight(otmp);
+
     return otmp;
 }
 

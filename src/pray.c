@@ -1837,7 +1837,8 @@ dosacrifice()
                     unrestrict_weapon_skill(weapon_skill_type(otmp));
                     if (!Hallucination && !Blind) {
                         otmp->dknown = 1;
-                        makeknown(otmp->otyp);
+						otmp->nknown = 1;
+						makeknown(otmp->otyp);
                         discover_artifact(otmp->oartifact);
                     }
                     return 1;

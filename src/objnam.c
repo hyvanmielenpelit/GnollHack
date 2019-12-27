@@ -397,12 +397,14 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     register struct objclass *ocl = &objects[typ];
 	int nn = obj->oartifact ? (obj->known || obj->nknown) : ocl->oc_name_known;
 	int omndx = obj->corpsenm;
-    const char *actualn = OBJ_NAME(*ocl);
+    const char *actualn = (obj->oartifact && artilist[obj->oartifact].desc && strcmp(artilist[obj->oartifact].desc, "")) ? artilist[obj->oartifact].desc : 
+		OBJ_NAME(*ocl);
 	const char *dn = (obj->oartifact && artilist[obj->oartifact].desc && strcmp(artilist[obj->oartifact].desc, "")) ? artilist[obj->oartifact].desc : 
 		OBJ_DESCR(*ocl);
     const char *un = ocl->oc_uname;
 	boolean pluralize = (obj->quan != 1L) && !(cxn_flags & CXN_SINGULAR);
     boolean known, dknown, bknown, nknown;
+	boolean makeThelower = FALSE;
 
     buf = nextobuf() + PREFIX; /* leave room for "17 -3 " */
     if (Role_if(PM_SAMURAI) && Japanese_item_name(typ))
@@ -434,6 +436,10 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         dknown = obj->dknown;
         bknown = obj->bknown;
 		nknown = obj->nknown;
+	}
+	if (is_quest_artifact(obj))
+	{
+		known = nknown = 1;
 	}
 
     if (obj_is_pname(obj))
@@ -735,10 +741,15 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         Sprintf(eos(buf), " with text \"%s\"", tshirt_text(obj, tmpbuf));
     }
 
-	if (has_oname(obj) && nknown && dknown) {
+	char anamebuf[BUFSZ] = "";
+	if (has_oname(obj) && (nknown || known) && dknown) {
         Strcat(buf, " named ");
- nameit:
-        Strcat(buf, ONAME(obj));
+		makeThelower = TRUE;
+	nameit:
+		strcpy(anamebuf, ONAME(obj));
+		if (makeThelower && !strncmpi(anamebuf, "The ", 4))
+			*anamebuf = lowc(*anamebuf);
+        Strcat(buf, anamebuf);
     }
 	else if (has_uoname(obj))
 	{

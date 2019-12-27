@@ -216,7 +216,7 @@ STAIR:(19,10),up
 # Non diggable walls
 NON_DIGGABLE:(00,00,75,19)
 # Objects
-OBJECT:(')',"bow"),(37,10),blessed,0,name:"The Longbow of Diana"
+OBJECT:(')',"long bow"),(37,10),blessed,0,name:"The Longbow of Diana"
 OBJECT:('(',"chest"),(37,10)
 OBJECT:random,(36,09)
 OBJECT:random,(36,10)

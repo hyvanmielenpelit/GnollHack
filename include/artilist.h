@@ -122,19 +122,19 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
       PHYS(5, 20), NO_DFNS, NO_CARY, 0, A_LAWFUL, NON_PM, NON_PM, 2500L,
       NO_COLOR),
 
-    A("Werebane", "ornamental runed silver saber", SABER_OF_LYCANTHROPE_SLAYING, SILVER_SABER, (SPFX_RESTR | SPFX_DFLAG2), 0, M2_WERE,
+    A("Werebane", "runed silver saber", SABER_OF_LYCANTHROPE_SLAYING, SILVER_SABER, (SPFX_RESTR | SPFX_DFLAG2), 0, M2_WERE,
       PHYS(5, 20), DFNS(AD_WERE), NO_CARY, 0, A_NONE, NON_PM, NON_PM, 1500L,
       NO_COLOR),
 
-    A("Grayswandir", "diamond-encrusted runed silver saber", SILVER_SABER, SILVER_SABER, (SPFX_RESTR | SPFX_HALRES), 0, 0,
+    A("Grayswandir", "diamond-encrusted silver saber", SILVER_SABER, SILVER_SABER, (SPFX_RESTR | SPFX_HALRES), 0, 0,
       PHYS(5, ART_DOUBLE_DAMAGE), NO_DFNS, NO_CARY, 0, A_LAWFUL, NON_PM, NON_PM, 8000L,
       NO_COLOR),
 
-    A("Giantslayer", "ruby-encrusted runed long sword", SWORD_OF_GIANT_SLAYING, LONG_SWORD, (SPFX_RESTR | SPFX_DFLAG2), 0, M2_GIANT,
+    A("Giantslayer", "ruby-encrusted long sword", SWORD_OF_GIANT_SLAYING, LONG_SWORD, (SPFX_RESTR | SPFX_DFLAG2), 0, M2_GIANT,
       PHYS(5, 20), NO_DFNS, NO_CARY, 0, A_NEUTRAL, NON_PM, NON_PM, 500L,
       NO_COLOR),
 
-    A("Ogresmasher", "gold-hilted runed war hammer", WAR_HAMMER_OF_OGRE_SLAYING, WAR_HAMMER, (SPFX_RESTR | SPFX_DCLAS), 0, S_OGRE,
+    A("Ogresmasher", "gold-hilted war hammer", WAR_HAMMER_OF_OGRE_SLAYING, WAR_HAMMER, (SPFX_RESTR | SPFX_DCLAS), 0, S_OGRE,
       PHYS(5, 20), NO_DFNS, NO_CARY, 0, A_NONE, NON_PM, NON_PM, 500L,
       NO_COLOR),
 
@@ -142,7 +142,7 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
       PHYS(5, 20), NO_DFNS, NO_CARY, 0, A_NONE, NON_PM, NON_PM, 500L,
       NO_COLOR),
 
-	A("Gnollbane", "ruby-hilted runed war hammer", WAR_HAMMER_OF_GNOLL_SLAYING, WAR_HAMMER, (SPFX_RESTR | SPFX_DFLAG2), 0, M2_GNOLL,
+	A("Gnollbane", "ruby-hilted war hammer", WAR_HAMMER_OF_GNOLL_SLAYING, WAR_HAMMER, (SPFX_RESTR | SPFX_DFLAG2), 0, M2_GNOLL,
       PHYS(5, 20), DFNS(AD_ELEC), NO_CARY, 0, A_LAWFUL, NON_PM, NON_PM, 500L,
       NO_COLOR),
 
@@ -150,7 +150,7 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
       PHYS(5, 5), NO_DFNS, NO_CARY, 0, A_NONE, NON_PM, PM_GNOLL, 2000L,
       NO_COLOR),
 
-	A("Howling Flail", "runed flail", RUNED_FLAIL, FLAIL, (SPFX_RESTR | SPFX_LUCK), 0, 0,
+	A("Howling Flail", "gold-hilted runed flail", RUNED_FLAIL, FLAIL, (SPFX_RESTR | SPFX_LUCK), 0, 0,
 		PHYS(5, 10), NO_DFNS, NO_CARY, 0, A_CHAOTIC, NON_PM, PM_GNOLL, 6000L,
 		NO_COLOR),
 
@@ -163,7 +163,7 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
      *      2) doesn't give unusual message for 2-headed monsters (but
      *      allowing those at all causes more problems than worth the effort).
      */
-    A("Vorpal Blade", "sharp runed long sword", LONG_SWORD, LONG_SWORD, (SPFX_RESTR | SPFX_BEHEAD), 0, 0,
+    A("Vorpal Blade", "immaculate runed long sword", LONG_SWORD, LONG_SWORD, (SPFX_RESTR | SPFX_BEHEAD), 0, 0,
       PHYS(5, 1), NO_DFNS, NO_CARY, 0, A_NEUTRAL, NON_PM, NON_PM, 4000L,
       NO_COLOR),
     /*
@@ -174,11 +174,11 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
      *                      --Koko, Lord high executioner of Titipu
      *                        (From Sir W.S. Gilbert's "The Mikado")
      */
-    A("Snickersnee", "runed katana", KATANA, KATANA, SPFX_RESTR, 0, 0,
+    A("Snickersnee", "gold-hilted runed katana", KATANA, KATANA, SPFX_RESTR, 0, 0,
 		PHYS(0, ART_DOUBLE_DAMAGE), NO_DFNS, NO_CARY,
       0, A_LAWFUL, PM_SAMURAI, NON_PM, 1200L, NO_COLOR),
 
-    A("Sunsword", "shining runed long sword", LONG_SWORD, LONG_SWORD, (SPFX_RESTR | SPFX_DFLAG2), 0, M2_UNDEAD | M2_DEMON,
+    A("Sunsword", "shining long sword", LONG_SWORD, LONG_SWORD, (SPFX_RESTR | SPFX_DFLAG2), 0, M2_UNDEAD | M2_DEMON,
       PHYS(5, ART_QUADRUPLE_DAMAGE), DFNS(AD_BLND), NO_CARY, 0, A_LAWFUL, NON_PM, NON_PM, 1500L,
       NO_COLOR),
 
@@ -186,7 +186,7 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
      *      The artifacts for the quest dungeon, all self-willed.
      */
 
-    A("The Orb of Detection", "gold-framed runed crystal ball", CRYSTAL_BALL, CRYSTAL_BALL,
+    A("The Orb of Detection", "runed crystal ball", CRYSTAL_BALL, CRYSTAL_BALL,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL), (SPFX_ESP | SPFX_HSPDAM), 0,
       NO_ATTK, NO_DFNS, CARY(AD_MAGM), INVISIBILITY, A_LAWFUL, PM_ARCHEOLOGIST,
       NON_PM, 2500L, NO_COLOR),
@@ -197,7 +197,7 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
       PHYS(5, ART_DOUBLE_DAMAGE), NO_DFNS, NO_CARY, LEVITATION, A_NEUTRAL, PM_BARBARIAN,
       NON_PM, 2500L, NO_COLOR),
 
-    A("The Sceptre of Might", "diamond-encrusted runed sceptre", MACE, MACE,
+    A("The Sceptre of Might", "diamond-encrusted sceptre", MACE, MACE,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_DALIGN), 0, 0, 
 		PHYS(5, ART_DOUBLE_DAMAGE),
       DFNS(AD_MAGM), NO_CARY, CONFLICT, A_LAWFUL, PM_CAVEMAN, NON_PM, 2500L,
@@ -211,28 +211,28 @@ A("The Palantir of Westernesse",        CRYSTAL_BALL, CRYSTAL_BALL,
         TAMING,         A_CHAOTIC, NON_PM , PM_ELF, 8000L, NO_COLOR ),
 #endif
 
-    A("The Staff of Aesculapius", "serpent-entwined runed quarterstaff", STAFF_OF_LIFE, QUARTERSTAFF,
+    A("The Staff of Aesculapius", "serpent-entwined quarterstaff", STAFF_OF_LIFE, QUARTERSTAFF,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_ATTK | SPFX_INTEL | SPFX_DRLI
        | SPFX_REGEN),
       0, 0, DRLI(0, 0), DRLI(0, 0), NO_CARY, HEALING, A_NEUTRAL, PM_HEALER,
       NON_PM, 5000L, NO_COLOR),
 
-    A("The Magic Mirror of Merlin", "ornamental runed looking glass", MAGIC_MIRROR, MIRROR,
+    A("The Magic Mirror of Merlin", "runed looking glass", MAGIC_MIRROR, MIRROR,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_SPEAK), SPFX_ESP, 0,
       NO_ATTK, NO_DFNS, CARY(AD_MAGM), 0, A_LAWFUL, PM_KNIGHT, NON_PM, 1500L,
       NO_COLOR),
 
-    A("The Eyes of the Overworld", "ornamental runed eyeglasses", LENSES, LENSES,
+    A("The Eyes of the Overworld", "runed eyeglasses", LENSES, LENSES,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_XRAY), 0, 0, NO_ATTK,
       DFNS(AD_MAGM), NO_CARY, ENLIGHTENING, A_NEUTRAL, PM_MONK, NON_PM,
       2500L, NO_COLOR),
 
-    A("The Mitre of Holiness", "diamond-encrusted runed helmet", HELM_OF_BRILLIANCE, HELMET,
+    A("The Mitre of Holiness", "diamond-encrusted helmet", HELM_OF_BRILLIANCE, HELMET,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_DFLAG2 | SPFX_INTEL | SPFX_PROTECT), 0,
       M2_UNDEAD, NO_ATTK, NO_DFNS, CARY(AD_FIRE), ENERGY_BOOST, A_LAWFUL,
       PM_PRIEST, NON_PM, 2000L, NO_COLOR),
 
-    A("The Longbow of Diana", "ornamental runed long bow", LONG_BOW, LONG_BOW,
+    A("The Longbow of Diana", "ornamental long bow", LONG_BOW, LONG_BOW,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_REFLECT), SPFX_ESP, 0,
       PHYS(10, ART_DOUBLE_DAMAGE), NO_DFNS, NO_CARY, CREATE_AMMO, A_CHAOTIC, PM_RANGER, NON_PM,
       4000L, NO_COLOR),
@@ -240,28 +240,28 @@ A("The Palantir of Westernesse",        CRYSTAL_BALL, CRYSTAL_BALL,
     /* MKoT has an additional carry property if the Key is not cursed (for
        rogues) or blessed (for non-rogues):  #untrap of doors and chests
        will always find any traps and disarming those will always succeed */
-    A("The Master Key of Thievery", "ornamental runed key", SKELETON_KEY, SKELETON_KEY,
+    A("The Master Key of Thievery", "ornamental key", SKELETON_KEY, SKELETON_KEY,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_SPEAK),
       (SPFX_WARN | SPFX_TCTRL | SPFX_HPHDAM), 0, NO_ATTK, NO_DFNS, NO_CARY,
       UNTRAP, A_CHAOTIC, PM_ROGUE, NON_PM, 3500L, NO_COLOR),
 
-    A("The Tsurugi of Muramasa", "ornamental runed tsurugi", TSURUGI, TSURUGI,
+    A("The Tsurugi of Muramasa", "runed tsurugi", TSURUGI, TSURUGI,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_BEHEAD | SPFX_LUCK
        | SPFX_PROTECT),
       0, 0, PHYS(0, 8), NO_DFNS, NO_CARY, 0, A_LAWFUL, PM_SAMURAI, NON_PM,
       4500L, NO_COLOR),
 
-    A("The Platinum Yendorian Express Card", "ornamental platinum credit card", CREDIT_CARD, CREDIT_CARD,
+    A("The Platinum Yendorian Express Card", "black credit card", CREDIT_CARD, CREDIT_CARD,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_DEFN),
       (SPFX_ESP | SPFX_HSPDAM), 0, NO_ATTK, NO_DFNS, CARY(AD_MAGM),
       CHARGE_OBJ, A_NEUTRAL, PM_TOURIST, NON_PM, 7000L, NO_COLOR),
 
-    A("The Orb of Fate", "ornamental runed crystal ball", CRYSTAL_BALL, CRYSTAL_BALL,
+    A("The Orb of Fate", "ornamental crystal ball", CRYSTAL_BALL, CRYSTAL_BALL,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_LUCK),
       (SPFX_WARN | SPFX_HSPDAM | SPFX_HPHDAM), 0, NO_ATTK, NO_DFNS, NO_CARY,
       LEV_TELE, A_NEUTRAL, PM_VALKYRIE, NON_PM, 3500L, NO_COLOR),
 
-    A("The Eye of the Aethiopica", "runed eye-shaped amulet", AMULET_OF_ESP, AMULET,
+    A("The Eye of the Aethiopica", "eye-shaped amulet", AMULET_OF_ESP, AMULET,
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL), (SPFX_EREGEN | SPFX_HSPDAM), 0,
       NO_ATTK, DFNS(AD_MAGM), NO_CARY, CREATE_PORTAL, A_NEUTRAL, PM_WIZARD,
       NON_PM, 4000L, NO_COLOR),
