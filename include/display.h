@@ -372,54 +372,9 @@
                               : urace.malenum)
 
 /*
- * Change the given glyph into it's given type.  Note:
- *      1) Pets, detected, and ridden monsters are animals and are converted
- *         to the proper monster number.
- *      2) Bodies are all mapped into the generic CORPSE object
- *      3) If handed a glyph out of range for the type, these functions
- *         will return NO_GLYPH (see exception below)
- *      4) glyph_to_swallow() does not return a showsyms[] index, but an
- *         offset from the first swallow symbol.  If handed something
- *         out of range, it will return zero (for lack of anything better
- *         to return).
- */
-#define glyph_to_mon(glyph) \
-    (glyph_is_normal_monster(glyph)                             \
-         ? ((glyph) - GLYPH_MON_OFF)                            \
-         : glyph_is_pet(glyph)                                  \
-               ? ((glyph) - GLYPH_PET_OFF)                      \
-               : glyph_is_detected_monster(glyph)               \
-                     ? ((glyph) - GLYPH_DETECT_OFF)             \
-                     : glyph_is_ridden_monster(glyph)           \
-                           ? ((glyph) - GLYPH_RIDDEN_OFF)       \
-                           : glyph_is_statue(glyph)             \
-                                 ? ((glyph) - GLYPH_STATUE_OFF) \
-                                 : NO_GLYPH)
-#define glyph_to_obj(glyph) \
-    (glyph_is_body(glyph)                        \
-         ? CORPSE                                \
-         : glyph_is_statue(glyph)                \
-               ? STATUE                          \
-               : glyph_is_normal_object(glyph)   \
-                     ? ((glyph) - GLYPH_OBJ_OFF) \
-                     : NO_GLYPH)
-#define glyph_to_trap(glyph) \
-    (glyph_is_trap(glyph) ? ((int) defsym_to_trap((glyph) - GLYPH_CMAP_OFF)) \
-                          : NO_GLYPH)
-#define glyph_to_cmap(glyph) \
-    (glyph_is_cmap(glyph) ? ((glyph) - GLYPH_CMAP_OFF) : NO_GLYPH)
-#define glyph_to_swallow(glyph) \
-    (glyph_is_swallow(glyph) ? (((glyph) - GLYPH_SWALLOW_OFF) & 0x7) : 0)
-#define glyph_to_warning(glyph) \
-    (glyph_is_warning(glyph) ? ((glyph) - GLYPH_WARNING_OFF) : NO_GLYPH);
-
-/*
  * Return true if the given glyph is what we want.  Note that bodies are
  * considered objects.
  */
-#define glyph_is_monster(glyph)                            \
-    (glyph_is_normal_monster(glyph) || glyph_is_pet(glyph) \
-     || glyph_is_ridden_monster(glyph) || glyph_is_detected_monster(glyph))
 #define glyph_is_normal_monster(glyph) \
     ((glyph) >= GLYPH_MON_OFF && (glyph) < (GLYPH_MON_OFF + NUMMONS))
 #define glyph_is_pet(glyph) \
@@ -439,7 +394,7 @@
     ((glyph) >= GLYPH_OBJ_OFF && (glyph) < (GLYPH_OBJ_OFF + NUM_OBJECTS))
 #define glyph_is_object(glyph)                               \
     (glyph_is_normal_object(glyph) || glyph_is_statue(glyph) \
-     || glyph_is_body(glyph))
+     || glyph_is_body(glyph) || glyph_is_artifact(glyph))
 #define glyph_is_trap(glyph)                         \
     ((glyph) >= (GLYPH_CMAP_OFF + trap_to_defsym(1)) \
      && (glyph) < (GLYPH_CMAP_OFF + trap_to_defsym(1) + TRAPNUM))
@@ -451,5 +406,61 @@
 #define glyph_is_warning(glyph)   \
     ((glyph) >= GLYPH_WARNING_OFF \
      && (glyph) < (GLYPH_WARNING_OFF + WARNCOUNT))
+#define glyph_is_monster(glyph)                            \
+    (glyph_is_normal_monster(glyph) || glyph_is_pet(glyph) \
+     || glyph_is_ridden_monster(glyph) || glyph_is_detected_monster(glyph))
+
+ /*
+  * Change the given glyph into it's given type.  Note:
+  *      1) Pets, detected, and ridden monsters are animals and are converted
+  *         to the proper monster number.
+  *      2) Bodies are all mapped into the generic CORPSE object
+  *      3) If handed a glyph out of range for the type, these functions
+  *         will return NO_GLYPH (see exception below)
+  *      4) glyph_to_swallow() does not return a showsyms[] index, but an
+  *         offset from the first swallow symbol.  If handed something
+  *         out of range, it will return zero (for lack of anything better
+  *         to return).
+  */
+#define glyph_to_mon(glyph) \
+    (glyph_is_normal_monster(glyph)                             \
+         ? ((glyph) - GLYPH_MON_OFF)                            \
+         : glyph_is_pet(glyph)                                  \
+               ? ((glyph) - GLYPH_PET_OFF)                      \
+               : glyph_is_detected_monster(glyph)               \
+                     ? ((glyph) - GLYPH_DETECT_OFF)             \
+                     : glyph_is_ridden_monster(glyph)           \
+                           ? ((glyph) - GLYPH_RIDDEN_OFF)       \
+                           : glyph_is_statue(glyph)             \
+                                 ? ((glyph) - GLYPH_STATUE_OFF) \
+                                 : NO_GLYPH)
+
+
+
+#define glyph_is_artifact(glyph) \
+    ((glyph) >= GLYPH_ARTIFACT_OFF && (glyph) < (GLYPH_ARTIFACT_OFF + NROFARTIFACTS))
+#define glyph_to_artifact(glyph) \
+    (glyph_is_artifact(glyph) ? ((glyph) - GLYPH_ARTIFACT_OFF) : NO_GLYPH)
+
+#define glyph_to_trap(glyph) \
+    (glyph_is_trap(glyph) ? ((int) defsym_to_trap((glyph) - GLYPH_CMAP_OFF)) \
+                          : NO_GLYPH)
+#define glyph_to_cmap(glyph) \
+    (glyph_is_cmap(glyph) ? ((glyph) - GLYPH_CMAP_OFF) : NO_GLYPH)
+#define glyph_to_swallow(glyph) \
+    (glyph_is_swallow(glyph) ? (((glyph) - GLYPH_SWALLOW_OFF) & 0x7) : 0)
+#define glyph_to_warning(glyph) \
+    (glyph_is_warning(glyph) ? ((glyph) - GLYPH_WARNING_OFF) : NO_GLYPH);
+
+#define glyph_to_obj(glyph) \
+    (glyph_is_body(glyph)                        \
+         ? CORPSE                                \
+         : glyph_is_statue(glyph)                \
+               ? STATUE                          \
+			 : glyph_is_artifact(glyph)                \
+				   ? artifact_to_obj(glyph_to_artifact(glyph))   \
+				   : glyph_is_normal_object(glyph)   \
+						 ? ((glyph) - GLYPH_OBJ_OFF) \
+						 : NO_GLYPH)
 
 #endif /* DISPLAY_H */

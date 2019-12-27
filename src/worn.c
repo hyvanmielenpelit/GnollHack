@@ -4,6 +4,8 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
+#include "artifact.h"
+#include "artilist.h"
 
 STATIC_DCL void FDECL(m_lose_armor, (struct monst *, struct obj *));
 STATIC_DCL void FDECL(m_dowear_type,
@@ -163,6 +165,13 @@ long mask;
 	updateabon();
 	updatemaxen();
 	updatemaxhp();
+
+	/* Readying a weapon to quiver or swap weapon slot does not trigger artifact name discovery -- JG */
+	if ((mask & (W_WEP | W_WEP2 | W_ARMOR | W_ACCESSORY)) && obj && obj->oartifact && !obj->nknown && (artilist[obj->oartifact].spfx & (SPFX_FAMOUS | SPFX_NAME_KNOWN_WHEN_PICKED_UP | SPFX_NAME_KNOWN_WHEN_WORN_OR_WIELDED)))
+	{
+		pline("As you %s %s, you suddenly become aware that it is named %s!", (mask == W_WEP || (u.twoweap && mask == W_WEP2)) ? "wield" : "wear", the(cxname(obj)), bare_artifactname(obj));
+		obj->nknown = TRUE;
+	}
 
 	/* Note that this does not work for weapons if there is an old weapon, since we do not know whether the change was caused by the old or the new weapon */
 	if ((obj && !oobj) || (oobj && !obj))

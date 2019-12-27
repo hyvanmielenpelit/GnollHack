@@ -394,6 +394,7 @@ E int FDECL(glyph_at, (XCHAR_P, XCHAR_P));
 E void NDECL(set_wall_state);
 E void FDECL(unset_seenv, (struct rm *, int, int, int, int));
 E int FDECL(warning_of, (struct monst *));
+E int FDECL(artifact_to_obj, (int));
 
 /* ### do.c ### */
 

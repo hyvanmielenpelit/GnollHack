@@ -1329,7 +1329,12 @@ register struct obj *obj;
         return;
     }
 
-    Sprintf(qbuf, "What do you want to name %s ",
+	if (has_oname(obj) && obj->nknown) {
+		pline("%s already has a true name.", Yname2(obj));
+		return;
+	}
+
+	Sprintf(qbuf, "What do you want to name %s ",
             is_plural(obj) ? "these" : "this");
     (void) safe_qbuf(qbuf, qbuf, "?", obj, xname, simpleonames, "item");
     getlin(qbuf, buf);

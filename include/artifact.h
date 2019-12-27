@@ -41,6 +41,10 @@
 #define SPFX_REFLECT 0x04000000L /* Reflection */
 #define SPFX_PROTECT 0x08000000L /* Protection */
 
+#define SPFX_FAMOUS 0x10000000L /* Name is always known */
+#define SPFX_NAME_KNOWN_WHEN_PICKED_UP 0x20000000L /* Ditto */
+#define SPFX_NAME_KNOWN_WHEN_WORN_OR_WIELDED 0x40000000L /* Ditto */
+
 struct artifact {
     short otyp;
 	short maskotyp;

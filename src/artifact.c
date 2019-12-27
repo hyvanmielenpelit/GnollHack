@@ -271,6 +271,15 @@ boolean mod;
                 if (otmp->otyp == RIN_INCREASE_DAMAGE)
                     otmp->spe = 0;
                 artiexist[m] = mod;
+				if (otmp->oartifact)
+				{
+					if (artilist[otmp->oartifact].spfx & SPFX_FAMOUS)
+						otmp->nknown = TRUE;
+					if (is_quest_artifact(otmp))
+					{
+						otmp->nknown = TRUE;
+					}
+				}
                 break;
             }
     return;
@@ -694,6 +703,12 @@ struct monst *mon;
 				&& oart->alignment != A_NONE
 				&& (oart->alignment != u.ualign.type
 					|| u.ualign.record < 0));
+
+			if (!obj->nknown && (oart->spfx & (SPFX_FAMOUS | SPFX_NAME_KNOWN_WHEN_PICKED_UP)))
+			{
+				pline("As you touch %s, you suddenly become aware that it is called %s!", the(cxname(obj)), bare_artifactname(obj));
+				obj->nknown = TRUE;
+			}
 		}
 		else if (mon->mnum != PM_WIZARD_OF_YENDOR /*!is_covetous(mon->data)*/ && !is_mplayer(mon->data)) {
 			badclass = self_willed && oart->role != NON_PM

@@ -395,7 +395,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     register char *buf;
     register int typ = ((obj->oartifact && artilist[obj->oartifact].maskotyp != STRANGE_OBJECT) ? artilist[obj->oartifact].maskotyp : obj->otyp);
     register struct objclass *ocl = &objects[typ];
-	int nn = obj->oartifact ? (obj->known || obj->nknown) : ocl->oc_name_known;
+	int nn = obj->oartifact ? obj->nknown : ocl->oc_name_known;
 	int omndx = obj->corpsenm;
     const char *actualn = (obj->oartifact && artilist[obj->oartifact].desc && strcmp(artilist[obj->oartifact].desc, "")) ? artilist[obj->oartifact].desc : 
 		OBJ_NAME(*ocl);
@@ -436,10 +436,6 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         dknown = obj->dknown;
         bknown = obj->bknown;
 		nknown = obj->nknown;
-	}
-	if (is_quest_artifact(obj))
-	{
-		known = nknown = 1;
 	}
 
     if (obj_is_pname(obj))
@@ -742,7 +738,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     }
 
 	char anamebuf[BUFSZ] = "";
-	if (has_oname(obj) && (nknown || known) && dknown) {
+	if (has_oname(obj) && nknown && dknown) {
         Strcat(buf, " named ");
 		makeThelower = TRUE;
 	nameit:

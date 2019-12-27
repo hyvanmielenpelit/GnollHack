@@ -122,6 +122,8 @@
  *                vertical.
  */
 #include "hack.h"
+#include "artifact.h"
+#include "artilist.h"
 
 STATIC_DCL void FDECL(display_monster,
                       (XCHAR_P, XCHAR_P, struct monst *, int, XCHAR_P));
@@ -147,6 +149,15 @@ STATIC_DCL int FDECL(wall_angle, (struct rm *));
 
 #define remember_topology(x, y) (lastseentyp[x][y] = levl[x][y].typ)
 
+int
+artifact_to_obj(artifactid)
+int artifactid;
+{
+	if (artifactid <= 0 || artifactid > NROFARTIFACTS || artifactid == NO_GLYPH)
+		return STRANGE_OBJECT;
+	return (int)artilist[artifactid].otyp;
+
+}
 /*
  * magic_map_background()
  *
