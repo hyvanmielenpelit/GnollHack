@@ -1650,7 +1650,15 @@ int x, y, glyph;
          *  the definition.
          */
 
-        if (glyph >= GLYPH_WARNING_OFF
+		if (glyph >= GLYPH_ARTIFACT_OFF
+			&& glyph < MAX_GLYPH) { /* an artifact */
+			text = "artifact";
+			offset = glyph - GLYPH_ARTIFACT_OFF;
+		} else if (glyph >= GLYPH_STATUE_OFF
+			&& glyph < GLYPH_ARTIFACT_OFF) { /* a statue */
+			text = "statue";
+			offset = glyph - GLYPH_STATUE_OFF;
+		} else if (glyph >= GLYPH_WARNING_OFF
             && glyph < GLYPH_STATUE_OFF) { /* a warning */
             text = "warning";
             offset = glyph - GLYPH_WARNING_OFF;

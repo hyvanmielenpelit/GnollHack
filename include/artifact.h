@@ -56,6 +56,7 @@ struct artifact {
     short race;         /* character race associated with */
     long cost; /* price when sold to hero (default 100 x base cost) */
     char acolor;        /* color to use if artifact 'glows' */
+	char ocolor;		/* color used for object instead of its normal color */
 };
 
 /* invoked properties with special powers */

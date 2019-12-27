@@ -7,6 +7,8 @@
 #include "wintty.h" /* for prototype of has_color() only */
 #endif
 #include "color.h"
+#include "artifact.h"
+#include "artilist.h"
 #define HI_DOMESTIC CLR_WHITE /* monst.c */
 
 #if !defined(TTY_GRAPHICS)
@@ -27,6 +29,7 @@ static const int explcolors[] = {
 #define zap_color(n) color = iflags.use_color ? zapcolors[n] : NO_COLOR
 #define cmap_color(n) color = iflags.use_color ? defsyms[n].color : NO_COLOR
 #define obj_color(n) color = iflags.use_color ? objects[n].oc_color : NO_COLOR
+#define artifact_color(n) color = iflags.use_color ? artilist[n].ocolor : NO_COLOR
 #define mon_color(n) color = iflags.use_color ? mons[n].mcolor : NO_COLOR
 #define invis_color(n) color = NO_COLOR
 #define pet_color(n) color = iflags.use_color ? mons[n].mcolor : NO_COLOR
@@ -79,7 +82,42 @@ unsigned *ospecial;
      *  Warning:  For speed, this makes an assumption on the order of
      *            offsets.  The order is set in display.h.
      */
-    if ((offset = (glyph - GLYPH_STATUE_OFF)) >= 0) { /* a statue */
+	if ((offset = (glyph - GLYPH_ARTIFACT_OFF)) >= 0) { /* an artifact */
+		int objoffset = artilist[offset].otyp;				
+		if (artilist[offset].maskotyp != STRANGE_OBJECT)
+		{
+			/* We always use maskotyp for base case if there is one, since the item is specified to look like one */
+			objoffset = artilist[offset].maskotyp;
+		}
+		/* Select the right symbol */
+		idx = objects[objoffset].oc_class + SYM_OFF_O;
+
+
+		if (objoffset == BOULDER)
+			idx = SYM_BOULDER + SYM_OFF_X;
+		if (has_rogue_color && iflags.use_color) {
+			switch (objects[objoffset].oc_class) {
+			case COIN_CLASS:
+				color = CLR_YELLOW;
+				break;
+			case FOOD_CLASS:
+				color = CLR_RED;
+				break;
+			default:
+				color = CLR_BRIGHT_BLUE;
+				break;
+			}
+		}
+		else
+		{
+			if(artilist[offset].ocolor == NO_COLOR)
+				obj_color(objoffset);
+			else
+				artifact_color(offset);
+		}
+		if (objoffset != BOULDER && is_objpile(x, y))
+			special |= MG_OBJPILE;
+	} else if ((offset = (glyph - GLYPH_STATUE_OFF)) >= 0) { /* a statue */
         idx = mons[offset].mlet + SYM_OFF_M;
         if (has_rogue_color)
             color = CLR_RED;

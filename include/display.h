@@ -307,7 +307,8 @@
 #define GLYPH_SWALLOW_OFF ((NUM_ZAP << 2) + GLYPH_ZAP_OFF)
 #define GLYPH_WARNING_OFF ((NUMMONS << 3) + GLYPH_SWALLOW_OFF)
 #define GLYPH_STATUE_OFF  (WARNCOUNT + GLYPH_WARNING_OFF)
-#define MAX_GLYPH         (NUMMONS + GLYPH_STATUE_OFF)
+#define GLYPH_ARTIFACT_OFF  (NROFARTIFACTS + GLYPH_STATUE_OFF)
+#define MAX_GLYPH         (NUMMONS + GLYPH_ARTIFACT_OFF)
 
 #define NO_GLYPH          MAX_GLYPH
 #define GLYPH_INVISIBLE   GLYPH_INVIS_OFF
@@ -336,7 +337,8 @@
                ? random_obj_to_glyph(rng)                               \
                : ((obj)->otyp == CORPSE)                                \
                      ? (int) (obj)->corpsenm + GLYPH_BODY_OFF           \
-                     : (int) (obj)->otyp + GLYPH_OBJ_OFF)
+                     : ((obj)->oartifact > 0) ? (int)(obj)->oartifact + GLYPH_ARTIFACT_OFF \
+						:  (int) (obj)->otyp + GLYPH_OBJ_OFF)
 
 /* MRKR: Statues now have glyphs corresponding to the monster they    */
 /*       represent and look like monsters when you are hallucinating. */
