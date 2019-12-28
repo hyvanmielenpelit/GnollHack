@@ -3038,9 +3038,14 @@ int final;
             (void) lcase(skill_level_name(wtype, sklvlbuf, FALSE));
         /* "you have no/basic/expert/master/grand-master skill with <skill>"
            or "you are unskilled/skilled in <skill>" */
-        Sprintf(buf, "%s %s %s", sklvlbuf,
-                hav ? "skill with" : "in", skill_name(wtype, TRUE));
-        if (can_advance(wtype, FALSE))
+
+		int hitbonus = weapon_skill_hit_bonus(uwep, wtype); /* Gives only pure skill bonuses */
+		int dmgbonus = weapon_skill_dmg_bonus(uwep, wtype); /* Gives only pure skill bonuses */
+
+        Sprintf(buf, "%s %s %s (%s%d to-hit and %s%d to damage)", sklvlbuf,
+                hav ? "skill with" : "in", skill_name(wtype, TRUE), hitbonus >=0 ? "+" : "", hitbonus, dmgbonus >= 0 ? "+" : "", dmgbonus);
+
+		if (can_advance(wtype, FALSE))
             Sprintf(eos(buf), " and %s that",
                     !final ? "can enhance" : "could have enhanced");
         if (hav)
@@ -3048,6 +3053,63 @@ int final;
         else
             you_are(buf, "");
     }
+
+	if (!uwep && P_SKILL(P_MARTIAL_ARTS) > P_UNSKILLED) {
+		wtype = P_MARTIAL_ARTS;
+		char sklvlbuf[20];
+		int sklvl = P_SKILL(wtype);
+		boolean hav = (sklvl != P_UNSKILLED && sklvl != P_SKILLED);
+
+		if (sklvl == P_ISRESTRICTED)
+			Strcpy(sklvlbuf, "no");
+		else
+			(void)lcase(skill_level_name(wtype, sklvlbuf, FALSE));
+		/* "you have no/basic/expert/master/grand-master skill with <skill>"
+		   or "you are unskilled/skilled in <skill>" */
+
+		int hitbonus = weapon_skill_hit_bonus(uwep, wtype); /* Gives only pure skill bonuses */
+		int dmgbonus = weapon_skill_dmg_bonus(uwep, wtype); /* Gives only pure skill bonuses */
+
+		Sprintf(buf, "%s %s %s (%s%d to-hit and %s%d to damage)", sklvlbuf,
+			hav ? "skill with" : "in", skill_name(wtype, TRUE), hitbonus >= 0 ? "+" : "", hitbonus, dmgbonus >= 0 ? "+" : "", dmgbonus);
+
+		if (can_advance(wtype, FALSE))
+			Sprintf(eos(buf), " and %s that",
+				!final ? "can enhance" : "could have enhanced");
+		if (hav)
+			you_have(buf, "");
+		else
+			you_are(buf, "");
+	}
+
+	if (u.twoweap) {
+		wtype = P_TWO_WEAPON_COMBAT;
+		char sklvlbuf[20];
+		int sklvl = P_SKILL(wtype);
+		boolean hav = (sklvl != P_UNSKILLED && sklvl != P_SKILLED);
+
+		if (sklvl == P_ISRESTRICTED)
+			Strcpy(sklvlbuf, "no");
+		else
+			(void)lcase(skill_level_name(wtype, sklvlbuf, FALSE));
+		/* "you have no/basic/expert/master/grand-master skill with <skill>"
+		   or "you are unskilled/skilled in <skill>" */
+
+		int hitbonus = weapon_skill_hit_bonus(uwep, wtype); /* Gives only pure skill bonuses */
+		int dmgbonus = weapon_skill_dmg_bonus(uwep, wtype); /* Gives only pure skill bonuses */
+
+		Sprintf(buf, "%s %s %s (%s%d to-hit and %s%d to damage)", sklvlbuf,
+			hav ? "skill with" : "in", skill_name(wtype, TRUE), hitbonus >= 0 ? "+" : "", hitbonus, dmgbonus >= 0 ? "+" : "", dmgbonus);
+
+		if (can_advance(wtype, FALSE))
+			Sprintf(eos(buf), " and %s that",
+				!final ? "can enhance" : "could have enhanced");
+		if (hav)
+			you_have(buf, "");
+		else
+			you_are(buf, "");
+	}
+
     /* report 'nudity' */
     if (!uarm && !uarmu && !uarmc && !uarms && !uarmg && !uarmf && !uarmh && !uarmo && !uarmb) {
         if (u.uroleplay.nudist)

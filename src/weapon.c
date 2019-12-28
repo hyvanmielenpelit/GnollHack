@@ -2007,8 +2007,8 @@ struct obj *obj;
 int
 uwep_skill_type()
 {
-    if (u.twoweap)
-        return P_TWO_WEAPON_COMBAT;
+    //if (u.twoweap)
+    //    return P_TWO_WEAPON_COMBAT;
     return weapon_skill_type(uwep);
 }
 
@@ -2035,7 +2035,7 @@ int use_this_skill;
 		if (type == P_NONE || type == P_MARTIAL_ARTS)
 			type2 = P_BARE_HANDED_COMBAT;
 
-		bonus += max(P_SKILL(type2) - 1, 0) - 1; /* unskilled => 0 */
+		bonus += max(P_SKILL(type2) - 1, 0) - 1;
 		/* unskilled: -1, basic: +0, skilled: +1, expert: +2 */
 	/*
 	 *        b.h. m.a.
@@ -2071,14 +2071,14 @@ int use_this_skill;
             bonus += 2;
             break;
         case P_EXPERT:
-            bonus += 3;
+            bonus += 4;
             break;
         }
     } 
 
 
 	/* Two-weapon fighting */
-	if (apply_two_weapon_bonus) 
+	if (type == P_TWO_WEAPON_COMBAT || (!use_this_skill && apply_two_weapon_bonus))
 	{
         int skill = P_SKILL(P_TWO_WEAPON_COMBAT);
         if (wep_type != P_NONE && P_SKILL(wep_type) < skill)
@@ -2105,7 +2105,7 @@ int use_this_skill;
 
 
 	/* Martial arts */
-	if (apply_martial_arts_bonus || type == P_MARTIAL_ARTS)
+	if ((!use_this_skill && apply_martial_arts_bonus) || type == P_MARTIAL_ARTS)
 	{
         bonus += 1 * max(P_SKILL(P_MARTIAL_ARTS) - 1, 0); /* unskilled => 0 */
 		/* unskilled: +0, basic: +1, skilled: +2, expert: +3 */
@@ -2115,7 +2115,7 @@ int use_this_skill;
 
 
     /* KMH -- It's harder to hit while you are riding */
-    if (u.usteed)
+    if (!use_this_skill && u.usteed)
 	{
         switch (P_SKILL(P_RIDING)) 
 		{
@@ -2191,18 +2191,18 @@ int use_this_skill;
             bonus += -2;
             break;
         case P_BASIC:
-            bonus += 0;
-            break;
-        case P_SKILLED:
             bonus += 1;
             break;
+        case P_SKILLED:
+            bonus += 4;
+            break;
         case P_EXPERT:
-            bonus += 2;
+            bonus += 7;
             break;
         }
     } 
 
-	if (apply_two_weapon_bonus)
+	if ((!use_this_skill && apply_two_weapon_bonus) || type == P_TWO_WEAPON_COMBAT)
 	{
         int skill = P_SKILL(P_TWO_WEAPON_COMBAT);
         if (P_SKILL(wep_type) < skill)
@@ -2226,7 +2226,7 @@ int use_this_skill;
         }
     } 
 
-	if (apply_martial_arts_bonus || type == P_MARTIAL_ARTS)
+	if ((!use_this_skill && apply_martial_arts_bonus) || type == P_MARTIAL_ARTS)
 	{
 		bonus += 1 * max(P_SKILL(P_MARTIAL_ARTS) - 1, 0); /* unskilled => 0 */
 		/* unskilled: +0, basic: +1, skilled: +2, expert: +3 */
@@ -2236,7 +2236,7 @@ int use_this_skill;
 	}
 
     /* KMH -- Riding gives some thrusting damage */
-    if (u.usteed && type != P_TWO_WEAPON_COMBAT) 
+    if (!use_this_skill && u.usteed && type != P_TWO_WEAPON_COMBAT)
 	{
         switch (P_SKILL(P_RIDING)) 
 		{
