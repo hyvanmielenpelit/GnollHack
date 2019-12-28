@@ -357,7 +357,7 @@ struct obj *obj;
 
     if (arti) {
         /* while being worn */
-        if ((obj->owornmask & ~W_ART) && (arti->spfx & SPFX_REFLECT))
+        if ((obj->owornmask & ~W_ARTIFACT_CARRIED) && (arti->spfx & SPFX_REFLECT))
             return TRUE;
         /* just being carried */
         if (arti->cspfx & SPFX_REFLECT)
@@ -497,7 +497,7 @@ boolean being_worn;
 
 /*
  * a potential artifact has just been worn/wielded/picked-up or
- * unworn/unwielded/dropped.  Pickup/drop only set/reset the W_ART mask.
+ * unworn/unwielded/dropped.  Pickup/drop only set/reset the W_ARTIFACT_CARRIED mask.
  */
 void
 set_artifact_intrinsic(otmp, on, wp_mask)
@@ -515,7 +515,7 @@ long wp_mask;
         return;
 
     /* effects from the defn field */
-    dtyp = (wp_mask != W_ART) ? oart->defn.adtyp : oart->cary.adtyp;
+    dtyp = (wp_mask != W_ARTIFACT_CARRIED) ? oart->defn.adtyp : oart->cary.adtyp;
 
     if (dtyp == AD_FIRE)
         mask = &EFire_resistance;
@@ -536,7 +536,7 @@ long wp_mask;
 	else if (dtyp == AD_WERE)
 		mask = &ELycanthropy_resistance;
 
-    if (mask && wp_mask == W_ART && !on) {
+    if (mask && wp_mask == W_ARTIFACT_CARRIED && !on) {
         /* find out if some other artifact also confers this intrinsic;
            if so, leave the mask alone */
         for (obj = invent; obj; obj = obj->nobj) {
@@ -557,8 +557,10 @@ long wp_mask;
     }
 
     /* intrinsics from the spfx field; there could be more than one */
-    spfx = (wp_mask != W_ART) ? oart->spfx : oart->cspfx;
-    if (spfx && wp_mask == W_ART && !on) {
+    spfx = (wp_mask != W_ARTIFACT_CARRIED) ? oart->spfx : oart->cspfx;
+
+#if 0
+    if (spfx && wp_mask == W_ARTIFACT_CARRIED && !on) {
         /* don't change any spfx also conferred by other artifacts */
         for (obj = invent; obj; obj = obj->nobj)
             if (obj != otmp && obj->oartifact) {
@@ -567,6 +569,7 @@ long wp_mask;
                     spfx &= ~art->cspfx;
             }
     }
+#endif
 
     if (spfx & SPFX_SEARCH) {
         if (on)
@@ -682,10 +685,10 @@ long wp_mask;
             EProtection &= ~wp_mask;
     }
 
-    if (wp_mask == W_ART && !on && oart->inv_prop) {
+    if (wp_mask == W_ARTIFACT_CARRIED && !on && oart->inv_prop) {
         /* might have to turn off invoked power too */
         if (oart->inv_prop <= LAST_PROP
-            && (u.uprops[oart->inv_prop].extrinsic & W_ARTI))
+            && (u.uprops[oart->inv_prop].extrinsic & W_ARTIFACT_INVOKED))
             (void) arti_invoke(otmp);
     }
 }
@@ -2403,14 +2406,14 @@ struct obj *obj;
 		}
         }
     } else {
-        //long eprop = (u.uprops[oart->inv_prop].extrinsic ^= W_ARTI),
+        //long eprop = (u.uprops[oart->inv_prop].extrinsic ^= W_ARTIFACT_INVOKED),
         //    iprop = u.uprops[oart->inv_prop].intrinsic;
-        boolean switch_on = (u.uprops[oart->inv_prop].extrinsic & W_ARTI) == 0;
+        boolean switch_on = (u.uprops[oart->inv_prop].extrinsic & W_ARTIFACT_INVOKED) == 0;
 
         if (switch_on && obj->cooldownleft > 0) // obj->age > monstermoves)
 		{
             /* the artifact is tired :-) */
-            u.uprops[oart->inv_prop].extrinsic ^= W_ARTI;
+            u.uprops[oart->inv_prop].extrinsic ^= W_ARTIFACT_INVOKED;
             You_feel("that %s %s ignoring you.", the(xname(obj)),
                      otense(obj, "are"));
             /* can't just keep repeatedly trying */
@@ -2427,7 +2430,7 @@ struct obj *obj;
 		obj->invokeon = switch_on;
 
 
-        if ((u.uprops[oart->inv_prop].extrinsic & ~W_ARTI) || u.uprops[oart->inv_prop].intrinsic || u.uprops[oart->inv_prop].blocked) {
+        if ((u.uprops[oart->inv_prop].extrinsic & ~W_ARTIFACT_INVOKED) || u.uprops[oart->inv_prop].intrinsic || u.uprops[oart->inv_prop].blocked) {
  nothing_special:
             /* you had the property from some other source too */
             if (carried(obj))
@@ -2447,7 +2450,7 @@ struct obj *obj;
                 float_up();
                 spoteffects(FALSE);
             } else
-                (void) float_down(I_SPECIAL | TIMEOUT, W_ARTI);
+                (void) float_down(I_SPECIAL | TIMEOUT, W_ARTIFACT_INVOKED);
 			*/
 			break;
 		case INVISIBILITY:
@@ -2481,17 +2484,17 @@ struct obj *obj;
     /* if we aren't levitating or this isn't an artifact which confers
        levitation via #invoke then freeinv() won't toggle levitation */
     if (!Levitation || (oart = get_artifact(obj)) == 0
-        || oart->inv_prop != LEVITATION || !(ELevitation & W_ARTI))
+        || oart->inv_prop != LEVITATION || !(ELevitation & W_ARTIFACT_INVOKED))
         return FALSE;
 
-    /* arti_invoke(off) -> float_down() clears I_SPECIAL|TIMEOUT & W_ARTI;
+    /* arti_invoke(off) -> float_down() clears I_SPECIAL|TIMEOUT & W_ARTIFACT_INVOKED;
        probe ahead to see whether that actually results in floating down;
        (this assumes that there aren't two simultaneously invoked artifacts
        both conferring levitation--safe, since if there were two of them,
        invoking the 2nd would negate the 1st rather than stack with it) */
     save_Lev = u.uprops[LEVITATION];
     HLevitation &= ~(I_SPECIAL | TIMEOUT);
-    ELevitation &= ~W_ARTI;
+    ELevitation &= ~W_ARTIFACT_INVOKED;
     result = (boolean) !Levitation;
     u.uprops[LEVITATION] = save_Lev;
     return result;
@@ -2621,7 +2624,7 @@ long *abil;
     long wornmask = (W_ARM | W_ARMC | W_ARMH | W_ARMS
                      | W_ARMG | W_ARMF | W_ARMU | W_ARMO | W_ARMB | W_MISC | W_MISC2 | W_MISC3 | W_MISC4 | W_MISC5
                      | W_AMUL | W_RINGL | W_RINGR | W_BLINDFOLD | W_WEP
-                     | W_ART | W_ARTI);
+                     | W_ARTIFACT_CARRIED | W_ARTIFACT_INVOKED);
 	*/
     //if (u.twoweap)
     //    wornmask |= W_SWAPWEP;
@@ -2641,7 +2644,7 @@ long *abil;
                 if (dtyp) {
                     if (art->cary.adtyp == dtyp /* carried */
                         || (art->defn.adtyp == dtyp /* defends while worn */
-                            && (obj->owornmask & ~(W_ART | W_ARTI))))
+                            && (obj->owornmask & ~(W_ARTIFACT_CARRIED | W_ARTIFACT_INVOKED))))
                         return obj;
                 }
                 if (spfx) {
@@ -2928,7 +2931,7 @@ boolean drop_untouchable;
     if ((art = get_artifact(obj)) != 0) {
         carryeffect = (art->cary.adtyp || art->cspfx);
         invoked = (art->inv_prop > 0 && art->inv_prop <= LAST_PROP
-                   && (u.uprops[art->inv_prop].extrinsic & W_ARTI) != 0L);
+                   && (u.uprops[art->inv_prop].extrinsic & W_ARTIFACT_INVOKED) != 0L);
     } else {
         carryeffect = invoked = FALSE;
     }

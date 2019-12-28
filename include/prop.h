@@ -177,9 +177,9 @@ struct prop {
 #define W_ACCESSORY (W_RING | W_AMUL | W_MISCITEMS | W_BLINDFOLD)
 
 /* Special */
-#define W_ART 0x10000000L     /* Carrying artifact (not really worn) */
+#define W_ARTIFACT_CARRIED 0x10000000L     /* Carrying artifact (not really worn) */
 /*0x20000000 used by I_SPECIAL */
-#define W_ARTI 0x40000000L    /* Invoked artifact  (not really worn) */
+#define W_ARTIFACT_INVOKED 0x40000000L    /* Invoked artifact  (not really worn) */
 #define W_CARRIED 0x80000000L  /* Carried */
 
     /*** Property is blocked by an object ***/

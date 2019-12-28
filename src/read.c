@@ -1431,7 +1431,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 				/* gold isn't subject to cursing and blessing */
 				if (obj->oclass == COIN_CLASS)
 					continue;
-				wornmask = (obj->owornmask & ~(W_BALL | W_ART | W_ARTI));
+				wornmask = (obj->owornmask & ~(W_BALL | W_ARTIFACT_CARRIED | W_ARTIFACT_INVOKED));
 				if (wornmask && !sblessed) {
 					/* handle a couple of special cases; we don't
 					   allow auxiliary weapon slots to be used to

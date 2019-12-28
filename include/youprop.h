@@ -117,7 +117,7 @@
 #define Confusion HConfusion
 
 #define Blinded u.uprops[BLINDED].intrinsic
-#define Blindfolded (ublindf)
+#define Blindfolded (ublindf != 0)
 /* ...means blind because of a cover */
 #define Blind                                     \
     ((u.uroleplay.blind || Blinded || Blindfolded \
@@ -125,10 +125,9 @@
      && !Blocks_Blindness)
 /* ...the Eyes operate even when you really are blind
     or don't have any eyes */
-#define Blindfolded_only                                            \
-    (Blindfolded && ublindf->oartifact != ART_EYES_OF_THE_OVERWORLD \
+#define Blind_because_of_blindfold_only                                            \
+    (Blindfolded && !Blocks_Blindness \
      && !u.uroleplay.blind && !Blinded && haseyes(youmonst.data))
-/* ...blind because of a blindfold, and *only* that */
 
 #define Sick u.uprops[SICK].intrinsic
 #define Stoned u.uprops[STONED].intrinsic
@@ -346,9 +345,9 @@
 #define Levitation ((HLevitation || ELevitation) && !BLevitation)
 /* Can't touch surface, can't go under water; overrides all others */
 #define Lev_at_will                                                    \
-    (((HLevitation & I_SPECIAL) != 0L || (ELevitation & W_ARTI) != 0L) \
+    (((HLevitation & I_SPECIAL) != 0L || (ELevitation & W_ARTIFACT_INVOKED) != 0L) \
      && (HLevitation & ~(I_SPECIAL | TIMEOUT)) == 0L                   \
-     && (ELevitation & ~W_ARTI) == 0L)
+     && (ELevitation & ~W_ARTIFACT_INVOKED) == 0L)
 
 /* Flying is overridden by Levitation */
 #define HFlying u.uprops[FLYING].intrinsic

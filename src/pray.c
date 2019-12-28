@@ -547,7 +547,7 @@ int trouble;
             impossible("fix_worst_trouble: nothing to uncurse.");
             return;
         }
-        if (!Blind || (otmp == ublindf && Blindfolded_only)) {
+        if (!Blind || (otmp == ublindf && Blind_because_of_blindfold_only)) {
             pline("%s %s.",
                   what ? what : (const char *) Yobjnam2(otmp, "softly glow"),
                   hcolor(NH_AMBER));

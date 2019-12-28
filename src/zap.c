@@ -2247,7 +2247,7 @@ int id;
      */
 
     (void) get_obj_location(obj, &ox, &oy, BURIED_TOO | CONTAINED_TOO);
-    old_wornmask = obj->owornmask & ~(W_ART | W_ARTI);
+    old_wornmask = obj->owornmask & ~(W_ARTIFACT_CARRIED | W_ARTIFACT_INVOKED);
     /* swap otmp for obj */
     replace_object(obj, otmp);
     if (obj_location == OBJ_INVENT) {

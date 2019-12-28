@@ -1254,7 +1254,7 @@ struct monst *mon;
 
 	for (o = is_you ? invent : mon->minvent; o; o = o->nobj) {
         /* oc_magic_cancellation field is only applicable for armor (which must be worn), this should exclude spellbooks and wands, which use oc_oc2 for something else */
-		/* omit W_SWAPWEP+W_QUIVER; W_ART+W_ARTI handled by protects() */
+		/* omit W_SWAPWEP+W_QUIVER; W_ARTIFACT_CARRIED+W_ARTIFACT_INVOKED handled by protects() */
 		wearmask = (W_ARMOR & ~W_ARMS) | W_ACCESSORY;
 
 		if (is_shield(o) || is_weapon(o) || (objects[o->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
@@ -3145,7 +3145,8 @@ struct attack *mattk;
                    the Eyes of the Overworld; make them block this
                    particular stun attack too */
                 if (!Blind) {
-                    Your1(vision_clears);
+					pline("But you can still see!");
+                    //Your1(vision_clears);
                 } else {
                     long oldstun = (HStun & TIMEOUT), newstun = (long) rnd(3);
 

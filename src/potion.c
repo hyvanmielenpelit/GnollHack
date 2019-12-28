@@ -254,7 +254,8 @@ boolean talk;
         talk = FALSE;
 
     if (can_see_now && !u_could_see) { /* regaining sight */
-        if (talk) {
+		if (talk) 
+		{
             if (Hallucination)
                 pline("Far out!  Everything is all cosmic again!");
             else
@@ -446,6 +447,7 @@ long mask; /* nonzero if resistance status should change by mask */
         if (talk)
             pline(message, verb);
     }
+
     return changed;
 }
 
@@ -1825,14 +1827,17 @@ register struct obj *obj;
         exercise(A_WIS, TRUE);
         break;
     case POT_BLINDNESS:
-        if (!Blind && !Unaware) {
-            kn++;
-            pline("It suddenly gets dark.");
-        }
+	{
+		boolean was_blind = Blind;
         make_blinded(itimeout_incr(Blinded, rnd(5)), FALSE);
-        if (!Blind && !Unaware)
-            Your1(vision_clears);
-        break;
+		if (Blind && !Unaware) {
+			kn++;
+			pline("It suddenly gets dark.");
+		}
+		//if (!Blind && !Unaware)
+        //    Your1(vision_clears);
+		break;
+	}
     case POT_WATER:
         if (u.umonnum == PM_GREMLIN) {
             (void) split_mon(&youmonst, (struct monst *) 0);
@@ -2117,7 +2122,7 @@ dodip()
     }
     potion->in_use = TRUE; /* assume it will be used up */
     if (potion->otyp == POT_WATER) {
-        boolean useeit = !Blind || (obj == ublindf && Blindfolded_only);
+        boolean useeit = !Blind || (obj == ublindf && Blind_because_of_blindfold_only);
         const char *obj_glows = Yobjnam2(obj, "glow");
 
         if (H2Opotion_dip(potion, obj, useeit, obj_glows))

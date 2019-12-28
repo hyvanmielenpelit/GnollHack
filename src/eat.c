@@ -3207,7 +3207,7 @@ gethungry()
     if (moves % 2) { /* odd turns */
         /* Regeneration uses up food, unless due to an artifact */
         if ((HRegeneration & ~FROM_FORM)
-            || (ERegeneration & ~(W_ARTI | W_WEP)))
+            || (ERegeneration & ~(W_ARTIFACT_INVOKED | W_WEP)))
             u.uhunger--;
         if (near_capacity() > SLT_ENCUMBER)
             u.uhunger--;
@@ -3215,7 +3215,7 @@ gethungry()
         if (Hunger)
             u.uhunger--;
         /* Conflict uses up food too */
-        if (HConflict || (EConflict & (~W_ARTI)))
+        if (HConflict || (EConflict & (~W_ARTIFACT_INVOKED)))
             u.uhunger--;
         /* +0 charged rings don't do anything, so don't affect hunger.
            Slow digestion cancels move hunger but still causes ring hunger. */

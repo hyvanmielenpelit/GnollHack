@@ -595,7 +595,7 @@ dosinkfall()
     }
 
     /* remove worn levitation items */
-    ELevitation &= ~W_ARTI;
+    ELevitation &= ~W_ARTIFACT_INVOKED;
     HLevitation &= ~(I_SPECIAL | TIMEOUT);
     HLevitation++;
     if (uleft && uleft->otyp == RIN_LEVITATION) {

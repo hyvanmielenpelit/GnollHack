@@ -661,22 +661,27 @@ update_extrinsics()
 			if (objects[otyp].oc_oprop3 >= 0 && (!inappr || (objects[otyp].oc_flags3 & O3_POWER_3_DISRESPECTS_CHARACTERS)))
 				u.uprops[objects[otyp].oc_oprop3].extrinsic |= bit;//W_CARRIED;
 
+			/* add wielded / worn artifact intrinsics */
+			if (uitem->oartifact && bit != W_CARRIED)
+				set_artifact_intrinsic(uitem, 1, bit);
+
+#if 0
 			int p = 0;
 			/* Properties blocked by item */
-			//if (!inappr && (p = w_blocks(uitem, bit)) != 0)
-			//	u.uprops[p].blocked |= bit;
-
+			if (!inappr && (p = w_blocks(uitem, bit)) != 0)
+				u.uprops[p].blocked |= bit;
+#endif
 		}
 
-		/* add artifact intrinsics */
+		/* add artifact carried and invoked intrinsics */
 		if (uitem->oartifact)
 		{
-			set_artifact_intrinsic(uitem, 1, W_ART);
+			set_artifact_intrinsic(uitem, 1, W_ARTIFACT_CARRIED);
 
 			/* Invoked property if any */
 			if (artilist[uitem->oartifact].inv_prop > 0 && artilist[uitem->oartifact].inv_prop <= LAST_PROP && uitem->invokeon)
 			{
-				u.uprops[artilist[uitem->oartifact].inv_prop].extrinsic |= W_ARTI;
+				u.uprops[artilist[uitem->oartifact].inv_prop].extrinsic |= W_ARTIFACT_INVOKED;
 			}
 		}
 
@@ -1441,7 +1446,7 @@ int propidx;
 
 char *
 from_what(propidx)
-int propidx; /* special cases can have negative values */
+int propidx; /* OBSOLETE: special cases can have negative values */
 {
     static char buf[BUFSZ];
 
@@ -1517,7 +1522,7 @@ int propidx; /* special cases can have negative values */
 				Sprintf(buf, because_of, obj->oartifact
 					? bare_artifactname(obj)
 					: ysimple_name(obj));*/
-			else if (propidx == BLINDED && Blindfolded_only)
+			else if (propidx == BLINDED && Blind_because_of_blindfold_only)
                 Sprintf(buf, because_of, ysimple_name(ublindf));
 
             /* remove some verbosity and/or redundancy */
@@ -1531,6 +1536,7 @@ int propidx; /* special cases can have negative values */
 		else { /* negative property index */
             /* if more blocking capabilities get implemented we'll need to
                replace this with what_blocks() comparable to what_gives() */
+#if 0
             switch (-propidx) {
             case BLINDED:
                 if (ublindf
@@ -1548,6 +1554,7 @@ int propidx; /* special cases can have negative values */
                             ysimple_name(uarmh)); /* cornuthaum */
                 break;
             }
+#endif
         }
 
     } /*wizard*/

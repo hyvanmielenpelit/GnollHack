@@ -191,7 +191,7 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
      *      The artifacts for the quest dungeon, all self-willed.
      */
 
-    A("The Orb of Detection", "runed crystal ball", CRYSTAL_BALL, CRYSTAL_BALL,
+    A("The Orb of Detection", "runed crystal ball", CRYSTAL_BALL, CRYSTAL_BALL, //STARTMARKER FOR QUEST ARTIFACTS
 		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_FAMOUS), SPFX_NONE, (SPFX_ESP | SPFX_HSPDAM), 0,
       NO_ATTK, NO_DFNS, CARY(AD_MAGM), INVISIBILITY, A_LAWFUL, PM_ARCHEOLOGIST,
       NON_PM, 2500L, NO_COLOR, CLR_MAGENTA),
@@ -245,7 +245,7 @@ A("The Palantir of Westernesse",        CRYSTAL_BALL, CRYSTAL_BALL,
        rogues) or blessed (for non-rogues):  #untrap of doors and chests
        will always find any traps and disarming those will always succeed */
     A("The Master Key of Thievery", "ornamental key", SKELETON_KEY, SKELETON_KEY,
-		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_SPEAK | AF_FAMOUS), SPFX_NONE,
+		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_SPEAK), SPFX_NONE,
       (SPFX_WARN | SPFX_TCTRL | SPFX_HPHDAM), 0, NO_ATTK, NO_DFNS, NO_CARY,
       UNTRAP, A_CHAOTIC, PM_ROGUE, NON_PM, 3500L, NO_COLOR, CLR_MAGENTA),
 
@@ -261,7 +261,7 @@ A("The Palantir of Westernesse",        CRYSTAL_BALL, CRYSTAL_BALL,
       CHARGE_OBJ, A_NEUTRAL, PM_TOURIST, NON_PM, 7000L, NO_COLOR, CLR_BLACK),
 
     A("The Orb of Fate", "ornamental crystal ball", CRYSTAL_BALL, CRYSTAL_BALL,
-		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_FAMOUS), SPFX_NONE,
+		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_FAMOUS | AF_READABLE), SPFX_NONE,
       (SPFX_WARN | SPFX_HSPDAM | SPFX_HPHDAM | SPFX_LUCK), 0, NO_ATTK, NO_DFNS, NO_CARY,
       LEV_TELE, A_NEUTRAL, PM_VALKYRIE, NON_PM, 3500L, NO_COLOR, CLR_MAGENTA),
 

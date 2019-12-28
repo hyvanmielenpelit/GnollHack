@@ -2843,7 +2843,7 @@ int final;
                 !haseyes(youmonst.data) ? "innately"
                 : u.uroleplay.blind ? "permanently"
                   /* better phrasing desperately wanted... */
-                  : Blindfolded_only ? "deliberately"
+                  : Blind_because_of_blindfold_only ? "deliberately"
                     : "temporarily");
         if (wizard && (Blinded & TIMEOUT) != 0L
             && !u.uroleplay.blind && haseyes(youmonst.data))
@@ -3147,7 +3147,7 @@ int final;
 	if (Eye_protection)
 		you_are("protected from eye damage", from_what(EYE_PROTECTION));
 	if (Blocks_Blindness)
-		you_are("protected against blindness ", from_what(BLOCKS_BLINDNESS));
+		you_are("protected against blindness", from_what(BLOCKS_BLINDNESS));
 	if (Flash_resistance)
 		you_are("protected from bright light", from_what(FLASH_RES));
 	if (Brain_protection)

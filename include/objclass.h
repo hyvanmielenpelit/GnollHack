@@ -670,8 +670,7 @@ struct objclass {
 #define O3_NONE										0x00000000
 #define O3_NO_WISH									0x00000001  /* item is special, it cannot be wished for, mimics oc_nowish */
 #define O3_UNIQUE									0x00000002  /* the item is unique, mimics oc_unique */
-#define O3_ARTIFACT_BASE_ITEM_ONLY						0x00000004  /* marked as a unique artifact base item, which whose abilities and true nature will get identified only when artifact's name is known */
-
+/* free bit */
 #define O3_POWER_1_DISRESPECTS_CHARACTERS			0x00000008  /* Do not use with WARN_OF_XXXX powers */
 #define O3_POWER_2_DISRESPECTS_CHARACTERS			0x00000010  /* Do not use with WARN_OF_XXXX powers */
 #define O3_POWER_3_DISRESPECTS_CHARACTERS			0x00000020  /* Do not use with WARN_OF_XXXX powers */

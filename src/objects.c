@@ -321,7 +321,7 @@ WEAPON("elven runedagger", "runed dagger", /* Base item for Sting */
 	AD_PHYS, 1, 5, 2, 1, 3, 2, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, P, WEP_DAGGER, P_DAGGER, MAT_WOOD, HI_WOOD, 
-	O1_MELEE_AND_THROWN_WEAPON, O2_ELVEN_ITEM, O3_NO_WISH | O3_ARTIFACT_BASE_ITEM_ONLY,
+	O1_MELEE_AND_THROWN_WEAPON, O2_ELVEN_ITEM, O3_NO_WISH,
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("orcish dagger", "crude dagger",
 	0, 1, 0, 0, 12, MULTIGEN_SINGLE, 10, 4, 
@@ -335,7 +335,7 @@ WEAPON("ornamental orcish dagger", "crudely ornated dagger", /* Base weapon for 
 	AD_PHYS, 3, 3, 0, 3, 3, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 	NO_POWER, NO_POWER, NO_POWER, P, WEP_DAGGER, P_DAGGER, MAT_IRON, CLR_BLACK,
-	O1_MELEE_AND_THROWN_WEAPON, O2_ORCISH_ITEM, O3_NO_WISH | O3_ARTIFACT_BASE_ITEM_ONLY,
+	O1_MELEE_AND_THROWN_WEAPON, O2_ORCISH_ITEM, O3_NO_WISH,
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("bone dagger", None,
 	1, 1, 0, 0, 6, MULTIGEN_SINGLE, 10,   4, 
@@ -804,7 +804,7 @@ WEAPON("morning star of troll slaying", "mithril-spiked morning star", /* Base i
 	AD_PHYS, 2, 4, 1, 1, 6, 2, AD_PHYS, 1, 6, 1, A1_WOUNDING, 0,
 	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	REGENERATION, WARN_TROLL, NO_POWER, B, WEP_MORNING_STAR, P_FLAIL, MAT_IRON, HI_METAL,
-	O1_INDESTRUCTIBLE, O2_FLICKER_COLOR_BLUE, O3_NO_WISH | O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS | O3_ARTIFACT_BASE_ITEM_ONLY, 
+	O1_INDESTRUCTIBLE, O2_FLICKER_COLOR_BLUE, O3_NO_WISH | O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS, 
 	PERMITTED_ALL, S_TROLL),
 WEAPON("war hammer", None,
 	1, 0, 0, 0, 11, MULTIGEN_SINGLE, 50, 5, 
@@ -819,14 +819,14 @@ WEAPON("heavy war hammer", "runed war hammer", /* Base object for Mjollnir */
 	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 	NO_POWER, NO_POWER, NO_POWER, B, WEP_HAMMER, P_BLUDGEONING_WEAPON, MAT_IRON, HI_METAL,
 	O1_INDESTRUCTIBLE | O1_MELEE_AND_THROWN_WEAPON | O1_WEIGHT_DOES_NOT_REDUCE_RANGE | O1_RETURNS_TO_HAND_AFTER_THROWING | O1_CAN_BE_THROWN_ONLY_IF_WIELDED,
-	O2_NONE, O3_NO_WISH | O3_ARTIFACT_BASE_ITEM_ONLY,
+	O2_NONE, O3_NO_WISH,
 	PERMITTED_ROLE_VALKYRIE, ALL_TARGETS),
 WEAPON("war hammer of ogre slaying", "runed war hammer", /* Base object for Ogresmasher */
 	0, 0, 1, 0, 0, MULTIGEN_SINGLE, 100, 500,
 	AD_PHYS, 1, 6, 2, 1, 6, 1, AD_PHYS, 2, 8, 0, A1_NONE, 0,
 	1, 0, 0, 0, 0, 0, 0, BONUS_TO_CON | SETS_FIXED_ATTRIBUTE | IGNORE_SPE, 25, 0, 0,
 	WARN_OGRE, NO_POWER, NO_POWER, B, WEP_HAMMER, P_BLUDGEONING_WEAPON, MAT_IRON, HI_METAL, 
-	O1_INDESTRUCTIBLE, O2_NONE, O3_NO_WISH | O3_ARTIFACT_BASE_ITEM_ONLY,
+	O1_INDESTRUCTIBLE, O2_NONE, O3_NO_WISH,
 	PERMITTED_ALL, S_OGRE),
 WEAPON("war hammer of gnoll slaying", "runed war hammer",
 	0, 0, 1, 0, 2, MULTIGEN_SINGLE, 50, 500,
@@ -963,7 +963,7 @@ WEAPON("runed flail", None, /* Base item for Howling Flail */
 	AD_PHYS, 1, 6, 2, 2, 4, 1, 	AD_PHYS, 2, 4, 0, A1_NONE, 0, 
 	1, 0, 0, 0, 0, 0, 0, BONUS_TO_CHA | SETS_FIXED_ATTRIBUTE | IGNORE_SPE, 25, 0, 0, 
 	NO_POWER, NO_POWER, NO_POWER, B, WEP_FLAIL, P_FLAIL, MAT_IRON, HI_METAL,
-	O1_INDESTRUCTIBLE, O2_GNOLLISH_ITEM | O2_DEMON_ITEM, O3_NO_WISH | O3_ARTIFACT_BASE_ITEM_ONLY,
+	O1_INDESTRUCTIBLE, O2_GNOLLISH_ITEM | O2_DEMON_ITEM, O3_NO_WISH,
 	PERMITTED_RACE_GNOLL, ALL_TARGETS),
 
 
@@ -1577,7 +1577,7 @@ RING("supreme power", "golden runed", /* Base item for the One Ring */
     0, INVISIBILITY, CLAIRVOYANT, SEE_INVISIBILITY, 10000, 1, 0,  5, 200, 0, BONUS_TO_ALLSTATS, 5, -20, MAT_GOLD, HI_GOLD,
 	O1_INDESTRUCTIBLE | O1_DISINTEGRATION_RESISTANT | O1_FIRE_RESISTANT | O1_COLD_RESISTANT | O1_LIGHTNING_RESISTANT,
 	O2_NONE, 
-	O3_NO_WISH | O3_READABLE | O3_ARTIFACT_BASE_ITEM_ONLY, PERMITTED_ALL),
+	O3_NO_WISH | O3_READABLE, PERMITTED_ALL),
 #undef RING
 
 /* amulets ... - THE Amulet comes last because it is special */
@@ -1601,7 +1601,7 @@ AMULET("amulet of mana",		        "convex",  75,	NO_POWER, NO_POWER, NO_POWER, 7
 AMULET("demon blood talisman",	   "tetrahedral",  35,	NO_POWER, NO_POWER, NO_POWER, 100, 0, 0, 0, 0, O1_MANA_PERCENTAGE_BONUS, O2_NONE, O3_NONE, PERMITTED_ALL), //doubles mana capacity
 AMULET("periapt of vitality",	        "linear",  75,	NO_POWER, NO_POWER, NO_POWER, 0, 25, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 AMULET("amulet of magical breathing", "octagonal", 65,  MAGICAL_BREATHING, 0, 0, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-AMULET("amulet",					"cylindrical",  0,  NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_ARTIFACT_BASE_ITEM_ONLY, PERMITTED_ALL), /* Base item for artifact amulets */
+AMULET("amulet",					"cylindrical",  0,  NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* Base item for artifact amulets */
 /* fixed descriptions; description duplication is deliberate;
  * fake one must come before real one because selection for
  * description shuffling stops when a non-magic amulet is encountered

@@ -378,7 +378,7 @@ struct obj {
 
 /* things that can be read */
 #define is_readable(otmp)                                                    \
-    (objects[otmp->otyp].oc_flags3 & O3_READABLE || otmp->oartifact == ART_ORB_OF_FATE)
+    ((objects[(otmp)->otyp].oc_flags3 & O3_READABLE) || ((otmp)->oartifact && artilist[(otmp)->oartifact].aflags & AF_READABLE))
 
 /* special stones */
 #define is_graystone_otyp(otyp)                                 \
@@ -403,19 +403,17 @@ struct obj {
     ((o)->quan != 1L                                                    \
      /* "the Eyes of the Overworld" are plural, but                     \
         "a pair of lenses named the Eyes of the Overworld" is not */    \
-     || ((o)->oartifact == ART_EYES_OF_THE_OVERWORLD                    \
-         && !undiscovered_artifact(ART_EYES_OF_THE_OVERWORLD)))
+     || ((o)->oartifact == ART_EYES_OF_THE_OVERWORLD && (o)->nknown && (o)->known))
+
 #define pair_of(o) ((o->oclass == MISCELLANEOUS_CLASS && \
 	(objects[o->otyp].oc_subtyp == MISC_EYEGLASSES || objects[o->otyp].oc_subtyp == MISC_EARRINGS || objects[o->otyp].oc_subtyp == MISC_PANTS || objects[o->otyp].oc_subtyp == MISC_WINGS || objects[o->otyp].oc_subtyp == MISC_EXTRA_ARMS)) \
 	 || is_gloves(o) || is_boots(o) || is_bracers(o))
 
 #define is_otyp_unique(otyp) (objects[otyp].oc_unique || (objects[otyp].oc_flags3 & O3_UNIQUE))
 #define is_otyp_nowish(otyp) (objects[otyp].oc_nowish || (objects[otyp].oc_flags3 & O3_NO_WISH))
-#define is_otyp_artifact_base_item_only(otyp) (objects[otyp].oc_flags3 & O3_ARTIFACT_BASE_ITEM_ONLY)
 
 #define is_obj_unique(obj) is_otyp_unique((obj)->otyp)
 #define is_obj_nowish(obj) is_otyp_nowish((obj)->otyp)
-#define is_obj_artifact_base_item_only(obj) is_otyp_artifact_base_item_only((obj)->otyp)
 
 /* 'PRIZE' values override obj->corpsenm so prizes mustn't be object types
    which use that field for monster type (or other overloaded purpose) */

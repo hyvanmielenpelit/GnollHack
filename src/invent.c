@@ -4,6 +4,8 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
+#include "artifact.h"
+#include "artilist.h"
 
 #ifndef C /* same as cmd.c */
 #define C(c) (0x1f & (c))
@@ -844,7 +846,7 @@ struct obj *obj;
             u.uhave.questart = 1;
             artitouch(obj);
         }
-        set_artifact_intrinsic(obj, 1, W_ART);
+        set_artifact_intrinsic(obj, 1, W_ARTIFACT_CARRIED);
     }
 
 	/* "special achievements" aren't discoverable during play, they
@@ -874,9 +876,11 @@ struct obj* otmp; /* object to be identified if any state change happens */
 	boolean was_flying = Flying;
 	boolean was_levitating = Levitation;
 	boolean was_invisible = Invis;
-	boolean was_blind = Levitation;
+	boolean was_blind = Blind;
+	boolean was_wearing_blindfold = Blindfolded;
+	boolean was_blocking_blindness = Blocks_Blindness;
 	boolean saw_invisible = See_invisible;
-	boolean blocked_invisibility = Blocks_Invisibility;
+	boolean was_blocking_invisibility = Blocks_Invisibility;
 	boolean had_hallucination = Hallucination;
 	boolean was_telepathic = Telepat;
 	boolean was_blind_telepathic = Blind_telepat;
@@ -914,6 +918,62 @@ struct obj* otmp; /* object to be identified if any state change happens */
 		}
 	}
 
+	/* Blindness */
+	if (Blind && !was_blind)
+	{
+		if (Hallucination && had_hallucination)
+			pline("Oh, bummer!  Everything is dark!  Help!");
+		else
+		{
+			if (Blindfolded && !was_wearing_blindfold)
+				You_cant("see any more.");
+			else if (!Blocks_Blindness || was_blocking_blindness)
+				You_cant("see anything now!");
+			else
+				pline("A cloud of darkness falls upon you.");
+		}
+
+		if (Punished)
+			set_bc(0);
+
+		toggle_blindness();
+	}
+	else if (!Blind && was_blind && !gulp_blnd_check())
+	{
+		if (Hallucination && had_hallucination)
+		{
+			if (u.uroleplay.blind) {
+				pline("For the first time in your life, you can see, and oh wow, it is all so cosmic for sure!");
+				u.uroleplay.blind = FALSE;
+			}
+			else
+				pline("Far out!  Everything is all cosmic again!");
+		}
+		else
+		{
+			if (u.uroleplay.blind) {
+				/* this can only happen by putting on the Eyes of the Overworld;
+				   that shouldn't actually produce a permanent cure, but we
+				   can't let the "blind from birth" conduct remain intact */
+				pline("For the first time in your life, you can see!");
+				u.uroleplay.blind = FALSE;
+			}
+			else
+			{
+				if (!Blindfolded && was_wearing_blindfold)
+					You("can see again.");
+				else if (Blocks_Blindness || !was_blocking_blindness)
+					You("can see!");
+				else
+					You("can see again.");
+			}
+		}
+
+		if (Punished)
+			set_bc(0);
+
+		toggle_blindness();
+	}
 
 	/* Hallucination */
 	if (Hallucination && !had_hallucination)
@@ -977,14 +1037,14 @@ struct obj* otmp; /* object to be identified if any state change happens */
 				pline("Suddenly you cannot see yourself.");
 			}
 		}
-		else if (Blocks_Invisibility && !blocked_invisibility && !Invis && was_invisible)
+		else if (Blocks_Invisibility && !was_blocking_invisibility && !Invis && was_invisible)
 		{
 			state_change_detected = TRUE;
 			newsym(u.ux, u.uy);
 			You("can %s!", See_invisible ? "no longer see through yourself"
 				: "see yourself");
 		}
-		else if (!Blocks_Invisibility && blocked_invisibility && Invis && !was_invisible)
+		else if (!Blocks_Invisibility && was_blocking_invisibility && Invis && !was_invisible)
 		{
 			state_change_detected = TRUE;
 			newsym(u.ux, u.uy);
@@ -1040,6 +1100,9 @@ struct obj* otmp; /* object to be identified if any state change happens */
 	{
 		makeknown(otmp->otyp);
 	}
+
+	context.botl = TRUE;
+
 }
 
 /*
@@ -1353,7 +1416,7 @@ struct obj *obj;
                 impossible("don't have quest artifact?");
             u.uhave.questart = 0;
         }
-        set_artifact_intrinsic(obj, 0, W_ART);
+        set_artifact_intrinsic(obj, 0, W_ARTIFACT_CARRIED);
     }
 
 	if (objects[obj->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED) {
@@ -4803,7 +4866,7 @@ struct obj *obj;
 {
 #if 1
     /* check for things that *are* worn or wielded (only used for monsters,
-       so we don't worry about excluding W_CHAIN, W_ARTI and the like) */
+       so we don't worry about excluding W_CHAIN, W_ARTIFACT_INVOKED and the like) */
     return (boolean) (obj->owornmask != 0L);
 #else
     /* this used to check for things that *might* be worn or wielded,

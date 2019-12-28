@@ -1538,6 +1538,7 @@ struct obj *otmp;
     setworn(otmp, W_BLINDFOLD);
     on_msg(otmp);
 
+#if 0
     if (Blind && !already_blind) {
         changed = TRUE;
         if (flags.verbose)
@@ -1560,6 +1561,7 @@ struct obj *otmp;
     if (changed) {
         toggle_blindness(); /* potion.c */
     }
+#endif
 }
 
 void
@@ -1576,11 +1578,15 @@ struct obj *otmp;
     setworn((struct obj *) 0, otmp->owornmask);
     off_msg(otmp);
 
-    if (Blind) {
-        if (was_blind) {
-            /* "still cannot see" makes no sense when removing lenses
-               since they can't have been the cause of your blindness */
-            You("still cannot see.");
+	if (Blind) {
+		if (was_blind) {
+			/* "still cannot see" makes no sense when removing lenses
+			   since they can't have been the cause of your blindness */
+			You("still cannot see.");
+		}
+	}
+
+#if 0
         } else {
             changed = TRUE; /* !was_blind */
             /* "You were wearing the Eyes of the Overworld." */
@@ -1598,6 +1604,8 @@ struct obj *otmp;
     if (changed) {
         toggle_blindness(); /* potion.c */
     }
+#endif
+
 }
 
 /* called in moveloop()'s prologue to set side-effects of worn start-up items;

@@ -3062,7 +3062,7 @@ register struct obj *obj;
             //boolean levhack = finesse_ahriman(obj);
 
             //if (levhack)
-             //   ELevitation = W_ART; /* other than W_ARTI */
+             //   ELevitation = W_ARTIFACT_CARRIED; /* other than W_ARTIFACT_INVOKED */
             if (flags.verbose)
                 You("drop %s.", doname(obj));
             /* Ensure update when we drop gold objects */
@@ -3071,7 +3071,7 @@ register struct obj *obj;
             freeinv(obj);
             hitfloor(obj, TRUE);
             //if (levhack)
-            //    float_down(I_SPECIAL | TIMEOUT, W_ARTI | W_ART);
+            //    float_down(I_SPECIAL | TIMEOUT, W_ARTIFACT_INVOKED | W_ARTIFACT_CARRIED);
             return 1;
         }
         if (!IS_ALTAR(levl[u.ux][u.uy].typ) && flags.verbose)
@@ -3377,9 +3377,9 @@ dodown()
     /* Levitation might be blocked, but player can still use '>' to
        turn off controlled levitation */
     if (HLevitation || ELevitation) {
-        if ((HLevitation & I_SPECIAL) || (ELevitation & W_ARTI)) {
+        if ((HLevitation & I_SPECIAL) || (ELevitation & W_ARTIFACT_INVOKED)) {
             /* end controlled levitation */
-            if (ELevitation & W_ARTI) {
+            if (ELevitation & W_ARTIFACT_INVOKED) {
                 struct obj *obj;
 
                 for (obj = invent; obj; obj = obj->nobj) {
@@ -3391,7 +3391,7 @@ dodown()
                     }
                 }
             }
-            if (float_down(I_SPECIAL | TIMEOUT, W_ARTI)) {
+            if (float_down(I_SPECIAL | TIMEOUT, W_ARTIFACT_INVOKED)) {
                 return 1; /* came down, so moved */
             } else if (!HLevitation && !ELevitation) {
                 Your("latent levitation ceases.");

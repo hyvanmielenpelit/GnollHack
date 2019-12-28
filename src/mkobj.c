@@ -2873,7 +2873,7 @@ struct obj *obj;
         W_ARM,    W_ARMC,   W_ARMH,    W_ARMS, W_ARMG,  W_ARMF,  W_ARMU,
         W_WEP,    W_QUIVER, W_SWAPWEP, W_AMUL, W_RINGL, W_RINGR, W_BLINDFOLD,
         W_SADDLE, W_BALL,   W_CHAIN,   0
-        /* [W_ART,W_ARTI are property bits for items which aren't worn] */
+        /* [W_ARTIFACT_CARRIED,W_ARTIFACT_INVOKED are property bits for items which aren't worn] */
     };
     char maskbuf[60];
     const char *what;
