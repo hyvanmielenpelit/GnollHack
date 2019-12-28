@@ -116,6 +116,7 @@ struct obj {
     Bitfield(cknown, 1); /* contents of container assumed to be known */
     Bitfield(lknown, 1); /* locked/unlocked status is known */
 	Bitfield(nknown, 1); /* true name is known */
+	Bitfield(aknown, 1); /* artifact status is known; if set, the artifact will be termed "the Artifact" instead of item named Artifact */
 	/* 4 free bits */
 
     int corpsenm;         /* type of corpse is mons[corpsenm] */

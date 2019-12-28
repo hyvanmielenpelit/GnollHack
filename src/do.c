@@ -455,7 +455,7 @@ register struct obj* obj;
 			otyp = artilist[obj->oartifact].maskotyp;
 	}
 	
-	boolean stats_known = ((!obj->oartifact && objects[otyp].oc_name_known) || (obj->oartifact && obj->nknown && obj->known));
+	boolean stats_known = ((!obj->oartifact && objects[otyp].oc_name_known) || (obj->oartifact && obj->nknown && obj->aknown));
 
 	char buf[BUFSZ];
 	char buf2[BUFSZ];

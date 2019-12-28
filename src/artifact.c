@@ -2445,15 +2445,16 @@ struct obj *obj;
                 You_feel("the tension decrease around you.");
             break;
         case LEVITATION:
-			/* -- Now handled elsewhere automatically
+#if 0
             if (switch_on) {
                 float_up();
                 spoteffects(FALSE);
             } else
                 (void) float_down(I_SPECIAL | TIMEOUT, W_ARTIFACT_INVOKED);
-			*/
+#endif
 			break;
 		case INVISIBILITY:
+#if 0
             if (Blocks_Invisibility || Blind)
                 goto nothing_special;
             newsym(u.ux, u.uy);
@@ -2462,8 +2463,9 @@ struct obj *obj;
                      Hallucination ? "normal" : "strange");
             else
                 Your("body seems to unfade...");
-            break;
-        }
+#endif
+			break;
+		}
     }
 
     return 1;
@@ -2812,10 +2814,7 @@ int orc_count; /* new count, new count is in the items; OBSOLETE: (warn_obj_cnt 
 
 
 		char weapbuf[BUFSZ] = "";
-		if(otmp->oartifact)
-			strcpy(weapbuf, bare_artifactname(otmp));
-		else
-			Sprintf(weapbuf, "Your %s", cxname(otmp));
+		Sprintf(weapbuf, Yname2(otmp));
 
         if (orc_count == -1 && otmp->detectioncount > 0) {
             /* -1 means that blindness has just been toggled; give a

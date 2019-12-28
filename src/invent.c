@@ -2598,8 +2598,11 @@ fully_identify_obj(otmp)
 struct obj *otmp;
 {
     makeknown(otmp->otyp);
-    if (otmp->oartifact)
-        discover_artifact((xchar) otmp->oartifact);
+	if (otmp->oartifact)
+	{
+		discover_artifact((xchar)otmp->oartifact);
+		otmp->aknown = 1;
+	}
     otmp->known = otmp->dknown = otmp->bknown = otmp->rknown = 1;
 	
 	if (has_oname(otmp))

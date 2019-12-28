@@ -198,7 +198,7 @@ struct obj *obj;
     if (!obj->oartifact || !has_oname(obj))
         return FALSE;
     if (!program_state.gameover && !iflags.override_ID) {
-        if (!obj->nknown || !obj->known) //not_fully_identified(obj))
+        if (!obj->nknown || !obj->aknown) //not_fully_identified(obj))
             return FALSE;
     }
     return TRUE;
@@ -397,7 +397,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     register int typ = ((obj->oartifact && artilist[obj->oartifact].maskotyp != STRANGE_OBJECT) ? artilist[obj->oartifact].maskotyp : obj->otyp);
     register struct objclass *ocl = &objects[typ];
 	/* Note: artifact always uses the unknown name format instead of oc_name_known; if the artifact is known, then it jumps to "the Artifact" format */
-	/* Note: artifact uses nknown and known to determine if it is in the format of "the Artifact"; this is in obj_is_pname function */
+	/* Note: artifact uses nknown and aknown to determine if it is in the format of "the Artifact"; this is in obj_is_pname function */
 	int nn = obj->oartifact ? 0 : ocl->oc_name_known;
 	int omndx = obj->corpsenm;
 	/* Note: this should never be applied for artifacts, as nn is 0 for them */
@@ -410,7 +410,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 		OBJ_DESCR(*ocl);
     const char *un = ocl->oc_uname;
 	boolean pluralize = (obj->quan != 1L) && !(cxn_flags & CXN_SINGULAR);
-    boolean known, dknown, bknown, nknown;
+    boolean known, dknown, bknown, nknown, aknown;
 	boolean makeThelower = FALSE;
 
     buf = nextobuf() + PREFIX; /* leave room for "17 -3 " */
@@ -436,13 +436,14 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         obj->bknown = TRUE;
 
     if (iflags.override_ID) {
-        known = dknown = bknown = nknown = TRUE;
+        known = dknown = bknown = nknown = aknown = TRUE;
         nn = 1;
     } else {
         known = obj->known;
         dknown = obj->dknown;
         bknown = obj->bknown;
 		nknown = obj->nknown;
+		aknown = obj->aknown;
 	}
 
 	/* Artifacts get just their name */
@@ -1678,6 +1679,8 @@ struct obj *otmp;
         return TRUE;
     if (otmp->oartifact && undiscovered_artifact(otmp->oartifact))
         return TRUE;
+	if (otmp->oartifact && !otmp->aknown)
+		return TRUE;
 	if (!otmp->nknown && has_oname(otmp))
 		return TRUE;
 	/* otmp->rknown is the only item of interest if we reach here */

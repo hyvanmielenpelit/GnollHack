@@ -463,7 +463,7 @@ struct obj* otmp;
 		if (!otmp->nknown)
 		{
 			otmp->nknown = TRUE;
-			otmp->known = TRUE;
+			otmp->aknown = TRUE;
 			if (carried(otmp))
 				prinv((char*)0, otmp, 0L);
 		}
