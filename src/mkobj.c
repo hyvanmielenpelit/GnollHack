@@ -926,7 +926,7 @@ boolean makingboxcontents;
 
     if (init) 
 	{
-		if(objects[otmp->otyp].oc_merge && !objects[otmp->otyp].oc_unique)
+		if(objects[otmp->otyp].oc_merge && !is_obj_unique(otmp))
 			otmp->quan = get_multigen_quan(objects[otmp->otyp].oc_multigen_type);
 
 		switch (let) {
@@ -1320,7 +1320,7 @@ boolean makingboxcontents;
     }
 
     /* unique objects may have an associated artifact entry */
-    if (objects[otyp].oc_unique && !otmp->oartifact)
+    if (is_otyp_unique(otyp) && !otmp->oartifact)
         otmp = mk_artifact(otmp, (aligntyp) A_NONE);
     otmp->owt = weight(otmp);
 

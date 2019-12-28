@@ -163,7 +163,7 @@ register int otyp;
     }
     /* here for ring/scroll/potion/wand */
     if (nn) {
-        if (ocl->oc_unique)
+        if (is_otyp_unique(otyp))
             Strcpy(buf, actualn); /* avoid spellbook of Book of the Dead */
         else
             Sprintf(eos(buf), " of %s", actualn);
@@ -422,7 +422,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
      * printed for the object is tied to the combination of the two
      * and printing the wrong article gives away information.
      */
-    if (!nn && ocl->oc_uses_known && ocl->oc_unique)
+    if (!nn && ocl->oc_uses_known && is_otyp_unique(typ))
         obj->known = 0;
     if (!Blind && !distantname)
         obj->dknown = TRUE;
@@ -860,7 +860,7 @@ struct obj *obj;
     else if (obj->otyp == FAKE_AMULET_OF_YENDOR && !known)
         return TRUE; /* lie */
     else
-        return (boolean) (objects[obj->otyp].oc_unique
+        return (boolean) (is_obj_unique(obj)
                           && (known || obj->otyp == AMULET_OF_YENDOR));
 }
 
@@ -2259,7 +2259,7 @@ struct obj *obj;
        any `known' and `dknown' checking necessary) */
     if (otyp == FAKE_AMULET_OF_YENDOR)
         otyp = AMULET_OF_YENDOR;
-    if (objects[otyp].oc_unique
+    if (is_otyp_unique(otyp)
         && !strcmp(simpleoname, OBJ_NAME(objects[otyp])))
         return the(simpleoname);
 
@@ -4173,8 +4173,7 @@ struct obj *no_wish;
 		|| typ == BELL_OF_OPENING
 		|| typ == SPE_BOOK_OF_THE_DEAD
 		|| typ == MAGIC_LAMP
-		|| (objects[typ].oc_nowish && !isartifact)
-		|| ((objects[typ].oc_flags3 & O3_NO_WISH) && !isartifact)
+		|| (is_otyp_nowish(typ) && !isartifact)
 		)
 		&& yn("That item is nonwishable. Force it anyway?") != 'y'))) {
         switch (typ) {
@@ -4195,7 +4194,7 @@ struct obj *no_wish;
             break;
         default:
             /* catch any other non-wishable objects (venom) */
-            if ((objects[typ].oc_nowish || (objects[typ].oc_flags3 & O3_NO_WISH)) && !isartifact)
+            if (is_otyp_nowish(typ) && !isartifact)
                 return (struct obj *) 0;
             break;
         }

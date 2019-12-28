@@ -131,7 +131,7 @@ aligntyp alignment; /* target alignment, or A_NONE */
     int m, n, altn;
     boolean by_align = (alignment != A_NONE);
     short o_typ = (by_align || !otmp) ? 0 : otmp->otyp;
-    boolean unique = !by_align && otmp && objects[o_typ].oc_unique;
+    boolean unique = !by_align && otmp && is_otyp_unique(o_typ);
     short eligible[NROFARTIFACTS];
 
     n = altn = 0;    /* no candidates found yet */
@@ -140,7 +140,7 @@ aligntyp alignment; /* target alignment, or A_NONE */
     for (m = 1, a = &artilist[m]; a->otyp; a++, m++) {
         if (artiexist[m])
             continue;
-        if ((a->spfx & SPFX_NOGEN) || unique)
+        if ((a->aflags & AF_NOGEN) || unique)
             continue;
 
         if (!by_align) {
@@ -273,7 +273,7 @@ boolean mod;
                 artiexist[m] = mod;
 				if (otmp->oartifact)
 				{
-					if (artilist[otmp->oartifact].spfx & SPFX_FAMOUS)
+					if (artilist[otmp->oartifact].aflags & AF_FAMOUS)
 						otmp->nknown = TRUE;
 					if (is_quest_artifact(otmp))
 					{
@@ -299,13 +299,13 @@ nartifact_exist()
 }
 
 boolean
-spec_ability(otmp, abil)
+artifact_has_flag(otmp, abil)
 struct obj *otmp;
 unsigned long abil;
 {
     const struct artifact *arti = get_artifact(otmp);
 
-    return (boolean) (arti && (arti->spfx & abil) != 0L);
+    return (boolean) (arti && (arti->aflags & abil) != 0L);
 }
 
 /* used so that callers don't need to known about SPFX_ codes */
@@ -345,7 +345,7 @@ boolean
 artifact_confers_unluck(obj)
 struct obj* obj;
 {
-	return (obj && obj->oartifact && ((obj->owornmask != 0 && (artilist[obj->oartifact].spfx & SPFX_ONE_RING)) || (artilist[obj->oartifact].cspfx & SPFX_ONE_RING)));
+	return (obj && obj->oartifact && ((obj->owornmask != 0 && (artilist[obj->oartifact].spfx & SPFX_UNLUCK)) || (artilist[obj->oartifact].cspfx & SPFX_UNLUCK)));
 }
 
 /* used to check whether a monster is getting reflection from an artifact */
@@ -379,7 +379,7 @@ struct obj *obj;
         return TRUE;
     /* non-silver artifacts with bonus against undead also are effective */
     arti = get_artifact(obj);
-    if (arti && (arti->spfx & SPFX_DFLAG2) && (arti->mtype & M2_UNDEAD))
+    if (arti && (arti->aflags & AF_DFLAG2) && (arti->mtype & M2_UNDEAD))
         return TRUE;
     /* [if there was anything with special bonus against noncorporeals,
        it would be effective too] */
@@ -423,7 +423,7 @@ const char *name;
         }
     }
 
-    /* Since almost every artifact is SPFX_RESTR, it doesn't cost
+    /* Since almost every artifact is AF_RESTR, it doesn't cost
        us much to do the string comparison before the spfx check.
        Bug fix:  don't name multiple elven daggers "Sting".
      */
@@ -434,7 +434,7 @@ const char *name;
         if (!strncmpi(aname, "the ", 4))
             aname += 4;
         if (!strcmp(aname, name))
-            return (boolean) ((a->spfx & (SPFX_NOGEN | SPFX_RESTR)) != 0
+            return (boolean) ((a->aflags & (AF_NOGEN | AF_RESTR)) != 0
                               || otmp->quan > 1L);
     }
 
@@ -574,7 +574,7 @@ long wp_mask;
         else
             ESearching &= ~wp_mask;
     }
-	if (spfx & SPFX_ONE_RING) {
+	if (spfx & SPFX_AGGRAVATE_MONSTER) {
 		if (on)
 			EAggravate_monster |= wp_mask;
 		else
@@ -716,17 +716,17 @@ struct monst *mon;
 	   will have to be extended to explicitly include quest artifacts */
 	if (oart)
 	{
-		self_willed = ((oart->spfx & SPFX_INTEL) != 0);
+		self_willed = ((oart->aflags & AF_INTEL) != 0);
 		if (yours) {
 			badclass = self_willed
 				&& ((oart->role != NON_PM && !Role_if(oart->role))
 					|| (oart->race != NON_PM && !Race_if(oart->race)));
-			badalign = ((oart->spfx & SPFX_RESTR) != 0
+			badalign = ((oart->aflags & AF_RESTR) != 0
 				&& oart->alignment != A_NONE
 				&& (oart->alignment != u.ualign.type
 					|| u.ualign.record < 0));
 
-			if (!obj->nknown && (oart->spfx & (SPFX_FAMOUS | SPFX_NAME_KNOWN_WHEN_PICKED_UP)))
+			if (!obj->nknown && (oart->aflags & (AF_FAMOUS | AF_NAME_KNOWN_WHEN_PICKED_UP)))
 			{
 				pline("As you touch %s, you suddenly become aware that it is called %s!", the(cxname(obj)), bare_artifactname(obj));
 				obj->nknown = TRUE;
@@ -735,7 +735,7 @@ struct monst *mon;
 		else if (mon->mnum != PM_WIZARD_OF_YENDOR /*!is_covetous(mon->data)*/ && !is_mplayer(mon->data)) {
 			badclass = self_willed && oart->role != NON_PM
 				&& oart != &artilist[ART_EXCALIBUR];
-			badalign = (oart->spfx & SPFX_RESTR) && oart->alignment != A_NONE
+			badalign = (oart->aflags & AF_RESTR) && oart->alignment != A_NONE
 				&& (oart->alignment != mon_aligntyp(mon));
 
 		}
@@ -819,9 +819,9 @@ struct monst *mon;
 {
     struct artifact atmp;
 
-    if (oart && (oart->spfx & SPFX_DBONUS) != 0) {
+    if (oart && (oart->aflags & AF_DBONUS) != 0) {
         atmp = *oart;
-        atmp.spfx &= SPFX_DBONUS; /* clear other spfx fields */
+        atmp.aflags &= AF_DBONUS; /* clear other spfx fields */
         if (spec_applies(&atmp, mon))
             return TRUE;
     }
@@ -837,28 +837,28 @@ struct monst *mtmp;
     struct permonst *ptr;
     boolean yours;
 
-    if (!(weap->spfx & (SPFX_DBONUS | SPFX_ATTK)))
+    if (!(weap->aflags & (AF_DBONUS | AF_ATTK)))
         return (weap->attk.adtyp == AD_PHYS);
 
     yours = (mtmp == &youmonst);
     ptr = mtmp->data;
 
-    if (weap->spfx & SPFX_DMONS) {
+    if (weap->aflags & AF_DMONS) {
         return (ptr == &mons[(int) weap->mtype]);
-    } else if (weap->spfx & SPFX_DCLAS) {
+    } else if (weap->aflags & AF_DCLAS) {
         return (weap->mtype == (unsigned long) ptr->mlet);
-    } else if (weap->spfx & SPFX_DFLAG1) {
+    } else if (weap->aflags & AF_DFLAG1) {
         return ((ptr->mflags1 & weap->mtype) != 0L);
-    } else if (weap->spfx & SPFX_DFLAG2) {
+    } else if (weap->aflags & AF_DFLAG2) {
         return ((ptr->mflags2 & weap->mtype)
                 || (yours
                     && ((!Upolyd && (urace.selfmask & weap->mtype))
                         || ((weap->mtype & M2_WERE) && u.ulycn >= LOW_PM))));
-    } else if (weap->spfx & SPFX_DALIGN) {
+    } else if (weap->aflags & AF_DALIGN) {
         return yours ? (u.ualign.type != weap->alignment)
                      : (ptr->maligntyp == A_NONE
                         || sgn(ptr->maligntyp) != weap->alignment);
-    } else if (weap->spfx & SPFX_ATTK) {
+    } else if (weap->aflags & AF_ATTK) {
         struct obj *defending_weapon = (yours ? uwep : MON_WEP(mtmp));
 
         if (defending_weapon && defending_weapon->oartifact
@@ -1336,9 +1336,9 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 
     /* We really want "on a natural 20" but GnollHack does it in */
     /* reverse from AD&D. */
-    if (spec_ability(otmp, SPFX_BEHEAD)) 
+    if (artifact_has_flag(otmp, (AF_BEHEAD | AF_BISECT)))
 	{
-        if (otmp->oartifact == ART_TSURUGI_OF_MURAMASA && dieroll == 1) 
+        if (artifact_has_flag(otmp, AF_BISECT) && dieroll == 1)
 		{
             strcpy(wepdesc, "The razor-sharp blade");
             /* not really beheading, but so close, why add another SPFX */
@@ -1390,7 +1390,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                 return TRUE;
             }
         } 
-		else if (otmp->oartifact == ART_VORPAL_BLADE
+		else if (artifact_has_flag(otmp, AF_BEHEAD)
                    && (dieroll == 1 || mdef->data == &mons[PM_JABBERWOCK])) 
 		{
             static const char *const behead_msg[2] = { "%s beheads %s!",
@@ -1444,7 +1444,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
             }
         }
     }
-    if (spec_ability(otmp, SPFX_DRLI)) 
+    if (artifact_has_flag(otmp, AF_DRLI)) 
 	{
         /* some non-living creatures (golems, vortices) are
            vulnerable to life drain effects */
@@ -2461,10 +2461,13 @@ struct obj *obj;
 }
 
 /* will freeing this object from inventory cause levitation to end? */
+/* OBSOLETE -- JG */
 boolean
 finesse_ahriman(obj)
 struct obj *obj;
 {
+	return 0;
+
     const struct artifact *oart;
     struct prop save_Lev;
     boolean result;
@@ -2506,7 +2509,7 @@ struct obj *obj;
     char buf[BUFSZ];
 
     /* Is this a speaking artifact? */
-    if (!oart || !(oart->spfx & SPFX_SPEAK))
+    if (!oart || !(oart->aflags & AF_SPEAK))
         return;
 
     line = getrumor(bcsign(obj), buf, TRUE);

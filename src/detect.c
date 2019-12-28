@@ -1687,9 +1687,7 @@ register int aflag; /* intrinsic autosearch vs explicit searching */
         if (!aflag)
             pline("What are you looking for?  The exit?");
     } else {
-        int fund = (uwep && uwep->oartifact
-                    && spec_ability(uwep, SPFX_SEARCH)) ? uwep->spe : 0;
-
+		int fund = 0;
         if (Enhanced_vision && !Blind)
             fund += 2; /* JDS: lenses help searching */
         if (fund > 5)

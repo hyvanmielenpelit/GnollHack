@@ -668,38 +668,38 @@ struct objclass {
 /* Artifact flags - to do: Attack type, half physical and spell damage, bonus to monsters only */
 /* Flags 3 */
 #define O3_NONE										0x00000000
-#define O3_NO_WISH									0x00000001  /* item is special, it cannot be wished for */
-#define O3_POWER_1_DISRESPECTS_CHARACTERS			0x00000002  /* Do not use with WARN_OF_XXXX powers */
-#define O3_POWER_2_DISRESPECTS_CHARACTERS			0x00000004  /* Do not use with WARN_OF_XXXX powers */
-#define O3_POWER_3_DISRESPECTS_CHARACTERS			0x00000008  /* Do not use with WARN_OF_XXXX powers */
-#define O3_HP_BONUS_DISRESPECTS_CHARACTERS			0x00000010
-#define O3_MANA_BONUS_DISRESPECTS_CHARACTERS		0x00000020
-#define O3_ATTRIBUTE_BONUS_DISRESPECTS_CHARACTERS	0x00000040
-#define O3_LUCK_DISRESPECTS_CHARACTERS				0x00000080
+#define O3_NO_WISH									0x00000001  /* item is special, it cannot be wished for, mimics oc_nowish */
+#define O3_UNIQUE									0x00000002  /* the item is unique, mimics oc_unique */
+#define O3_ARTIFACT_BASE_ITEM_ONLY						0x00000004  /* marked as a unique artifact base item, which whose abilities and true nature will get identified only when artifact's name is known */
 
-#define O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS	0x00000800  /* wielding or wearing prohibits the revival of permitted targets */
-#define O3_PREVENTS_SUMMONING_BY_PERMITTED_TARGETS	0x00001000  /* wielding or wearing prohibits AD_XXXX-type innate summoning by permitted targets; the target can still summon using spells */
-#define O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS	0x00002000	/* deals damage when wielded like artifacts */
+#define O3_POWER_1_DISRESPECTS_CHARACTERS			0x00000008  /* Do not use with WARN_OF_XXXX powers */
+#define O3_POWER_2_DISRESPECTS_CHARACTERS			0x00000010  /* Do not use with WARN_OF_XXXX powers */
+#define O3_POWER_3_DISRESPECTS_CHARACTERS			0x00000020  /* Do not use with WARN_OF_XXXX powers */
+#define O3_HP_BONUS_DISRESPECTS_CHARACTERS			0x00000040
+#define O3_MANA_BONUS_DISRESPECTS_CHARACTERS		0x00000080
+#define O3_ATTRIBUTE_BONUS_DISRESPECTS_CHARACTERS	0x00000100
+#define O3_LUCK_DISRESPECTS_CHARACTERS				0x00000200
 
-#define O3_INVOKABLE								0x00000400	/* can be invoked using invoke command */
-#define O3_APPLIABLE								0x00000800	/* can be applied as a tool */
-#define O3_WIELDABLE								0x00001000	/* can be wielded in a weapon slot */
-#define O3_READABLE									0x00002000	/* can be read */								
-#define O3_IGNITABLE								0x00004000	
-#define O3_RELATIVE_AGE								0x00008000	
-#define O3_ELEMENTAL_ENCHANTABLE					0x00010000
-#define O3_EATING_IDENTIFIES						0x00020000	
-/* free bit */
-/* free bit */
-/* free bit */
+#define O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS	0x00000400  /* wielding or wearing prohibits the revival of permitted targets */
+#define O3_PREVENTS_SUMMONING_BY_PERMITTED_TARGETS	0x00000800  /* wielding or wearing prohibits AD_XXXX-type innate summoning by permitted targets; the target can still summon using spells */
+#define O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS	0x00001000	/* deals damage when wielded like artifacts */
 
-#define O3_PERMTTED_TARGET_LAWFUL	0x00200000
-#define O3_PERMTTED_TARGET_NEUTRAL	0x00400000
-#define O3_PERMTTED_TARGET_CHAOTIC	0x00800000
+#define O3_INVOKABLE								0x00002000	/* can be invoked using invoke command */
+#define O3_APPLIABLE								0x00004000	/* can be applied as a tool */
+#define O3_WIELDABLE								0x00008000	/* can be wielded in a weapon slot */
+#define O3_READABLE									0x00010000	/* can be read */								
+#define O3_IGNITABLE								0x00020000	
+#define O3_RELATIVE_AGE								0x00040000	
+#define O3_ELEMENTAL_ENCHANTABLE					0x00080000
+#define O3_EATING_IDENTIFIES						0x00100000	
 
-#define O3_TARGET_PERMISSION_IS_M1_FLAG 0x10000000 /* Note: if no flag, then default is a monster symbol */
-#define O3_TARGET_PERMISSION_IS_M2_FLAG 0x20000000
-#define O3_TARGET_PERMISSION_IS_M3_FLAG 0x40000000 
+#define O3_PERMTTED_TARGET_LAWFUL					0x00200000
+#define O3_PERMTTED_TARGET_NEUTRAL					0x00400000
+#define O3_PERMTTED_TARGET_CHAOTIC					0x00800000
+
+#define O3_TARGET_PERMISSION_IS_M1_FLAG				0x10000000 /* Note: if no flag, then default is a monster symbol */
+#define O3_TARGET_PERMISSION_IS_M2_FLAG				0x20000000
+#define O3_TARGET_PERMISSION_IS_M3_FLAG				0x40000000 
 
 #define O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH 0x80000000 
 

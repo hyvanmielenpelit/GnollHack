@@ -376,7 +376,7 @@ rndcurse()
             if (!otmp || otmp->cursed)
                 continue; /* next target */
 
-            if (otmp->oartifact && spec_ability(otmp, SPFX_INTEL)
+            if (otmp->oartifact && artifact_has_flag(otmp, AF_INTEL)
                 && rn2(10) < 8) {
                 pline("%s!", Tobjnam(otmp, "resist"));
                 continue;

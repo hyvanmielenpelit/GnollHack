@@ -261,7 +261,7 @@ int *lo_p, *hi_p; /* output: range that item belongs among */
         /* exclude non-magic types and also unique ones */
         *lo_p = bases[ocls];
         for (i = *lo_p; objects[i].oc_class == ocls; i++)
-            if (objects[i].oc_unique || !objects[i].oc_magic)
+            if (is_otyp_unique(i) || !objects[i].oc_magic)
                 break;
         *hi_p = i - 1;
         break;

@@ -2079,6 +2079,46 @@ register struct obj* obj;
 			putstr(datawin, 0, txt);
 		}
 
+
+		unsigned long aflags = artilist[obj->oartifact].aflags;
+		if (aflags & AF_BEHEAD)
+		{
+			powercnt++;
+			Sprintf(buf, " %2d - May beheads target on hit", powercnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+		if (aflags & AF_BISECT)
+		{
+			powercnt++;
+			Sprintf(buf, " %2d - May bisect target on hit", powercnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+		if (aflags & AF_INTEL)
+		{
+			powercnt++;
+			Sprintf(buf, " %2d - Intelligent", powercnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+		if (aflags & AF_SPEAK)
+		{
+			powercnt++;
+			Sprintf(buf, " %2d - Speaking", powercnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+		if (aflags & AF_DRLI)
+		{
+			powercnt++;
+			Sprintf(buf, " %2d - Drains life levels on hit", powercnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+
+
+
 		for (int i = 1; i <= 2; i++)
 		{
 			unsigned long specialeffect = 0;
@@ -2110,41 +2150,10 @@ register struct obj* obj;
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
-			if (specialeffect & SPFX_BEHEAD)
-			{
-				powercnt++;
-				if (obj->oartifact == ART_TSURUGI_OF_MURAMASA)
-					Sprintf(buf, " %2d - May bisect target on hit", powercnt);
-				else
-					Sprintf(buf, " %2d - May beheads target on hit", powercnt);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
-			if (specialeffect & SPFX_INTEL)
-			{
-				powercnt++;
-				Sprintf(buf, " %2d - Intelligent", powercnt);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
-			if (specialeffect & SPFX_SPEAK)
-			{
-				powercnt++;
-				Sprintf(buf, " %2d - Speaking", powercnt);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
 			if (specialeffect & SPFX_WARN)
 			{
 				powercnt++;
 				Sprintf(buf, " %2d - Warning %s", powercnt, endbuf);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
-			if (specialeffect & SPFX_DRLI)
-			{
-				powercnt++;
-				Sprintf(buf, " %2d - Drains life levels on hit", powercnt);
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
@@ -2232,14 +2241,14 @@ register struct obj* obj;
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
-			if (specialeffect & SPFX_ONE_RING)
+			if (specialeffect & SPFX_AGGRAVATE_MONSTER)
 			{
 				powercnt++;
 				Sprintf(buf, " %2d - Aggravates monsters %s", powercnt, endbuf);
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
-			if (specialeffect & SPFX_ONE_RING)
+			if (specialeffect & SPFX_UNLUCK)
 			{
 				powercnt++;
 				Sprintf(buf, " %2d - Confers bad luck %s", powercnt, endbuf);
@@ -2251,14 +2260,14 @@ register struct obj* obj;
 		if (artilist[obj->oartifact].mtype > 0)
 		{
 			char endbuf[BUFSIZ] = "";
-			if ((artilist[obj->oartifact].spfx & SPFX_DMONS) && artilist[obj->oartifact].mtype < NUMMONS)
+			if ((artilist[obj->oartifact].aflags & AF_DMONS) && artilist[obj->oartifact].mtype < NUMMONS)
 			{
 				strcpy(endbuf, mons[artilist[obj->oartifact].mtype].mname);
 			}
-			else if (artilist[obj->oartifact].spfx & SPFX_DFLAG1)
+			else if (artilist[obj->oartifact].aflags & AF_DFLAG1)
 			{
 			}
-			else if (artilist[obj->oartifact].spfx & SPFX_DFLAG2)
+			else if (artilist[obj->oartifact].aflags & AF_DFLAG2)
 			{
 				if (artilist[obj->oartifact].mtype == M2_DWARF)
 					strcpy(endbuf, "dwarves");
@@ -2281,11 +2290,11 @@ register struct obj* obj;
 				else if (artilist[obj->oartifact].mtype == M2_WERE)
 					strcpy(endbuf, "lycanthropes");
 			}
-			else if (artilist[obj->oartifact].spfx & SPFX_DCLAS && artilist[obj->oartifact].mtype < MAXMCLASSES)
+			else if (artilist[obj->oartifact].aflags & AF_DCLAS && artilist[obj->oartifact].mtype < MAXMCLASSES)
 			{
 				strcpy(endbuf, def_monsyms[artilist[obj->oartifact].mtype].explain);
 			}
-			else if (artilist[obj->oartifact].spfx & SPFX_DALIGN)
+			else if (artilist[obj->oartifact].aflags & AF_DALIGN)
 			{
 				strcpy(endbuf, "non-aligned creatures");
 			}
@@ -3046,10 +3055,10 @@ register struct obj *obj;
             /* we might be levitating due to #invoke Heart of Ahriman;
                if so, levitation would end during call to freeinv()
                and we want hitfloor() to happen before float_down() */
-            boolean levhack = finesse_ahriman(obj);
+            //boolean levhack = finesse_ahriman(obj);
 
-            if (levhack)
-                ELevitation = W_ART; /* other than W_ARTI */
+            //if (levhack)
+             //   ELevitation = W_ART; /* other than W_ARTI */
             if (flags.verbose)
                 You("drop %s.", doname(obj));
             /* Ensure update when we drop gold objects */
@@ -3057,8 +3066,8 @@ register struct obj *obj;
                 context.botl = 1;
             freeinv(obj);
             hitfloor(obj, TRUE);
-            if (levhack)
-                float_down(I_SPECIAL | TIMEOUT, W_ARTI | W_ART);
+            //if (levhack)
+            //    float_down(I_SPECIAL | TIMEOUT, W_ARTI | W_ART);
             return 1;
         }
         if (!IS_ALTAR(levl[u.ux][u.uy].typ) && flags.verbose)
