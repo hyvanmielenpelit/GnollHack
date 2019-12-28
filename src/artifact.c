@@ -580,6 +580,12 @@ long wp_mask;
 		else
 			EAggravate_monster &= ~wp_mask;
 	}
+	if (spfx & SPFX_BLIND_SEEING) {
+		if (on)
+			EBlocks_Blindness |= wp_mask;
+		else
+			EBlocks_Blindness &= ~wp_mask;
+	}
 	if (spfx & SPFX_HALRES)
 	{
 		if (on)

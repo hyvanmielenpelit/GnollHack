@@ -48,6 +48,7 @@
 #define SPFX_PROTECT			0x00040000L  /* Protection */
 #define SPFX_AGGRAVATE_MONSTER	0x00080000L  /* Gives aggravate monster */
 #define SPFX_UNLUCK				0x00100000L  /* Gives brings bad luck */
+#define SPFX_BLIND_SEEING		0x00200000L  /* Blocks blindness */
 
 struct artifact {
     short otyp;

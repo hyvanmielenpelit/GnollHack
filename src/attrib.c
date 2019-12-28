@@ -1449,7 +1449,7 @@ int propidx; /* special cases can have negative values */
     /*
      * Restrict the source of the attributes just to debug mode for now
      */
-    if (wizard)
+    if (1)//wizard)
 	{
         static NEARDATA const char because_of[] = " because of %s";
 
@@ -1490,7 +1490,7 @@ int propidx; /* special cases can have negative values */
 				((HFast & TIMEOUT) != 0L) ? "a potion or spell"
 					: ((EFast & W_ARMF) != 0L && uarmf->dknown
 						&& objects[uarmf->otyp].oc_name_known)
-					? ysimple_name(uarmf) /* speed boots */
+					? yname(uarmf) //ysimple_name(uarmf) /* speed boots */
 					: EFast ? "worn equipment"
 					: something);
 			else if (u.uprops[propidx].extrinsic & W_ENVIRONMENT)
@@ -1508,10 +1508,11 @@ int propidx; /* special cases can have negative values */
 			else if (
 				((obj = what_gives(&u.uprops[propidx].extrinsic)) != 0 && (wizard || objects[obj->otyp].oc_name_known))
 				)
-                Sprintf(buf, because_of, obj->oartifact
+				Sprintf(buf, because_of, yname(obj));
+			/*obj->oartifact
                                              ? bare_artifactname(obj)
                                              : ysimple_name(obj));
-/*			else if (wizard
+				else if (wizard
 				&& (obj = what_carried_gives(propidx) != 0))
 				Sprintf(buf, because_of, obj->oartifact
 					? bare_artifactname(obj)
@@ -1526,7 +1527,8 @@ int propidx; /* special cases can have negative values */
                      && (p = strstri(buf, " of strangulation")) != 0)
                 *p = '\0';
 
-        } else { /* negative property index */
+        }
+		else { /* negative property index */
             /* if more blocking capabilities get implemented we'll need to
                replace this with what_blocks() comparable to what_gives() */
             switch (-propidx) {

@@ -454,6 +454,8 @@ register struct obj* obj;
 		if (!obj->known) //!objects[obj->otyp].oc_name_known)
 			otyp = artilist[obj->oartifact].maskotyp;
 	}
+	
+	boolean stats_known = ((!obj->oartifact && objects[otyp].oc_name_known) || (obj->oartifact && obj->nknown && obj->known));
 
 	char buf[BUFSZ];
 	char buf2[BUFSZ];
@@ -551,7 +553,7 @@ register struct obj* obj;
 	}
 	else if (objects[otyp].oc_class == AMULET_CLASS || objects[otyp].oc_class == RING_CLASS)
 	{
-		if (objects[otyp].oc_name_known)
+		if (stats_known)
 		{
 			if (objects[otyp].oc_magic)
 				strcpy(buf2, "Magical");
@@ -620,10 +622,10 @@ register struct obj* obj;
 	txt = buf;
 	putstr(datawin, 0, txt);
 
-	if(objects[otyp].oc_name_known && !(obj->oartifact && !obj->nknown))
+	if(stats_known)
 	{
 		/* Gold value */
-		if(obj->oartifact && obj->nknown)
+		if(obj->oartifact)
 			Sprintf(buf2, "%d gold", artilist[obj->oartifact].cost);
 		else
 			Sprintf(buf2, "%d gold", objects[otyp].oc_cost);
@@ -651,7 +653,7 @@ register struct obj* obj;
 	putstr(datawin, 0, txt);
 
 
-	if (is_weapon(obj) || ((is_gloves(obj) || is_boots(obj)) && objects[obj->otyp].oc_name_known) || objects[obj->otyp].oc_class == GEM_CLASS)
+	if (is_weapon(obj) || ((is_gloves(obj) || is_boots(obj)) && stats_known) || objects[obj->otyp].oc_class == GEM_CLASS)
 	{
 		char plusbuf[BUFSZ];
 		boolean maindiceprinted = FALSE;
@@ -764,7 +766,7 @@ register struct obj* obj;
 				Sprintf(plusbuf, "%d", objects[otyp].oc_wsdmgplus);
 				Strcat(buf, plusbuf);
 			}
-			if (objects[otyp].oc_name_known && (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
+			if (stats_known && (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
 			{
 				/* Damage - Doubled */
 				Sprintf(eos(buf), " (x2)");
@@ -814,7 +816,7 @@ register struct obj* obj;
 				Sprintf(plusbuf, "%d", objects[otyp].oc_wldmgplus);
 				Strcat(buf, plusbuf);
 			}
-			if (objects[otyp].oc_name_known && (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
+			if (stats_known && (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
 			{
 				/* Damage - Doubled */
 				Sprintf(eos(buf), " (x2)");
@@ -854,7 +856,8 @@ register struct obj* obj;
 
 
 
-		if (objects[otyp].oc_name_known && ((objects[otyp].oc_wedice > 0 && objects[otyp].oc_wedam > 0) || objects[otyp].oc_wedmgplus != 0))
+		if (stats_known
+			&& ((objects[otyp].oc_wedice > 0 && objects[otyp].oc_wedam > 0) || objects[otyp].oc_wedmgplus != 0))
 		{
 
 			/* Damage - Extra */
@@ -974,7 +977,7 @@ register struct obj* obj;
 
 	if (objects[otyp].oc_class == WAND_CLASS || (objects[otyp].oc_class == TOOL_CLASS && is_wand_like_tool(obj)))
 	{
-		if (objects[otyp].oc_name_known)
+		if (stats_known)
 		{
 			if (objects[otyp].oc_wsdice > 0 || objects[otyp].oc_wsdam > 0 || objects[otyp].oc_wsdmgplus > 0)
 			{
@@ -1018,7 +1021,8 @@ register struct obj* obj;
 		}
 	}
 
-	if (objects[otyp].oc_name_known && objects[otyp].oc_class != SPBOOK_CLASS && objects[otyp].oc_class != WAND_CLASS &&
+	if (stats_known
+		&& objects[otyp].oc_class != SPBOOK_CLASS && objects[otyp].oc_class != WAND_CLASS &&
 		(objects[otyp].oc_class == ARMOR_CLASS || (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || objects[otyp].oc_spell_casting_penalty != 0))
 	{
 		int splcaster = objects[otyp].oc_spell_casting_penalty;
@@ -1047,7 +1051,7 @@ register struct obj* obj;
 			if (obj->oclass == WEAPON_CLASS || is_weptool(obj))
 			{
 				int enchplus = obj->spe;
-				if (objects[otyp].oc_name_known && (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
+				if (stats_known && (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
 				{
 					enchplus *= 2;
 				}
@@ -1055,7 +1059,7 @@ register struct obj* obj;
 				Sprintf(bonusbuf, " (%s%d to hit and damage)", enchplus >= 0 ? "+" : "", enchplus);
 			}
 
-			if (obj->oclass == ARMOR_CLASS || (objects[otyp].oc_name_known && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)))
+			if (obj->oclass == ARMOR_CLASS || (stats_known && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)))
 			{
 				if (objects[otyp].oc_flags & O1_SPE_AFFECTS_MC)
 				{
@@ -1081,7 +1085,7 @@ register struct obj* obj;
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
-	if (obj->oeroded || obj->oeroded2 || (obj->rknown && obj->oerodeproof))
+	if (obj->rknown && (obj->oeroded || obj->oeroded2 || obj->oerodeproof))
 	{
 		char erodebuf[BUFSZ] = "";
 		char penaltybuf[BUFSZ] = "";
@@ -1098,7 +1102,7 @@ register struct obj* obj;
 				Sprintf(penaltybuf, "(%d to damage) ", -penalty);
 			}
 
-			if (obj->oclass == ARMOR_CLASS || (objects[otyp].oc_name_known && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)))
+			if (obj->oclass == ARMOR_CLASS || (stats_known && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)))
 			{
 				penalty = min(greatest_erosion(obj), objects[obj->otyp].oc_armor_class);
 				Sprintf(eos(penaltybuf), "(+%d penalty to AC)", penalty);
@@ -1133,7 +1137,7 @@ register struct obj* obj;
 	}
 
 	/* Various extra info is the item is known */
-	if (objects[otyp].oc_name_known	&& !object_uses_spellbook_wand_flags_and_properties(obj) && !(obj->oartifact && !obj->nknown))
+	if (stats_known && !object_uses_spellbook_wand_flags_and_properties(obj))
 	{
 		if (objects[otyp].oc_oprop > 0
 			|| objects[otyp].oc_oprop2 > 0 

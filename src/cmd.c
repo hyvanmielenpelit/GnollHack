@@ -3133,9 +3133,8 @@ int final;
     if (u.uedibility || maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)))
         you_can("recognize detrimental food", "");
 
+
     /*** Vision and senses ***/
-    if (!Blind && (Blinded || !haseyes(youmonst.data)))
-        you_can("see", from_what(-BLINDED)); /* Eyes of the Overworld */
     if (See_invisible) {
         if (!Blind)
             enl_msg(You_, "see", "saw", " invisible", from_what(SEE_INVISIBILITY));
@@ -3147,6 +3146,8 @@ int final;
 		you_have("enhanced vision", from_what(ENHANCED_VISION));
 	if (Eye_protection)
 		you_are("protected from eye damage", from_what(EYE_PROTECTION));
+	if (Blocks_Blindness)
+		you_are("protected against blindness ", from_what(BLOCKS_BLINDNESS));
 	if (Flash_resistance)
 		you_are("protected from bright light", from_what(FLASH_RES));
 	if (Brain_protection)
@@ -3215,13 +3216,6 @@ int final;
         you_have("automatic searching", from_what(SEARCHING));
     if (Clairvoyant)
         you_are("clairvoyant", from_what(CLAIRVOYANT));
-    else if ((HClairvoyant || EClairvoyant) && BClairvoyant) {
-        Strcpy(buf, from_what(-CLAIRVOYANT));
-        if (!strncmp(buf, " because of ", 12))
-            /* overwrite substring; strncpy doesn't add terminator */
-            (void) strncpy(buf, " if not for ", 12);
-        enl_msg(You_, "could be", "could have been", " clairvoyant", buf);
-    }
     if (Infravision)
         you_have("infravision", from_what(INFRAVISION));
     if (Detect_monsters)
@@ -3246,12 +3240,12 @@ int final;
     }
     if (Invisible)
         you_are("invisible", from_what(INVISIBILITY));
-    else if (Invis)
+	if (Blocks_Invisibility)
+		you_are("blocking invisibility ", from_what(BLOCKS_INVISIBILITY));
+	else if (Invis)
         you_are("invisible to others", from_what(INVISIBILITY));
     /* ordinarily "visible" is redundant; this is a special case for
        the situation when invisibility would be an expected attribute */
-    else if ((HInvis || EInvis) && Blocks_Invisibility)
-        you_are("visible", from_what(-INVISIBILITY));
     if (Displaced)
         you_are("displaced", from_what(DISPLACED));
     if (Stealth)

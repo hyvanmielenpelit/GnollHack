@@ -121,6 +121,8 @@ const struct propname {
 	{ MIND_SHIELDING, "mind shielding", "mind shielding" },
 	{ ODD_IDEAS, "visionary ideas", "visionary ideas" },
 	{ MAGICAL_KICKING, "magical kicking", "magical kicking" },
+	{ BLOCKS_INVISIBILITY, "blocks invisibility", "blocks invisibility" },
+	{ BLOCKS_BLINDNESS, "blocks blindness", "blocks blindness"  },
 	{ LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
 	{  0, 0 },
 };

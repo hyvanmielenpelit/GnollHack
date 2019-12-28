@@ -71,7 +71,7 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
 	   (AF_RESTR | AF_ATTK | AF_FAMOUS), SPFX_NONE, SPFX_NONE, 0, ELEC(5, 30), NO_DFNS, NO_CARY, 0,
       A_NEUTRAL, PM_VALKYRIE, NON_PM, 4000L, NO_COLOR, NO_COLOR),
 
-	/* Note: Battle axe of cleaving is different, it doubles the effect of Tsurugi of Muramasa --JG */
+	/* Note: Battle axe of cleaving is different, it mimicks the effect of Tsurugi of Muramasa --JG */
     A("Cleaver", "runed double-headed axe", BATTLE_AXE, BATTLE_AXE,  AF_RESTR, SPFX_NONE, SPFX_NONE, 0, PHYS(3, 6), NO_DFNS, NO_CARY,
       0, A_NEUTRAL, PM_BARBARIAN, NON_PM, 1500L, NO_COLOR, NO_COLOR),
 
@@ -95,7 +95,7 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
       PHYS(5, ART_TRIPLE_DAMAGE), NO_DFNS, NO_CARY, 0, A_CHAOTIC, NON_PM, PM_ELF, 2000L,
       CLR_BRIGHT_BLUE, NO_COLOR), /* bright blue is actually light blue */
 
-    A("Sting", "ornate runed dagger", ELVEN_RUNEDAGGER, ELVEN_DAGGER, AF_DFLAG2, SPFX_WARN, SPFX_NONE, M2_ORC,
+    A("Sting", "ornate runed dagger", ELVEN_RUNEDAGGER, ELVEN_DAGGER, (AF_DFLAG2), SPFX_WARN, SPFX_NONE, M2_ORC,
 		PHYS(5, ART_DOUBLE_DAMAGE), NO_DFNS, NO_CARY, 0, A_CHAOTIC, NON_PM, PM_ELF, 1000L, CLR_BRIGHT_BLUE, NO_COLOR),
     /*
      *      Magicbane is a bit different!  Its magic fanfare
@@ -227,7 +227,7 @@ A("The Palantir of Westernesse",        CRYSTAL_BALL, CRYSTAL_BALL,
       NO_COLOR, CLR_MAGENTA),
 
     A("The Eyes of the Overworld", "runed eyeglasses", LENSES, LENSES,
-		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED), SPFX_XRAY, SPFX_NONE, 0, NO_ATTK,
+		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED), (SPFX_XRAY | SPFX_BLIND_SEEING), SPFX_NONE, 0, NO_ATTK,
       DFNS(AD_MAGM), NO_CARY, ENLIGHTENING, A_NEUTRAL, PM_MONK, NON_PM,
       2500L, NO_COLOR, CLR_MAGENTA),
 

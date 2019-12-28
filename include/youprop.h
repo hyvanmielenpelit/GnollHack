@@ -22,6 +22,18 @@
 
 #define maybe_polyd(if_so, if_not) (Upolyd ? (if_so) : (if_not))
 
+/* Blocking abiliities */
+#define HBlocks_Invisibility u.uprops[BLOCKS_INVISIBILITY].intrinsic
+#define EBlocks_Invisibility u.uprops[BLOCKS_INVISIBILITY].extrinsic
+#define BBlocks_Invisibility u.uprops[BLOCKS_INVISIBILITY].blocked
+#define Blocks_Invisibility ((HBlocks_Invisibility || EBlocks_Invisibility) && !BBlocks_Invisibility)
+
+#define HBlocks_Blindness u.uprops[BLOCKS_BLINDNESS].intrinsic
+#define EBlocks_Blindness u.uprops[BLOCKS_BLINDNESS].extrinsic
+#define BBlocks_Blindness u.uprops[BLOCKS_BLINDNESS].blocked
+#define Blocks_Blindness ((HBlocks_Blindness|| EBlocks_Blindness) && !BBlocks_Blindness)
+
+
 /*** Resistances to troubles ***/
 /* With intrinsics and extrinsics */
 #define HFire_resistance u.uprops[FIRE_RES].intrinsic
@@ -110,7 +122,7 @@
 #define Blind                                     \
     ((u.uroleplay.blind || Blinded || Blindfolded \
       || !haseyes(youmonst.data))                 \
-     && !(ublindf && ublindf->oartifact == ART_EYES_OF_THE_OVERWORLD))
+     && !Blocks_Blindness)
 /* ...the Eyes operate even when you really are blind
     or don't have any eyes */
 #define Blindfolded_only                                            \
@@ -282,11 +294,6 @@
 
 /*** Appearance and behavior ***/
 #define Adornment u.uprops[ADORNED].extrinsic
-
-#define HBlocks_Invisibility u.uprops[BLOCKS_INVISIBILITY].intrinsic
-#define EBlocks_Invisibility u.uprops[BLOCKS_INVISIBILITY].extrinsic
-#define BBlocks_Invisibility u.uprops[BLOCKS_INVISIBILITY].blocked
-#define Blocks_Invisibility ((HBlocks_Invisibility || EBlocks_Invisibility) && !BBlocks_Invisibility)
 
 #define HInvis u.uprops[INVISIBILITY].intrinsic
 #define EInvis u.uprops[INVISIBILITY].extrinsic
