@@ -20,7 +20,8 @@
 #define AF_FAMOUS							0x00001000L  /* Name is always known */
 #define AF_NAME_KNOWN_WHEN_PICKED_UP		0x00002000L  /* Ditto */
 #define AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED	0x00004000L  /* Ditto */
-#define AF_READABLE	0x00008000L  /* readable even if base item is not */
+#define AF_NAME_KNOWN_WHEN_INVOKED			0x00008000L  /* Ditto */
+#define AF_READABLE	0x00010000L  /* readable even if base item is not */
 
 /* monster class flags and mask here */
 #define AF_DMONS	0x00100000L  /* attack bonus on one monster type */

@@ -371,7 +371,36 @@ struct objclass {
     schar oc_subtyp;		 /* armors: armor category, weapons: weapon category, miscellaneous magic items: subclass, etc.*/
 	schar oc_skill;			 /* Skills of weapons, spellbooks, tools, gems */
 	uchar oc_oprop, oc_oprop2, oc_oprop3; /* properties (invis, &c.) conveyed */
-	
+	unsigned long pflags;	 /* Power and property flags */
+
+#define P1_NONE												0x00000000
+#define P1_POWER_1_APPLIES_TO_ALL_CHARACTERS				0x00000001  /* Do not use with WARN_OF_XXXX powers */
+#define P1_POWER_1_APPLIES_TO_INAPPROPRIATE_CHARACTERS		0x00000002  /* Not implemented */
+#define P1_POWER_1_APPLIES_WHEN_CARRIED						0x00000004  /* Not implemented */
+#define P1_POWER_2_APPLIES_TO_ALL_CHARACTERS				0x00000008  /* Do not use with WARN_OF_XXXX powers */
+#define P1_POWER_2_APPLIES_TO_INAPPROPRIATE_CHARACTERS		0x00000010  /* Not implemented */
+#define P1_POWER_2_APPLIES_WHEN_CARRIED						0x00000020  /* Not implemented */
+#define P1_POWER_3_APPLIES_TO_ALL_CHARACTERS				0x00000040  /* Do not use with WARN_OF_XXXX powers */
+#define P1_POWER_3_APPLIES_TO_INAPPROPRIATE_CHARACTERS		0x00000080  /* Not implemented */
+#define P1_POWER_3_APPLIES_WHEN_CARRIED						0x00000100  /* Not implemented */
+#define P1_HP_BONUS_APPLIES_TO_ALL_CHARACTERS				0x00000200  
+#define P1_HP_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS		0x00000400  /* Not implemented */
+#define P1_HP_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS	0x00000800  /* Not implemented */
+#define P1_HP_BONUS_APPLIES_WHEN_CARRIED					0x00001000  /* Not implemented */
+#define P1_MANA_BONUS_APPLIES_TO_ALL_CHARACTERS				0x00002000  
+#define P1_MANA_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS	0x00004000  /* Not implemented */
+#define P1_MANA_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS	0x00008000  /* Not implemented */
+#define P1_MANA_BONUS_APPLIES_WHEN_CARRIED					0x00010000  /* Not implemented */
+#define P1_ATTRIBUTE_BONUS_APPLIES_TO_ALL_CHARACTERS		0x00020000 
+#define P1_ATTRIBUTE_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS	0x00040000  /* Not implemented */
+#define P1_ATTRIBUTE_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS	0x00080000  /* Not implemented */
+#define P1_ATTRIBUTE_APPLIES_WHEN_CARRIED					0x00100000  /* Not implemented */
+#define P1_LUCK_APPLIES_TO_ALL_CHARACTERS					0x00200000 
+#define P1_LUCK_APPLIES_TO_INAPPROPRIATE_CHARACTERS			0x00400000  /* Not implemented */
+#define P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS		0x00800000  /* Not implemented */
+#define P1_LUCK_APPLIES_WHEN_CARRIED						0x01000000  /* Not implemented */
+
+
 	char  oc_class; /* object class (enum obj_class_types) */
     schar oc_delay; /* delay when using such an object */
     uchar oc_color; /* color of the object */
@@ -389,7 +418,7 @@ struct objclass {
 	int oc_wldice, oc_wldam, oc_wldmgplus;	/* large monster damage, also used for duration for spells */
 	int oc_extra_damagetype;				/* Type of extra damage caused by the (magic) weapon */
 	int oc_wedice, oc_wedam, oc_wedmgplus;	/* extra damage used as a special effect influenced by target permissions mask */
-	long oc_aflags;							/* attack related flags, e.g. whether the attack is vorpal */
+	unsigned long oc_aflags;				/* attack related flags, e.g. whether the attack is vorpal */
 
 /* Attack flags for weapons, armor, weapon-like tools, and miscellaneous items */
 #define A1_NONE				0x00000000
@@ -671,13 +700,13 @@ struct objclass {
 #define O3_NO_WISH									0x00000001  /* item is special, it cannot be wished for, mimics oc_nowish */
 #define O3_UNIQUE									0x00000002  /* the item is unique, mimics oc_unique */
 /* free bit */
-#define O3_POWER_1_DISRESPECTS_CHARACTERS			0x00000008  /* Do not use with WARN_OF_XXXX powers */
-#define O3_POWER_2_DISRESPECTS_CHARACTERS			0x00000010  /* Do not use with WARN_OF_XXXX powers */
-#define O3_POWER_3_DISRESPECTS_CHARACTERS			0x00000020  /* Do not use with WARN_OF_XXXX powers */
-#define O3_HP_BONUS_DISRESPECTS_CHARACTERS			0x00000040
-#define O3_MANA_BONUS_DISRESPECTS_CHARACTERS		0x00000080
-#define O3_ATTRIBUTE_BONUS_DISRESPECTS_CHARACTERS	0x00000100
-#define O3_LUCK_DISRESPECTS_CHARACTERS				0x00000200
+/* free bit */
+/* free bit */
+/* free bit */
+/* free bit */
+/* free bit */
+/* free bit */
+/* free bit */
 
 #define O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS	0x00000400  /* wielding or wearing prohibits the revival of permitted targets */
 #define O3_PREVENTS_SUMMONING_BY_PERMITTED_TARGETS	0x00000800  /* wielding or wearing prohibits AD_XXXX-type innate summoning by permitted targets; the target can still summon using spells */

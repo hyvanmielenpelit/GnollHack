@@ -1136,6 +1136,20 @@ register struct obj* obj;
 		putstr(datawin, 0, txt);
 	}
 
+	if (obj->cooldownleft > 0)
+	{
+		Sprintf(buf, "Cooldown left:          %d rounds", obj->cooldownleft);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (stats_known && obj->invokeon)
+	{
+		Sprintf(buf, "Invoked ability:        Activated");
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
 	/* Various extra info is the item is known */
 	if (stats_known && !object_uses_spellbook_wand_flags_and_properties(obj))
 	{
@@ -2315,9 +2329,23 @@ register struct obj* obj;
 	return 0;
 }
 
-char* get_damage_type_text(damagetype)
+static const char* damage_type_names[] = {
+	"physical", "magic", "fire", "cold", "",
+	"", "", "electrical", "", "",
+	"", "", "stunning", "", "",
+	"life draining",
+};
+
+
+const char* get_damage_type_text(damagetype)
 int damagetype;
 {
+	if (damagetype < 0 || damagetype >= SIZE(damage_type_names))
+		return "";
+
+	return damage_type_names[damagetype];
+
+#if 0
 	static char buf[BUFSZ] = "";
 	
 	switch (damagetype)
@@ -2345,17 +2373,34 @@ int damagetype;
 	}
 
 	return buf;
+#endif
 }
 
-char* get_defense_type_text(defensetype)
+static const char* defense_type_names[] = {
+	"physical damage resistance", "magic resistance", "fire resistance", "cold resistance", "",
+	"", "", "shock resistance", "", "",
+	"", "", "stun resistance", "", "",
+	"drain resistance",
+};
+
+const char* get_defense_type_text(defensetype)
 int defensetype;
 {
+	if (defensetype < 0 || defensetype >= SIZE(defense_type_names))
+		return "";
+
+	return defense_type_names[defensetype];
+
+#if 0
 	static char buf[BUFSZ] = "";
 
 	switch (defensetype)
 	{
 	case AD_PHYS:
 		strcpy(buf, "physical damage resistance");
+		break;
+	case AD_MAGM:
+		strcpy(buf, "magic resistance");
 		break;
 	case AD_FIRE:
 		strcpy(buf, "fire resistance");
@@ -2366,27 +2411,35 @@ int defensetype;
 	case AD_ELEC:
 		strcpy(buf, "shock resistance");
 		break;
-	case AD_DRLI:
-		strcpy(buf, "drain resistance");
-		break;
 	case AD_STUN:
 		strcpy(buf, "stun resistance");
 		break;
-	case AD_MAGM:
-		strcpy(buf, "magic resistance");
+	case AD_DRLI:
+		strcpy(buf, "drain resistance");
 		break;
 	default:
 		break;
 	}
 
 	return buf;
+#endif
 }
 
-char* get_artifact_invoke_name(specialpropindex)
+static const char* artifact_invoke_names[] = { 
+	"taming", "healing", "mana replenishment", "untrapping", "charging",
+	"level teleportation", "portal creation", "enlightenment", "arrow creation", "death ray",
+};
+
+const char* get_artifact_invoke_name(specialpropindex)
 int specialpropindex;
 {
-	static char buf[BUFSZ] = "";
+	if (specialpropindex < TAMING || specialpropindex >= TAMING + SIZE(artifact_invoke_names))
+		return "";
 
+	return artifact_invoke_names[specialpropindex - TAMING];
+
+#if 0
+	static char buf[BUFSZ] = "";
 
 	switch (specialpropindex)
 	{
@@ -2425,6 +2478,7 @@ int specialpropindex;
 	}
 
 	return buf;
+#endif
 }
 
 /* Called when a boulder is dropped, thrown, or pushed.  If it ends up

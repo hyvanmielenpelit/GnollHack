@@ -61,7 +61,7 @@ struct monst { struct monst *dummy; };  /* lint: struct obj's union */
 #ifndef OBJECTS_PASS_2_
 /* first pass -- object descriptive text */
 #define OBJ(name,desc)  name, desc
-#define OBJECT(obj,contentdesc,shortdesc,bits,prp1,prp2,prp3,sym,prob,multigen,dly,wt,cost, \
+#define OBJECT(obj,contentdesc,shortdesc,bits,prp1,prp2,prp3,pflags,sym,prob,multigen,dly,wt,cost, \
                dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus, edmgtype,edice,edam,edmgplus,aflags,critpct,  hitbon,mcadj,fixdmgbon,range,  oc1,oc2,oc3,oc4,oc5,oc6,oc7,oc8,  nut,color,  dirsubtype,materials,cooldown,level,  powconfermask,permittedtargets,flags,flags2,flags3)  { obj }
 #define None (char *) 0 /* less visual distraction for 'no description' */
 
@@ -70,8 +70,8 @@ NEARDATA struct objdescr obj_descr[] =
 /* second pass -- object definitions */
 #define BITS(nmkn,mrg,uskn,ctnr,mgc,chrg,uniq,nwsh,big,tuf,dir,sub,skill,mtrl) \
   nmkn,mrg,uskn,0,mgc,chrg,uniq,nwsh,big,tuf,dir,mtrl,sub,skill /*SCO cpp fodder*/
-#define OBJECT(obj,contentdesc,shortdesc,bits,prp1,prp2,prp3,sym,prob,multigen,dly,wt,cost,   dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,critpct,   hitbon,mcadj,fixdmgbon,range,  oc1,oc2,oc3,oc4,oc5,oc6,oc7,oc8,  nut,color,  dirsubtype,materials,cooldown,level,  powconfermask,permittedtargets,flags,flags2,flags3) \
-  { 0, 0, (char *) 0, contentdesc, shortdesc, bits, prp1, prp2, prp3, sym, dly, COLOR_FIELD(color) prob, wt, nut,  \
+#define OBJECT(obj,contentdesc,shortdesc,bits,prp1,prp2,prp3,pflags,sym,prob,multigen,dly,wt,cost,   dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,critpct,   hitbon,mcadj,fixdmgbon,range,  oc1,oc2,oc3,oc4,oc5,oc6,oc7,oc8,  nut,color,  dirsubtype,materials,cooldown,level,  powconfermask,permittedtargets,flags,flags2,flags3) \
+  { 0, 0, (char *) 0, contentdesc, shortdesc, bits, prp1, prp2, prp3, pflags, sym, dly, COLOR_FIELD(color) prob, wt, nut,  \
     cost, dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, hitbon, mcadj, fixdmgbon, range,   oc1, oc2, oc3, oc4, oc5, oc6, oc7, oc8,   dirsubtype, materials, cooldown, level,  flags,flags2,flags3,powconfermask, permittedtargets, critpct, multigen }
 #ifndef lint
 #define HARDGEM(n) (n >= 8)
@@ -85,7 +85,7 @@ NEARDATA struct objclass objects[] =
 	/* dummy object[0] -- description [2nd arg] *must* be NULL */
 	OBJECT(OBJ("strange object", None), None, None, \
 		   BITS(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, P_NONE, 0), \
-		   NO_POWER, NO_POWER, NO_POWER, ILLOBJ_CLASS, 0, MULTIGEN_SINGLE, 0, 0, 0, \
+		   NO_POWER, NO_POWER, NO_POWER, P1_NONE, ILLOBJ_CLASS, 0, MULTIGEN_SINGLE, 0, 0, 0, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
 		   0, 0, \
@@ -96,11 +96,11 @@ NEARDATA struct objclass objects[] =
 	#define WEAPON(name,desc,nmkn,mrg,mgc,bi,prob,multigen,wt,cost,\
 				dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,critpct, \
 				hitbon,mcadj,throwrange,acbon,mcbon,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,\
-				power,power2,power3,typ,sub,skill,metal,color,\
+				power,power2,power3,pflags,typ,sub,skill,metal,color,\
 				flags,flags2,flags3,powconfermask,permittedtargets) \
 	    OBJECT(OBJ(name,desc), None, None,                                         \
 	           BITS(nmkn, mrg, 1, 0, mgc, 1, 0, 0, bi, 0, typ, sub, skill, metal),  \
-	           power, power2, power3, WEAPON_CLASS, prob, multigen, 0, wt, cost, \
+	           power, power2, power3, pflags, WEAPON_CLASS, prob, multigen, 0, wt, cost, \
 			   dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, critpct, \
 			   hitbon, mcadj, 0, throwrange, acbon, mcbon, manabon, hpbon, bonusattrs, attrbonus, splcastpen, multicount, \
 			   wt, color, \
@@ -111,7 +111,7 @@ NEARDATA struct objclass objects[] =
 	#define PROJECTILE(name,desc,  nmkn,mgc,prob,multigen,wt,cost,  dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,critpct,  hitbon,mcadj,  metal,sub,launcher_skill,skill,color,  flags,flags2,flags3, permittedtargets) \
 	    OBJECT(OBJ(name,desc), None, None,   \
 	           BITS(nmkn, 1, 1, 0, mgc, 1, 0, 0, 0, 0, PIERCE, sub, skill, metal), \
-	           NO_POWER, NO_POWER, NO_POWER, WEAPON_CLASS, prob, multigen, 0, wt, cost, \
+	           NO_POWER, NO_POWER, NO_POWER, P1_NONE, WEAPON_CLASS, prob, multigen, 0, wt, cost, \
 			   dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, critpct, \
 			   hitbon, mcadj, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
 			   wt, color, \
@@ -119,10 +119,10 @@ NEARDATA struct objclass objects[] =
 			   PERMITTED_ALL, permittedtargets, flags, flags2, flags3)
 
 
-	#define BOW(name,desc,nmkn,mgc,bi,prob,multigen,wt,cost,dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,critpct,hitbon,mcadj,fixeddmgbon,launchrange,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,power,power2,power3,metal,sub,skill,color,flags,flags2,flags3,powconfermask,permittedtargets) \
+	#define BOW(name,desc,nmkn,mgc,bi,prob,multigen,wt,cost,dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,critpct,hitbon,mcadj,fixeddmgbon,launchrange,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,power,power2,power3,pflags,metal,sub,skill,color,flags,flags2,flags3,powconfermask,permittedtargets) \
 	    OBJECT(OBJ(name,desc), None, None,                                         \
 	           BITS(nmkn, 0, 1, 0, mgc, 1, 0, 0, bi, 0, 0, sub, skill, metal),      \
-	           power, power2, power3, WEAPON_CLASS, prob, multigen, 0, wt, cost,                            \
+	           power, power2, power3, pflags, WEAPON_CLASS, prob, multigen, 0, wt, cost,                            \
 	           dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, critpct, \
 			   hitbon, mcadj, fixeddmgbon, launchrange, 0, 0, manabon, hpbon, bonusattrs, attrbonus, splcastpen, multicount,  \
 			   color, wt, \
@@ -214,19 +214,19 @@ WEAPON("dart", None,
     1, 1, 0, 0, 50, MULTIGEN_1D10, 1, 2,
 	AD_PHYS,	1, 2, 0, 1, 3, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,
 	2, 0, 0, 0, 0, 0, 0, 0, 0, 0, MULTISHOT_THROWN_2_EXPERT_1D2_SKILLED,
-	NO_POWER, NO_POWER, NO_POWER, P, WEP_DART, -P_THROWN_WEAPON, MAT_IRON, HI_METAL,
+	NO_POWER, NO_POWER, NO_POWER, P1_NONE, P, WEP_DART, -P_THROWN_WEAPON, MAT_IRON, HI_METAL,
 	O1_THROWN_WEAPON_ONLY, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 WEAPON("shuriken", "throwing star",
     0, 1, 0, 0, 25, MULTIGEN_1D8, 1, 6,
 	AD_PHYS, 1, 5, 0, 1, 8, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,
 	2, 0, 0, 0, 0, 0, 0, 0, 0, 0, MULTISHOT_THROWN_2_EXPERT_1D2_SKILLED,
-	NO_POWER, NO_POWER, NO_POWER, P, WEP_SHURIKEN, -P_THROWN_WEAPON, MAT_IRON, HI_METAL,
+	NO_POWER, NO_POWER, NO_POWER, P1_NONE, P, WEP_SHURIKEN, -P_THROWN_WEAPON, MAT_IRON, HI_METAL,
 	O1_THROWN_WEAPON_ONLY, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 WEAPON("boomerang", None,
     1, 1, 0, 0, 15, MULTIGEN_SINGLE, 5, 20,
 	AD_PHYS, 1, 9, 0, 1, 9, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	NO_POWER, NO_POWER, NO_POWER, 0, WEP_BOOMERANG, -P_THROWN_WEAPON, MAT_WOOD, HI_WOOD,
+	NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, WEP_BOOMERANG, -P_THROWN_WEAPON, MAT_WOOD, HI_WOOD,
 	O1_THROWN_WEAPON_ONLY | O1_RETURNS_TO_HAND_AFTER_THROWING, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 
 /* spears [note: javelin used to have a separate skill from spears,
@@ -238,49 +238,49 @@ WEAPON("spear", None,
 	1, 1, 0, 0, 45, MULTIGEN_SINGLE, 30,   3,	
 	AD_PHYS,	1, 6, 0, 1, 8, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, -60, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, P, WEP_SPEAR, P_SPEAR, MAT_IRON, HI_METAL, 
+	0, 0, 0, P1_NONE, P, WEP_SPEAR, P_SPEAR, MAT_IRON, HI_METAL,
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("elven spear", "runed spear",
 	0, 1, 0, 0, 10, MULTIGEN_SINGLE, 30,   3,	
 	AD_PHYS,	1, 7, 0, 1, 8, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, -65, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, P, WEP_SPEAR, P_SPEAR, MAT_WOOD, HI_WOOD, 
+	0, 0, 0, P1_NONE, P, WEP_SPEAR, P_SPEAR, MAT_WOOD, HI_WOOD,
 	O1_NONE, O2_ELVEN_ITEM, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("orcish spear", "crude spear",
 	0, 1, 0, 0, 13, MULTIGEN_SINGLE, 30,   3,	
 	AD_PHYS,	1, 5, 0, 1, 8, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, -55, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, P, WEP_SPEAR, P_SPEAR, MAT_IRON, CLR_BLACK, 
+	0, 0, 0, P1_NONE, P, WEP_SPEAR, P_SPEAR, MAT_IRON, CLR_BLACK,
 	O1_NONE, O2_ORCISH_ITEM, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("dwarvish spear", "stout spear",
 	0, 1, 0, 0, 12, MULTIGEN_SINGLE, 35,   3, 
 	AD_PHYS, 1, 8, 0, 1, 8, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, -50, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, P, WEP_SPEAR, P_SPEAR, MAT_IRON, HI_METAL,
+	0, 0, 0, P1_NONE, P, WEP_SPEAR, P_SPEAR, MAT_IRON, HI_METAL,
 	O1_NONE, O2_DWARVEN_ITEM, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("silver spear", None,
 	1, 1, 0, 0,  2, MULTIGEN_SINGLE, 36,  40, 
 	AD_PHYS, 1, 6, 0,  1, 8, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, -60, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, P, WEP_SPEAR, P_SPEAR, MAT_SILVER, HI_SILVER, 
+	0, 0, 0, P1_NONE, P, WEP_SPEAR, P_SPEAR, MAT_SILVER, HI_SILVER,
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("javelin", "throwing spear",
 	0, 0, 0, 0, 10, MULTIGEN_SINGLE, 20,   3, 
 	AD_PHYS, 1, 6, 0, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, -100, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, P, WEP_JAVELIN, P_SPEAR, MAT_IRON, HI_METAL, 
+	0, 0, 0, P1_NONE, P, WEP_JAVELIN, P_SPEAR, MAT_IRON, HI_METAL,
 	O1_THROWN_WEAPON_ONLY, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("javelin of returning", "throwing spear",
 	0, 1, 1, 0, 5, MULTIGEN_SINGLE, 20,   3, 
 	AD_PHYS, 1, 6, 0, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, -100, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, P, WEP_JAVELIN, P_SPEAR, MAT_IRON, HI_METAL, 
+	0, 0, 0, P1_NONE, P, WEP_JAVELIN, P_SPEAR, MAT_IRON, HI_METAL,
 	O1_THROWN_WEAPON_ONLY | O1_WEIGHT_DOES_NOT_REDUCE_RANGE | O1_RETURNS_TO_HAND_AFTER_THROWING, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 
@@ -289,14 +289,14 @@ WEAPON("trident", None,
 	1, 0, 0, 0,  6, MULTIGEN_SINGLE, 25,   5, 
 	AD_PHYS, 1,  6, 1, 3,  4, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, P, WEP_TRIDENT, P_SPEAR, MAT_IRON, HI_METAL, 
+	0, 0, 0, P1_NONE, P, WEP_TRIDENT, P_SPEAR, MAT_IRON, HI_METAL,
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("silver fork", None,
 	1, 0, 0, 0, 2, MULTIGEN_SINGLE, 5, 40, 
 	AD_PHYS, 1, 2, 0, 0, 0, 1, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, P, WEP_FORK, P_SPEAR, MAT_SILVER, HI_SILVER, 
+	0, 0, 0, P1_NONE, P, WEP_FORK, P_SPEAR, MAT_SILVER, HI_SILVER,
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 
@@ -306,98 +306,98 @@ WEAPON("dagger", None,
 	1, 1, 0, 0, 14, MULTIGEN_SINGLE, 10,   4, 
 	AD_PHYS, 1, 4, 0, 1,  3, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, P, WEP_DAGGER, P_DAGGER, MAT_IRON, HI_METAL, 
+	0, 0, 0, P1_NONE, P, WEP_DAGGER, P_DAGGER, MAT_IRON, HI_METAL,
 	O1_MELEE_AND_THROWN_WEAPON, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("elven dagger", "runed dagger",
 	0, 1, 0, 0, 10, MULTIGEN_SINGLE, 10,   4, 
 	AD_PHYS, 1, 5, 0, 1, 3, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, P, WEP_DAGGER, P_DAGGER, MAT_WOOD, HI_WOOD, 
+	0, 0, 0, P1_NONE, P, WEP_DAGGER, P_DAGGER, MAT_WOOD, HI_WOOD,
 	O1_MELEE_AND_THROWN_WEAPON, O2_ELVEN_ITEM, O3_NONE,
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("elven runedagger", "runed dagger", /* Base item for Sting */
 	0, 1, 0, 0, 0, MULTIGEN_SINGLE, 10,   4, 
 	AD_PHYS, 1, 5, 2, 1, 3, 2, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, P, WEP_DAGGER, P_DAGGER, MAT_WOOD, HI_WOOD, 
+	0, 0, 0, P1_NONE, P, WEP_DAGGER, P_DAGGER, MAT_WOOD, HI_WOOD,
 	O1_MELEE_AND_THROWN_WEAPON, O2_ELVEN_ITEM, O3_NO_WISH,
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("orcish dagger", "crude dagger",
 	0, 1, 0, 0, 12, MULTIGEN_SINGLE, 10, 4, 
 	AD_PHYS, 1, 3, 0, 1,  3, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, P, WEP_DAGGER, P_DAGGER, MAT_IRON, CLR_BLACK, 
+	0, 0, 0, P1_NONE, P, WEP_DAGGER, P_DAGGER, MAT_IRON, CLR_BLACK,
 	O1_MELEE_AND_THROWN_WEAPON, O2_ORCISH_ITEM, O3_NONE,
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("ornamental orcish dagger", "crudely ornated dagger", /* Base weapon for Grimtooth */
     0, 1, 0, 0, 0, MULTIGEN_SINGLE, 10, 4, 
 	AD_PHYS, 3, 3, 0, 3, 3, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	NO_POWER, NO_POWER, NO_POWER, P, WEP_DAGGER, P_DAGGER, MAT_IRON, CLR_BLACK,
+	NO_POWER, NO_POWER, NO_POWER, P1_NONE, P, WEP_DAGGER, P_DAGGER, MAT_IRON, CLR_BLACK,
 	O1_MELEE_AND_THROWN_WEAPON, O2_ORCISH_ITEM, O3_NO_WISH,
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("bone dagger", None,
 	1, 1, 0, 0, 6, MULTIGEN_SINGLE, 10,   4, 
 	AD_PHYS, 1, 3, 0, 1,  3, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, P, WEP_DAGGER, P_DAGGER, MAT_BONE, CLR_WHITE, 
+	0, 0, 0, P1_NONE, P, WEP_DAGGER, P_DAGGER, MAT_BONE, CLR_WHITE,
 	O1_MELEE_AND_THROWN_WEAPON, O2_NONE, O3_NONE,
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("silver dagger", None,
 	1, 1, 0, 0, 3, MULTIGEN_SINGLE, 12,  40, 
 	AD_PHYS, 1, 4, 0, 1,  3, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, P, WEP_DAGGER, P_DAGGER, MAT_SILVER, HI_SILVER, 
+	0, 0, 0, P1_NONE, P, WEP_DAGGER, P_DAGGER, MAT_SILVER, HI_SILVER, 
 	O1_MELEE_AND_THROWN_WEAPON, O2_NONE, O3_NONE,
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("Morgul blade", "black dagger",
 	0, 0, 1, 0, 0, MULTIGEN_SINGLE, 10, 100,  
 	AD_PHYS, 1, 4, 0, 1, 3, 0, AD_PHYS, 1, 3, 1, A1_WOUNDING, 0, 
 	2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, P, WEP_DAGGER, P_DAGGER, MAT_IRON, CLR_BLACK, 
+	0, 0, 0, P1_NONE, P, WEP_DAGGER, P_DAGGER, MAT_IRON, CLR_BLACK, 
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("main-gauche", None,
 	1, 1, 0, 0, 4, MULTIGEN_SINGLE, 10,   4, 
 	AD_PHYS, 1, 4, 0, 1,  3, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, P, WEP_DAGGER, P_DAGGER, MAT_IRON, HI_METAL, 
+	0, 0, 0, P1_NONE, P, WEP_DAGGER, P_DAGGER, MAT_IRON, HI_METAL, 
 	O1_IS_ARMOR_WHEN_WIELDED, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("athame", None,
 	1, 1, 0, 0, 0, MULTIGEN_SINGLE, 10,   4, 
 	AD_PHYS, 1, 4, 0, 1,  3, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, S, WEP_KNIFE, P_DAGGER, MAT_IRON, HI_METAL,
+	0, 0, 0, P1_NONE, S,WEP_KNIFE, P_DAGGER, MAT_IRON, HI_METAL,
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("scalpel", None,
 	1, 1, 0, 0, 0, MULTIGEN_SINGLE, 5,   6, 
 	AD_PHYS, 1, 3, 0, 1, 3, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, S, WEP_KNIFE, P_DAGGER, MAT_METAL, HI_METAL, 
+	0, 0, 0, P1_NONE, S,WEP_KNIFE, P_DAGGER, MAT_METAL, HI_METAL, 
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("knife", None,
 	1, 1, 0, 0, 8, MULTIGEN_SINGLE, 5, 4, 
 	AD_PHYS, 1, 3, 0, 1, 2, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, P|S, WEP_KNIFE, P_DAGGER, MAT_IRON, HI_METAL,
+	0, 0, 0, P1_NONE, P|S, WEP_KNIFE, P_DAGGER, MAT_IRON, HI_METAL,
 	O1_NONE, O2_NONE, O3_NONE,
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("silver knife", None,
 	1, 1, 0, 0, 2, MULTIGEN_SINGLE, 5, 40, 
 	AD_PHYS, 1, 3, 0, 1, 2, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, P|S, WEP_KNIFE, P_DAGGER, MAT_SILVER, HI_SILVER,
+	0, 0, 0, P1_NONE, P|S, WEP_KNIFE, P_DAGGER, MAT_SILVER, HI_SILVER,
 	O1_NONE, O2_NONE, O3_NONE,
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("stiletto", None,
 	1, 1, 0, 0, 5, MULTIGEN_SINGLE, 5,   4, 
 	AD_PHYS, 1, 3, 0, 1, 2, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, P|S, WEP_KNIFE, P_DAGGER, MAT_IRON, HI_METAL,
+	0, 0, 0, P1_NONE, P|S, WEP_KNIFE, P_DAGGER, MAT_IRON, HI_METAL,
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 /* 3.6: worm teeth and crysknives now stack;
@@ -406,15 +406,15 @@ WEAPON("stiletto", None,
 WEAPON("worm tooth", None,
 	1, 1, 0, 0, 0, MULTIGEN_SINGLE, 20,   2, 
 	AD_PHYS, 1, 2, 0, 1,  2, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, WEP_WORM_TOOTH, P_DAGGER, 0, CLR_WHITE, 
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+	0, 0, 0, P1_NONE, B, WEP_WORM_TOOTH, P_DAGGER, 0, CLR_WHITE,
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("crysknife", None,
 	1, 1, 0, 0, 0, MULTIGEN_SINGLE, 20, 100, 
 	AD_PHYS, 1, 10, 0, 1, 10, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, P, WEP_WORM_TOOTH, P_DAGGER, MAT_MINERAL, CLR_WHITE,
+	0, 0, 0, P1_NONE, P, WEP_WORM_TOOTH, P_DAGGER, MAT_MINERAL, CLR_WHITE,
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 
@@ -423,28 +423,28 @@ WEAPON("axe", None,
 	1, 0, 0, 0, 22, MULTIGEN_SINGLE, 50,   8, 
 	AD_PHYS, 1, 6, 1, 1, 8, 1, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, S, WEP_AXE, P_AXE, MAT_IRON, HI_METAL, 
+	0, 0, 0, P1_NONE, S, WEP_AXE, P_AXE, MAT_IRON, HI_METAL, 
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("throwing axe", None,
     1, 0, 0, 0, 10, MULTIGEN_SINGLE, 50,   8, 
 	AD_PHYS, 1, 6, 0, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, S, WEP_THROWING_AXE, P_AXE, MAT_IRON, HI_METAL, 
+	0, 0, 0, P1_NONE, S, WEP_THROWING_AXE, P_AXE, MAT_IRON, HI_METAL, 
 	O1_MELEE_AND_THROWN_WEAPON, O2_NONE, O3_NONE,
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("battle-axe", "double-headed axe",       /* "double-bitted"? */
     0, 0, 0, 1, 8, MULTIGEN_SINGLE, 100,  40, 
 	AD_PHYS, 2, 8, 0, 2, 8, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, S, WEP_TWO_HANDED_AXE, P_AXE, MAT_IRON, HI_METAL, 
+	0, 0, 0, P1_NONE, S, WEP_TWO_HANDED_AXE, P_AXE, MAT_IRON, HI_METAL, 
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("battle-axe of cleaving", "runed double-headed axe",    
     0, 0, 1, 1, 2, MULTIGEN_SINGLE, 100, 4000,
 	AD_PHYS, 2, 8, 0, 2, 8, 0, AD_PHYS, 0, 0, 0, A1_BISECT, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, S, WEP_TWO_HANDED_AXE, P_AXE, MAT_IRON, HI_METAL,
+	0, 0, 0, P1_NONE, S, WEP_TWO_HANDED_AXE, P_AXE, MAT_IRON, HI_METAL,
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 
@@ -453,83 +453,83 @@ WEAPON("short sword", None,
     1, 0, 0, 0,  8, MULTIGEN_SINGLE, 45,  10, 
 	AD_PHYS, 1, 6, 0, 1,  8, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, P, WEP_SHORT_SWORD, P_SWORD, MAT_IRON, HI_METAL, 
+	0, 0, 0, P1_NONE, P, WEP_SHORT_SWORD, P_SWORD, MAT_IRON, HI_METAL, 
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("elven short sword", "runed short sword",
 	0, 0, 0, 0,  2, MULTIGEN_SINGLE, 40,  10, 
 	AD_PHYS, 1, 8, 0, 1, 8, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, P, WEP_SHORT_SWORD, P_SWORD, MAT_WOOD, HI_WOOD,
+	0, 0, 0, P1_NONE, P, WEP_SHORT_SWORD, P_SWORD, MAT_WOOD, HI_WOOD,
 	O1_NONE, O2_ELVEN_ITEM, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("orcish short sword", "crude short sword",
 	0, 0, 0, 0,  3, MULTIGEN_SINGLE, 50,  10, 
 	AD_PHYS, 1, 5, 0, 1,  8, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, P, WEP_SHORT_SWORD, P_SWORD, MAT_IRON, CLR_BLACK,
+	0, 0, 0, P1_NONE, P, WEP_SHORT_SWORD, P_SWORD, MAT_IRON, CLR_BLACK,
 	O1_NONE, O2_ORCISH_ITEM, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("dwarvish short sword", "broad short sword",
 	0, 0, 0, 0, 2, MULTIGEN_SINGLE, 50, 10, 
 	AD_PHYS, 1, 7, 0, 1, 8, 0, AD_PHYS, 0, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, P, WEP_SHORT_SWORD, P_SWORD, MAT_IRON, HI_METAL,
+	0, 0, 0, P1_NONE, P, WEP_SHORT_SWORD, P_SWORD, MAT_IRON, HI_METAL,
 	O1_NONE, O2_DWARVEN_ITEM, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("scimitar", "curved sword",
 	0, 0, 0, 0, 10, MULTIGEN_SINGLE, 60, 15, 
 	AD_PHYS, 1, 8, 0, 1, 8, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, S, WEP_SCIMITAR, P_SWORD, MAT_IRON, HI_METAL,
+	0, 0, 0, P1_NONE, S,WEP_SCIMITAR, P_SWORD, MAT_IRON, HI_METAL,
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("silver saber", None,
 	1, 0, 0, 0, 6, MULTIGEN_SINGLE, 55, 75, 
 	AD_PHYS, 1, 8, 0, 1, 8, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, S, WEP_SABER, P_SWORD, MAT_SILVER, HI_SILVER, 
+	0, 0, 0, P1_NONE, S,WEP_SABER, P_SWORD, MAT_SILVER, HI_SILVER, 
 	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 WEAPON("saber of lycanthrope slaying", None, /* Base weapon for Werebane */
 	1, 0, 0, 0, 2, MULTIGEN_SINGLE, 55, 500, 
 	AD_PHYS, 1, 8, 1, 1, 8, 1, AD_PHYS, 2, 8, 0, A1_NONE, 0, 
 	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	WARN_LYCANTHROPE, NO_POWER, NO_POWER, S, WEP_SABER, P_SWORD, MAT_SILVER, HI_SILVER,
+	WARN_LYCANTHROPE, NO_POWER, NO_POWER, P1_NONE, S, WEP_SABER, P_SWORD, MAT_SILVER, HI_SILVER,
 	O1_NONE, O2_NONE, O3_TARGET_PERMISSION_IS_M2_FLAG | O3_PREVENTS_SUMMONING_BY_PERMITTED_TARGETS,
 	PERMITTED_ALL, M2_WERE),
 WEAPON("broadsword", None,
 	1, 0, 0, 0, 8, MULTIGEN_SINGLE, 60, 10, 
 	AD_PHYS, 2, 4, 0, 1, 6, 1, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, S, WEP_BROADSWORD, P_SWORD, MAT_IRON, HI_METAL, 
+	0, 0, 0, P1_NONE, S,WEP_BROADSWORD, P_SWORD, MAT_IRON, HI_METAL, 
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("elven broadsword", "runed broadsword",
 	0, 0, 0, 0, 4, MULTIGEN_SINGLE, 55, 10, 
 	AD_PHYS, 2, 4, 0, 1, 6, 1, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, S, WEP_BROADSWORD, P_SWORD, MAT_WOOD, HI_WOOD,
+	0, 0, 0, P1_NONE, S,WEP_BROADSWORD, P_SWORD, MAT_WOOD, HI_WOOD,
 	O1_NONE, O2_ELVEN_ITEM, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("long sword", None,
 	1, 0, 0, 0, 24, MULTIGEN_SINGLE, 60, 15, 
 	AD_PHYS, 1, 8, 0, 1, 12, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, S, WEP_LONG_SWORD, P_SWORD, MAT_IRON, HI_METAL, 
+	0, 0, 0, P1_NONE, S,WEP_LONG_SWORD, P_SWORD, MAT_IRON, HI_METAL, 
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("silver long sword", None,
 	1, 0, 0, 0, 1, MULTIGEN_SINGLE, 55, 500, 
 	AD_PHYS, 1, 8, 0, 1, 12, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, S, WEP_LONG_SWORD, P_SWORD, MAT_SILVER, HI_SILVER,
+	0, 0, 0, P1_NONE, S,WEP_LONG_SWORD, P_SWORD, MAT_SILVER, HI_SILVER,
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("sword of demon slaying", "shining long sword",
 	0, 0, 1, 0, 2, MULTIGEN_SINGLE, 60, 3000,
 	AD_PHYS, 1, 8, 1, 1, 12, 1, AD_PHYS, 2, 12, 0, A1_WOUNDING, 0,
 	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	WARN_DEMON, NO_POWER, NO_POWER, S, WEP_LONG_SWORD, P_SWORD, MAT_SILVER, HI_SILVER,
+	WARN_DEMON, NO_POWER, NO_POWER, P1_NONE, S, WEP_LONG_SWORD, P_SWORD, MAT_SILVER, HI_SILVER,
 	O1_NONE,
 	O2_FLICKER_COLOR_RED,
 	O3_TARGET_PERMISSION_IS_M2_FLAG | O3_PREVENTS_SUMMONING_BY_PERMITTED_TARGETS,
@@ -538,7 +538,7 @@ WEAPON("sword of holy vengeance", "radiant long sword",
 	0, 0, 1, 0, 2, MULTIGEN_SINGLE, 60, 5000,
 	AD_PHYS, 1, 8, 0, 1, 12, 0, AD_PHYS, 0, 0, 0, A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS, 0,
 	0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0,
-	WARN_UNDEAD, WARN_DEMON, NO_POWER, S, WEP_LONG_SWORD, P_SWORD, MAT_SILVER, HI_SILVER,
+	WARN_UNDEAD, WARN_DEMON, NO_POWER, P1_NONE, S, WEP_LONG_SWORD, P_SWORD, MAT_SILVER, HI_SILVER,
 	O1_NOT_CURSEABLE | O1_SPE_AFFECTS_MC, 
 	O2_ANGELIC_ITEM | O2_GENERATED_BLESSED | O2_SHINES_MAGICAL_LIGHT | O2_FLICKER_COLOR_WHITE,
 	O3_TARGET_PERMISSION_IS_M2_FLAG | O3_PERMTTED_TARGET_CHAOTIC | O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS, 
@@ -547,7 +547,7 @@ WEAPON("sword of unholy desecration", "black long sword",
 	0, 0, 1, 0, 2, MULTIGEN_SINGLE, 60, 3000,
 	AD_PHYS, 1, 8, 0, 1, 12, 0, AD_PHYS, 0, 0, 0, A1_LEVEL_DRAIN | A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS, 0,
 	0, -4, 0, 0, 5, 0, 0, 0, 0, 0, 0,
-	WARN_ANGEL, NO_POWER, NO_POWER, S, WEP_LONG_SWORD, P_SWORD, MAT_METAL, CLR_BLACK,
+	WARN_ANGEL, NO_POWER, NO_POWER, P1_NONE, S, WEP_LONG_SWORD, P_SWORD, MAT_METAL, CLR_BLACK,
 	O1_SPE_AFFECTS_MC_ADJUSTMENT,
 	O2_DEMON_ITEM | O2_FLICKER_COLOR_BLACK,
 	O3_PERMTTED_TARGET_LAWFUL | O3_PERMTTED_TARGET_NEUTRAL | O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS,
@@ -556,96 +556,96 @@ WEAPON("sword of defense", "runed long sword",  // STARTMARKER FOR MAGIC SWORDS 
 	0, 0, 1, 0, 4, MULTIGEN_SINGLE, 60, 750,
 	AD_PHYS, 1, 8, 0, 1, 12, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,
 	0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, S, WEP_LONG_SWORD, P_SWORD, MAT_IRON, HI_METAL,
+	0, 0, 0, P1_NONE, S,WEP_LONG_SWORD, P_SWORD, MAT_IRON, HI_METAL,
 	O1_IS_ARMOR_WHEN_WIELDED, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("sword of sharpness", "ornamental long sword",
 	0, 0, 1, 0, 4, MULTIGEN_SINGLE, 60, 3000,
 	AD_PHYS, 1, 8, 0, 1, 12, 0, AD_PHYS, 0, 0, 1, A1_SHARPNESS, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, S, WEP_LONG_SWORD, P_SWORD, MAT_IRON, HI_METAL,
+	0, 0, 0, P1_NONE, S, WEP_LONG_SWORD, P_SWORD, MAT_IRON, HI_METAL,
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("vorpal sword", "immaculate long sword",
 	0, 0, 1, 0, 2, MULTIGEN_SINGLE, 60, 5000,
 	AD_PHYS, 1, 8, 0, 1, 12, 0, AD_PHYS, 0, 0, 1, A1_VORPAL, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, S, WEP_LONG_SWORD, P_SWORD, MAT_IRON, HI_METAL,
+	0, 0, 0, P1_NONE, S, WEP_LONG_SWORD, P_SWORD, MAT_IRON, HI_METAL,
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("sword of wounding", "exquisite long sword",
 	0, 0, 1, 0, 4, MULTIGEN_SINGLE, 60, 750,
 	AD_PHYS, 1, 8, 0, 1, 12, 0, AD_PHYS, 0, 0, 1, A1_WOUNDING, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, S, WEP_LONG_SWORD, P_SWORD, MAT_IRON, HI_METAL,
+	0, 0, 0, P1_NONE, S, WEP_LONG_SWORD, P_SWORD, MAT_IRON, HI_METAL,
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("sword of life stealing", "gold-hilted long sword",
 	0, 0, 1, 0, 3, MULTIGEN_SINGLE, 60, 2000,
 	AD_PHYS, 1, 8, 0, 1, 12, 0, AD_PHYS, 0, 0, 0, A1_LIFE_LEECH | A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA | A1_LEVEL_DRAIN | A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES | A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL, 2,
 	0, -2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, S, WEP_LONG_SWORD, P_SWORD, MAT_IRON, HI_GOLD,
+	0, 0, 0, P1_NONE, S, WEP_LONG_SWORD, P_SWORD, MAT_IRON, HI_GOLD,
 	O1_SPE_AFFECTS_MC_ADJUSTMENT, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 WEAPON("sword of orc slaying", "silver-hilted long sword",
 	0, 0, 1, 0, 3, MULTIGEN_SINGLE, 60, 500,
 	AD_PHYS, 1, 8, 0, 1, 12, 0, AD_PHYS, 1, 12, 0, A1_NONE, 0,
 	0, 0, 0, 0, 0, 0, 0, BONUS_TO_HIT | IGNORE_SPE, 2, 0, 0,
-	POISON_RES, WARN_ORC, NO_POWER, S, WEP_LONG_SWORD, P_SWORD, MAT_IRON, HI_SILVER,
+	POISON_RES, WARN_ORC, NO_POWER, P1_NONE, S, WEP_LONG_SWORD, P_SWORD, MAT_IRON, HI_SILVER,
 	O1_NONE, O2_ELVEN_ITEM | O2_FLICKER_COLOR_BLUE, O3_TARGET_PERMISSION_IS_M2_FLAG | O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS, 
 	(PERMITTED_RACE_MASK & ~PERMITTED_RACE_ORC), M2_ORC),
 WEAPON("sword of troll slaying", "mithril-hilted long sword",
 	0, 0, 1, 0, 3, MULTIGEN_SINGLE, 60, 750,
 	AD_PHYS, 1, 8, 1, 1, 12, 1, AD_PHYS, 2, 12, 0, A1_WOUNDING, 0,
 	1, 0, 0, 0, 0, 0, 0, BONUS_TO_HIT | IGNORE_SPE, 3, 0, 0,
-	WARN_TROLL, NO_POWER, NO_POWER, S, WEP_LONG_SWORD, P_SWORD, MAT_IRON, HI_SILVER,
+	WARN_TROLL, NO_POWER, NO_POWER, P1_NONE, S, WEP_LONG_SWORD, P_SWORD, MAT_IRON, HI_SILVER,
 	O1_NONE, O2_FLICKER_COLOR_BLUE, O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS, 
 	PERMITTED_ALL, S_TROLL),
 WEAPON("sword of giant slaying", "decorated long sword",
 	0, 0, 1, 0, 3, MULTIGEN_SINGLE, 60, 1000,
 	AD_PHYS, 1, 8, 1, 1, 12, 1, AD_PHYS, 3, 12, 0, A1_NONE, 0,
 	1, 0, 0, 0, 0, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE, STR19(19), 0, 0,
-	WARN_GIANT, NO_POWER, NO_POWER, S, WEP_LONG_SWORD, P_SWORD, MAT_IRON, HI_METAL,
+	WARN_GIANT, NO_POWER, NO_POWER, P1_NONE, S, WEP_LONG_SWORD, P_SWORD, MAT_IRON, HI_METAL,
 	O1_NONE, O2_FLICKER_COLOR_BLUE, O3_TARGET_PERMISSION_IS_M2_FLAG, 
 	PERMITTED_ALL, M2_GIANT),
 WEAPON("sword of dragon slaying", "ancient long sword", //ENDMARKER FOR MAGIC SWORDS WITH SHUFFLED APPREARANCES
 	0, 0, 1, 0, 3, MULTIGEN_SINGLE, 60, 1500,
 	AD_PHYS, 1, 8, 1, 1, 12, 1, AD_PHYS, 4, 12, 0, A1_NONE, 0,
 	1, 0, 0, 0, 0, 0, 0, BONUS_TO_HIT | IGNORE_SPE, 6, 0, 0,
-	WARN_DRAGON, NO_POWER, NO_POWER, S, WEP_BROADSWORD, P_SWORD, MAT_IRON, HI_METAL,
+	WARN_DRAGON, NO_POWER, NO_POWER, P1_NONE, S, WEP_BROADSWORD, P_SWORD, MAT_IRON, HI_METAL,
 	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, S_DRAGON),
 WEAPON("glass sword", None,
 	1, 0, 1, 0, 3, MULTIGEN_SINGLE, 20, 500,
 	AD_PHYS, 1, 8, 0, 1, 12, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, S, WEP_LONG_SWORD, P_SWORD, MAT_GLASS, HI_GLASS,
+	0, 0, 0, P1_NONE, S, WEP_LONG_SWORD, P_SWORD, MAT_GLASS, HI_GLASS,
 	O1_NONE, O2_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("two-handed sword", None,
 	1, 0, 0, 1, 18, MULTIGEN_SINGLE, 120, 50, 
 	AD_PHYS, 2, 6, 0, 3, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, S, WEP_TWO_HANDED_SWORD, P_SWORD, MAT_IRON, HI_METAL, 
+	0, 0, 0, P1_NONE, S, WEP_TWO_HANDED_SWORD, P_SWORD, MAT_IRON, HI_METAL, 
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("katana", "samurai sword",
 	0, 0, 0, 0, 4, MULTIGEN_SINGLE, 80, 80, 
 	AD_PHYS, 1, 10, 0, 1, 12, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, S, WEP_KATANA, P_SWORD, MAT_IRON, HI_METAL, 
+	0, 0, 0, P1_NONE, S, WEP_KATANA, P_SWORD, MAT_IRON, HI_METAL, 
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 /* special swords set up for artifacts */
 WEAPON("tsurugi", "long samurai sword", /* Base item for Tsurugi of Muramasa */
 	0, 0, 0, 1, 0, MULTIGEN_SINGLE, 100, 500, 
 	AD_PHYS, 2, 8, 0, 3, 8, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
-	2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, S, WEP_TSURUGI, P_SWORD,
+	2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, P1_NONE, S, WEP_TSURUGI, P_SWORD,
 	MAT_METAL, HI_METAL, O1_NONE, O2_NONE, O3_NO_WISH, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("runesword", "runed broadsword", /* Base item for Stormbringer */
 	0, 0, 0, 0, 0, MULTIGEN_SINGLE, 55, 300, 
 	AD_PHYS, 2, 4, 1, 1, 6, 2, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, S, WEP_BROADSWORD, P_SWORD, MAT_IRON, CLR_BLACK, 
+	0, 0, 0, P1_NONE, S, WEP_BROADSWORD, P_SWORD, MAT_IRON, CLR_BLACK, 
 	O1_NONE, O2_NONE, O3_NO_WISH, 
 	PERMITTED_ALL, ALL_TARGETS),
 
@@ -655,35 +655,35 @@ WEAPON("partisan", "vulgar polearm",
 	0, 0, 0, 1, 4, MULTIGEN_SINGLE, 80, 10, 
 	AD_PHYS, 2, 6, 0, 2, 6, 1, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, P, WEP_POLEARM, P_POLEARM, MAT_IRON, HI_METAL, 
+	0, 0, 0, P1_NONE, P, WEP_POLEARM, P_POLEARM, MAT_IRON, HI_METAL, 
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("ranseur", "hilted polearm",
 	0, 0, 0, 1, 4, MULTIGEN_SINGLE, 50, 6, 
 	AD_PHYS, 2, 4, 0, 2, 4, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, P, WEP_POLEARM, P_POLEARM, MAT_IRON, HI_METAL, 
+	0, 0, 0, P1_NONE, P, WEP_POLEARM, P_POLEARM, MAT_IRON, HI_METAL, 
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("spetum", "forked polearm",
 	0, 0, 0, 1, 4, MULTIGEN_SINGLE, 50, 6, 
 	AD_PHYS, 2, 5, 1, 2, 7, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, P, WEP_POLEARM, P_POLEARM, MAT_IRON, HI_METAL, 
+	0, 0, 0, P1_NONE, P, WEP_POLEARM, P_POLEARM, MAT_IRON, HI_METAL, 
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("glaive", "single-edged polearm",
 	0, 0, 0, 1, 8, MULTIGEN_SINGLE, 75, 6, 
 	AD_PHYS, 2, 6, 0, 2, 8, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, S, WEP_POLEARM, P_POLEARM, MAT_IRON, HI_METAL, 
+	0, 0, 0, P1_NONE, S,WEP_POLEARM, P_POLEARM, MAT_IRON, HI_METAL, 
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("lance", None,
 	1, 0, 0, 0, 4, MULTIGEN_SINGLE, 180, 10, 
 	AD_PHYS, 1, 6, 0, 1, 8, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, P, WEP_LANCE, P_SPEAR, MAT_IRON, HI_METAL, 
+	0, 0, 0, P1_NONE, P, WEP_LANCE, P_SPEAR, MAT_IRON, HI_METAL, 
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 /* +2d10 when jousting with lance as primary weapon */
@@ -692,28 +692,28 @@ WEAPON("halberd", "angled poleaxe",
 	0, 0, 0, 1, 7, MULTIGEN_SINGLE, 150, 10, 
 	AD_PHYS, 2, 5, 0, 3, 5, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, P | S, WEP_POLEARM, P_POLEARM, MAT_IRON, HI_METAL, 
+	0, 0, 0, P1_NONE, P|S, WEP_POLEARM, P_POLEARM, MAT_IRON, HI_METAL,
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("bardiche", "long poleaxe",
 	0, 0, 0, 1, 3, MULTIGEN_SINGLE, 120, 7, 
 	AD_PHYS, 2, 4, 0, 3, 4, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, S, WEP_POLEARM, P_POLEARM, MAT_IRON, HI_METAL, 
+	0, 0, 0, P1_NONE, S,WEP_POLEARM, P_POLEARM, MAT_IRON, HI_METAL, 
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("voulge", "pole cleaver",
 	0, 0, 0, 1, 3, MULTIGEN_SINGLE, 125, 5, 
 	AD_PHYS, 2, 4, 0, 2, 4, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, S, WEP_POLEARM, P_POLEARM, MAT_IRON, HI_METAL, 
+	0, 0, 0, P1_NONE, S, WEP_POLEARM, P_POLEARM, MAT_IRON, HI_METAL, 
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("dwarvish mattock", "broad pick",
 	0, 0, 0, 1, 13, MULTIGEN_SINGLE, 120, 50, 
 	AD_PHYS, 2, 6, 0, 3, 6, 1, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, B, WEP_PICK_AXE, P_PICK_AXE, MAT_IRON, HI_METAL, 
+	0, 0, 0, P1_NONE, B, WEP_PICK_AXE, P_PICK_AXE, MAT_IRON, HI_METAL, 
 	O1_NONE, O2_DWARVEN_ITEM, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 /* curved/hooked */
@@ -721,28 +721,28 @@ WEAPON("fauchard", "pole sickle",
 	0, 0, 0, 1, 2, MULTIGEN_SINGLE, 60, 5, 
 	AD_PHYS, 2, 6, 0, 2, 8, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, P | S, WEP_POLEARM, P_POLEARM, MAT_IRON, HI_METAL, 
+	0, 0, 0, P1_NONE, P | S, WEP_POLEARM, P_POLEARM, MAT_IRON, HI_METAL,
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("guisarme", "pruning hook",
 	0, 0, 0, 1, 2, MULTIGEN_SINGLE, 80, 5, 
 	AD_PHYS, 3, 4, 0, 2, 8, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, S, WEP_POLEARM, P_POLEARM, MAT_IRON, HI_METAL, 
+	0, 0, 0, P1_NONE, S,WEP_POLEARM, P_POLEARM, MAT_IRON, HI_METAL, 
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("bill-guisarme", "hooked polearm",
 	0, 0, 0, 1, 3, MULTIGEN_SINGLE, 120, 7, 
 	AD_PHYS, 3, 4, 0, 2, 10, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, P | S, WEP_POLEARM, P_POLEARM, MAT_IRON, HI_METAL, 
+	0, 0, 0, P1_NONE, P | S, WEP_POLEARM, P_POLEARM, MAT_IRON, HI_METAL,
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("infernal ancus", "black ornamental hooked polearm",
 	0, 0, 1, 0, 0, MULTIGEN_SINGLE, 100, 100, 
 	AD_PHYS, 1, 6, 1, 1, 8, 1, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, P | S, WEP_POLEARM, P_POLEARM, MAT_IRON, CLR_BLACK, 
+	0, 0, 0, P1_NONE, P | S, WEP_POLEARM, P_POLEARM, MAT_IRON, CLR_BLACK,
 	O1_NONE, O2_DEMON_ITEM, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 /* other */
@@ -750,14 +750,14 @@ WEAPON("lucern hammer", "pronged polearm",
 	0, 0, 0, 1, 4, MULTIGEN_SINGLE, 150, 7, 
 	AD_PHYS, 3, 4, 0, 2, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, B | P, WEP_POLEARM, P_POLEARM, MAT_IRON, HI_METAL, 
+	0, 0, 0, P1_NONE, B | P, WEP_POLEARM, P_POLEARM, MAT_IRON, HI_METAL,
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("bec de corbin", "beaked polearm",
 	0, 0, 0, 1, 3, MULTIGEN_SINGLE, 100, 1, 
 	AD_PHYS, 2, 8, 1, 2, 8, 1, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, B | P, WEP_POLEARM, P_POLEARM, MAT_IRON, HI_METAL, 
+	0, 0, 0, P1_NONE, B | P, WEP_POLEARM, P_POLEARM, MAT_IRON, HI_METAL,
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 
@@ -766,21 +766,21 @@ WEAPON("mace", None,
 	1, 0, 0, 0, 31, MULTIGEN_SINGLE, 60, 5, 
 	AD_PHYS, 1, 6, 1, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	NO_POWER, NO_POWER, NO_POWER, B, WEP_MACE, P_BLUDGEONING_WEAPON, MAT_IRON, HI_METAL,
+	NO_POWER, NO_POWER, NO_POWER, P1_NONE, B, WEP_MACE, P_BLUDGEONING_WEAPON, MAT_IRON, HI_METAL,
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("silver mace", None,
 	1, 0, 0, 0, 2, MULTIGEN_SINGLE, 55, 250, 
 	AD_PHYS, 1, 6, 1, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	NO_POWER, NO_POWER, NO_POWER, B, WEP_MACE, P_BLUDGEONING_WEAPON, MAT_SILVER, HI_SILVER,
+	NO_POWER, NO_POWER, NO_POWER, P1_NONE, B, WEP_MACE, P_BLUDGEONING_WEAPON, MAT_SILVER, HI_SILVER,
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("mace of disruption", "runed silver mace",
 	0, 0, 1, 0, 3, MULTIGEN_SINGLE, 60, 750,
 	AD_PHYS, 1, 6, 1, 1, 6, 0, AD_PHYS, 2, 6, 2, A1_NONE, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	NO_POWER, NO_POWER, NO_POWER, B, WEP_MACE, P_BLUDGEONING_WEAPON, MAT_SILVER, HI_SILVER,
+	NO_POWER, NO_POWER, NO_POWER, P1_NONE, B, WEP_MACE, P_BLUDGEONING_WEAPON, MAT_SILVER, HI_SILVER,
 	O1_NONE, 
 	O2_SHINES_MAGICAL_LIGHT | O2_FLICKER_COLOR_WHITE, 
 	O3_TARGET_PERMISSION_IS_M2_FLAG, 
@@ -789,35 +789,35 @@ WEAPON("mace of death", "skull-headed obsidian mace", /* Also base weapon for Wa
 	0, 0, 1, 0, 2, MULTIGEN_SINGLE, 40, 2000, 
 	AD_PHYS, 1, 6, 2, 1, 6, 1, AD_PHYS, 0, 0, 0, A1_CRITICAL_STRIKE | A1_CRITICAL_STRIKE_IS_DEADLY | A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK | A1_MAGIC_RESISTANCE_PROTECTS, 10, 
 	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, B, WEP_MACE, P_BLUDGEONING_WEAPON, MAT_BONE, CLR_BLACK, 
+	0, 0, 0, P1_NONE, B, WEP_MACE, P_BLUDGEONING_WEAPON, MAT_BONE, CLR_BLACK, 
 	O1_NONE, O2_DEMON_ITEM, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("morning star", None,
 	1, 0, 0, 0, 10, MULTIGEN_SINGLE, 60, 10, 
 	AD_PHYS, 2, 4, 0, 1, 6, 1, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	NO_POWER, NO_POWER, NO_POWER, B, WEP_MORNING_STAR, P_FLAIL, MAT_IRON, HI_METAL, 
+	NO_POWER, NO_POWER, NO_POWER, P1_NONE, B, WEP_MORNING_STAR, P_FLAIL, MAT_IRON, HI_METAL, 
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("morning star of troll slaying", "mithril-spiked morning star", /* Base item for Trollsbane */
 	0, 0, 1, 0, 0, MULTIGEN_SINGLE, 60, 500,
 	AD_PHYS, 2, 4, 1, 1, 6, 2, AD_PHYS, 1, 6, 1, A1_WOUNDING, 0,
 	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	REGENERATION, WARN_TROLL, NO_POWER, B, WEP_MORNING_STAR, P_FLAIL, MAT_IRON, HI_METAL,
+	REGENERATION, WARN_TROLL, NO_POWER, P1_NONE, B, WEP_MORNING_STAR, P_FLAIL, MAT_IRON, HI_METAL,
 	O1_INDESTRUCTIBLE, O2_FLICKER_COLOR_BLUE, O3_NO_WISH | O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS, 
 	PERMITTED_ALL, S_TROLL),
 WEAPON("war hammer", None,
 	1, 0, 0, 0, 11, MULTIGEN_SINGLE, 50, 5, 
 	AD_PHYS, 1, 6, 1, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	NO_POWER, NO_POWER, NO_POWER, B, WEP_HAMMER, P_BLUDGEONING_WEAPON, MAT_IRON, HI_METAL,
+	NO_POWER, NO_POWER, NO_POWER, P1_NONE, B, WEP_HAMMER, P_BLUDGEONING_WEAPON, MAT_IRON, HI_METAL,
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("heavy war hammer", "runed war hammer", /* Base object for Mjollnir */
 	0, 0, 1, 0, 0, MULTIGEN_SINGLE, 100, 1000, 
 	AD_PHYS, 1, 8, 1, 1, 8, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	NO_POWER, NO_POWER, NO_POWER, B, WEP_HAMMER, P_BLUDGEONING_WEAPON, MAT_IRON, HI_METAL,
+	NO_POWER, NO_POWER, NO_POWER, P1_NONE, B, WEP_HAMMER, P_BLUDGEONING_WEAPON, MAT_IRON, HI_METAL,
 	O1_INDESTRUCTIBLE | O1_MELEE_AND_THROWN_WEAPON | O1_WEIGHT_DOES_NOT_REDUCE_RANGE | O1_RETURNS_TO_HAND_AFTER_THROWING | O1_CAN_BE_THROWN_ONLY_IF_WIELDED,
 	O2_NONE, O3_NO_WISH,
 	PERMITTED_ROLE_VALKYRIE, ALL_TARGETS),
@@ -825,35 +825,35 @@ WEAPON("war hammer of ogre slaying", "runed war hammer", /* Base object for Ogre
 	0, 0, 1, 0, 0, MULTIGEN_SINGLE, 100, 500,
 	AD_PHYS, 1, 6, 2, 1, 6, 1, AD_PHYS, 2, 8, 0, A1_NONE, 0,
 	1, 0, 0, 0, 0, 0, 0, BONUS_TO_CON | SETS_FIXED_ATTRIBUTE | IGNORE_SPE, 25, 0, 0,
-	WARN_OGRE, NO_POWER, NO_POWER, B, WEP_HAMMER, P_BLUDGEONING_WEAPON, MAT_IRON, HI_METAL, 
+	WARN_OGRE, NO_POWER, NO_POWER, P1_NONE, B, WEP_HAMMER, P_BLUDGEONING_WEAPON, MAT_IRON, HI_METAL,
 	O1_INDESTRUCTIBLE, O2_NONE, O3_NO_WISH,
 	PERMITTED_ALL, S_OGRE),
 WEAPON("war hammer of gnoll slaying", "runed war hammer",
 	0, 0, 1, 0, 2, MULTIGEN_SINGLE, 50, 500,
 	AD_PHYS, 1, 6, 1, 1, 6, 1, AD_PHYS, 2, 6, 0, A1_NONE, 0,
 	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	WARN_GNOLL, NO_POWER, NO_POWER, S, WEP_HAMMER, P_BLUDGEONING_WEAPON, MAT_IRON, HI_METAL,
+	WARN_GNOLL, NO_POWER, NO_POWER, P1_NONE, B, WEP_HAMMER, P_BLUDGEONING_WEAPON, MAT_IRON, HI_METAL,
 	O1_NONE, O2_NONE, O3_TARGET_PERMISSION_IS_M2_FLAG | O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS, 
 	(PERMITTED_RACE_MASK & ~PERMITTED_RACE_GNOLL), M2_GNOLL),
 WEAPON("club", None,
 	1, 0, 0, 0, 12, MULTIGEN_SINGLE, 40, 3, 
 	AD_PHYS, 1, 6, 0, 1, 3, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, B, WEP_CLUB, P_BLUDGEONING_WEAPON, MAT_WOOD, HI_WOOD, 
+	0, 0, 0, P1_NONE, B, WEP_CLUB, P_BLUDGEONING_WEAPON, MAT_WOOD, HI_WOOD, 
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("infernal jagged-toothed club", "black jagged-toothed club",
 	0, 0, 1, 0, 0, MULTIGEN_SINGLE, 60, 100, 
 	AD_PHYS, 1, 6, 1, 1, 6, 1, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, B, WEP_SPIKED_CLUB, P_BLUDGEONING_WEAPON, MAT_WOOD, CLR_BLACK, 
+	0, 0, 0, P1_NONE, B, WEP_SPIKED_CLUB, P_BLUDGEONING_WEAPON, MAT_WOOD, CLR_BLACK, 
 	O1_NONE, O2_DEMON_ITEM, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("rubber hose", None,
 	1, 0, 0, 0, 0, MULTIGEN_SINGLE, 20, 3, 
 	AD_PHYS, 1, 4, 0, 1, 3, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, B, WEP_HOSE, P_WHIP, MAT_PLASTIC, CLR_BROWN, 
+	0, 0, 0, P1_NONE, B, WEP_HOSE, P_WHIP, MAT_PLASTIC, CLR_BROWN, 
 	O1_NONE, O2_FLIMSY, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 	
@@ -862,21 +862,21 @@ WEAPON("flindbar", "iron staff",
 	0, 0, 0, 1, 0, MULTIGEN_SINGLE, 160, 5, 
 	AD_PHYS, 2, 10, 0, 3, 10, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, B, WEP_ROD, P_QUARTERSTAFF, MAT_IRON, HI_METAL, 
+	0, 0, 0, P1_NONE, B, WEP_ROD, P_QUARTERSTAFF, MAT_IRON, HI_METAL, 
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("quarterstaff", "wooden staff",
 	0, 0, 0, 1, 11, MULTIGEN_SINGLE, 30, 5, 
 	AD_PHYS, 2, 4, 0, 2, 4, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, B, WEP_STAFF, P_QUARTERSTAFF, MAT_WOOD, HI_WOOD, 
+	0, 0, 0, P1_NONE, B, WEP_STAFF, P_QUARTERSTAFF, MAT_WOOD, HI_WOOD, 
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("staff of the magi", "runed staff", //STARTMARKER FOR SHUFFLED STAFFS
 	0, 0, 1, 1, 3, MULTIGEN_SINGLE, 30, 1500,
 	AD_PHYS, 2, 4, 0, 2, 4, 0, AD_ELEC, 2, 6, 0, A1_NONE, 0,
 	0, 0, 0, 0, 0, 50, 0, BONUS_TO_SPELL_CASTING, 20, 0, 0,
-	NO_POWER, NO_POWER, NO_POWER, B, WEP_STAFF, P_QUARTERSTAFF, MAT_WOOD, HI_WOOD,
+	NO_POWER, NO_POWER, NO_POWER, P1_NONE, B, WEP_STAFF, P_QUARTERSTAFF, MAT_WOOD, HI_WOOD,
 	O1_MANA_PERCENTAGE_BONUS | O1_COLD_RESISTANT | O1_FIRE_RESISTANT | O1_LIGHTNING_RESISTANT, 
 	O2_NONE, O3_NONE, 
 	PERMITTED_ROLE_WIZARD, ALL_TARGETS),
@@ -884,35 +884,35 @@ WEAPON("staff of fire", "ornamental staff",
 	0, 0, 1, 1, 5, MULTIGEN_SINGLE, 30, 1000,
 	AD_PHYS, 2, 4, 0, 2, 4, 0, AD_FIRE, 2, 6, 0, A1_NONE, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, -8, 0,
-	FIRE_RES, NO_POWER, NO_POWER, B, WEP_STAFF, P_QUARTERSTAFF, MAT_WOOD, HI_WOOD,
+	FIRE_RES, NO_POWER, NO_POWER, P1_NONE, B, WEP_STAFF, P_QUARTERSTAFF, MAT_WOOD, HI_WOOD,
 	O1_FIRE_RESISTANT | O1_SPE_AFFECTS_MC, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("staff of frost", "blue-hued staff",
 	0, 0, 1, 1, 8, MULTIGEN_SINGLE, 30, 500,
 	AD_PHYS, 1, 6, 0, 1, 6, 0, AD_COLD, 1, 6, 0, A1_NONE, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, -4, 0,
-	COLD_RES, NO_POWER, NO_POWER, B, WEP_STAFF, P_QUARTERSTAFF, MAT_WOOD, HI_WOOD,
+	COLD_RES, NO_POWER, NO_POWER, P1_NONE, B, WEP_STAFF, P_QUARTERSTAFF, MAT_WOOD, HI_WOOD,
 	O1_COLD_RESISTANT, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("staff of thunder and lightning", "forked staff",
 	0, 0, 1, 1, 3, MULTIGEN_SINGLE, 30, 1500,
 	AD_PHYS, 2, 4, 0, 2, 4, 0, AD_ELEC, 3, 6, 0, A1_NONE, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, -12, 0,
-	SHOCK_RES, NO_POWER, NO_POWER, B, WEP_STAFF, P_QUARTERSTAFF, MAT_WOOD, HI_WOOD,
+	SHOCK_RES, NO_POWER, NO_POWER, P1_NONE, B, WEP_STAFF, P_QUARTERSTAFF, MAT_WOOD, HI_WOOD,
 	O1_LIGHTNING_RESISTANT | O1_SPE_AFFECTS_MC, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("staff of life", "serpent-entwined staff",
 	0, 0, 1, 1, 7, MULTIGEN_SINGLE, 30, 750,
 	AD_PHYS, 2, 4, 0, 2, 4, 0, AD_PHYS, 0, 0, 0, A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	DRAIN_RES, DEATH_RES, REGENERATION, B, WEP_STAFF, P_QUARTERSTAFF, MAT_WOOD, HI_WOOD,
+	DRAIN_RES, DEATH_RES, REGENERATION, P1_NONE, B, WEP_STAFF, P_QUARTERSTAFF, MAT_WOOD, HI_WOOD,
 	O1_NONE, O2_NONE, O3_TARGET_PERMISSION_IS_M2_FLAG, 
 	PERMITTED_ALL, M2_UNDEAD),
 WEAPON("staff of withering", "twisted staff", //ENDMARKER FOR SHUFFLED STAFFS
 	0, 0, 1, 1, 3, MULTIGEN_SINGLE, 30, 1500,
 	AD_PHYS, 2, 4, 0, 2, 4, 0, AD_PHYS, 0, 0, 0, A1_LEVEL_DRAIN, 0,
 	0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	DRAIN_RES, NO_POWER, NO_POWER, B, WEP_STAFF, P_QUARTERSTAFF, MAT_WOOD, HI_WOOD,
+	DRAIN_RES, NO_POWER, NO_POWER, P1_NONE, B, WEP_STAFF, P_QUARTERSTAFF, MAT_WOOD, HI_WOOD,
 	O1_SPE_AFFECTS_MC_ADJUSTMENT, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 
@@ -921,48 +921,48 @@ WEAPON("aklys", "thonged club",
 	0, 0, 0, 0, 8, MULTIGEN_SINGLE, 15, 4, 
 	AD_PHYS, 1, 6, 0, 1, 3, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, B, WEP_SPIKED_CLUB, P_BLUDGEONING_WEAPON, MAT_IRON, HI_METAL, 
+	0, 0, 0, P1_NONE, B, WEP_SPIKED_CLUB, P_BLUDGEONING_WEAPON, MAT_IRON, HI_METAL, 
 	O1_THROWN_WEAPON_ONLY | O1_RETURNS_TO_HAND_AFTER_THROWING, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("flail", None,
     1, 0, 0, 0, 33, MULTIGEN_SINGLE, 35, 4, 
 	AD_PHYS, 1, 6, 1, 2, 4, 0, 	AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, B, WEP_FLAIL, P_FLAIL, MAT_IRON, HI_METAL, 
+	0, 0, 0, P1_NONE, B, WEP_FLAIL, P_FLAIL, MAT_IRON, HI_METAL, 
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("silver flail", None,
     1, 0, 0, 0, 4, MULTIGEN_SINGLE, 35, 40, 
 	AD_PHYS, 1, 6, 1, 2, 4, 0, 	AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, B, WEP_FLAIL, P_FLAIL, MAT_SILVER, HI_SILVER, 
+	0, 0, 0, P1_NONE, B, WEP_FLAIL, P_FLAIL, MAT_SILVER, HI_SILVER, 
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("double-headed flail", None,
 	1, 0, 0, 0, 3, MULTIGEN_SINGLE, 55, 250, 
 	AD_PHYS, 1, 6, 1, 2, 4, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, MULTISHOT_MELEE_2_EXPERT_1D2_SKILLED, 
-	NO_POWER, NO_POWER, NO_POWER, B, WEP_FLAIL, P_FLAIL, MAT_IRON, HI_METAL,
+	NO_POWER, NO_POWER, NO_POWER, P1_NONE, B, WEP_FLAIL, P_FLAIL, MAT_IRON, HI_METAL,
 	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 	/* one-handed, strikes up to two times, -1 hit bonus (difficult to wield) */
 WEAPON("triple-headed flail", None,
 	1, 0, 0, 0, 0, MULTIGEN_SINGLE, 70, 1000, 
 	AD_PHYS, 1, 6, 1, 2, 4, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	-2, 0, 0, 0, 0, 0, 0, 0, 0, 0, MULTISHOT_MELEE_3_EXPERT_2_SKILLED, 
-	NO_POWER, NO_POWER, NO_POWER, B, WEP_FLAIL, P_FLAIL, MAT_IRON, HI_METAL, 
+	NO_POWER, NO_POWER, NO_POWER, P1_NONE, B, WEP_FLAIL, P_FLAIL, MAT_IRON, HI_METAL, 
 	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 	/* one-handed, strikes up to three times, -2 hit bonus (difficult to wield) */
 WEAPON("triple-headed flail of life draining", "runed triple-headed flail", /* The flail of Yeenoghu, currently non-artifact */
 	0, 0, 1, 0, 0, MULTIGEN_SINGLE, 70, 8000, 
 	AD_PHYS, 1, 6, 3, 2, 4, 2, AD_PHYS, 0, 0, 0, A1_LEVEL_DRAIN, 0, 
 	0, -2, 0, 0, 0, 0, 0, 0, 0, 0, MULTISHOT_MELEE_3_EXPERT_2_SKILLED, 
-	NO_POWER, NO_POWER, NO_POWER, B, WEP_FLAIL, P_FLAIL, MAT_IRON, HI_METAL, 
+	NO_POWER, NO_POWER, NO_POWER, P1_NONE, B, WEP_FLAIL, P_FLAIL, MAT_IRON, HI_METAL, 
 	O1_SPE_AFFECTS_MC_ADJUSTMENT, O2_DEMON_ITEM, O3_NO_WISH, PERMITTED_ALL, ALL_TARGETS),
 WEAPON("runed flail", None, /* Base item for Howling Flail */
     1, 0, 1, 0, 0, MULTIGEN_SINGLE, 35, 1000, 
 	AD_PHYS, 1, 6, 2, 2, 4, 1, 	AD_PHYS, 2, 4, 0, A1_NONE, 0, 
 	1, 0, 0, 0, 0, 0, 0, BONUS_TO_CHA | SETS_FIXED_ATTRIBUTE | IGNORE_SPE, 25, 0, 0, 
-	NO_POWER, NO_POWER, NO_POWER, B, WEP_FLAIL, P_FLAIL, MAT_IRON, HI_METAL,
+	NO_POWER, NO_POWER, NO_POWER, P1_NONE, B, WEP_FLAIL, P_FLAIL, MAT_IRON, HI_METAL,
 	O1_INDESTRUCTIBLE, O2_GNOLLISH_ITEM | O2_DEMON_ITEM, O3_NO_WISH,
 	PERMITTED_RACE_GNOLL, ALL_TARGETS),
 
@@ -971,47 +971,47 @@ WEAPON("runed flail", None, /* Base item for Howling Flail */
 WEAPON("bullwhip", None,
     1, 0, 0, 0, 2, MULTIGEN_SINGLE, 20, 4,
 	AD_PHYS, 1, 2, 0,  1, 1, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, WEP_WHIP, P_WHIP, MAT_LEATHER, CLR_BROWN, 
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+	0, 0, 0, P1_NONE, 0, WEP_WHIP, P_WHIP, MAT_LEATHER, CLR_BROWN,
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("black blade of disintegration", "sword-shaped planar rift",
    	0, 0, 1, 1, 0, MULTIGEN_SINGLE, 0, 0, 
 	AD_PHYS, 2, 8, 0,  3, 8, 0, AD_PHYS, 0, 0, 0, A1_CRITICAL_STRIKE | A1_CRITICAL_STRIKE_IS_DEADLY | A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK, 100, 
 	0, -8, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, S, WEP_TWO_HANDED_SWORD, P_SWORD, MAT_PLANARRIFT, CLR_BLACK, 
+	0, 0, 0, P1_NONE, S, WEP_TWO_HANDED_SWORD, P_SWORD, MAT_PLANARRIFT, CLR_BLACK, 
 	O1_DISINTEGRATION_RESISTANT | O1_SPE_AFFECTS_MC_ADJUSTMENT, O2_NONE, O3_NO_WISH,
 	PERMITTED_ALL, ALL_TARGETS),
 
 /* bows */
 BOW("bow", None,							1, 0, 1, 0, MULTIGEN_SINGLE, 30, 30, 
-	AD_PHYS, 1, 3, 0, 1, 4, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,		0, 0, 0, -100, 0, 0, 0, 0, 0, MULTISHOT_NONE, 0, 0, 0, MAT_WOOD, WEP_SHORT_BOW, P_BOW, HI_WOOD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
+	AD_PHYS, 1, 3, 0, 1, 4, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,		0, 0, 0, -100, 0, 0, 0, 0, 0, MULTISHOT_NONE, 0, 0, 0, P1_NONE, MAT_WOOD, WEP_SHORT_BOW, P_BOW, HI_WOOD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 BOW("short bow", None,						1, 0, 1, 12, MULTIGEN_SINGLE, 30, 30, 
-	AD_PHYS, 1, 3, 0, 1, 4, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,		0, 0, 0, -80,  0, 0, 0, 0, 0, MULTISHOT_NONE, 0, 0, 0, MAT_WOOD, WEP_SHORT_BOW, P_BOW, HI_WOOD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
+	AD_PHYS, 1, 3, 0, 1, 4, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,		0, 0, 0, -80,  0, 0, 0, 0, 0, MULTISHOT_NONE, 0, 0, 0, P1_NONE, MAT_WOOD, WEP_SHORT_BOW, P_BOW, HI_WOOD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 BOW("elven long bow", "runed long bow",		0, 0, 1, 12, MULTIGEN_SINGLE, 40, 200, 
-	AD_PHYS, 1, 5, 0, 1, 7, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,		1, 0, 0, -110, 0, 0, 0, 0, 0, MULTISHOT_NONE, 0, 0, 0, MAT_WOOD, WEP_LONG_BOW, P_BOW, HI_WOOD, O1_NONE, O2_ELVEN_ITEM, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
+	AD_PHYS, 1, 5, 0, 1, 7, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,		1, 0, 0, -110, 0, 0, 0, 0, 0, MULTISHOT_NONE, 0, 0, 0, P1_NONE, MAT_WOOD, WEP_LONG_BOW, P_BOW, HI_WOOD, O1_NONE, O2_ELVEN_ITEM, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 BOW("orcish short bow", "crude short bow",  0, 0, 1, 12, MULTIGEN_SINGLE, 35, 10, 
-	AD_PHYS, 1, 2, 0, 1, 3, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,		0, 0, 0, -70,  0, 0, 0, 0, 0, MULTISHOT_NONE, 0, 0, 0, MAT_WOOD, WEP_SHORT_BOW, P_BOW, CLR_BLACK, O1_NONE, O2_ORCISH_ITEM, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
+	AD_PHYS, 1, 2, 0, 1, 3, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,		0, 0, 0, -70,  0, 0, 0, 0, 0, MULTISHOT_NONE, 0, 0, 0, P1_NONE, MAT_WOOD, WEP_SHORT_BOW, P_BOW, CLR_BLACK, O1_NONE, O2_ORCISH_ITEM, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 BOW("long bow", None,						1, 0, 1, 12, MULTIGEN_SINGLE, 45, 75, 
-	AD_PHYS, 1, 4, 0, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,		0, 0, 0, -100, 0, 0, 0, 0, 0, MULTISHOT_NONE, 0, 0, 0, MAT_WOOD, WEP_LONG_BOW, P_BOW, HI_WOOD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
+	AD_PHYS, 1, 4, 0, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,		0, 0, 0, -100, 0, 0, 0, 0, 0, MULTISHOT_NONE, 0, 0, 0, P1_NONE, MAT_WOOD, WEP_LONG_BOW, P_BOW, HI_WOOD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 BOW("composite long bow", None,				1, 0, 1, 6, MULTIGEN_SINGLE, 50, 250, 
-	AD_PHYS, 1, 5, 1, 1, 7, 1, AD_PHYS, 0, 0, 0, A1_NONE, 0,		0, 0, 0, -130, 0, 0, 0, 0, 0, MULTISHOT_NONE, 0, 0, 0, MAT_WOOD, WEP_LONG_BOW, P_BOW, HI_WOOD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
+	AD_PHYS, 1, 5, 1, 1, 7, 1, AD_PHYS, 0, 0, 0, A1_NONE, 0,		0, 0, 0, -130, 0, 0, 0, 0, 0, MULTISHOT_NONE, 0, 0, 0, P1_NONE, MAT_WOOD, WEP_LONG_BOW, P_BOW, HI_WOOD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 BOW("composite short bow", None,			1, 0, 1, 6, MULTIGEN_SINGLE, 35, 100, 
-	AD_PHYS, 1, 4, 1, 1, 5, 1, AD_PHYS, 0, 0, 0, A1_NONE, 0,		0, 0, 0, -90,  0, 0, 0, 0, 0, MULTISHOT_NONE, 0, 0, 0, MAT_WOOD, WEP_SHORT_BOW, P_BOW, HI_WOOD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
+	AD_PHYS, 1, 4, 1, 1, 5, 1, AD_PHYS, 0, 0, 0, A1_NONE, 0,		0, 0, 0, -90,  0, 0, 0, 0, 0, MULTISHOT_NONE, 0, 0, 0, P1_NONE, MAT_WOOD, WEP_SHORT_BOW, P_BOW, HI_WOOD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 BOW("yumi", "oriental long bow",			0, 0, 1, 0, MULTIGEN_SINGLE, 55, 150, 
-	AD_PHYS, 1, 4, 0, 1, 8, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,		0, 0, 0, -120, 0, 0, 0, 0, 0, MULTISHOT_NONE, 0, 0, 0, MAT_WOOD, WEP_LONG_BOW, P_BOW, HI_WOOD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
+	AD_PHYS, 1, 4, 0, 1, 8, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,		0, 0, 0, -120, 0, 0, 0, 0, 0, MULTISHOT_NONE, 0, 0, 0, P1_NONE, MAT_WOOD, WEP_LONG_BOW, P_BOW, HI_WOOD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 BOW("sling", None,							1, 0, 0, 34, MULTIGEN_SINGLE, 3, 20, 
-	AD_PHYS, 1, 2, 0, 1, 4, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,		0, 0, 0, -60,  0, 0, 0, 0, 0, MULTISHOT_NONE, 0, 0, 0, MAT_LEATHER, WEP_SLING, P_SLING, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
+	AD_PHYS, 1, 2, 0, 1, 4, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,		0, 0, 0, -60,  0, 0, 0, 0, 0, MULTISHOT_NONE, 0, 0, 0, P1_NONE, MAT_LEATHER, WEP_SLING, P_SLING, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 BOW("crossbow", None,						1, 0, 1, 30, MULTIGEN_SINGLE, 100, 75, 
-	AD_PHYS, 1, 5, 0, 1, 5, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,		0, 0, 3, 18,   0, 0, 0, 0, 0, MULTISHOT_NONE, 0, 0, 0, MAT_WOOD, WEP_CROSSBOW, P_CROSSBOW, HI_WOOD, O1_NONE, O2_NONE, O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH, PERMITTED_ALL, ALL_TARGETS),
+	AD_PHYS, 1, 5, 0, 1, 5, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,		0, 0, 3, 18,   0, 0, 0, 0, 0, MULTISHOT_NONE, 0, 0, 0, P1_NONE, MAT_WOOD, WEP_CROSSBOW, P_CROSSBOW, HI_WOOD, O1_NONE, O2_NONE, O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH, PERMITTED_ALL, ALL_TARGETS),
 BOW("hand crossbow", None,					1, 0, 0, 5, MULTIGEN_SINGLE, 40, 50, 
-	AD_PHYS, 1, 2, 0, 1, 2, 0, AD_PHYS, 0, 0, 0,	A1_NONE, 0,		0, 0, 0, 9,    0, 0, 0, 0, 0, MULTISHOT_NONE, 0, 0, 0, MAT_WOOD, WEP_HAND_CROSSBOW, P_CROSSBOW, HI_WOOD, O1_NONE, O2_NONE, O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH, PERMITTED_ALL, ALL_TARGETS),
+	AD_PHYS, 1, 2, 0, 1, 2, 0, AD_PHYS, 0, 0, 0,	A1_NONE, 0,		0, 0, 0, 9,    0, 0, 0, 0, 0, MULTISHOT_NONE, 0, 0, 0, P1_NONE, MAT_WOOD, WEP_HAND_CROSSBOW, P_CROSSBOW, HI_WOOD, O1_NONE, O2_NONE, O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH, PERMITTED_ALL, ALL_TARGETS),
 BOW("heavy crossbow", None,					1, 0, 1, 10, MULTIGEN_SINGLE, 200, 150, 
-	AD_PHYS, 1, 8, 0, 1, 8, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,	0, 0, 6, 24,   0, 0, 0, 0, 0, MULTISHOT_NONE, 0, 0, 0, MAT_WOOD, WEP_CROSSBOW, P_CROSSBOW, HI_WOOD, O1_NONE, O2_NONE, O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH, PERMITTED_ALL, ALL_TARGETS),
+	AD_PHYS, 1, 8, 0, 1, 8, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,	0, 0, 6, 24,   0, 0, 0, 0, 0, MULTISHOT_NONE, 0, 0, 0, P1_NONE, MAT_WOOD, WEP_CROSSBOW, P_CROSSBOW, HI_WOOD, O1_NONE, O2_NONE, O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH, PERMITTED_ALL, ALL_TARGETS),
 BOW("repeating crossbow", None,				1, 0, 1, 5, MULTIGEN_SINGLE, 180, 75, 
-	AD_PHYS, 1, 5, 0, 1, 5, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,		-2, 0, 1, 18,  0, 0, 0, 0, 0, MULTISHOT_LAUNCHER_2_NOSKILL, 0, 0, 0, MAT_WOOD, WEP_REPEATING_CROSSBOW, P_CROSSBOW, HI_WOOD, O1_NONE, O2_NONE, O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH, PERMITTED_ALL, ALL_TARGETS),
+	AD_PHYS, 1, 5, 0, 1, 5, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,		-2, 0, 1, 18,  0, 0, 0, 0, 0, MULTISHOT_LAUNCHER_2_NOSKILL, 0, 0, 0, P1_NONE, MAT_WOOD, WEP_REPEATING_CROSSBOW, P_CROSSBOW, HI_WOOD, O1_NONE, O2_NONE, O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH, PERMITTED_ALL, ALL_TARGETS),
 BOW("repeating heavy crossbow", None,		1, 0, 1, 1, MULTIGEN_SINGLE, 360, 1000, 
-	AD_PHYS, 1, 8, 0, 1, 8, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,	-2, 0, 4, 24,	0, 0, 0, 0, 0, MULTISHOT_LAUNCHER_2_NOSKILL, 0, 0, 0, MAT_WOOD, WEP_REPEATING_CROSSBOW, P_CROSSBOW, HI_WOOD, O1_NONE, O2_NONE, O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH, PERMITTED_ALL, ALL_TARGETS),
+	AD_PHYS, 1, 8, 0, 1, 8, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,	-2, 0, 4, 24,	0, 0, 0, 0, 0, MULTISHOT_LAUNCHER_2_NOSKILL, 0, 0, 0, P1_NONE, MAT_WOOD, WEP_REPEATING_CROSSBOW, P_CROSSBOW, HI_WOOD, O1_NONE, O2_NONE, O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH, PERMITTED_ALL, ALL_TARGETS),
 
 #undef P
 #undef S
@@ -1027,50 +1027,50 @@ BOW("repeating heavy crossbow", None,		1, 0, 1, 1, MULTIGEN_SINGLE, 360, 1000,
          * Only MAT_COPPER (including brass) corrodes.
          * Some creatures are vulnerable to MAT_SILVER.
          */
-#define ARMOR(name,desc,kn,mgc,blk,power,power2,power3,prob,delay,wt,  \
+#define ARMOR(name,desc,kn,mgc,blk,power,power2,power3,pflags,prob,delay,wt,  \
               cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,sub,skill,metal,c,flags,flags2,flags3,powconfermask)                   \
     OBJECT(OBJ(name, desc), None, None,                                       \
            BITS(kn, 0, 1, 0, mgc, 1, 0, 0, blk, 0, 0, sub, skill, metal),  \
-           power, power2, power3, ARMOR_CLASS, prob, MULTIGEN_SINGLE, delay, wt, cost,                     \
+           power, power2, power3, pflags, ARMOR_CLASS, prob, MULTIGEN_SINGLE, delay, wt, cost,                     \
            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, 10 - ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, 0, \
 		   wt, c, \
 		   0, 0, 0, 0, \
 		   powconfermask, ALL_TARGETS, flags, flags2, flags3 )
-#define HELM(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,flags,flags2,flags3,powconfermask)  \
-    ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
+#define HELM(name,desc,kn,mgc,power,power2,power3,pflags,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,flags,flags2,flags3,powconfermask)  \
+    ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, prob, delay, wt,  \
           cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_HELM, P_NONE, metal, c, flags, flags2, flags3,powconfermask)
-#define CLOAK(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,flags,flags2,flags3,powconfermask)  \
-    ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
+#define CLOAK(name,desc,kn,mgc,power,power2,power3,pflags,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,flags,flags2,flags3,powconfermask)  \
+    ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, prob, delay, wt,  \
           cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_CLOAK, P_NONE, metal, c, flags, flags2, flags3,powconfermask)
-#define SHIELD(name,desc,kn,mgc,blk,power,power2,power3,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,flags,flags2,flags3,powconfermask) \
-    ARMOR(name, desc, kn, mgc, blk, power, power2, power3, prob, delay, wt, \
+#define SHIELD(name,desc,kn,mgc,blk,power,power2,power3,pflags,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,flags,flags2,flags3,powconfermask) \
+    ARMOR(name, desc, kn, mgc, blk, power, power2, power3, pflags, prob, delay, wt, \
           cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_SHIELD, P_NONE, metal, c, flags, flags2, flags3,powconfermask)
-#define GLOVES(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,flags,flags2,flags3,powconfermask)  \
-    ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
+#define GLOVES(name,desc,kn,mgc,power,power2,power3,pflags,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,flags,flags2,flags3,powconfermask)  \
+    ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, prob, delay, wt,  \
           cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_GLOVES, P_NONE, metal, c, flags, flags2, flags3, powconfermask)
-#define BOOTS(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,flags,flags2,flags3,powconfermask)  \
-    ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
+#define BOOTS(name,desc,kn,mgc,power,power2,power3,pflags,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,flags,flags2,flags3,powconfermask)  \
+    ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, prob, delay, wt,  \
           cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_BOOTS, P_NONE, metal, c, flags, flags2, flags3, powconfermask)
-#define SHIRT(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,flags,flags2,flags3,powconfermask)  \
-    ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
+#define SHIRT(name,desc,kn,mgc,power,power2,power3,pflags,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,flags,flags2,flags3,powconfermask)  \
+    ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags,prob, delay, wt,  \
           cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_SHIRT, P_NONE, metal, c, flags, flags2, flags3, powconfermask)
-#define ROBE(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,flags,flags2,flags3,powconfermask)  \
-    ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
+#define ROBE(name,desc,kn,mgc,power,power2,power3,pflags,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,flags,flags2,flags3,powconfermask)  \
+    ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, prob, delay, wt,  \
           cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_ROBE, P_NONE, metal, c, flags, flags2, flags3, powconfermask)
-#define BRACERS(name,desc,kn,mgc,power,power2,power3,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,flags,flags2,flags3,powconfermask)  \
-    ARMOR(name, desc, kn, mgc, 0, power, power2, power3, prob, delay, wt,  \
+#define BRACERS(name,desc,kn,mgc,power,power2,power3,pflags,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,flags,flags2,flags3,powconfermask)  \
+    ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, prob, delay, wt,  \
           cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_BRACERS, P_NONE, metal, c, flags, flags2, flags3, powconfermask)
 
 /* note: acbon = 10 - ac used in ARMOR, i.e., 1 gives -1 AC bonus to the player */
 #define WEAPONSHIELD(name,desc,kn,mgc,prob,wt,cost,\
 			dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,critpct, \
 			hitbon,mcadj,throwrange,acbon,mcbon,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,\
-			power,power2,power3,typ,skill,metal,color,\
+			power,power2,power3,pflags,typ,skill,metal,color,\
 			flags,flags2,flags3,powconfermask,permittedtargets) \
     OBJECT(OBJ(name,desc), None, None,                                         \
            BITS(kn, 0, 1, 0, mgc, 1, 0, 0, 0, 0, typ, ARM_SHIELD, skill, metal),  \
-           power, power2, power3, ARMOR_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, \
+           power, power2, power3, pflags, ARMOR_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, \
 		   dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, critpct, \
 		   hitbon, mcadj, 0, throwrange, acbon, mcbon, manabon, hpbon, bonusattrs, attrbonus, splcastpen, multicount, \
 		   wt, color, \
@@ -1080,11 +1080,11 @@ BOW("repeating heavy crossbow", None,		1, 0, 1, 1, MULTIGEN_SINGLE, 360, 1000,
 #define WEAPONBOOTS(name,desc,kn,mgc,delay,prob,wt,cost,\
 			dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,critpct, \
 			hitbon,mcadj,throwrange,acbon,mcbon,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,\
-			power,power2,power3,typ,metal,color,\
+			power,power2,power3,pflags,typ,metal,color,\
 			flags,flags2,flags3,powconfermask,permittedtargets) \
     OBJECT(OBJ(name,desc), None, None,                                         \
            BITS(kn, 0, 1, 0, mgc, 1, 0, 0, 0, 0, typ, ARM_BOOTS, P_MARTIAL_ARTS, metal),  \
-           power, power2, power3, ARMOR_CLASS, prob, MULTIGEN_SINGLE, delay, wt, cost, \
+           power, power2, power3, pflags, ARMOR_CLASS, prob, MULTIGEN_SINGLE, delay, wt, cost, \
 		   dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, critpct, \
 		   hitbon, mcadj, 0, throwrange, acbon, mcbon, manabon, hpbon, bonusattrs, attrbonus, splcastpen, multicount, \
 		   wt, color, \
@@ -1094,11 +1094,11 @@ BOW("repeating heavy crossbow", None,		1, 0, 1, 1, MULTIGEN_SINGLE, 360, 1000,
 #define WEAPONGLOVES(name,desc,kn,mgc,delay,prob,wt,cost,\
 			dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,critpct, \
 			hitbon,mcadj,throwrange,acbon,mcbon,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,\
-			power,power2,power3,typ,metal,color,\
+			power,power2,power3,pflags,typ,metal,color,\
 			flags,flags2,flags3,powconfermask,permittedtargets) \
     OBJECT(OBJ(name,desc), None, None,                                         \
            BITS(kn, 0, 1, 0, mgc, 1, 0, 0, 0, 0, typ, ARM_GLOVES, P_BARE_HANDED_COMBAT, metal),  \
-           power, power2, power3, ARMOR_CLASS, prob, MULTIGEN_SINGLE, delay, wt, cost, \
+           power, power2, power3, pflags, ARMOR_CLASS, prob, MULTIGEN_SINGLE, delay, wt, cost, \
 		   dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, critpct, \
 		   hitbon, mcadj, 0, throwrange, acbon, mcbon, manabon, hpbon, bonusattrs, attrbonus, splcastpen, multicount, \
 		   wt, color, \
@@ -1108,78 +1108,78 @@ BOW("repeating heavy crossbow", None,		1, 0, 1, 1, MULTIGEN_SINGLE, 360, 1000,
 
 /* helmets */
 HELM("elven leather helm", "leather hat",
-    0, 0,           0, 0, 0,  
+    0, 0,           0, 0, 0, P1_NONE,
 	6, 1,  3,  8,  9, 0, 0, 0, 0, 0, 0, MAT_LEATHER, HI_LEATHER, 
 	O1_NONE, O2_ELVEN_ITEM, O3_NONE, PERMITTED_ALL),
 HELM("cotton hood", None,
-    1, 0,           0, 0, 0,  
+    1, 0,           0, 0, 0, P1_NONE,  
 	3, 1,  3,  8,  10, 0, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_BLACK, 
 	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 HELM("gnollish hood", "crude leather hood",
-    0, 0,           0, 0, 0,  
+    0, 0,           0, 0, 0, P1_NONE,
 	3, 1,  3,  8,  9, 0, 0, 0, 0, 0, 0, MAT_LEATHER, HI_LEATHER, 
 	O1_NONE, O2_GNOLLISH_ITEM, O3_NONE, PERMITTED_ALL),
 HELM("orcish helm", "iron skull cap",
-    0, 0,           0, 0, 0,  
+    0, 0,           0, 0, 0, P1_NONE,
 	6, 1, 30, 10,  9, 0, 0, 0, 0, 0, 4, MAT_IRON, CLR_BLACK, 
 	O1_NONE, O2_ORCISH_ITEM, O3_NONE, PERMITTED_ALL),
 HELM("dwarvish iron helm", "hard hat",
-    0, 0,           0, 0, 0,  
+    0, 0,           0, 0, 0, P1_NONE,
 	6, 1, 40, 20,  8, 0, 0, 0, 0, 0, 4, MAT_IRON, HI_METAL, 
 	O1_NONE, O2_DWARVEN_ITEM, O3_NONE, PERMITTED_ALL),
 HELM("fedora", None,
-    1, 0,           0, 0, 0,  0, 0,  
+    1, 0,           0, 0, 0, P1_NONE, 0, 0,
 	3,  1, 10, 0, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_BROWN, 
 	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 HELM("tinfoil hat of mind shielding", "thin metal hat",
-    0, 1, MIND_SHIELDING, CHARM_RES, ODD_IDEAS,
+    0, 1, MIND_SHIELDING, CHARM_RES, ODD_IDEAS, P1_NONE,
 	3, 1, 6, 80, 10, 1, 0, 0, BONUS_TO_INT | BONUS_TO_WIS, -2, 6, MAT_METAL, HI_METAL, 
 	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 HELM("ducal crown", "golden crown", //STARTMARKER FOR SHUFFLED CROWNS & CROWN WISH RANGE
-    0, 1, NO_POWER, NO_POWER, NO_POWER,
+    0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE,
 	3, 1, 20, 1000, 10, 0, 0, 0, 0, 0, 0, MAT_GOLD, HI_GOLD,
 	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 HELM("crown of rulership", "ornamental crown", //ENDMARKER FOR SHUFFLED CROWNS & CROWN WISH RANGE
-    0, 1, NO_POWER, NO_POWER, NO_POWER,
+    0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE,
 	3, 1, 20, 5000, 10, 0, 0, 0, BONUS_TO_CHA | SETS_FIXED_ATTRIBUTE, 20, 0, MAT_GOLD, HI_GOLD, 
 	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 HELM("cornuthaum", "blue conical hat", //STARTMARKER FOR CONICAL HATS
-    0, 1, CLAIRVOYANT, NO_POWER, NO_POWER, 
+    0, 1, CLAIRVOYANT, NO_POWER, NO_POWER, P1_NONE,
 	3, 1, 4, 80, 10, 1, 0, 0, BONUS_TO_CHA | IGNORE_SPE, 1, 0, MAT_CLOTH, CLR_BLUE, 
 	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ROLE_WIZARD),
         /* name coined by devteam; confers clairvoyance for wizards,
            blocks clairvoyance if worn by role other than wizard */
 HELM("dunce cap", "white conical hat",
-    0, 1, NO_POWER, NO_POWER, NO_POWER,  
+    0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE,
 	3, 1,  4,  1, 10, 0, 0, 0, BONUS_TO_INT | BONUS_TO_WIS | FIXED_IS_MAXIMUM | SETS_FIXED_ATTRIBUTE, 6, 0, MAT_CLOTH, CLR_WHITE, 
 	O1_BECOMES_CURSED_WHEN_WORN, O2_NONE, O3_NONE, PERMITTED_ALL),
 HELM("gnomish felt hat", "red conical hat",  //ENDMARKER FOR CONICAL HATS
-    0, 0, NO_POWER, NO_POWER, NO_POWER, 
+    0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE,
 	3, 1, 4, 1, 10, 0, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_RED, 
 	O1_NONE, O2_GNOMISH_ITEM, O3_NONE, PERMITTED_ALL),
 HELM("silk top hat", "cylindrical hat", 
-    0, 0, NO_POWER, NO_POWER, NO_POWER, 
+    0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE,
 	3, 1, 4, 100, 10, 0, 0, 0, 0, 0, 0, MAT_SILK, CLR_BLACK, 
 	O1_NONE, O2_GNOMISH_ITEM, O3_NONE, PERMITTED_ALL),
 HELM("dented pot", None,
-    1, 0, NO_POWER, NO_POWER, NO_POWER,  
+    1, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE,
 	2, 0, 30,  8,  9, 0, 0, 0, 0, 0, 4, MAT_IRON, CLR_BLACK, 
 	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 /* with shuffled appearances... */
 HELM("helmet", "plumed helmet",
-    0, 0, NO_POWER, NO_POWER, NO_POWER, 
+    0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE,
 	10, 1, 50, 10,  9, 0, 0, 0, 0, 0, 4, MAT_IRON, HI_METAL, 
 	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 HELM("helm of brilliance", "etched helmet",
-	0, 1, NO_POWER, NO_POWER, NO_POWER,  
+	0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE,
 	6, 1, 50, 50,  9, 0, 0, 0, BONUS_TO_INT | BONUS_TO_WIS, 0, 0, MAT_IRON, CLR_GREEN, 
 	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 HELM("helm of opposite alignment", "crested helmet",
-     0, 1, NO_POWER, NO_POWER, NO_POWER,  
+     0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE,
 	6, 1, 50, 50,  9, 0, 0, 0, 0, 0, 4, MAT_IRON, HI_METAL, 
 	O1_BECOMES_CURSED_WHEN_WORN, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
 HELM("helm of telepathy", "visored helmet",
-    0, 1, TELEPAT, NO_POWER, NO_POWER, 
+    0, 1, TELEPAT, NO_POWER, NO_POWER, P1_NONE,
 	2, 1, 50, 50,  9, 0, 0, 0, 0, 0, 2, MAT_IRON, HI_METAL, 
 	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 
@@ -1191,200 +1191,200 @@ HELM("helm of telepathy", "visored helmet",
  *      (2) That the order of the dragon scale mail and dragon scales
  *          is the same as order of dragons defined in monst.c.
  */
-#define DRGN_ARMR(name,mgc,power,power2,power3,cost,ac,mc,manabon,hpbon,bonusattrs,attrbonus,splcastpen,color,flags,flags2,flags3,powconfermask)  \
-    ARMOR(name, None, 1, mgc, 1, power, power2, power3, 0, 5, 550,  \
+#define DRGN_ARMR(name,mgc,power,power2,power3,pflags,cost,ac,mc,manabon,hpbon,bonusattrs,attrbonus,splcastpen,color,flags,flags2,flags3,powconfermask)  \
+    ARMOR(name, None, 1, mgc, 1, power, power2, power3, pflags, 0, 5, 550,  \
           cost, ac, mc, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_SUIT, P_NONE, MAT_DRAGON_HIDE, color, flags, flags2, flags3, powconfermask)
 /* 3.4.1: dragon scale mail reclassified as "magic" since magic is
    needed to create them */
-DRGN_ARMR("gray dragon scale mail",    1, ANTIMAGIC,  0, 0, 6000, 1, 4, 0, 0, 0, 0,  8, CLR_GRAY, O1_NONE, O2_DRAGON_ITEM | O2_MONSTER_SCALE_MAIL, O3_NONE, PERMITTED_ALL),
-DRGN_ARMR("silver dragon scale mail",  1, REFLECTING, 0, 0, 6000, 1, 4, 0, 0, 0, 0,  4, DRAGON_SILVER, O1_NONE, O2_DRAGON_ITEM | O2_MONSTER_SCALE_MAIL, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("gray dragon scale mail",    1, ANTIMAGIC,  0, 0, P1_NONE, 6000, 1, 4, 0, 0, 0, 0,  8, CLR_GRAY, O1_NONE, O2_DRAGON_ITEM | O2_MONSTER_SCALE_MAIL, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("silver dragon scale mail",  1, REFLECTING, 0, 0, P1_NONE, 6000, 1, 4, 0, 0, 0, 0,  4, DRAGON_SILVER, O1_NONE, O2_DRAGON_ITEM | O2_MONSTER_SCALE_MAIL, O3_NONE, PERMITTED_ALL),
 #if 0 /* DEFERRED */
 DRGN_ARMR("shimmering dragon scale mail", 1, DISPLACED, 1200, 1, CLR_CYAN),
 #endif
-DRGN_ARMR("red dragon scale mail",     1, FIRE_RES,   0, 0, 4000, 1, 4, 0, 0, 0, 0,  2, CLR_RED, O1_FIRE_RESISTANT, O2_DRAGON_ITEM | O2_MONSTER_SCALE_MAIL, O3_NONE, PERMITTED_ALL),
-DRGN_ARMR("white dragon scale mail",   1, COLD_RES,   0, 0, 3000, 1, 4, 0, 0, 0, 0,  0, CLR_WHITE, O1_COLD_RESISTANT, O2_DRAGON_ITEM | O2_MONSTER_SCALE_MAIL, O3_NONE, PERMITTED_ALL),
-DRGN_ARMR("orange dragon scale mail",  1, SLEEP_RES,  0, 0, 4000, 1, 4, 0, 0, 0, 0,  0, CLR_ORANGE, O1_NONE, O2_DRAGON_ITEM | O2_MONSTER_SCALE_MAIL, O3_NONE, PERMITTED_ALL),
-DRGN_ARMR("black dragon scale mail",   1, DISINT_RES, 0, 0, 5000, 1, 4, 0, 0, 0, 0,  4, CLR_BLACK, O1_DISINTEGRATION_RESISTANT, O2_DRAGON_ITEM | O2_MONSTER_SCALE_MAIL, O3_NONE, PERMITTED_ALL),
-DRGN_ARMR("blue dragon scale mail",    1, SHOCK_RES,  0, 0, 4000, 1, 4, 0, 0, 0, 0,  2, CLR_BLUE, O1_LIGHTNING_RESISTANT, O2_DRAGON_ITEM | O2_MONSTER_SCALE_MAIL, O3_NONE, PERMITTED_ALL),
-DRGN_ARMR("green dragon scale mail",   1, POISON_RES, 0, 0, 3000, 1, 4, 0, 0, 0, 0,  0, CLR_GREEN, O1_NONE, O2_DRAGON_ITEM | O2_MONSTER_SCALE_MAIL, O3_NONE, PERMITTED_ALL),
-DRGN_ARMR("yellow dragon scale mail",  1, ACID_RES,   0, 0, 3000, 1, 4, 0, 0, 0, 0, -2, CLR_YELLOW, O1_NONE, O2_DRAGON_ITEM | O2_MONSTER_SCALE_MAIL, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("red dragon scale mail",     1, FIRE_RES,   0, 0, P1_NONE, 4000, 1, 4, 0, 0, 0, 0,  2, CLR_RED, O1_FIRE_RESISTANT, O2_DRAGON_ITEM | O2_MONSTER_SCALE_MAIL, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("white dragon scale mail",   1, COLD_RES,   0, 0, P1_NONE, 3000, 1, 4, 0, 0, 0, 0,  0, CLR_WHITE, O1_COLD_RESISTANT, O2_DRAGON_ITEM | O2_MONSTER_SCALE_MAIL, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("orange dragon scale mail",  1, SLEEP_RES,  0, 0, P1_NONE, 4000, 1, 4, 0, 0, 0, 0,  0, CLR_ORANGE, O1_NONE, O2_DRAGON_ITEM | O2_MONSTER_SCALE_MAIL, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("black dragon scale mail",   1, DISINT_RES, 0, 0, P1_NONE, 5000, 1, 4, 0, 0, 0, 0,  4, CLR_BLACK, O1_DISINTEGRATION_RESISTANT, O2_DRAGON_ITEM | O2_MONSTER_SCALE_MAIL, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("blue dragon scale mail",    1, SHOCK_RES,  0, 0, P1_NONE, 4000, 1, 4, 0, 0, 0, 0,  2, CLR_BLUE, O1_LIGHTNING_RESISTANT, O2_DRAGON_ITEM | O2_MONSTER_SCALE_MAIL, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("green dragon scale mail",   1, POISON_RES, 0, 0, P1_NONE, 3000, 1, 4, 0, 0, 0, 0,  0, CLR_GREEN, O1_NONE, O2_DRAGON_ITEM | O2_MONSTER_SCALE_MAIL, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("yellow dragon scale mail",  1, ACID_RES,   0, 0, P1_NONE, 3000, 1, 4, 0, 0, 0, 0, -2, CLR_YELLOW, O1_NONE, O2_DRAGON_ITEM | O2_MONSTER_SCALE_MAIL, O3_NONE, PERMITTED_ALL),
 /* For now, only dragons leave these. */
 /* 3.4.1: dragon scales left classified as "non-magic"; they confer
    magical properties but are produced "naturally" */
-DRGN_ARMR("gray dragon scales",        0, ANTIMAGIC,  0, 0, 1500, 7, 1, 0, 0, 0, 0,  8, CLR_GRAY, O1_NONE, O2_DRAGON_ITEM | O2_MONSTER_SCALES, O3_NONE, PERMITTED_ALL),
-DRGN_ARMR("silver dragon scales",      0, REFLECTING, 0, 0, 1500, 7, 1, 0, 0, 0, 0,  4, DRAGON_SILVER, O1_NONE, O2_DRAGON_ITEM | O2_MONSTER_SCALES, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("gray dragon scales",        0, ANTIMAGIC,  0, 0, P1_NONE, 1500, 7, 1, 0, 0, 0, 0,  8, CLR_GRAY, O1_NONE, O2_DRAGON_ITEM | O2_MONSTER_SCALES, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("silver dragon scales",      0, REFLECTING, 0, 0, P1_NONE, 1500, 7, 1, 0, 0, 0, 0,  4, DRAGON_SILVER, O1_NONE, O2_DRAGON_ITEM | O2_MONSTER_SCALES, O3_NONE, PERMITTED_ALL),
 #if 0 /* DEFERRED */
 DRGN_ARMR("shimmering dragon scales",  0, DISPLACED,   700, 7, CLR_CYAN),
 #endif
-DRGN_ARMR("red dragon scales",         0, FIRE_RES,   0, 0, 1000, 7, 1, 0, 0, 0, 0,  2, CLR_RED, O1_FIRE_RESISTANT, O2_DRAGON_ITEM | O2_MONSTER_SCALES, O3_NONE, PERMITTED_ALL),
-DRGN_ARMR("white dragon scales",       0, COLD_RES,   0, 0,  750, 7, 1, 0, 0, 0, 0,  0, CLR_WHITE, O1_COLD_RESISTANT, O2_DRAGON_ITEM | O2_MONSTER_SCALES, O3_NONE, PERMITTED_ALL),
-DRGN_ARMR("orange dragon scales",      0, SLEEP_RES,  0, 0, 1000, 7, 1, 0, 0, 0, 0, -2, CLR_ORANGE, O1_NONE, O2_DRAGON_ITEM | O2_MONSTER_SCALES, O3_NONE, PERMITTED_ALL),
-DRGN_ARMR("black dragon scales",       0, DISINT_RES, 0, 0, 1250, 7, 1, 0, 0, 0, 0,  4, CLR_BLACK, O1_DISINTEGRATION_RESISTANT, O2_DRAGON_ITEM | O2_MONSTER_SCALES, O3_NONE, PERMITTED_ALL),
-DRGN_ARMR("blue dragon scales",        0, SHOCK_RES,  0, 0, 1000, 7, 1, 0, 0, 0, 0,  2, CLR_BLUE, O1_LIGHTNING_RESISTANT, O2_DRAGON_ITEM | O2_MONSTER_SCALES, O3_NONE, PERMITTED_ALL),
-DRGN_ARMR("green dragon scales",       0, POISON_RES, 0, 0,  750, 7, 1, 0, 0, 0, 0,   0, CLR_GREEN, O1_NONE, O2_DRAGON_ITEM | O2_MONSTER_SCALES, O3_NONE, PERMITTED_ALL),
-DRGN_ARMR("yellow dragon scales",      0, ACID_RES,   0, 0,  750, 7, 1, 0, 0, 0, 0, -2, CLR_YELLOW, O1_NONE, O2_DRAGON_ITEM | O2_MONSTER_SCALES, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("red dragon scales",         0, FIRE_RES,   0, 0, P1_NONE, 1000, 7, 1, 0, 0, 0, 0,  2, CLR_RED, O1_FIRE_RESISTANT, O2_DRAGON_ITEM | O2_MONSTER_SCALES, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("white dragon scales",       0, COLD_RES,   0, 0, P1_NONE, 750, 7, 1, 0, 0, 0, 0,  0, CLR_WHITE, O1_COLD_RESISTANT, O2_DRAGON_ITEM | O2_MONSTER_SCALES, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("orange dragon scales",      0, SLEEP_RES,  0, 0, P1_NONE, 1000, 7, 1, 0, 0, 0, 0, -2, CLR_ORANGE, O1_NONE, O2_DRAGON_ITEM | O2_MONSTER_SCALES, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("black dragon scales",       0, DISINT_RES, 0, 0, P1_NONE, 1250, 7, 1, 0, 0, 0, 0,  4, CLR_BLACK, O1_DISINTEGRATION_RESISTANT, O2_DRAGON_ITEM | O2_MONSTER_SCALES, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("blue dragon scales",        0, SHOCK_RES,  0, 0, P1_NONE, 1000, 7, 1, 0, 0, 0, 0,  2, CLR_BLUE, O1_LIGHTNING_RESISTANT, O2_DRAGON_ITEM | O2_MONSTER_SCALES, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("green dragon scales",       0, POISON_RES, 0, 0, P1_NONE, 750, 7, 1, 0, 0, 0, 0,   0, CLR_GREEN, O1_NONE, O2_DRAGON_ITEM | O2_MONSTER_SCALES, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("yellow dragon scales",      0, ACID_RES,   0, 0, P1_NONE, 750, 7, 1, 0, 0, 0, 0, -2, CLR_YELLOW, O1_NONE, O2_DRAGON_ITEM | O2_MONSTER_SCALES, O3_NONE, PERMITTED_ALL),
 #undef DRGN_ARMR
 /* other suits */
 ARMOR("orichalcum full plate mail", None,
-	  1, 0, 1,	 ANTIMAGIC, 0, 0,  5, 7, 960,3500,  1, 12, 0, 0, 0, 0, 40, ARM_SUIT, P_NONE, MAT_ORICHALCUM, HI_GOLD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	  1, 0, 1,	 ANTIMAGIC, 0, 0, P1_NONE, 5, 7, 960,3500,  1, 12, 0, 0, 0, 0, 40, ARM_SUIT, P_NONE, MAT_ORICHALCUM, HI_GOLD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ARMOR("mithril full plate mail", None,
-	  1, 0, 1,			 0, 0, 0,  5, 7, 550,3000,  0, 8, 0, 0, 0, 0, 12, ARM_SUIT, P_NONE, MAT_MITHRIL, HI_SILVER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	  1, 0, 1,			 0, 0, 0, P1_NONE, 5, 7, 550,3000,  0, 8, 0, 0, 0, 0, 12, ARM_SUIT, P_NONE, MAT_MITHRIL, HI_SILVER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ARMOR("full plate mail", None,
-	  1, 0, 1,			 0, 0, 0, 10, 7, 960,2000,  1, 5, 0, 0, 0, 0, 20, ARM_SUIT, P_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	  1, 0, 1,			 0, 0, 0, P1_NONE, 10, 7, 960,2000,  1, 5, 0, 0, 0, 0, 20, ARM_SUIT, P_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ARMOR("field plate mail", None,
-	  1, 0, 1,			 0, 0, 0, 20, 6, 840,1000,  2, 4, 0, 0, 0, 0, 18, ARM_SUIT, P_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	  1, 0, 1,			 0, 0, 0, P1_NONE, 20, 6, 840,1000,  2, 4, 0, 0, 0, 0, 18, ARM_SUIT, P_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ARMOR("plate mail", None,
-      1, 0, 1,			 0, 0, 0, 32, 5, 720, 600,  3, 3, 0, 0, 0, 0, 16, ARM_SUIT, P_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      1, 0, 1,			 0, 0, 0, P1_NONE, 32, 5, 720, 600,  3, 3, 0, 0, 0, 0, 16, ARM_SUIT, P_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ARMOR("crystal plate mail", None,
-      1, 0, 1,  REFLECTING, 0, 0,  5, 5, 640,3000,  3, 3, 0, 0, 0, 0,  4, ARM_SUIT, P_NONE, MAT_GLASS, CLR_WHITE, O1_RUST_RESISTANT | O1_CORROSION_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
+      1, 0, 1,  REFLECTING, 0, 0, P1_NONE, 5, 5, 640,3000,  3, 3, 0, 0, 0, 0,  4, ARM_SUIT, P_NONE, MAT_GLASS, CLR_WHITE, O1_RUST_RESISTANT | O1_CORROSION_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
 ARMOR("bronze plate mail", None,
-      1, 0, 1,			 0, 0, 0, 20, 5, 800, 150,  4, 8, 0, 0, 0, 0, 16, ARM_SUIT, P_NONE, MAT_COPPER, HI_COPPER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      1, 0, 1,			 0, 0, 0, P1_NONE, 20, 5, 800, 150,  4, 8, 0, 0, 0, 0, 16, ARM_SUIT, P_NONE, MAT_COPPER, HI_COPPER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ARMOR("splint mail", None,
-      1, 0, 1,			 0, 0, 0, 35, 5, 640, 125,  4, 3, 0, 0, 0, 0, 12, ARM_SUIT, P_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      1, 0, 1,			 0, 0, 0, P1_NONE, 35, 5, 640, 125,  4, 3, 0, 0, 0, 0, 12, ARM_SUIT, P_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ARMOR("banded mail", None,
-      1, 0, 1,			 0, 0, 0, 35, 5, 560, 200,  4, 3, 0, 0, 0, 0, 10, ARM_SUIT, P_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      1, 0, 1,			 0, 0, 0, P1_NONE, 35, 5, 560, 200,  4, 3, 0, 0, 0, 0, 10, ARM_SUIT, P_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ARMOR("dwarvish mithril-coat", None,
-      1, 0, 0,			 0, 0, 0, 10, 1, 250, 750,  4, 6, 0, 0, 0, 0, 8, ARM_SUIT, P_NONE, MAT_MITHRIL, HI_SILVER, O1_RUST_RESISTANT | O1_CORROSION_RESISTANT, O2_DWARVEN_ITEM, O3_NONE, PERMITTED_ALL),
+      1, 0, 0,			 0, 0, 0, P1_NONE, 10, 1, 250, 750,  4, 6, 0, 0, 0, 0, 8, ARM_SUIT, P_NONE, MAT_MITHRIL, HI_SILVER, O1_RUST_RESISTANT | O1_CORROSION_RESISTANT, O2_DWARVEN_ITEM, O3_NONE, PERMITTED_ALL),
 ARMOR("elven mithril-coat", None,
-      1, 0, 0,			 0, 0, 0, 15, 1, 150, 250,  5, 4, 0, 0, 0, 0, 0, ARM_SUIT, P_NONE, MAT_MITHRIL, HI_SILVER, O1_RUST_RESISTANT | O1_CORROSION_RESISTANT, O2_ELVEN_ITEM, O3_NONE, PERMITTED_ALL),
+      1, 0, 0,			 0, 0, 0, P1_NONE, 15, 1, 150, 250,  5, 4, 0, 0, 0, 0, 0, ARM_SUIT, P_NONE, MAT_MITHRIL, HI_SILVER, O1_RUST_RESISTANT | O1_CORROSION_RESISTANT, O2_ELVEN_ITEM, O3_NONE, PERMITTED_ALL),
 ARMOR("chain mail", None,
-      1, 0, 0,			 0, 0, 0, 35, 5, 480,  75,  5, 3, 0, 0, 0, 0, 8, ARM_SUIT, P_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      1, 0, 0,			 0, 0, 0, P1_NONE, 35, 5, 480,  75,  5, 3, 0, 0, 0, 0, 8, ARM_SUIT, P_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ARMOR("orcish chain mail", "crude chain mail",
-      0, 0, 0,			 0, 0, 0, 20, 5, 450,  40,  6, 3, 0, 0, 0, 0, 12, ARM_SUIT, P_NONE, MAT_IRON, CLR_BLACK, O1_NONE, O2_ORCISH_ITEM, O3_NONE, PERMITTED_ALL),
+      0, 0, 0,			 0, 0, 0, P1_NONE, 20, 5, 450,  40,  6, 3, 0, 0, 0, 0, 12, ARM_SUIT, P_NONE, MAT_IRON, CLR_BLACK, O1_NONE, O2_ORCISH_ITEM, O3_NONE, PERMITTED_ALL),
 ARMOR("scale mail", None,
-      1, 0, 0,			 0, 0, 0, 35, 5, 500,  45,  6, 3, 0, 0, 0, 0, 6, ARM_SUIT, P_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      1, 0, 0,			 0, 0, 0, P1_NONE, 35, 5, 500,  45,  6, 3, 0, 0, 0, 0, 6, ARM_SUIT, P_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ARMOR("studded leather armor", None,
-      1, 0, 0,			 0, 0, 0, 35, 3, 200,  15,  7, 3, 0, 0, 0, 0, 4, ARM_SUIT, P_NONE, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      1, 0, 0,			 0, 0, 0, P1_NONE, 35, 3, 200,  15,  7, 3, 0, 0, 0, 0, 4, ARM_SUIT, P_NONE, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ARMOR("gnollish studded leather armor", "crude studded leather armor",
-      0, 0, 0,			 0, 0, 0, 30, 3, 175,  15,  8, 3, 0, 0, 0, 0, 6, ARM_SUIT, P_NONE, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_GNOLLISH_ITEM, O3_NONE, PERMITTED_ALL),
+      0, 0, 0,			 0, 0, 0, P1_NONE, 30, 3, 175,  15,  8, 3, 0, 0, 0, 0, 6, ARM_SUIT, P_NONE, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_GNOLLISH_ITEM, O3_NONE, PERMITTED_ALL),
 ARMOR("ring mail", None,
-      1, 0, 0,			 0, 0, 0, 35, 5, 500,  30,  7, 2, 0, 0, 0, 0, 6, ARM_SUIT, P_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      1, 0, 0,			 0, 0, 0, P1_NONE, 35, 5, 500,  30,  7, 2, 0, 0, 0, 0, 6, ARM_SUIT, P_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ARMOR("orcish ring mail", "crude ring mail",
-      0, 0, 0,			 0, 0, 0, 20, 5, 450,  15,  8, 2, 0, 0, 0, 0, 10, ARM_SUIT, P_NONE, MAT_IRON, CLR_BLACK, O1_NONE, O2_ORCISH_ITEM, O3_NONE, PERMITTED_ALL),
+      0, 0, 0,			 0, 0, 0, P1_NONE, 20, 5, 450,  15,  8, 2, 0, 0, 0, 0, 10, ARM_SUIT, P_NONE, MAT_IRON, CLR_BLACK, O1_NONE, O2_ORCISH_ITEM, O3_NONE, PERMITTED_ALL),
 ARMOR("leather armor", None,
-      1, 0, 0,			 0, 0, 0, 40, 3, 150,   5,  8, 2, 0, 0, 0, 0, 2, ARM_SUIT, P_NONE, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      1, 0, 0,			 0, 0, 0, P1_NONE, 40, 3, 150,   5,  8, 2, 0, 0, 0, 0, 2, ARM_SUIT, P_NONE, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ARMOR("gnollish leather armor", "crude leather armor",
-      0, 0, 0,			 0, 0, 0, 21, 3, 125,   3,  9, 2, 0, 0, 0, 0, 4, ARM_SUIT, P_NONE, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_GNOLLISH_ITEM, O3_NONE, PERMITTED_ALL),
+      0, 0, 0,			 0, 0, 0, P1_NONE, 21, 3, 125,   3,  9, 2, 0, 0, 0, 0, 4, ARM_SUIT, P_NONE, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_GNOLLISH_ITEM, O3_NONE, PERMITTED_ALL),
 ARMOR("leather jacket", None,
-      1, 0, 0,			 0, 0, 0, 10, 0,  30,  10,  9, 1, 0, 0, 0, 0, 0, ARM_SUIT, P_NONE, MAT_LEATHER, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      1, 0, 0,			 0, 0, 0, P1_NONE, 10, 0,  30,  10,  9, 1, 0, 0, 0, 0, 0, ARM_SUIT, P_NONE, MAT_LEATHER, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ARMOR("force field armor", "armor-shaped force field",
-      0, 1, 0,			 0, 0, 0, 0,  0,   0,   4,  4, 6, 0, 0, 0, 0, -2, ARM_SUIT, P_NONE, MAT_FORCEFIELD, HI_GLASS, O1_FIRE_RESISTANT | O1_LIGHTNING_RESISTANT | O1_COLD_RESISTANT | O1_CORROSION_RESISTANT | O1_RUST_RESISTANT, O2_NONE, O3_NO_WISH, PERMITTED_ALL),
+      0, 1, 0,			 0, 0, 0, P1_NONE, 0,  0,   0,   4,  4, 6, 0, 0, 0, 0, -2, ARM_SUIT, P_NONE, MAT_FORCEFIELD, HI_GLASS, O1_FIRE_RESISTANT | O1_LIGHTNING_RESISTANT | O1_COLD_RESISTANT | O1_CORROSION_RESISTANT | O1_RUST_RESISTANT, O2_NONE, O3_NO_WISH, PERMITTED_ALL),
 
 /* shirts */
 ARMOR("Hawaiian shirt", None, //STARTMARKER 1
-    1, 0, 0, 0,			 0, 0, 8, 0, 5,  5, 10, 1, 0, 0, 0, 0, 0, ARM_SHIRT, P_NONE, MAT_CLOTH, CLR_MAGENTA, O1_NONE, O2_NONE, O3_READABLE, PERMITTED_ALL),
+    1, 0, 0, 0,			 0, 0, P1_NONE, 8, 0, 5,  5, 10, 1, 0, 0, 0, 0, 0, ARM_SHIRT, P_NONE, MAT_CLOTH, CLR_MAGENTA, O1_NONE, O2_NONE, O3_READABLE, PERMITTED_ALL),
 /* with shuffled appearances... */
 ARMOR("shirt of uncontrollable laughter", "funny T-shirt", //STARTMARKER 2
-    0, 1, 0,  LAUGHING,  0, 0, 6, 0, 5, 50, 10, 1, 0, 0, 0, 0, 6, ARM_SHIRT, P_NONE, MAT_CLOTH, CLR_BLUE, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_READABLE, PERMITTED_ALL),
+    0, 1, 0,  LAUGHING,  0, 0, P1_NONE, 6, 0, 5, 50, 10, 1, 0, 0, 0, 0, 6, ARM_SHIRT, P_NONE, MAT_CLOTH, CLR_BLUE, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_READABLE, PERMITTED_ALL),
 ARMOR("shirt of comeliness", "black T-shirt",
-	0, 1, 0, 0,			 0, 0, 6, 0, 5, 50, 10, 1, 0, 0, BONUS_TO_CHA, 0, 0, ARM_SHIRT, P_NONE, MAT_CLOTH, CLR_BLACK, O1_NONE, O2_NONE, O3_READABLE, PERMITTED_ALL),
+	0, 1, 0, 0,			 0, 0, P1_NONE, 6, 0, 5, 50, 10, 1, 0, 0, BONUS_TO_CHA, 0, 0, ARM_SHIRT, P_NONE, MAT_CLOTH, CLR_BLACK, O1_NONE, O2_NONE, O3_READABLE, PERMITTED_ALL),
 ARMOR("shirt of sound mindedness", "green T-shirt", 
-	0, 1, 0, HALLUC_RES, 0, 0, 6, 0, 5, 50, 10, 1, 0, 0, 0, 0, -2, ARM_SHIRT, P_NONE, MAT_CLOTH, CLR_GREEN, O1_NONE, O2_NONE, O3_READABLE, PERMITTED_ALL),
+	0, 1, 0, HALLUC_RES, 0, 0, P1_NONE, 6, 0, 5, 50, 10, 1, 0, 0, 0, 0, -2, ARM_SHIRT, P_NONE, MAT_CLOTH, CLR_GREEN, O1_NONE, O2_NONE, O3_READABLE, PERMITTED_ALL),
 ARMOR("T-shirt", "old T-shirt",//ENDMARKER 1 & 2
-    0, 0, 0, 0,			 0, 0, 4, 0, 5,  2, 10, 1, 0, 0, 0, 0, 0, ARM_SHIRT, P_NONE, MAT_CLOTH, CLR_WHITE, O1_NONE, O2_NONE, O3_READABLE, PERMITTED_ALL),
+    0, 0, 0, 0,			 0, 0, P1_NONE, 4, 0, 5,  2, 10, 1, 0, 0, 0, 0, 0, ARM_SHIRT, P_NONE, MAT_CLOTH, CLR_WHITE, O1_NONE, O2_NONE, O3_READABLE, PERMITTED_ALL),
 
 
 /* cloaks */
 CLOAK("elven cloak", "faded pall",
-      0, 1,        STEALTH, 0, 0, 8,  0, 10, 60,  9, 2, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_BLACK, O1_NONE, O2_ELVEN_ITEM, O3_NONE, PERMITTED_ALL),
+      0, 1,        STEALTH, 0, 0, P1_NONE, 8,  0, 10, 60,  9, 2, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_BLACK, O1_NONE, O2_ELVEN_ITEM, O3_NONE, PERMITTED_ALL),
 CLOAK("orcish cloak", "coarse mantelet",
-      0, 0,				 0, 0, 0, 8,  0, 10, 40, 10, 1, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_BLACK, O1_NONE, O2_ORCISH_ITEM, O3_NONE, PERMITTED_ALL),
+      0, 0,				 0, 0, 0, P1_NONE, 8,  0, 10, 40, 10, 1, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_BLACK, O1_NONE, O2_ORCISH_ITEM, O3_NONE, PERMITTED_ALL),
 CLOAK("dwarvish cloak", "hooded cloak",
-      0, 0,			     0, 0, 0, 8,  0, 10, 50, 10, 2, 0, 0, 0, 0, 0, MAT_CLOTH, HI_CLOTH, O1_NONE, O2_DWARVEN_ITEM, O3_NONE, PERMITTED_ALL),
+      0, 0,			     0, 0, 0, P1_NONE, 8,  0, 10, 50, 10, 2, 0, 0, 0, 0, 0, MAT_CLOTH, HI_CLOTH, O1_NONE, O2_DWARVEN_ITEM, O3_NONE, PERMITTED_ALL),
 CLOAK("oilskin cloak", "slippery cloak",
-      0, 0,				 0, 0, 0, 8,  0, 10, 50,  9, 2, 0, 0, 0, 0, 0, MAT_CLOTH, HI_CLOTH, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      0, 0,				 0, 0, 0, P1_NONE, 8,  0, 10, 50,  9, 2, 0, 0, 0, 0, 0, MAT_CLOTH, HI_CLOTH, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 CLOAK("alchemy smock", "apron",
-      0, 1, POISON_RES, 0, 0, 9, 0, 10, 50,  9, 1, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_WHITE, O1_NONE, O2_NONE, O3_READABLE, PERMITTED_ALL),
+      0, 1, POISON_RES, 0, 0, P1_NONE, 9, 0, 10, 50,  9, 1, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_WHITE, O1_NONE, O2_NONE, O3_READABLE, PERMITTED_ALL),
 CLOAK("leather cloak", None,
-      1, 0,				 0, 0, 0, 8,  0, 15, 40,  9, 1, 0, 0, 0, 0, 0, MAT_LEATHER, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      1, 0,				 0, 0, 0, P1_NONE, 8,  0, 15, 40,  9, 1, 0, 0, 0, 0, 0, MAT_LEATHER, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 /* with shuffled appearances... */
 CLOAK("cloak of protection", "tattered cape",
-      0, 1, NO_POWER, 0, 0, 9, 0, 10, 250,  7, 3, 0, 0, 0, 0, 0, MAT_CLOTH, HI_CLOTH, O1_SPE_AFFECTS_MC, O2_NONE, O3_NONE, PERMITTED_ALL),
+      0, 1, NO_POWER, 0, 0, P1_NONE, 9, 0, 10, 250,  7, 3, 0, 0, 0, 0, 0, MAT_CLOTH, HI_CLOTH, O1_SPE_AFFECTS_MC, O2_NONE, O3_NONE, PERMITTED_ALL),
         /* cloak of protection is now the only item conferring MC 3 */
 CLOAK("cloak of invisibility", "opera cloak",
-      0, 1,      INVISIBILITY, 0, 0, 9, 0, 10, 250,  9, 2, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_BRIGHT_MAGENTA, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      0, 1,      INVISIBILITY, 0, 0, P1_NONE, 9, 0, 10, 250,  9, 2, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_BRIGHT_MAGENTA, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 CLOAK("cloak of magic resistance", "ornamental cope",
-      0, 1,  ANTIMAGIC, 0, 0, 6, 0, 10, 250,  9, 2, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      0, 1,  ANTIMAGIC, 0, 0, P1_NONE, 6, 0, 10, 250,  9, 2, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
         /*  'cope' is not a spelling mistake... leave it be */
 CLOAK("cloak of integrity", "hard woven cloak",
-      0, 1,  DISINT_RES, 0, 0, 6, 0, 10, 250,  8, 2, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_WHITE, O1_DISINTEGRATION_RESISTANT | O1_FIRE_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
+      0, 1,  DISINT_RES, 0, 0, P1_NONE, 6, 0, 10, 250,  8, 2, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_WHITE, O1_DISINTEGRATION_RESISTANT | O1_FIRE_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
 CLOAK("cloak of displacement", "piece of cloth",
-      0, 1,  DISPLACED, 0, 0, 7, 0, 10, 250,  9, 2, 0, 0, 0, 0, 0, MAT_CLOTH, HI_CLOTH, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      0, 1,  DISPLACED, 0, 0, P1_NONE, 7, 0, 10, 250,  9, 2, 0, 0, 0, 0, 0, MAT_CLOTH, HI_CLOTH, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 
 /* robes and gowns */
 /* with shuffled appearances... */
 ROBE("robe", "old robe", //STARTMARKER 1 & 2
-	0, 0, NO_POWER, NO_POWER, NO_POWER, 10, 1, 20,  25,  10, 2, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_RED, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 10, 1, 20,  25,  10, 2, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_RED, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ROBE("robe of protection", "golden ornamental robe",
-	0, 1, NO_POWER, NO_POWER, NO_POWER, 10, 1, 25, 400,  7, 4, 0, 0, 0, 0, 0, MAT_CLOTH, HI_GOLD, O1_SPE_AFFECTS_MC, O2_NONE, O3_NONE, PERMITTED_ALL),
+	0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 10, 1, 25, 400,  7, 4, 0, 0, 0, 0, 0, MAT_CLOTH, HI_GOLD, O1_SPE_AFFECTS_MC, O2_NONE, O3_NONE, PERMITTED_ALL),
 ROBE("robe of magic resistance", "silvery ornamental robe",
-	0, 1, ANTIMAGIC, NO_POWER, NO_POWER, 9, 1, 25, 400,  9, 3, 0, 0, 0, 0, 0, MAT_CLOTH, HI_SILVER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	0, 1, ANTIMAGIC, NO_POWER, NO_POWER, P1_NONE, 9, 1, 25, 400,  9, 3, 0, 0, 0, 0, 0, MAT_CLOTH, HI_SILVER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ROBE("gown of the archbishops", "shining purple robe",
-	0, 1, CURSE_RES, DEATH_RES, DRAIN_RES, 5, 2, 30, 400,  9, 4,15, 15, 0, 0, 0, MAT_CLOTH, CLR_MAGENTA, O1_NOT_CURSEABLE | O1_HP_PERCENTAGE_BONUS | O1_MANA_PERCENTAGE_BONUS, O2_GENERATED_BLESSED, O3_NONE, PERMITTED_ALL),
+	0, 1, CURSE_RES, DEATH_RES, DRAIN_RES, P1_NONE, 5, 2, 30, 400,  9, 4,15, 15, 0, 0, 0, MAT_CLOTH, CLR_MAGENTA, O1_NOT_CURSEABLE | O1_HP_PERCENTAGE_BONUS | O1_MANA_PERCENTAGE_BONUS, O2_GENERATED_BLESSED, O3_NONE, PERMITTED_ALL),
 ROBE("robe of powerlessness", "shining green robe",
-	0, 1, NO_POWER, NO_POWER, NO_POWER, 10, 1, 25, 400,  9, 2, 0, 0, BONUS_TO_STR | BONUS_TO_INT | SETS_FIXED_ATTRIBUTE | FIXED_IS_MAXIMUM | IGNORE_SPE, 3, 0, MAT_CLOTH, CLR_GREEN, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
+	0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 10, 1, 25, 400,  9, 2, 0, 0, BONUS_TO_STR | BONUS_TO_INT | SETS_FIXED_ATTRIBUTE | FIXED_IS_MAXIMUM | IGNORE_SPE, 3, 0, MAT_CLOTH, CLR_GREEN, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
 ROBE("robe of eyes", "star-patterned robe",
-	0, 1, INFRAVISION, SEE_INVISIBILITY, SEARCHING, 5, 1, 25, 400,  9, 3, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_CYAN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	0, 1, INFRAVISION, SEE_INVISIBILITY, SEARCHING, P1_NONE, 5, 1, 25, 400,  9, 3, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_CYAN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ROBE("robe of the archmagi", "shining blue robe",
-	0, 1, NO_POWER, NO_POWER, NO_POWER, 5, 2, 30, 400,  9, 3, 0, 0, BONUS_TO_INT | SETS_FIXED_ATTRIBUTE, 20, 0, MAT_CLOTH, HI_ZAP, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 5, 2, 30, 400,  9, 3, 0, 0, BONUS_TO_INT | SETS_FIXED_ATTRIBUTE, 20, 0, MAT_CLOTH, HI_ZAP, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ROBE("robe of starry wisdom", "shining black robe", //ENDMARKER 2
-	0, 1, NO_POWER, NO_POWER, NO_POWER, 5, 2, 30, 400,  9, 3, 0, 0, BONUS_TO_WIS | SETS_FIXED_ATTRIBUTE, 20, 0, MAT_CLOTH, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 5, 2, 30, 400,  9, 3, 0, 0, BONUS_TO_WIS | SETS_FIXED_ATTRIBUTE, 20, 0, MAT_CLOTH, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 /* without shuffled appearances... */
 ROBE("bathrobe", "soft cotton robe",
-	0, 0, NO_POWER, NO_POWER, NO_POWER, 6, 1, 25,   5, 10, 1, 0, 0, 0, 0, 2, MAT_CLOTH, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 6, 1, 25,   5, 10, 1, 0, 0, 0, 0, 2, MAT_CLOTH, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ROBE("clerical gown", None,
-	1, 0, NO_POWER, NO_POWER, NO_POWER, 6, 1, 15,  25, 10, 3, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_BLACK, O1_NONE, O2_GENERATED_BLESSED, O3_NONE, PERMITTED_ALL),
+	1, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 6, 1, 15,  25, 10, 3, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_BLACK, O1_NONE, O2_GENERATED_BLESSED, O3_NONE, PERMITTED_ALL),
 ROBE("tailored silk robe", "fine robe",
-	0, 0, NO_POWER, NO_POWER, NO_POWER, 3, 1, 30, 100, 10, 1, 0, 0, 0, 0, 0, MAT_SILK, CLR_BROWN, O1_NONE, O2_GNOMISH_ITEM, O3_NONE, PERMITTED_ALL),
+	0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 3, 1, 30, 100, 10, 1, 0, 0, 0, 0, 0, MAT_SILK, CLR_BROWN, O1_NONE, O2_GNOMISH_ITEM, O3_NONE, PERMITTED_ALL),
 ROBE("gnollish haircloth robe", "crude robe",
-	0, 0, NO_POWER, NO_POWER, NO_POWER, 6, 1, 30,  10,  9, 2, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_BROWN, O1_NONE, O2_GNOLLISH_ITEM, O3_NONE, PERMITTED_ALL),
+	0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 6, 1, 30,  10,  9, 2, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_BROWN, O1_NONE, O2_GNOLLISH_ITEM, O3_NONE, PERMITTED_ALL),
 ROBE("mummy wrapping", None, //ENDMARKER 1
-	1, 0, BLOCKS_INVISIBILITY, NO_POWER, NO_POWER, 0, 0,  3,   2, 10, 1, 0, 0, 0, 0, 4, MAT_CLOTH, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	1, 0, BLOCKS_INVISIBILITY, NO_POWER, NO_POWER, P1_NONE, 0, 0,  3,   2, 10, 1, 0, 0, 0, 0, 4, MAT_CLOTH, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 	/* worn mummy wrapping blocks invisibility */
 
 
 /* bracers */
 /* with shuffled appearances... */
 BRACERS("leather bracers", "old bracers", //STARTMARKER 1 & 2
-	0, 0, 0,		  0, 0, 10, 1, 10,   5, 9, 1, 0, 0, 0, 0, 0, MAT_CLOTH, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	0, 0, 0,		  0, 0, P1_NONE, 10, 1, 10,   5, 9, 1, 0, 0, 0, 0, 0, MAT_CLOTH, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 BRACERS("bracers of defense", "runed bracers",
-	0, 1, NO_POWER, 0, 0, 10, 1, 10, 300, 7, 3, 0, 0, 0, 0, 0, MAT_CLOTH, HI_LEATHER, O1_SPE_AFFECTS_MC, O2_NONE, O3_NONE, PERMITTED_ALL),
+	0, 1, NO_POWER, 0, 0, P1_NONE, 10, 1, 10, 300, 7, 3, 0, 0, 0, 0, 0, MAT_CLOTH, HI_LEATHER, O1_SPE_AFFECTS_MC, O2_NONE, O3_NONE, PERMITTED_ALL),
 BRACERS("bracers of archery", "deerskin bracers",
-	0, 1, 0,		  0, 0, 10, 1, 10, 300, 9, 1, 0, 0, 0, 0, 4, MAT_CLOTH, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	0, 1, 0,		  0, 0, P1_NONE, 10, 1, 10, 300, 9, 1, 0, 0, 0, 0, 4, MAT_CLOTH, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 BRACERS("bracers of spell casting", "shining bracers",
-	0, 1, 0,		  0, 0, 10, 1, 10, 300, 9, 1, 10, 0, 0, 0, -7, MAT_CLOTH, HI_LEATHER, O1_MANA_PERCENTAGE_BONUS, O2_NONE, O3_NONE, PERMITTED_ALL),
+	0, 1, 0,		  0, 0, P1_NONE, 10, 1, 10, 300, 9, 1, 10, 0, 0, 0, -7, MAT_CLOTH, HI_LEATHER, O1_MANA_PERCENTAGE_BONUS, O2_NONE, O3_NONE, PERMITTED_ALL),
 BRACERS("bracers of magic resistance", "ornamental bracers",//ENDMARKER 1 & 2
-	0, 1, ANTIMAGIC,  0, 0, 10, 1, 10, 300, 9, 1, 0, 0, 0, 0, 0, MAT_CLOTH, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	0, 1, ANTIMAGIC,  0, 0, P1_NONE, 10, 1, 10, 300, 9, 1, 0, 0, 0, 0, 0, MAT_CLOTH, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 
 
 
 /* shields */
 SHIELD("small shield", None,
-       1, 0, 0,          0, 0, 0, 6, 0,  80,  3, 9, 0, 0, 0, 0, 0, 8, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+       1, 0, 0,          0, 0, 0, P1_NONE, 6, 0,  80,  3, 9, 0, 0, 0, 0, 0, 8, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SHIELD("elven shield", "blue and green shield",
-       0, 0, 0,          0, 0, 0, 2, 0,  140,  7, 8, 0, 0, 0, 0, 0, 6, MAT_WOOD, CLR_GREEN, O1_NONE, O2_ELVEN_ITEM, O3_NONE, PERMITTED_ALL),
+       0, 0, 0,          0, 0, 0, P1_NONE, 2, 0,  140,  7, 8, 0, 0, 0, 0, 0, 6, MAT_WOOD, CLR_GREEN, O1_NONE, O2_ELVEN_ITEM, O3_NONE, PERMITTED_ALL),
 SHIELD("Uruk-hai shield", "white-handed shield",
-       0, 0, 0,          0, 0, 0, 2, 0,  120,  7, 9, 0, 0, 0, 0, 0, 12, MAT_IRON, HI_METAL, O1_NONE, O2_ORCISH_ITEM, O3_NONE, PERMITTED_ALL),
+       0, 0, 0,          0, 0, 0, P1_NONE, 2, 0,  120,  7, 9, 0, 0, 0, 0, 0, 12, MAT_IRON, HI_METAL, O1_NONE, O2_ORCISH_ITEM, O3_NONE, PERMITTED_ALL),
 SHIELD("orcish shield", "red-eyed shield",
-       0, 0, 0,          0, 0, 0, 2, 0,  100,  7, 9, 0, 0, 0, 0, 0, 10, MAT_IRON, CLR_RED, O1_NONE, O2_ORCISH_ITEM, O3_NONE, PERMITTED_ALL),
+       0, 0, 0,          0, 0, 0, P1_NONE, 2, 0,  100,  7, 9, 0, 0, 0, 0, 0, 10, MAT_IRON, CLR_RED, O1_NONE, O2_ORCISH_ITEM, O3_NONE, PERMITTED_ALL),
 SHIELD("large shield", None,
-       1, 0, 1,          0, 0, 0, 5, 0, 160, 10, 8, 0, 0, 0, 0, 0, 12, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+       1, 0, 1,          0, 0, 0, P1_NONE, 5, 0, 160, 10, 8, 0, 0, 0, 0, 0, 12, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SHIELD("dwarvish roundshield", "large round shield",
-       0, 0, 0,          0, 0, 0, 4, 0, 150, 10, 8, 0, 0, 0, 0, 0, 12, MAT_IRON, HI_METAL, O1_NONE, O2_DWARVEN_ITEM, O3_NONE, PERMITTED_ALL),
+       0, 0, 0,          0, 0, 0, P1_NONE, 4, 0, 150, 10, 8, 0, 0, 0, 0, 0, 12, MAT_IRON, HI_METAL, O1_NONE, O2_DWARVEN_ITEM, O3_NONE, PERMITTED_ALL),
 SHIELD("shield of reflection", "polished silver shield",
-       0, 1, 0, REFLECTING, 0, 0, 3, 0, 70, 750, 8, 0, 0, 0, 0, 0, 10, MAT_SILVER, HI_SILVER, O1_RUST_RESISTANT | O1_CORROSION_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
+       0, 1, 0, REFLECTING, 0, 0, P1_NONE, 3, 0, 70, 750, 8, 0, 0, 0, 0, 0, 10, MAT_SILVER, HI_SILVER, O1_RUST_RESISTANT | O1_CORROSION_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
 
 WEAPONSHIELD("spiked shield", None,
 	1, 0, 5, 130, 50, 
 	AD_PHYS, 1, 6, 0, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,
 	0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, PIERCE, P_SPEAR, MAT_IRON, HI_METAL, 
+	0, 0, 0, P1_NONE, PIERCE, P_SPEAR, MAT_IRON, HI_METAL,
 	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 WEAPONSHIELD("spiked silver shield", None,
 	1, 0, 2, 130, 500, 
 	AD_PHYS, 1, 6, 0, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,
 	0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, PIERCE, P_SPEAR, MAT_SILVER, HI_SILVER, 
+	0, 0, 0, P1_NONE, PIERCE, P_SPEAR, MAT_SILVER, HI_SILVER,
 	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 
 
@@ -1394,86 +1394,86 @@ WEAPONSHIELD("spiked silver shield", None,
  * HI_METAL or CLR_BLACK.  All have shuffled descriptions.
  */
 GLOVES("leather gloves", "old gloves",
-       0, 0,        0, 0, 0, 8, 1, 10,  8, 9, 0, 0, 0, 0, 0, 2, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+       0, 0,        0, 0, 0, P1_NONE, 8, 1, 10,  8, 9, 0, 0, 0, 0, 0, 2, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 GLOVES("gauntlets of fumbling", "padded gloves",
-       0, 1, FUMBLING, 0, 0, 8, 1, 10, 100, 9, 0, 0, 0, 0, 0, 12, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
+       0, 1, FUMBLING, 0, 0, P1_NONE, 8, 1, 10, 100, 9, 0, 0, 0, 0, 0, 12, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
 GLOVES("gloves of spell casting", "deerskin gloves",
-       0, 1,		0, 0, 0, 8, 1, 10, 100, 9, 0, 20, 0, BONUS_TO_SPELL_CASTING, 16, 0, MAT_LEATHER, HI_LEATHER, O1_MANA_PERCENTAGE_BONUS, O2_NONE, O3_NONE, PERMITTED_ALL),
+       0, 1,		0, 0, 0, P1_NONE, 8, 1, 10, 100, 9, 0, 20, 0, BONUS_TO_SPELL_CASTING, 16, 0, MAT_LEATHER, HI_LEATHER, O1_MANA_PERCENTAGE_BONUS, O2_NONE, O3_NONE, PERMITTED_ALL),
 WEAPONGLOVES("gauntlets of ogre power", "riding gloves",
 	0, 1, 1, 8, 30, 100,
 	AD_PHYS, 1, 2, 0, 1, 2, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,
 	0, 0, 0, 1, 0, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE | IGNORE_SPE, STR18(100), 6, 0,
-	0, 0, 0, WHACK, MAT_IRON, CLR_BROWN,
+	0, 0, 0, P1_NONE, WHACK, MAT_IRON, CLR_BROWN,
 	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 GLOVES("gauntlets of dexterity", "fencing gloves",
-       0, 1,        0, 0, 0, 8, 1, 10, 100, 9, 0, 0, 0, BONUS_TO_DEX, 0, 0, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+       0, 1,        0, 0, 0, P1_NONE, 8, 1, 10, 100, 9, 0, 0, 0, BONUS_TO_DEX, 0, 0, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 
 /* without shuffled appearances */
 WEAPONGLOVES("spiked gauntlets", None,
 	1, 0, 1, 5, 30, 30,
 	AD_PHYS, 1, 4, 0, 1, 4, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,
 	0, 0, 0, 1, 0, 0, 0, 0, 0, 8, 0,
-	0, 0, 0, PIERCE, MAT_IRON, HI_METAL,
+	0, 0, 0, P1_NONE, PIERCE, MAT_IRON, HI_METAL,
 	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 WEAPONGLOVES("silver gauntlets", None,
 	1, 0, 1, 5, 30, 300,
 	AD_PHYS, 1, 2, 0, 1, 2, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,
 	0, 0, 0, 1, 0, 0, 0, 0, 0, 4, 0,
-	0, 0, 0, WHACK, MAT_SILVER, HI_SILVER,
+	0, 0, 0, P1_NONE, WHACK, MAT_SILVER, HI_SILVER,
 	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 
 
 /* boots */
 BOOTS("low boots", "walking shoes",
-      0, 0,          0, 0, 0, 14, 2, 10,  8, 9, 0, 0, 0, 0, 0, 0, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      0, 0,          0, 0, 0, P1_NONE, 14, 2, 10,  8, 9, 0, 0, 0, 0, 0, 0, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 //BOOTS("iron shoes", "hard shoes",
 //      0, 0,          0, 0, 0, 7, 2, 60, 16, 8, 0, 0, 0, 0, 0, 2, MAT_IRON, HI_METAL, O1_NONE, O2_DWARVEN_ITEM, O3_NONE, PERMITTED_ALL),
 WEAPONBOOTS("iron shoes", "hard shoes",
 	1, 0, 2, 7, 60, 16,
 	AD_PHYS, 1, 3, 0, 1, 3, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,
 	0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0,
-	NO_POWER, NO_POWER, NO_POWER, WHACK, MAT_IRON, HI_METAL,
+	NO_POWER, NO_POWER, NO_POWER, P1_NONE, WHACK, MAT_IRON, HI_METAL,
 	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 BOOTS("leather sandals", None,
-      1, 0,          0, 0, 0, 2, 1, 6,  4, 10, 0, 0, 0, 0, 0, 0, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      1, 0,          0, 0, 0, P1_NONE, 2, 1, 6,  4, 10, 0, 0, 0, 0, 0, 0, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 BOOTS("cotton slippers", None,
-      1, 0,          0, 0, 0, 2, 1, 3,  4, 10, 0, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      1, 0,          0, 0, 0, P1_NONE, 2, 1, 3,  4, 10, 0, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 BOOTS("high boots", "jackboots",
-      0, 0,          0, 0, 0, 12, 2, 30, 12, 8, 0, 0, 0, 0, 0, 0, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      0, 0,          0, 0, 0, P1_NONE, 12, 2, 30, 12, 8, 0, 0, 0, 0, 0, 0, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 /* with shuffled appearances... */
 BOOTS("speed boots", "combat boots",
-      0, 1,       FAST, 0, 0, 12, 2, 30, 50, 9, 0, 0, 0, 0, 0, 0, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      0, 1,       FAST, 0, 0, P1_NONE, 12, 2, 30, 50, 9, 0, 0, 0, 0, 0, 0, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 BOOTS("water walking boots", "jungle boots",
-      0, 1,   WWALKING, 0, 0, 12, 2, 15, 50, 9, 0, 0, 0, 0, 0, 0, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      0, 1,   WWALKING, 0, 0, P1_NONE, 12, 2, 15, 50, 9, 0, 0, 0, 0, 0, 0, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 BOOTS("jumping boots", "hiking boots",
-      0, 1,    JUMPING, 0, 0, 12, 2, 30, 50, 9, 0, 0, 0, 0, 0, 0, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+      0, 1,    JUMPING, 0, 0, P1_NONE, 12, 2, 30, 50, 9, 0, 0, 0, 0, 0, 0, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 BOOTS("elven boots", "mud boots",
-      0, 1,    STEALTH, 0, 0, 12, 2, 20,  8, 9, 0, 0, 0, 0, 0, 0, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_ELVEN_ITEM, O3_NONE, PERMITTED_ALL),
+      0, 1,    STEALTH, 0, 0, P1_NONE, 12, 2, 20,  8, 9, 0, 0, 0, 0, 0, 0, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_ELVEN_ITEM, O3_NONE, PERMITTED_ALL),
 WEAPONBOOTS("kicking boots", "buckled boots",
 	0, 1, 2, 12, 60, 50,
 	AD_PHYS, 1, 7, 0, 1, 7, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,
 	0, 0, 0, 1, 0, 0, 0, 0, 0, 2, 0,
-	MAGICAL_KICKING, NO_POWER, NO_POWER, WHACK, MAT_IRON, CLR_BROWN,
+	MAGICAL_KICKING, NO_POWER, NO_POWER, P1_NONE, WHACK, MAT_IRON, CLR_BROWN,
 	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 /* CLR_BROWN for same reason as gauntlets of power */
 
 BOOTS("fumble boots", "riding boots",
-      0, 1,   FUMBLING, 0, 0, 12, 2, 30, 30, 9, 0, 0, 0, 0, 0, 4, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
+      0, 1,   FUMBLING, 0, 0, P1_NONE, 12, 2, 30, 30, 9, 0, 0, 0, 0, 0, 4, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
 BOOTS("levitation boots", "snow boots",
-      0, 1, LEVITATION, 0, 0, 12, 2, 15, 30, 9, 0, 0, 0, 0, 0, 0, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
+      0, 1, LEVITATION, 0, 0, P1_NONE, 12, 2, 15, 30, 9, 0, 0, 0, 0, 0, 0, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
 
 /* more without shuffled appearances */
 WEAPONBOOTS("spiked boots", None,
 	1, 0, 2, 5, 60, 20,
 	AD_PHYS, 1, 5, 0, 1, 5, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,
 	0, 0, 0, 2, 0, 0, 0, 0, 0, 3, 0,
-	NO_POWER, NO_POWER, NO_POWER, PIERCE, MAT_IRON, HI_METAL,
+	NO_POWER, NO_POWER, NO_POWER, P1_NONE, PIERCE, MAT_IRON, HI_METAL,
 	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 WEAPONBOOTS("silver shoes", None,
 	1, 0, 2, 3, 60, 200,
 	AD_PHYS, 1, 3, 0, 1, 3, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,
 	0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0,
-	NO_POWER, NO_POWER, NO_POWER, WHACK, MAT_SILVER, HI_SILVER,
+	NO_POWER, NO_POWER, NO_POWER, P1_NONE, WHACK, MAT_SILVER, HI_SILVER,
 	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 
 
@@ -1491,117 +1491,117 @@ WEAPONBOOTS("silver shoes", None,
 #undef WEAPONBOOTS
 
 /* rings ... */
-#define RING(name,desc,prob,power,power2,power3,cost,mgc,spec,mohs,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,color,flags,flags2,flags3,powconfermask) \
+#define RING(name,desc,prob,power,power2,power3,pflags,cost,mgc,spec,mohs,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,color,flags,flags2,flags3,powconfermask) \
     OBJECT(OBJ(name, desc), None, None,                                         \
            BITS(0, 0, spec, 0, mgc, spec, 0, 0, 0,                    \
                 HARDGEM(mohs), 0, 0, P_NONE, metal),                     \
-           power, power2, power3, RING_CLASS, 0, MULTIGEN_SINGLE, prob, 1, cost,  \
+           power, power2, power3, pflags, RING_CLASS, 0, MULTIGEN_SINGLE, prob, 1, cost,  \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattrs,attrbonus, splcastpen, 0, \
 		   15, color, 0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
 RING("adornment", "wooden", /* STARTMARKER FOR SHUFFLED RINGS */
-    30, ADORNED, 0, 0, 100, 1, 1, 2, 0, 0, BONUS_TO_CHA, 0, 0, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+    30, ADORNED, 0, 0, P1_NONE, 100, 1, 1, 2, 0, 0, BONUS_TO_CHA, 0, 0, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("gain strength", "granite",
-	30, 0, 0, 0, 150, 1, 1, 7, 0, 0, BONUS_TO_STR, 0, 0, MAT_MINERAL, HI_MINERAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	30, 0, 0, 0, P1_NONE, 150, 1, 1, 7, 0, 0, BONUS_TO_STR, 0, 0, MAT_MINERAL, HI_MINERAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("gain dexterity", "thin",
-	30, 0, 0, 0, 150, 1, 1, 7, 0, 0, BONUS_TO_DEX, 0, 0, MAT_MINERAL, HI_MINERAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	30, 0, 0, 0, P1_NONE, 150, 1, 1, 7, 0, 0, BONUS_TO_DEX, 0, 0, MAT_MINERAL, HI_MINERAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("gain constitution", "opal",
-	30, 0, 0, 0, 150, 1, 1, 7, 0, 0, BONUS_TO_CON, 0, 0, MAT_MINERAL, HI_MINERAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	30, 0, 0, 0, P1_NONE, 150, 1, 1, 7, 0, 0, BONUS_TO_CON, 0, 0, MAT_MINERAL, HI_MINERAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("gain intelligence", "adamantine",
-	30, 0, 0, 0, 150, 1, 1, 7, 0, 0, BONUS_TO_INT, 0, 0, MAT_MINERAL, HI_MINERAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	30, 0, 0, 0, P1_NONE, 150, 1, 1, 7, 0, 0, BONUS_TO_INT, 0, 0, MAT_MINERAL, HI_MINERAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("gain wisdom", "polished",
-	30, 0, 0, 0, 150, 1, 1, 7, 0, 0, BONUS_TO_WIS, 0, 0, MAT_MINERAL, HI_MINERAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	30, 0, 0, 0, P1_NONE, 150, 1, 1, 7, 0, 0, BONUS_TO_WIS, 0, 0, MAT_MINERAL, HI_MINERAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("power", "runed",
-	10, 0, 0, 0, 300, 1, 1, 7, 0, 0, BONUS_TO_ALLSTATS, 0, 0, MAT_MINERAL, HI_MINERAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	10, 0, 0, 0, P1_NONE, 300, 1, 1, 7, 0, 0, BONUS_TO_ALLSTATS, 0, 0, MAT_MINERAL, HI_MINERAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("increase accuracy", "clay",
-	30, 0, 0, 0, 150, 1, 1, 4, 0, 0, BONUS_TO_HIT, 0, 0, MAT_MINERAL, CLR_RED, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	30, 0, 0, 0, P1_NONE, 150, 1, 1, 4, 0, 0, BONUS_TO_HIT, 0, 0, MAT_MINERAL, CLR_RED, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("increase damage", "coral",
-	30, 0, 0, 0, 150, 1, 1, 4, 0, 0, BONUS_TO_DAMAGE, 0, 0, MAT_MINERAL, CLR_ORANGE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	30, 0, 0, 0, P1_NONE, 150, 1, 1, 4, 0, 0, BONUS_TO_DAMAGE, 0, 0, MAT_MINERAL, CLR_ORANGE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("protection", "black onyx",
-	35, NO_POWER, 0, 0, 100, 1, 1, 7, 0, 0, BONUS_TO_AC | BONUS_TO_MC, 0, 0, MAT_MINERAL, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	35, NO_POWER, 0, 0, P1_NONE, 100, 1, 1, 7, 0, 0, BONUS_TO_AC | BONUS_TO_MC, 0, 0, MAT_MINERAL, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("regeneration", "moonstone",
-	35, REGENERATION, 0, 0, 200, 1, 0,  6, 0, 0, 0, 0, 0, MAT_MINERAL, HI_MINERAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	35, REGENERATION, 0, 0, P1_NONE, 200, 1, 0,  6, 0, 0, 0, 0, 0, MAT_MINERAL, HI_MINERAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("replenishment", "crystal",
-	30, ENERGY_REGENERATION, 0, 0, 300, 1, 0,  6, 0, 0, 0, 0, 0, MAT_MINERAL, HI_MINERAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	30, ENERGY_REGENERATION, 0, 0, P1_NONE, 300, 1, 0,  6, 0, 0, 0, 0, 0, MAT_MINERAL, HI_MINERAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("the serpent god", "serpent-headed",
-	10, 0, 0, 0, 300, 1, 0,  6,150, 0, 0, 0, 0, MAT_MINERAL, HI_MINERAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	10, 0, 0, 0, P1_NONE, 300, 1, 0,  6,150, 0, 0, 0, 0, MAT_MINERAL, HI_MINERAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("fortitude", "immaculate",
-	30, 0, 0, 0, 200, 1, 0,  6,  0, 25, 0, 0, 0, MAT_MINERAL, HI_MINERAL, O1_HP_PERCENTAGE_BONUS, O2_NONE, O3_NONE, PERMITTED_ALL),
+	30, 0, 0, 0, P1_NONE, 200, 1, 0,  6,  0, 25, 0, 0, 0, MAT_MINERAL, HI_MINERAL, O1_HP_PERCENTAGE_BONUS, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("searching", "tiger eye",
-	30, SEARCHING, 0, 0, 200, 1, 0,  6, 0, 0, 0, 0, 0, MAT_GEMSTONE, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	30, SEARCHING, 0, 0, P1_NONE, 200, 1, 0,  6, 0, 0, 0, 0, 0, MAT_GEMSTONE, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("stealth", "jade",
-	30, STEALTH, 0, 0, 100, 1, 0,  6, 0, 0, 0, 0, 0, MAT_GEMSTONE, CLR_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	30, STEALTH, 0, 0, P1_NONE, 100, 1, 0,  6, 0, 0, 0, 0, 0, MAT_GEMSTONE, CLR_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("sustain ability", "bronze",
-	30, FIXED_ABIL, 0, 0, 100, 1, 0,  4, 0, 0, 0, 0, 0, MAT_COPPER, HI_COPPER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	30, FIXED_ABIL, 0, 0, P1_NONE, 100, 1, 0,  4, 0, 0, 0, 0, 0, MAT_COPPER, HI_COPPER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("levitation", "agate",
-	30, LEVITATION, 0, 0, 200, 1, 0,  7, 0, 0, 0, 0, 0, MAT_GEMSTONE, CLR_RED, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	30, LEVITATION, 0, 0, P1_NONE, 200, 1, 0,  7, 0, 0, 0, 0, 0, MAT_GEMSTONE, CLR_RED, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("hunger", "topaz",
-	30, HUNGER, 0, 0, 100, 1, 0,  8, 0, 0, 0, 0, 0, MAT_GEMSTONE, CLR_CYAN, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
+	30, HUNGER, 0, 0, P1_NONE, 100, 1, 0,  8, 0, 0, 0, 0, 0, MAT_GEMSTONE, CLR_CYAN, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
 RING("aggravate monster", "sapphire",
-	30, AGGRAVATE_MONSTER, 0, 0,        150, 1, 0,  9, 0, 0, 0, 0, 0, MAT_GEMSTONE, CLR_BLUE, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
+	30, AGGRAVATE_MONSTER, 0, 0, P1_NONE, 150, 1, 0,  9, 0, 0, 0, 0, 0, MAT_GEMSTONE, CLR_BLUE, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
 RING("conflict", "ruby",
-	10, CONFLICT, 0, 0, 300, 1, 0,  9, 0, 0, 0, 0, 0, MAT_GEMSTONE, CLR_RED, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	10, CONFLICT, 0, 0, P1_NONE, 300, 1, 0,  9, 0, 0, 0, 0, 0, MAT_GEMSTONE, CLR_RED, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("warning", "diamond",
-	30, WARNING, 0, 0, 100, 1, 0, 10, 0, 0, 0, 0, 0, MAT_GEMSTONE, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	30, WARNING, 0, 0, P1_NONE, 100, 1, 0, 10, 0, 0, 0, 0, 0, MAT_GEMSTONE, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("poison resistance", "pearl",
-	30, POISON_RES, 0, 0,               150, 1, 0,  4, 0, 0, 0, 0, 0, MAT_BONE, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	30, POISON_RES, 0, 0, P1_NONE, 150, 1, 0,  4, 0, 0, 0, 0, 0, MAT_BONE, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("fire resistance", "iron",
-	30, FIRE_RES, 0, 0, 200, 1, 0,  5, 0, 0, 0, 0, 0, MAT_IRON, HI_METAL, O1_FIRE_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
+	30, FIRE_RES, 0, 0, P1_NONE, 200, 1, 0,  5, 0, 0, 0, 0, 0, MAT_IRON, HI_METAL, O1_FIRE_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("cold resistance", "brass",
-	30, COLD_RES, 0, 0, 150, 1, 0,  4, 0, 0, 0, 0, 0, MAT_COPPER, HI_COPPER, O1_COLD_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
+	30, COLD_RES, 0, 0, P1_NONE, 150, 1, 0,  4, 0, 0, 0, 0, 0, MAT_COPPER, HI_COPPER, O1_COLD_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("shock resistance", "copper",
-	30, SHOCK_RES, 0, 0, 150, 1, 0,  3, 0, 0, 0, 0, 0, MAT_COPPER, HI_COPPER, O1_LIGHTNING_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
+	30, SHOCK_RES, 0, 0, P1_NONE, 150, 1, 0,  3, 0, 0, 0, 0, 0, MAT_COPPER, HI_COPPER, O1_LIGHTNING_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("life protection", "platinum",
-	25, DEATH_RES, DRAIN_RES, 0,               200, 1, 0,  3, 0, 0, 0, 0, 0, MAT_COPPER, HI_COPPER, O1_LIGHTNING_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
+	25, DEATH_RES, DRAIN_RES, 0, P1_NONE, 200, 1, 0,  3, 0, 0, 0, 0, 0, MAT_COPPER, HI_COPPER, O1_LIGHTNING_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("free action", "twisted",
-	30, FREE_ACTION, 0, 0, 200, 1, 0,  6, 0, 0, 0, 0, 0, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	30, FREE_ACTION, 0, 0, P1_NONE, 200, 1, 0,  6, 0, 0, 0, 0, 0, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("slow digestion", "steel",
-	30, SLOW_DIGESTION, 0, 0, 200, 1, 0,  8, 0, 0, 0, 0, 0, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	30, SLOW_DIGESTION, 0, 0, P1_NONE, 200, 1, 0,  8, 0, 0, 0, 0, 0, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("teleportation", "silver",
-	30, TELEPORT, 0, 0, 200, 1, 0,  3, 0, 0, 0, 0, 0, MAT_SILVER, HI_SILVER, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
+	30, TELEPORT, 0, 0, P1_NONE, 200, 1, 0,  3, 0, 0, 0, 0, 0, MAT_SILVER, HI_SILVER, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
 RING("teleport control", "gold",
-	20, TELEPORT_CONTROL, 0, 0, 300, 1, 0,  3, 0, 0, 0, 0, 0, MAT_GOLD, HI_GOLD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	20, TELEPORT_CONTROL, 0, 0, P1_NONE, 300, 1, 0,  3, 0, 0, 0, 0, 0, MAT_GOLD, HI_GOLD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("polymorph", "ivory",
-	30, POLYMORPH, 0, 0, 300, 1, 0,  4, 0, 0, 0, 0, 0, MAT_BONE, CLR_WHITE, O1_POLYMORPH_RESISTANT, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
+	30, POLYMORPH, 0, 0, P1_NONE, 300, 1, 0,  4, 0, 0, 0, 0, 0, MAT_BONE, CLR_WHITE, O1_POLYMORPH_RESISTANT, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
 RING("polymorph control", "emerald",
-	20, POLYMORPH_CONTROL, 0, 0, 300, 1, 0,  8, 0, 0, 0, 0, 0, MAT_GEMSTONE, CLR_BRIGHT_GREEN, O1_POLYMORPH_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
+	20, POLYMORPH_CONTROL, 0, 0, P1_NONE, 300, 1, 0,  8, 0, 0, 0, 0, 0, MAT_GEMSTONE, CLR_BRIGHT_GREEN, O1_POLYMORPH_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("invisibility", "wire",
-	25, INVISIBILITY, 0, 0, 150, 1, 0,  5, 0, 0, 0, 0, 0, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	25, INVISIBILITY, 0, 0, P1_NONE, 150, 1, 0,  5, 0, 0, 0, 0, 0, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("see invisible", "engagement",
-	30, SEE_INVISIBILITY, 0, 0, 150, 1, 0,  5, 0, 0, 0, 0, 0, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	30, SEE_INVISIBILITY, 0, 0, P1_NONE, 150, 1, 0,  5, 0, 0, 0, 0, 0, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("protection from shape changers", "shiny", /* ENDMARKER FOR SHUFFLED RINGS */
-	30, PROT_FROM_SHAPE_CHANGERS, 0, 0, 100, 1, 0,  5, 0, 0, 0, 0, 0, MAT_IRON, CLR_BRIGHT_CYAN, O1_POLYMORPH_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
+	30, PROT_FROM_SHAPE_CHANGERS, 0, 0, P1_NONE, 100, 1, 0,  5, 0, 0, 0, 0, 0, MAT_IRON, CLR_BRIGHT_CYAN, O1_POLYMORPH_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
 
 /* without shuffled apprearances */
 RING("supreme power", "golden runed", /* Base item for the One Ring */
-    0, INVISIBILITY, CLAIRVOYANT, SEE_INVISIBILITY, 10000, 1, 0,  5, 200, 0, BONUS_TO_ALLSTATS, 5, -20, MAT_GOLD, HI_GOLD,
+    0, INVISIBILITY, CLAIRVOYANT, SEE_INVISIBILITY, P1_NONE, 10000, 1, 0,  5, 200, 0, BONUS_TO_ALLSTATS, 5, -20, MAT_GOLD, HI_GOLD,
 	O1_INDESTRUCTIBLE | O1_DISINTEGRATION_RESISTANT | O1_FIRE_RESISTANT | O1_COLD_RESISTANT | O1_LIGHTNING_RESISTANT,
 	O2_NONE, 
 	O3_NO_WISH | O3_READABLE, PERMITTED_ALL),
 #undef RING
 
 /* amulets ... - THE Amulet comes last because it is special */
-#define AMULET(name,desc,prob,power,power2,power3,manabonus,hpbonus,bonusattrs,attrbonus,splcastpen,flags,flags2,flags3,powconfermask) \
+#define AMULET(name,desc,prob,power,power2,power3,pflags,manabonus,hpbonus,bonusattrs,attrbonus,splcastpen,flags,flags2,flags3,powconfermask) \
     OBJECT(OBJ(name, desc), None, None,                                          \
            BITS(0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, P_NONE, MAT_IRON),        \
-           power, power2, power3,  AMULET_CLASS, prob, MULTIGEN_SINGLE, 0, 5, 150, \
+           power, power2, power3, pflags, AMULET_CLASS, prob, MULTIGEN_SINGLE, 0, 5, 150, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, manabonus, hpbonus, bonusattrs, attrbonus, splcastpen, 0, \
 		   20, HI_METAL, 0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
-AMULET("amulet of ESP",                "circular", 90,	TELEPAT, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-AMULET("amulet of life saving",       "spherical", 75,  LIFESAVED, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-AMULET("amulet of strangulation",          "oval", 100, STRANGLED, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
-AMULET("amulet of restful sleep",    "triangular", 100, SLEEPY, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
-AMULET("amulet versus poison",        "pyramidal", 90,	POISON_RES, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-AMULET("amulet versus life draining",   "cubical", 75,	DRAIN_RES, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-AMULET("amulet of change",               "square", 100, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
-AMULET("amulet of unchanging",          "concave", 45,  UNCHANGING, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, O1_POLYMORPH_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
-AMULET("amulet of reflection",        "hexagonal", 75,  REFLECTING, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-AMULET("amulet of mana",		        "convex",  75,	NO_POWER, NO_POWER, NO_POWER, 75, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-AMULET("demon blood talisman",	   "tetrahedral",  35,	NO_POWER, NO_POWER, NO_POWER, 100, 0, 0, 0, 0, O1_MANA_PERCENTAGE_BONUS, O2_NONE, O3_NONE, PERMITTED_ALL), //doubles mana capacity
-AMULET("periapt of vitality",	        "linear",  75,	NO_POWER, NO_POWER, NO_POWER, 0, 25, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-AMULET("amulet of magical breathing", "octagonal", 65,  MAGICAL_BREATHING, 0, 0, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-AMULET("amulet",					"cylindrical",  0,  NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* Base item for artifact amulets */
+AMULET("amulet of ESP",                "circular", 90,	TELEPAT, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+AMULET("amulet of life saving",       "spherical", 75,  LIFESAVED, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+AMULET("amulet of strangulation",          "oval", 100, STRANGLED, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
+AMULET("amulet of restful sleep",    "triangular", 100, SLEEPY, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
+AMULET("amulet versus poison",        "pyramidal", 90,	POISON_RES, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+AMULET("amulet versus life draining",   "cubical", 75,	DRAIN_RES, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+AMULET("amulet of change",               "square", 100, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
+AMULET("amulet of unchanging",          "concave", 45,  UNCHANGING, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0, O1_POLYMORPH_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
+AMULET("amulet of reflection",        "hexagonal", 75,  REFLECTING, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+AMULET("amulet of mana",		        "convex",  75,	NO_POWER, NO_POWER, NO_POWER, P1_NONE, 75, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+AMULET("demon blood talisman",	   "tetrahedral",  35,	NO_POWER, NO_POWER, NO_POWER, P1_NONE, 100, 0, 0, 0, 0, O1_MANA_PERCENTAGE_BONUS, O2_NONE, O3_NONE, PERMITTED_ALL), //doubles mana capacity
+AMULET("periapt of vitality",	        "linear",  75,	NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 25, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+AMULET("amulet of magical breathing", "octagonal", 65,  MAGICAL_BREATHING, 0, 0, P1_NONE, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+AMULET("amulet",					"cylindrical",  0,  NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* Base item for artifact amulets */
 /* fixed descriptions; description duplication is deliberate;
  * fake one must come before real one because selection for
  * description shuffling stops when a non-magic amulet is encountered
@@ -1609,174 +1609,174 @@ AMULET("amulet",					"cylindrical",  0,  NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 
 OBJECT(OBJ("cheap plastic imitation of the Amulet of Yendor",
            "Amulet of Yendor"), None, None,
        BITS(0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, MAT_PLASTIC),
-       0, 0, 0, AMULET_CLASS, 0, MULTIGEN_SINGLE, 0, 10, 0,
+       0, 0, 0, P1_NONE, AMULET_CLASS, 0, MULTIGEN_SINGLE, 0, 10, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	   1, HI_METAL, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_NONE, O2_NONE, O3_NONE),
 OBJECT(OBJ("Amulet of Yendor", /* note: description == name */
            "Amulet of Yendor"), None, None,
        BITS(0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, MAT_MITHRIL),
-       0, 0, 0, AMULET_CLASS, 0, MULTIGEN_SINGLE, 0, 10, 30000,
+       0, 0, 0, P1_NONE, AMULET_CLASS, 0, MULTIGEN_SINGLE, 0, 10, 30000,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	   20, HI_METAL, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_INDESTRUCTIBLE, O2_NONE, O3_NONE),
 #undef AMULET
 
 /* miscellaneous (magic) items */
-#define MISCELLANEOUSITEM(name,desc,sub,specialworntext,shortdesc,kn,magic,mergeable,charged,prob,cost,wt,power,power2,power3,manabonus,hpbonus,bonusattrs,attrbonus,splcastpen,nut,material,color,flags,flags2,flags3,powconfermask) \
+#define MISCELLANEOUSITEM(name,desc,sub,specialworntext,shortdesc,kn,magic,mergeable,charged,prob,cost,wt,power,power2,power3,pflags,manabonus,hpbonus,bonusattrs,attrbonus,splcastpen,nut,material,color,flags,flags2,flags3,powconfermask) \
     OBJECT(OBJ(name, desc), specialworntext, shortdesc,                                          \
            BITS(kn, mergeable, charged, 0, magic, charged, 0, 0, 0, 0, 0, sub, 0, material),        \
-           power, power2, power3,  MISCELLANEOUS_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost,  \
+           power, power2, power3, pflags, MISCELLANEOUS_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost,  \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, manabonus, hpbonus, bonusattrs, attrbonus, splcastpen, 0, \
 		   nut, color, 0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
 MISCELLANEOUSITEM("brooch of shielding", "golden brooch", MISC_BROOCH, None, None,
 	0, 1, 0, 0, 50, 150, 5,
-	NO_POWER, 0, 0, 0, 0, BONUS_TO_MC, 5, 0,
+	NO_POWER, 0, 0, P1_NONE, 0, 0, BONUS_TO_MC, 5, 0,
 	20, MAT_GOLD, HI_GOLD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("nose ring of bull strength", "golden nose ring", MISC_NOSERING, None, None,
 	0, 1, 0, 0, 50, 200, 2, //STARTMARKER FOR NOSE RING WISH-CLASS, SHUFFLE
-	0, 0, 0, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE, STR18(76), 0,
+	0, 0, 0, P1_NONE, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE, STR18(76), 0,
 	50, MAT_GOLD, HI_GOLD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("nose ring of bullheadedness", "silver nose ring", MISC_NOSERING, None, None,
 	0, 1, 0, 0, 50, 200, 2,
-	0, 0, 0, 0, 0, BONUS_TO_WIS | SETS_FIXED_ATTRIBUTE | FIXED_IS_MAXIMUM, 3, 0,
+	0, 0, 0, P1_NONE, 0, 0, BONUS_TO_WIS | SETS_FIXED_ATTRIBUTE | FIXED_IS_MAXIMUM, 3, 0,
 	50, MAT_SILVER, HI_SILVER, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("nose ring of cerebral safeguarding", "bronze nose ring", MISC_NOSERING, None, None,
 	0, 1, 0, 0, 50, 200, 2, //ENDMARKER FOR NOSE RING WISH-CLASS, SHUFFLE
-	BRAIN_PROTECTION, 0, 0, 0, 0, 0, 0, 0,
+	BRAIN_PROTECTION, 0, 0, P1_NONE, 0, 0, 0, 0, 0,
 	50, MAT_COPPER, HI_COPPER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("headband of intellect", "shining blue headband", MISC_HEADBAND, None, None,
 	0, 1, 0, 0, 40, 200, 3,
-	0, 0, 0, 0, 0, BONUS_TO_INT | SETS_FIXED_ATTRIBUTE, 19, 0,
+	0, 0, 0, P1_NONE, 0, 0, BONUS_TO_INT | SETS_FIXED_ATTRIBUTE, 19, 0,
 	50, MAT_CLOTH, CLR_BLUE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("golden earrings", None, MISC_EARRINGS, None, None,
 	1, 0, 0, 0, 15, 200, 2,
-	0, 0, 0, 0, 0, BONUS_TO_CHA, 1, 0,
+	0, 0, 0, P1_NONE, 0, 0, BONUS_TO_CHA, 1, 0,
 	50, MAT_GOLD, HI_GOLD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_GENDER_FEMALE),
 MISCELLANEOUSITEM("ioun stone of protection", "red ioun stone", MISC_IOUN_STONE, None, None,
 	0, 1, 0, 0, 15, 200, 10, //STARTMARKER FOR IOUNSTONE WISH-CLASS
-	NO_POWER, NO_POWER, NO_POWER, 0, 0, BONUS_TO_MC, 4, 0,
+	NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, BONUS_TO_MC, 4, 0,
 	50, MAT_MINERAL, CLR_RED, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("ioun stone of spell mastery", "blue ioun stone", MISC_IOUN_STONE, None, None,
 	0, 1, 0, 0, 15, 200, 10,
-	NO_POWER, NO_POWER, NO_POWER, 50, 0, 0, 0, -20,
+	NO_POWER, NO_POWER, NO_POWER, P1_NONE, 50, 0, 0, 0, -20,
 	50, MAT_MINERAL, CLR_BLUE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("ioun stone of magic resistance", "brown ioun stone", MISC_IOUN_STONE, None, None,
 	0, 1, 0, 0, 15, 200, 10,
-	ANTIMAGIC, NO_POWER, NO_POWER, 0, 0, 0, 0, 0,
+	ANTIMAGIC, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
 	50, MAT_MINERAL, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("ioun stone of strength", "pink ioun stone", MISC_IOUN_STONE, None, None,
 	0, 1, 0, 0, 15, 200, 10,
-	NO_POWER, NO_POWER, NO_POWER, 0, 0, BONUS_TO_STR, 2, 0,
+	NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, BONUS_TO_STR, 2, 0,
 	50, MAT_MINERAL, CLR_BRIGHT_MAGENTA, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("ioun stone of dexterity", "green ioun stone", MISC_IOUN_STONE, None, None,
 	0, 1, 0, 0, 15, 200, 10,
-	0, 0, 0, 0, 0, BONUS_TO_DEX, 2, 0,
+	0, 0, 0, P1_NONE, 0, 0, BONUS_TO_DEX, 2, 0,
 	50, MAT_MINERAL, CLR_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("ioun stone of constitution", "purple ioun stone", MISC_IOUN_STONE, None, None,
 	0, 1, 0, 0, 15, 200, 10,
-	0, 0, 0, 0, 0, BONUS_TO_CON, 2, 0,
+	0, 0, 0, P1_NONE, 0, 0, BONUS_TO_CON, 2, 0,
 	50, MAT_MINERAL, CLR_MAGENTA, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("ioun stone of intelligence", "yellow ioun stone", MISC_IOUN_STONE, None, None,
 	0, 1, 0, 0, 15, 200, 50,
-	0, 0, 0, 0, 0, BONUS_TO_INT, 2, 0,
+	0, 0, 0, P1_NONE, 0, 0, BONUS_TO_INT, 2, 0,
 	50, MAT_MINERAL, CLR_YELLOW, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("ioun stone of wisdom", "white ioun stone", MISC_IOUN_STONE, None, None,
 	0, 1, 0, 0, 15, 200, 10,
-	0, 0, 0, 0, 0, BONUS_TO_WIS, 2, 0,
+	0, 0, 0, P1_NONE, 0, 0, BONUS_TO_WIS, 2, 0,
 	50, MAT_MINERAL, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("ioun stone of charisma", "black ioun stone", MISC_IOUN_STONE, None, None,
 	0, 1, 0, 0, 15, 200, 10,
-	0, 0, 0, 0, 0, BONUS_TO_CHA, 2, 0,
+	0, 0, 0, P1_NONE, 0, 0, BONUS_TO_CHA, 2, 0,
 	50, MAT_MINERAL, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("ioun stone of awareness", "gray ioun stone", MISC_IOUN_STONE, None, None,
 	0, 1, 0, 0, 15, 200, 10,
-	WARNING, NO_POWER, NO_POWER, 0, 0, 0, 0, 0,
+	WARNING, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
 	50, MAT_MINERAL, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("ioun stone of regeneration", "orange ioun stone", MISC_IOUN_STONE, None, None,
 	0, 1, 0, 0, 15, 200, 10,
-	REGENERATION, NO_POWER, NO_POWER, 0, 0, 0, 0, 0,
+	REGENERATION, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
 	50, MAT_MINERAL, CLR_ORANGE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("ioun stone of incessant hunger", "light blue ioun stone", MISC_IOUN_STONE, None, None,
 	0, 1, 0, 0, 15, 200, 10,
-	HUNGER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0,
+	HUNGER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
 	50, MAT_MINERAL, CLR_BRIGHT_BLUE, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("ioun stone of restful sleep", "transparent ioun stone", MISC_IOUN_STONE, None, None,
 	0, 1, 0, 0, 15, 200, 10,
-	SLEEPY, NO_POWER, NO_POWER, 0, 0, 0, 0, 0,
+	SLEEPY, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
 	50, MAT_MINERAL, CLR_BRIGHT_CYAN, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("ioun stone of sustenance", "cyan ioun stone", MISC_IOUN_STONE, None, None,
 	0, 1, 0, 0, 15, 200, 10, //ENDMARKER FOR IOUNSTONE WISH-CLASS
-	SLOW_DIGESTION, NO_POWER, NO_POWER, 0, 0, 0, 0, 0,
+	SLOW_DIGESTION, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
 	50, MAT_MINERAL, CLR_CYAN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("wings of flying", "artificial wings", MISC_WINGS, None, None,
 	0, 1, 0, 0, 20, 200, 50,
-	FLYING, NO_POWER, NO_POWER, 0, 0, 0, 0, 0,
+	FLYING, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
 	50, MAT_MODRONITE, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("lenses", "gold-framed eyeglasses", MISC_EYEGLASSES, None, None,
 	0, 0, 0, 0, 40, 80, 3, //STARTMARKER FOR EYEGLASSES WISH-CLASS AND SHUFFLED EYEGLASSES
-	ENHANCED_VISION, NO_POWER, NO_POWER, 0, 0, 0, 0, 0,
+	ENHANCED_VISION, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
 	20, MAT_GLASS, HI_GLASS, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("eyeglasses of hallucination", "oval eyeglasses", MISC_EYEGLASSES, None, None,
 	0, 0, 0, 0, 40, 150, 3,
-	HALLUC, NO_POWER, NO_POWER, 0, 0, 0, 0, 0,
+	HALLUC, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
 	20, MAT_GLASS, HI_GLASS, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("eyeglasses of awkwardness", "square eyeglasses", MISC_EYEGLASSES, None, None,
 	0, 0, 0, 0, 40, 150, 3,
-	NO_POWER, NO_POWER, NO_POWER, 0, 0, BONUS_TO_CHA | SETS_FIXED_ATTRIBUTE | FIXED_IS_MAXIMUM, 3, 0,
+	NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, BONUS_TO_CHA | SETS_FIXED_ATTRIBUTE | FIXED_IS_MAXIMUM, 3, 0,
 	20, MAT_GLASS, HI_GLASS, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("eyeglasses of see invisible", "round eyeglasses", MISC_EYEGLASSES, None, None,
 	0, 0, 0, 0, 40, 150, 3,  //ENDMARKER FOR SHUFFLED EYEGLASSES
-	SEE_INVISIBILITY, NO_POWER, NO_POWER, 0, 0, 0, 0, 0,
+	SEE_INVISIBILITY, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
 	20, MAT_GLASS, HI_GLASS, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("sunglasses", "shaded eyeglasses", MISC_EYEGLASSES, None, None,
 	0, 0, 0, 0, 30, 80, 3,   //ENDMARKER FOR EYEGLASSES WISH-CLASS
-	FLASH_RES, NO_POWER, NO_POWER, 0, 0, 0, 0, 0,
+	FLASH_RES, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
 	20, MAT_GLASS, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("goggles of night", "leather-framed goggles", MISC_EYEGLASSES, None, None,
 	0, 0, 0, 0, 40, 100, 3,  //STARTMARKER FOR GOGGLES WISH-CLASS, SHUFFLED GOGGLES
-	INFRAVISION, NO_POWER, NO_POWER, 0, 0, 0, 0, 0,
+	INFRAVISION, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
 	20, MAT_PLASTIC, HI_GLASS, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("goggles of eye protection", "transparent goggles", MISC_EYEGLASSES, None, None,
 	0, 0, 0, 0, 40, 100, 3, //ENDMARKER FOR GOGGLES WISH-CLASS, ENDMARKER FOR SHUFFLED GOGGLES
-	EYE_PROTECTION, NO_POWER, NO_POWER, 0, 0, 0, 0, 0,
+	EYE_PROTECTION, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
 	20, MAT_PLASTIC, HI_GLASS, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("expensive watch", None, MISC_WRIST_WATCH, "on left wrist", None,
 	1, 0, 0, 0, 20, 200, 6,
-	NO_POWER, NO_POWER, NO_POWER, 0, 0, BONUS_TO_CHA, 1, 0,
+	NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, BONUS_TO_CHA, 1, 0,
 	50, MAT_GOLD, HI_GOLD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_GENDER_MALE),
 MISCELLANEOUSITEM("leather belt", "old belt", MISC_BELT, None, None,
 	0, 0, 0, 0, 50, 5, 5, //STARTMARKER FOR BELTS
-	NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0,
+	NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
 	20, MAT_CLOTH, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("belt of dwarvenkind", "sturdy belt", MISC_BELT, None, None,
 	0, 1, 0, 1, 50, 250, 5,
-	POISON_RES, NO_POWER, NO_POWER, 0, 0, BONUS_TO_CON, 0, 0,
+	POISON_RES, NO_POWER, NO_POWER, P1_NONE, 0, 0, BONUS_TO_CON, 0, 0,
 	20, MAT_CLOTH, HI_LEATHER, O1_NONE, O2_DWARVEN_ITEM, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("belt of fortitude", "runed belt", MISC_BELT, None, None,
 	0, 1, 0, 0, 50, 250, 5,
-	0, 0, 0, 0, 50, 0, 0, 0,
+	0, 0, 0, P1_NONE, 0, 50, 0, 0, 0,
 	20, MAT_CLOTH, HI_LEATHER, O1_HP_PERCENTAGE_BONUS, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("belt of hill giant strength", "ornamental belt", MISC_BELT, None, None,
 	0, 1, 0, 0, 25, 250, 5,
-	0, 0, 0, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE, STR19(20), 0,
+	0, 0, 0, P1_NONE, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE, STR19(20), 0,
 	20, MAT_CLOTH, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("belt of stone giant strength", "heavy belt", MISC_BELT, None, None,
 	0, 1, 0, 0, 20, 250, 5,
-	0, 0, 0, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE, STR19(21), 0,
+	0, 0, 0, P1_NONE, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE, STR19(21), 0,
 	20, MAT_CLOTH, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("belt of frost giant strength", "decorative belt", MISC_BELT, None, None,
 	0, 1, 0, 0, 15, 250, 5,
-	0, 0, 0, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE, STR19(22), 0,
+	0, 0, 0, P1_NONE, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE, STR19(22), 0,
 	20, MAT_CLOTH, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("belt of fire giant strength", "coarse belt", MISC_BELT, None, None,
 	0, 1, 0, 0, 10, 250, 5,
-	0, 0, 0, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE, STR19(23), 0,
+	0, 0, 0, P1_NONE, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE, STR19(23), 0,
 	20, MAT_CLOTH, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("belt of storm giant strength", "rudimentary belt", MISC_BELT, None, None,
 	0, 1, 0, 0, 5, 250, 5, //ENDMARKER FOR BELTS
-	0, 0, 0, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE, STR19(24), 0,
+	0, 0, 0, P1_NONE, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE, STR19(24), 0,
 	20, MAT_CLOTH, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 
 
@@ -1787,28 +1787,28 @@ MISCELLANEOUSITEM("belt of storm giant strength", "rudimentary belt", MISC_BELT,
 #define TOOL(name,desc,kn,mrg,mgc,chg,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,splcastpen,mat,color,flags,flags2,flags3,powconfermask) \
     OBJECT(OBJ(name, desc), None, None,                                           \
            BITS(kn, mrg, chg, 0, mgc, chg, 0, 0, 0, 0, 0, 0, P_NONE, mat), \
-           0, 0, 0, TOOL_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, \
+           0, 0, 0, P1_NONE,  TOOL_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattr, attrbonus, splcastpen, 0, \
 		   wt, color, 0, 0, cooldown, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
 #define SPELLTOOL(name,desc,kn,mrg,mgc,chg,prob,wt,cost,dir,dirsubtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus,cooldown,mat,color,flags,flags2,flags3) \
     OBJECT(OBJ(name, desc), None, None,                                           \
            BITS(kn, mrg, chg, 0, mgc, chg, 0, 0, 0, 0, dir, 0, P_NONE, mat), \
-           0, 0, 0, TOOL_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, \
+           0, 0, 0, P1_NONE,  TOOL_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, \
 		   AD_PHYS, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
 		   wt, color, dirsubtype, 0, cooldown, 0, PERMITTED_ALL, ALL_TARGETS, O1_WAND_LIKE_TOOL | flags, flags2, flags3)
 #define CONTAINER(name,desc,shortdesc,kn,mgc,chg,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,mat,color,flags,flags2,flags3,powconfermask) \
     OBJECT(OBJ(name, desc), None, shortdesc,                                           \
            BITS(kn, 0, chg, 1, mgc, chg, 0, 0, 0, 0, 0, 0, P_NONE, mat),   \
-           0, 0, 0, TOOL_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, \
+           0, 0, 0, P1_NONE,  TOOL_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattr, attrbonus, 0, 0, \
 		   wt, color, 0, 0, cooldown, 0, powconfermask, ALL_TARGETS, flags, O2_CONTAINER | flags2, flags3)
 #define WEPTOOL(name,desc,kn,mgc,bi,prob,wt,cost,sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, aflags, critpct, hitbon,splcastpen,sub,skill,cooldown,mat,clr,flags,flags2,flags3,powconfermask)\
     OBJECT(OBJ(name, desc), None, None,                                           \
            BITS(kn, 0, 1, 0, mgc, 1, 0, 0, bi, 0, hitbon, sub, skill, mat),    \
-           0, 0, 0, TOOL_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, \
+           0, 0, 0, P1_NONE,  TOOL_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, \
 		   AD_PHYS, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, 0, 0, 0, 0, aflags, critpct, \
 		   hitbon, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
 		   wt, clr, 0, 0, cooldown, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
@@ -1927,13 +1927,13 @@ WEPTOOL("unicorn horn", None,
  */
 OBJECT(OBJ("Candelabrum of Invocation", "candelabrum"),None, None,
        BITS(0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, P_NONE, MAT_GOLD),
-       0, 0, 0, TOOL_CLASS, 0, MULTIGEN_SINGLE, 0, 10, 5000,
+       0, 0, 0, P1_NONE, TOOL_CLASS, 0, MULTIGEN_SINGLE, 0, 10, 5000,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	   200, HI_GOLD, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_INDESTRUCTIBLE, O2_NONE, O3_IGNITABLE | O3_RELATIVE_AGE),
 OBJECT(OBJ("Bell of Opening", "silver bell"), None, None,
        BITS(0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, P_NONE, MAT_SILVER),
-       0, 0, 0, TOOL_CLASS, 0, MULTIGEN_SINGLE, 0, 10, 5000,
+       0, 0, 0, P1_NONE, TOOL_CLASS, 0, MULTIGEN_SINGLE, 0, 10, 5000,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	   50, HI_SILVER, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_INDESTRUCTIBLE, O2_NONE, O3_NONE),
@@ -1941,10 +1941,10 @@ OBJECT(OBJ("Bell of Opening", "silver bell"), None, None,
 #undef WEPTOOL
 
 /* Comestibles ... */
-#define FOOD(name, desc, sub, known, prob, multigen, delay, wt, unk, material, ediblesubtype, power1, power2, power3, acquireprob, durdice, durdiesize, durplus, nutrition, color, flags, flags2, flags3, powconfermask)         \
+#define FOOD(name, desc, sub, known, prob, multigen, delay, wt, unk, material, ediblesubtype, power1, power2, power3, pflags, acquireprob, durdice, durdiesize, durplus, nutrition, color, flags, flags2, flags3, powconfermask)         \
     OBJECT(OBJ(name, desc), None, None,                                     \
            BITS(known, 1, unk, 0, 0, 0, 0, 0, 0, 0, 0, sub, P_NONE, material), \
-		   power1, power2, power3, FOOD_CLASS, prob, multigen, delay, wt, nutrition / 20 + 5,  \
+		   power1, power2, power3, pflags, FOOD_CLASS, prob, multigen, delay, wt, nutrition / 20 + 5,  \
 		   0, 0, 0, 0, durdice, durdiesize, durplus, 0, 0, 0, 0, A1_NONE, acquireprob, \
 		   0, 0, 0, 0, ediblesubtype, 0, 0, 0, 0, 0, 0, 0, \
            nutrition, color, 0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
@@ -1959,84 +1959,84 @@ OBJECT(OBJ("Bell of Opening", "silver bell"), None, None,
  * Meatballs/sticks/rings are only created from objects via stone to flesh.
  */
 /* meat */
-FOOD("tripe ration",		None, FOODTYPE_RATION, 1,	140, MULTIGEN_SINGLE, 2, 10, 0, MAT_FLESH, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 200, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("corpse",				None, FOODTYPE_CORPSE, 1,	  0, MULTIGEN_SINGLE, 1,  0, 0, MAT_FLESH, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("egg",					None, FOODTYPE_EGG, 1,	 85, MULTIGEN_SINGLE, 1,  1, 1, MAT_FLESH, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 80, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("meatball",			None, FOODTYPE_MEAT, 1,	  0, MULTIGEN_SINGLE, 1,  1, 0, MAT_FLESH, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 5, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("meat stick",			None, FOODTYPE_MEAT, 1,	  0, MULTIGEN_SINGLE, 1,  1, 0, MAT_FLESH, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 5, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("huge chunk of meat",	None, FOODTYPE_MEAT, 1,	  0, MULTIGEN_SINGLE, 20, 400, 0, MAT_FLESH, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 2000, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("tripe ration",		None, FOODTYPE_RATION, 1,	140, MULTIGEN_SINGLE, 2, 10, 0, MAT_FLESH, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 200, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("corpse",				None, FOODTYPE_CORPSE, 1,	  0, MULTIGEN_SINGLE, 1,  0, 0, MAT_FLESH, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("egg",					None, FOODTYPE_EGG, 1,	 85, MULTIGEN_SINGLE, 1,  1, 1, MAT_FLESH, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 80, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("meatball",			None, FOODTYPE_MEAT, 1,	  0, MULTIGEN_SINGLE, 1,  1, 0, MAT_FLESH, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 5, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("meat stick",			None, FOODTYPE_MEAT, 1,	  0, MULTIGEN_SINGLE, 1,  1, 0, MAT_FLESH, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 5, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("huge chunk of meat",	None, FOODTYPE_MEAT, 1,	  0, MULTIGEN_SINGLE, 20, 400, 0, MAT_FLESH, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 2000, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 /* special case because it's not mergable */
 OBJECT(OBJ("meat ring", None), None, None,
        BITS(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, FOODTYPE_MEAT, 0, MAT_FLESH),
-       0, 0, 0, FOOD_CLASS, 0, MULTIGEN_SINGLE, 1, 5, 1,
+       0, 0, 0, P1_NONE, FOOD_CLASS, 0, MULTIGEN_SINGLE, 1, 5, 1,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	   5, CLR_BROWN, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_NONE, O2_NONE, O3_NONE),
 /* pudding 'corpses' will turn into these and combine;
    must be in same order as the pudding monsters */
-FOOD("glob of gray ooze",		"gray glob",  FOODTYPE_GLOB, 0, 0, MULTIGEN_SINGLE, 2, 20, 1, MAT_FLESH, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 20, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("glob of brown pudding",	"brown glob", FOODTYPE_GLOB, 0,	0, MULTIGEN_SINGLE, 2, 20, 1, MAT_FLESH, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 20, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("glob of green slime",		"green glob", FOODTYPE_GLOB, 0,	0, MULTIGEN_SINGLE, 2, 20, 1, MAT_FLESH, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 20, CLR_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("glob of black pudding",	"black glob", FOODTYPE_GLOB, 0,	0, MULTIGEN_SINGLE, 2, 20, 1, MAT_FLESH, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 20, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("glob of gray ooze",		"gray glob",  FOODTYPE_GLOB, 0, 0, MULTIGEN_SINGLE, 2, 20, 1, MAT_FLESH, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 20, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("glob of brown pudding",	"brown glob", FOODTYPE_GLOB, 0,	0, MULTIGEN_SINGLE, 2, 20, 1, MAT_FLESH, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 20, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("glob of green slime",		"green glob", FOODTYPE_GLOB, 0,	0, MULTIGEN_SINGLE, 2, 20, 1, MAT_FLESH, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 20, CLR_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("glob of black pudding",	"black glob", FOODTYPE_GLOB, 0,	0, MULTIGEN_SINGLE, 2, 20, 1, MAT_FLESH, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 20, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 
 /* fruits & veggies */
-FOOD("kelp frond", None,		FOODTYPE_KELP,		1,  0, MULTIGEN_SINGLE,		1,  1, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 30, CLR_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("eucalyptus leaf", None,	FOODTYPE_LEAF,		1,  6, MULTIGEN_SINGLE,		1,  1, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 30, CLR_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("handful of nuts", None,	FOODTYPE_NUTS,		1,  6, MULTIGEN_1D6,		1,	2, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 100, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("apple", None,				FOODTYPE_FRUIT,		1, 10, MULTIGEN_1D2,		1,  5, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 150, CLR_RED, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("orange", None,			FOODTYPE_FRUIT,		1, 10, MULTIGEN_1D2,		1,  5, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 150, CLR_ORANGE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("pear", None,				FOODTYPE_FRUIT,		1, 10, MULTIGEN_1D2,		1,  5, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 150, CLR_BRIGHT_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("melon", None,				FOODTYPE_FRUIT,		1, 10, MULTIGEN_SINGLE,		1,  80, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 800, CLR_BRIGHT_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("banana", None,			FOODTYPE_FRUIT,		1, 10, MULTIGEN_1D6,		1,  5, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 150, CLR_YELLOW, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("carrot", None,			FOODTYPE_VEGETABLE, 1, 10, MULTIGEN_1D3,		1,  3, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 100, CLR_ORANGE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("kelp frond", None,		FOODTYPE_KELP,		1,  0, MULTIGEN_SINGLE,		1,  1, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 30, CLR_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("eucalyptus leaf", None,	FOODTYPE_LEAF,		1,  6, MULTIGEN_SINGLE,		1,  1, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 30, CLR_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("handful of nuts", None,	FOODTYPE_NUTS,		1,  6, MULTIGEN_1D6,		1,	2, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 100, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("apple", None,				FOODTYPE_FRUIT,		1, 10, MULTIGEN_1D2,		1,  5, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 150, CLR_RED, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("orange", None,			FOODTYPE_FRUIT,		1, 10, MULTIGEN_1D2,		1,  5, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 150, CLR_ORANGE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("pear", None,				FOODTYPE_FRUIT,		1, 10, MULTIGEN_1D2,		1,  5, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 150, CLR_BRIGHT_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("melon", None,				FOODTYPE_FRUIT,		1, 10, MULTIGEN_SINGLE,		1,  80, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 800, CLR_BRIGHT_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("banana", None,			FOODTYPE_FRUIT,		1, 10, MULTIGEN_1D6,		1,  5, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 150, CLR_YELLOW, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("carrot", None,			FOODTYPE_VEGETABLE, 1, 10, MULTIGEN_1D3,		1,  3, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 100, CLR_ORANGE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 
 /* shuffled mushrooms */
 FOOD("champignon", "brown mushroom", FOODTYPE_MUSHROOM,
-	0, 5, MULTIGEN_1D2,	1, 3, 1, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0,100, CLR_BROWN, O1_NONE, O2_NONE, O3_EATING_IDENTIFIES, PERMITTED_ALL),
+	0, 5, MULTIGEN_1D2,	1, 3, 1, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0,100, CLR_BROWN, O1_NONE, O2_NONE, O3_EATING_IDENTIFIES, PERMITTED_ALL),
 FOOD("penny bun", "black mushroom", FOODTYPE_MUSHROOM,
-	0, 5, MULTIGEN_1D2,	1, 3, 1, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0,100, CLR_BLACK, O1_NONE, O2_NONE, O3_EATING_IDENTIFIES, PERMITTED_ALL),
+	0, 5, MULTIGEN_1D2,	1, 3, 1, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0,100, CLR_BLACK, O1_NONE, O2_NONE, O3_EATING_IDENTIFIES, PERMITTED_ALL),
 FOOD("chanterelle", "golden mushroom", FOODTYPE_MUSHROOM,
-	0, 5, MULTIGEN_1D2,	1, 3, 1, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0,100, CLR_YELLOW, O1_NONE, O2_NONE, O3_EATING_IDENTIFIES, PERMITTED_ALL),
+	0, 5, MULTIGEN_1D2,	1, 3, 1, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0,100, CLR_YELLOW, O1_NONE, O2_NONE, O3_EATING_IDENTIFIES, PERMITTED_ALL),
 FOOD("fly agaris", "red mushroom", FOODTYPE_MUSHROOM,
-	0, 5, MULTIGEN_1D2,		1, 3, 1, MAT_VEGGY, EDIBLE_POISONOUS, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0,100, CLR_RED, O1_NONE, O2_NONE, O3_EATING_IDENTIFIES, PERMITTED_ALL),
+	0, 5, MULTIGEN_1D2,		1, 3, 1, MAT_VEGGY, EDIBLE_POISONOUS, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0,100, CLR_RED, O1_NONE, O2_NONE, O3_EATING_IDENTIFIES, PERMITTED_ALL),
 FOOD("death cap", "pale white mushroom", FOODTYPE_MUSHROOM,
-	0, 5, MULTIGEN_1D2,		1, 3, 1, MAT_VEGGY, EDIBLE_DEADLY_POISONOUS, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 100, CLR_WHITE, O1_NONE, O2_NONE, O3_EATING_IDENTIFIES, PERMITTED_ALL),
+	0, 5, MULTIGEN_1D2,		1, 3, 1, MAT_VEGGY, EDIBLE_DEADLY_POISONOUS, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 100, CLR_WHITE, O1_NONE, O2_NONE, O3_EATING_IDENTIFIES, PERMITTED_ALL),
 FOOD("mana mushroom", "violet mushroom", FOODTYPE_MUSHROOM,
-	0, 5, MULTIGEN_1D2,		1, 3, 1, MAT_VEGGY, EDIBLE_NORMAL, ENERGY_REGENERATION, NO_POWER, NO_POWER, 100, 1, 50, 50, 100, CLR_MAGENTA, O1_NONE, O2_NONE, O3_EATING_IDENTIFIES, PERMITTED_ALL),
+	0, 5, MULTIGEN_1D2,		1, 3, 1, MAT_VEGGY, EDIBLE_NORMAL, ENERGY_REGENERATION, NO_POWER, NO_POWER, P1_NONE, 100, 1, 50, 50, 100, CLR_MAGENTA, O1_NONE, O2_NONE, O3_EATING_IDENTIFIES, PERMITTED_ALL),
 FOOD("healing mushroom", "orange mushroom", FOODTYPE_MUSHROOM,
-	0, 5, MULTIGEN_1D2,		1, 3, 1, MAT_VEGGY, EDIBLE_NORMAL, REGENERATION, NO_POWER, NO_POWER, 100, 1, 50, 50, 100, CLR_ORANGE, O1_NONE, O2_NONE, O3_EATING_IDENTIFIES, PERMITTED_ALL),
+	0, 5, MULTIGEN_1D2,		1, 3, 1, MAT_VEGGY, EDIBLE_NORMAL, REGENERATION, NO_POWER, NO_POWER, P1_NONE, 100, 1, 50, 50, 100, CLR_ORANGE, O1_NONE, O2_NONE, O3_EATING_IDENTIFIES, PERMITTED_ALL),
 FOOD("panther cap", "gray mushroom", FOODTYPE_MUSHROOM,
-	0, 3, MULTIGEN_1D2,		1, 3, 1, MAT_VEGGY, EDIBLE_NORMAL, BLIND_TELEPAT, NO_POWER, NO_POWER, 100, 0, 0, 0, 100, CLR_GRAY, O1_NONE, O2_NONE, O3_EATING_IDENTIFIES, PERMITTED_ALL),
+	0, 3, MULTIGEN_1D2,		1, 3, 1, MAT_VEGGY, EDIBLE_NORMAL, BLIND_TELEPAT, NO_POWER, NO_POWER, P1_NONE, 100, 0, 0, 0, 100, CLR_GRAY, O1_NONE, O2_NONE, O3_EATING_IDENTIFIES, PERMITTED_ALL),
 FOOD("magic mushroom", "green mushroom", FOODTYPE_MUSHROOM,
-	0, 5, MULTIGEN_1D2,		1, 3, 1, MAT_VEGGY, EDIBLE_HALLUCINATING, NO_POWER, NO_POWER, NO_POWER, 0, 1, 100, 100, 100, CLR_GREEN, O1_NONE, O2_NONE, O3_EATING_IDENTIFIES, PERMITTED_ALL),
+	0, 5, MULTIGEN_1D2,		1, 3, 1, MAT_VEGGY, EDIBLE_HALLUCINATING, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 1, 100, 100, 100, CLR_GREEN, O1_NONE, O2_NONE, O3_EATING_IDENTIFIES, PERMITTED_ALL),
 /* end of suffled mushrooms */
 
 /* name of slime mold is changed based on player's OPTION=fruit:something
    and bones data might have differently named ones from prior games */
-FOOD("slime mold", None, FOODTYPE_MOLD, 1, 65, MULTIGEN_SINGLE,	1,  5, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 300, HI_ORGANIC, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("slime mold", None, FOODTYPE_MOLD, 1, 65, MULTIGEN_SINGLE,	1,  5, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 300, HI_ORGANIC, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 
 /* people food */
-FOOD("lump of royal jelly", None, FOODTYPE_JELLY, 1, 0, MULTIGEN_SINGLE,	1,  2, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 200, CLR_YELLOW, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("cream pie", None, FOODTYPE_CAKE, 1, 15, MULTIGEN_SINGLE,	1, 10, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 150, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("candy bar", None, FOODTYPE_CANDY, 1, 15, MULTIGEN_SINGLE,	1,  2, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 150, CLR_BROWN, O1_NONE, O2_NONE, O3_READABLE, PERMITTED_ALL),
-FOOD("fortune cookie", None, FOODTYPE_CAKE, 1, 30, MULTIGEN_SINGLE,	1,  1, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 50, CLR_YELLOW, O1_NONE, O2_NONE, O3_READABLE, PERMITTED_ALL),
-FOOD("pancake", None, FOODTYPE_CAKE, 1, 20, MULTIGEN_SINGLE,	2,  2, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 250, CLR_YELLOW, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("lembas wafer", None, FOODTYPE_BREAD, 1, 30, MULTIGEN_SINGLE,	2,  5, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 1000, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("cram ration", None, FOODTYPE_RATION, 1, 30, MULTIGEN_SINGLE,	3, 15, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 900, HI_ORGANIC, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("food ration", None, FOODTYPE_RATION, 1, 380, MULTIGEN_SINGLE,	5, 20, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 800, HI_ORGANIC, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("K-ration", None, FOODTYPE_RATION, 1, 0, MULTIGEN_SINGLE,	1, 10, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 525, HI_ORGANIC, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-FOOD("C-ration", None, FOODTYPE_RATION, 1, 0, MULTIGEN_SINGLE,	1, 10, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 450, HI_ORGANIC, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("lump of royal jelly", None, FOODTYPE_JELLY, 1, 0, MULTIGEN_SINGLE,	1,  2, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 200, CLR_YELLOW, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("cream pie", None, FOODTYPE_CAKE, 1, 15, MULTIGEN_SINGLE,	1, 10, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 150, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("candy bar", None, FOODTYPE_CANDY, 1, 15, MULTIGEN_SINGLE,	1,  2, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 150, CLR_BROWN, O1_NONE, O2_NONE, O3_READABLE, PERMITTED_ALL),
+FOOD("fortune cookie", None, FOODTYPE_CAKE, 1, 30, MULTIGEN_SINGLE,	1,  1, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 50, CLR_YELLOW, O1_NONE, O2_NONE, O3_READABLE, PERMITTED_ALL),
+FOOD("pancake", None, FOODTYPE_CAKE, 1, 20, MULTIGEN_SINGLE,	2,  2, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 250, CLR_YELLOW, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("lembas wafer", None, FOODTYPE_BREAD, 1, 30, MULTIGEN_SINGLE,	2,  5, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 1000, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("cram ration", None, FOODTYPE_RATION, 1, 30, MULTIGEN_SINGLE,	3, 15, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 900, HI_ORGANIC, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("food ration", None, FOODTYPE_RATION, 1, 380, MULTIGEN_SINGLE,	5, 20, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 800, HI_ORGANIC, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("K-ration", None, FOODTYPE_RATION, 1, 0, MULTIGEN_SINGLE,	1, 10, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 525, HI_ORGANIC, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("C-ration", None, FOODTYPE_RATION, 1, 0, MULTIGEN_SINGLE,	1, 10, 0, MAT_VEGGY, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 450, HI_ORGANIC, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 /* tins have type specified by obj->spe (+1 for spinach, other implies
    flesh; negative specifies preparation method {homemade,boiled,&c})
    and by obj->corpsenm (type of monster flesh) */
-FOOD("tin", None, FOODTYPE_TIN, 1, 75, MULTIGEN_SINGLE,	0, 10, 1, MAT_METAL, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+FOOD("tin", None, FOODTYPE_TIN, 1, 75, MULTIGEN_SINGLE,	0, 10, 1, MAT_METAL, EDIBLE_NORMAL, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 #undef FOOD
 
 /* potions ... */
 #define POTION(name,desc,mgc,power,prob,cost,color,flags,flags2,flags3,powconfermask) \
     OBJECT(OBJ(name, desc), None, None,                                           \
            BITS(0, 1, 0, 0, mgc, 0, 0, 0, 0, 0, 0, 0, P_NONE, MAT_GLASS),      \
-           power, 0, 0, POTION_CLASS, prob, MULTIGEN_SINGLE, 0, 12, cost,  \
+           power, 0, 0, P1_NONE, POTION_CLASS, prob, MULTIGEN_SINGLE, 0, 12, cost,  \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
 		   10, color, 0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
@@ -2078,7 +2078,7 @@ POTION("water",                 "clear",  0, 0, 92, 100, CLR_CYAN, O1_NONE, O2_N
 #define SCROLL(name,text,mgc,prob,cost,sflags,flags,flags2,flags3,powconfermask)   \
     OBJECT(OBJ(name, text), None, None,   \
            BITS(0, 1, 0, 0, mgc, 0, 0, 0, 0, 0, 0, 0, P_NONE, MAT_PAPER),    \
-           0, 0, 0, SCROLL_CLASS, prob, MULTIGEN_SINGLE, 0, 4, cost, \
+           0, 0, 0, P1_NONE, SCROLL_CLASS, prob, MULTIGEN_SINGLE, 0, 4, cost, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, sflags, 0, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
 		   6, HI_PAPER, 0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
@@ -2153,7 +2153,7 @@ SCROLL("blank paper", "unlabeled",  0,  28,  60, S1_NONE, O1_NONE, O2_NONE, O3_N
 #define SPELL(name,desc,contentdesc,shortdesc,skill,prob,learndelay,cooldown,level,manacost,attr,range,radius,skillchance,savingthrowadj,mgc,dir,dirsubtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,sflags,color,flags,flags2,flags3)  \
     OBJECT(OBJ(name, desc), contentdesc, shortdesc,                                           \
            BITS(0, 0, 0, 0, mgc, 0, 0, 0, 0, 0, dir, 0, skill, MAT_PAPER),       \
-           0, 0, 0, SPBOOK_CLASS, prob, MULTIGEN_SINGLE, learndelay, 50, (level + 2) * 50 + (level + 1) * (level + 1) * 5,               \
+           0, 0, 0, P1_NONE, SPBOOK_CLASS, prob, MULTIGEN_SINGLE, learndelay, 50, (level + 2) * 50 + (level + 1) * (level + 1) * 5,               \
            0, sdice,sdam,sdmgplus,ldice,ldam,ldmgplus, 0, 0, 0, 0, sflags, 0, \
 		   0, savingthrowadj, 0, 0, cooldown, level, manacost, attr, range, radius, skillchance, 0, \
 		   20, color,dirsubtype, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, flags, flags2, flags3)
@@ -2464,14 +2464,14 @@ SPELL("blank paper", "plain", None, None, P_NONE, 18, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 /* tribute book for 3.6 */
 OBJECT(OBJ("novel", "paperback"), None, None,
        BITS(0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, P_NONE, MAT_PAPER),
-       0, 0, 0, SPBOOK_CLASS, 0, MULTIGEN_SINGLE, 0, 0, 20,
+       0, 0, 0, P1_NONE, SPBOOK_CLASS, 0, MULTIGEN_SINGLE, 0, 0, 20,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
 	   20, CLR_BRIGHT_BLUE, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_NON_SPELL_SPELLBOOK, O2_NONE, O3_NONE),
 /* a special, one of a kind, spellbook */
 OBJECT(OBJ("Book of the Dead", "papyrus"), None, None,
        BITS(0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, P_NONE, MAT_PAPER),
-       0, 0, 0, SPBOOK_CLASS, 0, MULTIGEN_SINGLE, 0, 20, 10000,
+       0, 0, 0, P1_NONE, SPBOOK_CLASS, 0, MULTIGEN_SINGLE, 0, 20, 10000,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0,
 	   20, HI_PAPER, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_INDESTRUCTIBLE | O1_NON_SPELL_SPELLBOOK, O2_NONE, O3_NONE),
@@ -2481,7 +2481,7 @@ OBJECT(OBJ("Book of the Dead", "papyrus"), None, None,
 #define WAND(name,typ,prob,cost,mgc,dir,dirsubtype,range,radius,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,sflags,metal,color,flags,flags2,flags3) \
     OBJECT(OBJ(name, typ),  None, None,                                             \
            BITS(0, 0, 1, 0, mgc, 1, 0, 0, 0, 0, dir, 0, P_NONE, metal),    \
-           0, 0, 0, WAND_CLASS, prob, MULTIGEN_SINGLE, 0, 6, cost, \
+           0, 0, 0, P1_NONE, WAND_CLASS, prob, MULTIGEN_SINGLE, 0, 6, cost, \
 		   0, sdice,sdam,sdmgplus,ldice,ldam,ldmgplus, 0, 0, 0, 0, sflags, 0, \
 		   0,0, 0, 0, 0, 0, 0, 0, range, radius, 0, 0, \
 		   30, color, dirsubtype, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, flags, flags2, flags3)
@@ -2527,7 +2527,7 @@ WAND(None,            "jeweled",  0, 150, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NO
 #define COIN(name,prob,metal,worth) \
     OBJECT(OBJ(name, None),  None, None,                                       \
            BITS(0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, P_NONE, metal),    \
-           0, 0, 0, COIN_CLASS, prob, MULTIGEN_SINGLE, 0, 1, worth, \
+           0, 0, 0, P1_NONE, COIN_CLASS, prob, MULTIGEN_SINGLE, 0, 1, worth, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
 		   0, HI_GOLD, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_NONE, O2_NONE, O3_READABLE)
@@ -2539,7 +2539,7 @@ COIN("gold piece", 1000, MAT_GOLD, 1),
     OBJECT(OBJ(name, desc), None, None,                                             \
            BITS(0, 1, 0, 0, 0, 0, 0, 0, 0,                              \
                 HARDGEM(mohs), 0, WEP_SLING_BULLET, -P_SLING, glass),                     \
-           0, 0, 0, GEM_CLASS, prob, MULTIGEN_SINGLE, 0, 1, gval, \
+           0, 0, 0, P1_NONE, GEM_CLASS, prob, MULTIGEN_SINGLE, 0, 1, gval, \
 		   0, 1, 3, 0, 1, 3, 0, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
 		   nutr, color, WEP_SLING, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
@@ -2547,7 +2547,7 @@ COIN("gold piece", 1000, MAT_GOLD, 1),
     OBJECT(OBJ(name, desc),  None, None,                                            \
            BITS(kn, 1, 0, 0, mgc, 0, 0, 0, 0,                           \
                 HARDGEM(mohs), 0, WEP_SLING_BULLET, -P_SLING, glass), \
-           power1, power2, power3, GEM_CLASS, prob, MULTIGEN_SINGLE, 0, wt, gval, \
+           power1, power2, power3, P1_NONE, GEM_CLASS, prob, MULTIGEN_SINGLE, 0, wt, gval, \
 		   0, sdice, sdam, splus, ldice, ldam, lplus, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
 		   nutr, color, WEP_SLING, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
@@ -2653,26 +2653,26 @@ ROCK("nugget of mithril ore", None,		//Ore endmarker
  */
 OBJECT(OBJ("boulder", None), None, None,
        BITS(1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, P_NONE, MAT_MINERAL), 
-	   0, 0, 0, ROCK_CLASS, 100, MULTIGEN_SINGLE, 0, 8000, 0,
+	   0, 0, 0, P1_NONE, ROCK_CLASS, 100, MULTIGEN_SINGLE, 0, 8000, 0,
 	   AD_PHYS, 1, 20, 0, 1, 20, 0, 0, 0, 0, 0, A1_NONE, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	   2000, HI_MINERAL, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_THROWN_WEAPON_ONLY, O2_NONE, O3_NONE),
 OBJECT(OBJ("statue", None), None, None,
        BITS(1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, P_NONE, MAT_MINERAL), 
-	   0, 0, 0, ROCK_CLASS, 900, MULTIGEN_SINGLE, 0, 4000, 0,
+	   0, 0, 0, P1_NONE, ROCK_CLASS, 900, MULTIGEN_SINGLE, 0, 4000, 0,
 	   AD_PHYS, 1, 20, 0, 1, 20, 0, 0, 0, 0, 0, A1_NONE, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	   2500, CLR_WHITE, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_NONE, O2_NONE, O3_NONE),
 OBJECT(OBJ("heavy iron ball", None), None, None,
        BITS(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, WHACK, 0, P_NONE, MAT_IRON),
-	   0, 0, 0, BALL_CLASS, 1000, MULTIGEN_SINGLE, 0, 800, 10,
+	   0, 0, 0, P1_NONE, BALL_CLASS, 1000, MULTIGEN_SINGLE, 0, 800, 10,
 	   AD_PHYS, 1, 25, 0, 1, 25, 0, 0, 0, 0, 0, A1_NONE, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	  200, HI_METAL, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_THROWN_WEAPON_ONLY, O2_NONE, O3_NONE),
         /* +d4 when "very heavy" */
 OBJECT(OBJ("iron chain", None), None, None,
        BITS(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, WHACK, 0, P_NONE, MAT_IRON),
-	   0, 0, 0, CHAIN_CLASS, 1000, MULTIGEN_SINGLE, 0, 240, 0,
+	   0, 0, 0, P1_NONE, CHAIN_CLASS, 1000, MULTIGEN_SINGLE, 0, 240, 0,
 	   AD_PHYS, 1, 4, 0, 1, 4, 0, 0, 0, 0, 0, A1_NONE, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	   200, HI_METAL, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_NONE, O2_NONE, O3_NONE),
@@ -2683,13 +2683,13 @@ OBJECT(OBJ("iron chain", None), None, None,
  */
 OBJECT(OBJ("blinding venom", "splash of venom"), None, None,
        BITS(0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, P_NONE, MAT_LIQUID), 
-	   0, 0, 0, VENOM_CLASS, 500, MULTIGEN_SINGLE, 0, 1, 0,
+	   0, 0, 0, P1_NONE, VENOM_CLASS, 500, MULTIGEN_SINGLE, 0, 1, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	   0, HI_ORGANIC, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_NONE, O2_NONE, O3_NONE),
 OBJECT(OBJ("acid venom", "splash of venom"), None, None,
        BITS(0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, P_NONE, MAT_LIQUID), 
-	   0, 0, 0, VENOM_CLASS, 500, MULTIGEN_SINGLE, 0, 1, 0,
+	   0, 0, 0, P1_NONE, VENOM_CLASS, 500, MULTIGEN_SINGLE, 0, 1, 0,
 	   AD_PHYS, 2, 6, 0, 2, 6, 0, 0, 0, 0, 0, A1_NONE, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	   0, HI_ORGANIC, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_NONE, O2_NONE, O3_NONE),
@@ -2699,7 +2699,7 @@ OBJECT(OBJ("acid venom", "splash of venom"), None, None,
 #define REAGENT(name, desc, known, prob, multigen, eatdelay, wt, cost, material, ediblesubtype, nutrition, color, flags, flags2, flags3, powconfermask)         \
     OBJECT(OBJ(name, desc), None, None,                                      \
            BITS(known, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, P_NONE, material), \
-		   0, 0, 0, REAGENT_CLASS, prob, multigen, eatdelay, wt, cost, \
+		   0, 0, 0, P1_NONE, REAGENT_CLASS, prob, multigen, eatdelay, wt, cost, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, ediblesubtype, 0, 0, 0, 0, 0, 0, 0, \
            nutrition, color, 0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
@@ -2732,7 +2732,7 @@ OBJECT(OBJ("acid venom", "splash of venom"), None, None,
 /* fencepost, the deadly Array Terminator -- name [1st arg] *must* be NULL */
 OBJECT(OBJ(None, None), None, None,
        BITS(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, P_NONE, 0), 
-	   0, 0, 0, ILLOBJ_CLASS, 0, MULTIGEN_SINGLE, 0, 0, 0, \
+	   0, 0, 0, P1_NONE, ILLOBJ_CLASS, 0, MULTIGEN_SINGLE, 0, 0, 0, \
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
 	   0, 0, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_NONE, O2_NONE, O3_NONE)

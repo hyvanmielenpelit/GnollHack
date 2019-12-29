@@ -392,22 +392,23 @@ xname_flags(obj, cxn_flags)
 register struct obj *obj;
 unsigned cxn_flags; /* bitmask of CXN_xxx values */
 {
+	if (!obj)
+		return "";
+
     register char *buf;
-	/* Note: maskotyp is not relevant here (only in doexamine for stats), but can be used just in case -- JG */
+	boolean artifact_description_exists = obj->oartifact && artilist[obj->oartifact].desc && strcmp(artilist[obj->oartifact].desc, "");
+	/* Note: maskotyp is relevant here when artifact description does not exist */
     register int typ = ((obj->oartifact && artilist[obj->oartifact].maskotyp != STRANGE_OBJECT) ? artilist[obj->oartifact].maskotyp : obj->otyp);
     register struct objclass *ocl = &objects[typ];
-	/* Note: artifact always uses the unknown name format instead of oc_name_known; if the artifact is known, then it jumps to "the Artifact" format */
+	/* Note: when its description exists, an artifact always uses the unknown name format instead of oc_name_known;
+	 * if the artifact is known, then it jumps to "the Artifact" format */
 	/* Note: artifact uses nknown and aknown to determine if it is in the format of "the Artifact"; this is in obj_is_pname function */
-	int nn = obj->oartifact ? 0 : ocl->oc_name_known;
+	int nn = artifact_description_exists ? 0 : ocl->oc_name_known;
 	int omndx = obj->corpsenm;
-	/* Note: this should never be applied for artifacts, as nn is 0 for them */
+	/* Note: this is applied for artifacts only when their own description does not exist */
     const char *actualn = OBJ_NAME(*ocl);
-	/* (obj->oclass != RING_CLASS && obj->oclass != WAND_CLASS && obj->oclass != POTION_CLASS && obj->oclass != SCROLL_CLASS && obj->oclass != SPBOOK_CLASS
-		&& obj->oartifact && artilist[obj->oartifact].desc && strcmp(artilist[obj->oartifact].desc, "")) ? artilist[obj->oartifact].desc :
-		*/
 	/* Note: use artifact description for artifacts instead */
-	const char *dn = (obj->oartifact && artilist[obj->oartifact].desc && strcmp(artilist[obj->oartifact].desc, "")) ? artilist[obj->oartifact].desc :
-		OBJ_DESCR(*ocl);
+	const char *dn = artifact_description_exists ? artilist[obj->oartifact].desc : OBJ_DESCR(*ocl);
     const char *un = ocl->oc_uname;
 	boolean pluralize = (obj->quan != 1L) && !(cxn_flags & CXN_SINGULAR);
     boolean known, dknown, bknown, nknown, aknown;

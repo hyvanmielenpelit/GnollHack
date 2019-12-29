@@ -654,11 +654,11 @@ update_extrinsics()
 				bit = W_CARRIED;
 
 			/* Properties conferred by item */
-			if (objects[otyp].oc_oprop >= 0 && (!inappr || (objects[otyp].oc_flags3 & O3_POWER_1_DISRESPECTS_CHARACTERS)))
+			if (objects[otyp].oc_oprop >= 0 && (!inappr || (objects[otyp].oc_flags3 & P1_POWER_1_APPLIES_TO_ALL_CHARACTERS)))
 				u.uprops[objects[otyp].oc_oprop].extrinsic |= bit;//W_CARRIED;
-			if (objects[otyp].oc_oprop2 >= 0 && (!inappr || (objects[otyp].oc_flags3 & O3_POWER_2_DISRESPECTS_CHARACTERS)))
+			if (objects[otyp].oc_oprop2 >= 0 && (!inappr || (objects[otyp].oc_flags3 & P1_POWER_2_APPLIES_TO_ALL_CHARACTERS)))
 				u.uprops[objects[otyp].oc_oprop2].extrinsic |= bit;//W_CARRIED;
-			if (objects[otyp].oc_oprop3 >= 0 && (!inappr || (objects[otyp].oc_flags3 & O3_POWER_3_DISRESPECTS_CHARACTERS)))
+			if (objects[otyp].oc_oprop3 >= 0 && (!inappr || (objects[otyp].oc_flags3 & P1_POWER_3_APPLIES_TO_ALL_CHARACTERS)))
 				u.uprops[objects[otyp].oc_oprop3].extrinsic |= bit;//W_CARRIED;
 
 			/* add wielded / worn artifact intrinsics */
@@ -1700,7 +1700,7 @@ boolean addconstitutionbonus;
 			|| objects[otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED
 			))
 		{
-			if (inappropriate_character_type(uitem) && !(objects[otyp].oc_flags3 & O3_HP_BONUS_DISRESPECTS_CHARACTERS))
+			if (inappropriate_character_type(uitem) && !(objects[otyp].oc_flags3 & P1_HP_BONUS_APPLIES_TO_ALL_CHARACTERS))
 			{
 				continue;
 			}
@@ -1791,7 +1791,7 @@ updateabon()
 			|| objects[otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED
 			))
 		{
-			if (inappropriate_character_type(uitem) && !(objects[otyp].oc_flags3 & O3_ATTRIBUTE_BONUS_DISRESPECTS_CHARACTERS))
+			if (inappropriate_character_type(uitem) && !(objects[otyp].oc_flags3 & P1_ATTRIBUTE_BONUS_APPLIES_TO_ALL_CHARACTERS))
 			{
 				continue;
 			}

@@ -314,7 +314,7 @@ confers_luck(obj)
 struct obj *obj;
 {
 	if ((objects[obj->otyp].oc_flags & O1_CONFERS_LUCK
-		&& (objects[obj->otyp].oc_flags3 & O3_LUCK_DISRESPECTS_CHARACTERS || !inappropriate_character_type(obj))))
+		&& (objects[obj->otyp].oc_flags3 & P1_LUCK_APPLIES_TO_ALL_CHARACTERS || !inappropriate_character_type(obj))))
 		return TRUE;
 
     return FALSE;
@@ -326,7 +326,7 @@ confers_unluck(obj)
 struct obj* obj;
 {
 	if (objects[obj->otyp].oc_flags & O1_CONFERS_UNLUCK
-		&& (objects[obj->otyp].oc_flags3 & O3_LUCK_DISRESPECTS_CHARACTERS || !inappropriate_character_type(obj)))
+		&& (objects[obj->otyp].oc_flags3 & P1_LUCK_APPLIES_TO_ALL_CHARACTERS || !inappropriate_character_type(obj)))
 		return TRUE;
 
 	return FALSE;
@@ -2195,9 +2195,17 @@ struct obj *obj;
         return 1;
     }
 
+	if (obj && obj->oartifact && !obj->nknown && (artilist[obj->oartifact].aflags & (AF_FAMOUS | AF_NAME_KNOWN_WHEN_INVOKED)))
+	{
+		pline("As you invoke %s, %syou suddenly become aware that it is named %s!", the(cxname(obj)),
+			obj->oartifact == ART_HOWLING_FLAIL ? "it lets loose a majestic roar and " : "",
+			bare_artifactname(obj));
+		obj->nknown = TRUE;
+	}
+
     if (oart->inv_prop > LAST_PROP) {
         /* It's a special power, not "just" a property */
-        if (obj->age > monstermoves) {
+        if (obj->cooldownleft > 0) {
             /* the artifact is tired :-) */
             You_feel("that %s %s ignoring you.", the(xname(obj)),
                      otense(obj, "are"));
@@ -2205,17 +2213,26 @@ struct obj *obj;
             obj->age += (long) d(3, 10);
             return 1;
         }
-        obj->age = monstermoves + rnz(100);
+
+		//obj->cooldownleft = rnz(100);
+        //obj->age = monstermoves + rnz(100);
 
         switch (oart->inv_prop) {
         case TAMING: {
             struct obj pseudo;
-
-            pseudo =
-                zeroobj; /* neither cursed nor blessed, zero oextra too */
+            pseudo = zeroobj; /* neither cursed nor blessed, zero oextra too */
             pseudo.otyp = SCR_TAMING;
             (void) seffects(&pseudo);
-            break;
+			obj->cooldownleft = 100 + rnz(100);
+
+			/* Howling Flail may drain your life upon invocation */
+			if (!rn2(2))
+			{
+				pline("%s your life energy!", Tobjnam(obj, "draw"));
+				losexp("life drainage");
+			}
+
+			break;
         }
         case HEALING: {
             int healamt = (u.uhpmax + 1 - u.uhp) / 2;
@@ -2240,7 +2257,8 @@ struct obj *obj;
             if (Blinded > creamed)
                 make_blinded(creamed, FALSE);
             context.botl = TRUE;
-            break;
+			obj->cooldownleft = 100 + rnz(100);
+			break;
         }
         case ENERGY_BOOST: {
             int epboost = (u.uenmax + 1 - u.uen) / 2;
@@ -2255,14 +2273,17 @@ struct obj *obj;
                 You_feel("re-energized.");
             } else
                 goto nothing_special;
-            break;
+			obj->cooldownleft = 100 + rnz(100);
+			break;
         }
         case UNTRAP: {
             if (!untrap(TRUE)) {
-                obj->age = 0; /* don't charge for changing their mind */
+                //obj->age = 0; /* don't charge for changing their mind */
                 return 0;
             }
-            break;
+			else
+				obj->cooldownleft = 25 + rnz(25);
+			break;
         }
         case CHARGE_OBJ: {
             struct obj *otmp = getobj(recharge_type, "charge", 0, "");
@@ -2276,11 +2297,13 @@ struct obj *obj;
                                          || oart->role == NON_PM));
             recharge(otmp, b_effect ? 1 : obj->cursed ? -1 : 0);
             update_inventory();
-            break;
+			obj->cooldownleft = 100 + rnz(100);
+			break;
         }
         case LEV_TELE:
             level_tele(FALSE);
-            break;
+			obj->cooldownleft = 25 + rnz(25);
+			break;
         case CREATE_PORTAL: {
             int i, num_ok_dungeons, last_ok_dungeon = 0;
             d_level newlev;
@@ -2339,11 +2362,13 @@ struct obj *obj;
                     You_feel("weightless for a moment.");
                 goto_level(&newlev, FALSE, FALSE, FALSE);
             }
-            break;
+			obj->cooldownleft = 25 + rnz(25);
+			break;
         }
         case ENLIGHTENING:
             enlightenment(MAGICENLIGHTENMENT, ENL_GAMEINPROGRESS);
-            break;
+			obj->cooldownleft = 25 + rnz(25);
+			break;
         case CREATE_AMMO: {
             struct obj *otmp = mksobj(ARROW, TRUE, FALSE, FALSE);
 
@@ -2365,14 +2390,15 @@ struct obj *obj;
             otmp = hold_another_object(otmp, "Suddenly %s out.",
                                        aobjnam(otmp, "fall"), (char *) 0);
             nhUse(otmp);
-            break;
+			obj->cooldownleft = 50 + rnz(50);
+			break;
         }
 		case WAND_OF_DEATH:
 		{
-			struct obj* pseudo = mksobj(SPE_FINGER_OF_DEATH, FALSE, FALSE, FALSE);
-			pseudo->blessed = pseudo->cursed = 0;
-			pseudo->quan = 20L; /* do not let useup get it */
-			int otyp = pseudo->otyp;
+			struct obj pseudo = zeroobj;
+			pseudo.otyp = SPE_FINGER_OF_DEATH;
+			pseudo.quan = 20L; /* do not let useup get it */
+			int otyp = pseudo.otyp;
 			int damage = 0;
 
 			if (!getdir((char*)0)) 
@@ -2382,7 +2408,7 @@ struct obj *obj;
 			}
 			if (!u.dx && !u.dy && !u.dz) 
 			{
-				if ((damage = zapyourself(pseudo, TRUE)) != 0) {
+				if ((damage = zapyourself(&pseudo, TRUE)) != 0) {
 					char buf[BUFSZ];
 
 					Sprintf(buf, "zapped %sself with %s", uhim(), cxname(obj));
@@ -2391,10 +2417,9 @@ struct obj *obj;
 			}
 			else
 			{
-				weffects(pseudo);
+				weffects(&pseudo);
 			}
 
-			obfree(pseudo, (struct obj*) 0); /* now, get rid of it */
 			obj->cooldownleft = 100 + rnd(100);
 
 			/* Wand of Orcus may drain your life upon invocation */
