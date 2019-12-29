@@ -121,7 +121,9 @@ struct obj *obj;
         /* in case we haven't seen the item yet (ie, currently blinded),
            this quest message describes it by name so mark it as seen */
         obj->dknown = 1;
-		obj->aknown = 1; /* Quest artifacts become identified by the artifact message */
+		/* Quest artifacts become identified by the artifact message */
+		obj->aknown = 1;
+		obj->nknown = 1;
 		/* only give this message once */
         Qstat(touched_artifact) = TRUE;
         qt_pager(QT_GOTIT);

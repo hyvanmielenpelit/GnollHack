@@ -18,6 +18,7 @@ STATIC_DCL void NDECL(do_positionbar);
 STATIC_DCL void FDECL(regen_hp, (int));
 STATIC_DCL void FDECL(interrupt_multi, (const char *));
 STATIC_DCL void FDECL(debug_fields, (const char *));
+STATIC_DCL void NDECL(create_monster_or_encounter);
 
 void
 moveloop(resuming)
@@ -126,53 +127,7 @@ boolean resuming;
 						: (depth(&u.uz) > depth(&stronghold_level)) ? 50
 						: 70))
 					{
-						/* Special Nazgul appearance if carrying the One Ring */
-						struct obj* ring = carrying(RIN_SUPREME_POWER);
-						struct monst* nazgul = (struct monst*)0;
-						if (ring && ring->oartifact == ART_ONE_RING && !rn2(10))
-						{
-							if (!context.made_witch_king && !rn2(9))
-							{
-								nazgul = makemon(&mons[PM_NAZGUL], 0, 0, MM_MAX_HP | MM_MALE);
-								if (nazgul)
-								{
-									nazgul = christen_monst(nazgul, "Witch-King of Angmar");
-									nazgul->u_know_mname = TRUE; /* He's famous -- JG */
-									mongets(nazgul, CROWN_OF_RULERSHIP);
-									context.made_witch_king = TRUE;
-								}
-								else /* replacement */
-									nazgul = makemon(&mons[PM_KING_WRAITH], 0, 0, MM_MAX_HP);
-							}
-							else
-							{
-								nazgul = makemon(&mons[PM_NAZGUL], 0, 0, NO_MM_FLAGS);
-								if(!nazgul)
-									nazgul = makemon(&mons[PM_KING_WRAITH], 0, 0, NO_MM_FLAGS);
-							}
-
-							if(!rn2(4))
-							{
-								if (nazgul)
-									nazgul = makemon(&mons[PM_NAZGUL], 0, 0, NO_MM_FLAGS);
-
-								if (!nazgul)
-									nazgul = makemon(&mons[PM_KING_WRAITH], 0, 0, NO_MM_FLAGS);
-							}
-						}
-						
-						if (!nazgul)
-						{
-							if (!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && !rn2(ENCOUNTER_ONE_IN_CHANCE))
-							{
-								randomize_encounter(0, 0);
-							}
-							else
-							{
-								(void)makemon((struct permonst*) 0, 0, 0,
-									NO_MM_FLAGS);
-							}
-						}
+						create_monster_or_encounter();
 					}
                     /* calculate how much time passed. */
                     if (u.usteed && u.umoved) {
@@ -513,6 +468,60 @@ boolean resuming;
         }
     }
 }
+
+STATIC_OVL
+void
+create_monster_or_encounter()
+{
+	/* Special Nazgul appearance if carrying the One Ring */
+	struct obj* ring = carrying(RIN_SUPREME_POWER);
+	struct monst* nazgul = (struct monst*)0;
+	if (ring && ring->oartifact == ART_ONE_RING && !rn2(10))
+	{
+		if (!context.made_witch_king && !rn2(9))
+		{
+			nazgul = makemon(&mons[PM_NAZGUL], 0, 0, MM_MAX_HP | MM_MALE);
+			if (nazgul)
+			{
+				nazgul = christen_monst(nazgul, "Witch-King of Angmar");
+				nazgul->u_know_mname = TRUE; /* He's famous -- JG */
+				mongets(nazgul, CROWN_OF_RULERSHIP);
+				context.made_witch_king = TRUE;
+			}
+			else /* replacement */
+				nazgul = makemon(&mons[PM_KING_WRAITH], 0, 0, MM_MAX_HP);
+		}
+		else
+		{
+			nazgul = makemon(&mons[PM_NAZGUL], 0, 0, NO_MM_FLAGS);
+			if (!nazgul)
+				nazgul = makemon(&mons[PM_KING_WRAITH], 0, 0, NO_MM_FLAGS);
+		}
+
+		if (!rn2(4))
+		{
+			if (nazgul)
+				nazgul = makemon(&mons[PM_NAZGUL], 0, 0, NO_MM_FLAGS);
+
+			if (!nazgul)
+				nazgul = makemon(&mons[PM_KING_WRAITH], 0, 0, NO_MM_FLAGS);
+		}
+		}
+
+	if (!nazgul)
+	{
+		if (!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && !rn2(ENCOUNTER_ONE_IN_CHANCE))
+		{
+			randomize_encounter(0, 0);
+		}
+		else
+		{
+			(void)makemon((struct permonst*) 0, 0, 0,
+				NO_MM_FLAGS);
+		}
+	}
+}
+
 
 /* maybe recover some lost health (or lose some when an eel out of water) */
 STATIC_OVL void
