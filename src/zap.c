@@ -184,7 +184,7 @@ struct obj *otmp;
 		reveal_invis = TRUE;
 		if (disguised_mimic)
 			seemimic(mtmp);
-		if (u.uswallow || rnd(20) < 5 + u.ulevel + find_mac(mtmp)) //Hitsas +5 arrow + caster level, good at high levels
+		if (u.uswallow || 1) //rnd(20) < 5 + u.ulevel + find_mac(mtmp)) //Hitsas +5 arrow + caster level, good at high levels
 		{
 			dmg = 0;
 			dmg = d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus; //Same for small and big
@@ -4409,7 +4409,7 @@ struct obj *obj;
     if (u.usteed && (objects[otyp].oc_dir != NODIR) && !u.dx && !u.dy
         && (u.dz > 0) && zap_steed(obj)) {
         disclose = TRUE;
-    } else if (objects[otyp].oc_dir == IMMEDIATE || objects[otyp].oc_dir == TOUCH) {
+    } else if (objects[otyp].oc_dir == IMMEDIATE || objects[otyp].oc_dir == IMMEDIATE_MULTIPLE_TARGETS || objects[otyp].oc_dir == TOUCH) {
         zapsetup(); /* reset obj_zapped */
         if (u.uswallow) {
             (void) bhitm(u.ustuck, obj);
@@ -4426,8 +4426,11 @@ struct obj *obj;
 			else
 				range = rn1(8, 6);
 
-			(void) bhit(u.dx, u.dy, range, ZAPPED_WAND, bhitm, bhito,
-                        &obj);
+			boolean hit_only_one = TRUE;
+			if (objects[otyp].oc_dir == IMMEDIATE_MULTIPLE_TARGETS)
+				hit_only_one = FALSE;
+
+			(void) bhit(u.dx, u.dy, range, ZAPPED_WAND, bhitm, bhito, &obj, hit_only_one);
         }
         zapwrapup(); /* give feedback for obj_zapped */
 
@@ -4500,6 +4503,23 @@ struct obj *obj;
     return;
 }
 
+/* Note: this is needed, because objects cannot have self-references */
+int 
+get_displayed_object_type_from_subdir_type(subdir)
+int subdir;
+{
+	int displayedobjtype = STRANGE_OBJECT;
+	switch (subdir)
+	{
+	case SUBDIR_ARROW:
+		displayedobjtype = BONE_ARROW;
+		break;
+	default:
+		break;
+	}
+
+	return displayedobjtype;
+}
 /* augment damage for a spell dased on the hero's intelligence (and level) */
 int
 spell_damage_bonus(dmg)
@@ -4648,13 +4668,14 @@ int range, *skipstart, *skipend;
  *  one is revealed for a weapon, but if not a weapon is left up to fhitm().
  */
 struct monst *
-bhit(ddx, ddy, range, weapon, fhitm, fhito, pobj)
+bhit(ddx, ddy, range, weapon, fhitm, fhito, pobj, hit_only_one)
 register int ddx, ddy, range;          /* direction and range */
 enum bhit_call_types weapon;           /* defined in hack.h */
 int FDECL((*fhitm), (MONST_P, OBJ_P)), /* fns called when mon/obj hit */
     FDECL((*fhito), (OBJ_P, OBJ_P));
 struct obj **pobj; /* object tossed/used, set to NULL
                     * if object is destroyed */
+boolean hit_only_one;
 {
     struct monst *mtmp;
     struct obj *obj = *pobj;
@@ -4680,6 +4701,17 @@ struct obj **pobj; /* object tossed/used, set to NULL
         allow_skip = !rn2(3);
     }
 
+	int displayedobjtype = STRANGE_OBJECT;
+	struct obj dispobj = zeroobj;
+	if (weapon == ZAPPED_WAND && obj)
+	{
+		if (objects[obj->otyp].oc_dir_subtype)
+		{
+			displayedobjtype = get_displayed_object_type_from_subdir_type(objects[obj->otyp].oc_dir_subtype);
+			dispobj.otyp = displayedobjtype;
+		}
+	}
+
     if (weapon == FLASHED_LIGHT) {
         tmp_at(DISP_BEAM, cmap_to_glyph(S_flashbeam));
     } else if (weapon == THROWN_TETHERED_WEAPON && obj) {
@@ -4688,6 +4720,8 @@ struct obj **pobj; /* object tossed/used, set to NULL
             tmp_at(DISP_TETHER, obj_to_glyph(obj, rn2_on_display_rng));
     } else if (weapon != ZAPPED_WAND && weapon != INVIS_BEAM)
         tmp_at(DISP_FLASH, obj_to_glyph(obj, rn2_on_display_rng));
+	 else if (weapon == ZAPPED_WAND && displayedobjtype != STRANGE_OBJECT)
+		 tmp_at(DISP_FLASH, obj_to_glyph(&dispobj, rn2_on_display_rng));
 
     while (range-- > 0) {
         int x, y;
@@ -4822,7 +4856,11 @@ struct obj **pobj; /* object tossed/used, set to NULL
             } else {
                 /* ZAPPED_WAND */
                 (*fhitm)(mtmp, obj);
-                range -= 3;
+
+				if (hit_only_one)
+					break;
+				else
+	                range -= 3;
             }
         } else {
             if (weapon == ZAPPED_WAND && obj->otyp == WAN_PROBING
@@ -4870,7 +4908,7 @@ struct obj **pobj; /* object tossed/used, set to NULL
             bhitpos.y -= ddy;
             break;
         }
-        if (weapon != ZAPPED_WAND && weapon != INVIS_BEAM) {
+        if ((weapon != ZAPPED_WAND || (weapon == ZAPPED_WAND && displayedobjtype != STRANGE_OBJECT)) && weapon != INVIS_BEAM) {
             /* 'I' present but no monster: erase */
             /* do this before the tmp_at() */
             if (glyph_is_invisible(levl[bhitpos.x][bhitpos.y].glyph)
@@ -4918,7 +4956,7 @@ struct obj **pobj; /* object tossed/used, set to NULL
         point_blank = FALSE; /* affects passing through iron bars */
     }
 
-    if (weapon != ZAPPED_WAND && weapon != INVIS_BEAM && !tethered_weapon)
+    if ((weapon != ZAPPED_WAND || (weapon == ZAPPED_WAND && displayedobjtype != STRANGE_OBJECT)) && weapon != INVIS_BEAM && !tethered_weapon)
         tmp_at(DISP_END, 0);
 
     if (shopdoor)

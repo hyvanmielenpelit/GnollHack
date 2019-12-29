@@ -902,7 +902,7 @@ boolean is_golf_swing;
     newsym(x, y);
     mon = bhit(u.dx, u.dy, range, is_golf_swing ? GOLF_SWING : KICKED_WEAPON,
                (int FDECL((*), (MONST_P, OBJ_P))) 0,
-               (int FDECL((*), (OBJ_P, OBJ_P))) 0, &kickedobj);
+               (int FDECL((*), (OBJ_P, OBJ_P))) 0, &kickedobj, TRUE);
     if (!kickedobj)
         return 1; /* object broken */
 

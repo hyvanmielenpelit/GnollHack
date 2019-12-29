@@ -334,12 +334,15 @@ struct objclass {
 #define oc_bulky oc_big    /* for armor */
     Bitfield(oc_tough, 1); /* hard gems/rings */
 
-    Bitfield(oc_dir, 3);
+    Bitfield(oc_dir, 4);
 #define NODIR 1     /* for wands/spells:	non-directional */
-#define IMMEDIATE 2 /*						directional */
+#define IMMEDIATE 2 /*						directional at one target */
 #define RAY 3       /*						zap beams */
 #define TARGETED 4  /*						targeted using throwspell */
 #define TOUCH 5     /*						like immediate but touch distance */
+#define IMMEDIATE_MULTIPLE_TARGETS 6 /*		directional but many targets in a line like a ray */
+
+#define SUBDIR_ARROW 1
 
 #define PIERCE 1 /* for weapons & tools used as weapons */
 #define SLASH 2  /* (latter includes iron ball & chain) */

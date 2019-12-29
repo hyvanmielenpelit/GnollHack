@@ -1232,7 +1232,7 @@ int spell;
 			strcpy(buf2, "None");
 			break;
 		case IMMEDIATE:
-			strcpy(buf2, "Effect in selected direction");
+			strcpy(buf2, "One target in selected direction");
 			break;
 		case RAY:
 			if(objects[booktype].oc_aflags & S1_SPELL_EXPLOSION_EFFECT)
@@ -1245,6 +1245,9 @@ int spell;
 			break;
 		case TOUCH:
 			strcpy(buf2, "Touch");
+			break;
+		case IMMEDIATE_MULTIPLE_TARGETS:
+			strcpy(buf2, "Multiple targets in selected direction");
 			break;
 		default:
 			break;

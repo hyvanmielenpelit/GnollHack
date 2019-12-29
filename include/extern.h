@@ -3141,7 +3141,7 @@ E void FDECL(hit, (const char *, struct monst *, const char *, int));
 E void FDECL(miss, (const char *, struct monst *));
 E struct monst *FDECL(bhit, (int, int, int, enum bhit_call_types,
                              int (*)(MONST_P, OBJ_P),
-                             int (*)(OBJ_P, OBJ_P), struct obj **));
+                             int (*)(OBJ_P, OBJ_P), struct obj **, BOOLEAN_P));
 E struct monst *FDECL(boomhit, (struct obj *, int, int));
 E int FDECL(zhitm, (struct monst *, int, struct obj*, int, int, int, struct obj **));
 E int FDECL(burn_floor_objects, (int, int, BOOLEAN_P, BOOLEAN_P));
@@ -3169,6 +3169,7 @@ E void NDECL(timestop);
 E void FDECL(disintegrate_mon, (struct monst*, int, const char*));
 E boolean FDECL(item_prevents_revival, (int));
 E boolean FDECL(item_prevents_summoning, (int));
+E int FDECL(get_displayed_object_type_from_subdir_type, (int));
 
 #endif /* !MAKEDEFS_C && !LEV_LEX_C */
 

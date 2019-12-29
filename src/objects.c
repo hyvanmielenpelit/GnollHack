@@ -2264,7 +2264,7 @@ SPELL("knock",            "pink", None, "Opens the target door",
 SPELL("force bolt",       "red", None, "Shoots a bolt of force",
       P_ARCANE_SPELL,			15,  2,			 0, 1, 10, A_INT, 10, 0, 20, 0, 1, IMMEDIATE, 0, 3, 6, 1, 0, 0, 0, S1_NONE, CLR_RED, O1_NONE, O2_NONE, O3_NONE),
 SPELL("magic arrow",      "hardcover", None, "Shoots a magical arrow",
-      P_ARCANE_SPELL,			15,  1,			 0, -1, 4, A_INT, 18, 0, 20, 0, 1, IMMEDIATE, 0, 1, 8, 1, 0, 0, 0, S1_NONE, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE),
+      P_ARCANE_SPELL,			15,  1,			 0, -1, 4, A_INT, 18, 0, 20, 0, 1, IMMEDIATE, SUBDIR_ARROW, 1, 8, 1, 0, 0, 0, S1_NONE, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE),
 SPELL("confuse monster", "orange", None, "The caster can confuse monsters on hit",
       P_ENCHANTMENT_SPELL,		10,  2,			 0, 1, 10, A_AVG_INT_CHA, 16, 0, 100, 0, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, S1_NONE, CLR_ORANGE, O1_NONE, O2_NONE, O3_NONE),
 SPELL("cure blindness",  "yellow", None, "Cures blindness",
@@ -2281,7 +2281,7 @@ SPELL("detect food",     "cyan", None, "Detects the location of all comestibles"
       P_DIVINATION_SPELL,		10,  3,			 0, -1, 4, A_MAX_INT_WIS, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NONE, CLR_CYAN, O1_NONE, O2_NONE, O3_NONE),
 
 SPELL("fear",			"blue-hued", None, "Causes monsters to flee",
-      P_ENCHANTMENT_SPELL,		10,  3,			 0, 4, 30, A_AVG_INT_WIS_CHA, 10, 0, 100, 0, 1, IMMEDIATE, 0, 0, 0, 0, 6, 6, 10, S1_NONE, CLR_BRIGHT_BLUE, O1_NONE, O2_NONE, O3_NONE),
+      P_ENCHANTMENT_SPELL,		10,  3,			 0, 4, 30, A_AVG_INT_WIS_CHA, 10, 0, 100, 0, 1, IMMEDIATE_MULTIPLE_TARGETS, 0, 0, 0, 0, 6, 6, 10, S1_NONE, CLR_BRIGHT_BLUE, O1_NONE, O2_NONE, O3_NONE),
 SPELL("mass fear",      "light blue", None, "Causes all monsters on the level to flee",
       P_ENCHANTMENT_SPELL,		10,  3,			 0, 6, 75, A_AVG_INT_WIS_CHA, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 6, 6, 10, S1_NONE, CLR_BRIGHT_BLUE, O1_NONE, O2_NONE, O3_NONE),
 
