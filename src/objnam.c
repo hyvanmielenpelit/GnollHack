@@ -4185,7 +4185,8 @@ struct obj *no_wish;
 		|| typ == BELL_OF_OPENING
 		|| typ == SPE_BOOK_OF_THE_DEAD
 		|| typ == MAGIC_LAMP
-		|| (is_otyp_nowish(typ) && !isartifact)
+		|| (!isartifact && is_otyp_nowish(typ))
+		|| (isartifact && (artilist[get_artifact_id(typ, name)].aflags & AF_NO_WISH))
 		)
 		&& yn("That item is nonwishable. Force it anyway?") != 'y'))) {
         switch (typ) {
@@ -4208,7 +4209,10 @@ struct obj *no_wish;
             /* catch any other non-wishable objects (venom) */
             if (is_otyp_nowish(typ) && !isartifact)
                 return (struct obj *) 0;
-            break;
+
+			if (isartifact && (artilist[get_artifact_id(typ, name)].aflags & AF_NO_WISH))
+				return (struct obj*) 0;
+			break;
         }
     }
 

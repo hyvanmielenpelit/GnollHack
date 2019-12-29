@@ -270,6 +270,12 @@ A("The Palantir of Westernesse",        CRYSTAL_BALL, CRYSTAL_BALL,
       NO_ATTK, DFNS(AD_MAGM), NO_CARY, CREATE_PORTAL, A_NEUTRAL, PM_WIZARD,
       NON_PM, 4000L, NO_COLOR, CLR_MAGENTA),
 
+	A("The Ark of the Covenant", "gold-covered wooden chest", GOLDEN_CHEST, GOLDEN_CHEST,
+		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_FAMOUS | AF_NO_WISH), SPFX_NONE, (SPFX_LUCK | SPFX_PROTECT), 0,
+      NO_ATTK, NO_DFNS, CARY(AD_MAGM), BLESS_CONTENTS, A_LAWFUL, NON_PM, // PM_ARCHEOLOGIST,
+      NON_PM, 5000L, NO_COLOR, HI_GOLD),
+
+
     /*
      *  terminator; otyp must be zero
      */

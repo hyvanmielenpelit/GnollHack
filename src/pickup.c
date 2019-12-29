@@ -2088,7 +2088,7 @@ int depthin;
         && obj->spe <= 0)
         return FALSE;
 
-	if (container->otyp == BAG_OF_WIZARDRY &&
+	if ((container->otyp == BAG_OF_WIZARDRY || container->otyp == GOLDEN_CHEST) &&
 		(obj->otyp == WAN_CANCELLATION || obj->otyp == BAG_OF_TRICKS)
 		&& obj->spe > 0)
 	{

@@ -2084,7 +2084,7 @@ register struct obj* obj;
 
 
 	/* Artifact powers */
-	if (obj->known && obj->nknown && obj->oartifact)
+	if (obj->oartifact && stats_known)
 	{
 		int powercnt = 0;
 		Sprintf(buf, "Artifact properties:");
@@ -2531,7 +2531,7 @@ int defensetype;
 
 static const char* artifact_invoke_names[] = { 
 	"taming", "healing", "mana replenishment", "untrapping", "charging",
-	"level teleportation", "portal creation", "enlightenment", "arrow creation", "death ray",
+	"level teleportation", "portal creation", "enlightenment", "arrow creation", "death ray", "blessing of contents",
 };
 
 const char* get_artifact_invoke_name(specialpropindex)

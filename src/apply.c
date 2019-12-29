@@ -4211,7 +4211,7 @@ doapply()
     if (!obj)
         return 0;
 
-	if (obj->cooldownleft > 0)
+	if (obj->cooldownleft > 0 && !Is_weight_changing_bag(obj)) /* Exception for Ark of the Covenant */
 	{
 		You("cannot apply %s before its cooldown has expired.", the(cxname(obj)));
 		return 0;
@@ -4257,6 +4257,7 @@ doapply()
 	case LEATHER_BAG:
 	case ORIENTAL_SILK_SACK:
 	case EXPENSIVE_HANDBAG:
+	case GOLDEN_CHEST:
 	case BAG_OF_HOLDING:
 	case BAG_OF_WIZARDRY:
 	case BAG_OF_TREASURE_HAULING:

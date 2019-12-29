@@ -69,6 +69,7 @@ E struct obj *FDECL(mk_artifact, (struct obj *, ALIGNTYP_P));
 E const char *FDECL(artifact_name, (const char *, short *));
 E boolean FDECL(exist_artifact, (int, const char *));
 E void FDECL(artifact_exists, (struct obj *, const char *, BOOLEAN_P));
+E int FDECL(get_artifact_id, (int, const char*));
 E int NDECL(nartifact_exist);
 E boolean FDECL(arti_immune, (struct obj *, int));
 E boolean FDECL(artifact_has_flag, (struct obj *, unsigned long));

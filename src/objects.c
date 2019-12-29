@@ -1812,11 +1812,16 @@ MISCELLANEOUSITEM("belt of storm giant strength", "rudimentary belt", MISC_BELT,
 		   AD_PHYS, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, 0, 0, 0, 0, aflags, critpct, \
 		   hitbon, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
 		   wt, clr, 0, 0, cooldown, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
+
 /* containers */
 CONTAINER("large box",       None, None,
 	1, 0, 0, 40, 350,   8, 0, 0, 0, 0, 0, P1_NONE, MAT_WOOD, HI_WOOD, O1_NONE, O2_CONTAINER_BOX, O3_NONE, PERMITTED_ALL), //STARTMARKER 1
 CONTAINER("chest",           None, None,
 	1, 0, 0, 30, 600,  16, 0, 0, 0, 0, 0, P1_NONE, MAT_WOOD, HI_WOOD, O1_NONE, O2_CONTAINER_BOX, O3_NONE, PERMITTED_ALL),
+CONTAINER("golden chest",           None, None,
+	1, 0, 0, 0, 600, 1000, 0, 0, 0, 0, 0, P1_NONE, MAT_WOOD, HI_GOLD, 
+	O1_FIRE_RESISTANT | O1_INDESTRUCTIBLE | O1_DISINTEGRATION_RESISTANT | O1_NOT_CURSEABLE,
+	O2_CONTAINER_MAGIC_BAG | O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG | O2_GENERATED_BLESSED, O3_NO_WISH, PERMITTED_ALL),
 CONTAINER("ice box",         None, None,
 	1, 0, 0,  5, 900,  42, 0, 0, 0, 0, 0, P1_NONE, MAT_PLASTIC, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 CONTAINER("bookshelf",		 None, None,

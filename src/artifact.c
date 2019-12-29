@@ -285,6 +285,23 @@ boolean mod;
     return;
 }
 
+
+int
+get_artifact_id(otyp, name)
+int otyp;
+const char* name;
+{
+	if (otyp > 0 && *name)
+	{
+		for (int i = 1; i <= NROFARTIFACTS; i++)
+			if (artilist[i].otyp == otyp && !strcmp(artilist[i].name, name))
+			{
+				return i;
+			}
+	}
+	return 0;
+}
+
 int
 nartifact_exist()
 {
@@ -2297,7 +2314,8 @@ struct obj *obj;
 		//obj->cooldownleft = rnz(100);
         //obj->age = monstermoves + rnz(100);
 
-        switch (oart->inv_prop) {
+        switch (oart->inv_prop) 
+		{
         case TAMING: {
             struct obj pseudo;
             pseudo = zeroobj; /* neither cursed nor blessed, zero oextra too */
@@ -2509,7 +2527,49 @@ struct obj *obj;
 				losexp("life drainage");
 			}
 		}
-        }
+		case BLESS_CONTENTS:
+		{
+			int cnt = 0;
+			for (struct obj* otmp = obj->cobj; otmp; otmp = otmp->nobj) {
+				cnt++;
+			}
+			int selected_item = 0;
+			
+			if (cnt == 0)
+			{
+				pline("Nothing seems to happen.");
+				obj->cooldownleft = 5 + rnd(5);
+			}
+			else
+			{
+				if (cnt > 1)
+					selected_item = rn2(cnt);
+				int i = 0;
+				boolean blessed = FALSE;
+				for (struct obj* otmp = obj->cobj; otmp; otmp = otmp->nobj) {
+					if (i == selected_item)
+					{
+						bless(otmp);
+						blessed = TRUE;
+						break;
+					}
+					i++;
+				}
+				if (blessed)
+				{
+					pline("A light blue aura glows inside %s for a while.", the(cxname(obj)));
+					obj->cooldownleft = 150 + rnd(150);
+				}
+				else
+				{
+					pline("Nothing seems to happen.");
+					obj->cooldownleft = 5 + rnd(5);
+				}
+			}
+
+		}
+
+        } /* switch */
     } else {
         //long eprop = (u.uprops[oart->inv_prop].extrinsic ^= W_ARTIFACT_INVOKED),
         //    iprop = u.uprops[oart->inv_prop].intrinsic;
