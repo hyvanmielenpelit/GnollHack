@@ -137,7 +137,6 @@ struct obj *otmp;
 {
     boolean wake = TRUE; /* Most 'zaps' should wake monster */
     boolean reveal_invis = FALSE, learn_it = FALSE;
-	boolean dbldam = 0; // Role_if(PM_KNIGHT) && u.uhave.questart;
     boolean skilled_spell, helpful_gesture = FALSE;
     int dmg, otyp = otmp->otyp;
     const char *zap_type_text = "spell";
@@ -164,13 +163,9 @@ struct obj *otmp;
             shieldeff(mtmp->mx, mtmp->my);
             pline("Boing!");
             break; /* skip makeknown */
-        } else if (u.uswallow || rnd(20) < 10 + find_mac(mtmp)) {
+        } else if (u.uswallow || 1) { //rnd(20) < 10 + find_mac(mtmp))
 			dmg = 0;
 			dmg = d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus; //Spells do the same damage for small and big
-
-			//Knight quest artifact
-			if (dbldam)
-				dmg *= 2;
 
 			//Deal the damage, resist will tell this separately
 			hit(zap_type_text, mtmp, exclam(dmg), 0);
@@ -188,10 +183,6 @@ struct obj *otmp;
 		{
 			dmg = 0;
 			dmg = d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus; //Same for small and big
-
-			//Knight quest artifact
-			if (dbldam)
-				dmg *= 2;
 
 			//Deal the damage, resist will tell this separately
 			hit(zap_type_text, mtmp, exclam(dmg), 0);
@@ -311,8 +302,6 @@ struct obj *otmp;
             reveal_invis = TRUE;
             wake = TRUE;
             dmg = rnd(8);
-            if (dbldam)
-                dmg *= 2;
             if (otyp == SPE_TURN_UNDEAD)
                 dmg = spell_damage_bonus(dmg);
             context.bypasses = TRUE; /* for make_corpse() */
@@ -339,8 +328,6 @@ struct obj *otmp;
 			reveal_invis = TRUE;
 			wake = TRUE;
 			dmg = max(mtmp->mhp, d(20,6));
-			if (dbldam)
-				dmg *= 2;
 			context.bypasses = TRUE; /* for make_corpse() */
 			if (!resist(mtmp, otmp, 0, dmg, TELL_LETHAL_STYLE)) {
 				if (!DEADMONSTER(mtmp))
@@ -354,8 +341,6 @@ struct obj *otmp;
 			reveal_invis = TRUE;
 			wake = TRUE;
 			dmg = max(mtmp->mhp, d(30, 6));
-			if (dbldam)
-				dmg *= 2;
 			context.bypasses = TRUE; /* for make_corpse() */
 			if (!resist(mtmp, otmp, 0, dmg, TELL_LETHAL_STYLE)) {
 				if (!DEADMONSTER(mtmp))
@@ -586,8 +571,6 @@ struct obj *otmp;
         if (disguised_mimic)
             seemimic(mtmp);
         dmg = monhp_per_lvl(mtmp);
-        if (dbldam)
-            dmg *= 2;
         if (otyp == SPE_DRAIN_LIFE)
             dmg = spell_damage_bonus(dmg);
         if (resists_drli(mtmp)) {
