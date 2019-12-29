@@ -2065,9 +2065,11 @@ register struct monst *shkp; /* if angry, impose a surcharge */
         tmp = 5L;
     /* shopkeeper may notice if the player isn't very knowledgeable -
        especially when gem prices are concerned */
-    if (!obj->dknown || !objects[obj->otyp].oc_name_known) {
+    if (!obj->dknown || (!obj->oartifact && !objects[obj->otyp].oc_name_known) || (obj->oartifact && !obj->nknown))
+	{
         if (obj->oclass == GEM_CLASS
-            && objects[obj->otyp].oc_material == MAT_GLASS) {
+            && objects[obj->otyp].oc_material == MAT_GLASS) 
+		{
             int i;
             /* get a value that's 'random' from game to game, but the
                same within the same game */
@@ -2109,7 +2111,9 @@ register struct monst *shkp; /* if angry, impose a surcharge */
                 break;
             }
             tmp = (long) objects[i].oc_cost;
-        } else if (oid_price_adjustment(obj, obj->o_id) > 0) {
+        }
+		else if (oid_price_adjustment(obj, obj->o_id) > 0) 
+		{
             /* unid'd, arbitrarily impose surcharge: tmp *= 4/3 */
             multiplier *= 4L;
             divisor *= 3L;
@@ -2134,7 +2138,11 @@ register struct monst *shkp; /* if angry, impose a surcharge */
     else if (ACURR(A_CHA) <= 10)
         multiplier *= 4L, divisor *= 3L;
 
-    /* tmp = (tmp * multiplier) / divisor [with roundoff tweak] */
+	/* Monsters sell cheaper */
+	if (!shkp_is_shopkeeper)
+		multiplier *= 2L, divisor *= 3L;
+
+	/* tmp = (tmp * multiplier) / divisor [with roundoff tweak] */
     tmp *= multiplier;
     if (divisor > 1L) {
         /* tmp = (((tmp * 10) / divisor) + 5) / 10 */
