@@ -2262,7 +2262,7 @@ SPELL("detect monsters",  "leathery", None, "The caster can sense all monsters o
 SPELL("knock",            "pink", None, "Opens the target door",
       P_TRANSMUTATION_SPELL,	15,  1,			 0, -1, 1, A_INT, 12, 0, 50, 0, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, S1_NONE, CLR_BRIGHT_MAGENTA, O1_NONE, O2_NONE, O3_NONE),
 SPELL("force bolt",       "red", None, "Shoots a bolt of force",
-      P_ARCANE_SPELL,			15,  2,			 0, 1, 10, A_INT, 10, 0, 20, 0, 1, IMMEDIATE, 0, 3, 6, 1, 0, 0, 0, S1_NONE, CLR_RED, O1_NONE, O2_NONE, O3_NONE),
+      P_ARCANE_SPELL,			15,  2,			 0, 1, 10, A_INT, 10, 0, 20, 0, 1, IMMEDIATE, IMMEDIATE_MAGIC_MISSILE_NONBEAM , 3, 6, 1, 0, 0, 0, S1_NONE, CLR_RED, O1_NONE, O2_NONE, O3_NONE),
 SPELL("magic arrow",      "hardcover", None, "Shoots a magical arrow",
       P_ARCANE_SPELL,			15,  1,			 0, -1, 4, A_INT, 18, 0, 20, 0, 1, IMMEDIATE, SUBDIR_ARROW, 1, 8, 1, 0, 0, 0, S1_NONE, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE),
 SPELL("confuse monster", "orange", None, "The caster can confuse monsters on hit",

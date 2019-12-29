@@ -4688,13 +4688,16 @@ boolean hit_only_one;
 	struct obj dispobj = zeroobj;
 	if (weapon == ZAPPED_WAND && obj)
 	{
-		if (objects[obj->otyp].oc_dir_subtype)
+		if (objects[obj->otyp].oc_dir_subtype > 0)
 		{
 			displayedobjtype = get_displayed_object_type_from_subdir_type(objects[obj->otyp].oc_dir_subtype);
 			dispobj.otyp = displayedobjtype;
 		}
+		else if (objects[obj->otyp].oc_dir_subtype < 0)
+		{
+			displayedobjtype = objects[obj->otyp].oc_dir_subtype;
+		}
 	}
-
     if (weapon == FLASHED_LIGHT) {
         tmp_at(DISP_BEAM, cmap_to_glyph(S_flashbeam));
     } else if (weapon == THROWN_TETHERED_WEAPON && obj) {
@@ -4703,8 +4706,12 @@ boolean hit_only_one;
             tmp_at(DISP_TETHER, obj_to_glyph(obj, rn2_on_display_rng));
     } else if (weapon != ZAPPED_WAND && weapon != INVIS_BEAM)
         tmp_at(DISP_FLASH, obj_to_glyph(obj, rn2_on_display_rng));
-	 else if (weapon == ZAPPED_WAND && displayedobjtype != STRANGE_OBJECT)
+	 else if (weapon == ZAPPED_WAND && displayedobjtype > STRANGE_OBJECT)
 		 tmp_at(DISP_FLASH, obj_to_glyph(&dispobj, rn2_on_display_rng));
+	 else if (weapon == ZAPPED_WAND && displayedobjtype <= IMMEDIATE_MAGIC_MISSILE_BEAM)
+		tmp_at(DISP_BEAM, zapdir_to_glyph(ddx, ddy, -displayedobjtype - 11));
+	 else if (weapon == ZAPPED_WAND && displayedobjtype <= IMMEDIATE_MAGIC_MISSILE_NONBEAM)
+		tmp_at(DISP_FLASH, zapdir_to_glyph(ddx, ddy, -displayedobjtype - 1));
 
     while (range-- > 0) {
         int x, y;
@@ -4866,7 +4873,8 @@ boolean hit_only_one;
             }
         }
         if (weapon == ZAPPED_WAND && (IS_DOOR(typ) || typ == SDOOR)) {
-            switch (obj->otyp) {
+            switch (obj->otyp) 
+			{
             case WAN_OPENING:
             case WAN_LOCKING:
             case WAN_STRIKING:
