@@ -145,37 +145,24 @@ enmaxadjustment()
 	{
 		otyp = uitem->otyp;
 		if (!object_uses_spellbook_wand_flags_and_properties(uitem)
-			&& objects[otyp].oc_mana_bonus > 0 && (
-			  (uitem == uwep && (is_shield(uitem) || is_weapon(uitem)))
-			|| uitem == uarm
-			|| uitem == uarmc
-			|| uitem == uarmh
-			|| (uitem == uarms && (is_shield(uitem) || is_weapon(uitem)))
-			|| uitem == uarmg
-			|| uitem == uarmf
-			|| uitem == uarmu
-			|| uitem == uarmo
-			|| uitem == uarmb
-			|| uitem == umisc
-			|| uitem == umisc2
-			|| uitem == umisc3
-			|| uitem == umisc4
-			|| uitem == umisc5
-			|| uitem == uamul
-			|| uitem == uright
-			|| uitem == uleft
-			|| objects[otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED
-			))
+			&& objects[otyp].oc_mana_bonus != 0)
 		{
-			if (inappropriate_character_type(uitem) && !(objects[otyp].oc_flags3 & P1_MANA_BONUS_APPLIES_TO_ALL_CHARACTERS))
-			{
-				continue;
-			}
+			boolean inappr = inappropriate_character_type(uitem);
+			boolean worn = is_obj_worn(uitem);
 
-			if (objects[otyp].oc_flags & O1_MANA_PERCENTAGE_BONUS)
-				adj += (objects[otyp].oc_mana_bonus * (baseen + baseadj)) / 100;
-			else
-				adj += objects[otyp].oc_mana_bonus;
+			if ((worn || (!worn && (objects[otyp].oc_pflags & P1_MANA_BONUS_APPLIES_WHEN_CARRIED)))
+				&& ((!inappr && !(objects[otyp].oc_pflags & (P1_MANA_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
+					|| (objects[otyp].oc_pflags & P1_MANA_BONUS_APPLIES_TO_ALL_CHARACTERS)
+					|| (inappr && (objects[otyp].oc_pflags & (P1_MANA_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY | P1_MANA_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS)))
+					)
+				)
+			{
+				int multiplier = (objects[otyp].oc_pflags & P1_MANA_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr ? -1 : 1;
+				if (objects[otyp].oc_pflags & P1_MANA_PERCENTAGE_BONUS)
+					adj += multiplier * (objects[otyp].oc_mana_bonus * (baseen + baseadj)) / 100;
+				else
+					adj += multiplier * objects[otyp].oc_mana_bonus;
+			}
 		}
 	}
 

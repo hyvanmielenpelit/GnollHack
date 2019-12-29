@@ -310,26 +310,74 @@ unsigned long abil;
 
 /* used so that callers don't need to known about SPFX_ codes */
 boolean
-confers_luck(obj)
-struct obj *obj;
+confers_luck(uitem)
+struct obj *uitem;
 {
-	if ((objects[obj->otyp].oc_flags & O1_CONFERS_LUCK
-		&& (objects[obj->otyp].oc_flags3 & P1_LUCK_APPLIES_TO_ALL_CHARACTERS || !inappropriate_character_type(obj))))
-		return TRUE;
+	if (!uitem)
+		return FALSE;
+
+	int otyp = uitem->otyp;
+	boolean inappr = inappropriate_character_type(uitem);
+	boolean luck = (
+		((objects[otyp].oc_pflags & P1_CONFERS_UNLUCK) && ((objects[otyp].oc_pflags & P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr))
+		|| ((objects[otyp].oc_pflags & P1_CONFERS_LUCK) && !(objects[otyp].oc_pflags & P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr));
+	boolean unluck = (
+		((objects[otyp].oc_pflags & P1_CONFERS_UNLUCK) && !((objects[otyp].oc_pflags & P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr))
+		|| ((objects[otyp].oc_pflags & P1_CONFERS_LUCK) && (objects[otyp].oc_pflags & P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr));
+
+	boolean luck_obtained = (luck && !unluck);
+	if (!luck_obtained)
+		return FALSE;
+
+	boolean worn = is_obj_worn(uitem);
+
+	if ((worn || (!worn && (objects[otyp].oc_pflags & P1_LUCK_APPLIES_WHEN_CARRIED)))
+		&& ((!inappr && !(objects[otyp].oc_pflags & (P1_LUCK_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
+			|| (objects[otyp].oc_pflags & P1_LUCK_APPLIES_TO_ALL_CHARACTERS)
+			|| (inappr && (objects[otyp].oc_pflags & (P1_LUCK_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY | P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS)))
+			)
+		)
+	{
+		return luck_obtained;
+	}
 
     return FALSE;
 }
 
 /* used so that callers don't need to known about SPFX_ codes */
 boolean
-confers_unluck(obj)
-struct obj* obj;
+confers_unluck(uitem)
+struct obj* uitem;
 {
-	if (objects[obj->otyp].oc_flags & O1_CONFERS_UNLUCK
-		&& (objects[obj->otyp].oc_flags3 & P1_LUCK_APPLIES_TO_ALL_CHARACTERS || !inappropriate_character_type(obj)))
-		return TRUE;
+	if (!uitem)
+		return FALSE;
 
-	return FALSE;
+	int otyp = uitem->otyp;
+	boolean inappr = inappropriate_character_type(uitem);
+	boolean luck = (
+		((objects[otyp].oc_pflags & P1_CONFERS_UNLUCK) && ((objects[otyp].oc_pflags & P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr))
+		|| ((objects[otyp].oc_pflags & P1_CONFERS_LUCK) && !(objects[otyp].oc_pflags & P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr));
+	boolean unluck = (
+		((objects[otyp].oc_pflags & P1_CONFERS_UNLUCK) && !((objects[otyp].oc_pflags & P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr))
+		|| ((objects[otyp].oc_pflags & P1_CONFERS_LUCK) && (objects[otyp].oc_pflags & P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr));
+
+	boolean unluck_obtained = (!luck && unluck);
+	if (!unluck_obtained)
+		return FALSE;
+
+	boolean worn = is_obj_worn(uitem);
+
+	if ((worn || (!worn && (objects[otyp].oc_pflags & P1_LUCK_APPLIES_WHEN_CARRIED)))
+		&& ((!inappr && !(objects[otyp].oc_pflags & (P1_LUCK_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
+			|| (objects[otyp].oc_pflags & P1_LUCK_APPLIES_TO_ALL_CHARACTERS)
+			|| (inappr && (objects[otyp].oc_pflags & (P1_LUCK_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY | P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS)))
+			)
+		)
+	{
+		return unluck_obtained;
+	}
+
+	return FALSE; 
 }
 
 /* obj is assumed to be carried */
@@ -486,9 +534,33 @@ boolean being_worn;
 {
     const struct artifact *arti;
 
-    if ((being_worn || objects[otmp->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED) && (objects[otmp->otyp].oc_oprop == PROTECTION || objects[otmp->otyp].oc_oprop2 == PROTECTION || objects[otmp->otyp].oc_oprop3 == PROTECTION))
+	boolean inappr = inappropriate_character_type(otmp);
+
+    if ((being_worn || objects[otmp->otyp].oc_pflags & P1_POWER_1_APPLIES_WHEN_CARRIED)
+		&& ((!inappr && !(objects[otmp->otyp].oc_pflags & P1_POWER_1_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
+			|| (objects[otmp->otyp].oc_pflags & P1_POWER_1_APPLIES_TO_ALL_CHARACTERS)
+			|| (inappr && (objects[otmp->otyp].oc_pflags & P1_POWER_1_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
+			)
+		&& (objects[otmp->otyp].oc_oprop == PROTECTION))
         return TRUE;
-    arti = get_artifact(otmp);
+
+	if ((being_worn || objects[otmp->otyp].oc_pflags & P1_POWER_2_APPLIES_WHEN_CARRIED)
+		&& ((!inappr && !(objects[otmp->otyp].oc_pflags & P1_POWER_2_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
+			|| (objects[otmp->otyp].oc_pflags & P1_POWER_2_APPLIES_TO_ALL_CHARACTERS)
+			|| (inappr && (objects[otmp->otyp].oc_pflags & P1_POWER_2_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
+			)
+		&& (objects[otmp->otyp].oc_oprop2 == PROTECTION))
+		return TRUE;
+
+	if ((being_worn || objects[otmp->otyp].oc_pflags & P1_POWER_3_APPLIES_WHEN_CARRIED)
+		&& ((!inappr && !(objects[otmp->otyp].oc_pflags & P1_POWER_3_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
+			|| (objects[otmp->otyp].oc_pflags & P1_POWER_3_APPLIES_TO_ALL_CHARACTERS)
+			|| (inappr && (objects[otmp->otyp].oc_pflags & P1_POWER_3_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
+			)
+		&& (objects[otmp->otyp].oc_oprop3 == PROTECTION))
+		return TRUE;
+
+	arti = get_artifact(otmp);
     if (!arti)
         return FALSE;
     return (boolean) ((arti->cspfx & SPFX_PROTECT) != 0
@@ -2198,7 +2270,7 @@ struct obj *obj;
 	if (obj && obj->oartifact && !obj->nknown && (artilist[obj->oartifact].aflags & (AF_FAMOUS | AF_NAME_KNOWN_WHEN_INVOKED)))
 	{
 		pline("As you invoke %s, %syou suddenly become aware that it is named %s!", the(cxname(obj)),
-			obj->oartifact == ART_HOWLING_FLAIL ? "it lets loose a majestic roar and " : "",
+			obj->oartifact == ART_HOWLING_FLAIL ? "it lets loose a majestic howl and " : "",
 			bare_artifactname(obj));
 		obj->nknown = TRUE;
 	}

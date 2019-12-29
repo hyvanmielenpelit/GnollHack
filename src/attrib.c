@@ -529,7 +529,7 @@ boolean uncursed_confers_extra_luck; /* So I can't think up of a good name.  So 
 
     for (otmp = invent; otmp; otmp = otmp->nobj)
 	{
-        if (artifact_confers_luck(otmp) || (confers_luck(otmp) && carried_object_confers_powers(otmp)))
+        if (artifact_confers_luck(otmp) || confers_luck(otmp))
 		{
             if (otmp->cursed)
                 bonchance -= otmp->quan;
@@ -539,27 +539,13 @@ boolean uncursed_confers_extra_luck; /* So I can't think up of a good name.  So 
                 bonchance += otmp->quan;
         }
 		
-		if (artifact_confers_unluck(otmp) || (confers_unluck(otmp) && carried_object_confers_powers(otmp)))
+		if (artifact_confers_unluck(otmp) || confers_unluck(otmp))
 		{
 			bonchance -= otmp->quan;
 		}
 	}
 
     return sgn((int) bonchance);
-}
-
-boolean
-carried_object_confers_powers(otmp)
-struct obj* otmp;
-{
-	return ((otmp->oclass == WEAPON_CLASS && (otmp->owornmask & W_WEP))
-		|| (otmp->oclass == ARMOR_CLASS && (otmp->owornmask & W_ARMOR))
-		|| (otmp->oclass == RING_CLASS && (otmp->owornmask & W_RING))
-		|| (otmp->oclass == AMULET_CLASS && (otmp->owornmask & W_AMUL))
-		|| (otmp->oclass == MISCELLANEOUS_CLASS && (otmp->owornmask & W_MISCITEMS))
-		|| (otmp->oclass == TOOL_CLASS && (otmp->owornmask & W_BLINDFOLD || (is_weptool(otmp) && otmp->owornmask & W_WEP)))
-		|| (objects[otmp->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED))
-		;
 }
 
 boolean
@@ -585,27 +571,7 @@ update_extrinsics()
 	//Add then extrinsics from all carried items
 	for (uitem = invent; uitem; uitem = uitem->nobj)
 	{
-		if (!object_uses_spellbook_wand_flags_and_properties(uitem)
-			&& (
-			(uitem == uwep && (is_shield(uitem) || is_weapon(uitem)))
-			|| uitem == uarm
-			|| uitem == uarmc
-			|| uitem == uarmh
-			|| (uitem == uarms && (is_shield(uitem) || is_weapon(uitem)))
-			|| uitem == uarmg
-			|| uitem == uarmf
-			|| uitem == uarmu
-			|| uitem == uarmo
-			|| uitem == uarmb
-			|| uitem == umisc
-			|| uitem == umisc2
-			|| uitem == umisc3
-			|| uitem == umisc4
-			|| uitem == umisc5
-			|| uitem == uamul
-			|| uitem == uright
-			|| uitem == uleft
-			|| objects[uitem->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED))
+		if (!object_uses_spellbook_wand_flags_and_properties(uitem))
 		{
 			int otyp = uitem->otyp;
 			boolean inappr = FALSE;
@@ -620,7 +586,7 @@ update_extrinsics()
 				bit = W_ARMC;
 			else if (uitem == uarmh)
 				bit = W_ARMH;
-			else if (uitem == uarms)
+			else if (uitem == uarms && (is_shield(uitem) || is_weapon(uitem)))
 				bit = W_ARMS;
 			else if (uitem == uarmg)
 				bit = W_ARMG;
@@ -648,22 +614,54 @@ update_extrinsics()
 				bit = W_RINGR;
 			else if (uitem == uleft)
 				bit = W_RINGL;
-			else if (uitem == uwep)
+			else if (uitem == ublindf)
+				bit = W_BLINDFOLD;
+			else if (uitem == uwep && (is_shield(uitem) || is_weapon(uitem)))
 				bit = W_WEP;
 			else
 				bit = W_CARRIED;
 
 			/* Properties conferred by item */
-			if (objects[otyp].oc_oprop >= 0 && (!inappr || (objects[otyp].oc_flags3 & P1_POWER_1_APPLIES_TO_ALL_CHARACTERS)))
+			if (objects[otyp].oc_oprop >= 0 
+				&& (bit != W_CARRIED || (bit == W_CARRIED && (objects[otyp].oc_pflags & P1_POWER_1_APPLIES_WHEN_CARRIED)))
+				&& ((!inappr && !(objects[otyp].oc_pflags & P1_POWER_1_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
+					|| (objects[otyp].oc_pflags & P1_POWER_1_APPLIES_TO_ALL_CHARACTERS)
+					|| (inappr && (objects[otyp].oc_pflags & P1_POWER_1_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
+					)
+				)
 				u.uprops[objects[otyp].oc_oprop].extrinsic |= bit;//W_CARRIED;
-			if (objects[otyp].oc_oprop2 >= 0 && (!inappr || (objects[otyp].oc_flags3 & P1_POWER_2_APPLIES_TO_ALL_CHARACTERS)))
+			if (objects[otyp].oc_oprop2 >= 0 
+				&& (bit != W_CARRIED || (bit == W_CARRIED && (objects[otyp].oc_pflags & P1_POWER_2_APPLIES_WHEN_CARRIED)))
+				&& ((!inappr && !(objects[otyp].oc_pflags & P1_POWER_2_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
+				|| (objects[otyp].oc_pflags & P1_POWER_2_APPLIES_TO_ALL_CHARACTERS)
+				|| (inappr && (objects[otyp].oc_pflags & P1_POWER_2_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
+				))
 				u.uprops[objects[otyp].oc_oprop2].extrinsic |= bit;//W_CARRIED;
-			if (objects[otyp].oc_oprop3 >= 0 && (!inappr || (objects[otyp].oc_flags3 & P1_POWER_3_APPLIES_TO_ALL_CHARACTERS)))
+			if (objects[otyp].oc_oprop3 >= 0
+				&& (bit != W_CARRIED || (bit == W_CARRIED && (objects[otyp].oc_pflags & P1_POWER_3_APPLIES_WHEN_CARRIED)))
+				&& ((!inappr && !(objects[otyp].oc_pflags & P1_POWER_3_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
+				|| (objects[otyp].oc_pflags & P1_POWER_3_APPLIES_TO_ALL_CHARACTERS)
+				|| (inappr && (objects[otyp].oc_pflags & P1_POWER_3_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
+				))
 				u.uprops[objects[otyp].oc_oprop3].extrinsic |= bit;//W_CARRIED;
 
 			/* add wielded / worn artifact intrinsics */
 			if (uitem->oartifact && bit != W_CARRIED)
 				set_artifact_intrinsic(uitem, 1, bit);
+
+			/* add artifact carried and invoked intrinsics */
+			if (uitem->oartifact)
+			{
+				set_artifact_intrinsic(uitem, 1, W_ARTIFACT_CARRIED);
+
+				/* Invoked property if any */
+				if (artilist[uitem->oartifact].inv_prop > 0 && artilist[uitem->oartifact].inv_prop <= LAST_PROP && uitem->invokeon)
+				{
+					u.uprops[artilist[uitem->oartifact].inv_prop].extrinsic |= W_ARTIFACT_INVOKED;
+				}
+			}
+
+
 
 #if 0
 			int p = 0;
@@ -671,18 +669,6 @@ update_extrinsics()
 			if (!inappr && (p = w_blocks(uitem, bit)) != 0)
 				u.uprops[p].blocked |= bit;
 #endif
-		}
-
-		/* add artifact carried and invoked intrinsics */
-		if (uitem->oartifact)
-		{
-			set_artifact_intrinsic(uitem, 1, W_ARTIFACT_CARRIED);
-
-			/* Invoked property if any */
-			if (artilist[uitem->oartifact].inv_prop > 0 && artilist[uitem->oartifact].inv_prop <= LAST_PROP && uitem->invokeon)
-			{
-				u.uprops[artilist[uitem->oartifact].inv_prop].extrinsic |= W_ARTIFACT_INVOKED;
-			}
 		}
 
 	}
@@ -1678,37 +1664,24 @@ boolean addconstitutionbonus;
 	{
 		otyp = uitem->otyp;
 		if (!object_uses_spellbook_wand_flags_and_properties(uitem)
-			&& objects[otyp].oc_hp_bonus > 0 && (
-			(uitem == uwep && (is_shield(uitem) || is_weapon(uitem)))
-			|| uitem == uarm
-			|| uitem == uarmc
-			|| uitem == uarmh
-			|| (uitem == uarms && (is_shield(uitem) || is_weapon(uitem)))
-			|| uitem == uarmg
-			|| uitem == uarmf
-			|| uitem == uarmu
-			|| uitem == uarmo
-			|| uitem == uarmb
-			|| uitem == umisc
-			|| uitem == umisc2
-			|| uitem == umisc3
-			|| uitem == umisc4
-			|| uitem == umisc5
-			|| uitem == uamul
-			|| uitem == uright
-			|| uitem == uleft
-			|| objects[otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED
-			))
+			&& objects[otyp].oc_hp_bonus != 0)
 		{
-			if (inappropriate_character_type(uitem) && !(objects[otyp].oc_flags3 & P1_HP_BONUS_APPLIES_TO_ALL_CHARACTERS))
-			{
-				continue;
-			}
+			boolean inappr = inappropriate_character_type(uitem);
+			boolean worn = is_obj_worn(uitem);
 
-			if (objects[otyp].oc_flags & O1_HP_PERCENTAGE_BONUS)
-				adj += (objects[otyp].oc_hp_bonus * (basehp + baseadj)) / 100;
-			else
-				adj += objects[otyp].oc_hp_bonus;
+			if ((worn || (!worn && (objects[otyp].oc_pflags & P1_HP_BONUS_APPLIES_WHEN_CARRIED)))
+				&& ((!inappr && !(objects[otyp].oc_pflags & (P1_HP_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
+					|| (objects[otyp].oc_pflags & P1_HP_BONUS_APPLIES_TO_ALL_CHARACTERS)
+					|| (inappr && (objects[otyp].oc_pflags & (P1_HP_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY | P1_HP_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS)))
+					)
+				)
+			{
+				int multiplier = (objects[otyp].oc_pflags & P1_HP_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr ? -1 : 1;
+				if (objects[otyp].oc_pflags & P1_HP_PERCENTAGE_BONUS)
+					adj += multiplier * (objects[otyp].oc_hp_bonus * (basehp + baseadj)) / 100;
+				else
+					adj += multiplier * objects[otyp].oc_hp_bonus;
+			}
 		}
 	}
 
@@ -1768,146 +1741,133 @@ updateabon()
 	for (uitem = invent; uitem; uitem = uitem->nobj)
 	{
 		otyp = uitem->otyp;
-		if (!object_uses_spellbook_wand_flags_and_properties(uitem)
-			&& (
-			(uitem == uwep && (is_shield(uitem) || is_weapon(uitem)))
-			|| uitem == uarm
-			|| uitem == uarmc
-			|| uitem == uarmh
-			|| (uitem == uarms && (is_shield(uitem) || is_weapon(uitem)))
-			|| uitem == uarmg
-			|| uitem == uarmf
-			|| uitem == uarmu
-			|| uitem == uarmo
-			|| uitem == uarmb
-			|| uitem == umisc
-			|| uitem == umisc2
-			|| uitem == umisc3
-			|| uitem == umisc4
-			|| uitem == umisc5
-			|| uitem == uamul
-			|| uitem == uright
-			|| uitem == uleft
-			|| objects[otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED
-			))
+		if (!object_uses_spellbook_wand_flags_and_properties(uitem))
 		{
-			if (inappropriate_character_type(uitem) && !(objects[otyp].oc_flags3 & P1_ATTRIBUTE_BONUS_APPLIES_TO_ALL_CHARACTERS))
-			{
-				continue;
-			}
+			boolean inappr = inappropriate_character_type(uitem);
+			boolean worn = is_obj_worn(uitem);
 
-			for (int i = 0; i < A_MAX+5; i++)
+			if ((worn || (!worn && (objects[otyp].oc_pflags & P1_ATTRIBUTE_BONUS_APPLIES_WHEN_CARRIED)))
+				&& ((!inappr && !(objects[otyp].oc_pflags & (P1_ATTRIBUTE_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
+					|| (objects[otyp].oc_pflags & P1_ATTRIBUTE_BONUS_APPLIES_TO_ALL_CHARACTERS)
+					|| (inappr && (objects[otyp].oc_pflags & (P1_ATTRIBUTE_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY | P1_ATTRIBUTE_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS)))
+					)
+				)
 			{
-				int bit = 0;
-				switch (i)
+				int multiplier = (objects[otyp].oc_pflags & P1_ATTRIBUTE_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr ? -1 : 1;
+
+				for (int i = 0; i < A_MAX+5; i++)
 				{
-				case A_STR:
-					bit = BONUS_TO_STR;
-					break;
-				case A_DEX:
-					bit = BONUS_TO_DEX;
-					break;
-				case A_CON:
-					bit = BONUS_TO_CON;
-					break;
-				case A_INT:
-					bit = BONUS_TO_INT;
-					break;
-				case A_WIS:
-					bit = BONUS_TO_WIS;
-					break;
-				case A_CHA:
-					bit = BONUS_TO_CHA;
-					break;
-				case A_MAX + 0:
-					bit = BONUS_TO_DAMAGE;
-					break;
-				case A_MAX + 1:
-					bit = BONUS_TO_HIT;
-					break;
-				case A_MAX + 2:
-					bit = BONUS_TO_AC;
-					break;
-				case A_MAX + 3:
-					bit = BONUS_TO_MC;
-					break;
-				case A_MAX + 4:
-					bit = BONUS_TO_SPELL_CASTING;
-					break;
-				default:
-					bit = 0;
-					break;
-				}
-						
-				if (objects[otyp].oc_bonus_attributes & bit)
-				{
-					if (i < A_MAX)
+					int bit = 0;
+					switch (i)
 					{
-						if (objects[otyp].oc_bonus_attributes & SETS_FIXED_ATTRIBUTE)
+					case A_STR:
+						bit = BONUS_TO_STR;
+						break;
+					case A_DEX:
+						bit = BONUS_TO_DEX;
+						break;
+					case A_CON:
+						bit = BONUS_TO_CON;
+						break;
+					case A_INT:
+						bit = BONUS_TO_INT;
+						break;
+					case A_WIS:
+						bit = BONUS_TO_WIS;
+						break;
+					case A_CHA:
+						bit = BONUS_TO_CHA;
+						break;
+					case A_MAX + 0:
+						bit = BONUS_TO_DAMAGE;
+						break;
+					case A_MAX + 1:
+						bit = BONUS_TO_HIT;
+						break;
+					case A_MAX + 2:
+						bit = BONUS_TO_AC;
+						break;
+					case A_MAX + 3:
+						bit = BONUS_TO_MC;
+						break;
+					case A_MAX + 4:
+						bit = BONUS_TO_SPELL_CASTING;
+						break;
+					default:
+						bit = 0;
+						break;
+					}
+						
+					if (objects[otyp].oc_bonus_attributes & bit)
+					{
+						if (i < A_MAX)
 						{
-							if (objects[otyp].oc_bonus_attributes & FIXED_IS_MAXIMUM)
+							if (objects[otyp].oc_bonus_attributes & SETS_FIXED_ATTRIBUTE)
 							{
-								int afixmaxcandidate = objects[otyp].oc_attribute_bonus;
-								if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
-									afixmaxcandidate += uitem->spe;
+								if (objects[otyp].oc_bonus_attributes & FIXED_IS_MAXIMUM)
+								{
+									int afixmaxcandidate = objects[otyp].oc_attribute_bonus;
+									if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
+										afixmaxcandidate += uitem->spe;
 
-								/* Take the lowest maximum (most constraining) */
-								if (afixmaxcandidate < AFIXMAX(i))
-									AFIXMAX(i) = afixmaxcandidate;
+									/* Take the lowest maximum (most constraining) */
+									if (afixmaxcandidate < AFIXMAX(i))
+										AFIXMAX(i) = afixmaxcandidate;
+								}
+								else
+								{
+									int afixmincandidate = objects[otyp].oc_attribute_bonus;
+									if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
+										afixmincandidate += uitem->spe;
+
+									/* Take the highest minimum (most constraining) */
+									if (afixmincandidate > AFIXMIN(i))
+										AFIXMIN(i) = afixmincandidate;
+								}
 							}
 							else
 							{
-								int afixmincandidate = objects[otyp].oc_attribute_bonus;
-								if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
-									afixmincandidate += uitem->spe;
-
-								/* Take the highest minimum (most constraining) */
-								if (afixmincandidate > AFIXMIN(i))
-									AFIXMIN(i) = afixmincandidate;
+								if (objects[otyp].oc_attribute_bonus == 0 && objects[otyp].oc_charged)
+									ABONUS(i) += multiplier * uitem->spe;
+								else
+									ABONUS(i) += multiplier * objects[otyp].oc_attribute_bonus;
 							}
 						}
-						else
+						else if (i == A_MAX + 0)
 						{
 							if (objects[otyp].oc_attribute_bonus == 0 && objects[otyp].oc_charged)
-								ABONUS(i) += uitem->spe;
+								u.udaminc += multiplier * uitem->spe;
 							else
-								ABONUS(i) += objects[otyp].oc_attribute_bonus;
+								u.udaminc += multiplier * objects[otyp].oc_attribute_bonus;
 						}
-					}
-					else if (i == A_MAX + 0)
-					{
-						if (objects[otyp].oc_attribute_bonus == 0 && objects[otyp].oc_charged)
-							u.udaminc += uitem->spe;
-						else
-							u.udaminc += objects[otyp].oc_attribute_bonus;
-					}
-					else if (i == A_MAX + 1)
-					{
-						if (objects[otyp].oc_attribute_bonus == 0 && objects[otyp].oc_charged)
-							u.uhitinc += uitem->spe;
-						else
-							u.uhitinc += objects[otyp].oc_attribute_bonus;
-					}
-					else if (i == A_MAX + 2)
-					{
-						if (objects[otyp].oc_attribute_bonus == 0 && objects[otyp].oc_charged)
-							u.uacbonus += uitem->spe;
-						else
-							u.uacbonus += objects[otyp].oc_attribute_bonus;
-					}
-					else if (i == A_MAX + 3)
-					{
-						if (objects[otyp].oc_attribute_bonus == 0 && objects[otyp].oc_charged)
-							u.umcbonus += uitem->spe;
-						else
-							u.umcbonus += objects[otyp].oc_attribute_bonus;
-					}
-					else if (i == A_MAX + 4)
-					{
-						if (objects[otyp].oc_attribute_bonus == 0 && objects[otyp].oc_charged)
-							u.uspellcastingbonus += uitem->spe;
-						else
-							u.uspellcastingbonus += objects[otyp].oc_attribute_bonus;
+						else if (i == A_MAX + 1)
+						{
+							if (objects[otyp].oc_attribute_bonus == 0 && objects[otyp].oc_charged)
+								u.uhitinc += multiplier * uitem->spe;
+							else
+								u.uhitinc += multiplier * objects[otyp].oc_attribute_bonus;
+						}
+						else if (i == A_MAX + 2)
+						{
+							if (objects[otyp].oc_attribute_bonus == 0 && objects[otyp].oc_charged)
+								u.uacbonus += multiplier * uitem->spe;
+							else
+								u.uacbonus += multiplier * objects[otyp].oc_attribute_bonus;
+						}
+						else if (i == A_MAX + 3)
+						{
+							if (objects[otyp].oc_attribute_bonus == 0 && objects[otyp].oc_charged)
+								u.umcbonus += multiplier * uitem->spe;
+							else
+								u.umcbonus += multiplier * objects[otyp].oc_attribute_bonus;
+						}
+						else if (i == A_MAX + 4)
+						{
+							if (objects[otyp].oc_attribute_bonus == 0 && objects[otyp].oc_charged)
+								u.uspellcastingbonus += multiplier * uitem->spe;
+							else
+								u.uspellcastingbonus += multiplier * objects[otyp].oc_attribute_bonus;
+						}
 					}
 				}
 			}
@@ -1920,6 +1880,32 @@ updateabon()
 
 }
 
+boolean is_obj_worn(uitem)
+struct obj* uitem;
+{
+	return (
+		(uitem == uwep && (is_shield(uitem) || is_weapon(uitem)))
+		|| uitem == uarm
+		|| uitem == uarmc
+		|| uitem == uarmh
+		|| (uitem == uarms && (is_shield(uitem) || is_weapon(uitem)))
+		|| uitem == uarmg
+		|| uitem == uarmf
+		|| uitem == uarmu
+		|| uitem == uarmo
+		|| uitem == uarmb
+		|| uitem == umisc
+		|| uitem == umisc2
+		|| uitem == umisc3
+		|| uitem == umisc4
+		|| uitem == umisc5
+		|| uitem == uamul
+		|| uitem == uright
+		|| uitem == uleft
+		|| uitem == ublindf
+		);
+
+}
 
 schar
 acurr(x)

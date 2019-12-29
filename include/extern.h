@@ -119,7 +119,6 @@ E void FDECL(poisoned, (const char *, int, const char *, int, BOOLEAN_P));
 E void FDECL(extra_enchantment_damage, (const char*, int, const char*, boolean));
 E void FDECL(change_luck, (SCHAR_P));
 E int FDECL(stone_luck, (BOOLEAN_P));
-E boolean FDECL(carried_object_confers_powers, (struct obj*));
 E boolean FDECL(object_uses_spellbook_wand_flags_and_properties, (struct obj*));
 E boolean FDECL(inappropriate_character_type, (struct obj*));
 E boolean FDECL(inappropriate_monster_character_type, (struct monst*, struct obj*));
@@ -144,7 +143,7 @@ E char *FDECL(from_what, (int));
 E void FDECL(uchangealign, (int, int));
 E const struct innate* FDECL(race_abil, (int));
 E const struct innate* FDECL(role_abil, (int));
-
+E boolean FDECL(is_obj_worn, (struct obj*));
 
 /* ### ball.c ### */
 

@@ -33,6 +33,11 @@
 #define BBlocks_Blindness u.uprops[BLOCKS_BLINDNESS].blocked
 #define Blocks_Blindness ((HBlocks_Blindness|| EBlocks_Blindness) && !BBlocks_Blindness)
 
+#define HBlocks_Clairvoyance u.uprops[BLOCKS_CLAIRVOYANCE].intrinsic
+#define EBlocks_Clairvoyance u.uprops[BLOCKS_CLAIRVOYANCE].extrinsic
+#define BBlocks_Clairvoyance u.uprops[BLOCKS_CLAIRVOYANCE].blocked
+#define Blocks_Clairvoyance ((HBlocks_Clairvoyance|| EBlocks_Clairvoyance) && !BBlocks_Clairvoyance)
+
 
 /*** Resistances to troubles ***/
 /* With intrinsics and extrinsics */
@@ -281,7 +286,7 @@
 #define HClairvoyant u.uprops[CLAIRVOYANT].intrinsic
 #define EClairvoyant u.uprops[CLAIRVOYANT].extrinsic
 #define BClairvoyant u.uprops[CLAIRVOYANT].blocked
-#define Clairvoyant ((HClairvoyant || EClairvoyant) && !BClairvoyant)
+#define Clairvoyant ((HClairvoyant || EClairvoyant) && !BClairvoyant && !Blocks_Clairvoyance)
 
 #define HInfravision u.uprops[INFRAVISION].intrinsic
 #define EInfravision u.uprops[INFRAVISION].extrinsic

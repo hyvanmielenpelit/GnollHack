@@ -1260,10 +1260,14 @@ struct monst *mon;
 		if (is_shield(o) || is_weapon(o) || (objects[o->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
 			wearmask |= (W_WEP | W_ARMS);
 
-		if ((o->owornmask & wearmask) || (objects[o->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED) 
-			&& !inappropriate_monster_character_type(mon, o))
+		item_mc_bonus = 0;
+		int otyp = o->otyp;
+		boolean inappr = inappropriate_monster_character_type(mon, o);
+		boolean worn = !!(o->owornmask & wearmask);
+
+		if (worn)
 		{
-			item_mc_bonus = 0;
+			/* MC always from worn */
 			if (objects[o->otyp].oc_flags & O1_EROSION_DOES_NOT_AFFECT_MC)
 				item_mc_bonus += objects[o->otyp].oc_magic_cancellation;
 			else
@@ -1271,6 +1275,15 @@ struct monst *mon;
 
 			if (objects[o->otyp].oc_flags & O1_SPE_AFFECTS_MC)
 				item_mc_bonus += o->spe;
+		}
+
+		if ((worn || (!worn && (objects[otyp].oc_pflags & P1_ATTRIBUTE_BONUS_APPLIES_WHEN_CARRIED)))
+			&& ((!inappr && !(objects[otyp].oc_pflags & (P1_ATTRIBUTE_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
+				|| (objects[otyp].oc_pflags & P1_ATTRIBUTE_BONUS_APPLIES_TO_ALL_CHARACTERS)
+				|| (inappr && (objects[otyp].oc_pflags & (P1_ATTRIBUTE_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY | P1_ATTRIBUTE_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS)))
+				)
+			)
+		{
 
 			/* Note u.umcbonus is not being used at the moment, even though it contains appropriate bonuses for you */
 			if (objects[o->otyp].oc_bonus_attributes & BONUS_TO_MC)
@@ -1279,22 +1292,24 @@ struct monst *mon;
 				if (!(objects[o->otyp].oc_bonus_attributes & IGNORE_SPE))
 					item_mc_bonus += o->spe;
 			}
-
-			if (o == uarm)
-				suit_mc_bonus = item_mc_bonus;
-			else if (o == uarmo)
-				robe_mc_bonus = item_mc_bonus;
-			else
-				mc += item_mc_bonus;
 		}
-    }
-	/* Finally, add greated of suit and robe MC bonus */
 
+		if (o == uarm)
+			suit_mc_bonus = item_mc_bonus;
+		else if (o == uarmo)
+			robe_mc_bonus = item_mc_bonus;
+		else
+			mc += item_mc_bonus;
+	}
+
+	/* Finally, add greated of suit and robe MC bonus */
 	combined_mc_bonus = max(suit_mc_bonus, robe_mc_bonus);
 	mc += combined_mc_bonus;
-	context.suit_yielding_mc_bonus = (suit_mc_bonus == combined_mc_bonus);
-	context.robe_yielding_mc_bonus = (robe_mc_bonus == combined_mc_bonus);
-
+	if (is_you)
+	{
+		context.suit_yielding_mc_bonus = (suit_mc_bonus == combined_mc_bonus);
+		context.robe_yielding_mc_bonus = (robe_mc_bonus == combined_mc_bonus);
+	}
 	if ((is_you && (Protection || u.uspellprot > 0)))
 		mc += max(1, u.uspellprot);
 

@@ -844,7 +844,8 @@ register struct obj* obj;
 		/* Damage type - Main */
 		if (printmaindmgtype && objects[otyp].oc_damagetype != AD_PHYS)
 		{
-			char* dmgttext = get_damage_type_text(objects[otyp].oc_damagetype);
+			char dmgttext[BUFSZ] = "";
+			strcpy(dmgttext, get_damage_type_text(objects[otyp].oc_damagetype));
 			*dmgttext = highc(*dmgttext);
 			if (strcmp(dmgttext, "") != 0)
 			{
@@ -900,7 +901,8 @@ register struct obj* obj;
 			/* Damage type - Extra */
 			if (objects[otyp].oc_extra_damagetype != AD_PHYS)
 			{
-				char* dmgttext = get_damage_type_text(objects[otyp].oc_extra_damagetype);
+				char dmgttext[BUFSZ] = "";
+				strcpy(dmgttext, get_damage_type_text(objects[otyp].oc_extra_damagetype));
 				*dmgttext = highc(*dmgttext);
 				if (strcmp(dmgttext, "") != 0)
 				{
@@ -1160,8 +1162,8 @@ register struct obj* obj;
 			|| objects[otyp].oc_hp_bonus > 0
 			|| objects[otyp].oc_bonus_attributes > 0
 			|| objects[otyp].oc_aflags > 0
-			|| objects[otyp].oc_flags & O1_CONFERS_LUCK
-			|| objects[otyp].oc_flags & O1_CONFERS_UNLUCK
+			|| objects[otyp].oc_pflags & P1_CONFERS_LUCK
+			|| objects[otyp].oc_pflags & P1_CONFERS_UNLUCK
 			)
 		{
 			Sprintf(buf, "Conferred powers:");
@@ -1184,6 +1186,86 @@ register struct obj* obj;
 					prop = objects[otyp].oc_hp_bonus;
 				else if (j == 6)
 					prop = objects[otyp].oc_bonus_attributes;
+
+				char pwbuf[BUFSZ] = "";
+				if (j == 1)
+				{
+					if (objects[otyp].oc_pflags & P1_POWER_1_APPLIES_WHEN_CARRIED)
+						Sprintf(eos(pwbuf), " when carried");
+					else
+						Sprintf(eos(pwbuf), " when %s", is_weapon(obj)? "wielded" : "worn");
+
+					if (objects[otyp].oc_pflags & P1_POWER_1_APPLIES_TO_ALL_CHARACTERS)
+						Sprintf(eos(pwbuf), " (applies to all)");
+					else if (objects[otyp].oc_pflags & P1_POWER_1_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY)
+						Sprintf(eos(pwbuf), " (applies to inappropriate only)");
+				}
+				else if (j == 2)
+				{
+					if (objects[otyp].oc_pflags & P1_POWER_2_APPLIES_WHEN_CARRIED)
+						Sprintf(eos(pwbuf), " when carried");
+					else
+						Sprintf(eos(pwbuf), " when %s", is_weapon(obj) ? "wielded" : "worn");
+
+					if (objects[otyp].oc_pflags & P1_POWER_2_APPLIES_TO_ALL_CHARACTERS)
+						Sprintf(eos(pwbuf), " (applies to all)");
+					else if (objects[otyp].oc_pflags & P1_POWER_2_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY)
+						Sprintf(eos(pwbuf), " (applies to inappropriate only)");
+				}
+				else if (j == 3)
+				{
+					if (objects[otyp].oc_pflags & P1_POWER_3_APPLIES_WHEN_CARRIED)
+						Sprintf(eos(pwbuf), " when carried");
+					else
+						Sprintf(eos(pwbuf), " when %s", is_weapon(obj) ? "wielded" : "worn");
+
+					if (objects[otyp].oc_pflags & P1_POWER_3_APPLIES_TO_ALL_CHARACTERS)
+						Sprintf(eos(pwbuf), " (applies to all)");
+					else if (objects[otyp].oc_pflags & P1_POWER_3_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY)
+						Sprintf(eos(pwbuf), " (applies to inappropriate only)");
+				}
+				else if (j == 4)
+				{
+					if (objects[otyp].oc_pflags & P1_HP_BONUS_APPLIES_WHEN_CARRIED)
+						Sprintf(eos(pwbuf), " when carried");
+					else
+						Sprintf(eos(pwbuf), " when %s", is_weapon(obj) ? "wielded" : "worn");
+
+					if (objects[otyp].oc_pflags & P1_HP_BONUS_APPLIES_TO_ALL_CHARACTERS)
+						Sprintf(eos(pwbuf), " (applies to all)");
+					else if (objects[otyp].oc_pflags & P1_HP_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY)
+						Sprintf(eos(pwbuf), " (applies to inappropriate only)");
+					else if (objects[otyp].oc_pflags & P1_HP_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS)
+						Sprintf(eos(pwbuf), " (negative to inappropriate)");
+				}
+				else if (j == 5)
+				{
+					if (objects[otyp].oc_pflags & P1_MANA_BONUS_APPLIES_WHEN_CARRIED)
+						Sprintf(eos(pwbuf), " when carried");
+					else
+						Sprintf(eos(pwbuf), " when %s", is_weapon(obj) ? "wielded" : "worn");
+
+					if (objects[otyp].oc_pflags & P1_MANA_BONUS_APPLIES_TO_ALL_CHARACTERS)
+						Sprintf(eos(pwbuf), " (applies to all)");
+					else if (objects[otyp].oc_pflags & P1_MANA_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY)
+						Sprintf(eos(pwbuf), " (applies to inappropriate only)");
+					else if (objects[otyp].oc_pflags & P1_MANA_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS)
+						Sprintf(eos(pwbuf), " (negative to inappropriate)");
+				}
+				else if (j == 6)
+				{
+					if (objects[otyp].oc_pflags & P1_ATTRIBUTE_BONUS_APPLIES_WHEN_CARRIED)
+						Sprintf(eos(pwbuf), " when carried");
+					else
+						Sprintf(eos(pwbuf), " when %s", is_weapon(obj) ? "wielded" : "worn");
+
+					if (objects[otyp].oc_pflags & P1_ATTRIBUTE_BONUS_APPLIES_TO_ALL_CHARACTERS)
+						Sprintf(eos(pwbuf), " (applies to all)");
+					else if (objects[otyp].oc_pflags & P1_ATTRIBUTE_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY)
+						Sprintf(eos(pwbuf), " (applies to inappropriate only)");
+					else if (objects[otyp].oc_pflags & P1_ATTRIBUTE_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS)
+						Sprintf(eos(pwbuf), " (negative to inappropriate)");
+				}
 
 				if (prop > 0)
 				{
@@ -1208,7 +1290,7 @@ register struct obj* obj;
 					}
 					else if(j == 4)
 					{
-						if (objects[otyp].oc_flags & O1_MANA_PERCENTAGE_BONUS)
+						if (objects[otyp].oc_pflags & P1_MANA_PERCENTAGE_BONUS)
 						{
 							Sprintf(buf2, "Mana pool is increased by %d%%", prop);
 						}
@@ -1219,7 +1301,7 @@ register struct obj* obj;
 					}
 					else if (j == 5)
 					{
-						if (objects[otyp].oc_flags & O1_HP_PERCENTAGE_BONUS)
+						if (objects[otyp].oc_pflags & P1_HP_PERCENTAGE_BONUS)
 						{
 							Sprintf(buf2, "Maximum hit points are increased by %d%%", prop);
 						}
@@ -1359,7 +1441,7 @@ register struct obj* obj;
 							if (strcmp(buf2, "") != 0) // Something else than ""
 							{
 								Sprintf(buf3, " %2d - ", powercnt);
-								Sprintf(buf, "%s%s", buf3, buf2);
+								Sprintf(buf, "%s%s%s", buf3, buf2, pwbuf);
 								txt = buf;
 								putstr(datawin, 0, txt);
 							}
@@ -1371,7 +1453,7 @@ register struct obj* obj;
 					{
 						if (strcmp(buf2, "") != 0) // Something else than ""
 						{
-							Sprintf(buf, "%s%s", buf3, buf2);
+							Sprintf(buf, "%s%s%s", buf3, buf2, pwbuf);
 							txt = buf;
 							putstr(datawin, 0, txt);
 						}
@@ -1380,17 +1462,43 @@ register struct obj* obj;
 			}
 
 			/* Power-like flags here */
-			if (objects[otyp].oc_flags & O1_CONFERS_LUCK)
+			if (objects[otyp].oc_pflags & P1_CONFERS_LUCK)
 			{
+				char pwbuf[BUFSZ] = "";
+				if (objects[otyp].oc_pflags & P1_LUCK_APPLIES_WHEN_CARRIED)
+					Sprintf(eos(pwbuf), " when carried");
+				else
+					Sprintf(eos(pwbuf), " when %s", is_weapon(obj) ? "wielded" : "worn");
+
+				if (objects[otyp].oc_pflags & P1_LUCK_APPLIES_TO_ALL_CHARACTERS)
+					Sprintf(eos(pwbuf), " (applies to all)");
+				else if (objects[otyp].oc_pflags & P1_LUCK_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY)
+					Sprintf(eos(pwbuf), " (applies to inappropriate only)");
+				else if (objects[otyp].oc_pflags & P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS)
+					Sprintf(eos(pwbuf), " (negative to inappropriate)");
+
 				powercnt++;
-				Sprintf(buf, " %2d - Confers luck", powercnt);
+				Sprintf(buf, " %2d - Confers luck%s", powercnt, pwbuf);
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
-			if (objects[otyp].oc_flags & O1_CONFERS_UNLUCK)
+			if (objects[otyp].oc_pflags & P1_CONFERS_UNLUCK)
 			{
+				char pwbuf[BUFSZ] = "";
+				if (objects[otyp].oc_pflags & P1_LUCK_APPLIES_WHEN_CARRIED)
+					Sprintf(eos(pwbuf), " when carried");
+				else
+					Sprintf(eos(pwbuf), " when %s", is_weapon(obj) ? "wielded" : "worn");
+
+				if (objects[otyp].oc_pflags & P1_LUCK_APPLIES_TO_ALL_CHARACTERS)
+					Sprintf(eos(pwbuf), " (applies to all)");
+				else if (objects[otyp].oc_pflags & P1_LUCK_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY)
+					Sprintf(eos(pwbuf), " (applies to inappropriate only)");
+				else if (objects[otyp].oc_pflags & P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS)
+					Sprintf(eos(pwbuf), " (negative to inappropriate)");
+
 				powercnt++;
-				Sprintf(buf, " %2d - Confers bad luck", powercnt);
+				Sprintf(buf, " %2d - Confers bad luck%s", powercnt, pwbuf);
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
@@ -1826,7 +1934,7 @@ register struct obj* obj;
 
 
 		/* Item properties */
-		if (objects[otyp].oc_flags & ~(O1_THROWN_WEAPON_ONLY | O1_MELEE_AND_THROWN_WEAPON | O1_CONFERS_LUCK | O1_CONFERS_UNLUCK
+		if (objects[otyp].oc_flags & ~(O1_THROWN_WEAPON_ONLY | O1_MELEE_AND_THROWN_WEAPON
 			| O1_WAND_LIKE_TOOL | O1_NON_SPELL_SPELLBOOK | O1_EDIBLE_NONFOOD))
 		{
 			int powercnt = 0;
@@ -1861,13 +1969,6 @@ register struct obj* obj;
 			{
 				powercnt++;
 				Sprintf(buf, " %2d - Cold resistant", powercnt);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
-			if (objects[otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED)
-			{
-				powercnt++;
-				Sprintf(buf, " %2d - Confers powers when carried", powercnt);
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
@@ -1990,7 +2091,7 @@ register struct obj* obj;
 		txt = buf;
 		putstr(datawin, 0, txt);
 
-		char* alingstr = align_str(artilist[obj->oartifact].alignment);
+		const char* alingstr = align_str(artilist[obj->oartifact].alignment);
 		powercnt++;
 		Sprintf(buf, " %2d - Alignment is %s", powercnt, alingstr);
 		txt = buf;
@@ -2014,23 +2115,24 @@ register struct obj* obj;
 
 		if (artilist[obj->oartifact].attk.damd != 0)
 		{
-			char* dmgttext = get_damage_type_text(artilist[obj->oartifact].attk.adtyp);
-			*dmgttext = highc(*dmgttext);
+			char dmgttext[BUFSZ] = "";
+			strcpy(dmgttext, get_damage_type_text(artilist[obj->oartifact].attk.adtyp));
+
+			powercnt++;
+			Sprintf(buf, " %2d - Artifact damage type is %s damage", powercnt, dmgttext);
+			txt = buf;
+			putstr(datawin, 0, txt);
 
 			char dmgbuf[BUFSIZ] = "";
 			if (artilist[obj->oartifact].attk.damd > 0)
 			{
 				Sprintf(dmgbuf, "Artifact damage bonus is 1d%d", artilist[obj->oartifact].attk.damd);
-				if (strcmp(dmgttext, "") != 0)
-				{
-					Sprintf(eos(dmgbuf), " (%s damage)", dmgttext);
-				}
 			}
-			else if (artilist[obj->oartifact].attk.damd == ART_DOUBLE_DAMAGE)
+			else if (artilist[obj->oartifact].attk.damd == ARTDMG_DOUBLE_DAMAGE)
 				Sprintf(dmgbuf, "Artifact deals double normal damage");
-			else if (artilist[obj->oartifact].attk.damd == ART_TRIPLE_DAMAGE)
+			else if (artilist[obj->oartifact].attk.damd == ARTDMG_TRIPLE_DAMAGE)
 				Sprintf(dmgbuf, "Artifact deals triple normal damage");
-			else if (artilist[obj->oartifact].attk.damd == ART_QUADRUPLE_DAMAGE)
+			else if (artilist[obj->oartifact].attk.damd == ARTDMG_QUADRUPLE_DAMAGE)
 				Sprintf(dmgbuf, "Artifact deals quadruple normal damage");
 
 			powercnt++;
@@ -2048,7 +2150,8 @@ register struct obj* obj;
 
 		if (artilist[obj->oartifact].defn.adtyp > 0)
 		{
-			char* defensetext = get_defense_type_text(artilist[obj->oartifact].defn.adtyp);
+			char defensetext[BUFSZ] = "";
+			strcpy(defensetext, get_defense_type_text(artilist[obj->oartifact].defn.adtyp));
 			*defensetext = highc(*defensetext);
 
 			powercnt++;
@@ -2061,7 +2164,8 @@ register struct obj* obj;
 		}
 		if (artilist[obj->oartifact].cary.adtyp > 0)
 		{
-			char* defensetext = get_defense_type_text(artilist[obj->oartifact].cary.adtyp);
+			char defensetext[BUFSZ] = "";
+			strcpy(defensetext, get_defense_type_text(artilist[obj->oartifact].cary.adtyp));
 			*defensetext = highc(*defensetext);
 
 			powercnt++;
@@ -2074,9 +2178,9 @@ register struct obj* obj;
 			char invoketext[BUFSIZ] = "";
 			if (artilist[obj->oartifact].inv_prop > LAST_PROP)
 			{
-				char* invprop = get_artifact_invoke_name(artilist[obj->oartifact].inv_prop);
-				*invprop = highc(*invprop);
+				const char* invprop = get_artifact_invoke_name(artilist[obj->oartifact].inv_prop);
 				strcpy(invoketext, invprop);
+				*invoketext = highc(*invoketext);
 			}
 			else
 			{

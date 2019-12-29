@@ -371,34 +371,41 @@ struct objclass {
     schar oc_subtyp;		 /* armors: armor category, weapons: weapon category, miscellaneous magic items: subclass, etc.*/
 	schar oc_skill;			 /* Skills of weapons, spellbooks, tools, gems */
 	uchar oc_oprop, oc_oprop2, oc_oprop3; /* properties (invis, &c.) conveyed */
-	unsigned long pflags;	 /* Power and property flags */
+	unsigned long oc_pflags;	 /* Power and property flags */
 
-#define P1_NONE												0x00000000
-#define P1_POWER_1_APPLIES_TO_ALL_CHARACTERS				0x00000001  /* Do not use with WARN_OF_XXXX powers */
-#define P1_POWER_1_APPLIES_TO_INAPPROPRIATE_CHARACTERS		0x00000002  /* Not implemented */
-#define P1_POWER_1_APPLIES_WHEN_CARRIED						0x00000004  /* Not implemented */
-#define P1_POWER_2_APPLIES_TO_ALL_CHARACTERS				0x00000008  /* Do not use with WARN_OF_XXXX powers */
-#define P1_POWER_2_APPLIES_TO_INAPPROPRIATE_CHARACTERS		0x00000010  /* Not implemented */
-#define P1_POWER_2_APPLIES_WHEN_CARRIED						0x00000020  /* Not implemented */
-#define P1_POWER_3_APPLIES_TO_ALL_CHARACTERS				0x00000040  /* Do not use with WARN_OF_XXXX powers */
-#define P1_POWER_3_APPLIES_TO_INAPPROPRIATE_CHARACTERS		0x00000080  /* Not implemented */
-#define P1_POWER_3_APPLIES_WHEN_CARRIED						0x00000100  /* Not implemented */
-#define P1_HP_BONUS_APPLIES_TO_ALL_CHARACTERS				0x00000200  
-#define P1_HP_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS		0x00000400  /* Not implemented */
-#define P1_HP_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS	0x00000800  /* Not implemented */
-#define P1_HP_BONUS_APPLIES_WHEN_CARRIED					0x00001000  /* Not implemented */
-#define P1_MANA_BONUS_APPLIES_TO_ALL_CHARACTERS				0x00002000  
-#define P1_MANA_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS	0x00004000  /* Not implemented */
-#define P1_MANA_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS	0x00008000  /* Not implemented */
-#define P1_MANA_BONUS_APPLIES_WHEN_CARRIED					0x00010000  /* Not implemented */
-#define P1_ATTRIBUTE_BONUS_APPLIES_TO_ALL_CHARACTERS		0x00020000 
-#define P1_ATTRIBUTE_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS	0x00040000  /* Not implemented */
-#define P1_ATTRIBUTE_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS	0x00080000  /* Not implemented */
-#define P1_ATTRIBUTE_APPLIES_WHEN_CARRIED					0x00100000  /* Not implemented */
-#define P1_LUCK_APPLIES_TO_ALL_CHARACTERS					0x00200000 
-#define P1_LUCK_APPLIES_TO_INAPPROPRIATE_CHARACTERS			0x00400000  /* Not implemented */
-#define P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS		0x00800000  /* Not implemented */
-#define P1_LUCK_APPLIES_WHEN_CARRIED						0x01000000  /* Not implemented */
+#define P1_NONE													0x00000000
+#define P1_POWER_1_APPLIES_TO_ALL_CHARACTERS					0x00000001  /* Do not use with WARN_OF_XXXX powers */
+#define P1_POWER_1_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY		0x00000002  /* only */
+#define P1_POWER_1_APPLIES_WHEN_CARRIED							0x00000004 
+#define P1_POWER_2_APPLIES_TO_ALL_CHARACTERS					0x00000008  /* Do not use with WARN_OF_XXXX powers */
+#define P1_POWER_2_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY		0x00000010  
+#define P1_POWER_2_APPLIES_WHEN_CARRIED							0x00000020  
+#define P1_POWER_3_APPLIES_TO_ALL_CHARACTERS					0x00000040  /* Do not use with WARN_OF_XXXX powers */
+#define P1_POWER_3_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY		0x00000080  
+#define P1_POWER_3_APPLIES_WHEN_CARRIED							0x00000100  
+#define P1_HP_BONUS_APPLIES_TO_ALL_CHARACTERS					0x00000200  
+#define P1_HP_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY	0x00000400  
+#define P1_HP_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS		0x00000800  
+#define P1_HP_BONUS_APPLIES_WHEN_CARRIED						0x00001000  
+#define P1_MANA_BONUS_APPLIES_TO_ALL_CHARACTERS					0x00002000  
+#define P1_MANA_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY	0x00004000  
+#define P1_MANA_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS		0x00008000  
+#define P1_MANA_BONUS_APPLIES_WHEN_CARRIED						0x00010000  
+#define P1_ATTRIBUTE_BONUS_APPLIES_TO_ALL_CHARACTERS			0x00020000 
+#define P1_ATTRIBUTE_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY	0x00040000  
+#define P1_ATTRIBUTE_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS	0x00080000  
+#define P1_ATTRIBUTE_BONUS_APPLIES_WHEN_CARRIED					0x00100000  
+#define P1_LUCK_APPLIES_TO_ALL_CHARACTERS						0x00200000 
+#define P1_LUCK_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY		0x00400000  
+#define P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS			0x00800000  
+#define P1_LUCK_APPLIES_WHEN_CARRIED							0x01000000  
+/* free bit */
+/* free bit */
+/* free bit */
+#define P1_CONFERS_LUCK											0x10000000			/* Adds one positive luck bonus; these need to be flags instead of props because they stack */
+#define P1_CONFERS_UNLUCK										0x20000000			/* Adds one negative luck bonus (the same as cursed luckstone) */
+#define P1_MANA_PERCENTAGE_BONUS								0x40000000
+#define P1_HP_PERCENTAGE_BONUS									0x80000000
 
 
 	char  oc_class; /* object class (enum obj_class_types) */
@@ -635,15 +642,15 @@ struct objclass {
 
 #define O1_EDIBLE_NONFOOD					0x00008000
 
-#define O1_MANA_PERCENTAGE_BONUS			0x00010000
-#define O1_HP_PERCENTAGE_BONUS				0x00020000
-#define O1_BECOMES_CURSED_WHEN_WORN			0x00040000
-#define O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED 0x00080000
-#define O1_CANNOT_BE_DROPPED_IF_CURSED		0x00100000
+#define O1_BECOMES_CURSED_WHEN_WORN							0x00010000
+#define O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED		0x00020000
+#define O1_CANNOT_BE_DROPPED_IF_CURSED						0x00040000
 
-#define O1_CONFERS_LUCK						0x00200000			/* Adds one positive luck bonus; these need to be flags instead of props because they stack */
-#define O1_CONFERS_UNLUCK					0x00400000			/* Adds one negative luck bonus (the same as cursed luckstone) */
-#define O1_CONFERS_POWERS_WHEN_CARRIED		0x00800000
+#define O1_FLICKERS_WHEN_MONSTERS_DETECTED					0x00080000
+#define O1_OFLAG_POWERS_APPLY_TO_ALL_CHARACTERS				0x00100000
+#define O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY	0x00200000
+#define O1_OFLAG_POWERS_APPLY_WHEN_CARRIED					0x00400000
+	/* free bit */
 
 #define O1_THROWN_WEAPON_ONLY				0x01000000			/* says "Thrown weapon" instead of "Melee weapon", default range is larger, can use throwrange data value, gets penalties in melee combat */
 #define O1_MELEE_AND_THROWN_WEAPON			0x02000000			/* says "Melee and thrown weapon" instead of "Melee weapon", default range is larger, can use throwrange data value */

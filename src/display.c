@@ -1337,119 +1337,106 @@ see_monsters()
 	struct obj* uitem;
  	for (uitem = invent; uitem; uitem = uitem->nobj)
 	{
-		if (!object_uses_spellbook_wand_flags_and_properties(uitem)
-			&& (
-			(uitem == uwep && (is_shield(uitem) || is_weapon(uitem)))
-				|| uitem == uarm
-				|| uitem == uarmc
-				|| uitem == uarmh
-				|| (uitem == uarms && (is_shield(uitem) || is_weapon(uitem)))
-				|| uitem == uarmg
-				|| uitem == uarmf
-				|| uitem == uarmu
-				|| uitem == uarmo
-				|| uitem == uarmb
-				|| uitem == umisc
-				|| uitem == umisc2
-				|| uitem == umisc3
-				|| uitem == umisc4
-				|| uitem == umisc5
-				|| uitem == uamul
-				|| uitem == uright
-				|| uitem == uleft
-				|| objects[uitem->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED))
+		if (!object_uses_spellbook_wand_flags_and_properties(uitem))
 		{
 			int otyp = uitem->otyp;
-			if (inappropriate_character_type(uitem))
+			boolean inappr = inappropriate_character_type(uitem);
+			boolean worn = is_obj_worn(uitem);
+
+			/* Note: all flickering objects must be wielded for them to do so -- JG */
+			if ((worn || (!worn && (objects[otyp].oc_pflags & O1_OFLAG_POWERS_APPLY_WHEN_CARRIED)))
+				&& ((!inappr && !(objects[otyp].oc_pflags & (O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
+					|| (objects[otyp].oc_flags & O1_OFLAG_POWERS_APPLY_TO_ALL_CHARACTERS)
+					|| (inappr && (objects[otyp].oc_pflags & (O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
+					)
+				)
 			{
-				continue;
-			}
+				if (uitem->oartifact
+					&& (uitem->oartifact == ART_STING
+						|| uitem->oartifact == ART_ORCRIST
+						|| uitem->oartifact == ART_GRIMTOOTH
+						))
+				{
+					int old_count = uitem->detectioncount;
+					if (new_warn_obj_cnt != uitem->detectioncount)
+						Sting_effects(uitem, new_warn_obj_cnt);
 
-			if (uitem->oartifact
-				&& (uitem->oartifact == ART_STING
-					|| uitem->oartifact == ART_ORCRIST
-					|| uitem->oartifact == ART_GRIMTOOTH
-					))
-			{
-				int old_count = uitem->detectioncount;
-				if (new_warn_obj_cnt != uitem->detectioncount)
-					Sting_effects(uitem, new_warn_obj_cnt);
+					uitem->detectioncount = new_warn_obj_cnt;
+				}
+				else if ((objects[otyp].oc_flags & O1_FLICKERS_WHEN_MONSTERS_DETECTED) && item_has_specific_monster_warning(uitem))
+				{
+					int old_count = uitem->detectioncount;
+					int new_count = 0;
+					if (objects[otyp].oc_oprop == WARN_ORC
+						|| objects[otyp].oc_oprop2 == WARN_ORC
+						|| objects[otyp].oc_oprop3 == WARN_ORC)
+						new_count += new_orc_warn_obj_cnt;
 
-				uitem->detectioncount = new_warn_obj_cnt;
-			}
-			else if (item_has_specific_monster_warning(uitem))
-			{
-				int old_count = uitem->detectioncount;
-				int new_count = 0;
-				if (objects[otyp].oc_oprop == WARN_ORC
-					|| objects[otyp].oc_oprop2 == WARN_ORC
-					|| objects[otyp].oc_oprop3 == WARN_ORC)
-					new_count += new_orc_warn_obj_cnt;
+					if (objects[otyp].oc_oprop == WARN_DEMON
+						|| objects[otyp].oc_oprop2 == WARN_DEMON
+						|| objects[otyp].oc_oprop3 == WARN_DEMON)
+						new_count += new_demon_warn_obj_cnt;
 
-				if (objects[otyp].oc_oprop == WARN_DEMON
-					|| objects[otyp].oc_oprop2 == WARN_DEMON
-					|| objects[otyp].oc_oprop3 == WARN_DEMON)
-					new_count += new_demon_warn_obj_cnt;
+					if (objects[otyp].oc_oprop == WARN_UNDEAD
+						|| objects[otyp].oc_oprop2 == WARN_UNDEAD
+						|| objects[otyp].oc_oprop3 == WARN_UNDEAD)
+						new_count += new_undead_warn_obj_cnt;
 
-				if (objects[otyp].oc_oprop == WARN_UNDEAD
-					|| objects[otyp].oc_oprop2 == WARN_UNDEAD
-					|| objects[otyp].oc_oprop3 == WARN_UNDEAD)
-					new_count += new_undead_warn_obj_cnt;
+					if (objects[otyp].oc_oprop == WARN_TROLL
+						|| objects[otyp].oc_oprop2 == WARN_TROLL
+						|| objects[otyp].oc_oprop3 == WARN_TROLL)
+						new_count += new_troll_warn_obj_cnt;
 
-				if (objects[otyp].oc_oprop == WARN_TROLL
-					|| objects[otyp].oc_oprop2 == WARN_TROLL
-					|| objects[otyp].oc_oprop3 == WARN_TROLL)
-					new_count += new_troll_warn_obj_cnt;
+					if (objects[otyp].oc_oprop == WARN_GIANT
+						|| objects[otyp].oc_oprop2 == WARN_GIANT
+						|| objects[otyp].oc_oprop3 == WARN_GIANT)
+						new_count += new_giant_warn_obj_cnt;
 
-				if (objects[otyp].oc_oprop == WARN_GIANT
-					|| objects[otyp].oc_oprop2 == WARN_GIANT
-					|| objects[otyp].oc_oprop3 == WARN_GIANT)
-					new_count += new_giant_warn_obj_cnt;
+					if (objects[otyp].oc_oprop == WARN_DRAGON
+						|| objects[otyp].oc_oprop2 == WARN_DRAGON
+						|| objects[otyp].oc_oprop3 == WARN_DRAGON)
+						new_count += new_dragon_warn_obj_cnt;
 
-				if (objects[otyp].oc_oprop == WARN_DRAGON
-					|| objects[otyp].oc_oprop2 == WARN_DRAGON
-					|| objects[otyp].oc_oprop3 == WARN_DRAGON)
-					new_count += new_dragon_warn_obj_cnt;
+					if (objects[otyp].oc_oprop == WARN_ELF
+						|| objects[otyp].oc_oprop2 == WARN_ELF
+						|| objects[otyp].oc_oprop3 == WARN_ELF)
+						new_count += new_elf_warn_obj_cnt;
 
-				if (objects[otyp].oc_oprop == WARN_ELF
-					|| objects[otyp].oc_oprop2 == WARN_ELF
-					|| objects[otyp].oc_oprop3 == WARN_ELF)
-					new_count += new_elf_warn_obj_cnt;
+					if (objects[otyp].oc_oprop == WARN_DWARF
+						|| objects[otyp].oc_oprop2 == WARN_DWARF
+						|| objects[otyp].oc_oprop3 == WARN_DWARF)
+						new_count += new_dwarf_warn_obj_cnt;
 
-				if (objects[otyp].oc_oprop == WARN_DWARF
-					|| objects[otyp].oc_oprop2 == WARN_DWARF
-					|| objects[otyp].oc_oprop3 == WARN_DWARF)
-					new_count += new_dwarf_warn_obj_cnt;
+					if (objects[otyp].oc_oprop == WARN_GNOLL
+						|| objects[otyp].oc_oprop2 == WARN_GNOLL
+						|| objects[otyp].oc_oprop3 == WARN_GNOLL)
+						new_count += new_gnoll_warn_obj_cnt;
 
-				if (objects[otyp].oc_oprop == WARN_GNOLL
-					|| objects[otyp].oc_oprop2 == WARN_GNOLL
-					|| objects[otyp].oc_oprop3 == WARN_GNOLL)
-					new_count += new_gnoll_warn_obj_cnt;
+					if (objects[otyp].oc_oprop == WARN_OGRE
+						|| objects[otyp].oc_oprop2 == WARN_OGRE
+						|| objects[otyp].oc_oprop3 == WARN_OGRE)
+						new_count += new_ogre_warn_obj_cnt;
 
-				if (objects[otyp].oc_oprop == WARN_OGRE
-					|| objects[otyp].oc_oprop2 == WARN_OGRE
-					|| objects[otyp].oc_oprop3 == WARN_OGRE)
-					new_count += new_ogre_warn_obj_cnt;
+					if (objects[otyp].oc_oprop == WARN_HUMAN
+						|| objects[otyp].oc_oprop2 == WARN_HUMAN
+						|| objects[otyp].oc_oprop3 == WARN_HUMAN)
+						new_count += new_human_warn_obj_cnt;
 
-				if (objects[otyp].oc_oprop == WARN_HUMAN
-					|| objects[otyp].oc_oprop2 == WARN_HUMAN
-					|| objects[otyp].oc_oprop3 == WARN_HUMAN)
-					new_count += new_human_warn_obj_cnt;
+					if (objects[otyp].oc_oprop == WARN_LYCANTHROPE
+						|| objects[otyp].oc_oprop2 == WARN_LYCANTHROPE
+						|| objects[otyp].oc_oprop3 == WARN_LYCANTHROPE)
+						new_count += new_were_warn_obj_cnt;
 
-				if (objects[otyp].oc_oprop == WARN_LYCANTHROPE
-					|| objects[otyp].oc_oprop2 == WARN_LYCANTHROPE
-					|| objects[otyp].oc_oprop3 == WARN_LYCANTHROPE)
-					new_count += new_were_warn_obj_cnt;
+					if (objects[otyp].oc_oprop == WARN_ANGEL
+						|| objects[otyp].oc_oprop2 == WARN_ANGEL
+						|| objects[otyp].oc_oprop3 == WARN_ANGEL)
+						new_count += new_angel_warn_obj_cnt;
 
-				if (objects[otyp].oc_oprop == WARN_ANGEL
-					|| objects[otyp].oc_oprop2 == WARN_ANGEL
-					|| objects[otyp].oc_oprop3 == WARN_ANGEL)
-					new_count += new_angel_warn_obj_cnt;
+					if (new_count != uitem->detectioncount)
+						Sting_effects(uitem, new_count);
 
-				if (new_count != uitem->detectioncount)
-					Sting_effects(uitem, new_count);
-
-				uitem->detectioncount = new_count;
+					uitem->detectioncount = new_count;
+				}
 			}
 		}
 	}

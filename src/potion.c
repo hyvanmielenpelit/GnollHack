@@ -339,36 +339,24 @@ toggle_blindness()
 	struct obj* uitem;
 	for (uitem = invent; uitem; uitem = uitem->nobj)
 	{
-		if (!object_uses_spellbook_wand_flags_and_properties(uitem)
-			&& (
-			(uitem == uwep && (is_shield(uitem) || is_weapon(uitem)))
-				|| uitem == uarm
-				|| uitem == uarmc
-				|| uitem == uarmh
-				|| (uitem == uarms && (is_shield(uitem) || is_weapon(uitem)))
-				|| uitem == uarmg
-				|| uitem == uarmf
-				|| uitem == uarmu
-				|| uitem == uarmo
-				|| uitem == uarmb
-				|| uitem == umisc
-				|| uitem == umisc2
-				|| uitem == umisc3
-				|| uitem == umisc4
-				|| uitem == umisc5
-				|| uitem == uamul
-				|| uitem == uright
-				|| uitem == uleft
-				|| objects[uitem->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED))
+		if (!object_uses_spellbook_wand_flags_and_properties(uitem))
 		{
 			int otyp = uitem->otyp;
-			if (inappropriate_character_type(uitem))
+			boolean inappr = inappropriate_character_type(uitem);
+			boolean worn = is_obj_worn(uitem);
+
+			if ((worn || (!worn && (objects[otyp].oc_pflags & O1_OFLAG_POWERS_APPLY_WHEN_CARRIED)))
+				&& ((!inappr && !(objects[otyp].oc_pflags & (O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
+					|| (objects[otyp].oc_flags & O1_OFLAG_POWERS_APPLY_TO_ALL_CHARACTERS)
+					|| (inappr && (objects[otyp].oc_pflags & (O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
+					)
+				)
 			{
-				continue;
-			}
-			if (item_has_specific_monster_warning(uitem) || uitem->oartifact == ART_STING || uitem->oartifact == ART_ORCRIST || uitem->oartifact == ART_GRIMTOOTH)
-			{
-				Sting_effects(uitem, -1);
+				if (((objects[otyp].oc_flags & O1_FLICKERS_WHEN_MONSTERS_DETECTED) && item_has_specific_monster_warning(uitem))
+					|| uitem->oartifact == ART_STING || uitem->oartifact == ART_ORCRIST || uitem->oartifact == ART_GRIMTOOTH)
+				{
+					Sting_effects(uitem, -1);
+				}
 			}
 		}
 	}

@@ -549,7 +549,8 @@ boolean on, silently;
             break;
         /* properties which have no effect for monsters */
         case CLAIRVOYANT:
-        case STEALTH:
+		case BLOCKS_CLAIRVOYANCE:
+		case STEALTH:
 		case MAGICAL_KICKING:
 		case DETECT_MONSTERS:
 		case BLIND_TELEPAT:

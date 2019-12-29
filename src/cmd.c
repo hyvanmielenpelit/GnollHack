@@ -3278,7 +3278,9 @@ int final;
         you_have("automatic searching", from_what(SEARCHING));
     if (Clairvoyant)
         you_are("clairvoyant", from_what(CLAIRVOYANT));
-    if (Infravision)
+	if (Blocks_Clairvoyance)
+		you_are("blocking clairvoyance", from_what(BLOCKS_CLAIRVOYANCE));
+	if (Infravision)
         you_have("infravision", from_what(INFRAVISION));
     if (Detect_monsters)
         you_are("sensing the presence of monsters", "");

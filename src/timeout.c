@@ -123,6 +123,7 @@ const struct propname {
 	{ MAGICAL_KICKING, "magical kicking", "magical kicking" },
 	{ BLOCKS_INVISIBILITY, "blocks invisibility", "blocks invisibility" },
 	{ BLOCKS_BLINDNESS, "blocks blindness", "blocks blindness"  },
+	{ BLOCKS_CLAIRVOYANCE, "blocks clairvoyance", "blocks clairvoyance" },
 	{ LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
 	{  0, 0 },
 };
@@ -2136,7 +2137,8 @@ void
 begin_timestoptimer(duration)
 long duration;
 {
-	if (start_timer(duration, TIMER_GLOBAL, TIME_RESTART, &zeroany))
+	anything any = zeroany;
+	if (start_timer(duration, TIMER_GLOBAL, TIME_RESTART, &any))
 	{
 		//Success
 	}

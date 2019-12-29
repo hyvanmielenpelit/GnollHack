@@ -1513,57 +1513,44 @@ int montype;
 	//Add then extrinsics from all carried items
 	for (uitem = invent; uitem; uitem = uitem->nobj)
 	{
-		if (!object_uses_spellbook_wand_flags_and_properties(uitem)
-			&& (
-			(uitem == uwep && (is_shield(uitem) || is_weapon(uitem)))
-				|| uitem == uarm
-				|| uitem == uarmc
-				|| uitem == uarmh
-				|| (uitem == uarms && (is_shield(uitem) || is_weapon(uitem)))
-				|| uitem == uarmg
-				|| uitem == uarmf
-				|| uitem == uarmu
-				|| uitem == uarmo
-				|| uitem == uarmb
-				|| uitem == umisc
-				|| uitem == umisc2
-				|| uitem == umisc3
-				|| uitem == umisc4
-				|| uitem == umisc5
-				|| uitem == uamul
-				|| uitem == uright
-				|| uitem == uleft
-				|| objects[uitem->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED))
+		if (!object_uses_spellbook_wand_flags_and_properties(uitem))
 		{
 			int otyp = uitem->otyp;
-			if (inappropriate_character_type(uitem))
-			{
-				continue;
-			}
-			if (objects[otyp].oc_flags3 & O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS)
-			{
-				if (objects[otyp].oc_target_permissions == ALL_TARGETS)
-					return TRUE;
+			boolean inappr = inappropriate_character_type(uitem);
+			boolean worn = is_obj_worn(uitem);
 
-				if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M1_FLAG)
+			if ((worn || (!worn && (objects[otyp].oc_pflags & O1_OFLAG_POWERS_APPLY_WHEN_CARRIED)))
+				&& ((!inappr && !(objects[otyp].oc_pflags & (O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
+					|| (objects[otyp].oc_flags & O1_OFLAG_POWERS_APPLY_TO_ALL_CHARACTERS)
+					|| (inappr && (objects[otyp].oc_pflags & (O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
+					)
+				)
+			{
+				if (objects[otyp].oc_flags3 & O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS)
 				{
-					if (mons[montype].mflags1 & objects[otyp].oc_target_permissions)
+					if (objects[otyp].oc_target_permissions == ALL_TARGETS)
 						return TRUE;
-				}
-				else if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M2_FLAG)
-				{
-					if (mons[montype].mflags2 & objects[otyp].oc_target_permissions)
-						return TRUE;
-				}
-				else if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M3_FLAG)
-				{
-					if (mons[montype].mflags3 & objects[otyp].oc_target_permissions)
-						return TRUE;
-				}
-				else
-				{
-					if (mons[montype].mlet == objects[otyp].oc_target_permissions)
-						return TRUE;
+
+					if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M1_FLAG)
+					{
+						if (mons[montype].mflags1 & objects[otyp].oc_target_permissions)
+							return TRUE;
+					}
+					else if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M2_FLAG)
+					{
+						if (mons[montype].mflags2 & objects[otyp].oc_target_permissions)
+							return TRUE;
+					}
+					else if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M3_FLAG)
+					{
+						if (mons[montype].mflags3 & objects[otyp].oc_target_permissions)
+							return TRUE;
+					}
+					else
+					{
+						if (mons[montype].mlet == objects[otyp].oc_target_permissions)
+							return TRUE;
+					}
 				}
 			}
 
@@ -1583,60 +1570,47 @@ int montype;
 	//Add then extrinsics from all carried items
 	for (uitem = invent; uitem; uitem = uitem->nobj)
 	{
-		if (!object_uses_spellbook_wand_flags_and_properties(uitem)
-			&& (
-			(uitem == uwep && (is_shield(uitem) || is_weapon(uitem)))
-				|| uitem == uarm
-				|| uitem == uarmc
-				|| uitem == uarmh
-				|| (uitem == uarms && (is_shield(uitem) || is_weapon(uitem)))
-				|| uitem == uarmg
-				|| uitem == uarmf
-				|| uitem == uarmu
-				|| uitem == uarmo
-				|| uitem == uarmb
-				|| uitem == umisc
-				|| uitem == umisc2
-				|| uitem == umisc3
-				|| uitem == umisc4
-				|| uitem == umisc5
-				|| uitem == uamul
-				|| uitem == uright
-				|| uitem == uleft
-				|| objects[uitem->otyp].oc_flags & O1_CONFERS_POWERS_WHEN_CARRIED))
+		if (!object_uses_spellbook_wand_flags_and_properties(uitem))
 		{
 			int otyp = uitem->otyp;
-			if (inappropriate_character_type(uitem))
-			{
-				continue;
-			}
-			if (objects[otyp].oc_flags3 & O3_PREVENTS_SUMMONING_BY_PERMITTED_TARGETS)
-			{
-				if (objects[otyp].oc_target_permissions == ALL_TARGETS)
-					return TRUE;
+			boolean inappr = inappropriate_character_type(uitem);
+			boolean worn = is_obj_worn(uitem);
 
-				if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M1_FLAG)
+			if ((worn || (!worn && (objects[otyp].oc_pflags & O1_OFLAG_POWERS_APPLY_WHEN_CARRIED)))
+				&& ((!inappr && !(objects[otyp].oc_pflags & (O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
+					|| (objects[otyp].oc_flags & O1_OFLAG_POWERS_APPLY_TO_ALL_CHARACTERS)
+					|| (inappr && (objects[otyp].oc_pflags & (O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
+					)
+				)
+			{
+
+				if (objects[otyp].oc_flags3 & O3_PREVENTS_SUMMONING_BY_PERMITTED_TARGETS)
 				{
-					if (mons[montype].mflags1 & objects[otyp].oc_target_permissions)
+					if (objects[otyp].oc_target_permissions == ALL_TARGETS)
 						return TRUE;
-				}
-				else if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M2_FLAG)
-				{
-					if (mons[montype].mflags2 & objects[otyp].oc_target_permissions)
-						return TRUE;
-				}
-				else if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M3_FLAG)
-				{
-					if (mons[montype].mflags3 & objects[otyp].oc_target_permissions)
-						return TRUE;
-				}
-				else
-				{
-					if (mons[montype].mlet == objects[otyp].oc_target_permissions)
-						return TRUE;
+
+					if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M1_FLAG)
+					{
+						if (mons[montype].mflags1 & objects[otyp].oc_target_permissions)
+							return TRUE;
+					}
+					else if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M2_FLAG)
+					{
+						if (mons[montype].mflags2 & objects[otyp].oc_target_permissions)
+							return TRUE;
+					}
+					else if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M3_FLAG)
+					{
+						if (mons[montype].mflags3 & objects[otyp].oc_target_permissions)
+							return TRUE;
+					}
+					else
+					{
+						if (mons[montype].mlet == objects[otyp].oc_target_permissions)
+							return TRUE;
+					}
 				}
 			}
-
 		}
 	}
 

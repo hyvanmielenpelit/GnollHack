@@ -31,9 +31,9 @@ static const char *artifact_names[] = {
 #define     STUN(a,b)   {0,AD_STUN,a,b,0}         /* magical attack */
 /* clang-format on */
 
-#define ART_DOUBLE_DAMAGE -1
-#define ART_TRIPLE_DAMAGE -2
-#define ART_QUADRUPLE_DAMAGE -3
+#define ARTDMG_DOUBLE_DAMAGE -1
+#define ARTDMG_TRIPLE_DAMAGE -2
+#define ARTDMG_QUADRUPLE_DAMAGE -3
 
 #define None (char *)0
 
@@ -92,11 +92,11 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
      *      Sting and Orcrist will warn of M2_ORC monsters.
      */
     A("Orcrist", "ornate runed broadsword", ELVEN_BROADSWORD, ELVEN_BROADSWORD, AF_DFLAG2, SPFX_WARN, SPFX_NONE, M2_ORC,
-      PHYS(5, ART_TRIPLE_DAMAGE), NO_DFNS, NO_CARY, 0, A_CHAOTIC, NON_PM, PM_ELF, 2000L,
+      PHYS(5, ARTDMG_TRIPLE_DAMAGE), NO_DFNS, NO_CARY, 0, A_CHAOTIC, NON_PM, PM_ELF, 2000L,
       CLR_BRIGHT_BLUE, NO_COLOR), /* bright blue is actually light blue */
 
     A("Sting", "ornate runed dagger", ELVEN_RUNEDAGGER, ELVEN_DAGGER, (AF_DFLAG2), SPFX_WARN, SPFX_NONE, M2_ORC,
-		PHYS(5, ART_DOUBLE_DAMAGE), NO_DFNS, NO_CARY, 0, A_CHAOTIC, NON_PM, PM_ELF, 1000L, CLR_BRIGHT_BLUE, NO_COLOR),
+		PHYS(5, ARTDMG_DOUBLE_DAMAGE), NO_DFNS, NO_CARY, 0, A_CHAOTIC, NON_PM, PM_ELF, 1000L, CLR_BRIGHT_BLUE, NO_COLOR),
     /*
      *      Magicbane is a bit different!  Its magic fanfare
      *      unbalances victims in addition to doing some damage.
@@ -106,11 +106,11 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
       3500L, NO_COLOR, NO_COLOR),
 
     A("Frost Brand", "iron-hilted runed long sword", LONG_SWORD, LONG_SWORD, (AF_RESTR | AF_ATTK | AF_DEFN | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED), SPFX_NONE, SPFX_NONE, 0,
-      COLD(5, ART_DOUBLE_DAMAGE), COLD(0, 0), NO_CARY, 0, A_NONE, NON_PM, NON_PM, 3000L,
+      COLD(5, ARTDMG_DOUBLE_DAMAGE), COLD(0, 0), NO_CARY, 0, A_NONE, NON_PM, NON_PM, 3000L,
       NO_COLOR, CLR_WHITE),
 
     A("Fire Brand", "copper-hilted runed long sword", LONG_SWORD, LONG_SWORD, (AF_RESTR | AF_ATTK | AF_DEFN | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED), SPFX_NONE, SPFX_NONE, 0,
-      FIRE(5, ART_DOUBLE_DAMAGE), FIRE(0, 0), NO_CARY, 0, A_NONE, NON_PM, NON_PM, 3000L,
+      FIRE(5, ARTDMG_DOUBLE_DAMAGE), FIRE(0, 0), NO_CARY, 0, A_NONE, NON_PM, NON_PM, 3000L,
       NO_COLOR, CLR_RED),
 
     A("Dragonbane", "mithril-hilted runed broadsword", SWORD_OF_DRAGON_SLAYING, BROADSWORD,
@@ -127,7 +127,7 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
       NO_COLOR, NO_COLOR),
 
     A("Grayswandir", "diamond-encrusted silver saber", SILVER_SABER, SILVER_SABER, (AF_RESTR | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED), SPFX_HALRES, SPFX_NONE, 0,
-      PHYS(5, ART_DOUBLE_DAMAGE), NO_DFNS, NO_CARY, 0, A_LAWFUL, NON_PM, NON_PM, 8000L,
+      PHYS(5, ARTDMG_DOUBLE_DAMAGE), NO_DFNS, NO_CARY, 0, A_LAWFUL, NON_PM, NON_PM, 8000L,
       NO_COLOR, CLR_GRAY),
 
     A("Giantslayer", "ruby-encrusted long sword", SWORD_OF_GIANT_SLAYING, LONG_SWORD, (AF_RESTR | AF_DFLAG2 | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED), SPFX_NONE, SPFX_NONE, M2_GIANT,
@@ -176,11 +176,11 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
      *                        (From Sir W.S. Gilbert's "The Mikado")
      */
     A("Snickersnee", "gold-hilted runed katana", KATANA, KATANA, AF_RESTR, SPFX_NONE, SPFX_NONE, 0,
-		PHYS(0, ART_DOUBLE_DAMAGE), NO_DFNS, NO_CARY,
+		PHYS(0, ARTDMG_DOUBLE_DAMAGE), NO_DFNS, NO_CARY,
       0, A_LAWFUL, PM_SAMURAI, NON_PM, 1200L, NO_COLOR, HI_GOLD),
 
     A("Sunsword", "glowing runed long sword", LONG_SWORD, LONG_SWORD, (AF_RESTR | AF_DFLAG2 | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED), SPFX_NONE, SPFX_NONE, M2_UNDEAD | M2_DEMON,
-      PHYS(5, ART_QUADRUPLE_DAMAGE), DFNS(AD_BLND), NO_CARY, 0, A_LAWFUL, NON_PM, NON_PM, 1500L,
+      PHYS(5, ARTDMG_QUADRUPLE_DAMAGE), DFNS(AD_BLND), NO_CARY, 0, A_LAWFUL, NON_PM, NON_PM, 1500L,
       NO_COLOR, HI_GOLD),
 		  
     A("The One Ring", "plain golden", RIN_SUPREME_POWER, RIN_SUPREME_POWER, (AF_RESTR | AF_INTEL), SPFX_NONE, SPFX_AGGRAVATE_MONSTER | SPFX_UNLUCK, 0,
@@ -199,12 +199,12 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
     A("The Heart of Ahriman", "glowing red jewel", LUCKSTONE, LUCKSTONE,
 		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_FAMOUS), SPFX_NONE, SPFX_STLTH, 0,
       /* this stone does double damage if used as a projectile weapon */
-      PHYS(5, ART_DOUBLE_DAMAGE), NO_DFNS, NO_CARY, LEVITATION, A_NEUTRAL, PM_BARBARIAN,
+      PHYS(5, ARTDMG_DOUBLE_DAMAGE), NO_DFNS, NO_CARY, LEVITATION, A_NEUTRAL, PM_BARBARIAN,
       NON_PM, 2500L, NO_COLOR, CLR_RED),
 
     A("The Sceptre of Might", "diamond-encrusted sceptre", MACE, MACE,
 		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_DALIGN | AF_FAMOUS), SPFX_NONE, SPFX_NONE, 0,
-		PHYS(5, ART_DOUBLE_DAMAGE),
+		PHYS(5, ARTDMG_DOUBLE_DAMAGE),
       DFNS(AD_MAGM), NO_CARY, CONFLICT, A_LAWFUL, PM_CAVEMAN, NON_PM, 2500L,
       NO_COLOR, HI_GOLD),
 
@@ -238,7 +238,7 @@ A("The Palantir of Westernesse",        CRYSTAL_BALL, CRYSTAL_BALL,
 
     A("The Longbow of Diana", "ornamental long bow", LONG_BOW, LONG_BOW,
 		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_FAMOUS), SPFX_REFLECT, SPFX_ESP, 0,
-      PHYS(10, ART_DOUBLE_DAMAGE), NO_DFNS, NO_CARY, CREATE_AMMO, A_CHAOTIC, PM_RANGER, NON_PM,
+      PHYS(10, ARTDMG_DOUBLE_DAMAGE), NO_DFNS, NO_CARY, CREATE_AMMO, A_CHAOTIC, PM_RANGER, NON_PM,
       4000L, NO_COLOR, CLR_MAGENTA),
 
     /* MKoT has an additional carry property if the Key is not cursed (for
