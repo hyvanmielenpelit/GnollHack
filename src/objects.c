@@ -45,7 +45,7 @@ struct monst { struct monst *dummy; };  /* lint: struct obj's union */
 #else /* !OBJECTS_PASS_2_ */
 /* second pass */
 #include "color.h"
-#define COLOR_FIELD(X) X,
+//#define COLOR_FIELD(X) X,
 #endif /* !OBJECTS_PASS_2_ */
 
 /* objects have symbols: ) [ = " ( % ! ? + / $ * ` 0 _ . */
@@ -70,8 +70,8 @@ NEARDATA struct objdescr obj_descr[] =
 /* second pass -- object definitions */
 #define BITS(nmkn,mrg,uskn,ctnr,mgc,chrg,uniq,nwsh,big,tuf,dir,sub,skill,mtrl) \
   nmkn,mrg,uskn,0,mgc,chrg,uniq,nwsh,big,tuf,dir,mtrl,sub,skill /*SCO cpp fodder*/
-#define OBJECT(obj,contentdesc,shortdesc,bits,prp1,prp2,prp3,pflags,sym,prob,multigen,dly,wt,cost,   dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,critpct,   hitbon,mcadj,fixdmgbon,range,  oc1,oc2,oc3,oc4,oc5,oc6,oc7,oc8,  nut,color,  dirsubtype,materials,cooldown,level,  powconfermask,permittedtargets,flags,flags2,flags3) \
-  { 0, 0, (char *) 0, contentdesc, shortdesc, bits, prp1, prp2, prp3, pflags, sym, dly, COLOR_FIELD(color) prob, wt, nut,  \
+#define OBJECT(obj,contentdesc,shortdesc,bits,prp1,prp2,prp3,pflags,sym,prob,multigen,dly,wt,cost,dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,critpct,   hitbon,mcadj,fixdmgbon,range,  oc1,oc2,oc3,oc4,oc5,oc6,oc7,oc8,  nut,color,  dirsubtype,materials,cooldown,level,  powconfermask,permittedtargets,flags,flags2,flags3) \
+  { 0, 0, (char *) 0, contentdesc, shortdesc, bits, prp1, prp2, prp3, pflags, sym, dly, color, prob, wt, nut,  \
     cost, dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, hitbon, mcadj, fixdmgbon, range,   oc1, oc2, oc3, oc4, oc5, oc6, oc7, oc8,   dirsubtype, materials, cooldown, level,  flags,flags2,flags3,powconfermask, permittedtargets, critpct, multigen }
 #ifndef lint
 #define HARDGEM(n) (n >= 8)
@@ -1010,7 +1010,7 @@ BOW("heavy crossbow", None,					1, 0, 1, 10, MULTIGEN_SINGLE, 200, 150,
 	AD_PHYS, 1, 8, 0, 1, 8, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,	0, 0, 6, 24,   0, 0, 0, 0, 0, MULTISHOT_NONE, 0, 0, 0, P1_NONE, MAT_WOOD, WEP_CROSSBOW, P_CROSSBOW, HI_WOOD, O1_NONE, O2_NONE, O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH, PERMITTED_ALL, ALL_TARGETS),
 BOW("repeating crossbow", None,				1, 0, 1, 5, MULTIGEN_SINGLE, 180, 75, 
 	AD_PHYS, 1, 5, 0, 1, 5, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,		-2, 0, 1, 18,  0, 0, 0, 0, 0, MULTISHOT_LAUNCHER_2_NOSKILL, 0, 0, 0, P1_NONE, MAT_WOOD, WEP_REPEATING_CROSSBOW, P_CROSSBOW, HI_WOOD, O1_NONE, O2_NONE, O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH, PERMITTED_ALL, ALL_TARGETS),
-BOW("repeating heavy crossbow", None,		1, 0, 1, 1, MULTIGEN_SINGLE, 360, 1000, 
+BOW("repeating heavy crossbow", None,		1, 0, 1, 1, MULTIGEN_SINGLE, 360, 1000,
 	AD_PHYS, 1, 8, 0, 1, 8, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,	-2, 0, 4, 24,	0, 0, 0, 0, 0, MULTISHOT_LAUNCHER_2_NOSKILL, 0, 0, 0, P1_NONE, MAT_WOOD, WEP_REPEATING_CROSSBOW, P_CROSSBOW, HI_WOOD, O1_NONE, O2_NONE, O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH, PERMITTED_ALL, ALL_TARGETS),
 
 #undef P

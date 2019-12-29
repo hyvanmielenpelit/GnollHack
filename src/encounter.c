@@ -3,6 +3,7 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
+#include <ctype.h>
 
 /* NAMELISTS HERE */
 #define MAX_NAMELIST_NAMES 16
