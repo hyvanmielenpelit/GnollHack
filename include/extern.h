@@ -2497,6 +2497,8 @@ E int FDECL(getspellcooldown, (int));
 E char* FDECL(domatcompname, (struct materialcomponent*));
 E int FDECL(subdirtype2explosiontype, (int));
 E void FDECL(addspellintrinsictimeout, (int));
+E int FDECL(getspellenergycost, (int));
+E int FDECL(get_spellbook_adjusted_mana_cost, (int));
 
 
 /* ### steal.c ### */

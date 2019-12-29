@@ -1049,10 +1049,41 @@ int spell;
 	if (spell < 0)
 		return 0;
 
-	int energy = objects[spellid(spell)].oc_spell_mana_cost;
+	int energy = get_spellbook_adjusted_mana_cost(spellid(spell));
 
 	return energy;
 }
+
+int
+get_spellbook_adjusted_mana_cost(objid)
+int objid;
+{
+	if (objid <= STRANGE_OBJECT || objid >= NUM_OBJECTS)
+		return 0;
+
+	int skill = objects[objid].oc_skill;
+	int skill_level = P_SKILL(skill);
+	int multiplier = 100;
+	switch (skill_level)
+	{
+	case P_BASIC:
+		multiplier = 85;
+		break;
+	case P_SKILLED:
+		multiplier = 70;
+		break;
+	case P_EXPERT:
+		multiplier = 50;
+		break;
+	default:
+		break;
+	}
+
+	int energy = max(2, (objects[objid].oc_spell_mana_cost * multiplier) / 100);
+
+	return energy;
+}
+
 
 
 int
@@ -1165,9 +1196,10 @@ int spell;
 	}
 
 	/* Mana cost*/
-	if (objects[booktype].oc_spell_mana_cost > 0)
+	int manacost = get_spellbook_adjusted_mana_cost(booktype);
+	if (manacost > 0)
 	{
-		Sprintf(buf2, "%d", objects[booktype].oc_spell_mana_cost);
+		Sprintf(buf2, "%d", manacost);
 	}
 	else
 	{
