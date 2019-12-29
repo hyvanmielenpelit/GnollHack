@@ -2081,8 +2081,11 @@ boolean atme;
         return 0;
     }
 
+
     /* gain skill for successful cast */
-	if(rn2(100) < spellskillchance(spell))
+	if (spellskillchance(spell) >= 100)
+		use_skill(skill, max(((spellev(spell) + 2) * spellskillchance(spell)) / 100, 1));
+	else if(rn2(100) < spellskillchance(spell))
 	    use_skill(skill, max(spellev(spell) + 2, 1));
 
     obfree(pseudo, (struct obj *) 0); /* now, get rid of it */

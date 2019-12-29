@@ -531,9 +531,8 @@ boolean uncursed_confers_extra_luck; /* So I can't think up of a good name.  So 
 	{
         if (artifact_confers_luck(otmp) || confers_luck(otmp))
 		{
-            if (otmp->cursed)
-                bonchance -= otmp->quan;
-            else if (otmp->blessed)
+           /* Note cursed luckstone is now handled in confers_unluck */
+			if (otmp->blessed)
                 bonchance += otmp->quan;
             else if (uncursed_confers_extra_luck)
                 bonchance += otmp->quan;
