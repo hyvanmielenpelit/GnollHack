@@ -157,7 +157,8 @@ enmaxadjustment()
 					)
 				)
 			{
-				int multiplier = (objects[otyp].oc_pflags & P1_MANA_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr ? -1 : 1;
+				int multiplier = ((objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE) && uitem->cursed) || 
+					(objects[otyp].oc_pflags & P1_MANA_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr ? -1 : 1;
 				if (objects[otyp].oc_pflags & P1_MANA_PERCENTAGE_BONUS)
 					adj += multiplier * (objects[otyp].oc_mana_bonus * (baseen + baseadj)) / 100;
 				else

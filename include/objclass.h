@@ -401,7 +401,7 @@ struct objclass {
 #define P1_LUCK_APPLIES_WHEN_CARRIED							0x01000000  
 /* free bit */
 /* free bit */
-/* free bit */
+#define P1_CURSED_ITEM_YIELDS_NEGATIVE							0x08000000  
 #define P1_CONFERS_LUCK											0x10000000			/* Adds one positive luck bonus; these need to be flags instead of props because they stack */
 #define P1_CONFERS_UNLUCK										0x20000000			/* Adds one negative luck bonus (the same as cursed luckstone) */
 #define P1_MANA_PERCENTAGE_BONUS								0x40000000

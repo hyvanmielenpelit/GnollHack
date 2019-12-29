@@ -1676,7 +1676,8 @@ boolean addconstitutionbonus;
 					)
 				)
 			{
-				int multiplier = (objects[otyp].oc_pflags & P1_HP_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr ? -1 : 1;
+				int multiplier = ((objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE) && uitem->cursed) || 
+					(objects[otyp].oc_pflags & P1_HP_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr ? -1 : 1;
 				if (objects[otyp].oc_pflags & P1_HP_PERCENTAGE_BONUS)
 					adj += multiplier * (objects[otyp].oc_hp_bonus * (basehp + baseadj)) / 100;
 				else
@@ -1753,7 +1754,8 @@ updateabon()
 					)
 				)
 			{
-				int multiplier = (objects[otyp].oc_pflags & P1_ATTRIBUTE_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr ? -1 : 1;
+				int multiplier = ((objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE) && uitem->cursed) || 
+					(objects[otyp].oc_pflags & P1_ATTRIBUTE_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr ? -1 : 1;
 
 				for (int i = 0; i < A_MAX+5; i++)
 				{

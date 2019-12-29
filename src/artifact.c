@@ -323,8 +323,9 @@ struct obj *uitem;
 		|| ((objects[otyp].oc_pflags & P1_CONFERS_LUCK) && !(objects[otyp].oc_pflags & P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr));
 	boolean unluck = (
 		((objects[otyp].oc_pflags & P1_CONFERS_UNLUCK) && !((objects[otyp].oc_pflags & P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr))
-		|| ((objects[otyp].oc_pflags & P1_CONFERS_LUCK) && (objects[otyp].oc_pflags & P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr));
-
+		|| ((objects[otyp].oc_pflags & P1_CONFERS_LUCK) && (
+			((objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE) && uitem->cursed) || (objects[otyp].oc_pflags & P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr))
+		);
 	boolean luck_obtained = (luck && !unluck);
 	if (!luck_obtained)
 		return FALSE;
@@ -359,7 +360,8 @@ struct obj* uitem;
 		|| ((objects[otyp].oc_pflags & P1_CONFERS_LUCK) && !(objects[otyp].oc_pflags & P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr));
 	boolean unluck = (
 		((objects[otyp].oc_pflags & P1_CONFERS_UNLUCK) && !((objects[otyp].oc_pflags & P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr))
-		|| ((objects[otyp].oc_pflags & P1_CONFERS_LUCK) && (objects[otyp].oc_pflags & P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr));
+			|| ((objects[otyp].oc_pflags & P1_CONFERS_LUCK) && (((objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE) && uitem->cursed) || (objects[otyp].oc_pflags & P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr))
+		);
 
 	boolean unluck_obtained = (!luck && unluck);
 	if (!unluck_obtained)
