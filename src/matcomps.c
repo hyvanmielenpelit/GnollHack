@@ -1248,6 +1248,17 @@ struct materialcomponentlist matlists[] =
 		}
 	},
 
+	{ SPE_SHOCKING_TOUCH,
+	"Nugget of copper ore",
+	STRANGE_OBJECT,
+	20,
+		{
+			{NUGGET_OF_COPPER_ORE, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
+			NO_MATCOMP,
+			NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
+		}
+	},
+
 
 	/* Array terminator, uses spellsgained */
 	{STRANGE_OBJECT,

@@ -1278,6 +1278,7 @@ boolean makingboxcontents;
 	if (is_generated_with_double_spe(otmp))
 	{
 		otmp->spe *= 2;
+		otmp->spe += rn2(3) - 1; /* -1, 0, 1 to make spe sometimes even */
 	}
 
 	/* Blessed or cursed */
