@@ -616,14 +616,15 @@ xchar x, y; /* coordinates where object was before the impact, not after */
             result = "cracking";
         }
         if (result) {
-            if (otmp->otyp == MIRROR || otmp->otyp == MAGIC_MIRROR)
-                change_luck(-2);
+			You_hear("a muffled %s.", result);
+			
+			if (otmp->otyp == MIRROR || otmp->otyp == MAGIC_MIRROR)
+                change_luck(-2, TRUE);
+			else if (otmp->otyp == EGG && otmp->spe && otmp->corpsenm >= LOW_PM)
+				change_luck(-1, TRUE);
+			/* eggs laid by you.  penalty is -1 per egg, max 5,
+			 * but it's always exactly 1 that breaks */
 
-            /* eggs laid by you.  penalty is -1 per egg, max 5,
-             * but it's always exactly 1 that breaks */
-            if (otmp->otyp == EGG && otmp->spe && otmp->corpsenm >= LOW_PM)
-                change_luck(-1);
-            You_hear("a muffled %s.", result);
             if (costly) {
                 if (frominv && !otmp->unpaid)
                     otmp->no_charge = 1;
@@ -1837,16 +1838,17 @@ boolean shop_floor_obj;
 
         if (objects[otmp->otyp].oc_material == MAT_GLASS
             || otmp->otyp == EXPENSIVE_CAMERA) {
-            if (otmp->otyp == MIRROR || otmp->otyp == MAGIC_MIRROR)
-                change_luck(-2);
-            result = "crash";
+			result = "crash";
+			You_hear("a muffled %s.", result);
+			if (otmp->otyp == MIRROR || otmp->otyp == MAGIC_MIRROR)
+                change_luck(-2, TRUE);
         } else {
             /* penalty for breaking eggs laid by you */
-            if (otmp->otyp == EGG && otmp->spe && otmp->corpsenm >= LOW_PM)
-                change_luck((schar) -min(otmp->quan, 5L));
-            result = "splat";
+			result = "splat";
+			You_hear("a muffled %s.", result);
+			if (otmp->otyp == EGG && otmp->spe && otmp->corpsenm >= LOW_PM)
+                change_luck((schar) -min(otmp->quan, 5L), TRUE);
         }
-        You_hear("a muffled %s.", result);
         obj_extract_self(otmp);
         obfree(otmp, (struct obj *) 0);
         return TRUE;

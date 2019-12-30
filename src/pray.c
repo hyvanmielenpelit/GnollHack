@@ -1427,6 +1427,7 @@ dosacrifice()
         }
 
         if (your_race(ptr)) {
+			int luck_change = 0;
             if (is_demon(youmonst.data)) {
                 You("find the idea very satisfying.");
                 exercise(A_WIS, TRUE);
@@ -1461,7 +1462,7 @@ dosacrifice()
                 } else {
                     /* either you're chaotic or altar is Moloch's or both */
                     pline_The("blood covers the altar!");
-                    change_luck(altaralign == A_NONE ? -2 : 2);
+                    luck_change += (altaralign == A_NONE ? -2 : 2);
                     demonless_msg = "blood coagulates";
                 }
                 if ((pm = dlord(altaralign)) != NON_PM
@@ -1491,9 +1492,12 @@ dosacrifice()
                 (void) adjattrib(A_WIS, -1, TRUE);
                 if (!Inhell)
                     angrygods(u.ualign.type);
-                change_luck(-5);
+				luck_change += -5;
             } else
                 adjalign(5);
+
+			change_luck(luck_change, TRUE);
+
             if (carried(otmp))
                 useup(otmp);
             else
@@ -1619,6 +1623,7 @@ dosacrifice()
         }
     } /* real Amulet */
 
+	int luck_change = 0;
     if (otmp->otyp == FAKE_AMULET_OF_YENDOR) {
         if (!highaltar && !otmp->known)
             goto too_soon;
@@ -1627,13 +1632,13 @@ dosacrifice()
             You("realize you have made a %s.",
                 Hallucination ? "boo-boo" : "mistake");
             otmp->known = TRUE;
-            change_luck(-1);
+            change_luck(-1, TRUE);
             return 1;
         } else {
             /* don't you dare try to fool the gods */
             if (Deaf)
                 pline("Oh, no."); /* didn't hear thunderclap */
-            change_luck(-3);
+            luck_change += -3;
             adjalign(-1);
             u.ugangr += 3;
             value = -3;
@@ -1641,7 +1646,10 @@ dosacrifice()
     } /* fake Amulet */
 
     if (value == 0) {
-        pline1(nothing_happens);
+		if (luck_change)
+			change_luck(luck_change, TRUE);
+		else
+	        pline1(nothing_happens);
         return 1;
     }
 
@@ -1679,18 +1687,19 @@ dosacrifice()
 
                     uchangealign(altaralign, 0);
                     /* Beware, Conversion is costly */
-                    change_luck(-3);
+					luck_change += -3;
                     u.ublesscnt += Role_if(PM_PRIEST) ? 150 : 300;
                 } else {
                     u.ugangr += 3;
                     adjalign(-5);
                     pline("%s rejects your sacrifice!", a_gname());
                     godvoice(altaralign, "Suffer, infidel!");
-                    change_luck(-5);
+					luck_change += -5;
                     (void) adjattrib(A_WIS, -2, TRUE);
                     if (!Inhell)
                         angrygods(u.ualign.type);
                 }
+				change_luck(luck_change, TRUE);
                 return 1;
             } else {
                 consume_offering(otmp);
@@ -1700,7 +1709,7 @@ dosacrifice()
                     struct monst *pri;
                     You_feel("the power of %s increase.", u_gname());
                     exercise(A_WIS, TRUE);
-                    change_luck(1);
+					luck_change += 1;
                     /* Yes, this is supposed to be &=, not |= */
                     levl[u.ux][u.uy].altarmask &= AM_SHRINE;
                     /* the following accommodates stupid compilers */
@@ -1725,12 +1734,13 @@ dosacrifice()
                 } else {
                     pline("Unluckily, you feel the power of %s decrease.",
                           u_gname());
-                    change_luck(-1);
+                    luck_change += -1;
                     exercise(A_WIS, FALSE);
                     if (rnl(u.ulevel) > 6 && u.ualign.record > 0
                         && rnd(u.ualign.record) > (7 * ALIGNLIM) / 8)
                         summon_minion(altaralign, TRUE);
                 }
+				change_luck(luck_change, TRUE);
                 return 1;
             }
         }
@@ -1748,7 +1758,7 @@ dosacrifice()
                           Hallucination ? "groovy" : "slightly mollified");
 
                     if ((int) u.uluck < 0)
-                        change_luck(1);
+						luck_change += 1;
                 } else {
                     pline("%s seems %s.", u_gname(),
                           Hallucination ? "cosmic (not a new fact)"
@@ -1782,7 +1792,7 @@ dosacrifice()
                     else
                         You("have a hopeful feeling.");
                     if ((int) u.uluck < 0)
-                        change_luck(1);
+						luck_change += 1;
                 } else {
                     if (Hallucination)
                         pline("Overall, there is a smell of fried onions.");
@@ -1844,10 +1854,16 @@ dosacrifice()
                     return 1;
                 }
             }
-            change_luck((value * LUCKMAX) / (MAXVALUE * 2));
-            if ((int) u.uluck < 0)
-                u.uluck = 0;
-            if (u.uluck != saved_luck) {
+            luck_change += (value * LUCKMAX) / (MAXVALUE * 2);
+			if (luck_change + u.uluck > LUCKMAX)
+				luck_change -= (luck_change + u.uluck - LUCKMAX);
+			if (luck_change + u.uluck < LUCKMIN)
+				luck_change -= (luck_change + u.uluck - LUCKMIN);
+			if (luck_change + u.uluck < 0)
+				luck_change -= (luck_change + u.uluck - 0);
+
+			if (luck_change) //u.uluck != saved_luck) 
+			{
                 if (Blind)
                     You("think %s brushed your %s.", something,
                         body_part(FOOT));
@@ -1859,7 +1875,8 @@ dosacrifice()
             }
         }
     }
-    return 1;
+	change_luck(luck_change, TRUE);
+	return 1;
 }
 
 /* determine prayer results in advance; also used for enlightenment */
@@ -1985,9 +2002,9 @@ prayer_done() /* M. Stephenson (1.0.3b) */
         if (on_altar() && u.ualign.type != alignment)
             (void) water_prayer(FALSE);
         u.ublesscnt += Role_if(PM_PRIEST) ? rnz(125) : rnz(250);
-        change_luck(-3);
         gods_upset(u.ualign.type);
-    } else if (p_type == 1) {
+		change_luck(-3, TRUE);
+	} else if (p_type == 1) {
         if (on_altar() && u.ualign.type != alignment)
             (void) water_prayer(FALSE);
         angrygods(u.ualign.type); /* naughty */
@@ -1995,9 +2012,9 @@ prayer_done() /* M. Stephenson (1.0.3b) */
         if (water_prayer(FALSE)) {
             /* attempted water prayer on a non-coaligned altar */
             u.ublesscnt += Role_if(PM_PRIEST) ? rnz(125) : rnz(250);
-            change_luck(-3);
             gods_upset(u.ualign.type);
-        } else
+			change_luck(-3, TRUE);
+		} else
             pleased(alignment);
     } else {
         /* coaligned */
@@ -2275,7 +2292,7 @@ register int x, y;
     } else {
         pline("A voice (could it be %s?) whispers:", align_gname(altaralign));
         verbalize("Thou shalt pay, infidel!");
-        change_luck(-1);
+        change_luck(-1, TRUE);
     }
 }
 

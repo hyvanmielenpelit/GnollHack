@@ -5746,7 +5746,7 @@ void
 sokoban_guilt()
 {
     if (Sokoban) {
-        change_luck(-1);
+        change_luck(-1, TRUE);
         /* TODO: issue some feedback so that player can learn that whatever
            he/she just did is a naughty thing to do in sokoban and should
            probably be avoided in future....

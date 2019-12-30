@@ -411,8 +411,6 @@ floorexamine()
 			return  TRUE;
 	}
 
-	/* if we can't touch floor objects then use invent food only */
-	/* Is there some food (probably a heavy corpse) here on the ground? */
 	for (otmp = level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere) 
 	{
 		char qsfx[QBUFSZ];
@@ -605,7 +603,7 @@ register struct obj* obj;
 	putstr(datawin, 0, txt);
 
 	/* Weight */
-	double objweight = ((double)objects[otyp].oc_weight) / 16;
+	double objweight = ((double)obj->owt) / 16;
 
 	/* Show loadstone incorrectly if not known and not carried */
 	if(otyp == LOADSTONE && !carried(obj) && !objects[otyp].oc_name_known)
@@ -637,7 +635,7 @@ register struct obj* obj;
 		/* Nutritinal value */
 		if (is_edible(obj))
 		{
-			Sprintf(buf2, "%d rounds", objects[otyp].oc_nutrition);
+			Sprintf(buf2, "%d rounds", obj->oeaten ? obj->oeaten : obj_nutrition(obj));
 
 			Sprintf(buf, "Nutritional value:      %s", buf2);
 			txt = buf;

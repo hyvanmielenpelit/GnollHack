@@ -118,7 +118,7 @@ E void FDECL(losestr, (int));
 E void FDECL(poisontell, (int, BOOLEAN_P));
 E void FDECL(poisoned, (const char *, int, const char *, int, BOOLEAN_P));
 E void FDECL(extra_enchantment_damage, (const char*, int, const char*, boolean));
-E void FDECL(change_luck, (SCHAR_P));
+E void FDECL(change_luck, (SCHAR_P, BOOLEAN_P));
 E int FDECL(stone_luck, (BOOLEAN_P));
 E boolean FDECL(object_uses_spellbook_wand_flags_and_properties, (struct obj*));
 E boolean FDECL(inappropriate_character_type, (struct obj*));
@@ -737,6 +737,7 @@ E void FDECL(set_tin_variety, (struct obj *, int));
 E int FDECL(tin_variety_txt, (char *, int *));
 E void FDECL(tin_details, (struct obj *, int, char *));
 E boolean FDECL(Popeye, (int));
+E unsigned FDECL(obj_nutrition, (struct obj*));
 
 
 /* ### encounter.c ### */

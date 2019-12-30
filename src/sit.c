@@ -223,8 +223,8 @@ dosit()
             case 6:
                 if (u.uluck + rn2(5) < 0) 
 				{
-                    You_feel("your luck is changing.");
-                    change_luck(1);
+                    //You_feel("your luck is changing.");
+                    change_luck(1, TRUE);
                 } 
 				else
                     makewish();
@@ -255,7 +255,7 @@ dosit()
                  "A curse upon thee for sitting upon this most holy throne!");
                 if (Luck > 0) {
                     make_blinded(Blinded + rn1(100, 250), TRUE);
-                    change_luck((Luck > 1) ? -rnd(2) : -1);
+                    change_luck((Luck > 1) ? -rnd(2) : -1, TRUE);
                 } 
 				else
                     rndcurse();

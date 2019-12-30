@@ -495,7 +495,7 @@ struct obj *obj;
                     if (canspotmon(mtmp))
                         ++pet_cnt;
                     if (mintrap(mtmp) == 2)
-                        change_luck(-1);
+                        change_luck(-1, TRUE);
                 }
             }
         }

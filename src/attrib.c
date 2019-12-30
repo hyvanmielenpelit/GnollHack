@@ -510,14 +510,58 @@ boolean lifesavedalready;
 
 
 void
-change_luck(n)
+change_luck(n, verbose)
 register schar n;
+boolean verbose;
 {
+	if (!n)
+		return;
+
+	schar startluck = u.uluck;
     u.uluck += n;
     if (u.uluck < 0 && u.uluck < LUCKMIN)
         u.uluck = LUCKMIN;
     if (u.uluck > 0 && u.uluck > LUCKMAX)
         u.uluck = LUCKMAX;
+
+	schar endluck = u.uluck;
+	schar diff = endluck - startluck;
+
+	if (verbose && diff != 0)
+	{
+	
+		schar absdiff = abs(diff);
+		const char* adj = diff < 0 ? "unluckier" : "luckier";
+		char buf[BUFSZ] = "";
+		switch (absdiff)
+		{
+		case 1:
+			Sprintf(buf, "You feel %s.", adj);
+			break;
+		case 2:
+			Sprintf(buf, "You feel noticeably %s.", adj);
+			break;
+		case 3:
+			Sprintf(buf, "You feel a lot %s.", adj);
+			break;
+		case 4:
+			Sprintf(buf, "You feel %s about your luck.", diff < 0 ? "greatly worried" : "great");
+			break;
+		case 5:
+		case 6:
+		case 7:
+		case 8:
+		case 9:
+		case 10:
+			Sprintf(buf, "You feel Fortuna %s.", diff < 0 ? "is very angry with you" : "is smiling on you");
+			break;
+		default:
+			Sprintf(buf, "You feel Fortuna %s.", diff < 0 ? "is angry with you" : "is smiling on you");
+			break;
+		}
+		pline(buf);
+	}
+
 }
 
 /* OBSOLETE -- JG */

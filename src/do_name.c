@@ -2306,7 +2306,7 @@ const char *gang, *other;
         boolean nameit = FALSE;
 
         if (gang && orcname) {
-            Sprintf(buf, "%s of %s", upstart(orcname),
+            Sprintf(buf, "%s of the %s clan", upstart(orcname),
                     upstart(strcpy(gbuf, gang)));
             nameit = TRUE;
         } else if (other && orcname) {

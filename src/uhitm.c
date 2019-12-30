@@ -1084,7 +1084,7 @@ int dieroll;
 					if (breaktest(obj)) 
 					{
 						You("break %s.  That's bad luck!", ysimple_name(obj));
-						change_luck(-2);
+						change_luck(-2, TRUE);
 						useup(obj);
 						obj = (struct obj*) 0;
 						unarmed = FALSE; /* avoid obj==0 confusion */
@@ -1144,6 +1144,7 @@ int dieroll;
 				case EGG: 
 				{
 					long cnt = obj->quan;
+					int luck_change = 0;
 
 					tmp = 1; /* nominal physical damage */
 					get_dmg_bonus = FALSE;
@@ -1158,9 +1159,9 @@ int dieroll;
 					if (obj->spe && obj->corpsenm >= LOW_PM) 
 					{
 						if (obj->quan < 5L)
-							change_luck((schar)-(obj->quan));
+							luck_change += (schar)-(obj->quan);
 						else
-							change_luck(-5);
+							luck_change += -5;
 					}
 
 					if (touch_petrifies(&mons[obj->corpsenm])) 
@@ -1174,6 +1175,8 @@ int dieroll;
 							plur(cnt));
 						obj->known = 1; /* (not much point...) */
 						useup_eggs(obj);
+
+						change_luck(luck_change, TRUE);
 
 						if (check_magic_cancellation_success(mon, 0))
 						{
@@ -1198,7 +1201,8 @@ int dieroll;
 
 						You("hit %s with %s egg%s.", mon_nam(mon), eggp,
 							plur(cnt));
-						if (touch_petrifies(mdat) && !stale_egg(obj)) 
+
+						if (touch_petrifies(mdat) && !stale_egg(obj))
 						{
 							pline_The("egg%s %s alive any more...", plur(cnt),
 								(cnt == 1L) ? "isn't" : "aren't");
@@ -1219,6 +1223,9 @@ int dieroll;
 							useup_eggs(obj);
 							exercise(A_WIS, FALSE);
 						}
+
+						change_luck(luck_change, TRUE);
+
 					}
 					break;
 #undef useup_eggs
@@ -3646,7 +3653,7 @@ boolean wep_was_destroyed;
                     pline("%s cannot defend itself.",
                           Adjmonnam(mon, "blind"));
                     if (!rn2(500))
-                        change_luck(-1);
+                        change_luck(-1, TRUE);
                 }
             } else if (Free_action) {
                 You("momentarily stiffen.");

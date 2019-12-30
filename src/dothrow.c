@@ -2327,6 +2327,7 @@ register struct obj *obj;
     boolean is_buddy = sgn(mon->data->maligntyp) == sgn(u.ualign.type);
     boolean is_gem = objects[obj->otyp].oc_material == MAT_GEMSTONE;
     int ret = 0;
+	int luck_change = 0;
     static NEARDATA const char nogood[] = " is not interested in your junk.";
     static NEARDATA const char acceptgift[] = " accepts your gift.";
     static NEARDATA const char maybeluck[] = " hesitatingly";
@@ -2342,10 +2343,10 @@ register struct obj *obj;
         if (is_gem) {
             if (is_buddy) {
                 Strcat(buf, addluck);
-                change_luck(5);
+				luck_change += 5;
             } else {
                 Strcat(buf, maybeluck);
-                change_luck(rn2(7) - 3);
+				luck_change += rn2(7) - 3;
             }
         } else {
             Strcat(buf, nogood);
@@ -2356,10 +2357,10 @@ register struct obj *obj;
         if (is_gem) {
             if (is_buddy) {
                 Strcat(buf, addluck);
-                change_luck(2);
+				luck_change += 2;
             } else {
                 Strcat(buf, maybeluck);
-                change_luck(rn2(3) - 1);
+				luck_change += rn2(3) - 1;
             }
         } else {
             Strcat(buf, nogood);
@@ -2370,10 +2371,10 @@ register struct obj *obj;
         if (is_gem) {
             if (is_buddy) {
                 Strcat(buf, addluck);
-                change_luck(1);
+				luck_change += 1;
             } else {
                 Strcat(buf, maybeluck);
-                change_luck(rn2(3) - 1);
+				luck_change += rn2(3) - 1;
             }
         } else {
             Strcat(buf, noluck);
@@ -2388,6 +2389,9 @@ register struct obj *obj;
  nopick:
     if (!Blind)
         pline1(buf);
+
+	change_luck(luck_change, TRUE);
+
     if (!tele_restrict(mon))
         (void) rloc(mon, TRUE);
     return ret;
@@ -2494,7 +2498,7 @@ boolean from_invent;
     case MIRROR:
 	case MAGIC_MIRROR:
 		if (hero_caused)
-            change_luck(-2);
+            change_luck(-2, TRUE);
         break;
     case POT_WATER:      /* really, all potions */
         obj->in_use = 1; /* in case it's fatal */
@@ -2525,7 +2529,7 @@ boolean from_invent;
     case EGG:
         /* breaking your own eggs is bad luck */
         if (hero_caused && obj->spe && obj->corpsenm >= LOW_PM)
-            change_luck((schar) -min(obj->quan, 5L));
+            change_luck((schar) -min(obj->quan, 5L), TRUE);
         break;
     case BOULDER:
     case STATUE:

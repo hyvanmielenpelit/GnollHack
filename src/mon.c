@@ -2935,7 +2935,8 @@ struct monst *mtmp;
 int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
 {
     int tmp, mndx, x = mtmp->mx, y = mtmp->my;
-    struct permonst *mdat;
+	schar luck_change = 0;
+	struct permonst *mdat;
     struct obj *otmp;
     struct trap *t;
     boolean wasinside = u.uswallow && (u.ustuck == mtmp),
@@ -3099,17 +3100,19 @@ cleanup:
         && u.ualign.type != A_CHAOTIC) {
         HTelepat &= ~INTRINSIC;
 		HBlind_telepat &= ~INTRINSIC;
-		change_luck(-2);
         You("murderer!");
         if (Blind && !(Blind_telepat || Unblind_telepat || Detect_monsters))
             see_monsters(); /* Can't sense monsters any more. */
-    }
+		luck_change += -2;
+	}
     if ((mtmp->mpeaceful && !rn2(2)) || mtmp->mtame)
-        change_luck(-1);
+		luck_change += -1;
     if (is_unicorn(mdat) && sgn(u.ualign.type) == sgn(mdat->maligntyp)) {
-        change_luck(-5);
         You_feel("guilty...");
-    }
+		luck_change += -5;
+	}
+
+	change_luck(luck_change, TRUE);
 
     /* give experience points */
     tmp = experience(mtmp, (int) mvitals[mndx].died);

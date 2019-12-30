@@ -727,6 +727,7 @@ void
 stolen_booty(VOID_ARGS)
 {
     char *gang, gang_name[BUFSZ];
+	char lootlabel[BUFSIZ] = "";
     struct monst *mtmp;
     int cnt, i, otyp;
 
@@ -744,15 +745,18 @@ stolen_booty(VOID_ARGS)
      */
 
     gang = rndorcname(gang_name);
+	*gang = highc(*gang);
+	Sprintf(lootlabel, "loot of %s", gang);
+
     /* create the stuff that the gang took */
     cnt = rnd(4);
     for (i = 0; i < cnt; ++i)
-        migr_booty_item(rn2(4) ? TALLOW_CANDLE : WAX_CANDLE, gang);
+        migr_booty_item(rn2(4) ? TALLOW_CANDLE : WAX_CANDLE, lootlabel);
     cnt = rnd(3);
     for (i = 0; i < cnt; ++i)
-        migr_booty_item(SKELETON_KEY, gang);
+        migr_booty_item(SKELETON_KEY, lootlabel);
     otyp = rn2((GAUNTLETS_OF_DEXTERITY - LEATHER_GLOVES) + 1) + LEATHER_GLOVES;
-    migr_booty_item(otyp, gang);
+    migr_booty_item(otyp, lootlabel);
     cnt = rnd(10);
     for (i = 0; i < cnt; ++i) {
         /* Food items - but no lembas! (or some other weird things) */
@@ -762,14 +766,15 @@ stolen_booty(VOID_ARGS)
             && otyp != GLOB_OF_BLACK_PUDDING && otyp != MEAT_STICK
             && otyp != MEATBALL && otyp != MEAT_STICK && otyp != MEAT_RING
             && otyp != HUGE_CHUNK_OF_MEAT && otyp != CORPSE)
-            migr_booty_item(otyp, gang);
+            migr_booty_item(otyp, lootlabel);
     }
-    migr_booty_item(rn2(2) ? LONG_SWORD : SILVER_SABER, gang);
+    migr_booty_item(rn2(2) ? LONG_SWORD : SILVER_SABER, lootlabel);
     /* create the leader of the orc gang */
     mtmp = makemon(&mons[PM_ORC_CAPTAIN], 0, 0, MM_NONAME);
     if (mtmp) {
-        mtmp = christen_monst(mtmp, upstart(gang));
-        mtmp->mpeaceful = 0;
+        mtmp = christen_monst(mtmp, gang);
+		mtmp->u_know_mname = TRUE; /* Not realistic, but let's do it */
+		mtmp->mpeaceful = 0;
         shiny_orc_stuff(mtmp);
         migrate_orc(mtmp, ORC_LEADER);
     }
@@ -788,8 +793,11 @@ stolen_booty(VOID_ARGS)
              * Don't christen the orc captain as a subordinate
              * member of the main orc horde.
              */
-            if (mtmp->data != &mons[PM_ORC_CAPTAIN])
-                mtmp = christen_orc(mtmp, upstart(gang), "");
+			if (mtmp->data != &mons[PM_ORC_CAPTAIN])
+			{
+				mtmp = christen_orc(mtmp, gang, "");
+				mtmp->u_know_mname = TRUE; /* Not realistic, but let's do it */
+			}
         }
     }
     /* Lastly, ensure there's several more orcs from the gang along the way.
