@@ -354,7 +354,7 @@ learn(VOID_ARGS)
     /* JDS: lenses give 50% faster reading; 33% smaller read time */
     if (context.spbook.delay && Enhanced_vision && rn2(2))
         context.spbook.delay++;
-    if (Confusion) 
+    if (Confusion && book->otyp != SPE_BOOK_OF_THE_DEAD) 
 	{ /* became confused while learning */
 		context.spbook.reading_result = READING_RESULT_CONFUSED;
 #if 0
@@ -375,8 +375,17 @@ learn(VOID_ARGS)
     }
 
 
-	boolean reading_result = context.spbook.reading_result;
+	/* STUDY RESULT */
+	booktype = book->otyp;
 
+	/* Book of the Dead always has the same result */
+	if (booktype == SPE_BOOK_OF_THE_DEAD) {
+		deadbook(book);
+		return 0;
+	}
+
+	/* Possible failures */
+	boolean reading_result = context.spbook.reading_result;
 	if (reading_result == READING_RESULT_FAIL)
 	{
 		boolean gone = FALSE;
@@ -414,12 +423,9 @@ learn(VOID_ARGS)
 		return 0;
 	}
 
-    exercise(A_WIS, TRUE); /* you're studying. */
-    booktype = book->otyp;
-    if (booktype == SPE_BOOK_OF_THE_DEAD) {
-        deadbook(book);
-        return 0;
-    }
+
+	/* SUCCESS */
+	exercise(A_WIS, TRUE); /* you're studying. */
 
     Sprintf(splname,
             objects[booktype].oc_name_known ? "\"%s\"" : "the \"%s\" spell",
@@ -588,31 +594,32 @@ register struct obj *spellbook;
 		}
 		if (yn(buf) != 'y')
 			return takeround; // Takes one round to read the header if not known in advance
+
+		if (perusetext)
+			You("start perusing %s...", the(cxname(spellbook)));
+
+		/* attempting to read dull book may make hero fall asleep */
+		if (!confused && !Sleep_resistance
+			&& !strcmp(OBJ_DESCR(objects[booktype]), "dull")) {
+			const char *eyes;
+			int dullbook = rnd(25) - ACURR(A_WIS);
+
+			/* adjust chance if hero stayed awake, got interrupted, retries */
+			if (context.spbook.delay && spellbook == context.spbook.book)
+				dullbook -= rnd(objects[booktype].oc_spell_level);
+
+			if (dullbook > 0) {
+				eyes = body_part(EYE);
+				if (eyecount(youmonst.data) > 1)
+					eyes = makeplural(eyes);
+				pline("This book is so dull that you can't keep your %s open.",
+					  eyes);
+				dullbook += rnd(2 * objects[booktype].oc_spell_level);
+				fall_asleep(-dullbook, TRUE);
+				return 1;
+			}
+		}
 	}
-	if (perusetext)
-		You("start perusing %s...", the(cxname(spellbook)));
-
-	/* attempting to read dull book may make hero fall asleep */
-	if (!confused && !Sleep_resistance
-        && !strcmp(OBJ_DESCR(objects[booktype]), "dull")) {
-        const char *eyes;
-        int dullbook = rnd(25) - ACURR(A_WIS);
-
-        /* adjust chance if hero stayed awake, got interrupted, retries */
-        if (context.spbook.delay && spellbook == context.spbook.book)
-            dullbook -= rnd(objects[booktype].oc_spell_level);
-
-        if (dullbook > 0) {
-            eyes = body_part(EYE);
-            if (eyecount(youmonst.data) > 1)
-                eyes = makeplural(eyes);
-            pline("This book is so dull that you can't keep your %s open.",
-                  eyes);
-            dullbook += rnd(2 * objects[booktype].oc_spell_level);
-            fall_asleep(-dullbook, TRUE);
-            return 1;
-        }
-    }
 
     if (context.spbook.delay && !confused && spellbook == context.spbook.book
         /* handle the sequence: start reading, get interrupted, have

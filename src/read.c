@@ -336,7 +336,6 @@ doread()
         return 1;
 	} else if (scroll->oartifact == ART_ONE_RING) {
 		pline("The ring is plain and featureless, but you somehow feel that there is more to it than that.");
-
 		return 1;
 	} else if (scroll->otyp == CANDY_BAR) {
         static const char *wrapper_msgs[] = {
@@ -361,7 +360,7 @@ doread()
                && scroll->oclass != SPBOOK_CLASS) {
         pline(silly_thing_to, "read");
         return 0;
-    } else if (Blind && (scroll->otyp != SPE_BOOK_OF_THE_DEAD)) {
+    } else if (Blind /*&& (scroll->otyp != SPE_BOOK_OF_THE_DEAD)*/) { //Not sure why Book of the Dead should be readable when blind --JG
         const char *what = 0;
 
         if (scroll->oclass == SPBOOK_CLASS)

@@ -2468,21 +2468,21 @@ SPELL("lower water",			"obnoxious", None, "Evaporates water",
 
 /* books with fixed descriptions
  */
-SPELL("blank paper", "plain", None, None, P_NONE, 18, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, HI_PAPER, O1_NON_SPELL_SPELLBOOK, O2_NONE, O3_NONE),
+SPELL("blank paper", "plain", None, None, P_NONE, 18, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, HI_PAPER, O1_NON_SPELL_SPELLBOOK, O2_NONE, O3_READABLE),
 /* tribute book for 3.6 */
 OBJECT(OBJ("novel", "paperback"), None, None,
        BITS(0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, P_NONE, MAT_PAPER),
        0, 0, 0, P1_NONE, SPBOOK_CLASS, 0, MULTIGEN_SINGLE, 0, 0, 20,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
-	   20, CLR_BRIGHT_BLUE, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_NON_SPELL_SPELLBOOK, O2_NONE, O3_NONE),
+	   20, CLR_BRIGHT_BLUE, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_NON_SPELL_SPELLBOOK, O2_NONE, O3_READABLE),
 /* a special, one of a kind, spellbook */
 OBJECT(OBJ("Book of the Dead", "papyrus"), None, None,
        BITS(0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, P_NONE, MAT_PAPER),
        0, 0, 0, P1_NONE, SPBOOK_CLASS, 0, MULTIGEN_SINGLE, 0, 20, 10000,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0,
-	   20, HI_PAPER, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_INDESTRUCTIBLE | O1_NON_SPELL_SPELLBOOK, O2_NONE, O3_NONE),
+	   20, HI_PAPER, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_INDESTRUCTIBLE | O1_NON_SPELL_SPELLBOOK, O2_NONE, O3_READABLE),
 #undef SPELL
 
 /* wands ... */
