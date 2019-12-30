@@ -342,7 +342,7 @@ struct objclass {
 #define TOUCH 5     /*						like immediate but touch distance */
 #define IMMEDIATE_MULTIPLE_TARGETS 6 /*		directional but many targets in a line like a ray */
 
-#define SUBDIR_ARROW 1
+#define IMMEDIATE_ITEM_ARROW 1
 
 #define PIERCE 1 /* for weapons & tools used as weapons */
 #define SLASH 2  /* (latter includes iron ball & chain) */

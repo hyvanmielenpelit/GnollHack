@@ -4494,7 +4494,7 @@ int subdir;
 	int displayedobjtype = STRANGE_OBJECT;
 	switch (subdir)
 	{
-	case SUBDIR_ARROW:
+	case IMMEDIATE_ITEM_ARROW:
 		displayedobjtype = BONE_ARROW;
 		break;
 	default:
