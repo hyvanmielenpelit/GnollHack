@@ -243,6 +243,9 @@ struct obj {
 #define is_generated_blessed(otmp)                                            \
 	(objects[otmp->otyp].oc_flags2 & O2_GENERATED_BLESSED)
 
+#define is_generated_with_double_spe(otmp)                                            \
+	(objects[otmp->otyp].oc_flags2 & O3_GENERATED_WITH_DOUBLE_SPE)
+
 #define oresist_disintegration(obj)                                       \
     (objects[obj->otyp].oc_flags & O1_DISINTEGRATION_RESISTANT || objects[obj->otyp].oc_flags & O1_INDESTRUCTIBLE || objects[obj->otyp].oc_oprop == DISINT_RES  || objects[obj->otyp].oc_oprop2 == DISINT_RES || objects[obj->otyp].oc_oprop3 == DISINT_RES || obj_resists(obj, 5, 50) \
      || is_quest_artifact(obj) )

@@ -3266,6 +3266,8 @@ int final;
 		you_are("warned of dwarves", from_what(WARN_DWARF));
 	if (Gnoll_warning)
 		you_are("warned of gnolls", from_what(WARN_GNOLL));
+	if (Gnome_warning)
+		you_are("warned of gnomes", from_what(WARN_GNOME));
 	if (Ogre_warning)
 		you_are("warned of ogres", from_what(WARN_OGRE));
 	if (Human_warning)
@@ -3511,13 +3513,10 @@ int final;
         you_have("extra luck", "");
     else if (u.moreluck < 0)
         you_have("reduced luck", "");
-    if (carrying(LUCKSTONE) || stone_luck(TRUE)) {
-        ltmp = stone_luck(FALSE);
-        if (ltmp <= 0)
-            enl_msg("Bad luck ", "does", "did", " not time out for you", "");
-        if (ltmp >= 0)
-            enl_msg("Good luck ", "does", "did", " not time out for you", "");
-    }
+    if (u.unluck_does_not_timeout)
+        enl_msg("Bad luck ", "does", "did", " not time out for you", "");
+    if (u.luck_does_not_timeout)
+        enl_msg("Good luck ", "does", "did", " not time out for you", "");
 
     if (u.ugangr) {
         Sprintf(buf, " %sangry with you",

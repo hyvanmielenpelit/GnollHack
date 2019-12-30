@@ -533,6 +533,7 @@ int curse_bless;
 {
     register int n;
     boolean is_cursed, is_blessed;
+	int multiplier = is_generated_with_double_spe(obj) ? 2 : 1;
 
     is_cursed = curse_bless < 0;
     is_blessed = curse_bless > 0;
@@ -540,7 +541,7 @@ int curse_bless;
     if (obj->oclass == WAND_CLASS) {
         int lim = (obj->otyp == WAN_WISHING)
                       ? 3
-                      : (objects[obj->otyp].oc_dir != NODIR) ? 8 : 15;
+                      : ((objects[obj->otyp].oc_dir != NODIR) ? 8 : 15) * multiplier;
 
         /* undo any prior cancellation, even when is_cursed */
         if (obj->spe == -1)
@@ -574,7 +575,8 @@ int curse_bless;
             stripspe(obj);
         } else {
             n = (lim == 3) ? 3 : rn1(5, lim + 1 - 5);
-            if (!is_blessed)
+			n *= multiplier;
+			if (!is_blessed)
                 n = rnd(n);
 
             if (obj->spe < n)
@@ -598,11 +600,11 @@ int curse_bless;
 
     } else if (obj->oclass == RING_CLASS && objects[obj->otyp].oc_charged) {
         /* charging does not affect ring's curse/bless status */
-        int s = is_blessed ? rnd(3) : is_cursed ? -rnd(2) : 1;
+        int s = is_blessed ? rnd(3 * multiplier) : is_cursed ? -rnd(2 * multiplier) : multiplier > 1 ? rnd(multiplier) : 1;
         boolean is_on = (obj == uleft || obj == uright);
 
         /* destruction depends on current state, not adjustment */
-        if (obj->spe > rn2(7) || obj->spe <= -5) {
+        if (obj->spe > rn2(7 * multiplier) || obj->spe <= -5 * multiplier) {
             pline("%s momentarily, then %s!", Yobjnam2(obj, "pulsate"),
                   otense(obj, "explode"));
             if (is_on)
@@ -1200,8 +1202,9 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 			same_color = FALSE;
 
 		/* KMH -- catch underflow */
+		int multiplier = is_generated_with_double_spe(otmp) ? 2 : 1;
 		s = scursed ? -otmp->spe : otmp->spe;
-		if (s > (special_armor ? 5 : 3) && rn2(s)) {
+		if (s > multiplier * (special_armor ? 5 : 3) && rn2(max(1, s / multiplier))) {
 			otmp->in_use = TRUE;
 			pline("%s violently %s%s%s for a while, then %s.", Yname2(otmp),
 				otense(otmp, Blind ? "vibrate" : "glow"),
@@ -1214,10 +1217,10 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 			break;
 		}
 		s = scursed ? -1
-			: (otmp->spe >= 9)
-			? (rn2(otmp->spe) == 0)
+			: (otmp->spe >= 9 * multiplier)
+			? (rn2(max(1, otmp->spe / multiplier)) == 0)
 			: sblessed
-			? rnd(3 - otmp->spe / 3)
+			? rnd(3 - otmp->spe / (3 * multiplier))
 			: 1;
 		if (s >= 0 && is_dragon_scales(otmp)) {
 			/* dragon scales get turned into dragon scale mail */
@@ -1334,14 +1337,14 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 		if (youmonst.data->mlet != S_HUMAN || scursed) {
 			if (!HConfusion)
 				You_feel("confused.");
-			make_confused(HConfusion + rnd(100), FALSE);
+			make_confused(itimeout_incr(HConfusion, rnd(100)), FALSE);
 		}
 		else if (confused) {
 			if (!sblessed) {
 				Your("%s begin to %s%s.", makeplural(body_part(HAND)),
 					Blind ? "tingle" : "glow ",
 					Blind ? "" : hcolor(NH_PURPLE));
-				make_confused(HConfusion + rnd(100), FALSE);
+				make_confused(itimeout_incr(HConfusion, rnd(100)), FALSE);
 			}
 			else {
 				pline("A %s%s surrounds your %s.",
@@ -1576,10 +1579,12 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 			break;
 		}
 
-		if (!chwepon(sobj, otmp, scursed ? -1
+		int multiplier = is_generated_with_double_spe(otmp) ? 2 : 1;
+
+		if (!enchant_weapon(sobj, otmp, scursed ? -1
 			: !otmp ? 1
-			: (otmp->spe >= 9) ? !rn2(otmp->spe)
-			: sblessed ? rnd(3 - otmp->spe / 3)
+			: (otmp->spe >= 9 * multiplier) ? !rn2(max(1, otmp->spe / multiplier))
+			: sblessed ? rnd(max(1, 3 - otmp->spe / (3 * multiplier)))
 			: 1))
 			sobj = 0; /* nothing enchanted: strange_feeling -> useup */
 		break;
@@ -1951,7 +1956,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
                 pline("Wow!  Modern art.");
             else
                 Your("%s spins in bewilderment.", body_part(HEAD));
-            make_confused(HConfusion + rnd(30), FALSE);
+            make_confused(itimeout_incr(HConfusion, rnd(30)), FALSE);
             break;
         }
         if (sblessed) {
@@ -1969,7 +1974,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
         if (level.flags.nommap) {
             Your("%s spins as %s blocks the spell!", body_part(HEAD),
                  something);
-            make_confused(HConfusion + rnd(30), FALSE);
+            make_confused(itimeout_incr(HConfusion, rnd(30)), FALSE);
             break;
         }
         pline("A map coalesces in your mind!");
@@ -1986,7 +1991,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 		if (level.flags.nommap) {
 			Your("%s spins as %s blocks the spell!", body_part(HEAD),
 				something);
-			make_confused(HConfusion + rnd(30), FALSE);
+			make_confused(itimeout_incr(HConfusion, rnd(30)), FALSE);
 			break;
 		}
 		if(trap_detect(sobj) == 0) //Something was detected

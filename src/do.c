@@ -1713,6 +1713,13 @@ register struct obj* obj;
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
+				if (objects[otyp].oc_power_permissions & PERMITTED_RACE_GNOME)
+				{
+					powercnt++;
+					Sprintf(buf, " %2d - Gnomes", powercnt);
+					txt = buf;
+					putstr(datawin, 0, txt);
+				}
 				if (objects[otyp].oc_power_permissions & PERMITTED_RACE_HUMAN)
 				{
 					powercnt++;
@@ -1850,6 +1857,13 @@ register struct obj* obj;
 					{
 						powercnt++;
 						Sprintf(buf, " %2d - Gnolls", powercnt);
+						txt = buf;
+						putstr(datawin, 0, txt);
+					}
+					if (objects[otyp].oc_target_permissions & M2_GNOME)
+					{
+						powercnt++;
+						Sprintf(buf, " %2d - Gnomes", powercnt);
 						txt = buf;
 						putstr(datawin, 0, txt);
 					}
@@ -2401,6 +2415,8 @@ register struct obj* obj;
 					strcpy(endbuf, "giants");
 				else if (artilist[obj->oartifact].mtype == M2_GNOLL)
 					strcpy(endbuf, "gnolls");
+				else if (artilist[obj->oartifact].mtype == M2_GNOME)
+					strcpy(endbuf, "gnomes");
 				else if (artilist[obj->oartifact].mtype == M2_HUMAN)
 					strcpy(endbuf, "human beings");
 				else if (artilist[obj->oartifact].mtype == M2_MODRON)

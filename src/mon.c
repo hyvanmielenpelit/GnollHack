@@ -250,8 +250,10 @@ int mndx, mode;
             else if (is_dwarf(ptr))
                 mndx = PM_DWARF;
             else if (is_gnoll(ptr))
-                mndx = PM_GNOME;
-            else if (is_orc(ptr))
+                mndx = PM_GNOLL;
+			else if (is_gnome(ptr))
+				mndx = PM_GNOME;
+			else if (is_orc(ptr))
                 mndx = PM_ORC;
         }
         break;
@@ -509,6 +511,7 @@ boolean createcorpse;
 			obj->owt = weight(obj);
 		}
 		goto default_1;
+	case PM_MUCILAGINOUS_CUBE:
 	case PM_OCHRE_JELLY:
 		sporequan++;
 	case PM_SPOTTED_JELLY:
@@ -516,16 +519,19 @@ boolean createcorpse;
 		sporequan++;
 	case PM_SHRIEKER:
 	case PM_VIOLET_FUNGUS:
+	case PM_GELATINOUS_CUBE:
 		sporequan++;
+	case PM_ACID_BLOB:
+	case PM_QUIVERING_BLOB:
 	case PM_BROWN_MOLD:
 	case PM_YELLOW_MOLD:
 	case PM_GREEN_MOLD:
 	case PM_RED_MOLD:
 	{
 		sporequan++;
-		if (!rn2(2))
+		if (!mtmp->mcloned && (!rn2(2) || mndx == PM_MUCILAGINOUS_CUBE))
 		{
-			obj = mksobj_at(HEAP_OF_SPORAL_POWDER, x, y, TRUE, FALSE);
+			obj = mksobj_at(HEAP_OF_SPORAL_POWDER, x, y, FALSE, FALSE);
 			obj->quan = sporequan > 1 ? rnd(sporequan) : 1;
 			obj->owt = weight(obj);
 		}
@@ -745,7 +751,16 @@ boolean createcorpse;
     case PM_BLACK_PUDDING:
         /* we have to do this here because most other places
            expect there to be an object coming back; not this one */
-        obj = mksobj_at(GLOB_OF_BLACK_PUDDING - (PM_BLACK_PUDDING - mndx),
+		/* first, make some powder */
+		if (!mtmp->mcloned && !rn2(3))
+		{
+			obj = mksobj_at(HEAP_OF_SPORAL_POWDER, x, y, FALSE, FALSE);
+			obj->quan = rnd(3);
+			obj->owt = weight(obj);
+		}
+
+		/* then, the glob */
+		obj = mksobj_at(GLOB_OF_BLACK_PUDDING - (PM_BLACK_PUDDING - mndx),
                         x, y, TRUE, FALSE);
 
         while (obj && (otmp = obj_nexto(obj)) != (struct obj *) 0) {

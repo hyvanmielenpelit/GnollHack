@@ -364,10 +364,12 @@ struct you {
 #define A_ORIGINAL 1
 #define A_CURRENT  0
     aligntyp ualignbase[CONVERT]; /* for ualign conversion record */
-    schar uluck, moreluck;        /* luck and luck bonus */
-#define Luck (u.uluck + u.moreluck)
+	schar uluck;
+	long moreluck;        /* luck and luck bonus */
+	boolean luck_does_not_timeout, unluck_does_not_timeout;
 #define LUCKADD    3  /* value of u.moreluck when carrying luck stone;
-                         + when blessed or uncursed, - when cursed */
+						 + when blessed or uncursed, - when cursed */
+#define Luck (u.uluck + u.moreluck > 0 ? LUCKADD : u.moreluck < 0 ? -LUCKADD : 0)
 #define LUCKMAX   10  /* maximum value of u.ulUck */
 #define LUCKMIN (-10) /* minimum value of u.uluck */
 	schar ubasehitinc;		/* permanent intrinsic values not affected by items or anything else */

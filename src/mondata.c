@@ -559,7 +559,9 @@ struct permonst *pm1, *pm2;
         return is_dwarf(pm2);
     if (is_gnoll(pm1))
         return is_gnoll(pm2);
-    if (is_orc(pm1))
+	if (is_gnome(pm1))
+		return is_gnome(pm2);
+	if (is_orc(pm1))
         return is_orc(pm2);
     /* other creatures are less precise */
     if (is_giant(pm1))

@@ -117,6 +117,7 @@ const struct propname {
 	{ WARN_LYCANTHROPE, "warning of lycanthropes", "warning of lycanthropes" },
 	{ WARN_ANGEL, "warning of angels", "warning of angels" },
 	{ WARN_OGRE, "warning of ogres", "warning of ogres" },
+	{ WARN_OGRE, "warning of gnomes", "warning of gnomes" },
 	{ CHARM_RES, "charm resistance", "charm resistance" },
 	{ MIND_SHIELDING, "mind shielding", "mind shielding" },
 	{ ODD_IDEAS, "visionary ideas", "visionary ideas" },
@@ -214,12 +215,12 @@ vomiting_dialogue()
         txt = vomiting_texts[1];
         break;
     case 6:
-        make_stunned((HStun & TIMEOUT) + (long) d(2, 4), FALSE);
+        make_stunned(itimeout_incr(HStun, d(2, 4)), FALSE);
         if (!Popeye(VOMITING))
             stop_occupation();
     /*FALLTHRU*/
     case 9:
-        make_confused((HConfusion & TIMEOUT) + (long) d(2, 4), FALSE);
+        make_confused(itimeout_incr(HConfusion, d(2, 4)), FALSE);
         if (multi > 0)
             nomul(0);
         break;
@@ -498,12 +499,12 @@ nh_timeout()
          * neither is stopped if you don't have a luckstone.
          * Luck is based at 0 usually, +1 if a full moon and -1 on Friday 13th
          */
-        register int time_luck = stone_luck(FALSE);
-        boolean nostone = !carrying(LUCKSTONE) && !stone_luck(TRUE);
+        //register int time_luck = stone_luck(FALSE);
+        //boolean nostone = !carrying(LUCKSTONE) && !stone_luck(TRUE);
 
-        if (u.uluck > baseluck && (nostone || time_luck < 0))
+        if (u.uluck > baseluck  && !u.luck_does_not_timeout)//(u.uluck > baseluck && (nostone || time_luck < 0))
             u.uluck--;
-        else if (u.uluck < baseluck && (nostone || time_luck > 0))
+        else if (u.uluck < baseluck && !u.unluck_does_not_timeout) //(u.uluck < baseluck && (nostone || time_luck > 0))
             u.uluck++;
     }
     if (u.uinvulnerable)
@@ -748,6 +749,7 @@ nh_timeout()
 			case WARN_ANGEL:
 
 			case WARN_OGRE:
+			case WARN_GNOME:
 				break;
 			case PASSES_WALLS:
 				if (!Passes_walls) {

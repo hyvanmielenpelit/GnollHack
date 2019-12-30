@@ -855,7 +855,7 @@ struct obj *obj;
                 You("don't have a reflection.");
             else if (u.umonnum == PM_UMBER_HULK) {
                 pline("Huh?  That doesn't look like you!");
-                make_confused(HConfusion + d(3, 4), FALSE);
+                make_confused(itimeout_incr(HConfusion, d(3, 4)), FALSE);
             } else if (Hallucination)
                 You(look_str, hcolor((char *) 0));
             else if (Sick)
@@ -2128,7 +2128,7 @@ struct obj *obj;
             if (!Confusion)
                 You("suddenly feel %s.",
                     Hallucination ? "trippy" : "confused");
-            make_confused((HConfusion & TIMEOUT) + lcount, TRUE);
+            make_confused(itimeout_incr(HConfusion, lcount), TRUE);
             break;
         case 3:
             make_stunned((HStun & TIMEOUT) + lcount, TRUE);

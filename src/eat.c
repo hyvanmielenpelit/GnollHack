@@ -1819,7 +1819,7 @@ struct obj *obj;
             You_feel("rather trippy.");
         else
             You_feel("rather %s.", body_part(LIGHT_HEADED));
-        make_confused(HConfusion + d(2, 4), FALSE);
+        make_confused(itimeout_incr(HConfusion, d(2, 4)), FALSE);
     } else if (!rn2(4) && !Blind) {
         pline("Everything suddenly goes dark.");
         /* hero is not Blind, but Blinded timer might be nonzero if

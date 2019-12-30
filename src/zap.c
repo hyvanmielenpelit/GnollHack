@@ -826,6 +826,14 @@ struct monst* mtmp;
 		putstr(datawin, 0, txt);
 	}
 
+	if (is_gnome(mtmp->data))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Gnome", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
 	if (is_orc(mtmp->data))
 	{
 		abilcnt++;
@@ -3142,6 +3150,8 @@ register struct obj *obj;
 						zombietype = PM_ELF_ZOMBIE;
 					else if (sobj->corpsenm == PM_GNOLL || mons[sobj->corpsenm].mflags2 & M2_GNOLL)
 						zombietype = PM_GNOLL_ZOMBIE;
+					else if (sobj->corpsenm == PM_GNOLL || mons[sobj->corpsenm].mflags2 & M2_GNOME)
+						zombietype = PM_GNOME_ZOMBIE;
 					else if (sobj->corpsenm == PM_ORC || mons[sobj->corpsenm].mflags2 & M2_ORC)
 						zombietype = PM_ORC_ZOMBIE;
 					else if (sobj->corpsenm == PM_GIANT || mons[sobj->corpsenm].mflags2 & M2_GIANT)
@@ -3189,6 +3199,8 @@ register struct obj *obj;
 						zombietype = PM_ELF_MUMMY;
 					else if (sobj->corpsenm == PM_GNOLL || mons[sobj->corpsenm].mflags2 & M2_GNOLL)
 						zombietype = PM_GNOLL_MUMMY;
+					else if (sobj->corpsenm == PM_GNOLL || mons[sobj->corpsenm].mflags2 & M2_GNOME)
+						zombietype = PM_GNOME_MUMMY;
 					else if (sobj->corpsenm == PM_ORC || mons[sobj->corpsenm].mflags2 & M2_ORC)
 						zombietype = PM_ORC_MUMMY;
 					else if (sobj->corpsenm == PM_GIANT || mons[sobj->corpsenm].mflags2 & M2_GIANT)

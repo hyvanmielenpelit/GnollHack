@@ -1274,6 +1274,12 @@ boolean makingboxcontents;
         }
     }
 
+	/* Double spe? */
+	if (is_generated_with_double_spe(otmp))
+	{
+		otmp->spe *= 2;
+	}
+
 	/* Blessed or cursed */
 	if (is_generated_blessed(otmp))
 	{
@@ -1640,7 +1646,7 @@ register struct obj *otmp;
     otmp->cursed = 0;
     otmp->blessed = 1;
     if (carried(otmp) && (confers_luck(otmp) || confers_unluck(otmp)))
-        set_moreluck();
+        updateabon();
     else if (Is_weight_changing_bag(otmp))
         otmp->owt = weight(otmp);
     else if (otmp->otyp == FIGURINE && otmp->timed)
@@ -1660,7 +1666,7 @@ register struct obj *otmp;
         old_light = arti_light_radius(otmp);
     otmp->blessed = 0;
     if (carried(otmp) && (confers_luck(otmp) || confers_unluck(otmp)))
-        set_moreluck();
+        updateabon();
     else if (Is_weight_changing_bag(otmp))
         otmp->owt = weight(otmp);
     if (otmp->lamplit)
@@ -1691,7 +1697,7 @@ register struct obj *otmp;
 			reset_remarm();
 		/* some cursed items need immediate updating */
 		if (carried(otmp) && (confers_luck(otmp) || confers_unluck(otmp))) {
-			set_moreluck();
+			updateabon();
 		}
 		else if (Is_weight_changing_bag(otmp)) {
 			otmp->owt = weight(otmp);
@@ -1722,7 +1728,7 @@ register struct obj *otmp;
         old_light = arti_light_radius(otmp);
     otmp->cursed = 0;
     if (carried(otmp) && (confers_luck(otmp) || confers_unluck(otmp)))
-        set_moreluck();
+        updateabon();
     else if (Is_weight_changing_bag(otmp))
         otmp->owt = weight(otmp);
     else if (otmp->otyp == FIGURINE && otmp->timed)

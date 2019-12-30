@@ -1302,7 +1302,7 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
     do_confuse = !rn2(12);
     if (do_confuse) {
         if (youdefend)
-            make_confused((HConfusion & TIMEOUT) + 4L, FALSE);
+            make_confused(itimeout_incr(HConfusion, 4L), FALSE);
         else
             mdef->mconf = 1;
     }
@@ -2919,6 +2919,10 @@ struct obj* otmp;
 		|| objects[otyp].oc_oprop == WARN_GNOLL
 		|| objects[otyp].oc_oprop2 == WARN_GNOLL
 		|| objects[otyp].oc_oprop3 == WARN_GNOLL
+
+		|| objects[otyp].oc_oprop == WARN_GNOME
+		|| objects[otyp].oc_oprop2 == WARN_GNOME
+		|| objects[otyp].oc_oprop3 == WARN_GNOME
 
 		|| objects[otyp].oc_oprop == WARN_OGRE
 		|| objects[otyp].oc_oprop2 == WARN_OGRE

@@ -520,6 +520,7 @@ register schar n;
         u.uluck = LUCKMAX;
 }
 
+/* OBSOLETE -- JG */
 int
 stone_luck(uncursed_confers_extra_luck)
 boolean uncursed_confers_extra_luck; /* So I can't think up of a good name.  So sue me. --KAA */
@@ -830,6 +831,7 @@ struct obj* uitem;
 				|| ((objects[otyp].oc_power_permissions & PERMITTED_RACE_ELF) && (monster->data->mflags2 & M2_ELF))
 				|| ((objects[otyp].oc_power_permissions & PERMITTED_RACE_DWARF) && (monster->data->mflags2 & M2_DWARF))
 				|| ((objects[otyp].oc_power_permissions & PERMITTED_RACE_GNOLL) && (monster->data->mflags2 & M2_GNOLL))
+				|| ((objects[otyp].oc_power_permissions & PERMITTED_RACE_GNOME) && (monster->data->mflags2 & M2_GNOME))
 				|| ((objects[otyp].oc_power_permissions & PERMITTED_RACE_ORC) && (monster->data->mflags2 & M2_ORC))
 				)
 			{
@@ -886,6 +888,7 @@ struct obj* uitem;
 
 
 /* there has just been an inventory change affecting a luck-granting item */
+/* OBSOLETE --JG */
 void
 set_moreluck()
 {
@@ -1733,6 +1736,14 @@ updateabon()
 	u.umcbonus = 0;
 	u.uspellcastingbonus = 0;
 
+	u.moreluck = 0;
+	int blessed_luck_count = 0;
+	int uncursed_luck_count = 0;
+	int cursed_luck_count = 0;
+	u.luck_does_not_timeout = 0;
+	u.unluck_does_not_timeout = 0;
+
+
 	/* Set wounded legs here */
 	if (Wounded_legs)
 		ABONUS(A_DEX) = -1;
@@ -1741,6 +1752,8 @@ updateabon()
 	for (uitem = invent; uitem; uitem = uitem->nobj)
 	{
 		otyp = uitem->otyp;
+
+		/* Following are for non-spellbooks and non-wands */
 		if (!object_uses_spellbook_wand_flags_and_properties(uitem))
 		{
 			boolean inappr = inappropriate_character_type(uitem);
@@ -1873,8 +1886,36 @@ updateabon()
 				}
 			}
 		}
+
+		/* Following are for all items */
+		/* Luck */
+		if (artifact_confers_luck(uitem) || confers_luck(uitem))
+		{
+			/* Note cursed luckstone is now handled in confers_unluck */
+			u.moreluck += uitem->quan;
+			if (uitem->blessed)
+				blessed_luck_count += uitem->quan;
+			else
+				uncursed_luck_count += uitem->quan;
+		}
+
+		if (artifact_confers_unluck(uitem) || confers_unluck(uitem))
+		{
+			u.moreluck -= uitem->quan;
+			if(uitem->cursed)
+				cursed_luck_count += uitem->quan;
+			else
+				uncursed_luck_count -= uitem->quan;
+		}
+
 	}
-	set_moreluck();
+
+	if (blessed_luck_count > cursed_luck_count)
+		u.luck_does_not_timeout = 1;
+
+	if (cursed_luck_count > blessed_luck_count)
+		u.unluck_does_not_timeout = 1;
+
 	find_ac();
 	find_mc();
 	context.botl = 1;

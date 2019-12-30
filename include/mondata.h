@@ -120,6 +120,7 @@
 #define is_dwarf(ptr) (((ptr)->mflags2 & M2_DWARF) != 0L)
 #define is_gnoll(ptr) (((ptr)->mflags2 & M2_GNOLL) != 0L)
 #define is_orc(ptr) (((ptr)->mflags2 & M2_ORC) != 0L)
+#define is_gnome(ptr) (((ptr)->mflags2 & M2_GNOME) != 0L)
 #define is_human(ptr) (((ptr)->mflags2 & M2_HUMAN) != 0L)
 #define your_race(ptr) (((ptr)->mflags2 & urace.selfmask) != 0L)
 #define is_bat(ptr)                                         \
@@ -191,7 +192,9 @@
 #define mon_has_bloodlust(mtmp) (has_bloodlust((mtmp)->data) || (mtmp)->hasbloodlust)
 #define mon_disregards_own_health(mtmp) (disregards_own_health((mtmp)->data) || (mtmp)->disregards_own_health)
 #define mon_disregards_enemy_strength(mtmp) (disregards_enemy_strength((mtmp)->data) || (mtmp)->disregards_enemy_strength)
-
+#define does_split_upon_hit(ptr) (((ptr)->mflags4 & M4_SPLITS_UPON_HIT) != 0L)
+#define is_vegetarian_food(ptr) (((ptr)->mflags4 & M4_VEGETARIAN_FOOD) != 0L)
+#define is_vegan_food(ptr) (((ptr)->mflags4 & M4_VEGAN_FOOD) != 0L)
 
 #define is_mplayer(ptr) \
     (((ptr) >= &mons[PM_ARCHEOLOGIST]) && ((ptr) <= &mons[PM_WIZARD]))
@@ -258,15 +261,10 @@
 /* G_NOCORPSE monsters might still be swallowed as a purple worm */
 /* Maybe someday this could be in mflags... */
 #define vegan(ptr)                                                 \
-    ((ptr)->mlet == S_BLOB || (ptr)->mlet == S_JELLY               \
-     || (ptr)->mlet == S_FUNGUS || (ptr)->mlet == S_VORTEX         \
-     || (ptr)->mlet == S_LIGHT                                     \
-     || ((ptr)->mlet == S_ELEMENTAL && (ptr) != &mons[PM_STALKER]) \
-     || ((ptr)->mlet == S_GOLEM && (ptr) != &mons[PM_FLESH_GOLEM]  \
-         && (ptr) != &mons[PM_LEATHER_GOLEM]) || noncorporeal(ptr))
+    (is_vegan_food(ptr) || noncorporeal(ptr))
+
 #define vegetarian(ptr) \
-    (vegan(ptr)         \
-     || ((ptr)->mlet == S_PUDDING && (ptr) != &mons[PM_BLACK_PUDDING]))
+    (vegan(ptr) || is_vegetarian_food(ptr))
 
 /* monkeys are tameable via bananas but not pacifiable via food,
    otherwise their theft attack could be nullified too easily;

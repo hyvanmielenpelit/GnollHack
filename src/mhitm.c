@@ -492,8 +492,7 @@ register struct monst *magr, *mdef;
 							obfree(omonwep, (struct obj*)0);
 						endforloop = TRUE;
 					}
-					if ((mdef->data == &mons[PM_BLACK_PUDDING]
-						|| mdef->data == &mons[PM_BROWN_PUDDING])
+					if (does_split_upon_hit(mdef->data)
 						&& (otmp && (objects[otmp->otyp].oc_material == MAT_IRON
 							|| objects[otmp->otyp].oc_material == MAT_METAL))
 						&& mdef->mhp > 1

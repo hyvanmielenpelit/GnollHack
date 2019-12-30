@@ -1636,7 +1636,7 @@ int dieroll;
 		if (mon->mtame && !destroyed)
 			monflee(mon, 10 * rnd(tmp), FALSE, FALSE);
 	}
-	if ((mdat == &mons[PM_BLACK_PUDDING] || mdat == &mons[PM_BROWN_PUDDING])
+	if ((does_split_upon_hit(mdat))
 		/* pudding is alive and healthy enough to split */
 		&& mon->mhp > 1 && !mon->mcancelled
 		/* iron weapon using melee or polearm hit [3.6.1: metal weapon too;

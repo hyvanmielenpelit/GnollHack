@@ -57,6 +57,7 @@
 		|| (Elf_warning && mon->data->mflags2 & M2_ELF) \
 		|| (Dwarf_warning && mon->data->mflags2 & M2_DWARF) \
 		|| (Gnoll_warning && mon->data->mflags2 & M2_GNOLL) \
+		|| (Gnome_warning && mon->data->mflags2 & M2_GNOME) \
 		|| (Human_warning && mon->data->mflags2 & M2_HUMAN) \
 		|| (Lycanthrope_warning && mon->data->mflags2 & M2_WERE) \
 		|| (Angel_warning && mon->data->mlet == S_ANGEL) \

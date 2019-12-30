@@ -265,8 +265,7 @@ dosit()
 				{
                     if (level.flags.nommap) {
                         pline("A terrible drone fills your head!");
-                        make_confused((HConfusion & TIMEOUT) + (long) rnd(30),
-                                      FALSE);
+                        make_confused(itimeout_incr(HConfusion, rnd(30)), FALSE);
                     } else {
                         pline("An image forms in your mind.");
                         do_mapping();
@@ -300,7 +299,7 @@ dosit()
                 break;
             case 13:
                 Your("mind turns into a pretzel!");
-                make_confused((HConfusion & TIMEOUT) + (long) rn1(7, 16),
+                make_confused(itimeout_incr(HConfusion, rnd(7) + 15),
                               FALSE);
                 break;
             default:

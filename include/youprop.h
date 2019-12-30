@@ -257,6 +257,10 @@
 #define EGnoll_warning u.uprops[WARN_GNOLL].extrinsic
 #define Gnoll_warning (HGnoll_warning || EGnoll_warning)
 
+#define HGnome_warning u.uprops[WARN_GNOME].intrinsic
+#define EGnome_warning u.uprops[WARN_GNOME].extrinsic
+#define Gnome_warning (HGnome_warning || EGnome_warning)
+
 #define HOgre_warning u.uprops[WARN_OGRE].intrinsic
 #define EOgre_warning u.uprops[WARN_OGRE].extrinsic
 #define Ogre_warning (HOgre_warning || EOgre_warning)
@@ -276,7 +280,8 @@
 
 #define Any_warning (Undead_warning || Demon_warning || Orc_warning || Troll_warning \
 					|| Giant_warning || Dragon_warning || Elf_warning || Dwarf_warning \
-					|| Gnoll_warning || Human_warning || Lycanthrope_warning || Angel_warning || Ogre_warning)
+					|| Gnoll_warning || Human_warning || Lycanthrope_warning || Angel_warning \
+					|| Ogre_warning || Gnome_warning)
 
 
 #define HSearching u.uprops[SEARCHING].intrinsic

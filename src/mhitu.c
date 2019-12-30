@@ -1651,8 +1651,7 @@ register struct obj* omonwep;
                     && (objects[otmp->otyp].oc_material == MAT_IRON
                         /* relevant 'metal' objects are scalpel and tsurugi */
                         || objects[otmp->otyp].oc_material == MAT_METAL)
-                    && (u.umonnum == PM_BLACK_PUDDING
-                        || u.umonnum == PM_BROWN_PUDDING)) {
+                    && (u.umonnum >= 0 && does_split_upon_hit(&mons[u.umonnum]))) {
                     if (tmp > 1)
                         exercise(A_STR, FALSE);
                     /* inflict damage now; we know it can't be fatal */
@@ -2269,7 +2268,7 @@ register struct obj* omonwep;
                 You("are getting even more confused.");
             else
                 You("are getting confused.");
-            make_confused(HConfusion + dmg, FALSE);
+            make_confused(itimeout_incr(HConfusion, dmg), FALSE);
         }
         dmg = 0;
         break;
@@ -3116,7 +3115,7 @@ struct attack *mattk;
                     pline("%s gaze confuses you!", s_suffix(Monnam(mtmp)));
                 else
                     You("are getting more and more confused.");
-                make_confused(HConfusion + conf, FALSE);
+                make_confused(itimeout_incr(HConfusion, conf), FALSE);
                 stop_occupation();
             }
         }

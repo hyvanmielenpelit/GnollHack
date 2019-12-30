@@ -722,7 +722,7 @@ int spellnum;
             dmg = (int) mtmp->m_lev;
             if (Half_spell_damage)
                 dmg = (dmg + 1) / 2;
-            make_confused(HConfusion + dmg, TRUE);
+            make_confused(itimeout_incr(HConfusion, dmg), TRUE);
             if (Hallucination)
                 You_feel("%s!", oldprop ? "trippier" : "trippy");
             else

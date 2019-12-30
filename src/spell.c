@@ -147,7 +147,7 @@ struct obj *bp;
         break;
     case 4:
         pline("These runes were just too much to comprehend.");
-        make_confused(HConfusion + rn1(7, 16), FALSE);
+        make_confused(itimeout_incr(HConfusion, rn1(7, 16)), FALSE);
         break;
     case 5:
         pline_The("book was coated with contact poison!");
@@ -354,7 +354,10 @@ learn(VOID_ARGS)
     /* JDS: lenses give 50% faster reading; 33% smaller read time */
     if (context.spbook.delay && Enhanced_vision && rn2(2))
         context.spbook.delay++;
-    if (Confusion) { /* became confused while learning */
+    if (Confusion) 
+	{ /* became confused while learning */
+		context.spbook.reading_result = READING_RESULT_CONFUSED;
+#if 0
         (void) confused_book(book);
         context.spbook.book = 0; /* no longer studying */
         context.spbook.o_id = 0;
@@ -363,12 +366,54 @@ learn(VOID_ARGS)
         nomovemsg = 0;
         context.spbook.delay = 0;
         return 0;
+#endif
     }
     if (context.spbook.delay) {
         /* not if (context.spbook.delay++), so at end delay == 0 */
         context.spbook.delay++;
         return 1; /* still busy */
     }
+
+
+	boolean reading_result = context.spbook.reading_result;
+
+	if (reading_result == READING_RESULT_FAIL)
+	{
+		boolean gone = FALSE;
+
+		if (book->cursed)
+			gone = cursed_book(book);
+		else if (!book->blessed && !rn2(2))
+		{
+			pline("These runes were just too much to comprehend.");
+			make_confused(itimeout_incr(HConfusion, rnd(4) + 5), FALSE);
+		}
+		else
+		{
+			pline("Despite your best efforts, you fail to understand the spell in %s.", the(cxname(book)));
+		}
+
+		if (gone || !rn2(2)) {
+			if (!gone)
+				pline_The("spellbook crumbles to dust!");
+			if (!objects[book->otyp].oc_name_known
+				&& !objects[book->otyp].oc_uname)
+				docall(book);
+			useup(book);
+		}
+		else
+			book->in_use = FALSE;
+		return 0;
+	}
+	else if (reading_result == READING_RESULT_CONFUSED)
+	{
+		if (!confused_book(book))
+		{
+			book->in_use = FALSE;
+		}
+		return 0;
+	}
+
     exercise(A_WIS, TRUE); /* you're studying. */
     booktype = book->otyp;
     if (booktype == SPE_BOOK_OF_THE_DEAD) {
@@ -662,18 +707,27 @@ register struct obj *spellbook;
             }
         }
 
+		/* Now, check the result */
+		context.spbook.reading_result = READING_RESULT_SUCCESS;
         if (too_hard)
 		{
+			context.spbook.reading_result = READING_RESULT_FAIL;
+#if 0
 			boolean gone = FALSE;
 			
-			if(!rn2(2) && spellbook->cursed)
+			if(spellbook->cursed)
 				gone = cursed_book(spellbook);
+			else if (!spellbook->blessed && !rn2(2))
+			{
+				pline("These runes were just too much to comprehend.");
+				make_confused(itimeout_incr(HConfusion, rnd(4) + 5), FALSE);
+			}
 
             nomul(context.spbook.delay); /* study time */
             multi_reason = "reading a book";
             nomovemsg = 0;
             context.spbook.delay = 0;
-            if (gone || !rn2(3)) {
+            if (gone || !rn2(2)) {
                 if (!gone)
                     pline_The("spellbook crumbles to dust!");
                 if (!objects[spellbook->otyp].oc_name_known
@@ -683,10 +737,13 @@ register struct obj *spellbook;
             } else
                 spellbook->in_use = FALSE;
             return 1;
+#endif
         } 
 		else if (confused) 
 		{
-            if (!confused_book(spellbook))
+			context.spbook.reading_result = READING_RESULT_CONFUSED;
+#if 0
+			if (!confused_book(spellbook))
 			{
                 spellbook->in_use = FALSE;
             }
@@ -695,11 +752,12 @@ register struct obj *spellbook;
             nomovemsg = 0;
             context.spbook.delay = 0;
             return 1;
+#endif
         }
         spellbook->in_use = FALSE;
 
-		if (perusetext)
-			pline("The spellbook seems comprehensible enough.");
+//		if (perusetext)
+//			pline("The spellbook seems comprehensible enough.");
 
 		You("begin to %s the runes.",
 			spellbook->otyp == SPE_BOOK_OF_THE_DEAD ? "recite" : "memorize");

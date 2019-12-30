@@ -1284,6 +1284,7 @@ see_monsters()
 	int new_elf_warn_obj_cnt = 0;
 	int new_dwarf_warn_obj_cnt = 0;
 	int new_gnoll_warn_obj_cnt = 0;
+	int new_gnome_warn_obj_cnt = 0;
 	int new_ogre_warn_obj_cnt = 0;
 	int new_human_warn_obj_cnt = 0;
 	int new_were_warn_obj_cnt = 0;
@@ -1320,6 +1321,8 @@ see_monsters()
 			new_dwarf_warn_obj_cnt++;
 		if (Gnoll_warning && (mon->data->mflags2 & M2_GNOLL) != 0L)
 			new_gnoll_warn_obj_cnt++;
+		if (Gnome_warning && (mon->data->mflags2 & M2_GNOME) != 0L)
+			new_gnome_warn_obj_cnt++;
 		if (Ogre_warning && (mon->data->mlet == S_OGRE))
 			new_ogre_warn_obj_cnt++;
 		if (Human_warning && (mon->data->mflags2 & M2_HUMAN) != 0L)
@@ -1411,6 +1414,11 @@ see_monsters()
 						|| objects[otyp].oc_oprop2 == WARN_GNOLL
 						|| objects[otyp].oc_oprop3 == WARN_GNOLL)
 						new_count += new_gnoll_warn_obj_cnt;
+
+					if (objects[otyp].oc_oprop == WARN_GNOME
+						|| objects[otyp].oc_oprop2 == WARN_GNOME
+						|| objects[otyp].oc_oprop3 == WARN_GNOME)
+						new_count += new_gnome_warn_obj_cnt;
 
 					if (objects[otyp].oc_oprop == WARN_OGRE
 						|| objects[otyp].oc_oprop2 == WARN_OGRE

@@ -1109,7 +1109,7 @@ struct obj **optr;
             break;
         case 2:
             pline("%s you!", Tobjnam(obj, "confuse"));
-            make_confused((HConfusion & TIMEOUT) + (long) rnd(100), FALSE);
+            make_confused(itimeout_incr(HConfusion, rnd(100)), FALSE);
             break;
         case 3:
             if (!resists_blnd(&youmonst)) {

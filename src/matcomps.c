@@ -260,7 +260,7 @@ struct materialcomponentlist matlists[] =
 	{ SPE_FEAR,
 	"Mandrake root",
 	STRANGE_OBJECT,
-	5,
+	3,
 	{{MANDRAKE_ROOT, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS}, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP} },
 
 	{ SPE_MASS_FEAR,
@@ -360,11 +360,11 @@ struct materialcomponentlist matlists[] =
 	},
 
 	{ SPE_CREATE_CLAY_GOLEM,
-	"10 clay pebbles, spider silk",
+	"3 clay pebbles, spider silk",
 	STRANGE_OBJECT,
 	1,
 		{
-			{CLAY_PEBBLE, NOT_APPLICABLE, 10, MATCOMP_BLESSED_REQUIRED}, 
+			{CLAY_PEBBLE, NOT_APPLICABLE, 3, MATCOMP_BLESSED_REQUIRED}, 
 			{THREAD_OF_SPIDER_SILK, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
 			NO_MATCOMP,
 			NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
@@ -372,11 +372,11 @@ struct materialcomponentlist matlists[] =
 	},
 
 	{ SPE_CREATE_STONE_GOLEM,
-	"10 stone pebbles, spider silk",
+	"5 stone pebbles, spider silk",
 	STRANGE_OBJECT,
 	1,
 		{
-			{STONE_PEBBLE, NOT_APPLICABLE, 10, MATCOMP_NO_FLAGS},
+			{STONE_PEBBLE, NOT_APPLICABLE, 5, MATCOMP_NO_FLAGS},
 			{THREAD_OF_SPIDER_SILK, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
 			NO_MATCOMP,
 			NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
@@ -753,7 +753,7 @@ struct materialcomponentlist matlists[] =
 	{ SPE_LIGHTNING_BOLT,
 	"Nugget of copper ore",
 	STRANGE_OBJECT,
-	10,
+	20,
 		{
 			{NUGGET_OF_COPPER_ORE, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
 			NO_MATCOMP,
@@ -764,7 +764,7 @@ struct materialcomponentlist matlists[] =
 	{ SPE_THUNDERSTORM,
 	"Nugget of copper ore, sporal powder",
 	STRANGE_OBJECT,
-	5,
+	10,
 		{
 			{NUGGET_OF_COPPER_ORE, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
 			{HEAP_OF_SPORAL_POWDER, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
@@ -776,7 +776,7 @@ struct materialcomponentlist matlists[] =
 	{ SPE_FIRE_BOLT,
 	"Pinch of sulfurous ash",
 	STRANGE_OBJECT,
-	10,
+	50,
 		{
 			{PINCH_OF_SULFUROUS_ASH, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
 			NO_MATCOMP,
@@ -787,7 +787,7 @@ struct materialcomponentlist matlists[] =
 	{ SPE_FIREBALL,
 	"Pinch of sulfurous ash, piece of wood",
 	STRANGE_OBJECT,
-	5,
+	20,
 		{
 			{PINCH_OF_SULFUROUS_ASH, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
 			{PIECE_OF_WOOD, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
@@ -798,7 +798,7 @@ struct materialcomponentlist matlists[] =
 	{ SPE_FIRE_STORM,
 	"Sulfurous ash, wood, feather",
 	STRANGE_OBJECT,
-	3,
+	10,
 		{
 			{PINCH_OF_SULFUROUS_ASH, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
 			{PIECE_OF_WOOD, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
@@ -810,7 +810,7 @@ struct materialcomponentlist matlists[] =
 	{ SPE_METEOR_SWARM,
 	"2 pinches of sulfurous ash, 4 rocks",
 	STRANGE_OBJECT,
-	1,
+	10,
 		{
 			{PINCH_OF_SULFUROUS_ASH, NOT_APPLICABLE, 2, MATCOMP_NO_FLAGS},
 			{ROCK, NOT_APPLICABLE, 4, MATCOMP_NO_FLAGS},
@@ -833,7 +833,7 @@ struct materialcomponentlist matlists[] =
 	{ SPE_CONE_OF_COLD,
 	"Nugget of iron ore",
 	STRANGE_OBJECT,
-	3,
+	10,
 		{
 			{NUGGET_OF_IRON_ORE, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
 			NO_MATCOMP,
@@ -844,7 +844,7 @@ struct materialcomponentlist matlists[] =
 	{ SPE_ICE_STORM,
 	"Nugget of iron ore, feather",
 	STRANGE_OBJECT,
-	3,
+	10,
 		{
 			{NUGGET_OF_IRON_ORE, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
 			{FEATHER, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
@@ -910,7 +910,7 @@ struct materialcomponentlist matlists[] =
 	{ SPE_PROTECTION_FROM_CURSES,
 	"Blessed clove of garlic",
 	STRANGE_OBJECT,
-	5,
+	3,
 		{
 			{CLOVE_OF_GARLIC, NOT_APPLICABLE, 1, MATCOMP_BLESSED_REQUIRED},
 			NO_MATCOMP,
@@ -921,7 +921,7 @@ struct materialcomponentlist matlists[] =
 	{ SPE_PROTECTION_FROM_LIGHTNING,
 	"Pinch of sulfurous ash",
 	STRANGE_OBJECT,
-	5,
+	3,
 		{
 			{PINCH_OF_SULFUROUS_ASH, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
 			NO_MATCOMP,
@@ -932,9 +932,20 @@ struct materialcomponentlist matlists[] =
 	{ SPE_PROTECTION_FROM_COLD,
 	"Feather",
 	STRANGE_OBJECT,
-	5,
+	3,
 		{
 			{FEATHER, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
+			NO_MATCOMP,
+			NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
+		}
+	},
+
+	{ SPE_LOWER_WATER,
+	"Piece of wood",
+	STRANGE_OBJECT,
+	3,
+		{
+			{PIECE_OF_WOOD, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
 			NO_MATCOMP,
 			NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
 		}
@@ -943,7 +954,7 @@ struct materialcomponentlist matlists[] =
 	{ SPE_PROTECTION_FROM_FIRE,
 	"Clump of bat guano",
 	STRANGE_OBJECT,
-	5,
+	3,
 		{
 			{CLUMP_OF_BAT_GUANO, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
 			NO_MATCOMP,
@@ -954,7 +965,7 @@ struct materialcomponentlist matlists[] =
 	{ SPE_PROTECTION_FROM_ACID,
 	"Bone",
 	STRANGE_OBJECT,
-	5,
+	3,
 		{
 			{BONE, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
 			NO_MATCOMP,
@@ -965,7 +976,7 @@ struct materialcomponentlist matlists[] =
 	{ SPE_PROTECTION,
 	"Nugget of iron ore",
 	STRANGE_OBJECT,
-	5,
+	3,
 		{
 			{NUGGET_OF_IRON_ORE, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
 			NO_MATCOMP,
@@ -976,7 +987,7 @@ struct materialcomponentlist matlists[] =
 	{ SPE_PROTECTION_FROM_LYCANTHROPY,
 	"Sprig of wolfsbane",
 	STRANGE_OBJECT,
-	5,
+	3,
 		{
 			{SPRIG_OF_WOLFSBANE, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
 			NO_MATCOMP,
@@ -987,7 +998,7 @@ struct materialcomponentlist matlists[] =
 	{ SPE_PROTECTION_FROM_DEATH_MAGIC,
 	"Human skull",
 	STRANGE_OBJECT,
-	5,
+	3,
 		{
 			{HUMAN_SKULL, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
 			NO_MATCOMP,
@@ -998,7 +1009,7 @@ struct materialcomponentlist matlists[] =
 	{ SPE_PROTECTION_FROM_DISINTEGRATION,
 	"Pinch of sulfurous ash",
 	STRANGE_OBJECT,
-	5,
+	3,
 		{
 			{PINCH_OF_SULFUROUS_ASH, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
 			NO_MATCOMP,
@@ -1009,7 +1020,7 @@ struct materialcomponentlist matlists[] =
 	{ SPE_PROTECTION_FROM_PETRIFICATION,
 	"Lizard corpse",
 	STRANGE_OBJECT,
-	5,
+	3,
 		{
 			{CORPSE, PM_LIZARD, 1, MATCOMP_NO_FLAGS},
 			NO_MATCOMP,
@@ -1020,7 +1031,7 @@ struct materialcomponentlist matlists[] =
 	{ SPE_PROTECTION_FROM_SICKNESS,
 	"Ginseng root",
 	STRANGE_OBJECT,
-	5,
+	3,
 		{
 			{GINSENG_ROOT, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
 			NO_MATCOMP,
@@ -1174,7 +1185,7 @@ struct materialcomponentlist matlists[] =
 	{ SPE_PROTECTION_FROM_POISON,
 	"Sprig of wolfsbane",
 	STRANGE_OBJECT,
-	5,
+	3,
 		{
 			{SPRIG_OF_WOLFSBANE, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
 			NO_MATCOMP,
@@ -1215,6 +1226,27 @@ struct materialcomponentlist matlists[] =
 		}
 	},
 
+	{ SPE_CURSE,
+	"Clump of bat guano, holy symbol",
+	STRANGE_OBJECT,
+	1,
+		{
+			{CLUMP_OF_BAT_GUANO, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
+			{HOLY_SYMBOL, NOT_APPLICABLE, 1, MATCOMP_NOT_SPENT},
+			NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
+		}
+	},
+
+	{ SPE_DRAIN_LIFE,
+	"Human skull",
+	STRANGE_OBJECT,
+	30,
+		{
+			{HUMAN_SKULL, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
+			NO_MATCOMP,
+			NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
+		}
+	},
 
 
 	/* Array terminator, uses spellsgained */
