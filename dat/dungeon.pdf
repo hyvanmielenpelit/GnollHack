@@ -11,8 +11,7 @@ CHAINBRANCH:	"Sokoban" "oracle" + (1, 0) up
 RNDLEVEL:	"bigrm" "B" @ (10, 3) 40 10
 CHAINBRANCH:	"The Quest" "oracle" + (6, 2) portal
 BRANCH:		"Fort Ludios" @ (18, 4) portal
-BRANCH:		"Lesser Modron" @ (12, 5) portal
-BRANCH:		"Greater Modron" @ (23, 5) portal
+BRANCH:		"Plane of the Modron" @ (12, 5) portal
 RNDLEVEL:	"medusa" "none" @ (-5, 4) 4
 LEVALIGN:	chaotic
 LEVEL:		"castle" "none" @ (-1, 0)
@@ -24,7 +23,6 @@ DESCRIPTION:	mazelike
 DESCRIPTION:	hellish
 ALIGNMENT:	noalign
 BRANCH:		"Vlad's Tower" @ (9, 5) up
-BRANCH:		"Ultimate Modron" @ (14, 5) portal
 LEVEL:		"valley" "V" @ (1, 0)
 LEVEL:		"sanctum" "none" @ (-1, 0)
 LEVEL:		"juiblex" "J" @ (4, 4)
@@ -63,20 +61,10 @@ DESCRIPTION:	mazelike
 ALIGNMENT:	unaligned
 LEVEL:		"knox" "K" @ (-1, 0)
 
-DUNGEON:	"Lesser Modron" "M" (1, 0)
+DUNGEON:	"Plane of the Modron" "M" (1, 0)
 DESCRIPTION:	mazelike
 ALIGNMENT:	unaligned
 LEVEL:		"modron1" "M" @ (-1, 0)
-
-DUNGEON:	"Greater Modron" "N" (1, 0)
-DESCRIPTION:	mazelike
-ALIGNMENT:	unaligned
-LEVEL:		"modron2" "N" @ (-1, 0)
-
-DUNGEON:	"Ultimate Modron" "P" (1, 0)
-DESCRIPTION:	mazelike
-ALIGNMENT:	unaligned
-LEVEL:		"modron3" "P" @ (-1, 0)
 
 DUNGEON:	"Vlad's Tower" "T" (3, 0)
 PROTOFILE:	"tower"

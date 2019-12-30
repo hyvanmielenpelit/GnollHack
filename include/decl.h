@@ -72,10 +72,8 @@ E struct dgn_topology { /* special dungeon levels for speed */
 	xchar d_mines_dnum, d_quest_dnum;
 	d_level d_qstart_level, d_qlocate_level, d_nemesis_level;
     d_level d_knox_level;
-	d_level d_modron1_level;
-	d_level d_modron2_level;
-	d_level d_modron3_level;
-	xchar d_modron1_dnum, d_modron2_dnum, d_modron3_dnum;
+	d_level d_modron_level;
+	xchar d_modron_dnum;
 	d_level d_mineend_level;
     d_level d_sokoend_level;
 } dungeon_topology;
@@ -109,12 +107,8 @@ E struct dgn_topology { /* special dungeon levels for speed */
 #define qlocate_level           (dungeon_topology.d_qlocate_level)
 #define nemesis_level           (dungeon_topology.d_nemesis_level)
 #define knox_level              (dungeon_topology.d_knox_level)
-#define modron1_level           (dungeon_topology.d_modron1_level)
-#define modron2_level           (dungeon_topology.d_modron2_level)
-#define modron3_level           (dungeon_topology.d_modron3_level)
-#define modron1_dnum            (dungeon_topology.d_modron1_dnum)
-#define modron2_dnum            (dungeon_topology.d_modron2_dnum)
-#define modron3_dnum            (dungeon_topology.d_modron3_dnum)
+#define modron_level            (dungeon_topology.d_modron_level)
+#define modron_dnum             (dungeon_topology.d_modron_dnum)
 #define mineend_level           (dungeon_topology.d_mineend_level)
 #define sokoend_level           (dungeon_topology.d_sokoend_level)
 /* clang-format on */

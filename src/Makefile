@@ -703,7 +703,7 @@ $(O)sp_lev.tag: $(O)utility.tag $(DAT)\bigroom.des  $(DAT)\castle.des \
 	$(DAT)\medusa.des  $(DAT)\oracle.des   $(DAT)\tower.des  \
 	$(DAT)\yendor.des  $(DAT)\arch.des     $(DAT)\barb.des   \
 	$(DAT)\caveman.des $(DAT)\healer.des   $(DAT)\knight.des \
-	$(DAT)\modron1.des $(DAT)\modron2.des  $(DAT)\modron3.des \
+	$(DAT)\modron.des \
 	$(DAT)\monk.des    $(DAT)\priest.des   $(DAT)\ranger.des \
 	$(DAT)\rogue.des   $(DAT)\samurai.des  $(DAT)\sokoban.des \
 	$(DAT)\tourist.des $(DAT)\valkyrie.des $(DAT)\wizard.des
@@ -724,9 +724,7 @@ $(O)sp_lev.tag: $(O)utility.tag $(DAT)\bigroom.des  $(DAT)\castle.des \
 	$(U)levcomp caveman.des
 	$(U)levcomp healer.des
 	$(U)levcomp knight.des
-	$(U)levcomp modron1.des
-	$(U)levcomp modron2.des
-	$(U)levcomp modron3.des
+	$(U)levcomp modron.des
 	$(U)levcomp monk.des
 	$(U)levcomp priest.des
 	$(U)levcomp ranger.des

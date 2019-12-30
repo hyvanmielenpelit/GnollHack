@@ -121,9 +121,7 @@ typedef struct branch {
 #define Is_qlocate(x) (on_level(x, &qlocate_level))
 #define Is_nemesis(x) (on_level(x, &nemesis_level))
 #define Is_knox(x) (on_level(x, &knox_level))
-#define Is_modron1_level(x) (on_level(x, &modron1_level))
-#define Is_modron2_level(x) (on_level(x, &modron2_level))
-#define Is_modron3_level(x) (on_level(x, &modron3_level))
+#define Is_modron_level(x) (on_level(x, &modron_level))
 #define Is_mineend_level(x) (on_level(x, &mineend_level))
 #define Is_sokoend_level(x) (on_level(x, &sokoend_level))
 

@@ -690,9 +690,7 @@ struct level_map {
 				  { "fire", &fire_level },
                   { "juiblex", &juiblex_level },
                   { "knox", &knox_level },
-				  { "modron1", &modron1_level },
-				  { "modron2", &modron2_level },
-				  { "modron3", &modron3_level },
+				  { "modron", &modron_level },
 				  { "medusa", &medusa_level },
                   { "oracle", &oracle_level },
                   { "orcus", &orcus_level },
@@ -959,9 +957,7 @@ init_dungeons()
     sokoban_dnum = dname_to_dnum("Sokoban");
     mines_dnum = dname_to_dnum("The Gnomish Mines");
     tower_dnum = dname_to_dnum("Vlad's Tower");
-	modron1_dnum = dname_to_dnum("Lesser Modron");
-	modron2_dnum = dname_to_dnum("Greater Modron");
-	modron3_dnum = dname_to_dnum("Ultimate Modron");
+	modron_dnum = dname_to_dnum("Plane of the Modron");
 
     /* one special fixup for dummy surface level */
     if ((x = find_level("dummy")) != 0) {
@@ -1416,36 +1412,12 @@ d_level *lev;
     return (boolean) (lev->dnum == mines_dnum);
 }
 
-/* are you in a modron level? */
+/* are you in a modron 1? */
 boolean
 In_modron_level(lev)
 d_level* lev;
 {
-	return (boolean)(In_modron_level_1(lev) || In_modron_level_2(lev) || In_modron_level_3(lev));
-}
-
-/* are you in a modron 1? */
-boolean
-In_modron_level_1(lev)
-d_level* lev;
-{
-	return (boolean)(lev->dnum == modron1_dnum);
-}
-
-/* are you in a modron 2? */
-boolean
-In_modron_level_2(lev)
-d_level* lev;
-{
-	return (boolean)(lev->dnum == modron2_dnum);
-}
-
-/* are you in a modron 3? */
-boolean
-In_modron_level_3(lev)
-d_level* lev;
-{
-	return (boolean)(lev->dnum == modron3_dnum);
+	return (boolean)(lev->dnum == modron_dnum);
 }
 
 /*

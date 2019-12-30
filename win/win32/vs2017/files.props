@@ -39,9 +39,7 @@
     <Desfiles Include = "knox.des"/>
     <Desfiles Include = "medusa.des"/>
     <Desfiles Include = "mines.des"/>
-    <Desfiles Include = "modron1.des"/>
-    <Desfiles Include = "modron2.des"/>
-    <Desfiles Include = "modron3.des"/>
+    <Desfiles Include = "modron.des"/>
     <Desfiles Include = "monk.des"/>
     <Desfiles Include = "oracle.des"/>
     <Desfiles Include = "priest.des"/>
@@ -80,8 +78,6 @@
     <Levfiles Include = "valley.lev"/>
     <Levfiles Include = "knox.lev"/>
     <Levfiles Include = "modron1.lev"/>
-    <Levfiles Include = "modron2.lev"/>
-    <Levfiles Include = "modron3.lev"/>
     <Levfiles Include = "minefill.lev"/>
     <Levfiles Include = "minend-1.lev"/>
     <Levfiles Include = "minend-2.lev"/>
