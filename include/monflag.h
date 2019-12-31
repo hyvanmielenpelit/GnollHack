@@ -89,79 +89,79 @@
 #define MR2_FUMBLING 0x00400000L  /* clumsy */
 #define MR2_LAUGHING 0x00800000L  /* laughing uncontrollably */
 
-#define M1_NONE 0x00000000
-#define M1_FLY 0x00000001L         /* can fly or float */
-#define M1_SWIM 0x00000002L        /* can traverse water */
-#define M1_AMORPHOUS 0x00000004L   /* can flow under doors */
-#define M1_WALLWALK 0x00000008L    /* can phase thru rock */
-#define M1_CLING 0x00000010L       /* can cling to ceiling */
-#define M1_TUNNEL 0x00000020L      /* can tunnel thru rock */
-#define M1_NEEDPICK 0x00000040L    /* needs pick to tunnel */
-#define M1_CONCEAL 0x00000080L     /* hides under objects */
-#define M1_HIDE 0x00000100L        /* mimics, blends in with ceiling */
-#define M1_AMPHIBIOUS 0x00000200L  /* can survive underwater */
-#define M1_BREATHLESS 0x00000400L  /* doesn't need to breathe */
-#define M1_NOTAKE 0x00000800L      /* cannot pick up objects */
-#define M1_NOEYES 0x00001000L      /* no eyes to gaze into or blind */
-#define M1_NOHANDS 0x00002000L     /* no hands to handle things */
-#define M1_NOLIMBS 0x00006000L     /* no arms/legs to kick/wear on */
-#define M1_NOHEAD 0x00008000L      /* no head to behead */
-#define M1_MINDLESS 0x00010000L    /* has no mind--golem, zombie, mold */
-#define M1_HUMANOID 0x00020000L    /* has humanoid head/arms/torso */
-#define M1_ANIMAL 0x00040000L      /* has animal body */
-#define M1_SLITHY 0x00080000L      /* has serpent body */
-#define M1_UNSOLID 0x00100000L     /* has no solid or liquid body */
-#define M1_THICK_HIDE 0x00200000L  /* has thick hide or scales */
-#define M1_OVIPAROUS 0x00400000L   /* can lay eggs */
-#define M1_REGEN 0x00800000L       /* regenerates hit points */
-#define M1_SEE_INVIS 0x01000000L   /* can see invisible creatures */
-#define M1_TPORT 0x02000000L       /* can teleport */
-#define M1_TPORT_CNTRL 0x04000000L /* controls where it teleports to */
-#define M1_ACID 0x08000000L        /* acidic to eat */
-#define M1_POIS 0x10000000L        /* poisonous to eat */
-#define M1_CARNIVORE 0x20000000L   /* eats corpses */
-#define M1_HERBIVORE 0x40000000L   /* eats fruits */
-#define M1_OMNIVORE 0x60000000L    /* eats both */
+#define M1_NONE			0x00000000
+#define M1_FLY			0x00000001L         /* can fly or float */
+#define M1_SWIM			0x00000002L        /* can traverse water */
+#define M1_AMORPHOUS	0x00000004L   /* can flow under doors */
+#define M1_WALLWALK		0x00000008L    /* can phase thru rock */
+#define M1_CLING		0x00000010L       /* can cling to ceiling */
+#define M1_TUNNEL		0x00000020L      /* can tunnel thru rock */
+#define M1_NEEDPICK		0x00000040L    /* needs pick to tunnel */
+#define M1_CONCEAL		0x00000080L     /* hides under objects */
+#define M1_HIDE			0x00000100L        /* mimics, blends in with ceiling */
+#define M1_AMPHIBIOUS	0x00000200L  /* can survive underwater */
+#define M1_BREATHLESS	0x00000400L  /* doesn't need to breathe */
+#define M1_NOTAKE		0x00000800L      /* cannot pick up objects */
+#define M1_NOEYES		0x00001000L      /* no eyes to gaze into or blind */
+#define M1_NOHANDS		0x00002000L     /* no hands to handle things */
+#define M1_NOLIMBS		0x00006000L     /* no arms/legs to kick/wear on */
+#define M1_NOHEAD		0x00008000L      /* no head to behead */
+#define M1_MINDLESS		0x00010000L    /* has no mind--golem, zombie, mold */
+#define M1_HUMANOID		0x00020000L    /* has humanoid head/arms/torso */
+#define M1_ANIMAL		0x00040000L      /* has animal body */
+#define M1_SLITHY		0x00080000L      /* has serpent body */
+#define M1_UNSOLID		0x00100000L     /* has no solid or liquid body */
+#define M1_THICK_HIDE	0x00200000L  /* has thick hide or scales */
+#define M1_OVIPAROUS	0x00400000L   /* can lay eggs */
+#define M1_REGEN		0x00800000L       /* regenerates hit points */
+#define M1_SEE_INVIS	0x01000000L   /* can see invisible creatures */
+#define M1_TPORT		0x02000000L       /* can teleport */
+#define M1_TPORT_CNTRL	0x04000000L /* controls where it teleports to */
+#define M1_ACID			0x08000000L        /* acidic to eat */
+#define M1_POIS			0x10000000L        /* poisonous to eat */
+#define M1_CARNIVORE	0x20000000L   /* eats corpses */
+#define M1_HERBIVORE	0x40000000L   /* eats fruits */
+#define M1_OMNIVORE		0x60000000L    /* eats both */
 #ifdef NHSTDC
-#define M1_METALLIVORE 0x80000000UL /* eats metal */
+#define M1_METALLIVORE	0x80000000UL /* eats metal */
 #else
 #define M1_METALLIVORE 0x80000000L /* eats metal */
 #endif
 
-#define M2_NONE 0x00000000
-#define M2_NOPOLY 0x00000001L       /* players mayn't poly into one */
-#define M2_UNDEAD 0x00000002L       /* is walking dead */
-#define M2_WERE 0x00000004L         /* is a lycanthrope */
-#define M2_HUMAN 0x00000008L        /* is a human */
-#define M2_ELF 0x00000010L          /* is an elf */
-#define M2_DWARF 0x00000020L        /* is a dwarf */
-#define M2_GNOLL 0x00000040L        /* is a gnoll */
-#define M2_ORC 0x00000080L          /* is an orc */
-#define M2_DEMON 0x00000100L        /* is a demon */
-#define M2_MODRON 0x00000200L		/* is a modron */
-#define M2_GNOME 0x00000040L        /* is a gnome */
-#define M2_MERC 0x00000800L         /* is a guard or soldier */
-#define M2_LORD 0x00001000L         /* is a lord to its kind */
-#define M2_PRINCE 0x00002000L       /* is an overlord to its kind */
-#define M2_MINION 0x00004000L       /* is a minion of a deity */
-#define M2_GIANT 0x00008000L        /* is a giant */
+#define M2_NONE			0x00000000
+#define M2_NOPOLY		0x00000001L       /* players mayn't poly into one */
+#define M2_UNDEAD		0x00000002L       /* is walking dead */
+#define M2_WERE			0x00000004L         /* is a lycanthrope */
+#define M2_HUMAN		0x00000008L        /* is a human */
+#define M2_ELF			0x00000010L          /* is an elf */
+#define M2_DWARF		0x00000020L        /* is a dwarf */
+#define M2_GNOLL		0x00000040L        /* is a gnoll */
+#define M2_ORC			0x00000080L          /* is an orc */
+#define M2_DEMON		0x00000100L        /* is a demon */
+#define M2_MODRON		0x00000200L		/* is a modron */
+#define M2_GNOME		0x00000400L        /* is a gnome */
+#define M2_MERC			0x00000800L         /* is a guard or soldier */
+#define M2_LORD			0x00001000L         /* is a lord to its kind */
+#define M2_PRINCE		0x00002000L       /* is an overlord to its kind */
+#define M2_MINION		0x00004000L       /* is a minion of a deity */
+#define M2_GIANT		0x00008000L        /* is a giant */
 #define M2_SHAPESHIFTER 0x00010000L /* is a shapeshifting species */
-#define M2_MALE 0x00020000L         /* always male */
-#define M2_FEMALE 0x00040000L       /* always female */
-#define M2_NEUTER 0x00080000L       /* neither male nor female */
-#define M2_PNAME 0x00010000L        /* monster name is a proper name */
-#define M2_HOSTILE 0x00200000L      /* always starts hostile */
-#define M2_PEACEFUL 0x00400000L     /* always starts peaceful */
-#define M2_DOMESTIC 0x00800000L     /* can be tamed by feeding */
-#define M2_WANDER 0x01000000L       /* wanders randomly */
-#define M2_STALK 0x02000000L        /* follows you to other levels */
-#define M2_NASTY 0x04000000L        /* extra-nasty monster (more xp) */
-#define M2_ROCKTHROW 0x08000000L    /* throws boulders */
-#define M2_GREEDY 0x10000000L       /* likes gold */
-#define M2_JEWELS 0x20000000L       /* likes gems */
-#define M2_COLLECT 0x40000000L      /* picks up weapons and food */
+#define M2_MALE			0x00020000L         /* always male */
+#define M2_FEMALE		0x00040000L       /* always female */
+#define M2_NEUTER		0x00080000L       /* neither male nor female */
+#define M2_PNAME		0x00100000L        /* monster name is a proper name */
+#define M2_HOSTILE		0x00200000L      /* always starts hostile */
+#define M2_PEACEFUL		0x00400000L     /* always starts peaceful */
+#define M2_DOMESTIC		0x00800000L     /* can be tamed by feeding */
+#define M2_WANDER		0x01000000L       /* wanders randomly */
+#define M2_STALK		0x02000000L        /* follows you to other levels */
+#define M2_NASTY		0x04000000L        /* extra-nasty monster (more xp) */
+#define M2_ROCKTHROW	0x08000000L    /* throws boulders */
+#define M2_GREEDY		0x10000000L       /* likes gold */
+#define M2_JEWELS		0x20000000L       /* likes gems */
+#define M2_COLLECT		0x40000000L      /* picks up weapons and food */
 #ifdef NHSTDC
-#define M2_MAGIC 0x80000000UL /* picks up magic items */
+#define M2_MAGIC		0x80000000UL /* picks up magic items */
 #else
 #define M2_MAGIC 0x80000000L /* picks up magic items */
 #endif

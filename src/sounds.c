@@ -2019,6 +2019,10 @@ struct monst* mtmp;
 	}
 	else if (mtmp->mnum == PM_ORACLE || msound == MS_ORACLE)
 	{
+		Sprintf(ansbuf, "My name is %s.", MNAME(mtmp));
+		verbalize(ansbuf);
+		mtmp->u_know_mname = 1;
+
 		Sprintf(ansbuf, "I am the Oracle of Delphi.");
 		verbalize(ansbuf);
 	}
@@ -2031,6 +2035,10 @@ struct monst* mtmp;
 		}
 		else
 		{
+			Sprintf(ansbuf, "My name is %s.", MNAME(mtmp));
+			verbalize(ansbuf);
+			mtmp->u_know_mname = 1;
+
 			Sprintf(ansbuf, "I work for the DDPD.");
 			verbalize(ansbuf);
 		}
@@ -2052,6 +2060,8 @@ struct monst* mtmp;
 				Sprintf(ansbuf, "I am %s, a local %s.", MNAME(mtmp), mtmp->data->mname);
 			else
 				Sprintf(ansbuf, "I am a local %s.", mtmp->data->mname);
+
+			mtmp->u_know_mname = 1;
 			verbalize(ansbuf);
 		}
 	}

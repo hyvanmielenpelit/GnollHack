@@ -490,6 +490,9 @@ E char* FDECL(randomize_dwarf_name, (char*));
 E char* FDECL(randomize_elf_name, (char*));
 E char* FDECL(randomize_gnome_name, (char*));
 E char* FDECL(randomize_hobbit_name, (char*));
+E char* FDECL(randomize_gnoll_name, (char*));
+E char* FDECL(randomize_flind_name, (char*));
+E char* FDECL(randomize_human_name, (char*));
 
 /* ### do_wear.c ### */
 

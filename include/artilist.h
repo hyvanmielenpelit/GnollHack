@@ -154,9 +154,9 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
 		PHYS(5, 10), NO_DFNS, NO_CARY, TAMING, A_CHAOTIC, NON_PM, PM_GNOLL, 6000L,
 		NO_COLOR, HI_GOLD),
 
-	A("Wand of Orcus", "skull-headed wand-like mace", MACE_OF_DEATH, MACE_OF_DEATH, (AF_NOGEN | AF_RESTR | AF_NAME_KNOWN_WHEN_INVOKED), SPFX_NONE, SPFX_NONE, 0,
+	A("Wand of Orcus", "skull-headed obsidian mace", MACE_OF_DEATH, MACE_OF_DEATH, (AF_NOGEN | AF_RESTR | AF_NAME_KNOWN_WHEN_INVOKED), SPFX_NONE, SPFX_NONE, 0,
 		PHYS(5, 10), NO_DFNS, NO_CARY, WAND_OF_DEATH, A_CHAOTIC, NON_PM, NON_PM, 6000L,
-		NO_COLOR, CLR_WHITE),
+		NO_COLOR, CLR_BLACK),
 
 	/*
      *      Two problems:  1) doesn't let trolls regenerate heads,

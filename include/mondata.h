@@ -72,8 +72,8 @@
                           || (ptr) == &mons[PM_FLOATING_EYE]) \
                              ? 1                              \
                              : 2)
-#define nolimbs(ptr) (((ptr)->mflags1 & M1_NOLIMBS) != 0L) /*== M1_NOLIMBS)*/
-#define nohands(ptr) (((ptr)->mflags1 & M1_NOHANDS) != 0L || nolimbs(ptr))
+#define nolimbs(ptr) (((ptr)->mflags1 & M1_NOLIMBS) == M1_NOLIMBS) /* two bits */
+#define nohands(ptr) (((ptr)->mflags1 & M1_NOHANDS) != 0L) /* also covers no limbs because of the bit in M1_NOLIMBS  */
 #define notake(ptr) (((ptr)->mflags1 & M1_NOTAKE) != 0L)
 #define has_head(ptr) (((ptr)->mflags1 & M1_NOHEAD) == 0L)
 #define has_horns(ptr) (num_horns(ptr) > 0)

@@ -199,6 +199,20 @@ register struct monst* mtmp;
 	if (is_gnome(mtmp->data) && !has_mname(mtmp))
 		christen_monst(mtmp, upstart(randomize_gnome_name(mnamebuf)));
 
+	if (is_gnoll(mtmp->data) && !has_mname(mtmp))
+	{
+		if (mtmp->data == &mons[PM_FLIND] || mtmp->data == &mons[PM_FLIND_LORD])
+			christen_monst(mtmp, upstart(randomize_flind_name(mnamebuf)));
+		else
+			christen_monst(mtmp, upstart(randomize_gnoll_name(mnamebuf)));
+	}
+	if (is_human(mtmp->data) && !has_mname(mtmp))
+	{
+		if(mtmp->female)
+			christen_monst(mtmp, upstart(randomize_female_human_name(mnamebuf)));
+		else
+			christen_monst(mtmp, upstart(randomize_male_human_name(mnamebuf)));
+	}
 	if (mtmp->data == &mons[PM_HOBBIT] && !has_mname(mtmp))
 		christen_monst(mtmp, upstart(randomize_hobbit_name(mnamebuf)));
 }
