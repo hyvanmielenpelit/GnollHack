@@ -2536,7 +2536,7 @@ struct obj *otmp;
         break;
 	case EDIBLE_GAIN_STRENGTH:
 		if (otmp->otyp == HANDFUL_OF_SPINACH_LEAVES)
-			pline("This made you feel like %s!",
+			pline("That made you feel like %s!",
 				Hallucination ? "Swee'pea"
 				: !Fixed_abil ? "Popeye"
 				: (flags.female ? "Olive Oyl" : "Bluto"));
@@ -2545,7 +2545,7 @@ struct obj *otmp;
 		break;
 	case EDIBLE_GAIN_DEXTERITY:
 		if (otmp->otyp == BANANA)
-			pline("This made you feel like a monkey!");
+			pline("That made you feel like a monkey!");
 
 		(void)adjattrib(A_DEX, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1,
 			TRUE ? -1 : 1);
