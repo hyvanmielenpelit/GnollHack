@@ -1800,7 +1800,7 @@ const genericptr vptr2;
                internal order is ok if neither or just one is punctuation
                since letters have lower values so come out before punct */
             static const char punctclasses[] = {
-                S_LIZARD, S_EEL, S_GOLEM, S_GHOST, S_DEMON, S_HUMAN, '\0'
+                S_LIZARD, S_EEL, S_GOLEM, S_TREANT, S_GHOST, S_DEMON, S_HUMAN, '\0'
             };
 
             if ((punct = index(punctclasses, mcls1)) != 0)

@@ -419,6 +419,13 @@ struct obj {
 #define is_obj_unique(obj) is_otyp_unique((obj)->otyp)
 #define is_obj_nowish(obj) is_otyp_nowish((obj)->otyp)
 
+#define nonrotting_food(otyp) \
+    ((objects[(otyp)].oc_flags3 & O3_NONROTTING_FOOD) != 0)
+
+
+
+
+
 /* 'PRIZE' values override obj->corpsenm so prizes mustn't be object types
    which use that field for monster type (or other overloaded purpose) */
 #define MINES_PRIZE 1

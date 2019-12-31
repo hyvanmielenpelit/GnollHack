@@ -3167,6 +3167,7 @@ static const struct alt_spellings {
 	{ "sulfurous ash", PINCH_OF_SULFUROUS_ASH },
 	{ "sulphurous ash", PINCH_OF_SULFUROUS_ASH },
 	{ "ash", PINCH_OF_SULFUROUS_ASH },
+	{ "spinach", HANDFUL_OF_SPINACH_LEAVES },
 	{ "ring of death resistance", RIN_LIFE_PROTECTION },
 	{ "ring of protection from shape shifters", RIN_PROTECTION_FROM_SHAPE_CHANGERS },
 	{ "belt of giant strength", BELT_OF_HILL_GIANT_STRENGTH },
@@ -3315,10 +3316,10 @@ struct obj *no_wish;
         locked = unlocked = broken = 0;
     tvariety = RANDOM_TIN;
     mntmp = NON_PM;
-#define UNDEFINED 0
-#define EMPTY 1
-#define SPINACH 2
-    contents = UNDEFINED;
+#define CONTAINER_UNDEFINED 0
+#define CONTAINER_EMPTY 1
+#define CONTAINER_SPINACH 2
+    contents = CONTAINER_UNDEFINED;
     oclass = 0;
     actualn = dn = un = 0;
     wetness = 0;
@@ -3449,7 +3450,7 @@ struct obj *no_wish;
         } else if (!strncmpi(bp, "diluted ", l = 8)) {
             isdiluted = 1;
         } else if (!strncmpi(bp, "empty ", l = 6)) {
-            contents = EMPTY;
+            contents = CONTAINER_EMPTY;
         } else if (!strncmpi(bp, "small ", l = 6)) { /* glob sizes */
             /* "small" might be part of monster name (mimic, if wishing
                for its corpse) rather than prefix for glob size; when
@@ -3566,7 +3567,7 @@ struct obj *no_wish;
     }
     if ((p = strstri(bp, " of spinach")) != 0) {
         *p = 0;
-        contents = SPINACH;
+        contents = CONTAINER_SPINACH;
     }
 
     /*
@@ -3642,7 +3643,7 @@ struct obj *no_wish;
 			&& !strstri(bp, "finger ")) {
             if ((p = strstri(bp, "tin of ")) != 0) {
                 if (!strcmpi(p + 7, "spinach")) {
-                    contents = SPINACH;
+                    contents = CONTAINER_SPINACH;
                     mntmp = NON_PM;
                 } else {
                     tmp = tin_variety_txt(p + 7, &tinv);
@@ -3954,7 +3955,7 @@ struct obj *no_wish;
         goto retry;
     }
     if (!strcmpi(bp, "spinach")) {
-        contents = SPINACH;
+        contents = CONTAINER_SPINACH;
         typ = TIN;
         goto typfnd;
     }
@@ -4274,10 +4275,10 @@ struct obj *no_wish;
     /* set otmp->spe.  This may, or may not, use spe... */
     switch (typ) {
     case TIN:
-        if (contents == EMPTY) {
+        if (contents == CONTAINER_EMPTY) {
             otmp->corpsenm = NON_PM;
             otmp->spe = 0;
-        } else if (contents == SPINACH) {
+        } else if (contents == CONTAINER_SPINACH) {
             otmp->corpsenm = NON_PM;
             otmp->spe = 1;
         }
@@ -4428,7 +4429,7 @@ struct obj *no_wish;
 			otmp->elemental_enchantment = LIGHTNING_ENCHANTMENT;
 	}
 	/* empty for containers rather than for tins */
-    if (contents == EMPTY) {
+    if (contents == CONTAINER_EMPTY) {
         if (otmp->otyp == BAG_OF_TRICKS || otmp->otyp == HORN_OF_PLENTY) {
             if (otmp->spe > 0)
                 otmp->spe = 0;

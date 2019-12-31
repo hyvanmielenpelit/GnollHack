@@ -222,6 +222,7 @@
 #define M4_SPLITS_UPON_HIT			0x00000008		/* brown and black puddings */
 #define M4_VEGETARIAN_FOOD			0x00000010		/* puddings and other monsters for a vegetarian */
 #define M4_VEGAN_FOOD				0x00000020		/* monsters for a vegan */
+#define M4_NONROTTING_CORPSE		0x00000040		/* corpse does not rot */
 
 
 

@@ -237,7 +237,7 @@ boolean givemsg;
         else
             num = 1;
     }
-    (void) adjattrib(A_STR, (otmp && otmp->cursed) ? -num : num,
+    (void) adjattrib(A_STR, (otmp && otmp->cursed) ? -num : (otmp && otmp->blessed) ? num + rn2(2) : num,
                      givemsg ? -1 : 1);
 }
 

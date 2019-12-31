@@ -1524,7 +1524,7 @@ struct obj *body;
 #define ROT_AGE (250L)         /* age when corpses rot away */
 
     /* lizards and lichen don't rot or revive */
-    if (body->corpsenm == PM_LIZARD || body->corpsenm == PM_LICHEN)
+    if (nonrotting_corpse(body->corpsenm))
         return;
 
     action = ROT_CORPSE;             /* default action: rot away */
@@ -1885,9 +1885,8 @@ int x, y;
 }
 
 /* return TRUE if the corpse has special timing */
-#define special_corpse(num)                                                 \
-    (((num) == PM_LIZARD) || ((num) == PM_LICHEN) || (is_rider(&mons[num])) \
-      || ((num) == PM_PHOENIX) || (mons[num].mlet == S_TROLL))
+#define special_corpse(mnum)                                                 \
+    (nonrotting_corpse(mnum) || is_reviver_corpse(mnum))
 
 /*
  * OEXTRA note: Passing mtmp causes mtraits to be saved

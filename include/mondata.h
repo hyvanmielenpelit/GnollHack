@@ -129,6 +129,7 @@
 #define is_bird(ptr) ((ptr)->mlet == S_BAT && !is_bat(ptr))
 #define is_giant(ptr) (((ptr)->mflags2 & M2_GIANT) != 0L)
 #define is_golem(ptr) ((ptr)->mlet == S_GOLEM)
+#define is_treant(ptr) ((ptr)->mlet == S_TREANT)
 #define is_dragon(ptr) ((ptr)->mlet == S_DRAGON)
 #define is_domestic(ptr) (((ptr)->mflags2 & M2_DOMESTIC) != 0L)
 #define is_demon(ptr) (((ptr)->mflags2 & M2_DEMON) != 0L)
@@ -208,6 +209,7 @@
      || (ptr) == &mons[PM_ELF] || (ptr) == &mons[PM_HUMAN])
 /* return TRUE if the monster tends to revive */
 #define is_reviver(ptr) (((ptr)->mflags3 & M3_REVIVES_FROM_DEAD) != 0)
+#define is_reviver_corpse(mnum) ((mons[(mnum)].mflags3 & M3_REVIVES_FROM_DEAD) != 0)
 //(is_rider(ptr) || (ptr) == &mons[PM_PHOENIX] || (ptr)->mlet == S_TROLL)
 /* monsters whose corpses and statues need special handling;
    note that high priests and the Wizard of Yendor are flagged
@@ -266,6 +268,12 @@
 #define vegetarian(ptr) \
     (vegan(ptr) || is_vegetarian_food(ptr))
 
+#define nonrotting_corpse(mnum) \
+    ((mons[(mnum)].mflags4 & M4_NONROTTING_CORPSE) != 0)
+
+#define nonrotting_corpse_ptr(ptr) \
+    (((ptr)->mflags4 & M4_NONROTTING_CORPSE) != 0)
+
 /* monkeys are tameable via bananas but not pacifiable via food,
    otherwise their theft attack could be nullified too easily;
    dogs and cats can be tamed by anything they like to eat and are
@@ -278,6 +286,6 @@
      : (is_domestic(ptr) && (obj)->oclass == FOOD_CLASS                  \
         && ((ptr)->mlet != S_UNICORN                                     \
             || objects[(obj)->otyp].oc_material == MAT_VEGGY                 \
-            || ((obj)->otyp == CORPSE && (obj)->corpsenm == PM_LICHEN))))
+            || ((obj)->otyp == CORPSE && (((obj)->corpsenm == PM_LICHEN) || ((obj)->corpsenm == PM_WHITE_LICHEN)  || ((obj)->corpsenm == PM_BLACK_LICHEN))   ))))
 
 #endif /* MONDATA_H */

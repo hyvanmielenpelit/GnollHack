@@ -836,8 +836,7 @@ register struct obj *obj;
         if (mptr == &mons[PM_GHOUL]) {
             if (obj->otyp == CORPSE)
                 return (peek_at_iced_corpse_age(obj) + 50L <= monstermoves
-                        && fptr != &mons[PM_LIZARD]
-                        && fptr != &mons[PM_LICHEN])
+                        && !nonrotting_corpse_ptr(fptr))
                            ? DOGFOOD
                            : (starving && !vegan(fptr))
                               ? ACCFOOD
@@ -858,7 +857,7 @@ register struct obj *obj;
             return carni ? CADAVER : MANFOOD;
         case CORPSE:
             if ((peek_at_iced_corpse_age(obj) + 50L <= monstermoves
-                 && obj->corpsenm != PM_LIZARD && obj->corpsenm != PM_LICHEN
+                 && !nonrotting_corpse(obj->corpsenm)
                  && mptr->mlet != S_FUNGUS)
                 || (acidic(fptr) && !resists_acid(mon))
                 || (poisonous(fptr) && !resists_poison(mon)))

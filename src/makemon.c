@@ -775,6 +775,8 @@ register struct monst *mtmp;
 			}
 		}
 		break;
+	case S_TREANT:
+		break;
 	case S_DEMON:
         switch (mm) {
         case PM_BALROG:

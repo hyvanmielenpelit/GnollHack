@@ -745,7 +745,16 @@ boolean createcorpse;
 		break;
 		/* expired puddings will congeal into a large blob;
        like dragons, relies on the order remaining consistent */
-    case PM_GRAY_OOZE:
+	case PM_TREANT:
+	case PM_ELDER_TREANT:
+		obj = mksobj_at(PIECE_OF_WOOD, x, y, FALSE, FALSE);
+		if(obj)
+		{
+			obj->quan = rnd(mndx == PM_ELDER_TREANT ? 4 : 2);
+			obj->owt = weight(obj);
+		}
+		break;
+	case PM_GRAY_OOZE:
     case PM_BROWN_PUDDING:
     case PM_GREEN_SLIME:
     case PM_BLACK_PUDDING:

@@ -2699,7 +2699,8 @@ struct monst *mon;
     case PM_JUIBLEX:
     case PM_LEPRECHAUN:
     case PM_LICHEN:
-    case PM_LIZARD:
+	case PM_TREANT:
+	case PM_LIZARD:
     case PM_WOOD_NYMPH:
         return TRUE;
     default:

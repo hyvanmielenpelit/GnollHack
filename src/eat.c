@@ -27,7 +27,7 @@ STATIC_DCL void FDECL(start_tin, (struct obj *));
 STATIC_DCL int FDECL(eatcorpse, (struct obj *));
 STATIC_DCL void FDECL(start_eating, (struct obj *));
 STATIC_DCL void FDECL(fprefx, (struct obj *));
-STATIC_DCL void FDECL(fpostfx, (struct obj *));
+STATIC_DCL void FDECL(food_after_effect, (struct obj *));
 STATIC_DCL int NDECL(bite);
 STATIC_DCL int FDECL(edibility_prompts, (struct obj *));
 STATIC_DCL int FDECL(rottenfood, (struct obj *));
@@ -49,14 +49,8 @@ char msgbuf[BUFSZ];
 
 /* Rider corpses are treated as non-rotting so that attempting to eat one
    will be sure to reach the stage of eating where that meal is fatal */
-#define nonrotting_corpse(mnum) \
-    ((mnum) == PM_LIZARD || (mnum) == PM_LICHEN || is_rider(&mons[mnum]))
-
 /* non-rotting non-corpses; unlike lizard corpses, these items will behave
    as if rotten if they are cursed (fortune cookies handled elsewhere) */
-#define nonrotting_food(otyp) \
-    ((otyp) == LEMBAS_WAFER || (otyp) == CRAM_RATION)
-
 STATIC_OVL NEARDATA const char comestibles[] = { FOOD_CLASS, 0 };
 STATIC_OVL NEARDATA const char offerfodder[] = { FOOD_CLASS, AMULET_CLASS,
                                                  0 };
@@ -477,7 +471,7 @@ boolean message;
     if (piece->otyp == CORPSE || piece->globby)
         cpostfx(piece->corpsenm);
     else
-        fpostfx(piece);
+        food_after_effect(piece);
 
     if (carried(piece))
         useup(piece);
@@ -2114,7 +2108,7 @@ struct obj *otmp;
                   Hallucination ? "primo" : "yummy",
                   singular(otmp, xname));
         } else if (otmp->otyp == APPLE && otmp->cursed && !Sleep_resistance) {
-            ; /* skip core joke; feedback deferred til fpostfx() */
+            ; /* skip core joke; feedback deferred til food_after_effect() */
 
 #if defined(MAC) || defined(MACOSX)
         /* KMH -- Why should Unix have all the fun?
@@ -2486,25 +2480,32 @@ struct obj *otmp;
 
 /* called after consuming (non-corpse) food */
 STATIC_OVL void
-fpostfx(otmp)
+food_after_effect(otmp)
 struct obj *otmp;
 {
-    switch (otmp->otyp) {
-    case SPRIG_OF_WOLFSBANE:
+	if (!(otmp->oclass == FOOD_CLASS || (objects[otmp->otyp].oc_flags & O1_EDIBLE_NONFOOD)))
+		return;
+
+	if (rn2(100) >= objects[otmp->otyp].oc_critical_strike_percentage)
+		return;
+
+    switch (objects[otmp->otyp].oc_edible_effect) 
+	{
+    case EDIBLE_CURE_LYCANTHROPY:
         if (u.ulycn >= LOW_PM || is_were(youmonst.data))
             you_unwere(TRUE);
         break;
-    case CARROT:
+    case EDIBLE_CURE_BLIDNESS:
         if (!u.uswallow
             || !attacktype_fordmg(u.ustuck->data, AT_ENGL, AD_BLND))
             make_blinded((long) u.ucreamed, TRUE);
         break;
-    case FORTUNE_COOKIE:
+    case EDIBLE_READ_FORTUNE:
         outrumor(bcsign(otmp), BY_COOKIE);
         if (!Blind)
             u.uconduct.literate++;
         break;
-    case LUMP_OF_ROYAL_JELLY:
+    case EDIBLE_ROYAL_JELLY:
         /* This stuff seems to be VERY healthy! */
         gainstr(otmp, 1, TRUE);
         if (Upolyd) {
@@ -2533,7 +2534,39 @@ struct obj *otmp;
         if (!otmp->cursed)
             heal_legs(0);
         break;
-    case EGG:
+	case EDIBLE_GAIN_STRENGTH:
+		if (otmp->otyp == HANDFUL_OF_SPINACH_LEAVES)
+			pline("This made you feel like %s!",
+				Hallucination ? "Swee'pea"
+				: !Fixed_abil ? "Popeye"
+				: (flags.female ? "Olive Oyl" : "Bluto"));
+
+		gainstr(otmp, 1, TRUE);
+		break;
+	case EDIBLE_GAIN_DEXTERITY:
+		if (otmp->otyp == BANANA)
+			pline("This made you feel like a monkey!");
+
+		(void)adjattrib(A_DEX, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1,
+			TRUE ? -1 : 1);
+		break;
+	case EDIBLE_GAIN_CONSTITUTION:
+		(void)adjattrib(A_CON, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1,
+			TRUE ? -1 : 1);
+		break;
+	case EDIBLE_GAIN_INTELLIGENCE:
+		(void)adjattrib(A_INT, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1,
+			TRUE ? -1 : 1);
+		break;
+	case EDIBLE_GAIN_WISDOM:
+		(void)adjattrib(A_WIS, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1,
+			TRUE ? -1 : 1);
+		break;
+	case EDIBLE_GAIN_CHARISMA:
+		(void)adjattrib(A_CHA, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1,
+			TRUE ? -1 : 1);
+		break;
+	case EDIBLE_EGG:
         if (flesh_petrifies(&mons[otmp->corpsenm])) {
             if (!Stone_resistance
                 && !(poly_when_stoned(youmonst.data)
@@ -2547,13 +2580,13 @@ struct obj *otmp;
             /* note: no "tastes like chicken" message for eggs */
         }
         break;
-    case EUCALYPTUS_LEAF:
+    case EDIBLE_CURE_SICKNESS:
         if (Sick && !otmp->cursed)
             make_sick(0L, (char *) 0, TRUE, SICK_ALL);
         if (Vomiting && !otmp->cursed)
             make_vomiting(0L, TRUE);
         break;
-    case APPLE:
+    case EDIBLE_APPLE:
         if (otmp->cursed && !Sleep_resistance) {
             /* Snow White; 'poisoned' applies to [a subset of] weapons,
                not food, so we substitute cursed; fortunately our hero

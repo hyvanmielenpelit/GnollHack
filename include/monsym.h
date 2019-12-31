@@ -70,12 +70,13 @@ enum mon_class_types {
     S_DEMON      = 56, /* & */
     S_EEL        = 57, /* ; (fish) */
     S_LIZARD     = 58, /* : (reptiles) */
+	S_TREANT	 = 59, /* # */
 
-    S_WORM_TAIL  = 59, /* ~ */
-    S_MIMIC_DEF  = 60, /* ] */
+    S_WORM_TAIL  = 60, /* ~ */
+    S_MIMIC_DEF  = 61, /* ] */
 
 
-    MAXMCLASSES  = 61  /* number of monster classes */
+    MAXMCLASSES  = 62  /* number of monster classes */
 };
 
 /*
@@ -140,6 +141,7 @@ enum mon_class_types {
 #define DEF_DEMON       '&'
 #define DEF_EEL         ';'
 #define DEF_LIZARD      ':'
+#define DEF_TREANT      '#'
 
 #define DEF_INVISIBLE   'I'
 #define DEF_WORM_TAIL   '~'
