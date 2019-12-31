@@ -908,7 +908,7 @@ randomtruegem()
 int
 randomreagent(alsotruegems, reagentstyle)
 boolean alsotruegems;
-int reagentstyle; //0 = all, 1 = priest only, 2 = all but no priest
+int reagentstyle; //0 = all, 1 = priest only, 2 = wizard (no priest specific reagents)
 {
 	int otyp = 0;
 
@@ -919,77 +919,169 @@ int reagentstyle; //0 = all, 1 = priest only, 2 = all but no priest
 		if (Inhell && !rn2(4))
 			return PINCH_OF_SULFUROUS_ASH;
 
-		switch (rn2(15))
+		if(reagentstyle == 0)
 		{
-		case 0:
-			if(reagentstyle == 2)
+			switch (rn2(16))
+			{
+			case 0:
 				otyp = CLUMP_OF_BAT_GUANO;
-			else
-				otyp = SILVER_ARROW;
-			break;
-		case 1:
-			if (reagentstyle == 2)
+				break;
+			case 1:
 				otyp = THREAD_OF_SPIDER_SILK;
-			else
-				otyp = CLOVE_OF_GARLIC;
-			break;
-		case 2:
-			otyp = GINSENG_ROOT;
-			break;
-		case 3:
-			otyp = MANDRAKE_ROOT;
-			break;
-		case 4:
-			if (reagentstyle == 2)
-				otyp = THREAD_OF_SPIDER_SILK;
-			else
+				break;
+			case 2:
+				otyp = GINSENG_ROOT;
+				break;
+			case 3:
+				otyp = MANDRAKE_ROOT;
+				break;
+			case 4:
 				otyp = SPRIG_OF_WOLFSBANE;
-			break;
-		case 5:
-			otyp = THREAD_OF_SPIDER_SILK;
-			break;
-		case 6:
-			if (reagentstyle == 1)
+				break;
+			case 5:
+				otyp = THREAD_OF_SPIDER_SILK;
+				break;
+			case 6:
 				otyp = CLOVE_OF_GARLIC;
-			else
-				otyp = CLUMP_OF_BAT_GUANO;
-			break;
-		case 7:
-			otyp = PINCH_OF_SULFUROUS_ASH;
-			break;
-		case 8:
-			if (reagentstyle == 1)
-				otyp = CLOVE_OF_GARLIC;
-			else
+				break;
+			case 7:
+				otyp = PINCH_OF_SULFUROUS_ASH;
+				break;
+			case 8:
 				otyp = BONE;
-			break;
-		case 9:
-			if (reagentstyle == 2)
-				otyp = JET;
-			else
-				otyp = PEARL;
-			break;
-		case 10:
-			if (reagentstyle == 1)
-				otyp = SPRIG_OF_WOLFSBANE;
-			else
+				break;
+			case 9:
+				otyp = PIECE_OF_WOOD;
+				break;
+			case 10:
 				otyp = HEAP_OF_SPORAL_POWDER;
-			break;
-		case 11:
-			otyp = FEATHER;
-			break;
-		case 12:
-			otyp = BONE;
-			break;
-		case 13:
-			otyp = HUMAN_SKULL;
-			break;
-		case 14:
-			otyp = PIECE_OF_WOOD;
-			break;
-		default:
-			otyp = CLOVE_OF_GARLIC;
-			break;
+				break;
+			case 11:
+				otyp = FEATHER;
+				break;
+			case 12:
+				otyp = BONE;
+				break;
+			case 13:
+				otyp = HUMAN_SKULL;
+				break;
+			case 14:
+				otyp = NUGGET_OF_IRON_ORE;
+				break;
+			case 15:
+				otyp = NUGGET_OF_COPPER_ORE;
+				break;
+			default:
+				otyp = CLOVE_OF_GARLIC;
+				break;
+			}
+		}
+		else if (reagentstyle == 1)
+		{
+			/* priest */
+			if (reagentstyle == 0)
+			{
+				switch (rn2(14))
+				{
+				case 0:
+					otyp = CLUMP_OF_BAT_GUANO;
+					break;
+				case 1:
+					otyp = THREAD_OF_SPIDER_SILK;
+					break;
+				case 2:
+					otyp = GINSENG_ROOT;
+					break;
+				case 3:
+					otyp = MANDRAKE_ROOT;
+					break;
+				case 4:
+					otyp = SPRIG_OF_WOLFSBANE;
+					break;
+				case 5:
+					otyp = THREAD_OF_SPIDER_SILK;
+					break;
+				case 6:
+					otyp = CLOVE_OF_GARLIC;
+					break;
+				case 7:
+					otyp = PINCH_OF_SULFUROUS_ASH;
+					break;
+				case 8:
+					otyp = BONE;
+					break;
+				case 9:
+					otyp = PIECE_OF_WOOD;
+					break;
+				case 10:
+					otyp = HEAP_OF_SPORAL_POWDER;
+					break;
+				case 11:
+					otyp = FEATHER;
+					break;
+				case 12:
+					otyp = BONE;
+					break;
+				case 13:
+					otyp = HUMAN_SKULL;
+					break;
+				default:
+					otyp = CLOVE_OF_GARLIC;
+					break;
+				}
+			}
+		}
+		else if (reagentstyle == 2)
+		{
+			/* wizard */
+			switch (rn2(14))
+			{
+			case 0:
+				otyp = CLUMP_OF_BAT_GUANO;
+				break;
+			case 1:
+				otyp = THREAD_OF_SPIDER_SILK;
+				break;
+			case 2:
+				otyp = NUGGET_OF_IRON_ORE;
+				break;
+			case 3:
+				otyp = MANDRAKE_ROOT;
+				break;
+			case 4:
+				otyp = NUGGET_OF_COPPER_ORE;
+				break;
+			case 5:
+				otyp = THREAD_OF_SPIDER_SILK;
+				break;
+			case 6:
+				otyp = MAGIC_MUSHROOM;
+				break;
+			case 7:
+				otyp = PINCH_OF_SULFUROUS_ASH;
+				break;
+			case 8:
+				otyp = BONE;
+				break;
+			case 9:
+				otyp = PIECE_OF_WOOD;
+				break;
+			case 10:
+				otyp = HEAP_OF_SPORAL_POWDER;
+				break;
+			case 11:
+				otyp = FEATHER;
+				break;
+			case 12:
+				otyp = BONE;
+				break;
+			case 13:
+				otyp = HUMAN_SKULL;
+				break;
+			default:
+				otyp = PINCH_OF_SULFUROUS_ASH;
+				break;
+			}
 		}
 		return otyp;
 	}

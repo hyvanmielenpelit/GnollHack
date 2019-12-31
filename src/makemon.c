@@ -20,6 +20,7 @@ STATIC_DCL boolean FDECL(mk_gen_ok, (int, int, int));
 STATIC_DCL void FDECL(m_initgrp, (struct monst *, int, int, int, int));
 STATIC_DCL void FDECL(m_initweap, (struct monst *));
 STATIC_DCL void FDECL(m_initinv, (struct monst *));
+STATIC_DCL void FDECL(m_init_background, (struct monst*));
 STATIC_DCL boolean FDECL(makemon_rnd_goodpos, (struct monst *,
                                                unsigned, coord *));
 
@@ -179,6 +180,29 @@ long amount;
 	}
 	return 0;
 }
+
+STATIC_OVL void
+m_init_background(mtmp)
+register struct monst* mtmp;
+{
+	char mnamebuf[BUFSZ] = "";
+
+	if (is_dwarf(mtmp->data) && !has_mname(mtmp))
+		christen_monst(mtmp, upstart(randomize_dwarf_name(mnamebuf)));
+
+	if (is_orc(mtmp->data) && !has_mname(mtmp))
+		christen_monst(mtmp, upstart(rndorcname(mnamebuf)));
+
+	if (is_elf(mtmp->data) && !has_mname(mtmp))
+		christen_monst(mtmp, upstart(randomize_elf_name(mnamebuf)));
+
+	if (is_gnome(mtmp->data) && !has_mname(mtmp))
+		christen_monst(mtmp, upstart(randomize_gnome_name(mnamebuf)));
+
+	if (mtmp->data == &mons[PM_HOBBIT] && !has_mname(mtmp))
+		christen_monst(mtmp, upstart(randomize_hobbit_name(mnamebuf)));
+}
+
 
 STATIC_OVL void
 m_initweap(mtmp)
@@ -2136,6 +2160,8 @@ int mmflags;
             m_initweap(mtmp); /* equip with weapons / armor */
         m_initinv(mtmp); /* add on a few special items incl. more armor */
         m_dowear(mtmp, TRUE);
+
+		m_init_background(mtmp);
 
         if (!rn2(100) && is_domestic(ptr)
             && can_saddle(mtmp) && !which_armor(mtmp, W_SADDLE)) {

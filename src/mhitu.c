@@ -2427,7 +2427,7 @@ register struct obj* omonwep;
 		}
 	}
 
-	/* Life drain */
+	/* Life leech */
 	if (mattk->aatyp == AT_WEAP && omonwep && (objects[omonwep->otyp].oc_aflags & A1_LIFE_LEECH) && eligible_for_extra_damage(omonwep, &youmonst, mtmp)
 		&& (
 		((objects[omonwep->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)

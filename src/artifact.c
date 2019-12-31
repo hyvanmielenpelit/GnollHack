@@ -1576,7 +1576,16 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                 mdef->m_lev--;
                 drain /= 2;
                 if (drain)
-                    healup(drain, 0, FALSE, FALSE, FALSE, FALSE, FALSE);
+				{
+					if (youattack)
+						healup(drain, 0, FALSE, FALSE, FALSE, FALSE, FALSE);
+					else
+					{
+						magr->mhp += drain;
+						if (magr->mhp > magr->mhpmax)
+							magr->mhp = magr->mhpmax;
+					}
+				}
             }
             return vis;
         } else { /* youdefend */

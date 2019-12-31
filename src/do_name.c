@@ -1159,7 +1159,6 @@ const char *name;
         buf[PL_PSIZ - 1] = '\0';
     }
     new_mname(mtmp, lth); /* removes old name if one is present */
-	free_umname(mtmp); /* remove uname if there is one */
     if (lth)
         Strcpy(MNAME(mtmp), name);
     return mtmp;
@@ -2285,6 +2284,156 @@ char *s;
     }
     return s;
 }
+
+
+char*
+randomize_dwarf_name(s)
+char* s;
+{
+	static const char* start[] = { "th", "m", "d", "thr", "g",
+		"d", "t", "l", "b", "", "n", "f", "fr", "gr", "aggr" };
+	static const char* v[] = { "a", "e," "i", "o", "u", "u", "eo", "y" };
+	static const char* middle_vowel_end[] = { "l", "r", "g", "n" };
+	static const char* mv[] = { "a", "e," "i", "o", "u" };
+	static const char* middle_novowel_end[] = { "rog", "rg" };
+	static const char* end_previous_vowel[] = { "din", "ddin", "rdin", "rin", "in", "mli", "lin", "nin", "sek", "rek", "rim", "im" , "r", "ri", "gas", "m", "dis", "di" };
+	static const char* end_previous_novowel[] = { "din", "rin", "in", "lin", "rim", "im", "ri", "as", "dis" };
+
+	if (s) {
+		strcpy(s, "");
+		if (!rn2(4))
+		{
+			/* with middle syllable */
+			/* with no vowel end*/
+			if(!rn2(3))
+				Sprintf(eos(s), "%s%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
+					middle_novowel_end[rn2(SIZE(middle_novowel_end))], end_previous_novowel[rn2(SIZE(end_previous_novowel))]);
+			else
+				Sprintf(eos(s), "%s%s%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
+					middle_vowel_end[rn2(SIZE(middle_vowel_end))], mv[rn2(SIZE(mv))], end_previous_vowel[rn2(SIZE(end_previous_vowel))]);
+		}
+		else
+			Sprintf(eos(s), "%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
+				end_previous_vowel[rn2(SIZE(end_previous_vowel))]);
+	}
+	return s;
+}
+
+char*
+randomize_elf_name(s)
+char* s;
+{
+	static const char* start[] = { "", "", "", "g", "gal", "b", "c", "cel",
+		"d", "l", "b", "n", "f", "f", "gl", "gw" };
+	static const char* v[] = { "a", "e", "i", "o", "ae", "ea", "eo" };
+	static const char* middle_vowel_end[] = { "l", "m", "g", "n", "br", "dr", "lemm", "ld", "lr", "r", "ng", "lg" };
+	static const char* mv[] = { "a", "e", "i", "o" };
+	static const char* middle_novowel_end[] = { "lad", "len", "m", "r", "l", "ren", "n", "galm", "galn", "ngr", "ng", "nr", "in", "th", "dhr", "gl", 
+		"ht", "bl", "thr", "rd", "mr", "nd", "nn" };
+	static const char* end_previous_vowel[] = { "riel", "rie", "drie", "driel", "dras", "dros", "drod", "dras", "ros", "rod", 
+		"nael", "dhel", "n", "d", "r", "wen", "brian", "bor", "mbrian", "mbor", "rdan", "nor", "ron", 
+		"lin", "dil", "hil", "dhil", "rdhil", "kil", "re", "we", "nd", "l", "lye", "dhon", "thil", "dor", "l-galad", "ndor", "las", "dir", "dreth",
+		"phin", "lodh" };
+	static const char* end_previous_novowel[] = { "iel", "ie", "as", "os", "od", "ael", "an", "on", "arfin", "olfin", "ion", "ien", "or",
+		"in", "un", "ellas", "anel", "odel", "uil" };
+
+	if (s) {
+		strcpy(s, "");
+		if (rn2(3))
+		{
+			/* with middle syllable */
+			/* with no vowel end*/
+			if (!rn2(2))
+				Sprintf(s, "%s%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
+					middle_novowel_end[rn2(SIZE(middle_novowel_end))], end_previous_novowel[rn2(SIZE(end_previous_novowel))]);
+			else
+				Sprintf(s, "%s%s%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
+					middle_vowel_end[rn2(SIZE(middle_vowel_end))], mv[rn2(SIZE(mv))], end_previous_vowel[rn2(SIZE(end_previous_vowel))]);
+		}
+		else
+			Sprintf(s, "%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
+				end_previous_vowel[rn2(SIZE(end_previous_vowel))]);
+	}
+	return s;
+}
+
+char*
+randomize_gnome_name(s)
+char* s;
+{
+	static const char* start[] = { "", "", "", "g", "h", "b", "p",
+		"d", "l", "br", "n", "f", "sh", "w", "r", "z", "t", "fr", "gl", "v", "wr", "sch", "gn" };
+	static const char* v[] = { "a", "e", "i", "o", "u", "u", "y", "ee", "oo", "uu" };
+	static const char* middle_vowel_end[] = { "l", "lg", "m", "n", "lst", "lv", "dd", "mpn", "r", "ld", "rk", "nk", "rl", "d", "v", "rr", "pp", "shl" };
+	static const char* mv[] = { "a", "e", "i", "o", "u", "y" };
+	static const char* middle_novowel_end[] = { "m", "r", "l", "n" "ss", "s", "ll", 
+		"mbl", "rn", "bl", "thr", "rd", "mr", "nd", "nn", "mp", "p", "rg", "pp", "lb", "shl", "rb", "lfr", "nk" };
+	static const char* end_previous_vowel[] = { "cc", "ck", "x", "b", "n", "m", "ll", "nock", "wick", "wock", "mil",
+		"k", "nn", "nottin", "mottin", "noodle", "lla", "ddo", "mip", "bell" };
+	static const char* end_previous_novowel[] = { "a", "e", "o", "i", "y", "ey", "in", "yn", "en", 
+		"oodle" "ottin", "owick", "owock", "iwick", "iwock", "wick", "wock", "ell", "ag", "ed" };
+
+	if (s) 
+	{
+		strcpy(s, "");
+		if (!rn2(3))
+		{
+			/* with middle syllable */
+			/* with no vowel end*/
+			if (!rn2(2))
+				Sprintf(s, "%s%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
+					middle_novowel_end[rn2(SIZE(middle_novowel_end))], end_previous_novowel[rn2(SIZE(end_previous_novowel))]);
+			else
+				Sprintf(s, "%s%s%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
+					middle_vowel_end[rn2(SIZE(middle_vowel_end))], mv[rn2(SIZE(mv))], end_previous_vowel[rn2(SIZE(end_previous_vowel))]);
+		}
+		else
+			Sprintf(s, "%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
+				end_previous_vowel[rn2(SIZE(end_previous_vowel))]);
+	}
+	return s;
+}
+
+
+char*
+randomize_hobbit_name(s)
+char* s;
+{
+	static const char* start[] = { "", "b", "bl", "s", "br",
+		"d", "dr", "f", "fl", "fr", "g", "gr", "h", "l", "m", "p", "pr", "s", "t" };
+	static const char* v[] = { "a", "e", "i", "o", "u" };
+	static const char* middle_vowel_end[] = { "g", "l", "lg", "m", "n", "st", "ld" };
+	static const char* mv[] = { "a", "e", "i", "o", "u", "y", "ia" };
+	static const char* middle_novowel_end[] = { "g", "d" "m", "lb", "lgr", "nd", "ng", "cc", "n", "lc", "l", "lm"
+		"sc", "ff", "th", "rr", "rtl", "nt", "lv", "pp", "rt", "nch" };
+	static const char* end_previous_vowel[] = { "b", "c", "nd", "rd", "nta", "ca", "ll", "lac", "lbo", "do", "lba", "ll", "lla", 
+		"mwise", "bert", "bart",  "mbert", "mbart", "bald",
+		"fast", "mfast", "mfred", "grim", "brand", "gard", "fons", "bson", "mson", "mac", "doc", "dic", "mas", "gilda", "lot", "mrose" };
+	static const char* end_previous_novowel[] = { "a", "e", "o", "o", "i", "y", "ida", "ard", "anta", "old", "ald"
+		"obert", "ibert", "obart", "ibart", "an", "ibald",  "ibald" };
+
+	if (s)
+	{
+		strcpy(s, "");
+		if (rn2(3))
+		{
+			/* with middle syllable */
+			/* with no vowel end*/
+			if (rn2(4))
+				Sprintf(s, "%s%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
+					middle_novowel_end[rn2(SIZE(middle_novowel_end))], end_previous_novowel[rn2(SIZE(end_previous_novowel))]);
+			else
+				Sprintf(s, "%s%s%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
+					middle_vowel_end[rn2(SIZE(middle_vowel_end))], mv[rn2(SIZE(mv))], end_previous_vowel[rn2(SIZE(end_previous_vowel))]);
+		}
+		else
+			Sprintf(s, "%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
+				end_previous_vowel[rn2(SIZE(end_previous_vowel))]);
+	}
+	return s;
+}
+
+
 
 struct monst *
 christen_orc(mtmp, gang, other)

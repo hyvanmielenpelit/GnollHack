@@ -1318,7 +1318,7 @@ dochat()
 
 	chatnum++;
 
-	if(msound >= MS_IMITATE)
+	if(is_speaking_monster(mtmp->data))
 	{
 		/* Who are you? */
 		strcpy(available_chat_list[chatnum].name, "\"Who are you?\"");

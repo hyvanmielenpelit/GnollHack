@@ -1796,7 +1796,7 @@ int dieroll;
 		}
 	}
 
-	/* Life drain */
+	/* Life leech */
 	if (obj && (objects[obj->otyp].oc_aflags & A1_LIFE_LEECH) && eligible_for_extra_damage(obj, mon, &youmonst) && !is_rider(mon->data)
 		&& !is_not_living(mon->data)
 		&& (

@@ -486,6 +486,10 @@ E char *FDECL(rndorcname, (char *));
 E struct monst *FDECL(christen_orc, (struct monst *, const char *, const char *));
 E const char *FDECL(noveltitle, (int *));
 E const char *FDECL(lookup_novel, (const char *, int *));
+E char* FDECL(randomize_dwarf_name, (char*));
+E char* FDECL(randomize_elf_name, (char*));
+E char* FDECL(randomize_gnome_name, (char*));
+E char* FDECL(randomize_hobbit_name, (char*));
 
 /* ### do_wear.c ### */
 

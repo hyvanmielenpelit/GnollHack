@@ -783,7 +783,7 @@ stolen_booty(VOID_ARGS)
         if (DEADMONSTER(mtmp))
             continue;
 
-        if (is_orc(mtmp->data) && !has_mname(mtmp) && rn2(10)) {
+        if (is_orc(mtmp->data) /* && !has_mname(mtmp) */ && rn2(10)) { /* all orcs have a name at start, so need to override */
             /*
              * We'll consider the orc captain from the level
              * .des file to be the captain of a rival orc horde
