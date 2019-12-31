@@ -2662,7 +2662,7 @@ ROCK("nugget of mithril ore", None,		//Ore endmarker
 OBJECT(OBJ("boulder", None), None, None,
        BITS(1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, P_NONE, MAT_MINERAL), 
 	   0, 0, 0, P1_NONE, ROCK_CLASS, 100, MULTIGEN_SINGLE, 0, 8000, 0,
-	   AD_PHYS, 1, 20, 0, 1, 20, 0, 0, 0, 0, 0, A1_NONE, 0,
+	   AD_PHYS, 2, 6, 8, 2, 6, 8, 0, 0, 0, 0, A1_NONE, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	   2000, HI_MINERAL, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_THROWN_WEAPON_ONLY, O2_NONE, O3_NONE),
 OBJECT(OBJ("statue", None), None, None,

@@ -810,7 +810,7 @@ register struct obj *otmp;
             else
                 Your("%s are frozen to the %s!", makeplural(body_part(FOOT)),
                      surface(u.ux, u.uy));
-            nomul(-(rn1(9 - 6 * bcsign(otmp), 8 - 4 * bcsign(otmp))));
+			nomul(-d(5 - 2 * bcsign(otmp), 4)); // (rn1(9 - 6 * bcsign(otmp), 8 - 4 * bcsign(otmp))));
             multi_reason = "frozen by a potion";
             nomovemsg = You_can_move_again;
             exercise(A_DEX, FALSE);
@@ -821,7 +821,7 @@ register struct obj *otmp;
             You("yawn.");
         } else {
             You("suddenly fall asleep!");
-            fall_asleep(-rn1(9 - 6 * bcsign(otmp), 8 - 4 * bcsign(otmp)), TRUE);
+            fall_asleep(-d(5 - 2 * bcsign(otmp), 4), TRUE);
         }
         break;
     case POT_MONSTER_DETECTION:
@@ -920,7 +920,7 @@ register struct obj *otmp;
         } else
             nothing++;
         make_confused(itimeout_incr(HConfusion,
-                                    rn1(7, 16 - 8 * bcsign(otmp))),
+			d(6 - 2 * bcsign(otmp), 8)),  //rn1(7, 16 - 8 * bcsign(otmp))
                       FALSE);
         break;
     case POT_GAIN_ABILITY:
@@ -1195,7 +1195,7 @@ register struct obj *otmp;
             pline("This burns%s!",
                   otmp->blessed ? " a little" : otmp->cursed ? " a lot"
                                                              : " like acid");
-            dmg = d(otmp->cursed ? 2 : 1, otmp->blessed ? 4 : 8);
+            dmg = d(otmp->cursed ? 8 : 6, otmp->blessed ? 6 : 8);
             losehp(Maybe_Half_Phys(dmg), "potion of acid", KILLED_BY_AN);
             exercise(A_CON, FALSE);
         }
@@ -1454,7 +1454,7 @@ int how;
                 pline("This burns%s!",
                       obj->blessed ? " a little"
                                    : obj->cursed ? " a lot" : "");
-                dmg = d(obj->cursed ? 2 : 1, obj->blessed ? 4 : 8);
+                dmg = d(obj->cursed ? 4 : 3, obj->blessed ? 6 : 8);
                 losehp(Maybe_Half_Phys(dmg), "potion of acid", KILLED_BY_AN);
             }
             break;
@@ -1557,7 +1557,7 @@ int how;
                 /* really should be rnd(5) for consistency with players
                  * breathing potions, but...
                  */
-                paralyze_monst(mon, rn1(9, 8));
+				paralyze_monst(mon, d(3 - 1 * bcsign(obj), 4)); //rn1(9, 8));
             }
             break;
         case POT_SPEED:
@@ -1566,8 +1566,8 @@ int how;
             break;
         case POT_BLINDNESS:
             if (haseyes(mon->data)) {
-                int btmp = 64 + rn2(32)
-                            + rn2(32) * !resist(mon, obj, 0, 0, NOTELL);
+                int btmp = d(1, 8)
+                            + d(3, 8) * !resist(mon, obj, 0, 0, NOTELL);
 
                 btmp += mon->mblinded;
                 mon->mblinded = min(btmp, 127);
@@ -1621,7 +1621,7 @@ int how;
                       is_silent(mon->data) ? "writhes" : "shrieks");
                 if (!is_silent(mon->data))
                     wake_nearto(tx, ty, mon->data->mlevel * 10);
-                mon->mhp -= d(obj->cursed ? 2 : 1, obj->blessed ? 4 : 8);
+                mon->mhp -= d(obj->cursed ? 4 : 3, obj->blessed ? 6 : 8);
                 if (DEADMONSTER(mon)) {
                     if (your_fault)
                         killed(mon);
@@ -1766,11 +1766,15 @@ register struct obj *obj;
     case POT_HALLUCINATION:
         You("have a momentary vision.");
         break;
-    case POT_CONFUSION:
-    case POT_BOOZE:
+	case POT_BOOZE:
+		if (!Confusion)
+			You_feel("somewhat dizzy.");
+		make_confused(itimeout_incr(HConfusion, d(1, 5)), FALSE);
+		break;
+	case POT_CONFUSION:
         if (!Confusion)
             You_feel("somewhat dizzy.");
-        make_confused(itimeout_incr(HConfusion, rnd(5)), FALSE);
+        make_confused(itimeout_incr(HConfusion, d(4 - 1 * bcsign(obj), 8)), FALSE);
         break;
     case POT_INVISIBILITY:
         if (!Blind && !Invis) {
@@ -1784,7 +1788,7 @@ register struct obj *obj;
         kn++;
         if (!Free_action) {
             pline("%s seems to be holding you.", Something);
-            nomul(-rnd(5));
+			nomul(-d(3 - 1 * bcsign(obj), 4)); // rnd(5));
             multi_reason = "frozen by a potion";
             nomovemsg = You_can_move_again;
             exercise(A_DEX, FALSE);
@@ -1795,7 +1799,7 @@ register struct obj *obj;
         kn++;
         if (!Free_action && !Sleep_resistance) {
             You_feel("rather tired.");
-            nomul(-rnd(5));
+            nomul(-d(3 - 1 * bcsign(obj), 4));
             multi_reason = "sleeping off a magical draught";
             nomovemsg = You_can_move_again;
             exercise(A_DEX, FALSE);
@@ -1817,7 +1821,7 @@ register struct obj *obj;
     case POT_BLINDNESS:
 	{
 		boolean was_blind = Blind;
-        make_blinded(itimeout_incr(Blinded, rnd(5)), FALSE);
+        make_blinded(itimeout_incr(Blinded, d(4 - 1 * bcsign(obj), 8)), FALSE);
 		if (Blind && !Unaware) {
 			kn++;
 			pline("It suddenly gets dark.");

@@ -1917,7 +1917,7 @@ int style;
         } else if (bhitpos.x == u.ux && bhitpos.y == u.uy) {
             if (multi)
                 nomul(0);
-            if (thitu(9 + singleobj->spe, weapon_total_dmg_value(singleobj, &youmonst, (struct monst*)0),
+            if (thitu(10 + singleobj->spe, weapon_total_dmg_value(singleobj, &youmonst, (struct monst*)0),
                       &singleobj, (char *) 0))
                 stop_occupation();
         }
