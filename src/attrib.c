@@ -407,9 +407,9 @@ boolean lifesavedalready;
 	//Effects
 	if(sptype == COLD_ENCHANTMENT)
 	{
-		pline("%s%s %s freezing!",
+		pline("%s%s %s ice-cold!",
 			isupper((uchar)* reason) ? "" : "The ", reason,
-			plural ? "were" : "was");
+			plural ? "are" : "is");
 		if (Cold_resistance || Invulnerable) {
 			shieldeff(u.ux, u.uy);
 			pline_The("cold doesn't seem to affect you.");
@@ -430,9 +430,9 @@ boolean lifesavedalready;
 	}
 	else if (sptype == FIRE_ENCHANTMENT)
 	{
-		pline("%s%s %s flaming!",
+		pline("%s%s %s burning hot!",
 			isupper((uchar)* reason) ? "" : "The ", reason,
-			plural ? "were" : "was");
+			plural ? "are" : "is");
 		if (Fire_resistance || Invulnerable) {
 			shieldeff(u.ux, u.uy);
 			pline_The("fire doesn't seem to affect you.");
@@ -453,9 +453,9 @@ boolean lifesavedalready;
 	}
 	else if (sptype == LIGHTNING_ENCHANTMENT)
 	{
-		pline("%s%s %s electrified!",
+		pline("%s%s %s you with electricity!",
 			isupper((uchar)* reason) ? "" : "The ", reason,
-			plural ? "were" : "was");
+			plural ? "jolt" : "jolts");
 		if (Shock_resistance || Invulnerable) {
 			shieldeff(u.ux, u.uy);
 			pline_The("lightning doesn't seem to affect you.");

@@ -2131,7 +2131,7 @@ role_init()
  * place where it actually matters for the hero is in set_uasmon()
  * and that can use mons[race] rather than mons[role] for this
  * particular property.  Despite the comment, it is checked--where
- * needed--via instrinsic 'Infravision' which set_uasmon() manages.
+ * needed--via intrinsic 'Infravision' which set_uasmon() manages.
  */
     /* Fix up infravision */
     if (mons[urace.malenum].mflags3 & M3_INFRAVISION) {

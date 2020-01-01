@@ -647,7 +647,7 @@ struct monst* mtmp;
 	char buf[BUFSZ];
 	const char* txt;
 
-	Sprintf(buf, "%s instrinsic abilities:", s_suffix(Monnam(mtmp)));
+	Sprintf(buf, "%s intrinsic abilities:", s_suffix(Monnam(mtmp)));
 	txt = buf;
 	putstr(datawin, 0, txt);
 

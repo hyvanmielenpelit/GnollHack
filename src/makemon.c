@@ -780,9 +780,30 @@ register struct monst *mtmp;
 	case S_DEMON:
         switch (mm) {
         case PM_BALROG:
-            (void) mongets(mtmp, BULLWHIP);
-            (void) mongets(mtmp, BROADSWORD);
-            break;
+		{
+			otmp = mksobj(BULLWHIP, TRUE, FALSE, FALSE);
+			spe2 = rnd(4);
+			otmp->spe = max(otmp->spe, spe2);
+			otmp->elemental_enchantment = FIRE_ENCHANTMENT;
+			(void)mpickobj(mtmp, otmp);
+
+			if (rn2(2))
+			{
+				otmp = mksobj(BROADSWORD, TRUE, FALSE, FALSE);
+				spe2 = rnd(2);
+				otmp->spe = max(otmp->spe, spe2);
+				otmp->elemental_enchantment = FIRE_ENCHANTMENT;
+				(void)mpickobj(mtmp, otmp);
+			}
+			else
+			{
+				otmp = mksobj(INFERNAL_AXE, TRUE, FALSE, FALSE);
+				spe2 = 1 + rnd(2);
+				otmp->spe = max(otmp->spe, spe2);
+				(void)mpickobj(mtmp, otmp);
+			}
+			break;
+		}
         case PM_ORCUS:
 		{
 			//(void) mongets(mtmp, WAN_DEATH); /* the Wand of Orcus */
