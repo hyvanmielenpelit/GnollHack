@@ -566,5 +566,6 @@ enum bodypart_types {
 #include "matcomps.h"
 #include "encounter.h"
 
+static const char empty_string[] = "";
 
 #endif /* HACK_H */

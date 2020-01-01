@@ -305,6 +305,8 @@ boolean female;
     register const struct Role *role;
     register int i;
 
+	static NEARDATA const char player_name[] = "Player";
+
     /* Find the role */
     for (role = roles; role->name.m; role++)
         if (monnum == role->malenum || monnum == role->femalenum)
@@ -325,7 +327,7 @@ boolean female;
         return role->name.f;
     else if (role->name.m)
         return role->name.m;
-    return "Player";
+    return player_name;
 }
 
 const char *

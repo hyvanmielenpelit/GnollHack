@@ -1090,7 +1090,7 @@ struct obj *obj;
 {
     if (has_oname(obj))
         return ONAME(obj);
-    return "";
+    return empty_string;
 }
 
 
@@ -1137,7 +1137,7 @@ struct obj* obj;
 {
 	if (has_uoname(obj))
 		return UONAME(obj);
-	return "";
+	return empty_string;
 }
 
 

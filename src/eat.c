@@ -2460,8 +2460,11 @@ STATIC_OVL const char *
 foodword(otmp)
 struct obj *otmp;
 {
+	static const char food[] = "food";
+
     if (otmp->oclass == FOOD_CLASS)
-        return "food";
+        return food;
+
     if (otmp->oclass == GEM_CLASS && objects[otmp->otyp].oc_material == MAT_GLASS
         && otmp->dknown)
         makeknown(otmp->otyp);

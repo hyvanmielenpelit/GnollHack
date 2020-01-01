@@ -5904,8 +5904,10 @@ int dir;
         "southeast", "south",     "southwest", "down",      "up",
     };
 
+	static NEARDATA const char invalidname[] = "invalid";
+
     if (dir < 0 || dir >= SIZE(dirnames))
-        return "invalid";
+        return invalidname;
     return dirnames[dir];
 }
 

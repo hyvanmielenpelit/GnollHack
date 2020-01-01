@@ -2465,39 +2465,9 @@ const char* get_damage_type_text(damagetype)
 int damagetype;
 {
 	if (damagetype < 0 || damagetype >= SIZE(damage_type_names))
-		return "";
+		return empty_string;
 
 	return damage_type_names[damagetype];
-
-#if 0
-	static char buf[BUFSZ] = "";
-	
-	switch (damagetype)
-	{
-	case AD_PHYS:
-		strcpy(buf, "physical");
-		break;
-	case AD_FIRE:
-		strcpy(buf, "fire");
-		break;
-	case AD_COLD:
-		strcpy(buf, "cold");
-		break;
-	case AD_ELEC:
-		strcpy(buf, "electrical");
-		break;
-	case AD_DRLI:
-		strcpy(buf, "life draining");
-		break;
-	case AD_STUN:
-		strcpy(buf, "stunning");
-		break;
-	default:
-		break;
-	}
-
-	return buf;
-#endif
 }
 
 static const char* defense_type_names[] = {
@@ -2511,42 +2481,9 @@ const char* get_defense_type_text(defensetype)
 int defensetype;
 {
 	if (defensetype < 0 || defensetype >= SIZE(defense_type_names))
-		return "";
+		return empty_string;
 
 	return defense_type_names[defensetype];
-
-#if 0
-	static char buf[BUFSZ] = "";
-
-	switch (defensetype)
-	{
-	case AD_PHYS:
-		strcpy(buf, "physical damage resistance");
-		break;
-	case AD_MAGM:
-		strcpy(buf, "magic resistance");
-		break;
-	case AD_FIRE:
-		strcpy(buf, "fire resistance");
-		break;
-	case AD_COLD:
-		strcpy(buf, "cold resistance");
-		break;
-	case AD_ELEC:
-		strcpy(buf, "shock resistance");
-		break;
-	case AD_STUN:
-		strcpy(buf, "stun resistance");
-		break;
-	case AD_DRLI:
-		strcpy(buf, "drain resistance");
-		break;
-	default:
-		break;
-	}
-
-	return buf;
-#endif
 }
 
 static const char* artifact_invoke_names[] = { 
@@ -2558,51 +2495,9 @@ const char* get_artifact_invoke_name(specialpropindex)
 int specialpropindex;
 {
 	if (specialpropindex < TAMING || specialpropindex >= TAMING + SIZE(artifact_invoke_names))
-		return "";
+		return empty_string;
 
 	return artifact_invoke_names[specialpropindex - TAMING];
-
-#if 0
-	static char buf[BUFSZ] = "";
-
-	switch (specialpropindex)
-	{
-	case TAMING:
-		strcpy(buf, "taming");
-		break;
-	case HEALING:
-		strcpy(buf, "healing");
-		break;
-	case ENERGY_BOOST:
-		strcpy(buf, "mana replenishment");
-		break;
-	case UNTRAP:
-		strcpy(buf, "untrapping");
-		break;
-	case CHARGE_OBJ:
-		strcpy(buf, "charging");
-		break;
-	case LEV_TELE:
-		strcpy(buf, "level teleportation");
-		break;
-	case CREATE_PORTAL:
-		strcpy(buf, "portal creation");
-		break;
-	case ENLIGHTENING:
-		strcpy(buf, "enlightenment");
-		break;
-	case CREATE_AMMO:
-		strcpy(buf, "arrow creation");
-		break;
-	case WAND_OF_DEATH:
-		strcpy(buf, "death ray");
-		break;
-	default:
-		break;
-	}
-
-	return buf;
-#endif
 }
 
 /* Called when a boulder is dropped, thrown, or pushed.  If it ends up

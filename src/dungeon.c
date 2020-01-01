@@ -1800,17 +1800,23 @@ STATIC_OVL const char *
 br_string(type)
 int type;
 {
-    switch (type) {
+	static const char Portal[] = "Portal";
+	static const char Connection[] = "Connection";
+	static const char One_way_stair[] = "One way stair";
+	static const char Stair[] = "Stair";
+	static const char _Unknown[] = " (unknown)";
+
+	switch (type) {
     case BR_PORTAL:
-        return "Portal";
+        return Portal;
     case BR_NO_END1:
-        return "Connection";
+        return Connection;
     case BR_NO_END2:
-        return "One way stair";
+        return One_way_stair;
     case BR_STAIR:
-        return "Stair";
+        return Stair;
     }
-    return " (unknown)";
+    return _Unknown;
 }
 
 STATIC_OVL char

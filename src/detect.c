@@ -1043,40 +1043,52 @@ d_level *where;
     register schar ll = depth(&u.uz) - depth(where);
     register boolean indun = (u.uz.dnum == where->dnum);
 
+	static const char far_away[] = "far away";
+	static const char far_below[] = "far below";
+	static const char away_below_you[] = "away below you";
+	static const char below_you[] = "below you";
+	static const char in_the_distance[] = "in the distance";
+	static const char just_below[] = "just below";
+	static const char far_above[] = "far above";
+	static const char away_above_you[] = "away above you";
+	static const char above_you[] = "above you";
+	static const char just_above[] = "just above";
+	static const char near_you[] = "near you";
+
     if (ll < 0) {
         if (ll < (-8 - rn2(3)))
             if (!indun)
-                return "far away";
+                return far_away;
             else
-                return "far below";
+                return far_below;
         else if (ll < -1)
             if (!indun)
-                return "away below you";
+                return away_below_you;
             else
-                return "below you";
+                return below_you;
         else if (!indun)
-            return "in the distance";
+            return in_the_distance;
         else
-            return "just below";
+            return just_below;
     } else if (ll > 0) {
         if (ll > (8 + rn2(3)))
             if (!indun)
-                return "far away";
+                return far_away;
             else
-                return "far above";
+                return far_above;
         else if (ll > 1)
             if (!indun)
-                return "away above you";
+                return away_above_you;
             else
-                return "above you";
+                return above_you;
         else if (!indun)
-            return "in the distance";
+            return in_the_distance;
         else
-            return "just above";
+            return just_above;
     } else if (!indun)
-        return "in the distance";
+        return in_the_distance;
     else
-        return "near you";
+        return near_you;
 }
 
 static const struct {

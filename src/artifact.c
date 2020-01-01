@@ -107,7 +107,7 @@ artiname(artinum)
 int artinum;
 {
     if (artinum <= 0 || artinum > NROFARTIFACTS)
-        return "";
+        return empty_string;
     return artilist[artinum].name;
 }
 

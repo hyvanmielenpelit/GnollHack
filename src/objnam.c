@@ -392,10 +392,15 @@ xname_flags(obj, cxn_flags)
 register struct obj *obj;
 unsigned cxn_flags; /* bitmask of CXN_xxx values */
 {
-	if (!obj)
-		return "";
+	register char* buf;
 
-    register char *buf;
+	if (!obj)
+	{
+		buf = nextobuf();
+		strcpy(buf, empty_string);
+		return buf;
+	}
+
 	boolean artifact_description_exists = obj->oartifact && artilist[obj->oartifact].desc && strcmp(artilist[obj->oartifact].desc, "");
 	/* Note: maskotyp is relevant here when artifact description does not exist */
     register int typ = ((obj->oartifact && artilist[obj->oartifact].maskotyp != STRANGE_OBJECT) ? artilist[obj->oartifact].maskotyp : obj->otyp);
@@ -415,6 +420,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 	boolean makeThelower = FALSE;
 
     buf = nextobuf() + PREFIX; /* leave room for "17 -3 " */
+
     if (Role_if(PM_SAMURAI) && Japanese_item_name(typ))
         actualn = Japanese_item_name(typ);
     /* 3.6.2: this used to be part of 'dn's initialization, but it
@@ -1825,7 +1831,11 @@ struct obj *obj;
     char *buf, *save_ocuname, *save_uoname = (char *) 0;
 
 	if (!obj)
-		return "";
+	{
+		buf = nextobuf();
+		strcpy(buf, empty_string);
+		return buf;
+	}
 
     /* bypass object twiddling for artifacts */
     if (obj->oartifact)

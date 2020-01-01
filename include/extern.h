@@ -2499,7 +2499,7 @@ E int NDECL(dovspell);
 E void FDECL(initialspell, (struct obj *));
 E int NDECL(domix);
 E int FDECL(getspellcooldown, (int));
-E char* FDECL(domatcompname, (struct materialcomponent*));
+E const char* FDECL(domatcompname, (struct materialcomponent*));
 E int FDECL(subdirtype2explosiontype, (int));
 E void FDECL(addspellintrinsictimeout, (int));
 E int FDECL(getspellenergycost, (int));

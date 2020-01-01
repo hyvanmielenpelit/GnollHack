@@ -967,7 +967,7 @@ int skill;
 		return "necromancy";
 	default:
         impossible("Unknown spell skill, %d;", skill);
-        return "";
+        return empty_string;
     }
 }
 
@@ -3712,7 +3712,7 @@ int spell;
 
 }
 
-char*
+const char*
 domatcompname(mc)
 struct materialcomponent* mc;
 {
@@ -3725,7 +3725,7 @@ struct materialcomponent* mc;
 		permon = &mons[mc->monsterid];
 
 	if (!perobj || !mc || mc->amount == 0)
-		return "";
+		return empty_string;
 
 	static char buf3[BUFSZ];
 	char buf2[BUFSZ], buf4[BUFSZ] = "";
