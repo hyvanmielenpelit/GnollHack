@@ -292,17 +292,19 @@ register int nk;
 }
 
 void
-more_experienced(exper, rexp)
-register int exper, rexp;
+more_experienced(exper, gamescore)
+register int exper, gamescore;
 {
-    long oldexp = u.uexp,
-         oldrexp = u.urexp,
-         newexp = oldexp + exper,
-         rexpincr = 4 * exper + rexp,
+	long added_experience = exper == 0 ? 0 : max(1, exper + (exper * max(-9, u.uexperiencebonus)) / 10);
+	long added_gamescore = gamescore;
+	long oldexp = u.uexp,
+         oldrexp = u.u_gamescore,
+         newexp = oldexp + added_experience,
+         rexpincr = 4 * added_experience + added_gamescore,
          newrexp = oldrexp + rexpincr;
 
     /* cap experience and score on wraparound */
-    if (newexp < 0 && exper > 0)
+    if (newexp < 0 && added_experience > 0)
         newexp = LONG_MAX;
     if (newrexp < 0 && rexpincr > 0)
         newrexp = LONG_MAX;
@@ -312,19 +314,19 @@ register int exper, rexp;
         if (flags.showexp)
             context.botl = TRUE;
 		
-		if(newexp - oldexp == exper)
-			You("gain %d experience point%s.", exper, exper == 1 ? "" : "s");
+		if(newexp - oldexp == added_experience)
+			You("gain %d experience point%s.", added_experience, added_experience == 1 ? "" : "s");
 
     }
     /* newrexp will always differ from oldrexp unless they're LONG_MAX */
     if (newrexp != oldrexp) {
-        u.urexp = newrexp;
+        u.u_gamescore = newrexp;
 #ifdef SCORE_ON_BOTL
         if (flags.showscore)
             context.botl = TRUE;
 #endif
     }
-    if (u.urexp >= (Role_if(PM_WIZARD) ? 1000 : 2000))
+    if (u.u_gamescore >= (Role_if(PM_WIZARD) ? 1000 : 2000))
         flags.beginner = 0;
 }
 

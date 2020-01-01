@@ -46,6 +46,8 @@ STATIC_PTR int FDECL(armor_or_accessory_off, (struct obj *));
 STATIC_PTR int FDECL(accessory_or_armor_on, (struct obj *));
 STATIC_DCL void FDECL(already_wearing, (const char *));
 STATIC_DCL void FDECL(already_wearing2, (const char *, const char *));
+STATIC_DCL void FDECL(item_change_sex_and_useup, (struct obj*));
+
 
 void
 off_msg(otmp)
@@ -882,6 +884,9 @@ long wearslotmask;
 	if (wearslotmask != 0)
 		setworn(ud, wearslotmask);
 
+	if(ud->otyp == BELT_OF_CHANGE)
+		item_change_sex_and_useup(ud);
+
 #if 0
 	if (ud->otyp == WINGS_OF_FLYING)
 	{
@@ -1027,30 +1032,9 @@ Amulet_on()
         if (Slimed)
             make_slimed(0L, (char *) 0);
         break;
-    case AMULET_OF_CHANGE: {
-        int orig_sex = poly_gender();
-
-        if (Unchanging)
-            break;
-        change_sex();
-        /* Don't use same message as polymorph */
-        if (orig_sex != poly_gender()) {
-            makeknown(AMULET_OF_CHANGE);
-            You("are suddenly very %s!",
-                flags.female ? "feminine" : "masculine");
-            context.botl = 1;
-        } else
-            /* already polymorphed into single-gender monster; only
-               changed the character's base sex */
-            You("don't feel like yourself.");
-        pline_The("amulet disintegrates!");
-        if (orig_sex == poly_gender() && uamul->dknown
-            && !objects[AMULET_OF_CHANGE].oc_name_known
-            && !objects[AMULET_OF_CHANGE].oc_uname)
-            docall(uamul);
-        useup(uamul);
+    case AMULET_OF_CHANGE:
+		item_change_sex_and_useup(uamul);
         break;
-    }
     case AMULET_OF_STRANGULATION:
         if (can_be_strangled(&youmonst)) {
             makeknown(AMULET_OF_STRANGULATION);
@@ -1139,6 +1123,38 @@ Amulet_off()
     setworn((struct obj *) 0, W_AMUL);
 
     return;
+}
+
+STATIC_OVL
+void
+item_change_sex_and_useup(uitem)
+struct obj* uitem;
+{
+	if (!uitem)
+		return;
+
+	int orig_sex = poly_gender();
+
+	if (Unchanging)
+		return;
+	change_sex();
+	/* Don't use same message as polymorph */
+	if (orig_sex != poly_gender()) {
+		makeknown(uitem->otyp);
+		You("are suddenly very %s!",
+			flags.female ? "feminine" : "masculine");
+		context.botl = 1;
+	}
+	else
+		/* already polymorphed into single-gender monster; only
+		   changed the character's base sex */
+		You("don't feel like yourself.");
+	pline("%s disintegrates!", The(cxname(uitem)));
+	if (orig_sex == poly_gender() && uitem->dknown
+		&& !objects[uitem->otyp].oc_name_known
+		&& !objects[uitem->otyp].oc_uname)
+		docall(uitem);
+	useup(uitem);
 }
 
 /* handle ring discovery; comparable to learnwand() */

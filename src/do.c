@@ -1310,7 +1310,7 @@ register struct obj* obj;
 					}
 					else if (j == 6)
 					{
-						for (int k = 0; k < 11; k++)
+						for (int k = 0; k < 12; k++)
 						{
 							strcpy(buf2, "");
 							int stat = objects[otyp].oc_attribute_bonus;
@@ -1434,6 +1434,12 @@ register struct obj* obj;
 								powercnt++;
 
 								Sprintf(buf2, "%s %s%d%% %s to spell casting", grantbuf, stat >= 0 ? "+" : "", stat * 5, bonusbuf);
+							}
+							if (k == 11 && prop & BONUS_TO_EXPERIENCE)
+							{
+								powercnt++;
+
+								Sprintf(buf2, "%s %s%d%% %s to experience", grantbuf, stat >= 0 ? "+" : "", stat * 10, bonusbuf);
 							}
 
 							if (strcmp(buf2, "") != 0) // Something else than ""

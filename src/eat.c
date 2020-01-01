@@ -19,8 +19,8 @@ STATIC_DCL void NDECL(do_reset_eat);
 STATIC_DCL void FDECL(done_eating, (BOOLEAN_P));
 STATIC_DCL void FDECL(cprefx, (int));
 STATIC_DCL int FDECL(intrinsic_possible, (int, struct permonst *));
-STATIC_DCL void FDECL(givit, (int, struct permonst *, int));
-STATIC_DCL void FDECL(temporary_givit, (int, int, int));
+STATIC_DCL void FDECL(givit, (int, struct permonst *));
+STATIC_DCL void FDECL(temporary_givit, (int, int));
 STATIC_DCL void FDECL(cpostfx, (int));
 STATIC_DCL void FDECL(consume_tin, (const char *));
 STATIC_DCL void FDECL(start_tin, (struct obj *));
@@ -862,16 +862,12 @@ register struct permonst *ptr;
 }
 
 STATIC_OVL void
-temporary_givit(type, duration, successpercentage)
+temporary_givit(type, duration)
 int type;
 int duration;
-int successpercentage;
 {
 	if (duration <= 0)
 		return;
-
-	if (successpercentage > 0 && rn2(100) >= successpercentage)
-		return; /* fail */
 
 	switch (type) {
 	case REGENERATION:
@@ -897,10 +893,9 @@ int successpercentage;
  * and what type of intrinsic it is trying to give you.
  */
 STATIC_OVL void
-givit(type, ptr, successpercentage)
+givit(type, ptr)
 int type;
 register struct permonst *ptr;
-int successpercentage;
 {
 	if (ptr)
 	{
@@ -934,11 +929,6 @@ int successpercentage;
 		}
 
 		if (ptr->mlevel <= rn2(chance))
-			return; /* failed die roll */
-	}
-	else if (successpercentage > 0)
-	{
-		if (rn2(100) >= successpercentage)
 			return; /* failed die roll */
 	}
 
@@ -1400,7 +1390,7 @@ int pm;
 		else if (tmp == -6)
 			(void)adjattrib(A_CHA, 1, -1);
 		else if (tmp > 0)
-            givit(tmp, ptr, 0);
+            givit(tmp, ptr);
     } /* check_intrinsics */
 
     if (catch_lycanthropy >= LOW_PM && !Lycanthropy_resistance) {
@@ -2489,6 +2479,16 @@ struct obj *otmp;
 	if (rn2(100) >= objects[otmp->otyp].oc_critical_strike_percentage)
 		return;
 
+	/* Properties */
+	int duration = d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_dicesize) + objects[otmp->otyp].oc_spell_dur_plus;
+	if (objects[otmp->otyp].oc_edible_effect > 0)
+	{
+		if (duration > 0)
+			temporary_givit(objects[otmp->otyp].oc_edible_effect, duration);
+		else
+			givit(objects[otmp->otyp].oc_edible_effect, (struct permonst*)0); // u.uprops[objects[otmp->otyp].oc_oprop].intrinsic |= FROM_ACQUIRED;
+	}
+
     switch (objects[otmp->otyp].oc_edible_effect) 
 	{
     case EDIBLE_CURE_LYCANTHROPY:
@@ -3092,29 +3092,6 @@ doeat()
 		} else
 				fprefx(otmp);
     }
-
-	int duration = d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_dicesize) + objects[otmp->otyp].oc_spell_dur_plus;
-	if (objects[otmp->otyp].oc_oprop > 0)
-	{
-		if (duration > 0)
-			temporary_givit(objects[otmp->otyp].oc_oprop, duration, objects[otmp->otyp].oc_critical_strike_percentage);
-		else
-			givit(objects[otmp->otyp].oc_oprop, (struct permonst*)0, objects[otmp->otyp].oc_critical_strike_percentage); // u.uprops[objects[otmp->otyp].oc_oprop].intrinsic |= FROM_ACQUIRED;
-	}
-	if (objects[otmp->otyp].oc_oprop2 > 0)
-	{
-		if (duration > 0)
-			temporary_givit(objects[otmp->otyp].oc_oprop2, duration, objects[otmp->otyp].oc_critical_strike_percentage);
-		else
-			givit(objects[otmp->otyp].oc_oprop2, (struct permonst*)0, objects[otmp->otyp].oc_critical_strike_percentage); // u.uprops[objects[otmp->otyp].oc_oprop2].intrinsic |= FROM_ACQUIRED;
-	}
-	if (objects[otmp->otyp].oc_oprop3 > 0)
-	{
-		if (duration > 0)
-			temporary_givit(objects[otmp->otyp].oc_oprop3, duration, objects[otmp->otyp].oc_critical_strike_percentage);
-		else
-			givit(objects[otmp->otyp].oc_oprop3, (struct permonst*)0, objects[otmp->otyp].oc_critical_strike_percentage); // u.uprops[objects[otmp->otyp].oc_oprop3].intrinsic |= FROM_ACQUIRED;
-	}
 
 	/* re-calc the nutrition */
     basenutrit = (int) obj_nutrition(otmp);

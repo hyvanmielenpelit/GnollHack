@@ -1779,6 +1779,7 @@ updateabon()
 	u.uacbonus = 0;
 	u.umcbonus = 0;
 	u.uspellcastingbonus = 0;
+	u.uexperiencebonus = 0;
 
 	u.moreluck = 0;
 	int blessed_luck_count = 0;
@@ -1813,7 +1814,7 @@ updateabon()
 				int multiplier = ((objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE) && uitem->cursed) || 
 					(objects[otyp].oc_pflags & P1_ATTRIBUTE_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr ? -1 : 1;
 
-				for (int i = 0; i < A_MAX+5; i++)
+				for (int i = 0; i < A_MAX+6; i++)
 				{
 					int bit = 0;
 					switch (i)
@@ -1851,6 +1852,9 @@ updateabon()
 					case A_MAX + 4:
 						bit = BONUS_TO_SPELL_CASTING;
 						break;
+					case A_MAX + 5:
+						bit = BONUS_TO_EXPERIENCE;
+						break;
 					default:
 						bit = 0;
 						break;
@@ -1885,46 +1889,46 @@ updateabon()
 							}
 							else
 							{
-								if (objects[otyp].oc_attribute_bonus == 0 && objects[otyp].oc_charged)
+								ABONUS(i) += multiplier * objects[otyp].oc_attribute_bonus;
+								if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
 									ABONUS(i) += multiplier * uitem->spe;
-								else
-									ABONUS(i) += multiplier * objects[otyp].oc_attribute_bonus;
 							}
 						}
 						else if (i == A_MAX + 0)
 						{
-							if (objects[otyp].oc_attribute_bonus == 0 && objects[otyp].oc_charged)
+							u.udaminc += multiplier * objects[otyp].oc_attribute_bonus;
+							if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
 								u.udaminc += multiplier * uitem->spe;
-							else
-								u.udaminc += multiplier * objects[otyp].oc_attribute_bonus;
 						}
 						else if (i == A_MAX + 1)
 						{
-							if (objects[otyp].oc_attribute_bonus == 0 && objects[otyp].oc_charged)
+							u.uhitinc += multiplier * objects[otyp].oc_attribute_bonus;
+							if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
 								u.uhitinc += multiplier * uitem->spe;
-							else
-								u.uhitinc += multiplier * objects[otyp].oc_attribute_bonus;
 						}
 						else if (i == A_MAX + 2)
 						{
-							if (objects[otyp].oc_attribute_bonus == 0 && objects[otyp].oc_charged)
+							u.uacbonus += multiplier * objects[otyp].oc_attribute_bonus;
+							if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
 								u.uacbonus += multiplier * uitem->spe;
-							else
-								u.uacbonus += multiplier * objects[otyp].oc_attribute_bonus;
 						}
 						else if (i == A_MAX + 3)
 						{
-							if (objects[otyp].oc_attribute_bonus == 0 && objects[otyp].oc_charged)
+							u.umcbonus += multiplier * objects[otyp].oc_attribute_bonus;
+							if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
 								u.umcbonus += multiplier * uitem->spe;
-							else
-								u.umcbonus += multiplier * objects[otyp].oc_attribute_bonus;
 						}
 						else if (i == A_MAX + 4)
 						{
-							if (objects[otyp].oc_attribute_bonus == 0 && objects[otyp].oc_charged)
+							u.uspellcastingbonus += multiplier * objects[otyp].oc_attribute_bonus;
+							if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
 								u.uspellcastingbonus += multiplier * uitem->spe;
-							else
-								u.uspellcastingbonus += multiplier * objects[otyp].oc_attribute_bonus;
+						}
+						else if (i == A_MAX + 5)
+						{
+							u.uexperiencebonus += multiplier * objects[otyp].oc_attribute_bonus;
+							if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
+								u.uexperiencebonus += multiplier * uitem->spe;
 						}
 					}
 				}
