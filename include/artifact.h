@@ -52,6 +52,8 @@
 #define SPFX_AGGRAVATE_MONSTER	0x00080000L  /* Gives aggravate monster */
 #define SPFX_UNLUCK				0x00100000L  /* Gives brings bad luck */
 #define SPFX_BLIND_SEEING		0x00200000L  /* Blocks blindness */
+#define SPFX_HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS \
+								0x00400000L  /* Ditto, for Mitre of Holiness */
 
 struct artifact {
     short otyp;

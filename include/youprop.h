@@ -459,6 +459,10 @@
 #define EHalf_physical_damage u.uprops[HALF_PHDAM].extrinsic
 #define Half_physical_damage (HHalf_physical_damage || EHalf_physical_damage)
 
+#define HHalf_physical_damage_against_undead_and_demons u.uprops[HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS].intrinsic
+#define EHalf_physical_damage_against_undead_and_demons u.uprops[HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS].extrinsic
+#define Half_physical_damage_against_undead_and_demons (HHalf_physical_damage_against_undead_and_demons || EHalf_physical_damage_against_undead_and_demons)
+
 #define HRegeneration u.uprops[REGENERATION].intrinsic
 #define ERegeneration u.uprops[REGENERATION].extrinsic
 #define Regeneration (HRegeneration || ERegeneration)

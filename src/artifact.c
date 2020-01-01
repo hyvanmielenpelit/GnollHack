@@ -701,6 +701,12 @@ long wp_mask;
 		else
 			EAggravate_monster &= ~wp_mask;
 	}
+	if (spfx & SPFX_HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS) {
+		if (on)
+			EHalf_physical_damage_against_undead_and_demons |= wp_mask;
+		else
+			EHalf_physical_damage_against_undead_and_demons &= ~wp_mask;
+	}
 	if (spfx & SPFX_BLIND_SEEING) {
 		if (on)
 			EBlocks_Blindness |= wp_mask;
@@ -2795,7 +2801,10 @@ long *abil;
         { &EEnergy_regeneration, SPFX_EREGEN },
         { &EHalf_spell_damage, SPFX_HSPDAM },
         { &EHalf_physical_damage, SPFX_HPHDAM },
-        { &EReflecting, SPFX_REFLECT },
+		{ &EHalf_physical_damage_against_undead_and_demons, SPFX_HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS },
+		{ &EAggravate_monster, SPFX_AGGRAVATE_MONSTER },
+		{ &EBlocks_Blindness, SPFX_BLIND_SEEING },
+		{ &EReflecting, SPFX_REFLECT },
     };
     int k;
 

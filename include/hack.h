@@ -308,6 +308,13 @@ typedef struct sortloot_item Loot;
 #define Maybe_Half_Phys(dmg) \
     ((Half_physical_damage) ? (((dmg) + 1) / 2) : (dmg))
 
+#define Maybe_Half_Phys_Magr(dmg, magr) \
+    ((Half_physical_damage|| (Half_physical_damage_against_undead_and_demons \
+		&& (is_undead(magr->data) || is_demon(magr->data) || is_vampshifter(magr)))) \
+	? (((dmg) + 1) / 2) : (dmg))
+
+
+
 /* flags for special ggetobj status returns */
 #define ALL_FINISHED 0x01 /* called routine already finished the job */
 

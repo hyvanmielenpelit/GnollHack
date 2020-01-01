@@ -2196,15 +2196,18 @@ int final;
     case HALF_PHDAM:
         category_name = "physical";
         break;
-    case HALF_SPDAM:
+	case HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS:
+		category_name = "physical";
+		break;
+	case HALF_SPDAM:
         category_name = "spell";
         break;
     default:
         category_name = "unknown";
         break;
     }
-    Sprintf(buf, " %s %s damage", (final || wizard) ? "half" : "reduced",
-            category_name);
+    Sprintf(buf, " %s %s damage%s", (final || wizard) ? "half" : "reduced",
+            category_name, category == HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS ? " from undead and demons" : "");
     enl_msg(You_, "take", "took", buf, from_what(category));
 }
 
@@ -3430,7 +3433,9 @@ int final;
 #endif
 	if (Half_physical_damage)
         enlght_halfdmg(HALF_PHDAM, final);
-    if (Half_spell_damage)
+	if (Half_physical_damage_against_undead_and_demons)
+		enlght_halfdmg(HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS, final);
+	if (Half_spell_damage)
         enlght_halfdmg(HALF_SPDAM, final);
     /* polymorph and other shape change */
     if (Protection_from_shape_changers)

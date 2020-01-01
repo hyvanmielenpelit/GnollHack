@@ -1524,8 +1524,7 @@ register struct obj* omonwep;
 	} else	{
 		if (dmg) {
 			if (Half_physical_damage
-				/* Mitre of Holiness */
-				|| (Role_if(PM_PRIEST) && uarmh && is_quest_artifact(uarmh)
+				|| (Half_physical_damage_against_undead_and_demons
 					&& (is_undead(mtmp->data) || is_demon(mtmp->data)
 						|| is_vampshifter(mtmp))))
 				dmg = (dmg + 1) / 2;
@@ -1564,11 +1563,10 @@ register struct obj* omonwep;
         } else { /* hand to hand weapon */
 			struct obj* otmp = omonwep; //mon_currwep;
 
-            if (mattk->aatyp == AT_WEAP && otmp) {
-				int tmp;
-
-                if (otmp->otyp == CORPSE
-                    && touch_petrifies(&mons[otmp->corpsenm])) {
+            if (mattk->aatyp == AT_WEAP && otmp)
+			{
+                if (otmp->otyp == CORPSE && touch_petrifies(&mons[otmp->corpsenm])) 
+				{
                     dmg = 1;
                     pline("%s hits you with the %s corpse.", Monnam(mtmp),
                           mons[otmp->corpsenm].mname);
@@ -1577,17 +1575,18 @@ register struct obj* omonwep;
                 }
 
 				/* Negative AC reduces damage */
-				if (dmg && u.uac < 0) {
+				if (dmg && u.uac < 0) 
+				{
 					dmg -= rnd(-u.uac);
 					if (dmg < 1)
 						dmg = 1;
 				}
-				if (dmg) {
+				if (dmg) 
+				{
 					if (Half_physical_damage
-						/* Mitre of Holiness */
-						|| (Role_if(PM_PRIEST) && uarmh && is_quest_artifact(uarmh)
-							&& (is_undead(mtmp->data) || is_demon(mtmp->data)
-								|| is_vampshifter(mtmp))))
+						|| (Half_physical_damage_against_undead_and_demons
+							&& (is_undead(mtmp->data) || is_demon(mtmp->data)|| is_vampshifter(mtmp)))
+						)
 						dmg = (dmg + 1) / 2;
 				}
 
@@ -1612,9 +1611,24 @@ register struct obj* omonwep;
 					dmg += special_hit_dmg;
 				}
 
+				boolean silvermsg = FALSE;
+				if (objects[otmp->otyp].oc_material == MAT_SILVER && Hate_silver)
+				{
+					dmg += rnd(20);
+					silvermsg = TRUE;
+				}
+
 				//Finally, display damage caused
 				if(!hittxt)
 					hitmsg(mtmp, mattk, dmg);
+
+				/* Silver message immediately next */
+				if (silvermsg) 
+				{
+					pline_The("silver sears your flesh!");
+					exercise(A_CON, FALSE);
+				}
+
 
 				/* Check if the object should shatter */
 				if (omonwep && objects[omonwep->otyp].oc_material == MAT_GLASS
@@ -1623,7 +1637,7 @@ register struct obj* omonwep;
 					&& !omonwep->oartifact
 					)
 				{
-					/* Shattering is done below, here just the message*/
+					/* Shattering is done below, here just the message */
 					objectshatters = TRUE;
 					if (omonwep->quan == 1)
 						pline("%s %s shatters from the blow!", s_suffix(Monnam(mtmp)), xname(omonwep));
@@ -1634,28 +1648,20 @@ register struct obj* omonwep;
 
 				if (!dmg)
                     break;
-                if (objects[otmp->otyp].oc_material == MAT_SILVER
-                    && Hate_silver) {
-                    pline_The("silver sears your flesh!");
-                    exercise(A_CON, FALSE);
-                }
-                /* this redundancy necessary because you have
+
+
+				/* this redundancy necessary because you have
                    to take the damage _before_ being cloned;
                    need to have at least 2 hp left to split */
-                tmp = dmg;
-                if (u.uac < 0)
-                    tmp -= rnd(-u.uac);
-                if (tmp < 1)
-                    tmp = 1;
-                if (u.mh - tmp > 1
-                    && (objects[otmp->otyp].oc_material == MAT_IRON
+                if (u.mh - dmg > 1 && (objects[otmp->otyp].oc_material == MAT_IRON
                         /* relevant 'metal' objects are scalpel and tsurugi */
                         || objects[otmp->otyp].oc_material == MAT_METAL)
-                    && (u.umonnum >= 0 && does_split_upon_hit(&mons[u.umonnum]))) {
-                    if (tmp > 1)
+                    && (u.umonnum >= 0 && does_split_upon_hit(&mons[u.umonnum])))
+				{
+                    if (dmg > 1)
                         exercise(A_STR, FALSE);
                     /* inflict damage now; we know it can't be fatal */
-                    u.mh -= tmp;
+                    u.mh -= dmg;
                     context.botl = 1;
                     dmg = 0; /* don't inflict more damage below */
                     if (cloneu())

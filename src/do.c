@@ -2346,6 +2346,13 @@ register struct obj* obj;
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
+			if (specialeffect & SPFX_HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Half physical damage against undead and demons %s", powercnt, endbuf);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
 			if (specialeffect & SPFX_TCTRL)
 			{
 				powercnt++;
