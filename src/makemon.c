@@ -474,7 +474,7 @@ register struct monst *mtmp;
         if (humanoid(ptr)) {
             /* create minion stuff; can't use mongets */
 			
-			int weaptype = SWORD_OF_HOLY_VENGEANCE;
+			int weaptype = !rn2(3) || is_lord(ptr) ? SWORD_OF_HOLY_VENGEANCE : !rn2(3) ? LONG_SWORD : SILVER_LONG_SWORD;
 			int artifacttype = 0;
 			
 			if (!rn2(4))
@@ -500,6 +500,9 @@ register struct monst *mtmp;
             if (artifacttype > 0 && (!rn2(20) || is_lord(ptr)))
                 otmp = oname(otmp, artiname(artifacttype));
 
+			if (otmp->oartifact == 0 && weaptype != SWORD_OF_HOLY_VENGEANCE)
+				otmp->elemental_enchantment = FIRE_ENCHANTMENT;
+
             bless(otmp);
             otmp->oerodeproof = TRUE;
             spe2 = rnd(4);
@@ -507,7 +510,7 @@ register struct monst *mtmp;
             (void) mpickobj(mtmp, otmp);
 
             otmp = mksobj(!rn2(4) || is_lord(ptr) ? SHIELD_OF_REFLECTION
-                                                  : LARGE_SHIELD,
+                                                  : !rn2(3) ? SPIKED_SILVER_SHIELD : LARGE_SHIELD,
                           FALSE, FALSE, FALSE);
             otmp->cursed = FALSE;
             otmp->oerodeproof = TRUE;

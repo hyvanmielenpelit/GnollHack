@@ -453,7 +453,7 @@ boolean lifesavedalready;
 	}
 	else if (sptype == LIGHTNING_ENCHANTMENT)
 	{
-		pline("%s%s %s you with electricity!",
+		pline("%s%s %s you with lightning!",
 			isupper((uchar)* reason) ? "" : "The ", reason,
 			plural ? "jolt" : "jolts");
 		if (Shock_resistance || Invulnerable) {
