@@ -2504,7 +2504,7 @@ struct monst* mtmp;
 
 	if(otmp->owornmask)
 	{
-		if (otmp->cursed)
+		if (otmp->cursed && !cursed_items_are_positive_mon(mtmp))
 		{
 			if (otmp->owornmask & W_SADDLE)
 				You("try to remove %s from %s, but you can't. It's cursed!", cxname(otmp), mon_nam(mtmp));

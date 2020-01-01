@@ -2081,7 +2081,8 @@ register struct obj *otmp;
         return 0;
     }
     /* Curses, like chickens, come home to roost. */
-    if ((otmp == uwep) ? welded(otmp, &youmonst) : (int) otmp->cursed) {
+    if ((otmp == uwep) ? welded(otmp, &youmonst) : (int) otmp->cursed && !cursed_items_are_positive(youmonst.data))
+	{
         boolean use_plural = (is_boots(otmp) || is_gloves(otmp) || is_bracers(otmp)
                                || otmp->quan > 1L);
 
@@ -2718,9 +2719,9 @@ find_ac()
 
 	/* armor class from worn gear */
 	if (uarm)
-		suit_ac_bonus = ARM_AC_BONUS(uarm);
+		suit_ac_bonus = ARM_AC_BONUS(uarm, youmonst.data);
 	if (uarmo)
-		robe_ac_bonus = ARM_AC_BONUS(uarmo);
+		robe_ac_bonus = ARM_AC_BONUS(uarmo, youmonst.data);
 
 	combined_ac_bonus = max(suit_ac_bonus, robe_ac_bonus);
 	uac -= combined_ac_bonus;
@@ -2728,22 +2729,22 @@ find_ac()
 	context.robe_yielding_ac_bonus = (robe_ac_bonus == combined_ac_bonus);
 
 	if (uarmc)
-		uac -= ARM_AC_BONUS(uarmc);
+		uac -= ARM_AC_BONUS(uarmc, youmonst.data);
 	if (uarmh)
-		uac -= ARM_AC_BONUS(uarmh);
+		uac -= ARM_AC_BONUS(uarmh, youmonst.data);
 	if (uarmf)
-		uac -= ARM_AC_BONUS(uarmf);
+		uac -= ARM_AC_BONUS(uarmf, youmonst.data);
 	if (uarms && (is_shield(uarms) || is_weapon(uarms)))
-		uac -= ARM_AC_BONUS(uarms); /* Only a shield and a wielded weapon can give AC; exclude wielded other armor types */
+		uac -= ARM_AC_BONUS(uarms, youmonst.data); /* Only a shield and a wielded weapon can give AC; exclude wielded other armor types */
 	if (uarmg)
-		uac -= ARM_AC_BONUS(uarmg);
+		uac -= ARM_AC_BONUS(uarmg, youmonst.data);
 	if (uarmu)
-		uac -= ARM_AC_BONUS(uarmu);
+		uac -= ARM_AC_BONUS(uarmu, youmonst.data);
 	if (uarmb)
-		uac -= ARM_AC_BONUS(uarmb);
+		uac -= ARM_AC_BONUS(uarmb, youmonst.data);
 
 	if (uwep && (is_shield(uwep) || is_weapon(uwep)))
-		uac -= ARM_AC_BONUS(uwep); /* A wielded weapon can give AC, also a wielded shield (in right hand) */
+		uac -= ARM_AC_BONUS(uwep, youmonst.data); /* A wielded weapon can give AC, also a wielded shield (in right hand) */
 
 
 	/* Kludge removed by JG -- Now in u.uacbonus */

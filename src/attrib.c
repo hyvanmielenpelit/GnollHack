@@ -1788,6 +1788,7 @@ updateabon()
 	u.luck_does_not_timeout = 0;
 	u.unluck_does_not_timeout = 0;
 
+	boolean cursed_are_good = cursed_items_are_positive(youmonst.data);
 
 	/* Set wounded legs here */
 	if (Wounded_legs)
@@ -1813,6 +1814,9 @@ updateabon()
 			{
 				int multiplier = ((objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE) && uitem->cursed) || 
 					(objects[otyp].oc_pflags & P1_ATTRIBUTE_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr ? -1 : 1;
+
+				boolean cursed_plus_cursed_good = uitem->cursed && cursed_are_good;
+				int applicable_spe = (cursed_plus_cursed_good ? abs(uitem->spe) : uitem->spe);
 
 				for (int i = 0; i < A_MAX+6; i++)
 				{
@@ -1870,7 +1874,7 @@ updateabon()
 								{
 									int afixmaxcandidate = objects[otyp].oc_attribute_bonus;
 									if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
-										afixmaxcandidate += uitem->spe;
+										afixmaxcandidate += applicable_spe;
 
 									/* Take the lowest maximum (most constraining) */
 									if (afixmaxcandidate < AFIXMAX(i))
@@ -1880,7 +1884,7 @@ updateabon()
 								{
 									int afixmincandidate = objects[otyp].oc_attribute_bonus;
 									if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
-										afixmincandidate += uitem->spe;
+										afixmincandidate += applicable_spe;
 
 									/* Take the highest minimum (most constraining) */
 									if (afixmincandidate > AFIXMIN(i))
@@ -1891,44 +1895,44 @@ updateabon()
 							{
 								ABONUS(i) += multiplier * objects[otyp].oc_attribute_bonus;
 								if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
-									ABONUS(i) += multiplier * uitem->spe;
+									ABONUS(i) += multiplier * applicable_spe;
 							}
 						}
 						else if (i == A_MAX + 0)
 						{
 							u.udaminc += multiplier * objects[otyp].oc_attribute_bonus;
 							if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
-								u.udaminc += multiplier * uitem->spe;
+								u.udaminc += multiplier * applicable_spe;
 						}
 						else if (i == A_MAX + 1)
 						{
 							u.uhitinc += multiplier * objects[otyp].oc_attribute_bonus;
 							if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
-								u.uhitinc += multiplier * uitem->spe;
+								u.uhitinc += multiplier * applicable_spe;
 						}
 						else if (i == A_MAX + 2)
 						{
 							u.uacbonus += multiplier * objects[otyp].oc_attribute_bonus;
 							if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
-								u.uacbonus += multiplier * uitem->spe;
+								u.uacbonus += multiplier * applicable_spe;
 						}
 						else if (i == A_MAX + 3)
 						{
 							u.umcbonus += multiplier * objects[otyp].oc_attribute_bonus;
 							if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
-								u.umcbonus += multiplier * uitem->spe;
+								u.umcbonus += multiplier * applicable_spe;
 						}
 						else if (i == A_MAX + 4)
 						{
 							u.uspellcastingbonus += multiplier * objects[otyp].oc_attribute_bonus;
 							if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
-								u.uspellcastingbonus += multiplier * uitem->spe;
+								u.uspellcastingbonus += multiplier * applicable_spe;
 						}
 						else if (i == A_MAX + 5)
 						{
 							u.uexperiencebonus += multiplier * objects[otyp].oc_attribute_bonus;
 							if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
-								u.uexperiencebonus += multiplier * uitem->spe;
+								u.uexperiencebonus += multiplier * applicable_spe;
 						}
 					}
 				}

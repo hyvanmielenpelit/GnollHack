@@ -512,12 +512,12 @@ enum bodypart_types {
 #endif
 #define plur(x) (((x) == 1) ? "" : "s")
 
-#define ARM_AC_BONUS(obj) (((obj)->oclass == ARMOR_CLASS || (objects[(obj)->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)) ?                    \
-    (objects[(obj)->otyp].oc_armor_class + (objects[(obj)->otyp].oc_flags & O1_SPE_DOES_NOT_AFFECT_AC ? 0 : (obj)->spe) \
+#define ARM_AC_BONUS(obj, ptr) (((obj)->oclass == ARMOR_CLASS || (objects[(obj)->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)) ?                    \
+    (objects[(obj)->otyp].oc_armor_class + (objects[(obj)->otyp].oc_flags & O1_SPE_DOES_NOT_AFFECT_AC ? 0 : (!cursed_items_are_positive(ptr) ? (obj)->spe : abs((obj)->spe))) \
      - (objects[(obj)->otyp].oc_flags & O1_EROSION_DOES_NOT_AFFECT_AC ? 0 : min((int) greatest_erosion(obj), objects[(obj)->otyp].oc_armor_class))) : 0)
 
-#define ARM_MC_BONUS(obj)                      \
-    (objects[(obj)->otyp].oc_magic_cancellation + (objects[(obj)->otyp].oc_flags & O1_SPE_AFFECTS_MC ? (obj)->spe : 0) \
+#define ARM_MC_BONUS(obj, ptr)                      \
+    (objects[(obj)->otyp].oc_magic_cancellation + (objects[(obj)->otyp].oc_flags & O1_SPE_AFFECTS_MC ? (!cursed_items_are_positive(ptr) ? (obj)->spe : abs((obj)->spe)) : 0) \
      - (objects[(obj)->otyp].oc_flags & O1_EROSION_DOES_NOT_AFFECT_MC ? 0 : min((int) greatest_erosion(obj), objects[(obj)->otyp].oc_magic_cancellation)))
 
 

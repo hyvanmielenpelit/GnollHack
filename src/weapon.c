@@ -262,7 +262,7 @@ struct monst* mattacker;
 	boolean Is_weapon = is_weapon(otmp);
 	boolean Is_worn_gauntlets = is_gloves(otmp) && (otmp->owornmask & W_ARMG);
 
-	if(mattacker && mattacker->data->mflags2 & (M2_DEMON | M2_UNDEAD) && otmp->cursed)
+	if(mattacker && cursed_items_are_positive_mon(mattacker) && otmp->cursed)
 	{ 
 		if (Is_weapon || Is_worn_gauntlets)
 			tmp += abs(otmp->spe);
@@ -383,7 +383,7 @@ struct monst* mattacker;
 				tmp += objects[otyp].oc_wsdmgplus;
 			}
 
-			if (mattacker && mattacker->data->mflags2 & (M2_DEMON | M2_UNDEAD) && otmp->cursed)
+			if (mattacker && cursed_items_are_positive_mon(mattacker) && otmp->cursed)
 				tmp += abs(otmp->spe);
 			else
 				tmp += otmp->spe;

@@ -62,8 +62,8 @@ STATIC_DCL int FDECL(ready_weapon, (struct obj *, long));
      || (optr)->otyp == HEAVY_IRON_BALL || (optr)->otyp == IRON_CHAIN)
 
 /* used by welded(), and also while wielding */
-#define will_weld(optr, mptr) \
-    ((optr)->cursed && (erodeable_wep(optr) || (optr)->otyp == TIN_OPENER) && !((mptr)->data->mflags2 & (M2_DEMON | M2_UNDEAD)))
+#define will_weld(otmp, mtmp) \
+    ((otmp)->cursed && (erodeable_wep(otmp) || (otmp)->otyp == TIN_OPENER) && !cursed_items_are_positive_mon(mtmp))
 
 /*** Functions that place a given item in a slot ***/
 /* Proper usage includes:

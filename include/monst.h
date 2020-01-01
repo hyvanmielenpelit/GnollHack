@@ -205,6 +205,10 @@ struct monst {
     ((mon)->cham == PM_VAMPIRE || (mon)->cham == PM_VAMPIRE_LORD || (mon)->cham == PM_VAMPIRE_MAGE \
      || (mon)->cham == PM_VLAD_THE_IMPALER)
 
+#define cursed_items_are_positive_mon(mon) \
+	(cursed_items_are_positive((mon)->data) || ((mon)->cham >= LOW_PM && cursed_items_are_positive(&mons[(mon)->cham])))
+
+
 /* mimic appearances that block vision/light */
 #define is_lightblocker_mappear(mon)                       \
     (is_obj_mappear(mon, BOULDER)                          \

@@ -246,7 +246,6 @@
 
 
 #define is_vampire(ptr) ((ptr)->mlet == S_VAMPIRE)
-
 #define hates_light(ptr) ((ptr) == &mons[PM_GREMLIN])
 
 /* used to vary a few messages, not affected by death attacks*/
@@ -254,6 +253,11 @@
     (is_undead(ptr) || is_nonliving(ptr))
 
 #define is_living(ptr) !is_not_living(ptr)
+
+
+/* cursed items are good for some evil creatures */
+#define cursed_items_are_positive(ptr) \
+	(is_undead(ptr) || is_demon(ptr))
 
 /* no corpse (ie, blank scrolls) if killed by fire */
 #define completelyburns(ptr) \
