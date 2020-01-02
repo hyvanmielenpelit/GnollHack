@@ -258,8 +258,9 @@ struct obj *otmp;
 #define MUSE_WAN_TELEPORTATION 15
 #define MUSE_BUGLE 16
 #define MUSE_UNICORN_HORN 17
-#define MUSE_POT_FULL_HEALING 18
-#define MUSE_LIZARD_CORPSE 19
+#define MUSE_POT_GREATER_HEALING 18
+#define MUSE_POT_FULL_HEALING 19
+#define MUSE_LIZARD_CORPSE 20
 /*
 #define MUSE_INNATE_TPT 9999
  * We cannot use this.  Since monsters get unlimited teleportation, if they
@@ -278,7 +279,12 @@ struct monst *mtmp;
         m.has_defense = MUSE_POT_FULL_HEALING;
         return TRUE;
     }
-    if ((obj = m_carrying(mtmp, POT_EXTRA_HEALING)) != 0) {
+	if ((obj = m_carrying(mtmp, POT_GREATER_HEALING)) != 0) {
+		m.defensive = obj;
+		m.has_defense = MUSE_POT_GREATER_HEALING;
+		return TRUE;
+	}
+	if ((obj = m_carrying(mtmp, POT_EXTRA_HEALING)) != 0) {
         m.defensive = obj;
         m.has_defense = MUSE_POT_EXTRA_HEALING;
         return TRUE;
@@ -552,7 +558,12 @@ struct monst *mtmp;
                 m.defensive = obj;
                 m.has_defense = MUSE_POT_FULL_HEALING;
             }
-            nomore(MUSE_POT_EXTRA_HEALING);
+			nomore(MUSE_POT_GREATER_HEALING);
+			if (obj->otyp == POT_GREATER_HEALING) {
+				m.defensive = obj;
+				m.has_defense = MUSE_POT_GREATER_HEALING;
+			}
+			nomore(MUSE_POT_EXTRA_HEALING);
             if (obj->otyp == POT_EXTRA_HEALING) {
                 m.defensive = obj;
                 m.has_defense = MUSE_POT_EXTRA_HEALING;
@@ -932,9 +943,9 @@ struct monst *mtmp;
         mquaffmsg(mtmp, otmp);
         i = d(6 + 2 * bcsign(otmp), 4);
         mtmp->mhp += i;
-        if (mtmp->mhp > mtmp->mhpmax)
-            mtmp->mhp = ++mtmp->mhpmax;
-        if (!otmp->cursed && !mtmp->mcansee)
+		if (mtmp->mhp > mtmp->mhpmax)
+			mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? 1 : 0));
+		if (!otmp->cursed && !mtmp->mcansee)
             mcureblindness(mtmp, vismon);
         if (vismon)
             pline("%s looks better.", Monnam(mtmp));
@@ -947,7 +958,7 @@ struct monst *mtmp;
         i = d(6 + 2 * bcsign(otmp), 8);
         mtmp->mhp += i;
         if (mtmp->mhp > mtmp->mhpmax)
-            mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? 5 : 2));
+            mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? 2 : 0));
         if (!mtmp->mcansee)
             mcureblindness(mtmp, vismon);
         if (vismon)
@@ -956,7 +967,21 @@ struct monst *mtmp;
             makeknown(POT_EXTRA_HEALING);
         m_useup(mtmp, otmp);
         return 2;
-    case MUSE_POT_FULL_HEALING:
+	case MUSE_POT_GREATER_HEALING:
+		mquaffmsg(mtmp, otmp);
+		i = d(10 + 2 * bcsign(otmp), 8) + 8;
+		mtmp->mhp += i;
+		if (mtmp->mhp > mtmp->mhpmax)
+			mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? 3 : 0));
+		if (!mtmp->mcansee)
+			mcureblindness(mtmp, vismon);
+		if (vismon)
+			pline("%s looks much, much better.", Monnam(mtmp));
+		if (oseen)
+			makeknown(POT_GREATER_HEALING);
+		m_useup(mtmp, otmp);
+		return 2;
+	case MUSE_POT_FULL_HEALING:
         mquaffmsg(mtmp, otmp);
         if (otmp->otyp == POT_SICKNESS)
             unbless(otmp); /* Pestilence */
@@ -1058,8 +1083,26 @@ find_offensive(mtmp)
 struct monst *mtmp;
 {
     register struct obj *obj;
-    boolean reflection_skip = (Reflecting && rn2(2));
-    struct obj *helmet = which_armor(mtmp, W_ARMH);
+	boolean extremely_high_level_skip = (mtmp->data->difficulty > 60);
+	boolean very_high_level_skip = (mtmp->data->difficulty > 30 && mtmp->data->difficulty <= 60);
+	boolean high_level_skip = (mtmp->data->difficulty > 20 && mtmp->data->difficulty <= 30);
+	boolean medium_level_skip = (mtmp->data->difficulty > 15 && mtmp->data->difficulty <= 20);
+	boolean low_level_skip = (mtmp->data->difficulty > 10 && mtmp->data->difficulty <= 15);
+	boolean very_low_level_skip = (mtmp->data->difficulty > 5 && mtmp->data->difficulty <= 10);
+	boolean reflection_skip = (Reflecting && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 15 || rn2(2)));
+	boolean antimagic_skip = (Antimagic && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 15 || rn2(2)));
+	boolean sleep_resistant_skip = (Sleep_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || rn2(2)));
+	boolean death_resistant_skip = (Death_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || rn2(2)));
+	boolean disintegration_resistant_skip = (Disint_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || rn2(2)));
+	boolean fire_resistant_skip = (Fire_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || rn2(2)));
+	boolean cold_resistant_skip = (Cold_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || rn2(2)));
+	boolean shock_resistant_skip = (Shock_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || rn2(2)));
+
+	boolean level_skip_weak_wand = (very_low_level_skip && rn2(2)) || (low_level_skip && rn2(4)) || (medium_level_skip && rn2(8)) || high_level_skip || very_high_level_skip || extremely_high_level_skip;
+	boolean level_skip_normal_wand = (very_low_level_skip && !rn2(3)) || (low_level_skip && rn2(2)) || (medium_level_skip && rn2(4)) || (high_level_skip && rn2(8)) || very_high_level_skip || extremely_high_level_skip;
+	boolean level_skip_powerful_wand = (very_low_level_skip && !rn2(4)) || (low_level_skip && !rn2(3)) || (medium_level_skip && rn2(2)) || (high_level_skip && rn2(4)) || (very_high_level_skip && rn2(8)) || (extremely_high_level_skip && rn2(16));
+
+	struct obj *helmet = which_armor(mtmp, W_ARMH);
 
     m.offensive = (struct obj *) 0;
     m.has_offense = 0;
@@ -1081,55 +1124,56 @@ struct monst *mtmp;
 #define nomore(x)       if (m.has_offense == x) continue;
     /* this picks the last viable item rather than prioritizing choices */
     for (obj = mtmp->minvent; obj; obj = obj->nobj) {
-        if (!reflection_skip) {
+        if (!reflection_skip) 
+		{
             nomore(MUSE_WAN_DEATH);
-            if (obj->otyp == WAN_DEATH && obj->spe > 0) {
+            if (obj->otyp == WAN_DEATH && obj->spe > 0 && !antimagic_skip && !death_resistant_skip && !level_skip_powerful_wand) {
                 m.offensive = obj;
                 m.has_offense = MUSE_WAN_DEATH;
             }
 			nomore(MUSE_WAN_DISINTEGRATION);
-			if (obj->otyp == WAN_DISINTEGRATION && obj->spe > 0) {
+			if (obj->otyp == WAN_DISINTEGRATION && obj->spe > 0 && !disintegration_resistant_skip && !level_skip_powerful_wand) {
 				m.offensive = obj;
 				m.has_offense = MUSE_WAN_DISINTEGRATION;
 			}
 			nomore(MUSE_WAN_SLEEP);
-            if (obj->otyp == WAN_SLEEP && obj->spe > 0 && multi >= 0) {
+            if (obj->otyp == WAN_SLEEP && obj->spe > 0 && multi >= 0 && !sleep_resistant_skip && !antimagic_skip && !level_skip_normal_wand) {
                 m.offensive = obj;
                 m.has_offense = MUSE_WAN_SLEEP;
             }
             nomore(MUSE_WAN_FIRE);
-            if (obj->otyp == WAN_FIRE && obj->spe > 0) {
+            if (obj->otyp == WAN_FIRE && obj->spe > 0 && fire_resistant_skip && !level_skip_normal_wand) {
                 m.offensive = obj;
                 m.has_offense = MUSE_WAN_FIRE;
             }
             nomore(MUSE_FIRE_HORN);
-            if (obj->otyp == FIRE_HORN && obj->spe > 0 && can_blow(mtmp)) {
+            if (obj->otyp == FIRE_HORN && obj->spe > 0 && can_blow(mtmp) && fire_resistant_skip && !level_skip_normal_wand) {
                 m.offensive = obj;
                 m.has_offense = MUSE_FIRE_HORN;
             }
             nomore(MUSE_WAN_COLD);
-            if (obj->otyp == WAN_COLD && obj->spe > 0) {
+            if (obj->otyp == WAN_COLD && obj->spe > 0 && cold_resistant_skip && !level_skip_normal_wand) {
                 m.offensive = obj;
                 m.has_offense = MUSE_WAN_COLD;
             }
             nomore(MUSE_FROST_HORN);
-            if (obj->otyp == FROST_HORN && obj->spe > 0 && can_blow(mtmp)) {
+            if (obj->otyp == FROST_HORN && obj->spe > 0 && can_blow(mtmp) && cold_resistant_skip && !level_skip_normal_wand) {
                 m.offensive = obj;
                 m.has_offense = MUSE_FROST_HORN;
             }
             nomore(MUSE_WAN_LIGHTNING);
-            if (obj->otyp == WAN_LIGHTNING && obj->spe > 0) {
+            if (obj->otyp == WAN_LIGHTNING && obj->spe > 0 && shock_resistant_skip && !level_skip_normal_wand) {
                 m.offensive = obj;
                 m.has_offense = MUSE_WAN_LIGHTNING;
             }
             nomore(MUSE_WAN_MAGIC_MISSILE);
-            if (obj->otyp == WAN_MAGIC_MISSILE && obj->spe > 0) {
+            if (obj->otyp == WAN_MAGIC_MISSILE && obj->spe > 0 && antimagic_skip && !level_skip_weak_wand) {
                 m.offensive = obj;
                 m.has_offense = MUSE_WAN_MAGIC_MISSILE;
             }
         }
         nomore(MUSE_WAN_STRIKING);
-        if (obj->otyp == WAN_STRIKING && obj->spe > 0) {
+        if (obj->otyp == WAN_STRIKING && obj->spe > 0 && antimagic_skip && !level_skip_weak_wand) {
             m.offensive = obj;
             m.has_offense = MUSE_WAN_STRIKING;
         }
@@ -1151,48 +1195,51 @@ struct monst *mtmp;
             m.has_offense = MUSE_WAN_TELEPORTATION;
         }
 #endif
-        nomore(MUSE_POT_PARALYSIS);
-        if (obj->otyp == POT_PARALYSIS && multi >= 0) {
-            m.offensive = obj;
-            m.has_offense = MUSE_POT_PARALYSIS;
-        }
-        nomore(MUSE_POT_BLINDNESS);
-        if (obj->otyp == POT_BLINDNESS && !attacktype(mtmp->data, AT_GAZE)) {
-            m.offensive = obj;
-            m.has_offense = MUSE_POT_BLINDNESS;
-        }
-        nomore(MUSE_POT_CONFUSION);
-        if (obj->otyp == POT_CONFUSION) {
-            m.offensive = obj;
-            m.has_offense = MUSE_POT_CONFUSION;
-        }
-        nomore(MUSE_POT_SLEEPING);
-        if (obj->otyp == POT_SLEEPING) {
-            m.offensive = obj;
-            m.has_offense = MUSE_POT_SLEEPING;
-        }
-        nomore(MUSE_POT_ACID);
-        if (obj->otyp == POT_ACID) {
-            m.offensive = obj;
-            m.has_offense = MUSE_POT_ACID;
-        }
-        /* we can safely put this scroll here since the locations that
-         * are in a 1 square radius are a subset of the locations that
-         * are in wand or throwing range (in other words, always lined_up())
-         */
-        nomore(MUSE_SCR_EARTH);
-        if (obj->otyp == SCR_EARTH
-            && ((helmet && is_metallic(helmet)) || mtmp->mconf
-                || amorphous(mtmp->data) || passes_walls(mtmp->data)
-                || noncorporeal(mtmp->data) || unsolid(mtmp->data)
-                || !rn2(10))
-            && dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) <= 2
-            && mtmp->mcansee && haseyes(mtmp->data)
-            && !Is_rogue_level(&u.uz)
-            && (!In_endgame(&u.uz) || Is_earthlevel(&u.uz))) {
-            m.offensive = obj;
-            m.has_offense = MUSE_SCR_EARTH;
-        }
+		if (!level_skip_weak_wand)
+		{
+			nomore(MUSE_POT_PARALYSIS);
+			if (obj->otyp == POT_PARALYSIS && multi >= 0) {
+				m.offensive = obj;
+				m.has_offense = MUSE_POT_PARALYSIS;
+			}
+			nomore(MUSE_POT_BLINDNESS);
+			if (obj->otyp == POT_BLINDNESS && !attacktype(mtmp->data, AT_GAZE)) {
+				m.offensive = obj;
+				m.has_offense = MUSE_POT_BLINDNESS;
+			}
+			nomore(MUSE_POT_CONFUSION);
+			if (obj->otyp == POT_CONFUSION) {
+				m.offensive = obj;
+				m.has_offense = MUSE_POT_CONFUSION;
+			}
+			nomore(MUSE_POT_SLEEPING);
+			if (obj->otyp == POT_SLEEPING) {
+				m.offensive = obj;
+				m.has_offense = MUSE_POT_SLEEPING;
+			}
+			nomore(MUSE_POT_ACID);
+			if (obj->otyp == POT_ACID) {
+				m.offensive = obj;
+				m.has_offense = MUSE_POT_ACID;
+			}
+			/* we can safely put this scroll here since the locations that
+			 * are in a 1 square radius are a subset of the locations that
+			 * are in wand or throwing range (in other words, always lined_up())
+			 */
+			nomore(MUSE_SCR_EARTH);
+			if (obj->otyp == SCR_EARTH
+				&& ((helmet && is_metallic(helmet)) || mtmp->mconf
+					|| amorphous(mtmp->data) || passes_walls(mtmp->data)
+					|| noncorporeal(mtmp->data) || unsolid(mtmp->data)
+					|| !rn2(10))
+				&& dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) <= 2
+				&& mtmp->mcansee && haseyes(mtmp->data)
+				&& !Is_rogue_level(&u.uz)
+				&& (!In_endgame(&u.uz) || Is_earthlevel(&u.uz))) {
+				m.offensive = obj;
+				m.has_offense = MUSE_SCR_EARTH;
+			}
+		}
 #if 0
         nomore(MUSE_SCR_FIRE);
         if (obj->otyp == SCR_FIRE && resists_fire(mtmp)
