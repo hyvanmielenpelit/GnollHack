@@ -1089,18 +1089,18 @@ struct monst *mtmp;
 	boolean medium_level_skip = (mtmp->data->difficulty > 15 && mtmp->data->difficulty <= 20);
 	boolean low_level_skip = (mtmp->data->difficulty > 10 && mtmp->data->difficulty <= 15);
 	boolean very_low_level_skip = (mtmp->data->difficulty > 5 && mtmp->data->difficulty <= 10);
-	boolean reflection_skip = (Reflecting && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 15 || rn2(2)));
-	boolean antimagic_skip = (Antimagic && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 15 || rn2(2)));
-	boolean sleep_resistant_skip = (Sleep_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || rn2(2)));
-	boolean death_resistant_skip = (Death_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || rn2(2)));
-	boolean disintegration_resistant_skip = (Disint_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || rn2(2)));
-	boolean fire_resistant_skip = (Fire_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || rn2(2)));
-	boolean cold_resistant_skip = (Cold_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || rn2(2)));
-	boolean shock_resistant_skip = (Shock_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || rn2(2)));
+	boolean reflection_skip = (Reflecting && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 15 || (mtmp->data->intl > 10 && rn2(4)) || rn2(2)));
+	boolean antimagic_skip = (Antimagic && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 15 || (mtmp->data->intl > 10 && rn2(4)) || rn2(2)));
+	boolean sleep_resistant_skip = (Sleep_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
+	boolean death_resistant_skip = (Death_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
+	boolean disintegration_resistant_skip = (Disint_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
+	boolean fire_resistant_skip = (Fire_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
+	boolean cold_resistant_skip = (Cold_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
+	boolean shock_resistant_skip = (Shock_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
 
 	boolean level_skip_weak_wand = (very_low_level_skip && rn2(2)) || (low_level_skip && rn2(4)) || (medium_level_skip && rn2(8)) || high_level_skip || very_high_level_skip || extremely_high_level_skip;
 	boolean level_skip_normal_wand = (very_low_level_skip && !rn2(3)) || (low_level_skip && rn2(2)) || (medium_level_skip && rn2(4)) || (high_level_skip && rn2(8)) || very_high_level_skip || extremely_high_level_skip;
-	boolean level_skip_powerful_wand = (very_low_level_skip && !rn2(4)) || (low_level_skip && !rn2(3)) || (medium_level_skip && rn2(2)) || (high_level_skip && rn2(4)) || (very_high_level_skip && rn2(8)) || (extremely_high_level_skip && rn2(16));
+	boolean level_skip_powerful_wand = (very_low_level_skip && !rn2(9)) || (low_level_skip && !rn2(6)) || (medium_level_skip && !rn2(3)) || (high_level_skip && rn2(2)) || (very_high_level_skip && rn2(3)) || (extremely_high_level_skip && rn2(4));
 
 	struct obj *helmet = which_armor(mtmp, W_ARMH);
 
@@ -1132,7 +1132,7 @@ struct monst *mtmp;
                 m.has_offense = MUSE_WAN_DEATH;
             }
 			nomore(MUSE_WAN_DISINTEGRATION);
-			if (obj->otyp == WAN_DISINTEGRATION && obj->spe > 0 && !disintegration_resistant_skip && !level_skip_powerful_wand) {
+			if (obj->otyp == WAN_DISINTEGRATION && obj->spe > 0 && !disintegration_resistant_skip && ((!uarm && !uarms && !level_skip_powerful_wand) || ((uarm || uarms) && !level_skip_normal_wand))) {
 				m.offensive = obj;
 				m.has_offense = MUSE_WAN_DISINTEGRATION;
 			}
