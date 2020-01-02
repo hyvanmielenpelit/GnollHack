@@ -4028,7 +4028,7 @@ struct ext_func_tab extcmdlist[] = {
 	{ 'A', "ability", "use ability or skill",
 			doability, IFBURIED | AUTOCOMPLETE },
 	{ C('y'), "attributes", "show your attributes",
-			doattributes, IFBURIED | INCMDMENU },
+			doattributes, IFBURIED | AUTOCOMPLETE | INCMDMENU },
 	{ '@', "autopickup", "toggle the pickup option on/off",
             dotogglepickup, IFBURIED },
 	{ C('b'), "break", "break something", dobreak, IFBURIED | AUTOCOMPLETE | INCMDMENU },
@@ -4129,7 +4129,7 @@ struct ext_func_tab extcmdlist[] = {
     { RING_SYM, "seerings", "show the ring(s) currently worn",
             doprring, IFBURIED },
     { SPBOOK_SYM, "seespells", "list and reorder known spells",
-            dovspell, IFBURIED },
+            dovspell, IFBURIED | INCMDMENU },
     { TOOL_SYM, "seetools", "show the tools currently in use",
             doprtool, IFBURIED },
     { '^', "seetrap", "show the type of adjacent trap", doidtrap, IFBURIED },
@@ -4194,7 +4194,7 @@ struct ext_func_tab extcmdlist[] = {
 	{ M('y'), "you", "describe your character", docharacterstatistics, IFBURIED | AUTOCOMPLETE | INCMDMENU },
 	{ 'z', "zap", "zap a wand", dozap },
 	{ 'Z', "cast", "zap (cast) a spell", docast, IFBURIED },
-	{ M('z'), "spelldetails", "describe a spell you know", dospelldescriptions, IFBURIED | AUTOCOMPLETE | INCMDMENU },
+	{ M('z'), "spellactions", "additional actions for spells", dospellactions, IFBURIED | AUTOCOMPLETE | INCMDMENU },
 
 
 #ifdef DEBUG

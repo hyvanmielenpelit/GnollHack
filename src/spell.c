@@ -28,6 +28,7 @@
 #define spellcooldownlength(spell) spl_book[spell].sp_cooldownlength
 #define spellcooldownleft(spell) spl_book[spell].sp_cooldownleft
 #define spellskillchance(spell) spl_book[spell].sp_skillchance
+#define spellhotkey(spell) spl_book[spell].sp_hotkey
 #define spellname(spell) OBJ_NAME(objects[spellid(spell)])
 #define spellet(spell) \
     ((char) ((spell < 26) ? ('a' + spell) : ('A' + spell - 26)))
@@ -867,7 +868,7 @@ int spell_list_type;
 
     if (flags.menu_style == MENU_TRADITIONAL) {
         /* we know there is at least 1 known spell */
-        for (nspells = 1; nspells < MAXSPELL && spellid(nspells) != NO_SPELL;
+        for (nspells = 1; nspells < min(MAXSPELL, 52) && spellid(nspells) != NO_SPELL;
              nspells++)
             continue;
 
@@ -898,7 +899,7 @@ int spell_list_type;
             return TRUE;
         }
     }
-    return dospellmenu((spell_list_type == 2 ? "Choose a spell to be described in more detail" : spell_list_type == 1 ? "Choose which spell to prepare" : "Choose which spell to cast"),
+    return dospellmenu((spell_list_type == 2 ? "Choose a spell" : spell_list_type == 1 ? "Choose which spell to prepare" : "Choose which spell to cast"),
 		(spell_list_type == 2 ? SPELLMENU_DETAILS : spell_list_type == 1 ? SPELLMENU_PREPARE : SPELLMENU_CAST),
                        spell_no);
 }
@@ -916,12 +917,12 @@ docast()
 
 /* the M('z') command -- spell info / descriptions */
 int
-dospelldescriptions()
+dospellactions()
 {
 	int spell_no;
 
 	if (getspell(&spell_no, 2))
-		return spelldescription(spell_no);
+		return dospellactionmenu(spell_no);
 	return 0;
 }
 
@@ -2758,12 +2759,12 @@ int *spell_no;
      * (2) that selection letters are pre-pended to the
      * given string and are of the form "a - ".
      */
-	if (splaction == SPELLMENU_DETAILS)
+	if (splaction == SPELLMENU_DETAILS || splaction == SPELLMENU_VIEW || splaction == SPELLMENU_SORT || splaction >= 0)
 	{
 		int maxlen = 15;
 		int maxnamelen = 0;
 
-		for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
+		for (i = 0; i < min(MAXSPELL, 52) && spellid(i) != NO_SPELL; i++)
 		{
 			int desclen = 0;
 			splnum = !spl_orderindx ? i : spl_orderindx[i];
@@ -2804,7 +2805,9 @@ int *spell_no;
 
 		add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, buf,
 			MENU_UNSELECTED);
-		for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++) {
+
+
+		for (i = 0; i < min(MAXSPELL, 52) && spellid(i) != NO_SPELL; i++) {
 			splnum = !spl_orderindx ? i : spl_orderindx[i];
 			char shortenedname[BUFSZ] = "";
 			char fullname[BUFSZ] = "";
@@ -2862,7 +2865,7 @@ int *spell_no;
 		int maxlen = 23;
 		int maxnamelen = 0;
 
-		for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
+		for (i = 0; i < min(MAXSPELL, 52) && spellid(i) != NO_SPELL; i++)
 		{
 			int desclen = 0;
 			int namelen = 0;
@@ -2898,7 +2901,7 @@ int *spell_no;
 		}
 		add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, buf,
 			MENU_UNSELECTED);
-		for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++) {
+		for (i = 0; i < min(MAXSPELL, 52) && spellid(i) != NO_SPELL; i++) {
 			splnum = !spl_orderindx ? i : spl_orderindx[i];
 
 			if (!iflags.menu_tab_sep) {
@@ -2994,7 +2997,7 @@ int *spell_no;
 
 		int maxnamelen = 0;
 
-		for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
+		for (i = 0; i < min(MAXSPELL, 52) && spellid(i) != NO_SPELL; i++)
 		{
 			int namelen = 0;
 			splnum = !spl_orderindx ? i : spl_orderindx[i];
@@ -3016,135 +3019,183 @@ int *spell_no;
 		}
 		add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, buf,
 			MENU_UNSELECTED);
-		for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++) {
-			splnum = !spl_orderindx ? i : spl_orderindx[i];
-			char shortenedname[BUFSZ] = "";
-			char fullname[BUFSZ] = "";
-			char categorybuf[BUFSZ] = "";
 
-			if (!iflags.menu_tab_sep) {
-				if (spellknow(splnum) <= 0)
-					Sprintf(fmt, "%%-%ds  %%s", namelength);
+		int hotkeynum = 1;
+		boolean hotkeyfound = FALSE;
+		for(int k = 1; k <= 2; k++)
+		{
+			if (hotkeyfound)
+			{
+				any = zeroany;
+				add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, "", MENU_UNSELECTED);
+			}
+			for (i = 0; i < min(MAXSPELL, 52) && spellid(i) != NO_SPELL; i++)
+			{
+				if (k == 1)
+				{
+					if (spellhotkey(i) != hotkeynum)
+					{
+						if (i >= min(MAXSPELL, 52) - 1 || spellid(i + 1) == NO_SPELL)
+						{
+							hotkeynum++;
+							i = -1;
+							if (hotkeynum > 10)
+								break;
+						}
+						continue;
+					}
+					hotkeyfound = TRUE;
+				}
+
+				splnum = !spl_orderindx ? i : spl_orderindx[i];
+				char shortenedname[BUFSZ] = "";
+				char fullname[BUFSZ] = "";
+				char categorybuf[BUFSZ] = "";
+
+				if (!iflags.menu_tab_sep) {
+					if (spellknow(splnum) <= 0)
+						Sprintf(fmt, "%%-%ds  %%s", namelength);
+					else
+						Sprintf(fmt, "%%-%ds  %%s   %%-13s %%4d  %%s %%3d%%%% %%4d  %%4s", namelength);
+					//		fmt = "%-20s  %2d   %-12s %4d %3d%% %8s";
+				}
+				else {
+					if (spellknow(splnum) <= 0)
+						strcpy(fmt, "%s\t%s");
+					else
+						strcpy(fmt, "%s\t%s\t%s\t%-d\t%-d%%\t%-d\t%s");
+					//		fmt = "%s\t%-d\t%s\t%-d\t%-d%%\t%s";
+				}
+
+				Sprintf(fullname, "%s%s", spellcooldownleft(splnum) > 0 ? "-" : "",
+					spellname(splnum));
+
+				//Spell name
+				if (strlen(fullname) > (size_t)(spellcooldownleft(splnum) > 0 ? namelength-1 : namelength))
+					strncpy(shortenedname, fullname, (size_t)(spellcooldownleft(splnum) > 0 ? namelength-1 : namelength));
 				else
-					Sprintf(fmt, "%%-%ds  %%s   %%-13s %%4d  %%s %%3d%%%% %%4d  %%4s", namelength);
-				//		fmt = "%-20s  %2d   %-12s %4d %3d%% %8s";
-			}
-			else {
-				if (spellknow(splnum) <= 0)
-					strcpy(fmt, "%s\t%s");
+					strcpy(shortenedname, fullname);
+
+				if (spellcooldownleft(splnum) > 0)
+					Strcat(shortenedname, "-");
+
+				//Spell level
+				if (spellev(splnum) < -1)
+					strcpy(levelbuf, " *");
+				else if (spellev(splnum) == -1)
+					strcpy(levelbuf, " c");
+				else if (spellev(splnum) == 0)
+					strcpy(levelbuf, " C");
 				else
-					strcpy(fmt, "%s\t%s\t%s\t%-d\t%-d%%\t%-d\t%s");
-				//		fmt = "%s\t%-d\t%s\t%-d\t%-d%%\t%s";
+					Sprintf(levelbuf, "%2d", spellev(splnum));
+
+				strcpy(categorybuf, spelltypemnemonic(spell_skilltype(spellid(splnum))));
+
+
+				if (spellamount(splnum) >= 0)
+					Sprintf(availablebuf, "%d", spellamount(splnum));
+				else
+					strcpy(availablebuf, "Inf.");
+
+				switch (objects[spellid(splnum)].oc_spell_attribute)
+				{
+				case A_STR:
+					strcpy(statbuf, "Str");
+					break;
+				case A_DEX:
+					strcpy(statbuf, "Dex");
+					break;
+				case A_CON:
+					strcpy(statbuf, "Con");
+					break;
+				case A_INT:
+					strcpy(statbuf, "Int");
+					break;
+				case A_WIS:
+					strcpy(statbuf, "Wis");
+					break;
+				case A_CHA:
+					strcpy(statbuf, "Cha");
+					break;
+				case A_MAX_INT_WIS:
+					strcpy(statbuf, "I/W");
+					break;
+				case A_MAX_INT_CHA:
+					strcpy(statbuf, "I/C");
+					break;
+				case A_MAX_WIS_CHA:
+					strcpy(statbuf, "W/C");
+					break;
+				case A_MAX_INT_WIS_CHA:
+					strcpy(statbuf, "Any");
+					break;
+				case A_AVG_INT_WIS:
+					strcpy(statbuf, "I+W");
+					break;
+				case A_AVG_INT_CHA:
+					strcpy(statbuf, "I+C");
+					break;
+				case A_AVG_WIS_CHA:
+					strcpy(statbuf, "W+C");
+					break;
+				case A_AVG_INT_WIS_CHA:
+					strcpy(statbuf, "All");
+					break;
+				default:
+					strcpy(statbuf, "N/A");
+					break;
+				}
+
+				//Category
+				if (spellknow(splnum) <= 0)
+					Sprintf(buf, fmt, shortenedname, "(You cannot recall this spell)");
+				else
+					Sprintf(buf, fmt, shortenedname, levelbuf,//spellev(splnum),
+						categorybuf,
+						getspellenergycost(splnum),
+						statbuf,
+						100 - percent_success(splnum),
+						spellcooldownleft(splnum) > 0 ? spellcooldownleft(splnum) : getspellcooldown(splnum),
+						availablebuf);  //spellretention(splnum, retentionbuf));
+
+				any.a_int = splnum + 1; /* must be non-zero */
+
+				char letter = '\0';
+				if (k == 1)
+				{
+					if (spellhotkey(i) == 10)
+						letter = '0';
+					else
+						letter = spellhotkey(i) + '0';
+				}
+				else
+					letter = spellet(splnum);
+
+				add_menu(tmpwin, NO_GLYPH, &any, letter, 0, ATR_NONE, buf,
+					(splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
+
+				Strcat(shortenedname, "=black");
+				if(spellcooldownleft(splnum) > 0 && splaction != SPELLMENU_PREPARE)
+				{
+					add_menu_coloring(shortenedname);
+					strcpy(colorbufs[colorbufcnt], shortenedname);
+					colorbufcnt++;
+				}
+				/* //Should not be needed
+				else
+				{
+					free_menu_coloring_str(buf);
+				}
+				*/
+
+				if (k == 1)
+				{
+					hotkeynum++;
+					i = -1;
+					if (hotkeynum > 10)
+						break;
+				}
 			}
-
-			Sprintf(fullname, "%s%s", spellcooldownleft(splnum) > 0 ? "-" : "",
-				spellname(splnum));
-
-			//Spell name
-			if (strlen(fullname) > (size_t)(spellcooldownleft(splnum) > 0 ? namelength-1 : namelength))
-				strncpy(shortenedname, fullname, (size_t)(spellcooldownleft(splnum) > 0 ? namelength-1 : namelength));
-			else
-				strcpy(shortenedname, fullname);
-
-			if (spellcooldownleft(splnum) > 0)
-				Strcat(shortenedname, "-");
-
-			//Spell level
-			if (spellev(splnum) < -1)
-				strcpy(levelbuf, " *");
-			else if (spellev(splnum) == -1)
-				strcpy(levelbuf, " c");
-			else if (spellev(splnum) == 0)
-				strcpy(levelbuf, " C");
-			else
-				Sprintf(levelbuf, "%2d", spellev(splnum));
-
-			strcpy(categorybuf, spelltypemnemonic(spell_skilltype(spellid(splnum))));
-
-
-			if (spellamount(splnum) >= 0)
-				Sprintf(availablebuf, "%d", spellamount(splnum));
-			else
-				strcpy(availablebuf, "Inf.");
-
-			switch (objects[spellid(splnum)].oc_spell_attribute)
-			{
-			case A_STR:
-				strcpy(statbuf, "Str");
-				break;
-			case A_DEX:
-				strcpy(statbuf, "Dex");
-				break;
-			case A_CON:
-				strcpy(statbuf, "Con");
-				break;
-			case A_INT:
-				strcpy(statbuf, "Int");
-				break;
-			case A_WIS:
-				strcpy(statbuf, "Wis");
-				break;
-			case A_CHA:
-				strcpy(statbuf, "Cha");
-				break;
-			case A_MAX_INT_WIS:
-				strcpy(statbuf, "I/W");
-				break;
-			case A_MAX_INT_CHA:
-				strcpy(statbuf, "I/C");
-				break;
-			case A_MAX_WIS_CHA:
-				strcpy(statbuf, "W/C");
-				break;
-			case A_MAX_INT_WIS_CHA:
-				strcpy(statbuf, "Any");
-				break;
-			case A_AVG_INT_WIS:
-				strcpy(statbuf, "I+W");
-				break;
-			case A_AVG_INT_CHA:
-				strcpy(statbuf, "I+C");
-				break;
-			case A_AVG_WIS_CHA:
-				strcpy(statbuf, "W+C");
-				break;
-			case A_AVG_INT_WIS_CHA:
-				strcpy(statbuf, "All");
-				break;
-			default:
-				strcpy(statbuf, "N/A");
-				break;
-			}
-
-			//Category
-			if (spellknow(splnum) <= 0)
-				Sprintf(buf, fmt, shortenedname, "(You cannot recall this spell)");
-			else
-				Sprintf(buf, fmt, shortenedname, levelbuf,//spellev(splnum),
-					categorybuf,
-					getspellenergycost(splnum),
-					statbuf,
-					100 - percent_success(splnum),
-					spellcooldownleft(splnum) > 0 ? spellcooldownleft(splnum) : getspellcooldown(splnum),
-					availablebuf);  //spellretention(splnum, retentionbuf));
-
-			any.a_int = splnum + 1; /* must be non-zero */
-			add_menu(tmpwin, NO_GLYPH, &any, spellet(splnum), 0, ATR_NONE, buf,
-				(splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
-
-			Strcat(shortenedname, "=black");
-			if(spellcooldownleft(splnum) > 0 && splaction != SPELLMENU_PREPARE)
-			{
-				add_menu_coloring(shortenedname);
-				strcpy(colorbufs[colorbufcnt], shortenedname);
-				colorbufcnt++;
-			}
-			/* //Should not be needed
-			else
-			{
-				free_menu_coloring_str(buf);
-			}
-			*/
 		}
 	}
     how = PICK_ONE;
@@ -3191,6 +3242,202 @@ int *spell_no;
     }
     return FALSE;
 } 
+
+int
+dospellactionmenu(spell)
+int spell;
+{
+	int i = '\0';
+
+	menu_item* pick_list = (menu_item*)0;
+	winid win;
+	anything any;
+
+	any = zeroany;
+	win = create_nhwindow(NHW_MENU);
+	start_menu(win);
+
+
+	struct available_selection_item
+	{
+		int charnum;
+		char name[BUFSZ];
+		int (*function_ptr)(int);
+	};
+	struct available_selection_item available_selection_item[10] = { 0 };
+	int selnum = 0;
+
+
+	/* Spell description */
+	strcpy(available_selection_item[selnum].name, "Detailed spell description");
+	available_selection_item[selnum].function_ptr = &spelldescription;
+	available_selection_item[selnum].charnum = 'a' + selnum;
+
+	any = zeroany;
+	any.a_char = available_selection_item[selnum].charnum;
+
+	add_menu(win, NO_GLYPH, &any,
+		any.a_char, 0, ATR_NONE,
+		available_selection_item[selnum].name, MENU_UNSELECTED);
+
+	selnum++;
+
+	/* Set or clear hotkey */
+	char hotbuf[BUFSZ] = "";
+	if(spellhotkey(spell))
+		Sprintf(hotbuf, " (currently \'%d\')", (spellhotkey(spell) % 10));
+
+	Sprintf(available_selection_item[selnum].name, "Set or clear hotkey%s", hotbuf);
+	available_selection_item[selnum].function_ptr = &setspellhotkey;
+	available_selection_item[selnum].charnum = 'a' + selnum;
+
+	any = zeroany;
+	any.a_char = available_selection_item[selnum].charnum;
+
+	add_menu(win, NO_GLYPH, &any,
+		any.a_char, 0, ATR_NONE,
+		available_selection_item[selnum].name, MENU_UNSELECTED);
+
+	selnum++;
+
+
+	/* Forget spell */
+	strcpy(available_selection_item[selnum].name, "Forget spell");
+	available_selection_item[selnum].function_ptr = &forgetspell;
+	available_selection_item[selnum].charnum = 'a' + selnum;
+
+	any = zeroany;
+	any.a_char = available_selection_item[selnum].charnum;
+
+	add_menu(win, NO_GLYPH, &any,
+		any.a_char, 0, ATR_NONE,
+		available_selection_item[selnum].name, MENU_UNSELECTED);
+
+	selnum++;
+
+
+	/* Finalize the menu */
+	char qbuf[BUFSZ] = "";
+	Sprintf(qbuf, "What do you want to do with \'%s\'?", spellname(spell));
+
+	/* Finish the menu */
+	end_menu(win, qbuf);
+
+
+	if (selnum <= 0)
+	{
+		You("can't do anything with this spell.");
+		destroy_nhwindow(win);
+		return 0;
+	}
+
+
+	/* Now generate the menu */
+	if (select_menu(win, PICK_ONE, &pick_list) > 0)
+	{
+		i = pick_list->item.a_char;
+		free((genericptr_t)pick_list);
+	}
+	destroy_nhwindow(win);
+
+	if (i == '\0')
+		return 0;
+
+	int res = 0;
+	for (int j = 0; j < selnum; j++)
+	{
+		if (available_selection_item[j].charnum == i)
+		{
+			if (i != '\0')
+			{
+				res = (available_selection_item[j].function_ptr)(spell);
+			}
+			break;
+		}
+	}
+
+	return res;
+}
+
+
+int
+setspellhotkey(spell)
+int spell;
+{
+	char promptbuf[BUFSZ] = "";
+	char answerbuf[BUFSZ] = "";
+	char buf[BUFSZ] = "";
+	Sprintf(promptbuf, "Which hotkey do you want to use for \'%s\' (0-9)?", spellname(spell));
+	getlin(promptbuf, answerbuf);
+	(void)mungspaces(answerbuf);
+	if (answerbuf[0] == '\033' || answerbuf[0] == 'q')
+	{
+		pline(Never_mind);
+		return 0;
+	}
+	else if (answerbuf[0] == '\0' || answerbuf[0] == ' ')
+	{
+		spellhotkey(spell) = 0;
+		Sprintf(buf, "Hotkey for \'%s\' cleared.", spellname(spell));
+		pline(buf);
+	}
+	else if (answerbuf[0] >= '0' && answerbuf[0] <= '9')
+	{
+		int selected_hotkey = 0;
+		if(answerbuf[0] == '0')
+			selected_hotkey = 10;
+		else
+			selected_hotkey = answerbuf[0] - '0';
+
+		/* clear the existing hotkey */
+		for (int n = 0; n < MAXSPELL; n++)
+		{
+			if(spl_book[n].sp_hotkey == selected_hotkey)
+			{
+				spl_book[n].sp_hotkey = 0;
+				break;
+			}
+			if (spellid(n) == NO_SPELL)
+				break;
+		}
+
+		spellhotkey(spell) = selected_hotkey;
+		Sprintf(buf, "Hotkey for \'%s\' set to \'%c\'.", spellname(spell), answerbuf[0]);
+		pline(buf);
+	}
+	else
+		pline("Illegal hotkey.");
+
+	return 0;
+}
+
+int
+forgetspell(spell)
+int spell;
+{
+	char qbuf[BUFSZ] = "";
+	Sprintf(qbuf, "Are you sure you want to forget \'%s\' permanently?", spellname(spell));
+	if (ynq(qbuf) == 'y')
+	{
+		struct spell empty_spell = { 0 };
+		for (int n = spell + 1; n <= MAXSPELL; n++)
+		{
+			if (n == MAXSPELL)
+				spl_book[n - 1] = empty_spell;
+			else
+			{ 
+				spl_book[n - 1] = spl_book[n];
+				if (spellid(n) == NO_SPELL)
+					break;
+			}
+		}
+		char buf[BUFSZ] = "";
+		Sprintf(buf, "You removed \'%s\' from your memory permanently.", spellname(spell));
+		pline(buf);
+	}
+
+	return 0;
+}
 
 STATIC_OVL int
 percent_success(spell)
@@ -3431,6 +3678,27 @@ char *outbuf;
     }
     return outbuf;
 }
+
+
+boolean
+already_learnt_spell_type(otyp)
+int otyp;
+{
+	if (otyp <= STRANGE_OBJECT || otyp >= NUM_OBJECTS)
+		return FALSE;
+
+	if (objects[otyp].oc_class != SPBOOK_CLASS)
+		return FALSE;
+
+	for (int i = 0; i < MAXSPELL; i++)
+		if (spellid(i) == NO_SPELL)
+			break;
+		else if (spellid(i) == otyp)
+			return TRUE;
+
+	return FALSE;
+}
+
 
 /* Learn a spell during creation of the initial inventory */
 void

@@ -1330,6 +1330,7 @@ register struct trobj *trop;
                    || otyp == SCR_BLANK_PAPER
                    || otyp == SPE_BLANK_PAPER
                    || otyp == WAN_NOTHING
+				   || already_learnt_spell_type(otyp)
                    /* orcs start with poison resistance */
                    || (otyp == RIN_POISON_RESISTANCE && Race_if(PM_ORC))
                    /* Monks don't use weapons */

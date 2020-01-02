@@ -2234,12 +2234,13 @@ SPELL("light",            "cloth", None, "Lights up the nearby area",
 SPELL("black blade of disaster", "ebony", "some long-forgotten arcane magic", "Summons a blade that disintegrates targets on hit",
 	P_CONJURATION_SPELL,		 5, 10,			20,10,300, A_INT, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 3, 10, 30, S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, CLR_BLACK, O1_DISINTEGRATION_RESISTANT, O2_NONE, O3_NONE),
 
+/* power words do not have material components, and therefore skill learn chance is just 1% */
 SPELL("power word kill",   "preposterous", "some long-forgotten arcane magic", "Kills the target",
-    P_ARCANE_SPELL,				 5,  5,		   500,10,300, A_INT, 6, 0, 100, 0, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
+    P_ARCANE_SPELL,				 5,  5,		   500,10,300, A_INT, 6, 0, 1, 0, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
 SPELL("power word stun",   "ludicrous", None, "Stuns the target",//Note monsters do not have a stun timer
-    P_ARCANE_SPELL,				 5,  4,			 0, 3, 20, A_INT,10, 0, 100, 0, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, S1_NONE, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
+    P_ARCANE_SPELL,				 5,  4,			 0, 3, 20, A_INT,10, 0, 1, 0, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, S1_NONE, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
 SPELL("power word blind",   "anomalous", None, "Blinds the target", //Note monsters have a blindness timer
-    P_ARCANE_SPELL,				 5,  3,			 0, 4, 30, A_INT, 8, 0, 100, 0, 1, IMMEDIATE, 0, 0, 0, 0, 5, 10, 50, S1_NONE, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
+    P_ARCANE_SPELL,				 5,  3,			 0, 4, 30, A_INT, 8, 0, 1, 0, 1, IMMEDIATE, 0, 0, 0, 0, 5, 10, 50, S1_NONE, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
 
 SPELL("holy word",			"antediluvian", None, "Stuns, blinds, and kills nearby enemies",
 	P_CLERIC_SPELL,				 5,  6,			 0, 8,150, A_WIS, 0, 5, 100, 0, 1, NODIR, 0, 0, 0, 0, 5, 10, 50, S1_NONE, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),

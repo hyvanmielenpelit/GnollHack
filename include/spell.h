@@ -19,6 +19,7 @@ struct spell {
 	int sp_cooldownlength; /* cooldown length */
 	int sp_cooldownleft; /* cooldown turns left */
 	int sp_skillchance; /* % chance to get skill points upon casting */
+	int sp_hotkey; /* value from 1 to 10 */
 };
 
 /* levels of memory destruction with a scroll of amnesia */
