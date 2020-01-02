@@ -1308,7 +1308,7 @@ E int FDECL(magic_negation, (struct monst *));
 E int FDECL(magic_negation_percentage, (int));
 E boolean NDECL(gulp_blnd_check);
 E int FDECL(gazemu, (struct monst *, struct attack *));
-E void FDECL(mdamageu, (struct monst *, int));
+E void FDECL(mdamageu, (struct monst *, int, BOOLEAN_P));
 E int FDECL(could_seduce, (struct monst *, struct monst *, struct attack *));
 E int FDECL(doseduce, (struct monst *));
 

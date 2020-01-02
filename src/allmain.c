@@ -474,51 +474,53 @@ STATIC_OVL
 void
 create_monster_or_encounter()
 {
-	/* Special Nazgul appearance if carrying the One Ring */
-	struct obj* ring = carrying(RIN_SUPREME_POWER);
 	struct monst* nazgul = (struct monst*)0;
-	if (ring && ring->oartifact == ART_ONE_RING && !rn2(10))
+	if(!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && !Is_modron_level(&u.uz))
 	{
-		if (!context.made_witch_king && !rn2(9))
+		/* Special Nazgul appearance if carrying the One Ring */
+		struct obj* ring = carrying(RIN_SUPREME_POWER);
+		if (ring && ring->oartifact == ART_ONE_RING && !rn2(10))
 		{
-			nazgul = makemon(&mons[PM_NAZGUL], 0, 0, MM_MAX_HP | MM_MALE);
-			if (nazgul)
+			if (!context.made_witch_king && !rn2(9))
 			{
-				nazgul = christen_monst(nazgul, "Witch-King of Angmar");
-				nazgul->u_know_mname = TRUE; /* He's famous -- JG */
-				mongets(nazgul, CROWN_OF_RULERSHIP);
-				context.made_witch_king = TRUE;
+				nazgul = makemon(&mons[PM_NAZGUL], 0, 0, MM_MAX_HP | MM_MALE);
+				if (nazgul)
+				{
+					nazgul = christen_monst(nazgul, "Witch-King of Angmar");
+					nazgul->u_know_mname = TRUE; /* He's famous -- JG */
+					mongets(nazgul, CROWN_OF_RULERSHIP);
+					context.made_witch_king = TRUE;
+				}
+				else /* replacement */
+					nazgul = makemon(&mons[PM_KING_WRAITH], 0, 0, MM_MAX_HP);
 			}
-			else /* replacement */
-				nazgul = makemon(&mons[PM_KING_WRAITH], 0, 0, MM_MAX_HP);
-		}
-		else
-		{
-			nazgul = makemon(&mons[PM_NAZGUL], 0, 0, NO_MM_FLAGS);
-			if (!nazgul)
-				nazgul = makemon(&mons[PM_KING_WRAITH], 0, 0, NO_MM_FLAGS);
-		}
-
-		if (!rn2(4))
-		{
-			if (nazgul)
+			else
+			{
 				nazgul = makemon(&mons[PM_NAZGUL], 0, 0, NO_MM_FLAGS);
+				if (!nazgul)
+					nazgul = makemon(&mons[PM_KING_WRAITH], 0, 0, NO_MM_FLAGS);
+			}
 
-			if (!nazgul)
-				nazgul = makemon(&mons[PM_KING_WRAITH], 0, 0, NO_MM_FLAGS);
+			if (!rn2(4))
+			{
+				if (nazgul)
+					nazgul = makemon(&mons[PM_NAZGUL], 0, 0, NO_MM_FLAGS);
+
+				if (!nazgul)
+					nazgul = makemon(&mons[PM_KING_WRAITH], 0, 0, NO_MM_FLAGS);
+			}
 		}
-		}
+	}
 
 	if (!nazgul)
 	{
-		if (!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && !rn2(ENCOUNTER_ONE_IN_CHANCE))
+		if (!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && !Is_modron_level(&u.uz) && !rn2(ENCOUNTER_ONE_IN_CHANCE))
 		{
 			randomize_encounter(0, 0);
 		}
 		else
 		{
-			(void)makemon((struct permonst*) 0, 0, 0,
-				NO_MM_FLAGS);
+			(void)makemon((struct permonst*) 0, 0, 0, NO_MM_FLAGS);
 		}
 	}
 }

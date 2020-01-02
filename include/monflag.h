@@ -224,6 +224,7 @@
 #define M4_VEGAN_FOOD				0x00000020		/* monsters for a vegan */
 #define M4_NONROTTING_CORPSE		0x00000040		/* corpse does not rot */
 
+#define M4_ALTERNATIVE_PASSIVE_DEFENSE_TEXT	0x00000080		/* e.g. engulfed in X's flames rather than feel very hot */
 
 
 

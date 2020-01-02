@@ -51,6 +51,9 @@
 #define confers_charisma(mon) \
     (((ptr)->mconveys & MR_CHARISMA) != 0)
 
+#define alternative_passive_defense_text(ptr) \
+    (((ptr)->mflags4 & M4_ALTERNATIVE_PASSIVE_DEFENSE_TEXT) != 0)
+
 #define is_lminion(mon) \
     (is_minion((mon)->data) && mon_aligntyp(mon) == A_LAWFUL)
 #define is_flyer(ptr) (((ptr)->mflags1 & M1_FLY) != 0L)

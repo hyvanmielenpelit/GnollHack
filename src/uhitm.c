@@ -3424,7 +3424,7 @@ register struct monst *mon;
                                         || mon->data->mlet == S_LESSER_UNDEAD)
                         && rn2(5) && !Sick_resistance && !Invulnerable) {
                         You_feel("%ssick.", (Sick) ? "very " : "");
-                        mdamageu(mon, rnd(8));
+                        mdamageu(mon, rnd(8), TRUE);
                     }
                 }
             } else {
@@ -3536,7 +3536,7 @@ boolean wep_was_destroyed;
                     hliquid("acid"));
 
             if (!Acid_resistance && !Invulnerable)
-                mdamageu(mon, tmp);
+                mdamageu(mon, tmp, TRUE);
             if (!rn2(30))
                 erode_armor(&youmonst, ERODE_CORRODE);
         }
@@ -3604,7 +3604,7 @@ boolean wep_was_destroyed;
             pline("A hail of magic missiles narrowly misses you!");
         } else {
             You("are hit by magic missiles appearing from thin air!");
-            mdamageu(mon, tmp);
+            mdamageu(mon, tmp, TRUE);
         }
         break;
     case AD_ENCH: /* KMH -- remove enchantment (disenchanter) */
@@ -3674,7 +3674,7 @@ boolean wep_was_destroyed;
                     break;
                 }
                 You("are suddenly very cold!");
-                mdamageu(mon, tmp);
+                mdamageu(mon, tmp, TRUE);
                 /* monster gets stronger with your heat! */
                 mon->mhp += tmp / 2;
                 if (mon->mhpmax < mon->mhp)
@@ -3692,12 +3692,18 @@ boolean wep_was_destroyed;
             if (monnear(mon, u.ux, u.uy)) {
                 if (Fire_resistance || Invulnerable) {
                     shieldeff(u.ux, u.uy);
-                    You_feel("mildly warm.");
+					if (alternative_passive_defense_text(mon->data))
+						You("are engulfed in %s flames, but they do not burn you!", s_suffix(mon_nam(mon)));
+					else
+						You_feel("mildly warm.");
                     ugolemeffects(AD_FIRE, tmp);
                     break;
                 }
-                You("are suddenly very hot!");
-                mdamageu(mon, tmp); /* fire damage */
+				if (alternative_passive_defense_text(mon->data))
+					You("are engulfed in %s flames!", s_suffix(mon_nam(mon)));
+				else
+					You("are suddenly very hot!");
+                mdamageu(mon, tmp, TRUE); /* fire damage */
             }
             break;
         case AD_ELEC:
@@ -3708,7 +3714,7 @@ boolean wep_was_destroyed;
                 break;
             }
             You("are jolted with electricity!");
-            mdamageu(mon, tmp);
+            mdamageu(mon, tmp, TRUE);
             break;
         default:
             break;

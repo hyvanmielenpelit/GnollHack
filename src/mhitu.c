@@ -1796,7 +1796,7 @@ register struct obj* omonwep;
             break;
         }
 		//Cause the damage here rather than below
-		mdamageu(mtmp, dmg);
+		mdamageu(mtmp, dmg, FALSE);
         dmg = 0; /* don't inflict a second dose below */
 
         if (!uarmh || uarmh->otyp != DUNCE_CAP) {
@@ -2391,7 +2391,7 @@ register struct obj* omonwep;
     }
     if ((Upolyd ? u.mh : u.uhp) < 1) {
         /* already dead? call rehumanize() or done_in_by() as appropriate */
-        mdamageu(mtmp, 1);
+        mdamageu(mtmp, 1, FALSE);
         dmg = 0;
     }
 
@@ -2522,7 +2522,7 @@ register struct obj* omonwep;
 			context.botl = 1;
 		}
 
-		mdamageu(mtmp, dmg);
+		mdamageu(mtmp, dmg, FALSE);
 
 		if (permdmg2 > 0)
 		{
@@ -2892,7 +2892,7 @@ struct attack *mattk;
 	if (Invulnerable)
 		tmp = 0;
 
-    mdamageu(mtmp, tmp);
+    mdamageu(mtmp, tmp, TRUE);
     if (tmp)
         stop_occupation();
 
@@ -2978,8 +2978,7 @@ boolean ufound;
                     tmp = Maybe_Half_Phys(tmp);
 				if (Invulnerable)
 					tmp = 0;
-				You("sustain %d damage.", tmp);
-				mdamageu(mtmp, tmp);
+				mdamageu(mtmp, tmp, TRUE);
             }
             break;
 
@@ -3199,7 +3198,7 @@ struct attack *mattk;
                 if (lev > rn2(25))
                     destroy_item(SPBOOK_CLASS, AD_FIRE);
                 if (dmg)
-                    mdamageu(mtmp, dmg);
+                    mdamageu(mtmp, dmg, TRUE);
             }
         }
         break;
@@ -3250,12 +3249,16 @@ struct attack *mattk;
 
 /* mtmp hits you for n points damage */
 void
-mdamageu(mtmp, n)
+mdamageu(mtmp, n, verbose)
 struct monst *mtmp;
 int n;
+boolean verbose;
 {
     context.botl = 1;
-    if (Upolyd) {
+	if (verbose && n > 0)
+		You("sustain %d damage!", n);
+
+	if (Upolyd) {
         u.mh -= n;
         if (u.mh < 1)
             rehumanize();
@@ -3264,6 +3267,7 @@ int n;
         if (u.uhp < 1)
             done_in_by(mtmp, DIED);
     }
+
 }
 
 /* returns 0 if seduction impossible,
@@ -3829,14 +3833,21 @@ struct attack *mattk;
             tmp = 0;
             break;
         case AD_FIRE: /* Red mold */
-            if (resists_fire(mtmp)) {
+            if (resists_fire(mtmp)) 
+			{
                 shieldeff(mtmp->mx, mtmp->my);
-                pline("%s is mildly warm.", Monnam(mtmp));
+				if (alternative_passive_defense_text(youmonst.data))
+					pline("%s is engulfed in your flames, but they do not burn %s.", Monnam(mtmp), mon_nam(mtmp));
+				else
+					pline("%s is mildly warm.", Monnam(mtmp));
                 golemeffects(mtmp, AD_FIRE, tmp);
                 tmp = 0;
                 break;
             }
-            pline("%s is suddenly very hot!", Monnam(mtmp));
+			if (alternative_passive_defense_text(youmonst.data))
+				pline("%s is engulfed in your flames!", Monnam(mtmp));
+			else
+				pline("%s is suddenly very hot!", Monnam(mtmp));
             break;
         case AD_ELEC:
             if (resists_elec(mtmp)) {
@@ -3855,8 +3866,12 @@ struct attack *mattk;
     else
         tmp = 0;
 
- assess_dmg:
-    if ((mtmp->mhp -= tmp) <= 0) {
+assess_dmg:
+	if (canseemon(mtmp) && tmp > 0)
+		pline("%s sustains %d damage!", Monnam(mtmp), tmp);
+
+    if ((mtmp->mhp -= tmp) <= 0)
+	{
         pline("%s dies!", Monnam(mtmp));
         xkilled(mtmp, XKILL_NOMSG);
         if (!DEADMONSTER(mtmp))

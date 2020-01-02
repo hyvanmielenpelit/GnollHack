@@ -3079,7 +3079,7 @@ register struct obj *obj;
 			pline("However, nothing seems to happen.");
 		else if (vismonstcount == 1) {
 			if (lastseenmon)
-				pline("%s appears in a cloud of smoke!", An(mon_nam(lastseenmon)));
+				pline("%s appears in a cloud of smoke!", Amonnam(lastseenmon));
 		}
 		else
 			pline("Monsters appear in a cloud of smoke!");
@@ -3114,7 +3114,7 @@ register struct obj *obj;
 		else if (vismonstcount == 1)
 		{
 			if (lastseenmon)
-				pline("%s crawls out of nowhere!", An(mon_nam(lastseenmon)));
+				pline("%s crawls out of nowhere!", Amonnam(lastseenmon));
 		}
 		else if (vismonstcount == 2)
 			pline("Two ghouls crawl out of nowhere!");

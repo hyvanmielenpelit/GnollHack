@@ -350,7 +350,7 @@ boolean foundyou;
         break;
     }
     if (dmg)
-        mdamageu(mtmp, dmg);
+        mdamageu(mtmp, dmg, TRUE);
     return (ret);
 }
 
@@ -540,7 +540,7 @@ int spellnum;
     }
 
     if (dmg)
-        mdamageu(mtmp, dmg);
+        mdamageu(mtmp, dmg, TRUE);
 }
 
 STATIC_OVL
@@ -754,7 +754,7 @@ int spellnum;
     }
 
     if (dmg)
-        mdamageu(mtmp, dmg);
+        mdamageu(mtmp, dmg, TRUE);
 }
 
 STATIC_DCL

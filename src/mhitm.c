@@ -1881,15 +1881,24 @@ int mdead;
             break;
         case AD_FIRE:
             if (resists_fire(magr)) {
-                if (canseemon(magr)) {
-                    pline("%s is mildly warmed.", Monnam(magr));
+                if (canseemon(magr)) 
+				{
+					if (alternative_passive_defense_text(mdef->data))
+						pline("%s is engulfed in %s flames, but they do not burn %s.", Monnam(magr), s_suffix(mon_nam(mdef)), mon_nam(magr));
+					else
+						pline("%s is mildly warmed.", Monnam(magr));
                     golemeffects(magr, AD_FIRE, tmp);
                 }
                 tmp = 0;
                 break;
             }
             if (canseemon(magr))
-                pline("%s is suddenly very hot!", Monnam(magr));
+			{
+				if (alternative_passive_defense_text(mdef->data))
+					pline("%s is engulfed in %s flames!", Monnam(magr), s_suffix(mon_nam(mdef)));
+				else
+	                pline("%s is suddenly very hot!", Monnam(magr));
+			}
             break;
         case AD_ELEC:
             if (resists_elec(magr)) {
@@ -1911,7 +1920,11 @@ int mdead;
         tmp = 0;
 
  assess_dmg:
-    if ((magr->mhp -= tmp) <= 0) {
+	if (canseemon(magr) && tmp > 0)
+		pline("%s sustains %d damage!", Monnam(magr), tmp);
+
+	if ((magr->mhp -= tmp) <= 0)
+	{
         monkilled(magr, "", (int) mddat->mattk[i].adtyp);
         return (mdead | mhit | MM_AGR_DIED);
     }

@@ -2260,7 +2260,7 @@ boolean pick;
                 dmg = d(4, 6);
                 if (Half_physical_damage)
                     dmg = (dmg + 1) / 2;
-                mdamageu(mtmp, dmg);
+                mdamageu(mtmp, dmg, TRUE);
             }
             break;
         default: /* monster surprises you. */
