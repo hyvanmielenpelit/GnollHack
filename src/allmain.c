@@ -475,6 +475,8 @@ void
 create_monster_or_encounter()
 {
 	struct monst* nazgul = (struct monst*)0;
+	boolean nazgul_appeared = FALSE;
+
 	if(!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && !Is_modron_level(&u.uz))
 	{
 		/* Special Nazgul appearance if carrying the One Ring */
@@ -493,12 +495,18 @@ create_monster_or_encounter()
 				}
 				else /* replacement */
 					nazgul = makemon(&mons[PM_KING_WRAITH], 0, 0, MM_MAX_HP);
+
+				if(nazgul)
+					nazgul_appeared = TRUE;
 			}
 			else
 			{
 				nazgul = makemon(&mons[PM_NAZGUL], 0, 0, NO_MM_FLAGS);
 				if (!nazgul)
 					nazgul = makemon(&mons[PM_KING_WRAITH], 0, 0, NO_MM_FLAGS);
+
+				if (nazgul)
+					nazgul_appeared = TRUE;
 			}
 
 			if (!rn2(4))
@@ -508,11 +516,14 @@ create_monster_or_encounter()
 
 				if (!nazgul)
 					nazgul = makemon(&mons[PM_KING_WRAITH], 0, 0, NO_MM_FLAGS);
+
+				if (nazgul)
+					nazgul_appeared = TRUE;
 			}
 		}
 	}
 
-	if (!nazgul)
+	if (!nazgul_appeared)
 	{
 		if (!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && !Is_modron_level(&u.uz) && !rn2(ENCOUNTER_ONE_IN_CHANCE))
 		{
