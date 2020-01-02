@@ -206,8 +206,8 @@
 #define M3_CHAT_CAN_JOIN_PARTY						0x02000000		/* can join the player's party */
 
 #define M3_WEBMAKER									0x04000000		/* is a webmaker */
-#define M3_KNOWS_TRAPS								0x08000000		/* is knows traps on the level */
-#define M3_KNOWS_PITS_AND_HOLES						0x10000000		/* is knows pits and holes on the level */
+#define M3_KNOWS_TRAPS								0x08000000		/* knows traps on the level */
+#define M3_KNOWS_PITS_AND_HOLES						0x10000000		/* knows pits and holes on the level */
 
 #define M3_RANDOM_CORPSE							0x20000000		/* leaves a corpse at random intervals */
 #define M3_CORPSE_CRUMBLES_TO_DUST					0x40000000		/* corpse crumbles to dust, also leaving no corpse */
