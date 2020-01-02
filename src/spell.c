@@ -3009,25 +3009,31 @@ int *spell_no;
 		int namelength = max(10, min(maxnamelen, 27));
 
 
-		if (!iflags.menu_tab_sep) {
-			Sprintf(fmt, "%%-%ds     Level %%-13s Mana Stat Fail Cool Casts", namelength);
-			Sprintf(buf, fmt, "    Name",
-				"Category");
-		}
-		else {
-			Sprintf(buf, "Name\tLevel\tCategory\tMana\tStat\tFail\tCool\tCasts");
-		}
-		add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, buf,
-			MENU_UNSELECTED);
-
 		int hotkeynum = 1;
 		boolean hotkeyfound = FALSE;
-		for(int k = 1; k <= 2; k++)
+		for (int k = 1; k <= 2; k++)
 		{
-			if (hotkeyfound)
+			if (k == 1 || hotkeyfound)
 			{
+				if (!iflags.menu_tab_sep) {
+					Sprintf(fmt, "%%-%ds     Level %%-13s Mana Stat Fail Cool Casts", namelength);
+					Sprintf(buf, fmt, "    Name",
+						"Category");
+			}
+			else {
+				Sprintf(buf, "Name\tLevel\tCategory\tMana\tStat\tFail\tCool\tCasts");
+			}
+
+				if (hotkeyfound)
+				{
+					any = zeroany;
+					add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, "", MENU_UNSELECTED);
+				}
+
 				any = zeroany;
-				add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, "", MENU_UNSELECTED);
+				add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, buf,
+					MENU_UNSELECTED);
+
 			}
 			for (i = 0; i < min(MAXSPELL, 52) && spellid(i) != NO_SPELL; i++)
 			{
@@ -3367,7 +3373,7 @@ int spell;
 	char promptbuf[BUFSZ] = "";
 	char answerbuf[BUFSZ] = "";
 	char buf[BUFSZ] = "";
-	Sprintf(promptbuf, "Which hotkey do you want to use for \'%s\' (0-9)?", spellname(spell));
+	Sprintf(promptbuf, "Which hotkey do you want to use for \'%s\' [0-9]?", spellname(spell));
 	getlin(promptbuf, answerbuf);
 	(void)mungspaces(answerbuf);
 	if (answerbuf[0] == '\033' || answerbuf[0] == 'q')
