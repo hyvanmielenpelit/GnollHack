@@ -276,14 +276,32 @@ struct monst *mtmp;
 
 /* regenerate lost hit points */
 void
-mon_regen(mon, digest_meal)
+monster_regeneration_and_timeout(mon, digest_meal)
 struct monst *mon;
 boolean digest_meal;
 {
+	int roundstofull = regenerates(mon->data) ? max(1, min(mon->mhpmax, 150)) : 300;
+	int fixedhpperround = mon->mhpmax / roundstofull;
+	int basispointchancetogetextrahp = (10000 * (mon->mhpmax % roundstofull)) / roundstofull;
+
+	if (mon->mhpmax > 0 && mon->mhp < mon->mhpmax)
+	{
+		mon->mhp += fixedhpperround;
+		if (basispointchancetogetextrahp > 0 && rn2(10000) < basispointchancetogetextrahp)
+			mon->mhp += 1;
+
+		if (mon->mhp > mon->mhpmax)
+			mon->mhp = mon->mhpmax;
+	}
+
+/*
     if (mon->mhp < mon->mhpmax && (moves % 20 == 0 || regenerates(mon->data)))
         mon->mhp++;
+*/
+
     if (mon->mspec_used)
         mon->mspec_used--;
+
     if (digest_meal) {
         if (mon->meating) {
             mon->meating--;

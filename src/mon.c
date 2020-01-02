@@ -1334,7 +1334,7 @@ mcalcdistress()
         }
 
         /* regenerate hit points */
-        mon_regen(mtmp, FALSE);
+        monster_regeneration_and_timeout(mtmp, FALSE);
 
         /* possibly polymorph shapechangers and lycanthropes */
         if (mtmp->cham >= LOW_PM)

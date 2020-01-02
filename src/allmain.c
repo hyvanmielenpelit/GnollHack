@@ -15,7 +15,8 @@
 #ifdef POSITIONBAR
 STATIC_DCL void NDECL(do_positionbar);
 #endif
-STATIC_DCL void FDECL(regen_hp, (int));
+STATIC_DCL void NDECL(regenerate_hp);
+STATIC_DCL void NDECL(regenerate_mana);
 STATIC_DCL void FDECL(interrupt_multi, (const char *));
 STATIC_DCL void FDECL(debug_fields, (const char *));
 STATIC_DCL void NDECL(create_monster_or_encounter);
@@ -204,8 +205,8 @@ boolean resuming;
                     } else if (!Upolyd ? (u.uhp < u.uhpmax)
                                        : (u.mh < u.mhmax
                                           || youmonst.data->mlet == S_EEL)) {
-                        /* maybe heal */
-                        regen_hp(wtcap);
+						/* regenerate hit points */
+						regenerate_hp();
                     }
 
                     /* moving around while encumbered is hard work */
@@ -227,31 +228,8 @@ boolean resuming;
                     }
 
 					/* regenerate mana */
-					int roundstofull = Energy_regeneration ? max(1, min(u.uenmax, 225)) : 450;
-					int fixedmanaperround = u.uenmax / roundstofull;
-					int basispointchancetogetextramana = (10000 * (u.uenmax % roundstofull)) / roundstofull;
+					regenerate_mana();
 
-					/*
-					&& ((wtcap < MOD_ENCUMBER
-						&& (!(moves % ((MAXULEV + 8 - u.ulevel)
-							* (Role_if(PM_WIZARD) ? 3 : 4)
-							/ 6)))) || Energy_regeneration)
-						u.uen += rn1(
-							(int) (max(ACURR(A_WIS), ACURR(A_INT))) / 15 + 1, 1);
-					*/
-
-                    if (u.uenmax > 0 && u.uen < u.uenmax)
-					{
-						u.uen += fixedmanaperround;
-						if(basispointchancetogetextramana > 0 && rn2(10000) < basispointchancetogetextramana)
-							u.uen += 1;
-
-						if (u.uen > u.uenmax)
-                            u.uen = u.uenmax;
-                        context.botl = TRUE;
-                        if (u.uen == u.uenmax)
-                            interrupt_multi("You feel full of energy.");
-                    }
 
                     if (!u.uinvulnerable) {
                         if (Teleportation && !rn2(85)) {
@@ -539,12 +517,60 @@ create_monster_or_encounter()
 
 /* maybe recover some lost health (or lose some when an eel out of water) */
 STATIC_OVL void
-regen_hp(wtcap)
-int wtcap;
+regenerate_hp()
 {
-    int heal = 0;
-    boolean reached_full = FALSE,
-            encumbrance_ok = (wtcap < MOD_ENCUMBER || !u.umoved);
+	/* regenerate hp */
+	int relevant_hpmax = Upolyd ? u.mhmax : u.uhpmax;
+	int roundstofull = Regeneration ? max(1, min(relevant_hpmax, 150)) : 300;
+	int fixedhpperround = relevant_hpmax / roundstofull;
+	int basispointchancetogetextrahp = (10000 * (relevant_hpmax % roundstofull)) / roundstofull;
+
+	if (Upolyd)
+	{
+		if (u.mh < 1) { /* shouldn't happen... */
+			rehumanize();
+		}
+		else if (youmonst.data->mlet == S_EEL && !is_pool(u.ux, u.uy) && !Is_waterlevel(&u.uz))
+		{
+			/* eel out of water loses hp, similar to monster eels;
+			   as hp gets lower, rate of further loss slows down */
+			if (u.mh > 1 && !Regeneration && rn2(u.mh) > rn2(8) && (!Half_physical_damage || (Half_physical_damage && !rn2(2))))
+				u.mh--;
+		}
+		else if (relevant_hpmax > 0 && u.mh < relevant_hpmax)
+		{
+			u.mh += fixedhpperround;
+			if (basispointchancetogetextrahp > 0 && rn2(10000) < basispointchancetogetextrahp)
+				u.mh += 1;
+
+			if (u.mh > relevant_hpmax)
+				u.mh = relevant_hpmax;
+			context.botl = TRUE;
+			if (u.mh == relevant_hpmax)
+				interrupt_multi("You are in full health.");
+		}
+	}
+	else
+	{
+			if (relevant_hpmax > 0 && u.uhp < relevant_hpmax)
+			{
+				u.uhp += fixedhpperround;
+				if (basispointchancetogetextrahp > 0 && rn2(10000) < basispointchancetogetextrahp)
+					u.uhp += 1;
+
+				if (u.uhp > relevant_hpmax)
+					u.uhp = relevant_hpmax;
+				context.botl = TRUE;
+				if (u.uhp == relevant_hpmax)
+					interrupt_multi("You are in full health.");
+			}
+	}
+
+#if 0
+	int heal = 0;
+	boolean reached_full = FALSE,
+		encumbrance_ok = (wtcap < MOD_ENCUMBER || !u.umoved);
+
 
     if (Upolyd) {
         if (u.mh < 1) { /* shouldn't happen... */
@@ -605,7 +631,43 @@ int wtcap;
 
     if (reached_full)
         interrupt_multi("You are in full health.");
+#endif
 }
+
+
+STATIC_OVL void
+regenerate_mana()
+{
+
+	/* regenerate mana */
+	int roundstofull = Energy_regeneration ? max(1, min(u.uenmax, 225)) : 450;
+	int fixedmanaperround = u.uenmax / roundstofull;
+	int basispointchancetogetextramana = (10000 * (u.uenmax % roundstofull)) / roundstofull;
+
+	/*
+	&& ((wtcap < MOD_ENCUMBER
+		&& (!(moves % ((MAXULEV + 8 - u.ulevel)
+			* (Role_if(PM_WIZARD) ? 3 : 4)
+			/ 6)))) || Energy_regeneration)
+		u.uen += rn1(
+			(int) (max(ACURR(A_WIS), ACURR(A_INT))) / 15 + 1, 1);
+	*/
+
+	if (u.uenmax > 0 && u.uen < u.uenmax)
+	{
+		u.uen += fixedmanaperround;
+		if (basispointchancetogetextramana > 0 && rn2(10000) < basispointchancetogetextramana)
+			u.uen += 1;
+
+		if (u.uen > u.uenmax)
+			u.uen = u.uenmax;
+		context.botl = TRUE;
+		if (u.uen == u.uenmax)
+			interrupt_multi("You feel full of energy.");
+	}
+
+}
+
 
 void
 stop_occupation()

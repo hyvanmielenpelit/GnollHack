@@ -1596,7 +1596,7 @@ E boolean FDECL(olfaction, (struct permonst *));
 E boolean FDECL(itsstuck, (struct monst *));
 E boolean FDECL(mb_trapped, (struct monst *));
 E boolean FDECL(monhaskey, (struct monst *, BOOLEAN_P));
-E void FDECL(mon_regen, (struct monst *, BOOLEAN_P));
+E void FDECL(monster_regeneration_and_timeout, (struct monst *, BOOLEAN_P));
 E int FDECL(dochugw, (struct monst *));
 E boolean FDECL(onscary, (int, int, struct monst *));
 E void FDECL(monflee, (struct monst *, int, BOOLEAN_P, BOOLEAN_P));
