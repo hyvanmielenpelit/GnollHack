@@ -13,6 +13,7 @@
 #define GENERALCMD   0x08 /* general command, does not take game time */
 #define CMD_NOT_AVAILABLE 0x10 /* recognized but non-functional (!SHELL,&c) */
 #define INCMDMENU	 0x20 /* Displayed in command menu under M('c') */
+#define INSPELLMENU	 0x40 /* Displayed in spell menu under '+' */
 
 struct ext_func_tab {
     uchar key;

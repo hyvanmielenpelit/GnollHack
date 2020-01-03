@@ -203,6 +203,8 @@ STATIC_DCL char FDECL(there_cmd_menu, (BOOLEAN_P, int, int));
 STATIC_DCL char *NDECL(parse);
 STATIC_DCL void FDECL(show_direction_keys, (winid, CHAR_P, BOOLEAN_P));
 STATIC_DCL boolean FDECL(help_dir, (CHAR_P, int, const char *));
+STATIC_DCL void FDECL(add_command_menu_items, (winid, int));
+
 
 static const char *readchar_queue = "";
 static coord clicklook_cc;
@@ -3745,16 +3747,74 @@ doattributes(VOID_ARGS)
 STATIC_PTR int
 docommandmenu(VOID_ARGS)
 {
-	register const struct ext_func_tab* efp;
 	winid menuwin;
 	menu_item* selected = (menu_item*)0;
+	int n = 0;
+
+	menuwin = create_nhwindow(NHW_MENU);
+	start_menu(menuwin);
+
+	add_command_menu_items(menuwin, INCMDMENU);
+
+	end_menu(menuwin, "Choose an action:");
+	n = select_menu(menuwin, PICK_ONE, &selected);
+	if (n > 0)
+	{
+		if (selected->item.a_nfunc)
+		{
+			(void)(selected->item.a_nfunc)();
+		}
+		free((genericptr_t)selected);
+	}
+
+	destroy_nhwindow(menuwin);
+	return 0;
+
+}
+
+
+/* '+' command */
+STATIC_PTR int
+dospellmenu(VOID_ARGS)
+{
+	winid menuwin;
+	menu_item* selected = (menu_item*)0;
+	int n = 0;
+
+	menuwin = create_nhwindow(NHW_MENU);
+	start_menu(menuwin);
+
+	add_command_menu_items(menuwin, INSPELLMENU);
+
+	end_menu(menuwin, "Choose an action for spells:");
+	n = select_menu(menuwin, PICK_ONE, &selected);
+	if (n > 0)
+	{
+		if (selected->item.a_nfunc)
+		{
+			(void)(selected->item.a_nfunc)();
+		}
+		free((genericptr_t)selected);
+	}
+
+	destroy_nhwindow(menuwin);
+	return 0;
+}
+
+STATIC_OVL
+void
+add_command_menu_items(menuwin, cmdflag)
+winid menuwin;
+int cmdflag;
+{
+	register const struct ext_func_tab* efp;
 	int n = 0;
 	size_t maxcommandlength = 0;
 	size_t maxdesclength = 0;
 
 	for (efp = extcmdlist; efp->ef_txt; efp++)
 	{
-		if ((efp->flags & CMD_NOT_AVAILABLE) != 0 || (efp->flags & INCMDMENU) == 0)
+		if ((efp->flags & CMD_NOT_AVAILABLE) != 0 || (efp->flags & cmdflag) == 0)
 			continue;
 
 		if (strlen(efp->ef_txt) > maxcommandlength)
@@ -3764,13 +3824,9 @@ docommandmenu(VOID_ARGS)
 			maxdesclength = strlen(efp->ef_desc);
 	}
 
-	menuwin = create_nhwindow(NHW_MENU);
-
-	start_menu(menuwin);
-
 	anything any;
 
-	for (efp = extcmdlist; efp->ef_txt; efp++) 
+	for (efp = extcmdlist; efp->ef_txt; efp++)
 	{
 		any = zeroany;
 		char shortcutbuf[BUFSZ] = "";
@@ -3790,7 +3846,7 @@ docommandmenu(VOID_ARGS)
 				Sprintf(eos(cmdbuf), " ");
 		}
 
-		if ((efp->flags & CMD_NOT_AVAILABLE) != 0 || (efp->flags & INCMDMENU) == 0)
+		if ((efp->flags & CMD_NOT_AVAILABLE) != 0 || (efp->flags & cmdflag) == 0)
 			continue;
 
 		strcpy(descbuf, efp->ef_desc);
@@ -3820,21 +3876,8 @@ docommandmenu(VOID_ARGS)
 			buf, MENU_UNSELECTED);
 		n++;
 	}
-
-	end_menu(menuwin, "Choose an action:");
-	n = select_menu(menuwin, PICK_ONE, &selected);
-	if (n > 0) 
-	{
-		if (selected->item.a_nfunc)
-		{
-			(void)(selected->item.a_nfunc)();
-		}
-		free((genericptr_t)selected);
-	}
-
-	destroy_nhwindow(menuwin);
-	return 0;
 }
+
 
 void
 youhiding(via_enlghtmt, msgflag)
@@ -4128,8 +4171,8 @@ struct ext_func_tab extcmdlist[] = {
             wiz_show_seenv, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { RING_SYM, "seerings", "show the ring(s) currently worn",
             doprring, IFBURIED },
-    { SPBOOK_SYM, "seespells", "list and reorder known spells",
-            dovspell, IFBURIED | INCMDMENU },
+    { SPBOOK_SYM, "spellmenu", "spell main menu",
+            dospellmenu, AUTOCOMPLETE | IFBURIED | INCMDMENU },
     { TOOL_SYM, "seetools", "show the tools currently in use",
             doprtool, IFBURIED },
     { '^', "seetrap", "show the type of adjacent trap", doidtrap, IFBURIED },
@@ -4188,13 +4231,15 @@ struct ext_func_tab extcmdlist[] = {
     { 'w', "wield", "wield (put in use) a weapon", dowield },
     { M('w'), "wipe", "wipe off your face", dowipe, AUTOCOMPLETE | INCMDMENU },
 	{ 'x', "swap", "swap wielded and secondary weapons", doswapweapon, INCMDMENU },
-	{ 'X', "mix", "prepare a spell from material components",
-			domix, AUTOCOMPLETE },
 	{ M('x'), "examine", "describe an item", doitemdescriptions, IFBURIED | AUTOCOMPLETE | INCMDMENU },
 	{ M('y'), "you", "describe your character", docharacterstatistics, IFBURIED | AUTOCOMPLETE | INCMDMENU },
 	{ 'z', "zap", "zap a wand", dozap },
-	{ 'Z', "cast", "zap (cast) a spell", docast, IFBURIED },
-	{ M('z'), "spellactions", "additional actions for spells", dospellactions, IFBURIED | AUTOCOMPLETE | INCMDMENU },
+	{ 'Z', "cast", "cast a spell", docast, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
+	{ 'X', "mix", "prepare a spell from material components",
+			domix, AUTOCOMPLETE | INSPELLMENU },
+	{ M('z'), "viewspell", "view or manage spells", dospellactions, IFBURIED | AUTOCOMPLETE | INCMDMENU | INSPELLMENU },
+	{ '\0', "reorderspells", "sort and reorder known spells",
+			dovspell, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
 
 
 #ifdef DEBUG
