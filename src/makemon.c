@@ -934,7 +934,12 @@ register struct monst *mtmp;
      *  Soldiers get armour & rations - armour approximates their ac.
      *  Nymphs may get mirror or potion of object detection.
      */
-	switch (ptr->mlet) {
+	switch (ptr->mlet) 
+	{
+	case S_DOG:
+		if(!rn2(6))
+			(void)mongets(mtmp, BONE);
+		break;
 	case S_HUMAN:
 		if (is_mercenary(ptr)) {
 			register int mac;
