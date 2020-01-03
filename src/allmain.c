@@ -523,7 +523,7 @@ regenerate_hp()
 	int relevant_hpmax = Upolyd ? u.mhmax : u.uhpmax;
 	int roundstofull = Regeneration ? max(1, min(relevant_hpmax, 150)) : 300;
 	int fixedhpperround = relevant_hpmax / roundstofull;
-	int basispointchancetogetextrahp = (10000 * (relevant_hpmax % roundstofull)) / roundstofull;
+	int fractional_hp = (10000 * (relevant_hpmax % roundstofull)) / roundstofull;
 
 	if (Upolyd)
 	{
@@ -540,11 +540,18 @@ regenerate_hp()
 		else if (relevant_hpmax > 0 && u.mh < relevant_hpmax)
 		{
 			u.mh += fixedhpperround;
-			if (basispointchancetogetextrahp > 0 && rn2(10000) < basispointchancetogetextrahp)
-				u.mh += 1;
-
-			if (u.mh > relevant_hpmax)
+			u.mh_fraction += fractional_hp;
+			if (u.mh_fraction >= 10000)
+			{
+				int added_hp = (u.mh_fraction / 10000);
+				u.mh += added_hp;
+				u.mh_fraction -= 10000 * added_hp;
+			}
+			if (u.mh >= relevant_hpmax)
+			{
 				u.mh = relevant_hpmax;
+				u.mh_fraction = 0;
+			}
 			context.botl = TRUE;
 			if (u.mh == relevant_hpmax)
 				interrupt_multi("You are in full health.");
@@ -555,11 +562,19 @@ regenerate_hp()
 			if (relevant_hpmax > 0 && u.uhp < relevant_hpmax)
 			{
 				u.uhp += fixedhpperround;
-				if (basispointchancetogetextrahp > 0 && rn2(10000) < basispointchancetogetextrahp)
-					u.uhp += 1;
+				u.uhp_fraction += fractional_hp;
+				if (u.uhp_fraction >= 10000)
+				{
+					int added_hp = (u.uhp_fraction / 10000);
+					u.uhp += added_hp;
+					u.uhp_fraction -= 10000 * added_hp;
+				}
 
-				if (u.uhp > relevant_hpmax)
+				if (u.uhp >= relevant_hpmax)
+				{
 					u.uhp = relevant_hpmax;
+					u.uhp_fraction = 0;
+				}
 				context.botl = TRUE;
 				if (u.uhp == relevant_hpmax)
 					interrupt_multi("You are in full health.");
@@ -642,7 +657,7 @@ regenerate_mana()
 	/* regenerate mana */
 	int roundstofull = Energy_regeneration ? max(1, min(u.uenmax, 225)) : 450;
 	int fixedmanaperround = u.uenmax / roundstofull;
-	int basispointchancetogetextramana = (10000 * (u.uenmax % roundstofull)) / roundstofull;
+	int fractional_mana = (10000 * (u.uenmax % roundstofull)) / roundstofull;
 
 	/*
 	&& ((wtcap < MOD_ENCUMBER
@@ -656,11 +671,19 @@ regenerate_mana()
 	if (u.uenmax > 0 && u.uen < u.uenmax)
 	{
 		u.uen += fixedmanaperround;
-		if (basispointchancetogetextramana > 0 && rn2(10000) < basispointchancetogetextramana)
-			u.uen += 1;
+		u.uen_fraction += fractional_mana;
+		if (u.uen_fraction >= 10000)
+		{
+			int added_mana = (u.uen_fraction / 10000);
+			u.uen += added_mana;
+			u.uen_fraction -= 10000 * added_mana;
+		}
 
-		if (u.uen > u.uenmax)
+		if (u.uen >= u.uenmax)
+		{
 			u.uen = u.uenmax;
+			u.uen_fraction = 0;
+		}
 		context.botl = TRUE;
 		if (u.uen == u.uenmax)
 			interrupt_multi("You feel full of energy.");

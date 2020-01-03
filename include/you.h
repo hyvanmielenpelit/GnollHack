@@ -390,6 +390,7 @@ struct you {
     int uen, uenmax, ubaseenmax;         /* magical energy - M. Stephenson */
     xchar uhpinc[MAXULEV],   /* increases to uhpmax for each level gain */
           ueninc[MAXULEV];   /* increases to uenmax for each level gain */
+	int uhp_fraction, uen_fraction, mh_fraction;
     int ugangr;              /* if the gods are angry at you */
     int ugifts;              /* number of artifacts bestowed */
     int ublessed, ublesscnt; /* blessing/duration from #pray */

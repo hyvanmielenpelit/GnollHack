@@ -3552,7 +3552,7 @@ STATIC_OVL int
 use_pole(obj)
 struct obj *obj;
 {
-    int res = 0, typ, max_range, min_range, glyph;
+    int res = 0, max_range, min_range, glyph;
     coord cc;
     struct monst *mtmp;
     struct monst *hitm = context.polearm.hitmon;
@@ -3586,13 +3586,17 @@ struct obj *obj;
      *  for polearm skill; Yeoman in slash'em can become expert.)
      */
     min_range = 4;
-    typ = uwep_skill_type();
+	max_range = 8;
+
+#if 0
+	typ = uwep_skill_type();
     if (typ == P_NONE || P_SKILL(typ) <= P_BASIC)
         max_range = 4;
     else if (P_SKILL(typ) == P_SKILLED)
         max_range = 5;
     else
         max_range = 8; /* (P_SKILL(typ) >= P_EXPERT) */
+#endif
 
     polearm_range_min = min_range;
     polearm_range_max = max_range;

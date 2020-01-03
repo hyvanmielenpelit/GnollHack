@@ -1986,6 +1986,12 @@ struct monst* mtmp;
 	if (!mtmp)
 		return 0;
 
+	if (!mtmp->mpeaceful)
+	{
+		pline("%s is not in the mood for chatting.", Monnam(mtmp));
+		return 1;
+	}
+
 	char ansbuf[BUFSZ] = "";
 	int msound = mtmp->data->msound;
 
