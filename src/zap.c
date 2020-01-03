@@ -4857,7 +4857,14 @@ boolean hit_only_one;
                 return mtmp;
             } else {
                 /* ZAPPED_WAND */
-                (*fhitm)(mtmp, obj);
+				if (weapon == ZAPPED_WAND && !(displayedobjtype <= IMMEDIATE_MAGIC_MISSILE_BEAM))
+				{
+					if(hit_only_one)
+						tmp_at(DISP_END, 0);
+					else
+						tmp_at(bhitpos.x, bhitpos.y);
+				}
+				(*fhitm)(mtmp, obj);
 
 				if (hit_only_one)
 					break;
@@ -4959,7 +4966,11 @@ boolean hit_only_one;
         point_blank = FALSE; /* affects passing through iron bars */
     }
 
-    if ((weapon != ZAPPED_WAND || (weapon == ZAPPED_WAND && displayedobjtype != STRANGE_OBJECT)) && weapon != INVIS_BEAM && !tethered_weapon)
+    if ((
+		weapon != ZAPPED_WAND 
+		|| (weapon == ZAPPED_WAND && ((displayedobjtype <= IMMEDIATE_MAGIC_MISSILE_BEAM) || (!(displayedobjtype <= IMMEDIATE_MAGIC_MISSILE_BEAM) && !hit_only_one)))
+		) 
+		&& weapon != INVIS_BEAM && !tethered_weapon)
         tmp_at(DISP_END, 0);
 
     if (shopdoor)
