@@ -3786,7 +3786,7 @@ dospellmenu(VOID_ARGS)
 
 	add_command_menu_items(menuwin, INSPELLMENU);
 
-	end_menu(menuwin, "Choose an action for spells:");
+	end_menu(menuwin, "Choose a command for spells:");
 	n = select_menu(menuwin, PICK_ONE, &selected);
 	if (n > 0)
 	{
@@ -4237,7 +4237,7 @@ struct ext_func_tab extcmdlist[] = {
 	{ 'Z', "cast", "cast a spell", docast, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
 	{ 'X', "mix", "prepare a spell from material components",
 			domix, AUTOCOMPLETE | INSPELLMENU },
-	{ M('z'), "viewspell", "view or manage spells", dospellactions, IFBURIED | AUTOCOMPLETE | INCMDMENU | INSPELLMENU },
+	{ M('z'), "viewspell", "view or manage spells", dospellviewormanage, IFBURIED | AUTOCOMPLETE | INCMDMENU | INSPELLMENU },
 	{ '\0', "reorderspells", "sort and reorder known spells",
 			dovspell, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
 

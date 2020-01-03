@@ -903,7 +903,7 @@ int spell_list_type;
             return TRUE;
         }
     }
-    return dospellmenu((spell_list_type == 2 ? "Choose a spell" : spell_list_type == 1 ? "Choose which spell to prepare" : "Choose which spell to cast"),
+    return dospellmenu((spell_list_type == 2 ? "Choose a spell to view or manage" : spell_list_type == 1 ? "Choose a spell to prepare" : "Choose a spell to cast"),
 		(spell_list_type == 2 ? SPELLMENU_DETAILS : spell_list_type == 1 ? SPELLMENU_PREPARE : SPELLMENU_CAST),
                        spell_no);
 }
@@ -921,12 +921,12 @@ docast()
 
 /* the M('z') command -- spell info / descriptions */
 int
-dospellactions()
+dospellviewormanage()
 {
 	int spell_no;
 
 	if (getspell(&spell_no, 2))
-		return dospellactionmenu(spell_no);
+		return dospellmanagemenu(spell_no);
 	return 0;
 }
 
@@ -2796,8 +2796,9 @@ int *spell_no;
 		if (extraspaces > 42)
 			extraspaces = 42;
 
-		int extraleftforname = 42 - extraspaces;
-		int namelength = max(10, min(maxnamelen, 20 + extraleftforname));
+		int extraleftforname_and_hotkey = 42 - extraspaces;
+		int hotkey_chars = 2;
+		int namelength = max(10, min(maxnamelen, 20 + extraleftforname_and_hotkey - hotkey_chars));
 
 
 		char spacebuf[BUFSZ] = "";
@@ -2806,11 +2807,11 @@ int *spell_no;
 			Strcat(spacebuf, " ");
 
 		if (!iflags.menu_tab_sep) {
-			Sprintf(fmt, "%%-%ds  Description    %%s", namelength + 4);
+			Sprintf(fmt, "%%-%ds#  Description    %%s", namelength + 6);
 			Sprintf(buf, fmt, "    Name", spacebuf);
 		}
 		else {
-			Sprintf(buf, "Name\tDescription");
+			Sprintf(buf, "Name\tH\tDescription");
 		}
 
 		add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, buf,
@@ -2824,10 +2825,10 @@ int *spell_no;
 			char categorybuf[BUFSZ] = "";
 
 			if (!iflags.menu_tab_sep) {
-				Sprintf(fmt, "%%-%ds  %%s", namelength);
+				Sprintf(fmt, "%%-%ds  %%c  %%s", namelength);
 			}
 			else {
-				strcpy(fmt, "%s\t%s");
+				strcpy(fmt, "%s\t%c\t%s");
 			}
 
 			Sprintf(fullname, "%s", spellname(splnum));
@@ -2857,12 +2858,17 @@ int *spell_no;
 			else
 				strcpy(descbuf, nodesc);
 
+			char hotkeychar = ' ';
+			if (spellhotkey(i) == 10)
+				hotkeychar = '0';
+			else if(spellhotkey(i) > 0)
+				hotkeychar = spellhotkey(i) + '0';
 
 			//Finally print
 			if (spellknow(splnum) <= 0)
-				Sprintf(buf, fmt, shortenedname, "(You cannot recall this spell)");
+				Sprintf(buf, fmt, shortenedname, hotkeychar,  "(You cannot recall this spell)");
 			else
-				Sprintf(buf, fmt, shortenedname, descbuf);
+				Sprintf(buf, fmt, shortenedname, hotkeychar, descbuf);
 
 			any.a_int = splnum + 1; /* must be non-zero */
 			add_menu(tmpwin, NO_GLYPH, &any, spellet(splnum), 0, ATR_NONE, buf,
@@ -2899,7 +2905,7 @@ int *spell_no;
 		boolean hotkeyfound = FALSE;
 		add_spell_prepare_menu_heading(tmpwin, namelength, extraspaces, FALSE);
 
-		for (i = 1; i <= 10 && spellid(i) != NO_SPELL; i++)
+		for (i = 1; i <= 10; i++)
 		{
 			if (hotkeys[i] > 0)
 			{
@@ -2934,7 +2940,7 @@ int *spell_no;
 
 		boolean hotkeyfound = FALSE;
 		add_spell_cast_menu_heading(tmpwin, namelength, FALSE);
-		for (i = 1; i <= 10 && spellid(i) != NO_SPELL; i++)
+		for (i = 1; i <= 10; i++)
 		{
 			if (hotkeys[i] > 0)
 			{
@@ -3344,7 +3350,7 @@ boolean usehotkey;
 }
 
 int
-dospellactionmenu(spell)
+dospellmanagemenu(spell)
 int spell;
 {
 	int i = '\0';
