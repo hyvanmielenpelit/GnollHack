@@ -2703,17 +2703,22 @@ dovspell()
     int splnum, othnum;
     struct spell spl_tmp;
 
-    if (spellid(0) == NO_SPELL) {
+    if (spellid(0) == NO_SPELL)
+	{
         You("don't know any spells right now.");
-    } else {
-        while (dospellmenu("Currently known spells",
-                           SPELLMENU_VIEW, &splnum)) {
-            if (splnum == SPELLMENU_SORT) {
+    } 
+	else 
+	{
+        while (dospellmenu("Currently known spells", SPELLMENU_VIEW, &splnum))
+		{
+            if (splnum == SPELLMENU_SORT) 
+			{
                 if (spellsortmenu())
                     sortspells();
-            } else {
-                Sprintf(qbuf, "Reordering spells; swap '%c' with",
-                        spellet(splnum));
+            } 
+			else 
+			{
+                Sprintf(qbuf, "Reordering spells; swap '%c' with", spellet(splnum));
                 if (!dospellmenu(qbuf, splnum, &othnum))
                     break;
 
@@ -2723,7 +2728,8 @@ dovspell()
             }
         }
     }
-    if (spl_orderindx) {
+    if (spl_orderindx) 
+	{
         free((genericptr_t) spl_orderindx);
         spl_orderindx = 0;
     }
@@ -2755,6 +2761,10 @@ int *spell_no;
     any = zeroany; /* zero out all bits */
 
 	int hotkeys[11] = { 0 };
+
+	/* -1 means no hotkey; otherwise, values can be 0... MAXSPELL - 1, indicating the spell learnt */
+	for (i = 0; i <= 10; i++)
+		hotkeys[i] = -1;
 
 	for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
 	{
@@ -2907,7 +2917,7 @@ int *spell_no;
 
 		for (i = 1; i <= 10; i++)
 		{
-			if (hotkeys[i] > 0)
+			if (hotkeys[i] >= 0)
 			{
 				add_spell_prepare_menu_item(tmpwin, hotkeys[i], splaction, namelength, extraspaces, TRUE);
 				hotkeyfound = TRUE;
@@ -2942,7 +2952,7 @@ int *spell_no;
 		add_spell_cast_menu_heading(tmpwin, namelength, FALSE);
 		for (i = 1; i <= 10; i++)
 		{
-			if (hotkeys[i] > 0)
+			if (hotkeys[i] >= 0)
 			{
 				add_spell_cast_menu_item(tmpwin, hotkeys[i], splaction, namelength, colorbufs[colorbufcnt], &colorbufcnt, TRUE);
 				hotkeyfound = TRUE;
