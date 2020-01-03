@@ -2709,7 +2709,7 @@ dovspell()
     } 
 	else 
 	{
-        while (dospellmenu("Currently known spells", SPELLMENU_VIEW, &splnum))
+        while (dospellmenu("Choose a spell to reorder", SPELLMENU_VIEW, &splnum))
 		{
             if (splnum == SPELLMENU_SORT) 
 			{
