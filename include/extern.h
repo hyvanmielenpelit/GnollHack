@@ -2490,7 +2490,6 @@ E void FDECL(book_substitution, (struct obj *, struct obj *));
 E void NDECL(age_spells);
 E int NDECL(docast);
 E int NDECL(dospellviewormanage);
-E int NDECL(docraft);
 E int FDECL(spell_skilltype, (int));
 E int FDECL(spelleffects, (int, BOOLEAN_P));
 E int FDECL(spelldescription, (int));
@@ -2509,7 +2508,6 @@ E int FDECL(subdirtype2explosiontype, (int));
 E void FDECL(addspellintrinsictimeout, (int));
 E int FDECL(getspellenergycost, (int));
 E int FDECL(get_spellbook_adjusted_mana_cost, (int));
-
 
 /* ### steal.c ### */
 

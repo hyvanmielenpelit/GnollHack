@@ -933,10 +933,15 @@ int show_weights;
 				else
 					wtcount += curr->owt;
 
-                add_menu(win, obj_to_glyph(curr, rn2_on_display_rng), &any,
-                         (qflags & USE_INVLET) ? curr->invlet
-                           : (first && curr->oclass == COIN_CLASS) ? '$' : 0,
-                         def_oc_syms[(int) objects[curr->otyp].oc_class].sym,
+				char applied_invlet = (qflags & USE_INVLET) ? curr->invlet
+					: (first && curr->oclass == COIN_CLASS) ? GOLD_SYM : 0;
+				
+				char applied_group_accelerator = 
+					applied_invlet == GOLD_SYM && def_oc_syms[(int)objects[curr->otyp].oc_class].sym == GOLD_SYM ? GOLD_SYM_ALTERNATE : def_oc_syms[(int)objects[curr->otyp].oc_class].sym;
+
+				add_menu(win, obj_to_glyph(curr, rn2_on_display_rng), &any,
+					applied_invlet,
+					applied_group_accelerator,
                          ATR_NONE, show_weights > 0 ? doname_with_price_and_weight_first(curr, loadstonecorrectly) : doname_with_price(curr), MENU_UNSELECTED);
                 first = FALSE;
             }

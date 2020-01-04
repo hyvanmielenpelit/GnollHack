@@ -716,22 +716,6 @@ doability(VOID_ARGS)
 		0, 0, iflags.menu_headings,
 		"Skill-Based Abilities            ", MENU_UNSELECTED);
 
-	/* Craft */
-	/*
-	strcpy(available_ability_list[abilitynum].name, "Craft");
-	available_ability_list[abilitynum].function_ptr = &docraft;
-	available_ability_list[abilitynum].charnum = 'a' + abilitynum;
-
-	any = zeroany;
-	any.a_char = available_ability_list[abilitynum].charnum;
-
-	add_menu(win, NO_GLYPH, &any,
-		any.a_char, 0, ATR_NONE,
-		available_ability_list[abilitynum].name, MENU_UNSELECTED);
-
-	abilitynum++;
-	*/
-
 	/* Ride */
 	strcpy(available_ability_list[abilitynum].name, "Ride");
 	available_ability_list[abilitynum].function_ptr = &doride;
@@ -4075,7 +4059,6 @@ struct ext_func_tab extcmdlist[] = {
 	{ '@', "autopickup", "toggle the pickup option on/off",
             dotogglepickup, IFBURIED },
 	{ C('b'), "break", "break something", dobreak, IFBURIED | AUTOCOMPLETE | INCMDMENU },
-	{ '\0'/*'C'*/, "craft", "craft an item", docraft },
     { 'c', "close", "close a door", doclose },
 	{ 'C', "chat", "talk to someone", dotalk, IFBURIED | AUTOCOMPLETE },
 	{ C('c'), "call", "call (name) something", docallcmd, IFBURIED | AUTOCOMPLETE },

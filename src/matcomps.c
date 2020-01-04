@@ -864,11 +864,11 @@ struct materialcomponentlist matlists[] =
 	},
 
 	{ SPE_MAGE_ARMOR,
-	"Jade stone",
+	"Nugget of iron ore",
 	STRANGE_OBJECT,
-	5,
+	4,
 		{
-			{JADE, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
+			{NUGGET_OF_IRON_ORE, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
 			NO_MATCOMP,
 			NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
 		}

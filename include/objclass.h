@@ -917,6 +917,7 @@ extern uchar oc_syms[MAXOCLASSES];      /* current class symbols */
 #define VENOM_SYM '.'
 #define REAGENT_SYM '9'
 #define MISCELLANEOUS_SYM '8'
+#define GOLD_SYM_ALTERNATE '\''
 
 struct fruit {
     char fname[PL_FSIZ];

@@ -1,7 +1,7 @@
-        Welcome to NetHack!                ( description of version 3.6 )
+        Welcome to GnollHack!                ( description of version 4.0 )
 
-        NetHack is a Dungeons and Dragons like game where you (the adventurer)
-descend into the depths of the dungeon in search of the Amulet of Yendor,
+        GnollHack is a Dungeons and Dragons like game based on NetHack where 
+you descend into the depths of the dungeon in search of the Amulet of Yendor,
 reputed to be hidden somewhere below the twentieth level.  You begin your
 adventure with a pet that can help you in many ways, and can be trained
 to do all sorts of things.  On the way you will find useful (or useless)
@@ -10,7 +10,7 @@ attack a monster by trying to move onto the space a monster is on (but often
 it is much wiser to leave it alone).
 
         Unlike most adventure games, which give you a verbal description of
-your location, NetHack gives you a visual image of the dungeon level you are
+your location, GnollHack gives you a visual image of the dungeon level you are
 on.
 
         NetHack uses the following symbols:
@@ -87,10 +87,11 @@ Commands:
         .       Rest, do nothing for one turn.
         _       Travel via a shortest-path algorithm to a point on the map.
         a       Apply (use) a tool (pick-axe, key, lamp...).
-        A       Remove all armor.
+        A       Ability menu.
         ^A      Redo the previous command.
         c       Close a door.
-        C       Call (name) monster, individual object, or type of object.
+        C       Chat to a monster.
+        M-c     Command menu.
         d       Drop something.  d7a:  drop seven items of object a.
         D       Drop multiple items.  This command is implemented in two
                 different ways.  One way is:
@@ -108,7 +109,7 @@ Commands:
                 Da - drop all objects, without asking for confirmation.
                 Du - drop only unpaid objects (when in a shop).
                 D%u - drop only unpaid food.
-        ^D      Kick (for doors, usually).
+        ^D      Dig the ground.
         e       Eat food.
         E       Engrave a message on the floor.
                 E- - write in the dust with your fingers.
@@ -121,6 +122,7 @@ Commands:
                 Iu - list all unpaid items.
                 Ix - list all used up items that are on your shopping bill.
                 I$ - count your money.
+        N       Name monster, individual object, or type of object.
         o       Open a door.
         O       Review current options and possibly change them.
                 A menu displaying the option settings will be displayed
@@ -135,11 +137,14 @@ Commands:
                 The behavior can be varied via the msg_window option.
         q       Drink (quaff) something (potion, water, etc).
         Q       Select ammunition for quiver.
+        ^Q      Kick (for doors, usually).
+        M-q     Quit the game.
         r       Read a scroll or spellbook.
         R       Remove an accessory (ring, amulet, etc).
         ^R      Redraw the screen.
         s       Search for secret doors and traps around you.
-        S       Save the game.
+        S       Skill menu.
+        M-s     Save the game.
         t       Throw an object or shoot a projectile.
         T       Take off armor.
         ^T      Teleport, if you are able.
@@ -149,11 +154,15 @@ Commands:
         w       Wield weapon.  w- means wield nothing, use bare hands.
         W       Wear armor.
         x       Swap wielded and secondary weapons.
-        X       Toggle two-weapon combat.
-        ^X      Show your attributes.
+        X       Prepare spell components for a spell.
+        ^X      Toggle two-weapon combat.
+        M-x     Examine an item. (Show item statistics.)
+        ^Y      Show your attributes.
+        M-y     Show your character statistics.
         z       Zap a wand.  (Use y instead of z if number_pad is -1.)
         Z       Cast a spell.  (Use Y instead of Z if number_pad is -1.)
         ^Z      Suspend the game.  (^Y instead of ^Z if number_pad is -1.)
+        M-z     View or manage a spell.
         :       Look at what is here.
         ;       Look at what is somewhere else.
         ,       Pick up some things.
@@ -166,7 +175,7 @@ Commands:
         (       Tell what tools you are using.
         *       Tell what equipment you are using; combines the preceding five.
         $       Count your gold pieces.
-        +       List the spells you know; also rearrange them if desired.
+        +       Spell menu.
         \       Show what types of objects have been discovered.
         `       Show discovered types for one class of objects.
         !       Escape to a shell, if supported in your version and OS.

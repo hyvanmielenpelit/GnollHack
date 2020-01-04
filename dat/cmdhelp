@@ -45,15 +45,16 @@ N	Name: shortcut for '#name'
 u	Untrap: shortcut for '#untrap'
 &. #0,-1 vs 1,2,3,4
 a	Apply (use) a tool or break a wand
-A	Remove all armor and/or all accessories and/or unwield weapons
+A	Ability menu
 ^A	Redo the previous command
 ^B	Go southwest until you are near something
+^B	Break something
 c	Close a door
-C	Call (name) a monster, an individual object, or a type of object
+C	Chat: talk to an adjacent creature
 ^C	Interrupt: quit the game
 d	Drop an item
 D	Drop specific item types
-^D	Kick something (usually a door, chest, or box)
+^D	Dig the ground
 e	Eat something
 E	Engrave writing on the floor
 f	Fire ammunition from quiver
@@ -68,6 +69,7 @@ I	Inventory specific item types
 ^L	Go east until you are near something
 m	Followed by direction, move without picking anything up or fighting
 M	Followed by direction, move a distance without picking anything up
+N	Name a monster, an individual object, or a type of object
 ^N	Go southeast until you are near something
 o	Open a door
 O	Show option settings, possibly change them
@@ -76,11 +78,12 @@ P	Put on an accessory (ring, amulet, etc; will work for armor too)
 ^P	Toggle through previously displayed game messages
 q	Quaff (drink) something (potion, water, etc)
 Q	Select ammunition for quiver (use '#quit' to quit)
+^Q	Kick something (usually a door, chest, or box)
 r	Read a scroll or spellbook
 R	Remove an accessory (ring, amulet, etc; will work for armor too)
 ^R	Redraw screen
 s	Search all immediately adjacent locations for traps and secret doors
-S	Save the game (and exit; there is no "save and keep going")
+S	Skill menu
 t	Throw something (choose an item, then a direction--not a target)
 T	Take off one piece of armor (will work for accessories too)
 ^T	Teleport around level
@@ -90,8 +93,9 @@ V	Show history of game's development
 w	Wield a weapon (for dual weapons: 'w' secondary, 'x', 'w' primary, 'X')
 W	Wear a piece of armor (will work for accessories too)
 x	Swap wielded and secondary weapons
-X	Toggle two-weapon combat
-^X	Show your attributes (shows more in debug or explore mode)
+X	Mix spell components
+^X	Toggle two-weapon combat
+^Y	Show your attributes
 &? number_pad=0,1,2,3,4
 &? number_pad=0
 y	Go northwest 1 space
@@ -144,7 +148,7 @@ _	Travel via a shortest-path algorithm to a point on the map
 (	Show the tools currently in use
 *	Show all equipment in use (combination of the ),[,=,",( commands)
 $	Count your gold
-+	List known spells
++	Spell menu
 #	Perform an extended command (use '#?' to list choices)
 &# number_pad:
 &#  -1 = numpad off, swap y with z (including Y with Z, ^Y with ^Z, M-y &c)
@@ -199,10 +203,10 @@ M-2	Toggle two-weapon combat
 M-?	Display extended command help (if the platform allows this)
 M-a	Adjust inventory letters
 M-A	Annotate: supply a name for the current dungeon level
-M-c	Chat: talk to an adjacent creature
+M-c	Command menu
 M-C	Conduct: list voluntary challenges you have maintained
 M-d	Dip an object into something
-M-e	Enhance: check weapons skills, advance them if eligible
+M-e	Skill menu
 M-f	Force a lock
 M-i	Invoke an object's special powers
 M-j	Jump to a nearby location
@@ -216,9 +220,12 @@ M-p	Pray to the gods for help
 M-q	Quit (exit without saving)
 M-r	Rub a lamp or a touchstone
 M-R	Ride: mount or dismount a saddled steed
-M-s	Sit down
+M-s	Save the game (and exit; there is no "save and keep going")
 M-t	Turn undead
 M-T	Tip: empty a container
 M-u	Untrap something (trap, door, or chest)
 M-v	Print compile time options for this version of NetHack
 M-w	Wipe off your face
+M-x	Show item statistics
+M-y	Show your character statistics
+M-z	View or manage a spell

@@ -4725,6 +4725,8 @@ boolean hit_only_one;
 	 else if (weapon == ZAPPED_WAND && displayedobjtype <= IMMEDIATE_MAGIC_MISSILE_NONBEAM)
 		tmp_at(DISP_FLASH, zapdir_to_glyph(ddx, ddy, -displayedobjtype - 1));
 
+	boolean beam_cleared_off = FALSE;
+
     while (range-- > 0) {
         int x, y;
 
@@ -4859,8 +4861,11 @@ boolean hit_only_one;
                 /* ZAPPED_WAND */
 				if (weapon == ZAPPED_WAND && !(displayedobjtype <= IMMEDIATE_MAGIC_MISSILE_BEAM))
 				{
-					if(hit_only_one)
+					if (hit_only_one)
+					{
 						tmp_at(DISP_END, 0);
+						beam_cleared_off = TRUE;
+					}
 					else
 						tmp_at(bhitpos.x, bhitpos.y);
 				}
@@ -4968,7 +4973,7 @@ boolean hit_only_one;
 
     if ((
 		weapon != ZAPPED_WAND 
-		|| (weapon == ZAPPED_WAND && ((displayedobjtype <= IMMEDIATE_MAGIC_MISSILE_BEAM) || (!(displayedobjtype <= IMMEDIATE_MAGIC_MISSILE_BEAM) && !hit_only_one)))
+		|| (weapon == ZAPPED_WAND && displayedobjtype != STRANGE_OBJECT && !beam_cleared_off)
 		) 
 		&& weapon != INVIS_BEAM && !tethered_weapon)
         tmp_at(DISP_END, 0);

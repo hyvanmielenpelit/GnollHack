@@ -931,20 +931,6 @@ dospellviewormanage()
 }
 
 
-/* the ('C') command -- craft an item */
-int
-docraft()
-{
-	/*
-	int spell_no;
-
-	if (getspell(&spell_no, 2))
-		return spelldescription(spell_no);
-	*/
-	return 0;
-}
-
-
 STATIC_OVL const char *
 spelltypemnemonic(skill)
 int skill;
@@ -3840,7 +3826,7 @@ struct obj *obj;
         spl_book[i].sp_lev = objects[otyp].oc_spell_level;
 		spl_book[i].sp_matcomp = objects[otyp].oc_material_components;
 		if(spl_book[i].sp_matcomp)
-			spl_book[i].sp_amount = 0;
+			spl_book[i].sp_amount = matlists[spl_book[i].sp_matcomp].spellsgained; /* Some amount in the beginning */
 		else
 			spl_book[i].sp_amount = -1;
 		spl_book[i].sp_cooldownlength = objects[otyp].oc_spell_cooldown;
@@ -4180,5 +4166,6 @@ int spell;
 		*/
 	return cooldown;
 }
+
 
 /*spell.c*/

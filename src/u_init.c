@@ -1195,7 +1195,8 @@ u_init()
      *  Do we really need this?
      */
     for (i = 0; i < A_MAX; i++)
-        if (!rn2(20)) {
+        if (!rn2(20)) 
+		{
             register int xd = rn2(7) - 2; /* biased variation */
 
             (void) adjattrib(i, xd, TRUE);
@@ -1204,7 +1205,8 @@ u_init()
         }
 
     /* make sure you can carry all you have - especially for Tourists */
-    while (inv_weight() > 0) {
+    while (inv_weight() > 0) 
+	{
         if (adjattrib(A_STR, 1, TRUE))
             continue;
         if (adjattrib(A_CON, 1, TRUE))
@@ -1213,7 +1215,7 @@ u_init()
         break;
     }
 
-	//Check if any skill can be advanced
+	/* Check if any skill can be advanced */
 	update_can_advance_any_skill();
 
 	/* Run initial stats */
@@ -1224,6 +1226,7 @@ u_init()
 
     return;
 }
+
 
 /* skills aren't initialized, so we use the role-specific skill lists */
 STATIC_OVL boolean
