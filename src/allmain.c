@@ -742,6 +742,72 @@ display_gamewindows()
     display_nhwindow(WIN_MAP, FALSE);
 }
 
+const char*
+get_game_difficulty_text(level)
+int level;
+{
+	
+	switch (level)
+	{
+	case -2:
+		return "very easy";
+	case -1:
+		return  "easy";
+	case 0:
+		return  "normal";
+	case 1:
+		return "hard";
+	case 2:
+		return "very hard";
+	default:
+		return "unknown";
+	}
+
+	return "unknown";
+}
+
+
+void 
+choose_game_difficulty()
+{
+	winid menuwin;
+	menu_item* selected = (menu_item*)0;
+	int n = 0;
+
+	menuwin = create_nhwindow(NHW_MENU);
+	start_menu(menuwin);
+	anything any = zeroany;
+
+	for(int i = -2; i <= 2; i++)
+	{
+		any = zeroany;
+		any.a_int = i + 3;
+		char diffchar = i + 2 + 'a';
+		char buf[BUFSZ] = "";
+		const char* leveltext;
+		
+		leveltext = get_game_difficulty_text(i);
+		strcpy(buf, leveltext);
+
+		add_menu(menuwin, NO_GLYPH, &any, diffchar, 0, ATR_NONE,
+			buf, MENU_UNSELECTED);
+	}
+
+	end_menu(menuwin, "Pick game difficulty");
+	n = select_menu(menuwin, PICK_ONE, &selected);
+	if (n > 0)
+	{
+		context.game_difficulty = selected->item.a_int - 3;
+		free((genericptr_t)selected);
+	}
+	else
+		context.game_difficulty = 0;
+
+	destroy_nhwindow(menuwin);
+}
+
+
+
 void
 newgame()
 {

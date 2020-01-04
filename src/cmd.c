@@ -2483,13 +2483,15 @@ int final;
         }
         you_have(buf, "");
     }
+	
+
 #ifdef SCORE_ON_BOTL
     if (flags.showscore) {
         /* describes what's shown on status line, which is an approximation;
            only show it here if player has the 'showscore' option enabled */
         Sprintf(buf, "%ld%s", botl_score(),
                 !final ? "" : " before end-of-game adjustments");
-        enl_msg("Your score ", "is ", "was ", buf, "");
+        enl_msg("Your game score ", "is ", "was ", buf, "");
     }
 #endif
 }
@@ -2579,6 +2581,12 @@ int final;
     } else
         Strcpy(buf, "off");
     enl_msg("Autopickup ", "is ", "was ", buf, "");
+
+	const char* game_dif_text = get_game_difficulty_text(context.game_difficulty);
+	strcpy(buf, game_dif_text);
+	enl_msg("Your game difficulty ", "is ", "was ", buf, "");
+
+
 }
 
 /* characteristics: expanded version of bottom line strength, dexterity, &c */

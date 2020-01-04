@@ -287,8 +287,11 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
 
     /* strip role,race,&c suffix; calls askname() if plname[] is empty
        or holds a generic user name like "player" or "games" */
+
+	/* ASKS THE NAME HERE IF NOT SET YET */
     plnamesuffix();
-    set_playmode(); /* sets plname to "wizard" for wizard mode */
+
+	set_playmode(); /* sets plname to "wizard" for wizard mode */
     /* until the getlock code is resolved, override askname()'s
        setting of renameallowed; when False, player_selection()
        won't resent renaming as an option */
@@ -347,20 +350,28 @@ attempt_restore:
         }
     }
 
-    if (!resuming) {
+    if (!resuming) 
+	{
         /* new game:  start by choosing role, race, etc;
            player might change the hero's name while doing that,
            in which case we try to restore under the new name
            and skip selection this time if that didn't succeed */
-        if (!iflags.renameinprogress) {
-            player_selection();
-            if (iflags.renameinprogress) {
+        if (!iflags.renameinprogress) 
+		{
+			/* CHOOSE PLAYER ROLE AND RACE */
+			player_selection();
+            if (iflags.renameinprogress) 
+			{
             /* player has renamed the hero while selecting role;
             discard current lock file and create another for
             the new character name */
                 goto attempt_restore;
             }
         }
+		/* CHOOSE DIFFICULTY */
+		choose_game_difficulty();
+
+		/* NEW GAME STARTS HERE */
         newgame();
         if (discover)
             You("are in non-scoring discovery mode.");

@@ -1800,8 +1800,13 @@ boolean normalhd;
 //        mon->m_lev = mon->mhp / 4; /* approximation */
     } else 
 #endif
+
+
 	if (mon->m_lev <= 0) {
 		int hp = (maxhp || dragonmaxhp ? 4 : rnd(4)) + constitution_hp_bonus(mon->mcon) / 2;
+
+		hp = monhp_difficulty_adjustment(hp);
+
 		if (hp < 1)
 			hp = 1;
 		mon->mhpmax = mon->mhp = hp;
@@ -1809,10 +1814,28 @@ boolean normalhd;
 		int hp = (maxhp || dragonmaxhp ? (int)mon->m_lev * 8 : d((int)mon->m_lev, 8)) + mon->m_lev * constitution_hp_bonus(mon->mcon);
 		if (hp < 1)
 			hp = 1;
+		hp = monhp_difficulty_adjustment(hp);
 		mon->mhpmax = mon->mhp = hp;
 		if (is_home_elemental(ptr))
             mon->mhpmax = (mon->mhp *= 2); //Down from x3
     }
+}
+
+int
+monhp_difficulty_adjustment(hp)
+int hp;
+{
+	int adjhp = hp;
+	if (context.game_difficulty == 2)
+		adjhp *= 4;
+	else if (context.game_difficulty == 1)
+		adjhp *= 2;
+	else if (context.game_difficulty == -1)
+		adjhp = (hp + 1) / 2;
+	else if (context.game_difficulty == -2)
+		adjhp = (hp + 3) / 4;
+
+	return adjhp;
 }
 
 struct mextra *

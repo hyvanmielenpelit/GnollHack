@@ -4859,7 +4859,7 @@ boolean hit_only_one;
                 return mtmp;
             } else {
                 /* ZAPPED_WAND */
-				if (weapon == ZAPPED_WAND && !(displayedobjtype <= IMMEDIATE_MAGIC_MISSILE_BEAM))
+				if (weapon == ZAPPED_WAND && !(displayedobjtype <= IMMEDIATE_MAGIC_MISSILE_BEAM) && displayedobjtype != STRANGE_OBJECT)
 				{
 					if (hit_only_one)
 					{
