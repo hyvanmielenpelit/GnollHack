@@ -3636,7 +3636,7 @@ int spell;
     /* Players basic likelihood of being able to cast any spell
      * is based of their `magic' statistic. (Int or Wis)
      */
-	chance = -40;
+	chance = 0;
 	chance += 10 * statused;
 
     /*
@@ -3649,7 +3649,7 @@ int spell;
     //difficulty =
     //    (spellev(spell) - 1) * 4 - ((skill * 6) + ((u.ulevel - 1) * 2) + 0);
 
-	chance += -40 * spellev(spell);
+	chance += -50 * (spellev(spell) + 1);
 	chance += 80 * skill;
 	chance += 20 * u.ulevel;
 	chance += -5 * splcaster;

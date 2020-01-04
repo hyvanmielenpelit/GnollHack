@@ -2386,7 +2386,7 @@ SPELL("finger of death",  "leather bound", "ancient Stygian magic", "Shoots a de
 SPELL("deathspell",	      "morbid", "ancient Stygian magic", "Kills the targets in the area of effect",
 	P_NECROMANCY_SPELL,		    5, 10,			12,10,300, A_AVG_INT_WIS, 12, 1, 100, 0, 1, RAY, RAY_DEATH, 0, 0, 0, 0, 0, 0, S1_SPELL_EXPLOSION_EFFECT | S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
 SPELL("armageddon",       "pitch black", "ancient Stygian magic", "Kills all creatures on the level",
-	P_NECROMANCY_SPELL,			2, 14,			20,12,750, A_AVG_INT_WIS, 0, 255, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE),
+	P_NECROMANCY_SPELL,			2, 14,			20,12,1000, A_AVG_INT_WIS, 0, 255, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE),
 SPELL("wish",			  "platinum-plated", "some long-forgotten arcane magic", "The caster can wish for an object",
       P_CONJURATION_SPELL,		2, 15,			20,10,300, A_AVG_INT_WIS_CHA, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, HI_SILVER, O1_NONE, O2_NONE, O3_NONE),
 SPELL("time stop",		   "ancient", "some long-forgotten arcane magic", "Stops the flow of time, except for the caster",
