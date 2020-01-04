@@ -665,7 +665,7 @@ boolean createcorpse;
 		break;
 	case PM_LEATHER_GOLEM:
 	{
-		if(!rn2(2))
+		if (!rn2(2))
 		{
 			int objid = LEATHER_ARMOR;
 			num = d(1, 3);
@@ -704,13 +704,13 @@ boolean createcorpse;
 		free_umname(mtmp);
 		break;
 	}
-    case PM_GOLD_GOLEM:
+	case PM_GOLD_GOLEM:
 	{
-        /* Good luck gives more coins */
+		/* Good luck gives more coins */
 		boolean goldcreated = FALSE;
-		if(!rn2(2))
+		if (!rn2(2))
 		{
-			obj = mkgold((long) (195 - rnl(101)), x, y);
+			obj = mkgold((long)(195 - rnl(101)), x, y);
 			goldcreated = TRUE;
 		}
 		if (!goldcreated || !rn2(2))
@@ -723,14 +723,14 @@ boolean createcorpse;
 		free_umname(mtmp);
 		break;
 	}
-    case PM_PAPER_GOLEM:
+	case PM_PAPER_GOLEM:
 		if (!rn2(2))
 		{
 			num = rnd(2);
 			while (num--)
 				obj = mksobj_at(SCR_BLANK_PAPER, x, y, TRUE, FALSE);
 		}
-        free_mname(mtmp);
+		free_mname(mtmp);
 		free_umname(mtmp);
 		break;
 	case PM_GEMSTONE_GOLEM:
@@ -744,23 +744,23 @@ boolean createcorpse;
 		}
 		break;
 		/* expired puddings will congeal into a large blob;
-       like dragons, relies on the order remaining consistent */
+	   like dragons, relies on the order remaining consistent */
 	case PM_TREANT:
 	case PM_ELDER_TREANT:
 		obj = mksobj_at(PIECE_OF_WOOD, x, y, FALSE, FALSE);
-		if(obj)
+		if (obj)
 		{
 			obj->quan = rnd(mndx == PM_ELDER_TREANT ? 4 : 2);
 			obj->owt = weight(obj);
 		}
 		break;
 	case PM_GRAY_OOZE:
-    case PM_BROWN_PUDDING:
-    case PM_GREEN_SLIME:
-    case PM_BLACK_PUDDING:
-        /* we have to do this here because most other places
-           expect there to be an object coming back; not this one */
-		/* first, make some powder */
+	case PM_BROWN_PUDDING:
+	case PM_GREEN_SLIME:
+	case PM_BLACK_PUDDING:
+		/* we have to do this here because most other places
+		   expect there to be an object coming back; not this one */
+		   /* first, make some powder */
 		if (!mtmp->mcloned && !rn2(3))
 		{
 			obj = mksobj_at(HEAP_OF_SPORAL_POWDER, x, y, FALSE, FALSE);
@@ -770,26 +770,34 @@ boolean createcorpse;
 
 		/* then, the glob */
 		obj = mksobj_at(GLOB_OF_BLACK_PUDDING - (PM_BLACK_PUDDING - mndx),
-                        x, y, TRUE, FALSE);
+			x, y, TRUE, FALSE);
 
-        while (obj && (otmp = obj_nexto(obj)) != (struct obj *) 0) {
-            pudding_merge_message(obj, otmp);
-            obj = obj_meld(&obj, &otmp);
-        }
-        free_mname(mtmp);
+		while (obj && (otmp = obj_nexto(obj)) != (struct obj*) 0) {
+			pudding_merge_message(obj, otmp);
+			obj = obj_meld(&obj, &otmp);
+		}
+		free_mname(mtmp);
 		free_umname(mtmp);
 		return obj;
-    default_1:
-    default:
-        if (mvitals[mndx].mvflags & G_NOCORPSE) {
-            return (struct obj *) 0;
-        } else {
+	default_1:
+	default:
+		if (mvitals[mndx].mvflags & G_NOCORPSE) 
+		{
+			return (struct obj*) 0;
+		}
+		else if (mtmp->leaves_no_corpse) 
+		{
+			return (struct obj*) 0;
+		}
+		else
+		{
             corpstatflags |= CORPSTAT_INIT;
             /* preserve the unique traits of some creatures */
 			/* always keep traits if there is mextra -- JG */
             obj = mkcorpstat(CORPSE, (mtmp->mextra || KEEPTRAITS(mtmp)) ? mtmp : 0,
                              mdat, x, y, corpstatflags);
-            if (burythem) {
+            if (burythem) 
+			{
                 boolean dealloc;
 
                 (void) bury_an_obj(obj, &dealloc);
@@ -2828,7 +2836,7 @@ boolean was_swallowed; /* digestion */
     /* must duplicate this below check in xkilled() since it results in
      * creating no objects as well as no corpse
      */
-    if (LEVEL_SPECIFIC_NOCORPSE(mdat))
+	if (LEVEL_SPECIFIC_NOCORPSE(mdat))
         return FALSE;
 
     if (((bigmonst(mdat) || mdat == &mons[PM_LIZARD]) && !mon->mcloned)
@@ -3179,7 +3187,7 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
         /* corpse--none if hero was inside the monster */
         if (!wasinside) {
             cadaver = make_corpse(mtmp,
-				burycorpse ? CORPSTAT_BURIED : CORPSTAT_NONE,
+				burycorpse ? CORPSTAT_BURIED : CORPSTAT_NONE, 
 				corpse_chance(mtmp, (struct monst*) 0, FALSE)
 			);
             if (burycorpse && cadaver && cansee(x, y) && !mtmp->minvis

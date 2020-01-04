@@ -860,8 +860,11 @@ u_init()
 	u.ubasehpmax = newhp();
 	u.ubaseenmax = newpw();
 
-	u.uspellprot = 0;
-    adjabil(0, 1);
+	u.uhp_fraction = 0;
+	u.mh_fraction = 0;
+	u.uen_fraction = 0;
+	
+	adjabil(0, 1);
     u.ulevel = u.ulevelmax = 1;
 
 	init_attr(75); /* init attribute values */

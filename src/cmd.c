@@ -3392,31 +3392,14 @@ int final;
         you_have(enlght_combatinc("to hit", u.ubasehitinc + u.uhitinc, final, buf), "");
     if (u.ubasedaminc + u.udaminc)
         you_have(enlght_combatinc("damage", u.ubasedaminc + u.udaminc, final, buf), "");
-    if (u.uspellprot || Protection) {
-        int prot = 0;
-
-        if (uleft && uleft->otyp == RIN_PROTECTION)
-            prot += uleft->spe;
-        if (uright && uright->otyp == RIN_PROTECTION)
-            prot += uright->spe;
-        if (HProtection & INTRINSIC)
-            prot += u.ublessed;
-        prot += u.uspellprot;
-        if (prot)
-            you_have(enlght_combatinc("defense", prot, final, buf), "");
-    }
-#if 0
-	if ((armpro = u.umc) > 0) {
-        /* magic cancellation factor, conferred by worn armor */
-        static const char *const mc_types[] = {
-            "" /*ordinary*/, "warded", "guarded", "protected",
-        };
-        /* sanity check */
-        if (armpro >= SIZE(mc_types))
-            armpro = SIZE(mc_types) - 1;
-        you_are(mc_types[armpro], "");
-    }
-#endif
+	if (Protection)
+		you_have("magical protection (-3 to AC and +3 to MC)", from_what(SLOW_DIGESTION));
+	if (Magical_shielding)
+		you_have("magical shielding (-4 to AC)", from_what(MAGICAL_SHIELDING));
+	if (Magical_barkskin)
+		you_have("magical barkskin (+7 to MC)", from_what(MAGICAL_BARKSKIN));
+	if (Magical_stoneskin)
+		you_have("magical stoneskin (-10 to AC)", from_what(MAGICAL_STONESKIN));
 	if (Half_physical_damage)
         enlght_halfdmg(HALF_PHDAM, final);
 	if (Half_physical_damage_against_undead_and_demons)

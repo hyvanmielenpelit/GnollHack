@@ -886,6 +886,10 @@ struct obj* otmp; /* object to be identified if any state change happens */
 	boolean was_blind_telepathic = Blind_telepat;
 	boolean had_magical_breathing = Magical_breathing;
 	boolean had_warning = Warning;
+	boolean had_protection = Protection;
+	boolean had_magical_shielding= Magical_shielding;
+	boolean had_magical_barkskin = Magical_barkskin;
+	boolean had_magical_stoneskin = Magical_stoneskin;
 
 	update_extrinsics();
 	updateabon();
@@ -1094,6 +1098,51 @@ struct obj* otmp; /* object to be identified if any state change happens */
 				(void)drown();
 			}
 		}
+	}
+
+	/* Some spell powers */
+	if (Protection && !had_protection)
+	{
+		state_change_detected = TRUE;
+		You("feel protected!");
+	}
+	else if (!Protection && had_protection)
+	{
+		state_change_detected = TRUE;
+		You("feel unprotected!");
+	}
+
+	if (Magical_shielding && !had_magical_shielding)
+	{
+		state_change_detected = TRUE;
+		You("feel shielded!");
+	}
+	else if (!Magical_shielding && had_magical_shielding)
+	{
+		state_change_detected = TRUE;
+		You("feel unshielded!");
+	}
+
+	if (Magical_barkskin && !had_magical_barkskin)
+	{
+		state_change_detected = TRUE;
+		Your("skin thickens into bark!");
+	}
+	else if (!Magical_stoneskin && had_magical_stoneskin)
+	{
+		state_change_detected = TRUE;
+		Your("skin softens!");
+	}
+
+	if (Magical_stoneskin && !had_magical_stoneskin)
+	{
+		state_change_detected = TRUE;
+		Your("skin thickens into bark!");
+	}
+	else if (!Magical_stoneskin && had_magical_stoneskin)
+	{
+		state_change_detected = TRUE;
+		Your("skin unstones!");
 	}
 
 	if (otmp && state_change_detected)

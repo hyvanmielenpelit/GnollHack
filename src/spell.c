@@ -49,7 +49,6 @@ STATIC_DCL int FDECL(percent_success, (int));
 STATIC_DCL int FDECL(attribute_value_for_spellbook, (int));
 STATIC_DCL char *FDECL(spellretention, (int, char *));
 STATIC_DCL int FDECL(throwspell, (int));
-STATIC_DCL void NDECL(cast_protection);
 STATIC_DCL void FDECL(spell_backfire, (int));
 STATIC_DCL const char *FDECL(spelltypemnemonic, (int));
 STATIC_DCL boolean FDECL(spell_aim_step, (genericptr_t, int, int));
@@ -967,94 +966,6 @@ spell_skilltype(booktype)
 int booktype;
 {
     return objects[booktype].oc_skill;
-}
-
-STATIC_OVL void
-cast_protection()
-{
-
-	int gain = 4;
-#if 0
-	int l = u.ulevel, loglev = 0,
-		gain, natac = u.uac + u.uspellprot;
-
-	/* note: u.uspellprot is subtracted when find_ac() factors it into u.uac,
-       so adding here factors it back out
-       (versions prior to 3.6 had this backwards) */
-
-    /* loglev=log2(u.ulevel)+1 (1..5) */
-    while (l) {
-        loglev++;
-        l /= 2;
-    }
-
-    /* The more u.uspellprot you already have, the less you get,
-     * and the better your natural ac, the less you get.
-     *
-     *  LEVEL AC    SPELLPROT from successive SPE_PROTECTION casts
-     *      1     10    0,  1,  2,  3,  4
-     *      1      0    0,  1,  2,  3
-     *      1    -10    0,  1,  2
-     *      2-3   10    0,  2,  4,  5,  6,  7,  8
-     *      2-3    0    0,  2,  4,  5,  6
-     *      2-3  -10    0,  2,  3,  4
-     *      4-7   10    0,  3,  6,  8,  9, 10, 11, 12
-     *      4-7    0    0,  3,  5,  7,  8,  9
-     *      4-7  -10    0,  3,  5,  6
-     *      7-15 -10    0,  3,  5,  6
-     *      8-15  10    0,  4,  7, 10, 12, 13, 14, 15, 16
-     *      8-15   0    0,  4,  7,  9, 10, 11, 12
-     *      8-15 -10    0,  4,  6,  7,  8
-     *     16-30  10    0,  5,  9, 12, 14, 16, 17, 18, 19, 20
-     *     16-30   0    0,  5,  9, 11, 13, 14, 15
-     *     16-30 -10    0,  5,  8,  9, 10
-     */
-    natac = (10 - natac) / 10; /* convert to positive and scale down */
-    gain = loglev - (int) u.uspellprot / (4 - min(3, natac));
-#endif
-
-
-    if (gain > 0) {
-        if (!Blind) {
-            int rmtyp;
-            const char *hgolden = hcolor(NH_GOLDEN), *atmosphere;
-
-            if (u.uspellprot) {
-                pline_The("%s haze around you becomes more dense.", hgolden);
-            } else {
-                rmtyp = levl[u.ux][u.uy].typ;
-                atmosphere = u.uswallow
-                                ? ((u.ustuck->data == &mons[PM_FOG_CLOUD])
-                                   ? "mist"
-                                   : is_whirly(u.ustuck->data)
-                                      ? "maelstrom"
-                                      : is_animal(u.ustuck->data)
-                                         ? "maw"
-                                         : "ooze")
-                                : (u.uinwater
-                                   ? hliquid("water")
-                                   : (rmtyp == CLOUD)
-                                      ? "cloud"
-                                      : IS_TREE(rmtyp)
-                                         ? "vegetation"
-                                         : IS_STWALL(rmtyp)
-                                            ? "stone"
-                                            : "air");
-                pline_The("%s around you begins to shimmer with %s haze.",
-                          atmosphere, an(hgolden));
-            }
-        }
-		u.uspellprot = gain; //+= gain;
-		u.uspmtime = d(objects[SPE_PROTECTION].oc_spell_dur_dice, objects[SPE_PROTECTION].oc_spell_dur_dicesize) + objects[SPE_PROTECTION].oc_spell_dur_plus;
-
-		if (!u.usptime)
-            u.usptime = u.uspmtime;
-
-        find_ac();
-		find_mc();
-	} else {
-        Your("skin feels warm for a moment.");
-    }
 }
 
 /* attempting to cast a forgotten spell will cause disorientation */
@@ -1995,8 +1906,9 @@ boolean atme;
             You("sense a pointy hat on top of your %s.", body_part(HEAD));
         break;
     case SPE_PROTECTION:
-        cast_protection();
-        break;
+	case SPE_SHIELD:
+	case SPE_BARKSKIN:
+	case SPE_STONESKIN:
 	case SPE_REFLECTION:
 	case SPE_ANTI_MAGIC_SHELL:
 	case SPE_PROTECTION_FROM_FIRE:
@@ -2248,6 +2160,18 @@ int otyp;
 			break;
 		case CONFLICT:
 			Your("neighborhood feels more quarrelsome than before.");
+			break;
+		case PROTECTION:
+			You_feel("protected!");
+			break;
+		case MAGICAL_SHIELDING:
+			You_feel("shielded!");
+			break;
+		case MAGICAL_BARKSKIN:
+			Your("skin hardens into bark!");
+			break;
+		case MAGICAL_STONESKIN:
+			Your("skin hardens into stone!");
 			break;
 		default:
 			break;

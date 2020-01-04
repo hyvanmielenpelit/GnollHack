@@ -143,6 +143,7 @@ struct monst {
 	Bitfield(isfaithful, 1);					/* being separate from the owner does not reduce tameness */
 	Bitfield(ispartymember, 1);					/* a peaceful monster that has joined your party (e.g., does not give you the money or items back from its inventory) */
 	Bitfield(talkstate, 3);						/* 1 = has said introduction, 2 = has said non-repeatable secondary question, 3 = has said first repeatable confirmatory question,  4 = has said second repeatable confirmatory question */
+	Bitfield(leaves_no_corpse, 1);				/* this particular monster does not leave a corpse */
 	int notalktimer;
 	Bitfield(u_know_mname, 1); /* you know the monster's name */
 

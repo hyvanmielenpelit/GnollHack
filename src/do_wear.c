@@ -2762,12 +2762,14 @@ find_ac()
 	uac -= u.ubaseacbonus;
 	uac -= u.uacbonus;
 
-	/* armor class from other sources */
-    if (HProtection & INTRINSIC)
-        uac -= u.ublessed;
-    uac -= u.uspellprot;
-
-    /* [The magic binary numbers 127 and -128 should be replaced with the
+	if (Magical_stoneskin)
+		uac -= 10;
+	else if (Magical_shielding)
+		uac -= 4;
+	else if (Protection)
+		uac -= 3;
+	
+	/* [The magic binary numbers 127 and -128 should be replaced with the
      * mystic decimal numbers 99 and -99 which require no explanation to
      * the uninitiated and would cap the width of a status line value at
      * one less character.]

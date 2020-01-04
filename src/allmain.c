@@ -454,20 +454,33 @@ create_monster_or_encounter()
 {
 	struct monst* nazgul = (struct monst*)0;
 	boolean nazgul_appeared = FALSE;
+	int maxlevel = 4 * u.ulevel;
+	int mdx = NON_PM;
+	if (maxlevel >= mons[PM_NAZGUL].difficulty && !(mvitals[PM_NAZGUL].mvflags & G_GONE))
+		mdx = PM_NAZGUL;
+	else if (maxlevel >= mons[PM_KING_WRAITH].difficulty && !(mvitals[PM_KING_WRAITH].mvflags & G_GONE))
+		mdx = PM_KING_WRAITH;
+	else if (maxlevel >= mons[PM_SPECTRE].difficulty && !(mvitals[PM_SPECTRE].mvflags & G_GONE))
+		mdx = PM_SPECTRE;
+	else if (maxlevel >= mons[PM_BARROW_WIGHT].difficulty && !(mvitals[PM_BARROW_WIGHT].mvflags & G_GONE))
+		mdx = PM_BARROW_WIGHT;
+	else if (maxlevel >= mons[PM_WRAITH].difficulty && !(mvitals[PM_WRAITH].mvflags & G_GONE))
+		mdx = PM_WRAITH;
 
-	if(!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && !Is_modron_level(&u.uz) && !(mvitals[PM_NAZGUL].mvflags & G_GONE))
+	if(!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && !Is_modron_level(&u.uz) && mdx >= LOW_PM)
 	{
-		/* Special Nazgul appearance if carrying the One Ring */
+		/* Special Nazgul or wraith appearance if carrying the One Ring */
 		struct obj* ring = carrying(RIN_SUPREME_POWER);
-		if (ring && ring->oartifact == ART_ONE_RING && !rn2(10))
+		if (ring && ring->oartifact == ART_ONE_RING && mdx >= LOW_PM && !rn2(10))
 		{
-			if (!context.made_witch_king && !rn2(9))
+			if (!context.made_witch_king && mdx == PM_NAZGUL && !rn2(9))
 			{
 				nazgul = makemon(&mons[PM_NAZGUL], 0, 0, MM_MAX_HP | MM_MALE);
 				if (nazgul)
 				{
 					nazgul = christen_monst(nazgul, "Witch-King of Angmar");
 					nazgul->u_know_mname = TRUE; /* He's famous -- JG */
+					nazgul->leaves_no_corpse = TRUE;
 					mongets(nazgul, CROWN_OF_RULERSHIP);
 					context.made_witch_king = TRUE;
 				}
@@ -477,9 +490,12 @@ create_monster_or_encounter()
 			}
 			else
 			{
-				nazgul = makemon(&mons[PM_NAZGUL], 0, 0, NO_MM_FLAGS);
+				nazgul = makemon(&mons[mdx], 0, 0, NO_MM_FLAGS);
 				if (nazgul)
+				{
+					nazgul->leaves_no_corpse = TRUE;
 					nazgul_appeared = TRUE;
+				}
 			}
 		}
 	}

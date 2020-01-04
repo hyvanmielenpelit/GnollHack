@@ -178,6 +178,21 @@
 #define EBrain_protection u.uprops[BRAIN_PROTECTION].extrinsic
 #define Brain_protection (HBrain_protection || EBrain_protection)
 
+#define HMagical_shielding u.uprops[MAGICAL_SHIELDING].intrinsic
+#define EMagical_shielding u.uprops[MAGICAL_SHIELDING].extrinsic
+#define BMagical_shielding u.uprops[MAGICAL_SHIELDING].blocked
+#define Magical_shielding ((HMagical_shielding || EMagical_shielding) && !BMagical_shielding)
+
+#define HMagical_barkskin u.uprops[MAGICAL_BARKSKIN].intrinsic
+#define EMagical_barkskin u.uprops[MAGICAL_BARKSKIN].extrinsic
+#define BMagical_barkskin u.uprops[MAGICAL_BARKSKIN].blocked
+#define Magical_barkskin ((HMagical_barkskin || EMagical_barkskin) && !BMagical_barkskin)
+
+#define HMagical_stoneskin u.uprops[MAGICAL_STONESKIN].intrinsic
+#define EMagical_stoneskin u.uprops[MAGICAL_STONESKIN].extrinsic
+#define BMagical_stoneskin u.uprops[MAGICAL_STONESKIN].blocked
+#define Magical_stoneskin ((HMagical_stoneskin || EMagical_stoneskin) && !BMagical_stoneskin)
+
 #define HLaughing u.uprops[LAUGHING].intrinsic
 #define ELaughing u.uprops[LAUGHING].extrinsic
 #define Laughing (HLaughing || ELaughing)

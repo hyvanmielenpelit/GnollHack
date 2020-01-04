@@ -1310,8 +1310,14 @@ struct monst *mon;
 		context.suit_yielding_mc_bonus = (suit_mc_bonus == combined_mc_bonus);
 		context.robe_yielding_mc_bonus = (robe_mc_bonus == combined_mc_bonus);
 	}
-	if ((is_you && (Protection || u.uspellprot > 0)))
-		mc += max(1, u.uspellprot);
+
+	if (is_you)
+	{
+		if (Magical_barkskin)
+			mc += 7;
+		else if (Protection)
+			mc += 3;
+	}
 
     return mc;
 }

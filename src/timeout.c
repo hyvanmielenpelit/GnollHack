@@ -125,6 +125,9 @@ const struct propname {
 	{ BLOCKS_INVISIBILITY, "blocks invisibility", "blocks invisibility" },
 	{ BLOCKS_BLINDNESS, "blocks blindness", "blocks blindness"  },
 	{ BLOCKS_CLAIRVOYANCE, "blocks clairvoyance", "blocks clairvoyance" },
+	{ MAGICAL_SHIELDING, "magically shielded", "magical shielding" },
+	{ MAGICAL_BARKSKIN, "magically barkskinned", "magical barkskin" },
+	{ MAGICAL_STONESKIN, "magically stoneskinned", "magical stoneskin" },
 	{ LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
 	{  0, 0 },
 };
@@ -532,19 +535,6 @@ nh_timeout()
     if (u.ucreamed)
         u.ucreamed--;
 
-    /* Dissipate spell-based protection. */
-    if (u.usptime) {
-        if (--u.usptime == 0 && u.uspellprot) {
-            u.usptime = u.uspmtime;
-            u.uspellprot--;
-            find_ac();
-			find_mc();
-			if (!Blind)
-                Norep("The %s haze around you %s.", hcolor(NH_GOLDEN),
-                      u.uspellprot ? "becomes less dense" : "disappears");
-        }
-    }
-
     if (u.ugallop) {
         if (--u.ugallop == 0L && u.usteed)
             pline("%s stops galloping.", Monnam(u.usteed));
@@ -927,6 +917,22 @@ nh_timeout()
 				if (!Conflict)
 					Your("neighborhood feels less quarrelsome than before.");
 				break;
+			case PROTECTION:
+				if (!Protection)
+					You_feel("less protected than before.");
+				break;
+			case MAGICAL_SHIELDING:
+				if (!Magical_shielding)
+					You_feel("less shielded than before.");
+				break;
+			case MAGICAL_BARKSKIN:
+				if (!Magical_barkskin)
+					Your("skin feels less bark-like than before.");
+				break;
+			case MAGICAL_STONESKIN:
+				if (!Magical_stoneskin)
+					Your("skin feels less stone-like than before.");
+				break;
 			}
 		}
 		else if ((upp->intrinsic & TIMEOUT) && ((upp->intrinsic & TIMEOUT) == 3))
@@ -1029,6 +1035,18 @@ nh_timeout()
 				break;
 			case CONFLICT:
 				Your("neighborhood is starting to feel less quarrelsome than before.");
+				break;
+			case PROTECTION:
+				You("are starting to feel less protected than before.");
+				break;
+			case MAGICAL_SHIELDING:
+				You("are starting to feel less shielded than before.");
+				break;
+			case MAGICAL_BARKSKIN:
+				Your("skin is starting to feel less bark-like than before.");
+				break;
+			case MAGICAL_STONESKIN:
+				Your("skin is starting to feel less stone-like than before.");
 				break;
 			}
 		}
