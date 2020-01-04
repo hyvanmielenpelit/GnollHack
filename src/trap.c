@@ -635,15 +635,15 @@ int *fail_reason;
             || (mptr->msound == MS_GUARDIAN
                 && quest_info(MS_GUARDIAN) != mnum)) {
             mon = makemon(&mons[PM_DOPPELGANGER], x, y,
-                          NO_MINVENT | MM_NOCOUNTBIRTH | MM_ADJACENTOK);
+                          MM_NO_MONSTER_INVENTORY | MM_NOCOUNTBIRTH | MM_ADJACENTOK);
             /* if hero has protection from shape changers, cham field will
                be NON_PM; otherwise, set form to match the statue */
             if (mon && mon->cham >= LOW_PM)
                 (void) newcham(mon, mptr, FALSE, FALSE);
         } else
             mon = makemon(mptr, x, y, (cause == ANIMATE_SPELL)
-                                          ? (NO_MINVENT | MM_ADJACENTOK)
-                                          : NO_MINVENT);
+                                          ? (MM_NO_MONSTER_INVENTORY | MM_ADJACENTOK)
+                                          : MM_NO_MONSTER_INVENTORY);
     }
 
     if (!mon) {

@@ -2459,7 +2459,7 @@ boolean makecat, givemsg;
     if (itsalive) {
         if (makecat)
             livecat = makemon(&mons[PM_HOUSECAT], box->ox, box->oy,
-                              NO_MINVENT | MM_ADJACENTOK);
+                              MM_NO_MONSTER_INVENTORY | MM_ADJACENTOK);
         if (livecat) {
             livecat->mpeaceful = 1;
             set_malign(livecat);

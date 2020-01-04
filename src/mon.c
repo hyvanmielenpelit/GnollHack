@@ -632,7 +632,7 @@ boolean createcorpse;
 		if (!rn2(2))
 		{
 			obj = mksobj_at(CLAY_PEBBLE, x, y, FALSE, FALSE);
-			obj->quan = (long)(rnd(8) + 1);
+			obj->quan = (long)(rnd(3));
 			obj->owt = weight(obj);
 		}
 		free_mname(mtmp);
@@ -647,7 +647,7 @@ boolean createcorpse;
 		if (!rn2(2))
 		{
 			obj = mksobj_at(STONE_PEBBLE, x, y, FALSE, FALSE);
-			obj->quan = (long)(rnd(8) + 1);
+			obj->quan = (long)(rnd(5));
 			obj->owt = weight(obj);
 		}
 		free_mname(mtmp);
@@ -4358,7 +4358,7 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
     hpn = mtmp->mhp;
     hpd = mtmp->mhpmax;
     /* set level and hit points */
-    newmonhp(mtmp, monsndx(mdat), FALSE, FALSE);
+    newmonhp(mtmp, monsndx(mdat), 0UL);
     /* new hp: same fraction of max as before */
 #ifndef LINT
     mtmp->mhp = (int) (((long) hpn * (long) mtmp->mhp) / (long) hpd);

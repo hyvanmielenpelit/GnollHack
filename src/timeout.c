@@ -1175,7 +1175,7 @@ long timeout;
             && !(mvitals[mnum].mvflags & (G_GENOD | G_EXTINCT))) {
             for (i = hatchcount; i > 0; i--) {
                 if (!enexto(&cc, x, y, &mons[mnum])
-                    || !(mon = makemon(&mons[mnum], cc.x, cc.y, NO_MINVENT)))
+                    || !(mon = makemon(&mons[mnum], cc.x, cc.y, MM_NO_MONSTER_INVENTORY)))
                     break;
                 /* tame if your own egg hatches while you're on the
                    same dungeon level, or any dragon egg which hatches

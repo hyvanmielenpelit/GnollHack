@@ -1985,7 +1985,7 @@ static struct {
     { hmenu_doextversion, "About GnollHack (version information)." },
     { dispfile_help, "Long description of the game and commands." },
     { dispfile_shelp, "List of game commands." },
-    { hmenu_dohistory, "Concise history of GnollHack." },
+    { hmenu_dohistory, "Concise history of GnollHack and NetHack." },
     { hmenu_dowhatis, "Info on a character in the game display." },
     { hmenu_dowhatdoes, "Info on what a given key does." },
     { option_help, "List of game options." },

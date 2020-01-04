@@ -438,7 +438,7 @@ struct obj *corpse;
     } else {
         /* give your possessions to the monster you become */
         in_mklev = TRUE; /* use <u.ux,u.uy> as-is */
-        mtmp = makemon(&mons[u.ugrave_arise], u.ux, u.uy, NO_MINVENT);
+        mtmp = makemon(&mons[u.ugrave_arise], u.ux, u.uy, MM_NO_MONSTER_INVENTORY);
         in_mklev = FALSE;
         if (!mtmp) { /* arise-type might have been genocided */
             drop_upon_death((struct monst *) 0, (struct obj *) 0, u.ux, u.uy);

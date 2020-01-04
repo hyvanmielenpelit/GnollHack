@@ -1113,7 +1113,7 @@ boolean adjacentok; /* False: at obj's spot only, True: nearby is allowed */
         if (mtmp2->mhpmax <= 0 && !is_rider(mtmp2->data))
             return (struct monst *) 0;
         mtmp = makemon(mtmp2->data, cc->x, cc->y,
-                       (NO_MINVENT | MM_NOWAIT | MM_NOCOUNTBIRTH
+                       (MM_NO_MONSTER_INVENTORY | MM_NOWAIT | MM_NOCOUNTBIRTH
                         | (adjacentok ? MM_ADJACENTOK : 0)));
         if (!mtmp)
             return mtmp;
@@ -1150,7 +1150,8 @@ boolean adjacentok; /* False: at obj's spot only, True: nearby is allowed */
         mtmp2->mflee_timer = mtmp->mflee_timer;
         mtmp2->mlstmv = mtmp->mlstmv;
         mtmp2->m_ap_type = mtmp->m_ap_type;
-        /* set these ones explicitly */
+		mtmp2->leaves_no_corpse = mtmp->leaves_no_corpse;
+		/* set these ones explicitly */
         mtmp2->mrevived = 1;
         mtmp2->mavenge = 0;
         mtmp2->meating = 0;
@@ -1328,7 +1329,7 @@ int animateintomon;
     if (cant_revive(&montype, TRUE, corpse)) {
         /* make a zombie or doppelganger instead */
         /* note: montype has changed; mptr keeps old value for newcham() */
-        mtmp = makemon(&mons[montype], x, y, NO_MINVENT | MM_NOWAIT);
+        mtmp = makemon(&mons[montype], x, y, MM_NO_MONSTER_INVENTORY | MM_NOWAIT);
         if (mtmp) {
             /* skip ghost handling */
             if (has_omid(corpse))
@@ -1351,7 +1352,7 @@ int animateintomon;
             wary_dog(mtmp, TRUE);
     } else {
         /* make a new monster */
-        mtmp = makemon(mptr, x, y, NO_MINVENT | MM_NOWAIT | MM_NOCOUNTBIRTH);
+        mtmp = makemon(mptr, x, y, MM_NO_MONSTER_INVENTORY | MM_NOWAIT | MM_NOCOUNTBIRTH);
     }
     if (!mtmp)
         return (struct monst *) 0;
@@ -2348,7 +2349,7 @@ struct obj *obj;
             } else { /* (obj->otyp == FIGURINE) */
                 if (golem_xform)
                     ptr = &mons[PM_FLESH_GOLEM];
-                mon = makemon(ptr, oox, ooy, NO_MINVENT);
+                mon = makemon(ptr, oox, ooy, MM_NO_MONSTER_INVENTORY);
                 if (mon) {
                     if (costly_spot(oox, ooy)
                         && (carried(obj) ? obj->unpaid : !obj->no_charge)) {
@@ -4710,6 +4711,10 @@ boolean hit_only_one;
 			displayedobjtype = objects[obj->otyp].oc_dir_subtype;
 		}
 	}
+
+	boolean zapped_wand_obj_displayed = FALSE;
+	boolean zapped_wand_beam = FALSE;
+
     if (weapon == FLASHED_LIGHT) {
         tmp_at(DISP_BEAM, cmap_to_glyph(S_flashbeam));
     } else if (weapon == THROWN_TETHERED_WEAPON && obj) {
@@ -4718,13 +4723,23 @@ boolean hit_only_one;
             tmp_at(DISP_TETHER, obj_to_glyph(obj, rn2_on_display_rng));
     } else if (weapon != ZAPPED_WAND && weapon != INVIS_BEAM)
         tmp_at(DISP_FLASH, obj_to_glyph(obj, rn2_on_display_rng));
-	 else if (weapon == ZAPPED_WAND && displayedobjtype > STRANGE_OBJECT)
-		 tmp_at(DISP_FLASH, obj_to_glyph(&dispobj, rn2_on_display_rng));
-	 else if (weapon == ZAPPED_WAND && displayedobjtype <= IMMEDIATE_MAGIC_MISSILE_BEAM)
-		tmp_at(DISP_BEAM, zapdir_to_glyph(ddx, ddy, -displayedobjtype - 11));
-	 else if (weapon == ZAPPED_WAND && displayedobjtype <= IMMEDIATE_MAGIC_MISSILE_NONBEAM)
-		tmp_at(DISP_FLASH, zapdir_to_glyph(ddx, ddy, -displayedobjtype - 1));
-
+	else if (weapon == ZAPPED_WAND && displayedobjtype != STRANGE_OBJECT)
+	{
+		zapped_wand_obj_displayed = TRUE;
+		if (displayedobjtype > STRANGE_OBJECT)
+		{
+			tmp_at(DISP_FLASH, obj_to_glyph(&dispobj, rn2_on_display_rng));
+		}
+		else if (displayedobjtype <= IMMEDIATE_MAGIC_MISSILE_BEAM)
+		{
+			tmp_at(DISP_BEAM, zapdir_to_glyph(ddx, ddy, -displayedobjtype - 11));
+			zapped_wand_beam = TRUE;
+		}
+		else if (displayedobjtype < STRANGE_OBJECT)
+		{
+			tmp_at(DISP_FLASH, zapdir_to_glyph(ddx, ddy, -displayedobjtype - 1));
+		}
+	}
 	boolean beam_cleared_off = FALSE;
 
     while (range-- > 0) {
@@ -4859,7 +4874,7 @@ boolean hit_only_one;
                 return mtmp;
             } else {
                 /* ZAPPED_WAND */
-				if (weapon == ZAPPED_WAND && !(displayedobjtype <= IMMEDIATE_MAGIC_MISSILE_BEAM) && displayedobjtype != STRANGE_OBJECT)
+				if (weapon == ZAPPED_WAND && zapped_wand_obj_displayed && !zapped_wand_beam)
 				{
 					if (hit_only_one)
 					{
@@ -4973,7 +4988,7 @@ boolean hit_only_one;
 
     if ((
 		weapon != ZAPPED_WAND 
-		|| (weapon == ZAPPED_WAND && displayedobjtype != STRANGE_OBJECT && !beam_cleared_off)
+		|| (weapon == ZAPPED_WAND && zapped_wand_obj_displayed && !beam_cleared_off)
 		) 
 		&& weapon != INVIS_BEAM && !tethered_weapon)
         tmp_at(DISP_END, 0);
@@ -7042,7 +7057,7 @@ boolean faithful;
 {
 	struct monst* mon = (struct monst*)0;
 
-	mon = makemon(&mons[monst_id], u.ux, u.uy, MM_NOCOUNTBIRTH | mmflags);
+	mon = makemon(&mons[monst_id], u.ux, u.uy, MM_NOCOUNTBIRTH | MM_NO_DIFFICULTY_HP_CHANGE | mmflags);
 	if (mon)
 	{
 		mon->issummoned = markassummoned;
@@ -7078,7 +7093,7 @@ int spl_otyp;
 	monindex = ndemon(A_NONE);
 	
 	if(monindex)
-		mon = makemon(&mons[monindex], u.ux, u.uy, NO_MINVENT | MM_NOCOUNTBIRTH);
+		mon = makemon(&mons[monindex], u.ux, u.uy, MM_NO_MONSTER_INVENTORY | MM_NO_DIFFICULTY_HP_CHANGE | MM_NOCOUNTBIRTH);
 
 	if (mon)
 	{

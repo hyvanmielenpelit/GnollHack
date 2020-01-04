@@ -908,7 +908,7 @@ struct monst *mtmp, *mtarg;
         }
         /* And pets will hesitate to attack vastly stronger foes.
            This penalty will be discarded if master's in trouble. */
-        if (!(mtmp->disregards_enemy_strength|| disregards_enemy_strength(mtmp->data)) && mtarg->m_lev > mtmp_lev + 4L)
+        if (!mon_disregards_enemy_strength(mtmp) && mtarg->m_lev > mtmp_lev + 4L)
             score -= (mtarg->m_lev - mtmp_lev) * 20L;
         /* All things being the same, go for the beefiest monster. This
            bonus should not be large enough to override the pet's aversion
@@ -1132,14 +1132,14 @@ int after; /* this is extra fast monster movement */
 		{
             int mstatus;
 
-            if ((!(mtmp->disregards_own_health || disregards_own_health(mtmp->data)) && (int) mtmp2->m_lev >= (int) mtmp->m_lev + 2)
+            if ((!mon_disregards_own_health(mtmp) && (int) mtmp2->m_lev >= (int) mtmp->m_lev + 2)
                 || (mtmp2->data == &mons[PM_FLOATING_EYE] && rn2(10)
                     && mtmp->mcansee && haseyes(mtmp->data) && mtmp2->mcansee
                     && (perceives(mtmp->data) || !mtmp2->minvis))
                 || (mtmp2->data == &mons[PM_GELATINOUS_CUBE] && rn2(10))
                 || (mtmp2->mtame && !Conflict)
 				|| (max_passive_dmg(mtmp2, mtmp) >= mtmp->mhp)
-				|| (((!(mtmp->disregards_own_health || disregards_own_health(mtmp->data)) && mtmp->mhp * 4 < mtmp->mhpmax)
+				|| (((!mon_disregards_own_health(mtmp) && mtmp->mhp * 4 < mtmp->mhpmax)
                      || mtmp2->data->msound == MS_GUARDIAN
                      || mtmp2->data->msound == MS_LEADER || !mon_has_bloodlust(mtmp) /*mtmp->ispacifist*/) && mtmp2->mpeaceful
                     && !Conflict && !mon_has_bloodlust(mtmp))

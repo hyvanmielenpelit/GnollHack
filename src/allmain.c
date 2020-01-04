@@ -793,7 +793,7 @@ choose_game_difficulty()
 			buf, MENU_UNSELECTED);
 	}
 
-	end_menu(menuwin, "Pick game difficulty");
+	end_menu(menuwin, "Pick a level for game difficulty");
 	n = select_menu(menuwin, PICK_ONE, &selected);
 	if (n > 0)
 	{

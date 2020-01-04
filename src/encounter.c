@@ -1236,30 +1236,13 @@ int x, y;
 	else if (In_mines(&u.uz))
 		max_attk_monsters = 3;
 
-	/* Select encounters of an appropriate level */
-	int zlevel = level_difficulty();
-
 	for (int i = 1; i <= 1; i++)
 	{
-		int midmlev = 0, maxmlev = 0, minmlev = 0;
+		int maxmlev = 0, minmlev = 0;
 		totalselectedprob = 0;
-		if (i == 1)
-		{
-			/* Try first with a tighter range */
-			midmlev = (zlevel * 2 + u.ulevel) / (3 * (In_endgame(&u.uz) ? 3 : u.uhave.amulet ? 2 : 1));
-			maxmlev = (zlevel * 2 + u.ulevel) / 2;
-			minmlev = max(0, midmlev - (maxmlev - midmlev)); //equates to midmlev/2 = (2z+c)/6
-		}
-		else if (i == 2)
-		{
-			minmlev = (zlevel * 2 + u.ulevel) / (12 * (In_endgame(&u.uz) ? 3 : u.uhave.amulet ? 2 : 1));
-			maxmlev = (zlevel * 2 + u.ulevel) / 2;
-		}
-		else
-		{
-			minmlev = 0;
-			maxmlev = (zlevel * 2 + u.ulevel);
-		}
+
+		get_generated_monster_minmax_levels(i, &minmlev, &maxmlev);
+
 		for (int j = 1; j < MAX_ENCOUNTERS; j++)
 		{
 			encounter_list[j].insearch = FALSE;

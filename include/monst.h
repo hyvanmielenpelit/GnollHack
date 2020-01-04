@@ -146,6 +146,7 @@ struct monst {
 	Bitfield(leaves_no_corpse, 1);				/* this particular monster does not leave a corpse */
 	int notalktimer;
 	Bitfield(u_know_mname, 1); /* you know the monster's name */
+	int max_hp_percentage;						/* % of the monster's maximum theoretical hit points at the time of creation */
 
     Bitfield(iswiz, 1);     /* is the Wizard of Yendor */
     Bitfield(wormno, 5);    /* at most 31 worms on any level */

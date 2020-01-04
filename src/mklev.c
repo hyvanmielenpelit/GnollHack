@@ -998,7 +998,7 @@ makelevel()
 			stash->olocked = FALSE;
 			stash->otrapped = FALSE;
 			char namebuf[BUFSZ];
-			Sprintf(namebuf, "%s's stash", plname);
+			Sprintf(namebuf, "%s stash", s_suffix(plname));
 			stash = uoname(stash, namebuf);
 
 			struct obj* otmp = (struct obj*)0;

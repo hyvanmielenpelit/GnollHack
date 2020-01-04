@@ -105,7 +105,7 @@ boolean quietly;
             }
         }
 
-        mtmp = makemon(pm, x, y, MM_EDOG | MM_IGNOREWATER | NO_MINVENT);
+        mtmp = makemon(pm, x, y, MM_EDOG | MM_IGNOREWATER | MM_NO_MONSTER_INVENTORY | MM_NO_DIFFICULTY_HP_CHANGE);
         if (otmp && !mtmp) { /* monster was genocided or square occupied */
             if (!quietly)
                 pline_The("figurine writhes and then shatters into pieces!");
@@ -209,7 +209,7 @@ makedog()
 		}
 	}
 
-    mtmp = makemon(&mons[pettype], u.ux, u.uy, MM_EDOG | MM_NORMAL_HIT_DICE);
+    mtmp = makemon(&mons[pettype], u.ux, u.uy, MM_EDOG | MM_NORMAL_HIT_DICE | MM_NO_DIFFICULTY_HP_CHANGE);
 
     if (!mtmp)
         return ((struct monst *) 0); /* pets were genocided */
@@ -943,7 +943,9 @@ boolean forcetaming;
         || (mtmp->data->mflags3 & M3_WANTSARTI))
         return FALSE;
 
-    /* worst case, at least it'll be peaceful. */
+	boolean was_tame = mtmp->mtame;
+
+	/* worst case, at least it'll be peaceful. */
     mtmp->mpeaceful = 1;
     set_malign(mtmp);
     if (!forcetaming && flags.moonphase == FULL_MOON && night() && rn2(6) && obj
@@ -1011,6 +1013,9 @@ boolean forcetaming;
     /* add the pet extension */
     newedog(mtmp);
     initedog(mtmp);
+
+	if (!was_tame && mtmp->mtame && context.game_difficulty != 0)
+		newmonhp(mtmp, mtmp->mnum, MM_NO_DIFFICULTY_HP_CHANGE | MM_ADJUST_HP_FROM_EXISTING);
 
     if (obj) { /* thrown food */
         /* defer eating until the edog extension has been set up */

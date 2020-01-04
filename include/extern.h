@@ -821,6 +821,8 @@ E int NDECL(enmaxadjustment);
 E void NDECL(updatemaxen);
 E int FDECL(experience, (struct monst *, int));
 E void FDECL(more_experienced, (int, int));
+E long FDECL(game_score_difficulty_adjustment, (long));
+
 E void FDECL(losexp, (const char *));
 E void NDECL(newexplevel);
 E void FDECL(pluslvl, (BOOLEAN_P));
@@ -1240,15 +1242,16 @@ E void FDECL(dealloc_monst, (struct monst *));
 E boolean FDECL(is_home_elemental, (struct permonst *));
 E struct monst *FDECL(clone_mon, (struct monst *, XCHAR_P, XCHAR_P));
 E int FDECL(monhp_per_lvl, (struct monst *));
-E void FDECL(newmonhp, (struct monst *, int, BOOLEAN_P, BOOLEAN_P));
-E int FDECL(monhp_difficulty_adjustment, (int));
+E void FDECL(newmonhp, (struct monst *, int, unsigned long));
+E int FDECL(monhp_difficulty_adjustment, (int, int));
 E struct mextra *NDECL(newmextra);
 E void FDECL(copy_mextra, (struct monst *, struct monst *));
 E void FDECL(dealloc_mextra, (struct monst *));
-E struct monst *FDECL(makemon, (struct permonst *, int, int, int));
+E struct monst *FDECL(makemon, (struct permonst *, int, int, unsigned long));
 E boolean FDECL(create_critters, (int, struct permonst *, BOOLEAN_P));
 E struct permonst *NDECL(rndmonst);
 E void FDECL(reset_rndmonst, (int));
+E void FDECL(get_generated_monster_minmax_levels, (int, int*, int*));
 E struct permonst *FDECL(mkclass, (CHAR_P, int));
 E struct permonst *FDECL(mkclass_aligned, (CHAR_P, int, ALIGNTYP_P));
 E int FDECL(mkclass_poly, (int));
@@ -2548,10 +2551,10 @@ E boolean FDECL(stucksteed, (BOOLEAN_P));
 
 /* ### teleport.c ### */
 
-E boolean FDECL(goodpos, (int, int, struct monst *, unsigned));
+E boolean FDECL(goodpos, (int, int, struct monst *, unsigned long));
 E boolean FDECL(enexto, (coord *, XCHAR_P, XCHAR_P, struct permonst *));
 E boolean FDECL(enexto_core, (coord *, XCHAR_P, XCHAR_P,
-                              struct permonst *, unsigned));
+                              struct permonst *, unsigned long));
 E void FDECL(teleds, (int, int, BOOLEAN_P));
 E boolean FDECL(safe_teleds, (BOOLEAN_P));
 E boolean FDECL(teleport_pet, (struct monst *, BOOLEAN_P));

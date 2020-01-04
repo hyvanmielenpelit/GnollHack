@@ -287,9 +287,9 @@ struct obj *book2;
         You("raised the dead!");
         /* first maybe place a dangerous adversary */
         if (!rn2(3) && ((mtmp = makemon(&mons[PM_MASTER_LICH], u.ux, u.uy,
-                                        NO_MINVENT)) != 0
+                                        MM_NO_MONSTER_INVENTORY)) != 0
                         || (mtmp = makemon(&mons[PM_NALFESHNEE], u.ux, u.uy,
-                                           NO_MINVENT)) != 0)) {
+                                           MM_NO_MONSTER_INVENTORY)) != 0)) {
             mtmp->mpeaceful = 0;
             set_malign(mtmp);
         }
@@ -298,7 +298,7 @@ struct obj *book2;
         /* last place some monsters around you */
         mm.x = u.ux;
         mm.y = u.uy;
-        mkundead(&mm, TRUE, NO_MINVENT);
+        mkundead(&mm, TRUE, MM_NO_MONSTER_INVENTORY);
     } else if (book2->blessed) {
         for (mtmp = fmon; mtmp; mtmp = mtmp2) {
             mtmp2 = mtmp->nmon; /* tamedog() changes chain */

@@ -1,6 +1,6 @@
-NetHack History file for release 3.6
+GnollHack History file for release 4.0
 
-Behold, mortal, the origins of NetHack...
+Behold, mortal, the origins of NetHack and thus also of GnollHack...
 
 Jay Fenlason wrote the original Hack with help from Kenny Woodland,
 Mike Thome, and Jon Payne.
@@ -217,8 +217,14 @@ Derek S. Ray, Alex Smith, Mike Stephenson, Janet Walz and Paul Winner.
 In early May 2019, another 320 bug fixes along with some enhancements and 
 the adopted curses window port, were released as 3.6.2.
 
+In mid-July 2019, Sound Mind Games started developing GnollHack based off
+NetHack 3.6.2.
+
 The official NetHack web site is maintained by Ken Lorber at
 http://www.nethack.org/.
+
+The official GnollHack web site is maintained by Sound Mind Games at
+http://www.gnollhack.com/.
 
 On behalf of the NetHack community, thank you very much once again  to
 M.  Drew  Streib and Pasi Kallinen for providing a public NetHack server

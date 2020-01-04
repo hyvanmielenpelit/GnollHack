@@ -746,17 +746,24 @@ register struct obj *otmp;
         }
         /* FALLTHRU */
     case POT_INVISIBILITY:
-        if (Invis || Blind || Blocks_Invisibility || BInvis) {
+        if (Invis || Blind || Blocks_Invisibility || BInvis) 
+		{
             nothing++;
-        } else {
+        } 
+		else 
+		{
             self_invis_message();
         }
+
         if (otmp->blessed)
             HInvis |= FROM_ACQUIRED;
         else
-            incr_itimeout(&HInvis, otmp->oclass == POTION_CLASS ? rn1(15, 31) : duration);
+            incr_itimeout(&HInvis, otmp->oclass == POTION_CLASS ? d(2, 10) + 80 : duration);
+
         newsym(u.ux, u.uy); /* update position */
-        if (otmp->cursed) {
+
+        if (otmp->cursed)
+		{
             pline("For some reason, you feel your presence is known.");
             aggravate();
         }

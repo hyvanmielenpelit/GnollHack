@@ -291,6 +291,35 @@ register int nk;
     return (tmp);
 }
 
+long
+game_score_difficulty_adjustment(points_added)
+long points_added;
+{
+	long added_gamescore = points_added;
+
+	/* game difficulty adjustment */
+	switch (context.game_difficulty)
+	{
+	case -2:
+		added_gamescore /= 10;
+		break;
+	case -1:
+		added_gamescore /= 3;
+		break;
+	case 1:
+		added_gamescore *= 2;
+		break;
+	case 2:
+		added_gamescore *= 4;
+		break;
+	default:
+		break;
+	}
+
+	return added_gamescore;
+}
+
+
 void
 more_experienced(exper, gamescore)
 register int exper, gamescore;
@@ -298,10 +327,10 @@ register int exper, gamescore;
 	long added_experience = exper == 0 ? 0 : max(1, exper + (exper * max(-9, u.uexperiencebonus)) / 10);
 	long added_gamescore = gamescore;
 	long oldexp = u.uexp,
-         oldrexp = u.u_gamescore,
-         newexp = oldexp + added_experience,
-         rexpincr = 4 * added_experience + added_gamescore,
-         newrexp = oldrexp + rexpincr;
+		oldrexp = u.u_gamescore,
+		newexp = oldexp + added_experience,
+		rexpincr = game_score_difficulty_adjustment(4 * added_experience + added_gamescore),
+        newrexp = oldrexp + rexpincr;
 
     /* cap experience and score on wraparound */
     if (newexp < 0 && added_experience > 0)

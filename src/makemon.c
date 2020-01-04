@@ -22,7 +22,7 @@ STATIC_DCL void FDECL(m_initweap, (struct monst *));
 STATIC_DCL void FDECL(m_initinv, (struct monst *));
 STATIC_DCL void FDECL(m_init_background, (struct monst*));
 STATIC_DCL boolean FDECL(makemon_rnd_goodpos, (struct monst *,
-                                               unsigned, coord *));
+                                               unsigned long, coord *));
 
 #define m_initsgrp(mtmp, x, y, mmf) m_initgrp(mtmp, x, y, 3, mmf)
 #define m_initlgrp(mtmp, x, y, mmf) m_initgrp(mtmp, x, y, 10, mmf)
@@ -1770,15 +1770,22 @@ struct monst *mon;
 /* set up a new monster's initial level and hit points;
    used by newcham() as well as by makemon() */
 void
-newmonhp(mon, mndx, maxhp, normalhd)
+newmonhp(mon, mndx, mmflags)
 struct monst *mon;
 int mndx;
-boolean maxhp;
-boolean normalhd;
+unsigned long mmflags;
 {
     struct permonst *ptr = &mons[mndx];
+	boolean use_maxhp = !!(mmflags & MM_MAX_HP);
+	boolean use_normalhd = !!(mmflags & MM_NORMAL_HIT_DICE);
+	boolean no_dif_level_adj = !!(mmflags & MM_NO_DIFFICULTY_HP_CHANGE);
+	boolean adj_existing_hp = !!(mmflags & MM_ADJUST_HP_FROM_EXISTING);
+	int old_maxhp = mon->mhpmax;
+	int old_hp = mon->mhp;
 
-    mon->m_lev = normalhd ? ptr->mlevel : adj_lev(ptr);
+	if(!adj_existing_hp)
+		mon->m_lev = use_normalhd ? ptr->mlevel : adj_lev(ptr);
+
 	boolean dragonmaxhp = !!(ptr->mlet == S_DRAGON && mndx >= PM_GRAY_DRAGON && In_endgame(&u.uz));
 
 #if 0
@@ -1798,41 +1805,86 @@ boolean normalhd;
 		//ABOVE is obsolete, since hp's are now ints
 //		mon->mhpmax = mon->mhp = 2 * (ptr->mlevel - 6);
 //        mon->m_lev = mon->mhp / 4; /* approximation */
-    } else 
+}
+	else
 #endif
 
+	int hp = 0;
+	int maxhp = 0;
 
-	if (mon->m_lev <= 0) {
-		int hp = (maxhp || dragonmaxhp ? 4 : rnd(4)) + constitution_hp_bonus(mon->mcon) / 2;
+	if (mon->m_lev <= 0) 
+	{
+		maxhp = 4 + constitution_hp_bonus(mon->mcon) / 2;
+		hp = use_maxhp || dragonmaxhp ? maxhp : rnd(4) + constitution_hp_bonus(mon->mcon) / 2;
+	} 
+	else 
+	{
+		maxhp = (int)mon->m_lev * 8 + mon->m_lev * constitution_hp_bonus(mon->mcon);
+		hp = use_maxhp || dragonmaxhp ? maxhp : d((int)mon->m_lev, 8) + mon->m_lev * constitution_hp_bonus(mon->mcon);
+	}
 
-		hp = monhp_difficulty_adjustment(hp);
+	/* Override hp if adjusting */
+	if (adj_existing_hp && mon->max_hp_percentage > 0)
+	{
+		hp = (mon->max_hp_percentage * maxhp) / 100;
+	}
 
-		if (hp < 1)
-			hp = 1;
-		mon->mhpmax = mon->mhp = hp;
-    } else {
-		int hp = (maxhp || dragonmaxhp ? (int)mon->m_lev * 8 : d((int)mon->m_lev, 8)) + mon->m_lev * constitution_hp_bonus(mon->mcon);
-		if (hp < 1)
-			hp = 1;
-		hp = monhp_difficulty_adjustment(hp);
-		mon->mhpmax = mon->mhp = hp;
-		if (is_home_elemental(ptr))
-            mon->mhpmax = (mon->mhp *= 2); //Down from x3
-    }
+	if (hp < 1)
+		hp = 1;
+
+	if (maxhp < 1)
+		maxhp = 1;
+
+	/* This is the new max_hp_percentage */
+	int max_hp_percentage = (int)(((unsigned long)hp * 100) / (unsigned long)maxhp);
+	mon->max_hp_percentage = max_hp_percentage;
+
+	/* Difficulty  and dungeon level adjustments */
+	if (!no_dif_level_adj)
+		hp = monhp_difficulty_adjustment(hp, context.game_difficulty);
+
+	if (is_home_elemental(ptr))
+		hp *= 2;
+
+	/* Finally, set mhpmax */
+	mon->mhpmax = hp;
+
+	/* If adjusting, new hp = old_hp proportionally to old and new mhpmax's */
+	if (adj_existing_hp && old_hp > 0 && old_maxhp > 0 && mon->mhpmax > 0)
+	{
+		unsigned long result = ((unsigned long)old_hp * (unsigned long)mon->mhpmax) / (unsigned long)old_maxhp;
+		mon->mhp = (int)result;
+	}
+	else
+		mon->mhp = mon->mhpmax;
+
+	if (is_home_elemental(ptr))
+		mon->mhpmax = (mon->mhp *= 2); //Down from x3
+
+	if (mon->mhpmax < 1)
+		mon->mhpmax = 1;
+
+	if (mon->mhp < 1)
+		mon->mhp = 1;
+
+	if (mon->mhp > mon->mhpmax)
+		mon->mhp = mon->mhpmax;
+
 }
 
 int
-monhp_difficulty_adjustment(hp)
+monhp_difficulty_adjustment(hp, difficulty_level)
 int hp;
+int difficulty_level;
 {
 	int adjhp = hp;
-	if (context.game_difficulty == 2)
+	if (difficulty_level == 2)
 		adjhp *= 4;
-	else if (context.game_difficulty == 1)
+	else if (difficulty_level == 1)
 		adjhp *= 2;
-	else if (context.game_difficulty == -1)
+	else if (difficulty_level == -1)
 		adjhp = (hp + 1) / 2;
-	else if (context.game_difficulty == -2)
+	else if (difficulty_level == -2)
 		adjhp = (hp + 3) / 4;
 
 	return adjhp;
@@ -1858,7 +1910,7 @@ newmextra()
 boolean
 makemon_rnd_goodpos(mon, gpflags, cc)
 struct monst *mon;
-unsigned gpflags;
+unsigned long gpflags;
 coord *cc;
 {
     int tryct = 0;
@@ -1936,15 +1988,15 @@ struct monst *
 makemon(ptr, x, y, mmflags)
 register struct permonst *ptr;
 register int x, y;
-int mmflags;
+unsigned long mmflags;
 {
     register struct monst *mtmp;
     int mndx, mcham, ct, mitem;
     boolean anymon = (!ptr);
     boolean byyou = (x == u.ux && y == u.uy);
-    boolean allow_minvent = ((mmflags & NO_MINVENT) == 0);
+    boolean allow_minvent = ((mmflags & MM_NO_MONSTER_INVENTORY) == 0);
     boolean countbirth = ((mmflags & MM_NOCOUNTBIRTH) == 0);
-    unsigned gpflags = (mmflags & MM_IGNOREWATER) ? MM_IGNOREWATER : 0;
+    unsigned long gpflags = (mmflags & MM_IGNOREWATER) ? MM_IGNOREWATER : 0;
 
     /* if caller wants random location, do it here */
     if (x == 0 && y == 0) {
@@ -2049,8 +2101,8 @@ int mmflags;
 	mtmp->mcha = ptr->cha;
 	
 	/* set up level and hit points */
-	newmonhp(mtmp, mndx, !!(mmflags & MM_MAX_HP), !!(mmflags & MM_NORMAL_HIT_DICE));
-
+	newmonhp(mtmp, mndx, mmflags);
+	
 	if (is_female(ptr))
         mtmp->female = TRUE;
     else if (is_male(ptr))
@@ -2399,7 +2451,7 @@ rndmonst()
 		return ptr;
 
     if (rndmonst_state.choice_count < 0) { /* need to recalculate */
-        int zlevel, minmlev, maxmlev, midmlev;
+        int minmlev = 0, maxmlev = 0;
         boolean elemlevel;
         boolean upper;
 
@@ -2407,37 +2459,21 @@ rndmonst()
 		{
 			rndmonst_state.choice_count = 0;
 			/* look for first common monster */
-			for (mndx = LOW_PM; mndx < SPECIAL_PM; mndx++) {
+			for (mndx = LOW_PM; mndx < SPECIAL_PM; mndx++) 
+			{
 				if (!uncommon(mndx))
 					break;
 				rndmonst_state.mchoices[mndx] = 0;
 			}
-			if (mndx == SPECIAL_PM) {
+			if (mndx == SPECIAL_PM) 
+			{
 				/* evidently they've all been exterminated */
 				debugpline0("rndmonst: no common mons!");
 				return (struct permonst *) 0;
 			} /* else `mndx' now ready for use below */
-			zlevel = level_difficulty();
-
 			/* determine the level of the weakest monster to make. */
 			/* determine the level of the strongest monster to make. */
-			if (i == 1)
-			{
-				/* Try first with a tighter range */
-				midmlev = (zlevel * 2 + u.ulevel) / (3 * (In_endgame(&u.uz) ? 3 : u.uhave.amulet ? 2 : 1));
-				maxmlev = (zlevel * 2 + u.ulevel)  / 2;
-				minmlev = max(0, midmlev - (maxmlev - midmlev)); //equates to midmlev/2 = (2z+c)/6
-			}
-			else if (i == 2)
-			{
-				minmlev = (zlevel * 2 + u.ulevel) / (12 * (In_endgame(&u.uz) ? 3 : u.uhave.amulet ? 2 : 1));
-				maxmlev = (zlevel * 2 + u.ulevel) / 2;
-			}
-			else
-			{
-				minmlev = 0;
-				maxmlev = (zlevel * 2 + u.ulevel);
-			}
+			get_generated_monster_minmax_levels(i, &minmlev, &maxmlev);
 
 			upper = Is_rogue_level(&u.uz);
 			elemlevel = In_endgame(&u.uz) && !Is_astralevel(&u.uz);
@@ -2445,7 +2481,8 @@ rndmonst()
 			/*
 			 * Find out how many monsters exist in the range we have selected.
 			 */
-			for ( ; mndx < SPECIAL_PM; mndx++) { /* (`mndx' initialized above) */
+			for ( ; mndx < SPECIAL_PM; mndx++)
+			{ /* (`mndx' initialized above) */
 				ptr = &mons[mndx];
 				rndmonst_state.mchoices[mndx] = 0;
 				if (tooweak(mndx, minmlev) || toostrong(mndx, maxmlev))
@@ -2473,7 +2510,8 @@ rndmonst()
 		}
     } /* choice_count+mchoices[] recalc */
 
-    if (rndmonst_state.choice_count <= 0) {
+    if (rndmonst_state.choice_count <= 0) 
+	{
         /* maybe no common mons left, or all are too weak or too strong */
         debugpline1("rndmonst: choice_count=%d", rndmonst_state.choice_count);
         return (struct permonst *) 0;
@@ -2487,13 +2525,93 @@ rndmonst()
         if ((ct -= (int) rndmonst_state.mchoices[mndx]) <= 0)
             break;
 
-    if (mndx == SPECIAL_PM || uncommon(mndx)) { /* shouldn't happen */
+    if (mndx == SPECIAL_PM || uncommon(mndx)) 
+	{ /* shouldn't happen */
         impossible("rndmonst: bad `mndx' [#%d]", mndx);
         return (struct permonst *) 0;
     }
     return &mons[mndx];
 }
 
+
+void
+get_generated_monster_minmax_levels(attempt, minlvl, maxlvl)
+int attempt;
+int* minlvl;
+int* maxlvl;
+{
+	long max_multiplier = 1;
+	long max_divisor = 1;
+	long min_multiplier = 1;
+	long min_divisor = 1;
+	int zlevel = level_difficulty();
+	int i = attempt;
+
+	int minmlev = 0;
+	int midmlev = 0;
+	int maxmlev = 0;
+
+	if (In_endgame(&u.uz))
+	{
+		max_multiplier *= 2;
+		max_divisor *= 1;
+	}
+	else if (u.uhave.amulet)
+	{
+		max_multiplier *= 3;
+		max_divisor *= 2;
+	}
+
+	switch (context.game_difficulty)
+	{
+	case -2:
+		min_multiplier *= 1;
+		min_divisor *= 2;
+		max_multiplier *= 2;
+		max_divisor *= 3;
+		break;
+	case -1:
+		min_multiplier *= 3;
+		min_divisor *= 4;
+		max_multiplier *= 4;
+		max_divisor *= 5;
+		break;
+	case 1:
+		min_multiplier *= 1;
+		min_divisor *= 1;
+		max_multiplier *= 3;
+		max_divisor *= 2;
+		break;
+	case 2:
+		min_multiplier *= 3;
+		min_divisor *= 2;
+		max_multiplier *= 2;
+		max_divisor *= 1;
+		break;
+	}
+
+	if (i == 1)
+	{
+		/* Try first with a tighter range */
+		midmlev = (zlevel * 2 + u.ulevel) / 3;
+		maxmlev = ((zlevel * 2 + u.ulevel) * max_multiplier) / (2 * max_divisor);
+		minmlev = (max(0, midmlev - (maxmlev - midmlev)) * min_multiplier) / min_divisor; //equates to midmlev/2 = (2z+c)/6
+	}
+	else if (i == 2)
+	{
+		minmlev = ((zlevel * 2 + u.ulevel) * min_multiplier) / (12 * min_divisor);
+		maxmlev = ((zlevel * 2 + u.ulevel) * max_multiplier) / (2 * max_divisor);
+	}
+	else
+	{
+		minmlev = 0;
+		maxmlev = max((zlevel * 2 + u.ulevel), ((zlevel * 2 + u.ulevel) * max_multiplier) / (max_divisor));
+	}
+
+	*minlvl = minmlev;
+	*maxlvl = maxmlev;
+
+}
 /* called when you change level (experience or dungeon depth) or when
    monster species can no longer be created (genocide or extinction) */
 void
@@ -2551,37 +2669,14 @@ aligntyp atyp;
 {
     register int first, last, num = 0;
     int k, nums[SPECIAL_PM + 1]; /* +1: insurance for final return value */
-    int minmlev, maxmlev, mask = (G_NOGEN | G_UNIQ) & ~spc;
-	int zlevel = 0;
+    int minmlev = 0, maxmlev = 0, mask = (G_NOGEN | G_UNIQ) & ~spc;
 
     (void) memset((genericptr_t) nums, 0, sizeof nums);
 
-	zlevel = level_difficulty();
-
 	for(int i = 1; i <= 3; i++)
 	{
-		if(i == 1)
-		{
-			/* determine the level of the weakest monster to make. */
-			minmlev = (zlevel * 2 + u.ulevel) / 6;
-			/* determine the level of the strongest monster to make. */
-			maxmlev = (zlevel * 2 + u.ulevel) / 3;
-		}
-		else if (i == 2)
-		{
-			/* determine the level of the weakest monster to make. */
-			minmlev = (zlevel * 2 + u.ulevel) / 12;
-			/* determine the level of the strongest monster to make. */
-			maxmlev = (zlevel * 2 + u.ulevel) * 2;
-		}
-		else
-		{
-			/* determine the level of the weakest monster to make. */
-			minmlev = 0;
-			/* determine the level of the strongest monster to make. */
-			maxmlev = (zlevel * 2 + u.ulevel);
-		}
-
+		get_generated_monster_minmax_levels(i, &minmlev, &maxmlev);
+	
 		if (class < 1 || class >= MAXMCLASSES) {
 			impossible("mkclass called with bad class!");
 			return (struct permonst *) 0;
