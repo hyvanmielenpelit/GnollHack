@@ -1111,12 +1111,12 @@ register struct monst *mtmp;
 				(void)mongetsgold(mtmp, rn2(501) + 200);
 			//Reagents
 			n = rnd(5);
-			while (n--)
+			for (int i = 0; i < n; i++)
 				(void)mongets(mtmp, randomreagent(TRUE, FALSE));
 
 			//Spellbooks
 			n = rnd(3); // 1...3
-			while (n--)
+			for (int i = 0; i < n; i++)
 			{
 				otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
 				(void)mpickobj(mtmp, otmp);
@@ -1178,14 +1178,14 @@ register struct monst *mtmp;
 
 			//Reagents
 			n = rnd(4);
-			while (n--)
+			for (int i = 0; i < n; i++)
 			{
 				(void)mongets(mtmp, randomreagent(TRUE, 2));
 			}
 
 			//Some spellbooks
 			n = rnd(4); // 1...4
-			while (n--)
+			for (int i = 0; i < n; i++)
 			{
 				otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
 				(void)mpickobj(mtmp, otmp);
@@ -1217,7 +1217,7 @@ register struct monst *mtmp;
 
 		//Reagents
 		n = rnd(3) + (ptr == &mons[PM_MASTER_LICH] || ptr == &mons[PM_ARCH_LICH] ? 2 : 0); //1...3 + 2
-		while (n--)
+		for (int i = 0; i < n; i++)
 			(void)mongets(mtmp, randomreagent(TRUE, 2));
 
 		//Some spellbooks
@@ -1228,7 +1228,7 @@ register struct monst *mtmp;
 		else
 			n = rnd(3); // 1...3
 
-		while (n--)
+		for (int i = 0; i < n; i++)
 		{
 			otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
 			(void)mpickobj(mtmp, otmp);
@@ -1258,7 +1258,7 @@ register struct monst *mtmp;
 
 			//Reagents
 			n = rnd(3) + 2;
-			while (n--)
+			for (int i = 0; i < n; i++)
 				(void)mongets(mtmp, randomreagent(TRUE, 2));
 
 			if (!rn2(4))
@@ -1317,7 +1317,7 @@ register struct monst *mtmp;
 
 		if (n > 0)
 		{
-			while (n--)
+			for (int i = 0; i < n; i++)
 			{
 				otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
 				(void)mpickobj(mtmp, otmp);
@@ -1353,12 +1353,12 @@ register struct monst *mtmp;
 		{
 			/* Some random reagants */
 			int n = rn2(3);
-			while (n--)
+			for (int i = 0; i < n; i++)
 				(void)mongets(mtmp, randomreagent(TRUE, 0));
 
 			/* Some spellbooks */
 			n = rn2(2);
-			while (n--)
+			for(int i = 0; i < n; i++)
 			{
 				otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
 				(void)mpickobj(mtmp, otmp);
@@ -1436,11 +1436,11 @@ register struct monst *mtmp;
 		else if (ptr == &mons[PM_GNOLL_WARDEN])
 		{
 				int n = rn2(3);
-				while (n--)
+				for (int i = 0; i < n; i++)
 					(void)mongets(mtmp, randomreagent(FALSE, 0));
 
 				n = rn2(2);
-				while (n--)
+				for (int i = 0; i < n; i++)
 				{
 					otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
 					(void)mpickobj(mtmp, otmp);
@@ -1513,11 +1513,11 @@ register struct monst *mtmp;
 		{
 			int n = 0;
 			n = rnd(3);
-			while (n--)
+			for (int i = 0; i < n; i++)
 				(void)mongets(mtmp, randomreagent(TRUE, 0));
 
 			n = rn2(2);
-			while (n--)
+			for (int i = 0; i < n; i++)
 			{
 				otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
 				(void)mpickobj(mtmp, otmp);
