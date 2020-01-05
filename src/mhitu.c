@@ -1836,7 +1836,7 @@ register struct obj* omonwep;
                 multi_reason = "paralyzed by a monster";
                 exercise(A_DEX, FALSE);
 
-				/* Now new paralysis for a while */
+				/* No new paralysis for a while */
 				set_itimeout(&HFree_action, 20);
             }
         }
