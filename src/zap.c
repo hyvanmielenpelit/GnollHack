@@ -4,6 +4,8 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
+#include "artifact.h"
+#include "artilist.h"
 
 /* Disintegration rays have special treatment; corpses are never left.
  * But the routine which calculates the damage is separate from the routine
@@ -1317,7 +1319,6 @@ int animateintomon;
     }
 
     if ((mons[montype].mlet == S_EEL && !IS_POOL(levl[x][y].typ)) 
-		|| (mons[montype].mlet == S_TROLL && ((uwep && uwep->oartifact == ART_TROLLSBANE) || (uarms && uarms->oartifact == ART_TROLLSBANE)))
 		|| item_prevents_revival(montype)) 
 	{
         if (by_hero && cansee(x, y))
@@ -1505,6 +1506,40 @@ int montype;
 	//Add then extrinsics from all carried items
 	for (uitem = invent; uitem; uitem = uitem->nobj)
 	{
+		if (uitem->oartifact && artifact_has_flag(uitem, AF_PREVENTS_REVIVAL_OF_MON))
+		{
+			if (artifact_has_flag(uitem, AF_DFLAG1))
+			{
+				if (mons[montype].mflags1 & artilist[uitem->oartifact].mtype)
+					return TRUE;
+			}
+			else if (artifact_has_flag(uitem, AF_DFLAG2))
+			{
+				if (mons[montype].mflags2 & artilist[uitem->oartifact].mtype)
+					return TRUE;
+			}
+			else if (artifact_has_flag(uitem, AF_DMONS))
+			{
+				if (montype == artilist[uitem->oartifact].mtype)
+					return TRUE;
+			}
+			else if (artifact_has_flag(uitem, AF_DCLAS))
+			{
+				if (mons[montype].mlet == artilist[uitem->oartifact].mtype)
+					return TRUE;
+			}
+			else if (artifact_has_flag(uitem, AF_DALIGN))
+			{
+				if (sgn(mons[montype].maligntyp) != sgn(artilist[uitem->oartifact].mtype))
+					return TRUE;
+			}
+			else
+			{
+				if (montype == artilist[uitem->oartifact].mtype)
+					return TRUE;
+			}
+		}
+
 		if (!object_uses_spellbook_wand_flags_and_properties(uitem))
 		{
 			int otyp = uitem->otyp;
@@ -1562,6 +1597,40 @@ int montype;
 	//Add then extrinsics from all carried items
 	for (uitem = invent; uitem; uitem = uitem->nobj)
 	{
+		if (uitem->oartifact && artifact_has_flag(uitem, AF_PREVENTS_SUMMONING_OF_MON))
+		{
+			if (artifact_has_flag(uitem, AF_DFLAG1))
+			{
+				if (mons[montype].mflags1 & artilist[uitem->oartifact].mtype)
+					return TRUE;
+			}
+			else if (artifact_has_flag(uitem, AF_DFLAG2))
+			{
+				if (mons[montype].mflags2 & artilist[uitem->oartifact].mtype)
+					return TRUE;
+			}
+			else if (artifact_has_flag(uitem, AF_DMONS))
+			{
+				if (montype == artilist[uitem->oartifact].mtype)
+					return TRUE;
+			}
+			else if (artifact_has_flag(uitem, AF_DCLAS))
+			{
+				if (mons[montype].mlet == artilist[uitem->oartifact].mtype)
+					return TRUE;
+			}
+			else if (artifact_has_flag(uitem, AF_DALIGN))
+			{
+				if (sgn(mons[montype].maligntyp) != sgn(artilist[uitem->oartifact].mtype))
+					return TRUE;
+			}
+			else
+			{
+				if (montype == artilist[uitem->oartifact].mtype)
+					return TRUE;
+			}
+		}
+
 		if (!object_uses_spellbook_wand_flags_and_properties(uitem))
 		{
 			int otyp = uitem->otyp;

@@ -398,7 +398,10 @@ boolean
 can_track(ptr)
 register struct permonst *ptr;
 {
-    if ((uwep && uwep->oartifact == ART_EXCALIBUR) || (uarms && uarms->oartifact == ART_EXCALIBUR))
+	/* All monsters can track Excalibur */
+    if ((uwep && uwep->oartifact && artifact_has_flag(uwep, AF_MONSTERS_CAN_TRACK_ARTIFACT)) 
+		|| (uarms && uarms->oartifact && artifact_has_flag(uarms, AF_MONSTERS_CAN_TRACK_ARTIFACT))
+		)
         return TRUE;
     else
         return (boolean) haseyes(ptr);

@@ -2935,7 +2935,7 @@ doeat()
         } else if (!nodelicious) {
             pline("%s%s is delicious!",
                   (obj_is_pname(otmp)
-                   && otmp->oartifact < ART_ORB_OF_DETECTION)
+                   && !any_quest_artifact(otmp))
                       ? ""
                       : "This ",
                   (otmp->oclass == COIN_CLASS)

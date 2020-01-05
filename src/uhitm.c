@@ -213,7 +213,8 @@ struct obj *wep; /* uwep for attack(), null for kick_monster() */
     if (flags.confirm && mtmp->mpeaceful
         && !Confusion && !Hallucination && !Stunned) {
         /* Intelligent chaotic weapons (Stormbringer) want blood */
-        if (wep && wep->oartifact == ART_STORMBRINGER) {
+        if (wep && wep->oartifact && artifact_has_flag(wep, AF_BLOODTHIRSTY)) 
+		{
             override_confirmation = TRUE;
             return FALSE;
         }
@@ -349,8 +350,10 @@ register struct monst *mtmp;
      * you'll usually just swap places if this is a movement command
      */
     /* Intelligent chaotic weapons (Stormbringer) want blood */
-    if (is_safepet(mtmp) && !context.forcefight) {
-        if (!uwep || uwep->oartifact != ART_STORMBRINGER) {
+    if (is_safepet(mtmp) && !context.forcefight) 
+	{
+        if (!uwep || !(uwep->oartifact && artifact_has_flag(uwep, AF_BLOODTHIRSTY))) 
+		{
             /* There are some additional considerations: this won't work
              * if in a shop or Punished or you miss a random roll or
              * if you can walk thru walls and your pet cannot (KAA) or
@@ -416,9 +419,6 @@ register struct monst *mtmp;
         || overexertion())
         goto atk_done;
 
-    //if (u.twoweap && !can_twoweapon())
-    //    untwoweapon();
-
     if (unweapon) {
         unweapon = FALSE;
         if (flags.verbose) {
@@ -479,11 +479,10 @@ int dieroll;
             /* hmon() might destroy weapon; remember aspect for cutworm */
             slice_or_chop = (weapon && (is_blade(weapon) || is_axe(weapon)));
 
-    if (override_confirmation) {
-        /* this may need to be generalized if weapons other than
-           Stormbringer acquire similar anti-social behavior... */
-        if (flags.verbose)
-            Your("bloodthirsty blade attacks!");
+    if (override_confirmation) 
+	{
+        if (flags.verbose && weapon)
+            Your("bloodthirsty %s attacks!", is_blade(weapon) ? "blade" : is_weapon(weapon) ? weapon_type_names[objects[weapon->otyp].oc_subtyp] : "weapon");
     }
 
     if (!*mhit)
@@ -963,7 +962,9 @@ boolean* obj_destroyed;
 				if (!valid_weapon_attack || mon == u.ustuck || u.twoweap
 					/* Cleaver can hit up to three targets at once so don't
 					   let it also hit from behind or shatter foes' weapons */
-					|| (hand_to_hand && obj->oartifact == ART_CLEAVER)) 
+					|| (hand_to_hand && obj->oartifact && artifact_has_flag(obj, AF_HITS_ADJACENT_SQUARES))
+					|| (hand_to_hand && (objects[obj->otyp].oc_aflags & A1_HITS_ADJACENT_SQUARES))
+					)
 				{
 					; /* no special bonuses */
 				}

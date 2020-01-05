@@ -2239,6 +2239,7 @@ register struct obj* obj;
 
 
 		unsigned long aflags = artilist[obj->oartifact].aflags;
+		unsigned long mtype = artilist[obj->oartifact].mtype;
 		if (aflags & AF_BEHEAD)
 		{
 			powercnt++;
@@ -2257,6 +2258,68 @@ register struct obj* obj;
 		{
 			powercnt++;
 			Sprintf(buf, " %2d - Hits also adjacent squares", powercnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+		if (aflags & AF_BLOODTHIRSTY)
+		{
+			powercnt++;
+			Sprintf(buf, " %2d - Bloodthirsty", powercnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+		if (aflags & AF_PREVENTS_REVIVAL_OF_MON)
+		{
+			powercnt++;
+			Sprintf(buf, " %2d - Prevents revival of %s", powercnt,
+				((aflags & AF_DFLAG2) && mtype & M2_ORC) ? "orcs" : 
+				((aflags & AF_DFLAG2) && mtype & M2_ELF) ? "elves" :
+				((aflags & AF_DFLAG2) && mtype & M2_DEMON) ? "demons" :
+				((aflags & AF_DFLAG2) && mtype & M2_UNDEAD) ? "undead" :
+				((aflags & AF_DFLAG2) && mtype & M2_GIANT) ? "giants" :
+				((aflags & AF_DFLAG2) && mtype & M2_WERE) ? "lycanthropes" :
+				((aflags & AF_DCLAS) && mtype == S_TROLL) ? "trolls" :
+				((aflags & AF_DCLAS) && mtype == S_OGRE) ? "ogres" :
+				((aflags & AF_DCLAS) && mtype == S_DRAGON) ? "dragons" :
+				"a specific type of monsters");
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+		if (aflags & AF_PREVENTS_SUMMONING_OF_MON)
+		{
+			powercnt++;
+			Sprintf(buf, " %2d - Prevents summoning by %s", powercnt,
+				((aflags & AF_DFLAG2) && mtype & M2_ORC) ? "orcs" :
+				((aflags & AF_DFLAG2) && mtype & M2_ELF) ? "elves" :
+				((aflags & AF_DFLAG2) && mtype & M2_DEMON) ? "demons" :
+				((aflags & AF_DFLAG2) && mtype & M2_UNDEAD) ? "undead" :
+				((aflags & AF_DFLAG2) && mtype & M2_GIANT) ? "giants" :
+				((aflags & AF_DFLAG2) && mtype & M2_WERE) ? "lycanthropes" :
+				((aflags & AF_DCLAS) && mtype == S_TROLL) ? "trolls" :
+				((aflags & AF_DCLAS) && mtype == S_OGRE) ? "ogres" :
+				((aflags & AF_DCLAS) && mtype == S_DRAGON) ? "dragons" :
+				"a specific type of monsters");
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+		if (aflags & AF_MAGIC_ABSORBING)
+		{
+			powercnt++;
+			Sprintf(buf, " %2d - Magic absorbing", powercnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+		if (aflags & AF_MONSTERS_CAN_TRACK_ARTIFACT)
+		{
+			powercnt++;
+			Sprintf(buf, " %2d - Monsters can track the artifact", powercnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+		if (aflags & AF_ANGERS_DEMONS)
+		{
+			powercnt++;
+			Sprintf(buf, " %2d - Angers demons on sight", powercnt);
 			txt = buf;
 			putstr(datawin, 0, txt);
 		}
@@ -2321,6 +2384,8 @@ register struct obj* obj;
 				Sprintf(buf, " %2d - Warning of the presence of %s %s", powercnt,
 					(context.warntype.obj& M2_ORC) ? "orcs"
 					: (context.warntype.obj & M2_ELF) ? "elves"
+					: (context.warntype.obj & M2_WERE) ? "lycanthropes"
+					: (context.warntype.obj & M2_GIANT) ? "giants"
 					: (context.warntype.obj & M2_DEMON) ? "demons" : something, endbuf);
 				txt = buf;
 				putstr(datawin, 0, txt);

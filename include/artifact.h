@@ -17,7 +17,14 @@
 #define AF_DRLI		0x00000040L  /* drains a level from monsters */
 #define AF_BEHEAD	0x00000400L  /* beheads monsters */
 #define AF_BISECT	0x00000800L  /* bisects monsters */
-#define AF_HITS_ADJACENT_SQUARES			0x00001000L  /* hits adjacent squares (cleaver) */
+#define AF_HITS_ADJACENT_SQUARES			0x00001000L  /* hits adjacent squares (like Cleaver) */
+#define AF_BLOODTHIRSTY						0x00002000L  /* no attack confirmation (like Stormbringer) */
+#define AF_MAGIC_ABSORBING					0x00004000L  /* absorbs curses (like Magicbane) */
+#define AF_PREVENTS_REVIVAL_OF_MON			0x00008000L  /* prevents revival of specified monsters (like Trollsbane) */
+#define AF_PREVENTS_SUMMONING_OF_MON		0x00010000L  /* prevents summoning by specified monsters (like Demonbane) */
+#define AF_MONSTERS_CAN_TRACK_ARTIFACT		0x00020000L  /* Ditto */
+#define AF_ANGERS_DEMONS					0x00040000L  /* Ditto */
+
 #define AF_FAMOUS							0x01000000L  /* Name is always known */
 #define AF_NAME_KNOWN_WHEN_PICKED_UP		0x02000000L  /* Ditto */
 #define AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED	0x04000000L  /* Ditto */

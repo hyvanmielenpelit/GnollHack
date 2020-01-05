@@ -4,6 +4,7 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
+#include "artifact.h"
 
 extern const char *const destroy_strings[][3]; /* from zap.c */
 
@@ -1468,7 +1469,7 @@ unsigned trflags;
             if (Half_physical_damage || Half_spell_damage)
                 dmgval2 += rnd(4);
             /* give Magicbane wielder dose of own medicine */
-            if ((uwep && uwep->oartifact == ART_MAGICBANE) || (uarms && uarms->oartifact == ART_MAGICBANE))
+            if ((uwep && uwep->oartifact && artifact_has_flag(uwep, AF_MAGIC_ABSORBING)) || (uarms && uarms->oartifact && artifact_has_flag(uarms, AF_MAGIC_ABSORBING)))
                 dmgval2 += rnd(4);
             if (Passes_walls)
                 dmgval2 = (dmgval2 + 3) / 4;
@@ -2631,7 +2632,7 @@ register struct monst *mtmp;
                 int dmgval2 = rnd(4);
 
                 if ((otmp = MON_WEP(mtmp)) != 0
-                    && otmp->oartifact == ART_MAGICBANE)
+                    && otmp->oartifact && artifact_has_flag(otmp, AF_MAGIC_ABSORBING))
                     dmgval2 += rnd(4);
                 if (passes_walls(mptr))
                     dmgval2 = (dmgval2 + 3) / 4;

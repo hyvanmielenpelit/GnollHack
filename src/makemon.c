@@ -4,6 +4,7 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
+#include "artifact.h"
 
 #include <ctype.h>
 
@@ -2227,9 +2228,10 @@ unsigned long mmflags;
     if (is_dprince(ptr) && ptr->msound == MS_BRIBE) {
         mtmp->mpeaceful = mtmp->minvis = mtmp->perminvis = 1;
         mtmp->mavenge = 0;
-        if ((uwep && (uwep->oartifact == ART_EXCALIBUR || uwep->oartifact == ART_DEMONBANE))
-			|| (uarms && (uarms->oartifact == ART_EXCALIBUR || uarms->oartifact == ART_DEMONBANE)) )
-            mtmp->mpeaceful = mtmp->mtame = FALSE;
+		if ((uwep && uwep->oartifact && artifact_has_flag(uwep, AF_ANGERS_DEMONS))
+			|| (uarms && uarms->oartifact && artifact_has_flag(uarms, AF_ANGERS_DEMONS))
+			)
+			mtmp->mpeaceful = mtmp->mtame = FALSE;
     }
 #ifndef DCC30_BUG
     if (mndx == PM_LONG_WORM && (mtmp->wormno = get_wormno()) != 0)

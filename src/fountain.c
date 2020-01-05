@@ -301,7 +301,8 @@ drinkfountain()
 			break;
         case 23: /* Water demon */
 			if (zlevel > 12) {
-				if ((uwep && uwep->oartifact == ART_DEMONBANE) || (uarms && uarms->oartifact == ART_DEMONBANE)) {
+				if (item_prevents_summoning(PM_WATER_DEMON)) 
+				{
 					pline("You have a passing sensation of relief.");
 				}
 				else
@@ -469,7 +470,8 @@ register struct obj *obj;
         break;
     case 21: /* Water Demon */
 		if(zlevel > 12) { 
-			if ((uwep && uwep->oartifact == ART_DEMONBANE) || (uarms && uarms->oartifact == ART_DEMONBANE)) {
+			if (item_prevents_summoning(PM_WATER_DEMON))
+			{
 				pline("You have a passing sensation of relief.");
 			}
 			else

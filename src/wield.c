@@ -4,6 +4,7 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
+#include "artifact.h"
 
 /* KMH -- Differences between the three weapon slots.
  *
@@ -1431,7 +1432,7 @@ register int amount;
      * addition adverse reaction on Magicbane whose effects are
      * spe dependent.  Give an obscure clue here.
      */
-    if (weapon->oartifact == ART_MAGICBANE && weapon->spe >= 0) {
+    if (weapon->oartifact && artifact_has_flag(weapon, AF_MAGIC_ABSORBING) && weapon->spe >= 0) {
         Your("right %s %sches!", body_part(HAND),
              (((amount > 1) && (weapon->spe > 1)) ? "flin" : "it"));
     }

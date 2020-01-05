@@ -2152,7 +2152,7 @@ const char *verb;
     /* leave off "your" for most of your artifacts, but prepend
      * "your" for unique objects and "foo of bar" quest artifacts */
     if (!carried(obj) || !obj_is_pname(obj)
-        || obj->oartifact >= ART_ORB_OF_DETECTION) {
+        || any_quest_artifact(obj)) {
         char *outbuf = shk_your(nextobuf(), obj);
         int space_left = BUFSZ - 1 - strlen(outbuf);
 
@@ -2209,7 +2209,7 @@ struct obj *obj;
     /* leave off "your" for most of your artifacts, but prepend
      * "your" for unique objects and "foo of bar" quest artifacts */
     if (!carried(obj) || !obj_is_pname(obj)
-        || obj->oartifact >= ART_ORB_OF_DETECTION) {
+        || any_quest_artifact(obj)) {
         char *outbuf = shk_your(nextobuf(), obj);
         int space_left = BUFSZ - 1 - strlen(outbuf);
 

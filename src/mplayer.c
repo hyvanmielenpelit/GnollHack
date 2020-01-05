@@ -3,6 +3,7 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
+#include "artifact.h"
 
 STATIC_DCL const char *NDECL(dev_name);
 STATIC_DCL void FDECL(get_mplname, (struct monst *, char *));
@@ -277,7 +278,7 @@ register boolean special;
                 && monmightthrowwep(otmp))
                 otmp->quan += (long) rn2(is_spear(otmp) ? 4 : 8);
             /* mplayers knew better than to overenchant Magicbane */
-            if (otmp->oartifact == ART_MAGICBANE)
+            if (otmp->oartifact && artifact_has_flag(otmp, AF_MAGIC_ABSORBING))
                 otmp->spe = rnd(4);
             (void) mpickobj(mtmp, otmp);
         }

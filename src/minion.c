@@ -4,6 +4,7 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
+#include "artifact.h"
 
 void
 newemin(mtmp)
@@ -56,10 +57,12 @@ struct monst *mon;
     aligntyp atyp;
     struct monst *mtmp;
 
-    if (mon) {
+    if (mon) 
+	{
         ptr = mon->data;
 
-        if (((uwep && uwep->oartifact == ART_DEMONBANE) || (uarms && uarms->oartifact == ART_DEMONBANE)) && is_demon(ptr)) {
+        if (item_prevents_summoning(mon->mnum)) 
+		{
             if (canseemon(mon))
                 pline("%s looks puzzled for a moment.", Monnam(mon));
             return 0;
@@ -525,8 +528,10 @@ register struct monst *mtmp;
 {
     long cash, demand, offer;
 
-    if ((uwep && (uwep->oartifact == ART_EXCALIBUR || uwep->oartifact == ART_DEMONBANE))
-		|| (uarms && (uarms->oartifact == ART_EXCALIBUR || uarms->oartifact == ART_DEMONBANE))) {
+	if ((uwep && uwep->oartifact && artifact_has_flag(uwep, AF_ANGERS_DEMONS))
+		|| (uarms && uarms->oartifact && artifact_has_flag(uarms, AF_ANGERS_DEMONS))
+		) 
+	{
         pline("%s looks very angry.", Amonnam(mtmp));
         mtmp->mpeaceful = mtmp->mtame = 0;
 		if (!mtmp->mtame)
