@@ -655,7 +655,7 @@ struct attack *uattk;
 		int dieroll = rnd(20);
 		int mhit = (tmp > dieroll || u.uswallow);
 
-		if (uwep && uwep->oartifact && artifact_has_flag(uwep, AF_HITS_ADJACENT_SQUARES)
+		if (uwep && ((objects[uwep->otyp].oc_aflags & A1_HITS_ADJACENT_SQUARES) || (uwep->oartifact && artifact_has_flag(uwep, AF_HITS_ADJACENT_SQUARES)))
 			&& !u.uswallow && !u.ustuck && !NODIAG(u.umonnum))
 		{
 			malive = hitum_cleave(mon, uattk, uwep);
@@ -712,7 +712,7 @@ struct attack *uattk;
 				&armorpenalty);
 			int dieroll = rnd(20);
 			int mhit = (tmp > dieroll || u.uswallow);
-			if (uarms && uarms->oartifact && artifact_has_flag(uarms, AF_HITS_ADJACENT_SQUARES)
+			if (uarms && ((objects[uarms->otyp].oc_aflags & A1_HITS_ADJACENT_SQUARES) || (uarms->oartifact && artifact_has_flag(uarms, AF_HITS_ADJACENT_SQUARES)))
 				&& !u.uswallow && !u.ustuck && !NODIAG(u.umonnum))
 			{
 				malive = hitum_cleave(mon, uattk, uarms);

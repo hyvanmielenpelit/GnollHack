@@ -464,16 +464,16 @@ struct objclass {
 #define A1_LEVEL_DRAIN_DISRESPECTS_TARGETS					0x00080000  
 #define A1_LEVEL_DRAIN_DISRESPECTS_CHARACTERS				0x00100000  
 
-#define A1_STUN												0x00200000  /* stuns target */
-#define A1_STUN_DISRESPECTS_TARGETS							0x00400000  
-#define A1_STUN_DISRESPECTS_CHARACTERS						0x00800000  
+/* Extra weapon options */
+#define A1_STUN												0x00200000  /* stuns target, not implemented */
+#define A1_HITS_ADJACENT_SQUARES							0x00400000  /* like Cleaver */
+/* free bit*/
 
+/* General */
 #define A1_MAGIC_RESISTANCE_PROTECTS						0x01000000
 #define A1_BYPASSES_MC										0x02000000	/* No MC check */  
-
 #define A1_EXTRA_DAMAGE_DISRESPECTS_TARGETS					0x04000000  
 #define A1_EXTRA_DAMAGE_DISRESPECTS_CHARACTERS				0x08000000  
-
 #define A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA					0x10000000 /* abilities such as wounding and life leech are based on full caused damage, not just extra damage */
 #define A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS			0x20000000
 #define A1_ITEM_VANISHES_ON_HIT								0x40000000
