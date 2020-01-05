@@ -109,7 +109,7 @@ struct monst *mon;
         || ptr == &mons[PM_DEATH] || is_vampshifter(mon))
         return TRUE;
     wep = (mon == &youmonst) ? uwep : MON_WEP(mon);
-    return (boolean) (wep && wep->oartifact && artilist[wep->oartifact].defn == DRAIN_RES);
+    return (boolean) (wep && wep->oartifact && artilist[wep->oartifact].worn_prop == DRAIN_RES);
 }
 
 /* True if monster is magic resistant */
@@ -127,7 +127,7 @@ struct monst *mon;
 
 	/* check for magic resistance granted by wielded weapon */
     o = is_you ? uwep : MON_WEP(mon);
-    if (o && o->oartifact && artilist[o->oartifact].defn == ANTIMAGIC)
+    if (o && o->oartifact && artilist[o->oartifact].worn_prop == ANTIMAGIC)
         return TRUE;
     /* check for magic resistance granted by worn or carried items */
     o = is_you ? invent : mon->minvent;
@@ -138,7 +138,7 @@ struct monst *mon;
     for (; o; o = o->nobj)
         if (((o->owornmask & slotmask) != 0L
              && (objects[o->otyp].oc_oprop == ANTIMAGIC || objects[o->otyp].oc_oprop2 == ANTIMAGIC || objects[o->otyp].oc_oprop3 == ANTIMAGIC))
-            || (o->oartifact && artilist[o->oartifact].cary == ANTIMAGIC))
+            || (o->oartifact && artilist[o->oartifact].carried_prop == ANTIMAGIC))
             return TRUE;
     return FALSE;
 }
@@ -164,7 +164,7 @@ struct monst *mon;
         || dmgtype_fromattack(ptr, AD_BLND, AT_GAZE))
         return TRUE;
     o = is_you ? uwep : MON_WEP(mon);
-    if (o && o->oartifact && artilist[o->oartifact].defn == FLASH_RES)
+    if (o && o->oartifact && artilist[o->oartifact].worn_prop == FLASH_RES)
         return TRUE;
     o = is_you ? invent : mon->minvent;
     slotmask = W_ARMOR | W_ACCESSORY;
@@ -176,10 +176,10 @@ struct monst *mon;
              && (
 				  objects[o->otyp].oc_oprop == BLINDED || objects[o->otyp].oc_oprop2 == BLINDED || objects[o->otyp].oc_oprop3 == BLINDED
 				  || objects[o->otyp].oc_oprop == FLASH_RES || objects[o->otyp].oc_oprop2 == FLASH_RES || objects[o->otyp].oc_oprop3 == FLASH_RES
-				  || (o->oartifact && artilist[o->oartifact].defn == FLASH_RES)
+				  || (o->oartifact && artilist[o->oartifact].worn_prop == FLASH_RES)
 				)
 			)
-            || (o->oartifact && artilist[o->oartifact].cary == FLASH_RES))
+            || (o->oartifact && artilist[o->oartifact].carried_prop == FLASH_RES))
             return TRUE;
     return FALSE;
 }

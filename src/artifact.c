@@ -561,8 +561,8 @@ long wp_mask;
     if (!oart)
         return;
 
-    /* effects from the defn field */
-	proptyp = (wp_mask != W_ARTIFACT_CARRIED) ? oart->defn : oart->cary;
+    /* effects from the worn_prop field */
+	proptyp = (wp_mask != W_ARTIFACT_CARRIED) ? oart->worn_prop : oart->carried_prop;
 
 	if(proptyp > 0 && proptyp <= LAST_PROP)
 	{
@@ -721,8 +721,8 @@ int dtyp;
     if (dtyp == AD_PHYS)
         return FALSE; /* nothing is immune to phys dmg */
     return (boolean) (weap->attk.adtyp == dtyp
-                      || (weap->defn && prop_to_adtyp(weap->defn) == dtyp)
-                      || (weap->cary && prop_to_adtyp(weap->cary) == dtyp)
+                      || (weap->worn_prop && prop_to_adtyp(weap->worn_prop) == dtyp)
+                      || (weap->carried_prop && prop_to_adtyp(weap->carried_prop) == dtyp)
 		);
 }
 
@@ -750,9 +750,6 @@ struct monst *mtmp;
 {
     struct permonst *ptr;
     boolean yours;
-
-    if (!(weap->aflags & (AF_DBONUS | AF_ATTK)))
-        return (weap->attk.adtyp == AD_PHYS);
 
     yours = (mtmp == &youmonst);
     ptr = mtmp->data;
@@ -782,15 +779,8 @@ struct monst *mtmp;
                      : (ptr->maligntyp == A_NONE
                         || sgn(ptr->maligntyp) != weap->alignment);
     } 
-	else if (weap->aflags & AF_ATTK) 
+	else
 	{
-        struct obj *defending_weapon = (yours ? uwep : MON_WEP(mtmp));
-
-		/*
-        if (defending_weapon && defending_weapon->oartifact
-            && defends((int) weap->attk.adtyp, defending_weapon))
-            return FALSE;
-		*/
         switch (weap->attk.adtyp) 
 		{
         case AD_FIRE:
@@ -814,10 +804,10 @@ struct monst *mtmp;
             return !(yours ? Drain_resistance : resists_drli(mtmp));
         case AD_STON:
             return !(yours ? Stone_resistance : resists_ston(mtmp));
-        default:
-            impossible("Weird weapon special attack.");
-        }
-    }
+		case AD_PHYS:
+			return 1;
+		}
+	}
     return 0;
 }
 
@@ -2672,7 +2662,7 @@ int prop_index;
 
     for (obj = invent; obj; obj = obj->nobj) 
 	{
-		if ((wornbits & W_ARTIFACT_CARRIED) && obj->oartifact && (artilist[obj->oartifact].cary == prop_index || (artilist[obj->oartifact].cspfx & spfx)))
+		if ((wornbits & W_ARTIFACT_CARRIED) && obj->oartifact && (artilist[obj->oartifact].carried_prop == prop_index || (artilist[obj->oartifact].cspfx & spfx)))
 			return obj;
 
 		if ((wornbits & W_ARTIFACT_INVOKED) && obj->oartifact && artilist[obj->oartifact].inv_prop == prop_index && obj->invokeon)
@@ -3037,7 +3027,7 @@ boolean drop_untouchable;
                          || (Is_container(obj) && Has_contents(obj)))));
 
     if ((art = get_artifact(obj)) != 0) {
-        carryeffect = (art->cary || art->cspfx);
+        carryeffect = (art->carried_prop || art->cspfx);
         invoked = (art->inv_prop > 0 && art->inv_prop <= LAST_PROP
                    && (u.uprops[art->inv_prop].extrinsic & W_ARTIFACT_INVOKED) != 0L);
     } else {

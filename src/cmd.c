@@ -2231,7 +2231,7 @@ int propindx; /* index of a property which can be conveyed by worn item */
 		if (carried_item_is_giving_power(o, propindx))
 			return TRUE;
 
-		if (o->oartifact && (artilist[o->oartifact].cary == propindx || (artilist[o->oartifact].cspfx & spfx)))
+		if (o->oartifact && (artilist[o->oartifact].carried_prop == propindx || (artilist[o->oartifact].cspfx & spfx)))
 			return TRUE;
 
 		if (o->oartifact && artilist[o->oartifact].inv_prop == propindx && o->invokeon)

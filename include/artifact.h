@@ -12,33 +12,39 @@
 #define AF_RESTR	0x00000002L  /* item is restricted - can't be named */
 #define AF_INTEL	0x00000004L  /* item is self-willed - intelligent */
 #define AF_SPEAK	0x00000008L  /* item can speak (finally implemented) */
-#define AF_ATTK		0x00000010L  /* item has a special attack (attk) */
-#define AF_DEFN		0x00000020L  /* item has a special defence (defn) */
-#define AF_DRLI		0x00000040L  /* drains a level from monsters */
-#define AF_BEHEAD	0x00000400L  /* beheads monsters */
-#define AF_BISECT	0x00000800L  /* bisects monsters */
-#define AF_HITS_ADJACENT_SQUARES			0x00001000L  /* hits adjacent squares (like Cleaver) */
-#define AF_BLOODTHIRSTY						0x00002000L  /* no attack confirmation (like Stormbringer) */
-#define AF_MAGIC_ABSORBING					0x00004000L  /* absorbs curses (like Magicbane) */
-#define AF_PREVENTS_REVIVAL_OF_MON			0x00008000L  /* prevents revival of specified monsters (like Trollsbane) */
-#define AF_PREVENTS_SUMMONING_OF_MON		0x00010000L  /* prevents summoning by specified monsters (like Demonbane) */
-#define AF_MONSTERS_CAN_TRACK_ARTIFACT		0x00020000L  /* Ditto */
-#define AF_ANGERS_DEMONS					0x00040000L  /* Ditto */
-
-#define AF_FAMOUS							0x01000000L  /* Name is always known */
-#define AF_NAME_KNOWN_WHEN_PICKED_UP		0x02000000L  /* Ditto */
-#define AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED	0x04000000L  /* Ditto */
-#define AF_NAME_KNOWN_WHEN_INVOKED			0x08000000L  /* Ditto */
-#define AF_READABLE	0x40000000L  /* readable even if base item is not */
-#define AF_NO_WISH	0x80000000L  /* not wishable, not that for artifacts the base item's no wish does not apply */
+#define AF_DRLI		0x00000010L  /* drains a level from monsters */
+#define AF_BEHEAD	0x00000020L  /* beheads monsters */
+#define AF_BISECT	0x00000040L  /* bisects monsters */
+#define AF_HITS_ADJACENT_SQUARES			0x00000080L  /* hits adjacent squares (like Cleaver) */
+#define AF_BLOODTHIRSTY						0x00000100L  /* no attack confirmation (like Stormbringer) */
+#define AF_MAGIC_ABSORBING					0x00000200L  /* absorbs curses (like Magicbane) */
+#define AF_PREVENTS_REVIVAL_OF_MON			0x00000400L  /* prevents revival of specified monsters (like Trollsbane) */
+#define AF_PREVENTS_SUMMONING_OF_MON		0x00000800L  /* prevents summoning by specified monsters (like Demonbane) */
+#define AF_MONSTERS_CAN_TRACK_ARTIFACT		0x00001000L  /* Ditto */
+#define AF_ANGERS_DEMONS					0x00002000L  /* Ditto */
+/* free bit */
+/* free bit */
+/* free bit */
+/* free bit */
+/* free bit */
+/* free bit */
 
 /* monster class flags and mask here */
-#define AF_DMONS	0x00100000L  /* attack bonus on one monster type */
-#define AF_DCLAS	0x00200000L  /* attack bonus on monsters w/ symbol mtype */
-#define AF_DFLAG1	0x00400000L  /* attack bonus on monsters w/ mflags1 flag */
-#define AF_DFLAG2	0x00800000L  /* attack bonus on monsters w/ mflags2 flag */
-#define AF_DALIGN	0x01000000L  /* attack bonus on non-aligned monsters  */
-#define AF_DBONUS	0x01F00000L  /* attack bonus mask */
+#define AF_DMONS							0x00100000L  /* attack bonus on one monster type */
+#define AF_DCLAS							0x00200000L  /* attack bonus on monsters w/ symbol mtype */
+#define AF_DFLAG1							0x00400000L  /* attack bonus on monsters w/ mflags1 flag */
+#define AF_DFLAG2							0x00800000L  /* attack bonus on monsters w/ mflags2 flag */
+#define AF_DALIGN							0x01000000L  /* attack bonus on non-aligned monsters  */
+#define AF_DBONUS							0x01F00000L  /* attack bonus mask */
+
+#define AF_FAMOUS							0x02000000L  /* Name is always known */
+#define AF_NAME_KNOWN_WHEN_PICKED_UP		0x04000000L  /* Ditto */
+#define AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED	0x08000000L  /* Ditto */
+#define AF_NAME_KNOWN_WHEN_INVOKED			0x10000000L  /* Ditto */
+/* free bit */
+#define AF_READABLE							0x40000000L  /* readable even if base item is not */
+#define AF_NO_WISH							0x80000000L  /* not wishable, not that for artifacts the base item's no wish does not apply */
+
 
 /* wielded or carried special effects */
 #define SPFX_NONE				0x00000000L  /* No special effects, just a bonus */
@@ -77,8 +83,9 @@ struct artifact {
 	int tohit_diesize;
 	int tohit_plus;
 	struct attack attk;
-	int defn, cary;		/* property conferred when wielded/worn or carried */
-    int inv_prop;       /* property obtained by invoking artifact */
+	int worn_prop;		/* property conferred when wielded/worn */
+	int carried_prop;	/* property conferred when carried */
+	int inv_prop;       /* property obtained by invoking artifact */
     aligntyp alignment; /* alignment of bequeathing gods */
     short role;         /* character role associated with */
     short race;         /* character race associated with */

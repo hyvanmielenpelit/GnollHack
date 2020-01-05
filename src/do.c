@@ -2184,10 +2184,10 @@ register struct obj* obj;
 			putstr(datawin, 0, txt);
 		}
 
-		if (artilist[obj->oartifact].defn > 0)
+		if (artilist[obj->oartifact].worn_prop > 0)
 		{
 			char defensetext[BUFSZ] = "";
-			strcpy(defensetext, get_property_name(artilist[obj->oartifact].defn));
+			strcpy(defensetext, get_property_name(artilist[obj->oartifact].worn_prop));
 			*defensetext = highc(*defensetext);
 
 			powercnt++;
@@ -2198,10 +2198,10 @@ register struct obj* obj;
 			txt = buf;
 			putstr(datawin, 0, txt);
 		}
-		if (artilist[obj->oartifact].cary > 0)
+		if (artilist[obj->oartifact].carried_prop > 0)
 		{
 			char defensetext[BUFSZ] = "";
-			strcpy(defensetext, get_property_name(artilist[obj->oartifact].cary));
+			strcpy(defensetext, get_property_name(artilist[obj->oartifact].carried_prop));
 			*defensetext = highc(*defensetext);
 
 			powercnt++;

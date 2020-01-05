@@ -48,7 +48,7 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
       NON_PM, NON_PM, 0L, NO_COLOR, NO_COLOR),
 
     A("Excalibur", "gold-hilted runed long sword", LONG_SWORD, LONG_SWORD, 
-  	  AF_NOGEN | AF_RESTR | AF_DEFN | AF_INTEL | AF_FAMOUS | AF_DEFN | AF_MONSTERS_CAN_TRACK_ARTIFACT | AF_ANGERS_DEMONS,
+  	  AF_NOGEN | AF_RESTR | AF_INTEL | AF_FAMOUS | AF_MONSTERS_CAN_TRACK_ARTIFACT | AF_ANGERS_DEMONS,
 	  (SPFX_SEEK | SPFX_SEARCH), SPFX_NONE, 0, 
 	  1, 5, 0, PHYS(1, 20), DRAIN_RES, NO_POWER, 0, A_LAWFUL, PM_KNIGHT, NON_PM, 4000L, 
 	  NO_COLOR, NO_COLOR),
@@ -57,7 +57,7 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
      *      providing 8 + CON bonus more.
      */
     A("Stormbringer", "black runesword", RUNESWORD, ELVEN_BROADSWORD, 
-		(AF_RESTR | AF_ATTK | AF_DEFN | AF_INTEL | AF_DRLI | AF_NAME_KNOWN_WHEN_PICKED_UP | AF_BLOODTHIRSTY),
+		(AF_RESTR | AF_INTEL | AF_DRLI | AF_NAME_KNOWN_WHEN_PICKED_UP | AF_BLOODTHIRSTY),
 		SPFX_NONE, SPFX_NONE, 0, 
 		1, 5, 0, DRLI(1, 5), DRAIN_RES, NO_POWER, NO_POWER, A_CHAOTIC, NON_PM, NON_PM, 8000L,
 		NO_COLOR, CLR_BLACK),
@@ -66,7 +66,7 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
      *      if the wielder is a Valkyrie wearing Gauntlets of Power.
      */
     A("Mjollnir", "shining runed war hammer", HEAVY_WAR_HAMMER, WAR_HAMMER, /* Mjo:llnir */
-	   (AF_RESTR | AF_ATTK | AF_FAMOUS), SPFX_NONE, SPFX_NONE, 0, 
+	   (AF_RESTR | AF_FAMOUS), SPFX_NONE, SPFX_NONE, 0, 
 	   1, 5, 0, ELEC(1, 30), NO_POWER, NO_POWER, NO_POWER,
       A_NEUTRAL, PM_VALKYRIE, NON_PM, 4000L, 
 	  NO_COLOR, NO_COLOR),
@@ -104,16 +104,16 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
      *      Magicbane is a bit different!  Its magic fanfare
      *      unbalances victims in addition to doing some damage.
      */
-    A("Magicbane", "runed athame", ATHAME, ATHAME, (AF_RESTR | AF_ATTK | AF_DEFN | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED | AF_MAGIC_ABSORBING), 
+    A("Magicbane", "runed athame", ATHAME, ATHAME, (AF_RESTR | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED | AF_MAGIC_ABSORBING), 
 		SPFX_NONE, SPFX_NONE, 0,
 		1, 3, 0, STUN(1, 10), ANTIMAGIC, NO_POWER, NO_POWER, A_NEUTRAL, PM_WIZARD, NON_PM, 3500L, 
 		NO_COLOR, NO_COLOR),
 
-    A("Frost Brand", "iron-hilted runed long sword", LONG_SWORD, LONG_SWORD, (AF_RESTR | AF_ATTK | AF_DEFN | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED), SPFX_NONE, SPFX_NONE, 0,
+    A("Frost Brand", "iron-hilted runed long sword", LONG_SWORD, LONG_SWORD, (AF_RESTR | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED), SPFX_NONE, SPFX_NONE, 0,
 	  1, 5, 0, COLD(ARTDMG_DOUBLE_DAMAGE, 0), COLD_RES, NO_POWER, NO_POWER, A_NONE, NON_PM, NON_PM, 3000L,
       NO_COLOR, CLR_WHITE),
 
-    A("Fire Brand", "copper-hilted runed long sword", LONG_SWORD, LONG_SWORD, (AF_RESTR | AF_ATTK | AF_DEFN | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED), SPFX_NONE, SPFX_NONE, 0,
+    A("Fire Brand", "copper-hilted runed long sword", LONG_SWORD, LONG_SWORD, (AF_RESTR | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED), SPFX_NONE, SPFX_NONE, 0,
 	  1, 5, 0, FIRE(ARTDMG_DOUBLE_DAMAGE, 0), FIRE_RES, NO_POWER, NO_POWER, A_NONE, NON_PM, NON_PM, 3000L,
       NO_COLOR, CLR_RED),
 
@@ -222,7 +222,7 @@ A("The Palantir of Westernesse",        CRYSTAL_BALL, CRYSTAL_BALL,
 #endif
 
     A("The Staff of Aesculapius", "serpent-entwined quarterstaff", STAFF_OF_LIFE, QUARTERSTAFF,
-		(AF_NOGEN | AF_RESTR | AF_ATTK | AF_INTEL | AF_DRLI | AF_FAMOUS), SPFX_REGEN, SPFX_NONE, 0, 
+		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_DRLI | AF_FAMOUS), SPFX_REGEN, SPFX_NONE, 0, 
 		0, 0, 0, DRLI(0,0), DRAIN_RES, NO_POWER, HEALING, A_NEUTRAL, PM_HEALER, NON_PM, 5000L, 
 		NO_COLOR, CLR_MAGENTA),
 
@@ -260,7 +260,7 @@ A("The Palantir of Westernesse",        CRYSTAL_BALL, CRYSTAL_BALL,
 		NO_COLOR, CLR_MAGENTA),
 
     A("The Platinum Yendorian Express Card", "black credit card", CREDIT_CARD, CREDIT_CARD,
-		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_DEFN | AF_FAMOUS), SPFX_NONE, (SPFX_ESP | SPFX_HSPDAM), 0, 
+		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_FAMOUS), SPFX_NONE, (SPFX_ESP | SPFX_HSPDAM), 0, 
 		0, 0, 0, NO_ATTK, NO_POWER, ANTIMAGIC, CHARGE_OBJ, A_NEUTRAL, PM_TOURIST, NON_PM, 7000L, 
 		NO_COLOR, CLR_BLACK),
 
