@@ -82,9 +82,7 @@ E boolean FDECL(artifact_confers_unluck, (struct obj*));
 E boolean FDECL(arti_reflects, (struct obj *));
 E boolean FDECL(shade_glare, (struct obj *));
 E boolean FDECL(restrict_name, (struct obj *, const char *));
-E boolean FDECL(defends, (int, struct obj *));
-E boolean FDECL(defends_when_carried, (int, struct obj *));
-E void FDECL(set_artifact_intrinsic, (struct obj *, BOOLEAN_P, long));
+E void FDECL(set_artifact_intrinsic, (struct obj *, long));
 E int FDECL(touch_artifact, (struct obj *, struct monst *));
 E int FDECL(spec_abon, (struct obj *, struct monst *));
 E int FDECL(spec_dbon, (struct obj *, struct monst *, int));
@@ -100,7 +98,7 @@ E boolean FDECL(artifact_light, (struct obj *));
 E long FDECL(spec_m2, (struct obj *));
 E boolean FDECL(artifact_has_invprop, (struct obj *, UCHAR_P));
 E long FDECL(arti_cost, (struct obj *));
-E struct obj *FDECL(what_gives, (long *));
+E struct obj *FDECL(what_gives, (int));
 E const char *FDECL(glow_color, (int));
 E const char *FDECL(glow_verb, (int, BOOLEAN_P));
 E void FDECL(Sting_effects, (struct obj*, int));
@@ -110,6 +108,13 @@ E void FDECL(retouch_equipment, (int));
 E void NDECL(mkot_trap_warn);
 E boolean FDECL(is_magic_key, (struct monst *, struct obj *));
 E struct obj *FDECL(has_magic_key, (struct monst *));
+E boolean FDECL(carried_item_is_giving_power, (struct obj*, int));
+E boolean FDECL(worn_item_is_giving_power, (struct obj*, int));
+E unsigned long FDECL(prop_to_spfx, (int));
+E int FDECL(spfx_to_prop, (unsigned long));
+E uchar FDECL(prop_to_adtyp, (int));
+E int FDECL(adtyp_to_prop, (uchar));
+
 
 /* ### attrib.c ### */
 
@@ -265,6 +270,8 @@ E void NDECL(sanity_check);
 E char* FDECL(key2txt, (UCHAR_P, char *));
 E char FDECL(yn_function, (const char *, const char *, CHAR_P));
 E boolean FDECL(paranoid_query, (BOOLEAN_P, const char *));
+E boolean object_stats_known(struct obj*);
+
 
 /* ### dbridge.c ### */
 
@@ -2627,6 +2634,7 @@ E void FDECL(timer_stats, (const char *, char *, long *, long *));
 E void FDECL(relink_timers, (BOOLEAN_P));
 E int NDECL(wiz_timeout_queue);
 E void NDECL(timer_sanity_check);
+E const char* FDECL(get_property_name, (int));
 
 /* ### topten.c ### */
 

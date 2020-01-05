@@ -68,7 +68,7 @@ enum prop_types {
     TELEPORT_CONTROL  = 46,
     LEVITATION        = 47,
     FLYING            = 48,
-    WWALKING          = 49,
+    WATER_WALKING     = 49,
     SWIMMING          = 50,
     MAGICAL_BREATHING = 51,
     PASSES_WALLS      = 52,
@@ -122,7 +122,8 @@ enum prop_types {
 	MAGICAL_SHIELDING = 98,
 	MAGICAL_BARKSKIN  = 99,
 	MAGICAL_STONESKIN = 100,
-	LAUGHING		  = 101 //KEEP THIS LAST
+	XRAY_VISION		  = 101,
+	LAUGHING		  = 102 //KEEP THIS LAST
 };
 #define LAST_PROP (LAUGHING)
 

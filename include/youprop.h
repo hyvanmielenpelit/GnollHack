@@ -229,6 +229,10 @@
 #define EBlind_telepat u.uprops[BLIND_TELEPAT].extrinsic
 #define Blind_telepat (HBlind_telepat || EBlind_telepat)
 
+#define HXRay_vision u.uprops[XRAY_VISION].intrinsic
+#define EXRay_vision u.uprops[XRAY_VISION].extrinsic
+#define XRay_vision (HXRay_vision || EXRay_vision)
+
 #define HWarning u.uprops[WARNING].intrinsic
 #define EWarning u.uprops[WARNING].extrinsic
 #define Warning (HWarning || EWarning)
@@ -387,8 +391,8 @@
      && !BFlying)
 /* May touch surface; does not override any others */
 
-#define HWwalking u.uprops[WWALKING].intrinsic
-#define EWwalking u.uprops[WWALKING].extrinsic
+#define HWwalking u.uprops[WATER_WALKING].intrinsic
+#define EWwalking u.uprops[WATER_WALKING].extrinsic
 #define Wwalking ((EWwalking || HWwalking) && !Is_waterlevel(&u.uz))
 /* Don't get wet, can't go under water; overrides others except levitation */
 /* Wwalking is meaningless on water level */

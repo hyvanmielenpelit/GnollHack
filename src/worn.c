@@ -555,10 +555,11 @@ boolean on, silently;
 		case DETECT_MONSTERS:
 		case BLIND_TELEPAT:
 		case TELEPAT:
-            break;
+		case XRAY_VISION:
+			break;
         /* properties which should have an effect but aren't implemented */
         case LEVITATION:
-        case WWALKING:
+        case WATER_WALKING:
             break;
         /* properties which maybe should have an effect but don't */
         case DISPLACED:

@@ -19,14 +19,10 @@ extern boolean notonhead; /* for long worms */
 #define get_artifact(o) \
     (((o) && (o)->oartifact) ? &artilist[(int) (o)->oartifact] : 0)
 
-STATIC_DCL boolean FDECL(bane_applies, (const struct artifact *,
-                                        struct monst *));
+STATIC_DCL boolean FDECL(bane_applies, (const struct artifact *, struct monst *));
 STATIC_DCL int FDECL(spec_applies, (const struct artifact *, struct monst *));
 STATIC_DCL int FDECL(arti_invoke, (struct obj *));
-STATIC_DCL boolean FDECL(Mb_hit, (struct monst * magr, struct monst *mdef,
-                                struct obj *, int *, int, BOOLEAN_P, char *));
-STATIC_DCL unsigned long FDECL(abil_to_spfx, (long *));
-STATIC_DCL uchar FDECL(abil_to_adtyp, (long *));
+STATIC_DCL boolean FDECL(Mb_hit, (struct monst * magr, struct monst *mdef, struct obj *, int *, int, BOOLEAN_P, char *));
 STATIC_DCL int FDECL(glow_strength, (int));
 STATIC_DCL boolean FDECL(untouchable, (struct obj *, BOOLEAN_P));
 STATIC_DCL int FDECL(count_surround_traps, (int, int));
@@ -50,7 +46,7 @@ static boolean artiexist[1 + NROFARTIFACTS + 1];
 STATIC_OVL xchar artidisco[NROFARTIFACTS];
 
 STATIC_DCL void NDECL(hack_artifacts);
-STATIC_DCL boolean FDECL(attacks, (int, struct obj *));
+STATIC_DCL boolean FDECL(artifact_attack_type, (int, struct obj *));
 
 /* handle some special cases; must be called after u_init() */
 STATIC_OVL void
@@ -536,7 +532,7 @@ const char *name;
 }
 
 STATIC_OVL boolean
-attacks(adtyp, otmp)
+artifact_attack_type(adtyp, otmp)
 int adtyp;
 struct obj *otmp;
 {
@@ -547,237 +543,58 @@ struct obj *otmp;
     return FALSE;
 }
 
-boolean
-defends(adtyp, otmp)
-int adtyp;
-struct obj *otmp;
-{
-    register const struct artifact *weap;
-
-    if ((weap = get_artifact(otmp)) != 0)
-        return (boolean) (weap->defn.adtyp == adtyp);
-    return FALSE;
-}
-
-/* used for monsters */
-boolean
-defends_when_carried(adtyp, otmp)
-int adtyp;
-struct obj *otmp;
-{
-    register const struct artifact *weap;
-
-    if ((weap = get_artifact(otmp)) != 0)
-        return (boolean) (weap->cary.adtyp == adtyp);
-    return FALSE;
-}
 
 /*
  * a potential artifact has just been worn/wielded/picked-up or
  * unworn/unwielded/dropped.  Pickup/drop only set/reset the W_ARTIFACT_CARRIED mask.
  */
 void
-set_artifact_intrinsic(otmp, on, wp_mask)
+set_artifact_intrinsic(otmp, wp_mask)
 struct obj *otmp;
-boolean on;
 long wp_mask;
 {
-    long *mask = 0;
-    register const struct artifact *art, *oart = get_artifact(otmp);
-    register struct obj *obj;
-    register uchar dtyp;
+    long *propptr = 0;
+    register const struct artifact *oart = get_artifact(otmp);
+    register uchar proptyp;
     register long spfx;
 
     if (!oart)
         return;
 
     /* effects from the defn field */
-    dtyp = (wp_mask != W_ARTIFACT_CARRIED) ? oart->defn.adtyp : oart->cary.adtyp;
+	proptyp = (wp_mask != W_ARTIFACT_CARRIED) ? oart->defn : oart->cary;
 
-    if (dtyp == AD_FIRE)
-        mask = &EFire_resistance;
-    else if (dtyp == AD_COLD)
-        mask = &ECold_resistance;
-    else if (dtyp == AD_DRAY)
-        mask = &EDeath_resistance;
-	else if (dtyp == AD_ELEC)
-		mask = &EShock_resistance;
-	else if (dtyp == AD_MAGM)
-        mask = &EAntimagic;
-    else if (dtyp == AD_DISN)
-        mask = &EDisint_resistance;
-    else if (dtyp == AD_DRST)
-        mask = &EPoison_resistance;
-    else if (dtyp == AD_DRLI)
-        mask = &EDrain_resistance;
-	else if (dtyp == AD_WERE)
-		mask = &ELycanthropy_resistance;
-	else if (dtyp == AD_BLND)
-		mask = &EFlash_resistance;
-	else if (dtyp == AD_DISE)
-		mask = &ESick_resistance;
+	if(proptyp > 0 && proptyp <= LAST_PROP)
+	{
+		propptr = &u.uprops[proptyp].extrinsic;
+		*propptr |= wp_mask;
+	}
 
-    if (mask && wp_mask == W_ARTIFACT_CARRIED && !on) {
-        /* find out if some other artifact also confers this intrinsic;
-           if so, leave the mask alone */
-        for (obj = invent; obj; obj = obj->nobj) {
-            if (obj != otmp && obj->oartifact) {
-                art = get_artifact(obj);
-                if (art && art->cary.adtyp == dtyp) {
-                    mask = (long *) 0;
-                    break;
-                }
-            }
-        }
-    }
-    if (mask) {
-        if (on)
-            *mask |= wp_mask;
-        else
-            *mask &= ~wp_mask;
-    }
-
-    /* intrinsics from the spfx field; there could be more than one */
+    /* intrinsics from the spfx and cspfx fields; there could be more than one */
     spfx = (wp_mask != W_ARTIFACT_CARRIED) ? oart->spfx : oart->cspfx;
 
-#if 0
-    if (spfx && wp_mask == W_ARTIFACT_CARRIED && !on) {
-        /* don't change any spfx also conferred by other artifacts */
-        for (obj = invent; obj; obj = obj->nobj)
-            if (obj != otmp && obj->oartifact) {
-                art = get_artifact(obj);
-                if (art)
-                    spfx &= ~art->cspfx;
-            }
-    }
-#endif
-
-    if (spfx & SPFX_SEARCH) {
-        if (on)
-            ESearching |= wp_mask;
-        else
-            ESearching &= ~wp_mask;
-    }
-	if (spfx & SPFX_AGGRAVATE_MONSTER) {
-		if (on)
-			EAggravate_monster |= wp_mask;
-		else
-			EAggravate_monster &= ~wp_mask;
-	}
-	if (spfx & SPFX_HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS) {
-		if (on)
-			EHalf_physical_damage_against_undead_and_demons |= wp_mask;
-		else
-			EHalf_physical_damage_against_undead_and_demons &= ~wp_mask;
-	}
-	if (spfx & SPFX_BLIND_SEEING) {
-		if (on)
-			EBlocks_Blindness |= wp_mask;
-		else
-			EBlocks_Blindness &= ~wp_mask;
-	}
-	if (spfx & SPFX_HALRES)
+	unsigned long bit = 0x00000001UL;
+	for (int i = 0; i < 32; i++)
 	{
-		if (on)
-			EHalluc_resistance |= wp_mask;
-		else
-			EHalluc_resistance &= ~wp_mask;
-		//(void)make_hallucinated((long)!on, restoring ? FALSE : TRUE,
-		//	wp_mask);
-		/* make_hallucinated must (re)set the mask itself to get
-         * the display right */
-        /* restoring needed because this is the only artifact intrinsic
-         * that can print a message--need to guard against being printed
-         * when restoring a game
-         */
-    }
-    if (spfx & SPFX_ESP) {
-        if (on)
-            ETelepat |= wp_mask;
-        else
-            ETelepat &= ~wp_mask;
-        see_monsters();
-    }
-    if (spfx & SPFX_STLTH) {
-        if (on)
-            EStealth |= wp_mask;
-        else
-            EStealth &= ~wp_mask;
-    }
-    if (spfx & SPFX_REGEN) {
-        if (on)
-            ERegeneration |= wp_mask;
-        else
-            ERegeneration &= ~wp_mask;
-    }
-    if (spfx & SPFX_TCTRL) {
-        if (on)
-            ETeleport_control |= wp_mask;
-        else
-            ETeleport_control &= ~wp_mask;
-    }
-    if (spfx & SPFX_WARN) {
-        if (spec_m2(otmp)) {
-            if (on) {
-                EWarn_of_mon |= wp_mask;
-                context.warntype.obj |= spec_m2(otmp);
-            } else {
-                EWarn_of_mon &= ~wp_mask;
-                context.warntype.obj &= ~spec_m2(otmp);
-            }
-            see_monsters();
-        } else {
-            if (on)
-                EWarning |= wp_mask;
-            else
-                EWarning &= ~wp_mask;
-        }
-    }
-    if (spfx & SPFX_EREGEN) {
-        if (on)
-            EEnergy_regeneration |= wp_mask;
-        else
-            EEnergy_regeneration &= ~wp_mask;
-    }
-    if (spfx & SPFX_HSPDAM) {
-        if (on)
-            EHalf_spell_damage |= wp_mask;
-        else
-            EHalf_spell_damage &= ~wp_mask;
-    }
-    if (spfx & SPFX_HPHDAM) {
-        if (on)
-            EHalf_physical_damage |= wp_mask;
-        else
-            EHalf_physical_damage &= ~wp_mask;
-    }
-    if (spfx & SPFX_XRAY) {
-        /* this assumes that no one else is using xray_range */
-        if (on)
-            u.xray_range = 3;
-        else
-            u.xray_range = -1;
-        vision_full_recalc = 1;
-    }
-    if ((spfx & SPFX_REFLECT) && (wp_mask & W_WEP)) {
-        if (on)
-            EReflecting |= wp_mask;
-        else
-            EReflecting &= ~wp_mask;
-    }
-    if (spfx & SPFX_PROTECT) {
-        if (on)
-            EProtection |= wp_mask;
-        else
-            EProtection &= ~wp_mask;
+		if (i > 0)
+			bit = bit << 1;
+
+		if (spfx & bit)
+		{
+			int prop = spfx_to_prop(bit);
+			if (prop > 0 && prop <= LAST_PROP)
+				u.uprops[prop].extrinsic |= wp_mask;
+		}
+	}
+
+	/* set monster type */
+    if (spfx & SPFX_WARN_OF_MON) {
+        if (spec_m2(otmp)) 
+		{
+			context.warntype.obj |= spec_m2(otmp);
+        } 
     }
 
-    if (wp_mask == W_ARTIFACT_CARRIED && !on && oart->inv_prop) {
-        /* might have to turn off invoked power too */
-        if (oart->inv_prop <= LAST_PROP
-            && (u.uprops[oart->inv_prop].extrinsic & W_ARTIFACT_INVOKED))
-            (void) arti_invoke(otmp);
-    }
 }
 
 /* touch_artifact()'s return value isn't sufficient to tell whether it
@@ -904,8 +721,9 @@ int dtyp;
     if (dtyp == AD_PHYS)
         return FALSE; /* nothing is immune to phys dmg */
     return (boolean) (weap->attk.adtyp == dtyp
-                      || weap->defn.adtyp == dtyp
-                      || weap->cary.adtyp == dtyp);
+                      || (weap->defn && prop_to_adtyp(weap->defn) == dtyp)
+                      || (weap->cary && prop_to_adtyp(weap->cary) == dtyp)
+		);
 }
 
 STATIC_OVL boolean
@@ -939,28 +757,42 @@ struct monst *mtmp;
     yours = (mtmp == &youmonst);
     ptr = mtmp->data;
 
-    if (weap->aflags & AF_DMONS) {
+    if (weap->aflags & AF_DMONS) 
+	{
         return (ptr == &mons[(int) weap->mtype]);
-    } else if (weap->aflags & AF_DCLAS) {
+    } 
+	else if (weap->aflags & AF_DCLAS) 
+	{
         return (weap->mtype == (unsigned long) ptr->mlet);
-    } else if (weap->aflags & AF_DFLAG1) {
+    } 
+	else if (weap->aflags & AF_DFLAG1) 
+	{
         return ((ptr->mflags1 & weap->mtype) != 0L);
-    } else if (weap->aflags & AF_DFLAG2) {
+    } 
+	else if (weap->aflags & AF_DFLAG2)
+	{
         return ((ptr->mflags2 & weap->mtype)
                 || (yours
                     && ((!Upolyd && (urace.selfmask & weap->mtype))
                         || ((weap->mtype & M2_WERE) && u.ulycn >= LOW_PM))));
-    } else if (weap->aflags & AF_DALIGN) {
+    } 
+	else if (weap->aflags & AF_DALIGN) 
+	{
         return yours ? (u.ualign.type != weap->alignment)
                      : (ptr->maligntyp == A_NONE
                         || sgn(ptr->maligntyp) != weap->alignment);
-    } else if (weap->aflags & AF_ATTK) {
+    } 
+	else if (weap->aflags & AF_ATTK) 
+	{
         struct obj *defending_weapon = (yours ? uwep : MON_WEP(mtmp));
 
+		/*
         if (defending_weapon && defending_weapon->oartifact
             && defends((int) weap->attk.adtyp, defending_weapon))
             return FALSE;
-        switch (weap->attk.adtyp) {
+		*/
+        switch (weap->attk.adtyp) 
+		{
         case AD_FIRE:
             return !(yours ? Fire_resistance : resists_fire(mtmp));
         case AD_COLD:
@@ -1012,10 +844,18 @@ struct monst *mon;
 
     /* no need for an extra check for `NO_ATTK' because this will
        always return 0 for any artifact which has that attribute */
+	if (!weap || !spec_applies(weap, mon))
+		return 0;
 
-    if (weap && weap->attk.damn && spec_applies(weap, mon))
-        return rnd((int) weap->attk.damn);
-    return 0;
+	int dice = weap->tohit_dice;
+	int size = weap->tohit_diesize;
+	int plus = weap->tohit_plus;
+
+	int abon = plus;
+	if (dice > 0 && size > 0)
+		abon += d(dice, size);
+
+    return abon;
 }
 
 /* special damage bonus */
@@ -1035,10 +875,13 @@ int tmp;
 
 	if (spec_dbon_applies)
 	{
-		if (weap->attk.damd > 0)
-			return rnd((int)weap->attk.damd) + (int)weap->attk.damp;
-		else if(weap->attk.damd < 0)
-			return max(-weap->attk.damd * tmp, 0);
+		int dbon = weap->attk.damp;
+		if (weap->attk.damd > 0 && weap->attk.damn > 0)
+			dbon += d(weap->attk.damn, weap->attk.damd);
+		else if(weap->attk.damn < 0)
+			dbon += max(-weap->attk.damn * tmp, 0);
+
+		return dbon;
 	}
 
 	return 0;
@@ -1368,7 +1211,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                        || (youattack && mdef == u.ustuck));
 
     /* the four basic attacks: fire, cold, shock and missiles */
-    if (attacks(AD_FIRE, otmp)) {
+    if (artifact_attack_type(AD_FIRE, otmp)) {
         if (realizes_damage)
             pline_The("fiery blade %s %s%c",
                       !spec_dbon_applies
@@ -1387,7 +1230,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
             burn_away_slime();
         return realizes_damage;
     }
-    if (attacks(AD_COLD, otmp)) {
+    if (artifact_attack_type(AD_COLD, otmp)) {
         if (realizes_damage)
             pline_The("ice-cold blade %s %s%c",
                       !spec_dbon_applies ? "hits" : "freezes", hittee,
@@ -1396,7 +1239,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
             (void) destroy_mitem(mdef, POTION_CLASS, AD_COLD);
         return realizes_damage;
     }
-    if (attacks(AD_ELEC, otmp)) {
+    if (artifact_attack_type(AD_ELEC, otmp)) {
         if (realizes_damage)
             pline_The("massive hammer hits%s %s%c",
                       !spec_dbon_applies ? "" : "!  Lightning strikes",
@@ -1409,7 +1252,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
             (void) destroy_mitem(mdef, WAND_CLASS, AD_ELEC);
         return realizes_damage;
     }
-    if (attacks(AD_MAGM, otmp)) {
+    if (artifact_attack_type(AD_MAGM, otmp)) {
         if (realizes_damage)
             pline_The("imaginary widget hits%s %s%c",
                       !spec_dbon_applies
@@ -1419,7 +1262,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
         return realizes_damage;
     }
 
-    if (attacks(AD_STUN, otmp) && dieroll <= MB_MAX_DIEROLL) {
+    if (artifact_attack_type(AD_STUN, otmp) && dieroll <= MB_MAX_DIEROLL) {
         /* Magicbane's special attacks (possibly modifies hittee[]) */
         return Mb_hit(magr, mdef, otmp, dmgptr, dieroll, vis, hittee);
     }
@@ -2718,122 +2561,217 @@ struct obj *otmp;
         return (100L * (long) objects[otmp->otyp].oc_cost);
 }
 
-STATIC_OVL uchar
-abil_to_adtyp(abil)
-long *abil;
+struct abil2adtyp_tag {
+	int prop;
+	uchar adtyp;
+} abil2adtyp[] = {
+	{ FIRE_RES, AD_FIRE },
+	{ COLD_RES, AD_COLD },
+	{ SHOCK_RES, AD_ELEC },
+	{ DEATH_RES, AD_DRAY },
+	{ LYCANTHROPY_RES, AD_WERE },
+	{ ANTIMAGIC, AD_MAGM },
+	{ DISINT_RES, AD_DISN },
+	{ POISON_RES, AD_DRST },
+	{ DRAIN_RES, AD_DRLI },
+	{ FLASH_RES, AD_BLND },
+};
+
+uchar
+prop_to_adtyp(prop_index)
+int prop_index;
 {
-    struct abil2adtyp_tag {
-        long *abil;
-        uchar adtyp;
-    } abil2adtyp[] = {
-        { &EFire_resistance, AD_FIRE },
-        { &ECold_resistance, AD_COLD },
-        { &EShock_resistance, AD_ELEC },
-		{ &EDeath_resistance, AD_DRAY },
-		{ &ELycanthropy_resistance, AD_WERE },
-		{ &EAntimagic, AD_MAGM },
-        { &EDisint_resistance, AD_DISN },
-        { &EPoison_resistance, AD_DRST },
-        { &EDrain_resistance, AD_DRLI },
-    };
     int k;
 
     for (k = 0; k < SIZE(abil2adtyp); k++) {
-        if (abil2adtyp[k].abil == abil)
+        if (abil2adtyp[k].prop == prop_index)
             return abil2adtyp[k].adtyp;
     }
     return 0;
 }
 
-STATIC_OVL unsigned long
-abil_to_spfx(abil)
-long *abil;
+int
+adtyp_to_prop(adtyp_index)
+uchar adtyp_index;
 {
-    static const struct abil2spfx_tag {
-        long *abil;
-        unsigned long spfx;
-    } abil2spfx[] = {
-        { &ESearching, SPFX_SEARCH },
-        { &EHalluc_resistance, SPFX_HALRES },
-        { &ETelepat, SPFX_ESP },
-        { &EStealth, SPFX_STLTH },
-        { &ERegeneration, SPFX_REGEN },
-        { &ETeleport_control, SPFX_TCTRL },
-        { &EWarn_of_mon, SPFX_WARN },
-        { &EWarning, SPFX_WARN },
-        { &EEnergy_regeneration, SPFX_EREGEN },
-        { &EHalf_spell_damage, SPFX_HSPDAM },
-        { &EHalf_physical_damage, SPFX_HPHDAM },
-		{ &EHalf_physical_damage_against_undead_and_demons, SPFX_HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS },
-		{ &EAggravate_monster, SPFX_AGGRAVATE_MONSTER },
-		{ &EBlocks_Blindness, SPFX_BLIND_SEEING },
-		{ &EReflecting, SPFX_REFLECT },
-    };
+	int k;
+
+	for (k = 0; k < SIZE(abil2adtyp); k++) {
+		if (abil2adtyp[k].adtyp == adtyp_index)
+			return abil2adtyp[k].prop;
+	}
+	return 0;
+}
+
+static const struct abil2spfx_tag {
+	int prop;
+	unsigned long spfx;
+} abil2spfx[] = {
+	/* SPFX_SEEK not here */
+	{ WARN_OF_MON, SPFX_WARN_OF_MON },
+	{ SEARCHING, SPFX_SEARCH },
+	{ HALLUC_RES, SPFX_HALRES },
+	{ TELEPAT, SPFX_ESP },
+	{ STEALTH, SPFX_STLTH },
+	{ REGENERATION, SPFX_REGEN },
+	{ ENERGY_REGENERATION, SPFX_EREGEN },
+	{ HALF_SPDAM, SPFX_HSPDAM },
+	{ HALF_PHDAM, SPFX_HPHDAM },
+	{ TELEPORT_CONTROL, SPFX_TCTRL },
+	/* SPFX_LUCK not here */
+	{ XRAY_VISION, SPFX_XRAY },
+	{ REFLECTING, SPFX_REFLECT },
+	{ PROTECTION, SPFX_PROTECT },
+	{ AGGRAVATE_MONSTER, SPFX_AGGRAVATE_MONSTER },
+	/* SPFX_UNLUCK not here */
+	{ BLOCKS_BLINDNESS, SPFX_BLIND_SEEING },
+	{ HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS, SPFX_HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS },
+	{ WARNING, SPFX_WARNING },
+};
+
+unsigned long
+prop_to_spfx(prop_index)
+int prop_index;
+{
+
     int k;
 
     for (k = 0; k < SIZE(abil2spfx); k++) {
-        if (abil2spfx[k].abil == abil)
+        if (abil2spfx[k].prop == prop_index)
             return abil2spfx[k].spfx;
     }
     return 0L;
 }
 
+int
+spfx_to_prop(spfx_bit)
+unsigned long spfx_bit;
+{
+
+	int k;
+
+	for (k = 0; k < SIZE(abil2spfx); k++) {
+		if (abil2spfx[k].spfx == spfx_bit)
+			return abil2spfx[k].prop;
+	}
+	return 0;
+}
+
 /*
- * Return the first item that is conveying a particular intrinsic.
+ * Return the first item that is conveying a particular extrinsic.
  */
 struct obj *
-what_gives(abil)
-long *abil;
+what_gives(prop_index)
+int prop_index;
 {
     struct obj *obj;
-    uchar dtyp;
-    unsigned long spfx;
     long wornbits;
-	/*
-    long wornmask = (W_ARM | W_ARMC | W_ARMH | W_ARMS
-                     | W_ARMG | W_ARMF | W_ARMU | W_ARMO | W_ARMB | W_MISC | W_MISC2 | W_MISC3 | W_MISC4 | W_MISC5
-                     | W_AMUL | W_RINGL | W_RINGR | W_BLINDFOLD | W_WEP
-                     | W_ARTIFACT_CARRIED | W_ARTIFACT_INVOKED);
-	*/
-    //if (u.twoweap)
-    //    wornmask |= W_SWAPWEP;
-    
-	dtyp = abil_to_adtyp(abil);
-    spfx = abil_to_spfx(abil);
-	wornbits = *abil; // (wornmask&* abil);
+	long spfx = prop_to_spfx(prop_index);
+
+	wornbits = u.uprops[prop_index].extrinsic;
 
     for (obj = invent; obj; obj = obj->nobj) 
 	{
-        if (obj->oartifact
-            && (abil != &EWarn_of_mon || context.warntype.obj))
+		if ((wornbits & W_ARTIFACT_CARRIED) && obj->oartifact && (artilist[obj->oartifact].cary == prop_index || (artilist[obj->oartifact].cspfx & spfx)))
+			return obj;
+
+		if ((wornbits & W_ARTIFACT_INVOKED) && obj->oartifact && artilist[obj->oartifact].inv_prop == prop_index && obj->invokeon)
+			return obj;
+
+		if (wornbits & W_CARRIED)
 		{
-            const struct artifact *art = get_artifact(obj);
+			if (carried_item_is_giving_power(obj, prop_index))
+				return obj;
+		}
 
-            if (art) {
-                if (dtyp) {
-                    if (art->cary.adtyp == dtyp /* carried */
-                        || (art->defn.adtyp == dtyp /* defends while worn */
-                            && (obj->owornmask & ~(W_ARTIFACT_CARRIED | W_ARTIFACT_INVOKED))))
-                        return obj;
-                }
-                if (spfx) {
-                    /* property conferred when carried */
-                    if ((art->cspfx & spfx) == spfx)
-                        return obj;
-                    /* property conferred when wielded or worn */
-                    if ((art->spfx & spfx) == spfx && obj->owornmask)
-                        return obj;
-                }
-            }
-        }
-
-		/* check worn */
-		if (wornbits & obj->owornmask) //wornbits &&  == (wornmask & 
+		if (wornbits & obj->owornmask)
             return obj;
     }
     return (struct obj *) 0;
 }
 
+
+boolean
+carried_item_is_giving_power(obj, prop_index)
+struct obj* obj;
+int prop_index;
+{
+	if (!obj)
+		return FALSE;
+
+	int otyp = obj->otyp;
+	boolean inappr = inappropriate_character_type(obj);
+
+	if (objects[otyp].oc_oprop == prop_index
+		&& (objects[otyp].oc_pflags & P1_POWER_1_APPLIES_WHEN_CARRIED)
+		&& ((!inappr && !(objects[otyp].oc_pflags & P1_POWER_1_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
+			|| (objects[otyp].oc_pflags & P1_POWER_1_APPLIES_TO_ALL_CHARACTERS)
+			|| (inappr && (objects[otyp].oc_pflags & P1_POWER_1_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
+		)
+		return TRUE;
+
+	if (objects[otyp].oc_oprop2 == prop_index
+		&& (objects[otyp].oc_pflags & P1_POWER_2_APPLIES_WHEN_CARRIED)
+		&& ((!inappr && !(objects[otyp].oc_pflags & P1_POWER_2_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
+			|| (objects[otyp].oc_pflags & P1_POWER_2_APPLIES_TO_ALL_CHARACTERS)
+			|| (inappr && (objects[otyp].oc_pflags & P1_POWER_2_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
+		)
+		return TRUE;
+
+	if (objects[otyp].oc_oprop3 == prop_index
+		&& (objects[otyp].oc_pflags & P1_POWER_3_APPLIES_WHEN_CARRIED)
+		&& ((!inappr && !(objects[otyp].oc_pflags & P1_POWER_3_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
+			|| (objects[otyp].oc_pflags & P1_POWER_3_APPLIES_TO_ALL_CHARACTERS)
+			|| (inappr && (objects[otyp].oc_pflags & P1_POWER_3_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
+		)
+		return TRUE;
+
+	return FALSE;
+}
+
+boolean
+worn_item_is_giving_power(obj, prop_index)
+struct obj* obj;
+int prop_index;
+{
+	if (!obj)
+		return FALSE;
+
+	if (!obj->owornmask)
+		return carried_item_is_giving_power(obj, prop_index);
+
+	if ((obj->owornmask & W_WEP) && !(is_weapon(obj) || is_shield(obj)))
+		return carried_item_is_giving_power(obj, prop_index);
+
+	if ((obj->owornmask & W_WEP2) && !(is_weapon(obj) || is_shield(obj)))
+		return carried_item_is_giving_power(obj, prop_index);
+
+	int otyp = obj->otyp;
+	boolean inappr = inappropriate_character_type(obj);
+
+	if (objects[otyp].oc_oprop == prop_index
+		&& ((!inappr && !(objects[otyp].oc_pflags & P1_POWER_1_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
+			|| (objects[otyp].oc_pflags & P1_POWER_1_APPLIES_TO_ALL_CHARACTERS)
+			|| (inappr && (objects[otyp].oc_pflags & P1_POWER_1_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
+		)
+		return TRUE;
+
+	if (objects[otyp].oc_oprop2 == prop_index
+		&& ((!inappr && !(objects[otyp].oc_pflags & P1_POWER_2_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
+			|| (objects[otyp].oc_pflags & P1_POWER_2_APPLIES_TO_ALL_CHARACTERS)
+			|| (inappr && (objects[otyp].oc_pflags & P1_POWER_2_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
+		)
+		return TRUE;
+
+	if (objects[otyp].oc_oprop3 == prop_index
+		&& ((!inappr && !(objects[otyp].oc_pflags & P1_POWER_3_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
+			|| (objects[otyp].oc_pflags & P1_POWER_3_APPLIES_TO_ALL_CHARACTERS)
+			|| (inappr && (objects[otyp].oc_pflags & P1_POWER_3_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
+		)
+		return TRUE;
+
+	return FALSE;
+}
 
 const char *
 glow_color(arti_indx)
@@ -3099,7 +3037,7 @@ boolean drop_untouchable;
                          || (Is_container(obj) && Has_contents(obj)))));
 
     if ((art = get_artifact(obj)) != 0) {
-        carryeffect = (art->cary.adtyp || art->cspfx);
+        carryeffect = (art->cary || art->cspfx);
         invoked = (art->inv_prop > 0 && art->inv_prop <= LAST_PROP
                    && (u.uprops[art->inv_prop].extrinsic & W_ARTIFACT_INVOKED) != 0L);
     } else {

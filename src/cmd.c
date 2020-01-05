@@ -6,6 +6,8 @@
 #include "hack.h"
 #include "lev.h"
 #include "func_tab.h"
+#include "artifact.h"
+#include "artilist.h"
 
 /* Macros for meta and ctrl modifiers:
  *   M and C return the meta/ctrl code for the given character;
@@ -2215,19 +2217,47 @@ cause_known(propindx)
 int propindx; /* index of a property which can be conveyed by worn item */
 {
     register struct obj *o;
-    long mask = W_ARMOR | W_AMUL | W_RING | W_BLINDFOLD | W_MISCITEMS;
 
     /* simpler than from_what()/what_gives(); we don't attempt to
        handle artifacts and we deliberately ignore wielded items */
-    for (o = invent; o; o = o->nobj) {
-        if (!(o->owornmask & mask))
+
+	long spfx = prop_to_spfx(propindx);
+
+    for (o = invent; o; o = o->nobj) 
+	{
+		if (!object_stats_known(o))
+			continue;
+
+		if (carried_item_is_giving_power(o, propindx))
+			return TRUE;
+
+		if (o->oartifact && (artilist[o->oartifact].cary == propindx || (artilist[o->oartifact].cspfx & spfx)))
+			return TRUE;
+
+		if (o->oartifact && artilist[o->oartifact].inv_prop == propindx && o->invokeon)
+			return TRUE;
+
+        if (!o->owornmask)
             continue;
-        if (((int) objects[o->otyp].oc_oprop == propindx || (int)objects[o->otyp].oc_oprop2 == propindx || (int)objects[o->otyp].oc_oprop3 == propindx)
-            && objects[o->otyp].oc_name_known && o->dknown)
-            return TRUE;
+
+		if (worn_item_is_giving_power(o, propindx))
+			return TRUE;
     }
     return FALSE;
 }
+
+boolean 
+object_stats_known(obj)
+struct obj* obj;
+{
+	if (!obj)
+		return FALSE;
+
+	boolean statsknown = ((!obj->oartifact && objects[obj->otyp].oc_name_known) || (obj->oartifact && obj->aknown && obj->nknown));
+	boolean dknown = obj->dknown;
+	return (statsknown && dknown);
+}
+
 
 /* format a characteristic value, accommodating Strength's strangeness */
 STATIC_OVL char *
@@ -2775,21 +2805,21 @@ int final;
         if (Lev_at_will && magic)
             you_are("levitating, at will", "");
         else
-            enl_msg(youtoo, are, were, "levitating", from_what(LEVITATION));
+            enl_msg(youtoo, are, were, "levitating", !(magic || is_innate(LEVITATION) || cause_known(LEVITATION)) ? "" : from_what(LEVITATION));
     } else if (Flying) { /* can only fly when not levitating */
-        enl_msg(youtoo, are, were, "flying", from_what(FLYING));
+        enl_msg(youtoo, are, were, "flying", !(magic || is_innate(FLYING) || cause_known(FLYING)) ? "" : from_what(FLYING));
     }
     if (Underwater) {
         you_are("underwater", "");
     } else if (u.uinwater) {
-        you_are(Swimming ? "swimming" : "in water", from_what(SWIMMING));
+        you_are(Swimming ? "swimming" : "in water", !(magic || is_innate(SWIMMING) || cause_known(SWIMMING)) ? "" : from_what(SWIMMING));
     } else if (walking_on_water()) {
         /* show active Wwalking here, potential Wwalking elsewhere */
         Sprintf(buf, "walking on %s",
                 is_pool(u.ux, u.uy) ? "water"
                 : is_lava(u.ux, u.uy) ? "lava"
                   : surface(u.ux, u.uy)); /* catchall; shouldn't happen */
-        you_are(buf, from_what(WWALKING));
+        you_are(buf, !(magic || is_innate(WATER_WALKING) || cause_known(WATER_WALKING)) ? "" : from_what(WATER_WALKING));
     }
     if (Upolyd && (u.uundetected || U_AP_TYPE != M_AP_NOTHING))
         youhiding(TRUE, final);
@@ -2803,7 +2833,7 @@ int final;
         Strcpy(buf, "being strangled");
         if (wizard)
             Sprintf(eos(buf), " (%ld)", (Strangled & TIMEOUT));
-        you_are(buf, from_what(STRANGLED));
+        you_are(buf, !(magic || cause_known(STRANGLED)) ? "" : from_what(STRANGLED));
     }
 
 	if (u.uburied)
@@ -2849,7 +2879,7 @@ int final;
         you_are(buf, !haseyes(youmonst.data) ? "" : from_what(BLINDED));
     }
     if (Deaf)
-        you_are("deaf", from_what(DEAF));
+        you_are("deaf", !(magic || is_innate(DEAF) || cause_known(DEAF)) ? "" : from_what(DEAF));
 
     /* external troubles, more or less */
     if (Punished) {
@@ -3215,6 +3245,8 @@ int final;
         you_are("telepathic", from_what(TELEPAT));
 	if (Blind_telepat)
 		you_are("telepathic when blind", from_what(BLIND_TELEPAT));
+	if (XRay_vision)
+		you_have("X-ray vision", from_what(XRAY_VISION));
 	if (Warning)
         you_are("warned", from_what(WARNING));
     if (Warn_of_mon && context.warntype.obj) {
@@ -3378,7 +3410,7 @@ int final;
     }
     /* actively walking on water handled earlier as a status condition */
     if (Wwalking && !walking_on_water())
-        you_can("walk on water", from_what(WWALKING));
+        you_can("walk on water", from_what(WATER_WALKING));
     /* actively swimming (in water but not under it) handled earlier */
     if (Swimming && (Underwater || !u.uinwater))
         you_can("swim", from_what(SWIMMING));
@@ -3711,7 +3743,7 @@ doattributes(VOID_ARGS)
     int mode = BASICENLIGHTENMENT;
 
     /* show more--as if final disclosure--for wizard and explore modes */
-    if (wizard || discover)
+    if ((wizard && yn("Enforce magic enlightenment?") == 'y') || discover)
         mode |= MAGICENLIGHTENMENT;
 
     enlightenment(mode, ENL_GAMEINPROGRESS);

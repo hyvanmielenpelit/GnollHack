@@ -611,6 +611,7 @@ update_extrinsics()
 		u.uprops[i].extrinsic = 0; // &= ~W_CARRIED;
 		u.uprops[i].blocked = 0;
 	}
+	context.warntype.obj = 0;
 
 	//Add then extrinsics from all carried items
 	for (uitem = invent; uitem; uitem = uitem->nobj)
@@ -691,12 +692,12 @@ update_extrinsics()
 
 			/* add wielded / worn artifact intrinsics */
 			if (uitem->oartifact && bit != W_CARRIED)
-				set_artifact_intrinsic(uitem, 1, bit);
+				set_artifact_intrinsic(uitem, bit);
 
 			/* add artifact carried and invoked intrinsics */
 			if (uitem->oartifact)
 			{
-				set_artifact_intrinsic(uitem, 1, W_ARTIFACT_CARRIED);
+				set_artifact_intrinsic(uitem, W_ARTIFACT_CARRIED);
 
 				/* Invoked property if any */
 				if (artilist[uitem->oartifact].inv_prop > 0 && artilist[uitem->oartifact].inv_prop <= LAST_PROP && uitem->invokeon)
@@ -1543,7 +1544,7 @@ int propidx; /* OBSOLETE: special cases can have negative values */
 				Sprintf(buf, because_of, ustuckbuf);
 			}
 			else if (
-				((obj = what_gives(&u.uprops[propidx].extrinsic)) != 0 && (wizard || objects[obj->otyp].oc_name_known))
+				((obj = what_gives(propidx)) != 0 && (wizard || objects[obj->otyp].oc_name_known))
 				)
 				Sprintf(buf, because_of, yname(obj));
 			/*obj->oartifact
@@ -1780,6 +1781,7 @@ updateabon()
 	u.umcbonus = 0;
 	u.uspellcastingbonus = 0;
 	u.uexperiencebonus = 0;
+	u.xray_range = XRay_vision ? 3 : -1;
 
 	u.moreluck = 0;
 	int blessed_luck_count = 0;

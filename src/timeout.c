@@ -80,7 +80,7 @@ const struct propname {
 	{ JUMPING, "jumping", "jumping" },
 	{ TELEPORT_CONTROL, "teleport control", "teleport control" },
 	{ FLYING, "flying", "flying" },
-	{ WWALKING, "water walking", "water walking" },
+	{ WATER_WALKING, "water walking", "water walking" },
 	{ SWIMMING, "swimming", "swimming" },
 	{ MAGICAL_BREATHING, "magical breathing", "magical breathing" },
 	{ PASSES_WALLS, "pass thru walls", "pass thru walls" },
@@ -128,6 +128,7 @@ const struct propname {
 	{ MAGICAL_SHIELDING, "magically shielded", "magical shielding" },
 	{ MAGICAL_BARKSKIN, "magically barkskinned", "magical barkskin" },
 	{ MAGICAL_STONESKIN, "magically stoneskinned", "magical stoneskin" },
+	{ XRAY_VISION, "X-ray vision", "X-ray vision" },
 	{ LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
 	{  0, 0 },
 };
@@ -901,7 +902,12 @@ nh_timeout()
 					You_feel("less telepathic.");
 				see_monsters();
 				break;
-			case WWALKING:
+			case XRAY_VISION:
+				if (!XRay_vision)
+					You("can no longer see through walls.");
+				see_monsters();
+				break;
+			case WATER_WALKING:
 				if (!Wwalking)
 					You_feel("less able to walk on water.");
 				break;
@@ -1024,7 +1030,10 @@ nh_timeout()
 			case TELEPAT:
 				You("are starting to feel less telepathic than before.");
 				break;
-			case WWALKING:
+			case XRAY_VISION:
+				Your("vision through the walls is starting to get blurred.");
+				break;
+			case WATER_WALKING:
 				You("are starting to feel less able to walk on water than before.");
 				break;
 			case MAGICAL_BREATHING:
@@ -3126,5 +3135,20 @@ boolean ghostly;
         }
     }
 }
+
+const char* get_property_name(prop_index)
+int prop_index;
+{
+	for (int idx = 0; propertynames[idx].prop_num; idx++)
+	{
+		if (propertynames[idx].prop_num == prop_index)
+		{
+			return propertynames[idx].prop_noun;
+		}
+	}
+
+	return "";
+}
+
 
 /*timeout.c*/

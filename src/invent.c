@@ -883,12 +883,29 @@ struct obj* otmp; /* object to be identified if any state change happens */
 	boolean had_hallucination = Hallucination;
 	boolean was_telepathic = Telepat;
 	boolean was_blind_telepathic = Blind_telepat;
+	boolean had_xray_vision = XRay_vision;
 	boolean had_magical_breathing = Magical_breathing;
 	boolean had_warning = Warning;
+	boolean had_warning_of_mon = Warning;
+	boolean had_orc_warning = Orc_warning;
+	boolean had_elf_warning = Elf_warning;
+	boolean had_dwarf_warning = Dwarf_warning;
+	boolean had_gnome_warning = Gnome_warning;
+	boolean had_human_warning = Human_warning;
+	boolean had_demon_warning = Demon_warning;
+	boolean had_angel_warning = Angel_warning;
+	boolean had_ogre_warning = Ogre_warning;
+	boolean had_gnoll_warning = Gnoll_warning;
+	boolean had_giant_warning = Giant_warning;
+	boolean had_dragon_warning = Dragon_warning;
+	boolean had_undead_warning = Undead_warning;
+	boolean had_troll_warning = Troll_warning;
+	boolean had_lycanthrope_warning = Lycanthrope_warning;
 	boolean had_protection = Protection;
 	boolean had_magical_shielding= Magical_shielding;
 	boolean had_magical_barkskin = Magical_barkskin;
 	boolean had_magical_stoneskin = Magical_stoneskin;
+	long previous_warntype_obj = context.warntype.obj;
 
 	update_extrinsics();
 	updateabon();
@@ -1069,7 +1086,6 @@ struct obj* otmp; /* object to be identified if any state change happens */
 		}
 	}
 
-
 	/* Telepathy, warning and blindness */
 	if ((Telepat && !was_telepathic)
 		|| (!Telepat && was_telepathic)
@@ -1077,10 +1093,47 @@ struct obj* otmp; /* object to be identified if any state change happens */
 		|| (!Blind_telepat && was_blind_telepathic)
 		|| (Warning && !had_warning)
 		|| (!Warning && had_warning)
+		|| (Warn_of_mon && (!had_warning_of_mon || context.warntype.obj != previous_warntype_obj))
+		|| (!Warn_of_mon && had_warning_of_mon)
+		|| (Orc_warning && !had_orc_warning)
+		|| (!Orc_warning && had_orc_warning)
+		|| (Elf_warning && !had_elf_warning)
+		|| (!Elf_warning && had_elf_warning)
+		|| (Dwarf_warning && !had_dwarf_warning)
+		|| (!Dwarf_warning && had_dwarf_warning)
+		|| (Gnome_warning && !had_gnome_warning)
+		|| (!Gnome_warning && had_gnome_warning)
+		|| (Demon_warning && !had_demon_warning)
+		|| (!Demon_warning && had_demon_warning)
+		|| (Angel_warning && !had_angel_warning)
+		|| (!Angel_warning && had_angel_warning)
+		|| (Ogre_warning && !had_ogre_warning)
+		|| (!Ogre_warning && had_ogre_warning)
+		|| (Gnoll_warning && !had_gnoll_warning)
+		|| (!Gnoll_warning && had_gnoll_warning)
+		|| (Giant_warning && !had_giant_warning)
+		|| (!Giant_warning && had_giant_warning)
+		|| (Dragon_warning && !had_dragon_warning)
+		|| (!Dragon_warning && had_dragon_warning)
+		|| (Undead_warning && !had_undead_warning)
+		|| (!Undead_warning && had_undead_warning)
+		|| (Lycanthrope_warning && !had_lycanthrope_warning)
+		|| (!Lycanthrope_warning && had_lycanthrope_warning)
+		|| (Troll_warning && !had_troll_warning)
+		|| (!Troll_warning && had_troll_warning)
 		|| (Blind && !was_blind)
 		|| (!Blind && was_blind)
 		)
 	{
+		see_monsters();
+	}
+
+	/* X-ray vision */
+	if ((XRay_vision && !had_xray_vision)
+		|| (!XRay_vision && had_xray_vision)
+		)
+	{
+		vision_full_recalc = 1;
 		see_monsters();
 	}
 

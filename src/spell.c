@@ -2150,7 +2150,10 @@ int otyp;
 		case TELEPAT:
 			You_feel("telepathic.");
 			break;
-		case WWALKING:
+		case XRAY_VISION:
+			You("can see through walls.");
+			break;
+		case WATER_WALKING:
 			You_feel("like you could walk on water.");
 			break;
 		case MAGICAL_BREATHING:

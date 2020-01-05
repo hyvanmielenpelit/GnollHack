@@ -1276,11 +1276,11 @@ register struct obj* obj;
 					}
 					if(j <= 3)
 					{
-						for (int j = 0; propertynames[j].prop_num; j++)
+						for (int idx = 0; propertynames[idx].prop_num; idx++)
 						{
-							if (propertynames[j].prop_num == prop)
+							if (propertynames[idx].prop_num == prop)
 							{
-								strcpy(buf2, propertynames[j].prop_noun);
+								strcpy(buf2, propertynames[idx].prop_noun);
 								*buf2 = highc(*buf2);
 								break;
 							}
@@ -2131,7 +2131,7 @@ register struct obj* obj;
 			putstr(datawin, 0, txt);
 		}
 
-		if (artilist[obj->oartifact].attk.damd != 0)
+		if (artilist[obj->oartifact].attk.damn != 0 || artilist[obj->oartifact].attk.damd != 0 || artilist[obj->oartifact].attk.damp != 0)
 		{
 			char dmgttext[BUFSZ] = "";
 			strcpy(dmgttext, get_damage_type_text(artilist[obj->oartifact].attk.adtyp));
@@ -2142,34 +2142,52 @@ register struct obj* obj;
 			putstr(datawin, 0, txt);
 
 			char dmgbuf[BUFSIZ] = "";
-			if (artilist[obj->oartifact].attk.damd > 0)
+			char plusbuf[BUFSIZ] = "";
+			if (artilist[obj->oartifact].attk.damp != 0)
+				Sprintf(plusbuf, "%s%d", artilist[obj->oartifact].attk.damp >= 0 ? "+" : "", artilist[obj->oartifact].attk.damp);
+
+			if (artilist[obj->oartifact].attk.damn > 0 && artilist[obj->oartifact].attk.damd > 0)
 			{
-				Sprintf(dmgbuf, "Artifact damage bonus is 1d%d", artilist[obj->oartifact].attk.damd);
+				Sprintf(dmgbuf, "Artifact damage bonus is %dd%d%s", artilist[obj->oartifact].attk.damn, artilist[obj->oartifact].attk.damd, plusbuf);
 			}
-			else if (artilist[obj->oartifact].attk.damd == ARTDMG_DOUBLE_DAMAGE)
+			else if (artilist[obj->oartifact].attk.damn == ARTDMG_DOUBLE_DAMAGE)
 				Sprintf(dmgbuf, "Artifact deals double normal damage");
-			else if (artilist[obj->oartifact].attk.damd == ARTDMG_TRIPLE_DAMAGE)
+			else if (artilist[obj->oartifact].attk.damn == ARTDMG_TRIPLE_DAMAGE)
 				Sprintf(dmgbuf, "Artifact deals triple normal damage");
-			else if (artilist[obj->oartifact].attk.damd == ARTDMG_QUADRUPLE_DAMAGE)
+			else if (artilist[obj->oartifact].attk.damn == ARTDMG_QUADRUPLE_DAMAGE)
 				Sprintf(dmgbuf, "Artifact deals quadruple normal damage");
+			else
+				Sprintf(dmgbuf, "Artifact damage bonus is %s", plusbuf);
 
 			powercnt++;
 			Sprintf(buf, " %2d - %s", powercnt, dmgbuf);
 			txt = buf;
 			putstr(datawin, 0, txt);
 		}
-		if (artilist[obj->oartifact].attk.damn > 0)
+		if (artilist[obj->oartifact].tohit_dice != 0 || artilist[obj->oartifact].tohit_diesize != 0 || artilist[obj->oartifact].tohit_plus != 0)
 		{
+			char tohitbuf[BUFSIZ] = "";
+			char plusbuf[BUFSIZ] = "";
+			if (artilist[obj->oartifact].tohit_plus != 0)
+				Sprintf(plusbuf, "%s%d", artilist[obj->oartifact].tohit_plus >= 0 ? "+" : "", artilist[obj->oartifact].tohit_plus);
+
+			if (artilist[obj->oartifact].tohit_dice > 0 && artilist[obj->oartifact].tohit_diesize > 0)
+			{
+				Sprintf(tohitbuf, "Artifact to-hit bonus is %dd%d%s", artilist[obj->oartifact].tohit_dice, artilist[obj->oartifact].tohit_diesize, plusbuf);
+			}
+			else
+				Sprintf(tohitbuf, "Artifact to-hit bonus is %s", plusbuf);
+
 			powercnt++;
-			Sprintf(buf, " %2d - Artifact to-hit bonus is 1d%d", powercnt, artilist[obj->oartifact].attk.damn);
+			Sprintf(buf, " %2d - %s", powercnt, tohitbuf);
 			txt = buf;
 			putstr(datawin, 0, txt);
 		}
 
-		if (artilist[obj->oartifact].defn.adtyp > 0)
+		if (artilist[obj->oartifact].defn > 0)
 		{
 			char defensetext[BUFSZ] = "";
-			strcpy(defensetext, get_defense_type_text(artilist[obj->oartifact].defn.adtyp));
+			strcpy(defensetext, get_property_name(artilist[obj->oartifact].defn));
 			*defensetext = highc(*defensetext);
 
 			powercnt++;
@@ -2180,10 +2198,10 @@ register struct obj* obj;
 			txt = buf;
 			putstr(datawin, 0, txt);
 		}
-		if (artilist[obj->oartifact].cary.adtyp > 0)
+		if (artilist[obj->oartifact].cary > 0)
 		{
 			char defensetext[BUFSZ] = "";
-			strcpy(defensetext, get_defense_type_text(artilist[obj->oartifact].cary.adtyp));
+			strcpy(defensetext, get_property_name(artilist[obj->oartifact].cary));
 			*defensetext = highc(*defensetext);
 
 			powercnt++;
@@ -2224,7 +2242,7 @@ register struct obj* obj;
 		if (aflags & AF_BEHEAD)
 		{
 			powercnt++;
-			Sprintf(buf, " %2d - May beheads target on hit", powercnt);
+			Sprintf(buf, " %2d - May behead target on hit", powercnt);
 			txt = buf;
 			putstr(datawin, 0, txt);
 		}
@@ -2290,7 +2308,17 @@ register struct obj* obj;
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
-			if (specialeffect & SPFX_WARN)
+			if (specialeffect & SPFX_WARN_OF_MON)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Warning of the presence of %s %s", powercnt,
+					(context.warntype.obj& M2_ORC) ? "orcs"
+					: (context.warntype.obj & M2_ELF) ? "elves"
+					: (context.warntype.obj & M2_DEMON) ? "demons" : something, endbuf);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (specialeffect & SPFX_WARNING)
 			{
 				powercnt++;
 				Sprintf(buf, " %2d - Warning %s", powercnt, endbuf);

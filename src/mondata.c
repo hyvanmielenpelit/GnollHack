@@ -4,6 +4,9 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
+#include "artifact.h"
+#include "artilist.h"
+
 /*
  *      These routines provide basic data for any type of monster.
  */
@@ -106,7 +109,7 @@ struct monst *mon;
         || ptr == &mons[PM_DEATH] || is_vampshifter(mon))
         return TRUE;
     wep = (mon == &youmonst) ? uwep : MON_WEP(mon);
-    return (boolean) (wep && wep->oartifact && defends(AD_DRLI, wep));
+    return (boolean) (wep && wep->oartifact && artilist[wep->oartifact].defn == DRAIN_RES);
 }
 
 /* True if monster is magic resistant */
@@ -124,7 +127,7 @@ struct monst *mon;
 
 	/* check for magic resistance granted by wielded weapon */
     o = is_you ? uwep : MON_WEP(mon);
-    if (o && o->oartifact && defends(AD_MAGM, o))
+    if (o && o->oartifact && artilist[o->oartifact].defn == ANTIMAGIC)
         return TRUE;
     /* check for magic resistance granted by worn or carried items */
     o = is_you ? invent : mon->minvent;
@@ -132,12 +135,10 @@ struct monst *mon;
     if (!is_you /* assumes monsters don't wield non-weapons */
         || (uwep && (uwep->oclass == WEAPON_CLASS || is_weptool(uwep))))
         slotmask |= W_WEP;
-    if (is_you && u.twoweap)
-        slotmask |= W_SWAPWEP;
     for (; o; o = o->nobj)
         if (((o->owornmask & slotmask) != 0L
              && (objects[o->otyp].oc_oprop == ANTIMAGIC || objects[o->otyp].oc_oprop2 == ANTIMAGIC || objects[o->otyp].oc_oprop3 == ANTIMAGIC))
-            || (o->oartifact && defends_when_carried(AD_MAGM, o)))
+            || (o->oartifact && artilist[o->oartifact].cary == ANTIMAGIC))
             return TRUE;
     return FALSE;
 }
@@ -163,23 +164,22 @@ struct monst *mon;
         || dmgtype_fromattack(ptr, AD_BLND, AT_GAZE))
         return TRUE;
     o = is_you ? uwep : MON_WEP(mon);
-    if (o && o->oartifact && defends(AD_BLND, o))
+    if (o && o->oartifact && artilist[o->oartifact].defn == FLASH_RES)
         return TRUE;
     o = is_you ? invent : mon->minvent;
     slotmask = W_ARMOR | W_ACCESSORY;
     if (!is_you /* assumes monsters don't wield non-weapons */
         || (uwep && (uwep->oclass == WEAPON_CLASS || is_weptool(uwep))))
         slotmask |= W_WEP;
-    if (is_you && u.twoweap)
-        slotmask |= W_SWAPWEP;
     for (; o; o = o->nobj)
         if (((o->owornmask & slotmask) != 0L
              && (
 				  objects[o->otyp].oc_oprop == BLINDED || objects[o->otyp].oc_oprop2 == BLINDED || objects[o->otyp].oc_oprop3 == BLINDED
 				  || objects[o->otyp].oc_oprop == FLASH_RES || objects[o->otyp].oc_oprop2 == FLASH_RES || objects[o->otyp].oc_oprop3 == FLASH_RES
+				  || (o->oartifact && artilist[o->oartifact].defn == FLASH_RES)
 				)
 			)
-            || (o->oartifact && defends_when_carried(AD_BLND, o)))
+            || (o->oartifact && artilist[o->oartifact].cary == FLASH_RES))
             return TRUE;
     return FALSE;
 }
