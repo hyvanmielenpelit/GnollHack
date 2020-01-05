@@ -2253,6 +2253,13 @@ register struct obj* obj;
 			txt = buf;
 			putstr(datawin, 0, txt);
 		}
+		if (aflags & AF_HITS_ADJACENT_SQUARES)
+		{
+			powercnt++;
+			Sprintf(buf, " %2d - Hits also adjacent squares", powercnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
 		if (aflags & AF_INTEL)
 		{
 			powercnt++;

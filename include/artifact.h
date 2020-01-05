@@ -17,12 +17,13 @@
 #define AF_DRLI		0x00000040L  /* drains a level from monsters */
 #define AF_BEHEAD	0x00000400L  /* beheads monsters */
 #define AF_BISECT	0x00000800L  /* bisects monsters */
-#define AF_FAMOUS							0x00001000L  /* Name is always known */
-#define AF_NAME_KNOWN_WHEN_PICKED_UP		0x00002000L  /* Ditto */
-#define AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED	0x00004000L  /* Ditto */
-#define AF_NAME_KNOWN_WHEN_INVOKED			0x00008000L  /* Ditto */
-#define AF_READABLE	0x00010000L  /* readable even if base item is not */
-#define AF_NO_WISH	0x80000000L  /* readable even if base item is not */
+#define AF_HITS_ADJACENT_SQUARES			0x00001000L  /* hits adjacent squares (cleaver) */
+#define AF_FAMOUS							0x01000000L  /* Name is always known */
+#define AF_NAME_KNOWN_WHEN_PICKED_UP		0x02000000L  /* Ditto */
+#define AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED	0x04000000L  /* Ditto */
+#define AF_NAME_KNOWN_WHEN_INVOKED			0x08000000L  /* Ditto */
+#define AF_READABLE	0x40000000L  /* readable even if base item is not */
+#define AF_NO_WISH	0x80000000L  /* not wishable, not that for artifacts the base item's no wish does not apply */
 
 /* monster class flags and mask here */
 #define AF_DMONS	0x00100000L  /* attack bonus on one monster type */

@@ -4,12 +4,13 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
+#include "artifact.h"
 
 STATIC_DCL boolean FDECL(known_hitum, (struct monst *, struct obj *, int *,
                                        int, int, struct attack *, int));
 STATIC_DCL boolean FDECL(theft_petrifies, (struct obj *));
 STATIC_DCL void FDECL(steal_it, (struct monst *, struct attack *));
-STATIC_DCL boolean FDECL(hitum_cleave, (struct monst *, struct attack *));
+STATIC_DCL boolean FDECL(hitum_cleave, (struct monst *, struct attack *, struct obj*));
 STATIC_DCL boolean FDECL(hitum, (struct monst *, struct attack *));
 STATIC_DCL boolean FDECL(hmon_hitmon, (struct monst *, struct obj *, int,
                                        int, BOOLEAN_P*));
@@ -536,9 +537,10 @@ int dieroll;
 /* hit the monster next to you and the monsters to the left and right of it;
    return False if the primary target is killed, True otherwise */
 STATIC_OVL boolean
-hitum_cleave(target, uattk)
+hitum_cleave(target, uattk, weapon)
 struct monst *target; /* non-Null; forcefight at nothing doesn't cleave... */
 struct attack *uattk; /* ... but we don't enforce that here; Null works ok */
+struct obj* weapon;
 {
     /* swings will be delivered in alternate directions; with consecutive
        attacks it will simulate normal swing and backswing; when swings
@@ -591,18 +593,21 @@ struct attack *uattk; /* ... but we don't enforce that here; Null works ok */
             continue;
         }
 
-        tmp = find_roll_to_hit(mtmp, uattk->aatyp, uwep,
-                               &attknum, &armorpenalty);
-        dieroll = rnd(20);
-        mhit = (tmp > dieroll);
-        bhitpos.x = tx, bhitpos.y = ty; /* normally set up by attack() */
-        (void) known_hitum(mtmp, uwep, &mhit, tmp, armorpenalty,
-                           uattk, dieroll);
-        (void) passive(mtmp, uwep, mhit, !DEADMONSTER(mtmp), AT_WEAP, !uwep);
-
+		/* Hit only hostile monsters to make it better --JG */
+		if (mtmp && (!mtmp->mpeaceful || Conflict) || mtmp == target)
+		{
+			tmp = find_roll_to_hit(mtmp, uattk->aatyp, weapon,
+				&attknum, &armorpenalty);
+			dieroll = rnd(20);
+			mhit = (tmp > dieroll);
+			bhitpos.x = tx, bhitpos.y = ty; /* normally set up by attack() */
+			(void)known_hitum(mtmp, weapon, &mhit, tmp, armorpenalty,
+				uattk, dieroll);
+			(void)passive(mtmp, weapon, mhit, !DEADMONSTER(mtmp), AT_WEAP, !weapon);
+		}
         /* stop attacking if weapon is gone or hero got killed and
            life-saved after passive counter-attack */
-        if (!uwep || u.umortality > umort)
+        if (!weapon || u.umortality > umort)
             break;
     }
     /* set up for next time */
@@ -650,28 +655,30 @@ struct attack *uattk;
 		int dieroll = rnd(20);
 		int mhit = (tmp > dieroll || u.uswallow);
 
-		/* Cleaver attacks three spots, 'mon' and one on either side of 'mon';
-		   it can't be part of dual-wielding but we guard against that anyway;
-		   cleave return value reflects status of primary target ('mon') */
-		if (uwep && uwep->oartifact == ART_CLEAVER && !u.twoweap
+		if (uwep && uwep->oartifact && artifact_has_flag(uwep, AF_HITS_ADJACENT_SQUARES)
 			&& !u.uswallow && !u.ustuck && !NODIAG(u.umonnum))
-			return hitum_cleave(mon, uattk);
-
-		if (tmp > dieroll)
-			exercise(A_DEX, TRUE);
-		/* bhitpos is set up by caller */
-		malive = known_hitum(mon, uwep, &mhit, tmp, armorpenalty, uattk, dieroll);
-		if (wepbefore && !uwep)
-			wep_was_destroyed = TRUE;
-		(void)passive(mon, uwep, mhit, malive, AT_WEAP, wep_was_destroyed);
+		{
+			malive = hitum_cleave(mon, uattk, uwep);
+			if (wepbefore && !uwep)
+				wep_was_destroyed = TRUE;
+		}
+		else
+		{
+			if (tmp > dieroll)
+				exercise(A_DEX, TRUE);
+			/* bhitpos is set up by caller */
+			malive = known_hitum(mon, uwep, &mhit, tmp, armorpenalty, uattk, dieroll);
+			if (wepbefore && !uwep)
+				wep_was_destroyed = TRUE;
+			(void)passive(mon, uwep, mhit, malive, AT_WEAP, wep_was_destroyed);
+		}
 
 		if (!malive || m_at(x, y) != mon || wep_was_destroyed)
 			break;
 	}
 
-	/* second attack for two-weapon combat; FOLLOWING IS OBSOLETE/JG: won't occur if Stormbringer
-	   overrode confirmation (assumes Stormbringer is primary weapon)
-	   or if the monster was killed or knocked to different location */
+
+	/* second attack for two-weapon combat */
 	wep_was_destroyed = FALSE;
 	wepbefore = uarms;
 
@@ -705,14 +712,24 @@ struct attack *uattk;
 				&armorpenalty);
 			int dieroll = rnd(20);
 			int mhit = (tmp > dieroll || u.uswallow);
-			malive = known_hitum(mon, uarms, &mhit, tmp, armorpenalty, uattk,
-				dieroll);
-			/* second passive counter-attack only occurs if second attack hits */
-			if (mhit)
-				(void)passive(mon, uarms, mhit, malive, AT_WEAP, !uarms);
+			if (uarms && uarms->oartifact && artifact_has_flag(uarms, AF_HITS_ADJACENT_SQUARES)
+				&& !u.uswallow && !u.ustuck && !NODIAG(u.umonnum))
+			{
+				malive = hitum_cleave(mon, uattk, uarms);
+				if (wepbefore && !uarms)
+					wep_was_destroyed = TRUE;
+			}
+			else
+			{
 
-			if (wepbefore && !uarms)
-				wep_was_destroyed = TRUE;
+				malive = known_hitum(mon, uarms, &mhit, tmp, armorpenalty, uattk,
+					dieroll);
+				/* second passive counter-attack only occurs if second attack hits */
+				if (wepbefore && !uarms)
+					wep_was_destroyed = TRUE;
+				if (mhit)
+					(void)passive(mon, uarms, mhit, malive, AT_WEAP, wep_was_destroyed);
+			}
 
 			if (!malive || m_at(x, y) != mon || wep_was_destroyed)
 				break;
@@ -3510,7 +3527,7 @@ register struct monst *mon;
 int
 passive(mon, weapon, mhit, malive, aatyp, wep_was_destroyed)
 struct monst *mon;
-struct obj *weapon; /* uwep or uswapwep or uarmg or uarmf or Null */
+struct obj *weapon; /* uwep or uarms or uarmg or uarmf or Null */
 boolean mhit;
 int malive;
 uchar aatyp;
@@ -3582,7 +3599,7 @@ boolean wep_was_destroyed;
 
             if (protector == 0L /* no protection */
                 || (protector == W_ARMG && !uarmg
-                    && !uwep && !wep_was_destroyed)
+                    && !weapon && !wep_was_destroyed)
                 || (protector == W_ARMF && !uarmf)
                 || (protector == W_ARMH && !uarmh)
                 || (protector == (W_ARMC | W_ARMG) && (!uarmc || !uarmg))) {
