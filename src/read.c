@@ -1381,15 +1381,21 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 		register int ct = 0;
 		register struct monst* mtmp;
 
-		for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
+		for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) 
+		{
 			if (DEADMONSTER(mtmp))
 				continue;
-			if (cansee(mtmp->mx, mtmp->my)) {
+			if (otyp == SPE_MASS_FEAR && (mindless(mtmp->data) || is_undead(mtmp->data) || is_vampshifter(mtmp)))
+				continue;
+
+			if (cansee(mtmp->mx, mtmp->my)) 
+			{
 				if (confused || scursed) {
 					mtmp->mflee = mtmp->mfrozen = mtmp->msleeping = 0;
 					mtmp->mcanmove = 1;
 				}
-				else if (!resist(mtmp, sobj, 0, 0, NOTELL)) {
+				else if (!resist(mtmp, sobj, 0, 0, NOTELL)) 
+				{
 					int duration = 0;
 					if (otyp == SPE_MASS_FEAR)
 						duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_dicesize) + objects[otyp].oc_spell_dur_plus;

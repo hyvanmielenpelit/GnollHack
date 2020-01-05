@@ -2369,7 +2369,7 @@ SPELL("magic mapping",    "dusty", None, "The caster gains the knowledge of the 
 SPELL("identify",         "bronze-plated", None, "Identifies an item",
       P_DIVINATION_SPELL,		10,  1,			 0, 1, 10, A_MAX_INT_WIS, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NONE, HI_COPPER, O1_NONE, O2_NONE, O3_NONE),
 SPELL("turn undead",      "copper-plated", None, "Makes the target undead creatures flee",
-      P_CLERIC_SPELL,			11,  8,			 5, 5, 50, A_WIS, 0, 0, 100, 0, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, S1_NONE, HI_COPPER, O1_NONE, O2_NONE, O3_NONE),
+      P_CLERIC_SPELL,			11,  8,			 5, 3, 20, A_WIS, 0, 0, 100, 0, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, S1_NONE, HI_COPPER, O1_NONE, O2_NONE, O3_NONE),
 SPELL("polymorph",        "silver-plated", None, "Polymorphs monsters and items into something else",
       P_TRANSMUTATION_SPELL,    10,  6,			 0, 5, 50, A_INT, 8, 0, 100, 0, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, S1_NONE, HI_SILVER, O1_NONE, O2_NONE, O3_NONE),
 SPELL("teleport away",    "gold-plated", None, "Teleports the caster to a random location on the level",

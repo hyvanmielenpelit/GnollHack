@@ -1042,7 +1042,7 @@ struct materialcomponentlist matlists[] =
 	{ SPE_TURN_UNDEAD,
 	"Clove of garlic",
 	STRANGE_OBJECT,
-	5,
+	3,
 		{
 			{CLOVE_OF_GARLIC, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
 			NO_MATCOMP,
