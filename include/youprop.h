@@ -518,7 +518,9 @@
 #define EReflecting u.uprops[REFLECTING].extrinsic
 #define Reflecting (HReflecting || EReflecting)
 
-#define Free_action u.uprops[FREE_ACTION].extrinsic /* [Tom] */
+#define HFree_action u.uprops[FREE_ACTION].intrinsic
+#define EFree_action u.uprops[FREE_ACTION].extrinsic
+#define Free_action (HFree_action || EFree_action)
 
 #define Fixed_abil u.uprops[FIXED_ABIL].extrinsic /* KMH */
 

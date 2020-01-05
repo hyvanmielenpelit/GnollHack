@@ -1238,7 +1238,7 @@ register struct obj* omonwep;
                 Strcpy(buf, Monnam(mdef));
                 pline("%s is frozen by %s.", buf, mon_nam(magr));
             }
-            paralyze_monst(mdef, rnd(10));
+            paralyze_monst(mdef, 2 + rnd(8));
         }
         break;
     case AD_SLOW:

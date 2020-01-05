@@ -1818,18 +1818,26 @@ register struct obj* omonwep;
         break;
     case AD_PLYS:
         hitmsg(mtmp, mattk, dmg);
-        if (uncancelled && multi >= 0 && !rn2(3)) {
-            if (Free_action) {
-                You("momentarily stiffen.");
-            } else {
+        if (uncancelled && multi >= 0) 
+		{
+            if (Free_action) 
+			{
+				if(!HFree_action)
+	                You("momentarily stiffen.");
+            } 
+			else 
+			{
                 if (Blind)
                     You("are frozen!");
                 else
                     You("are frozen by %s!", mon_nam(mtmp));
                 nomovemsg = You_can_move_again;
-                nomul(-rnd(10));
+                nomul(-(rnd(8) + 2));
                 multi_reason = "paralyzed by a monster";
                 exercise(A_DEX, FALSE);
+
+				/* Now new paralysis for a while */
+				set_itimeout(&HFree_action, 20);
             }
         }
         break;
