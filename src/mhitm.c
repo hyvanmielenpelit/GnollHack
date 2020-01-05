@@ -471,12 +471,22 @@ register struct monst *magr, *mdef;
 						)
 					{
 						/* Shattering is done below, here just the message*/
+						boolean set_to_zero = FALSE;
 						if (omonwep->quan == 1)
+						{
+							set_to_zero = TRUE;
 							pline("%s %s shatters from the blow!", s_suffix(Monnam(magr)), xname(omonwep));
+						}
 						else
 							pline("One of %s %s shatters from the blow!", s_suffix(mon_nam(magr)), xname(omonwep));
 
 						m_useup(magr, omonwep);
+						if (set_to_zero)
+						{
+							omonwep = 0;
+							otmp = 0;
+							MON_WEP(magr) = 0;
+						}
 						endforloop = TRUE;
 					}
 					else if (omonwep && (objects[omonwep->otyp].oc_aflags & A1_ITEM_VANISHES_ON_HIT)
@@ -490,6 +500,11 @@ register struct monst *magr, *mdef;
 							m_useup(magr, omonwep);
 						else if (omonwep->where == OBJ_FREE)
 							obfree(omonwep, (struct obj*)0);
+
+						omonwep = 0;
+						otmp = 0;
+						MON_WEP(magr) = 0;
+
 						endforloop = TRUE;
 					}
 					if (does_split_upon_hit(mdef->data)

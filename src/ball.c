@@ -619,10 +619,14 @@ boolean allow_drag;
                 tmp = -2 + Luck + find_mac(victim);
                 tmp += omon_adj(victim, uball, TRUE);
 
+				boolean uball_destroyed = FALSE;
                 if (tmp >= dieroll)
-                    (void) hmon(victim, uball, HMON_DRAGGED, dieroll);
+                    (void) hmon(victim, uball, HMON_DRAGGED, dieroll, &uball_destroyed);
                 else
                     miss(xname(uball), victim);
+
+				if (uball_destroyed)
+					uball = 0;
 
             } /* now check again in case mon died */
             if (!m_at(uchain->ox, uchain->oy)) {

@@ -13,8 +13,6 @@ STATIC_DCL void NDECL(autoquiver);
 STATIC_DCL int FDECL(gem_accept, (struct monst *, struct obj *));
 STATIC_DCL void FDECL(tmiss, (struct obj *, struct monst *, BOOLEAN_P));
 STATIC_DCL int FDECL(throw_gold, (struct obj *));
-STATIC_DCL void FDECL(check_shop_obj, (struct obj *, XCHAR_P, XCHAR_P,
-                                       BOOLEAN_P));
 STATIC_DCL void FDECL(breakmsg, (struct obj *, BOOLEAN_P));
 STATIC_DCL boolean FDECL(toss_up, (struct obj *, BOOLEAN_P));
 STATIC_DCL void FDECL(sho_obj_return_to_u, (struct obj * obj));
@@ -1330,7 +1328,7 @@ int dx, dy, range;
     return;
 }
 
-STATIC_OVL void
+void
 check_shop_obj(obj, x, y, broken)
 struct obj *obj;
 xchar x, y;
@@ -2176,11 +2174,17 @@ register boolean is_golf;
                 u.uconduct.weaphit++;
 
 			//DAMAGE IS DONE HERE
-            if (hmon(mon, obj, hmode, dieroll)) 
+			boolean obj_destroyed = FALSE;
+            if (hmon(mon, obj, hmode, dieroll, &obj_destroyed)) 
 			{ /* mon still alive */
                 if (mon->wormno)
                     cutworm(mon, bhitpos.x, bhitpos.y, chopper);
             }
+			if (obj_destroyed)
+			{
+				obj = 0;
+				return 1;
+			}
             exercise(A_DEX, TRUE);
             /* if hero was swallowed and projectile killed the engulfer,
                'obj' got added to engulfer's inventory and then dropped,
@@ -2237,11 +2241,17 @@ register boolean is_golf;
             int was_swallowed = guaranteed_hit;
 
             exercise(A_DEX, TRUE);
-            if (!hmon(mon, obj, hmode, dieroll)) 
+			boolean obj_destroyed = FALSE;
+			boolean malive = hmon(mon, obj, hmode, dieroll, &obj_destroyed);
+			if (obj_destroyed)
+				obj = 0;
+			if (!malive)
 			{ /* mon killed */
+
                 if (was_swallowed && !u.uswallow && obj == uball)
                     return 1; /* already did placebc() */
             }
+
         } 
 		else 
 		{
@@ -2254,7 +2264,10 @@ register boolean is_golf;
         if (tmp >= dieroll) 
 		{
             exercise(A_DEX, TRUE);
-            (void) hmon(mon, obj, hmode, dieroll);
+			boolean obj_destroyed = FALSE;
+			(void) hmon(mon, obj, hmode, dieroll, &obj_destroyed);
+			if (obj_destroyed)
+				obj = 0;
         }
 		else 
 		{
@@ -2265,7 +2278,8 @@ register boolean is_golf;
 	else if ((otyp == EGG || otyp == CREAM_PIE || otyp == BLINDING_VENOM || otyp == ACID_VENOM)
                && (guaranteed_hit || ACURR(A_DEX) > rnd(25)))
 	{
-        (void) hmon(mon, obj, hmode, dieroll);
+		boolean obj_destroyed = FALSE;
+        (void) hmon(mon, obj, hmode, dieroll, &obj_destroyed);
         return 1; /* hmon used it up */
 
     } 

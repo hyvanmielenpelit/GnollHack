@@ -2683,7 +2683,10 @@ const char *verb;
                             mondied(mtmp);
                         }
                     } else {
-                        (void) hmon(mtmp, obj, HMON_THROWN, dieroll);
+						boolean obj_destroyed = FALSE;
+                        (void) hmon(mtmp, obj, HMON_THROWN, dieroll, &obj_destroyed);
+						if (obj_destroyed)
+							obj = 0;
                     }
                     if (!DEADMONSTER(mtmp) && !is_whirly(mtmp->data))
                         return FALSE; /* still alive */
@@ -2719,7 +2722,8 @@ const char *verb;
          */
         if ((t = t_at(x, y)) != 0)
             deltrap(t);
-        useupf(obj, 1L);
+		if(obj)
+	        useupf(obj, 1L);
         bury_objs(x, y);
         newsym(x, y);
         return TRUE;

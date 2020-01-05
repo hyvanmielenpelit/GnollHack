@@ -12,7 +12,7 @@ STATIC_DCL void FDECL(steal_it, (struct monst *, struct attack *));
 STATIC_DCL boolean FDECL(hitum_cleave, (struct monst *, struct attack *));
 STATIC_DCL boolean FDECL(hitum, (struct monst *, struct attack *));
 STATIC_DCL boolean FDECL(hmon_hitmon, (struct monst *, struct obj *, int,
-                                       int));
+                                       int, BOOLEAN_P*));
 STATIC_DCL int FDECL(joust, (struct monst *, struct obj *));
 STATIC_DCL void NDECL(demonpet);
 STATIC_DCL boolean FDECL(m_slips_free, (struct monst *, struct attack *));
@@ -501,7 +501,11 @@ int dieroll;
         /* we hit the monster; be careful: it might die or
            be knocked into a different location */
         notonhead = (mon->mx != bhitpos.x || mon->my != bhitpos.y);
-        malive = hmon(mon, weapon, HMON_MELEE, dieroll);
+		boolean obj_destroyed = FALSE;
+        malive = hmon(mon, weapon, HMON_MELEE, dieroll, &obj_destroyed);
+		if (obj_destroyed)
+			weapon = 0;
+
         if (malive) 
 		{
             /* monster still alive */
@@ -719,17 +723,18 @@ struct attack *uattk;
 
 /* general "damage monster" routine; return True if mon still alive */
 boolean
-hmon(mon, obj, thrown, dieroll)
+hmon(mon, obj, thrown, dieroll, obj_destroyed)
 struct monst *mon;
 struct obj *obj;
 int thrown; /* HMON_xxx (0 => hand-to-hand, other => ranged) */
 int dieroll;
+boolean* obj_destroyed;
 {
     boolean result, anger_guards;
 
     anger_guards = (mon->mpeaceful
                     && (mon->ispriest || mon->isshk || is_watch(mon->data)));
-    result = hmon_hitmon(mon, obj, thrown, dieroll);
+    result = hmon_hitmon(mon, obj, thrown, dieroll, obj_destroyed);
     if (mon->ispriest && !rn2(2))
         ghod_hitsu(mon);
     if (anger_guards)
@@ -739,11 +744,12 @@ int dieroll;
 
 /* guts of hmon() */
 STATIC_OVL boolean
-hmon_hitmon(mon, obj, thrown, dieroll)
+hmon_hitmon(mon, obj, thrown, dieroll, obj_destroyed)
 struct monst *mon;
 struct obj *obj;
 int thrown; /* HMON_xxx (0 => hand-to-hand, other => ranged) */
 int dieroll;
+boolean* obj_destroyed;
 {
 	int tmp = 0, extratmp = 0;
 	struct permonst* mdat = mon->data;
@@ -773,7 +779,8 @@ int dieroll;
 	boolean isdisintegrated = FALSE;
 	int critstrikeroll = rn2(100);
 	boolean is_golf_swing_with_stone = (thrown == HMON_GOLF && obj && uwep && (obj->oclass == GEM_CLASS || objects[obj->otyp].oc_skill == -P_SLING) && uwep->otyp == GOLF_CLUB);
-
+	int mx = mon->mx;
+	int my = mon->my;
 
 	int jousting = 0;
 	long silverhit = 0L;
@@ -1855,6 +1862,13 @@ int dieroll;
 			pline("%s from the blow!", Yobjnam2(obj, "shatter"));
 		else
 			pline("One of %s shatters from the blow!", yname(obj));
+
+		if (obj->oclass == GEM_CLASS)
+		{
+			if (obj->dknown && !objects[obj->otyp].oc_name_known
+				&& !objects[obj->otyp].oc_uname)
+				docall(obj);
+		}
 	}
 
 
@@ -2018,6 +2032,10 @@ int dieroll;
 		)
 	 ))
 	{
+		*obj_destroyed = TRUE;
+		if (*u.ushops || obj->unpaid)
+			check_shop_obj(obj, mx, my, TRUE);
+
 		if (obj->where == OBJ_INVENT)
 		{
 			if (obj->quan > 1)
@@ -2039,10 +2057,12 @@ int dieroll;
 			/* not useupf(), which charges */
 			delobj(obj);
 			newsym(x, y);
+			obj = (struct obj*)0;
 		}
 		else if (obj->where == OBJ_FREE)
 		{
 			obfree(obj, (struct obj*)0);
+			obj = (struct obj*)0;
 		}
 		update_inventory();
 	}

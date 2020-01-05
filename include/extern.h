@@ -627,6 +627,7 @@ E boolean FDECL(hurtle_jump, (genericptr_t, int, int));
 E boolean FDECL(hurtle_step, (genericptr_t, int, int));
 
 E void FDECL(get_multishot_stats, (struct monst*, struct obj*, struct obj*, BOOLEAN_P, int*, int*));
+E void FDECL(check_shop_obj, (struct obj*, XCHAR_P, XCHAR_P, BOOLEAN_P));
 
 
 /* ### do_wear.c ### */
@@ -2719,7 +2720,7 @@ E void FDECL(check_caitiff, (struct monst *));
 E int FDECL(find_roll_to_hit, (struct monst *, UCHAR_P, struct obj *,
                                int *, int *));
 E boolean FDECL(attack, (struct monst *));
-E boolean FDECL(hmon, (struct monst *, struct obj *, int, int));
+E boolean FDECL(hmon, (struct monst *, struct obj *, int, int, BOOLEAN_P*));
 E int FDECL(damageum, (struct monst *, struct attack *, int));
 E void FDECL(missum, (struct monst *, struct attack *, BOOLEAN_P));
 E int FDECL(passive, (struct monst *, struct obj *, BOOLEAN_P, int,
