@@ -846,7 +846,6 @@ struct obj *obj;
             u.uhave.questart = 1;
             artitouch(obj);
         }
-        set_artifact_intrinsic(obj, 1, W_ARTIFACT_CARRIED);
     }
 
 	/* "special achievements" aren't discoverable during play, they
@@ -1465,7 +1464,6 @@ struct obj *obj;
                 impossible("don't have quest artifact?");
             u.uhave.questart = 0;
         }
-        set_artifact_intrinsic(obj, 0, W_ARTIFACT_CARRIED);
     }
 
 	if (objects[obj->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED) {

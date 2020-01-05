@@ -90,7 +90,7 @@
 #define Mind_shielding (HMind_shielding || EMind_shielding)
 
 
-/* Hxxx due to FROM_FORM only */
+/* More resistances */
 #define HAntimagic u.uprops[ANTIMAGIC].intrinsic
 #define EAntimagic u.uprops[ANTIMAGIC].extrinsic
 #define Antimagic (HAntimagic || EAntimagic)
@@ -103,11 +103,13 @@
 #define EStone_resistance u.uprops[STONE_RES].extrinsic
 #define Stone_resistance (HStone_resistance || EStone_resistance)
 
-/* Intrinsics only */
 #define HSick_resistance u.uprops[SICK_RES].intrinsic
-#define Sick_resistance (HSick_resistance || defends(AD_DISE, uwep))
+#define ESick_resistance u.uprops[SICK_RES].extrinsic
+#define Sick_resistance (HSick_resistance || ESick_resistance)
 
-#define Invulnerable u.uprops[INVULNERABLE].intrinsic /* [Tom] */
+#define HInvulnerable u.uprops[INVULNERABLE].intrinsic
+#define EInvulnerable u.uprops[INVULNERABLE].extrinsic
+#define Invulnerable (HInvulnerable || EInvulnerable)
 
 
 /*** Troubles ***/
@@ -522,7 +524,9 @@
 #define EFree_action u.uprops[FREE_ACTION].extrinsic
 #define Free_action (HFree_action || EFree_action)
 
-#define Fixed_abil u.uprops[FIXED_ABIL].extrinsic /* KMH */
+#define HFixed_abil u.uprops[FIXED_ABIL].intrinsic
+#define EFixed_abil u.uprops[FIXED_ABIL].extrinsic
+#define Fixed_abil (HFixed_abil || EFixed_abil)
 
 #define HLifesaved u.uprops[LIFESAVED].intrinsic
 #define ELifesaved u.uprops[LIFESAVED].extrinsic

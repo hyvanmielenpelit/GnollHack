@@ -1470,15 +1470,6 @@ unsigned trflags;
             /* give Magicbane wielder dose of own medicine */
             if ((uwep && uwep->oartifact == ART_MAGICBANE) || (uarms && uarms->oartifact == ART_MAGICBANE))
                 dmgval2 += rnd(4);
-            /* having an artifact--other than own quest one--which
-               confers magic resistance simply by being carried
-               also increases the effect */
-            for (otmp = invent; otmp; otmp = otmp->nobj)
-                if (otmp->oartifact && !is_quest_artifact(otmp)
-                    && defends_when_carried(AD_MAGM, otmp))
-                    break;
-            if (otmp)
-                dmgval2 += rnd(4);
             if (Passes_walls)
                 dmgval2 = (dmgval2 + 3) / 4;
 
@@ -2641,12 +2632,6 @@ register struct monst *mtmp;
 
                 if ((otmp = MON_WEP(mtmp)) != 0
                     && otmp->oartifact == ART_MAGICBANE)
-                    dmgval2 += rnd(4);
-                for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
-                    if (otmp->oartifact
-                        && defends_when_carried(AD_MAGM, otmp))
-                        break;
-                if (otmp)
                     dmgval2 += rnd(4);
                 if (passes_walls(mptr))
                     dmgval2 = (dmgval2 + 3) / 4;

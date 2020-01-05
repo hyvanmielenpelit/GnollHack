@@ -174,7 +174,11 @@ struct monst *mon;
         slotmask |= W_SWAPWEP;
     for (; o; o = o->nobj)
         if (((o->owornmask & slotmask) != 0L
-             && (objects[o->otyp].oc_oprop == BLINDED || objects[o->otyp].oc_oprop2 == BLINDED || objects[o->otyp].oc_oprop3 == BLINDED))
+             && (
+				  objects[o->otyp].oc_oprop == BLINDED || objects[o->otyp].oc_oprop2 == BLINDED || objects[o->otyp].oc_oprop3 == BLINDED
+				  || objects[o->otyp].oc_oprop == FLASH_RES || objects[o->otyp].oc_oprop2 == FLASH_RES || objects[o->otyp].oc_oprop3 == FLASH_RES
+				)
+			)
             || (o->oartifact && defends_when_carried(AD_BLND, o)))
             return TRUE;
     return FALSE;

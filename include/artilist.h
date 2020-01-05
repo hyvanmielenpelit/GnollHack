@@ -18,17 +18,17 @@ static const char *artifact_names[] = {
     }
 
 /* clang-format off */
-#define     NO_ATTK     {0,0,0,0,0}               /* no attack */
-#define     NO_DFNS     {0,0,0,0,0}               /* no defense */
-#define     NO_CARY     {0,0,0,0,0}               /* no carry effects */
-#define     DFNS(c)     {0,c,0,0,0}
-#define     CARY(c)     {0,c,0,0,0}
-#define     PHYS(a,b)   {0,AD_PHYS,a,b,0}         /* physical */
-#define     DRLI(a,b)   {0,AD_DRLI,a,b,0}         /* life drain */
-#define     COLD(a,b)   {0,AD_COLD,a,b,0}
-#define     FIRE(a,b)   {0,AD_FIRE,a,b,0}
-#define     ELEC(a,b)   {0,AD_ELEC,a,b,0}         /* electrical shock */
-#define     STUN(a,b)   {0,AD_STUN,a,b,0}         /* magical attack */
+#define     NO_ATTK     {0,0,0,0,0,0}               /* no attack */
+#define     NO_DFNS     {0,0,0,0,0,0}               /* no defense */
+#define     NO_CARY     {0,0,0,0,0,0}               /* no carry effects */
+#define     DFNS(c)     {0,c,0,0,0,0}
+#define     CARY(c)     {0,c,0,0,0,0}
+#define     PHYS(a,b)   {0,AD_PHYS,a,b,0,0}         /* physical */
+#define     DRLI(a,b)   {0,AD_DRLI,a,b,0,0}         /* life drain */
+#define     COLD(a,b)   {0,AD_COLD,a,b,0,0}
+#define     FIRE(a,b)   {0,AD_FIRE,a,b,0,0}
+#define     ELEC(a,b)   {0,AD_ELEC,a,b,0,0}         /* electrical shock */
+#define     STUN(a,b)   {0,AD_STUN,a,b,0,0}         /* magical attack */
 /* clang-format on */
 
 #define ARTDMG_DOUBLE_DAMAGE -1

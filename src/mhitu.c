@@ -1787,7 +1787,7 @@ register struct obj* omonwep;
         break;
     case AD_DRIN:
         hitmsg(mtmp, mattk, dmg);
-        if (defends(AD_DRIN, uwep) || !has_head(youmonst.data)) {
+        if (Brain_protection || !has_head(youmonst.data)) {
             You("don't seem harmed.");
             /* Not clear what to do for green slimes */
             break;
@@ -1994,7 +1994,8 @@ register struct obj* omonwep;
     case AD_WERE:
         hitmsg(mtmp, mattk, dmg);
         if (uncancelled /* && !rn2(4)*/ && u.ulycn == NON_PM
-            && !Protection_from_shape_changers && !Lycanthropy_resistance && !defends(AD_WERE, uwep)) {
+            && !Protection_from_shape_changers && !Lycanthropy_resistance)
+		{
             You_feel("feverish.");
             exercise(A_CON, FALSE);
             set_ulycn(monsndx(mdat));
@@ -2271,18 +2272,18 @@ register struct obj* omonwep;
 		break;
     case AD_SLOW:
         hitmsg(mtmp, mattk, dmg);
-        if (uncancelled && HFast && !defends(AD_SLOW, uwep) && !rn2(4))
+        if (uncancelled && HFast)
             u_slow_down();
         break;
     case AD_DREN:
         hitmsg(mtmp, mattk, -1);
-        if (uncancelled && !rn2(4)) /* 25% chance */
+        if (uncancelled)
             drain_en(dmg);
         dmg = 0;
         break;
     case AD_CONF:
         hitmsg(mtmp, mattk, -1);
-        if (!mtmp->mcancelled && !rn2(4) && !mtmp->mspec_used) {
+        if (!mtmp->mcancelled && !mtmp->mspec_used) {
             mtmp->mspec_used = mtmp->mspec_used + (dmg + rn2(6));
             if (Confusion)
                 You("are getting even more confused.");
@@ -2953,7 +2954,7 @@ boolean ufound;
 		if(mattk->damn > 0 && mattk->damd > 0)
 			tmp += d((int)mattk->damn, (int)mattk->damd);
 		tmp += (int)mattk->damp;
-		boolean not_affected = defends((int) mattk->adtyp, uwep);
+		boolean not_affected = 0;
 
         hitmsg(mtmp, mattk, -1);
 

@@ -572,47 +572,6 @@ struct obj *otmp;
     return FALSE;
 }
 
-/* determine whether an item confers Protection */
-boolean
-protects(otmp, being_worn)
-struct obj *otmp;
-boolean being_worn;
-{
-    const struct artifact *arti;
-
-	boolean inappr = inappropriate_character_type(otmp);
-
-    if ((being_worn || objects[otmp->otyp].oc_pflags & P1_POWER_1_APPLIES_WHEN_CARRIED)
-		&& ((!inappr && !(objects[otmp->otyp].oc_pflags & P1_POWER_1_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
-			|| (objects[otmp->otyp].oc_pflags & P1_POWER_1_APPLIES_TO_ALL_CHARACTERS)
-			|| (inappr && (objects[otmp->otyp].oc_pflags & P1_POWER_1_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
-			)
-		&& (objects[otmp->otyp].oc_oprop == PROTECTION))
-        return TRUE;
-
-	if ((being_worn || objects[otmp->otyp].oc_pflags & P1_POWER_2_APPLIES_WHEN_CARRIED)
-		&& ((!inappr && !(objects[otmp->otyp].oc_pflags & P1_POWER_2_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
-			|| (objects[otmp->otyp].oc_pflags & P1_POWER_2_APPLIES_TO_ALL_CHARACTERS)
-			|| (inappr && (objects[otmp->otyp].oc_pflags & P1_POWER_2_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
-			)
-		&& (objects[otmp->otyp].oc_oprop2 == PROTECTION))
-		return TRUE;
-
-	if ((being_worn || objects[otmp->otyp].oc_pflags & P1_POWER_3_APPLIES_WHEN_CARRIED)
-		&& ((!inappr && !(objects[otmp->otyp].oc_pflags & P1_POWER_3_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
-			|| (objects[otmp->otyp].oc_pflags & P1_POWER_3_APPLIES_TO_ALL_CHARACTERS)
-			|| (inappr && (objects[otmp->otyp].oc_pflags & P1_POWER_3_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
-			)
-		&& (objects[otmp->otyp].oc_oprop3 == PROTECTION))
-		return TRUE;
-
-	arti = get_artifact(otmp);
-    if (!arti)
-        return FALSE;
-    return (boolean) ((arti->cspfx & SPFX_PROTECT) != 0
-                      || (being_worn && (arti->spfx & SPFX_PROTECT) != 0));
-}
-
 /*
  * a potential artifact has just been worn/wielded/picked-up or
  * unworn/unwielded/dropped.  Pickup/drop only set/reset the W_ARTIFACT_CARRIED mask.
@@ -653,6 +612,10 @@ long wp_mask;
         mask = &EDrain_resistance;
 	else if (dtyp == AD_WERE)
 		mask = &ELycanthropy_resistance;
+	else if (dtyp == AD_BLND)
+		mask = &EFlash_resistance;
+	else if (dtyp == AD_DISE)
+		mask = &ESick_resistance;
 
     if (mask && wp_mask == W_ARTIFACT_CARRIED && !on) {
         /* find out if some other artifact also confers this intrinsic;
