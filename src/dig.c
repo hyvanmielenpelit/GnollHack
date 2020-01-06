@@ -407,7 +407,7 @@ dig(VOID_ARGS)
 
 				/* Wood */
 				struct obj* otmp = mksobj_at(PIECE_OF_WOOD, dpx, dpy, FALSE, FALSE);
-				otmp->quan = d(1, 4);
+				otmp->quan = d(1, 3);
 				otmp->owt = weight(otmp);
 
 				/* Possibly some fruits */

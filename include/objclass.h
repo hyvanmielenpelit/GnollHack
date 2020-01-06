@@ -744,11 +744,11 @@ struct objclass {
 /* Artifact flags - to do: Attack type, half physical and spell damage, bonus to monsters only */
 /* Flags 3 */
 #define O3_NONE										0x00000000
-#define O3_NO_WISH									0x00000001  /* item is special, it cannot be wished for, mimics oc_nowish */
-#define O3_UNIQUE									0x00000002  /* the item is unique, mimics oc_unique */
+#define O3_NO_GENERATION							0x00000001  /* item is not generated normally */
+#define O3_NO_WISH									0x00000002  /* item is special, it cannot be wished for, mimics oc_nowish */
+#define O3_UNIQUE									0x00000004  /* the item is unique, mimics oc_unique */
 
-#define O3_GENERATED_WITH_DOUBLE_SPE					0x00000004  /* the item is unique, mimics oc_unique */
-/* free bit */
+#define O3_GENERATED_WITH_DOUBLE_SPE					0x00000008  /* the item is unique, mimics oc_unique */
 /* free bit */
 /* free bit */
 /* free bit */

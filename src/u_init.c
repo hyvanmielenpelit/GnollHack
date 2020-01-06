@@ -1548,6 +1548,24 @@ register struct trobj *trop;
 				otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
 				(void)add_to_container(obj, otmp);
 
+
+				/* Add some food */
+				for (int i = 1; i <= 2; i++)
+				{
+					otmp = mksobj(!rn2(3) ? CHANTERELLE : !rn2(2) ? CHAMPIGNON : PENNY_BUN, TRUE, FALSE, TRUE);
+					knows_object(otmp->otyp);
+					otmp->known = 1;
+					otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
+					(void)add_to_container(obj, otmp);
+				}
+
+				otmp = mksobj(SLIME_MOLD, TRUE, FALSE, TRUE);
+				knows_object(otmp->otyp);
+				otmp->known = 1;
+				otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
+				(void)add_to_container(obj, otmp);
+
+
 				/* Add arrows for magic arrow */
 				otmp = mksobj(ARROW, FALSE, FALSE, TRUE);
 				otmp->quan = 2 + rnd(5);

@@ -177,6 +177,7 @@ struct obj *otmp;
             miss(zap_type_text, mtmp);
         learn_it = TRUE;
         break;
+	case SPE_SHOCKING_TOUCH:
 	case SPE_MAGIC_ARROW:
 		reveal_invis = TRUE;
 		if (disguised_mimic)
@@ -2776,6 +2777,7 @@ struct obj *obj, *otmp;
         case SPE_EXTRA_HEALING:
 		case SPE_GREATER_HEALING:
 		case SPE_FULL_HEALING:
+		case SPE_SHOCKING_TOUCH:
 		case SPE_TOUCH_OF_DEATH:
 		case SPE_TOUCH_OF_PETRIFICATION:
 		case SPE_FLESH_TO_STONE:
@@ -3527,6 +3529,20 @@ boolean ordinary;
 		exercise(A_STR, FALSE);
 		break;
 
+	case SPE_SHOCKING_TOUCH:
+		learn_it = TRUE;
+		if (!Shock_resistance && !Invulnerable) {
+			You("shock yourself!");
+			exercise(A_CON, FALSE);
+			damage = d(1, 4);
+		}
+		else {
+			shieldeff(u.ux, u.uy);
+			You("shock yourself, but seem unharmed.");
+			ugolemeffects(AD_ELEC, damage);
+			damage = 0;
+		}
+		break;
 	case SPE_LIGHTNING_BOLT:
 	case WAN_LIGHTNING:
         learn_it = TRUE;
@@ -3543,7 +3559,6 @@ boolean ordinary;
         destroy_item(RING_CLASS, AD_ELEC);
         (void) flashburn((long) rnd(100));
         break;
-
 	case SPE_FIREBALL:
 		You("explode a fireball on top of yourself!");
         explode(u.ux, u.uy, RAY_FIRE, damage, obj->otyp, obj->oclass, EXPL_FIERY);
@@ -4063,6 +4078,7 @@ struct obj *obj; /* wand or spell */
     case SPE_POLYMORPH:
     case WAN_STRIKING:
     case SPE_FORCE_BOLT:
+	case SPE_SHOCKING_TOUCH:
 	case SPE_TOUCH_OF_DEATH:
 	case SPE_TOUCH_OF_PETRIFICATION:
 	case SPE_FLESH_TO_STONE:

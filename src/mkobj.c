@@ -282,11 +282,13 @@ char oclass;
 {
 	int i = 0;
 
-	boolean unacceptable = FALSE;
 	int randomizationclass = rn2(4);
 
 	for (int tryct = 0; tryct < 50; tryct++)
 	{
+		boolean unacceptable = FALSE;
+		boolean breakforloop = TRUE;
+
 		int prob = rnd(1000);
 		i = bases[(int)oclass];
 		while ((prob -= objects[i].oc_prob) > 0)
@@ -294,6 +296,12 @@ char oclass;
 
 		if (objects[i].oc_class != oclass || !OBJ_NAME(objects[i]))
 			panic("probtype error, oclass=%d i=%d", (int)oclass, i);
+
+		if (objects[i].oc_flags3 & O3_NO_GENERATION)
+		{
+			i = 0;
+			continue; /* new try */
+		}
 
 		/* Special code generating more relevant spellbooks */
 		if (oclass == SPBOOK_CLASS && randomizationclass < 3)
@@ -333,41 +341,40 @@ char oclass;
 			default:
 				break;
 			}
-		}
 
-		if (!unacceptable)
-		{
-			boolean alreadyknown = FALSE;
-			boolean breakforloop = TRUE;
 
-			for (int j = 0; i < MAXSPELL && spellid(j) != NO_SPELL; j++)
+			if (!unacceptable)
 			{
-				if (spellid(j) == i)
+				boolean alreadyknown = FALSE;
+
+				for (int j = 0; i < MAXSPELL && spellid(j) != NO_SPELL; j++)
 				{
-					alreadyknown = TRUE;
+					if (spellid(j) == i)
+					{
+						alreadyknown = TRUE;
+					}
+				}
+
+				if (alreadyknown)
+				{
+					switch (rn2(3))
+					{
+					case 0: /* pick another item from the same randomization class */
+						breakforloop = FALSE;
+						break;
+					case 1: /* pick another item from new randomized randomization class */
+						randomizationclass = rn2(4);
+						breakforloop = FALSE;
+						break;
+					case 2: /* we make a spellbook for a spell that the player already knows */
+						breakforloop = TRUE;
+						break;
+					}
 				}
 			}
-
-			if (alreadyknown)
-			{
-				switch (rn2(3))
-				{
-				case 0: /* pick another item from the same randomization class */
-					breakforloop = FALSE;
-					break;
-				case 1: /* pick another item from new randomized randomization class */
-					randomizationclass = rn2(4);
-					breakforloop = FALSE;
-					break;
-				case 2: /* we make a spellbook for a spell that the player already knows */
-					breakforloop = TRUE;
-					break;
-				}
-			}
-
-			if (breakforloop)
-				break; /* stop the for loop and make the item */
 		}
+		if (breakforloop)
+			break; /* stop the for loop and make the item */
 	}
 
 	return i;

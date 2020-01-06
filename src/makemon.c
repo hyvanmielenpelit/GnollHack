@@ -938,8 +938,8 @@ register struct monst *mtmp;
 	switch (ptr->mlet) 
 	{
 	case S_DOG:
-		if(!rn2(6))
-			(void)mongets(mtmp, BONE);
+		if(!rn2(7))
+			(void)mon_gets_noinit_item(mtmp, BONE, 1);
 		break;
 	case S_HUMAN:
 		if (is_mercenary(ptr)) {
@@ -2997,6 +2997,34 @@ int otyp;
     }
     return 0;
 }
+
+struct obj*
+mon_gets_noinit_item(mtmp, otyp, number)
+struct monst* mtmp;
+int otyp;
+int number;
+{
+	struct obj* otmp;
+
+	if (!otyp || !mtmp || number <= 0)
+		return (struct obj*)0;
+
+	otmp = mksobj(otyp, FALSE, FALSE, FALSE);
+	
+	if (otmp) 
+	{
+		if(objects[otmp->otyp].oc_merge && number > 1)
+		{
+			otmp->quan = number;
+			otmp->owt = weight(otmp);
+		}
+		(void)mpickobj(mtmp, otmp); /* might free otmp */
+		return otmp;
+	}
+
+	return (struct obj*)0;
+}
+
 
 int
 golemhp(type)

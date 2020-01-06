@@ -1266,6 +1266,7 @@ E int FDECL(mkclass_poly, (int));
 E int FDECL(adj_lev, (struct permonst *));
 E struct permonst *FDECL(grow_up, (struct monst *, struct monst *));
 E int FDECL(mongets, (struct monst *, int));
+E struct obj* FDECL(mon_gets_noinit_item, (struct monst*, int,  int));
 E int FDECL(mongetsgold, (struct monst*, long));
 E int FDECL(golemhp, (int));
 E boolean FDECL(peace_minded, (struct permonst *));
