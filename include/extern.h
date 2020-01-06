@@ -75,6 +75,7 @@ E int FDECL(get_artifact_id, (int, const char*));
 E int NDECL(nartifact_exist);
 E boolean FDECL(arti_immune, (struct obj *, int));
 E boolean FDECL(artifact_has_flag, (struct obj *, unsigned long));
+E boolean FDECL(artifact_confers_power, (struct obj*, int));
 E boolean FDECL(confers_luck, (struct obj *));
 E boolean FDECL(confers_unluck, (struct obj*));
 E boolean FDECL(artifact_confers_luck, (struct obj*));

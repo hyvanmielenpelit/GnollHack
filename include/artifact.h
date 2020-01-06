@@ -49,7 +49,7 @@
 /* wielded or carried special effects */
 #define SPFX_NONE				0x00000000L  /* No special effects, just a bonus */
 #define SPFX_SEEK				0x00000010L  /* Item helps you search for things */
-#define SPFX_WARN_OF_MON		0x00000020L  /* Item warns you of a specific monster type */
+#define SPFX_WARN_OF_MON		0x00000020L  /* Item warns you of a specific monster type; also always flickers */
 #define SPFX_SEARCH				0x00000040L  /* Helps searching */
 #define SPFX_HALRES				0x00000080L  /* Blocks hallucinations */
 #define SPFX_ESP				0x00000100L  /* ESP (like amulet of ESP) */

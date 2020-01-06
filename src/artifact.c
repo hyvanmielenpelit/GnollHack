@@ -321,6 +321,41 @@ unsigned long abil;
     return (boolean) (arti && (arti->aflags & abil) != 0L);
 }
 
+
+boolean
+artifact_confers_power(otmp, prop_index)
+struct obj* otmp;
+int prop_index;
+{
+	if (!otmp)
+		return FALSE;
+
+	const struct artifact* arti = get_artifact(otmp);
+	if (!arti)
+		return FALSE;
+
+	if ((arti->carried_prop == prop_index)
+		|| ((arti->worn_prop == prop_index)
+			&& (!is_weapon(otmp) || is_shield(otmp) ? (otmp->owornmask & W_WEAPON) : (otmp->owornmask & (W_ARMOR | W_ACCESSORY)))
+			)
+		)
+		return TRUE;
+
+	unsigned long abil = prop_to_spfx(prop_index);
+	boolean worn_mask_ok = FALSE;
+	if (is_weapon(otmp) || is_shield(otmp))
+		worn_mask_ok = !!(otmp->owornmask & W_WEAPON);
+	else
+		worn_mask_ok = !!(otmp->owornmask & (W_ARMOR | W_ACCESSORY));
+
+	if ((arti->cspfx & abil)
+		|| ((arti->spfx & abil)	&& worn_mask_ok))
+		return TRUE;
+
+	return FALSE;
+}
+
+
 /* used so that callers don't need to known about SPFX_ codes */
 boolean
 confers_luck(uitem)
@@ -2811,64 +2846,22 @@ struct obj* otmp;
 	if (!otmp)
 		return FALSE;
 
-	int otyp = otmp->otyp;
-
 	boolean res = (
-		objects[otyp].oc_oprop == WARN_ORC
-		|| objects[otyp].oc_oprop2 == WARN_ORC
-		|| objects[otyp].oc_oprop3 == WARN_ORC
-
-		|| objects[otyp].oc_oprop == WARN_DEMON
-		|| objects[otyp].oc_oprop2 == WARN_DEMON
-		|| objects[otyp].oc_oprop3 == WARN_DEMON
-
-		|| objects[otyp].oc_oprop == WARN_UNDEAD
-		|| objects[otyp].oc_oprop2 == WARN_UNDEAD
-		|| objects[otyp].oc_oprop3 == WARN_UNDEAD
-
-		|| objects[otyp].oc_oprop == WARN_TROLL
-		|| objects[otyp].oc_oprop2 == WARN_TROLL
-		|| objects[otyp].oc_oprop3 == WARN_TROLL
-
-		|| objects[otyp].oc_oprop == WARN_GIANT
-		|| objects[otyp].oc_oprop2 == WARN_GIANT
-		|| objects[otyp].oc_oprop3 == WARN_GIANT
-
-		|| objects[otyp].oc_oprop == WARN_DRAGON
-		|| objects[otyp].oc_oprop2 == WARN_DRAGON
-		|| objects[otyp].oc_oprop3 == WARN_DRAGON
-
-		|| objects[otyp].oc_oprop == WARN_ELF
-		|| objects[otyp].oc_oprop2 == WARN_ELF
-		|| objects[otyp].oc_oprop3 == WARN_ELF
-
-		|| objects[otyp].oc_oprop == WARN_DWARF
-		|| objects[otyp].oc_oprop2 == WARN_DWARF
-		|| objects[otyp].oc_oprop3 == WARN_DWARF
-
-		|| objects[otyp].oc_oprop == WARN_GNOLL
-		|| objects[otyp].oc_oprop2 == WARN_GNOLL
-		|| objects[otyp].oc_oprop3 == WARN_GNOLL
-
-		|| objects[otyp].oc_oprop == WARN_GNOME
-		|| objects[otyp].oc_oprop2 == WARN_GNOME
-		|| objects[otyp].oc_oprop3 == WARN_GNOME
-
-		|| objects[otyp].oc_oprop == WARN_OGRE
-		|| objects[otyp].oc_oprop2 == WARN_OGRE
-		|| objects[otyp].oc_oprop3 == WARN_OGRE
-
-		|| objects[otyp].oc_oprop == WARN_HUMAN
-		|| objects[otyp].oc_oprop2 == WARN_HUMAN
-		|| objects[otyp].oc_oprop3 == WARN_HUMAN
-
-		|| objects[otyp].oc_oprop == WARN_LYCANTHROPE
-		|| objects[otyp].oc_oprop2 == WARN_LYCANTHROPE
-		|| objects[otyp].oc_oprop3 == WARN_LYCANTHROPE
-
-		|| objects[otyp].oc_oprop == WARN_ANGEL
-		|| objects[otyp].oc_oprop2 == WARN_ANGEL
-		|| objects[otyp].oc_oprop3 == WARN_ANGEL);
+		worn_item_is_giving_power(otmp, WARN_OF_MON)
+		|| worn_item_is_giving_power(otmp, WARN_DEMON)
+		|| worn_item_is_giving_power(otmp, WARN_UNDEAD)
+		|| worn_item_is_giving_power(otmp, WARN_TROLL)
+		|| worn_item_is_giving_power(otmp, WARN_GIANT)
+		|| worn_item_is_giving_power(otmp, WARN_DRAGON)
+		|| worn_item_is_giving_power(otmp, WARN_ELF)
+		|| worn_item_is_giving_power(otmp, WARN_DWARF)
+		|| worn_item_is_giving_power(otmp, WARN_GNOME)
+		|| worn_item_is_giving_power(otmp, WARN_GNOLL)
+		|| worn_item_is_giving_power(otmp, WARN_OGRE)
+		|| worn_item_is_giving_power(otmp, WARN_HUMAN)
+		|| worn_item_is_giving_power(otmp, WARN_LYCANTHROPE)
+		|| worn_item_is_giving_power(otmp, WARN_ANGEL)
+		);
 
 	return res;
 }
@@ -2884,11 +2877,9 @@ int orc_count; /* new count, new count is in the items; OBSOLETE: (warn_obj_cnt 
 
 	int otyp = otmp->otyp;
 
-    if (otmp
-        && (otmp->oartifact == ART_STING
-            || otmp->oartifact == ART_ORCRIST
-            || otmp->oartifact == ART_GRIMTOOTH
-			|| item_has_specific_monster_warning(otmp)
+	if (otmp
+        && ((otmp->oartifact && artifact_confers_power(otmp, WARN_OF_MON))
+    		|| item_has_specific_monster_warning(otmp)
 			)) 
 	{
         int oldstr = glow_strength(otmp->detectioncount),
