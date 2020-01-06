@@ -345,18 +345,17 @@ toggle_blindness()
 			boolean inappr = inappropriate_character_type(uitem);
 			boolean worn = is_obj_worn(uitem);
 
-			if ((worn || (!worn && (objects[otyp].oc_pflags & O1_OFLAG_POWERS_APPLY_WHEN_CARRIED)))
+			if ((((worn || (!worn && (objects[otyp].oc_pflags & O1_OFLAG_POWERS_APPLY_WHEN_CARRIED)))
 				&& ((!inappr && !(objects[otyp].oc_pflags & (O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
 					|| (objects[otyp].oc_flags & O1_OFLAG_POWERS_APPLY_TO_ALL_CHARACTERS)
 					|| (inappr && (objects[otyp].oc_pflags & (O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
-					)
+					)) 
+					&& ((objects[otyp].oc_flags & O1_FLICKERS_WHEN_MONSTERS_DETECTED) && item_has_specific_monster_warning(uitem))
+				)
+				|| (uitem->oartifact && artifact_confers_power(uitem, WARN_OF_MON))
 				)
 			{
-				if (((objects[otyp].oc_flags & O1_FLICKERS_WHEN_MONSTERS_DETECTED) && item_has_specific_monster_warning(uitem))
-					|| uitem->oartifact == ART_STING || uitem->oartifact == ART_ORCRIST || uitem->oartifact == ART_GRIMTOOTH)
-				{
-					Sting_effects(uitem, -1);
-				}
+				Sting_effects(uitem, -1);
 			}
 		}
 	}

@@ -2539,7 +2539,7 @@ boolean
 artifact_light(obj)
 struct obj *obj;
 {
-    return (boolean) (obj && ((get_artifact(obj) && obj->oartifact == ART_SUNSWORD)));
+    return (boolean) (obj && obj->oartifact && artifact_has_flag(obj, AF_SHINES_MAGICAL_LIGHT));
 }
 
 /* KMH -- Talking artifacts are finally implemented */

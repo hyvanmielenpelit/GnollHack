@@ -22,7 +22,7 @@
 #define AF_PREVENTS_SUMMONING_OF_MON		0x00000800L  /* prevents summoning by specified monsters (like Demonbane) */
 #define AF_MONSTERS_CAN_TRACK_ARTIFACT		0x00001000L  /* Ditto */
 #define AF_ANGERS_DEMONS					0x00002000L  /* Ditto */
-/* free bit */
+#define AF_SHINES_MAGICAL_LIGHT				0x00004000L  /* shines like Sunsword */
 /* free bit */
 /* free bit */
 /* free bit */
