@@ -2716,11 +2716,11 @@ int mode, final, attrindx;
 	if (attrindx == A_STR)
 	{
 		int currstr = ACURR(A_STR);
-		int tohitbonus_constant = (currstr <= STR18(100) ? strength_tohit_bonus(min(18, currstr)) : strength_tohit_bonus(currstr));
-		int tohitbonus_random = ((currstr > 18 && currstr <= STR18(100)) ? 1 : 0);
-		int dmgbonus_constant = (currstr <= STR18(100) ? strength_damage_bonus(min(18, currstr)) : strength_damage_bonus(currstr));
-		int dmgbonus_random = ((currstr > 18 && currstr <= STR18(100)) ? 2 : 0);
-		int random_chance = ((currstr > 18 && currstr <= STR18(100)) ? currstr - 18 : 0);
+		int tohitbonus_constant = (currstr < STR18(100) ? strength_tohit_bonus(min(18, currstr)) : strength_tohit_bonus(currstr));
+		int tohitbonus_random = ((currstr > 18 && currstr < STR18(100)) ? 1 : 0);
+		int dmgbonus_constant = (currstr < STR18(100) ? strength_damage_bonus(min(18, currstr)) : strength_damage_bonus(currstr));
+		int dmgbonus_random = ((currstr > 18 && currstr < STR18(100)) ? 2 : 0);
+		int random_chance = ((currstr > 18 && currstr < STR18(100)) ? currstr - 18 : 0);
 		char tohitbuf[BUFSIZ] = "";
 		char dmgbuf[BUFSIZ] = "";
 
@@ -3069,7 +3069,7 @@ int final;
 		int hitbonus = weapon_skill_hit_bonus(uwep, wtype); /* Gives only pure skill bonuses */
 		int dmgbonus = weapon_skill_dmg_bonus(uwep, wtype); /* Gives only pure skill bonuses */
 
-        Sprintf(buf, "%s %s %s (%s%d to-hit and %s%d to damage)", sklvlbuf,
+        Sprintf(buf, "%s %s %s (%s%d to hit and %s%d to damage)", sklvlbuf,
                 hav ? "skill with" : "in", skill_name(wtype, TRUE), hitbonus >=0 ? "+" : "", hitbonus, dmgbonus >= 0 ? "+" : "", dmgbonus);
 
 		if (can_advance(wtype, FALSE))
@@ -3097,7 +3097,7 @@ int final;
 		int hitbonus = weapon_skill_hit_bonus(uwep, wtype); /* Gives only pure skill bonuses */
 		int dmgbonus = weapon_skill_dmg_bonus(uwep, wtype); /* Gives only pure skill bonuses */
 
-		Sprintf(buf, "%s %s %s (%s%d to-hit and %s%d to damage)", sklvlbuf,
+		Sprintf(buf, "%s %s %s (%s%d to hit and %s%d to damage)", sklvlbuf,
 			hav ? "skill with" : "in", skill_name(wtype, TRUE), hitbonus >= 0 ? "+" : "", hitbonus, dmgbonus >= 0 ? "+" : "", dmgbonus);
 
 		if (can_advance(wtype, FALSE))
@@ -3125,7 +3125,7 @@ int final;
 		int hitbonus = weapon_skill_hit_bonus(uwep, wtype); /* Gives only pure skill bonuses */
 		int dmgbonus = weapon_skill_dmg_bonus(uwep, wtype); /* Gives only pure skill bonuses */
 
-		Sprintf(buf, "%s %s %s (%s%d to-hit and %s%d to damage)", sklvlbuf,
+		Sprintf(buf, "%s %s %s (%s%d to hit and %s%d to damage)", sklvlbuf,
 			hav ? "skill with" : "in", skill_name(wtype, TRUE), hitbonus >= 0 ? "+" : "", hitbonus, dmgbonus >= 0 ? "+" : "", dmgbonus);
 
 		if (can_advance(wtype, FALSE))

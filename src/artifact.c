@@ -336,7 +336,7 @@ int prop_index;
 
 	if ((arti->carried_prop == prop_index)
 		|| ((arti->worn_prop == prop_index)
-			&& (!is_weapon(otmp) || is_shield(otmp) ? (otmp->owornmask & W_WEAPON) : (otmp->owornmask & (W_ARMOR | W_ACCESSORY)))
+			&& (!is_weapon(otmp) || is_shield(otmp) ? (otmp->owornmask & W_WIELDED_WEAPON) : (otmp->owornmask & (W_ARMOR | W_ACCESSORY)))
 			)
 		)
 		return TRUE;
@@ -344,7 +344,7 @@ int prop_index;
 	unsigned long abil = prop_to_spfx(prop_index);
 	boolean worn_mask_ok = FALSE;
 	if (is_weapon(otmp) || is_shield(otmp))
-		worn_mask_ok = !!(otmp->owornmask & W_WEAPON);
+		worn_mask_ok = !!(otmp->owornmask & W_WIELDED_WEAPON);
 	else
 		worn_mask_ok = !!(otmp->owornmask & (W_ARMOR | W_ACCESSORY));
 
