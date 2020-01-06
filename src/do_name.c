@@ -1749,6 +1749,7 @@ rndghostname()
  * a_monnam:    a newt          it      an invisible orc        Fido
  * m_monnam:    newt            xan     orc                     Fido
  * y_monnam:    your newt     your xan  your invisible orc      Fido
+ * Ymonnam:    Your newt     Your xan  Your invisible orc      Fido
  * noname_monnam(mon,article):
  *              article newt    art xan art invisible orc       art dog
  */
@@ -2054,6 +2055,14 @@ struct monst *mtmp;
                            : 0;
 
     return x_monnam(mtmp, prefix, (char *) 0, suppression_flag, FALSE);
+}
+
+/* pet name: "Your little dog" */
+char*
+Ymonnam(mtmp)
+struct monst* mtmp;
+{
+	return upstart(y_monnam(mtmp));
 }
 
 char *

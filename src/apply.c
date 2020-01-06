@@ -12,7 +12,6 @@ STATIC_DCL int FDECL(use_towel, (struct obj *));
 STATIC_DCL boolean FDECL(its_dead, (int, int, int *));
 STATIC_DCL int FDECL(use_stethoscope, (struct obj *));
 STATIC_DCL void FDECL(use_whistle, (struct obj *));
-STATIC_DCL void FDECL(use_magic_whistle, (struct obj *));
 STATIC_DCL int FDECL(use_leash, (struct obj *));
 STATIC_DCL int FDECL(use_mirror, (struct obj *));
 STATIC_DCL int FDECL(use_holysymbol, (struct obj*));
@@ -443,7 +442,7 @@ struct obj *obj;
         if (Deaf)
             You_feel("rushing air tickle your %s.",
                         body_part(NOSE));
-        else
+        else if(obj)
             You(whistle_str, obj->cursed ? "shrill" : "high");
         wake_nearby();
         if (obj->cursed)
@@ -451,15 +450,16 @@ struct obj *obj;
     }
 }
 
-STATIC_OVL void
+void
 use_magic_whistle(obj)
 struct obj *obj;
 {
-    register struct monst *mtmp, *nextmon;
+    register struct monst *mtmp, *nextmon, *selmon;
+	selmon = (struct monst*)0;
 
     if (!can_blow(&youmonst)) {
         You("are incapable of using the whistle.");
-    } else if (obj->cursed && !rn2(2)) {
+    } else if (obj && obj->cursed && !rn2(2)) {
         You("produce a %shigh-pitched humming noise.",
             Underwater ? "very " : "");
         wake_nearby();
@@ -467,10 +467,16 @@ struct obj *obj;
         int pet_cnt = 0, omx, omy;
 
         /* it's magic!  it works underwater too (at a higher pitch) */
-        You(whistle_str,
-            Hallucination ? "normal" : Underwater ? "strange, high-pitched"
+		if(obj)
+	        You(whistle_str,
+		        Hallucination ? "normal" : Underwater ? "strange, high-pitched"
                                                   : "strange");
-        for (mtmp = fmon; mtmp; mtmp = nextmon) {
+		else
+			Your("spell produces a %s whistling sound.",
+				Hallucination ? "normal" : Underwater ? "strange, high-pitched"
+				: "strange");
+		
+		for (mtmp = fmon; mtmp; mtmp = nextmon) {
             nextmon = mtmp->nmon; /* trap might kill mon */
             if (DEADMONSTER(mtmp))
                 continue;
@@ -492,6 +498,7 @@ struct obj *obj;
                 mnexto(mtmp);
                 if (mtmp->mx != omx || mtmp->my != omy) {
                     mtmp->mundetected = 0; /* reveal non-mimic hider */
+					selmon = mtmp;
                     if (canspotmon(mtmp))
                         ++pet_cnt;
                     if (mintrap(mtmp) == 2)
@@ -499,8 +506,18 @@ struct obj *obj;
                 }
             }
         }
-        if (pet_cnt > 0)
-            makeknown(obj->otyp);
+		if (pet_cnt > 0)
+		{
+			if(obj)
+				makeknown(obj->otyp);
+			else
+			{
+				if(pet_cnt == 1 && selmon)
+					pline("%s appears in a cloud of smoke!", Ymonnam(selmon));
+				else
+					Your("pets appear in a cloud of smoke!");
+			}
+		}
     }
 }
 

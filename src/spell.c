@@ -1385,7 +1385,7 @@ int spell;
 	}
 
 	/* Skill chance */
-	Sprintf(buf, "Skill chance: %d%%", objects[booktype].oc_spell_skill_chance);
+	Sprintf(buf, "Train chance: %d%%", objects[booktype].oc_spell_skill_chance);
 	txt = buf;
 	putstr(datawin, 0, txt);
 
@@ -1898,7 +1898,10 @@ boolean atme;
 	case SPE_CREATE_FAMILIAR:
         (void) make_familiar((struct obj *) 0, u.ux, u.uy, FALSE);
         break;
-    case SPE_CLAIRVOYANCE:
+	case SPE_SUMMONING_CALL:
+		use_magic_whistle((struct obj*) 0);
+		break;
+	case SPE_CLAIRVOYANCE:
         if (!BClairvoyant) {
             if (role_skill >= P_SKILLED)
                 pseudo->blessed = 1; /* detect monsters as well as map */

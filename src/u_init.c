@@ -740,7 +740,7 @@ static const struct def_skill Skill_W_Max[] = {
 
 static const struct def_skill Skill_W_Init_Chaotic[] = {
 	{ P_ARCANE_SPELL, P_BASIC },
-	{ P_NECROMANCY_SPELL, P_BASIC },
+	{ P_ENCHANTMENT_SPELL, P_BASIC },
 	{ P_NONE, 0 }
 };
 static const struct def_skill Skill_W_Init_NonChaotic[] = {

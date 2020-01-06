@@ -453,7 +453,7 @@ register struct obj* obj;
 			otyp = artilist[obj->oartifact].maskotyp;
 	}
 	
-	boolean stats_known = ((!obj->oartifact && objects[otyp].oc_name_known) || (obj->oartifact && obj->nknown && obj->aknown));
+	boolean stats_known = object_stats_known(obj);
 
 	char buf[BUFSZ];
 	char buf2[BUFSZ];
@@ -1021,8 +1021,7 @@ register struct obj* obj;
 		}
 	}
 
-	if (stats_known
-		&& objects[otyp].oc_class != SPBOOK_CLASS && objects[otyp].oc_class != WAND_CLASS &&
+	if (objects[otyp].oc_class != SPBOOK_CLASS && objects[otyp].oc_class != WAND_CLASS &&
 		(objects[otyp].oc_class == ARMOR_CLASS || (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || objects[otyp].oc_spell_casting_penalty != 0))
 	{
 		int splcaster = objects[otyp].oc_spell_casting_penalty;

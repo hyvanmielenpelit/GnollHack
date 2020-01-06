@@ -276,7 +276,7 @@ const char *materialnm[] = { "mysterious", "liquid",  "wax",        "vegetable",
                              "flesh",      "organic", "paper",      "cloth",   "silk",      "leather",
                              "wooden",     "bone",    "dragonhide", "iron",
                              "metal",      "copper",  "silver",     "gold",
-                             "platinum",   "orichalcum", "adamantine", "mithril", "plastic",    "glass",
+                             "platinum",   "orichalcum", "adamantium", "mithril", "plastic",    "glass",
                              "gemstone",   "stone",  "modronite",    "planar rift", "force field" };
 
 

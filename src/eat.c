@@ -2569,6 +2569,9 @@ struct obj *otmp;
 			TRUE ? -1 : 1);
 		break;
 	case EDIBLE_GAIN_CHARISMA:
+		if (otmp->otyp == AVOCADO)
+			pline("That made you feel like a hipster!");
+
 		(void)adjattrib(A_CHA, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1,
 			TRUE ? -1 : 1);
 		break;

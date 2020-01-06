@@ -876,11 +876,11 @@ mkgarden()
 						quan = rnd(3);
 						break;
 					case 2:
-						itemtype = HANDFUL_OF_SPINACH_LEAVES;
+						itemtype = rn2(3) ? CHAMPIGNON : HANDFUL_OF_SPINACH_LEAVES;
 						quan = 1;
 						break;
 					case 3:
-						itemtype = AVOCADO;
+						itemtype = rn2(4) ? PENNY_BUN : AVOCADO;
 						quan = 1;
 						break;
 					case 4:
@@ -928,15 +928,15 @@ mkgarden()
 						quan = rnd(2);
 						break;
 					case 15:
-						itemtype = PANTHER_CAP;
+						itemtype = rn2(4) ? CHANTERELLE : PANTHER_CAP;
 						quan = 1;
 						break;
 					case 16:
-						itemtype = BANANA;
+						itemtype = rn2(4) ? APPLE : BANANA;
 						quan = 1;
 						break;
 					case 17:
-						itemtype = POMEGRANATE;
+						itemtype = rn2(4) ? PEAR : POMEGRANATE;
 						quan = 1;
 						break;
 					default:

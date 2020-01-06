@@ -1814,7 +1814,7 @@ register struct obj *obj;
 					|| objects[contents->otyp].oc_material == MAT_GOLD
 					|| objects[contents->otyp].oc_material == MAT_PLATINUM
 					|| objects[contents->otyp].oc_material == MAT_MITHRIL
-					|| objects[contents->otyp].oc_material == MAT_ADAMANTINE
+					|| objects[contents->otyp].oc_material == MAT_ADAMANTIUM
 					|| objects[contents->otyp].oc_material == MAT_GEMSTONE
 					))
 				cwt += obj->cursed ? (weight(contents) * 2) : obj->blessed ? ((weight(contents) + 63) / 64)
@@ -1861,7 +1861,7 @@ register struct obj *obj;
     return (wt ? wt * (int) obj->quan : ((int) obj->quan + 1) >> 1);
 }
 
-static int treefruits[] = { APPLE, ORANGE, PEAR, BANANA, EUCALYPTUS_LEAF };
+static int treefruits[] = { APPLE, ORANGE, PEAR, BANANA, POMEGRANATE, EUCALYPTUS_LEAF };
 
 struct obj *
 rnd_treefruit_at(x, y)

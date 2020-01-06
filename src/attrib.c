@@ -61,8 +61,7 @@ static const struct innate
                  { 19, SEARCHING, "perceptive", "unaware" },
                  { 22, WARNING, "sensitive", "" },
                  { 25, TELEPORT_CONTROL, "controlled", "uncontrolled" },
-				 { 28, POLYMORPH_CONTROL, "more controlled", "less controlled" },
-				 { 31, DEATH_RES, "less mortal", "more mortal" },
+				 { 28, DEATH_RES, "less mortal", "more mortal" },
 				 { 0, 0, 0, 0 } },
 
   pri_abil[] = { { 12, WARN_UNDEAD, "sensitive to undead", "" },
@@ -99,7 +98,6 @@ static const struct innate
 
   wiz_abil[] = { { 15, ENHANCED_VISION, "studious", "" },
                  { 20, TELEPORT_CONTROL, "controlled", "uncontrolled" },
-				 { 25, POLYMORPH_CONTROL, "more controlled", "less controlled" },
 				 { 0, 0, 0, 0 } },
 
   /* Intrinsics conferred by race */

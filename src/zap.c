@@ -1957,7 +1957,7 @@ int okind;
 	case MAT_COPPER:
 	case MAT_PLATINUM:
 	case MAT_ORICHALCUM:
-	case MAT_ADAMANTINE:
+	case MAT_ADAMANTIUM:
 	case MAT_MITHRIL:
         pm_index = PM_IRON_GOLEM;
         material = "metal ";

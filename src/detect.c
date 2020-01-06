@@ -1702,9 +1702,16 @@ register int aflag; /* intrinsic autosearch vs explicit searching */
 		int fund = 0;
         if (Enhanced_vision && !Blind)
             fund += 2; /* JDS: lenses help searching */
-        if (fund > 5)
+		if (Searching)
+			fund += 1; /* JG: searching helps a little in finding hidden doors */
+		fund += (Luck + 1) / 2; /* Luck moved here to be more consistent */
+
+		if (fund > 5)
             fund = 5;
-        for (x = u.ux - 1; x < u.ux + 2; x++)
+		else if (fund < -10)
+			fund = -10;
+
+		for (x = u.ux - 1; x < u.ux + 2; x++)
             for (y = u.uy - 1; y < u.uy + 2; y++) {
                 if (!isok(x, y))
                     continue;
@@ -1714,7 +1721,7 @@ register int aflag; /* intrinsic autosearch vs explicit searching */
                 if (Blind && !aflag)
                     feel_location(x, y);
                 if (levl[x][y].typ == SDOOR) {
-                    if (rnl(7 - fund))
+                    if (rn2(7 - fund))
                         continue;
                     cvt_sdoor_to_door(&levl[x][y]); /* .typ = DOOR */
                     exercise(A_WIS, TRUE);
@@ -1722,7 +1729,7 @@ register int aflag; /* intrinsic autosearch vs explicit searching */
                     feel_location(x, y); /* make sure it shows up */
                     You("find a hidden door.");
                 } else if (levl[x][y].typ == SCORR) {
-                    if (rnl(7 - fund))
+                    if (rn2(7 - fund))
                         continue;
                     levl[x][y].typ = CORR;
                     unblock_point(x, y); /* vision */

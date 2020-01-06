@@ -164,7 +164,7 @@ enum obj_material_types {
     MAT_GOLD        = 17, /* Au */
     MAT_PLATINUM    = 18, /* Pt */
 	MAT_ORICHALCUM	= 19,
-	MAT_ADAMANTINE  = 20,
+	MAT_ADAMANTIUM  = 20,
 	MAT_MITHRIL     = 21,
     MAT_PLASTIC     = 22,
     MAT_GLASS       = 23,

@@ -1369,9 +1369,12 @@ dokick()
                 && (treefruit = rnd_treefruit_at(x, y))) {
                 long nfruit = 8L - rnl(7), nfall;
                 short frtype = treefruit->otyp;
+				if (treefruit && (objects[treefruit->otyp].oc_edible_effect == EDIBLE_NO_EFFECT || objects[treefruit->otyp].oc_edible_effect == EDIBLE_APPLE))
+				{
+					treefruit->quan = nfruit;
+					treefruit->owt = weight(treefruit);
+				}
 
-                treefruit->quan = nfruit;
-                treefruit->owt = weight(treefruit);
                 if (is_plural(treefruit))
                     pline("Some %s fall from the tree!", xname(treefruit));
                 else

@@ -414,8 +414,11 @@ dig(VOID_ARGS)
 				if (!rn2(3))
 				{
 					struct obj* otmp = rnd_treefruit_at(dpx, dpy);
-					otmp->quan = rnd(16) + 4;
-					otmp->owt = weight(otmp);
+					if (otmp && (objects[otmp->otyp].oc_edible_effect == EDIBLE_NO_EFFECT || objects[otmp->otyp].oc_edible_effect == EDIBLE_APPLE))
+					{
+						otmp->quan = rnd(16) + 4;
+						otmp->owt = weight(otmp);
+					}
 				}
             } else {
                 digtxt = "You succeed in cutting away some rock.";
@@ -1370,8 +1373,11 @@ register struct monst *mtmp;
 		if (pile && pile < 5)
 		{
 			struct obj* otmp = rnd_treefruit_at(mtmp->mx, mtmp->my);
-			otmp->quan = rnd(16) + 4;
-			otmp->owt = weight(otmp);
+			if (otmp && (objects[otmp->otyp].oc_edible_effect == EDIBLE_NO_EFFECT || objects[otmp->otyp].oc_edible_effect == EDIBLE_APPLE))
+			{
+				otmp->quan = rnd(16) + 4;
+				otmp->owt = weight(otmp);
+			}
 		}
     } else {
         here->typ = CORR, here->flags = 0;
