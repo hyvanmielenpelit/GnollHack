@@ -648,12 +648,12 @@ struct materialcomponentlist matlists[] =
 	},
 
 	{ SPE_FLESH_TO_STONE,
-	"15 rocks, 3 clumps of bat guano",
+	"Jet stone, 2 bat guano",
 	STRANGE_OBJECT,
 	1,
 		{
-			{ROCK, NOT_APPLICABLE, 15, MATCOMP_NO_FLAGS},
-			{CLUMP_OF_BAT_GUANO, NOT_APPLICABLE, 3, MATCOMP_NO_FLAGS},
+			{JET, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
+			{CLUMP_OF_BAT_GUANO, NOT_APPLICABLE, 2, MATCOMP_NO_FLAGS},
 			NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
 		}
 	},
@@ -925,7 +925,7 @@ struct materialcomponentlist matlists[] =
 	},
 		
 	{ SPE_FIREBALL,
-	"Pinch of sulfurous ash, piece of wood",
+	"Sulfurous ash, wood",
 	STRANGE_OBJECT,
 	20,
 		{
@@ -948,13 +948,13 @@ struct materialcomponentlist matlists[] =
 	},
 
 	{ SPE_METEOR_SWARM,
-	"2 pinches of sulfurous ash, 4 rocks",
+	"Sulfurous ash, wood, 4 stones",
 	STRANGE_OBJECT,
 	10,
 		{
-			{PINCH_OF_SULFUROUS_ASH, NOT_APPLICABLE, 2, MATCOMP_NO_FLAGS},
-			{ROCK, NOT_APPLICABLE, 4, MATCOMP_NO_FLAGS},
-			NO_MATCOMP,
+			{PINCH_OF_SULFUROUS_ASH, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
+			{PIECE_OF_WOOD, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
+			{STONE_PEBBLE, NOT_APPLICABLE, 4, MATCOMP_NO_FLAGS},
 			NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
 		}
 	},
@@ -1224,11 +1224,11 @@ struct materialcomponentlist matlists[] =
 	},
 
 	{ SPE_ANIMATE_EARTH,
-	"5 rocks",
+	"Stone pebble",
 	STRANGE_OBJECT,
-	1,
+	3,
 		{
-			{ROCK, NOT_APPLICABLE, 5, MATCOMP_NO_FLAGS},
+			{STONE_PEBBLE, NOT_APPLICABLE, 5, MATCOMP_NO_FLAGS},
 			NO_MATCOMP,
 			NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
 		}
