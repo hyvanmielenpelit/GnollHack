@@ -2845,8 +2845,8 @@ boolean was_swallowed; /* digestion */
 
 	if(leaves_corpses_randomly(mdat))
 	{
-		tmp = 5; // +((mdat->geno & G_FREQ) < 2); // +verysmall(mdat);
-		return (boolean)!rn2(tmp);
+		boolean leavecorpse = !rn2(5);
+		return leavecorpse;
 	}
 
 	return TRUE;

@@ -1385,9 +1385,29 @@ boolean replaceundead;
 	if(animateintomon < 0)
 	{
 	    montype = corpse->corpsenm;
+		if (is_undead(&mons[montype]) && replaceundead)
+		{
+			/* Human and dwarf corpses etc. but others need to be replaced here are ok */
+			if (mons[montype].mlet == S_WRAITH)
+				montype = PM_HUMAN;
+			else if (montype == PM_VAMPIRE_MAGE)
+				montype = PM_WIZARD;
+			else if (montype == PM_SKELETON)
+				montype = PM_HUMAN;
+			else if (montype == PM_SKELETON_LORD)
+				montype = PM_HUMAN;
+			else if (montype == PM_SKELETON_KING)
+				montype = PM_HUMAN;
+			else if (montype == PM_GIANT_SKELETON)
+				montype = PM_GIANT;
+			else if (mons[montype].mlet == S_VAMPIRE)
+				montype = PM_HUMAN;
+		}
 	}
 	else
+	{
 		montype = animateintomon;
+	}
 
     mptr = &mons[montype];
     /* [should probably handle recorporealization first; if corpse and
@@ -2802,14 +2822,26 @@ struct obj *obj, *otmp;
 					ox = obj->ox, oy = obj->oy; /* won't happen */
 
 				mtmp = revive(obj, TRUE, -1, TRUE);
+
 				if (!mtmp) {
 					res = 0; /* no monster implies corpse was left intact */
 				}
 				else {
-					if (cansee(ox, oy)) {
-						if (canspotmon(mtmp)) {
-							pline("%s is resurrected!",
-								upstart(noname_monnam(mtmp, ARTICLE_THE)));
+					int newmnum = mtmp->mnum;
+
+					if (cansee(ox, oy))
+					{
+						if (canspotmon(mtmp)) 
+						{
+							boolean newcorpsetype = (corpsenm != newmnum && corpsenm > NON_PM);
+							char cbuf[BUFSZ] = "";
+							if (newcorpsetype && corpsname && strcmp(corpsname, ""))
+								Sprintf(cbuf, " from %s", the(corpsname));
+
+							pline("%s is resurrected%s!",
+								upstart(noname_monnam(mtmp, newcorpsetype ? ARTICLE_A : ARTICLE_THE)),
+								cbuf);
+
 							learn_it = TRUE;
 						}
 						else {
