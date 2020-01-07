@@ -163,23 +163,79 @@ struct obj *otmp;
         reveal_invis = TRUE;
         if (disguised_mimic)
             seemimic(mtmp);
-        if (resists_magicmissile(mtmp) || is_magic_resistant(mtmp) || Invulnerable) { /* match effect on player */
+        if (resists_magicmissile(mtmp) || is_magic_resistant(mtmp) || Invulnerable) 
+		{ /* match effect on player */
             shieldeff(mtmp->mx, mtmp->my);
             pline("Boing!");
             break; /* skip makeknown */
-        } else if (u.uswallow || 1) { //rnd(20) < 10 + find_mac(mtmp))
-			dmg = 0;
+        }
+		else if (u.uswallow || 1)
+		{ //rnd(20) < 10 + find_mac(mtmp))
 			dmg = d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus; //Spells do the same damage for small and big
 
-			//Deal the damage, resist will tell this separately
-			hit(zap_type_text, mtmp, exclam(dmg), 0);
-
+			/* resist deals the damage and displays the damage dealt */
+			hit(zap_type_text, mtmp, exclam(dmg), -1);
 			(void) resist(mtmp, otmp, 0, dmg, TELL);
-        } else
+
+        } 
+		else
             miss(zap_type_text, mtmp);
         learn_it = TRUE;
         break;
 	case SPE_SHOCKING_TOUCH:
+		res = 1;
+		reveal_invis = TRUE;
+		if (disguised_mimic)
+			seemimic(mtmp);
+		dmg = d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus;
+
+		if (resists_elec(mtmp))
+		{
+			shieldeff(mtmp->mx, mtmp->my);
+			pline("%s is unaffected by your touch!", Monnam(mtmp));
+			break;
+		}
+		/* resist deals the damage and displays the damage dealt */
+		hit(zap_type_text, mtmp, exclam(dmg), -1);
+		(void)resist(mtmp, otmp, 0, dmg, TELL);
+		learn_it = TRUE;
+		break;
+	case SPE_BURNING_HANDS:
+		res = 1;
+		reveal_invis = TRUE;
+		if (disguised_mimic)
+			seemimic(mtmp);
+		dmg = d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus;
+
+		if (resists_fire(mtmp))
+		{
+			shieldeff(mtmp->mx, mtmp->my);
+			pline("%s is unaffected by your touch!", Monnam(mtmp));
+			break;
+		}
+		/* resist deals the damage and displays the damage dealt */
+		hit(zap_type_text, mtmp, exclam(dmg), -1);
+		(void)resist(mtmp, otmp, 0, dmg, TELL);
+		learn_it = TRUE;
+		break;
+	case SPE_FREEZING_TOUCH:
+		res = 1;
+		reveal_invis = TRUE;
+		if (disguised_mimic)
+			seemimic(mtmp);
+		dmg = d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus;
+
+		if (resists_cold(mtmp))
+		{
+			shieldeff(mtmp->mx, mtmp->my);
+			pline("%s is unaffected by your touch!", Monnam(mtmp));
+			break;
+		}
+		/* resist deals the damage and displays the damage dealt */
+		hit(zap_type_text, mtmp, exclam(dmg), -1);
+		(void)resist(mtmp, otmp, 0, dmg, TELL);
+		learn_it = TRUE;
+		break;
 	case SPE_MAGIC_ARROW:
 		res = 1;
 		reveal_invis = TRUE;
@@ -190,9 +246,8 @@ struct obj *otmp;
 			dmg = 0;
 			dmg = d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus; //Same for small and big
 
-			//Deal the damage, resist will tell this separately
-			hit(zap_type_text, mtmp, exclam(dmg), 0);
-
+			/* resist deals the damage and displays the damage dealt */
+			hit(zap_type_text, mtmp, exclam(dmg), -1);
 			(void)resist(mtmp, otmp, 0, dmg, TELL);
 		}
 		else
@@ -3046,6 +3101,8 @@ struct obj *obj, *otmp;
 		case SPE_REPLENISH_UNDEATH:
 		case SPE_GREATER_UNDEATH_REPLENISHMENT:
 		case SPE_SHOCKING_TOUCH:
+		case SPE_BURNING_HANDS:
+		case SPE_FREEZING_TOUCH:
 		case SPE_TOUCH_OF_DEATH:
 		case SPE_TOUCH_OF_PETRIFICATION:
 		case SPE_FLESH_TO_STONE:
@@ -3826,14 +3883,44 @@ boolean ordinary;
 			exercise(A_CON, FALSE);
 			damage = d(1, 4);
 		}
-		else {
+		else
+		{
 			shieldeff(u.ux, u.uy);
 			You("shock yourself, but seem unharmed.");
 			ugolemeffects(AD_ELEC, damage);
 			damage = 0;
 		}
 		break;
-	case SPE_LIGHTNING_BOLT:
+	case SPE_BURNING_HANDS:
+		learn_it = TRUE;
+		if (!Fire_resistance && !Invulnerable) {
+			You("burn yourself!");
+			exercise(A_CON, FALSE);
+			damage = d(1, 4);
+		}
+		else
+		{
+			shieldeff(u.ux, u.uy);
+			You("burn yourself, but seem unharmed.");
+			ugolemeffects(AD_FIRE, damage);
+			damage = 0;
+		}
+		break;
+	case SPE_FREEZING_TOUCH:
+		learn_it = TRUE;
+		if (!Cold_resistance && !Invulnerable) {
+			You("freeze yourself!");
+			exercise(A_CON, FALSE);
+			damage = d(1, 4);
+		}
+		else
+		{
+			shieldeff(u.ux, u.uy);
+			You("freeze yourself, but seem unharmed.");
+			ugolemeffects(AD_COLD, damage);
+			damage = 0;
+		}
+	break;	case SPE_LIGHTNING_BOLT:
 	case WAN_LIGHTNING:
         learn_it = TRUE;
         if (!Shock_resistance && !Invulnerable) {
@@ -4386,6 +4473,8 @@ struct obj *obj; /* wand or spell */
     case WAN_STRIKING:
     case SPE_FORCE_BOLT:
 	case SPE_SHOCKING_TOUCH:
+	case SPE_BURNING_HANDS:
+	case SPE_FREEZING_TOUCH:
 	case SPE_TOUCH_OF_DEATH:
 	case SPE_TOUCH_OF_PETRIFICATION:
 	case SPE_FLESH_TO_STONE:
@@ -5000,15 +5089,17 @@ int damage;
          && !(u.uswallow && mtmp == u.ustuck)) || !flags.verbose)
 		if(damage >  0)
 	        pline("%s %s it for %d damage%s", The(str), vtense(str, "hit"), damage, force);
-		else
+		else if (!damage)
 			pline("%s %s it but %s no effect%s", The(str), vtense(str, "hit"), vtense(str, "have"), force);
+		else
+			pline("%s %s it%s", The(str), vtense(str, "hit"), force);
 	else
 		if (damage > 0)
-			pline("%s %s %s for %d damage%s", The(str), vtense(str, "hit"),
-              mon_nam(mtmp), damage, force);
+			pline("%s %s %s for %d damage%s", The(str), vtense(str, "hit"), mon_nam(mtmp), damage, force);
+		else if (!damage)
+			pline("%s %s %s but %s no effect%s", The(str), vtense(str, "hit"), mon_nam(mtmp), vtense(str, "have"), force);
 		else
-			pline("%s %s %s but %s no effect%s", The(str), vtense(str, "hit"),
-				mon_nam(mtmp), vtense(str, "have"), force);
+			pline("%s %s %s%s", The(str), vtense(str, "hit"), mon_nam(mtmp), force);
 }
 
 void
