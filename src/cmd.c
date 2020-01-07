@@ -2228,19 +2228,7 @@ int propindx; /* index of a property which can be conveyed by worn item */
 		if (!object_stats_known(o))
 			continue;
 
-		if (carried_item_is_giving_power(o, propindx))
-			return TRUE;
-
-		if (o->oartifact && (artilist[o->oartifact].carried_prop == propindx || (artilist[o->oartifact].cspfx & spfx)))
-			return TRUE;
-
-		if (o->oartifact && artilist[o->oartifact].inv_prop == propindx && o->invokeon)
-			return TRUE;
-
-        if (!o->owornmask)
-            continue;
-
-		if (worn_item_is_giving_power(o, propindx))
+		if (item_is_giving_power(o, propindx))
 			return TRUE;
     }
     return FALSE;

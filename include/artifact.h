@@ -22,9 +22,9 @@
 #define AF_PREVENTS_SUMMONING_OF_MON		0x00000800L  /* prevents summoning by specified monsters (like Demonbane) */
 #define AF_MONSTERS_CAN_TRACK_ARTIFACT		0x00001000L  /* Ditto */
 #define AF_ANGERS_DEMONS					0x00002000L  /* Ditto */
-#define AF_SHINES_MAGICAL_LIGHT				0x00004000L  /* shines like Sunsword */
-/* free bit */
-/* free bit */
+#define AF_SHINES_MAGICAL_LIGHT				0x00004000L  /* shines like Sunsword when wielded */
+#define AF_FLICKERS							0x00008000L  /* flickers like Sting */
+#define AF_FLICKERS_WHEN_CARRIED			0x00010000L  /* flickers also when just carried */
 /* free bit */
 /* free bit */
 /* free bit */
@@ -69,6 +69,8 @@
 #define SPFX_HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS \
 								0x00400000L  /* Ditto, for Mitre of Holiness */
 #define SPFX_WARNING			0x00800000L  /* Item warns you of danger */
+#define SPFX_ORC_WARNING		0x01000000L  /* Item warns you of orcs */
+#define SPFX_ELF_WARNING		0x02000000L  /* Item warns you of elves */
 
 struct artifact {
     short otyp;

@@ -2390,6 +2390,20 @@ register struct obj* obj;
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
+			if (specialeffect & SPFX_ORC_WARNING)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Warning of the presence of orcs %s", powercnt, endbuf);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (specialeffect & SPFX_ELF_WARNING)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Warning of the presence of elves %s", powercnt, endbuf);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
 			if (specialeffect & SPFX_WARNING)
 			{
 				powercnt++;

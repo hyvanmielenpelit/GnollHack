@@ -83,7 +83,7 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
 	 *		Added +1d5/+1d20 bonus against elves to improve the artifact, still does 3d3 to all targets from the base weapon --JG
      */
     A("Grimtooth", "runed crude dagger", ORNAMENTAL_ORCISH_DAGGER, ORCISH_DAGGER, 
-	  (AF_RESTR | AF_DFLAG2), SPFX_WARN_OF_MON, SPFX_NONE, M2_ELF, 
+	  (AF_RESTR | AF_DFLAG2 | AF_FLICKERS), SPFX_ELF_WARNING, SPFX_NONE, M2_ELF,
 	  1, 5, 0, PHYS(1, 20), NO_POWER, NO_POWER, NO_POWER, A_CHAOTIC, NON_PM, PM_ORC, 500L, 
 	  CLR_RED, NO_COLOR),
     /*
@@ -93,12 +93,12 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
      *      EWarn_of_mon for all monsters that have the M2_value flag.
      *      Sting and Orcrist will warn of M2_ORC monsters.
      */
-    A("Orcrist", "ornate runed broadsword", ELVEN_BROADSWORD, ELVEN_BROADSWORD, AF_DFLAG2, SPFX_WARN_OF_MON, SPFX_NONE, M2_ORC,
+    A("Orcrist", "ornate runed broadsword", ELVEN_BROADSWORD, ELVEN_BROADSWORD, (AF_DFLAG2 | AF_FLICKERS), SPFX_ORC_WARNING, SPFX_NONE, M2_ORC,
 	  1, 5, 0, PHYS(ARTDMG_TRIPLE_DAMAGE, 0), NO_POWER, NO_POWER, NO_POWER,
 	  A_CHAOTIC, NON_PM, PM_ELF, 2000L,
       CLR_BRIGHT_BLUE, NO_COLOR), /* bright blue is actually light blue */
 
-    A("Sting", "ornate runed dagger", ELVEN_RUNEDAGGER, ELVEN_DAGGER, (AF_DFLAG2), SPFX_WARN_OF_MON, SPFX_NONE, M2_ORC,
+    A("Sting", "ornate runed dagger", ELVEN_RUNEDAGGER, ELVEN_DAGGER, (AF_DFLAG2 | AF_FLICKERS), SPFX_ORC_WARNING, SPFX_NONE, M2_ORC,
 		 1, 5, 0, PHYS(ARTDMG_DOUBLE_DAMAGE, 0), NO_POWER, NO_POWER, NO_POWER, A_CHAOTIC, NON_PM, PM_ELF, 1000L, CLR_BRIGHT_BLUE, NO_COLOR),
     /*
      *      Magicbane is a bit different!  Its magic fanfare

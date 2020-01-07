@@ -4,6 +4,7 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
+#include "artifact.h"
 
 boolean notonhead = FALSE;
 
@@ -350,9 +351,11 @@ toggle_blindness()
 					|| (objects[otyp].oc_flags & O1_OFLAG_POWERS_APPLY_TO_ALL_CHARACTERS)
 					|| (inappr && (objects[otyp].oc_pflags & (O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
 					)) 
-					&& ((objects[otyp].oc_flags & O1_FLICKERS_WHEN_MONSTERS_DETECTED) && item_has_specific_monster_warning(uitem))
+					&& (
+						((objects[otyp].oc_flags & O1_FLICKERS_WHEN_MONSTERS_DETECTED) || artifact_has_flag(uitem, AF_FLICKERS) || artifact_has_flag(uitem, AF_FLICKERS_WHEN_CARRIED))
+						&& item_has_specific_monster_warning(uitem)
+					   )
 				)
-				|| (uitem->oartifact && artifact_confers_power(uitem, WARN_OF_MON))
 				)
 			{
 				Sting_effects(uitem, -1);

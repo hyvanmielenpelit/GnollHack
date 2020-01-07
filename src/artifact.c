@@ -334,6 +334,7 @@ int prop_index;
 	if (!arti)
 		return FALSE;
 
+	/* Normal wielded and carried properties */
 	if ((arti->carried_prop == prop_index)
 		|| ((arti->worn_prop == prop_index)
 			&& (!is_weapon(otmp) || is_shield(otmp) ? (otmp->owornmask & W_WIELDED_WEAPON) : (otmp->owornmask & (W_ARMOR | W_ACCESSORY)))
@@ -341,6 +342,11 @@ int prop_index;
 		)
 		return TRUE;
 
+	/* Invoked property */
+	if (arti->inv_prop == prop_index && otmp->invokeon)
+		return TRUE;
+
+	/* Properties from spfx and cspx flags */
 	unsigned long abil = prop_to_spfx(prop_index);
 	boolean worn_mask_ok = FALSE;
 	if (is_weapon(otmp) || is_shield(otmp))
@@ -2655,6 +2661,8 @@ static const struct abil2spfx_tag {
 	{ BLOCKS_BLINDNESS, SPFX_BLIND_SEEING },
 	{ HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS, SPFX_HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS },
 	{ WARNING, SPFX_WARNING },
+	{ WARN_ORC, SPFX_ORC_WARNING },
+	{ WARN_ELF, SPFX_ELF_WARNING },
 };
 
 unsigned long
@@ -2801,6 +2809,22 @@ int prop_index;
 	return FALSE;
 }
 
+boolean
+item_is_giving_power(obj, prop_index)
+struct obj* obj;
+int prop_index;
+{
+
+	if (worn_item_is_giving_power(obj, prop_index))
+		return TRUE;
+
+	if (obj->oartifact && artifact_confers_power(obj, prop_index))
+		return TRUE;
+
+	return FALSE;
+}
+
+
 const char *
 glow_color(arti_indx)
 int arti_indx;
@@ -2850,20 +2874,21 @@ struct obj* otmp;
 		return FALSE;
 
 	boolean res = (
-		worn_item_is_giving_power(otmp, WARN_OF_MON)
-		|| worn_item_is_giving_power(otmp, WARN_DEMON)
-		|| worn_item_is_giving_power(otmp, WARN_UNDEAD)
-		|| worn_item_is_giving_power(otmp, WARN_TROLL)
-		|| worn_item_is_giving_power(otmp, WARN_GIANT)
-		|| worn_item_is_giving_power(otmp, WARN_DRAGON)
-		|| worn_item_is_giving_power(otmp, WARN_ELF)
-		|| worn_item_is_giving_power(otmp, WARN_DWARF)
-		|| worn_item_is_giving_power(otmp, WARN_GNOME)
-		|| worn_item_is_giving_power(otmp, WARN_GNOLL)
-		|| worn_item_is_giving_power(otmp, WARN_OGRE)
-		|| worn_item_is_giving_power(otmp, WARN_HUMAN)
-		|| worn_item_is_giving_power(otmp, WARN_LYCANTHROPE)
-		|| worn_item_is_giving_power(otmp, WARN_ANGEL)
+		item_is_giving_power(otmp, WARN_OF_MON)
+		|| item_is_giving_power(otmp, WARN_ORC)
+		|| item_is_giving_power(otmp, WARN_DEMON)
+		|| item_is_giving_power(otmp, WARN_UNDEAD)
+		|| item_is_giving_power(otmp, WARN_TROLL)
+		|| item_is_giving_power(otmp, WARN_GIANT)
+		|| item_is_giving_power(otmp, WARN_DRAGON)
+		|| item_is_giving_power(otmp, WARN_ELF)
+		|| item_is_giving_power(otmp, WARN_DWARF)
+		|| item_is_giving_power(otmp, WARN_GNOME)
+		|| item_is_giving_power(otmp, WARN_GNOLL)
+		|| item_is_giving_power(otmp, WARN_OGRE)
+		|| item_is_giving_power(otmp, WARN_HUMAN)
+		|| item_is_giving_power(otmp, WARN_LYCANTHROPE)
+		|| item_is_giving_power(otmp, WARN_ANGEL)
 		);
 
 	return res;
@@ -2880,10 +2905,7 @@ int orc_count; /* new count, new count is in the items; OBSOLETE: (warn_obj_cnt 
 
 	int otyp = otmp->otyp;
 
-	if (otmp
-        && ((otmp->oartifact && artifact_confers_power(otmp, WARN_OF_MON))
-    		|| item_has_specific_monster_warning(otmp)
-			)) 
+	if (otmp && item_has_specific_monster_warning(otmp))
 	{
         int oldstr = glow_strength(otmp->detectioncount),
             newstr = glow_strength(orc_count);
