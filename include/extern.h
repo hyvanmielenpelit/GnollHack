@@ -3136,8 +3136,8 @@ E boolean FDECL(get_obj_location, (struct obj *, xchar *, xchar *, int));
 E boolean FDECL(get_mon_location, (struct monst *, xchar *, xchar *, int));
 E struct monst *FDECL(get_container_location,
                       (struct obj * obj, int *, int *));
-E struct monst *FDECL(montraits, (struct obj *, coord *, BOOLEAN_P));
-E struct monst *FDECL(revive, (struct obj *, BOOLEAN_P, int));
+E struct monst *FDECL(montraits, (struct obj *, coord *, BOOLEAN_P, int));
+E struct monst *FDECL(revive, (struct obj *, BOOLEAN_P, int, BOOLEAN_P));
 E int FDECL(revive_from_inventory, (struct monst *));
 E void FDECL(cancel_item, (struct obj *));
 E boolean FDECL(drain_item, (struct obj *, BOOLEAN_P));
@@ -3146,8 +3146,7 @@ E boolean FDECL(obj_resists, (struct obj *, int, int));
 E boolean FDECL(obj_shudders, (struct obj *));
 E void FDECL(do_osshock, (struct obj *));
 E int FDECL(bhito, (struct obj *, struct obj *));
-E int FDECL(bhitpile,
-            (struct obj *, int (*)(OBJ_P, OBJ_P), int, int, SCHAR_P));
+E int FDECL(bhitpile, (struct obj *, int (*)(OBJ_P, OBJ_P), int, int, SCHAR_P, BOOLEAN_P));
 E int FDECL(zappable, (struct obj *));
 E void FDECL(zapnodir, (struct obj *));
 E int NDECL(dozap);
@@ -3168,7 +3167,7 @@ E void FDECL(hit, (const char *, struct monst *, const char *, int));
 E void FDECL(miss, (const char *, struct monst *));
 E struct monst *FDECL(bhit, (int, int, int, enum bhit_call_types,
                              int (*)(MONST_P, OBJ_P),
-                             int (*)(OBJ_P, OBJ_P), struct obj **, BOOLEAN_P));
+                             int (*)(OBJ_P, OBJ_P), struct obj **, BOOLEAN_P, BOOLEAN_P));
 E struct monst *FDECL(boomhit, (struct obj *, int, int));
 E int FDECL(zhitm, (struct monst *, int, struct obj*, int, int, int, struct obj **));
 E int FDECL(burn_floor_objects, (int, int, BOOLEAN_P, BOOLEAN_P));

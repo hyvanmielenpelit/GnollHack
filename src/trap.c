@@ -624,7 +624,7 @@ int *fail_reason;
     if (use_saved_traits) {
         /* restore a petrified monster */
         cc.x = x, cc.y = y;
-        mon = montraits(statue, &cc, (cause == ANIMATE_SPELL));
+        mon = montraits(statue, &cc, (cause == ANIMATE_SPELL), -1);
         if (mon && mon->mtame && !mon->isminion)
             wary_dog(mon, TRUE);
     } else {

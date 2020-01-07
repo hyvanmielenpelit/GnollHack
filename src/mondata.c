@@ -557,6 +557,7 @@ struct permonst *pm1, *pm2;
 
     if (pm1 == pm2)
         return TRUE; /* exact match */
+
     /* player races have their own predicates */
     if (is_human(pm1))
         return is_human(pm2);

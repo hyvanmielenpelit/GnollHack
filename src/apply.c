@@ -83,7 +83,7 @@ struct obj *obj;
         (void) zapyourself(obj, TRUE);
     } else if ((mtmp = bhit(u.dx, u.dy, COLNO, FLASHED_LIGHT,
                             (int FDECL((*), (MONST_P, OBJ_P))) 0,
-                            (int FDECL((*), (OBJ_P, OBJ_P))) 0, &obj, TRUE)) != 0) {
+                            (int FDECL((*), (OBJ_P, OBJ_P))) 0, &obj, TRUE, FALSE)) != 0) {
         obj->ox = u.ux, obj->oy = u.uy;
         (void) flash_hits_mon(mtmp, obj);
     }
@@ -904,7 +904,7 @@ struct obj *obj;
     }
     mtmp = bhit(u.dx, u.dy, COLNO, INVIS_BEAM,
                 (int FDECL((*), (MONST_P, OBJ_P))) 0,
-                (int FDECL((*), (OBJ_P, OBJ_P))) 0, &obj, TRUE);
+                (int FDECL((*), (OBJ_P, OBJ_P))) 0, &obj, TRUE, FALSE);
     if (!mtmp || !haseyes(mtmp->data) || notonhead)
         return 1;
 
@@ -1023,7 +1023,7 @@ struct obj* obj;
 	}
 	exercise(A_WIS, TRUE);
 	(void)bhit(u.dx, u.dy, obj->blessed ? 4 : 3, ZAPPED_WAND, uthitm, uthito,
-		& obj, TRUE);
+		& obj, TRUE, FALSE);
 
 	return 1;
 }
@@ -4051,7 +4051,7 @@ struct obj *obj;
                 /* if (context.botl) bot(); */
             }
             if (affects_objects && level.objects[x][y]) {
-                (void) bhitpile(obj, bhito, x, y, 0);
+                (void) bhitpile(obj, bhito, x, y, 0, FALSE);
                 if (context.botl)
                     bot(); /* potion effects */
             }
@@ -4069,7 +4069,7 @@ struct obj *obj;
              * since it's also used by retouch_equipment() for polyself.)
              */
             if (affects_objects && level.objects[x][y]) {
-                (void) bhitpile(obj, bhito, x, y, 0);
+                (void) bhitpile(obj, bhito, x, y, 0, FALSE);
                 if (context.botl)
                     bot(); /* potion effects */
             }

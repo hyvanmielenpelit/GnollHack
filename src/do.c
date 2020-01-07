@@ -4377,7 +4377,7 @@ struct obj *corpse;
         if (container_where == OBJ_MINVENT && mtmp2)
             mcarry = mtmp2;
     }
-    mtmp = revive(corpse, FALSE, -1); /* corpse is gone if successful */
+    mtmp = revive(corpse, FALSE, -1, FALSE); /* corpse is gone if successful */
 
     if (mtmp) {
         switch (where) {
@@ -4473,7 +4473,7 @@ int animateintomon; // monstid to be animated into
 		if (container_where == OBJ_MINVENT && mtmp2)
 			mcarry = mtmp2;
 	}
-	mtmp = revive(corpse, FALSE, animateintomon); /* corpse is gone if successful */
+	mtmp = revive(corpse, FALSE, animateintomon, FALSE); /* corpse is gone if successful */
 
 	if (mtmp) {
 		switch (where) {

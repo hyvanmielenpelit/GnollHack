@@ -3203,7 +3203,7 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
 
 cleanup:
     /* punish bad behaviour */
-    if (is_human(mdat)
+    if (is_human(mdat) && !is_undead(mdat) && !is_were(mdat)
         && (!always_hostile(mdat) && mtmp->malign <= 0)
         && (mndx < PM_ARCHEOLOGIST || mndx > PM_WIZARD)
         && u.ualign.type != A_CHAOTIC) {
