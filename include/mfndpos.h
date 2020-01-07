@@ -6,6 +6,10 @@
 #ifndef MFNDPOS_H
 #define MFNDPOS_H
 
+/* New --JG */
+#define ALLOW_PITS 0x00000001L /* can enter pits (pitwalk) */
+
+/* Old */
 #define ALLOW_MDISP 0x00001000L /* can displace a monster out of its way */
 #define ALLOW_TRAPS 0x00020000L /* can enter traps */
 #define ALLOW_U 0x00040000L     /* can attack you */

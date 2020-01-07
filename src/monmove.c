@@ -506,7 +506,8 @@ register struct monst *mtmp;
     /* update quest status flags */
     quest_stat_check(mtmp);
 
-    if (!mtmp->mcanmove || (mtmp->mstrategy & STRAT_WAITMASK)) {
+    if (!mtmp->mcanmove || (mtmp->mstrategy & STRAT_WAITMASK)) 
+	{
         if (Hallucination)
             newsym(mtmp->mx, mtmp->my);
         if (mtmp->mcanmove && (mtmp->mstrategy & STRAT_CLOSE)
@@ -516,7 +517,8 @@ register struct monst *mtmp;
     }
 
     /* there is a chance we will wake it */
-    if (mtmp->msleeping && !disturb(mtmp)) {
+    if (mtmp->msleeping && !disturb(mtmp)) 
+	{
         if (Hallucination)
             newsym(mtmp->mx, mtmp->my);
         return 0;
@@ -535,7 +537,8 @@ register struct monst *mtmp;
 
     /* some monsters teleport */
     if (mtmp->mflee && !rn2(40) && can_teleport(mdat) && !mtmp->iswiz
-        && !level.flags.noteleport) {
+        && !level.flags.noteleport)
+	{
         (void) rloc(mtmp, TRUE);
         return 0;
     }
@@ -552,7 +555,8 @@ register struct monst *mtmp;
         mtmp->mflee = 0;
 
     /* cease conflict-induced swallow/grab if conflict has ended */
-    if (mtmp == u.ustuck && mtmp->mpeaceful && !mtmp->mconf && !(Conflict)) {
+    if (mtmp == u.ustuck && mtmp->mpeaceful && !mtmp->mconf && !(Conflict))
+	{
         release_hero(mtmp);
         return 0; /* uses up monster's turn */
     }
@@ -571,26 +575,33 @@ register struct monst *mtmp;
     /* check distance and scariness of attacks */
     distfleeck(mtmp, &inrange, &nearby, &scared);
 
-    if (find_defensive(mtmp)) {
+    if (find_defensive(mtmp)) 
+	{
         if (use_defensive(mtmp) != 0)
             return 1;
-    } else if (find_misc(mtmp)) {
+    } else if (find_misc(mtmp))
+	{
         if (use_misc(mtmp) != 0)
             return 1;
     }
 
     /* Demonic Blackmail! */
     if (nearby && mdat->msound == MS_BRIBE && mtmp->mpeaceful && !mtmp->mtame
-        && !u.uswallow) {
-        if (mtmp->mux != u.ux || mtmp->muy != u.uy) {
+        && !u.uswallow)
+	{
+        if (mtmp->mux != u.ux || mtmp->muy != u.uy) 
+		{
             pline("%s whispers at thin air.",
                   cansee(mtmp->mux, mtmp->muy) ? Monnam(mtmp) : "It");
 
-            if (is_demon(youmonst.data)) {
+            if (is_demon(youmonst.data)) 
+			{
                 /* "Good hunting, brother" */
                 if (!tele_restrict(mtmp))
                     (void) rloc(mtmp, TRUE);
-            } else {
+            }
+			else 
+			{
                 mtmp->minvis = mtmp->perminvis = 0;
                 /* Why?  For the same reason in real demon talk */
                 pline("%s gets angry!", Amonnam(mtmp));
@@ -598,33 +609,40 @@ register struct monst *mtmp;
                 set_malign(mtmp);
                 /* since no way is an image going to pay it off */
             }
-        } else if (demon_talk(mtmp))
+        }
+		else if (demon_talk(mtmp))
             return 1; /* you paid it off */
     }
 
     /* the watch will look around and see if you are up to no good :-) */
-    if (is_watch(mdat)) {
+    if (is_watch(mdat))
+	{
         watch_on_duty(mtmp);
 
-    } else if (is_mind_flayer(mdat) && !rn2(20)) {
+    }
+	else if (is_mind_flayer(mdat) && !rn2(20))
+	{
         struct monst *m2, *nmon = (struct monst *) 0;
 
         if (canseemon(mtmp))
             pline("%s concentrates.", Monnam(mtmp));
-        if (distu(mtmp->mx, mtmp->my) > BOLT_LIM * BOLT_LIM) {
+        if (distu(mtmp->mx, mtmp->my) > BOLT_LIM * BOLT_LIM)
+		{
             You("sense a faint wave of psychic energy.");
             goto toofar;
         }
         pline("A wave of psychic energy pours over you!");
         if (mtmp->mpeaceful
-            && (!Conflict || resist(mtmp, (struct obj*) 0, 5, 0, 0))) {
+            && (!Conflict || resist(mtmp, (struct obj*) 0, 5, 0, 0))) 
+		{
             pline("It feels quite soothing.");
         } 
 		else if (!u.uinvulnerable && !Invulnerable && !Mind_shielding) 
 		{
             register boolean m_sen = sensemon(mtmp);
 
-            if (m_sen || ((Blind_telepat || Unblind_telepat) && rn2(2)) || !rn2(10)) {
+            if (m_sen || ((Blind_telepat || Unblind_telepat) && rn2(2)) || !rn2(10)) 
+			{
                 int dmg;
                 pline("It locks on to your %s!",
                       m_sen ? "telepathy" : (Blind_telepat || Unblind_telepat) ? "latent telepathy"
@@ -640,7 +658,8 @@ register struct monst *mtmp;
 			You("are unaffected.");
 		}
 
-        for (m2 = fmon; m2; m2 = nmon) {
+        for (m2 = fmon; m2; m2 = nmon) 
+		{
             nmon = m2->nmon;
             if (DEADMONSTER(m2))
                 continue;
@@ -669,7 +688,8 @@ register struct monst *mtmp;
      */
     if ((!mtmp->mpeaceful || Conflict) && inrange
         && dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) <= 8
-        && attacktype(mdat, AT_WEAP)) {
+        && attacktype(mdat, AT_WEAP))
+	{
         struct obj *mw_tmp;
 
         /* The scared check is necessary.  Otherwise a monster that is
@@ -709,10 +729,13 @@ register struct monst *mtmp;
             && !mtmp->mspec_used) {
             struct attack *a;
 
-            for (a = &mdat->mattk[0]; a < &mdat->mattk[NATTK]; a++) {
+            for (a = &mdat->mattk[0]; a < &mdat->mattk[NATTK]; a++)
+			{
                 if (a->aatyp == AT_MAGC && !mtmp->mcancelled
-                    && (a->adtyp == AD_SPEL || a->adtyp == AD_CLRC)) {
-                    if (castmu(mtmp, a, FALSE, FALSE)) {
+                    && (a->adtyp == AD_SPEL || a->adtyp == AD_CLRC))
+				{
+                    if (castmu(mtmp, a, FALSE, FALSE))
+					{
                         tmp = 3;
                         break;
                     }
@@ -1032,9 +1055,13 @@ register int after;
     gx = mtmp->mux;
     gy = mtmp->muy;
     appr = mtmp->mflee ? -1 : 1;
-    if (mtmp->mconf || mtmp->mstun || (u.uswallow && mtmp == u.ustuck)) {
+
+    if (mtmp->mconf || mtmp->mstun || (u.uswallow && mtmp == u.ustuck))
+	{
         appr = 0;
-    } else {
+    } 
+	else 
+	{
         struct obj *lepgold, *ygold;
         boolean should_see = (couldsee(omx, omy)
                               && (levl[gx][gy].lit || !levl[omx][omy].lit)
@@ -1055,23 +1082,27 @@ register int after;
                     > ((ygold = findgold(invent)) ? ygold->quan : 0L))))
             appr = -1;
 
-        if (!should_see && can_track(ptr)) {
+        if (!should_see && can_track(ptr)) 
+		{
             register coord *cp;
 
             cp = gettrack(omx, omy);
-            if (cp) {
+            if (cp)
+			{
                 gx = cp->x;
                 gy = cp->y;
             }
         }
     }
 
-    if ((!mtmp->mpeaceful || !rn2(10)) && (!Is_rogue_level(&u.uz))) {
+    if ((!mtmp->mpeaceful || !rn2(10)) && (!Is_rogue_level(&u.uz)))
+	{
         boolean in_line = (lined_up(mtmp)
                && (distmin(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy)
                    <= (throws_rocks(youmonst.data) ? 20 : ACURRSTR / 2 + 1)));
 
-        if (appr != 1 || !in_line) {
+        if (appr != 1 || !in_line) 
+		{
             /* Monsters in combat won't pick stuff up, avoiding the
              * situation where you toss arrows at it and it has nothing
              * better to do than pick the arrows up.
@@ -1182,15 +1213,19 @@ register int after;
                     }
                 }
             }
-        } else if (likegold) {
+        } 
+		else if (likegold)
+		{
             /* don't try to pick up anything else, but use the same loop */
             uses_items = 0;
             likegems = likeobjs = likemagic = likerock = conceals = 0;
             goto look_for_obj;
         }
 
-        if (minr < SQSRCHRADIUS && appr == -1) {
-            if (distmin(omx, omy, mtmp->mux, mtmp->muy) <= 3) {
+        if (minr < SQSRCHRADIUS && appr == -1) 
+		{
+            if (distmin(omx, omy, mtmp->mux, mtmp->muy) <= 3) 
+			{
                 gx = mtmp->mux;
                 gy = mtmp->muy;
             } else
@@ -1221,7 +1256,9 @@ register int after;
         flag |= NOTONL;
     if (passes_walls(ptr))
         flag |= (ALLOW_WALL | ALLOW_ROCK);
-    if (passes_bars(ptr))
+	if (has_pitwalk(mtmp->data))
+		flag |= ALLOW_PITS;
+	if (passes_bars(ptr))
         flag |= ALLOW_BARS;
     if (can_tunnel)
         flag |= ALLOW_DIG;

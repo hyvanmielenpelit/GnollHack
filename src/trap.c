@@ -2169,46 +2169,61 @@ register struct monst *mtmp;
     struct permonst *mptr = mtmp->data;
     struct obj *otmp;
 
-    if (!trap) {
+    if (!trap)
+	{
         mtmp->mtrapped = 0;      /* perhaps teleported? */
-    } else if (mtmp->mtrapped) { /* is currently in the trap */
+    } 
+	else if (mtmp->mtrapped)
+	{ /* is currently in the trap */
         if (!trap->tseen && cansee(mtmp->mx, mtmp->my) && canseemon(mtmp)
             && (is_pit(trap->ttyp) || trap->ttyp == BEAR_TRAP
                 || trap->ttyp == HOLE
-                || trap->ttyp == WEB)) {
+                || trap->ttyp == WEB)) 
+		{
             /* If you come upon an obviously trapped monster, then
              * you must be able to see the trap it's in too.
              */
             seetrap(trap);
         }
 
-        if (!rn2(40)) {
-            if (sobj_at(BOULDER, mtmp->mx, mtmp->my)
-                && is_pit(trap->ttyp)) {
-                if (!rn2(2)) {
+        if (!rn2(40) || (is_pit(trap->ttyp) && has_pitwalk(mtmp->data)))
+		{
+            if (sobj_at(BOULDER, mtmp->mx, mtmp->my)  && is_pit(trap->ttyp))
+			{
+                if (!rn2(2) || has_pitwalk(mtmp->data))
+				{
                     mtmp->mtrapped = 0;
                     if (canseemon(mtmp))
-                        pline("%s pulls free...", Monnam(mtmp));
+                        pline("%s rises from the pit...", Monnam(mtmp));
                     fill_pit(mtmp->mx, mtmp->my);
                 }
-            } else {
+            } 
+			else 
+			{
                 mtmp->mtrapped = 0;
             }
-        } else if (metallivorous(mptr)) {
-            if (trap->ttyp == BEAR_TRAP) {
+        } 
+		else if (metallivorous(mptr)) 
+		{
+            if (trap->ttyp == BEAR_TRAP) 
+			{
                 if (canseemon(mtmp))
                     pline("%s eats a bear trap!", Monnam(mtmp));
                 deltrap(trap);
                 mtmp->meating = 5;
                 mtmp->mtrapped = 0;
-            } else if (trap->ttyp == SPIKED_PIT) {
+            } 
+			else if (trap->ttyp == SPIKED_PIT)
+			{
                 if (canseemon(mtmp))
                     pline("%s munches on some spikes!", Monnam(mtmp));
                 trap->ttyp = PIT;
                 mtmp->meating = 5;
             }
         }
-    } else {
+    } 
+	else
+	{
         register int tt = trap->ttyp;
         boolean in_sight, tear_web, see_it,
             inescapable = force_mintrap || ((tt == HOLE || tt == PIT)
@@ -2218,14 +2233,23 @@ register struct monst *mtmp;
         /* true when called from dotrap, inescapable is not an option */
         if (mtmp == u.usteed)
             inescapable = TRUE;
-        if (!inescapable && ((mtmp->mtrapseen & (1 << (tt - 1))) != 0
-                             || (tt == HOLE && !mindless(mptr)))) {
+        
+		if (!inescapable && (knows_pits_and_holes(mtmp->data) || knows_traps(mtmp->data) ||
+			((mtmp->mtrapseen & (1 << (tt - 1))) != 0  || (tt == HOLE && !mindless(mptr)))))
+		{
             /* it has been in such a trap - perhaps it escapes */
-            if ((mtmp->data->mflags3 & (M3_KNOWS_PITS_AND_HOLES | M3_KNOWS_TRAPS)) || rn2(4))
+            if ((is_pit(tt) && has_pitwalk(mtmp->data)) || rn2(4))
                 return 0;
-        } else {
+        }
+		else 
+		{
             mtmp->mtrapseen |= (1 << (tt - 1));
         }
+
+		/* pitwalking creatures do not care about pits */
+		if (is_pit(tt) && has_pitwalk(mtmp->data))
+			return 0;
+
         /* Monster is aggravated by being trapped by you.
            Recognizing who made the trap isn't completely
            unreasonable; everybody has their own style. */
@@ -2488,7 +2512,7 @@ register struct monst *mtmp;
                     break;               /* avoids trap */
                 fallverb = "is dragged"; /* sokoban pit */
             }
-            if (!passes_walls(mptr))
+            if (!passes_walls(mptr) && !has_pitwalk(mptr))
                 mtmp->mtrapped = 1;
             if (in_sight) {
                 pline("%s %s into %s pit!", Monnam(mtmp), fallverb,

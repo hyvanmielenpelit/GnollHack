@@ -49,7 +49,7 @@ enum prop_types {
     SEE_INVISIBILITY  = 29,
     TELEPAT           = 30,  /* Blind telepathy is now its own property type*/
     WARNING           = 31,
-    WARN_OF_MON       = 32,
+    WARN_OF_MON       = 32,  /* Obsolete -- JG */
     WARN_UNDEAD       = 33,
     SEARCHING         = 34,
     CLAIRVOYANT       = 35,

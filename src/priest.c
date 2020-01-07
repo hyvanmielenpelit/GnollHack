@@ -72,7 +72,9 @@ register xchar omx, omy, gx, gy;
         allowflags = ALLOW_SSM | ALLOW_SANCT;
     if (passes_walls(mtmp->data))
         allowflags |= (ALLOW_ROCK | ALLOW_WALL);
-    if (throws_rocks(mtmp->data))
+	if (has_pitwalk(mtmp->data))
+		allowflags |= ALLOW_PITS;
+	if (throws_rocks(mtmp->data))
         allowflags |= ALLOW_ROCK;
     if (tunnels(mtmp->data))
         allowflags |= ALLOW_DIG;

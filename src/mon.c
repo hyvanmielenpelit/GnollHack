@@ -2019,17 +2019,23 @@ long flag;
     in_poisongas = ((gas_reg = visible_region_at(x,y)) != 0
                     && gas_reg->glyph == gas_glyph);
 
-    if (flag & ALLOW_DIG) {
+	if (flag & ALLOW_DIG)
+	{
         struct obj *mw_tmp;
 
         /* need to be specific about what can currently be dug */
-        if (!needspick(mdat)) {
+        if (!needspick(mdat)) 
+		{
             rockok = treeok = TRUE;
-        } else if ((mw_tmp = MON_WEP(mon)) && mw_tmp->cursed
-                   && mon->weapon_check == NO_WEAPON_WANTED) {
+        } 
+		else if ((mw_tmp = MON_WEP(mon)) && mw_tmp->cursed
+                   && mon->weapon_check == NO_WEAPON_WANTED) 
+		{
             rockok = is_pick(mw_tmp);
             treeok = is_axe(mw_tmp);
-        } else {
+        }
+		else
+		{
             rockok = (m_carrying(mon, PICK_AXE)
                       || (m_carrying(mon, DWARVISH_MATTOCK)
                           && !which_armor(mon, W_ARMS)));
@@ -2042,16 +2048,19 @@ long flag;
 
 nexttry: /* eels prefer the water, but if there is no water nearby,
             they will crawl over land */
-    if (mon->mconf) {
+    if (mon->mconf)
+	{
         flag |= ALLOW_ALL;
         flag &= ~NOTONL;
     }
+
     if (!mon->mcansee)
         flag |= ALLOW_SSM;
     maxx = min(x + 1, COLNO - 1);
     maxy = min(y + 1, ROWNO - 1);
     for (nx = max(1, x - 1); nx <= maxx; nx++)
-        for (ny = max(0, y - 1); ny <= maxy; ny++) {
+        for (ny = max(0, y - 1); ny <= maxy; ny++) 
+		{
             if (nx == x && ny == y)
                 continue;
             ntyp = levl[nx][ny].typ;
@@ -2127,8 +2136,11 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
                     if (!(flag & ALLOW_U))
                         continue;
                     info[cnt] |= ALLOW_U;
-                } else {
-                    if (MON_AT(nx, ny)) {
+                }
+				else
+				{
+                    if (MON_AT(nx, ny))
+					{
                         struct monst *mtmp2 = m_at(nx, ny);
 						long mmagr = mm_aggression(mon, mtmp2);
                         long mmflag = flag | mmagr;
@@ -2159,30 +2171,34 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
                        attack, into a temple. */
                     if (level.flags.has_temple && *in_rooms(nx, ny, TEMPLE)
                         && !*in_rooms(x, y, TEMPLE)
-                        && in_your_sanctuary((struct monst *) 0, nx, ny)) {
+                        && in_your_sanctuary((struct monst *) 0, nx, ny))
+					{
                         if (flag & ALLOW_SANCT)
 	                        info[cnt] |= ALLOW_SANCT;
 						else
 							continue;  /* cannot attack, cannot move to the square */
 					}
                 }
-                if (checkobj && sobj_at(CLOVE_OF_GARLIC, nx, ny)) {
+                if (checkobj && sobj_at(CLOVE_OF_GARLIC, nx, ny)) 
+				{
 					if (flag & NOGARLIC)
 						continue;  /* cannot attack, cannot move to the square */
 					else
-		                info[cnt] |= NOGARLIC; /* indicates that there is a garlic in the square, but the creature shouldn't care */
+		                info[cnt] |= NOGARLIC; /* indicates that there is a garlic in the square, but the creature directed not to care (by lack of flags) */
                 }
-                if (checkobj && sobj_at(BOULDER, nx, ny)) {
+                if (checkobj && sobj_at(BOULDER, nx, ny)) 
+				{
 					if (flag & ALLOW_ROCK)
 						info[cnt] |= ALLOW_ROCK;
 					else
 						continue;  /* cannot attack, cannot move to the square */
                 }
-                if (monseeu && onlineu(nx, ny)) {
+                if (monseeu && onlineu(nx, ny))
+				{
 					if (flag & NOTONL)
 						continue;  /* cannot move to the square */
 					else
-	                    info[cnt] |= NOTONL; /* indicates that the square is on the line, but the creature shouldn't care */
+	                    info[cnt] |= NOTONL; /* indicates that the square is on the line, but the creature is directed not to care (by lack of flags) */
                 }
                 /* check for diagonal tight squeeze */
                 if (nx != x && ny != y && bad_rock(mdat, x, ny)
@@ -2193,18 +2209,24 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
                  * and checking is done in dogmove.c.  In either case,
                  * "harmless" traps are neither avoided nor marked in info[].
                  */
-                if ((ttmp = t_at(nx, ny)) != 0) {
-                    if (ttmp->ttyp >= TRAPNUM || ttmp->ttyp == 0) {
+                if ((ttmp = t_at(nx, ny)) != 0) 
+				{
+                    if (ttmp->ttyp >= TRAPNUM || ttmp->ttyp == 0) 
+					{
                         impossible(
                          "A monster looked at a very strange trap of type %d.",
                                    ttmp->ttyp);
                             continue;
                     }
+					/* The if excludes the types of the traps the mon should not care about */
                     if ((ttmp->ttyp != RUST_TRAP
                          || mdat == &mons[PM_IRON_GOLEM])
                         && ttmp->ttyp != STATUE_TRAP
                         && ttmp->ttyp != VIBRATING_SQUARE
-                        && ((!is_pit(ttmp->ttyp) && !is_hole(ttmp->ttyp))
+						&& ((!is_pit(ttmp->ttyp)) /* exclude/include pits for flyers/nonflyers */
+							|| (!has_pitwalk(mdat) && !is_flyer(mdat) && !is_floater(mdat)
+								&& !is_clinger(mdat)) || Sokoban)
+						&& ((!is_hole(ttmp->ttyp)) /* exclude/include holes or flyers/nonflyers */
                             || (!is_flyer(mdat) && !is_floater(mdat)
                                 && !is_clinger(mdat)) || Sokoban)
                         && (ttmp->ttyp != SLP_GAS_TRAP || !resists_sleep(mon))
@@ -2217,12 +2239,20 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
                         && (ttmp->ttyp != WEB
                             || (!amorphous(mdat) && !webmaker(mdat)
                                 && !is_whirly(mdat) && !unsolid(mdat)))
-                        && (ttmp->ttyp != ANTI_MAGIC || !is_magic_resistant(mon))) {
-                        if (!(flag & ALLOW_TRAPS)) {
+                        && (ttmp->ttyp != ANTI_MAGIC || !is_magic_resistant(mon)))
+					{
+						/* Here are all relevant traps the mon should care about */
+						if (flag & ALLOW_TRAPS)
+							info[cnt] |= ALLOW_TRAPS;  /* there is a trap but the creature is directed not to care (by the presence of flags) */
+						else if ((flag & ALLOW_PITS) && is_pit(ttmp->ttyp))
+							info[cnt] |= ALLOW_PITS;
+						else
+						{
                             if (mon->mtrapseen & (1L << (ttmp->ttyp - 1)))
-                                continue;
-                        }
-                        info[cnt] |= ALLOW_TRAPS;
+                                continue; /* No movement to the trap */
+							else
+								info[cnt] |= (flag & (ALLOW_TRAPS | ALLOW_PITS)); /* The mon does not know the trap is there */
+						}
                     }
                 }
                 poss[cnt].x = nx;

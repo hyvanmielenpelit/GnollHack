@@ -186,7 +186,10 @@
 #define is_reflecting(ptr) (((ptr)->mflags3 & M3_REFLECTING) != 0L)
 #define is_constrictor(ptr) (((ptr)->mflags3 & M3_CONSTRICTOR) != 0L)
 #define hug_requires_two_previous_attacks(ptr) (((ptr)->mflags3 & M3_HUG_HITS_IF_TWO_FIRST_ATTACKS_SUCCEEDED) != 0L)
-
+#define knows_pits_and_holes(ptr) \
+    (((ptr)->mflags3 & M3_KNOWS_PITS_AND_HOLES) != 0)
+#define knows_traps(ptr) \
+    (((ptr)->mflags3 & M3_KNOWS_TRAPS) != 0)
 
 #define is_brave(ptr) (((ptr)->mflags4 & M4_BRAVE) != 0L)
 #define is_fearless(ptr) (((ptr)->mflags4 & M4_FEARLESS) != 0L)
@@ -280,6 +283,9 @@
 
 #define nonrotting_corpse_ptr(ptr) \
     (((ptr)->mflags4 & M4_NONROTTING_CORPSE) != 0)
+
+#define has_pitwalk(ptr) \
+    (((ptr)->mflags4 & M4_PITWALK) != 0)
 
 /* monkeys are tameable via bananas but not pacifiable via food,
    otherwise their theft attack could be nullified too easily;

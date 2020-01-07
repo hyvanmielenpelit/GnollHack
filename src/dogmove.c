@@ -1056,7 +1056,9 @@ int after; /* this is extra fast monster movement */
         allowflags |= ALLOW_BARS;
     if (throws_rocks(mtmp->data))
         allowflags |= ALLOW_ROCK;
-    if (is_displacer(mtmp->data))
+	if (has_pitwalk(mtmp->data))
+		allowflags |= ALLOW_PITS;
+	if (is_displacer(mtmp->data))
         allowflags |= ALLOW_MDISP;
     if (Conflict && !resist(mtmp, (struct obj*) 0, 5, 0, 0)) {
         allowflags |= (ALLOW_U  | ALLOW_TM);

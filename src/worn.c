@@ -521,114 +521,193 @@ struct monst *mon;
 struct obj *obj;
 boolean on, silently;
 {
-    int unseen;
-    uchar mask;
-    struct obj *otmp;
-    int which = (int) objects[obj->otyp].oc_oprop;
+    int unseen = 0;
+    uchar mask = 0;
+    struct obj *otmp = (struct obj*)0;
 
-    unseen = !canseemon(mon);
-    if (!which)
-        goto maybe_blocks;
+	/* clear mon extrinsics */
+	mon->mextrinsics = 0;
+	mon->minvis = mon->perminvis;
 
-    if (on) {
-        switch (which) {
-        case INVISIBILITY:
-            mon->minvis = !mon->invis_blkd;
-            break;
-        case FAST: {
-            boolean save_in_mklev = in_mklev;
-            if (silently)
-                in_mklev = TRUE;
-            mon_adjust_speed(mon, 0, obj);
-            in_mklev = save_in_mklev;
-            break;
-        }
-        /* properties handled elsewhere */
-        case ANTIMAGIC:
-        case REFLECTING:
-            break;
-        /* properties which have no effect for monsters */
-        case CLAIRVOYANT:
-		case BLOCKS_CLAIRVOYANCE:
-		case STEALTH:
-		case MAGICAL_KICKING:
-		case DETECT_MONSTERS:
-		case BLIND_TELEPAT:
-		case TELEPAT:
-		case XRAY_VISION:
-			break;
-        /* properties which should have an effect but aren't implemented */
-        case LEVITATION:
-        case WATER_WALKING:
-            break;
-        /* properties which maybe should have an effect but don't */
-        case DISPLACED:
-		case FUMBLING:
-		case ODD_IDEAS:
-		case LAUGHING:
-        case JUMPING:
-		case PROTECTION:
-            break;
-        default:
-            if (which <= 8) { /* 1 thru 8 correspond to MR_xxx mask values */
-                /* FIRE,COLD,SLEEP,DISINT,SHOCK,POISON,ACID,STONE */
-                mask = (uchar) (1 << (which - 1));
-                mon->mextrinsics |= (unsigned short) mask;
-            }
-            break;
-        }
-    } else { /* off */
-        switch (which) {
-        case INVISIBILITY:
-            mon->minvis = mon->perminvis;
-            break;
-        case FAST: {
-            boolean save_in_mklev = in_mklev;
-            if (silently)
-                in_mklev = TRUE;
-            mon_adjust_speed(mon, 0, obj);
-            in_mklev = save_in_mklev;
-            break;
-        }
-        case FIRE_RES:
-        case COLD_RES:
-        case SLEEP_RES:
-        case DISINT_RES:
-		case DEATH_RES:
-		case CHARM_RES:
-		case MIND_SHIELDING:
-		case SHOCK_RES:
-        case POISON_RES:
-        case ACID_RES:
-        case STONE_RES:
-            mask = (uchar) (1 << (which - 1));
-            /* update monster's extrinsics (for worn objects only;
-               'obj' itself might still be worn or already unworn) */
-            for (otmp = mon->minvent; otmp; otmp = otmp->nobj)
-                if (otmp != obj
-                    && otmp->owornmask
-                    && (int) objects[otmp->otyp].oc_oprop == which)
-                    break;
-            if (!otmp)
-                mon->mextrinsics &= ~((unsigned short) mask);
-            break;
-        default:
-            break;
-        }
-    }
+	/* add them all back*/
+	for (otmp = mon->minvent; otmp; otmp = otmp->nobj)
+	{
+		for (int i = 1; i <= 7; i++)
+		{
+			if (i > 3 && !obj->oartifact)
+				break;
 
- maybe_blocks:
-    /* obj->owornmask has been cleared by this point, so we can't use it.
-       However, since monsters don't wield armor, we don't have to guard
-       against that and can get away with a blanket worn-mask value. */
-    switch (w_blocks(obj, ~0L)) {
-    case INVISIBILITY:
-        mon->invis_blkd = on ? 1 : 0;
-        mon->minvis = on ? 0 : mon->perminvis;
-        break;
-    default:
-        break;
-    }
+			uchar which = 0;
+			switch (i)
+			{
+			case 1:
+				which = objects[obj->otyp].oc_oprop;
+			case 2:
+				which = objects[obj->otyp].oc_oprop2;
+			case 3:
+				which = objects[obj->otyp].oc_oprop3;
+			case 4:
+				which = artilist[obj->oartifact].carried_prop;
+			case 5:
+				which = artilist[obj->oartifact].worn_prop;
+			case 6:
+				which = obj->invokeon ? artilist[obj->oartifact].inv_prop : 0;
+			default:
+				if (i >= 7 && i <= 38)
+				{
+					int bitnum = i - 6;
+					unsigned long bit = 0x00000001UL;
+					if (bitnum > 1)
+						bit = bit << bitnum;
+
+					int propnum = spfx_to_prop(bit);
+					if (artilist[obj->oartifact].spfx & bit)
+						which = propnum;
+				}
+				else if (i >= 39 && i <= 70)
+				{
+					int bitnum = i - 38;
+					unsigned long bit = 0x00000001UL;
+					if (bitnum > 1)
+						bit = bit << bitnum;
+
+					int propnum = spfx_to_prop(bit);
+					if (artilist[obj->oartifact].cspfx & bit)
+						which = propnum;
+				}
+			}
+
+			unseen = !canseemon(mon);
+			if (!which)
+				goto maybe_blocks;
+
+			if (1) //(on)
+			{
+				switch (which)
+				{
+				case INVISIBILITY:
+					mon->minvis = !mon->invis_blkd;
+					break;
+				case FAST:
+				{
+					boolean save_in_mklev = in_mklev;
+					if (silently)
+						in_mklev = TRUE;
+					mon_adjust_speed(mon, 0, obj);
+					in_mklev = save_in_mklev;
+					break;
+				}
+				/* properties handled elsewhere */
+				case ANTIMAGIC:
+				case REFLECTING:
+					break;
+					/* properties which have no effect for monsters */
+				case CLAIRVOYANT:
+				case BLOCKS_CLAIRVOYANCE:
+				case STEALTH:
+				case MAGICAL_KICKING:
+				case DETECT_MONSTERS:
+				case BLIND_TELEPAT:
+				case TELEPAT:
+				case XRAY_VISION:
+					break;
+					/* properties which should have an effect but aren't implemented */
+				case LEVITATION:
+				case WATER_WALKING:
+					break;
+					/* properties which maybe should have an effect but don't */
+				case DISPLACED:
+				case FUMBLING:
+				case ODD_IDEAS:
+				case LAUGHING:
+				case JUMPING:
+				case PROTECTION:
+					break;
+				default:
+					if (which <= 8)
+					{ /* 1 thru 8 correspond to MR_xxx mask values */
+						/* FIRE,COLD,SLEEP,DISINT,SHOCK,POISON,ACID,STONE */
+						mask = (1 << (which - 1));
+						mon->mextrinsics |= (unsigned long)mask;
+					}
+					else if (which == CHARM_RES)
+					{
+						mon->mextrinsics |= MR_CHARM;
+					}
+					else if (which == DEATH_RES)
+					{
+						mon->mextrinsics |= MR_DEATH;
+					}
+					else if (which == LYCANTHROPY_RES)
+					{
+						mon->mextrinsics |= MR_LYCANTHROPY;
+					}
+					else if (which == ANTIMAGIC)
+					{
+						mon->mextrinsics |= MR_MAGIC;
+					}
+					break;
+				}
+			}
+#if 0
+			else
+			{ /* off */
+				switch (which)
+				{
+				case INVISIBILITY:
+					mon->minvis = mon->perminvis;
+					break;
+				case FAST:
+				{
+					boolean save_in_mklev = in_mklev;
+					if (silently)
+						in_mklev = TRUE;
+					mon_adjust_speed(mon, 0, obj);
+					in_mklev = save_in_mklev;
+					break;
+				}
+				case FIRE_RES:
+				case COLD_RES:
+				case SLEEP_RES:
+				case DISINT_RES:
+				case DEATH_RES:
+				case CHARM_RES:
+				case MIND_SHIELDING:
+				case SHOCK_RES:
+				case POISON_RES:
+				case ACID_RES:
+				case STONE_RES:
+					mask = (uchar)(1 << (which - 1));
+					/* update monster's extrinsics (for worn objects only;
+					   'obj' itself might still be worn or already unworn) */
+					for (otmp = mon->minvent; otmp; otmp = otmp->nobj)
+						if (otmp != obj
+							&& otmp->owornmask
+							&& (objects[otmp->otyp].oc_oprop == which || objects[otmp->otyp].oc_oprop2 == which || objects[otmp->otyp].oc_oprop3 == which))
+							break;
+					if (!otmp)
+						mon->mextrinsics &= ~((unsigned short)mask);
+					break;
+				default:
+					break;
+				}
+			}
+#endif
+		maybe_blocks:
+			/* obj->owornmask has been cleared by this point, so we can't use it.
+			   However, since monsters don't wield armor, we don't have to guard
+			   against that and can get away with a blanket worn-mask value. */
+			switch (w_blocks(obj, ~0L))
+			{
+			case INVISIBILITY:
+				mon->invis_blkd = on ? 1 : 0;
+				mon->minvis = on ? 0 : mon->perminvis;
+				break;
+			default:
+				break;
+			}
+		}
+	}
 
     if (!on && mon == u.usteed && obj->otyp == SADDLE)
         dismount_steed(DISMOUNT_FELL);
