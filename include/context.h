@@ -9,6 +9,11 @@
 #ifndef CONTEXT_H
 #define CONTEXT_H
 
+#ifndef PROP_H
+#include "prop.h"
+#endif // !PROP_H
+
+
 #define CONTEXTVERBSZ 30
 
 /*
@@ -137,6 +142,7 @@ struct context_info
 	boolean made_witch_king;
 	int made_shop_count;
 	char used_names[BUFSIZ * 32];
+	struct prop_info properties[LAST_PROP + 1]; /* here until a better place can be found */
 	boolean encounter_appeared[256];
 	int shop_identify_type;
 	boolean mon_moving; /* monsters' turn to move */

@@ -583,11 +583,12 @@ nh_timeout()
     was_flying = Flying;
 	for (upp = u.uprops; upp < u.uprops + SIZE(u.uprops); upp++)
 	{
+		int propnum = (int)(upp - u.uprops);
 		int extratime = 0;
 		if ((upp->intrinsic & TIMEOUT) && !(--upp->intrinsic & TIMEOUT))
 		{
-			kptr = find_delayed_killer((int)(upp - u.uprops));
-			switch (upp - u.uprops) {
+			kptr = find_delayed_killer(propnum);
+			switch (propnum) {
 			case STONED:
 				if (kptr && kptr->name[0]) {
 					killer.format = kptr->format;
@@ -944,7 +945,7 @@ nh_timeout()
 		else if ((upp->intrinsic & TIMEOUT) && ((upp->intrinsic & TIMEOUT) == 3))
 		{
 			// Early warning
-			switch (upp - u.uprops) {
+			switch (propnum) {
 			case FAST:
 				if (!Very_fast)
 					You_feel("you are starting to slow down%s.",
@@ -1062,7 +1063,7 @@ nh_timeout()
 		else if ((upp->intrinsic & TIMEOUT) > 0)
 		{
 			// Continuous warning
-			switch (upp - u.uprops) {
+			switch (propnum) {
 			case STRANGLED:
 				You("are being strangled!");
 				break;
@@ -1079,9 +1080,9 @@ nh_timeout()
 		update_all_character_properties((struct obj*)0);
 
 		/* Finally, add time to recurring intrinsics */
-		if ((upp->intrinsic & TIMEOUT) == 0 && upp->recurring && (upp->extrinsic || (upp->intrinsic & ~TIMEOUT)))
+		if ((upp->intrinsic & TIMEOUT) == 0 && context.properties[propnum].recurring && (upp->extrinsic || (upp->intrinsic & ~TIMEOUT)))
 		{
-			incr_itimeout(&upp->intrinsic, extratime + upp->recurring_constant + (upp->recurring_random > 0 ? rn2(upp->recurring_random + 1) : 0));
+			incr_itimeout(&upp->intrinsic, extratime + context.properties[propnum].recurring_constant + (context.properties[propnum].recurring_random > 0 ? rn2(context.properties[propnum].recurring_random + 1) : 0));
 		}
 	}
 

@@ -10,6 +10,10 @@
 #include "mextra.h"
 #endif
 
+#ifndef PROP_H
+#include "prop.h"
+#endif
+
 /* The weapon_check flag is used two ways:
  * 1) When calling mon_wield_item, is 2-6 depending on what is desired.
  * 2) Between calls to mon_wield_item, is 0 or 1 depending on whether or not
@@ -190,6 +194,7 @@ struct monst {
 	long extra_encounter_xp; /* extra experience yielded by this monster due to encounter difficulty */
 	xchar timed;		   /* # of fuses (timers) attached to this monst */
 	struct mextra *mextra; /* point to mextra struct */
+	struct prop mprops[LAST_PROP + 1]; /* monster's properties */
 };
 
 #define newmonst() (struct monst *) alloc(sizeof (struct monst))

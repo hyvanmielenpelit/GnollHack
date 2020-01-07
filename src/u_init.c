@@ -774,29 +774,29 @@ register char sym;
 void
 props_init()
 {
-	u.uprops[LAUGHING].recurring = TRUE;
-	u.uprops[LAUGHING].recurring_constant = 0;
-	u.uprops[LAUGHING].recurring_random = 20;
+	context.properties[LAUGHING].recurring = TRUE;
+	context.properties[LAUGHING].recurring_constant = 0;
+	context.properties[LAUGHING].recurring_random = 20;
 
-	u.uprops[FUMBLING].recurring = TRUE;
-	u.uprops[FUMBLING].recurring_constant = 0;
-	u.uprops[FUMBLING].recurring_random = 20;
+	context.properties[FUMBLING].recurring = TRUE;
+	context.properties[FUMBLING].recurring_constant = 0;
+	context.properties[FUMBLING].recurring_random = 20;
 
-	u.uprops[ODD_IDEAS].recurring = TRUE;
-	u.uprops[ODD_IDEAS].recurring_constant = 150;
-	u.uprops[ODD_IDEAS].recurring_random = 100;
+	context.properties[ODD_IDEAS].recurring = TRUE;
+	context.properties[ODD_IDEAS].recurring_constant = 150;
+	context.properties[ODD_IDEAS].recurring_random = 100;
 
-	u.uprops[SLEEPY].recurring = TRUE;
-	u.uprops[SLEEPY].recurring_constant = 0;
-	u.uprops[SLEEPY].recurring_random = 100;
+	context.properties[SLEEPY].recurring = TRUE;
+	context.properties[SLEEPY].recurring_constant = 0;
+	context.properties[SLEEPY].recurring_random = 100;
 
-	u.uprops[STRANGLED].recurring = TRUE;
-	u.uprops[STRANGLED].recurring_constant = 6;
-	u.uprops[STRANGLED].recurring_random = 0;
+	context.properties[STRANGLED].recurring = TRUE;
+	context.properties[STRANGLED].recurring_constant = 6;
+	context.properties[STRANGLED].recurring_random = 0;
 
-	u.uprops[AIRLESS_ENVIRONMENT].recurring = TRUE;
-	u.uprops[AIRLESS_ENVIRONMENT].recurring_constant = 6;
-	u.uprops[AIRLESS_ENVIRONMENT].recurring_random = 0;
+	context.properties[AIRLESS_ENVIRONMENT].recurring = TRUE;
+	context.properties[AIRLESS_ENVIRONMENT].recurring_constant = 6;
+	context.properties[AIRLESS_ENVIRONMENT].recurring_random = 0;
 }
 
 void

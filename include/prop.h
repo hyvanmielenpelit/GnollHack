@@ -204,7 +204,9 @@ struct prop {
 /* Control flags */
 #define FROM_FORM 0x10000000L  /* Polyd; conferred by monster form */
 #define I_SPECIAL 0x20000000L /* Property is controllable */
+};
 
+struct prop_info {
 	boolean recurring;			/* Is property recurring? EProperty causes timeout in HProperty to increase by recurring_constant + rnd(recurring_random) */
 	int recurring_constant;
 	int recurring_random;
