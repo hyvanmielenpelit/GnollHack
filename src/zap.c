@@ -5001,14 +5001,14 @@ int damage;
 		if(damage >  0)
 	        pline("%s %s it for %d damage%s", The(str), vtense(str, "hit"), damage, force);
 		else
-			pline("%s %s it%s", The(str), vtense(str, "hit"), force);
+			pline("%s %s it but %s no effect%s", The(str), vtense(str, "hit"), vtense(str, "have"), force);
 	else
 		if (damage > 0)
 			pline("%s %s %s for %d damage%s", The(str), vtense(str, "hit"),
               mon_nam(mtmp), damage, force);
 		else
-			pline("%s %s %s%s", The(str), vtense(str, "hit"),
-				mon_nam(mtmp), force);
+			pline("%s %s %s but %s no effect%s", The(str), vtense(str, "hit"),
+				mon_nam(mtmp), vtense(str, "have"), force);
 }
 
 void
@@ -6028,7 +6028,8 @@ boolean say; /* Announce out of sight hit/miss events if true */
 
 	fltxt = flash_types[(type <= -30) ? abstype : abs(type)];
 
-    if (u.uswallow) {
+    if (u.uswallow)
+	{
         register int tmp;
 
         if (type < 0)
@@ -6054,7 +6055,8 @@ boolean say; /* Announce out of sight hit/miss events if true */
     save_bhitpos = bhitpos;
 
     tmp_at(DISP_BEAM, zapdir_to_glyph(dx, dy, zaptype)); //abstype => zaptype
-    while (range-- > 0) {
+    while (range-- > 0)
+	{
         lsx = sx;
         sx += dx;
         lsy = sy;
@@ -6086,16 +6088,27 @@ boolean say; /* Announce out of sight hit/miss events if true */
             mon = m_at(sx, sy);
         }
 
-        if (mon) {
-            if (isexplosioneffect) //type == ZT_SPELL(ZT_FIRE))
+        if (mon)
+		{
+			/* Ray hits a monster */
+			
+			if (isexplosioneffect) //type == ZT_SPELL(ZT_FIRE))
                 break;
-            if (type >= 0)
+            
+			if (type >= 0)
                 mon->mstrategy &= ~STRAT_WAITMASK;
+
         buzzmonst:
-            notonhead = (mon->mx != bhitpos.x || mon->my != bhitpos.y);
-            if (zap_hit(find_mac(mon), spell_type)) {
-                if (mon_reflects(mon, (char *) 0)) {
-                    if (cansee(mon->mx, mon->my)) {
+            
+			notonhead = (mon->mx != bhitpos.x || mon->my != bhitpos.y);
+            
+			if (zap_hit(find_mac(mon), spell_type))
+			{
+                if (mon_reflects(mon, (char *) 0)) 
+				{
+					/* Ray is reflected */
+                    if (cansee(mon->mx, mon->my))
+					{
                         hit(fltxt, mon, exclam(0), -1);
                         shieldeff(mon->mx, mon->my);
                         (void) mon_reflects(mon,
@@ -6103,13 +6116,21 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     }
                     dx = -dx;
                     dy = -dy;
-                } else {
-                    boolean mon_could_move = mon->mcanmove;
-                    int tmp = zhitm(mon, type, origobj, dmgdice, dicesize, dmgplus, &otmp);
+                }
+				else 
+				{
+					/* Ray is not reflected */
+					
+					boolean mon_could_move = mon->mcanmove;
+					
+					/* Ray does damage and actually reduces mon's hit points */
+					int tmp = zhitm(mon, type, origobj, dmgdice, dicesize, dmgplus, &otmp);
 
-                    if (is_rider(mon->data)
-                        && abstype == ZT_DISINTEGRATION) {
-                        if (canseemon(mon)) {
+					/* Rider non-disintegration */
+                    if (is_rider(mon->data) && abstype == ZT_DISINTEGRATION)
+					{
+                        if (canseemon(mon)) 
+						{
                             hit(fltxt, mon, ".", -1);
                             pline("%s disintegrates.", Monnam(mon));
                             pline("%s body reintegrates before your %s!",
@@ -6122,7 +6143,10 @@ boolean say; /* Announce out of sight hit/miss events if true */
                         mon->mhp = mon->mhpmax;
                         break; /* Out of while loop */
                     }
-                    if (mon->data == &mons[PM_DEATH] && abstype == ZT_DEATH) {
+
+					/* Death grows stronger */
+					if (mon->data == &mons[PM_DEATH] && abstype == ZT_DEATH)
+					{
                         if (canseemon(mon)) {
                             hit(fltxt, mon, ".", -1);
                             pline("%s absorbs the deadly %s!", Monnam(mon),
@@ -6133,13 +6157,21 @@ boolean say; /* Announce out of sight hit/miss events if true */
                         break; /* Out of while loop */
                     }
 
-                    if (tmp == DISINTEGRATION_DUMMY_DAMAGE) { /* disintegration */
+					/* Disintegrate */
+					if (tmp == DISINTEGRATION_DUMMY_DAMAGE)
+					{ /* disintegration */
                         disintegrate_mon(mon, type, fltxt);
-                    } else if (DEADMONSTER(mon)) {
-                        if (type < 0) {
+                    } 
+					else if (DEADMONSTER(mon)) 
+					{
+						/* Already dead monsters */
+						if (type < 0)
+						{
                             /* mon has just been killed by another monster */
                             monkilled(mon, fltxt, AD_RBRE);
-                        } else {
+                        } 
+						else 
+						{
                             int xkflags = XKILL_GIVEMSG; /* killed(mon); */
 
                             /* killed by hero; we know 'type' isn't negative;
@@ -6152,12 +6184,18 @@ boolean say; /* Announce out of sight hit/miss events if true */
                                 xkflags |= XKILL_NOCORPSE;
                             xkilled(mon, xkflags);
                         }
-                    } else {
-                        if (!otmp) {
-                            /* normal non-fatal hit */
+                    }
+					else
+					{
+						/* Normal hit */
+						if (!otmp)
+						{
+                            /* normal non-fatal hit text */
                             if (say || canseemon(mon))
                                 hit(fltxt, mon, exclam(tmp), tmp);
-                        } else {
+                        } 
+						else 
+						{
                             /* some armor was destroyed; no damage done */
                             if (canseemon(mon))
                                 pline("%s %s is disintegrated!",
@@ -6170,16 +6208,24 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     }
                 }
                 range -= 2;
-            } else {
+            } 
+			else 
+			{
                 if (say || canseemon(mon))
                     miss(fltxt, mon);
             }
-        } else if (sx == u.ux && sy == u.uy && range >= 0) {
+        } 
+		else if (sx == u.ux && sy == u.uy && range >= 0) 
+		{
+			/* Ray hits you or your steed */
             nomul(0);
-            if (u.usteed && !rn2(3) && !mon_reflects(u.usteed, (char *) 0)) {
+            if (u.usteed && !rn2(3) && !mon_reflects(u.usteed, (char *) 0)) 
+			{
                 mon = u.usteed;
                 goto buzzmonst;
-            } else if (zap_hit((int) u.uac, 0)) {
+            } 
+			else if (zap_hit((int) u.uac, 0))
+			{
                 range -= 2;
                 pline("%s hits you!", The(fltxt));
                 if (Reflecting) {
@@ -6194,9 +6240,13 @@ boolean say; /* Announce out of sight hit/miss events if true */
                 } else {
                     zhitu(type, origobj, dmgdice, dicesize, dmgplus, fltxt, sx, sy);
                 }
-            } else if (!Blind) {
+            } 
+			else if (!Blind) 
+			{
                 pline("%s whizzes by you!", The(fltxt));
-            } else if (abstype == ZT_LIGHTNING) {
+            }
+			else if (abstype == ZT_LIGHTNING)
+			{
                 Your("%s tingles.", body_part(ARM));
             }
 			if (abstype == ZT_LIGHTNING)

@@ -1664,11 +1664,6 @@ boolean atme;
      * effects, e.g. more damage, further distance, and so on, without
      * additional cost to the spellcaster.
      */
-	case SPE_FIREBALL:
-	case SPE_FIRE_STORM:
-	case SPE_METEOR_SWARM:
-	case SPE_ICE_STORM:
-	case SPE_THUNDERSTORM:
 #if 0		
 		if (throwspell(otyp)) {
             cc.x = u.dx;
@@ -1709,13 +1704,18 @@ boolean atme;
         break; */
 #endif
     /* these spells are all duplicates of wand effects */
-	case SPE_FIRE_BOLT:
-	case SPE_LIGHTNING_BOLT:
-	case SPE_CONE_OF_COLD:
 	case SPE_MAGIC_ARROW:
 	case SPE_FORCE_BOLT:
         physical_damage = TRUE;
     /*FALLTHRU*/
+	case SPE_FIREBALL:
+	case SPE_FIRE_STORM:
+	case SPE_METEOR_SWARM:
+	case SPE_ICE_STORM:
+	case SPE_THUNDERSTORM:
+	case SPE_FIRE_BOLT:
+	case SPE_LIGHTNING_BOLT:
+	case SPE_CONE_OF_COLD:
 	case SPE_DEATHSPELL:
 	case SPE_SLEEP:
     case SPE_MAGIC_MISSILE:
