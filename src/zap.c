@@ -2616,7 +2616,8 @@ struct obj *obj, *otmp;
     if (obj == otmp)
         return 0;
 
-    if (obj->bypass) {
+    if (obj->bypass) 
+	{
         /* The bypass bit is currently only used as follows:
          *
          * POLYMORPH - When a monster being polymorphed drops something
@@ -2649,9 +2650,12 @@ struct obj *obj, *otmp;
          * as a safeguard against any stray occurrence left in an obj
          * struct someplace, although that should never happen.
          */
-        if (context.bypasses) {
+        if (context.bypasses)
+		{
             return 0;
-        } else {
+        } 
+		else 
+		{
             debugpline1("%s for a moment.", Tobjnam(obj, "pulsate"));
             obj->bypass = 0;
         }
@@ -2665,21 +2669,28 @@ struct obj *obj, *otmp;
     if (!(obj->where == OBJ_FLOOR || otmp->otyp == SPE_STONE_TO_FLESH))
         impossible("bhito: obj is not floor or Stone To Flesh spell");
 
-    if (obj == uball) {
+    if (obj == uball) 
+	{
         res = 0;
-    } else if (obj == uchain) {
-        if (otmp->otyp == WAN_OPENING || otmp->otyp == SPE_KNOCK) {
+    } 
+	else if (obj == uchain)
+	{
+        if (otmp->otyp == WAN_OPENING || otmp->otyp == SPE_KNOCK)
+		{
             learn_it = TRUE;
             unpunish();
         } else
             res = 0;
-    } else
-        switch (otmp->otyp) {
+    } 
+	else
+        switch (otmp->otyp) 
+		{
         case WAN_POLYMORPH:
         case SPE_POLYMORPH:
 			res = 1;
             if (obj->otyp == WAN_POLYMORPH || obj->otyp == SPE_POLYMORPH
-                || obj->otyp == POT_POLYMORPH || obj_resists(obj, 5, 95)) {
+                || obj->otyp == POT_POLYMORPH || obj_resists(obj, 5, 95)) 
+			{
                 res = 0;
                 break;
             }
@@ -2689,7 +2700,8 @@ struct obj *obj, *otmp;
             if (Is_box(obj))
                 (void) boxlock(obj, otmp);
 
-            if (obj_shudders(obj)) {
+            if (obj_shudders(obj))
+			{
                 boolean cover =
                     ((obj == level.objects[u.ux][u.uy]) && u.uundetected
                      && hides_under(youmonst.data));
@@ -2709,11 +2721,15 @@ struct obj *obj, *otmp;
             res = !obj->dknown;
             /* target object has now been "seen (up close)" */
             obj->dknown = 1;
-            if (Is_container(obj) || obj->otyp == STATUE) {
+            if (Is_container(obj) || obj->otyp == STATUE)
+			{
                 obj->cknown = obj->lknown = 1;
-                if (!obj->cobj) {
+                if (!obj->cobj) 
+				{
                     pline("%s empty.", Tobjnam(obj, "are"));
-                } else if (SchroedingersBox(obj)) {
+                } 
+				else if (SchroedingersBox(obj))
+				{
                     /* we don't want to force alive vs dead
                        determination for Schroedinger's Cat here,
                        so just make probing be inconclusive for it */
@@ -2723,7 +2739,9 @@ struct obj *obj, *otmp;
                            picks a form which can't leave a corpse */
                         an(Hallucination ? rndmonnam((char *) 0) : "cat"));
                     obj->cknown = 0;
-                } else {
+                }
+				else
+				{
                     struct obj *o;
                     /* view contents (not recursively) */
                     for (o = obj->cobj; o; o = o->nobj)
@@ -2740,25 +2758,33 @@ struct obj *obj, *otmp;
             /* learn the type if you see or hear something break
                (the sound could be implicit) */
             maybelearnit = cansee(obj->ox, obj->oy) || !Deaf;
-            if (obj->otyp == BOULDER) {
+            if (obj->otyp == BOULDER) 
+			{
 				res = 1;
                 if (cansee(obj->ox, obj->oy))
                     pline_The("boulder falls apart.");
                 else
                     You_hear("a crumbling sound.");
                 fracture_rock(obj);
-            } else if (obj->otyp == STATUE) {
+            } 
+			else if (obj->otyp == STATUE) 
+			{
 				res = 1;
-                if (break_statue(obj)) {
-                    if (cansee(obj->ox, obj->oy)) {
+                if (break_statue(obj)) 
+				{
+                    if (cansee(obj->ox, obj->oy))
+					{
                         if (Hallucination)
                             pline_The("%s shatters.", rndmonnam(NULL));
                         else
                             pline_The("statue shatters.");
-                    } else
+                    } 
+					else
                         You_hear("a crumbling sound.");
                 }
-            } else {
+            } 
+			else
+			{
                 int oox = obj->ox;
                 int ooy = obj->oy;
                 if (context.mon_moving
@@ -2806,11 +2832,13 @@ struct obj *obj, *otmp;
             break;
 		case WAN_RESURRECTION:
 		case SPE_RESURRECTION:
-			if (obj->otyp == EGG) {
+			if (obj->otyp == EGG) 
+			{
 				res = 1;
 				revive_egg(obj);
 			}
-			else if (obj->otyp == CORPSE) {
+			else if (obj->otyp == CORPSE) 
+			{
 				res = 1;
 				struct monst* mtmp;
 				xchar ox, oy;
@@ -2823,10 +2851,12 @@ struct obj *obj, *otmp;
 
 				mtmp = revive(obj, TRUE, -1, TRUE);
 
-				if (!mtmp) {
+				if (!mtmp) 
+				{
 					res = 0; /* no monster implies corpse was left intact */
 				}
-				else {
+				else
+				{
 					int newmnum = mtmp->mnum;
 
 					if (cansee(ox, oy))
@@ -2844,7 +2874,8 @@ struct obj *obj, *otmp;
 
 							learn_it = TRUE;
 						}
-						else {
+						else 
+						{
 							/* saw corpse but don't see monster: maybe
 							   mtmp is invisible, or has been placed at
 							   a different spot than <ox,oy> */
@@ -2853,10 +2884,12 @@ struct obj *obj, *otmp;
 							pline("%s disappears.", corpsname);
 						}
 					}
-					else {
+					else 
+					{
 						/* couldn't see corpse's location */
 						if (Role_if(PM_HEALER) && !Deaf
-							&& !is_not_living(&mons[corpsenm])) {
+							&& !is_not_living(&mons[corpsenm]))
+						{
 							if (!type_is_pname(&mons[corpsenm]))
 								corpsname = an(corpsname);
 							if (!Hallucination)
@@ -3044,7 +3077,8 @@ boolean stop_at_first_hit_object;
     int hitanything = 0;
     register struct obj *otmp, *next_obj;
 
-    if (obj->otyp == SPE_FORCE_BOLT || obj->otyp == WAN_STRIKING) {
+    if (obj->otyp == SPE_FORCE_BOLT || obj->otyp == WAN_STRIKING)
+	{
         struct trap *t = t_at(tx, ty);
 
         /* We can't settle for the default calling sequence of
@@ -3058,7 +3092,8 @@ boolean stop_at_first_hit_object;
     }
 
     poly_zapped = -1;
-    for (otmp = level.objects[tx][ty]; otmp; otmp = next_obj) {
+    for (otmp = level.objects[tx][ty]; otmp; otmp = next_obj) 
+	{
         next_obj = otmp->nexthere;
         /* for zap downwards, don't hit object poly'd hero is hiding under */
         if (zz > 0 && u.uundetected && otmp == level.objects[u.ux][u.uy]
@@ -3113,7 +3148,8 @@ register struct obj *obj;
 	struct monst* mtmp = (struct monst*)0;
 	struct obj* otmp = (struct obj*)0;
 
-    switch (obj->otyp) {
+    switch (obj->otyp)
+	{
     case WAN_LIGHT:
     case SPE_LIGHT:
         litroom(TRUE, obj);
