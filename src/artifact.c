@@ -1486,6 +1486,9 @@ int critstrikeroll; /* need to synchronize critical strike based abilities */
 	if (!otmp || !magr || !mdef)
 		return 0;
 
+	if (object_uses_spellbook_wand_flags_and_properties(otmp))
+		return 0;
+
 	boolean youattack = (magr == &youmonst);
 	boolean youdefend = (mdef == &youmonst);
 	boolean vis = (!youattack && magr && cansee(magr->mx, magr->my))

@@ -136,9 +136,10 @@ int x, y;
     int create;
     struct monst *mtmp;
     struct trap *t;
+	boolean uses_spell_flags = obj ? object_uses_spellbook_wand_flags_and_properties(obj) : FALSE;
 
     if (obj->otyp == CREAM_PIE 
-		|| ((objects[obj->otyp].oc_aflags & A1_ITEM_VANISHES_ON_HIT) // The item vanishes here always, because we cannot check appropriateness properly
+		|| (!uses_spell_flags && (objects[obj->otyp].oc_aflags & A1_ITEM_VANISHES_ON_HIT) // The item vanishes here always, because we cannot check appropriateness properly
 			)
 		|| (objects[obj->otyp].oc_material == MAT_GLASS
 		&& !(objects[obj->otyp].oc_flags & O1_INDESTRUCTIBLE)

@@ -460,6 +460,7 @@ register struct monst *magr, *mdef;
 				{
 					struct obj* omonwep = otmp;
 					res[i] = hitmm(magr, mdef, mattk, otmp);
+					boolean uses_spell_flags = omonwep ? object_uses_spellbook_wand_flags_and_properties(omonwep) : FALSE;
 
 					/* Check if the weapon shatters */
 					/* Check if the object should shatter */
@@ -489,7 +490,7 @@ register struct monst *magr, *mdef;
 						}
 						endforloop = TRUE;
 					}
-					else if (omonwep && (objects[omonwep->otyp].oc_aflags & A1_ITEM_VANISHES_ON_HIT)
+					else if (omonwep && !uses_spell_flags && (objects[omonwep->otyp].oc_aflags & A1_ITEM_VANISHES_ON_HIT)
 						&& (
 							!(objects[omonwep->otyp].oc_aflags & A1_ITEM_VANISHES_ONLY_IF_PERMITTED_TARGET)
 							|| ((objects[omonwep->otyp].oc_aflags & A1_ITEM_VANISHES_ONLY_IF_PERMITTED_TARGET) && eligible_for_extra_damage(omonwep, mdef, magr))
@@ -925,6 +926,7 @@ register struct obj* omonwep;
 	int tmp = 0, extratmp = 0;
 
 	struct obj* mweapon = omonwep; // MON_WEP(magr);
+	boolean uses_spell_flags = omonwep ? object_uses_spellbook_wand_flags_and_properties(omonwep) : FALSE;
 
 	if (mweapon)
 	{
@@ -1516,7 +1518,7 @@ register struct obj* omonwep;
         return res;
 
 	/* Wounding */
-	if (mweapon && !isdisintegrated && (objects[mweapon->otyp].oc_aflags & A1_WOUNDING) && 
+	if (mweapon && !uses_spell_flags && !isdisintegrated && (objects[mweapon->otyp].oc_aflags & A1_WOUNDING) &&
 		eligible_for_extra_damage(mweapon, mdef, magr) && !is_rider(mdef->data)
 		&& (
 		((objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
@@ -1551,7 +1553,7 @@ register struct obj* omonwep;
 	}
 
 	/* Life leech */
-	if (mweapon && !isdisintegrated && (objects[mweapon->otyp].oc_aflags & A1_LIFE_LEECH) && eligible_for_extra_damage(mweapon, mdef, magr)
+	if (mweapon && !uses_spell_flags && !isdisintegrated && (objects[mweapon->otyp].oc_aflags & A1_LIFE_LEECH) && eligible_for_extra_damage(mweapon, mdef, magr)
 		&& !is_rider(mdef->data) && !is_not_living(mdef->data)
 		&& (
 		((objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)

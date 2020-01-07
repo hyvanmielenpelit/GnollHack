@@ -1456,6 +1456,8 @@ register struct obj* omonwep;
 	dmg = 0;
     /*  First determine the base damage done */
 	struct obj* mweapon = omonwep; // MON_WEP(mtmp);
+	boolean uses_spell_flags = omonwep ? object_uses_spellbook_wand_flags_and_properties(omonwep) : FALSE;
+
 	if (mweapon)
 	{
 		//Use weapon damage
@@ -2421,7 +2423,7 @@ register struct obj* omonwep;
 	int permdmg2 = 0;
 
 	/* Wounding */
-	if (mattk->aatyp == AT_WEAP && omonwep && (objects[omonwep->otyp].oc_aflags & A1_WOUNDING) && eligible_for_extra_damage(omonwep, &youmonst, mtmp)
+	if (mattk->aatyp == AT_WEAP && omonwep && !uses_spell_flags && (objects[omonwep->otyp].oc_aflags & A1_WOUNDING) && eligible_for_extra_damage(omonwep, &youmonst, mtmp)
 		&& (
 		((objects[omonwep->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
 			&& (
@@ -2449,7 +2451,7 @@ register struct obj* omonwep;
 	}
 
 	/* Life leech */
-	if (mattk->aatyp == AT_WEAP && omonwep && (objects[omonwep->otyp].oc_aflags & A1_LIFE_LEECH) && eligible_for_extra_damage(omonwep, &youmonst, mtmp)
+	if (mattk->aatyp == AT_WEAP && omonwep && !uses_spell_flags && (objects[omonwep->otyp].oc_aflags & A1_LIFE_LEECH) && eligible_for_extra_damage(omonwep, &youmonst, mtmp)
 		&& (
 		((objects[omonwep->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
 			&& (
@@ -2628,12 +2630,13 @@ register struct obj* omonwep;
 		}
 	}
 
-	if (omonwep && (objectshatters || 
-		(objects[omonwep->otyp].oc_aflags & A1_ITEM_VANISHES_ON_HIT
+	if (omonwep && (objectshatters || (!uses_spell_flags 
+		&& ((objects[omonwep->otyp].oc_aflags & A1_ITEM_VANISHES_ON_HIT)
 			&& (
 				!(objects[omonwep->otyp].oc_aflags & A1_ITEM_VANISHES_ONLY_IF_PERMITTED_TARGET)
 				|| ((objects[omonwep->otyp].oc_aflags & A1_ITEM_VANISHES_ONLY_IF_PERMITTED_TARGET) && eligible_for_extra_damage(omonwep, &youmonst, mtmp))
 				)
+			)
 		)
 	))
 	{

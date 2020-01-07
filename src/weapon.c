@@ -491,6 +491,9 @@ int basedmg;
 	if (!otmp || !mon)
 		return 0;
 
+	if (object_uses_spellbook_wand_flags_and_properties(otmp))
+		return 0;
+
 	int tmp = 0, otyp = otmp->otyp;
 	boolean youdefend = (mon == &youmonst);
 	boolean extra_is_critical = FALSE;

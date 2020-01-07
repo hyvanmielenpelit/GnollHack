@@ -653,8 +653,9 @@ struct attack *uattk;
 		int tmp = find_roll_to_hit(mon, uattk->aatyp, uwep, &attknum, &armorpenalty);
 		int dieroll = rnd(20);
 		int mhit = (tmp > dieroll || u.uswallow);
+		boolean uses_spell_flags = uwep ? object_uses_spellbook_wand_flags_and_properties(uwep) : FALSE;
 
-		if (uwep && ((objects[uwep->otyp].oc_aflags & A1_HITS_ADJACENT_SQUARES) || (uwep->oartifact && artifact_has_flag(uwep, AF_HITS_ADJACENT_SQUARES)))
+		if (uwep && !uses_spell_flags &&((objects[uwep->otyp].oc_aflags & A1_HITS_ADJACENT_SQUARES) || (uwep->oartifact && artifact_has_flag(uwep, AF_HITS_ADJACENT_SQUARES)))
 			&& !u.uswallow && !u.ustuck && !NODIAG(u.umonnum))
 		{
 			malive = hitum_cleave(mon, uattk, uwep);
@@ -711,7 +712,9 @@ struct attack *uattk;
 				&armorpenalty);
 			int dieroll = rnd(20);
 			int mhit = (tmp > dieroll || u.uswallow);
-			if (uarms && ((objects[uarms->otyp].oc_aflags & A1_HITS_ADJACENT_SQUARES) || (uarms->oartifact && artifact_has_flag(uarms, AF_HITS_ADJACENT_SQUARES)))
+			boolean uses_spell_flags = uarms ? object_uses_spellbook_wand_flags_and_properties(uarms) : FALSE;
+
+			if (uarms && !uses_spell_flags && ((objects[uarms->otyp].oc_aflags & A1_HITS_ADJACENT_SQUARES) || (uarms->oartifact && artifact_has_flag(uarms, AF_HITS_ADJACENT_SQUARES)))
 				&& !u.uswallow && !u.ustuck && !NODIAG(u.umonnum))
 			{
 				malive = hitum_cleave(mon, uattk, uarms);
@@ -1779,8 +1782,10 @@ boolean* obj_destroyed;
 		pline(fmt, whom);
 	}
 
+	boolean uses_spell_flags = obj ? object_uses_spellbook_wand_flags_and_properties(obj) : FALSE;
+
 	/* Wounding */
-	if (obj && (objects[obj->otyp].oc_aflags & A1_WOUNDING) && eligible_for_extra_damage(obj, mon, &youmonst)
+	if (obj && !uses_spell_flags && (objects[obj->otyp].oc_aflags & A1_WOUNDING) && eligible_for_extra_damage(obj, mon, &youmonst)
 		&& !is_rider(mon->data)
 		&& (
 		((objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
@@ -1822,7 +1827,7 @@ boolean* obj_destroyed;
 	}
 
 	/* Life leech */
-	if (obj && (objects[obj->otyp].oc_aflags & A1_LIFE_LEECH) && eligible_for_extra_damage(obj, mon, &youmonst) && !is_rider(mon->data)
+	if (obj && !uses_spell_flags && (objects[obj->otyp].oc_aflags & A1_LIFE_LEECH) && eligible_for_extra_damage(obj, mon, &youmonst) && !is_rider(mon->data)
 		&& !is_not_living(mon->data)
 		&& (
 		((objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
@@ -2041,8 +2046,8 @@ boolean* obj_destroyed;
 
 	}
 
-	if (obj && (objectshatters || (
-		(objects[obj->otyp].oc_aflags & A1_ITEM_VANISHES_ON_HIT)
+	if (obj && (objectshatters || (!uses_spell_flags
+		&& (objects[obj->otyp].oc_aflags & A1_ITEM_VANISHES_ON_HIT)
 		&& (
 			!(objects[obj->otyp].oc_aflags & A1_ITEM_VANISHES_ONLY_IF_PERMITTED_TARGET)
 			|| ((objects[obj->otyp].oc_aflags & A1_ITEM_VANISHES_ONLY_IF_PERMITTED_TARGET) && eligible_for_extra_damage(obj, mon, &youmonst))

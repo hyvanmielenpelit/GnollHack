@@ -454,6 +454,7 @@ register struct obj* obj;
 	}
 	
 	boolean stats_known = object_stats_known(obj);
+	boolean uses_spell_flags = object_uses_spellbook_wand_flags_and_properties(obj);
 
 	char buf[BUFSZ];
 	char buf2[BUFSZ];
@@ -651,7 +652,7 @@ register struct obj* obj;
 	putstr(datawin, 0, txt);
 
 
-	if (is_weapon(obj) || ((is_gloves(obj) || is_boots(obj)) && stats_known) || objects[obj->otyp].oc_class == GEM_CLASS)
+	if (!uses_spell_flags && (is_weapon(obj) || ((is_gloves(obj) || is_boots(obj)) && stats_known) || objects[obj->otyp].oc_class == GEM_CLASS))
 	{
 		char plusbuf[BUFSZ];
 		boolean maindiceprinted = FALSE;
@@ -1050,7 +1051,7 @@ register struct obj* obj;
 			if (obj->oclass == WEAPON_CLASS || is_weptool(obj))
 			{
 				int enchplus = obj->spe;
-				if (stats_known && (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
+				if (!uses_spell_flags && stats_known && (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
 				{
 					enchplus *= 2;
 				}
@@ -1150,7 +1151,7 @@ register struct obj* obj;
 	}
 
 	/* Various extra info is the item is known */
-	if (stats_known && !object_uses_spellbook_wand_flags_and_properties(obj))
+	if (stats_known && !uses_spell_flags)
 	{
 		if (objects[otyp].oc_oprop > 0
 			|| objects[otyp].oc_oprop2 > 0 
@@ -1505,35 +1506,35 @@ register struct obj* obj;
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
-			if (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS)
+			if (!uses_spell_flags && (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
 			{
 				powercnt++;
 				Sprintf(buf, " %2d - Deals double damage on hit", powercnt);
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
-			if ((objects[otyp].oc_aflags & A1_SVB_MASK) == A1_VORPAL)
+			if (!uses_spell_flags && (objects[otyp].oc_aflags & A1_SVB_MASK) == A1_VORPAL)
 			{
 				powercnt++;
 				Sprintf(buf, " %2d - Beheads target on hit", powercnt);
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
-			if ((objects[otyp].oc_aflags & A1_SVB_MASK) == A1_BISECT)
+			if (!uses_spell_flags && (objects[otyp].oc_aflags & A1_SVB_MASK) == A1_BISECT)
 			{
 				powercnt++;
 				Sprintf(buf, " %2d - Besects target on hit", powercnt);
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
-			if ((objects[otyp].oc_aflags & A1_SVB_MASK) == A1_SHARPNESS)
+			if (!uses_spell_flags && (objects[otyp].oc_aflags & A1_SVB_MASK) == A1_SHARPNESS)
 			{
 				powercnt++;
 				Sprintf(buf, " %2d - 10%% chance of permanent damage equal to 25%% of target's maximum hit points", powercnt);
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
-			if ((objects[otyp].oc_aflags & A1_CRITICAL_STRIKE) && (objects[otyp].oc_aflags & A1_CRITICAL_STRIKE_IS_DEADLY))
+			if (!uses_spell_flags && (objects[otyp].oc_aflags & A1_CRITICAL_STRIKE) && (objects[otyp].oc_aflags & A1_CRITICAL_STRIKE_IS_DEADLY))
 			{
 				powercnt++;
 				int critchance = objects[otyp].oc_critical_strike_percentage;
@@ -1550,21 +1551,21 @@ register struct obj* obj;
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
-			if (objects[otyp].oc_aflags & A1_LEVEL_DRAIN)
+			if (!uses_spell_flags && (objects[otyp].oc_aflags & A1_LEVEL_DRAIN))
 			{
 				powercnt++;
 				Sprintf(buf, " %2d - Drains a level on hit", powercnt);
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
-			if (objects[otyp].oc_aflags & A1_LIFE_LEECH)
+			if (!uses_spell_flags && (objects[otyp].oc_aflags & A1_LIFE_LEECH))
 			{
 				powercnt++;
 				Sprintf(buf, " %2d - Transfers hit points to the wielder on hit", powercnt);
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
-			if (objects[otyp].oc_aflags & A1_WOUNDING)
+			if (!uses_spell_flags && (objects[otyp].oc_aflags & A1_WOUNDING))
 			{
 				powercnt++;
 				Sprintf(buf, " %2d - Reduces hit points permanently on hit", powercnt);
