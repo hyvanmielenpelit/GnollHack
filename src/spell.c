@@ -1788,14 +1788,18 @@ boolean atme;
 	case SPE_MASS_RAISE_ZOMBIE:
 	case SPE_MASS_CREATE_MUMMY:
 	case SPE_MASS_CREATE_DRACOLICH:
-    case SPE_HEALING:
+	case SPE_REPLENISH_UNDEATH:
+	case SPE_GREATER_UNDEATH_REPLENISHMENT:
+	case SPE_HEALING:
     case SPE_EXTRA_HEALING:
 	case SPE_GREATER_HEALING:
 	case SPE_FULL_HEALING:
 	case SPE_DRAIN_LIFE:
     case SPE_STONE_TO_FLESH:
         if (objects[otyp].oc_dir != NODIR) {
-            if (otyp == SPE_HEALING || otyp == SPE_EXTRA_HEALING || otyp == SPE_GREATER_HEALING || otyp == SPE_FULL_HEALING) {
+            if (otyp == SPE_HEALING || otyp == SPE_EXTRA_HEALING || otyp == SPE_GREATER_HEALING || otyp == SPE_FULL_HEALING
+				|| otyp == SPE_REPLENISH_UNDEATH || otyp == SPE_GREATER_UNDEATH_REPLENISHMENT
+				) {
                 /* healing and extra healing are actually potion effects,
                    but they've been extended to take a direction like wands */
                 if (role_skill >= P_SKILLED)
@@ -3559,25 +3563,9 @@ int spell;
 
 	splcaster -= u.uspellcastingbonus; /* This is a bonus, not a penalty */
 
-    /* `healing spell' bonus */
-	/*
-    if (spellid(spell) == SPE_HEALING || spellid(spell) == SPE_EXTRA_HEALING || spellid(spell) == SPE_GREATER_HEALING || spellid(spell) == SPE_FULL_HEALING
-        || spellid(spell) == SPE_CURE_BLINDNESS
-        || spellid(spell) == SPE_CURE_SICKNESS
-		|| spellid(spell) == SPE_CURE_PETRIFICATION
-		|| spellid(spell) == SPE_RESTORE_ABILITY
-        || spellid(spell) == SPE_REMOVE_CURSE)
-        splcaster += special;
 
-    if (splcaster > 20)
-        splcaster = 20;
-	*/
+    /* Calculate success chance */
 
-    /* Calculate learned ability */
-
-    /* Players basic likelihood of being able to cast any spell
-     * is based of their `magic' statistic. (Int or Wis)
-     */
 	chance = 0;
 	chance += 10 * statused;
 

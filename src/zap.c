@@ -535,7 +535,7 @@ struct obj *otmp;
 	case SPE_FULL_HEALING:
 		res = 1;
 		reveal_invis = TRUE;
-        if (mtmp->data != &mons[PM_PESTILENCE]) {
+        if (mtmp->data != &mons[PM_PESTILENCE] && is_living(mtmp->data)) {
             wake = FALSE; /* wakeup() makes the target angry */
 			if(otyp == SPE_FULL_HEALING)
 				mtmp->mhp = mtmp->mhpmax;
@@ -560,18 +560,58 @@ struct obj *otmp;
                         mimic_hit_msg(mtmp, otyp);
                 } else
                     pline("%s looks %s.", Monnam(mtmp),
-                          otyp == SPE_EXTRA_HEALING ? "much better" : otyp == SPE_FULL_HEALING ? "completely healed" : "better");
+                          otyp == SPE_GREATER_HEALING ? "much, much better" : SPE_EXTRA_HEALING ? "much better" : otyp == SPE_FULL_HEALING ? "completely healed" : "better");
             }
             if (mtmp->mtame || mtmp->mpeaceful) {
                 adjalign(Role_if(PM_HEALER) ? 1 : sgn(u.ualign.type));
             }
-        } else { /* Pestilence */
+        } 
+		else if (mtmp->data == &mons[PM_PESTILENCE])
+		{ /* Pestilence */
             /* Pestilence will always resist; damage is half of 3d{4,8,12} */
             (void) resist(mtmp, otmp, 0,
                           d(3, otyp == SPE_FULL_HEALING ? 12 : otyp == SPE_EXTRA_HEALING ? 8 : 4), TELL);
         }
-        break;
-    case WAN_LIGHT: /* (broken wand) */
+		else
+		{ /* Undead and other nonliving such as golems */
+			pline("%s is unaffected.", Monnam(mtmp));
+		}
+		break;
+	case SPE_REPLENISH_UNDEATH:
+	case SPE_GREATER_UNDEATH_REPLENISHMENT:
+		res = 1;
+		reveal_invis = TRUE;
+		if (is_undead(mtmp->data))
+		{
+			wake = FALSE; /* wakeup() makes the target angry */
+
+			mtmp->mhp += d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus;
+
+			if (mtmp->mhp > mtmp->mhpmax)
+				mtmp->mhp = mtmp->mhpmax;
+			if (skilled_spell || otyp == SPE_GREATER_UNDEATH_REPLENISHMENT)
+				mcureblindness(mtmp, canseemon(mtmp));
+			if (canseemon(mtmp)) {
+				if (disguised_mimic) {
+					if (is_obj_mappear(mtmp, STRANGE_OBJECT)) {
+						/* it can do better now */
+						set_mimic_sym(mtmp);
+						newsym(mtmp->mx, mtmp->my);
+					}
+					else
+						mimic_hit_msg(mtmp, otyp);
+				}
+				else
+					pline("%s looks %s.", Monnam(mtmp),
+						otyp == SPE_GREATER_UNDEATH_REPLENISHMENT ? "much better" : "better");
+			}
+		}
+		else
+		{ /* Non-undead */
+			pline("%s is unaffected.", Monnam(mtmp));
+		}
+		break;
+	case WAN_LIGHT: /* (broken wand) */
 		res = 1;
 		if (flash_hits_mon(mtmp, otmp)) {
             learn_it = TRUE;
@@ -2938,6 +2978,8 @@ struct obj *obj, *otmp;
         case SPE_EXTRA_HEALING:
 		case SPE_GREATER_HEALING:
 		case SPE_FULL_HEALING:
+		case SPE_REPLENISH_UNDEATH:
+		case SPE_GREATER_UNDEATH_REPLENISHMENT:
 		case SPE_SHOCKING_TOUCH:
 		case SPE_TOUCH_OF_DEATH:
 		case SPE_TOUCH_OF_PETRIFICATION:
@@ -4032,15 +4074,32 @@ boolean ordinary;
 	case SPE_HEALING:
     case SPE_EXTRA_HEALING:
 	case SPE_GREATER_HEALING:
-		learn_it = TRUE; /* (no effect for spells...) */
-        healup(damage, 0, FALSE, (obj->blessed || obj->otyp == SPE_EXTRA_HEALING), (obj->blessed || obj->otyp == SPE_EXTRA_HEALING), FALSE, FALSE);
-        You_feel("%sbetter.", obj->otyp == SPE_EXTRA_HEALING ? "much " : "");
+		if(is_living(youmonst.data))
+		{
+			learn_it = TRUE; /* (no effect for spells...) */
+			healup(damage, 0, FALSE, (obj->blessed || obj->otyp != SPE_HEALING), (obj->blessed || obj->otyp != SPE_HEALING), FALSE, FALSE);
+			You_feel("%sbetter.", obj->otyp == SPE_GREATER_HEALING ? "much, much " : obj->otyp == SPE_EXTRA_HEALING ? "much " : "");
+		}
+		else
+			You_feel("no different than before.");
 		damage = 0;
-        break;
+		break;
 	case SPE_FULL_HEALING:
 		learn_it = TRUE; /* (no effect for spells...) */
 		healup(9999, 0, TRUE, TRUE, TRUE, TRUE, TRUE);
 		You_feel("completely healed.");
+		damage = 0;
+		break;
+	case SPE_REPLENISH_UNDEATH:
+	case SPE_GREATER_UNDEATH_REPLENISHMENT:
+		if (is_undead(youmonst.data))
+		{
+			learn_it = TRUE; /* (no effect for spells...) */
+			healup(damage, 0, FALSE, (obj->blessed || obj->otyp == SPE_GREATER_UNDEATH_REPLENISHMENT), (obj->blessed || obj->otyp == SPE_GREATER_UNDEATH_REPLENISHMENT), FALSE, FALSE);
+			You_feel("%sbetter.", obj->otyp == SPE_GREATER_UNDEATH_REPLENISHMENT ? "much " : "");
+		}
+		else
+			You_feel("no different than before.");
 		damage = 0;
 		break;
 	case WAN_LIGHT: /* (broken wand) */
@@ -4273,6 +4332,8 @@ struct obj *obj; /* wand or spell */
     case SPE_EXTRA_HEALING:
 	case SPE_GREATER_HEALING:
 	case SPE_FULL_HEALING:
+	case SPE_REPLENISH_UNDEATH:
+	case SPE_GREATER_UNDEATH_REPLENISHMENT:
 	case SPE_DRAIN_LIFE:
     case WAN_OPENING:
     case SPE_KNOCK:

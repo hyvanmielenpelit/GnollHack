@@ -2495,9 +2495,9 @@ SPELL("stone to flesh",   "thick", None, "Turns a statue back to a living being"
 SPELL("haste self",      "purple", None, "Increases the movement and attack speed of the caster",
       P_MOVEMENT_SPELL,			10,  4,			 0, 3, 30, A_INT, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 1, 10, 100, S1_NONE, CLR_MAGENTA, O1_NONE, O2_NONE, O3_NONE),
 SPELL("levitation",      "tan", None, "Raises the caster off the ground",
-      P_MOVEMENT_SPELL,			10,  4,			 0, 2, 15, A_INT, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 5, 10, 140, S1_NONE, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE),
+      P_MOVEMENT_SPELL,			5,  4,			 0, 2, 15, A_INT, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 5, 10, 140, S1_NONE, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE),
 SPELL("teleport away",    "gold-plated", None, "Teleports the caster to a random location on the level",
-      P_MOVEMENT_SPELL,			10,  6,			 5, 4, 30, A_INT, 0, 0, 100, 0, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, S1_NONE, HI_GOLD, O1_NONE, O2_NONE, O3_NONE),
+      P_MOVEMENT_SPELL,			5,  6,			 5, 4, 30, A_INT, 0, 0, 100, 0, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, S1_NONE, HI_GOLD, O1_NONE, O2_NONE, O3_NONE),
 SPELL("jumping",          "thin", None, "Enables the caster to jump",
       P_MOVEMENT_SPELL,			5,  3,			 0,-1,  4, A_DEX, 0, 0, 100, 0, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, S1_NONE, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
 SPELL("water walking",			"circle-patterned", None, "Makes the caster able to walk on water",
@@ -2588,6 +2588,10 @@ SPELL("raise skeleton king",			"skeletal", None, "Summons a permanent skeleton k
 	P_NECROMANCY_SPELL,			2,  7,		    0, 10, 300, A_AVG_INT_WIS, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NONE, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
 SPELL("raise giant skeleton",			"stupendous", None, "Summons a permanent giant skeleton",
 	P_NECROMANCY_SPELL,			5,  5,		    0, 4, 30, A_AVG_INT_WIS, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NONE, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
+SPELL("replenish undeath",         "skull-patterned", None, "Heals a target undead for 6d6 hit points",
+	P_NECROMANCY_SPELL,			5,  3,			 0, 2, 15, A_WIS, 0, 0, 100, 0, 1, IMMEDIATE, 0, 6, 6, 0, 0, 0, 0, S1_NONE, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE),
+SPELL("greater undeath replenishment",   "bone-patterned", None, "Heals a target undead for 12d6 hit points",
+	P_NECROMANCY_SPELL,			5,  6,			 2, 4, 30, A_WIS, 0, 0, 100, 0, 1, IMMEDIATE, 0, 12, 6, 0, 0, 0, 0, S1_NONE, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE),
 
 
 /* books with fixed descriptions
