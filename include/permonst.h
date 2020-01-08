@@ -73,11 +73,11 @@ struct permonst {
 
 extern NEARDATA struct permonst mons[]; /* the master list of monster types */
 
-#define VERY_SLOW 3
+#define VERY_SLOW_SPEED 3
 #define SLOW_SPEED 9
 #define NORMAL_SPEED 12 /* movement rates */
 #define FAST_SPEED 15
-#define VERY_FAST 24
+#define VERY_FAST_SPEED 24
 
 #define NON_PM (-1)                  /* "not a monster" */
 #define LOW_PM (NON_PM + 1)          /* first monster in mons[] */

@@ -968,7 +968,7 @@ register struct obj *otmp;
             unkn++;
         }
         exercise(A_DEX, TRUE);
-        incr_itimeout(&HFast, otmp->oclass == POTION_CLASS ? rn1(10, 100 + 60 * bcsign(otmp)) : duration);
+        incr_itimeout(&HVery_fast, otmp->oclass == POTION_CLASS ? rn1(10, 100 + 60 * bcsign(otmp)) : duration);
         break;
 	case POT_MAGIC_RESISTANCE:
 		if (!Antimagic)

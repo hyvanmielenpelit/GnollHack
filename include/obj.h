@@ -214,6 +214,8 @@ struct obj {
            doesn't weld to hand, and twoweapon won't work with one */
 #define is_weapon(o) \
 	((o)->oclass == WEAPON_CLASS || is_weptool(o) || (objects[(o)->otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED))
+#define is_amulet(o) \
+	((o)->oclass == AMULET_CLASS)
 #define is_wet_towel(o) ((o)->otyp == TOWEL && (o)->spe > 0)
 #define bimanual(otmp)                                            \
     ((otmp->oclass == WEAPON_CLASS || otmp->oclass == TOOL_CLASS) \
@@ -297,7 +299,7 @@ struct obj {
     ((monstermoves - (egg)->age) > (2 * MAX_EGG_HATCH_TIME))
 #define ofood(o) ((o)->otyp == CORPSE || (o)->otyp == EGG || (o)->otyp == TIN)
 #define polyfodder(obj) (ofood(obj) && pm_to_cham((obj)->corpsenm) != NON_PM)
-#define mlevelgain(obj) (ofood(obj) && (obj)->corpsenm >= LOW_PM && (mons[(obj)->corpsenm].mconveys & MR_LEVEL_GAIN))
+#define mlevelgain(obj) (ofood(obj) && (obj)->corpsenm >= LOW_PM && (mons[(obj)->corpsenm].mconveys & MC_LEVEL_GAIN))
 #define mhealup(obj) (ofood(obj) && (obj)->corpsenm == PM_NURSE)
 #define Is_pudding(o) ((o)->oclass == FOOD_CLASS && objects[(o)->otyp].oc_subtyp == FOODTYPE_GLOB)
 

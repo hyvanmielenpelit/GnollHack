@@ -161,16 +161,6 @@ Boots_on(VOID_ARGS)
         u.uprops[objects[uarmf->otyp].oc_oprop].extrinsic & ~WORN_BOOTS;
 
     switch (uarmf->otyp) {
-    case LOW_BOOTS:
-    case IRON_SHOES:
-    case HIGH_BOOTS:
-	case COTTON_SLIPPERS:
-	case LEATHER_SANDALS:
-	case JUMPING_BOOTS:
-    case KICKING_BOOTS:
-	case SPIKED_BOOTS:
-	case SILVER_SHOES:
-		break;
     case WATER_WALKING_BOOTS:
         if (u.uinwater)
             spoteffects(TRUE);
@@ -178,38 +168,11 @@ Boots_on(VOID_ARGS)
            put on while feet are stuck) */
         break;
     case SPEED_BOOTS:
-        /* Speed boots are still better than intrinsic speed, */
-        /* though not better than potion speed */
-        if (!oldprop && !(HFast & TIMEOUT)) 
-		{
-            makeknown(uarmf->otyp);
-            You_feel("yourself speed up%s.",
-                     (oldprop || HFast) ? " a bit more" : "");
-        }
+		makeknown(uarmf->otyp);
         break;
     case ELVEN_BOOTS:
         toggle_stealth(uarmf, oldprop, TRUE);
         break;
-    case FUMBLE_BOOTS:
-		/*
-        if (!oldprop && !(HFumbling & ~TIMEOUT))
-            incr_itimeout(&HFumbling, rnd(20));
-			*/
-        break;
-    case LEVITATION_BOOTS:
-#if 0
-        if (!oldprop && !HLevitation && !(BLevitation & FROM_ACQUIRED)) {
-            makeknown(uarmf->otyp);
-            float_up();
-            if (Levitation)
-                spoteffects(FALSE); /* for sink effect */
-        } else {
-            float_vs_flight(); /* maybe toggle (BFlying & I_SPECIAL) */
-        }
-#endif
-        break;
-    default:
-        impossible(unknown_type, c_boots, uarmf->otyp);
     }
     uarmf->known = 1; /* boots' +/- evident because of status line AC */
 	return 0;
@@ -229,12 +192,6 @@ Boots_off(VOID_ARGS)
     setworn((struct obj *) 0, W_ARMF);
 
     switch (otyp) {
-    case SPEED_BOOTS:
-        if (!Very_fast && !context.takeoff.cancelled_don) {
-            makeknown(otyp);
-            You_feel("yourself slow down%s.", Fast ? " a bit" : "");
-        }
-        break;
     case WATER_WALKING_BOOTS:
         /* check for lava since fireproofed boots make it viable */
         if ((is_pool(u.ux, u.uy) || is_lava(u.ux, u.uy))
@@ -250,33 +207,6 @@ Boots_off(VOID_ARGS)
     case ELVEN_BOOTS:
         toggle_stealth(otmp, oldprop, FALSE);
         break;
-    case FUMBLE_BOOTS:
-        //if (!EFumbling && !(HFumbling & ~TIMEOUT))
-        //    HFumbling =  0;
-        break;
-    case LEVITATION_BOOTS:
-#if 0
-        if (!oldprop && !HLevitation && !(BLevitation & FROM_ACQUIRED)
-            && !context.takeoff.cancelled_don) {
-            (void) float_down(0L, 0L);
-            makeknown(otyp);
-        } else {
-            float_vs_flight(); /* maybe toggle (BFlying & I_SPECIAL) */
-        }
-#endif
-        break;
-    case LOW_BOOTS:
-    case IRON_SHOES:
-    case HIGH_BOOTS:
-	case COTTON_SLIPPERS:
-	case LEATHER_SANDALS:
-	case JUMPING_BOOTS:
-    case KICKING_BOOTS:
-	case SPIKED_BOOTS:
-	case SILVER_SHOES:
-		break;
-    default:
-        impossible(unknown_type, c_boots, otyp);
     }
     context.takeoff.cancelled_don = FALSE;
 	return 0;
@@ -291,42 +221,15 @@ Cloak_on(VOID_ARGS)
 	//boolean wasinvisble = Invis;
 
     switch (uarmc->otyp) {
-    case ORCISH_CLOAK:
-    case DWARVISH_CLOAK:
-    case CLOAK_OF_MAGIC_RESISTANCE:
-	case CLOAK_OF_INTEGRITY:
-	case LEATHER_CLOAK:
-        break;
-    case CLOAK_OF_PROTECTION:
-        makeknown(uarmc->otyp);
-        break;
     case ELVEN_CLOAK:
         toggle_stealth(uarmc, oldprop, TRUE);
         break;
     case CLOAK_OF_DISPLACEMENT:
         toggle_displacement(uarmc, oldprop, TRUE);
         break;
-    case CLOAK_OF_INVISIBILITY:
-#if 0
-        /* since cloak of invisibility was worn, we know mummy wrapping
-           wasn't, so no need to check `oldprop' against blocked */
-        if (!(u.uprops[INVISIBILITY].extrinsic & ~WORN_CLOAK) && !HInvis && !Blocks_Invisibility && !Blind) {
-            makeknown(uarmc->otyp);
-            newsym(u.ux, u.uy);
-            pline("Suddenly you can%s yourself.",
-                  See_invisible ? " see through" : "not see");
-        }
-#endif
-        break;
     case OILSKIN_CLOAK:
         pline("%s very tightly.", Tobjnam(uarmc, "fit"));
         break;
-    /* Alchemy smock gives poison _and_ acid resistance */
-    case ALCHEMY_SMOCK:
-        EAcid_resistance |= WORN_CLOAK;
-        break;
-    default:
-        impossible(unknown_type, c_cloak, uarmc->otyp);
     }
     uarmc->known = 1; /* cloak's +/- evident because of status line AC */
 	return 0;
@@ -346,38 +249,12 @@ Cloak_off(VOID_ARGS)
 	context.takeoff.cancelled_don = FALSE;
 
     switch (otyp) {
-    case ORCISH_CLOAK:
-    case DWARVISH_CLOAK:
-    case CLOAK_OF_PROTECTION:
-	case CLOAK_OF_INTEGRITY:
-	case CLOAK_OF_MAGIC_RESISTANCE:
-    case OILSKIN_CLOAK:
-    case LEATHER_CLOAK:
-        break;
     case ELVEN_CLOAK:
         toggle_stealth(otmp, oldprop, FALSE);
         break;
     case CLOAK_OF_DISPLACEMENT:
         toggle_displacement(otmp, oldprop, FALSE);
         break;
-    case CLOAK_OF_INVISIBILITY:
-#if 0
-        if (wasinvisible && !Invis && !Blind) 
-		{
-            makeknown(CLOAK_OF_INVISIBILITY);
-            newsym(u.ux, u.uy);
-            pline("Suddenly you can %s.",
-                  See_invisible ? "no longer see through yourself"
-                                : see_yourself);
-        }
-#endif
-        break;
-    /* Alchemy smock gives poison _and_ acid resistance */
-    case ALCHEMY_SMOCK:
-        EAcid_resistance &= ~WORN_CLOAK;
-        break;
-    default:
-        impossible(unknown_type, c_cloak, otyp);
     }
 	return 0;
 }
@@ -387,25 +264,6 @@ int
 Helmet_on(VOID_ARGS)
 {
     switch (uarmh->otyp) {
-    case FEDORA:
-    case HELMET:
-    case DENTED_POT:
-    case ELVEN_LEATHER_HELM:
-    case DWARVISH_IRON_HELM:
-	case DUCAL_CROWN:
-	case CROWN_OF_RULERSHIP:
-	case ORCISH_HELM:
-	case GNOLLISH_HOOD:
-	case COTTON_HOOD:
-	case HELM_OF_TELEPATHY:
-        break;
-    case HELM_OF_BRILLIANCE:
-        //adj_abon(uarmh, uarmh->spe);
-        break;
-    case CORNUTHAUM:
-	case GNOMISH_FELT_HAT:
-	case SILK_TOP_HAT:
-		break;
     case HELM_OF_OPPOSITE_ALIGNMENT:
         /* changing alignment can toggle off active artifact
            properties, including levitation; uarmh could get
@@ -444,10 +302,6 @@ Helmet_on(VOID_ARGS)
                          : "giddy");
         }
         break;
-	case TINFOIL_HAT_OF_MIND_SHIELDING:
-		break;
-	default:
-        impossible(unknown_type, c_helmet, uarmh->otyp);
     }
     uarmh->known = 1; /* helmet's +/- evident because of status line AC */
 	return 0;
@@ -459,46 +313,12 @@ Helmet_off(VOID_ARGS)
     context.takeoff.mask &= ~W_ARMH;
 
     switch (uarmh->otyp) {
-    case FEDORA:
-    case HELMET:
-    case DENTED_POT:
-    case ELVEN_LEATHER_HELM:
-    case DWARVISH_IRON_HELM:
-	case DUCAL_CROWN:
-	case CROWN_OF_RULERSHIP:
-	case ORCISH_HELM:
-	case GNOLLISH_HOOD:
-	case COTTON_HOOD:
-		break;
-    case DUNCE_CAP:
-        context.botl = 1;
-        break;
-	case CORNUTHAUM:
-	case GNOMISH_FELT_HAT:
-	case SILK_TOP_HAT:
-		break;
-    case HELM_OF_TELEPATHY:
-#if 0
-        /* need to update ability before calling see_monsters() */
-        setworn((struct obj *) 0, W_ARMH);
-        see_monsters();
-        return 0;
-#endif
-		break;
-    case HELM_OF_BRILLIANCE:
-//        if (!context.takeoff.cancelled_don)
-//            adj_abon(uarmh, -uarmh->spe);
-        break;
     case HELM_OF_OPPOSITE_ALIGNMENT:
         /* changing alignment can toggle off active artifact
            properties, including levitation; uarmh could get
            dropped or destroyed here */
         uchangealign(u.ualignbase[A_CURRENT], 2);
         break;
-	case TINFOIL_HAT_OF_MIND_SHIELDING:
-		break;
-	default:
-        impossible(unknown_type, c_helmet, uarmh->otyp);
     }
 
 	setworn((struct obj *) 0, W_ARMH);
@@ -511,27 +331,7 @@ STATIC_PTR
 int
 Gloves_on(VOID_ARGS)
 {
-    switch (uarmg->otyp) {
-    case LEATHER_GLOVES:
-	case SPIKED_GAUNTLETS:
-	case SILVER_GAUNTLETS:
-		break;
-    case GAUNTLETS_OF_FUMBLING:
-		/*
-        if (!(u.uprops[FUMBLING].extrinsic & ~WORN_GLOVES) && !(HFumbling & ~TIMEOUT))
-            incr_itimeout(&HFumbling, rnd(20));
-			*/
-        break;
-    case GAUNTLETS_OF_OGRE_POWER:
-        break;
-    case GAUNTLETS_OF_DEXTERITY:
- //       adj_abon(uarmg, uarmg->spe);
-        break;
-	case GLOVES_OF_SPELL_CASTING:
-		break;
-	default:
-        impossible(unknown_type, c_gloves, uarmg->otyp);
-    }
+
     uarmg->known = 1; /* gloves' +/- evident because of status line AC */
 	return 0;
 }
@@ -567,26 +367,6 @@ Gloves_off(VOID_ARGS)
 
     context.takeoff.mask &= ~W_ARMG;
 
-    switch (uarmg->otyp) {
-    case LEATHER_GLOVES:
-	case SPIKED_GAUNTLETS:
-	case SILVER_GAUNTLETS:
-	case GLOVES_OF_SPELL_CASTING:
-		break;
-    case GAUNTLETS_OF_FUMBLING:
-        //if (!EFumbling && !(HFumbling & ~TIMEOUT))
-        //    HFumbling = 0;
-        break;
-    case GAUNTLETS_OF_OGRE_POWER:
-        break;
-    case GAUNTLETS_OF_DEXTERITY:
-//        if (!context.takeoff.cancelled_don)
-//            adj_abon(uarmg, -uarmg->spe);
-        break;
-    default:
-        impossible(unknown_type, c_gloves, uarmg->otyp);
-    }
-
 	setworn((struct obj*) 0, W_ARMG);
 
     context.takeoff.cancelled_don = FALSE;
@@ -608,24 +388,6 @@ Gloves_off(VOID_ARGS)
 STATIC_PTR int
 Shield_on(VOID_ARGS)
 {
-    /* no shield currently requires special handling when put on, but we
-       keep this uncommented in case somebody adds a new one which does
-       [reflection is handled by setting u.uprops[REFLECTION].extrinsic
-       in setworn() called by armor_or_accessory_on() before Shield_on()] */
-    switch (uarms->otyp) {
-    case SMALL_SHIELD:
-    case ELVEN_SHIELD:
-    case URUK_HAI_SHIELD:
-    case ORCISH_SHIELD:
-    case DWARVISH_ROUNDSHIELD:
-    case LARGE_SHIELD:
-    case SHIELD_OF_REFLECTION:
-	case SPIKED_SHIELD:
-	case SPIKED_SILVER_SHIELD:
-		break;
-    default:
-        impossible(unknown_type, c_shield, uarms->otyp);
-    }
     uarms->known = 1; /* shield's +/- evident because of status line AC */
 	return 0;
 }
@@ -635,23 +397,6 @@ Shield_off(VOID_ARGS)
 {
     context.takeoff.mask &= ~W_ARMS;
 
-    /* no shield currently requires special handling when taken off, but we
-       keep this uncommented in case somebody adds a new one which does */
-    switch (uarms->otyp) {
-    case SMALL_SHIELD:
-    case ELVEN_SHIELD:
-    case URUK_HAI_SHIELD:
-    case ORCISH_SHIELD:
-    case DWARVISH_ROUNDSHIELD:
-    case LARGE_SHIELD:
-    case SHIELD_OF_REFLECTION:
-	case SPIKED_SHIELD:
-	case SPIKED_SILVER_SHIELD:
-		break;
-    default:
-        impossible(unknown_type, c_shield, uarms->otyp);
-    }
-
     setworn((struct obj *) 0, W_ARMS);
 	context.takeoff.cancelled_don = FALSE;
 	return 0;
@@ -660,26 +405,6 @@ Shield_off(VOID_ARGS)
 STATIC_PTR int
 Shirt_on(VOID_ARGS)
 {
-    /* no shirt currently requires special handling when put on, but we
-       keep this uncommented in case somebody adds a new one which does */
-    switch (uarmu->otyp) {
-	case SHIRT_OF_UNCONTROLLABLE_LAUGHTER:
-		/* Laughing will start automatically if timer is zero */
-		/*
-		if (!(u.uprops[LAUGHING].extrinsic & ~WORN_SHIRT) && !(HLaughing & ~TIMEOUT))
-			incr_itimeout(&HLaughing, rnd(20));
-		break;
-		*/
-	case SHIRT_OF_SOUND_MINDEDNESS:
-	case HAWAIIAN_SHIRT:
-    case T_SHIRT:
-        break;
-	case SHIRT_OF_COMELINESS:
-//		adj_abon(uarmu, uarmu->spe);
-		break;
-	default:
-        impossible(unknown_type, c_shirt, uarmu->otyp);
-    }
     uarmu->known = 1; /* shirt's +/- evident because of status line AC */
 	return 0;
 }
@@ -693,27 +418,6 @@ Shirt_off(VOID_ARGS)
 	long oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_SHIRT;
     context.takeoff.mask &= ~W_ARMU;
 
-    /* no shirt currently requires special handling when taken off, but we
-       keep this uncommented in case somebody adds a new one which does */
-	
-	switch (uarmu->otyp) {
-	case SHIRT_OF_UNCONTROLLABLE_LAUGHTER:
-		/* Clear off laughing immediately */
-		//if (!ELaughing && !(HLaughing & ~TIMEOUT))
-		//	HLaughing = 0; //Must be zero, since the player is not laughing
-		break;
-	case SHIRT_OF_SOUND_MINDEDNESS:
-	case HAWAIIAN_SHIRT:
-    case T_SHIRT:
-        break;
-	case SHIRT_OF_COMELINESS:
-//		if (!context.takeoff.cancelled_don)
-//			adj_abon(uarmu, -uarmu->spe);
-		break;
-	default:
-        impossible(unknown_type, c_shirt, uarmu->otyp);
-    }
-
 	setworn((struct obj*) 0, W_ARMU);
 
 	context.takeoff.cancelled_don = FALSE;
@@ -724,36 +428,6 @@ STATIC_PTR int
 Robe_on(VOID_ARGS)
 {
 
-	/* no shirt currently requires special handling when put on, but we
-	   keep this uncommented in case somebody adds a new one which does */
-	switch (uarmo->otyp) {
-	case ROBE:
-	case GNOLLISH_HAIRCLOTH_ROBE:
-	case CLERICAL_GOWN:
-	case BATHROBE:
-	case ROBE_OF_PROTECTION:
-	case ROBE_OF_POWERLESSNESS:
-	case ROBE_OF_EYES:
-	case TAILORED_SILK_ROBE:
-	case GOWN_OF_THE_ARCHBISHOPS:
-	case ROBE_OF_MAGIC_RESISTANCE:
-	case ROBE_OF_STARRY_WISDOM:
-	case ROBE_OF_THE_ARCHMAGI:
-		break;
-	case MUMMY_WRAPPING:
-#if 0
-		/* Note: it's already being worn, so we have to cheat here. */
-		if ((HInvis || EInvis) && !(BInvis & ~W_ARMO) && 
-			!HBlocks_Invisibility && !(EBlocks_Invisibility & ~W_ARMO) && !Blind && !Invis) {
-			newsym(u.ux, u.uy);
-			You("can %s!", See_invisible ? "no longer see through yourself"
-				: see_yourself);
-		}
-#endif
-		break;
-	default:
-		impossible(unknown_type, c_robe, uarmo->otyp);
-	}
 	uarmo->known = 1; /* shirt's +/- evident because of status line AC */
 	return 0;
 }
@@ -765,39 +439,7 @@ Robe_off(VOID_ARGS)
 	struct obj* ud = uarmo;
 
 	context.takeoff.mask &= ~W_ARMO;
-
-	/* no shirt currently requires special handling when taken off, but we
-	   keep this uncommented in case somebody adds a new one which does */
-
 	setworn((struct obj*) 0, W_ARMO);
-
-	switch (ud->otyp) {
-	case ROBE:
-	case GNOLLISH_HAIRCLOTH_ROBE:
-	case CLERICAL_GOWN:
-	case BATHROBE:
-	case ROBE_OF_PROTECTION:
-	case ROBE_OF_MAGIC_RESISTANCE:
-	case ROBE_OF_POWERLESSNESS:
-	case ROBE_OF_EYES:
-	case TAILORED_SILK_ROBE:
-	case GOWN_OF_THE_ARCHBISHOPS:
-	case ROBE_OF_STARRY_WISDOM:
-	case ROBE_OF_THE_ARCHMAGI:
-		break;
-	case MUMMY_WRAPPING:
-#if 0
-		if (!wasinvisible && Invis && !Blind) {
-			newsym(u.ux, u.uy);
-			You("can %s.", See_invisible ? "see through yourself"
-				: "no longer see yourself");
-		}
-#endif
-		break;
-	default:
-		impossible(unknown_type, c_robe, ud->otyp);
-	}
-
 	context.takeoff.cancelled_don = FALSE;
 
 	return 0;
@@ -806,23 +448,6 @@ Robe_off(VOID_ARGS)
 STATIC_PTR int
 Bracers_on(VOID_ARGS)
 {
-	/* no shirt currently requires special handling when put on, but we
-	   keep this uncommented in case somebody adds a new one which does */
-
-	/*
-	switch (uarmb->otyp) {
-	case LEATHER_BRACERS:
-	case BRACERS_OF_ARCHERY:
-	case BRACERS_OF_SPELL_CASTING:
-	case BRACERS_OF_MAGIC_RESISTANCE:
-		break;
-	case BRACERS_OF_DEFENSE:
-		makeknown(uarmb->otyp);
-		break;
-	default:
-		impossible(unknown_type, c_bracers, uarmb->otyp);
-	}
-	*/
 	uarmb->known = 1;
 	return 0;
 }
@@ -831,23 +456,6 @@ int
 Bracers_off(VOID_ARGS)
 {
 	context.takeoff.mask &= ~W_ARMB;
-
-	/* no shirt currently requires special handling when taken off, but we
-	   keep this uncommented in case somebody adds a new one which does */
-
-	/*
-	switch (uarmb->otyp) {
-	case LEATHER_BRACERS:
-	case BRACERS_OF_DEFENSE:
-	case BRACERS_OF_ARCHERY:
-	case BRACERS_OF_SPELL_CASTING:
-	case BRACERS_OF_MAGIC_RESISTANCE:
-		break;
-		break;
-	default:
-		impossible(unknown_type, c_bracers, uarmb->otyp);
-	}
-	*/
 
 	setworn((struct obj*) 0, W_ARMB);
 	context.takeoff.cancelled_don = FALSE;
@@ -887,29 +495,6 @@ long wearslotmask;
 	if(ud->otyp == BELT_OF_CHANGE)
 		item_change_sex_and_useup(ud);
 
-#if 0
-	if (ud->otyp == WINGS_OF_FLYING)
-	{
-		if (!Levitation && Flying)
-		{
-			makeknown(ud->otyp);
-			pline("You attach %s to your back and start to fly.", the(cxname(ud)));
-		}
-	}
-	else if (ud->otyp == EYEGLASSES_OF_HALLUCINATION)
-	{
-		if (Hallucination && !hadhallucination)
-		{
-			makeknown(ud->otyp);
-			pline("Oh wow! Everything %s so cosmic!", (!Blind) ? "looks" : "feels");
-		}
-	}
-	else if (ud->otyp == EYEGLASSES_OF_SEE_INVISIBLE)
-	{
-		see_monsters();
-	}
-#endif
-
 	return 0;
 }
 
@@ -931,38 +516,6 @@ struct obj* ud;
 	{
 		pline("%s orbiting around your %s.", Tobjnam(ud, "stop"), body_part(HEAD));
 	}
-#if 0
-	else if (ud->otyp == WINGS_OF_FLYING)
-	{
-		if (!Levitation)
-			pline("You stop flying%s.", !Is_airlevel(&u.uz) ? " and land down" : "");
-	}
-	else if (ud->otyp == EYEGLASSES_OF_HALLUCINATION)
-	{
-		if (hadhallucination && !Hallucination)
-		{
-			eatmupdate();
-			if (u.uswallow) {
-				swallowed(0); /* redraw swallow display */
-			}
-			else {
-				/* The see_* routines should be called *before* the pline. */
-				see_monsters();
-				see_objects();
-				see_traps();
-			}
-
-			update_inventory();
-			context.botl = TRUE;
-			makeknown(ud->otyp);
-			pline("Everything %s SO boring now.", (!Blind) ? "looks" : "feels");
-		}
-	}
-	else if (ud->otyp == EYEGLASSES_OF_SEE_INVISIBLE)
-	{
-		see_monsters();
-	}
-#endif
 
 	return 0;
 }
@@ -1021,13 +574,6 @@ Amulet_on()
         setuqwep((struct obj *) 0);
 
     switch (uamul->otyp) {
-    case AMULET_OF_ESP:
-    case AMULET_OF_LIFE_SAVING:
-    case AMULET_VERSUS_POISON:
-    case AMULET_OF_REFLECTION:
-    case AMULET_OF_MAGICAL_BREATHING:
-    case FAKE_AMULET_OF_YENDOR:
-        break;
     case AMULET_OF_UNCHANGING:
         if (Slimed)
             make_slimed(0L, (char *) 0);
@@ -1043,21 +589,6 @@ Amulet_on()
             pline("It constricts your throat!");
         }
         break;
-    case AMULET_OF_RESTFUL_SLEEP: {
-        //long newnap = (long) rnd(100), oldnap = (HSleepy & TIMEOUT);
-
-        /* avoid clobbering FROM_ACQUIRED bit, which might have
-           gotten set by previously eating one of these amulets */
-        //if (newnap < oldnap || oldnap == 0L)
-        //    HSleepy = (HSleepy & ~TIMEOUT) | newnap;
-    } break;
-	case AMULET_OF_MANA:
-	case DEMON_BLOOD_TALISMAN:
-	case PERIAPT_OF_VITALITY:
-		makeknown(uamul->otyp);
-		break;
-	case AMULET_OF_YENDOR:
-        break;
     }
 	return;
 }
@@ -1068,39 +599,6 @@ Amulet_off()
     context.takeoff.mask &= ~W_AMUL;
 
     switch (uamul->otyp) {
-    case AMULET_OF_ESP:
-#if 0        
-		/* need to update ability before calling see_monsters() */
-        setworn((struct obj *) 0, W_AMUL);
-        see_monsters();
-        return;
-#endif
-	case AMULET_OF_LIFE_SAVING:
-    case AMULET_VERSUS_POISON:
-    case AMULET_OF_REFLECTION:
-    case AMULET_OF_CHANGE:
-    case AMULET_OF_UNCHANGING:
-    case FAKE_AMULET_OF_YENDOR:
-	case AMULET_OF_MANA:
-	case PERIAPT_OF_VITALITY:
-	case DEMON_BLOOD_TALISMAN:
-		break;
-    case AMULET_OF_MAGICAL_BREATHING:
-#if 0
-		if (Underwater) {
-            /* HMagical_breathing must be set off
-                before calling drown() */
-            setworn((struct obj *) 0, W_AMUL);
-            if (!breathless(youmonst.data) && !amphibious(youmonst.data)
-                && !Swimming) {
-                You("suddenly inhale an unhealthy amount of %s!",
-                    hliquid("water"));
-                (void) drown();
-            }
-            return;
-        }
-#endif
-        break;
     case AMULET_OF_STRANGULATION:
         if (Strangled) {
             Strangled = 0L;
@@ -1111,17 +609,9 @@ Amulet_off()
                 You("can breathe more easily!");
         }
         break;
-    case AMULET_OF_RESTFUL_SLEEP:
-        //setworn((struct obj *) 0, W_AMUL);
-        /* HSleepy = 0L; -- avoid clobbering FROM_ACQUIRED bit */
-        //if (!ESleepy && !(HSleepy & ~TIMEOUT))
-        //    HSleepy &= ~TIMEOUT; /* clear timeout bits */
-        return;
-    case AMULET_OF_YENDOR:
-        break;
     }
-    setworn((struct obj *) 0, W_AMUL);
 
+    setworn((struct obj *) 0, W_AMUL);
     return;
 }
 
@@ -1199,16 +689,6 @@ register struct obj *obj;
     long oldprop = u.uprops[objects[obj->otyp].oc_oprop].extrinsic;
     int old_attrib = 0, which = 0;
     boolean observable = FALSE;
-	/*
-	int oldstr, olddex, oldcon, oldint, oldwis, oldcha, oldac;
-	oldstr = ACURR(A_STR);
-	olddex = ACURR(A_DEX);
-	oldcon = ACURR(A_CON);
-	oldint = ACURR(A_INT);
-	oldwis = ACURR(A_WIS);
-	oldcha = ACURR(A_CHA);
-	oldac = u.uac;
-	*/
 
     /* make sure ring isn't wielded; can't use remove_worn_item()
        here because it has already been set worn in a ring slot */
@@ -1229,137 +709,15 @@ register struct obj *obj;
         oldprop &= ~W_RING;
 
     switch (obj->otyp) {
-    case RIN_TELEPORTATION:
-    case RIN_REGENERATION:
-	case RIN_REPLENISHMENT:
-	case RIN_SEARCHING:
-    case RIN_HUNGER:
-    case RIN_AGGRAVATE_MONSTER:
-    case RIN_POISON_RESISTANCE:
-    case RIN_FIRE_RESISTANCE:
-    case RIN_COLD_RESISTANCE:
-    case RIN_SHOCK_RESISTANCE:
-	case RIN_LIFE_PROTECTION:
-	case RIN_CONFLICT:
-    case RIN_TELEPORT_CONTROL:
-    case RIN_POLYMORPH:
-    case RIN_POLYMORPH_CONTROL:
-    case RIN_FREE_ACTION:
-    case RIN_SLOW_DIGESTION:
-    case RIN_SUSTAIN_ABILITY:
-    case MEAT_RING:
-        break;
     case RIN_STEALTH:
         toggle_stealth(obj, oldprop, TRUE);
         break;
-    case RIN_WARNING:
-        //see_monsters();
-        break;
-	case RIN_SUPREME_POWER:
-	case RIN_SEE_INVISIBLE:
-#if 0
-		/* can now see invisible monsters */
-        set_mimic_blocking(); /* do special mimic handling */
-        see_monsters();
 
-        if (Invis && !oldprop && !HSee_invisible && !Blind) {
-            newsym(u.ux, u.uy);
-            pline("Suddenly you are transparent, but there!");
-            learnring(obj, TRUE);
-        }
-#endif
-        break;
-    case RIN_INVISIBILITY:
-#if 0
-        if (Invis && !oldprop && !HInvis && !BInvis && !Blocks_Invisibility && !Blind) {
-            learnring(obj, TRUE);
-            newsym(u.ux, u.uy);
-            self_invis_message();
-        }
-#endif
-        break;
-	case RIN_LEVITATION:
-#if 0
-        if (!oldprop && !HLevitation && !(BLevitation & FROM_ACQUIRED)) {
-            float_up();
-            learnring(obj, TRUE);
-            if (Levitation)
-                spoteffects(FALSE); /* for sinks */
-        } else {
-            float_vs_flight(); /* maybe toggle (BFlying & I_SPECIAL) */
-        }
-#endif
-        break;
-    case RIN_GAIN_STRENGTH:
-        which = A_STR;
-        goto adjust_attrib;
-	case RIN_GAIN_DEXTERITY:
-		which = A_DEX;
-		goto adjust_attrib;
-	case RIN_GAIN_CONSTITUTION:
-        which = A_CON;
-        goto adjust_attrib;
-	case RIN_GAIN_INTELLIGENCE:
-		which = A_INT;
-		goto adjust_attrib;
-	case RIN_GAIN_WISDOM:
-		which = A_WIS;
-		goto adjust_attrib;
-	case RIN_ADORNMENT:
-        which = A_CHA;
- adjust_attrib:
-        //old_attrib = ACURR(which);
-        //ABONUS(which) += obj->spe;
-        //observable = (old_attrib != ACURR(which));
-        /* if didn't change, usually means ring is +0 but might
-           be because nonzero couldn't go below min or above max;
-           learn +0 enchantment if attribute value is not stuck
-           at a limit [and ring has been seen and its type is
-           already discovered, both handled by learnring()] */
-        //if (observable || !extremeattr(which))
-        //    learnring(obj, observable);
-        //context.botl = 1;
-        break;
-	case RIN_POWER:
-	{
-		/*
-		ABONUS(A_STR) += obj->spe;
-		ABONUS(A_DEX) += obj->spe;
-		ABONUS(A_CON) += obj->spe;
-		ABONUS(A_INT) += obj->spe;
-		ABONUS(A_WIS) += obj->spe;
-		ABONUS(A_CHA) += obj->spe;
-		*/
-		break;
-	}
-	case RIN_INCREASE_ACCURACY: /* KMH */
-        //u.uhitinc += obj->spe;
-        break;
-    case RIN_INCREASE_DAMAGE:
-        //u.udaminc += obj->spe;
-        break;
     case RIN_PROTECTION_FROM_SHAPE_CHANGERS:
         rescham();
         break;
-    case RIN_PROTECTION:
-        /* usually learn enchantment and discover type;
-           won't happen if ring is unseen or if it's +0
-           and the type hasn't been discovered yet */
-//        observable = (obj->spe != 0);
-//        learnring(obj, observable);
-//        if (obj->spe)
-//            find_ac(); /* updates botl */
-        break;
-    }
+	}
 
-	/*
-	observable = (oldstr != ACURR(A_STR) || olddex != ACURR(A_DEX)
-		|| oldcon != ACURR(A_CON) || oldint != ACURR(A_INT)
-		|| oldwis != ACURR(A_WIS) || oldcha != ACURR(A_CHA)
-		|| oldac != u.uac);
-	if (observable)
-		learnring(obj, observable);
-	*/
 	return;
 }
 
@@ -1369,19 +727,6 @@ register struct obj *obj;
 boolean gone;
 {
     long mask = (obj->owornmask & W_RING);
-    int old_attrib, which;
-
-	/*
-    boolean observable;
-	int oldstr, olddex, oldcon, oldint, oldwis, oldcha, oldac;
-	oldstr = ACURR(A_STR);
-	olddex = ACURR(A_DEX);
-	oldcon = ACURR(A_CON);
-	oldint = ACURR(A_INT);
-	oldwis = ACURR(A_WIS);
-	oldcha = ACURR(A_CHA);
-	oldac = u.uac;
-	*/
 
     context.takeoff.mask &= ~mask;
     if (!(u.uprops[objects[obj->otyp].oc_oprop].extrinsic & mask))
@@ -1392,120 +737,8 @@ boolean gone;
         setworn((struct obj *) 0, obj->owornmask);
 
     switch (obj->otyp) {
-    case RIN_TELEPORTATION:
-    case RIN_REGENERATION:
-	case RIN_REPLENISHMENT:
-	case RIN_SEARCHING:
-    case RIN_HUNGER:
-    case RIN_AGGRAVATE_MONSTER:
-    case RIN_POISON_RESISTANCE:
-    case RIN_FIRE_RESISTANCE:
-    case RIN_COLD_RESISTANCE:
-    case RIN_SHOCK_RESISTANCE:
-	case RIN_LIFE_PROTECTION:
-	case RIN_CONFLICT:
-    case RIN_TELEPORT_CONTROL:
-    case RIN_POLYMORPH:
-    case RIN_POLYMORPH_CONTROL:
-    case RIN_FREE_ACTION:
-    case RIN_SLOW_DIGESTION:
-    case RIN_SUSTAIN_ABILITY:
-    case MEAT_RING:
-        break;
     case RIN_STEALTH:
         toggle_stealth(obj, (EStealth & ~mask), FALSE);
-        break;
-    case RIN_WARNING:
-        //see_monsters();
-        break;
-	case RIN_SUPREME_POWER:
-	case RIN_SEE_INVISIBLE:
-#if 0
-		/* Make invisible monsters go away */
-        if (!See_invisible) {
-            set_mimic_blocking(); /* do special mimic handling */
-            see_monsters();
-        }
-
-        if (Invisible && !Blind) {
-            newsym(u.ux, u.uy);
-            pline("Suddenly you cannot see yourself.");
-            learnring(obj, TRUE);
-        }
-#endif
-        break;
-    case RIN_INVISIBILITY:
-#if 0        
-		if (!Invis && !BInvis && !Blocks_Invisibility && !Blind)
-		{
-            newsym(u.ux, u.uy);
-            Your("body seems to unfade%s.",
-                 See_invisible ? " completely" : "..");
-            learnring(obj, TRUE);
-        }
-		#endif        break;
-    case RIN_LEVITATION:
-#if 0
-        if (!(BLevitation & FROM_ACQUIRED)) {
-            (void) float_down(0L, 0L);
-            if (!Levitation)
-                learnring(obj, TRUE);
-        } else {
-            float_vs_flight(); /* maybe toggle (BFlying & I_SPECIAL) */
-        }
-#endif
-        break;
-    case RIN_GAIN_STRENGTH:
-        which = A_STR;
-        goto adjust_attrib;
-	case RIN_GAIN_DEXTERITY:
-		which = A_DEX;
-		goto adjust_attrib;
-	case RIN_GAIN_CONSTITUTION:
-        which = A_CON;
-        goto adjust_attrib;
-	case RIN_GAIN_INTELLIGENCE:
-		which = A_INT;
-		goto adjust_attrib;
-	case RIN_GAIN_WISDOM:
-		which = A_WIS;
-		goto adjust_attrib;
-	case RIN_ADORNMENT:
-        which = A_CHA;
- adjust_attrib:
-        old_attrib = ACURR(which);
-        //ABONUS(which) -= obj->spe;
-//        observable = (old_attrib != ACURR(which));
-//        /* same criteria as Ring_on() */
-//        if (observable || !extremeattr(which))
-//            learnring(obj, observable);
-//        context.botl = 1;
-        break;
-	case RIN_POWER:
-	{
-		/*
-		ABONUS(A_STR) -= obj->spe;
-		ABONUS(A_DEX) -= obj->spe;
-		ABONUS(A_CON) -= obj->spe;
-		ABONUS(A_INT) -= obj->spe;
-		ABONUS(A_WIS) -= obj->spe;
-		ABONUS(A_CHA) -= obj->spe;
-		*/
-		break;
-	}
-	case RIN_INCREASE_ACCURACY: /* KMH */
-//        u.uhitinc -= obj->spe;
-        break;
-    case RIN_INCREASE_DAMAGE:
-//        u.udaminc -= obj->spe;
-        break;
-    case RIN_PROTECTION:
-        /* might have been put on while blind and we can now see
-           or perhaps been forgotten due to amnesia */
-//        observable = (obj->spe != 0);
-//        learnring(obj, observable);
-//        if (obj->spe)
-//            find_ac(); /* updates botl */
         break;
     case RIN_PROTECTION_FROM_SHAPE_CHANGERS:
         /* If you're no longer protected, let the chameleons
@@ -1514,16 +747,6 @@ boolean gone;
         restartcham();
         break;
     }
-
-	/*
-	observable = (oldstr != ACURR(A_STR) || olddex != ACURR(A_DEX)
-		|| oldcon != ACURR(A_CON) || oldint != ACURR(A_INT)
-		|| oldwis != ACURR(A_WIS) || oldcha != ACURR(A_CHA)
-		|| oldac != u.uac);
-	if (observable)
-		learnring(obj, observable);
-	context.botl = 1;
-	*/
 
 	return;
 }
@@ -1553,31 +776,6 @@ struct obj *otmp;
         remove_worn_item(otmp, FALSE);
     setworn(otmp, W_BLINDFOLD);
     on_msg(otmp);
-
-#if 0
-    if (Blind && !already_blind) {
-        changed = TRUE;
-        if (flags.verbose)
-            You_cant("see any more.");
-        /* set ball&chain variables before the hero goes blind */
-        if (Punished)
-            set_bc(0);
-    } else if (already_blind && !Blind) {
-        changed = TRUE;
-        /* "You are now wearing the Eyes of the Overworld." */
-        if (u.uroleplay.blind) {
-            /* this can only happen by putting on the Eyes of the Overworld;
-               that shouldn't actually produce a permanent cure, but we
-               can't let the "blind from birth" conduct remain intact */
-            pline("For the first time in your life, you can see!");
-            u.uroleplay.blind = FALSE;
-        } else
-            You("can see!");
-    }
-    if (changed) {
-        toggle_blindness(); /* potion.c */
-    }
-#endif
 }
 
 void
@@ -1601,26 +799,6 @@ struct obj *otmp;
 			You("still cannot see.");
 		}
 	}
-
-#if 0
-        } else {
-            changed = TRUE; /* !was_blind */
-            /* "You were wearing the Eyes of the Overworld." */
-            You_cant("see anything now!");
-            /* set ball&chain variables before the hero goes blind */
-            if (Punished)
-                set_bc(0);
-        }
-    } else if (was_blind) {
-        if (!gulp_blnd_check()) {
-            changed = TRUE; /* !Blind */
-            You("can see again.");
-        }
-    }
-    if (changed) {
-        toggle_blindness(); /* potion.c */
-    }
-#endif
 
 }
 

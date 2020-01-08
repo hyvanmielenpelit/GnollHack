@@ -515,10 +515,18 @@
 #define EUnchanging u.uprops[UNCHANGING].extrinsic
 #define Unchanging (HUnchanging || EUnchanging) /* KMH */
 
+#define HSlowed u.uprops[SLOWED].intrinsic
+#define ESlowed u.uprops[SLOWED].extrinsic
+#define Slowed (HSlowed || ESlowed)
+
 #define HFast u.uprops[FAST].intrinsic
 #define EFast u.uprops[FAST].extrinsic
-#define Fast (HFast || EFast)
-#define Very_fast ((HFast & ~INTRINSIC) || EFast)
+#define Fast (HFast || EFast) & !Slowed
+
+#define HVery_fast u.uprops[VERY_FAST].intrinsic
+#define EVery_fast u.uprops[VERY_FAST].extrinsic
+#define Very_fast (HVery_fast || EVery_fast) && !Slowed
+
 
 #define HReflecting u.uprops[REFLECTING].intrinsic
 #define EReflecting u.uprops[REFLECTING].extrinsic

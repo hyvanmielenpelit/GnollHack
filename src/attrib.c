@@ -57,11 +57,12 @@ static const struct innate
 				 { 7, POISON_RES, "healthy", "" },
 				 { 10, JUMPING, "jumpy", "" },
 				 { 13, SICK_RES, "even healthier", "" },
-				 { 16, STEALTH, "stealthy", "" },
-                 { 19, SEARCHING, "perceptive", "unaware" },
-                 { 22, WARNING, "sensitive", "" },
-                 { 25, TELEPORT_CONTROL, "controlled", "uncontrolled" },
-				 { 28, DEATH_RES, "less mortal", "more mortal" },
+				 { 16, VERY_FAST, "very quick", "slow" },
+				 { 19, STEALTH, "stealthy", "" },
+                 { 22, SEARCHING, "perceptive", "unaware" },
+                 { 25, WARNING, "sensitive", "" },
+                 { 28, TELEPORT_CONTROL, "controlled", "uncontrolled" },
+				 { 31, DEATH_RES, "less mortal", "more mortal" },
 				 { 0, 0, 0, 0 } },
 
   pri_abil[] = { { 12, WARN_UNDEAD, "sensitive to undead", "" },
@@ -1468,8 +1469,6 @@ int propidx;
 	/* Special cases */
 	if (propidx == DRAIN_RES && u.ulycn >= LOW_PM)
         return A_FROM_LYCN;
-    if (propidx == FAST && Very_fast)
-        return A_FROM_NONE; /* can't become very fast innately */
     if (propidx == BLINDED && !haseyes(youmonst.data))
         return A_FROM_FORM;
     return A_FROM_NONE;
@@ -1521,14 +1520,8 @@ int propidx; /* OBSOLETE: special cases can have negative values */
 				Strcpy(buf, " due to your lycanthropy");
 			else if (innateness == A_FROM_FORM)
 				Strcpy(buf, " from current creature form");
-			else if (propidx == FAST && Very_fast)
-				Sprintf(buf, because_of,
-				((HFast & TIMEOUT) != 0L) ? "a potion or spell"
-					: ((EFast & W_ARMF) != 0L && uarmf->dknown
-						&& objects[uarmf->otyp].oc_name_known)
-					? yname(uarmf) //ysimple_name(uarmf) /* speed boots */
-					: EFast ? "worn equipment"
-					: something);
+			else if (u.uprops[propidx].intrinsic & TIMEOUT)
+				Sprintf(buf, because_of, "a temporary effect");
 			else if (u.uprops[propidx].extrinsic & W_ENVIRONMENT)
 				Sprintf(buf, because_of, "your surroundings");
 			else if (u.uprops[propidx].extrinsic & W_STUCK)

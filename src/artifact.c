@@ -323,7 +323,8 @@ unsigned long abil;
 
 
 boolean
-artifact_confers_power(otmp, prop_index)
+artifact_confers_monster_power(mon, otmp, prop_index)
+struct monst* mon; /* not used at the moment, but here in case artifact powers will depend on the wielder */
 struct obj* otmp;
 int prop_index;
 {
@@ -2716,7 +2717,7 @@ int prop_index;
 
 		if (wornbits & W_CARRIED)
 		{
-			if (carried_item_is_giving_power(obj, prop_index))
+			if (carried_item_is_giving_monster_power(&youmonst, obj, prop_index))
 				return obj;
 		}
 
@@ -2728,7 +2729,8 @@ int prop_index;
 
 
 boolean
-carried_item_is_giving_power(obj, prop_index)
+carried_item_is_giving_monster_power(mon, obj, prop_index)
+struct monst* mon;
 struct obj* obj;
 int prop_index;
 {
@@ -2736,7 +2738,7 @@ int prop_index;
 		return FALSE;
 
 	int otyp = obj->otyp;
-	boolean inappr = inappropriate_character_type(obj);
+	boolean inappr = inappropriate_monster_character_type(mon,obj);
 
 	if (objects[otyp].oc_oprop == prop_index
 		&& (objects[otyp].oc_pflags & P1_POWER_1_APPLIES_WHEN_CARRIED)
@@ -2766,7 +2768,8 @@ int prop_index;
 }
 
 boolean
-worn_item_is_giving_power(obj, prop_index)
+worn_item_is_giving_monster_power(mon, obj, prop_index)
+struct monst* mon;
 struct obj* obj;
 int prop_index;
 {
@@ -2774,16 +2777,16 @@ int prop_index;
 		return FALSE;
 
 	if (!obj->owornmask)
-		return carried_item_is_giving_power(obj, prop_index);
+		return carried_item_is_giving_monster_power(mon, obj, prop_index);
 
 	if ((obj->owornmask & W_WEP) && !(is_weapon(obj) || is_shield(obj)))
-		return carried_item_is_giving_power(obj, prop_index);
+		return carried_item_is_giving_monster_power(mon, obj, prop_index);
 
 	if ((obj->owornmask & W_WEP2) && !(is_weapon(obj) || is_shield(obj)))
-		return carried_item_is_giving_power(obj, prop_index);
+		return carried_item_is_giving_monster_power(mon, obj, prop_index);
 
 	int otyp = obj->otyp;
-	boolean inappr = inappropriate_character_type(obj);
+	boolean inappr = inappropriate_monster_character_type(mon, obj);
 
 	if (objects[otyp].oc_oprop == prop_index
 		&& ((!inappr && !(objects[otyp].oc_pflags & P1_POWER_1_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
@@ -2810,18 +2813,27 @@ int prop_index;
 }
 
 boolean
-item_is_giving_power(obj, prop_index)
+item_is_giving_monster_power(mon, obj, prop_index)
+struct monst* mon;
 struct obj* obj;
 int prop_index;
 {
 
-	if (worn_item_is_giving_power(obj, prop_index))
+	if (worn_item_is_giving_monster_power(mon, obj, prop_index))
 		return TRUE;
 
-	if (obj->oartifact && artifact_confers_power(obj, prop_index))
+	if (obj->oartifact && artifact_confers_monster_power(mon, obj, prop_index))
 		return TRUE;
 
 	return FALSE;
+}
+
+boolean
+item_is_giving_power(obj, prop_index)
+struct obj* obj;
+int prop_index;
+{
+	return item_is_giving_monster_power(&youmonst, obj, prop_index);
 }
 
 

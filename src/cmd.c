@@ -3489,9 +3489,18 @@ int final;
     if (Hate_silver)
         you_are("harmed by silver", "");
     /* movement and non-armor-based protection */
-    if (Fast)
-        you_are(Very_fast ? "very fast" : "fast", from_what(FAST));
-    if (Reflecting)
+	if (Very_fast)
+		you_are("very fast", from_what(VERY_FAST));
+	if (Fast)
+	{
+		if (Very_fast)
+			you_have("latent fastness", from_what(FAST));
+		else
+			you_are("fast", from_what(FAST));
+	}
+	if (Slowed)
+		you_are("slowed", from_what(SLOWED));
+	if (Reflecting)
         you_have("reflection", from_what(REFLECTING));
     if (Free_action)
         you_have("free action", from_what(FREE_ACTION));

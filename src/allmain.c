@@ -131,11 +131,17 @@ boolean resuming;
 						create_monster_or_encounter();
 					}
                     /* calculate how much time passed. */
-                    if (u.usteed && u.umoved) {
+                    if (u.usteed && u.umoved) 
+					{
                         /* your speed doesn't augment steed's speed */
                         moveamt = mcalcmove(u.usteed);
-                    } else {
-                        moveamt = youmonst.data->mmove;
+                    } 
+					else 
+					{
+						if(Slowed)
+	                        moveamt = youmonst.data->mmove;
+						else
+							moveamt = (youmonst.data->mmove + 2) / 3;
 
                         if (Very_fast) { /* speed boots, potion, or spell */
                             /* gain a free action on 2/3 of turns */

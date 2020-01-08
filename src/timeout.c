@@ -44,7 +44,7 @@ const struct propname {
 	{ TELEPORT, "teleporting", "teleportation" },
 	{ POLYMORPH, "polymorphing", "polymorph" },
 	{ LEVITATION, "levitating", "levitation" },
-	{ FAST, "fast", "quickness" }, /* timed 'FAST' is very fast */
+	{ FAST, "fast", "fastness" },
 	{ CLAIRVOYANT, "clairvoyant", "clairvoyance" },
 	{ DETECT_MONSTERS, "monster detection", "monster detection" },
 	{ SEE_INVISIBILITY, "see invisible", "see invisible" },
@@ -129,6 +129,8 @@ const struct propname {
 	{ MAGICAL_BARKSKIN, "magically barkskinned", "magical barkskin" },
 	{ MAGICAL_STONESKIN, "magically stoneskinned", "magical stoneskin" },
 	{ XRAY_VISION, "X-ray vision", "X-ray vision" },
+	{ VERY_FAST, "very fast", "very high fastness" },
+	{ SLOWED, "slowed", "slowness" },
 	{ LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
 	{  0, 0 },
 };
@@ -633,9 +635,19 @@ nh_timeout()
 				done(POISONING);
 				break;
 			case FAST:
+				if (!Very_fast && !Fast)
+					You_feel("yourself slowing down%s.",
+						Fast ? " a bit" : "");
+				break;
+			case VERY_FAST:
 				if (!Very_fast)
 					You_feel("yourself slowing down%s.",
 						Fast ? " a bit" : "");
+				break;
+			case SLOWED:
+				if (!Slowed)
+					You_feel("yourself speed up%s.",
+						Very_fast ? " a lot" : Fast ? "" : " a bit");
 				break;
 			case CONFUSION:
 				/* So make_confused works properly */
@@ -942,14 +954,20 @@ nh_timeout()
 				break;
 			}
 		}
-		else if ((upp->intrinsic & TIMEOUT) && ((upp->intrinsic & TIMEOUT) == 3))
+		else if ((upp->intrinsic & TIMEOUT) && ((upp->intrinsic & TIMEOUT) == 3) && !(upp->intrinsic & ~TIMEOUT) && !(upp->extrinsic))
 		{
-			// Early warning
+			/* Early warning */
 			switch (propnum) {
 			case FAST:
 				if (!Very_fast)
-					You_feel("you are starting to slow down%s.",
-						Fast ? " a bit" : "");
+					You_feel("you are starting to slow down.");
+				break;
+			case VERY_FAST:
+				You_feel("you are starting to slow down%s.",
+					Fast ? " a bit" : "");
+				break;
+			case SLOWED:
+				You_feel("you are starting to speed up.");
 				break;
 			case INVISIBILITY:
 				You("are starting to feel more visible.");

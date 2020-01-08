@@ -213,7 +213,7 @@ struct obj *wep; /* uwep for attack(), null for kick_monster() */
     if (flags.confirm && mtmp->mpeaceful
         && !Confusion && !Hallucination && !Stunned) {
         /* Intelligent chaotic weapons (Stormbringer) want blood */
-        if (wep && wep->oartifact && artifact_has_flag(wep, AF_BLOODTHIRSTY)) 
+        if (wep && wep->oartifact && artifact_has_flag(wep, AF_BLOODTHIRSTY) && !mtmp->mtame) 
 		{
             override_confirmation = TRUE;
             return FALSE;
@@ -352,7 +352,7 @@ register struct monst *mtmp;
     /* Intelligent chaotic weapons (Stormbringer) want blood */
     if (is_safepet(mtmp) && !context.forcefight) 
 	{
-        if (!uwep || !(uwep->oartifact && artifact_has_flag(uwep, AF_BLOODTHIRSTY))) 
+        if (1) //!uwep || !(uwep->oartifact && artifact_has_flag(uwep, AF_BLOODTHIRSTY))) 
 		{
             /* There are some additional considerations: this won't work
              * if in a shop or Punished or you miss a random roll or
@@ -361,21 +361,23 @@ register struct monst *mtmp;
              * There's also a chance of displacing a "frozen" monster:
              * sleeping monsters might magically walk in their sleep.
              */
-            boolean foo = (Punished || !rn2(7)
-                           || (is_longworm(mtmp->data) && mtmp->wormno)),
-                    inshop = FALSE;
+			boolean foo = (Punished || !rn2(7) || (is_longworm(mtmp->data) && mtmp->wormno));
+            boolean inshop = FALSE;
             char *p;
 
             /* only check for in-shop if don't already have reason to stop */
-            if (!foo) {
+            if (!foo) 
+			{
                 for (p = in_rooms(mtmp->mx, mtmp->my, SHOPBASE); *p; p++)
-                    if (tended_shop(&rooms[*p - ROOMOFFSET])) {
+                    if (tended_shop(&rooms[*p - ROOMOFFSET])) 
+					{
                         inshop = TRUE;
                         break;
                     }
             }
-            if (inshop || foo || (IS_ROCK(levl[u.ux][u.uy].typ)
-                                  && !passes_walls(mtmp->data))) {
+
+			if (inshop || foo || (IS_ROCK(levl[u.ux][u.uy].typ) && !passes_walls(mtmp->data))) 
+			{
                 char buf[BUFSZ];
 
                 monflee(mtmp, rnd(6), FALSE, FALSE);
@@ -385,13 +387,15 @@ register struct monst *mtmp;
                 context.travel = context.travel1 = context.mv = context.run
                     = 0;
                 return TRUE;
-            } else if ((mtmp->mfrozen || (!mtmp->mcanmove)
-                        || (mtmp->data->mmove == 0)) && rn2(6)) {
+            } 
+			else if ((mtmp->mfrozen || (!mtmp->mcanmove) || (mtmp->data->mmove == 0)) && rn2(6)) 
+			{
                 pline("%s doesn't seem to move!", Monnam(mtmp));
                 context.travel = context.travel1 = context.mv = context.run
                     = 0;
                 return TRUE;
-            } else
+            }
+			else
                 return FALSE;
         }
     }

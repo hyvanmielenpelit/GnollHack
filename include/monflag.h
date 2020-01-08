@@ -47,51 +47,57 @@
 #define MS_WERE 38      /* lycanthrope in human form */
 #define MS_BOAST 39     /* giants */
 
-#define MR_NONE 0x00000000L
-#define MR_FIRE 0x00000001L   /* resists fire */
-#define MR_COLD 0x00000002L   /* resists cold */
-#define MR_SLEEP 0x00000004L  /* resists sleep */
-#define MR_DISINT 0x00000008L /* resists disintegration */
-#define MR_ELEC 0x00000010L   /* resists electricity */
-#define MR_POISON 0x00000020L /* resists poison */
-#define MR_ACID 0x00000040L   /* resists acid */
-#define MR_STONE 0x00000080L  /* resists petrification */
-#define MR_DEATH 0x00000100L  /* resists death */
-#define MR_LYCANTHROPY 0x00000200L		/* resists lycanthropy */
-#define MR_MAGICMISSILE 0x00000400L		/* resists magic missiles */
-#define MR_MAGIC 0x00000800L			/* resists magic */
-#define MR_CHARM 0x00001000L			/* resists charm */
-#define MR_DRAIN 0x00002000L			/* resists life draining */
-#define MR_FLASH 0x00004000L			/* resists life draining */
+/* resistances, and all intrinsics and extrinsics the monster can have */
+#define MR_NONE			0x00000000L
+#define MR_FIRE			0x00000001L			/* resists fire */
+#define MR_COLD			0x00000002L			/* resists cold */
+#define MR_SLEEP		0x00000004L			/* resists sleep */
+#define MR_DISINT		0x00000008L			/* resists disintegration */
+#define MR_ELEC			0x00000010L			/* resists electricity */
+#define MR_POISON		0x00000020L			/* resists poison */
+#define MR_ACID			0x00000040L			/* resists acid */
+#define MR_STONE		0x00000080L			/* resists petrification */
+#define MR_DEATH		0x00000100L			/* resists death */
+#define MR_LYCANTHROPY	0x00000200L			/* resists lycanthropy */
+#define MR_MAGICMISSILE 0x00000400L			/* resists magic missiles */
+#define MR_MAGIC		0x00000800L			/* resists magic */
+#define MR_CHARM		0x00001000L			/* resists charm */
+#define MR_DRAIN		0x00002000L			/* resists life draining */
+#define MR_FLASH		0x00004000L			/* resists life draining */
+#define MR_REFLECTING	0x00008000L			/* reflecting */
+#define MR_FAST			0x00010000L			/* very fast */
+#define MR_VERY_FAST	0x00020000L			/* very fast */
 
-#define MR_STRENGTH 0x00010000L			/* confers strength */
-#define MR_DEXTERITY 0x00020000L		/* confers dexterity */
-#define MR_CONSTITUTION 0x00040000L		/* confers constitution */
-#define MR_INTELLIGENCE 0x00080000L		/* confers intelligence */
-#define MR_WISDOM 0x00100000L			/* confers wisdom */
-#define MR_CHARISMA 0x00200000L			/* confers charisma */
+/* conveyances: resistances, teleport, teleport control, telepathy */
+#define MC_NONE			0x00000000L
+#define MC_FIRE			0x00000001L			/* confers fire resistance */
+#define MC_COLD			0x00000002L   		/* confers cold resistance */
+#define MC_SLEEP		0x00000004L  		/* confers sleep resistance */
+#define MC_DISINT		0x00000008L 		/* confers disintegration resistance */
+#define MC_ELEC			0x00000010L   		/* confers shock resistance */
+#define MC_POISON		0x00000020L 		/* confers poison resistance */
+#define MC_ACID			0x00000040L   		/* confers acid resistance */
+#define MC_STONE		0x00000080L  		/* confers petrification resistance */
+#define MC_DEATH		0x00000100L  		/* confers death resistance */
+#define MC_LYCANTHROPY	0x00000200L			/* confers lycanthropy resistance */
+/* free bit */
+#define MC_MAGIC		0x00000800L			/* confers magic resistance */
+#define MC_CHARM		0x00001000L			/* confers charm resistance */
+#define MC_DRAIN		0x00002000L			/* confers life draining resistance */
+#define MC_FLASH		0x00004000L			/* confers flash resistance */
+#define MC_STRENGTH		0x00010000L			/* confers strength */
+#define MC_DEXTERITY	0x00020000L			/* confers dexterity */
+#define MC_CONSTITUTION 0x00040000L			/* confers constitution */
+#define MC_INTELLIGENCE 0x00080000L			/* confers intelligence */
+#define MC_WISDOM		0x00100000L			/* confers wisdom */
+#define MC_CHARISMA		0x00200000L			/* confers charisma */
+#define MC_LEVEL_GAIN	0x00400000L			/* confers experience levels */
+#define MC_TELEPORT		0x00800000L			/* confers teleportiis */
+#define MC_TELEPORT_CONTROL 0x01000000L		/* confers teleport control */
+#define MC_BLIND_TELEPATHY 0x02000000L		/* confers blind telepathy */
+#define MC_TELEPATHY	0x04000000L			/* confers telepathy */
 
-#define MR_LEVEL_GAIN 0x00400000L		/* confers experience levels */
 
-#define MR_TELEPORT 0x00800000L			/* confers teleportiis */
-#define MR_TELEPORT_CONTROL 0x01000000L	/* confers teleport control */
-#define MR_BLIND_TELEPATHY 0x02000000L	/* confers blind telepathy */
-#define MR_TELEPATHY 0x04000000L		/* confers telepathy */
-
-#define MR_REFLECTING 0x08000000L		/* reflecting */
-
-/* other resistances: magic, sickness */
-/* other conveyances: teleport, teleport control, telepathy */
-
-/* individual resistances */
-#define MR2_SEE_INVIS 0x00010000L /* see invisible */
-#define MR2_LEVITATE 0x00020000L  /* levitation */
-#define MR2_WATERWALK 0x00040000L /* water walking */
-#define MR2_MAGBREATH 0x00080000L /* magical breathing */
-#define MR2_DISPLACED 0x00100000L /* displaced */
-#define MR2_STRENGTH 0x00200000L  /* gauntlets of power */
-#define MR2_FUMBLING 0x00400000L  /* clumsy */
-#define MR2_LAUGHING 0x00800000L  /* laughing uncontrollably */
 
 #define M1_NONE			0x00000000
 #define M1_FLY			0x00000001L         /* can fly or float */

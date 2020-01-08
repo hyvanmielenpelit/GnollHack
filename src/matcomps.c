@@ -976,7 +976,7 @@ struct materialcomponentlist matlists[] =
 	{ SPE_CONE_OF_COLD,
 	"Nugget of iron ore",
 	STRANGE_OBJECT,
-	10,
+	15,
 		{
 			{NUGGET_OF_IRON_ORE, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
 			NO_MATCOMP,

@@ -2178,42 +2178,85 @@ mon_reflects(mon, str)
 struct monst *mon;
 const char *str;
 {
-    struct obj *orefl = which_armor(mon, W_ARMS);
+	if (!mon)
+		return FALSE;
 
-    if (orefl && orefl->otyp == SHIELD_OF_REFLECTION) {
-        if (str) {
-            pline(str, s_suffix(mon_nam(mon)), "shield");
-            makeknown(SHIELD_OF_REFLECTION);
-        }
-        return TRUE;
-    } else if (arti_reflects(MON_WEP(mon))) {
-        /* due to wielded artifact weapon */
-        if (str)
-            pline(str, s_suffix(mon_nam(mon)), "weapon");
-        return TRUE;
-    } else if ((orefl = which_armor(mon, W_AMUL))
-               && orefl->otyp == AMULET_OF_REFLECTION) {
-        if (str) {
-            pline(str, s_suffix(mon_nam(mon)), "amulet");
-            makeknown(AMULET_OF_REFLECTION);
-        }
-        return TRUE;
-    } else if ((orefl = which_armor(mon, W_ARM))
-               && (orefl->otyp == SILVER_DRAGON_SCALES
-                   || orefl->otyp == SILVER_DRAGON_SCALE_MAIL)) {
-        if (str)
-            pline(str, s_suffix(mon_nam(mon)), "armor");
-        return TRUE;
-    }
-	else if (is_reflecting(mon))
+	if (!is_reflecting(mon))
+		return FALSE;
+
+	if (!(mon->mextrinsics & MR_REFLECTING))
 	{
-        if (str)
-            pline(str, s_suffix(mon_nam(mon)), 
-			(mon->mextrinsics & MR_REFLECTING) ? "item" : mon->data->mlet == S_DRAGON ? "scales" : mon->data->mlet == S_TREANT ? "bark" : "body");
+		if (str)
+			pline(str, s_suffix(mon_nam(mon)), mon->data->mlet == S_DRAGON ? "scales" : mon->data->mlet == S_TREANT ? "bark" : "body");
 
-        return TRUE;
-    }
+		return TRUE;
+	}
+
+	struct obj* orefl = what_gives_monster(mon, REFLECTING);
+	if(orefl)
+	{
+		if (is_shield(orefl)) 
+		{
+			if (str) 
+			{
+				pline(str, s_suffix(mon_nam(mon)), "shield");
+				makeknown(orefl->otyp);
+			}
+			return TRUE;
+		}
+		else if (is_weapon(orefl))
+		{
+			if (str)
+			{
+				pline(str, s_suffix(mon_nam(mon)), "weapon");
+				makeknown(orefl->otyp);
+			}
+			return TRUE;
+		} 
+		else if (is_amulet(orefl)) 
+		{
+			if (str) 
+			{
+				pline(str, s_suffix(mon_nam(mon)), "amulet");
+				makeknown(orefl->otyp);
+			}
+			return TRUE;
+		}
+		else if (is_suit(orefl)) 
+		{
+			if (str)
+			{
+				pline(str, s_suffix(mon_nam(mon)), "armor");
+				makeknown(orefl->otyp);
+			}
+			return TRUE;
+		}
+		else
+		{
+			if (str)
+				pline(str, s_suffix(mon_nam(mon)), "item");
+
+			return TRUE;
+		}
+	}
     return FALSE;
+}
+
+struct obj*
+what_gives_monster(mon, prop_index)
+struct monst* mon;
+int prop_index;
+{
+	if (!mon)
+		return (struct obj*)0;
+
+	for (struct obj* otmp = (mon == &youmonst ? invent : mon->minvent); otmp; otmp->nobj)
+	{
+		if(item_is_giving_monster_power(mon, otmp, prop_index))
+			return otmp;
+	}
+
+	return (struct obj*)0;
 }
 
 boolean

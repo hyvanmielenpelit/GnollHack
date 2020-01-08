@@ -45,17 +45,17 @@
     ((((mon)->data->mresists | (mon)->mextrinsics) & MR_FLASH) != 0)
 
 #define confers_strength(ptr) \
-    (((ptr)->mconveys & MR_STRENGTH) != 0)
+    (((ptr)->mconveys & MC_STRENGTH) != 0)
 #define confers_dexterity(mon) \
-    (((ptr)->mconveys & MR_DEXTERITY) != 0)
+    (((ptr)->mconveys & MC_DEXTERITY) != 0)
 #define confers_constitution(mon) \
-    (((ptr)->mconveys & MR_CONSTITUTION) != 0)
+    (((ptr)->mconveys & MC_CONSTITUTION) != 0)
 #define confers_intelligence(mon) \
-    (((ptr)->mconveys & MR_INTELLIGENCE) != 0)
+    (((ptr)->mconveys & MC_INTELLIGENCE) != 0)
 #define confers_wisdom(mon) \
-    (((ptr)->mconveys & MR_WISDOM) != 0)
+    (((ptr)->mconveys & MC_WISDOM) != 0)
 #define confers_charisma(mon) \
-    (((ptr)->mconveys & MR_CHARISMA) != 0)
+    (((ptr)->mconveys & MC_CHARISMA) != 0)
 
 #define alternative_passive_defense_text(ptr) \
     (((ptr)->mflags4 & M4_ALTERNATIVE_PASSIVE_DEFENSE_TEXT) != 0)

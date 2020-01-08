@@ -76,7 +76,7 @@ E int FDECL(get_artifact_id, (int, const char*));
 E int NDECL(nartifact_exist);
 E boolean FDECL(arti_immune, (struct obj *, int));
 E boolean FDECL(artifact_has_flag, (struct obj *, unsigned long));
-E boolean FDECL(artifact_confers_power, (struct obj*, int));
+E boolean FDECL(artifact_confers_monster_power, (struct monst*, struct obj*, int));
 E boolean FDECL(confers_luck, (struct obj *));
 E boolean FDECL(confers_unluck, (struct obj*));
 E boolean FDECL(artifact_confers_luck, (struct obj*));
@@ -110,13 +110,15 @@ E void FDECL(retouch_equipment, (int));
 E void NDECL(mkot_trap_warn);
 E boolean FDECL(is_magic_key, (struct monst *, struct obj *));
 E struct obj *FDECL(has_magic_key, (struct monst *));
-E boolean FDECL(carried_item_is_giving_power, (struct obj*, int));
-E boolean FDECL(worn_item_is_giving_power, (struct obj*, int));
+E boolean FDECL(carried_item_is_giving_monster_power, (struct monst*, struct obj*, int));
+E boolean FDECL(worn_item_is_giving_monster_power, (struct monst*, struct obj*, int));
+E boolean FDECL(item_is_giving_monster_power, (struct monst*, struct obj*, int));
 E boolean FDECL(item_is_giving_power, (struct obj*, int));
 E unsigned long FDECL(prop_to_spfx, (int));
 E int FDECL(spfx_to_prop, (unsigned long));
 E uchar FDECL(prop_to_adtyp, (int));
 E int FDECL(adtyp_to_prop, (uchar));
+E struct obj* FDECL(what_gives_monster, (struct monst*, int));
 
 
 /* ### attrib.c ### */

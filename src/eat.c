@@ -814,51 +814,51 @@ register struct permonst *ptr;
 #endif
     switch (type) {
     case FIRE_RES:
-        res = (ptr->mconveys & MR_FIRE) != 0;
+        res = (ptr->mconveys & MC_FIRE) != 0;
         ifdebugresist("can get fire resistance");
         break;
     case SLEEP_RES:
-        res = (ptr->mconveys & MR_SLEEP) != 0;
+        res = (ptr->mconveys & MC_SLEEP) != 0;
         ifdebugresist("can get sleep resistance");
         break;
     case COLD_RES:
-        res = (ptr->mconveys & MR_COLD) != 0;
+        res = (ptr->mconveys & MC_COLD) != 0;
         ifdebugresist("can get cold resistance");
         break;
     case DISINT_RES:
-        res = (ptr->mconveys & MR_DISINT) != 0;
+        res = (ptr->mconveys & MC_DISINT) != 0;
         ifdebugresist("can get disintegration resistance");
         break;
 	case DRAIN_RES:
-		res = (ptr->mconveys & MR_DRAIN) != 0;
+		res = (ptr->mconveys & MC_DRAIN) != 0;
 		ifdebugresist("can get drain resistance");
 		break;
 	case FLASH_RES:
-		res = (ptr->mconveys & MR_FLASH) != 0;
+		res = (ptr->mconveys & MC_FLASH) != 0;
 		ifdebugresist("can get flash resistance");
 		break;
 	case SHOCK_RES: /* shock (electricity) resistance */
-        res = (ptr->mconveys & MR_ELEC) != 0;
+        res = (ptr->mconveys & MC_ELEC) != 0;
         ifdebugresist("can get shock resistance");
         break;
     case POISON_RES:
-        res = (ptr->mconveys & MR_POISON) != 0;
+        res = (ptr->mconveys & MC_POISON) != 0;
         ifdebugresist("can get poison resistance");
         break;
     case TELEPORT:
-		res = (ptr->mconveys & MR_TELEPORT) != 0;
+		res = (ptr->mconveys & MC_TELEPORT) != 0;
 		ifdebugresist("can get teleport");
         break;
     case TELEPORT_CONTROL:
-		res = (ptr->mconveys & MR_TELEPORT_CONTROL) != 0;
+		res = (ptr->mconveys & MC_TELEPORT_CONTROL) != 0;
 		ifdebugresist("can get teleport control");
         break;
     case BLIND_TELEPAT:
-		res = (ptr->mconveys & MR_BLIND_TELEPATHY) != 0;
+		res = (ptr->mconveys & MC_BLIND_TELEPATHY) != 0;
 		ifdebugresist("can get blind-telepathy");
         break;
 	case TELEPAT:
-		res = (ptr->mconveys & MR_TELEPATHY) != 0;
+		res = (ptr->mconveys & MC_TELEPATHY) != 0;
 		ifdebugresist("can get telepathy");
 		break;
 	default:

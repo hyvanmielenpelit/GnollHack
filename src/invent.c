@@ -905,6 +905,9 @@ struct obj* otmp; /* object to be identified if any state change happens */
 	boolean had_magical_shielding= Magical_shielding;
 	boolean had_magical_barkskin = Magical_barkskin;
 	boolean had_magical_stoneskin = Magical_stoneskin;
+	boolean was_fast = Fast;
+	boolean was_very_fast = Very_fast;
+	boolean was_slowed = Slowed;
 	long previous_warntype_obj = context.warntype.obj;
 
 	update_extrinsics();
@@ -1151,6 +1154,22 @@ struct obj* otmp; /* object to be identified if any state change happens */
 			}
 		}
 	}
+
+
+	/* Fastness */
+	if ((!was_slowed && Slowed) || (was_very_fast && !Very_fast) || (!was_very_fast && was_fast && !Very_fast && !Fast))
+	{
+		You_feel("yourself slow down%s.", Fast ? " a bit" : "");
+	}
+	else if (Very_fast && !was_very_fast)
+	{
+		You_feel("yourself speed up%s.", was_fast ? " a bit more" : "");
+	}
+	else if (Fast && !was_fast && !was_very_fast)
+	{
+		You_feel("yourself speed up.");
+	}
+
 
 	/* Some spell powers */
 	if (Protection && !had_protection)

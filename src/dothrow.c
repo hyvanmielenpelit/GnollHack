@@ -1993,24 +1993,6 @@ register boolean is_golf;
         disttmp = -4;
     tmp += disttmp;
 
-    /* gloves are a hindrance to proper use of bows */
-    if (uarmg && uwep && objects[uwep->otyp].oc_skill == P_BOW) {
-        switch (uarmg->otyp) {
-        case GAUNTLETS_OF_OGRE_POWER: /* metal */
-            tmp -= 2;
-            break;
-        case GAUNTLETS_OF_FUMBLING:
-            tmp -= 3;
-            break;
-        case LEATHER_GLOVES:
-        case GAUNTLETS_OF_DEXTERITY:
-            break;
-        default:
-            impossible("Unknown type of gloves (%d)", uarmg->otyp);
-            break;
-        }
-    }
-
 		//Bows have point black penalty
 		//OTHER BONUSES FROM BOW ARE GIVEN BELOW, THIS IS FOR POINT BLACK RANGE ONLY
 	if (hmode == HMON_THROWN) 
