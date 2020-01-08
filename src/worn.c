@@ -591,7 +591,7 @@ boolean silently;
 				yields_power = TRUE;
 				break;
 			case 6:
-				which = otmp->invokeon ? artilist[otmp->oartifact].inv_prop : 0;
+				which = otmp->invokeon && artilist[otmp->oartifact].inv_prop > 0 ? artilist[otmp->oartifact].inv_prop : 0;
 				wornrequired = FALSE;
 				yields_power = TRUE;
 				break;
@@ -934,6 +934,7 @@ boolean creation;
 	if (!nohands(mon->data) && (cursed_items_are_positive_mon(mon) || !(MON_WEP(mon) && mwelded(MON_WEP(mon), mon)) && !(old_gloves && old_gloves->cursed)))
 		wears_ringl = m_dowear_type(mon, W_RINGL, creation, FALSE);
 
+	update_mon_intrinsics(mon, creation);
 
 	struct obj* new_shirt = which_armor(mon, W_ARMU);
 	struct obj* new_suit = which_armor(mon, W_ARM);
@@ -1136,8 +1137,6 @@ outer_break:
     best->owornmask |= flag;
     if (autocurse)
         curse(best);
-
-	update_mon_intrinsics(mon, creation);
 
     /* if couldn't see it but now can, or vice versa, */
     if (!creation && (unseen ^ !canseemon(mon))) {

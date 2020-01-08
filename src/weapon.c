@@ -1177,6 +1177,7 @@ boolean verbose_fail;
                       mbodypart(mon, HAND));
         }
         obj->owornmask = W_WEP;
+		update_mon_intrinsics(mon, FALSE);
         return 1;
     }
 
