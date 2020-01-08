@@ -2305,15 +2305,20 @@ struct monst *mtmp;
     while ((otmp = mtmp->minvent) != 0) {
         /* this has now become very similar to m_useupall()... */
         obj_extract_self(otmp);
-        if (otmp->owornmask) {
-            if (keeping_mon) {
+        if (otmp->owornmask) 
+		{
+            if (keeping_mon) 
+			{
                 if (otmp == mwep)
                     mwepgone(mtmp), mwep = 0;
                 mtmp->misc_worn_check &= ~otmp->owornmask;
-                update_mon_intrinsics(mtmp, otmp, FALSE, TRUE);
+				otmp->owornmask = 0L;
+                update_mon_intrinsics(mtmp, TRUE);
+				if (mtmp == u.usteed && otmp->otyp == SADDLE)
+					dismount_steed(DISMOUNT_FELL);
             }
-            otmp->owornmask = 0L; /* obfree() expects this */
-        }
+			otmp->owornmask = 0L; /* obfree() expects this */
+		}
         obfree(otmp, (struct obj *) 0); /* dealloc_obj() isn't sufficient */
     }
 }

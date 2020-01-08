@@ -163,7 +163,7 @@ struct obj *otmp;
         reveal_invis = TRUE;
         if (disguised_mimic)
             seemimic(mtmp);
-        if (resists_magicmissile(mtmp) || is_magic_resistant(mtmp) || Invulnerable) 
+        if (resists_magicmissile(mtmp) || resists_magic(mtmp) || Invulnerable)
 		{ /* match effect on player */
             shieldeff(mtmp->mx, mtmp->my);
             pline("Boing!");
@@ -192,11 +192,11 @@ struct obj *otmp;
 		if (resists_elec(mtmp))
 		{
 			shieldeff(mtmp->mx, mtmp->my);
-			pline("%s is unaffected by your touch!", Monnam(mtmp));
+			pline("%s is unaffected by your electric touch!", Monnam(mtmp));
 			break;
 		}
 		/* resist deals the damage and displays the damage dealt */
-		hit(zap_type_text, mtmp, exclam(dmg), -1);
+		Your("touch jolts %s with electricity!", mon_nam(mtmp));
 		(void)resist(mtmp, otmp, 0, dmg, TELL);
 		learn_it = TRUE;
 		break;
@@ -210,11 +210,11 @@ struct obj *otmp;
 		if (resists_fire(mtmp))
 		{
 			shieldeff(mtmp->mx, mtmp->my);
-			pline("%s is unaffected by your touch!", Monnam(mtmp));
+			pline("%s is unaffected by your fiery touch!", Monnam(mtmp));
 			break;
 		}
 		/* resist deals the damage and displays the damage dealt */
-		hit(zap_type_text, mtmp, exclam(dmg), -1);
+		Your("fiery touch burns %s!", mon_nam(mtmp));
 		(void)resist(mtmp, otmp, 0, dmg, TELL);
 		learn_it = TRUE;
 		break;
@@ -228,11 +228,11 @@ struct obj *otmp;
 		if (resists_cold(mtmp))
 		{
 			shieldeff(mtmp->mx, mtmp->my);
-			pline("%s is unaffected by your touch!", Monnam(mtmp));
+			pline("%s is unaffected by your freezing touch!", Monnam(mtmp));
 			break;
 		}
 		/* resist deals the damage and displays the damage dealt */
-		hit(zap_type_text, mtmp, exclam(dmg), -1);
+		Your("freezing touch sears %s!", mon_nam(mtmp));
 		(void)resist(mtmp, otmp, 0, dmg, TELL);
 		learn_it = TRUE;
 		break;
@@ -436,7 +436,7 @@ struct obj *otmp;
             /* if a long worm has mcorpsenm set, it was polymophed by
                the current zap and shouldn't be affected if hit again */
             ;
-        } else if (is_magic_resistant(mtmp)) {
+        } else if (resists_magic(mtmp)) {
             /* magic missile resistance protects from polymorph traps, so make
                it guard against involuntary polymorph attacks too... */
             shieldeff(mtmp->mx, mtmp->my);
@@ -891,17 +891,17 @@ struct monst* mtmp;
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
+	if (is_reflecting(mtmp))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Reflecting", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
 	if (can_teleport(mtmp->data))
 	{
 		abilcnt++;
 		Sprintf(buf, " %2d - Teleportation", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-	if (is_reflecting(mtmp->data))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Reflecting", abilcnt);
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
@@ -5614,7 +5614,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 
     switch (abstype) {
     case ZT_MAGIC_MISSILE:
-        if (resists_magicmissile(mon) || is_magic_resistant(mon)) {
+        if (resists_magicmissile(mon) || resists_magic(mon)) {
             sho_shieldeff = TRUE;
 			tmp = 0;
             break;
@@ -5702,7 +5702,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 			break;
 		}
 		if (is_not_living(mon->data) || is_demon(mon->data)
-			|| is_vampshifter(mon) || resists_death(mon) || is_magic_resistant(mon)) {
+			|| is_vampshifter(mon) || resists_death(mon) || resists_magic(mon)) {
 			/* similar to player */
 			sho_shieldeff = TRUE;
 			tmp = 0;
@@ -6050,8 +6050,10 @@ const char *fltxt;
                 if (otmp->owornmask & W_WEP)
                     setmnotwielded(mon, otmp);
                 /* also dismounts hero if this object is steed's saddle */
-                update_mon_intrinsics(mon, otmp, FALSE, TRUE);
-                otmp->owornmask = 0L;
+				otmp->owornmask = 0L;
+				update_mon_intrinsics(mon, TRUE);
+				if (mon == u.usteed && otmp->otyp == SADDLE)
+					dismount_steed(DISMOUNT_FELL);
             }
             obj_extract_self(otmp);
             obfree(otmp, (struct obj *) 0);

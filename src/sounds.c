@@ -1764,7 +1764,7 @@ dochat()
 		chatnum++;
 
 	}
-	else if (mtmp->mpeaceful && (mtmp->data->mflags3 & M3_PRIEST) && msound != MS_ORACLE)
+	else if (mtmp->mpeaceful && is_priest(mtmp->data) && msound != MS_ORACLE)
 	{
 		/* Non-priest monster priests here */
 		strcpy(available_chat_list[chatnum].name, "Ask for healing");
@@ -2524,7 +2524,10 @@ struct monst* mtmp;
 			mtmp->misc_worn_check &= ~otmp->owornmask;
 			otmp->owornmask = 0L;
 
-			update_mon_intrinsics(mtmp, otmp, FALSE, FALSE);
+			update_mon_intrinsics(mtmp, FALSE);
+
+			if (mtmp == u.usteed && otmp->otyp == SADDLE)
+				dismount_steed(DISMOUNT_FELL);
 
 			if(otmp->owornmask & W_SADDLE)
 				You("remove %s from %s.", cxname(otmp), mon_nam(mtmp));

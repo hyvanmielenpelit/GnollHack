@@ -894,7 +894,7 @@ struct obj* uitem;
 				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_HEALER) && (monsndx(monster->data) == PM_HEALER || (monster->data->mflags3 & M3_HEALER)))
 				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_KNIGHT) && (monsndx(monster->data) == PM_KNIGHT || (monster->data->mflags3 & M3_KNIGHT)))
 				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_MONK) && (monsndx(monster->data) == PM_MONK || monsndx(monster->data) == PM_MASTER_KAEN))
-				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_PRIEST) && (monsndx(monster->data) == PM_PRIEST || monsndx(monster->data) == PM_PRIESTESS || monster->ispriest || (monster->data->mflags3 & M3_PRIEST)))
+				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_PRIEST) && (monsndx(monster->data) == PM_PRIEST || monsndx(monster->data) == PM_PRIESTESS || monster->ispriest || is_priest(monster->data)))
 				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_TOURIST) && (monsndx(monster->data) == PM_TOURIST || monsndx(monster->data) == PM_TWOFLOWER))
 				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_VALKYRIE) && monsndx(monster->data) == PM_VALKYRIE)
 				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_WIZARD) && (monsndx(monster->data) == PM_WIZARD || (monster->data->mflags3 & M3_WIZARD)))

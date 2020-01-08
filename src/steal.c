@@ -707,8 +707,12 @@ boolean verbosely;
     }
     /* do this last, after placing obj on floor; removing steed's saddle
        throws rider, possibly inflicting fatal damage and producing bones */
-    if (update_mon)
-        update_mon_intrinsics(mon, obj, FALSE, TRUE);
+	if (update_mon)
+	{
+		update_mon_intrinsics(mon, TRUE);
+		if (mon == u.usteed && obj->otyp == SADDLE)
+			dismount_steed(DISMOUNT_FELL);
+	}
 }
 
 /* some monsters bypass the normal rules for moving between levels or
@@ -799,8 +803,11 @@ boolean is_pet; /* If true, pet should keep wielded/worn items */
 			/* do this last, after placing obj on floor; removing steed's saddle
 			   throws rider, possibly inflicting fatal damage and producing bones */
 			if (update_mon)
-				update_mon_intrinsics(mtmp, otmp, FALSE, TRUE);
-
+			{
+				update_mon_intrinsics(mtmp, TRUE);
+				if (mtmp == u.usteed && otmp->otyp == SADDLE)
+					dismount_steed(DISMOUNT_FELL);
+			}
 
 			obfree(otmp, (struct obj*) 0); //Delete the item
 		}

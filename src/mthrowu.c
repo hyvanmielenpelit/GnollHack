@@ -1184,8 +1184,10 @@ struct obj *obj;
         if (obj == MON_WEP(mon))
             mwepgone(mon);
         mon->misc_worn_check &= ~obj->owornmask;
-        update_mon_intrinsics(mon, obj, FALSE, FALSE);
-        obj->owornmask = 0L;
+		obj->owornmask = 0L;
+		update_mon_intrinsics(mon, FALSE);
+		if (mon == u.usteed && obj->otyp == SADDLE)
+			dismount_steed(DISMOUNT_FELL);
     }
     obfree(obj, (struct obj *) 0);
 }

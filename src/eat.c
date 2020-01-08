@@ -829,7 +829,15 @@ register struct permonst *ptr;
         res = (ptr->mconveys & MR_DISINT) != 0;
         ifdebugresist("can get disintegration resistance");
         break;
-    case SHOCK_RES: /* shock (electricity) resistance */
+	case DRAIN_RES:
+		res = (ptr->mconveys & MR_DRAIN) != 0;
+		ifdebugresist("can get drain resistance");
+		break;
+	case FLASH_RES:
+		res = (ptr->mconveys & MR_FLASH) != 0;
+		ifdebugresist("can get flash resistance");
+		break;
+	case SHOCK_RES: /* shock (electricity) resistance */
         res = (ptr->mconveys & MR_ELEC) != 0;
         ifdebugresist("can get shock resistance");
         break;

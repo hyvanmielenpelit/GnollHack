@@ -209,7 +209,7 @@ int expltype;
                     case AD_PHYS:
                         break;
                     case AD_MAGM:
-                        explmask[i][j] |= is_magic_resistant(mtmp) || resists_magicmissile(mtmp);
+                        explmask[i][j] |= resists_magic(mtmp) || resists_magicmissile(mtmp);
                         break;
                     case AD_FIRE:
                         explmask[i][j] |= resists_fire(mtmp);

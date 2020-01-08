@@ -1672,7 +1672,7 @@ struct obj *otmp;
         steedhit = TRUE;
         break;
     case POLY_TRAP:
-        if (!is_magic_resistant(steed) && !resist(steed, (struct obj*) 0, 12, 0, NOTELL)) {
+        if (!resists_magic(steed) && !resist(steed, (struct obj*) 0, 12, 0, NOTELL)) {
             (void) newcham(steed, (struct permonst *) 0, FALSE, FALSE);
             if (!can_saddle(steed) || !can_ride(steed))
                 dismount_steed(DISMOUNT_POLY);
@@ -2643,7 +2643,7 @@ register struct monst *mtmp;
             break;
         case ANTI_MAGIC:
             /* similar to hero's case, more or less */
-            if (!is_magic_resistant(mtmp)) { /* lose spell energy */
+            if (!resists_magic(mtmp)) { /* lose spell energy */
                 if (!mtmp->mcancelled && (attacktype(mptr, AT_MAGC)
                                     || attacktype(mptr, AT_BREA))) {
                     mtmp->mspec_used += d(2, 2);
@@ -2723,7 +2723,7 @@ register struct monst *mtmp;
             }
             break;
         case POLY_TRAP:
-            if (is_magic_resistant(mtmp)) {
+            if (resists_magic(mtmp)) {
                 shieldeff(mtmp->mx, mtmp->my);
             } else if (!resist(mtmp, (struct obj*) 0, 12, 0, NOTELL)) {
                 if (newcham(mtmp, (struct permonst *) 0, FALSE, FALSE))

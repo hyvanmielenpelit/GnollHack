@@ -1797,11 +1797,13 @@ register const char *str;
     if (mtmp->isshk && inhishop(mtmp))
         return FALSE;
 
-    for (otmp = level.objects[mtmp->mx][mtmp->my]; otmp; otmp = otmp2) {
+    for (otmp = level.objects[mtmp->mx][mtmp->my]; otmp; otmp = otmp2) 
+	{
         otmp2 = otmp->nexthere;
         /* Nymphs take everything.  Most monsters don't pick up corpses. */
         if (!str ? searches_for_item(mtmp, otmp)
-                 : !!(index(str, otmp->oclass))) {
+                 : !!(index(str, otmp->oclass)))
+		{
             if (otmp->otyp == CORPSE && mtmp->data->mlet != S_NYMPH
                 /* let a handful of corpse types thru to can_carry() */
                 && !touch_petrifies(&mons[otmp->corpsenm])
@@ -1817,7 +1819,8 @@ register const char *str;
                 continue;
             /* handle cases where the critter can only get some */
             otmp3 = otmp;
-            if (carryamt != otmp->quan) {
+            if (carryamt != otmp->quan) 
+			{
                 otmp3 = splitobj(otmp, carryamt);
             }
             if (cansee(mtmp->mx, mtmp->my) && flags.verbose)
@@ -2239,7 +2242,7 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
                         && (ttmp->ttyp != WEB
                             || (!amorphous(mdat) && !webmaker(mdat)
                                 && !is_whirly(mdat) && !unsolid(mdat)))
-                        && (ttmp->ttyp != ANTI_MAGIC || !is_magic_resistant(mon)))
+                        && (ttmp->ttyp != ANTI_MAGIC || !resists_magic(mon)))
 					{
 						/* Here are all relevant traps the mon should care about */
 						if (flag & ALLOW_TRAPS)
@@ -2948,12 +2951,16 @@ struct monst *mdef;
         /* some objects may end up outside the statue */
         while ((obj = mdef->minvent) != 0) {
             obj_extract_self(obj);
-            if (obj->owornmask)
-                update_mon_intrinsics(mdef, obj, FALSE, TRUE);
-            obj_no_longer_held(obj);
-            if (obj->owornmask & W_WEP)
-                setmnotwielded(mdef, obj);
-            obj->owornmask = 0L;
+			obj_no_longer_held(obj);
+			if (obj->owornmask)
+			{
+				if (obj->owornmask & W_WEP)
+					setmnotwielded(mdef, obj);
+				obj->owornmask = 0L;
+				update_mon_intrinsics(mdef, TRUE);
+				if (mdef == u.usteed && obj->otyp == SADDLE)
+					dismount_steed(DISMOUNT_FELL);
+			}
             if (obj->otyp == BOULDER
 #if 0 /* monsters don't carry statues */
                 ||  (obj->otyp == STATUE

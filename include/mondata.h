@@ -37,6 +37,12 @@
     ((((mon)->data->mresists | (mon)->mextrinsics) & MR_MAGIC) != 0)
 #define resists_charm(mon) \
     ((((mon)->data->mresists | (mon)->mextrinsics) & MR_CHARM) != 0)
+#define is_reflecting(mon) \
+	((((mon)->data->mresists | (mon)->mextrinsics) & MR_REFLECTING) != 0)
+#define resists_drain(mon) \
+    ((((mon)->data->mresists | (mon)->mextrinsics) & MR_DRAIN) != 0)
+#define resists_flash(mon) \
+    ((((mon)->data->mresists | (mon)->mextrinsics) & MR_FLASH) != 0)
 
 #define confers_strength(ptr) \
     (((ptr)->mconveys & MR_STRENGTH) != 0)
@@ -183,13 +189,13 @@
 #define leaves_corpses_randomly(ptr) (((ptr)->mflags3 & M3_RANDOM_CORPSE) != 0L)
 #define corpse_crumbles_to_dust(ptr) (((ptr)->mflags3 & M3_CORPSE_CRUMBLES_TO_DUST) != 0L)
 #define is_speaking_monster(ptr) (((ptr)->mflags3 & M3_SPEAKING) != 0L)
-#define is_reflecting(ptr) (((ptr)->mflags3 & M3_REFLECTING) != 0L)
 #define is_constrictor(ptr) (((ptr)->mflags3 & M3_CONSTRICTOR) != 0L)
 #define hug_requires_two_previous_attacks(ptr) (((ptr)->mflags3 & M3_HUG_HITS_IF_TWO_FIRST_ATTACKS_SUCCEEDED) != 0L)
 #define knows_pits_and_holes(ptr) \
     (((ptr)->mflags3 & M3_KNOWS_PITS_AND_HOLES) != 0)
 #define knows_traps(ptr) \
     (((ptr)->mflags3 & M3_KNOWS_TRAPS) != 0)
+#define is_priest(ptr) (((ptr)->mflags3 & M3_PRIEST) != 0L)
 
 #define is_brave(ptr) (((ptr)->mflags4 & M4_BRAVE) != 0L)
 #define is_fearless(ptr) (((ptr)->mflags4 & M4_FEARLESS) != 0L)
@@ -286,6 +292,15 @@
 
 #define has_pitwalk(ptr) \
     (((ptr)->mflags4 & M4_PITWALK) != 0)
+
+/* Overall resistances */
+#define resists_drli(mon) \
+  (is_undead((mon)->data) || is_demon((mon)->data) || is_were((mon)->data) \
+	|| ((mon) == &youmonst && u.ulycn >= LOW_PM) || is_vampshifter(mon) || resists_drain(mon))
+
+#define resists_blnd(mon) \
+	(((mon) == &youmonst && (Blind || Unaware)) || ((mon)->mblinded || !(mon)->mcansee \
+	|| !haseyes((mon)->data) || (mon)->msleeping) || resists_flash(mon))
 
 /* monkeys are tameable via bananas but not pacifiable via food,
    otherwise their theft attack could be nullified too easily;

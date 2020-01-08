@@ -1287,7 +1287,7 @@ register struct obj *otmp;
                 pline_The("wand misses you.");
             stop_occupation();
             nomul(0);
-        } else if (resists_magicmissile(mtmp) || is_magic_resistant(mtmp)) {
+        } else if (resists_magicmissile(mtmp) || resists_magic(mtmp)) {
             shieldeff(mtmp->mx, mtmp->my);
             pline("Boing!");
         } else if (rnd(20) < 10 + find_mac(mtmp)) {
@@ -2105,7 +2105,8 @@ struct obj *obj;
     if (typ == WAN_SPEED_MONSTER || typ == POT_SPEED)
         return (boolean) (mon->mspeed != MFAST);
 
-    switch (obj->oclass) {
+    switch (obj->oclass) 
+	{
     case WAND_CLASS:
         if (obj->spe <= 0)
             return FALSE;
@@ -2136,7 +2137,12 @@ struct obj *obj;
             return (boolean) !(is_not_living(mon->data) || is_vampshifter(mon));
         if (typ == AMULET_OF_REFLECTION)
             return TRUE;
-        break;
+	case RING_CLASS:
+		if ((mon->misc_worn_check & W_RING) == W_RING)
+			return FALSE;
+		if (!is_cursed_magic_item(obj))
+			return TRUE;
+			break;
 	case MISCELLANEOUS_CLASS:
 		break;
 	case TOOL_CLASS:
@@ -2198,10 +2204,13 @@ const char *str;
         if (str)
             pline(str, s_suffix(mon_nam(mon)), "armor");
         return TRUE;
-    } else if (is_reflecting(mon->data)) {
-        /* Silver dragons only reflect when mature; babies do, too XnotX */
+    }
+	else if (is_reflecting(mon))
+	{
         if (str)
-            pline(str, s_suffix(mon_nam(mon)), mon->data->mlet == S_DRAGON ? "scales" : "body");
+            pline(str, s_suffix(mon_nam(mon)), 
+			(mon->mextrinsics & MR_REFLECTING) ? "item" : mon->data->mlet == S_DRAGON ? "scales" : mon->data->mlet == S_TREANT ? "bark" : "body");
+
         return TRUE;
     }
     return FALSE;
@@ -2291,7 +2300,7 @@ const char *fmt, *str;
 			pline(fmt, str, "bracers");
 		return TRUE;
 	}
-	else if (is_reflecting(youmonst.data)) {  //youmonst.data == &mons[PM_SILVER_DRAGON]) {
+	else if (is_reflecting(&youmonst)) {  //youmonst.data == &mons[PM_SILVER_DRAGON]) {
         if (fmt && str)
             pline(fmt, str, "scales");
         return TRUE;

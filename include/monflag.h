@@ -61,6 +61,8 @@
 #define MR_MAGICMISSILE 0x00000400L		/* resists magic missiles */
 #define MR_MAGIC 0x00000800L			/* resists magic */
 #define MR_CHARM 0x00001000L			/* resists charm */
+#define MR_DRAIN 0x00002000L			/* resists life draining */
+#define MR_FLASH 0x00004000L			/* resists life draining */
 
 #define MR_STRENGTH 0x00010000L			/* confers strength */
 #define MR_DEXTERITY 0x00020000L		/* confers dexterity */
@@ -75,6 +77,8 @@
 #define MR_TELEPORT_CONTROL 0x01000000L	/* confers teleport control */
 #define MR_BLIND_TELEPATHY 0x02000000L	/* confers blind telepathy */
 #define MR_TELEPATHY 0x04000000L		/* confers telepathy */
+
+#define MR_REFLECTING 0x08000000L		/* reflecting */
 
 /* other resistances: magic, sickness */
 /* other conveyances: teleport, teleport control, telepathy */

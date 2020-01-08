@@ -2316,7 +2316,10 @@ struct attack *mattk;
             if (otmp->owornmask & W_WEP)
                 setmnotwielded(mdef, otmp);
             otmp->owornmask = 0L;
-            update_mon_intrinsics(mdef, otmp, FALSE, FALSE);
+            update_mon_intrinsics(mdef, FALSE);
+			if (mdef == u.usteed && otmp->otyp == SADDLE)
+				dismount_steed(DISMOUNT_FELL);
+
             /* give monster a chance to wear other equipment on its next
                move instead of waiting until it picks something up */
             mdef->misc_worn_check |= I_SPECIAL;

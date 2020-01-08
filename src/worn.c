@@ -8,7 +8,7 @@
 #include "artilist.h"
 
 STATIC_DCL void FDECL(m_lose_armor, (struct monst *, struct obj *));
-STATIC_DCL void FDECL(m_dowear_type,
+STATIC_DCL boolean FDECL(m_dowear_type,
                       (struct monst *, long, BOOLEAN_P, BOOLEAN_P));
 STATIC_DCL int FDECL(extra_pref, (struct monst *, struct obj *));
 
@@ -516,10 +516,9 @@ struct obj *obj; /* item to make known if effect can be seen */
 /* armor put on or taken off; might be magical variety
    [TODO: rename to 'update_mon_extrinsics()' and change all callers...] */
 void
-update_mon_intrinsics(mon, obj, on, silently)
+update_mon_intrinsics(mon, silently)
 struct monst *mon;
-struct obj *obj;
-boolean on, silently;
+boolean silently;
 {
     int unseen = 0;
     uchar mask = 0;
@@ -534,52 +533,110 @@ boolean on, silently;
 	{
 		for (int i = 1; i <= 7; i++)
 		{
-			if (i > 3 && !obj->oartifact)
+			if (i > 3 && !otmp->oartifact)
 				break;
 
+			int otyp = otmp->otyp;
 			uchar which = 0;
+			boolean inappr = inappropriate_monster_character_type(mon, otmp);
+			boolean yields_power = FALSE;
+			boolean wornrequired = TRUE;
+
 			switch (i)
 			{
 			case 1:
-				which = objects[obj->otyp].oc_oprop;
+				which = objects[otyp].oc_oprop;
+				if (objects[otyp].oc_pflags & P1_POWER_1_APPLIES_TO_ALL_CHARACTERS)
+					yields_power = TRUE;
+				else if (inappr && (objects[otyp].oc_pflags & P1_POWER_1_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
+					yields_power = TRUE;
+				else if (!inappr && !(objects[otyp].oc_pflags & P1_POWER_1_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
+					yields_power = TRUE;
+
+				if (objects[otyp].oc_pflags & P1_POWER_1_APPLIES_WHEN_CARRIED)
+					wornrequired = FALSE;
+				break;
 			case 2:
-				which = objects[obj->otyp].oc_oprop2;
+				which = objects[otyp].oc_oprop2;
+				if (objects[otyp].oc_pflags & P1_POWER_2_APPLIES_TO_ALL_CHARACTERS)
+					yields_power = TRUE;
+				else if (inappr && (objects[otyp].oc_pflags & P1_POWER_2_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
+					yields_power = TRUE;
+				else if (!inappr && !(objects[otyp].oc_pflags & P1_POWER_2_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
+					yields_power = TRUE;
+
+				if (objects[otyp].oc_pflags & P1_POWER_2_APPLIES_WHEN_CARRIED)
+					wornrequired = FALSE;
+				break;
 			case 3:
-				which = objects[obj->otyp].oc_oprop3;
+				which = objects[otyp].oc_oprop3;
+				if (objects[otyp].oc_pflags & P1_POWER_3_APPLIES_TO_ALL_CHARACTERS)
+					yields_power = TRUE;
+				else if (inappr && (objects[otyp].oc_pflags & P1_POWER_3_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
+					yields_power = TRUE;
+				else if (!inappr && !(objects[otyp].oc_pflags & P1_POWER_3_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
+					yields_power = TRUE;
+
+				if (objects[otyp].oc_pflags & P1_POWER_3_APPLIES_WHEN_CARRIED)
+					wornrequired = FALSE;
+				break;
 			case 4:
-				which = artilist[obj->oartifact].carried_prop;
+				which = artilist[otmp->oartifact].carried_prop;
+				wornrequired = FALSE;
+				yields_power = TRUE;
+				break;
 			case 5:
-				which = artilist[obj->oartifact].worn_prop;
+				which = artilist[otmp->oartifact].worn_prop;
+				wornrequired = TRUE;
+				yields_power = TRUE;
+				break;
 			case 6:
-				which = obj->invokeon ? artilist[obj->oartifact].inv_prop : 0;
+				which = otmp->invokeon ? artilist[otmp->oartifact].inv_prop : 0;
+				wornrequired = FALSE;
+				yields_power = TRUE;
+				break;
 			default:
 				if (i >= 7 && i <= 38)
 				{
+					wornrequired = TRUE;
+					yields_power = TRUE;
+
 					int bitnum = i - 6;
 					unsigned long bit = 0x00000001UL;
 					if (bitnum > 1)
 						bit = bit << bitnum;
 
 					int propnum = spfx_to_prop(bit);
-					if (artilist[obj->oartifact].spfx & bit)
+					if (artilist[otmp->oartifact].spfx & bit)
 						which = propnum;
 				}
 				else if (i >= 39 && i <= 70)
 				{
+					wornrequired = FALSE;
+					yields_power = TRUE;
+
 					int bitnum = i - 38;
 					unsigned long bit = 0x00000001UL;
 					if (bitnum > 1)
 						bit = bit << bitnum;
 
 					int propnum = spfx_to_prop(bit);
-					if (artilist[obj->oartifact].cspfx & bit)
+					if (artilist[otmp->oartifact].cspfx & bit)
 						which = propnum;
 				}
+				break;
+			}
+
+			if (yields_power && (!wornrequired || (wornrequired && otmp->owornmask)))
+			{
+				/* OK */
+			}
+			else
+			{
+				continue;
 			}
 
 			unseen = !canseemon(mon);
-			if (!which)
-				goto maybe_blocks;
 
 			if (1) //(on)
 			{
@@ -593,15 +650,11 @@ boolean on, silently;
 					boolean save_in_mklev = in_mklev;
 					if (silently)
 						in_mklev = TRUE;
-					mon_adjust_speed(mon, 0, obj);
+					mon_adjust_speed(mon, 0, otmp);
 					in_mklev = save_in_mklev;
 					break;
 				}
 				/* properties handled elsewhere */
-				case ANTIMAGIC:
-				case REFLECTING:
-					break;
-					/* properties which have no effect for monsters */
 				case CLAIRVOYANT:
 				case BLOCKS_CLAIRVOYANCE:
 				case STEALTH:
@@ -622,6 +675,10 @@ boolean on, silently;
 				case LAUGHING:
 				case JUMPING:
 				case PROTECTION:
+					break;
+				case BLOCKS_INVISIBILITY:
+					mon->invis_blkd = 1;
+					mon->minvis = 0;
 					break;
 				default:
 					if (which <= 8)
@@ -645,6 +702,18 @@ boolean on, silently;
 					else if (which == ANTIMAGIC)
 					{
 						mon->mextrinsics |= MR_MAGIC;
+					}
+					else if (which == REFLECTING)
+					{
+						mon->mextrinsics |= MR_REFLECTING;
+					}
+					else if (which == DRAIN_RES)
+					{
+						mon->mextrinsics |= MR_DRAIN;
+					}
+					else if (which == FLASH_RES)
+					{
+						mon->mextrinsics |= MR_FLASH;
 					}
 					break;
 				}
@@ -692,7 +761,6 @@ boolean on, silently;
 					break;
 				}
 			}
-#endif
 		maybe_blocks:
 			/* obj->owornmask has been cleared by this point, so we can't use it.
 			   However, since monsters don't wield armor, we don't have to guard
@@ -706,11 +774,10 @@ boolean on, silently;
 			default:
 				break;
 			}
+
+#endif
 		}
 	}
-
-    if (!on && mon == u.usteed && obj->otyp == SADDLE)
-        dismount_steed(DISMOUNT_FELL);
 
     /* if couldn't see it but now can, or vice versa, update display */
     if (!silently && (unseen ^ !canseemon(mon)))
@@ -768,6 +835,10 @@ boolean creation;
      */
     if (verysmall(mon->data) || nohands(mon->data) || is_animal(mon->data))
         return;
+
+	if (mon->mfrozen)
+		return;
+
     /* give mummies a chance to wear their wrappings
      * and let skeletons wear their initial armor */
     if (mindless(mon->data)
@@ -775,47 +846,150 @@ boolean creation;
                           || mon->data->mlet == S_LESSER_UNDEAD)))
         return;
 
+	boolean wears_shirt = FALSE;
+	boolean wears_suit = FALSE;
+	boolean wears_robe = FALSE;
+	boolean wears_cloak = FALSE;
+	boolean wears_gloves = FALSE;
+	boolean wears_helmet = FALSE;
+	boolean wears_bracers = FALSE;
+	boolean wears_boots = FALSE;
+	boolean wears_shield = FALSE;
+	boolean wears_amulet = FALSE;
+	boolean wears_ringr = FALSE;
+	boolean wears_ringl = FALSE;
+
+	struct obj* old_shirt = which_armor(mon, W_ARMU);
+	struct obj* old_suit = which_armor(mon, W_ARM);
+	struct obj* old_robe = which_armor(mon, W_ARMO);
+	struct obj* old_cloak = which_armor(mon, W_ARMC);
+	struct obj* old_gloves = which_armor(mon, W_ARMG);
+	struct obj* old_helmet = which_armor(mon, W_ARMH);
+	struct obj* old_bracers = which_armor(mon, W_ARMB);
+	struct obj* old_boots = which_armor(mon, W_ARMF);
+	struct obj* old_shield = which_armor(mon, W_ARMS);
+	struct obj* old_amulet = which_armor(mon, W_AMUL);
+	struct obj* old_ringr = which_armor(mon, W_RINGR);
+	struct obj* old_ringl = which_armor(mon, W_RINGL);
+
+	int old_shirt_delay = old_shirt ? objects[old_shirt->otyp].oc_delay : 0;
+	int old_suit_delay = old_suit ? objects[old_suit->otyp].oc_delay : 0;
+	int old_robe_delay = old_robe ? objects[old_robe->otyp].oc_delay : 0;
+	int old_cloak_delay = old_cloak ? objects[old_cloak->otyp].oc_delay : 0;
+	int old_gloves_delay = old_gloves ? objects[old_gloves->otyp].oc_delay : 0;
+	int old_helmet_delay = old_helmet ? objects[old_helmet->otyp].oc_delay : 0;
+	int old_bracers_delay = old_bracers ? objects[old_bracers->otyp].oc_delay : 0;
+	int old_boots_delay = old_boots ? objects[old_boots->otyp].oc_delay : 0;
+	int old_shield_delay = old_shield ? objects[old_shield->otyp].oc_delay : 0;
+	int old_amulet_delay = old_amulet ? objects[old_amulet->otyp].oc_delay : 0;
+	int old_ringr_delay = old_ringr ? objects[old_ringr->otyp].oc_delay : 0;
+	int old_ringl_delay = old_ringl ? objects[old_ringl->otyp].oc_delay : 0;
+
 	/* Main armor */
-	if (!cantweararm(mon->data) && !(mon->misc_worn_check & (W_ARM | W_ARMC | W_ARMO)))
-		m_dowear_type(mon, W_ARMU, creation, FALSE);
-
-	if(!(mon->misc_worn_check & (W_ARMC | W_ARMO)))
+	if (!cantweararm(mon->data) && (cursed_items_are_positive_mon(mon) || !((old_cloak && old_cloak->cursed) || (old_robe && old_robe->cursed) || (old_suit && old_suit->cursed))) )
 	{
-		if (!cantweararm(mon->data))
-			m_dowear_type(mon, W_ARM, creation, FALSE);
-		else
-			m_dowear_type(mon, W_ARM, creation, RACE_EXCEPTION);
-
+		wears_shirt = m_dowear_type(mon, W_ARMU, creation, FALSE);
 	}
 
-	if (!cantweararm(mon->data) && !(mon->misc_worn_check & W_ARMC))
-		m_dowear_type(mon, W_ARMO, creation, FALSE);
+	if (!cantweararm(mon->data) && (cursed_items_are_positive_mon(mon) || !((old_cloak && old_cloak->cursed) || (old_robe && old_robe->cursed))) )
+		wears_suit = m_dowear_type(mon, W_ARM, creation, FALSE);
+	else
+		wears_suit = m_dowear_type(mon, W_ARM, creation, RACE_EXCEPTION);
+
+	/*
+	if(!(mon->misc_worn_check & (W_ARMC | W_ARMO)))
+	{
+
+	}
+	*/
+
+	if (!cantweararm(mon->data) && (cursed_items_are_positive_mon(mon) || !(old_cloak && old_cloak->cursed)))
+	{
+		wears_robe = m_dowear_type(mon, W_ARMO, creation, FALSE);
+	}
 
 	if (!cantweararm(mon->data) || mon->data->msize == MZ_SMALL)
-		m_dowear_type(mon, W_ARMC, creation, FALSE);
-
+	{
+		wears_robe = m_dowear_type(mon, W_ARMC, creation, FALSE);
+	}
 
 	/* Other armor types */
 	if (has_head(mon->data))
-		m_dowear_type(mon, W_ARMH, creation, FALSE);
+		wears_helmet = m_dowear_type(mon, W_ARMH, creation, FALSE);
     if (!nohands(mon->data) && (!MON_WEP(mon) || !bimanual(MON_WEP(mon))))
-        m_dowear_type(mon, W_ARMS, creation, FALSE);
+		wears_shield = m_dowear_type(mon, W_ARMS, creation, FALSE);
 	if (!nohands(mon->data) && !(MON_WEP(mon) && mwelded(MON_WEP(mon), mon)))
-		m_dowear_type(mon, W_ARMG, creation, FALSE);
+		wears_gloves = m_dowear_type(mon, W_ARMG, creation, FALSE);
     if (!nolimbs(mon->data) && !slithy(mon->data) && mon->data->mlet != S_CENTAUR)
-        m_dowear_type(mon, W_ARMF, creation, FALSE);
+        wears_boots = m_dowear_type(mon, W_ARMF, creation, FALSE);
 	if (!nolimbs(mon->data))
-		m_dowear_type(mon, W_ARMB, creation, FALSE);
+		wears_bracers = m_dowear_type(mon, W_ARMB, creation, FALSE);
 
 
 	/* Accessories */
 	if (has_head(mon->data))
-		m_dowear_type(mon, W_AMUL, creation, FALSE);
+		wears_amulet = m_dowear_type(mon, W_AMUL, creation, FALSE);
+	if (!nohands(mon->data) && (cursed_items_are_positive_mon(mon) || !(MON_WEP(mon) && mwelded(MON_WEP(mon), mon)) && !(old_gloves && old_gloves->cursed)))
+		wears_ringr = m_dowear_type(mon, W_RINGR, creation, FALSE);
+	if (!nohands(mon->data) && (cursed_items_are_positive_mon(mon) || !(MON_WEP(mon) && mwelded(MON_WEP(mon), mon)) && !(old_gloves && old_gloves->cursed)))
+		wears_ringl = m_dowear_type(mon, W_RINGL, creation, FALSE);
+
+
+	struct obj* new_shirt = which_armor(mon, W_ARMU);
+	struct obj* new_suit = which_armor(mon, W_ARM);
+	struct obj* new_robe = which_armor(mon, W_ARMO);
+	struct obj* new_cloak = which_armor(mon, W_ARMC);
+	struct obj* new_gloves = which_armor(mon, W_ARMG);
+	struct obj* new_helmet = which_armor(mon, W_ARMH);
+	struct obj* new_bracers = which_armor(mon, W_ARMB);
+	struct obj* new_boots = which_armor(mon, W_ARMF);
+	struct obj* new_shield = which_armor(mon, W_ARMS);
+	struct obj* new_amulet = which_armor(mon, W_AMUL);
+	struct obj* new_ringr = which_armor(mon, W_RINGR);
+	struct obj* new_ringl = which_armor(mon, W_RINGL);
+
+	int new_shirt_delay = new_shirt ? objects[new_shirt->otyp].oc_delay : 0;
+	int new_suit_delay = new_suit ? objects[new_suit->otyp].oc_delay : 0;
+	int new_robe_delay = new_robe ? objects[new_robe->otyp].oc_delay : 0;
+	int new_cloak_delay = new_cloak ? objects[new_cloak->otyp].oc_delay : 0;
+	int new_gloves_delay = new_gloves ? objects[new_gloves->otyp].oc_delay : 0;
+	int new_helmet_delay = new_helmet ? objects[new_helmet->otyp].oc_delay : 0;
+	int new_bracers_delay = new_bracers ? objects[new_bracers->otyp].oc_delay : 0;
+	int new_boots_delay = new_boots ? objects[new_boots->otyp].oc_delay : 0;
+	int new_shield_delay = new_shield ? objects[new_shield->otyp].oc_delay : 0;
+	int new_amulet_delay = new_amulet ? objects[new_amulet->otyp].oc_delay : 0;
+	int new_ringr_delay = new_ringr ? objects[new_ringr->otyp].oc_delay : 0;
+	int new_ringl_delay = new_ringl ? objects[new_ringl->otyp].oc_delay : 0;
+
+	boolean takes_off_old_suit = wears_shirt || wears_suit;
+	boolean takes_off_old_robe = wears_shirt || wears_suit || wears_robe;
+	boolean takes_off_old_cloak = wears_shirt || wears_suit || wears_robe || wears_cloak;
+
+	int totaldelay = 0;
+	totaldelay += takes_off_old_cloak ? old_cloak_delay : 0;
+	totaldelay += takes_off_old_robe ? old_robe_delay : 0;
+	totaldelay += takes_off_old_suit ? old_suit_delay : 0;
+	totaldelay += wears_shirt ? old_shirt_delay + new_shirt_delay : 0;
+	totaldelay += wears_suit ? new_suit_delay : 0;
+	totaldelay += wears_robe ? new_robe_delay : 0;
+	totaldelay += wears_cloak ? new_cloak_delay : 0;
+	totaldelay += wears_gloves ? old_gloves_delay + new_gloves_delay : 0;
+	totaldelay += wears_helmet ? old_helmet_delay + new_helmet_delay : 0;
+	totaldelay += wears_bracers ? old_bracers_delay + new_bracers_delay : 0;
+	totaldelay += wears_boots ? old_boots_delay + new_boots_delay : 0;
+	totaldelay += wears_shield ? old_shield_delay + new_shield_delay : 0;
+	totaldelay += wears_amulet ? old_amulet_delay + new_amulet_delay : 0;
+	totaldelay += wears_ringl ? old_ringl_delay + new_ringl_delay : 0;
+	totaldelay += wears_ringr ? old_ringr_delay + new_ringr_delay : 0;
+
+	mon->mfrozen = totaldelay;
+	if (mon->mfrozen)
+		mon->mcanmove = 0;
 
 }
 
-
-STATIC_OVL void
+/* 0 if nothing happened, TRUE if new was worn (and old consequently removed, if any) */
+STATIC_OVL boolean
 m_dowear_type(mon, flag, creation, racialexception)
 struct monst *mon;
 long flag;
@@ -829,20 +1003,25 @@ boolean racialexception;
     char nambuf[BUFSZ];
 
     if (mon->mfrozen)
-        return; /* probably putting previous item on */
+        return 0; /* probably putting previous item on */
 
     /* Get a copy of monster's name before altering its visibility */
     Strcpy(nambuf, See_invisible ? Monnam(mon) : mon_nam(mon));
 
     old = which_armor(mon, flag);
-    if (old && old->cursed)
-        return;
+    if (old && old->cursed && !cursed_items_are_positive_mon(mon))
+        return 0;
     if (old && flag == W_AMUL)
-        return; /* no such thing as better amulets */
-    best = old;
+        return 0; /* no such thing as better amulets */
+	if (old && flag == W_RINGL)
+		return 0; /* no such thing as better rings */
+	if (old && flag == W_RINGR)
+		return 0; /* no such thing as better rings */
+	best = old;
 
     for (obj = mon->minvent; obj; obj = obj->nobj) {
-        switch (flag) {
+        switch (flag) 
+		{
         case W_AMUL:
             if (obj->oclass != AMULET_CLASS
                 || (obj->otyp != AMULET_OF_LIFE_SAVING
@@ -850,7 +1029,13 @@ boolean racialexception;
                 continue;
             best = obj;
             goto outer_break; /* no such thing as better amulets */
-        case W_ARMU:
+		case W_RINGR:
+		case W_RINGL:
+			if (obj->oclass != RING_CLASS || (is_priest(mon->data) && obj->cursed) || is_cursed_magic_item(obj) || (obj->owornmask && obj->owornmask != flag))
+				continue;
+			best = obj;
+			goto outer_break; /* no such thing as better amulets */
+		case W_ARMU:
             if (!is_shirt(obj))
                 continue;
             break;
@@ -913,23 +1098,24 @@ boolean racialexception;
     }
 outer_break:
     if (!best || best == old)
-        return;
+        return 0;
 
     /* same auto-cursing behavior as for hero */
     autocurse = ((objects[best->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_WORN)  && !best->cursed);
-    /* if wearing a cloak, account for the time spent removing
-       and re-wearing it when putting on a suit or shirt */
-    if ((flag == W_ARM || flag == W_ARMU || flag == W_ARMO) && (mon->misc_worn_check & W_ARMC))
-        m_delay += 2;
-    /* when upgrading a piece of armor, account for time spent
-       taking off current one */
-    if (old)
-        m_delay += objects[old->otyp].oc_delay;
 
-    if (old) /* do this first to avoid "(being worn)" */
-        old->owornmask = 0L;
-    if (!creation) {
-        if (canseemon(mon)) {
+	/* Take old off */
+	if (old)
+	{/* do this first to avoid "(being worn)" */
+		old->owornmask = 0L;
+		/* intrinsics are updated below */
+		if (mon == u.usteed && old->otyp == SADDLE)
+			dismount_steed(DISMOUNT_FELL);
+	}
+
+    if (!creation) 
+	{
+        if (canseemon(mon)) 
+		{
             char buf[BUFSZ];
 
             if (old)
@@ -943,18 +1129,16 @@ outer_break:
                       simpleonames(best), otense(best, "glow"),
                       hcolor(NH_BLACK));
         } /* can see it */
-        m_delay += objects[best->otyp].oc_delay;
-        mon->mfrozen = m_delay;
-        if (mon->mfrozen)
-            mon->mcanmove = 0;
     }
-    if (old)
-        update_mon_intrinsics(mon, old, FALSE, creation);
-    mon->misc_worn_check |= flag;
+
+	/* Put new on */
+	mon->misc_worn_check |= flag;
     best->owornmask |= flag;
     if (autocurse)
         curse(best);
-    update_mon_intrinsics(mon, best, TRUE, creation);
+
+	update_mon_intrinsics(mon, creation);
+
     /* if couldn't see it but now can, or vice versa, */
     if (!creation && (unseen ^ !canseemon(mon))) {
         if (mon->minvis && !See_invisible) {
@@ -963,6 +1147,8 @@ outer_break:
         } /* else if (!mon->minvis) pline("%s suddenly appears!",
              Amonnam(mon)); */
     }
+
+	return 1;
 }
 #undef RACE_EXCEPTION
 
@@ -1014,9 +1200,14 @@ struct monst *mon;
 struct obj *obj;
 {
     mon->misc_worn_check &= ~obj->owornmask;
-    if (obj->owornmask)
-        update_mon_intrinsics(mon, obj, FALSE, FALSE);
-    obj->owornmask = 0L;
+	if (obj->owornmask)
+	{
+		obj->owornmask = 0L;
+		update_mon_intrinsics(mon, FALSE);
+		if (mon == u.usteed && obj->otyp == SADDLE)
+			dismount_steed(DISMOUNT_FELL);
+
+	}
 
     obj_extract_self(obj);
     place_object(obj, mon->mx, mon->my);

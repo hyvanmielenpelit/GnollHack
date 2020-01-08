@@ -97,7 +97,7 @@ set_uasmon()
        key off of it but include different monster forms...] */
     PROPSET(PASSES_WALLS, passes_walls(mdat));
     PROPSET(REGENERATION, regenerates(mdat));
-    PROPSET(REFLECTING, is_reflecting(mdat));
+    PROPSET(REFLECTING, is_reflecting(&youmonst));
 #undef PROPSET
 
     float_vs_flight(); /* maybe toggle (BFlying & I_SPECIAL) */
