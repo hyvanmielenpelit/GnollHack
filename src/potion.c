@@ -603,7 +603,7 @@ register struct obj *otmp;
 	if (!otmp)
 		return 0;
 
-	int duration = d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_dicesize) + objects[otmp->otyp].oc_spell_dur_plus;
+	int duration = d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus;
 
     switch (otmp->otyp) {
     case POT_RESTORE_ABILITY:

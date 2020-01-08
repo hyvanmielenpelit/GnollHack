@@ -125,7 +125,8 @@ enum prop_types {
 	XRAY_VISION		  = 101,
 	VERY_FAST		  = 102,
 	SLOWED			  = 103,
-	LAUGHING		  = 104 //KEEP THIS LAST
+	CANCELLED		  = 104,
+	LAUGHING		  = 105 //KEEP THIS LAST
 };
 #define LAST_PROP (LAUGHING)
 

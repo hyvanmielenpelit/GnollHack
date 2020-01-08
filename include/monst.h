@@ -82,15 +82,23 @@ struct monst {
     uchar m_ap_type;      /* what mappearance is describing, m_ap_types */
 
     schar mtame;                /* level of tameness, implies peaceful */
-    unsigned long mextrinsics; /* low 8 correspond to mresists */
-    int mspec_used;             /* monster's special ability attack timeout */
+    unsigned long mextrinsics;	/* low 8 correspond to mresists */
+	unsigned int mprops[LAST_PROP + 1]; /* one bit for extrinsic (item or environment), one bit for permanent acquired, and 14 bits for timer (max 16k rounds) */
+	int mspec_used;             /* monster's special ability attack timeout */
 
-    Bitfield(female, 1);      /* is female */
-    Bitfield(minvis, 1);      /* currently invisible */
-    Bitfield(invis_blkd, 1);  /* invisibility blocked */
-    Bitfield(perminvis, 1);   /* intrinsic minvis value */
-    Bitfield(mcancelled, 1);        /* has been cancelled */
-	int mcancelled_timer;				  /* cancellation timeout */
+    Bitfield(female, 1);		/* is female */
+    Bitfield(minvis, 1);		/* currently invisible */
+	int minvisibility_timer;	/* invisibility timeout */
+	Bitfield(invis_blkd, 1);	/* invisibility blocked */
+    Bitfield(perminvis, 1);		/* intrinsic minvis value */
+    Bitfield(mcancelled, 1);	/* has been cancelled */
+	int mcancelled_timer;		/* cancellation timeout */
+	Bitfield(slowed, 1);        /* has been slowed */
+	int mslowed_timer;			/* slow timeout */
+	Bitfield(fast, 1);			/* is fast */
+	int mfast_timer;			/* fast timeout */
+	Bitfield(very_fast, 1);     /* is very fast */
+	int mvery_fast_timer;		/* veryfast timeout */
 	Bitfield(mhalfmagicres, 1);	/* has half normal magic resistance */
 	int mhalfmagicres_timer;	/* 50% MR timeout */
 	Bitfield(mnomagicres, 1);	/* has no magic resistance */

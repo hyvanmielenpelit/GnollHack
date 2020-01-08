@@ -2494,7 +2494,7 @@ struct obj *otmp;
 		return;
 
 	/* Properties */
-	int duration = d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_dicesize) + objects[otmp->otyp].oc_spell_dur_plus;
+	int duration = d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus;
 	if (objects[otmp->otyp].oc_edible_effect > 0)
 	{
 		if (duration > 0)
@@ -3088,7 +3088,7 @@ doeat()
 		}
 		else if (objects[otmp->otyp].oc_edible_subtype == EDIBLE_HALLUCINATING && !Halluc_resistance)
 		{
-			int duration = d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_dicesize) + objects[otmp->otyp].oc_spell_dur_plus;
+			int duration = d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus;
 
 			if(duration > 0)
 				(void)make_hallucinated(itimeout_incr(HHallucination, duration), TRUE, 0L);

@@ -146,7 +146,7 @@ struct obj *otmp;
     struct obj *obj;
     boolean disguised_mimic = (mtmp->data->mlet == S_MIMIC
                                && M_AP_TYPE(mtmp) != M_AP_NOTHING);
-	int duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_dicesize) + objects[otyp].oc_spell_dur_plus;
+	int duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus;
 
 	if (u.uswallow && mtmp == u.ustuck)
         reveal_invis = FALSE;
@@ -499,13 +499,13 @@ struct obj *otmp;
 		res = 1;
 		if (disguised_mimic)
             seemimic(mtmp);
-        (void) cancel_monst(mtmp, otmp, TRUE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_dicesize) + objects[otmp->otyp].oc_spell_dur_plus);
+        (void) cancel_monst(mtmp, otmp, TRUE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus);
         break;
 	case SPE_LOWER_MAGIC_RESISTANCE:
 	case SPE_NEGATE_MAGIC_RESISTANCE:
 	case SPE_FORBID_SUMMONING:
 		res = 1;
-		(void)add_temporary_property(mtmp, otmp, TRUE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_dicesize) + objects[otmp->otyp].oc_spell_dur_plus);
+		(void)add_temporary_property(mtmp, otmp, TRUE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus);
 		break;
 	case WAN_TELEPORTATION:
     case SPE_TELEPORT_AWAY:
@@ -3231,11 +3231,10 @@ register struct obj *obj;
 	case SPE_ARMAGEDDON:
 		known = TRUE;
 		You("chant an invocation:");
-		verbalize("Thou who art darker than the blackest pitch, deeper than the deepest night.");
-		verbalize("I call upon thee, and swear myself to thee.");
-		verbalize("Let the fools who stand before me be destroyed by the power you and I possess!");
-		pline("Air begins to shine with strange golden color...");
-		pline("Suddenly immense power blasts all around you!");
+		verbalize("Vas Kal An Mani...");
+		pline("The air begins to take an odd dull color.");
+		verbalize("...In Corp Hur Tym!");
+		pline("Suddenly an eerie silence fills the air!");
 		armageddon();
 		break;
 	case SPE_WISH:
@@ -3692,11 +3691,71 @@ register struct obj *obj;
 		}
 		break;
 	}	
+	case SPE_SPHERE_OF_ANNIHILATION:
+	{
+		You("chant an invocation:");
+		verbalize("Thou who art darker than the blackest pitch, deeper than the deepest night.");
+		verbalize("I call upon thee, and swear myself to thee.");
+		verbalize("Let the fools who stand before me be destroyed by the power you and I possess!");
+		pline("Air begins to shine with strange golden color...");
+		pline("Suddenly immense power blasts all around you!");
+
+		int radius = objects[obj->otyp].oc_spell_radius;
+
+		boolean showmon = FALSE;
+		for (int i = 0; i < 10; i++)
+		{
+			for (int x = u.ux - radius; x <= u.ux + radius; x++)
+			{
+				for (int y = u.uy - radius; y <= u.uy + radius; y++)
+				{
+					if (isok(x, y))
+					{
+						if (i < 9)
+						{
+							if (cansee(x, y)) { /* Don't see anything if can't see the location */
+								if (showmon)
+									newsym(x, y); /* restore the old information */
+								else
+									show_glyph(x, y, cmap_to_glyph(S_darkroom));
+							}
+						}
+						else
+							newsym(x, y); /* restore the old information */
+					}
+				}
+			}
+			flush_screen(1); /* make sure the glyph shows up */
+			delay_output();
+			delay_output();
+			showmon = !showmon;
+		}
+
+		for (struct monst* mon = fmon; mon; mon = mon->nmon)
+		{
+			if (radius <= 0 || dist2(u.ux, u.uy, mon->mx, mon->my) <= radius * (radius + 1))
+			{
+				/* No other saving throw */
+				if (resists_disint(mon) || noncorporeal(mon->data))
+				{
+					shieldeff(mon->mx, mon->my);
+					pline("%s is unaffected!", Monnam(mon));
+
+				}
+				else if (!DEADMONSTER(mon) && mon != u.usteed)
+				{
+					disintegrate_mon(mon, 1, "sphere of annihilation");
+				}
+			}
+		}
+
+		break;
+	}
 
 	case SPE_DETECT_UNSEEN:
 	{
 		int msg = Invisible && !Blind;
-		int duration = d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_dicesize) + objects[obj->otyp].oc_spell_dur_plus;
+		int duration = d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_diesize) + objects[obj->otyp].oc_spell_dur_plus;
 		incr_itimeout(&HSee_invisible, duration);
 		set_mimic_blocking(); /* do special mimic handling */
 		see_monsters();       /* see invisible monsters */
@@ -3798,6 +3857,11 @@ dozap()
 		You("cannot zap %s before its cooldown has expired.", the(cxname(obj)));
 		return 0;
 	}
+	else if (Cancelled)
+	{
+		Your("magic is not flowing properly to allow for using a wand.");
+		return 0;
+	}
 
 	check_unpaid(obj);
 
@@ -3846,8 +3910,9 @@ struct obj *obj;
 boolean ordinary;
 {
     boolean learn_it = FALSE;
-    int damage = 0, meteors = 0;
-	damage = d(objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_dicesize) + objects[obj->otyp].oc_spell_dmg_plus; //Same for small and big
+    int meteors = 0;
+	int damage = d(objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize) + objects[obj->otyp].oc_spell_dmg_plus;
+	int duration = d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_diesize) + objects[obj->otyp].oc_spell_dur_plus;
 
     switch (obj->otyp) {
     case WAN_STRIKING:
@@ -3946,8 +4011,8 @@ boolean ordinary;
 		break;
 	case SPE_METEOR_SWARM:
 		pline("A meteor shoots at you!");
-		meteors = d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_dicesize) + objects[obj->otyp].oc_spell_dur_plus;
-		damage = d(objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_dicesize) + objects[obj->otyp].oc_spell_dmg_plus;
+		meteors = d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_diesize) + objects[obj->otyp].oc_spell_dur_plus;
+		damage = d(objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize) + objects[obj->otyp].oc_spell_dmg_plus;
 		explode(u.ux, u.uy, RAY_FIRE, damage, obj->otyp, obj->oclass, EXPL_FIERY);
 		break;
 	case SPE_ICE_STORM:
@@ -4036,13 +4101,13 @@ boolean ordinary;
     case WAN_CANCELLATION:
     case SPE_CANCELLATION:
 		damage = 0;
-		(void) cancel_monst(&youmonst, obj, TRUE, TRUE, TRUE, d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_dicesize) + objects[obj->otyp].oc_spell_dur_plus);
+		(void) cancel_monst(&youmonst, obj, TRUE, TRUE, TRUE, d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_diesize) + objects[obj->otyp].oc_spell_dur_plus);
         break;
 
 	case SPE_LOWER_MAGIC_RESISTANCE:
 	case SPE_NEGATE_MAGIC_RESISTANCE:
 	case SPE_FORBID_SUMMONING:
-		(void)add_temporary_property(&youmonst, obj, TRUE, TRUE, TRUE, d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_dicesize) + objects[obj->otyp].oc_spell_dur_plus);
+		(void)add_temporary_property(&youmonst, obj, TRUE, TRUE, TRUE, d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_diesize) + objects[obj->otyp].oc_spell_dur_plus);
 		break;
 	
 	case SPE_DRAIN_LIFE:
@@ -4060,16 +4125,25 @@ boolean ordinary;
          */
         int msg = !Invis && !Blind && !Blocks_Invisibility && !BInvis;
 
-        if (uarmo && Blocks_Invisibility && uarmo->otyp == MUMMY_WRAPPING) {
+		struct obj* block_otmp = what_gives_monster(&youmonst, BLOCKS_INVISIBILITY);
+
+        if (block_otmp && block_otmp->oclass == ARMOR_CLASS) 
+		{
             /* A mummy wrapping absorbs it and protects you */
             You_feel("rather itchy under %s.", yname(uarmo));
-            break;
         }
-        if (ordinary || !rn2(10)) { /* permanent */
+
+		incr_itimeout(&HInvis, 100 + rn2(50));
+
+#if 0
+		if (ordinary || !rn2(10))
+		{ /* permanent */
             HInvis |= FROM_ACQUIRED;
         } else { /* temporary */
             incr_itimeout(&HInvis, d(obj->spe, 250));
         }
+#endif
+
         if (msg) {
             learn_it = TRUE;
             newsym(u.ux, u.uy);
@@ -4100,7 +4174,6 @@ boolean ordinary;
             You("don't feel sleepy!");
         } else {
             pline_The("sleep ray hits you!");
-			int duration = d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_dicesize) + objects[obj->otyp].oc_spell_dur_plus;
             fall_asleep(-duration, TRUE);
         }
         break;
@@ -4108,10 +4181,9 @@ boolean ordinary;
     case WAN_SLOW_MONSTER:
     case SPE_SLOW_MONSTER:
 		damage = 0;
-		if (HFast & (TIMEOUT | INTRINSIC)) {
-            learn_it = TRUE;
-            u_slow_down();
-        }
+        learn_it = TRUE;
+		incr_itimeout(&HSlowed, obj->oclass == WAND_CLASS ? rn1(10, 100 + 60 * bcsign(obj)) : duration);
+		//u_slow_down();
         break;
 
     case WAN_TELEPORTATION:
@@ -4156,13 +4228,11 @@ boolean ordinary;
 		break;
 	case SPE_POWER_WORD_STUN:
 	{
-		int duration = d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_dicesize) + objects[obj->otyp].oc_spell_dur_plus;
 		make_stunned((HStun & TIMEOUT) + duration, TRUE);
 		break;
 	}
 	case SPE_POWER_WORD_BLIND:
 	{
-		int duration = d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_dicesize) + objects[obj->otyp].oc_spell_dur_plus;
 		make_blinded((Blinded & TIMEOUT) + duration, (boolean)!Blind);
 		break;
 	}
@@ -4527,10 +4597,15 @@ int duration;
                   : resist(mdef, obj, 0, 0, NOTELL))
         return FALSE; /* resisted cancellation */
 
-    if (self_cancel) { /* 1st cancel inventory */
-        struct obj *otmp;
+    if (self_cancel)
+	{
+		You_feel("your magic is not flowing properly.");
+		incr_itimeout(&HCancelled, duration);
 
-        for (otmp = (youdefend ? invent : mdef->minvent); otmp;
+#if 0
+		/* 1st cancel inventory */
+		struct obj* otmp;
+		for (otmp = (youdefend ? invent : mdef->minvent); otmp;
              otmp = otmp->nobj)
             cancel_item(otmp);
         if (youdefend) {
@@ -4538,6 +4613,7 @@ int duration;
             find_ac();
 			find_mc();
 		}
+#endif
     }
 
     /* now handle special cases */
@@ -5602,7 +5678,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 	if (origobj)
 	{
 		int dam = 0;
-		dam = d(objects[origobj->otyp].oc_spell_dmg_dice, objects[origobj->otyp].oc_spell_dmg_dicesize) + objects[origobj->otyp].oc_spell_dmg_plus; //Same for smal and big
+		dam = d(objects[origobj->otyp].oc_spell_dmg_dice, objects[origobj->otyp].oc_spell_dmg_diesize) + objects[origobj->otyp].oc_spell_dmg_plus; //Same for smal and big
 
 		tmp = dam;
 	}
@@ -5610,7 +5686,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 		tmp = d(dmgdice, dicesize) + dmgplus;
 
 	if(origobj)
-		duration = d(objects[origobj->otyp].oc_spell_dur_dice, objects[origobj->otyp].oc_spell_dur_dicesize) + objects[origobj->otyp].oc_spell_dur_plus; //Same for smal and big
+		duration = d(objects[origobj->otyp].oc_spell_dur_dice, objects[origobj->otyp].oc_spell_dur_diesize) + objects[origobj->otyp].oc_spell_dur_plus; //Same for smal and big
 
     switch (abstype) {
     case ZT_MAGIC_MISSILE:
@@ -6346,7 +6422,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
 				if (origobj)
 				{
 					int dam = 0;
-					dam = d(objects[origobj->otyp].oc_spell_dmg_dice, objects[origobj->otyp].oc_spell_dmg_dicesize) + objects[origobj->otyp].oc_spell_dmg_plus; //Same for small and big
+					dam = d(objects[origobj->otyp].oc_spell_dmg_dice, objects[origobj->otyp].oc_spell_dmg_diesize) + objects[origobj->otyp].oc_spell_dmg_plus; //Same for small and big
 						
 					(void) flashburn((long)dam);
 				}
@@ -7560,7 +7636,7 @@ int otyp;
 	otmp = mksobj(otyp, FALSE, FALSE, FALSE);
 	if (otmp && otmp != &zeroobj) 
 	{
-		otmp->age = d(objects[spell_otmp->otyp].oc_spell_dur_dice, objects[spell_otmp->otyp].oc_spell_dur_dicesize) + objects[spell_otmp->otyp].oc_spell_dur_plus;
+		otmp->age = d(objects[spell_otmp->otyp].oc_spell_dur_dice, objects[spell_otmp->otyp].oc_spell_dur_diesize) + objects[spell_otmp->otyp].oc_spell_dur_plus;
 		otmp->nomerge = 1;
 		begin_existence(otmp);
 		
@@ -7614,8 +7690,8 @@ boolean faithful;
 		mon->isfaithful = faithful;
 		(void)tamedog(mon, (struct obj*) 0, TRUE);
 
-		if((objects[spl_otyp].oc_spell_dur_dice > 1 && objects[spl_otyp].oc_spell_dur_dicesize > 1) || objects[spl_otyp].oc_spell_dur_plus)
-			mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_dicesize) + objects[spl_otyp].oc_spell_dur_plus;
+		if((objects[spl_otyp].oc_spell_dur_dice > 1 && objects[spl_otyp].oc_spell_dur_diesize > 1) || objects[spl_otyp].oc_spell_dur_plus)
+			mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_diesize) + objects[spl_otyp].oc_spell_dur_plus;
 		else
 			mon->summonduration = 0;
 
@@ -7648,7 +7724,7 @@ int spl_otyp;
 		mon->disregards_own_health = FALSE;
 		mon->hasbloodlust = TRUE;
 		(void)tamedog(mon, (struct obj*) 0, TRUE);
-		mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_dicesize) + objects[spl_otyp].oc_spell_dur_plus;
+		mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_diesize) + objects[spl_otyp].oc_spell_dur_plus;
 		begin_summontimer(mon);
 		pline("%s appears before you in a puff of smoke!", Amonnam(mon));
 	}
@@ -7682,7 +7758,7 @@ int spl_otyp;
 		mon->disregards_enemy_strength = TRUE;
 		mon->disregards_own_health = FALSE;
 		mon->hasbloodlust = TRUE;
-		mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_dicesize) + objects[spl_otyp].oc_spell_dur_plus;
+		mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_diesize) + objects[spl_otyp].oc_spell_dur_plus;
 		begin_summontimer(mon);
 		if (!Blind)
 			pline("%s steps through the portal!", Monnam(mon));
@@ -7727,14 +7803,14 @@ armageddon()
 		if(!DEADMONSTER(mon))
 		{
 			mon->mhp = 0;
-			xkilled(mon, canseemon(mon) ? XKILL_GIVEMSG : XKILL_NOMSG);
+			xkilled(mon, canseemon(mon) ? XKILL_DROPDEAD : XKILL_NOMSG);
 		}
 	}
 
 	if (killstyle == 2)
 	{
 		pline("Finally, the spell catches up on you... You die.");
-		Strcpy(killer.name, "armageddon spell");
+		Strcpy(killer.name, "armageddon");
 		killer.format = KILLED_BY_AN;
 		done(DIED);
 	}
@@ -7746,7 +7822,7 @@ timestop()
 {
 	pline("The flow of time seems to slow down!");
 	context.time_stopped = TRUE;
-	begin_timestoptimer(d(objects[SPE_TIME_STOP].oc_spell_dur_dice, objects[SPE_TIME_STOP].oc_spell_dur_dicesize) + objects[SPE_TIME_STOP].oc_spell_dur_plus);
+	begin_timestoptimer(d(objects[SPE_TIME_STOP].oc_spell_dur_dice, objects[SPE_TIME_STOP].oc_spell_dur_diesize) + objects[SPE_TIME_STOP].oc_spell_dur_plus);
 
 }
 

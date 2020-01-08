@@ -830,13 +830,22 @@ STATIC_OVL boolean
 rejectcasting()
 {
     /* rejections which take place before selecting a particular spell */
-    if (Stunned) {
+    if (Stunned)
+	{
         You("are too impaired to cast a spell.");
         return TRUE;
-    } else if (!can_chant(&youmonst)) {
+    } 
+	else if (!can_chant(&youmonst))
+	{
         You("are unable to chant the incantation.");
         return TRUE;
-    } else if (!freehand()) {
+    }
+	else if (Cancelled)
+	{
+		Your("magic is not flowing properly to allow for casting a spell.");
+		return TRUE;
+	}
+	else if (!freehand()) {
         /* Note: !freehand() occurs when weapon and shield (or two-handed
          * weapon) are welded to hands, so "arms" probably doesn't need
          * to be makeplural(bodypart(ARM)).
@@ -1240,7 +1249,7 @@ int spell;
 	}
 
 	/* Damage or Healing */
-	if (objects[booktype].oc_spell_dmg_dice > 0 || objects[booktype].oc_spell_dmg_dicesize > 0 || objects[booktype].oc_spell_dmg_plus > 0)
+	if (objects[booktype].oc_spell_dmg_dice > 0 || objects[booktype].oc_spell_dmg_diesize > 0 || objects[booktype].oc_spell_dmg_plus > 0)
 	{
 		char plusbuf[BUFSZ];
 		boolean maindiceprinted = FALSE;
@@ -1250,10 +1259,10 @@ int spell;
 		else
 			Sprintf(buf, "Damage:       ");
 
-		if (objects[booktype].oc_spell_dmg_dice > 0 && objects[booktype].oc_spell_dmg_dicesize > 0)
+		if (objects[booktype].oc_spell_dmg_dice > 0 && objects[booktype].oc_spell_dmg_diesize > 0)
 		{
 			maindiceprinted = TRUE;
-			Sprintf(plusbuf, "%dd%d", objects[booktype].oc_spell_dmg_dice, objects[booktype].oc_spell_dmg_dicesize);
+			Sprintf(plusbuf, "%dd%d", objects[booktype].oc_spell_dmg_dice, objects[booktype].oc_spell_dmg_diesize);
 			Strcat(buf, plusbuf);
 		}
 
@@ -1353,17 +1362,17 @@ int spell;
 	}
 
 	/* Duration */
-	if (objects[booktype].oc_spell_dur_dice > 0 || objects[booktype].oc_spell_dur_dicesize > 0 || objects[booktype].oc_spell_dur_plus > 0)
+	if (objects[booktype].oc_spell_dur_dice > 0 || objects[booktype].oc_spell_dur_diesize > 0 || objects[booktype].oc_spell_dur_plus > 0)
 	{
 		char plusbuf[BUFSZ];
 		boolean maindiceprinted = FALSE;
 
 		Sprintf(buf, "Duration:     ");
 
-		if (objects[booktype].oc_spell_dur_dice > 0 && objects[booktype].oc_spell_dur_dicesize > 0)
+		if (objects[booktype].oc_spell_dur_dice > 0 && objects[booktype].oc_spell_dur_diesize > 0)
 		{
 			maindiceprinted = TRUE;
-			Sprintf(plusbuf, "%dd%d", objects[booktype].oc_spell_dur_dice, objects[booktype].oc_spell_dur_dicesize);
+			Sprintf(plusbuf, "%dd%d", objects[booktype].oc_spell_dur_dice, objects[booktype].oc_spell_dur_diesize);
 			Strcat(buf, plusbuf); 
 		}
 
@@ -1377,7 +1386,7 @@ int spell;
 			Sprintf(plusbuf, "%d", objects[booktype].oc_spell_dur_plus);
 			Strcat(buf, plusbuf);
 		}
-		Sprintf(plusbuf, " round%s", (objects[booktype].oc_spell_dur_dice == 0 && objects[booktype].oc_spell_dur_dicesize == 0 && objects[booktype].oc_spell_dur_plus == 1) ? "" : "s");
+		Sprintf(plusbuf, " round%s", (objects[booktype].oc_spell_dur_dice == 0 && objects[booktype].oc_spell_dur_diesize == 0 && objects[booktype].oc_spell_dur_plus == 1) ? "" : "s");
 		Strcat(buf, plusbuf);
 
 		txt = buf;
@@ -1671,7 +1680,7 @@ boolean atme;
 			//One time only //n = rnd(8) + 1;
 			int shots = 1;
 			if(otyp == SPE_METEOR_SWARM)
-				shots = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_dicesize) + objects[otyp].oc_spell_dur_plus;
+				shots = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus;
 
 			for (n = 0; n < shots; n++) {
                 if (!u.dx && !u.dy && !u.dz) {
@@ -1687,7 +1696,7 @@ boolean atme;
 
                     explode(u.dx, u.dy,
                             objects[otyp].oc_dir_subtype,
-							d(objects[otyp].oc_spell_dmg_dice, objects[otyp].oc_spell_dmg_dicesize) + objects[otyp].oc_spell_dmg_plus,
+							d(objects[otyp].oc_spell_dmg_dice, objects[otyp].oc_spell_dmg_diesize) + objects[otyp].oc_spell_dmg_plus,
 							otyp, 0,
                             subdirtype2explosiontype(objects[otyp].oc_dir_subtype));
                 }
@@ -1790,6 +1799,7 @@ boolean atme;
 	case SPE_MASS_RAISE_ZOMBIE:
 	case SPE_MASS_CREATE_MUMMY:
 	case SPE_MASS_CREATE_DRACOLICH:
+	case SPE_SPHERE_OF_ANNIHILATION:
 	case SPE_REPLENISH_UNDEATH:
 	case SPE_GREATER_UNDEATH_REPLENISHMENT:
 	case SPE_HEALING:
@@ -1836,7 +1846,7 @@ boolean atme;
 				if (otyp == SPE_METEOR_SWARM)
 				{
 					int shots = 1;
-					shots = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_dicesize) + objects[otyp].oc_spell_dur_plus;
+					shots = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus;
 
 					for (n = 0; n < shots; n++)
 					{
@@ -2075,10 +2085,14 @@ boolean atme;
 
 
     /* gain skill for successful cast */
-	if (spellskillchance(spell) >= 100)
-		use_skill(skill, max(((spellev(spell) + 2) * spellskillchance(spell)) / 100, 1));
-	else if(rn2(100) < spellskillchance(spell))
-	    use_skill(skill, max(spellev(spell) + 2, 1));
+	int pointsmultiplier = max(0, spellskillchance(spell) / 100);
+	int randomizedchance = spellskillchance(spell) - pointsmultiplier * 100;
+
+	if (rn2(100) < randomizedchance)
+		pointsmultiplier++;
+
+	if (pointsmultiplier > 0)
+		use_skill(skill, (spellev(spell) + 2) * pointsmultiplier);
 
     obfree(pseudo, (struct obj *) 0); /* now, get rid of it */
     return 1;
@@ -2095,7 +2109,7 @@ int otyp;
 		return;
 
 	boolean hadbefore = u.uprops[objects[otyp].oc_dir_subtype].intrinsic || u.uprops[objects[otyp].oc_dir_subtype].extrinsic;
-	long duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_dicesize) + objects[otyp].oc_spell_dur_plus;
+	long duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus;
 	long oldtimeout = u.uprops[objects[otyp].oc_dir_subtype].intrinsic & TIMEOUT;
 	long oldprop = u.uprops[objects[otyp].oc_dir_subtype].intrinsic & ~TIMEOUT;
 
@@ -3996,6 +4010,7 @@ int spell;
 		else
 			You("now have %d more castings of \"%s\" prepared.", addedamount, spellname);
 
+#if 0
 		/* gain skill for successful preparation */
 		int otyp = spellid(spell);
 		int skill = spell_skilltype(otyp);
@@ -4004,7 +4019,7 @@ int spell;
 
 		if(skillpoints > 0)	
 			use_skill(skill, skillpoints);
-
+#endif
 	}
 
 

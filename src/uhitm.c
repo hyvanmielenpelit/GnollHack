@@ -2231,7 +2231,7 @@ demonpet()
 		dtmp->disregards_enemy_strength = TRUE;
 		dtmp->disregards_own_health = FALSE;
 		dtmp->hasbloodlust = TRUE;
-		dtmp->summonduration = d(objects[SPE_SUMMON_DEMON].oc_spell_dur_dice, objects[SPE_SUMMON_DEMON].oc_spell_dur_dicesize) + objects[SPE_SUMMON_DEMON].oc_spell_dur_plus;
+		dtmp->summonduration = d(objects[SPE_SUMMON_DEMON].oc_spell_dur_dice, objects[SPE_SUMMON_DEMON].oc_spell_dur_diesize) + objects[SPE_SUMMON_DEMON].oc_spell_dur_plus;
 		begin_summontimer(dtmp);
 
 		if (canseemon(dtmp))
@@ -2396,8 +2396,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 			tmp += u_str_dmg_bonus() / 2;
 	}
 
-    /* since hero can't be cancelled, only defender's armor applies */
-	negated = check_magic_cancellation_success(mdef, mattk->mcadj);
+	negated = Cancelled || check_magic_cancellation_success(mdef, mattk->mcadj);
 
     switch (mattk->adtyp) {
     case AD_STUN:

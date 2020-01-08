@@ -3500,6 +3500,8 @@ int final;
 	}
 	if (Slowed)
 		you_are("slowed", from_what(SLOWED));
+	if (Cancelled)
+		you_are("cancelled", from_what(CANCELLED));
 	if (Reflecting)
         you_have("reflection", from_what(REFLECTING));
     if (Free_action)

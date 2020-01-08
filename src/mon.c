@@ -3088,6 +3088,7 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
     boolean wasinside = u.uswallow && (u.ustuck == mtmp),
             burycorpse = FALSE,
             nomsg = (xkill_flags & XKILL_NOMSG) != 0,
+            dropdead = (xkill_flags & XKILL_DROPDEAD) != 0,
             nocorpse = (xkill_flags & XKILL_NOCORPSE) != 0,
             noconduct = (xkill_flags & XKILL_NOCONDUCT) != 0;
 
@@ -3114,10 +3115,17 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
 				"poor", namedpet ? SUPPRESS_SADDLE : 0, FALSE));
 
 		*bp = highc(*bp);
-
-		pline("%s is %s!", bp,
-			is_not_living(mtmp->data) ? "destroyed" : "killed");
-
+		
+		if (dropdead)
+		{
+			pline("%s %s!", bp,
+				(mtmp->data->geno & G_NOCORPSE) ? "vanishes" : is_not_living(mtmp->data) ? "falls down motionless" : "drops dead");
+		}
+		else
+		{
+			pline("%s is %s!", bp,
+				is_not_living(mtmp->data) ? "destroyed" : "killed");
+		}
 	}
 
     if (mtmp->mtrapped && (t = t_at(x, y)) != 0

@@ -515,6 +515,10 @@
 #define EUnchanging u.uprops[UNCHANGING].extrinsic
 #define Unchanging (HUnchanging || EUnchanging) /* KMH */
 
+#define HCancelled u.uprops[CANCELLED].intrinsic
+#define ECancelled u.uprops[CANCELLED].extrinsic
+#define Cancelled (HCancelled || ECancelled)
+
 #define HSlowed u.uprops[SLOWED].intrinsic
 #define ESlowed u.uprops[SLOWED].extrinsic
 #define Slowed (HSlowed || ESlowed)

@@ -595,10 +595,10 @@ struct objclass {
 /* oc_oc8 unused */
 #define oc_spell_saving_throw_adjustment oc_mc_adjustment	/* books: spell saving throw adjustment */
 #define oc_spell_dmg_dice oc_wsdice		/* books: spell damage no of dice */
-#define oc_spell_dmg_dicesize oc_wsdam	/* books: spell damage size of dice */
+#define oc_spell_dmg_diesize oc_wsdam	/* books: spell damage size of dice */
 #define oc_spell_dmg_plus oc_wsdmgplus	/* books: spell damage constant added */
 #define oc_spell_dur_dice oc_wldice		/* books: spell duration no of dice */
-#define oc_spell_dur_dicesize oc_wldam	/* books: spell duration size of dice */
+#define oc_spell_dur_diesize oc_wldam	/* books: spell duration size of dice */
 #define oc_spell_dur_plus oc_wldmgplus	/* books: spell duration constant added */
 
 	int oc_dir_subtype;				/* spells: ID for type of ray or immediate effect, weapons: damage type */

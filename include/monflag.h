@@ -65,8 +65,10 @@
 #define MR_DRAIN		0x00002000L			/* resists life draining */
 #define MR_FLASH		0x00004000L			/* resists life draining */
 #define MR_REFLECTING	0x00008000L			/* reflecting */
-#define MR_FAST			0x00010000L			/* very fast */
+#define MR_FAST			0x00010000L			/* fast */
 #define MR_VERY_FAST	0x00020000L			/* very fast */
+#define MR_INVISIBLE	0x00040000L			/* invisible */
+#define MR_BLOCKS_INVISIBLITY 0x00080000L	/* blocks invisiblity */
 
 /* conveyances: resistances, teleport, teleport control, telepathy */
 #define MC_NONE			0x00000000L

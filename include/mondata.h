@@ -44,6 +44,19 @@
 #define resists_flash(mon) \
     ((((mon)->data->mresists | (mon)->mextrinsics) & MR_FLASH) != 0)
 
+#if 0
+#define has_mon_property_invisible(mon) \
+    ((((mon)->data->mresists | (mon)->mextrinsics) & MR_INVISIBLE) != 0 || (mon)->mintrinsic[INVISIBILITY] != 0 )
+#define has_mon_property_blocks_invisiblity(mon) \
+    ((((mon)->data->mresists | (mon)->mextrinsics) & MR_BLOCKS_INVISIBLITY) != 0 || (mon)->mintrinsic[BLOCKS_INVISIBILITY] != 0 )
+#define has_mon_property_fast(mon) \
+    ((((mon)->data->mresists | (mon)->mextrinsics) & MR_FAST) != 0 || (mon)->mintrinsic[FAST] != 0 )
+#define has_mon_property_very_fast(mon) \
+    ((((mon)->data->mresists | (mon)->mextrinsics) & MR_VERY_FAST) != 0 || (mon)->mintrinsic[VERY_FAST] != 0 )
+#define has_mon_property_very_fast(mon) \
+    ((((mon)->data->mresists | (mon)->mextrinsics) & MR_VERY_FAST) != 0 || (mon)->mintrinsic[VERY_FAST] != 0 )
+#endif
+
 #define confers_strength(ptr) \
     (((ptr)->mconveys & MC_STRENGTH) != 0)
 #define confers_dexterity(mon) \

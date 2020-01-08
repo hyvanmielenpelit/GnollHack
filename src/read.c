@@ -1015,7 +1015,7 @@ struct obj *sobj;
 					mtmp->morigpeaceful = was_peaceful;
 					mtmp->morigtame = was_tame;
 					mtmp->mcharmed = 1;
-					mtmp->mcharmed_timer = d(objects[sobj->otyp].oc_spell_dur_dice, objects[sobj->otyp].oc_spell_dur_dicesize) + objects[sobj->otyp].oc_spell_dur_plus;
+					mtmp->mcharmed_timer = d(objects[sobj->otyp].oc_spell_dur_dice, objects[sobj->otyp].oc_spell_dur_diesize) + objects[sobj->otyp].oc_spell_dur_plus;
 				}
 			}
 
@@ -1093,7 +1093,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 #define COST_none (-1)
 	int costchange = COST_none;
 	boolean altfmt = FALSE;
-	int duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_dicesize) + objects[otyp].oc_spell_dur_plus;
+	int duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus;
 
     if (objects[otyp].oc_magic)
         exercise(A_WIS, TRUE);                       /* just for trying */
@@ -1398,7 +1398,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 				{
 					int duration = 0;
 					if (otyp == SPE_MASS_FEAR)
-						duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_dicesize) + objects[otyp].oc_spell_dur_plus;
+						duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus;
 
 					monflee(mtmp, 0, FALSE, FALSE);
 				}

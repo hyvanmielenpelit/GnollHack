@@ -131,6 +131,7 @@ const struct propname {
 	{ XRAY_VISION, "X-ray vision", "X-ray vision" },
 	{ VERY_FAST, "very fast", "very high fastness" },
 	{ SLOWED, "slowed", "slowness" },
+	{ CANCELLED, "cancelled", "cancellation" },
 	{ LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
 	{  0, 0 },
 };
@@ -876,6 +877,10 @@ nh_timeout()
 				if (!Antimagic)
 					You("feel less protected from magic.");
 				break;
+			case CANCELLED:
+				if (!Cancelled)
+					You("feel your magic is flowing more normally.");
+				break;
 			case DEATH_RES:
 				if (!Death_resistance)
 					Your("soul's silver cord feels thinner than before.");
@@ -1021,6 +1026,9 @@ nh_timeout()
 				break;
 			case ANTIMAGIC:
 				You("are starting to feel less protected from magic.");
+				break;
+			case CANCELLED:
+				You("feel your magic is starting to flow more normally.");
 				break;
 			case DEATH_RES:
 				Your("soul's silver cord is starting to feel thinner than before.");
