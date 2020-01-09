@@ -988,6 +988,7 @@ boolean creation;
 	boolean wears_amulet = FALSE;
 	boolean wears_ringr = FALSE;
 	boolean wears_ringl = FALSE;
+	boolean wears_misc1 = FALSE;
 
 	struct obj* old_shirt = which_armor(mon, W_ARMU);
 	struct obj* old_suit = which_armor(mon, W_ARM);
@@ -1001,6 +1002,7 @@ boolean creation;
 	struct obj* old_amulet = which_armor(mon, W_AMUL);
 	struct obj* old_ringr = which_armor(mon, W_RINGR);
 	struct obj* old_ringl = which_armor(mon, W_RINGL);
+	struct obj* old_misc1 = which_armor(mon, W_MISC);
 
 	int old_shirt_delay = old_shirt ? objects[old_shirt->otyp].oc_delay : 0;
 	int old_suit_delay = old_suit ? objects[old_suit->otyp].oc_delay : 0;
@@ -1014,6 +1016,7 @@ boolean creation;
 	int old_amulet_delay = old_amulet ? objects[old_amulet->otyp].oc_delay : 0;
 	int old_ringr_delay = old_ringr ? objects[old_ringr->otyp].oc_delay : 0;
 	int old_ringl_delay = old_ringl ? objects[old_ringl->otyp].oc_delay : 0;
+	int old_misc1_delay = old_misc1 ? objects[old_misc1->otyp].oc_delay : 0;
 
 	/* Main armor */
 	if (!cantweararm(mon->data) && (cursed_items_are_positive_mon(mon) || !((old_cloak && old_cloak->cursed) || (old_robe && old_robe->cursed) || (old_suit && old_suit->cursed))) )
@@ -1025,13 +1028,6 @@ boolean creation;
 		wears_suit = m_dowear_type(mon, W_ARM, creation, FALSE);
 	else
 		wears_suit = m_dowear_type(mon, W_ARM, creation, RACE_EXCEPTION);
-
-	/*
-	if(!(mon->worn_item_flags & (W_ARMC | W_ARMO)))
-	{
-
-	}
-	*/
 
 	if (!cantweararm(mon->data) && (cursed_items_are_positive_mon(mon) || !(old_cloak && old_cloak->cursed)))
 	{
@@ -1063,6 +1059,8 @@ boolean creation;
 		wears_ringr = m_dowear_type(mon, W_RINGR, creation, FALSE);
 	if (!nohands(mon->data) && (cursed_items_are_positive_mon(mon) || !(MON_WEP(mon) && mwelded(MON_WEP(mon), mon)) && !(old_gloves && old_gloves->cursed)))
 		wears_ringl = m_dowear_type(mon, W_RINGL, creation, FALSE);
+	if (!nolimbs(mon->data))
+		wears_misc1 = m_dowear_type(mon, W_MISC, creation, FALSE);
 
 	update_all_mon_statistics(mon, creation);
 
@@ -1078,6 +1076,7 @@ boolean creation;
 	struct obj* new_amulet = which_armor(mon, W_AMUL);
 	struct obj* new_ringr = which_armor(mon, W_RINGR);
 	struct obj* new_ringl = which_armor(mon, W_RINGL);
+	struct obj* new_misc1 = which_armor(mon, W_MISC);
 
 	int new_shirt_delay = new_shirt ? objects[new_shirt->otyp].oc_delay : 0;
 	int new_suit_delay = new_suit ? objects[new_suit->otyp].oc_delay : 0;
@@ -1091,6 +1090,7 @@ boolean creation;
 	int new_amulet_delay = new_amulet ? objects[new_amulet->otyp].oc_delay : 0;
 	int new_ringr_delay = new_ringr ? objects[new_ringr->otyp].oc_delay : 0;
 	int new_ringl_delay = new_ringl ? objects[new_ringl->otyp].oc_delay : 0;
+	int new_misc1_delay = new_ringl ? objects[new_misc1->otyp].oc_delay : 0;
 
 	boolean takes_off_old_suit = wears_shirt || wears_suit;
 	boolean takes_off_old_robe = wears_shirt || wears_suit || wears_robe;
@@ -1112,6 +1112,7 @@ boolean creation;
 	totaldelay += wears_amulet ? old_amulet_delay + new_amulet_delay : 0;
 	totaldelay += wears_ringl ? old_ringl_delay + new_ringl_delay : 0;
 	totaldelay += wears_ringr ? old_ringr_delay + new_ringr_delay : 0;
+	totaldelay += wears_misc1 ? old_misc1_delay + new_misc1_delay : 0;
 
 	mon->mfrozen = totaldelay;
 	if (mon->mfrozen)
@@ -1148,6 +1149,8 @@ boolean racialexception;
 		return 0; /* no such thing as better rings */
 	if (old && flag == W_RINGR)
 		return 0; /* no such thing as better rings */
+	if (old && flag == W_MISC)
+		return 0; /* no such thing as better misc items */
 	best = old;
 
     for (obj = mon->minvent; obj; obj = obj->nobj) {
@@ -1163,6 +1166,11 @@ boolean racialexception;
 		case W_RINGR:
 		case W_RINGL:
 			if (obj->oclass != RING_CLASS || (is_priest(mon->data) && obj->cursed) || is_cursed_magic_item(obj) || (obj->owornmask && obj->owornmask != flag))
+				continue;
+			best = obj;
+			goto outer_break; /* no such thing as better amulets */
+		case W_MISC:
+			if (obj->oclass != MISCELLANEOUS_CLASS || (is_priest(mon->data) && obj->cursed) || is_cursed_magic_item(obj) || (obj->owornmask && obj->owornmask != flag))
 				continue;
 			best = obj;
 			goto outer_break; /* no such thing as better amulets */

@@ -808,10 +808,10 @@ register struct monst *mtmp;
 }
 
 static NEARDATA const char practical[] = { WEAPON_CLASS, ARMOR_CLASS,
-                                           GEM_CLASS, FOOD_CLASS, 0 };
+                                           GEM_CLASS, FOOD_CLASS, MISCELLANEOUS_CLASS, 0 };
 static NEARDATA const char magical[] = { AMULET_CLASS, POTION_CLASS,
                                          SCROLL_CLASS, WAND_CLASS,
-                                         RING_CLASS,   SPBOOK_CLASS, 0 };
+                                         RING_CLASS,   SPBOOK_CLASS, MISCELLANEOUS_CLASS, 0 };
 static NEARDATA const char indigestion[] = { BALL_CLASS, ROCK_CLASS, 0 };
 static NEARDATA const char boulder_class[] = { ROCK_CLASS, 0 };
 static NEARDATA const char gem_class[] = { GEM_CLASS, 0 };
@@ -1173,11 +1173,11 @@ register int after;
                         continue;
 
                     if (((likegold && otmp->oclass == COIN_CLASS)
-                         || (likeobjs && index(practical, otmp->oclass)
+                         || (likeobjs && (index(practical, otmp->oclass))
                              && (otmp->otyp != CORPSE
                                  || (ptr->mlet == S_NYMPH
                                      && !is_rider(&mons[otmp->corpsenm]))))
-                         || (likemagic && index(magical, otmp->oclass))
+						 || (likemagic && index(magical, otmp->oclass))
                          || (uses_items && searches_for_item(mtmp, otmp))
                          || (likerock && otmp->otyp == BOULDER)
                          || (likegems && otmp->oclass == GEM_CLASS
