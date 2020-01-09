@@ -1406,7 +1406,7 @@ int how;
     } else {
         tx = mon->mx, ty = mon->my;
         /* sometimes it hits the saddle */
-        if (((mon->misc_worn_check & W_SADDLE)
+        if (((mon->worn_item_flags & W_SADDLE)
              && (saddle = which_armor(mon, W_SADDLE)))
             && (!rn2(10)
                 || (obj->otyp == POT_WATER
@@ -1528,9 +1528,10 @@ int how;
                 break;
             }
  do_illness:
-            if ((mon->mhpmax > 3) && !resist(mon, obj, 0, 0, NOTELL))
-                mon->mhpmax /= 2;
-            if ((mon->mhp > 2) && !resist(mon, obj, 0, 0, NOTELL))
+            if ((mon->mbasehpmax > 3) && !resist(mon, obj, 0, 0, NOTELL))
+                mon->mbasehpmax /= 2;
+			update_mon_maxhp(mon);
+			if ((mon->mhp > 2) && !resist(mon, obj, 0, 0, NOTELL))
                 mon->mhp /= 2;
             if (mon->mhp > mon->mhpmax)
                 mon->mhp = mon->mhpmax;
@@ -2540,18 +2541,21 @@ struct monst *mon,  /* monster being split */
     if (mon == &youmonst) {
         mtmp2 = cloneu();
         if (mtmp2) {
-            mtmp2->mhpmax = u.mhmax / 2;
-            u.basemhmax -= mtmp2->mhpmax;
+            mtmp2->mbasehpmax = u.basemhmax / 2;
+            u.basemhmax -= mtmp2->mbasehpmax;
 			updatemaxhp();
-            context.botl = 1;
+			update_mon_maxhp(mtmp2);
+			context.botl = 1;
             You("multiply%s!", reason);
         }
     } else {
         mtmp2 = clone_mon(mon, 0, 0);
         if (mtmp2) {
-            mtmp2->mhpmax = mon->mhpmax / 2;
-            mon->mhpmax -= mtmp2->mhpmax;
-            if (canspotmon(mon))
+            mtmp2->mbasehpmax = mon->mbasehpmax / 2;
+            mon->mbasehpmax -= mtmp2->mbasehpmax;
+			update_mon_maxhp(mtmp);
+			update_mon_maxhp(mtmp2);
+			if (canspotmon(mon))
                 pline("%s multiplies%s!", Monnam(mon), reason);
         }
     }

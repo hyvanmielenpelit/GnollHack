@@ -61,7 +61,7 @@ struct obj *otmp;
     }
 
     /* Is this a valid monster? */
-    if (mtmp->misc_worn_check & W_SADDLE || which_armor(mtmp, W_SADDLE)) {
+    if (mtmp->worn_item_flags & W_SADDLE || which_armor(mtmp, W_SADDLE)) {
         pline("%s doesn't need another one.", Monnam(mtmp));
         return 1;
     }
@@ -149,10 +149,10 @@ struct monst *mtmp;
         return;
     if (mpickobj(mtmp, saddle))
         panic("merged saddle?");
-    mtmp->misc_worn_check |= W_SADDLE;
+    mtmp->worn_item_flags |= W_SADDLE;
     saddle->owornmask = W_SADDLE;
     saddle->leashmon = mtmp->m_id;
-    update_mon_extrinsics(mtmp, FALSE);
+    update_all_mon_statistics(mtmp, FALSE);
 }
 
 /*** Riding the monster ***/

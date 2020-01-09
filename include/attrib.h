@@ -35,6 +35,20 @@ enum attrib_types {
 #define AEXE(x) (u.aexe.a[x])
 #define ACURR(x) (acurr(x))
 #define ACURRSTR (acurrstr())
+
+#define M_ABASE(mon, x) (mon->acurr.a[x])
+#define M_ABONUS(mon, x) (mon->abonus.a[x])
+#define M_AFIXMIN(mon, x) (mon->afixmin.a[x])
+#define M_AFIXMAX(mon, x) (mon->afixmax.a[x])
+#define M_AEXE(mon, x) (mon->aexe.a[x])
+#define M_ACURR(mon, x) (m_acurr(mon, x))
+#define M_ACURRSTR(mon) (m_acurrstr(mon))
+#define M_AMAX(mon, x) (mon->amax.a[x])
+#define M_ATEMP(mon, x) (mon->atemp.a[x])
+#define M_ATIME(mon, x) (mon->atime.a[x])
+#define M_ATTRMAX(mon, x) monster_attribute_maximum((mon)->data, x)
+#define M_ATTRMIN(mon, x) monster_attribute_minimum((mon)->data, x)
+
 /* should be: */
 /* #define ACURR(x) (ABONUS(x) + ATEMP(x) + (Upolyd  ? MBASE(x) : ABASE(x)) */
 #define MCURR(x) (u.macurr.a[x])

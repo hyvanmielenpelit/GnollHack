@@ -1175,7 +1175,8 @@ register struct monst *mtmp;
             pline("%s rusts.", Monnam(mtmp));
         mtmp->mhp -= dam;
         if (mtmp->mhpmax > dam)
-            mtmp->mhpmax -= dam;
+            mtmp->mbasehpmax -= dam;
+		update_mon_maxhp(mtmp);
         if (DEADMONSTER(mtmp)) {
             mondead(mtmp);
             if (DEADMONSTER(mtmp))
@@ -1457,13 +1458,13 @@ movemon()
             continue;
 
         /* after losing equipment, try to put on replacement */
-        if (mtmp->misc_worn_check & I_SPECIAL) {
+        if (mtmp->worn_item_flags & I_SPECIAL) {
             long oldworn;
 
-            mtmp->misc_worn_check &= ~I_SPECIAL;
-            oldworn = mtmp->misc_worn_check;
+            mtmp->worn_item_flags &= ~I_SPECIAL;
+            oldworn = mtmp->worn_item_flags;
             m_dowear(mtmp, FALSE);
-            if (mtmp->misc_worn_check != oldworn || !mtmp->mcanmove)
+            if (mtmp->worn_item_flags != oldworn || !mtmp->mcanmove)
                 continue;
         }
 
@@ -1883,7 +1884,7 @@ struct monst *mtmp;
         maxload = 1;
 	*/
 
-	carrcap = 50 * (mtmp->mstr + mtmp->mcon) + 50;
+	carrcap = 50 * (m_acurr(mtmp, A_STR) + m_acurr(mtmp, A_CON)) + 50;
 	if (mtmp->data->mlet == S_NYMPH)
 		carrcap = MAX_CARR_CAP;
 	else if (mtmp->data->msize == MZ_TINY)
@@ -1925,7 +1926,7 @@ struct obj *otmp;
         return 0; /* can't carry anything */
 
     if (otyp == CORPSE && touch_petrifies(&mons[otmp->corpsenm])
-        && !(mtmp->misc_worn_check & W_ARMG) && !resists_ston(mtmp))
+        && !(mtmp->worn_item_flags & W_ARMG) && !resists_ston(mtmp))
         return 0;
     if (otyp == CORPSE && is_rider(&mons[otmp->corpsenm]))
         return 0;
@@ -2635,7 +2636,7 @@ struct monst *mtmp;
         }
         m_useup(mtmp, lifesave);
         /* equip replacement amulet, if any, on next move */
-        mtmp->misc_worn_check |= I_SPECIAL;
+        mtmp->worn_item_flags |= I_SPECIAL;
 
         surviver = !(mvitals[monsndx(mtmp->data)].mvflags & G_GENOD);
         mtmp->mcanmove = 1;
@@ -2647,8 +2648,9 @@ struct monst *mtmp;
 		if (mtmp->mtame && !mtmp->isminion) {
             wary_dog(mtmp, !surviver);
         }
-        if (mtmp->mhpmax <= 0)
-            mtmp->mhpmax = 10;
+        if (mtmp->mbasehpmax <= 0)
+            mtmp->mbasehpmax = 10;
+		update_mon_maxhp(mtmp);
         mtmp->mhp = mtmp->mhpmax;
 
         if (!surviver) {
@@ -2704,10 +2706,11 @@ register struct monst *mtmp;
 			mtmp->mstaying = 0;
 			mtmp->mcarrying = 0;
 			mtmp->mwantstodrop = 1;
-			if (mtmp->mhpmax <= 0)
-                mtmp->mhpmax = 10;
-            mtmp->mhp = mtmp->mhpmax;
-            /* mtmp==u.ustuck can happen if previously a fog cloud
+			if (mtmp->mbasehpmax <= 0)
+				mtmp->mbasehpmax = 10;
+			update_mon_maxhp(mtmp);
+			mtmp->mhp = mtmp->mhpmax;
+			/* mtmp==u.ustuck can happen if previously a fog cloud
                or poly'd hero is hugging a vampire bat */
             if (mtmp == u.ustuck) {
                 if (u.uswallow)
@@ -2957,7 +2960,7 @@ struct monst *mdef;
 				if (obj->owornmask & W_WEP)
 					setmnotwielded(mdef, obj);
 				obj->owornmask = 0L;
-				update_mon_extrinsics(mdef, TRUE);
+				update_all_mon_statistics(mdef, TRUE);
 				if (mdef == u.usteed && obj->otyp == SADDLE)
 					dismount_steed(DISMOUNT_FELL);
 			}
@@ -3358,10 +3361,11 @@ struct monst *mtmp;
 			mtmp->mstaying = 0;
 			mtmp->mcarrying = 0;
 			mtmp->mwantstodrop = 1;
-			if (mtmp->mhpmax <= 0)
-                mtmp->mhpmax = 10;
-            mtmp->mhp = mtmp->mhpmax;
-            /* this can happen if previously a fog cloud */
+			if (mtmp->mbasehpmax <= 0)
+				mtmp->mbasehpmax = 10;
+			update_mon_maxhp(mtmp);
+			mtmp->mhp = mtmp->mhpmax;
+			/* this can happen if previously a fog cloud */
             if (u.uswallow && (mtmp == u.ustuck))
                 expels(mtmp, mtmp->data, FALSE);
             if (in_door) {
@@ -4505,7 +4509,7 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
 
     possibly_unwield(mtmp, polyspot); /* might lose use of weapon */
     mon_break_armor(mtmp, polyspot);
-    if (!(mtmp->misc_worn_check & W_ARMG))
+    if (!(mtmp->worn_item_flags & W_ARMG))
         mselftouch(mtmp, "No longer petrify-resistant, ",
                    !context.mon_moving);
     m_dowear(mtmp, FALSE);

@@ -585,6 +585,53 @@ struct obj *obj; /* item to make known if effect can be seen */
 }
 
 
+void
+update_all_mon_statistics(mon, silently)
+struct monst* mon;
+boolean silently;
+{
+	/* save properties */
+	char savedname[BUFSIZ] = "";
+	strcpy(savedname, mon_nam(mon));
+	boolean was_invisible = has_invisibility(mon);
+	boolean could_see = canseemon(mon);
+
+
+	update_mon_extrinsics(mon, silently);
+	update_mon_abon(mon);
+	/* monster do not currently have mana */
+	update_mon_maxhp(mon);
+
+
+	/* Messages for extrinsic phase transition */
+	if (!silently)
+	{
+		if (canseemon(mon))
+		{
+			if (!could_see)
+			{
+				pline("Suddenly, you can see %s!", mon_nam(mon));
+			}
+			else
+			{
+				/* Most such messages here */
+				if (has_invisibility(mon) && !was_invisible)
+				{
+					pline("%s body becomes transparent!", s_suffix(Monnam(mon)));
+				}
+				else if (!has_invisibility(mon) && was_invisible)
+				{
+					pline("%s body loses its transparency!", s_suffix(Monnam(mon)));
+				}
+			}
+		}
+		else if (could_see)
+		{
+			pline("Suddenly, you cannot see %s anymore!", savedname);
+		}
+	}
+}
+
 /* armor put on or taken off; might be magical variety */
 void
 update_mon_extrinsics(mon, silently)
@@ -594,12 +641,6 @@ boolean silently;
     int unseen = 0;
     uchar mask = 0;
     struct obj *otmp = (struct obj*)0;
-
-	/* save properties */
-	char savedname[BUFSIZ] = "";
-	strcpy(savedname, mon_nam(mon));
-	boolean was_invisible = has_invisibility(mon);
-	boolean could_see = canseemon(mon);
 
 	/* clear mon extrinsics */
 	for (int i = 1; i <= LAST_PROP; i++)
@@ -870,32 +911,6 @@ boolean silently;
     if (!silently && (unseen ^ !canseemon(mon)))
         newsym(mon->mx, mon->my);
 
-
-	/* Messages for extrinsic phase transition */
-	if (canseemon(mon))
-	{
-		if (!could_see)
-		{
-			pline("Suddenly, you can see %s!", mon_nam(mon));
-		}
-		else
-		{
-			/* Most such messages here */
-			if (has_invisibility(mon) && !was_invisible)
-			{
-				pline("%s body becomes transparent!", s_suffix(Monnam(mon)));
-			}
-			else if(!has_invisibility(mon) && was_invisible)
-			{
-				pline("%s body loses its transparency!", s_suffix(Monnam(mon)));
-			}
-		}
-	}
-	else if (could_see)
-	{
-		pline("Suddenly, you cannot see %s anymore!", savedname);
-	}
-
 }
 
 
@@ -905,10 +920,11 @@ register struct monst *mon;
 {
     register struct obj *obj;
     int base = mon->data->ac;
-    long mwflags = mon->misc_worn_check;
+    long mwflags = mon->worn_item_flags;
 
 	//DEX bonus for monsters, reduce the number from AC; not add!
-	base -= dexterity_ac_bonus(mon->mdex);
+	base -= dexterity_ac_bonus(m_acurr(mon, A_DEX));
+	base -= mon->macbonus;
 
     for (obj = mon->minvent; obj; obj = obj->nobj) {
         if (obj->owornmask & mwflags)
@@ -1011,7 +1027,7 @@ boolean creation;
 		wears_suit = m_dowear_type(mon, W_ARM, creation, RACE_EXCEPTION);
 
 	/*
-	if(!(mon->misc_worn_check & (W_ARMC | W_ARMO)))
+	if(!(mon->worn_item_flags & (W_ARMC | W_ARMO)))
 	{
 
 	}
@@ -1048,7 +1064,7 @@ boolean creation;
 	if (!nohands(mon->data) && (cursed_items_are_positive_mon(mon) || !(MON_WEP(mon) && mwelded(MON_WEP(mon), mon)) && !(old_gloves && old_gloves->cursed)))
 		wears_ringl = m_dowear_type(mon, W_RINGL, creation, FALSE);
 
-	update_mon_extrinsics(mon, creation);
+	update_all_mon_statistics(mon, creation);
 
 	struct obj* new_shirt = which_armor(mon, W_ARMU);
 	struct obj* new_suit = which_armor(mon, W_ARM);
@@ -1247,7 +1263,7 @@ outer_break:
     }
 
 	/* Put new on */
-	mon->misc_worn_check |= flag;
+	mon->worn_item_flags |= flag;
     best->owornmask |= flag;
     if (autocurse)
         curse(best);
@@ -1312,11 +1328,11 @@ m_lose_armor(mon, obj)
 struct monst *mon;
 struct obj *obj;
 {
-    mon->misc_worn_check &= ~obj->owornmask;
+    mon->worn_item_flags &= ~obj->owornmask;
 	if (obj->owornmask)
 	{
 		obj->owornmask = 0L;
-		update_mon_extrinsics(mon, FALSE);
+		update_all_mon_statistics(mon, FALSE);
 		if (mon == u.usteed && obj->otyp == SADDLE)
 			dismount_steed(DISMOUNT_FELL);
 

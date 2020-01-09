@@ -448,7 +448,7 @@ boolean ghostly;
             int mndx = monsndx(mtmp->data);
             if (propagate(mndx, TRUE, ghostly) == 0) {
                 /* cookie to trigger purge in getbones() */
-                mtmp->mhpmax = DEFUNCT_MONSTER;
+				mtmp->mbasehpmax = DEFUNCT_MONSTER;
             }
         }
         if (mtmp->minvent) {

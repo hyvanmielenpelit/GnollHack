@@ -1057,9 +1057,8 @@ boolean was_dead;
 
     /* if monster was starving when it died, undo that now */
     if (edog && edog->mhpmax_penalty) {
-        mtmp->mhpmax += edog->mhpmax_penalty;
-        mtmp->mhp += edog->mhpmax_penalty; /* heal it */
         edog->mhpmax_penalty = 0;
+		update_mon_maxhp(mtmp);
     }
 
     if (edog && (edog->killed_by_u == 1 || edog->abuse > 2)) {

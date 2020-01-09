@@ -2056,9 +2056,9 @@ boolean *prev_loot;
             }
             obj_extract_self(otmp);
             if ((unwornmask = otmp->owornmask) != 0L) {
-                mtmp->misc_worn_check &= ~unwornmask;
+                mtmp->worn_item_flags &= ~unwornmask;
                 otmp->owornmask = 0L;
-                update_mon_extrinsics(mtmp, FALSE);
+                update_all_mon_statistics(mtmp, FALSE);
 				if (mtmp == u.usteed && otmp->otyp == SADDLE)
 					dismount_steed(DISMOUNT_FELL);
 

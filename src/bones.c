@@ -460,8 +460,10 @@ struct obj *corpse;
     }
     if (mtmp) {
         mtmp->m_lev = (u.ulevel ? u.ulevel : 1);
-        mtmp->mhp = mtmp->mhpmax = u.uhpmax;
-        mtmp->female = flags.female;
+        mtmp->mbasehpmax = u.ubasehpmax;
+		update_mon_maxhp(mtmp);
+		mtmp->mhp = mtmp->mhpmax;
+		mtmp->female = flags.female;
         mtmp->msleeping = 1;
     }
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
@@ -646,7 +648,7 @@ getbones()
                     sanitize_name(MNAME(mtmp));
 				if (has_umname(mtmp))
 					sanitize_name(UMNAME(mtmp));
-				if (mtmp->mhpmax == DEFUNCT_MONSTER) {
+				if (mtmp->mbasehpmax == DEFUNCT_MONSTER) {
                     if (wizard) {
                         debugpline1("Removing defunct monster %s from bones.",
                                     mtmp->data->mname);

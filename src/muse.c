@@ -2138,7 +2138,7 @@ struct obj *obj;
         if (typ == AMULET_OF_REFLECTION)
             return TRUE;
 	case RING_CLASS:
-		if ((mon->misc_worn_check & W_RING) == W_RING)
+		if ((mon->worn_item_flags & W_RING) == W_RING)
 			return FALSE;
 		if (!is_cursed_magic_item(obj))
 			return TRUE;
@@ -2155,7 +2155,7 @@ struct obj *obj;
         break;
     case FOOD_CLASS:
         if (typ == CORPSE)
-            return (boolean) (((mon->misc_worn_check & W_ARMG) != 0L
+            return (boolean) (((mon->worn_item_flags & W_ARMG) != 0L
                                && touch_petrifies(&mons[obj->corpsenm]))
                               || (!resists_ston(mon)
                                   && cures_stoning(mon, obj, FALSE)));

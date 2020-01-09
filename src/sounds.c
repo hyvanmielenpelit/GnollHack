@@ -2521,10 +2521,10 @@ struct monst* mtmp;
 		}
 		else
 		{
-			mtmp->misc_worn_check &= ~otmp->owornmask;
+			mtmp->worn_item_flags &= ~otmp->owornmask;
 			otmp->owornmask = 0L;
 
-			update_mon_extrinsics(mtmp, FALSE);
+			update_all_mon_statistics(mtmp, FALSE);
 
 			if (mtmp == u.usteed && otmp->otyp == SADDLE)
 				dismount_steed(DISMOUNT_FELL);

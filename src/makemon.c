@@ -1627,15 +1627,24 @@ xchar x, y; /* clone's preferred location or 0 (near mon) */
      * We know original has more than 1 HP, so both end up with at least 1.
      */
     m2->mhpmax = mon->mhpmax;
-    m2->mhp = mon->mhp / 2;
+	m2->mbasehpmax = mon->mbasehpmax;
+	m2->mhp = mon->mhp / 2;
     mon->mhp -= m2->mhp;
 
-	m2->mstr = mon->mstr;
-	m2->mdex = mon->mdex;
-	m2->mcon = mon->mcon;
-	m2->mint = mon->mint;
-	m2->mwis = mon->mwis;
-	m2->mcha = mon->mcha;
+	for (int i = 0; i < A_MAX; i++)
+	{
+		m2->acurr.a[i] = mon->acurr.a[i];
+		m2->abonus.a[i] = mon->abonus.a[i];
+		m2->afixmin.a[i] = mon->afixmin.a[i];
+		m2->afixmax.a[i] = mon->afixmax.a[i];
+		m2->amax.a[i] = mon->amax.a[i];
+		m2->atemp.a[i] = mon->atemp.a[i];
+		m2->atime.a[i] = mon->atime.a[i];
+	}
+	m2->mdaminc = mon->mdaminc;
+	m2->mhitinc = mon->mhitinc;
+	m2->macbonus = mon->macbonus;
+	m2->mmcbonus = mon->mmcbonus;
 
     /* since shopkeepers and guards will only be cloned if they've been
      * polymorphed away from their original forms, the clone doesn't have
@@ -1742,7 +1751,7 @@ monhp_per_lvl(mon)
 struct monst *mon;
 {
     struct permonst *ptr = mon->data;
-    int hp = rnd(8) + constitution_hp_bonus(mon->mcon); /* default is d8 */
+    int hp = rnd(8) + constitution_hp_bonus(m_acurr(mon, A_CON)); /* default is d8 */
 
 #if 0
     /* like newmonhp, but home elementals are ignored, riders use normal d8 */
@@ -1760,7 +1769,7 @@ struct monst *mon;
 #endif		
 	if (!mon->m_lev) {
         /* level 0 monsters use 1d4 instead of Nd8 */
-        hp = rnd(4) + constitution_hp_bonus(mon->mcon) / 2;
+        hp = rnd(4) + constitution_hp_bonus(m_acurr(mon, A_CON)) / 2;
     }
 	if (hp < 1)
 		hp = 1;
@@ -1782,6 +1791,7 @@ unsigned long mmflags;
 	boolean no_dif_level_adj = !!(mmflags & MM_NO_DIFFICULTY_HP_CHANGE);
 	boolean adj_existing_hp = !!(mmflags & MM_ADJUST_HP_FROM_EXISTING);
 	int old_maxhp = mon->mhpmax;
+	int old_basemaxhp = mon->mbasehpmax;
 	int old_hp = mon->mhp;
 
 	if(!adj_existing_hp)
@@ -1811,33 +1821,33 @@ unsigned long mmflags;
 #endif
 
 	int hp = 0;
-	int maxhp = 0;
+	int basemaxhp = 0;
 
 	if (mon->m_lev <= 0) 
 	{
-		maxhp = 4 + constitution_hp_bonus(mon->mcon) / 2;
-		hp = use_maxhp || dragonmaxhp ? maxhp : rnd(4) + constitution_hp_bonus(mon->mcon) / 2;
+		basemaxhp = 4; // +constitution_hp_bonus(m_acurr(mon, A_CON)) / 2;
+		hp = use_maxhp || dragonmaxhp ? basemaxhp : rnd(4); // +constitution_hp_bonus(m_acurr(mon, A_CON)) / 2;
 	} 
 	else 
 	{
-		maxhp = (int)mon->m_lev * 8 + mon->m_lev * constitution_hp_bonus(mon->mcon);
-		hp = use_maxhp || dragonmaxhp ? maxhp : d((int)mon->m_lev, 8) + mon->m_lev * constitution_hp_bonus(mon->mcon);
+		basemaxhp = (int)mon->m_lev * 8; // +mon->m_lev * constitution_hp_bonus(m_acurr(mon, A_CON));
+		hp = use_maxhp || dragonmaxhp ? basemaxhp : d((int)mon->m_lev, 8); // +mon->m_lev * constitution_hp_bonus(m_acurr(mon, A_CON));
 	}
 
 	/* Override hp if adjusting */
 	if (adj_existing_hp && mon->max_hp_percentage > 0)
 	{
-		hp = (mon->max_hp_percentage * maxhp) / 100;
+		hp = (mon->max_hp_percentage * basemaxhp) / 100;
 	}
 
 	if (hp < 1)
 		hp = 1;
 
-	if (maxhp < 1)
-		maxhp = 1;
+	if (basemaxhp < 1)
+		basemaxhp = 1;
 
 	/* This is the new max_hp_percentage */
-	int max_hp_percentage = (int)(((unsigned long)hp * 100) / (unsigned long)maxhp);
+	int max_hp_percentage = (int)(((unsigned long)hp * 100) / (unsigned long)basemaxhp);
 	mon->max_hp_percentage = max_hp_percentage;
 
 	/* Difficulty  and dungeon level adjustments */
@@ -1848,7 +1858,10 @@ unsigned long mmflags;
 		hp *= 2;
 
 	/* Finally, set mhpmax */
-	mon->mhpmax = hp;
+	mon->mbasehpmax = hp;
+	if (mon->mbasehpmax < 1)
+		mon->mbasehpmax = 1;
+	update_mon_maxhp(mon);
 
 	/* If adjusting, new hp = old_hp proportionally to old and new mhpmax's */
 	if (adj_existing_hp && old_hp > 0 && old_maxhp > 0 && mon->mhpmax > 0)
@@ -1858,12 +1871,6 @@ unsigned long mmflags;
 	}
 	else
 		mon->mhp = mon->mhpmax;
-
-	if (is_home_elemental(ptr))
-		mon->mhpmax = (mon->mhp *= 2); //Down from x3
-
-	if (mon->mhpmax < 1)
-		mon->mhpmax = 1;
 
 	if (mon->mhp < 1)
 		mon->mhp = 1;
@@ -2094,12 +2101,38 @@ unsigned long mmflags;
     mtmp->mnum = mndx;
 
 	/* set up stats*/
-	mtmp->mstr = ptr->str;
-	mtmp->mdex = ptr->dex;
-	mtmp->mcon = ptr->con;
-	mtmp->mint = ptr->intl;
-	mtmp->mwis = ptr->wis;
-	mtmp->mcha = ptr->cha;
+	for (int i = 0; i < A_MAX; i++)
+	{
+		int curscore = 0;
+		switch (i)
+		{
+		case A_STR:
+			curscore = ptr->str;
+			break;
+		case A_DEX:
+			curscore = ptr->dex;
+			break;
+		case A_CON:
+			curscore = ptr->con;
+			break;
+		case A_INT:
+			curscore = ptr->intl;
+			break;
+		case A_WIS:
+			curscore = ptr->wis;
+			break;
+		case A_CHA:
+			curscore = ptr->cha;
+			break;
+		}
+		mtmp->acurr.a[i] = curscore;
+		mtmp->abonus.a[i] = 0;
+		mtmp->afixmin.a[i] = 0;
+		mtmp->afixmax.a[i] = i == A_STR ? STR19(25) : 25;
+		mtmp->amax.a[i] = monster_attribute_maximum(ptr, i);
+		mtmp->atemp.a[i] = 0;
+		mtmp->atime.a[i] = 0;
+	}
 	
 	/* set up level and hit points */
 	newmonhp(mtmp, mndx, mmflags);
@@ -2307,7 +2340,9 @@ unsigned long mmflags;
     if (allow_minvent && migrating_objs)
         deliver_obj_to_mon(mtmp, 1, DF_NONE); /* in case of waiting items */
 
-    if (!in_mklev)
+	update_all_mon_statistics(mtmp, TRUE);
+
+	if (!in_mklev)
         newsym(mtmp->mx, mtmp->my); /* make sure the mon shows up */
 
     return mtmp;
@@ -2876,7 +2911,8 @@ struct monst *mtmp, *victim;
         lev_limit = 50;   /* recalc below */
     }
 
-    mtmp->mhpmax += max_increase;
+    mtmp->mbasehpmax += max_increase;
+	update_mon_maxhp(mtmp);
     mtmp->mhp += cur_increase;
     if (mtmp->mhpmax <= hp_threshold)
         return ptr; /* doesn't gain a level */
@@ -2932,11 +2968,14 @@ struct monst *mtmp, *victim;
     if ((int) mtmp->m_lev > lev_limit) {
         mtmp->m_lev--; /* undo increment */
         /* HP might have been allowed to grow when it shouldn't */
-        if (mtmp->mhpmax == hp_threshold + 1)
-            mtmp->mhpmax--;
+		if (mtmp->mhpmax == hp_threshold + 1)
+		{
+			mtmp->mbasehpmax--;
+			update_mon_maxhp(mtmp);
+		}
     }
-    if (mtmp->mhpmax > 50 * 8)
-        mtmp->mhpmax = 50 * 8; /* absolute limit */
+//    if (mtmp->mhpmax > 50 * 8)
+//        mtmp->mhpmax = 50 * 8; /* absolute limit */
     if (mtmp->mhp > mtmp->mhpmax)
         mtmp->mhp = mtmp->mhpmax;
 

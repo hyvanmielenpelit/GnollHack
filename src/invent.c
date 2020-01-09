@@ -5038,7 +5038,7 @@ char *title;
     Sprintf(tmp, "%s %s:", s_suffix(noit_Monnam(mon)),
             do_all ? "possessions" : "armament");
 
-    if (do_all ? have_any : (mon->misc_worn_check || MON_WEP(mon))) {
+    if (do_all ? have_any : (mon->worn_item_flags || MON_WEP(mon))) {
         /* Fool the 'weapon in hand' routine into
          * displaying 'weapon in claw', etc. properly.
          */

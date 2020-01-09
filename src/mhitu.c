@@ -1063,24 +1063,12 @@ int adjustment_to_roll;
 	int wis = 0;
 	int cha = 0;
 
-	if (mtmp == &youmonst)
-	{
-		str = ACURRSTR;
-		dex = ACURR(A_DEX);
-		con = ACURR(A_CON);
-		intl = ACURR(A_INT);
-		wis = ACURR(A_WIS);
-		cha = ACURR(A_CHA);
-	}
-	else
-	{
-		str = (mtmp->mstr <= 18 ? mtmp->mstr : (mtmp->mstr > STR18(100) ? mtmp->mstr - 100 : 18));
-		dex = mtmp->mdex;
-		con = mtmp->mcon;
-		intl = mtmp->mint;
-		wis = mtmp->mwis;
-		cha = mtmp->mcha;
-	}
+	str = m_acurrstr(mtmp);
+	dex = m_acurr(mtmp, A_DEX);
+	con = m_acurr(mtmp, A_CON);
+	intl = m_acurr(mtmp, A_INT);
+	wis = m_acurr(mtmp, A_WIS);
+	cha = m_acurr(mtmp, A_CHA);
 
 	switch (ability)
 	{
@@ -1317,6 +1305,13 @@ struct monst *mon;
 		if (Magical_barkskin)
 			mc += 7;
 		else if (Protection)
+			mc += 3;
+	}
+	else
+	{
+		if (mon->mprops[MAGICAL_BARKSKIN] != 0)
+			mc += 7;
+		else if (mon->mprops[PROTECTION] != 0)
 			mc += 3;
 	}
 
@@ -3753,7 +3748,7 @@ struct attack *mattk;
     case AD_STON: /* cockatrice */
     {
         long protector = attk_protection((int) mattk->aatyp),
-             wornitems = mtmp->misc_worn_check;
+             wornitems = mtmp->worn_item_flags;
 
         /* wielded weapon gives same protection as gloves here */
         if (MON_WEP(mtmp) != 0)
@@ -3918,7 +3913,8 @@ cloneu()
     initedog(mon);
     mon->m_lev = youmonst.data->mlevel;
 	//mon might need mbasehpmax stat
-    mon->mhpmax = u.mhmax;
+    mon->mbasehpmax = u.basemhmax;
+	update_mon_maxhp(mon);
 	mon->mhp = u.mh / 2;
     u.mh -= mon->mhp;
     context.botl = 1;

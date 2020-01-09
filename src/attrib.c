@@ -220,6 +220,57 @@ int msgflg; /* positive => no message, zero => message, and */
     return TRUE;
 }
 
+
+/* adjust monster's attribute; return TRUE if change is made, FALSE otherwise */
+boolean
+m_adjattrib(mon, ndx, incr)
+struct monst* mon;
+int ndx, incr;
+{           
+	int old_acurr, old_abase, old_amax, decr;
+
+	if (mon->mprops[FIXED_ABIL] != 0 || !incr)
+		return FALSE;
+
+	old_acurr = M_ACURR(mon, ndx);
+	old_abase = M_ABASE(mon, ndx);
+	old_amax = M_AMAX(mon, ndx);
+	M_ABASE(mon, ndx) += incr; /* when incr is negative, this reduces M_ABASE(mon, ndx) */
+	if (incr > 0) 
+	{
+		if (M_ABASE(mon, ndx) > M_AMAX(mon, ndx)) {
+			M_AMAX(mon, ndx) = M_ABASE(mon, ndx);
+			if (M_AMAX(mon, ndx) > M_ATTRMAX(mon, ndx))
+				M_ABASE(mon, ndx) = M_AMAX(mon, ndx) = M_ATTRMAX(mon, ndx);
+		}
+	}
+	else
+	{ /* incr is negative */
+		if (M_ABASE(mon, ndx) < M_ATTRMIN(mon, ndx)) 
+		{
+			decr = rn2(M_ATTRMIN(mon, ndx) - M_ABASE(mon, ndx) + 1);
+			M_ABASE(mon, ndx) = M_ATTRMIN(mon, ndx);
+			M_AMAX(mon, ndx) -= decr;
+			if (M_AMAX(mon, ndx) < M_ATTRMIN(mon, ndx))
+				M_AMAX(mon, ndx) = M_ATTRMIN(mon, ndx);
+		}
+	}
+	if (M_ACURR(mon, ndx) == old_acurr) 
+	{
+		return FALSE;
+	}
+
+	//m_updatemaxhp(); //Not implemented
+	//m_updatemaxen(); //Not implemented
+
+	/* Check if AC and MC need to be updated */
+	find_mac(mon);
+	//find_mmc(mon); 
+
+	return TRUE;
+}
+
+
 void
 gainstr(otmp, incr, givemsg)
 struct obj *otmp;
@@ -1688,24 +1739,33 @@ newhp()
 }
 
 int
-hpmaxadjustment(addconstitutionbonus)
-boolean addconstitutionbonus;
+hpmaxadjustment()
 {
-	int basehp = u.ubasehpmax;
-	int baseadj = addconstitutionbonus ? constitution_hp_bonus(ACURR(A_CON)) * u.ulevel : 0;
+	return m_hpmaxadjustment(&youmonst);
+}
+
+int
+m_hpmaxadjustment(mon)
+struct monst* mon;
+{
+	boolean is_you = (mon == &youmonst);
+	int basehp = is_you ? u.ubasehpmax : mon->mbasehpmax;
+	int baseadj = constitution_hp_bonus(M_ACURR(mon, A_CON)) * (is_you ? u.ulevel : mon->m_lev);
 	int adj = baseadj;
 	int otyp = 0;
 	struct obj* uitem;
 
 
-	for (uitem = invent; uitem; uitem = uitem->nobj)
+	for (uitem = is_you ? invent : mon->minvent; uitem; uitem = uitem->nobj)
 	{
 		otyp = uitem->otyp;
 		if (!object_uses_spellbook_wand_flags_and_properties(uitem)
 			&& objects[otyp].oc_hp_bonus != 0)
 		{
-			boolean inappr = inappropriate_character_type(uitem);
-			boolean worn = is_obj_worn(uitem);
+			boolean inappr = inappropriate_monster_character_type(mon, uitem);
+			boolean worn = is_you ? is_obj_worn(uitem) :
+				((mon->worn_item_flags & uitem->owornmask) != 0 
+				&& (!is_weapon(uitem) || !is_shield(uitem) || ((is_weapon(uitem) || is_shield(uitem)) && (uitem->owornmask & W_WIELDED_WEAPON))));
 
 			if ((worn || (!worn && (objects[otyp].oc_pflags & P1_HP_BONUS_APPLIES_WHEN_CARRIED)))
 				&& ((!inappr && !(objects[otyp].oc_pflags & (P1_HP_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
@@ -1728,9 +1788,43 @@ boolean addconstitutionbonus;
 }
 
 void
+update_mon_maxhp(mon)
+struct monst* mon;
+{
+	if (!mon)
+		return;
+
+	if(mon == &youmonst)
+	{
+		updatemaxhp();
+		return;
+	}
+
+	mon->mhpmax = mon->mbasehpmax + m_hpmaxadjustment(mon);
+
+	/* EDOG penalty */
+	if(mon->mextra && EDOG(mon))
+	{
+		struct edog* edog = EDOG(mon);
+		if (edog->mhpmax_penalty) 
+		{
+			/* starving */
+			mon->mhpmax -= edog->mhpmax_penalty;
+		}
+	}
+
+	if (mon->mhpmax < 1)
+		mon->mhpmax = 1;
+
+	if (mon->mhp > mon->mhpmax)
+		mon->mhp = mon->mhpmax;
+
+}
+
+void
 updatemaxhp()
 {
-	u.uhpmax = u.ubasehpmax + hpmaxadjustment(TRUE);
+	u.uhpmax = u.ubasehpmax + hpmaxadjustment();
 
 	if (u.uhpmax < 1)
 		u.uhpmax = 1;
@@ -1738,7 +1832,7 @@ updatemaxhp()
 	if (u.uhp > u.uhpmax)
 		u.uhp = u.uhpmax;
 
-	u.mhmax = u.basemhmax + hpmaxadjustment(FALSE); //Monsters do not get CON bonus from hpadjustment, since their base hitpoints include consitution bonus +hpmaxadjustment();
+	u.mhmax = u.basemhmax + hpmaxadjustment();
 
 	if (u.mhmax < 1)
 		u.mhmax = 1;
@@ -1751,52 +1845,106 @@ updatemaxhp()
 	return;
 }
 
-
 void
 updateabon()
 {
+	update_mon_abon(&youmonst);
+}
+
+void
+update_mon_abon(mon)
+struct monst* mon;
+{
+	if (!mon)
+		return;
+
+	boolean is_you = (mon == &youmonst);
 	int otyp = 0;
 	struct obj* uitem;
 	int adj = 0;
 
-	/* reset abons */
-	for (int i = 0; i < A_MAX; i++)
-	{
-		ABONUS(i) = 0;
-		AFIXMIN(i) = 0;
-		AFIXMAX(i) = (i == A_STR ? STR19(25) : 25);
-	}
-	u.udaminc = 0;
-	u.uhitinc = 0;
-	u.uacbonus = 0;
-	u.umcbonus = 0;
-	u.uspellcastingbonus = 0;
-	u.uexperiencebonus = 0;
-	u.xray_range = XRay_vision ? 3 : -1;
-
-	u.moreluck = 0;
 	int blessed_luck_count = 0;
 	int uncursed_luck_count = 0;
 	int cursed_luck_count = 0;
-	u.luck_does_not_timeout = 0;
-	u.unluck_does_not_timeout = 0;
 
-	boolean cursed_are_good = cursed_items_are_positive(youmonst.data);
+	schar* abon_ptr[A_MAX] = { 0 };
+	schar* afixmin_ptr[A_MAX] = { 0 };
+	schar* afixmax_ptr[A_MAX] = { 0 };
+	schar* daminc_ptr = 0;
+	schar* hitinc_ptr = 0;
+	schar* acbonus_ptr = 0;
+	schar* mcbonus_ptr = 0;
+
+	/* Set pointers etc. */
+	if(is_you)
+	{
+		for (int i = 0; i < A_MAX; i++)
+		{
+			abon_ptr[i] = &ABONUS(i);
+			afixmin_ptr[i] = &AFIXMIN(i);
+			afixmax_ptr[i] = &AFIXMAX(i);
+		}
+		daminc_ptr = &u.udaminc;
+		hitinc_ptr = &u.uhitinc;
+		acbonus_ptr = &u.uacbonus;
+		mcbonus_ptr = &u.umcbonus;
+
+		/* properties that monsters do not have */
+		u.uspellcastingbonus = 0;
+		u.uexperiencebonus = 0;
+		u.xray_range = XRay_vision ? 3 : -1;
+
+		u.moreluck = 0;
+		u.luck_does_not_timeout = 0;
+		u.unluck_does_not_timeout = 0;
+	}
+	else
+	{
+		for (int i = 0; i < A_MAX; i++)
+		{
+			abon_ptr[i] = &M_ABONUS(mon, i);
+			afixmin_ptr[i] = &M_AFIXMIN(mon, i);
+			afixmax_ptr[i] = &M_AFIXMAX(mon, i);
+		}
+		daminc_ptr = &mon->mdaminc;
+		hitinc_ptr = &mon->mhitinc;
+		acbonus_ptr = &mon->macbonus;
+		mcbonus_ptr = &mon->mmcbonus;
+	}
+
+
+	/* reset abons */
+	for (int i = 0; i < A_MAX; i++)
+	{
+		*abon_ptr[i] = 0;
+		*afixmin_ptr[i] = 0;
+		*afixmax_ptr[i] = (i == A_STR ? STR19(25) : 25);
+	}
+
+	*daminc_ptr = 0;
+	*hitinc_ptr = 0;
+	*acbonus_ptr = 0;
+	*mcbonus_ptr = 0;
+
+
+	boolean cursed_are_good = cursed_items_are_positive(mon->data);
 
 	/* Set wounded legs here */
 	if (Wounded_legs)
-		ABONUS(A_DEX) = -1;
+		*abon_ptr[A_DEX] = -1;
 
 	/* add them back again */
-	for (uitem = invent; uitem; uitem = uitem->nobj)
+	for (uitem = is_you ? invent : mon->minvent; uitem; uitem = uitem->nobj)
 	{
 		otyp = uitem->otyp;
 
 		/* Following are for non-spellbooks and non-wands */
 		if (!object_uses_spellbook_wand_flags_and_properties(uitem))
 		{
-			boolean inappr = inappropriate_character_type(uitem);
-			boolean worn = is_obj_worn(uitem);
+			boolean inappr = inappropriate_monster_character_type(mon, uitem);
+			boolean worn = is_you ? is_obj_worn(uitem) :
+				((mon->worn_item_flags & uitem->owornmask) != 0
+					&& (!is_weapon(uitem) || !is_shield(uitem) || ((is_weapon(uitem) || is_shield(uitem)) && (uitem->owornmask & W_WIELDED_WEAPON))));
 
 			if ((worn || (!worn && (objects[otyp].oc_pflags & P1_ATTRIBUTE_BONUS_APPLIES_WHEN_CARRIED)))
 				&& ((!inappr && !(objects[otyp].oc_pflags & (P1_ATTRIBUTE_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
@@ -1870,8 +2018,8 @@ updateabon()
 										afixmaxcandidate += applicable_spe;
 
 									/* Take the lowest maximum (most constraining) */
-									if (afixmaxcandidate < AFIXMAX(i))
-										AFIXMAX(i) = afixmaxcandidate;
+									if (afixmaxcandidate < *afixmax_ptr[i])
+										*afixmax_ptr[i] = afixmaxcandidate;
 								}
 								else
 								{
@@ -1880,48 +2028,48 @@ updateabon()
 										afixmincandidate += applicable_spe;
 
 									/* Take the highest minimum (most constraining) */
-									if (afixmincandidate > AFIXMIN(i))
-										AFIXMIN(i) = afixmincandidate;
+									if (afixmincandidate > * afixmin_ptr[i])
+										*afixmin_ptr[i] = afixmincandidate;
 								}
 							}
 							else
 							{
-								ABONUS(i) += multiplier * objects[otyp].oc_attribute_bonus;
+								*abon_ptr[i] += multiplier * objects[otyp].oc_attribute_bonus;
 								if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
-									ABONUS(i) += multiplier * applicable_spe;
+									*abon_ptr[i] += multiplier * applicable_spe;
 							}
 						}
 						else if (i == A_MAX + 0)
 						{
-							u.udaminc += multiplier * objects[otyp].oc_attribute_bonus;
+							*daminc_ptr += multiplier * objects[otyp].oc_attribute_bonus;
 							if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
-								u.udaminc += multiplier * applicable_spe;
+								*daminc_ptr += multiplier * applicable_spe;
 						}
 						else if (i == A_MAX + 1)
 						{
-							u.uhitinc += multiplier * objects[otyp].oc_attribute_bonus;
+							*hitinc_ptr += multiplier * objects[otyp].oc_attribute_bonus;
 							if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
-								u.uhitinc += multiplier * applicable_spe;
+								*hitinc_ptr += multiplier * applicable_spe;
 						}
 						else if (i == A_MAX + 2)
 						{
-							u.uacbonus += multiplier * objects[otyp].oc_attribute_bonus;
+							*acbonus_ptr += multiplier * objects[otyp].oc_attribute_bonus;
 							if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
-								u.uacbonus += multiplier * applicable_spe;
+								*acbonus_ptr += multiplier * applicable_spe;
 						}
 						else if (i == A_MAX + 3)
 						{
-							u.umcbonus += multiplier * objects[otyp].oc_attribute_bonus;
+							*mcbonus_ptr += multiplier * objects[otyp].oc_attribute_bonus;
 							if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
-								u.umcbonus += multiplier * applicable_spe;
+								*mcbonus_ptr += multiplier * applicable_spe;
 						}
-						else if (i == A_MAX + 4)
+						else if (i == A_MAX + 4 && is_you)
 						{
 							u.uspellcastingbonus += multiplier * objects[otyp].oc_attribute_bonus;
 							if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
 								u.uspellcastingbonus += multiplier * applicable_spe;
 						}
-						else if (i == A_MAX + 5)
+						else if (i == A_MAX + 5 && is_you)
 						{
 							u.uexperiencebonus += multiplier * objects[otyp].oc_attribute_bonus;
 							if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
@@ -1932,39 +2080,47 @@ updateabon()
 			}
 		}
 
-		/* Following are for all items */
-		/* Luck */
-		if (artifact_confers_luck(uitem) || confers_luck(uitem))
-		{
-			/* Note cursed luckstone is now handled in confers_unluck */
-			u.moreluck += uitem->quan;
-			if (uitem->blessed)
-				blessed_luck_count += uitem->quan;
-			else
-				uncursed_luck_count += uitem->quan;
+			/* Following are for all items */
+			/* Luck */
+			if (is_you)
+			{
+				if ((artifact_confers_luck(uitem) || confers_luck(uitem)))
+				{
+					/* Note cursed luckstone is now handled in confers_unluck */
+					u.moreluck += uitem->quan;
+					if (uitem->blessed)
+						blessed_luck_count += uitem->quan;
+					else
+						uncursed_luck_count += uitem->quan;
+				}
+
+				if ((artifact_confers_unluck(uitem) || confers_unluck(uitem)))
+				{
+					u.moreluck -= uitem->quan;
+					if (uitem->cursed)
+						cursed_luck_count += uitem->quan;
+					else
+						uncursed_luck_count -= uitem->quan;
+				}
+			}
 		}
 
-		if (artifact_confers_unluck(uitem) || confers_unluck(uitem))
+		if(is_you)
 		{
-			u.moreluck -= uitem->quan;
-			if(uitem->cursed)
-				cursed_luck_count += uitem->quan;
-			else
-				uncursed_luck_count -= uitem->quan;
+			if (blessed_luck_count > cursed_luck_count)
+				u.luck_does_not_timeout = 1;
+
+			if (cursed_luck_count > blessed_luck_count)
+				u.unluck_does_not_timeout = 1;
+
+			find_ac();
+			find_mc();
+			context.botl = 1;
 		}
-
-	}
-
-	if (blessed_luck_count > cursed_luck_count)
-		u.luck_does_not_timeout = 1;
-
-	if (cursed_luck_count > blessed_luck_count)
-		u.unluck_does_not_timeout = 1;
-
-	find_ac();
-	find_mc();
-	context.botl = 1;
-
+		else
+		{
+			/* Nothing needs to be done here, since monster scores are not stored anywhere */
+		}
 }
 
 boolean is_obj_worn(uitem)
@@ -1993,6 +2149,7 @@ struct obj* uitem;
 		);
 
 }
+
 
 schar
 acurr(x)
@@ -2030,19 +2187,72 @@ int x;
 		return (schar) ((tmp >= 25) ? 25 : (tmp <= 1) ? 1 : tmp);
 }
 
+schar
+m_acurr(mon, x)
+struct monst* mon;
+int x;
+{
+	if (mon == &youmonst)
+		return acurr(x);
+
+	register int tmp = (mon->abonus.a[x] + mon->atemp.a[x] + mon->acurr.a[x]);
+
+	if (mon->afixmin.a[x] > 0 && mon->afixmax.a[x] > 0 && mon->afixmin.a[x] > mon->afixmax.a[x])
+	{
+		//Nothing
+	}
+	else
+	{
+		if (mon->afixmin.a[x] > 0 && mon->afixmin.a[x] > tmp)
+			tmp = mon->afixmin.a[x];
+
+		if (mon->afixmax.a[x] > 0 && mon->afixmax.a[x] < tmp)
+			tmp = mon->afixmax.a[x];
+
+		if (x == A_STR)
+		{
+			if (tmp > STR19(25))
+				tmp = STR19(25);
+		}
+		else
+		{
+			if (tmp > 25)
+				tmp = 25;
+		}
+	}
+
+	if (x == A_STR)
+		return (schar)((tmp >= STR19(25)) ? STR19(25) : (tmp <= 1) ? 1 : tmp);
+	else
+		return (schar)((tmp >= 25) ? 25 : (tmp <= 1) ? 1 : tmp);
+}
+
+
 /* condense clumsy ACURR(A_STR) value into value that fits into game formulas
  */
 schar
 acurrstr()
 {
-    register int str = ACURR(A_STR);
+    return acurrstr_base(ACURR(A_STR));
+}
 
-    if (str <= 18)
-        return (schar) str;
-    if (str <= 121)
-        return (schar) (19 + str / 50); /* map to 19..21 */
-    else
-        return (schar) (min(str, 125) - 100); /* 22..25 */
+schar
+m_acurrstr(mon)
+struct monst* mon;
+{
+	return acurrstr_base(m_acurr(mon, A_STR));
+}
+
+schar
+acurrstr_base(str)
+int str;
+{
+	if (str <= 18)
+		return (schar)str;
+	if (str <= 121)
+		return (schar)(19 + str / 50); /* map to 19..21 */
+	else
+		return (schar)(min(str, 125) - 100); /* 22..25 */
 }
 
 /* when wearing (or taking off) an unID'd item, this routine is used

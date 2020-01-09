@@ -565,11 +565,15 @@ int *dmg_p; /* for dishing out extra damage in lieu of Int loss */
             /* life-saving needed to reach here */
             exercise(A_WIS, FALSE);
 
-			mdef->mint -= int_loss;
-			if (mdef->mint < monster_attribute_minimum(mdef->data, A_INT))
+			(void)m_adjattrib(mdef, A_INT, -int_loss);
+
+			if (M_ABASE(mdef, A_INT) < M_ATTRMIN(mdef, A_INT))
 				*dmg_p += mdef->mhp;
+
 			pline("%s loses %d intelligence %s.", Monnam(mdef), int_loss, int_loss == 1 ? "point" : "points");
-		} else {
+		} 
+		else
+		{
             morehungry(-rnd(30)); /* cannot choke */
             if (ABASE(A_INT) < AMAX(A_INT)) {
                 /* recover lost Int; won't increase current max */
@@ -579,11 +583,14 @@ int *dmg_p; /* for dishing out extra damage in lieu of Int loss */
                 context.botl = 1;
 				You("feel smarter.");
 			}
+
             exercise(A_WIS, TRUE);
 
-			mdef->mint -= int_loss;
-			if (mdef->mint < monster_attribute_minimum(mdef->data, A_INT))
+			(void)m_adjattrib(mdef, A_INT, -int_loss);
+
+			if (M_ABASE(mdef, A_INT) < M_ATTRMIN(mdef, A_INT))
 				*dmg_p += mdef->mhp;
+
 			pline("%s loses %d intelligence %s.", Monnam(mdef), int_loss, int_loss == 1 ? "point" : "points");
 		}
         /* targetting another mind flayer or your own underlying species
@@ -649,9 +656,11 @@ int *dmg_p; /* for dishing out extra damage in lieu of Int loss */
                 result = MM_AGR_DIED;
             /* Rider takes extra damage regardless of whether attacker dies */
             *dmg_p += xtra_dmg;
-        } else {
-			mdef->mint -= rnd(2);
-			if(mdef->mint < monster_attribute_minimum(mdef->data, A_INT))
+        } 
+		else 
+		{
+			(void)m_adjattrib(mdef, A_INT, -rnd(2));
+			if(M_ABASE(mdef, A_INT) < M_ATTRMIN(mdef, A_INT))
 	            *dmg_p += mdef->mhp;
 
             give_nutrit = TRUE;

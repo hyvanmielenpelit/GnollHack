@@ -838,8 +838,10 @@ boolean fromspell;
 			newsym(mtmp->mx, mtmp->my);
             /* make him strong enough vs. endgame foes */
             mtmp->m_lev = rn1(8, 15);
-            mtmp->mhp = mtmp->mhpmax =
+            mtmp->mbasehpmax =
                 d((int) mtmp->m_lev, 10) + 30 + rnd(30);
+			update_mon_maxhp(mtmp);
+			mtmp->mhp = mtmp->mhpmax;
             if ((otmp = select_hwep(mtmp)) == 0) {
                 otmp = mksobj(SILVER_SABER, FALSE, FALSE, FALSE);
                 if (mpickobj(mtmp, otmp))

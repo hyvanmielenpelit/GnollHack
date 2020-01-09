@@ -1437,9 +1437,10 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                 int drain = monhp_per_lvl(mdef);
 
                 *dmgptr += drain;
-                mdef->mhpmax -= drain;
+                mdef->mbasehpmax -= drain;
                 mdef->m_lev--;
-                drain /= 2;
+				update_mon_maxhp(mdef);
+				drain /= 2;
                 if (drain)
 				{
 					if (youattack)
@@ -1624,9 +1625,12 @@ int critstrikeroll; /* need to synchronize critical strike based abilities */
 					if(!(mons[mdef->mnum].mflags3 & M3_REGENERATES_LOST_BODY_PARTS))
 					{
 						/* Max HP does not go down if the creature can regenerate the lost body part */
+						mdef->mbasehpmax -= damagedone;
 						mdef->mhpmax -= damagedone;
 						if (mdef->mhpmax < 1)
 							mdef->mhpmax = 1, lethaldamage = TRUE;
+						else
+							update_mon_maxhp(mdef);
 					}
 					pline("%s slices a part of %s off!", The(xname(otmp)),
 						mon_nam(mdef));
@@ -1743,9 +1747,12 @@ int critstrikeroll; /* need to synchronize critical strike based abilities */
 					if (!(mons[mdef->mnum].mflags3 & M3_REGENERATES_LOST_BODY_PARTS))
 					{
 						/* Max HP does not go down if the creature can regenerate the lost body part */
+						mdef->mbasehpmax -= damagedone;
 						mdef->mhpmax -= damagedone;
 						if (mdef->mhpmax < 1)
 							mdef->mhpmax = 1, lethaldamage = TRUE;
+						else
+							update_mon_maxhp(mdef);
 					}
 					pline("%s slices a part of %s off!", The(xname(otmp)),
 						mon_nam(mdef));
@@ -1919,10 +1926,13 @@ int critstrikeroll; /* need to synchronize critical strike based abilities */
 				{
 					int drain = monhp_per_lvl(mdef);
 					totaldamagedone += drain;
+					mdef->mbasehpmax -= drain;
 					mdef->mhpmax -= drain;
 					if (mdef->mhpmax < 1)
 						mdef->mhpmax = 1, lethaldamage = TRUE;
 					mdef->m_lev--;
+					if(!lethaldamage)
+						update_mon_maxhp(mdef);
 					/* non-artifact level drain does not heal */
 				}
 			}
@@ -1997,13 +2007,13 @@ int critstrikeroll; /* need to synchronize critical strike based abilities */
 								/* should never go here */
 								shieldeff(mdef->mx, mdef->my);
 							}
-							else if (mdef->misc_worn_check & W_ARMS) 
+							else if (mdef->worn_item_flags & W_ARMS) 
 							{
 								/* destroy shield; victim survives */
 								if ((otmp2 = which_armor(mdef, W_ARMS)) != 0)
 									m_useup(mdef, otmp2);
 							}
-							else if (mdef->misc_worn_check & W_ARM) 
+							else if (mdef->worn_item_flags & W_ARM) 
 							{
 								/* destroy body armor, also cloak if present */
 								if ((otmp2 = which_armor(mdef, W_ARM)) != 0)

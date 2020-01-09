@@ -228,7 +228,10 @@ struct monst *worm;
         if (worm->mhp > MHPMAX)
             worm->mhp = MHPMAX;
         if (worm->mhp > worm->mhpmax)
-            worm->mhpmax = worm->mhp;
+		{
+            worm->mbasehpmax = worm->mhp - worm->mhpmax;
+			update_mon_maxhp(worm);
+		}
     } else
         /* The worm doesn't grow, so the last segment goes away. */
         shrink_worm(wnum);
@@ -404,9 +407,12 @@ boolean cuttier; /* hit is by wielded blade or axe or by thrown axe */
 
     /* Calculate the lower-level mhp; use <N>d8 for long worms.
        Can't use newmonhp() here because it would reset m_lev. */
-    new_worm->mhpmax = new_worm->mhp = d((int) new_worm->m_lev, 8);
-    worm->mhpmax = d((int) worm->m_lev, 8); /* new maxHP for old worm */
-    if (worm->mhpmax < worm->mhp)
+    new_worm->mbasehpmax= d((int) new_worm->m_lev, 8);
+	update_mon_maxhp(new_worm);
+	new_worm->mhp = new_worm->mhpmax;
+    worm->mbasehpmax = d((int) worm->m_lev, 8); /* new maxHP for old worm */
+	update_mon_maxhp(worm);
+	if (worm->mhpmax < worm->mhp)
         worm->mhp = worm->mhpmax;
 
     wtails[new_wnum] = new_tail; /* We've got all the info right now */

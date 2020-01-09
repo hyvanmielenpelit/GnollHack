@@ -789,7 +789,7 @@ register struct monst *mtmp;
              * All monsters can wield the remaining weapons.
              */
             if ((((strongmonst(mtmp->data) || mtmp->data->str >= 14)
-                  && (mtmp->misc_worn_check & W_ARMS) == 0)
+                  && (mtmp->worn_item_flags & W_ARMS) == 0)
                  || !objects[pwep[i]].oc_bimanual)
                 && (objects[pwep[i]].oc_material != MAT_SILVER
                     || !mon_hates_silver(mtmp))) {
@@ -925,7 +925,7 @@ register struct monst *mtmp;
     register struct obj *otmp;
     register int i;
     boolean strong = (strongmonst(mtmp->data) || mtmp->data->str >= 13);
-    boolean wearing_shield = (mtmp->misc_worn_check & W_ARMS) != 0;
+    boolean wearing_shield = (mtmp->worn_item_flags & W_ARMS) != 0;
 
     /* prefer artifacts to everything else */
     for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
@@ -943,7 +943,7 @@ register struct monst *mtmp;
     /* big weapon is basically the same as bimanual */
     /* all monsters can wield the remaining weapons */
     for (i = 0; i < SIZE(hwep); i++) {
-        if (hwep[i] == CORPSE && !(mtmp->misc_worn_check & W_ARMG)
+        if (hwep[i] == CORPSE && !(mtmp->worn_item_flags & W_ARMG)
             && !resists_ston(mtmp))
             continue;
         if (((strong && !wearing_shield) || !objects[hwep[i]].oc_bimanual)
@@ -965,7 +965,7 @@ int handindex;
 {
 	register struct obj* otmp;
 	boolean strong = (strongmonst(mtmp->data) || mtmp->data->str >= 13);
-	boolean wearing_shield = (mtmp->misc_worn_check & W_ARMS) != 0;
+	boolean wearing_shield = (mtmp->worn_item_flags & W_ARMS) != 0;
 	int weaponindex = 1; //Start with second hand, if free
 
 	/* If the monster has not wielded a weapon, then all weapons are unwielded */
@@ -1177,7 +1177,7 @@ boolean verbose_fail;
                       mbodypart(mon, HAND));
         }
         obj->owornmask = W_WEP;
-		update_mon_extrinsics(mon, FALSE);
+		update_all_mon_statistics(mon, FALSE);
         return 1;
     }
 
@@ -1333,7 +1333,7 @@ struct monst* mon;
 
 	if(mon)
 	{
-		bonus += strength_damage_bonus(monster_current_str(mon));
+		bonus += strength_damage_bonus(m_acurr(mon, A_STR));
 	}
 
 	return bonus;
@@ -1356,67 +1356,6 @@ struct monst* mon;
 
 }
 
-int
-monster_current_str(mon)
-struct monst* mon;
-{
-	int currstr = 0;
-	struct obj* marmg;
-
-	if (!mon)
-		return 0;
-
-	if ((marmg = which_armor(mon, W_ARMG)) != 0
-		&& marmg->otyp == GAUNTLETS_OF_OGRE_POWER)
-		currstr = STR18(100);
-	else
-		currstr = mon->mstr;
-
-	if (currstr > STR19(25))
-		currstr = STR19(25);
-
-	return currstr;
-}
-
-int
-monster_current_dex(mon)
-struct monst* mon;
-{
-	int currdex = 0;
-	struct obj* marmg;
-
-	if (!mon)
-		return 0;
-
-	currdex = mon->mdex;
-
-	if ((marmg = which_armor(mon, W_ARMG)) != 0
-		&& marmg->otyp == GAUNTLETS_OF_DEXTERITY)
-		currdex += marmg->spe;
-
-	if (currdex > 25)
-		currdex = 25;
-
-	return currdex;
-}
-
-int
-monster_current_con(mon)
-struct monst* mon;
-{
-	int currcon = 0;
-
-	if (!mon)
-		return 0;
-
-	currcon = mon->mcon;
-
-	if (currcon > 25)
-		currcon = 25;
-
-	return currcon;
-}
-
 
 
 /* monster to hit bonus for strength and dex*/
@@ -1428,8 +1367,8 @@ struct monst* mon;
 
 	if (mon)
 	{
-		bonus += strength_tohit_bonus(monster_current_str(mon));
-		bonus += dexterity_tohit_bonus(monster_current_dex(mon));
+		bonus += strength_tohit_bonus(m_acurr(mon, A_STR));
+		bonus += dexterity_tohit_bonus(m_acurr(mon, A_DEX));
 	}
 	return bonus;
 
@@ -1444,7 +1383,7 @@ struct monst* mon;
 
 	if (mon)
 	{
-		bonus += dexterity_tohit_bonus(monster_current_dex(mon));
+		bonus += dexterity_tohit_bonus(m_acurr(mon, A_DEX));
 	}
 	return bonus;
 

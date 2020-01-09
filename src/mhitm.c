@@ -959,7 +959,7 @@ register struct obj* omonwep;
          || (mattk->adtyp == AD_DGST && pd == &mons[PM_MEDUSA]))
         && !resists_ston(magr)) {
         long protector = attk_protection((int) mattk->aatyp),
-             wornitems = magr->misc_worn_check;
+             wornitems = magr->worn_item_flags;
 
         /* wielded weapon gives same protection as gloves here */
         if (otmp != 0)
@@ -1368,11 +1368,12 @@ register struct obj* omonwep;
             tmp = d(2, 6);
             if (vis && canspotmon(mdef))
                 pline("%s suddenly seems weaker!", Monnam(mdef));
-            mdef->mhpmax -= tmp;
+            mdef->mbasehpmax -= tmp;
             if (mdef->m_lev == 0)
                 tmp = mdef->mhp;
             else
                 mdef->m_lev--;
+
             /* Automatic kill if drained past level 0 */
         }
         break;
@@ -1400,14 +1401,14 @@ register struct obj* omonwep;
                 dismount_steed(DISMOUNT_POLY);
             obj_extract_self(otmp);
             if (otmp->owornmask) {
-                mdef->misc_worn_check &= ~otmp->owornmask;
+                mdef->worn_item_flags &= ~otmp->owornmask;
                 if (otmp->owornmask & W_WEP)
                     mwepgone(mdef);
                 otmp->owornmask = 0L;
-                update_mon_extrinsics(mdef, FALSE);
+                update_all_mon_statistics(mdef, FALSE);
                 /* give monster a chance to wear other equipment on its next
                    move instead of waiting until it picks something up */
-                mdef->misc_worn_check |= I_SPECIAL;
+                mdef->worn_item_flags |= I_SPECIAL;
             }
             /* add_to_minv() might free otmp [if it merges] */
             if (vis)
@@ -1468,7 +1469,7 @@ register struct obj* omonwep;
             tmp = 0;
             break;
         }
-        if ((mdef->misc_worn_check & W_ARMH) && rn2(8)) {
+        if ((mdef->worn_item_flags & W_ARMH) && rn2(8)) {
             if (vis && canspotmon(magr) && canseemon(mdef)) {
                 Strcpy(buf, s_suffix(Monnam(mdef)));
                 pline("%s helmet blocks %s attack to %s head.", buf,
@@ -1539,9 +1540,7 @@ register struct obj* omonwep;
 		if (objects[mweapon->otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
 			extradmg = tmp;
 
-		mdef->mhpmax -= extradmg;
-		if (mdef->mhpmax < 1)
-			mdef->mhpmax = 1;
+		mdef->mbasehpmax -= extradmg;
 
 		if (extradmg > 0)
 		{
@@ -1591,6 +1590,7 @@ register struct obj* omonwep;
 
 	//Reduce HP
 	mdef->mhp -= tmp;
+	update_mon_maxhp(mdef);
 
 	//Adjust further if mhpmax is smaller
 	if (mdef->mhp > mdef->mhpmax)
@@ -1883,7 +1883,10 @@ int mdead;
                 pline("%s is suddenly very cold!", Monnam(magr));
             mdef->mhp += tmp / 2;
             if (mdef->mhpmax < mdef->mhp)
-                mdef->mhpmax = mdef->mhp;
+                mdef->mbasehpmax += (mdef->mhp - mdef->mhpmax);
+			update_mon_maxhp(mdef);
+			if (mdef->mhp > mdef->mhpmax)
+				mdef->mhp = mdef->mhpmax;
             if (mdef->mhpmax > ((int) (mdef->m_lev + 1) * 8))
                 (void) split_mon(mdef, magr);
             break;

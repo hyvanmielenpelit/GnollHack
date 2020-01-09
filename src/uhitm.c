@@ -1810,9 +1810,8 @@ boolean* obj_destroyed;
 		if (objects[obj->otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
 			extradmg = tmp;
 
-		mon->mhpmax -= extradmg;
-		if (mon->mhpmax < 1)
-			mon->mhpmax = 1;
+		mon->mbasehpmax -= extradmg;
+		update_mon_maxhp(mon);
 
 		if (mon->mhp > mon->mhpmax)
 			mon->mhp = mon->mhpmax;
@@ -1921,12 +1920,12 @@ boolean* obj_destroyed;
 		if (resists_disint(mon) || noncorporeal(mon->data)) {
 			shieldeff(mon->mx, mon->my);
 		}
-		else if (mon->misc_worn_check & W_ARMS) {
+		else if (mon->worn_item_flags & W_ARMS) {
 			/* destroy shield; victim survives */
 			if ((otmp2 = which_armor(mon, W_ARMS)) != 0)
 				m_useup(mon, otmp2);
 		}
-		else if (mon->misc_worn_check & W_ARM) {
+		else if (mon->worn_item_flags & W_ARM) {
 			/* destroy body armor, also cloak if present */
 			if ((otmp2 = which_armor(mon, W_ARM)) != 0)
 				m_useup(mon, otmp2);
@@ -2316,17 +2315,17 @@ struct attack *mattk;
         /* take the object away from the monster */
         obj_extract_self(otmp);
         if ((unwornmask = otmp->owornmask) != 0L) {
-            mdef->misc_worn_check &= ~unwornmask;
+            mdef->worn_item_flags &= ~unwornmask;
             if (otmp->owornmask & W_WEP)
                 setmnotwielded(mdef, otmp);
             otmp->owornmask = 0L;
-            update_mon_extrinsics(mdef, FALSE);
+            update_all_mon_statistics(mdef, FALSE);
 			if (mdef == u.usteed && otmp->otyp == SADDLE)
 				dismount_steed(DISMOUNT_FELL);
 
             /* give monster a chance to wear other equipment on its next
                move instead of waiting until it picks something up */
-            mdef->misc_worn_check |= I_SPECIAL;
+            mdef->worn_item_flags |= I_SPECIAL;
 
             if (otmp == stealoid) /* special message for final item */
                 pline("%s finishes taking off %s suit.", Monnam(mdef),
@@ -2600,7 +2599,8 @@ int specialdmg; /* blessed and/or silver bonus against various things */
             int xtmp = d(2, 6);
 
             pline("%s suddenly seems weaker!", Monnam(mdef));
-            mdef->mhpmax -= xtmp;
+            mdef->mbasehpmax -= xtmp;
+			update_mon_maxhp(mdef);
             mdef->mhp -= xtmp;
             /* !m_lev: level 0 monster is killed regardless of hit points
                rather than drop to level -1 */
@@ -3727,7 +3727,9 @@ boolean wep_was_destroyed;
                 /* monster gets stronger with your heat! */
                 mon->mhp += tmp / 2;
                 if (mon->mhpmax < mon->mhp)
-                    mon->mhpmax = mon->mhp;
+                    mon->mbasehpmax += mon->mhp - mon->mhpmax;
+				update_mon_maxhp(mon);
+
                 /* at a certain point, the monster will reproduce! */
                 if (mon->mhpmax > ((int) (mon->m_lev + 1) * 8))
                     (void) split_mon(mon, &youmonst);

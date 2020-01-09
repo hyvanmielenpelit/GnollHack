@@ -1862,7 +1862,7 @@ boolean called;
         Strcat(strcat(buf, adjective), " ");
     if (do_invis)
         Strcat(buf, "invisible ");
-    if (do_saddle && (mtmp->misc_worn_check & W_SADDLE) && !Blind
+    if (do_saddle && (mtmp->worn_item_flags & W_SADDLE) && !Blind
         && !Hallucination)
         Strcat(buf, "saddled ");
     has_adjectives = (buf[0] != '\0');

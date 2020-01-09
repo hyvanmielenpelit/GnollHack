@@ -12,7 +12,7 @@
  * which kills the monster.  The damage routine returns this cookie to
  * indicate that the monster should be disintegrated.
  */
-#define DISINTEGRATION_DUMMY_DAMAGE 1000
+#define DISINTEGRATION_DUMMY_DAMAGE 5000
 
 static NEARDATA boolean obj_zapped;
 static NEARDATA int poly_zapped;
@@ -713,7 +713,8 @@ struct obj *otmp;
         } else if (!resist(mtmp, otmp, 0, dmg, NOTELL)
                    && !DEADMONSTER(mtmp)) {
             mtmp->mhp -= dmg;
-            mtmp->mhpmax -= dmg;
+            mtmp->mbasehpmax -= dmg;
+			update_mon_maxhp(mtmp);
             /* die if already level 0, regardless of hit points */
             if (DEADMONSTER(mtmp) || mtmp->mhpmax <= 0 || mtmp->m_lev < 1) {
                 killed(mtmp);
@@ -1313,12 +1314,9 @@ int mnum_override; /* Use this mnum instead */
         if (!mtmp)
             return mtmp;
 
-        /* heal the monster */
-        if (mtmp->mhpmax > mtmp2->mhpmax && is_rider(mtmp2->data))
-            mtmp2->mhpmax = mtmp->mhpmax;
-        mtmp2->mhp = mtmp2->mhpmax;
-        /* Get these ones from mtmp */
-        mtmp2->minvent = mtmp->minvent; /*redundant*/
+		/* Get these ones from mtmp */
+		mtmp2->minvent = mtmp->minvent; /*redundant*/
+		
         /* monster ID is available if the monster died in the current
            game, but will be zero if the corpse was in a bones level
            (we cleared it when loading bones) */
@@ -1336,7 +1334,7 @@ int mnum_override; /* Use this mnum instead */
         mtmp2->muy = mtmp->muy;
         mtmp2->mw = mtmp->mw;
         mtmp2->wormno = mtmp->wormno;
-        mtmp2->misc_worn_check = mtmp->misc_worn_check;
+        mtmp2->worn_item_flags = mtmp->worn_item_flags;
         mtmp2->weapon_check = mtmp->weapon_check;
         mtmp2->mtrapseen = mtmp->mtrapseen;
         mtmp2->mflee = mtmp->mflee;
@@ -1381,6 +1379,14 @@ int mnum_override; /* Use this mnum instead */
                 ESHK(mtmp)->bill_p = &(ESHK(mtmp)->bill[0]);
             mtmp->isshk = 1;
         }
+
+		/* heal the monster */
+		if (mtmp->mbasehpmax > mtmp2->mbasehpmax&& is_rider(mtmp2->data))
+			mtmp2->mbasehpmax = mtmp->mbasehpmax;
+		update_mon_maxhp(mtmp);
+		update_mon_maxhp(mtmp2);
+		mtmp2->mhp = mtmp2->mhpmax;
+
         replmon(mtmp, mtmp2);
         newsym(mtmp2->mx, mtmp2->my); /* Might now be invisible */
 
@@ -5811,10 +5817,10 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 		tmp = 0;
 		if (resists_disint(mon) || noncorporeal(mon->data)) {
 			sho_shieldeff = TRUE;
-        } else if (mon->misc_worn_check & W_ARMS) {
+        } else if (mon->worn_item_flags & W_ARMS) {
             /* destroy shield; victim survives */
             *ootmp = which_armor(mon, W_ARMS);
-        } else if (mon->misc_worn_check & W_ARM) {
+        } else if (mon->worn_item_flags & W_ARM) {
             /* destroy body armor, also cloak if present */
             *ootmp = which_armor(mon, W_ARM);
             if ((otmp2 = which_armor(mon, W_ARMC)) != 0)
@@ -5832,9 +5838,10 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
         break;     /* not ordinary damage */
 	case ZT_DEATH:                              /* death */
 		if (mon->data == &mons[PM_DEATH]) {
-			mon->mhpmax += mon->mhpmax / 2;
-			if (mon->mhpmax >= DISINTEGRATION_DUMMY_DAMAGE)
-				mon->mhpmax = DISINTEGRATION_DUMMY_DAMAGE - 1;
+			mon->mbasehpmax += mon->mbasehpmax / 2;
+			if (mon->mbasehpmax >= DISINTEGRATION_DUMMY_DAMAGE / 2)
+				mon->mbasehpmax = DISINTEGRATION_DUMMY_DAMAGE / 2 - 1;
+			update_mon_maxhp(mon);
 			mon->mhp = mon->mhpmax;
 			tmp = 0;
 			break;
@@ -6184,12 +6191,12 @@ const char *fltxt;
             if (otmp->owornmask) 
 			{
                 /* in case monster's life gets saved */
-                mon->misc_worn_check &= ~otmp->owornmask;
+                mon->worn_item_flags &= ~otmp->owornmask;
                 if (otmp->owornmask & W_WEP)
                     setmnotwielded(mon, otmp);
                 /* also dismounts hero if this object is steed's saddle */
 				otmp->owornmask = 0L;
-				update_mon_extrinsics(mon, TRUE);
+				update_all_mon_statistics(mon, TRUE);
 				if (mon == u.usteed && otmp->otyp == SADDLE)
 					dismount_steed(DISMOUNT_FELL);
             }

@@ -2311,9 +2311,9 @@ struct monst *mtmp;
 			{
                 if (otmp == mwep)
                     mwepgone(mtmp), mwep = 0;
-                mtmp->misc_worn_check &= ~otmp->owornmask;
+                mtmp->worn_item_flags &= ~otmp->owornmask;
 				otmp->owornmask = 0L;
-                update_mon_extrinsics(mtmp, TRUE);
+                update_all_mon_statistics(mtmp, TRUE);
 				if (mtmp == u.usteed && otmp->otyp == SADDLE)
 					dismount_steed(DISMOUNT_FELL);
             }

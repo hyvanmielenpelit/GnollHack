@@ -14,6 +14,10 @@
 #include "prop.h"
 #endif
 
+#ifndef ATTRIB_H
+#include "attrib.h"
+#endif
+
 /* The weapon_check flag is used two ways:
  * 1) When calling mon_wield_item, is 2-6 depending on what is desired.
  * 2) Between calls to mon_wield_item, is 0 or 1 depending on whether or not
@@ -76,8 +80,22 @@ struct monst {
     xchar mux, muy;       /* where the monster thinks you are */
 #define MTSZ 4
     coord mtrack[MTSZ];   /* monster track */
-	int mstr, mdex, mcon, mint, mwis, mcha; /* monster current stats */
-	int mhp, mhpmax;
+
+	struct attribs 
+		acurr,			/* monster's current attributes (eg. str)*/
+		abonus,			/* monster's bonus attributes (eg. str) */
+		afixmin,		/* monster's fixed min attributes (eg. str), set by an item */
+		afixmax,		/* monster's fixed max attributes (eg. str), set by an item */
+		amax,			/* monster's max attributes (eg. str) */
+		atemp,			/* used for temporary loss/gain */
+		atime;			/* used for loss/gain countdown */
+
+	schar mdaminc;
+	schar mhitinc;
+	schar macbonus;
+	schar mmcbonus;
+
+	int mhp, mbasehpmax, mhpmax;
     unsigned mappearance; /* for undetected mimics and the wiz */
     uchar m_ap_type;      /* what mappearance is describing, m_ap_types */
 
@@ -195,7 +213,7 @@ struct monst {
     struct obj *minvent;   /* mon's inventory */
 
     struct obj *mw;        /* mon's weapon */
-    long misc_worn_check;  /* mon's wornmask */
+    long worn_item_flags;  /* mon's wornmask */
     xchar weapon_check;    /* flag for whether to try switching weapons */
 
     int meating;           /* monster is eating timeout */

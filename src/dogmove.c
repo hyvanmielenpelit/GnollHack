@@ -416,9 +416,11 @@ struct edog *edog;
 			int newmhpmax = mtmp->mhpmax / 3;
 			mtmp->mconf = 1;
 			edog->mhpmax_penalty = mtmp->mhpmax - newmhpmax;
-			mtmp->mhpmax = newmhpmax;
+			update_mon_maxhp(mtmp);
 			if (mtmp->mhp > mtmp->mhpmax)
 				mtmp->mhp = mtmp->mhpmax;
+			if (mtmp->mhp == 1)
+				mtmp->mhp = 0; /* since update_mon_maxhp takes it only to 1 */
 			if (DEADMONSTER(mtmp))
 				goto dog_died;
 			if (cansee(mtmp->mx, mtmp->my))

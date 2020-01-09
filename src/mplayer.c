@@ -141,8 +141,12 @@ register boolean special;
         struct obj *otmp;
 
         mtmp->m_lev = (special ? rn1(16, 15) : rnd(16));
-        mtmp->mhp = mtmp->mhpmax = d((int) mtmp->m_lev, 10)
+        
+		mtmp->mhpmax = d((int) mtmp->m_lev, 10)
                                    + (special ? (30 + rnd(30)) : 30);
+		update_mon_maxhp(mtmp);
+		mtmp->mhp = mtmp->mhpmax;
+
         if (special) {
             get_mplname(mtmp, nam);
             mtmp = christen_monst(mtmp, nam);

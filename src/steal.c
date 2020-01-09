@@ -491,7 +491,7 @@ gotobj:
     could_petrify =
         (otmp->otyp == CORPSE && touch_petrifies(&mons[otmp->corpsenm]));
     (void) mpickobj(mtmp, otmp); /* may free otmp */
-    if (could_petrify && !(mtmp->misc_worn_check & W_ARMG)) {
+    if (could_petrify && !(mtmp->worn_item_flags & W_ARMG)) {
         minstapetrify(mtmp, TRUE);
         return -1;
     }
@@ -681,7 +681,7 @@ boolean verbosely;
     if (obj->owornmask) {
         /* perform worn item handling if the monster is still alive */
         if (!DEADMONSTER(mon)) {
-            mon->misc_worn_check &= ~obj->owornmask;
+            mon->worn_item_flags &= ~obj->owornmask;
             update_mon = TRUE;
 
         /* don't charge for an owned saddle on dead steed (provided
@@ -709,7 +709,7 @@ boolean verbosely;
        throws rider, possibly inflicting fatal damage and producing bones */
 	if (update_mon)
 	{
-		update_mon_extrinsics(mon, TRUE);
+		update_all_mon_statistics(mon, TRUE);
 		if (mon == u.usteed && obj->otyp == SADDLE)
 			dismount_steed(DISMOUNT_FELL);
 	}
@@ -736,7 +736,7 @@ struct monst *mon;
                 mdrop_obj(mon, obj, FALSE);
             } else { /* migrating monster not on map */
                 if (obj->owornmask) {
-                    mon->misc_worn_check &= ~obj->owornmask;
+                    mon->worn_item_flags &= ~obj->owornmask;
                     if (obj->owornmask & W_WEP)
                         setmnotwielded(mon, obj);
                     obj->owornmask = 0L;
@@ -781,7 +781,7 @@ boolean is_pet; /* If true, pet should keep wielded/worn items */
 			if (otmp->owornmask) {
 				/* perform worn item handling if the monster is still alive */
 				if (!DEADMONSTER(mtmp)) {
-					mtmp->misc_worn_check &= ~otmp->owornmask;
+					mtmp->worn_item_flags &= ~otmp->owornmask;
 					update_mon = TRUE;
 
 					/* don't charge for an owned saddle on dead steed (provided
@@ -804,7 +804,7 @@ boolean is_pet; /* If true, pet should keep wielded/worn items */
 			   throws rider, possibly inflicting fatal damage and producing bones */
 			if (update_mon)
 			{
-				update_mon_extrinsics(mtmp, TRUE);
+				update_all_mon_statistics(mtmp, TRUE);
 				if (mtmp == u.usteed && otmp->otyp == SADDLE)
 					dismount_steed(DISMOUNT_FELL);
 			}
