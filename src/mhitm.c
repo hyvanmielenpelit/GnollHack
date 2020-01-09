@@ -313,7 +313,7 @@ register struct monst *magr, *mdef;
         return MM_MISS;
 
     /* Calculate the armour class differential. */
-    tmp = find_mac(mdef) + magr->m_lev;
+    tmp = find_mac(mdef) + magr->m_lev + magr->mhitinc;
     if (mdef->mconf || !mdef->mcanmove || mdef->msleeping) {
         tmp += 4;
         mdef->msleeping = 0;
@@ -927,6 +927,8 @@ register struct obj* omonwep;
 
 	struct obj* mweapon = omonwep; // MON_WEP(magr);
 	boolean uses_spell_flags = omonwep ? object_uses_spellbook_wand_flags_and_properties(omonwep) : FALSE;
+
+	tmp += magr->mdaminc;
 
 	if (mweapon)
 	{

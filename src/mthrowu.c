@@ -892,11 +892,11 @@ struct obj *obj;         /* missile (or stack providing it) */
 					//Non-ammo (normal thrown weapon) gets damage bonus
 					dam += m_thrown_str_dmg_bonus(mon);
 				}
-
 				if (bigmonst(youmonst.data))
                     hitv++;
                 hitv += 10 + weapon_to_hit_value(singleobj, &youmonst, mon);
-				hitv += mon->m_lev;
+				hitv += mon->m_lev + mon->mhitinc;
+				dam += mon->mdaminc;
 				if (dam < 1)
                     dam = 1;
                 hitu = thitu(hitv, dam, &singleobj, (char *) 0);
@@ -1257,9 +1257,10 @@ struct monst *mtmp;
         if (bigmonst(youmonst.data))
             hitv++;
         hitv += 10 + weapon_to_hit_value(otmp, &youmonst, mtmp);
-		hitv += mtmp->m_lev;
+		hitv += mtmp->m_lev + mtmp->mhitinc;
 		hitv += m_strdex_to_hit_bonus(mtmp); // since a pole, str & dex to hit bonus
 		dam += m_str_dmg_bonus(mtmp); // strength damage bonus
+		dam += mtmp->mdaminc;
 
 		if (dam < 1)
             dam = 1;

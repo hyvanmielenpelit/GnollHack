@@ -610,6 +610,7 @@ register struct monst *mtmp;
     tmp = AC_VALUE(u.uac) + 10; /* tmp ~= 0 - 20 */
     tmp += mtmp->m_lev;	//Add level to hit chance
 	tmp += m_strdex_to_hit_bonus(mtmp); //Add monster's STR and DEX bonus, thrown weapons are dealt separately
+	tmp += mtmp->mhitinc;
 	if (multi < 0)
         tmp += 4;
     if ((Invis && !has_see_invisible(mtmp)) || !mtmp->mcansee)
@@ -1283,9 +1284,9 @@ struct monst *mon;
 			}
 		}
 
-		if (o == uarm)
+		if (o->owornmask == W_ARM)
 			suit_mc_bonus = item_mc_bonus;
-		else if (o == uarmo)
+		else if (o->owornmask == W_ARMO)
 			robe_mc_bonus = item_mc_bonus;
 		else
 			mc += item_mc_bonus;
@@ -1450,6 +1451,7 @@ register struct obj* omonwep;
     }
 
 	dmg = 0;
+	dmg += mtmp->mdaminc;
     /*  First determine the base damage done */
 	struct obj* mweapon = omonwep; // MON_WEP(mtmp);
 	boolean uses_spell_flags = omonwep ? object_uses_spellbook_wand_flags_and_properties(omonwep) : FALSE;
