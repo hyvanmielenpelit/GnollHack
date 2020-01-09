@@ -3106,9 +3106,8 @@ E void FDECL(setworn, (struct obj *, long));
 E void FDECL(setnotworn, (struct obj *));
 E struct obj *FDECL(wearmask_to_obj, (long));
 E long FDECL(wearslot, (struct obj *));
-E void FDECL(mon_set_minvis, (struct monst *));
 E void FDECL(mon_adjust_speed, (struct monst *, int, struct obj *));
-E void FDECL(update_mon_intrinsics, (struct monst *, BOOLEAN_P));
+E void FDECL(update_mon_extrinsics, (struct monst *, BOOLEAN_P));
 E int FDECL(find_mac, (struct monst *));
 E void FDECL(m_dowear, (struct monst *, BOOLEAN_P));
 E struct obj *FDECL(which_armor, (struct monst *, long));
@@ -3119,6 +3118,9 @@ E void FDECL(bypass_objlist, (struct obj *, BOOLEAN_P));
 E struct obj *FDECL(nxt_unbypassed_obj, (struct obj *));
 E struct obj *FDECL(nxt_unbypassed_loot, (Loot *, struct obj *));
 E int FDECL(racial_exception, (struct monst *, struct obj *));
+E void FDECL(increase_mon_temporary_property, (struct monst*, int, int));
+E void FDECL(set_mon_temporary_property, (struct monst* mon, int, unsigned short));
+E int FDECL(get_mon_temporary_property, (struct monst*, int));
 
 /* ### write.c ### */
 

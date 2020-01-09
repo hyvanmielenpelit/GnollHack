@@ -2725,7 +2725,7 @@ lookaround()
             if ((mtmp = m_at(x, y)) != 0
                 && M_AP_TYPE(mtmp) != M_AP_FURNITURE
                 && M_AP_TYPE(mtmp) != M_AP_OBJECT
-                && (!mtmp->minvis || See_invisible) && !mtmp->mundetected) {
+                && (!is_not_visible(mtmp) || See_invisible) && !mtmp->mundetected) {
                 if ((context.run != 1 && !mtmp->mtame)
                     || (x == u.ux + u.dx && y == u.uy + u.dy
                         && !context.travel)) {
@@ -2962,7 +2962,7 @@ const char *msg_override;
 STATIC_OVL void
 maybe_wail()
 {
-    static short powers[] = { TELEPORT, SEE_INVISIBILITY, POISON_RES, COLD_RES,
+    static short powers[] = { TELEPORT, SEE_INVISIBLE, POISON_RES, COLD_RES,
                               SHOCK_RES, FIRE_RES, SLEEP_RES, DISINT_RES,
                               TELEPORT_CONTROL, STEALTH, FAST, INVISIBILITY };
 

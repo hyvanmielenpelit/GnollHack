@@ -1508,7 +1508,7 @@ struct monst *mtmp;
         } else if (cansee(mtmp->mx, mtmp->my)) {
             pline_The("%s rumbles in the middle of nowhere!",
                       ceiling(mtmp->mx, mtmp->my));
-            if (mtmp->minvis)
+            if (has_invisibility(mtmp))
                 map_invisible(mtmp->mx, mtmp->my);
             if (oseen)
                 makeknown(otmp->otyp);
@@ -1756,15 +1756,15 @@ struct monst *mtmp;
          * invisible unless you can see them.  Not really right, but...
          */
         nomore(MUSE_WAN_MAKE_INVISIBLE);
-        if (obj->otyp == WAN_MAKE_INVISIBLE && obj->spe > 0 && !mtmp->minvis
-            && !mtmp->invis_blkd && (!mtmp->mpeaceful || See_invisible)
+        if (obj->otyp == WAN_MAKE_INVISIBLE && obj->spe > 0 && !has_invisibility(mtmp)
+            && !has_blocks_invisibility(mtmp) && (!mtmp->mpeaceful || See_invisible)
             && (!attacktype(mtmp->data, AT_GAZE) || mtmp->mcancelled)) {
             m.misc = obj;
             m.has_misc = MUSE_WAN_MAKE_INVISIBLE;
         }
         nomore(MUSE_POT_INVISIBILITY);
-        if (obj->otyp == POT_INVISIBILITY && !mtmp->minvis
-            && !mtmp->invis_blkd && (!mtmp->mpeaceful || See_invisible)
+        if (obj->otyp == POT_INVISIBILITY && !has_invisibility(mtmp)
+            && !has_blocks_invisibility(mtmp) && (!mtmp->mpeaceful || See_invisible)
             && (!attacktype(mtmp->data, AT_GAZE) || mtmp->mcancelled)) {
             m.misc = obj;
             m.has_misc = MUSE_POT_INVISIBILITY;
@@ -1882,8 +1882,8 @@ struct monst *mtmp;
             mquaffmsg(mtmp, otmp);
         /* format monster's name before altering its visibility */
         Strcpy(nambuf, mon_nam(mtmp));
-        mon_set_minvis(mtmp);
-        if (vismon && mtmp->minvis) { /* was seen, now invisible */
+		increase_mon_temporary_property(mtmp, INVISIBILITY, d(2, 10) + 80);
+		if (vismon && has_invisibility(mtmp)) { /* was seen, now invisible */
             if (canspotmon(mtmp)) {
                 pline("%s body takes on a %s transparency.",
                       upstart(s_suffix(nambuf)),
@@ -2100,7 +2100,7 @@ struct obj *obj;
         return FALSE;
 
     if (typ == WAN_MAKE_INVISIBLE || typ == POT_INVISIBILITY)
-        return (boolean) (!mon->minvis && !mon->invis_blkd
+        return (boolean) (!has_invisibility(mon) && !has_blocks_invisibility(mon)
                           && !attacktype(mon->data, AT_GAZE));
     if (typ == WAN_SPEED_MONSTER || typ == POT_SPEED)
         return (boolean) (mon->mspeed != MFAST);
@@ -2184,7 +2184,7 @@ const char *str;
 	if (!is_reflecting(mon))
 		return FALSE;
 
-	if (!(mon->mextrinsics & MR_REFLECTING))
+	if (!(mon->mprops[REFLECTING] & M_EXTRINSIC))
 	{
 		if (str)
 			pline(str, s_suffix(mon_nam(mon)), mon->data->mlet == S_DRAGON ? "scales" : mon->data->mlet == S_TREANT ? "bark" : "body");

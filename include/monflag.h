@@ -65,10 +65,7 @@
 #define MR_DRAIN		0x00002000L			/* resists life draining */
 #define MR_FLASH		0x00004000L			/* resists life draining */
 #define MR_REFLECTING	0x00008000L			/* reflecting */
-#define MR_FAST			0x00010000L			/* fast */
-#define MR_VERY_FAST	0x00020000L			/* very fast */
-#define MR_INVISIBLE	0x00040000L			/* invisible */
-#define MR_BLOCKS_INVISIBLITY 0x00080000L	/* blocks invisiblity */
+#define MR_INVISIBLE	0x00010000L			/* invisible */
 
 /* conveyances: resistances, teleport, teleport control, telepathy */
 #define MC_NONE			0x00000000L
@@ -125,7 +122,7 @@
 #define M1_UNSOLID		0x00100000L     /* has no solid or liquid body */
 #define M1_THICK_HIDE	0x00200000L  /* has thick hide or scales */
 #define M1_OVIPAROUS	0x00400000L   /* can lay eggs */
-#define M1_REGEN		0x00800000L       /* regenerates hit points */
+#define M1_REGEN		0x00800000L       /* has_innate_regeneration hit points */
 #define M1_SEE_INVIS	0x01000000L   /* can see invisible creatures */
 #define M1_TPORT		0x02000000L       /* can teleport */
 #define M1_TPORT_CNTRL	0x04000000L /* controls where it teleports to */

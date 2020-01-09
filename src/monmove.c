@@ -280,7 +280,7 @@ monster_regeneration_and_timeout(mon, digest_meal)
 struct monst *mon;
 boolean digest_meal;
 {
-	int roundstofull = regenerates(mon->data) ? max(1, min(mon->mhpmax, 150)) : 300;
+	int roundstofull = has_regeneration(mon) ? max(1, min(mon->mhpmax, 150)) : 300;
 	int fixedhpperround = mon->mhpmax / roundstofull;
 	int basispointchancetogetextrahp = (10000 * (mon->mhpmax % roundstofull)) / roundstofull;
 
@@ -293,11 +293,6 @@ boolean digest_meal;
 		if (mon->mhp > mon->mhpmax)
 			mon->mhp = mon->mhpmax;
 	}
-
-/*
-    if (mon->mhp < mon->mhpmax && (moves % 20 == 0 || regenerates(mon->data)))
-        mon->mhp++;
-*/
 
     if (mon->mspec_used)
         mon->mspec_used--;
@@ -441,7 +436,7 @@ int *inrange, *nearby, *scared;
      * running into you by accident but possibly attacking the spot
      * where it guesses you are.
      */
-    if (!mtmp->mcansee || (Invis && !perceives(mtmp->data))) {
+    if (!mtmp->mcansee || (Invis && !has_see_invisible(mtmp))) {
         seescaryx = mtmp->mux;
         seescaryy = mtmp->muy;
     } else {
@@ -536,7 +531,7 @@ register struct monst *mtmp;
         mtmp->mstun = 0;
 
     /* some monsters teleport */
-    if (mtmp->mflee && !rn2(40) && can_teleport(mdat) && !mtmp->iswiz
+    if (mtmp->mflee && !rn2(40) && has_teleportation(mtmp) && !mtmp->iswiz
         && !level.flags.noteleport)
 	{
         (void) rloc(mtmp, TRUE);
@@ -602,7 +597,8 @@ register struct monst *mtmp;
             }
 			else 
 			{
-                mtmp->minvis = mtmp->perminvis = 0;
+				set_mon_temporary_property(mtmp, INVISIBILITY, 0);
+
                 /* Why?  For the same reason in real demon talk */
                 pline("%s gets angry!", Amonnam(mtmp));
                 mtmp->mpeaceful = 0;
@@ -669,7 +665,7 @@ register struct monst *mtmp;
                 continue;
             if (m2 == mtmp)
                 continue;
-            if (( (telepathic(m2->data) || (m2->mblinded && unblind_telepathic(m2->data))) && (rn2(2) || m2->mblinded))
+            if (( (has_telepathy(m2) || (m2->mblinded && has_blind_telepathy(m2))) && (rn2(2) || m2->mblinded))
                 || !rn2(10)) {
                 if (cansee(m2->mx, m2->my))
                     pline("It locks on to %s.", mon_nam(m2));
@@ -714,7 +710,7 @@ register struct monst *mtmp;
      */
 
     if (!nearby || mtmp->mflee || scared || mtmp->mconf || mtmp->mstun
-        || (mtmp->minvis && !rn2(3))
+        || (has_invisibility(mtmp) && !rn2(3))
         || (mdat->mlet == S_LEPRECHAUN && !findgold(invent)
             && (findgold(mtmp->minvent) || rn2(2)))
         || (is_wanderer(mdat) && !rn2(4)) || ((Conflict || mon_has_bloodlust(mtmp)) && !mtmp->iswiz)
@@ -805,7 +801,7 @@ register struct monst *mtmp;
         quest_talk(mtmp);
     /* extra emotional attack for vile monsters */
     if (inrange && mtmp->data->msound == MS_CUSS && !mtmp->mpeaceful
-        && couldsee(mtmp->mx, mtmp->my) && !mtmp->minvis && !rn2(5))
+        && couldsee(mtmp->mx, mtmp->my) && !has_invisibility(mtmp) && !rn2(5))
         cuss(mtmp);
 
     return (tmp == 2);
@@ -1068,7 +1064,7 @@ register int after;
                               && (dist2(omx, omy, gx, gy) <= 36));
 
         if (!mtmp->mcansee
-            || (should_see && Invis && !perceives(ptr) && rn2(11))
+            || (should_see && Invis && !has_see_invisible(mtmp) && rn2(11))
             || is_obj_mappear(&youmonst,STRANGE_OBJECT) || u.uundetected
             || (is_obj_mappear(&youmonst,GOLD_PIECE) && !likes_gold(ptr))
             || (mtmp->mpeaceful && !mtmp->isshk) /* allow shks to follow */
@@ -1641,7 +1637,7 @@ register int after;
                     mmoved = 3;
             }
 
-            if (mtmp->minvis) {
+            if (has_invisibility(mtmp)) {
                 newsym(mtmp->mx, mtmp->my);
                 if (mtmp->wormno)
                     see_wsegs(mtmp);
@@ -1716,7 +1712,7 @@ register struct monst *mtmp;
     if (mx == u.ux && my == u.uy)
         goto found_you;
 
-    notseen = (!mtmp->mcansee || (Invis && !perceives(mtmp->data)));
+    notseen = (!mtmp->mcansee || (Invis && !has_see_invisible(mtmp)));
     /* add cases as required.  eg. Displacement ... */
     if (notseen || Underwater) {
         /* Xorns can smell quantities of valuable metal

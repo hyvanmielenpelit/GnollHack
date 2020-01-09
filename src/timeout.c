@@ -47,7 +47,7 @@ const struct propname {
 	{ FAST, "fast", "fastness" },
 	{ CLAIRVOYANT, "clairvoyant", "clairvoyance" },
 	{ DETECT_MONSTERS, "monster detection", "monster detection" },
-	{ SEE_INVISIBILITY, "see invisible", "see invisible" },
+	{ SEE_INVISIBLE, "see invisible", "see invisible" },
 	{ INVISIBILITY, "invisible", "invisibility" },
 	/* properties beyond here don't have timed values during normal play,
 	   so there's not much point in trying to order them sensibly;
@@ -132,6 +132,12 @@ const struct propname {
 	{ VERY_FAST, "very fast", "very high fastness" },
 	{ SLOWED, "slowed", "slowness" },
 	{ CANCELLED, "cancelled", "cancellation" },
+	{ HIDING, "hiding", "hiding" },
+	{ HALF_MAGIC_RES, "having halved magic resistance", "halved magic resistance" },
+	{ NO_MAGIC_RES, "lacking magic resistance", "no magic resistance" },
+	{ CHARMED, "charmed", "charm" },
+	{ PARALYZED, "paralyzed", "paralysis" },
+	{ SUMMON_FORBIDDEN, "having summoning forbidden", "summoning forbidden" },
 	{ LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
 	{  0, 0 },
 };
@@ -685,7 +691,7 @@ nh_timeout()
 					stop_occupation();
 				}
 				break;
-			case SEE_INVISIBILITY:
+			case SEE_INVISIBLE:
 				set_mimic_blocking(); /* do special mimic handling */
 				see_monsters();       /* make invis mons appear */
 				newsym(u.ux, u.uy);   /* make self appear */
@@ -881,6 +887,30 @@ nh_timeout()
 				if (!Cancelled)
 					You("feel your magic is flowing more normally.");
 				break;
+			case HALF_MAGIC_RES:
+				if (!Half_magic_resistance)
+					You("feel your magic resistance is working more properly.");
+				break;
+			case NO_MAGIC_RES:
+				if (!No_magic_resistance)
+					You("feel your magic resistance is working more properly.");
+				break;
+			case PARALYZED:
+				if (!Paralyzed)
+					Your("limbs are moving again.");
+				break;
+			case SUMMON_FORBIDDEN:
+				if (!Summon_forbidden)
+					You("feel summoning is working properly again.");
+				break;
+			case CHARMED:
+				if (!Charmed)
+					Your("own motivations make more sense to you now.");
+				break;
+			case HIDING:
+				if (!Hiding)
+					You("feel more exposed.");
+				break;
 			case DEATH_RES:
 				if (!Death_resistance)
 					Your("soul's silver cord feels thinner than before.");
@@ -977,7 +1007,7 @@ nh_timeout()
 			case INVISIBILITY:
 				You("are starting to feel more visible.");
 				break;
-			case SEE_INVISIBILITY:
+			case SEE_INVISIBLE:
 				Your("vision of invisible monsters is becoming less clear.");
 				break;
 			case LEVITATION:
@@ -1029,6 +1059,24 @@ nh_timeout()
 				break;
 			case CANCELLED:
 				You("feel your magic is starting to flow more normally.");
+				break;
+			case HALF_MAGIC_RES:
+				You("feel your magic resistance is starting to work more properly.");
+				break;
+			case NO_MAGIC_RES:
+				You("feel your magic resistance is starting to work more properly.");
+				break;
+			case PARALYZED:
+				Your("limbs are starting move a bit.");
+				break;
+			case SUMMON_FORBIDDEN:
+				You("feel summoning is starting to work a bit more properly again.");
+				break;
+			case CHARMED:
+				Your("own motivations are starting to make a bit more sense to you.");
+				break;
+			case HIDING:
+				You("are starting to feel more exposed.");
 				break;
 			case DEATH_RES:
 				Your("soul's silver cord is starting to feel thinner than before.");

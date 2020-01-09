@@ -767,7 +767,7 @@ int maxdist;
 
         if ((targ = m_at(curx, cury)) != 0) {
             /* Is the monster visible to the pet? */
-            if ((!targ->minvis || perceives(mtmp->data))
+            if ((!is_not_visible(targ) || has_see_invisible(mtmp))
                 && !targ->mundetected)
                 break;
             /* If the pet can't see it, it assumes it aint there */
@@ -810,7 +810,7 @@ int    maxdist;
         if (pal) {
             if (pal->mtame) {
                 /* Pet won't notice invisible pets */
-                if (!pal->minvis || perceives(mtmp->data))
+                if (!is_not_visible(pal) || has_see_invisible(mtmp))
                     return 1;
             } else {
                 /* Quest leaders and guardians are always seen */
@@ -1137,7 +1137,7 @@ int after; /* this is extra fast monster movement */
             if ((!mon_disregards_own_health(mtmp) && (int) mtmp2->m_lev >= (int) mtmp->m_lev + 2)
                 || (mtmp2->data == &mons[PM_FLOATING_EYE] && rn2(10)
                     && mtmp->mcansee && haseyes(mtmp->data) && mtmp2->mcansee
-                    && (perceives(mtmp->data) || !mtmp2->minvis))
+                    && (has_see_invisible(mtmp) || !is_not_visible(mtmp2)))
                 || (mtmp2->data == &mons[PM_GELATINOUS_CUBE] && rn2(10))
                 || (mtmp2->mtame && !Conflict)
 				|| (max_passive_dmg(mtmp2, mtmp) >= mtmp->mhp)

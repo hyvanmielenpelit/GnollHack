@@ -176,7 +176,7 @@ register struct rm *lev;
             return 1;
 
     /* Mimics mimicing a door or boulder or ... block light. */
-    if ((mon = m_at(x, y)) && (!mon->minvis || See_invisible)
+    if ((mon = m_at(x, y)) && (!is_not_visible(mon) || See_invisible)
         && is_lightblocker_mappear(mon))
         return 1;
 
@@ -2800,13 +2800,13 @@ struct monst *mon;
        but couldsee it not true for astral vision */
     if ((mon->wormno ? worm_known(mon) : (cansee(mon->mx, mon->my)
                                           && couldsee(mon->mx, mon->my)))
-        && mon_visible(mon) && !mon->minvis)
+        && mon_visible(mon) && !is_not_visible(mon))
         how_seen |= MONSEEN_NORMAL;
     /* see invisible */
-    if (useemon && mon->minvis)
+    if (useemon && is_not_visible(mon))
         how_seen |= MONSEEN_SEEINVIS;
     /* infravision */
-    if ((!mon->minvis || See_invisible) && see_with_infrared(mon))
+    if ((!is_not_visible(mon) || See_invisible) && see_with_infrared(mon))
         how_seen |= MONSEEN_INFRAVIS;
     /* telepathy */
     if (tp_sensemon(mon))

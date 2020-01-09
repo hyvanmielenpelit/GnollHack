@@ -2238,7 +2238,7 @@ struct obj *otmp;
                 set_mimic_blocking();
                 see_monsters();
                 if (Invis && !oldprop && !ESee_invisible
-                    && !perceives(youmonst.data) && !Blind) {
+                    && !has_innate_see_invisible(youmonst.data) && !Blind) {
                     newsym(u.ux, u.uy);
                     pline("Suddenly you can see yourself.");
                     makeknown(typ);

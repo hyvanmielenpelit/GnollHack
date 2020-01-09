@@ -1230,11 +1230,11 @@ int x, y;
 	int selected_encounter = 0;
 	double totalselectedprob = 0;
 
-	int max_attk_monsters = 2;
+	int max_attk_monsters = 1;
 	if (Is_bigroom(&u.uz))
-		max_attk_monsters = 5;
-	else if (In_mines(&u.uz))
 		max_attk_monsters = 3;
+	else if (In_mines(&u.uz))
+		max_attk_monsters = 2;
 
 	for (int i = 1; i <= 1; i++)
 	{

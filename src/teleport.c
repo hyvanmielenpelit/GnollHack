@@ -747,7 +747,7 @@ boolean break_the_rules; /* True: wizard mode ^T */
         register int sp_no = 0, energy = 0;
 
         if (!Teleportation || (u.ulevel < (Role_if(PM_WIZARD) ? 8 : 12)
-                               && !can_teleport(youmonst.data))) {
+                               && !has_innate_teleportation(youmonst.data))) {
             /* Try to use teleport away spell.
                3.6.2: this used to require that you know the spellbook
                (probably just intended as an optimization to skip the

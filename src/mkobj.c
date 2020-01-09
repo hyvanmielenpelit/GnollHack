@@ -2313,7 +2313,7 @@ struct monst *mtmp;
                     mwepgone(mtmp), mwep = 0;
                 mtmp->misc_worn_check &= ~otmp->owornmask;
 				otmp->owornmask = 0L;
-                update_mon_intrinsics(mtmp, TRUE);
+                update_mon_extrinsics(mtmp, TRUE);
 				if (mtmp == u.usteed && otmp->otyp == SADDLE)
 					dismount_steed(DISMOUNT_FELL);
             }

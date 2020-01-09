@@ -53,7 +53,7 @@ static const struct innate
 
   mon_abil[] = { { 1, FAST, "", "" },
                  { 1, SLEEP_RES, "", "" },
-                 { 4, SEE_INVISIBILITY, "", "" },
+                 { 4, SEE_INVISIBLE, "", "" },
 				 { 7, POISON_RES, "healthy", "" },
 				 { 10, JUMPING, "jumpy", "" },
 				 { 13, SICK_RES, "even healthier", "" },
@@ -74,7 +74,7 @@ static const struct innate
 
   ran_abil[] = { { 1, SEARCHING, "", "" },
                  { 7, STEALTH, "stealthy", "" },
-                 { 15, SEE_INVISIBILITY, "", "" },
+                 { 15, SEE_INVISIBLE, "", "" },
                  { 0, 0, 0, 0 } },
 
   rog_abil[] = { { 1, STEALTH, "", "" },
@@ -88,7 +88,7 @@ static const struct innate
   tou_abil[] = { { 10, SEARCHING, "perceptive", "" },
 				 { 15, SICK_RES, "healthy", "" },
 				 { 20, POISON_RES, "hardy", "" },
-				 { 25, SEE_INVISIBILITY, "", "" },
+				 { 25, SEE_INVISIBLE, "", "" },
 				 { 0, 0, 0, 0 } },
 
   val_abil[] = { { 1, COLD_RES, "", "" },
@@ -1269,7 +1269,7 @@ int propid;
 {
     if (!propid)
         return;
-    if (propid == WARNING|| propid == SEE_INVISIBILITY)
+    if (propid == WARNING|| propid == SEE_INVISIBLE)
         see_monsters();
 }
 

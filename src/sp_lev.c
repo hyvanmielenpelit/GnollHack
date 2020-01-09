@@ -1767,8 +1767,6 @@ struct mkroom *croom;
                                              emits_light(mtmp->data),
                                              LS_MONSTER, (genericptr_t) mtmp);
                     }
-                    if (!mtmp->perminvis || pm_invisible(olddata))
-                        mtmp->perminvis = pm_invisible(mdat);
                 }
                 break;
             }
@@ -1815,8 +1813,9 @@ struct mkroom *croom;
             mtmp->mstun = 1;
         if (m->confused)
             mtmp->mconf = 1;
-        if (m->invis) {
-            mtmp->minvis = mtmp->perminvis = 1;
+        if (m->invis) 
+		{
+			mtmp->mprops[INVISIBILITY] |= M_INTRINSIC_ACQUIRED;
         }
         if (m->blinded) {
             mtmp->mcansee = 0;

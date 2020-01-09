@@ -46,7 +46,7 @@ enum prop_types {
     SLEEPY            = 27,
     HUNGER            = 28,
     /* Vision and senses */
-    SEE_INVISIBILITY  = 29,
+    SEE_INVISIBLE  = 29,
     TELEPAT           = 30,  /* Blind telepathy is now its own property type*/
     WARNING           = 31,
     WARN_OF_MON       = 32,  /* Obsolete -- JG */
@@ -126,7 +126,13 @@ enum prop_types {
 	VERY_FAST		  = 102,
 	SLOWED			  = 103,
 	CANCELLED		  = 104,
-	LAUGHING		  = 105 //KEEP THIS LAST
+	HIDING		   	  = 105,
+	HALF_MAGIC_RES	  = 106,
+	NO_MAGIC_RES	  = 107,
+	CHARMED			  = 108,
+	PARALYZED		  = 109,
+	SUMMON_FORBIDDEN  = 110,
+	LAUGHING		  = 111 //KEEP THIS LAST
 };
 #define LAST_PROP (LAUGHING)
 

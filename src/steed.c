@@ -152,7 +152,7 @@ struct monst *mtmp;
     mtmp->misc_worn_check |= W_SADDLE;
     saddle->owornmask = W_SADDLE;
     saddle->leashmon = mtmp->m_id;
-    update_mon_intrinsics(mtmp, FALSE);
+    update_mon_extrinsics(mtmp, FALSE);
 }
 
 /*** Riding the monster ***/

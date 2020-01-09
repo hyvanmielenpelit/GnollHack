@@ -916,7 +916,7 @@ struct obj *obj;
 #define SEENMON (MONSEEN_NORMAL | MONSEEN_SEEINVIS | MONSEEN_INFRAVIS)
     how_seen = vis ? howmonseen(mtmp) : 0;
     /* whether monster is able to use its vision-based capabilities */
-    monable = !mtmp->mcancelled && (!mtmp->minvis || perceives(mtmp->data));
+    monable = !mtmp->mcancelled && (!is_not_visible(mtmp) || has_see_invisible(mtmp));
     mlet = mtmp->data->mlet;
     if (mtmp->msleeping) {
         if (vis)
@@ -925,7 +925,7 @@ struct obj *obj;
     } else if (!mtmp->mcansee) {
         if (vis)
             pline("%s can't see anything right now.", Monnam(mtmp));
-    } else if (invis_mirror && !perceives(mtmp->data)) {
+    } else if (invis_mirror && !has_see_invisible(mtmp)) {
         if (vis)
             pline("%s fails to notice your %s.", Monnam(mtmp), mirror);
         /* infravision doesn't produce an image in the mirror */
@@ -973,7 +973,7 @@ struct obj *obj;
         if (!tele_restrict(mtmp))
             (void) rloc(mtmp, TRUE);
     } else if (!is_unicorn(mtmp->data) && !humanoid(mtmp->data)
-               && (!mtmp->minvis || perceives(mtmp->data)) && rn2(5)) {
+               && (!is_not_visible(mtmp) || has_see_invisible(mtmp)) && rn2(5)) {
         boolean do_react = TRUE;
 
         if (mtmp->mfrozen) {
@@ -989,9 +989,9 @@ struct obj *obj;
             monflee(mtmp, d(2, 4), FALSE, FALSE);
         }
     } else if (!Blind) {
-        if (mtmp->minvis && !See_invisible)
+        if (is_not_visible(mtmp) && !See_invisible)
             ;
-        else if ((mtmp->minvis && !perceives(mtmp->data))
+        else if ((is_not_visible(mtmp) && !has_see_invisible(mtmp))
                  /* redundant: can't get here if these are true */
                  || !haseyes(mtmp->data) || notonhead || !mtmp->mcansee)
             pline("%s doesn't seem to notice %s reflection.", Monnam(mtmp),
@@ -2346,7 +2346,7 @@ long timeout;
         /* [m_monnam() yields accurate mon type, overriding hallucination] */
         Sprintf(monnambuf, "%s", an(m_monnam(mtmp)));
         and_vanish[0] = '\0';
-        if ((mtmp->minvis && !See_invisible)
+        if ((is_not_visible(mtmp) && !See_invisible)
             || (mtmp->data->mlet == S_MIMIC
                 && M_AP_TYPE(mtmp) != M_AP_NOTHING))
             suppress_see = TRUE;

@@ -2058,7 +2058,7 @@ boolean *prev_loot;
             if ((unwornmask = otmp->owornmask) != 0L) {
                 mtmp->misc_worn_check &= ~unwornmask;
                 otmp->owornmask = 0L;
-                update_mon_intrinsics(mtmp, FALSE);
+                update_mon_extrinsics(mtmp, FALSE);
 				if (mtmp == u.usteed && otmp->otyp == SADDLE)
 					dismount_steed(DISMOUNT_FELL);
 

@@ -64,7 +64,7 @@ struct permonst *ptr;
         if (!is_swimmer(ptr))
             return TRUE;
     } else if (Is_firelevel(&u.uz)) {
-        if (!pm_resistance(ptr, MR_FIRE))
+        if (!has_innate(ptr, MR_FIRE))
             return TRUE;
     } else if (Is_airlevel(&u.uz)) {
         if (!(is_flyer(ptr) && ptr->mlet != S_TRAPPER) && !is_floater(ptr)
@@ -2147,10 +2147,6 @@ unsigned long mmflags;
         break;
     case S_LIGHT:
     case S_ELEMENTAL:
-        if (mndx == PM_STALKER || mndx == PM_BLACK_LIGHT) {
-            mtmp->perminvis = TRUE;
-            mtmp->minvis = TRUE;
-        }
         break;
     case S_EEL:
         (void) hideunder(mtmp);
@@ -2225,8 +2221,10 @@ unsigned long mmflags;
             set_apparxy(mtmp);
         }
     }
-    if (is_dprince(ptr) && ptr->msound == MS_BRIBE) {
-        mtmp->mpeaceful = mtmp->minvis = mtmp->perminvis = 1;
+    if (is_dprince(ptr) && ptr->msound == MS_BRIBE) 
+	{
+		mtmp->mpeaceful = 1;
+		increase_mon_temporary_property(mtmp, INVISIBILITY, 500);
         mtmp->mavenge = 0;
 		if ((uwep && uwep->oartifact && artifact_has_flag(uwep, AF_ANGERS_DEMONS))
 			|| (uarms && uarms->oartifact && artifact_has_flag(uarms, AF_ANGERS_DEMONS))

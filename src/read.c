@@ -2218,7 +2218,7 @@ boolean confused, byu;
 
         if (cansee(mtmp->mx, mtmp->my)) {
             pline("%s is hit by %s!", Monnam(mtmp), doname(otmp2));
-            if (mtmp->minvis && !canspotmon(mtmp))
+            if (is_not_visible(mtmp) && !canspotmon(mtmp))
                 map_invisible(mtmp->mx, mtmp->my);
         } else if (u.uswallow && mtmp == u.ustuck)
             You_hear("something hit %s %s over your %s!",
@@ -2992,7 +2992,7 @@ struct _create_particular_data *d;
         }
         if (d->invisible) {
             int mx = mtmp->mx, my = mtmp->my;
-            mon_set_minvis(mtmp);
+			mtmp->mprops[INVISIBILITY] |= M_INTRINSIC_ACQUIRED;
             if (does_block(mx, my, &levl[mx][my]))
                 block_point(mx, my);
             else

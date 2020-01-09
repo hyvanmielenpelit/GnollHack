@@ -2351,7 +2351,7 @@ void
 escape_tomb()
 {
     debugpline0("escape_tomb");
-    if ((Teleportation || can_teleport(youmonst.data))
+    if ((Teleportation || has_innate_teleportation(youmonst.data))
         && (Teleport_control || rn2(3) < Luck+2)) {
         You("attempt a teleport spell.");
         (void) dotele(FALSE);        /* calls unearth_you() */

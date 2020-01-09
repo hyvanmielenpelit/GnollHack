@@ -709,7 +709,7 @@ struct attack *mattk;
     }
 
     if (magr->mcancelled || !magr->mcansee || !mdef->mcansee
-        || (magr->minvis && !perceives(mdef->data)) || mdef->msleeping) {
+        || (is_not_visible(magr) && !has_see_invisible(mdef)) || mdef->msleeping) {
         if (vis && canspotmon(mdef))
             pline("but nothing happens.");
         return MM_MISS;
@@ -725,7 +725,7 @@ struct attack *mattk;
                                       "The gaze is reflected away by %s %s.");
                 return MM_MISS;
             }
-            if (mdef->minvis && !perceives(magr->data)) {
+            if (is_not_visible(mdef) && !has_see_invisible(magr)) {
                 if (canseemon(magr)) {
                     pline(
                       "%s doesn't seem to notice that %s gaze was reflected.",
@@ -1404,7 +1404,7 @@ register struct obj* omonwep;
                 if (otmp->owornmask & W_WEP)
                     mwepgone(mdef);
                 otmp->owornmask = 0L;
-                update_mon_intrinsics(mdef, FALSE);
+                update_mon_extrinsics(mdef, FALSE);
                 /* give monster a chance to wear other equipment on its next
                    move instead of waiting until it picks something up */
                 mdef->misc_worn_check |= I_SPECIAL;
@@ -1847,7 +1847,7 @@ int mdead;
                 if (!rn2(20))
                     tmp = 24;
                 if (magr->mcansee && haseyes(madat) && mdef->mcansee
-                    && (perceives(madat) || !mdef->minvis)) {
+                    && (is_not_visible(magr) || !has_invisibility(mdef))) {
                     /* construct format string; guard against '%' in Monnam */
                     Strcpy(buf, s_suffix(Monnam(mdef)));
                     (void) strNsubst(buf, "%", "%%", 0);

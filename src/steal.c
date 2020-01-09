@@ -619,7 +619,7 @@ struct monst *mtmp;
         Strcpy(buf, doname(otmp));
         (void) mpickobj(mtmp, otmp); /* could merge and free otmp but won't */
         pline("%s steals %s!", Monnam(mtmp), buf);
-        if (can_teleport(mtmp->data) && !tele_restrict(mtmp))
+        if (has_teleportation(mtmp) && !tele_restrict(mtmp))
             (void) rloc(mtmp, TRUE);
     }
 }
@@ -709,7 +709,7 @@ boolean verbosely;
        throws rider, possibly inflicting fatal damage and producing bones */
 	if (update_mon)
 	{
-		update_mon_intrinsics(mon, TRUE);
+		update_mon_extrinsics(mon, TRUE);
 		if (mon == u.usteed && obj->otyp == SADDLE)
 			dismount_steed(DISMOUNT_FELL);
 	}
@@ -804,7 +804,7 @@ boolean is_pet; /* If true, pet should keep wielded/worn items */
 			   throws rider, possibly inflicting fatal damage and producing bones */
 			if (update_mon)
 			{
-				update_mon_intrinsics(mtmp, TRUE);
+				update_mon_extrinsics(mtmp, TRUE);
 				if (mtmp == u.usteed && otmp->otyp == SADDLE)
 					dismount_steed(DISMOUNT_FELL);
 			}

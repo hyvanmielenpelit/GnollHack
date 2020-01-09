@@ -516,15 +516,17 @@ struct obj *otmp;
         break;
     case WAN_MAKE_INVISIBLE: {
 		res = 1;
-		int oldinvis = mtmp->minvis;
+		int oldinvis = has_invisibility(mtmp);
         char nambuf[BUFSZ];
 
         if (disguised_mimic)
             seemimic(mtmp);
         /* format monster's name before altering its visibility */
         Strcpy(nambuf, Monnam(mtmp));
-        mon_set_minvis(mtmp);
-        if (!oldinvis && knowninvisible(mtmp)) {
+		
+		increase_mon_temporary_property(mtmp, INVISIBILITY, 100 + rn2(50));
+
+		if (!oldinvis && knowninvisible(mtmp)) {
             pline("%s turns transparent!", nambuf);
             reveal_invis = TRUE;
             learn_it = TRUE;
@@ -780,7 +782,7 @@ struct monst* mtmp;
 	char buf[BUFSZ];
 	const char* txt;
 
-	Sprintf(buf, "%s current abilities:", s_suffix(Monnam(mtmp)));
+	Sprintf(buf, "%s current abilities:", s_suffix(noit_Monnam(mtmp)));
 	txt = buf;
 	putstr(datawin, 0, txt);
 
@@ -898,10 +900,69 @@ struct monst* mtmp;
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
-	if (can_teleport(mtmp->data))
+	if (has_invisibility(mtmp))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Invisible", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+	if (has_hiding(mtmp))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Hiding", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+	if (has_see_invisible(mtmp))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Sees invisible", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+	if (has_cancelled(mtmp))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Cancelled", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (has_slowed(mtmp))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Slowed", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (has_very_fast(mtmp))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Very fast", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+	else if (has_fast(mtmp))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Fast", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (has_teleportation(mtmp))
 	{
 		abilcnt++;
 		Sprintf(buf, " %2d - Teleportation", abilcnt);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+	if (has_teleport_control(mtmp))
+	{
+		abilcnt++;
+		Sprintf(buf, " %2d - Teleport control", abilcnt);
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
@@ -5410,7 +5471,8 @@ boolean stop_at_first_hit_object;
                    keep on going.  Note that we use mtmp->minvis
                    not canspotmon() because it makes no difference
                    whether the hero can see the monster or not. */
-                if (mtmp->minvis) {
+                if (has_invisibility(mtmp)) 
+				{
                     obj->ox = u.ux, obj->oy = u.uy;
                     (void) flash_hits_mon(mtmp, obj);
                 } else {
@@ -5423,7 +5485,7 @@ boolean stop_at_first_hit_object;
                    prepared for multiple hits so just get first one
                    that's either visible or could see its invisible
                    self.  [No tmp_at() cleanup is needed here.] */
-                if (!mtmp->minvis || perceives(mtmp->data))
+                if (!has_invisibility(mtmp) || has_see_invisible(mtmp))
                     return mtmp;
             } else if (weapon != ZAPPED_WAND) {
 
@@ -6127,7 +6189,7 @@ const char *fltxt;
                     setmnotwielded(mon, otmp);
                 /* also dismounts hero if this object is steed's saddle */
 				otmp->owornmask = 0L;
-				update_mon_intrinsics(mon, TRUE);
+				update_mon_extrinsics(mon, TRUE);
 				if (mon == u.usteed && otmp->otyp == SADDLE)
 					dismount_steed(DISMOUNT_FELL);
             }

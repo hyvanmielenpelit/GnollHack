@@ -553,11 +553,13 @@ register struct monst *mtmp;
     }
 
     /* Slight advantage given. */
-    if (is_dprince(mtmp->data) && mtmp->minvis) {
+    if (is_dprince(mtmp->data) && has_invisibility(mtmp)) 
+	{
         boolean wasunseen = !canspotmon(mtmp);
 
-        mtmp->minvis = mtmp->perminvis = 0;
-        if (wasunseen && canspotmon(mtmp)) {
+		set_mon_temporary_property(mtmp, INVISIBILITY, 0);
+
+		if (wasunseen && canspotmon(mtmp)) {
             pline("%s appears before you.", Amonnam(mtmp));
             mtmp->mstrategy &= ~STRAT_APPEARMSG;
         }

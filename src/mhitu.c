@@ -197,7 +197,7 @@ struct attack *mattk;
               ? could_seduce(mtmp, &youmonst, mattk) : 0);
     Monst_name = Monnam(mtmp);
 
-    if (!mtmp->mcansee || (Invis && !perceives(mtmp->data))) {
+    if (!mtmp->mcansee || (Invis && !has_see_invisible(mtmp))) {
         const char *swings = (mattk->aatyp == AT_BITE) ? "snaps"
                              : (mattk->aatyp == AT_KICK) ? "kicks"
                                : (mattk->aatyp == AT_STNG
@@ -612,7 +612,7 @@ register struct monst *mtmp;
 	tmp += m_strdex_to_hit_bonus(mtmp); //Add monster's STR and DEX bonus, thrown weapons are dealt separately
 	if (multi < 0)
         tmp += 4;
-    if ((Invis && !perceives(mdat)) || !mtmp->mcansee)
+    if ((Invis && !has_see_invisible(mtmp)) || !mtmp->mcansee)
         tmp -= 2;
     if (mtmp->mtrapped)
         tmp -= 2;
@@ -620,8 +620,9 @@ register struct monst *mtmp;
         tmp = 1;
 
     /* make eels visible the moment they hit/miss us */
-    if (mdat->mlet == S_EEL && mtmp->minvis && cansee(mtmp->mx, mtmp->my)) {
-        mtmp->minvis = 0;
+    if (mdat->mlet == S_EEL && has_hiding(mtmp) && cansee(mtmp->mx, mtmp->my)) 
+	{
+		mtmp->mprops[HIDING] = 0; /* Clear it out entirely */
         newsym(mtmp->mx, mtmp->my);
     }
 
@@ -3310,14 +3311,14 @@ struct attack *mattk; /* non-Null: current attack; Null: general capability */
         genagr = poly_gender();
     } else {
         pagr = magr->data;
-        agrinvis = magr->minvis;
+        agrinvis = has_invisibility(magr);
         genagr = gender(magr);
     }
     if (mdef == &youmonst) {
         defperc = (See_invisible != 0);
         gendef = poly_gender();
     } else {
-        defperc = perceives(mdef->data);
+        defperc = has_see_invisible(mdef);
         gendef = gender(mdef);
     }
 
@@ -3807,7 +3808,7 @@ struct attack *mattk;
                 if (!rn2(20))
                     tmp = 24;
                 if (mtmp->mcansee && haseyes(mtmp->data) && rn2(3)
-                    && (perceives(mtmp->data) || !Invis)) {
+                    && (has_see_invisible(mtmp) || !Invis)) {
                     if (Blind)
                         pline("As a blind %s, you cannot defend yourself.",
                               youmonst.data->mname);

@@ -1252,7 +1252,7 @@ do_mname()
             && (!(cansee(cx, cy) || see_with_infrared(mtmp))
                 || mtmp->mundetected || M_AP_TYPE(mtmp) == M_AP_FURNITURE
                 || M_AP_TYPE(mtmp) == M_AP_OBJECT
-                || (mtmp->minvis && !See_invisible)))) {
+                || (is_not_visible(mtmp) && !See_invisible)))) {
         pline("I see no monster there.");
         return;
     }
@@ -1790,7 +1790,7 @@ boolean called;
         article = ARTICLE_THE;
 
     do_hallu = Hallucination && !(suppress & SUPPRESS_HALLUCINATION);
-    do_invis = mtmp->minvis && !(suppress & SUPPRESS_INVISIBLE);
+    do_invis = is_not_visible(mtmp) && !(suppress & SUPPRESS_INVISIBLE);
     do_it = !canspotmon(mtmp) && article != ARTICLE_YOUR
             && !program_state.gameover && mtmp != u.usteed
             && !(u.uswallow && mtmp == u.ustuck) && !(suppress & SUPPRESS_IT);
@@ -1810,16 +1810,16 @@ boolean called;
         char priestnambuf[BUFSZ];
         char *name;
         long save_prop = EHalluc_resistance;
-        unsigned save_invis = mtmp->minvis;
+        unsigned short save_invis = mtmp->mprops[INVISIBILITY];
 
         /* when true name is wanted, explicitly block Hallucination */
         if (!do_hallu)
             EHalluc_resistance = 1L;
         if (!do_invis)
-            mtmp->minvis = 0;
+			mtmp->mprops[INVISIBILITY] = 0;
         name = priestname(mtmp, priestnambuf);
         EHalluc_resistance = save_prop;
-        mtmp->minvis = save_invis;
+		mtmp->mprops[INVISIBILITY] = save_invis;
         if (article == ARTICLE_NONE && !strncmp(name, "the ", 4))
             name += 4;
         return strcpy(buf, name);

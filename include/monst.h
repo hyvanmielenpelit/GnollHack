@@ -82,15 +82,16 @@ struct monst {
     uchar m_ap_type;      /* what mappearance is describing, m_ap_types */
 
     schar mtame;                /* level of tameness, implies peaceful */
-    unsigned long mextrinsics;	/* low 8 correspond to mresists */
-	unsigned int mprops[LAST_PROP + 1]; /* one bit for extrinsic (item or environment), one bit for permanent acquired, and 14 bits for timer (max 16k rounds) */
+
+	unsigned short mprops[LAST_PROP + 1]; /* simplified props structure for monsters, taking 1/6 u.uprops memory space but doing about the same thing anyway */
+
+#define M_TIMEOUT				0x3fff	/* timeout mask */
+#define M_INTRINSIC_ACQUIRED	0x4000  /* permanent intrisic acquired e.g. by eating monster corpses */
+#define M_EXTRINSIC				0x8000  /* extrinsic from items or environment, updated frequently by clearing and checking a new value */
+
 	int mspec_used;             /* monster's special ability attack timeout */
 
     Bitfield(female, 1);		/* is female */
-    Bitfield(minvis, 1);		/* currently invisible */
-	int minvisibility_timer;	/* invisibility timeout */
-	Bitfield(invis_blkd, 1);	/* invisibility blocked */
-    Bitfield(perminvis, 1);		/* intrinsic minvis value */
     Bitfield(mcancelled, 1);	/* has been cancelled */
 	int mcancelled_timer;		/* cancellation timeout */
 	Bitfield(slowed, 1);        /* has been slowed */

@@ -216,8 +216,8 @@
 #define Hunger (HHunger || EHunger)
 
 /*** Vision and senses ***/
-#define HSee_invisible u.uprops[SEE_INVISIBILITY].intrinsic
-#define ESee_invisible u.uprops[SEE_INVISIBILITY].extrinsic
+#define HSee_invisible u.uprops[SEE_INVISIBLE].intrinsic
+#define ESee_invisible u.uprops[SEE_INVISIBLE].extrinsic
 #define See_invisible (HSee_invisible || ESee_invisible)
 
 #define HTelepat u.uprops[TELEPAT].intrinsic
@@ -518,6 +518,30 @@
 #define HCancelled u.uprops[CANCELLED].intrinsic
 #define ECancelled u.uprops[CANCELLED].extrinsic
 #define Cancelled (HCancelled || ECancelled)
+
+#define HHalf_magic_resistance u.uprops[HALF_MAGIC_RES].intrinsic
+#define EHalf_magic_resistance u.uprops[HALF_MAGIC_RES].extrinsic
+#define Half_magic_resistance (HHalf_magic_resistance || EHalf_magic_resistance)
+
+#define HNo_magic_resistance u.uprops[NO_MAGIC_RES].intrinsic
+#define ENo_magic_resistance u.uprops[NO_MAGIC_RES].extrinsic
+#define No_magic_resistance (HNo_magic_resistance || ENo_magic_resistance)
+
+#define HParalyzed u.uprops[PARALYZED].intrinsic
+#define EParalyzed u.uprops[PARALYZED].extrinsic
+#define Paralyzed (HParalyzed || EParalyzed)
+
+#define HSummon_forbidden u.uprops[SUMMON_FORBIDDEN].intrinsic
+#define ESummon_forbidden u.uprops[SUMMON_FORBIDDEN].extrinsic
+#define Summon_forbidden (HSummon_forbidden || ESummon_forbidden)
+
+#define HCharmed u.uprops[CHARMED].intrinsic
+#define ECharmed u.uprops[CHARMED].extrinsic
+#define Charmed (HCharmed || ECharmed)
+
+#define HHiding u.uprops[HIDING].intrinsic
+#define EHiding u.uprops[HIDING].extrinsic
+#define Hiding (HHiding || EHiding)
 
 #define HSlowed u.uprops[SLOWED].intrinsic
 #define ESlowed u.uprops[SLOWED].extrinsic

@@ -77,16 +77,16 @@ set_uasmon()
                         || dmgtype(mdat, AD_RBRE)));
     PROPSET(SICK_RES, (mdat->mlet == S_FUNGUS || mdat == &mons[PM_GHOUL]));
 
-    PROPSET(STUNNED, (mdat == &mons[PM_STALKER] || is_bat(mdat)));
+//    PROPSET(STUNNED, (mdat == &mons[PM_STALKER] || is_bat(mdat))); /* Not sure what this was about --JG */
     PROPSET(HALLUC_RES, dmgtype(mdat, AD_HALU));
-    PROPSET(SEE_INVISIBILITY, perceives(mdat));
-	PROPSET(BLIND_TELEPAT, blind_telepathic(mdat));
-	PROPSET(TELEPAT, telepathic(mdat));
+    PROPSET(SEE_INVISIBLE, has_innate_see_invisible(mdat));
+	PROPSET(BLIND_TELEPAT, has_innate_blind_telepathy(mdat));
+	PROPSET(TELEPAT, has_innate_telepathy(mdat));
     /* note that Infravision uses mons[race] rather than usual mons[role] */
     PROPSET(INFRAVISION, infravision(Upolyd ? mdat : &mons[urace.malenum]));
-    PROPSET(INVISIBILITY, pm_invisible(mdat));
-    PROPSET(TELEPORT, can_teleport(mdat));
-    PROPSET(TELEPORT_CONTROL, control_teleport(mdat));
+    PROPSET(INVISIBILITY, has_innate_invisibility(mdat));
+    PROPSET(TELEPORT, has_innate_teleportation(mdat));
+    PROPSET(TELEPORT_CONTROL, has_innate_teleport_control(mdat));
     PROPSET(LEVITATION, is_floater(mdat));
     /* floating eye is the only 'floater'; it is also flagged as a 'flyer';
        suppress flying for it so that enlightenment doesn't confusingly
@@ -96,7 +96,7 @@ set_uasmon()
     /* [don't touch MAGICAL_BREATHING here; both Amphibious and Breathless
        key off of it but include different monster forms...] */
     PROPSET(PASSES_WALLS, passes_walls(mdat));
-    PROPSET(REGENERATION, regenerates(mdat));
+    PROPSET(REGENERATION, has_innate_regeneration(mdat));
     PROPSET(REFLECTING, is_reflecting(&youmonst));
 #undef PROPSET
 
@@ -1549,9 +1549,9 @@ dogaze()
             continue;
         if (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my)) {
             looked++;
-            if (Invis && !perceives(mtmp->data)) {
+            if (Invis && !has_see_invisible(mtmp)) {
                 pline("%s seems not to notice your gaze.", Monnam(mtmp));
-            } else if (mtmp->minvis && !See_invisible) {
+            } else if (has_invisibility(mtmp) && !See_invisible) {
                 You_cant("see where to gaze at %s.", Monnam(mtmp));
             } else if (M_AP_TYPE(mtmp) == M_AP_FURNITURE
                        || M_AP_TYPE(mtmp) == M_AP_OBJECT) {
@@ -1835,11 +1835,11 @@ domindblast()
             continue;
         if (mtmp->mpeaceful)
             continue;
-        u_sen = (telepathic(mtmp->data) || unblind_telepathic(mtmp->data)) && !mtmp->mcansee;
-        if (u_sen || (telepathic(mtmp->data) && rn2(2)) || !rn2(10)) {
+        u_sen = (has_telepathy(mtmp)) && !mtmp->mcansee;
+        if (u_sen || (has_telepathy(mtmp) && rn2(2)) || !rn2(10)) {
             You("lock in on %s %s.", s_suffix(mon_nam(mtmp)),
                 u_sen ? "telepathy"
-                      : telepathic(mtmp->data) || unblind_telepathic(mtmp->data) ? "latent telepathy" : "mind");
+                      : has_telepathy(mtmp) ? "latent telepathy" : "mind");
             mtmp->mhp -= rnd(15);
             if (DEADMONSTER(mtmp))
                 killed(mtmp);

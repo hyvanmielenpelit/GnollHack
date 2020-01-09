@@ -2320,7 +2320,7 @@ struct attack *mattk;
             if (otmp->owornmask & W_WEP)
                 setmnotwielded(mdef, otmp);
             otmp->owornmask = 0L;
-            update_mon_intrinsics(mdef, FALSE);
+            update_mon_extrinsics(mdef, FALSE);
 			if (mdef == u.usteed && otmp->otyp == SADDLE)
 				dismount_steed(DISMOUNT_FELL);
 
@@ -3871,7 +3871,7 @@ struct monst *mtmp;
 
         /* cloned Wiz starts out mimicking some other monster and
            might make himself invisible before being revealed */
-        if (mtmp->minvis && !See_invisible)
+        if (is_not_visible(mtmp) && !See_invisible)
             what = generic;
         else
             what = a_monnam(mtmp);

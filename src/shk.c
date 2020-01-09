@@ -1798,14 +1798,14 @@ boolean silently;
     long umoney;
     struct eshk *eshkp = ESHK(shkp);
     boolean take = FALSE, taken = FALSE;
-    unsigned save_minvis = shkp->minvis;
+	unsigned short save_minvis = shkp->mprops[INVISIBILITY];
     int roomno = *u.ushops;
     char takes[BUFSZ];
 
     /* not strictly consistent; affects messages and prevents next player
        (if bones are saved) from blundering into or being ambused by an
        invisible shopkeeper */
-    shkp->minvis = 0;
+	shkp->mprops[INVISIBILITY] = 0;
     /* The simplifying principle is that first-come
        already took everything you had. */
     if (numsk > 1) {
@@ -1888,7 +1888,7 @@ boolean silently;
             home_shk(shkp, FALSE);
     }
  clear:
-    shkp->minvis = save_minvis;
+	shkp->mprops[INVISIBILITY] = save_minvis;
     setpaid(shkp);
     return taken;
 }

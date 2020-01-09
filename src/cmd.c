@@ -3214,10 +3214,10 @@ int final;
     /*** Vision and senses ***/
     if (See_invisible) {
         if (!Blind)
-            enl_msg(You_, "see", "saw", " invisible", from_what(SEE_INVISIBILITY));
+            enl_msg(You_, "see", "saw", " invisible", from_what(SEE_INVISIBLE));
         else
             enl_msg(You_, "will see", "would have seen",
-                    " invisible when not blind", from_what(SEE_INVISIBILITY));
+                    " invisible when not blind", from_what(SEE_INVISIBLE));
     }
 	if (Enhanced_vision)
 		you_have("enhanced vision", from_what(ENHANCED_VISION));
@@ -3500,8 +3500,23 @@ int final;
 	}
 	if (Slowed)
 		you_are("slowed", from_what(SLOWED));
+	if (Paralyzed)
+		you_are("paralyzed", from_what(PARALYZED));
 	if (Cancelled)
 		you_are("cancelled", from_what(CANCELLED));
+	if (Summon_forbidden)
+		you_have("summoning forbidden", from_what(SUMMON_FORBIDDEN));
+
+	if (No_magic_resistance)
+		you_have("no magic resistance", from_what(NO_MAGIC_RES));
+	else if (Half_magic_resistance)
+		you_have("half normal magic resistance", from_what(HALF_MAGIC_RES));
+
+	if (Charmed)
+		you_are("charmed", from_what(CHARMED));
+
+	if (Hiding)
+		you_are("hiding", from_what(HIDING));
 	if (Reflecting)
         you_have("reflection", from_what(REFLECTING));
     if (Free_action)

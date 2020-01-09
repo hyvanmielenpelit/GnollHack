@@ -9,53 +9,96 @@
 #define bigmonst(ptr) ((ptr)->msize >= MZ_LARGE)
 #define hugemonst(ptr) ((ptr)->msize >= MZ_HUGE)
 
-#define pm_resistance(ptr, typ) (((ptr)->mresists & (typ)) != 0)
+#define has_innate(ptr, bit) \
+    (((ptr)->mresists & (bit)) != 0)
+#define has_property(mon, propindex)\
+	((mon)->mprops[(propindex)] != 0)
 
 #define resists_fire(mon) \
-    ((((mon)->data->mresists | (mon)->mextrinsics) & MR_FIRE) != 0)
+    (has_innate((mon)->data, MR_FIRE) || has_property(mon, FIRE_RES))
 #define resists_cold(mon) \
-    ((((mon)->data->mresists | (mon)->mextrinsics) & MR_COLD) != 0)
+    (has_innate((mon)->data, MR_COLD) || has_property(mon, COLD_RES))
 #define resists_sleep(mon) \
-    ((((mon)->data->mresists | (mon)->mextrinsics) & MR_SLEEP) != 0)
+    (has_innate((mon)->data, MR_SLEEP) || has_property(mon, SLEEP_RES))
 #define resists_disint(mon) \
-    ((((mon)->data->mresists | (mon)->mextrinsics) & MR_DISINT) != 0)
+    (has_innate((mon)->data, MR_DISINT) || has_property(mon, DISINT_RES))
 #define resists_elec(mon) \
-    ((((mon)->data->mresists | (mon)->mextrinsics) & MR_ELEC) != 0)
+    (has_innate((mon)->data, MR_ELEC) || has_property(mon, SHOCK_RES))
 #define resists_death(mon) \
-    ((((mon)->data->mresists | (mon)->mextrinsics) & MR_DEATH) != 0)
+    (has_innate((mon)->data, MR_DEATH) || has_property(mon, DEATH_RES))
 #define resists_lycanthropy(mon) \
-    ((((mon)->data->mresists | (mon)->mextrinsics) & MR_LYCANTHROPY) != 0)
+    (has_innate((mon)->data, MR_LYCANTHROPY) || has_property(mon, LYCANTHROPY_RES))
 #define resists_poison(mon) \
-    ((((mon)->data->mresists | (mon)->mextrinsics) & MR_POISON) != 0)
+    (has_innate((mon)->data, MR_POISON) || has_property(mon, POISON_RES))
 #define resists_acid(mon) \
-    ((((mon)->data->mresists | (mon)->mextrinsics) & MR_ACID) != 0)
+    (has_innate((mon)->data, MR_ACID) || has_property(mon, ACID_RES))
 #define resists_ston(mon) \
-    ((((mon)->data->mresists | (mon)->mextrinsics) & MR_STONE) != 0)
+    (has_innate((mon)->data, MR_STONE) || has_property(mon, STONE_RES))
 #define resists_magicmissile(mon) \
-    ((((mon)->data->mresists | (mon)->mextrinsics) & MR_MAGICMISSILE) != 0)
+    has_innate((mon)->data, MR_MAGICMISSILE)
 #define resists_magic(mon) \
-    ((((mon)->data->mresists | (mon)->mextrinsics) & MR_MAGIC) != 0)
+    (has_innate((mon)->data, MR_MAGIC) || has_property(mon, ANTIMAGIC))
 #define resists_charm(mon) \
-    ((((mon)->data->mresists | (mon)->mextrinsics) & MR_CHARM) != 0)
+    (has_innate((mon)->data, MR_CHARM) || has_property(mon, CHARM_RES))
 #define is_reflecting(mon) \
-	((((mon)->data->mresists | (mon)->mextrinsics) & MR_REFLECTING) != 0)
+	(has_innate((mon)->data, MR_REFLECTING) || has_property(mon, REFLECTING))
 #define resists_drain(mon) \
-    ((((mon)->data->mresists | (mon)->mextrinsics) & MR_DRAIN) != 0)
+    (has_innate((mon)->data, MR_DRAIN) || has_property(mon, DRAIN_RES))
 #define resists_flash(mon) \
-    ((((mon)->data->mresists | (mon)->mextrinsics) & MR_FLASH) != 0)
+    (has_innate((mon)->data, MR_FLASH) || has_property(mon, FLASH_RES))
 
-#if 0
-#define has_mon_property_invisible(mon) \
-    ((((mon)->data->mresists | (mon)->mextrinsics) & MR_INVISIBLE) != 0 || (mon)->mintrinsic[INVISIBILITY] != 0 )
-#define has_mon_property_blocks_invisiblity(mon) \
-    ((((mon)->data->mresists | (mon)->mextrinsics) & MR_BLOCKS_INVISIBLITY) != 0 || (mon)->mintrinsic[BLOCKS_INVISIBILITY] != 0 )
-#define has_mon_property_fast(mon) \
-    ((((mon)->data->mresists | (mon)->mextrinsics) & MR_FAST) != 0 || (mon)->mintrinsic[FAST] != 0 )
-#define has_mon_property_very_fast(mon) \
-    ((((mon)->data->mresists | (mon)->mextrinsics) & MR_VERY_FAST) != 0 || (mon)->mintrinsic[VERY_FAST] != 0 )
-#define has_mon_property_very_fast(mon) \
-    ((((mon)->data->mresists | (mon)->mextrinsics) & MR_VERY_FAST) != 0 || (mon)->mintrinsic[VERY_FAST] != 0 )
-#endif
+
+#define has_innate_invisibility(ptr) \
+	has_innate(ptr, MR_INVISIBLE)
+
+#define has_blocks_invisibility(mon) \
+	has_property(mon, BLOCKS_INVISIBILITY)
+
+#define has_slowed(mon) \
+	has_property(mon, SLOWED)
+
+#define has_cancelled(mon) \
+	has_property(mon, CANCELLED)
+
+#define has_half_magic_resistance(mon) \
+	has_property(mon, HALF_MAGIC_RES)
+
+#define has_no_magic_resistance(mon) \
+	has_property(mon, NO_MAGIC_RES)
+
+#define has_paralyzed(mon) \
+	has_property(mon, PARALYZED)
+
+#define has_summon_forbidden(mon) \
+	has_property(mon, SUMMON_FORBIDDEN)
+
+#define has_charmed(mon) \
+	has_property(mon, CHARMED)
+
+#define has_stunned(mon) \
+	has_property(mon, STUNNED)
+
+#define has_confused(mon) \
+	has_property(mon, CONFUSED)
+
+#define has_blinded(mon) \
+	has_property(mon, BLINDED)
+
+#define has_invisibility(mon) \
+	((has_innate_invisibility(mon->data) || has_property(mon, INVISIBILITY)) && !has_blocks_invisibility(mon))
+
+#define has_hiding(mon) \
+	has_property(mon, HIDING)
+
+#define is_not_visible(mon) \
+	(has_invisibility(mon) || has_hiding(mon))
+
+#define has_fast(mon) \
+	(has_property(mon, FAST) && !has_slowed(mon))
+
+#define has_very_fast(mon) \
+	(has_property(mon, VERY_FAST) && !has_slowed(mon))
+
 
 #define confers_strength(ptr) \
     (((ptr)->mconveys & MC_STRENGTH) != 0)
@@ -118,15 +161,30 @@
 #define lays_eggs(ptr) (((ptr)->mflags1 & M1_OVIPAROUS) != 0L)
 #define eggs_in_water(ptr) \
     (lays_eggs(ptr) && (ptr)->mlet == S_EEL && is_swimmer(ptr))
-#define regenerates(ptr) (((ptr)->mflags1 & M1_REGEN) != 0L)
-#define perceives(ptr) (((ptr)->mflags1 & M1_SEE_INVIS) != 0L)
-#define can_teleport(ptr) (((ptr)->mflags1 & M1_TPORT) != 0L)
-#define control_teleport(ptr) (((ptr)->mflags1 & M1_TPORT_CNTRL) != 0L)
-#define blind_telepathic(ptr)                                                \
+#define has_innate_regeneration(ptr) (((ptr)->mflags1 & M1_REGEN) != 0L)
+#define has_innate_see_invisible(ptr) (((ptr)->mflags1 & M1_SEE_INVIS) != 0L)
+#define has_innate_teleportation(ptr) (((ptr)->mflags1 & M1_TPORT) != 0L)
+#define has_innate_teleport_control(ptr) (((ptr)->mflags1 & M1_TPORT_CNTRL) != 0L)
+#define has_innate_blind_telepathy(ptr)                                                \
      (((ptr)->mflags3 & M3_BLIND_TELEPATHIC) != 0L)
 #define unblind_telepathic(ptr)                                                \
      (((ptr)->mflags3 & M3_UNBLIND_TELEPATHIC) != 0L)
-#define telepathic(ptr) unblind_telepathic(ptr) 
+#define has_innate_telepathy(ptr) unblind_telepathic(ptr) 
+
+#define has_see_invisible(mon) \
+	(has_innate_see_invisible((mon)->data) || has_property(mon, SEE_INVISIBLE))
+#define has_regeneration(mon) \
+	(has_innate_regeneration((mon)->data) || has_property(mon, REGENERATION))
+#define has_teleportation(mon) \
+	(has_innate_teleportation((mon)->data) || has_property(mon, TELEPORT))
+#define has_teleport_control(mon) \
+	(has_innate_teleport_control((mon)->data) || has_property(mon, TELEPORT_CONTROL))
+#define has_blind_telepathy(mon) \
+	(has_innate_blind_telepathy((mon)->data) || has_property(mon, BLIND_TELEPAT))
+#define has_telepathy(mon) \
+	(has_innate_telepathy((mon)->data) || has_property(mon, TELEPAT))
+
+
 #define is_armed(ptr) attacktype(ptr, AT_WEAP)
 #define acidic(ptr) (((ptr)->mflags1 & M1_ACID) != 0L)
 #define poisonous(ptr) (((ptr)->mflags1 & M1_POIS) != 0L)
@@ -252,8 +310,6 @@
 /*	[note: the light ranges above were reduced to 1 for performance...] */
 #define likes_lava(ptr) \
     (ptr == &mons[PM_FIRE_ELEMENTAL] || ptr == &mons[PM_SALAMANDER])
-#define pm_invisible(ptr) \
-    ((ptr) == &mons[PM_STALKER] || (ptr) == &mons[PM_BLACK_LIGHT])
 
 /* could probably add more */
 #define likes_fire(ptr)                                                  \

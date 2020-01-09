@@ -1438,7 +1438,7 @@ set_mimic_blocking()
     for (mon = fmon; mon; mon = mon->nmon) {
         if (DEADMONSTER(mon))
             continue;
-        if (mon->minvis && is_lightblocker_mappear(mon)) {
+        if (has_hiding(mon) && is_lightblocker_mappear(mon)) {
             if (See_invisible)
                 block_point(mon->mx, mon->my);
             else

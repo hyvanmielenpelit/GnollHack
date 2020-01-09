@@ -311,9 +311,11 @@ char *pname; /* caller-supplied output buffer */
     *pname = '\0';
     if (!do_hallu || !bogon_is_pname(whatcode))
         Strcat(pname, "the ");
-    if (mon->minvis)
+    if (has_invisibility(mon))
         Strcat(pname, "invisible ");
-    if (mon->isminion && EMIN(mon)->renegade)
+	if (has_hiding(mon))
+		Strcat(pname, "hiding ");
+	if (mon->isminion && EMIN(mon)->renegade)
         Strcat(pname, "renegade ");
 
     if (mon->ispriest || aligned_priest) { /* high_priest implies ispriest */
@@ -1014,9 +1016,11 @@ struct monst *mtmp;
         Strcat(info, (mtmp->mspeed == MFAST) ? ", fast"
                       : (mtmp->mspeed == MSLOW) ? ", slow"
                          : ", [? speed]");
-    if (mtmp->minvis)
+    if (has_invisibility(mtmp))
         Strcat(info, ", invisible");
-    if (mtmp == u.ustuck)
+	if (has_hiding(mtmp))
+		Strcat(info, ", hiding");
+	if (mtmp == u.ustuck)
         Strcat(info, sticks(youmonst.data) ? ", held by you"
                       : !u.uswallow ? ", holding you"
                          : attacktype_fordmg(u.ustuck->data, AT_ENGL, AD_DGST)

@@ -1185,7 +1185,7 @@ struct obj *obj;
             mwepgone(mon);
         mon->misc_worn_check &= ~obj->owornmask;
 		obj->owornmask = 0L;
-		update_mon_intrinsics(mon, FALSE);
+		update_mon_extrinsics(mon, FALSE);
 		if (mon == u.usteed && obj->otyp == SADDLE)
 			dismount_steed(DISMOUNT_FELL);
     }

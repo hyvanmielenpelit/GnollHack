@@ -421,17 +421,89 @@ struct obj *obj;
     return res;
 }
 
+
+
 void
-mon_set_minvis(mon)
-struct monst *mon;
+increase_mon_temporary_property(mon, prop_index, amount)
+struct monst* mon;
+int prop_index;
+int amount;
 {
-    mon->perminvis = 1;
-    if (!mon->invis_blkd) {
-        mon->minvis = 1;
-        newsym(mon->mx, mon->my); /* make it disappear */
-        if (mon->wormno)
-            see_wsegs(mon); /* and any tail too */
-    }
+	if (!mon)
+		return;
+
+	if (prop_index < 1 || prop_index > LAST_PROP)
+		return;
+
+	if (!amount)
+		return;
+
+	if (amount > 8191)
+		amount = 8191;
+
+	if (amount < -8191)
+		amount = -8191;
+
+	unsigned short absvalue = (unsigned short)abs(amount);
+	if (absvalue > M_TIMEOUT)
+		absvalue = M_TIMEOUT;
+
+	unsigned short currentvalue = mon->mprops[prop_index] & M_TIMEOUT;
+	unsigned short otherflags = mon->mprops[prop_index] & ~M_TIMEOUT;
+
+	if(amount > 0)
+	{
+		if (currentvalue + absvalue > M_TIMEOUT)
+			mon->mprops[prop_index] = M_TIMEOUT | otherflags;
+		else
+			mon->mprops[prop_index] = currentvalue + absvalue | otherflags;
+	}
+	else if (amount < 0)
+	{
+		if (currentvalue < absvalue)
+			mon->mprops[prop_index] = 0 | otherflags;
+		else
+			mon->mprops[prop_index] = currentvalue - absvalue | otherflags;
+	}
+
+}
+
+
+void
+set_mon_temporary_property(mon, prop_index, amount)
+struct monst* mon;
+int prop_index;
+unsigned short amount;
+{
+	if (!mon)
+		return;
+
+	if (prop_index < 1 || prop_index > LAST_PROP)
+		return;
+
+	if (!amount)
+		return;
+
+	if (amount > M_TIMEOUT)
+		amount = M_TIMEOUT;
+
+	unsigned short otherflags = mon->mprops[prop_index] & ~M_TIMEOUT;
+	mon->mprops[prop_index] = amount | otherflags;
+}
+
+int
+get_mon_temporary_property(mon, prop_index)
+struct monst* mon;
+int prop_index;
+{
+	if (!mon)
+		return 0;
+
+	if (prop_index < 1 || prop_index > LAST_PROP)
+		return 0;
+
+	unsigned short amount = mon->mprops[prop_index] & M_TIMEOUT;
+	return (int)amount;
 }
 
 
@@ -513,10 +585,9 @@ struct obj *obj; /* item to make known if effect can be seen */
 }
 
 
-/* armor put on or taken off; might be magical variety
-   [TODO: rename to 'update_mon_extrinsics()' and change all callers...] */
+/* armor put on or taken off; might be magical variety */
 void
-update_mon_intrinsics(mon, silently)
+update_mon_extrinsics(mon, silently)
 struct monst *mon;
 boolean silently;
 {
@@ -524,9 +595,17 @@ boolean silently;
     uchar mask = 0;
     struct obj *otmp = (struct obj*)0;
 
+	/* save properties */
+	char savedname[BUFSIZ] = "";
+	strcpy(savedname, mon_nam(mon));
+	boolean was_invisible = has_invisibility(mon);
+	boolean could_see = canseemon(mon);
+
 	/* clear mon extrinsics */
-	mon->mextrinsics = 0;
-	mon->minvis = mon->perminvis;
+	for (int i = 1; i <= LAST_PROP; i++)
+	{
+		mon->mprops[i] = mon->mprops[i] & M_EXTRINSIC;
+	}
 
 	/* add them all back*/
 	for (otmp = mon->minvent; otmp; otmp = otmp->nobj)
@@ -638,6 +717,9 @@ boolean silently;
 
 			unseen = !canseemon(mon);
 
+			mon->mprops[which] |= M_EXTRINSIC;
+
+#if 0
 			if (1) //(on)
 			{
 				switch (which)
@@ -718,6 +800,8 @@ boolean silently;
 					break;
 				}
 			}
+#endif
+
 #if 0
 			else
 			{ /* off */
@@ -779,9 +863,39 @@ boolean silently;
 		}
 	}
 
+	if (mon->wormno)
+		see_wsegs(mon); /* and any tail too */
+
     /* if couldn't see it but now can, or vice versa, update display */
     if (!silently && (unseen ^ !canseemon(mon)))
         newsym(mon->mx, mon->my);
+
+
+	/* Messages for extrinsic phase transition */
+	if (canseemon(mon))
+	{
+		if (!could_see)
+		{
+			pline("Suddenly, you can see %s!", mon_nam(mon));
+		}
+		else
+		{
+			/* Most such messages here */
+			if (has_invisibility(mon) && !was_invisible)
+			{
+				pline("%s body becomes transparent!", s_suffix(Monnam(mon)));
+			}
+			else if(!has_invisibility(mon) && was_invisible)
+			{
+				pline("%s body loses its transparency!", s_suffix(Monnam(mon)));
+			}
+		}
+	}
+	else if (could_see)
+	{
+		pline("Suddenly, you cannot see %s anymore!", savedname);
+	}
+
 }
 
 
@@ -934,7 +1048,7 @@ boolean creation;
 	if (!nohands(mon->data) && (cursed_items_are_positive_mon(mon) || !(MON_WEP(mon) && mwelded(MON_WEP(mon), mon)) && !(old_gloves && old_gloves->cursed)))
 		wears_ringl = m_dowear_type(mon, W_RINGL, creation, FALSE);
 
-	update_mon_intrinsics(mon, creation);
+	update_mon_extrinsics(mon, creation);
 
 	struct obj* new_shirt = which_armor(mon, W_ARMU);
 	struct obj* new_suit = which_armor(mon, W_ARM);
@@ -1140,7 +1254,7 @@ outer_break:
 
     /* if couldn't see it but now can, or vice versa, */
     if (!creation && (unseen ^ !canseemon(mon))) {
-        if (mon->minvis && !See_invisible) {
+        if (is_not_visible(mon) && !See_invisible) {
             pline("Suddenly you cannot see %s.", nambuf);
             makeknown(best->otyp);
         } /* else if (!mon->minvis) pline("%s suddenly appears!",
@@ -1202,7 +1316,7 @@ struct obj *obj;
 	if (obj->owornmask)
 	{
 		obj->owornmask = 0L;
-		update_mon_intrinsics(mon, FALSE);
+		update_mon_extrinsics(mon, FALSE);
 		if (mon == u.usteed && obj->otyp == SADDLE)
 			dismount_steed(DISMOUNT_FELL);
 

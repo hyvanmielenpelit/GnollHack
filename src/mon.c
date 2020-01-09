@@ -1194,7 +1194,7 @@ register struct monst *mtmp;
         if (!is_clinger(mtmp->data) && !likes_lava(mtmp->data)) {
             /* not fair...?  hero doesn't automatically teleport away
                from lava, just from water */
-            if (can_teleport(mtmp->data) && !tele_restrict(mtmp)) {
+            if (has_teleportation(mtmp) && !tele_restrict(mtmp)) {
                 if (rloc(mtmp, TRUE))
                     return 0;
             }
@@ -1242,7 +1242,7 @@ register struct monst *mtmp;
             && !amphibious(mtmp->data)) {
             /* like hero with teleport intrinsic or spell, teleport away
                if possible */
-            if (can_teleport(mtmp->data) && !tele_restrict(mtmp)) {
+            if (has_teleportation(mtmp) && !tele_restrict(mtmp)) {
                 if (rloc(mtmp, TRUE))
                     return 0;
             }
@@ -1751,7 +1751,7 @@ struct monst *mtmp;
         }
 
         /* Engulf & devour is instant, so don't set meating */
-        if (mtmp->minvis)
+        if (has_invisibility(mtmp))
             newsym(mtmp->mx, mtmp->my);
     }
 
@@ -2104,7 +2104,7 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
                 && (lavaok || !is_lava(nx, ny))) {
                 int dispx, dispy;
                 boolean monseeu = (mon->mcansee
-                                   && (!Invis || perceives(mdat)));
+                                   && (!Invis || has_see_invisible(mon)));
                 boolean checkobj = OBJ_AT(nx, ny);
 
                 /* Displacement also displaces the Elbereth/scare monster,
@@ -2957,7 +2957,7 @@ struct monst *mdef;
 				if (obj->owornmask & W_WEP)
 					setmnotwielded(mdef, obj);
 				obj->owornmask = 0L;
-				update_mon_intrinsics(mdef, TRUE);
+				update_mon_extrinsics(mdef, TRUE);
 				if (mdef == u.usteed && obj->otyp == SADDLE)
 					dismount_steed(DISMOUNT_FELL);
 			}
@@ -3235,7 +3235,7 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
 				burycorpse ? CORPSTAT_BURIED : CORPSTAT_NONE, 
 				corpse_chance(mtmp, (struct monst*) 0, FALSE)
 			);
-            if (burycorpse && cadaver && cansee(x, y) && !mtmp->minvis
+            if (burycorpse && cadaver && cansee(x, y) && !has_invisibility(mtmp)
                 && cadaver->where == OBJ_BURIED && !nomsg) {
                 pline("%s corpse ends up buried.", s_suffix(Monnam(mtmp)));
             }
@@ -4428,10 +4428,9 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
             new_light_source(mtmp->mx, mtmp->my, emits_light(mtmp->data),
                              LS_MONSTER, monst_to_any(mtmp));
     }
-    if (!mtmp->perminvis || pm_invisible(olddata))
-        mtmp->perminvis = pm_invisible(mdat);
-    mtmp->minvis = mtmp->invis_blkd ? 0 : mtmp->perminvis;
-    if (mtmp->mundetected)
+
+
+	if (mtmp->mundetected)
         (void) hideunder(mtmp);
     if (u.ustuck == mtmp) {
         if (u.uswallow) {

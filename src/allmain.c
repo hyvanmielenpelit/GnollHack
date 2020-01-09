@@ -141,16 +141,18 @@ boolean resuming;
                         if (!Slowed)
                             moveamt = youmonst.data->mmove;
                         else
-                            moveamt = (youmonst.data->mmove * 2 + 1) / 3;
+                            moveamt = (youmonst.data->mmove * 2 + 2) / 3;
 
                         if (Very_fast) { /* speed boots, potion, or spell */
                             /* gain a free action on 2/3 of turns */
-                            if (rn2(3) != 0)
-                                moveamt += NORMAL_SPEED;
+                            //if (rn2(3) != 0)
+							/* Now a stable addition of 2/3 of normal speed, rounded up, == 8 */
+							moveamt += (NORMAL_SPEED * 2 + 2) / 3;
                         } else if (Fast) { /* intrinsic */
                             /* gain a free action on 1/3 of turns */
-                            if (rn2(3) == 0)
-                                moveamt += NORMAL_SPEED;
+                            //if (rn2(3) == 0)
+							/* Now a stable addition of 1/3 of normal speed, rounded up, == 4 */
+                            moveamt += (NORMAL_SPEED + 2) / 3;
                         }
                     }
 

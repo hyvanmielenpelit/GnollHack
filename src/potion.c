@@ -757,10 +757,7 @@ register struct obj *otmp;
             self_invis_message();
         }
 
-        if (otmp->blessed)
-            HInvis |= FROM_ACQUIRED;
-        else
-            incr_itimeout(&HInvis, otmp->oclass == POTION_CLASS ? d(2, 10) + 80 : duration);
+        incr_itimeout(&HInvis, otmp->oclass == POTION_CLASS ? d(2, 10) + 80 : duration);
 
         newsym(u.ux, u.uy); /* update position */
 
@@ -1549,8 +1546,8 @@ int how;
             boolean sawit = canspotmon(mon);
 
             angermon = FALSE;
-            mon_set_minvis(mon);
-            if (sawit && !canspotmon(mon) && cansee(mon->mx, mon->my))
+			increase_mon_temporary_property(mon, INVISIBILITY, d(2, 10) + 80);
+			if (sawit && !canspotmon(mon) && cansee(mon->mx, mon->my))
                 map_invisible(mon->mx, mon->my);
             break;
         }

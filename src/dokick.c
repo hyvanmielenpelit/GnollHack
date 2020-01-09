@@ -445,7 +445,7 @@ xchar x, y;
 						You("kick %s.", mon_nam(mon));
 						(void)unmap_invisible(x, y);
 						pline("%s %s, %s evading your %skick.", Monnam(mon),
-							(!level.flags.noteleport && can_teleport(mon->data))
+							(!level.flags.noteleport && has_teleportation(mon))
 							? "teleports"
 							: is_floater(mon->data)
 							? "floats"

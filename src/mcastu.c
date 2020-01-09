@@ -59,7 +59,7 @@ boolean undirected;
 
         if (undirected)
             point_msg = "all around, then curses";
-        else if ((Invis && !perceives(mtmp->data)
+        else if ((Invis && !has_see_invisible(mtmp)
                   && (mtmp->mux != u.ux || mtmp->muy != u.uy))
                  || is_obj_mappear(&youmonst, STRANGE_OBJECT)
                  || u.uundetected)
@@ -281,7 +281,7 @@ boolean foundyou;
               canspotmon(mtmp) ? Monnam(mtmp) : "Something",
               is_undirected_spell(mattk->adtyp, spellnum)
                   ? ""
-                  : (Invisible && !perceives(mtmp->data)
+                  : (Invisible && !has_see_invisible(mtmp)
                      && (mtmp->mux != u.ux || mtmp->muy != u.uy))
                         ? " at a spot near you"
                         : (Displaced
@@ -431,7 +431,7 @@ int spellnum;
 
             /* messages not quite right if plural monsters created but
                only a single monster is seen */
-            if (Invisible && !perceives(mtmp->data)
+            if (Invisible && !has_see_invisible(mtmp)
                 && (mtmp->mux != u.ux || mtmp->muy != u.uy))
                 pline("%s around a spot near you!", mappear);
             else if (Displaced && (mtmp->mux != u.ux || mtmp->muy != u.uy))
@@ -484,11 +484,12 @@ int spellnum;
         dmg = 0;
         break;
     case MGC_DISAPPEAR: /* makes self invisible */
-        if (!mtmp->minvis && !mtmp->invis_blkd) {
+        if (!is_not_visible(mtmp) && !has_blocks_invisibility(mtmp))
+		{
             if (canseemon(mtmp))
                 pline("%s suddenly %s!", Monnam(mtmp),
                       !See_invisible ? "disappears" : "becomes transparent");
-            mon_set_minvis(mtmp);
+			increase_mon_temporary_property(mtmp, INVISIBILITY, d(2, 10) + 80);
             if (cansee(mtmp->mx, mtmp->my) && !canspotmon(mtmp))
                 map_invisible(mtmp->mx, mtmp->my);
             dmg = 0;
@@ -666,7 +667,7 @@ int spellnum;
             fmt = "%s casts at a clump of sticks, but nothing happens.";
         else if (let == S_SNAKE)
             fmt = "%s transforms a clump of sticks into snakes!";
-        else if (Invisible && !perceives(mtmp->data)
+        else if (Invisible && !has_see_invisible(mtmp)
                  && (mtmp->mux != u.ux || mtmp->muy != u.uy))
             fmt = "%s summons insects around a spot near you!";
         else if (Displaced && (mtmp->mux != u.ux || mtmp->muy != u.uy))
@@ -813,7 +814,7 @@ int spellnum;
         if (mtmp->permspeed == MFAST && spellnum == MGC_HASTE_SELF)
             return TRUE;
         /* invisibility when already invisible */
-        if ((mtmp->minvis || mtmp->invis_blkd) && spellnum == MGC_DISAPPEAR)
+        if ((has_invisibility(mtmp) || has_blocks_invisibility(mtmp)) && spellnum == MGC_DISAPPEAR)
             return TRUE;
         /* peaceful monster won't cast invisibility if you can't see
            invisible,
