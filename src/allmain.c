@@ -138,10 +138,10 @@ boolean resuming;
                     } 
 					else 
 					{
-						if(Slowed)
-	                        moveamt = youmonst.data->mmove;
-						else
-							moveamt = (youmonst.data->mmove + 2) / 3;
+                        if (!Slowed)
+                            moveamt = youmonst.data->mmove;
+                        else
+                            moveamt = (youmonst.data->mmove * 2 + 1) / 3;
 
                         if (Very_fast) { /* speed boots, potion, or spell */
                             /* gain a free action on 2/3 of turns */
