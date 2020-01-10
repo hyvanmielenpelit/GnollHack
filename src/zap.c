@@ -4124,6 +4124,7 @@ boolean ordinary;
 		boolean was_fast = Fast;
 		boolean was_very_fast = Very_fast;
 		incr_itimeout(&HVery_fast, 150 + rnd(50));
+		context.botl = TRUE;
 		if (Very_fast && !was_very_fast)
 		{
 			learn_it = TRUE;
@@ -4148,8 +4149,14 @@ boolean ordinary;
     case WAN_SLOW_MONSTER:
     case SPE_SLOW_MONSTER:
 		damage = 0;
-        learn_it = TRUE;
+		boolean was_slowed = Slowed;
 		incr_itimeout(&HSlowed, obj->oclass == WAND_CLASS ? rn1(10, 100 + 60 * bcsign(obj)) : duration);
+		context.botl = TRUE;
+		if (Slowed && !was_slowed)
+		{
+			learn_it = TRUE;
+			You("slow down.");
+		}
 		//u_slow_down();
         break;
 
@@ -4585,6 +4592,7 @@ int duration;
 	{
 		You_feel("your magic is not flowing properly.");
 		incr_itimeout(&HCancelled, duration);
+		context.botl = TRUE;
 
         if (Upolyd) { /* includes lycanthrope in creature form */
             /*

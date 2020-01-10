@@ -973,7 +973,9 @@ unsigned long *colormasks UNUSED;
                 Strcpy(nb = eos(nb), " FoodPois");
             if (cond & BL_MASK_TERMILL)
                 Strcpy(nb = eos(nb), " TermIll");
-            if (cond & BL_MASK_BLIND)
+			if (cond & BL_MASK_PARALYZED)
+				Strcpy(nb = eos(nb), " Paral");
+			if (cond & BL_MASK_BLIND)
                 Strcpy(nb = eos(nb), " Blind");
             if (cond & BL_MASK_DEAF)
                 Strcpy(nb = eos(nb), " Deaf");
@@ -983,7 +985,11 @@ unsigned long *colormasks UNUSED;
                 Strcpy(nb = eos(nb), " Conf");
             if (cond & BL_MASK_HALLU)
                 Strcpy(nb = eos(nb), " Hallu");
-            if (cond & BL_MASK_LEV)
+			if (cond & BL_MASK_SLOWED)
+				Strcpy(nb = eos(nb), " Slow");
+			if (cond & BL_MASK_CANCELLED)
+				Strcpy(nb = eos(nb), " Cancl");
+			if (cond & BL_MASK_LEV)
                 Strcpy(nb = eos(nb), " Lev");
             if (cond & BL_MASK_FLY)
                 Strcpy(nb = eos(nb), " Fly");

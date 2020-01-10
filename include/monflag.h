@@ -73,7 +73,7 @@
 #define MR_BLIND_TELEPATHY	0x00200000L		
 #define MR_TELEPATHY	0x00400000L		
 
-/* conveyances: resistances, teleport, teleport control, telepathy */
+/* conveyances: resistances, teleport, teleport control, telepathy, as well as other properties from eating the corpse */
 #define MC_NONE			0x00000000L
 #define MC_FIRE			0x00000001L			/* confers fire resistance */
 #define MC_COLD			0x00000002L   		/* confers cold resistance */
@@ -83,13 +83,14 @@
 #define MC_POISON		0x00000020L 		/* confers poison resistance */
 #define MC_ACID			0x00000040L   		/* confers acid resistance */
 #define MC_STONE		0x00000080L  		/* confers petrification resistance */
-#define MC_DEATH		0x00000100L  		/* confers death resistance */
-#define MC_LYCANTHROPY	0x00000200L			/* confers lycanthropy resistance */
+#define MC_DEATH		0x00000100L			/* confers life draining resistance */
+#define MC_DRAIN		0x00000200L			/* confers life draining resistance */
 /* free bit */
-#define MC_MAGIC		0x00000800L			/* confers magic resistance */
-#define MC_CHARM		0x00001000L			/* confers charm resistance */
-#define MC_DRAIN		0x00002000L			/* confers life draining resistance */
-#define MC_FLASH		0x00004000L			/* confers flash resistance */
+/* free bit */
+/* free bit */
+/* free bit */
+/* free bit */
+/* free bit */
 #define MC_STRENGTH		0x00010000L			/* confers strength */
 #define MC_DEXTERITY	0x00020000L			/* confers dexterity */
 #define MC_CONSTITUTION 0x00040000L			/* confers constitution */
@@ -97,11 +98,14 @@
 #define MC_WISDOM		0x00100000L			/* confers wisdom */
 #define MC_CHARISMA		0x00200000L			/* confers charisma */
 #define MC_LEVEL_GAIN	0x00400000L			/* confers experience levels */
-#define MC_TELEPORT		0x00800000L			/* confers teleportiis */
+#define MC_TELEPORT			0x00800000L			/* confers teleportiis */
 #define MC_TELEPORT_CONTROL 0x01000000L		/* confers teleport control */
-#define MC_BLIND_TELEPATHY 0x02000000L		/* confers blind telepathy */
-#define MC_TELEPATHY	0x04000000L			/* confers telepathy */
-
+#define MC_BLIND_TELEPATHY	0x02000000L		/* confers blind telepathy */
+#define MC_TELEPATHY		0x04000000L			/* confers telepathy */
+/* edible effects */
+#define MC_POISONOUS_CORPSE	0x08000000L		/* the corpse is poisonous to eat */
+#define MC_ACIDIC_CORPSE	0x10000000L		/* the corpse is acidic to eat */
+#define MC_HALLUCINATING_CORPSE	0x20000000L		/* the corpse is hallucinating to eat */
 
 
 #define M1_NONE			0x00000000
@@ -132,8 +136,8 @@
 /* free bit */
 /* free bit */
 /* free bit */
-#define M1_ACID			0x08000000L        /* acidic to eat */
-#define M1_POIS			0x10000000L        /* poisonous to eat */
+/* free bit */
+/* free bit */
 #define M1_CARNIVORE	0x20000000L   /* eats corpses */
 #define M1_HERBIVORE	0x40000000L   /* eats fruits */
 #define M1_OMNIVORE		0x60000000L    /* eats both */

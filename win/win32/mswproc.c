@@ -2800,7 +2800,7 @@ static mswin_condition_field _condition_fields[BL_MASK_BITS] = {
     { BL_MASK_STONE, "Stone" },
     { BL_MASK_SLIME, "Slime" },
     { BL_MASK_STRNGL, "Strngl" },
-	{ BL_MASK_STRNGL, "Suffoc" },
+	{ BL_MASK_SUFFOC, "Suffoc" },
 	{ BL_MASK_FOODPOIS, "FoodPois" },
     { BL_MASK_TERMILL, "TermIll" },
     { BL_MASK_BLIND, "Blind" },
@@ -2810,7 +2810,10 @@ static mswin_condition_field _condition_fields[BL_MASK_BITS] = {
     { BL_MASK_HALLU, "Hallu" },
     { BL_MASK_LEV, "Lev" },
     { BL_MASK_FLY, "Fly" },
-    { BL_MASK_RIDE, "Ride" }
+    { BL_MASK_RIDE, "Ride" },
+	{ BL_MASK_SLOWED, "Slow" },
+	{ BL_MASK_PARALYZED, "Paral" },
+	{ BL_MASK_CANCELLED, "Cancl" }
 };
 
 

@@ -236,6 +236,8 @@ OPTIONS=hilite_status:two-weapon-fighting/2weap/yellow
 OPTIONS=hilite_status:condition/hallu/yellow
 OPTIONS=hilite_status:condition/conf/orange
 OPTIONS=hilite_status:condition/stun/red&bold
+OPTIONS=hilite_status:condition/slow/yellow
+OPTIONS=hilite_status:condition/cancl/yellow
 
 ## Health
 OPTIONS=hilite_status:condition/termill/red&inverse
@@ -243,6 +245,7 @@ OPTIONS=hilite_status:condition/foodpois/red&inverse
 OPTIONS=hilite_status:condition/slime/red&inverse
 OPTIONS=hilite_status:condition/suffoc/red&inverse
 OPTIONS=hilite_status:condition/strngl/red&inverse
+OPTIONS=hilite_status:condition/paral/red&inverse
 
 # St, Dx, Co, In, Wi, Ch
 OPTIONS=hilite_status:characteristics/up/green/down/red

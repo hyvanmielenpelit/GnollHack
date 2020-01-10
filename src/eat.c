@@ -842,9 +842,9 @@ register struct permonst *ptr;
 		res = (ptr->mconveys & MC_DRAIN) != 0;
 		ifdebugresist("can get drain resistance");
 		break;
-	case FLASH_RES:
-		res = (ptr->mconveys & MC_FLASH) != 0;
-		ifdebugresist("can get flash resistance");
+	case DEATH_RES:
+		res = (ptr->mconveys & MC_DEATH) != 0;
+		ifdebugresist("can get death resistance");
 		break;
 	case SHOCK_RES: /* shock (electricity) resistance */
         res = (ptr->mconveys & MC_ELEC) != 0;
@@ -1257,7 +1257,8 @@ int pm;
     }
 
     /* possibly convey an intrinsic */
-    if (check_intrinsics) {
+    if (check_intrinsics)
+	{
         struct permonst *ptr = &mons[pm];
         boolean conveys_STR = confers_strength(ptr);
 		boolean conveys_DEX = confers_dexterity(ptr);
@@ -1267,8 +1268,8 @@ int pm;
 		boolean conveys_CHA = confers_charisma(ptr);
 		int i, count;
 
-        if (dmgtype(ptr, AD_STUN) || dmgtype(ptr, AD_HALU)
-            || pm == PM_VIOLET_FUNGUS) {
+        if (hallucinating_corpse(ptr)) 
+		{
             pline("Oh wow!  Great stuff!");
             (void) make_hallucinated((HHallucination & TIMEOUT) + 200L, FALSE,
                                      0L);

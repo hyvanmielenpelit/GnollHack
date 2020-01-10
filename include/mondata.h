@@ -145,15 +145,15 @@
 
 #define confers_strength(ptr) \
     (((ptr)->mconveys & MC_STRENGTH) != 0)
-#define confers_dexterity(mon) \
+#define confers_dexterity(ptr) \
     (((ptr)->mconveys & MC_DEXTERITY) != 0)
-#define confers_constitution(mon) \
+#define confers_constitution(ptr) \
     (((ptr)->mconveys & MC_CONSTITUTION) != 0)
-#define confers_intelligence(mon) \
+#define confers_intelligence(ptr) \
     (((ptr)->mconveys & MC_INTELLIGENCE) != 0)
-#define confers_wisdom(mon) \
+#define confers_wisdom(ptr) \
     (((ptr)->mconveys & MC_WISDOM) != 0)
-#define confers_charisma(mon) \
+#define confers_charisma(ptr) \
     (((ptr)->mconveys & MC_CHARISMA) != 0)
 
 #define alternative_passive_defense_text(ptr) \
@@ -218,10 +218,11 @@
 #define has_telepathy(mon) \
 	(has_innate_telepathy((mon)->data) || has_property(mon, TELEPAT))
 
+#define acidic(ptr) (((ptr)->mconveys & MC_ACIDIC_CORPSE) != 0L)
+#define poisonous(ptr) (((ptr)->mconveys & MC_POISONOUS_CORPSE) != 0L)
+#define hallucinating_corpse(ptr) (((ptr)->mconveys & MC_HALLUCINATING_CORPSE) != 0L)
 
 #define is_armed(ptr) attacktype(ptr, AT_WEAP)
-#define acidic(ptr) (((ptr)->mflags1 & M1_ACID) != 0L)
-#define poisonous(ptr) (((ptr)->mflags1 & M1_POIS) != 0L)
 #define carnivorous(ptr) (((ptr)->mflags1 & M1_CARNIVORE) != 0L)
 #define herbivorous(ptr) (((ptr)->mflags1 & M1_HERBIVORE) != 0L)
 #define metallivorous(ptr) (((ptr)->mflags1 & M1_METALLIVORE) != 0L)

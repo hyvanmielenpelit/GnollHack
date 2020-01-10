@@ -1156,7 +1156,7 @@ struct obj* otmp; /* object to be identified if any state change happens */
 	}
 
 
-	/* Fastness */
+	/* Speed */
 	if ((!was_slowed && Slowed) || (was_very_fast && !Very_fast) || (!was_very_fast && was_fast && !Very_fast && !Fast))
 	{
 		You_feel("yourself slow down%s.", Fast ? " a bit" : "");

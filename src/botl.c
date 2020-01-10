@@ -187,7 +187,13 @@ do_statusline2()
         Strcpy(nb = eos(nb), " Slime");
     if (Strangled)
         Strcpy(nb = eos(nb), " Strngl");
-    if (Sick) {
+	if (Slowed)
+		Strcpy(nb = eos(nb), " Slow");
+	if (Paralyzed)
+		Strcpy(nb = eos(nb), " Paral");
+	if (Cancelled)
+		Strcpy(nb = eos(nb), " Cancl");
+	if (Sick) {
         if (u.usick_type & SICK_VOMITABLE)
             Strcpy(nb = eos(nb), " FoodPois");
         if (u.usick_type & SICK_NONVOMITABLE)
@@ -757,7 +763,14 @@ bot_via_windowport()
         blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_FOODPOIS;
     if (Sick && (u.usick_type & SICK_NONVOMITABLE) != 0)
         blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_TERMILL;
-    /*
+	if (Slowed)
+		blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_SLOWED;
+	if (Paralyzed)
+		blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_PARALYZED;
+	if (Cancelled)
+		blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_CANCELLED;
+
+	/*
      * basic formatting puts hunger status and encumbrance here
      */
     if (Blind)
@@ -2283,6 +2296,9 @@ const struct condmap valid_conditions[] = {
     { "lev",      BL_MASK_LEV },
     { "fly",      BL_MASK_FLY },
     { "ride",     BL_MASK_RIDE },
+	{ "slow",     BL_MASK_SLOWED },
+	{ "paral",    BL_MASK_PARALYZED },
+	{ "cancl",    BL_MASK_CANCELLED },
 };
 
 #ifdef STATUS_HILITES
@@ -2294,11 +2310,11 @@ const struct condmap condition_aliases[] = {
                         | BL_MASK_FOODPOIS | BL_MASK_TERMILL
                         | BL_MASK_BLIND | BL_MASK_DEAF | BL_MASK_STUN
                         | BL_MASK_CONF | BL_MASK_HALLU | BL_MASK_SUFFOC
-                        | BL_MASK_LEV | BL_MASK_FLY | BL_MASK_RIDE },
+                        | BL_MASK_LEV | BL_MASK_FLY | BL_MASK_RIDE | BL_MASK_SLOWED | BL_MASK_PARALYZED | BL_MASK_CANCELLED },
     { "major_troubles", BL_MASK_STONE | BL_MASK_SLIME | BL_MASK_STRNGL
                         | BL_MASK_FOODPOIS | BL_MASK_TERMILL },
     { "minor_troubles", BL_MASK_BLIND | BL_MASK_DEAF | BL_MASK_STUN
-                        | BL_MASK_CONF | BL_MASK_HALLU },
+                        | BL_MASK_CONF | BL_MASK_HALLU | BL_MASK_SLOWED | BL_MASK_PARALYZED | BL_MASK_CANCELLED },
     { "movement",       BL_MASK_LEV | BL_MASK_FLY | BL_MASK_RIDE }
 };
 
