@@ -101,9 +101,9 @@ struct monst {
 
     schar mtame;                /* level of tameness, implies peaceful */
 
-	unsigned short mprops[LAST_PROP + 1]; /* simplified props structure for monsters, taking 1/6 u.uprops memory space but doing about the same thing anyway */
+	unsigned short mprops[LAST_PROP + 1]; /* simplified props structure for monsters, taking 1/6 u.uprops memory space but doing about the same thing anyway --JG */
 
-#define M_TIMEOUT				0x3fff	/* timeout mask */
+#define M_TIMEOUT				0x3fff	/* timeout mask for temporary property */
 #define M_INTRINSIC_ACQUIRED	0x4000  /* permanent intrisic acquired e.g. by eating monster corpses */
 #define M_EXTRINSIC				0x8000  /* extrinsic from items or environment, updated frequently by clearing and checking a new value */
 
@@ -120,8 +120,6 @@ struct monst {
                                */
     Bitfield(mcansee, 1);   /* cansee 1, temp.blinded 0, blind 0 */
 
-    Bitfield(mspeed, 2);    /* current speed */
-    Bitfield(permspeed, 2); /* intrinsic mspeed value */
     Bitfield(mrevived, 1);  /* has been revived from the dead */
     Bitfield(mcloned, 1);   /* has been cloned from another */
     Bitfield(mavenge, 1);   /* did something to deserve retaliation */

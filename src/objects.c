@@ -2445,7 +2445,7 @@ SPELL("mass fear",      "light blue", None, "Causes all monsters on the level to
 SPELL("confuse monster", "orange", None, "The caster can confuse monsters on hit",
       P_ENCHANTMENT_SPELL,		10,  2,			 0, 1, 10, A_AVG_INT_CHA, 16, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NONE, CLR_ORANGE, O1_NONE, O2_NONE, O3_NONE),
 SPELL("slow monster",    "light green", None, "Slows down the target",
-      P_ENCHANTMENT_SPELL,		10,  2,			 0, 1, 10, A_INT, 12, 0, 100, 0, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, S1_NONE, CLR_BRIGHT_GREEN, O1_NONE, O2_NONE, O3_NONE),
+      P_ENCHANTMENT_SPELL,		10,  2,			 0, 1, 10, A_INT, 12, 0, 100, 0, 1, IMMEDIATE, 0, 0, 0, 0, 1, 50, 100, S1_NONE, CLR_BRIGHT_GREEN, O1_NONE, O2_NONE, O3_NONE),
 SPELL("charm monster",   "eye-patterned", None, "Charms a monster for a duration",
       P_ENCHANTMENT_SPELL,		10,  3,			 2, 3, 20, A_AVG_INT_WIS_CHA, 8, 0, 100, 0, 1, IMMEDIATE, 0, 0, 0, 0, 10, 10, 50, S1_NONE, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
 SPELL("sphere of charming", "magenta", None, "Charms adjacent monsters for a duration",

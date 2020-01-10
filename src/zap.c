@@ -343,8 +343,8 @@ struct obj *otmp;
 		if (!resist(mtmp, otmp, 0, 0, NOTELL)) {
             if (disguised_mimic)
                 seemimic(mtmp);
-            mon_adjust_speed(mtmp, -1, otmp);
-            m_dowear(mtmp, FALSE); /* might want speed boots */
+			increase_mon_temporary_speed_verbosely(mtmp, SLOWED, otmp->oclass == WAND_CLASS ? rn1(10, 100 + 60 * bcsign(otmp)) : duration);
+			m_dowear(mtmp, FALSE); /* might want speed boots */
             if (u.uswallow && (mtmp == u.ustuck) && is_whirly(mtmp->data)) {
                 You("disrupt %s!", mon_nam(mtmp));
                 pline("A huge hole opens up...");
@@ -357,7 +357,7 @@ struct obj *otmp;
 		if (!resist(mtmp, otmp, 0, 0, NOTELL)) {
             if (disguised_mimic)
                 seemimic(mtmp);
-            mon_adjust_speed(mtmp, 1, otmp);
+			increase_mon_temporary_speed_verbosely(mtmp, VERY_FAST, 150 + rnd(50));
             m_dowear(mtmp, FALSE); /* might want speed boots */
         }
         if (mtmp->mtame)
@@ -1463,7 +1463,7 @@ boolean replaceundead;
                 (void) newcham(mtmp, mptr, FALSE, FALSE);
             } else if (mtmp->data->mlet == S_LESSER_UNDEAD) {
                 mtmp->mhp = mtmp->mhpmax = 100;
-                mon_adjust_speed(mtmp, 2, (struct obj *) 0); /* MFAST */
+				mtmp->mprops[VERY_FAST] |= M_INTRINSIC_ACQUIRED;
             }
         }
     } else if (has_omonst(corpse)) {
@@ -4119,18 +4119,19 @@ boolean ordinary;
     }
 
     case WAN_SPEED_MONSTER:
+	{
 		damage = 0;
-		if (!(HFast & INTRINSIC)) {
-            learn_it = TRUE;
-            if (!Fast)
-                You("speed up.");
-            else
-                Your("quickness feels more natural.");
-            exercise(A_DEX, TRUE);
-        }
-        HFast |= FROM_ACQUIRED;
-        break;
-
+		boolean was_fast = Fast;
+		boolean was_very_fast = Very_fast;
+		incr_itimeout(&HVery_fast, 150 + rnd(50));
+		if (Very_fast && !was_very_fast)
+		{
+			learn_it = TRUE;
+			You("speed up.");
+			exercise(A_DEX, TRUE);
+		}
+		break;
+	}
     case WAN_SLEEP:
     case SPE_SLEEP:
 		damage = 0;

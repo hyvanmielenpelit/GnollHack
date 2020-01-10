@@ -506,6 +506,7 @@ int prop_index;
 	return (int)amount;
 }
 
+#if 0
 
 void
 mon_adjust_speed(mon, adjust, obj)
@@ -583,7 +584,54 @@ struct obj *obj; /* item to make known if effect can be seen */
             learnwand(obj);
     }
 }
+#endif
 
+void
+set_mon_temporary_speed_verbosely(mtmp, prop_index, value)
+struct monst* mtmp;
+int prop_index;
+unsigned short value;
+{
+	/* works for fast, very fast, and slowed */
+	boolean was_fast = is_fast(mtmp);
+	boolean was_very_fast = is_very_fast(mtmp);
+	boolean was_slow = is_slow(mtmp);
+
+	set_mon_temporary_property(mtmp, prop_index, value);
+
+	if (canspotmon(mtmp))
+	{
+		if ((is_very_fast(mtmp) && !was_very_fast) || (is_fast(mtmp) && was_slow))
+		{
+			pline("%s is moving %sfaster.", Monnam(mtmp), !was_fast ? "much " : "");
+		}
+		else if (is_fast(mtmp) && !was_fast && !was_very_fast)
+		{
+			pline("%s is moving faster.", Monnam(mtmp));
+		}
+		else if (is_slow(mtmp) && !was_slow)
+		{
+			if((prop_index == STONED || prop_index == SLIMED) && value > 0)
+				pline("%s is slowing down!", Monnam(mtmp));
+			else if(prop_index == SLOWED && value > 0)
+				pline("%s slows down%s.", Monnam(mtmp), was_fast || was_very_fast ? " a lot" : "");
+			else
+				pline("%s is moving %sslower.", Monnam(mtmp), was_fast || was_very_fast ? "much " : "");
+		}
+	}
+}
+
+void
+increase_mon_temporary_speed_verbosely(mtmp, prop_index, duration)
+struct monst* mtmp;
+int prop_index;
+int duration;
+{
+	unsigned short existing_duration = (mtmp->mprops[prop_index] & M_TIMEOUT);
+	unsigned short value = (unsigned short)max(0, existing_duration + duration);
+
+	set_mon_temporary_speed_verbosely(mtmp, prop_index, value);
+}
 
 void
 update_all_mon_statistics(mon, silently)
@@ -645,7 +693,7 @@ boolean silently;
 	/* clear mon extrinsics */
 	for (int i = 1; i <= LAST_PROP; i++)
 	{
-		mon->mprops[i] = mon->mprops[i] & M_EXTRINSIC;
+		mon->mprops[i] &= ~M_EXTRINSIC;
 	}
 
 	/* add them all back*/
@@ -1655,8 +1703,10 @@ struct obj *obj;
     /* currently only does speed boots, but might be expanded if monsters
      * get to use more armor abilities
      */
-    if (obj) {
-        if (obj->otyp == SPEED_BOOTS && mon->permspeed != MFAST)
+	if (obj) 
+	{
+		if ((objects[obj->otyp].oc_oprop == VERY_FAST || objects[obj->otyp].oc_oprop2 == VERY_FAST || objects[obj->otyp].oc_oprop3 == VERY_FAST) 
+			&& !(mon->mprops[VERY_FAST] & (M_EXTRINSIC | M_INTRINSIC_ACQUIRED)))
             return 20;
     }
     return 0;

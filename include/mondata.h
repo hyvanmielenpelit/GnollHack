@@ -11,8 +11,10 @@
 
 #define has_innate(ptr, bit) \
     (((ptr)->mresists & (bit)) != 0)
-#define has_property(mon, propindex)\
+#define has_property(mon, propindex) \
 	((mon)->mprops[(propindex)] != 0)
+#define has_innate_or_property(mon, propindex)\
+	(has_innate(ptr, prop_to_innate(propindex)) || has_property(mon, propindex))
 
 #define resists_fire(mon) \
     (has_innate((mon)->data, MR_FIRE) || has_property(mon, FIRE_RES))
@@ -85,6 +87,15 @@
 #define has_slowed(mon) \
 	has_property(mon, SLOWED)
 
+#define has_slimed(mon) \
+	has_property(mon, SLIMED)
+
+#define has_stoned(mon) \
+	has_property(mon, STONED)
+
+#define is_slow(mon) \
+	(has_slowed(mon) || has_slimed(mon) || has_stoned(mon))
+
 #define has_cancelled(mon) \
 	has_property(mon, CANCELLED)
 
@@ -119,10 +130,17 @@
 	(has_invisibility(mon))
 
 #define has_fast(mon) \
-	(has_property(mon, FAST) && !has_slowed(mon))
+	has_property(mon, FAST)
 
 #define has_very_fast(mon) \
-	(has_property(mon, VERY_FAST) && !has_slowed(mon))
+	has_property(mon, VERY_FAST)
+
+#define is_very_fast(mon) \
+	(has_very_fast(mon) && !is_slow(mon))
+
+#define is_fast(mon) \
+	(has_fast(mon) && !is_slow(mon) && !is_very_fast(mon))
+
 
 
 #define confers_strength(ptr) \

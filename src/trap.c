@@ -2828,7 +2828,7 @@ boolean byplayer;
 
     /* give a "<mon> is slowing down" message and also remove
        intrinsic speed (comparable to similar effect on the hero) */
-    mon_adjust_speed(mon, -3, (struct obj *) 0);
+	increase_mon_temporary_speed_verbosely(mon, STONED, 10);
 
     if (cansee(mon->mx, mon->my))
         pline("%s turns to stone.", Monnam(mon));

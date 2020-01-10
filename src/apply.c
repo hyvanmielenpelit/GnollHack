@@ -1222,8 +1222,8 @@ struct obj **optr;
                 default:
                     break;
                 case 1:
-                    mon_adjust_speed(mtmp, 2, (struct obj *) 0);
-                    break;
+					mtmp->mprops[VERY_FAST] |= M_INTRINSIC_ACQUIRED;
+					break;
                 case 2: /* no explanation; it just happens... */
                     nomovemsg = "";
                     multi_reason = NULL;

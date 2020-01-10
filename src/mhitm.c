@@ -1261,13 +1261,10 @@ register struct obj* omonwep;
         }
         break;
     case AD_SLOW:
-        if (!cancelled && mdef->mspeed != MSLOW) {
-            unsigned int oldspeed = mdef->mspeed;
-
-            mon_adjust_speed(mdef, -1, (struct obj *) 0);
-            mdef->mstrategy &= ~STRAT_WAITFORU;
-            if (mdef->mspeed != oldspeed && vis && canspotmon(mdef))
-                pline("%s slows down.", Monnam(mdef));
+        if (!cancelled) 
+		{
+			set_mon_temporary_speed_verbosely(mdef, SLOWED, max(mdef->mprops[SLOWED] & M_TIMEOUT, 20 + rnd(10)));
+			mdef->mstrategy &= ~STRAT_WAITFORU;
         }
         break;
     case AD_CONF:

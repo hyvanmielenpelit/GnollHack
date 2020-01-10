@@ -1771,12 +1771,12 @@ struct monst *mtmp;
         }
         nomore(MUSE_WAN_SPEED_MONSTER);
         if (obj->otyp == WAN_SPEED_MONSTER && obj->spe > 0
-            && mtmp->mspeed != MFAST && !mtmp->isgd) {
+            && !has_very_fast(mtmp) && !mtmp->isgd) {
             m.misc = obj;
             m.has_misc = MUSE_WAN_SPEED_MONSTER;
         }
         nomore(MUSE_POT_SPEED);
-        if (obj->otyp == POT_SPEED && mtmp->mspeed != MFAST && !mtmp->isgd) {
+        if (obj->otyp == POT_SPEED && !has_very_fast(mtmp) && !mtmp->isgd) {
             m.misc = obj;
             m.has_misc = MUSE_POT_SPEED;
         }
@@ -1905,16 +1905,12 @@ struct monst *mtmp;
     case MUSE_WAN_SPEED_MONSTER:
         mzapmsg(mtmp, otmp, TRUE);
         otmp->spe--;
-        mon_adjust_speed(mtmp, 1, otmp);
-        return 2;
+		increase_mon_temporary_speed_verbosely(mtmp, VERY_FAST, rn1(10, 100 + 60 * bcsign(otmp)) );
+		return 2;
     case MUSE_POT_SPEED:
         mquaffmsg(mtmp, otmp);
-        /* note difference in potion effect due to substantially
-           different methods of maintaining speed ratings:
-           player's character becomes "very fast" temporarily;
-           monster becomes "one stage faster" permanently */
-        mon_adjust_speed(mtmp, 1, otmp);
-        m_useup(mtmp, otmp);
+		increase_mon_temporary_speed_verbosely(mtmp, VERY_FAST, rn1(10, 100 + 60 * bcsign(otmp)));
+		m_useup(mtmp, otmp);
         return 2;
     case MUSE_WAN_POLYMORPH:
         mzapmsg(mtmp, otmp, TRUE);
@@ -2103,7 +2099,7 @@ struct obj *obj;
         return (boolean) (!has_invisibility(mon) && !has_blocks_invisibility(mon)
                           && !attacktype(mon->data, AT_GAZE));
     if (typ == WAN_SPEED_MONSTER || typ == POT_SPEED)
-        return (boolean) (mon->mspeed != MFAST);
+        return !has_very_fast(mon);
 
     switch (obj->oclass) 
 	{
@@ -2462,7 +2458,7 @@ boolean stoning; /* True: stop petrification, False: cure stun && confusion */
     /* give a "<mon> is slowing down" message and also remove
        intrinsic speed (comparable to similar effect on the hero) */
     if (stoning)
-        mon_adjust_speed(mon, -3, (struct obj *) 0);
+		increase_mon_temporary_speed_verbosely(mon, STONED, 10);
 
     if (vis) {
         long save_quan = obj->quan;
@@ -2520,6 +2516,7 @@ boolean stoning; /* True: stop petrification, False: cure stun && confusion */
         mon->mconf = 0;
     }
     /* use up monster's next move */
+	mon->mprops[STONED] &= ~M_TIMEOUT;
     mon->movement -= NORMAL_SPEED;
     mon->mlstmv = monstermoves;
 }
@@ -2662,7 +2659,7 @@ boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
         pline("%s starts turning %s.", Monnam(mon),
               green_mon(mon) ? "into ooze" : hcolor(NH_GREEN));
     /* -4 => sliming, causes quiet loss of enhanced speed */
-    mon_adjust_speed(mon, -4, (struct obj *) 0);
+	increase_mon_temporary_speed_verbosely(mon, SLIMED, 10);
 
     if (trap) {
         const char *Mnam = vis ? Monnam(mon) : 0;
@@ -2750,7 +2747,9 @@ boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
         if (otyp != STRANGE_OBJECT)
             makeknown(otyp);
     }
-    /* use up monster's next move */
+	
+	mon->mprops[SLIMED] &= ~M_TIMEOUT;
+	/* use up monster's next move */
     mon->movement -= NORMAL_SPEED;
     mon->mlstmv = monstermoves;
     return res;

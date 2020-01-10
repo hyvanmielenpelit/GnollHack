@@ -143,16 +143,16 @@ boolean resuming;
                         else
                             moveamt = (youmonst.data->mmove * 2 + 2) / 3;
 
-                        if (Very_fast) { /* speed boots, potion, or spell */
+                        if (Very_fast) 
+						{ /* speed boots, potion, or spell */
+							/* randomization is here to avoid the player from optimizing the speed difference -- a slower monster has a chance of catching up! */
                             /* gain a free action on 2/3 of turns */
-                            //if (rn2(3) != 0)
-							/* Now a stable addition of 2/3 of normal speed, rounded up, == 8 */
-							moveamt += (NORMAL_SPEED * 2 + 2) / 3;
+                            if (rn2(3) != 0)
+								moveamt += NORMAL_SPEED;
                         } else if (Fast) { /* intrinsic */
                             /* gain a free action on 1/3 of turns */
-                            //if (rn2(3) == 0)
-							/* Now a stable addition of 1/3 of normal speed, rounded up, == 4 */
-                            moveamt += (NORMAL_SPEED + 2) / 3;
+                            if (rn2(3) == 0)
+	                            moveamt += NORMAL_SPEED;
                         }
                     }
 

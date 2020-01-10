@@ -2746,13 +2746,10 @@ int specialdmg; /* blessed and/or silver bonus against various things */
         /* if (negated) break; */
         break;
     case AD_SLOW:
-        if (!negated && mdef->mspeed != MSLOW) {
-            unsigned int oldspeed = mdef->mspeed;
-
-            mon_adjust_speed(mdef, -1, (struct obj *) 0);
-            if (mdef->mspeed != oldspeed && canseemon(mdef))
-                pline("%s slows down.", Monnam(mdef));
-        }
+        if (!negated) 
+		{
+			set_mon_temporary_speed_verbosely(mdef, SLOWED, max(mdef->mprops[SLOWED] & M_TIMEOUT, 20 + rnd(10)));
+		}
         break;
     case AD_CONF:
         if (!mdef->mconf) {

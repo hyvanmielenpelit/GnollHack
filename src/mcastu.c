@@ -512,8 +512,8 @@ int spellnum;
         dmg = 0;
         break;
     case MGC_HASTE_SELF:
-        mon_adjust_speed(mtmp, 1, (struct obj *) 0);
-        dmg = 0;
+		increase_mon_temporary_speed_verbosely(mtmp, VERY_FAST, 150 + rnd(50));
+		dmg = 0;
         break;
     case MGC_CURE_SELF:
         dmg = m_cure_self(mtmp, dmg);
@@ -811,7 +811,7 @@ int spellnum;
                 || spellnum == MGC_CLONE_WIZ))
             return TRUE;
         /* haste self when already fast */
-        if (mtmp->permspeed == MFAST && spellnum == MGC_HASTE_SELF)
+        if (has_very_fast(mtmp) && spellnum == MGC_HASTE_SELF)
             return TRUE;
         /* invisibility when already invisible */
         if ((has_invisibility(mtmp) || has_blocks_invisibility(mtmp)) && spellnum == MGC_DISAPPEAR)

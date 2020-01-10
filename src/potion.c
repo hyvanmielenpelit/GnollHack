@@ -1569,7 +1569,7 @@ int how;
             break;
         case POT_SPEED:
             angermon = FALSE;
-            mon_adjust_speed(mon, 1, obj);
+			increase_mon_temporary_speed_verbosely(mon, VERY_FAST, rn1(10, 100 + 60 * bcsign(obj)));
             break;
         case POT_BLINDNESS:
             if (haseyes(mon->data)) {

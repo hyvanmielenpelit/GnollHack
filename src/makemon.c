@@ -2201,8 +2201,8 @@ unsigned long mmflags;
             mtmp->mpeaceful = TRUE;
         break;
     case S_BAT:
-        if (Inhell && is_bat(ptr))
-            mon_adjust_speed(mtmp, 2, (struct obj *) 0);
+		if (Inhell && is_bat(ptr))
+			mtmp->mprops[VERY_FAST] |= M_INTRINSIC_ACQUIRED;
         break;
     }
     if ((ct = emits_light(mtmp->data)) > 0)

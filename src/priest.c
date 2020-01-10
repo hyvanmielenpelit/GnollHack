@@ -1010,10 +1010,12 @@ struct monst *mtmp;
         Strcat(info, ", scared");
     if (mtmp->mtrapped)
         Strcat(info, ", trapped");
-    if (mtmp->mspeed)
-        Strcat(info, (mtmp->mspeed == MFAST) ? ", fast"
-                      : (mtmp->mspeed == MSLOW) ? ", slow"
-                         : ", [? speed]");
+    if (is_slow(mtmp))
+		Strcat(info, ", slow");
+	else if (is_very_fast(mtmp))
+		Strcat(info, ", very fast");
+	else if (is_fast(mtmp))
+		Strcat(info, ", fast");
     if (has_invisibility(mtmp))
         Strcat(info, ", invisible");
 	if (mtmp == u.ustuck)

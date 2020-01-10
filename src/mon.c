@@ -1294,9 +1294,11 @@ struct monst *mon;
      *       MFAST's `+ 2' prevents hasted speed 1 from becoming a no-op;
      *       both adjustments have negligible effect on higher speeds.
      */
-    if (mon->mspeed == MSLOW)
+    if (is_slow(mon))
         mmove = (2 * mmove + 1) / 3;
-    else if (mon->mspeed == MFAST)
+	else if (is_very_fast(mon))
+		mmove = (5 * mmove + 2) / 3;
+	else if (is_fast(mon))
         mmove = (4 * mmove + 2) / 3;
 
     if (mon == u.usteed && u.ugallop && context.mv) {
@@ -4714,10 +4716,10 @@ int damtype, dam;
     } else {
         return;
     }
-    if (slow) {
-        if (mon->mspeed != MSLOW)
-            mon_adjust_speed(mon, -1, (struct obj *) 0);
-    }
+    if (slow) 
+	{
+		increase_mon_temporary_speed_verbosely(mon, SLOWED, 30 + rnd(10));
+	}
     if (heal) {
         if (mon->mhp < mon->mhpmax) {
             mon->mhp += heal;
