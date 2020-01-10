@@ -1387,12 +1387,6 @@ mcalcdistress()
 			mtmp->mwantstodrop = 1;
 		if (mtmp->mflee_timer && !--mtmp->mflee_timer)
             mtmp->mflee = 0;
-		if (mtmp->mhalfmagicres_timer && !--mtmp->mhalfmagicres_timer)
-			mtmp->mhalfmagicres = 0;
-		if (mtmp->mnomagicres_timer && !--mtmp->mnomagicres_timer)
-			mtmp->mnomagicres = 0;
-		if (mtmp->mnosummon_timer && !--mtmp->mnosummon_timer)
-			mtmp->mnosummon = 0;
 		if (mtmp->notalktimer > 0)
 			mtmp->notalktimer--;
 

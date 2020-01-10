@@ -3515,8 +3515,6 @@ int final;
 	if (Charmed)
 		you_are("charmed", from_what(CHARMED));
 
-	if (Hiding)
-		you_are("hiding", from_what(HIDING));
 	if (Reflecting)
         you_have("reflection", from_what(REFLECTING));
     if (Free_action)

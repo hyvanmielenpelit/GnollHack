@@ -11,6 +11,63 @@
  *      These routines provide basic data for any type of monster.
  */
 
+struct p2i {
+	int prop;
+	unsigned long innate;
+};
+
+
+static NEARDATA struct p2i prop2innate[] = {
+	{ FIRE_RES, MR_FIRE },
+	{ COLD_RES, MR_COLD },
+	{ SLEEP_RES, MR_SLEEP },
+	{ DISINT_RES, MR_DISINT },
+	{ SHOCK_RES, MR_ELEC },
+	{ POISON_RES, MR_POISON },
+	{ ACID_RES, MR_ACID },
+	{ STONE_RES, MR_STONE },
+	{ DEATH_RES, MR_DEATH },
+	{ LYCANTHROPY_RES, MR_LYCANTHROPY },
+	{ 0, MR_MAGICMISSILE },
+	{ ANTI_MAGIC, MR_MAGIC },
+	{ CHARM_RES, MR_CHARM },
+	{ DRAIN_RES, MR_DRAIN },
+	{ FLASH_RES, MR_FLASH },
+	{ REFLECTING, MR_REFLECTING },
+	{ INVISIBILITY, MR_INVISIBLE },
+	{ SEE_INVISIBLE, MR_SEE_INVISIBLE },
+	{ REGENERATION, MR_REGENERATION },
+	{ TELEPORT, MR_TELEPORT },
+	{ TELEPORT_CONTROL, MR_TELEPORT_CONTROL },
+	{ BLIND_TELEPAT, MR_BLIND_TELEPATHY },
+	{ TELEPAT, MR_TELEPATHY },
+};
+
+
+unsigned long
+prop_to_innate(prop_index)
+int prop_index;
+{
+	for (int i = 0; i < SIZE(prop2innate); i++)
+	{
+		if (prop2innate[i].prop == prop_index)
+			return prop2innate[i].innate;
+	}
+	return 0;
+}
+
+int
+innate_to_prop(innate_bit)
+unsigned long innate_bit;
+{
+	for (int i = 0; i < SIZE(prop2innate); i++)
+	{
+		if (prop2innate[i].innate == innate_bit)
+			return prop2innate[i].prop;
+	}
+	return 0;
+}
+
 /* set up an individual monster's base type (initial creation, shapechange) */
 void
 set_mon_data(mon, ptr)

@@ -447,8 +447,6 @@ int how;
     }
     if (has_invisibility(mtmp))
         Strcat(buf, "invisible ");
-	if (has_hiding(mtmp))
-		Strcat(buf, "hiding ");
 	if (distorted)
         Strcat(buf, "hallucinogen-distorted ");
 

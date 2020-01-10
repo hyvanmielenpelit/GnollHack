@@ -63,9 +63,15 @@
 #define MR_MAGIC		0x00000800L			/* resists magic */
 #define MR_CHARM		0x00001000L			/* resists charm */
 #define MR_DRAIN		0x00002000L			/* resists life draining */
-#define MR_FLASH		0x00004000L			/* resists life draining */
+#define MR_FLASH		0x00004000L			/* resists flash */
 #define MR_REFLECTING	0x00008000L			/* reflecting */
 #define MR_INVISIBLE	0x00010000L			/* invisible */
+#define MR_SEE_INVISIBLE 0x00020000L		/* see invisible */
+#define MR_REGENERATION 0x00040000L		
+#define MR_TELEPORT		0x00080000L		
+#define MR_TELEPORT_CONTROL 0x00100000L		
+#define MR_BLIND_TELEPATHY	0x00200000L		
+#define MR_TELEPATHY	0x00400000L		
 
 /* conveyances: resistances, teleport, teleport control, telepathy */
 #define MC_NONE			0x00000000L
@@ -122,10 +128,10 @@
 #define M1_UNSOLID		0x00100000L     /* has no solid or liquid body */
 #define M1_THICK_HIDE	0x00200000L  /* has thick hide or scales */
 #define M1_OVIPAROUS	0x00400000L   /* can lay eggs */
-#define M1_REGEN		0x00800000L       /* has_innate_regeneration hit points */
-#define M1_SEE_INVIS	0x01000000L   /* can see invisible creatures */
-#define M1_TPORT		0x02000000L       /* can teleport */
-#define M1_TPORT_CNTRL	0x04000000L /* controls where it teleports to */
+/* free bit */
+/* free bit */
+/* free bit */
+/* free bit */
 #define M1_ACID			0x08000000L        /* acidic to eat */
 #define M1_POIS			0x10000000L        /* poisonous to eat */
 #define M1_CARNIVORE	0x20000000L   /* eats corpses */
@@ -195,7 +201,7 @@
 #define M3_DISPLACES								0x00000400			/* moves monsters out of its way */
 #define M3_NONCORPOREAL								0x00000800      /* is noncorporeal, different from unsolid in the sense that
 																	an unsolid monster can be disintegrated, but noncorporeal not */
-#define M3_REFLECTING								0x00001000        /* reflecting monster */
+/* free bit */
 #define M3_NONLIVING								0x00002000			/* is nonliving, such as a golem or other construct or a vortex (unaffected by death attacks)*/
 #define M3_MULTIWEAPON								0x00004000		/* fights with more than one weapon (i.e., the wielded weapon), if available*/
 #define M3_CONSTRICTOR								0x00008000       /* grabbing / sticking itself causes constriction */
@@ -205,9 +211,8 @@
 #define M3_KNIGHT									0x00040000			/* monster can use knight items */
 #define M3_HEALER									0x00080000			/* monster can use healer items */
 
-#define M3_BLIND_TELEPATHIC							0x00100000		/* is blind telepathic */
-#define M3_UNBLIND_TELEPATHIC						0x00200000		/* is telepathic */
-#define M3_TELEPATHIC								M3_UNBLIND_TELEPATHIC		/* is telepathic */
+/* free bit */
+/* free bit */
 #define M3_REGENERATES_LOST_BODY_PARTS				0x00400000		/* does not lose max hitpoint because of sharpness or bisection */
 #define M3_REVIVES_FROM_DEAD						0x00800000		/* is resurrects itself after a while */
 

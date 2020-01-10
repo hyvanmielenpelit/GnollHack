@@ -54,6 +54,34 @@
 #define has_blocks_invisibility(mon) \
 	has_property(mon, BLOCKS_INVISIBILITY)
 
+#define has_innate_see_invisible(ptr) \
+	has_innate(ptr, MR_SEE_INVISIBLE)
+
+
+#define has_innate_regeneration(ptr) \
+	has_innate(ptr, MR_REGENERATION)
+
+
+#define has_innate_teleportation(ptr) \
+	has_innate(ptr, MR_TELEPORT)
+
+#define has_innate_teleport_control(ptr) \
+	has_innate(ptr, MR_TELEPORT_CONTROL)
+
+
+#define has_innate_blind_telepathy(ptr)   \
+	has_innate(ptr, MR_BLIND_TELEPATHY)
+
+#define has_innate_telepathy(ptr) \
+	has_innate(ptr, MR_TELEPATHY)
+
+#define has_telepathy(mon)   \
+     (has_innate_telepathy((mon)->data) || has_property(mon, TELEPAT))
+
+#define has_blind_telepathy(mon)   \
+     (has_innate_blind_telepathy((mon)->data) || has_property(mon, BLIND_TELEPAT))
+
+
 #define has_slowed(mon) \
 	has_property(mon, SLOWED)
 
@@ -87,11 +115,8 @@
 #define has_invisibility(mon) \
 	((has_innate_invisibility(mon->data) || has_property(mon, INVISIBILITY)) && !has_blocks_invisibility(mon))
 
-#define has_hiding(mon) \
-	has_property(mon, HIDING)
-
 #define is_not_visible(mon) \
-	(has_invisibility(mon) || has_hiding(mon))
+	(has_invisibility(mon))
 
 #define has_fast(mon) \
 	(has_property(mon, FAST) && !has_slowed(mon))
@@ -161,15 +186,6 @@
 #define lays_eggs(ptr) (((ptr)->mflags1 & M1_OVIPAROUS) != 0L)
 #define eggs_in_water(ptr) \
     (lays_eggs(ptr) && (ptr)->mlet == S_EEL && is_swimmer(ptr))
-#define has_innate_regeneration(ptr) (((ptr)->mflags1 & M1_REGEN) != 0L)
-#define has_innate_see_invisible(ptr) (((ptr)->mflags1 & M1_SEE_INVIS) != 0L)
-#define has_innate_teleportation(ptr) (((ptr)->mflags1 & M1_TPORT) != 0L)
-#define has_innate_teleport_control(ptr) (((ptr)->mflags1 & M1_TPORT_CNTRL) != 0L)
-#define has_innate_blind_telepathy(ptr)                                                \
-     (((ptr)->mflags3 & M3_BLIND_TELEPATHIC) != 0L)
-#define unblind_telepathic(ptr)                                                \
-     (((ptr)->mflags3 & M3_UNBLIND_TELEPATHIC) != 0L)
-#define has_innate_telepathy(ptr) unblind_telepathic(ptr) 
 
 #define has_see_invisible(mon) \
 	(has_innate_see_invisible((mon)->data) || has_property(mon, SEE_INVISIBLE))

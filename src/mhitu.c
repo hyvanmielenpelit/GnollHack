@@ -621,9 +621,9 @@ register struct monst *mtmp;
         tmp = 1;
 
     /* make eels visible the moment they hit/miss us */
-    if (mdat->mlet == S_EEL && has_hiding(mtmp) && cansee(mtmp->mx, mtmp->my)) 
+    if (mdat->mlet == S_EEL && mtmp->mundetected && cansee(mtmp->mx, mtmp->my))
 	{
-		mtmp->mprops[HIDING] = 0; /* Clear it out entirely */
+		mtmp->mundetected = 0;
         newsym(mtmp->mx, mtmp->my);
     }
 
@@ -835,7 +835,7 @@ register struct monst *mtmp;
             break;
 
 		case AT_SMMN:
-			if (!mtmp->mnosummon)
+			if (!has_summon_forbidden(mtmp))
 			{
 				if (mattk->adtyp == AD_DMNS)
 				{

@@ -244,12 +244,6 @@ docharacterstatistics()
 	txt = buf;
 	putstr(datawin, 0, txt);
 
-	extern const struct propname {
-		int prop_num;
-		const char* prop_name;
-		const char* prop_noun;
-	} propertynames[]; /* timeout.c */
-
 	int intrinsic_count = 0;
 	for (int i = 1; i <= LAST_PROP; i++)
 	{
@@ -261,15 +255,8 @@ docharacterstatistics()
 			char buf2[BUFSIZ] = "";
 			char buf3[BUFSIZ] = "";
 
-			for (int j = 0; propertynames[j].prop_num; j++)
-			{
-				if (propertynames[j].prop_num == i)
-				{
-					strcpy(buf2, propertynames[j].prop_noun);
-					*buf2 = highc(*buf2);
-					break;
-				}
-			}
+			strcpy(buf2, get_property_name(i));
+			*buf2 = highc(*buf2);
 
 			if (innate_intrinsic & FROM_RACE)
 			{
@@ -335,16 +322,9 @@ docharacterstatistics()
 					abil_count++;
 
 					char buf2[BUFSIZ] = "";
+					strcpy(buf2, get_property_name(intrinsic_ability[table_index].propid));
+					*buf2 = highc(*buf2);
 
-					for (int j = 0; propertynames[j].prop_num; j++)
-					{
-						if (propertynames[j].prop_num == intrinsic_ability[table_index].propid)
-						{
-							strcpy(buf2, propertynames[j].prop_noun);
-							*buf2 = highc(*buf2);
-							break;
-						}
-					}
 					Sprintf(buf, " Level %2d - %s", intrinsic_ability[table_index].ulevel, buf2);
 					txt = buf;
 					putstr(datawin, 0, txt);
@@ -460,12 +440,6 @@ register struct obj* obj;
 	char buf2[BUFSZ];
 	char buf3[BUFSZ];
 	const char* txt;
-
-	extern const struct propname {
-		int prop_num;
-		const char* prop_name;
-		const char* prop_noun;
-	} propertynames[]; /* timeout.c */
 
 	/* Name */
 	strcpy(buf, cxname(obj));
@@ -1276,15 +1250,8 @@ register struct obj* obj;
 					}
 					if(j <= 3)
 					{
-						for (int idx = 0; propertynames[idx].prop_num; idx++)
-						{
-							if (propertynames[idx].prop_num == prop)
-							{
-								strcpy(buf2, propertynames[idx].prop_noun);
-								*buf2 = highc(*buf2);
-								break;
-							}
-						}
+						strcpy(buf2, get_property_name(prop));
+						*buf2 = highc(*buf2);
 					}
 					else if(j == 4)
 					{
@@ -2220,15 +2187,8 @@ register struct obj* obj;
 			}
 			else
 			{
-				for (int j = 0; propertynames[j].prop_num; j++)
-				{
-					if (propertynames[j].prop_num == artilist[obj->oartifact].inv_prop)
-					{
-						strcpy(invoketext, propertynames[j].prop_noun);
-						*invoketext = highc(*invoketext);
-						break;
-					}
-				}
+				strcpy(invoketext, get_property_name(artilist[obj->oartifact].inv_prop));
+				*invoketext = highc(*invoketext);
 			}
 
 			powercnt++;

@@ -132,7 +132,6 @@ const struct propname {
 	{ VERY_FAST, "very fast", "very high fastness" },
 	{ SLOWED, "slowed", "slowness" },
 	{ CANCELLED, "cancelled", "cancellation" },
-	{ HIDING, "hiding", "hiding" },
 	{ HALF_MAGIC_RES, "having halved magic resistance", "halved magic resistance" },
 	{ NO_MAGIC_RES, "lacking magic resistance", "no magic resistance" },
 	{ CHARMED, "charmed", "charm" },
@@ -894,10 +893,6 @@ nh_timeout()
 				if (!Charmed)
 					Your("own motivations make more sense to you now.");
 				break;
-			case HIDING:
-				if (!Hiding)
-					You("feel more exposed.");
-				break;
 			case DEATH_RES:
 				if (!Death_resistance)
 					Your("soul's silver cord feels thinner than before.");
@@ -1061,9 +1056,6 @@ nh_timeout()
 				break;
 			case CHARMED:
 				Your("own motivations are starting to make a bit more sense to you.");
-				break;
-			case HIDING:
-				You("are starting to feel more exposed.");
 				break;
 			case DEATH_RES:
 				Your("soul's silver cord is starting to feel thinner than before.");

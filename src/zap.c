@@ -789,181 +789,84 @@ struct monst* mtmp;
 
 	int abilcnt = 0;
 
-	if(resists_acid(mtmp))
+	for (int i = 1; i <= LAST_PROP; i++)
 	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Acid resistance", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
+		boolean has_innate = FALSE;
+		boolean has_extrinsic = FALSE;
+		boolean has_instrinsic_acquired = FALSE;
+		boolean has_temporary = FALSE;
+
+		unsigned long ibit = prop_to_innate(i);
+
+		if (mtmp->data->mresists & ibit)
+			has_innate = TRUE;
+
+		if (mtmp->mprops[i] & M_EXTRINSIC)
+			has_extrinsic = TRUE;
+
+		if (mtmp->mprops[i] & M_INTRINSIC_ACQUIRED)
+			has_instrinsic_acquired = TRUE;
+
+		if (mtmp->mprops[i] & M_TIMEOUT)
+			has_temporary = TRUE;
+
+		boolean has_property = has_innate || has_extrinsic || has_instrinsic_acquired || has_temporary;
+
+		if (has_property)
+		{
+			char endbuf[BUFSZ] = "";
+			char endbuf2[BUFSZ] = "";
+			
+			if (0 && has_innate)
+			{
+				if (strcmp(endbuf, ""))
+					Strcat(endbuf, ", ");
+
+				Strcat(endbuf, "innate");
+			}
+
+			if (has_extrinsic)
+			{
+				if(strcmp(endbuf, ""))
+					Strcat(endbuf, ", ");
+
+				Strcat(endbuf, "extrinsic");
+			}
+			if (0 && has_instrinsic_acquired)
+			{
+				if (strcmp(endbuf, ""))
+					Strcat(endbuf, ", ");
+
+				Strcat(endbuf, "acquired");
+			}
+			if (has_temporary)
+			{
+				if (strcmp(endbuf, ""))
+					Strcat(endbuf, ", ");
+
+				Strcat(endbuf, "temporary");
+			}
+
+			if (strcmp(endbuf, ""))
+			{
+				Sprintf(endbuf2, " (%s)", endbuf);
+			}
+
+			char namebuf[BUFSZ] = "";
+			strcpy(namebuf, get_property_name(i));
+			*namebuf = highc(*namebuf);
+
+			abilcnt++;
+			Sprintf(buf, " %2d - %s%s", abilcnt, namebuf, endbuf2);
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
 	}
-	if (resists_blnd(mtmp))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Immune to blindness", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-	if (resists_charm(mtmp))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Charm resistance", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-	if (resists_cold(mtmp))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Cold resistance", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-	if (resists_death(mtmp))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Death resistance", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-	if (resists_disint(mtmp))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Disintegration resistance", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-	if (resists_drli(mtmp))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Drain resistance", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-	if (resists_elec(mtmp))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Shock resistance", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-	if (resists_fire(mtmp))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Fire resistance", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-	if (resists_lycanthropy(mtmp))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Lycanthropy resistance", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-	if (resists_magic(mtmp))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Magic resistance", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
+
 	if (resists_magicmissile(mtmp))
 	{
 		abilcnt++;
 		Sprintf(buf, " %2d - Magic missile resistance", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-	if (resists_poison(mtmp))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Poison resistance", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-	if (resists_sleep(mtmp))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Sleep resistance", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-	if (resists_ston(mtmp))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Petrification resistance", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-	if (is_reflecting(mtmp))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Reflecting", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-	if (has_invisibility(mtmp))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Invisible", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-	if (has_hiding(mtmp))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Hiding", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-	if (has_see_invisible(mtmp))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Sees invisible", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-	if (has_cancelled(mtmp))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Cancelled", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-
-	if (has_slowed(mtmp))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Slowed", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-
-	if (has_very_fast(mtmp))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Very fast", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-	else if (has_fast(mtmp))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Fast", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-
-	if (has_teleportation(mtmp))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Teleportation", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-	if (has_teleport_control(mtmp))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Teleport control", abilcnt);
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
@@ -1360,12 +1263,9 @@ int mnum_override; /* Use this mnum instead */
 		{
 			mtmp2->mprops[CANCELLED] = 0;
 		}
-		mtmp2->mhalfmagicres = 0;
-		mtmp2->mhalfmagicres_timer = 0;
-		mtmp2->mnomagicres = 0;
-		mtmp2->mnomagicres_timer = 0;
-		mtmp2->mnosummon = 0;
-		mtmp2->mnosummon_timer = 0;
+		mtmp2->mprops[NO_MAGIC_RES] = 0;
+		mtmp2->mprops[HALF_MAGIC_RES] = 0;
+		mtmp2->mprops[SUMMON_FORBIDDEN] = 0;
 		mtmp2->mcansee = 1; /* set like in makemon */
         mtmp2->mblinded = 0;
         mtmp2->mstun = 0;
@@ -4780,18 +4680,15 @@ int duration;
 
 	if (obj->otyp == SPE_LOWER_MAGIC_RESISTANCE)
 	{
-		mdef->mhalfmagicres = 1;
-		mdef->mhalfmagicres_timer = duration;
+		increase_mon_temporary_property(mdef, HALF_MAGIC_RES, duration);
 	}
 	else if (obj->otyp == SPE_NEGATE_MAGIC_RESISTANCE)
 	{
-		mdef->mnomagicres = 1;
-		mdef->mnomagicres_timer = duration;
+		increase_mon_temporary_property(mdef, NO_MAGIC_RES, duration);
 	}
 	else if (obj->otyp == SPE_FORBID_SUMMONING)
 	{
-		mdef->mnosummon = 1;
-		mdef->mnosummon_timer = duration;
+		increase_mon_temporary_property(mdef, SUMMON_FORBIDDEN, duration);
 	}
 		
 	return TRUE;
@@ -7528,10 +7425,10 @@ int damage, tell;
 		else if (dlev < 1)
 			dlev = is_mplayer(mtmp->data) ? u.ulevel : 1;
 
-		if (mtmp->mnomagicres)
+		if (has_no_magic_resistance(mtmp))
 			resisted = FALSE;
 		else
-			resisted = rn2(100 + alev - dlev) < (mtmp->data->mr / (mtmp->mhalfmagicres ? 2 : 1));
+			resisted = rn2(100 + alev - dlev) < (mtmp->data->mr / (has_half_magic_resistance(mtmp) ? 2 : 1));
 	}
 
 	if (resisted) {

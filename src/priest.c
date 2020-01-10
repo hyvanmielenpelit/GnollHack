@@ -313,8 +313,6 @@ char *pname; /* caller-supplied output buffer */
         Strcat(pname, "the ");
     if (has_invisibility(mon))
         Strcat(pname, "invisible ");
-	if (has_hiding(mon))
-		Strcat(pname, "hiding ");
 	if (mon->isminion && EMIN(mon)->renegade)
         Strcat(pname, "renegade ");
 
@@ -983,11 +981,11 @@ struct monst *mtmp;
         mhidden_description(mtmp, TRUE, eos(info));
     if (has_cancelled(mtmp))
         Strcat(info, ", cancelled");
-	if (mtmp->mnomagicres)
+	if (has_no_magic_resistance(mtmp))
 		Strcat(info, ", no magic resistance");
-	else if (mtmp->mhalfmagicres)
+	else if (has_half_magic_resistance(mtmp))
 		Strcat(info, ", halved magic resistance");
-	if (mtmp->mnosummon)
+	if (has_summon_forbidden(mtmp))
 		Strcat(info, ", unable to summon");
 	if (mtmp->mconf)
         Strcat(info, ", confused");
@@ -1018,8 +1016,6 @@ struct monst *mtmp;
                          : ", [? speed]");
     if (has_invisibility(mtmp))
         Strcat(info, ", invisible");
-	if (has_hiding(mtmp))
-		Strcat(info, ", hiding");
 	if (mtmp == u.ustuck)
         Strcat(info, sticks(youmonst.data) ? ", held by you"
                       : !u.uswallow ? ", holding you"

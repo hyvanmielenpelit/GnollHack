@@ -539,10 +539,6 @@
 #define ECharmed u.uprops[CHARMED].extrinsic
 #define Charmed (HCharmed || ECharmed)
 
-#define HHiding u.uprops[HIDING].intrinsic
-#define EHiding u.uprops[HIDING].extrinsic
-#define Hiding (HHiding || EHiding)
-
 #define HSlowed u.uprops[SLOWED].intrinsic
 #define ESlowed u.uprops[SLOWED].extrinsic
 #define Slowed (HSlowed || ESlowed)
