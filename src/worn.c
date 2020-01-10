@@ -1168,12 +1168,14 @@ boolean racialexception;
 			if (obj->oclass != RING_CLASS || (is_priest(mon->data) && obj->cursed) || is_cursed_magic_item(obj) || (obj->owornmask && obj->owornmask != flag))
 				continue;
 			best = obj;
-			goto outer_break; /* no such thing as better amulets */
+			goto outer_break; /* no such thing as better rings */
 		case W_MISC:
 			if (obj->oclass != MISCELLANEOUS_CLASS || (is_priest(mon->data) && obj->cursed) || is_cursed_magic_item(obj) || (obj->owornmask && obj->owornmask != flag))
 				continue;
+			if (objects[obj->otyp].oc_subtyp != MISC_BELT && !likes_magic(mon->data) && !(mon->mnum == PM_MINOTAUR && objects[obj->otyp].oc_subtyp == MISC_NOSERING))
+				continue;
 			best = obj;
-			goto outer_break; /* no such thing as better amulets */
+			goto outer_break; /* no such thing as better misc items */
 		case W_ARMU:
             if (!is_shirt(obj))
                 continue;

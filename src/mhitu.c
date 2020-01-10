@@ -39,7 +39,7 @@ int damage;
     /* Note: if opposite gender, "seductively" */
     /* If same gender, "engagingly" for nymph, normal msg for others */
     if ((compat = could_seduce(mtmp, &youmonst, mattk)) != 0
-        && !mtmp->mcancelled && !mtmp->mspec_used) {
+        && !has_cancelled(mtmp) && !mtmp->mspec_used) {
         pline("%s %s you %s.", Monst_name,
               !Blind ? "smiles at" : !Deaf ? "talks to" : "touches",
               (compat == 2) ? "engagingly" : "seductively");
@@ -123,7 +123,7 @@ struct attack *mattk;
     if (!canspotmon(mtmp))
         map_invisible(mtmp->mx, mtmp->my);
 
-    if (could_seduce(mtmp, &youmonst, mattk) && !mtmp->mcancelled)
+    if (could_seduce(mtmp, &youmonst, mattk) && !has_cancelled(mtmp))
         pline("%s pretends to be friendly.", Monnam(mtmp));
     else
         pline("%s %smisses!", Monnam(mtmp),
@@ -377,7 +377,7 @@ struct attack *alt_attk_buf;
                && attk->aatyp == AT_WEAP && attk->adtyp != AD_PHYS
                && !(mptr->mattk[1].aatyp == AT_WEAP
                     && mptr->mattk[1].adtyp == AD_PHYS)
-               && (magr->mcancelled
+               && (has_cancelled(magr)
                    || (weap && ((weap->otyp == CORPSE
                                  && touch_petrifies(&mons[weap->corpsenm]))
                                 || weap->oartifact == ART_STORMBRINGER
@@ -825,7 +825,7 @@ register struct monst *mtmp;
             }
             break;
         case AT_MAGC:
-			if(!mtmp->mcancelled)
+			if(!has_cancelled(mtmp))
 			{
 				if (range2)
 					sum[i] = buzzmu(mtmp, mattk);
@@ -842,7 +842,7 @@ register struct monst *mtmp;
 					/*  Special demon handling code */
 					if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
 						int chance = mattk->mcadj;
-						if (!mtmp->mcancelled && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
+						if (!has_cancelled(mtmp) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
 						{
 							pline("%s gates in some help.", Monnam(mtmp));
 							(void)msummon(mtmp);
@@ -864,14 +864,14 @@ register struct monst *mtmp;
 					/*  Special lycanthrope handling code */
 					if ((mtmp->cham == NON_PM) && is_were(mdat) && !range2) {
 						if (is_human(mdat)) {
-							if (!rn2(5 - (night() * 2)) && !mtmp->mcancelled)
+							if (!rn2(5 - (night() * 2)) && !has_cancelled(mtmp))
 								new_were(mtmp);
 						}
-						else if (!rn2(30) && !mtmp->mcancelled)
+						else if (!rn2(30) && !has_cancelled(mtmp))
 							new_were(mtmp);
 						mdat = mtmp->data;
 
-						if (!rn2(10) && !mtmp->mcancelled && !item_prevents_summoning(mtmp->mnum)) {
+						if (!rn2(10) && !has_cancelled(mtmp) && !item_prevents_summoning(mtmp->mnum)) {
 							int numseen, numhelp;
 							char buf[BUFSZ], genericwere[BUFSZ];
 
@@ -916,7 +916,7 @@ register struct monst *mtmp;
 					/*  Special gnoll handling code */
 					if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
 						int chance = mattk->mcadj;
-						if (!mtmp->mcancelled && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
+						if (!has_cancelled(mtmp) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
 						{
 							pline("%s summons some gnolls!", Monnam(mtmp));
 							(void)yeenoghu_gnoll_summon();
@@ -936,7 +936,7 @@ register struct monst *mtmp;
 					/*  Special gnoll handling code */
 					if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
 						int chance = mattk->mcadj;
-						if (!mtmp->mcancelled && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
+						if (!has_cancelled(mtmp) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
 						{
 							pline("%s summons some ghouls!", Monnam(mtmp));
 							(void)yeenoghu_ghoul_summon();
@@ -956,7 +956,7 @@ register struct monst *mtmp;
 					/*  Special gnoll handling code */
 					if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
 						int chance = mattk->mcadj;
-						if (!mtmp->mcancelled && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
+						if (!has_cancelled(mtmp) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
 						{
 							pline("%s summons some undead!", Monnam(mtmp));
 							(void)orcus_undead_summon();
@@ -1500,10 +1500,10 @@ register struct obj* omonwep;
 
     /*  Next a cancellation factor.
      *  Use uncancelled when cancellation factor takes into account certain
-     *  armor's special magic protection.  Otherwise just use !mtmp->mcancelled.
+     *  armor's special magic protection.  Otherwise just use !has_cancelled(mtmp).
      */
 	boolean mcsuccess = check_magic_cancellation_success(&youmonst, mattk->mcadj);
-	uncancelled = !mtmp->mcancelled && !mcsuccess;
+	uncancelled = !has_cancelled(mtmp) && !mcsuccess;
 
     permdmg = 0;
 
@@ -1923,11 +1923,11 @@ register struct obj* omonwep;
         break;
     case AD_STCK:
         hitmsg(mtmp, mattk, dmg);
-        if (!mtmp->mcancelled && !u.ustuck && !sticks(youmonst.data))
+        if (!has_cancelled(mtmp) && !u.ustuck && !sticks(youmonst.data))
             u.ustuck = mtmp;
         break;
     case AD_WRAP:
-        if ((!mtmp->mcancelled || u.ustuck == mtmp) && !sticks(youmonst.data)) 
+        if ((!has_cancelled(mtmp) || u.ustuck == mtmp) && !sticks(youmonst.data)) 
 		{
             if (!u.ustuck && !rn2(2)) 
 			{
@@ -2129,7 +2129,7 @@ register struct obj* omonwep;
         break;
     case AD_RUST:
         hitmsg(mtmp, mattk, dmg);
-        if (mtmp->mcancelled)
+        if (has_cancelled(mtmp))
             break;
         if (u.umonnum == PM_IRON_GOLEM) {
             You("rust!");
@@ -2141,13 +2141,13 @@ register struct obj* omonwep;
         break;
     case AD_CORR:
         hitmsg(mtmp, mattk, dmg);
-        if (mtmp->mcancelled)
+        if (has_cancelled(mtmp))
             break;
         erode_armor(&youmonst, ERODE_CORRODE);
         break;
     case AD_DCAY:
         hitmsg(mtmp, mattk, dmg);
-        if (mtmp->mcancelled)
+        if (has_cancelled(mtmp))
             break;
         if (u.umonnum == PM_WOOD_GOLEM || u.umonnum == PM_LEATHER_GOLEM) {
             You("rot!");
@@ -2160,7 +2160,7 @@ register struct obj* omonwep;
     case AD_HEAL:
         /* a cancelled nurse is just an ordinary monster,
          * nurses don't heal those that cause petrification */
-        if (mtmp->mcancelled || (Upolyd && touch_petrifies(youmonst.data))) {
+        if (has_cancelled(mtmp) || (Upolyd && touch_petrifies(youmonst.data))) {
             hitmsg(mtmp, mattk, dmg);
             break;
         }
@@ -2228,7 +2228,7 @@ register struct obj* omonwep;
         hitmsg(mtmp, mattk, dmg);
         if (!night() && mdat == &mons[PM_GREMLIN])
             break;
-        if (!mtmp->mcancelled && !rn2(10)) {
+        if (!has_cancelled(mtmp) && !rn2(10)) {
             if (!Deaf) {
                 if (Blind)
                     You_hear("laughter.");
@@ -2254,7 +2254,7 @@ register struct obj* omonwep;
 
 		break;
     case AD_ACID:
-		if (!mtmp->mcancelled && !rn2(3))
+		if (!has_cancelled(mtmp) && !rn2(3))
             if (Acid_resistance) {
 				hitmsg(mtmp, mattk, -1);
 				pline("You're covered in %s, but it seems harmless.",
@@ -2283,7 +2283,7 @@ register struct obj* omonwep;
         break;
     case AD_CONF:
         hitmsg(mtmp, mattk, -1);
-        if (!mtmp->mcancelled && !mtmp->mspec_used) {
+        if (!has_cancelled(mtmp) && !mtmp->mspec_used) {
             mtmp->mspec_used = mtmp->mspec_used + (dmg + rn2(6));
             if (Confusion)
                 You("are getting even more confused.");
@@ -2850,7 +2850,7 @@ struct attack *mattk;
         tmp = 0;
         break;
     case AD_ELEC:
-        if (!mtmp->mcancelled && rn2(2)) {
+        if (!has_cancelled(mtmp) && rn2(2)) {
             pline_The("air around you crackles with electricity.");
             if (Shock_resistance || Invulnerable) {
                 shieldeff(u.ux, u.uy);
@@ -2862,7 +2862,7 @@ struct attack *mattk;
             tmp = 0;
         break;
     case AD_COLD:
-        if (!mtmp->mcancelled && rn2(2)) {
+        if (!has_cancelled(mtmp) && rn2(2)) {
             if (Cold_resistance || Invulnerable) {
                 shieldeff(u.ux, u.uy);
                 You_feel("mildly chilly.");
@@ -2874,7 +2874,7 @@ struct attack *mattk;
             tmp = 0;
         break;
     case AD_FIRE:
-        if (!mtmp->mcancelled && rn2(2)) {
+        if (!has_cancelled(mtmp) && rn2(2)) {
             if (Fire_resistance || Invulnerable) {
                 shieldeff(u.ux, u.uy);
                 You_feel("mildly hot.");
@@ -2892,7 +2892,7 @@ struct attack *mattk;
         break;
     case AD_DREN:
         /* AC magic cancellation doesn't help when engulfed */
-        if (!mtmp->mcancelled && rn2(4)) /* 75% chance */
+        if (!has_cancelled(mtmp) && rn2(4)) /* 75% chance */
             drain_en(tmp);
         tmp = 0;
         break;
@@ -2942,7 +2942,7 @@ boolean ufound;
 {
     boolean physical_damage = TRUE, kill_agr = TRUE;
 
-    if (mtmp->mcancelled)
+    if (has_cancelled(mtmp))
         return 0;
 
     if (!ufound) {
@@ -3058,7 +3058,7 @@ struct attack *mattk;
         "dulled",                /* [7] */
     };
     int react = -1;
-    boolean cancelled = (mtmp->mcancelled != 0), already = FALSE;
+    boolean cancelled = has_cancelled(mtmp), already = FALSE;
 
     /* assumes that hero has to see monster's gaze in order to be
        affected, rather than monster just having to look at hero;
@@ -3077,7 +3077,7 @@ struct attack *mattk;
             if (!canseemon(mtmp))
                 break; /* silently */
             pline("%s %s.", Monnam(mtmp),
-                  (mtmp->data == &mons[PM_MEDUSA] && mtmp->mcancelled)
+                  (mtmp->data == &mons[PM_MEDUSA] && has_cancelled(mtmp))
                       ? "doesn't look all that ugly"
                       : "gazes ineffectually");
             break;
@@ -3165,7 +3165,7 @@ struct attack *mattk;
                 already = (mtmp->mcansee == 0);
                 /* Archons gaze every round; we don't want cancelled ones
                    giving the "seems puzzled/dazzled" message that often */
-                if (mtmp->mcancelled && mtmp->data == &mons[PM_ARCHON] && rn2(5))
+                if (has_cancelled(mtmp) && mtmp->data == &mons[PM_ARCHON] && rn2(5))
                     react = -1;
             } else {
 				int blnd = 0;
@@ -3348,9 +3348,9 @@ struct monst *mon;
     int attr_tot, tried_gloves = 0;
     char qbuf[QBUFSZ], Who[QBUFSZ];
 
-    if (mon->mcancelled || mon->mspec_used) {
+    if (has_cancelled(mon) || mon->mspec_used) {
         pline("%s acts as though %s has got a %sheadache.", Monnam(mon),
-              mhe(mon), mon->mcancelled ? "severe " : "");
+              mhe(mon), has_cancelled(mon) ? "severe " : "");
         return 0;
     }
     if (unconscious()) {
@@ -3639,7 +3639,7 @@ struct monst *mon;
         }
     }
     if (!rn2(25))
-        mon->mcancelled = 1; /* monster is worn out */
+        increase_mon_temporary_property(mon, CANCELLED, 10 + rnd(40)); /* monster is worn out */
     if (!tele_restrict(mon))
         (void) rloc(mon, TRUE);
     return 1;

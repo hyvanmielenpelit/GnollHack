@@ -1802,8 +1802,7 @@ struct mkroom *croom;
             mtmp->female = 1;
 		if (m->cancelled)
 		{
-			mtmp->mcancelled = 1;
-			mtmp->mcancelled_timer = (m->cancelled % 127);
+			mtmp->mprops[CANCELLED] = m->cancelled;
 		}
 		if (m->revived)
             mtmp->mrevived = 1;

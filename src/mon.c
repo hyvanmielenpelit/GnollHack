@@ -1352,6 +1352,30 @@ mcalcdistress()
                                           ? SHIFT_MSG : 0);
         were_change(mtmp);
 
+		for (int i = 1; i <= LAST_PROP; i++)
+		{
+			unsigned short otherflags = mtmp->mprops[i] & ~M_TIMEOUT;
+			unsigned short duration = mtmp->mprops[i] & M_TIMEOUT;
+			if (duration > 0)
+			{
+				mtmp->mprops[i] = (duration - 1) | otherflags;
+
+				if (mtmp->mprops[i] == 0)
+				{
+					switch(i)
+					{
+					case CHARMED:
+						mtmp->mpeaceful = mtmp->morigpeaceful;
+						mtmp->mtame = mtmp->morigtame;
+						break;
+					default:
+						break;
+					}
+				}
+			}
+		}
+
+
         /* gradually time out temporary problems */
         if (mtmp->mblinded && !--mtmp->mblinded)
             mtmp->mcansee = 1;
@@ -1363,20 +1387,12 @@ mcalcdistress()
 			mtmp->mwantstodrop = 1;
 		if (mtmp->mflee_timer && !--mtmp->mflee_timer)
             mtmp->mflee = 0;
-		if (mtmp->mcancelled_timer && !--mtmp->mcancelled_timer)
-			mtmp->mcancelled = 0;
 		if (mtmp->mhalfmagicres_timer && !--mtmp->mhalfmagicres_timer)
 			mtmp->mhalfmagicres = 0;
 		if (mtmp->mnomagicres_timer && !--mtmp->mnomagicres_timer)
 			mtmp->mnomagicres = 0;
 		if (mtmp->mnosummon_timer && !--mtmp->mnosummon_timer)
 			mtmp->mnosummon = 0;
-		if (mtmp->mcharmed_timer && !--mtmp->mcharmed_timer)
-		{
-			mtmp->mcharmed = 0;
-			mtmp->mpeaceful = mtmp->morigpeaceful;
-			mtmp->mtame = mtmp->morigtame;
-		}
 		if (mtmp->notalktimer > 0)
 			mtmp->notalktimer--;
 
@@ -3600,8 +3616,7 @@ boolean via_attack;
     }
 
 	/* just in case remove charm */
-	mtmp->mcharmed = 0;
-	mtmp->mcharmed_timer = 0;
+	mtmp->mprops[CHARMED] = 0;
 
     /* attacking your own quest leader will anger his or her guardians */
     if (!context.mon_moving /* should always be the case here */
@@ -3805,7 +3820,7 @@ restartcham()
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
             continue;
-        if (!mtmp->mcancelled)
+        if (!has_cancelled(mtmp))
             mtmp->cham = pm_to_cham(monsndx(mtmp->data));
         if (mtmp->data->mlet == S_MIMIC && mtmp->msleeping
             && cansee(mtmp->mx, mtmp->my)) {
@@ -3844,7 +3859,7 @@ register struct monst *mtmp;
 {
     struct trap *t;
 
-    if (mtmp->mcancelled || M_AP_TYPE(mtmp) || cansee(mtmp->mx, mtmp->my)
+    if (has_cancelled(mtmp) || M_AP_TYPE(mtmp) || cansee(mtmp->mx, mtmp->my)
         || rn2(3) || mtmp == u.ustuck
         /* can't hide while trapped except in pits */
         || (mtmp->mtrapped && (t = t_at(mtmp->mx, mtmp->my)) != 0
@@ -4342,10 +4357,10 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
             return 0;
         /* cancelled shapechangers become uncancelled prior
            to being given a new shape */
-        if (mtmp->mcancelled && !Protection_from_shape_changers) {
+        if (has_cancelled(mtmp) && !Protection_from_shape_changers) {
             mtmp->cham = pm_to_cham(monsndx(mtmp->data));
             if (mtmp->cham != NON_PM)
-                mtmp->mcancelled = 0;
+                mtmp->mprops[CANCELLED] = 0;
         }
     }
 

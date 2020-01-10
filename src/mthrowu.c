@@ -1080,7 +1080,7 @@ struct attack *mattk;
 {
     struct obj *otmp;
 
-    if (mtmp->mcancelled) {
+    if (has_cancelled(mtmp)) {
         if (!Deaf)
             pline("A dry rattle comes from %s throat.",
                   s_suffix(mon_nam(mtmp)));
@@ -1134,7 +1134,7 @@ struct attack  *mattk;
     int typ = (mattk->adtyp == AD_RBRE) ? rnd(AD_ACID) : mattk->adtyp ; // Does not include death ray
 
     if (m_lined_up(mtarg, mtmp)) {
-        if (mtmp->mcancelled) {
+        if (has_cancelled(mtmp)) {
             if (!Deaf) {
                 if (canseemon(mtmp))
                     pline("%s coughs.", Monnam(mtmp));
@@ -1296,7 +1296,7 @@ struct attack *mattk;
 {
     struct obj *otmp;
 
-    if (mtmp->mcancelled) {
+    if (has_cancelled(mtmp)) {
         if (!Deaf)
             pline("A dry rattle comes from %s throat.",
                   s_suffix(mon_nam(mtmp)));
@@ -1345,7 +1345,7 @@ struct attack *mattk;
     int typ = (mattk->adtyp == AD_RBRE) ? rnd(AD_ACID) : mattk->adtyp; //NOTE: Does not include death ray
 
     if (lined_up(mtmp)) {
-        if (mtmp->mcancelled) {
+        if (has_cancelled(mtmp)) {
             if (!Deaf) {
                 if (canseemon(mtmp))
                     pline("%s coughs.", Monnam(mtmp));

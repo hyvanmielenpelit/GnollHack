@@ -727,7 +727,7 @@ register struct monst *mtmp;
 
             for (a = &mdat->mattk[0]; a < &mdat->mattk[NATTK]; a++)
 			{
-                if (a->aatyp == AT_MAGC && !mtmp->mcancelled
+                if (a->aatyp == AT_MAGC && !has_cancelled(mtmp)
                     && (a->adtyp == AD_SPEL || a->adtyp == AD_CLRC))
 				{
                     if (castmu(mtmp, a, FALSE, FALSE))
@@ -1034,7 +1034,7 @@ register int after;
 #endif
 
     /* teleport if that lies in our nature */
-    if (ptr == &mons[PM_TENGU] && !rn2(5) && !mtmp->mcancelled
+    if (ptr == &mons[PM_TENGU] && !rn2(5) && !has_cancelled(mtmp)
         && !tele_restrict(mtmp)) {
         if (mtmp->mhp < 7 || mtmp->mpeaceful || rn2(2))
             (void) rloc(mtmp, TRUE);

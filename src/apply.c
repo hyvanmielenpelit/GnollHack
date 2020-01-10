@@ -916,7 +916,7 @@ struct obj *obj;
 #define SEENMON (MONSEEN_NORMAL | MONSEEN_SEEINVIS | MONSEEN_INFRAVIS)
     how_seen = vis ? howmonseen(mtmp) : 0;
     /* whether monster is able to use its vision-based capabilities */
-    monable = !mtmp->mcancelled && (!is_not_visible(mtmp) || has_see_invisible(mtmp));
+    monable = !has_cancelled(mtmp) && (!is_not_visible(mtmp) || has_see_invisible(mtmp));
     mlet = mtmp->data->mlet;
     if (mtmp->msleeping) {
         if (vis)

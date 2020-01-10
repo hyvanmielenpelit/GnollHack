@@ -1358,8 +1358,7 @@ int mnum_override; /* Use this mnum instead */
         if (!dmgtype(mtmp2->data, AD_SEDU)
             && (!SYSOPT_SEDUCE || !dmgtype(mtmp2->data, AD_SSEX)))
 		{
-            mtmp2->mcancelled = 0;
-			mtmp2->mcancelled_timer = 0;
+			mtmp2->mprops[CANCELLED] = 0;
 		}
 		mtmp2->mhalfmagicres = 0;
 		mtmp2->mhalfmagicres_timer = 0;
@@ -4666,9 +4665,6 @@ int duration;
 
     if (self_cancel)
 	{
-		You_feel("your magic is not flowing properly.");
-		incr_itimeout(&HCancelled, duration);
-
 #if 0
 		/* 1st cancel inventory */
 		struct obj* otmp;
@@ -4684,7 +4680,11 @@ int duration;
     }
 
     /* now handle special cases */
-    if (youdefend) {
+    if (youdefend) 
+	{
+		You_feel("your magic is not flowing properly.");
+		incr_itimeout(&HCancelled, duration);
+
         if (Upolyd) { /* includes lycanthrope in creature form */
             /*
              * Return to normal form unless Unchanging.
@@ -4703,15 +4703,15 @@ int duration;
             else
                 rehumanize();
         }
-    } else {
-        mdef->mcancelled = 1;
-		mdef->mcancelled_timer = duration;
+    } 
+	else 
+	{
+		increase_mon_temporary_property(mdef, CANCELLED, duration);
 
 		/* break charm */
-		if (mdef->mcharmed)
+		if (has_charmed(mdef))
 		{
-			mdef->mcharmed = 0;
-			mdef->mcharmed_timer = 0;
+			mdef->mprops[CHARMED] = 0;
 			mdef->mpeaceful = mdef->morigpeaceful;
 			mdef->mtame = mdef->morigtame;
 		}

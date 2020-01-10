@@ -981,7 +981,7 @@ struct monst *mtmp;
        won't be relevant for it, but wand of probing doesn't */
     if (mtmp->mundetected || mtmp->m_ap_type)
         mhidden_description(mtmp, TRUE, eos(info));
-    if (mtmp->mcancelled)
+    if (has_cancelled(mtmp))
         Strcat(info, ", cancelled");
 	if (mtmp->mnomagicres)
 		Strcat(info, ", no magic resistance");

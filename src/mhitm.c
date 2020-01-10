@@ -96,7 +96,7 @@ struct attack *mattk;
             seemimic(mdef);
         if (M_AP_TYPE(magr))
             seemimic(magr);
-        fmt = (could_seduce(magr, mdef, mattk) && !magr->mcancelled)
+        fmt = (could_seduce(magr, mdef, mattk) && !has_cancelled(magr))
                   ? "%s pretends to be friendly to"
                   : "%s misses";
         Sprintf(buf, fmt, Monnam(magr));
@@ -512,7 +512,7 @@ register struct monst *magr, *mdef;
 						&& (otmp && (objects[otmp->otyp].oc_material == MAT_IRON
 							|| objects[otmp->otyp].oc_material == MAT_METAL))
 						&& mdef->mhp > 1
-						&& !mdef->mcancelled) {
+						&& !has_cancelled(mdef)) {
 						struct monst* mclone;
 						if ((mclone = clone_mon(mdef, 0, 0)) != 0) {
 							if (vis && canspotmon(mdef)) {
@@ -649,7 +649,7 @@ struct obj* omonwep;
             seemimic(mdef);
         if (M_AP_TYPE(magr))
             seemimic(magr);
-        if ((compat = could_seduce(magr, mdef, mattk)) && !magr->mcancelled) {
+        if ((compat = could_seduce(magr, mdef, mattk)) && !has_cancelled(magr)) {
             Sprintf(buf, "%s %s", Monnam(magr),
                     mdef->mcansee ? "smiles at" : "talks to");
             pline("%s %s %s.", buf, mon_nam(mdef),
@@ -708,7 +708,7 @@ struct attack *mattk;
               canspotmon(mdef) ? mon_nam(mdef) : "something");
     }
 
-    if (magr->mcancelled || !magr->mcansee || !mdef->mcansee
+    if (has_cancelled(magr)|| !magr->mcansee || !mdef->mcansee
         || (is_not_visible(magr) && !has_see_invisible(mdef)) || mdef->msleeping) {
         if (vis && canspotmon(mdef))
             pline("but nothing happens.");
@@ -873,7 +873,7 @@ struct attack *mattk;
 {
     int result;
 
-    if (magr->mcancelled)
+    if (has_cancelled(magr))
         return MM_MISS;
 
     if (cansee(magr->mx, magr->my))
@@ -985,7 +985,7 @@ register struct obj* omonwep;
     }
 
     /* cancellation factor is the same as when attacking the hero */
-	cancelled = magr->mcancelled || check_magic_cancellation_success(mdef, mattk->mcadj);
+	cancelled = has_cancelled(magr)|| check_magic_cancellation_success(mdef, mattk->mcadj);
 
     switch (mattk->adtyp) {
     case AD_DGST:
@@ -1010,7 +1010,7 @@ register struct obj* omonwep;
 		// mdef->mhp;
         break;
     case AD_STUN:
-        if (magr->mcancelled)
+        if (has_cancelled(magr))
             break;
         if (canseemon(mdef))
             pline("%s %s for a moment.", Monnam(mdef),
@@ -1018,7 +1018,7 @@ register struct obj* omonwep;
         mdef->mstun = 1;
         goto physical;
     case AD_LEGS:
-        if (magr->mcancelled) {
+        if (has_cancelled(magr)) {
             tmp = 0;
             break;
         }
@@ -1136,7 +1136,7 @@ register struct obj* omonwep;
         tmp += destroy_mitem(mdef, RING_CLASS, AD_ELEC);
         break;
     case AD_ACID:
-        if (magr->mcancelled) {
+        if (has_cancelled(magr)) {
             tmp = 0;
             break;
         }
@@ -1155,7 +1155,7 @@ register struct obj* omonwep;
             acid_damage(MON_WEP(mdef));
         break;
     case AD_RUST:
-        if (magr->mcancelled)
+        if (has_cancelled(magr))
             break;
         if (pd == &mons[PM_IRON_GOLEM]) {
             if (vis && canseemon(mdef))
@@ -1172,14 +1172,14 @@ register struct obj* omonwep;
         tmp = 0;
         break;
     case AD_CORR:
-        if (magr->mcancelled)
+        if (has_cancelled(magr))
             break;
         erode_armor(mdef, ERODE_CORRODE);
         mdef->mstrategy &= ~STRAT_WAITFORU;
         tmp = 0;
         break;
     case AD_DCAY:
-        if (magr->mcancelled)
+        if (has_cancelled(magr))
             break;
         if (pd == &mons[PM_WOOD_GOLEM] || pd == &mons[PM_LEATHER_GOLEM]) {
             if (vis && canseemon(mdef))
@@ -1275,7 +1275,7 @@ register struct obj* omonwep;
          * limit, setting spec_used would not really be right (though
          * we still should check for it).
          */
-        if (!magr->mcancelled && !mdef->mconf && !magr->mspec_used) {
+        if (!has_cancelled(magr)&& !mdef->mconf && !magr->mspec_used) {
             if (vis && canseemon(mdef))
                 pline("%s looks confused.", Monnam(mdef));
             mdef->mconf = 1;
@@ -1298,7 +1298,7 @@ register struct obj* omonwep;
         tmp = 0;
         break;
     case AD_HALU:
-        if (!magr->mcancelled && haseyes(pd) && mdef->mcansee) {
+        if (!has_cancelled(magr)&& haseyes(pd) && mdef->mcansee) {
             if (vis && canseemon(mdef))
                 pline("%s looks %sconfused.", Monnam(mdef),
                       mdef->mconf ? "more " : "");
@@ -1310,8 +1310,8 @@ register struct obj* omonwep;
     case AD_CURS:
         if (!night() && (pa == &mons[PM_GREMLIN]))
             break;
-        if (!magr->mcancelled && !rn2(10)) {
-            mdef->mcancelled = 1; /* cancelled regardless of lifesave */
+        if (!has_cancelled(magr)&& !rn2(10)) {
+            mdef->mprops[CANCELLED] = 100 + rnd(50); /* cancelled regardless of lifesave */
             mdef->mstrategy &= ~STRAT_WAITFORU;
             if (is_were(pd) && pd->mlet != S_HUMAN)
                 were_change(mdef);
@@ -1339,7 +1339,7 @@ register struct obj* omonwep;
         break;
     case AD_SGLD:
         tmp = 0;
-        if (magr->mcancelled)
+        if (has_cancelled(magr))
             break;
         /* technically incorrect; no check for stealing gold from
          * between mdef's feet...
@@ -1506,7 +1506,7 @@ register struct obj* omonwep;
             tmp = 0;
         break;
     case AD_WRAP: /* monsters cannot grab one another, it's too hard */
-        if (magr->mcancelled)
+        if (has_cancelled(magr))
             tmp = 0;
         break;
     case AD_ENCH:
@@ -1828,7 +1828,7 @@ int mdead;
             acid_damage(MON_WEP(magr));
         goto assess_dmg;
     case AD_ENCH: /* KMH -- remove enchantment (disenchanter) */
-        if (mhit && !mdef->mcancelled && otmp) {
+        if (mhit && !has_cancelled(mdef)&& otmp) {
             (void) drain_item(otmp, FALSE);
             /* No message */
         }
@@ -1836,7 +1836,7 @@ int mdead;
     default:
         break;
     }
-    if (mdead || mdef->mcancelled)
+    if (mdead || has_cancelled(mdef))
         return (mdead | mhit);
 
     /* These affect the enemy only if defender is still alive */

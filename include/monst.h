@@ -110,8 +110,6 @@ struct monst {
 	int mspec_used;             /* monster's special ability attack timeout */
 
     Bitfield(female, 1);		/* is female */
-    Bitfield(mcancelled, 1);	/* has been cancelled */
-	int mcancelled_timer;		/* cancellation timeout */
 	Bitfield(slowed, 1);        /* has been slowed */
 	int mslowed_timer;			/* slow timeout */
 	Bitfield(fast, 1);			/* is fast */
@@ -124,10 +122,8 @@ struct monst {
 	int mnomagicres_timer;		/* no MR timeout */
 	Bitfield(mnosummon, 1);		/* cannot summon */
 	int mnosummon_timer;		/* no summon timeout */
-	Bitfield(mcharmed, 1);		/* under charm effect (original tameness and peacefulness being stored) */
 	schar morigtame;			/* tameness before charming */
 	Bitfield(morigpeaceful, 1);	/* peacefulness before charming */
-	int mcharmed_timer;			/* charm timeout */
 	Bitfield(mburied, 1);     /* has been buried */
     Bitfield(mundetected, 1); /* not seen in present hiding place;
                                * implies one of M1_CONCEAL or M1_HIDE,

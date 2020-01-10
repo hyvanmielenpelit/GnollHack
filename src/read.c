@@ -1014,8 +1014,7 @@ struct obj *sobj;
 					/* Charm can be dispelled and is non-permanent if timer > 0 */
 					mtmp->morigpeaceful = was_peaceful;
 					mtmp->morigtame = was_tame;
-					mtmp->mcharmed = 1;
-					mtmp->mcharmed_timer = d(objects[sobj->otyp].oc_spell_dur_dice, objects[sobj->otyp].oc_spell_dur_diesize) + objects[sobj->otyp].oc_spell_dur_plus;
+					increase_mon_temporary_property(mtmp, CHARMED, d(objects[sobj->otyp].oc_spell_dur_dice, objects[sobj->otyp].oc_spell_dur_diesize) + objects[sobj->otyp].oc_spell_dur_plus);
 				}
 			}
 

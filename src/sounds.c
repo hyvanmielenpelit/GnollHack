@@ -535,10 +535,9 @@ register struct monst *mtmp;
             nomul(0);
         wake_nearto(mtmp->mx, mtmp->my, mtmp->data->mlevel * 12);
 		/* break charm*/
-		if(mtmp->mcharmed)
+		if(has_charmed(mtmp))
 		{
-			mtmp->mcharmed = 0;
-			mtmp->mcharmed_timer = 0;
+			mtmp->mprops[CHARMED] = 0;
 			mtmp->mpeaceful = mtmp->morigpeaceful;
 			mtmp->mtame = mtmp->morigtame;
 		}
@@ -1115,7 +1114,7 @@ register struct monst *mtmp;
 
     if (pline_msg) {
         pline("%s %s", Monnam(mtmp), pline_msg);
-    } else if (mtmp->mcancelled && verbl_msg_mcan) {
+    } else if (has_cancelled(mtmp) && verbl_msg_mcan) {
         verbalize1(verbl_msg_mcan);
     } else if (verbl_msg) {
         /* more 3.6 tribute */

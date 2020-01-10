@@ -576,19 +576,6 @@ nh_timeout()
 		for (mon = mmtmp[i]; mon; mon = mon->nmon)
 			reduce_item_cooldown(mon->minvent);
 
-	//Reduce youmonst timers
-	if (youmonst.mcancelled_timer && !--youmonst.mcancelled_timer)
-		youmonst.mcancelled = 0;
-	if (youmonst.mhalfmagicres_timer && !--youmonst.mhalfmagicres_timer)
-		youmonst.mhalfmagicres = 0;
-	if (youmonst.mnomagicres_timer && !--youmonst.mnomagicres_timer)
-		youmonst.mnomagicres = 0;
-	if (youmonst.mnosummon_timer && !--youmonst.mnosummon_timer)
-		youmonst.mnosummon = 0;
-	if (youmonst.mcharmed_timer && !--youmonst.mcharmed_timer)
-		youmonst.mcharmed = 0;
-
-
     was_flying = Flying;
 	for (upp = u.uprops; upp < u.uprops + SIZE(u.uprops); upp++)
 	{
