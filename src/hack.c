@@ -3052,15 +3052,19 @@ weight_cap()
     carrcap = ((long)(3.5 * 16)) * (ACURRSTR + ACURR(A_CON)) + 48;
 
 	//Add more carrying capacity for strong heroes
-	if(ACURR(A_STR) >= STR18(1))
+	if (ACURR(A_STR) >= STR18(1))
 	{
-		//Bonus 3.5 ounces per percentile strength
-		carrcap += (long)(3.5 * (min(ACURR(A_STR), STR18(100)) - 18));
+		//Bonus 4 ounces per percentile strength
+		carrcap += (long)(4 * (min(ACURR(A_STR), STR18(100)) - 18));
+	}
 
+	if (ACURR(A_STR) >= STR18(100)) //Used to be STR18(1), but anything below 18/00 is now random
+	{
 		//7 lbs per bonus since CON cannot increase in the same way
 		carrcap += ((long)(7 * 16)) * (strength_damage_bonus(ACURR(A_STR))- strength_damage_bonus(18));
 		carrcap += ((long)(7 * 16)) * (strength_tohit_bonus(ACURR(A_STR)) - strength_tohit_bonus(18));
 	}
+
 //	if (Upolyd) {
         /* consistent with can_carry() in mon.c */
         if (youmonst.data->mlet == S_NYMPH)
