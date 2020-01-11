@@ -1207,11 +1207,15 @@ boolean makingboxcontents;
             otmp->recharged = 0; /* used to control recharging */
             break;
         case RING_CLASS:
-            if (objects[otmp->otyp].oc_charged == CHARGED_RING_NORMAL || objects[otmp->otyp].oc_charged == CHARGED_RING_POWER)
+            if (objects[otmp->otyp].oc_charged == CHARGED_RING_NORMAL || objects[otmp->otyp].oc_charged == CHARGED_RING_DOUBLE || objects[otmp->otyp].oc_charged == CHARGED_RING_POWER)
 			{
-				int addition = rnd(2);
-				if (objects[otmp->otyp].oc_charged != CHARGED_RING_POWER)
-					addition += !rn2(2) ? 0 : !rn2(2) ? 1 : !rn2(2) ? 2 : 3;
+				int addition = 0;
+				if (objects[otmp->otyp].oc_charged == CHARGED_RING_NORMAL)
+					addition += rnd(2) + !rn2(2) ? 0 : !rn2(2) ? 1 : !rn2(2) ? 2 : 3;
+				else if (objects[otmp->otyp].oc_charged == CHARGED_RING_DOUBLE)
+					addition += rnd(4) + !rn2(4) ? 0 : !rn2(4) ? 1 : !rn2(4) ? 2 : !rn2(4) ? 3 : !rn2(4) ? 4 : !rn2(4) ? 5 : 6;
+				else
+					addition += rnd(2);
 
 				if ((is_cursed_magic_item(otmp) || !rn2(11)))
 					curse(otmp);
@@ -1233,7 +1237,7 @@ boolean makingboxcontents;
             }
 			else if (objects[otmp->otyp].oc_charged)
 			{
-				int addition = get_init_charge(otmp);
+				int addition = get_obj_init_charge(otmp);
 				blessorcurse(otmp, 3);
 				otmp->spe = bcsign(otmp) * addition;
 				/* negative rings are usually cursed */
@@ -1273,12 +1277,12 @@ boolean makingboxcontents;
 			{
 				if (rn2(10) && (is_cursed_magic_item(otmp) || !rn2(11))) {
 					curse(otmp);
-					otmp->spe = -get_init_charge(otmp);
+					otmp->spe = -get_obj_init_charge(otmp);
 				}
 				else if (!rn2(10)) 
 				{
 					otmp->blessed = (objects[otmp->otyp].oc_flags2 & O2_GENERATED_BLESSED) ? 1 : rn2(2);
-					otmp->spe = get_init_charge(otmp);
+					otmp->spe = get_obj_init_charge(otmp);
 				}
 				else
 					blessorcurse(otmp, 10);
