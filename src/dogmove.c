@@ -575,9 +575,9 @@ int udist;
 							(void) mpickobj(mtmp, otmp);
 							
 							if (attacktype(mtmp->data, AT_WEAP)
-								&& mtmp->weapon_check == NEED_WEAPON)
+								&& mtmp->weapon_strategy == NEED_WEAPON)
 							{
-								mtmp->weapon_check = NEED_HTH_WEAPON;
+								mtmp->weapon_strategy = NEED_HTH_WEAPON;
 								(void) mon_wield_item(mtmp, FALSE);
 							}
 							m_dowear(mtmp, FALSE);

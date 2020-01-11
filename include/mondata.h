@@ -212,6 +212,9 @@
 #define has_stoned(mon) \
 	has_property(mon, STONED)
 
+#define has_petrification_resistance(mon) \
+	has_innate_or_property(mon, STONE_RES)
+
 #define has_magical_breathing(mon) \
 	(has_property(mon, MAGICAL_BREATHING))
 
@@ -386,7 +389,7 @@
 #define resists_acid(mon) \
     (has_innate((mon)->data, MR_ACID) || has_property(mon, ACID_RES))
 #define resists_ston(mon) \
-    (has_innate((mon)->data, MR_STONE) || has_property(mon, STONE_RES))
+    (has_innate((mon)->data, MR_STONE) || has_property(mon, STONE_RES) || noncorporeal((mon)->data))
 #define resists_magicmissile(mon) \
     has_innate((mon)->data, MR_MAGICMISSILE)
 #define resists_magic(mon) \

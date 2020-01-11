@@ -378,9 +378,9 @@ register struct monst *magr, *mdef;
                     res[i] |= MM_AGR_DIED;
                 break;
             }
-            if (magr->weapon_check == NEED_WEAPON || !MON_WEP(magr) || (is_launcher(MON_WEP(magr)) && !mwelded(MON_WEP(magr), magr)))
+            if (magr->weapon_strategy == NEED_WEAPON || !MON_WEP(magr) || (is_launcher(MON_WEP(magr)) && !mwelded(MON_WEP(magr), magr)))
 			{
-                magr->weapon_check = NEED_HTH_WEAPON;
+                magr->weapon_strategy = NEED_HTH_WEAPON;
                 if (mon_wield_item(magr, FALSE) != 0)
                     return 0;
             }
@@ -720,7 +720,8 @@ struct attack *mattk;
     if (magr->data == &mons[PM_MEDUSA] && mon_reflects(mdef, (char *) 0)) {
         if (canseemon(mdef))
             (void) mon_reflects(mdef, "The gaze is reflected away by %s %s.");
-        if (!is_blinded(mdef)) {
+        if (!is_blinded(mdef)) 
+		{
             if (mon_reflects(magr, (char *) 0)) {
                 if (canseemon(magr))
                     (void) mon_reflects(magr,
@@ -1201,25 +1202,24 @@ register struct obj* omonwep;
         if (cancelled) //changed to respect MC
             break;
  do_stone:
-        /* may die from the acid if it eats a stone-curing corpse */
-        if (munstone(mdef, FALSE))
-            goto post_stone;
-        if (poly_when_stoned(pd)) {
-            mon_to_stone(mdef);
-            tmp = 0;
-            break;
-        }
-        if (!resists_ston(mdef)) {
-            if (vis && canseemon(mdef))
-                pline("%s turns to stone!", Monnam(mdef));
-            monstone(mdef);
- post_stone:
-            if (!DEADMONSTER(mdef))
-                return 0;
-            else if (mdef->mtame && !vis)
-                You(brief_feeling, "peculiarly sad");
-            return (MM_DEF_DIED | (grow_up(magr, mdef) ? 0 : MM_AGR_DIED));
-        }
+		if (!resists_ston(mdef))
+		{
+			/* Medusa's gaze is instapetrify */
+			if (mattk->aatyp == AT_GAZE)
+			{
+				if (vis && canseemon(mdef))
+					pline("%s turns to stone!", Monnam(mdef));
+				monstone(mdef);
+
+				if (!DEADMONSTER(mdef))
+					return 0;
+				else if (mdef->mtame && !vis)
+					You(brief_feeling, "peculiarly sad");
+				return (MM_DEF_DIED | (grow_up(magr, mdef) ? 0 : MM_AGR_DIED));
+			}
+			else
+				start_delayed_petrification(mdef, FALSE);
+		}
         tmp = (mattk->adtyp == AD_STON ? 0 : 1);
         break;
     case AD_TLPT:

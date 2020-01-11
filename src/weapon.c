@@ -780,7 +780,7 @@ register struct monst *mtmp;
      */
     mwep = MON_WEP(mtmp);
     /* NO_WEAPON_WANTED means we already tried to wield and failed */
-    mweponly = (mwelded(mwep, mtmp) && mtmp->weapon_check == NO_WEAPON_WANTED);
+    mweponly = (mwelded(mwep, mtmp) && mtmp->weapon_strategy == NO_WEAPON_WANTED);
     if (dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) <= 13
         && couldsee(mtmp->mx, mtmp->my)) {
         for (i = 0; i < SIZE(pwep); i++) {
@@ -855,7 +855,7 @@ register struct monst *mtmp;
 					propellor = oselect(mtmp, HAND_CROSSBOW);
 			}
             if ((otmp = MON_WEP(mtmp)) && mwelded(otmp, mtmp) && otmp != propellor
-                && mtmp->weapon_check == NO_WEAPON_WANTED)
+                && mtmp->weapon_strategy == NO_WEAPON_WANTED)
                 propellor = 0;
         }
         /* propellor = obj, propellor to use
@@ -1018,12 +1018,12 @@ boolean polyspot;
             break;
     if (!obj) { /* The weapon was stolen or destroyed */
         MON_NOWEP(mon);
-        mon->weapon_check = NEED_WEAPON;
+        mon->weapon_strategy = NEED_WEAPON;
         return;
     }
     if (!attacktype(mon->data, AT_WEAP)) {
         setmnotwielded(mon, mw_tmp);
-        mon->weapon_check = NO_WEAPON_WANTED;
+        mon->weapon_strategy = NO_WEAPON_WANTED;
         obj_extract_self(obj);
         if (cansee(mon->mx, mon->my)) {
             pline("%s drops %s.", Monnam(mon), distant_name(obj, doname));
@@ -1051,12 +1051,12 @@ boolean polyspot;
      * polymorphed into little monster.  But it's not quite clear how to
      * handle this anyway....
      */
-    if (!(mwelded(mw_tmp, mon) && mon->weapon_check == NO_WEAPON_WANTED))
-        mon->weapon_check = NEED_WEAPON;
+    if (!(mwelded(mw_tmp, mon) && mon->weapon_strategy == NO_WEAPON_WANTED))
+        mon->weapon_strategy = NEED_WEAPON;
     return;
 }
 
-/* Let a monster try to wield a weapon, based on mon->weapon_check.
+/* Let a monster try to wield a weapon, based on mon->weapon_strategy.
  * Returns 1 if the monster took time to do it, 0 if it did not.
  */
 int
@@ -1067,14 +1067,14 @@ boolean verbose_fail;
     struct obj *obj;
 
     /* This case actually should never happen */
-	if (mon->weapon_check == NO_WEAPON_WANTED)
+	if (mon->weapon_strategy == NO_WEAPON_WANTED)
 	{
 		if(verbose_fail)
 			pline("%s does not want to wield a weapon.", Monnam(mon));
 
 		return 0;
 	}
-    switch (mon->weapon_check) {
+    switch (mon->weapon_strategy) {
     case NEED_HTH_WEAPON:
         obj = select_hwep(mon);
         break;
@@ -1108,7 +1108,7 @@ boolean verbose_fail;
         }
         break;
     default:
-        impossible("weapon_check %d for %s?", mon->weapon_check,
+        impossible("weapon_strategy %d for %s?", mon->weapon_strategy,
                    mon_nam(mon));
         return 0;
     }
@@ -1119,13 +1119,13 @@ boolean verbose_fail;
             /* already wielding it */
 			if (verbose_fail)
 				pline("%s is already wielding %s.", Monnam(mon), 
-					mon->weapon_check == NEED_HTH_WEAPON ? "a hand-to-hand weapon" : 
-					mon->weapon_check == NEED_RANGED_WEAPON ? "a ranged weapon" : 
-					mon->weapon_check == NEED_AXE ? "an axe" :
-					mon->weapon_check == NEED_PICK_AXE ? "a pick axe" :
-					mon->weapon_check == NEED_PICK_OR_AXE ? "a pick or axe" : "a weapon"
+					mon->weapon_strategy == NEED_HTH_WEAPON ? "a hand-to-hand weapon" : 
+					mon->weapon_strategy == NEED_RANGED_WEAPON ? "a ranged weapon" : 
+					mon->weapon_strategy == NEED_AXE ? "an axe" :
+					mon->weapon_strategy == NEED_PICK_AXE ? "a pick axe" :
+					mon->weapon_strategy == NEED_PICK_OR_AXE ? "a pick or axe" : "a weapon"
 				);
-			mon->weapon_check = NEED_WEAPON;
+			mon->weapon_strategy = NEED_WEAPON;
 			return 0;
         }
         /* Actually, this isn't necessary--as soon as the monster
@@ -1154,12 +1154,12 @@ boolean verbose_fail;
                 }
                 mw_tmp->bknown = 1;
             }
-            mon->weapon_check = NO_WEAPON_WANTED;
+            mon->weapon_strategy = NO_WEAPON_WANTED;
             return 1;
         }
         mon->mw = obj; /* wield obj */
         setmnotwielded(mon, mw_tmp);
-        mon->weapon_check = NEED_WEAPON;
+        mon->weapon_strategy = NEED_WEAPON;
         if (canseemon(mon)) {
             pline("%s wields %s!", Monnam(mon), doname(obj));
             if (mwelded(mw_tmp, mon)) {
@@ -1184,7 +1184,7 @@ boolean verbose_fail;
 	if (verbose_fail)
 		pline("%s cannot find a weapon to wield.", Monnam(mon));
 
-    mon->weapon_check = NEED_WEAPON;
+    mon->weapon_strategy = NEED_WEAPON;
     return 0;
 }
 
@@ -1197,7 +1197,7 @@ struct monst *mon;
 
     if (mwep) {
         setmnotwielded(mon, mwep);
-        mon->weapon_check = NEED_WEAPON;
+        mon->weapon_strategy = NEED_WEAPON;
     }
 }
 

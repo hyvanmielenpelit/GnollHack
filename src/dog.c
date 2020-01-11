@@ -152,7 +152,7 @@ boolean quietly;
 
     /* must wield weapon immediately since pets will otherwise drop it */
     if (mtmp->mtame && attacktype(mtmp->data, AT_WEAP)) {
-        mtmp->weapon_check = NEED_HTH_WEAPON;
+        mtmp->weapon_strategy = NEED_HTH_WEAPON;
         (void) mon_wield_item(mtmp, FALSE);
     }
     return mtmp;
@@ -1029,7 +1029,7 @@ boolean forcetaming;
 
     newsym(mtmp->mx, mtmp->my);
     if (attacktype(mtmp->data, AT_WEAP)) {
-        mtmp->weapon_check = NEED_HTH_WEAPON;
+        mtmp->weapon_strategy = NEED_HTH_WEAPON;
         (void) mon_wield_item(mtmp, FALSE);
     }
     return TRUE;

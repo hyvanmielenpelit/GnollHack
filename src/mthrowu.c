@@ -599,15 +599,14 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 
         if (otmp->otyp == EGG && touch_petrifies(&mons[otmp->corpsenm])) 
 		{
-			if (check_magic_cancellation_success(mtmp, 0))
+			if (check_magic_cancellation_success(mtmp, 0) || resists_ston(mtmp))
 			{
 				shieldeff(mtmp->mx, mtmp->my);
 				pline("%s resists!", Monnam(mtmp));
 			}
 			else
 			{
-				if (!munstone(mtmp, TRUE))
-					minstapetrify(mtmp, TRUE);
+				start_delayed_petrification(mtmp, FALSE);
 			}
             if (resists_ston(mtmp))
                 damage = 0;
@@ -1030,9 +1029,9 @@ struct monst *mtmp, *mtarg;
     boolean ispole;
 
     /* Polearms won't be applied by monsters against other monsters */
-    if (mtmp->weapon_check == NEED_WEAPON || !MON_WEP(mtmp)) {
-        mtmp->weapon_check = NEED_RANGED_WEAPON;
-        /* mon_wield_item resets weapon_check as appropriate */
+    if (mtmp->weapon_strategy == NEED_WEAPON || !MON_WEP(mtmp)) {
+        mtmp->weapon_strategy = NEED_RANGED_WEAPON;
+        /* mon_wield_item resets weapon_strategy as appropriate */
         if (mon_wield_item(mtmp, FALSE) != 0)
             return 0;
     }
@@ -1215,9 +1214,9 @@ struct monst *mtmp;
 		return;
 
     /* Rearranged beginning so monsters can use polearms not in a line */
-    if (mtmp->weapon_check == NEED_WEAPON || !MON_WEP(mtmp)) {
-        mtmp->weapon_check = NEED_RANGED_WEAPON;
-        /* mon_wield_item resets weapon_check as appropriate */
+    if (mtmp->weapon_strategy == NEED_WEAPON || !MON_WEP(mtmp)) {
+        mtmp->weapon_strategy = NEED_RANGED_WEAPON;
+        /* mon_wield_item resets weapon_strategy as appropriate */
         if (mon_wield_item(mtmp, FALSE) != 0)
             return;
     }

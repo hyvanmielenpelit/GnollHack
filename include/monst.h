@@ -18,7 +18,7 @@
 #include "attrib.h"
 #endif
 
-/* The weapon_check flag is used two ways:
+/* The weapon_strategy flag is used two ways:
  * 1) When calling mon_wield_item, is 2-6 depending on what is desired.
  * 2) Between calls to mon_wield_item, is 0 or 1 depending on whether or not
  *    the weapon is known by the monster to be cursed (so it shouldn't bother
@@ -151,6 +151,7 @@ struct monst {
 	Bitfield(ispartymember, 1);					/* a peaceful monster that has joined your party (e.g., does not give you the money or items back from its inventory) */
 	Bitfield(talkstate, 3);						/* 1 = has said introduction, 2 = has said non-repeatable secondary question, 3 = has said first repeatable confirmatory question,  4 = has said second repeatable confirmatory question */
 	Bitfield(leaves_no_corpse, 1);				/* this particular monster does not leave a corpse */
+	Bitfield(delayed_killer_by_you, 1);			/* is petrification or other delayed killer initiated by you */
 	int notalktimer;
 	Bitfield(u_know_mname, 1); /* you know the monster's name */
 	int max_hp_percentage;						/* % of the monster's maximum theoretical hit points at the time of creation */
@@ -190,7 +191,7 @@ struct monst {
 
     struct obj *mw;        /* mon's weapon */
     long worn_item_flags;  /* mon's wornmask */
-    xchar weapon_check;    /* flag for whether to try switching weapons */
+    xchar weapon_strategy;    /* flag for whether to try switching weapons */
 
     int meating;           /* monster is eating timeout */
 	long summonduration;   /* duration for summoned units */

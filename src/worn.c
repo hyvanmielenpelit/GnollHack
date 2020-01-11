@@ -665,11 +665,11 @@ int value; /* -1 sets the intrinsic and -2 clears it */
 		/* Stoned */
 		if (has_stoned(mtmp) && !was_stoned)
 		{
-			pline("%s is turning into stone!", Monnam(mtmp));
+			pline("%s starts turning into stone!", Monnam(mtmp));
 		}
 		else if (!has_stoned(mtmp) && was_stoned)
 		{
-			pline("%s is not turning into stone anymore.", Monnam(mtmp));
+			pline("%s stops turning into stone.", Monnam(mtmp));
 		}
 
 		/* Slimed */

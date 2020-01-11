@@ -271,13 +271,52 @@ struct obj *otmp;
 			}
 		}
 		break;
-	case SPE_TOUCH_OF_PETRIFICATION:
 	case SPE_FLESH_TO_STONE:
+	case SPE_TOUCH_OF_PETRIFICATION:
 		res = 1;
 		if (resists_ston(mtmp))
 			pline("%s is unaffected.", Monnam(mtmp));
-		else if(!resist(mtmp, otmp, 0, 0, TELL) && !munstone(mtmp, TRUE))
+		else if (!resist(mtmp, otmp, 0, 0, TELL))
+			start_delayed_petrification(mtmp, TRUE);
+		break;
+
+	case SPE_GAZE_OF_MEDUSA:
+		res = 1;
+		if (!m_canseeu(mtmp))
+			pline("%s couldn't see your gaze.", Monnam(mtmp));
+		else if (mon_reflects(mtmp, (char*)0))
+		{
+			if (canseemon(mtmp))
+				(void)mon_reflects(mtmp, "Your gaze is reflected by %s %s.");
+			if (!Blind) 
+			{
+				if (Reflecting) 
+				{
+					(void)ureflects("Your reflected gaze is reflected away by your %s.",
+						s_suffix(Monnam(mtmp)));
+				}
+				if (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my)
+					&& !Stone_resistance) {
+					You("meet your own reflected gaze.");
+					stop_occupation();
+					if (poly_when_stoned(youmonst.data) && polymon(PM_STONE_GOLEM))
+						break;
+					You("turn to stone...");
+					killer.format = KILLED_BY;
+					Strcpy(killer.name, mtmp->data->mname);
+					done(STONING);
+				}
+			}
+		}
+		else if (resists_ston(mtmp) || !mon_can_see(mtmp) || !haseyes(mtmp->data))
+			pline("%s is unaffected.", Monnam(mtmp));
+		else if (resist(mtmp, otmp, 0, 0, TELL))
+		{
+			/* nothing else */
+		}
+		else
 			minstapetrify(mtmp, TRUE);
+
 		break;
 	case SPE_POWER_WORD_KILL:
 		res = 1;
@@ -1276,7 +1315,7 @@ int mnum_override; /* Use this mnum instead */
         mtmp2->mw = mtmp->mw;
         mtmp2->wormno = mtmp->wormno;
         mtmp2->worn_item_flags = mtmp->worn_item_flags;
-        mtmp2->weapon_check = mtmp->weapon_check;
+        mtmp2->weapon_strategy = mtmp->weapon_strategy;
         mtmp2->mtrapseen = mtmp->mtrapseen;
         mtmp2->mflee = mtmp->mflee;
         mtmp2->mburied = mtmp->mburied;
@@ -1285,6 +1324,7 @@ int mnum_override; /* Use this mnum instead */
         mtmp2->mlstmv = mtmp->mlstmv;
         mtmp2->m_ap_type = mtmp->m_ap_type;
 		mtmp2->leaves_no_corpse = mtmp->leaves_no_corpse;
+		mtmp2->delayed_killer_by_you = mtmp->delayed_killer_by_you;
 		/* set these ones explicitly */
         mtmp2->mrevived = 1;
         mtmp2->mavenge = 0;
@@ -1294,7 +1334,7 @@ int mnum_override; /* Use this mnum instead */
         mtmp2->msleeping = 0;
         mtmp2->mfrozen = 0;
         mtmp2->mcanmove = 1;
-        /* most cancelled monsters return to normal,
+		/* most cancelled monsters return to normal,
            but some need to stay cancelled */
         if (!dmgtype(mtmp2->data, AD_SEDU)
             && (!SYSOPT_SEDUCE || !dmgtype(mtmp2->data, AD_SSEX)))
@@ -3109,6 +3149,7 @@ struct obj *obj, *otmp;
 		case SPE_TOUCH_OF_DEATH:
 		case SPE_TOUCH_OF_PETRIFICATION:
 		case SPE_FLESH_TO_STONE:
+		case SPE_GAZE_OF_MEDUSA:
 			res = 0;
             break;
         case SPE_STONE_TO_FLESH:
@@ -4228,12 +4269,13 @@ boolean ordinary;
         break;
 	case SPE_TOUCH_OF_PETRIFICATION:
 	case SPE_FLESH_TO_STONE:
+	case SPE_GAZE_OF_MEDUSA:
 		if (!Stoned && !Stone_resistance
 			&& !(poly_when_stoned(youmonst.data)
 				&& polymon(PM_STONE_GOLEM))) {
 			int kformat = NO_KILLER_PREFIX;
 			char kname[BUFSZ] = "";
-			Sprintf(kname, "cast flesh to stone on %sself", uhim());
+			Sprintf(kname, "cast a petrification spell on %sself", uhim());
 			make_stoned(5L, (char*)0, kformat, kname);
 		}
 		break;
@@ -4561,6 +4603,7 @@ struct obj *obj; /* wand or spell */
 	case SPE_TOUCH_OF_DEATH:
 	case SPE_TOUCH_OF_PETRIFICATION:
 	case SPE_FLESH_TO_STONE:
+	case SPE_GAZE_OF_MEDUSA:
 	case SPE_POWER_WORD_KILL:
 	case SPE_POWER_WORD_STUN:
 	case SPE_POWER_WORD_BLIND:

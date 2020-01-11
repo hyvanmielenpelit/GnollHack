@@ -697,10 +697,10 @@ register struct monst *mtmp;
          */
         mw_tmp = MON_WEP(mtmp);
         if (!(scared && mw_tmp && is_pick(mw_tmp))
-            && mtmp->weapon_check == NEED_WEAPON
+            && mtmp->weapon_strategy == NEED_WEAPON
             && !(mtmp->mtrapped && !nearby && select_rwep(mtmp))) 
 		{
-            mtmp->weapon_check = NEED_HTH_WEAPON;
+            mtmp->weapon_strategy = NEED_HTH_WEAPON;
             if (mon_wield_item(mtmp, FALSE) != 0)
                 return 0;
         }
@@ -889,15 +889,15 @@ xchar nix,niy;
             if (!mw_tmp
                 || !is_pick(mw_tmp)
                 || !is_axe(mw_tmp))
-                mtmp->weapon_check = NEED_PICK_OR_AXE;
+                mtmp->weapon_strategy = NEED_PICK_OR_AXE;
         } else if (IS_TREE(levl[nix][niy].typ)) {
             if (!(mw_tmp = MON_WEP(mtmp)) || !is_axe(mw_tmp))
-                mtmp->weapon_check = NEED_AXE;
+                mtmp->weapon_strategy = NEED_AXE;
         } else if (IS_STWALL(levl[nix][niy].typ)) {
             if (!(mw_tmp = MON_WEP(mtmp)) || !is_pick(mw_tmp))
-                mtmp->weapon_check = NEED_PICK_AXE;
+                mtmp->weapon_strategy = NEED_PICK_AXE;
         }
-        if (mtmp->weapon_check >= NEED_PICK_AXE && mon_wield_item(mtmp, FALSE))
+        if (mtmp->weapon_strategy >= NEED_PICK_AXE && mon_wield_item(mtmp, FALSE))
             return TRUE;
     }
     return FALSE;

@@ -491,10 +491,11 @@ gotobj:
     could_petrify =
         (otmp->otyp == CORPSE && touch_petrifies(&mons[otmp->corpsenm]));
     (void) mpickobj(mtmp, otmp); /* may free otmp */
-    if (could_petrify && !(mtmp->worn_item_flags & W_ARMG)) {
-        minstapetrify(mtmp, TRUE);
-        return -1;
-    }
+
+    if (could_petrify && !(mtmp->worn_item_flags & W_ARMG))
+	{
+		start_delayed_petrification(mtmp, FALSE);
+	}
     return (multi < 0) ? 0 : 1;
 }
 

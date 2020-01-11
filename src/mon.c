@@ -1326,7 +1326,7 @@ struct monst *mon;
    individual monster's metabolism; some of these might need to
    be reclassified to occur more in proportion with movement rate */
 void
-mcalcdistress()
+update_monster_timouts()
 {
     struct monst *mtmp;
 
@@ -1378,6 +1378,7 @@ mcalcdistress()
 		}
 
 
+
         /* gradually time out temporary problems */
 
         if (get_mon_temporary_property(mtmp, BLINDED) > 0)
@@ -1386,6 +1387,28 @@ mcalcdistress()
 			increase_mon_temporary_property_verbosely(mtmp, PARALYZED, -1);
 		if (get_mon_temporary_property(mtmp, FEARFUL) > 0)
 			increase_mon_temporary_property_verbosely(mtmp, FEARFUL, -1);
+
+		if (get_mon_temporary_property(mtmp, STONED) > 0)
+		{
+			increase_mon_temporary_property_verbosely(mtmp, STONED, -1);
+			
+			if (get_mon_temporary_property(mtmp, STONED) == 0)
+			{
+				if (!resists_ston(mtmp))
+				{
+					minstapetrify(mtmp, mtmp->delayed_killer_by_you);
+					if (Punished)
+						placebc();
+					if (mtmp == u.ustuck)
+						u.ustuck = 0;
+				}
+			}
+			else
+			{
+				(void)munstone(mtmp, FALSE); /* check if the monster has found something that helps */
+			}
+		}
+
 		if (get_mon_temporary_property(mtmp, SICK) > 0 && is_sick(mtmp))
 		{
 			increase_mon_temporary_property(mtmp, SICK, -1);
@@ -2104,7 +2127,7 @@ long flag;
             rockok = treeok = TRUE;
         } 
 		else if ((mw_tmp = MON_WEP(mon)) && mw_tmp->cursed
-                   && mon->weapon_check == NO_WEAPON_WANTED) 
+                   && mon->weapon_strategy == NO_WEAPON_WANTED) 
 		{
             rockok = is_pick(mw_tmp);
             treeok = is_axe(mw_tmp);

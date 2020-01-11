@@ -2838,6 +2838,18 @@ boolean byplayer;
         monstone(mon);
 }
 
+void start_delayed_petrification(mtmp, by_you)
+struct monst* mtmp;
+boolean by_you;
+{
+	mtmp->delayed_killer_by_you = by_you;
+
+	int existing_stoning = get_mon_temporary_property(mtmp, STONED);
+	set_mon_property_verbosely(mtmp, STONED, existing_stoning == 0 ? 5 : max(1, existing_stoning - 1));
+
+	/* unstoned is checked every round in a delayed fashion */
+}
+
 void
 selftouch(arg)
 const char *arg;
@@ -2879,10 +2891,13 @@ boolean byplayer;
                   arg ? mon_nam(mon) : Monnam(mon),
                   corpse_xname(mwep, (const char *) 0, CXN_PFX_THE));
         }
-        minstapetrify(mon, byplayer);
+
+		start_delayed_petrification(mon, byplayer);
+
+        //minstapetrify(mon, byplayer);
         /* if life-saved, might not be able to continue wielding */
-        if (!DEADMONSTER(mon) && !which_armor(mon, W_ARMG) && !resists_ston(mon))
-            mwepgone(mon);
+        //if (!DEADMONSTER(mon) && !which_armor(mon, W_ARMG) && !resists_ston(mon))
+        //    mwepgone(mon);
     }
 }
 

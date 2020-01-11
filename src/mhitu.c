@@ -760,15 +760,15 @@ register struct monst *mtmp;
                  */
 				boolean is_nonwelded_launcher = (MON_WEP(mtmp) && (is_launcher(MON_WEP(mtmp)) && !mwelded(MON_WEP(mtmp), mtmp)));
 
-                if (mtmp->weapon_check == NEED_WEAPON || !MON_WEP(mtmp) || is_nonwelded_launcher)
+                if (mtmp->weapon_strategy == NEED_WEAPON || !MON_WEP(mtmp) || is_nonwelded_launcher)
 				{
 					if (is_nonwelded_launcher && !select_hwep(mtmp))
 					{
 						pline("%s unwields %s.", Monnam(mtmp), the(cxname(MON_WEP(mtmp))));
 						setmnotwielded(mtmp, MON_WEP(mtmp));
 					}
-                    mtmp->weapon_check = NEED_HTH_WEAPON;
-                    /* mon_wield_item resets weapon_check as appropriate */
+                    mtmp->weapon_strategy = NEED_HTH_WEAPON;
+                    /* mon_wield_item resets weapon_strategy as appropriate */
                     if (mon_wield_item(mtmp, FALSE) != 0)
                         break;
                 }
@@ -2744,13 +2744,15 @@ struct attack *mattk;
                the resulting statue will end up there */
             remove_monster(mtmp->mx, mtmp->my); /* u.ux,u.uy */
             place_monster(mtmp, omx, omy);
-            minstapetrify(mtmp, TRUE);
+			int existing_stoning = get_mon_temporary_property(mtmp, STONED);
+			set_mon_property_verbosely(mtmp, STONED, max(1, min(existing_stoning - 1, 5)));
+			//minstapetrify(mtmp, TRUE);
             /* normally unstuck() would do this, but we're not
                fully swallowed yet so that won't work here */
-            if (Punished)
-                placebc();
-            u.ustuck = 0;
-            return (!DEADMONSTER(mtmp)) ? 0 : 2;
+            //if (Punished)
+            //    placebc();
+            //u.ustuck = 0;
+            //return (!DEADMONSTER(mtmp)) ? 0 : 2;
         }
 
         display_nhwindow(WIN_MESSAGE, FALSE);

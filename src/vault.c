@@ -477,7 +477,7 @@ invault()
                 }
                 /* don't want guard to waste next turn wielding a weapon */
                 if (!MON_WEP(guard)) {
-                    guard->weapon_check = NEED_HTH_WEAPON;
+                    guard->weapon_strategy = NEED_HTH_WEAPON;
                     (void) mon_wield_item(guard, FALSE);
                 }
             }

@@ -673,6 +673,18 @@ struct materialcomponentlist matlists[] =
 		}
 	},
 
+	{ SPE_GAZE_OF_MEDUSA,
+	"Jet stone, black pearl, bat guano",
+	STRANGE_OBJECT,
+	3,
+		{
+			{JET, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
+			{BLACK_PEARL, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
+			{CLUMP_OF_BAT_GUANO, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
+			NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
+		}
+	},
+
 	{ SPE_COLD_ENCHANT_ITEM,
 	"Nugget of iron ore",
 	STRANGE_OBJECT,

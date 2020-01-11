@@ -1008,7 +1008,7 @@ boolean* obj_destroyed;
 					 * chance is decreased; if less rusty, then vice versa.
 					 */
 					setmnotwielded(mon, monwep);
-					mon->weapon_check = NEED_WEAPON;
+					mon->weapon_strategy = NEED_WEAPON;
 					pline("%s from the force of your blow!",
 						Yobjnam2(monwep, "shatter"));
 					m_useupall(mon, monwep);
@@ -1141,18 +1141,15 @@ boolean* obj_destroyed;
 								obj->dknown ? CXN_PFX_THE
 								: CXN_ARTICLE));
 						obj->dknown = 1;
-						if (check_magic_cancellation_success(mon, 0))
+						if (check_magic_cancellation_success(mon, 0) || resists_ston(mon))
 						{
 							shieldeff(mon->mx, mon->my);
 							pline("%s resists!", Monnam(mon));
 						}
 						else
 						{
-							if (!munstone(mon, TRUE))
-								minstapetrify(mon, TRUE);
+							start_delayed_petrification(mon, TRUE);
 						}
-						if (resists_ston(mon))
-							break;
 						/* note: hp may be <= 0 even if munstoned==TRUE */
 						return (boolean)!DEADMONSTER(mon);
 #if 0
@@ -1210,18 +1207,15 @@ boolean* obj_destroyed;
 
 						change_luck(luck_change, TRUE);
 
-						if (check_magic_cancellation_success(mon, 0))
+						if (check_magic_cancellation_success(mon, 0) || resists_ston(mon))
 						{
 							shieldeff(mon->mx, mon->my);
 							pline("%s resists!", Monnam(mon));
 						}
 						else
 						{
-							if (!munstone(mon, TRUE))
-								minstapetrify(mon, TRUE);
+							start_delayed_petrification(mon, TRUE);
 						}
-						if (resists_ston(mon))
-							break;
 						return (boolean)(!DEADMONSTER(mon));
 					}
 					else 
@@ -2512,8 +2506,13 @@ int specialdmg; /* blessed and/or silver bonus against various things */
             tmp = 0;
         break;
     case AD_STON:
-        if (!negated && !munstone(mdef, TRUE))
-            minstapetrify(mdef, TRUE);
+		if (!negated && !resists_ston(mdef))
+		{
+			if (mattk->aatyp == AT_GAZE)
+				minstapetrify(mdef, TRUE);
+			else
+				start_delayed_petrification(mdef, TRUE);
+		}
         tmp = 0;
         break;
     case AD_SSEX:

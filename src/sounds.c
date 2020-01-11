@@ -2545,7 +2545,7 @@ struct monst* mtmp;
 	if (!mtmp)
 		return 0;
 
-	mtmp->weapon_check = NEED_HTH_WEAPON;
+	mtmp->weapon_strategy = NEED_HTH_WEAPON;
 
 	boolean wielded = mon_wield_item(mtmp, TRUE);
 	return wielded;
@@ -2558,7 +2558,7 @@ struct monst* mtmp;
 	if (!mtmp)
 		return 0;
 
-	mtmp->weapon_check = NEED_RANGED_WEAPON;
+	mtmp->weapon_strategy = NEED_RANGED_WEAPON;
 	boolean wielded = mon_wield_item(mtmp, TRUE);
 	return wielded;
 }
@@ -2570,7 +2570,7 @@ struct monst* mtmp;
 	if (!mtmp)
 		return 0;
 
-	mtmp->weapon_check = NEED_PICK_AXE;
+	mtmp->weapon_strategy = NEED_PICK_AXE;
 	boolean wielded = mon_wield_item(mtmp, TRUE);
 	return wielded;
 
@@ -2583,7 +2583,7 @@ struct monst* mtmp;
 	if (!mtmp)
 		return 0;
 
-	mtmp->weapon_check = NEED_AXE;
+	mtmp->weapon_strategy = NEED_AXE;
 	boolean wielded = mon_wield_item(mtmp, TRUE);
 	return wielded;
 
@@ -2608,7 +2608,7 @@ struct monst* mtmp;
 		else
 		{
 			setmnotwielded(mtmp, mwep);
-			mtmp->weapon_check = NEED_WEAPON;
+			mtmp->weapon_strategy = NEED_WEAPON;
 			pline("%s unwields %s.", Monnam(mtmp), cxname(mwep));
 		}
 	}

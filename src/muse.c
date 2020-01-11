@@ -2457,11 +2457,6 @@ boolean stoning; /* True: stop petrification, False: cure stun && confusion */
             lizard = food && obj->corpsenm == PM_LIZARD;
     int nutrit = food ? dog_nutrition(mon, obj) : 0; /* also sets meating */
 
-    /* give a "<mon> is slowing down" message and also remove
-       intrinsic speed (comparable to similar effect on the hero) */
-    if (stoning)
-		increase_mon_temporary_property_verbosely(mon, STONED, 10);
-
     if (vis) {
         long save_quan = obj->quan;
 
