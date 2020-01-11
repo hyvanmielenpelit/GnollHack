@@ -1816,15 +1816,17 @@ struct mkroom *croom;
 		{
 			mtmp->mprops[INVISIBILITY] |= M_INTRINSIC_ACQUIRED;
         }
-        if (m->blinded) {
-            mtmp->mcansee = 0;
-            mtmp->mblinded = (m->blinded % 127);
+        if (m->blinded) 
+		{
+			mtmp->mprops[BLINDED] |= (m->blinded & M_TIMEOUT);
         }
-        if (m->paralyzed) {
-            mtmp->mcanmove = 0;
-            mtmp->mfrozen = (m->paralyzed % 127);
+        if (m->paralyzed)
+		{
+			mtmp->mprops[PARALYZED] |= (m->blinded & M_TIMEOUT);
         }
-        if (m->fleeing) {
+        if (m->fleeing) 
+		{
+			/* Assume non-magical fleeing */
             mtmp->mflee = 1;
             mtmp->mflee_timer = (m->fleeing % 127);
         }

@@ -922,7 +922,7 @@ struct obj *obj;
         if (vis)
             pline("%s is too tired to look at your %s.", Monnam(mtmp),
                   mirror);
-    } else if (!mtmp->mcansee) {
+    } else if (is_blinded(mtmp)) {
         if (vis)
             pline("%s can't see anything right now.", Monnam(mtmp));
     } else if (invis_mirror && !has_see_invisible(mtmp)) {
@@ -993,7 +993,7 @@ struct obj *obj;
             ;
         else if ((is_invisible(mtmp) && !has_see_invisible(mtmp))
                  /* redundant: can't get here if these are true */
-                 || !haseyes(mtmp->data) || notonhead || !mtmp->mcansee)
+                 || !haseyes(mtmp->data) || notonhead || is_blinded(mtmp))
             pline("%s doesn't seem to notice %s reflection.", Monnam(mtmp),
                   mhis(mtmp));
         else

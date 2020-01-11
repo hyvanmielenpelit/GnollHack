@@ -424,7 +424,7 @@ xchar x, y;
 		{
 			/* check if mon catches your kick */
 			if (!rn2(clumsy ? 3 : 4) && (clumsy || !bigmonst(mon->data))
-				&& mon->mcansee && !mon->mtrapped && !thick_skinned(mon->data)
+				&& !is_blinded(mon) && !mon->mtrapped && !thick_skinned(mon->data)
 				&& mon->data->mlet != S_EEL && haseyes(mon->data) && mon->mcanmove
 				&& !is_stunned(mon) && !is_confused(mon) && !mon->msleeping
 				&& mon->data->mmove >= 12)

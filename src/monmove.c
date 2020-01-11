@@ -176,7 +176,7 @@ register struct monst *mtmp;
     int x, y;
 
     if (mtmp->mpeaceful && in_town(u.ux + u.dx, u.uy + u.dy)
-        && mtmp->mcansee && m_canseeu(mtmp) && !rn2(3)) {
+        && !is_blinded(mtmp) && m_canseeu(mtmp) && !rn2(3)) {
         if (picking_lock(&x, &y) && IS_DOOR(levl[x][y].typ)
             && (levl[x][y].doormask & D_LOCKED)) {
             if (couldsee(mtmp->mx, mtmp->my)) {
@@ -267,7 +267,7 @@ struct monst *mtmp;
     return (sengr_at("Elbereth", x, y, TRUE)
             && ((u.ux == x && u.uy == y)
                 || (Displaced && mtmp->mux == x && mtmp->muy == y))
-            && !(mtmp->isshk || mtmp->isgd || !mtmp->mcansee
+            && !(mtmp->isshk || mtmp->isgd || is_blinded(mtmp)
                  || mtmp->mpeaceful || mtmp->data->mlet == S_HUMAN
                  || mtmp->data == &mons[PM_MINOTAUR]
                  || Inhell || In_endgame(&u.uz)));
@@ -436,7 +436,7 @@ int *inrange, *nearby, *scared;
      * running into you by accident but possibly attacking the spot
      * where it guesses you are.
      */
-    if (!mtmp->mcansee || (Invis && !has_see_invisible(mtmp))) {
+    if (is_blinded(mtmp) || (Invis && !has_see_invisible(mtmp))) {
         seescaryx = mtmp->mux;
         seescaryy = mtmp->muy;
     } else {
@@ -657,7 +657,7 @@ register struct monst *mtmp;
                 continue;
             if (m2 == mtmp)
                 continue;
-            if (( (has_telepathy(m2) || (m2->mblinded && has_blind_telepathy(m2))) && (rn2(2) || m2->mblinded))
+            if (( (has_telepathy(m2) || (is_blinded(m2) && has_blind_telepathy(m2))) && (rn2(2) || is_blinded(m2)))
                 || !rn2(10)) {
                 if (cansee(m2->mx, m2->my))
                     pline("It locks on to %s.", mon_nam(m2));
@@ -706,7 +706,7 @@ register struct monst *mtmp;
         || (mdat->mlet == S_LEPRECHAUN && !findgold(invent)
             && (findgold(mtmp->minvent) || rn2(2)))
         || (is_wanderer(mdat) && !rn2(4)) || ((Conflict || mon_has_bloodlust(mtmp)) && !mtmp->iswiz)
-        || (!mtmp->mcansee && !rn2(4)) || mtmp->mpeaceful) {
+        || (is_blinded(mtmp) && !rn2(4)) || mtmp->mpeaceful) {
         /* Possibly cast an undirected spell if not attacking you */
         /* note that most of the time castmu() will pick a directed
            spell and do nothing, so the monster moves normally */
@@ -1055,7 +1055,7 @@ register int after;
                               && (levl[gx][gy].lit || !levl[omx][omy].lit)
                               && (dist2(omx, omy, gx, gy) <= 36));
 
-        if (!mtmp->mcansee
+        if (is_blinded(mtmp)
             || (should_see && Invis && !has_see_invisible(mtmp) && rn2(11))
             || is_obj_mappear(&youmonst,STRANGE_OBJECT) || u.uundetected
             || (is_obj_mappear(&youmonst,GOLD_PIECE) && !likes_gold(ptr))
@@ -1704,7 +1704,7 @@ register struct monst *mtmp;
     if (mx == u.ux && my == u.uy)
         goto found_you;
 
-    notseen = (!mtmp->mcansee || (Invis && !has_see_invisible(mtmp)));
+    notseen = (is_blinded(mtmp) || (Invis && !has_see_invisible(mtmp)));
     /* add cases as required.  eg. Displacement ... */
     if (notseen || Underwater) {
         /* Xorns can smell quantities of valuable metal

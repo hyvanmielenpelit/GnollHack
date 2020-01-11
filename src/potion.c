@@ -1574,13 +1574,11 @@ int how;
 			increase_mon_temporary_property_verbosely(mon, VERY_FAST, rn1(10, 100 + 60 * bcsign(obj)));
             break;
         case POT_BLINDNESS:
-            if (haseyes(mon->data)) {
-                int btmp = d(1, 8)
-                            + d(3, 8) * !resist(mon, obj, 0, 0, NOTELL);
+            if (haseyes(mon->data)) 
+			{
+                int btmp = d(1, 8) + d(3, 8) * !resist(mon, obj, 0, 0, NOTELL);
 
-                btmp += mon->mblinded;
-                mon->mblinded = min(btmp, 127);
-                mon->mcansee = 0;
+				increase_mon_temporary_property_verbosely(mon, BLINDED, btmp);
             }
             break;
         case POT_WATER:

@@ -136,6 +136,8 @@ const struct propname {
 	{ NO_MAGIC_RES, "lacking magic resistance", "no magic resistance" },
 	{ CHARMED, "charmed", "charm" },
 	{ PARALYZED, "paralyzed", "paralysis" },
+	{ FEARFUL, "unnaturally frightened", "magically induced fear" },
+	{ FEAR_RES, "fear resistance", "fear resistance" },
 	{ SLEEPING, "sleeping unnaturally deeply", "magically induced sleep" },
 	{ SUMMON_FORBIDDEN, "having summoning forbidden", "summoning forbidden" },
 	{ LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
@@ -886,6 +888,10 @@ nh_timeout()
 				if (!Paralyzed)
 					Your("limbs are moving again.");
 				break;
+			case FEARFUL:
+				if (!Fearful)
+					You("regain your composure.");
+				break;
 			case SLEEPING:
 				if (!Sleeping)
 					You("woke up.");
@@ -905,6 +911,10 @@ nh_timeout()
 			case CHARM_RES:
 				if (!Charm_resistance)
 					You_feel("less certain of your own motivations.");
+				break;
+			case FEAR_RES:
+				if (!Fear_resistance)
+					You_feel("less courageous.");
 				break;
 			case MIND_SHIELDING:
 				if (!Mind_shielding)
@@ -1056,6 +1066,9 @@ nh_timeout()
 			case PARALYZED:
 				Your("limbs are starting move a bit.");
 				break;
+			case FEARFUL:
+				You("are starting to regain your composure.");
+				break;
 			case SLEEPING:
 				You("are starting to wake up.");
 				break;
@@ -1070,6 +1083,9 @@ nh_timeout()
 				break;
 			case CHARM_RES:
 				You("are starting to feel less certain of your own motivations.");
+				break;
+			case FEAR_RES:
+				You("are starting to feel less courageous.");
 				break;
 			case MIND_SHIELDING:
 				You("are starting to feel less protected from mental detection.");

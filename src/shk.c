@@ -3865,7 +3865,7 @@ struct monst *shkp;
         gy = u.uy;
     } else if (ANGRY(shkp)) {
         /* Move towards the hero if the shopkeeper can see him. */
-        if (shkp->mcansee && m_canseeu(shkp)) {
+        if (!is_blinded(shkp) && m_canseeu(shkp)) {
             gx = u.ux;
             gy = u.uy;
         }

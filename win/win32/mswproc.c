@@ -2813,6 +2813,7 @@ static mswin_condition_field _condition_fields[BL_MASK_BITS] = {
     { BL_MASK_RIDE, "Ride" },
 	{ BL_MASK_SLOWED, "Slow" },
 	{ BL_MASK_PARALYZED, "Paral" },
+	{ BL_MASK_FEARFUL, "Fear" },
 	{ BL_MASK_SLEEPING, "Sleep" },
 	{ BL_MASK_CANCELLED, "Cancl" }
 };

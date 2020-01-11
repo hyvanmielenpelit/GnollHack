@@ -975,6 +975,8 @@ unsigned long *colormasks UNUSED;
                 Strcpy(nb = eos(nb), " TermIll");
 			if (cond & BL_MASK_PARALYZED)
 				Strcpy(nb = eos(nb), " Paral");
+			if (cond & BL_MASK_FEARFUL)
+				Strcpy(nb = eos(nb), " Fear");
 			if (cond & BL_MASK_SLEEPING)
 				Strcpy(nb = eos(nb), " Sleep");
 			if (cond & BL_MASK_BLIND)

@@ -85,6 +85,10 @@
 #define ECharm_resistance u.uprops[CHARM_RES].extrinsic
 #define Charm_resistance (HCharm_resistance || ECharm_resistance)
 
+#define HFear_resistance u.uprops[FEAR_RES].intrinsic
+#define EFear_resistance u.uprops[FEAR_RES].extrinsic
+#define Fear_resistance (HFear_resistance || ECharm_resistance)
+
 #define HMind_shielding u.uprops[MIND_SHIELDING].intrinsic
 #define EMind_shielding u.uprops[MIND_SHIELDING].extrinsic
 #define Mind_shielding (HMind_shielding || EMind_shielding)
@@ -534,6 +538,10 @@
 #define HSleeping u.uprops[SLEEPING].intrinsic
 #define ESleeping u.uprops[SLEEPING].extrinsic
 #define Sleeping (HSleeping || ESleeping)
+
+#define HFearful u.uprops[FEARFUL].intrinsic
+#define EFearful u.uprops[FEARFUL].extrinsic
+#define Fearful (HFearful|| EFearful)
 
 #define HSummon_forbidden u.uprops[SUMMON_FORBIDDEN].intrinsic
 #define ESummon_forbidden u.uprops[SUMMON_FORBIDDEN].extrinsic

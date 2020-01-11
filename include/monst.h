@@ -118,8 +118,6 @@ struct monst {
                                * but not mimic (that is, snake, spider,
                                * trapper, piercer, eel)
                                */
-    Bitfield(mcansee, 1);   /* cansee 1, temp.blinded 0, blind 0 */
-
     Bitfield(mrevived, 1);  /* has been revived from the dead */
     Bitfield(mcloned, 1);   /* has been cloned from another */
     Bitfield(mavenge, 1);   /* did something to deserve retaliation */
@@ -127,8 +125,6 @@ struct monst {
 
     Bitfield(mflee_timer, 7);  /* timeout for mflee */
     Bitfield(msleeping, 1); /* asleep until woken */
-
-    Bitfield(mblinded, 7);  /* cansee 0, temp.blinded n, blind 0 */
 
     Bitfield(mfrozen, 7);
     Bitfield(mcanmove, 1);  /* paralysis, similar to mblinded */

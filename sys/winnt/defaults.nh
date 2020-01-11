@@ -237,7 +237,9 @@ OPTIONS=hilite_status:condition/hallu/yellow
 OPTIONS=hilite_status:condition/conf/orange
 OPTIONS=hilite_status:condition/stun/red&bold
 OPTIONS=hilite_status:condition/slow/yellow
+OPTIONS=hilite_status:condition/fear/yellow
 OPTIONS=hilite_status:condition/cancl/yellow
+OPTIONS=hilite_status:condition/blind/yellow
 
 ## Health
 OPTIONS=hilite_status:condition/termill/red&inverse

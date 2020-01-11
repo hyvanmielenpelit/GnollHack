@@ -651,7 +651,7 @@ struct obj* omonwep;
             seemimic(magr);
         if ((compat = could_seduce(magr, mdef, mattk)) && !has_cancelled(magr)) {
             Sprintf(buf, "%s %s", Monnam(magr),
-                    mdef->mcansee ? "smiles at" : "talks to");
+                    !is_blinded(mdef) ? "smiles at" : "talks to");
             pline("%s %s %s.", buf, mon_nam(mdef),
                   compat == 2 ? "engagingly" : "seductively");
         } else {
@@ -708,7 +708,7 @@ struct attack *mattk;
               canspotmon(mdef) ? mon_nam(mdef) : "something");
     }
 
-    if (has_cancelled(magr)|| !magr->mcansee || !mdef->mcansee
+    if (has_cancelled(magr)|| is_blinded(magr) || is_blinded(mdef)
         || (is_invisible(magr) && !has_see_invisible(mdef)) || mdef->msleeping) {
         if (vis && canspotmon(mdef))
             pline("but nothing happens.");
@@ -718,7 +718,7 @@ struct attack *mattk;
     if (magr->data == &mons[PM_MEDUSA] && mon_reflects(mdef, (char *) 0)) {
         if (canseemon(mdef))
             (void) mon_reflects(mdef, "The gaze is reflected away by %s %s.");
-        if (mdef->mcansee) {
+        if (!is_blinded(mdef)) {
             if (mon_reflects(magr, (char *) 0)) {
                 if (canseemon(magr))
                     (void) mon_reflects(magr,
@@ -1284,19 +1284,16 @@ register struct obj* omonwep;
         if (can_blnd(magr, mdef, mattk->aatyp, (struct obj *) 0)) {
             register unsigned rnd_tmp;
 
-            if (vis && mdef->mcansee && canspotmon(mdef))
+            if (vis && !is_blinded(mdef) && canspotmon(mdef))
                 pline("%s is blinded.", Monnam(mdef));
             rnd_tmp = d((int) mattk->damn, (int) mattk->damd);
-            if ((rnd_tmp += mdef->mblinded) > 127)
-                rnd_tmp = 127;
-            mdef->mblinded = rnd_tmp;
-            mdef->mcansee = 0;
+			nonadditive_increase_mon_temporary_property(mdef, BLINDED, rnd_tmp);
             mdef->mstrategy &= ~STRAT_WAITFORU;
         }
         tmp = 0;
         break;
     case AD_HALU:
-        if (!has_cancelled(magr)&& haseyes(pd) && mdef->mcansee) {
+        if (!has_cancelled(magr)&& haseyes(pd) && !is_blinded(mdef)) {
             if (vis && canseemon(mdef))
                 pline("%s looks %sconfused.", Monnam(mdef),
                       is_confused(mdef) ? "more " : "");
@@ -1846,7 +1843,7 @@ int mdead;
             if (mddat == &mons[PM_FLOATING_EYE]) {
                 if (!rn2(20))
                     tmp = 24;
-                if (magr->mcansee && haseyes(madat) && mdef->mcansee
+                if (!is_blinded(magr) && haseyes(madat) && !is_blinded(mdef)
                     && (is_invisible(magr) || !is_invisible(mdef))) {
                     /* construct format string; guard against '%' in Monnam */
                     Strcpy(buf, s_suffix(Monnam(mdef)));

@@ -42,6 +42,8 @@
     (has_innate((mon)->data, MR_MAGIC) || has_property(mon, ANTIMAGIC))
 #define resists_charm(mon) \
     (has_innate((mon)->data, MR_CHARM) || has_property(mon, CHARM_RES))
+#define resists_fear(mon) \
+    (has_innate((mon)->data, MR_FEAR) || has_property(mon, FEAR_RES))
 #define is_reflecting(mon) \
 	(has_innate((mon)->data, MR_REFLECTING) || has_property(mon, REFLECTING))
 #define resists_drain(mon) \
@@ -152,7 +154,11 @@
 #define has_blinded(mon) \
 	has_property(mon, BLINDED)
 
+#define is_blinded(mon) \
+	has_blinded(mon)
 
+#define mon_can_see(mon) \
+	(!is_blinded(mon))
 
 #define has_hallucination(mon) \
 	has_property(mon, HALLUC)
@@ -172,6 +178,14 @@
 #define is_charmed(mon) \
 	(has_charmed(mon) && !has_charm_resistance(mon))
 
+#define has_fearful(mon) \
+	has_property(mon, FEARFUL)
+
+#define has_fear_resistance(mon) \
+	has_innate_or_property(mon, FEAR_RES)
+
+#define is_fearful(mon) \
+	(has_fearful(mon) && !has_fear_resistance(mon))
 
 
 #define has_levitation(mon) \
@@ -468,11 +482,9 @@
 	|| ((mon) == &youmonst && u.ulycn >= LOW_PM) || is_vampshifter(mon) || resists_drain(mon))
 
 #define resists_blnd(mon) \
-	(((mon) == &youmonst && (Blind || Unaware)) || ((mon)->mblinded || !(mon)->mcansee \
+	(((mon) == &youmonst && (Blind || Unaware)) || (is_blinded(mon) \
 	|| !haseyes((mon)->data) || (mon)->msleeping) || resists_flash(mon))
 
-#define is_blinded(mon) \
-	(has_blinded(mon) && !haseyes((mon)->data))
 
 /* monkeys are tameable via bananas but not pacifiable via food,
    otherwise their theft attack could be nullified too easily;

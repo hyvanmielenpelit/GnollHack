@@ -209,7 +209,7 @@ register struct monst *priest;
             return 0;
         } else if (index(u.urooms, temple)) {
             /* chase player if inside temple & can see him */
-            if (priest->mcansee && m_canseeu(priest)) {
+            if (!is_blinded(priest) && m_canseeu(priest)) {
                 gx = u.ux;
                 gy = u.uy;
             }
@@ -989,7 +989,7 @@ struct monst *mtmp;
 		Strcat(info, ", unable to summon");
 	if (is_confused(mtmp))
         Strcat(info, ", confused");
-    if (mtmp->mblinded || !mtmp->mcansee)
+    if (is_blinded(mtmp) || is_blinded(mtmp))
         Strcat(info, ", blind");
     if (is_stunned(mtmp))
         Strcat(info, ", stunned");

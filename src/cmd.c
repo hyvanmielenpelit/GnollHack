@@ -3185,9 +3185,11 @@ int final;
     if (Shock_resistance)
         you_are("shock resistant", from_what(SHOCK_RES));
 	if (Death_resistance)
-		you_are("death resistant", from_what(DEATH_RES));
+		you_are("immune to death magic", from_what(DEATH_RES));
 	if (Charm_resistance)
-		you_are("charm resistant", from_what(CHARM_RES));
+		you_are("immune to charming", from_what(CHARM_RES));
+	if (Fear_resistance)
+		you_are("immune to fear", from_what(FEAR_RES));
 	if (Mind_shielding)
 		you_are("mind-shielded", from_what(MIND_SHIELDING));
 	if (Lycanthropy_resistance)
@@ -3502,6 +3504,8 @@ int final;
 		you_are("slowed", from_what(SLOWED));
 	if (Paralyzed)
 		you_are("paralyzed", from_what(PARALYZED));
+	if (Fearful)
+		you_are("magically frightened", from_what(FEARFUL));
 	if (Sleeping)
 		you_are("in a magically induced sleep", from_what(SLEEPING));
 	if (Cancelled)

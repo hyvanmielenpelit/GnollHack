@@ -993,9 +993,9 @@ genericptr_t p2;
                 pline("%s coughs!", Monnam(mtmp));
             if (heros_fault(reg))
                 setmangry(mtmp, TRUE);
-            if (haseyes(mtmp->data) && mtmp->mcansee) {
-                mtmp->mblinded = 1;
-                mtmp->mcansee = 0;
+            if (haseyes(mtmp->data) && !is_blinded(mtmp))
+			{
+				nonadditive_increase_mon_temporary_property(mtmp, BLINDED, 5 + rnd(5));
             }
             if (resists_poison(mtmp))
                 return FALSE;

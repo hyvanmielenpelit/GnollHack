@@ -323,7 +323,7 @@ struct obj *otmp;
 			pline("%s is unaffected by the power word!", Monnam(mtmp));
 			break; /* skip makeknown */
 		}
-		else if (!mtmp->mcansee && ((duration > 0 && (int)mtmp->mblinded > duration) || (duration == 0 && mtmp->mblinded == 0)))
+		else if (is_blinded(mtmp) && ((duration > 0 && get_mon_temporary_property(mtmp, BLINDED) > duration) || (mtmp->mprops[BLINDED] & ~M_TIMEOUT)))
 		{ /* match effect on player */
 			pline("%s does not seem more blind than before.", Monnam(mtmp));
 			break; /* skip makeknown */
@@ -331,9 +331,7 @@ struct obj *otmp;
 		else if (!resist(mtmp, otmp, 0, 0, TELL) //Get no effect upon successful magic resistance
 			&& !DEADMONSTER(mtmp))
 		{
-			mtmp->mcansee = 0;
-			mtmp->mblinded = duration;
-			pline("%s is blinded!", Monnam(mtmp));
+			increase_mon_temporary_property_verbosely(mtmp, BLINDED, duration);
 		}
 		break;
 	case WAN_SLOW_MONSTER:
@@ -1261,8 +1259,7 @@ int mnum_override; /* Use this mnum instead */
 		mtmp2->mprops[NO_MAGIC_RES] = 0;
 		mtmp2->mprops[HALF_MAGIC_RES] = 0;
 		mtmp2->mprops[SUMMON_FORBIDDEN] = 0;
-		mtmp2->mcansee = 1; /* set like in makemon */
-        mtmp2->mblinded = 0;
+		mtmp2->mprops[BLINDED] = 0;
 		mtmp2->mprops[STUNNED] = 0;
 		mtmp2->mprops[CONFUSION] = 0;
 		if (mtmp2->isshk) {
@@ -5808,11 +5805,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
         if (!resists_blnd(mon)
             && !(type > 0 && u.uswallow && mon == u.ustuck)) {
             register unsigned rnd_tmp = rnd(50);
-            mon->mcansee = 0;
-            if ((mon->mblinded + rnd_tmp) > 127)
-                mon->mblinded = 127;
-            else
-                mon->mblinded += rnd_tmp;
+			nonadditive_increase_mon_temporary_property(mon, BLINDED, rnd_tmp);
         }
         if (!rn2(3))
             (void) destroy_mitem(mon, WAND_CLASS, AD_ELEC);

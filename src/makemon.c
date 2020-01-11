@@ -2164,7 +2164,7 @@ unsigned long mmflags;
 		mtmp->mtrapseen = ~0;
 
     place_monster(mtmp, x, y);
-    mtmp->mcansee = mtmp->mcanmove = mtmp->mwantstomove = mtmp->mwantstodrop = TRUE;
+    mtmp->mcanmove = mtmp->mwantstomove = mtmp->mwantstodrop = TRUE;
     mtmp->mpeaceful = (mmflags & MM_ANGRY) ? FALSE : peace_minded(ptr);
 
     switch (ptr->mlet) {

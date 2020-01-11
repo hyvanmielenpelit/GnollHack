@@ -1379,9 +1379,14 @@ mcalcdistress()
 
 
         /* gradually time out temporary problems */
-        if (mtmp->mblinded && !--mtmp->mblinded)
-            mtmp->mcansee = 1;
-        if (mtmp->mfrozen && !--mtmp->mfrozen)
+
+        if (get_mon_temporary_property(mtmp, BLINDED) > 0)
+            increase_mon_temporary_property_verbosely(mtmp, BLINDED, -1);
+		if (get_mon_temporary_property(mtmp, PARALYZED) > 0)
+			increase_mon_temporary_property_verbosely(mtmp, PARALYZED, -1);
+		if (get_mon_temporary_property(mtmp, FEARFUL) > 0)
+			increase_mon_temporary_property_verbosely(mtmp, FEARFUL, -1);
+		if (mtmp->mfrozen && !--mtmp->mfrozen)
             mtmp->mcanmove = 1;
 		if (mtmp->mstaying && !--mtmp->mstaying)
 			mtmp->mwantstomove = 1;
@@ -1500,7 +1505,7 @@ movemon()
         }
 
         /* continue if the monster died fighting */
-        if (Conflict && !mtmp->iswiz && mtmp->mcansee) {
+        if (Conflict && !mtmp->iswiz && !is_blinded(mtmp)) {
             /* Note:
              *  Conflict does not take effect in the first round.
              *  Therefore, A monster when stepping into the area will
@@ -1756,7 +1761,7 @@ struct monst *mtmp;
             } else if (heal) {
                 mtmp->mhp = mtmp->mhpmax;
             }
-            if ((eyes || heal) && !mtmp->mcansee)
+            if ((eyes || heal) && is_blinded(mtmp))
                 mcureblindness(mtmp, canseemon(mtmp));
             /* in case it polymorphed or died */
             if (ptr != original_ptr)
@@ -2070,7 +2075,7 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
         flag &= ~NOTONL;
     }
 
-    if (!mon->mcansee)
+    if (is_blinded(mon))
         flag |= ALLOW_SSM;
     maxx = min(x + 1, COLNO - 1);
     maxy = min(y + 1, ROWNO - 1);
@@ -2116,7 +2121,7 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
             if ((is_pool(nx, ny) == wantpool || poolok)
                 && (lavaok || !is_lava(nx, ny))) {
                 int dispx, dispy;
-                boolean monseeu = (mon->mcansee
+                boolean monseeu = (!is_blinded(mon)
                                    && (!Invis || has_see_invisible(mon)));
                 boolean checkobj = OBJ_AT(nx, ny);
 
@@ -3657,7 +3662,7 @@ boolean via_attack;
 
             if (!mindless(mon->data) && mon->mpeaceful
                 && couldsee(mon->mx, mon->my) && !mon->msleeping
-                && mon->mcansee && m_canseeu(mon)) {
+                && !is_blinded(mon) && m_canseeu(mon)) {
                 boolean exclaimed = FALSE;
 
                 if (humanoid(mon->data) || mon->isshk || mon->ispriest) {

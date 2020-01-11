@@ -197,7 +197,7 @@ struct attack *mattk;
               ? could_seduce(mtmp, &youmonst, mattk) : 0);
     Monst_name = Monnam(mtmp);
 
-    if (!mtmp->mcansee || (Invis && !has_see_invisible(mtmp))) {
+    if (is_blinded(mtmp) || (Invis && !has_see_invisible(mtmp))) {
         const char *swings = (mattk->aatyp == AT_BITE) ? "snaps"
                              : (mattk->aatyp == AT_KICK) ? "kicks"
                                : (mattk->aatyp == AT_STNG
@@ -613,7 +613,7 @@ register struct monst *mtmp;
 	tmp += mtmp->mhitinc;
 	if (multi < 0)
         tmp += 4;
-    if ((Invis && !has_see_invisible(mtmp)) || !mtmp->mcansee)
+    if ((Invis && !has_see_invisible(mtmp)) || is_blinded(mtmp))
         tmp -= 2;
     if (mtmp->mtrapped)
         tmp -= 2;
@@ -3073,7 +3073,7 @@ struct attack *mattk;
 
     switch (mattk->adtyp) {
     case AD_STON:
-        if (cancelled || !mtmp->mcansee) {
+        if (cancelled || is_blinded(mtmp)) {
             if (!canseemon(mtmp))
                 break; /* silently */
             pline("%s %s.", Monnam(mtmp),
@@ -3123,7 +3123,7 @@ struct attack *mattk;
         }
         break;
     case AD_CONF:
-        if (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my) && mtmp->mcansee
+        if (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my) && !is_blinded(mtmp)
             && !mtmp->mspec_used && rn2(5)) {
             if (cancelled) {
                 react = 0; /* "confused" */
@@ -3142,7 +3142,7 @@ struct attack *mattk;
         }
         break;
     case AD_STUN:
-        if (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my) && mtmp->mcansee
+        if (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my) && !is_blinded(mtmp)
             && !mtmp->mspec_used && rn2(5)) {
             if (cancelled) {
                 react = 1; /* "stunned" */
@@ -3162,7 +3162,7 @@ struct attack *mattk;
             && distu(mtmp->mx, mtmp->my) <= BOLT_LIM * BOLT_LIM) {
             if (cancelled) {
                 react = rn1(2, 2); /* "puzzled" || "dazzled" */
-                already = (mtmp->mcansee == 0);
+                already = (mtmp->mprops[BLINDED] != 0);
                 /* Archons gaze every round; we don't want cancelled ones
                    giving the "seems puzzled/dazzled" message that often */
                 if (has_cancelled(mtmp) && mtmp->data == &mons[PM_ARCHON] && rn2(5))
@@ -3193,7 +3193,7 @@ struct attack *mattk;
         }
         break;
     case AD_FIRE:
-        if (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my) && mtmp->mcansee
+        if (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my) && !is_blinded(mtmp)
             && !mtmp->mspec_used && rn2(5)) {
             if (cancelled) {
                 react = rn1(2, 4); /* "irritated" || "inflamed" */
@@ -3220,7 +3220,7 @@ struct attack *mattk;
         break;
 #ifdef PM_BEHOLDER /* work in progress */
     case AD_SLEE:
-        if (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my) && mtmp->mcansee
+        if (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my) && !is_blinded(mtmp)
             && multi >= 0 && !rn2(5) && !Sleep_resistance) {
             if (cancelled) {
                 react = 6;                      /* "tired" */
@@ -3233,7 +3233,7 @@ struct attack *mattk;
         }
         break;
     case AD_SLOW:
-        if (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my) && mtmp->mcansee
+        if (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my) && !is_blinded(mtmp)
             && (HFast & (INTRINSIC | TIMEOUT)) && !defends(AD_SLOW, uwep)
             && !rn2(4)) {
             if (cancelled) {
@@ -3804,7 +3804,7 @@ struct attack *mattk;
             if (u.umonnum == PM_FLOATING_EYE) {
                 if (!rn2(20))
                     tmp = 24;
-                if (mtmp->mcansee && haseyes(mtmp->data) && rn2(3)
+                if (!is_blinded(mtmp) && haseyes(mtmp->data) && rn2(3)
                     && (has_see_invisible(mtmp) || !Invis)) {
                     if (Blind)
                         pline("As a blind %s, you cannot defend yourself.",

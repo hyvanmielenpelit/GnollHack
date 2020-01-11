@@ -390,7 +390,7 @@ boolean devour;
     }
     if (heal)
         mtmp->mhp = mtmp->mhpmax;
-    if ((eyes || heal) && !mtmp->mcansee)
+    if ((eyes || heal) && is_blinded(mtmp))
         mcureblindness(mtmp, canseemon(mtmp));
     if (deadmimic)
         quickmimic(mtmp);
@@ -939,7 +939,7 @@ struct monst *mtmp;   /* Pet */
         return 0;
 
     /* If the pet is blind, it's not going to see any target */
-    if (!mtmp->mcansee)
+    if (is_blinded(mtmp))
         return 0;
 
     /* Search for any monsters lined up with the pet, within an arbitrary
@@ -1138,7 +1138,7 @@ int after; /* this is extra fast monster movement */
 
             if ((!mon_disregards_own_health(mtmp) && (int) mtmp2->m_lev >= (int) mtmp->m_lev + 2)
                 || (mtmp2->data == &mons[PM_FLOATING_EYE] && rn2(10)
-                    && mtmp->mcansee && haseyes(mtmp->data) && mtmp2->mcansee
+                    && !is_blinded(mtmp) && haseyes(mtmp->data) && !is_blinded(mtmp2)
                     && (has_see_invisible(mtmp) || !is_invisible(mtmp2)))
                 || (mtmp2->data == &mons[PM_GELATINOUS_CUBE] && rn2(10))
                 || (mtmp2->mtame && !Conflict)
@@ -1305,7 +1305,7 @@ int after; /* this is extra fast monster movement */
                      * the direction from which the ranged attack came;
                      * if it's blind or unseeing, it can't retaliate
                      */
-                    if (mtarg->mcansee && haseyes(mtarg->data)) {
+                    if (!is_blinded(mtarg) && haseyes(mtarg->data)) {
                         mstatus = mattackm(mtarg, mtmp);
                         if (mstatus & MM_DEF_DIED)
                             return 2;

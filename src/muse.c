@@ -323,7 +323,7 @@ struct monst *mtmp;
     /* since unicorn horns don't get used up, the monster would look
      * silly trying to use the same cursed horn round after round
      */
-    if (is_confused(mtmp) || is_stunned(mtmp) || !mtmp->mcansee) {
+    if (is_confused(mtmp) || is_stunned(mtmp) || is_blinded(mtmp)) {
         if (!is_unicorn(mtmp->data) && !nohands(mtmp->data)) {
             for (obj = mtmp->minvent; obj; obj = obj->nobj)
                 if (obj->otyp == UNICORN_HORN && !obj->cursed)
@@ -365,7 +365,7 @@ struct monst *mtmp;
      * These would be hard to combine because of the control flow.
      * Pestilence won't use healing even when blind.
      */
-    if (!mtmp->mcansee && !nohands(mtmp->data)
+    if (is_blinded(mtmp) && !nohands(mtmp->data)
         && mtmp->data != &mons[PM_PESTILENCE]) {
         if (m_use_healing(mtmp))
             return TRUE;
@@ -540,7 +540,7 @@ struct monst *mtmp;
             }
         }
         nomore(MUSE_SCR_TELEPORTATION);
-        if (obj->otyp == SCR_TELEPORTATION && mtmp->mcansee
+        if (obj->otyp == SCR_TELEPORTATION && !is_blinded(mtmp)
             && haseyes(mtmp->data)
             && (!obj->cursed || (!(mtmp->isshk && inhishop(mtmp))
                                  && !mtmp->isgd && !mtmp->ispriest))) {
@@ -636,7 +636,7 @@ struct monst *mtmp;
             else
                 pline_The("tip of %s's horn glows!", mon_nam(mtmp));
         }
-        if (!mtmp->mcansee) {
+        if (is_blinded(mtmp)) {
             mcureblindness(mtmp, vismon);
         } else if (is_confused(mtmp) || is_stunned(mtmp)) {
 			mtmp->mprops[CONFUSION] = 0;
@@ -946,7 +946,7 @@ struct monst *mtmp;
         mtmp->mhp += i;
 		if (mtmp->mhp > mtmp->mhpmax)
 			mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? 1 : 0));
-		if (!otmp->cursed && !mtmp->mcansee)
+		if (!otmp->cursed && is_blinded(mtmp))
             mcureblindness(mtmp, vismon);
         if (vismon)
             pline("%s looks better.", Monnam(mtmp));
@@ -960,7 +960,7 @@ struct monst *mtmp;
         mtmp->mhp += i;
         if (mtmp->mhp > mtmp->mhpmax)
             mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? 2 : 0));
-        if (!mtmp->mcansee)
+        if (is_blinded(mtmp))
             mcureblindness(mtmp, vismon);
         if (vismon)
             pline("%s looks much better.", Monnam(mtmp));
@@ -974,7 +974,7 @@ struct monst *mtmp;
 		mtmp->mhp += i;
 		if (mtmp->mhp > mtmp->mhpmax)
 			mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? 3 : 0));
-		if (!mtmp->mcansee)
+		if (is_blinded(mtmp))
 			mcureblindness(mtmp, vismon);
 		if (vismon)
 			pline("%s looks much, much better.", Monnam(mtmp));
@@ -987,7 +987,7 @@ struct monst *mtmp;
         if (otmp->otyp == POT_SICKNESS)
             unbless(otmp); /* Pestilence */
         mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? 8 : 4));
-        if (!mtmp->mcansee && otmp->otyp != POT_SICKNESS)
+        if (is_blinded(mtmp) && otmp->otyp != POT_SICKNESS)
             mcureblindness(mtmp, vismon);
         if (vismon)
             pline("%s looks completely healed.", Monnam(mtmp));
@@ -1234,7 +1234,7 @@ struct monst *mtmp;
 					|| noncorporeal(mtmp->data) || unsolid(mtmp->data)
 					|| !rn2(10))
 				&& dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) <= 2
-				&& mtmp->mcansee && haseyes(mtmp->data)
+				&& !is_blinded(mtmp) && haseyes(mtmp->data)
 				&& !Is_rogue_level(&u.uz)
 				&& (!In_endgame(&u.uz) || Is_earthlevel(&u.uz))) {
 				m.offensive = obj;
@@ -1245,7 +1245,7 @@ struct monst *mtmp;
         nomore(MUSE_SCR_FIRE);
         if (obj->otyp == SCR_FIRE && resists_fire(mtmp)
             && dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) <= 2
-            && mtmp->mcansee && haseyes(mtmp->data)) {
+            && !is_blinded(mtmp) && haseyes(mtmp->data)) {
             m.offensive = obj;
             m.has_offense = MUSE_SCR_FIRE;
         }
@@ -2409,9 +2409,9 @@ mcureblindness(mon, verbos)
 struct monst *mon;
 boolean verbos;
 {
-    if (!mon->mcansee) {
-        mon->mcansee = 1;
-        mon->mblinded = 0;
+    if (is_blinded(mon)) 
+	{
+        mon->mprops[BLINDED] = 0;
         if (verbos && haseyes(mon->data))
             pline("%s can see again.", Monnam(mon));
     }
@@ -2764,7 +2764,7 @@ struct obj *obj;
 {
     /* scroll of fire, non-empty wand or horn of fire */
     if (obj->otyp == SCR_FIRE)
-        return (haseyes(mon->data) && mon->mcansee);
+        return (haseyes(mon->data) && !is_blinded(mon));
     /* hero doesn't need hands or even limbs to zap, so mon doesn't either */
     return ((obj->otyp == WAN_FIRE
              || (obj->otyp == FIRE_HORN && can_blow(mon)))

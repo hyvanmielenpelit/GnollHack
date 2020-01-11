@@ -441,7 +441,7 @@ register struct monst *mtmp;
 
     /* Is the "it died" check actually correct? */
     if (mdat->mlet == S_LEPRECHAUN && !mtmp->mfrozen && !mtmp->msleeping
-        && !is_confused(mtmp) && mtmp->mcansee && !rn2(7)
+        && !is_confused(mtmp) && !is_blinded(mtmp) && !rn2(7)
         && (m_move(mtmp, 0) == 2 /* it died */
             || mtmp->mx != u.ux + u.dx
             || mtmp->my != u.uy + u.dy)) { /* it moved */
@@ -1284,7 +1284,7 @@ boolean* obj_destroyed;
 						else if (obj->otyp == BLINDING_VENOM) 
 						{
 							pline_The("venom blinds %s%s!", mon_nam(mon),
-								mon->mcansee ? "" : " further");
+								!is_blinded(mon) ? "" : " further");
 						}
 						else 
 						{
@@ -1302,12 +1302,7 @@ boolean* obj_destroyed;
 								vtense(what, "splash"), whom);
 						}
 						setmangry(mon, TRUE);
-						mon->mcansee = 0;
-						tmp = rn1(25, 21);
-						if (((int)mon->mblinded + tmp) > 127)
-							mon->mblinded = 127;
-						else
-							mon->mblinded += tmp;
+						increase_mon_temporary_property(mon, BLINDED, rn1(25, 21));
 					}
 					else 
 					{
@@ -2568,13 +2563,9 @@ int specialdmg; /* blessed and/or silver bonus against various things */
         break;
     case AD_BLND:
         if (can_blnd(&youmonst, mdef, mattk->aatyp, (struct obj *) 0)) {
-            if (!Blind && mdef->mcansee)
+            if (!Blind && !is_blinded(mdef))
                 pline("%s is blinded.", Monnam(mdef));
-            mdef->mcansee = 0;
-            tmp += mdef->mblinded;
-            if (tmp > 127)
-                tmp = 127;
-            mdef->mblinded = tmp;
+			nonadditive_increase_mon_temporary_property(mdef, BLINDED, tmp);
         }
         tmp = 0;
         break;
@@ -2823,12 +2814,11 @@ register struct attack *mattk;
     case AD_BLND:
         if (!resists_blnd(mdef)) {
             pline("%s is blinded by your flash of light!", Monnam(mdef));
-            mdef->mblinded = min((int) mdef->mblinded + tmp, 127);
-            mdef->mcansee = 0;
+			increase_mon_temporary_property(mdef, BLINDED, tmp);
         }
         break;
     case AD_HALU:
-        if (haseyes(mdef->data) && mdef->mcansee) {
+        if (haseyes(mdef->data) && !is_blinded(mdef)) {
             pline("%s is affected by your flash of light!", Monnam(mdef));
 			increase_mon_temporary_property_verbosely(mdef, HALLUC, 100 + rnd(100));
         }
@@ -3036,13 +3026,10 @@ register struct attack *mattk;
             case AD_BLND:
                 if (can_blnd(&youmonst, mdef, mattk->aatyp,
                              (struct obj *) 0)) {
-                    if (mdef->mcansee)
+                    if (!is_blinded(mdef))
                         pline("%s can't see in there!", Monnam(mdef));
-                    mdef->mcansee = 0;
-                    dam += mdef->mblinded;
-                    if (dam > 127)
-                        dam = 127;
-                    mdef->mblinded = dam;
+
+					nonadditive_increase_mon_temporary_property(mdef, BLINDED, dam);
                 }
                 dam = 0;
                 break;
@@ -3278,7 +3265,7 @@ register struct monst *mon;
                 if (!u.uswallow
                     && (compat = could_seduce(&youmonst, mon, mattk)) != 0) {
                     You("%s %s %s.",
-                        (mon->mcansee && haseyes(mon->data)) ? "smile at"
+                        (!is_blinded(mon) && haseyes(mon->data)) ? "smile at"
                                                              : "talk to",
                         mon_nam(mon),
                         (compat == 2) ? "engagingly" : "seductively");
@@ -3677,7 +3664,7 @@ boolean wep_was_destroyed;
                 if (!canseemon(mon)) {
                     break;
                 }
-                if (mon->mcansee) {
+                if (!is_blinded(mon)) {
                     if (ureflects("%s gaze is reflected by your %s.",
                                   s_suffix(Monnam(mon)))) {
                         ;
@@ -3924,7 +3911,10 @@ struct obj *otmp; /* source of flash */
         if (!resists_blnd(mtmp)) {
             tmp = dist2(otmp->ox, otmp->oy, mtmp->mx, mtmp->my);
             if (useeit) {
-                pline("%s is blinded by the flash!", Monnam(mtmp));
+				if(tmp < 3 && !is_blinded(mtmp))
+	                pline("%s is blinded by the flash!", Monnam(mtmp));
+				else
+					pline("%s is illuminated in the light of the flash!", Monnam(mtmp));
                 res = 1;
             }
             if (mtmp->data == &mons[PM_GREMLIN]) {
@@ -3938,8 +3928,9 @@ struct obj *otmp; /* source of flash */
                     setmangry(mtmp, TRUE);
                 if (tmp < 9 && !mtmp->isshk && rn2(4))
                     monflee(mtmp, rn2(4) ? rnd(100) : 0, FALSE, TRUE);
-                mtmp->mcansee = 0;
-                mtmp->mblinded = (tmp < 3) ? 0 : rnd(1 + 50 / tmp);
+
+				if (tmp < 3)
+					increase_mon_temporary_property(mtmp, BLINDED, rnd(1 + 50 / tmp));
             }
         }
     }

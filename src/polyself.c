@@ -58,6 +58,7 @@ set_uasmon()
     PROPSET(DISINT_RES, resists_disint(&youmonst));
 	PROPSET(DEATH_RES, resists_death(&youmonst));
 	PROPSET(CHARM_RES, resists_charm(&youmonst));
+	PROPSET(FEAR_RES, resists_fear(&youmonst));
 	PROPSET(SHOCK_RES, resists_elec(&youmonst));
     PROPSET(POISON_RES, resists_poison(&youmonst));
     PROPSET(ACID_RES, resists_acid(&youmonst));
@@ -1569,7 +1570,7 @@ dogaze()
                 }
                 setmangry(mtmp, TRUE);
                 if (!mtmp->mcanmove || is_stunned(mtmp) || mtmp->msleeping
-                    || !mtmp->mcansee || !haseyes(mtmp->data)) {
+                    || is_blinded(mtmp) || !haseyes(mtmp->data)) {
                     looked--;
                     continue;
                 }
@@ -1835,7 +1836,7 @@ domindblast()
             continue;
         if (mtmp->mpeaceful)
             continue;
-        u_sen = (has_telepathy(mtmp)) && !mtmp->mcansee;
+        u_sen = (has_telepathy(mtmp)) && is_blinded(mtmp);
         if (u_sen || (has_telepathy(mtmp) && rn2(2)) || !rn2(10)) {
             You("lock in on %s %s.", s_suffix(mon_nam(mtmp)),
                 u_sen ? "telepathy"

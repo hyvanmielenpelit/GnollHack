@@ -521,11 +521,11 @@ long nmv; /* number of moves */
 
     /* might stop being afraid, blind or frozen */
     /* set to 1 and allow final decrement in movemon() */
-    if (mtmp->mblinded) {
-        if (imv >= (int) mtmp->mblinded)
-            mtmp->mblinded = 1;
-        else
-            mtmp->mblinded -= imv;
+    if (is_blinded(mtmp)) {
+		if (imv >= (int)is_blinded(mtmp))
+			set_mon_temporary_property(mtmp, BLINDED, 0);
+		else
+			increase_mon_temporary_property(mtmp, BLINDED, -imv);
     }
     if (mtmp->mfrozen) {
         if (imv >= (int) mtmp->mfrozen)
@@ -828,7 +828,7 @@ register struct obj *obj;
         starving = (mon->mtame && !mon->isminion
                     && EDOG(mon)->mhpmax_penalty);
         /* even carnivores will eat carrots if they're temporarily blind */
-        mblind = (!mon->mcansee && haseyes(mon->data));
+        mblind = (is_blinded(mon) && haseyes(mon->data));
 
         /* ghouls prefer old corpses and unhatchable eggs, yum!
            they'll eat fresh non-veggy corpses and hatchable eggs

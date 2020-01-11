@@ -1741,20 +1741,16 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 						{
 							if (!mindless(mtmp->data) && mtmp->mcanmove)
 							{
-								mtmp->mcanmove = 0;
-								mtmp->mfrozen = duration;
+								increase_mon_temporary_property_verbosely(mtmp, PARALYZED, duration);
 								res = 1;
-								pline("%s is paralyzed!", Monnam(mtmp));
 							}
 						}
 						if(res == 0 && mtmp->m_lev < u.ulevel)
 						{
-							if(haseyes(mtmp->data) && mtmp->mcansee)
+							if(haseyes(mtmp->data) && !is_blinded(mtmp))
 							{
-								mtmp->mcansee = 0;
-								mtmp->mblinded = duration;
+								increase_mon_temporary_property_verbosely(mtmp, BLINDED, duration);
 								res = 1;
-								pline("%s is blinded!", Monnam(mtmp));
 							}
 						}
 						if (res == 0)

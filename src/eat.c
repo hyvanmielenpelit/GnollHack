@@ -18,7 +18,7 @@ STATIC_DCL struct obj *FDECL(touchfood, (struct obj *));
 STATIC_DCL void NDECL(do_reset_eat);
 STATIC_DCL void FDECL(done_eating, (BOOLEAN_P));
 STATIC_DCL void FDECL(cprefx, (int));
-STATIC_DCL int FDECL(intrinsic_possible, (int, struct permonst *));
+STATIC_DCL boolean FDECL(intrinsic_possible, (int, struct permonst *));
 STATIC_DCL void FDECL(givit, (int, struct permonst *));
 STATIC_DCL void FDECL(temporary_givit, (int, int));
 STATIC_DCL void FDECL(cpostfx, (int));
@@ -805,77 +805,68 @@ fix_petrification()
  */
 
 /* intrinsic_possible() returns TRUE iff a monster can give an intrinsic. */
-STATIC_OVL int
+STATIC_OVL boolean
 intrinsic_possible(type, ptr)
 int type;
 register struct permonst *ptr;
 {
-    int res = 0;
+	unsigned long conveyed = prop_to_conveyed(type);
+	return !!(ptr->mconveys & conveyed);
 
-#ifdef DEBUG
-#define ifdebugresist(Msg)      \
-    do {                        \
-        if (res)                \
-            debugpline0(Msg);   \
-    } while (0)
-#else
-#define ifdebugresist(Msg) /*empty*/
-#endif
-    switch (type) {
+#if 0
+	int res = 0;
+	
+	switch (type) {
     case FIRE_RES:
         res = (ptr->mconveys & MC_FIRE) != 0;
-        ifdebugresist("can get fire resistance");
         break;
     case SLEEP_RES:
         res = (ptr->mconveys & MC_SLEEP) != 0;
-        ifdebugresist("can get sleep resistance");
         break;
     case COLD_RES:
         res = (ptr->mconveys & MC_COLD) != 0;
-        ifdebugresist("can get cold resistance");
         break;
     case DISINT_RES:
         res = (ptr->mconveys & MC_DISINT) != 0;
-        ifdebugresist("can get disintegration resistance");
         break;
-	case DRAIN_RES:
-		res = (ptr->mconveys & MC_DRAIN) != 0;
-		ifdebugresist("can get drain resistance");
-		break;
 	case DEATH_RES:
 		res = (ptr->mconveys & MC_DEATH) != 0;
-		ifdebugresist("can get death resistance");
+		break;
+	case DRAIN_RES:
+		res = (ptr->mconveys & MC_DRAIN) != 0;
+		break;
+	case CHARM_RES:
+		res = (ptr->mconveys & MC_CHARM) != 0;
+		break;
+	case FEAR_RES:
+		res = (ptr->mconveys & MC_FEAR) != 0;
 		break;
 	case SHOCK_RES: /* shock (electricity) resistance */
         res = (ptr->mconveys & MC_ELEC) != 0;
-        ifdebugresist("can get shock resistance");
         break;
     case POISON_RES:
         res = (ptr->mconveys & MC_POISON) != 0;
-        ifdebugresist("can get poison resistance");
         break;
     case TELEPORT:
 		res = (ptr->mconveys & MC_TELEPORT) != 0;
-		ifdebugresist("can get teleport");
         break;
     case TELEPORT_CONTROL:
 		res = (ptr->mconveys & MC_TELEPORT_CONTROL) != 0;
-		ifdebugresist("can get teleport control");
         break;
     case BLIND_TELEPAT:
 		res = (ptr->mconveys & MC_BLIND_TELEPATHY) != 0;
-		ifdebugresist("can get blind-telepathy");
         break;
 	case TELEPAT:
 		res = (ptr->mconveys & MC_TELEPATHY) != 0;
-		ifdebugresist("can get telepathy");
 		break;
 	default:
         /* res stays 0 */
         break;
     }
-#undef ifdebugresist
-    return res;
+
+	return res;
+#endif
+
 }
 
 STATIC_OVL void
@@ -1006,6 +997,16 @@ register struct permonst *ptr;
 			else
 				You_feel("more firm about your own motivations!");
 			HCharm_resistance |= FROM_ACQUIRED;
+		}
+		break;
+	case FEAR_RES: /* charm resistance */
+		debugpline0("Trying to give fear resistance");
+		if (!(HFear_resistance & FROM_ACQUIRED)) {
+			if (Hallucination)
+				You_feel("like Thelma and Louise!");
+			else
+				You_feel("courageous!");
+			HFear_resistance |= FROM_ACQUIRED;
 		}
 		break;
 	case MIND_SHIELDING: /* mind shielding */

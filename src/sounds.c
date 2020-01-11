@@ -952,7 +952,7 @@ register struct monst *mtmp;
             pline_msg = "moans.";
         else if (is_confused(mtmp) || is_stunned(mtmp))
             verbl_msg = !rn2(3) ? "Huh?" : rn2(2) ? "What?" : "Eh?";
-        else if (!mtmp->mcansee)
+        else if (is_blinded(mtmp))
             verbl_msg = "I can't see!";
         else if (mtmp->mtrapped) {
             struct trap *t = t_at(mtmp->mx, mtmp->my);

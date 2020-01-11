@@ -11,37 +11,66 @@
  *      These routines provide basic data for any type of monster.
  */
 
-struct p2i {
+struct ability_conversion_table {
 	int prop;
 	unsigned long innate;
+	unsigned long conveyed;
+	int adtype;
 };
 
 
-static NEARDATA struct p2i prop2innate[] = {
-	{ FIRE_RES, MR_FIRE },
-	{ COLD_RES, MR_COLD },
-	{ SLEEP_RES, MR_SLEEP },
-	{ DISINT_RES, MR_DISINT },
-	{ SHOCK_RES, MR_ELEC },
-	{ POISON_RES, MR_POISON },
-	{ ACID_RES, MR_ACID },
-	{ STONE_RES, MR_STONE },
-	{ DEATH_RES, MR_DEATH },
-	{ LYCANTHROPY_RES, MR_LYCANTHROPY },
-	{ 0, MR_MAGICMISSILE },
-	{ ANTI_MAGIC, MR_MAGIC },
-	{ CHARM_RES, MR_CHARM },
-	{ DRAIN_RES, MR_DRAIN },
-	{ FLASH_RES, MR_FLASH },
-	{ REFLECTING, MR_REFLECTING },
-	{ INVISIBILITY, MR_INVISIBLE },
-	{ SEE_INVISIBLE, MR_SEE_INVISIBLE },
-	{ REGENERATION, MR_REGENERATION },
-	{ TELEPORT, MR_TELEPORT },
-	{ TELEPORT_CONTROL, MR_TELEPORT_CONTROL },
-	{ BLIND_TELEPAT, MR_BLIND_TELEPATHY },
-	{ TELEPAT, MR_TELEPATHY },
+static NEARDATA struct ability_conversion_table prop2innate[] = {
+	{ FIRE_RES, MR_FIRE, MC_FIRE, AD_FIRE },
+	{ COLD_RES, MR_COLD, MC_COLD, AD_COLD },
+	{ SLEEP_RES, MR_SLEEP, MC_SLEEP, AD_SLEE },
+	{ DISINT_RES, MR_DISINT, MC_DISINT, AD_DISN },
+	{ SHOCK_RES, MR_ELEC, MC_ELEC, AD_ELEC },
+	{ POISON_RES, MR_POISON, MC_POISON, AD_DRST },
+	{ ACID_RES, MR_ACID, MC_ACID, AD_ACID  },
+	{ STONE_RES, MR_STONE, MC_STONE, AD_STON  },
+	{ DEATH_RES, MR_DEATH, MC_DEATH, AD_DETH },
+	{ LYCANTHROPY_RES, MR_LYCANTHROPY, MC_NONE, AD_LYCA },
+	{ 0, MR_MAGICMISSILE, MC_NONE, AD_MAGM },
+	{ ANTI_MAGIC, MR_MAGIC, MC_NONE, -1  },
+	{ CHARM_RES, MR_CHARM, MC_CHARM, -1 },
+	{ FEAR_RES, MR_FEAR, MC_FEAR, -1 },
+	{ DRAIN_RES, MR_DRAIN, MC_DRAIN, AD_DRLI },
+	{ FLASH_RES, MR_FLASH, MC_NONE, AD_BLND },
+	{ REFLECTING, MR_REFLECTING, MC_NONE, -1 },
+	{ INVISIBILITY, MR_INVISIBLE, MC_NONE, -1 },
+	{ SEE_INVISIBLE, MR_SEE_INVISIBLE, MC_NONE, -1 },
+	{ REGENERATION, MR_REGENERATION, MC_NONE, -1 },
+	{ TELEPORT, MR_TELEPORT, MC_NONE, -1 },
+	{ TELEPORT_CONTROL, MR_TELEPORT_CONTROL, MC_NONE, -1 },
+	{ BLIND_TELEPAT, MR_BLIND_TELEPATHY, MC_NONE, -1 },
+	{ TELEPAT, MR_TELEPATHY, MC_NONE, -1 },
 };
+
+
+unsigned long
+prop_to_conveyed(prop_index)
+int prop_index;
+{
+	for (int i = 0; i < SIZE(prop2innate); i++)
+	{
+		if (prop2innate[i].prop == prop_index)
+			return prop2innate[i].conveyed;
+	}
+	return 0;
+}
+
+int
+conveyed_to_prop(conveyed_bit)
+unsigned long conveyed_bit;
+{
+	for (int i = 0; i < SIZE(prop2innate); i++)
+	{
+		if (prop2innate[i].conveyed == conveyed_bit)
+			return prop2innate[i].prop;
+	}
+	return 0;
+}
+
 
 
 unsigned long

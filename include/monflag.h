@@ -72,6 +72,8 @@
 #define MR_TELEPORT_CONTROL 0x00100000L		
 #define MR_BLIND_TELEPATHY	0x00200000L		
 #define MR_TELEPATHY	0x00400000L		
+#define MR_FEAR			0x00800000L			/* immune to fear */
+
 
 /* conveyances: resistances, teleport, teleport control, telepathy, as well as other properties from eating the corpse */
 #define MC_NONE			0x00000000L
@@ -83,10 +85,10 @@
 #define MC_POISON		0x00000020L 		/* confers poison resistance */
 #define MC_ACID			0x00000040L   		/* confers acid resistance */
 #define MC_STONE		0x00000080L  		/* confers petrification resistance */
-#define MC_DEATH		0x00000100L			/* confers life draining resistance */
+#define MC_DEATH		0x00000100L			/* confers death resistance */
 #define MC_DRAIN		0x00000200L			/* confers life draining resistance */
-/* free bit */
-/* free bit */
+#define MC_CHARM		0x00000400L			/* confers charm resistance */
+#define MC_FEAR			0x00000800L			/* confers fear resistance */
 /* free bit */
 /* free bit */
 /* free bit */
