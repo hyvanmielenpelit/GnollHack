@@ -97,7 +97,7 @@ struct obj *obj;
                         pline("%s is frightened to death, and unable to move.",
                               Monnam(mon));
                     }
-                    paralyze_monst(mon, 3);
+                    paralyze_monst(mon, 3, FALSE);
                 }
                 return 2;
             }
@@ -476,7 +476,8 @@ struct monst *mtmp;
                     continue;
                 if ((mon = m_at(xx, yy)) != 0 && is_mercenary(mon->data)
                     && mon->data != &mons[PM_GUARD]
-                    && (mon->msleeping || !mon->mcanmove)) {
+                    && !mon_can_move(mon))
+				{
                     m.defensive = obj;
                     m.has_defense = MUSE_BUGLE;
                     goto toot; /* double break */
@@ -2428,7 +2429,7 @@ boolean by_you;
 
     if (resists_ston(mon))
         return FALSE;
-    if (mon->meating || !mon->mcanmove || mon->msleeping)
+    if (mon->meating || !mon_can_move(mon))
         return FALSE;
     mon->mstrategy &= ~STRAT_WAITFORU;
 
@@ -2587,7 +2588,7 @@ boolean by_you;
 
     if (slimeproof(mptr))
         return FALSE;
-    if (mon->meating || !mon->mcanmove || mon->msleeping)
+    if (mon->meating || !mon_can_move(mon))
         return FALSE;
     mon->mstrategy &= ~STRAT_WAITFORU;
 

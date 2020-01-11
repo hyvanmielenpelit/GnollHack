@@ -486,7 +486,7 @@ int udist;
     register int omx, omy, carryamt = 0;
     struct obj *obj, *otmp;
 
-    if (mtmp->msleeping || !mtmp->mcanmove || !mtmp->mwantstomove)
+    if (!mon_can_move(mtmp) || !mtmp->mwantstomove)
         return 0;
 
     omx = mtmp->mx;

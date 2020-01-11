@@ -650,7 +650,7 @@ boolean pets_only; /* true for ascension or final escape */
                 the amulet; if you don't have it, will chase you
                 only if in range. -3. */
              || (u.uhave.amulet && mtmp->iswiz))
-            && ((!mtmp->msleeping && mtmp->mcanmove)
+            && ((mon_can_move(mtmp))
                 /* eg if level teleport or new trap, steed has no control
                    to avoid following */
                 || (mtmp == u.usteed))
@@ -968,10 +968,11 @@ boolean forcetaming;
     if (mtmp->mtame && obj) {
         int tasty;
 
-        if (mtmp->mcanmove && !is_confused(mtmp) && !mtmp->meating
+        if (mon_can_move(mtmp) && !is_confused(mtmp) && !mtmp->meating
             && ((tasty = dogfood(mtmp, obj)) == DOGFOOD
                 || (tasty <= ACCFOOD
-                    && EDOG(mtmp)->hungrytime <= monstermoves))) {
+                    && EDOG(mtmp)->hungrytime <= monstermoves))) 
+		{
             /* pet will "catch" and eat this thrown food */
             if (canseemon(mtmp)) {
                 boolean big_corpse =
@@ -996,7 +997,7 @@ boolean forcetaming;
         /* monsters with conflicting structures cannot be tamed */
         || mtmp->isshk || mtmp->isgd || mtmp->ispriest /* shopkeepers, guards, and priests cannot be forced to be tame for now -- JG */
         || (!forcetaming && 
-			(!mtmp->mcanmove
+			(!mtmp->mcanmove /* not sure why this is here --JG*/
 			|| mtmp->isminion /* minions can be tamed */
 			|| is_covetous(mtmp->data)
 			|| is_human(mtmp->data)

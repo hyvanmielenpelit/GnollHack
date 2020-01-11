@@ -407,7 +407,7 @@ int roomno;
         shrined = has_shrine(priest);
         sanctum = (priest->data == &mons[PM_HIGH_PRIEST]
                    && (Is_sanctum(&u.uz) || In_endgame(&u.uz)));
-        can_speak = (priest->mcanmove && !priest->msleeping);
+        can_speak = (mon_can_move(priest));
         if (can_speak && !Deaf && moves >= epri_p->intone_time) {
             unsigned save_priest = priest->ispriest;
 
@@ -549,14 +549,14 @@ register struct monst *priest;
 
     /* priests don't chat unless peaceful and in their own temple */
     if (!inhistemple(priest) || !priest->mpeaceful
-        || !priest->mcanmove || priest->msleeping) {
+        || !mon_can_move(priest)) {
         static const char *cranky_msg[3] = {
             "Thou wouldst have words, eh?  I'll give thee a word or two!",
             "Talk?  Here is what I have to say!",
             "Pilgrim, I would speak no longer with thee."
         };
 
-        if (!priest->mcanmove || priest->msleeping) {
+        if (!mon_can_move(priest)) {
             pline("%s breaks out of %s reverie!", Monnam(priest),
                   mhis(priest));
             priest->mfrozen = priest->msleeping = 0;
@@ -1003,13 +1003,11 @@ struct monst *mtmp;
 		Strcat(info, ", being strangled");
 	if (has_paralyzed(mtmp))
 		Strcat(info, ", paralyzed");
-	if (has_sleeping(mtmp))
-		Strcat(info, ", asleep");
 	if (is_stunned(mtmp))
         Strcat(info, ", stunned");
-    if (mtmp->msleeping)
-        Strcat(info, ", asleep");
-    else if (mtmp->mfrozen || !mtmp->mcanmove)
+	if (is_sleeping(mtmp))
+		Strcat(info, ", asleep");
+	if (mtmp->mfrozen || !mtmp->mcanmove)
         Strcat(info, ", can't move");
     else if (mtmp->mstrategy & STRAT_WAITMASK)
         Strcat(info, ", meditating");
@@ -1078,7 +1076,7 @@ ustatusline()
 		Strcat(info, ", cancelled");
 	if (Paralyzed)
 		Strcat(info, ", paralyzed");
-	if (Sleeping)
+	if (Sleeping || u.usleep)
 		Strcat(info, ", sleeping");
 	if (Blind) {
         Strcat(info, ", blind");

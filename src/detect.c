@@ -816,10 +816,13 @@ int mclass;                /* monster class, 0 for all */
                 map_monst(mtmp, TRUE);
 
             if (otmp && otmp->cursed
-                && (mtmp->msleeping || !mtmp->mcanmove)) {
+                && !mon_can_move(mtmp))
+			{
                 mtmp->msleeping = mtmp->mfrozen = mtmp->mstaying = 0;
                 mtmp->mcanmove = 1;
 				mtmp->mwantstomove = 1;
+				mtmp->mprops[SLEEPING] = 0;
+				mtmp->mprops[PARALYZED] = 0;
 				woken = TRUE;
             }
         }
@@ -1124,7 +1127,8 @@ struct obj **optr;
             make_confused(itimeout_incr(HConfusion, rnd(100)), FALSE);
             break;
         case 3:
-            if (!resists_blnd(&youmonst)) {
+            if (!resists_blnd(&youmonst)) 
+			{
                 pline("%s your vision!", Tobjnam(obj, "damage"));
                 make_blinded((Blinded & TIMEOUT) + (long) rnd(100), FALSE);
                 if (!Blind)

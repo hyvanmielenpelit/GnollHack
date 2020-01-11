@@ -52,8 +52,6 @@
 #define is_wooden(ptr) ((ptr) == &mons[PM_WOOD_GOLEM])
 #define thick_skinned(ptr) (((ptr)->mflags1 & M1_THICK_HIDE) != 0L)
 #define hug_throttles(ptr) ((ptr) == &mons[PM_ROPE_GOLEM])
-#define slimeproof(ptr) \
-    ((ptr) == &mons[PM_GREEN_SLIME] || flaming(ptr) || noncorporeal(ptr))
 #define lays_eggs(ptr) (((ptr)->mflags1 & M1_OVIPAROUS) != 0L)
 #define eggs_in_water(ptr) \
     (lays_eggs(ptr) && (ptr)->mlet == S_EEL && is_swimmer(ptr))
@@ -155,6 +153,14 @@
     (((ptr)->mflags4 & M4_ALTERNATIVE_PASSIVE_DEFENSE_TEXT) != 0)
 
 
+/* combinations */
+#define is_not_living(ptr) \
+    (is_undead(ptr) || is_nonliving(ptr))
+#define is_living(ptr) !is_not_living(ptr)
+#define slimeproof(ptr) \
+    ((ptr) == &mons[PM_GREEN_SLIME] || flaming(ptr) || noncorporeal(ptr))
+
+
 /* Resistances and properties */
 #define has_innate(ptr, bit) \
     (((ptr)->mresists & (bit)) != 0)
@@ -243,13 +249,16 @@
 	has_innate_or_property(mon, FREE_ACTION)
 
 #define is_paralyzed(mon) \
-	(has_paralyzed(mon) && !has_free_action(mon))
+	(has_paralyzed(mon) && !has_free_action(mon) && !is_undead((mon)->data) && !is_vampshifter(mon))
 
 #define has_sleeping(mon) \
 	has_property(mon, SLEEPING)
 
 #define is_sleeping(mon) \
 	(has_sleeping(mon) || (mon)->msleeping)
+
+#define mon_can_move(mon) \
+	((mon)->mcanmove && !is_sleeping(mon) && !is_paralyzed(mon))
 
 #define has_summon_forbidden(mon) \
 	has_property(mon, SUMMON_FORBIDDEN)
@@ -369,9 +378,9 @@
 #define resists_elec(mon) \
     (has_innate((mon)->data, MR_ELEC) || has_property(mon, SHOCK_RES))
 #define resists_death(mon) \
-    (has_innate((mon)->data, MR_DEATH) || has_property(mon, DEATH_RES) || is_undead((mon)->data) || is_demon((mon)->data) || is_vampshifter(mon))
+    (has_innate((mon)->data, MR_DEATH) || has_property(mon, DEATH_RES) || is_not_living((mon)->data) || is_demon((mon)->data) || is_vampshifter(mon))
 #define resists_lycanthropy(mon) \
-    (has_innate((mon)->data, MR_LYCANTHROPY) || has_property(mon, LYCANTHROPY_RES))
+    (has_innate((mon)->data, MR_LYCANTHROPY) || has_property(mon, LYCANTHROPY_RES) ||  is_not_living((mon)->data) || is_demon((mon)->data) || is_vampshifter(mon))
 #define resists_poison(mon) \
     (has_innate((mon)->data, MR_POISON) || has_property(mon, POISON_RES))
 #define resists_acid(mon) \
@@ -389,11 +398,13 @@
 #define is_reflecting(mon) \
 	(has_innate((mon)->data, MR_REFLECTING) || has_property(mon, REFLECTING))
 #define resists_drain(mon) \
-    (has_innate((mon)->data, MR_DRAIN) || has_property(mon, DRAIN_RES) || is_undead((mon)->data) || is_were((mon)->data) || is_demon((mon)->data) || is_vampshifter(mon))
+    (has_innate((mon)->data, MR_DRAIN) || has_property(mon, DRAIN_RES) ||  is_not_living((mon)->data) || is_were((mon)->data) || is_demon((mon)->data) || is_vampshifter(mon))
 #define resists_flash(mon) \
     (has_innate((mon)->data, MR_FLASH) || has_property(mon, FLASH_RES) || is_blinded(mon) || !haseyes((mon)->data) )
 #define resists_sickness(mon) \
-    (has_innate((mon)->data, MR_SICK) || has_property(mon, SICK_RES) || is_undead((mon)->data) || is_demon((mon)->data) || is_vampshifter(mon) )
+    (has_innate((mon)->data, MR_SICK) || has_property(mon, SICK_RES) ||  is_not_living((mon)->data) || is_demon((mon)->data) || is_vampshifter(mon) )
+#define resists_paralysis(mon) \
+    (has_innate((mon)->data, MR_FREE_ACTION) || has_property(mon, FREE_ACTION) ||  is_not_living((mon)->data) || is_vampshifter(mon))
 
 
 /* Conveyed propreties */
@@ -480,12 +491,6 @@
 #define is_vampire(ptr) ((ptr)->mlet == S_VAMPIRE)
 #define hates_light(ptr) ((ptr) == &mons[PM_GREMLIN])
 
-/* used to vary a few messages, not affected by death attacks*/
-#define is_not_living(ptr) \
-    (is_undead(ptr) || is_nonliving(ptr))
-
-#define is_living(ptr) !is_not_living(ptr)
-
 
 /* cursed items are good for some evil creatures */
 #define cursed_items_are_positive(ptr) \
@@ -520,7 +525,7 @@
 
 #define resists_blnd(mon) \
 	(((mon) == &youmonst && (Blind || Unaware)) || (is_blinded(mon) \
-	|| !haseyes((mon)->data) || (mon)->msleeping) || resists_flash(mon))
+	|| !haseyes((mon)->data) || is_sleeping(mon) || resists_flash(mon)))
 
 
 /* monkeys are tameable via bananas but not pacifiable via food,

@@ -1546,7 +1546,7 @@ domove_core()
                  * If holder is tame and there is no conflict,
                  * guaranteed escape.
                  */
-                switch (rn2(!u.ustuck->mcanmove ? 8 : 40)) {
+                switch (rn2(!mon_can_move(u.ustuck) ? 8 : 40)) {
                 case 0:
                 case 1:
                 case 2:
@@ -1555,7 +1555,8 @@ domove_core()
                     u.ustuck = 0;
                     break;
                 case 3:
-                    if (!u.ustuck->mcanmove) {
+                    if (!mon_can_move(u.ustuck)) 
+					{
                         /* it's free to move on next turn */
                         u.ustuck->mfrozen = 1;
                         u.ustuck->msleeping = 0;
@@ -2910,8 +2911,7 @@ monster_nearby()
                 && M_AP_TYPE(mtmp) != M_AP_OBJECT
                 && (!mtmp->mpeaceful || Hallucination)
                 && (!is_hider(mtmp->data) || !mtmp->mundetected)
-                && !noattacks(mtmp->data) && mtmp->mcanmove
-                && !mtmp->msleeping  /* aplvax!jcn */
+                && !noattacks(mtmp->data) && mon_can_move(mtmp)
                 && !onscary(u.ux, u.uy, mtmp) && canspotmon(mtmp))
                 return 1;
         }

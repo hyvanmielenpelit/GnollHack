@@ -108,12 +108,15 @@ register struct monst *mon;
               is_human(&mons[pm]) ? "human" : mons[pm].mname + 4);
 
     set_mon_data(mon, &mons[pm]);
-    if (mon->msleeping || !mon->mcanmove) {
+    if (!mon_can_move(mon)) 
+	{
         /* transformation wakens and/or revitalizes */
         mon->msleeping = 0;
         mon->mfrozen = 0; /* not asleep or paralyzed */
         mon->mcanmove = 1;
-    }
+		mon->mprops[SLEEPING] = 0;
+		mon->mprops[PARALYZED] = 0;
+	}
     /* regenerate by 1/4 of the lost hit points */
     mon->mhp += (mon->mhpmax - mon->mhp) / 4;
     newsym(mon->mx, mon->my);

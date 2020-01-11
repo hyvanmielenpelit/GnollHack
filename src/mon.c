@@ -1535,7 +1535,7 @@ movemon()
             mtmp->worn_item_flags &= ~I_SPECIAL;
             oldworn = mtmp->worn_item_flags;
             m_dowear(mtmp, FALSE);
-            if (mtmp->worn_item_flags != oldworn || !mtmp->mcanmove)
+            if (mtmp->worn_item_flags != oldworn || !mon_can_move(mtmp))
                 continue;
         }
 
@@ -3715,7 +3715,7 @@ boolean via_attack;
                 continue;    /* is no longer peaceful, but be explicit...  */
 
             if (!mindless(mon->data) && mon->mpeaceful
-                && couldsee(mon->mx, mon->my) && !mon->msleeping
+                && couldsee(mon->mx, mon->my) && mon_can_move(mon)
                 && !is_blinded(mon) && m_canseeu(mon)) {
                 boolean exclaimed = FALSE;
 
@@ -4802,16 +4802,19 @@ boolean silent;
             continue;
         if (is_watch(mtmp->data) && mtmp->mpeaceful) {
             ct++;
-            if (cansee(mtmp->mx, mtmp->my) && mtmp->mcanmove) {
+            if (cansee(mtmp->mx, mtmp->my) && mon_can_move(mtmp))
+			{
                 if (distu(mtmp->mx, mtmp->my) == 2)
                     nct++;
                 else
                     sct++;
             }
-            if (mtmp->msleeping || mtmp->mfrozen) {
-                slct++;
+            if (!mon_can_move(mtmp)) {
                 mtmp->msleeping = mtmp->mfrozen = 0;
-            }
+				mtmp->mcanmove = 1;
+				if(mon_can_move(mtmp))
+					slct++;
+			}
             mtmp->mpeaceful = 0;
         }
     }

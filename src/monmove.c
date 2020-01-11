@@ -97,7 +97,7 @@ void
 check_mon_talk(mon)
 struct monst* mon;
 {
-	if (!mon || DEADMONSTER(mon) || !is_speaking_monster(mon->data) || mindless(mon->data) || is_stunned(mon) || is_confused(mon) || mon->msleeping || mon->mtame)
+	if (!mon || DEADMONSTER(mon) || !is_speaking_monster(mon->data) || mindless(mon->data) || is_stunned(mon) || is_confused(mon) || !mon_can_move(mon) || mon->mtame)
 		return;
 
 	boolean mon_talked = FALSE;
@@ -400,9 +400,17 @@ boolean fleemsg;
             /* unfortunately we can't distinguish between temporary
                sleep and temporary paralysis, so both conditions
                receive the same alternate message */
-            if (!mtmp->mcanmove || !mtmp->data->mmove) {
-                pline("%s seems to flinch.", Adjmonnam(mtmp, "immobile"));
-            } else if (flees_light(mtmp)) {
+			/* Added more color below --JG */
+            if (!mon_can_move(mtmp) || !mtmp->data->mmove)
+			{
+				if(is_sleeping(mtmp) && !is_paralyzed(mtmp))
+					pline("%s seems to flinch.", Adjmonnam(mtmp, "sleeping"));
+				else if (is_paralyzed(mtmp) && mtmp->mcanmove)
+					pline("%s seems to flinch.", Adjmonnam(mtmp, "paralyzed"));
+				else
+					pline("%s seems to flinch.", Adjmonnam(mtmp, "immobile"));
+            } 
+			else if (flees_light(mtmp)) {
                 if (rn2(10) || Deaf)
                     pline("%s flees from the painful light of %s.",
                           Monnam(mtmp), bare_artifactname(uwep));
@@ -501,18 +509,18 @@ register struct monst *mtmp;
     /* update quest status flags */
     quest_stat_check(mtmp);
 
-    if (!mtmp->mcanmove || (mtmp->mstrategy & STRAT_WAITMASK)) 
+    if ((!mon_can_move(mtmp) && !is_sleeping(mtmp)) || (mtmp->mstrategy & STRAT_WAITMASK)) 
 	{
         if (Hallucination)
             newsym(mtmp->mx, mtmp->my);
-        if (mtmp->mcanmove && (mtmp->mstrategy & STRAT_CLOSE)
-            && !mtmp->msleeping && monnear(mtmp, u.ux, u.uy))
+        if (mon_can_move(mtmp) && (mtmp->mstrategy & STRAT_CLOSE)
+            && monnear(mtmp, u.ux, u.uy))
             quest_talk(mtmp); /* give the leaders a chance to speak */
         return 0;             /* other frozen monsters can't do anything */
     }
 
     /* there is a chance we will wake it */
-    if (mtmp->msleeping && !disturb(mtmp)) 
+    if ((mtmp->msleeping && !disturb(mtmp)) || !mon_can_move(mtmp))
 	{
         if (Hallucination)
             newsym(mtmp->mx, mtmp->my);
@@ -749,7 +757,7 @@ register struct monst *mtmp;
             break;
         case 1: /* monster moved */
             /* Maybe it stepped on a trap and fell asleep... */
-            if (mtmp->msleeping || !mtmp->mcanmove)
+            if (!mon_can_move(mtmp))
                 return 0;
             /* Monsters can move and then shoot on same turn;
                our hero can't.  Is that fair? */
@@ -789,7 +797,7 @@ register struct monst *mtmp;
 	/* talking for normal monsters */
 	check_mon_talk(mtmp);
     /* special speeches for quest monsters */
-    if (!mtmp->msleeping && mtmp->mcanmove && nearby)
+    if (mon_can_move(mtmp) && nearby)
         quest_talk(mtmp);
     /* extra emotional attack for vile monsters */
     if (inrange && mtmp->data->msound == MS_CUSS && !mtmp->mpeaceful
@@ -1580,7 +1588,7 @@ register int after;
             } else
                 newsym(mtmp->mx, mtmp->my);
         }
-        if (OBJ_AT(mtmp->mx, mtmp->my) && mtmp->mcanmove && !mtmp->issummoned) {
+        if (OBJ_AT(mtmp->mx, mtmp->my) && mon_can_move(mtmp) && !mtmp->issummoned) {
             /* recompute the likes tests, in case we polymorphed
              * or if the "likegold" case got taken above */
             if (setlikes) {
@@ -1641,7 +1649,7 @@ register int after;
                (just in case the object it was hiding under went away);
                usually set mundetected unless monster can't move.  */
             if (mtmp->mundetected
-                || (mtmp->mcanmove && !mtmp->msleeping && rn2(5)))
+                || (mon_can_move(mtmp) && rn2(5)))
                 (void) hideunder(mtmp);
             newsym(mtmp->mx, mtmp->my);
         }

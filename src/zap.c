@@ -6289,7 +6289,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
 				{
 					/* Ray is not reflected */
 					
-					boolean mon_could_move = mon->mcanmove;
+					boolean mon_could_move = mon_can_move(mon);
 					
 					/* Ray does damage and actually reduces mon's hit points */
 					int tmp = zhitm(mon, type, origobj, dmgdice, dicesize, dmgplus, &otmp);
@@ -6371,7 +6371,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                                       distant_name(otmp, xname));
                             m_useup(mon, otmp);
                         }
-                        if (mon_could_move && !mon->mcanmove) /* ZT_SLEEP */
+                        if (mon_could_move && !mon_can_move(mon)) /* ZT_SLEEP */
                             slept_monst(mon);
                     }
                 }

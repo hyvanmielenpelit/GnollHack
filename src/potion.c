@@ -1562,11 +1562,12 @@ int how;
             }
             break;
         case POT_PARALYSIS:
-            if (mon->mcanmove) {
+            if (!resists_paralysis(mon))
+			{
                 /* really should be rnd(5) for consistency with players
                  * breathing potions, but...
                  */
-				paralyze_monst(mon, d(3 - 1 * bcsign(obj), 4)); //rn1(9, 8));
+				paralyze_monst(mon, d(3 - 1 * bcsign(obj), 4), TRUE); //rn1(9, 8));
             }
             break;
         case POT_SPEED:

@@ -918,7 +918,7 @@ struct obj *obj;
     /* whether monster is able to use its vision-based capabilities */
     monable = !has_cancelled(mtmp) && (!is_invisible(mtmp) || has_see_invisible(mtmp));
     mlet = mtmp->data->mlet;
-    if (mtmp->msleeping) {
+    if (is_sleeping(mtmp)) {
         if (vis)
             pline("%s is too tired to look at your %s.", Monnam(mtmp),
                   mirror);
@@ -952,7 +952,7 @@ struct obj *obj;
             pline("%s is frozen by its reflection.", Monnam(mtmp));
         else
             You_hear("%s stop moving.", something);
-        paralyze_monst(mtmp, (int) mtmp->mfrozen + tmp);
+        paralyze_monst(mtmp, (int) mtmp->mfrozen + tmp, FALSE);
     } else if (monable && mtmp->data == &mons[PM_UMBER_HULK]) {
         if (vis)
             pline("%s confuses itself!", Monnam(mtmp));

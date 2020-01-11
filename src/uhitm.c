@@ -243,7 +243,7 @@ struct monst *mtmp;
         return;
 
     if (Role_if(PM_KNIGHT) && u.ualign.type == A_LAWFUL
-        && (!mtmp->mcanmove || mtmp->msleeping
+        && (!mon_can_move(mtmp)
             || (mtmp->mflee && !mtmp->mavenge))) {
         You("caitiff!");
         adjalign(-1);
@@ -388,7 +388,7 @@ register struct monst *mtmp;
                     = 0;
                 return TRUE;
             } 
-			else if ((mtmp->mfrozen || (!mtmp->mcanmove) || (mtmp->data->mmove == 0)) && rn2(6)) 
+			else if ((!mon_can_move(mtmp) || (mtmp->data->mmove == 0)) && rn2(6)) 
 			{
                 pline("%s doesn't seem to move!", Monnam(mtmp));
                 context.travel = context.travel1 = context.mv = context.run
@@ -440,7 +440,7 @@ register struct monst *mtmp;
     u_wipe_engr(3);
 
     /* Is the "it died" check actually correct? */
-    if (mdat->mlet == S_LEPRECHAUN && !mtmp->mfrozen && !mtmp->msleeping
+    if (mdat->mlet == S_LEPRECHAUN && mon_can_move(mtmp)
         && !is_confused(mtmp) && !is_blinded(mtmp) && !rn2(7)
         && (m_move(mtmp, 0) == 2 /* it died */
             || mtmp->mx != u.ux + u.dx
@@ -2036,7 +2036,7 @@ boolean* obj_destroyed;
 			nohandglow(mon);
 			if (!is_confused(mon) && !resist(mon, (struct obj*) 0, 8, 0, NOTELL)) {
 				increase_mon_temporary_property(mon, CONFUSION, d(1, 20) + 20);
-				if (!is_stunned(mon) && mon->mcanmove && !mon->msleeping
+				if (!is_stunned(mon) && mon_can_move(mon)
 					&& canseemon(mon))
 					pline("%s appears confused.", Monnam(mon));
 			}
@@ -2702,10 +2702,11 @@ int specialdmg; /* blessed and/or silver bonus against various things */
             tmp = 0;
         break;
     case AD_PLYS:
-        if (!negated && mdef->mcanmove && !rn2(3) && tmp < mdef->mhp) {
+        if (!negated && !resists_paralysis(mdef) && tmp < mdef->mhp)
+		{
             if (!Blind)
                 pline("%s is frozen by you!", Monnam(mdef));
-            paralyze_monst(mdef, 2 + rnd(8));
+            paralyze_monst(mdef, 2 + rnd(8), FALSE);
         }
         break;
     case AD_SLEE:
@@ -3106,7 +3107,7 @@ boolean wouldhavehit;
         You("miss %s.", mon_nam(mdef));
     else
         You("miss it.");
-    if (!mdef->msleeping && mdef->mcanmove)
+    if (mon_can_move(mdef))
         wakeup(mdef, TRUE);
 }
 

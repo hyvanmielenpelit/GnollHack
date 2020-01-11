@@ -429,6 +429,16 @@ int amount;
 {
 	set_mon_temporary_property(mon, prop_index, max(get_mon_temporary_property(mon, CONFUSION), amount));
 }
+
+void
+nonadditive_increase_mon_temporary_property_verbosely(mon, prop_index, amount)
+struct monst* mon;
+int prop_index;
+int amount;
+{
+	set_mon_property_verbosely(mon, prop_index, max(get_mon_temporary_property(mon, CONFUSION), amount));
+}
+
 void
 increase_mon_temporary_property(mon, prop_index, amount)
 struct monst* mon;

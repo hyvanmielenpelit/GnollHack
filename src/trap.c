@@ -1653,7 +1653,7 @@ struct obj *otmp;
         break;
     case SLP_GAS_TRAP:
         if (!resists_sleep(steed) && !has_innate_breathless(steed->data)
-            && !steed->msleeping && steed->mcanmove) {
+            && mon_can_move(steed)) {
             if (sleep_monst(steed, (struct obj*)0, rn1(7,8), -1, FALSE))
                 /* no in_sight check here; you can feel it even if blind */
                 pline("%s suddenly falls asleep!", Monnam(steed));
@@ -2362,8 +2362,7 @@ register struct monst *mtmp;
                 trapkilled = thitm(0, mtmp, (struct obj *) 0, d(2, 4), FALSE);
             break;
         case SLP_GAS_TRAP:
-            if (!resists_sleep(mtmp) && !has_innate_breathless(mptr) && !mtmp->msleeping
-                && mtmp->mcanmove) {
+            if (!resists_sleep(mtmp) && !has_innate_breathless(mptr) && mon_can_move(mtmp)) {
                 if (sleep_monst(mtmp, (struct obj*)0, rn1(7,8), -1, FALSE) && in_sight) {
                     pline("%s suddenly falls asleep!", Monnam(mtmp));
                     seetrap(trap);
@@ -4321,8 +4320,7 @@ struct trap *ttmp;
 struct monst *mtmp;
 {
     if (!ttmp->madeby_u) {
-        if (rnl(10) < 8 && !mtmp->mpeaceful && !mtmp->msleeping
-            && !mtmp->mfrozen && !mindless(mtmp->data)
+        if (rnl(10) < 8 && !mtmp->mpeaceful && mon_can_move(mtmp) && !mindless(mtmp->data)
             && mtmp->data->mlet != S_HUMAN) {
             mtmp->mpeaceful = 1;
             set_malign(mtmp); /* reset alignment */
@@ -4591,7 +4589,7 @@ boolean stuff;
     if (((wt * 2) / wc) >= HVY_ENCUMBER) {
         pline("%s is %s for you to lift.", Monnam(mtmp),
               stuff ? "carrying too much" : "too heavy");
-        if (!ttmp->madeby_u && !mtmp->mpeaceful && mtmp->mcanmove
+        if (!ttmp->madeby_u && !mtmp->mpeaceful && mon_can_move(mtmp)
             && !mindless(mtmp->data) && mtmp->data->mlet != S_HUMAN
             && rnl(10) < 3) {
             mtmp->mpeaceful = 1;
@@ -4631,7 +4629,7 @@ struct trap *ttmp;
         return 1;
 
     /* Will our hero succeed? */
-    if ((untrap_ok = succeed_untrap(ttmp)) && !mtmp->msleeping && mtmp->mcanmove) {
+    if ((untrap_ok = succeed_untrap(ttmp)) && mon_can_move(mtmp)) {
         You("try to reach out your %s, but %s backs away skeptically.",
             makeplural(body_part(ARM)), mon_nam(mtmp));
         return 1;

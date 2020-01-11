@@ -3815,13 +3815,13 @@ struct attack *mattk;
                                          "Your gaze is reflected by %s %s."))
                             return 1;
                         pline("%s is frozen by your gaze!", Monnam(mtmp));
-                        paralyze_monst(mtmp, tmp);
+                        paralyze_monst(mtmp, tmp, FALSE);
                         return 3;
                     }
                 }
             } else { /* gelatinous cube */
                 pline("%s is frozen by you.", Monnam(mtmp));
-                paralyze_monst(mtmp, tmp);
+                paralyze_monst(mtmp, tmp, FALSE);
                 return 3;
             }
             return 1;

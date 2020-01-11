@@ -1727,7 +1727,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 					{
 						if (mtmp->m_lev < u.ulevel - 10)
 						{
-							if (!DEADMONSTER(mtmp) && !is_not_living(mtmp->data) && !is_demon(mtmp->data) && !resists_death(mtmp))
+							if (!DEADMONSTER(mtmp) && !resists_death(mtmp))
 							{
 								mtmp->mhp = 0;
 								if (DEADMONSTER(mtmp))
@@ -1739,7 +1739,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 						}
 						if (res == 0 && mtmp->m_lev < u.ulevel - 5)
 						{
-							if (!mindless(mtmp->data) && mtmp->mcanmove)
+							if (!mindless(mtmp->data) && !resists_paralysis(mtmp))
 							{
 								increase_mon_temporary_property_verbosely(mtmp, PARALYZED, duration);
 								res = 1;
@@ -1747,7 +1747,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 						}
 						if(res == 0 && mtmp->m_lev < u.ulevel)
 						{
-							if(haseyes(mtmp->data) && !is_blinded(mtmp))
+							if(haseyes(mtmp->data) && !resists_blnd(mtmp))
 							{
 								increase_mon_temporary_property_verbosely(mtmp, BLINDED, duration);
 								res = 1;

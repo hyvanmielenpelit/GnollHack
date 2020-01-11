@@ -20,8 +20,7 @@ STATIC_DCL void FDECL(kops_gone, (BOOLEAN_P));
 #define IS_SHOP(x) (rooms[x].rtype >= SHOPBASE)
 
 #define muteshk(shkp)                       \
-    ((shkp)->msleeping || !(shkp)->mcanmove \
-     || (shkp)->data->msound <= MS_ANIMAL)
+    (!mon_can_move(shkp) || (shkp)->data->msound <= MS_ANIMAL)
 
 extern const struct shclass shtypes[]; /* defined in shknam.c */
 
@@ -1102,7 +1101,7 @@ rouse_shk(shkp, verbosely)
 struct monst *shkp;
 boolean verbosely;
 {
-    if (!shkp->mcanmove || shkp->msleeping) {
+    if (!mon_can_move(shkp)) {
         /* greed induced recovery... */
         if (verbosely && canspotmon(shkp))
             pline("%s %s.", Shknam(shkp),
@@ -1110,7 +1109,9 @@ boolean verbosely;
         shkp->msleeping = 0;
         shkp->mfrozen = 0;
         shkp->mcanmove = 1;
-    }
+		shkp->mprops[SLEEPING] = 0;
+		shkp->mprops[PARALYZED] = 0;
+	}
 }
 
 void
@@ -1340,7 +1341,7 @@ dopay()
     if (ltmp || eshkp->billct || eshkp->debit)
         rouse_shk(shkp, TRUE);
 
-    if (!shkp->mcanmove || shkp->msleeping) { /* still asleep/paralyzed */
+    if (!mon_can_move(shkp)) { /* still asleep/paralyzed */
         pline("%s %s.", Shknam(shkp),
               rn2(2) ? "seems to be napping" : "doesn't respond");
         return 0;
@@ -1815,7 +1816,7 @@ boolean silently;
                 Sprintf(takes, ", shakes %s %s,", noit_mhis(shkp),
                         mbodypart(shkp, HEAD));
             pline("%s %slooks at your corpse%s and %s.", Shknam(shkp),
-                  (!shkp->mcanmove || shkp->msleeping) ? "wakes up, " : "",
+                  (!mon_can_move(shkp)) ? "wakes up, " : "",
                   takes, !inhishop(shkp) ? "disappears" : "sighs");
         }
         rouse_shk(shkp, FALSE); /* wake shk for bones */
@@ -1849,7 +1850,7 @@ boolean silently;
             goto skip;
         umoney = money_cnt(invent);
         takes[0] = '\0';
-        if (!shkp->mcanmove || shkp->msleeping)
+        if (!mon_can_move(shkp))
             Strcat(takes, "wakes up and ");
         if (distu(shkp->mx, shkp->my) > 2)
             Strcat(takes, "comes and ");
@@ -3416,7 +3417,7 @@ register xchar x, y;
     if (!(shkp = shop_keeper(inside_shop(x, y))) || !inhishop(shkp))
         return 0;
 
-    if (shkp->mcanmove && !shkp->msleeping
+    if (mon_can_move(shkp)
         && (*u.ushops != ESHK(shkp)->shoproom || !inside_shop(u.ux, u.uy))
         && dist2(shkp->mx, shkp->my, x, y) < 3
         /* if it is the shk's pos, you hit and anger him */
@@ -3641,7 +3642,7 @@ boolean catchup; /* restoring a level */
 
     if ((monstermoves - tmp_dam->when) < REPAIR_DELAY)
         return 0;
-    if (shkp->msleeping || !shkp->mcanmove || ESHK(shkp)->following)
+    if (!mon_can_move(shkp) || ESHK(shkp)->following)
         return 0;
     x = tmp_dam->place.x;
     y = tmp_dam->place.y;
@@ -3943,7 +3944,7 @@ register int fall;
 
     /* 0 == can't speak, 1 == makes animal noises, 2 == speaks */
     lang = 0;
-    if (shkp->msleeping || !shkp->mcanmove || is_silent(shkp->data))
+    if (!mon_can_move(shkp) || is_silent(shkp->data))
         ; /* lang stays 0 */
     else if (shkp->data->msound <= MS_ANIMAL)
         lang = 1;
@@ -3975,7 +3976,7 @@ register int fall;
             adjalign(-sgn(u.ualign.type));
         }
     } else if (!um_dist(shkp->mx, shkp->my, 5)
-               && !shkp->msleeping && shkp->mcanmove
+               && mon_can_move(shkp)
                && (ESHK(shkp)->billct || ESHK(shkp)->debit)) {
         register struct obj *obj, *obj2;
 
@@ -4176,7 +4177,7 @@ boolean cant_mollify;
         || !rn2(50)) {
  getcad:
         if (muteshk(shkp)) {
-            if (animal && shkp->mcanmove && !shkp->msleeping)
+            if (animal && mon_can_move(shkp))
                 yelp(shkp);
         } else if (pursue || uinshp || !um_dist(x, y, 1)) {
             if (!Deaf)
@@ -4266,7 +4267,7 @@ register xchar x, y;
             break;
     /* note: otmp might have ->no_charge set, but that's ok */
     return (otmp && costly_spot(x, y)
-            && NOTANGRY(shkp) && shkp->mcanmove && !shkp->msleeping)
+            && NOTANGRY(shkp) && mon_can_move(shkp))
                ? otmp
                : (struct obj *) 0;
 }
@@ -4650,7 +4651,7 @@ register xchar x, y;
          */
         && ESHK(shkp)->shd.x == x
         && ESHK(shkp)->shd.y == y
-        && shkp->mcanmove && !shkp->msleeping
+        && mon_can_move(shkp)
         && (ESHK(shkp)->debit || ESHK(shkp)->billct || ESHK(shkp)->robbed)) {
         pline("%s%s blocks your way!", Shknam(shkp),
               Invis ? " senses your motion and" : "");
@@ -4685,7 +4686,7 @@ register xchar x, y;
     sx = ESHK(shkp)->shk.x;
     sy = ESHK(shkp)->shk.y;
 
-    if (shkp->mx == sx && shkp->my == sy && shkp->mcanmove && !shkp->msleeping
+    if (shkp->mx == sx && shkp->my == sy && mon_can_move(shkp)
         && (x == sx - 1 || x == sx + 1 || y == sy - 1 || y == sy + 1)
         && (Invis || carrying(PICK_AXE) || carrying(DWARVISH_MATTOCK)
             || u.usteed)) {

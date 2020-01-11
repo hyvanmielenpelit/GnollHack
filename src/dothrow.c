@@ -1899,6 +1899,7 @@ boolean mon_notices;
             mon->mfrozen = 0;
         }
     }
+
     /* some objects are more likely to hit than others */
     switch (obj->otyp) {
     case HEAVY_IRON_BALL:
@@ -2040,7 +2041,7 @@ register boolean is_golf;
 
     if (obj->oclass == GEM_CLASS && is_unicorn(mon->data)) 
 	{
-        if (mon->msleeping || !mon->mcanmove) 
+        if (!mon_can_move(mon))
 		{
             tmiss(obj, mon, FALSE);
             return 0;
@@ -2067,7 +2068,7 @@ register boolean is_golf;
         mon->msleeping = 0;
         mon->mstrategy &= ~STRAT_WAITMASK;
 
-        if (mon->mcanmove) 
+        if (mon_can_move(mon)) 
 		{
             pline("%s catches %s.", Monnam(mon), the(xname(obj)));
             if (mon->mpeaceful) 

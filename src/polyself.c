@@ -1569,7 +1569,7 @@ dogaze()
                         continue;
                 }
                 setmangry(mtmp, TRUE);
-                if (!mtmp->mcanmove || is_stunned(mtmp) || mtmp->msleeping
+                if (!mon_can_move(mtmp) || is_stunned(mtmp)
                     || is_blinded(mtmp) || !haseyes(mtmp->data)) {
                     looked--;
                     continue;

@@ -302,7 +302,7 @@ register struct monst *magr, *mdef;
 
     if (!magr || !mdef)
         return MM_MISS; /* mike@genat */
-    if (!magr->mcanmove || magr->msleeping)
+    if (!mon_can_move(magr))
         return MM_MISS;
     pa = magr->data;
     pd = mdef->data;
@@ -314,7 +314,8 @@ register struct monst *magr, *mdef;
 
     /* Calculate the armour class differential. */
     tmp = find_mac(mdef) + magr->m_lev + magr->mhitinc;
-    if (is_confused(mdef) || !mdef->mcanmove || mdef->msleeping) {
+    if (is_confused(mdef) || !mon_can_move(mdef))
+	{
         tmp += 4;
         mdef->msleeping = 0;
     }
@@ -621,7 +622,7 @@ register struct monst *magr, *mdef;
         if (res[i] & MM_AGR_DIED)
             return res[i];
         /* return if aggressor can no longer attack */
-        if (!magr->mcanmove || magr->msleeping)
+        if (!mon_can_move(magr))
             return res[i];
         if (res[i] & MM_HIT)
             struck = 1; /* at least one hit */
@@ -709,7 +710,8 @@ struct attack *mattk;
     }
 
     if (has_cancelled(magr)|| is_blinded(magr) || is_blinded(mdef)
-        || (is_invisible(magr) && !has_see_invisible(mdef)) || mdef->msleeping) {
+        || (is_invisible(magr) && !has_see_invisible(mdef)) || is_sleeping(mdef))
+	{
         if (vis && canspotmon(mdef))
             pline("but nothing happens.");
         return MM_MISS;
@@ -1241,9 +1243,10 @@ register struct obj* omonwep;
         }
         break;
     case AD_SLEE:
-        if (!cancelled && !mdef->msleeping
+        if (!cancelled && !is_sleeping(mdef)
             && sleep_monst(mdef, (struct obj *)0, rn1(3,8), -1, FALSE)) {
-            if (vis && canspotmon(mdef)) {
+            if (vis && canspotmon(mdef))
+			{
                 Strcpy(buf, Monnam(mdef));
                 pline("%s is put to sleep by %s.", buf, mon_nam(magr));
             }
@@ -1252,12 +1255,14 @@ register struct obj* omonwep;
         }
         break;
     case AD_PLYS:
-        if (!cancelled && mdef->mcanmove) {
-            if (vis && canspotmon(mdef)) {
+        if (!cancelled && !resists_paralysis(mdef))
+		{
+            if (vis && canspotmon(mdef) && !is_paralyzed(mdef)) 
+			{
                 Strcpy(buf, Monnam(mdef));
                 pline("%s is frozen by %s.", buf, mon_nam(magr));
             }
-            paralyze_monst(mdef, 2 + rnd(8));
+            paralyze_monst(mdef, 2 + rnd(8), FALSE);
         }
         break;
     case AD_SLOW:
@@ -1681,15 +1686,24 @@ register struct obj* omonwep;
 }
 
 void
-paralyze_monst(mon, amt)
+paralyze_monst(mon, amt, verbosely)
 struct monst *mon;
 int amt;
+boolean verbosely;
 {
+	if (verbosely)
+		nonadditive_increase_mon_temporary_property_verbosely(mon, PARALYZED, amt);
+	else
+		nonadditive_increase_mon_temporary_property(mon, PARALYZED, amt);
+
+#if 0
     if (amt > 127)
         amt = 127;
 
     mon->mcanmove = 0;
     mon->mfrozen = amt;
+#endif
+
     mon->meating = 0; /* terminate any meal-in-progress */
     mon->mstrategy &= ~STRAT_WAITFORU;
 }
@@ -1713,16 +1727,24 @@ int amt, lvl, tellstyle;
 	{
         shieldeff(mon->mx, mon->my);
     }
-	else if (mon->mcanmove)
+	else
 	{
         finish_meating(mon); /* terminate any meal-in-progress */
         amt += (int) mon->mfrozen;
-        if (amt > 0) { /* sleep for N turns */
-            mon->mcanmove = 0;
-            mon->mfrozen = min(amt, 127);
-        } else { /* sleep until awakened */
-            mon->msleeping = 1;
+        if (amt > 0) 
+		{ /* sleep for N turns */
+			if(tell == NOTELL)
+				nonadditive_increase_mon_temporary_property(mon, SLEEPING, amt);
+			else
+				nonadditive_increase_mon_temporary_property_verbosely(mon, SLEEPING, amt);
         }
+		else 
+		{ /* sleep until awakened */
+			if (tell == NOTELL)
+				mon->mprops[SLEEPING] |= M_INTRINSIC_ACQUIRED;
+			else
+				set_mon_property_verbosely(mon, SLEEPING, -1);
+		}
         return 1;
     }
     return 0;
@@ -1733,8 +1755,9 @@ void
 slept_monst(mon)
 struct monst *mon;
 {
-    if ((mon->msleeping || !mon->mcanmove) && mon == u.ustuck
-        && !sticks(youmonst.data) && !u.uswallow) {
+    if (!mon_can_move(mon) && mon == u.ustuck
+        && !sticks(youmonst.data) && !u.uswallow)
+	{
         pline("%s grip relaxes.", s_suffix(Monnam(mon)));
         unstuck(mon);
     }
@@ -1851,7 +1874,8 @@ int mdead;
                 if (!rn2(20))
                     tmp = 24;
                 if (!is_blinded(magr) && haseyes(madat) && !is_blinded(mdef)
-                    && (is_invisible(magr) || !is_invisible(mdef))) {
+                    && (is_invisible(magr) || !is_invisible(mdef))) 
+				{
                     /* construct format string; guard against '%' in Monnam */
                     Strcpy(buf, s_suffix(Monnam(mdef)));
                     (void) strNsubst(buf, "%", "%%", 0);
@@ -1860,17 +1884,20 @@ int mdead;
                                      canseemon(magr) ? buf : (char *) 0))
                         return (mdead | mhit);
                     Strcpy(buf, Monnam(magr));
-                    if (canseemon(magr))
-                        pline("%s is frozen by %s gaze!", buf,
-                              s_suffix(mon_nam(mdef)));
-                    paralyze_monst(magr, tmp);
+					if(!resists_paralysis(mdef))
+					{
+						if (canseemon(magr))
+							pline("%s is frozen by %s gaze!", buf,
+								  s_suffix(mon_nam(mdef)));
+						paralyze_monst(magr, tmp, FALSE);
+					}
                     return (mdead | mhit);
                 }
             } else { /* gelatinous cube */
                 Strcpy(buf, Monnam(magr));
                 if (canseemon(magr))
                     pline("%s is frozen by %s.", buf, mon_nam(mdef));
-                paralyze_monst(magr, tmp);
+                paralyze_monst(magr, tmp, FALSE);
                 return (mdead | mhit);
             }
             return 1;

@@ -107,7 +107,7 @@ dosounds()
         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
             if (DEADMONSTER(mtmp))
                 continue;
-            if ((mtmp->msleeping || is_lord(mtmp->data)
+            if ((is_sleeping(mtmp) || is_lord(mtmp->data)
                  || is_prince(mtmp->data)) && !is_animal(mtmp->data)
                 && mon_in_room(mtmp, COURT)) {
                 /* finding one is enough, at least for now */
@@ -227,13 +227,13 @@ dosounds()
 				&& mon_in_room(mtmp, DRAGONLAIR)) {
 				switch (rn2(2) + hallu) {
 				case 0:
-					if (mtmp->msleeping)
+					if (is_sleeping(mtmp))
 						You_feel("ominiously threatened.");
 					else
 						You_hear("coins being assembled.");
 					break;
 				case 1:
-					if(mtmp->msleeping)
+					if(is_sleeping(mtmp))
 						You_hear("loud snoring.");
 					else
 						You_hear("a loud roar.");
@@ -289,7 +289,7 @@ dosounds()
 #endif
                 && mon_in_room(mtmp, BARRACKS)
                 /* sleeping implies not-yet-disturbed (usually) */
-                && (mtmp->msleeping || ++count > 5)) {
+                && (is_sleeping(mtmp) || ++count > 5)) {
                 You_hear1(barracks_msg[rn2(3) + hallu]);
                 return;
             }
@@ -303,7 +303,7 @@ dosounds()
         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
             if (DEADMONSTER(mtmp))
                 continue;
-            if ((mtmp->msleeping || is_animal(mtmp->data))
+            if ((is_sleeping(mtmp) || is_animal(mtmp->data))
                 && mon_in_room(mtmp, ZOO)) {
                 You_hear1(zoo_msg[rn2(2) + hallu]);
                 return;
@@ -355,7 +355,7 @@ dosounds()
                 continue;
             if (mtmp->ispriest && inhistemple(mtmp)
                 /* priest must be active */
-                && mtmp->mcanmove && !mtmp->msleeping
+                && mon_can_move(mtmp)
                 /* hero must be outside this temple */
                 && temple_occupied(u.urooms) != EPRI(mtmp)->shroom)
                 break;
@@ -478,7 +478,7 @@ register struct monst *mtmp;
 {
     register const char *growl_verb = 0;
 
-    if (mtmp->msleeping || !mtmp->mcanmove || !mtmp->data->msound)
+    if (!mon_can_move(mtmp) || !mtmp->data->msound)
         return;
 
     /* presumably nearness and soundok checks have already been made */
@@ -501,7 +501,7 @@ register struct monst *mtmp;
 {
     register const char *yelp_verb = 0;
 
-    if (mtmp->msleeping || !mtmp->mcanmove || !mtmp->data->msound)
+    if (!mon_can_move(mtmp) || !mtmp->data->msound)
         return;
 
     /* presumably nearness and soundok checks have already been made */
@@ -552,7 +552,7 @@ register struct monst *mtmp;
 {
     register const char *whimper_verb = 0;
 
-    if (mtmp->msleeping || !mtmp->mcanmove || !mtmp->data->msound)
+    if (!mon_can_move(mtmp) || !mtmp->data->msound)
         return;
 
     /* presumably nearness and soundok checks have already been made */
@@ -584,7 +584,7 @@ void
 beg(mtmp)
 register struct monst *mtmp;
 {
-    if (mtmp->msleeping || !mtmp->mcanmove
+    if (!mon_can_move(mtmp)
         || !(carnivorous(mtmp->data) || herbivorous(mtmp->data)))
         return;
 
@@ -1175,7 +1175,7 @@ dochat()
     }
 
     if (u.usteed && u.dz > 0) {
-        if (!u.usteed->mcanmove || u.usteed->msleeping) {
+        if (!mon_can_move(u.usteed)) {
             pline("%s seems not to notice you.", Monnam(u.usteed));
             return 1;
         } else
@@ -1235,7 +1235,7 @@ dochat()
 	}
 
     /* sleeping monsters won't talk, except priests (who wake up) */
-    if ((!mtmp->mcanmove || mtmp->msleeping) && !mtmp->ispriest) {
+    if (!mon_can_move(mtmp) && !mtmp->ispriest) {
         /* If it is unseen, the player can't tell the difference between
            not noticing him and just not existing, so skip the message. */
         if (canspotmon(mtmp))

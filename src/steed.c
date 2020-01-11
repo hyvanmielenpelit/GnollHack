@@ -393,7 +393,7 @@ kick_steed()
         return;
 
     /* [ALI] Various effects of kicking sleeping/paralyzed steeds */
-    if (u.usteed->msleeping || !u.usteed->mcanmove) {
+    if (!mon_can_move(u.usteed)) {
         /* We assume a message has just been output of the form
          * "You kick <steed>."
          */
@@ -408,7 +408,7 @@ kick_steed()
                 u.usteed->mfrozen = 0;
                 u.usteed->mcanmove = 1;
             }
-            if (u.usteed->msleeping || !u.usteed->mcanmove)
+            if (!mon_can_move(u.usteed))
                 pline("%s stirs.", He);
             else
                 pline("%s rouses %sself!", He, mhim(u.usteed));
@@ -709,7 +709,7 @@ maybewakesteed(steed)
 struct monst *steed;
 {
     int frozen = (int) steed->mfrozen;
-    boolean wasimmobile = steed->msleeping || !steed->mcanmove;
+    boolean wasimmobile = !mon_can_move(steed);
 
     steed->msleeping = 0;
     if (frozen) {
@@ -723,7 +723,7 @@ struct monst *steed;
             steed->mfrozen = frozen;
         }
     }
-    if (wasimmobile && !steed->msleeping && steed->mcanmove)
+    if (wasimmobile && mon_can_move(steed))
         pline("%s wakes up.", Monnam(steed));
     /* regardless of waking, terminate any meal in progress */
     finish_meating(steed);
@@ -739,7 +739,7 @@ boolean checkfeeding;
 
     if (steed) {
         /* check whether steed can move */
-        if (steed->msleeping || !steed->mcanmove) {
+        if (!mon_can_move(steed)) {
             pline("%s won't move!", upstart(y_monnam(steed)));
             return TRUE;
         }

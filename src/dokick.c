@@ -255,7 +255,7 @@ boolean clumsy;
 		pline("%s hurtles backwards from the force of your kick!", Monnam(mon));
 		mhurtle(mon, u.dx, u.dy, 1);
 	}
-	else if (reels && mon->mcanmove) 
+	else if (reels) 
 	{
         /* see if the monster has a place to move into */
         mdx = mon->mx + u.dx;
@@ -425,8 +425,8 @@ xchar x, y;
 			/* check if mon catches your kick */
 			if (!rn2(clumsy ? 3 : 4) && (clumsy || !bigmonst(mon->data))
 				&& !is_blinded(mon) && !mon->mtrapped && !thick_skinned(mon->data)
-				&& mon->data->mlet != S_EEL && haseyes(mon->data) && mon->mcanmove
-				&& !is_stunned(mon) && !is_confused(mon) && !mon->msleeping
+				&& mon->data->mlet != S_EEL && haseyes(mon->data)
+				&& !is_stunned(mon) && !is_confused(mon) && mon_can_move(mon)
 				&& mon->data->mmove >= 12)
 			{
 				if (!nohands(mon->data) && !rn2(martial() ? 5 : 3))
@@ -489,9 +489,11 @@ register struct obj *gold;
     if (!likes_gold(mtmp->data) && !mtmp->isshk && !mtmp->ispriest
         && !mtmp->isgd && !is_mercenary(mtmp->data)) {
         wakeup(mtmp, TRUE);
-    } else if (!mtmp->mcanmove) {
+    } else if (!mon_can_move(mtmp))
+	{
         /* too light to do real damage */
-        if (canseemon(mtmp)) {
+        if (canseemon(mtmp))
+		{
             pline_The("%s harmlessly %s %s.", xname(gold),
                       otense(gold, "hit"), mon_nam(mtmp));
             msg_given = TRUE;

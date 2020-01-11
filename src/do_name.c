@@ -1276,7 +1276,7 @@ do_mname()
         if (!alreadynamed(mtmp, monnambuf, buf))
             pline("%s doesn't like being called names!", upstart(monnambuf));
     } else if (mtmp->isshk
-               && !(Deaf || mtmp->msleeping || !mtmp->mcanmove
+               && !(Deaf || !mon_can_move(mtmp)
                     || mtmp->data->msound <= MS_ANIMAL)) {
 		if (!alreadynamed(mtmp, monnambuf, buf))
 		{
