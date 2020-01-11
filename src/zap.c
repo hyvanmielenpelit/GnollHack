@@ -5130,15 +5130,15 @@ int damage;
          && !(u.uswallow && mtmp == u.ustuck)) || !flags.verbose)
 		if(damage >  0)
 	        pline("%s %s it for %d damage%s", The(str), vtense(str, "hit"), damage, force);
-		else if (!damage)
-			pline("%s %s it but %s no effect%s", The(str), vtense(str, "hit"), vtense(str, "have"), force);
+//		else if (!damage)
+//			pline("%s %s it but %s no effect%s", The(str), vtense(str, "hit"), vtense(str, "have"), force);
 		else
 			pline("%s %s it%s", The(str), vtense(str, "hit"), force);
 	else
 		if (damage > 0)
 			pline("%s %s %s for %d damage%s", The(str), vtense(str, "hit"), mon_nam(mtmp), damage, force);
-		else if (!damage)
-			pline("%s %s %s but %s no effect%s", The(str), vtense(str, "hit"), mon_nam(mtmp), vtense(str, "have"), force);
+//		else if (!damage)
+//			pline("%s %s %s but %s no effect%s", The(str), vtense(str, "hit"), mon_nam(mtmp), vtense(str, "have"), force);
 		else
 			pline("%s %s %s%s", The(str), vtense(str, "hit"), mon_nam(mtmp), force);
 }
@@ -5745,7 +5745,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
         break;
     case ZT_SLEEP:
         tmp = 0;
-        (void) sleep_monst(mon, origobj, !origobj ? rn1(5, 8) : duration, 0, TRUE); // Duration 0 = permanent sleep
+        (void) sleep_monst(mon, origobj, !origobj ? rn1(5, 8) : duration, 0, NOTELL); // Duration 0 = permanent sleep
         break;
     case ZT_DISINTEGRATION:  /* disintegration */
 		tmp = 0;

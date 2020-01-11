@@ -1733,14 +1733,14 @@ int amt, lvl, tellstyle;
         amt += (int) mon->mfrozen;
         if (amt > 0) 
 		{ /* sleep for N turns */
-			if(tell == NOTELL)
+			if(tellstyle == NOTELL)
 				nonadditive_increase_mon_temporary_property(mon, SLEEPING, amt);
 			else
 				nonadditive_increase_mon_temporary_property_verbosely(mon, SLEEPING, amt);
         }
 		else 
 		{ /* sleep until awakened */
-			if (tell == NOTELL)
+			if (tellstyle == NOTELL)
 				mon->mprops[SLEEPING] |= M_INTRINSIC_ACQUIRED;
 			else
 				set_mon_property_verbosely(mon, SLEEPING, -1);
