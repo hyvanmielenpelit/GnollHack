@@ -4254,20 +4254,24 @@ struct obj *no_wish;
     if (oclass == VENOM_CLASS)
         otmp->spe = 1;
 
-	int multiplier = is_generated_with_double_spe(otmp) ? 2 : 1;
-
     if (spesgn == 0) {
         spe = otmp->spe;
-    } else if (wizard) {
+    }
+	else if (wizard)
+	{
         ; /* no alteration to spe */
-    } else if (oclass == ARMOR_CLASS || oclass == WEAPON_CLASS
+    }
+	else if (oclass == ARMOR_CLASS || oclass == WEAPON_CLASS
                || is_weptool(otmp)
-               || (oclass == RING_CLASS && objects[typ].oc_charged)) {
-        if (spe > rnd(5 * multiplier) && spe > otmp->spe)
+               || (oclass == RING_CLASS && objects[typ].oc_charged)) 
+	{
+        if (spe > get_obj_init_charge(otmp) && spe > otmp->spe)
             spe = 0;
-        if (spe > 2 * multiplier && Luck < 0)
+        if (spe > get_obj_max_charge(otmp) / 3 && Luck < 0)
             spesgn = -1;
-    } else {
+    }
+	else 
+	{
         if (oclass == WAND_CLASS) {
             if (spe > 1 && spesgn == -1)
                 spe = 1;

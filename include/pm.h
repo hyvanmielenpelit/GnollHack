@@ -374,8 +374,8 @@
 #define	PM_GERYON	369
 #define	PM_BAALZEBUB	370
 #define	PM_YEENOGHU	371
-#define	PM_ORCUS	372
-#define	PM_DISPATER	373
+#define	PM_DISPATER	372
+#define	PM_ORCUS	373
 #define	PM_ASMODEUS	374
 #define	PM_DEMOGORGON	375
 #define	PM_DEATH	376

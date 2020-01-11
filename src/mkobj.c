@@ -1109,19 +1109,23 @@ boolean makingboxcontents;
             case EXPENSIVE_CAMERA:
             case TINNING_KIT:
             case MAGIC_MARKER:
-                otmp->spe = rn1(70, 30);
+			case HORN_OF_PLENTY:
+			case BAG_OF_TRICKS:
+			case BELL_OF_OPENING:
+			case MAGIC_FLUTE:
+			case MAGIC_HARP:
+			case FROST_HORN:
+			case FIRE_HORN:
+			case DRUM_OF_EARTHQUAKE:
+				otmp->spe = get_obj_init_charge(otmp);
                 break;
-            case CAN_OF_GREASE:
-                otmp->spe = rnd(25);
+			case CAN_OF_GREASE:
+                otmp->spe = get_obj_init_charge(otmp);
                 blessorcurse(otmp, 10);
                 break;
             case CRYSTAL_BALL:
-                otmp->spe = rnd(5);
+                otmp->spe = get_obj_init_charge(otmp);
                 blessorcurse(otmp, 2);
-                break;
-            case HORN_OF_PLENTY:
-            case BAG_OF_TRICKS:
-                otmp->spe = rnd(20);
                 break;
             case FIGURINE:
                 tryct = 0;
@@ -1129,16 +1133,6 @@ boolean makingboxcontents;
                     otmp->corpsenm = rndmonnum();
                 while (is_human(&mons[otmp->corpsenm]) && tryct++ < 30);
                 blessorcurse(otmp, 4);
-                break;
-            case BELL_OF_OPENING:
-                otmp->spe = 3;
-                break;
-            case MAGIC_FLUTE:
-            case MAGIC_HARP:
-            case FROST_HORN:
-            case FIRE_HORN:
-            case DRUM_OF_EARTHQUAKE:
-                otmp->spe = rn1(5, 4);
                 break;
             }
             break;
@@ -1208,21 +1202,22 @@ boolean makingboxcontents;
 				if (otmp->otyp == WAN_WISHING)
 					otmp->otyp = WAN_POLYMORPH;
 			}
-			if (otmp->otyp == WAN_WISHING)
-                otmp->spe = rnd(3);
-            else
-                otmp->spe =
-                    rn1(5, (objects[otmp->otyp].oc_dir == NODIR) ? 11 : 4);
+            otmp->spe = get_obj_init_charge(otmp);
             blessorcurse(otmp, 17);
             otmp->recharged = 0; /* used to control recharging */
             break;
         case RING_CLASS:
-            if (objects[otmp->otyp].oc_charged) {
+            if (objects[otmp->otyp].oc_charged == CHARGED_RING_NORMAL || objects[otmp->otyp].oc_charged == CHARGED_RING_POWER)
+			{
 				int addition = rnd(2);
-				if (otmp->otyp != RIN_POWER)
+				if (objects[otmp->otyp].oc_charged != CHARGED_RING_POWER)
 					addition += !rn2(2) ? 0 : !rn2(2) ? 1 : !rn2(2) ? 2 : 3;
 
-                blessorcurse(otmp, 3);
+				if ((is_cursed_magic_item(otmp) || !rn2(11)))
+					curse(otmp);
+				else
+					blessorcurse(otmp, 3);
+
                 if (rn2(10)) {
 					if (rn2(10) && bcsign(otmp))
 						otmp->spe = bcsign(otmp) * addition; // rne(3);
@@ -1231,20 +1226,36 @@ boolean makingboxcontents;
                 }
                 /* make useless +0 rings much less common */
                 if (otmp->spe == 0)
-                    otmp->spe = ((otmp->otyp == RIN_POWER) ? rnd(3) - 2 : rn2(4) - rn2(3));
+                    otmp->spe = ((objects[otmp->otyp].oc_charged == CHARGED_RING_POWER) ? rnd(3) - 2 : rn2(4) - rn2(3));
                 /* negative rings are usually cursed */
                 if (otmp->spe < 0 && rn2(5))
                     curse(otmp);
-            } else if (rn2(10) && (is_cursed_magic_item(otmp) || !rn2(9))) {
+            }
+			else if (objects[otmp->otyp].oc_charged)
+			{
+				int addition = get_init_charge(otmp);
+				blessorcurse(otmp, 3);
+				otmp->spe = bcsign(otmp) * addition;
+				/* negative rings are usually cursed */
+				if (otmp->spe < 0 && rn2(5))
+					curse(otmp);
+			}
+			else if (rn2(10) && (is_cursed_magic_item(otmp) || !rn2(9))) {
                 curse(otmp);
             }
             break;
 		case MISCELLANEOUS_CLASS:
-			if (objects[otmp->otyp].oc_charged) {
+			if (objects[otmp->otyp].oc_charged == CHARGED_MISCELLANEOUS_NORMAL) 
+			{
 				int addition = rnd(2);
 				if (otmp->otyp != STRANGE_OBJECT)
 					addition += !rn2(2) ? 0 : !rn2(2) ? 1 : !rn2(2) ? 2 : 3;
-				blessorcurse(otmp, 3);
+
+				if((is_cursed_magic_item(otmp) || !rn2(11)))
+					curse(otmp);
+				else
+					blessorcurse(otmp, 3);
+
 				if (rn2(10)) {
 					if (rn2(10) && bcsign(otmp))
 						otmp->spe = bcsign(otmp) * addition; // rne(3);
@@ -1255,6 +1266,22 @@ boolean makingboxcontents;
 				if (otmp->spe == 0)
 					otmp->spe = ((otmp->otyp == STRANGE_OBJECT) ? rnd(3) - 2 : rn2(4) - rn2(3));
 				/* negative miscellaneous items are usually cursed */
+				if (otmp->spe < 0 && rn2(5))
+					curse(otmp);
+			}
+			else if (objects[otmp->otyp].oc_charged)
+			{
+				if (rn2(10) && (is_cursed_magic_item(otmp) || !rn2(11))) {
+					curse(otmp);
+					otmp->spe = -get_init_charge(otmp);
+				}
+				else if (!rn2(10)) 
+				{
+					otmp->blessed = (objects[otmp->otyp].oc_flags2 & O2_GENERATED_BLESSED) ? 1 : rn2(2);
+					otmp->spe = get_init_charge(otmp);
+				}
+				else
+					blessorcurse(otmp, 10);
 				if (otmp->spe < 0 && rn2(5))
 					curse(otmp);
 			}
@@ -1281,17 +1308,11 @@ boolean makingboxcontents;
         }
     }
 
-	/* Double spe? */
-	if (is_generated_with_double_spe(otmp))
-	{
-		otmp->spe *= 2;
-		otmp->spe += rn2(3) - 1; /* -1, 0, 1 to make spe sometimes even */
-	}
-
 	/* Blessed or cursed */
 	if (is_generated_blessed(otmp))
 	{
 		otmp->cursed = 0;
+		otmp->spe = abs(otmp->spe);
 		otmp->blessed = 1;
 	}
 	else if (is_generated_cursed(otmp))
@@ -1341,6 +1362,205 @@ boolean makingboxcontents;
     return otmp;
 }
 
+
+int
+get_obj_init_charge(otmp)
+struct obj* otmp;
+{
+	if (!otmp)
+		return 0;
+
+	int init_charge = get_init_charge(objects[otmp->otyp].oc_charged);
+
+	/* Possible extra modifications here */
+
+	return init_charge;
+}
+
+int
+get_obj_max_charge(otmp)
+struct obj* otmp;
+{
+	if (!otmp)
+		return 0;
+
+	int init_charge = get_max_charge(objects[otmp->otyp].oc_charged);
+
+	/* Possible extra modifications here */
+
+	return init_charge;
+}
+
+int
+get_init_charge(charge_init_index)
+int charge_init_index;
+{
+	int charge = 1;
+
+	switch (charge_init_index)
+	{
+	case CHARGED_NOT_CHARGED:
+		charge = 0;
+		break;
+	case CHARGED_GENERAL:
+		charge = rne(3);
+		break;
+	case CHARGED_ALWAYS_1:
+		charge = 1;
+		break;
+	case CHARGED_ALWAYS_2:
+		charge = 2;
+		break;
+	case CHARGED_ALWAYS_3:
+		charge = 3;
+		break;
+	case CHARGED_ALWAYS_4:
+		charge = 4;
+		break;
+	case CHARGED_ALWAYS_5:
+		charge = 5;
+		break;
+	case CHARGED_RING_NORMAL:
+		charge = rnd(5);
+		break;
+	case CHARGED_RING_DOUBLE:
+		charge = rnd(10);
+		break;
+	case CHARGED_MISCELLANEOUS_NORMAL:
+		charge = rnd(5);
+		break;
+	case CHARGED_RING_POWER:
+		charge = rnd(3);
+		break;
+	case CHARGED_WAND_NORMAL_NODIR:
+		charge = rn1(5, 11);
+		break;
+	case CHARGED_WAND_NORMAL_DIR:
+		charge = rn1(5, 4);
+		break;
+	case CHARGED_WAND_WISHING:
+		charge = rnd(3);
+		break;
+	case CHARGED_HORN_NORMAL:
+		charge = rn1(5, 4);
+		break;
+	case CHARGED_BAG_OF_TRICKS:
+		charge = rnd(20);
+		break;
+	case CHARGED_CRYSTAL_BALL:
+		charge = rnd(5);
+		break;
+	case CHARGED_CAN_OF_GREASE:
+		charge = rnd(25);
+		break;
+	case CHARGED_MAGIC_MARKER:
+		charge = rn1(70, 30);
+		break;
+	case CHARGED_1D6_6:
+		charge = rnd(6) + 6;
+		break;
+	case CHARGED_1D15_15:
+		charge = rnd(15) + 15;
+		break;
+	case CHARGED_1D30_30:
+		charge = rnd(30) + 30;
+		break;
+	case CHARGED_1D45_45:
+		charge = rnd(45) + 45;
+		break;
+	case CHARGED_1D75_75:
+		charge = rnd(75) + 75;
+		break;
+	}
+
+	return charge;
+}
+
+
+int
+get_max_charge(charge_init_index)
+int charge_init_index;
+{
+	int charge = 1;
+
+	switch (charge_init_index)
+	{
+	case CHARGED_NOT_CHARGED:
+		charge = 0;
+		break;
+	case CHARGED_GENERAL:
+		charge = 5;
+		break;
+	case CHARGED_ALWAYS_1:
+		charge = 1;
+		break;
+	case CHARGED_ALWAYS_2:
+		charge = 2;
+		break;
+	case CHARGED_ALWAYS_3:
+		charge = 3;
+		break;
+	case CHARGED_ALWAYS_4:
+		charge = 4;
+		break;
+	case CHARGED_ALWAYS_5:
+		charge = 5;
+		break;
+	case CHARGED_RING_NORMAL:
+		charge = 7;
+		break;
+	case CHARGED_RING_DOUBLE:
+		charge = 15;
+		break;
+	case CHARGED_MISCELLANEOUS_NORMAL:
+		charge = 7;
+		break;
+	case CHARGED_RING_POWER:
+		charge = 5;
+		break;
+	case CHARGED_WAND_NORMAL_NODIR:
+		charge = 15;
+		break;
+	case CHARGED_WAND_NORMAL_DIR:
+		charge = 8;
+		break;
+	case CHARGED_WAND_WISHING:
+		charge = 3;
+		break;
+	case CHARGED_HORN_NORMAL:
+		charge = 10;
+		break;
+	case CHARGED_BAG_OF_TRICKS:
+		charge = 20;
+		break;
+	case CHARGED_CRYSTAL_BALL:
+		charge = 5;
+		break;
+	case CHARGED_CAN_OF_GREASE:
+		charge = 25;
+		break;
+	case CHARGED_MAGIC_MARKER:
+		charge = 100;
+		break;
+	case CHARGED_1D6_6:
+		charge = 12;
+		break;
+	case CHARGED_1D15_15:
+		charge = 30;
+		break;
+	case CHARGED_1D30_30:
+		charge = 60;
+		break;
+	case CHARGED_1D45_45:
+		charge = 90;
+		break;
+	case CHARGED_1D75_75:
+		charge = 150;
+		break;
+	}
+
+	return charge;
+}
 
 int 
 get_multigen_quan(multigen_index)

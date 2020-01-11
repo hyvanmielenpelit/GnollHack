@@ -1453,6 +1453,10 @@ E struct obj *FDECL(mk_named_object,
                     (int, struct permonst *, int, int, const char *));
 E struct obj *FDECL(rnd_treefruit_at, (int, int));
 E int FDECL(get_multigen_quan, (int));
+E int FDECL(get_init_charge, (int));
+E int FDECL(get_obj_init_charge, (struct obj*));
+E int FDECL(get_max_charge, (int));
+E int FDECL(get_obj_max_charge, (struct obj*));
 E void FDECL(set_corpsenm, (struct obj *, int));
 E void FDECL(start_corpse_timeout, (struct obj *));
 E void FDECL(bless, (struct obj *));

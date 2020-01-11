@@ -310,6 +310,33 @@ static const char* misc_type_worn_texts[] = {
 };
 
 
+enum charged_init_types {
+	CHARGED_NOT_CHARGED = 0,
+	CHARGED_GENERAL = 1,
+	CHARGED_ALWAYS_1 = 2,
+	CHARGED_ALWAYS_2 = 3,
+	CHARGED_ALWAYS_3 = 4,
+	CHARGED_ALWAYS_4 = 5,
+	CHARGED_ALWAYS_5 = 6,
+	CHARGED_RING_NORMAL = 7,
+	CHARGED_RING_DOUBLE = 8,
+	CHARGED_RING_POWER  = 9,
+	CHARGED_WAND_NORMAL_NODIR = 10,
+	CHARGED_WAND_NORMAL_DIR = 11,
+	CHARGED_WAND_WISHING = 12,
+	CHARGED_HORN_NORMAL = 13,
+	CHARGED_BAG_OF_TRICKS = 14,
+	CHARGED_CRYSTAL_BALL = 15,
+	CHARGED_CAN_OF_GREASE = 16,
+	CHARGED_MAGIC_MARKER = 17,
+	CHARGED_MISCELLANEOUS_NORMAL = 18,
+	CHARGED_1D6_6  = 19,
+	CHARGED_1D15_15 = 20,
+	CHARGED_1D30_30 = 21,
+	CHARGED_1D45_45 = 22,
+	CHARGED_1D75_75 = 23
+};
+
 struct objclass {
     short oc_name_idx;              /* index of actual name */
     short oc_descr_idx;             /* description when name unknown */
@@ -325,7 +352,7 @@ struct objclass {
     Bitfield(oc_pre_discovered, 1); /* Already known at start of game;
                                        won't be listed as a discovery. */
     Bitfield(oc_magic, 1);          /* inherently magical object */
-    Bitfield(oc_charged, 1);        /* may have +n or (n) charges */
+    uchar oc_charged;		        /* may have +n or (n) charges */
     Bitfield(oc_unique, 1);         /* special one-of-a-kind object */
     Bitfield(oc_nowish, 1);         /* cannot wish for this object */
 

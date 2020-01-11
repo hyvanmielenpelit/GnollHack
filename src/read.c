@@ -519,7 +519,7 @@ struct obj *obj;
     if (is_weptool(obj)) /* specific check before general tools */
         return FALSE;
     if (obj->oclass == TOOL_CLASS)
-        return (boolean) objects[obj->otyp].oc_charged;
+        return (boolean) (objects[obj->otyp].oc_charged != 0);
     return FALSE; /* why are weapons/armor considered charged anyway? */
 }
 
@@ -532,16 +532,13 @@ int curse_bless;
 {
     register int n;
     boolean is_cursed, is_blessed;
-	int multiplier = is_generated_with_double_spe(obj) ? 2 : 1;
 
     is_cursed = curse_bless < 0;
     is_blessed = curse_bless > 0;
 
     if (obj->oclass == WAND_CLASS) {
-        int lim = (obj->otyp == WAN_WISHING)
-                      ? 3
-                      : ((objects[obj->otyp].oc_dir != NODIR) ? 8 : 15) * multiplier;
-
+		int lim = get_obj_max_charge(obj);
+		
         /* undo any prior cancellation, even when is_cursed */
         if (obj->spe == -1)
             obj->spe = 0;
@@ -561,8 +558,9 @@ int curse_bless;
          *      7 : 100     100
          */
         n = (int) obj->recharged;
-        if (n > 0 && (obj->otyp == WAN_WISHING
-                      || (n * n * n > rn2(7 * 7 * 7)))) { /* recharge_limit */
+        if (n > 0 && (objects[obj->otyp].oc_charged == CHARGED_WAND_WISHING
+                      || (n * n * n > rn2(7 * 7 * 7))))
+		{ /* recharge_limit */
             wand_explode(obj, rnd(lim));
             return;
         }
@@ -570,11 +568,13 @@ int curse_bless;
         obj->recharged = (unsigned) (n + 1);
 
         /* now handle the actual recharging */
-        if (is_cursed) {
+        if (is_cursed) 
+		{
             stripspe(obj);
-        } else {
-            n = (lim == 3) ? 3 : rn1(5, lim + 1 - 5);
-			n *= multiplier;
+        } 
+		else 
+		{
+            n = (lim == 3) ? 3 : rn1(lim / 2, lim + 1 - (lim / 2));
 			if (!is_blessed)
                 n = rnd(n);
 
@@ -582,7 +582,9 @@ int curse_bless;
                 obj->spe = n;
             else
                 obj->spe++;
-            if (obj->otyp == WAN_WISHING && obj->spe > 3) {
+
+            if (objects[obj->otyp].oc_charged == CHARGED_WAND_WISHING && obj->spe > lim)
+			{
                 wand_explode(obj, 1);
                 return;
             }
@@ -597,13 +599,17 @@ int curse_bless;
 #endif
         }
 
-    } else if (obj->oclass == RING_CLASS && objects[obj->otyp].oc_charged) {
+    }
+	else if (obj->oclass == RING_CLASS && objects[obj->otyp].oc_charged)
+	{
         /* charging does not affect ring's curse/bless status */
-        int s = is_blessed ? rnd(3 * multiplier) : is_cursed ? -rnd(2 * multiplier) : multiplier > 1 ? rnd(multiplier) : 1;
+		int maxcharge = get_obj_max_charge(obj);
+        int s = is_blessed ? rnd(min(2, maxcharge / 2)) : is_cursed ? -rnd(min(2, maxcharge / 3)) : maxcharge >= 14 ? rnd(min(2, maxcharge / 7)) : 1;
         boolean is_on = (obj == uleft || obj == uright);
 
         /* destruction depends on current state, not adjustment */
-        if (obj->spe > rn2(7 * multiplier) || obj->spe <= -5 * multiplier) {
+        if (obj->spe > rn2(maxcharge) || obj->spe <= -(5 * maxcharge) / 7)
+		{
             pline("%s momentarily, then %s!", Yobjnam2(obj, "pulsate"),
                   otense(obj, "explode"));
             if (is_on)
@@ -631,10 +637,13 @@ int curse_bless;
                 alter_cost(obj, 0L);
         }
 
-    } else if (obj->oclass == TOOL_CLASS) {
+    } 
+	else if (obj->oclass == TOOL_CLASS) 
+{
         int rechrg = (int) obj->recharged;
 
-        if (objects[obj->otyp].oc_charged) {
+        if (objects[obj->otyp].oc_charged) 
+		{
             /* tools don't have a limit, but the counter used does */
             if (rechrg < 7) /* recharge_limit */
                 obj->recharged++;
@@ -1200,9 +1209,8 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 			same_color = FALSE;
 
 		/* KMH -- catch underflow */
-		int multiplier = is_generated_with_double_spe(otmp) ? 2 : 1;
 		s = scursed ? -otmp->spe : otmp->spe;
-		if (s > multiplier * (special_armor ? 5 : 3) && rn2(max(1, s / multiplier))) {
+		if (s > (special_armor ? 5 : 3) && rn2(max(1, s))) {
 			otmp->in_use = TRUE;
 			pline("%s violently %s%s%s for a while, then %s.", Yname2(otmp),
 				otense(otmp, Blind ? "vibrate" : "glow"),
@@ -1215,10 +1223,10 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 			break;
 		}
 		s = scursed ? -1
-			: (otmp->spe >= 9 * multiplier)
-			? (rn2(max(1, otmp->spe / multiplier)) == 0)
+			: (otmp->spe >= 9)
+			? (rn2(max(1, otmp->spe)) == 0)
 			: sblessed
-			? rnd(3 - otmp->spe / (3 * multiplier))
+			? rnd(3 - otmp->spe / 3)
 			: 1;
 		if (s >= 0 && is_dragon_scales(otmp)) {
 			/* dragon scales get turned into dragon scale mail */
@@ -1583,12 +1591,10 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 			break;
 		}
 
-		int multiplier = is_generated_with_double_spe(otmp) ? 2 : 1;
-
 		if (!enchant_weapon(sobj, otmp, scursed ? -1
 			: !otmp ? 1
-			: (otmp->spe >= 9 * multiplier) ? !rn2(max(1, otmp->spe / multiplier))
-			: sblessed ? rnd(max(1, 3 - otmp->spe / (3 * multiplier)))
+			: (otmp->spe >= 9) ? !rn2(max(1, otmp->spe))
+			: sblessed ? rnd(max(1, 3 - otmp->spe / 3))
 			: 1))
 			sobj = 0; /* nothing enchanted: strange_feeling -> useup */
 		break;

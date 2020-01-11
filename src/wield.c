@@ -1319,7 +1319,6 @@ register int amount;
     const char *xtime, *wepname = "";
     boolean multiple;
     int otyp = STRANGE_OBJECT;
-	int multiplier = is_generated_with_double_spe(otmp) ? 2 : 1;
 
     if (!weapon || (weapon->oclass != WEAPON_CLASS && !is_weptool(weapon))) {
         char buf[BUFSZ];
@@ -1395,7 +1394,7 @@ register int amount;
         return 1;
     }
     /* there is a (soft) upper and lower limit to weapon->spe */
-    if (((weapon->spe > 5 * multiplier && amount >= 0) || (weapon->spe < -5 * multiplier && amount < 0))
+    if (((weapon->spe > 5 && amount >= 0) || (weapon->spe < -5 && amount < 0))
         && rn2(3)) {
         if (!Blind)
             pline("%s %s for a while and then %s.",
@@ -1439,7 +1438,7 @@ register int amount;
 
     /* an elven magic clue, cookie@keebler */
     /* elven weapons vibrate warningly when enchanted beyond a limit */
-    if ((weapon->spe > 5 * multiplier)
+    if ((weapon->spe > get_obj_max_charge(weapon))
         && (is_elven_weapon(weapon) || weapon->oartifact || !rn2(7)))
         pline("%s unexpectedly.", Yobjnam2(weapon, "suddenly vibrate"));
 
