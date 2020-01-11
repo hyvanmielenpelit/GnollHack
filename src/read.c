@@ -1753,11 +1753,10 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 						}
 						if (res == 0)
 						{
-							if (!mindless(mtmp->data) && !mtmp->mstun)
+							if (!mindless(mtmp->data) && !is_stunned(mtmp))
 							{
-								mtmp->mstun = 1;
+								increase_mon_temporary_property_verbosely(mtmp, STUNNED, 20 + rnd(20));
 								res = 1;
-								pline("%s is stunned!", Monnam(mtmp));
 							}
 						}
 					}

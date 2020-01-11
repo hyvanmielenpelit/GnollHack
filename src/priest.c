@@ -991,7 +991,7 @@ struct monst *mtmp;
         Strcat(info, ", confused");
     if (mtmp->mblinded || !mtmp->mcansee)
         Strcat(info, ", blind");
-    if (mtmp->mstun)
+    if (is_stunned(mtmp))
         Strcat(info, ", stunned");
     if (mtmp->msleeping)
         Strcat(info, ", asleep");

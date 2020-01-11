@@ -1155,11 +1155,12 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
     }
     /* stun if that was selected and a worse effect didn't occur */
     if (do_stun) {
-        if (youdefend)
-            make_stunned(((HStun & TIMEOUT) + 3L), FALSE);
-        else
-            mdef->mstun = 1;
-        /* avoid extra stun message below if we used mb_verb["stun"] above */
+		if (youdefend)
+			make_stunned(((HStun & TIMEOUT) + 3L), FALSE);
+		else
+			increase_mon_temporary_property_verbosely(mdef, STUNNED, 3);
+
+		/* avoid extra stun message below if we used mb_verb["stun"] above */
         if (attack_indx == MB_INDEX_STUN)
             do_stun = FALSE;
     }

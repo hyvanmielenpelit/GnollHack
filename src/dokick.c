@@ -426,7 +426,7 @@ xchar x, y;
 			if (!rn2(clumsy ? 3 : 4) && (clumsy || !bigmonst(mon->data))
 				&& mon->mcansee && !mon->mtrapped && !thick_skinned(mon->data)
 				&& mon->data->mlet != S_EEL && haseyes(mon->data) && mon->mcanmove
-				&& !mon->mstun && !is_confused(mon) && !mon->msleeping
+				&& !is_stunned(mon) && !is_confused(mon) && !mon->msleeping
 				&& mon->data->mmove >= 12)
 			{
 				if (!nohands(mon->data) && !rn2(martial() ? 5 : 3))

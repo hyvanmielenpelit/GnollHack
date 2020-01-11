@@ -304,15 +304,14 @@ struct obj *otmp;
 			pline("%s is unaffected by the power word!", Monnam(mtmp));
 			break; /* skip makeknown */
 		}
-		else if (mtmp->mstun) { /* match effect on player */
+		else if (is_stunned(mtmp)) { /* match effect on player */
 			pline("%s does not seem more stunned than before.", Monnam(mtmp));
 			break; /* skip makeknown */
 		}
 		else if (!resist(mtmp, otmp, 0, 0, TELL) //Get no effect upon successful magic resistance
 			&& !DEADMONSTER(mtmp))
 		{
-			mtmp->mstun = 1;
-			pline("%s is stunned!", Monnam(mtmp));
+			increase_mon_temporary_property_verbosely(mtmp, STUNNED, 10 + rnd(10));
 		}
 		break;
 	case SPE_POWER_WORD_BLIND:
@@ -1264,7 +1263,7 @@ int mnum_override; /* Use this mnum instead */
 		mtmp2->mprops[SUMMON_FORBIDDEN] = 0;
 		mtmp2->mcansee = 1; /* set like in makemon */
         mtmp2->mblinded = 0;
-        mtmp2->mstun = 0;
+		mtmp2->mprops[STUNNED] = 0;
 		mtmp2->mprops[CONFUSION] = 0;
 		if (mtmp2->isshk) {
             neweshk(mtmp);

@@ -323,7 +323,7 @@ struct monst *mtmp;
     /* since unicorn horns don't get used up, the monster would look
      * silly trying to use the same cursed horn round after round
      */
-    if (is_confused(mtmp) || mtmp->mstun || !mtmp->mcansee) {
+    if (is_confused(mtmp) || is_stunned(mtmp) || !mtmp->mcansee) {
         if (!is_unicorn(mtmp->data) && !nohands(mtmp->data)) {
             for (obj = mtmp->minvent; obj; obj = obj->nobj)
                 if (obj->otyp == UNICORN_HORN && !obj->cursed)
@@ -336,7 +336,7 @@ struct monst *mtmp;
         }
     }
 
-    if (is_confused(mtmp) || mtmp->mstun) {
+    if (is_confused(mtmp) || is_stunned(mtmp)) {
         struct obj *liztin = 0;
 
         for (obj = mtmp->minvent; obj; obj = obj->nobj) {
@@ -638,10 +638,10 @@ struct monst *mtmp;
         }
         if (!mtmp->mcansee) {
             mcureblindness(mtmp, vismon);
-        } else if (is_confused(mtmp) || mtmp->mstun) {
+        } else if (is_confused(mtmp) || is_stunned(mtmp)) {
 			mtmp->mprops[CONFUSION] = 0;
-			mtmp->mstun = 0;
-            if (vismon)
+			mtmp->mprops[STUNNED] = 0;
+			if (vismon)
                 pline("%s seems steadier now.", Monnam(mtmp));
         } else
             impossible("No need for unicorn horn?");
@@ -2502,10 +2502,10 @@ boolean stoning; /* True: stop petrification, False: cure stun && confusion */
         else
             pline("%s seems limber!", Monnam(mon));
     }
-    if (lizard && (is_confused(mon) || mon->mstun)) {
+    if (lizard && (is_confused(mon) || is_stunned(mon))) {
 		mon->mprops[CONFUSION]  = 0;
-        mon->mstun = 0;
-        if (vis && !is_bat(mon->data) && mon->data != &mons[PM_STALKER])
+		mon->mprops[STUNNED] = 0;
+		if (vis && !is_bat(mon->data) && mon->data != &mons[PM_STALKER])
             pline("%s seems steadier now.", Monnam(mon));
     }
     if (mon->mtame && !mon->isminion && nutrit > 0) {

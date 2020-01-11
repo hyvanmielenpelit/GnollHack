@@ -1578,8 +1578,8 @@ register struct monst *mtmp;
                 }
                 /* The object's rustproofing is gone now */
                 otmp->oerodeproof = 0;
-                mtmp->mstun = 1;
-                if (canseemon(mtmp) && flags.verbose) {
+				increase_mon_temporary_property(mtmp, STUNNED, 5 + rnd(10));
+				if (canseemon(mtmp) && flags.verbose) {
                     pline("%s spits %s out in disgust!", Monnam(mtmp),
                           distant_name(otmp, doname));
                 }

@@ -3146,7 +3146,7 @@ struct attack *mattk;
             && !mtmp->mspec_used && rn2(5)) {
             if (cancelled) {
                 react = 1; /* "stunned" */
-                already = (mtmp->mstun != 0);
+                already = (is_stunned(mtmp) != 0);
             } else {
                 int stun = d(2, 6);
 
@@ -3841,9 +3841,9 @@ struct attack *mattk;
                 (void) split_mon(&youmonst, mtmp);
             break;
         case AD_STUN: /* Yellow mold */
-            if (!mtmp->mstun) {
-                mtmp->mstun = 1;
-                pline("%s %s.", Monnam(mtmp),
+            if (!is_stunned(mtmp)) {
+				nonadditive_increase_mon_temporary_property(mtmp, STUNNED, 5 + rnd(5));
+				pline("%s %s.", Monnam(mtmp),
                       makeplural(stagger(mtmp->data, "stagger")));
             }
             tmp = 0;

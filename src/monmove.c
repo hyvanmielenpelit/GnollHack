@@ -30,8 +30,8 @@ struct monst *mtmp;
             You_hear("a distant explosion.");
     }
     wake_nearto(mtmp->mx, mtmp->my, 7 * 7);
-    mtmp->mstun = 1;
-    mtmp->mhp -= rnd(15);
+	increase_mon_temporary_property(mtmp, STUNNED, 5 + rnd(10));
+	mtmp->mhp -= rnd(15);
     if (DEADMONSTER(mtmp)) {
         mondied(mtmp);
         if (!DEADMONSTER(mtmp)) /* lifesaved */
@@ -97,7 +97,7 @@ void
 check_mon_talk(mon)
 struct monst* mon;
 {
-	if (!mon || DEADMONSTER(mon) || !is_speaking_monster(mon->data) || mindless(mon->data) || mon->mstun || is_confused(mon) || mon->msleeping || mon->mtame)
+	if (!mon || DEADMONSTER(mon) || !is_speaking_monster(mon->data) || mindless(mon->data) || is_stunned(mon) || is_confused(mon) || mon->msleeping || mon->mtame)
 		return;
 
 	boolean mon_talked = FALSE;
@@ -522,10 +522,6 @@ register struct monst *mtmp;
     /* not frozen or sleeping: wipe out texts written in the dust */
     wipe_engr_at(mtmp->mx, mtmp->my, 1, FALSE);
 
-    /* stunned monsters get un-stunned with larger probability */
-    if (mtmp->mstun && !rn2(20))
-        mtmp->mstun = 0;
-
     /* some monsters teleport */
     if (mtmp->mflee && !rn2(40) && has_teleportation(mtmp) && !mtmp->iswiz
         && !level.flags.noteleport)
@@ -705,7 +701,7 @@ register struct monst *mtmp;
     /*  Now the actual movement phase
      */
 
-    if (!nearby || mtmp->mflee || scared || is_confused(mtmp) || mtmp->mstun
+    if (!nearby || mtmp->mflee || scared || is_confused(mtmp) || is_stunned(mtmp)
         || (is_invisible(mtmp) && !rn2(3))
         || (mdat->mlet == S_LEPRECHAUN && !findgold(invent)
             && (findgold(mtmp->minvent) || rn2(2)))
@@ -1048,7 +1044,7 @@ register int after;
     gy = mtmp->muy;
     appr = mtmp->mflee ? -1 : 1;
 
-    if (is_confused(mtmp) || mtmp->mstun || (u.uswallow && mtmp == u.ustuck))
+    if (is_confused(mtmp) || is_stunned(mtmp) || (u.uswallow && mtmp == u.ustuck))
 	{
         appr = 0;
     } 

@@ -545,7 +545,7 @@ struct entity *etmp;
     if (is_u(etmp) ? Confusion : etmp->emon->mprops[CONFUSION])
         tmp -= 2;
 
-    if (is_u(etmp) ? Stunned : etmp->emon->mstun)
+    if (is_u(etmp) ? Stunned : etmp->emon->mprops[STUNNED])
         tmp -= 3;
 
     if (is_db_wall(etmp->ex, etmp->ey))

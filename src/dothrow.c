@@ -1302,7 +1302,7 @@ int dx, dy, range;
 
     /* At the very least, debilitate the monster */
     mon->movement = 0;
-    mon->mstun = 1;
+	increase_mon_temporary_property(mon, STUNNED, 5 + rnd(10));
 
     /* Is the monster stuck or too heavy to push?
      * (very large monsters have too much inertia, even floaters and flyers)

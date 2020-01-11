@@ -280,7 +280,7 @@ int *attk_count, *role_roll_penalty;
     }
 
     /* adjust vs. (and possibly modify) monster state */
-    if (mtmp->mstun)
+    if (is_stunned(mtmp))
         tmp += 2;
     if (mtmp->mflee)
         tmp += 2;
@@ -2041,7 +2041,7 @@ boolean* obj_destroyed;
 			nohandglow(mon);
 			if (!is_confused(mon) && !resist(mon, (struct obj*) 0, 8, 0, NOTELL)) {
 				increase_mon_temporary_property(mon, CONFUSION, d(1, 20) + 20);
-				if (!mon->mstun && mon->mcanmove && !mon->msleeping
+				if (!is_stunned(mon) && mon->mcanmove && !mon->msleeping
 					&& canseemon(mon))
 					pline("%s appears confused.", Monnam(mon));
 			}
@@ -2402,8 +2402,8 @@ int specialdmg; /* blessed and/or silver bonus against various things */
         if (!Blind)
             pline("%s %s for a moment.", Monnam(mdef),
                   makeplural(stagger(pd, "stagger")));
-        mdef->mstun = 1;
-        goto physical;
+		nonadditive_increase_mon_temporary_property(mdef, STUNNED, 5 + rnd(5));
+		goto physical;
     case AD_LEGS:
 #if 0
         if (u.ucancelled) {

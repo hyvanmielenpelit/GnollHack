@@ -1809,8 +1809,8 @@ struct mkroom *croom;
         if (m->avenge)
             mtmp->mavenge = 1;
         if (m->stunned)
-            mtmp->mstun = 1;
-        if (m->confused)
+			mtmp->mprops[STUNNED] |= M_INTRINSIC_ACQUIRED;
+		if (m->confused)
 			mtmp->mprops[CONFUSION] |= M_INTRINSIC_ACQUIRED;
         if (m->invis) 
 		{

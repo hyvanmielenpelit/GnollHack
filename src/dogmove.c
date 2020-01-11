@@ -345,7 +345,7 @@ boolean devour;
         if (obj->unpaid)
             costly_alteration(obj, COST_DEGRD);
         obj->oerodeproof = 0;
-        mtmp->mstun = 1;
+		increase_mon_temporary_property(mtmp, STUNNED, 5 + rnd(10));
         if (canseemon(mtmp) && flags.verbose) {
             pline("%s spits %s out in disgust!", Monnam(mtmp),
                   distant_name(obj, doname));

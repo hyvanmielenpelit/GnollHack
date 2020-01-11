@@ -950,7 +950,7 @@ register struct monst *mtmp;
             pline_msg = "wants nothing to do with you.";
         else if (mtmp->mhp < mtmp->mhpmax / 4)
             pline_msg = "moans.";
-        else if (is_confused(mtmp) || mtmp->mstun)
+        else if (is_confused(mtmp) || is_stunned(mtmp))
             verbl_msg = !rn2(3) ? "Huh?" : rn2(2) ? "What?" : "Eh?";
         else if (!mtmp->mcansee)
             verbl_msg = "I can't see!";

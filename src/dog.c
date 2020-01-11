@@ -557,8 +557,8 @@ long nmv; /* number of moves */
         mtmp->mtrapped = 0;
     if (is_confused(mtmp) && rn2(imv + 1) > 50 / 2)
         mtmp->mprops[CONFUSION] = 0;
-    if (mtmp->mstun && rn2(imv + 1) > 10 / 2)
-        mtmp->mstun = 0;
+    if (is_stunned(mtmp) && rn2(imv + 1) > 10 / 2)
+        mtmp->mprops[STUNNED] = 0;
 
     /* might finish eating or be able to use special ability again */
     if (imv > mtmp->meating)

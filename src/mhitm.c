@@ -1015,8 +1015,8 @@ register struct obj* omonwep;
         if (canseemon(mdef))
             pline("%s %s for a moment.", Monnam(mdef),
                   makeplural(stagger(pd, "stagger")));
-        mdef->mstun = 1;
-        goto physical;
+		nonadditive_increase_mon_temporary_property(mdef, STUNNED, 5 + rnd(5));
+		goto physical;
     case AD_LEGS:
         if (has_cancelled(magr)) {
             tmp = 0;
@@ -1891,9 +1891,9 @@ int mdead;
                 (void) split_mon(mdef, magr);
             break;
         case AD_STUN:
-            if (!magr->mstun) {
-                magr->mstun = 1;
-                if (canseemon(magr))
+            if (!is_stunned(magr)) {
+				nonadditive_increase_mon_temporary_property(magr, STUNNED, 5 + rnd(5));
+				if (canseemon(magr))
                     pline("%s %s...", Monnam(magr),
                           makeplural(stagger(magr->data, "stagger")));
             }
