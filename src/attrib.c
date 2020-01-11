@@ -1944,8 +1944,8 @@ struct monst* mon;
 		{
 			boolean inappr = inappropriate_monster_character_type(mon, uitem);
 			boolean worn = is_you ? is_obj_worn(uitem) :
-				((mon->worn_item_flags & uitem->owornmask) != 0
-					&& (!is_weapon(uitem) || !is_shield(uitem) || ((is_weapon(uitem) || is_shield(uitem)) && (uitem->owornmask & W_WIELDED_WEAPON))));
+					((!is_weapon(uitem) && !is_shield(uitem) && (uitem->owornmask & ~W_WEAPON) != 0) 
+						|| ((is_weapon(uitem) || is_shield(uitem)) && (uitem->owornmask & W_WIELDED_WEAPON)));
 
 			if ((worn || (!worn && (objects[otyp].oc_pflags & P1_ATTRIBUTE_BONUS_APPLIES_WHEN_CARRIED)))
 				&& ((!inappr && !(objects[otyp].oc_pflags & (P1_ATTRIBUTE_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY)))

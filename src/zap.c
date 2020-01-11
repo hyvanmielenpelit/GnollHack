@@ -776,7 +776,7 @@ struct monst* mtmp;
 	char buf[BUFSZ];
 	const char* txt;
 
-	Sprintf(buf, "%s current abilities:", s_suffix(noit_Monnam(mtmp)));
+	Sprintf(buf, "Current abilities:"); // , s_suffix(noit_Monnam(mtmp)));
 	txt = buf;
 	putstr(datawin, 0, txt);
 
@@ -871,7 +871,7 @@ struct monst* mtmp;
 		putstr(datawin, 0, txt);
 	}
 
-	Sprintf(buf, "Applicable classifications:");
+	Sprintf(buf, "Classifications:");// , noit_mon_nam(mtmp));
 	txt = buf;
 	putstr(datawin, 0, txt);
 
@@ -1084,6 +1084,22 @@ struct monst* mtmp;
 		putstr(datawin, 0, txt);
 	}
 
+
+	Sprintf(buf, "Attribute scores:");// , s_suffix(noit_Monnam(mtmp)));
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	Sprintf(buf, " St:%s Dx:%d Co:%d In:%d Wi:%d Ch:%d", 
+		get_strength_string(M_ACURR(mtmp, A_STR)), 
+		M_ACURR(mtmp, A_DEX),
+		M_ACURR(mtmp, A_CON),
+		M_ACURR(mtmp, A_INT),
+		M_ACURR(mtmp, A_WIS),
+		M_ACURR(mtmp, A_CHA)
+		);
+
+	txt = buf;
+	putstr(datawin, 0, txt);
 
 	display_nhwindow(datawin, FALSE);
 	destroy_nhwindow(datawin), datawin = WIN_ERR;
