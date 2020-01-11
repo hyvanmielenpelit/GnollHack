@@ -878,6 +878,33 @@ struct monst* mtmp;
 
 	abilcnt = 0;
 
+	for (int j = 1; j <= 3; j++)
+	{
+		for (int i = 0; i < 32; i++)
+		{
+			unsigned long bit = 0x00000001;
+			if (i > 0)
+				bit = bit << i;
+
+			unsigned long flags = j == 1 ? mtmp->data->mflags1 : mtmp->data->mflags2;
+
+			if (flags & bit)
+			{
+				char descbuf[BUFSZ] = "";
+				strcpy(descbuf, get_mflag_description(bit, FALSE, j));
+				if (strcmp(descbuf, ""))
+				{
+					*descbuf = highc(*descbuf);
+					abilcnt++;
+					Sprintf(buf, " %2d - %s", abilcnt, descbuf);
+					txt = buf;
+					putstr(datawin, 0, txt);
+				}
+			}
+		}
+	}
+
+#if 0
 	if (is_shapeshifter(mtmp->data))
 	{
 		abilcnt++;
@@ -1077,6 +1104,7 @@ struct monst* mtmp;
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
+#endif
 
 	if (!abilcnt)
 	{

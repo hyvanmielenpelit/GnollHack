@@ -50,6 +50,96 @@ static NEARDATA struct ability_conversion_table prop2innate[] = {
 	{ FREE_ACTION, MR_FREE_ACTION, MC_NONE, AD_PLYS },
 };
 
+struct mflag_description {
+	int mflag_bit;
+	const char* singular_adjective;
+	const char* plural_noun;
+};
+
+static NEARDATA struct mflag_description m1flag_descriptions[] = {
+	{ M1_AMORPHOUS, "amorphous", "amorphous monsters" },
+	{ M1_AMPHIBIOUS, "amphibious", "amphibious monsters" },
+	{ M1_AMORPHOUS, "animal", "animals" },
+	{ M1_BREATHLESS, "breathless", "breathless monsters" },
+	{ M1_CARNIVORE, "carnivore", "carnivores" },
+	{ M1_CLING, "clinging", "clingers" },
+	{ M1_CONCEAL, "concealing", "concealed monster" },
+	{ M1_FLY, "flying", "flying monsters" },
+	{ M1_HERBIVORE, "herbivore", "herbivores" },
+	{ M1_HIDE, "hiding", "hidden monster" },
+	{ M1_HUMANOID, "humanoid", "humanoids" },
+	{ M1_METALLIVORE, "metallivore", "metallivores" },
+	{ M1_MINDLESS, "mindless", "mindless monsters" },
+	{ M1_NOEYES, "eyeless", "eyeless monsters" },
+	{ M1_NOHANDS, "handless", "handless monsters" },
+	{ M1_NOHEAD, "headless", "headless monsters" },
+	{ M1_NOLIMBS, "limbless", "limbless monsters" },
+	{ M1_OMNIVORE, "omnivore", "omnivores" },
+	{ M1_OVIPAROUS, "oviparious", "oviparious monsters" },
+	{ M1_SLITHY, "slithy", "slithing monsters" },
+	{ M1_SWIM, "swimming", "swimming monsters" },
+	{ M1_THICK_HIDE, "oviparious", "oviparious monsters" },
+	{ M1_TUNNEL, "tunneling", "tunneling monsters" },
+	{ M1_UNSOLID, "unsolid", "unsolid monsters" },
+	{ M1_WALLWALK, "passes through walls", "monsters that can pass through walls" },
+	{ 0 , "", "" }
+};
+
+static NEARDATA struct mflag_description m2flag_descriptions[] = {
+	{ M2_DEMON, "demon", "demons" },
+	{ M2_DWARF, "dwarf", "dwarves" },
+	{ M2_ELF, "elf", "elves" },
+	{ M2_GIANT, "giant", "giants" },
+	{ M2_GNOLL, "gnoll", "gnolls" },
+	{ M2_GNOME, "gnome", "gnomes" },
+	{ M2_HUMAN, "human", "human beings" },
+	{ M2_LORD, "lord", "lords" },
+	{ M2_MODRON, "modron", "modrons" },
+	{ M2_ORC, "orc", "orcs" },
+	{ M2_PRINCE, "prince", "princes" },
+	{ M2_SHAPESHIFTER, "shapeshifter", "shapeshifters" },
+	{ M2_UNDEAD, "undead", "undead" },
+	{ M2_WERE, "lycanthrope", "lycanthropes" },
+	{ 0 , "", "" }
+};
+
+static NEARDATA struct mflag_description m3flag_descriptions[] = {
+	{ M3_CONSTRICTOR, "constrictor", "constrictors" },
+	{ M3_INFRAVISION, "infravision", "monsters with infravision" },
+	{ M3_KNIGHT, "knight", "knights" },
+	{ M3_HEALER, "healer", "healers" },
+	{ M3_NONCORPOREAL, "noncorporeal", "noncorporeal monsters" },
+	{ M3_NONLIVING, "nonliving", "nonliving monster" },
+	{ M3_PRIEST, "priest", "priests" },
+//	{ M3_REGENERATES_LOST_BODY_PARTS, "regenerates lost body parts", "monsters that regenerate lost body parts" },
+//	{ M3_REVIVES_FROM_DEAD, "revives from dead", "monsters that revive from dead" },
+	{ M3_SPEAKING, "speaking", "speaking monsters" },
+	{ 0 , "", "" }
+};
+
+
+const char*
+get_mflag_description(mflag_bit, plural, mindex)
+unsigned long mflag_bit;
+boolean plural;
+unsigned char mindex;
+{
+	struct mflag_description* mtable = m1flag_descriptions;
+
+	if (mindex == 2)
+		mtable = m2flag_descriptions;
+	else if (mindex == 3)
+		mtable = m3flag_descriptions;
+
+	for (int i = 0; mtable[i].mflag_bit != 0 ; i++)
+	{
+		if (mtable[i].mflag_bit == mflag_bit)
+			return plural ? mtable[i].plural_noun : mtable[i].singular_adjective;
+	}
+
+	return empty_string;
+}
+
 
 unsigned long
 prop_to_conveyed(prop_index)

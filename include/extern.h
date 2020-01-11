@@ -1622,6 +1622,7 @@ E unsigned long FDECL(prop_to_innate, (int));
 E unsigned long FDECL(prop_to_conveyed, (int));
 E int FDECL(innate_to_prop, (unsigned long));
 E int FDECL(conveyed_to_prop, (unsigned long));
+E const char* FDECL(get_mflag_description, (unsigned long, BOOLEAN_P, unsigned char));
 
 /* ### monmove.c ### */
 
