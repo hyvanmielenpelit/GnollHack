@@ -1261,12 +1261,12 @@ int pm;
     if (check_intrinsics)
 	{
         struct permonst *ptr = &mons[pm];
-        boolean conveys_STR = confers_strength(ptr);
-		boolean conveys_DEX = confers_dexterity(ptr);
-		boolean conveys_CON = confers_constitution(ptr);
-		boolean conveys_INT = confers_intelligence(ptr);
-		boolean conveys_WIS = confers_wisdom(ptr);
-		boolean conveys_CHA = confers_charisma(ptr);
+        boolean conveys_STR = conveys_strength(ptr);
+		boolean conveys_DEX = conveys_dexterity(ptr);
+		boolean conveys_CON = conveys_constitution(ptr);
+		boolean conveys_INT = conveys_intelligence(ptr);
+		boolean conveys_WIS = conveys_wisdom(ptr);
+		boolean conveys_CHA = conveys_charisma(ptr);
 		int i, count;
 
         if (hallucinating_corpse(ptr)) 
