@@ -445,7 +445,7 @@ int how;
         Strcat(buf, "the ");
         killer.format = KILLED_BY;
     }
-    if (has_invisibility(mtmp))
+    if (is_invisible(mtmp))
         Strcat(buf, "invisible ");
 	if (distorted)
         Strcat(buf, "hallucinogen-distorted ");

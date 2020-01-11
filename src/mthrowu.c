@@ -198,7 +198,7 @@ struct obj *otmp, *mwep;
                ? matching_launcher(otmp, mwep)
                /* otherwise any stackable (non-ammo) weapon */
                : otmp->oclass == WEAPON_CLASS)
-        && !mtmp->mconf) 
+        && !is_confused(mtmp)) 
 	{
 
 		get_multishot_stats(mtmp, otmp, mwep, TRUE, &multishot, &multishotrndextra);

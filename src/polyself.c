@@ -1551,7 +1551,7 @@ dogaze()
             looked++;
             if (Invis && !has_see_invisible(mtmp)) {
                 pline("%s seems not to notice your gaze.", Monnam(mtmp));
-            } else if (has_invisibility(mtmp) && !See_invisible) {
+            } else if (is_invisible(mtmp) && !See_invisible) {
                 You_cant("see where to gaze at %s.", Monnam(mtmp));
             } else if (M_AP_TYPE(mtmp) == M_AP_FURNITURE
                        || M_AP_TYPE(mtmp) == M_AP_OBJECT) {
@@ -1577,12 +1577,12 @@ dogaze()
                  * gazes at *you*--only medusa gaze gets reflected then.
                  */
                 if (adtyp == AD_CONF) {
-                    if (!mtmp->mconf)
+                    if (!is_confused(mtmp))
                         Your("gaze confuses %s!", mon_nam(mtmp));
                     else
                         pline("%s is getting more and more confused.",
                               Monnam(mtmp));
-                    mtmp->mconf = 1;
+					 increase_mon_temporary_property(mtmp, CONFUSION, 20 + rnd(10));
                 } else if (adtyp == AD_FIRE) {
                     int dmg = d(2, 6), lev = (int) u.ulevel;
 

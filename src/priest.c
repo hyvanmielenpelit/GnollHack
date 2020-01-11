@@ -59,7 +59,7 @@ register xchar omx, omy, gx, gy;
 
     if (omx == gx && omy == gy)
         return 0;
-    if (mtmp->mconf) {
+    if (is_confused(mtmp)) {
         avoid = FALSE;
         appr = 0;
     }
@@ -311,7 +311,7 @@ char *pname; /* caller-supplied output buffer */
     *pname = '\0';
     if (!do_hallu || !bogon_is_pname(whatcode))
         Strcat(pname, "the ");
-    if (has_invisibility(mon))
+    if (is_invisible(mon))
         Strcat(pname, "invisible ");
 	if (mon->isminion && EMIN(mon)->renegade)
         Strcat(pname, "renegade ");
@@ -987,7 +987,7 @@ struct monst *mtmp;
 		Strcat(info, ", halved magic resistance");
 	if (has_summon_forbidden(mtmp))
 		Strcat(info, ", unable to summon");
-	if (mtmp->mconf)
+	if (is_confused(mtmp))
         Strcat(info, ", confused");
     if (mtmp->mblinded || !mtmp->mcansee)
         Strcat(info, ", blind");
@@ -1016,7 +1016,7 @@ struct monst *mtmp;
 		Strcat(info, ", very fast");
 	else if (is_fast(mtmp))
 		Strcat(info, ", fast");
-    if (has_invisibility(mtmp))
+    if (is_invisible(mtmp))
         Strcat(info, ", invisible");
 	if (mtmp == u.ustuck)
         Strcat(info, sticks(youmonst.data) ? ", held by you"

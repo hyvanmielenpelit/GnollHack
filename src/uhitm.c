@@ -441,7 +441,7 @@ register struct monst *mtmp;
 
     /* Is the "it died" check actually correct? */
     if (mdat->mlet == S_LEPRECHAUN && !mtmp->mfrozen && !mtmp->msleeping
-        && !mtmp->mconf && mtmp->mcansee && !rn2(7)
+        && !is_confused(mtmp) && mtmp->mcansee && !rn2(7)
         && (m_move(mtmp, 0) == 2 /* it died */
             || mtmp->mx != u.ux + u.dx
             || mtmp->my != u.uy + u.dy)) { /* it moved */
@@ -2039,8 +2039,8 @@ boolean* obj_destroyed;
 			}
 		} else if (u.umconf && hand_to_hand) {
 			nohandglow(mon);
-			if (!mon->mconf && !resist(mon, (struct obj*) 0, 8, 0, NOTELL)) {
-				mon->mconf = 1;
+			if (!is_confused(mon) && !resist(mon, (struct obj*) 0, 8, 0, NOTELL)) {
+				increase_mon_temporary_property(mon, CONFUSION, d(1, 20) + 20);
 				if (!mon->mstun && mon->mcanmove && !mon->msleeping
 					&& canseemon(mon))
 					pline("%s appears confused.", Monnam(mon));
@@ -2748,14 +2748,13 @@ int specialdmg; /* blessed and/or silver bonus against various things */
     case AD_SLOW:
         if (!negated) 
 		{
-			set_mon_temporary_speed_verbosely(mdef, SLOWED, max(mdef->mprops[SLOWED] & M_TIMEOUT, 20 + rnd(10)));
+			set_mon_property_verbosely(mdef, SLOWED, max(mdef->mprops[SLOWED] & M_TIMEOUT, 20 + rnd(10)));
 		}
         break;
     case AD_CONF:
-        if (!mdef->mconf) {
-            if (canseemon(mdef))
-                pline("%s looks confused.", Monnam(mdef));
-            mdef->mconf = 1;
+        if (!is_confused(mdef)) 
+		{
+            increase_mon_temporary_property_verbosely(mdef, CONFUSION, 10 + rnd(10));
         }
         break;
 	case AD_DMNS:
@@ -2831,7 +2830,7 @@ register struct attack *mattk;
     case AD_HALU:
         if (haseyes(mdef->data) && mdef->mcansee) {
             pline("%s is affected by your flash of light!", Monnam(mdef));
-            mdef->mconf = 1;
+			increase_mon_temporary_property_verbosely(mdef, HALLUC, 100 + rnd(100));
         }
         break;
     case AD_COLD:
@@ -3870,7 +3869,7 @@ struct monst *mtmp;
 
         /* cloned Wiz starts out mimicking some other monster and
            might make himself invisible before being revealed */
-        if (is_not_visible(mtmp) && !See_invisible)
+        if (is_invisible(mtmp) && !See_invisible)
             what = generic;
         else
             what = a_monnam(mtmp);
@@ -3892,7 +3891,7 @@ struct monst *mon;
 {
     char *hands = makeplural(body_part(HAND));
 
-    if (!u.umconf || mon->mconf)
+    if (!u.umconf || is_confused(mon))
         return;
     if (u.umconf == 1) {
         if (Blind)

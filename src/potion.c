@@ -1539,15 +1539,17 @@ int how;
                 pline("%s looks rather ill.", Monnam(mon));
             break;
         case POT_CONFUSION:
-        case POT_BOOZE:
+			increase_mon_temporary_property_verbosely(mon, CONFUSION, rn1(9, 8));
+			break;
+		case POT_BOOZE:
             if (!resist(mon, obj, 0, 0, NOTELL))
-                mon->mconf = TRUE;
+                increase_mon_temporary_property_verbosely(mon, CONFUSION, 4 + rnd(4));
             break;
         case POT_INVISIBILITY: {
             boolean sawit = canspotmon(mon);
 
             angermon = FALSE;
-			increase_mon_temporary_property(mon, INVISIBILITY, d(2, 10) + 80);
+			increase_mon_temporary_property_verbosely(mon, INVISIBILITY, d(1, 6) + 20);
 			if (sawit && !canspotmon(mon) && cansee(mon->mx, mon->my))
                 map_invisible(mon->mx, mon->my);
             break;
@@ -1569,7 +1571,7 @@ int how;
             break;
         case POT_SPEED:
             angermon = FALSE;
-			increase_mon_temporary_speed_verbosely(mon, VERY_FAST, rn1(10, 100 + 60 * bcsign(obj)));
+			increase_mon_temporary_property_verbosely(mon, VERY_FAST, rn1(10, 100 + 60 * bcsign(obj)));
             break;
         case POT_BLINDNESS:
             if (haseyes(mon->data)) {

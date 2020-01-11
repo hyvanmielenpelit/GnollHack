@@ -14,7 +14,7 @@
 #define has_property(mon, propindex) \
 	((mon)->mprops[(propindex)] != 0)
 #define has_innate_or_property(mon, propindex)\
-	(has_innate(ptr, prop_to_innate(propindex)) || has_property(mon, propindex))
+	(has_innate((mon)->data, prop_to_innate(propindex)) || has_property(mon, propindex))
 
 #define resists_fire(mon) \
     (has_innate((mon)->data, MR_FIRE) || has_property(mon, FIRE_RES))
@@ -50,19 +50,15 @@
     (has_innate((mon)->data, MR_FLASH) || has_property(mon, FLASH_RES))
 
 
+/* innates */
 #define has_innate_invisibility(ptr) \
 	has_innate(ptr, MR_INVISIBLE)
-
-#define has_blocks_invisibility(mon) \
-	has_property(mon, BLOCKS_INVISIBILITY)
 
 #define has_innate_see_invisible(ptr) \
 	has_innate(ptr, MR_SEE_INVISIBLE)
 
-
 #define has_innate_regeneration(ptr) \
 	has_innate(ptr, MR_REGENERATION)
-
 
 #define has_innate_teleportation(ptr) \
 	has_innate(ptr, MR_TELEPORT)
@@ -70,19 +66,22 @@
 #define has_innate_teleport_control(ptr) \
 	has_innate(ptr, MR_TELEPORT_CONTROL)
 
-
 #define has_innate_blind_telepathy(ptr)   \
 	has_innate(ptr, MR_BLIND_TELEPATHY)
 
 #define has_innate_telepathy(ptr) \
 	has_innate(ptr, MR_TELEPATHY)
 
+
+/* general properties */
 #define has_telepathy(mon)   \
      (has_innate_telepathy((mon)->data) || has_property(mon, TELEPAT))
 
 #define has_blind_telepathy(mon)   \
      (has_innate_blind_telepathy((mon)->data) || has_property(mon, BLIND_TELEPAT))
 
+#define has_blocks_invisibility(mon) \
+	has_property(mon, BLOCKS_INVISIBILITY)
 
 #define has_slowed(mon) \
 	has_property(mon, SLOWED)
@@ -92,6 +91,18 @@
 
 #define has_stoned(mon) \
 	has_property(mon, STONED)
+
+#define has_magical_breathing(mon) \
+	has_innate_or_property(mon, MAGICAL_BREATHING)
+
+#define has_strangled(mon) \
+	has_property(mon, STRANGLED)
+
+#define has_airless_environment(mon) \
+	has_property(mon, AIRLESS_ENVIRONMENT)
+
+#define is_suffocating(mon) \
+	(has_airless_environment(mon) && !has_magical_breathing(mon))
 
 #define is_slow(mon) \
 	(has_slowed(mon) || has_slimed(mon) || has_stoned(mon))
@@ -108,6 +119,18 @@
 #define has_paralyzed(mon) \
 	has_property(mon, PARALYZED)
 
+#define has_free_action(mon) \
+	has_innate_or_property(mon, FREE_ACTION)
+
+#define is_paralyzed(mon) \
+	(has_paralyzed(mon) && !has_free_action(mon))
+
+#define has_sleeping(mon) \
+	has_property(mon, SLEEPING)
+
+#define is_sleeping(mon) \
+	(has_sleeping(mon) || (mon)->msleeping)
+
 #define has_summon_forbidden(mon) \
 	has_property(mon, SUMMON_FORBIDDEN)
 
@@ -117,17 +140,59 @@
 #define has_stunned(mon) \
 	has_property(mon, STUNNED)
 
+#define is_stunned(mon) \
+	(has_stunned(mon))
+
 #define has_confused(mon) \
-	has_property(mon, CONFUSED)
+	has_property(mon, CONFUSION)
+
+#define is_confused(mon) \
+	(has_confused(mon))
 
 #define has_blinded(mon) \
 	has_property(mon, BLINDED)
 
-#define has_invisibility(mon) \
-	((has_innate_invisibility(mon->data) || has_property(mon, INVISIBILITY)) && !has_blocks_invisibility(mon))
 
-#define is_not_visible(mon) \
-	(has_invisibility(mon))
+
+#define has_hallucination(mon) \
+	has_property(mon, HALLUC)
+
+#define has_hallucination_resistance(mon) \
+	has_innate_or_property(mon, HALLUC_RES)
+
+#define is_hallucinating(mon) \
+	(has_hallucination(mon) && !has_hallucination_resistance(mon))
+
+#define has_charmed(mon) \
+	has_property(mon, CHARMED)
+
+#define has_charm_resistance(mon) \
+	has_innate_or_property(mon, CHARM_RES)
+
+#define is_charmed(mon) \
+	(has_charmed(mon) && !has_charm_resistance(mon))
+
+
+
+#define has_levitation(mon) \
+	has_property(mon, LEVITATION)
+
+#define has_flying(mon) \
+	has_innate_or_property(mon, FLYING)
+
+#define is_flying(mon) \
+	(has_flying(mon))
+
+#define is_levitating(mon) \
+	(has_levitation(mon) && !has_flying(mon))
+
+
+
+#define has_invisibility(mon) \
+	((has_innate_invisibility(mon->data) || has_property(mon, INVISIBILITY)))
+
+#define is_invisible(mon) \
+	(has_invisibility(mon) && !has_blocks_invisibility(mon))
 
 #define has_fast(mon) \
 	has_property(mon, FAST)
@@ -405,6 +470,9 @@
 #define resists_blnd(mon) \
 	(((mon) == &youmonst && (Blind || Unaware)) || ((mon)->mblinded || !(mon)->mcansee \
 	|| !haseyes((mon)->data) || (mon)->msleeping) || resists_flash(mon))
+
+#define is_blinded(mon) \
+	(has_blinded(mon) && !haseyes((mon)->data))
 
 /* monkeys are tameable via bananas but not pacifiable via food,
    otherwise their theft attack could be nullified too easily;

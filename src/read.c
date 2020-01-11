@@ -2217,7 +2217,7 @@ boolean confused, byu;
 
         if (cansee(mtmp->mx, mtmp->my)) {
             pline("%s is hit by %s!", Monnam(mtmp), doname(otmp2));
-            if (is_not_visible(mtmp) && !canspotmon(mtmp))
+            if (is_invisible(mtmp) && !canspotmon(mtmp))
                 map_invisible(mtmp->mx, mtmp->my);
         } else if (u.uswallow && mtmp == u.ustuck)
             You_hear("something hit %s %s over your %s!",

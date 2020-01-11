@@ -531,6 +531,10 @@
 #define EParalyzed u.uprops[PARALYZED].extrinsic
 #define Paralyzed (HParalyzed || EParalyzed)
 
+#define HSleeping u.uprops[SLEEPING].intrinsic
+#define ESleeping u.uprops[SLEEPING].extrinsic
+#define Sleeping (HSleeping || ESleeping)
+
 #define HSummon_forbidden u.uprops[SUMMON_FORBIDDEN].intrinsic
 #define ESummon_forbidden u.uprops[SUMMON_FORBIDDEN].extrinsic
 #define Summon_forbidden (HSummon_forbidden || ESummon_forbidden)

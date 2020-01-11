@@ -553,7 +553,7 @@ register struct monst *mtmp;
     }
 
     /* Slight advantage given. */
-    if (is_dprince(mtmp->data) && has_invisibility(mtmp)) 
+    if (is_dprince(mtmp->data) && is_invisible(mtmp))
 	{
         boolean wasunseen = !canspotmon(mtmp);
 

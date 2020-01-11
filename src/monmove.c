@@ -97,7 +97,7 @@ void
 check_mon_talk(mon)
 struct monst* mon;
 {
-	if (!mon || DEADMONSTER(mon) || !is_speaking_monster(mon->data) || mindless(mon->data) || mon->mstun || mon->mconf || mon->msleeping || mon->mtame)
+	if (!mon || DEADMONSTER(mon) || !is_speaking_monster(mon->data) || mindless(mon->data) || mon->mstun || is_confused(mon) || mon->msleeping || mon->mtame)
 		return;
 
 	boolean mon_talked = FALSE;
@@ -522,10 +522,6 @@ register struct monst *mtmp;
     /* not frozen or sleeping: wipe out texts written in the dust */
     wipe_engr_at(mtmp->mx, mtmp->my, 1, FALSE);
 
-    /* confused monsters get unconfused with small probability */
-    if (mtmp->mconf && !rn2(50))
-        mtmp->mconf = 0;
-
     /* stunned monsters get un-stunned with larger probability */
     if (mtmp->mstun && !rn2(20))
         mtmp->mstun = 0;
@@ -550,7 +546,7 @@ register struct monst *mtmp;
         mtmp->mflee = 0;
 
     /* cease conflict-induced swallow/grab if conflict has ended */
-    if (mtmp == u.ustuck && mtmp->mpeaceful && !mtmp->mconf && !(Conflict))
+    if (mtmp == u.ustuck && mtmp->mpeaceful && !is_confused(mtmp) && !(Conflict))
 	{
         release_hero(mtmp);
         return 0; /* uses up monster's turn */
@@ -709,8 +705,8 @@ register struct monst *mtmp;
     /*  Now the actual movement phase
      */
 
-    if (!nearby || mtmp->mflee || scared || mtmp->mconf || mtmp->mstun
-        || (has_invisibility(mtmp) && !rn2(3))
+    if (!nearby || mtmp->mflee || scared || is_confused(mtmp) || mtmp->mstun
+        || (is_invisible(mtmp) && !rn2(3))
         || (mdat->mlet == S_LEPRECHAUN && !findgold(invent)
             && (findgold(mtmp->minvent) || rn2(2)))
         || (is_wanderer(mdat) && !rn2(4)) || ((Conflict || mon_has_bloodlust(mtmp)) && !mtmp->iswiz)
@@ -801,7 +797,7 @@ register struct monst *mtmp;
         quest_talk(mtmp);
     /* extra emotional attack for vile monsters */
     if (inrange && mtmp->data->msound == MS_CUSS && !mtmp->mpeaceful
-        && couldsee(mtmp->mx, mtmp->my) && !has_invisibility(mtmp) && !rn2(5))
+        && couldsee(mtmp->mx, mtmp->my) && !is_invisible(mtmp) && !rn2(5))
         cuss(mtmp);
 
     return (tmp == 2);
@@ -1052,7 +1048,7 @@ register int after;
     gy = mtmp->muy;
     appr = mtmp->mflee ? -1 : 1;
 
-    if (mtmp->mconf || mtmp->mstun || (u.uswallow && mtmp == u.ustuck))
+    if (is_confused(mtmp) || mtmp->mstun || (u.uswallow && mtmp == u.ustuck))
 	{
         appr = 0;
     } 
@@ -1637,7 +1633,7 @@ register int after;
                     mmoved = 3;
             }
 
-            if (has_invisibility(mtmp)) {
+            if (is_invisible(mtmp)) {
                 newsym(mtmp->mx, mtmp->my);
                 if (mtmp->wormno)
                     see_wsegs(mtmp);

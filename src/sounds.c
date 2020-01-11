@@ -809,7 +809,7 @@ register struct monst *mtmp;
             pline_msg = "howls.";
         } else if (mtmp->mpeaceful) {
             if (mtmp->mtame
-                && (mtmp->mconf || mtmp->mflee || mtmp->mtrapped
+                && (is_confused(mtmp) || mtmp->mflee || mtmp->mtrapped
                     || moves > EDOG(mtmp)->hungrytime || mtmp->mtame < 5))
                 pline_msg = "whines.";
             else if (mtmp->mtame && EDOG(mtmp)->hungrytime > moves + 1000)
@@ -823,7 +823,7 @@ register struct monst *mtmp;
         break;
     case MS_MEW:
         if (mtmp->mtame) {
-            if (mtmp->mconf || mtmp->mflee || mtmp->mtrapped
+            if (is_confused(mtmp) || mtmp->mflee || mtmp->mtrapped
                 || mtmp->mtame < 5)
                 pline_msg = "yowls.";
             else if (moves > EDOG(mtmp)->hungrytime)
@@ -950,7 +950,7 @@ register struct monst *mtmp;
             pline_msg = "wants nothing to do with you.";
         else if (mtmp->mhp < mtmp->mhpmax / 4)
             pline_msg = "moans.";
-        else if (mtmp->mconf || mtmp->mstun)
+        else if (is_confused(mtmp) || mtmp->mstun)
             verbl_msg = !rn2(3) ? "Huh?" : rn2(2) ? "What?" : "Eh?";
         else if (!mtmp->mcansee)
             verbl_msg = "I can't see!";

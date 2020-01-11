@@ -542,7 +542,7 @@ struct entity *etmp;
                       || !etmp->edata->mmove || etmp->emon->wormno))
         return FALSE;
 
-    if (is_u(etmp) ? Confusion : etmp->emon->mconf)
+    if (is_u(etmp) ? Confusion : etmp->emon->mprops[CONFUSION])
         tmp -= 2;
 
     if (is_u(etmp) ? Stunned : etmp->emon->mstun)

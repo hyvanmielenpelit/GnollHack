@@ -421,8 +421,14 @@ struct obj *obj;
     return res;
 }
 
-
-
+void
+nonadditive_increase_mon_temporary_property(mon, prop_index, amount)
+struct monst* mon;
+int prop_index;
+int amount;
+{
+	set_mon_temporary_property(mon, prop_index, max(get_mon_temporary_property(mon, CONFUSION), amount));
+}
 void
 increase_mon_temporary_property(mon, prop_index, amount)
 struct monst* mon;
@@ -438,11 +444,11 @@ int amount;
 	if (!amount)
 		return;
 
-	if (amount > 8191)
-		amount = 8191;
+	if (amount > SHRT_MAX)
+		amount = SHRT_MAX;
 
-	if (amount < -8191)
-		amount = -8191;
+	if (amount < SHRT_MIN)
+		amount = SHRT_MIN;
 
 	unsigned short absvalue = (unsigned short)abs(amount);
 	if (absvalue > M_TIMEOUT)
@@ -587,20 +593,85 @@ struct obj *obj; /* item to make known if effect can be seen */
 #endif
 
 void
-set_mon_temporary_speed_verbosely(mtmp, prop_index, value)
+set_mon_property_verbosely(mtmp, prop_index, value)
 struct monst* mtmp;
 int prop_index;
-unsigned short value;
+int value; /* -1 sets the intrinsic and -2 clears it */
 {
 	/* works for fast, very fast, and slowed */
+	char savedname[BUFSIZ] = "";
+	strcpy(savedname, mon_nam(mtmp));
+
+	char SavedName[BUFSIZ] = "";
+	strcpy(SavedName, Monnam(mtmp));
+
+	boolean could_spot_mon = canspotmon(mtmp);
+	boolean was_invisible = is_invisible(mtmp);
+	boolean was_stoned = has_stoned(mtmp);
+	boolean was_slimed = has_slimed(mtmp);
+	boolean was_strangled = has_strangled(mtmp);
+	boolean was_suffocating = is_suffocating(mtmp);
 	boolean was_fast = is_fast(mtmp);
 	boolean was_very_fast = is_very_fast(mtmp);
 	boolean was_slow = is_slow(mtmp);
+	boolean was_sleeping = is_sleeping(mtmp);
+	boolean was_paralyzed = is_paralyzed(mtmp);
+	boolean was_blinded = is_blinded(mtmp);
+	boolean was_stunned = is_stunned(mtmp);
+	boolean was_confused = is_confused(mtmp);
+	boolean was_hallucinating = is_hallucinating(mtmp);
+	boolean was_charmed = is_charmed(mtmp);
+	boolean was_levitating = is_levitating(mtmp);
+	boolean was_flying = is_flying(mtmp);
 
-	set_mon_temporary_property(mtmp, prop_index, value);
+	if (value >= 0)
+		set_mon_temporary_property(mtmp, prop_index, min(USHRT_MAX, value));
+	else if (value == -1)
+		mtmp->mprops[prop_index] |= M_INTRINSIC_ACQUIRED;
+	else if (value == -2)
+		mtmp->mprops[prop_index] &= ~M_INTRINSIC_ACQUIRED;
 
 	if (canspotmon(mtmp))
 	{
+
+		if (!could_spot_mon)
+		{
+			pline("Suddenly, you can see %s!", mon_nam(mtmp));
+		}
+		else
+		{
+			/* Most such messages here */
+			if (is_invisible(mtmp) && !was_invisible && knowninvisible(mtmp))
+			{
+				pline("%s turns transparent!", SavedName);
+			}
+			else if (!is_invisible(mtmp) && was_invisible)
+			{
+				pline("%s body loses its transparency!", s_suffix(Monnam(mtmp)));
+			}
+		}
+
+		/* Stoned */
+		if (has_stoned(mtmp) && !was_stoned)
+		{
+			pline("%s is turning into stone!", Monnam(mtmp));
+		}
+		else if (!has_stoned(mtmp) && was_stoned)
+		{
+			pline("%s is not turning into stone anymore.", Monnam(mtmp));
+		}
+
+		/* Slimed */
+		if (has_slimed(mtmp) && !was_stoned)
+		{
+			pline("%s is turning into green slime!", Monnam(mtmp));
+		}
+		else if (!has_slimed(mtmp) && was_slimed)
+		{
+			pline("%s is not turning into green slime anymore.", Monnam(mtmp));
+		}
+
+		/* Speed */
 		if ((is_very_fast(mtmp) && !was_very_fast) || (is_fast(mtmp) && was_slow))
 		{
 			pline("%s is moving %sfaster.", Monnam(mtmp), !was_fast ? "much " : "");
@@ -618,11 +689,134 @@ unsigned short value;
 			else
 				pline("%s is moving %sslower.", Monnam(mtmp), was_fast || was_very_fast ? "much " : "");
 		}
+
+		/* Sleeping */
+		if (is_sleeping(mtmp) && !was_sleeping)
+		{
+			pline("%s falls asleep.", Monnam(mtmp));
+		}
+		else if(!is_sleeping(mtmp) && was_sleeping)
+		{
+			pline("%s wakes up.", Monnam(mtmp));
+		}
+
+		/* Paralysis */
+		if (is_paralyzed(mtmp) && !was_paralyzed)
+		{
+			pline("%s is paralyzed!", Monnam(mtmp));
+		}
+		else if (!is_paralyzed(mtmp) && was_paralyzed)
+		{
+			pline("%s can move again!", Monnam(mtmp));
+		}
+
+		/* Blindness */
+		if (is_blinded(mtmp) && !was_blinded)
+		{
+			pline("%s is blinded!", Monnam(mtmp));
+		}
+		else if (!has_blinded(mtmp) && was_blinded)
+		{
+			pline("%s can see again!", Monnam(mtmp));
+		}
+
+		/* Stunned */
+		if (is_stunned(mtmp) && !was_sleeping)
+		{
+			pline("%s falls asleep.", Monnam(mtmp));
+		}
+		else if (!is_sleeping(mtmp) && was_sleeping)
+		{
+			pline("%s wakes up.", Monnam(mtmp));
+		}
+
+		/* Confusion */
+		if (is_confused(mtmp) && !was_confused)
+		{
+			pline("%s is confused!", Monnam(mtmp));
+		}
+		else if (!is_confused(mtmp) && was_confused)
+		{
+			pline("%s looks less confused.", Monnam(mtmp));
+		}
+
+		/* Hallucination */
+		if (is_hallucinating(mtmp) && !was_hallucinating)
+		{
+			pline("%s looks seriously confused!", Monnam(mtmp));
+		}
+		else if (!is_hallucinating(mtmp) && was_hallucinating)
+		{
+			pline("%s looks more straight-minded.", Monnam(mtmp));
+		}
+
+		if (is_charmed(mtmp) && !was_charmed)
+		{
+			pline("%s is charmed!", Monnam(mtmp));
+		}
+		else if (!is_charmed(mtmp) && was_charmed)
+		{
+			pline("%s looks more in control of itself.", Monnam(mtmp));
+		}
+
+		/* Levitation */
+		if (is_levitating(mtmp) && !was_levitating)
+		{
+			pline("%s starts levitating.", Monnam(mtmp));
+		}
+		else if (!is_levitating(mtmp) && was_levitating)
+		{
+			pline("%s stops levitating.", Monnam(mtmp));
+		}
+
+		/* Levitation */
+		if (is_flying(mtmp) && !was_flying)
+		{
+			pline("%s starts flying.", Monnam(mtmp));
+		}
+		else if (!is_flying(mtmp) && was_flying)
+		{
+			pline("%s stops flying.", Monnam(mtmp));
+		}
+
+		if (has_strangled(mtmp) && !was_strangled)
+		{
+			pline("%s is being strangled to death!", Monnam(mtmp));
+		}
+		else if (!has_strangled(mtmp) && was_strangled)
+		{
+			pline("%s stops being strangled.", Monnam(mtmp));
+		}
+
+		if (is_suffocating(mtmp) && !was_suffocating)
+		{
+			pline("%s is suffocating!", Monnam(mtmp));
+		}
+		else if (!is_suffocating(mtmp) && was_suffocating)
+		{
+			pline("%s stops being suffocated.", Monnam(mtmp));
+		}
+
+
+		/* Cancelled */
+		/* Half magic resistance */
+		/* No magic resistance */
+		/* Summoning is forbidden */
+		/* Deaf */
+		/* Sick */
+		/* Vomiting */
+		/* Glib */
+
 	}
+	else if (could_spot_mon)
+	{
+		pline("Suddenly, you cannot see %s anymore!", savedname);
+	}
+
 }
 
 void
-increase_mon_temporary_speed_verbosely(mtmp, prop_index, duration)
+increase_mon_temporary_property_verbosely(mtmp, prop_index, duration)
 struct monst* mtmp;
 int prop_index;
 int duration;
@@ -630,8 +824,13 @@ int duration;
 	unsigned short existing_duration = (mtmp->mprops[prop_index] & M_TIMEOUT);
 	unsigned short value = (unsigned short)max(0, existing_duration + duration);
 
-	set_mon_temporary_speed_verbosely(mtmp, prop_index, value);
+	set_mon_property_verbosely(mtmp, prop_index, value);
 }
+
+
+
+
+
 
 void
 update_all_mon_statistics(mon, silently)
@@ -641,8 +840,8 @@ boolean silently;
 	/* save properties */
 	char savedname[BUFSIZ] = "";
 	strcpy(savedname, mon_nam(mon));
-	boolean was_invisible = has_invisibility(mon);
-	boolean could_see = canseemon(mon);
+	boolean was_invisible = is_invisible(mon);
+	boolean could_see = canspotmon(mon);
 
 
 	update_mon_extrinsics(mon, silently);
@@ -654,7 +853,7 @@ boolean silently;
 	/* Messages for extrinsic phase transition */
 	if (!silently)
 	{
-		if (canseemon(mon))
+		if (canspotmon(mon))
 		{
 			if (!could_see)
 			{
@@ -663,11 +862,11 @@ boolean silently;
 			else
 			{
 				/* Most such messages here */
-				if (has_invisibility(mon) && !was_invisible)
+				if (is_invisible(mon) && !was_invisible && knowninvisible(mon))
 				{
-					pline("%s body becomes transparent!", s_suffix(Monnam(mon)));
+					pline("%s turns transparent!", Monnam(mon));
 				}
-				else if (!has_invisibility(mon) && was_invisible)
+				else if (!is_invisible(mon) && was_invisible)
 				{
 					pline("%s body loses its transparency!", s_suffix(Monnam(mon)));
 				}
@@ -679,6 +878,7 @@ boolean silently;
 		}
 	}
 }
+
 
 /* armor put on or taken off; might be magical variety */
 void
@@ -1328,7 +1528,7 @@ outer_break:
 
     /* if couldn't see it but now can, or vice versa, */
     if (!creation && (unseen ^ !canseemon(mon))) {
-        if (is_not_visible(mon) && !See_invisible) {
+        if (is_invisible(mon) && !See_invisible) {
             pline("Suddenly you cannot see %s.", nambuf);
             makeknown(best->otyp);
         } /* else if (!mon->minvis) pline("%s suddenly appears!",

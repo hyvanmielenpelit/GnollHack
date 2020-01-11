@@ -3125,11 +3125,12 @@ E void FDECL(bypass_objlist, (struct obj *, BOOLEAN_P));
 E struct obj *FDECL(nxt_unbypassed_obj, (struct obj *));
 E struct obj *FDECL(nxt_unbypassed_loot, (Loot *, struct obj *));
 E int FDECL(racial_exception, (struct monst *, struct obj *));
+E void FDECL(nonadditive_increase_mon_temporary_property, (struct monst*, int, int));
 E void FDECL(increase_mon_temporary_property, (struct monst*, int, int));
 E void FDECL(set_mon_temporary_property, (struct monst* mon, int, unsigned short));
 E int FDECL(get_mon_temporary_property, (struct monst*, int));
-E void FDECL(set_mon_temporary_speed_verbosely, (struct monst*, int, unsigned short));
-E void FDECL(increase_mon_temporary_speed_verbosely, (struct monst*, int, int));
+E void FDECL(set_mon_property_verbosely, (struct monst*, int, int));
+E void FDECL(increase_mon_temporary_property_verbosely, (struct monst*, int, int));
 
 /* ### write.c ### */
 

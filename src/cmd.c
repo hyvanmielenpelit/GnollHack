@@ -3502,6 +3502,8 @@ int final;
 		you_are("slowed", from_what(SLOWED));
 	if (Paralyzed)
 		you_are("paralyzed", from_what(PARALYZED));
+	if (Sleeping)
+		you_are("in a magically induced sleep", from_what(SLEEPING));
 	if (Cancelled)
 		you_are("cancelled", from_what(CANCELLED));
 	if (Summon_forbidden)

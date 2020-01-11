@@ -555,8 +555,8 @@ long nmv; /* number of moves */
     /* might recover from temporary trouble */
     if (mtmp->mtrapped && rn2(imv + 1) > 40 / 2)
         mtmp->mtrapped = 0;
-    if (mtmp->mconf && rn2(imv + 1) > 50 / 2)
-        mtmp->mconf = 0;
+    if (is_confused(mtmp) && rn2(imv + 1) > 50 / 2)
+        mtmp->mprops[CONFUSION] = 0;
     if (mtmp->mstun && rn2(imv + 1) > 10 / 2)
         mtmp->mstun = 0;
 
@@ -968,7 +968,7 @@ boolean forcetaming;
     if (mtmp->mtame && obj) {
         int tasty;
 
-        if (mtmp->mcanmove && !mtmp->mconf && !mtmp->meating
+        if (mtmp->mcanmove && !is_confused(mtmp) && !mtmp->meating
             && ((tasty = dogfood(mtmp, obj)) == DOGFOOD
                 || (tasty <= ACCFOOD
                     && EDOG(mtmp)->hungrytime <= monstermoves))) {

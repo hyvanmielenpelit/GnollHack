@@ -191,6 +191,8 @@ do_statusline2()
 		Strcpy(nb = eos(nb), " Slow");
 	if (Paralyzed)
 		Strcpy(nb = eos(nb), " Paral");
+	if (Sleeping)
+		Strcpy(nb = eos(nb), " Sleep");
 	if (Cancelled)
 		Strcpy(nb = eos(nb), " Cancl");
 	if (Sick) {
@@ -767,6 +769,8 @@ bot_via_windowport()
 		blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_SLOWED;
 	if (Paralyzed)
 		blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_PARALYZED;
+	if (Sleeping)
+		blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_SLEEPING;
 	if (Cancelled)
 		blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_CANCELLED;
 
@@ -2298,6 +2302,7 @@ const struct condmap valid_conditions[] = {
     { "ride",     BL_MASK_RIDE },
 	{ "slow",     BL_MASK_SLOWED },
 	{ "paral",    BL_MASK_PARALYZED },
+	{ "sleep",    BL_MASK_SLEEPING },
 	{ "cancl",    BL_MASK_CANCELLED },
 };
 
@@ -2310,11 +2315,11 @@ const struct condmap condition_aliases[] = {
                         | BL_MASK_FOODPOIS | BL_MASK_TERMILL
                         | BL_MASK_BLIND | BL_MASK_DEAF | BL_MASK_STUN
                         | BL_MASK_CONF | BL_MASK_HALLU | BL_MASK_SUFFOC
-                        | BL_MASK_LEV | BL_MASK_FLY | BL_MASK_RIDE | BL_MASK_SLOWED | BL_MASK_PARALYZED | BL_MASK_CANCELLED },
+                        | BL_MASK_LEV | BL_MASK_FLY | BL_MASK_RIDE | BL_MASK_SLOWED | BL_MASK_PARALYZED | BL_MASK_SLEEPING | BL_MASK_CANCELLED },
     { "major_troubles", BL_MASK_STONE | BL_MASK_SLIME | BL_MASK_STRNGL
                         | BL_MASK_FOODPOIS | BL_MASK_TERMILL },
     { "minor_troubles", BL_MASK_BLIND | BL_MASK_DEAF | BL_MASK_STUN
-                        | BL_MASK_CONF | BL_MASK_HALLU | BL_MASK_SLOWED | BL_MASK_PARALYZED | BL_MASK_CANCELLED },
+                        | BL_MASK_CONF | BL_MASK_HALLU | BL_MASK_SLOWED | BL_MASK_PARALYZED | BL_MASK_SLEEPING | BL_MASK_CANCELLED },
     { "movement",       BL_MASK_LEV | BL_MASK_FLY | BL_MASK_RIDE }
 };
 

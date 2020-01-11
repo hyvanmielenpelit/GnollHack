@@ -220,7 +220,7 @@ struct obj *otmp;
                           FALSE),
                  onambuf);
 
-    if (mtmp->mconf)
+    if (is_confused(mtmp))
         pline("Being confused, %s mispronounces the magic words...",
               vismon ? mon_nam(mtmp) : mhe(mtmp));
 }
@@ -323,7 +323,7 @@ struct monst *mtmp;
     /* since unicorn horns don't get used up, the monster would look
      * silly trying to use the same cursed horn round after round
      */
-    if (mtmp->mconf || mtmp->mstun || !mtmp->mcansee) {
+    if (is_confused(mtmp) || mtmp->mstun || !mtmp->mcansee) {
         if (!is_unicorn(mtmp->data) && !nohands(mtmp->data)) {
             for (obj = mtmp->minvent; obj; obj = obj->nobj)
                 if (obj->otyp == UNICORN_HORN && !obj->cursed)
@@ -336,7 +336,7 @@ struct monst *mtmp;
         }
     }
 
-    if (mtmp->mconf || mtmp->mstun) {
+    if (is_confused(mtmp) || mtmp->mstun) {
         struct obj *liztin = 0;
 
         for (obj = mtmp->minvent; obj; obj = obj->nobj) {
@@ -638,8 +638,9 @@ struct monst *mtmp;
         }
         if (!mtmp->mcansee) {
             mcureblindness(mtmp, vismon);
-        } else if (mtmp->mconf || mtmp->mstun) {
-            mtmp->mconf = mtmp->mstun = 0;
+        } else if (is_confused(mtmp) || mtmp->mstun) {
+			mtmp->mprops[CONFUSION] = 0;
+			mtmp->mstun = 0;
             if (vismon)
                 pline("%s seems steadier now.", Monnam(mtmp));
         } else
@@ -697,7 +698,7 @@ struct monst *mtmp;
         mreadmsg(mtmp, otmp);
         m_useup(mtmp, otmp); /* otmp might be free'ed */
         how = SCR_TELEPORTATION;
-        if (obj_is_cursed || mtmp->mconf) {
+        if (obj_is_cursed || is_confused(mtmp)) {
             int nlev;
             d_level flev;
 
@@ -788,9 +789,9 @@ struct monst *mtmp;
 
         if (!rn2(73))
             cnt += rnd(4);
-        if (mtmp->mconf || otmp->cursed)
+        if (is_confused(mtmp) || otmp->cursed)
             cnt += 12;
-        if (mtmp->mconf)
+        if (is_confused(mtmp))
             pm = fish = &mons[PM_ACID_BLOB];
         else if (is_pool(mtmp->mx, mtmp->my))
             fish = &mons[u.uinwater ? PM_GIANT_EEL : PM_CROCODILE];
@@ -1228,7 +1229,7 @@ struct monst *mtmp;
 			 */
 			nomore(MUSE_SCR_EARTH);
 			if (obj->otyp == SCR_EARTH
-				&& ((helmet && is_metallic(helmet)) || mtmp->mconf
+				&& ((helmet && is_metallic(helmet)) || is_confused(mtmp)
 					|| amorphous(mtmp->data) || passes_walls(mtmp->data)
 					|| noncorporeal(mtmp->data) || unsolid(mtmp->data)
 					|| !rn2(10))
@@ -1494,7 +1495,7 @@ struct monst *mtmp;
         /* TODO: handle steeds */
         register int x, y;
         /* don't use monster fields after killing it */
-        boolean confused = (mtmp->mconf ? TRUE : FALSE);
+        boolean confused = (is_confused(mtmp) ? TRUE : FALSE);
         int mmx = mtmp->mx, mmy = mtmp->my;
         boolean is_cursed = otmp->cursed;
 
@@ -1508,7 +1509,7 @@ struct monst *mtmp;
         } else if (cansee(mtmp->mx, mtmp->my)) {
             pline_The("%s rumbles in the middle of nowhere!",
                       ceiling(mtmp->mx, mtmp->my));
-            if (has_invisibility(mtmp))
+            if (is_invisible(mtmp))
                 map_invisible(mtmp->mx, mtmp->my);
             if (oseen)
                 makeknown(otmp->otyp);
@@ -1540,7 +1541,7 @@ struct monst *mtmp;
         boolean vis = cansee(mtmp->mx, mtmp->my);
 
         mreadmsg(mtmp, otmp);
-        if (mtmp->mconf) {
+        if (is_confused(mtmp)) {
             if (vis)
                 pline("Oh, what a pretty fire!");
         } else {
@@ -1883,7 +1884,7 @@ struct monst *mtmp;
         /* format monster's name before altering its visibility */
         Strcpy(nambuf, mon_nam(mtmp));
 		increase_mon_temporary_property(mtmp, INVISIBILITY, d(2, 10) + 80);
-		if (vismon && has_invisibility(mtmp)) { /* was seen, now invisible */
+		if (vismon && is_invisible(mtmp)) { /* was seen, now invisible */
             if (canspotmon(mtmp)) {
                 pline("%s body takes on a %s transparency.",
                       upstart(s_suffix(nambuf)),
@@ -1905,11 +1906,11 @@ struct monst *mtmp;
     case MUSE_WAN_SPEED_MONSTER:
         mzapmsg(mtmp, otmp, TRUE);
         otmp->spe--;
-		increase_mon_temporary_speed_verbosely(mtmp, VERY_FAST, rn1(10, 100 + 60 * bcsign(otmp)) );
+		increase_mon_temporary_property_verbosely(mtmp, VERY_FAST, rn1(10, 100 + 60 * bcsign(otmp)) );
 		return 2;
     case MUSE_POT_SPEED:
         mquaffmsg(mtmp, otmp);
-		increase_mon_temporary_speed_verbosely(mtmp, VERY_FAST, rn1(10, 100 + 60 * bcsign(otmp)));
+		increase_mon_temporary_property_verbosely(mtmp, VERY_FAST, rn1(10, 100 + 60 * bcsign(otmp)));
 		m_useup(mtmp, otmp);
         return 2;
     case MUSE_WAN_POLYMORPH:
@@ -2458,7 +2459,7 @@ boolean stoning; /* True: stop petrification, False: cure stun && confusion */
     /* give a "<mon> is slowing down" message and also remove
        intrinsic speed (comparable to similar effect on the hero) */
     if (stoning)
-		increase_mon_temporary_speed_verbosely(mon, STONED, 10);
+		increase_mon_temporary_property_verbosely(mon, STONED, 10);
 
     if (vis) {
         long save_quan = obj->quan;
@@ -2501,8 +2502,8 @@ boolean stoning; /* True: stop petrification, False: cure stun && confusion */
         else
             pline("%s seems limber!", Monnam(mon));
     }
-    if (lizard && (mon->mconf || mon->mstun)) {
-        mon->mconf = 0;
+    if (lizard && (is_confused(mon) || mon->mstun)) {
+		mon->mprops[CONFUSION]  = 0;
         mon->mstun = 0;
         if (vis && !is_bat(mon->data) && mon->data != &mons[PM_STALKER])
             pline("%s seems steadier now.", Monnam(mon));
@@ -2513,7 +2514,7 @@ boolean stoning; /* True: stop petrification, False: cure stun && confusion */
         if (edog->hungrytime < monstermoves)
             edog->hungrytime = monstermoves;
         edog->hungrytime += nutrit;
-        mon->mconf = 0;
+		mon->mprops[CONFUSION] &= ~M_INTRINSIC_ACQUIRED;
     }
     /* use up monster's next move */
 	mon->mprops[STONED] &= ~M_TIMEOUT;
@@ -2659,7 +2660,7 @@ boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
         pline("%s starts turning %s.", Monnam(mon),
               green_mon(mon) ? "into ooze" : hcolor(NH_GREEN));
     /* -4 => sliming, causes quiet loss of enhanced speed */
-	increase_mon_temporary_speed_verbosely(mon, SLIMED, 10);
+	increase_mon_temporary_property_verbosely(mon, SLIMED, 10);
 
     if (trap) {
         const char *Mnam = vis ? Monnam(mon) : 0;
@@ -2694,7 +2695,7 @@ boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
         dmg = zhitm(mon, by_you ? 21 : -21, (struct obj*)0, 1, 8, 0, &odummyp);
     } else if (otyp == SCR_FIRE) {
         mreadmsg(mon, obj);
-        if (mon->mconf) {
+        if (is_confused(mon)) {
             if (cansee(mon->mx, mon->my))
                 pline("Oh, what a pretty fire!");
             if (vis && !objects[otyp].oc_name_known

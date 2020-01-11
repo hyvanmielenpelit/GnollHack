@@ -1764,7 +1764,7 @@ struct monst *mtmp;
         }
 
         /* Engulf & devour is instant, so don't set meating */
-        if (has_invisibility(mtmp))
+        if (is_invisible(mtmp))
             newsym(mtmp->mx, mtmp->my);
     }
 
@@ -2064,7 +2064,7 @@ long flag;
 
 nexttry: /* eels prefer the water, but if there is no water nearby,
             they will crawl over land */
-    if (mon->mconf)
+    if (is_confused(mon))
 	{
         flag |= ALLOW_ALL;
         flag &= ~NOTONL;
@@ -3250,7 +3250,7 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
 				burycorpse ? CORPSTAT_BURIED : CORPSTAT_NONE, 
 				corpse_chance(mtmp, (struct monst*) 0, FALSE)
 			);
-            if (burycorpse && cadaver && cansee(x, y) && !has_invisibility(mtmp)
+            if (burycorpse && cadaver && cansee(x, y) && !is_invisible(mtmp)
                 && cadaver->where == OBJ_BURIED && !nomsg) {
                 pline("%s corpse ends up buried.", s_suffix(Monnam(mtmp)));
             }
@@ -4718,7 +4718,7 @@ int damtype, dam;
     }
     if (slow) 
 	{
-		increase_mon_temporary_speed_verbosely(mon, SLOWED, 30 + rnd(10));
+		increase_mon_temporary_property_verbosely(mon, SLOWED, 30 + rnd(10));
 	}
     if (heal) {
         if (mon->mhp < mon->mhpmax) {

@@ -1252,7 +1252,7 @@ do_mname()
             && (!(cansee(cx, cy) || see_with_infrared(mtmp))
                 || mtmp->mundetected || M_AP_TYPE(mtmp) == M_AP_FURNITURE
                 || M_AP_TYPE(mtmp) == M_AP_OBJECT
-                || (is_not_visible(mtmp) && !See_invisible)))) {
+                || (is_invisible(mtmp) && !See_invisible)))) {
         pline("I see no monster there.");
         return;
     }
@@ -1790,7 +1790,7 @@ boolean called;
         article = ARTICLE_THE;
 
     do_hallu = Hallucination && !(suppress & SUPPRESS_HALLUCINATION);
-    do_invis = is_not_visible(mtmp) && !(suppress & SUPPRESS_INVISIBLE);
+    do_invis = is_invisible(mtmp) && !(suppress & SUPPRESS_INVISIBLE);
     do_it = !canspotmon(mtmp) && article != ARTICLE_YOUR
             && !program_state.gameover && mtmp != u.usteed
             && !(u.uswallow && mtmp == u.ustuck) && !(suppress & SUPPRESS_IT);

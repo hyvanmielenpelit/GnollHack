@@ -76,7 +76,7 @@
  */
 #define mon_visible(mon) \
     (/* The hero can see the monster IF the monster                     */ \
-     (!is_not_visible(mon) || See_invisible)  /*     1. is not invisible        */ \
+     (!is_invisible(mon) || See_invisible)  /*     1. is not invisible        */ \
      && !mon->mundetected             /* AND 2. not an undetected hider */ \
      && !(mon->mburied || u.uburied)) /* AND 3. neither you nor it is buried */
 
@@ -125,7 +125,7 @@
  * invisible to infravision.
  */
 #define knowninvisible(mon)                                               \
-    (is_not_visible(mtmp)                                                        \
+    (is_invisible(mon)                                                        \
      && ((cansee(mon->mx, mon->my) && (See_invisible || Detect_monsters)) \
          || (Telepat && distu(mon->mx, mon->my) <= (BOLT_LIM * BOLT_LIM))))
 

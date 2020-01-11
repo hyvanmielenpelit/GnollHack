@@ -281,8 +281,8 @@ boolean devour;
             nutrit = (nutrit * 3) / 4;
     }
     edog->hungrytime += nutrit;
-    mtmp->mconf = 0;
-    if (edog->mhpmax_penalty) {
+	mtmp->mprops[CONFUSION] &= ~M_INTRINSIC_ACQUIRED;
+	if (edog->mhpmax_penalty) {
         /* no longer starving */
         mtmp->mhpmax += edog->mhpmax_penalty;
         edog->mhpmax_penalty = 0;
@@ -414,7 +414,7 @@ struct edog *edog;
 		{
 			/* starving pets are limited in healing */
 			int newmhpmax = mtmp->mhpmax / 3;
-			mtmp->mconf = 1;
+			mtmp->mprops[CONFUSION] |= M_INTRINSIC_ACQUIRED;
 			edog->mhpmax_penalty = mtmp->mhpmax - newmhpmax;
 			update_mon_maxhp(mtmp);
 			if (mtmp->mhp > mtmp->mhpmax)
@@ -695,7 +695,7 @@ int after, udist, whappr;
                 }
     } else
         appr = 1; /* gtyp != UNDEF */
-    if (mtmp->mconf)
+    if (is_confused(mtmp))
         appr = 0;
 
 #define FARAWAY (COLNO + 2) /* position outside screen */
@@ -769,7 +769,7 @@ int maxdist;
 
         if ((targ = m_at(curx, cury)) != 0) {
             /* Is the monster visible to the pet? */
-            if ((!is_not_visible(targ) || has_see_invisible(mtmp))
+            if ((!is_invisible(targ) || has_see_invisible(mtmp))
                 && !targ->mundetected)
                 break;
             /* If the pet can't see it, it assumes it aint there */
@@ -812,7 +812,7 @@ int    maxdist;
         if (pal) {
             if (pal->mtame) {
                 /* Pet won't notice invisible pets */
-                if (!is_not_visible(pal) || has_see_invisible(mtmp))
+                if (!is_invisible(pal) || has_see_invisible(mtmp))
                     return 1;
             } else {
                 /* Quest leaders and guardians are always seen */
@@ -837,7 +837,7 @@ struct monst *mtmp, *mtarg;
 
     /* Give 1 in 3 chance of safe breathing even if pet is confused or
      * if you're on the quest start level */
-    if (!mtmp->mconf || !rn2(3) || Is_qstart(&u.uz)) {
+    if (!is_confused(mtmp) || !rn2(3) || Is_qstart(&u.uz)) {
         int mtmp_lev;
         aligntyp align1 = A_NONE, align2 = A_NONE; /* For priests, minions */
         boolean faith1 = TRUE,  faith2 = TRUE;
@@ -921,7 +921,7 @@ struct monst *mtmp, *mtarg;
        similar targets are abundant. */
     score += rnd(5);
     /* Pet may decide not to use ranged attack when confused */
-    if (mtmp->mconf && !rn2(3))
+    if (is_confused(mtmp) && !rn2(3))
         score -= 1000;
     return score;
 }
@@ -1073,7 +1073,7 @@ int after; /* this is extra fast monster movement */
         }
     }
 #if 0 /* [this is now handled in dochug()] */
-    if (!Conflict && !mtmp->mconf
+    if (!Conflict && !is_confused(mtmp)
         && mtmp == u.ustuck && !sticks(youmonst.data)) {
         unstuck(mtmp); /* swallowed case handled above */
         You("get released!");
@@ -1139,7 +1139,7 @@ int after; /* this is extra fast monster movement */
             if ((!mon_disregards_own_health(mtmp) && (int) mtmp2->m_lev >= (int) mtmp->m_lev + 2)
                 || (mtmp2->data == &mons[PM_FLOATING_EYE] && rn2(10)
                     && mtmp->mcansee && haseyes(mtmp->data) && mtmp2->mcansee
-                    && (has_see_invisible(mtmp) || !is_not_visible(mtmp2)))
+                    && (has_see_invisible(mtmp) || !is_invisible(mtmp2)))
                 || (mtmp2->data == &mons[PM_GELATINOUS_CUBE] && rn2(10))
                 || (mtmp2->mtame && !Conflict)
 				|| (max_passive_dmg(mtmp2, mtmp) >= mtmp->mhp)

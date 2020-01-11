@@ -106,8 +106,9 @@ static const struct innate
                  { 0, 0, 0, 0 } },
 
   elf_abil[] = { { 1, INFRAVISION, "", "" },
-                 { 4, SLEEP_RES, "awake", "tired" },
-                 { 0, 0, 0, 0 } },
+                 { 3, SLEEP_RES, "awake", "tired" },
+				 { 6, FREE_ACTION, "nimble", "stiff" },
+				 { 0, 0, 0, 0 } },
 
   gno_abil[] = { { 1, INFRAVISION, "", "" },
                  { 0, 0, 0, 0 } },

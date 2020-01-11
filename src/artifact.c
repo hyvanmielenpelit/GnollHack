@@ -1169,8 +1169,8 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
         if (youdefend)
             make_confused(itimeout_incr(HConfusion, 4L), FALSE);
         else
-            mdef->mconf = 1;
-    }
+			increase_mon_temporary_property_verbosely(mdef, CONFUSION, 4);
+	}
 
     /* now give message(s) describing side-effects;
        don't let vtense() be fooled by assigned name ending in 's' */

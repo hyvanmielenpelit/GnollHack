@@ -671,7 +671,7 @@ register struct monst *mtmp;
         case AT_TUCH:
         case AT_BUTT:
         case AT_TENT:
-            if (!range2 && (!MON_WEP(mtmp) || mtmp->mconf || Conflict || !touch_petrifies(youmonst.data))) 
+            if (!range2 && (!MON_WEP(mtmp) || is_confused(mtmp) || Conflict || !touch_petrifies(youmonst.data))) 
 			{
                 if (foundyou) 
 				{
@@ -3127,7 +3127,7 @@ struct attack *mattk;
             && !mtmp->mspec_used && rn2(5)) {
             if (cancelled) {
                 react = 0; /* "confused" */
-                already = (mtmp->mconf != 0);
+                already = (is_confused(mtmp) != 0);
             } else {
                 int conf = d(3, 4);
 
@@ -3308,7 +3308,7 @@ struct attack *mattk; /* non-Null: current attack; Null: general capability */
         genagr = poly_gender();
     } else {
         pagr = magr->data;
-        agrinvis = has_invisibility(magr);
+        agrinvis = is_invisible(magr);
         genagr = gender(magr);
     }
     if (mdef == &youmonst) {

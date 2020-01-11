@@ -271,7 +271,7 @@ boolean foundyou;
 	if (ml == 0)
 		failchance = 100;
 
-    if (rn2(100) < failchance) {//(rn2(ml * 10) < (mtmp->mconf ? 100 : 20)) { /* fumbled attack */
+    if (rn2(100) < failchance) {//(rn2(ml * 10) < (is_confused(mtmp) ? 100 : 20)) { /* fumbled attack */
         if (canseemon(mtmp) && !Deaf)
             pline_The("air crackles around %s.", mon_nam(mtmp));
         return (0);
@@ -484,7 +484,7 @@ int spellnum;
         dmg = 0;
         break;
     case MGC_DISAPPEAR: /* makes self invisible */
-        if (!is_not_visible(mtmp) && !has_blocks_invisibility(mtmp))
+        if (!is_invisible(mtmp) && !has_blocks_invisibility(mtmp))
 		{
             if (canseemon(mtmp))
                 pline("%s suddenly %s!", Monnam(mtmp),
@@ -512,7 +512,7 @@ int spellnum;
         dmg = 0;
         break;
     case MGC_HASTE_SELF:
-		increase_mon_temporary_speed_verbosely(mtmp, VERY_FAST, 150 + rnd(50));
+		increase_mon_temporary_property_verbosely(mtmp, VERY_FAST, 150 + rnd(50));
 		dmg = 0;
         break;
     case MGC_CURE_SELF:

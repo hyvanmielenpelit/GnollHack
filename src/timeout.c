@@ -136,6 +136,7 @@ const struct propname {
 	{ NO_MAGIC_RES, "lacking magic resistance", "no magic resistance" },
 	{ CHARMED, "charmed", "charm" },
 	{ PARALYZED, "paralyzed", "paralysis" },
+	{ SLEEPING, "sleeping unnaturally deeply", "magically induced sleep" },
 	{ SUMMON_FORBIDDEN, "having summoning forbidden", "summoning forbidden" },
 	{ LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
 	{  0, 0 },
@@ -885,6 +886,10 @@ nh_timeout()
 				if (!Paralyzed)
 					Your("limbs are moving again.");
 				break;
+			case SLEEPING:
+				if (!Sleeping)
+					You("woke up.");
+				break;
 			case SUMMON_FORBIDDEN:
 				if (!Summon_forbidden)
 					You("feel summoning is working properly again.");
@@ -1050,6 +1055,9 @@ nh_timeout()
 				break;
 			case PARALYZED:
 				Your("limbs are starting move a bit.");
+				break;
+			case SLEEPING:
+				You("are starting to wake up.");
 				break;
 			case SUMMON_FORBIDDEN:
 				You("feel summoning is starting to work a bit more properly again.");

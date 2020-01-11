@@ -343,7 +343,7 @@ struct obj *otmp;
 		if (!resist(mtmp, otmp, 0, 0, NOTELL)) {
             if (disguised_mimic)
                 seemimic(mtmp);
-			increase_mon_temporary_speed_verbosely(mtmp, SLOWED, otmp->oclass == WAND_CLASS ? rn1(10, 100 + 60 * bcsign(otmp)) : duration);
+			increase_mon_temporary_property_verbosely(mtmp, SLOWED, otmp->oclass == WAND_CLASS ? rn1(10, 100 + 60 * bcsign(otmp)) : duration);
 			m_dowear(mtmp, FALSE); /* might want speed boots */
             if (u.uswallow && (mtmp == u.ustuck) && is_whirly(mtmp->data)) {
                 You("disrupt %s!", mon_nam(mtmp));
@@ -357,7 +357,7 @@ struct obj *otmp;
 		if (!resist(mtmp, otmp, 0, 0, NOTELL)) {
             if (disguised_mimic)
                 seemimic(mtmp);
-			increase_mon_temporary_speed_verbosely(mtmp, VERY_FAST, 150 + rnd(50));
+			increase_mon_temporary_property_verbosely(mtmp, VERY_FAST, 150 + rnd(50));
             m_dowear(mtmp, FALSE); /* might want speed boots */
         }
         if (mtmp->mtame)
@@ -516,18 +516,14 @@ struct obj *otmp;
         break;
     case WAN_MAKE_INVISIBLE: {
 		res = 1;
-		int oldinvis = has_invisibility(mtmp);
-        char nambuf[BUFSZ];
+		int oldinvis = is_invisible(mtmp);
 
         if (disguised_mimic)
             seemimic(mtmp);
-        /* format monster's name before altering its visibility */
-        Strcpy(nambuf, Monnam(mtmp));
 		
-		increase_mon_temporary_property(mtmp, INVISIBILITY, 100 + rn2(50));
+		increase_mon_temporary_property_verbosely(mtmp, INVISIBILITY, 100 + rn2(50));
 
 		if (!oldinvis && knowninvisible(mtmp)) {
-            pline("%s turns transparent!", nambuf);
             reveal_invis = TRUE;
             learn_it = TRUE;
         }
@@ -1269,8 +1265,8 @@ int mnum_override; /* Use this mnum instead */
 		mtmp2->mcansee = 1; /* set like in makemon */
         mtmp2->mblinded = 0;
         mtmp2->mstun = 0;
-        mtmp2->mconf = 0;
-        if (mtmp2->isshk) {
+		mtmp2->mprops[CONFUSION] = 0;
+		if (mtmp2->isshk) {
             neweshk(mtmp);
             *ESHK(mtmp) = *ESHK(mtmp2);
             if (ESHK(mtmp2)->bill_p != 0
@@ -1555,8 +1551,8 @@ boolean replaceundead;
                 }
             }
             /* was ghost, now alive, it's all very confusing */
-            mtmp->mconf = 1;
-            /* separate ghost monster no longer exists */
+			mtmp->mprops[CONFUSION] |= M_INTRINSIC_ACQUIRED;
+			/* separate ghost monster no longer exists */
             mongone(ghost);
         }
         free_omid(corpse);
@@ -5277,7 +5273,8 @@ boolean stop_at_first_hit_object;
 	}
 	boolean beam_cleared_off = FALSE;
 
-    while (range-- > 0) {
+    while (range-- > 0)
+	{
         int x, y;
 
         bhitpos.x += ddx;
@@ -5285,14 +5282,16 @@ boolean stop_at_first_hit_object;
         x = bhitpos.x;
         y = bhitpos.y;
 
-        if (!isok(x, y)) {
+        if (!isok(x, y))
+		{
             bhitpos.x -= ddx;
             bhitpos.y -= ddy;
             break;
         }
 
         if (is_pick(obj) && inside_shop(x, y)
-            && (mtmp = shkcatch(obj, x, y)) != 0) {
+            && (mtmp = shkcatch(obj, x, y)) != 0) 
+		{
             tmp_at(DISP_END, 0);
             return mtmp;
         }
@@ -5303,7 +5302,8 @@ boolean stop_at_first_hit_object;
         if ((weapon == THROWN_WEAPON || weapon == KICKED_WEAPON || weapon == GOLF_SWING)
             && typ == IRONBARS
             && hits_bars(pobj, x - ddx, y - ddy, bhitpos.x, bhitpos.y,
-                         point_blank ? 0 : !rn2(5), 1)) {
+                         point_blank ? 0 : !rn2(5), 1)) 
+		{
             /* caveat: obj might now be null... */
             obj = *pobj;
             bhitpos.x -= ddx;
@@ -5311,13 +5311,15 @@ boolean stop_at_first_hit_object;
             break;
         }
 
-        if (weapon == ZAPPED_WAND && find_drawbridge(&x, &y)) {
+        if (weapon == ZAPPED_WAND && find_drawbridge(&x, &y))
+		{
             boolean learn_it = FALSE;
 
             switch (obj->otyp) {
             case WAN_OPENING:
             case SPE_KNOCK:
-                if (is_db_wall(bhitpos.x, bhitpos.y)) {
+                if (is_db_wall(bhitpos.x, bhitpos.y))
+				{
                     if (cansee(x, y) || cansee(bhitpos.x, bhitpos.y))
                         learn_it = TRUE;
                     open_drawbridge(x, y);
@@ -5348,8 +5350,10 @@ boolean stop_at_first_hit_object;
          *
          * skiprange_start is only set if this is a thrown rock
          */
-        if (skiprange_start && (range == skiprange_start) && allow_skip) {
-            if (is_pool(bhitpos.x, bhitpos.y) && !mtmp) {
+        if (skiprange_start && (range == skiprange_start) && allow_skip)
+		{
+            if (is_pool(bhitpos.x, bhitpos.y) && !mtmp) 
+			{
                 in_skip = TRUE;
                 if (!Blind)
                     pline("%s %s%s.", Yname2(obj), otense(obj, "skip"),
@@ -5357,23 +5361,28 @@ boolean stop_at_first_hit_object;
                 else
                     You_hear("%s skip.", yname(obj));
                 skipcount++;
-            } else if (skiprange_start > skiprange_end + 1) {
+            } else if (skiprange_start > skiprange_end + 1)
+			{
                 --skiprange_start;
             }
         }
-        if (in_skip) {
-            if (range <= skiprange_end) {
+        if (in_skip)
+		{
+            if (range <= skiprange_end)
+			{
                 in_skip = FALSE;
                 if (range > 3) /* another bounce? */
                     skiprange(range, &skiprange_start, &skiprange_end);
-            } else if (mtmp && M_IN_WATER(mtmp->data)) {
+            } else if (mtmp && M_IN_WATER(mtmp->data)) 
+			{
                 if ((!Blind && canseemon(mtmp)) || sensemon(mtmp))
                     pline("%s %s over %s.", Yname2(obj), otense(obj, "pass"),
                           mon_nam(mtmp));
             }
         }
 
-        if (mtmp && !(in_skip && M_IN_WATER(mtmp->data))) {
+        if (mtmp && !(in_skip && M_IN_WATER(mtmp->data)))
+		{
             notonhead = (bhitpos.x != mtmp->mx || bhitpos.y != mtmp->my);
             if (weapon == FLASHED_LIGHT) {
                 /* FLASHED_LIGHT hitting invisible monster should
@@ -5383,7 +5392,7 @@ boolean stop_at_first_hit_object;
                    keep on going.  Note that we use mtmp->minvis
                    not canspotmon() because it makes no difference
                    whether the hero can see the monster or not. */
-                if (has_invisibility(mtmp)) 
+                if (is_invisible(mtmp)) 
 				{
                     obj->ox = u.ux, obj->oy = u.uy;
                     (void) flash_hits_mon(mtmp, obj);
@@ -5391,15 +5400,19 @@ boolean stop_at_first_hit_object;
                     tmp_at(DISP_END, 0);
                     return mtmp; /* caller will call flash_hits_mon */
                 }
-            } else if (weapon == INVIS_BEAM) {
+            } 
+			else if (weapon == INVIS_BEAM) 
+			{
                 /* Like FLASHED_LIGHT, INVIS_BEAM should continue
                    through invisible targets; unlike it, we aren't
                    prepared for multiple hits so just get first one
                    that's either visible or could see its invisible
                    self.  [No tmp_at() cleanup is needed here.] */
-                if (!has_invisibility(mtmp) || has_see_invisible(mtmp))
+                if (!is_invisible(mtmp) || has_see_invisible(mtmp))
                     return mtmp;
-            } else if (weapon != ZAPPED_WAND) {
+            } 
+			else if (weapon != ZAPPED_WAND)
+			{
 
                 /* THROWN_WEAPON, KICKED_WEAPON */
                 if (!tethered_weapon)
@@ -5408,7 +5421,9 @@ boolean stop_at_first_hit_object;
                 if (cansee(bhitpos.x, bhitpos.y) && !canspotmon(mtmp))
                     map_invisible(bhitpos.x, bhitpos.y);
                 return mtmp;
-            } else {
+            }
+			else 
+			{
                 /* ZAPPED_WAND */
 				if (weapon == ZAPPED_WAND && zapped_wand_obj_displayed && !zapped_wand_beam)
 				{
@@ -5430,14 +5445,18 @@ boolean stop_at_first_hit_object;
 						range -= 3;
 				}
             }
-        } else {
+        } 
+		else 
+		{
             if (weapon == ZAPPED_WAND && obj->otyp == WAN_PROBING
-                && glyph_is_invisible(levl[bhitpos.x][bhitpos.y].glyph)) {
+                && glyph_is_invisible(levl[bhitpos.x][bhitpos.y].glyph)) 
+			{
                 unmap_object(bhitpos.x, bhitpos.y);
                 newsym(x, y);
             }
         }
-        if (fhito) {
+        if (fhito)
+		{
 			if (bhitpile(obj, fhito, bhitpos.x, bhitpos.y, 0, stop_at_first_hit_object))
 			{
 				if (stop_at_first_hit_object)
@@ -5445,17 +5464,21 @@ boolean stop_at_first_hit_object;
 				else
 					range--;
 			}
-        } else {
+        } 
+		else 
+		{
             if ((weapon == KICKED_WEAPON || weapon == GOLF_SWING)
                 && ((obj->oclass == COIN_CLASS
                      && OBJ_AT(bhitpos.x, bhitpos.y))
                     || ship_object(obj, bhitpos.x, bhitpos.y,
-                                   costly_spot(bhitpos.x, bhitpos.y)))) {
+                                   costly_spot(bhitpos.x, bhitpos.y))))
+			{
                 tmp_at(DISP_END, 0);
                 return (struct monst *) 0;
             }
         }
-        if (weapon == ZAPPED_WAND && (IS_DOOR(typ) || typ == SDOOR)) {
+        if (weapon == ZAPPED_WAND && (IS_DOOR(typ) || typ == SDOOR))
+		{
             switch (obj->otyp) 
 			{
             case WAN_OPENING:
@@ -5464,12 +5487,14 @@ boolean stop_at_first_hit_object;
             case SPE_KNOCK:
             case SPE_WIZARD_LOCK:
             case SPE_FORCE_BOLT:
-                if (doorlock(obj, bhitpos.x, bhitpos.y)) {
+                if (doorlock(obj, bhitpos.x, bhitpos.y)) 
+				{
                     if (cansee(bhitpos.x, bhitpos.y)
                         || (obj->otyp == WAN_STRIKING && !Deaf))
                         learnwand(obj);
                     if (levl[bhitpos.x][bhitpos.y].doormask == D_BROKEN
-                        && *in_rooms(bhitpos.x, bhitpos.y, SHOPBASE)) {
+                        && *in_rooms(bhitpos.x, bhitpos.y, SHOPBASE))
+					{
                         shopdoor = TRUE;
                         add_damage(bhitpos.x, bhitpos.y, SHOP_DOOR_COST);
                     }
@@ -5477,12 +5502,14 @@ boolean stop_at_first_hit_object;
                 break;
             }
         }
-        if (!ZAP_POS(typ) || closed_door(bhitpos.x, bhitpos.y)) {
+        if (!ZAP_POS(typ) || closed_door(bhitpos.x, bhitpos.y))
+		{
             bhitpos.x -= ddx;
             bhitpos.y -= ddy;
             break;
         }
-        if ((weapon != ZAPPED_WAND || (weapon == ZAPPED_WAND && displayedobjtype != STRANGE_OBJECT)) && weapon != INVIS_BEAM) {
+        if ((weapon != ZAPPED_WAND || (weapon == ZAPPED_WAND && displayedobjtype != STRANGE_OBJECT)) && weapon != INVIS_BEAM)
+		{
             /* 'I' present but no monster: erase */
             /* do this before the tmp_at() */
             if (glyph_is_invisible(levl[bhitpos.x][bhitpos.y].glyph)
@@ -5502,24 +5529,29 @@ boolean stop_at_first_hit_object;
         }
         /* limit range of ball so hero won't make an invalid move */
         if (weapon == THROWN_WEAPON && range > 0
-            && obj->otyp == HEAVY_IRON_BALL) {
+            && obj->otyp == HEAVY_IRON_BALL)
+		{
             struct obj *bobj;
             struct trap *t;
 
-            if ((bobj = sobj_at(BOULDER, x, y)) != 0) {
+            if ((bobj = sobj_at(BOULDER, x, y)) != 0)
+			{
                 if (cansee(x, y))
                     pline("%s hits %s.", The(distant_name(obj, xname)),
                           an(xname(bobj)));
                 range = 0;
-            } else if (obj == uball) {
-                if (!test_move(x - ddx, y - ddy, ddx, ddy, TEST_MOVE)) {
+            } 
+			else if (obj == uball) {
+                if (!test_move(x - ddx, y - ddy, ddx, ddy, TEST_MOVE))
+				{
                     /* nb: it didn't hit anything directly */
                     if (cansee(x, y))
                         pline("%s jerks to an abrupt halt.",
                               The(distant_name(obj, xname))); /* lame */
                     range = 0;
                 } else if (Sokoban && (t = t_at(x, y)) != 0
-                           && (is_pit(t->ttyp) || is_hole(t->ttyp))) {
+                           && (is_pit(t->ttyp) || is_hole(t->ttyp))) 
+				{
                     /* hero falls into the trap, so ball stops */
                     range = 0;
                 }

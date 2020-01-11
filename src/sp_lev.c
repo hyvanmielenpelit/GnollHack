@@ -1811,7 +1811,7 @@ struct mkroom *croom;
         if (m->stunned)
             mtmp->mstun = 1;
         if (m->confused)
-            mtmp->mconf = 1;
+			mtmp->mprops[CONFUSION] |= M_INTRINSIC_ACQUIRED;
         if (m->invis) 
 		{
 			mtmp->mprops[INVISIBILITY] |= M_INTRINSIC_ACQUIRED;

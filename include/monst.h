@@ -140,7 +140,6 @@ struct monst {
 	Bitfield(mcarrying, 7);	
 	Bitfield(mwantstodrop, 1);
 
-	Bitfield(mconf, 1);     /* confused */
     Bitfield(mpeaceful, 1); /* does not attack unprovoked */
     Bitfield(mtrapped, 1);  /* trapped in a pit, web or bear trap */
     Bitfield(mleashed, 1);  /* monster is on a leash */

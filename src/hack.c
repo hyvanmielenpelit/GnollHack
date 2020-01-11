@@ -1562,7 +1562,7 @@ domove_core()
                     }
                 /*FALLTHRU*/
                 default:
-                    if (u.ustuck->mtame && !Conflict && !u.ustuck->mconf)
+                    if (u.ustuck->mtame && !Conflict && !is_confused(u.ustuck))
                         goto pull_free;
                     You("cannot escape from %s!", mon_nam(u.ustuck));
                     nomul(0);
@@ -2725,7 +2725,7 @@ lookaround()
             if ((mtmp = m_at(x, y)) != 0
                 && M_AP_TYPE(mtmp) != M_AP_FURNITURE
                 && M_AP_TYPE(mtmp) != M_AP_OBJECT
-                && (!is_not_visible(mtmp) || See_invisible) && !mtmp->mundetected) {
+                && (!is_invisible(mtmp) || See_invisible) && !mtmp->mundetected) {
                 if ((context.run != 1 && !mtmp->mtame)
                     || (x == u.ux + u.dx && y == u.uy + u.dy
                         && !context.travel)) {

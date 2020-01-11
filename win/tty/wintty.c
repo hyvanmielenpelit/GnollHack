@@ -3676,6 +3676,7 @@ static struct condition_t {
     { BL_MASK_RIDE,     { "Ride",     "Rid",   "Rd"  } },
 	{ BL_MASK_SLOWED,   { "Slow",     "Slo",   "Sl"  } },
 	{ BL_MASK_PARALYZED,{ "Paral",    "Par",   "Pa"  } },
+	{ BL_MASK_SLEEPING, { "Sleep",    "Slp",   "Sl"  } },
 	{ BL_MASK_CANCELLED,{ "Cancl",    "Cnl",   "Cl"  } },
 };
 static const char *encvals[3][6] = {

@@ -314,7 +314,7 @@ register struct monst *magr, *mdef;
 
     /* Calculate the armour class differential. */
     tmp = find_mac(mdef) + magr->m_lev + magr->mhitinc;
-    if (mdef->mconf || !mdef->mcanmove || mdef->msleeping) {
+    if (is_confused(mdef) || !mdef->mcanmove || mdef->msleeping) {
         tmp += 4;
         mdef->msleeping = 0;
     }
@@ -421,7 +421,7 @@ register struct monst *magr, *mdef;
              * have a weapon instead.  This instinct doesn't work for
              * players, or under conflict or confusion.
              */
-            if (!magr->mconf && !Conflict && otmp && mattk->aatyp != AT_WEAP
+            if (!is_confused(magr) && !Conflict && otmp && mattk->aatyp != AT_WEAP
                 && touch_petrifies(mdef->data)) {
                 strike = 0;
                 break;
@@ -709,7 +709,7 @@ struct attack *mattk;
     }
 
     if (has_cancelled(magr)|| !magr->mcansee || !mdef->mcansee
-        || (is_not_visible(magr) && !has_see_invisible(mdef)) || mdef->msleeping) {
+        || (is_invisible(magr) && !has_see_invisible(mdef)) || mdef->msleeping) {
         if (vis && canspotmon(mdef))
             pline("but nothing happens.");
         return MM_MISS;
@@ -725,7 +725,7 @@ struct attack *mattk;
                                       "The gaze is reflected away by %s %s.");
                 return MM_MISS;
             }
-            if (is_not_visible(mdef) && !has_see_invisible(magr)) {
+            if (is_invisible(mdef) && !has_see_invisible(magr)) {
                 if (canseemon(magr)) {
                     pline(
                       "%s doesn't seem to notice that %s gaze was reflected.",
@@ -1263,7 +1263,7 @@ register struct obj* omonwep;
     case AD_SLOW:
         if (!cancelled) 
 		{
-			set_mon_temporary_speed_verbosely(mdef, SLOWED, max(mdef->mprops[SLOWED] & M_TIMEOUT, 20 + rnd(10)));
+			set_mon_property_verbosely(mdef, SLOWED, max(mdef->mprops[SLOWED] & M_TIMEOUT, 20 + rnd(10)));
 			mdef->mstrategy &= ~STRAT_WAITFORU;
         }
         break;
@@ -1272,10 +1272,11 @@ register struct obj* omonwep;
          * limit, setting spec_used would not really be right (though
          * we still should check for it).
          */
-        if (!has_cancelled(magr)&& !mdef->mconf && !magr->mspec_used) {
+        if (!has_cancelled(magr)&& !is_confused(mdef) && !magr->mspec_used)
+		{
             if (vis && canseemon(mdef))
                 pline("%s looks confused.", Monnam(mdef));
-            mdef->mconf = 1;
+			nonadditive_increase_mon_temporary_property(mdef, CONFUSION, 20 + rnd(10));
             mdef->mstrategy &= ~STRAT_WAITFORU;
         }
         break;
@@ -1298,8 +1299,8 @@ register struct obj* omonwep;
         if (!has_cancelled(magr)&& haseyes(pd) && mdef->mcansee) {
             if (vis && canseemon(mdef))
                 pline("%s looks %sconfused.", Monnam(mdef),
-                      mdef->mconf ? "more " : "");
-            mdef->mconf = 1;
+                      is_confused(mdef) ? "more " : "");
+			nonadditive_increase_mon_temporary_property(mdef, HALLUC, 100 + rnd(50));
             mdef->mstrategy &= ~STRAT_WAITFORU;
         }
         tmp = 0;
@@ -1846,7 +1847,7 @@ int mdead;
                 if (!rn2(20))
                     tmp = 24;
                 if (magr->mcansee && haseyes(madat) && mdef->mcansee
-                    && (is_not_visible(magr) || !has_invisibility(mdef))) {
+                    && (is_invisible(magr) || !is_invisible(mdef))) {
                     /* construct format string; guard against '%' in Monnam */
                     Strcpy(buf, s_suffix(Monnam(mdef)));
                     (void) strNsubst(buf, "%", "%%", 0);
