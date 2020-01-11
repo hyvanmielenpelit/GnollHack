@@ -924,6 +924,7 @@ docast()
 
     if (getspell(&spell_no, FALSE))
         return spelleffects(spell_no, FALSE);
+
     return 0;
 }
 
@@ -1807,7 +1808,8 @@ boolean atme;
 	case SPE_GREATER_HEALING:
 	case SPE_FULL_HEALING:
 	case SPE_DRAIN_LIFE:
-    case SPE_STONE_TO_FLESH:
+	case SPE_PROBE_MONSTER:
+	case SPE_STONE_TO_FLESH:
         if (objects[otyp].oc_dir != NODIR) {
             if (otyp == SPE_HEALING || otyp == SPE_EXTRA_HEALING || otyp == SPE_GREATER_HEALING || otyp == SPE_FULL_HEALING
 				|| otyp == SPE_REPLENISH_UNDEATH || otyp == SPE_GREATER_UNDEATH_REPLENISHMENT
@@ -2094,8 +2096,13 @@ boolean atme;
 	if (pointsmultiplier > 0)
 		use_skill(skill, (spellev(spell) + 2) * pointsmultiplier);
 
+	int result = 1;
+	if (pseudo->otyp == SPE_PROBE_MONSTER)
+		result = 0;
+
     obfree(pseudo, (struct obj *) 0); /* now, get rid of it */
-    return 1;
+
+    return result;
 }
 
 void

@@ -1650,6 +1650,18 @@ struct materialcomponentlist matlists[] =
 		}
 	},
 
+	{ SPE_PROBE_MONSTER,
+	"50 gold pieces",
+	STRANGE_OBJECT,
+	10,
+		{
+			{GOLD_PIECE, NOT_APPLICABLE, 50, MATCOMP_NO_FLAGS},
+			NO_MATCOMP,
+			NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
+		}
+	},
+
+
 
 	/* Array terminator, uses spellsgained */
 	{STRANGE_OBJECT,

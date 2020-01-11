@@ -532,7 +532,8 @@ struct obj *otmp;
 		if(wake)
 			res = 1;
 		break;
-    case WAN_PROBING:
+	case SPE_PROBE_MONSTER:
+	case WAN_PROBING:
 		res = 1;
 		wake = FALSE;
         reveal_invis = TRUE;
@@ -4354,7 +4355,8 @@ boolean ordinary;
     case WAN_NOTHING:
 		damage = 0;
 		break;
-    case WAN_PROBING: {
+	case WAN_PROBING: {
+	case SPE_PROBE_MONSTER:
 		damage = 0;
 		struct obj *otmp;
 
@@ -4495,7 +4497,8 @@ struct obj *obj; /* wand or spell */
      * Carefully test the results of any that are
      * moved here from the bottom section.
      */
-    case WAN_PROBING:
+	case WAN_PROBING:
+	case SPE_PROBE_MONSTER:
         probe_monster(u.usteed);
         learnwand(obj);
         steedhit = TRUE;
@@ -4730,8 +4733,9 @@ struct obj *obj; /* wand or spell */
     ttmp = t_at(x, y); /* trap if there is one */
 
     switch (obj->otyp) {
-    case WAN_PROBING:
-        ptmp = 0;
+	case WAN_PROBING:
+	case SPE_PROBE_MONSTER:
+		ptmp = 0;
         if (u.dz < 0) {
             You("probe towards the %s.", ceiling(x, y));
         } else {
@@ -5460,7 +5464,7 @@ boolean stop_at_first_hit_object;
         } 
 		else 
 		{
-            if (weapon == ZAPPED_WAND && obj->otyp == WAN_PROBING
+            if (weapon == ZAPPED_WAND && (obj->otyp == WAN_PROBING || obj->otyp == SPE_PROBE_MONSTER)
                 && glyph_is_invisible(levl[bhitpos.x][bhitpos.y].glyph)) 
 			{
                 unmap_object(bhitpos.x, bhitpos.y);
