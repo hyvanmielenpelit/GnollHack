@@ -2501,9 +2501,9 @@ boolean from_invent;
         if (obj->otyp == POT_OIL && obj->lamplit) {
             explode_oil(obj, x, y);
         } else if (distu(x, y) <= 2) {
-            if (!breathless(youmonst.data) || haseyes(youmonst.data)) {
+            if (!has_innate_breathless(youmonst.data) || haseyes(youmonst.data)) {
                 if (obj->otyp != POT_WATER) {
-                    if (!breathless(youmonst.data)) {
+                    if (!has_innate_breathless(youmonst.data)) {
                         /* [what about "familiar odor" when known?] */
                         You("smell a peculiar odor...");
                     } else {

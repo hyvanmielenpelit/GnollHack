@@ -415,7 +415,7 @@
 /* Get wet, may go under surface */
 
 #define Breathless \
-    (Magical_breathing || breathless(youmonst.data))
+    (Magical_breathing || has_innate_breathless(youmonst.data))
 
 #define Underwater (u.uinwater)
 

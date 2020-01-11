@@ -18,7 +18,7 @@
 #define is_floater(ptr) ((ptr)->mlet == S_EYE || (ptr)->mlet == S_LIGHT)
 #define is_clinger(ptr) (((ptr)->mflags1 & M1_CLING) != 0L)
 #define is_swimmer(ptr) (((ptr)->mflags1 & M1_SWIM) != 0L)
-#define breathless(ptr) (((ptr)->mflags1 & M1_BREATHLESS) != 0L)
+#define has_innate_breathless(ptr) (((ptr)->mflags1 & M1_BREATHLESS) != 0L)
 #define amphibious(ptr) \
     (((ptr)->mflags1 & (M1_AMPHIBIOUS | M1_BREATHLESS)) != 0L)
 #define passes_walls(ptr) (((ptr)->mflags1 & M1_WALLWALK) != 0L)
@@ -207,7 +207,13 @@
 	has_property(mon, STONED)
 
 #define has_magical_breathing(mon) \
-	has_innate_or_property(mon, MAGICAL_BREATHING)
+	(has_property(mon, MAGICAL_BREATHING))
+
+#define is_breathless(mon) \
+	(has_magical_breathing(mon) || has_innate_breathless((mon)->data))
+
+
+#define mon_survives_without_air  (is_breathless(mon))
 
 #define has_strangled(mon) \
 	has_property(mon, STRANGLED)
@@ -280,6 +286,17 @@
 
 #define is_hallucinating(mon) \
 	(has_hallucination(mon) && !has_hallucination_resistance(mon))
+
+
+#define has_sick(mon) \
+	has_property(mon, SICK)
+
+#define has_sickness_resistance(mon) \
+	has_innate_or_property(mon, SICK_RES)
+
+#define is_sick(mon) \
+	(has_sick(mon) && !has_sickness_resistance(mon) && !is_undead((mon)->data) && !is_demon((mon)->data) && !is_vampshifter(mon))
+
 
 #define has_charmed(mon) \
 	has_property(mon, CHARMED)
@@ -375,6 +392,8 @@
     (has_innate((mon)->data, MR_DRAIN) || has_property(mon, DRAIN_RES) || is_undead((mon)->data) || is_were((mon)->data) || is_demon((mon)->data) || is_vampshifter(mon))
 #define resists_flash(mon) \
     (has_innate((mon)->data, MR_FLASH) || has_property(mon, FLASH_RES) || is_blinded(mon) || !haseyes((mon)->data) )
+#define resists_sickness(mon) \
+    (has_innate((mon)->data, MR_SICK) || has_property(mon, SICK_RES) || is_undead((mon)->data) || is_demon((mon)->data) || is_vampshifter(mon) )
 
 
 /* Conveyed propreties */

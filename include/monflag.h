@@ -73,6 +73,7 @@
 #define MR_BLIND_TELEPATHY	0x00200000L		
 #define MR_TELEPATHY	0x00400000L		
 #define MR_FEAR			0x00800000L			/* immune to fear */
+#define MR_SICK			0x01000000L			/* immune to sickness */
 
 
 /* conveyances: resistances, teleport, teleport control, telepathy, as well as other properties from eating the corpse */
@@ -89,7 +90,7 @@
 #define MC_DRAIN		0x00000200L			/* confers life draining resistance */
 #define MC_CHARM		0x00000400L			/* confers charm resistance */
 #define MC_FEAR			0x00000800L			/* confers fear resistance */
-/* free bit */
+#define MC_SICK			0x00001000L			/* confers sickness resistance */
 /* free bit */
 /* free bit */
 /* free bit */

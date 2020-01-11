@@ -1145,7 +1145,7 @@ struct obj* otmp; /* object to be identified if any state change happens */
 	{
 		if (Underwater) 
 		{
-			if (!breathless(youmonst.data) && !amphibious(youmonst.data) && !Swimming) 
+			if (!has_innate_breathless(youmonst.data) && !amphibious(youmonst.data) && !Swimming) 
 			{
 				state_change_detected = TRUE;
 				You("suddenly inhale an unhealthy amount of %s!",

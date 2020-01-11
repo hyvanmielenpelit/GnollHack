@@ -978,7 +978,7 @@ genericptr_t p2;
         /* Non living and non breathing monsters are not concerned;
            adult green dragon is not affected by gas cloud, baby one is */
         if (!(is_not_living(mtmp->data) || is_vampshifter(mtmp))
-            && !breathless(mtmp->data)
+            && !has_innate_breathless(mtmp->data)
             /* not is_swimmer(); assume that non-fish are swimming on
                the surface and breathing the air above it periodically
                unless located at water spot on plane of water */
@@ -986,7 +986,7 @@ genericptr_t p2;
                  && is_pool(mtmp->mx, mtmp->my))
             /* exclude monsters with poison gas breath attack:
                adult green dragon and Chromatic Dragon (and iron golem,
-               but is_not_living() and breathless() tests also catch that) */
+               but is_not_living() and has_innate_breathless() tests also catch that) */
             && !(attacktype_fordmg(mtmp->data, AT_BREA, AD_DRST)
                  || attacktype_fordmg(mtmp->data, AT_BREA, AD_RBRE))) {
             if (cansee(mtmp->mx, mtmp->my))

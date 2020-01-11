@@ -1660,7 +1660,7 @@ int how;
 
     /* Note: potionbreathe() does its own docall() */
     if ((distance == 0 || (distance < 3 && rn2(5)))
-        && (!breathless(youmonst.data) || haseyes(youmonst.data)))
+        && (!has_innate_breathless(youmonst.data) || haseyes(youmonst.data)))
         potionbreathe(obj);
     else if (obj->dknown && !objects[obj->otyp].oc_name_known
              && !objects[obj->otyp].oc_uname && cansee(tx, ty))
@@ -1700,7 +1700,7 @@ register struct obj *obj;
     case POT_RESTORE_ABILITY:
     case POT_GAIN_ABILITY:
         if (obj->cursed) {
-            if (!breathless(youmonst.data))
+            if (!has_innate_breathless(youmonst.data))
                 pline("Ulch!  That potion smells terrible!");
             else if (haseyes(youmonst.data)) {
                 const char *eyes = body_part(EYE);
@@ -2202,7 +2202,7 @@ dodip()
             pline("BOOM!  They explode!");
             wake_nearto(u.ux, u.uy, (BOLT_LIM + 1) * (BOLT_LIM + 1));
             exercise(A_STR, FALSE);
-            if (!breathless(youmonst.data) || haseyes(youmonst.data))
+            if (!has_innate_breathless(youmonst.data) || haseyes(youmonst.data))
                 potionbreathe(obj);
             useupall(obj);
             losehp(amt + rnd(9), /* not physical damage */

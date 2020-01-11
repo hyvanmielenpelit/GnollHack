@@ -7166,7 +7166,7 @@ boolean forcedestroy;
         pline("%s %s %s!", mult, xname(obj),
               destroy_strings[dindx][(cnt > 1L)]);
         if (osym == POTION_CLASS && dmgtyp != AD_COLD) {
-            if (!breathless(youmonst.data) || haseyes(youmonst.data))
+            if (!has_innate_breathless(youmonst.data) || haseyes(youmonst.data))
                 potionbreathe(obj);
         }
         if (obj->owornmask) {

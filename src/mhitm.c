@@ -1508,7 +1508,14 @@ register struct obj* omonwep;
         /* there's no msomearmor() function, so just do damage */
         /* if (cancelled) break; */
         break;
-    default:
+	case AD_DISE:
+		if (!resists_sickness(mdef) && !cancelled)
+		{
+			set_mon_property_verbosely(mdef, SICK, 
+				is_sick(mdef) ? max(1, (get_mon_temporary_property(mdef, SICK) + 1) / 3) : rn1(M_ACURR(mdef, A_CON), 20));
+		}
+		break;
+	default:
         tmp = 0;
         break;
     }

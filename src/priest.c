@@ -989,21 +989,28 @@ struct monst *mtmp;
 		Strcat(info, ", unable to summon");
 	if (is_confused(mtmp))
         Strcat(info, ", confused");
-    if (is_blinded(mtmp) || is_blinded(mtmp))
+    if (is_blinded(mtmp))
         Strcat(info, ", blind");
-    if (is_stunned(mtmp))
+	if (is_sick(mtmp))
+		Strcat(info, ", terminally ill");
+	if (is_fearful(mtmp))
+		Strcat(info, ", fearful");
+	if (has_stoned(mtmp))
+		Strcat(info, ", solidifying");
+	if (has_slimed(mtmp))
+		Strcat(info, ", becoming slimy");
+	if (has_strangled(mtmp))
+		Strcat(info, ", being strangled");
+	if (has_paralyzed(mtmp))
+		Strcat(info, ", paralyzed");
+	if (has_sleeping(mtmp))
+		Strcat(info, ", asleep");
+	if (is_stunned(mtmp))
         Strcat(info, ", stunned");
     if (mtmp->msleeping)
         Strcat(info, ", asleep");
-#if 0 /* unfortunately mfrozen covers temporary sleep and being busy \
-         (donning armor, for instance) as well as paralysis */
-    else if (mtmp->mfrozen)
-        Strcat(info, ", paralyzed");
-#else
     else if (mtmp->mfrozen || !mtmp->mcanmove)
         Strcat(info, ", can't move");
-#endif
-    /* [arbitrary reason why it isn't moving] */
     else if (mtmp->mstrategy & STRAT_WAITMASK)
         Strcat(info, ", meditating");
     if (mtmp->mflee)
@@ -1065,7 +1072,15 @@ ustatusline()
         Strcat(info, ", nauseated"); /* !"nauseous" */
     if (Confusion)
         Strcat(info, ", confused");
-    if (Blind) {
+	if (Fearful)
+		Strcat(info, ", fearful");
+	if (Cancelled)
+		Strcat(info, ", cancelled");
+	if (Paralyzed)
+		Strcat(info, ", paralyzed");
+	if (Sleeping)
+		Strcat(info, ", sleeping");
+	if (Blind) {
         Strcat(info, ", blind");
         if (u.ucreamed) {
             if ((long) u.ucreamed < Blinded || Blindfolded

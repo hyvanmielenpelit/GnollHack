@@ -1003,7 +1003,8 @@ struct permonst *mdat;
     if (Sick_resistance) {
         You_feel("a slight illness.");
         return FALSE;
-    } else {
+    } else
+	{
         make_sick(Sick ? Sick / 3L + 1L : (long) rn1(ACURR(A_CON), 20),
                   mdat->mname, TRUE, SICK_NONVOMITABLE);
         return TRUE;

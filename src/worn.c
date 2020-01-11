@@ -623,6 +623,7 @@ int value; /* -1 sets the intrinsic and -2 clears it */
 	boolean was_charmed = is_charmed(mtmp);
 	boolean was_levitating = is_levitating(mtmp);
 	boolean was_flying = is_flying(mtmp);
+	boolean was_sick = is_sick(mtmp);
 
 	if (value >= 0)
 		set_mon_temporary_property(mtmp, prop_index, min(USHRT_MAX, value));
@@ -795,6 +796,15 @@ int value; /* -1 sets the intrinsic and -2 clears it */
 		else if (!is_suffocating(mtmp) && was_suffocating)
 		{
 			pline("%s stops being suffocated.", Monnam(mtmp));
+		}
+
+		if (is_sick(mtmp) && !was_sick)
+		{
+			pline("%s looks terminally ill!", Monnam(mtmp));
+		}
+		else if (!is_sick(mtmp) && was_sick)
+		{
+			pline("%s is cured from its terminal illness.", Monnam(mtmp));
 		}
 
 

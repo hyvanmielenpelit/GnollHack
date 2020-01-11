@@ -34,6 +34,7 @@ static NEARDATA struct ability_conversion_table prop2innate[] = {
 	{ ANTI_MAGIC, MR_MAGIC, MC_NONE, -1  },
 	{ CHARM_RES, MR_CHARM, MC_CHARM, -1 },
 	{ FEAR_RES, MR_FEAR, MC_FEAR, -1 },
+	{ SICK_RES, MR_SICK, MC_FEAR, -1 },
 	{ DRAIN_RES, MR_DRAIN, MC_DRAIN, AD_DRLI },
 	{ FLASH_RES, MR_FLASH, MC_NONE, AD_BLND },
 	{ REFLECTING, MR_REFLECTING, MC_NONE, -1 },
@@ -338,7 +339,7 @@ can_blow(mtmp)
 struct monst *mtmp;
 {
     if ((is_silent(mtmp->data) || mtmp->data->msound == MS_BUZZ)
-        && (breathless(mtmp->data) || verysmall(mtmp->data)
+        && (has_innate_breathless(mtmp->data) || verysmall(mtmp->data)
             || !has_head(mtmp->data) || mtmp->data->mlet == S_EEL))
         return FALSE;
     if ((mtmp == &youmonst) && Strangled)
@@ -384,7 +385,7 @@ struct monst *mon;
         nobrainer = mindless(mon->data);
         /* monsters don't wear amulets of magical breathing,
            so second part doesn't achieve anything useful... */
-        nonbreathing = (breathless(mon->data)
+        nonbreathing = (has_innate_breathless(mon->data)
                         || ((mamul = which_armor(mon, W_AMUL)) != 0
                             && (mamul->otyp == AMULET_OF_MAGICAL_BREATHING)));
     }

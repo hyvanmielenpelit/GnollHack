@@ -769,7 +769,7 @@ register xchar x, y;
             > dist2(x, y, mtmp->mx, mtmp->my)) {
             if (!um_dist(mtmp->mx, mtmp->my, 3)) {
                 ; /* still close enough */
-            } else if (otmp->cursed && !breathless(mtmp->data)) {
+            } else if (otmp->cursed && !has_innate_breathless(mtmp->data)) {
                 if (um_dist(mtmp->mx, mtmp->my, 5)
                     || (mtmp->mhp -= rnd(2)) <= 0) {
                     long save_pacifism = u.uconduct.killer;

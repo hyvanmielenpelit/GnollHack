@@ -1386,6 +1386,46 @@ mcalcdistress()
 			increase_mon_temporary_property_verbosely(mtmp, PARALYZED, -1);
 		if (get_mon_temporary_property(mtmp, FEARFUL) > 0)
 			increase_mon_temporary_property_verbosely(mtmp, FEARFUL, -1);
+		if (get_mon_temporary_property(mtmp, SICK) > 0 && is_sick(mtmp))
+		{
+			increase_mon_temporary_property(mtmp, SICK, -1);
+			if (get_mon_temporary_property(mtmp, SICK) == 0 && !has_sickness_resistance(mtmp))
+			{
+				if (canseemon(mtmp))
+				{
+					pline("%s dies of %s terminal illness!", Monnam(mtmp), mhis(mtmp));
+				}
+				mtmp->mhp = 0;
+				mondied(mtmp);
+			}
+		}
+		if (get_mon_temporary_property(mtmp, STRANGLED) > 0 && !is_breathless(mtmp))
+		{
+			increase_mon_temporary_property(mtmp, STRANGLED, -1);
+			if (get_mon_temporary_property(mtmp, STRANGLED) == 0)
+			{
+				if (canseemon(mtmp))
+				{
+					pline("%s dies of strangulation!", Monnam(mtmp));
+				}
+				mtmp->mhp = 0;
+				mondied(mtmp);
+			}
+		}
+		if (get_mon_temporary_property(mtmp, AIRLESS_ENVIRONMENT) > 0 && !is_breathless(mtmp) &&
+			!(is_pool(mtmp->mx, mtmp->my) && amphibious(mtmp->data)))
+		{
+			increase_mon_temporary_property(mtmp, AIRLESS_ENVIRONMENT, -1);
+			if (get_mon_temporary_property(mtmp, AIRLESS_ENVIRONMENT) == 0)
+			{
+				if (canseemon(mtmp))
+				{
+					pline("%s dies of suffocation!", Monnam(mtmp));
+				}
+				mtmp->mhp = 0;
+				mondied(mtmp);
+			}
+		}
 		if (mtmp->mfrozen && !--mtmp->mfrozen)
             mtmp->mcanmove = 1;
 		if (mtmp->mstaying && !--mtmp->mstaying)
@@ -1397,8 +1437,22 @@ mcalcdistress()
 		if (mtmp->notalktimer > 0)
 			mtmp->notalktimer--;
 
-        /* FIXME: mtmp->mlstmv ought to be updated here */
-    }
+
+		/* might need to update mon properties */
+		update_all_mon_statistics(mtmp, TRUE);
+
+		/* recurring properties */
+		for (int i = 1; i <= LAST_PROP; i++)
+		{
+			if ((mtmp->mprops[i] & M_TIMEOUT) == 0 && context.properties[i].recurring && (mtmp->mprops[i] & ~M_TIMEOUT))
+			{
+				increase_mon_temporary_property(mtmp, i, 
+					context.properties[i].recurring_constant + (context.properties[i].recurring_random > 0 ? rn2(context.properties[i].recurring_random + 1) : 0)
+				);
+			}
+		}
+
+	}
 }
 
 int
@@ -2036,7 +2090,7 @@ long flag;
     lavaok = (is_flyer(mdat) || is_clinger(mdat) || likes_lava(mdat));
     thrudoor = ((flag & (ALLOW_WALL | BUSTDOOR)) != 0L);
     poisongas_ok = ((is_not_living(mdat) || is_vampshifter(mon)
-                     || breathless(mdat)) || resists_poison(mon));
+                     || has_innate_breathless(mdat)) || resists_poison(mon));
     in_poisongas = ((gas_reg = visible_region_at(x,y)) != 0
                     && gas_reg->glyph == gas_glyph);
 
