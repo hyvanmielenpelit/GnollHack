@@ -78,8 +78,8 @@ static NEARDATA struct mflag_description m1flag_descriptions[] = {
 	{ M1_OVIPAROUS, "oviparious", "oviparious monsters" },
 	{ M1_SLITHY, "slithy", "slithing monsters" },
 	{ M1_SWIM, "swimming", "swimming monsters" },
-	{ M1_THICK_HIDE, "oviparious", "oviparious monsters" },
-	{ M1_TUNNEL, "tunneling", "tunneling monsters" },
+	{ M1_THICK_HIDE, "thick hide", "thick-hided monsters" },
+//	{ M1_TUNNEL, "tunneling", "tunneling monsters" },
 	{ M1_UNSOLID, "unsolid", "unsolid monsters" },
 	{ M1_WALLWALK, "passes through walls", "monsters that can pass through walls" },
 	{ 0 , "", "" }
