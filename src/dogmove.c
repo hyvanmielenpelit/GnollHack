@@ -1410,7 +1410,9 @@ xchar nx, ny;
 {
     if ((!is_pool(nx, ny) || is_swimmer(mon->data))
         && (!is_lava(nx, ny) || likes_lava(mon->data))
-        && (!sobj_at(BOULDER, nx, ny) || throws_rocks(mon->data)))
+        && (!sobj_at(BOULDER, nx, ny) || throws_rocks(mon->data))
+		&& mon_can_reach_floor(mon)
+		)
         return TRUE;
     return FALSE;
 }

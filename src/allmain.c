@@ -48,31 +48,41 @@ boolean resuming;
 
     /* side-effects from the real world */
     flags.moonphase = phase_of_the_moon();
-    if (flags.moonphase == FULL_MOON) {
+    if (flags.moonphase == FULL_MOON)
+	{
         You("are lucky!  Full moon tonight.");
         change_luck(1, FALSE);
-    } else if (flags.moonphase == NEW_MOON) {
+    }
+	else if (flags.moonphase == NEW_MOON) 
+	{
         pline("Be careful!  New moon tonight.");
     }
+
     flags.friday13 = friday_13th();
-    if (flags.friday13) {
+    if (flags.friday13) 
+	{
         pline("Watch out!  Bad things can happen on Friday the 13th.");
         change_luck(-1, FALSE);
     }
 
-    if (!resuming) { /* new game */
+    if (!resuming)
+	{ /* new game */
         context.rndencode = rnd(9000);
         set_wear((struct obj *) 0); /* for side-effects of starting gear */
         (void) pickup(1);      /* autopickup at initial location */
     }
     context.botlx = TRUE; /* for STATUS_HILITES */
     update_inventory(); /* for perm_invent */
-    if (resuming) { /* restoring old game */
+
+    if (resuming) 
+	{ /* restoring old game */
         read_engr_at(u.ux, u.uy); /* subset of pickup() */
     }
 
     (void) encumber_msg(); /* in case they auto-picked up something */
-    if (defer_see_monsters) {
+
+    if (defer_see_monsters)
+	{
         defer_see_monsters = FALSE;
         see_monsters();
     }
@@ -82,8 +92,10 @@ boolean resuming;
     youmonst.movement = NORMAL_SPEED; /* give the hero some movement points */
     context.move = 0;
 
+	/* Main move loop */
     program_state.in_moveloop = 1;
-    for (;;) {
+    for (;;)
+	{
 #ifdef SAFERHANGUP
         if (program_state.done_hup)
             end_of_input();
@@ -93,22 +105,31 @@ boolean resuming;
         do_positionbar();
 #endif
 
-        if (context.move) {
+        if (context.move) 
+		{
             /* actual time passed */
             youmonst.movement -= NORMAL_SPEED;
 
-            do { /* hero can't move this turn loop */
+			/* Loop for increasing youmonst.movement towards the action threshold of NORMAL_SPEED */
+			do
+			{ /* hero can't move this turn loop */
                 wtcap = encumber_msg();
 				context.hungry_message_displayed = FALSE;
+
+				/* Loop for moving monsters*/
                 context.mon_moving = TRUE;
-                do {
+                do 
+				{
                     monscanmove = movemon();
                     if (youmonst.movement >= NORMAL_SPEED)
                         break; /* it's now your turn */
-                } while (monscanmove);
+                } 
+				while (monscanmove);
                 context.mon_moving = FALSE;
 
-                if (!monscanmove && youmonst.movement < NORMAL_SPEED) {
+				/* Increase your movement */
+                if (!monscanmove && youmonst.movement < NORMAL_SPEED)
+				{
                     /* both hero and monsters are out of steam this round */
                     struct monst *mtmp;
 
@@ -130,6 +151,7 @@ boolean resuming;
 					{
 						create_monster_or_encounter();
 					}
+
                     /* calculate how much time passed. */
                     if (u.usteed && u.umoved) 
 					{
@@ -156,7 +178,8 @@ boolean resuming;
                         }
                     }
 
-                    switch (wtcap) {
+                    switch (wtcap) 
+					{
                     case UNENCUMBERED:
                         break;
                     case SLT_ENCUMBER:
@@ -207,24 +230,32 @@ boolean resuming;
                      * requires that encumbrance and movement rate be
                      * recalculated.
                      */
-                    if (u.uinvulnerable) {
+                    if (u.uinvulnerable)
+					{
                         /* for the moment at least, you're in tiptop shape */
                         wtcap = UNENCUMBERED;
-                    } else if (!Upolyd ? (u.uhp < u.uhpmax)
+                    } 
+					else if (!Upolyd ? (u.uhp < u.uhpmax)
                                        : (u.mh < u.mhmax
-                                          || youmonst.data->mlet == S_EEL)) {
+                                          || youmonst.data->mlet == S_EEL)) 
+					{
 						/* regenerate hit points */
 						regenerate_hp();
                     }
 
                     /* moving around while encumbered is hard work */
-                    if (wtcap > MOD_ENCUMBER && u.umoved) {
+                    if (wtcap > MOD_ENCUMBER && u.umoved) 
+					{
                         if (!(wtcap < EXT_ENCUMBER ? moves % 30
-                                                   : moves % 10)) {
-                            if (Upolyd && u.mh > 1) {
+                                                   : moves % 10)) 
+						{
+                            if (Upolyd && u.mh > 1)
+							{
                                 u.mh--;
                                 context.botl = TRUE;
-                            } else if (!Upolyd && u.uhp > 1) {
+                            }
+							else if (!Upolyd && u.uhp > 1) 
+							{
                                 u.uhp--;
                                 context.botl = TRUE;
                             } else {
@@ -239,8 +270,10 @@ boolean resuming;
 					regenerate_mana();
 
 
-                    if (!u.uinvulnerable) {
-                        if (Teleportation && !rn2(85)) {
+                    if (!u.uinvulnerable) 
+					{
+                        if (Teleportation && !rn2(85))
+						{
                             xchar old_ux = u.ux, old_uy = u.uy;
 
                             tele();
@@ -257,12 +290,15 @@ boolean resuming;
                         if ((change == 1 && !Polymorph)
                             || (change == 2 && u.ulycn == NON_PM))
                             change = 0;
+
                         if (Polymorph && !rn2(100))
                             change = 1;
                         else if (u.ulycn >= LOW_PM && !Upolyd
                                  && !rn2(80 - (20 * night())))
                             change = 2;
-                        if (change && !Unchanging) {
+
+                        if (change && !Unchanging) 
+						{
                             if (multi >= 0) {
                                 stop_occupation();
                                 if (change == 1)
@@ -310,8 +346,10 @@ boolean resuming;
                         under_ground(0);
 
                     /* when immobile, count is in turns */
-                    if (multi < 0) {
-                        if (++multi == 0) { /* finished yet? */
+                    if (multi < 0 && !Sleeping && !Paralyzed) /* Let Sleeping and Paralyzed expire first, and then multi */
+					{
+                        if (++multi == 0)
+						{ /* finished yet? */
                             unmul((char *) 0);
                             /* if unmul caused a level change, take it now */
                             if (u.utotype)
@@ -320,6 +358,10 @@ boolean resuming;
                     }
                 }
             } while (youmonst.movement < NORMAL_SPEED); /* hero can't move */
+
+
+			/* Now the hero can take finally move or take an action, unless the action is prevented by sleeping, paralysis, or being occupied */
+			/* These are equivalent to the next ones below outside the if clause */
 
             /******************************************/
             /* once-per-hero-took-time things go here */
@@ -349,7 +391,8 @@ boolean resuming;
         clear_splitobjs();
 		update_all_character_properties((struct obj*)0);
 
-        if (!context.mv || Blind)
+		/* Redraw screen */
+		if (!context.mv || Blind)
 		{
             /* redo monsters if hallu or wearing a helm of telepathy */
             if (Hallucination) { /* update screen randomly */
@@ -367,6 +410,7 @@ boolean resuming;
                 vision_recalc(0); /* vision! */
         }
 
+		/* Update the statusline */
 		if (context.botl || context.botlx) {
 			bot();
 			curs_on_u();
@@ -378,25 +422,31 @@ boolean resuming;
 
 		context.move = 1;
 
-        if (multi >= 0 && occupation) {
+        if (multi >= 0 && occupation && !Sleeping && !Paralyzed) /* No occupation when sleeping or paralyzed */
+		{
 #if defined(MICRO) || defined(WIN32)
             abort_lev = 0;
-            if (kbhit()) {
+
+            if (kbhit())
+			{
                 if ((ch = pgetchar()) == ABORT)
                     abort_lev++;
                 else
                     pushch(ch);
             }
+
             if (!abort_lev && (*occupation)() == 0)
 #else
             if ((*occupation)() == 0)
 #endif
                 occupation = 0;
+
             if (
 #if defined(MICRO) || defined(WIN32)
                 abort_lev ||
 #endif
-                monster_nearby()) {
+                monster_nearby()) 
+			{
                 stop_occupation();
                 reset_eat();
             }
@@ -419,27 +469,34 @@ boolean resuming;
 
 		if (!Sleeping && !Paralyzed)
 		{
-			if (multi > 0) {
+			if (multi > 0) 
+			{
 				lookaround();
-				if (!multi) {
+
+				if (!multi) 
+				{
 					/* lookaround may clear multi */
 					context.move = 0;
 					if (flags.time)
 						context.botl = TRUE;
 					continue;
 				}
-				if (context.mv) {
+
+				if (context.mv) 
+				{
 					if (multi < COLNO && !--multi)
 						context.travel = context.travel1 = context.mv =
 						context.run = 0;
 					domove();
 				}
-				else {
+				else 
+				{
 					--multi;
 					rhack(save_cm);
 				}
 			}
-			else if (multi == 0) {
+			else if (multi == 0)
+			{
 #ifdef MAIL
 				ckmailstatus();
 #endif
@@ -455,9 +512,11 @@ boolean resuming;
 
         if (vision_full_recalc)
             vision_recalc(0); /* vision! */
+
         /* when running in non-tport mode, this gets done through domove() */
         if ((!context.run || flags.runmode == RUN_TPORT)
-            && (multi && (!context.travel ? !(multi % 7) : !(moves % 7L)))) {
+            && (multi && (!context.travel ? !(multi % 7) : !(moves % 7L))))
+		{
             if (flags.time && context.run)
                 context.botl = TRUE;
             /* [should this be flush_screen() instead?] */

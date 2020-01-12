@@ -860,6 +860,9 @@ boolean silently;
 	/* save properties */
 	char savedname[BUFSIZ] = "";
 	strcpy(savedname, mon_nam(mon));
+
+	boolean was_levitating = is_levitating(mon);
+	boolean was_flying = is_flying(mon);
 	boolean was_invisible = is_invisible(mon);
 	boolean could_see = canspotmon(mon);
 
@@ -890,6 +893,20 @@ boolean silently;
 				{
 					pline("%s body loses its transparency!", s_suffix(Monnam(mon)));
 				}
+			}
+
+			if (is_flying(mon) && !was_levitating && !was_flying)
+			{
+				pline("%s starts flying!", Monnam(mon));
+
+			}
+			else if (is_levitating(mon) && !was_levitating && !was_flying)
+			{
+				pline("%s starts levitating!", Monnam(mon));
+			}
+			else if (!is_levitating(mon) && !is_flying(mon) && (was_levitating || !was_flying))
+			{
+				pline("%s lands down.", Monnam(mon));
 			}
 		}
 		else if (could_see)

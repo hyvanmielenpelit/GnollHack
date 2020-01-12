@@ -347,7 +347,8 @@
 #define is_levitating(mon) \
 	(has_levitation(mon) && !has_flying(mon))
 
-
+#define mon_can_reach_floor(mon) \
+	(!is_levitating(mon) || Is_airlevel(&u.uz)|| Is_waterlevel(&u.uz))
 
 #define has_invisibility(mon) \
 	((has_innate_invisibility(mon->data) || has_property(mon, INVISIBILITY)))

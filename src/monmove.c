@@ -1135,7 +1135,7 @@ register int after;
             minr = 1;
 
         if ((likegold || likegems || likeobjs || likemagic || likerock
-             || conceals) && (!*in_rooms(omx, omy, SHOPBASE)
+             || conceals) && mon_can_reach_floor(mtmp) && (!*in_rooms(omx, omy, SHOPBASE)
                               || (!rn2(25) && !mtmp->isshk))) {
  look_for_obj:
             oomx = min(COLNO - 1, omx + minr);
@@ -1588,7 +1588,9 @@ register int after;
             } else
                 newsym(mtmp->mx, mtmp->my);
         }
-        if (OBJ_AT(mtmp->mx, mtmp->my) && mon_can_move(mtmp) && !mtmp->issummoned) {
+
+        if (OBJ_AT(mtmp->mx, mtmp->my) && mon_can_move(mtmp) && !mtmp->issummoned && mon_can_reach_floor(mtmp)) 
+		{
             /* recompute the likes tests, in case we polymorphed
              * or if the "likegold" case got taken above */
             if (setlikes) {
@@ -1620,7 +1622,8 @@ register int after;
                     return 2; /* it died */
             }
 
-            if (!*in_rooms(mtmp->mx, mtmp->my, SHOPBASE) || !rn2(25)) {
+            if (!*in_rooms(mtmp->mx, mtmp->my, SHOPBASE) || !rn2(25)) 
+			{
                 boolean picked = FALSE;
 
                 if (likeobjs)
