@@ -817,7 +817,7 @@ int spellnum;
 
     if (adtyp == AD_SPEL) {
         /* aggravate monsters, etc. won't be cast by peaceful monsters */
-        if (mtmp->mpeaceful
+        if (is_peaceful(mtmp)
             && (spellnum == MGC_AGGRAVATION || spellnum == MGC_SUMMON_MONS
                 || spellnum == MGC_CLONE_WIZ))
             return TRUE;
@@ -832,7 +832,7 @@ int spellnum;
            same as when monsters drink potions of invisibility.  This doesn't
            really make a lot of sense, but lets the player avoid hitting
            peaceful monsters by mistake */
-        if (mtmp->mpeaceful && !See_invisible && spellnum == MGC_DISAPPEAR)
+        if (is_peaceful(mtmp) && !See_invisible && spellnum == MGC_DISAPPEAR)
             return TRUE;
         /* healing when already healed */
         if (mtmp->mhp == mtmp->mhpmax && spellnum == MGC_CURE_SELF)
@@ -856,7 +856,7 @@ int spellnum;
     } else if (adtyp == AD_CLRC) {
         /* summon insects/sticks to snakes won't be cast by peaceful monsters
          */
-        if (mtmp->mpeaceful && spellnum == CLC_INSECTS)
+        if (is_peaceful(mtmp) && spellnum == CLC_INSECTS)
             return TRUE;
         /* healing when already healed */
         if (mtmp->mhp == mtmp->mhpmax && spellnum == CLC_CURE_SELF)

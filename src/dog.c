@@ -151,7 +151,7 @@ boolean quietly;
     newsym(mtmp->mx, mtmp->my);
 
     /* must wield weapon immediately since pets will otherwise drop it */
-    if (mtmp->mtame && attacktype(mtmp->data, AT_WEAP)) {
+    if (is_tame(mtmp) && attacktype(mtmp->data, AT_WEAP)) {
         mtmp->weapon_strategy = NEED_HTH_WEAPON;
         (void) mon_wield_item(mtmp, FALSE);
     }
@@ -281,7 +281,7 @@ losedogs()
                 if (dismissKops == 0)
                     dismissKops = 1;
                 ESHK(mtmp)->dismiss_kops = FALSE; /* reset */
-            } else if (!mtmp->mpeaceful) {
+            } else if (!is_peaceful(mtmp)) {
                 /* an unpacified shk is returning; don't dismiss kops
                    even if another pacified one is willing to do so */
                 dismissKops = -1;
@@ -294,7 +294,7 @@ losedogs()
         if (mtmp->isshk) {
             /* hostile shk might accompany hero [ESHK(mtmp)->dismiss_kops
                can't be set here; it's only used for migrating_mons] */
-            if (!mtmp->mpeaceful)
+            if (!is_peaceful(mtmp))
                 dismissKops = -1;
         }
     }
@@ -380,7 +380,7 @@ boolean with_you;
            goto_level(do.c) decides who ends up at your target spot
            when there is a monster there too. */
         if (!MON_AT(u.ux, u.uy)
-            && !rn2(mtmp->mtame ? 10 : mtmp->mpeaceful ? 5 : 2))
+            && !rn2(is_tame(mtmp) ? 10 : is_peaceful(mtmp) ? 5 : 2))
             rloc_to(mtmp, u.ux, u.uy);
         else
             mnexto(mtmp);
@@ -571,9 +571,9 @@ long nmv; /* number of moves */
         mtmp->mspec_used -= imv;
 
     /* reduce tameness for every 150 moves you are separated */
-    if (mtmp->mtame && !mtmp->isfaithful) {
+    if (mtmp->mtame/**/ && !mtmp->isfaithful) {
         int wilder = (imv + 75) / 150;
-        if (mtmp->mtame > wilder)
+        if (mtmp->mtame/**/ > wilder)
             mtmp->mtame -= wilder; /* less tame */
         else if (mtmp->mtame > rn2(wilder))
             mtmp->mtame = 0; /* untame */
@@ -629,7 +629,7 @@ boolean pets_only; /* true for ascension or final escape */
         if (DEADMONSTER(mtmp))
             continue;
         if (pets_only) {
-            if (!mtmp->mtame)
+            if (!is_tame(mtmp))
                 continue; /* reject non-pets */
             /* don't block pets from accompanying hero's dungeon
                escape or ascension simply due to mundane trifles;
@@ -965,7 +965,8 @@ boolean forcetaming;
     }
 
     /* feeding it treats makes it tamer */
-    if (mtmp->mtame && obj) {
+    if (mtmp->mtame && obj)
+	{
         int tasty;
 
         if (mon_can_move(mtmp) && !is_confused(mtmp) && !mtmp->meating
@@ -1073,7 +1074,7 @@ boolean was_dead;
             if (haseyes(youmonst.data)) {
                 if (haseyes(mtmp->data))
                     pline("%s %s to look you in the %s.", Monnam(mtmp),
-                          mtmp->mpeaceful ? "seems unable" : "refuses",
+                          is_peaceful(mtmp) ? "seems unable" : "refuses",
                           body_part(EYE));
                 else
                     pline("%s avoids your gaze.", Monnam(mtmp));
@@ -1089,7 +1090,7 @@ boolean was_dead;
     if (!mtmp->mtame) {
         if (!quietly && canspotmon(mtmp))
             pline("%s %s.", Monnam(mtmp),
-                  mtmp->mpeaceful ? "is no longer tame" : "has become feral");
+                  is_peaceful(mtmp) ? "is no longer tame" : "has become feral");
         newsym(mtmp->mx, mtmp->my);
         /* a life-saved monster might be leashed;
            don't leave it that way if it's no longer tame */

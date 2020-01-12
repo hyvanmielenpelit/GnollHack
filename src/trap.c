@@ -739,7 +739,7 @@ int *fail_reason;
             /* avoid charging for Manlobbi's statue of Manlobbi
                if stone-to-flesh is used on petrified shopkeep */
             && mon != shkp)
-            (void) stolen_value(statue, x, y, (boolean) shkp->mpeaceful != 0,
+            (void) stolen_value(statue, x, y, is_peaceful(shkp) != 0,
                                 FALSE);
 
         if (historic) {
@@ -2422,7 +2422,7 @@ register struct monst *mtmp;
             if (mptr == &mons[PM_IRON_GOLEM]) {
                 if (in_sight)
                     pline("%s falls to pieces!", Monnam(mtmp));
-                else if (mtmp->mtame)
+                else if (is_tame(mtmp))
                     pline("May %s rust in peace.", mon_nam(mtmp));
                 mondied(mtmp);
                 if (DEADMONSTER(mtmp))
@@ -4347,7 +4347,7 @@ struct trap *ttmp;
 struct monst *mtmp;
 {
     if (!ttmp->madeby_u) {
-        if (rnl(10) < 8 && !mtmp->mpeaceful && mon_can_move(mtmp) && !mindless(mtmp->data)
+        if (rnl(10) < 8 && !is_peaceful(mtmp) && mon_can_move(mtmp) && !mindless(mtmp->data)
             && mtmp->data->mlet != S_HUMAN) {
             mtmp->mpeaceful = 1;
             set_malign(mtmp); /* reset alignment */
@@ -4616,7 +4616,7 @@ boolean stuff;
     if (((wt * 2) / wc) >= HVY_ENCUMBER) {
         pline("%s is %s for you to lift.", Monnam(mtmp),
               stuff ? "carrying too much" : "too heavy");
-        if (!ttmp->madeby_u && !mtmp->mpeaceful && mon_can_move(mtmp)
+        if (!ttmp->madeby_u && !is_peaceful(mtmp) && mon_can_move(mtmp)
             && !mindless(mtmp->data) && mtmp->data->mlet != S_HUMAN
             && rnl(10) < 3) {
             mtmp->mpeaceful = 1;
@@ -5225,7 +5225,7 @@ boolean disarm;
             Sprintf(buf, "exploding %s", xname(obj));
 
             if (costly)
-                loss += stolen_value(obj, ox, oy, (boolean) shkp->mpeaceful != 0,
+                loss += stolen_value(obj, ox, oy, is_peaceful(shkp) != 0,
                                      TRUE);
             delete_contents(obj);
             /* unpunish() in advance if either ball or chain (or both)
@@ -5239,7 +5239,7 @@ boolean disarm;
                 otmp2 = otmp->nexthere;
                 if (costly)
                     loss += stolen_value(otmp, otmp->ox, otmp->oy,
-                                         (boolean) shkp->mpeaceful != 0, TRUE);
+                                         is_peaceful(shkp) != 0, TRUE);
                 delobj(otmp);
             }
             wake_nearby();

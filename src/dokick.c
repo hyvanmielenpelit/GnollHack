@@ -210,9 +210,10 @@ boolean clumsy;
     check_caitiff(mon);
 
     /* squeeze some guilt feelings... */
-    if (mon->mtame) {
+    if (mon->mtame)
+	{
         abuse_dog(mon);
-        if (mon->mtame)
+        if (is_tame(mon))
             monflee(mon, (dmg ? rnd(dmg) : 1), FALSE, FALSE);
         else
             mon->mflee = 0;
@@ -292,7 +293,7 @@ xchar x, y;
 
         bhitpos.x = x;
         bhitpos.y = y;
-        if (!mon->mpeaceful || !canspotmon(mon))
+        if (!is_peaceful(mon) || !canspotmon(mon))
             context.forcefight = TRUE; /* attack even if invisible */
         /* kicking might be halted by discovery of hidden monster,
            by player declining to attack peaceful monster,
@@ -523,7 +524,7 @@ register struct obj *gold;
                 if (!robbed)
                     make_happy_shk(mtmp, FALSE);
             } else {
-                if (mtmp->mpeaceful) {
+                if (is_peaceful(mtmp)) {
                     ESHK(mtmp)->credit += value;
                     You("have %ld %s in credit.", ESHK(mtmp)->credit,
                         currency(ESHK(mtmp)->credit));
@@ -531,7 +532,7 @@ register struct obj *gold;
                     verbalize("Thanks, scum!");
             }
         } else if (mtmp->ispriest) {
-            if (mtmp->mpeaceful)
+            if (is_peaceful(mtmp))
                 verbalize("Thank you for your contribution.");
             else
                 verbalize("Thanks, scum!");
@@ -547,7 +548,7 @@ register struct obj *gold;
                     ? "Drop the rest and follow me."
                     : hidden_gold()
                           ? "You still have hidden gold.  Drop it now."
-                          : mtmp->mpeaceful
+                          : is_peaceful(mtmp)
                                 ? "I'll take care of that; please move along."
                                 : "I'll take that; now get moving.");
         } else if (is_mercenary(mtmp->data)) {
@@ -571,7 +572,7 @@ register struct obj *gold;
                         mtmp->mpeaceful = TRUE;
                 }
             }
-            if (mtmp->mpeaceful)
+            if (is_peaceful(mtmp))
                 verbalize("That should do.  Now beat it!");
             else
                 verbalize("That's not enough, coward!");
@@ -631,7 +632,7 @@ xchar x, y; /* coordinates where object was before the impact, not after */
                 if (frominv && !otmp->unpaid)
                     otmp->no_charge = 1;
                 loss +=
-                    stolen_value(otmp, x, y, (boolean) shkp->mpeaceful, TRUE);
+                    stolen_value(otmp, x, y, is_peaceful(shkp), TRUE);
             }
             if (otmp->quan > 1L) {
                 useup(otmp);
@@ -930,7 +931,7 @@ boolean is_golf_swing;
         if (isgold)
             costly_gold(x, y, kickedobj->quan);
         else
-            (void) stolen_value(kickedobj, x, y, (boolean) shkp->mpeaceful,
+            (void) stolen_value(kickedobj, x, y, is_peaceful(shkp),
                                 FALSE);
     }
 
@@ -1565,7 +1566,7 @@ dokick()
                 if (DEADMONSTER(mtmp))
                     continue;
                 if (is_watch(mtmp->data) && couldsee(mtmp->mx, mtmp->my)
-                    && mtmp->mpeaceful) {
+                    && is_peaceful(mtmp)) {
                     mon_yells(mtmp, "Halt, thief!  You're under arrest!", "yell", "angrily", FALSE);
                     (void) angry_guards(FALSE);
                     break;
@@ -1580,7 +1581,7 @@ dokick()
             for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
                 if (DEADMONSTER(mtmp))
                     continue;
-                if (is_watch(mtmp->data) && mtmp->mpeaceful
+                if (is_watch(mtmp->data) && is_peaceful(mtmp)
                     && couldsee(mtmp->mx, mtmp->my)) {
                     if (levl[x][y].looted & D_WARNED) {
                         mon_yells(mtmp,
@@ -1675,7 +1676,7 @@ xchar dlev;          /* if !0 send to dlev near player */
         if ((shkp = shop_keeper(*in_rooms(x, y, SHOPBASE))) != 0) {
             debit = ESHK(shkp)->debit;
             robbed = ESHK(shkp)->robbed;
-            angry = !shkp->mpeaceful;
+            angry = !is_peaceful(shkp);
         }
     }
 

@@ -275,9 +275,9 @@ int x, y;
             (mtmp->mx != x || mtmp->my != y)
                 ? ((mtmp->isshk && accurate) ? "tail of " : "tail of a ")
                 : "",
-            (mtmp->mtame && accurate)
+            (is_tame(mtmp) && accurate)
                 ? "tame "
-                : (mtmp->mpeaceful && accurate)
+                : (is_peaceful(mtmp) && accurate)
                     ? "peaceful "
                     : "",
             name);
@@ -309,7 +309,7 @@ int x, y;
     if (mtmp->mundetected || M_AP_TYPE(mtmp))
         mhidden_description(mtmp, FALSE, eos(buf));
 
-	if (mtmp->mtame)
+	if (is_tame(mtmp))
 	{
 		Sprintf(eos(buf), ", %d/%d HP", mtmp->mhp, mtmp->mhpmax);
 		if (has_edog(mtmp))

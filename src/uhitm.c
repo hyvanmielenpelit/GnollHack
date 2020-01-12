@@ -191,7 +191,7 @@ struct obj *wep; /* uwep for attack(), null for kick_monster() */
 
             if (!Blind && Hallucination)
                 pline("A %s %s appeared!",
-                      mtmp->mtame ? "tame" : "wild", l_monnam(mtmp));
+                      is_tame(mtmp) ? "tame" : "wild", l_monnam(mtmp));
             else if (Blind || (is_pool(mtmp->mx, mtmp->my) && !Underwater))
                 pline("Wait!  There's a hidden monster there!");
             else if ((obj = level.objects[mtmp->mx][mtmp->my]) != 0)
@@ -210,10 +210,10 @@ struct obj *wep; /* uwep for attack(), null for kick_monster() */
         wakeup(mtmp, TRUE);
     }
 
-    if (flags.confirm && mtmp->mpeaceful
+    if (flags.confirm && is_peaceful(mtmp)
         && !Confusion && !Hallucination && !Stunned) {
         /* Intelligent chaotic weapons (Stormbringer) want blood */
-        if (wep && wep->oartifact && artifact_has_flag(wep, AF_BLOODTHIRSTY) && !mtmp->mtame) 
+        if (wep && wep->oartifact && artifact_has_flag(wep, AF_BLOODTHIRSTY) && !is_tame(mtmp)) 
 		{
             override_confirmation = TRUE;
             return FALSE;
@@ -247,7 +247,7 @@ struct monst *mtmp;
             || (is_fleeing(mtmp) && !mtmp->mavenge))) {
         You("caitiff!");
         adjalign(-1);
-    } else if (Role_if(PM_SAMURAI) && mtmp->mpeaceful) {
+    } else if (Role_if(PM_SAMURAI) && is_peaceful(mtmp)) {
         /* attacking peaceful creatures is bad for the samurai's giri */
         You("dishonorably attack the innocent!");
         adjalign(-1);
@@ -597,7 +597,7 @@ struct obj* weapon;
         }
 
 		/* Hit only hostile monsters to make it better --JG */
-		if (mtmp && (!mtmp->mpeaceful || Conflict) || mtmp == target)
+		if (mtmp && (!is_peaceful(mtmp) || Conflict) || mtmp == target)
 		{
 			tmp = find_roll_to_hit(mtmp, uattk->aatyp, weapon,
 				&attknum, &armorpenalty);
@@ -755,7 +755,7 @@ boolean* obj_destroyed;
 {
     boolean result, anger_guards;
 
-    anger_guards = (mon->mpeaceful
+    anger_guards = (is_peaceful(mon)
                     && (mon->ispriest || mon->isshk || is_watch(mon->data)));
     result = hmon_hitmon(mon, obj, thrown, dieroll, obj_destroyed);
     if (mon->ispriest && !rn2(2))
@@ -1656,12 +1656,13 @@ boolean* obj_destroyed;
 			hide_damage_amount = TRUE;
 		}
 	}
-	if (mon->mtame && tmp > 0) {
+	if (mon->mtame && tmp > 0)
+	{
 		/* do this even if the pet is being killed (affects revival) */
 		abuse_dog(mon); /* reduces tameness */
 		/* flee if still alive and still tame; if already suffering from
 		   untimed fleeing, no effect, otherwise increases timed fleeing */
-		if (mon->mtame && !destroyed)
+		if (is_tame(mon) && !destroyed)
 			monflee(mon, 10 * rnd(tmp), FALSE, FALSE);
 	}
 	if ((does_split_upon_hit(mdat))
@@ -2786,7 +2787,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 		if(poisondamage && mdef->mhp > -poisondamage)
 			Your("poison was deadly...");
 		
-		if (mdef->mtame && !cansee(mdef->mx, mdef->my)) {
+		if (is_tame(mdef) && !cansee(mdef->mx, mdef->my)) {
             You_feel("embarrassed for a moment.");
             if (tmp)
                 xkilled(mdef, XKILL_NOMSG); /* !tmp but hp<1: already killed */

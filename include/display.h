@@ -62,7 +62,7 @@
 		|| (Lycanthrope_warning && mon->data->mflags2 & M2_WERE) \
 		|| (Angel_warning && mon->data->mlet == S_ANGEL) \
 		|| (Ogre_warning && mon->data->mlet == S_OGRE) \
-	) && !(mon)->mpeaceful && (distu((mon)->mx, (mon)->my) < 100))
+	) && !is_peaceful((mon)) && (distu((mon)->mx, (mon)->my) < 100))
 
 /*     && (((int) ((mon)->m_lev / 4)) >= context.warnlevel)) */
 
@@ -136,7 +136,7 @@
  * definition here is convenient.
  */
 #define is_safepet(mon)                                                   \
-    (mon && mon->mtame && canspotmon(mon) && flags.safe_dog && !Confusion \
+    (mon && is_tame(mon) && canspotmon(mon) && flags.safe_dog && !Confusion \
      && !Hallucination && !Stunned)
 
 /*

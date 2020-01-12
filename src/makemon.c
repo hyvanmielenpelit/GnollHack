@@ -3185,13 +3185,13 @@ struct monst *mtmp;
     if (mtmp->data->msound == MS_LEADER) {
         mtmp->malign = -20;
     } else if (mal == A_NONE) {
-        if (mtmp->mpeaceful)
+        if (is_peaceful(mtmp))
             mtmp->malign = 0;
         else
             mtmp->malign = 20; /* really hostile */
     } else if (always_peaceful(mtmp->data)) {
         int absmal = abs(mal);
-        if (mtmp->mpeaceful)
+        if (is_peaceful(mtmp))
             mtmp->malign = -3 * max(5, absmal);
         else
             mtmp->malign = 3 * max(5, absmal); /* renegade */
@@ -3203,7 +3203,7 @@ struct monst *mtmp;
             mtmp->malign = max(5, absmal);
     } else if (coaligned) {
         int absmal = abs(mal);
-        if (mtmp->mpeaceful)
+        if (is_peaceful(mtmp))
             mtmp->malign = -3 * max(3, absmal);
         else /* renegade */
             mtmp->malign = max(3, absmal);

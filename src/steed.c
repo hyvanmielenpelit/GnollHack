@@ -92,8 +92,8 @@ struct obj *otmp;
 
     /* Calculate your chance */
     chance = ACURR(A_DEX) + ACURR(A_CHA) / 2 + 2 * mtmp->mtame;
-    chance += u.ulevel * (mtmp->mtame ? 20 : 5);
-    if (!mtmp->mtame)
+    chance += u.ulevel * (is_tame(mtmp) ? 20 : 5);
+    if (!is_tame(mtmp))
         chance -= 10 * mtmp->m_lev;
     if (Role_if(PM_KNIGHT))
         chance += 20;
@@ -162,7 +162,7 @@ boolean
 can_ride(mtmp)
 struct monst *mtmp;
 {
-    return (mtmp->mtame && humanoid(youmonst.data)
+    return (is_tame(mtmp) && humanoid(youmonst.data)
             && !verysmall(youmonst.data) && !bigmonst(youmonst.data)
             && (!Underwater || is_swimmer(mtmp->data)));
 }
@@ -297,7 +297,7 @@ boolean force;      /* Quietly force this animal */
 		)) /* must be tame at this point*/
 		mtmp->mtame--; /* reduce tameness if not knight */
 
-    if (!force && !Role_if(PM_KNIGHT) && !mtmp->mtame) {
+    if (!force && !Role_if(PM_KNIGHT) && !is_tame(mtmp)) {
         /* no longer tame */
         newsym(mtmp->mx, mtmp->my);
         pline("%s resists%s!", Monnam(mtmp),

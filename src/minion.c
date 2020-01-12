@@ -150,7 +150,7 @@ struct monst *mon;
                 /* renegade if same alignment but not peaceful
                    or peaceful but different alignment */
                 EMIN(mtmp)->renegade =
-                    (atyp != u.ualign.type) ^ !mtmp->mpeaceful;
+                    (atyp != u.ualign.type) ^ !is_peaceful(mtmp);
             }
 			if(canseemon(mtmp))
 			{ 

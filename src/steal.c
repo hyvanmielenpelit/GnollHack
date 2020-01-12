@@ -525,7 +525,7 @@ register struct obj *otmp;
     }
     /* for hero owned object on shop floor, mtmp is taking possession
        and if it's eventually dropped in a shop, shk will claim it */
-    if (!mtmp->mtame)
+    if (!is_tame(mtmp))
         otmp->no_charge = 0;
     /* Must do carrying effects on object prior to add_to_minv() */
     carry_obj_effects(otmp);
@@ -687,7 +687,7 @@ boolean verbosely;
 
         /* don't charge for an owned saddle on dead steed (provided
            that the hero is within the same shop at the time) */
-        } else if (mon->mtame && (obj->owornmask & W_SADDLE) != 0L
+        } else if (is_tame(mon) && (obj->owornmask & W_SADDLE) != 0L
                    && !obj->unpaid && costly_spot(omx, omy)
                    /* being at costly_spot guarantees lev->roomno is not 0 */
                    && index(in_rooms(u.ux, u.uy, SHOPBASE),
@@ -788,7 +788,7 @@ boolean is_pet; /* If true, pet should keep wielded/worn items */
 					/* don't charge for an owned saddle on dead steed (provided
 					   that the hero is within the same shop at the time) */
 				}
-				else if (mtmp->mtame && (otmp->owornmask & W_SADDLE) != 0L
+				else if (is_tame(mtmp) && (otmp->owornmask & W_SADDLE) != 0L
 					&& !otmp->unpaid && costly_spot(omx, omy)
 					/* being at costly_spot guarantees lev->roomno is not 0 */
 					&& index(in_rooms(u.ux, u.uy, SHOPBASE),

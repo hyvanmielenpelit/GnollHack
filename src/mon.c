@@ -1354,8 +1354,12 @@ update_monster_timouts()
                                           ? SHIFT_MSG : 0);
         were_change(mtmp);
 
-		boolean was_paralyzed = !!mtmp->mprops[PARALYZED];
-		boolean was_sleeping = !!mtmp->mprops[SLEEPING];
+		boolean was_paralyzed = is_paralyzed(mtmp);
+		boolean was_sleeping = is_sleeping(mtmp);
+		boolean was_charmed = is_charmed(mtmp);
+		boolean was_tame = is_tame(mtmp);
+		boolean was_fearful = is_fearful(mtmp);
+		boolean was_fleeing = is_fleeing(mtmp);
 
 		/* gradually time out temporary problems */
 		for (int i = 1; i <= LAST_PROP; i++)
@@ -1393,7 +1397,7 @@ update_monster_timouts()
 									placebc();
 								if (mtmp == u.ustuck)
 									u.ustuck = 0;
-								if (mtmp->mtame && !canspotmon(mtmp))
+								if (is_tame(mtmp) && !canspotmon(mtmp))
 									You("have a peculiarly sad feeling for a moment, then it passes.");
 
 							}
@@ -1404,9 +1408,10 @@ update_monster_timouts()
 						if (!!slimeproof(mtmp->data))
 						{
 							(void)newcham(mtmp, &mons[PM_GREEN_SLIME], FALSE, TRUE);
+							mtmp->mprops[CHARMED] = 0;
 							if (mtmp->mtame)
 								mtmp->mtame = 0;
-							if (mtmp->mpeaceful)
+							if (is_peaceful(mtmp))
 								mtmp->mpeaceful = 0;
 						}
 					}
@@ -1422,7 +1427,7 @@ update_monster_timouts()
 							mondied(mtmp);
 							if (mtmp == u.ustuck)
 								u.ustuck = 0;
-							if (mtmp->mtame && !canspotmon(mtmp))
+							if (is_tame(mtmp) && !canspotmon(mtmp))
 								You("have a peculiarly sad feeling for a moment, then it passes.");
 						}
 						break;
@@ -1437,7 +1442,7 @@ update_monster_timouts()
 							mondied(mtmp);
 							if (mtmp == u.ustuck)
 								u.ustuck = 0;
-							if (mtmp->mtame && !canspotmon(mtmp))
+							if (is_tame(mtmp) && !canspotmon(mtmp))
 								You("have a peculiarly sad feeling for a moment, then it passes.");
 						}
 						break;
@@ -1452,7 +1457,7 @@ update_monster_timouts()
 							mondied(mtmp);
 							if (mtmp == u.ustuck)
 								u.ustuck = 0;
-							if (mtmp->mtame && !canspotmon(mtmp))
+							if (is_tame(mtmp) && !canspotmon(mtmp))
 								You("have a peculiarly sad feeling for a moment, then it passes.");
 						}
 						break;
@@ -1471,6 +1476,33 @@ update_monster_timouts()
 							if (canseemon(mtmp) && mon_can_move(mtmp))
 							{
 								pline("%s is no longer paralyzed!", Monnam(mtmp));
+							}
+						}
+						break;
+					case CHARMED:
+						if (canseemon(mtmp))
+						{
+							if (!is_charmed(mtmp) && was_charmed)
+							{
+								pline("%s looks more in control of itself.", Monnam(mtmp));
+							}
+							else
+							{
+								if (is_tame(mtmp))
+									pline("%s seems confused for a moment.", Monnam(mtmp));
+								else if (is_peaceful(mtmp))
+									pline("%s seems to be less friendly but still peaceful.", Monnam(mtmp));
+								else
+									pline("%s turns hostile!", Monnam(mtmp));
+							}
+						}
+						break;
+					case FEARFUL:
+						if (canseemon(mtmp))
+						{
+							if (!is_fleeing(mtmp) && was_fleeing)
+							{
+								pline("%s %sstops fleeing.", Monnam(mtmp), !is_fearful(mtmp) && was_fearful ? "looks less frightened and " : "");
 							}
 						}
 						break;
@@ -1700,7 +1732,7 @@ register struct monst *mtmp;
     int poly, grow, heal, mstone;
 
     /* If a pet, eating is handled separately, in dog.c */
-    if (mtmp->mtame)
+    if (is_tame(mtmp))
         return 0;
 
     /* Eats topmost metal object if it is there */
@@ -1794,7 +1826,7 @@ struct monst *mtmp;
 
     buf[0] = '\0';
     /* If a pet, eating is handled separately, in dog.c */
-    if (mtmp->mtame)
+    if (is_tame(mtmp))
         return 0;
 
     /* eat organic objects, including cloth and wood, if present;
@@ -2121,7 +2153,7 @@ struct obj *otmp;
         return 0;
     if (mtmp->isshk)
         return iquan; /* no limit */
-    if (mtmp->mpeaceful && !mtmp->mtame)
+    if (is_peaceful(mtmp) && !is_tame(mtmp))
         return 0;
     /* otherwise players might find themselves obligated to violate
      * their alignment if the monster takes something they need
@@ -2307,7 +2339,7 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
 
 						if (mtmp2)
 						{
-							if (!mtmp2->mtame)
+							if (!is_tame(mtmp2))
 							{
 								if (mmflag & ALLOW_M)
 									info[cnt] |= ALLOW_M;
@@ -2453,7 +2485,7 @@ struct monst *magr, /* monster that is currently deciding where to move */
 
 	if (mon_has_bloodlust(magr))
 	{
-		if(mdef->mpeaceful && !mdef->mtame)
+		if(is_peaceful(mdef) && !is_tame(mdef))
 			return ALLOW_M;
 	}
 
@@ -3186,7 +3218,7 @@ int how;
               is_not_living(mdef->data) ? "destroyed" : "killed",
               *fltxt ? " by the " : "", fltxt);
     else
-        be_sad = (mdef->mtame != 0);
+        be_sad = (is_tame(mdef) != 0);
 
     /* no corpses if digested or disintegrated */
     disintegested = (how == AD_DGST || how == -AD_RBRE);
@@ -3260,14 +3292,14 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
         You("%s %s!",
             is_not_living(mtmp->data) ? "destroy" : "kill",
             !(wasinside || canspotmon(mtmp)) ? "it"
-              : !mtmp->mtame ? mon_nam(mtmp)
+              : !is_tame(mtmp) ? mon_nam(mtmp)
                 : x_monnam(mtmp, namedpet ? ARTICLE_NONE : ARTICLE_THE,
                            "poor", namedpet ? SUPPRESS_SADDLE : 0, FALSE));*/
 
 		char bp[BUFSZ] = ""; 
 
 		strcpy(bp, !(wasinside || canspotmon(mtmp)) ? "it"
-			: !mtmp->mtame ? mon_nam(mtmp)
+			: !is_tame(mtmp) ? mon_nam(mtmp)
 			: x_monnam(mtmp, namedpet ? ARTICLE_NONE : ARTICLE_THE,
 				"poor", namedpet ? SUPPRESS_SADDLE : 0, FALSE));
 
@@ -3416,7 +3448,7 @@ cleanup:
             see_monsters(); /* Can't sense monsters any more. */
 		luck_change += -2;
 	}
-    if ((mtmp->mpeaceful && !rn2(2)) || mtmp->mtame)
+    if ((is_peaceful(mtmp) && !rn2(2)) || is_tame(mtmp))
 		luck_change += -1;
     if (is_unicorn(mdat) && sgn(u.ualign.type) == sgn(mdat->maligntyp)) {
         You_feel("guilty...");
@@ -3450,14 +3482,14 @@ cleanup:
             u.ublessed = 0;
         if (mdat->maligntyp == A_NONE)
             adjalign((int) (ALIGNLIM / 4)); /* BIG bonus */
-    } else if (mtmp->mtame) {
+    } else if (is_tame(mtmp)) {
         adjalign(-15); /* bad!! */
         /* your god is mighty displeased... */
         if (!Hallucination)
             You_hear("the rumble of distant thunder...");
         else
             You_hear("the studio audience applaud!");
-    } else if (mtmp->mpeaceful)
+    } else if (is_peaceful(mtmp))
         adjalign(-5);
 
     /* malign was already adjusted for u.ualign.type and randomization */
@@ -3715,7 +3747,7 @@ boolean via_attack;
     if (via_attack && sengr_at("Elbereth", u.ux, u.uy, TRUE)
         /* only hypocritical if monster is vulnerable to Elbereth (or
            peaceful--not vulnerable but attacking it is hypocritical) */
-        && (onscary(u.ux, u.uy, mtmp) || mtmp->mpeaceful)) {
+        && (onscary(u.ux, u.uy, mtmp) || is_peaceful(mtmp))) {
         You_feel("like a hypocrite.");
         /* AIS: Yes, I know alignment penalties and bonuses aren't balanced
            at the moment. This is about correct relative to other "small"
@@ -3734,9 +3766,9 @@ boolean via_attack;
 
     /* AIS: Should this be in both places, or just in wakeup()? */
     mtmp->mstrategy &= ~STRAT_WAITMASK;
-    if (!mtmp->mpeaceful)
+    if (!is_peaceful(mtmp))
         return;
-    if (mtmp->mtame)
+    if (is_tame(mtmp))
         return;
     mtmp->mpeaceful = 0;
     if (mtmp->ispriest) {
@@ -3767,7 +3799,8 @@ boolean via_attack;
         for (mon = fmon; mon; mon = mon->nmon) {
             if (DEADMONSTER(mon))
                 continue;
-            if (mon->data == q_guardian && mon->mpeaceful) {
+            if (mon->data == q_guardian && mon->mpeaceful)
+			{
                 mon->mpeaceful = 0;
                 if (canseemon(mon))
                     ++got_mad;
@@ -3797,7 +3830,7 @@ boolean via_attack;
             if (mon == mtmp) /* the mpeaceful test catches this since mtmp */
                 continue;    /* is no longer peaceful, but be explicit...  */
 
-            if (!mindless(mon->data) && mon->mpeaceful
+            if (!mindless(mon->data) && is_peaceful(mon)
                 && couldsee(mon->mx, mon->my) && mon_can_move(mon)
                 && !is_blinded(mon) && m_canseeu(mon)) {
                 boolean exclaimed = FALSE;
@@ -3820,7 +3853,7 @@ boolean via_attack;
                             monflee(mon, rn2(50) + 25, TRUE, !exclaimed);
                             exclaimed = TRUE;
                         }
-                        if (mon->mtame) {
+                        if (is_tame(mon)) {
                             /* mustn't set mpeaceful to 0 as below;
                                perhaps reduce tameness? */
                         } else {
@@ -3889,7 +3922,7 @@ int x, y, distance;
                 mtmp->mstrategy &= ~STRAT_WAITMASK; /* wake 'meditation' */
             if (context.mon_moving)
                 continue;
-            if (mtmp->mtame) {
+            if (is_tame(mtmp)) {
                 if (!mtmp->isminion)
                     EDOG(mtmp)->whistletime = moves;
                 /* Clear mtrack. This is to fix up a pet who is
@@ -4883,7 +4916,7 @@ boolean silent;
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
             continue;
-        if (is_watch(mtmp->data) && mtmp->mpeaceful) {
+        if (is_watch(mtmp->data) && is_peaceful(mtmp)) {
             ct++;
             if (cansee(mtmp->mx, mtmp->my) && mon_can_move(mtmp))
 			{

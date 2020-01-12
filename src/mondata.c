@@ -1048,7 +1048,7 @@ struct monst *mtmp;
     if (mtmp->iswiz && mon_has_amulet(mtmp))
         return FALSE;
     /* some monsters will follow even while intending to flee from you */
-    if (mtmp->mtame || mtmp->iswiz || is_fshk(mtmp))
+    if (is_tame(mtmp) || mtmp->iswiz || is_fshk(mtmp))
         return TRUE;
     /* stalking types follow, but won't when fleeing unless you hold
        the Amulet */

@@ -251,7 +251,7 @@ boolean quietly;
             monstone(magr);
             if (!DEADMONSTER(magr))
                 return MM_HIT; /* lifesaved */
-            else if (magr->mtame && !vis)
+            else if (is_tame(magr) && !vis)
                 You(brief_feeling, "peculiarly sad");
             return MM_AGR_DIED;
         }
@@ -904,7 +904,7 @@ struct attack *mattk;
         if (was_leashed)
             Your("leash falls slack.");
     }
-    if (magr->mtame) /* give this one even if it was visible */
+    if (is_tame(magr)) /* give this one even if it was visible */
         You(brief_feeling, "melancholy");
 
     return result;
@@ -994,7 +994,7 @@ register struct obj* omonwep;
             monstone(magr);
             if (!DEADMONSTER(magr))
                 return MM_HIT; /* lifesaved */
-            else if (magr->mtame && !vis)
+            else if (is_tame(magr) && !vis)
                 You(brief_feeling, "peculiarly sad");
             return MM_AGR_DIED;
 #endif
@@ -1015,7 +1015,7 @@ register struct obj* omonwep;
             mondied(magr);
             if (!DEADMONSTER(magr))
                 return 0; /* lifesaved */
-            else if (magr->mtame && !vis)
+            else if (is_tame(magr) && !vis)
                 You(brief_feeling, "queasy");
             return MM_AGR_DIED;
         }
@@ -1099,7 +1099,7 @@ register struct obj* omonwep;
             mondead(mdef); /* was mondied() but that dropped paper scrolls */
             if (!DEADMONSTER(mdef))
                 return 0;
-            else if (mdef->mtame && !vis)
+            else if (is_tame(mdef) && !vis)
                 pline("May %s roast in peace.", mon_nam(mdef));
             return (MM_DEF_DIED | (grow_up(magr, mdef) ? 0 : MM_AGR_DIED));
         }
@@ -1177,7 +1177,7 @@ register struct obj* omonwep;
             mondied(mdef);
             if (!DEADMONSTER(mdef))
                 return 0;
-            else if (mdef->mtame && !vis)
+            else if (is_tame(mdef) && !vis)
                 pline("May %s rust in peace.", mon_nam(mdef));
             return (MM_DEF_DIED | (grow_up(magr, mdef) ? 0 : MM_AGR_DIED));
         }
@@ -1201,7 +1201,7 @@ register struct obj* omonwep;
             mondied(mdef);
             if (!DEADMONSTER(mdef))
                 return 0;
-            else if (mdef->mtame && !vis)
+            else if (is_tame(mdef) && !vis)
                 pline("May %s rot in peace.", mon_nam(mdef));
             return (MM_DEF_DIED | (grow_up(magr, mdef) ? 0 : MM_AGR_DIED));
         }
@@ -1224,7 +1224,7 @@ register struct obj* omonwep;
 
 				if (!DEADMONSTER(mdef))
 					return 0;
-				else if (mdef->mtame && !vis)
+				else if (is_tame(mdef) && !vis)
 					You(brief_feeling, "peculiarly sad");
 				return (MM_DEF_DIED | (grow_up(magr, mdef) ? 0 : MM_AGR_DIED));
 			}
@@ -1335,7 +1335,7 @@ register struct obj* omonwep;
                 mondied(mdef);
                 if (!DEADMONSTER(mdef))
                     return 0;
-                else if (mdef->mtame && !vis)
+                else if (is_tame(mdef) && !vis)
                     You(brief_feeling, "strangely sad");
                 return (MM_DEF_DIED
                         | (grow_up(magr, mdef) ? 0 : MM_AGR_DIED));
@@ -1397,7 +1397,7 @@ register struct obj* omonwep;
             break;
         /* find an object to steal, non-cursed if magr is tame */
         for (obj = mdef->minvent; obj; obj = obj->nobj)
-            if (!magr->mtame || !obj->cursed)
+            if (!is_tame(magr) || !obj->cursed)
                 break;
 
         if (obj) {
@@ -1654,7 +1654,7 @@ register struct obj* omonwep;
 			 * DGST monsters don't die from undead corpses
 			 */
 			num = monsndx(pd);
-			if (magr->mtame && !magr->isminion
+			if (is_tame(magr) && !magr->isminion
 				&& !(mvitals[num].mvflags & G_NOCORPSE)) 
 			{
 				struct obj* virtualcorpse = mksobj(CORPSE, FALSE, FALSE, FALSE);

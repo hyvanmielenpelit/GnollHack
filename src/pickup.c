@@ -2430,7 +2430,7 @@ struct obj *item;
 
     if (*u.ushops && (shkp = shop_keeper(*u.ushops)) != 0) {
         if (held ? (boolean) item->unpaid : costly_spot(u.ux, u.uy))
-            loss = stolen_value(item, u.ux, u.uy, (boolean) shkp->mpeaceful,
+            loss = stolen_value(item, u.ux, u.uy, is_peaceful(shkp),
                                 TRUE);
     }
     obfree(item, (struct obj *) 0);

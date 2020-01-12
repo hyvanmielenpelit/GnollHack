@@ -3617,7 +3617,7 @@ struct monst *mon;
         }
     }
 
-    if (mon->mtame) { /* don't charge */
+    if (is_tame(mon)) { /* don't charge */
         ;
     } else if (rn2(20) < ACURR(A_CHA)) {
         pline("%s demands that you pay %s, but you refuse...",
@@ -3632,7 +3632,8 @@ struct monst *mon;
             cost = (long) rnd(LARGEST_INT) + 500L;
         else
             cost = (long) rnd((int) umoney + 10) + 500L;
-        if (mon->mpeaceful) {
+        if (is_peaceful(mon))
+		{
             cost /= 5L;
             if (!cost)
                 cost = 1L;

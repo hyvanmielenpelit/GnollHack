@@ -376,7 +376,7 @@ struct monst *mtmp;
         || (mtmp->mhp >= 10 && mtmp->mhp * fraction >= mtmp->mhpmax))
         return FALSE;
 
-    if (mtmp->mpeaceful) {
+    if (is_peaceful(mtmp)) {
         if (!nohands(mtmp->data)) {
             if (m_use_healing(mtmp))
                 return TRUE;
@@ -1108,7 +1108,7 @@ struct monst *mtmp;
 
     m.offensive = (struct obj *) 0;
     m.has_offense = 0;
-    if (mtmp->mpeaceful || is_animal(mtmp->data) || mindless(mtmp->data)
+    if (is_peaceful(mtmp) || is_animal(mtmp->data) || mindless(mtmp->data)
         || nohands(mtmp->data))
         return FALSE;
     if (u.uswallow)
@@ -1740,7 +1740,7 @@ struct monst *mtmp;
             m.has_misc = MUSE_POT_GAIN_LEVEL;
         }
         nomore(MUSE_BULLWHIP);
-        if (obj->otyp == BULLWHIP && !mtmp->mpeaceful
+        if (obj->otyp == BULLWHIP && !is_peaceful(mtmp)
             /* the random test prevents whip-wielding
                monster from attempting disarm every turn */
             && uwep && !rn2(5) && obj == MON_WEP(mtmp)
@@ -1759,14 +1759,14 @@ struct monst *mtmp;
          */
         nomore(MUSE_WAN_MAKE_INVISIBLE);
         if (obj->otyp == WAN_MAKE_INVISIBLE && obj->spe > 0 && !has_invisibility(mtmp)
-            && !has_blocks_invisibility(mtmp) && (!mtmp->mpeaceful || See_invisible)
+            && !has_blocks_invisibility(mtmp) && (!is_peaceful(mtmp) || See_invisible)
             && (!attacktype(mtmp->data, AT_GAZE) || has_cancelled(mtmp))) {
             m.misc = obj;
             m.has_misc = MUSE_WAN_MAKE_INVISIBLE;
         }
         nomore(MUSE_POT_INVISIBILITY);
         if (obj->otyp == POT_INVISIBILITY && !has_invisibility(mtmp)
-            && !has_blocks_invisibility(mtmp) && (!mtmp->mpeaceful || See_invisible)
+            && !has_blocks_invisibility(mtmp) && (!is_peaceful(mtmp) || See_invisible)
             && (!attacktype(mtmp->data, AT_GAZE) || has_cancelled(mtmp))) {
             m.misc = obj;
             m.has_misc = MUSE_POT_INVISIBILITY;
@@ -2076,7 +2076,7 @@ struct monst *mtmp;
             return 0;
         return rn2(6) ? POT_SPEED : WAN_SPEED_MONSTER;
     case 1:
-        if (mtmp->mpeaceful && !See_invisible)
+        if (is_peaceful(mtmp) && !See_invisible)
             return 0;
         return rn2(6) ? POT_INVISIBILITY : WAN_MAKE_INVISIBLE;
     case 2:

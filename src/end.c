@@ -1480,7 +1480,7 @@ int how;
         if (mtmp || Schroedingers_cat) {
             while (mtmp) {
                 Sprintf(eos(pbuf), " and %s", mon_nam(mtmp));
-                if (mtmp->mtame)
+                if (is_tame(mtmp))
                     nowrap_add(u.u_gamescore, mtmp->mhp);
                 mtmp = mtmp->nmon;
             }

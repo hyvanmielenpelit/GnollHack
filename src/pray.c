@@ -1505,7 +1505,7 @@ dosacrifice()
             return 1;
         } else if (has_omonst(otmp)
                    && (mtmp = get_mtraits(otmp, FALSE)) != 0
-                   && mtmp->mtame) {
+                   && is_tame(mtmp)) {
                 /* mtmp is a temporary pointer to a tame monster's attributes,
                  * not a real monster */
             pline("So this is how you repay loyalty?");
@@ -2082,7 +2082,7 @@ doturn()
         if (!cansee(mtmp->mx, mtmp->my) || distu(mtmp->mx, mtmp->my) > range)
             continue;
 
-        if (!mtmp->mpeaceful
+        if (!is_peaceful(mtmp)
             && (is_undead(mtmp->data) || is_vampshifter(mtmp)
                 || (is_demon(mtmp->data) && (u.ulevel > (MAXULEV / 2))))) {
             mtmp->msleeping = 0;

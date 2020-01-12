@@ -200,7 +200,7 @@ register struct monst *priest;
     gx += rn1(3, -1); /* mill around the altar */
     gy += rn1(3, -1);
 
-    if (!priest->mpeaceful
+    if (!is_peaceful(priest)
         || (Conflict && !check_magic_resistance_and_halve_damage(priest, (struct obj*)0, 5, 0, 0))) {
         if (monnear(priest, u.ux, u.uy)) {
             if (Displaced)
@@ -330,7 +330,7 @@ char *pname; /* caller-supplied output buffer */
                 what = "priest";
         }
     } else {
-        if (mon->mtame && !strcmpi(what, "Angel"))
+        if (is_tame(mon) && !strcmpi(what, "Angel"))
             Strcat(pname, "guardian ");
     }
 
@@ -426,7 +426,7 @@ int roomno;
         }
         msg1 = msg2 = 0;
         if (sanctum && Is_sanctum(&u.uz)) {
-            if (priest->mpeaceful) {
+            if (is_peaceful(priest)) {
                 /* first time inside */
                 msg1 = "Infidel, you have entered Moloch's Sanctum!";
                 msg2 = "Be gone!";
@@ -548,7 +548,7 @@ register struct monst *priest;
     }
 
     /* priests don't chat unless peaceful and in their own temple */
-    if (!inhistemple(priest) || !priest->mpeaceful
+    if (!inhistemple(priest) || !is_peaceful(priest)
         || !mon_can_move(priest)) {
         static const char *cranky_msg[3] = {
             "Thou wouldst have words, eh?  I'll give thee a word or two!",
@@ -568,7 +568,7 @@ register struct monst *priest;
     }
 
     /* you desecrated the temple and now you want to chat? */
-    if (priest->mpeaceful && *in_rooms(priest->mx, priest->my, TEMPLE)
+    if (is_peaceful(priest) && *in_rooms(priest->mx, priest->my, TEMPLE)
         && !has_shrine(priest)) {
         verbalize(
               "Begone!  Thou desecratest this holy place with thy presence.");
@@ -941,16 +941,16 @@ struct monst *mtmp;
     char info[BUFSZ], monnambuf[BUFSZ];
 
     info[0] = 0;
-    if (mtmp->mtame) {
+    if (is_tame(mtmp)) {
         Strcat(info, ", tame");
         if (wizard) {
-            Sprintf(eos(info), " (%d", mtmp->mtame);
+            Sprintf(eos(info), " (%d", is_tame(mtmp));
             if (!mtmp->isminion)
                 Sprintf(eos(info), "; hungry %ld; apport %d",
                         EDOG(mtmp)->hungrytime, EDOG(mtmp)->apport);
             Strcat(info, ")");
         }
-    } else if (mtmp->mpeaceful)
+    } else if (is_peaceful(mtmp))
         Strcat(info, ", peaceful");
 
     if (mtmp->data == &mons[PM_LONG_WORM]) {

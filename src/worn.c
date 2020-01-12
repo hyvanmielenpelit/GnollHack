@@ -630,12 +630,13 @@ int value; /* -1 sets the intrinsic and -2 clears it */
 	boolean was_stunned = is_stunned(mtmp);
 	boolean was_confused = is_confused(mtmp);
 	boolean was_hallucinating = is_hallucinating(mtmp);
-	boolean was_charmed = is_charmed(mtmp);
 	boolean was_levitating = is_levitating(mtmp);
 	boolean was_flying = is_flying(mtmp);
 	boolean was_sick = is_sick(mtmp);
 	boolean was_fearful = is_fearful(mtmp);
 	boolean was_fleeing = is_fleeing(mtmp);
+	boolean was_charmed = is_charmed(mtmp);
+	boolean was_tame = is_tame(mtmp);
 
 	if (value >= 0)
 		set_mon_temporary_property(mtmp, prop_index, min(USHRT_MAX, value));
@@ -763,15 +764,6 @@ int value; /* -1 sets the intrinsic and -2 clears it */
 			pline("%s looks more straight-minded.", Monnam(mtmp));
 		}
 
-		if (is_charmed(mtmp) && !was_charmed)
-		{
-			pline("%s is charmed!", Monnam(mtmp));
-		}
-		else if (!is_charmed(mtmp) && was_charmed)
-		{
-			pline("%s looks more in control of itself.", Monnam(mtmp));
-		}
-
 
 		/* Fearful*/
 		if(is_fleeing(mtmp) && !was_fleeing)
@@ -793,6 +785,34 @@ int value; /* -1 sets the intrinsic and -2 clears it */
 			pline("%s %sstops fleeing.", Monnam(mtmp), !is_fearful(mtmp) && was_fearful ? "looks less frightened and " : "");
 		}
 		
+
+		/* Charm */
+		/* Note: Currently charmed and tame are stil the same, mtame is always set before you get here */
+		if (is_tame(mtmp) && !was_tame)
+		{
+			/* You will never get here */
+			pline("%s %sseems now friendly.", Monnam(mtmp), is_charmed(mtmp) ? "is charmed and " : "");
+		}
+		else if (is_charmed(mtmp) && !was_charmed && was_tame)
+		{
+			/* You will normally always get here */
+			pline("%s is charmed!", Monnam(mtmp));
+		}
+		else if (!is_tame(mtmp) && was_tame)
+		{
+			if (!is_charmed(mtmp) && was_charmed)
+			{
+				pline("%s looks more in control of itself.", Monnam(mtmp));
+			}
+			else
+			{
+				if (is_peaceful(mtmp))
+					pline("%s seems to be less friendly but still peaceful.", Monnam(mtmp));
+				else
+					pline("%s turns hostile!", Monnam(mtmp));
+			}
+		}
+
 
 		/* Levitation */
 		if (is_levitating(mtmp) && !was_levitating)

@@ -323,7 +323,7 @@ leader_speaks(mtmp)
 struct monst *mtmp;
 {
     /* maybe you attacked leader? */
-    if (!mtmp->mpeaceful) {
+    if (!is_peaceful(mtmp)) {
         Qstat(pissed_off) = TRUE;
         mtmp->mstrategy &= ~STRAT_WAITMASK; /* end the inaction */
     }

@@ -185,7 +185,7 @@ boolean destroyit;
                                  ? shop_keeper(*u.ushops)
                                  : 0;
         boolean costly = (boolean) (shkp != 0),
-                peaceful_shk = costly && (boolean) shkp->mpeaceful;
+                peaceful_shk = costly && is_peaceful(shkp);
         long loss = 0L;
 
         pline("In fact, you've totally destroyed %s.", the(xname(box)));

@@ -179,7 +179,7 @@ boolean isyou;
                 if (DEADMONSTER(mtmp))
                     continue;
                 if (is_watch(mtmp->data) && couldsee(mtmp->mx, mtmp->my)
-                    && mtmp->mpeaceful) {
+                    && is_peaceful(mtmp)) {
                     if (!Deaf) {
                         pline("%s yells:", Amonnam(mtmp));
                         verbalize("Hey, stop using that fountain!");

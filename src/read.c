@@ -998,6 +998,7 @@ int howmuch;
     docrt(); /* this correctly will reset vision */
 }
 
+
 /* monster is hit by scroll of taming's effect */
 int
 maybe_tame(mtmp, sobj)
@@ -1009,7 +1010,7 @@ struct obj *sobj;
 
     if (sobj->cursed) {
         setmangry(mtmp, FALSE);
-        if (was_peaceful && !mtmp->mpeaceful)
+        if (was_peaceful && !is_peaceful(mtmp))
             return -1;
     } else {
 		if (mtmp->isshk)
@@ -1023,7 +1024,7 @@ struct obj *sobj;
 					/* Charm can be dispelled and is non-permanent if timer > 0 */
 					mtmp->morigpeaceful = was_peaceful;
 					mtmp->morigtame = was_tame;
-					increase_mon_temporary_property(mtmp, CHARMED, d(objects[sobj->otyp].oc_spell_dur_dice, objects[sobj->otyp].oc_spell_dur_diesize) + objects[sobj->otyp].oc_spell_dur_plus);
+					increase_mon_temporary_property_verbosely(mtmp, CHARMED, d(objects[sobj->otyp].oc_spell_dur_dice, objects[sobj->otyp].oc_spell_dur_diesize) + objects[sobj->otyp].oc_spell_dur_plus);
 				}
 			}
 
@@ -1033,7 +1034,7 @@ struct obj *sobj;
 			shieldeff(mtmp->mx, mtmp->my);
 			pline("%s resists!", Monnam(mtmp));
 		}
-        if ((!was_peaceful && mtmp->mpeaceful) || (!was_tame && mtmp->mtame))
+        if ((!was_peaceful && is_peaceful(mtmp)) || (!was_tame && is_tame(mtmp)))
             return 1;
     }
     return 0;
@@ -1408,7 +1409,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 					duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus;
 					make_mon_fearful(mtmp, duration ? duration : 100 + rnd(50));
 				}
-				if (!mtmp->mtame)
+				if (!is_tame(mtmp))
 					ct++; /* pets don't laugh at you */
 			}
 		}
@@ -1666,7 +1667,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 				if ((mtmp = m_at(u.ux + i, u.uy + j)) != 0
 					|| (!i && !j && (mtmp = u.usteed) != 0))
 				{
-					if(!mtmp->mtame)
+					if(!is_tame(mtmp))
 					{
 						++candidates;
 						res = 0;
@@ -1722,7 +1723,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 				{
 					++candidates;
 					res = 0;
-					if (!mtmp->mtame && !mtmp->mpeaceful && !check_magic_resistance_and_halve_damage(mtmp, sobj, 0, 0, TELL))
+					if (!mtmp->mtame && !is_peaceful(mtmp) && !check_magic_resistance_and_halve_damage(mtmp, sobj, 0, 0, TELL))
 					{
 						if (mtmp->m_lev < u.ulevel - 10)
 						{

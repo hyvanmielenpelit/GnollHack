@@ -1682,7 +1682,7 @@ int how;
         else if (context.mon_moving) /* obj thrown by monster */
             subfrombill(obj, shkp);
         else /* obj thrown by hero */
-            (void) stolen_value(obj, u.ux, u.uy, (boolean) shkp->mpeaceful,
+            (void) stolen_value(obj, u.ux, u.uy, is_peaceful(shkp),
                                 FALSE);
     }
     obfree(obj, (struct obj *) 0);

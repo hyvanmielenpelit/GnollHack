@@ -497,7 +497,7 @@ struct monst *oracl;
     if (!oracl) {
         There("is no one here to consult.");
         return 0;
-    } else if (!oracl->mpeaceful) {
+    } else if (!is_peaceful(oracl)) {
         pline("%s is in no mood for consultations.", Monnam(oracl));
         return 0;
     } else if (!umoney) {
@@ -587,7 +587,7 @@ struct monst* oracl;
 		There("is no one here to identify items.");
 		return 0;
 	}
-	else if (!oracl->mpeaceful) {
+	else if (!is_peaceful(oracl)) {
 		pline("%s is in no mood for identification.", Monnam(oracl));
 		return 0;
 	}
@@ -666,7 +666,7 @@ struct monst* oracl;
 		There("is no one here to enlighten you.");
 		return 0;
 	}
-	else if (!oracl->mpeaceful) {
+	else if (!is_peaceful(oracl)) {
 		pline("%s is in no mood for enlightenment.", Monnam(oracl));
 		return 0;
 	}

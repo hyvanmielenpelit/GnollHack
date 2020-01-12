@@ -1287,7 +1287,7 @@ do_mname()
         if (!alreadynamed(mtmp, monnambuf, buf))
             pline("%s will not accept the name %s.", upstart(monnambuf), buf);
     }
-	else if(!has_mname(mtmp) && mtmp->mpeaceful && is_animal(mtmp->data))
+	else if(!has_mname(mtmp) && is_peaceful(mtmp) && is_animal(mtmp->data))
 	{
 		/* Peaceful animals can be christened, others do not accept your naming */
 		(void)christen_monst(mtmp, buf);
@@ -1786,7 +1786,7 @@ boolean called;
 
     if (program_state.gameover)
         suppress |= SUPPRESS_HALLUCINATION;
-    if (article == ARTICLE_YOUR && !mtmp->mtame)
+    if (article == ARTICLE_YOUR && !is_tame(mtmp))
         article = ARTICLE_THE;
 
     do_hallu = Hallucination && !(suppress & SUPPRESS_HALLUCINATION);
@@ -1904,7 +1904,7 @@ boolean called;
 		{
 			char tmpbuf[BUFSIZ] = "";
 			strcpy(tmpbuf, buf);
-			if (!mtmp->mtame)
+			if (!is_tame(mtmp))
 			{
 				if ((bp = strstri(name, " the ")) != 0)
 					Sprintf(buf, "%s%s %s", tmpbuf, pm_name, name);
@@ -2047,7 +2047,7 @@ struct monst *mtmp;
 {
     int prefix, suppression_flag;
 
-    prefix = mtmp->mtame ? ARTICLE_YOUR : ARTICLE_THE;
+    prefix = is_tame(mtmp) ? ARTICLE_YOUR : ARTICLE_THE;
     suppression_flag = (has_mname(mtmp)
                         /* "saddled" is redundant when mounted */
                         || mtmp == u.usteed)

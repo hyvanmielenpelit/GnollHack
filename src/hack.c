@@ -1563,7 +1563,7 @@ domove_core()
                     }
                 /*FALLTHRU*/
                 default:
-                    if (u.ustuck->mtame && !Conflict && !is_confused(u.ustuck))
+                    if (is_tame(u.ustuck) && !Conflict && !is_confused(u.ustuck))
                         goto pull_free;
                     You("cannot escape from %s!", mon_nam(u.ustuck));
                     nomul(0);
@@ -1622,7 +1622,7 @@ domove_core()
             if (M_AP_TYPE(mtmp) && !Protection_from_shape_changers
                 && !sensemon(mtmp))
                 stumble_onto_mimic(mtmp);
-            else if (mtmp->mpeaceful && !Hallucination)
+            else if (is_peaceful(mtmp) && !Hallucination)
                 /* m_monnam(): "dog" or "Fido", no "invisible dog" or "it" */
                 pline("Pardon me, %s.", m_monnam(mtmp));
             else
@@ -1789,10 +1789,12 @@ domove_core()
      * Ceiling-hiding pets are skipped by this section of code, to
      * be caught by the normal falling-monster code.
      */
-    if (is_safepet(mtmp) && !(is_hider(mtmp->data) && mtmp->mundetected)) {
+    if (is_safepet(mtmp) && !(is_hider(mtmp->data) && mtmp->mundetected)) 
+	{
         /* if trapped, there's a chance the pet goes wild */
         if (mtmp->mtrapped) {
-            if (!rn2(mtmp->mtame)) {
+            if (!rn2(mtmp->mtame)) 
+			{
                 mtmp->mtame = mtmp->mpeaceful = mtmp->msleeping = 0;
                 if (mtmp->mleashed)
                     m_unleash(mtmp, TRUE);
@@ -1809,7 +1811,7 @@ domove_core()
         mtmp->mundetected = 0;
         if (M_AP_TYPE(mtmp))
             seemimic(mtmp);
-        else if (!mtmp->mtame)
+        else if (!is_tame(mtmp))
             newsym(mtmp->mx, mtmp->my);
         u.ux = mtmp->mx, u.uy = mtmp->my; /* resume swapping positions */
 
@@ -1845,7 +1847,7 @@ domove_core()
             newsym(x, y);
             newsym(u.ux0, u.uy0);
 
-            You("%s %s.", mtmp->mtame ? "swap places with" : "frighten",
+            You("%s %s.", is_tame(mtmp) ? "swap places with" : "frighten",
                 pnambuf);
 
             /* check for displacing it into pools and traps */
@@ -2245,7 +2247,7 @@ boolean pick;
         case S_PIERCER:
             pline("%s suddenly drops from the %s!", Amonnam(mtmp),
                   ceiling(u.ux, u.uy));
-            if (mtmp->mtame) { /* jumps to greet you, not attack */
+            if (is_tame(mtmp)) { /* jumps to greet you, not attack */
                 ;
             } else if (uarmh && is_metallic(uarmh)) {
                 pline("Its blow glances off your %s.",
@@ -2265,10 +2267,10 @@ boolean pick;
             }
             break;
         default: /* monster surprises you. */
-            if (mtmp->mtame)
+            if (is_tame(mtmp))
                 pline("%s jumps near you from the %s.", Amonnam(mtmp),
                       ceiling(u.ux, u.uy));
-            else if (mtmp->mpeaceful) {
+            else if (is_peaceful(mtmp)) {
                 You("surprise %s!",
                     Blind && !sensemon(mtmp) ? something : a_monnam(mtmp));
                 mtmp->mpeaceful = 0;
@@ -2520,7 +2522,7 @@ register boolean newlev;
         case DELPHI: {
             struct monst *oracle = monstinroom(&mons[PM_ORACLE], roomno);
             if (oracle) {
-                if (!oracle->mpeaceful)
+                if (!is_peaceful(oracle))
                     verbalize("You're in Delphi, %s.", plname);
                 else
                     verbalize("%s, %s, welcome to Delphi!",
@@ -2727,7 +2729,7 @@ lookaround()
                 && M_AP_TYPE(mtmp) != M_AP_FURNITURE
                 && M_AP_TYPE(mtmp) != M_AP_OBJECT
                 && (!is_invisible(mtmp) || See_invisible) && !mtmp->mundetected) {
-                if ((context.run != 1 && !mtmp->mtame)
+                if ((context.run != 1 && !is_tame(mtmp))
                     || (x == u.ux + u.dx && y == u.uy + u.dy
                         && !context.travel)) {
                     if (iflags.mention_walls)
@@ -2909,7 +2911,7 @@ monster_nearby()
                 continue;
             if ((mtmp = m_at(x, y)) && M_AP_TYPE(mtmp) != M_AP_FURNITURE
                 && M_AP_TYPE(mtmp) != M_AP_OBJECT
-                && (!mtmp->mpeaceful || Hallucination)
+                && (!is_peaceful(mtmp) || Hallucination)
                 && (!is_hider(mtmp->data) || !mtmp->mundetected)
                 && !noattacks(mtmp->data) && mon_can_move(mtmp)
                 && !onscary(u.ux, u.uy, mtmp) && canspotmon(mtmp))

@@ -193,16 +193,7 @@
 	has_innate(ptr, MR_TELEPATHY)
 
 
-/* general properties */
-#define has_telepathy(mon)   \
-     (has_innate_telepathy((mon)->data) || has_property(mon, TELEPAT))
-
-#define has_blind_telepathy(mon)   \
-     (has_innate_blind_telepathy((mon)->data) || has_property(mon, BLIND_TELEPAT))
-
-#define has_blocks_invisibility(mon) \
-	has_property(mon, BLOCKS_INVISIBILITY)
-
+/* slow, stoning, and sliming */
 #define has_slowed(mon) \
 	has_property(mon, SLOWED)
 
@@ -221,13 +212,16 @@
 #define is_stoning(mon) \
 	(has_property(mon, STONED) && !has_petrification_resistance(mon))
 
+#define is_slow(mon) \
+	(has_slowed(mon) || is_turning_into_slime(mon) || is_stoning(mon))
 
+
+/* strangulation and suffocation */
 #define has_magical_breathing(mon) \
 	(has_property(mon, MAGICAL_BREATHING))
 
 #define is_breathless(mon) \
 	(has_magical_breathing(mon) || has_innate_breathless((mon)->data))
-
 
 #define mon_survives_without_air  (is_breathless(mon))
 
@@ -237,16 +231,14 @@
 #define is_being_strangled(mon) \
 	(has_strangled(mon))
 
-
 #define has_airless_environment(mon) \
 	has_property(mon, AIRLESS_ENVIRONMENT)
 
 #define is_suffocating(mon) \
 	(has_airless_environment(mon) && !has_magical_breathing(mon))
 
-#define is_slow(mon) \
-	(has_slowed(mon) || is_turning_into_slime(mon) || is_stoning(mon))
 
+/* magic-use related properties */
 #define has_cancelled(mon) \
 	has_property(mon, CANCELLED)
 
@@ -256,6 +248,11 @@
 #define has_no_magic_resistance(mon) \
 	has_property(mon, NO_MAGIC_RES)
 
+#define has_summon_forbidden(mon) \
+	has_property(mon, SUMMON_FORBIDDEN)
+
+
+/* paralysis, sleeping, and can move */
 #define has_paralyzed(mon) \
 	has_property(mon, PARALYZED)
 
@@ -274,12 +271,8 @@
 #define mon_can_move(mon) \
 	((mon)->mcanmove && !is_sleeping(mon) && !is_paralyzed(mon))
 
-#define has_summon_forbidden(mon) \
-	has_property(mon, SUMMON_FORBIDDEN)
 
-#define has_charmed(mon) \
-	has_property(mon, CHARMED)
-
+/* stun and confusion */
 #define has_stunned(mon) \
 	has_property(mon, STUNNED)
 
@@ -292,6 +285,8 @@
 #define is_confused(mon) \
 	(has_confused(mon))
 
+
+/* blindness and can see (meaning can detect the player at the first place) */
 #define has_blinded(mon) \
 	has_property(mon, BLINDED)
 
@@ -301,6 +296,8 @@
 #define mon_can_see(mon) \
 	(!is_blinded(mon))
 
+
+/* hallucination */
 #define has_hallucination(mon) \
 	has_property(mon, HALLUC)
 
@@ -311,6 +308,7 @@
 	(has_hallucination(mon) && !has_hallucination_resistance(mon))
 
 
+/* sickness */
 #define has_sick(mon) \
 	has_property(mon, SICK)
 
@@ -321,15 +319,27 @@
 	(has_sick(mon) && !has_sickness_resistance(mon) && !is_undead((mon)->data) && !is_demon((mon)->data) && !is_vampshifter(mon))
 
 
+/* charmed and tame */
 #define has_charmed(mon) \
 	has_property(mon, CHARMED)
 
+#define has_innate_charm_resistance(ptr) \
+	has_innate(ptr, MR_CHARM)
+
 #define has_charm_resistance(mon) \
-	(has_innate_or_property(mon, CHARM_RES))
+	(has_innate_charm_resistance((mon)->data) || has_property(mon, CHARM_RES))
 
 #define is_charmed(mon) \
-	(has_charmed(mon) && !has_charm_resistance(mon))
+	(has_charmed(mon) && !has_charm_resistance(mon) && !is_undead((mon)->data) && !mindless((mon)->data))
 
+#define is_tame(mon) \
+	(is_charmed(mon) || (mon)->mtame)
+
+#define is_peaceful(mon) \
+	(is_charmed(mon) || (mon)->mpeaceful)
+
+
+/* fearful and fleeing */
 #define has_fearful(mon) \
 	has_property(mon, FEARFUL)
 
@@ -342,13 +352,8 @@
 #define is_fleeing(mon) \
 	(is_fearful(mon) || (mon)->mflee)
 
-#define has_drain_resistance(mon) \
-	(has_innate_or_property(mon, DRAIN_RES))
 
-#define has_death_resistance(mon) \
-	(has_innate_or_property(mon, DEATH_RES))
-
-
+/* flying and levitation */
 #define has_levitation(mon) \
 	has_property(mon, LEVITATION)
 
@@ -364,12 +369,19 @@
 #define mon_can_reach_floor(mon) \
 	(!is_levitating(mon) || Is_airlevel(&u.uz)|| Is_waterlevel(&u.uz))
 
+
+/* invisibility */
+#define has_blocks_invisibility(mon) \
+	has_property(mon, BLOCKS_INVISIBILITY)
+
 #define has_invisibility(mon) \
 	((has_innate_invisibility(mon->data) || has_property(mon, INVISIBILITY)))
 
 #define is_invisible(mon) \
 	(has_invisibility(mon) && !has_blocks_invisibility(mon))
 
+
+/* speed */
 #define has_fast(mon) \
 	has_property(mon, FAST)
 
@@ -383,8 +395,21 @@
 	(has_fast(mon) && !is_slow(mon) && !is_very_fast(mon))
 
 
+/* other properties */
+#define has_telepathy(mon)   \
+     (has_innate_telepathy((mon)->data) || has_property(mon, TELEPAT))
+
+#define has_blind_telepathy(mon)   \
+     (has_innate_blind_telepathy((mon)->data) || has_property(mon, BLIND_TELEPAT))
+
+#define has_drain_resistance(mon) \
+	(has_innate_or_property(mon, DRAIN_RES))
+
+#define has_death_resistance(mon) \
+	(has_innate_or_property(mon, DEATH_RES))
 
 
+/* resistances at the time of acquisition */
 #define resists_fire(mon) \
     (has_innate((mon)->data, MR_FIRE) || has_property(mon, FIRE_RES))
 #define resists_cold(mon) \

@@ -1558,10 +1558,10 @@ dogaze()
                        || M_AP_TYPE(mtmp) == M_AP_OBJECT) {
                 looked--;
                 continue;
-            } else if (flags.safe_dog && mtmp->mtame && !Confusion) {
+            } else if (flags.safe_dog && is_tame(mtmp) && !Confusion) {
                 You("avoid gazing at %s.", y_monnam(mtmp));
             } else {
-                if (flags.confirm && mtmp->mpeaceful && !Confusion) {
+                if (flags.confirm && is_peaceful(mtmp) && !Confusion) {
                     Sprintf(qbuf, "Really %s %s?",
                             (adtyp == AD_CONF) ? "confuse" : "attack",
                             mon_nam(mtmp));
@@ -1834,7 +1834,7 @@ domindblast()
             continue;
         if (distu(mtmp->mx, mtmp->my) > BOLT_LIM * BOLT_LIM)
             continue;
-        if (mtmp->mpeaceful)
+        if (is_peaceful(mtmp))
             continue;
         u_sen = (has_telepathy(mtmp)) && is_blinded(mtmp);
         if (u_sen || (has_telepathy(mtmp) && rn2(2)) || !rn2(10)) {

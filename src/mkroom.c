@@ -513,9 +513,11 @@ struct mkroom *sroom;
                           sx, sy, MM_ASLEEP);
 			}
 
-			if (mon) {
+			if (mon)
+			{
                 mon->msleeping = 1;
-                if (type == COURT && mon->mpeaceful) {
+                if (type == COURT && is_peaceful(mon))
+				{
                     mon->mpeaceful = 0;
                     set_malign(mon);
                 }

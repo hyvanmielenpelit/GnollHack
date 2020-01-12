@@ -400,7 +400,7 @@ struct obj *otmp;
 			increase_mon_temporary_property_verbosely(mtmp, VERY_FAST, 150 + rnd(50));
             m_dowear(mtmp, FALSE); /* might want speed boots */
         }
-        if (mtmp->mtame)
+        if (is_tame(mtmp))
             helpful_gesture = TRUE;
         break;
     case WAN_UNDEAD_TURNING:
@@ -709,7 +709,7 @@ struct obj *otmp;
                     pline("%s looks %s.", Monnam(mtmp),
                           otyp == SPE_GREATER_HEALING ? "much, much better" : SPE_EXTRA_HEALING ? "much better" : otyp == SPE_FULL_HEALING ? "completely healed" : "better");
             }
-            if (mtmp->mtame || mtmp->mpeaceful) {
+            if (is_tame(mtmp) || is_peaceful(mtmp)) {
                 adjalign(Role_if(PM_HEALER) ? 1 : sgn(u.ualign.type));
             }
         } 
@@ -1656,7 +1656,7 @@ boolean replaceundead;
         }
         /* don't charge for shopkeeper's own corpse if we just revived him */
         if (shkp && mtmp != shkp)
-            (void) stolen_value(corpse, x, y, (boolean) shkp->mpeaceful,
+            (void) stolen_value(corpse, x, y, is_peaceful(shkp),
                                 FALSE);
 
         /* [we don't give any comparable message about the corpse for
@@ -2612,7 +2612,7 @@ int id;
              || (Has_contents(obj)
                  && (contained_cost(obj, shkp, 0L, FALSE, FALSE) != 0L)))
             && inhishop(shkp)) {
-            if (shkp->mpeaceful) {
+            if (is_peaceful(shkp)) {
                 if (*u.ushops
                     && (*in_rooms(u.ux, u.uy, 0)
                         == *in_rooms(shkp->mx, shkp->my, 0))
@@ -2679,7 +2679,7 @@ struct obj *obj;
                         && (carried(obj) ? obj->unpaid : !obj->no_charge)) {
                         shkp = shop_keeper(*in_rooms(oox, ooy, SHOPBASE));
                         stolen_value(obj, oox, ooy,
-                                     (shkp && shkp->mpeaceful), FALSE);
+                                     (shkp && is_peaceful(shkp)), FALSE);
                     }
                     if (obj->timed)
                         obj_stop_timers(obj);
@@ -8081,7 +8081,7 @@ armageddon()
 	mmtmp[2] = mydogs; /* for use during level changes */
 	for (mon = mmtmp[0]; mon; mon = mon->nmon)
 	{
-		if (mon->mtame > 5 && killstyle == 0)
+		if (mtmp->mtame > 5 && killstyle == 0)
 			continue;
 
 		for (mtmp = mmtmp[2]; mtmp; mtmp = mtmp->nmon)

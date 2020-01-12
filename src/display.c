@@ -470,7 +470,7 @@ xchar worm_tail;            /* mon is actually a worm tail */
          * If both are being highlighted in the same way, it doesn't
          * matter, but if not, showing them as pets is preferrable.
          */
-        if (mon->mtame && !Hallucination) {
+        if (is_tame(mon) && !Hallucination) {
             if (worm_tail)
                 num = petnum_to_glyph(PM_LONG_WORM_TAIL);
             else

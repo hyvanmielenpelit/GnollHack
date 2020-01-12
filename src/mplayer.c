@@ -382,7 +382,7 @@ register struct monst *mtmp;
             "Here is what I have to say!",
         };
 
-    if (mtmp->mpeaceful)
+    if (is_peaceful(mtmp))
         return; /* will drop to humanoid talk */
 
     pline("Talk? -- %s", (mtmp->data == &mons[urole.malenum]

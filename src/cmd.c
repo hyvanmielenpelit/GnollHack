@@ -2761,7 +2761,7 @@ int final;
                       && !(final == ENL_GAMEOVERDEAD
                            && !strcmp(killer.name, "riding accident")));
     const char *steedname = (!Riding ? (char *) 0
-                      : x_monnam(u.usteed, u.usteed->mtame ? ARTICLE_YOUR : ARTICLE_THE, (char *) 0,
+                      : x_monnam(u.usteed, is_tame(u.usteed) ? ARTICLE_YOUR : ARTICLE_THE, (char *) 0,
 						(SUPPRESS_SADDLE | SUPPRESS_HALLUCINATION), FALSE));
 
     /*\

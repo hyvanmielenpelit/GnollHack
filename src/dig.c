@@ -1269,7 +1269,7 @@ boolean zap;
                 if (DEADMONSTER(mtmp))
                     continue;
                 if (is_watch(mtmp->data) && !is_blinded(mtmp) && m_canseeu(mtmp)
-                    && couldsee(mtmp->mx, mtmp->my) && mtmp->mpeaceful)
+                    && couldsee(mtmp->mx, mtmp->my) && is_peaceful(mtmp))
                     break;
             }
         }
@@ -2138,7 +2138,7 @@ int x, y;
     }
     for (otmp = level.objects[x][y]; otmp; otmp = otmp2) {
         if (costly) {
-            loss += stolen_value(otmp, x, y, (boolean) shkp->mpeaceful, TRUE);
+            loss += stolen_value(otmp, x, y, is_peaceful(shkp), TRUE);
             if (otmp->oclass != COIN_CLASS)
                 otmp->no_charge = 1;
         }

@@ -860,7 +860,7 @@ struct monst *mtmp, *mtarg;
             || mtarg->data->msound == MS_GUARDIAN)
             return -5000L;
         /* D: Fixed angelic beings using gaze attacks on coaligned priests */
-        if (faith1 && faith2 && align1 == align2 && mtarg->mpeaceful) {
+        if (faith1 && faith2 && align1 == align2 && is_peaceful(mtarg)) {
             score -= 5000L;
             return score;
         }
@@ -870,7 +870,7 @@ struct monst *mtmp, *mtarg;
             return score;
         }
         /* Is the monster peaceful or tame? */
-        if ((mtarg->mpeaceful && !mon_has_bloodlust(mtmp) /*mtmp->ispacifist*/) || mtarg->mtame || mtarg == &youmonst) {
+        if ((is_peaceful(mtarg) && !mon_has_bloodlust(mtmp) /*mtmp->ispacifist*/) || is_tame(mtarg) || mtarg == &youmonst) {
             /* Pets will never be targeted */
             score -= 3000L;
             return score;
@@ -881,7 +881,7 @@ struct monst *mtmp, *mtarg;
             return score;
         }
         /* Target hostile monsters in preference to peaceful ones */
-        if (!mtarg->mpeaceful)
+        if (!is_peaceful(mtarg))
             score += 10;
         /* Is the monster passive? Don't waste energy on it, if so */
         if (!mon_has_bloodlust(mtmp) && mtarg->data->mattk[0].aatyp == AT_NONE)
@@ -1102,7 +1102,7 @@ int after; /* this is extra fast monster movement */
     for (i = 0; i < cnt; i++) {
         nx = poss[i].x;
         ny = poss[i].y;
-        if (MON_AT(nx, ny) && !((info[i] & ALLOW_M) || ((info[i] & ALLOW_TM) && m_at(nx, ny) && m_at(nx, ny)->mtame) || info[i] & ALLOW_MDISP))
+        if (MON_AT(nx, ny) && !((info[i] & ALLOW_M) || ((info[i] & ALLOW_TM) && m_at(nx, ny) && is_tame(m_at(nx, ny))) || info[i] & ALLOW_MDISP))
             continue;
         if (cursed_object_at(nx, ny))
             continue;
@@ -1130,7 +1130,7 @@ int after; /* this is extra fast monster movement */
 
 		boolean monatres = MON_AT(nx, ny);
 		register struct monst* mtmp2 = m_at(nx, ny);
-		boolean allowres =((info[i] & ALLOW_M) && monatres) || ((info[i] & ALLOW_TM) && monatres && mtmp2 && mtmp2->mtame);
+		boolean allowres =((info[i] & ALLOW_M) && monatres) || ((info[i] & ALLOW_TM) && monatres && mtmp2 && is_tame(mtmp2));
 
 		if (allowres)
 		{
@@ -1141,11 +1141,11 @@ int after; /* this is extra fast monster movement */
                     && !is_blinded(mtmp) && haseyes(mtmp->data) && !is_blinded(mtmp2)
                     && (has_see_invisible(mtmp) || !is_invisible(mtmp2)))
                 || (mtmp2->data == &mons[PM_GELATINOUS_CUBE] && rn2(10))
-                || (mtmp2->mtame && !Conflict)
+                || (is_tame(mtmp2) && !Conflict)
 				|| (max_passive_dmg(mtmp2, mtmp) >= mtmp->mhp)
 				|| (((!mon_disregards_own_health(mtmp) && mtmp->mhp * 4 < mtmp->mhpmax)
                      || mtmp2->data->msound == MS_GUARDIAN
-                     || mtmp2->data->msound == MS_LEADER || !mon_has_bloodlust(mtmp) /*mtmp->ispacifist*/) && mtmp2->mpeaceful
+                     || mtmp2->data->msound == MS_LEADER || !mon_has_bloodlust(mtmp) /*mtmp->ispacifist*/) && is_peaceful(mtmp2)
                     && !Conflict && !mon_has_bloodlust(mtmp))
                 || (touch_petrifies(mtmp2->data) && !resists_ston(mtmp)))
                 continue;

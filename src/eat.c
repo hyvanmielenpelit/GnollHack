@@ -540,7 +540,7 @@ int *dmg_p; /* for dishing out extra damage in lieu of Int loss */
                 /* life-saved; don't continue eating the brains */
                 return MM_MISS;
             } else {
-                if (magr->mtame && !visflag)
+                if (is_tame(magr) && !visflag)
                     /* parallels mhitm.c's brief_feeling */
                     You("have a sad thought for a moment, then it passes.");
                 return MM_AGR_DIED;

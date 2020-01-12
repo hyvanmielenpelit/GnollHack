@@ -77,7 +77,7 @@ boolean forceshow;
             if (mtmp->isgd) {
                 return FALSE;
             } else if (!in_fcorridor(grd, u.ux, u.uy)) {
-                if (mtmp->mtame)
+                if (is_tame(mtmp))
                     yelp(mtmp);
                 (void) rloc(mtmp, FALSE);
             }
@@ -250,7 +250,7 @@ struct monst *grd;
        set the guard loose */
     if ((money_cnt(invent) || hidden_gold())
         && um_dist(grd->mx, grd->my, 1)) {
-        if (grd->mpeaceful) {
+        if (is_peaceful(grd)) {
             if (canspotmon(grd)) /* see or sense via telepathy */
                 pline("%s becomes irate.", Monnam(grd));
             grd->mpeaceful = 0; /* bypass setmangry() */
@@ -589,7 +589,7 @@ struct monst *grd;
 
             if (!IS_WALL(levl[x][y].typ) && !in_fcorridor(grd, x, y)) {
                 if ((mon = m_at(x, y)) != 0 && mon != grd) {
-                    if (mon->mtame)
+                    if (is_tame(mon))
                         yelp(mon);
                     (void) rloc(mon, FALSE);
                 }
@@ -723,7 +723,7 @@ int goldx, goldy; /* <gold->ox, gold->oy> */
         if (!strcmpi(monnambuf, "It"))
             Strcpy(monnambuf, "Someone");
         pline("%s%s picks up the gold%s.", monnambuf,
-              (grd->mpeaceful && EGD(grd)->warncnt > 5)
+              (is_peaceful(grd) && EGD(grd)->warncnt > 5)
                  ? " calms down and" : "",
               under_u ? " from beneath you" : "");
     }
@@ -763,14 +763,14 @@ register struct monst *grd;
         egrd->gddone = 1;
         goto cleanup;
     }
-    debugpline1("gd_move: %s guard", grd->mpeaceful ? "peaceful" : "hostile");
+    debugpline1("gd_move: %s guard", is_peaceful(grd) ? "peaceful" : "hostile");
 
     u_in_vault = vault_occupied(u.urooms) ? TRUE : FALSE;
     grd_in_vault = *in_rooms(grd->mx, grd->my, VAULT) ? TRUE : FALSE;
     if (!u_in_vault && !grd_in_vault)
         wallify_vault(grd);
 
-    if (!grd->mpeaceful) {
+    if (!is_peaceful(grd)) {
         if (!u_in_vault
             && (grd_in_vault || (in_fcorridor(grd, grd->mx, grd->my)
                                  && !in_fcorridor(grd, u.ux, u.uy)))) {
@@ -902,7 +902,7 @@ register struct monst *grd;
        (on even via wish and drop) so don't assume hero has been warned */
     if (goldincorridor && !egrd->gddone) {
         gd_pick_corridor_gold(grd, m, n);
-        if (!grd->mpeaceful)
+        if (!is_peaceful(grd))
             return -1;
         egrd->warncnt = 5;
         return 0;
@@ -1083,7 +1083,7 @@ boolean silently;
         gx = u.ux;
         gy = u.uy;
     } else {
-        if (grd->mpeaceful) /* peaceful guard has no "right" to your gold */
+        if (is_peaceful(grd)) /* peaceful guard has no "right" to your gold */
             goto remove_guard;
 
         mnexto(grd);

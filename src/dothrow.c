@@ -1344,7 +1344,7 @@ boolean broken;
     if (broken || !costly_xy || *in_rooms(x, y, SHOPBASE) != *u.ushops) {
         /* thrown out of a shop or into a different shop */
         if (is_unpaid(obj))
-            (void) stolen_value(obj, u.ux, u.uy, (boolean) shkp->mpeaceful,
+            (void) stolen_value(obj, u.ux, u.uy, is_peaceful(shkp),
                                 FALSE);
         if (broken)
             obj->no_charge = 1;
@@ -2046,7 +2046,7 @@ register boolean is_golf;
             tmiss(obj, mon, FALSE);
             return 0;
         } 
-		else if (mon->mtame) 
+		else if (is_tame(mon)) 
 		{
             pline("%s catches and drops %s.", Monnam(mon), the(xname(obj)));
             return 0;
@@ -2071,7 +2071,7 @@ register boolean is_golf;
         if (mon_can_move(mon)) 
 		{
             pline("%s catches %s.", Monnam(mon), the(xname(obj)));
-            if (mon->mpeaceful) 
+            if (is_peaceful(mon))
 			{
                 boolean next2u = monnear(mon, u.ux, u.uy);
 
@@ -2273,7 +2273,7 @@ register boolean is_golf;
 
     } 
 	else if (befriend_with_obj(mon->data, obj)
-               || (mon->mtame && dogfood(mon, obj) <= ACCFOOD)) 
+               || (is_tame(mon) && dogfood(mon, obj) <= ACCFOOD)) 
 	{
         if (tamedog(mon, obj, FALSE)) 
 		{
@@ -2557,7 +2557,7 @@ boolean from_invent;
                     multiple breakage isn't drastically worse than
                     single breakage.  (ought to be done via ESHK)  */
                 if (moves != lastmovetime)
-                    peaceful_shk = shkp->mpeaceful;
+                    peaceful_shk = is_peaceful(shkp);
                 if (stolen_value(obj, x, y, peaceful_shk, FALSE) > 0L
                     && (*o_shop != u.ushops[0] || !inside_shop(u.ux, u.uy))
                     && moves != lastmovetime)

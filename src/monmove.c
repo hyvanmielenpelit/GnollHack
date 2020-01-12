@@ -97,7 +97,8 @@ void
 check_mon_talk(mon)
 struct monst* mon;
 {
-	if (!mon || DEADMONSTER(mon) || !is_speaking_monster(mon->data) || mindless(mon->data) || is_stunned(mon) || is_confused(mon) || !mon_can_move(mon) || mon->mtame)
+	if (!mon || DEADMONSTER(mon) || !is_speaking_monster(mon->data) || mindless(mon->data) 
+		|| is_stunned(mon) || is_confused(mon) || !mon_can_move(mon) || is_tame(mon))
 		return;
 
 	boolean mon_talked = FALSE;
@@ -120,7 +121,7 @@ struct monst* mon;
 			if(m_canseeu(mon) && dist <= 4 && speaks)
 			{ 
 				/* Normal peaceful monster talk */
-				if(mon->mpeaceful && !is_undead(mon->data) && !is_demon(mon->data)
+				if(is_peaceful(mon) && !is_undead(mon->data) && !is_demon(mon->data)
 					&& !mon->isshk && !mon->isgd && !mon->ispriest && !is_watch(mon->data) && !is_mercenary(mon->data)
 					&& !(mon->iswiz || mon->data == &mons[PM_MEDUSA]
 						|| mon->data->msound == MS_NEMESIS || mon->data->msound == MS_LEADER || mon->data->msound == MS_ORACLE
@@ -175,7 +176,7 @@ register struct monst *mtmp;
 {
     int x, y;
 
-    if (mtmp->mpeaceful && in_town(u.ux + u.dx, u.uy + u.dy)
+    if (is_peaceful(mtmp) && in_town(u.ux + u.dx, u.uy + u.dy)
         && !is_blinded(mtmp) && m_canseeu(mtmp) && !rn2(3)) {
         if (picking_lock(&x, &y) && IS_DOOR(levl[x][y].typ)
             && (levl[x][y].doormask & D_LOCKED)) {
@@ -207,7 +208,7 @@ register struct monst *mtmp;
 
     /* a similar check is in monster_nearby() in hack.c */
     /* check whether hero notices monster and stops current activity */
-    if (occupation && !rd && !Confusion && (!mtmp->mpeaceful || Hallucination)
+    if (occupation && !rd && !Confusion && (!is_peaceful(mtmp) || Hallucination)
         /* it's close enough to be a threat */
         && distu(x, y) <= (BOLT_LIM + 1) * (BOLT_LIM + 1)
         /* and either couldn't see it before, or it was too far away */
@@ -268,7 +269,7 @@ struct monst *mtmp;
             && ((u.ux == x && u.uy == y)
                 || (Displaced && mtmp->mux == x && mtmp->muy == y))
             && !(mtmp->isshk || mtmp->isgd || is_blinded(mtmp)
-                 || mtmp->mpeaceful || mtmp->data->mlet == S_HUMAN
+                 || is_peaceful(mtmp) || mtmp->data->mlet == S_HUMAN
                  || mtmp->data == &mons[PM_MINOTAUR]
                  || Inhell || In_endgame(&u.uz)));
 }
@@ -486,7 +487,7 @@ int *inrange, *nearby, *scared;
     sawscary = onscary(seescaryx, seescaryy, mtmp);
     if (*nearby && (sawscary
                     || (flees_light(mtmp) && !bravegremlin)
-                    || (!mtmp->mpeaceful && in_your_sanctuary(mtmp, 0, 0)))) {
+                    || (!is_peaceful(mtmp) && in_your_sanctuary(mtmp, 0, 0)))) {
         *scared = 1;
         monflee(mtmp, rnd(rn2(7) ? 10 : 100), TRUE, TRUE);
     } else
@@ -581,7 +582,7 @@ register struct monst *mtmp;
         mtmp->mflee = 0;
 
     /* cease conflict-induced swallow/grab if conflict has ended */
-    if (mtmp == u.ustuck && mtmp->mpeaceful && !is_confused(mtmp) && !(Conflict))
+    if (mtmp == u.ustuck && is_peaceful(mtmp) && !is_confused(mtmp) && !(Conflict))
 	{
         release_hero(mtmp);
         return 0; /* uses up monster's turn */
@@ -612,7 +613,7 @@ register struct monst *mtmp;
     }
 
     /* Demonic Blackmail! */
-    if (nearby && mdat->msound == MS_BRIBE && mtmp->mpeaceful && !mtmp->mtame
+    if (nearby && mdat->msound == MS_BRIBE && is_peaceful(mtmp) && !is_tame(mtmp)
         && !u.uswallow)
 	{
         if (mtmp->mux != u.ux || mtmp->muy != u.uy) 
@@ -659,7 +660,7 @@ register struct monst *mtmp;
             goto toofar;
         }
         pline("A wave of psychic energy pours over you!");
-        if (mtmp->mpeaceful
+        if (is_peaceful(mtmp)
             && (!Conflict || check_magic_resistance_and_halve_damage(mtmp, (struct obj*) 0, 5, 0, 0))) 
 		{
             pline("It feels quite soothing.");
@@ -690,7 +691,7 @@ register struct monst *mtmp;
             nmon = m2->nmon;
             if (DEADMONSTER(m2))
                 continue;
-            if (m2->mpeaceful == mtmp->mpeaceful)
+            if (is_peaceful(m2) == is_peaceful(mtmp))
                 continue;
             if (mindless(m2->data))
                 continue;
@@ -713,7 +714,7 @@ register struct monst *mtmp;
     /* If monster is nearby you, and has to wield a weapon, do so.   This
      * costs the monster a move, of course.
      */
-    if ((!mtmp->mpeaceful || Conflict) && inrange
+    if ((!is_peaceful(mtmp) || Conflict) && inrange
         && dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) <= 8
         && attacktype(mdat, AT_WEAP))
 	{
@@ -745,7 +746,7 @@ register struct monst *mtmp;
         || (mdat->mlet == S_LEPRECHAUN && !findgold(invent)
             && (findgold(mtmp->minvent) || rn2(2)))
         || (is_wanderer(mdat) && !rn2(4)) || ((Conflict || mon_has_bloodlust(mtmp)) && !mtmp->iswiz)
-        || (is_blinded(mtmp) && !rn2(4)) || mtmp->mpeaceful) {
+        || (is_blinded(mtmp) && !rn2(4)) || is_peaceful(mtmp)) {
         /* Possibly cast an undirected spell if not attacking you */
         /* note that most of the time castmu() will pick a directed
            spell and do nothing, so the monster moves normally */
@@ -815,7 +816,7 @@ register struct monst *mtmp;
     /*  Now, attack the player if possible - one attack set per monst
      */
 
-    if (!mtmp->mpeaceful || (Conflict && !check_magic_resistance_and_halve_damage(mtmp, (struct obj*) 0, 5, 0, 0))) {
+    if (!is_peaceful(mtmp) || (Conflict && !check_magic_resistance_and_halve_damage(mtmp, (struct obj*) 0, 5, 0, 0))) {
         if (inrange && !noattacks(mdat)
             && (Upolyd ? u.mh : u.uhp) > 0 && !scared && tmp != 3)
             if (mattacku(mtmp))
@@ -831,7 +832,7 @@ register struct monst *mtmp;
     if (mon_can_move(mtmp) && nearby)
         quest_talk(mtmp);
     /* extra emotional attack for vile monsters */
-    if (inrange && mtmp->data->msound == MS_CUSS && !mtmp->mpeaceful
+    if (inrange && mtmp->data->msound == MS_CUSS && !is_peaceful(mtmp)
         && couldsee(mtmp->mx, mtmp->my) && !is_invisible(mtmp) && !rn2(5))
         cuss(mtmp);
 
@@ -998,7 +999,7 @@ register int after;
     if (mtmp->wormno)
         goto not_special;
     /* my dog gets special treatment */
-    if (mtmp->mtame) {
+    if (is_tame(mtmp)) {
         mmoved = dog_move(mtmp, after);
         goto postmov;
     }
@@ -1067,7 +1068,7 @@ register int after;
     /* teleport if that lies in our nature */
     if (ptr == &mons[PM_TENGU] && !rn2(5) && !has_cancelled(mtmp)
         && !tele_restrict(mtmp)) {
-        if (mtmp->mhp < 7 || mtmp->mpeaceful || rn2(2))
+        if (mtmp->mhp < 7 || is_peaceful(mtmp) || rn2(2))
             (void) rloc(mtmp, TRUE);
         else
             mnexto(mtmp);
@@ -1098,7 +1099,7 @@ register int after;
             || (should_see && Invis && !has_see_invisible(mtmp) && rn2(11))
             || is_obj_mappear(&youmonst,STRANGE_OBJECT) || u.uundetected
             || (is_obj_mappear(&youmonst,GOLD_PIECE) && !likes_gold(ptr))
-            || (mtmp->mpeaceful && !mtmp->isshk) /* allow shks to follow */
+            || (is_peaceful(mtmp) && !mtmp->isshk) /* allow shks to follow */
             || ((monsndx(ptr) == PM_STALKER || ptr->mlet == S_BAT
                  || ptr->mlet == S_LIGHT) && !rn2(3)))
             appr = 0;
@@ -1122,7 +1123,7 @@ register int after;
         }
     }
 
-    if ((!mtmp->mpeaceful || !rn2(10)) && (!Is_rogue_level(&u.uz)))
+    if ((!is_peaceful(mtmp) || !rn2(10)) && (!Is_rogue_level(&u.uz)))
 	{
         boolean in_line = (lined_up(mtmp)
                && (distmin(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy)
@@ -1159,10 +1160,10 @@ register int after;
 
         /* cut down the search radius if it thinks character is closer. */
         if (distmin(mtmp->mux, mtmp->muy, omx, omy) < SQSRCHRADIUS
-            && !mtmp->mpeaceful)
+            && !is_peaceful(mtmp))
             minr--;
         /* guards shouldn't get too distracted */
-        if (!mtmp->mpeaceful && is_mercenary(ptr))
+        if (!is_peaceful(mtmp) && is_mercenary(ptr))
             minr = 1;
 
         if ((likegold || likegems || likeobjs || likemagic || likerock
@@ -1262,14 +1263,14 @@ register int after;
 
     /* don't tunnel if hostile and close enough to prefer a weapon */
     if (can_tunnel && needspick(ptr)
-        && ((!mtmp->mpeaceful || Conflict)
+        && ((!is_peaceful(mtmp) || Conflict)
             && dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) <= 8))
         can_tunnel = FALSE;
 
     nix = omx;
     niy = omy;
     flag = 0L;
-    if (mtmp->mpeaceful && (!(Conflict) || check_magic_resistance_and_halve_damage(mtmp, (struct obj*)0, 5, 0, 0)))
+    if (is_peaceful(mtmp) && (!(Conflict) || check_magic_resistance_and_halve_damage(mtmp, (struct obj*)0, 5, 0, 0)))
         flag |= (ALLOW_SANCT | ALLOW_SSM);
     else
 	{
@@ -1314,7 +1315,7 @@ register int after;
         chi = -1;
         nidist = dist2(nix, niy, gx, gy);
         /* allow monsters be shortsighted on some levels for balance */
-        if (!mtmp->mpeaceful && level.flags.shortsighted
+        if (!is_peaceful(mtmp) && level.flags.shortsighted
             && nidist > (couldsee(nix, niy) ? 144 : 36) && appr == 1)
             appr = 0;
         if (is_unicorn(ptr) && level.flags.noteleport) {
@@ -1738,7 +1739,7 @@ register struct monst *mtmp;
      */
 
     /* pet knows your smell; grabber still has hold of you */
-    if (mtmp->mtame || mtmp == u.ustuck)
+    if (is_tame(mtmp) || mtmp == u.ustuck)
         goto found_you;
 
     /* monsters which know where you are don't suddenly forget,
@@ -1804,7 +1805,7 @@ undesirable_disp(mtmp, x, y)
 struct monst *mtmp;
 xchar x, y;
 {
-    boolean is_pet = (mtmp && mtmp->mtame && !mtmp->isminion);
+    boolean is_pet = (mtmp && is_tame(mtmp) && !mtmp->isminion);
     struct trap *trap = t_at(x, y);
 
     if (is_pet) {

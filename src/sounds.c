@@ -661,7 +661,7 @@ register struct monst *mtmp;
 		pline_msg = "does not respond.";
 		break;
 	case MS_ORACLE:
-		if (mtmp->mpeaceful)
+		if (is_peaceful(mtmp))
 			Sprintf(verbuf, "Welcome to Delphi, adventurer!");
 		else
 			Sprintf(verbuf, "Begone, you fool!");
@@ -669,7 +669,7 @@ register struct monst *mtmp;
 		break;
 		//return doconsult(mtmp);
     case MS_PRIEST:
-		if(mtmp->mpeaceful)
+		if(is_peaceful(mtmp))
 			Sprintf(verbuf, "Welcome to the temple of %s, adventurer!", (mtmp->ispriest && mtmp->mextra && mtmp->mextra->epri) ? align_gname(mtmp->mextra->epri->shralign) : "our almighty god");
 		else
 			Sprintf(verbuf, "You shall perish by the divine hand of %s!", (mtmp->ispriest && mtmp->mextra && mtmp->mextra->epri) ? align_gname(mtmp->mextra->epri->shralign) : "our almighty god");
@@ -693,7 +693,7 @@ register struct monst *mtmp;
 			{
 				char shopbuf[BUFSZ] = "";
 				Sprintf(shopbuf, "my %s", shoptypename(eshkp->shoptype));
-				if (mtmp->mpeaceful)
+				if (is_peaceful(mtmp))
 					Sprintf(verbuf, "Welcome to %s, adventurer!", shopbuf);
 				else
 					Sprintf(verbuf, "You rotten thief!");
@@ -701,7 +701,7 @@ register struct monst *mtmp;
 		}
 		else
 		{
-			if (mtmp->mpeaceful)
+			if (is_peaceful(mtmp))
 				Sprintf(verbuf, "Welcome, adventurer!");
 			else
 				Sprintf(verbuf, "You rotten thief!");
@@ -734,7 +734,7 @@ register struct monst *mtmp;
                 ? urace.individual.f
                 : (urace.individual.m) ? urace.individual.m : urace.noun;
 
-        if (mtmp->mtame) {
+        if (is_tame(mtmp)) {
             if (kindred) {
                 Sprintf(verbuf, "Good %s to you Master%s",
                         isnight ? "evening" : "day",
@@ -750,7 +750,7 @@ register struct monst *mtmp;
                           : "I find myself growing a little weary.");
                 verbl_msg = verbuf;
             }
-        } else if (mtmp->mpeaceful) {
+        } else if (is_peaceful(mtmp)) {
             if (kindred && isnight) {
                 Sprintf(verbuf, "Good feeding %s!",
                         flags.female ? "sister" : "brother");
@@ -807,7 +807,7 @@ register struct monst *mtmp;
     case MS_BARK:
         if (flags.moonphase == FULL_MOON && night()) {
             pline_msg = "howls.";
-        } else if (mtmp->mpeaceful) {
+        } else if (is_peaceful(mtmp)) {
             if (mtmp->mtame
                 && (is_confused(mtmp) || is_fleeing(mtmp) || mtmp->mtrapped
                     || moves > EDOG(mtmp)->hungrytime || mtmp->mtame < 5))
@@ -822,7 +822,7 @@ register struct monst *mtmp;
         }
         break;
     case MS_MEW:
-        if (mtmp->mtame) {
+        if (is_tame(mtmp)) {
             if (is_confused(mtmp) || is_fleeing(mtmp) || mtmp->mtrapped
                 || mtmp->mtame < 5)
                 pline_msg = "yowls.";
@@ -836,28 +836,28 @@ register struct monst *mtmp;
         }
         /*FALLTHRU*/
     case MS_GROWL:
-        pline_msg = mtmp->mpeaceful ? "snarls." : "growls!";
+        pline_msg = is_peaceful(mtmp) ? "snarls." : "growls!";
         break;
     case MS_ROAR:
-        pline_msg = mtmp->mpeaceful ? "snarls." : "roars!";
+        pline_msg = is_peaceful(mtmp) ? "snarls." : "roars!";
         break;
     case MS_SQEEK:
         pline_msg = "squeaks.";
         break;
     case MS_SQAWK:
-        if (ptr == &mons[PM_RAVEN] && !mtmp->mpeaceful)
+        if (ptr == &mons[PM_RAVEN] && !is_peaceful(mtmp))
             verbl_msg = "Nevermore!";
         else
             pline_msg = "squawks.";
         break;
     case MS_HISS:
-        if (!mtmp->mpeaceful)
+        if (!is_peaceful(mtmp))
             pline_msg = "hisses!";
         else
             return 0; /* no sound */
         break;
     case MS_BUZZ:
-        pline_msg = mtmp->mpeaceful ? "drones." : "buzzes angrily.";
+        pline_msg = is_peaceful(mtmp) ? "drones." : "buzzes angrily.";
         break;
     case MS_GRUNT:
         pline_msg = "grunts.";
@@ -903,9 +903,9 @@ register struct monst *mtmp;
         pline_msg = "mumbles incomprehensibly.";
         break;
     case MS_DJINNI:
-        if (mtmp->mtame) {
+        if (is_tame(mtmp)) {
             verbl_msg = "Sorry, I'm all out of wishes.";
-        } else if (mtmp->mpeaceful) {
+        } else if (is_peaceful(mtmp)) {
             if (ptr == &mons[PM_WATER_DEMON])
                 pline_msg = "gurgles.";
             else
@@ -920,7 +920,7 @@ register struct monst *mtmp;
         }
         break;
     case MS_BOAST: /* giants */
-        if (!mtmp->mpeaceful) {
+        if (!is_peaceful(mtmp)) {
             switch (rn2(4)) {
             case 0:
                 pline("%s boasts about %s gem collection.", Monnam(mtmp),
@@ -938,7 +938,7 @@ register struct monst *mtmp;
         }
         /*FALLTHRU*/
     case MS_HUMANOID:
-        if (!mtmp->mpeaceful) {
+        if (!is_peaceful(mtmp)) {
             if (In_endgame(&u.uz) && is_mplayer(ptr))
                 mplayer_talk(mtmp);
             else
@@ -1018,7 +1018,7 @@ register struct monst *mtmp;
         }
     } break;
     case MS_ARREST:
-        if (mtmp->mpeaceful)
+        if (is_peaceful(mtmp))
             verbalize("Just the facts, %s.", flags.female ? "Ma'am" : "Sir");
         else {
             static const char *const arrest_msg[3] = {
@@ -1029,13 +1029,13 @@ register struct monst *mtmp;
         }
         break;
     case MS_BRIBE:
-        if (mtmp->mpeaceful && !mtmp->mtame) {
+        if (is_peaceful(mtmp) && !is_tame(mtmp)) {
             (void) demon_talk(mtmp);
             break;
         }
     /* fall through */
     case MS_CUSS:
-        if (!mtmp->mpeaceful)
+        if (!is_peaceful(mtmp))
             cuss(mtmp);
         else if (is_lminion(mtmp))
             verbl_msg = "It's not too late.";
@@ -1076,7 +1076,7 @@ register struct monst *mtmp;
                        "The food's not fit for Orcs!",
                        "My feet hurt, I've been on them all day!",
                    };
-        verbl_msg = mtmp->mpeaceful ? soldier_pax_msg[rn2(3)]
+        verbl_msg = is_peaceful(mtmp) ? soldier_pax_msg[rn2(3)]
                                     : soldier_foe_msg[rn2(3)];
         break;
     }
@@ -1226,7 +1226,7 @@ dochat()
         return 0;
 
 	/* Non-speaking monster */
-	if (!is_speaking_monster(mtmp->data) && !mtmp->mtame)
+	if (!is_speaking_monster(mtmp->data) && !is_tame(mtmp))
 	{
 		if (canspotmon(mtmp))
 			pline("%s does not seem to be of the type that engages in conversation.", Monnam(mtmp));
@@ -1246,7 +1246,7 @@ dochat()
     /* if this monster is waiting for something, prod it into action */
     mtmp->mstrategy &= ~STRAT_WAITMASK;
 
-    if (mtmp->mtame && mtmp->meating) {
+    if (is_tame(mtmp) && mtmp->meating) {
         if (!canspotmon(mtmp))
             map_invisible(mtmp->mx, mtmp->my);
         pline("%s is eating noisily.", Monnam(mtmp));
@@ -1335,7 +1335,7 @@ dochat()
 	}
 
 	/* Tame dog and cat commands */
-	if (has_edog(mtmp) && mtmp->mtame)
+	if (has_edog(mtmp) && is_tame(mtmp))
 	{
 		if (mtmp->data->mlet == S_DOG && !mtmp->mstaying && mtmp->mwantstomove)
 		{
@@ -1466,7 +1466,7 @@ dochat()
 
 	}
 
-	if (mtmp->mtame && invent) /*  && !mtmp->issummoned */
+	if (is_tame(mtmp) && invent) /*  && !mtmp->issummoned */
 	{
 		Sprintf(available_chat_list[chatnum].name, "Give items to %s", mon_nam(mtmp));
 		available_chat_list[chatnum].function_ptr = &do_chat_pet_giveitems;
@@ -1482,7 +1482,7 @@ dochat()
 		chatnum++;
 	}
 
-	if (mtmp->mtame && mtmp->minvent) /*  && !mtmp->issummoned */
+	if (is_tame(mtmp) && mtmp->minvent) /*  && !mtmp->issummoned */
 	{
 		if(m_has_wearable_armor_or_accessory(mtmp))
 		{
@@ -1516,7 +1516,7 @@ dochat()
 		}
 	}
 
-	if (mtmp->mtame && mtmp->minvent && !nohands(mtmp->data) && attacktype(mtmp->data, AT_WEAP)) /*  && !mtmp->issummoned */
+	if (is_tame(mtmp) && mtmp->minvent && !nohands(mtmp->data) && attacktype(mtmp->data, AT_WEAP)) /*  && !mtmp->issummoned */
 	{
 		if (select_hwep(mtmp))
 		{
@@ -1597,7 +1597,7 @@ dochat()
 	}
 
 	/* Peaceful monster with sellable items */
-	if (mtmp->mpeaceful && !(mtmp->mtame && !mtmp->ispartymember)
+	if (is_peaceful(mtmp) && !(is_tame(mtmp) && !mtmp->ispartymember)
 		&& !mtmp->isshk 
 		&& !mtmp->isgd
 		&& !mtmp->ispriest
@@ -1623,7 +1623,7 @@ dochat()
 	}
 
 	/* Ask a suitable (speaking) peaceful monster to join */
-	if (mtmp->mpeaceful && !mtmp->mtame
+	if (is_peaceful(mtmp) && !is_tame(mtmp)
 		&& (mtmp->data->mflags3 & M3_CHAT_CAN_JOIN_PARTY)
 		&& !(mtmp->data->geno & G_UNIQ)
 		&& !mtmp->isshk
@@ -1651,7 +1651,7 @@ dochat()
 
 
 	/* Oracle */
-	if (mtmp->mpeaceful && msound == MS_ORACLE)
+	if (is_peaceful(mtmp) && msound == MS_ORACLE)
 	{
 		strcpy(available_chat_list[chatnum].name, "Ask for a consultation");
 		available_chat_list[chatnum].function_ptr = &do_chat_oracle_consult;
@@ -1694,7 +1694,7 @@ dochat()
 	}
 
 	/* Priest */
-	if (mtmp->mpeaceful && (msound == MS_PRIEST || mtmp->ispriest))
+	if (is_peaceful(mtmp) && (msound == MS_PRIEST || mtmp->ispriest))
 	{
 		strcpy(available_chat_list[chatnum].name, "Ask for standard healing");
 		available_chat_list[chatnum].function_ptr = &do_chat_priest_normal_healing;
@@ -1763,7 +1763,7 @@ dochat()
 		chatnum++;
 
 	}
-	else if (mtmp->mpeaceful && is_priest(mtmp->data) && msound != MS_ORACLE)
+	else if (is_peaceful(mtmp) && is_priest(mtmp->data) && msound != MS_ORACLE)
 	{
 		/* Non-priest monster priests here */
 		strcpy(available_chat_list[chatnum].name, "Ask for healing");
@@ -1795,7 +1795,7 @@ dochat()
 	}
 
 	/* Quest */
-	if ((mtmp->mpeaceful && (msound == MS_LEADER || msound == MS_GUARDIAN)) || msound == MS_NEMESIS)
+	if ((is_peaceful(mtmp) && (msound == MS_LEADER || msound == MS_GUARDIAN)) || msound == MS_NEMESIS)
 	{
 		strcpy(available_chat_list[chatnum].name, "Talk about your quest");
 		available_chat_list[chatnum].function_ptr = &do_chat_quest_chat;
@@ -1817,7 +1817,7 @@ dochat()
 	{
 		if(1)
 		{
-			if(mtmp->mpeaceful)
+			if(is_peaceful(mtmp))
 				strcpy(available_chat_list[chatnum].name, "Ask about the state of business");
 			else
 				Sprintf(available_chat_list[chatnum].name, "Ask about what's getting on %s nerves", mhis(mtmp));
@@ -1833,7 +1833,7 @@ dochat()
 
 			chatnum++;
 		}
-		if (!mtmp->mpeaceful)
+		if (!is_peaceful(mtmp))
 		{
 			strcpy(available_chat_list[chatnum].name, "Ask for reconciliation");
 			available_chat_list[chatnum].function_ptr = &do_chat_shk_reconciliation;
@@ -1866,7 +1866,7 @@ dochat()
 
 
 		int shp_indx = 0;
-		if(mtmp->mpeaceful && mtmp->mextra && ESHK(mtmp))
+		if(is_peaceful(mtmp) && mtmp->mextra && ESHK(mtmp))
 		{
 			shp_indx = ESHK(mtmp)->shoptype - SHOPBASE;
 			const struct shclass* shp = &shtypes[shp_indx];
@@ -1888,7 +1888,7 @@ dochat()
 		}
 
 
-		if (mtmp->mpeaceful && !Blind && (otmp = shop_object(u.ux, u.uy)) != (struct obj*) 0)
+		if (is_peaceful(mtmp) && !Blind && (otmp = shop_object(u.ux, u.uy)) != (struct obj*) 0)
 		{
 			/* standing on something in a shop and chatting causes the shopkeeper
 			   to describe the price(s).  This can inhibit other chatting inside
@@ -1915,7 +1915,7 @@ dochat()
 	/* Watchmen */
 	if (is_watch(mtmp->data))
 	{
-		if(!mtmp->mpeaceful)
+		if(!is_peaceful(mtmp))
 		{
 			strcpy(available_chat_list[chatnum].name, "Ask for reconciliation");
 			available_chat_list[chatnum].function_ptr = &do_chat_watchman_reconciliation;
@@ -1985,7 +1985,7 @@ struct monst* mtmp;
 	if (!mtmp)
 		return 0;
 
-	if (!mtmp->mpeaceful)
+	if (!is_peaceful(mtmp))
 	{
 		pline("%s is not in the mood for chatting.", Monnam(mtmp));
 		return 1;
@@ -2033,7 +2033,7 @@ struct monst* mtmp;
 	}
 	else if (msound == MS_ARREST)
 	{
-		if(!mtmp->mpeaceful)
+		if(!is_peaceful(mtmp))
 		{
 			Sprintf(ansbuf, "Hah, I'm the DDPD officer who is going to arrest you, scum!");
 			verbalize(ansbuf);
@@ -2050,7 +2050,7 @@ struct monst* mtmp;
 	}
 	else if (is_watch(mtmp->data))
 	{
-		if (!mtmp->mpeaceful)
+		if (!is_peaceful(mtmp))
 		{
 			if(uwep && is_weapon(uwep))
 				Sprintf(ansbuf, "Hah, drop your weapon first, scum!");
@@ -2139,7 +2139,7 @@ struct monst* mtmp;
 
 	boolean givepawsuccess = FALSE;
 	if (mtmp->mtame >= 1 && mtmp->mtame <= 4)
-		givepawsuccess = !rn2(6 - mtmp->mtame);
+		givepawsuccess = !rn2(6 - is_tame(mtmp));
 	else if (mtmp->mtame >= 5)
 		givepawsuccess = TRUE;
 
@@ -2637,11 +2637,11 @@ struct monst* mtmp;
 		There("is no one here to talk to.");
 		return 0;
 	}
-	else if (!mtmp->mpeaceful) {
+	else if (!is_peaceful(mtmp)) {
 		pline("%s is in no mood for joining.", Monnam(mtmp));
 		return 0;
 	}
-	else if (mtmp->mtame) {
+	else if (is_tame(mtmp)) {
 		if(mtmp->ispartymember)
 			pline("%s is already in your party.", Monnam(mtmp));
 		else
@@ -2684,7 +2684,7 @@ struct monst* mtmp;
 			mtmp->ispartymember = TRUE;
 			pline("%s joins your party!", Monnam(mtmp));
 		}
-		else if (!mtmp->mtame)
+		else if (!is_tame(mtmp))
 		{
 			pline("%s takes your money but refuses join your party after all!", Monnam(mtmp));
 		}
@@ -2884,7 +2884,7 @@ struct monst* mtmp;
 		free((genericptr_t)pick_list);
 		destroy_nhwindow(win);
 
-		if (mtmp->mpeaceful && buy_count > 0) 
+		if (is_peaceful(mtmp) && buy_count > 0) 
 		{
 			if (!Deaf && (is_undead(mtmp->data) || is_demon(mtmp->data) || (mtmp->data->maligntyp < 0 && mtmp->data->difficulty > 10)))
 				verbalize("Use your purchase well!");
@@ -3027,7 +3027,7 @@ struct monst* mtmp;
 		There("is no one here to talk to.");
 		return 0;
 	}
-	else if (!mtmp->mpeaceful) 
+	else if (!is_peaceful(mtmp)) 
 	{
 		pline("%s is in no mood for doing any services.", Monnam(mtmp));
 		return 0;
@@ -3108,7 +3108,7 @@ struct monst* mtmp;
 		There("is no one here to talk to.");
 		return 0;
 	}
-	else if (!mtmp->mpeaceful)
+	else if (!is_peaceful(mtmp))
 	{
 		pline("%s is in no mood for doing any services.", Monnam(mtmp));
 		return 0;
@@ -3161,7 +3161,7 @@ struct monst* mtmp;
 		There("is no one here to talk to.");
 		return 0;
 	}
-	else if (!mtmp->mpeaceful)
+	else if (!is_peaceful(mtmp))
 	{
 		pline("%s is in no mood for doing any services.", Monnam(mtmp));
 		return 0;
@@ -3222,7 +3222,7 @@ struct monst* mtmp;
 		There("is no one here to talk to.");
 		return 0;
 	}
-	else if (!mtmp->mpeaceful)
+	else if (!is_peaceful(mtmp))
 	{
 		pline("%s is in no mood for doing any divination.", Monnam(mtmp));
 		return 0;
@@ -3348,7 +3348,7 @@ struct monst* mtmp;
 		There("is no one here to identify items.");
 		return 0;
 	}
-	else if (!mtmp->mpeaceful) {
+	else if (!is_peaceful(mtmp)) {
 		pline("%s is in no mood for identification.", Monnam(mtmp));
 		return 0;
 	}
@@ -3464,7 +3464,7 @@ struct monst* mtmp;
 	long costapplyingtodebit = max(0, min(reconcile_cost - 1000, ESHK(mtmp)->debit));
 	ESHK(mtmp)->debit -= costapplyingtodebit;
 
-	if (mtmp->mpeaceful)
+	if (is_peaceful(mtmp))
 		pline("\"That's a deal. Be more careful next time.\"");
 	else
 		pline("\"On second thought, maybe you should hang for your crimes anyway.\"");
@@ -3523,7 +3523,7 @@ struct monst* mtmp;
 
 	pacify_guards();
 
-	if(mtmp->mpeaceful)
+	if(is_peaceful(mtmp))
 		pline("\"Fine, it's alright now. Be more careful next time.\"");
 	else
 		pline("\"On second thought, maybe I'll hang you anyway.\"");

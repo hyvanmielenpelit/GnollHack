@@ -81,7 +81,7 @@ boolean showtail;
         show_glyph(mtmp->mx, mtmp->my,
                    detected_mon_to_glyph(mtmp, newsym_rn2));
     else
-        show_glyph(mtmp->mx, mtmp->my, mtmp->mtame
+        show_glyph(mtmp->mx, mtmp->my, is_tame(mtmp)
                    ? pet_to_glyph(mtmp, newsym_rn2)
                    : mon_to_glyph(mtmp, newsym_rn2));
 
@@ -363,7 +363,7 @@ register struct obj *sobj;
                    "You feel worried about your future financial situation.");
             else if (steedgold)
                 Sprintf(buf, "You feel interested in %s financial situation.",
-                        s_suffix(x_monnam(u.usteed, u.usteed->mtame ? ARTICLE_YOUR : ARTICLE_THE,
+                        s_suffix(x_monnam(u.usteed, is_tame(u.usteed) ? ARTICLE_YOUR : ARTICLE_THE,
                                           (char *) 0, SUPPRESS_SADDLE, FALSE)));
             else
                 Strcpy(buf, "You feel materially poor.");
@@ -1675,7 +1675,7 @@ boolean via_warning;
             map_invisible(x, y);
             You_feel("an unseen monster!");
         } else if (!sensemon(mtmp)) {
-            You("find %s.", mtmp->mtame ? y_monnam(mtmp) : a_monnam(mtmp));
+            You("find %s.", is_tame(mtmp) ? y_monnam(mtmp) : a_monnam(mtmp));
         }
         return 1;
     }

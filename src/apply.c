@@ -484,7 +484,7 @@ struct obj *obj;
                this avoids trap issues if you're on a trap location */
             if (mtmp == u.usteed)
                 continue;
-            if (mtmp->mtame) {
+            if (is_tame(mtmp)) {
                 if (mtmp->mtrapped) {
                     /* no longer in previous trap (affects mintrap) */
                     mtmp->mtrapped = 0;
@@ -661,7 +661,7 @@ struct obj *obj;
         /* trying again will work provided the monster is tame
            (and also that it doesn't change location by retry time) */
         map_invisible(cc.x, cc.y);
-    } else if (!mtmp->mtame) {
+    } else if (!is_tame(mtmp)) {
         pline("%s %s leashed!", Monnam(mtmp),
               (!obj->leashmon) ? "cannot be" : "is not");
     } else if (!obj->leashmon) {
@@ -786,7 +786,7 @@ register xchar x, y;
                 } else {
                     pline("%s is choked by the leash!", Monnam(mtmp));
                     /* tameness eventually drops to 1 here (never 0) */
-                    if (mtmp->mtame && rn2(mtmp->mtame))
+                    if (mtmp->mtame/**/ && rn2(mtmp->mtame/**/))
                         mtmp->mtame--;
 
 					if (!mtmp->mtame)
@@ -1076,7 +1076,7 @@ struct obj* otmp;
 			}
 			else
 			{
-				if (!check_magic_resistance_and_halve_damage(mtmp, otmp, 0, 0, TELL) && !is_dlord(mtmp->data) && !is_dprince(mtmp->data) && !mtmp->mtame)
+				if (!check_magic_resistance_and_halve_damage(mtmp, otmp, 0, 0, TELL) && !is_dlord(mtmp->data) && !is_dprince(mtmp->data) && !is_tame(mtmp))
 				{
 					if (mtmp->m_lev <= 10 && mtmp->m_lev < u.ulevel && rn2(100) < (percentchance - 100))
 					{
@@ -1085,7 +1085,7 @@ struct obj* otmp;
 					}
 					else
 					{
-						if (!mtmp->mpeaceful)
+						if (!is_peaceful(mtmp))
 						{
 							You("successfully pacify %s.", the(mon_nam(mtmp)));
 							mtmp->mpeaceful = 1;
@@ -1915,7 +1915,7 @@ int magic; /* 0=Physical, otherwise skill level */
         pline("This calls for swimming, not jumping!");
         return 0;
     } else if (u.ustuck) {
-        if (u.ustuck->mtame && !Conflict && !is_confused(u.ustuck)) {
+        if (is_tame(u.ustuck) && !Conflict && !is_confused(u.ustuck)) {
             You("pull free from %s.", mon_nam(u.ustuck));
             u.ustuck = 0;
             return 1;
@@ -3512,7 +3512,7 @@ int min_range, max_range;
             if (!impaired
                 && glyph_is_monster(glyph)
                 && (mtmp = m_at(x, y)) != 0
-                && (mtmp->mtame || (mtmp->mpeaceful && flags.confirm)))
+                && (is_tame(mtmp) || (is_peaceful(mtmp) && flags.confirm)))
                 continue;
             if (glyph_is_monster(glyph)
                 || glyph_is_warning(glyph)
