@@ -1408,7 +1408,13 @@ update_monster_timouts()
 						if (!!slimeproof(mtmp->data))
 						{
 							(void)newcham(mtmp, &mons[PM_GREEN_SLIME], FALSE, TRUE);
-							mtmp->mprops[CHARMED] = 0;
+							/* break charm */
+							if (has_charmed(mtmp))
+							{
+								mtmp->mprops[CHARMED] = 0;
+								mtmp->mpeaceful = mtmp->morigpeaceful;
+								mtmp->mtame = mtmp->morigtame;
+							}
 							if (mtmp->mtame)
 								mtmp->mtame = 0;
 							if (is_peaceful(mtmp))
@@ -1601,9 +1607,9 @@ movemon()
 #ifdef SAFERHANGUP
             /* or if the program has lost contact with the user */
             || program_state.done_hup
-			|| context.time_stopped //Time stop spell has been cast
 #endif
-            ) {
+			|| context.time_stopped //Time stop spell has been cast
+			) {
             somebody_can_move = FALSE;
             break;
         }
@@ -3786,7 +3792,12 @@ boolean via_attack;
     }
 
 	/* just in case remove charm */
-	mtmp->mprops[CHARMED] = 0;
+	if (has_charmed(mtmp))
+	{
+		mtmp->mprops[CHARMED] = 0;
+		mtmp->mpeaceful = mtmp->morigpeaceful;
+		mtmp->mtame = mtmp->morigtame;
+	}
 
     /* attacking your own quest leader will anger his or her guardians */
     if (!context.mon_moving /* should always be the case here */

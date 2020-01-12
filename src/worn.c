@@ -454,6 +454,12 @@ int amount;
 	if (!amount)
 		return;
 
+	if (mon == &youmonst)
+	{
+		incr_itimeout(&u.uprops[prop_index].intrinsic, amount);
+		return;
+	}
+
 	if (amount > SHRT_MAX)
 		amount = SHRT_MAX;
 
@@ -500,6 +506,12 @@ unsigned short amount;
 	if (!amount)
 		return;
 
+	if (mon == &youmonst)
+	{
+		set_itimeout(&u.uprops[prop_index].intrinsic, amount);
+		return;
+	}
+
 	if (amount > M_TIMEOUT)
 		amount = M_TIMEOUT;
 
@@ -517,6 +529,11 @@ int prop_index;
 
 	if (prop_index < 1 || prop_index > LAST_PROP)
 		return 0;
+
+	if (mon == &youmonst)
+	{
+		return (u.uprops[prop_index].intrinsic & TIMEOUT);
+	}
 
 	unsigned short amount = mon->mprops[prop_index] & M_TIMEOUT;
 	return (int)amount;

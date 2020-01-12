@@ -2754,7 +2754,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 	case AD_DMNS:
 		tmp = 0;
 		chance = mattk->damp;
-		if(chance > 0)
+		if(chance > 0 && !Summon_forbidden)
 		{
 			if (rn2(100) < chance) {
 				You("gate in some help!");

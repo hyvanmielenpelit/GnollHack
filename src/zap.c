@@ -7716,6 +7716,8 @@ int damage, tell;
     int resisted;
     int alev, dlev;
 	char oclass = ILLOBJ_CLASS;
+	boolean is_you = (mtmp == &youmonst);
+
 	if (otmp)
 		oclass = otmp->oclass;
 
@@ -7771,24 +7773,44 @@ int damage, tell;
 
 	if (resisted) {
 		damage = (damage + 1) / 2;
-		if (tell) {
-			shieldeff(mtmp->mx, mtmp->my);
-			pline("%s resists!", Monnam(mtmp));
+		if (tell) 
+		{
+			if (is_you)
+			{
+				shieldeff(u.ux,u.uy);
+				You("resist!");
+			}
+			else
+			{
+				shieldeff(mtmp->mx, mtmp->my);
+				pline("%s resists!", Monnam(mtmp));
+			}
 		}
 	}
 
 	if (damage) {
-		if(tell && !(tell == TELL_LETHAL_STYLE && !resisted)) //Lethal damage not shown, resisted though yes
-			pline("%s sustains %d damage!", Monnam(mtmp), damage);
-
-		mtmp->mhp -= damage;
-        if (DEADMONSTER(mtmp)) {
-            if (m_using)
-                monkilled(mtmp, "", AD_RBRE);
-            else
-                killed(mtmp);
-        }
-    }
+		if (tell && !(tell == TELL_LETHAL_STYLE && !resisted))
+		{//Lethal damage not shown, resisted though yes
+			if (is_you)
+				You("sustain %d damage!", damage);
+			else
+				pline("%s sustains %d damage!", Monnam(mtmp), damage);
+		}
+		if (is_you)
+		{
+			losehp(damage, otmp ? cxname(otmp) : "damage source", KILLED_BY);
+		}
+		else
+		{
+			mtmp->mhp -= damage;
+			if (DEADMONSTER(mtmp)) {
+				if (m_using)
+					monkilled(mtmp, "", AD_RBRE);
+				else
+					killed(mtmp);
+			}
+		}
+	}
     return resisted;
 }
 
