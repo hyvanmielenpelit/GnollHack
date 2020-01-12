@@ -3839,6 +3839,9 @@ register struct obj *obj;
 		{
 			if (radius <= 0 || dist2(u.ux, u.uy, mon->mx, mon->my) <= radius * (radius + 1))
 			{
+				if (is_peaceful(mon))
+					setmangry(mon, FALSE);
+
 				/* No other saving throw */
 				boolean magic_resistance_success = check_magic_resistance_and_halve_damage(mon, (struct obj*)0,  u.ulevel, 0, NOTELL);
 
@@ -3866,6 +3869,9 @@ register struct obj *obj;
 		{
 			if (dist2(u.ux, u.uy, mon->mx, mon->my) <= radius * (radius + 1))
 			{
+				if (is_peaceful(mon))
+					setmangry(mon, FALSE);
+
 				int dmg = d(objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize) + objects[obj->otyp].oc_spell_dmg_plus;
 				if (resists_fire(mon))
 				{
@@ -3891,6 +3897,9 @@ register struct obj *obj;
 		{
 			if (dist2(u.ux, u.uy, mon->mx, mon->my) <= radius * (radius + 1))
 			{
+				if (is_peaceful(mon))
+					setmangry(mon, FALSE);
+
 				int dmg = d(objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize) + objects[obj->otyp].oc_spell_dmg_plus;
 				if (resists_cold(mon))
 				{
@@ -3916,6 +3925,9 @@ register struct obj *obj;
 		{
 			if (dist2(u.ux, u.uy, mon->mx, mon->my) <= radius * (radius + 1))
 			{
+				if (is_peaceful(mon))
+					setmangry(mon, FALSE);
+
 				int dmg = d(objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize) + objects[obj->otyp].oc_spell_dmg_plus;
 				if (resists_elec(mon))
 				{
@@ -3941,6 +3953,9 @@ register struct obj *obj;
 		{
 			if (dist2(u.ux, u.uy, mon->mx, mon->my) <= radius * (radius + 1))
 			{
+				if(is_peaceful(mon))
+					setmangry(mon, FALSE);
+
 				int dmg = d(objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize) + objects[obj->otyp].oc_spell_dmg_plus;
 				if (resists_magic(mon))
 				{
@@ -8081,7 +8096,7 @@ armageddon()
 	mmtmp[2] = mydogs; /* for use during level changes */
 	for (mon = mmtmp[0]; mon; mon = mon->nmon)
 	{
-		if (mtmp->mtame > 5 && killstyle == 0)
+		if (mon->mtame > 5 && killstyle == 0)
 			continue;
 
 		for (mtmp = mmtmp[2]; mtmp; mtmp = mtmp->nmon)
