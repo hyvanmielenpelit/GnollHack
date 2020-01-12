@@ -2827,7 +2827,7 @@ boolean byplayer;
 
     /* give a "<mon> is slowing down" message and also remove
        intrinsic speed (comparable to similar effect on the hero) */
-	increase_mon_temporary_property_verbosely(mon, STONED, 10);
+	/* message is not here, since instapetrify */
 
     if (cansee(mon->mx, mon->my))
         pline("%s turns to stone.", Monnam(mon));

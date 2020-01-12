@@ -1354,6 +1354,8 @@ update_monster_timouts()
                                           ? SHIFT_MSG : 0);
         were_change(mtmp);
 
+
+		/* gradually time out temporary problems */
 		for (int i = 1; i <= LAST_PROP; i++)
 		{
 			unsigned short otherflags = mtmp->mprops[i] & ~M_TIMEOUT;
@@ -1374,81 +1376,89 @@ update_monster_timouts()
 						break;
 					}
 				}
-			}
-		}
 
-
-
-        /* gradually time out temporary problems */
-
-        if (get_mon_temporary_property(mtmp, BLINDED) > 0)
-            increase_mon_temporary_property_verbosely(mtmp, BLINDED, -1);
-		if (get_mon_temporary_property(mtmp, PARALYZED) > 0)
-			increase_mon_temporary_property_verbosely(mtmp, PARALYZED, -1);
-		if (get_mon_temporary_property(mtmp, FEARFUL) > 0)
-			increase_mon_temporary_property_verbosely(mtmp, FEARFUL, -1);
-
-		if (get_mon_temporary_property(mtmp, STONED) > 0)
-		{
-			increase_mon_temporary_property_verbosely(mtmp, STONED, -1);
-			
-			if (get_mon_temporary_property(mtmp, STONED) == 0)
-			{
-				if (!resists_ston(mtmp))
+				/* These work in any case when duration was 1 (now 0) */
+				if (duration == 1)
 				{
-					minstapetrify(mtmp, mtmp->delayed_killer_by_you);
-					if (Punished)
-						placebc();
-					if (mtmp == u.ustuck)
-						u.ustuck = 0;
+					switch (i)
+					{
+					case STONED:
+						{
+							if (!resists_ston(mtmp))
+							{
+								minstapetrify(mtmp, mtmp->delayed_killer_by_you);
+								if (Punished)
+									placebc();
+								if (mtmp == u.ustuck)
+									u.ustuck = 0;
+							}
+						}
+						break;
+					case SICK:
+						if (!resists_sickness(mtmp))
+						{
+							if (canseemon(mtmp))
+							{
+								pline("%s dies of %s terminal illness!", Monnam(mtmp), mhis(mtmp));
+							}
+							mtmp->mhp = 0;
+							mondied(mtmp);
+						}
+						break;
+					case STRANGLED:
+						if (!is_breathless(mtmp))
+						{
+							if (canseemon(mtmp))
+							{
+								pline("%s dies of strangulation!", Monnam(mtmp));
+							}
+							mtmp->mhp = 0;
+							mondied(mtmp);
+						}
+						break;
+					case AIRLESS_ENVIRONMENT:
+						if (!is_breathless(mtmp) && !(is_pool(mtmp->mx, mtmp->my) && amphibious(mtmp->data)))
+						{
+							if (canseemon(mtmp))
+							{
+								pline("%s dies of suffocation!", Monnam(mtmp));
+							}
+							mtmp->mhp = 0;
+							mondied(mtmp);
+						}
+						break;
+					default:
+						break;
+					}
+
+				}
+				else
+				{
+					switch (i)
+					{
+					case STONED:
+						(void)munstone(mtmp, FALSE); /* check if the monster has found something that helps */
+						break;
+					case STRANGLED:
+						if (canseemon(mtmp) && !is_breathless(mtmp))
+						{
+							pline("%s is gasping for air!", Monnam(mtmp));
+						}
+						break;
+					case AIRLESS_ENVIRONMENT:
+						if (canseemon(mtmp) && !is_breathless(mtmp) && !(is_pool(mtmp->mx, mtmp->my) && amphibious(mtmp->data)))
+						{
+							pline("%s is gasping for air!", Monnam(mtmp));
+						}
+						break;
+					}
 				}
 			}
-			else
-			{
-				(void)munstone(mtmp, FALSE); /* check if the monster has found something that helps */
-			}
 		}
 
-		if (get_mon_temporary_property(mtmp, SICK) > 0 && is_sick(mtmp))
-		{
-			increase_mon_temporary_property(mtmp, SICK, -1);
-			if (get_mon_temporary_property(mtmp, SICK) == 0 && !has_sickness_resistance(mtmp))
-			{
-				if (canseemon(mtmp))
-				{
-					pline("%s dies of %s terminal illness!", Monnam(mtmp), mhis(mtmp));
-				}
-				mtmp->mhp = 0;
-				mondied(mtmp);
-			}
-		}
-		if (get_mon_temporary_property(mtmp, STRANGLED) > 0 && !is_breathless(mtmp))
-		{
-			increase_mon_temporary_property(mtmp, STRANGLED, -1);
-			if (get_mon_temporary_property(mtmp, STRANGLED) == 0)
-			{
-				if (canseemon(mtmp))
-				{
-					pline("%s dies of strangulation!", Monnam(mtmp));
-				}
-				mtmp->mhp = 0;
-				mondied(mtmp);
-			}
-		}
-		if (get_mon_temporary_property(mtmp, AIRLESS_ENVIRONMENT) > 0 && !is_breathless(mtmp) &&
-			!(is_pool(mtmp->mx, mtmp->my) && amphibious(mtmp->data)))
-		{
-			increase_mon_temporary_property(mtmp, AIRLESS_ENVIRONMENT, -1);
-			if (get_mon_temporary_property(mtmp, AIRLESS_ENVIRONMENT) == 0)
-			{
-				if (canseemon(mtmp))
-				{
-					pline("%s dies of suffocation!", Monnam(mtmp));
-				}
-				mtmp->mhp = 0;
-				mondied(mtmp);
-			}
-		}
+
+		/* reduce basic stat timers */
+
 		if (mtmp->mfrozen && !--mtmp->mfrozen)
             mtmp->mcanmove = 1;
 		if (mtmp->mstaying && !--mtmp->mstaying)
