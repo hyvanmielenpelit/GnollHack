@@ -995,13 +995,13 @@ struct monst *mtmp;
 		Strcat(info, ", terminally ill");
 	if (is_fearful(mtmp))
 		Strcat(info, ", fearful");
-	if (has_stoned(mtmp))
+	if (is_stoning(mtmp))
 		Strcat(info, ", solidifying");
-	if (has_slimed(mtmp))
+	if (is_turning_into_slime(mtmp))
 		Strcat(info, ", becoming slimy");
-	if (has_strangled(mtmp))
+	if (is_being_strangled(mtmp))
 		Strcat(info, ", being strangled");
-	if (has_paralyzed(mtmp))
+	if (is_paralyzed(mtmp))
 		Strcat(info, ", paralyzed");
 	if (is_stunned(mtmp))
         Strcat(info, ", stunned");

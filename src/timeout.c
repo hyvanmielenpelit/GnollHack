@@ -87,7 +87,7 @@ const struct propname {
 	{ SLOW_DIGESTION, "slow digestion", "slow digestion" },
 	{ HALF_SPDAM, "half spell damage", "half spell damage" },
 	{ HALF_PHDAM, "half physical damage", "half physical damage" },
-	{ REGENERATION, "hit point regeneration", "hit point regeneration" },
+	{ REGENERATION, "regeneration", "regeneration" },
 	{ ENERGY_REGENERATION, "mana regeneration", "mana regeneration" },
 	{ PROTECTION, "extra protection", "extra protection" },
 	{ PROT_FROM_SHAPE_CHANGERS, "protection from shape changers", "protection from shape changers" },
@@ -1166,9 +1166,6 @@ nh_timeout()
 			}
 		}
 
-		/* Needs to be called if e.g. amulet of strangulation vanished */
-		update_all_character_properties((struct obj*)0);
-
 		/* Finally, add time to recurring intrinsics */
 		if ((upp->intrinsic & TIMEOUT) == 0 && context.properties[propnum].recurring && (upp->extrinsic || (upp->intrinsic & ~TIMEOUT)))
 		{
@@ -1176,7 +1173,10 @@ nh_timeout()
 		}
 	}
 
-    run_timers();
+	/* Needs to be called if e.g. amulet of strangulation vanished */
+	update_all_character_properties((struct obj*)0);
+
+	run_timers();
 	context.botl = context.botlx = 1;
 }
 

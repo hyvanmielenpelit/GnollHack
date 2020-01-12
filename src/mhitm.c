@@ -237,7 +237,10 @@ boolean quietly;
      */
     vis = (canspotmon(magr) && canspotmon(mdef));
 
-    if (touch_petrifies(pd) && !resists_ston(magr)) {
+    if (touch_petrifies(pd) && !resists_ston(magr)) 
+	{
+		start_delayed_petrification(magr, FALSE);
+#if 0
         if (which_armor(magr, W_ARMG) != 0) {
             if (poly_when_stoned(pa)) {
                 mon_to_stone(magr);
@@ -252,7 +255,8 @@ boolean quietly;
                 You(brief_feeling, "peculiarly sad");
             return MM_AGR_DIED;
         }
-    }
+#endif
+	}
 
     remove_monster(fx, fy); /* pick up from orig position */
     remove_monster(tx, ty);
@@ -962,7 +966,8 @@ register struct obj* omonwep;
 
     if ((touch_petrifies(pd) /* or flesh_petrifies() */
          || (mattk->adtyp == AD_DGST && pd == &mons[PM_MEDUSA]))
-        && !resists_ston(magr)) {
+        && !resists_ston(magr)) 
+	{
         long protector = attk_protection((int) mattk->aatyp),
              wornitems = magr->worn_item_flags;
 
@@ -971,7 +976,10 @@ register struct obj* omonwep;
             wornitems |= W_ARMG;
 
         if (protector == 0L
-            || (protector != ~0L && (wornitems & protector) != protector)) {
+            || (protector != ~0L && (wornitems & protector) != protector)) 
+		{
+			start_delayed_petrification(magr, FALSE);
+#if 0
             if (poly_when_stoned(pa)) {
                 mon_to_stone(magr);
                 return MM_HIT; /* no damage during the polymorph */
@@ -984,6 +992,7 @@ register struct obj* omonwep;
             else if (magr->mtame && !vis)
                 You(brief_feeling, "peculiarly sad");
             return MM_AGR_DIED;
+#endif
         }
     }
 

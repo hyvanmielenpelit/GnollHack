@@ -619,7 +619,62 @@ struct obj *otmp;
             mdrop_obj(mtmp, obj, FALSE);
         }
         break;
-    case SPE_HEALING:
+	case SPE_CURE_SICKNESS:
+	{
+		res = 1;
+		boolean was_sick = is_sick(mtmp);
+		boolean had_sick = !!mtmp->mprops[SICK];
+		mtmp->mprops[SICK] &= ~(M_INTRINSIC_ACQUIRED | M_TIMEOUT);
+
+		boolean was_turning_into_slime = is_turning_into_slime(mtmp);
+		boolean had_slimed = !!mtmp->mprops[SLIMED];
+		mtmp->mprops[SLIMED] &= ~(M_INTRINSIC_ACQUIRED | M_TIMEOUT);
+
+		if (!is_sick(mtmp) && !is_turning_into_slime(mtmp) && (was_sick || was_turning_into_slime))
+			pline("%s looks much better!", Monnam(mtmp));
+		else if (!is_sick(mtmp) && was_sick)
+			pline("%s is no longer terminally ill but is still turning into slime!", Monnam(mtmp));
+		else if (!is_turning_into_slime(mtmp) && was_turning_into_slime)
+			pline("%s is no longer turning into slime but is still terminally ill!", Monnam(mtmp));
+		else if (!mtmp->mprops[SICK] && had_sick)
+			pline("%s is cured of its terminal illness!", Monnam(mtmp));
+		else if (!mtmp->mprops[SLIMED] && had_slimed)
+			pline("%s is cured of its sliming!", Monnam(mtmp));
+		else
+			pline("Nothing much seems to happen to %s.", mon_nam(mtmp));
+
+		break;
+	}
+	case SPE_CURE_BLINDNESS:
+	{
+		res = 1;
+		boolean was_blinded = is_blinded(mtmp);
+		boolean had_blinded = !!mtmp->mprops[BLINDED];
+		mtmp->mprops[BLINDED] &= ~(M_INTRINSIC_ACQUIRED | M_TIMEOUT);
+		if (!is_blinded(mtmp) && was_blinded)
+			pline("%s can see again!", Monnam(mtmp));
+		else if (!mtmp->mprops[BLINDED] && had_blinded)
+			pline("%s is cured of its underlying blindness!", Monnam(mtmp));
+		else
+			pline("Nothing much seems to happen to %s.", mon_nam(mtmp));
+
+		break;
+	}
+	case SPE_CURE_PETRIFICATION:
+	{
+		res = 1;
+		boolean was_stoning = is_stoning(mtmp);
+		boolean had_stoned = !!mtmp->mprops[STONED];
+		mtmp->mprops[STONED] &= ~(M_INTRINSIC_ACQUIRED | M_TIMEOUT);
+		if (!is_stoning(mtmp) && was_stoning)
+			pline("%s stops solidifying!", Monnam(mtmp));
+		else if (!mtmp->mprops[STONED] && had_stoned)
+			pline("%s is cured of its petrification!", Monnam(mtmp));
+		else
+			pline("Nothing much seems to happen to %s.", mon_nam(mtmp));
+		break;
+	}
+	case SPE_HEALING:
     case SPE_EXTRA_HEALING:
 	case SPE_GREATER_HEALING:
 	case SPE_FULL_HEALING:
@@ -3137,7 +3192,10 @@ struct obj *obj, *otmp;
         case WAN_SPEED_MONSTER:
 		case SPE_MAGIC_ARROW:
 		case WAN_NOTHING:
-        case SPE_HEALING:
+		case SPE_CURE_BLINDNESS:
+		case SPE_CURE_SICKNESS:
+		case SPE_CURE_PETRIFICATION:
+		case SPE_HEALING:
         case SPE_EXTRA_HEALING:
 		case SPE_GREATER_HEALING:
 		case SPE_FULL_HEALING:
@@ -4368,6 +4426,20 @@ boolean ordinary;
 		You_feel("completely healed.");
 		damage = 0;
 		break;
+	case SPE_CURE_BLINDNESS:
+		healup(0, 0, FALSE, TRUE, FALSE, FALSE, FALSE);
+		break;
+	case SPE_CURE_SICKNESS:
+		if (Sick)
+			You("are no longer ill.");
+		if (Slimed)
+			make_slimed(0L, "The slime disappears!");
+		healup(0, 0, TRUE, FALSE, FALSE, FALSE, FALSE);
+		break;
+	case SPE_CURE_PETRIFICATION:
+		if (Stoned)
+			fix_petrification();
+		break;
 	case SPE_REPLENISH_UNDEATH:
 	case SPE_GREATER_UNDEATH_REPLENISHMENT:
 		if (is_undead(youmonst.data))
@@ -4585,8 +4657,6 @@ struct obj *obj; /* wand or spell */
         break;
 
     /* Default processing via bhitm() for these */
-    case SPE_CURE_SICKNESS:
-	case SPE_CURE_PETRIFICATION:
 	case WAN_MAKE_INVISIBLE:
     case WAN_CANCELLATION:
     case SPE_CANCELLATION:
@@ -4611,7 +4681,10 @@ struct obj *obj; /* wand or spell */
 	case WAN_SLOW_MONSTER:
     case SPE_SLOW_MONSTER:
     case WAN_SPEED_MONSTER:
-    case SPE_HEALING:
+	case SPE_CURE_BLINDNESS:
+	case SPE_CURE_SICKNESS:
+	case SPE_CURE_PETRIFICATION:
+	case SPE_HEALING:
     case SPE_EXTRA_HEALING:
 	case SPE_GREATER_HEALING:
 	case SPE_FULL_HEALING:

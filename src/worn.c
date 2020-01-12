@@ -617,9 +617,9 @@ int value; /* -1 sets the intrinsic and -2 clears it */
 
 	boolean could_spot_mon = canspotmon(mtmp);
 	boolean was_invisible = is_invisible(mtmp);
-	boolean was_stoned = has_stoned(mtmp);
-	boolean was_slimed = has_slimed(mtmp);
-	boolean was_strangled = has_strangled(mtmp);
+	boolean was_stoning = is_stoning(mtmp);
+	boolean was_turning_into_slime = is_turning_into_slime(mtmp);
+	boolean was_strangled = is_being_strangled(mtmp);
 	boolean was_suffocating = is_suffocating(mtmp);
 	boolean was_fast = is_fast(mtmp);
 	boolean was_very_fast = is_very_fast(mtmp);
@@ -663,21 +663,21 @@ int value; /* -1 sets the intrinsic and -2 clears it */
 		}
 
 		/* Stoned */
-		if (has_stoned(mtmp) && !was_stoned)
+		if (is_stoning(mtmp) && !was_stoning)
 		{
 			pline("%s starts turning into stone!", Monnam(mtmp));
 		}
-		else if (!has_stoned(mtmp) && was_stoned)
+		else if (!is_stoning(mtmp) && was_stoning)
 		{
 			pline("%s stops turning into stone.", Monnam(mtmp));
 		}
 
 		/* Slimed */
-		if (has_slimed(mtmp) && !was_stoned)
+		if (is_turning_into_slime(mtmp) && !was_turning_into_slime)
 		{
 			pline("%s is turning into green slime!", Monnam(mtmp));
 		}
-		else if (!has_slimed(mtmp) && was_slimed)
+		else if (!is_turning_into_slime(mtmp) && was_turning_into_slime)
 		{
 			pline("%s is not turning into green slime anymore.", Monnam(mtmp));
 		}
@@ -790,11 +790,11 @@ int value; /* -1 sets the intrinsic and -2 clears it */
 			pline("%s stops flying.", Monnam(mtmp));
 		}
 
-		if (has_strangled(mtmp) && !was_strangled)
+		if (is_being_strangled(mtmp) && !was_strangled)
 		{
 			pline("%s is being strangled to death!", Monnam(mtmp));
 		}
-		else if (!has_strangled(mtmp) && was_strangled)
+		else if (!is_being_strangled(mtmp) && was_strangled)
 		{
 			pline("%s stops being strangled.", Monnam(mtmp));
 		}

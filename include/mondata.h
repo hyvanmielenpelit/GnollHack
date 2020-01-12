@@ -209,11 +209,18 @@
 #define has_slimed(mon) \
 	has_property(mon, SLIMED)
 
+#define is_turning_into_slime(mon) \
+	(has_slimed(mon))
+
 #define has_stoned(mon) \
 	has_property(mon, STONED)
 
 #define has_petrification_resistance(mon) \
 	has_innate_or_property(mon, STONE_RES)
+
+#define is_stoning(mon) \
+	(has_property(mon, STONED) && !has_petrification_resistance(mon))
+
 
 #define has_magical_breathing(mon) \
 	(has_property(mon, MAGICAL_BREATHING))
@@ -227,6 +234,10 @@
 #define has_strangled(mon) \
 	has_property(mon, STRANGLED)
 
+#define is_being_strangled(mon) \
+	(has_strangled(mon))
+
+
 #define has_airless_environment(mon) \
 	has_property(mon, AIRLESS_ENVIRONMENT)
 
@@ -234,7 +245,7 @@
 	(has_airless_environment(mon) && !has_magical_breathing(mon))
 
 #define is_slow(mon) \
-	(has_slowed(mon) || has_slimed(mon) || has_stoned(mon))
+	(has_slowed(mon) || is_turning_into_slime(mon) || is_stoning(mon))
 
 #define has_cancelled(mon) \
 	has_property(mon, CANCELLED)

@@ -1354,8 +1354,8 @@ update_monster_timouts()
                                           ? SHIFT_MSG : 0);
         were_change(mtmp);
 
-		boolean was_paralyzed = mtmp->mprops[PARALYZED];
-		boolean was_sleeping = mtmp->mprops[SLEEPING];
+		boolean was_paralyzed = !!mtmp->mprops[PARALYZED];
+		boolean was_sleeping = !!mtmp->mprops[SLEEPING];
 
 		/* gradually time out temporary problems */
 		for (int i = 1; i <= LAST_PROP; i++)
@@ -1393,6 +1393,9 @@ update_monster_timouts()
 									placebc();
 								if (mtmp == u.ustuck)
 									u.ustuck = 0;
+								if (mtmp->mtame && !canspotmon(mtmp))
+									You("have a peculiarly sad feeling for a moment, then it passes.");
+
 							}
 						}
 						break;
@@ -1405,6 +1408,10 @@ update_monster_timouts()
 							}
 							mtmp->mhp = 0;
 							mondied(mtmp);
+							if (mtmp == u.ustuck)
+								u.ustuck = 0;
+							if (mtmp->mtame && !canspotmon(mtmp))
+								You("have a peculiarly sad feeling for a moment, then it passes.");
 						}
 						break;
 					case STRANGLED:
@@ -1416,6 +1423,10 @@ update_monster_timouts()
 							}
 							mtmp->mhp = 0;
 							mondied(mtmp);
+							if (mtmp == u.ustuck)
+								u.ustuck = 0;
+							if (mtmp->mtame && !canspotmon(mtmp))
+								You("have a peculiarly sad feeling for a moment, then it passes.");
 						}
 						break;
 					case AIRLESS_ENVIRONMENT:
@@ -1427,6 +1438,10 @@ update_monster_timouts()
 							}
 							mtmp->mhp = 0;
 							mondied(mtmp);
+							if (mtmp == u.ustuck)
+								u.ustuck = 0;
+							if (mtmp->mtame && !canspotmon(mtmp))
+								You("have a peculiarly sad feeling for a moment, then it passes.");
 						}
 						break;
 					case SLEEPING:

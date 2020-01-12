@@ -245,6 +245,7 @@ OPTIONS=hilite_status:condition/blind/yellow
 OPTIONS=hilite_status:condition/termill/red&inverse
 OPTIONS=hilite_status:condition/foodpois/red&inverse
 OPTIONS=hilite_status:condition/slime/red&inverse
+OPTIONS=hilite_status:condition/stone/red&inverse
 OPTIONS=hilite_status:condition/suffoc/red&inverse
 OPTIONS=hilite_status:condition/strngl/red&inverse
 OPTIONS=hilite_status:condition/paral/red&inverse

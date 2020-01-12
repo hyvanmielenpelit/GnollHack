@@ -1804,6 +1804,9 @@ boolean atme;
 	case SPE_SPHERE_OF_ANNIHILATION:
 	case SPE_REPLENISH_UNDEATH:
 	case SPE_GREATER_UNDEATH_REPLENISHMENT:
+	case SPE_CURE_BLINDNESS:
+	case SPE_CURE_SICKNESS:
+	case SPE_CURE_PETRIFICATION:
 	case SPE_HEALING:
     case SPE_EXTRA_HEALING:
 	case SPE_GREATER_HEALING:
@@ -1910,20 +1913,6 @@ boolean atme;
         break;
     /* end of potion-like spells */
 
-    case SPE_CURE_BLINDNESS:
-        healup(0, 0, FALSE, TRUE, FALSE, FALSE, FALSE);
-        break;
-    case SPE_CURE_SICKNESS:
-        if (Sick)
-            You("are no longer ill.");
-        if (Slimed)
-            make_slimed(0L, "The slime disappears!");
-        healup(0, 0, TRUE, FALSE, FALSE, FALSE, FALSE);
-        break;
-	case SPE_CURE_PETRIFICATION:
-		if (Stoned)
-			fix_petrification();
-		break;
 	case SPE_CREATE_FAMILIAR:
         (void) make_familiar((struct obj *) 0, u.ux, u.uy, FALSE);
         break;

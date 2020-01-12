@@ -774,6 +774,7 @@ register char sym;
 void
 props_init()
 {
+	/* All these require that they maintained by extrinsic or a permanent intrinsic, otherwise they will be set to zero automatically */
 	context.properties[LAUGHING].recurring = TRUE;
 	context.properties[LAUGHING].recurring_constant = 0;
 	context.properties[LAUGHING].recurring_random = 20;
@@ -797,10 +798,6 @@ props_init()
 	context.properties[AIRLESS_ENVIRONMENT].recurring = TRUE;
 	context.properties[AIRLESS_ENVIRONMENT].recurring_constant = 6;
 	context.properties[AIRLESS_ENVIRONMENT].recurring_random = 0;
-
-	context.properties[STONED].recurring = TRUE;
-	context.properties[STONED].recurring_constant = 5;
-	context.properties[STONED].recurring_random = 0;
 
 }
 
