@@ -925,7 +925,7 @@ struct monst* mtmp;
 			if (i > 0)
 				bit = bit << i;
 
-			unsigned long flags = j == 1 ? mtmp->data->mflags1 : mtmp->data->mflags2;
+			unsigned long flags = j == 1 ? mtmp->data->mflags1 : j == 2 ? mtmp->data->mflags2 : mtmp->data->mflags3;
 
 			if (flags & bit)
 			{
