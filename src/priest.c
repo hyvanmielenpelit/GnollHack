@@ -541,7 +541,7 @@ register struct monst *priest;
     /* KMH, conduct */
     u.uconduct.gnostic++;
 
-    if (priest->mflee || (!priest->ispriest && coaligned && strayed)) {
+    if (is_fleeing(priest) || (!priest->ispriest && coaligned && strayed)) {
         pline("%s doesn't want anything to do with you!", Monnam(priest));
         priest->mpeaceful = 0;
         return;
@@ -1011,7 +1011,7 @@ struct monst *mtmp;
         Strcat(info, ", can't move");
     else if (mtmp->mstrategy & STRAT_WAITMASK)
         Strcat(info, ", meditating");
-    if (mtmp->mflee)
+    if (is_fleeing(mtmp))
         Strcat(info, ", scared");
     if (mtmp->mtrapped)
         Strcat(info, ", trapped");

@@ -1828,7 +1828,7 @@ struct mkroom *croom;
 		{
 			/* Assume non-magical fleeing */
             mtmp->mflee = 1;
-            mtmp->mflee_timer = (m->fleeing % 127);
+            mtmp->mflee_timer = m->fleeing;
         }
 
         if (m->has_invent) {

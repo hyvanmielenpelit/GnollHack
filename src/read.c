@@ -1397,17 +1397,16 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 
 			if (cansee(mtmp->mx, mtmp->my)) 
 			{
-				if (confused || scursed) {
+				if (confused || scursed) 
+				{
 					mtmp->mflee = mtmp->mfrozen = mtmp->msleeping = 0;
 					mtmp->mcanmove = 1;
+					mtmp->mprops[FEARFUL] = 0;
 				}
 				else if (!check_magic_resistance_and_halve_damage(mtmp, sobj, 0, 0, NOTELL)) 
 				{
-					int duration = 0;
-					if (otyp == SPE_MASS_FEAR)
-						duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus;
-
-					monflee(mtmp, 0, FALSE, FALSE);
+					duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus;
+					make_mon_fearful(mtmp, duration ? duration : 100 + rnd(50));
 				}
 				if (!mtmp->mtame)
 					ct++; /* pets don't laugh at you */

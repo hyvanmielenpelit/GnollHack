@@ -141,12 +141,14 @@ struct obj *otmp;
     boolean wake = TRUE; /* Most 'zaps' should wake monster */
     boolean reveal_invis = FALSE, learn_it = FALSE;
     boolean skilled_spell, helpful_gesture = FALSE;
-    int dmg, otyp = otmp->otyp;
+    int otyp = otmp->otyp;
     const char *zap_type_text = "spell";
     struct obj *obj;
     boolean disguised_mimic = (mtmp->data->mlet == S_MIMIC
                                && M_AP_TYPE(mtmp) != M_AP_NOTHING);
 	int duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus;
+	int dmg = d(objects[otyp].oc_spell_dmg_dice, objects[otyp].oc_spell_dmg_diesize) + objects[otyp].oc_spell_dmg_plus;
+
 	boolean magic_resistance_success = check_magic_resistance_and_halve_damage(mtmp, otmp, 0, 0, NOTELL);
 	if (u.uswallow && mtmp == u.ustuck)
         reveal_invis = FALSE;
@@ -408,20 +410,18 @@ struct obj *otmp;
         if (is_undead(mtmp->data) || is_vampshifter(mtmp)) {
             reveal_invis = TRUE;
             wake = TRUE;
-            dmg = rnd(8);
-            if (otyp == SPE_TURN_UNDEAD)
-                dmg = spell_damage_bonus(dmg);
             context.bypasses = TRUE; /* for make_corpse() */
-            if (!check_magic_resistance_and_halve_damage(mtmp, otmp, 0, dmg, NOTELL)) {
+            if (!check_magic_resistance_and_halve_damage(mtmp, otmp, 0, dmg, TELL))
+			{
                 if (!DEADMONSTER(mtmp))
-                    monflee(mtmp, 0, FALSE, TRUE);
-            }
+					monflee(mtmp, duration, FALSE, TRUE);
+			}
         }
         break;
 	case SPE_FEAR:
 		res = 1;
 		if (!DEADMONSTER(mtmp) && !resists_fear(mtmp) && !check_magic_resistance_and_halve_damage(mtmp, otmp, 0, 0, NOTELL)) {
-			monflee(mtmp, 0, FALSE, TRUE);
+			make_mon_fearful(mtmp, duration);
 		}
 		break;
 	case WAN_RESURRECTION:
@@ -439,11 +439,11 @@ struct obj *otmp;
 			res = 1;
 			reveal_invis = TRUE;
 			wake = TRUE;
-			dmg = max(mtmp->mhp, d(20,6));
+			dmg = max(mtmp->mhp, dmg);
 			context.bypasses = TRUE; /* for make_corpse() */
 			if (!check_magic_resistance_and_halve_damage(mtmp, otmp, 0, dmg, TELL_LETHAL_STYLE)) {
 				if (!DEADMONSTER(mtmp))
-					monflee(mtmp, 0, FALSE, TRUE);
+					monflee(mtmp, duration, FALSE, TRUE);
 			}
 		}
 		break;
@@ -453,11 +453,11 @@ struct obj *otmp;
 			res = 1;
 			reveal_invis = TRUE;
 			wake = TRUE;
-			dmg = max(mtmp->mhp, d(30, 6));
+			dmg = max(mtmp->mhp, dmg);
 			context.bypasses = TRUE; /* for make_corpse() */
 			if (!check_magic_resistance_and_halve_damage(mtmp, otmp, 0, dmg, TELL_LETHAL_STYLE)) {
 				if (!DEADMONSTER(mtmp))
-					monflee(mtmp, 0, FALSE, TRUE);
+					monflee(mtmp, duration, FALSE, TRUE);
 			}
 		}
 		break;

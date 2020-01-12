@@ -1633,6 +1633,7 @@ E void FDECL(monster_regeneration_and_timeout, (struct monst *, BOOLEAN_P));
 E int FDECL(dochugw, (struct monst *));
 E boolean FDECL(onscary, (int, int, struct monst *));
 E void FDECL(monflee, (struct monst *, int, BOOLEAN_P, BOOLEAN_P));
+E void FDECL(make_mon_fearful, (struct monst*, int));
 E void FDECL(mon_yells, (struct monst *, const char *, const char *, const char*, BOOLEAN_P));
 E void FDECL(check_mon_talk, (struct monst*));
 E int FDECL(dochug, (struct monst *));

@@ -809,7 +809,7 @@ register struct monst *mtmp;
             pline_msg = "howls.";
         } else if (mtmp->mpeaceful) {
             if (mtmp->mtame
-                && (is_confused(mtmp) || mtmp->mflee || mtmp->mtrapped
+                && (is_confused(mtmp) || is_fleeing(mtmp) || mtmp->mtrapped
                     || moves > EDOG(mtmp)->hungrytime || mtmp->mtame < 5))
                 pline_msg = "whines.";
             else if (mtmp->mtame && EDOG(mtmp)->hungrytime > moves + 1000)
@@ -823,7 +823,7 @@ register struct monst *mtmp;
         break;
     case MS_MEW:
         if (mtmp->mtame) {
-            if (is_confused(mtmp) || mtmp->mflee || mtmp->mtrapped
+            if (is_confused(mtmp) || is_fleeing(mtmp) || mtmp->mtrapped
                 || mtmp->mtame < 5)
                 pline_msg = "yowls.";
             else if (moves > EDOG(mtmp)->hungrytime)
@@ -946,7 +946,7 @@ register struct monst *mtmp;
             break;
         }
         /* Generic peaceful humanoid behaviour. */
-        if (mtmp->mflee)
+        if (is_fleeing(mtmp))
             pline_msg = "wants nothing to do with you.";
         else if (mtmp->mhp < mtmp->mhpmax / 4)
             pline_msg = "moans.";

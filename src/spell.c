@@ -281,7 +281,8 @@ struct obj *book2;
     }
 
     /* when not an invocation situation */
-    if (book2->cursed) {
+    if (book2->cursed)
+	{
     raise_dead:
 
         You("raised the dead!");
@@ -299,28 +300,40 @@ struct obj *book2;
         mm.x = u.ux;
         mm.y = u.uy;
         mkundead(&mm, TRUE, MM_NO_MONSTER_INVENTORY);
-    } else if (book2->blessed) {
-        for (mtmp = fmon; mtmp; mtmp = mtmp2) {
+    } 
+	else if (book2->blessed)
+	{
+        for (mtmp = fmon; mtmp; mtmp = mtmp2) 
+		{
             mtmp2 = mtmp->nmon; /* tamedog() changes chain */
             if (DEADMONSTER(mtmp))
                 continue;
 
             if ((is_undead(mtmp->data) || is_vampshifter(mtmp))
-                && cansee(mtmp->mx, mtmp->my)) {
+                && cansee(mtmp->mx, mtmp->my))
+			{
                 mtmp->mpeaceful = TRUE;
-                if (sgn(mtmp->data->maligntyp) == sgn(u.ualign.type)
-                    && distu(mtmp->mx, mtmp->my) < 4)
-                    if (mtmp->mtame) {
-                        if (mtmp->mtame < 20)
-                            mtmp->mtame++;
-                    } else
-                        (void) tamedog(mtmp, (struct obj *) 0, FALSE);
+
+				if (sgn(mtmp->data->maligntyp) == sgn(u.ualign.type)
+					&& distu(mtmp->mx, mtmp->my) < 4)
+				{
+					if (mtmp->mtame)
+					{
+						if (mtmp->mtame < 20)
+							mtmp->mtame++;
+					}
+					else
+						(void)tamedog(mtmp, (struct obj*) 0, FALSE);
+				}
                 else
                     monflee(mtmp, 0, FALSE, TRUE);
             }
         }
-    } else {
-        switch (rn2(3)) {
+    }
+	else
+	{
+        switch (rn2(3))
+		{
         case 0:
             Your("ancestors are annoyed with you!");
             break;

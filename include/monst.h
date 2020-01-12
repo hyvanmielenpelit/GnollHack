@@ -123,16 +123,16 @@ struct monst {
     Bitfield(mavenge, 1);   /* did something to deserve retaliation */
     Bitfield(mflee, 1);     /* fleeing */
 
-    Bitfield(mflee_timer, 7);  /* timeout for mflee */
+    short mflee_timer;  /* timeout for mflee */
     Bitfield(msleeping, 1); /* asleep until woken */
 
-    Bitfield(mfrozen, 7);
+	short mfrozen;
     Bitfield(mcanmove, 1);  /* paralysis, similar to mblinded */
 
-	Bitfield(mstaying, 7);	/* commanded to stay in place, similar to frozen, but commanded */
+	short mstaying;	/* commanded to stay in place, similar to frozen, but commanded */
 	Bitfield(mwantstomove, 1);  /* mon wants to move, not staying in place */
 
-	Bitfield(mcarrying, 7);	
+	short mcarrying;
 	Bitfield(mwantstodrop, 1);
 
     Bitfield(mpeaceful, 1); /* does not attack unprovoked */

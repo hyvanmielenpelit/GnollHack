@@ -402,7 +402,7 @@ register struct monst *mtmp;
         /*FALLTHRU*/
 
     case STRAT_NONE: /* harass */
-        if (!rn2(!mtmp->mflee ? 5 : 33))
+        if (!rn2(!is_fleeing(mtmp) ? 5 : 33))
             mnexto(mtmp);
         return 0;
 

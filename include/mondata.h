@@ -339,6 +339,9 @@
 #define is_fearful(mon) \
 	(has_fearful(mon) && !has_fear_resistance(mon) && !is_undead((mon)->data) && !mindless((mon)->data) && !is_vampshifter(mon))
 
+#define is_fleeing(mon) \
+	(is_fearful(mon) || (mon)->mflee)
+
 #define has_drain_resistance(mon) \
 	(has_innate_or_property(mon, DRAIN_RES))
 

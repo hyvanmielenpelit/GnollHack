@@ -623,7 +623,7 @@ struct monst *mtmp;
 
     /* when using defensive choice to run away, we want monster to avoid
        rushing right straight back; don't override if already scared */
-    fleetim = !mtmp->mflee ? (33 - (30 * mtmp->mhp / mtmp->mhpmax)) : 0;
+    fleetim = !is_fleeing(mtmp) ? (33 - (30 * mtmp->mhp / mtmp->mhpmax)) : 0;
 #define m_flee(m)                          \
     if (fleetim && !m->iswiz) {            \
         monflee(m, fleetim, FALSE, FALSE); \

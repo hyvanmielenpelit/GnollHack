@@ -634,6 +634,8 @@ int value; /* -1 sets the intrinsic and -2 clears it */
 	boolean was_levitating = is_levitating(mtmp);
 	boolean was_flying = is_flying(mtmp);
 	boolean was_sick = is_sick(mtmp);
+	boolean was_fearful = is_fearful(mtmp);
+	boolean was_fleeing = is_fleeing(mtmp);
 
 	if (value >= 0)
 		set_mon_temporary_property(mtmp, prop_index, min(USHRT_MAX, value));
@@ -769,6 +771,28 @@ int value; /* -1 sets the intrinsic and -2 clears it */
 		{
 			pline("%s looks more in control of itself.", Monnam(mtmp));
 		}
+
+
+		/* Fearful*/
+		if(is_fleeing(mtmp) && !was_fleeing)
+		{
+			if (M_AP_TYPE(mtmp) != M_AP_FURNITURE && M_AP_TYPE(mtmp) != M_AP_OBJECT)
+			{
+				if (!mon_can_move(mtmp) || !mtmp->data->mmove)
+					pline("%s looks frightened.", Monnam(mtmp));
+				else
+					pline("%s %sturns to flee.", Monnam(mtmp), is_fearful(mtmp) ? "looks frightened and " : "");
+			}
+		}
+		else if (is_fearful(mtmp) && !was_fearful && was_fleeing)
+		{
+			pline("%s looks even more frightened than before.", Monnam(mtmp));
+		}
+		else if (!is_fleeing(mtmp) && was_fleeing)
+		{
+			pline("%s %sstops fleeing.", Monnam(mtmp), !is_fearful(mtmp) && was_fearful ? "looks less frightened and " : "");
+		}
+		
 
 		/* Levitation */
 		if (is_levitating(mtmp) && !was_levitating)

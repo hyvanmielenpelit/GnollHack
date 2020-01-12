@@ -200,8 +200,7 @@ struct monst *bugler; /* monster that played instrument */
             if (!unique_corpstat(mtmp->data)
                 && (mtmp->mstrategy & STRAT_WAITMASK) != 0)
                 mtmp->mstrategy &= ~STRAT_WAITMASK;
-            else if (distm < distance / 3
-                     && !check_magic_resistance_and_halve_damage(mtmp, (struct obj*)0, 8, 0, NOTELL))
+            else if (distm < distance / 3 && !check_magic_resistance_and_halve_damage(mtmp, (struct obj*)0, 8, 0, NOTELL))
                 monflee(mtmp, 0, FALSE, TRUE);
         }
     }

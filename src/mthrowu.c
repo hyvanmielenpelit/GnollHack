@@ -1051,7 +1051,7 @@ struct monst *mtmp, *mtarg;
     if (!ispole && m_lined_up(mtarg, mtmp)) {
         int chance = max(BOLT_LIM - distmin(x, y, mtarg->mx, mtarg->my), 1);
 
-        if (!mtarg->mflee || !rn2(chance)) {
+        if (!is_fleeing(mtarg) || !rn2(chance)) {
             if (ammo_and_launcher(otmp, mwep)
                 && dist2(mtmp->mx, mtmp->my, mtarg->mx, mtarg->my)
                    > PET_MISSILE_RANGE2) //Monsters shoot a range of 8

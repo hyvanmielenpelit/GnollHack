@@ -150,7 +150,7 @@ struct obj *wep; /* uwep for attack(), null for kick_monster() */
         if (M_AP_TYPE(mtmp) && !Protection_from_shape_changers
             /* applied pole-arm attack is too far to get stuck */
             && distu(mtmp->mx, mtmp->my) <= 2) {
-            if (!u.ustuck && !mtmp->mflee && dmgtype(mtmp->data, AD_STCK))
+            if (!u.ustuck && !is_fleeing(mtmp) && dmgtype(mtmp->data, AD_STCK))
                 u.ustuck = mtmp;
         }
         /* #H7329 - if hero is on engraved "Elbereth", this will end up
@@ -244,7 +244,7 @@ struct monst *mtmp;
 
     if (Role_if(PM_KNIGHT) && u.ualign.type == A_LAWFUL
         && (!mon_can_move(mtmp)
-            || (mtmp->mflee && !mtmp->mavenge))) {
+            || (is_fleeing(mtmp) && !mtmp->mavenge))) {
         You("caitiff!");
         adjalign(-1);
     } else if (Role_if(PM_SAMURAI) && mtmp->mpeaceful) {
@@ -282,7 +282,7 @@ int *attk_count, *role_roll_penalty;
     /* adjust vs. (and possibly modify) monster state */
     if (is_stunned(mtmp))
         tmp += 2;
-    if (mtmp->mflee)
+    if (is_fleeing(mtmp))
         tmp += 2;
 
     if (mtmp->msleeping) {
@@ -975,7 +975,7 @@ boolean* obj_destroyed;
 				{
 					; /* no special bonuses */
 				}
-				else if (mon->mflee && Role_if(PM_ROGUE) && !Upolyd
+				else if (is_fleeing(mon) && Role_if(PM_ROGUE) && !Upolyd
 					/* multi-shot throwing is too powerful here */
 					&& hand_to_hand) 
 				{
@@ -3849,7 +3849,7 @@ struct monst *mtmp;
 {
     const char *fmt = "Wait!  That's %s!", *generic = "a monster", *what = 0;
 
-    if (!u.ustuck && !mtmp->mflee && dmgtype(mtmp->data, AD_STCK))
+    if (!u.ustuck && !is_fleeing(mtmp) && dmgtype(mtmp->data, AD_STCK))
         u.ustuck = mtmp;
 
     if (Blind) {

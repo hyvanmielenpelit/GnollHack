@@ -680,7 +680,7 @@ int after, udist, whappr;
         gy = u.uy;
         if (after && udist <= 4 && gx == u.ux && gy == u.uy)
             return -2;
-        appr = (udist >= 9) ? 1 : (mtmp->mflee) ? -1 : 0;
+        appr = (udist >= 9) ? 1 : is_fleeing(mtmp) ? -1 : 0;
         if (udist > 1) {
             if (!IS_ROOM(levl[u.ux][u.uy].typ) || !rn2(4) || whappr
                 || (dog_has_minvent && rn2(edog->apport)))

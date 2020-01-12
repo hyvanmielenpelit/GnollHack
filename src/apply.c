@@ -1071,7 +1071,7 @@ struct obj* otmp;
 				if (!check_magic_resistance_and_halve_damage(mtmp, otmp, 0, dmg, TELL))
 				{
 					if (!DEADMONSTER(mtmp))
-						monflee(mtmp, 0, FALSE, TRUE);
+						monflee(mtmp, 200 + rnd(100), FALSE, TRUE);
 				}
 			}
 			else

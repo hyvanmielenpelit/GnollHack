@@ -383,20 +383,23 @@ boolean fleemsg;
     if (mtmp == u.ustuck)
         release_hero(mtmp); /* expels/unstuck */
 
-    if (!first || !mtmp->mflee) {
+    if (!first || !mtmp->mflee)
+	{
         /* don't lose untimed scare */
         if (!fleetime)
             mtmp->mflee_timer = 0;
-        else if (!mtmp->mflee || mtmp->mflee_timer) {
+        else if (!mtmp->mflee || mtmp->mflee_timer)
+		{
             fleetime += (int) mtmp->mflee_timer;
             /* ensure monster flees long enough to visibly stop fighting */
             if (fleetime == 1)
                 fleetime++;
-            mtmp->mflee_timer = (unsigned) min(fleetime, 127);
+            mtmp->mflee_timer = (short)min(fleetime, SHRT_MAX);
         }
-        if (!mtmp->mflee && fleemsg && canseemon(mtmp)
+        if (!is_fleeing(mtmp) && fleemsg && canseemon(mtmp)
             && M_AP_TYPE(mtmp) != M_AP_FURNITURE
-            && M_AP_TYPE(mtmp) != M_AP_OBJECT) {
+            && M_AP_TYPE(mtmp) != M_AP_OBJECT) 
+		{
             /* unfortunately we can't distinguish between temporary
                sleep and temporary paralysis, so both conditions
                receive the same alternate message */
@@ -424,6 +427,34 @@ boolean fleemsg;
     /* ignore recently-stepped spaces when made to flee */
     memset(mtmp->mtrack, 0, sizeof(mtmp->mtrack));
 }
+
+
+void
+make_mon_fearful(mtmp, fleetime)
+struct monst* mtmp;
+int fleetime;
+{
+	/* shouldn't happen; maybe warrants impossible()? */
+	if (DEADMONSTER(mtmp))
+		return;
+
+	if (mtmp == u.ustuck)
+		release_hero(mtmp); /* expels/unstuck */
+
+	if (!fleetime)
+		set_mon_property_verbosely(mtmp, FEARFUL, -1);
+	else
+	{
+		if (get_mon_temporary_property(mtmp, FEARFUL) + fleetime == 1)
+			fleetime++;
+
+		increase_mon_temporary_property_verbosely(mtmp, FEARFUL, fleetime);
+	}
+	memset(mtmp->mtrack, 0, sizeof(mtmp->mtrack));
+}
+
+
+
 
 STATIC_OVL void
 distfleeck(mtmp, inrange, nearby, scared)
@@ -531,7 +562,7 @@ register struct monst *mtmp;
     wipe_engr_at(mtmp->mx, mtmp->my, 1, FALSE);
 
     /* some monsters teleport */
-    if (mtmp->mflee && !rn2(40) && has_teleportation(mtmp) && !mtmp->iswiz
+    if (is_fleeing(mtmp) && !rn2(40) && has_teleportation(mtmp) && !mtmp->iswiz
         && !level.flags.noteleport)
 	{
         (void) rloc(mtmp, TRUE);
@@ -545,7 +576,7 @@ register struct monst *mtmp;
         return 1; /* m_respond gaze can kill medusa */
 
     /* fleeing monsters might regain courage */
-    if (mtmp->mflee && !mtmp->mflee_timer && mtmp->mhp == mtmp->mhpmax
+    if (is_fleeing(mtmp) && !mtmp->mflee_timer && mtmp->mhp == mtmp->mhpmax
         && !rn2(25))
         mtmp->mflee = 0;
 
@@ -709,7 +740,7 @@ register struct monst *mtmp;
     /*  Now the actual movement phase
      */
 
-    if (!nearby || mtmp->mflee || scared || is_confused(mtmp) || is_stunned(mtmp)
+    if (!nearby || is_fleeing(mtmp) || scared || is_confused(mtmp) || is_stunned(mtmp)
         || (is_invisible(mtmp) && !rn2(3))
         || (mdat->mlet == S_LEPRECHAUN && !findgold(invent)
             && (findgold(mtmp->minvent) || rn2(2)))
@@ -1044,13 +1075,13 @@ register int after;
         goto postmov;
     }
  not_special:
-    if (u.uswallow && !mtmp->mflee && u.ustuck != mtmp)
+    if (u.uswallow && !is_fleeing(mtmp) && u.ustuck != mtmp)
         return 1;
     omx = mtmp->mx;
     omy = mtmp->my;
     gx = mtmp->mux;
     gy = mtmp->muy;
-    appr = mtmp->mflee ? -1 : 1;
+    appr = is_fleeing(mtmp) ? -1 : 1;
 
     if (is_confused(mtmp) || is_stunned(mtmp) || (u.uswallow && mtmp == u.ustuck))
 	{
