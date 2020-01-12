@@ -993,8 +993,6 @@ struct monst *mtmp;
         Strcat(info, ", blind");
 	if (is_sick(mtmp))
 		Strcat(info, ", terminally ill");
-	if (is_fearful(mtmp))
-		Strcat(info, ", fearful");
 	if (is_stoning(mtmp))
 		Strcat(info, ", solidifying");
 	if (is_turning_into_slime(mtmp))
