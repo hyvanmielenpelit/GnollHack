@@ -1399,6 +1399,18 @@ update_monster_timouts()
 							}
 						}
 						break;
+					case SLIMED:
+					{
+						if (!!slimeproof(mtmp->data))
+						{
+							(void)newcham(mtmp, &mons[PM_GREEN_SLIME], FALSE, TRUE);
+							if (mtmp->mtame)
+								mtmp->mtame = 0;
+							if (mtmp->mpeaceful)
+								mtmp->mpeaceful = 0;
+						}
+					}
+					break;
 					case SICK:
 						if (!resists_sickness(mtmp))
 						{
@@ -1472,7 +1484,10 @@ update_monster_timouts()
 					switch (i)
 					{
 					case STONED:
-						(void)munstone(mtmp, FALSE); /* check if the monster has found something that helps */
+						(void)munstone(mtmp, mtmp->delayed_killer_by_you); /* check if the monster has found something that helps */
+						break;
+					case SLIMED:
+						(void)munslime(mtmp, mtmp->delayed_killer_by_you); /* check if the monster has found something that helps */
 						break;
 					case STRANGLED:
 						if (canseemon(mtmp) && !is_breathless(mtmp))

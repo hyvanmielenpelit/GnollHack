@@ -1132,7 +1132,7 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
                 }
             }
         } else {
-            if (rn2(2) && resist(mdef, mb, 10, 0, NOTELL))
+            if (rn2(2) && check_magic_resistance_and_halve_damage(mdef, mb, 10, 0, NOTELL))
                 resisted = TRUE;
             else
                 monflee(mdef, 3, FALSE, (mdef->mhp > *dmgptr));

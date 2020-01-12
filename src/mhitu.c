@@ -2302,7 +2302,9 @@ register struct obj* omonwep;
     case AD_DETH:
 	{
         pline("%s reaches out with its deadly touch.", Monnam(mtmp));
-        if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance) {
+		boolean magic_resistance_success = check_magic_resistance_and_halve_damage(&youmonst, (struct obj*)0, mtmp->m_lev, 0, NOTELL);
+        if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance || magic_resistance_success) 
+		{
             /* Still does normal damage */
             pline("Was that the touch of death?");
             break;

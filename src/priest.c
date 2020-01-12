@@ -201,7 +201,7 @@ register struct monst *priest;
     gy += rn1(3, -1);
 
     if (!priest->mpeaceful
-        || (Conflict && !resist(priest, (struct obj*)0, 5, 0, 0))) {
+        || (Conflict && !check_magic_resistance_and_halve_damage(priest, (struct obj*)0, 5, 0, 0))) {
         if (monnear(priest, u.ux, u.uy)) {
             if (Displaced)
                 Your("displaced image doesn't fool %s!", mon_nam(priest));
@@ -1076,7 +1076,7 @@ ustatusline()
 		Strcat(info, ", cancelled");
 	if (Paralyzed)
 		Strcat(info, ", paralyzed");
-	if (Sleeping || u.usleep)
+	if (Sleeping)
 		Strcat(info, ", sleeping");
 	if (Blind) {
         Strcat(info, ", blind");

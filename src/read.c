@@ -1014,7 +1014,7 @@ struct obj *sobj;
     } else {
 		if (mtmp->isshk)
 			make_happy_shk(mtmp, FALSE);
-		else if (!resists_charm(mtmp) && !resist(mtmp, sobj, 0, 0, NOTELL) && !check_ability_resistance_success(mtmp, A_WIS, objects[sobj->otyp].oc_spell_saving_throw_adjustment))
+		else if (!resists_charm(mtmp) && !check_magic_resistance_and_halve_damage(mtmp, sobj, 0, 0, NOTELL) && !check_ability_resistance_success(mtmp, A_WIS, objects[sobj->otyp].oc_spell_saving_throw_adjustment))
 		{
 			if (tamedog(mtmp, (struct obj*) 0, FALSE))
 			{
@@ -1401,7 +1401,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 					mtmp->mflee = mtmp->mfrozen = mtmp->msleeping = 0;
 					mtmp->mcanmove = 1;
 				}
-				else if (!resist(mtmp, sobj, 0, 0, NOTELL)) 
+				else if (!check_magic_resistance_and_halve_damage(mtmp, sobj, 0, 0, NOTELL)) 
 				{
 					int duration = 0;
 					if (otyp == SPE_MASS_FEAR)
@@ -1723,7 +1723,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 				{
 					++candidates;
 					res = 0;
-					if (!mtmp->mtame && !mtmp->mpeaceful && !resist(mtmp, sobj, 0, 0, TELL))
+					if (!mtmp->mtame && !mtmp->mpeaceful && !check_magic_resistance_and_halve_damage(mtmp, sobj, 0, 0, TELL))
 					{
 						if (mtmp->m_lev < u.ulevel - 10)
 						{

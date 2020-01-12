@@ -1068,7 +1068,7 @@ struct obj* otmp;
 			if (!otmp->cursed)
 			{
 				pline("%s shines brightly before %s!", Yname2(otmp), the(mon_nam(mtmp)));
-				if (!resist(mtmp, otmp, 0, dmg, TELL))
+				if (!check_magic_resistance_and_halve_damage(mtmp, otmp, 0, dmg, TELL))
 				{
 					if (!DEADMONSTER(mtmp))
 						monflee(mtmp, 0, FALSE, TRUE);
@@ -1076,7 +1076,7 @@ struct obj* otmp;
 			}
 			else
 			{
-				if (!resist(mtmp, otmp, 0, 0, TELL) && !is_dlord(mtmp->data) && !is_dprince(mtmp->data) && !mtmp->mtame)
+				if (!check_magic_resistance_and_halve_damage(mtmp, otmp, 0, 0, TELL) && !is_dlord(mtmp->data) && !is_dprince(mtmp->data) && !mtmp->mtame)
 				{
 					if (mtmp->m_lev <= 10 && mtmp->m_lev < u.ulevel && rn2(100) < (percentchance - 100))
 					{

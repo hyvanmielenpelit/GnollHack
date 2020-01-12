@@ -1295,7 +1295,7 @@ register struct obj *otmp;
         } else if (rnd(20) < 10 + find_mac(mtmp)) {
             tmp = d(2, 12);
             hit("wand", mtmp, exclam(tmp), 0); //Do not tell the damage here, since resist will
-            (void) resist(mtmp, otmp, 0, tmp, TELL);
+            (void) check_magic_resistance_and_halve_damage(mtmp, otmp, 0, tmp, TELL);
             if (cansee(mtmp->mx, mtmp->my) && zap_oseen)
                 makeknown(WAN_STRIKING);
         } else {

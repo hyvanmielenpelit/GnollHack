@@ -1672,7 +1672,7 @@ struct obj *otmp;
         steedhit = TRUE;
         break;
     case POLY_TRAP:
-        if (!resists_magic(steed) && !resist(steed, (struct obj*) 0, 12, 0, NOTELL)) {
+        if (!resists_magic(steed) && !check_magic_resistance_and_halve_damage(steed, (struct obj*) 0, 12, 0, NOTELL)) {
             (void) newcham(steed, (struct permonst *) 0, FALSE, FALSE);
             if (!can_saddle(steed) || !can_ride(steed))
                 dismount_steed(DISMOUNT_POLY);
@@ -2727,7 +2727,7 @@ register struct monst *mtmp;
         case POLY_TRAP:
             if (resists_magic(mtmp)) {
                 shieldeff(mtmp->mx, mtmp->my);
-            } else if (!resist(mtmp, (struct obj*) 0, 12, 0, NOTELL)) {
+            } else if (!check_magic_resistance_and_halve_damage(mtmp, (struct obj*) 0, 12, 0, NOTELL)) {
                 if (newcham(mtmp, (struct permonst *) 0, FALSE, FALSE))
                     /* we're done with mptr but keep it up to date */
                     mptr = mtmp->data;
@@ -2849,6 +2849,18 @@ boolean by_you;
 
 	/* unstoned is checked every round in a delayed fashion */
 }
+
+void start_delayed_sliming(mtmp, by_you)
+struct monst* mtmp;
+boolean by_you;
+{
+	mtmp->delayed_killer_by_you = by_you;
+
+	int existing_sliming = get_mon_temporary_property(mtmp, SLIMED);
+	set_mon_property_verbosely(mtmp, SLIMED, existing_sliming == 0 ? 10 : max(1, existing_sliming - 1));
+
+}
+
 
 void
 selftouch(arg)

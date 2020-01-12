@@ -2092,7 +2092,7 @@ doturn()
                 mtmp->mflee = 0;
                 mtmp->mfrozen = 0;
                 mtmp->mcanmove = 1;
-            } else if (!resist(mtmp, (struct obj*)0, u.ulevel, 0, TELL)) {
+            } else if (!check_magic_resistance_and_halve_damage(mtmp, (struct obj*)0, u.ulevel, 0, TELL)) {
                 xlev = 6;
                 switch (mtmp->data->mlet) {
                 /* this is intentional, lichs are tougher
@@ -2108,7 +2108,7 @@ doturn()
                 case S_GREATER_UNDEAD: /* Mummies */
                     xlev += 2; /*FALLTHRU*/
                 case S_LESSER_UNDEAD:
-                    if (u.ulevel >= xlev && !resist(mtmp, (struct obj*)0, u.ulevel, 0, NOTELL)) {
+                    if (u.ulevel >= xlev && !check_magic_resistance_and_halve_damage(mtmp, (struct obj*)0, u.ulevel, 0, NOTELL)) {
                         if (u.ualign.type == A_CHAOTIC) {
                             mtmp->mpeaceful = 1;
                             set_malign(mtmp);

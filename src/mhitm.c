@@ -127,7 +127,7 @@ register struct monst *mtmp;
     nmon = 0;
 #endif
     /* perhaps the monster will resist Conflict */
-    if (resist(mtmp, (struct obj*) 0, 5, 0, 0))
+    if (check_magic_resistance_and_halve_damage(mtmp, (struct obj*) 0, 5, 0, 0))
         return 0;
 
     if (u.ustuck == mtmp) {
@@ -934,6 +934,10 @@ register struct obj* omonwep;
 
 	struct obj* mweapon = omonwep; // MON_WEP(magr);
 	boolean uses_spell_flags = omonwep ? object_uses_spellbook_wand_flags_and_properties(omonwep) : FALSE;
+	
+	/* cancellation factor is the same as when attacking the hero */
+	cancelled = has_cancelled(magr) || check_magic_cancellation_success(mdef, mattk->mcadj);
+
 
 	tmp += magr->mdaminc;
 
@@ -968,6 +972,7 @@ register struct obj* omonwep;
          || (mattk->adtyp == AD_DGST && pd == &mons[PM_MEDUSA]))
         && !resists_ston(magr)) 
 	{
+		/* Note: no cancellation applies because the mon touches the petrifying creature by attacking bare handed */
         long protector = attk_protection((int) mattk->aatyp),
              wornitems = magr->worn_item_flags;
 
@@ -995,9 +1000,6 @@ register struct obj* omonwep;
 #endif
         }
     }
-
-    /* cancellation factor is the same as when attacking the hero */
-	cancelled = has_cancelled(magr)|| check_magic_cancellation_success(mdef, mattk->mcadj);
 
     switch (mattk->adtyp) {
     case AD_DGST:
@@ -1253,7 +1255,7 @@ register struct obj* omonwep;
         break;
     case AD_SLEE:
         if (!cancelled && !is_sleeping(mdef)
-            && sleep_monst(mdef, (struct obj *)0, rn1(3,8), -1, FALSE)) {
+            && sleep_monst(mdef, (struct obj *)0, rn1(3,8), magr->m_lev, FALSE)) {
             if (vis && canspotmon(mdef))
 			{
                 Strcpy(buf, Monnam(mdef));
@@ -1493,7 +1495,10 @@ register struct obj* omonwep;
     case AD_SLIM:
         if (cancelled)
             break; /* physical damage only */
-        if (!rn2(4) && !slimeproof(pd)) {
+        if (!slimeproof(pd)) 
+		{
+			start_delayed_sliming(mdef, FALSE);
+#if 0
             if (!munslime(mdef, FALSE) && !DEADMONSTER(mdef)) {
                 if (newcham(mdef, &mons[PM_GREEN_SLIME], FALSE,
                             (boolean) (vis && canseemon(mdef))))
@@ -1508,6 +1513,7 @@ register struct obj* omonwep;
             if (DEADMONSTER(mdef))
                 res |= MM_DEF_DIED;
             tmp = 0;
+#endif
         }
         break;
     case AD_STCK:
@@ -1732,10 +1738,10 @@ int amt, lvl, tellstyle;
 			
 		shieldeff(mon->mx, mon->my);
 	}
-	else if(lvl >= 0 && resist(mon, otmp, lvl, 0, tellstyle))
+	else if(lvl >= 0 && check_magic_resistance_and_halve_damage(mon, otmp, lvl, 0, tellstyle))
 	{
-        shieldeff(mon->mx, mon->my);
-    }
+		/* no futher action here */
+	}
 	else
 	{
         finish_meating(mon); /* terminate any meal-in-progress */

@@ -2028,7 +2028,7 @@ boolean* obj_destroyed;
 			}
 		} else if (u.umconf && hand_to_hand) {
 			nohandglow(mon);
-			if (!is_confused(mon) && !resist(mon, (struct obj*) 0, 8, 0, NOTELL)) {
+			if (!is_confused(mon) && !check_magic_resistance_and_halve_damage(mon, (struct obj*) 0, 8, 0, NOTELL)) {
 				increase_mon_temporary_property(mon, CONFUSION, d(1, 20) + 20);
 				if (!is_stunned(mon) && mon_can_move(mon)
 					&& canseemon(mon))
@@ -2709,7 +2709,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
         }
         break;
     case AD_SLEE:
-        if (!negated && !mdef->msleeping && sleep_monst(mdef, (struct obj*)0, rn1(3,8), -1, FALSE)) {
+        if (!negated && !mdef->msleeping && sleep_monst(mdef, (struct obj*)0, rn1(3,8), u.ulevel, FALSE)) {
             if (!Blind)
                 pline("%s is put to sleep by you!", Monnam(mdef));
             slept_monst(mdef);
@@ -2718,7 +2718,9 @@ int specialdmg; /* blessed and/or silver bonus against various things */
     case AD_SLIM:
         if (negated)
             break; /* physical damage only */
-        if (!rn2(4) && !slimeproof(pd)) {
+        if (!rn2(4) && !slimeproof(pd))
+		{
+
             if (!munslime(mdef, TRUE) && !DEADMONSTER(mdef)) {
                 /* this assumes newcham() won't fail; since hero has
                    a slime attack, green slimes haven't been geno'd */

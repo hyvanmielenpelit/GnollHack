@@ -394,25 +394,36 @@ int spellnum;
     switch (spellnum) {
     case MGC_DEATH_TOUCH:
         pline("Oh no, %s's using the touch of death!", mhe(mtmp));
-        if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance) { //Invulnerability does not protect against death attacks
+		boolean magic_resistance_success = check_magic_resistance_and_halve_damage(&youmonst, (struct obj*)0, mtmp->m_lev, 0, NOTELL);
+
+        if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance)
+		{ //Invulnerability does not protect against death attacks
             You("seem no deader than before.");
-        } else if (!Antimagic && rn2(mtmp->m_lev) > 12) {
-            if (Hallucination) {
+        }
+		else if (!Antimagic && !magic_resistance_success && rn2(mtmp->m_lev) > 12) 
+		{
+            if (Hallucination) 
+			{
                 You("have an out of body experience.");
-            } else {
+            }
+			else
+			{
                 killer.format = KILLED_BY_AN;
                 Strcpy(killer.name, "touch of death");
                 done(DIED);
             }
-        } else {
-            if (Antimagic)
+        } 
+		else 
+		{
+            if (Antimagic || magic_resistance_success)
                 shieldeff(u.ux, u.uy);
             pline("Lucky for you, it didn't work!");
         }
         dmg = 0;
         break;
     case MGC_CLONE_WIZ:
-        if (mtmp->iswiz && context.no_of_wizards == 1) {
+        if (mtmp->iswiz && context.no_of_wizards == 1)
+		{
             pline("Double Trouble...");
             clonewiz();
             dmg = 0;

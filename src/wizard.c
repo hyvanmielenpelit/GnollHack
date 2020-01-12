@@ -372,25 +372,31 @@ register struct monst *mtmp;
     mtmp->mstrategy =
         (mtmp->mstrategy & (STRAT_WAITMASK | STRAT_APPEARMSG)) | strat;
 
-    switch (strat) {
+    switch (strat)
+	{
     case STRAT_HEAL: /* hide and recover */
         /* if wounded, hole up on or near the stairs (to block them) */
         choose_stairs(&sx, &sy);
         mtmp->mavenge = 1; /* covetous monsters attack while fleeing */
         if (In_W_tower(mtmp->mx, mtmp->my, &u.uz)
-            || (mtmp->iswiz && !sx && !mon_has_amulet(mtmp))) {
+            || (mtmp->iswiz && !sx && !mon_has_amulet(mtmp)))
+		{
             if (!rn2(3 + mtmp->mhp / 10))
                 (void) rloc(mtmp, TRUE);
-        } else if (sx && (mtmp->mx != sx || mtmp->my != sy)) {
-            if (!mnearto(mtmp, sx, sy, TRUE)) {
+        }
+		else if (sx && (mtmp->mx != sx || mtmp->my != sy))
+		{
+            if (!mnearto(mtmp, sx, sy, TRUE))
+			{
                 m_into_limbo(mtmp);
                 return 0;
             }
         }
         /* if you're not around, cast healing spells */
         if (distu(mtmp->mx, mtmp->my) > (BOLT_LIM * BOLT_LIM))
-            if (mtmp->mhp <= mtmp->mhpmax - 8) {
-                mtmp->mhp += rnd(8);
+            if (mtmp->mhp <= mtmp->mhpmax - 1) //8)
+			{
+				mtmp->mhp += 1; // rnd(8);
                 return 1;
             }
         /*FALLTHRU*/
@@ -410,17 +416,20 @@ register struct monst *mtmp;
         if (!targ) { /* simply wants you to close */
             return 0;
         }
-        if ((u.ux == tx && u.uy == ty) || where == STRAT_PLAYER) {
+        if ((u.ux == tx && u.uy == ty) || where == STRAT_PLAYER)
+		{
             /* player is standing on it (or has it) */
             mnexto(mtmp);
             return 0;
         }
         if (where == STRAT_GROUND) {
-            if (!MON_AT(tx, ty) || (mtmp->mx == tx && mtmp->my == ty)) {
+            if (!MON_AT(tx, ty) || (mtmp->mx == tx && mtmp->my == ty)) 
+			{
                 /* teleport to it and pick it up */
                 rloc_to(mtmp, tx, ty); /* clean old pos */
 
-                if ((otmp = on_ground(which_arti(targ))) != 0) {
+                if ((otmp = on_ground(which_arti(targ))) != 0)
+				{
                     if (cansee(mtmp->mx, mtmp->my))
                         pline("%s picks up %s.", Monnam(mtmp),
                               (distu(mtmp->mx, mtmp->my) <= 5)
@@ -431,13 +440,17 @@ register struct monst *mtmp;
                     return 1;
                 } else
                     return 0;
-            } else {
+            } 
+			else
+			{
                 /* a monster is standing on it - cause some trouble */
                 if (!rn2(5))
                     mnexto(mtmp);
                 return 0;
             }
-        } else { /* a monster has it - 'port beside it. */
+        } 
+		else 
+		{ /* a monster has it - 'port beside it. */
             if (!mnearto(mtmp, tx, ty, FALSE))
                 m_into_limbo(mtmp);
             return 0;
