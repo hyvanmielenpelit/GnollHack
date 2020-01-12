@@ -348,7 +348,9 @@ boolean resuming;
 
         clear_splitobjs();
 		update_all_character_properties((struct obj*)0);
-        if (!context.mv || Blind) {
+
+        if (!context.mv || Blind)
+		{
             /* redo monsters if hallu or wearing a helm of telepathy */
             if (Hallucination) { /* update screen randomly */
                 see_monsters();
@@ -364,15 +366,17 @@ boolean resuming;
             if (vision_full_recalc)
                 vision_recalc(0); /* vision! */
         }
-        if (context.botl || context.botlx) {
-            bot();
-            curs_on_u();
-        } else if (iflags.time_botl) {
-            timebot();
-            curs_on_u();
-        }
 
-        context.move = 1;
+		if (context.botl || context.botlx) {
+			bot();
+			curs_on_u();
+		}
+		else if (iflags.time_botl) {
+			timebot();
+			curs_on_u();
+		}
+
+		context.move = 1;
 
         if (multi >= 0 && occupation) {
 #if defined(MICRO) || defined(WIN32)
@@ -413,30 +417,36 @@ boolean resuming;
 
         u.umoved = FALSE;
 
-        if (multi > 0) {
-            lookaround();
-            if (!multi) {
-                /* lookaround may clear multi */
-                context.move = 0;
-                if (flags.time)
-                    context.botl = TRUE;
-                continue;
-            }
-            if (context.mv) {
-                if (multi < COLNO && !--multi)
-                    context.travel = context.travel1 = context.mv =
-                        context.run = 0;
-                domove();
-            } else {
-                --multi;
-                rhack(save_cm);
-            }
-        } else if (multi == 0) {
+		if (!Sleeping && !Paralyzed)
+		{
+			if (multi > 0) {
+				lookaround();
+				if (!multi) {
+					/* lookaround may clear multi */
+					context.move = 0;
+					if (flags.time)
+						context.botl = TRUE;
+					continue;
+				}
+				if (context.mv) {
+					if (multi < COLNO && !--multi)
+						context.travel = context.travel1 = context.mv =
+						context.run = 0;
+					domove();
+				}
+				else {
+					--multi;
+					rhack(save_cm);
+				}
+			}
+			else if (multi == 0) {
 #ifdef MAIL
-            ckmailstatus();
+				ckmailstatus();
 #endif
-            rhack((char *) 0);
-        }
+				rhack((char*)0);
+			}
+		}
+
         if (u.utotype)       /* change dungeon level */
             deferred_goto(); /* after rhack() */
         /* !context.move here: multiple movement command stopped */

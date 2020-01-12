@@ -1354,6 +1354,8 @@ update_monster_timouts()
                                           ? SHIFT_MSG : 0);
         were_change(mtmp);
 
+		boolean was_paralyzed = mtmp->mprops[PARALYZED];
+		boolean was_sleeping = mtmp->mprops[SLEEPING];
 
 		/* gradually time out temporary problems */
 		for (int i = 1; i <= LAST_PROP; i++)
@@ -1425,6 +1427,24 @@ update_monster_timouts()
 							}
 							mtmp->mhp = 0;
 							mondied(mtmp);
+						}
+						break;
+					case SLEEPING:
+						if (!is_sleeping(mtmp) && was_sleeping)
+						{
+							if (canseemon(mtmp) && mon_can_move(mtmp))
+							{
+								pline("%s wakes up!", Monnam(mtmp));
+							}
+						}
+						break;
+					case PARALYZED:
+						if (!is_paralyzed(mtmp) && was_sleeping)
+						{
+							if (canseemon(mtmp) && mon_can_move(mtmp))
+							{
+								pline("%s is no longer paralyzed!", Monnam(mtmp));
+							}
 						}
 						break;
 					default:

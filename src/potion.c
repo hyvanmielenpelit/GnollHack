@@ -816,10 +816,14 @@ register struct obj *otmp;
             else
                 Your("%s are frozen to the %s!", makeplural(body_part(FOOT)),
                      surface(u.ux, u.uy));
+			incr_itimeout(&HParalyzed, d(5 - 2 * bcsign(otmp), 4));
+			context.botl = context.botlx = 1;
+#if 0
 			nomul(-d(5 - 2 * bcsign(otmp), 4)); // (rn1(9 - 6 * bcsign(otmp), 8 - 4 * bcsign(otmp))));
             multi_reason = "frozen by a potion";
             nomovemsg = You_can_move_again;
             exercise(A_DEX, FALSE);
+#endif
         }
         break;
     case POT_SLEEPING:
@@ -1794,23 +1798,32 @@ register struct obj *obj;
         break;
     case POT_PARALYSIS:
         kn++;
-        if (!Free_action) {
+        if (!Free_action) 
+		{
             pline("%s seems to be holding you.", Something);
+			incr_itimeout(&HParalyzed, d(3 - 1 * bcsign(obj), 4));
+			context.botl = context.botlx = 1;
+#if 0
 			nomul(-d(3 - 1 * bcsign(obj), 4)); // rnd(5));
             multi_reason = "frozen by a potion";
             nomovemsg = You_can_move_again;
             exercise(A_DEX, FALSE);
-        } else
+#endif
+        }
+		else
             You("stiffen momentarily.");
         break;
     case POT_SLEEPING:
         kn++;
         if (!Free_action && !Sleep_resistance) {
             You_feel("rather tired.");
+			fall_asleep(-d(3 - 1 * bcsign(obj), 4), FALSE);
+#if 0
             nomul(-d(3 - 1 * bcsign(obj), 4));
             multi_reason = "sleeping off a magical draught";
             nomovemsg = You_can_move_again;
             exercise(A_DEX, FALSE);
+#endif
         } else
             You("yawn.");
         break;

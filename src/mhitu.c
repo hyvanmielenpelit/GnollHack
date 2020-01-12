@@ -1832,11 +1832,16 @@ register struct obj* omonwep;
                     You("are frozen!");
                 else
                     You("are frozen by %s!", mon_nam(mtmp));
+
+				incr_itimeout(&HParalyzed, (rnd(8) + 2));
+				context.botl = context.botlx = 1;
+
+#if 0
                 nomovemsg = You_can_move_again;
                 nomul(-(rnd(8) + 2));
                 multi_reason = "paralyzed by a monster";
                 exercise(A_DEX, FALSE);
-
+#endif
 				/* No new paralysis for a while */
 				set_itimeout(&HFree_action, 20);
             }

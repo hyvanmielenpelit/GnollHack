@@ -3677,9 +3677,14 @@ boolean wep_was_destroyed;
                               !rn2(2) ? "numb" : "stupified");
                     } else {
                         You("are frozen by %s gaze!", s_suffix(mon_nam(mon)));
+						incr_itimeout(&HParalyzed, (ACURR(A_WIS) > 12 || rn2(4)) ? tmp : 127);
+						context.botl = context.botlx = 1;
+
+#if 0
                         nomul((ACURR(A_WIS) > 12 || rn2(4)) ? -tmp : -127);
                         multi_reason = "frozen by a monster's gaze";
                         nomovemsg = 0;
+#endif
                     }
                 } else {
                     pline("%s cannot defend itself.",
@@ -3691,10 +3696,15 @@ boolean wep_was_destroyed;
                 You("momentarily stiffen.");
             } else { /* gelatinous cube */
                 You("are frozen by %s!", mon_nam(mon));
-                nomovemsg = You_can_move_again;
+				incr_itimeout(&HParalyzed, tmp);
+				context.botl = context.botlx = 1;
+
+#if 0
+				nomovemsg = You_can_move_again;
                 nomul(-tmp);
                 multi_reason = "frozen by a monster";
                 exercise(A_DEX, FALSE);
+#endif
             }
             break;
         case AD_COLD: /* brown mold or blue jelly */

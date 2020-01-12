@@ -786,6 +786,27 @@ nh_timeout()
 				}
 				break;
 			}
+			case SLEEPING:
+				if (!Sleeping)
+				{
+					u.usleep = 0;
+					if (Paralyzed)
+						You("wake up but still cannot move!");
+					else
+						You("wake up!");
+				}
+				break;
+			case PARALYZED:
+				if (!Paralyzed)
+				{
+					if (Sleeping)
+						You("are no longer paralyzed but still asleep!");
+					else if(nolimbs(youmonst.data))
+						You("are no longer paralyzed");
+					else
+						Your("limbs are moving again!");
+				}
+				break;
 			case FUMBLING:
 				/* call this only when a move took place.  */
 				/* otherwise handle fumbling msgs locally. */
@@ -884,17 +905,9 @@ nh_timeout()
 				if (!No_magic_resistance)
 					You("feel your magic resistance is working more properly.");
 				break;
-			case PARALYZED:
-				if (!Paralyzed)
-					Your("limbs are moving again.");
-				break;
 			case FEARFUL:
 				if (!Fearful)
 					You("regain your composure.");
-				break;
-			case SLEEPING:
-				if (!Sleeping)
-					You("woke up.");
 				break;
 			case SUMMON_FORBIDDEN:
 				if (!Summon_forbidden)
@@ -1164,6 +1177,7 @@ nh_timeout()
 	}
 
     run_timers();
+	context.botl = context.botlx = 1;
 }
 
 void
@@ -1172,6 +1186,10 @@ int how_long;
 boolean wakeup_msg;
 {
     stop_occupation();
+	incr_itimeout(&HSleeping, abs(how_long));
+	context.botl = context.botlx = 1;
+
+#if 0
     nomul(how_long);
     multi_reason = "sleeping";
     /* generally don't notice sounds while sleeping */
@@ -1185,6 +1203,7 @@ boolean wakeup_msg;
     /* early wakeup from combat won't be possible until next monster turn */
     u.usleep = monstermoves;
     nomovemsg = wakeup_msg ? "You wake up." : You_can_move_again;
+#endif
 }
 
 /* Attach an egg hatch timeout to the given egg.

@@ -418,7 +418,7 @@ struct obj *otmp;
         break;
 	case SPE_FEAR:
 		res = 1;
-		if (!DEADMONSTER(mtmp) && !(mindless(mtmp->data) || is_undead(mtmp->data) || is_vampshifter(mtmp)) && !resist(mtmp, otmp, 0, 0, NOTELL)) {
+		if (!DEADMONSTER(mtmp) && !resists_fear(mtmp) && !resist(mtmp, otmp, 0, 0, NOTELL)) {
 			monflee(mtmp, 0, FALSE, TRUE);
 		}
 		break;

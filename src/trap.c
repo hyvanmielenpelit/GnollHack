@@ -4087,9 +4087,9 @@ struct trap *ttmp;
 			break;
 		case ROCKTRAP:
 		case ROLLING_BOULDER_TRAP:
-			probability = 66;
+			probability = 50;
 		break;		default:
-			probability = 83;
+			probability = 66;
 			break;
 		}
 		break;
@@ -4109,13 +4109,13 @@ struct trap *ttmp;
 		case FIRE_TRAP:
 		case SLP_GAS_TRAP:
 		case MAGIC_TRAP:
-			probability = 83;
+			probability = 66;
 			break;
 		case ROCKTRAP:
 		case ROLLING_BOULDER_TRAP:
-			probability = 90;
+			probability = 75;
 		default:
-			probability = 95;
+			probability = 83;
 			break;
 		}
 		break;
@@ -4135,13 +4135,13 @@ struct trap *ttmp;
 		case FIRE_TRAP:
 		case SLP_GAS_TRAP:
 		case MAGIC_TRAP:
-			probability = 95;
+			probability = 83;
 			break;
 		case ROCKTRAP:
 		case ROLLING_BOULDER_TRAP:
-			probability = 98;
+			probability = 88;
 		default:
-			probability = 99;
+			probability = 92;
 			break;
 		}
 		break;

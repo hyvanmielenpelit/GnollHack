@@ -798,6 +798,9 @@ bot_via_windowport()
         blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_FLY;
     if (u.usteed)
         blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_RIDE;
+
+	valset[BL_CONDITION] = TRUE;
+
     evaluate_and_notify_windowport(valset, idx);
 }
 
@@ -887,7 +890,8 @@ boolean *valsetlist;
          *  ought to force the windowport to treat current HP as changed
          *  if hitpointbar is On, in order for that to be re-rendered.
          */
-    if (update_all || chg || reset) {
+    if (update_all || chg || reset) 
+	{
         idxmax = curr->idxmax;
         pc = (idxmax >= 0) ? percentage(curr, &blstats[idx][idxmax]) : 0;
 
