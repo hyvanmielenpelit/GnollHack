@@ -904,7 +904,7 @@ boolean silently;
 			{
 				pline("%s starts levitating!", Monnam(mon));
 			}
-			else if (!is_levitating(mon) && !is_flying(mon) && (was_levitating || !was_flying))
+			else if (!is_levitating(mon) && !is_flying(mon) && (was_levitating || was_flying))
 			{
 				pline("%s lands down.", Monnam(mon));
 			}
