@@ -529,18 +529,13 @@ register struct monst *mtmp;
             yelp_verb = (!Deaf) ? "wail" : "cringe";
             break;
         }
-    if (yelp_verb) {
+    if (yelp_verb)
+	{
         pline("%s %s!", Monnam(mtmp), vtense((char *) 0, yelp_verb));
         if (context.run)
             nomul(0);
         wake_nearto(mtmp->mx, mtmp->my, mtmp->data->mlevel * 12);
-		/* break charm*/
-		if(has_charmed(mtmp))
-		{
-			mtmp->mprops[CHARMED] = 0;
-			mtmp->mpeaceful = mtmp->morigpeaceful;
-			mtmp->mtame = mtmp->morigtame;
-		}
+		break_charm(mtmp);
 
     }
 }
@@ -2146,7 +2141,7 @@ struct monst* mtmp;
 	if(givepawsuccess)
 	{
 		pline("%s gives you the paw!", Monnam(mtmp));
-		if (mtmp->mtame < 5)
+		if (mtmp->mtame > 0 && mtmp->mtame < 5)
 			mtmp->mtame++;
 	}
 	else
@@ -2678,7 +2673,7 @@ struct monst* mtmp;
 		money2mon(mtmp, (long)u_pay);
 		context.botl = 1;
 
-		boolean success = tamedog(mtmp, (struct obj*)0, TRUE);
+		boolean success = tamedog(mtmp, (struct obj*)0, TRUE, FALSE, 0, FALSE);
 		if (success)
 		{
 			mtmp->ispartymember = TRUE;

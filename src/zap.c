@@ -464,7 +464,7 @@ struct obj *otmp;
 	case SPE_CHARM_MONSTER:
 	case SPE_DOMINATE_MONSTER:
 		res = 1;
-		(void)maybe_tame(mtmp, otmp);
+		helpful_gesture = (maybe_tame(mtmp, otmp) == 1 || is_tame(mtmp));
 		break;
 	case WAN_POLYMORPH:
     case SPE_POLYMORPH:
@@ -822,13 +822,19 @@ struct obj *otmp;
         impossible("What an interesting effect (%d)", otyp);
         break;
     }
-    if (wake) {
-        if (!DEADMONSTER(mtmp)) {
+    if (wake)
+	{
+        if (!DEADMONSTER(mtmp))
+		{
             wakeup(mtmp, helpful_gesture ? FALSE : TRUE);
-            m_respond(mtmp);
-            if (mtmp->isshk && !*u.ushops)
-                hot_pursuit(mtmp);
-        } else if (M_AP_TYPE(mtmp))
+			if(!is_peaceful(mtmp))
+			{
+	           m_respond(mtmp);
+				if (mtmp->isshk && !*u.ushops)
+					hot_pursuit(mtmp);
+			}
+        }
+		else if (M_AP_TYPE(mtmp))
             seemimic(mtmp); /* might unblock if mimicing a boulder/door */
     }
     /* note: bhitpos won't be set if swallowed, but that's okay since
@@ -1683,7 +1689,7 @@ boolean replaceundead;
             }
             /* tame the revived monster if its ghost was tame */
             if (ghost->mtame && !mtmp->mtame) {
-                if (tamedog(mtmp, (struct obj *) 0, FALSE)) {
+                if (tamedog(mtmp, (struct obj *) 0, FALSE, FALSE, 0, FALSE)) {
                     /* ghost's edog data is ignored */
                     mtmp->mtame = ghost->mtame;
                 }
@@ -1718,7 +1724,7 @@ boolean replaceundead;
 	if (animateintomon >= 0)
 	{
 		//Animated are tamed
-		tamedog(mtmp, (struct obj*) 0, FALSE);
+		tamedog(mtmp, (struct obj*) 0, FALSE, FALSE, 0, FALSE);
 		mtmp->disregards_enemy_strength = TRUE;
 		mtmp->disregards_own_health = TRUE;
 	}
@@ -3194,6 +3200,7 @@ struct obj *obj, *otmp;
         case WAN_SPEED_MONSTER:
 		case SPE_MAGIC_ARROW:
 		case WAN_NOTHING:
+		case SPE_CHARM_MONSTER:
 		case SPE_CURE_BLINDNESS:
 		case SPE_CURE_SICKNESS:
 		case SPE_CURE_PETRIFICATION:
@@ -4902,14 +4909,7 @@ int duration;
 	else 
 	{
 		increase_mon_temporary_property(mdef, CANCELLED, duration);
-
-		/* break charm */
-		if (has_charmed(mdef))
-		{
-			mdef->mprops[CHARMED] = 0;
-			mdef->mpeaceful = mdef->morigpeaceful;
-			mdef->mtame = mdef->morigtame;
-		}
+		break_charm(mdef);
 
 		/* force shapeshifter into its base form */
         if (M_AP_TYPE(mdef) != M_AP_NOTHING)
@@ -8014,7 +8014,7 @@ boolean faithful;
 		mon->hasbloodlust = bloodlust;
 		mon->ispacifist = pacifist;
 		mon->isfaithful = faithful;
-		(void)tamedog(mon, (struct obj*) 0, TRUE);
+		(void)tamedog(mon, (struct obj*) 0, TRUE, FALSE, 0, FALSE);
 
 		if((objects[spl_otyp].oc_spell_dur_dice > 1 && objects[spl_otyp].oc_spell_dur_diesize > 1) || objects[spl_otyp].oc_spell_dur_plus)
 			mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_diesize) + objects[spl_otyp].oc_spell_dur_plus;
@@ -8049,7 +8049,7 @@ int spl_otyp;
 		mon->disregards_enemy_strength = TRUE;
 		mon->disregards_own_health = FALSE;
 		mon->hasbloodlust = TRUE;
-		(void)tamedog(mon, (struct obj*) 0, TRUE);
+		(void)tamedog(mon, (struct obj*) 0, TRUE, FALSE, 0, FALSE);
 		mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_diesize) + objects[spl_otyp].oc_spell_dur_plus;
 		begin_summontimer(mon);
 		pline("%s appears before you in a puff of smoke!", Amonnam(mon));

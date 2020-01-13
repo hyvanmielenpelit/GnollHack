@@ -290,7 +290,7 @@ boolean force;      /* Quietly force this animal */
     }
 
 	/* Reduce tameness */
-	if (!force && !Role_if(PM_KNIGHT) && P_SKILL(P_RIDING) < P_EXPERT && 
+	if (!force && mtmp->mtame > 0 && !Role_if(PM_KNIGHT) && P_SKILL(P_RIDING) < P_EXPERT &&
 		!rn2(
 			P_SKILL(P_RIDING) < P_BASIC ? 10 : 
 			P_SKILL(P_RIDING) == P_BASIC ? 20 : 50 /* P_SKILLED */

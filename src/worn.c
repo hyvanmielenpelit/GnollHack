@@ -427,7 +427,7 @@ struct monst* mon;
 int prop_index;
 int amount;
 {
-	set_mon_temporary_property(mon, prop_index, max(get_mon_temporary_property(mon, CONFUSION), amount));
+	set_mon_temporary_property(mon, prop_index, max(get_mon_temporary_property(mon, prop_index), amount));
 }
 
 void
@@ -436,8 +436,22 @@ struct monst* mon;
 int prop_index;
 int amount;
 {
-	set_mon_property_verbosely(mon, prop_index, max(get_mon_temporary_property(mon, CONFUSION), amount));
+	set_mon_property_verbosely(mon, prop_index, max(get_mon_temporary_property(mon, prop_index), amount));
 }
+
+void
+nonadditive_increase_mon_temporary_property_b(mtmp, prop_index, duration, verbose)
+struct monst* mtmp;
+int prop_index;
+int duration;
+boolean verbose;
+{
+	if (verbose)
+		nonadditive_increase_mon_temporary_property_verbosely(mtmp, prop_index, duration);
+	else
+		nonadditive_increase_mon_temporary_property(mtmp, prop_index, duration);
+}
+
 
 void
 increase_mon_temporary_property(mon, prop_index, amount)
@@ -490,6 +504,32 @@ int amount;
 
 }
 
+void
+increase_mon_temporary_property_verbosely(mtmp, prop_index, duration)
+struct monst* mtmp;
+int prop_index;
+int duration;
+{
+	unsigned short existing_duration = (mtmp->mprops[prop_index] & M_TIMEOUT);
+	unsigned short value = (unsigned short)max(0, existing_duration + duration);
+
+	set_mon_property_verbosely(mtmp, prop_index, value);
+}
+
+void
+increase_mon_temporary_property_b(mtmp, prop_index, duration, verbose)
+struct monst* mtmp;
+int prop_index;
+int duration;
+boolean verbose;
+{
+	if (verbose)
+		increase_mon_temporary_property_verbosely(mtmp, prop_index, duration);
+	else
+		increase_mon_temporary_property(mtmp, prop_index, duration);
+}
+
+
 
 void
 set_mon_temporary_property(mon, prop_index, amount)
@@ -517,6 +557,53 @@ unsigned short amount;
 
 	unsigned short otherflags = mon->mprops[prop_index] & ~M_TIMEOUT;
 	mon->mprops[prop_index] = amount | otherflags;
+}
+
+void
+set_mon_temporary_property_b(mon, prop_index, amount, verbose)
+struct monst* mon;
+int prop_index;
+unsigned short amount;
+boolean verbose;
+{
+	if (verbose)
+		set_mon_property_verbosely(mon, prop_index, (int)amount); /* set_mon_property sets the temporary property by calling set_mon_temporary_property */
+	else
+		set_mon_temporary_property(mon, prop_index, amount);
+}
+
+
+void
+set_mon_property_b(mtmp, prop_index, value, verbose)
+struct monst* mtmp;
+int prop_index;
+int value; /* -1 sets the intrinsic and -2 clears it */
+boolean verbose;
+{
+	if (verbose)
+		set_mon_property_verbosely(mtmp, prop_index, value);
+	else
+		set_mon_property(mtmp, prop_index, value);
+}
+
+void
+set_mon_property(mtmp, prop_index, value)
+struct monst* mtmp;
+int prop_index;
+int value; /* -1 sets the intrinsic and -2 clears it */
+{
+	if (!mtmp)
+		return;
+
+	if (prop_index < 1 || prop_index > LAST_PROP)
+		return;
+
+	if (value >= 0)
+		set_mon_temporary_property(mtmp, prop_index, min(USHRT_MAX, value));
+	else if (value == -1)
+		mtmp->mprops[prop_index] |= M_INTRINSIC_ACQUIRED;
+	else if (value == -2)
+		mtmp->mprops[prop_index] &= ~M_INTRINSIC_ACQUIRED;
 }
 
 int
@@ -655,12 +742,7 @@ int value; /* -1 sets the intrinsic and -2 clears it */
 	boolean was_charmed = is_charmed(mtmp);
 	boolean was_tame = is_tame(mtmp);
 
-	if (value >= 0)
-		set_mon_temporary_property(mtmp, prop_index, min(USHRT_MAX, value));
-	else if (value == -1)
-		mtmp->mprops[prop_index] |= M_INTRINSIC_ACQUIRED;
-	else if (value == -2)
-		mtmp->mprops[prop_index] &= ~M_INTRINSIC_ACQUIRED;
+	set_mon_property(mtmp, prop_index, value);
 
 	if (canspotmon(mtmp))
 	{
@@ -895,21 +977,6 @@ int value; /* -1 sets the intrinsic and -2 clears it */
 	}
 
 }
-
-void
-increase_mon_temporary_property_verbosely(mtmp, prop_index, duration)
-struct monst* mtmp;
-int prop_index;
-int duration;
-{
-	unsigned short existing_duration = (mtmp->mprops[prop_index] & M_TIMEOUT);
-	unsigned short value = (unsigned short)max(0, existing_duration + duration);
-
-	set_mon_property_verbosely(mtmp, prop_index, value);
-}
-
-
-
 
 
 

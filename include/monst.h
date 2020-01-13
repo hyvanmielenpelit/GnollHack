@@ -110,8 +110,6 @@ struct monst {
 	int mspec_used;             /* monster's special ability attack timeout */
 
     Bitfield(female, 1);		/* is female */
-	schar morigtame;			/* tameness before charming */
-	Bitfield(morigpeaceful, 1);	/* peacefulness before charming */
 	Bitfield(mburied, 1);		/* has been buried */
     Bitfield(mundetected, 1);	/* not seen in present hiding place;
 								 * implies one of M1_CONCEAL or M1_HIDE,

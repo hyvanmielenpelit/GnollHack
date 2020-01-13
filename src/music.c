@@ -215,18 +215,23 @@ int distance;
 {
     struct monst *mtmp, *mtmp2;
 
-    if (u.uswallow) {
+    if (u.uswallow)
+	{
         if (!check_magic_resistance_and_halve_damage(u.ustuck, (struct obj*)0, 8, 0, NOTELL))
-            (void) tamedog(u.ustuck, (struct obj *) 0, FALSE);
-    } else {
-        for (mtmp = fmon; mtmp; mtmp = mtmp2) {
+            (void) tamedog(u.ustuck, (struct obj *) 0, FALSE, TRUE, 200 + rnd(100), TRUE);
+    }
+	else
+	{
+        for (mtmp = fmon; mtmp; mtmp = mtmp2) 
+		{
             mtmp2 = mtmp->nmon;
             if (DEADMONSTER(mtmp))
                 continue;
 
-            if (distu(mtmp->mx, mtmp->my) <= distance) {
+            if (distu(mtmp->mx, mtmp->my) <= distance) 
+			{
                 if (!check_magic_resistance_and_halve_damage(mtmp, (struct obj*)0, 8, 0, NOTELL))
-                    (void) tamedog(mtmp, (struct obj *) 0, FALSE);
+                    (void) tamedog(mtmp, (struct obj *) 0, FALSE, TRUE, 200 + rnd(100), TRUE);
             }
         }
     }

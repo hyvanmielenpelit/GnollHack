@@ -575,7 +575,7 @@ FDECL(inaccessible_equipment, (struct obj *, const char *, BOOLEAN_P));
 
 E void FDECL(newedog, (struct monst *));
 E void FDECL(free_edog, (struct monst *));
-E void FDECL(initedog, (struct monst *));
+E void FDECL(initedog, (struct monst *, BOOLEAN_P));
 E struct monst *FDECL(make_familiar,
                       (struct obj *, XCHAR_P, XCHAR_P, BOOLEAN_P));
 E struct monst *NDECL(makedog);
@@ -586,9 +586,11 @@ E void FDECL(mon_catchup_elapsed_time, (struct monst *, long));
 E void FDECL(keepdogs, (BOOLEAN_P));
 E void FDECL(migrate_to_level, (struct monst *, XCHAR_P, XCHAR_P, coord *));
 E int FDECL(dogfood, (struct monst *, struct obj *));
-E boolean FDECL(tamedog, (struct monst *, struct obj *, BOOLEAN_P));
+E boolean FDECL(tamedog, (struct monst *, struct obj *, BOOLEAN_P, BOOLEAN_P, unsigned short, BOOLEAN_P));
 E void FDECL(abuse_dog, (struct monst *));
 E void FDECL(wary_dog, (struct monst *, BOOLEAN_P));
+E void FDECL(break_charm, (struct monst*));
+
 
 /* ### dogmove.c ### */
 
@@ -3138,10 +3140,16 @@ E int FDECL(racial_exception, (struct monst *, struct obj *));
 E void FDECL(nonadditive_increase_mon_temporary_property, (struct monst*, int, int));
 E void FDECL(nonadditive_increase_mon_temporary_property_verbosely, (struct monst*, int, int));
 E void FDECL(increase_mon_temporary_property, (struct monst*, int, int));
-E void FDECL(set_mon_temporary_property, (struct monst* mon, int, unsigned short));
+E void FDECL(set_mon_temporary_property, (struct monst*, int, unsigned short));
 E int FDECL(get_mon_temporary_property, (struct monst*, int));
+E void FDECL(set_mon_property, (struct monst*, int, int));
 E void FDECL(set_mon_property_verbosely, (struct monst*, int, int));
 E void FDECL(increase_mon_temporary_property_verbosely, (struct monst*, int, int));
+
+E void FDECL(increase_mon_temporary_property_b, (struct monst*, int, int, BOOLEAN_P));
+E void FDECL(nonadditive_increase_mon_temporary_property_b, (struct monst*, int, int, BOOLEAN_P));
+E void FDECL(set_mon_property_b, (struct monst*, int, int, BOOLEAN_P));
+E void FDECL(set_mon_temporary_property_b, (struct monst*, int, unsigned short, BOOLEAN_P));
 
 /* ### write.c ### */
 

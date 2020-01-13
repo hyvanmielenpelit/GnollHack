@@ -1357,6 +1357,7 @@ update_monster_timouts()
 		boolean was_paralyzed = is_paralyzed(mtmp);
 		boolean was_sleeping = is_sleeping(mtmp);
 		boolean was_charmed = is_charmed(mtmp);
+		boolean was_peaceful = is_peaceful(mtmp);
 		boolean was_tame = is_tame(mtmp);
 		boolean was_fearful = is_fearful(mtmp);
 		boolean was_fleeing = is_fleeing(mtmp);
@@ -1369,19 +1370,6 @@ update_monster_timouts()
 			if (duration > 0)
 			{
 				mtmp->mprops[i] = (duration - 1) | otherflags;
-
-				if (mtmp->mprops[i] == 0)
-				{
-					switch(i)
-					{
-					case CHARMED:
-						mtmp->mpeaceful = mtmp->morigpeaceful;
-						mtmp->mtame = mtmp->morigtame;
-						break;
-					default:
-						break;
-					}
-				}
 
 				/* These work in any case when duration was 1 (now 0) */
 				if (duration == 1)
@@ -1408,13 +1396,8 @@ update_monster_timouts()
 						if (!!slimeproof(mtmp->data))
 						{
 							(void)newcham(mtmp, &mons[PM_GREEN_SLIME], FALSE, TRUE);
-							/* break charm */
-							if (has_charmed(mtmp))
-							{
-								mtmp->mprops[CHARMED] = 0;
-								mtmp->mpeaceful = mtmp->morigpeaceful;
-								mtmp->mtame = mtmp->morigtame;
-							}
+							break_charm(mtmp);
+
 							if (mtmp->mtame)
 								mtmp->mtame = 0;
 							if (is_peaceful(mtmp))
@@ -1486,19 +1469,24 @@ update_monster_timouts()
 						}
 						break;
 					case CHARMED:
+						/* New symbol and HP */
+						if (was_tame && !is_tame(mtmp))
+						{
+							newsym(mtmp->mx, mtmp->my);
+							if (context.game_difficulty != 0)
+								newmonhp(mtmp, mtmp->mnum, MM_ADJUST_HP_FROM_EXISTING);
+						}
+
 						if (canseemon(mtmp))
 						{
 							if (!is_charmed(mtmp) && was_charmed)
 							{
-								pline("%s looks more in control of itself.", Monnam(mtmp));
-							}
-							else
-							{
 								if (is_tame(mtmp))
-									pline("%s seems confused for a moment.", Monnam(mtmp));
-								else if (is_peaceful(mtmp))
-									pline("%s seems to be less friendly but still peaceful.", Monnam(mtmp));
+									pline("%s looks perplexed for a while.", Monnam(mtmp));
 								else
+									pline("%s looks more in control of itself.", Monnam(mtmp));
+								
+								if (!is_peaceful(mtmp) && was_peaceful)
 									pline("%s turns hostile!", Monnam(mtmp));
 							}
 						}
@@ -3716,7 +3704,8 @@ void
 m_respond(mtmp)
 struct monst *mtmp;
 {
-    if (mtmp->data->msound == MS_SHRIEK) {
+    if (mtmp->data->msound == MS_SHRIEK) 
+	{
         if (!Deaf) {
             pline("%s shrieks.", Monnam(mtmp));
             stop_occupation();
@@ -3729,7 +3718,8 @@ struct monst *mtmp;
         }
         aggravate();
     }
-    if (mtmp->data == &mons[PM_MEDUSA]) {
+    if (mtmp->data == &mons[PM_MEDUSA])
+	{
         register int i;
 
         for (i = 0; i < NATTK; i++)
@@ -3792,12 +3782,7 @@ boolean via_attack;
     }
 
 	/* just in case remove charm */
-	if (has_charmed(mtmp))
-	{
-		mtmp->mprops[CHARMED] = 0;
-		mtmp->mpeaceful = mtmp->morigpeaceful;
-		mtmp->mtame = mtmp->morigtame;
-	}
+	break_charm(mtmp);
 
     /* attacking your own quest leader will anger his or her guardians */
     if (!context.mon_moving /* should always be the case here */
@@ -3896,10 +3881,12 @@ register struct monst *mtmp;
 boolean via_attack;
 {
     mtmp->msleeping = 0;
-    if (M_AP_TYPE(mtmp)) {
+    if (M_AP_TYPE(mtmp)) 
+	{
         seemimic(mtmp);
-    } else if (context.forcefight && !context.mon_moving
-               && mtmp->mundetected) {
+    } 
+	else if (context.forcefight && !context.mon_moving && mtmp->mundetected)
+	{
         mtmp->mundetected = 0;
         newsym(mtmp->mx, mtmp->my);
     }

@@ -170,7 +170,7 @@ char *genbuf;
                 *visible += 1;
         }
         if (yours && mtmp)
-            (void) tamedog(mtmp, (struct obj *) 0, TRUE);
+            (void) tamedog(mtmp, (struct obj *) 0, TRUE, FALSE, 0, FALSE);
     }
     return total;
 }

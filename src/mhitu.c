@@ -3923,7 +3923,7 @@ cloneu()
         return NULL;
     mon->mcloned = 1;
     mon = christen_monst(mon, plname);
-    initedog(mon);
+    initedog(mon, TRUE);
     mon->m_lev = youmonst.data->mlevel;
 	//mon might need mbasehpmax stat
     mon->mbasehpmax = u.basemhmax;

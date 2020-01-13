@@ -1005,29 +1005,38 @@ maybe_tame(mtmp, sobj)
 struct monst *mtmp;
 struct obj *sobj;
 {
-    int was_tame = mtmp->mtame;
-    unsigned was_peaceful = mtmp->mpeaceful;
+	boolean was_tame = is_tame(mtmp);
+	boolean was_peaceful = is_peaceful(mtmp);
 
-    if (sobj->cursed) {
+    if (sobj->cursed) 
+	{
         setmangry(mtmp, FALSE);
         if (was_peaceful && !is_peaceful(mtmp))
             return -1;
-    } else {
+    }
+	else 
+	{
 		if (mtmp->isshk)
 			make_happy_shk(mtmp, FALSE);
-		else if (!resists_charm(mtmp) && !check_magic_resistance_and_halve_damage(mtmp, sobj, 0, 0, NOTELL) && !check_ability_resistance_success(mtmp, A_WIS, objects[sobj->otyp].oc_spell_saving_throw_adjustment))
+		else if (resists_charm(mtmp))
 		{
-			if (tamedog(mtmp, (struct obj*) 0, FALSE))
+			pline("%s is unaffected.", Monnam(mtmp));
+		}
+		else if (!check_magic_resistance_and_halve_damage(mtmp, sobj, 0, 0, NOTELL) && !check_ability_resistance_success(mtmp, A_WIS, objects[sobj->otyp].oc_spell_saving_throw_adjustment))
+		{
+			int duration = 0;
+			boolean charmed = FALSE;
+			if (sobj && !(objects[sobj->otyp].oc_aflags & S1_SPELL_IS_NONREVERSIBLE_PERMANENT))
 			{
-				if (sobj && !(objects[sobj->otyp].oc_aflags & S1_SPELL_IS_NONREVERSIBLE_PERMANENT))
-				{
-					/* Charm can be dispelled and is non-permanent if timer > 0 */
-					mtmp->morigpeaceful = was_peaceful;
-					mtmp->morigtame = was_tame;
-					increase_mon_temporary_property_verbosely(mtmp, CHARMED, d(objects[sobj->otyp].oc_spell_dur_dice, objects[sobj->otyp].oc_spell_dur_diesize) + objects[sobj->otyp].oc_spell_dur_plus);
-				}
+				duration = d(objects[sobj->otyp].oc_spell_dur_dice, objects[sobj->otyp].oc_spell_dur_diesize) + objects[sobj->otyp].oc_spell_dur_plus;
+				charmed = TRUE;
 			}
 
+			/* tame dog verbosely */
+			if (!tamedog(mtmp, (struct obj*) 0, FALSE, charmed, duration, TRUE) || !is_tame(mtmp))
+			{
+				pline("%s is unaffected!", Monnam(mtmp));
+			}
 		}
 		else
 		{
@@ -2979,7 +2988,7 @@ struct _create_particular_data *d;
         if (d->fem != -1 && !is_male(mtmp->data) && !is_female(mtmp->data))
             mtmp->female = d->fem; /* ignored for is_neuter() */
         if (d->maketame) {
-            (void) tamedog(mtmp, (struct obj *) 0, TRUE);
+            (void) tamedog(mtmp, (struct obj *) 0, TRUE, FALSE, 0, FALSE);
         } else if (d->makepeaceful || d->makehostile) {
             mtmp->mtame = 0; /* sanity precaution */
             mtmp->mpeaceful = d->makepeaceful ? 1 : 0;

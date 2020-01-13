@@ -323,7 +323,7 @@ struct obj *book2;
 							mtmp->mtame++;
 					}
 					else
-						(void)tamedog(mtmp, (struct obj*) 0, FALSE);
+						(void)tamedog(mtmp, (struct obj*) 0, FALSE, FALSE, 0, FALSE);
 				}
                 else
                     monflee(mtmp, 0, FALSE, TRUE);

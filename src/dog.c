@@ -32,11 +32,15 @@ struct monst *mtmp;
 }
 
 void
-initedog(mtmp)
+initedog(mtmp, set_tameness)
 register struct monst *mtmp;
+boolean set_tameness;
 {
-    mtmp->mtame = is_domestic(mtmp->data) ? 10 : 5;
-    mtmp->mpeaceful = 1;
+	if (set_tameness)
+	{
+		mtmp->mtame = is_domestic(mtmp->data) ? 10 : 5;
+		mtmp->mpeaceful = 1;
+	}
 	mtmp->ispartymember = 0;
 	mtmp->mavenge = 0;
     set_malign(mtmp); /* recalc alignment now that it's tamed */
@@ -119,7 +123,7 @@ boolean quietly;
     if (is_pool(mtmp->mx, mtmp->my) && minliquid(mtmp))
         return (struct monst *) 0;
 
-    initedog(mtmp);
+    initedog(mtmp, TRUE);
     mtmp->msleeping = 0;
     if (otmp) { /* figurine; resulting monster might not become a pet */
         chance = rn2(10); /* 0==tame, 1==peaceful, 2==hostile */
@@ -233,7 +237,7 @@ makedog()
 
 		mtmp->u_know_mname = 1;
 	}
-    initedog(mtmp);
+    initedog(mtmp, TRUE);
     return  mtmp;
 }
 
@@ -571,9 +575,9 @@ long nmv; /* number of moves */
         mtmp->mspec_used -= imv;
 
     /* reduce tameness for every 150 moves you are separated */
-    if (mtmp->mtame/**/ && !mtmp->isfaithful) {
+    if (mtmp->mtame && !mtmp->isfaithful) {
         int wilder = (imv + 75) / 150;
-        if (mtmp->mtame/**/ > wilder)
+        if (mtmp->mtame > wilder)
             mtmp->mtame -= wilder; /* less tame */
         else if (mtmp->mtame > rn2(wilder))
             mtmp->mtame = 0; /* untame */
@@ -933,21 +937,29 @@ register struct obj *obj;
  * succeeded.
  */
 boolean
-tamedog(mtmp, obj, forcetaming)
+tamedog(mtmp, obj, forcetaming, charm, duration, verbose)
 register struct monst *mtmp;
 register struct obj *obj;
 boolean forcetaming;
+boolean charm;
+unsigned short duration;
+boolean verbose;
 {
     /* The Wiz, Medusa and the quest nemeses aren't even made peaceful. */
     if (!mtmp || mtmp->iswiz || mtmp->data == &mons[PM_MEDUSA]
         || (mtmp->data->mflags3 & M3_WANTSARTI))
         return FALSE;
 
-	boolean was_tame = mtmp->mtame;
+	boolean was_tame = is_tame(mtmp);
+	boolean has_edog = has_edog(mtmp);
 
-	/* worst case, at least it'll be peaceful. */
-    mtmp->mpeaceful = 1;
-    set_malign(mtmp);
+	if (!charm)
+	{
+		/* worst case, at least it'll be peaceful. */
+		mtmp->mpeaceful = 1;
+		set_malign(mtmp);
+	}
+
     if (!forcetaming && flags.moonphase == FULL_MOON && night() && rn2(6) && obj
         && mtmp->data->mlet == S_DOG)
         return FALSE;
@@ -957,7 +969,8 @@ boolean forcetaming;
     mtmp->mflee_timer = 0;
 
     /* make grabber let go now, whether it becomes tame or not */
-    if (mtmp == u.ustuck) {
+    if (mtmp == u.ustuck)
+	{
         if (u.uswallow)
             expels(mtmp, mtmp->data, TRUE);
         else if (!(Upolyd && sticks(youmonst.data)))
@@ -975,31 +988,38 @@ boolean forcetaming;
                     && EDOG(mtmp)->hungrytime <= monstermoves))) 
 		{
             /* pet will "catch" and eat this thrown food */
-            if (canseemon(mtmp)) {
-                boolean big_corpse =
-                    (obj->otyp == CORPSE && obj->corpsenm >= LOW_PM
-                     && mons[obj->corpsenm].msize > mtmp->data->msize);
-                pline("%s catches %s%s", Monnam(mtmp), the(xname(obj)),
-                      !big_corpse ? "." : ", or vice versa!");
-            } else if (cansee(mtmp->mx, mtmp->my))
-                pline("%s.", Tobjnam(obj, "stop"));
+			if(verbose)
+			{
+				if (canseemon(mtmp))
+				{
+					boolean big_corpse =
+						(obj->otyp == CORPSE && obj->corpsenm >= LOW_PM
+						 && mons[obj->corpsenm].msize > mtmp->data->msize);
+
+					pline("%s catches %s%s", Monnam(mtmp), the(xname(obj)),
+						  !big_corpse ? "." : ", or vice versa!");
+				}
+				else if (cansee(mtmp->mx, mtmp->my))
+					pline("%s.", Tobjnam(obj, "stop"));
+			}
             /* dog_eat expects a floor object */
             place_object(obj, mtmp->mx, mtmp->my);
+
             (void) dog_eat(mtmp, obj, mtmp->mx, mtmp->my, FALSE);
             /* eating might have killed it, but that doesn't matter here;
                a non-null result suppresses "miss" message for thrown
                food and also implies that the object has been deleted */
             return TRUE;
-        } else
+        }
+		else
             return FALSE;
     }
 
-    if (mtmp->mtame ||  (mtmp->data->geno & G_UNIQ) /* Unique monsters cannot be tamed -- JG */
+    if ((mtmp->mtame) ||  (mtmp->data->geno & G_UNIQ) /* Unique monsters cannot be tamed -- JG */
         /* monsters with conflicting structures cannot be tamed */
         || mtmp->isshk || mtmp->isgd || mtmp->ispriest /* shopkeepers, guards, and priests cannot be forced to be tame for now -- JG */
         || (!forcetaming && 
-			(!mtmp->mcanmove /* not sure why this is here --JG*/
-			|| mtmp->isminion /* minions can be tamed */
+			(mtmp->isminion /* minions cannot be tamed, not sure why this is --JG */
 			|| is_covetous(mtmp->data)
 			|| is_human(mtmp->data)
 			|| (is_demon(mtmp->data) && !is_demon(youmonst.data))
@@ -1013,10 +1033,23 @@ boolean forcetaming;
         return FALSE;
 
     /* add the pet extension */
-    newedog(mtmp);
-    initedog(mtmp);
+	if(!has_edog)
+	{
+	    newedog(mtmp);
+		initedog(mtmp, !charm);
+	}
+	else if (!charm)
+	{
+		mtmp->mtame = is_domestic(mtmp->data) ? 10 : 5;
+		mtmp->mpeaceful = 1;
+	}
 
-	if (!was_tame && mtmp->mtame && context.game_difficulty != 0)
+	if (charm)
+	{
+		set_mon_property_b(mtmp, CHARMED, !duration ? -1 : duration, verbose);
+	}
+
+	if (!was_tame && is_tame(mtmp) && context.game_difficulty != 0)
 		newmonhp(mtmp, mtmp->mnum, MM_NO_DIFFICULTY_HP_CHANGE | MM_ADJUST_HP_FROM_EXISTING);
 
     if (obj) { /* thrown food */
@@ -1029,11 +1062,32 @@ boolean forcetaming;
     }
 
     newsym(mtmp->mx, mtmp->my);
-    if (attacktype(mtmp->data, AT_WEAP)) {
+    if (attacktype(mtmp->data, AT_WEAP)) 
+	{
         mtmp->weapon_strategy = NEED_HTH_WEAPON;
         (void) mon_wield_item(mtmp, FALSE);
     }
     return TRUE;
+}
+
+void
+break_charm(mtmp)
+struct monst* mtmp;
+{
+	boolean was_tame = is_tame(mtmp);
+
+	/* break charm */
+	if (has_charmed(mtmp))
+	{
+		mtmp->mprops[CHARMED] = 0;
+		if (was_tame && !is_tame(mtmp))
+		{
+			newsym(mtmp->mx, mtmp->my);
+			if (context.game_difficulty != 0)
+				newmonhp(mtmp, mtmp->mnum, MM_ADJUST_HP_FROM_EXISTING);
+		}
+
+	}
 }
 
 /*
@@ -1082,7 +1136,8 @@ boolean was_dead;
         }
     } else {
         /* chance it goes wild anyway - Pet Sematary */
-        mtmp->mtame = rn2(mtmp->mtame + 1);
+		if(mtmp->mtame)
+	        mtmp->mtame = rn2(mtmp->mtame + 1);
         if (!mtmp->mtame)
             mtmp->mpeaceful = rn2(2);
     }

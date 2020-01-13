@@ -24,7 +24,7 @@ b j n   1 2 3           g<dir>:   run in direction <dir> until something
 General commands:
 ?       help    display one of several informative texts
 #quit   quit    end the game without saving current game
-S       save    save the game (to be continued later) and exit
+M-s     save    save the game (to be continued later) and exit
 !       sh      escape to some SHELL (if allowed)
 ^Z      suspend suspend the game (independent of your current suspend char)
 O       options set options
