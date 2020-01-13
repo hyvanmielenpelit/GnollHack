@@ -333,7 +333,7 @@
 	(has_charmed(mon) && !has_charm_resistance(mon) && !is_undead((mon)->data) && !mindless((mon)->data))
 
 #define is_tame(mon) \
-	(is_charmed(mon) || (mon)->mtame)
+	((is_charmed(mon) || (mon)->mtame) && (mon)->mextra && (mon)->mextra->edog) /* Note: currently a monster cannot be tame without an edog */
 
 #define is_peaceful(mon) \
 	(is_charmed(mon) || (mon)->mpeaceful)
