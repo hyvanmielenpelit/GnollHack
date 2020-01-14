@@ -1548,7 +1548,11 @@ wiz_save_encounters(VOID_ARGS) /* Save a csv file for encounters */
 
 		(void)remove(fq_save);
 
+#ifdef MAC
+		fd = macopen(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, TEXT_TYPE);
+#else
 		fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
+#endif
 
 		char buf[BUFSIZ] = "";
 

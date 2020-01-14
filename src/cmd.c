@@ -1623,8 +1623,11 @@ wiz_save_monsters(VOID_ARGS) /* Save a csv file for monsters */
 
 		(void)remove(fq_save);
 
+#ifdef MAC
+		fd = macopen(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, TEXT_TYPE);
+#else
 		fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
-
+#endif
 		char buf[BUFSIZ] = "";
 
 		Sprintf(buf, "Name,Level,Move,AC,MC,MR,Alignment,GenoFlags,");
