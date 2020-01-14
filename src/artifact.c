@@ -1158,7 +1158,7 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
 		if (youdefend)
 			make_stunned(((HStun & TIMEOUT) + 3L), FALSE);
 		else
-			increase_mon_temporary_property_verbosely(mdef, STUNNED, 3);
+			increase_mon_property_verbosely(mdef, STUNNED, 3);
 
 		/* avoid extra stun message below if we used mb_verb["stun"] above */
         if (attack_indx == MB_INDEX_STUN)
@@ -1170,7 +1170,7 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
         if (youdefend)
             make_confused(itimeout_incr(HConfusion, 4L), FALSE);
         else
-			increase_mon_temporary_property_verbosely(mdef, CONFUSION, 4);
+			increase_mon_property_verbosely(mdef, CONFUSION, 4);
 	}
 
     /* now give message(s) describing side-effects;

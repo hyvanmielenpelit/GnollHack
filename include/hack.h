@@ -578,4 +578,5 @@ enum bodypart_types {
 
 static const char empty_string[] = "";
 
+
 #endif /* HACK_H */

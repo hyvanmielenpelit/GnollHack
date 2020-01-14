@@ -1583,7 +1583,7 @@ dogaze()
                     else
                         pline("%s is getting more and more confused.",
                               Monnam(mtmp));
-					 increase_mon_temporary_property(mtmp, CONFUSION, 20 + rnd(10));
+					 increase_mon_property(mtmp, CONFUSION, 20 + rnd(10));
                 } else if (adtyp == AD_FIRE) {
                     int dmg = d(2, 6), lev = (int) u.ulevel;
 

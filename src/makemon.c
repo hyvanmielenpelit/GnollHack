@@ -2258,7 +2258,7 @@ unsigned long mmflags;
     if (is_dprince(ptr) && ptr->msound == MS_BRIBE) 
 	{
 		mtmp->mpeaceful = 1;
-		increase_mon_temporary_property(mtmp, INVISIBILITY, 500);
+		increase_mon_property(mtmp, INVISIBILITY, 500);
         mtmp->mavenge = 0;
 		if ((uwep && uwep->oartifact && artifact_has_flag(uwep, AF_ANGERS_DEMONS))
 			|| (uarms && uarms->oartifact && artifact_has_flag(uarms, AF_ANGERS_DEMONS))

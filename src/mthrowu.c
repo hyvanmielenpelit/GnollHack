@@ -643,7 +643,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 		{
             if (vis && !is_blinded(mtmp))
                 pline("%s is blinded by %s.", Monnam(mtmp), the(xname(otmp)));
-			increase_mon_temporary_property(mtmp, BLINDED, rnd(25) + 20);
+			increase_mon_property(mtmp, BLINDED, rnd(25) + 20);
         }
 
         objgone = drop_throw(otmp, 1, bhitpos.x, bhitpos.y);

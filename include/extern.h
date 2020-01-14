@@ -3127,6 +3127,7 @@ E long FDECL(wearslot, (struct obj *));
 //E void FDECL(mon_adjust_speed, (struct monst *, int, struct obj *));
 E void FDECL(update_mon_extrinsics, (struct monst*, BOOLEAN_P));
 E void FDECL(update_all_mon_statistics, (struct monst *, BOOLEAN_P));
+E void FDECL(update_all_mon_statistics_core, (struct monst*, BOOLEAN_P));
 E int FDECL(find_mac, (struct monst *));
 E void FDECL(m_dowear, (struct monst *, BOOLEAN_P));
 E struct obj *FDECL(which_armor, (struct monst *, long));
@@ -3137,19 +3138,18 @@ E void FDECL(bypass_objlist, (struct obj *, BOOLEAN_P));
 E struct obj *FDECL(nxt_unbypassed_obj, (struct obj *));
 E struct obj *FDECL(nxt_unbypassed_loot, (Loot *, struct obj *));
 E int FDECL(racial_exception, (struct monst *, struct obj *));
-E void FDECL(nonadditive_increase_mon_temporary_property, (struct monst*, int, int));
-E void FDECL(nonadditive_increase_mon_temporary_property_verbosely, (struct monst*, int, int));
-E void FDECL(increase_mon_temporary_property, (struct monst*, int, int));
-E void FDECL(set_mon_temporary_property, (struct monst*, int, unsigned short));
-E int FDECL(get_mon_temporary_property, (struct monst*, int));
+E void FDECL(nonadditive_increase_mon_property, (struct monst*, int, int));
+E void FDECL(nonadditive_increase_mon_property_verbosely, (struct monst*, int, int));
+E void FDECL(increase_mon_property, (struct monst*, int, int));
+E int FDECL(get_mon_property, (struct monst*, int));
 E void FDECL(set_mon_property, (struct monst*, int, int));
 E void FDECL(set_mon_property_verbosely, (struct monst*, int, int));
-E void FDECL(increase_mon_temporary_property_verbosely, (struct monst*, int, int));
+E void FDECL(verbose_wrapper, (struct monst*, unsigned char, int, int, BOOLEAN_P));
+E void FDECL(increase_mon_property_verbosely, (struct monst*, int, int));
 
-E void FDECL(increase_mon_temporary_property_b, (struct monst*, int, int, BOOLEAN_P));
-E void FDECL(nonadditive_increase_mon_temporary_property_b, (struct monst*, int, int, BOOLEAN_P));
+E void FDECL(increase_mon_property_b, (struct monst*, int, int, BOOLEAN_P));
+E void FDECL(nonadditive_increase_mon_property_b, (struct monst*, int, int, BOOLEAN_P));
 E void FDECL(set_mon_property_b, (struct monst*, int, int, BOOLEAN_P));
-E void FDECL(set_mon_temporary_property_b, (struct monst*, int, unsigned short, BOOLEAN_P));
 
 /* ### write.c ### */
 

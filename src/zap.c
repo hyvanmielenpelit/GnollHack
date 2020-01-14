@@ -354,7 +354,7 @@ struct obj *otmp;
 		else if (!check_magic_resistance_and_halve_damage(mtmp, otmp, 0, 0, TELL) //Get no effect upon successful magic resistance
 			&& !DEADMONSTER(mtmp))
 		{
-			increase_mon_temporary_property_verbosely(mtmp, STUNNED, 10 + rnd(10));
+			increase_mon_property_verbosely(mtmp, STUNNED, 10 + rnd(10));
 		}
 		break;
 	case SPE_POWER_WORD_BLIND:
@@ -366,7 +366,7 @@ struct obj *otmp;
 			pline("%s is unaffected by the power word!", Monnam(mtmp));
 			break; /* skip makeknown */
 		}
-		else if (is_blinded(mtmp) && ((duration > 0 && get_mon_temporary_property(mtmp, BLINDED) > duration) || (mtmp->mprops[BLINDED] & ~M_TIMEOUT)))
+		else if (is_blinded(mtmp) && ((duration > 0 && get_mon_property(mtmp, BLINDED) > duration) || (mtmp->mprops[BLINDED] & ~M_TIMEOUT)))
 		{ /* match effect on player */
 			pline("%s does not seem more blind than before.", Monnam(mtmp));
 			break; /* skip makeknown */
@@ -374,7 +374,7 @@ struct obj *otmp;
 		else if (!check_magic_resistance_and_halve_damage(mtmp, otmp, 0, 0, TELL) //Get no effect upon successful magic resistance
 			&& !DEADMONSTER(mtmp))
 		{
-			increase_mon_temporary_property_verbosely(mtmp, BLINDED, duration);
+			increase_mon_property_verbosely(mtmp, BLINDED, duration);
 		}
 		break;
 	case WAN_SLOW_MONSTER:
@@ -383,7 +383,7 @@ struct obj *otmp;
 		if (!check_magic_resistance_and_halve_damage(mtmp, otmp, 0, 0, NOTELL)) {
             if (disguised_mimic)
                 seemimic(mtmp);
-			increase_mon_temporary_property_verbosely(mtmp, SLOWED, otmp->oclass == WAND_CLASS ? rn1(10, 100 + 60 * bcsign(otmp)) : duration);
+			increase_mon_property_verbosely(mtmp, SLOWED, otmp->oclass == WAND_CLASS ? rn1(10, 100 + 60 * bcsign(otmp)) : duration);
 			m_dowear(mtmp, FALSE); /* might want speed boots */
             if (u.uswallow && (mtmp == u.ustuck) && is_whirly(mtmp->data)) {
                 You("disrupt %s!", mon_nam(mtmp));
@@ -397,7 +397,7 @@ struct obj *otmp;
 		if (!check_magic_resistance_and_halve_damage(mtmp, otmp, 0, 0, NOTELL)) {
             if (disguised_mimic)
                 seemimic(mtmp);
-			increase_mon_temporary_property_verbosely(mtmp, VERY_FAST, 150 + rnd(50));
+			increase_mon_property_verbosely(mtmp, VERY_FAST, 150 + rnd(50));
             m_dowear(mtmp, FALSE); /* might want speed boots */
         }
         if (is_tame(mtmp))
@@ -559,7 +559,7 @@ struct obj *otmp;
         if (disguised_mimic)
             seemimic(mtmp);
 		
-		increase_mon_temporary_property_verbosely(mtmp, INVISIBILITY, 100 + rn2(50));
+		increase_mon_property_verbosely(mtmp, INVISIBILITY, 100 + rn2(50));
 
 		if (!oldinvis && knowninvisible(mtmp)) {
             reveal_invis = TRUE;
@@ -4908,7 +4908,7 @@ int duration;
     } 
 	else 
 	{
-		increase_mon_temporary_property(mdef, CANCELLED, duration);
+		increase_mon_property(mdef, CANCELLED, duration);
 		break_charm(mdef, TRUE);
 
 		/* force shapeshifter into its base form */
@@ -4975,15 +4975,15 @@ int duration;
 
 	if (obj->otyp == SPE_LOWER_MAGIC_RESISTANCE)
 	{
-		increase_mon_temporary_property(mdef, HALF_MAGIC_RES, duration);
+		increase_mon_property(mdef, HALF_MAGIC_RES, duration);
 	}
 	else if (obj->otyp == SPE_NEGATE_MAGIC_RESISTANCE)
 	{
-		increase_mon_temporary_property(mdef, NO_MAGIC_RES, duration);
+		increase_mon_property(mdef, NO_MAGIC_RES, duration);
 	}
 	else if (obj->otyp == SPE_FORBID_SUMMONING)
 	{
-		increase_mon_temporary_property(mdef, SUMMON_FORBIDDEN, duration);
+		increase_mon_property(mdef, SUMMON_FORBIDDEN, duration);
 	}
 		
 	return TRUE;
@@ -6102,7 +6102,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
         if (!resists_blnd(mon)
             && !(type > 0 && u.uswallow && mon == u.ustuck)) {
             register unsigned rnd_tmp = rnd(50);
-			nonadditive_increase_mon_temporary_property(mon, BLINDED, rnd_tmp);
+			nonadditive_increase_mon_property(mon, BLINDED, rnd_tmp);
         }
         if (!rn2(3))
             (void) destroy_mitem(mon, WAND_CLASS, AD_ELEC);

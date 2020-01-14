@@ -1296,7 +1296,7 @@ boolean* obj_destroyed;
 								vtense(what, "splash"), whom);
 						}
 						setmangry(mon, TRUE);
-						increase_mon_temporary_property(mon, BLINDED, rn1(25, 21));
+						increase_mon_property(mon, BLINDED, rn1(25, 21));
 					}
 					else 
 					{
@@ -2030,7 +2030,7 @@ boolean* obj_destroyed;
 		} else if (u.umconf && hand_to_hand) {
 			nohandglow(mon);
 			if (!is_confused(mon) && !check_magic_resistance_and_halve_damage(mon, (struct obj*) 0, 8, 0, NOTELL)) {
-				increase_mon_temporary_property(mon, CONFUSION, d(1, 20) + 20);
+				increase_mon_property(mon, CONFUSION, d(1, 20) + 20);
 				if (!is_stunned(mon) && mon_can_move(mon)
 					&& canseemon(mon))
 					pline("%s appears confused.", Monnam(mon));
@@ -2392,7 +2392,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
         if (!Blind)
             pline("%s %s for a moment.", Monnam(mdef),
                   makeplural(stagger(pd, "stagger")));
-		nonadditive_increase_mon_temporary_property(mdef, STUNNED, 5 + rnd(5));
+		nonadditive_increase_mon_property(mdef, STUNNED, 5 + rnd(5));
 		goto physical;
     case AD_LEGS:
 #if 0
@@ -2565,7 +2565,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
         if (can_blnd(&youmonst, mdef, mattk->aatyp, (struct obj *) 0)) {
             if (!Blind && !is_blinded(mdef))
                 pline("%s is blinded.", Monnam(mdef));
-			nonadditive_increase_mon_temporary_property(mdef, BLINDED, tmp);
+			nonadditive_increase_mon_property(mdef, BLINDED, tmp);
         }
         tmp = 0;
         break;
@@ -2748,7 +2748,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
     case AD_CONF:
         if (!is_confused(mdef)) 
 		{
-            increase_mon_temporary_property_verbosely(mdef, CONFUSION, 10 + rnd(10));
+            increase_mon_property_verbosely(mdef, CONFUSION, 10 + rnd(10));
         }
         break;
 	case AD_DMNS:
@@ -2817,13 +2817,13 @@ register struct attack *mattk;
     case AD_BLND:
         if (!resists_blnd(mdef)) {
             pline("%s is blinded by your flash of light!", Monnam(mdef));
-			increase_mon_temporary_property(mdef, BLINDED, tmp);
+			increase_mon_property(mdef, BLINDED, tmp);
         }
         break;
     case AD_HALU:
         if (haseyes(mdef->data) && !is_blinded(mdef)) {
             pline("%s is affected by your flash of light!", Monnam(mdef));
-			increase_mon_temporary_property_verbosely(mdef, HALLUC, 100 + rnd(100));
+			increase_mon_property_verbosely(mdef, HALLUC, 100 + rnd(100));
         }
         break;
     case AD_COLD:
@@ -3032,7 +3032,7 @@ register struct attack *mattk;
                     if (!is_blinded(mdef))
                         pline("%s can't see in there!", Monnam(mdef));
 
-					nonadditive_increase_mon_temporary_property(mdef, BLINDED, dam);
+					nonadditive_increase_mon_property(mdef, BLINDED, dam);
                 }
                 dam = 0;
                 break;
@@ -3943,7 +3943,7 @@ struct obj *otmp; /* source of flash */
                     monflee(mtmp, rn2(4) ? rnd(100) : 0, FALSE, TRUE);
 
 				if (tmp < 3)
-					increase_mon_temporary_property(mtmp, BLINDED, rnd(1 + 50 / tmp));
+					increase_mon_property(mtmp, BLINDED, rnd(1 + 50 / tmp));
             }
         }
     }

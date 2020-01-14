@@ -30,7 +30,7 @@ struct monst *mtmp;
             You_hear("a distant explosion.");
     }
     wake_nearto(mtmp->mx, mtmp->my, 7 * 7);
-	increase_mon_temporary_property(mtmp, STUNNED, 5 + rnd(10));
+	increase_mon_property(mtmp, STUNNED, 5 + rnd(10));
 	mtmp->mhp -= rnd(15);
     if (DEADMONSTER(mtmp)) {
         mondied(mtmp);
@@ -446,10 +446,10 @@ int fleetime;
 		set_mon_property_verbosely(mtmp, FEARFUL, -1);
 	else
 	{
-		if (get_mon_temporary_property(mtmp, FEARFUL) + fleetime == 1)
+		if (get_mon_property(mtmp, FEARFUL) + fleetime == 1)
 			fleetime++;
 
-		increase_mon_temporary_property_verbosely(mtmp, FEARFUL, fleetime);
+		increase_mon_property_verbosely(mtmp, FEARFUL, fleetime);
 	}
 	memset(mtmp->mtrack, 0, sizeof(mtmp->mtrack));
 }
@@ -629,7 +629,7 @@ register struct monst *mtmp;
             }
 			else 
 			{
-				set_mon_temporary_property(mtmp, INVISIBILITY, 0);
+				set_mon_property(mtmp, INVISIBILITY, 0);
 
                 /* Why?  For the same reason in real demon talk */
                 pline("%s gets angry!", Amonnam(mtmp));

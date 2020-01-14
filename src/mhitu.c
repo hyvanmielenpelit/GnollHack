@@ -2751,7 +2751,7 @@ struct attack *mattk;
                the resulting statue will end up there */
             remove_monster(mtmp->mx, mtmp->my); /* u.ux,u.uy */
             place_monster(mtmp, omx, omy);
-			int existing_stoning = get_mon_temporary_property(mtmp, STONED);
+			int existing_stoning = get_mon_property(mtmp, STONED);
 			set_mon_property_verbosely(mtmp, STONED, max(1, min(existing_stoning - 1, 5)));
 			//minstapetrify(mtmp, TRUE);
             /* normally unstuck() would do this, but we're not
@@ -3650,7 +3650,7 @@ struct monst *mon;
         }
     }
     if (!rn2(25))
-        increase_mon_temporary_property(mon, CANCELLED, 10 + rnd(40)); /* monster is worn out */
+        increase_mon_property(mon, CANCELLED, 10 + rnd(40)); /* monster is worn out */
     if (!tele_restrict(mon))
         (void) rloc(mon, TRUE);
     return 1;
@@ -3853,7 +3853,7 @@ struct attack *mattk;
             break;
         case AD_STUN: /* Yellow mold */
             if (!is_stunned(mtmp)) {
-				nonadditive_increase_mon_temporary_property(mtmp, STUNNED, 5 + rnd(5));
+				nonadditive_increase_mon_property(mtmp, STUNNED, 5 + rnd(5));
 				pline("%s %s.", Monnam(mtmp),
                       makeplural(stagger(mtmp->data, "stagger")));
             }

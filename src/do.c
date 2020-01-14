@@ -3313,7 +3313,7 @@ boolean with_impact;
                                    FALSE, could_slime);
                     delobj(obj); /* corpse is digested */
                 } else if (could_petrify) {
-					int existing_stoning = get_mon_temporary_property(u.ustuck, STONED);
+					int existing_stoning = get_mon_property(u.ustuck, STONED);
 					set_mon_property_verbosely(u.ustuck, STONED, max(1, min(existing_stoning - 1, 5)));
 					//minstapetrify(u.ustuck, TRUE);
                     /* Don't leave a cockatrice corpse in a statue */

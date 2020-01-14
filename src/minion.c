@@ -557,7 +557,7 @@ register struct monst *mtmp;
 	{
         boolean wasunseen = !canspotmon(mtmp);
 
-		set_mon_temporary_property(mtmp, INVISIBILITY, 0);
+		set_mon_property(mtmp, INVISIBILITY, 0);
 
 		if (wasunseen && canspotmon(mtmp)) {
             pline("%s appears before you.", Amonnam(mtmp));

@@ -11,6 +11,8 @@ STATIC_DCL void FDECL(m_lose_armor, (struct monst *, struct obj *));
 STATIC_DCL boolean FDECL(m_dowear_type,
                       (struct monst *, long, BOOLEAN_P, BOOLEAN_P));
 STATIC_DCL int FDECL(extra_pref, (struct monst *, struct obj *));
+STATIC_DCL void FDECL(set_mon_temporary_property, (struct monst*, int, unsigned short));
+
 
 const struct worn {
     long w_mask;
@@ -422,43 +424,49 @@ struct obj *obj;
 }
 
 void
-nonadditive_increase_mon_temporary_property(mon, prop_index, amount)
+nonadditive_increase_mon_property(mon, prop_index, amount)
 struct monst* mon;
 int prop_index;
 int amount;
 {
-	set_mon_temporary_property(mon, prop_index, max(get_mon_temporary_property(mon, prop_index), amount));
+	set_mon_property(mon, prop_index, max(get_mon_property(mon, prop_index), amount));
 }
 
 void
-nonadditive_increase_mon_temporary_property_verbosely(mon, prop_index, amount)
-struct monst* mon;
+nonadditive_increase_mon_property_verbosely(mtmp, prop_index, amount)
+struct monst* mtmp;
 int prop_index;
 int amount;
 {
-	set_mon_property_verbosely(mon, prop_index, max(get_mon_temporary_property(mon, prop_index), amount));
+	set_mon_property_verbosely(mtmp, prop_index, max(get_mon_property(mtmp, prop_index), amount));
 }
 
 void
-nonadditive_increase_mon_temporary_property_b(mtmp, prop_index, duration, verbose)
+nonadditive_increase_mon_property_b(mtmp, prop_index, duration, verbose)
 struct monst* mtmp;
 int prop_index;
 int duration;
 boolean verbose;
 {
 	if (verbose)
-		nonadditive_increase_mon_temporary_property_verbosely(mtmp, prop_index, duration);
+		nonadditive_increase_mon_property_verbosely(mtmp, prop_index, duration);
 	else
-		nonadditive_increase_mon_temporary_property(mtmp, prop_index, duration);
+		nonadditive_increase_mon_property(mtmp, prop_index, duration);
 }
 
 
 void
-increase_mon_temporary_property(mon, prop_index, amount)
-struct monst* mon;
+increase_mon_property(mtmp, prop_index, duration)
+struct monst* mtmp;
 int prop_index;
-int amount;
+int duration;
 {
+	int maxvalue = (int)M_TIMEOUT;
+	unsigned short value = (unsigned short)max(0, min(maxvalue, (get_mon_property(mtmp, prop_index) + duration)));
+
+	set_mon_property(mtmp, prop_index, value);
+
+#if 0
 	if (!mon)
 		return;
 
@@ -474,11 +482,11 @@ int amount;
 		return;
 	}
 
-	if (amount > SHRT_MAX)
-		amount = SHRT_MAX;
+	if (amount > GH_SHRT_MAX)
+		amount = GH_SHRT_MAX;
 
-	if (amount < SHRT_MIN)
-		amount = SHRT_MIN;
+	if (amount < GH_SHRT_MIN)
+		amount = GH_SHRT_MIN;
 
 	unsigned short absvalue = (unsigned short)abs(amount);
 	if (absvalue > M_TIMEOUT)
@@ -501,37 +509,37 @@ int amount;
 		else
 			mon->mprops[prop_index] = currentvalue - absvalue | otherflags;
 	}
-
+#endif
 }
 
 void
-increase_mon_temporary_property_verbosely(mtmp, prop_index, duration)
+increase_mon_property_verbosely(mtmp, prop_index, duration)
 struct monst* mtmp;
 int prop_index;
 int duration;
 {
-	unsigned short existing_duration = (mtmp->mprops[prop_index] & M_TIMEOUT);
-	unsigned short value = (unsigned short)max(0, existing_duration + duration);
+	int maxvalue = (int)M_TIMEOUT;
+	unsigned short value = (unsigned short)max(0, min(maxvalue, (get_mon_property(mtmp, prop_index) + duration)));
 
 	set_mon_property_verbosely(mtmp, prop_index, value);
 }
 
 void
-increase_mon_temporary_property_b(mtmp, prop_index, duration, verbose)
+increase_mon_property_b(mtmp, prop_index, duration, verbose)
 struct monst* mtmp;
 int prop_index;
 int duration;
 boolean verbose;
 {
 	if (verbose)
-		increase_mon_temporary_property_verbosely(mtmp, prop_index, duration);
+		increase_mon_property_verbosely(mtmp, prop_index, duration);
 	else
-		increase_mon_temporary_property(mtmp, prop_index, duration);
+		increase_mon_property(mtmp, prop_index, duration);
 }
 
 
 
-void
+STATIC_OVL void
 set_mon_temporary_property(mon, prop_index, amount)
 struct monst* mon;
 int prop_index;
@@ -541,9 +549,6 @@ unsigned short amount;
 		return;
 
 	if (prop_index < 1 || prop_index > LAST_PROP)
-		return;
-
-	if (!amount)
 		return;
 
 	if (mon == &youmonst)
@@ -559,25 +564,12 @@ unsigned short amount;
 	mon->mprops[prop_index] = amount | otherflags;
 }
 
-void
-set_mon_temporary_property_b(mon, prop_index, amount, verbose)
-struct monst* mon;
-int prop_index;
-unsigned short amount;
-boolean verbose;
-{
-	if (verbose)
-		set_mon_property_verbosely(mon, prop_index, (int)amount); /* set_mon_property sets the temporary property by calling set_mon_temporary_property */
-	else
-		set_mon_temporary_property(mon, prop_index, amount);
-}
-
 
 void
 set_mon_property_b(mtmp, prop_index, value, verbose)
 struct monst* mtmp;
 int prop_index;
-int value; /* -1 sets the intrinsic and -2 clears it */
+int value; /* -1 sets the intrinsic and -2 clears it; -3 clears both temporary and permanent instrinsic */
 boolean verbose;
 {
 	if (verbose)
@@ -590,24 +582,48 @@ void
 set_mon_property(mtmp, prop_index, value)
 struct monst* mtmp;
 int prop_index;
-int value; /* -1 sets the intrinsic and -2 clears it */
+int value; /* -1 sets the intrinsic and -2 clears it; -3 clears both temporary and permanent instrinsic */
 {
+
 	if (!mtmp)
 		return;
 
 	if (prop_index < 1 || prop_index > LAST_PROP)
 		return;
 
+	boolean was_tame = is_tame(mtmp);
+
 	if (value >= 0)
-		set_mon_temporary_property(mtmp, prop_index, min(USHRT_MAX, value));
+		set_mon_temporary_property(mtmp, prop_index, min((unsigned short)M_TIMEOUT, (unsigned short)value));
 	else if (value == -1)
 		mtmp->mprops[prop_index] |= M_INTRINSIC_ACQUIRED;
 	else if (value == -2)
 		mtmp->mprops[prop_index] &= ~M_INTRINSIC_ACQUIRED;
+	else if (value == -3)
+	{
+		mtmp->mprops[prop_index] &= ~M_INTRINSIC_ACQUIRED;
+		set_mon_temporary_property(mtmp, prop_index, 0);
+	}
+
+	/* Adjustments */
+	if (was_tame && !is_tame(mtmp))
+	{
+		newsym(mtmp->mx, mtmp->my);
+		if (context.game_difficulty != 0)
+			newmonhp(mtmp, mtmp->mnum, MM_ADJUST_HP_FROM_EXISTING);
+
+	}
+	else if (is_tame(mtmp) && !was_tame)
+	{
+		newsym(mtmp->mx, mtmp->my);
+		if (context.game_difficulty != 0)
+			newmonhp(mtmp, mtmp->mnum, MM_NO_DIFFICULTY_HP_CHANGE | MM_ADJUST_HP_FROM_EXISTING);
+	}
+
 }
 
 int
-get_mon_temporary_property(mon, prop_index)
+get_mon_property(mon, prop_index)
 struct monst* mon;
 int prop_index;
 {
@@ -710,7 +726,19 @@ void
 set_mon_property_verbosely(mtmp, prop_index, value)
 struct monst* mtmp;
 int prop_index;
-int value; /* -1 sets the intrinsic and -2 clears it */
+int value; /* -1 sets the intrinsic and -2 clears it; -3 clears both temporary and permanent instrinsic */
+{
+	verbose_wrapper(mtmp, 1, prop_index, value, FALSE);
+}
+
+
+void
+verbose_wrapper(mtmp, function_choice, prop_index, value, silently)
+struct monst* mtmp;
+unsigned char function_choice;
+int prop_index;
+int value;
+boolean silently;
 {
 	/* works for fast, very fast, and slowed */
 	char savedname[BUFSIZ] = "";
@@ -741,8 +769,23 @@ int value; /* -1 sets the intrinsic and -2 clears it */
 	boolean was_fleeing = is_fleeing(mtmp);
 	boolean was_charmed = is_charmed(mtmp);
 	boolean was_tame = is_tame(mtmp);
+	boolean was_peaceful = is_peaceful(mtmp);
 
-	set_mon_property(mtmp, prop_index, value);
+
+	switch (function_choice)
+	{
+	case 0:
+		update_all_mon_statistics_core(mtmp, silently);
+		break;
+	case 1:
+		set_mon_property(mtmp, prop_index, value);
+		break;
+	default:
+		break;
+	}
+
+	if (silently)
+		return;
 
 	if (canspotmon(mtmp))
 	{
@@ -795,9 +838,9 @@ int value; /* -1 sets the intrinsic and -2 clears it */
 		}
 		else if (is_slow(mtmp) && !was_slow)
 		{
-			if((prop_index == STONED || prop_index == SLIMED) && value > 0)
+			if ((prop_index == STONED || prop_index == SLIMED) && value > 0)
 				pline("%s is slowing down!", Monnam(mtmp));
-			else if(prop_index == SLOWED && value > 0)
+			else if (prop_index == SLOWED && value > 0)
 				pline("%s slows down%s.", Monnam(mtmp), was_fast || was_very_fast ? " a lot" : "");
 			else
 				pline("%s is moving %sslower.", Monnam(mtmp), was_fast || was_very_fast ? "much " : "");
@@ -808,7 +851,7 @@ int value; /* -1 sets the intrinsic and -2 clears it */
 		{
 			pline("%s falls asleep.", Monnam(mtmp));
 		}
-		else if(!is_sleeping(mtmp) && was_sleeping)
+		else if (!is_sleeping(mtmp) && was_sleeping)
 		{
 			pline("%s wakes up.", Monnam(mtmp));
 		}
@@ -820,7 +863,10 @@ int value; /* -1 sets the intrinsic and -2 clears it */
 		}
 		else if (!is_paralyzed(mtmp) && was_paralyzed)
 		{
-			pline("%s can move again!", Monnam(mtmp));
+			if (mon_can_move(mtmp))
+				pline("%s can move again!", Monnam(mtmp));
+			else
+				pline("%s is no longer paralyzed!", Monnam(mtmp));
 		}
 
 		/* Blindness */
@@ -865,7 +911,7 @@ int value; /* -1 sets the intrinsic and -2 clears it */
 
 
 		/* Fearful*/
-		if(is_fleeing(mtmp) && !was_fleeing)
+		if (is_fleeing(mtmp) && !was_fleeing)
 		{
 			if (M_AP_TYPE(mtmp) != M_AP_FURNITURE && M_AP_TYPE(mtmp) != M_AP_OBJECT)
 			{
@@ -883,33 +929,27 @@ int value; /* -1 sets the intrinsic and -2 clears it */
 		{
 			pline("%s %sstops fleeing.", Monnam(mtmp), !is_fearful(mtmp) && was_fearful ? "looks less frightened and " : "");
 		}
-		
+
 
 		/* Charm */
-		/* Note: Currently charmed and tame are stil the same, mtame is always set before you get here */
-		if (is_tame(mtmp) && !was_tame)
+		if (is_charmed(mtmp) && !was_charmed)
 		{
-			/* You will never get here */
-			pline("%s %sseems now friendly.", Monnam(mtmp), is_charmed(mtmp) ? "is charmed and " : "");
-		}
-		else if (is_charmed(mtmp) && !was_charmed && was_tame)
-		{
-			/* You will normally always get here */
 			pline("%s is charmed!", Monnam(mtmp));
-		}
-		else if (!is_tame(mtmp) && was_tame)
-		{
-			if (!is_charmed(mtmp) && was_charmed)
-			{
-				pline("%s looks more in control of itself.", Monnam(mtmp));
-			}
+			if (is_tame(mtmp) && !was_tame)
+				pline("%s looks friendly.", Monnam(mtmp));
 			else
-			{
-				if (is_peaceful(mtmp))
-					pline("%s seems to be less friendly but still peaceful.", Monnam(mtmp));
-				else
-					pline("%s turns hostile!", Monnam(mtmp));
-			}
+				pline("%s looks %s for a while.", Monnam(mtmp), is_tame(mtmp) ? "a little perplexed" :
+					is_peaceful(mtmp) ? "a little uncomfortable" : "uncomfortable");
+		}
+		if (!is_charmed(mtmp) && was_charmed)
+		{
+			if (is_tame(mtmp))
+				pline("%s looks perplexed for a while.", Monnam(mtmp));
+			else
+				pline("%s looks more in control of %sself.", Monnam(mtmp), mhim(mtmp));
+
+			if (!is_peaceful(mtmp) && was_peaceful)
+				pline("%s turns hostile!", Monnam(mtmp));
 		}
 
 
@@ -979,12 +1019,26 @@ int value; /* -1 sets the intrinsic and -2 clears it */
 }
 
 
+void
+update_all_mon_statistics_core(mon, silently)
+struct monst* mon;
+boolean silently;
+{
+	update_mon_extrinsics(mon, silently);
+	update_mon_abon(mon);
+	/* monster do not currently have mana */
+	update_mon_maxhp(mon);
+}
 
 void
 update_all_mon_statistics(mon, silently)
 struct monst* mon;
 boolean silently;
 {
+
+	verbose_wrapper(mon, 0, 0, 0, silently);
+
+#if 0
 	/* save properties */
 	char savedname[BUFSIZ] = "";
 	strcpy(savedname, mon_nam(mon));
@@ -1042,6 +1096,7 @@ boolean silently;
 			pline("Suddenly, you cannot see %s anymore!", savedname);
 		}
 	}
+#endif
 }
 
 
@@ -1054,6 +1109,7 @@ boolean silently;
     int unseen = 0;
     uchar mask = 0;
     struct obj *otmp = (struct obj*)0;
+	boolean was_tame = is_tame(mon);
 
 	/* clear mon extrinsics */
 	for (int i = 1; i <= LAST_PROP; i++)
@@ -1323,6 +1379,23 @@ boolean silently;
     /* if couldn't see it but now can, or vice versa, update display */
     if (!silently && (unseen ^ !canseemon(mon)))
         newsym(mon->mx, mon->my);
+
+
+	/* Adjustments */
+	if (was_tame && !is_tame(mon))
+	{
+		newsym(mon->mx, mon->my);
+		if (context.game_difficulty != 0)
+			newmonhp(mon, mon->mnum, MM_ADJUST_HP_FROM_EXISTING);
+
+	}
+	else if (is_tame(mon) && !was_tame)
+	{
+		newsym(mon->mx, mon->my);
+		if (context.game_difficulty != 0)
+			newmonhp(mon, mon->mnum, MM_NO_DIFFICULTY_HP_CHANGE | MM_ADJUST_HP_FROM_EXISTING);
+	}
+
 
 }
 

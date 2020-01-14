@@ -1029,7 +1029,7 @@ register struct obj* omonwep;
         if (canseemon(mdef))
             pline("%s %s for a moment.", Monnam(mdef),
                   makeplural(stagger(pd, "stagger")));
-		nonadditive_increase_mon_temporary_property(mdef, STUNNED, 5 + rnd(5));
+		nonadditive_increase_mon_property(mdef, STUNNED, 5 + rnd(5));
 		goto physical;
     case AD_LEGS:
         if (has_cancelled(magr)) {
@@ -1292,7 +1292,7 @@ register struct obj* omonwep;
 		{
             if (vis && canseemon(mdef))
                 pline("%s looks confused.", Monnam(mdef));
-			nonadditive_increase_mon_temporary_property(mdef, CONFUSION, 20 + rnd(10));
+			nonadditive_increase_mon_property(mdef, CONFUSION, 20 + rnd(10));
             mdef->mstrategy &= ~STRAT_WAITFORU;
         }
         break;
@@ -1303,7 +1303,7 @@ register struct obj* omonwep;
             if (vis && !is_blinded(mdef) && canspotmon(mdef))
                 pline("%s is blinded.", Monnam(mdef));
             rnd_tmp = d((int) mattk->damn, (int) mattk->damd);
-			nonadditive_increase_mon_temporary_property(mdef, BLINDED, rnd_tmp);
+			nonadditive_increase_mon_property(mdef, BLINDED, rnd_tmp);
             mdef->mstrategy &= ~STRAT_WAITFORU;
         }
         tmp = 0;
@@ -1313,7 +1313,7 @@ register struct obj* omonwep;
             if (vis && canseemon(mdef))
                 pline("%s looks %sconfused.", Monnam(mdef),
                       is_confused(mdef) ? "more " : "");
-			nonadditive_increase_mon_temporary_property(mdef, HALLUC, 100 + rnd(50));
+			nonadditive_increase_mon_property(mdef, HALLUC, 100 + rnd(50));
             mdef->mstrategy &= ~STRAT_WAITFORU;
         }
         tmp = 0;
@@ -1532,7 +1532,7 @@ register struct obj* omonwep;
 		if (!resists_sickness(mdef) && !cancelled)
 		{
 			set_mon_property_verbosely(mdef, SICK, 
-				is_sick(mdef) ? max(1, (get_mon_temporary_property(mdef, SICK) + 1) / 3) : rn1(M_ACURR(mdef, A_CON), 20));
+				is_sick(mdef) ? max(1, (get_mon_property(mdef, SICK) + 1) / 3) : rn1(M_ACURR(mdef, A_CON), 20));
 		}
 		break;
 	default:
@@ -1707,9 +1707,9 @@ int amt;
 boolean verbosely;
 {
 	if (verbosely)
-		nonadditive_increase_mon_temporary_property_verbosely(mon, PARALYZED, amt);
+		nonadditive_increase_mon_property_verbosely(mon, PARALYZED, amt);
 	else
-		nonadditive_increase_mon_temporary_property(mon, PARALYZED, amt);
+		nonadditive_increase_mon_property(mon, PARALYZED, amt);
 
 #if 0
     if (amt > 127)
@@ -1749,9 +1749,9 @@ int amt, lvl, tellstyle;
         if (amt > 0) 
 		{ /* sleep for N turns */
 			if(tellstyle == NOTELL)
-				nonadditive_increase_mon_temporary_property(mon, SLEEPING, amt);
+				nonadditive_increase_mon_property(mon, SLEEPING, amt);
 			else
-				nonadditive_increase_mon_temporary_property_verbosely(mon, SLEEPING, amt);
+				nonadditive_increase_mon_property_verbosely(mon, SLEEPING, amt);
         }
 		else 
 		{ /* sleep until awakened */
@@ -1938,7 +1938,7 @@ int mdead;
             break;
         case AD_STUN:
             if (!is_stunned(magr)) {
-				nonadditive_increase_mon_temporary_property(magr, STUNNED, 5 + rnd(5));
+				nonadditive_increase_mon_property(magr, STUNNED, 5 + rnd(5));
 				if (canseemon(magr))
                     pline("%s %s...", Monnam(magr),
                           makeplural(stagger(magr->data, "stagger")));

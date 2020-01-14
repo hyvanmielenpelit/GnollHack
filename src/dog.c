@@ -527,9 +527,9 @@ long nmv; /* number of moves */
     /* set to 1 and allow final decrement in movemon() */
     if (is_blinded(mtmp)) {
 		if (imv >= (int)is_blinded(mtmp))
-			set_mon_temporary_property(mtmp, BLINDED, 0);
+			set_mon_property(mtmp, BLINDED, 0);
 		else
-			increase_mon_temporary_property(mtmp, BLINDED, -imv);
+			increase_mon_property(mtmp, BLINDED, -imv);
     }
     if (mtmp->mfrozen) {
         if (imv >= (int) mtmp->mfrozen)
@@ -1042,15 +1042,19 @@ boolean verbose;
 	{
 		mtmp->mtame = is_domestic(mtmp->data) ? 10 : 5;
 		mtmp->mpeaceful = 1;
+
 	}
 
 	if (charm)
 	{
 		set_mon_property_b(mtmp, CHARMED, !duration ? -1 : duration, verbose);
 	}
-
-	if (!was_tame && is_tame(mtmp) && context.game_difficulty != 0)
-		newmonhp(mtmp, mtmp->mnum, MM_NO_DIFFICULTY_HP_CHANGE | MM_ADJUST_HP_FROM_EXISTING);
+	else if(is_tame(mtmp) && !was_tame)
+	{
+		newsym(mtmp->mx, mtmp->my);
+		if (context.game_difficulty != 0)
+			newmonhp(mtmp, mtmp->mnum, MM_NO_DIFFICULTY_HP_CHANGE | MM_ADJUST_HP_FROM_EXISTING);
+	}
 
     if (obj) { /* thrown food */
         /* defer eating until the edog extension has been set up */
@@ -1075,39 +1079,10 @@ break_charm(mtmp, verbose)
 struct monst* mtmp;
 boolean verbose;
 {
-	boolean was_tame = is_tame(mtmp);
-	boolean was_peaceful = is_peaceful(mtmp);
-	boolean was_charmed = is_charmed(mtmp);
-
 	/* break charm */
 	if (has_charmed(mtmp))
 	{
-		mtmp->mprops[CHARMED] = 0;
-		if (was_tame && !is_tame(mtmp))
-		{
-			newsym(mtmp->mx, mtmp->my);
-			if (context.game_difficulty != 0)
-				newmonhp(mtmp, mtmp->mnum, MM_ADJUST_HP_FROM_EXISTING);
-
-			if (verbose)
-			{
-				if (canseemon(mtmp))
-				{
-					if (!is_charmed(mtmp) && was_charmed)
-					{
-						if (is_tame(mtmp))
-							pline("%s looks perplexed for a while.", Monnam(mtmp));
-						else
-							pline("%s looks more in control of %sself.", Monnam(mtmp), mhim(mtmp));
-
-						if (!is_peaceful(mtmp) && was_peaceful)
-							pline("%s turns hostile!", Monnam(mtmp));
-					}
-				}
-
-			}
-		}
-
+		set_mon_property_verbosely(mtmp, CHARMED, -3);
 	}
 }
 

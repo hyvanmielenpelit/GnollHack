@@ -500,7 +500,7 @@ int spellnum;
             if (canseemon(mtmp))
                 pline("%s suddenly %s!", Monnam(mtmp),
                       !See_invisible ? "disappears" : "becomes transparent");
-			increase_mon_temporary_property(mtmp, INVISIBILITY, d(2, 10) + 80);
+			increase_mon_property(mtmp, INVISIBILITY, d(2, 10) + 80);
             if (cansee(mtmp->mx, mtmp->my) && !canspotmon(mtmp))
                 map_invisible(mtmp->mx, mtmp->my);
             dmg = 0;
@@ -523,7 +523,7 @@ int spellnum;
         dmg = 0;
         break;
     case MGC_HASTE_SELF:
-		increase_mon_temporary_property_verbosely(mtmp, VERY_FAST, 150 + rnd(50));
+		increase_mon_property_verbosely(mtmp, VERY_FAST, 150 + rnd(50));
 		dmg = 0;
         break;
     case MGC_CURE_SELF:

@@ -1369,11 +1369,61 @@ update_monster_timouts()
 			unsigned short duration = mtmp->mprops[i] & M_TIMEOUT;
 			if (duration > 0)
 			{
-				mtmp->mprops[i] = (duration - 1) | otherflags;
-
-				/* These work in any case when duration was 1 (now 0) */
-				if (duration == 1)
+				if (duration > 1) 
 				{
+					mtmp->mprops[i] = (duration - 1) | otherflags; /* make it a bit faster than with mon_set_property, since the state does not change*/
+
+					/* Messaging before the timer expiry */
+					switch (i)
+					{
+					case STONED:
+						(void)munstone(mtmp, mtmp->delayed_killer_by_you); /* check if the monster has found something that helps */
+						break;
+					case SLIMED:
+						(void)munslime(mtmp, mtmp->delayed_killer_by_you); /* check if the monster has found something that helps */
+						break;
+					case STRANGLED:
+						if (canseemon(mtmp) && !is_breathless(mtmp))
+						{
+							pline("%s is gasping for air!", Monnam(mtmp));
+						}
+						break;
+					case AIRLESS_ENVIRONMENT:
+						if (canseemon(mtmp) && !is_breathless(mtmp) && !(is_pool(mtmp->mx, mtmp->my) && amphibious(mtmp->data)))
+						{
+							pline("%s is gasping for air!", Monnam(mtmp));
+						}
+						break;
+					}
+
+				}
+				else if (duration == 1)
+				{
+					switch (i)
+					{
+					/* Properties where value going to zero has a special effect when reduced to zero by timer rather than by any other means */
+					case STONED:
+					case SLIMED:
+					case SICK:
+					case STRANGLED:
+					case AIRLESS_ENVIRONMENT:
+					case LAUGHING:
+					case FUMBLING:
+					case ODD_IDEAS:
+					case SLEEPY:
+						/* No messanging, which is reserved for getting better from the trouble */
+						set_mon_property(mtmp, i, 0);
+						break;
+					default:
+						/* State change message */
+						set_mon_property_verbosely(mtmp, i, 0);
+						break;
+					}
+
+
+					/* These should only include timed troubles, where the final effect is dependent on the */
+					/* counter going to zero, rather than going to zero some other way */
+					/* All the other effects and messaging go to set_mon_property_verbosely */
 					switch (i)
 					{
 					case STONED:
@@ -1387,24 +1437,23 @@ update_monster_timouts()
 									u.ustuck = 0;
 								if (is_tame(mtmp) && !canspotmon(mtmp))
 									You("have a peculiarly sad feeling for a moment, then it passes.");
-
 							}
 						}
 						break;
 					case SLIMED:
-					{
-						if (!!slimeproof(mtmp->data))
 						{
-							(void)newcham(mtmp, &mons[PM_GREEN_SLIME], FALSE, TRUE);
-							break_charm(mtmp, FALSE);
+							if (!!slimeproof(mtmp->data))
+							{
+								(void)newcham(mtmp, &mons[PM_GREEN_SLIME], FALSE, TRUE);
+								break_charm(mtmp, FALSE);
 
-							if (mtmp->mtame)
-								mtmp->mtame = 0;
-							if (is_peaceful(mtmp))
-								mtmp->mpeaceful = 0;
+								if (mtmp->mtame)
+									mtmp->mtame = 0;
+								if (is_peaceful(mtmp))
+									mtmp->mpeaceful = 0;
+							}
 						}
-					}
-					break;
+						break;
 					case SICK:
 						if (!resists_sickness(mtmp))
 						{
@@ -1450,84 +1499,51 @@ update_monster_timouts()
 								You("have a peculiarly sad feeling for a moment, then it passes.");
 						}
 						break;
-					case SLEEPING:
-						if (!is_sleeping(mtmp) && was_sleeping)
-						{
-							if (canseemon(mtmp) && mon_can_move(mtmp))
-							{
-								pline("%s wakes up!", Monnam(mtmp));
-							}
-						}
-						break;
-					case PARALYZED:
-						if (!is_paralyzed(mtmp) && was_sleeping)
-						{
-							if (canseemon(mtmp) && mon_can_move(mtmp))
-							{
-								pline("%s is no longer paralyzed!", Monnam(mtmp));
-							}
-						}
-						break;
-					case CHARMED:
-						/* New symbol and HP */
-						if (was_tame && !is_tame(mtmp))
-						{
-							newsym(mtmp->mx, mtmp->my);
-							if (context.game_difficulty != 0)
-								newmonhp(mtmp, mtmp->mnum, MM_ADJUST_HP_FROM_EXISTING);
-						}
-
+					case LAUGHING:
+						mtmp->mfrozen += 1;
+						mtmp->mcanmove = 0;
 						if (canseemon(mtmp))
 						{
-							if (!is_charmed(mtmp) && was_charmed)
-							{
-								if (is_tame(mtmp))
-									pline("%s looks perplexed for a while.", Monnam(mtmp));
-								else
-									pline("%s looks more in control of %sself.", Monnam(mtmp), mhim(mtmp));
+							char laughbuf[BUFSZ] = "";
+							if(!has_head(mtmp->data) || rn2(2))
+								Sprintf(laughbuf, "out loud");
+							else
+								Sprintf(laughbuf, "%s head off", mhis(mtmp));
 
-								if (!is_peaceful(mtmp) && was_peaceful)
-									pline("%s turns hostile!", Monnam(mtmp));
-							}
+							if (is_speaking_monster(mtmp->data))
+								pline("Suddenly, %s laughs %s.", mon_nam(mtmp), laughbuf);
+							else
+								pline("Suddenly, %s looks absolutely hilarious.", mon_nam(mtmp));
 						}
-						break;
-					case FEARFUL:
+					case FUMBLING:
+						mtmp->mfrozen += 2;
+						mtmp->mcanmove = 0;
 						if (canseemon(mtmp))
 						{
-							if (!is_fleeing(mtmp) && was_fleeing)
-							{
-								pline("%s %sstops fleeing.", Monnam(mtmp), !is_fearful(mtmp) && was_fearful ? "looks less frightened and " : "");
-							}
+							if (nolimbs(mtmp->data) || slithy(mtmp->data))
+								pline("Suddenly, %s stumbles.", mon_nam(mtmp));
+							else if (unsolid(mtmp->data) || noncorporeal(mtmp->data) || is_flyer(mtmp->data) || is_floater(mtmp->data))
+								pline("Suddenly, %s seems highly unstable.", mon_nam(mtmp));
+							else
+								pline("Suddenly, %s trips over %s feet.", mon_nam(mtmp), mhis(mtmp));
 						}
+						break;
+					case ODD_IDEAS:
+						if (canseemon(mtmp))
+						{
+							if (mindless(mtmp->data))
+								pline("Suddenly, %s shudders.", mon_nam(mtmp));
+							else
+								pline("Suddenly, %s looks unusually suspicious of %s surroundings.", mon_nam(mtmp), mhis(mtmp));
+						}
+						break;
+					case SLEEPY:
+						increase_mon_property_verbosely(mtmp, SLEEPING, rnd(20));
 						break;
 					default:
 						break;
 					}
 
-				}
-				else
-				{
-					switch (i)
-					{
-					case STONED:
-						(void)munstone(mtmp, mtmp->delayed_killer_by_you); /* check if the monster has found something that helps */
-						break;
-					case SLIMED:
-						(void)munslime(mtmp, mtmp->delayed_killer_by_you); /* check if the monster has found something that helps */
-						break;
-					case STRANGLED:
-						if (canseemon(mtmp) && !is_breathless(mtmp))
-						{
-							pline("%s is gasping for air!", Monnam(mtmp));
-						}
-						break;
-					case AIRLESS_ENVIRONMENT:
-						if (canseemon(mtmp) && !is_breathless(mtmp) && !(is_pool(mtmp->mx, mtmp->my) && amphibious(mtmp->data)))
-						{
-							pline("%s is gasping for air!", Monnam(mtmp));
-						}
-						break;
-					}
 				}
 			}
 		}
@@ -1555,7 +1571,7 @@ update_monster_timouts()
 		{
 			if ((mtmp->mprops[i] & M_TIMEOUT) == 0 && context.properties[i].recurring && (mtmp->mprops[i] & ~M_TIMEOUT))
 			{
-				increase_mon_temporary_property(mtmp, i, 
+				increase_mon_property(mtmp, i, 
 					context.properties[i].recurring_constant + (context.properties[i].recurring_random > 0 ? rn2(context.properties[i].recurring_random + 1) : 0)
 				);
 			}
@@ -1746,7 +1762,7 @@ register struct monst *mtmp;
                 }
                 /* The object's rustproofing is gone now */
                 otmp->oerodeproof = 0;
-				increase_mon_temporary_property(mtmp, STUNNED, 5 + rnd(10));
+				increase_mon_property(mtmp, STUNNED, 5 + rnd(10));
 				if (canseemon(mtmp) && flags.verbose) {
                     pline("%s spits %s out in disgust!", Monnam(mtmp),
                           distant_name(otmp, doname));
@@ -4891,7 +4907,7 @@ int damtype, dam;
     }
     if (slow) 
 	{
-		increase_mon_temporary_property_verbosely(mon, SLOWED, 30 + rnd(10));
+		increase_mon_property_verbosely(mon, SLOWED, 30 + rnd(10));
 	}
     if (heal) {
         if (mon->mhp < mon->mhpmax) {

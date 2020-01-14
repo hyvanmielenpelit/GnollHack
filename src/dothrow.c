@@ -1302,7 +1302,7 @@ int dx, dy, range;
 
     /* At the very least, debilitate the monster */
     mon->movement = 0;
-	increase_mon_temporary_property(mon, STUNNED, 5 + rnd(10));
+	increase_mon_property(mon, STUNNED, 5 + rnd(10));
 
     /* Is the monster stuck or too heavy to push?
      * (very large monsters have too much inertia, even floaters and flyers)
@@ -2294,7 +2294,7 @@ register boolean is_golf;
 		{
             if (is_animal(u.ustuck->data)) 
 			{
-				int existing_stoning = get_mon_temporary_property(u.ustuck, STONED);
+				int existing_stoning = get_mon_property(u.ustuck, STONED);
 				set_mon_property_verbosely(u.ustuck, STONED, max(1, min(existing_stoning - 1, 5)));
 				//minstapetrify(u.ustuck, TRUE);
                 /* Don't leave a cockatrice corpse available in a statue */

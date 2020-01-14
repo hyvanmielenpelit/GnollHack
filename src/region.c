@@ -995,7 +995,7 @@ genericptr_t p2;
                 setmangry(mtmp, TRUE);
             if (haseyes(mtmp->data) && !is_blinded(mtmp))
 			{
-				nonadditive_increase_mon_temporary_property(mtmp, BLINDED, 5 + rnd(5));
+				nonadditive_increase_mon_property(mtmp, BLINDED, 5 + rnd(5));
             }
             if (resists_poison(mtmp))
                 return FALSE;

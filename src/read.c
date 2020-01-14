@@ -1028,7 +1028,7 @@ struct obj *sobj;
 			boolean charmed = FALSE;
 			if (sobj && !(objects[sobj->otyp].oc_aflags & S1_SPELL_IS_NONREVERSIBLE_PERMANENT))
 			{
-				int existing_charmed_duration = get_mon_temporary_property(mtmp, CHARMED);
+				int existing_charmed_duration = get_mon_property(mtmp, CHARMED);
 				duration += existing_charmed_duration;
 				duration += d(objects[sobj->otyp].oc_spell_dur_dice, objects[sobj->otyp].oc_spell_dur_diesize) + objects[sobj->otyp].oc_spell_dur_plus;
 				charmed = TRUE;
@@ -1752,7 +1752,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 						{
 							if (!mindless(mtmp->data) && !resists_paralysis(mtmp))
 							{
-								increase_mon_temporary_property_verbosely(mtmp, PARALYZED, duration);
+								increase_mon_property_verbosely(mtmp, PARALYZED, duration);
 								res = 1;
 							}
 						}
@@ -1760,7 +1760,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 						{
 							if(haseyes(mtmp->data) && !resists_blnd(mtmp))
 							{
-								increase_mon_temporary_property_verbosely(mtmp, BLINDED, duration);
+								increase_mon_property_verbosely(mtmp, BLINDED, duration);
 								res = 1;
 							}
 						}
@@ -1768,7 +1768,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 						{
 							if (!mindless(mtmp->data) && !is_stunned(mtmp))
 							{
-								increase_mon_temporary_property_verbosely(mtmp, STUNNED, 20 + rnd(20));
+								increase_mon_property_verbosely(mtmp, STUNNED, 20 + rnd(20));
 								res = 1;
 							}
 						}

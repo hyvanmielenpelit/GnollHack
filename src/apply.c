@@ -956,7 +956,7 @@ struct obj *obj;
     } else if (monable && mtmp->data == &mons[PM_UMBER_HULK]) {
         if (vis)
             pline("%s confuses itself!", Monnam(mtmp));
-		nonadditive_increase_mon_temporary_property(mtmp, CONFUSION, 10 + rnd(10));
+		nonadditive_increase_mon_property(mtmp, CONFUSION, 10 + rnd(10));
     } else if (monable && (mlet == S_NYMPH || mtmp->data == &mons[PM_SUCCUBUS]
                            || mtmp->data == &mons[PM_INCUBUS])) {
         if (vis) {
