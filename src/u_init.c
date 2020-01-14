@@ -1252,7 +1252,7 @@ add_school_specific_spellbooks()
 				while (otyp == SPE_BLANK_PAPER
 					|| already_learnt_spell_type(otyp)
 					|| objects[otyp].oc_skill != skill
-					|| (objects[otyp].oc_spell_level > 4
+					|| (objects[otyp].oc_spell_level > 2 + P_SKILL(skill)
 						|| restricted_spell_discipline(otyp)
 						|| (Role_if(PM_WIZARD) && !(objects[otyp].oc_spell_attribute == A_INT
 							|| objects[otyp].oc_spell_attribute == A_MAX_INT_WIS
