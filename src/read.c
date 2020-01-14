@@ -1028,7 +1028,9 @@ struct obj *sobj;
 			boolean charmed = FALSE;
 			if (sobj && !(objects[sobj->otyp].oc_aflags & S1_SPELL_IS_NONREVERSIBLE_PERMANENT))
 			{
-				duration = d(objects[sobj->otyp].oc_spell_dur_dice, objects[sobj->otyp].oc_spell_dur_diesize) + objects[sobj->otyp].oc_spell_dur_plus;
+				int existing_charmed_duration = get_mon_temporary_property(mtmp, CHARMED);
+				duration += existing_charmed_duration;
+				duration += d(objects[sobj->otyp].oc_spell_dur_dice, objects[sobj->otyp].oc_spell_dur_diesize) + objects[sobj->otyp].oc_spell_dur_plus;
 				charmed = TRUE;
 			}
 
