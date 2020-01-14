@@ -18,6 +18,7 @@ STATIC_DCL void FDECL(ini_inv, (struct trobj *));
 STATIC_DCL void FDECL(knows_object, (int));
 STATIC_DCL void FDECL(knows_class, (CHAR_P));
 STATIC_DCL boolean FDECL(restricted_spell_discipline, (int));
+STATIC_DCL void NDECL(add_school_specific_spellbooks);
 
 #define UNDEF_TYP 0
 #define UNDEF_SPE '\177'
@@ -62,6 +63,7 @@ static struct trobj Cave_man[] = {
 	{ LEATHER_ARMOR, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
     { 0, 0, 0, 0, 0, 0 }
 };
+
 static struct trobj Healer[] = {
     { SCALPEL, 0, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
     { LEATHER_GLOVES, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
@@ -72,15 +74,13 @@ static struct trobj Healer[] = {
     { WAN_SLEEP, UNDEF_SPE, WAND_CLASS, 1, UNDEF_BLESS, 0 },
     /* always blessed, so it's guaranteed readable */
     { SPE_HEALING, 0, SPBOOK_CLASS, 1, 1, 0 },
-    { SPE_EXTRA_HEALING, 0, SPBOOK_CLASS, 1, 1, 0 },
-    { SPE_STONE_TO_FLESH, 0, SPBOOK_CLASS, 1, 1, 0 },
-	{ GINSENG_ROOT, 0, SPBOOK_CLASS, 3, 0, 0 },
-	{ GINSENG_ROOT, 0, SPBOOK_CLASS, 1, 1, 0 },
-	{ CLOVE_OF_GARLIC, 0, SPBOOK_CLASS, 2, 0, 0 },
+	{ GINSENG_ROOT, 0, REAGENT_CLASS, 4, 0, 0 },
+	{ CLOVE_OF_GARLIC, 0, REAGENT_CLASS, 2, 0, 0 },
 	{ APPLE, 0, FOOD_CLASS, 5, 0, 0 },
 	{ LEATHER_BAG, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
 	{ 0, 0, 0, 0, 0, 0 }
 };
+
 static struct trobj Knight[] = {
     { LONG_SWORD, 1, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
     { LANCE, 1, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
@@ -95,8 +95,6 @@ static struct trobj Monk[] = {
 #define M_BOOK 2
     { LEATHER_GLOVES, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
     { ROBE, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-    { UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, 1, 0 },
-	{ UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, 1, 0 },
 	{ UNDEF_TYP, UNDEF_SPE, SCROLL_CLASS, 1, UNDEF_BLESS, 0 },
     { POT_HEALING, 0, POTION_CLASS, 3, UNDEF_BLESS, 0 },
     { FOOD_RATION, 0, FOOD_CLASS, 1, 0, 0 },
@@ -117,7 +115,7 @@ static struct trobj Priest[] = {
 	{ POT_WATER, 0, POTION_CLASS, 4, 1, 0 }, /* holy water */
 	{ CLOVE_OF_GARLIC, 0, FOOD_CLASS, 1, 0, 0 },
 	{ SPRIG_OF_WOLFSBANE, 0, FOOD_CLASS, 1, 0, 0 },
-    { UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 2, UNDEF_BLESS, 0 },
+	{ GINSENG_ROOT, 0, REAGENT_CLASS, 2, 0, 0 },
 	{ UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 2, UNDEF_BLESS, 0 },
 	{ LEATHER_BAG, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
 	{ 0, 0, 0, 0, 0, 0 }
@@ -209,8 +207,6 @@ static struct trobj Wizard[] =
     { UNDEF_TYP, UNDEF_SPE, SCROLL_CLASS, 3, UNDEF_BLESS, 0 },
 	{ SPE_MAGIC_ARROW, 0, SPBOOK_CLASS, 1, 1, 0 },
 	{ UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, UNDEF_BLESS, 0 },
-	{ UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, UNDEF_BLESS, 0 },
-	{ UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, UNDEF_BLESS, 0 },
 	{ 0, 0, 0, 0, 0, 0 }
 };
 static struct trobj WizardAlternate[] = 
@@ -224,8 +220,6 @@ static struct trobj WizardAlternate[] =
 	{ UNDEF_TYP, UNDEF_SPE, POTION_CLASS, 3, UNDEF_BLESS, 0 },
 	{ UNDEF_TYP, UNDEF_SPE, SCROLL_CLASS, 3, UNDEF_BLESS, 0 },
 	{ SPE_MAGIC_ARROW, 0, SPBOOK_CLASS, 1, 1, 0 },
-	{ UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, UNDEF_BLESS, 0 },
-	{ UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, UNDEF_BLESS, 0 },
 	{ UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, UNDEF_BLESS, 0 },
 	{ 0, 0, 0, 0, 0, 0 }
 };
@@ -623,6 +617,7 @@ static const struct def_skill Skill_Ranger_Init[] = {
 	{ P_BOW, P_BASIC },
 	{ P_CROSSBOW, P_BASIC },
 	{ P_DISARM_TRAP, P_BASIC },
+	{ P_CONJURATION_SPELL, P_BASIC },
 	{ P_NONE, 0 }
 };
 
@@ -726,7 +721,7 @@ static const struct def_skill Skill_W_Max[] = {
     { P_THROWN_WEAPON, P_EXPERT },
     { P_ARCANE_SPELL, P_EXPERT },
     { P_DIVINATION_SPELL, P_EXPERT },
-    { P_ENCHANTMENT_SPELL, P_SKILLED },
+    { P_ENCHANTMENT_SPELL, P_EXPERT },
     { P_MOVEMENT_SPELL, P_EXPERT },
     { P_TRANSMUTATION_SPELL, P_EXPERT },
 	{ P_CONJURATION_SPELL, P_EXPERT },
@@ -741,11 +736,13 @@ static const struct def_skill Skill_W_Max[] = {
 static const struct def_skill Skill_W_Init_Chaotic[] = {
 	{ P_ARCANE_SPELL, P_BASIC },
 	{ P_ENCHANTMENT_SPELL, P_BASIC },
+	{ P_TRANSMUTATION_SPELL, P_BASIC },
 	{ P_NONE, 0 }
 };
 static const struct def_skill Skill_W_Init_NonChaotic[] = {
 	{ P_ARCANE_SPELL, P_BASIC },
 	{ P_ENCHANTMENT_SPELL, P_BASIC },
+	{ P_TRANSMUTATION_SPELL, P_BASIC },
 	{ P_NONE, 0 }
 };
 
@@ -1181,6 +1178,10 @@ u_init()
         break;
     }
 
+
+	/* Add school-specific spells */
+	add_school_specific_spellbooks();
+
     if (discover)
         ini_inv(Wishing);
 
@@ -1232,6 +1233,60 @@ u_init()
     return;
 }
 
+
+STATIC_OVL
+void
+add_school_specific_spellbooks()
+{
+	for (int skill = P_FIRST_SPELL; skill <= P_LAST_SPELL; skill++)
+	{
+		if (P_SKILL(skill) >= P_BASIC)
+		{
+			int cnt = max(0, P_SKILL(skill) - 1);
+
+			for (int i = 0; i < cnt; i++)
+			{
+				struct obj* obj = mkobj(SPBOOK_CLASS, FALSE, FALSE);
+				int otyp = obj->otyp;
+
+				while (otyp == SPE_BLANK_PAPER
+					|| already_learnt_spell_type(otyp)
+					|| objects[otyp].oc_skill != skill
+					|| (objects[otyp].oc_spell_level > 4
+						|| restricted_spell_discipline(otyp)
+						|| (Role_if(PM_WIZARD) && !(objects[otyp].oc_spell_attribute == A_INT
+							|| objects[otyp].oc_spell_attribute == A_MAX_INT_WIS
+							|| objects[otyp].oc_spell_attribute == A_MAX_INT_CHA
+							|| objects[otyp].oc_spell_attribute == A_MAX_INT_WIS_CHA
+							|| objects[otyp].oc_spell_attribute == A_AVG_INT_WIS
+							|| objects[otyp].oc_spell_attribute == A_AVG_INT_CHA
+							|| objects[otyp].oc_spell_attribute == A_AVG_INT_WIS_CHA
+							))
+						|| (Role_if(PM_PRIEST) && !(objects[otyp].oc_spell_attribute == A_WIS
+							|| objects[otyp].oc_spell_attribute == A_MAX_INT_WIS
+							|| objects[otyp].oc_spell_attribute == A_MAX_WIS_CHA
+							|| objects[otyp].oc_spell_attribute == A_MAX_INT_WIS_CHA
+							|| objects[otyp].oc_spell_attribute == A_AVG_INT_WIS
+							|| objects[otyp].oc_spell_attribute == A_AVG_WIS_CHA
+							|| objects[otyp].oc_spell_attribute == A_AVG_INT_WIS_CHA
+							))
+						))
+				{
+					dealloc_obj(obj);
+					obj = mkobj(SPBOOK_CLASS, FALSE, FALSE);
+					otyp = obj->otyp;
+				}
+
+				obj = addinv(obj);
+				if (OBJ_DESCR(objects[otyp]) && obj->known)
+					discover_object(otyp, TRUE, FALSE);
+
+				initialspell(obj);
+				useup(obj);
+			}
+		}
+	}
+}
 
 /* skills aren't initialized, so we use the role-specific skill lists */
 STATIC_OVL boolean

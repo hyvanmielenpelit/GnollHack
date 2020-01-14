@@ -736,7 +736,7 @@ struct materialcomponentlist matlists[] =
 	{ SPE_COLD_ENCHANT_ITEM,
 	"Nugget of iron ore",
 	STRANGE_OBJECT,
-	2,
+	5,
 		{
 			{NUGGET_OF_IRON_ORE, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
 			NO_MATCOMP,
@@ -747,7 +747,7 @@ struct materialcomponentlist matlists[] =
 	{ SPE_FIRE_ENCHANT_ITEM,
 	"Pinch of sulfurous ash",
 	STRANGE_OBJECT,
-	2,
+	5,
 		{
 			{PINCH_OF_SULFUROUS_ASH, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
 			NO_MATCOMP,
@@ -758,7 +758,7 @@ struct materialcomponentlist matlists[] =
 	{ SPE_LIGHTNING_ENCHANT_ITEM,
 	"Nugget of copper ore",
 	STRANGE_OBJECT,
-	2,
+	5,
 		{
 			{NUGGET_OF_COPPER_ORE, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
 			NO_MATCOMP,
