@@ -1071,10 +1071,13 @@ boolean verbose;
 }
 
 void
-break_charm(mtmp)
+break_charm(mtmp, verbose)
 struct monst* mtmp;
+boolean verbose;
 {
 	boolean was_tame = is_tame(mtmp);
+	boolean was_peaceful = is_peaceful(mtmp);
+	boolean was_charmed = is_charmed(mtmp);
 
 	/* break charm */
 	if (has_charmed(mtmp))
@@ -1085,6 +1088,24 @@ struct monst* mtmp;
 			newsym(mtmp->mx, mtmp->my);
 			if (context.game_difficulty != 0)
 				newmonhp(mtmp, mtmp->mnum, MM_ADJUST_HP_FROM_EXISTING);
+
+			if (verbose)
+			{
+				if (canseemon(mtmp))
+				{
+					if (!is_charmed(mtmp) && was_charmed)
+					{
+						if (is_tame(mtmp))
+							pline("%s looks perplexed for a while.", Monnam(mtmp));
+						else
+							pline("%s looks more in control of %sself.", Monnam(mtmp), mhim(mtmp));
+
+						if (!is_peaceful(mtmp) && was_peaceful)
+							pline("%s turns hostile!", Monnam(mtmp));
+					}
+				}
+
+			}
 		}
 
 	}

@@ -589,7 +589,7 @@ E int FDECL(dogfood, (struct monst *, struct obj *));
 E boolean FDECL(tamedog, (struct monst *, struct obj *, BOOLEAN_P, BOOLEAN_P, unsigned short, BOOLEAN_P));
 E void FDECL(abuse_dog, (struct monst *));
 E void FDECL(wary_dog, (struct monst *, BOOLEAN_P));
-E void FDECL(break_charm, (struct monst*));
+E void FDECL(break_charm, (struct monst*, BOOLEAN_P));
 
 
 /* ### dogmove.c ### */

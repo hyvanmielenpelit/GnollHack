@@ -1396,7 +1396,7 @@ update_monster_timouts()
 						if (!!slimeproof(mtmp->data))
 						{
 							(void)newcham(mtmp, &mons[PM_GREEN_SLIME], FALSE, TRUE);
-							break_charm(mtmp);
+							break_charm(mtmp, FALSE);
 
 							if (mtmp->mtame)
 								mtmp->mtame = 0;
@@ -1484,8 +1484,8 @@ update_monster_timouts()
 								if (is_tame(mtmp))
 									pline("%s looks perplexed for a while.", Monnam(mtmp));
 								else
-									pline("%s looks more in control of itself.", Monnam(mtmp));
-								
+									pline("%s looks more in control of %sself.", Monnam(mtmp), mhim(mtmp));
+
 								if (!is_peaceful(mtmp) && was_peaceful)
 									pline("%s turns hostile!", Monnam(mtmp));
 							}
@@ -3782,7 +3782,7 @@ boolean via_attack;
     }
 
 	/* just in case remove charm */
-	break_charm(mtmp);
+	break_charm(mtmp, FALSE);
 
     /* attacking your own quest leader will anger his or her guardians */
     if (!context.mon_moving /* should always be the case here */

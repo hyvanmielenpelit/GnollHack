@@ -4909,7 +4909,7 @@ int duration;
 	else 
 	{
 		increase_mon_temporary_property(mdef, CANCELLED, duration);
-		break_charm(mdef);
+		break_charm(mdef, TRUE);
 
 		/* force shapeshifter into its base form */
         if (M_AP_TYPE(mdef) != M_AP_NOTHING)

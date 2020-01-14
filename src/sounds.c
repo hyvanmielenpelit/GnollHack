@@ -535,7 +535,7 @@ register struct monst *mtmp;
         if (context.run)
             nomul(0);
         wake_nearto(mtmp->mx, mtmp->my, mtmp->data->mlevel * 12);
-		break_charm(mtmp);
+		break_charm(mtmp, TRUE);
 
     }
 }
