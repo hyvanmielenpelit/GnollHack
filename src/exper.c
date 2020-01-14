@@ -343,7 +343,7 @@ register int exper, gamescore;
         if (flags.showexp)
             context.botl = TRUE;
 		
-		if(newexp - oldexp == added_experience)
+		if(flags.tellexp && newexp - oldexp == added_experience)
 			You("gain %d experience point%s.", added_experience, added_experience == 1 ? "" : "s");
 
     }

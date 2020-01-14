@@ -47,7 +47,8 @@ struct flag {
     boolean rest_on_space;   /* space means rest */
     boolean safe_dog;        /* give complete protection to the dog */
     boolean showexp;         /* show experience points */
-    boolean showscore;       /* show score */
+	boolean tellexp;		 /* tell experience points when received */
+	boolean showscore;       /* show score */
     boolean silent;          /* whether the bell rings or not */
     /* The story so far:
      * 'sortloot' originally took a True/False value but was changed

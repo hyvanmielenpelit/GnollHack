@@ -85,7 +85,7 @@ static struct Bool_Opt {
     { "autodescribe", &iflags.autodescribe, TRUE, SET_IN_GAME },
     { "autodig", &flags.autodig, FALSE, SET_IN_GAME },
     { "autoopen", &flags.autoopen, TRUE, SET_IN_GAME },
-    { "autopickup", &flags.pickup, TRUE, SET_IN_GAME },
+    { "autopickup", &flags.pickup, FALSE, SET_IN_GAME },
     { "autoquiver", &flags.autoquiver, FALSE, SET_IN_GAME },
 #if defined(MICRO) && !defined(AMIGA)
     { "BIOS", &iflags.BIOS, FALSE, SET_IN_FILE },
@@ -216,7 +216,8 @@ static struct Bool_Opt {
     { "splash_screen", &iflags.wc_splash_screen, TRUE, DISP_IN_GAME }, /*WC*/
     { "standout", &flags.standout, FALSE, SET_IN_GAME },
     { "status_updates", &iflags.status_updates, TRUE, DISP_IN_GAME },
-    { "tiled_map", &iflags.wc_tiled_map, PREFER_TILED, DISP_IN_GAME }, /*WC*/
+	{ "tellexp", &flags.tellexp, TRUE, SET_IN_GAME },
+	{ "tiled_map", &iflags.wc_tiled_map, PREFER_TILED, DISP_IN_GAME }, /*WC*/
     { "time", &flags.time, FALSE, SET_IN_GAME },
 #ifdef TIMED_DELAY
     { "timed_delay", &flags.nap, TRUE, SET_IN_GAME },
