@@ -33,6 +33,12 @@ enum encumbrance_types {
     OVERLOADED   = 5  /* Overloaded */
 };
 
+/* types of functions within verbose_wrapper */
+enum verbose_function_types {
+	VERBOSE_FUNCTION_UPDATE_MON_STATISTICS = 0,
+	VERBOSE_FUNCTION_SET_MON_PROPERTY = 1
+};
+
 /* weight increment of heavy iron ball */
 #define IRON_BALL_W_INCR 160
 

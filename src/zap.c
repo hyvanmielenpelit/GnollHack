@@ -379,6 +379,7 @@ struct obj *otmp;
 		break;
 	case WAN_SLOW_MONSTER:
     case SPE_SLOW_MONSTER:
+	case SPE_MASS_SLOW:
 		res = 1;
 		if (!check_magic_resistance_and_halve_damage(mtmp, otmp, 0, 0, NOTELL)) {
             if (disguised_mimic)
@@ -3197,7 +3198,8 @@ struct obj *obj, *otmp;
             break;
         case WAN_SLOW_MONSTER: /* no effect on objects */
         case SPE_SLOW_MONSTER:
-        case WAN_SPEED_MONSTER:
+		case SPE_MASS_SLOW:
+		case WAN_SPEED_MONSTER:
 		case SPE_MAGIC_ARROW:
 		case WAN_NOTHING:
 		case SPE_CHARM_MONSTER:
@@ -4420,6 +4422,7 @@ boolean ordinary;
 
     case WAN_SLOW_MONSTER:
     case SPE_SLOW_MONSTER:
+	case SPE_MASS_SLOW:
 		damage = 0;
 		boolean was_slowed = Slowed;
 		incr_itimeout(&HSlowed, obj->oclass == WAND_CLASS ? rn1(10, 100 + 60 * bcsign(obj)) : duration);
@@ -4818,7 +4821,8 @@ struct obj *obj; /* wand or spell */
 	case SPE_MAGIC_ARROW:
 	case WAN_SLOW_MONSTER:
     case SPE_SLOW_MONSTER:
-    case WAN_SPEED_MONSTER:
+	case SPE_MASS_SLOW:
+	case WAN_SPEED_MONSTER:
 	case SPE_CURE_BLINDNESS:
 	case SPE_CURE_SICKNESS:
 	case SPE_CURE_PETRIFICATION:
@@ -5232,7 +5236,7 @@ struct obj *obj;
         } else if (u.dz) {
             disclose = zap_updown(obj);
         } else {
-			int range = 1;
+			int range = 1, radius = 0;
 
 			if (objects[otyp].oc_dir == TOUCH)
 				range = 1;
@@ -5241,11 +5245,14 @@ struct obj *obj;
 			else
 				range = rn1(8, 6);
 
+			if (objects[otyp].oc_spell_radius > 0)
+				radius = objects[otyp].oc_spell_radius;
+
 			boolean hit_only_one = TRUE;
 			if (objects[otyp].oc_dir == IMMEDIATE_MULTIPLE_TARGETS)
 				hit_only_one = FALSE;
 
-			(void) bhit(u.dx, u.dy, range, ZAPPED_WAND, bhitm, bhito, &obj, hit_only_one, !!(objects[otyp].oc_aflags& S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT));
+			(void) bhit(u.dx, u.dy, range, radius, ZAPPED_WAND, bhitm, bhito, &obj, hit_only_one, !!(objects[otyp].oc_aflags & S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT));
         }
         zapwrapup(); /* give feedback for obj_zapped */
 
@@ -5485,8 +5492,8 @@ int range, *skipstart, *skipend;
  *  one is revealed for a weapon, but if not a weapon is left up to fhitm().
  */
 struct monst *
-bhit(ddx, ddy, range, weapon, fhitm, fhito, pobj, hit_only_one, stop_at_first_hit_object)
-register int ddx, ddy, range;          /* direction and range */
+bhit(ddx, ddy, range, radius, weapon, fhitm, fhito, pobj, hit_only_one, stop_at_first_hit_object)
+register int ddx, ddy, range, radius;          /* direction, range, and effect radius */
 enum bhit_call_types weapon;           /* defined in hack.h */
 int FDECL((*fhitm), (MONST_P, OBJ_P)), /* fns called when mon/obj hit */
     FDECL((*fhito), (OBJ_P, OBJ_P));
@@ -5727,7 +5734,27 @@ boolean stop_at_first_hit_object;
 						tmp_at(bhitpos.x, bhitpos.y);
 				}
 				int had_effect = (*fhitm)(mtmp, obj);
+				int more_effect_num = 0;
 
+				/* Make radius if it is specified */
+				if (radius > 0)
+				{
+					for (int rx = -radius; rx <= radius; rx++)
+					{
+						for (int ry = -radius; ry <= radius; ry++)
+						{
+							int px = bhitpos.x + rx;
+							int py = bhitpos.y + ry;
+
+							if (isok(px, py) && dist2(px, py, bhitpos.x, bhitpos.y) <= (radius + 1) * radius)
+							{
+								struct monst* mtmp2 = m_at(px, py);
+								if(mtmp2 && mtmp2 != mtmp && mtmp2 != &youmonst)
+									more_effect_num += (*fhitm)(mtmp2, obj);
+							}
+						}
+					}
+				}
 				if (had_effect)
 				{
 					if (hit_only_one)

@@ -904,7 +904,7 @@ boolean is_golf_swing;
     obj_extract_self(kickedobj);
     (void) snuff_candle(kickedobj);
     newsym(x, y);
-    mon = bhit(u.dx, u.dy, range, is_golf_swing ? GOLF_SWING : KICKED_WEAPON,
+    mon = bhit(u.dx, u.dy, range, 0, is_golf_swing ? GOLF_SWING : KICKED_WEAPON,
                (int FDECL((*), (MONST_P, OBJ_P))) 0,
                (int FDECL((*), (OBJ_P, OBJ_P))) 0, &kickedobj, TRUE, FALSE);
     if (!kickedobj)

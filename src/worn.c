@@ -728,14 +728,14 @@ struct monst* mtmp;
 int prop_index;
 int value; /* -1 sets the intrinsic and -2 clears it; -3 clears both temporary and permanent instrinsic */
 {
-	verbose_wrapper(mtmp, 1, prop_index, value, FALSE);
+	verbose_wrapper(VERBOSE_FUNCTION_SET_MON_PROPERTY, mtmp, prop_index, value, FALSE);
 }
 
 
 void
-verbose_wrapper(mtmp, function_choice, prop_index, value, silently)
+verbose_wrapper(function_choice, mtmp, prop_index, value, silently)
+enum verbose_function_types function_choice;
 struct monst* mtmp;
-unsigned char function_choice;
 int prop_index;
 int value;
 boolean silently;
@@ -1036,7 +1036,7 @@ struct monst* mon;
 boolean silently;
 {
 
-	verbose_wrapper(mon, 0, 0, 0, silently);
+	verbose_wrapper(VERBOSE_FUNCTION_UPDATE_MON_STATISTICS, mon, 0, 0, silently);
 
 #if 0
 	/* save properties */

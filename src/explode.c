@@ -180,7 +180,7 @@ int expltype;
                     explmask[i][j] = !!Shock_resistance;
                     break;
 				case AD_DRAY:
-					explmask[i][j] = !!(Death_resistance || is_not_living(youmonst.data) || is_demon(youmonst.data));
+					explmask[i][j] = !!(Death_resistance || resists_death(&youmonst));
 					break;
 				case AD_WERE:
 					explmask[i][j] = !!Lycanthropy_resistance;
@@ -221,7 +221,7 @@ int expltype;
                         explmask[i][j] |= resists_disint(mtmp);
                         break;
 					case AD_DRAY:
-						explmask[i][j] |= (resists_death(mtmp) || is_not_living(mtmp->data) || is_demon(mtmp->data) || is_vampshifter(mtmp));
+						explmask[i][j] |= resists_death(mtmp);
 						break;
 					case AD_ELEC:
                         explmask[i][j] |= resists_elec(mtmp);

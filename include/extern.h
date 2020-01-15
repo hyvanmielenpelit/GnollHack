@@ -3144,7 +3144,7 @@ E void FDECL(increase_mon_property, (struct monst*, int, int));
 E int FDECL(get_mon_property, (struct monst*, int));
 E void FDECL(set_mon_property, (struct monst*, int, int));
 E void FDECL(set_mon_property_verbosely, (struct monst*, int, int));
-E void FDECL(verbose_wrapper, (struct monst*, unsigned char, int, int, BOOLEAN_P));
+E void FDECL(verbose_wrapper, (enum verbose_function_types, struct monst*, int, int, BOOLEAN_P));
 E void FDECL(increase_mon_property_verbosely, (struct monst*, int, int));
 
 E void FDECL(increase_mon_property_b, (struct monst*, int, int, BOOLEAN_P));
@@ -3195,7 +3195,7 @@ E int FDECL(spell_damage_bonus, (int));
 E const char *FDECL(exclam, (int force));
 E void FDECL(hit, (const char *, struct monst *, const char *, int));
 E void FDECL(miss, (const char *, struct monst *));
-E struct monst *FDECL(bhit, (int, int, int, enum bhit_call_types,
+E struct monst *FDECL(bhit, (int, int, int, int, enum bhit_call_types,
                              int (*)(MONST_P, OBJ_P),
                              int (*)(OBJ_P, OBJ_P), struct obj **, BOOLEAN_P, BOOLEAN_P));
 E struct monst *FDECL(boomhit, (struct obj *, int, int));

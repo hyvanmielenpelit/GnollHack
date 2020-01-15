@@ -81,7 +81,7 @@ struct obj *obj;
             (u.dz > 0) ? surface(u.ux, u.uy) : ceiling(u.ux, u.uy));
     } else if (!u.dx && !u.dy) {
         (void) zapyourself(obj, TRUE);
-    } else if ((mtmp = bhit(u.dx, u.dy, COLNO, FLASHED_LIGHT,
+    } else if ((mtmp = bhit(u.dx, u.dy, COLNO, 0, FLASHED_LIGHT,
                             (int FDECL((*), (MONST_P, OBJ_P))) 0,
                             (int FDECL((*), (OBJ_P, OBJ_P))) 0, &obj, TRUE, FALSE)) != 0) {
         obj->ox = u.ux, obj->oy = u.uy;
@@ -902,7 +902,7 @@ struct obj *obj;
                 (u.dz > 0) ? surface(u.ux, u.uy) : ceiling(u.ux, u.uy));
         return 1;
     }
-    mtmp = bhit(u.dx, u.dy, COLNO, INVIS_BEAM,
+    mtmp = bhit(u.dx, u.dy, COLNO, 0, INVIS_BEAM,
                 (int FDECL((*), (MONST_P, OBJ_P))) 0,
                 (int FDECL((*), (OBJ_P, OBJ_P))) 0, &obj, TRUE, FALSE);
     if (!mtmp || !haseyes(mtmp->data) || notonhead)
@@ -1022,7 +1022,7 @@ struct obj* obj;
 		return 0;
 	}
 	exercise(A_WIS, TRUE);
-	(void)bhit(u.dx, u.dy, obj->blessed ? 4 : 3, ZAPPED_WAND, uthitm, uthito,
+	(void)bhit(u.dx, u.dy, obj->blessed ? 4 : 3, 0, ZAPPED_WAND, uthitm, uthito,
 		& obj, TRUE, FALSE);
 
 	return 1;

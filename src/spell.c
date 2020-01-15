@@ -1746,7 +1746,8 @@ boolean atme;
     case SPE_MAGIC_MISSILE:
 	case SPE_KNOCK:
     case SPE_SLOW_MONSTER:
-    case SPE_WIZARD_LOCK:
+	case SPE_MASS_SLOW:
+	case SPE_WIZARD_LOCK:
     case SPE_DIG:
 	case SPE_LOWER_WATER:
 	case SPE_FEAR:

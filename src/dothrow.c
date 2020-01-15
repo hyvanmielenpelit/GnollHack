@@ -1663,7 +1663,7 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
         if (Underwater)
             range = 1;
 
-        mon = bhit(u.dx, u.dy, range,
+        mon = bhit(u.dx, u.dy, range, 0,
                    tethered_weapon ? THROWN_TETHERED_WEAPON : THROWN_WEAPON,
                    (int FDECL((*), (MONST_P, OBJ_P))) 0,
                    (int FDECL((*), (OBJ_P, OBJ_P))) 0, &obj, TRUE, FALSE);
@@ -2685,7 +2685,7 @@ struct obj *obj;
             bhitpos.x = u.ux;
             bhitpos.y = u.uy;
         } else {
-            mon = bhit(u.dx, u.dy, range, THROWN_WEAPON,
+            mon = bhit(u.dx, u.dy, range, 0, THROWN_WEAPON,
                        (int FDECL((*), (MONST_P, OBJ_P))) 0,
                        (int FDECL((*), (OBJ_P, OBJ_P))) 0, &obj, TRUE, FALSE);
             if (!obj)
