@@ -1,0 +1,17 @@
+name: C/C++ CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: installcurses
+      run: sudo apt-get -y install libncurses-dev
+    - name: configure
+      run: cd sys/unix; sh setup.sh hints/linux; cd ../..
+    - name: make
+      run: make
