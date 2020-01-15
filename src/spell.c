@@ -3839,7 +3839,8 @@ int spell;
 		return 0;
 	}
 
-	if (!invent) {
+	if (!invent)
+	{
 		You("have nothing to prepare spells with.");
 		return 0;
 	}
@@ -3862,6 +3863,7 @@ int spell;
 	*capspellname = highc(*capspellname); //Make first letter capital
 
 	int matcnt = 0;
+	int lowest_multiplier = 999;
 
 	//Check the material components here
 	for(int j = 0; matlists[spellmatcomp(spell)].matcomp[j].amount != 0; j++)
@@ -3911,23 +3913,61 @@ int spell;
 		if ((mc->objectid == CORPSE || mc->objectid == TIN || mc->objectid == EGG) && mc->monsterid >= 0 && mc->monsterid != otmp->corpsenm)
 			acceptable = FALSE;
 
+		//Check quantity
+		if (otmp->quan < mc->amount)
+		{
+			pline("%s requires %s as %s, but you have only %d.",
+				spellname,
+				buf3,
+				otmp->quan);
+			return 0;
+		}
+
+		int quan_mult = mc->amount > 0 ? otmp->quan / mc->amount : 1;
+
+		if (quan_mult < lowest_multiplier)
+			lowest_multiplier = quan_mult;
+
 		//Note: You might ask for another pick from another type (e.g., using both blessed and uncursed items), but this gets a bit too complicated
 		if (acceptable)
 		{
-			if (otmp->quan < mc->amount)
-			{
-				pline("%s requires %s as %s, but you have only %d.",
-					spellname,
-					buf3,
-					otmp->quan);
-				return 0;
-			}
-			//Result is ok so far
+			//Correct ingredient
 		}
 		else
 		{
 			//Incorrect ingredient
 			result = 0;
+		}
+
+	}
+
+	boolean failure = !result || ((Confusion || Stunned) && spellev(spell) > 1 && rn2(spellev(spell)));
+	int spells_gained_per_mixing = matlists[spellmatcomp(spell)].spellsgained;
+	int selected_multiplier = 1;
+
+	if (lowest_multiplier > 1)
+	{
+		char qbuf[BUFSZ] = "";
+		char buf[BUFSZ] = "";
+		Sprintf(qbuf, "You get %d casting%s per mixing. How many times to mix? [max %d] (1)", spells_gained_per_mixing, plur(spells_gained_per_mixing), lowest_multiplier);
+		getlin(qbuf, buf);
+		(void)mungspaces(buf);
+
+		if (buf[0] == '\033')
+		{
+			return;
+		}
+		else if (buf[0] == ' ' || buf[0] == '\0')
+		{
+			selected_multiplier = 1;
+		}
+		else
+		{
+			int count = atoi(buf);
+			if (count > 0)
+			{
+				selected_multiplier = min(lowest_multiplier, count);
+			}
 		}
 	}
 
@@ -3940,7 +3980,7 @@ int spell;
 		if (!otmp || !mc)
 			continue;
 
-		if (result)
+		if (!failure)
 			makeknown(otmp->otyp);
 
 		boolean usecomps = !(mc->flags & MATCOMP_NOT_SPENT);
@@ -3975,9 +4015,10 @@ int spell;
 		//Use them all up
 		if (!(mc->flags & MATCOMP_NOT_SPENT) && !obj_resists(otmp,0,100) && otmp->oclass == objects[mc->objectid].oc_class)
 		{
-			if(otmp->quan >= mc->amount)
+			int used_amount = (failure ? 1 : selected_multiplier) * mc->amount;
+			if(otmp->quan >= used_amount)
 			{
-				for (int i = 0; i < mc->amount; i++)
+				for (int i = 0; i < used_amount; i++)
 					useup(otmp);
 			}
 			else
@@ -3989,7 +4030,7 @@ int spell;
 	}
 
 	//And now the result
-	if (!result || ((Confusion || Stunned) && spellev(spell) > 1 && rn2(spellev(spell))))
+	if (failure)
 	{
 		//Explosion
 		int dmg = d(max(1, spellev(spell)), 6);
@@ -4022,7 +4063,7 @@ int spell;
 	else
 	{
 		//Success
-		int addedamount = matlists[spellmatcomp(spell)].spellsgained;
+		int addedamount = spells_gained_per_mixing * selected_multiplier;
 		spellamount(spell) += addedamount;
 		You("successfully prepared the material components.", spellname);
 		if (addedamount == 1)

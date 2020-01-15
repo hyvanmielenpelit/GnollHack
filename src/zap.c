@@ -2105,10 +2105,13 @@ int ochance, achance; /* percent chance for ordinary objects, artifacts */
         || obj->otyp == SPE_BOOK_OF_THE_DEAD
         || obj->otyp == CANDELABRUM_OF_INVOCATION
         || obj->otyp == BELL_OF_OPENING
-		|| objects[obj->otyp].oc_flags & O1_INDESTRUCTIBLE
-		|| (obj->otyp == CORPSE && is_rider(&mons[obj->corpsenm]))) {
+		|| (objects[obj->otyp].oc_flags & O1_INDESTRUCTIBLE)
+		|| (obj->otyp == CORPSE && is_rider(&mons[obj->corpsenm]))) 
+	{
         return TRUE;
-    } else {
+    }
+	else 
+	{
         int chance = rn2(100);
 
         return (boolean) (chance < (obj->oartifact ? achance : ochance));
