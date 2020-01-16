@@ -1189,7 +1189,7 @@ struct attack* mattk;
 
 	if (m_lined_up(mtarg, mtmp))
 	{
-		if (has_cancelled(mtmp))
+		if (has_cancelled(mtmp) || is_blinded(mtmp))
 		{
 			if (canseemon(mtmp))
 				pline("%s blinks.", Monnam(mtmp));
@@ -1397,7 +1397,7 @@ struct attack *mattk;
 
     if (lined_up(mtmp))
 	{
-        if (has_cancelled(mtmp))
+        if (has_cancelled(mtmp) || is_blinded(mtmp))
 		{
             if (canseemon(mtmp))
                 pline("%s blinks.", Monnam(mtmp));
