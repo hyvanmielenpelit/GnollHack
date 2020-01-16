@@ -1180,11 +1180,12 @@ eyesmm(mtmp, mattk, mtarg)
 struct monst* mtmp, * mtarg;
 struct attack* mattk;
 {
-	/* if new breath types are added, change AD_ACID to max type */
 	int effect_choices[6] = { AD_DISN, AD_DRAY, AD_ELEC, AD_MAGM, AD_SLEE, AD_COLD };
+	int ray1_effect_choices[3] = { AD_DISN, AD_ELEC, AD_COLD }; /* Elemental */
+	int ray2_effect_choices[3] = { AD_DRAY, AD_MAGM, AD_SLEE }; /* Magic */
 	int typ = (mattk->adtyp == AD_RBRE) ? effect_choices[rn2(6)] :
-		(mattk->adtyp == AD_REY1) ? (rn2(2) ? AD_DISN : AD_DRAY) : 
-		(mattk->adtyp == AD_REY2) ? (rn2(2) ? AD_ELEC : AD_COLD) :
+		(mattk->adtyp == AD_REY1) ? ray1_effect_choices[rn2(3)] :
+		(mattk->adtyp == AD_REY2) ? ray2_effect_choices[rn2(3)] :
 		mattk->adtyp;
 
 	if (m_lined_up(mtarg, mtmp))
@@ -1196,22 +1197,16 @@ struct attack* mattk;
 			return 0;
 		}
 
-		/* 6.25% chance of using all four or none at all, 12.5% for 1 or 3 weapons, and 37.5% for 2 attacks */
-		if (rn2(2)) 
+		if ((typ >= AD_MAGM) && (typ <= AD_DRAY))
 		{
-			if ((typ >= AD_MAGM) && (typ <= AD_DRAY))
-			{
-				if (canseemon(mtmp))
-					pline("One of %s eyestalks fires %s!", s_suffix(mon_nam(mtmp)), eyestalk[typ - 1]);
-				dobuzz((int)(-30 - (typ - 1)), (struct obj*)0, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp,
-					mtmp->mx, mtmp->my, sgn(tbx), sgn(tby), FALSE);
-				nomul(0);
-			}
-			else 
-				impossible("Eyestalk %d used", typ - 1);
+			if (canseemon(mtmp))
+				pline("One of %s eyestalks fires %s!", s_suffix(mon_nam(mtmp)), eyestalk[typ - 1]);
+			dobuzz((int)(-30 - (typ - 1)), (struct obj*)0, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp,
+				mtmp->mx, mtmp->my, sgn(tbx), sgn(tby), FALSE);
+			nomul(0);
 		}
-		else
-			return 0;
+		else 
+			impossible("Eyestalk %d used", typ - 1);
 	}
 	return 1;
 }
@@ -1389,9 +1384,11 @@ struct attack *mattk;
 
 	/* if new breath types are added, change AD_ACID to max type */
 	int effect_choices[6] = { AD_DISN, AD_DRAY, AD_ELEC, AD_MAGM, AD_SLEE, AD_COLD };
+	int ray1_effect_choices[3] = { AD_DISN, AD_ELEC, AD_COLD }; /* Elemental */
+	int ray2_effect_choices[3] = { AD_DRAY, AD_MAGM, AD_SLEE }; /* Magic */
 	int typ = (mattk->adtyp == AD_RBRE) ? effect_choices[rn2(6)] :
-		(mattk->adtyp == AD_REY1) ? (rn2(2) ? AD_DISN : AD_DRAY) :
-		(mattk->adtyp == AD_REY2) ? (rn2(2) ? AD_ELEC : AD_COLD) :
+		(mattk->adtyp == AD_REY1) ? ray1_effect_choices[rn2(3)] :
+		(mattk->adtyp == AD_REY2) ? ray2_effect_choices[rn2(3)] :
 		mattk->adtyp;
 
 

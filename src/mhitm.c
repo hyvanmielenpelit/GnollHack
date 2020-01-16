@@ -582,7 +582,8 @@ register struct monst *magr, *mdef;
             break;
 
         case AT_BREA:
-            if (!monnear(magr, mdef->mx, mdef->my)) {
+            if (!monnear(magr, mdef->mx, mdef->my))
+			{
                 strike = breamm(magr, mattk, mdef);
 
                 /* We don't really know if we hit or not; pretend we did. */
@@ -598,7 +599,9 @@ register struct monst *magr, *mdef;
             break;
 
 		case AT_EYES:
-			strike = eyesmm(magr, mattk, mdef);
+			strike = 0;
+			if (monnear(magr, mdef->mx, mdef->my) || rn2(4))
+				strike = eyesmm(magr, mattk, mdef);
 
 			/* We don't really know if we hit or not; pretend we did. */
 			if (strike)
@@ -1320,7 +1323,40 @@ register struct obj* omonwep;
         }
         tmp = 0;
         break;
-    case AD_HALU:
+	case AD_CNCL:
+		if (cancelled)
+		{
+			if (canseemon(magr))
+				pline("%s gazes at %s but without effect.", Monnam(magr), mon_nam(mdef));
+			break;
+		}
+		else if (is_blinded(magr))
+		{
+			if (canseemon(magr))
+				pline("%s stares blindly at %s general direction.", Monnam(magr), s_suffix(mon_nam(mdef)));
+			break;
+		}
+		else if (is_reflecting(mdef))
+		{
+			if (canseemon(magr))
+			{
+				pline("%s gazes at %s.", Monnam(magr), mon_nam(mdef));
+				(void)mon_reflects(mdef, "The gaze is reflected away by %s %s!");
+			}
+			break;
+		}
+		else
+		{
+			if (canseemon(magr))
+			{
+				if (is_cancelled(mdef))
+					pline("%s gazes at %s. %s is hit by an invisible anti-magic ray!", Monnam(magr), mon_nam(mdef), Monnam(mdef));
+				else
+					pline("%s keeps %s anti-magic gaze focused on %s.", Monnam(magr), mhis(magr), mon_nam(mdef));
+			}
+			nonadditive_increase_mon_property_verbosely(mdef, CANCELLED, 2 + rnd(3));
+		}
+	break;    case AD_HALU:
         if (!has_cancelled(magr)&& haseyes(pd) && !is_blinded(mdef)) {
             if (vis && canseemon(mdef))
                 pline("%s looks %sconfused.", Monnam(mdef),

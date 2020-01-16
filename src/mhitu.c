@@ -740,7 +740,8 @@ register struct monst *mtmp;
             /* Note: breamu takes care of displacement */
             break;
 		case AT_EYES:
-			sum[i] = eyesmu(mtmp, mattk);
+			if(!is_blinded(mtmp) && (!range2 || rn2(4))) /* Blinded already here to prevent continuous blinking */
+				sum[i] = eyesmu(mtmp, mattk);
 			break;
 		case AT_SPIT:
             if (range2)
@@ -3231,6 +3232,38 @@ struct attack *mattk;
             }
         }
         break;
+	case AD_CNCL:
+		if (cancelled) 
+		{
+			if (canseemon(mtmp))
+				pline("%s gazes at you but without effect.", Monnam(mtmp));
+			break;
+		}
+		else if (is_blinded(mtmp))
+		{
+			if (canseemon(mtmp))
+				pline("%s stares blindly at your general direction.", Monnam(mtmp));
+			break;
+		}
+		else if (Reflecting)
+		{
+			if (canseemon(mtmp))
+				(void)ureflects("%s gazes at you, but the gaze is reflected away by your %s.", Monnam(mtmp));
+
+			break;
+		}
+		else
+		{
+			if (canseemon(mtmp))
+			{
+				if(!Cancelled)
+					pline("%s gazes at you. You are hit by an invisible anti-magic ray!", Monnam(mtmp));
+				else
+					pline("%s keeps %s anti-magic gaze focused on you.", Monnam(mtmp), mhis(mtmp));
+			}
+			set_itimeout(&HCancelled, max(HCancelled & TIMEOUT, 2 + rnd(3)));
+		}
+		break;
 #if 0 /* work in progress */
     case AD_SLEE:
         if (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my) && !is_blinded(mtmp)

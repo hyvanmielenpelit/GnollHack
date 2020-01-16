@@ -151,8 +151,7 @@
 #define is_vegan_food(ptr) (((ptr)->mflags4 & M4_VEGAN_FOOD) != 0L)
 #define alternative_passive_defense_text(ptr) \
     (((ptr)->mflags4 & M4_ALTERNATIVE_PASSIVE_DEFENSE_TEXT) != 0)
-#define has_cancellation_gaze(ptr) (((ptr)->mflags4 & M4_CANCELLATION_GAZE) != 0L)
-#define is_gaze_cancelling(mon) (has_cancellation_gaze((mon)->data) && !Reflecting)
+
 
 
 /* combinations */
@@ -243,6 +242,9 @@
 /* magic-use related properties */
 #define has_cancelled(mon) \
 	has_property(mon, CANCELLED)
+
+#define is_cancelled(mon) \
+	has_cancelled(mon)
 
 #define has_half_magic_resistance(mon) \
 	has_property(mon, HALF_MAGIC_RES)

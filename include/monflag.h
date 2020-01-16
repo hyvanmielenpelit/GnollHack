@@ -249,7 +249,6 @@
 #define M4_ALTERNATIVE_PASSIVE_DEFENSE_TEXT	0x00000080		/* e.g. engulfed in X's flames rather than feel very hot */
 
 #define M4_PITWALK					0x00000100		/* can walk in and out of pits without trouble */
-#define M4_CANCELLATION_GAZE		0x00000200		/* players is cancelled whenever beholder see him or her */
 
 
 #define MZ_TINY 0          /* < 2' */
