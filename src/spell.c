@@ -1736,7 +1736,7 @@ boolean atme;
 	case SPE_METEOR_SWARM:
 	case SPE_ICE_STORM:
 	case SPE_THUNDERSTORM:
-	case SPE_MAGIC_IMPLOSION:
+	case SPE_MAGICAL_IMPLOSION:
 	case SPE_MAGIC_STORM:
 	case SPE_FIRE_BOLT:
 	case SPE_LIGHTNING_BOLT:
@@ -3955,7 +3955,7 @@ int spell;
 
 		if (buf[0] == '\033')
 		{
-			return;
+			return 0;
 		}
 		else if (buf[0] == ' ' || buf[0] == '\0')
 		{

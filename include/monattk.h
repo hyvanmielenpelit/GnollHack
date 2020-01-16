@@ -24,6 +24,7 @@
 #define AT_BOOM 14  /* explodes when killed */
 #define AT_GAZE 15  /* gaze - ranged */
 #define AT_TENT 16  /* tentacles */
+#define AT_EYES 17  /* beholder eye stalk - ranged */
 
 #define AT_SMMN 253 /* uses demon special abilities */
 #define AT_WEAP 254 /* uses weapon */
@@ -87,6 +88,8 @@
 #define AD_GNOL 245 /* Summons gnolls, Yeenoghu */
 #define AD_GHUL 246 /* Summons ghouls, Yeenoghu */
 #define AD_UNDO 247 /* Summons undead, Orcus */
+#define AD_REY1 248 /* random eyestalk 1 */
+#define AD_REY2 249 /* random eyestalk 2 */
 
 #define AD_SAMU 252 /* hits, may steal Amulet (Wizard) */
 #define AD_CURS 253 /* random curse (ex. gremlin) */

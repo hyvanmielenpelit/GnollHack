@@ -2324,7 +2324,7 @@ SPELL("burning hands",    "hand-patterned", None, "Causes the target to suffer f
       P_ARCANE_SPELL,			10,  4,			 3, 2, 15, A_INT, 1, 0, 20, 0, 1, TOUCH, 0, 8, 6, 0, 0, 0, 0, S1_NONE, CLR_RED, O1_FIRE_RESISTANT, O2_NONE, O3_NONE),
 SPELL("fire bolt",        "light red", None, "Shoots a bolt of fire",
       P_ARCANE_SPELL,			 5,  4,			 0, 2, 15, A_INT, 10, 0, 20, 0, 1, RAY, RAY_FIRE, 4, 6, 0, 0, 0, 0, S1_NONE, CLR_RED, O1_FIRE_RESISTANT, O2_NONE, O3_NONE),
-SPELL("magic implosion", "radiating", None, "Creates a magical implosion at the target",
+SPELL("magical implosion", "radiating", None, "Creates a magical implosion at the target",
       P_ARCANE_SPELL,			 5,  5,		     0, 3, 30, A_INT, 12, 0, 20, 0, 1, RAY, RAY_MAGIC_MISSILE, 4, 6, 0, 0, 0, 0, S1_SPELL_EXPLOSION_EFFECT, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
 SPELL("fireball",         "ragged", None, "Shoots an exploding fireball",
       P_ARCANE_SPELL,			 5,  4,			 0, 4, 30, A_INT, 14, 0, 20, 0, 1, RAY, RAY_FIRE, 6, 6, 0, 0, 0, 0, S1_SPELL_EXPLOSION_EFFECT, HI_PAPER, O1_FIRE_RESISTANT, O2_NONE, O3_NONE),

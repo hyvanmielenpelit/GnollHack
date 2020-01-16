@@ -739,7 +739,10 @@ register struct monst *mtmp;
                 sum[i] = breamu(mtmp, mattk);
             /* Note: breamu takes care of displacement */
             break;
-        case AT_SPIT:
+		case AT_EYES:
+			sum[i] = eyesmu(mtmp, mattk);
+			break;
+		case AT_SPIT:
             if (range2)
                 sum[i] = spitmu(mtmp, mattk);
             /* Note: spitmu takes care of displacement */
@@ -3228,7 +3231,7 @@ struct attack *mattk;
             }
         }
         break;
-#ifdef PM_BEHOLDER /* work in progress */
+#if 0 /* work in progress */
     case AD_SLEE:
         if (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my) && !is_blinded(mtmp)
             && multi >= 0 && !rn2(5) && !Sleep_resistance) {

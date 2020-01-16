@@ -987,7 +987,7 @@ struct materialcomponentlist matlists[] =
 		}
 	},
 
-	{ SPE_MAGIC_IMPLOSION,
+	{ SPE_MAGICAL_IMPLOSION,
 	"Nugget of platinum ore",
 	STRANGE_OBJECT,
 	20,

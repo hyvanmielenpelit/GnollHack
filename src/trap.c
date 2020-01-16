@@ -1478,7 +1478,7 @@ unsigned trflags;
                                      : (dmgval2 >= hp / 4) ? "very lethargic."
                                                            : "sluggish.");
             /* opposite of magical explosion */
-            losehp(dmgval2, "anti-magic implosion", KILLED_BY_AN);
+            losehp(dmgval2, "anti-magical implosion", KILLED_BY_AN);
         }
         break;
 

@@ -26,6 +26,12 @@ STATIC_OVL NEARDATA const char *breathwep[] = {
     "strange breath #9"
 };
 
+STATIC_OVL NEARDATA const char* eyestalk[] = {
+	"a ray of magical energy", "a fire ray", "a frost ray", "a sleep ray", "a disintegration ray",
+	"a ray of lightning", "a ray of negative energy", "an acid ray", "a death ray",
+	"strange eyestalk #9"
+};
+
 extern boolean notonhead; /* for long worms */
 STATIC_VAR int mesg_given; /* for m_throw()/thitu() 'miss' message */
 
@@ -1168,6 +1174,50 @@ struct attack  *mattk;
 }
 
 
+/* beholder gazes at monster (ranged) */
+int
+eyesmm(mtmp, mattk, mtarg)
+struct monst* mtmp, * mtarg;
+struct attack* mattk;
+{
+	/* if new breath types are added, change AD_ACID to max type */
+	int effect_choices[6] = { AD_DISN, AD_DRAY, AD_ELEC, AD_MAGM, AD_SLEE, AD_COLD };
+	int typ = (mattk->adtyp == AD_RBRE) ? effect_choices[rn2(6)] :
+		(mattk->adtyp == AD_REY1) ? (rn2(2) ? AD_DISN : AD_DRAY) : 
+		(mattk->adtyp == AD_REY2) ? (rn2(2) ? AD_ELEC : AD_COLD) :
+		mattk->adtyp;
+
+	if (m_lined_up(mtarg, mtmp))
+	{
+		if (has_cancelled(mtmp))
+		{
+			if (canseemon(mtmp))
+				pline("%s blinks.", Monnam(mtmp));
+			return 0;
+		}
+
+		/* 6.25% chance of using all four or none at all, 12.5% for 1 or 3 weapons, and 37.5% for 2 attacks */
+		if (rn2(2)) 
+		{
+			if ((typ >= AD_MAGM) && (typ <= AD_DRAY))
+			{
+				if (canseemon(mtmp))
+					pline("One of %s eyestalks fires %s!", s_suffix(mon_nam(mtmp)), eyestalk[typ - 1]);
+				dobuzz((int)(-30 - (typ - 1)), (struct obj*)0, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp,
+					mtmp->mx, mtmp->my, sgn(tbx), sgn(tby), FALSE);
+				nomul(0);
+			}
+			else 
+				impossible("Eyestalk %d used", typ - 1);
+		}
+		else
+			return 0;
+	}
+	return 1;
+}
+
+
+
 
 /* remove an entire item from a monster's inventory; destroy that item */
 void
@@ -1327,9 +1377,9 @@ struct attack *mattk;
     return 0;
 }
 
-/* monster breathes at you (ranged) */
+/* beholder fires an eyestalk at you (ranged) */
 int
-breamu(mtmp, mattk)
+eyesmu(mtmp, mattk)
 struct monst *mtmp;
 struct attack *mattk;
 {
@@ -1337,40 +1387,87 @@ struct attack *mattk;
 	if (!mtmp || !mattk)
 		return 0;
 
-    /* if new breath types are added, change AD_ACID to max type */
-    int typ = (mattk->adtyp == AD_RBRE) ? rnd(AD_ACID) : mattk->adtyp; //NOTE: Does not include death ray
+	/* if new breath types are added, change AD_ACID to max type */
+	int effect_choices[6] = { AD_DISN, AD_DRAY, AD_ELEC, AD_MAGM, AD_SLEE, AD_COLD };
+	int typ = (mattk->adtyp == AD_RBRE) ? effect_choices[rn2(6)] :
+		(mattk->adtyp == AD_REY1) ? (rn2(2) ? AD_DISN : AD_DRAY) :
+		(mattk->adtyp == AD_REY2) ? (rn2(2) ? AD_ELEC : AD_COLD) :
+		mattk->adtyp;
 
-    if (lined_up(mtmp)) {
-        if (has_cancelled(mtmp)) {
-            if (!Deaf) {
-                if (canseemon(mtmp))
-                    pline("%s coughs.", Monnam(mtmp));
-                else
-                    You_hear("a cough.");
-            }
+
+    if (lined_up(mtmp))
+	{
+        if (has_cancelled(mtmp))
+		{
+            if (canseemon(mtmp))
+                pline("%s blinks.", Monnam(mtmp));
             return 0;
         }
-        if (!mtmp->mspec_used && rn2(3)) {
-            if ((typ >= AD_MAGM) && (typ <= AD_DRAY)) {
+        if (rn2(2))
+		{
+            if ((typ >= AD_MAGM) && (typ <= AD_DRAY))
+			{
                 if (canseemon(mtmp))
-                    pline("%s breathes %s!", Monnam(mtmp),
-                          breathwep[typ - 1]);
-				buzz((int)(-20 - (typ - 1)), (struct obj*)0, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp, mtmp->mx,
+                    pline("One of %s eyestalks fires %s!", s_suffix(mon_nam(mtmp)),
+                          eyestalk[typ - 1]);
+				buzz((int)(-30 - (typ - 1)), (struct obj*)0, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp, mtmp->mx,
                      mtmp->my, sgn(tbx), sgn(tby));
                 nomul(0);
-                /* breath runs out sometimes. Also, give monster some
-                 * cunning; don't breath if the player fell asleep.
-                 */
-                if (!rn2(3))
-                    mtmp->mspec_used = 10 + rn2(20);
-                if (typ == AD_SLEE && !Sleep_resistance)
-                    mtmp->mspec_used += rnd(20);
-            } else
-                impossible("Breath weapon %d used", typ - 1);
+            } 
+			else
+                impossible("Eyestalk %d used", typ - 1);
         }
     }
     return 1;
 }
+
+
+/* monster breathes at you (ranged) */
+int
+breamu(mtmp, mattk)
+struct monst* mtmp;
+struct attack* mattk;
+{
+	//Sanity check
+	if (!mtmp || !mattk)
+		return 0;
+
+	/* if new breath types are added, change AD_ACID to max type */
+	int typ = (mattk->adtyp == AD_RBRE) ? rnd(AD_ACID) : mattk->adtyp; //NOTE: Does not include death ray
+
+	if (lined_up(mtmp)) {
+		if (has_cancelled(mtmp)) {
+			if (!Deaf) {
+				if (canseemon(mtmp))
+					pline("%s coughs.", Monnam(mtmp));
+				else
+					You_hear("a cough.");
+			}
+			return 0;
+		}
+		if (!mtmp->mspec_used && rn2(3)) {
+			if ((typ >= AD_MAGM) && (typ <= AD_DRAY)) {
+				if (canseemon(mtmp))
+					pline("%s breathes %s!", Monnam(mtmp),
+						breathwep[typ - 1]);
+				buzz((int)(-20 - (typ - 1)), (struct obj*)0, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp, mtmp->mx,
+					mtmp->my, sgn(tbx), sgn(tby));
+				nomul(0);
+				/* breath runs out sometimes. Also, give monster some
+				 * cunning; don't breath if the player fell asleep.
+				 */
+				if (!rn2(3))
+					mtmp->mspec_used = 10 + rn2(20);
+				if (typ == AD_SLEE && !Sleep_resistance)
+					mtmp->mspec_used += rnd(20);
+			}
+			else
+				impossible("Breath weapon %d used", typ - 1);
+		}
+	}
+	return 1;
+}
+
 
 boolean
 linedup(ax, ay, bx, by, boulderhandling)

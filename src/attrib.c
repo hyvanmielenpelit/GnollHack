@@ -789,6 +789,16 @@ update_extrinsics()
 		}
 	}
 
+
+	/* Check for monsters with cancellation gaze */
+	for (struct monst* mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+	{
+		if (!DEADMONSTER(mtmp) && m_canseeu(mtmp) && is_gaze_cancelling(mtmp))
+		{
+			u.uprops[CANCELLED].extrinsic |= W_ENVIRONMENT; /* Let's use this as general */
+		}
+	}
+
 	/* Check if any of the recurring properties should be cleared out */
 	for (int i = 0; i <= LAST_PROP; i++)
 	{

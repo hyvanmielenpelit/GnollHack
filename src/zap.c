@@ -4254,7 +4254,7 @@ boolean ordinary;
 		You("conjure an ice storm on top of yourself!");
 		explode(u.ux, u.uy, RAY_FIRE, damage, obj->otyp, obj->oclass, EXPL_FROSTY);
 		break;
-	case SPE_MAGIC_IMPLOSION:
+	case SPE_MAGICAL_IMPLOSION:
 		You("engulf yourself in a magical implosion!");
 		explode(u.ux, u.uy, RAY_MAGIC_MISSILE, damage, obj->otyp, obj->oclass, EXPL_MAGICAL);
 		break;

@@ -299,7 +299,8 @@ struct obj *obj; /* aatyp == AT_WEAP, AT_SPIT */
     case AT_BOOM:
     case AT_GAZE:
     case AT_MAGC:
-    case AT_BREA: /* assumed to be lightning */
+	case AT_EYES: /* assumed to be lightning */
+	case AT_BREA: /* assumed to be lightning */
         /* light-based attacks may be cancelled or resisted */
         if (magr && has_cancelled(magr))
             return FALSE;
@@ -371,7 +372,7 @@ ranged_attk(ptr)
 struct permonst *ptr;
 {
     register int i, atyp;
-    long atk_mask = (1L << AT_BREA) | (1L << AT_SPIT) | (1L << AT_GAZE);
+    long atk_mask = (1L << AT_EYES) | (1L << AT_BREA) | (1L << AT_SPIT) | (1L << AT_GAZE);
 
     /* was: (attacktype(ptr, AT_BREA) || attacktype(ptr, AT_WEAP)
      *       || attacktype(ptr, AT_SPIT) || attacktype(ptr, AT_GAZE)

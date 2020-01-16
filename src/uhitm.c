@@ -3482,7 +3482,8 @@ register struct monst *mon;
             continue;
         /* Not break--avoid passive attacks from enemy */
 
-        case AT_BREA:
+		case AT_EYES:
+		case AT_BREA:
         case AT_SPIT:
         case AT_GAZE: /* all done using #monster command */
             dhit = 0;
