@@ -1418,7 +1418,7 @@ struct attack *mattk;
                 impossible("Eyestalk %d used", typ - 1);
         }
     }
-    return 1;
+    return DEADMONSTER(mtmp) ? 2 : 1;
 }
 
 
@@ -1465,7 +1465,7 @@ struct attack* mattk;
 				impossible("Breath weapon %d used", typ - 1);
 		}
 	}
-	return 1;
+	return DEADMONSTER(mtmp) ? 2 : 1;
 }
 
 
