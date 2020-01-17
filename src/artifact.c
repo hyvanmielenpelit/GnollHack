@@ -2105,12 +2105,16 @@ int critstrikeroll; /* need to synchronize critical strike based abilities */
 						{
 							if (check_rider_death(mdef, 0, (const char*)0))
 							{
-								/* no furhter action */
+								lethaldamage = FALSE;
+								totaldamagedone = 0;
 							}
-							else if (is_living(mdef->data))
-								pline("%s strikes %s dead!", The(xname(otmp)), mon_nam(mdef));
 							else
-								pline("%s strikes %s down!", The(xname(otmp)), mon_nam(mdef));
+							{
+								if (is_living(mdef->data))
+									pline("%s strikes %s dead!", The(xname(otmp)), mon_nam(mdef));
+								else
+									pline("%s strikes %s down!", The(xname(otmp)), mon_nam(mdef));
+							}
 						}
 						else
 						{

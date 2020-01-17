@@ -263,6 +263,7 @@ struct obj *otmp;
 		if (check_rider_death(mtmp, 0, (const char*)0))
 		{
 			/* no further action */
+			break;
 		}
 		else if (is_not_living(mtmp->data) || is_demon(mtmp->data) || resists_death(mtmp) || magic_resistance_success)
 		{ /* match effect on player */
@@ -331,6 +332,7 @@ struct obj *otmp;
 		if (check_rider_death(mtmp, 0, (const char*)0))
 		{
 			/* no further action */
+			break;
 		}
 		else if (is_not_living(mtmp->data) || is_demon(mtmp->data) || resists_death(mtmp) || mindless(mtmp->data) || magic_resistance_success)
 		{ /* match effect on player */
@@ -6472,14 +6474,17 @@ struct monst* mon;
 int type;
 const char* fltxt;
 {
-	/* Rider non-disintegration */
+	/* Death gets stronger */
 	if (mon && mon->data == &mons[PM_DEATH])
 	{
-		if (canseemon(mon)) {
-			hit(fltxt, mon, ".", -1);
+		if (canseemon(mon)) 
+		{
+			if(fltxt && strcmp(fltxt, ""))
+				hit(fltxt, mon, ".", -1);
+
 			pline("%s absorbs the deadly %s!", Monnam(mon),
-				type == ZT_BREATH(ZT_DEATH) ? "blast"
-				: "ray");
+				type == 0 ? "magics" : type == ZT_BREATH(ZT_DEATH) ? "blast" : "ray");
+			
 			pline("It seems even stronger than before.");
 		}
 		mon->mbasehpmax += mon->mbasehpmax / 2;

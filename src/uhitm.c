@@ -1525,11 +1525,7 @@ boolean* obj_destroyed;
 			unenchantmsg = TRUE;
 			break;
 		case DEATH_ENCHANTMENT:
-			if (check_rider_death(mon, 0, (const char*)0))
-			{
-				/* no further action */
-			}
-			else if (resists_death(mon) || is_not_living(mon->data) || is_demon(mon->data) || is_vampshifter(mon))
+			if (mon->mnum == PM_DEATH || resists_death(mon) || is_not_living(mon->data) || is_demon(mon->data) || is_vampshifter(mon))
 			{
 				needenchantmsg = -obj->elemental_enchantment;
 			}
@@ -1988,11 +1984,7 @@ boolean* obj_destroyed;
 				pline_The("electricity doesn't seem to affect %s.", mon_nam(mon));
 				break;
 			case -DEATH_ENCHANTMENT:
-				if (mon->data == &mons[PM_DEATH] && canseemon(mon)) {
-					pline("%s absorbs the deadly magics!", Monnam(mon));
-					pline("It seems even stronger than before.");
-					mon->mhp = mon->mhpmax;
-				} else
+				if (!check_rider_death(mon, 0, (const char*)0)) 
 					pline_The("death magic doesn't seem to affect %s.", mon_nam(mon));
 				break;
 			case COLD_ENCHANTMENT:
