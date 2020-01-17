@@ -1968,14 +1968,14 @@ int critstrikeroll; /* need to synchronize critical strike based abilities */
 						|| (objects[otmp->otyp].oc_extra_damagetype == AD_ELEC && (youdefend ? Shock_resistance : resists_elec(mdef)))))
 					||
 					((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK
-						&& ((youdefend ? Death_resistance : resists_death(mdef)) || is_not_living(mdef->data) || is_demon(mdef->data) || is_vampshifter(mdef)
+						&& ((youdefend ? Death_resistance : resists_death(mdef))
 							|| ((objects[otmp->otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS) ? (youdefend ? Antimagic : resists_magic(mdef)) : 0)
 							|| (!(objects[otmp->otyp].oc_aflags & A1_BYPASSES_MC) && check_magic_cancellation_success(mdef,
 								objects[otmp->otyp].oc_mc_adjustment + (objects[otmp->otyp].oc_flags & O1_SPE_AFFECTS_MC_ADJUSTMENT ? -otmp->spe : 0)))
 							))
 					||
 					((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK
-						&& ((youdefend ? (Disint_resistance || Invulnerable) : resists_disint(mdef)) || noncorporeal(mdef->data)
+						&& ((youdefend ? (Disint_resistance || Invulnerable) : resists_disint(mdef))
 							|| ((objects[otmp->otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS) ? (youdefend ? Antimagic : resists_magic(mdef)) : 0)
 							|| (!(objects[otmp->otyp].oc_aflags & A1_BYPASSES_MC) && check_magic_cancellation_success(mdef,
 								objects[otmp->otyp].oc_mc_adjustment + (objects[otmp->otyp].oc_flags & O1_SPE_AFFECTS_MC_ADJUSTMENT ? -otmp->spe : 0)))
@@ -1984,11 +1984,45 @@ int critstrikeroll; /* need to synchronize critical strike based abilities */
 				{
 					if (!youdefend)
 					{
-						shieldeff(mdef->mx, mdef->my);
-						pline("%s is unaffected!", Monnam(mdef));
+						if((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK)
+						{
+							pline("%s hits %s with death magic!", The(xname(otmp)), mon_nam(mdef));
+						}
+						else if ((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK)
+						{
+							pline("%s hits %s with annihilating force!", The(xname(otmp)), mon_nam(mdef));
+						}
+						else
+						{
+							pline("%s hits %s with a deadly blow!", The(xname(otmp)), mon_nam(mdef));
+						}
+
+						if ((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK
+							&& check_rider_death_absorption(mdef, The(xname(otmp))))
+						{
+							/* Death absorbed the death magics instead of being unaffected */
+						}
+						else
+						{
+							shieldeff(mdef->mx, mdef->my);
+							pline("%s is unaffected!", Monnam(mdef));
+						}
 					}
 					else
 					{
+						if ((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK)
+						{
+							pline("%s hits you with death magic!", The(xname(otmp)));
+						}
+						else if ((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK)
+						{
+							pline("%s hits you with annihilating force!", The(xname(otmp)));
+						}
+						else
+						{
+							pline("%s hits you with a deadly blow!", The(xname(otmp)));
+						}
+
 						shieldeff(u.ux, u.uy);
 						You("are unaffected!");
 					}
@@ -1997,7 +2031,6 @@ int critstrikeroll; /* need to synchronize critical strike based abilities */
 				{
 					if ((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK)
 					{
-
 						if (!youdefend)
 						{
 							pline("%s hits %s.", The(xname(otmp)), mon_nam(mdef));
@@ -2053,11 +2086,13 @@ int critstrikeroll; /* need to synchronize critical strike based abilities */
 							{					// if (abstyp == ZT_BREATH(ZT_DISINTEGRATION)) {
 								You("are not disintegrated.");
 							}
-							else if (uarms) {
+							else if (uarms) 
+							{
 								/* destroy shield; other possessions are safe */
 								(void)destroy_arm(uarms);
 							}
-							else if (uarm) {
+							else if (uarm) 
+							{
 								/* destroy suit; if present, cloak and robe go too */
 								if (uarmc)
 									(void)destroy_arm(uarmc);
@@ -2091,7 +2126,15 @@ int critstrikeroll; /* need to synchronize critical strike based abilities */
 						lethaldamage = TRUE;
 						if (!youdefend)
 						{
-							pline("%s hits %s. The magic is deadly...", The(xname(otmp)), mon_nam(mdef));
+							if (check_rider_death_absorption(mdef, The(xname(otmp))))
+							{
+								lethaldamage = FALSE;
+								totaldamagedone = 0;
+							}
+							else
+							{
+								pline("%s hits %s. The magic is deadly...", The(xname(otmp)), mon_nam(mdef));
+							}
 						}
 						else
 						{
@@ -2103,18 +2146,10 @@ int critstrikeroll; /* need to synchronize critical strike based abilities */
 						lethaldamage = TRUE;
 						if (!youdefend)
 						{
-							if (check_rider_death(mdef, 0, (const char*)0))
-							{
-								lethaldamage = FALSE;
-								totaldamagedone = 0;
-							}
+							if (is_living(mdef->data))
+								pline("%s strikes %s dead!", The(xname(otmp)), mon_nam(mdef));
 							else
-							{
-								if (is_living(mdef->data))
-									pline("%s strikes %s dead!", The(xname(otmp)), mon_nam(mdef));
-								else
-									pline("%s strikes %s down!", The(xname(otmp)), mon_nam(mdef));
-							}
+								pline("%s strikes %s down!", The(xname(otmp)), mon_nam(mdef));
 						}
 						else
 						{

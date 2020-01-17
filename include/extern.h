@@ -3225,7 +3225,7 @@ E void FDECL(summondemogorgon, (int));
 E void NDECL(armageddon);
 E void NDECL(timestop);
 E boolean FDECL(check_rider_disintegration, (struct monst*, const char*));
-E boolean FDECL(check_rider_death, (struct monst*, int, const char*));
+E boolean FDECL(check_rider_death_absorption, (struct monst*, const char*));
 E void FDECL(maybe_disintegrate_mon, (struct monst*, int, const char*));
 E void FDECL(disintegrate_mon, (struct monst*, int, const char*));
 E boolean FDECL(item_prevents_revival, (int));

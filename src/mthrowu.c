@@ -563,7 +563,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 				otmp->elemental_enchantment = 0;
 				break;
 			case DEATH_ENCHANTMENT:
-				if (check_rider_death(mtmp, 0, (const char*)0))
+				if (check_rider_death_absorption(mtmp, (const char*)0))
 				{
 					/* no further action */
 				}

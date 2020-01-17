@@ -1984,7 +1984,7 @@ boolean* obj_destroyed;
 				pline_The("electricity doesn't seem to affect %s.", mon_nam(mon));
 				break;
 			case -DEATH_ENCHANTMENT:
-				if (!check_rider_death(mon, 0, (const char*)0)) 
+				if (!check_rider_death_absorption(mon, (const char*)0))
 					pline_The("death magic doesn't seem to affect %s.", mon_nam(mon));
 				break;
 			case COLD_ENCHANTMENT:

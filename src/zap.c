@@ -260,7 +260,7 @@ struct obj *otmp;
 		res = 1;
 		reveal_invis = TRUE;
 		You("reach out with your deadly touch...");
-		if (check_rider_death(mtmp, 0, (const char*)0))
+		if (check_rider_death_absorption(mtmp, (const char*)0))
 		{
 			/* no further action */
 			break;
@@ -329,7 +329,7 @@ struct obj *otmp;
 	case SPE_POWER_WORD_KILL:
 		res = 1;
 		reveal_invis = TRUE;
-		if (check_rider_death(mtmp, 0, (const char*)0))
+		if (check_rider_death_absorption(mtmp, (const char*)0))
 		{
 			/* no further action */
 			break;
@@ -6469,9 +6469,8 @@ const char* fltxt;
 
 
 boolean
-check_rider_death(mon, type, fltxt)
+check_rider_death_absorption(mon, fltxt)
 struct monst* mon;
-int type;
 const char* fltxt;
 {
 	/* Death gets stronger */
@@ -6479,12 +6478,10 @@ const char* fltxt;
 	{
 		if (canseemon(mon)) 
 		{
-			if(fltxt && strcmp(fltxt, ""))
+			if (fltxt && strcmp(fltxt, ""))
 				hit(fltxt, mon, ".", -1);
 
-			pline("%s absorbs the deadly %s!", Monnam(mon),
-				type == 0 ? "magics" : type == ZT_BREATH(ZT_DEATH) ? "blast" : "ray");
-			
+			pline("%s absorbs the deadly magics!", Monnam(mon));
 			pline("It seems even stronger than before.");
 		}
 		mon->mbasehpmax += mon->mbasehpmax / 2;
