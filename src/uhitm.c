@@ -1525,7 +1525,11 @@ boolean* obj_destroyed;
 			unenchantmsg = TRUE;
 			break;
 		case DEATH_ENCHANTMENT:
-			if (resists_death(mon) || is_not_living(mon->data) || is_demon(mon->data) || is_vampshifter(mon))
+			if (check_rider_death(mon, 0, (const char*)0))
+			{
+				/* no further action */
+			}
+			else if (resists_death(mon) || is_not_living(mon->data) || is_demon(mon->data) || is_vampshifter(mon))
 			{
 				needenchantmsg = -obj->elemental_enchantment;
 			}

@@ -260,7 +260,11 @@ struct obj *otmp;
 		res = 1;
 		reveal_invis = TRUE;
 		You("reach out with your deadly touch...");
-		if (is_not_living(mtmp->data) || is_demon(mtmp->data) || resists_death(mtmp) || magic_resistance_success)
+		if (check_rider_death(mtmp, 0, (const char*)0))
+		{
+			/* no further action */
+		}
+		else if (is_not_living(mtmp->data) || is_demon(mtmp->data) || resists_death(mtmp) || magic_resistance_success)
 		{ /* match effect on player */
 			shieldeff(mtmp->mx, mtmp->my);
 			pline("%s is unaffected by your touch!", Monnam(mtmp));
@@ -324,7 +328,11 @@ struct obj *otmp;
 	case SPE_POWER_WORD_KILL:
 		res = 1;
 		reveal_invis = TRUE;
-		if (is_not_living(mtmp->data) || is_demon(mtmp->data) || resists_death(mtmp) || mindless(mtmp->data) || magic_resistance_success)
+		if (check_rider_death(mtmp, 0, (const char*)0))
+		{
+			/* no further action */
+		}
+		else if (is_not_living(mtmp->data) || is_demon(mtmp->data) || resists_death(mtmp) || mindless(mtmp->data) || magic_resistance_success)
 		{ /* match effect on player */
 			shieldeff(mtmp->mx, mtmp->my);
 			pline("%s is unaffected by the power word!", Monnam(mtmp));
@@ -6098,7 +6106,8 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
         type = -1; /* no saving throw wanted */
         break;     /* not ordinary damage */
 	case ZT_DEATH:                              /* death */
-		if (mon->data == &mons[PM_DEATH]) {
+		if (mon->data == &mons[PM_DEATH]) 
+		{
 			mon->mbasehpmax += mon->mbasehpmax / 2;
 			if (mon->mbasehpmax >= DISINTEGRATION_DUMMY_DAMAGE / 2)
 				mon->mbasehpmax = DISINTEGRATION_DUMMY_DAMAGE / 2 - 1;
@@ -6473,6 +6482,10 @@ const char* fltxt;
 				: "ray");
 			pline("It seems even stronger than before.");
 		}
+		mon->mbasehpmax += mon->mbasehpmax / 2;
+		if (mon->mbasehpmax >= DISINTEGRATION_DUMMY_DAMAGE / 2)
+			mon->mbasehpmax = DISINTEGRATION_DUMMY_DAMAGE / 2 - 1;
+		update_mon_maxhp(mon);
 		mon->mhp = mon->mhpmax;
 		return TRUE;
 	}
@@ -6717,10 +6730,17 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     }
 
 					/* Death grows stronger */
-					if (abstype == ZT_DEATH && check_rider_death(mon, type, fltxt))
+					if (abstype == ZT_DEATH && mon->mnum == PM_DEATH)
 					{
-                        break; /* Out of while loop */
-                    }
+						if (canseemon(mon)) 
+						{
+							hit(fltxt, mon, ".", -1);
+							pline("%s absorbs the deadly %s!", Monnam(mon),
+								type == ZT_BREATH(ZT_DEATH) ? "blast"
+								: "ray");
+							pline("It seems even stronger than before.");
+						}
+					}
 
 					/* Disintegrate */
 					if (tmp == DISINTEGRATION_DUMMY_DAMAGE)

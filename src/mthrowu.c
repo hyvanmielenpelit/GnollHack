@@ -563,7 +563,11 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 				otmp->elemental_enchantment = 0;
 				break;
 			case DEATH_ENCHANTMENT:
-				if (resists_death(mtmp) || is_not_living(mtmp->data) || is_demon(mtmp->data) || is_vampshifter(mtmp)) 
+				if (check_rider_death(mtmp, 0, (const char*)0))
+				{
+					/* no further action */
+				}
+				else if (resists_death(mtmp) || is_not_living(mtmp->data) || is_demon(mtmp->data) || is_vampshifter(mtmp)) 
 				{
 					if (vis)
 						pline_The("death magic doesn't seem to affect %s.",
