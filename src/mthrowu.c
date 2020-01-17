@@ -1400,20 +1400,17 @@ struct attack *mattk;
                 pline("%s blinks.", Monnam(mtmp));
             return 0;
         }
-        if (rn2(2))
+        if ((typ >= AD_MAGM) && (typ <= AD_DRAY))
 		{
-            if ((typ >= AD_MAGM) && (typ <= AD_DRAY))
-			{
-                if (canseemon(mtmp))
-                    pline("One of %s eyestalks fires %s!", s_suffix(mon_nam(mtmp)),
-                          eyestalk[typ - 1]);
-				buzz((int)(-30 - (typ - 1)), (struct obj*)0, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp, mtmp->mx,
-                     mtmp->my, sgn(tbx), sgn(tby));
-                nomul(0);
-            } 
-			else
-                impossible("Eyestalk %d used", typ - 1);
-        }
+            if (canseemon(mtmp))
+                pline("One of %s eyestalks fires %s!", s_suffix(mon_nam(mtmp)),
+                        eyestalk[typ - 1]);
+			buzz((int)(-30 - (typ - 1)), (struct obj*)0, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp, mtmp->mx,
+                    mtmp->my, sgn(tbx), sgn(tby));
+            nomul(0);
+        } 
+		else
+            impossible("Eyestalk %d used", typ - 1);
     }
     return DEADMONSTER(mtmp) ? 2 : 1;
 }

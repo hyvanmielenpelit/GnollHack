@@ -2024,6 +2024,10 @@ int critstrikeroll; /* need to synchronize critical strike based abilities */
 								if ((otmp2 = which_armor(mdef, W_ARMO)) != 0)
 									m_useup(mdef, otmp2);
 							}
+							else if (check_rider_disintegration(mdef, (const char*)0))
+							{
+								/* Nothing further */
+							}
 							else
 							{
 								/* no body armor, victim dies; destroy cloak
@@ -2035,27 +2039,8 @@ int critstrikeroll; /* need to synchronize critical strike based abilities */
 								if ((otmp2 = which_armor(mdef, W_ARMO)) != 0)
 									m_useup(mdef, otmp2);
 
-								if (is_rider(mdef->data)) 
-								{
-									if (canseemon(mdef)) 
-									{
-										pline("%s disintegrates.", Monnam(mdef));
-										pline("%s body reintegrates before your %s!",
-											s_suffix(Monnam(mdef)),
-											(eyecount(youmonst.data) == 1)
-											? body_part(EYE)
-											: makeplural(body_part(EYE)));
-										pline("%s resurrects!", Monnam(mdef));
-									}
-									mdef->mhp = mdef->mhpmax;
-								}
-								else 
-								{ /* disintegration */
-									//disintegrate_mon(mdef, 1, xname(otmp));
-									lethaldamage = TRUE;
-									isdisintegrated = TRUE;
-									//pline("%s is disintegrated!", Monnam(mdef));
-								}
+								lethaldamage = TRUE;
+								isdisintegrated = TRUE;
 							}
 						}
 						else

@@ -3239,7 +3239,7 @@ struct attack *mattk;
 				pline("%s gazes at you but without effect.", Monnam(mtmp));
 			break;
 		}
-		else if (is_blinded(mtmp))
+		else if (is_blinded(mtmp) || !m_canseeu(mtmp))
 		{
 			if (canseemon(mtmp))
 				pline("%s stares blindly at your general direction.", Monnam(mtmp));
@@ -3259,9 +3259,10 @@ struct attack *mattk;
 				if(!Cancelled)
 					pline("%s gazes at you. You are hit by an invisible anti-magic ray!", Monnam(mtmp));
 				else
-					pline("%s keeps %s anti-magic gaze focused on you.", Monnam(mtmp), mhis(mtmp));
+					pline("%s focuses %s anti-magic gaze on you.", Monnam(mtmp), mhis(mtmp));
 			}
-			set_itimeout(&HCancelled, max(HCancelled & TIMEOUT, 2 + rnd(3)));
+			set_itimeout(&HCancelled, max(HCancelled & TIMEOUT, 7));
+			context.botl = context.botlx = 1;
 		}
 		break;
 #if 0 /* work in progress */

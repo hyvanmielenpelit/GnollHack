@@ -1330,7 +1330,7 @@ register struct obj* omonwep;
 				pline("%s gazes at %s but without effect.", Monnam(magr), mon_nam(mdef));
 			break;
 		}
-		else if (is_blinded(magr))
+		else if (is_blinded(magr) || (is_invisible(mdef) && !has_see_invisible(magr)))
 		{
 			if (canseemon(magr))
 				pline("%s stares blindly at %s general direction.", Monnam(magr), s_suffix(mon_nam(mdef)));
@@ -1352,9 +1352,9 @@ register struct obj* omonwep;
 				if (is_cancelled(mdef))
 					pline("%s gazes at %s. %s is hit by an invisible anti-magic ray!", Monnam(magr), mon_nam(mdef), Monnam(mdef));
 				else
-					pline("%s keeps %s anti-magic gaze focused on %s.", Monnam(magr), mhis(magr), mon_nam(mdef));
+					pline("%s focuses %s anti-magic gaze on %s.", Monnam(magr), mhis(magr), mon_nam(mdef));
 			}
-			nonadditive_increase_mon_property_verbosely(mdef, CANCELLED, 2 + rnd(3));
+			nonadditive_increase_mon_property_verbosely(mdef, CANCELLED, 7);
 		}
 	break;    case AD_HALU:
         if (!has_cancelled(magr)&& haseyes(pd) && !is_blinded(mdef)) {

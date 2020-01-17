@@ -417,11 +417,11 @@
 #define resists_fire(mon) \
     (has_innate((mon)->data, MR_FIRE) || has_property(mon, FIRE_RES))
 #define resists_cold(mon) \
-    (has_innate((mon)->data, MR_COLD) || has_property(mon, COLD_RES))
+    (has_innate((mon)->data, MR_COLD) || has_property(mon, COLD_RES) || is_undead((mon)->data) || is_vampshifter(mon))
 #define resists_sleep(mon) \
-    (has_innate((mon)->data, MR_SLEEP) || has_property(mon, SLEEP_RES))
+    (has_innate((mon)->data, MR_SLEEP) || has_property(mon, SLEEP_RES) || is_undead((mon)->data) || is_vampshifter(mon))
 #define resists_disint(mon) \
-    (has_innate((mon)->data, MR_DISINT) || has_property(mon, DISINT_RES))
+    (has_innate((mon)->data, MR_DISINT) || has_property(mon, DISINT_RES) || noncorporeal((mon)->data))
 #define resists_elec(mon) \
     (has_innate((mon)->data, MR_ELEC) || has_property(mon, SHOCK_RES))
 #define resists_death(mon) \
@@ -429,9 +429,9 @@
 #define resists_lycanthropy(mon) \
     (has_innate((mon)->data, MR_LYCANTHROPY) || has_property(mon, LYCANTHROPY_RES) ||  is_not_living((mon)->data) || is_demon((mon)->data) || is_vampshifter(mon))
 #define resists_poison(mon) \
-    (has_innate((mon)->data, MR_POISON) || has_property(mon, POISON_RES))
+    (has_innate((mon)->data, MR_POISON) || has_property(mon, POISON_RES) || is_not_living((mon)->data) || is_vampshifter(mon))
 #define resists_acid(mon) \
-    (has_innate((mon)->data, MR_ACID) || has_property(mon, ACID_RES))
+    (has_innate((mon)->data, MR_ACID) || has_property(mon, ACID_RES) || noncorporeal((mon)->data))
 #define resists_ston(mon) \
     (has_innate((mon)->data, MR_STONE) || has_property(mon, STONE_RES) || noncorporeal((mon)->data))
 #define resists_magicmissile(mon) \

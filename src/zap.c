@@ -3857,7 +3857,7 @@ register struct obj *obj;
 				/* No other saving throw */
 				boolean magic_resistance_success = check_magic_resistance_and_halve_damage(mon, (struct obj*)0,  u.ulevel, 0, NOTELL);
 
-				if (resists_disint(mon) || noncorporeal(mon->data) || magic_resistance_success)
+				if (resists_disint(mon) || magic_resistance_success)
 				{
 					if (canspotmon(mon))
 					{
@@ -3867,7 +3867,7 @@ register struct obj *obj;
 				}
 				else if (!DEADMONSTER(mon) && mon != u.usteed)
 				{
-					disintegrate_mon(mon, 1, "sphere of annihilation");
+					maybe_disintegrate_mon(mon, 1, "sphere of annihilation");
 				}
 			}
 		}
@@ -6429,6 +6429,87 @@ int type; /* either hero cast spell type or 0 */
     return (3 - chance < ac + spell_bonus);
 }
 
+boolean
+check_rider_disintegration(mon, fltxt)
+struct monst* mon;
+const char* fltxt;
+{
+	/* Rider non-disintegration */
+	if (mon && is_rider(mon->data))
+	{
+		if (canseemon(mon))
+		{
+			if(fltxt && strcmp(fltxt, ""))
+				hit(fltxt, mon, ".", -1);
+
+			pline("%s disintegrates.", Monnam(mon));
+			pline("%s body reintegrates before your %s!",
+				s_suffix(Monnam(mon)),
+				(eyecount(youmonst.data) == 1)
+				? body_part(EYE)
+				: makeplural(body_part(EYE)));
+			pline("%s resurrects!", Monnam(mon));
+		}
+		mon->mhp = mon->mhpmax;
+		return TRUE;
+	}
+	return FALSE;
+}
+
+
+boolean
+check_rider_death(mon, type, fltxt)
+struct monst* mon;
+int type;
+const char* fltxt;
+{
+	/* Rider non-disintegration */
+	if (mon && mon->data == &mons[PM_DEATH])
+	{
+		if (canseemon(mon)) {
+			hit(fltxt, mon, ".", -1);
+			pline("%s absorbs the deadly %s!", Monnam(mon),
+				type == ZT_BREATH(ZT_DEATH) ? "blast"
+				: "ray");
+			pline("It seems even stronger than before.");
+		}
+		mon->mhp = mon->mhpmax;
+		return TRUE;
+	}
+	return FALSE;
+}
+
+
+void
+maybe_disintegrate_mon(mon, type, fltxt)
+struct monst* mon;
+int type; /* hero vs other */ /* 100 == disintegrate just items and caller takes care of the killing and messaging*/
+const char* fltxt;
+{
+	if (!mon || DEADMONSTER(mon))
+		return;
+
+	/* Rider non-disintegration */
+	if (check_rider_disintegration(mon, fltxt))
+	{
+		/* No further action */
+	}
+	else if (resists_disint(mon))
+	{
+		/* should never get here if the resistance and magic resistance are properly checked earlier */
+		if (canspotmon(mon))
+		{
+			shieldeff(mon->mx, mon->my);
+			pline("%s is unaffected!", Monnam(mon));
+		}
+	}
+	else
+	{
+		disintegrate_mon(mon, type, fltxt);
+	}
+
+}
+
 void //STATIC_OVL 
 disintegrate_mon(mon, type, fltxt)
 struct monst *mon;
@@ -6630,33 +6711,14 @@ boolean say; /* Announce out of sight hit/miss events if true */
 					int tmp = zhitm(mon, type, origobj, dmgdice, dicesize, dmgplus, &otmp);
 
 					/* Rider non-disintegration */
-                    if (is_rider(mon->data) && abstype == ZT_DISINTEGRATION)
+                    if (abstype == ZT_DISINTEGRATION && check_rider_disintegration(mon, fltxt))
 					{
-                        if (canseemon(mon)) 
-						{
-                            hit(fltxt, mon, ".", -1);
-                            pline("%s disintegrates.", Monnam(mon));
-                            pline("%s body reintegrates before your %s!",
-                                  s_suffix(Monnam(mon)),
-                                  (eyecount(youmonst.data) == 1)
-                                      ? body_part(EYE)
-                                      : makeplural(body_part(EYE)));
-                            pline("%s resurrects!", Monnam(mon));
-                        }
-                        mon->mhp = mon->mhpmax;
                         break; /* Out of while loop */
                     }
 
 					/* Death grows stronger */
-					if (mon->data == &mons[PM_DEATH] && abstype == ZT_DEATH)
+					if (abstype == ZT_DEATH && check_rider_death(mon, type, fltxt))
 					{
-                        if (canseemon(mon)) {
-                            hit(fltxt, mon, ".", -1);
-                            pline("%s absorbs the deadly %s!", Monnam(mon),
-                                  type == ZT_BREATH(ZT_DEATH) ? "blast"
-                                                              : "ray");
-                            pline("It seems even stronger than before.");
-                        }
                         break; /* Out of while loop */
                     }
 
