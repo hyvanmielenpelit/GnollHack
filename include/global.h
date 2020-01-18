@@ -70,8 +70,8 @@ typedef xchar boolean; /* 0 or 1 */
 #endif
 
 #ifndef TRUE /* defined in some systems' native include files */
-#define TRUE ((boolean) 1)
-#define FALSE ((boolean) 0)
+#define TRUE 1 //((boolean) 1)
+#define FALSE 0 //((boolean) 0)
 #endif
 
 /*

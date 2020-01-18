@@ -131,21 +131,26 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
     if (dir == (char *) 0)
         dir = exepath(argv[0]);
 #ifdef _MSC_VER
-    if (IsDebuggerPresent()) {
+    if (IsDebuggerPresent())
+	{
         static char exepath[_MAX_PATH];
         /* check if we're running under the debugger so we can get to the right folder anyway */
-        if (dir != (char *)0) {
+        if (dir != (char *)0)
+		{
             char *top = (char *)0;
 
             if (strlen(dir) < (_MAX_PATH - 1))
                 strcpy(exepath, dir);
             top = strstr(exepath, "\\build\\.\\Debug");
             if (!top) top = strstr(exepath, "\\build\\.\\Release");
-            if (top) {
+            if (top) 
+			{
                 *top = '\0';
-                if (strlen(exepath) < (_MAX_PATH - (strlen("\\binary\\") + 1))) {
+                if (strlen(exepath) < (_MAX_PATH - (strlen("\\binary\\") + 1)))
+				{
                     Strcat(exepath, "\\binary\\");
-                    if (strlen(exepath) < (PATHLEN - 1)) {
+                    if (strlen(exepath) < (PATHLEN - 1))
+					{
                         dir = exepath;
                     }
                 }
@@ -153,7 +158,8 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
         }
     }
 #endif
-    if (dir != (char *)0) {
+    if (dir != (char *)0) 
+	{
         int prefcnt;
         int fd;
         boolean have_syscf = FALSE;
@@ -167,10 +173,13 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
              fqn_prefix[prefcnt] = fqn_prefix[0];
         /* sysconf should be searched for in this location */
         envp = nh_getenv("COMMONPROGRAMFILES");
-        if (envp) {
+        if (envp)
+		{
             if ((sptr = index(envp, ';')) != 0)
                 *sptr = '\0';
-            if (strlen(envp) > 0) {
+
+            if (strlen(envp) > 0)
+			{
                 fqn_prefix[SYSCONFPREFIX] =
                     (char *) alloc(strlen(envp) + 10);
                 Strcpy(fqn_prefix[SYSCONFPREFIX], envp);
@@ -186,13 +195,15 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
 
         /* Is there a SYSCF_FILE there? */
         fd = open(fqname(SYSCF_FILE, SYSCONFPREFIX, 0), O_RDONLY);
-        if (fd >= 0) {
+        if (fd >= 0)
+		{
             /* readable */
             close(fd);
             have_syscf = TRUE;
         }
 
-        if (!have_syscf) {
+        if (!have_syscf) 
+		{
             /* No SYSCF_FILE where there should be one, and
                without an installer, a user may not be able
                to place one there. So, let's try somewhere else... */
@@ -200,7 +211,8 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
 
             /* Is there a SYSCF_FILE there? */
             fd = open(fqname(SYSCF_FILE, SYSCONFPREFIX, 0), O_RDONLY);
-            if (fd >= 0) {
+            if (fd >= 0) 
+			{
                 /* readable */
                 close(fd);
                 have_syscf = TRUE;
@@ -210,10 +222,13 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
         /* user's home directory should default to this - unless
          * overridden */
         envp = nh_getenv("USERPROFILE");
-        if (envp) {
+        if (envp)
+		{
             if ((sptr = index(envp, ';')) != 0)
                 *sptr = '\0';
-            if (strlen(envp) > 0) {
+
+            if (strlen(envp) > 0)
+			{
                 fqn_prefix[CONFIGPREFIX] =
                     (char *) alloc(strlen(envp) + 2);
                 Strcpy(fqn_prefix[CONFIGPREFIX], envp);
@@ -221,14 +236,16 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
             }
         }
     }
-    if (GUILaunched || IsDebuggerPresent()) {
+    if (GUILaunched || IsDebuggerPresent())
+	{
         getreturn_enabled = TRUE;
     }
 
     check_recordfile((char *) 0);
     iflags.windowtype_deferred = TRUE;
     initoptions();                  
-    if (!validate_prefix_locations(failbuf)) {
+    if (!validate_prefix_locations(failbuf)) 
+	{
         raw_printf("Some invalid directory locations were specified:\n\t%s\n",
                    failbuf);
         GnollHack_exit(EXIT_FAILURE);
@@ -247,7 +264,8 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
             iflags.windowtype_locked = TRUE;
 
     windowtype = default_window_sys;
-    if (!iflags.windowtype_locked) {
+    if (!iflags.windowtype_locked)
+	{
 #if defined(TTY_GRAPHICS)
         Strcpy(default_window_sys, "tty");
 #else
@@ -260,7 +278,8 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
     }
     choose_windows(windowtype);
 
-    if (!dlb_init()) {
+    if (!dlb_init()) 
+	{
         pline(
             "%s\n%s\n%s\n%s\n\nGnollHack was unable to open the required file "
             "\"%s\".%s",
@@ -309,9 +328,12 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
     /* Set up level 0 file to keep the game state.
      */
     fd = create_levelfile(0, (char *) 0);
-    if (fd < 0) {
+    if (fd < 0) 
+	{
         raw_print("Cannot create lock file");
-    } else {
+    }
+	else 
+	{
         hackpid = GetCurrentProcessId();
         write(fd, (genericptr_t) &hackpid, sizeof(hackpid));
         nhclose(fd);
@@ -327,23 +349,28 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
      * We'll return here if new game player_selection() renames the hero.
      */
 attempt_restore:
-    if ((fd = restore_saved_game()) >= 0) {
+    if ((fd = restore_saved_game()) >= 0)
+	{
 #ifdef NEWS
-        if (iflags.news) {
+        if (iflags.news)
+		{
             display_file(NEWS, FALSE);
             iflags.news = FALSE;
         }
 #endif
         pline("Restoring save file...");
         mark_synch(); /* flush output */
-        if (dorecover(fd)) {
+        if (dorecover(fd))
+		{
             resuming = TRUE; /* not starting new game */
             if (discover)
                 You("are in non-scoring discovery mode.");
-            if (discover || wizard) {
+            if (discover || wizard) 
+			{
                 if (yn("Do you want to keep the save file?") == 'n')
                     (void) delete_savefile();
-                else {
+                else 
+				{
                     nh_compress(fqname(SAVEF, SAVEPREFIX, 0));
                 }
             }

@@ -39,7 +39,7 @@ STATIC_DCL boolean FDECL(confused_book, (struct obj *));
 STATIC_DCL void FDECL(deadbook, (struct obj *));
 STATIC_PTR int NDECL(learn);
 STATIC_DCL boolean NDECL(rejectcasting);
-STATIC_DCL boolean FDECL(getspell, (int *, boolean));
+STATIC_DCL boolean FDECL(getspell, (int *, int));
 STATIC_PTR int FDECL(CFDECLSPEC spell_cmp, (const genericptr,
                                             const genericptr));
 STATIC_DCL void NDECL(sortspells);
@@ -3813,7 +3813,7 @@ domix()
 {
 	int spell_no;
 
-	if (getspell(&spell_no, TRUE))
+	if (getspell(&spell_no, 1))
 	{
 		//Open mixing menu and explain what components are needed
 		return domaterialcomponentsmenu(spell_no);
