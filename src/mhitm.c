@@ -600,7 +600,7 @@ register struct monst *magr, *mdef;
 
 		case AT_EYES:
 			strike = 0;
-			if (monnear(magr, mdef->mx, mdef->my) || rn2(4))
+			if ((monnear(magr, mdef->mx, mdef->my) || rn2(6)) && !is_reflecting(mdef) && !is_blinded(magr))
 				strike = eyesmm(magr, mattk, mdef);
 
 			/* We don't really know if we hit or not; pretend we did. */

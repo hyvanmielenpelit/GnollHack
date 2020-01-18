@@ -740,7 +740,7 @@ register struct monst *mtmp;
             /* Note: breamu takes care of displacement */
             break;
 		case AT_EYES:
-			if(!is_blinded(mtmp) && (!range2 || rn2(4))) /* Blinded already here to prevent continuous blinking */
+			if(!is_blinded(mtmp) && !Reflecting && (!range2 || rn2(6))) /* Blinded already here to prevent continuous blinking */
 				sum[i] = eyesmu(mtmp, mattk);
 			break;
 		case AT_SPIT:
