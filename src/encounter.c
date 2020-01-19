@@ -1557,25 +1557,25 @@ wiz_save_encounters(VOID_ARGS) /* Save a csv file for encounters */
 		char buf[BUFSIZ] = "";
 
 		Sprintf(buf, "#,DifMin");
-		write(fd, buf, strlen(buf));
+		(void)write(fd, buf, strlen(buf));
 		for (int j = 1; j <= MAX_ENCOUNTER_ATTACKING_MONSTERS; j++)
 		{
 			Sprintf(buf, ",DifP%d", j);
-			write(fd, buf, strlen(buf));
+			(void)write(fd, buf, strlen(buf));
 
 		}
 		Sprintf(buf, ",DifMax,Probability");
-		write(fd, buf, strlen(buf));
+		(void)write(fd, buf, strlen(buf));
 
 
 		for (int j = 0; j < 16; j++)
 		{
 			Sprintf(buf, ",%d,Monster", j + 1);
-			write(fd, buf, strlen(buf));
+			(void)write(fd, buf, strlen(buf));
 
 		}
 		Sprintf(buf, "\n");
-		write(fd, buf, strlen(buf));
+		(void)write(fd, buf, strlen(buf));
 
 
 
@@ -1585,19 +1585,19 @@ wiz_save_encounters(VOID_ARGS) /* Save a csv file for encounters */
 				break;
 
 			Sprintf(buf, "%d,%d", i, encounter_list[i].difficulty_min);
-			write(fd, buf, strlen(buf));
+			(void)write(fd, buf, strlen(buf));
 
 			for (int j = 1; j <= MAX_ENCOUNTER_ATTACKING_MONSTERS; j++)
 			{
 				Sprintf(buf, ",%d", encounter_list[i].difficulty_point_estimate[j]);
-				write(fd, buf, strlen(buf));
+				(void)write(fd, buf, strlen(buf));
 			}
 
 			Sprintf(buf, ",%d,%f",
 				encounter_list[i].difficulty_max,
 				encounter_list[i].probability
 			);
-			write(fd, buf, strlen(buf));
+			(void)write(fd, buf, strlen(buf));
 
 
 
@@ -1609,12 +1609,12 @@ wiz_save_encounters(VOID_ARGS) /* Save a csv file for encounters */
 					j+1,
 					mons[encounter_list[i].encounter_monsters[j].permonstid].mname
 				);
-				write(fd, buf, strlen(buf));
+				(void)write(fd, buf, strlen(buf));
 			}
 			Sprintf(buf, "\n");
-			write(fd, buf, strlen(buf));
+			(void)write(fd, buf, strlen(buf));
 		}
-		close(fd);
+		(void)close(fd);
 
 		pline("Done!");
 	}

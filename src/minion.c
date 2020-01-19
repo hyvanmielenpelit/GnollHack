@@ -12,7 +12,8 @@ struct monst *mtmp;
 {
     if (!mtmp->mextra)
         mtmp->mextra = newmextra();
-    if (!EMIN(mtmp)) {
+    if (!EMIN(mtmp))
+	{
         EMIN(mtmp) = (struct emin *) alloc(sizeof(struct emin));
         (void) memset((genericptr_t) EMIN(mtmp), 0, sizeof(struct emin));
     }
@@ -22,7 +23,8 @@ void
 free_emin(mtmp)
 struct monst *mtmp;
 {
-    if (mtmp->mextra && EMIN(mtmp)) {
+    if (mtmp->mextra && EMIN(mtmp)) 
+	{
         free((genericptr_t) EMIN(mtmp));
         EMIN(mtmp) = (struct emin *) 0;
     }
@@ -73,38 +75,53 @@ struct monst *mon;
                                              : (ptr->maligntyp == A_NONE)
                                                    ? A_NONE
                                                    : sgn(ptr->maligntyp);
-    } else {
+    }
+	else 
+	{
         ptr = &mons[PM_WIZARD_OF_YENDOR];
         atyp = (ptr->maligntyp == A_NONE) ? A_NONE : sgn(ptr->maligntyp);
     }
 
-	if (ptr == &mons[PM_FLIND_LORD]) {
+	if (ptr == &mons[PM_FLIND_LORD])
+	{
 		dtype = (!rn2(80)) ? PM_YEENOGHU : (!rn2(40)) ? monsndx(ptr) : (!rn2(4)) ? ndemon(atyp) : PM_FLIND;
 		if (dtype == PM_YEENOGHU && (mvitals[PM_YEENOGHU].mvflags & G_GONE))
 			dtype = monsndx(ptr);
 		if (dtype == PM_FLIND && (mvitals[PM_FLIND].mvflags & G_GONE))
 			dtype = ndemon(atyp);
 		cnt = 1;
-	} else if (is_dprince(ptr) || (ptr == &mons[PM_WIZARD_OF_YENDOR])) {
+	}
+	else if (is_dprince(ptr) || (ptr == &mons[PM_WIZARD_OF_YENDOR]))
+	{
         dtype = (!rn2(20)) ? dlord(atyp) : ndemon(atyp); //(!rn2(50)) ? dprince(atyp) : 
         cnt = (!rn2(3) && is_ndemon(&mons[dtype])) ? 2 : 1;
-    } else if (is_dlord(ptr)) {
+    }
+	else if (is_dlord(ptr))
+	{
         dtype = (!rn2(80)) ? dprince(atyp) : (!rn2(40)) ? dlord(atyp)
                                                         : ndemon(atyp);
         cnt = (!rn2(4) && is_ndemon(&mons[dtype])) ? 2 : 1;
-    } else if (is_ndemon(ptr)) {
+    } 
+	else if (is_ndemon(ptr)) 
+	{
         dtype = (!rn2(80)) ? dlord(atyp) : (!rn2(6)) ? ndemon(atyp)
                                                      : monsndx(ptr);
         cnt = 1;
-    } else if (is_lminion(mon)) {
+    }
+	else if (is_lminion(mon))
+	{
         dtype = (is_lord(ptr) && !rn2(40))
                     ? llord()
                     : (is_lord(ptr) || !rn2(6)) ? lminion() : monsndx(ptr);
         cnt = (!rn2(4) && !is_lord(&mons[dtype])) ? 2 : 1;
-    } else if (ptr == &mons[PM_ANGEL]) {
+    }
+	else if (ptr == &mons[PM_ANGEL])
+	{
         /* non-lawful angels can also summon */
-        if (!rn2(6)) {
-            switch (atyp) { /* see summon_minion */
+        if (!rn2(6))
+		{
+            switch (atyp)
+			{ /* see summon_minion */
             case A_NEUTRAL:
                 dtype = PM_AIR_ELEMENTAL + rn2(4);
                 break;
@@ -113,7 +130,9 @@ struct monst *mon;
                 dtype = ndemon(atyp);
                 break;
             }
-        } else {
+        }
+		else 
+		{
             dtype = PM_ANGEL;
         }
         cnt = (!rn2(4) && !is_lord(&mons[dtype])) ? 2 : 1;
@@ -129,7 +148,8 @@ struct monst *mon;
      * If this daemon is unique and being re-summoned (the only way we
      * could get this far with an extinct dtype), try another.
      */
-    if (mvitals[dtype].mvflags & G_GONE) {
+    if (mvitals[dtype].mvflags & G_GONE)
+	{
         dtype = ndemon(atyp);
         if (dtype == NON_PM)
             return 0;
@@ -139,12 +159,15 @@ struct monst *mon;
        count of non-null makemon() result is not sufficient */
     census = monster_census(FALSE);
 
-    while (cnt > 0) {
+    while (cnt > 0)
+	{
         mtmp = makemon(&mons[dtype], u.ux, u.uy, MM_EMIN);
-        if (mtmp) {
+        if (mtmp) 
+		{
             result++;
             /* an angel's alignment should match the summoner */
-            if (dtype == PM_ANGEL) {
+            if (dtype == PM_ANGEL)
+			{
                 mtmp->isminion = 1;
                 EMIN(mtmp)->min_align = atyp;
                 /* renegade if same alignment but not peaceful
@@ -187,7 +210,8 @@ yeenoghu_gnoll_summon()
 	int canseemonnumber = 0;
 	struct monst* mtmp2 = (struct monst *) 0;
 
-	while (cnt > 0) {
+	while (cnt > 0)
+	{
 		int roll = rn2(15);
 		dtype = NON_PM;
 
@@ -230,7 +254,8 @@ yeenoghu_gnoll_summon()
 		}
 
 		mtmp = makemon(&mons[dtype], u.ux, u.uy, MM_EMIN);
-		if (mtmp) {
+		if (mtmp) 
+		{
 			result++;
 			if (canseemon(mtmp))
 			{
@@ -281,7 +306,8 @@ yeenoghu_ghoul_summon()
 	int canseemonnumber = 0;
 	struct monst* mtmp2 = (struct monst*) 0;
 
-	while (cnt > 0) {
+	while (cnt > 0)
+	{
 		dtype = PM_GHOUL;
 
 		if (mvitals[dtype].mvflags & G_GONE)
@@ -291,7 +317,8 @@ yeenoghu_ghoul_summon()
 		}
 
 		mtmp = makemon(&mons[dtype], u.ux, u.uy, MM_EMIN);
-		if (mtmp) {
+		if (mtmp) 
+		{
 			result++;
 			if (canseemon(mtmp))
 			{
@@ -306,7 +333,8 @@ yeenoghu_ghoul_summon()
 	if (canseemonnumber >= 3)
 		strcpy(numberword, "Several");
 
-	if (result > 0 && canseemonnumber > 0) {
+	if (result > 0 && canseemonnumber > 0)
+	{
 		if (result == 1 && mtmp)
 			pline("%s crawls out of nowhere!", Amonnam(mtmp));
 		else

@@ -1631,57 +1631,57 @@ wiz_save_monsters(VOID_ARGS) /* Save a csv file for monsters */
 		char buf[BUFSIZ] = "";
 
 		Sprintf(buf, "Name,Level,Move,AC,MC,MR,Alignment,GenoFlags,");
-		write(fd, buf, strlen(buf));
+		(void)write(fd, buf, strlen(buf));
 		for (int j = 0; j < NATTK; j++)
 		{
 			Sprintf(buf, "Attack%d,Type,DmgType,DiceNum,DieSize,DmgPlus,MCAdj,", j+1);
-			write(fd, buf, strlen(buf));
+			(void)write(fd, buf, strlen(buf));
 
 		}
 
 		Sprintf(buf, ",CorpseWeight,Nutrition,SoundType,Size,STR,DEX,CON,INT,WIS,CHA,");
-		write(fd, buf, strlen(buf));
+		(void)write(fd, buf, strlen(buf));
 
 		Sprintf(buf, "MResists,");
-		write(fd, buf, strlen(buf));
+		(void)write(fd, buf, strlen(buf));
 		for (int j = 0; j < 32; j++)
 		{
 			Sprintf(buf, "%d,", j+1);
-			write(fd, buf, strlen(buf));
+			(void)write(fd, buf, strlen(buf));
 		}
 		Sprintf(buf, "MConveys,");
-		write(fd, buf, strlen(buf));
+		(void)write(fd, buf, strlen(buf));
 		for (int j = 0; j < 32; j++)
 		{
 			Sprintf(buf, "%d,", j + 1);
-			write(fd, buf, strlen(buf));
+			(void)write(fd, buf, strlen(buf));
 		}
 		Sprintf(buf, "MFlags1,");
-		write(fd, buf, strlen(buf));
+		(void)write(fd, buf, strlen(buf));
 		for (int j = 0; j < 32; j++)
 		{
 			Sprintf(buf, "%d,", j + 1);
-			write(fd, buf, strlen(buf));
+			(void)write(fd, buf, strlen(buf));
 		}
 		Sprintf(buf, "MFlags2,");
-		write(fd, buf, strlen(buf));
+		(void)write(fd, buf, strlen(buf));
 		for (int j = 0; j < 32; j++)
 		{
 			Sprintf(buf, "%d,", j + 1);
-			write(fd, buf, strlen(buf));
+			(void)write(fd, buf, strlen(buf));
 		}
 		Sprintf(buf, "MFlags3,");
-		write(fd, buf, strlen(buf));
+		(void)write(fd, buf, strlen(buf));
 		for (int j = 0; j < 32; j++)
 		{
 			Sprintf(buf, "%d,", j + 1);
-			write(fd, buf, strlen(buf));
+			(void)write(fd, buf, strlen(buf));
 		}
 		Sprintf(buf, ",Difficulty,Color,");
-		write(fd, buf, strlen(buf));
+		(void)write(fd, buf, strlen(buf));
 
 		Sprintf(buf, ",STR-ToHit-Bonus,STR-DmgBonus,DEX-ToHit-Bonus,DEX-AC-Bonus,CON-HP-Bonus\n");
-		write(fd, buf, strlen(buf));
+		(void)write(fd, buf, strlen(buf));
 
 
 		for (int i = LOW_PM; i < NUMMONS; i++)
@@ -1692,65 +1692,65 @@ wiz_save_monsters(VOID_ARGS) /* Save a csv file for monsters */
 				(int)mons[i].mlevel, (int)mons[i].mmove, 
 				(int)mons[i].ac, (int)mons[i].mc, (int)mons[i].mr, 
 				(int)mons[i].maligntyp, (int)mons[i].geno);
-			write(fd, buf, strlen(buf));
+			(void)write(fd, buf, strlen(buf));
 			for (int j = 0; j < NATTK; j++)
 			{
 				Sprintf(buf, ",%d,%d,%d,%d,%d,%d,", 
 					mons[i].mattk[j].aatyp, mons[i].mattk[j].adtyp, 
 					mons[i].mattk[j].damn, mons[i].mattk[j].damd, mons[i].mattk[j].damp, 
 					mons[i].mattk[j].mcadj);
-				write(fd, buf, strlen(buf));
+				(void)write(fd, buf, strlen(buf));
 			}
 
 			Sprintf(buf, ",%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,", 
 				mons[i].cwt, mons[i].cnutrit, mons[i].msound, mons[i].msize, 
 				mons[i].str, mons[i].dex, mons[i].con, mons[i].intl, mons[i].wis, mons[i].cha);
-			write(fd, buf, strlen(buf));
+			(void)write(fd, buf, strlen(buf));
 
 			Sprintf(buf, ",");
-			write(fd, buf, strlen(buf));
+			(void)write(fd, buf, strlen(buf));
 			for (int j = 0; j < 32; j++)
 			{
 				Sprintf(buf, "%d,", (mons[i].mresists & (1L << j)) ? 1 : 0);
-				write(fd, buf, strlen(buf));
+				(void)write(fd, buf, strlen(buf));
 			}
 			Sprintf(buf, ",");
-			write(fd, buf, strlen(buf));
+			(void)write(fd, buf, strlen(buf));
 			for (int j = 0; j < 32; j++)
 			{
 				Sprintf(buf, "%d,", (mons[i].mconveys & (1L << j)) ? 1 : 0);
-				write(fd, buf, strlen(buf));
+				(void)write(fd, buf, strlen(buf));
 			}
 			Sprintf(buf, ",");
-			write(fd, buf, strlen(buf));
+			(void)write(fd, buf, strlen(buf));
 			for (int j = 0; j < 32; j++)
 			{
 				Sprintf(buf, "%d,", (mons[i].mflags1 & (1L << j)) ? 1 : 0);
-				write(fd, buf, strlen(buf));
+				(void)write(fd, buf, strlen(buf));
 			}
 			Sprintf(buf, ",");
-			write(fd, buf, strlen(buf));
+			(void)write(fd, buf, strlen(buf));
 			for (int j = 0; j < 32; j++)
 			{
 				Sprintf(buf, "%d,", (mons[i].mflags2 & (1L << j)) ? 1 : 0);
-				write(fd, buf, strlen(buf));
+				(void)write(fd, buf, strlen(buf));
 			}
 			Sprintf(buf, ",");
-			write(fd, buf, strlen(buf));
+			(void)write(fd, buf, strlen(buf));
 			for (int j = 0; j < 32; j++)
 			{
 				Sprintf(buf, "%d,", (mons[i].mflags3 & (1L << j)) ? 1 : 0);
-				write(fd, buf, strlen(buf));
+				(void)write(fd, buf, strlen(buf));
 			}
 			Sprintf(buf, ",%d,%d,",
 				mons[i].difficulty, mons[i].mcolor);
-			write(fd, buf, strlen(buf));
+			(void)write(fd, buf, strlen(buf));
 			Sprintf(buf, ",%d,%d,%d,%d,%d\n",
 				strength_tohit_bonus(mons[i].str), strength_damage_bonus(mons[i].str), dexterity_tohit_bonus(mons[i].dex), dexterity_ac_bonus(mons[i].dex),constitution_hp_bonus(mons[i].con));
-			write(fd, buf, strlen(buf));
+			(void)write(fd, buf, strlen(buf));
 
 		}
-		close(fd);
+		(void)close(fd);
 
 		pline("Done!");
 	}

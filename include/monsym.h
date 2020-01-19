@@ -58,7 +58,7 @@ enum mon_class_types {
     S_RUSTMONST  = 44, /* R */
     S_SNAKE      = 45, /* S */
     S_TROLL      = 46, /* T */
-    S_UMBER      = 47, /* U: umber hulk or otyugh */
+    S_UMBER      = 47, /* U: umber hulk or an aberration, such as otyugh or chimera */
     S_VAMPIRE    = 48, /* V */
     S_WRAITH     = 49, /* W */
     S_XORN       = 50, /* X */

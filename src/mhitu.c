@@ -968,10 +968,30 @@ register struct monst *mtmp;
 						}
 						else
 						{
-							if (!rn2(2) || !canseemon(mtmp) || !m_carrying(mtmp, WAN_DEATH))
+							if (!rn2(2) || !canseemon(mtmp) || (!m_carrying(mtmp, MACE_OF_DEATH) && !m_carrying(mtmp, WAN_DEATH)))
 								pline("%s laughs at you!", Monnam(mtmp));
 							else
 								pline("%s swings his wand menacingly.", Monnam(mtmp));
+						}
+					}
+				}
+				else if (mattk->adtyp == AD_MINO)
+				{
+					if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
+						int chance = mattk->mcadj;
+						if (!has_cancelled(mtmp) && !(mvitals[PM_MINOTAUR].mvflags & G_GONE) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
+						{
+							mtmp = makemon(&mons[PM_MINOTAUR], u.ux, u.uy, MM_EMIN);
+							if(mtmp)
+								pline("%s summons a minotaur", Monnam(mtmp));
+							sum[i] = 1;
+						}
+						else
+						{
+							if (!rn2(2))
+								pline("%s curses at you!", Monnam(mtmp));
+							else
+								pline("%s laughs menacingly.", Monnam(mtmp));
 						}
 					}
 				}

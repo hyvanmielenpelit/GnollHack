@@ -106,7 +106,7 @@ const struct class_sym def_monsyms[MAXMCLASSES] = {
     { DEF_RUSTMONST, "", "rust monster or disenchanter" },
     { DEF_SNAKE, "", "snake" },
     { DEF_TROLL, "", "troll" },
-    { DEF_UMBER, "", "umber hulk or otyugh" },
+    { DEF_UMBER, "", "umber hulk, otyugh, or chimera" },
     { DEF_VAMPIRE, "", "vampire" },
     { DEF_WRAITH, "", "wraith" },
     { DEF_XORN, "", "xorn" },
