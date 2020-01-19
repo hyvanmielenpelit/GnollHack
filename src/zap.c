@@ -3461,6 +3461,12 @@ register struct obj *obj;
 	case SPE_CALL_HIERARCH_MODRON:
 		(void)summoncreature(obj->otyp, (rn2(100) < (u.ulevel - 1) * 1) ? PM_MODRON_TERTIAN : (rn2(100) < (u.ulevel - 1) * 5) ? PM_MODRON_QUARTON : PM_MODRON_QUINTON, "%s appears in a cloud of smoke.", NO_MM_FLAGS, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE);
 		break;
+	case SPE_STICK_TO_SNAKE:
+		mtmp = summoncreature(obj->otyp, PM_SNAKE, "You throw the stick you prepared in the front of you. It turns into %s!", MM_EMIN_COALIGNED, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE);
+		break;
+	case SPE_STICK_TO_COBRA:
+		mtmp = summoncreature(obj->otyp, PM_COBRA, "You throw the stick you prepared in the front of you. It turns into %s!", MM_EMIN_COALIGNED, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE);
+		break;
 	case SPE_GUARDIAN_ANGEL:
 		You("recite an ancient prayer to %s.", u_gname());
 		gain_guardian_angel(TRUE);
@@ -4046,6 +4052,7 @@ register struct obj *obj;
 			pline("Nothing seems to happens.");
 		}
 		break;
+	case SPE_ENLIGHTENMENT:
 	case WAN_ENLIGHTENMENT:
         known = TRUE;
         You_feel("self-knowledgeable...");
@@ -4054,7 +4061,51 @@ register struct obj *obj;
         pline_The("feeling subsides.");
         exercise(A_WIS, TRUE);
         break;
-    }
+	case SPE_COMMUNE:
+		known = TRUE;
+		You("commune with %s...", u_gname());
+		display_nhwindow(WIN_MESSAGE, FALSE);
+
+		if (can_pray(FALSE))
+			You_feel("that you can safely pray.");
+		else
+		{
+			You_feel("that you cannot safely pray.");
+
+			if (u.ugangr)
+				You("also feel that %s is %sangry with you.", u_gname(), u.ugangr > 6 ? "extremely " : u.ugangr > 3 ? "very " : "");
+
+			if (u.ublesscnt > 0)
+			{
+				You("query about your prayer conduct. The number %d appears before you.", u.ublesscnt / 10 + 1);
+
+				if (u.ublesscnt > 300)
+					You_feel("that %s is quite tired of your constant whining.", u_gname());
+
+				pline("It feels that %s wait %sbefore bothering %s again.",
+					u.ublesscnt >= 50 ? "it would be wise to" : "you must",
+					u.ublesscnt < 50 ? "a little longer " : u.ublesscnt > 200 ? "a long time " : "",
+					u_gname());
+			}
+		}
+
+		You("query about your fortune.");
+		if (Luck < 0)
+			You("see a number of %d. You feel that it is %s unlucky number.",
+				abs(Luck), abs(Luck) >= 10 ? "an extremely" : abs(Luck) >= 5 ? "a very" : "an");
+		else if (Luck > 0)
+			You("see a number of %d. You feel that it is %s lucky number.",
+				Luck, Luck >= 10 ? "an extremely" : Luck >= 5 ? "a very" : "a");
+		else
+			Your("vision is neutral.");
+
+		You("finish communing with %s.", u_gname());
+		break;
+	case SPE_PRAYER:
+		You("recite an aeon-old prayer to %s.", u_gname());
+		(void)prayer_spell();
+		break;
+	}
     if (known) {
         if (!objects[obj->otyp].oc_name_known)
             more_experienced(0, 10);

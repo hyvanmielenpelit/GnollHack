@@ -2025,6 +2025,37 @@ prayer_done() /* M. Stephenson (1.0.3b) */
     return 1;
 }
 
+
+int
+prayer_spell()
+{
+	/* Your sins are absolved */
+	boolean sins_absolved = FALSE;
+
+	u.ublesscnt = 0;
+	if (u.uluck < 0)
+		u.uluck = 0, sins_absolved = TRUE;
+	if (u.ualign.record <= 0)
+		u.ualign.record = 1, sins_absolved = TRUE;
+	if(u.ugangr)
+		u.ugangr = 0, sins_absolved = TRUE;
+	if (p_type < 2)
+		p_type = 3, sins_absolved = TRUE;
+
+	if (sins_absolved)
+		You_feel("that your sins have been forgiven.");
+
+	if (p_type == 3 && !Inhell)
+	{
+		/* if you've been true to your god you can't die while you pray */
+		if (!Blind)
+			You("are surrounded by a shimmering light.");
+		u.uinvulnerable = TRUE;
+	}
+
+	return prayer_done();
+}
+
 /* #turn command */
 int
 doturn()

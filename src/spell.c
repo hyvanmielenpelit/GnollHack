@@ -1811,6 +1811,8 @@ boolean atme;
 	case SPE_GUARDIAN_ANGEL:
 	case SPE_DIVINE_MOUNT:
 	case SPE_HEAVENLY_ARMY:
+	case SPE_STICK_TO_SNAKE:
+	case SPE_STICK_TO_COBRA:
 	case SPE_CALL_HIERARCH_MODRON:
 	case SPE_GREAT_YENDORIAN_SUMMONING:
 	case SPE_CALL_GHOUL:
@@ -1834,7 +1836,10 @@ boolean atme;
 	case SPE_DRAIN_LIFE:
 	case SPE_PROBE_MONSTER:
 	case SPE_STONE_TO_FLESH:
-        if (objects[otyp].oc_dir != NODIR) {
+	case SPE_COMMUNE:
+	case SPE_PRAYER:
+	case SPE_ENLIGHTENMENT:
+		if (objects[otyp].oc_dir != NODIR) {
             if (otyp == SPE_HEALING || otyp == SPE_EXTRA_HEALING || otyp == SPE_GREATER_HEALING || otyp == SPE_FULL_HEALING
 				|| otyp == SPE_REPLENISH_UNDEATH || otyp == SPE_GREATER_UNDEATH_REPLENISHMENT
 				) {
