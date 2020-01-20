@@ -936,8 +936,7 @@ int show_weights;
 				char applied_invlet = (qflags & USE_INVLET) ? curr->invlet
 					: (first && curr->oclass == COIN_CLASS) ? GOLD_SYM : 0;
 				
-				char applied_group_accelerator = 
-					applied_invlet == GOLD_SYM && def_oc_syms[(int)objects[curr->otyp].oc_class].sym == GOLD_SYM ? GOLD_SYM_ALTERNATE : def_oc_syms[(int)objects[curr->otyp].oc_class].sym;
+				char applied_group_accelerator = def_oc_syms[(int)objects[curr->otyp].oc_class].sym;
 
 				add_menu(win, obj_to_glyph(curr, rn2_on_display_rng), &any,
 					applied_invlet,

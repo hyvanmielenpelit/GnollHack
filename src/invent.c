@@ -3213,11 +3213,8 @@ nextclass:
 				wtcount += otmp->owt;
 
 			char applied_class_accelerator = wizid ? def_oc_syms[(int)otmp->oclass].sym : 0;
-			if (def_oc_syms[(int)otmp->oclass].sym == GOLD_SYM)
-				if(def_oc_syms[(int)otmp->oclass].sym == ilet)
-					applied_class_accelerator = GOLD_SYM_ALTERNATE; /* hack in the case '$' does not work, make ilet and group accelerator different ot have two options --JG */
 
-            add_menu(win, obj_to_glyph(otmp, rn2_on_display_rng), &any, ilet,
+			add_menu(win, obj_to_glyph(otmp, rn2_on_display_rng), &any, ilet,
 				applied_class_accelerator,
                      ATR_NONE, show_weights > 0 ? doname_with_weight_first(otmp, loadstonecorrectly) : doname(otmp), MENU_UNSELECTED);
         }

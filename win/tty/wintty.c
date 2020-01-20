@@ -1992,11 +1992,15 @@ struct WinDesc *cw;
                 }
             }
 			
+			char altgoldbuf[2] = "";
+			altgoldbuf[0] = GOLD_SYM_ALTERNATE;
+
             /* set extra chars.. */
             Strcat(resp, default_menu_cmds);
             Strcat(resp, " ");                  /* next page or end */
             Strcat(resp, "0123456789\033\n\r"); /* counts, quit */
-            Strcat(resp, gacc);                 /* group accelerators */
+			Strcat(resp, altgoldbuf);			/* alternative gold symbol */
+			Strcat(resp, gacc);                 /* group accelerators */
             Strcat(resp, mapped_menu_cmds);
 
             if (cw->npages > 1)
@@ -2024,6 +2028,10 @@ struct WinDesc *cw;
             morc = MENU_EXPLICIT_CHOICE;
         else
             morc = map_menu_cmd(morc);
+
+		/* Replace alternate gold symbol with gold symbol to ensure exactly the same behavior */
+		if (morc == GOLD_SYM_ALTERNATE)
+			morc = GOLD_SYM;
 
         switch (morc) {
         case '0':

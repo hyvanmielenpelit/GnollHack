@@ -2450,7 +2450,7 @@ SPELL("banish demon",		  "squamous", None, "Destroys the target demon",
 	P_CLERIC_SPELL,				5, 4,			10, 8,150, A_WIS, 8, 0, 100, 0, 1, IMMEDIATE, 0, 30, 6, 0, 1, 50, 100, S1_NONE, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
 SPELL("prayer",			   "biblical", "some aeon-old prayer", "May invoke a divine intervention from your god",
 	P_CLERIC_SPELL,			    5, 5,		   175, 4, 30, A_WIS, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE),
-SPELL("absolution",		   "ecclesiastical", "some aeon-old prayer", "Absolves you for your sins",
+SPELL("absolution",		   "ecclesiastical", "some aeon-old prayer", "Absolves your sins",
 	P_CLERIC_SPELL,			    5, 5,		  1000, 6,175, A_WIS, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE),
 
 SPELL("light",            "cloth", None, "Lights up the nearby area",
