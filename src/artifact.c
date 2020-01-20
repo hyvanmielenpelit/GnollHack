@@ -839,7 +839,7 @@ struct monst *mtmp;
 			return !(yours ? Lycanthropy_resistance : resists_lycanthropy(mtmp));
 		case AD_MAGM:
         case AD_STUN:
-            return !(yours ? Antimagic : (rn2(100) < ptr->mr));
+            return !(yours ? Antimagic : (resists_magic(mtmp) || resists_magicmissile(mtmp) || (rn2(100) < ptr->mr)));
         case AD_DRST:
             return !(yours ? Poison_resistance : resists_poison(mtmp));
         case AD_DRLI:
@@ -853,6 +853,51 @@ struct monst *mtmp;
     return 0;
 }
 
+
+boolean
+is_immune(mtmp, dmgtype)
+struct monst* mtmp;
+int dmgtype;
+{
+	boolean yours = (mtmp == &youmonst);
+
+	switch (dmgtype)
+	{
+	case AD_MAGM:
+		return (yours ? Antimagic : (resists_magic(mtmp) || resists_magicmissile(mtmp)));
+	case AD_FIRE:
+		return (yours ? Fire_resistance : resists_fire(mtmp));
+	case AD_COLD:
+		return (yours ? Cold_resistance : resists_cold(mtmp));
+	case AD_SLEE:
+		return (yours ? Sleep_resistance : resists_sleep(mtmp));
+	case AD_DISN:
+		return (yours ? Disint_resistance : resists_disint(mtmp));
+	case AD_ELEC:
+		return (yours ? Shock_resistance : resists_elec(mtmp));
+	case AD_DRST:
+		return (yours ? Poison_resistance : resists_poison(mtmp));
+	case AD_ACID:
+		return (yours ? Acid_resistance : resists_acid(mtmp));
+	case AD_DRAY:
+		return (yours ? Antimagic || Death_resistance : resists_magic(mtmp) || resists_death(mtmp));
+	case AD_BLND:
+		return (yours ? Flash_resistance || Blind || Unaware : resists_blnd(mtmp));
+	case AD_WERE:
+		return (yours ? Lycanthropy_resistance : resists_lycanthropy(mtmp));
+	case AD_STUN:
+		return (yours ? Antimagic : resists_magic(mtmp));
+	case AD_DRLI:
+		return (yours ? Drain_resistance : resists_drli(mtmp));
+	case AD_STON:
+		return (yours ? Stone_resistance : resists_ston(mtmp));
+	case AD_PHYS:
+		return 0;
+	}
+
+	return 0;
+
+}
 /* return the M2 flags of monster that an artifact's special attacks apply
  * against */
 long

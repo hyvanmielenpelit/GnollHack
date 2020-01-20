@@ -239,6 +239,7 @@ OPTIONS=hilite_status:condition/stun/red&bold
 OPTIONS=hilite_status:condition/slow/yellow
 OPTIONS=hilite_status:condition/fear/yellow
 OPTIONS=hilite_status:condition/cancl/yellow
+OPTIONS=hilite_status:condition/silent/yellow
 OPTIONS=hilite_status:condition/blind/yellow
 
 ## Health

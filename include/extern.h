@@ -119,6 +119,7 @@ E int FDECL(spfx_to_prop, (unsigned long));
 E uchar FDECL(prop_to_adtyp, (int));
 E int FDECL(adtyp_to_prop, (uchar));
 E struct obj* FDECL(what_gives_monster, (struct monst*, int));
+E boolean FDECL(is_immune, (struct monst*, int));
 
 
 /* ### attrib.c ### */
@@ -1725,8 +1726,8 @@ E void FDECL(thrwmu, (struct monst *));
 E int FDECL(spitmu, (struct monst *, struct attack *));
 E int FDECL(breamu, (struct monst *, struct attack *));
 E int FDECL(eyesmu, (struct monst*, struct attack*));
-E boolean FDECL(linedup, (XCHAR_P, XCHAR_P, XCHAR_P, XCHAR_P, int));
-E boolean FDECL(lined_up, (struct monst *));
+E boolean FDECL(linedup, (XCHAR_P, XCHAR_P, XCHAR_P, XCHAR_P, int, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, int, BOOLEAN_P));
+E boolean FDECL(lined_up, (struct monst *, BOOLEAN_P, int, BOOLEAN_P));
 E struct obj *FDECL(m_carrying, (struct monst *, int));
 E int FDECL(thrwmm, (struct monst *, struct monst *));
 E int FDECL(spitmm, (struct monst *, struct attack *, struct monst *));

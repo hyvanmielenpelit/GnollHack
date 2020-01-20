@@ -894,9 +894,11 @@ register struct attack *mattk;
         cursetxt(mtmp, FALSE);
         return (0);
     }
-    if (lined_up(mtmp) && rn2(3)) {
+    if (lined_up(mtmp, TRUE, mattk->adtyp, TRUE) && rn2(3))
+	{
         nomul(0);
-        if (mattk->adtyp && (mattk->adtyp <= AD_SPC2)) { /* no cf unsigned >0 */
+        if (mattk->adtyp && (mattk->adtyp <= AD_SPC2))
+		{ /* no cf unsigned >0 */
             if (canseemon(mtmp))
                 pline("%s zaps you with a %s!", Monnam(mtmp),
                       flash_types[ad_to_typ(mattk->adtyp)]);

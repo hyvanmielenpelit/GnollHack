@@ -735,23 +735,35 @@ struct monst *priest;
     ay = y = EPRI(priest)->shrpos.y;
     troom = &rooms[roomno - ROOMOFFSET];
 
-    if ((u.ux == x && u.uy == y) || !linedup(u.ux, u.uy, x, y, 1)) {
-        if (IS_DOOR(levl[u.ux][u.uy].typ)) {
-            if (u.ux == troom->lx - 1) {
+    if ((u.ux == x && u.uy == y) || !linedup(u.ux, u.uy, x, y, 1, FALSE, FALSE, FALSE, 0, FALSE))
+	{
+        if (IS_DOOR(levl[u.ux][u.uy].typ))
+		{
+            if (u.ux == troom->lx - 1) 
+			{
                 x = troom->hx;
                 y = u.uy;
-            } else if (u.ux == troom->hx + 1) {
+            } 
+			else if (u.ux == troom->hx + 1) 
+			{
                 x = troom->lx;
                 y = u.uy;
-            } else if (u.uy == troom->ly - 1) {
+            }
+			else if (u.uy == troom->ly - 1)
+			{
                 x = u.ux;
                 y = troom->hy;
-            } else if (u.uy == troom->hy + 1) {
+            }
+			else if (u.uy == troom->hy + 1) 
+			{
                 x = u.ux;
                 y = troom->ly;
             }
-        } else {
-            switch (rn2(4)) {
+        }
+		else
+		{
+            switch (rn2(4))
+			{
             case 0:
                 x = u.ux;
                 y = troom->ly;
@@ -770,7 +782,7 @@ struct monst *priest;
                 break;
             }
         }
-        if (!linedup(u.ux, u.uy, x, y, 1))
+        if (!linedup(u.ux, u.uy, x, y, 1, FALSE, FALSE, FALSE, 0, FALSE))
             return;
     }
 

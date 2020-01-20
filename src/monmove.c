@@ -613,7 +613,7 @@ register struct monst *mtmp;
     }
 
     /* Demonic Blackmail! */
-    if (nearby && mdat->msound == MS_BRIBE && is_peaceful(mtmp) && !is_tame(mtmp)
+    if (nearby && mdat->msound == MS_BRIBE && is_peaceful(mtmp) && !is_silenced(mtmp) && !is_tame(mtmp)
         && !u.uswallow)
 	{
         if (mtmp->mux != u.ux || mtmp->muy != u.uy) 
@@ -746,7 +746,8 @@ register struct monst *mtmp;
         || (mdat->mlet == S_LEPRECHAUN && !findgold(invent)
             && (findgold(mtmp->minvent) || rn2(2)))
         || (is_wanderer(mdat) && !rn2(4)) || ((Conflict || mon_has_bloodlust(mtmp)) && !mtmp->iswiz)
-        || (is_blinded(mtmp) && !rn2(4)) || is_peaceful(mtmp)) {
+        || (is_blinded(mtmp) && !rn2(4)) || is_peaceful(mtmp))
+	{
         /* Possibly cast an undirected spell if not attacking you */
         /* note that most of the time castmu() will pick a directed
            spell and do nothing, so the monster moves normally */
@@ -754,7 +755,8 @@ register struct monst *mtmp;
            from you from having cast dozens of sticks-to-snakes
            or similar spells by the time you reach it */
         if (dist2(mtmp->mx, mtmp->my, u.ux, u.uy) <= 49
-            && !mtmp->mspec_used) {
+            && !mtmp->mspec_used) 
+		{
             struct attack *a;
 
             for (a = &mdat->mattk[0]; a < &mdat->mattk[NATTK]; a++)
@@ -775,7 +777,8 @@ register struct monst *mtmp;
         if (tmp != 2)
             distfleeck(mtmp, &inrange, &nearby, &scared); /* recalc */
 
-        switch (tmp) { /* for pets, cases 0 and 3 are equivalent */
+        switch (tmp) 
+		{ /* for pets, cases 0 and 3 are equivalent */
         case 0: /* no movement, but it can still attack you */
         case 3: /* absolutely no movement */
             /* vault guard might have vanished */
@@ -816,7 +819,8 @@ register struct monst *mtmp;
     /*  Now, attack the player if possible - one attack set per monst
      */
 
-    if (!is_peaceful(mtmp) || (Conflict && !check_magic_resistance_and_halve_damage(mtmp, (struct obj*) 0, 5, 0, 0))) {
+    if (!is_peaceful(mtmp) || (Conflict && !check_magic_resistance_and_halve_damage(mtmp, (struct obj*) 0, 5, 0, 0)))
+	{
         if (inrange && !noattacks(mdat)
             && (Upolyd ? u.mh : u.uhp) > 0 && !scared && tmp != 3)
             if (mattacku(mtmp))
@@ -1125,7 +1129,7 @@ register int after;
 
     if ((!is_peaceful(mtmp) || !rn2(10)) && (!Is_rogue_level(&u.uz)))
 	{
-        boolean in_line = (lined_up(mtmp)
+        boolean in_line = (lined_up(mtmp, FALSE, 0, FALSE)
                && (distmin(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy)
                    <= (throws_rocks(youmonst.data) ? 20 : ACURRSTR / 2 + 1)));
 

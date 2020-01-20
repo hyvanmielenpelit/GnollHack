@@ -8,7 +8,7 @@
 STATIC_DCL int FDECL(monmulti, (struct monst *, struct obj *, struct obj *));
 STATIC_DCL void FDECL(monshoot, (struct monst *, struct obj *, struct obj *));
 STATIC_DCL int FDECL(drop_throw, (struct obj *, BOOLEAN_P, int, int));
-STATIC_DCL boolean FDECL(m_lined_up, (struct monst *, struct monst *));
+STATIC_DCL boolean FDECL(m_lined_up, (struct monst *, struct monst *, BOOLEAN_P, int, BOOLEAN_P));
 
 #define URETREATING(x, y) \
     (distmin(u.ux, u.uy, x, y) > distmin(u.ux0, u.uy0, x, y))
@@ -1058,10 +1058,12 @@ struct monst *mtmp, *mtarg;
 
     mwep = MON_WEP(mtmp); /* wielded weapon */
 
-    if (!ispole && m_lined_up(mtarg, mtmp)) {
+    if (!ispole && m_lined_up(mtarg, mtmp, TRUE, AD_PHYS, FALSE))
+	{
         int chance = max(BOLT_LIM - distmin(x, y, mtarg->mx, mtarg->my), 1);
 
-        if (!is_fleeing(mtarg) || !rn2(chance)) {
+        if (!is_fleeing(mtarg) || !rn2(chance))
+		{
             if (ammo_and_launcher(otmp, mwep)
                 && dist2(mtmp->mx, mtmp->my, mtarg->mx, mtarg->my)
                    > PET_MISSILE_RANGE2) //Monsters shoot a range of 8
@@ -1092,7 +1094,7 @@ struct attack *mattk;
                   s_suffix(mon_nam(mtmp)));
         return 0;
     }
-    if (m_lined_up(mtarg, mtmp)) {
+    if (m_lined_up(mtarg, mtmp, TRUE, mattk->adtyp, FALSE)) {
         switch (mattk->adtyp) {
         case AD_BLND:
         case AD_DRST:
@@ -1139,8 +1141,10 @@ struct attack  *mattk;
     /* if new breath types are added, change AD_ACID to max type */
     int typ = (mattk->adtyp == AD_RBRE) ? rnd(AD_ACID) : mattk->adtyp ; // Does not include death ray
 
-    if (m_lined_up(mtarg, mtmp)) {
-        if (is_cancelled(mtmp)) {
+    if (m_lined_up(mtarg, mtmp, TRUE, typ, TRUE))
+	{
+        if (is_cancelled(mtmp)) 
+		{
             if (!Deaf) {
                 if (canseemon(mtmp))
                     pline("%s coughs.", Monnam(mtmp));
@@ -1149,8 +1153,10 @@ struct attack  *mattk;
             }
             return 0;
         }
-        if (!mtmp->mspec_used && rn2(3)) {
-            if ((typ >= AD_MAGM) && (typ <= AD_DRAY)) {
+        if (!mtmp->mspec_used && rn2(3)) 
+		{
+            if ((typ >= AD_MAGM) && (typ <= AD_DRAY))
+			{
                 if (canseemon(mtmp))
                     pline("%s breathes %s!", Monnam(mtmp), breathwep[typ - 1]);
                 dobuzz((int) (-20 - (typ - 1)), (struct obj*)0, (int) mattk->damn, (int)mattk->damd, (int)mattk->damp,
@@ -1163,7 +1169,8 @@ struct attack  *mattk;
 
                 /* If this is a pet, it'll get hungry. Minions and
                  * spell beings won't hunger */
-                if (mtmp->mtame && !mtmp->isminion) {
+                if (mtmp->mtame && !mtmp->isminion) 
+				{
                     struct edog *dog = EDOG(mtmp);
 
                     /* Hunger effects will catch up next move */
@@ -1192,7 +1199,7 @@ struct attack* mattk;
 		(mattk->adtyp == AD_REY2) ? ray2_effect_choices[rn2(3)] :
 		mattk->adtyp;
 
-	if (m_lined_up(mtarg, mtmp))
+	if (m_lined_up(mtarg, mtmp, TRUE, typ, TRUE))
 	{
 		if (is_cancelled(mtmp) || is_blinded(mtmp))
 		{
@@ -1323,7 +1330,7 @@ struct monst *mtmp;
      * going away, you are probably hurt or running.  Give
      * chase, but if you are getting too far away, throw.
      */
-    if (!lined_up(mtmp)
+    if (!lined_up(mtmp, TRUE, AD_PHYS, FALSE)
         || (URETREATING(x, y)
             && rn2(BOLT_LIM - distmin(x, y, mtmp->mux, mtmp->muy))))
         return;
@@ -1341,14 +1348,17 @@ struct attack *mattk;
 {
     struct obj *otmp;
 
-    if (is_cancelled(mtmp)) {
+    if (is_cancelled(mtmp)) 
+	{
         if (!Deaf)
             pline("A dry rattle comes from %s throat.",
                   s_suffix(mon_nam(mtmp)));
         return 0;
     }
-    if (lined_up(mtmp)) {
-        switch (mattk->adtyp) {
+    if (lined_up(mtmp, TRUE, mattk->adtyp, FALSE))
+	{
+        switch (mattk->adtyp) 
+		{
         case AD_BLND:
         case AD_DRST:
             otmp = mksobj(BLINDING_VENOM, TRUE, FALSE, FALSE);
@@ -1361,14 +1371,17 @@ struct attack *mattk;
             break;
         }
         if (!rn2(BOLT_LIM
-                 - distmin(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy))) {
+                 - distmin(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy)))
+		{
             if (canseemon(mtmp))
                 pline("%s spits venom!", Monnam(mtmp));
             m_throw(mtmp, mtmp->mx, mtmp->my, sgn(tbx), sgn(tby),
                     distmin(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy), otmp);
             nomul(0);
             return 0;
-        } else {
+        }
+		else 
+		{
             obj_extract_self(otmp);
             obfree(otmp, (struct obj *) 0);
         }
@@ -1396,7 +1409,7 @@ struct attack *mattk;
 		mattk->adtyp;
 
 
-    if (lined_up(mtmp))
+    if (lined_up(mtmp, TRUE, typ, TRUE))
 	{
         if (is_cancelled(mtmp) || is_blinded(mtmp))
 		{
@@ -1433,8 +1446,10 @@ struct attack* mattk;
 	/* if new breath types are added, change AD_ACID to max type */
 	int typ = (mattk->adtyp == AD_RBRE) ? rnd(AD_ACID) : mattk->adtyp; //NOTE: Does not include death ray
 
-	if (lined_up(mtmp)) {
-		if (is_cancelled(mtmp)) {
+	if (lined_up(mtmp, TRUE, typ, TRUE))
+	{
+		if (is_cancelled(mtmp)) 
+		{
 			if (!Deaf) {
 				if (canseemon(mtmp))
 					pline("%s coughs.", Monnam(mtmp));
@@ -1468,9 +1483,14 @@ struct attack* mattk;
 
 
 boolean
-linedup(ax, ay, bx, by, boulderhandling)
+linedup(ax, ay, bx, by, boulderhandling, block_if_hostile_monster, block_if_peaceful_monster, block_if_tame_monster, dmgtype, attack_can_reflect)
 register xchar ax, ay, bx, by;
 int boulderhandling; /* 0=block, 1=ignore, 2=conditionally block */
+boolean block_if_hostile_monster;
+boolean block_if_peaceful_monster;
+boolean block_if_tame_monster;
+int dmgtype;
+boolean attack_can_reflect;
 {
     int dx, dy, boulderspots;
 
@@ -1484,14 +1504,25 @@ int boulderhandling; /* 0=block, 1=ignore, 2=conditionally block */
         return FALSE;
 
     if ((!tbx || !tby || abs(tbx) == abs(tby)) /* straight line or diagonal */
-        && distmin(tbx, tby, 0, 0) < BOLT_LIM) {
-        if ((ax == u.ux && ay == u.uy) ? (boolean) couldsee(bx, by)
-                                       : clear_path(ax, ay, bx, by))
+        && distmin(tbx, tby, 0, 0) < BOLT_LIM
+		) 
+	{
+		boolean path_clear_base = (ax == u.ux && ay == u.uy) ? (boolean)couldsee(bx, by)
+			: clear_path(ax, ay, bx, by);
+
+		if(path_clear_base /* no boulders */
+			&& !block_if_hostile_monster && !block_if_peaceful_monster && !block_if_tame_monster
+			&& !attack_can_reflect)/* no need to consider monsters */
             return TRUE;
-        /* don't have line of sight, but might still be lined up
-           if that lack of sight is due solely to boulders */
-        if (boulderhandling == 0)
-            return FALSE;
+
+		if (!path_clear_base /* boulders or otherwise blocked */
+			&& boulderhandling == 0) /* no need to check boulders or monsters separately */
+			return FALSE;
+
+		/* here we need to check either boulders or monsters, or both */
+
+        /* don't have line of sight or need to check monsters, but might still be lined up
+           if that lack of sight is due solely to boulders or monsters */
         dx = sgn(ax - bx), dy = sgn(ay - by);
         boulderspots = 0;
         do {
@@ -1499,28 +1530,74 @@ int boulderhandling; /* 0=block, 1=ignore, 2=conditionally block */
             bx += dx, by += dy;
             if (IS_ROCK(levl[bx][by].typ) || closed_door(bx, by))
                 return FALSE;
-            if (sobj_at(BOULDER, bx, by))
+			if ((bx != ax || by != ay) && MON_AT(bx, by))
+			{
+				struct monst* mtmp = m_at(bx, by);
+				if(mtmp)
+				{
+					if (is_reflecting(mtmp) && attack_can_reflect)
+						return FALSE;
+					if (!is_immune(mtmp, dmgtype))
+					{
+						if (block_if_hostile_monster && !is_peaceful(mtmp))
+							return FALSE;
+						if (block_if_peaceful_monster && is_peaceful(mtmp))
+							return FALSE;
+						if (block_if_tame_monster && is_tame(mtmp))
+							return FALSE;
+					}
+				}
+			}
+			if (sobj_at(BOULDER, bx, by))
                 ++boulderspots;
-        } while (bx != ax || by != ay);
-        /* reached target position without encountering obstacle */
-        if (boulderhandling == 1 || rn2(2 + boulderspots) < 2)
-            return TRUE;
-    }
+
+			if (boulderhandling == 0 && boulderspots > 0)
+				return FALSE;
+
+		} while (bx != ax || by != ay);
+        
+		/* reached target position without encountering obstacle */
+		if (boulderhandling == 0)
+			return TRUE; /* Nothing was blocking */
+		else if (boulderhandling == 1)
+            return TRUE; /* All boulders were ignored */
+		else if (boulderhandling == 2 && rn2(2 + boulderspots) < 2)
+			return TRUE;
+	}
     return FALSE;
 }
 
 STATIC_OVL boolean
-m_lined_up(mtarg, mtmp)
+m_lined_up(mtarg, mtmp, can_hit_others, dmgtype, attack_can_reflect)
 struct monst *mtarg, *mtmp;
+boolean can_hit_others;
+int dmgtype;
+boolean attack_can_reflect;
 {
-    return (linedup(mtarg->mx, mtarg->my, mtmp->mx, mtmp->my, 0));
+
+	boolean block_if_hostile_monster = 0;
+	boolean block_if_peaceful_monster = 0;
+	boolean block_if_tame_monster = 0;
+
+	if (can_hit_others && !Conflict)
+	{
+		block_if_hostile_monster = !is_peaceful(mtmp) && !mon_has_bloodlust(mtmp);
+		block_if_peaceful_monster = !mon_has_bloodlust(mtmp) && mtmp->data->maligntyp >= 0;
+		block_if_tame_monster = is_tame(mtmp);
+	}
+
+
+    return (linedup(mtarg->mx, mtarg->my, mtmp->mx, mtmp->my, 0, block_if_hostile_monster, block_if_peaceful_monster, block_if_tame_monster, dmgtype, attack_can_reflect));
 }
 
 
 /* is mtmp in position to use ranged attack? */
 boolean
-lined_up(mtmp)
+lined_up(mtmp, can_hit_others, dmgtype, attack_can_reflect)
 register struct monst *mtmp;
+boolean can_hit_others;
+int dmgtype;
+boolean attack_can_reflect;
 {
     boolean ignore_boulders;
 
@@ -1530,10 +1607,21 @@ register struct monst *mtmp;
                               && U_AP_TYPE != M_AP_MONSTER)))
         return FALSE;
 
+	boolean block_if_hostile_monster = 0;
+	boolean block_if_peaceful_monster = 0;
+	boolean block_if_tame_monster = 0;
+
+	if(can_hit_others && !Conflict)
+	{
+		block_if_hostile_monster = !is_peaceful(mtmp) && !mon_has_bloodlust(mtmp);
+		block_if_peaceful_monster = !mon_has_bloodlust(mtmp) && mtmp->data->maligntyp >= 0;
+		block_if_tame_monster = is_tame(mtmp);
+	}
+
     ignore_boulders = (throws_rocks(mtmp->data)
                        || m_carrying(mtmp, WAN_STRIKING));
     return linedup(mtmp->mux, mtmp->muy, mtmp->mx, mtmp->my,
-                   ignore_boulders ? 1 : 2);
+                   ignore_boulders ? 1 : 2, block_if_hostile_monster, block_if_peaceful_monster, block_if_tame_monster, dmgtype, attack_can_reflect);
 }
 
 /* check if a monster is carrying a particular item */
