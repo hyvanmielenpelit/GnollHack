@@ -403,7 +403,29 @@ struct obj *otmp;
             }
         }
         break;
-    case WAN_SPEED_MONSTER:
+	case SPE_HOLD_MONSTER:
+	case SPE_MASS_HOLD:
+		res = 1;
+		if (!check_magic_resistance_and_halve_damage(mtmp, otmp, 0, 0, NOTELL) 
+			&& !check_ability_resistance_success(mtmp, A_WIS, objects[otmp->otyp].oc_spell_saving_throw_adjustment))
+		{
+			if (disguised_mimic)
+				seemimic(mtmp);
+			increase_mon_property_verbosely(mtmp, PARALYZED, duration);
+			if (u.uswallow && (mtmp == u.ustuck) && is_whirly(mtmp->data)) 
+			{
+				You("disrupt %s!", mon_nam(mtmp));
+				pline("A huge hole opens up...");
+				expels(mtmp, mtmp->data, TRUE);
+			}
+		}
+		else
+		{
+			shieldeff(mtmp->mx, mtmp->my);
+			pline("%s resists!", Monnam(mtmp));
+		}
+		break;
+	case WAN_SPEED_MONSTER:
 		res = 1;
 		if (!check_magic_resistance_and_halve_damage(mtmp, otmp, 0, 0, NOTELL)) {
             if (disguised_mimic)
@@ -3220,6 +3242,8 @@ struct obj *obj, *otmp;
         case WAN_SLOW_MONSTER: /* no effect on objects */
         case SPE_SLOW_MONSTER:
 		case SPE_MASS_SLOW:
+		case SPE_HOLD_MONSTER:
+		case SPE_MASS_HOLD:
 		case WAN_SPEED_MONSTER:
 		case SPE_SILENCE:
 		case SPE_MAGIC_ARROW:
@@ -4519,6 +4543,27 @@ boolean ordinary;
 		}
 		//u_slow_down();
         break;
+	case SPE_HOLD_MONSTER:
+	case SPE_MASS_HOLD:
+		damage = 0;
+		if (!check_magic_resistance_and_halve_damage(&youmonst, obj, 0, 0, NOTELL)
+			&& !check_ability_resistance_success(&youmonst, A_WIS, objects[obj->otyp].oc_spell_saving_throw_adjustment))
+		{
+			boolean was_paralyzed = Paralyzed;
+			incr_itimeout(&HParalyzed, duration);
+			context.botl = context.botlx = TRUE;
+			if (Paralyzed && !was_paralyzed)
+			{
+				learn_it = TRUE;
+				You("are paralyzed!");
+			}
+		}
+		else
+		{
+			shieldeff(u.ux, u.uy);
+			You("resist!");
+		}
+		break;
 	case SPE_SILENCE:
 		damage = 0;
 		boolean was_silenced = Silenced;
@@ -4919,6 +4964,8 @@ struct obj *obj; /* wand or spell */
 	case WAN_SLOW_MONSTER:
     case SPE_SLOW_MONSTER:
 	case SPE_MASS_SLOW:
+	case SPE_HOLD_MONSTER:
+	case SPE_MASS_HOLD:
 	case WAN_SPEED_MONSTER:
 	case SPE_SILENCE:
 	case SPE_CURE_BLINDNESS:

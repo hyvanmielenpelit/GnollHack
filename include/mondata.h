@@ -576,7 +576,7 @@
 	|| ((mon) == &youmonst && u.ulycn >= LOW_PM) || is_vampshifter(mon) || resists_drain(mon))
 
 #define resists_blnd(mon) \
-	(((mon) == &youmonst && (Blind || Unaware)) || (is_blinded(mon) \
+	(((mon) == &youmonst && (Blind || Unaware || Flash_resistance)) || (is_blinded(mon) \
 	|| !haseyes((mon)->data) || is_sleeping(mon) || resists_flash(mon)))
 
 

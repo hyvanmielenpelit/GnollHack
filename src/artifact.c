@@ -846,6 +846,12 @@ struct monst *mtmp;
             return !(yours ? Drain_resistance : resists_drli(mtmp));
         case AD_STON:
             return !(yours ? Stone_resistance : resists_ston(mtmp));
+		case AD_DISE:
+			return !(yours ? Sick_resistance : resists_sickness(mtmp));
+		case AD_PLYS:
+			return !(yours ? Free_action : resists_paralysis(mtmp));
+		case AD_BLND:
+			return !(yours ? Flash_resistance : resists_blnd(mtmp) || resists_flash(mtmp));
 		case AD_PHYS:
 			return 1;
 		}
@@ -891,6 +897,10 @@ int dmgtype;
 		return (yours ? Drain_resistance : resists_drli(mtmp));
 	case AD_STON:
 		return (yours ? Stone_resistance : resists_ston(mtmp));
+	case AD_DISE:
+		return !(yours ? Sick_resistance : resists_sickness(mtmp));
+	case AD_PLYS:
+		return !(yours ? Free_action : resists_paralysis(mtmp));
 	case AD_PHYS:
 		return 0;
 	}
