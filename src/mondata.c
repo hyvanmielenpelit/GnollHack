@@ -302,7 +302,7 @@ struct obj *obj; /* aatyp == AT_WEAP, AT_SPIT */
 	case AT_EYES: /* assumed to be lightning */
 	case AT_BREA: /* assumed to be lightning */
         /* light-based attacks may be cancelled or resisted */
-        if (magr && has_cancelled(magr))
+        if (magr && is_cancelled(magr))
             return FALSE;
         return !resists_blnd(mdef);
 
@@ -345,7 +345,7 @@ struct obj *obj; /* aatyp == AT_WEAP, AT_SPIT */
     case AT_TUCH:
     case AT_STNG:
         /* some physical, blind-inducing attacks can be cancelled */
-        if (magr && has_cancelled(magr))
+        if (magr && is_cancelled(magr))
             return FALSE;
         break;
 
@@ -446,8 +446,9 @@ boolean
 can_chant(mtmp)
 struct monst *mtmp;
 {
-    if ((mtmp == &youmonst && Strangled)
-        || is_silent(mtmp->data) || !has_head(mtmp->data)
+    if ((mtmp == &youmonst && (Strangled || Silenced))
+		|| is_silenced(mtmp) || is_being_strangled(mtmp)
+		|| is_silent(mtmp->data) || !has_head(mtmp->data)
         || mtmp->data->msound == MS_BUZZ || mtmp->data->msound == MS_BURBLE)
         return FALSE;
     return TRUE;

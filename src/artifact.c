@@ -1085,7 +1085,7 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
     switch (attack_indx) {
     case MB_INDEX_CANCEL:
         old_uasmon = youmonst.data;
-        /* No has_cancelled(mdef)check: even a cancelled monster can be polymorphed
+        /* No is_cancelled(mdef)check: even a cancelled monster can be polymorphed
          * into a golem, and the "cancel" effect acts as if some magical
          * energy remains in spellcasting defenders to be absorbed later.
          */

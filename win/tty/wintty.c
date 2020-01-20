@@ -3679,6 +3679,7 @@ static struct condition_t {
 	{ BL_MASK_FEARFUL,  { "Fear",     "Fea",   "Fe"  } },
 	{ BL_MASK_SLEEPING, { "Sleep",    "Slp",   "Sl"  } },
 	{ BL_MASK_CANCELLED,{ "Cancl",    "Cnl",   "Cl"  } },
+	{ BL_MASK_SILENCED, { "Silent",   "Sil",   "Si"  } },
 };
 static const char *encvals[3][6] = {
     { "", "Burdened", "Stressed", "Strained", "Overtaxed", "Overloaded" },

@@ -189,6 +189,8 @@ do_statusline2()
         Strcpy(nb = eos(nb), " Strngl");
 	if (Slowed)
 		Strcpy(nb = eos(nb), " Slow");
+	if (Silenced)
+		Strcpy(nb = eos(nb), " Silent");
 	if (Paralyzed)
 		Strcpy(nb = eos(nb), " Paral");
 	if (Fearful)
@@ -769,6 +771,8 @@ bot_via_windowport()
         blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_TERMILL;
 	if (Slowed)
 		blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_SLOWED;
+	if (Silenced)
+		blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_SILENCED;
 	if (Paralyzed)
 		blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_PARALYZED;
 	if (Fearful)
@@ -2313,6 +2317,7 @@ const struct condmap valid_conditions[] = {
 	{ "fear",     BL_MASK_FEARFUL },
 	{ "sleep",    BL_MASK_SLEEPING },
 	{ "cancl",    BL_MASK_CANCELLED },
+	{ "silent",   BL_MASK_SILENCED },
 };
 
 #ifdef STATUS_HILITES
@@ -2326,13 +2331,13 @@ const struct condmap condition_aliases[] = {
                         | BL_MASK_CONF | BL_MASK_HALLU | BL_MASK_SUFFOC
                         | BL_MASK_LEV | BL_MASK_FLY | BL_MASK_RIDE | BL_MASK_SLOWED 
 						| BL_MASK_PARALYZED | BL_MASK_FEARFUL | BL_MASK_SLEEPING 
-						| BL_MASK_CANCELLED },
+						| BL_MASK_CANCELLED | BL_MASK_SILENCED },
     { "major_troubles", BL_MASK_STONE | BL_MASK_SLIME | BL_MASK_STRNGL
                         | BL_MASK_FOODPOIS | BL_MASK_TERMILL },
     { "minor_troubles", BL_MASK_BLIND | BL_MASK_DEAF | BL_MASK_STUN
                         | BL_MASK_CONF | BL_MASK_HALLU | BL_MASK_SLOWED 
 						| BL_MASK_PARALYZED | BL_MASK_FEARFUL | BL_MASK_SLEEPING 
-						| BL_MASK_CANCELLED },
+						| BL_MASK_CANCELLED | BL_MASK_SILENCED },
     { "movement",       BL_MASK_LEV | BL_MASK_FLY | BL_MASK_RIDE }
 };
 

@@ -1934,7 +1934,7 @@ int
 dopray()
 {
     /* Confirm accidental slips of Alt-P */
-    if (ParanoidPray && yn("Are you sure you want to pray?") != 'y')
+    if (!context.spellpray && ParanoidPray && yn("Are you sure you want to pray?") != 'y')
         return 0;
 
     u.uconduct.gnostic++;
@@ -2027,9 +2027,9 @@ prayer_done() /* M. Stephenson (1.0.3b) */
 
 
 int
-prayer_spell()
+absolution_spell()
 {
-	/* Your sins are absolved */
+	/* You are absolved for your sins */
 	boolean sins_absolved = FALSE;
 
 	u.ublesscnt = 0;
@@ -2037,24 +2037,21 @@ prayer_spell()
 		u.uluck = 0, sins_absolved = TRUE;
 	if (u.ualign.record <= 0)
 		u.ualign.record = 1, sins_absolved = TRUE;
-	if(u.ugangr)
+	if (u.ugangr)
 		u.ugangr = 0, sins_absolved = TRUE;
-	if (p_type < 2)
-		p_type = 3, sins_absolved = TRUE;
 
 	if (sins_absolved)
-		You_feel("that your sins have been forgiven.");
-
-	if (p_type == 3 && !Inhell)
 	{
-		/* if you've been true to your god you can't die while you pray */
-		if (!Blind)
-			You("are surrounded by a shimmering light.");
-		u.uinvulnerable = TRUE;
+		You_feel("that your sins have been forgiven.");
+		return 1;
 	}
-
-	return prayer_done();
+	else
+	{
+		You_feel("that %s is already pleased with you.", u_gname());
+		return 0;
+	}
 }
+
 
 /* #turn command */
 int

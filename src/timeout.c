@@ -140,6 +140,7 @@ const struct propname {
 	{ FEAR_RES, "fear resistance", "fear resistance" },
 	{ SLEEPING, "sleeping unnaturally deeply", "magically induced sleep" },
 	{ SUMMON_FORBIDDEN, "having summoning forbidden", "summoning forbidden" },
+	{ SILENCED, "silenced", "silence" },
 	{ LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
 	{  0, 0 },
 };
@@ -645,6 +646,10 @@ nh_timeout()
 					You_feel("yourself speed up%s.",
 						Very_fast ? " a lot" : Fast ? "" : " a bit");
 				break;
+			case SILENCED:
+				if (!Silenced)
+					You("can speak again!");
+				break;
 			case CONFUSION:
 				/* So make_confused works properly */
 				set_itimeout(&HConfusion, 1L);
@@ -1013,6 +1018,9 @@ nh_timeout()
 				break;
 			case SLOWED:
 				You_feel("you are starting to speed up.");
+				break;
+			case SILENCED:
+				You_feel("your is starting to return.");
 				break;
 			case INVISIBILITY:
 				You("are starting to feel more visible.");

@@ -572,7 +572,7 @@ struct monst *summoner;
     coord bypos;
     int count, census, tmp, makeindex, s_cls, m_cls;
 
-	if (!summoner || has_cancelled(summoner) || has_summon_forbidden(summoner))
+	if (!summoner || is_cancelled(summoner) || has_summon_forbidden(summoner))
 		return 0;
 
 #define MAXNASTIES 10 /* more than this can be created */

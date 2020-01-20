@@ -73,7 +73,8 @@ enum relationships { NO_LTEQGT = -1,
 #define BL_MASK_FEARFUL         0x00010000L
 #define BL_MASK_SLEEPING        0x00020000L
 #define BL_MASK_CANCELLED       0x00040000L
-#define BL_MASK_BITS            19 /* number of mask bits that can be set */
+#define BL_MASK_SILENCED        0x00080000L
+#define BL_MASK_BITS            20 /* number of mask bits that can be set */
 /* clang-format on */
 
 #define VIA_WINDOWPORT() \

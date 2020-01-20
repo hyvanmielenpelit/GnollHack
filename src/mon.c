@@ -4005,7 +4005,7 @@ restartcham()
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
             continue;
-        if (!has_cancelled(mtmp))
+        if (!is_cancelled(mtmp))
             mtmp->cham = pm_to_cham(monsndx(mtmp->data));
         if (mtmp->data->mlet == S_MIMIC && mtmp->msleeping
             && cansee(mtmp->mx, mtmp->my)) {
@@ -4044,7 +4044,7 @@ register struct monst *mtmp;
 {
     struct trap *t;
 
-    if (has_cancelled(mtmp) || M_AP_TYPE(mtmp) || cansee(mtmp->mx, mtmp->my)
+    if (is_cancelled(mtmp) || M_AP_TYPE(mtmp) || cansee(mtmp->mx, mtmp->my)
         || rn2(3) || mtmp == u.ustuck
         /* can't hide while trapped except in pits */
         || (mtmp->mtrapped && (t = t_at(mtmp->mx, mtmp->my)) != 0
@@ -4542,7 +4542,7 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
             return 0;
         /* cancelled shapechangers become uncancelled prior
            to being given a new shape */
-        if (has_cancelled(mtmp) && !Protection_from_shape_changers) {
+        if (is_cancelled(mtmp) && !Protection_from_shape_changers) {
             mtmp->cham = pm_to_cham(monsndx(mtmp->data));
             if (mtmp->cham != NON_PM)
                 mtmp->mprops[CANCELLED] = 0;
@@ -4994,7 +4994,7 @@ short otyp;
     case M_AP_MONSTER:
         break;
     case M_AP_OBJECT:
-        if (otyp == SPE_HEALING || otyp == SPE_EXTRA_HEALING || otyp == SPE_GREATER_HEALING || otyp == SPE_FULL_HEALING) {
+        if (otyp == SPE_MINOR_HEALING || otyp == SPE_HEALING || otyp == SPE_EXTRA_HEALING || otyp == SPE_GREATER_HEALING || otyp == SPE_FULL_HEALING) {
             pline("%s seems a more vivid %s than before.",
                   The(simple_typename(ap)),
                   c_obj_colors[objects[ap].oc_color]);

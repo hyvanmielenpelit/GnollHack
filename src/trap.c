@@ -2646,7 +2646,7 @@ register struct monst *mtmp;
         case ANTI_MAGIC:
             /* similar to hero's case, more or less */
             if (!resists_magic(mtmp)) { /* lose spell energy */
-                if (!has_cancelled(mtmp) && (attacktype(mptr, AT_MAGC)
+                if (!is_cancelled(mtmp) && (attacktype(mptr, AT_MAGC)
                                     || attacktype(mptr, AT_BREA))) {
                     mtmp->mspec_used += d(2, 2);
                     if (in_sight) {

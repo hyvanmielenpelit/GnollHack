@@ -991,6 +991,8 @@ unsigned long *colormasks UNUSED;
                 Strcpy(nb = eos(nb), " Hallu");
 			if (cond & BL_MASK_SLOWED)
 				Strcpy(nb = eos(nb), " Slow");
+			if (cond & BL_MASK_SILENCED)
+				Strcpy(nb = eos(nb), " Silent");
 			if (cond & BL_MASK_CANCELLED)
 				Strcpy(nb = eos(nb), " Cancl");
 			if (cond & BL_MASK_LEV)

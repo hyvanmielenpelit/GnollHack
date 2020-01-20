@@ -888,6 +888,17 @@ struct materialcomponentlist matlists[] =
 		}
 	},
 
+	{ SPE_MINOR_HEALING,
+	"Ginseng root",
+	STRANGE_OBJECT,
+	20,
+		{
+			{GINSENG_ROOT, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
+			NO_MATCOMP,
+			NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
+		}
+	},
+
 	{ SPE_HEALING,
 	"Ginseng root",
 	STRANGE_OBJECT,
@@ -1156,11 +1167,11 @@ struct materialcomponentlist matlists[] =
 	},
 
 	{ SPE_PROTECTION_FROM_LIGHTNING,
-	"Pinch of sulfurous ash",
+	"Nugget of iron ore",
 	STRANGE_OBJECT,
 	3,
 		{
-			{PINCH_OF_SULFUROUS_ASH, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
+			{NUGGET_OF_IRON_ORE, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
 			NO_MATCOMP,
 			NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
 		}
@@ -1743,6 +1754,17 @@ struct materialcomponentlist matlists[] =
 		}
 	},
 
+	{ SPE_SILENCE,
+	"Bone",
+	STRANGE_OBJECT,
+	10,
+		{
+			{BONE, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
+			NO_MATCOMP,
+			NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
+		}
+	},
+
 	{ SPE_SUMMON_DEMON,
 	"Black opal",
 	STRANGE_OBJECT,
@@ -1811,6 +1833,17 @@ struct materialcomponentlist matlists[] =
 	},
 
 	{ SPE_PRAYER,
+	"Topaz",
+	STRANGE_OBJECT,
+	3,
+		{
+			{TOPAZ, NOT_APPLICABLE, 1, MATCOMP_NOT_CURSED},
+			NO_MATCOMP,
+			NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
+		}
+	},
+
+	{ SPE_ABSOLUTION,
 	"Citrine stone",
 	STRANGE_OBJECT,
 	1,

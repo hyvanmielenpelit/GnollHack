@@ -1746,6 +1746,7 @@ boolean atme;
     case SPE_MAGIC_MISSILE:
 	case SPE_KNOCK:
     case SPE_SLOW_MONSTER:
+	case SPE_SILENCE:
 	case SPE_MASS_SLOW:
 	case SPE_WIZARD_LOCK:
     case SPE_DIG:
@@ -1829,6 +1830,7 @@ boolean atme;
 	case SPE_CURE_BLINDNESS:
 	case SPE_CURE_SICKNESS:
 	case SPE_CURE_PETRIFICATION:
+	case SPE_MINOR_HEALING:
 	case SPE_HEALING:
     case SPE_EXTRA_HEALING:
 	case SPE_GREATER_HEALING:
@@ -1838,9 +1840,11 @@ boolean atme;
 	case SPE_STONE_TO_FLESH:
 	case SPE_COMMUNE:
 	case SPE_PRAYER:
+	case SPE_ABSOLUTION:
 	case SPE_ENLIGHTENMENT:
-		if (objects[otyp].oc_dir != NODIR) {
-            if (otyp == SPE_HEALING || otyp == SPE_EXTRA_HEALING || otyp == SPE_GREATER_HEALING || otyp == SPE_FULL_HEALING
+		if (objects[otyp].oc_dir != NODIR)
+		{
+            if (otyp == SPE_MINOR_HEALING || otyp == SPE_HEALING || otyp == SPE_EXTRA_HEALING || otyp == SPE_GREATER_HEALING || otyp == SPE_FULL_HEALING
 				|| otyp == SPE_REPLENISH_UNDEATH || otyp == SPE_GREATER_UNDEATH_REPLENISHMENT
 				) {
                 /* healing and extra healing are actually potion effects,

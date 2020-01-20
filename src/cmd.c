@@ -3505,6 +3505,8 @@ int final;
 	}
 	if (Slowed)
 		you_are("slowed", from_what(SLOWED));
+	if (Silenced)
+		you_are("silenced", from_what(SILENCED));
 	if (Paralyzed)
 		you_are("paralyzed", from_what(PARALYZED));
 	if (Fearful)

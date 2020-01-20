@@ -908,6 +908,8 @@ struct obj* otmp; /* object to be identified if any state change happens */
 	boolean was_fast = Fast;
 	boolean was_very_fast = Very_fast;
 	boolean was_slowed = Slowed;
+	boolean was_silenced = Silenced;
+	boolean was_cancelled = Cancelled;
 	long previous_warntype_obj = context.warntype.obj;
 
 	update_extrinsics();
@@ -1170,6 +1172,30 @@ struct obj* otmp; /* object to be identified if any state change happens */
 		You_feel("yourself speed up.");
 	}
 
+
+	/* Silenced */
+	if (Silenced && !was_silenced)
+	{
+		state_change_detected = TRUE;
+		Your("voice disappears!");
+	}
+	else if (!Silenced && was_silenced)
+	{
+		state_change_detected = TRUE;
+		Your("voice returns!");
+	}
+
+	/* Cancellation */
+	if (Cancelled && !was_cancelled)
+	{
+		state_change_detected = TRUE;
+		Your("voice disappears!");
+	}
+	else if (!Cancelled && was_cancelled)
+	{
+		state_change_detected = TRUE;
+		Your("voice returns!");
+	}
 
 	/* Some spell powers */
 	if (Protection && !had_protection)

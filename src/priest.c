@@ -979,8 +979,10 @@ struct monst *mtmp;
        won't be relevant for it, but wand of probing doesn't */
     if (mtmp->mundetected || mtmp->m_ap_type)
         mhidden_description(mtmp, TRUE, eos(info));
-    if (has_cancelled(mtmp))
+    if (is_cancelled(mtmp))
         Strcat(info, ", cancelled");
+	if (is_silenced(mtmp))
+		Strcat(info, ", silenced");
 	if (has_no_magic_resistance(mtmp))
 		Strcat(info, ", no magic resistance");
 	else if (has_half_magic_resistance(mtmp))
@@ -1072,6 +1074,8 @@ ustatusline()
 		Strcat(info, ", fearful");
 	if (Cancelled)
 		Strcat(info, ", cancelled");
+	if (Silenced)
+		Strcat(info, ", silenced");
 	if (Paralyzed)
 		Strcat(info, ", paralyzed");
 	if (Sleeping)

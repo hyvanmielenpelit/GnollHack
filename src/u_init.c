@@ -73,7 +73,9 @@ static struct trobj Healer[] = {
     { POT_EXTRA_HEALING, 0, POTION_CLASS, 4, UNDEF_BLESS, 0 },
     { WAN_SLEEP, UNDEF_SPE, WAND_CLASS, 1, UNDEF_BLESS, 0 },
     /* always blessed, so it's guaranteed readable */
-    { SPE_HEALING, 0, SPBOOK_CLASS, 1, 1, 0 },
+	{ SPE_MINOR_HEALING, 0, SPBOOK_CLASS, 1, 1, 0 },
+	{ SPE_HEALING, 0, SPBOOK_CLASS, 1, 1, 0 },
+	{ SPE_EXTRA_HEALING, 0, SPBOOK_CLASS, 1, 1, 0 },
 	{ GINSENG_ROOT, 0, REAGENT_CLASS, 4, 0, 0 },
 	{ CLOVE_OF_GARLIC, 0, REAGENT_CLASS, 2, 0, 0 },
 	{ APPLE, 0, FOOD_CLASS, 5, 0, 0 },
@@ -92,15 +94,14 @@ static struct trobj Knight[] = {
 	{ 0, 0, 0, 0, 0, 0 }
 };
 static struct trobj Monk[] = {
-#define M_BOOK 2
     { LEATHER_GLOVES, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
     { ROBE, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-	{ UNDEF_TYP, UNDEF_SPE, SCROLL_CLASS, 1, UNDEF_BLESS, 0 },
     { POT_HEALING, 0, POTION_CLASS, 3, UNDEF_BLESS, 0 },
     { FOOD_RATION, 0, FOOD_CLASS, 1, 0, 0 },
     { APPLE, 0, FOOD_CLASS, 1, UNDEF_BLESS, 0 },
     { ORANGE, 0, FOOD_CLASS, 1, UNDEF_BLESS, 0 },
 	{ HANDFUL_OF_NUTS, 0, FOOD_CLASS, 1, UNDEF_BLESS, 0 },
+	{ SPE_MINOR_HEALING, 0, SPBOOK_CLASS, 1, 1, 0 },
 	/* Yes, we know fortune cookies aren't really from China.  They were
      * invented by George Jung in Los Angeles, California, USA in 1916.
      */
@@ -116,6 +117,8 @@ static struct trobj Priest[] = {
 	{ CLOVE_OF_GARLIC, 0, FOOD_CLASS, 1, 0, 0 },
 	{ SPRIG_OF_WOLFSBANE, 0, FOOD_CLASS, 1, 0, 0 },
 	{ GINSENG_ROOT, 0, REAGENT_CLASS, 2, 0, 0 },
+	{ SPE_MINOR_HEALING, 0, SPBOOK_CLASS, 1, 1, 0 },
+	{ SPE_HEALING, 0, SPBOOK_CLASS, 1, 1, 0 },
 	{ UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 2, UNDEF_BLESS, 0 },
 	{ LEATHER_BAG, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
 	{ 0, 0, 0, 0, 0, 0 }
@@ -961,9 +964,6 @@ u_init()
         skill_init(Skill_K_Init, Skill_K_Max);
         break;
     case PM_MONK: {
-        static short M_spell[] = { SPE_HEALING, SPE_PROTECTION, SPE_SLEEP };
-
-        Monk[M_BOOK].trotyp = M_spell[rn2(90) / 30]; /* [0..2] */
         ini_inv(Monk);
         if (!rn2(5))
             ini_inv(Magicmarker);

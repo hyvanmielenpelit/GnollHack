@@ -770,6 +770,8 @@ boolean silently;
 	boolean was_charmed = is_charmed(mtmp);
 	boolean was_tame = is_tame(mtmp);
 	boolean was_peaceful = is_peaceful(mtmp);
+	boolean was_silenced = is_silenced(mtmp);
+	boolean was_cancelled = is_cancelled(mtmp);
 
 
 	switch (function_choice)
@@ -844,6 +846,26 @@ boolean silently;
 				pline("%s slows down%s.", Monnam(mtmp), was_fast || was_very_fast ? " a lot" : "");
 			else
 				pline("%s is moving %sslower.", Monnam(mtmp), was_fast || was_very_fast ? "much " : "");
+		}
+
+		/* Silenced */
+		if (is_silenced(mtmp) && !was_silenced)
+		{
+			pline("%s voice disappears.", s_suffix(Monnam(mtmp)));
+		}
+		else if (!is_silenced(mtmp) && was_silenced)
+		{
+			pline("%s voice returns.", s_suffix(Monnam(mtmp)));
+		}
+
+		/* Cancellation */
+		if (is_cancelled(mtmp) && !was_cancelled)
+		{
+			pline("%s magic seems to stop flowing properly.", s_suffix(Monnam(mtmp)));
+		}
+		else if (!is_cancelled(mtmp) && was_cancelled)
+		{
+			pline("%s magic seems to start flowing properly.", s_suffix(Monnam(mtmp)));
 		}
 
 		/* Sleeping */

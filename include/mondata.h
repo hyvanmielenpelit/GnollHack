@@ -255,6 +255,11 @@
 #define has_summon_forbidden(mon) \
 	has_property(mon, SUMMON_FORBIDDEN)
 
+#define has_silenced(mon) \
+	has_property(mon, SILENCED)
+
+#define is_silenced(mon) \
+	has_silenced(mon)
 
 /* paralysis, sleeping, and can move */
 #define has_paralyzed(mon) \

@@ -555,6 +555,11 @@
 #define ESlowed u.uprops[SLOWED].extrinsic
 #define Slowed (HSlowed || ESlowed)
 
+#define HSilenced u.uprops[SILENCED].intrinsic
+#define ESilenced u.uprops[SILENCED].extrinsic
+#define Silenced (HSilenced || ESilenced)
+
+
 #define HFast u.uprops[FAST].intrinsic
 #define EFast u.uprops[FAST].extrinsic
 #define Fast (HFast || EFast) & !Slowed

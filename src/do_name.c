@@ -2261,7 +2261,7 @@ char *buf;
     if (mtmp && buf) {
         Sprintf(buf, "%s - %s",
                 x_monnam(mtmp, ARTICLE_NONE, (char *) 0, 0, TRUE),
-                has_cancelled(mtmp) ? coynames[SIZE(coynames) - 1]
+                is_cancelled(mtmp) ? coynames[SIZE(coynames) - 1]
                            : coynames[mtmp->m_id % (SIZE(coynames) - 1)]);
     }
     return buf;

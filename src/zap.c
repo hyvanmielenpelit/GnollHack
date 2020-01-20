@@ -414,7 +414,14 @@ struct obj *otmp;
         if (is_tame(mtmp))
             helpful_gesture = TRUE;
         break;
-    case WAN_UNDEAD_TURNING:
+	case SPE_SILENCE:
+		res = 1;
+		if (!check_magic_resistance_and_halve_damage(mtmp, otmp, 0, 0, NOTELL))
+		{
+			increase_mon_property_verbosely(mtmp, SILENCED, duration);
+		}
+		break;
+	case WAN_UNDEAD_TURNING:
     case SPE_TURN_UNDEAD:
 		res = 1;
 		wake = FALSE;
@@ -687,6 +694,7 @@ struct obj *otmp;
 			pline("Nothing much seems to happen to %s.", mon_nam(mtmp));
 		break;
 	}
+	case SPE_MINOR_HEALING:
 	case SPE_HEALING:
     case SPE_EXTRA_HEALING:
 	case SPE_GREATER_HEALING:
@@ -718,7 +726,7 @@ struct obj *otmp;
                         mimic_hit_msg(mtmp, otyp);
                 } else
                     pline("%s looks %s.", Monnam(mtmp),
-                          otyp == SPE_GREATER_HEALING ? "much, much better" : SPE_EXTRA_HEALING ? "much better" : otyp == SPE_FULL_HEALING ? "completely healed" : "better");
+                          otyp == SPE_GREATER_HEALING ? "much, much better" : otyp == SPE_EXTRA_HEALING ? "much better" : otyp == SPE_FULL_HEALING ? "completely healed" : "better");
             }
             if (is_tame(mtmp) || is_peaceful(mtmp)) {
                 adjalign(Role_if(PM_HEALER) ? 1 : sgn(u.ualign.type));
@@ -3213,12 +3221,14 @@ struct obj *obj, *otmp;
         case SPE_SLOW_MONSTER:
 		case SPE_MASS_SLOW:
 		case WAN_SPEED_MONSTER:
+		case SPE_SILENCE:
 		case SPE_MAGIC_ARROW:
 		case WAN_NOTHING:
 		case SPE_CHARM_MONSTER:
 		case SPE_CURE_BLINDNESS:
 		case SPE_CURE_SICKNESS:
 		case SPE_CURE_PETRIFICATION:
+		case SPE_MINOR_HEALING:
 		case SPE_HEALING:
         case SPE_EXTRA_HEALING:
 		case SPE_GREATER_HEALING:
@@ -4102,8 +4112,19 @@ register struct obj *obj;
 		You("finish communing with %s.", u_gname());
 		break;
 	case SPE_PRAYER:
+	{
+		int orig_blesscnt = u.ublesscnt;
+		u.ublesscnt = 0;
+		context.spellpray = TRUE;
+		(void)dopray();
+		context.spellpray = FALSE;
+		u.ublesscnt = orig_blesscnt;
+		break;
+
+	}
+	case SPE_ABSOLUTION:
 		You("recite an aeon-old prayer to %s.", u_gname());
-		(void)prayer_spell();
+		(void)absolution_spell();
 		break;
 	}
     if (known) {
@@ -4490,7 +4511,7 @@ boolean ordinary;
 		damage = 0;
 		boolean was_slowed = Slowed;
 		incr_itimeout(&HSlowed, obj->oclass == WAND_CLASS ? rn1(10, 100 + 60 * bcsign(obj)) : duration);
-		context.botl = TRUE;
+		context.botl = context.botlx = TRUE;
 		if (Slowed && !was_slowed)
 		{
 			learn_it = TRUE;
@@ -4498,7 +4519,17 @@ boolean ordinary;
 		}
 		//u_slow_down();
         break;
-
+	case SPE_SILENCE:
+		damage = 0;
+		boolean was_silenced = Silenced;
+		incr_itimeout(&HSilenced, duration);
+		context.botl = context.botlx = TRUE;
+		if (Silenced && !was_silenced)
+		{
+			learn_it = TRUE;
+			Your("voice disappears.");
+		}
+		break;
     case WAN_TELEPORTATION:
     case SPE_TELEPORT_AWAY:
 		damage = 0;
@@ -4612,13 +4643,15 @@ boolean ordinary;
 		learn_it = TRUE;
 		(void)revive_from_inventory(&youmonst);
 		break;
+	case SPE_MINOR_HEALING:
 	case SPE_HEALING:
     case SPE_EXTRA_HEALING:
 	case SPE_GREATER_HEALING:
 		if(is_living(youmonst.data))
 		{
 			learn_it = TRUE; /* (no effect for spells...) */
-			healup(damage, 0, FALSE, (obj->blessed || obj->otyp != SPE_HEALING), (obj->blessed || obj->otyp != SPE_HEALING), FALSE, FALSE);
+			healup(damage, 0, FALSE, (obj->blessed || (obj->otyp != SPE_HEALING && obj->otyp != SPE_MINOR_HEALING)),
+				(obj->blessed || (obj->otyp != SPE_HEALING && obj->otyp != SPE_MINOR_HEALING)), FALSE, FALSE);
 			You_feel("%sbetter.", obj->otyp == SPE_GREATER_HEALING ? "much, much " : obj->otyp == SPE_EXTRA_HEALING ? "much " : "");
 		}
 		else
@@ -4887,9 +4920,11 @@ struct obj *obj; /* wand or spell */
     case SPE_SLOW_MONSTER:
 	case SPE_MASS_SLOW:
 	case WAN_SPEED_MONSTER:
+	case SPE_SILENCE:
 	case SPE_CURE_BLINDNESS:
 	case SPE_CURE_SICKNESS:
 	case SPE_CURE_PETRIFICATION:
+	case SPE_MINOR_HEALING:
 	case SPE_HEALING:
     case SPE_EXTRA_HEALING:
 	case SPE_GREATER_HEALING:

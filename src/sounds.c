@@ -651,6 +651,9 @@ register struct monst *mtmp;
     if (!canspotmon(mtmp))
         map_invisible(mtmp->mx, mtmp->my);
 
+	if (is_silenced(mtmp))
+		msound = MS_SILENT;
+
     switch (msound) {
 	case MS_SILENT:
 		pline_msg = "does not respond.";
@@ -1109,7 +1112,7 @@ register struct monst *mtmp;
 
     if (pline_msg) {
         pline("%s %s", Monnam(mtmp), pline_msg);
-    } else if (has_cancelled(mtmp) && verbl_msg_mcan) {
+    } else if (is_cancelled(mtmp) && verbl_msg_mcan) {
         verbalize1(verbl_msg_mcan);
     } else if (verbl_msg) {
         /* more 3.6 tribute */
@@ -1151,7 +1154,11 @@ dochat()
         You_cant("speak.  You're choking!");
         return 0;
     }
-    if (u.uswallow) {
+	if (Silenced) {
+		You_cant("speak.  Your voice is gone!");
+		return 0;
+	}
+	if (u.uswallow) {
         pline("They won't hear you out there.");
         return 0;
     }
@@ -1225,6 +1232,13 @@ dochat()
 	{
 		if (canspotmon(mtmp))
 			pline("%s does not seem to be of the type that engages in conversation.", Monnam(mtmp));
+
+		return 0;
+	}
+	if (is_silenced(mtmp) && !is_tame(mtmp))
+	{
+		if (canspotmon(mtmp))
+			pline("%s voice is gone and cannot answer you!", s_suffix(Monnam(mtmp)));
 
 		return 0;
 	}
@@ -1983,7 +1997,13 @@ struct monst* mtmp;
 	if (!is_peaceful(mtmp))
 	{
 		pline("%s is not in the mood for chatting.", Monnam(mtmp));
-		return 1;
+		return 0;
+	}
+
+	if (is_silenced(mtmp))
+	{
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), mhis(mtmp));
+		return 0;
 	}
 
 	char ansbuf[BUFSZ] = "";
@@ -2643,6 +2663,12 @@ struct monst* mtmp;
 			pline("%s is already following you.", Monnam(mtmp));
 		return 0;
 	}
+	else if (is_silenced(mtmp))
+	{
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), mhis(mtmp));
+		return 0;
+	}
+
 	/*
 	else if (!umoney) {
 		You("have no money.");
@@ -2697,6 +2723,14 @@ STATIC_OVL int
 do_chat_buy_items(mtmp)
 struct monst* mtmp;
 {
+
+	if (is_silenced(mtmp))
+	{
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), mhis(mtmp));
+		return 0;
+	}
+
+
 	int result = 0;
 	int sellable_item_count = 0;
 
@@ -2990,6 +3024,12 @@ STATIC_OVL int
 do_chat_oracle_consult(mtmp)
 struct monst* mtmp;
 {
+	if (is_silenced(mtmp))
+	{
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), mhis(mtmp));
+		return 0;
+	}
+
 	return doconsult(mtmp);
 }
 
@@ -2997,6 +3037,13 @@ STATIC_OVL int
 do_chat_oracle_identify(mtmp)
 struct monst* mtmp;
 {
+	if (is_silenced(mtmp))
+	{
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), mhis(mtmp));
+		return 0;
+	}
+
+
 	return do_oracle_identify(mtmp);
 }
 
@@ -3004,6 +3051,13 @@ STATIC_OVL int
 do_chat_oracle_enlightenment(mtmp)
 struct monst* mtmp;
 {
+	if (is_silenced(mtmp))
+	{
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), mhis(mtmp));
+		return 0;
+	}
+
+
 	return do_oracle_enlightenment(mtmp);
 }
 
@@ -3027,7 +3081,12 @@ struct monst* mtmp;
 		pline("%s is in no mood for doing any services.", Monnam(mtmp));
 		return 0;
 	}
-	else if (!umoney) 
+	else if (is_silenced(mtmp))
+	{
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), mhis(mtmp));
+		return 0;
+	}
+	else if (!umoney)
 	{
 		You("have no money.");
 		return 0;
@@ -3108,6 +3167,11 @@ struct monst* mtmp;
 		pline("%s is in no mood for doing any services.", Monnam(mtmp));
 		return 0;
 	}
+	else if (is_silenced(mtmp))
+	{
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), mhis(mtmp));
+		return 0;
+	}
 	else if (!umoney)
 	{
 		You("have no money.");
@@ -3161,6 +3225,11 @@ struct monst* mtmp;
 		pline("%s is in no mood for doing any services.", Monnam(mtmp));
 		return 0;
 	}
+	else if (is_silenced(mtmp))
+	{
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), mhis(mtmp));
+		return 0;
+	}
 	else if (!umoney)
 	{
 		You("have no money.");
@@ -3200,6 +3269,12 @@ STATIC_OVL int
 do_chat_priest_chat(mtmp)
 struct monst* mtmp;
 {
+	if (is_silenced(mtmp))
+	{
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), mhis(mtmp));
+		return 0;
+	}
+
 	priest_talk(mtmp);
 	return 1;
 }
@@ -3220,6 +3295,11 @@ struct monst* mtmp;
 	else if (!is_peaceful(mtmp))
 	{
 		pline("%s is in no mood for doing any divination.", Monnam(mtmp));
+		return 0;
+	}
+	else if (is_silenced(mtmp))
+	{
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), mhis(mtmp));
 		return 0;
 	}
 	else if (!umoney)
@@ -3319,6 +3399,12 @@ STATIC_OVL int
 do_chat_shk_chat(mtmp)
 struct monst* mtmp;
 {
+	if (is_silenced(mtmp))
+	{
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), mhis(mtmp));
+		return 0;
+	}
+
 	shk_chat(mtmp);
 	return 1;
 }
@@ -3345,6 +3431,11 @@ struct monst* mtmp;
 	}
 	else if (!is_peaceful(mtmp)) {
 		pline("%s is in no mood for identification.", Monnam(mtmp));
+		return 0;
+	}
+	else if (is_silenced(mtmp))
+	{
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), mhis(mtmp));
 		return 0;
 	}
 	else if (!umoney) {
@@ -3436,6 +3527,12 @@ struct monst* mtmp;
 		There("is no one here to talk to.");
 		return 0;
 	}
+	else if (is_silenced(mtmp))
+	{
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), mhis(mtmp));
+		return 0;
+	}
+
 
 	Sprintf(qbuf, "\"You need to pay %d %s in compensation. Agree?\"", reconcile_cost, currency(reconcile_cost));
 
@@ -3489,6 +3586,11 @@ struct monst* mtmp;
 		There("is no one here to talk to.");
 		return 0;
 	}
+	else if (is_silenced(mtmp))
+	{
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), mhis(mtmp));
+		return 0;
+	}
 	else if (mvitals[PM_WATCHMAN].died > 0 || mvitals[PM_WATCH_CAPTAIN].died > 0) {
 		pline("You will hang for your crimes, scum!", Monnam(mtmp));
 		return 0;
@@ -3532,6 +3634,11 @@ STATIC_OVL int
 do_chat_quest_chat(mtmp)
 struct monst* mtmp;
 {
+	if (is_silenced(mtmp))
+	{
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), mhis(mtmp));
+		return 0;
+	}
 	quest_chat(mtmp);
 	return 1;
 }
