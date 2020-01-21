@@ -953,7 +953,8 @@ unsigned trflags;
     nomul(0);
 
     /* KMH -- You can't escape the Sokoban level traps */
-    if (Sokoban && (is_pit(ttype) || is_hole(ttype))) {
+    if (Sokoban && (is_pit(ttype) || is_hole(ttype))) 
+	{
         /* The "air currents" message is still appropriate -- even when
          * the hero isn't flying or levitating -- because it conveys the
          * reason why the player cannot escape the trap with a dexterity
@@ -963,19 +964,24 @@ unsigned trflags;
               a_your[trap->madeby_u],
               defsyms[trap_to_defsym(ttype)].explanation);
         /* then proceed to normal trap effect */
-    } else if (already_seen && !forcetrap) {
+    }
+	else if (already_seen && !forcetrap) 
+	{
         if ((Levitation || (Flying && !plunged))
-            && (is_pit(ttype) || ttype == HOLE || ttype == BEAR_TRAP)) {
+            && (is_pit(ttype) || ttype == HOLE || ttype == BEAR_TRAP))
+		{
             You("%s over %s %s.", Levitation ? "float" : "fly",
                 a_your[trap->madeby_u],
                 defsyms[trap_to_defsym(ttype)].explanation);
             return;
         }
-        if (!Fumbling && ttype != MAGIC_PORTAL && ttype != VIBRATING_SQUARE
+
+        if (!Fumbling && ttype != MAGIC_PORTAL && ttype != VIBRATING_SQUARE && ttype != MODRON_OCTAHEDRAL_PORTAL && ttype != MODRON_TETRAHEDRAL_PORTAL
             && ttype != ANTI_MAGIC && !forcebungle && !plunged
             && !conj_pit && !adj_pit
             && (!rn2(5) || (is_pit(ttype)
-                            && is_clinger(youmonst.data)))) {
+                            && is_clinger(youmonst.data))))
+		{
                 You("escape %s %s.", (ttype == ARROW_TRAP && !trap->madeby_u)
                                      ? "an"
                                      : a_your[trap->madeby_u],
@@ -984,7 +990,8 @@ unsigned trflags;
         }
     }
 
-    if (u.usteed) {
+    if (u.usteed) 
+	{
         u.usteed->mtrapseen |= (1 << (ttype - 1));
         /* suppress article in various steed messages when using its
            name (which won't occur when hallucinating) */
@@ -992,7 +999,8 @@ unsigned trflags;
             steed_article = ARTICLE_NONE;
     }
 
-    switch (ttype) {
+    switch (ttype) 
+	{
     case ARROW_TRAP:
         if (trap->once && trap->tseen && !rn2(15)) {
             You_hear("a loud click!");
@@ -1589,10 +1597,15 @@ unsigned trflags;
 
 	case MODRON_OCTAHEDRAL_PORTAL:
 		feeltrap(trap);
-		(void)modronportaltele(trap, &youmonst, u.ux + 5, u.uy + 0);
+		(void)modronportaltele(trap, &youmonst, u.ux + 7, u.uy + 0);
 		break;
 
-    default:
+	case MODRON_TETRAHEDRAL_PORTAL:
+		feeltrap(trap);
+		(void)modronportaltele(trap, &youmonst, u.ux - 4, u.uy + 0);
+		break;
+
+	default:
         feeltrap(trap);
         impossible("You hit a trap of type %u", trap->ttyp);
     }
@@ -2783,7 +2796,10 @@ register struct monst *mtmp;
             }
             break;
 		case MODRON_OCTAHEDRAL_PORTAL:
-			modronportaltele(trap, mtmp, mtmp->mx + 5, mtmp->my);
+			modronportaltele(trap, mtmp, mtmp->mx + 7, mtmp->my);
+			break;
+		case MODRON_TETRAHEDRAL_PORTAL:
+			modronportaltele(trap, mtmp, mtmp->mx - 4, mtmp->my);
 			break;
 		default:
             impossible("Some monster encountered a strange trap of type %d.",
@@ -4509,6 +4525,7 @@ struct trap* ttmp;
 				   "polymorph trap",
 				   "vibrating square",
 				   "octahedral magic portal",
+				   "tetrahedral magic portal",
 				   0 };
 
 /*

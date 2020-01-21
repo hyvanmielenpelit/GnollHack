@@ -209,6 +209,7 @@ const struct symdef defsyms[MAXPCHARS] = {
        { '^', "polymorph trap", C(CLR_BRIGHT_GREEN) }, /* trap */
        { '~', "vibrating square", C(CLR_MAGENTA) },    /* "trap" */
 	   { '^', "octahedral magic portal", C(CLR_CYAN) }, /* trap */
+	   { '^', "tetrahedral magic portal", C(CLR_CYAN) }, /* trap */
 	   /* zap colors are changed by mapglyph() to match type of beam */
        { '|', "", C(CLR_GRAY) },                /* vbeam */
        { '-', "", C(CLR_GRAY) },                /* hbeam */

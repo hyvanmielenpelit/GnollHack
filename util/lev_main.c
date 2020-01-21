@@ -173,6 +173,7 @@ static struct {
                    { "polymorph", POLY_TRAP },
                    { "vibrating square", VIBRATING_SQUARE },
 				   { "octahedral portal", MODRON_OCTAHEDRAL_PORTAL },
+				   { "tetrahedral portal", MODRON_TETRAHEDRAL_PORTAL },
 				   { 0, 0 } };
 
 static struct {

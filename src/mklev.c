@@ -1511,6 +1511,7 @@ coord *tm;
             /* reject "too hard" traps */
             switch (kind) {
 			case MODRON_OCTAHEDRAL_PORTAL:
+			case MODRON_TETRAHEDRAL_PORTAL:
 			case MAGIC_PORTAL:
             case VIBRATING_SQUARE:
                 kind = NO_TRAP;

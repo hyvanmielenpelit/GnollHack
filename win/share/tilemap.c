@@ -591,6 +591,7 @@ struct {
 {S_polymorph_trap,       "polymorph trap", "polymorph trap"},
 {S_vibrating_square,     "vibrating square", "vibrating square"},
 {S_octagonal_portal,     "octahedral magic portal", "octahedral magic portal"},
+{S_tetragonal_portal,     "tetrahedral magic portal", "tetrahedral magic portal"},
 {S_vbeam,    "vertical beam", "cmap 65"},
 {S_hbeam,    "horizontal beam", "cmap 66"},
 {S_lslant,   "left slant beam", "cmap 67"},

@@ -1443,6 +1443,7 @@ dospinweb()
         case LEVEL_TELEP:
         case MAGIC_PORTAL:
 		case MODRON_OCTAHEDRAL_PORTAL:
+		case MODRON_TETRAHEDRAL_PORTAL:
 		case VIBRATING_SQUARE:
             Your("webbing vanishes!");
             return 0;

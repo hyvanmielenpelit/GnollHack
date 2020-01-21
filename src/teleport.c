@@ -570,6 +570,26 @@ int y;
 			/* Code to use usable items, if need be -- Now no items are used when accessing the portal */
 		}
 	}
+	else if (ttmp->ttyp == MODRON_TETRAHEDRAL_PORTAL)
+	{
+		if (mtmp == &youmonst)
+			otmp = carrying(MODRONITE_TETRAHEDRON);
+		else
+			otmp = m_carrying(mtmp, MODRONITE_TETRAHEDRON);
+
+		if (!otmp)
+		{
+			if (mtmp == &youmonst)
+				pline("Violet glimmer surrounds you for a while but nothing else happens.");
+			else if (canseemon(mtmp))
+				pline("Violet glimmer flashes around %s.", mon_nam(mtmp));
+			return FALSE;
+		}
+		else
+		{
+			/* Code to use usable items, if need be -- Now no items are used when accessing the portal */
+		}
+	}
 	else
 		return FALSE; //Not a modron portal
 
