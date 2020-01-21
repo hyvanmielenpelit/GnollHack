@@ -302,6 +302,17 @@ struct materialcomponentlist matlists[] =
 		}
 	},
 
+	{ SPE_LOWER_MAGIC_RESISTANCE,
+		"Nugget of orichalcum ore",
+		STRANGE_OBJECT,
+		5,
+		{
+			{NUGGET_OF_ORICHALCUM_ORE, NOT_APPLICABLE, 1, MATCOMP_NO_FLAGS},
+			NO_MATCOMP,
+			NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
+		}
+	},
+
 	{ SPE_NEGATE_MAGIC_RESISTANCE,
 		"Nugget of orichalcum ore",
 		STRANGE_OBJECT,

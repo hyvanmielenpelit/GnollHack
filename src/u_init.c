@@ -460,6 +460,7 @@ static const struct def_skill Skill_H_Init[] = {
 	{ P_DAGGER, P_BASIC },
 	{ P_QUARTERSTAFF, P_BASIC },
 	{ P_HEALING_SPELL, P_SKILLED },
+	{ P_ABJURATION_SPELL, P_BASIC },
 	{ P_NONE, 0 }
 };
 
