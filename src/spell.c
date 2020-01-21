@@ -1748,6 +1748,7 @@ boolean atme;
 	case SPE_SILENCE:
 	case SPE_SLOW_MONSTER:
 	case SPE_MASS_SLOW:
+	case SPE_HASTE_MONSTER:
 	case SPE_HOLD_MONSTER:
 	case SPE_MASS_HOLD:
 	case SPE_WIZARD_LOCK:
@@ -1758,7 +1759,7 @@ boolean atme;
 	case SPE_NEGATE_UNDEATH:
 	case SPE_BANISH_DEMON:
 	case SPE_POLYMORPH:
-    case SPE_TELEPORT_AWAY:
+    case SPE_TELEPORT_MONSTER:
     case SPE_CANCELLATION:
 	case SPE_LOWER_MAGIC_RESISTANCE:
 	case SPE_NEGATE_MAGIC_RESISTANCE:
@@ -1844,6 +1845,12 @@ boolean atme;
 	case SPE_PRAYER:
 	case SPE_ABSOLUTION:
 	case SPE_ENLIGHTENMENT:
+	case SPE_TELEPORT_SELF:
+	case SPE_CONTROLLED_TELEPORT:
+	case SPE_CIRCLE_OF_TELEPORTATION:
+	case SPE_LEVEL_TELEPORT:
+	case SPE_CONTROLLED_LEVEL_TELEPORT:
+	case SPE_PORTAL:
 		if (objects[otyp].oc_dir != NODIR)
 		{
             if (otyp == SPE_MINOR_HEALING || otyp == SPE_HEALING || otyp == SPE_EXTRA_HEALING || otyp == SPE_GREATER_HEALING || otyp == SPE_FULL_HEALING
@@ -2370,7 +2377,7 @@ int what;
 #define REMOVESPELL 4
 
     for (i = 0; i < MAXSPELL; i++)
-        if (spellid(i) == SPE_TELEPORT_AWAY || spellid(i) == NO_SPELL)
+        if (spellid(i) == SPE_TELEPORT_MONSTER || spellid(i) == NO_SPELL)
             break;
     if (i == MAXSPELL) {
         impossible("tport_spell: spellbook full");
@@ -2379,23 +2386,23 @@ int what;
         if (what == HIDE_SPELL || what == REMOVESPELL) {
             save_tport.tport_indx = MAXSPELL;
         } else if (what == UNHIDESPELL) {
-            /*assert( save_tport.savespell.sp_id == SPE_TELEPORT_AWAY );*/
+            /*assert( save_tport.savespell.sp_id == SPE_TELEPORT_MONSTER );*/
             spl_book[save_tport.tport_indx] = save_tport.savespell;
             save_tport.tport_indx = MAXSPELL; /* burn bridge... */
         } else if (what == ADD_SPELL) {
             save_tport.savespell = spl_book[i];
             save_tport.tport_indx = i;
-            spl_book[i].sp_id = SPE_TELEPORT_AWAY;
-            spl_book[i].sp_lev = objects[SPE_TELEPORT_AWAY].oc_spell_level;
-			spl_book[i].sp_matcomp = objects[SPE_TELEPORT_AWAY].oc_material_components;
-			spl_book[i].sp_cooldownlength = objects[SPE_TELEPORT_AWAY].oc_spell_cooldown;
+            spl_book[i].sp_id = SPE_TELEPORT_MONSTER;
+            spl_book[i].sp_lev = objects[SPE_TELEPORT_MONSTER].oc_spell_level;
+			spl_book[i].sp_matcomp = objects[SPE_TELEPORT_MONSTER].oc_material_components;
+			spl_book[i].sp_cooldownlength = objects[SPE_TELEPORT_MONSTER].oc_spell_cooldown;
 			spl_book[i].sp_cooldownleft = 0;
-			spl_book[i].sp_skillchance = objects[SPE_TELEPORT_AWAY].oc_spell_skill_chance;
+			spl_book[i].sp_skillchance = objects[SPE_TELEPORT_MONSTER].oc_spell_skill_chance;
 			spl_book[i].sp_amount = -1; //Infinite??
 			spl_book[i].sp_know = KEEN;
             return REMOVESPELL; /* operation needed to reverse */
         }
-    } else { /* spellid(i) == SPE_TELEPORT_AWAY */
+    } else { /* spellid(i) == SPE_TELEPORT_MONSTER */
         if (what == ADD_SPELL || what == UNHIDESPELL) {
             save_tport.tport_indx = MAXSPELL;
         } else if (what == REMOVESPELL) {

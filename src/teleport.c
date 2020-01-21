@@ -438,14 +438,21 @@ boolean force_it;
 void
 tele()
 {
-    (void) scrolltele((struct obj *) 0, FALSE);
+    (void) scrolltele((struct obj *) 0, FALSE, FALSE);
+}
+
+/* teleport the hero as though he or she had teleport control */
+void
+controlled_teleportation()
+{
+	(void)scrolltele((struct obj*) 0, FALSE, TRUE);
 }
 
 /* teleport the hero via some method other than scroll of teleport */
 void
 wiztele()
 {
-	(void)scrolltele((struct obj*) 0, TRUE);
+	(void)scrolltele((struct obj*) 0, TRUE, TRUE);
 }
 
 
@@ -454,15 +461,17 @@ wiztele()
    outcome sometimes depends upon destination and discovery needs to be
    performed before arrival, in case we land on another teleport scroll */
 boolean
-scrolltele(scroll, iswizcmd)
+scrolltele(scroll, iswizcmd, iscontrolled)
 struct obj *scroll;
 boolean iswizcmd;
+boolean iscontrolled;
 {
     coord cc;
     boolean result = FALSE; /* don't learn scroll */
 
     /* Disable teleportation in stronghold && Vlad's Tower */
-    if (level.flags.noteleport) {
+    if (level.flags.noteleport) 
+	{
         if (!wizard) {
             pline("A mysterious force prevents you from teleporting!");
             return TRUE;
@@ -473,15 +482,21 @@ boolean iswizcmd;
     if (!Blinded)
         make_blinded(0L, FALSE);
 
-    if ((u.uhave.amulet || On_W_tower_level(&u.uz)) && !rn2(3)) {
+    if ((u.uhave.amulet || On_W_tower_level(&u.uz)) && !rn2(3)) 
+	{
         You_feel("disoriented for a moment.");
         if (!wizard || yn("Override?") != 'y')
             return FALSE;
     }
-    if ((Teleport_control && !Stunned) || (wizard && (iswizcmd || yn("Enforce teleport control?") == 'y'))) {
-        if (unconscious()) {
+
+    if ((Teleport_control && !Stunned) || iscontrolled || (wizard && (iswizcmd || yn("Enforce teleport control?") == 'y')))
+	{
+        if (unconscious() && !iscontrolled && !iswizcmd)
+		{
             pline("Being unconscious, you cannot control your teleport.");
-        } else {
+        }
+		else 
+		{
             char whobuf[BUFSZ];
 
             Strcpy(whobuf, "you");
@@ -494,7 +509,8 @@ boolean iswizcmd;
                 return TRUE; /* abort */
             /* possible extensions: introduce a small error if
                magic power is low; allow transfer to solid rock */
-            if (teleok(cc.x, cc.y, FALSE)) {
+            if (teleok(cc.x, cc.y, FALSE)) 
+			{
                 /* for scroll, discover it regardless of destination */
                 if (scroll)
                     learnscroll(scroll);
@@ -504,7 +520,9 @@ boolean iswizcmd;
             pline("Sorry...");
             result = TRUE;
         }
-    } else if (scroll && scroll->blessed) {
+    } 
+	else if (scroll && scroll->blessed)
+	{
         /* (this used to be handled in seffects()) */
         if (yn("Do you wish to teleport?") == 'n')
             return TRUE;
@@ -754,7 +772,7 @@ boolean break_the_rules; /* True: wizard mode ^T */
                lookup loop) but it is possible to know and cast a spell
                after forgetting its book due to amnesia. */
             for (sp_no = 0; sp_no < MAXSPELL; sp_no++)
-                if (spl_book[sp_no].sp_id == SPE_TELEPORT_AWAY)
+                if (spl_book[sp_no].sp_id == SPE_TELEPORT_MONSTER)
                     break;
             /* casting isn't inhibited by being Stunned (...it ought to be) */
             castit = (sp_no < MAXSPELL && !Confusion);
@@ -776,7 +794,7 @@ boolean break_the_rules; /* True: wizard mode ^T */
            [Note: this spellev() is different from the one in spell.c
            but they both yield the same result.] */
 #define spellev(spell_otyp) ((int) objects[spell_otyp].oc_spell_level)
-        energy = 5 * spellev(SPE_TELEPORT_AWAY);
+        energy = 5 * spellev(SPE_TELEPORT_MONSTER);
         if (break_the_rules) {
             if (!castit)
                 energy = 0;
@@ -835,14 +853,16 @@ boolean break_the_rules; /* True: wizard mode ^T */
 }
 
 void
-level_tele(iswizcmd)
-boolean iswizcmd;
+level_tele(teletype, iscontrolled)
+int teletype; /* 0 = scroll or other involuntary, 1 = wizard mode command, 2 = spell */
+boolean iscontrolled;
 {
     register int newlev;
     d_level newlevel;
     const char *escape_by_flying = 0; /* when surviving dest of -N */
     char buf[BUFSZ];
     boolean force_dest = FALSE;
+	int tcnt = 0;
 
     if (iflags.debug_fuzzer)
         goto random_levtport;
@@ -851,7 +871,7 @@ boolean iswizcmd;
         You_feel("very disoriented for a moment.");
         return;
     }
-    if ((Teleport_control && !Stunned) || (wizard && (iswizcmd || yn("Enforce teleport control?") == 'y'))) 
+    if ((Teleport_control && !Stunned) || iscontrolled || (wizard && (teletype == 1 || yn("Enforce teleport control?") == 'y'))) 
 	{
         char qbuf[BUFSZ];
         int trycnt = 0;
@@ -958,10 +978,20 @@ boolean iswizcmd;
          */
         if (In_quest(&u.uz) && newlev > 0)
             newlev = newlev + dungeons[u.uz.dnum].depth_start - 1;
-    } else { /* involuntary level tele */
-    random_levtport:
-        newlev = random_teleport_level();
-        if (newlev == depth(&u.uz)) {
+    } 
+	else
+	{ /* involuntary level tele */
+random_levtport:
+		tcnt = 0;
+		do
+		{
+			tcnt++;
+			newlev = random_teleport_level();
+
+		} while (newlev == depth(&u.uz) && tcnt < (teletype == 0 ? 1 : 10));
+
+        if (newlev == depth(&u.uz))
+		{
             You1(shudder_for_moment);
             return;
         }
@@ -1165,7 +1195,7 @@ unsigned trflags;
         You("are momentarily disoriented.");
     deltrap(trap);
     newsym(u.ux, u.uy); /* get rid of trap symbol */
-    level_tele(FALSE);
+    level_tele(0, FALSE);
 }
 
 /* check whether monster can arrive at location <x,y> via Tport (or fall) */

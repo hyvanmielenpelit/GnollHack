@@ -120,7 +120,7 @@ E uchar FDECL(prop_to_adtyp, (int));
 E int FDECL(adtyp_to_prop, (uchar));
 E struct obj* FDECL(what_gives_monster, (struct monst*, int));
 E boolean FDECL(is_immune, (struct monst*, int));
-
+E int NDECL(create_portal);
 
 /* ### attrib.c ### */
 
@@ -2593,12 +2593,13 @@ E void FDECL(teleds, (int, int, BOOLEAN_P));
 E boolean FDECL(safe_teleds, (BOOLEAN_P));
 E boolean FDECL(teleport_pet, (struct monst *, BOOLEAN_P));
 E void NDECL(tele);
+E void NDECL(controlled_teleportation);
 E void NDECL(wiztele);
-E boolean FDECL(scrolltele, (struct obj *, BOOLEAN_P));
+E boolean FDECL(scrolltele, (struct obj *, BOOLEAN_P, BOOLEAN_P));
 E boolean FDECL(modronportaltele, (struct trap*, struct monst*, int, int));
 E int NDECL(dotelecmd);
 E int FDECL(dotele, (BOOLEAN_P));
-E void FDECL(level_tele, (BOOLEAN_P));
+E void FDECL(level_tele, (int, BOOLEAN_P));
 E void FDECL(domagicportal, (struct trap *));
 E void FDECL(tele_trap, (struct trap *));
 E void FDECL(level_tele_trap, (struct trap *, unsigned));

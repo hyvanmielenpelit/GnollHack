@@ -403,6 +403,9 @@ struct obj *otmp;
             }
         }
         break;
+	case SPE_HASTE_MONSTER:
+		increase_mon_property_verbosely(mtmp, VERY_FAST, otmp->oclass == WAND_CLASS ? rn1(10, 100 + 60 * bcsign(otmp)) : duration);
+		break;
 	case SPE_HOLD_MONSTER:
 	case SPE_MASS_HOLD:
 		res = 1;
@@ -586,7 +589,7 @@ struct obj *otmp;
 		(void)add_temporary_property(mtmp, otmp, TRUE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus);
 		break;
 	case WAN_TELEPORTATION:
-    case SPE_TELEPORT_AWAY:
+    case SPE_TELEPORT_MONSTER:
 		res = 1;
 		if (disguised_mimic)
             seemimic(mtmp);
@@ -3016,7 +3019,7 @@ struct obj *obj, *otmp;
 			(void) drain_item(obj, TRUE);
             break;
         case WAN_TELEPORTATION:
-        case SPE_TELEPORT_AWAY:
+        case SPE_TELEPORT_MONSTER:
 			res = 1;
 			(void) rloco(obj);
             break;
@@ -3242,6 +3245,7 @@ struct obj *obj, *otmp;
         case WAN_SLOW_MONSTER: /* no effect on objects */
         case SPE_SLOW_MONSTER:
 		case SPE_MASS_SLOW:
+		case SPE_HASTE_MONSTER:
 		case SPE_HOLD_MONSTER:
 		case SPE_MASS_HOLD:
 		case WAN_SPEED_MONSTER:
@@ -4036,6 +4040,26 @@ register struct obj *obj;
 
 		break;
 	}
+	case SPE_CIRCLE_OF_TELEPORTATION:
+	{
+		int radius = objects[obj->otyp].oc_spell_radius;
+		for (struct monst* mon = fmon; mon; mon = mon->nmon)
+		{
+			if (dist2(u.ux, u.uy, mon->mx, mon->my) <= radius * (radius + 1))
+			{
+				if (!DEADMONSTER(mon) && mon != u.usteed && mon != &youmonst
+					&& !check_magic_resistance_and_halve_damage(mon, (struct obj*)0, u.ulevel, 0, canspotmon(mon) ? TELL : NOTELL))
+				{
+					(void)u_teleport_mon(mon, TRUE);
+
+					if (is_peaceful(mon))
+						setmangry(mon, FALSE);
+				}
+			}
+		}
+
+		break;
+	}
 	case SPE_DETECT_UNSEEN:
 	{
 		int msg = Invisible && !Blind;
@@ -4085,6 +4109,21 @@ register struct obj *obj;
 		{
 			pline("Nothing seems to happens.");
 		}
+		break;
+	case SPE_TELEPORT_SELF:
+		tele();
+		break;
+	case SPE_CONTROLLED_TELEPORT:
+		controlled_teleportation();
+		break;
+	case SPE_LEVEL_TELEPORT:
+		level_tele(2, FALSE);
+		break;
+	case SPE_CONTROLLED_LEVEL_TELEPORT:
+		level_tele(2, TRUE);
+		break;
+	case SPE_PORTAL:
+		create_portal();
 		break;
 	case SPE_ENLIGHTENMENT:
 	case WAN_ENLIGHTENMENT:
@@ -4543,6 +4582,17 @@ boolean ordinary;
 		}
 		//u_slow_down();
         break;
+	case SPE_HASTE_MONSTER:
+		damage = 0;
+		boolean was_very_fast = Very_fast;
+		incr_itimeout(&HVery_fast, obj->oclass == WAND_CLASS ? rn1(10, 100 + 60 * bcsign(obj)) : duration);
+		context.botl = context.botlx = TRUE;
+		if (Very_fast && !was_very_fast)
+		{
+			learn_it = TRUE;
+			You("speed up.");
+		}
+		break;
 	case SPE_HOLD_MONSTER:
 	case SPE_MASS_HOLD:
 		damage = 0;
@@ -4576,7 +4626,7 @@ boolean ordinary;
 		}
 		break;
     case WAN_TELEPORTATION:
-    case SPE_TELEPORT_AWAY:
+    case SPE_TELEPORT_MONSTER:
 		damage = 0;
 		tele();
         /* same criteria as when mounted (zap_steed) */
@@ -4929,7 +4979,7 @@ struct obj *obj; /* wand or spell */
         steedhit = TRUE;
         break;
     case WAN_TELEPORTATION:
-    case SPE_TELEPORT_AWAY:
+    case SPE_TELEPORT_MONSTER:
         /* you go together */
         tele();
         /* same criteria as when unmounted (zapyourself) */
@@ -4964,6 +5014,7 @@ struct obj *obj; /* wand or spell */
 	case WAN_SLOW_MONSTER:
     case SPE_SLOW_MONSTER:
 	case SPE_MASS_SLOW:
+	case SPE_HASTE_MONSTER:
 	case SPE_HOLD_MONSTER:
 	case SPE_MASS_HOLD:
 	case WAN_SPEED_MONSTER:
@@ -5301,7 +5352,7 @@ struct obj *obj; /* wand or spell */
                 del_engr(e);
                 break;
             case WAN_TELEPORTATION:
-            case SPE_TELEPORT_AWAY:
+            case SPE_TELEPORT_MONSTER:
                 rloc_engr(e);
                 break;
             case SPE_STONE_TO_FLESH:

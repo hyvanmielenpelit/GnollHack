@@ -2370,67 +2370,15 @@ struct obj *obj;
 			break;
         }
         case LEV_TELE:
-            level_tele(FALSE);
+            level_tele(2, FALSE);
 			obj->cooldownleft = 25 + rnz(25);
 			break;
-        case CREATE_PORTAL: {
-            int i, num_ok_dungeons, last_ok_dungeon = 0;
-            d_level newlev;
-            extern int n_dgns; /* from dungeon.c */
-            winid tmpwin = create_nhwindow(NHW_MENU);
-            anything any;
+        case CREATE_PORTAL:
+		{
+			int portal_res = create_portal();
+			if (!portal_res)
+				goto nothing_special;
 
-            any = zeroany; /* set all bits to zero */
-            start_menu(tmpwin);
-            /* use index+1 (cant use 0) as identifier */
-            for (i = num_ok_dungeons = 0; i < n_dgns; i++) {
-                if (!dungeons[i].dunlev_ureached)
-                    continue;
-                any.a_int = i + 1;
-                add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
-                         dungeons[i].dname, MENU_UNSELECTED);
-                num_ok_dungeons++;
-                last_ok_dungeon = i;
-            }
-            end_menu(tmpwin, "Open a portal to which dungeon?");
-            if (num_ok_dungeons > 1) {
-                /* more than one entry; display menu for choices */
-                menu_item *selected;
-                int n;
-
-                n = select_menu(tmpwin, PICK_ONE, &selected);
-                if (n <= 0) {
-                    destroy_nhwindow(tmpwin);
-                    goto nothing_special;
-                }
-                i = selected[0].item.a_int - 1;
-                free((genericptr_t) selected);
-            } else
-                i = last_ok_dungeon; /* also first & only OK dungeon */
-            destroy_nhwindow(tmpwin);
-
-            /*
-             * i is now index into dungeon structure for the new dungeon.
-             * Find the closest level in the given dungeon, open
-             * a use-once portal to that dungeon and go there.
-             * The closest level is either the entry or dunlev_ureached.
-             */
-            newlev.dnum = i;
-            if (dungeons[i].depth_start >= depth(&u.uz))
-                newlev.dlevel = dungeons[i].entry_lev;
-            else
-                newlev.dlevel = dungeons[i].dunlev_ureached;
-
-            if (u.uhave.amulet || In_endgame(&u.uz) || In_endgame(&newlev)
-                || newlev.dnum == u.uz.dnum || !next_to_u()) {
-                You_feel("very disoriented for a moment.");
-            } else {
-                if (!Blind)
-                    You("are surrounded by a shimmering sphere!");
-                else
-                    You_feel("weightless for a moment.");
-                goto_level(&newlev, FALSE, FALSE, FALSE);
-            }
 			obj->cooldownleft = 25 + rnz(25);
 			break;
         }
@@ -2605,6 +2553,82 @@ struct obj *obj;
     }
 
     return 1;
+}
+
+int
+create_portal()
+{
+	int i, num_ok_dungeons, last_ok_dungeon = 0;
+	d_level newlev;
+	extern int n_dgns; /* from dungeon.c */
+	winid tmpwin = create_nhwindow(NHW_MENU);
+	anything any;
+
+	any = zeroany; /* set all bits to zero */
+	start_menu(tmpwin);
+
+	/* use index+1 (cant use 0) as identifier */
+	for (i = num_ok_dungeons = 0; i < n_dgns; i++) 
+	{
+		if (!dungeons[i].dunlev_ureached)
+			continue;
+		any.a_int = i + 1;
+		add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
+			dungeons[i].dname, MENU_UNSELECTED);
+		num_ok_dungeons++;
+		last_ok_dungeon = i;
+	}
+	
+	end_menu(tmpwin, "Open a portal to which dungeon?");
+
+
+	if (num_ok_dungeons > 1) 
+	{
+		/* more than one entry; display menu for choices */
+		menu_item* selected;
+		int n;
+
+		n = select_menu(tmpwin, PICK_ONE, &selected);
+		if (n <= 0)
+		{
+			destroy_nhwindow(tmpwin);
+			return 0;
+		}
+		i = selected[0].item.a_int - 1;
+		free((genericptr_t)selected);
+	}
+	else
+		i = last_ok_dungeon; /* also first & only OK dungeon */
+
+	destroy_nhwindow(tmpwin);
+
+	/*
+	 * i is now index into dungeon structure for the new dungeon.
+	 * Find the closest level in the given dungeon, open
+	 * a use-once portal to that dungeon and go there.
+	 * The closest level is either the entry or dunlev_ureached.
+	 */
+	newlev.dnum = i;
+	if (dungeons[i].depth_start >= depth(&u.uz))
+		newlev.dlevel = dungeons[i].entry_lev;
+	else
+		newlev.dlevel = dungeons[i].dunlev_ureached;
+
+	if (u.uhave.amulet || In_endgame(&u.uz) || In_endgame(&newlev)
+		|| newlev.dnum == u.uz.dnum || !next_to_u())
+	{
+		You_feel("very disoriented for a moment.");
+	}
+	else 
+	{
+		if (!Blind)
+			You("are surrounded by a shimmering sphere!");
+		else
+			You_feel("weightless for a moment.");
+		goto_level(&newlev, FALSE, FALSE, FALSE);
+	}
+
+	return 1;
 }
 
 /* will freeing this object from inventory cause levitation to end? */
