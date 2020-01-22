@@ -40,7 +40,27 @@ TELEPORT_REGION:(01,07,05,11),(0,0,0,0),down
 # The special entrace portal
 TRAP:"octahedral portal", (05,09)
 TRAP:"tetrahedral portal", (08,09)
-OBJECT:('9',"modronite ball"),(01,09)
+
+# Dead adventurers
+OBJECT: ')', (01,07)
+OBJECT: '[', (01,07)
+OBJECT:('9',"bone"),(01,07)
+OBJECT:('9',"bone"),(01,07)
+OBJECT:('9',"modronite ball"),(01,07)
+OBJECT:('9',"human skull"),(01,07)
+
+[50%]: OBJECT:(')',"quarterstaff"),(04,11)
+[25%]: OBJECT: '/', (04,11)
+[50%]: OBJECT: '*', (04,11)
+OBJECT:('9',"bone"),(04,11)
+[50%]: OBJECT:('9',"bone"),(04,11)
+OBJECT:('9',"modronite monopole"),(04,11)
+OBJECT:('9',"human skull"),(04,11)
+ENGRAVING:(04,11),engrave,"They came through the walls"
+
+OBJECT:('9',"bone"),(01,10)
+[50%]: OBJECT:('9',"bone"),(04,07)
+[50%]: OBJECT:('9',"bone"),(05,07)
 
 # Portals to the main guard room and back
 TRAP:"octahedral portal", (24,12)
@@ -68,74 +88,125 @@ MONSTER:('M',"modron duodrone"),(11,08)
 MONSTER:('M',"modron duodrone"),(11,11)
 MONSTER:('M',"modron duodrone"),(12,09)
 MONSTER:('M',"modron tridrone"),(13,11)
-OBJECT:('9',"modronite tetrahedron"),(12,07)
-OBJECT:('9',"modronite monopole"),(12,11)
+
+CONTAINER:('(',"chest"),not_trapped,(12,07) {
+OBJECT:('9',"modronite tetrahedron")
+[50%]: OBJECT: '*'
+[50%]: OBJECT: ')'
+}
+
+CONTAINER:('(',"chest"),(12,11) {
+[50%]: OBJECT:('9',"modronite monopole")
+[50%]: OBJECT: '*'
+[50%]: OBJECT: ')'
+}
 
 # Waiting room
-MONSTER:('M',"modron monodrone"),(19,13)
-MONSTER:('M',"modron monodrone"),(20,13)
-MONSTER:('M',"modron monodrone"),(21,13)
-MONSTER:('M',"modron monodrone"),(22,13)
-MONSTER:('M',"modron duodrone"),(19,14)
-MONSTER:('M',"modron duodrone"),(20,14)
 MONSTER:('M',"modron tridrone"),(21,14)
+MONSTER:('M',"modron tridrone"),(21,12)
 MONSTER:('M',"modron quadrone"),(22,11)
 
 # Storage room
 MONSTER:('M',"modron tridrone"),(20,06)
 MONSTER:('M',"modron tridrone"),(21,06)
-OBJECT:('9',"modronite cube"),(13,05)
+[50%]: OBJECT:('9',"modronite cube"),(13,05)
+[50%]: OBJECT: '/', (13,05)
+[50%]: OBJECT: '8', (13,05)
 
 
 # UPPER PART
-# Modrons guarding the upper room near entrance
+# Final room: Pentadrone and quadrone
 MONSTER:('M',"modron pentadrone"),(02,04)
-MONSTER:('M',"modron pentadrone"),(02,03)
-OBJECT:('9',"modronite dodecahedron"),(02,04)
+MONSTER:('M',"modron quadrone"),(02,05)
+CONTAINER:('(',"chest"),(01,05) {
+OBJECT:('9',"modronite tetrahedron")
+[50%]: OBJECT:('9',"modronite dodecahedron")
+[50%]: OBJECT: '8'
+}
 
-# Triumvirate of quadrones
+# Assembly of quadrones
 MONSTER:('M',"modron quadrone"),(10,02)
 MONSTER:('M',"modron quadrone"),(10,03)
-MONSTER:('M',"modron quadrone"),(11,03)
-OBJECT:('9',"modronite monopole"),(11,05)
+OBJECT:('9',"modronite tetrahedron"),(07,05)
+CONTAINER:('(',"chest"),(11,05) {
+[50%]: OBJECT:('9',"modronite monopole")
+[50%]: OBJECT: '/'
+[50%]: OBJECT: '*'
+}
+
 OBJECT:('9',"modronite cube"),(07,05)
 
-# Quadrone
-MONSTER:('M',"modron quadrone"),(23,02)
 
-# Upper triumvirate
-MONSTER:('M',"modron tridrone"),(27,06)
-MONSTER:('M',"modron tridrone"),(27,07)
-MONSTER:('M',"modron tridrone"),(27,05)
-OBJECT:('9',"modronite tetrahedron"),(30,02)
+# Triumvirate of tridrones
+MONSTER:('M',"modron tridrone"),(22,02)
+MONSTER:('M',"modron tridrone"),(23,02)
+MONSTER:('M',"modron tridrone"),(24,02)
+
+# Legion of duodrones
+MONSTER:('M',"modron duodrone"),(25,05)
+MONSTER:('M',"modron duodrone"),(25,06)
+MONSTER:('M',"modron duodrone"),(25,07)
+MONSTER:('M',"modron duodrone"),(26,06)
+CONTAINER:('(',"chest"),not_trapped,(30,02) {
+OBJECT:('9',"modronite tetrahedron")
+[50%]: OBJECT: '/'
+[50%]: OBJECT: '*'
+}
 
 # Upper extra room
-MONSTER:('M',"modron tridrone"),(34,06)
-OBJECT:('9',"modronite tetrahedron"),(34,02)
-OBJECT:('9',"modronite cube"),(34,02)
+MONSTER:('M',"modron quadrone"),(34,06)
+CONTAINER:('(',"chest"),not_trapped,(34,02) {
+OBJECT:('9',"modronite tetrahedron")
+[50%]: OBJECT:('9',"modronite cube")
+[50%]: OBJECT: '/'
+[50%]: OBJECT: '*'
+}
 
 
 # LOWER PART
 # Modrons guarding the lower room near entrance
-MONSTER:('M',"modron monodrone"),(02,15)
 MONSTER:('M',"modron monodrone"),(03,15)
 MONSTER:('M',"modron monodrone"),(04,15)
 MONSTER:('M',"modron duodrone"),(02,16)
-MONSTER:('M',"modron tridrone"),(03,17)
-OBJECT:('9',"modronite octahedron"),(05,18)
 
-# Lower triumvirate
+CONTAINER:('(',"chest"),not_trapped,(05,18) {
+OBJECT:('9',"modronite octahedron")
+}
+ENGRAVING:(05,18),burn,"Elbereth"
+
+CONTAINER:('(',"chest"),(01,18) {
+[50%]: OBJECT: '*'
+[50%]: OBJECT: ')'
+}
+
+
+# Lower triumvirate, led by pentadrone
 MONSTER:('M',"modron tridrone"),(10,14)
-MONSTER:('M',"modron tridrone"),(11,14)
+MONSTER:('M',"modron pentadrone"),(11,14)
 MONSTER:('M',"modron tridrone"),(12,14)
-OBJECT:('9',"modronite octahedron"),(11,14)
 
-# Quadrone in the third room
+CONTAINER:('(',"chest"),not_trapped,(07,13) {
+OBJECT:('9',"modronite octahedron")
+[50%]: OBJECT: '/'
+[50%]: OBJECT: '/'
+[50%]: OBJECT: '*'
+[50%]: OBJECT: '*'
+[25%]: OBJECT: '8'
+}
+
+# Quadrone and assistants
 MONSTER:('M',"modron quadrone"),(23,17)
+MONSTER:('M',"modron duodrone"),(22,17)
+MONSTER:('M',"modron duodrone"),(24,17)
 
 # Lower extra room
-MONSTER:('M',"modron tridrone"),(34,17)
-OBJECT:('9',"modronite cube"),(30,17)
+MONSTER:('M',"modron quadrone"),(34,17)
+
+CONTAINER:('(',"chest"),(30,17) {
+OBJECT:('9',"modronite cube")
+[50%]: OBJECT: '/'
+[50%]: OBJECT: '*'
+}
 
 
 # FINAL GUARD ROOM
@@ -149,34 +220,96 @@ MONSTER:('M',"modron monodrone"),(33,10)
 MONSTER:('M',"modron monodrone"),(34,10)
 MONSTER:('M',"modron tridrone"),(29,11)
 MONSTER:('M',"modron tridrone"),(30,11)
-MONSTER:('M',"modron tridrone"),(31,11)
-MONSTER:('M',"modron quadrone"),(29,12)
-MONSTER:('M',"modron quadrone"),(30,12)
-MONSTER:('M',"modron pentadrone"),(31,12)
 MONSTER:('M',"modron duodrone"),(29,13)
 MONSTER:('M',"modron duodrone"),(29,13)
 MONSTER:('M',"modron duodrone"),(30,13)
 MONSTER:('M',"modron duodrone"),(31,13)
 
+# OUTER COURTYARD, FRONT
+MONSTER:('M',"modron quadrone"),(41,03)
+MONSTER:('M',"modron quadrone"),(41,08)
+MONSTER:('M',"modron quadrone"),(41,10)
+MONSTER:('M',"modron quadrone"),(41,15)
+
+# OUTER COURTYARD, BACK
+MONSTER:('M',"modron quadrone"),(71,03)
+MONSTER:('M',"modron quadrone"),(71,08)
+MONSTER:('M',"modron quadrone"),(71,10)
+MONSTER:('M',"modron quadrone"),(71,15)
+
+# INNER COURTYARD
+MONSTER:('M',"modron pentadrone"),(50,09)
+MONSTER:('M',"modron pentadrone"),(50,09)
+MONSTER:('M',"modron pentadrone"),(55,06)
+MONSTER:('M',"modron pentadrone"),(55,12)
 
 # HIERARCH MODRONS -- BOTHER THEM AT YOUR OWN PERIL
 # Quintons
-MONSTER:('M',"modron quinton"),(47,15)
 MONSTER:('M',"modron quinton"),(47,03)
+CONTAINER:('(',"chest"),not_trapped,(47,03) {
+[50%]: OBJECT:('9',"modronite cube")
+[50%]: OBJECT: '+'
+[50%]: OBJECT: '?'
+[50%]: OBJECT: '*'
+}
+MONSTER:('M',"modron quinton"),(47,15)
+CONTAINER:('(',"chest"),not_trapped,(47,15) {
+[50%]: OBJECT:('9',"modronite octahedron")
+[50%]: OBJECT: '+'
+[50%]: OBJECT: '?'
+[50%]: OBJECT: '*'
+}
 MONSTER:('M',"modron quinton"),(63,03)
+CONTAINER:('(',"chest"),not_trapped,(63,03) {
+OBJECT:('9',"modronite tetrahedron")
+[50%]: OBJECT: '+'
+[50%]: OBJECT: '?'
+[25%]: OBJECT: '8'
+[25%]: OBJECT: '/'
+[50%]: OBJECT: '*'
+}
 MONSTER:('M',"modron quinton"),(63,15)
-OBJECT:('9',"modronite octahedron"),(47,15)
-OBJECT:('9',"modronite cube"),(47,03)
-OBJECT:('9',"modronite tetrahedron"),(63,03)
-OBJECT:('9',"modronite monopole"),(63,15)
+CONTAINER:('(',"chest"),not_trapped,(63,15) {
+[50%]: OBJECT:('9',"modronite monopole")
+[50%]: OBJECT: '+'
+[50%]: OBJECT: '?'
+[25%]: OBJECT: '8'
+[25%]: OBJECT: '/'
+[50%]: OBJECT: '*'
+}
 
 # Quartons
 MONSTER:('M',"modron quarton"),(55,03)
+CONTAINER:('(',"chest"),not_trapped,(55,03) {
+[50%]: OBJECT: '+'
+[50%]: OBJECT:('9',"modronite dodecahedron")
+[50%]: OBJECT: '?'
+[25%]: OBJECT: '?'
+[25%]: OBJECT: '+'
+[25%]: OBJECT: '/'
+[25%]: OBJECT: '*'
+}
+
 MONSTER:('M',"modron quarton"),(55,15)
-OBJECT:('9',"modronite dodecahedron"),(55,03)
-OBJECT:('+',"call hierarch modron"),(55,15)
+CONTAINER:('(',"chest"),not_trapped,(55,15) {
+OBJECT:('+',"call hierarch modron")
+[50%]: OBJECT: '?'
+[25%]: OBJECT: '?'
+[25%]: OBJECT: '+'
+[25%]: OBJECT: '/'
+[25%]: OBJECT: '*'
+}
 
 # Tertian in the middle
 MONSTER:('M',"modron tertian"),(55,09)
-OBJECT:('8',"wings of flying"),(55,09)
-OBJECT:('9',"modronite icosahedron"),(55,09)
+CONTAINER:('(',"chest"),not_trapped,(55,09) {
+OBJECT:('8',"wings of flying")
+OBJECT:('9',"modronite icosahedron")
+[50%]: OBJECT: '?'
+[50%]: OBJECT: '?'
+[50%]: OBJECT: '+'
+[50%]: OBJECT: '+'
+[25%]: OBJECT: '8'
+[50%]: OBJECT: '/'
+[50%]: OBJECT: '*'
+}

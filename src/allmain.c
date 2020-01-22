@@ -544,7 +544,7 @@ create_monster_or_encounter()
 	else if (maxlevel >= mons[PM_WRAITH].difficulty && !(mvitals[PM_WRAITH].mvflags & G_GONE))
 		mdx = PM_WRAITH;
 
-	if(!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && !Is_modron_level(&u.uz) && mdx >= LOW_PM)
+	if(!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && !(u.uz.dnum == modron_dnum) && mdx >= LOW_PM)
 	{
 		/* Special Nazgul or wraith appearance if carrying the One Ring */
 		struct obj* ring = carrying(RIN_SUPREME_POWER);
@@ -577,9 +577,9 @@ create_monster_or_encounter()
 		}
 	}
 
-	if (!nazgul_appeared)
+	if (!nazgul_appeared && !(u.uz.dnum == modron_dnum)) /* Modrons cannot be currently randomly generated, not even on the modron plane */
 	{
-		if (!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && !Is_modron_level(&u.uz) && !rn2(ENCOUNTER_ONE_IN_CHANCE))
+		if (!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && !rn2(ENCOUNTER_ONE_IN_CHANCE))
 		{
 			randomize_encounter(0, 0);
 		}

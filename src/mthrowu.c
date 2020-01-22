@@ -1451,10 +1451,10 @@ struct attack* mattk;
 		if (is_cancelled(mtmp)) 
 		{
 			if (!Deaf) {
-				if (canseemon(mtmp))
-					pline("%s coughs.", Monnam(mtmp));
-				else
-					You_hear("a cough.");
+if (canseemon(mtmp))
+pline("%s coughs.", Monnam(mtmp));
+else
+You_hear("a cough.");
 			}
 			return 0;
 		}
@@ -1492,28 +1492,28 @@ boolean block_if_tame_monster;
 int dmgtype;
 boolean attack_can_reflect;
 {
-    int dx, dy, boulderspots;
+	int dx, dy, boulderspots;
 
-    /* These two values are set for use after successful return. */
-    tbx = ax - bx;
-    tby = ay - by;
+	/* These two values are set for use after successful return. */
+	tbx = ax - bx;
+	tby = ay - by;
 
-    /* sometimes displacement makes a monster think that you're at its
-       own location; prevent it from throwing and zapping in that case */
-    if (!tbx && !tby)
-        return FALSE;
+	/* sometimes displacement makes a monster think that you're at its
+	   own location; prevent it from throwing and zapping in that case */
+	if (!tbx && !tby)
+		return FALSE;
 
-    if ((!tbx || !tby || abs(tbx) == abs(tby)) /* straight line or diagonal */
-        && distmin(tbx, tby, 0, 0) < BOLT_LIM
-		) 
+	if ((!tbx || !tby || abs(tbx) == abs(tby)) /* straight line or diagonal */
+		&& distmin(tbx, tby, 0, 0) < BOLT_LIM
+		)
 	{
 		boolean path_clear_base = (ax == u.ux && ay == u.uy) ? (boolean)couldsee(bx, by)
 			: clear_path(ax, ay, bx, by);
 
-		if(path_clear_base /* no boulders */
+		if (path_clear_base /* no boulders */
 			&& !block_if_hostile_monster && !block_if_peaceful_monster && !block_if_tame_monster
 			&& !attack_can_reflect)/* no need to consider monsters */
-            return TRUE;
+			return TRUE;
 
 		if (!path_clear_base /* boulders or otherwise blocked */
 			&& boulderhandling == 0) /* no need to check boulders or monsters separately */
@@ -1521,29 +1521,42 @@ boolean attack_can_reflect;
 
 		/* here we need to check either boulders or monsters, or both */
 
-        /* don't have line of sight or need to check monsters, but might still be lined up
-           if that lack of sight is due solely to boulders or monsters */
-        dx = sgn(ax - bx), dy = sgn(ay - by);
-        boulderspots = 0;
-        do {
-            /* <bx,by> is guaranteed to eventually converge with <ax,ay> */
-            bx += dx, by += dy;
-            if (IS_ROCK(levl[bx][by].typ) || closed_door(bx, by))
-                return FALSE;
-			if ((bx != ax || by != ay) && MON_AT(bx, by))
+		/* don't have line of sight or need to check monsters, but might still be lined up
+		   if that lack of sight is due solely to boulders or monsters */
+		dx = sgn(ax - bx), dy = sgn(ay - by);
+		boulderspots = 0;
+		do {
+			/* <bx,by> is guaranteed to eventually converge with <ax,ay> */
+			bx += dx, by += dy;
+			if (IS_ROCK(levl[bx][by].typ) || closed_door(bx, by))
+				return FALSE;
+			if (bx != ax || by != ay)
 			{
-				struct monst* mtmp = m_at(bx, by);
-				if(mtmp)
+				if (MON_AT(bx, by))
 				{
-					if (is_reflecting(mtmp) && attack_can_reflect)
-						return FALSE;
-					if (!is_immune(mtmp, dmgtype))
+					struct monst* mtmp = m_at(bx, by);
+					if (mtmp)
 					{
-						if (block_if_hostile_monster && !is_peaceful(mtmp))
+						if (is_reflecting(mtmp) && attack_can_reflect)
 							return FALSE;
-						if (block_if_peaceful_monster && is_peaceful(mtmp))
-							return FALSE;
-						if (block_if_tame_monster && is_tame(mtmp))
+						if (!is_immune(mtmp, dmgtype))
+						{
+							if (block_if_hostile_monster && !is_peaceful(mtmp))
+								return FALSE;
+							if (block_if_peaceful_monster && is_peaceful(mtmp) && !is_tame(mtmp))
+								return FALSE;
+							if (block_if_tame_monster && is_peaceful(mtmp) && is_tame(mtmp))
+								return FALSE;
+						}
+					}
+				}
+				else if (bx == u.ux && by == u.uy)
+				{
+					if ((Reflecting || is_reflecting(&youmonst)) && attack_can_reflect)
+						return FALSE;
+					if (!is_immune(&youmonst, dmgtype))
+					{
+						if (block_if_tame_monster)
 							return FALSE;
 					}
 				}
@@ -1557,12 +1570,17 @@ boolean attack_can_reflect;
 		} while (bx != ax || by != ay);
         
 		/* reached target position without encountering obstacle */
-		if (boulderhandling == 0)
-			return TRUE; /* Nothing was blocking */
-		else if (boulderhandling == 1)
-            return TRUE; /* All boulders were ignored */
-		else if (boulderhandling == 2 && rn2(2 + boulderspots) < 2)
-			return TRUE;
+		if (boulderspots > 0)
+		{
+			if (boulderhandling == 0)
+				return FALSE; /* You should never get here */
+			else if (boulderhandling == 1)
+				return TRUE; /* All boulders were ignored */
+			else if (boulderhandling == 2 && rn2(2 + boulderspots) < 2)
+				return TRUE;
+		}
+		else
+			return path_clear_base;
 	}
     return FALSE;
 }

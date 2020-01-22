@@ -1412,7 +1412,7 @@ d_level *lev;
     return (boolean) (lev->dnum == mines_dnum);
 }
 
-/* are you in a modron 1? */
+/* are you in the modron level? */
 boolean
 In_modron_level(lev)
 d_level* lev;
