@@ -68,7 +68,7 @@ MONSTER:('M',"modron duodrone"),(11,08)
 MONSTER:('M',"modron duodrone"),(11,11)
 MONSTER:('M',"modron duodrone"),(12,09)
 MONSTER:('M',"modron tridrone"),(13,11)
-OBJECT:('9',"modronite ball"),(12,07)
+OBJECT:('9',"modronite tetrahedron"),(12,07)
 OBJECT:('9',"modronite monopole"),(12,11)
 
 # Waiting room
@@ -98,6 +98,7 @@ MONSTER:('M',"modron quadrone"),(10,02)
 MONSTER:('M',"modron quadrone"),(10,03)
 MONSTER:('M',"modron quadrone"),(11,03)
 OBJECT:('9',"modronite monopole"),(11,05)
+OBJECT:('9',"modronite cube"),(07,05)
 
 # Quadrone
 MONSTER:('M',"modron quadrone"),(23,02)
@@ -111,6 +112,7 @@ OBJECT:('9',"modronite tetrahedron"),(30,02)
 # Upper extra room
 MONSTER:('M',"modron tridrone"),(34,06)
 OBJECT:('9',"modronite tetrahedron"),(34,02)
+OBJECT:('9',"modronite cube"),(34,02)
 
 
 # LOWER PART
@@ -172,9 +174,9 @@ OBJECT:('9',"modronite monopole"),(63,15)
 MONSTER:('M',"modron quarton"),(55,03)
 MONSTER:('M',"modron quarton"),(55,15)
 OBJECT:('9',"modronite dodecahedron"),(55,03)
-OBJECT:('9',"modronite dodecahedron"),(55,15)
+OBJECT:('+',"call hierarch modron"),(55,15)
 
 # Tertian in the middle
 MONSTER:('M',"modron tertian"),(55,09)
+OBJECT:('8',"wings of flying"),(55,09)
 OBJECT:('9',"modronite icosahedron"),(55,09)
-OBJECT:('+',"call hierarch modron"),(55,09)
