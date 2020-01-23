@@ -2261,7 +2261,7 @@ int prop_index;
 	if (!mon)
 		return (struct obj*)0;
 
-	for (struct obj* otmp = (mon == &youmonst ? invent : mon->minvent); otmp; otmp->nobj)
+	for (struct obj* otmp = (mon == &youmonst ? invent : mon->minvent); otmp; otmp = otmp->nobj)
 	{
 		if(item_is_giving_monster_power(mon, otmp, prop_index))
 			return otmp;
