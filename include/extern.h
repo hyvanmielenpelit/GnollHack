@@ -2750,7 +2750,7 @@ E void FDECL(check_caitiff, (struct monst *));
 E int FDECL(find_roll_to_hit, (struct monst *, UCHAR_P, struct obj *,
                                int *, int *));
 E boolean FDECL(attack, (struct monst *));
-E boolean FDECL(hmon, (struct monst *, struct obj *, int, int, BOOLEAN_P*));
+E boolean FDECL(hmon, (struct monst *, struct obj *, int, int, boolean *));
 E int FDECL(damageum, (struct monst *, struct attack *, int));
 E void FDECL(missum, (struct monst *, struct attack *, BOOLEAN_P));
 E int FDECL(passive, (struct monst *, struct obj *, BOOLEAN_P, int,

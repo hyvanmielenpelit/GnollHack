@@ -170,11 +170,11 @@ unsigned long *colormasks;
              *  and get constructed at need from status_vals[] rather
              *  than the original values passed to status_update()).
              */
-            if (fldidx == BL_GOLD) {
-                /* decode once instead of every time it's displayed */
+          /*if (fldidx == BL_GOLD) {
+                /* decode once instead of every time it's displayed  * /
                 status_vals[BL_GOLD][0] = ' ';
                 text = decode_mixed(&status_vals[BL_GOLD][1], text);
-            } else if ((fldidx == BL_HUNGER || fldidx == BL_CAP)
+            } else*/ if ((fldidx == BL_HUNGER || fldidx == BL_CAP)
                        && (!*text || !strcmp(text, " "))) {
                 /* fieldfmt[] is " %s"; avoid lone space when empty */
                 *status_vals[fldidx] = '\0';
@@ -253,11 +253,11 @@ boolean border;
     twolineorder[3][15] = {
         { BL_TITLE,
           /*xspace*/ BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH,
-          /*xspace*/ BL_ALIGN,
+          /*xspace*/ //BL_ALIGN,
           /*xspace*/ BL_SCORE,
           BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD },
         { BL_LEVELDESC,
-          /*xspace*/ BL_GOLD,
+          /*xspace*/ //BL_GOLD,
           /*xspace*/ BL_HP, BL_HPMAX,
           /*xspace*/ BL_ENE, BL_ENEMAX,
           /*xspace*/ BL_AC,
@@ -273,8 +273,8 @@ boolean border;
           /*xspace*/ BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH,
           /*xspace*/ BL_SCORE,
           BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
-        { BL_ALIGN,
-          /*xspace*/ BL_GOLD,
+        { //BL_ALIGN,
+          /*xspace*/ //BL_GOLD,
           /*xspace*/ BL_HP, BL_HPMAX,
           /*xspace*/ BL_ENE, BL_ENEMAX,
           /*xspace*/ BL_AC,
@@ -397,7 +397,7 @@ boolean border;
                                         * functional result being 'w += 30' */
                 }
                 /*FALLTHRU*/
-            case BL_ALIGN:
+            //case BL_ALIGN:
             case BL_LEVELDESC:
                 spacing[fld] = (i > 0 ? 1 : 0); /* extra space unless first */
                 break;
@@ -415,7 +415,7 @@ boolean border;
             case BL_HP:
             case BL_ENE:
             case BL_AC:
-            case BL_GOLD:
+            //case BL_GOLD:
                 spacing[fld] = 1; /* always extra space */
                 break;
             case BL_XP:
@@ -659,9 +659,9 @@ boolean border;
         BL_AC,
         /* 3:blank */
         BL_LEVELDESC,
-        BL_ALIGN,
+        //BL_ALIGN,
         BL_XP, BL_EXP, BL_HD,
-        BL_GOLD,
+        //BL_GOLD,
         /* 2:blank (but only if time or score or both enabled) */
         BL_TIME,
         BL_SCORE,
@@ -1138,11 +1138,11 @@ curs_vert_status_vals(int win_width)
                 lbl = (!strcmp(text, "1") || !strcmp(text, "0")) ? "hit-die"
                       : "hit-dice";
                 break;
-            case BL_ALIGN:
-                /* don't want sprintf(": %s") below inserting second space */
+            /*case BL_ALIGN:
+                /* don't want sprintf(": %s") below inserting second space * /
                 if (*text == ' ')
                     ++text;
-                break;
+                break; */
             case BL_HP:
             case BL_ENE:
                 /* pad HP and En so that they're right aligned */

@@ -60,7 +60,8 @@
  * since otherwise comparisons with signed quantities are done incorrectly
  */
 typedef schar xchar;
-#if defined(__GNUC__) && defined(WIN32) && defined(__cplusplus)
+//#if defined(__GNUC__) && defined(WIN32) && defined(__cplusplus)
+#ifdef __MINGW32__
 /* Resolve conflict with Qt 5 and MinGW-w32 */
 typedef uchar boolean; /* 0 or 1 */
 #else
@@ -207,6 +208,20 @@ typedef uchar nhsym;
 #if !defined(AMIGA) && !defined(TOS) && !defined(OS2_HPFS)
 #define SHORT_FILENAMES /* filenames are 8.3 */
 #endif
+#endif
+
+#if (!defined(MAC) && !defined(O_WRONLY) && !defined(AZTEC_C)) \
+    || defined(USE_FCNTL)
+#include <fcntl.h>
+#endif
+
+/* Some really stupid OSes treat binary and text files differently.
+ * They need O_TEXT flag passed to open() for text files.
+ * Making this 0 will have no effect on systems where write() actually
+ * writes the contents of the buffer without arbitrarily modifying it.
+ */
+#ifndef O_TEXT
+#define O_TEXT 0
 #endif
 
 #ifdef VMS
