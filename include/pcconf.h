@@ -95,7 +95,7 @@
 
 #define RANDOM /* have Berkeley random(3) */
 
-#define MAIL /* Allows for fake mail daemon to deliver mail */
+/* #define MAIL /* Allows for fake mail daemon to deliver mail */
              /* in the MSDOS version.  (For AMIGA MAIL see  */
              /* amiconf.h).	In the future this will be the */
              /* hook for mail reader implementation.        */

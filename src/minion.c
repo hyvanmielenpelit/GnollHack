@@ -552,7 +552,7 @@ boolean talk;
 /* returns 1 if it won't attack. */
 int
 demon_talk(mtmp)
-register struct monst *mtmp;
+struct monst *mtmp;
 {
     long cash, demand, offer;
 

@@ -2257,7 +2257,7 @@ SCROLL(None, "STRC PRST SKRZ KRK",  1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_N
     /* These must come last because they have special fixed descriptions.
      */
 #ifdef MAIL
-SCROLL("mail",          "stamped",  0,   0,   0),
+SCROLL("mail",          "stamped",  0,   0,   0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 #endif
 SCROLL("blank paper", "unlabeled",  0,  28,  60, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 #undef SCROLL

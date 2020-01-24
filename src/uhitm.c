@@ -13,7 +13,7 @@ STATIC_DCL void FDECL(steal_it, (struct monst *, struct attack *));
 STATIC_DCL boolean FDECL(hitum_cleave, (struct monst *, struct attack *, struct obj*));
 STATIC_DCL boolean FDECL(hitum, (struct monst *, struct attack *));
 STATIC_DCL boolean FDECL(hmon_hitmon, (struct monst *, struct obj *, int,
-                                       int, BOOLEAN_P*));
+                                       int, boolean *));
 STATIC_DCL int FDECL(joust, (struct monst *, struct obj *));
 STATIC_DCL void NDECL(demonpet);
 STATIC_DCL boolean FDECL(m_slips_free, (struct monst *, struct attack *));

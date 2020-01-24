@@ -45,7 +45,7 @@ curses_update_inv(void)
     /* Clear the window as it is at the moment. */
     werase(win);
 
-    display_inventory(NULL, FALSE);
+    display_inventory(NULL, FALSE, 0);
 
     if (border)
         box(win, 0, 0);

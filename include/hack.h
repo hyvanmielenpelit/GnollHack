@@ -238,6 +238,7 @@ typedef struct sortloot_item Loot;
 #include "engrave.h"
 #include "rect.h"
 #include "region.h"
+#include "matcomps.h" /* before extern.h */
 
 /* Symbol offsets */
 #define SYM_OFF_P (0)
@@ -579,7 +580,6 @@ enum bodypart_types {
 #define DEVTEAM_URL "http://www.gnollhack.com"
 
 #define ENCOUNTER_ONE_IN_CHANCE 3
-#include "matcomps.h"
 #include "encounter.h"
 
 static const char empty_string[] = "";
