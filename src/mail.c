@@ -406,7 +406,7 @@ struct mail_info *info;
     verbalize("%s, %s!  %s.", Hello(md), plname, info->display_txt);
 
     if (info->message_typ) {
-        struct obj *obj = mksobj(SCR_MAIL, FALSE, FALSE);
+        struct obj *obj = mksobj(SCR_MAIL, FALSE, FALSE, FALSE);
 
         if (info->object_nam)
             obj = oname(obj, info->object_nam);
