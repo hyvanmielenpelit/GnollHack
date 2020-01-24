@@ -57,6 +57,8 @@ STATIC_DCL void FDECL(add_spell_cast_menu_item, (winid, int, int, int, char*, in
 STATIC_DCL void FDECL(add_spell_cast_menu_heading, (winid, int, BOOLEAN_P));
 STATIC_DCL void FDECL(add_spell_prepare_menu_item, (winid, int, int, int, int, BOOLEAN_P));
 STATIC_DCL void FDECL(add_spell_prepare_menu_heading, (winid, int, int, BOOLEAN_P));
+STATIC_DCL boolean FDECL(is_acceptable_component_object_type, (struct materialcomponent*, int));
+STATIC_DCL boolean FDECL(is_acceptable_component_monster_type, (struct materialcomponent*, int));
 
 /* The roles[] table lists the role-specific values for tuning
  * percent_success().
@@ -3892,18 +3894,30 @@ int spell;
 		strcpy(buf3, domatcompname(mc));
 
 		Sprintf(buf, "You need %s%s. ",
-			buf3, (mc->flags& MATCOMP_NOT_SPENT ? " as a catalyst" : " as a component"));
+			buf3, ((mc->flags & MATCOMP_NOT_SPENT) ? " as a catalyst" : " as a component"));
 
 
 		struct obj* otmp = (struct obj*) 0;
 		char buf5[BUFSZ];
 		Sprintf(buf5, "prepare \"%s\" with", spellname);
 
-		char classletter = FOOD_CLASS;
-		if (mc->objectid != CORPSE && mc->objectid != TIN && mc->objectid != EGG)
-			classletter = objects[mc->objectid].oc_class;
+		char allclassletters[MAX_MATCOMP_ALTERNATIVES + 1];
 
-		otmp = getobj(&classletter, buf5, 0, buf);
+		int c = 0;
+		for (c = 0; c < MAX_MATCOMP_ALTERNATIVES; c++)
+		{
+			if (mc->objectid[c] == STRANGE_OBJECT)
+				break;
+
+			char classletter = FOOD_CLASS;
+			if (mc->objectid[c] != CORPSE && mc->objectid[c] != TIN && mc->objectid[c] != EGG)
+				classletter = objects[mc->objectid[c]].oc_class;
+
+			allclassletters[c] = classletter;
+		}
+		allclassletters[c] = '\0';
+
+		otmp = getobj(allclassletters, buf5, 0, buf);
 
 		if (!otmp)
 			return 0;
@@ -3913,7 +3927,7 @@ int spell;
 
 		//Check if acceptable
 		boolean acceptable = FALSE;
-		if (otmp->otyp == mc->objectid)
+		if (is_acceptable_component_object_type(mc, otmp->otyp))
 			acceptable = TRUE;
 
 		if ((mc->flags & MATCOMP_BLESSED_REQUIRED) && !otmp->blessed)
@@ -3928,7 +3942,8 @@ int spell;
 		if ((mc->flags & MATCOMP_DEATH_ENCHANTMENT_REQUIRED) && otmp->elemental_enchantment != DEATH_ENCHANTMENT)
 			acceptable = FALSE;
 
-		if ((mc->objectid == CORPSE || mc->objectid == TIN || mc->objectid == EGG) && mc->monsterid >= 0 && mc->monsterid != otmp->corpsenm)
+		if ((is_acceptable_component_object_type(mc, CORPSE) || is_acceptable_component_object_type(mc, TIN) || is_acceptable_component_object_type(mc, EGG))
+			&& mc->monsterid[0] >= 0 && !is_acceptable_component_monster_type(mc, otmp->corpsenm))
 			acceptable = FALSE;
 
 		//Check quantity
@@ -4007,10 +4022,10 @@ int spell;
 		if (obj_resists(otmp, 0, 100))
 			usecomps = FALSE;
 
-		if (otmp->otyp != mc->objectid)
+		if (otmp->otyp != mc->objectid[0])
 		{
 			//Wrong item
-			if(otmp->oclass != objects[mc->objectid].oc_class
+			if(otmp->oclass != objects[mc->objectid[0]].oc_class
 				&& otmp->oclass != POTION_CLASS && otmp->oclass != SCROLL_CLASS && otmp->oclass != FOOD_CLASS)
 			{
 				//The same class may get consumed, but not a different class, unless it is a potion, scroll, or food
@@ -4031,7 +4046,7 @@ int spell;
 				usecomps = FALSE;
 		}
 		//Use them all up
-		if (!(mc->flags & MATCOMP_NOT_SPENT) && !obj_resists(otmp,0,100) && otmp->oclass == objects[mc->objectid].oc_class)
+		if (!(mc->flags & MATCOMP_NOT_SPENT) && !obj_resists(otmp,0,100) && otmp->oclass == objects[mc->objectid[0]].oc_class)
 		{
 			int used_amount = (failure ? 1 : selected_multiplier) * mc->amount;
 			if(otmp->quan >= used_amount)
@@ -4111,17 +4126,57 @@ int spell;
 
 }
 
+STATIC_OVL
+boolean
+is_acceptable_component_object_type(mc, otyp)
+struct materialcomponent *mc;
+int otyp;
+{
+	for (int i = 0; i < MAX_MATCOMP_ALTERNATIVES; i++)
+	{
+		if (mc->objectid[i] == STRANGE_OBJECT)
+			break;
+
+		if (mc->objectid[i] == otyp)
+			return TRUE;
+	}
+	return FALSE;
+}
+
+STATIC_OVL
+boolean
+is_acceptable_component_monster_type(mc, mnum)
+struct materialcomponent* mc;
+int mnum;
+{
+	for (int i = 0; i < MAX_MATCOMP_MONSTER_ALTERNATIVES; i++)
+	{
+		if (mc->monsterid[i] == NOT_APPLICABLE)
+			break;
+
+		if (mc->monsterid[i] == mnum)
+			return TRUE;
+	}
+	return FALSE;
+}
+
+
 const char*
 domatcompname(mc)
 struct materialcomponent* mc;
 {
+	/* in general, use the description for complicated (e.g., multialternative) cases */
+	if(mc->description && strcmp(mc->description, ""))
+		return mc->description;
+
+	/* otherwise construct the description based on the first component */
 	struct objclass* perobj = (struct objclass*)0;
-	if (mc->objectid >= 0)
-		perobj = &objects[mc->objectid];
+	if (mc->objectid[0] >= 0)
+		perobj = &objects[mc->objectid[0]];
 
 	struct permonst* permon = (struct permonst*)0;
-	if (mc->monsterid >= 0)
-		permon = &mons[mc->monsterid];
+	if (mc->monsterid[0] >= 0)
+		permon = &mons[mc->monsterid[0]];
 
 	if (!perobj || !mc || mc->amount == 0)
 		return empty_string;
@@ -4131,24 +4186,24 @@ struct materialcomponent* mc;
 
 	if (permon && perobj)
 	{
-		if (mc->objectid == CORPSE || mc->objectid == EGG)
+		if (mc->objectid[0] == CORPSE || mc->objectid[0] == EGG)
 			//Add "lizard" to "corpse" to get "lizard corpse" (or lizard egg)
 			Sprintf(buf4, "%s %s", permon->mname, obj_descr[perobj->oc_name_idx].oc_name);
-		else if (mc->objectid == TIN)
+		else if (mc->objectid[0] == TIN)
 			//Add "lizard" to "tin" to get "lizard corpse"
 			Sprintf(buf4, "%s of %s meat", obj_descr[perobj->oc_name_idx].oc_name, permon->mname);
 		else
-			Sprintf(buf4, "%s%s", obj_descr[perobj->oc_name_idx].oc_name, GemStone(mc->objectid) ? " stone" : "");
+			Sprintf(buf4, "%s%s", obj_descr[perobj->oc_name_idx].oc_name, GemStone(mc->objectid[0]) ? " stone" : "");
 	}
 	else
 	{
 		Sprintf(buf4, "%s%s%s",
-			objects[mc->objectid].oc_class == SCROLL_CLASS ? "scroll of " :
-			objects[mc->objectid].oc_class == POTION_CLASS ? "potion of " :
-			objects[mc->objectid].oc_class == WAND_CLASS ? "wand of " :
-			objects[mc->objectid].oc_class == SPBOOK_CLASS ? "spellbook of " : "",
+			objects[mc->objectid[0]].oc_class == SCROLL_CLASS ? "scroll of " :
+			objects[mc->objectid[0]].oc_class == POTION_CLASS ? "potion of " :
+			objects[mc->objectid[0]].oc_class == WAND_CLASS ? "wand of " :
+			objects[mc->objectid[0]].oc_class == SPBOOK_CLASS ? "spellbook of " : "",
 			obj_descr[perobj->oc_name_idx].oc_name,
-			GemStone(mc->objectid) ? " stone" : "");
+			GemStone(mc->objectid[0]) ? " stone" : "");
 	}
 
 	//Correct type of component

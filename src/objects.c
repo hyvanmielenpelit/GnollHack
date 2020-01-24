@@ -2412,7 +2412,7 @@ SPELL("great Yendorian summoning", "hideous", "some long-forgotten arcane magic"
 SPELL("stinking cloud",			"peculiar", None, "Conjures a stinking cloud",
 	P_CONJURATION_SPELL,		5, 3,			 0, 2, 15, A_INT, 0, 0, 100, 0, 1, TARGETED, 0, 0, 0, 0, 0, 0, 0, S1_NONE, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
 SPELL("wish",			  "platinum-plated", "some long-forgotten arcane magic", "The caster can wish for an object",
-      P_CONJURATION_SPELL,		3, 15,			20,12,750, A_AVG_INT_WIS_CHA, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, HI_SILVER, O1_NONE, O2_NONE, O3_NONE),
+      P_CONJURATION_SPELL,		3, 15,			20,12,750, A_AVG_INT_WIS_CHA, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, HI_SILVER, O1_NONE, O2_NONE, O3_NO_WISH),
 SPELL("black blade of disaster", "ebony", "some long-forgotten arcane magic", "Summons a blade that disintegrates targets on hit",
 	P_CONJURATION_SPELL,		 5, 10,			20,11,500, A_INT, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 3, 10, 30, S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, CLR_BLACK, O1_DISINTEGRATION_RESISTANT, O2_NONE, O3_NONE),
 SPELL("mage armor",		   "ornamental", None, "Summons a wizard-friendly magical armor with AC4",

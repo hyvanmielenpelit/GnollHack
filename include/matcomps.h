@@ -7,10 +7,13 @@
 #ifndef MATCOMPS_H
 #define MATCOMPS_H
 
+#define MAX_MATCOMP_ALTERNATIVES 10
+#define MAX_MATCOMP_MONSTER_ALTERNATIVES 5
 
 struct materialcomponent {
-	int objectid;  //0 if none
-	int monsterid; //Used for corpses and tins, -1 if none
+	int objectid[MAX_MATCOMP_ALTERNATIVES];  //0 if none
+	int monsterid[MAX_MATCOMP_MONSTER_ALTERNATIVES]; //Used for corpses and tins, -1 if none
+	const char* description;
 	int amount;
 	unsigned long flags;
 };
@@ -28,7 +31,7 @@ struct materialcomponent {
 struct materialcomponentlist {
 	int spell_objectid;			/* Used to link the list with the appropriate spell, one spell can have many, but first we use only the first */
 	char* description_short;	/* Used for mixing menu, when selecting the spell */
-	int created_objectid;		/* Used for recipes to indicate the object created */
+	int created_objectid;		/* UNUSED: Used for recipes to indicate the object created */
 	int spellsgained;			/* How many spells do you get for these material components */
 	struct materialcomponent matcomp[MAX_MATERIALS];
 };
@@ -37,8 +40,12 @@ struct materialcomponentlist {
 
 /*Material components*/
 #define NOT_APPLICABLE -1
+#define NO_MATCOMP_ALTERNATIVES { STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, \
+								  STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT }
 
-#define NO_MATCOMP {STRANGE_OBJECT, NOT_APPLICABLE, 0, MATCOMP_NO_FLAGS}
+#define NO_MATCOMP_MONSTER_ALTERNATIVES { NOT_APPLICABLE, NOT_APPLICABLE, NOT_APPLICABLE, NOT_APPLICABLE, NOT_APPLICABLE }
+
+#define NO_MATCOMP {NO_MATCOMP_ALTERNATIVES, NO_MATCOMP_MONSTER_ALTERNATIVES, 0, MATCOMP_NO_FLAGS}
 
 extern NEARDATA struct materialcomponentlist matlists[];
 
