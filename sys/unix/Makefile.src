@@ -363,7 +363,7 @@ WINCURSESLIB = -lncurses
 LIBS = -lm
 
 # make GnollHack
-GAME     = GnollHack
+GAME     = gnollhack
 # GAME     = gnollhack.prg
 
 # if you defined RANDOM in unixconf.h/tosconf.h since your system did not come
