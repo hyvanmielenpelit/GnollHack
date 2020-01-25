@@ -33,7 +33,7 @@ CFLAGS+=-DVAR_PLAYGROUND=\"$(HACKDIR)/var\"
 
 LINK=$(CC)
 # Only needed for GLIBC stack trace:
-LFLAGS=-rdynamic
+LFLAGS=-rdynamic -no-pie
 
 WINSRC = $(WINTTYSRC)
 WINOBJ = $(WINTTYOBJ)

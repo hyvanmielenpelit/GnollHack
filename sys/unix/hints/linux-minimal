@@ -16,6 +16,7 @@ VARDIR=$(HACKDIR)
 CFLAGS=-g -I../include
 
 LINK=$(CC)
+LFLAGS=-no-pie
 
 WINSRC = $(WINTTYSRC)
 WINOBJ = $(WINTTYOBJ)
