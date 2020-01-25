@@ -334,9 +334,18 @@ attempt_restore:
                 goto attempt_restore;
             }
         }
+        /* CHOOSE DIFFICULTY */
+		choose_game_difficulty();
+
         newgame();
         wd_message();
     }
+	else
+	{
+		/* Call initializations that are part of newgame here when resuming a saved game */
+		encounter_init();
+		/* matcomps do not need to be initialized, because they have been saved as part of objects array */
+	}
 
     /* moveloop() never returns but isn't flagged NORETURN */
     moveloop(resuming);
