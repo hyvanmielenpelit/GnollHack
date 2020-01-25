@@ -180,7 +180,7 @@
  *              GDBPATH      (the path to the system gdb(1) program)
  *            Regular GnollHack options can also be specified in order to
  *            provide system-wide default values local to your system:
- *              OPTIONS      (same as in users' .GnollHackrc or defaults.nh)
+ *              OPTIONS      (same as in users' .gnollhackrc or defaults.nh)
  *
  *              In the future there may be other ways to supply SYSCF
  *              information (Windows registry, Apple resource forks, etc)

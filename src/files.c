@@ -1876,7 +1876,7 @@ const char *filename;
 
 const char *default_configfile =
 #ifdef UNIX
-    ".GnollHackrc";
+    ".gnollhackrc";
 #else
 #if defined(MAC) || defined(__BEOS__)
     "GnollHack Defaults";
@@ -2012,9 +2012,9 @@ int src;
 #else /* should be only UNIX left */
     envp = nh_getenv("HOME");
     if (!envp)
-        Strcpy(tmp_config, ".GnollHackrc");
+        Strcpy(tmp_config, ".gnollhackrc");
     else
-        Sprintf(tmp_config, "%s/%s", envp, ".GnollHackrc");
+        Sprintf(tmp_config, "%s/%s", envp, ".gnollhackrc");
 
     set_configfile_name(tmp_config);
     if ((fp = fopenp(configfile, "r")) != (FILE *) 0)
