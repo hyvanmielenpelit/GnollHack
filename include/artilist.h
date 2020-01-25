@@ -44,13 +44,13 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
      */
 
     /*  dummy element #0, so that all interesting indices are non-zero */
-    A("", None, STRANGE_OBJECT, STRANGE_OBJECT, AF_NONE, SPFX_NONE, SPFX_NONE, 0, 0, 0, 0, NO_ATTK, NO_POWER, NO_POWER, 0, A_NONE,
+    A("", None, STRANGE_OBJECT, STRANGE_OBJECT, AF_NONE, SPFX_NONE, SPFX_NONE, 0, 0, 0, 0, NO_ATTK, NO_POWER, NO_POWER, NO_POWER, A_NONE,
       NON_PM, NON_PM, 0L, NO_COLOR, NO_COLOR),
 
     A("Excalibur", "gold-hilted runed long sword", LONG_SWORD, LONG_SWORD, 
   	  AF_NOGEN | AF_RESTR | AF_INTEL | AF_FAMOUS | AF_MONSTERS_CAN_TRACK_ARTIFACT | AF_ANGERS_DEMONS,
 	  (SPFX_SEEK | SPFX_SEARCH), SPFX_NONE, 0, 
-	  1, 5, 0, PHYS(1, 20), DRAIN_RES, NO_POWER, 0, A_LAWFUL, PM_KNIGHT, NON_PM, 4000L, 
+	  1, 5, 0, PHYS(1, 20), DRAIN_RES, NO_POWER, NO_POWER, A_LAWFUL, PM_KNIGHT, NON_PM, 4000L,
 	  NO_COLOR, NO_COLOR),
     /*
      *      Stormbringer only has a 5 because it can drain a level,
@@ -293,14 +293,15 @@ A("The Palantir of Westernesse",        CRYSTAL_BALL, CRYSTAL_BALL,
 
 #ifndef MAKEDEFS_C
 #undef NO_ATTK
-#undef NO_POWER
 #undef DFNS
 #undef PHYS
+#undef PHYSI
 #undef DRLI
 #undef COLD
 #undef FIRE
 #undef ELEC
 #undef STUN
+#undef None
 #endif
 
 /*artilist.h*/
