@@ -1870,6 +1870,8 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 			otmp = getobj(allowall, (otyp == SPE_BLESS ? "bless" : "curse"), 0, "");
 			if (otmp)
 			{
+				u.uconduct.gnostic++;
+
 				if (otyp == SPE_BLESS) {
 					if (otmp->cursed) {
 						func = uncurse;

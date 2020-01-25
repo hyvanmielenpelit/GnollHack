@@ -2165,7 +2165,7 @@ register struct obj *obj;
     }
 	else if ((objects[obj->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && obj->cursed) {
         obj->bknown = 1;
-        pline_The("%s%s won't leave your person.", is_graystone(obj) ? "The stone" : "The item", plur(obj->quan));
+        pline("%s%s won't leave your person.", is_graystone(obj) ? "The stone" : "The item", plur(obj->quan));
         return 0;
     }
 	else if (obj->otyp == AMULET_OF_YENDOR

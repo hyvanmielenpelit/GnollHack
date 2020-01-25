@@ -3143,6 +3143,7 @@ struct monst* mtmp;
 	pseudo->quan = 20L; /* do not let useup get it */
 	seffects(pseudo);
 	obfree(pseudo, (struct obj*)0);
+	/* gnostic handled in seffects */
 
 	return 1;
 }
@@ -3202,6 +3203,7 @@ struct monst* mtmp;
 	pseudo->quan = 20L; /* do not let useup get it */
 	peffects(pseudo);
 	obfree(pseudo, (struct obj*)0);
+	u.uconduct.gnostic++;
 
 	return 1;
 }
@@ -3260,6 +3262,7 @@ struct monst* mtmp;
 	pseudo->quan = 20L; /* do not let useup get it */
 	peffects(pseudo);
 	obfree(pseudo, (struct obj*)0);
+	u.uconduct.gnostic++;
 
 	return 1;
 }
@@ -3324,6 +3327,8 @@ struct monst* mtmp;
 	}
 	money2mon(mtmp, (long)u_pay);
 	context.botl = 1;
+
+	u.uconduct.gnostic++;
 
 	verbalize("Very well, then. Let's see what your fortune is like.");
 
