@@ -17,7 +17,7 @@
                BlueprintIdentifier = "3189577E21A1FDA400FB2ABE"
                BuildableName = "makedefs"
                BlueprintName = "makedefs"
-               ReferencedContainer = "container:NetHack.xcodeproj">
+               ReferencedContainer = "container:GnollHack.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -35,7 +35,7 @@
             BlueprintIdentifier = "3189577E21A1FDA400FB2ABE"
             BuildableName = "makedefs"
             BlueprintName = "makedefs"
-            ReferencedContainer = "container:NetHack.xcodeproj">
+            ReferencedContainer = "container:GnollHack.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -58,7 +58,7 @@
             BlueprintIdentifier = "3189577E21A1FDA400FB2ABE"
             BuildableName = "makedefs"
             BlueprintName = "makedefs"
-            ReferencedContainer = "container:NetHack.xcodeproj">
+            ReferencedContainer = "container:GnollHack.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -77,7 +77,7 @@
             BlueprintIdentifier = "3189577E21A1FDA400FB2ABE"
             BuildableName = "makedefs"
             BlueprintName = "makedefs"
-            ReferencedContainer = "container:NetHack.xcodeproj">
+            ReferencedContainer = "container:GnollHack.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

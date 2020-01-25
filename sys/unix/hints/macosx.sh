@@ -1,7 +1,7 @@
 #!/bin/sh
-# NetHack 3.6  macosx.sh $NHDT-Date: 1517231957 2018/01/29 13:19:17 $  $NHDT-Branch: githash $:$NHDT-Revision: 1.20 $
+# GnollHack 3.6  macosx.sh $NHDT-Date: 1517231957 2018/01/29 13:19:17 $  $NHDT-Branch: githash $:$NHDT-Revision: 1.20 $
 # Copyright (c) Kenneth Lorber, Kensington, Maryland, 2007.
-# NetHack may be freely redistributed.  See license for details.
+# GnollHack may be freely redistributed.  See license for details.
 #
 # hints helper script for macosx
 # DO NOT invoke directly.
@@ -151,10 +151,10 @@ xdescplist)	SVSDOT=`util/makedefs --svs .`
         <key>IFPkgDescriptionDeleteWarning</key>
         <string></string>
         <key>IFPkgDescriptionDescription</key>
-        <string>NetHack $SVSDOT for the MacOS X Terminal
+        <string>GnollHack $SVSDOT for the MacOS X Terminal
 </string>
         <key>IFPkgDescriptionTitle</key>
-        <string>NetHack</string>
+        <string>GnollHack</string>
         <key>IFPkgDescriptionVersion</key>
         <string>$SVSDOT</string>
 </dict>
@@ -169,11 +169,11 @@ xinfoplist)	SVSDOT=`util/makedefs --svs .`
 <plist version="1.0">
 <dict>
 	<key>CFBundleGetInfoString</key>
-	<string>NetHack $SVSDOT for the MacOS X Terminal</string>
+	<string>GnollHack $SVSDOT for the MacOS X Terminal</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.nethack.term</string>
+	<string>org.gnollhack.term</string>
 	<key>CFBundleName</key>
-	<string>NetHack</string>
+	<string>GnollHack</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$SVSDOT</string>
 	<key>IFMajorVersion</key>

@@ -439,7 +439,7 @@
 		3186A3D721A4B14B0052BF02 /* cursinvt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cursinvt.h; path = ../../win/curses/cursinvt.h; sourceTree = "<group>"; };
 		3186A3D821A4B14B0052BF02 /* cursmisc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cursmisc.h; path = ../../win/curses/cursmisc.h; sourceTree = "<group>"; };
 		3186A3D921A4B14B0052BF02 /* curswins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = curswins.h; path = ../../win/curses/curswins.h; sourceTree = "<group>"; };
-		3189577121A1FCC100FB2ABE /* NetHack */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = NetHack; sourceTree = BUILT_PRODUCTS_DIR; };
+		3189577121A1FCC100FB2ABE /* GnollHack */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = GnollHack; sourceTree = BUILT_PRODUCTS_DIR; };
 		3189577F21A1FDA400FB2ABE /* makedefs */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = makedefs; sourceTree = BUILT_PRODUCTS_DIR; };
 		3192867B21A3ACAB00325BEB /* lev_comp.y */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.yacc; name = lev_comp.y; path = ../../util/lev_comp.y; sourceTree = "<group>"; };
 		3192867D21A3ACB800325BEB /* lev_comp.l */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lex; name = lev_comp.l; path = ../../util/lev_comp.l; sourceTree = "<group>"; };
@@ -654,7 +654,7 @@
 		3189577221A1FCC100FB2ABE /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				3189577121A1FCC100FB2ABE /* NetHack */,
+				3189577121A1FCC100FB2ABE /* GnollHack */,
 				3189577F21A1FDA400FB2ABE /* makedefs */,
 				31B8A41E21A2669A0055BD01 /* lev_comp */,
 				31B8A43621A268DF0055BD01 /* dgn_comp */,
@@ -991,14 +991,14 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		3189577021A1FCC100FB2ABE /* NetHack */ = {
+		3189577021A1FCC100FB2ABE /* GnollHack */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3189577821A1FCC100FB2ABE /* Build configuration list for PBXNativeTarget "NetHack" */;
+			buildConfigurationList = 3189577821A1FCC100FB2ABE /* Build configuration list for PBXNativeTarget "GnollHack" */;
 			buildPhases = (
 				3189576D21A1FCC100FB2ABE /* Sources */,
 				3189576E21A1FCC100FB2ABE /* Frameworks */,
 				3189576F21A1FCC100FB2ABE /* CopyFiles */,
-				3192867121A3A2D500325BEB /* Copy nethack */,
+				3192867121A3A2D500325BEB /* Copy gnollhack */,
 				317E7C5421A3804400F6E4E5 /* Build Guidebook */,
 				317E7C5521A3912D00F6E4E5 /* Build nhdat */,
 				3192867021A39F6A00325BEB /* Install */,
@@ -1012,9 +1012,9 @@
 				3192867621A3AAFE00325BEB /* PBXTargetDependency */,
 				3192867421A3AAFA00325BEB /* PBXTargetDependency */,
 			);
-			name = NetHack;
-			productName = NetHack;
-			productReference = 3189577121A1FCC100FB2ABE /* NetHack */;
+			name = GnollHack;
+			productName = GnollHack;
+			productReference = 3189577121A1FCC100FB2ABE /* GnollHack */;
 			productType = "com.apple.product-type.tool";
 		};
 		3189577E21A1FDA400FB2ABE /* makedefs */ = {
@@ -1152,7 +1152,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 3189576C21A1FCC100FB2ABE /* Build configuration list for PBXProject "NetHack" */;
+			buildConfigurationList = 3189576C21A1FCC100FB2ABE /* Build configuration list for PBXProject "GnollHack" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -1164,7 +1164,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				3189577021A1FCC100FB2ABE /* NetHack */,
+				3189577021A1FCC100FB2ABE /* GnollHack */,
 				3189577E21A1FDA400FB2ABE /* makedefs */,
 				31B8A41D21A2669A0055BD01 /* lev_comp */,
 				31B8A43521A268DF0055BD01 /* dgn_comp */,
@@ -1602,7 +1602,7 @@
 				"$(NH_DAT_DIR)/nhdat",
 				"$(NH_DAT_DIR)/license",
 				"$(NH_DAT_DIR)/symbols",
-				"$(NH_SRC_DIR)/nethack",
+				"$(NH_SRC_DIR)/gnollhack",
 				"$(NH_UTIL_DIR)/recover",
 				"$(NH_UNIX_DIR)/sysconf",
 				"$(NH_UNIX_DIR)/hints/macosx.sh",
@@ -1614,15 +1614,15 @@
 				"$(NH_INSTALL_DIR)/nhdat",
 				"$(NH_INSTALL_DIR)/licenses",
 				"$(NH_INSTALL_DIR)/symbols",
-				"$(NH_INSTALL_DIR)/nethack",
+				"$(NH_INSTALL_DIR)/gnollhack",
 				"$(NH_INSTALL_DIR)/recover",
 				"$(NH_INSTALL_DIR)/sysconf",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "mkdir -p ${NH_INSTALL_DIR}/save\ncd ${NH_DAT_DIR}\ncp nhdat license symbols ${NH_INSTALL_DIR}\ncp ${NH_SRC_DIR}/nethack ${NH_INSTALL_DIR}\ncp ${NH_UTIL_DIR}/recover ${NH_INSTALL_DIR}\ntouch ${NH_INSTALL_DIR}/perm\ntouch ${NH_INSTALL_DIR}/record\ntouch ${NH_INSTALL_DIR}/logfile\ntouch ${NH_INSTALL_DIR}/xlogfile\ncd ${NH_ROOT_DIR}\nsys/unix/hints/macosx.sh editsysconf sys/unix/sysconf ${NH_INSTALL_DIR}/sysconf\n";
+			shellScript = "mkdir -p ${NH_INSTALL_DIR}/save\ncd ${NH_DAT_DIR}\ncp nhdat license symbols ${NH_INSTALL_DIR}\ncp ${NH_SRC_DIR}/gnollhack ${NH_INSTALL_DIR}\ncp ${NH_UTIL_DIR}/recover ${NH_INSTALL_DIR}\ntouch ${NH_INSTALL_DIR}/perm\ntouch ${NH_INSTALL_DIR}/record\ntouch ${NH_INSTALL_DIR}/logfile\ntouch ${NH_INSTALL_DIR}/xlogfile\ncd ${NH_ROOT_DIR}\nsys/unix/hints/macosx.sh editsysconf sys/unix/sysconf ${NH_INSTALL_DIR}/sysconf\n";
 		};
-		3192867121A3A2D500325BEB /* Copy nethack */ = {
+		3192867121A3A2D500325BEB /* Copy gnollhack */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1630,17 +1630,17 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
-				"$(BUILT_PRODUCTS_DIR)/nethack",
+				"$(BUILT_PRODUCTS_DIR)/gnollhack",
 			);
-			name = "Copy nethack";
+			name = "Copy gnollhack";
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(NH_SRC_DIR)/nethack",
+				"$(NH_SRC_DIR)/gnollhack",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp ${BUILT_PRODUCTS_DIR}/nethack ${NH_SRC_DIR}/nethack\n";
+			shellScript = "cp ${BUILT_PRODUCTS_DIR}/gnollhack ${NH_SRC_DIR}/gnollhack\n";
 		};
 		3192867221A3AA5700325BEB /* copy dlb */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2010,7 +2010,7 @@
 				NH_DAT_DIR = "$(NH_ROOT_DIR)/dat";
 				NH_DOC_DIR = "$(NH_ROOT_DIR)/doc";
 				NH_INC_DIR = "$(NH_ROOT_DIR)/include";
-				NH_INSTALL_DIR = "$(HOME)/nethackdir";
+				NH_INSTALL_DIR = "$(HOME)/gnollhackdir";
 				NH_ROOT_DIR = "$(SOURCE_ROOT)/../..";
 				NH_SRC_DIR = "$(NH_ROOT_DIR)/src";
 				NH_UNIX_DIR = "$(NH_ROOT_DIR)/sys/unix";
@@ -2086,7 +2086,7 @@
 				NH_DAT_DIR = "$(NH_ROOT_DIR)/dat";
 				NH_DOC_DIR = "$(NH_ROOT_DIR)/doc";
 				NH_INC_DIR = "$(NH_ROOT_DIR)/include";
-				NH_INSTALL_DIR = "$(HOME)/nethackdir";
+				NH_INSTALL_DIR = "$(HOME)/gnollhackdir";
 				NH_ROOT_DIR = "$(SOURCE_ROOT)/../..";
 				NH_SRC_DIR = "$(NH_ROOT_DIR)/src";
 				NH_UNIX_DIR = "$(NH_ROOT_DIR)/sys/unix";
@@ -2214,7 +2214,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		3189576C21A1FCC100FB2ABE /* Build configuration list for PBXProject "NetHack" */ = {
+		3189576C21A1FCC100FB2ABE /* Build configuration list for PBXProject "GnollHack" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3189577621A1FCC100FB2ABE /* Debug */,
@@ -2223,7 +2223,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3189577821A1FCC100FB2ABE /* Build configuration list for PBXNativeTarget "NetHack" */ = {
+		3189577821A1FCC100FB2ABE /* Build configuration list for PBXNativeTarget "GnollHack" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3189577921A1FCC100FB2ABE /* Debug */,

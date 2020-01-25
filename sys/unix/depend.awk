@@ -1,6 +1,6 @@
 # depend.awk -- awk script used to construct makefile dependencies
-# for nethack's source files (`make depend' support for Makefile.src).
-# $NHDT-Date: 1546220373 2018/12/31 01:39:33 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.8 $
+# for gnollhack's source files (`make depend' support for Makefile.src).
+# $NHDT-Date: 1546220373 2018/12/31 01:39:33 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.8 $
 #
 # usage:
 #   cd src ; nawk -f depend.awk ../include/*.h list-of-.c/.cpp-files

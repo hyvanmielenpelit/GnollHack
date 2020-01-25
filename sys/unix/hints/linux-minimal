@@ -1,13 +1,13 @@
 #
-# NetHack 3.6  linux $NHDT-Date: 1432512814 2018/11/23 16:00:00 $  $NHDT-Branch: master $:$NHDT-Revision: 1.12 $
+# GnollHack 3.6  linux $NHDT-Date: 1432512814 2018/11/23 16:00:00 $  $NHDT-Branch: master $:$NHDT-Revision: 1.12 $
 # Copyright (c) Patric Mueller
-# NetHack may be freely redistributed.  See license for details. 
+# GnollHack may be freely redistributed.  See license for details. 
 #
 #-PRE
 # Hints file for a minimal build
 # This hints file provides the base for a minimal tty build for Linux
 
-PREFIX=$(wildcard ~)/nethack-minimal
+PREFIX=$(wildcard ~)/gnollhack-minimal
 HACKDIR=$(PREFIX)/games/lib/$(GAME)dir
 SHELLDIR=$(PREFIX)/games
 INSTDIR=$(HACKDIR)

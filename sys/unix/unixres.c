@@ -1,6 +1,6 @@
-/* NetHack 3.6	unixres.c	$NHDT-Date: 1432512788 2015/05/25 00:13:08 $  $NHDT-Branch: master $:$NHDT-Revision: 1.12 $ */
+/* GnollHack 3.6	unixres.c	$NHDT-Date: 1432512788 2015/05/25 00:13:08 $  $NHDT-Branch: master $:$NHDT-Revision: 1.12 $ */
 /* Copyright (c) Slash'EM development team, 2001. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /* [ALI] This module defines nh_xxx functions to replace getuid etc which
  * will hide privileges from the caller if so desired.

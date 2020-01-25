@@ -1,8 +1,8 @@
 #
-# NetHack 3.5  linux $NHDT-Date: 1524684267 2018/04/25 19:24:27 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.1 $
-# NetHack 3.5  linux $Date: 2010/01/15 19:54:37 $  $Revision: 1.8 $
+# GnollHack 3.5  linux $NHDT-Date: 1524684267 2018/04/25 19:24:27 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.1 $
+# GnollHack 3.5  linux $Date: 2010/01/15 19:54:37 $  $Revision: 1.8 $
 # Copyright (c) Kenneth Lorber, Kensington, Maryland, 2007.
-# NetHack may be freely redistributed.  See license for details. 
+# GnollHack may be freely redistributed.  See license for details. 
 #
 #-PRE
 # Linux hints file
@@ -15,7 +15,7 @@ COMPILEREVISION?=1
 # this is the chroot dir
 PREFIX=$(wildcard ~)/nh/install
 
-# this is the dir where NetHack is inside the chroot
+# this is the dir where GnollHack is inside the chroot
 HACKDIR=/nh.$(shell date +%Y%m%d)-$(COMPILEREVISION)
 INSTDIR=$(PREFIX)$(HACKDIR)
 SHELLDIR=$(PREFIX)/games

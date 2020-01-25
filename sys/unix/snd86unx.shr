@@ -65,7 +65,7 @@ X
 XFor 386BSD, follow the installation instructions in install.bsd.
 X
 XFor SCO UNIX 3.2.4, no new kernel drivers are needed, and you need only
-Xcopy interp.c to your src directory and proceed with making NetHack, with
+Xcopy interp.c to your src directory and proceed with making GnollHack, with
 XVPIX_MUSIC set in unixconf.h.
 X
 XInteresting tunes mailed to the author will be periodically posted in batches

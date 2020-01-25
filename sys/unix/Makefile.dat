@@ -1,6 +1,6 @@
-#      NetHack Datafiles Makefile.dat $NHDT-Date: 1447844574 2018/04/25 19:25:54 $ $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.22 $
+#      GnollHack Datafiles Makefile.dat $NHDT-Date: 1447844574 2018/04/25 19:25:54 $ $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.22 $
 # Copyright (c) 2018 by Pasi Kallinen
-# NetHack may be freely redistributed.  See license for details.
+# GnollHack may be freely redistributed.  See license for details.
 
 # Root of source tree:
 NHSROOT=..
@@ -50,14 +50,14 @@ nhtiles.bmp: ../util/tile2bmp ../win/share/monsters.txt \
 				../win/share/other.txt
 	../util/tile2bmp $@
 
-NetHack.ad: ../win/X11/NetHack.ad
+GnollHack.ad: ../win/X11/GnollHack.ad
 # handle "#define foo bar" -lines
-	grep ^#define ../win/X11/NetHack.ad | \
+	grep ^#define ../win/X11/GnollHack.ad | \
 		sed -e 's/^#define/s/g' -e 's/  */ /g' \
-		    -e 's/$$/ g/g' > NetHack.ad.tmp
-	grep -v ^#define ../win/X11/NetHack.ad | \
-		sed -f NetHack.ad.tmp > NetHack.ad
-	-rm -f NetHack.ad.tmp
+		    -e 's/$$/ g/g' > GnollHack.ad.tmp
+	grep -v ^#define ../win/X11/GnollHack.ad | \
+		sed -f GnollHack.ad.tmp > GnollHack.ad
+	-rm -f GnollHack.ad.tmp
 
 pet_mark.xbm: ../win/X11/pet_mark.xbm
 	cp ../win/X11/pet_mark.xbm pet_mark.xbm
@@ -74,7 +74,7 @@ mapbg.xpm: ../win/gnome/mapbg.xpm
 nhsplash.xpm: ../win/Qt/nhsplash.xpm
 	cp ../win/Qt/nhsplash.xpm nhsplash.xpm
 
-nethack.icns: ../win/Qt/nhicns.uu
+gnollhack.icns: ../win/Qt/nhicns.uu
 	$(UUDECODE) ../win/Qt/nhicns.uu
 
 Info.plist: ../win/Qt/Info.pli
@@ -168,5 +168,5 @@ dungeon: dungeon.def ../util/makedefs ../util/dgn_comp
 spotless:
 	-rm -f spec_levs quest_levs *.lev $(VARDAT) dungeon dungeon.pdf
 	-rm -f nhdat x11tiles beostiles pet_mark.xbm pilemark.xbm rip.xpm mapbg.xpm
-	-rm -f rip.img GEM_RSC.RSC title.img nh16.img NetHack.ad
+	-rm -f rip.img GEM_RSC.RSC title.img nh16.img GnollHack.ad
 	-rm -f nhsplash.xpm nhtiles.bmp

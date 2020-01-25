@@ -1,7 +1,7 @@
-#	NetHack Makefile.
-# NetHack 3.6  Makefile.src    $NHDT-Date: 1550876124 2019/02/22 22:55:24 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.70 $
+#	GnollHack Makefile.
+# GnollHack 3.6  Makefile.src    $NHDT-Date: 1550876124 2019/02/22 22:55:24 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.70 $
 # Copyright (c) 2018 by Pasi Kallinen
-# NetHack may be freely redistributed.  See license for details.
+# GnollHack may be freely redistributed.  See license for details.
 
 # Root of source tree:
 NHSROOT=..
@@ -140,7 +140,7 @@ SYSOBJ = ioctl.o unixmain.o unixtty.o unixunix.o unixres.o
 #CC = mwcc
 #CFLAGS = -r -I../include
 #LINK = mwld
-#LFLAGS = -map nethack.xMAP
+#LFLAGS = -map gnollhack.xMAP
 #   on Intel:
 #CFLAGS = -O -I../include
 #LINK = gcc
@@ -174,7 +174,7 @@ GNOMEINC=-I/usr/lib/glib/include -I/usr/lib/gnome-libs/include -I../win/gnome
 #LFLAGS = 
 
 # The Qt and Be window systems are written in C++, while the rest of
-# NetHack is standard C.  If using Qt, uncomment the LINK line here to get
+# GnollHack is standard C.  If using Qt, uncomment the LINK line here to get
 # the C++ libraries linked in.
 CXXFLAGS = $(CFLAGS) -I. -I$(QTDIR)/include
 CXX ?= g++
@@ -343,7 +343,7 @@ WINCURSESLIB = -lncurses
 # for X11, you must include libinet.a.
 # LIBS = -lmalloc -linet
 #
-# Linux NetHack uses some bsd style ioctl functions, thus it is necessary to
+# Linux GnollHack uses some bsd style ioctl functions, thus it is necessary to
 # use the bsd libs.  (Only if still compiling as BSD in unixconf.h; recent
 # versions compile fine using SYSV without this.)
 # LIBS = -lbsd
@@ -362,9 +362,9 @@ WINCURSESLIB = -lncurses
 #
 LIBS = -lm
 
-# make NetHack
+# make GnollHack
 GAME     = GnollHack
-# GAME     = nethack.prg
+# GAME     = gnollhack.prg
 
 # if you defined RANDOM in unixconf.h/tosconf.h since your system did not come
 # with a reasonable random number generator
@@ -379,7 +379,7 @@ AWK	= nawk
 # changing this to 0 will change the behavior to only make that file if
 # it doesn't already exist; to skip it completely, create an empty file
 # of that name and also set this to 0; there shouldn't be any need to
-# skip it--if nethack's sources don't reside in a git repository than
+# skip it--if gnollhack's sources don't reside in a git repository than
 # the script which creates that file will fail benignly and 'makedefs -v'
 # will proceed without it
 GITINFO=1
@@ -435,7 +435,7 @@ MAKEDEFS = ../util/makedefs
 CONFIG_H = ../src/config.h-t
 HACK_H	= ../src/hack.h-t
 
-# all .c that are part of the main NetHack program and are not operating- or
+# all .c that are part of the main GnollHack program and are not operating- or
 # windowing-system specific
 HACKCSRC = allmain.c alloc.c apply.c artifact.c attrib.c ball.c bones.c \
 	   botl.c cmd.c dbridge.c decl.c detect.c dig.c display.c dlb.c do.c \
@@ -554,7 +554,7 @@ SysV-AT:	DUMB.Setup $(HOBJ) Makefile
 SysBe: $(HOBJ) Makefile
 	@echo "Linking $(GAME)."
 	$(AT)$(LINK) $(LFLAGS) -o $(GAME) $(HOBJ) $(WINLIB) $(LIBS)
-	@xres -o $(GAME) ../win/BeOS/nethack.rsrc
+	@xres -o $(GAME) ../win/BeOS/gnollhack.rsrc
 	@mimeset -f $(GAME)
 	@touch SysBe
 

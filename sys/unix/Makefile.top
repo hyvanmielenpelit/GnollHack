@@ -1,7 +1,7 @@
-#      NetHack Top-level Makefile.
-# NetHack 3.6  Makefile.top    $NHDT-Date: 1524689449 2018/04/25 20:50:49 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.36 $
+#      GnollHack Top-level Makefile.
+# GnollHack 3.6  Makefile.top    $NHDT-Date: 1524689449 2018/04/25 20:50:49 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.36 $
 # Copyright (c) 2015 by Kenneth Lorber, Kensington, Maryland
-# NetHack may be freely redistributed.  See license for details.
+# GnollHack may be freely redistributed.  See license for details.
 
 # Root of source tree:
 NHSROOT=.
@@ -18,10 +18,10 @@ NHSROOT=.
 # execute things like 'data' and 'rumors')
 # MAKE = make
 
-# make NetHack
+# make GnollHack
 #PREFIX	 = /usr
-GAME     = nethack
-# GAME     = nethack.prg
+GAME     = gnollhack
+# GAME     = gnollhack.prg
 #GAMEUID  = games
 #GAMEGRP  = bin
 
@@ -37,19 +37,19 @@ DIRPERM  = 0755
 # VARDIR may also appear in unixconf.h as "VAR_PLAYGROUND" else HACKDIR
 #
 # note that 'make install' believes in creating a nice tidy HACKDIR for
-# installation, free of debris from previous NetHack versions --
+# installation, free of debris from previous GnollHack versions --
 # therefore there should not be anything in HACKDIR that you want to keep
 # (if there is, you'll have to do the installation by hand or modify the
 # instructions)
 #HACKDIR  = $(PREFIX)/games/lib/$(GAME)dir
 #VARDIR  = $(HACKDIR)
-# Where nethack.sh in installed.  If this is not defined, the wrapper is not used.
+# Where gnollhack.sh in installed.  If this is not defined, the wrapper is not used.
 #SHELLDIR = $(PREFIX)/games
 
 # per discussion in Install.X11 and Install.Qt
 #VARDATND = 
-# VARDATND = x11tiles NetHack.ad pet_mark.xbm pilemark.xbm
-# VARDATND = x11tiles NetHack.ad pet_mark.xbm pilemark.xbm rip.xpm
+# VARDATND = x11tiles GnollHack.ad pet_mark.xbm pilemark.xbm
+# VARDATND = x11tiles GnollHack.ad pet_mark.xbm pilemark.xbm rip.xpm
 # for Atari/Gem
 # VARDATND = nh16.img title.img GEM_RSC.RSC rip.img
 # for BeOS
@@ -152,8 +152,8 @@ beostiles: $(GAME)
 	( cd util ; $(MAKE) tile2beos )
 	( cd dat ; $(MAKE) beostiles )
 
-NetHack.ad: $(GAME)
-	( cd dat ; $(MAKE) NetHack.ad )
+GnollHack.ad: $(GAME)
+	( cd dat ; $(MAKE) GnollHack.ad )
 
 pet_mark.xbm:
 	( cd dat ; $(MAKE) pet_mark.xbm )
@@ -207,9 +207,9 @@ dofiles:
 	cp util/recover $(INSTDIR)
 	-if test -n '$(SHELLDIR)'; then rm -f $(SHELLDIR)/$(GAME); fi
 	if test -n '$(SHELLDIR)'; then \
-		sed -e 's;/usr/games/lib/nethackdir;$(HACKDIR);' \
-		-e 's;HACKDIR/nethack;HACKDIR/$(GAME);' \
-		< sys/unix/nethack.sh \
+		sed -e 's;/usr/games/lib/gnollhackdir;$(HACKDIR);' \
+		-e 's;HACKDIR/gnollhack;HACKDIR/$(GAME);' \
+		< sys/unix/gnollhack.sh \
 		> $(SHELLDIR)/$(GAME) ; fi
 # set up their permissions
 	-( cd $(INSTDIR) ; $(CHOWN) $(GAMEUID) $(GAME) recover ; \

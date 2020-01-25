@@ -1,7 +1,7 @@
-#	Makefile for NetHack's utility programs.
-# NetHack 3.6  Makefile.utl    $NHDT-Date: 1539968067 2018/10/19 16:54:27 $  $NHDT-Branch: keni-makedefsm $:$NHDT-Revision: 1.38 $
+#	Makefile for GnollHack's utility programs.
+# GnollHack 3.6  Makefile.utl    $NHDT-Date: 1539968067 2018/10/19 16:54:27 $  $NHDT-Branch: keni-makedefsm $:$NHDT-Revision: 1.38 $
 # Copyright (c) 2018 by Robert Patrick Rankin
-# NetHack may be freely redistributed.  See license for details.
+# GnollHack may be freely redistributed.  See license for details.
 
 # Root of source tree:
 NHSROOT=..
@@ -188,7 +188,7 @@ UTILSRCS = $(MAKESRC) panic.c $(SPLEVSRC) $(DGNCOMPSRC) $(RECOVSRC) $(DLBSRC)
 # files that define all monsters and objects
 CMONOBJ = ../src/monst.c ../src/objects.c
 OMONOBJ = $(OBJDIR)/monst.o $(OBJDIR)/objects.o
-# files that provide access to NetHack's names
+# files that provide access to GnollHack's names
 CNAMING = ../src/drawing.c ../src/decl.c $(CMONOBJ)
 ONAMING = $(OBJDIR)/drawing.o $(OBJDIR)/decl.o $(OMONOBJ)
 # dynamic memory allocation
