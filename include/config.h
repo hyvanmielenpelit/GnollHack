@@ -457,7 +457,7 @@ typedef unsigned char uchar;
 
 #define DOAGAIN '\001' /* ^A, the "redo" key used in cmd.c and getline.c */
 
-/* CONFIG_ERROR_SECURE: If user makes GnollHackOPTIONS point to a file ...
+/* CONFIG_ERROR_SECURE: If user makes NETHACKOPTIONS point to a file ...
  *  TRUE: Show the first error, nothing else.
  *  FALSE: Show all errors as normal, with line numbers and context.
  */
