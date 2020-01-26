@@ -1071,7 +1071,7 @@ int objid;
 		break;
 	}
 
-	int energy = max(2, (objects[objid].oc_spell_mana_cost * multiplier) / 100);
+	int energy = max(1, (objects[objid].oc_spell_mana_cost * multiplier) / 100);
 
 	return energy;
 }

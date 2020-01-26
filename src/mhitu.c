@@ -982,9 +982,9 @@ register struct monst *mtmp;
 						int chance = mattk->mcadj;
 						if (!is_cancelled(mtmp) && !(mvitals[PM_MINOTAUR].mvflags & G_GONE) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
 						{
-							mtmp = makemon(&mons[PM_MINOTAUR], u.ux, u.uy, MM_EMIN);
-							if(mtmp)
-								pline("%s summons a minotaur", Monnam(mtmp));
+							struct monst* mtmp2 = makemon(&mons[PM_MINOTAUR], u.ux, u.uy, MM_EMIN);
+							if(mtmp2)
+								pline("%s summons %s.", Monnam(mtmp), a_monnam(mtmp2));
 							sum[i] = 1;
 						}
 						else if(!is_silenced(mtmp))

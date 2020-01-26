@@ -89,7 +89,7 @@
 #define AD_GNOL 245 /* Summons gnolls, Yeenoghu */
 #define AD_GHUL 246 /* Summons ghouls, Yeenoghu */
 #define AD_UNDO 247 /* Summons undead, Orcus */
-#define AD_MINO 248 /* Summons ghouls, Yeenoghu */
+#define AD_MINO 248 /* Summons a minotaur, Baphomet and Geryon */
 #define AD_REY1 249 /* random eyestalk 1 */
 #define AD_REY2 250 /* random eyestalk 2 */
 

@@ -731,7 +731,7 @@ regenerate_mana()
 {
 
 	/* regenerate mana */
-	int roundstofull = Energy_regeneration ? max(1, min(u.uenmax, 225)) : 450;
+	int roundstofull = Energy_regeneration ? max(1, min(u.uenmax, 450)) : 900;
 	int fixedmanaperround = u.uenmax / roundstofull;
 	int fractional_mana = (10000 * (u.uenmax % roundstofull)) / roundstofull;
 

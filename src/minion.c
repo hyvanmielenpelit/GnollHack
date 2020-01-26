@@ -728,7 +728,7 @@ aligntyp atyp;
     int tryct, pm;
 
     for (tryct = !In_endgame(&u.uz) ? 20 : 0; tryct > 0; --tryct) {
-        pm = rn1(PM_DEMOGORGON + 1 - PM_ORCUS, PM_ORCUS);
+        pm = rn1(PM_DEMOGORGON + 1 - PM_BAALZEBUB, PM_BAALZEBUB);
         if (!(mvitals[pm].mvflags & G_GONE)
             && (atyp == A_NONE || sgn(mons[pm].maligntyp) == sgn(atyp)))
             return pm;

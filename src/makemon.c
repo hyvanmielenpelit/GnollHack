@@ -850,6 +850,19 @@ register struct monst *mtmp;
 			otmp->spe = max(otmp->spe, spe2);
 			(void)mpickobj(mtmp, otmp);
 			break;
+		case PM_BAPHOMET:
+			/* Baphomet's bardiche */
+			otmp = mksobj(HUGE_INFERNAL_BARDICHE, FALSE, FALSE, FALSE);
+			curse(otmp);
+			otmp->oerodeproof = TRUE;
+			spe2 = 2 + rnd(3);
+			otmp->spe = max(otmp->spe, spe2);
+			(void)mpickobj(mtmp, otmp);
+
+			/* And his nose ring, of course */
+			(void)mongets(mtmp, !rn2(2) ? NOSE_RING_OF_BULL_STRENGTH : NOSE_RING_OF_BULLHEADEDNESS);
+
+			break;
 		}
         /* prevent djinn and mail daemons from leaving objects when
          * they vanish
