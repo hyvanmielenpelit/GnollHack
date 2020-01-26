@@ -41,7 +41,7 @@ struct monst *mon;
         if (!tunnels(mon->data) || !needspick(mon->data))
             pickaxe = &dummy;
         /* don't hang on to key if can't open doors */
-        if (nohands(mon->data) || verysmall(mon->data))
+        if ((nohands(mon->data) && !is_telekinetic_operator(mon->data)) || verysmall(mon->data))
             key = &dummy;
     }
     if (wep) {
@@ -1079,7 +1079,7 @@ int after; /* this is extra fast monster movement */
         You("get released!");
     }
 #endif
-    if (!nohands(mtmp->data) && !verysmall(mtmp->data)) {
+    if (can_operate_objects(mtmp->data)) {
         allowflags |= OPENDOOR;
         if (monhaskey(mtmp, TRUE))
             allowflags |= UNLOCKDOOR;

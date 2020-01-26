@@ -324,7 +324,7 @@ struct monst *mtmp;
      * silly trying to use the same cursed horn round after round
      */
     if (is_confused(mtmp) || is_stunned(mtmp) || is_blinded(mtmp)) {
-        if (!is_unicorn(mtmp->data) && !nohands(mtmp->data)) {
+        if (!is_unicorn(mtmp->data) && can_operate_objects(mtmp->data)) {
             for (obj = mtmp->minvent; obj; obj = obj->nobj)
                 if (obj->otyp == UNICORN_HORN && !obj->cursed)
                     break;
@@ -365,7 +365,7 @@ struct monst *mtmp;
      * These would be hard to combine because of the control flow.
      * Pestilence won't use healing even when blind.
      */
-    if (is_blinded(mtmp) && !nohands(mtmp->data)
+    if (is_blinded(mtmp) && can_operate_objects(mtmp->data)
         && mtmp->data != &mons[PM_PESTILENCE]) {
         if (m_use_healing(mtmp))
             return TRUE;
@@ -377,7 +377,7 @@ struct monst *mtmp;
         return FALSE;
 
     if (is_peaceful(mtmp)) {
-        if (!nohands(mtmp->data)) {
+        if (can_operate_objects(mtmp->data)) {
             if (m_use_healing(mtmp))
                 return TRUE;
         }
@@ -459,7 +459,7 @@ struct monst *mtmp;
         }
     }
 
-    if (nohands(mtmp->data)) /* can't use objects */
+    if (!can_operate_objects(mtmp->data)) /* can't use objects */
         goto botm;
 
     if (is_mercenary(mtmp->data) && (obj = m_carrying(mtmp, BUGLE)) != 0) {
@@ -1109,7 +1109,7 @@ struct monst *mtmp;
     m.offensive = (struct obj *) 0;
     m.has_offense = 0;
     if (is_peaceful(mtmp) || is_animal(mtmp->data) || mindless(mtmp->data)
-        || nohands(mtmp->data))
+        || !can_operate_objects(mtmp->data))
         return FALSE;
     if (u.uswallow)
         return FALSE;
@@ -1733,7 +1733,7 @@ struct monst *mtmp;
                         }
                     }
     }
-    if (nohands(mdat))
+    if (!can_operate_objects(mdat))
         return 0;
 
 #define nomore(x)       if (m.has_misc == x) continue

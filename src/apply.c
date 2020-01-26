@@ -306,13 +306,13 @@ register struct obj *obj;
     boolean interference = (u.uswallow && is_whirly(u.ustuck->data)
                             && !rn2(Role_if(PM_HEALER) ? 10 : 3));
 
-    if (nohands(youmonst.data)) {
+    if (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data)) {
         You("have no hands!"); /* not `body_part(HAND)' */
         return 0;
     } else if (Deaf) {
         You_cant("hear anything!");
         return 0;
-    } else if (!freehand()) {
+    } else if (!freehand() && !is_telekinetic_operator(youmonst.data)) {
         You("have no free %s.", body_part(HAND));
         return 0;
     }
@@ -3082,7 +3082,7 @@ struct obj *otmp;
     int levtyp = levl[u.ux][u.uy].typ;
     const char *occutext = "setting the trap";
 
-    if (nohands(youmonst.data))
+    if (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data))
         what = "without hands";
     else if (Stunned)
         what = "while stunned";

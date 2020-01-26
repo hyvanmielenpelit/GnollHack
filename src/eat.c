@@ -1730,13 +1730,18 @@ struct obj *otmp;
     const char *mesg = 0;
     register int tmp;
 
-    if (metallivorous(youmonst.data)) {
+    if (metallivorous(youmonst.data)) 
+	{
         mesg = "You bite right into the metal tin...";
         tmp = 0;
-    } else if (cantwield(youmonst.data)) { /* nohands || verysmall */
+    } 
+	else if (!can_operate_objects(youmonst.data)) 
+	{ /* nohands || verysmall */
         You("cannot handle the tin properly to open it.");
         return;
-    } else if (otmp->blessed) {
+    } 
+	else if (otmp->blessed) 
+	{
         /* 50/50 chance for immediate access vs 1 turn delay (unless
            wielding blessed tin opener which always yields immediate
            access); 1 turn delay case is non-deterministic:  getting
@@ -1747,8 +1752,11 @@ struct obj *otmp;
             mesg = "The tin opens like magic!";
         else
             pline_The("tin seems easy to open.");
-    } else if (uwep) {
-        switch (uwep->otyp) {
+    } 
+	else if (uwep) 
+	{
+        switch (uwep->otyp)
+		{
         case TIN_OPENER:
             mesg = "You easily open the tin."; /* iff tmp==0 */
             tmp = rn2(uwep->cursed ? 3 : !uwep->blessed ? 2 : 1);
@@ -1771,13 +1779,17 @@ struct obj *otmp;
             goto no_opener;
         }
         pline("Using %s you try to open the tin.", yobjnam(uwep, (char *) 0));
-    } else {
+    }
+	else
+	{
     no_opener:
         pline("It is not so easy to open this tin.");
-        if (Glib) {
+        if (Glib)
+		{
             pline_The("tin slips from your %s.",
                       makeplural(body_part(FINGER)));
-            if (otmp->quan > 1L) {
+            if (otmp->quan > 1L) 
+			{
                 otmp = splitobj(otmp, 1L);
             }
             if (carried(otmp))

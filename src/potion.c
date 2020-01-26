@@ -2109,7 +2109,7 @@ dodip()
                 flags.verbose ? obuf : shortestname, pooltype);
         /* "Dip <the object> into the {pool, moat, &c}?" */
         if (yn(qbuf) == 'y') {
-            if (Levitation) {
+            if (Levitation && !Levitation_control) {
                 floating_above(pooltype);
             } else if (u.usteed && !is_swimmer(u.usteed->data)
                        && P_SKILL(P_RIDING) < P_BASIC) {

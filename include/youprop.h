@@ -378,11 +378,16 @@
    FROM_ACQUIRED set if inside solid rock (or in water on Plane of Water) */
 #define BLevitation u.uprops[LEVITATION].blocked
 #define Levitation ((HLevitation || ELevitation) && !BLevitation)
+
+#define HLevitation_control u.uprops[LEVITATION_CONTROL].intrinsic
+#define ELevitation_control u.uprops[LEVITATION_CONTROL].extrinsic
+#define Levitation_control (HLevitation_control || ELevitation_control)
+
 /* Can't touch surface, can't go under water; overrides all others */
 #define Lev_at_will                                                    \
-    (((HLevitation & I_SPECIAL) != 0L || (ELevitation & W_ARTIFACT_INVOKED) != 0L) \
+    ((Levitation && Levitation_control) || (((HLevitation & I_SPECIAL) != 0L || (ELevitation & W_ARTIFACT_INVOKED) != 0L) \
      && (HLevitation & ~(I_SPECIAL | TIMEOUT)) == 0L                   \
-     && (ELevitation & ~W_ARTIFACT_INVOKED) == 0L)
+     && (ELevitation & ~W_ARTIFACT_INVOKED) == 0L))
 
 /* Flying is overridden by Levitation */
 #define HFlying u.uprops[FLYING].intrinsic

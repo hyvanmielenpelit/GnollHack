@@ -1222,7 +1222,15 @@ struct attack* mattk;
 	return 1;
 }
 
+const char* get_eyestalk_ray_name(typ)
+{
+	return eyestalk[typ - 1];
+}
 
+const char* get_breath_weapon_name(typ)
+{
+	return breathwep[typ - 1];
+}
 
 
 /* remove an entire item from a monster's inventory; destroy that item */

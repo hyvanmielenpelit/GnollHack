@@ -1525,7 +1525,7 @@ dochat()
 		}
 	}
 
-	if (is_tame(mtmp) && mtmp->minvent && !nohands(mtmp->data) && attacktype(mtmp->data, AT_WEAP)) /*  && !mtmp->issummoned */
+	if (is_tame(mtmp) && mtmp->minvent && can_operate_objects(mtmp->data) && attacktype(mtmp->data, AT_WEAP)) /*  && !mtmp->issummoned */
 	{
 		if (select_hwep(mtmp))
 		{

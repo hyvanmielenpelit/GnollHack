@@ -88,11 +88,12 @@ set_uasmon()
     PROPSET(INVISIBILITY, has_innate_invisibility(mdat));
     PROPSET(TELEPORT, has_innate_teleportation(mdat));
     PROPSET(TELEPORT_CONTROL, has_innate_teleport_control(mdat));
-    PROPSET(LEVITATION, is_floater(mdat));
+	PROPSET(LEVITATION, is_floater(mdat));
     /* floating eye is the only 'floater'; it is also flagged as a 'flyer';
        suppress flying for it so that enlightenment doesn't confusingly
        show latent flight capability always blocked by levitation */
-    PROPSET(FLYING, (is_flyer(mdat) && !is_floater(mdat)));
+	PROPSET(LEVITATION_CONTROL, has_innate_levitation_control(mdat));
+	PROPSET(FLYING, (is_flyer(mdat) && !is_floater(mdat)));
     PROPSET(SWIMMING, is_swimmer(mdat));
     /* [don't touch MAGICAL_BREATHING here; both Amphibious and Breathless
        key off of it but include different monster forms...] */
@@ -501,9 +502,16 @@ int psflags;
 			}
 			else
 			{
-				if (mons[mntmp].difficulty > max(5, u.ulevel * 2))
+				if (forcecontrol)
+					break;
+				else if (mons[mntmp].difficulty > max(5, u.ulevel * 2))
 				{
-					if (yn("This form may be too difficult for your polymorph control. Continue?") == 'y')
+					if(wizard && !forcecontrol && yn("Enforce polymorph control success?") == 'y')
+					{
+						forcecontrol = TRUE;
+						break;
+					}
+					else if (yn("This form may be too difficult for your polymorph control. Continue?") == 'y')
 						break;
 				}
 				else
@@ -1527,7 +1535,9 @@ dogaze()
             break;
         }
     }
-    if (adtyp != AD_CONF && adtyp != AD_FIRE) {
+
+    if (adtyp != AD_CONF && adtyp != AD_FIRE && adtyp != AD_CNCL) 
+	{
         impossible("gaze attack %d?", adtyp);
         return 0;
     }
@@ -1543,108 +1553,251 @@ dogaze()
         You("lack the energy to use your special gaze!");
         return 0;
     }
-    u.uen -= 15;
-    context.botl = 1;
 
-    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
-        if (DEADMONSTER(mtmp))
-            continue;
-        if (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my)) {
-            looked++;
-            if (Invis && !has_see_invisible(mtmp)) {
-                pline("%s seems not to notice your gaze.", Monnam(mtmp));
-            } else if (is_invisible(mtmp) && !See_invisible) {
-                You_cant("see where to gaze at %s.", Monnam(mtmp));
-            } else if (M_AP_TYPE(mtmp) == M_AP_FURNITURE
-                       || M_AP_TYPE(mtmp) == M_AP_OBJECT) {
-                looked--;
-                continue;
-            } else if (flags.safe_dog && is_tame(mtmp) && !Confusion) {
-                You("avoid gazing at %s.", y_monnam(mtmp));
-            } else {
-                if (flags.confirm && is_peaceful(mtmp) && !Confusion) {
-                    Sprintf(qbuf, "Really %s %s?",
-                            (adtyp == AD_CONF) ? "confuse" : "attack",
-                            mon_nam(mtmp));
-                    if (yn(qbuf) != 'y')
-                        continue;
-                }
-                setmangry(mtmp, TRUE);
-                if (!mon_can_move(mtmp) || is_stunned(mtmp)
-                    || is_blinded(mtmp) || !haseyes(mtmp->data)) {
-                    looked--;
-                    continue;
-                }
-                /* No reflection check for consistency with when a monster
-                 * gazes at *you*--only medusa gaze gets reflected then.
-                 */
-                if (adtyp == AD_CONF) {
-                    if (!is_confused(mtmp))
-                        Your("gaze confuses %s!", mon_nam(mtmp));
-                    else
-                        pline("%s is getting more and more confused.",
-                              Monnam(mtmp));
-					 increase_mon_property(mtmp, CONFUSION, 20 + rnd(10));
-                } else if (adtyp == AD_FIRE) {
-                    int dmg = d(2, 6), lev = (int) u.ulevel;
+	if (!getdir((char*)0))
+		return 0;
 
-                    You("attack %s with a fiery gaze!", mon_nam(mtmp));
-                    if (resists_fire(mtmp)) {
-                        pline_The("fire doesn't burn %s!", mon_nam(mtmp));
-                        dmg = 0;
-                    }
-                    if (lev > rn2(20))
-                        (void) destroy_mitem(mtmp, SCROLL_CLASS, AD_FIRE);
-                    if (lev > rn2(20))
-                        (void) destroy_mitem(mtmp, POTION_CLASS, AD_FIRE);
-                    if (lev > rn2(25))
-                        (void) destroy_mitem(mtmp, SPBOOK_CLASS, AD_FIRE);
-                    if (dmg)
-                        mtmp->mhp -= dmg;
-                    if (DEADMONSTER(mtmp))
-                        killed(mtmp);
-                }
-                /* For consistency with passive() in uhitm.c, this only
-                 * affects you if the monster is still alive.
-                 */
-                if (DEADMONSTER(mtmp))
-                    continue;
+	if (!u.dx && !u.dy && !u.dz)
+	{
+		You_cant("gaze at yourself.");
+		return 0;
+	}
+	else if (!u.dx && !u.dy && u.dz > 0)
+	{
+		You("gaze at the floor. Nothing else happens.");
+		return 0;
+	}
+	else if (!u.dx && !u.dy && u.dz < 0)
+	{
+		You("gaze at the ceiling. Nothing else happens.");
+		return 0;
+	}
 
-                if (mtmp->data == &mons[PM_FLOATING_EYE] && !is_cancelled(mtmp)) {
-                    if (!Free_action) {
-                        You("are frozen by %s gaze!",
-                            s_suffix(mon_nam(mtmp)));
-                        nomul((u.ulevel > 6 || rn2(4))
-                                  ? -d((int) mtmp->m_lev + 1,
-                                       (int) mtmp->data->mattk[0].damd)
-                                  : -200);
-                        multi_reason = "frozen by a monster's gaze";
-                        nomovemsg = 0;
-                        return 1;
-                    } else
-                        You("stiffen momentarily under %s gaze.",
-                            s_suffix(mon_nam(mtmp)));
-                }
-                /* Technically this one shouldn't affect you at all because
-                 * the Medusa gaze is an active monster attack that only
-                 * works on the monster's turn, but for it to *not* have an
-                 * effect would be too weird.
-                 */
-                if (mtmp->data == &mons[PM_MEDUSA] && !is_cancelled(mtmp)) {
-                    pline("Gazing at the awake %s is not a very good idea.",
-                          l_monnam(mtmp));
-                    /* as if gazing at a sleeping anything is fruitful... */
-                    You("turn to stone...");
-                    killer.format = KILLED_BY;
-                    Strcpy(killer.name, "deliberately meeting Medusa's gaze");
-                    done(STONING);
-                }
+	u.uen -= 15;
+	context.botl = 1;
+
+	int maxgazerange = 18;
+	int cx = u.ux + u.dx, cy = u.uy + u.dy;
+
+	while (isok(cx, cy) && couldsee(cx, cy) && dist2(u.ux, u.uy, cx, cy) <= maxgazerange * maxgazerange) 
+	{
+		if (MON_AT(cx, cy))
+		{
+			mtmp = m_at(cx, cy);
+			if (mtmp && !DEADMONSTER(mtmp) && canseemon(mtmp))
+			{
+				looked++;
+				if (Invis && !has_see_invisible(mtmp)) {
+					pline("%s seems not to notice your gaze.", Monnam(mtmp));
+				} else if (is_invisible(mtmp) && !See_invisible) {
+					You_cant("see where to gaze at %s.", Monnam(mtmp));
+				} else if (M_AP_TYPE(mtmp) == M_AP_FURNITURE
+						   || M_AP_TYPE(mtmp) == M_AP_OBJECT) {
+					looked--;
+					continue;
+				} else if (flags.safe_dog && is_tame(mtmp) && !Confusion) {
+					You("avoid gazing at %s.", y_monnam(mtmp));
+				} else {
+					if (flags.confirm && is_peaceful(mtmp) && !Confusion) {
+						Sprintf(qbuf, "Really %s %s?",
+								(adtyp == AD_CONF) ? "confuse" : "attack",
+								mon_nam(mtmp));
+						if (yn(qbuf) != 'y')
+							continue;
+					}
+					setmangry(mtmp, TRUE);
+					if (!mon_can_move(mtmp) || is_stunned(mtmp)
+						|| is_blinded(mtmp) || !haseyes(mtmp->data)) {
+						looked--;
+						continue;
+					}
+					/* No reflection check for consistency with when a monster
+					 * gazes at *you*--only medusa gaze gets reflected then.
+					 */
+					switch (adtyp)
+					{
+					case AD_CONF:
+					{
+						if (!is_confused(mtmp))
+							Your("gaze confuses %s!", mon_nam(mtmp));
+						else
+							pline("%s is getting more and more confused.",
+								Monnam(mtmp));
+						increase_mon_property(mtmp, CONFUSION, 20 + rnd(10));
+						break;
+					}
+					case AD_FIRE:
+					{
+						int dmg = d(2, 6), lev = (int)u.ulevel;
+
+						You("attack %s with a fiery gaze!", mon_nam(mtmp));
+						if (resists_fire(mtmp)) {
+							pline_The("fire doesn't burn %s!", mon_nam(mtmp));
+							dmg = 0;
+						}
+						if (lev > rn2(20))
+							(void)destroy_mitem(mtmp, SCROLL_CLASS, AD_FIRE);
+						if (lev > rn2(20))
+							(void)destroy_mitem(mtmp, POTION_CLASS, AD_FIRE);
+						if (lev > rn2(25))
+							(void)destroy_mitem(mtmp, SPBOOK_CLASS, AD_FIRE);
+						if (dmg)
+							mtmp->mhp -= dmg;
+						if (DEADMONSTER(mtmp))
+							killed(mtmp);
+						break;
+					}
+					case AD_CNCL:
+					{
+						if (Cancelled)
+						{
+							You("gaze at %s but without effect.", mon_nam(mtmp));
+							break;
+						}
+						else if (Blind || (is_invisible(mtmp) && !See_invisible))
+						{
+							You("stare blindly at %s general direction.", s_suffix(mon_nam(mtmp)));
+							break;
+						}
+						else if (is_reflecting(mtmp))
+						{
+							You("gaze at %s.", mon_nam(mtmp));
+							(void)mon_reflects(mtmp, "The gaze is reflected away by %s %s!");
+							break;
+						}
+						else
+						{
+							if (is_cancelled(mtmp))
+								You("gaze at %s. %s is hit by an invisible anti-magic ray!", mon_nam(mtmp), Monnam(mtmp));
+							else
+								You("focus your anti-magic gaze on %s.", mon_nam(mtmp));
+							nonadditive_increase_mon_property_verbosely(mtmp, CANCELLED, 7);
+						}
+						break;
+					}
+					default:
+						break;
+					}
+
+					/* For consistency with passive() in uhitm.c, this only
+					 * affects you if the monster is still alive.
+					 */
+					if (!DEADMONSTER(mtmp))
+					{
+						if (mtmp->data == &mons[PM_FLOATING_EYE] && !is_cancelled(mtmp)) {
+							if (!Free_action) {
+								You("are frozen by %s gaze!",
+									s_suffix(mon_nam(mtmp)));
+								nomul((u.ulevel > 6 || rn2(4))
+									? -d((int)mtmp->m_lev + 1,
+									(int)mtmp->data->mattk[0].damd)
+									: -200);
+								multi_reason = "frozen by a monster's gaze";
+								nomovemsg = 0;
+								return 1;
+							}
+							else
+								You("stiffen momentarily under %s gaze.",
+									s_suffix(mon_nam(mtmp)));
+						}
+						/* Technically this one shouldn't affect you at all because
+						 * the Medusa gaze is an active monster attack that only
+						 * works on the monster's turn, but for it to *not* have an
+						 * effect would be too weird.
+						 */
+						if (mtmp->data == &mons[PM_MEDUSA] && !is_cancelled(mtmp)) {
+							pline("Gazing at the awake %s is not a very good idea.",
+								l_monnam(mtmp));
+							/* as if gazing at a sleeping anything is fruitful... */
+							You("turn to stone...");
+							killer.format = KILLED_BY;
+							Strcpy(killer.name, "deliberately meeting Medusa's gaze");
+							done(STONING);
+						}
+					}
+				}
+				/* Gaze hits only one monster */
+				break;
             }
         }
+
+		/* Add range */
+		cx = cx + u.dx;
+		cy = cy + u.dy;
     }
     if (!looked)
         You("gaze at no place in particular.");
     return 1;
+}
+
+int
+doeyestalk()
+{
+	uchar adtyp = 0;
+
+	if (Blind) {
+		You_cant("see anything to gaze at.");
+		return 0;
+	}
+	else if (Cancelled) {
+		You("are cancelled and cannot use your eyestalks!");
+		return 0;
+	}
+	else if (Hallucination) {
+		You_cant("gaze at anything you can see.");
+		return 0;
+	}
+
+	if (!getdir((char*)0))
+		return 0;
+
+	if (!u.dx && !u.dy && !u.dz)
+	{
+		You_cant("gaze at yourself.");
+		return 0;
+	}
+
+
+	int attacksperformed = 0;
+	for (int i = 0; i < NATTK; i++)
+	{
+		struct attack* mattk = &youmonst.data->mattk[i];
+
+		if (!mattk)
+			continue;
+
+		if (mattk->aatyp != AT_EYES)
+			continue;
+
+		if (u.uen < 5) {
+			You("lack the energy to use your eyestalks%s!", attacksperformed > 0 ? " any further" : "");
+			return 0;
+		}
+		u.uen -= 5;
+		context.botl = 1;
+
+		uchar adtyp = mattk->adtyp;
+		int effect_choices[6] = { AD_DISN, AD_DRAY, AD_ELEC, AD_MAGM, AD_SLEE, AD_COLD };
+		int ray1_effect_choices[3] = { AD_DISN, AD_ELEC, AD_COLD }; /* Elemental */
+		int ray2_effect_choices[3] = { AD_DRAY, AD_MAGM, AD_SLEE }; /* Magic */
+		int typ = (mattk->adtyp == AD_RBRE) ? effect_choices[rn2(6)] :
+			(mattk->adtyp == AD_REY1) ? ray1_effect_choices[rn2(3)] :
+			(mattk->adtyp == AD_REY2) ? ray2_effect_choices[rn2(3)] :
+			mattk->adtyp;
+
+		if ((typ >= AD_MAGM) && (typ <= AD_DRAY))
+		{
+			pline("One of your eyestalks fires %s!", get_eyestalk_ray_name(typ));
+			buzz((int)(0 + (typ - 1)), (struct obj*)0, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp,
+				u.ux, u.uy, u.dx, u.dy);
+			attacksperformed++;
+		}
+		else
+			impossible("Eyestalk %d used", typ - 1);
+
+	}
+
+	return 1;
 }
 
 int

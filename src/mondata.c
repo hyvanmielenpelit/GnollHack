@@ -65,6 +65,8 @@ static NEARDATA struct mflag_description m1flag_descriptions[] = {
 	{ M1_CLING, "clinging", "clingers" },
 	{ M1_CONCEAL, "concealing", "concealed monster" },
 	{ M1_FLY, "flying", "flying monsters" },
+	{ M1_FLOATER, "floater", "floating monsters" },
+	{ M1_TELEKINETIC_OPERATOR, "telekinetically operating", "telekinetically operating monsters" },
 	{ M1_HERBIVORE, "herbivore", "herbivores" },
 	{ M1_HIDE, "hiding", "hidden monster" },
 	{ M1_HUMANOID, "humanoid", "humanoids" },

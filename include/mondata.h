@@ -15,7 +15,8 @@
 
 /* M1-4 flags*/
 #define is_flyer(ptr) (((ptr)->mflags1 & M1_FLY) != 0L)
-#define is_floater(ptr) ((ptr)->mlet == S_EYE || (ptr)->mlet == S_LIGHT)
+#define is_floater(ptr) (((ptr)->mflags1 & M1_FLOATER) != 0L)
+#define is_telekinetic_operator(ptr) (((ptr)->mflags1 & M1_TELEKINETIC_OPERATOR) != 0L)
 #define is_clinger(ptr) (((ptr)->mflags1 & M1_CLING) != 0L)
 #define is_swimmer(ptr) (((ptr)->mflags1 & M1_SWIM) != 0L)
 #define has_innate_breathless(ptr) (((ptr)->mflags1 & M1_BREATHLESS) != 0L)
@@ -36,6 +37,8 @@
 #define nolimbs(ptr) (((ptr)->mflags1 & M1_NOLIMBS) == M1_NOLIMBS) /* two bits */
 #define nohands(ptr) (((ptr)->mflags1 & M1_NOHANDS) != 0L) /* also covers no limbs because of the bit in M1_NOLIMBS  */
 #define notake(ptr) (((ptr)->mflags1 & M1_NOTAKE) != 0L)
+#define can_operate_objects(ptr) (!(nohands(ptr) || verysmall(ptr)) || is_telekinetic_operator(ptr))
+
 #define has_head(ptr) (((ptr)->mflags1 & M1_NOHEAD) == 0L)
 #define has_horns(ptr) (num_horns(ptr) > 0)
 #define is_whirly(ptr) \
@@ -186,6 +189,9 @@
 
 #define has_innate_teleport_control(ptr) \
 	has_innate(ptr, MR_TELEPORT_CONTROL)
+
+#define has_innate_levitation_control(ptr) \
+	has_innate(ptr, MR_LEVITATION_CONTROL)
 
 #define has_innate_blind_telepathy(ptr)   \
 	has_innate(ptr, MR_BLIND_TELEPATHY)
@@ -365,6 +371,9 @@
 /* flying and levitation */
 #define has_levitation(mon) \
 	has_property(mon, LEVITATION)
+
+#define has_levitation_control(mon) \
+	(has_innate_levitation_control((mon)->data) || has_property(mon, LEVITATION_CONTROL))
 
 #define has_flying(mon) \
 	has_innate_or_property(mon, FLYING)

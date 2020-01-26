@@ -141,6 +141,7 @@ const struct propname {
 	{ SLEEPING, "sleeping unnaturally deeply", "magically induced sleep" },
 	{ SUMMON_FORBIDDEN, "having summoning forbidden", "summoning forbidden" },
 	{ SILENCED, "silenced", "silence" },
+	{ LEVITATION_CONTROL, "levitation control", "levitation control" },
 	{ LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
 	{  0, 0 },
 };

@@ -1782,7 +1782,7 @@ doloot()
         /* "Can't do that while carrying so much stuff." */
         return 0;
     }
-    if (nohands(youmonst.data)) {
+    if (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data)) {
         You("have no hands!"); /* not `body_part(HAND)' */
         return 0;
     }
@@ -2575,7 +2575,7 @@ boolean more_containers; /* True iff #loot multiple and this isn't last one */
     abort_looting = FALSE;
     emptymsg[0] = '\0';
 
-    if (!u_handsy())
+    if (!u_handsy() && !is_telekinetic_operator(youmonst.data))
         return 0;
 
     if (obj->olocked) {

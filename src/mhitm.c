@@ -1357,7 +1357,8 @@ register struct obj* omonwep;
 			}
 			nonadditive_increase_mon_property_verbosely(mdef, CANCELLED, 7);
 		}
-	break;    case AD_HALU:
+		break;    
+	case AD_HALU:
         if (!is_cancelled(magr)&& haseyes(pd) && !is_blinded(mdef)) {
             if (vis && canseemon(mdef))
                 pline("%s looks %sconfused.", Monnam(mdef),

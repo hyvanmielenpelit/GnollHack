@@ -157,7 +157,7 @@ boolean check_pit;
         && (t = t_at(u.ux, u.uy)) != 0 && uteetering_at_seen_pit(t))
         return FALSE;
 
-    return (boolean) ((!Levitation || Is_airlevel(&u.uz)
+    return (boolean) ((!(Levitation && !Levitation_control) || Is_airlevel(&u.uz)
                        || Is_waterlevel(&u.uz))
                       && (!u.uundetected || !is_hider(youmonst.data)
                           || u.umonnum == PM_TRAPPER));

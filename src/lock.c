@@ -99,7 +99,7 @@ picklock(VOID_ARGS)
         }
     }
 
-    if (xlock.usedtime++ >= 50 || nohands(youmonst.data)) {
+    if (xlock.usedtime++ >= 50 || (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data))) {
         You("give up your attempt at %s.", lock_action());
         exercise(A_DEX, TRUE); /* even if you don't succeed */
         return ((xlock.usedtime = 0));
@@ -226,7 +226,7 @@ forcelock(VOID_ARGS)
     if ((xlock.box->ox != u.ux) || (xlock.box->oy != u.uy))
         return ((xlock.usedtime = 0)); /* you or it moved */
 
-    if (xlock.usedtime++ >= 50 || !uwep || nohands(youmonst.data)) {
+    if (xlock.usedtime++ >= 50 || !uwep || (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data))) {
         You("give up your attempt to force the lock.");
         if (xlock.usedtime >= 50) /* you made the effort */
             exercise((xlock.picktyp) ? A_DEX : A_STR, TRUE);
@@ -318,7 +318,7 @@ struct obj *pick;
     if (xlock.usedtime && picktyp == xlock.picktyp) {
         static char no_longer[] = "Unfortunately, you can no longer %s %s.";
 
-        if (nohands(youmonst.data)) {
+        if (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data)) {
             const char *what = (picktyp == LOCK_PICK) ? "pick" : "key";
 
             if (picktyp == CREDIT_CARD)
@@ -340,7 +340,7 @@ struct obj *pick;
         }
     }
 
-    if (nohands(youmonst.data)) {
+    if (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data)) {
         You_cant("hold %s -- you have no hands!", doname(pick));
         return PICKLOCK_DID_NOTHING;
     } else if (u.uswallow) {
@@ -638,7 +638,7 @@ int x, y;
     boolean portcullis;
     int res = 0;
 
-    if (nohands(youmonst.data)) {
+    if (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data)) {
         You_cant("open anything -- you have no hands!");
         return 0;
     }
@@ -781,7 +781,7 @@ doclose()
     boolean portcullis;
     int res = 0;
 
-    if (nohands(youmonst.data)) {
+    if (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data)) {
         You_cant("close anything -- you have no hands!");
         return 0;
     }

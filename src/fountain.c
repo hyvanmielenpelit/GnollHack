@@ -228,7 +228,7 @@ drinkfountain()
 	register int zlevel;
 	zlevel = level_difficulty();
 
-	if (Levitation) {
+	if (Levitation && !Levitation_control) {
         floating_above("fountain");
         return;
     }
@@ -397,7 +397,8 @@ void
 dipfountain(obj)
 register struct obj *obj;
 {
-    if (Levitation) {
+    if (Levitation && !Levitation_control)
+	{
         floating_above("fountain");
         return;
     }
@@ -591,7 +592,8 @@ drinksink()
     struct obj *otmp;
     struct monst *mtmp;
 
-    if (Levitation) {
+    if (Levitation && !Levitation_control) 
+	{
         floating_above("sink");
         return;
     }

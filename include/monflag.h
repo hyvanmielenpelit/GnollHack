@@ -75,6 +75,7 @@
 #define MR_FEAR			0x00800000L			/* immune to fear */
 #define MR_SICK			0x01000000L			/* immune to sickness */
 #define MR_FREE_ACTION	0x02000000L			/* immune to paralysis */
+#define MR_LEVITATION_CONTROL 0x04000000L		
 
 
 /* conveyances: resistances, teleport, teleport control, telepathy, as well as other properties from eating the corpse */
@@ -136,8 +137,9 @@
 #define M1_UNSOLID		0x00100000L     /* has no solid or liquid body */
 #define M1_THICK_HIDE	0x00200000L  /* has thick hide or scales */
 #define M1_OVIPAROUS	0x00400000L   /* can lay eggs */
-/* free bit */
-/* free bit */
+#define M1_FLOATER		0x00800000L   /* can float */
+#define M1_TELEKINETIC_OPERATOR \
+						0x01000000L   /* can use telekinesis as hands for certain purposes (for beholder opening doors etc.) */
 /* free bit */
 /* free bit */
 /* free bit */

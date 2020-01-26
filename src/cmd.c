@@ -710,13 +710,48 @@ doability(VOID_ARGS)
 		char name[BUFSZ];
 		int (*function_ptr)();
 	};
-	struct available_ability available_ability_list[MAXABILITYNUM];
+	struct available_ability available_ability_list[MAXABILITYNUM] = { { 0 } };
 	int abilitynum = 0;
 
+	/* CHARACTER ABILITY INFORMATION */
 	any = zeroany;
 	add_menu(win, NO_GLYPH, &any,
 		0, 0, iflags.menu_headings,
-		"Skill-Based Abilities            ", MENU_UNSELECTED);
+		"View Character Abilities            ", MENU_UNSELECTED);
+
+	strcpy(available_ability_list[abilitynum].name, "Statistics [you]");
+	available_ability_list[abilitynum].function_ptr = &docharacterstatistics;
+	available_ability_list[abilitynum].charnum = 'a' + abilitynum;
+
+	any = zeroany;
+	any.a_char = available_ability_list[abilitynum].charnum;
+
+	add_menu(win, NO_GLYPH, &any,
+		any.a_char, 0, ATR_NONE,
+		available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+	abilitynum++;
+
+
+	strcpy(available_ability_list[abilitynum].name, "Attributes [attributes]");
+	available_ability_list[abilitynum].function_ptr = &doattributes;
+	available_ability_list[abilitynum].charnum = 'a' + abilitynum;
+
+	any = zeroany;
+	any.a_char = available_ability_list[abilitynum].charnum;
+
+	add_menu(win, NO_GLYPH, &any,
+		any.a_char, 0, ATR_NONE,
+		available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+	abilitynum++;
+
+
+	/* SKILL-BASED ABILITIES */
+	any = zeroany;
+	add_menu(win, NO_GLYPH, &any,
+		0, 0, iflags.menu_headings,
+		"Use Skill-Based Abilities           ", MENU_UNSELECTED);
 
 	/* Ride */
 	strcpy(available_ability_list[abilitynum].name, "Ride");
@@ -766,7 +801,7 @@ doability(VOID_ARGS)
 		any = zeroany;
 		add_menu(win, NO_GLYPH, &any,
 			0, 0, iflags.menu_headings,
-			"Monster Abilities                ", MENU_UNSELECTED);
+			"Use Monster Abilities               ", MENU_UNSELECTED);
 		    
 		if (can_breathe(youmonst.data))
 		{
@@ -818,8 +853,26 @@ doability(VOID_ARGS)
 
 		if (attacktype(youmonst.data, AT_GAZE))
 		{
-			strcpy(available_ability_list[abilitynum].name, "Gaze");
+			char gazebuf[BUFSIZ] = "";
+			Sprintf(gazebuf, "Gaze%s", youmonst.data->mlet == S_EYE ? " with central eye" : "");
+			strcpy(available_ability_list[abilitynum].name, gazebuf);
 			available_ability_list[abilitynum].function_ptr = &dogaze;
+			available_ability_list[abilitynum].charnum = 'a' + abilitynum;
+
+			any = zeroany;
+			any.a_char = available_ability_list[abilitynum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+			abilitynum++;
+		}
+
+		if (attacktype(youmonst.data, AT_EYES))
+		{
+			strcpy(available_ability_list[abilitynum].name, "Gaze with one or more eyestalks");
+			available_ability_list[abilitynum].function_ptr = &doeyestalk;
 			available_ability_list[abilitynum].charnum = 'a' + abilitynum;
 
 			any = zeroany;
@@ -978,7 +1031,7 @@ doability(VOID_ARGS)
 	}
 
 
-	end_menu(win, "Which ability do you want to use?");
+	end_menu(win, "What do you want to do?");
 
 
 	if (abilitynum <= 0)
@@ -2800,7 +2853,8 @@ int final;
     } else if (Flying) { /* can only fly when not levitating */
         enl_msg(youtoo, are, were, "flying", !(magic || is_innate(FLYING) || cause_known(FLYING)) ? "" : from_what(FLYING));
     }
-    if (Underwater) {
+
+	if (Underwater) {
         you_are("underwater", "");
     } else if (u.uinwater) {
         you_are(Swimming ? "swimming" : "in water", !(magic || is_innate(SWIMMING) || cause_known(SWIMMING)) ? "" : from_what(SWIMMING));
@@ -3373,7 +3427,9 @@ int final;
         }
         BLevitation = save_BLev;
     }
-    /* actively flying handled earlier as a status condition */
+	if (Levitation_control)
+		you_have("levitation control", from_what(LEVITATION_CONTROL));
+	/* actively flying handled earlier as a status condition */
     if (BFlying) { /* flight is blocked */
         long save_BFly = BFlying;
 
@@ -4098,7 +4154,7 @@ struct ext_func_tab extcmdlist[] = {
             donamelevel, IFBURIED | AUTOCOMPLETE },
     { 'a', "apply", "apply (use) a tool (pick-axe, key, lamp...)",
             doapply },
-	{ 'A', "ability", "use ability or skill",
+	{ 'A', "ability", "view and use skills and abilities",
 			doability, IFBURIED | AUTOCOMPLETE },
 	{ C('y'), "attributes", "show your attributes",
 			doattributes, IFBURIED | AUTOCOMPLETE | INCMDMENU },

@@ -1739,6 +1739,8 @@ E void FDECL(m_throw, (struct monst *, int, int, int, int, int, struct obj *));
 E void FDECL(hit_bars, (struct obj **, int, int, int, int,
                         BOOLEAN_P, BOOLEAN_P));
 E boolean FDECL(hits_bars, (struct obj **, int, int, int, int, int, int));
+E const char* FDECL(get_eyestalk_ray_name, (int));
+E const char* FDECL(get_breath_weapon_name, (int));
 
 /* ### muse.c ### */
 
@@ -2076,6 +2078,7 @@ E int NDECL(doremove);
 E int NDECL(dospinweb);
 E int NDECL(dosummon);
 E int NDECL(dogaze);
+E int NDECL(doeyestalk);
 E int NDECL(dohide);
 E int NDECL(dopoly);
 E int NDECL(domindblast);

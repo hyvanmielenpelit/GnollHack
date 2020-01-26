@@ -3536,8 +3536,10 @@ dodown()
     }
     /* Levitation might be blocked, but player can still use '>' to
        turn off controlled levitation */
-    if (HLevitation || ELevitation) {
-        if ((HLevitation & I_SPECIAL) || (ELevitation & W_ARTIFACT_INVOKED)) {
+    if (Levitation && !Levitation_control) /* With levitiation control you can essentially fly while floating, so you can go up and down the stairs */
+	{
+        if ((HLevitation & I_SPECIAL) || (ELevitation & W_ARTIFACT_INVOKED)) 
+		{
             /* end controlled levitation */
             if (ELevitation & W_ARTIFACT_INVOKED) {
                 struct obj *obj;

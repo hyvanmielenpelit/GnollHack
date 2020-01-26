@@ -42,7 +42,7 @@ struct obj *otmp;
     int chance;
     const char *s;
 
-    if (!u_handsy())
+    if (!u_handsy() && !is_telekinetic_operator(youmonst.data))
         return 0;
 
     /* Select an animal */

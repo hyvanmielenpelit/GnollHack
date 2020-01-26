@@ -1471,7 +1471,7 @@ boolean creation;
      * except for the additional restriction on intelligence.  (Players
      * are always intelligent, even if polymorphed).
      */
-    if (verysmall(mon->data) || nohands(mon->data) || is_animal(mon->data))
+    if (!can_operate_objects(mon->data) || is_animal(mon->data))
         return;
 
 	if (mon->mfrozen)
