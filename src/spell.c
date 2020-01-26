@@ -1433,7 +1433,7 @@ int spell;
 		txt = buf;
 		putstr(datawin, 0, txt);
 
-		for (int j = 0; matlists[objects[booktype].oc_material_components].matcomp[j].objectid > 0; j++)
+		for (int j = 0; matlists[objects[booktype].oc_material_components].matcomp[j].objectid[0] > 0; j++)
 		{
 			Sprintf(buf, " %2d - %s%s", (j + 1), domatcompname(&matlists[objects[booktype].oc_material_components].matcomp[j]),
 				((matlists[objects[booktype].oc_material_components].matcomp[j].flags & MATCOMP_NOT_SPENT) ? " as a catalyst": ""));

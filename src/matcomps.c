@@ -4,7 +4,7 @@
 
 #include "hack.h"
 
-#define NO_DESC (const char*)0
+#define NO_DESC (char*)0
 
 struct materialcomponentlist matlists[] =
 {

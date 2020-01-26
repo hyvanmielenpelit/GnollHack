@@ -109,13 +109,14 @@ Commands:
                 Da - drop all objects, without asking for confirmation.
                 Du - drop only unpaid objects (when in a shop).
                 D%u - drop only unpaid food.
-        ^D      Dig the ground.
+        ^D      Kick (for doors, usually).
         e       Eat food.
         E       Engrave a message on the floor.
                 E- - write in the dust with your fingers.
         f       Fire ammunition from quiver.
         F       Followed by direction, fight a monster (even if you don't
                 sense it).
+        M-g     Dig the ground.
         i       Display your inventory.
         I       Display selected parts of your inventory, as in
                 I* - list all gems in inventory.
@@ -137,7 +138,6 @@ Commands:
                 The behavior can be varied via the msg_window option.
         q       Drink (quaff) something (potion, water, etc).
         Q       Select ammunition for quiver.
-        ^Q      Kick (for doors, usually).
         M-q     Quit the game.
         r       Read a scroll or spellbook.
         R       Remove an accessory (ring, amulet, etc).

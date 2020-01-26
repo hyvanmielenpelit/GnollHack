@@ -40,8 +40,7 @@ V       history display game history
 
 Game commands:
 ^B      break   break an item
-^D      dig     dig the ground
-^Q      kick    kick (a door, or something else)
+^D      kick    kick (a door, or something else)
 ^T      'port   teleport (if you can)
 ^Y      show    show your attributes
 ^X      twoweapon toggle two-weapon combat
@@ -105,6 +104,7 @@ M-C     conduct view optional challenges
 M-d     dip     dip an object into something
 M-e     enhance advance or check weapon and spell skills
 M-f     force   force a lock
+M-g     dig     dig the ground
 M-i     invoke  invoke an object's special powers
 M-j     jump    jump to another location
 M-l     loot    loot a box on the floor
