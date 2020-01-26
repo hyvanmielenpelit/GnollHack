@@ -14,7 +14,7 @@
  * Incrementing EDITLEVEL can be used to force invalidation of old bones
  * and save files.
  */
-#define EDITLEVEL 0
+#define EDITLEVEL 1
 
 #define COPYRIGHT_BANNER_A "GnollHack, Copyright 2020 by Sound Mind Games"
 #define COPYRIGHT_BANNER_B \
