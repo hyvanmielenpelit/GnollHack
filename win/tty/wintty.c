@@ -3699,8 +3699,8 @@ static const char *encvals[3][6] = {
 /* 2 or 3 status lines */
 static const enum statusfields
     twolineorder[3][MAX_PER_ROW] = {
-    { BL_TITLE, BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH, //BL_ALIGN,
-      BL_SCORE, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
+    { BL_TITLE, BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH, BL_GOLD,  //BL_ALIGN,
+      BL_SCORE, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD },
     { BL_LEVELDESC, BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX,  //BL_GOLD, 
       BL_AC, BL_MC_LVL, BL_MC_PCT, BL_XP, BL_EXP, BL_HD, BL_TIME, BL_2WEP, BL_SKILL, BL_HUNGER,
       BL_CAP, BL_CONDITION, BL_FLUSH },
@@ -3710,8 +3710,8 @@ static const enum statusfields
 },
     /* Align moved from 1 to 2, Leveldesc+Time+Condition moved from 2 to 3 */
     threelineorder[3][MAX_PER_ROW] = {
-    { BL_TITLE, BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH,
-      BL_SCORE, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
+    { BL_TITLE, BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH, BL_GOLD,
+      BL_SCORE, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
     { BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX,  //BL_GOLD, BL_ALIGN, 
       BL_AC,  BL_MC_LVL, BL_MC_PCT, BL_XP, BL_EXP, BL_HD, BL_2WEP, BL_SKILL, BL_HUNGER,
       BL_CAP, BL_FLUSH, blPAD, blPAD, blPAD },
@@ -3856,7 +3856,8 @@ unsigned long *colormasks;
     int attrmask;
     long *condptr = (long *) ptr;
     char *text = (char *) ptr;
-    char *lastchar, *p;  //goldbuf[40], 
+    char *lastchar, *p;  
+	char goldbuf[40] = "";
     const char *fmt;
     boolean reset_state = NO_RESET;
 
@@ -3882,8 +3883,8 @@ unsigned long *colormasks;
         tty_status[NOW][fldidx].dirty = TRUE;
         truncation_expected = FALSE;
         break;
-//    case BL_GOLD:
-//        text = decode_mixed(goldbuf, text);
+    case BL_GOLD:
+        text = decode_mixed(goldbuf, text);
         /*FALLTHRU*/
     default:
         attrmask = (color >> 8) & 0x00FF;
@@ -3954,11 +3955,11 @@ unsigned long *colormasks;
         if (iflags.wc2_hitpointbar)
             tty_status[NOW][fldidx].lth = 30 + 2; /* '[' and ']' */
         break;
-/*     case BL_GOLD:
+    case BL_GOLD:
         // \GXXXXNNNN counts as 1 [moot since we use decode_mixed() above]
         if ((p = index(status_vals[fldidx], '\\')) != 0 && p[1] == 'G')
             tty_status[NOW][fldidx].lth -= (10 - 1);
-        break; */
+        break; 
     case BL_CAP:
         enc_shrinklvl = 0; /* caller is passing full length string */
         enclev = stat_cap_indx();
@@ -4216,7 +4217,7 @@ int lvl;
 
     if (levval) {
         dlvl_shrinklvl = lvl;
-        Strcpy(buf, (lvl == 0) ? "Dlvl" : "Dl");
+        Strcpy(buf, (lvl == 0) ? "DLvl" : "DL");
         Strcat(buf, levval);
         Strcpy(status_vals[BL_LEVELDESC], buf);
         tty_status[NOW][BL_LEVELDESC].lth = strlen(status_vals[BL_LEVELDESC]);

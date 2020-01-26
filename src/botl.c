@@ -432,7 +432,7 @@ char *buf;
         Strcat(buf, " ");
     } else {
         /* ports with more room may expand this one */
-        Sprintf(buf, "Dlvl:%-2d ", depth(&u.uz));
+        Sprintf(buf, "DL:%-2d ", depth(&u.uz));
         ret = 0;
     }
     return ret;
@@ -546,10 +546,10 @@ STATIC_VAR struct istat_s initblstats[MAXBLSTATS] = {
     INIT_BLSTAT("intelligence", " In:%s", ANY_INT, 10, BL_IN),
     INIT_BLSTAT("wisdom", " Wi:%s", ANY_INT, 10, BL_WI),
     INIT_BLSTAT("charisma", " Ch:%s", ANY_INT, 10, BL_CH),
-//    INIT_BLSTAT("alignment", " %s", ANY_STR, 40, BL_ALIGN),
+	INIT_BLSTAT("gold", " %s", ANY_LONG, 30, BL_GOLD),
+	//    INIT_BLSTAT("alignment", " %s", ANY_STR, 40, BL_ALIGN),
     INIT_BLSTAT("score", " S:%s", ANY_LONG, 20, BL_SCORE),
     INIT_BLSTAT("carrying-capacity", " %s", ANY_INT, 20, BL_CAP),
-//    INIT_BLSTAT("gold", " %s", ANY_LONG, 30, BL_GOLD),
     INIT_BLSTATP("power", " MP:%s", ANY_INT, 10, BL_ENEMAX, BL_ENE),
     INIT_BLSTAT("power-max", "(%s)", ANY_INT, 10, BL_ENEMAX),
     INIT_BLSTAT("experience-level", " XL:%s", ANY_INT, 10, BL_XP),
@@ -597,7 +597,7 @@ bot_via_windowport()
     const char *titl;
     register char *nb;
     int i, idx, cap;
-    //long money;
+    long money;
 
     if (!blinit)
         panic("bot before init.");
@@ -679,9 +679,9 @@ bot_via_windowport()
     valset[BL_LEVELDESC] = TRUE; /* indicate val already set */
 
     /* Gold */
-//    if ((money = money_cnt(invent)) < 0L)
-//        money = 0L; /* ought to issue impossible() and then discard gold */
-//    blstats[idx][BL_GOLD].a.a_long = min(money, 999999L);
+    if ((money = money_cnt(invent)) < 0L)
+        money = 0L; /* ought to issue impossible() and then discard gold */
+    blstats[idx][BL_GOLD].a.a_long = min(money, 999999L);
     /*
      * The tty port needs to display the current symbol for gold
      * as a field header, so to accommodate that we pass gold with
@@ -697,13 +697,13 @@ bot_via_windowport()
      * The currency prefix is encoded as ten character \GXXXXNNNN
      * sequence.
      */
-	/*
+	
     Sprintf(blstats[idx][BL_GOLD].val, "%s:%ld",
             (iflags.in_dumplog || iflags.invis_goldsym) ? "$"
               : encglyph(objnum_to_glyph(GOLD_PIECE)),
             blstats[idx][BL_GOLD].a.a_long);
     valset[BL_GOLD] = TRUE; // indicate val already set
-	*/
+	
 
     /* Power (magical energy) */
     blstats[idx][BL_ENE].a.a_int = min(u.uen, 9999);
@@ -867,7 +867,7 @@ boolean *valsetlist;
      * Setting 'chg = 2' is enough to render the field properly, but
      * not to honor an initial highlight, so force 'update_all = TRUE'.
      */
-	/*
+	
     if (fld == BL_GOLD
         && (context.rndencode != oldrndencode
             || showsyms[COIN_CLASS + SYM_OFF_O] != oldgoldsym)) {
@@ -875,7 +875,7 @@ boolean *valsetlist;
         oldrndencode = context.rndencode;
         oldgoldsym = showsyms[COIN_CLASS + SYM_OFF_O];
     }
-	*/
+	
     reset = FALSE;
 #ifdef STATUS_HILITES
     if (!update_all && !chg && curr->time) {
