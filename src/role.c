@@ -295,7 +295,7 @@ const struct Role roles[] = {
       "Pri",
       "the Great Temple",
       "the Temple of Nalzok",
-	  { "Sees the beatitude of all objects", "Can pray more twice as often as normal", "", "", ""},
+	  { "Sees the beatitude of all objects", "Can pray twice as often as normal", "", "", ""},
 	  PM_PRIEST,
       PM_PRIESTESS,
       NON_PM,
