@@ -288,8 +288,8 @@ E NEARDATA struct mvitals {
 
 E NEARDATA long domove_attempting;
 E NEARDATA long domove_succeeded;
-#define DOMOVE_WALK         0x00000001
-#define DOMOVE_RUSH         0x00000002
+#define DOMOVE_WALK         0x00000001L
+#define DOMOVE_RUSH         0x00000002L
 
 E NEARDATA struct c_color_names {
     const char *const c_black, *const c_amber, *const c_golden,

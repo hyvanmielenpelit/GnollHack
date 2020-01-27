@@ -191,66 +191,66 @@
 #define M2_MAGIC 0x80000000L /* picks up magic items */
 #endif
 
-#define M3_NONE										0x00000000
-#define M3_WANTSAMUL								0x00000001 /* would like to steal the amulet */
-#define M3_WANTSBELL								0x00000002 /* wants the bell */
-#define M3_WANTSBOOK								0x00000004 /* wants the book */
-#define M3_WANTSCAND								0x00000008 /* wants the candelabrum */
-#define M3_WANTSARTI								0x00000010 /* wants the quest artifact */
-#define M3_WANTSALL									0x0000001f  /* wants any major artifact */
-#define M3_WAITFORU									0x00000040  /* waits to see you or get attacked */
-#define M3_CLOSE									0x00000080     /* lets you close unless attacked */
+#define M3_NONE										0x00000000L
+#define M3_WANTSAMUL								0x00000001L /* would like to steal the amulet */
+#define M3_WANTSBELL								0x00000002L /* wants the bell */
+#define M3_WANTSBOOK								0x00000004L /* wants the book */
+#define M3_WANTSCAND								0x00000008L /* wants the candelabrum */
+#define M3_WANTSARTI								0x00000010L /* wants the quest artifact */
+#define M3_WANTSALL									0x0000001fL  /* wants any major artifact */
+#define M3_WAITFORU									0x00000040L  /* waits to see you or get attacked */
+#define M3_CLOSE									0x00000080L     /* lets you close unless attacked */
 
-#define M3_COVETOUS									0x0000000f /* wants something (earlier the same as WANTSALL) */
-#define M3_WAITMASK									0x000000c0 /* waiting... */
+#define M3_COVETOUS									0x0000000fL /* wants something (earlier the same as WANTSALL) */
+#define M3_WAITMASK									0x000000c0L /* waiting... */
 
 /* Infravision is currently implemented for players only */
-#define M3_INFRAVISION								0x00000100  /* has infravision */
-#define M3_INFRAVISIBLE								0x00000200 /* visible by infravision */
+#define M3_INFRAVISION								0x00000100L  /* has infravision */
+#define M3_INFRAVISIBLE								0x00000200L /* visible by infravision */
 
-#define M3_DISPLACES								0x00000400			/* moves monsters out of its way */
-#define M3_NONCORPOREAL								0x00000800      /* is noncorporeal, different from unsolid in the sense that
+#define M3_DISPLACES								0x00000400L			/* moves monsters out of its way */
+#define M3_NONCORPOREAL								0x00000800L      /* is noncorporeal, different from unsolid in the sense that
 																	an unsolid monster can be disintegrated, but noncorporeal not */
 /* free bit */
-#define M3_NONLIVING								0x00002000			/* is nonliving, such as a golem or other construct or a vortex (unaffected by death attacks)*/
-#define M3_MULTIWEAPON								0x00004000		/* fights with more than one weapon (i.e., the wielded weapon), if available*/
-#define M3_CONSTRICTOR								0x00008000       /* grabbing / sticking itself causes constriction */
+#define M3_NONLIVING								0x00002000L			/* is nonliving, such as a golem or other construct or a vortex (unaffected by death attacks)*/
+#define M3_MULTIWEAPON								0x00004000L		/* fights with more than one weapon (i.e., the wielded weapon), if available*/
+#define M3_CONSTRICTOR								0x00008000L       /* grabbing / sticking itself causes constriction */
 
-#define M3_WIZARD									0x00010000			/* monster can use wizard items */
-#define M3_PRIEST									0x00020000			/* monster can use priest items */
-#define M3_KNIGHT									0x00040000			/* monster can use knight items */
-#define M3_HEALER									0x00080000			/* monster can use healer items */
+#define M3_WIZARD									0x00010000L			/* monster can use wizard items */
+#define M3_PRIEST									0x00020000L			/* monster can use priest items */
+#define M3_KNIGHT									0x00040000L			/* monster can use knight items */
+#define M3_HEALER									0x00080000L			/* monster can use healer items */
 
 /* free bit */
 /* free bit */
-#define M3_REGENERATES_LOST_BODY_PARTS				0x00400000		/* does not lose max hitpoint because of sharpness or bisection */
-#define M3_REVIVES_FROM_DEAD						0x00800000		/* is resurrects itself after a while */
+#define M3_REGENERATES_LOST_BODY_PARTS				0x00400000L		/* does not lose max hitpoint because of sharpness or bisection */
+#define M3_REVIVES_FROM_DEAD						0x00800000L		/* is resurrects itself after a while */
 
-#define M3_SPEAKING									0x01000000		/* can be spoken to using the chat command */
-#define M3_CHAT_CAN_JOIN_PARTY						0x02000000		/* can join the player's party */
+#define M3_SPEAKING									0x01000000L		/* can be spoken to using the chat command */
+#define M3_CHAT_CAN_JOIN_PARTY						0x02000000L		/* can join the player's party */
 
-#define M3_WEBMAKER									0x04000000		/* is a webmaker */
-#define M3_KNOWS_TRAPS								0x08000000		/* knows traps on the level */
-#define M3_KNOWS_PITS_AND_HOLES						0x10000000		/* knows pits and holes on the level */
+#define M3_WEBMAKER									0x04000000L		/* is a webmaker */
+#define M3_KNOWS_TRAPS								0x08000000L		/* knows traps on the level */
+#define M3_KNOWS_PITS_AND_HOLES						0x10000000L		/* knows pits and holes on the level */
 
-#define M3_RANDOM_CORPSE							0x20000000		/* leaves a corpse at random intervals */
-#define M3_CORPSE_CRUMBLES_TO_DUST					0x40000000		/* corpse crumbles to dust, also leaving no corpse */
-#define M3_HUG_HITS_IF_TWO_FIRST_ATTACKS_SUCCEEDED	0x80000000		/* corpse crumbles to dust, also leaving no corpse */
+#define M3_RANDOM_CORPSE							0x20000000L		/* leaves a corpse at random intervals */
+#define M3_CORPSE_CRUMBLES_TO_DUST					0x40000000L		/* corpse crumbles to dust, also leaving no corpse */
+#define M3_HUG_HITS_IF_TWO_FIRST_ATTACKS_SUCCEEDED	0x80000000L		/* corpse crumbles to dust, also leaving no corpse */
 
 
-#define M4_NONE						0x00000000
-#define M4_BRAVE					0x00000001		/* disregards enemy strength */
-#define M4_FEARLESS					0x00000002		/* disregards own health */
-#define M4_BLOODLUST				0x00000004		/* attacks peaceful */
+#define M4_NONE						0x00000000L
+#define M4_BRAVE					0x00000001L		/* disregards enemy strength */
+#define M4_FEARLESS					0x00000002L		/* disregards own health */
+#define M4_BLOODLUST				0x00000004L		/* attacks peaceful */
 
-#define M4_SPLITS_UPON_HIT			0x00000008		/* brown and black puddings */
-#define M4_VEGETARIAN_FOOD			0x00000010		/* puddings and other monsters for a vegetarian */
-#define M4_VEGAN_FOOD				0x00000020		/* monsters for a vegan */
-#define M4_NONROTTING_CORPSE		0x00000040		/* corpse does not rot */
+#define M4_SPLITS_UPON_HIT			0x00000008L		/* brown and black puddings */
+#define M4_VEGETARIAN_FOOD			0x00000010L		/* puddings and other monsters for a vegetarian */
+#define M4_VEGAN_FOOD				0x00000020L		/* monsters for a vegan */
+#define M4_NONROTTING_CORPSE		0x00000040L		/* corpse does not rot */
 
-#define M4_ALTERNATIVE_PASSIVE_DEFENSE_TEXT	0x00000080		/* e.g. engulfed in X's flames rather than feel very hot */
+#define M4_ALTERNATIVE_PASSIVE_DEFENSE_TEXT	0x00000080L		/* e.g. engulfed in X's flames rather than feel very hot */
 
-#define M4_PITWALK					0x00000100		/* can walk in and out of pits without trouble */
+#define M4_PITWALK					0x00000100L		/* can walk in and out of pits without trouble */
 
 
 #define MZ_TINY 0          /* < 2' */

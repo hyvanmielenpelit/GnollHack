@@ -403,39 +403,39 @@ struct objclass {
 	uchar oc_oprop, oc_oprop2, oc_oprop3; /* properties (invis, &c.) conveyed */
 	unsigned long oc_pflags;	 /* Power and property flags */
 
-#define P1_NONE													0x00000000
-#define P1_POWER_1_APPLIES_TO_ALL_CHARACTERS					0x00000001  
-#define P1_POWER_1_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY		0x00000002  
-#define P1_POWER_1_APPLIES_WHEN_CARRIED							0x00000004 
-#define P1_POWER_2_APPLIES_TO_ALL_CHARACTERS					0x00000008  
-#define P1_POWER_2_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY		0x00000010  
-#define P1_POWER_2_APPLIES_WHEN_CARRIED							0x00000020  
-#define P1_POWER_3_APPLIES_TO_ALL_CHARACTERS					0x00000040  
-#define P1_POWER_3_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY		0x00000080  
-#define P1_POWER_3_APPLIES_WHEN_CARRIED							0x00000100  
-#define P1_HP_BONUS_APPLIES_TO_ALL_CHARACTERS					0x00000200  
-#define P1_HP_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY	0x00000400  
-#define P1_HP_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS		0x00000800  
-#define P1_HP_BONUS_APPLIES_WHEN_CARRIED						0x00001000  
-#define P1_MANA_BONUS_APPLIES_TO_ALL_CHARACTERS					0x00002000  
-#define P1_MANA_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY	0x00004000  
-#define P1_MANA_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS		0x00008000  
-#define P1_MANA_BONUS_APPLIES_WHEN_CARRIED						0x00010000  
-#define P1_ATTRIBUTE_BONUS_APPLIES_TO_ALL_CHARACTERS			0x00020000 
-#define P1_ATTRIBUTE_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY	0x00040000  
-#define P1_ATTRIBUTE_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS	0x00080000  
-#define P1_ATTRIBUTE_BONUS_APPLIES_WHEN_CARRIED					0x00100000  
-#define P1_LUCK_APPLIES_TO_ALL_CHARACTERS						0x00200000 
-#define P1_LUCK_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY		0x00400000  
-#define P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS			0x00800000  
-#define P1_LUCK_APPLIES_WHEN_CARRIED							0x01000000  
+#define P1_NONE													0x00000000L
+#define P1_POWER_1_APPLIES_TO_ALL_CHARACTERS					0x00000001L  
+#define P1_POWER_1_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY		0x00000002L  
+#define P1_POWER_1_APPLIES_WHEN_CARRIED							0x00000004L 
+#define P1_POWER_2_APPLIES_TO_ALL_CHARACTERS					0x00000008L  
+#define P1_POWER_2_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY		0x00000010L  
+#define P1_POWER_2_APPLIES_WHEN_CARRIED							0x00000020L  
+#define P1_POWER_3_APPLIES_TO_ALL_CHARACTERS					0x00000040L  
+#define P1_POWER_3_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY		0x00000080L  
+#define P1_POWER_3_APPLIES_WHEN_CARRIED							0x00000100L  
+#define P1_HP_BONUS_APPLIES_TO_ALL_CHARACTERS					0x00000200L  
+#define P1_HP_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY	0x00000400L  
+#define P1_HP_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS		0x00000800L  
+#define P1_HP_BONUS_APPLIES_WHEN_CARRIED						0x00001000L  
+#define P1_MANA_BONUS_APPLIES_TO_ALL_CHARACTERS					0x00002000L  
+#define P1_MANA_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY	0x00004000L  
+#define P1_MANA_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS		0x00008000L  
+#define P1_MANA_BONUS_APPLIES_WHEN_CARRIED						0x00010000L  
+#define P1_ATTRIBUTE_BONUS_APPLIES_TO_ALL_CHARACTERS			0x00020000L 
+#define P1_ATTRIBUTE_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY	0x00040000L  
+#define P1_ATTRIBUTE_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS	0x00080000L  
+#define P1_ATTRIBUTE_BONUS_APPLIES_WHEN_CARRIED					0x00100000L  
+#define P1_LUCK_APPLIES_TO_ALL_CHARACTERS						0x00200000L 
+#define P1_LUCK_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY		0x00400000L  
+#define P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS			0x00800000L  
+#define P1_LUCK_APPLIES_WHEN_CARRIED							0x01000000L  
 /* free bit */
 /* free bit */
-#define P1_CURSED_ITEM_YIELDS_NEGATIVE							0x08000000  
-#define P1_CONFERS_LUCK											0x10000000			/* Adds one positive luck bonus; these need to be flags instead of props because they stack */
-#define P1_CONFERS_UNLUCK										0x20000000			/* Adds one negative luck bonus (the same as cursed luckstone) */
-#define P1_MANA_PERCENTAGE_BONUS								0x40000000
-#define P1_HP_PERCENTAGE_BONUS									0x80000000
+#define P1_CURSED_ITEM_YIELDS_NEGATIVE							0x08000000L  
+#define P1_CONFERS_LUCK											0x10000000L			/* Adds one positive luck bonus; these need to be flags instead of props because they stack */
+#define P1_CONFERS_UNLUCK										0x20000000L			/* Adds one negative luck bonus (the same as cursed luckstone) */
+#define P1_MANA_PERCENTAGE_BONUS								0x40000000L
+#define P1_HP_PERCENTAGE_BONUS									0x80000000L
 
 
 	char  oc_class; /* object class (enum obj_class_types) */
@@ -458,62 +458,62 @@ struct objclass {
 	unsigned long oc_aflags;				/* attack related flags, e.g. whether the attack is vorpal */
 
 /* Attack flags for weapons, armor, weapon-like tools, and miscellaneous items */
-#define A1_NONE				0x00000000
-#define A1_CRITICAL_STRIKE	0x00000001  /* extra damage is caused only by chance determined by oc_critical_strike_percentage */
-#define A1_CRITICAL_STRIKE_IS_DEADLY				0x00000002  
+#define A1_NONE														0x00000000L
+#define A1_CRITICAL_STRIKE											0x00000001L  /* extra damage is caused only by chance determined by oc_critical_strike_percentage */
+#define A1_CRITICAL_STRIKE_IS_DEADLY								0x00000002L  
 		/* successful critical strike causes lethal damage. If this flag is on, critical strike is considered not to be connected with extra damage; rather, it is treated similarly to vorpal attack */
-#define A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK	0x00000004  /* lethal damage is death magic */
-#define A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK	0x00000008  /* lethal damage is disintegration */
+#define A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK					0x00000004L  /* lethal damage is death magic */
+#define A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK			0x00000008L  /* lethal damage is disintegration */
 #define A1_DEADLY_CRITICAL_STRIKE_USES_EXTRA_DAMAGE_TYPE (A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK | A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK)  
 		/* lethal damage is of extra damage type; note that normal critical strike always follows extra_damagetype */
 #define A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK (A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK | A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK)  
-#define A1_CRITICAL_STRIKE_DISRESPECTS_TARGETS		0x00000010  /* successful critical strike causes lethal damage */
-#define A1_CRITICAL_STRIKE_DISRESPECTS_CHARACTERS	0x00000020  /* successful critical strike causes lethal damage */
-#define A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES	0x00000040  /* All other special types use critical strike probability instead of being certain or using their own standard probability */
-#define A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL	0x00000080  /* The number specified by oc_critical_strike_percentage is a die roll on d20 (X or less, e.g., 1 = 5% chance or 2 = 10% chance on any attack regardless of actual hit chance) */
+#define A1_CRITICAL_STRIKE_DISRESPECTS_TARGETS						0x00000010L  /* successful critical strike causes lethal damage */
+#define A1_CRITICAL_STRIKE_DISRESPECTS_CHARACTERS					0x00000020L  /* successful critical strike causes lethal damage */
+#define A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES	0x00000040L  /* All other special types use critical strike probability instead of being certain or using their own standard probability */
+#define A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL					0x00000080L  /* The number specified by oc_critical_strike_percentage is a die roll on d20 (X or less, e.g., 1 = 5% chance or 2 = 10% chance on any attack regardless of actual hit chance) */
 
-#define A1_WOUNDING								0x00000100  /* extra damage caused is permanent damage */
-#define A1_WOUNDING_DISRESPECTS_TARGETS			0x00000200  /* successful critical strike causes lethal damage */
-#define A1_WOUNDING_DISRESPECTS_CHARACTERS		0x00000400  /* successful critical strike causes lethal damage */
+#define A1_WOUNDING													0x00000100L  /* extra damage caused is permanent damage */
+#define A1_WOUNDING_DISRESPECTS_TARGETS								0x00000200L  /* successful critical strike causes lethal damage */
+#define A1_WOUNDING_DISRESPECTS_CHARACTERS							0x00000400L  /* successful critical strike causes lethal damage */
 
-#define A1_LIFE_LEECH							0x00000800  /* heals hit points equal to the extra damage caused */
-#define A1_LIFE_LEECH_DISRESPECTS_TARGETS		0x00001000  /* successful critical strike causes lethal damage */
-#define A1_LIFE_LEECH_DISRESPECTS_CHARACTERS	0x00002000  /* successful critical strike causes lethal damage */
+#define A1_LIFE_LEECH												0x00000800L  /* heals hit points equal to the extra damage caused */
+#define A1_LIFE_LEECH_DISRESPECTS_TARGETS							0x00001000L  /* successful critical strike causes lethal damage */
+#define A1_LIFE_LEECH_DISRESPECTS_CHARACTERS						0x00002000L  /* successful critical strike causes lethal damage */
 
-#define A1_SHARPNESS							0x00004000	/* 2/20 chance of the monster losing 25% of maximum hit points */
-#define A1_VORPAL								0x00008000	/* 1/20 chance of the monster being beheaded */
+#define A1_SHARPNESS												0x00004000L	/* 2/20 chance of the monster losing 25% of maximum hit points */
+#define A1_VORPAL													0x00008000L	/* 1/20 chance of the monster being beheaded */
 #define A1_BISECT (A1_SHARPNESS | A1_VORPAL) /* 1/20 chance of a small monster being bisected and a big monster losing 50% of maximum hit points */
 #define A1_SVB_MASK (A1_SHARPNESS | A1_VORPAL)
-#define A1_VORPAL_LIKE_DISRESPECTS_TARGETS					0x00010000
-#define A1_VORPAL_LIKE_DISRESPECTS_CHARACTERS				0x00020000
+#define A1_VORPAL_LIKE_DISRESPECTS_TARGETS							0x00010000L
+#define A1_VORPAL_LIKE_DISRESPECTS_CHARACTERS						0x00020000L
 
-#define A1_LEVEL_DRAIN										0x00040000  /* drains a level from monsters */
-#define A1_LEVEL_DRAIN_DISRESPECTS_TARGETS					0x00080000  
-#define A1_LEVEL_DRAIN_DISRESPECTS_CHARACTERS				0x00100000  
+#define A1_LEVEL_DRAIN												0x00040000L  /* drains a level from monsters */
+#define A1_LEVEL_DRAIN_DISRESPECTS_TARGETS							0x00080000L  
+#define A1_LEVEL_DRAIN_DISRESPECTS_CHARACTERS						0x00100000L  
 
 /* Extra weapon options */
-#define A1_STUN												0x00200000  /* stuns target, not implemented */
-#define A1_HITS_ADJACENT_SQUARES							0x00400000  /* like Cleaver */
+#define A1_STUN														0x00200000L  /* stuns target, not implemented */
+#define A1_HITS_ADJACENT_SQUARES									0x00400000L  /* like Cleaver */
 /* free bit*/
 
 /* General */
-#define A1_MAGIC_RESISTANCE_PROTECTS						0x01000000
-#define A1_BYPASSES_MC										0x02000000	/* No MC check */  
-#define A1_EXTRA_DAMAGE_DISRESPECTS_TARGETS					0x04000000  
-#define A1_EXTRA_DAMAGE_DISRESPECTS_CHARACTERS				0x08000000  
-#define A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA					0x10000000 /* abilities such as wounding and life leech are based on full caused damage, not just extra damage */
-#define A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS			0x20000000
-#define A1_ITEM_VANISHES_ON_HIT								0x40000000
-#define A1_ITEM_VANISHES_ONLY_IF_PERMITTED_TARGET			0x80000000
+#define A1_MAGIC_RESISTANCE_PROTECTS								0x01000000L
+#define A1_BYPASSES_MC												0x02000000L	/* No MC check */  
+#define A1_EXTRA_DAMAGE_DISRESPECTS_TARGETS							0x04000000L  
+#define A1_EXTRA_DAMAGE_DISRESPECTS_CHARACTERS						0x08000000L  
+#define A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA							0x10000000L /* abilities such as wounding and life leech are based on full caused damage, not just extra damage */
+#define A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS					0x20000000L
+#define A1_ITEM_VANISHES_ON_HIT										0x40000000L
+#define A1_ITEM_VANISHES_ONLY_IF_PERMITTED_TARGET					0x80000000L
 
 
 /* Spell flags for spells, scrolls, potions, spell-like tools, and wands */
-#define S1_NONE 0x00000000
-#define S1_SPELL_EXPLOSION_EFFECT				0x00000001
-#define S1_SPELL_BYPASSES_MAGIC_RESISTANCE		0x00000002
-#define S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY	0x00000004
-#define S1_SPELL_IS_NONREVERSIBLE_PERMANENT		0x00000008
-#define S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT		0x00000010
+#define S1_NONE									0x00000000L
+#define S1_SPELL_EXPLOSION_EFFECT				0x00000001L
+#define S1_SPELL_BYPASSES_MAGIC_RESISTANCE		0x00000002L
+#define S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY	0x00000004L
+#define S1_SPELL_IS_NONREVERSIBLE_PERMANENT		0x00000008L
+#define S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT		0x00000010L
 
 
 	int oc_hitbonus;						/* weapons: "to hit" bonus */
@@ -690,126 +690,126 @@ struct objclass {
 
 
 /* Item resistances -- General: cannot be overriden */
-#define O1_NONE								0x00000000 
-#define O1_INDESTRUCTIBLE					0x00000001 
-#define O1_DISINTEGRATION_RESISTANT			0x00000002 
-#define O1_FIRE_RESISTANT					0x00000004 
-#define O1_COLD_RESISTANT					0x00000008 
-#define O1_LIGHTNING_RESISTANT				0x00000010
-#define O1_POLYMORPH_RESISTANT				0x00000020
-#define O1_RUST_RESISTANT					0x00000040
-#define O1_CORROSION_RESISTANT				0x00000080
+#define O1_NONE								0x00000000L 
+#define O1_INDESTRUCTIBLE					0x00000001L 
+#define O1_DISINTEGRATION_RESISTANT			0x00000002L 
+#define O1_FIRE_RESISTANT					0x00000004L 
+#define O1_COLD_RESISTANT					0x00000008L 
+#define O1_LIGHTNING_RESISTANT				0x00000010L
+#define O1_POLYMORPH_RESISTANT				0x00000020L
+#define O1_RUST_RESISTANT					0x00000040L
+#define O1_CORROSION_RESISTANT				0x00000080L
 
-#define O1_SPE_AFFECTS_MC					0x00000100			/* +X of the item influences also its MC */
-#define O1_EROSION_DOES_NOT_AFFECT_MC		0x00000200			/* erosion level does not affect the item's MC */
-#define O1_SPE_DOES_NOT_AFFECT_AC			0x00000400			/* +X of the item does not affect its AC bonus */
-#define O1_EROSION_DOES_NOT_AFFECT_AC		0x00000800			/* erosion level does not affect the item's MC */
-#define O1_IS_ARMOR_WHEN_WIELDED			0x00001000			/* acts as an armor when wielded giving AC using oc_armor_class, which must be specified */
-#define O1_IS_WEAPON_WHEN_WIELDED			0x00002000			/* acts as a weapon when wielded (or worn in shield slot in two-weapon fighting) using damage statistics */
-#define O1_SPE_AFFECTS_MC_ADJUSTMENT		0x00004000			/* +X of the item influences also its MC adjustment (i.e., saving throw penalty for attacks) */
+#define O1_SPE_AFFECTS_MC					0x00000100L			/* +X of the item influences also its MC */
+#define O1_EROSION_DOES_NOT_AFFECT_MC		0x00000200L			/* erosion level does not affect the item's MC */
+#define O1_SPE_DOES_NOT_AFFECT_AC			0x00000400L			/* +X of the item does not affect its AC bonus */
+#define O1_EROSION_DOES_NOT_AFFECT_AC		0x00000800L			/* erosion level does not affect the item's MC */
+#define O1_IS_ARMOR_WHEN_WIELDED			0x00001000L			/* acts as an armor when wielded giving AC using oc_armor_class, which must be specified */
+#define O1_IS_WEAPON_WHEN_WIELDED			0x00002000L			/* acts as a weapon when wielded (or worn in shield slot in two-weapon fighting) using damage statistics */
+#define O1_SPE_AFFECTS_MC_ADJUSTMENT		0x00004000L			/* +X of the item influences also its MC adjustment (i.e., saving throw penalty for attacks) */
 
-#define O1_EDIBLE_NONFOOD					0x00008000
+#define O1_EDIBLE_NONFOOD					0x00008000L
 
-#define O1_BECOMES_CURSED_WHEN_WORN							0x00010000
-#define O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED		0x00020000
-#define O1_CANNOT_BE_DROPPED_IF_CURSED						0x00040000
+#define O1_BECOMES_CURSED_WHEN_WORN							0x00010000L
+#define O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED		0x00020000L
+#define O1_CANNOT_BE_DROPPED_IF_CURSED						0x00040000L
 
-#define O1_FLICKERS_WHEN_MONSTERS_DETECTED					0x00080000
-#define O1_OFLAG_POWERS_APPLY_TO_ALL_CHARACTERS				0x00100000
-#define O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY	0x00200000
-#define O1_OFLAG_POWERS_APPLY_WHEN_CARRIED					0x00400000
+#define O1_FLICKERS_WHEN_MONSTERS_DETECTED					0x00080000L
+#define O1_OFLAG_POWERS_APPLY_TO_ALL_CHARACTERS				0x00100000L
+#define O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY	0x00200000L
+#define O1_OFLAG_POWERS_APPLY_WHEN_CARRIED					0x00400000L
 	/* free bit */
 
-#define O1_THROWN_WEAPON_ONLY				0x01000000			/* says "Thrown weapon" instead of "Melee weapon", default range is larger, can use throwrange data value, gets penalties in melee combat */
-#define O1_MELEE_AND_THROWN_WEAPON			0x02000000			/* says "Melee and thrown weapon" instead of "Melee weapon", default range is larger, can use throwrange data value */
-#define O1_WEIGHT_DOES_NOT_REDUCE_RANGE		0x04000000			/* the object magically flies when thrown, ignoring its weight */
-#define O1_RETURNS_TO_HAND_AFTER_THROWING	0x08000000			/* the object returns to the owner's hand after throwing */
-#define O1_CAN_BE_THROWN_ONLY_IF_WIELDED	0x10000000			/* has to be wielded to be thrown, e.g., Mjollnir */
-#define O1_WAND_LIKE_TOOL					0x20000000			/* apply is the same as zap, uses spellbook/wand paramters and flags instead of normal flags */
-#define O1_NON_SPELL_SPELLBOOK				0x40000000			/* uses non-spellbook flags and other non-spellbook stats */
-#define O1_NOT_CURSEABLE					0x80000000
+#define O1_THROWN_WEAPON_ONLY				0x01000000L			/* says "Thrown weapon" instead of "Melee weapon", default range is larger, can use throwrange data value, gets penalties in melee combat */
+#define O1_MELEE_AND_THROWN_WEAPON			0x02000000L			/* says "Melee and thrown weapon" instead of "Melee weapon", default range is larger, can use throwrange data value */
+#define O1_WEIGHT_DOES_NOT_REDUCE_RANGE		0x04000000L			/* the object magically flies when thrown, ignoring its weight */
+#define O1_RETURNS_TO_HAND_AFTER_THROWING	0x08000000L			/* the object returns to the owner's hand after throwing */
+#define O1_CAN_BE_THROWN_ONLY_IF_WIELDED	0x10000000L			/* has to be wielded to be thrown, e.g., Mjollnir */
+#define O1_WAND_LIKE_TOOL					0x20000000L			/* apply is the same as zap, uses spellbook/wand paramters and flags instead of normal flags */
+#define O1_NON_SPELL_SPELLBOOK				0x40000000L			/* uses non-spellbook flags and other non-spellbook stats */
+#define O1_NOT_CURSEABLE					0x80000000L
 
 
 /* Flags 2 */
-#define O2_NONE					0x00000000
-#define O2_ELVEN_ITEM			0x00000001
-#define O2_DWARVEN_ITEM			0x00000002
-#define O2_ORCISH_ITEM			0x00000004
-#define O2_GNOLLISH_ITEM		0x00000008
-#define O2_DRAGON_ITEM			0x00000010
-#define O2_DEMON_ITEM			0x00000020
-#define O2_ANGELIC_ITEM			0x00000040
-#define O2_MODRON_ITEM			0x00000080
-#define O2_GNOMISH_ITEM			0x00000100
+#define O2_NONE					0x00000000L
+#define O2_ELVEN_ITEM			0x00000001L
+#define O2_DWARVEN_ITEM			0x00000002L
+#define O2_ORCISH_ITEM			0x00000004L
+#define O2_GNOLLISH_ITEM		0x00000008L
+#define O2_DRAGON_ITEM			0x00000010L
+#define O2_DEMON_ITEM			0x00000020L
+#define O2_ANGELIC_ITEM			0x00000040L
+#define O2_MODRON_ITEM			0x00000080L
+#define O2_GNOMISH_ITEM			0x00000100L
 	/* free bit */
 
-#define O2_CONTAINER			0x00000400	
-#define O2_CONTAINER_BOX		0x00000800	
-#define O2_CONTAINER_MAGIC_BAG	0x00001000	
-#define O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG 0x00002000
+#define O2_CONTAINER			0x00000400L	
+#define O2_CONTAINER_BOX		0x00000800L	
+#define O2_CONTAINER_MAGIC_BAG	0x00001000L	
+#define O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG 0x00002000L
 
-#define O2_MONSTER_SCALES		0x00004000	
-#define O2_MONSTER_SCALE_MAIL	0x00008000
-#define O2_CANDLE				0x00010000	
-#define O2_SHINES_MAGICAL_LIGHT 0x00020000	
+#define O2_MONSTER_SCALES		0x00004000L	
+#define O2_MONSTER_SCALE_MAIL	0x00008000L
+#define O2_CANDLE				0x00010000L	
+#define O2_SHINES_MAGICAL_LIGHT 0x00020000L	
 #define O2_FLICKER_COLOR_RED	O2_NONE	
-#define O2_FLICKER_COLOR_WHITE	0x00040000	
-#define O2_FLICKER_COLOR_BLUE	0x00080000	
+#define O2_FLICKER_COLOR_WHITE	0x00040000L	
+#define O2_FLICKER_COLOR_BLUE	0x00080000L	
 #define O2_FLICKER_COLOR_BLACK (O2_FLICKER_COLOR_WHITE | O2_FLICKER_COLOR_BLUE)	
 #define O2_FLICKER_COLOR_MASK (O2_FLICKER_COLOR_WHITE | O2_FLICKER_COLOR_BLUE)	
 
-#define O2_GRAYSTONE			0x00100000	
-#define O2_ROCK					0x00200000	
-#define O2_ORE					0x00400000	
+#define O2_GRAYSTONE			0x00100000L	
+#define O2_ROCK					0x00200000L	
+#define O2_ORE					0x00400000L	
 
-#define O2_FLIMSY				0x00800000	
+#define O2_FLIMSY				0x00800000L
 
-#define O2_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED 0x10000000			/* if deathenchantable item, then death, otherwise lightning*/
-#define O2_GENERATED_BLESSED	0x20000000								/* Always generated blessed */									
-#define O2_GENERATED_CURSED		0x40000000								/* Always generated cursed */								
-#define O2_CURSED_MAGIC_ITEM	0x80000000								/* The effect of the item is negative; typically 90% chance of being cursed */									
+#define O2_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED 0x10000000L			/* if deathenchantable item, then death, otherwise lightning*/
+#define O2_GENERATED_BLESSED	0x20000000L								/* Always generated blessed */									
+#define O2_GENERATED_CURSED		0x40000000L								/* Always generated cursed */								
+#define O2_CURSED_MAGIC_ITEM	0x80000000L								/* The effect of the item is negative; typically 90% chance of being cursed */									
 
 /* Artifact flags - to do: Attack type, half physical and spell damage, bonus to monsters only */
 /* Flags 3 */
-#define O3_NONE										0x00000000
-#define O3_NO_GENERATION							0x00000001  /* item is not generated normally */
-#define O3_NO_WISH									0x00000002  /* item is special, it cannot be wished for, mimics oc_nowish */
-#define O3_UNIQUE									0x00000004  /* the item is unique, mimics oc_unique */
+#define O3_NONE										0x00000000L
+#define O3_NO_GENERATION							0x00000001L  /* item is not generated normally */
+#define O3_NO_WISH									0x00000002L  /* item is special, it cannot be wished for, mimics oc_nowish */
+#define O3_UNIQUE									0x00000004L  /* the item is unique, mimics oc_unique */
 
-#define O3_GENERATED_WITH_DOUBLE_SPE					0x00000008  /* the item is unique, mimics oc_unique */
+#define O3_GENERATED_WITH_DOUBLE_SPE					0x00000008L  /* the item is unique, mimics oc_unique */
 /* free bit */
 /* free bit */
 /* free bit */
-/* free bit */
-/* free bit */
-/* free bit */
-
-#define O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS	0x00000400  /* wielding or wearing prohibits the revival of permitted targets */
-#define O3_PREVENTS_SUMMONING_BY_PERMITTED_TARGETS	0x00000800  /* wielding or wearing prohibits AD_XXXX-type innate summoning by permitted targets; the target can still summon using spells */
-#define O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS	0x00001000	/* deals damage when wielded like artifacts */
-
-#define O3_INVOKABLE								0x00002000	/* can be invoked using invoke command */
-#define O3_APPLIABLE								0x00004000	/* can be applied as a tool */
-#define O3_WIELDABLE								0x00008000	/* can be wielded in a weapon slot */
-#define O3_READABLE									0x00010000	/* can be read */								
-#define O3_IGNITABLE								0x00020000	
-#define O3_RELATIVE_AGE								0x00040000	
-#define O3_ELEMENTAL_ENCHANTABLE					0x00080000
-#define O3_EATING_IDENTIFIES						0x00100000	
-#define O3_NONROTTING_FOOD							0x00200000
 /* free bit */
 /* free bit */
 /* free bit */
 
-#define O3_PERMTTED_TARGET_LAWFUL					0x02000000
-#define O3_PERMTTED_TARGET_NEUTRAL					0x04000000
-#define O3_PERMTTED_TARGET_CHAOTIC					0x08000000
+#define O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS	0x00000400L  /* wielding or wearing prohibits the revival of permitted targets */
+#define O3_PREVENTS_SUMMONING_BY_PERMITTED_TARGETS	0x00000800L  /* wielding or wearing prohibits AD_XXXX-type innate summoning by permitted targets; the target can still summon using spells */
+#define O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS	0x00001000L	/* deals damage when wielded like artifacts */
 
-#define O3_TARGET_PERMISSION_IS_M1_FLAG				0x10000000 /* Note: if no flag, then default is a monster symbol */
-#define O3_TARGET_PERMISSION_IS_M2_FLAG				0x20000000
-#define O3_TARGET_PERMISSION_IS_M3_FLAG				0x40000000 
+#define O3_INVOKABLE								0x00002000L	/* can be invoked using invoke command */
+#define O3_APPLIABLE								0x00004000L	/* can be applied as a tool */
+#define O3_WIELDABLE								0x00008000L	/* can be wielded in a weapon slot */
+#define O3_READABLE									0x00010000L	/* can be read */								
+#define O3_IGNITABLE								0x00020000L	
+#define O3_RELATIVE_AGE								0x00040000L	
+#define O3_ELEMENTAL_ENCHANTABLE					0x00080000L
+#define O3_EATING_IDENTIFIES						0x00100000L	
+#define O3_NONROTTING_FOOD							0x00200000L
+/* free bit */
+/* free bit */
+/* free bit */
 
-#define O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH 0x80000000 
+#define O3_PERMTTED_TARGET_LAWFUL					0x02000000L
+#define O3_PERMTTED_TARGET_NEUTRAL					0x04000000L
+#define O3_PERMTTED_TARGET_CHAOTIC					0x08000000L
+
+#define O3_TARGET_PERMISSION_IS_M1_FLAG				0x10000000L /* Note: if no flag, then default is a monster symbol */
+#define O3_TARGET_PERMISSION_IS_M2_FLAG				0x20000000L
+#define O3_TARGET_PERMISSION_IS_M3_FLAG				0x40000000L 
+
+#define O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH 0x80000000L 
 
 
 
@@ -817,51 +817,51 @@ struct objclass {
 
 
 /* flag values for CONFERS_POWERS_TO_SPECIFIED_CHARACTERS_ONLY in nonspell_oc7 */
-#define PERMITTED_ALL				0x00000000
+#define PERMITTED_ALL				0x00000000L
 
-#define PERMITTED_RACE_HUMAN		0x00000001
-#define PERMITTED_RACE_ELF			0x00000002
-#define PERMITTED_RACE_DWARF		0x00000004
-#define PERMITTED_RACE_GNOLL		0x00000008
-#define PERMITTED_RACE_GNOME		0x80000010
-#define PERMITTED_RACE_ORC			0x00000020
+#define PERMITTED_RACE_HUMAN		0x00000001L
+#define PERMITTED_RACE_ELF			0x00000002L
+#define PERMITTED_RACE_DWARF		0x00000004L
+#define PERMITTED_RACE_GNOLL		0x00000008L
+#define PERMITTED_RACE_GNOME		0x80000010L
+#define PERMITTED_RACE_ORC			0x00000020L
 
 #define PERMITTED_RACE_MASK (PERMITTED_RACE_HUMAN | PERMITTED_RACE_ELF | PERMITTED_RACE_DWARF | PERMITTED_RACE_GNOLL | PERMITTED_RACE_GNOME | PERMITTED_RACE_ORC)
 
 
-#define PERMITTED_ROLE_ARCHEOLOGIST	0x00000040
-#define PERMITTED_ROLE_BARBARIAN	0x00000080
-#define PERMITTED_ROLE_CAVEMAN		0x00000100
-#define PERMITTED_ROLE_HEALER		0x00000200
-#define PERMITTED_ROLE_KNIGHT		0x00000400
-#define PERMITTED_ROLE_MONK			0x00000800
-#define PERMITTED_ROLE_PRIEST		0x00001000
-#define PERMITTED_ROLE_ROGUE		0x00002000
-#define PERMITTED_ROLE_RANGER		0x00004000
-#define PERMITTED_ROLE_SAMURAI		0x00008000
-#define PERMITTED_ROLE_TOURIST		0x00010000
-#define PERMITTED_ROLE_VALKYRIE		0x00020000
-#define PERMITTED_ROLE_WIZARD		0x00040000
+#define PERMITTED_ROLE_ARCHEOLOGIST	0x00000040L
+#define PERMITTED_ROLE_BARBARIAN	0x00000080L
+#define PERMITTED_ROLE_CAVEMAN		0x00000100L
+#define PERMITTED_ROLE_HEALER		0x00000200L
+#define PERMITTED_ROLE_KNIGHT		0x00000400L
+#define PERMITTED_ROLE_MONK			0x00000800L
+#define PERMITTED_ROLE_PRIEST		0x00001000L
+#define PERMITTED_ROLE_ROGUE		0x00002000L
+#define PERMITTED_ROLE_RANGER		0x00004000L
+#define PERMITTED_ROLE_SAMURAI		0x00008000L
+#define PERMITTED_ROLE_TOURIST		0x00010000L
+#define PERMITTED_ROLE_VALKYRIE		0x00020000L
+#define PERMITTED_ROLE_WIZARD		0x00040000L
 
 #define PERMITTED_ROLE_MASK (PERMITTED_ROLE_ARCHEOLOGIST | PERMITTED_ROLE_BARBARIAN | PERMITTED_ROLE_CAVEMAN | PERMITTED_ROLE_HEALER | PERMITTED_ROLE_KNIGHT | \
 	PERMITTED_ROLE_MONK | PERMITTED_ROLE_PRIEST | PERMITTED_ROLE_ROGUE | PERMITTED_ROLE_RANGER | PERMITTED_ROLE_SAMURAI | PERMITTED_ROLE_TOURIST | \
 	PERMITTED_ROLE_VALKYRIE | PERMITTED_ROLE_WIZARD)
 
-#define PERMITTED_ALIGNMENT_LAWFUL	0x00080000
-#define PERMITTED_ALIGNMENT_NEUTRAL	0x00100000
-#define PERMITTED_ALIGNMENT_CHAOTIC	0x00200000
+#define PERMITTED_ALIGNMENT_LAWFUL	0x00080000L
+#define PERMITTED_ALIGNMENT_NEUTRAL	0x00100000L
+#define PERMITTED_ALIGNMENT_CHAOTIC	0x00200000L
 
 #define PERMITTED_ALIGNMENT_MASK (PERMITTED_ALIGNMENT_LAWFUL | PERMITTED_ALIGNMENT_NEUTRAL | PERMITTED_ALIGNMENT_CHAOTIC)
 
-#define PERMITTED_GENDER_MALE		0x00400000
-#define PERMITTED_GENDER_FEMALE		0x00800000
+#define PERMITTED_GENDER_MALE		0x00400000L
+#define PERMITTED_GENDER_FEMALE		0x00800000L
 
 #define PERMITTED_GENDER_MASK (PERMITTED_GENDER_MALE | PERMITTED_GENDER_FEMALE)
 
 #define PERMITTED_CHARACTER_MASK (PERMITTED_RACE_MASK | PERMITTED_ROLE_MASK | PERMITTED_ALIGNMENT_MASK | PERMITTED_GENDER_MASK)
 
 /* Permitted target mask */
-#define ALL_TARGETS				0x00000000
+#define ALL_TARGETS				0x00000000L
 
 };
 
