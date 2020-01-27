@@ -81,10 +81,28 @@ STATIC_DCL int FDECL(ready_weapon, (struct obj *, long));
  * responsibility to handle that.  It's also the caller's responsibility
  * to print the appropriate messages.
  */
+
 void
 setuwep(obj, mask)
+register struct obj* obj;
+long mask;
+{
+	setuwepcore(obj, mask, TRUE);
+}
+
+void
+setuwepquietly(obj, mask)
+register struct obj* obj;
+long mask;
+{
+	setuwepcore(obj, mask, FALSE);
+}
+
+void
+setuwepcore(obj, mask, verbose)
 register struct obj *obj;
 long mask;
+boolean verbose;
 {
 	struct obj* olduwep = (struct obj*)0;
 	if (mask == W_WEP)
@@ -101,14 +119,14 @@ long mask;
     /* This message isn't printed in the caller because it happens
      * *whenever* Sunsword is unwielded, from whatever cause.
      */
-    setworn(obj, mask);
+    setworncore(obj, mask, verbose);
 
 	if (obj && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
 		obj->known = 1;
 
     if (uwep == obj && olduwep && (artifact_light(olduwep) || (objects[olduwep->otyp].oc_flags2 & O2_SHINES_MAGICAL_LIGHT)) && olduwep->lamplit) {
         end_burn(olduwep, FALSE);
-        if (!Blind)
+        if (!Blind && verbose)
             pline("%s shining.", Tobjnam(olduwep, "stop"));
     }
 	
@@ -507,7 +525,7 @@ dowield()
 #endif
 	}
 
-	update_all_character_properties((struct obj*)0);
+	update_all_character_properties((struct obj*)0, TRUE);
 
     return result;
 }

@@ -1183,7 +1183,7 @@ nh_timeout()
 	}
 
 	/* Needs to be called if e.g. amulet of strangulation vanished */
-	update_all_character_properties((struct obj*)0);
+	update_all_character_properties((struct obj*)0, TRUE);
 
 	run_timers();
 	context.botl = context.botlx = 1;

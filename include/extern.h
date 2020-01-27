@@ -1074,7 +1074,7 @@ E int FDECL(ckunpaid, (struct obj *));
 #endif
 E void FDECL(addinv_core1, (struct obj *));
 E void FDECL(addinv_core2, (struct obj *));
-E void FDECL(update_all_character_properties, (struct obj*));
+E void FDECL(update_all_character_properties, (struct obj*, BOOLEAN_P));
 E struct obj *FDECL(addinv, (struct obj *));
 E struct obj *FDECL(hold_another_object,
                     (struct obj *, const char *, const char *, const char *));
@@ -3031,6 +3031,8 @@ E void FDECL(set_ulycn, (int));
 /* ### wield.c ### */
 
 E void FDECL(setuwep, (struct obj *, long));
+E void FDECL(setuwepcore, (struct obj*, long, BOOLEAN_P));
+E void FDECL(setuwepquietly, (struct obj*, long));
 E void FDECL(setuqwep, (struct obj *));
 E void FDECL(setuswapwep, (struct obj *, long));
 E int NDECL(dowield);
@@ -3130,6 +3132,10 @@ E int FDECL(wseg_at, (struct monst *, int, int));
 
 E void FDECL(setworn, (struct obj *, long));
 E void FDECL(setnotworn, (struct obj *));
+E void FDECL(setworncore, (struct obj*, long, BOOLEAN_P));
+E void FDECL(setwornquietly, (struct obj*, long));
+E void FDECL(setnotworncore, (struct obj*, BOOLEAN_P));
+E void FDECL(setnotwornquietly, (struct obj*));
 E struct obj *FDECL(wearmask_to_obj, (long));
 E long FDECL(wearslot, (struct obj *));
 //E void FDECL(mon_adjust_speed, (struct monst *, int, struct obj *));

@@ -868,8 +868,9 @@ struct obj *obj;
 }
 
 void
-update_all_character_properties(otmp)
+update_all_character_properties(otmp, verbose)
 struct obj* otmp; /* object to be identified if any state change happens */
+boolean verbose;
 {
 	boolean state_change_detected = FALSE;
 	boolean was_flying = Flying;
@@ -917,6 +918,8 @@ struct obj* otmp; /* object to be identified if any state change happens */
 	updatemaxen();
 	updatemaxhp();
 
+	if (!verbose) /* None of the ancillary effects happen either */
+		return;
 
 	/* PROPERTY STATE TRANSITIONS */
 	/* Levitation and flying */
@@ -1264,7 +1267,7 @@ void
 addinv_core2(obj)
 struct obj *obj;
 {
-	update_all_character_properties(obj);
+	update_all_character_properties(obj, TRUE);
 }
 
 /*
@@ -1568,7 +1571,7 @@ struct obj *obj;
 		curse(obj);
 	}
 
-	update_all_character_properties(obj);
+	update_all_character_properties(obj, TRUE);
 
 	if (obj->otyp == FIGURINE && obj->timed) {
         (void) stop_timer(FIG_TRANSFORM, obj_to_any(obj));

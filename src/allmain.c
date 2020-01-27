@@ -389,7 +389,7 @@ boolean resuming;
         /****************************************/
 
         clear_splitobjs();
-		update_all_character_properties((struct obj*)0);
+		update_all_character_properties((struct obj*)0, TRUE);
 
 		/* Redraw screen */
 		if (!context.mv || Blind)

@@ -44,14 +44,31 @@ const struct worn {
              { 0, 0 }
 };
 
+void
+setworn(obj, mask)
+register struct obj* obj;
+long mask;
+{
+	setworncore(obj, mask, TRUE);
+}
+
+void
+setwornquietly(obj, mask)
+register struct obj* obj;
+long mask;
+{
+	setworncore(obj, mask, FALSE);
+}
+
 /* note: monsters don't have clairvoyance, so your role
    has no significant effect on their use of w_blocks() */
 
 /* Updated to use the extrinsic and blocked fields. */
 void
-setworn(obj, mask)
+setworncore(obj, mask, verbose)
 register struct obj *obj;
 long mask;
+boolean verbose;
 {
     register const struct worn *wp;
 	register struct obj* oobj = (struct obj*)0;
@@ -166,11 +183,12 @@ long mask;
 	/* Readying a weapon to quiver or swap weapon slot does not trigger artifact name discovery -- JG */
 	if ((mask & (W_WEP | W_WEP2 | W_ARMOR | W_ACCESSORY)) && obj && obj->oartifact && !obj->nknown && (artilist[obj->oartifact].aflags & (AF_FAMOUS | AF_NAME_KNOWN_WHEN_PICKED_UP | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED)))
 	{
-		pline("As you %s %s, you suddenly become aware that it is named %s!", (mask == W_WEP || (u.twoweap && mask == W_WEP2)) ? "wield" : "wear", the(cxname(obj)), bare_artifactname(obj));
+		if(verbose)
+			pline("As you %s %s, you suddenly become aware that it is named %s!", (mask == W_WEP || (u.twoweap && mask == W_WEP2)) ? "wield" : "wear", the(cxname(obj)), bare_artifactname(obj));
 		obj->nknown = TRUE;
 	}
 
-	update_all_character_properties(obj);
+	update_all_character_properties(obj, verbose);
 
 	/* Note that this does not work for weapons if there is an old weapon, since we do not know whether the change was caused by the old or the new weapon */
 	if ((obj && !oobj) || (oobj && !obj))
@@ -238,11 +256,27 @@ long mask;
 	update_inventory();
 }
 
+
+void
+setnotworn(obj)
+register struct obj* obj;
+{
+	setnotworncore(obj, TRUE);
+}
+
+void
+setnotwornquietly(obj)
+register struct obj* obj;
+{
+	setnotworncore(obj, FALSE);
+}
+
 /* called e.g. when obj is destroyed */
 /* Updated to use the extrinsic and blocked fields. */
 void
-setnotworn(obj)
+setnotworncore(obj, verbose)
 register struct obj *obj;
+boolean verbose;
 {
     register const struct worn *wp;
 //    register int p;
@@ -291,7 +325,7 @@ register struct obj *obj;
 		}
 	}
 
-	update_all_character_properties(obj);
+	update_all_character_properties(obj, verbose);
 
 	//int curstr = ACURR(A_STR);
 
