@@ -1542,6 +1542,8 @@ dogaze()
         return 0;
     }
 
+	int gazemanacost = (adtyp == AD_CNCL ? 5 : 15);
+
     if (Blind) {
         You_cant("see anything to gaze at.");
         return 0;
@@ -1549,7 +1551,7 @@ dogaze()
         You_cant("gaze at anything you can see.");
         return 0;
     }
-    if (u.uen < 15) {
+    if (u.uen < gazemanacost) {
         You("lack the energy to use your special gaze!");
         return 0;
     }
@@ -1573,7 +1575,7 @@ dogaze()
 		return 0;
 	}
 
-	u.uen -= 15;
+	u.uen -= gazemanacost;
 	context.botl = 1;
 
 	int maxgazerange = 18;
@@ -1587,30 +1589,34 @@ dogaze()
 			if (mtmp && !DEADMONSTER(mtmp) && canseemon(mtmp))
 			{
 				looked++;
-				if (Invis && !has_see_invisible(mtmp)) {
+				if (Invis && !has_see_invisible(mtmp))
+				{
 					pline("%s seems not to notice your gaze.", Monnam(mtmp));
-				} else if (is_invisible(mtmp) && !See_invisible) {
+				}
+				else if (is_invisible(mtmp) && !See_invisible)
+				{
 					You_cant("see where to gaze at %s.", Monnam(mtmp));
-				} else if (M_AP_TYPE(mtmp) == M_AP_FURNITURE
-						   || M_AP_TYPE(mtmp) == M_AP_OBJECT) {
+				}
+				else if (M_AP_TYPE(mtmp) == M_AP_FURNITURE
+						   || M_AP_TYPE(mtmp) == M_AP_OBJECT)
+				{
 					looked--;
-					continue;
-				} else if (flags.safe_dog && is_tame(mtmp) && !Confusion) {
+				}
+/*				else if (flags.safe_dog && is_tame(mtmp) && !Confusion) //Unnecessary now that gazing has been changed to be directional
+				{
 					You("avoid gazing at %s.", y_monnam(mtmp));
-				} else {
-					if (flags.confirm && is_peaceful(mtmp) && !Confusion) {
+				} 
+*/				else 
+				{
+					if (flags.confirm && is_peaceful(mtmp) && !Confusion) 
+					{
 						Sprintf(qbuf, "Really %s %s?",
-								(adtyp == AD_CONF) ? "confuse" : "attack",
+								(adtyp == AD_CONF) ? "confuse" : "gaze at",
 								mon_nam(mtmp));
 						if (yn(qbuf) != 'y')
-							continue;
+							break;
 					}
 					setmangry(mtmp, TRUE);
-					if (!mon_can_move(mtmp) || is_stunned(mtmp)
-						|| is_blinded(mtmp) || !haseyes(mtmp->data)) {
-						looked--;
-						continue;
-					}
 					/* No reflection check for consistency with when a monster
 					 * gazes at *you*--only medusa gaze gets reflected then.
 					 */
@@ -1618,6 +1624,12 @@ dogaze()
 					{
 					case AD_CONF:
 					{
+						if (!mon_can_move(mtmp) || is_stunned(mtmp)
+							|| is_blinded(mtmp) || !haseyes(mtmp->data))
+						{
+							Your("gaze has no effect on %s!", mon_nam(mtmp));
+							break;
+						}
 						if (!is_confused(mtmp))
 							Your("gaze confuses %s!", mon_nam(mtmp));
 						else
@@ -1628,6 +1640,12 @@ dogaze()
 					}
 					case AD_FIRE:
 					{
+						if (!mon_can_move(mtmp) || is_stunned(mtmp)
+							|| is_blinded(mtmp) || !haseyes(mtmp->data))
+						{
+							Your("gaze has no effect on %s!", mon_nam(mtmp));
+							break;
+						}
 						int dmg = d(2, 6), lev = (int)u.ulevel;
 
 						You("attack %s with a fiery gaze!", mon_nam(mtmp));
@@ -1684,7 +1702,8 @@ dogaze()
 					 */
 					if (!DEADMONSTER(mtmp))
 					{
-						if (mtmp->data == &mons[PM_FLOATING_EYE] && !is_cancelled(mtmp)) {
+						if (mtmp->data == &mons[PM_FLOATING_EYE] && !is_cancelled(mtmp)) 
+						{
 							if (!Free_action) {
 								You("are frozen by %s gaze!",
 									s_suffix(mon_nam(mtmp)));
@@ -1705,7 +1724,8 @@ dogaze()
 						 * works on the monster's turn, but for it to *not* have an
 						 * effect would be too weird.
 						 */
-						if (mtmp->data == &mons[PM_MEDUSA] && !is_cancelled(mtmp)) {
+						if (mtmp->data == &mons[PM_MEDUSA] && !is_cancelled(mtmp)) 
+						{
 							pline("Gazing at the awake %s is not a very good idea.",
 								l_monnam(mtmp));
 							/* as if gazing at a sleeping anything is fruitful... */
@@ -1771,7 +1791,7 @@ doeyestalk()
 
 		if (u.uen < 5) {
 			You("lack the energy to use your eyestalks%s!", attacksperformed > 0 ? " any further" : "");
-			return 0;
+			return (attacksperformed > 0 ? 1 : 0);
 		}
 		u.uen -= 5;
 		context.botl = 1;
