@@ -125,8 +125,10 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
      */
     if (getcwd(orgdir, sizeof orgdir) == (char *) 0)
         error("GnollHack: current directory path too long");
-    dir = nh_getenv("GnollHackDIR");
-    if (dir == (char *) 0)
+    dir = nh_getenv("GNOLLHACKDIR");
+	if (dir == (char*)0)
+		dir = nh_getenv("NETHACKDIR");
+	if (dir == (char *) 0)
         dir = nh_getenv("HACKDIR");
     if (dir == (char *) 0)
         dir = exepath(argv[0]);
@@ -906,6 +908,7 @@ getlock()
             if (ci == 'y' || ci == 'n' || ci == 'Y' || ci == 'N') {
                 ct = 1;
                 c = ci;
+				break;
             }
         }
     }

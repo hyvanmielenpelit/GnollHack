@@ -116,7 +116,7 @@ extern void FDECL(GnollHack_exit, (int));
 #define SYSOPT_PANICTRACE_LIBC 0
 #endif
 #else
-#define SYSOPT_PANICTRACE_GDB (nh_getenv("GnollHack_USE_GDB") == 0 ? 0 : 2)
+#define SYSOPT_PANICTRACE_GDB (nh_getenv("NETHACK_USE_GDB") == 0 ? 0 : 2)
 #ifdef PANICTRACE_LIBC
 #define SYSOPT_PANICTRACE_LIBC 1
 #else

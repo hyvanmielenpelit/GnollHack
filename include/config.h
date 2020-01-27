@@ -502,7 +502,7 @@ typedef unsigned char uchar;
 
 /* GnollHack will execute an external program whenever a new message-window
  * message is shown.  The program to execute is given in environment variable
- * GnollHack_MSGHANDLER.  It will get the message as the only parameter.
+ * NETHACK_MSGHANDLER.  It will get the message as the only parameter.
  * Only available with POSIX_TYPES or GNU C */
 /* #define MSGHANDLER */
 

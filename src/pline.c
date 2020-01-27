@@ -508,7 +508,7 @@ const char *line;
     if (!use_pline_handler)
         return;
 
-    if (!(env = nh_getenv("GnollHack_MSGHANDLER"))) {
+    if (!(env = nh_getenv("NETHACK_MSGHANDLER"))) {
         use_pline_handler = FALSE;
         return;
     }
