@@ -1028,7 +1028,7 @@ struct monst* mtmp;
 	{
 		for (int i = 0; i < 32; i++)
 		{
-			unsigned long bit = 0x00000001;
+			unsigned long bit = 0x00000001UL;
 			if (i > 0)
 				bit = bit << i;
 

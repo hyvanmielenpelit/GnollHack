@@ -54,26 +54,26 @@ enum relationships { NO_LTEQGT = -1,
 /* Boolean condition bits for the condition mask */
 
 /* clang-format off */
-#define BL_MASK_STONE           0x00000001L
-#define BL_MASK_SLIME           0x00000002L
-#define BL_MASK_STRNGL          0x00000004L
-#define BL_MASK_SUFFOC          0x00000008L
-#define BL_MASK_FOODPOIS        0x00000010L
-#define BL_MASK_TERMILL         0x00000020L
-#define BL_MASK_BLIND           0x00000040L
-#define BL_MASK_DEAF            0x00000080L
-#define BL_MASK_STUN            0x00000100L
-#define BL_MASK_CONF            0x00000200L
-#define BL_MASK_HALLU           0x00000400L
-#define BL_MASK_LEV             0x00000800L
-#define BL_MASK_FLY             0x00001000L
-#define BL_MASK_RIDE            0x00002000L
-#define BL_MASK_SLOWED          0x00004000L
-#define BL_MASK_PARALYZED       0x00008000L
-#define BL_MASK_FEARFUL         0x00010000L
-#define BL_MASK_SLEEPING        0x00020000L
-#define BL_MASK_CANCELLED       0x00040000L
-#define BL_MASK_SILENCED        0x00080000L
+#define BL_MASK_STONE           0x00000001UL
+#define BL_MASK_SLIME           0x00000002UL
+#define BL_MASK_STRNGL          0x00000004UL
+#define BL_MASK_SUFFOC          0x00000008UL
+#define BL_MASK_FOODPOIS        0x00000010UL
+#define BL_MASK_TERMILL         0x00000020UL
+#define BL_MASK_BLIND           0x00000040UL
+#define BL_MASK_DEAF            0x00000080UL
+#define BL_MASK_STUN            0x00000100UL
+#define BL_MASK_CONF            0x00000200UL
+#define BL_MASK_HALLU           0x00000400UL
+#define BL_MASK_LEV             0x00000800UL
+#define BL_MASK_FLY             0x00001000UL
+#define BL_MASK_RIDE            0x00002000UL
+#define BL_MASK_SLOWED          0x00004000UL
+#define BL_MASK_PARALYZED       0x00008000UL
+#define BL_MASK_FEARFUL         0x00010000UL
+#define BL_MASK_SLEEPING        0x00020000UL
+#define BL_MASK_CANCELLED       0x00040000UL
+#define BL_MASK_SILENCED        0x00080000UL
 #define BL_MASK_BITS            20 /* number of mask bits that can be set */
 /* clang-format on */
 

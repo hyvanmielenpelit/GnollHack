@@ -598,7 +598,7 @@ long wp_mask;
     long *propptr = 0;
     register const struct artifact *oart = get_artifact(otmp);
     register uchar proptyp;
-    register long spfx;
+    register unsigned long spfx;
 
     if (!oart)
         return;
@@ -615,7 +615,7 @@ long wp_mask;
     /* intrinsics from the spfx and cspfx fields; there could be more than one */
     spfx = (wp_mask != W_ARTIFACT_CARRIED) ? oart->spfx : oart->cspfx;
 
-	long bit = 0x00000001L;
+	unsigned long bit = 0x00000001UL;
 	for (int i = 0; i < 32; i++)
 	{
 		if (i > 0)

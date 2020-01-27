@@ -167,65 +167,65 @@ extern
  * Some day this might be better in its own wincap.h file.
  */
 /* clang-format off */
-#define WC_COLOR         0x00000001L /* 01 Port can display things in color  */
-#define WC_HILITE_PET    0x00000002L /* 02 supports hilite pet               */
-#define WC_ASCII_MAP     0x00000004L /* 03 supports an ascii map             */
-#define WC_TILED_MAP     0x00000008L /* 04 supports a tiled map              */
-#define WC_PRELOAD_TILES 0x00000010L /* 05 supports pre-loading tiles        */
-#define WC_TILE_WIDTH    0x00000020L /* 06 prefer this width of tile         */
-#define WC_TILE_HEIGHT   0x00000040L /* 07 prefer this height of tile        */
-#define WC_TILE_FILE     0x00000080L /* 08 alternative tile file name        */
-#define WC_INVERSE       0x00000100L /* 09 Port supports inverse video       */
-#define WC_ALIGN_MESSAGE 0x00000200L /* 10 supports mesg alignment top|b|l|r */
-#define WC_ALIGN_STATUS  0x00000400L /* 11 supports status alignmt top|b|l|r */
-#define WC_VARY_MSGCOUNT 0x00000800L /* 12 supports varying message window   */
-#define WC_FONT_MAP      0x00001000L /* 13 supports spec of map window font  */
-#define WC_FONT_MESSAGE  0x00002000L /* 14 supports spec of message font     */
-#define WC_FONT_STATUS   0x00004000L /* 15 supports spec of status font      */
-#define WC_FONT_MENU     0x00008000L /* 16 supports spec of menu font        */
-#define WC_FONT_TEXT     0x00010000L /* 17 supports spec of text window font */
-#define WC_FONTSIZ_MAP   0x00020000L /* 18 supports spec of map font size    */
-#define WC_FONTSIZ_MESSAGE 0x040000L /* 19 supports spec of mesg font size   */
-#define WC_FONTSIZ_STATUS 0x0080000L /* 20 supports spec of status font size */
-#define WC_FONTSIZ_MENU  0x00100000L /* 21 supports spec of menu font size   */
-#define WC_FONTSIZ_TEXT  0x00200000L /* 22 supports spec of text font size   */
-#define WC_SCROLL_MARGIN 0x00400000L /* 23 supports setting map scroll marg  */
-#define WC_SPLASH_SCREEN 0x00800000L /* 24 supports display of splash screen */
-#define WC_POPUP_DIALOG  0x01000000L /* 25 supports queries in popup dialogs */
-#define WC_SCROLL_AMOUNT 0x02000000L /* 26 scroll this amount at scroll marg */
-#define WC_EIGHT_BIT_IN  0x04000000L /* 27 8-bit character input             */
-#define WC_PERM_INVENT   0x08000000L /* 28 supports persistent inventory win */
-#define WC_MAP_MODE      0x10000000L /* 29 map_mode option                   */
-#define WC_WINDOWCOLORS  0x20000000L /* 30 background color for mesg window  */
-#define WC_PLAYER_SELECTION 0x40000000L /* 31 supports player selection      */
+#define WC_COLOR         0x00000001UL /* 01 Port can display things in color  */
+#define WC_HILITE_PET    0x00000002UL /* 02 supports hilite pet               */
+#define WC_ASCII_MAP     0x00000004UL /* 03 supports an ascii map             */
+#define WC_TILED_MAP     0x00000008UL /* 04 supports a tiled map              */
+#define WC_PRELOAD_TILES 0x00000010UL /* 05 supports pre-loading tiles        */
+#define WC_TILE_WIDTH    0x00000020UL /* 06 prefer this width of tile         */
+#define WC_TILE_HEIGHT   0x00000040UL /* 07 prefer this height of tile        */
+#define WC_TILE_FILE     0x00000080UL /* 08 alternative tile file name        */
+#define WC_INVERSE       0x00000100UL /* 09 Port supports inverse video       */
+#define WC_ALIGN_MESSAGE 0x00000200UL /* 10 supports mesg alignment top|b|l|r */
+#define WC_ALIGN_STATUS  0x00000400UL /* 11 supports status alignmt top|b|l|r */
+#define WC_VARY_MSGCOUNT 0x00000800UL /* 12 supports varying message window   */
+#define WC_FONT_MAP      0x00001000UL /* 13 supports spec of map window font  */
+#define WC_FONT_MESSAGE  0x00002000UL /* 14 supports spec of message font     */
+#define WC_FONT_STATUS   0x00004000UL /* 15 supports spec of status font      */
+#define WC_FONT_MENU     0x00008000UL /* 16 supports spec of menu font        */
+#define WC_FONT_TEXT     0x00010000UL /* 17 supports spec of text window font */
+#define WC_FONTSIZ_MAP   0x00020000UL /* 18 supports spec of map font size    */
+#define WC_FONTSIZ_MESSAGE 0x040000UL /* 19 supports spec of mesg font size   */
+#define WC_FONTSIZ_STATUS 0x0080000UL /* 20 supports spec of status font size */
+#define WC_FONTSIZ_MENU  0x00100000UL /* 21 supports spec of menu font size   */
+#define WC_FONTSIZ_TEXT  0x00200000UL /* 22 supports spec of text font size   */
+#define WC_SCROLL_MARGIN 0x00400000UL /* 23 supports setting map scroll marg  */
+#define WC_SPLASH_SCREEN 0x00800000UL /* 24 supports display of splash screen */
+#define WC_POPUP_DIALOG  0x01000000UL /* 25 supports queries in popup dialogs */
+#define WC_SCROLL_AMOUNT 0x02000000UL /* 26 scroll this amount at scroll marg */
+#define WC_EIGHT_BIT_IN  0x04000000UL /* 27 8-bit character input             */
+#define WC_PERM_INVENT   0x08000000UL /* 28 supports persistent inventory win */
+#define WC_MAP_MODE      0x10000000UL /* 29 map_mode option                   */
+#define WC_WINDOWCOLORS  0x20000000UL /* 30 background color for mesg window  */
+#define WC_PLAYER_SELECTION 0x40000000UL /* 31 supports player selection      */
 #ifdef NHSTDC
 #define WC_MOUSE_SUPPORT 0x80000000UL /* 32 mouse support                    */
 #else
-#define WC_MOUSE_SUPPORT 0x80000000L /* 32 mouse support                     */
+#define WC_MOUSE_SUPPORT 0x80000000UL /* 32 mouse support                     */
 #endif
                                      /* no free bits */
 
-#define WC2_FULLSCREEN    0x0001L /* 01 display full screen             */
-#define WC2_SOFTKEYBOARD  0x0002L /* 02 software keyboard               */
-#define WC2_WRAPTEXT      0x0004L /* 03 wrap long lines of text         */
-#define WC2_HILITE_STATUS 0x0008L /* 04 hilite fields in status         */
-#define WC2_SELECTSAVED   0x0010L /* 05 saved game selection menu       */
-#define WC2_DARKGRAY      0x0020L /* 06 use bold black for black glyphs */
-#define WC2_HITPOINTBAR   0x0040L /* 07 show bar representing hit points */
-#define WC2_FLUSH_STATUS  0x0080L /* 08 call status_update(BL_FLUSH)
+#define WC2_FULLSCREEN    0x0001UL /* 01 display full screen             */
+#define WC2_SOFTKEYBOARD  0x0002UL /* 02 software keyboard               */
+#define WC2_WRAPTEXT      0x0004UL /* 03 wrap long lines of text         */
+#define WC2_HILITE_STATUS 0x0008UL /* 04 hilite fields in status         */
+#define WC2_SELECTSAVED   0x0010UL /* 05 saved game selection menu       */
+#define WC2_DARKGRAY      0x0020UL /* 06 use bold black for black glyphs */
+#define WC2_HITPOINTBAR   0x0040UL /* 07 show bar representing hit points */
+#define WC2_FLUSH_STATUS  0x0080UL /* 08 call status_update(BL_FLUSH)
                                    *    after updating status window fields */
-#define WC2_RESET_STATUS  0x0100L /* 09 call status_update(BL_RESET) to
+#define WC2_RESET_STATUS  0x0100UL /* 09 call status_update(BL_RESET) to
                                    *    indicate 'draw everything'      */
-#define WC2_TERM_SIZE     0x0200L /* 10 support setting terminal size   */
-#define WC2_STATUSLINES   0x0400L /* 16 switch between 2 or 3 lines of status */
-#define WC2_WINDOWBORDERS 0x0800L /* 11 display borders on nh windows   */
-#define WC2_PETATTR       0x1000L /* 12 attributes for hilite_pet       */
-#define WC2_GUICOLOR      0x2000L /* 13 display colours outside map win */
+#define WC2_TERM_SIZE     0x0200UL /* 10 support setting terminal size   */
+#define WC2_STATUSLINES   0x0400UL /* 16 switch between 2 or 3 lines of status */
+#define WC2_WINDOWBORDERS 0x0800UL /* 11 display borders on nh windows   */
+#define WC2_PETATTR       0x1000UL /* 12 attributes for hilite_pet       */
+#define WC2_GUICOLOR      0x2000UL /* 13 display colours outside map win */
 /* pline() can overload the display attributes argument passed to putstr()
    with one or more flags and at most one of bold/blink/inverse/&c */
-#define WC2_URGENT_MESG   0x4000L /* 14 putstr(WIN_MESSAGE) supports urgency
+#define WC2_URGENT_MESG   0x4000UL /* 14 putstr(WIN_MESSAGE) supports urgency
                                    *    via non-display attribute flag  */
-#define WC2_SUPPRESS_HIST 0x8000L /* 15 putstr(WIN_MESSAGE) supports history
+#define WC2_SUPPRESS_HIST 0x8000UL /* 15 putstr(WIN_MESSAGE) supports history
                                    *    suppression via non-disp attr   */
                                   /* 16 free bits */
 

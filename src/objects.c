@@ -2547,7 +2547,7 @@ SPELL("greater healing",  "darkened", None, "Heals a target for 20d6+30 hit poin
 SPELL("full healing",     "light gray", None, "Heals a target to full hit points",
       P_HEALING_SPELL,			5,  6,			 6, 7, 75, A_WIS, 5, 0, 100, 0, 1, IMMEDIATE, 0, 0, 0, 255, 0, 0, 0, S1_NONE, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE),
 SPELL("restore ability",  "light brown", None, "Restores lost ability points",
-      P_HEALING_SPELL,			5,  5,			 0, 5, 50, A_WIS, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NONE, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE),
+      P_HEALING_SPELL,			5,  5,			 0, 2, 15, A_WIS, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NONE, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE),
 
 SPELL("slow monster",    "light green", None, "Slows down the target",
 	P_MOVEMENT_SPELL,		5,  2,			 0, 1, 10, A_INT, 12, 0, 100, 0, 1, IMMEDIATE, 0, 0, 0, 0, 1, 50, 100, S1_NONE, CLR_BRIGHT_GREEN, O1_NONE, O2_NONE, O3_NONE),
