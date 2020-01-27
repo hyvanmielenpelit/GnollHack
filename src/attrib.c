@@ -661,8 +661,8 @@ update_extrinsics()
 	//Clear first all carried item extrinsics
 	for (int i = 0; i <= LAST_PROP; i++)
 	{
-		u.uprops[i].extrinsic = 0; // &= ~W_CARRIED;
-		u.uprops[i].blocked = 0;
+		u.uprops[i].extrinsic = 0L; // &= ~W_CARRIED;
+		u.uprops[i].blocked = 0L;
 	}
 	context.warntype.obj = 0;
 
@@ -677,7 +677,7 @@ update_extrinsics()
 			{
 				inappr = TRUE;
 			}
-			int bit = 0;
+			long bit = 0;
 			if (uitem == uarm)
 				bit = W_ARM;
 			else if (uitem == uarmc)

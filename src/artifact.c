@@ -615,7 +615,7 @@ long wp_mask;
     /* intrinsics from the spfx and cspfx fields; there could be more than one */
     spfx = (wp_mask != W_ARTIFACT_CARRIED) ? oart->spfx : oart->cspfx;
 
-	unsigned long bit = 0x00000001UL;
+	long bit = 0x00000001L;
 	for (int i = 0; i < 32; i++)
 	{
 		if (i > 0)

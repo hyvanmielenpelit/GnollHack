@@ -403,39 +403,39 @@ struct objclass {
 	uchar oc_oprop, oc_oprop2, oc_oprop3; /* properties (invis, &c.) conveyed */
 	unsigned long oc_pflags;	 /* Power and property flags */
 
-#define P1_NONE													0x00000000L
-#define P1_POWER_1_APPLIES_TO_ALL_CHARACTERS					0x00000001L  
-#define P1_POWER_1_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY		0x00000002L  
-#define P1_POWER_1_APPLIES_WHEN_CARRIED							0x00000004L 
-#define P1_POWER_2_APPLIES_TO_ALL_CHARACTERS					0x00000008L  
-#define P1_POWER_2_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY		0x00000010L  
-#define P1_POWER_2_APPLIES_WHEN_CARRIED							0x00000020L  
-#define P1_POWER_3_APPLIES_TO_ALL_CHARACTERS					0x00000040L  
-#define P1_POWER_3_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY		0x00000080L  
-#define P1_POWER_3_APPLIES_WHEN_CARRIED							0x00000100L  
-#define P1_HP_BONUS_APPLIES_TO_ALL_CHARACTERS					0x00000200L  
-#define P1_HP_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY	0x00000400L  
-#define P1_HP_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS		0x00000800L  
-#define P1_HP_BONUS_APPLIES_WHEN_CARRIED						0x00001000L  
-#define P1_MANA_BONUS_APPLIES_TO_ALL_CHARACTERS					0x00002000L  
-#define P1_MANA_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY	0x00004000L  
-#define P1_MANA_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS		0x00008000L  
-#define P1_MANA_BONUS_APPLIES_WHEN_CARRIED						0x00010000L  
-#define P1_ATTRIBUTE_BONUS_APPLIES_TO_ALL_CHARACTERS			0x00020000L 
-#define P1_ATTRIBUTE_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY	0x00040000L  
-#define P1_ATTRIBUTE_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS	0x00080000L  
-#define P1_ATTRIBUTE_BONUS_APPLIES_WHEN_CARRIED					0x00100000L  
-#define P1_LUCK_APPLIES_TO_ALL_CHARACTERS						0x00200000L 
-#define P1_LUCK_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY		0x00400000L  
-#define P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS			0x00800000L  
-#define P1_LUCK_APPLIES_WHEN_CARRIED							0x01000000L  
+#define P1_NONE													0x00000000UL
+#define P1_POWER_1_APPLIES_TO_ALL_CHARACTERS					0x00000001UL  
+#define P1_POWER_1_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY		0x00000002UL  
+#define P1_POWER_1_APPLIES_WHEN_CARRIED							0x00000004UL 
+#define P1_POWER_2_APPLIES_TO_ALL_CHARACTERS					0x00000008UL  
+#define P1_POWER_2_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY		0x00000010UL  
+#define P1_POWER_2_APPLIES_WHEN_CARRIED							0x00000020UL  
+#define P1_POWER_3_APPLIES_TO_ALL_CHARACTERS					0x00000040UL  
+#define P1_POWER_3_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY		0x00000080UL  
+#define P1_POWER_3_APPLIES_WHEN_CARRIED							0x00000100UL  
+#define P1_HP_BONUS_APPLIES_TO_ALL_CHARACTERS					0x00000200UL  
+#define P1_HP_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY	0x00000400UL  
+#define P1_HP_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS		0x00000800UL  
+#define P1_HP_BONUS_APPLIES_WHEN_CARRIED						0x00001000UL  
+#define P1_MANA_BONUS_APPLIES_TO_ALL_CHARACTERS					0x00002000UL  
+#define P1_MANA_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY	0x00004000UL  
+#define P1_MANA_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS		0x00008000UL  
+#define P1_MANA_BONUS_APPLIES_WHEN_CARRIED						0x00010000UL  
+#define P1_ATTRIBUTE_BONUS_APPLIES_TO_ALL_CHARACTERS			0x00020000UL 
+#define P1_ATTRIBUTE_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY	0x00040000UL  
+#define P1_ATTRIBUTE_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS	0x00080000UL  
+#define P1_ATTRIBUTE_BONUS_APPLIES_WHEN_CARRIED					0x00100000UL  
+#define P1_LUCK_APPLIES_TO_ALL_CHARACTERS						0x00200000UL 
+#define P1_LUCK_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY		0x00400000UL  
+#define P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS			0x00800000UL  
+#define P1_LUCK_APPLIES_WHEN_CARRIED							0x01000000UL  
 /* free bit */
 /* free bit */
-#define P1_CURSED_ITEM_YIELDS_NEGATIVE							0x08000000L  
-#define P1_CONFERS_LUCK											0x10000000L			/* Adds one positive luck bonus; these need to be flags instead of props because they stack */
-#define P1_CONFERS_UNLUCK										0x20000000L			/* Adds one negative luck bonus (the same as cursed luckstone) */
-#define P1_MANA_PERCENTAGE_BONUS								0x40000000L
-#define P1_HP_PERCENTAGE_BONUS									0x80000000L
+#define P1_CURSED_ITEM_YIELDS_NEGATIVE							0x08000000UL  
+#define P1_CONFERS_LUCK											0x10000000UL			/* Adds one positive luck bonus; these need to be flags instead of props because they stack */
+#define P1_CONFERS_UNLUCK										0x20000000UL			/* Adds one negative luck bonus (the same as cursed luckstone) */
+#define P1_MANA_PERCENTAGE_BONUS								0x40000000UL
+#define P1_HP_PERCENTAGE_BONUS									0x80000000UL
 
 
 	char  oc_class; /* object class (enum obj_class_types) */
@@ -458,62 +458,62 @@ struct objclass {
 	unsigned long oc_aflags;				/* attack related flags, e.g. whether the attack is vorpal */
 
 /* Attack flags for weapons, armor, weapon-like tools, and miscellaneous items */
-#define A1_NONE														0x00000000L
-#define A1_CRITICAL_STRIKE											0x00000001L  /* extra damage is caused only by chance determined by oc_critical_strike_percentage */
-#define A1_CRITICAL_STRIKE_IS_DEADLY								0x00000002L  
+#define A1_NONE														0x00000000UL
+#define A1_CRITICAL_STRIKE											0x00000001UL  /* extra damage is caused only by chance determined by oc_critical_strike_percentage */
+#define A1_CRITICAL_STRIKE_IS_DEADLY								0x00000002UL  
 		/* successful critical strike causes lethal damage. If this flag is on, critical strike is considered not to be connected with extra damage; rather, it is treated similarly to vorpal attack */
-#define A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK					0x00000004L  /* lethal damage is death magic */
-#define A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK			0x00000008L  /* lethal damage is disintegration */
+#define A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK					0x00000004UL  /* lethal damage is death magic */
+#define A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK			0x00000008UL  /* lethal damage is disintegration */
 #define A1_DEADLY_CRITICAL_STRIKE_USES_EXTRA_DAMAGE_TYPE (A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK | A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK)  
 		/* lethal damage is of extra damage type; note that normal critical strike always follows extra_damagetype */
 #define A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK (A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK | A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK)  
-#define A1_CRITICAL_STRIKE_DISRESPECTS_TARGETS						0x00000010L  /* successful critical strike causes lethal damage */
-#define A1_CRITICAL_STRIKE_DISRESPECTS_CHARACTERS					0x00000020L  /* successful critical strike causes lethal damage */
-#define A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES	0x00000040L  /* All other special types use critical strike probability instead of being certain or using their own standard probability */
-#define A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL					0x00000080L  /* The number specified by oc_critical_strike_percentage is a die roll on d20 (X or less, e.g., 1 = 5% chance or 2 = 10% chance on any attack regardless of actual hit chance) */
+#define A1_CRITICAL_STRIKE_DISRESPECTS_TARGETS						0x00000010UL  /* successful critical strike causes lethal damage */
+#define A1_CRITICAL_STRIKE_DISRESPECTS_CHARACTERS					0x00000020UL  /* successful critical strike causes lethal damage */
+#define A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES	0x00000040UL  /* All other special types use critical strike probability instead of being certain or using their own standard probability */
+#define A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL					0x00000080UL  /* The number specified by oc_critical_strike_percentage is a die roll on d20 (X or less, e.g., 1 = 5% chance or 2 = 10% chance on any attack regardless of actual hit chance) */
 
-#define A1_WOUNDING													0x00000100L  /* extra damage caused is permanent damage */
-#define A1_WOUNDING_DISRESPECTS_TARGETS								0x00000200L  /* successful critical strike causes lethal damage */
-#define A1_WOUNDING_DISRESPECTS_CHARACTERS							0x00000400L  /* successful critical strike causes lethal damage */
+#define A1_WOUNDING													0x00000100UL  /* extra damage caused is permanent damage */
+#define A1_WOUNDING_DISRESPECTS_TARGETS								0x00000200UL  /* successful critical strike causes lethal damage */
+#define A1_WOUNDING_DISRESPECTS_CHARACTERS							0x00000400UL  /* successful critical strike causes lethal damage */
 
-#define A1_LIFE_LEECH												0x00000800L  /* heals hit points equal to the extra damage caused */
-#define A1_LIFE_LEECH_DISRESPECTS_TARGETS							0x00001000L  /* successful critical strike causes lethal damage */
-#define A1_LIFE_LEECH_DISRESPECTS_CHARACTERS						0x00002000L  /* successful critical strike causes lethal damage */
+#define A1_LIFE_LEECH												0x00000800UL  /* heals hit points equal to the extra damage caused */
+#define A1_LIFE_LEECH_DISRESPECTS_TARGETS							0x00001000UL  /* successful critical strike causes lethal damage */
+#define A1_LIFE_LEECH_DISRESPECTS_CHARACTERS						0x00002000UL  /* successful critical strike causes lethal damage */
 
-#define A1_SHARPNESS												0x00004000L	/* 2/20 chance of the monster losing 25% of maximum hit points */
-#define A1_VORPAL													0x00008000L	/* 1/20 chance of the monster being beheaded */
+#define A1_SHARPNESS												0x00004000UL	/* 2/20 chance of the monster losing 25% of maximum hit points */
+#define A1_VORPAL													0x00008000UL	/* 1/20 chance of the monster being beheaded */
 #define A1_BISECT (A1_SHARPNESS | A1_VORPAL) /* 1/20 chance of a small monster being bisected and a big monster losing 50% of maximum hit points */
 #define A1_SVB_MASK (A1_SHARPNESS | A1_VORPAL)
-#define A1_VORPAL_LIKE_DISRESPECTS_TARGETS							0x00010000L
-#define A1_VORPAL_LIKE_DISRESPECTS_CHARACTERS						0x00020000L
+#define A1_VORPAL_LIKE_DISRESPECTS_TARGETS							0x00010000UL
+#define A1_VORPAL_LIKE_DISRESPECTS_CHARACTERS						0x00020000UL
 
-#define A1_LEVEL_DRAIN												0x00040000L  /* drains a level from monsters */
-#define A1_LEVEL_DRAIN_DISRESPECTS_TARGETS							0x00080000L  
-#define A1_LEVEL_DRAIN_DISRESPECTS_CHARACTERS						0x00100000L  
+#define A1_LEVEL_DRAIN												0x00040000UL  /* drains a level from monsters */
+#define A1_LEVEL_DRAIN_DISRESPECTS_TARGETS							0x00080000UL  
+#define A1_LEVEL_DRAIN_DISRESPECTS_CHARACTERS						0x00100000UL  
 
 /* Extra weapon options */
-#define A1_STUN														0x00200000L  /* stuns target, not implemented */
-#define A1_HITS_ADJACENT_SQUARES									0x00400000L  /* like Cleaver */
+#define A1_STUN														0x00200000UL  /* stuns target, not implemented */
+#define A1_HITS_ADJACENT_SQUARES									0x00400000UL  /* like Cleaver */
 /* free bit*/
 
 /* General */
-#define A1_MAGIC_RESISTANCE_PROTECTS								0x01000000L
-#define A1_BYPASSES_MC												0x02000000L	/* No MC check */  
-#define A1_EXTRA_DAMAGE_DISRESPECTS_TARGETS							0x04000000L  
-#define A1_EXTRA_DAMAGE_DISRESPECTS_CHARACTERS						0x08000000L  
-#define A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA							0x10000000L /* abilities such as wounding and life leech are based on full caused damage, not just extra damage */
-#define A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS					0x20000000L
-#define A1_ITEM_VANISHES_ON_HIT										0x40000000L
-#define A1_ITEM_VANISHES_ONLY_IF_PERMITTED_TARGET					0x80000000L
+#define A1_MAGIC_RESISTANCE_PROTECTS								0x01000000UL
+#define A1_BYPASSES_MC												0x02000000UL	/* No MC check */  
+#define A1_EXTRA_DAMAGE_DISRESPECTS_TARGETS							0x04000000UL  
+#define A1_EXTRA_DAMAGE_DISRESPECTS_CHARACTERS						0x08000000UL  
+#define A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA							0x10000000UL /* abilities such as wounding and life leech are based on full caused damage, not just extra damage */
+#define A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS					0x20000000UL
+#define A1_ITEM_VANISHES_ON_HIT										0x40000000UL
+#define A1_ITEM_VANISHES_ONLY_IF_PERMITTED_TARGET					0x80000000UL
 
 
 /* Spell flags for spells, scrolls, potions, spell-like tools, and wands */
-#define S1_NONE									0x00000000L
-#define S1_SPELL_EXPLOSION_EFFECT				0x00000001L
-#define S1_SPELL_BYPASSES_MAGIC_RESISTANCE		0x00000002L
-#define S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY	0x00000004L
-#define S1_SPELL_IS_NONREVERSIBLE_PERMANENT		0x00000008L
-#define S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT		0x00000010L
+#define S1_NONE									0x00000000UL
+#define S1_SPELL_EXPLOSION_EFFECT				0x00000001UL
+#define S1_SPELL_BYPASSES_MAGIC_RESISTANCE		0x00000002UL
+#define S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY	0x00000004UL
+#define S1_SPELL_IS_NONREVERSIBLE_PERMANENT		0x00000008UL
+#define S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT		0x00000010UL
 
 
 	int oc_hitbonus;						/* weapons: "to hit" bonus */
