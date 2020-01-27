@@ -943,8 +943,9 @@ getlock()
 #if defined(CHDIR) && !defined(NOCWD_ASSUMPTIONS)
         chdirx(orgdir, 0);
 #endif
-        Sprintf(oops, "%s", "Cannot start a new game.");
-        raw_print(oops);
+	 /* Not sure what was the logic of this message --JG */
+     //   Sprintf(oops, "%s", "Cannot start a new game.");
+     //   raw_print(oops);
     }
 
 gotlock:
