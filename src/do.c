@@ -419,7 +419,7 @@ STATIC_PTR int
 itemdescription(obj)
 register struct obj* obj;
 {
-	if (!obj)
+	if (!obj || obj == &zeroobj)
 		return 0;
 
 	winid datawin = WIN_ERR;

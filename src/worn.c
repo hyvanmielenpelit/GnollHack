@@ -1632,7 +1632,7 @@ boolean creation;
 	int new_amulet_delay = new_amulet ? objects[new_amulet->otyp].oc_delay : 0;
 	int new_ringr_delay = new_ringr ? objects[new_ringr->otyp].oc_delay : 0;
 	int new_ringl_delay = new_ringl ? objects[new_ringl->otyp].oc_delay : 0;
-	int new_misc1_delay = new_ringl ? objects[new_misc1->otyp].oc_delay : 0;
+	int new_misc1_delay = new_misc1 ? objects[new_misc1->otyp].oc_delay : 0;
 
 	boolean takes_off_old_suit = wears_shirt || wears_suit;
 	boolean takes_off_old_robe = wears_shirt || wears_suit || wears_robe;
