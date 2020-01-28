@@ -3035,6 +3035,8 @@ E void FDECL(setuwepcore, (struct obj*, long, BOOLEAN_P));
 E void FDECL(setuwepquietly, (struct obj*, long));
 E void FDECL(setuqwep, (struct obj *));
 E void FDECL(setuswapwep, (struct obj *, long));
+E void FDECL(setuqwepquietly, (struct obj*));
+E void FDECL(setuswapwepquietly, (struct obj*, long));
 E int NDECL(dowield);
 E int NDECL(doswapweapon);
 E int FDECL(dosingleswapweapon, (long));

@@ -1721,33 +1721,33 @@ register struct trobj *trop;
 
         if (obj->oclass == ARMOR_CLASS) {
             if (is_shield(obj) && !uarms && !(uwep && bimanual(uwep))) {
-                setworn(obj, W_ARMS);
+                setwornquietly(obj, W_ARMS);
                 /* 3.6.2: this used to unset uswapwep if it was set, but
                    wearing a shield doesn't prevent having an alternate
                    weapon ready to swap with the primary; just make sure we
                    aren't two-weaponing (academic; no one starts that way) */
                 u.twoweap = FALSE;
             } else if (is_helmet(obj) && !uarmh)
-                setworn(obj, W_ARMH);
+                setwornquietly(obj, W_ARMH);
             else if (is_gloves(obj) && !uarmg)
-                setworn(obj, W_ARMG);
+                setwornquietly(obj, W_ARMG);
             else if (is_shirt(obj) && !uarmu)
-                setworn(obj, W_ARMU);
+                setwornquietly(obj, W_ARMU);
             else if (is_cloak(obj) && !uarmc)
-                setworn(obj, W_ARMC);
+                setwornquietly(obj, W_ARMC);
 			else if (is_robe(obj) && !uarmo)
-				setworn(obj, W_ARMO);
+				setwornquietly(obj, W_ARMO);
 			else if (is_bracers(obj) && !uarmb)
-				setworn(obj, W_ARMB);
+				setwornquietly(obj, W_ARMB);
 			else if (is_boots(obj) && !uarmf)
-                setworn(obj, W_ARMF);
+                setwornquietly(obj, W_ARMF);
             else if (is_suit(obj) && !uarm)
-                setworn(obj, W_ARM);
+                setwornquietly(obj, W_ARM);
         }
 
 		if (obj->oclass == AMULET_CLASS && !uamul)
 		{
-			setworn(obj, W_AMUL);
+			setwornquietly(obj, W_AMUL);
 		}
 
 		if (obj->oclass == MISCELLANEOUS_CLASS && !(umisc && umisc2 && umisc3 && umisc4 && umisc5))
@@ -1765,15 +1765,15 @@ register struct trobj *trop;
 			else
 			{
 				if(!umisc)
-					setworn(obj, W_MISC);
+					setwornquietly(obj, W_MISC);
 				else if (!umisc2)
-					setworn(obj, W_MISC2);
+					setwornquietly(obj, W_MISC2);
 				else if (!umisc3)
-					setworn(obj, W_MISC3);
+					setwornquietly(obj, W_MISC3);
 				else if (!umisc4)
-					setworn(obj, W_MISC4);
+					setwornquietly(obj, W_MISC4);
 				else if (!umisc5)
-					setworn(obj, W_MISC5);
+					setwornquietly(obj, W_MISC5);
 			}
 		}
 
@@ -1783,15 +1783,15 @@ register struct trobj *trop;
             if (is_ammo(obj) || is_missile(obj)) 
 			{
                 if (!uquiver)
-                    setuqwep(obj);
+                    setuqwepquietly(obj);
             }
 			else if (!uwep && (!uarms || !bimanual(obj)) && !is_launcher(obj))
 			{
-                setuwep(obj, W_WEP);
+                setuwepquietly(obj, W_WEP);
             }
 			else if (!uswapwep && is_launcher(obj))
 			{
-                setuswapwep(obj, W_SWAPWEP);
+                setuswapwepquietly(obj, W_SWAPWEP);
             }
         }
 		if (obj->oclass == SPBOOK_CLASS && obj->otyp != SPE_BLANK_PAPER)

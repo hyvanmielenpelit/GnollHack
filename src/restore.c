@@ -662,7 +662,7 @@ unsigned int *stuckid, *steedid;
     if (tmp_bc) {
         for (otmp = tmp_bc; otmp; otmp = otmp->nobj) {
             if (otmp->owornmask)
-                setworn(otmp, otmp->owornmask);
+                setwornquietly(otmp, otmp->owornmask);
         }
         if (!uball || !uchain)
             impossible("restgamestate: lost ball & chain");
@@ -926,7 +926,7 @@ register int fd;
     /* take care of iron ball & chain */
     for (otmp = fobj; otmp; otmp = otmp->nobj)
         if (otmp->owornmask)
-            setworn(otmp, otmp->owornmask);
+            setwornquietly(otmp, otmp->owornmask);
 
     /* in_use processing must be after:
      *    + The inventory has been read so that freeinv() works.

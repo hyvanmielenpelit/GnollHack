@@ -299,7 +299,7 @@ void
 setuqwep(obj)
 register struct obj *obj;
 {
-    setworn(obj, W_QUIVER);
+    setworncore(obj, W_QUIVER, TRUE);
     /* no extra handling needed; this used to include a call to
        update_inventory() but that's already performed by setworn() */
     return;
@@ -310,9 +310,29 @@ setuswapwep(obj, mask)
 register struct obj *obj;
 long mask;
 {
-    setworn(obj, mask);
+    setworncore(obj, mask, TRUE);
     return;
 }
+
+void
+setuqwepquietly(obj)
+register struct obj* obj;
+{
+	setworncore(obj, W_QUIVER, FALSE);
+	/* no extra handling needed; this used to include a call to
+	   update_inventory() but that's already performed by setworn() */
+	return;
+}
+
+void
+setuswapwepquietly(obj, mask)
+register struct obj* obj;
+long mask;
+{
+	setworncore(obj, mask, FALSE); 
+	return;
+}
+
 
 /*** Commands to change particular slot(s) ***/
 
