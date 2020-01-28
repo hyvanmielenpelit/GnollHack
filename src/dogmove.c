@@ -988,7 +988,7 @@ int after; /* this is extra fast monster movement */
     int i, j, k;
     register struct edog *edog = EDOG(mtmp);
     struct obj *obj = (struct obj *) 0;
-    xchar otyp;
+    xchar foodtyp;
     boolean has_edog, cursemsg[9], do_eat = FALSE;
     boolean better_with_displacing = FALSE;
     xchar nix, niy;      /* position mtmp is (considering) moving to */
@@ -1208,13 +1208,16 @@ int after; /* this is extra fast monster movement */
 
         /* dog eschews cursed objects, but likes dog food */
         /* (minion isn't interested; `cursemsg' stays FALSE) */
-        if (has_edog && !mtmp->issummoned && !mtmp->ispartymember)
-            for (obj = level.objects[nx][ny]; obj; obj = obj->nexthere) {
-                if (obj->cursed) {
+        if (has_edog)
+            for (obj = level.objects[nx][ny]; obj; obj = obj->nexthere) 
+			{
+                if (obj->cursed && (is_animal(mtmp->data) || is_angel(mtmp->data))) /* animals and angels eschew cursed objects */
+				{
                     cursemsg[i] = TRUE;
-                } else if ((otyp = dogfood(mtmp, obj)) < MANFOOD
-                         && (otyp < ACCFOOD
-                             || edog->hungrytime <= monstermoves)) {
+                } 
+				else if ((foodtyp = dogfood(mtmp, obj)) < MANFOOD
+                         && (foodtyp < ACCFOOD || edog->hungrytime <= monstermoves))
+				{
                     /* Note: our dog likes the food so much that he
                      * might eat it even when it conceals a cursed object */
                     nix = nx;
@@ -1235,7 +1238,8 @@ int after; /* this is extra fast monster movement */
         /* This causes unintended issues for pets trying to follow
            the hero. Thus, only run it if not leashed and >5 tiles
            away. */
-        if (!mtmp->mleashed && distmin(mtmp->mx, mtmp->my, u.ux, u.uy) > 5) {
+        if (!mtmp->mleashed && distmin(mtmp->mx, mtmp->my, u.ux, u.uy) > 5)
+		{
             k = has_edog ? uncursedcnt : cnt;
             for (j = 0; j < MTSZ && j < k - 1; j++)
                 if (nx == mtmp->mtrack[j].x && ny == mtmp->mtrack[j].y)
@@ -1246,7 +1250,8 @@ int after; /* this is extra fast monster movement */
         j = ((ndist = GDIST(nx, ny)) - nidist) * appr;
         if ((j == 0 && !rn2(++chcnt)) || j < 0
             || (j > 0 && !whappr
-                && ((omx == nix && omy == niy && !rn2(3)) || !rn2(12)))) {
+                && ((omx == nix && omy == niy && !rn2(3)) || !rn2(12)))) 
+		{
             nix = nx;
             niy = ny;
             nidist = ndist;
@@ -1267,7 +1272,8 @@ int after; /* this is extra fast monster movement */
         int hungry = 0;
 
         /* How hungry is the pet? */
-        if (!mtmp->isminion) {
+        if (!mtmp->isminion)
+		{
             struct edog *dog = EDOG(mtmp);
 
             hungry = (monstermoves > (dog->hungrytime + 300));
@@ -1280,13 +1286,17 @@ int after; /* this is extra fast monster movement */
         mtarg = best_target(mtmp);
 
         /* Hungry pets are unlikely to use breath/spit attacks */
-        if (mtarg && (!hungry || !rn2(5))) {
+        if (mtarg && (!hungry || !rn2(5)))
+		{
             int mstatus;
 
-            if (mtarg == &youmonst) {
+            if (mtarg == &youmonst)
+			{
                 if (mattacku(mtmp))
                     return 2;
-            } else {
+            }
+			else
+			{
                 mstatus = mattackm(mtmp, mtarg);
 
                 /* Shouldn't happen, really */
@@ -1298,14 +1308,16 @@ int after; /* this is extra fast monster movement */
                  * nothing will happen.
                  */
                 if ((mstatus & MM_HIT) && !(mstatus & MM_DEF_DIED)
-                    && rn2(4) && mtarg != &youmonst) {
+                    && rn2(4) && mtarg != &youmonst)
+				{
 
                     /* Can monster see? If it can, it can retaliate
                      * even if the pet is invisible, since it'll see
                      * the direction from which the ranged attack came;
                      * if it's blind or unseeing, it can't retaliate
                      */
-                    if (!is_blinded(mtarg) && haseyes(mtarg->data)) {
+                    if (!is_blinded(mtarg) && haseyes(mtarg->data))
+					{
                         mstatus = mattackm(mtarg, mtmp);
                         if (mstatus & MM_DEF_DIED)
                             return 2;
@@ -1322,8 +1334,10 @@ newdogpos:
 		{
 			boolean wasseen;
 
-			if (info[chi] & ALLOW_U) {
-				if (mtmp->mleashed) { /* play it safe */
+			if (info[chi] & ALLOW_U)
+			{
+				if (mtmp->mleashed)
+				{ /* play it safe */
 					pline("%s breaks loose of %s leash!", Monnam(mtmp),
 						  mhis(mtmp));
 					m_unleash(mtmp, FALSE);
@@ -1340,7 +1354,8 @@ newdogpos:
 			wasseen = canseemon(mtmp);
 			remove_monster(omx, omy);
 			place_monster(mtmp, nix, niy);
-			if (cursemsg[chi] && (wasseen || canseemon(mtmp))) {
+			if (cursemsg[chi] && (wasseen || canseemon(mtmp))) 
+			{
 				/* describe top item of pile, not necessarily cursed item itself;
 				   don't use glyph_at() here--it would return the pet but we want
 				   to know whether an object is remembered at this map location */
@@ -1360,11 +1375,14 @@ newdogpos:
 			 * move before moving it, but it can't eat until after being
 			 * moved.  Thus the do_eat flag.
 			 */
-			if (do_eat) {
+			if (do_eat)
+			{
 				if (dog_eat(mtmp, obj, omx, omy, FALSE) == 2)
 					return 2;
 			}
-		} else if (mtmp->mleashed && distu(omx, omy) > 4) {
+		} 
+		else if (mtmp->mleashed && distu(omx, omy) > 4)
+		{
 			/* an incredible kludge, but the only way to keep pooch near
 			 * after it spends time eating or in a trap, etc.
 			 */
@@ -1378,12 +1396,14 @@ newdogpos:
 				goto dognext;
 
 			i = xytod(nx, ny);
-			for (j = (i + 7) % 8; j < (i + 1) % 8; j++) {
+			for (j = (i + 7) % 8; j < (i + 1) % 8; j++) 
+			{
 				dtoxy(&cc, j);
 				if (goodpos(cc.x, cc.y, mtmp, 0))
 					goto dognext;
 			}
-			for (j = (i + 6) % 8; j < (i + 2) % 8; j++) {
+			for (j = (i + 6) % 8; j < (i + 2) % 8; j++)
+			{
 				dtoxy(&cc, j);
 				if (goodpos(cc.x, cc.y, mtmp, 0))
 					goto dognext;
