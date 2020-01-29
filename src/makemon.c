@@ -1603,17 +1603,23 @@ xchar x, y; /* clone's preferred location or 0 (near mon) */
     if (mon->mhp <= 1 || (mvitals[monsndx(mon->data)].mvflags & G_EXTINCT))
         return (struct monst *) 0;
 
-    if (x == 0) {
+    if (x == 0)
+	{
         mm.x = mon->mx;
         mm.y = mon->my;
         if (!enexto(&mm, mm.x, mm.y, mon->data) || MON_AT(mm.x, mm.y))
             return (struct monst *) 0;
-    } else if (!isok(x, y)) {
+    }
+	else if (!isok(x, y))
+	{
         return (struct monst *) 0; /* paranoia */
-    } else {
+    }
+	else
+	{
         mm.x = x;
         mm.y = y;
-        if (MON_AT(mm.x, mm.y)) {
+        if (MON_AT(mm.x, mm.y))
+		{
             if (!enexto(&mm, mm.x, mm.y, mon->data) || MON_AT(mm.x, mm.y))
                 return (struct monst *) 0;
         }
@@ -1674,14 +1680,18 @@ xchar x, y; /* clone's preferred location or 0 (near mon) */
     if (emits_light(m2->data))
         new_light_source(m2->mx, m2->my, emits_light(m2->data), LS_MONSTER,
                          monst_to_any(m2));
-    if (has_mname(mon)) {
+    if (has_mname(mon)) 
+	{
         m2 = christen_monst(m2, MNAME(mon));
-    } else if (mon->isshk) {
+    }
+	else if (mon->isshk)
+	{
         m2 = christen_monst(m2, shkname(mon));
     }
 
     /* not all clones caused by player are tame or peaceful */
-    if (!context.mon_moving) {
+    if (!context.mon_moving) 
+	{
         if (mon->mtame)
             m2->mtame = rn2(max(2 + u.uluck, 2)) ? mon->mtame : 0;
         else if (mon->mpeaceful)
@@ -1689,23 +1699,30 @@ xchar x, y; /* clone's preferred location or 0 (near mon) */
     }
 
     newsym(m2->mx, m2->my); /* display the new monster */
-    if (m2->mtame) {
-        if (mon->isminion) {
-            newemin(m2);
-            if (EMIN(mon))
-                *(EMIN(m2)) = *(EMIN(mon));
-        } else {
-            /* because m2 is a copy of mon it is tame but not init'ed.
-             * however, tamedog will not re-tame a tame dog, so m2
-             * must be made non-tame to get initialized properly.
-             */
-            m2->mtame = 0;
-            if (tamedog(m2, (struct obj *) 0, FALSE, FALSE, 0, FALSE))
+	if (m2->mtame)
+	{
+		if (mon->isminion)
+		{
+			newemin(m2);
+			if (EMIN(mon))
+				*(EMIN(m2)) = *(EMIN(mon));
+		}
+		else
+		{
+			/* because m2 is a copy of mon it is tame but not init'ed.
+			 * however, tamedog will not re-tame a tame dog, so m2
+			 * must be made non-tame to get initialized properly.
+			 */
+			m2->mtame = 0;
+			if (tamedog(m2, (struct obj*) 0, FALSE, FALSE, 0, FALSE))
 			{
-                *(EDOG(m2)) = *(EDOG(mon));
-            }
-        }
-    }
+				*(EDOG(m2)) = *(EDOG(mon));
+			}
+		}
+	}
+	else
+		m2->isminion = FALSE;
+
     set_malign(m2);
 
 	if (!m2->mtame)
