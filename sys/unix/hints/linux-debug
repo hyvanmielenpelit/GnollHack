@@ -56,8 +56,8 @@ WINOBJ += tile.o
 
 WINTTYLIB=-lcurses
 
-CHOWN=chown
-CHGRP=chgrp
+CHOWN=true
+CHGRP=true
 
 GAMEUID=games
 GAMEGRP=bin
