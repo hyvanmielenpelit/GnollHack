@@ -9,12 +9,12 @@
 # for Ubuntu dapper.
 
 
-PREFIX=/usr
+PREFIX=/opt/gnollhack/server.gnollhack.com
 #PREFIX=$(wildcard ~)/nh/install
 #HACKDIR=$(PREFIX)/games/lib/$(GAME)dir
-HACKDIR=$(GAME)
-#SHELLDIR = $(PREFIX)/games
-SHELLDIR = $(HACKDIR)/..
+HACKDIR=/gnh
+#SHELLDIR = $(PREFIX)
+#SHELLDIR = $(HACKDIR)/..
 INSTDIR = $(HACKDIR)
 VARDIR = $(HACKDIR)/var
 
@@ -62,7 +62,7 @@ CHOWN=true
 CHGRP=true
 
 GAMEUID=games
-GAMEGRP=bin
+GAMEGRP=games
 
 VARDIRPERM = 0755
 VARFILEPERM = 0600
