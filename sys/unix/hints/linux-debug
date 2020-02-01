@@ -11,9 +11,11 @@
 
 PREFIX=/usr
 #PREFIX=$(wildcard ~)/nh/install
-HACKDIR=$(PREFIX)/games/lib/$(GAME)dir
-SHELLDIR = $(PREFIX)/games
-INSTDIR=$(HACKDIR)
+#HACKDIR=$(PREFIX)/games/lib/$(GAME)dir
+HACKDIR=$(GAME)
+#SHELLDIR = $(PREFIX)/games
+SHELLDIR = $(HACKDIR)
+INSTDIR = $(HACKDIR)
 VARDIR = $(HACKDIR)/var
 
 
