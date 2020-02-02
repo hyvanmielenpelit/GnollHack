@@ -1622,7 +1622,7 @@ struct obj *obj;
 		Strcpy(buf, *str1);
 #endif
 #ifdef ANDROID
-	if (showlog)
+	if (1) /* was showlog but that was always TRUE */
 		and_getlin_log(qbuf, buf);
 	else
 #endif
