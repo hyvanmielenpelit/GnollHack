@@ -1704,7 +1704,7 @@ xchar x, y; /* clone's preferred location or 0 (near mon) */
 		if (mon->isminion)
 		{
 			newemin(m2);
-			if (EMIN(mon))
+			if (mon->mextra && EMIN(mon))
 				*(EMIN(m2)) = *(EMIN(mon));
 		}
 		else
