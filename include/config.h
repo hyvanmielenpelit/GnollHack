@@ -352,7 +352,7 @@
  * otherwise it will be the current directory.
  */
 #ifndef HACKDIR
-#define HACKDIR "/usr/games/lib/GnollHackdir"
+#define HACKDIR "/usr/games/lib/gnollhackdir"
 #endif
 
 /*
