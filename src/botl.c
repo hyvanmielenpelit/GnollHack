@@ -849,7 +849,8 @@ boolean *valsetlist;
 
     chg = update_all ? 0 : compare_blstats(prev, curr);
 
-    /* Temporary? hack: moveloop()'s prolog for a new game sets
+#ifndef ANDROID
+	/* Temporary? hack: moveloop()'s prolog for a new game sets
      * context.rndencode after the status window has been init'd,
      * so $:0 has already been encoded and cached by the window
      * port.  Without this hack, gold's \G sequence won't be
@@ -875,7 +876,8 @@ boolean *valsetlist;
         oldrndencode = context.rndencode;
         oldgoldsym = showsyms[COIN_CLASS + SYM_OFF_O];
     }
-	
+#endif
+
     reset = FALSE;
 #ifdef STATUS_HILITES
     if (!update_all && !chg && curr->time) {

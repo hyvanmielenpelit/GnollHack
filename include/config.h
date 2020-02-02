@@ -50,6 +50,7 @@
 /* #define QT_GRAPHICS */    /* Qt interface */
 /* #define GNOME_GRAPHICS */ /* Gnome interface */
 /* #define MSWIN_GRAPHICS */ /* Windows NT, CE, Graphics */
+/* #define ANDROID_GRAPHICS */ /* Android graphics */
 
 /*
  * Define the default window system.  This should be one that is compiled
@@ -114,6 +115,18 @@
 #endif
 #define HACKDIR "\\GnollHack"
 #endif
+
+#ifdef ANDROID
+#define ANDROID_GRAPHICS
+#ifdef TTY_GRAPHICS
+#undef TTY_GRAPHICS
+#endif
+#ifdef DEFAULT_WINDOW_SYS
+#undef DEFAULT_WINDOW_SYS
+#endif
+#define DEFAULT_WINDOW_SYS "and"
+#endif
+
 
 #ifndef DEFAULT_WINDOW_SYS
 #define DEFAULT_WINDOW_SYS "tty"
@@ -236,7 +249,7 @@
 #define ENTRYMAX 100 /* must be >= 10 */
 #endif
 #ifndef PERS_IS_UID
-#if !defined(MICRO) && !defined(MAC) && !defined(WIN32)
+#if !defined(MICRO) && !defined(MAC) && !defined(WIN32)  && !defined(ANDROID)
 #define PERS_IS_UID 1 /* delete for PERSMAX per name; now per uid */
 #else
 #define PERS_IS_UID 0
@@ -261,7 +274,7 @@
  *
  */
 
-#if defined(UNIX) && !defined(ZLIB_COMP) && !defined(COMPRESS)
+#if defined(UNIX) && !defined(ZLIB_COMP) && !defined(COMPRESS) && !defined(ANDROID)
 /* path and file name extension for compression program */
 #define COMPRESS "/usr/bin/compress" /* Lempel-Ziv compression */
 #define COMPRESS_EXTENSION ".Z"      /* compress's extension */

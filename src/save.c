@@ -127,8 +127,10 @@ dosave0()
         return 0;
     fq_save = fqname(SAVEF, SAVEPREFIX, 1); /* level files take 0 */
 
+#ifndef ANDROID
 #if defined(UNIX) || defined(VMS)
-    sethanguphandler((void FDECL((*), (int) )) SIG_IGN);
+	sethanguphandler((void FDECL((*), (int))) SIG_IGN);
+#endif
 #endif
 #ifndef NO_SIGNAL
     (void) signal(SIGINT, SIG_IGN);
@@ -139,7 +141,8 @@ dosave0()
         return 0;
 #endif
 
-    HUP if (iflags.window_inited)
+#ifndef ANDROID
+	HUP if (iflags.window_inited)
     {
         nh_uncompress(fq_save);
         fd = open_savefile();
@@ -153,6 +156,7 @@ dosave0()
             }
         }
     }
+#endif
 
     HUP mark_synch(); /* flush any buffered screen output */
 

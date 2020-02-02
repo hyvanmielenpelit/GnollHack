@@ -39,7 +39,7 @@ char *argv[];
     boolean resuming;
 
     resuming = mingw_main(argc, argv);
-    GnollHack_exit(EXIT_SUCCESS);
+    gnollhack_exit(EXIT_SUCCESS);
     /*NOTREACHED*/
     return 0;
 }

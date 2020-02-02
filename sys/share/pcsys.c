@@ -29,9 +29,9 @@
 #endif
 
 #if defined(MICRO) || defined(OS2)
-void FDECL(nethack_exit, (int));
+void FDECL(gnollhack_exit, (int));
 #else
-#define nethack_exit exit
+#define gnollhack_exit exit
 #endif
 STATIC_DCL void NDECL(msexit);
 
@@ -261,7 +261,7 @@ playwoRAMdisk()
         c = 'y';
     if (c != 'y') {
         settty("Be seeing you...\n");
-        nethack_exit(EXIT_SUCCESS);
+        gnollhack_exit(EXIT_SUCCESS);
     }
     set_lock_and_bones();
     return;
@@ -479,7 +479,7 @@ const char *name, *mode;
 
 #if defined(MICRO) || defined(OS2)
 void
-nethack_exit(code)
+gnollhack_exit(code)
 int code;
 {
     msexit();

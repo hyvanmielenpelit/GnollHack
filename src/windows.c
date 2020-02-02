@@ -44,6 +44,9 @@ extern struct window_procs Gnome_procs;
 #ifdef MSWIN_GRAPHICS
 extern struct window_procs mswin_procs;
 #endif
+#ifdef ANDROID_GRAPHICS
+extern struct window_procs and_procs;
+#endif
 #ifdef WINCHAIN
 extern struct window_procs chainin_procs;
 extern void FDECL(chainin_procs_init, (int));
@@ -127,6 +130,9 @@ static struct win_choices {
 #endif
 #ifdef MSWIN_GRAPHICS
     { &mswin_procs, 0 CHAINR(0) },
+#endif
+#ifdef ANDROID_GRAPHICS
+	{ &and_procs, 0 CHAINR(0) },
 #endif
 #ifdef WINCHAIN
     { &chainin_procs, chainin_procs_init, chainin_procs_chain },
@@ -1217,6 +1223,19 @@ time_t now;
     if (!sysopt.dumplogfile)
         return;
     fname = dump_fmtstr(sysopt.dumplogfile, buf);
+#elif defined(ANDROID)
+	if (iflags.dumplog)
+	{
+		char buf_[BUFSZ];
+		dump_fmtstr(DUMPLOG_FILE, buf_);
+		and_get_dumplog_dir(buf);
+		if (strlen(buf_) + strlen(buf) < BUFSZ - 1)
+			fname = strcat(buf, buf_);
+		else
+			fname = strcpy(buf, buf_);
+	}
+	else
+		fname = 0;
 #else
     fname = dump_fmtstr(DUMPLOG_FILE, buf);
 #endif

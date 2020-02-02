@@ -44,9 +44,9 @@ STATIC_DCL void FDECL(process_options, (int argc, char **argv));
 STATIC_DCL void NDECL(nhusage);
 
 #if defined(MICRO) || defined(OS2)
-extern void FDECL(nethack_exit, (int));
+extern void FDECL(gnollhack_exit, (int));
 #else
-#define nethack_exit exit
+#define gnollhack_exit exit
 #endif
 
 #ifdef EXEPATH
@@ -80,7 +80,7 @@ char *argv[];
     sys_early_init();
     resuming = pcmain(argc, argv);
     moveloop(resuming);
-    nethack_exit(EXIT_SUCCESS);
+    gnollhack_exit(EXIT_SUCCESS);
     /*NOTREACHED*/
     return 0;
 }
@@ -147,7 +147,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
         error("NetHack: current directory path too long");
 #ifndef NO_SIGNAL
     signal(SIGINT,
-           (SIG_RET_TYPE) nethack_exit); /* restore original directory */
+           (SIG_RET_TYPE) gnollhack_exit); /* restore original directory */
 #endif
 #endif /* !AMIGA && !GNUDOS */
 
@@ -278,7 +278,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
     if (!validate_prefix_locations(failbuf)) {
         raw_printf("Some invalid directory locations were specified:\n\t%s\n",
                    failbuf);
-        nethack_exit(EXIT_FAILURE);
+        gnollhack_exit(EXIT_FAILURE);
     }
 #endif
 
@@ -294,7 +294,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
 #endif
     if (argc > 1) {
         if (argcheck(argc, argv, ARG_VERSION) == 2)
-            nethack_exit(EXIT_SUCCESS);
+            gnollhack_exit(EXIT_SUCCESS);
 
         if (argcheck(argc, argv, ARG_DEBUG) == 1) {
             argc--;
@@ -332,13 +332,13 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
                 initoptions();
 #endif
                 prscore(argc, argv);
-                nethack_exit(EXIT_SUCCESS);
+                gnollhack_exit(EXIT_SUCCESS);
             }
 
             /* Don't initialize the window system just to print usage */
             if (!strncmp(argv[1], "-?", 2) || !strncmp(argv[1], "/?", 2)) {
                 nhusage();
-                nethack_exit(EXIT_SUCCESS);
+                gnollhack_exit(EXIT_SUCCESS);
             }
         }
     }
@@ -653,7 +653,7 @@ char *argv[];
         /* FALL THROUGH */
         case '?':
             nhusage();
-            nethack_exit(EXIT_SUCCESS);
+            gnollhack_exit(EXIT_SUCCESS);
         }
     }
 }

@@ -1,0 +1,42 @@
+buildscript {
+  repositories {
+    google()
+    jcenter()
+  }
+
+  dependencies {
+    classpath 'com.android.tools.build:gradle:3.4.0'
+  }
+}
+
+allprojects {
+  repositories {
+    google()
+    jcenter()
+  }
+}
+
+apply plugin: 'com.android.application'
+
+android {
+
+  compileSdkVersion 28
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_7
+    targetCompatibility JavaVersion.VERSION_1_7
+  }
+
+  sourceSets {
+    main {
+      manifest.srcFile 'AndroidManifest.xml'
+      res.srcDirs = ['res']
+      assets.srcDirs = ['assets']
+      jniLibs.srcDirs = ['libs']
+    }
+  }
+}
+
+dependencies {
+  implementation 'com.tbd.forkfront:ForkFront-Android'
+}

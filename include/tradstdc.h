@@ -423,7 +423,9 @@ typedef genericptr genericptr_t; /* (void *) or (char *) */
  * append this to a prototype declaration (see pline() in extern.h).
  */
 #ifdef __GNUC__
-#if (__GNUC__ >= 2) && !defined(USE_OLDARGS)
+#ifdef ANDROID
+#define PRINTF_F(f,v) __attribute__ ((format (__printf__, f, v)))
+#elif (__GNUC__ >= 2) && !defined(USE_OLDARGS)
 #define PRINTF_F(f, v) __attribute__((format(printf, f, v)))
 #endif
 #if __GNUC__ >= 3

@@ -526,6 +526,28 @@ struct obj *pick;
     return PICKLOCK_DID_SOMETHING;
 }
 
+#ifdef ANDROID
+boolean
+can_try_force()
+{
+	if (u.uswallow) {
+		return FALSE;
+	}
+
+	if (!uwep /* proper type test */
+		|| ((uwep->oclass == WEAPON_CLASS || is_weptool(uwep))
+			? (objects[uwep->otyp].oc_skill < P_DAGGER
+				|| objects[uwep->otyp].oc_skill == P_FLAIL
+				|| objects[uwep->otyp].oc_skill > P_LANCE)
+			: uwep->oclass != ROCK_CLASS)) {
+		return FALSE;
+	}
+
+	return can_reach_floor(TRUE);
+}
+#endif
+
+
 /* try to force a chest with your weapon */
 int
 doforce()
@@ -694,6 +716,9 @@ int x, y;
 
     if (!(door->doormask & D_CLOSED)) {
         const char *mesg;
+#ifdef ANDROID
+		int locked = FALSE;
+#endif
 
         switch (door->doormask) {
         case D_BROKEN:
@@ -707,10 +732,18 @@ int x, y;
             break;
         default:
             mesg = " is locked";
-            break;
+#ifdef ANDROID
+			locked = TRUE;
+#endif
+			break;
         }
         pline("This door%s.", mesg);
-        return res;
+#ifdef ANDROID
+		if (locked && flags.autokick) {
+			autokick();
+		}
+#endif
+		return res;
     }
 
     if (verysmall(youmonst.data)) {

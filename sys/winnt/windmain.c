@@ -26,7 +26,7 @@ static char *FDECL(exepath, (char *));
 char *NDECL(exename);
 boolean NDECL(fakeconsole);
 void NDECL(freefakeconsole);
-E void FDECL(GnollHack_exit, (int));
+E void FDECL(gnollhack_exit, (int));
 E char chosen_windowtype[WINTYPELEN];   /* flag.h */
 #if defined(MSWIN_GRAPHICS)
 E void NDECL(mswin_destroy_reg);
@@ -250,7 +250,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
 	{
         raw_printf("Some invalid directory locations were specified:\n\t%s\n",
                    failbuf);
-        GnollHack_exit(EXIT_FAILURE);
+        gnollhack_exit(EXIT_FAILURE);
     }
     if (!hackdir[0])
         Strcpy(hackdir, orgdir);
@@ -415,7 +415,7 @@ attempt_restore:
 	//	iflags.debug_fuzzer = TRUE;
 
 	moveloop(resuming);
-    GnollHack_exit(EXIT_SUCCESS);
+    gnollhack_exit(EXIT_SUCCESS);
     /*NOTREACHED*/
     return 0;
 }
@@ -432,7 +432,7 @@ char *argv[];
      */
     if (argc > 1) {
         if (argcheck(argc, argv, ARG_VERSION) == 2)
-            GnollHack_exit(EXIT_SUCCESS);
+            gnollhack_exit(EXIT_SUCCESS);
 
         if (argcheck(argc, argv, ARG_DEBUG) == 1) {
             argc--;
@@ -472,18 +472,18 @@ char *argv[];
 #endif
                 prscore(argc, argv);
 
-                GnollHack_exit(EXIT_SUCCESS);
+                gnollhack_exit(EXIT_SUCCESS);
             }
             if (GUILaunched) {
                 if (!strncmpi(argv[1], "-clearreg", 6)) { /* clear registry */
                     mswin_destroy_reg();
-                    GnollHack_exit(EXIT_SUCCESS);
+                    gnollhack_exit(EXIT_SUCCESS);
                 }
             }
             /* Don't initialize the full window system just to print usage */
             if (!strncmp(argv[1], "-?", 2) || !strncmp(argv[1], "/?", 2)) {
                 nhusage();
-                GnollHack_exit(EXIT_SUCCESS);
+                gnollhack_exit(EXIT_SUCCESS);
             }
         }
     }
@@ -574,7 +574,7 @@ char *argv[];
         /* FALL THROUGH */
         case '?':
             nhusage();
-            GnollHack_exit(EXIT_SUCCESS);
+            gnollhack_exit(EXIT_SUCCESS);
         }
     }
 }
@@ -872,7 +872,7 @@ getlock()
         unlock_file(HLOCK);
         Sprintf(oops, "Cannot open %s", fq_lock);
         raw_print(oops);
-        GnollHack_exit(EXIT_FAILURE);
+        gnollhack_exit(EXIT_FAILURE);
     }
 
     (void) nhclose(fd);

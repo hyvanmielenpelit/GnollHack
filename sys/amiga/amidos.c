@@ -479,7 +479,7 @@ chdir(dir) char *dir;
  */
 #undef exit
 void
-nethack_exit(code)
+gnollhack_exit(code)
 {
 #ifdef CHDIR
     extern char orgdir[];

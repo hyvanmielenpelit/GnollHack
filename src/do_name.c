@@ -682,12 +682,12 @@ const char *goal;
     }
     cx = ccp->x;
     cy = ccp->y;
-#ifdef CLIPPING
+#if defined(CLIPPING) && !defined(ANDROID)
     cliparound(cx, cy);
 #endif
     curs(WIN_MAP, cx, cy);
     flush_screen(0);
-#ifdef MAC
+#if defined(MAC) || defined(ANDROID)
     lock_mouse_cursor(TRUE);
 #endif
     for (;;) {
@@ -970,7 +970,7 @@ const char *goal;
         curs(WIN_MAP, cx, cy);
         flush_screen(0);
     }
-#ifdef MAC
+#if defined(MAC) || defined(ANDROID)
     lock_mouse_cursor(FALSE);
 #endif
     if (msg_given)
@@ -1613,7 +1613,20 @@ struct obj *obj;
     else
         (void) safe_qbuf(qbuf, "Call ", ":", obj,
                          docall_xname, simpleonames, "thing");
-    getlin(qbuf, buf);
+	/* pointer to old name */
+	str1 = &(objects[obj->otyp].oc_uname);
+	buf[0] = '\0';
+#ifdef EDIT_GETLIN
+	/* if there's an existing name, make it be the default answer */
+	if (*str1)
+		Strcpy(buf, *str1);
+#endif
+#ifdef ANDROID
+	if (showlog)
+		and_getlin_log(qbuf, buf);
+	else
+#endif
+		getlin(qbuf, buf);
     if (!*buf || *buf == '\033')
         return;
 

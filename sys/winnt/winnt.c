@@ -500,7 +500,7 @@ void nhassert_failed(const char * exp, const char * file, int line)
 }
 
 void
-GnollHack_exit(code)
+gnollhack_exit(code)
 int code;
 {
     /* Only if we started from the GUI, not the command prompt,

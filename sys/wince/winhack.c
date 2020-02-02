@@ -11,7 +11,7 @@
 
 extern char orgdir[PATHLEN]; /* also used in pcsys.c, amidos.c */
 
-extern void FDECL(nethack_exit, (int));
+extern void FDECL(gnollhack_exit, (int));
 static TCHAR *_get_cmd_arg(TCHAR *pCmdLine);
 
 // Global Variables:

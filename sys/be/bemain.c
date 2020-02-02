@@ -266,10 +266,10 @@ authorize_wizard_mode()
  * If we are not using the Be GUI, then just exit -- we don't need to
  * do anything extra.
  */
-void nethack_exit(int status);
+void gnollhack_exit(int status);
 
 void
-nethack_exit(int status)
+gnollhack_exit(int status)
 {
     exit(status);
 }

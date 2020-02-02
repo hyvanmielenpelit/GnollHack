@@ -516,6 +516,10 @@ E char* FDECL(randomize_gnoll_name, (char*));
 E char* FDECL(randomize_flind_name, (char*));
 E char* FDECL(randomize_male_human_name, (char*));
 E char* FDECL(randomize_female_human_name, (char*));
+#ifdef ANDROID
+E void FDECL(and_getlin_log, (const char*, char*));
+#endif
+
 
 /* ### do_wear.c ### */
 
@@ -612,6 +616,10 @@ E boolean FDECL(could_reach_item, (struct monst*, XCHAR_P, XCHAR_P));
 E boolean FDECL(ghitm, (struct monst *, struct obj *));
 E void FDECL(container_impact_dmg, (struct obj *, XCHAR_P, XCHAR_P));
 E int NDECL(dokick);
+#ifdef ANDROID
+E void NDECL(autokick);
+E int FDECL(dokick_indir, (BOOLEAN_P));
+#endif
 E boolean FDECL(ship_object, (struct obj *, XCHAR_P, XCHAR_P, BOOLEAN_P));
 E void FDECL(obj_delivery, (BOOLEAN_P));
 E void FDECL(deliver_obj_to_mon, (struct monst *mtmp, int, unsigned long));
@@ -807,6 +815,9 @@ E void FDECL(restore_killers, (int));
 E char *FDECL(build_english_list, (char *));
 #if defined(PANICTRACE) && !defined(NO_SIGNAL)
 E void FDECL(panictrace_setsignals, (BOOLEAN_P));
+#endif
+#ifdef ANDROID
+void and_you_die();
 #endif
 
 
@@ -1195,6 +1206,9 @@ E void FDECL(breakchestlock, (struct obj *, BOOLEAN_P));
 E void NDECL(reset_pick);
 E void FDECL(maybe_reset_pick, (struct obj *));
 E int FDECL(pick_lock, (struct obj *));
+#ifdef ANDROID
+E boolean NDECL(can_try_force);
+#endif
 E int NDECL(doforce);
 E boolean FDECL(boxlock, (struct obj *, struct obj *));
 E boolean FDECL(doorlock, (struct obj *, int, int));
@@ -1202,6 +1216,9 @@ E int NDECL(doopen);
 E boolean FDECL(stumble_on_door_mimic, (int, int));
 E int FDECL(doopen_indir, (int, int));
 E int NDECL(doclose);
+#ifdef ANDROID
+E void FDECL(lock_mouse_cursor, (boolean));
+#endif
 
 #ifdef MAC
 /* These declarations are here because the main code calls them. */
@@ -3084,6 +3101,9 @@ E void FDECL(dump_open_log, (time_t));
 E void NDECL(dump_close_log);
 E void FDECL(dump_redirect, (BOOLEAN_P));
 E void FDECL(dump_forward_putstr, (winid, int, const char*, int));
+#if defined(ANDROID) && defined(DUMPLOG)
+E void FDECL(and_get_dumplog_dir, (char*));
+#endif
 
 /* ### winnt.c ### */
 #ifdef WIN32

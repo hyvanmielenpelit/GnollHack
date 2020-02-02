@@ -68,10 +68,10 @@ STATIC_DCL void NDECL(dump_plines);
 STATIC_DCL void FDECL(dump_everything, (int, time_t));
 STATIC_DCL int NDECL(num_extinct);
 
-#if defined(__BEOS__) || defined(MICRO) || defined(OS2)
-extern void FDECL(GnollHack_exit, (int));
+#if defined(__BEOS__) || defined(MICRO) || defined(OS2) || defined(ANDROID)
+extern void FDECL(gnollhack_exit, (int));
 #else
-#define GnollHack_exit exit
+#define gnollhack_exit exit
 #endif
 
 #define done_stopprint program_state.stopprint
@@ -1077,7 +1077,13 @@ int how;
         bot();
     }
 
-    if (iflags.debug_fuzzer) {
+#ifdef ANDROID
+	if (how != TRICKED && how != QUIT && how != PANICKED && how != ESCAPED) {
+		and_you_die();
+	}
+#endif
+
+	if (iflags.debug_fuzzer) {
         if (!(program_state.panicking || how == PANICKED)) {
             savelife(how);
             /* periodically restore characteristics and lost exp levels
@@ -1722,7 +1728,7 @@ int status;
         return;
 #endif
     program_state.exiting = 1;
-    GnollHack_exit(status);
+    gnollhack_exit(status);
 }
 
 enum vanq_order_modes {

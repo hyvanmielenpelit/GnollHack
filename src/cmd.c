@@ -128,6 +128,10 @@ extern int NDECL(dozap);              /**/
 extern int NDECL(doorganize);         /**/
 #endif /* DUMB */
 
+#ifdef ANDROID
+extern void NDECL(quit_possible);
+#endif
+
 static int NDECL((*timed_occ_fn));
 
 STATIC_PTR int NDECL(dosuspend_core);
@@ -5459,7 +5463,10 @@ register char *cmd;
         cmd = parse();
     }
     if (*cmd == Cmd.spkeys[NHKF_ESC]) {
-        context.move = FALSE;
+#ifdef ANDROID
+		quit_possible();
+#endif
+		context.move = FALSE;
         return;
     }
     if (*cmd == DOAGAIN && !in_doagain && saveq[0]) {

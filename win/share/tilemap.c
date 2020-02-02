@@ -24,7 +24,7 @@ extern void FDECL(exit, (int));
 #endif
 #endif
 
-#if defined(MSDOS) || defined(WIN32) || defined(X11_GRAPHICS)
+#if defined(MSDOS) || defined(WIN32) || defined(X11_GRAPHICS) || defined(ANDROID)
 #define STATUES_LOOK_LIKE_MONSTERS
 #endif
 

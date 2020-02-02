@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string
+		name="credits">
+<![CDATA[
+
+<h1>NetHack Android Port</h1>
+<a href="https://github.com/gurrhack/NetHack-Android">Project Home</a><br/>
+<p>Based on NetHack 3.6.2<br/>
+<a href="http://www.nethack.org">http://www.nethack.org</a></p>
+<p><small>Inspired by NetHack iPhone Port by <a href="http://code.google.com/p/iNetHack/">Dirk Zimmermann</a></small></p>
+
+<p><br/><br/><h2>Hearse Implementation</h2>
+<i>by Ranbato</i><br/>
+<a href="https://github.com/Ranbato">https://github.com/Ranbato</a></p>
+
+<p><br/><br/><h2>The Absurd NetHack Tileset</h2>
+<i>by John Shaw</i><br/>
+<a href="http://www.thinktwicenews.com">www.thinktwicenews.com</a><br/>
+Modified by gurr</p>
+
+<p><br/><br/><h2>Chozo Tiles</h2>
+<i>by James Hogwood</i><br/>
+<a href="https://web.archive.org/web/20121029092206/http://www.multifoliate.com/nh/">http://www.multifoliate.com/nh</a><br/>
+Modified by Patric Mueller and gurr</p>
+
+<p><br/><br/><h2>DragonDePlatino\'s tileset</h2>
+<i>by Andrew Rios</i><br/>
+<a href="http://dragondeplatino.daportfolio.com/about/">http://dragondeplatino.daportfolio.com/about/</a></p><br/>
+Modified by gurr</p>
+
+<p><br/><br/><h2>Geoduck\'s tileset</h2>
+<i>by Robert M. Cook</i><br/>
+<a href="http://www.geoduckthings.net/nhack/nhack.html">http://www.geoduckthings.net/nhack/nhack.html</a></p>
+
+<p><br/><br/><h2>Nevanda Tiles</h2>
+<i>by Nevanda</i><br/>
+<a href="http://nevanda.deviantart.com/art/nethack-tiles-32x32px-416691316">http://nevanda.deviantart.com/art/nethack-tiles-32x32px-416691316</a><br/>
+Modified by Brendan Dwyer</p>
+
+]]>
+	</string>
+</resources>

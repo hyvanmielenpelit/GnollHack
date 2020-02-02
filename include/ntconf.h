@@ -281,5 +281,5 @@ extern void FDECL(nhassert_failed, (const char * exp, const char * file,
 #endif
 
 #define GnollHack_enter(argc, argv) GnollHack_enter_winnt()
-extern void FDECL(GnollHack_exit, (int)) NORETURN;
+extern void FDECL(gnollhack_exit, (int)) NORETURN;
 #endif /* NTCONF_H */

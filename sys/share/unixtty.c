@@ -36,7 +36,7 @@
 #define termstruct termio
 #endif
 #endif /* POSIX_TYPES */
-#ifdef LINUX
+#if defined(LINUX) && !defined(ANDROID)
 #include <sys/ioctl.h>
 #undef delay_output /* curses redefines this */
 #include <curses.h>
@@ -463,7 +463,7 @@ init_linux_cons()
 }
 #endif /* __linux__ */
 
-#ifndef __begui__ /* the Be GUI will define its own error proc */
+#if !defined(__begui__) && !defined(ANDROID) /* the Be GUI will define its own error proc */
 /* fatal error */
 /*VARARGS1*/
 void error

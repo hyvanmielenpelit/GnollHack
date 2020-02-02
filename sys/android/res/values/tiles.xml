@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="tileNames">
+        <item>Absurd</item>
+    	<item>Ascii (no tiles)</item>
+        <item>Chozo</item>
+        <item>DawnHack</item>
+        <item>Default</item>
+        <item>Geoduck</item>
+        <item>Nevanda</item>
+    </string-array>
+    <string-array name="tileValues">
+        <item>absurd_32</item>
+        <item>TTY</item>
+        <item>chozo_32</item>
+        <item>dawnhack_32</item>
+        <item>default_32</item>
+        <item>geoduck_24x40</item>
+        <item>nevanda_32</item>
+    </string-array>
+
+</resources>

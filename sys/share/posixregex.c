@@ -101,6 +101,13 @@ regex_match(const char *s, struct nhregex *re)
 void
 regex_free(struct nhregex *re)
 {
-    regfree(&re->re);
+#ifdef ANDROID
+	/* If an error occured the struct is already freed internally
+	 * in the Bionic implementation (which is based on NetBSD)
+	 * https://android.googlesource.com/platform/bionic/+/master/libc/upstream-netbsd/lib/libc/regex/regcomp.c (331)
+	 */
+	if (!re->err)
+#endif
+	regfree(&re->re);
     free(re);
 }

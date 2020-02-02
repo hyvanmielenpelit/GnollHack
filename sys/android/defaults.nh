@@ -1,0 +1,148 @@
+# Sample config file for Android NetHack
+# A '#' at the beginning of a line means the rest of the
+# line is a comment.
+#
+# Some options MUST be set in this file, other options
+# can be toggled while playing. The options set in this
+# file will override corresponding options in the
+# preference screen.
+#
+# Not all NetHack options are supported in the Android
+# port. Unsupported options will be silently ignored.
+#
+# To change the configuration, comment out the unwanted
+# lines, and uncomment the configuration you want.
+
+# *** OPTIONS ***
+#
+#
+# *** Personal Preferences ***
+#
+# Some options to set personal preferences. Uncomment
+# and change these to suit your personal preference.
+#
+#OPTIONS=name:Eir,role:Valkyrie,race:Human,align:lawful
+#OPTIONS=dogname:Fido,catname:Morris,fruit:guava
+#OPTIONS=horsename:Silver
+#
+#
+# *** General options ***
+#
+#OPTIONS=packorder:")[%?+/=!(*0_`
+OPTIONS=scores:10 top/2 around/own
+OPTIONS=!cmdassist
+#OPTIONS=nolegacy,noverbose
+
+#OPTIONS=autopickup,pickup_types:$"=/!?+
+OPTIONS=!autopickup
+
+OPTIONS=lit_corridor,showexp,time,toptenwin
+OPTIONS=pile_limit:2,hilite_pile,hilite_pet
+OPTIONS=DECgraphics,runmode:walk
+OPTIONS=boulder:0
+#OPTIONS=!force_invmenu
+
+# Change ghost symbol to X
+#SYMBOLS=S_ghost:X
+
+#
+# *** Palette ***
+#
+# With the palette option you can change the colors used
+# by NetHack.
+#
+# There are 16 colors in total. Each color is specified
+# with three hexadecimal digits. One digit each for the
+# red, green, and blue component. Internally the digits
+# are duplicated to form a 24bpp color. So F90 expands
+# to FF9900.
+#
+# The colors are specified in a fixed order separated
+# with '/'.
+# The order is as follows:
+#
+# Palette index
+#   0 - Black
+#   1 - Red
+#   2 - Green
+#   3 - Brown
+#   4 - Blue
+#   5 - Magenta
+#   6 - Cyan
+#   7 - Gray
+#   8 - No color
+#   9 - Orange
+#   A - Bright Green
+#   B - Yellow
+#   C - Bright Blue
+#   D - Bright Magenta
+#   E - Bright Cyan
+#   F - White
+#
+# Palette index: 0   1   2   3   4   5   6   7   8   9   A   B   C   D   E   F
+#                |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+#OPTIONS=palette:555/F00/080/641/00F/F0F/0FF/888/FFF/F90/0F0/FF0/08F/F7F/7FF/FFF
+
+# *** Dumplog ***
+#
+# A dump log is a log that is written when the game is
+# over. It contains a view of the map and a record of
+# the player's belonging, attributes, etc.
+#
+# The logs are written to the "Documents" folder
+# normally located at /sdcard/Documents/
+#OPTIONS=dumplog
+
+# Colorize individual rows on a menu based on what
+# regular expressions match its text
+# http://nethackwiki.com/wiki/Menucolors
+MENUCOLOR=" blessed "=green
+MENUCOLOR=" holy "=green
+MENUCOLOR=" uncursed "=yellow
+MENUCOLOR=" cursed "=red
+MENUCOLOR=" unholy "=red
+MENUCOLOR=" cursed .* \(being worn\)"=red&underline
+MENUCOLOR="loadstone|wand (of|called) cancellation"=white&underline
+MENUCOLOR="Amulet of Yendor named"=magenta
+MENUCOLOR="gold piece"=yellow
+
+
+# *** Status hilites ***
+#
+
+## Keep changes for x number of turns
+OPTIONS=statushilites:10
+
+## Misc
+OPTIONS=hilite_status:gold/always/yellow
+OPTIONS=hilite_status:characteristics/up/green/down/red
+OPTIONS=hilite_status:experience-level/up/green/down/red
+
+## HP
+OPTIONS=hilite_status:hitpoints/100%/green/<100%/green/<70%/yellow
+OPTIONS=hilite_status:hitpoints/<50%/orange/<30%/red&bold
+OPTIONS=hilite_status:hitpoints/<15%/red&inverse
+
+## Power
+OPTIONS=hilite_status:power/100%/green/<100%/green/<70%/yellow
+OPTIONS=hilite_status:power/<50%/orange/<30%/red&bold
+
+## Conditions
+OPTIONS=hilite_status:condition/movement/green
+OPTIONS=hilite_status:condition/minor_troubles/orange
+OPTIONS=hilite_status:condition/major_troubles/red&inverse
+OPTIONS=hilite_status:condition/blind/red/stun/red
+
+## Hunger
+OPTIONS=hilite_status:hunger/satiated/yellow/hungry/orange
+OPTIONS=hilite_status:hunger/weak/red&bold/fainting/red&inverse
+OPTIONS=hilite_status:hunger/fainted/red&inverse
+
+## Encumbrance
+OPTIONS=hilite_status:carrying-capacity/burdened/yellow/stressed/orange
+OPTIONS=hilite_status:carrying-capacity/strained/red&bold
+OPTIONS=hilite_status:carrying-capacity/overtaxed/red&inverse
+OPTIONS=hilite_status:carrying-capacity/overloaded/red&inverse
+
+
+

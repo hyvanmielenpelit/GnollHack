@@ -4165,11 +4165,18 @@ boolean picked_some;
             There("is %s object here.", picked_some ? "another" : "an");
         else
             There("are %s%s objects here.",
-                  (obj_cnt < 5)
+#ifdef ANDROID
+			(obj_cnt == 2) ? "two" : (
+#endif
+				(obj_cnt < 5)
                       ? "a few"
                       : (obj_cnt < 10)
                           ? "several"
-                          : "many",
+                          : "many"
+#ifdef ANDROID
+				)
+#endif
+				,
                   picked_some ? " more" : "");
         for (; otmp; otmp = otmp->nexthere)
             if (otmp->otyp == CORPSE && will_feel_cockatrice(otmp, FALSE)) {

@@ -70,7 +70,7 @@ typedef long off_t;
 
 /* ### amidos.c ### */
 
-extern void FDECL(nethack_exit, (int));
+extern void FDECL(gnollhack_exit, (int));
 
 /* ### amiwbench.c ### */
 

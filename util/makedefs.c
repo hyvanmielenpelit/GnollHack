@@ -1721,7 +1721,9 @@ static struct win_info window_opts[] = {
 #ifdef BEOS_GRAPHICS
     { "BeOS", "BeOS InterfaceKit" },
 #endif
-    { 0, 0 }
+#ifdef ANDROID_GRAPHICS
+	{ "and", "Android" },
+#endif    { 0, 0 }
 };
 
 static void

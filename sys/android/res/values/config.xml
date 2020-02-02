@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="namespace">com.tbd.NetHack</string>
+	<string name="oldActivityName">NetHack</string>
+	<string name="nativeDataDir">nethackdir</string>
+	<string name="libraryName">nethack</string>
+	<string name="defaultsFile">defaults.nh</string>
+	<string name="defaultCmdPanel">menu ... # 20s . : ; , e d r z Z q t f w x i E Q P R W T o ^d ^p a A ^t D F p ^x ^o ?</string>
+	<bool name="useCP437Decoder">true</bool>
+	<bool name="hearseAvailable">true</bool>
+	<string name="hearseClientName">Gurr Android Nethack 3.6.0</string>
+	<string name="hearseRoles">Arc|Bar|Cav|Hea|Kni|Mon|Pri|Rog|Ran|Sam|Tou|Val|Wiz</string>
+	<string name="hearseNethackVersion">54</string>
+</resources>

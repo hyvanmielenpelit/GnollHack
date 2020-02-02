@@ -41,7 +41,7 @@ const
 #endif
 #endif
 
-#if defined(UNIX) && defined(QT_GRAPHICS)
+#if defined(UNIX) && defined(QT_GRAPHICS) || defined(ANDROID)
 #include <sys/types.h>
 #include <dirent.h>
 #include <stdlib.h>
@@ -600,8 +600,10 @@ clearlocks()
 #ifndef NO_SIGNAL
         (void) signal(SIGINT, SIG_IGN);
 #endif
+#ifndef ANDROID
 #if defined(UNIX) || defined(VMS)
         sethanguphandler((void FDECL((*), (int) )) SIG_IGN);
+#endif
 #endif
         /* can't access maxledgerno() before dungeons are created -dlc */
         for (x = (n_dgns ? maxledgerno() : 0); x >= 0; x--)
@@ -852,7 +854,7 @@ d_level *lev;
     tempname = set_bonestemp_name();
     tempname = fqname(tempname, BONESPREFIX, 1);
 
-#if (defined(SYSV) && !defined(SVR4)) || defined(GENIX)
+#if (defined(SYSV) && !defined(SVR4) && !defined(ANDROID)) || defined(GENIX)
     /* old SYSVs don't have rename.  Some SVR3's may, but since they
      * also have link/unlink, it doesn't matter. :-)
      */
@@ -1126,6 +1128,49 @@ const char *filename;
 /* --------- end of obsolete code ----*/
 #endif /* 0 - WAS STORE_PLNAME_IN_FILE*/
 }
+#ifdef ANDROID
+int filter_running(entry)
+const struct dirent* entry;
+{
+	return *entry->d_name && entry->d_name[strlen(entry->d_name) - 1] == '0';
+}
+char*
+plname_from_running(filename)
+const char* filename;
+{
+	int fd;
+	char* result = 0;
+	int savelev, hpid, pltmpsiz;
+	struct version_info version_data;
+	char savename[SAVESIZE];
+	struct savefile_info sfi;
+	char tmpplbuf[PL_NSIZ];
+
+	/* level 0 file contains:
+	 *  pid of creating process (ignored here)
+	 *  level number for current level of save file
+	 *  name of save file nethack would have created
+	 *  savefile info
+	 *  player name
+	 *  and game state
+	 */
+	if ((fd = open(filename, O_RDONLY | O_BINARY, 0)) >= 0) {
+		if (read(fd, (genericptr_t)&hpid, sizeof hpid) == sizeof hpid
+			&& read(fd, (genericptr_t)&savelev, sizeof(savelev)) == sizeof savelev
+			&& read(fd, (genericptr_t)savename, sizeof savename) == sizeof savename
+			&& read(fd, (genericptr_t)&version_data, sizeof version_data) == sizeof version_data
+			&& read(fd, (genericptr_t)&sfi, sizeof sfi) == sizeof sfi
+			&& read(fd, (genericptr_t)&pltmpsiz, sizeof pltmpsiz) == sizeof pltmpsiz
+			&& pltmpsiz > 0 && pltmpsiz <= PL_NSIZ
+			&& read(fd, (genericptr_t)&tmpplbuf, pltmpsiz) == pltmpsiz) {
+			result = dupstr(tmpplbuf);
+		}
+		close(fd);
+	}
+
+	return result;
+}
+#endif
 #endif /* defined(SELECTSAVED) */
 
 char **
@@ -1207,6 +1252,43 @@ get_saved_games()
             closedir(dir);
         }
     }
+#endif
+#ifdef ANDROID
+	int myuid = getuid();
+	struct dirent** namelist;
+	struct dirent** namelist2;
+	int n1 = scandir("save", &namelist, 0, 0);
+	int n2 = scandir(".", &namelist2, filter_running, 0);
+	if (n1 < 0) n1 = 0;
+	if (n2 < 0) n2 = 0;
+	int i, uid;
+	char name[64]; /* more than PL_NSIZ */
+	if (n1 > 0 || n2 > 0) {
+		result = (char**)alloc((n1 + n2 + 1) * sizeof(char*)); /* at most */
+		(void)memset((genericptr_t)result, 0, (n1 + n2 + 1) * sizeof(char*));
+	}
+	for (i = 0; i < n1; i++) {
+		if (sscanf(namelist[i]->d_name, "%d%63s", &uid, name) == 2) {
+			if (uid == myuid) {
+				char filename[BUFSZ];
+				char* r;
+				Sprintf(filename, "save/%d%s", uid, name);
+				r = plname_from_file(filename);
+				if (r)
+					result[j++] = r;
+			}
+		}
+	}
+	for (i = 0; i < n2; i++) {
+		if (sscanf(namelist2[i]->d_name, "%d%63[^.].0", &uid, name) == 2) {
+			if (uid == myuid) {
+				char* r;
+				r = plname_from_running(namelist2[i]->d_name);
+				if (r)
+					result[j++] = r;
+			}
+		}
+	}
 #endif
 #ifdef VMS
     Strcpy(plname, "*");
@@ -1875,13 +1957,13 @@ const char *filename;
 /* ----------  BEGIN CONFIG FILE HANDLING ----------- */
 
 const char *default_configfile =
-#ifdef UNIX
+#if defined(UNIX) && !defined(ANDROID)
     ".gnollhackrc";
 #else
 #if defined(MAC) || defined(__BEOS__)
     "GnollHack Defaults";
 #else
-#if defined(MSDOS) || defined(WIN32)
+#if defined(MSDOS) || defined(WIN32) || defined(ANDROID)
     "defaults.nh";
 #else
     "GnollHack.cnf";
@@ -1969,7 +2051,7 @@ int src;
     }
     /* fall through to standard names */
 
-#if defined(MICRO) || defined(MAC) || defined(__BEOS__) || defined(WIN32)
+#if defined(MICRO) || defined(MAC) || defined(__BEOS__) || defined(WIN32) || defined(ANDROID)
     set_configfile_name(fqname(default_configfile, CONFIGPREFIX, 0));
     if ((fp = fopenp(configfile, "r")) != (FILE *) 0) {
         return fp;
@@ -2903,7 +2985,7 @@ fopen_wizkit_file()
 #endif
     }
 
-#if defined(MICRO) || defined(MAC) || defined(__BEOS__) || defined(WIN32)
+#if defined(MICRO) || defined(MAC) || defined(__BEOS__) || defined(WIN32) || defined(ANDROID)
     if ((fp = fopenp(fqname(wizkit, CONFIGPREFIX, 0), "r")) != (FILE *) 0)
         return fp;
 #else
@@ -3770,6 +3852,15 @@ recover_savefile()
             (void) unlink(fq_lock);
         }
     }
+
+#ifdef ANDROID
+	/* if the new savefile isn't compressed
+	 * it will be overwritten when the old
+	 * savefile is restored in restore_saved_game()
+	 */
+	nh_compress(fqname(SAVEF, SAVEPREFIX, 0));
+#endif
+
     return TRUE;
 }
 

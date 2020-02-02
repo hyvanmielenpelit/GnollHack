@@ -1,0 +1,7 @@
+bin
+libs/*
+assets/gnollhackdir
+gen
+.gradle
+build
+local.properties
