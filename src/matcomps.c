@@ -944,11 +944,11 @@ struct materialcomponentlist matlists[] =
 	},
 
 	{ SPE_LIGHT,
-	"Tallow candle",
+	"Any kind of candle",
 	STRANGE_OBJECT,
 	2,
 		{
-			{{TALLOW_CANDLE, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, NO_MATCOMP_MONSTER_ALTERNATIVES, NO_DESC, 1, MATCOMP_NO_FLAGS},
+			{{TALLOW_CANDLE, WAX_CANDLE, MAGIC_CANDLE, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, NO_MATCOMP_MONSTER_ALTERNATIVES, NO_DESC, 1, MATCOMP_NO_FLAGS},
 			NO_MATCOMP,
 			NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
 		}
@@ -1010,7 +1010,7 @@ struct materialcomponentlist matlists[] =
 	},
 
 	{ SPE_MAGIC_ARROW,
-	"Any type of arrow",
+	"Any kind of arrow",
 	STRANGE_OBJECT,
 	10,
 		{
@@ -1032,7 +1032,7 @@ struct materialcomponentlist matlists[] =
 	},
 
 	{ SPE_FORCE_BOLT,
-	"Any type of crossbow bolt or quarrel",
+	"Any kind of crossbow bolt or quarrel",
 	STRANGE_OBJECT,
 	10,
 		{

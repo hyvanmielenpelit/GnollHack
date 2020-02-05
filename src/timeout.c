@@ -634,13 +634,12 @@ nh_timeout()
 				break;
 			case FAST:
 				if (!Very_fast && !Fast)
-					You_feel("yourself slowing down%s.",
-						Fast ? " a bit" : "");
+					You_feel("less quick than before.");
 				break;
 			case VERY_FAST:
 				if (!Very_fast)
-					You_feel("yourself slowing down%s.",
-						Fast ? " a bit" : "");
+					You_feel("%sless quick than before.",
+						Fast ? "a bit " : "");
 				break;
 			case SLOWED:
 				if (!Slowed)
@@ -1011,10 +1010,10 @@ nh_timeout()
 			switch (propnum) {
 			case FAST:
 				if (!Very_fast)
-					You_feel("you are starting to slow down.");
+					You("are starting to feel less quick than before.");
 				break;
 			case VERY_FAST:
-				You_feel("you are starting to slow down%s.",
+				You("are starting to feel%s less quick than before.",
 					Fast ? " a bit" : "");
 				break;
 			case SLOWED:
@@ -1170,7 +1169,7 @@ nh_timeout()
 				if (!Survives_without_air)
 					You("cannot breathe!");
 				else
-					upp->intrinsic &= ~TIMEOUT; /* You can breathe, os clear the suffocation timeout -- It will be set to the full time value below */
+					upp->intrinsic &= ~TIMEOUT; /* You can breathe, so clear the suffocation timeout -- It will be set to the full time value below */
 				break;
 			}
 		}

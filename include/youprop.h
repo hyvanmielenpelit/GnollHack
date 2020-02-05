@@ -424,7 +424,7 @@
 
 #define Underwater (u.uinwater)
 
-#define Survives_without_air (!Underwater && Breathless) || (Underwater && (Amphibious || Swimming))
+#define Survives_without_air ((!Underwater && Breathless) || (Underwater && (Amphibious || Swimming)))
 
 /* Note that Underwater and u.uinwater are both used in code.
    The latter form is for later implementation of other in-water
@@ -567,11 +567,11 @@
 
 #define HFast u.uprops[FAST].intrinsic
 #define EFast u.uprops[FAST].extrinsic
-#define Fast (HFast || EFast) & !Slowed
+#define Fast ((HFast || EFast) && !Slowed && !Stoned)
 
 #define HVery_fast u.uprops[VERY_FAST].intrinsic
 #define EVery_fast u.uprops[VERY_FAST].extrinsic
-#define Very_fast (HVery_fast || EVery_fast) && !Slowed
+#define Very_fast ((HVery_fast || EVery_fast) && !Slowed && !Stoned)
 
 
 #define HReflecting u.uprops[REFLECTING].intrinsic
