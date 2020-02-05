@@ -1035,7 +1035,7 @@ int spell;
 }
 
 int
-getspellenergycost(spell)
+get_spell_mana_cost(spell)
 int spell;
 {
 	if (spell < 0)
@@ -1552,7 +1552,7 @@ boolean atme;
      */
     //energy = (spellev(spell) * 5);
 	/* 5 <= energy <= 35 */
-	energy = getspellenergycost(spell);
+	energy = get_spell_mana_cost(spell);
 
     /*if (u.uhunger <= 10 && spellid(spell) != SPE_DETECT_FOOD) {
         You("are too hungry to cast that spell.");
@@ -3310,7 +3310,7 @@ boolean usehotkey;
 	else
 		Sprintf(buf, fmt, shortenedname, levelbuf,//spellev(splnum),
 			categorybuf,
-			getspellenergycost(splnum),
+			get_spell_mana_cost(splnum),
 			statbuf,
 			100 - percent_success(splnum),
 			spellcooldownleft(splnum) > 0 ? spellcooldownleft(splnum) : getspellcooldown(splnum),
