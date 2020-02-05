@@ -2967,7 +2967,21 @@ long quan;       /* if non-0, print this quantity, not obj->quan */
 int
 ddoinv()
 {
-    (void) display_inventory((char *) 0, FALSE, 1);
+    //(void) display_inventory((char *) 0, FALSE, 1);
+
+	char invlet;
+
+	invlet = display_inventory((const char*)0, TRUE, 1);
+	if (!invlet || invlet == '\033' || invlet == '\0')
+		return 0;
+
+	for (struct obj* invobj = invent; invobj; invobj = invobj->nobj)
+		if (invobj->invlet == invlet) 
+		{
+			itemdescription(invobj);
+			break;
+		}
+
     return 0;
 }
 
