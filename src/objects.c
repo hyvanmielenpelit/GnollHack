@@ -1527,7 +1527,7 @@ WEAPONBOOTS("spiked silver boots", None,
 /* rings ... */
 #define RING(name,desc,prob,power,power2,power3,pflags,cost,mgc,spec,mohs,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,color,flags,flags2,flags3,powconfermask) \
     OBJECT(OBJ(name, desc), None, None,                                         \
-           BITS(0, 0, spec, 0, mgc, spec, 0, 0, 0,                    \
+           BITS(0, 0, spec == CHARGED_NOT_CHARGED ? 0 : 1 , 0, mgc, spec, 0, 0, 0,                    \
                 HARDGEM(mohs), 0, 0, P_NONE, metal),                     \
            power, power2, power3, pflags, RING_CLASS, prob, MULTIGEN_SINGLE, 0, 1, cost,  \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \

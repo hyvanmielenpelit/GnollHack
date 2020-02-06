@@ -810,10 +810,10 @@ boolean silently;
 
 	switch (function_choice)
 	{
-	case 0:
+	case VERBOSE_FUNCTION_UPDATE_MON_STATISTICS:
 		update_all_mon_statistics_core(mtmp, silently);
 		break;
-	case 1:
+	case VERBOSE_FUNCTION_SET_MON_PROPERTY:
 		set_mon_property(mtmp, prop_index, value);
 		break;
 	default:
@@ -1162,6 +1162,10 @@ update_mon_extrinsics(mon, silently)
 struct monst *mon;
 boolean silently;
 {
+
+	if (!mon)
+		return;
+
     int unseen = 0;
     uchar mask = 0;
     struct obj *otmp = (struct obj*)0;
