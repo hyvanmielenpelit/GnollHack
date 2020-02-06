@@ -1034,19 +1034,19 @@ int spell;
     return;
 }
 
-int
+double
 get_spell_mana_cost(spell)
 int spell;
 {
 	if (spell < 0)
 		return 0;
 
-	int energy = get_spellbook_adjusted_mana_cost(spellid(spell));
+	double energy = get_spellbook_adjusted_mana_cost(spellid(spell));
 
 	return energy;
 }
 
-int
+double
 get_spellbook_adjusted_mana_cost(objid)
 int objid;
 {
@@ -1055,7 +1055,7 @@ int objid;
 
 	int skill = objects[objid].oc_skill;
 	int skill_level = P_SKILL(skill);
-	int multiplier = 100;
+	double multiplier = 100;
 	switch (skill_level)
 	{
 	case P_BASIC:
@@ -1071,7 +1071,10 @@ int objid;
 		break;
 	}
 
-	int energy = max(1, (objects[objid].oc_spell_mana_cost * multiplier) / 100);
+	double energy = max(0.1, ((double)objects[objid].oc_spell_mana_cost * multiplier) / 100);
+
+	if (energy >= 100)
+		energy = floor(energy);
 
 	return energy;
 }
@@ -1188,10 +1191,11 @@ int spell;
 	}
 
 	/* Mana cost*/
-	int manacost = get_spellbook_adjusted_mana_cost(booktype);
+	double manacost = get_spellbook_adjusted_mana_cost(booktype);
 	if (manacost > 0)
 	{
-		Sprintf(buf2, "%d", manacost);
+		double displayed_manacost = ceil(10 * manacost) / 10;
+		Sprintf(buf2, "%.*f", displayed_manacost >= 100 ? 0 : 1, displayed_manacost);
 	}
 	else
 	{
@@ -1489,7 +1493,7 @@ spelleffects(spell, atme)
 int spell;
 boolean atme;
 {
-	int energy, damage, chance, n; // , intell;
+	int damage, chance, n; // , intell;
     int otyp, skill, role_skill, res = 0;
     boolean confused = (Confusion != 0);
     boolean physical_damage = FALSE;
@@ -1552,7 +1556,8 @@ boolean atme;
      */
     //energy = (spellev(spell) * 5);
 	/* 5 <= energy <= 35 */
-	energy = get_spell_mana_cost(spell);
+
+	double denergy = get_spell_mana_cost(spell);
 
     /*if (u.uhunger <= 10 && spellid(spell) != SPE_DETECT_FOOD) {
         You("are too hungry to cast that spell.");
@@ -1588,9 +1593,10 @@ boolean atme;
         res = 1; /* time is going to elapse even if spell doesn't get cast */
     }
 #endif
-
-    if (energy > u.uen) {
-        You("don't have enough energy to cast that spell.");
+	double dumana = (double)u.uen + ((double)u.uen_fraction) / 10000;
+    if (denergy > dumana)
+	{
+        You("don't have enough mana to cast that spell.");
         return res;
     } 
 	//else {
@@ -1662,12 +1668,12 @@ boolean atme;
     chance = percent_success(spell);
     if (confused || (rnd(100) > chance)) {
         You("fail to cast the spell correctly.");
-        u.uen -= energy / 2;
+		deduct_mana_cost(denergy / 2);
         context.botl = 1;
         return 1;
     }
 
-    u.uen -= energy;
+	deduct_mana_cost(denergy);
     context.botl = 1;
     exercise(A_WIS, TRUE);
     /* pseudo is a temporary "false" object containing the spell stats */
@@ -2293,6 +2299,24 @@ int subdir;
 	}
 
 	return expltype;
+}
+
+void
+deduct_mana_cost(double dmana)
+{
+
+	int integer_mana = (int)dmana;
+	double df_mana = dmana - (double)integer_mana;
+	int fractional_mana = (int)(10000 * df_mana);
+
+	u.uen -= integer_mana;
+	u.uen_fraction -= fractional_mana;
+	if (u.uen_fraction < 0)
+	{
+		int multiple = (abs(u.uen_fraction) / 10000) + 1;
+		u.uen -= multiple;
+		u.uen_fraction += multiple * 10000;
+	}
 }
 
 /*ARGSUSED*/
@@ -3210,18 +3234,19 @@ boolean usehotkey;
 	char categorybuf[BUFSZ] = "";
 	anything any = zeroany;
 
-	if (!iflags.menu_tab_sep) {
+	if (!iflags.menu_tab_sep) 
+	{
 		if (spellknow(splnum) <= 0)
 			Sprintf(fmt, "%%-%ds  %%s", namelength);
 		else
-			Sprintf(fmt, "%%-%ds  %%s   %%-13s %%4d  %%s %%3d%%%% %%4d  %%4s", namelength);
+			Sprintf(fmt, "%%-%ds  %%s   %%-13s %%4.*f  %%s %%3d%%%% %%4d  %%4s", namelength);
 		//		fmt = "%-20s  %2d   %-12s %4d %3d%% %8s";
 	}
 	else {
 		if (spellknow(splnum) <= 0)
 			strcpy(fmt, "%s\t%s");
 		else
-			strcpy(fmt, "%s\t%s\t%s\t%-d\t%-d%%\t%-d\t%s");
+			strcpy(fmt, "%s\t%s\t%s\t%.*f\t%-d%%\t%-d\t%s");
 		//		fmt = "%s\t%-d\t%s\t%-d\t%-d%%\t%s";
 	}
 
@@ -3304,13 +3329,16 @@ boolean usehotkey;
 		break;
 	}
 
+	double spellmanacost = get_spell_mana_cost(splnum);
+	double displayed_manacost = ceil(10 * spellmanacost) / 10;
+
 	//Category
 	if (spellknow(splnum) <= 0)
 		Sprintf(buf, fmt, shortenedname, "(You cannot recall this spell)");
 	else
 		Sprintf(buf, fmt, shortenedname, levelbuf,//spellev(splnum),
 			categorybuf,
-			get_spell_mana_cost(splnum),
+			displayed_manacost >= 100 ? 0 : 1, displayed_manacost,
 			statbuf,
 			100 - percent_success(splnum),
 			spellcooldownleft(splnum) > 0 ? spellcooldownleft(splnum) : getspellcooldown(splnum),
