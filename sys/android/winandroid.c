@@ -1402,7 +1402,7 @@ void and_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, int glyph, int bkglyph)
 	int ch;
 	int col;
 	unsigned int special;
-	mapglyph(glyph, &ch, &col, &special, x, y, 0);
+	mapglyph(glyph, &ch, &col, &special, x, y); // , 0);
 
 	special &= ~(MG_CORPSE|MG_INVIS|MG_RIDDEN|MG_STATUE); // TODO support
 	if(!iflags.hilite_pet)
