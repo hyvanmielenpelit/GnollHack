@@ -538,7 +538,7 @@ can_try_force()
 		|| ((uwep->oclass == WEAPON_CLASS || is_weptool(uwep))
 			? (objects[uwep->otyp].oc_skill < P_DAGGER
 				|| objects[uwep->otyp].oc_skill == P_FLAIL
-				|| objects[uwep->otyp].oc_skill > P_LANCE)
+				|| objects[uwep->otyp].oc_skill > P_SPEAR)
 			: uwep->oclass != ROCK_CLASS)) {
 		return FALSE;
 	}
