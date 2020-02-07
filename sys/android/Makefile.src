@@ -319,9 +319,9 @@ HACK_H	= ../src/hack.h-t
 HACKCSRC = allmain.c alloc.c apply.c artifact.c attrib.c ball.c bones.c \
 	   botl.c cmd.c dbridge.c decl.c detect.c dig.c display.c dlb.c do.c \
 	   do_name.c do_wear.c dog.c dogmove.c dokick.c dothrow.c drawing.c \
-	   dungeon.c eat.c end.c engrave.c exper.c explode.c extralev.c \
+	   dungeon.c eat.c encounter.c end.c engrave.c exper.c explode.c extralev.c \
 	   files.c fountain.c hack.c hacklib.c invent.c isaac64.c light.c \
-	   lock.c mail.c makemon.c mapglyph.c mcastu.c mhitm.c mhitu.c minion.c \
+	   lock.c mail.c makemon.c mapglyph.c matcomps.c mcastu.c mhitm.c mhitu.c minion.c \
 	   mklev.c mkmap.c \
 	   mkmaze.c mkobj.c mkroom.c mon.c mondata.c monmove.c monst.c \
 	   mplayer.c mthrowu.c muse.c music.c o_init.c objects.c objnam.c \
@@ -364,8 +364,8 @@ CSOURCES = $(HACKCSRC) $(SYSSRC) $(WINCSRC) $(GENCSRC)
 #
 HACKINCL = align.h amiconf.h androidconf.h artifact.h artilist.h attrib.h beconf.h \
 	botl.h color.h config.h config1.h context.h coord.h decl.h def_os2.h \
-	display.h dlb.h dungeon.h engrave.h extern.h flag.h func_tab.h \
-	global.h hack.h lev.h lint.h macconf.h mextra.h mfndpos.h micro.h \
+	display.h dlb.h dungeon.h encounter.h engrave.h extern.h flag.h func_tab.h \
+	global.h hack.h lev.h lint.h macconf.h matcomps.h mextra.h mfndpos.h micro.h \
 	mkroom.h \
 	monattk.h mondata.h monflag.h monst.h monsym.h obj.h objclass.h \
 	os2conf.h patchlevel.h pcconf.h permonst.h prop.h rect.h region.h rm.h \
@@ -382,9 +382,9 @@ FIRSTOBJ = monst.o objects.o
 HOBJ = $(FIRSTOBJ) allmain.o alloc.o apply.o artifact.o attrib.o ball.o \
 	bones.o botl.o cmd.o dbridge.o decl.o detect.o dig.o display.o dlb.o \
 	do.o do_name.o do_wear.o dog.o dogmove.o dokick.o dothrow.o \
-	drawing.o dungeon.o eat.o end.o engrave.o exper.o explode.o \
+	drawing.o dungeon.o eat.o encounter.o end.o engrave.o exper.o explode.o \
 	extralev.o files.o fountain.o hack.o hacklib.o invent.o isaac64.o \
-	light.o lock.o mail.o makemon.o mapglyph.o mcastu.o mhitm.o mhitu.o \
+	light.o lock.o mail.o makemon.o mapglyph.o matcomps.o mcastu.o mhitm.o mhitu.o \
 	minion.o mklev.o mkmap.o \
 	mkmaze.o mkobj.o mkroom.o mon.o mondata.o monmove.o monstr.o \
 	mplayer.o mthrowu.o muse.o music.o o_init.o objnam.o options.o \

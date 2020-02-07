@@ -355,6 +355,7 @@ NEARDATA struct permonst mons[] = {
 		M4_NONE,
 		14, CLR_RED),
 #endif
+
     /*
      * eyes
      */
