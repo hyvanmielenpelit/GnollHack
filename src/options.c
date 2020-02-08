@@ -107,7 +107,8 @@ static struct Bool_Opt {
 #else
     { "checkspace", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
-    { "clicklook", &iflags.clicklook, FALSE, SET_IN_GAME },
+	{ "classic_statue_symbol", &flags.classic_statue_symbol, FALSE, SET_IN_GAME },
+	{ "clicklook", &iflags.clicklook, FALSE, SET_IN_GAME },
     { "cmdassist", &iflags.cmdassist, TRUE, SET_IN_GAME },
 #if defined(MICRO) || defined(WIN32) || defined(ANDROID) || defined(CURSES_GRAPHICS)
     { "color", &iflags.wc_color, TRUE, SET_IN_GAME }, /*WC*/
@@ -158,7 +159,8 @@ static struct Bool_Opt {
     { "ignintr", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
     { "implicit_uncursed", &iflags.implicit_uncursed, TRUE, SET_IN_GAME },
-    { "large_font", &iflags.obsolete, FALSE, SET_IN_FILE }, /* OBSOLETE */
+	{ "inv_weight_last", &flags.inventory_weights_last, FALSE, SET_IN_GAME },
+	{ "large_font", &iflags.obsolete, FALSE, SET_IN_FILE }, /* OBSOLETE */
     { "legacy", &flags.legacy, TRUE, DISP_IN_GAME },
     { "lit_corridor", &flags.lit_corridor, FALSE, SET_IN_GAME },
     { "lootabc", &flags.lootabc, FALSE, SET_IN_GAME },
@@ -181,7 +183,8 @@ static struct Bool_Opt {
 #else
     { "menu_overlay", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
-    { "monpolycontrol", &iflags.mon_polycontrol, FALSE, SET_IN_WIZGAME },
+	{ "metric_system", &flags.metric_system, FALSE, SET_IN_GAME },
+	{ "monpolycontrol", &iflags.mon_polycontrol, FALSE, SET_IN_WIZGAME },
 #ifdef NEWS
     { "news", &iflags.news, TRUE, DISP_IN_GAME },
 #else
@@ -4105,7 +4108,9 @@ boolean tinitial, tfrom_file;
                     if (iflags.perm_invent)
                         need_redraw = TRUE;
                 }
-            } else if (boolopt[i].addr == &flags.lit_corridor
+			} else if (boolopt[i].addr == &flags.classic_statue_symbol) {
+					need_redraw = TRUE;
+			} else if (boolopt[i].addr == &flags.lit_corridor
                        || boolopt[i].addr == &flags.dark_room) {
                 /*
                  * All corridor squares seen via night vision or

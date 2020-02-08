@@ -1546,34 +1546,45 @@ unsigned doname_flags;
 
 	//Weights
 
-	double objweight = 0;
-	double objweight_oz = 0;
+	//double objweight = 0;
+	int objweight_oz = 0;
 	if (!loadstonecorrectly && obj->otyp == LOADSTONE)
 		objweight_oz = objects[LUCKSTONE].oc_weight;  
 	else
 		objweight_oz = obj->owt; 
 
-	objweight = ((double)objweight_oz) / 16;  //ounces to lbs
+	//objweight = ((double)objweight_oz) / 16;  //ounces to lbs
 
-	if ((wizard && iflags.wizweight) || weightfirst) {
+	if ((wizard && iflags.wizweight) || weightfirst) 
+	{
+		char weightbuf[BUFSZ];
+		printweight(weightbuf, objweight_oz, TRUE, TRUE);
 		char buf[BUFSZ];
+		Sprintf(buf, "%s - %s", weightbuf, bp);
+#if 0
 		if (objweight >= 1000)
 			Sprintf(buf, "%3.0f cwt - %s", objweight / 100, bp);
 		else if (objweight >= 10)
 			Sprintf(buf, "%3.0f lbs - %s", objweight, bp);
 		else
 			Sprintf(buf, "%1.1f %s - %s", objweight, objweight == 1 ? "lb " : "lbs", bp);
+#endif
 		strcpy(bp, buf);
 
 	}
 	
 	if (weightlast)
 	{
+		char weightbuf[BUFSZ];
+		printweight(weightbuf, objweight_oz, FALSE, FALSE);
 		char buf[BUFSZ];
+		Sprintf(buf, "%s (%s)", bp, weightbuf);
+#if 0
 		if (objweight >= 10)// || ((int)(objweight / 10)) * 10 == (int)objweight)
-			Sprintf(buf, "%s (%d %s)", bp, (int)objweight, objweight == 1 ? "lb" : "lbs");
+			Sprintf(buf, "%s (%3.0f %s)", bp, (int)objweight, objweight == 1 ? "lb" : "lbs");
 		else
 			Sprintf(buf, "%s (%.1f %s)", bp, objweight, objweight == 1 ? "lb" : "lbs");
+#endif
 		strcpy(bp, buf);
 	}
 
@@ -1647,6 +1658,13 @@ doname_with_weight_first_true(obj)
 struct obj* obj;
 {
 	return doname_base(obj, DONAME_WITH_WEIGHT_FIRST | DONAME_LOADSTONE_CORRECTLY);
+}
+
+char*
+doname_with_weight_last_true(obj)
+struct obj* obj;
+{
+	return doname_base(obj, DONAME_WITH_WEIGHT_LAST | DONAME_LOADSTONE_CORRECTLY);
 }
 
 

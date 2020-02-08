@@ -118,12 +118,19 @@ unsigned *ospecial;
 		if (objoffset != BOULDER && is_objpile(x, y))
 			special |= MG_OBJPILE;
 	} else if ((offset = (glyph - GLYPH_STATUE_OFF)) >= 0) { /* a statue */
-        idx = mons[offset].mlet + SYM_OFF_M;
-        if (has_rogue_color)
-            color = CLR_RED;
-        else
-            obj_color(STATUE);
-        special |= MG_STATUE;
+		if (flags.classic_statue_symbol)
+		{
+			idx = ROCK_CLASS + SYM_OFF_O;
+		}
+		else
+		{
+			idx = mons[offset].mlet + SYM_OFF_M;
+		}
+		if (has_rogue_color)
+			color = CLR_RED;
+		else
+			obj_color(STATUE);
+		special |= MG_STATUE;
         if (is_objpile(x,y))
             special |= MG_OBJPILE;
     } else if ((offset = (glyph - GLYPH_WARNING_OFF)) >= 0) { /* warn flash */

@@ -413,6 +413,64 @@ floorexamine()
 	return res;
 }
 
+void
+printweight(buf, weight_in_ounces, weight_fixed_width, unit_fixed_width)
+char* buf;
+int weight_in_ounces;
+boolean weight_fixed_width;
+boolean unit_fixed_width;
+{
+	double weight_in_pounds = ((double)weight_in_ounces) / 16;
+	if (flags.metric_system)
+	{
+		double avoirdupois_pound_in_kg = 0.45359237;
+		double weight_in_kg = weight_in_pounds * avoirdupois_pound_in_kg;
+
+		if (weight_in_kg >= 10000)
+		{
+			Sprintf(buf, weight_fixed_width ? "%3.0f" : "%.0f", weight_in_kg / 1000);
+			if (unit_fixed_width)
+				Strcat(buf, " t ");
+			else
+				Sprintf(eos(buf), " ton%s", weight_in_kg == 1000 ? "" : "s");
+		}
+		else if (weight_in_kg >= 1000)
+		{
+			Sprintf(buf, weight_fixed_width ? "%1.1f " : "%.1f", weight_in_kg / 1000);
+			if (unit_fixed_width)
+				Strcat(buf, " t ");
+			else
+				Sprintf(eos(buf), " ton%s", weight_in_kg == 1000 ? "" : "s");
+
+		}
+		else if (weight_in_kg >= 10)
+		{
+			Sprintf(buf, weight_fixed_width ? "%3.0f kg" : "%.0f kg", weight_in_kg);
+		}
+		else
+		{
+			Sprintf(buf, weight_fixed_width ? "%1.1f kg" : "%.1f kg", weight_in_kg);
+		}
+	}
+	else
+	{
+		if (weight_in_pounds >= 1000)
+			Sprintf(buf, weight_fixed_width ? "%3.0f cwt" : "%.0f cwt", weight_in_pounds / 100);
+		else if (weight_in_pounds >= 10)
+			Sprintf(buf, weight_fixed_width ? "%3.0f lbs" : "%.0f lbs", weight_in_pounds);
+		else
+		{
+			if (weight_in_pounds == 1)
+			{
+				Sprintf(buf, weight_fixed_width ? "%1.1f lb" : "%.1f lb", weight_in_pounds);
+				if (unit_fixed_width)
+					Strcat(buf, " ");
+			}
+			else
+				Sprintf(buf, weight_fixed_width ? "%1.1f lbs" : "%.1f lbs", weight_in_pounds);
+		}
+	}
+}
 
 int
 itemdescription(obj)
@@ -577,18 +635,13 @@ register struct obj* obj;
 	putstr(datawin, 0, txt);
 
 	/* Weight */
-	double objweight = ((double)obj->owt) / 16;
+	int objweight = obj->owt;
 
 	/* Show loadstone incorrectly if not known and not carried */
 	if(otyp == LOADSTONE && !carried(obj) && !objects[otyp].oc_name_known)
-		objweight = ((double)objects[LUCKSTONE].oc_weight) / 16;
+		objweight = objects[LUCKSTONE].oc_weight;
 
-	if (objweight >= 1000)
-		Sprintf(buf2, "%.0f cwt", objweight / 100);
-	else if (objweight >= 10)
-		Sprintf(buf2, "%.0f lbs", objweight);
-	else
-		Sprintf(buf2, "%.1f %s", objweight, objweight == 1 ? "lb " : "lbs");
+	printweight(buf2, objweight, FALSE, FALSE);
 
 	Sprintf(buf, "Weight:                 %s", buf2);
 	txt = buf;

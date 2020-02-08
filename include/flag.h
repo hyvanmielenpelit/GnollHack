@@ -51,6 +51,9 @@ struct flag {
     boolean safe_dog;        /* give complete protection to the dog */
     boolean showexp;         /* show experience points */
 	boolean tellexp;		 /* tell experience points when received */
+	boolean metric_system;   /* use the metric system (kilograms) instead of avoirdupois pounds and ounces */
+	boolean inventory_weights_last; /* inventory weights are shown after the name of the item rather first, as normal */
+	boolean classic_statue_symbol; /* statue is shown as rock */
 	boolean showscore;       /* show score */
     boolean silent;          /* whether the bell rings or not */
     /* The story so far:

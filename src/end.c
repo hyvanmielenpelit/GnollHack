@@ -1672,7 +1672,7 @@ int show_weights;
 						else
 							totalweight += obj->owt;
 	
-						Sprintf(&buf[2], "%2d - %s", count, show_weights > 0 ? doname_with_price_and_weight_first(obj, loadstonecorrectly) : doname_with_price(obj));
+						Sprintf(&buf[2], "%2d - %s", count, show_weights > 0 ? (flags.inventory_weights_last ? doname_with_price_and_weight_last(obj, loadstonecorrectly) : doname_with_price_and_weight_first(obj, loadstonecorrectly)) : doname_with_price(obj));
 						//Strcpy(&buf[2], doname_with_price_and_weight_first(obj));
                         putstr(tmpwin, 0, buf);
                     }

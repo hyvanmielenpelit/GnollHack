@@ -941,7 +941,7 @@ int show_weights;
 				add_menu(win, obj_to_glyph(curr, rn2_on_display_rng), &any,
 					applied_invlet,
 					applied_group_accelerator,
-                         ATR_NONE, show_weights > 0 ? doname_with_price_and_weight_first(curr, loadstonecorrectly) : doname_with_price(curr), MENU_UNSELECTED);
+                         ATR_NONE, show_weights > 0 ? (flags.inventory_weights_last ? doname_with_price_and_weight_last(curr, loadstonecorrectly) : doname_with_price_and_weight_first(curr, loadstonecorrectly)) : doname_with_price(curr), MENU_UNSELECTED);
                 first = FALSE;
             }
         }

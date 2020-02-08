@@ -459,6 +459,7 @@ E void FDECL(set_wounded_legs, (long, int));
 E void FDECL(heal_legs, (int));
 E boolean NDECL(floorexamine);
 E int FDECL(itemdescription, (struct obj*));
+E void FDECL(printweight, (char*, int, boolean, boolean));
 
 /* ### do_name.c ### */
 
@@ -1855,6 +1856,7 @@ E char *FDECL(doname, (struct obj *));
 E char *FDECL(doname_with_price, (struct obj *));
 E char *FDECL(doname_vague_quan, (struct obj *));
 E char* FDECL(doname_with_weight_first_true, (struct obj*));
+E char* FDECL(doname_with_weight_last_true, (struct obj*));
 E char* FDECL(doname_with_weight_first, (struct obj*, boolean));
 E char* FDECL(doname_with_weight_last, (struct obj*, boolean));
 E char* FDECL(doname_with_price_and_weight_first, (struct obj*, boolean));
