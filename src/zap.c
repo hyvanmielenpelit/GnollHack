@@ -8004,14 +8004,14 @@ int osym, dmgtyp;
     return tmp;
 }
 
-int
+boolean
 check_magic_resistance_and_halve_damage(mtmp, otmp, lvl, damage, tell)
 struct monst *mtmp;
 struct obj* otmp;
 int lvl;
 int damage, tell;
 {
-    int resisted;
+    boolean resisted;
     int alev, dlev;
 	char oclass = ILLOBJ_CLASS;
 	boolean is_you = (mtmp == &youmonst);
@@ -8057,25 +8057,36 @@ int damage, tell;
 			break; /* spell */
 		}
 		/* defense level */
-		dlev = (int) mtmp->m_lev;
-		if (dlev > 50)
-			dlev = 50;
-		else if (dlev < 1)
-			dlev = is_mplayer(mtmp->data) ? u.ulevel : 1;
+		if (is_you)
+			dlev = u.ulevel;
+		else
+		{
+			dlev = (int) mtmp->m_lev;
+			if (dlev > 50)
+				dlev = 50;
+			else if (dlev < 1)
+				dlev = 1; //  is_mplayer(mtmp->data) ? u.ulevel : 1;
+		}
 
-		if (has_no_magic_resistance(mtmp))
+		boolean nomr = is_you ? No_magic_resistance : has_no_magic_resistance(mtmp);
+		boolean halfmr = is_you ? Half_magic_resistance : has_half_magic_resistance(mtmp);
+
+		if (nomr)
+			resisted = FALSE;
+		else if (mtmp->data->mr == 0)
 			resisted = FALSE;
 		else
-			resisted = rn2(100 + alev - dlev) < (mtmp->data->mr / (has_half_magic_resistance(mtmp) ? 2 : 1));
+			resisted = (rn2(100 + alev - dlev) < (mtmp->data->mr / (halfmr ? 2 : 1)));
 	}
 
-	if (resisted) {
+	if (resisted)
+	{
 		damage = (damage + 1) / 2;
 		if (tell) 
 		{
 			if (is_you)
 			{
-				shieldeff(u.ux,u.uy);
+				shieldeff(u.ux, u.uy);
 				You("resist!");
 			}
 			else
@@ -8086,7 +8097,8 @@ int damage, tell;
 		}
 	}
 
-	if (damage) {
+	if (damage) 
+	{
 		if (tell && !(tell == TELL_LETHAL_STYLE && !resisted))
 		{//Lethal damage not shown, resisted though yes
 			if (is_you)
@@ -8101,7 +8113,8 @@ int damage, tell;
 		else
 		{
 			mtmp->mhp -= damage;
-			if (DEADMONSTER(mtmp)) {
+			if (DEADMONSTER(mtmp))
+			{
 				if (m_using)
 					monkilled(mtmp, "", AD_RBRE);
 				else

@@ -1271,7 +1271,8 @@ register struct obj* omonwep;
         break;
     case AD_SLEE:
         if (!cancelled && !is_sleeping(mdef)
-            && sleep_monst(mdef, (struct obj *)0, rn1(3,8), magr->m_lev, FALSE)) {
+            && sleep_monst(mdef, (struct obj *)0, rn1(3,8), magr->m_lev, FALSE)) 
+		{
             if (vis && canspotmon(mdef))
 			{
                 Strcpy(buf, Monnam(mdef));

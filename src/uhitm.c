@@ -2353,6 +2353,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 	int chance = 0, poisondamage = 0;
 
 	int tmp = 0, extratmp = 0;
+	double total_damage = 0;
 	
 	/*  First determine the base damage done */
 	struct obj* mweapon = uwep;
@@ -3967,5 +3968,92 @@ int dmg;
         map_invisible(mon->mx, mon->my);
     }
 }
+
+double
+adjust_damage(basedamage, magr, mdef, adtyp, is_spell_damage, use_lethal_damage)
+int basedamage;
+struct monst* magr;
+struct monst* mdef;
+int adtyp;
+boolean is_spell_damage;
+boolean use_lethal_damage;
+{
+	double base_dmg_d = (double)basedamage;
+	boolean you_attack = (magr && magr == &youmonst);
+	boolean you_defend = (mdef && mdef == &youmonst);
+	double monster_damage_multiplier = 1;
+	double monster_hp_multiplier = 1;
+
+	switch (context.game_difficulty)
+	{
+	case -2:
+		monster_damage_multiplier = 0.63;
+		monster_hp_multiplier = 0.40;
+		break;
+	case -1:
+		monster_damage_multiplier = 0.79;
+		monster_hp_multiplier = 0.63;
+		break;
+	case 1:
+		monster_damage_multiplier = 1.26;
+		monster_hp_multiplier = 1.59;
+		break;
+	case 2:
+		monster_damage_multiplier = 1.59;
+		monster_hp_multiplier = 2.52;
+		break;
+	default:
+		break;
+	}
+
+	if (mdef)
+	{
+		if (use_lethal_damage)
+		{
+			if (you_defend)
+			{
+				if (Upolyd)
+					return u.mh;
+				else
+					return u.uhp;
+			}
+			else
+				return mdef->mhp;
+		}
+
+		/* Physical and spell damage adjustments */
+		if (!is_spell_damage && adtyp == AD_PHYS &&
+			((you_defend ? Half_physical_damage : has_half_physical_damage(mdef)))
+			|| (magr && (you_defend ? Half_physical_damage_against_undead_and_demons : has_half_physical_damage_against_undead_and_demons(mdef)) && (is_undead(magr->data) || is_demon(magr->data)))
+			)
+		{
+			base_dmg_d /= 2;
+		}
+
+		if (is_spell_damage && (you_defend ? Half_spell_damage : has_half_spell_damage(mdef)))
+		{
+			base_dmg_d /= 2;
+		}
+
+		/* Armor-type reductions, half specific damage type reductions, and vulneratbilities here */
+		/* Nothing here yet */
+
+		/* Game difficulty level adjustments */
+		if (you_defend || is_tame(mdef)) /* You or your pet is being hit */
+		{
+			if(!magr || (magr && !(you_attack || is_tame(magr)))) /* Only hostile and non-tame peaceful attacking monsters get damage bonus */
+				base_dmg_d *= monster_damage_multiplier;
+		}
+		else /* Hostile or non-tame peaceful monster is being hit */
+		{
+			base_dmg_d /= monster_hp_multiplier; /* The damage gets adjusted by their implicit hp adjustment */
+			if (!magr || (magr && !(you_attack || is_tame(magr)))) /* Only hostile and non-tame peaceful attacking monsters get damage bonus */
+				base_dmg_d *= monster_damage_multiplier;
+		}
+	}
+
+	return base_dmg_d;
+}
+
 
 /*uhitm.c*/

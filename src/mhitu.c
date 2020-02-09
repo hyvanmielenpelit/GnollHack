@@ -1775,15 +1775,24 @@ register struct obj* omonwep;
 		break;
     case AD_SLEE:
 		hitmsg(mtmp, mattk, dmg);
-		if (uncancelled && multi >= 0 && !rn2(5)) {
-            if (Sleep_resistance)
+		if (uncancelled && multi >= 0) 
+		{
+            if (Sleep_resistance || check_magic_resistance_and_halve_damage(&youmonst, (struct obj*)0, u.ulevel, 0 , NOTELL))
                 break;
             fall_asleep(-rn1(3, 8), TRUE);
-            if (Blind)
-                You("are put to sleep!");
-            else
-                You("are put to sleep by %s!", mon_nam(mtmp));
-        }
+			if (Sleeping)
+			{
+				You("feel even sleepier than before!");
+			}
+			else
+			{
+				if (Blind)
+					You("are put to sleep!");
+				else
+					You("are put to sleep by %s!", mon_nam(mtmp));
+			}
+			set_itimeout(&HSleep_resistance, 20);
+		}
 		break;
     case AD_BLND:
         if (can_blnd(mtmp, &youmonst, mattk->aatyp, (struct obj *) 0)) {

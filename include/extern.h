@@ -2783,6 +2783,7 @@ E void FDECL(passive_obj, (struct monst *, struct obj *, struct attack *));
 E void FDECL(stumble_onto_mimic, (struct monst *));
 E int FDECL(flash_hits_mon, (struct monst *, struct obj *));
 E void FDECL(light_hits_gremlin, (struct monst *, int));
+E double FDECL(adjust_damage, (int, struct monst*, struct monst*, int, boolean, boolean));
 
 /* ### unixmain.c ### */
 
@@ -3252,7 +3253,7 @@ E boolean FDECL(break_statue, (struct obj *));
 E void FDECL(destroy_item, (int, int));
 E int FDECL(destroy_mitem, (struct monst *, int, int));
 E void FDECL(destroy_one_item, (struct obj*, int, int, boolean));
-E int FDECL(check_magic_resistance_and_halve_damage, (struct monst *, struct obj *, int, int, int));
+E boolean FDECL(check_magic_resistance_and_halve_damage, (struct monst *, struct obj *, int, int, int));
 E void NDECL(makewish);
 E void FDECL(summonitem, (struct obj*, int));
 E void FDECL(summonblackblade, (struct obj*));

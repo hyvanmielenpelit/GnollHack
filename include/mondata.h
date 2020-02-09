@@ -267,6 +267,17 @@
 #define is_silenced(mon) \
 	has_silenced(mon)
 
+/* half damage */
+#define has_half_physical_damage(mon) \
+	has_property(mon, HALF_PHDAM)
+
+#define has_half_spell_damage(mon) \
+	has_property(mon, HALF_SPDAM)
+
+#define has_half_physical_damage_against_undead_and_demons(mon) \
+	has_property(mon, HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS)
+
+
 /* paralysis, sleeping, and can move */
 #define has_paralyzed(mon) \
 	has_property(mon, PARALYZED)
