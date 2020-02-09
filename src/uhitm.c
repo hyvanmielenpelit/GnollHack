@@ -4055,5 +4055,49 @@ boolean use_lethal_damage;
 	return base_dmg_d;
 }
 
+void
+deduct_player_hp(hp_d)
+double hp_d;
+{
+
+	int integer_hp = (int)hp_d;
+	double fracionalpart_hp_d = hp_d - (double)integer_hp;
+	int fractional_hp = (int)(10000 * fracionalpart_hp_d);
+
+	int* target_integer_part_ptr = (int*)0;
+	int* target_fractional_part_ptr = (int*)0;
+
+	if (Upolyd)
+	{
+		target_integer_part_ptr = &u.mh;
+		target_fractional_part_ptr = &u.mh_fraction;
+	}
+	else
+	{
+		target_integer_part_ptr = &u.uhp;
+		target_fractional_part_ptr = &u.uhp_fraction;
+	}
+
+	*target_integer_part_ptr -= integer_hp;
+	*target_fractional_part_ptr -= fractional_hp;
+
+	if (*target_fractional_part_ptr < 0)
+	{
+		int multiple = (abs(*target_fractional_part_ptr) / 10000) + 1;
+		*target_integer_part_ptr -= multiple;
+		*target_fractional_part_ptr += multiple * 10000;
+	}
+}
+
+void
+deduct_monster_hp(mtmp, hp_d)
+struct monst* mtmp;
+double hp_d;
+{
+	if (!mtmp)
+		return;
+
+	mtmp->mhp -= (int)ceil(hp_d);
+}
 
 /*uhitm.c*/

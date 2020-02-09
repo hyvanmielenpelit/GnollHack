@@ -2784,6 +2784,8 @@ E void FDECL(stumble_onto_mimic, (struct monst *));
 E int FDECL(flash_hits_mon, (struct monst *, struct obj *));
 E void FDECL(light_hits_gremlin, (struct monst *, int));
 E double FDECL(adjust_damage, (int, struct monst*, struct monst*, int, boolean, boolean));
+E void FDECL(deduct_player_hp, (double));
+E void FDECL(deduct_monster_hp, (struct monst*, double));
 
 /* ### unixmain.c ### */
 
