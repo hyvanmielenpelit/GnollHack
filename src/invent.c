@@ -1164,14 +1164,17 @@ boolean verbose;
 	/* Speed */
 	if ((!was_slowed && Slowed) || (was_very_fast && !Very_fast) || (!was_very_fast && was_fast && !Very_fast && !Fast))
 	{
+		state_change_detected = TRUE;
 		You_feel("yourself slow down%s.", Fast ? " a bit" : "");
 	}
 	else if (Very_fast && !was_very_fast)
 	{
+		state_change_detected = TRUE;
 		You_feel("yourself speed up%s.", was_fast ? " a bit more" : "");
 	}
 	else if (Fast && !was_fast && !was_very_fast)
 	{
+		state_change_detected = TRUE;
 		You_feel("yourself speed up.");
 	}
 
