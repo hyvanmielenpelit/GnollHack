@@ -425,6 +425,7 @@ boolean unit_fixed_width;
 	{
 		double avoirdupois_pound_in_kg = 0.45359237;
 		double weight_in_kg = weight_in_pounds * avoirdupois_pound_in_kg;
+		double weight_in_grams = weight_in_kg * 1000;
 
 		if (weight_in_kg >= 10000)
 		{
@@ -449,13 +450,24 @@ boolean unit_fixed_width;
 		}
 		else
 		{
-			Sprintf(buf, weight_fixed_width ? "%1.1f kg" : "%.1f kg", weight_in_kg);
+			if (flags.detailed_weights && weight_in_grams < 1000)
+			{
+				Sprintf(buf, weight_fixed_width ? "%3.0f g" : "%.0f g", weight_in_grams);
+				if (unit_fixed_width)
+					Strcat(buf, " ");
+			}
+			else
+				Sprintf(buf, weight_fixed_width ? "%1.1f kg" : "%.1f kg", weight_in_kg);
 		}
 	}
 	else
 	{
 		if (weight_in_pounds >= 1000)
 			Sprintf(buf, weight_fixed_width ? "%3.0f cwt" : "%.0f cwt", weight_in_pounds / 100);
+		else if (flags.detailed_weights && weight_in_ounces < 1000)
+		{
+			Sprintf(buf, weight_fixed_width ? "%3d oz." : "%d oz.", weight_in_ounces);
+		}
 		else if (weight_in_pounds >= 10)
 			Sprintf(buf, weight_fixed_width ? "%3.0f lbs" : "%.0f lbs", weight_in_pounds);
 		else

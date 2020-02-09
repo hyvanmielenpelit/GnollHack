@@ -968,7 +968,8 @@ int show_weights;
                  MENU_UNSELECTED);
     }
 
-	add_weight_summary(win, wtcount, show_weights);
+	if (flags.show_weight_summary)
+		add_weight_summary(win, wtcount, show_weights);
 
 	end_menu(win, qstr);
     n = select_menu(win, how, pick_list);

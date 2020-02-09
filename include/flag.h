@@ -54,6 +54,8 @@ struct flag {
 	boolean metric_system;   /* use the metric system (kilograms) instead of avoirdupois pounds and ounces */
 	boolean inventory_weights_last; /* inventory weights are shown after the name of the item rather first, as normal */
 	boolean classic_statue_symbol; /* statue is shown as rock */
+	boolean detailed_weights; /* use ounces and grams instead of lbs and kg */
+	boolean show_weight_summary; /* show weight summary */
 	boolean showscore;       /* show score */
     boolean silent;          /* whether the bell rings or not */
     /* The story so far:

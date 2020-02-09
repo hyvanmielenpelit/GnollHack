@@ -117,6 +117,7 @@ static struct Bool_Opt {
 #endif
     { "confirm", &flags.confirm, TRUE, SET_IN_GAME },
     { "dark_room", &flags.dark_room, TRUE, SET_IN_GAME },
+	{ "detailed_weights", &flags.detailed_weights, FALSE, SET_IN_GAME },
 #ifdef ANDROID
 	{"dumplog", &iflags.dumplog, FALSE, SET_IN_FILE },
 #endif
@@ -228,7 +229,8 @@ static struct Bool_Opt {
 #else
     { "showscore", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
-    { "silent", &flags.silent, TRUE, SET_IN_GAME },
+	{ "show_weight_summary", &flags.show_weight_summary, TRUE, SET_IN_GAME },
+	{ "silent", &flags.silent, TRUE, SET_IN_GAME },
     { "softkeyboard", &iflags.wc2_softkeyboard, FALSE, SET_IN_FILE }, /*WC2*/
     { "sortpack", &flags.sortpack, TRUE, SET_IN_GAME },
     { "sparkle", &flags.sparkle, TRUE, SET_IN_GAME },

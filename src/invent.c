@@ -3265,7 +3265,8 @@ nextclass:
     }
 	else
 	{
-		add_weight_summary(win, wtcount, show_weights);
+		if (flags.show_weight_summary)
+			add_weight_summary(win, wtcount, show_weights);
 	}
     end_menu(win, query && *query ? query : (char *) 0);
 
@@ -4288,7 +4289,8 @@ boolean picked_some;
             putstr(tmpwin, 0, buf2);
         }
 
-		add_weight_summary_putstr(tmpwin, totalweight, 1);
+		if (flags.show_weight_summary)
+			add_weight_summary_putstr(tmpwin, totalweight, 1);
 
         display_nhwindow(tmpwin, TRUE);
         destroy_nhwindow(tmpwin);

@@ -1676,7 +1676,8 @@ int show_weights;
 						//Strcpy(&buf[2], doname_with_price_and_weight_first(obj));
                         putstr(tmpwin, 0, buf);
                     }
-					add_weight_summary_putstr(tmpwin, totalweight, show_weights);
+					if(flags.show_weight_summary)
+						add_weight_summary_putstr(tmpwin, totalweight, show_weights);
 
 					unsortloot(&sortedcobj);
                 } else if (cat) {
