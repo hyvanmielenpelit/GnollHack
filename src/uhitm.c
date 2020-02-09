@@ -1519,10 +1519,12 @@ boolean* obj_destroyed;
 				needenchantmsg = obj->elemental_enchantment;
 				tmp += d(3, 6);
 			}
-			if(is_ammo(obj) || throwing_weapon(obj) || objects[obj->otyp].oc_merge ? 1 : !rn2(5))
+			if (is_ammo(obj) || throwing_weapon(obj) || objects[obj->otyp].oc_merge ? 1 : !rn2(5))
+			{
 				obj->elemental_enchantment = 0;
-			/* defer "obj is no longer enchanted" until after hit message */
-			unenchantmsg = TRUE;
+				/* defer "obj is no longer enchanted" until after hit message */
+				unenchantmsg = TRUE;
+			}
 			break;
 		case DEATH_ENCHANTMENT:
 			if (mon->mnum == PM_DEATH || resists_death(mon) || is_not_living(mon->data) || is_demon(mon->data) || is_vampshifter(mon))

@@ -3551,7 +3551,10 @@ forgetspell(spell)
 int spell;
 {
 	char qbuf[BUFSZ] = "";
-	Sprintf(qbuf, "Are you sure you want to forget \'%s\' permanently?", spellname(spell));
+	char spellnamebuf[BUFSZ] = "";
+	strcpy(spellnamebuf, spellname(spell));
+
+	Sprintf(qbuf, "Are you sure you want to forget \'%s\' permanently?", spellnamebuf);
 	if (ynq(qbuf) == 'y')
 	{
 		struct spell empty_spell = { 0 };
@@ -3567,7 +3570,7 @@ int spell;
 			}
 		}
 		char buf[BUFSZ] = "";
-		Sprintf(buf, "You removed \'%s\' from your memory permanently.", spellname(spell));
+		Sprintf(buf, "You removed \'%s\' from your memory permanently.", spellnamebuf);
 		pline(buf);
 	}
 
