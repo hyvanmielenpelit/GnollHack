@@ -260,7 +260,8 @@ boolean border;
           /*xspace*/ //BL_GOLD,
           /*xspace*/ BL_HP, BL_HPMAX,
           /*xspace*/ BL_ENE, BL_ENEMAX,
-          /*xspace*/ BL_AC, BL_MC_LVL, BL_MC_PCT,
+          /*xspace*/ BL_AC,
+		  /*xspace*/ BL_MC_LVL, BL_MC_PCT,
           /*xspace*/ BL_XP, BL_EXP, BL_HD,
           /*xspace*/ BL_TIME, BL_SKILL, BL_2WEP,
           /*xspace*/ BL_HUNGER, BL_CAP, BL_CONDITION,
@@ -277,7 +278,8 @@ boolean border;
           /*xspace*/ //BL_GOLD,
           /*xspace*/ BL_HP, BL_HPMAX,
           /*xspace*/ BL_ENE, BL_ENEMAX,
-          /*xspace*/ BL_AC, BL_MC_LVL, BL_MC_PCT,
+          /*xspace*/ BL_AC, 
+		  /*xspace*/ BL_MC_LVL, BL_MC_PCT,
           /*xspace*/ BL_XP, BL_EXP, BL_HD,
           /*xspace*/ BL_HUNGER, BL_CAP,
           BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
@@ -409,26 +411,27 @@ boolean border;
                 spacing[fld] = (i > 0 ? 1 : 0); /* extra space unless first */
                 break;
 			case BL_SKILL:
-				spacing[fld] = (skill_and_2wep & 1);
+				spacing[fld] = (skill_and_2wep & 1) ? 1 : 0;
 				break;
 			case BL_2WEP:
 				spacing[fld] = ((skill_and_2wep & 2) && !(skill_and_2wep & 1));
 				break;
 			case BL_HUNGER:
-                spacing[fld] = (cap_and_hunger & 1);
+                spacing[fld] = !skill_and_2wep && (cap_and_hunger & 1) ? 1 : 0;
                 break;
             case BL_CAP:
-                spacing[fld] = ((cap_and_hunger & 2) && !(cap_and_hunger & 1));
+                spacing[fld] = !skill_and_2wep && ((cap_and_hunger & 2) && !(cap_and_hunger & 1)) ? 1 : 0;
                 break;
             case BL_CONDITION:
                 text = cbuf; /* for 'w += strlen(text)' below */
-                spacing[fld] = (cap_and_hunger == 0);
+                spacing[fld] = (!cap_and_hunger && ! skill_and_2wep) ? 1 : 0;
                 break;
             case BL_STR:
             case BL_HP:
             case BL_ENE:
             case BL_AC:
-            case BL_GOLD:
+			case BL_MC_LVL:
+			case BL_GOLD:
                 spacing[fld] = 1; /* always extra space */
                 break;
             case BL_XP:
@@ -670,7 +673,8 @@ boolean border;
         BL_HP, BL_HPMAX,
         BL_ENE, BL_ENEMAX,
         BL_AC,
-        /* 3:blank */
+		BL_MC_LVL, BL_MC_PCT,
+		/* 3:blank */
         BL_LEVELDESC,
 		BL_GOLD,
 		//BL_ALIGN,
@@ -772,24 +776,24 @@ boolean border;
 			spacing[fld] = (skill_and_2wep & 1) ? 2 : 0;
 			break;
 		case BL_2WEP:
-			/* on same line as hunger if both are non-blank,
-			   otherwise needs blank line if hunger is being omitted */
+			/* on same line as skill if both are non-blank,
+			   otherwise needs blank line if skill is being omitted */
 			spacing[fld] = (skill_and_2wep == 2) ? 2 : 0;
 			break;
 		case BL_HUNGER:
             /* separated from characteristics unless blank */
-            spacing[fld] = (cap_and_hunger & 1) ? 2 : 0;
+            spacing[fld] = (cap_and_hunger & 1) ? (!skill_and_2wep ? 2 : 1) : 0;
             break;
         case BL_CAP:
             /* on same line as hunger if both are non-blank,
                otherwise needs blank line if hunger is being omitted */
-            spacing[fld] = (cap_and_hunger == 2) ? 2 : 0;
+            spacing[fld] = (cap_and_hunger == 2) ? (!skill_and_2wep ? 2 : 1) : 0;
             break;
         case BL_CONDITION:
             /* need blank line if hunger and encumbrance are both omitted,
                otherwise just start on next line; if more than 3 conditions
                are present, this will consume multiple lines from height */
-            spacing[fld] = cond_count ? (!cap_and_hunger ? 2 : 1) : 0;
+            spacing[fld] = cond_count ? (!cap_and_hunger && !skill_and_2wep  ? 2 : 1) : 0;
             if (cond_count > 3) /* first 3 handled via '+= spacing[]' below */
                 height_needed += (cond_count - 1) / 3; /* three per line */
             break;
