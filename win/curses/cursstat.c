@@ -170,11 +170,11 @@ unsigned long *colormasks;
              *  and get constructed at need from status_vals[] rather
              *  than the original values passed to status_update()).
              */
-          /*if (fldidx == BL_GOLD) {
-                /* decode once instead of every time it's displayed  * /
+          if (fldidx == BL_GOLD) {
+                /* decode once instead of every time it's displayed  */
                 status_vals[BL_GOLD][0] = ' ';
                 text = decode_mixed(&status_vals[BL_GOLD][1], text);
-            } else*/ if ((fldidx == BL_HUNGER || fldidx == BL_CAP)
+            } else if ((fldidx == BL_HUNGER || fldidx == BL_CAP)
                        && (!*text || !strcmp(text, " "))) {
                 /* fieldfmt[] is " %s"; avoid lone space when empty */
                 *status_vals[fldidx] = '\0';
@@ -250,44 +250,45 @@ boolean border;
     /* almost all fields already come with a leading space;
        "xspace" indicates places where we'll generate an extra one */
     static const enum statusfields
-    twolineorder[3][15] = {
+    twolineorder[3][19] = {
         { BL_TITLE,
           /*xspace*/ BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH,
-          /*xspace*/ //BL_ALIGN,
+          /*xspace*/ BL_GOLD, //BL_ALIGN,
           /*xspace*/ BL_SCORE,
-          BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD },
+          BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
         { BL_LEVELDESC,
           /*xspace*/ //BL_GOLD,
           /*xspace*/ BL_HP, BL_HPMAX,
           /*xspace*/ BL_ENE, BL_ENEMAX,
-          /*xspace*/ BL_AC,
+          /*xspace*/ BL_AC, BL_MC_LVL, BL_MC_PCT,
           /*xspace*/ BL_XP, BL_EXP, BL_HD,
-          /*xspace*/ BL_TIME,
+          /*xspace*/ BL_TIME, BL_SKILL, BL_2WEP,
           /*xspace*/ BL_HUNGER, BL_CAP, BL_CONDITION,
-          BL_FLUSH },
+			BL_FLUSH },
         { BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
-          blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD }
+          blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD }
     },
-    threelineorder[3][15] = { /* moves align to line 2, leveldesc+ to 3 */
+    threelineorder[3][19] = { /* moves align to line 2, leveldesc+ to 3 */
         { BL_TITLE,
           /*xspace*/ BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH,
-          /*xspace*/ BL_SCORE,
-          BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
+          /*xspace*/ BL_GOLD,
+          BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
         { //BL_ALIGN,
           /*xspace*/ //BL_GOLD,
           /*xspace*/ BL_HP, BL_HPMAX,
           /*xspace*/ BL_ENE, BL_ENEMAX,
-          /*xspace*/ BL_AC,
+          /*xspace*/ BL_AC, BL_MC_LVL, BL_MC_PCT,
           /*xspace*/ BL_XP, BL_EXP, BL_HD,
           /*xspace*/ BL_HUNGER, BL_CAP,
-          BL_FLUSH, blPAD, blPAD },
+          BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
         { BL_LEVELDESC,
           /*xspace*/ BL_TIME,
+		  /*xspace*/ BL_SKILL, BL_2WEP,
           /*xspecial*/ BL_CONDITION,
           BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
-          blPAD, blPAD, blPAD, blPAD }
+          blPAD, blPAD, blPAD, blPAD, blPAD, blPAD }
     };
-    const enum statusfields (*fieldorder)[15];
+    const enum statusfields (*fieldorder)[19];
     xchar spacing[MAXBLSTATS], valline[MAXBLSTATS];
     enum statusfields fld, prev_fld;
     char *text, *p, cbuf[BUFSZ], ebuf[STATVAL_WIDTH];
@@ -296,7 +297,7 @@ boolean border;
     char sbuf[STATVAL_WIDTH];
 #endif
     int i, j, number_of_lines,
-        cap_and_hunger, exp_points, sho_score,
+        cap_and_hunger, skill_and_2wep, exp_points, sho_score,
         height, width, w, xtra, clen, x, y, t, ex, ey,
         condstart = 0, conddummy = 0;
 #ifdef STATUS_HILITES
@@ -337,12 +338,18 @@ boolean border;
     curs_stat_conds(0, &x, &y, cbuf, &asis);
     clen = (int) strlen(cbuf);
 
-    cap_and_hunger = 0;
-    if (*status_vals[BL_HUNGER])
+	skill_and_2wep = 0;
+	if (*status_vals[BL_SKILL])
+		skill_and_2wep |= 1;
+	if (*status_vals[BL_2WEP])
+		skill_and_2wep |= 2;
+
+	cap_and_hunger = 0;
+	if (*status_vals[BL_HUNGER])
         cap_and_hunger |= 1;
     if (*status_vals[BL_CAP])
         cap_and_hunger |= 2;
-    exp_points = (flags.showexp ? 1 : 0);
+	exp_points = (flags.showexp ? 1 : 0);
     /* don't bother conditionalizing this; always 0 for !SCORE_ON_BOTL */
     sho_score = (status_activefields[BL_SCORE] != 0);
 
@@ -401,11 +408,17 @@ boolean border;
             case BL_LEVELDESC:
                 spacing[fld] = (i > 0 ? 1 : 0); /* extra space unless first */
                 break;
-            case BL_HUNGER:
+			case BL_SKILL:
+				spacing[fld] = (skill_and_2wep & 1);
+				break;
+			case BL_2WEP:
+				spacing[fld] = ((skill_and_2wep & 2) && !(skill_and_2wep & 1));
+				break;
+			case BL_HUNGER:
                 spacing[fld] = (cap_and_hunger & 1);
                 break;
             case BL_CAP:
-                spacing[fld] = (cap_and_hunger == 2);
+                spacing[fld] = ((cap_and_hunger & 2) && !(cap_and_hunger & 1));
                 break;
             case BL_CONDITION:
                 text = cbuf; /* for 'w += strlen(text)' below */
@@ -415,7 +428,7 @@ boolean border;
             case BL_HP:
             case BL_ENE:
             case BL_AC:
-            //case BL_GOLD:
+            case BL_GOLD:
                 spacing[fld] = 1; /* always extra space */
                 break;
             case BL_XP:
@@ -659,16 +672,17 @@ boolean border;
         BL_AC,
         /* 3:blank */
         BL_LEVELDESC,
-        //BL_ALIGN,
+		BL_GOLD,
+		//BL_ALIGN,
         BL_XP, BL_EXP, BL_HD,
-        //BL_GOLD,
         /* 2:blank (but only if time or score or both enabled) */
         BL_TIME,
         BL_SCORE,
         /* 1:blank */
         BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH,
-        /* 5:blank (if any of hunger, encumbrance, or conditions appear) */
-        BL_HUNGER, BL_CAP, /* these two are shown on same line */
+        /* 6:blank (if any of hunger, encumbrance, or conditions appear) */
+		BL_SKILL, BL_2WEP, /* these two are shown on same line */
+		BL_HUNGER, BL_CAP, /* these two are shown on same line */
         BL_CONDITION, /* shown three per line so may take up to four lines */
         BL_FLUSH
     };
@@ -677,7 +691,7 @@ boolean border;
          BL_CONDITION, BL_CAP, BL_HUNGER
     };
     xchar spacing[MAXBLSTATS];
-    int i, fld, cap_and_hunger, time_and_score, cond_count;
+    int i, fld, cap_and_hunger, skill_and_2wep, time_and_score, cond_count;
     char *text;
 #ifdef STATUS_HILITES
     char *p = 0, savedch = '\0';
@@ -705,6 +719,11 @@ boolean border;
      *  (Would probably only look good enough to matter when 6 or more
      *  conditions are present, so not worth bothering with.)
      */
+	skill_and_2wep = 0;
+	if (*status_vals_long[BL_SKILL])
+		skill_and_2wep |= 1;
+	if (*status_vals_long[BL_2WEP])
+		skill_and_2wep |= 2;
 
     cap_and_hunger = 0;
     if (*status_vals_long[BL_HUNGER])
@@ -748,7 +767,16 @@ boolean border;
             spacing[fld] = (time_and_score == 2) ? 2
                            : (time_and_score & 1) ? 1 : 0;
             break;
-        case BL_HUNGER:
+		case BL_SKILL:
+			/* separated from characteristics unless blank */
+			spacing[fld] = (skill_and_2wep & 1) ? 2 : 0;
+			break;
+		case BL_2WEP:
+			/* on same line as hunger if both are non-blank,
+			   otherwise needs blank line if hunger is being omitted */
+			spacing[fld] = (skill_and_2wep == 2) ? 2 : 0;
+			break;
+		case BL_HUNGER:
             /* separated from characteristics unless blank */
             spacing[fld] = (cap_and_hunger & 1) ? 2 : 0;
             break;
