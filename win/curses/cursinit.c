@@ -56,7 +56,7 @@ nhrgb orig_hiwhite;
 "\\ \\_/ /|  /| || |_| | |_ | |_ | |  | || (_| || (__ |   < "
 
 #define NETHACK_SPLASH_F \
-" \\___/ |_| |_| \\___/ \\__| \\__||_|  |_| \\__,_| \\___||_|\\_\"
+" \\___/ |_| |_| \\___/ \\__| \\__||_|  |_| \\__,_| \\___||_|\\_\\"
 
 
 /* win* is size and placement of window to change, x/y/w/h is baseline
