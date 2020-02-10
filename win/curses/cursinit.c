@@ -41,22 +41,22 @@ nhrgb orig_hiwhite;
 /* Banners used for an optional ASCII splash screen */
 
 #define NETHACK_SPLASH_A \
-" _   _        _    _    _               _    "
+"  ____               _    _    _    _               _    "
 
 #define NETHACK_SPLASH_B \
-"| \\ | |      | |  | |  | |             | |   "
+" / ___|             | |  | |  | |  | |             | |   "
 
 #define NETHACK_SPLASH_C \
-"|  \\| |  ___ | |_ | |__| |  __ _   ___ | | __"
+"/ / __  _  __   ___ | |  | |  | |__| |  __ _   ___ | | __"
 
 #define NETHACK_SPLASH_D \
-"| . ` | / _ \\| __||  __  | / _` | / __|| |/ /"
+"| | L \\| |/  | / _ \\| |  | |  |  __  | / _` | / __|| |/ /"
 
 #define NETHACK_SPLASH_E \
-"| |\\  ||  __/| |_ | |  | || (_| || (__ |   < "
+"\\ \\_/ /|  /| || |_| | |_ | |_ | |  | || (_| || (__ |   < "
 
 #define NETHACK_SPLASH_F \
-"|_| \\_| \\___| \\__||_|  |_| \\__,_| \\___||_|\\_\\"
+" \\___/ |_| |_| \\___/ \\__| \\__||_|  |_| \\__,_| \\___||_|\\_\"
 
 
 /* win* is size and placement of window to change, x/y/w/h is baseline
