@@ -1627,9 +1627,14 @@ register struct obj* omonwep;
 					dmg = 0;
 
 				boolean hittxt = FALSE;
+				boolean displaysustain = FALSE;
+				int ahres = 0;
 
 				hittxt = (otmp->oartifact
-					&& artifact_hit(mtmp, &youmonst, otmp, &dmg, dieroll));
+					&& (ahres = artifact_hit(mtmp, &youmonst, otmp, &dmg, dieroll)));
+
+				if (ahres == 1)
+					displaysustain = TRUE;
 
 				int special_hit_dmg = pseudo_artifact_hit(mtmp, &youmonst, otmp, extradmg, dieroll, critstrikeroll);
 				if (special_hit_dmg < 0)
@@ -1651,8 +1656,10 @@ register struct obj* omonwep;
 				}
 
 				//Finally, display damage caused
-				if(!hittxt)
+				if (!hittxt)
 					hitmsg(mtmp, mattk, dmg);
+				else if (displaysustain && dmg > 0)
+					You("sustain %d damage.", dmg);
 
 				/* Silver message immediately next */
 				if (silvermsg) 

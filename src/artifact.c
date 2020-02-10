@@ -955,7 +955,7 @@ int tmp;
     register const struct artifact *weap = get_artifact(otmp);
 
     if (!weap || (weap->attk.adtyp == AD_PHYS /* check for `NO_ATTK' */
-                  && weap->attk.damn == 0 && weap->attk.damd == 0))
+                  && weap->attk.damn == 0 && weap->attk.damd == 0 && weap->attk.damp == 0))
         spec_dbon_applies = FALSE;
     else
         spec_dbon_applies = spec_applies(weap, mon);
@@ -1264,7 +1264,7 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
  * extension: change the killer so that when an orc kills you with
  * Stormbringer it's "killed by Stormbringer" instead of "killed by an orc".
  */
-boolean
+int
 artifact_hit(magr, mdef, otmp, dmgptr, dieroll)
 struct monst *magr, *mdef;
 struct obj *otmp;
@@ -1318,7 +1318,8 @@ int dieroll; /* needed for Magicbane and vorpal blades */
             burn_away_slime();
         return realizes_damage;
     }
-    if (artifact_attack_type(AD_COLD, otmp)) {
+    if (artifact_attack_type(AD_COLD, otmp)) 
+	{
         if (realizes_damage)
             pline_The("ice-cold blade %s %s%c",
                       !spec_dbon_applies ? "hits" : "freezes", hittee,
@@ -1327,7 +1328,8 @@ int dieroll; /* needed for Magicbane and vorpal blades */
             (void) destroy_mitem(mdef, POTION_CLASS, AD_COLD);
         return realizes_damage;
     }
-    if (artifact_attack_type(AD_ELEC, otmp)) {
+    if (artifact_attack_type(AD_ELEC, otmp))
+	{
         if (realizes_damage)
             pline_The("massive hammer hits%s %s%c",
                       !spec_dbon_applies ? "" : "!  Lightning strikes",
@@ -1340,7 +1342,8 @@ int dieroll; /* needed for Magicbane and vorpal blades */
             (void) destroy_mitem(mdef, WAND_CLASS, AD_ELEC);
         return realizes_damage;
     }
-    if (artifact_attack_type(AD_MAGM, otmp)) {
+    if (artifact_attack_type(AD_MAGM, otmp))
+	{
         if (realizes_damage)
             pline_The("imaginary widget hits%s %s%c",
                       !spec_dbon_applies
@@ -1373,7 +1376,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 			{
                 You("slice %s wide open!", mon_nam(mdef));
                 *dmgptr = 2 * mdef->mhp + FATAL_DAMAGE_MODIFIER;
-                return TRUE;
+                return 2;
             }
             if (!youdefend) 
 			{
@@ -1389,12 +1392,12 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                         pline("%s cuts deeply into %s!", Monnam(magr),
                               hittee);
                     *dmgptr *= 2;
-                    return TRUE;
+                    return 2;
                 }
                 *dmgptr = 2 * mdef->mhp + FATAL_DAMAGE_MODIFIER;
                 pline("%s cuts %s in half!", wepdesc, mon_nam(mdef));
                 otmp->dknown = TRUE;
-                return TRUE;
+                return 2;
             } 
 			else
 			{
@@ -1403,7 +1406,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                     pline("%s cuts deeply into you!",
                           magr ? Monnam(magr) : wepdesc);
                     *dmgptr *= 2;
-                    return TRUE;
+                    return 2;
                 }
 
                 /* Players with negative AC's take less damage instead
@@ -1413,8 +1416,8 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                  */
                 *dmgptr = 2 * (Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER;
                 pline("%s cuts you in half!", wepdesc);
-                otmp->dknown = TRUE;
-                return TRUE;
+                otmp->dknown = 2;
+                return 2;
             }
         } 
 		else if (artifact_has_flag(otmp, AF_BEHEAD)
@@ -1433,13 +1436,13 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                     else if (vis)
                         pline("Somehow, %s misses wildly.", mon_nam(magr));
                     *dmgptr = 0;
-                    return (boolean) (youattack || vis);
+                    return (youattack || vis) * 2;
                 }
                 if (noncorporeal(mdef->data) || amorphous(mdef->data)) 
 				{
                     pline("%s slices through %s %s.", The(wepdesc),
                           s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
-                    return TRUE;
+                    return 2;
                 }
                 *dmgptr = 2 * mdef->mhp + FATAL_DAMAGE_MODIFIER;
                 pline(behead_msg[rn2(SIZE(behead_msg))], The(wepdesc),
@@ -1447,7 +1450,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                 if (Hallucination && !flags.female)
                     pline("Good job Henry, but that wasn't Anne.");
                 otmp->dknown = TRUE;
-                return TRUE;
+                return 2;
             }
 			else
 			{
@@ -1455,19 +1458,19 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                     pline("Somehow, %s misses you wildly.",
                           magr ? mon_nam(magr) : the(wepdesc));
                     *dmgptr = 0;
-                    return TRUE;
+                    return 2;
                 }
                 if (noncorporeal(youmonst.data) || amorphous(youmonst.data))
 				{
                     pline("%s slices through your %s.", The(wepdesc),
                           body_part(NECK));
-                    return TRUE;
+                    return 2;
                 }
                 *dmgptr = 2 * (Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER;
                 pline(behead_msg[rn2(SIZE(behead_msg))], The(wepdesc), "you");
                 otmp->dknown = TRUE;
                 /* Should amulets fall off? */
-                return TRUE;
+                return 2;
             }
         }
     }

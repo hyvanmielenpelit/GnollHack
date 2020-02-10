@@ -785,7 +785,7 @@ boolean* obj_destroyed;
 	 * associated with the damage don't come out until _after_ outputting
 	 * a hit message.
 	 */
-	boolean hittxt = FALSE, destroyed = FALSE, already_killed = FALSE;
+	boolean hittxt = FALSE, displaysustain = FALSE, destroyed = FALSE, already_killed = FALSE;
 	boolean get_dmg_bonus = TRUE;
 	boolean ispoisoned = FALSE, needpoismsg = FALSE, poiskilled = FALSE,
 		unpoisonmsg = FALSE;
@@ -1019,14 +1019,17 @@ boolean* obj_destroyed;
 					hittxt = TRUE;
 				}
 
+				int ahres = 0;
 				if (obj->oartifact
-					&& artifact_hit(&youmonst, mon, obj, &tmp, dieroll)) 
+					&& (ahres = artifact_hit(&youmonst, mon, obj, &tmp, dieroll))) 
 				{
 					if (DEADMONSTER(mon)) /* artifact killed monster */
 						return FALSE;
 					if (tmp == 0)
 						return TRUE;
 					hittxt = TRUE;
+					if(ahres == 1)
+						displaysustain = TRUE;
 				}
 				int special_hit_dmg = pseudo_artifact_hit(&youmonst, mon, obj, extratmp, dieroll, critstrikeroll);
 				if (special_hit_dmg < 0)
@@ -1715,6 +1718,10 @@ boolean* obj_destroyed;
 					? "bash" : Role_if(PM_BARBARIAN) ? "smite" : "hit",
 					mon_nam(mon), canseemon(mon) ? exclam(tmp) : ".");
 		}
+	}
+	else if (hittxt && displaysustain && damagedealt > 0)
+	{
+		pline("%s sustains %d damage.", Monnam(mon), damagedealt);
 	}
 
 	if (silvermsg) {

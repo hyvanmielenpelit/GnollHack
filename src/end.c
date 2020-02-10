@@ -891,7 +891,9 @@ int how;
     context.botl = 1;
     u.ugrave_arise = NON_PM;
     HUnchanging = 0L;
-    curs_on_u();
+	HSleeping = 0L;
+	HParalyzed = 0L;
+	curs_on_u();
     if (!context.mon_moving)
         endmultishot(FALSE);
     if (u.uswallow) {
