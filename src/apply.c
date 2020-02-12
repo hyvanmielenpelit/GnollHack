@@ -3569,6 +3569,9 @@ STATIC_OVL int
 use_pole(obj)
 struct obj *obj;
 {
+	if (!obj)
+		return 0;
+
     int res = 0, max_range, min_range, glyph;
     coord cc;
     struct monst *mtmp;
@@ -3602,8 +3605,8 @@ struct obj *obj;
      *  (Note: no roles in GnollHack can become expert or better
      *  for polearm skill; Yeoman in slash'em can become expert.)
      */
-    min_range = 4;
-	max_range = 8;
+    min_range = POLEARM_MIN_DISTANCE;
+	max_range = (has_otyp_extended_polearm_reach(obj->otyp) ? POLEARM_EXTENDED_MAX_DISTANCE : POLEARM_NORMAL_MAX_DISTANCE);
 
 #if 0
 	typ = uwep_skill_type();

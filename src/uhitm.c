@@ -4037,13 +4037,43 @@ boolean use_lethal_damage;
 			base_dmg_d /= 2;
 		}
 
+		if (!is_spell_damage && adtyp == AD_PHYS &&
+			((you_defend ? Double_physical_damage : has_double_physical_damage(mdef)))
+			)
+		{
+			base_dmg_d *= 2;
+		}
+
 		if (is_spell_damage && (you_defend ? Half_spell_damage : has_half_spell_damage(mdef)))
 		{
 			base_dmg_d /= 2;
 		}
 
+		if (is_spell_damage && (you_defend ? Double_spell_damage : has_double_spell_damage(mdef)))
+		{
+			base_dmg_d *= 2;
+		}
+
 		/* Armor-type reductions, half specific damage type reductions, and vulneratbilities here */
-		/* Nothing here yet */
+		if (adtyp == AD_FIRE && (you_defend ? Fire_vulnerability : has_fire_vulnerability(mdef)))
+		{
+			base_dmg_d *= 2;
+		}
+
+		if (adtyp == AD_COLD && (you_defend ? Cold_vulnerability : has_cold_vulnerability(mdef)))
+		{
+			base_dmg_d *= 2;
+		}
+
+		if (adtyp == AD_ELEC && (you_defend ? Elec_vulnerability : has_elec_vulnerability(mdef)))
+		{
+			base_dmg_d *= 2;
+		}
+
+		if (adtyp == AD_MAGM && (you_defend ? Magic_damage_vulnerability : has_magm_vulnerability(mdef)))
+		{
+			base_dmg_d *= 2;
+		}
 
 		/* Game difficulty level adjustments */
 		if (you_defend || is_tame(mdef)) /* You or your pet is being hit */
@@ -4104,7 +4134,22 @@ double hp_d;
 	if (!mtmp)
 		return;
 
-	mtmp->mhp -= (int)ceil(hp_d);
+//	mtmp->mhp -= (int)ceil(hp_d);
+
+	int integer_hp = (int)hp_d;
+	double fracionalpart_hp_d = hp_d - (double)integer_hp;
+	int fractional_hp = (int)(10000 * fracionalpart_hp_d);
+
+	mtmp->mhp -= integer_hp;
+	mtmp->mhp_fraction -= fractional_hp;
+
+	if (mtmp->mhp_fraction < 0)
+	{
+		int multiple = (abs(mtmp->mhp_fraction) / 10000) + 1;
+		mtmp->mhp -= multiple;
+		mtmp->mhp_fraction += multiple * 10000;
+	}
+
 }
 
 /*uhitm.c*/

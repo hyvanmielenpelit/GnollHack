@@ -44,14 +44,28 @@ set_uasmon()
 
     set_mon_data(&youmonst, mdat);
 
-#define PROPSET(PropIndx, ON)                          \
+#define PROPSET(PropIndx, condition)                          \
     do {                                               \
-        if (ON)                                        \
+        if (condition)                                        \
             u.uprops[PropIndx].intrinsic |= FROM_FORM;  \
         else                                           \
             u.uprops[PropIndx].intrinsic &= ~FROM_FORM; \
     } while (0)
 
+	unsigned long bit = 1UL;
+	for (int i = 1; i <= 32; i++)
+	{
+		int prop = 0;
+		if(i > 1)
+			bit = bit << 1;
+
+		prop = innate_to_prop(bit);
+		if (prop > 0)
+		{
+			PROPSET(prop, has_innate(youmonst.data, bit));
+		}
+	}
+#if 0
     PROPSET(FIRE_RES, resists_fire(&youmonst));
     PROPSET(COLD_RES, resists_cold(&youmonst));
     PROPSET(SLEEP_RES, resists_sleep(&youmonst));
@@ -76,30 +90,30 @@ set_uasmon()
     PROPSET(ANTIMAGIC, (dmgtype(mdat, AD_MAGM)
                         || mdat == &mons[PM_GRAY_DRAGON_HATCHLING]
                         || dmgtype(mdat, AD_RBRE)));
-    PROPSET(SICK_RES, (mdat->mlet == S_FUNGUS || mdat == &mons[PM_GHOUL]));
-
 //    PROPSET(STUNNED, (mdat == &mons[PM_STALKER] || is_bat(mdat))); /* Not sure what this was about --JG */
-    PROPSET(HALLUC_RES, dmgtype(mdat, AD_HALU));
     PROPSET(SEE_INVISIBLE, has_innate_see_invisible(mdat));
 	PROPSET(BLIND_TELEPAT, has_innate_blind_telepathy(mdat));
 	PROPSET(TELEPAT, has_innate_telepathy(mdat));
     /* note that Infravision uses mons[race] rather than usual mons[role] */
-    PROPSET(INFRAVISION, infravision(Upolyd ? mdat : &mons[urace.malenum]));
     PROPSET(INVISIBILITY, has_innate_invisibility(mdat));
     PROPSET(TELEPORT, has_innate_teleportation(mdat));
     PROPSET(TELEPORT_CONTROL, has_innate_teleport_control(mdat));
-	PROPSET(LEVITATION, is_floater(mdat));
     /* floating eye is the only 'floater'; it is also flagged as a 'flyer';
        suppress flying for it so that enlightenment doesn't confusingly
        show latent flight capability always blocked by levitation */
 	PROPSET(LEVITATION_CONTROL, has_innate_levitation_control(mdat));
-	PROPSET(FLYING, (is_flyer(mdat) && !is_floater(mdat)));
-    PROPSET(SWIMMING, is_swimmer(mdat));
     /* [don't touch MAGICAL_BREATHING here; both Amphibious and Breathless
        key off of it but include different monster forms...] */
-    PROPSET(PASSES_WALLS, passes_walls(mdat));
     PROPSET(REGENERATION, has_innate_regeneration(mdat));
     PROPSET(REFLECTING, is_reflecting(&youmonst));
+#endif
+	PROPSET(SICK_RES, (mdat->mlet == S_FUNGUS || mdat == &mons[PM_GHOUL]));
+	PROPSET(HALLUC_RES, dmgtype(mdat, AD_HALU));
+	PROPSET(INFRAVISION, infravision(Upolyd ? mdat : &mons[urace.malenum]));
+	PROPSET(LEVITATION, is_floater(mdat));
+	PROPSET(FLYING, (is_flyer(mdat) && !is_floater(mdat)));
+	PROPSET(SWIMMING, is_swimmer(mdat));
+	PROPSET(PASSES_WALLS, passes_walls(mdat));
 #undef PROPSET
 
     float_vs_flight(); /* maybe toggle (BFlying & I_SPECIAL) */

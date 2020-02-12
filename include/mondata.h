@@ -437,6 +437,24 @@
 #define has_death_resistance(mon) \
 	(has_innate_or_property(mon, DEATH_RES))
 
+#define has_fire_vulnerability(mon) \
+	(has_innate((mon)->data, MR_VULNERABLITY_FIRE) || has_property(mon, FIRE_VULNERABILITY))
+
+#define has_cold_vulnerability(mon) \
+	(has_innate((mon)->data, MR_VULNERABLITY_COLD) || has_property(mon, COLD_VULNERABILITY))
+
+#define has_elec_vulnerability(mon) \
+	(has_innate((mon)->data, MR_VULNERABLITY_ELEC) || has_property(mon, ELEC_VULNERABILITY))
+
+#define has_magm_vulnerability(mon) \
+	(has_innate((mon)->data, MR_VULNERABLITY_MAGM) || has_property(mon, MAGM_VULNERABILITY))
+
+#define has_double_physical_damage(mon) \
+	(has_property(mon, DOUBLE_PHYSICAL_DAMAGE))
+
+#define has_double_spell_damage(mon) \
+	(has_property(mon, DOUBLE_SPELL_DAMAGE))
+
 
 /* resistances at the time of acquisition */
 #define resists_fire(mon) \

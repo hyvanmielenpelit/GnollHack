@@ -96,7 +96,12 @@ struct monst {
 	schar mmcbonus;
 
 	int mhp, mbasehpmax, mhpmax;
-    unsigned mappearance; /* for undetected mimics and the wiz */
+	int mhp_fraction;
+
+	int men, mbaseenmax, menmax;
+	int men_fraction;
+	
+	unsigned mappearance; /* for undetected mimics and the wiz */
     uchar m_ap_type;      /* what mappearance is describing, m_ap_types */
 
     schar mtame;                /* level of tameness, implies peaceful */

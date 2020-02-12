@@ -3486,7 +3486,7 @@ int final;
     if (u.ubasedaminc + u.udaminc)
         you_have(enlght_combatinc("damage", u.ubasedaminc + u.udaminc, final, buf), "");
 	if (Protection)
-		you_have("magical protection (-3 to AC and +3 to MC)", from_what(SLOW_DIGESTION));
+		you_have("magical protection (-3 to AC and +3 to MC)", from_what(PROTECTION));
 	if (Magical_shielding)
 		you_have("magical shielding (-4 to AC)", from_what(MAGICAL_SHIELDING));
 	if (Magical_barkskin)
@@ -3499,7 +3499,19 @@ int final;
 		enlght_halfdmg(HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS, final);
 	if (Half_spell_damage)
         enlght_halfdmg(HALF_SPDAM, final);
-    /* polymorph and other shape change */
+	if (Fire_vulnerability)
+		you_are("vulnerable to fire", from_what(FIRE_VULNERABILITY));
+	if (Cold_vulnerability)
+		you_are("vulnerable to cold", from_what(COLD_VULNERABILITY));
+	if (Elec_vulnerability)
+		you_are("vulnerable to electricity", from_what(ELEC_VULNERABILITY));
+	if (Magic_damage_vulnerability)
+		you_are("vulnerable to magical damage", from_what(MAGM_VULNERABILITY));
+	if (Double_physical_damage)
+		you_are("receiving double physical damage", from_what(DOUBLE_PHYSICAL_DAMAGE));
+	if (Double_spell_damage)
+		you_are("receiving double spell damage", from_what(DOUBLE_SPELL_DAMAGE));
+	/* polymorph and other shape change */
     if (Protection_from_shape_changers)
         you_are("protected from shape changers",
                 from_what(PROT_FROM_SHAPE_CHANGERS));

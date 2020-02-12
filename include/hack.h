@@ -18,6 +18,10 @@
 #define OFF 0
 #define BOLT_LIM 8        /* from this distance ranged attacks will be made */
 #define MAX_CARR_CAP 2000 /* so that boulders can be heavier */
+#define POLEARM_MIN_DISTANCE 4 /* squared distance */
+#define POLEARM_NORMAL_MAX_DISTANCE 8
+#define POLEARM_EXTENDED_MAX_DISTANCE 13
+
 #define DUMMY \
     {         \
         0     \

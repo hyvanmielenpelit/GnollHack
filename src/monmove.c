@@ -284,16 +284,33 @@ boolean digest_meal;
 {
 	int roundstofull = has_regeneration(mon) ? max(1, min(mon->mhpmax, 150)) : 300;
 	int fixedhpperround = mon->mhpmax / roundstofull;
-	int basispointchancetogetextrahp = (10000 * (mon->mhpmax % roundstofull)) / roundstofull;
+	int fractional_hp = (10000 * (mon->mhpmax % roundstofull)) / roundstofull;
 
 	if (mon->mhpmax > 0 && mon->mhp < mon->mhpmax)
 	{
+#if 0
+		int basispointchancetogetextrahp = (10000 * (mon->mhpmax % roundstofull)) / roundstofull;
 		mon->mhp += fixedhpperround;
 		if (basispointchancetogetextrahp > 0 && rn2(10000) < basispointchancetogetextrahp)
 			mon->mhp += 1;
 
 		if (mon->mhp > mon->mhpmax)
 			mon->mhp = mon->mhpmax;
+#endif
+		mon->mhp += fixedhpperround;
+		mon->mhp_fraction += fractional_hp;
+		if (mon->mhp_fraction >= 10000)
+		{
+			int added_hp = (mon->mhp_fraction / 10000);
+			mon->mhp += added_hp;
+			mon->mhp_fraction -= 10000 * added_hp;
+		}
+
+		if (mon->mhp >= mon->mhpmax)
+		{
+			mon->mhp = mon->mhpmax;
+			mon->mhp_fraction = 0;
+		}
 	}
 
     if (mon->mspec_used)

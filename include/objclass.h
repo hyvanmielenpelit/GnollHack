@@ -779,8 +779,8 @@ struct objclass {
 #define O3_NO_WISH									0x00000002UL  /* item is special, it cannot be wished for, mimics oc_nowish */
 #define O3_UNIQUE									0x00000004UL  /* the item is unique, mimics oc_unique */
 
-#define O3_GENERATED_WITH_DOUBLE_SPE					0x00000008UL  /* the item is unique, mimics oc_unique */
-/* free bit */
+#define O3_GENERATED_WITH_DOUBLE_SPE				0x00000008UL  /* is generated with double normal spe */
+#define O3_EXTENDED_POLEARM_REACH					0x00000010UL  /* range is max 13 instead of normal 8 */
 /* free bit */
 /* free bit */
 /* free bit */

@@ -493,6 +493,30 @@
 #define EHalf_physical_damage_against_undead_and_demons u.uprops[HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS].extrinsic
 #define Half_physical_damage_against_undead_and_demons (HHalf_physical_damage_against_undead_and_demons || EHalf_physical_damage_against_undead_and_demons)
 
+#define HDouble_physical_damage u.uprops[DOUBLE_PHYSICAL_DAMAGE].intrinsic
+#define EDouble_physical_damage u.uprops[DOUBLE_PHYSICAL_DAMAGE].extrinsic
+#define Double_physical_damage (HDouble_physical_damage || EDouble_physical_damage)
+
+#define HDouble_spell_damage u.uprops[DOUBLE_SPELL_DAMAGE].intrinsic
+#define EDouble_spell_damage u.uprops[DOUBLE_SPELL_DAMAGE].extrinsic
+#define Double_spell_damage (HDouble_spell_damage || EDouble_spell_damage)
+
+#define HFire_vulnerability u.uprops[FIRE_VULNERABILITY].intrinsic
+#define EFire_vulnerability u.uprops[FIRE_VULNERABILITY].extrinsic
+#define Fire_vulnerability (HFire_vulnerability || EFire_vulnerability)
+
+#define HCold_vulnerability u.uprops[COLD_VULNERABILITY].intrinsic
+#define ECold_vulnerability u.uprops[COLD_VULNERABILITY].extrinsic
+#define Cold_vulnerability (HCold_vulnerability || ECold_vulnerability)
+
+#define HElec_vulnerability u.uprops[ELEC_VULNERABILITY].intrinsic
+#define EElec_vulnerability u.uprops[ELEC_VULNERABILITY].extrinsic
+#define Elec_vulnerability (HElec_vulnerability || EElec_vulnerability)
+
+#define HMagic_damage_vulnerability u.uprops[MAGM_VULNERABILITY].intrinsic
+#define EMagic_damage_vulnerability u.uprops[MAGM_VULNERABILITY].extrinsic
+#define Magic_damage_vulnerability (HMagic_damage_vulnerability || EMagic_damage_vulnerability)
+
 #define HRegeneration u.uprops[REGENERATION].intrinsic
 #define ERegeneration u.uprops[REGENERATION].extrinsic
 #define Regeneration (HRegeneration || ERegeneration)

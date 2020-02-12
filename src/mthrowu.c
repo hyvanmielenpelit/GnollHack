@@ -13,8 +13,6 @@ STATIC_DCL boolean FDECL(m_lined_up, (struct monst *, struct monst *, BOOLEAN_P,
 #define URETREATING(x, y) \
     (distmin(u.ux, u.uy, x, y) > distmin(u.ux0, u.uy0, x, y))
 
-#define POLE_LIM 5 /* How far monsters can use pole-weapons */
-
 #define PET_MISSILE_RANGE2 36 /* Square of distance within which pets shoot */
 
 /*
@@ -1291,12 +1289,13 @@ struct monst *mtmp;
     if (!otmp)
         return;
 
-    if (is_pole(otmp)) {
+    if (is_pole(otmp)) 
+	{
         int dam, hitv;
 
         if (otmp != MON_WEP(mtmp))
             return; /* polearm must be wielded */
-        if (dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) > POLE_LIM
+        if (dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) > (has_otyp_extended_polearm_reach(otmp->otyp) ? POLEARM_EXTENDED_MAX_DISTANCE : POLEARM_NORMAL_MAX_DISTANCE)
             || !couldsee(mtmp->mx, mtmp->my))
             return; /* Out of range, or intervening wall */
 

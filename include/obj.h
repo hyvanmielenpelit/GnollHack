@@ -421,8 +421,8 @@ struct obj {
 #define nonrotting_food(otyp) \
     ((objects[(otyp)].oc_flags3 & O3_NONROTTING_FOOD) != 0)
 
-
-
+#define has_otyp_extended_polearm_reach(otyp) \
+    ((objects[(otyp)].oc_flags3 & O3_EXTENDED_POLEARM_REACH) != 0)
 
 
 /* 'PRIZE' values override obj->corpsenm so prizes mustn't be object types

@@ -75,19 +75,23 @@
 #define MR_FEAR			0x00800000UL			/* immune to fear */
 #define MR_SICK			0x01000000UL			/* immune to sickness */
 #define MR_FREE_ACTION	0x02000000UL			/* immune to paralysis */
-#define MR_LEVITATION_CONTROL 0x04000000UL		
+#define MR_LEVITATION_CONTROL	0x04000000UL		
+#define MR_VULNERABLITY_FIRE	0x08000000UL		
+#define MR_VULNERABLITY_COLD	0x10000000UL		
+#define MR_VULNERABLITY_ELEC	0x20000000UL		
+#define MR_VULNERABLITY_MAGM	0x40000000UL		
 
 
 /* conveyances: resistances, teleport, teleport control, telepathy, as well as other properties from eating the corpse */
 #define MC_NONE			0x00000000UL
 #define MC_FIRE			0x00000001UL			/* confers fire resistance */
-#define MC_COLD			0x00000002UL   		/* confers cold resistance */
-#define MC_SLEEP		0x00000004UL  		/* confers sleep resistance */
-#define MC_DISINT		0x00000008UL 		/* confers disintegration resistance */
-#define MC_ELEC			0x00000010UL   		/* confers shock resistance */
-#define MC_POISON		0x00000020UL 		/* confers poison resistance */
-#define MC_ACID			0x00000040UL   		/* confers acid resistance */
-#define MC_STONE		0x00000080UL  		/* confers petrification resistance */
+#define MC_COLD			0x00000002UL   			/* confers cold resistance */
+#define MC_SLEEP		0x00000004UL  			/* confers sleep resistance */
+#define MC_DISINT		0x00000008UL 			/* confers disintegration resistance */
+#define MC_ELEC			0x00000010UL   			/* confers shock resistance */
+#define MC_POISON		0x00000020UL 			/* confers poison resistance */
+#define MC_ACID			0x00000040UL   			/* confers acid resistance */
+#define MC_STONE		0x00000080UL  			/* confers petrification resistance */
 #define MC_DEATH		0x00000100UL			/* confers death resistance */
 #define MC_DRAIN		0x00000200UL			/* confers life draining resistance */
 #define MC_CHARM		0x00000400UL			/* confers charm resistance */
@@ -103,14 +107,14 @@
 #define MC_WISDOM		0x00100000UL			/* confers wisdom */
 #define MC_CHARISMA		0x00200000UL			/* confers charisma */
 #define MC_LEVEL_GAIN	0x00400000UL			/* confers experience levels */
-#define MC_TELEPORT			0x00800000UL			/* confers teleportiis */
+#define MC_TELEPORT			0x00800000UL		/* confers teleportiis */
 #define MC_TELEPORT_CONTROL 0x01000000UL		/* confers teleport control */
 #define MC_BLIND_TELEPATHY	0x02000000UL		/* confers blind telepathy */
-#define MC_TELEPATHY		0x04000000UL			/* confers telepathy */
+#define MC_TELEPATHY		0x04000000UL		/* confers telepathy */
 /* edible effects */
 #define MC_POISONOUS_CORPSE	0x08000000UL		/* the corpse is poisonous to eat */
 #define MC_ACIDIC_CORPSE	0x10000000UL		/* the corpse is acidic to eat */
-#define MC_HALLUCINATING_CORPSE	0x20000000UL		/* the corpse is hallucinating to eat */
+#define MC_HALLUCINATING_CORPSE	0x20000000UL	/* the corpse is hallucinating to eat */
 
 
 #define M1_NONE			0x00000000UL
