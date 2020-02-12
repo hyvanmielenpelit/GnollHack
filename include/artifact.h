@@ -77,7 +77,8 @@ struct artifact {
 	short maskotyp;
 	const char *name;
 	const char* desc;	/* unidentified name */
-	unsigned long aflags;  /* artifact flags */
+	const char* hit_desc;/* description used in artifact_hit: e.g., massive hammer, ice-cold blade, etc. */
+	unsigned long aflags;/* artifact flags */
 	unsigned long spfx;  /* special effect from wielding/wearing */
     unsigned long cspfx; /* special effect just from carrying obj */
     unsigned long mtype; /* monster type, symbol, or flag */

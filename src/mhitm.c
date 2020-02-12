@@ -1076,7 +1076,8 @@ register struct obj* omonwep;
                         return (MM_DEF_DIED
                                 | (grow_up(magr, mdef) ? 0 : MM_AGR_DIED));
                 }
-				int special_hit_dmg = pseudo_artifact_hit(magr, mdef, otmp, extratmp, dieroll, critstrikeroll);
+				int spec_adtyp = 0;
+				int special_hit_dmg = pseudo_artifact_hit(magr, mdef, otmp, extratmp, dieroll, critstrikeroll, &spec_adtyp);
 				if (special_hit_dmg < 0)
 				{
 					hittxtalreadydisplayed = TRUE;

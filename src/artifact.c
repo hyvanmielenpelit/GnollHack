@@ -1289,7 +1289,8 @@ int dieroll; /* needed for Magicbane and vorpal blades */
      */
     *dmgptr += spec_dbon(otmp, mdef, *dmgptr);
 
-    if (youattack && youdefend) {
+    if (youattack && youdefend)
+	{
         impossible("attacking yourself with weapon?");
         return FALSE;
     }
@@ -1298,10 +1299,17 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                        /* feel the effect even if not seen */
                        || (youattack && mdef == u.ustuck));
 
+	char artifact_hit_desc[BUFSZ] = "";
+	if(otmp->oartifact && artilist[otmp->oartifact].hit_desc && strcmp(artilist[otmp->oartifact].hit_desc, ""))
+		strcpy(artifact_hit_desc, artilist[otmp->oartifact].hit_desc);
+	else
+		strcpy(artifact_hit_desc, cxname(otmp));
+
     /* the four basic attacks: fire, cold, shock and missiles */
-    if (artifact_attack_type(AD_FIRE, otmp)) {
+    if (artifact_attack_type(AD_FIRE, otmp)) 
+	{
         if (realizes_damage)
-            pline_The("fiery blade %s %s%c",
+            pline_The("%s %s %s%c", artifact_hit_desc,
                       !spec_dbon_applies
                           ? "hits"
                           : (mdef->data == &mons[PM_WATER_ELEMENTAL])
@@ -1321,7 +1329,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
     if (artifact_attack_type(AD_COLD, otmp)) 
 	{
         if (realizes_damage)
-            pline_The("ice-cold blade %s %s%c",
+            pline_The("%s %s %s%c", artifact_hit_desc,
                       !spec_dbon_applies ? "hits" : "freezes", hittee,
                       !spec_dbon_applies ? '.' : '!');
         if (!rn2(4))
@@ -1331,7 +1339,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
     if (artifact_attack_type(AD_ELEC, otmp))
 	{
         if (realizes_damage)
-            pline_The("massive hammer hits%s %s%c",
+            pline_The("%s hits%s %s%c", artifact_hit_desc,
                       !spec_dbon_applies ? "" : "!  Lightning strikes",
                       hittee, !spec_dbon_applies ? '.' : '!');
         if (spec_dbon_applies)
@@ -1345,7 +1353,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
     if (artifact_attack_type(AD_MAGM, otmp))
 	{
         if (realizes_damage)
-            pline_The("imaginary widget hits%s %s%c",
+            pline_The("%s hits%s %s%c", artifact_hit_desc,
                       !spec_dbon_applies
                           ? ""
                           : "!  A hail of magic missiles strikes",
@@ -1353,12 +1361,14 @@ int dieroll; /* needed for Magicbane and vorpal blades */
         return realizes_damage;
     }
 
-    if (artifact_attack_type(AD_STUN, otmp) && dieroll <= MB_MAX_DIEROLL) {
+    if (artifact_attack_type(AD_STUN, otmp) && dieroll <= MB_MAX_DIEROLL) 
+	{
         /* Magicbane's special attacks (possibly modifies hittee[]) */
         return Mb_hit(magr, mdef, otmp, dmgptr, dieroll, vis, hittee);
     }
 
-    if (!spec_dbon_applies) {
+    if (!spec_dbon_applies) 
+	{
         /* since damage bonus didn't apply, nothing more to do;
            no further attacks have side-effects on inventory */
         return FALSE;
@@ -1370,7 +1380,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 	{
         if (artifact_has_flag(otmp, AF_BISECT) && dieroll == 1)
 		{
-            strcpy(wepdesc, "The razor-sharp blade");
+            strcpy(wepdesc, The(artifact_hit_desc));
             /* not really beheading, but so close, why add another SPFX */
             if (youattack && u.uswallow && mdef == u.ustuck) 
 			{
@@ -1428,9 +1438,11 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 
             if (youattack && u.uswallow && mdef == u.ustuck)
                 return FALSE;
-			strcpy(wepdesc, cxname(otmp));
-            if (!youdefend) {
-                if (!has_head(mdef->data) || notonhead || u.uswallow) {
+			strcpy(wepdesc, artifact_hit_desc);
+            if (!youdefend)
+			{
+                if (!has_head(mdef->data) || notonhead || u.uswallow) 
+				{
                     if (youattack)
                         pline("Somehow, you miss %s wildly.", mon_nam(mdef));
                     else if (vis)
@@ -1480,19 +1492,24 @@ int dieroll; /* needed for Magicbane and vorpal blades */
            vulnerable to life drain effects */
         const char *life = is_not_living(mdef->data) ? "animating force" : "life";
 
-        if (!youdefend) {
-            if (vis) {
+        if (!youdefend)
+		{
+            if (vis)
+			{
                 if (otmp->oartifact == ART_STORMBRINGER)
-                    pline_The("%s blade draws the %s from %s!",
-                              hcolor(NH_BLACK), life, mon_nam(mdef));
+                    pline_The("%s draws the %s from %s!",
+                              artifact_hit_desc, life, mon_nam(mdef));
                 else
                     pline("%s draws the %s from %s!",
                           The(distant_name(otmp, xname)), life,
                           mon_nam(mdef));
             }
-            if (mdef->m_lev == 0) {
+            if (mdef->m_lev == 0) 
+			{
                 *dmgptr = 2 * mdef->mhp + FATAL_DAMAGE_MODIFIER;
-            } else {
+            }
+			else 
+			{
                 int drain = monhp_per_lvl(mdef);
 
                 *dmgptr += drain;
@@ -1513,7 +1530,9 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 				}
             }
             return vis;
-        } else { /* youdefend */
+        }
+		else
+		{ /* youdefend */
             int oldhpmax = u.uhpmax;
 
             if (Blind)
@@ -1528,7 +1547,8 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                 pline("%s drains your %s!", The(distant_name(otmp, xname)),
                       life);
             losexp("life drainage");
-            if (magr && magr->mhp < magr->mhpmax) {
+            if (magr && magr->mhp < magr->mhpmax)
+			{
                 magr->mhp += (oldhpmax - u.uhpmax) / 2;
                 if (magr->mhp > magr->mhpmax)
                     magr->mhp = magr->mhpmax;
@@ -1544,11 +1564,12 @@ int dieroll; /* needed for Magicbane and vorpal blades */
  * Returns extra damage caused, to be added to damage caused by caller (so it can be displayed correctly), if any caused; -1 means that the caller has to kill mdef
  */
 int
-pseudo_artifact_hit(magr, mdef, otmp, extradmg, dieroll, critstrikeroll)
+pseudo_artifact_hit(magr, mdef, otmp, extradmg, dieroll, critstrikeroll, adtyp_ptr)
 struct monst* magr, * mdef;
 struct obj* otmp;
 int dieroll; /* needed for Magicbane and vorpal blades */
 int critstrikeroll; /* need to synchronize critical strike based abilities */
+int* adtyp_ptr; /* return value is the type of damage caused */
 {
 	if (!otmp || !magr || !mdef)
 		return 0;
@@ -1569,6 +1590,8 @@ int critstrikeroll; /* need to synchronize critical strike based abilities */
 	boolean lethaldamage = FALSE;
 	boolean isdisintegrated = FALSE;
 	int criticalstrikeroll = critstrikeroll;
+
+	*adtyp_ptr = objects[otmp->otyp].oc_damagetype;
 
 	Strcpy(hittee, youdefend ? you : mon_nam(mdef));
 
@@ -1983,6 +2006,7 @@ int critstrikeroll; /* need to synchronize critical strike based abilities */
 				}
 				else 
 				{
+					*adtyp_ptr = AD_DRLI;
 					int drain = monhp_per_lvl(mdef);
 					totaldamagedone += drain;
 					mdef->mbasehpmax -= drain;
