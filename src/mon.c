@@ -4886,34 +4886,43 @@ kill_genocided_monsters()
 }
 
 void
-golemeffects(mon, damtype, dam)
+golemeffects(mon, damtype, damage)
 register struct monst *mon;
-int damtype, dam;
+int damtype;
+double damage;
 {
-    int heal = 0, slow = 0;
+	double heal = 0;
+	int slow = 0;
 
-    if (mon->data == &mons[PM_FLESH_GOLEM]) {
+    if (mon->data == &mons[PM_FLESH_GOLEM]) 
+	{
         if (damtype == AD_ELEC)
-            heal = (dam + 5) / 6;
+            heal = damage / 6;
         else if (damtype == AD_FIRE || damtype == AD_COLD)
             slow = 1;
-    } else if (mon->data == &mons[PM_IRON_GOLEM]) {
+    } 
+	else if (mon->data == &mons[PM_IRON_GOLEM]) 
+	{
         if (damtype == AD_ELEC)
             slow = 1;
         else if (damtype == AD_FIRE)
-            heal = dam;
-    } else {
+            heal = damage;
+    } 
+	else 
+	{
         return;
     }
+
     if (slow) 
 	{
 		increase_mon_property_verbosely(mon, SLOWED, 30 + rnd(10));
 	}
-    if (heal) {
-        if (mon->mhp < mon->mhpmax) {
-            mon->mhp += heal;
-            if (mon->mhp > mon->mhpmax)
-                mon->mhp = mon->mhpmax;
+
+    if (heal) 
+	{
+        if (mon->mhp < mon->mhpmax) 
+		{
+			deduct_monster_hp(mon, -damage);
             if (cansee(mon->mx, mon->my))
                 pline("%s seems healthier.", Monnam(mon));
         }

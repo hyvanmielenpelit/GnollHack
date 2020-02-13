@@ -802,6 +802,8 @@ boolean* obj_destroyed;
 		|| (thrown == HMON_APPLIED && is_pole(uwep)));
 	boolean hide_damage_amount = FALSE;
 	boolean isdisintegrated = FALSE;
+	int damage_increase_adtyp = AD_MAGM; /* base assumption if nothing else is set */
+
 	int critstrikeroll = rn2(100);
 	boolean is_golf_swing_with_stone = (thrown == HMON_GOLF && obj && uwep && (obj->oclass == GEM_CLASS || objects[obj->otyp].oc_skill == -P_SLING) && uwep->otyp == GOLF_CLUB);
 	int mx = mon->mx;
@@ -858,7 +860,9 @@ boolean* obj_destroyed;
 				/* normal bare-handed damage */
 				tmp = rnd(2);
 			}
-			damage += adjust_damage(tmp, &youmonst, mon, AD_PHYS, FALSE, FALSE);
+
+			damage_increase_adtyp = AD_PHYS;
+			damage += adjust_damage(tmp, &youmonst, mon, AD_PHYS, FALSE);
 
 			if (martial_bonus() && !martial_arts_applies)
 			{
@@ -880,12 +884,13 @@ boolean* obj_destroyed;
 			if (uarmg)
 			{
 				/* gauntlets, no rings exposed */
+				damage_increase_adtyp = objects[uarmg->otyp].oc_damagetype;
 				int basedmg = weapon_dmg_value(uarmg, mon, &youmonst);
-				damage += adjust_damage(basedmg, &youmonst, mon, objects[uarmg->otyp].oc_damagetype, FALSE, FALSE);
+				damage += adjust_damage(basedmg, &youmonst, mon, objects[uarmg->otyp].oc_damagetype, FALSE);
 				extratmp = weapon_extra_dmg_value(uarmg, mon, &youmonst, basedmg);
-				damage += adjust_damage(extratmp, &youmonst, mon, objects[uarmg->otyp].oc_extra_damagetype, FALSE, FALSE);
+				damage += adjust_damage(extratmp, &youmonst, mon, objects[uarmg->otyp].oc_extra_damagetype, FALSE);
 				/* silver gauntelts? */
-				damage += adjust_damage(special_dmgval(&youmonst, mon, W_ARMG, &silverhit), &youmonst, mon, AD_PHYS, FALSE, FALSE);
+				damage += adjust_damage(special_dmgval(&youmonst, mon, W_ARMG, &silverhit), &youmonst, mon, AD_PHYS, FALSE);
 				barehand_silver_gauntlets = !!(silverhit & W_ARMG);
 				if (barehand_silver_gauntlets)
 					silvermsg = TRUE;
@@ -893,7 +898,8 @@ boolean* obj_destroyed;
 			else
 			{
 				/* no gauntlets, rings exposed */
-				damage += adjust_damage(special_dmgval(&youmonst, mon, W_RING, &silverhit), &youmonst, mon, AD_PHYS, FALSE, FALSE);
+				damage_increase_adtyp = AD_PHYS;
+				damage += adjust_damage(special_dmgval(&youmonst, mon, W_RING, &silverhit), &youmonst, mon, AD_PHYS, FALSE);
 				barehand_silver_rings += (((silverhit & W_RINGL) ? 1 : 0) + ((silverhit & W_RINGR) ? 1 : 0));
 				if (barehand_silver_rings > 0)
 					silvermsg = TRUE;
@@ -921,17 +927,20 @@ boolean* obj_destroyed;
 					|| !ammo_and_launcher(obj, uwep)))) 
 			{
 				/* then do only 1-2 points of damage */
+				damage_increase_adtyp = objects[obj->otyp].oc_damagetype;
 				if (mdat == &mons[PM_SHADE] && !shade_glare(obj))
 					damage = 0;
 				else
-					damage = adjust_damage(rnd(2), &youmonst, mon, objects[uarmg->otyp].oc_damagetype, FALSE, FALSE);
+					damage = adjust_damage(rnd(2), &youmonst, mon, objects[obj->otyp].oc_damagetype, FALSE);
+
 				if (objects[obj->otyp].oc_material == MAT_SILVER
 					&& mon_hates_silver(mon)) 
 				{
 					silvermsg = TRUE;
 					silverobj = TRUE;
+
 					/* if it will already inflict dmg, make it worse */
-					damage += adjust_damage(rnd((min(1, (int)damage)) ? 20 : 10), &youmonst, mon, AD_PHYS, FALSE, FALSE);
+					damage += adjust_damage(rnd((min(1, (int)damage)) ? 20 : 10), &youmonst, mon, AD_PHYS, FALSE);
 				}
 				if (!thrown && (obj == uwep || obj == uarms) && obj->otyp == BOOMERANG
 					&& rnl(4) == 4 - 1) 
@@ -964,9 +973,10 @@ boolean* obj_destroyed;
 				else
 					basedmg = weapon_dmg_value(obj, mon, &youmonst);
 
-				damage = adjust_damage(basedmg, &youmonst, mon, objects[obj->otyp].oc_damagetype, FALSE, FALSE);
+				damage_increase_adtyp = objects[obj->otyp].oc_damagetype;
+				damage = adjust_damage(basedmg, &youmonst, mon, objects[obj->otyp].oc_damagetype, FALSE);
 				extratmp = weapon_extra_dmg_value(obj, mon, &youmonst, basedmg);
-				damage += adjust_damage(extratmp, &youmonst, mon, objects[obj->otyp].oc_damagetype, FALSE, FALSE);
+				damage += adjust_damage(extratmp, &youmonst, mon, objects[obj->otyp].oc_damagetype, FALSE);
 
 				/* a minimal hit doesn't exercise proficiency */
 				valid_weapon_attack = (damage > 0);
@@ -984,7 +994,7 @@ boolean* obj_destroyed;
 					&& hand_to_hand) 
 				{
 					You("strike %s from behind!", mon_nam(mon));
-					damage += adjust_damage(rnd(u.ulevel), &youmonst, mon, objects[obj->otyp].oc_damagetype, FALSE, FALSE);
+					damage += adjust_damage(rnd(u.ulevel), &youmonst, mon, objects[obj->otyp].oc_damagetype, FALSE);
 					hittxt = TRUE;
 				}
 				else if (dieroll == 2 && obj == uwep
@@ -1054,7 +1064,7 @@ boolean* obj_destroyed;
 				}
 				else if(special_hit_dmg > 0)
 				{
-					damage += adjust_damage(special_hit_dmg, &youmonst, mon, spec_adtyp, FALSE, FALSE);
+					damage += adjust_damage(special_hit_dmg, &youmonst, mon, spec_adtyp, FALSE);
 				}
 				if (objects[obj->otyp].oc_material == MAT_SILVER
 					&& mon_hates_silver(mon)) 
@@ -1123,10 +1133,11 @@ boolean* obj_destroyed;
 				case HEAVY_IRON_BALL: /* 1d25 */
 				case IRON_CHAIN:      /* 1d4+1 */
 				{
+					damage_increase_adtyp = objects[obj->otyp].oc_damagetype;
 					int basedmg = weapon_dmg_value(obj, mon, &youmonst);
-					damage = adjust_damage(basedmg, &youmonst, mon, objects[obj->otyp].oc_damagetype, FALSE, FALSE);
+					damage = adjust_damage(basedmg, &youmonst, mon, objects[obj->otyp].oc_damagetype, FALSE);
 					extratmp = weapon_extra_dmg_value(obj, mon, &youmonst, basedmg);
-					damage += adjust_damage(extratmp, &youmonst, mon, objects[obj->otyp].oc_extra_damagetype, FALSE, FALSE);
+					damage += adjust_damage(extratmp, &youmonst, mon, objects[obj->otyp].oc_extra_damagetype, FALSE);
 					break;
 				}
 				case MIRROR:
@@ -1176,8 +1187,9 @@ boolean* obj_destroyed;
 						; /* maybe turn the corpse into a statue? */
 #endif
 					}
+					damage_increase_adtyp = AD_PHYS;
 					damage = adjust_damage((obj->corpsenm >= LOW_PM ? mons[obj->corpsenm].msize
-						: 0) + 1, &youmonst, mon, AD_PHYS, FALSE, FALSE);
+						: 0) + 1, &youmonst, mon, AD_PHYS, FALSE);
 					break;
 
 #define useup_eggs(o)                    \
@@ -1338,10 +1350,11 @@ boolean* obj_destroyed;
 					else 
 					{
 						Your("venom burns %s!", mon_nam(mon));
+						damage_increase_adtyp = objects[obj->otyp].oc_damagetype;
 						int basedmg = weapon_dmg_value(obj, mon, &youmonst);
-						damage = adjust_damage(basedmg, &youmonst, mon, objects[obj->otyp].oc_damagetype, FALSE, FALSE);
+						damage = adjust_damage(basedmg, &youmonst, mon, objects[obj->otyp].oc_damagetype, FALSE);
 						extratmp = weapon_extra_dmg_value(obj, mon, &youmonst, basedmg);
-						damage += adjust_damage(extratmp, &youmonst, mon, objects[obj->otyp].oc_extra_damagetype, FALSE, FALSE);
+						damage += adjust_damage(extratmp, &youmonst, mon, objects[obj->otyp].oc_extra_damagetype, FALSE);
 					}
 					if (thrown)
 						obfree(obj, (struct obj*) 0);
@@ -1353,7 +1366,8 @@ boolean* obj_destroyed;
 				default:
 					/* non-weapons can damage because of their weight */
 					/* (but not too much) */
-					damage = adjust_damage(obj->owt / 100, &youmonst, mon, AD_PHYS, FALSE, FALSE);
+					damage_increase_adtyp = AD_PHYS;
+					damage = adjust_damage(obj->owt / 100, &youmonst, mon, AD_PHYS, FALSE);
 					if (is_wet_towel(obj)) 
 					{
 						/* wielded wet towel should probably use whip skill
@@ -1376,7 +1390,7 @@ boolean* obj_destroyed;
 					if (objects[obj->otyp].oc_material == MAT_SILVER
 						&& mon_hates_silver(mon)) 
 					{
-						damage += adjust_damage(rnd(20), &youmonst, mon, objects[obj->otyp].oc_damagetype, FALSE, FALSE);
+						damage += adjust_damage(rnd(20), &youmonst, mon, objects[obj->otyp].oc_damagetype, FALSE);
 						silvermsg = TRUE;
 						silverobj = TRUE;
 					}
@@ -1390,8 +1404,8 @@ boolean* obj_destroyed;
 
 	if (get_dmg_bonus && damage > 0)
 	{
-		damage += adjust_damage(u.ubasedaminc, &youmonst, mon, AD_MAGM, FALSE, FALSE);
-		damage += adjust_damage(u.udaminc, &youmonst, mon, AD_MAGM, FALSE, FALSE);
+		damage += adjust_damage(u.ubasedaminc, &youmonst, mon, damage_increase_adtyp, FALSE);
+		damage += adjust_damage(u.udaminc, &youmonst, mon, damage_increase_adtyp, FALSE);
 		
 		/* If you throw using a propellor, you don't get a strength
 		 * bonus but you do get an increase-damage bonus.
@@ -1400,23 +1414,23 @@ boolean* obj_destroyed;
 			|| !ammo_and_launcher(obj, uwep))) 
 		{
 			if (thrown == HMON_THROWN)
-				damage += adjust_damage(u_thrown_str_dmg_bonus(), &youmonst, mon, AD_PHYS, FALSE, FALSE);
+				damage += adjust_damage(u_thrown_str_dmg_bonus(), &youmonst, mon, AD_PHYS, FALSE);
 			else if (!obj || obj == uarmg)
 			{
 				if(!martial_bonus() || (uarmg && is_metallic(uarmg)))
-					damage += adjust_damage(u_str_dmg_bonus() / 2, &youmonst, mon, AD_PHYS, FALSE, FALSE);
+					damage += adjust_damage(u_str_dmg_bonus() / 2, &youmonst, mon, AD_PHYS, FALSE);
 				else if(P_SKILL(P_MARTIAL_ARTS) >= P_BASIC)
-					damage += adjust_damage(u_str_dmg_bonus(), &youmonst, mon, AD_PHYS, FALSE, FALSE);
+					damage += adjust_damage(u_str_dmg_bonus(), &youmonst, mon, AD_PHYS, FALSE);
 			}
 			else
-				damage += adjust_damage(u_str_dmg_bonus(), &youmonst, mon, AD_PHYS, FALSE, FALSE);
+				damage += adjust_damage(u_str_dmg_bonus(), &youmonst, mon, AD_PHYS, FALSE);
 		}
 		else if ((obj && uwep && ammo_and_launcher(obj, uwep)) || is_golf_swing_with_stone)
 		{
 			if (objects[uwep->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH)
-				damage += adjust_damage(objects[uwep->otyp].oc_fixed_damage_bonus, &youmonst, mon, objects[uwep->otyp].oc_damagetype, FALSE, FALSE);
+				damage += adjust_damage(objects[uwep->otyp].oc_fixed_damage_bonus, &youmonst, mon, objects[uwep->otyp].oc_damagetype, FALSE);
 			else
-				damage += adjust_damage(u_str_dmg_bonus(), &youmonst, mon, objects[uwep->otyp].oc_damagetype, FALSE, FALSE);
+				damage += adjust_damage(u_str_dmg_bonus(), &youmonst, mon, objects[uwep->otyp].oc_damagetype, FALSE);
 
 			/*
 			if (uwep->otyp == CROSSBOW)
@@ -1433,22 +1447,20 @@ boolean* obj_destroyed;
 
 			//All bows get bow's enchantment bonus and damage
 			int basedmg = weapon_dmg_value(uwep, mon, &youmonst);
-			damage += adjust_damage(basedmg, & youmonst, mon, objects[uwep->otyp].oc_damagetype, FALSE, FALSE);
+			damage += adjust_damage(basedmg, & youmonst, mon, objects[uwep->otyp].oc_damagetype, FALSE);
 			extratmp = weapon_extra_dmg_value(uwep, mon, &youmonst, basedmg);
-			damage += adjust_damage(extratmp, & youmonst, mon, objects[uwep->otyp].oc_extra_damagetype, FALSE, FALSE);
+			damage += adjust_damage(extratmp, & youmonst, mon, objects[uwep->otyp].oc_extra_damagetype, FALSE);
 
 			//Bracers give extra +2 damage, blessed even +3 + their bonus
 			if (uarmb && uarmb->otyp == BRACERS_OF_ARCHERY)
-				damage += adjust_damage(
-					(uarmb->cursed ? -2 : 2) + (uarmb->blessed ? 1 : 0) + uarmb->spe,
-					&youmonst, mon, objects[obj->otyp].oc_damagetype, FALSE, FALSE
-				);
+				damage += adjust_damage((uarmb->cursed ? -2 : 2) + (uarmb->blessed ? 1 : 0) + uarmb->spe,
+					&youmonst, mon, objects[obj->otyp].oc_damagetype, FALSE);
 
 		}
 		else if (thrown == HMON_THROWN && obj && !is_ammo(obj))
 		{
 			//Thrown weapons get also damage bonus, but specific for thrown weapons
-			damage += adjust_damage(u_thrown_str_dmg_bonus(), &youmonst, mon, AD_PHYS, FALSE, FALSE);
+			damage += adjust_damage(u_thrown_str_dmg_bonus(), &youmonst, mon, AD_PHYS, FALSE);
 		}
 	}
 
@@ -1459,7 +1471,7 @@ boolean* obj_destroyed;
 
 		/* to be valid a projectile must have had the correct projector */
 		wep = (is_golf_swing_with_stone || PROJECTILE(obj)) ? uwep : obj;
-		damage += adjust_damage(weapon_skill_dmg_bonus(wep, is_golf_swing_with_stone ? P_THROWN_WEAPON : P_NONE), &youmonst, mon, objects[wep->otyp].oc_damagetype, FALSE, FALSE);
+		damage += adjust_damage(weapon_skill_dmg_bonus(wep, is_golf_swing_with_stone ? P_THROWN_WEAPON : P_NONE), &youmonst, mon, objects[wep->otyp].oc_damagetype, FALSE);
 		/* [this assumes that `!thrown' implies wielded...] */
 		wtype = is_golf_swing_with_stone ? P_THROWN_WEAPON :
 			!obj ? (P_SKILL(P_BARE_HANDED_COMBAT) < P_EXPERT ? P_BARE_HANDED_COMBAT : P_MARTIAL_ARTS) :
@@ -1467,20 +1479,24 @@ boolean* obj_destroyed;
 		use_skill(wtype, 1);
 	}
 
-	if (ispoisoned && !isdisintegrated) {
+	if (ispoisoned && !isdisintegrated) 
+	{
 		int nopoison = (10 - (obj->owt / 10));
 
 		if (nopoison < 2)
 			nopoison = 2;
-		if (Role_if(PM_SAMURAI)) {
+		if (Role_if(PM_SAMURAI))
+		{
 			You("dishonorably use a poisoned weapon!");
 			adjalign(-sgn(u.ualign.type));
 		}
-		else if (u.ualign.type == A_LAWFUL && u.ualign.record > -10) {
+		else if (u.ualign.type == A_LAWFUL && u.ualign.record > -10)
+		{
 			You_feel("like an evil coward for using a poisoned weapon.");
 			adjalign(-1);
 		}
-		if (obj && !rn2(nopoison)) {
+		if (obj && !rn2(nopoison)) 
+		{
 			/* remove poison now in case obj ends up in a bones file */
 			obj->opoisoned = FALSE;
 			/* defer "obj is no longer poisoned" until after hit message */
@@ -1490,19 +1506,20 @@ boolean* obj_destroyed;
 			needpoismsg = TRUE;
 		else if (rn2(10))
 		{
-			poisondamage = adjust_damage(rnd(6), &youmonst, mon, AD_DRST, FALSE, FALSE);
+			poisondamage = adjust_damage(rnd(6), &youmonst, mon, AD_DRST, FALSE);
 			damage += poisondamage;
 		}
 		else
 		{
-			poisondamage = adjust_damage(d(6, 6), & youmonst, mon, AD_DRST, FALSE, FALSE);
+			poisondamage = adjust_damage(d(6, 6), & youmonst, mon, AD_DRST, FALSE);
 			damage += poisondamage;
 			//poiskilled = TRUE;
 			//hide_damage_amount = TRUE;
 		}
 	}
 
-	if (obj && obj->elemental_enchantment > 0 && !isdisintegrated) {
+	if (obj && obj->elemental_enchantment > 0 && !isdisintegrated)
+	{
 		switch (obj->elemental_enchantment)
 		{
 		case COLD_ENCHANTMENT:
@@ -1511,7 +1528,7 @@ boolean* obj_destroyed;
 			else
 			{
 				needenchantmsg = obj->elemental_enchantment;
-				damage += adjust_damage(rnd(6), &youmonst, mon, AD_COLD, FALSE, FALSE);
+				damage += adjust_damage(rnd(6), &youmonst, mon, AD_COLD, FALSE);
 			}
 			if (is_ammo(obj) || throwing_weapon(obj) || objects[obj->otyp].oc_merge ? !rn2(10) : !rn2(50)) 
 			{
@@ -1526,7 +1543,7 @@ boolean* obj_destroyed;
 			else
 			{
 				needenchantmsg = obj->elemental_enchantment;
-				damage += adjust_damage(d(2, 6), &youmonst, mon, AD_FIRE, FALSE, FALSE);
+				damage += adjust_damage(d(2, 6), &youmonst, mon, AD_FIRE, FALSE);
 			}
 			if (is_ammo(obj) || throwing_weapon(obj) || objects[obj->otyp].oc_merge ? !rn2(3) : !rn2(15)) {
 				obj->elemental_enchantment = 0;
@@ -1540,7 +1557,7 @@ boolean* obj_destroyed;
 			else
 			{
 				needenchantmsg = obj->elemental_enchantment;
-				damage += adjust_damage(d(3, 6), &youmonst, mon, AD_ELEC, FALSE, FALSE);
+				damage += adjust_damage(d(3, 6), &youmonst, mon, AD_ELEC, FALSE);
 			}
 			if (is_ammo(obj) || throwing_weapon(obj) || objects[obj->otyp].oc_merge ? 1 : !rn2(5))
 			{
@@ -1609,7 +1626,7 @@ boolean* obj_destroyed;
 
 	if (jousting && !isdisintegrated) 
 	{
-		damage += adjust_damage(d(2, (obj == uwep) ? 10 : 2), &youmonst, mon, objects[obj->otyp].oc_damagetype, FALSE, FALSE); /* [was in weapon_dmg_value()] */
+		damage += adjust_damage(d(2, (obj == uwep) ? 10 : 2), &youmonst, mon, objects[obj->otyp].oc_damagetype, FALSE); /* [was in weapon_dmg_value()] */
 		You("joust %s%s", mon_nam(mon), canseemon(mon) ? exclam((int)ceil(damage)) : ".");
 		if (jousting < 0) 
 		{
@@ -1837,7 +1854,7 @@ boolean* obj_destroyed;
 			)
 		)
 	{
-		int extradmg = (int)ceil(adjust_damage(extratmp, &youmonst, mon, objects[obj->otyp].oc_extra_damagetype, FALSE, FALSE));
+		int extradmg = (int)ceil(adjust_damage(extratmp, &youmonst, mon, objects[obj->otyp].oc_extra_damagetype, FALSE));
 		if (objects[obj->otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
 			extradmg = (int)ceil(damage);
 
@@ -1879,7 +1896,7 @@ boolean* obj_destroyed;
 			)
 		)
 	{
-		int extradmg = (int)ceil(adjust_damage(extratmp, &youmonst, mon, objects[obj->otyp].oc_extra_damagetype, FALSE, FALSE));
+		int extradmg = (int)ceil(adjust_damage(extratmp, &youmonst, mon, objects[obj->otyp].oc_extra_damagetype, FALSE));
 		if (objects[obj->otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
 			extradmg = (int)ceil(damage);
 
@@ -2390,38 +2407,43 @@ int specialdmg; /* blessed and/or silver bonus against various things */
     register struct permonst *pd = mdef->data;
     boolean negated;
     struct obj *mongold;
-	int chance = 0, poisondamage = 0;
+	int chance = 0;
+	double poisondamage = 0;
 
-	int tmp = 0, extratmp = 0;
-	double total_damage = 0;
+	int extratmp = 0;
+	double damage = 0;
 	
 	/*  First determine the base damage done */
 	struct obj* mweapon = uwep;
 	if (mweapon && mattk->aatyp == AT_WEAP)
 	{
+		int basedmg = 0;
 		//Use weapon damage
 		if (is_launcher(mweapon))
-			tmp = d(1, 2);
+			basedmg = d(1, 2);
 		else
-			tmp += weapon_dmg_value(mweapon, mdef, &youmonst);
+			basedmg = weapon_dmg_value(mweapon, mdef, &youmonst);
 
-		extratmp = weapon_extra_dmg_value(mweapon, mdef, &youmonst, tmp);
-		tmp += extratmp;
+		damage += adjust_damage(basedmg, &youmonst, mdef, objects[mweapon->otyp].oc_damagetype, FALSE);
+		extratmp = weapon_extra_dmg_value(mweapon, mdef, &youmonst, basedmg);
+		damage += adjust_damage(extratmp, &youmonst, mdef, objects[mweapon->otyp].oc_damagetype, FALSE);
 	}
 	else
 	{
+		int tmp = 0;
 		//Use stats from ATTK
 		if (mattk->damn > 0 && mattk->damd > 0)
 			tmp += d((int)mattk->damn, (int)mattk->damd);
 		tmp += (int)mattk->damp;
+		damage += adjust_damage(tmp, &youmonst, mdef, mattk->adtyp, FALSE);
 	}
 
 	if (mattk->adtyp == AD_PHYS || mattk->adtyp == AD_DRIN)
 	{
 		if (mattk->aatyp == AT_WEAP || mattk->aatyp == AT_HUGS)
-			tmp += u_str_dmg_bonus();
+			damage += adjust_damage(u_str_dmg_bonus(), & youmonst, mdef, mattk->adtyp, FALSE);
 		else
-			tmp += u_str_dmg_bonus() / 2;
+			damage += adjust_damage(u_str_dmg_bonus() / 2, & youmonst, mdef, mattk->adtyp, FALSE);
 	}
 
 	negated = Cancelled || check_magic_cancellation_success(mdef, mattk->mcadj);
@@ -2436,7 +2458,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
     case AD_LEGS:
 #if 0
         if (u.ucancelled) {
-            tmp = 0;
+            damage = 0;
             break;
         }
 #endif
@@ -2446,39 +2468,47 @@ int specialdmg; /* blessed and/or silver bonus against various things */
     case AD_PHYS:
  physical:
         if (pd == &mons[PM_SHADE]) {
-            tmp = 0;
+            damage = 0;
             if (!specialdmg)
                 impossible("bad shade attack function flow?");
         }
-        tmp += specialdmg;
+        damage += adjust_damage(specialdmg, &youmonst, mdef, mattk->adtyp, FALSE);
 
-        if (mattk->aatyp == AT_WEAP) {
+        if (mattk->aatyp == AT_WEAP)
+		{
             /* hmonas() uses known_hitum() to deal physical damage,
                then also damageum() for non-AD_PHYS; don't inflict
                extra physical damage for unusual damage types */
-            tmp = 0;
-        } else if (mattk->aatyp == AT_KICK
+            damage = 0;
+        } 
+		else if (mattk->aatyp == AT_KICK
                    || mattk->aatyp == AT_CLAW
                    || mattk->aatyp == AT_TUCH
-                   || mattk->aatyp == AT_HUGS) {
-            if (thick_skinned(pd))
-                tmp = (mattk->aatyp == AT_KICK) ? 0 : (tmp + 1) / 2;
+                   || mattk->aatyp == AT_HUGS)
+		{
+			if (thick_skinned(pd))
+				damage = (mattk->aatyp == AT_KICK) ? 0 : damage / 2;
+
             /* add ring(s) of increase damage */
-            if (u.ubasedaminc + u.udaminc > 0) {
+            if (u.ubasedaminc + u.udaminc > 0)
+			{
                 /* applies even if damage was 0 */
-                tmp += u.ubasedaminc + u.udaminc;
-            } else if (tmp > 0) {
+                damage += adjust_damage(u.ubasedaminc + u.udaminc, & youmonst, mdef, mattk->adtyp, FALSE);
+            }
+			else if (damage > 0) 
+			{
                 /* ring(s) might be negative; avoid converting
                    0 to non-0 or positive to non-positive */
-                tmp += u.udaminc;
-                if (tmp < 1)
-                    tmp = 1;
+                damage += adjust_damage(u.udaminc, &youmonst, mdef, mattk->adtyp, FALSE);
+                if (damage < 1)
+                    damage = 1;
             }
         }
         break;
     case AD_FIRE:
-        if (negated) {
-            tmp = 0;
+        if (negated)
+		{
+            damage = 0;
             break;
         }
         if (!Blind)
@@ -2491,59 +2521,73 @@ int specialdmg; /* blessed and/or silver bonus against various things */
                     (pd == &mons[PM_PAPER_GOLEM]) ? " paper"
                       : (pd == &mons[PM_STRAW_GOLEM]) ? " straw" : "");
             xkilled(mdef, XKILL_NOMSG | XKILL_NOCORPSE);
-            tmp = 0;
+			damage = 0;
             break;
-            /* Don't return yet; keep hp<1 and tmp=0 for pet msg */
+            /* Don't return yet; keep hp<1 and damage=0 for pet msg */
         }
-        tmp += destroy_mitem(mdef, SCROLL_CLASS, AD_FIRE);
-        tmp += destroy_mitem(mdef, SPBOOK_CLASS, AD_FIRE);
-        if (resists_fire(mdef)) {
+		damage += adjust_damage(destroy_mitem(mdef, SCROLL_CLASS, AD_FIRE), &youmonst, mdef, mattk->adtyp, FALSE);
+		damage += adjust_damage(destroy_mitem(mdef, SPBOOK_CLASS, AD_FIRE), &youmonst, mdef, mattk->adtyp, FALSE);
+
+        if (resists_fire(mdef))
+		{
             if (!Blind)
                 pline_The("fire doesn't heat %s!", mon_nam(mdef));
-            golemeffects(mdef, AD_FIRE, tmp);
+            golemeffects(mdef, AD_FIRE, damage);
             shieldeff(mdef->mx, mdef->my);
-            tmp = 0;
+            damage = 0;
         }
+
         /* only potions damage resistant players in destroy_item */
-        tmp += destroy_mitem(mdef, POTION_CLASS, AD_FIRE);
+		damage += adjust_damage(destroy_mitem(mdef, POTION_CLASS, AD_FIRE), &youmonst, mdef, mattk->adtyp, FALSE);
+
         break;
     case AD_COLD:
-        if (negated) {
-            tmp = 0;
+        if (negated)
+		{
+            damage = 0;
             break;
         }
+
         if (!Blind)
             pline("%s is covered in frost!", Monnam(mdef));
-        if (resists_cold(mdef)) {
+
+        if (resists_cold(mdef)) 
+		{
             shieldeff(mdef->mx, mdef->my);
             if (!Blind)
                 pline_The("frost doesn't chill %s!", mon_nam(mdef));
-            golemeffects(mdef, AD_COLD, tmp);
-            tmp = 0;
+            golemeffects(mdef, AD_COLD, damage);
+            damage = 0;
         }
-        tmp += destroy_mitem(mdef, POTION_CLASS, AD_COLD);
+
+        damage += adjust_damage(destroy_mitem(mdef, POTION_CLASS, AD_COLD), &youmonst, mdef, mattk->adtyp, FALSE);
         break;
     case AD_ELEC:
-        if (negated) {
-            tmp = 0;
+        if (negated) 
+		{
+            damage = 0;
             break;
         }
+
         if (!Blind)
             pline("%s is zapped!", Monnam(mdef));
-        tmp += destroy_mitem(mdef, WAND_CLASS, AD_ELEC);
-        if (resists_elec(mdef)) {
+
+        damage += adjust_damage(destroy_mitem(mdef, WAND_CLASS, AD_ELEC), &youmonst, mdef, mattk->adtyp, FALSE);
+        
+		if (resists_elec(mdef)) 
+		{
             if (!Blind)
                 pline_The("zap doesn't shock %s!", mon_nam(mdef));
-            golemeffects(mdef, AD_ELEC, tmp);
+            golemeffects(mdef, AD_ELEC, damage);
             shieldeff(mdef->mx, mdef->my);
-            tmp = 0;
+            damage = 0;
         }
         /* only rings damage resistant players in destroy_item */
-        tmp += destroy_mitem(mdef, RING_CLASS, AD_ELEC);
+        damage += adjust_damage(destroy_mitem(mdef, RING_CLASS, AD_ELEC), &youmonst, mdef, mattk->adtyp, FALSE);
         break;
     case AD_ACID:
         if (resists_acid(mdef))
-            tmp = 0;
+            damage = 0;
         break;
     case AD_STON:
 		if (!negated && !resists_ston(mdef))
@@ -2553,14 +2597,14 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 			else
 				start_delayed_petrification(mdef, TRUE);
 		}
-        tmp = 0;
+        damage = 0;
         break;
     case AD_SSEX:
     case AD_SEDU:
     case AD_SITM:
         if(!resists_charm(mdef) && !check_magic_cancellation_success(mdef, mattk->mcadj))
 			steal_it(mdef, mattk);
-        tmp = 0;
+        damage = 0;
         break;
     case AD_SGLD:
         /* This you as a leprechaun, so steal
@@ -2578,12 +2622,14 @@ int specialdmg; /* blessed and/or silver bonus against various things */
             }
         }
         exercise(A_DEX, TRUE);
-        tmp = 0;
+        damage = 0;
         break;
     case AD_TLPT:
-        if (tmp <= 0)
-            tmp = 1;
-        if (!negated) {
+        if (damage <= 0)
+            damage = 1;
+
+        if (!negated) 
+		{
             char nambuf[BUFSZ];
             boolean u_saw_mon = (canseemon(mdef)
                                  || (u.uswallow && u.ustuck == mdef));
@@ -2593,20 +2639,23 @@ int specialdmg; /* blessed and/or silver bonus against various things */
             if (u_teleport_mon(mdef, FALSE) && u_saw_mon
                 && !(canseemon(mdef) || (u.uswallow && u.ustuck == mdef)))
                 pline("%s suddenly disappears!", nambuf);
-            if (tmp >= mdef->mhp) { /* see hitmu(mhitu.c) */
+            
+			if (damage >= (double)mdef->mhp) 
+			{ /* see hitmu(mhitu.c) */
                 if (mdef->mhp == 1)
                     ++mdef->mhp;
-                tmp = mdef->mhp - 1;
+                damage = (double)(mdef->mhp - 1);
             }
         }
         break;
     case AD_BLND:
-        if (can_blnd(&youmonst, mdef, mattk->aatyp, (struct obj *) 0)) {
+        if (can_blnd(&youmonst, mdef, mattk->aatyp, (struct obj *) 0)) 
+		{
             if (!Blind && !is_blinded(mdef))
                 pline("%s is blinded.", Monnam(mdef));
-			nonadditive_increase_mon_property(mdef, BLINDED, tmp);
+			nonadditive_increase_mon_property(mdef, BLINDED, (int)ceil(damage));
         }
-        tmp = 0;
+        damage = 0;
         break;
     case AD_CURS:
         if (night() && !rn2(10) && !is_cancelled(mdef)) {
@@ -2615,13 +2664,13 @@ int specialdmg; /* blessed and/or silver bonus against various things */
                     pline("Some writing vanishes from %s head!",
                           s_suffix(mon_nam(mdef)));
                 xkilled(mdef, XKILL_NOMSG);
-                /* Don't return yet; keep hp<1 and tmp=0 for pet msg */
+                /* Don't return yet; keep hp<1 and damage=0 for pet msg */
             } else {
                 mdef->mprops[CANCELLED] = 100 + rnd(50);
                 You("chuckle.");
             }
         }
-        tmp = 0;
+        damage = 0;
         break;
     case AD_DRLI:
         if (!negated && !resists_drli(mdef)) //!rn2(3) && 
@@ -2639,7 +2688,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
                 xkilled(mdef, XKILL_NOMSG);
             } else
                 mdef->m_lev--;
-            tmp = 0;
+            damage = 0;
         }
         break;
     case AD_RUST:
@@ -2648,11 +2697,11 @@ int specialdmg; /* blessed and/or silver bonus against various things */
             xkilled(mdef, XKILL_NOMSG);
         }
         erode_armor(mdef, ERODE_RUST);
-        tmp = 0;
+        damage = 0;
         break;
     case AD_CORR:
         erode_armor(mdef, ERODE_CORRODE);
-        tmp = 0;
+        damage = 0;
         break;
     case AD_DCAY:
         if (pd == &mons[PM_WOOD_GOLEM] || pd == &mons[PM_LEATHER_GOLEM]) {
@@ -2660,26 +2709,31 @@ int specialdmg; /* blessed and/or silver bonus against various things */
             xkilled(mdef, XKILL_NOMSG);
         }
         erode_armor(mdef, ERODE_ROT);
-        tmp = 0;
+        damage = 0;
         break;
     case AD_DREN:
         if (!negated && !rn2(4))
             xdrainenergym(mdef, TRUE);
-        tmp = 0;
+        damage = 0;
         break;
     case AD_DRST:
     case AD_DRDX:
     case AD_DRCO:
-        if (!negated && !rn2(8)) {
+        if (!negated && !rn2(8)) 
+		{
             Your("%s was poisoned!", mpoisons_subj(&youmonst, mattk));
-            if (resists_poison(mdef)) {
+            if (resists_poison(mdef)) 
+			{
                 pline_The("poison doesn't seem to affect %s.", mon_nam(mdef));
-            } else {
-                if (!rn2(10)) {
-					poisondamage = d(6, 6) + 10; // mdef->mhp;
+            } 
+			else 
+			{
+                if (!rn2(10)) 
+				{
+					poisondamage = adjust_damage(d(6, 6) + 10, &youmonst, mdef, mattk->adtyp, FALSE); // mdef->mhp;
                 } else
-					poisondamage = rn1(10, 6);
-				tmp += poisondamage;
+					poisondamage = adjust_damage(rn1(10, 6), &youmonst, mdef, mattk->adtyp, FALSE);
+				damage += poisondamage;
             }
         }
         break;
@@ -2688,7 +2742,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 
         if (notonhead || !has_head(pd)) {
             pline("%s doesn't seem harmed.", Monnam(mdef));
-            tmp = 0;
+            damage = 0;
             if (!Unchanging && pd == &mons[PM_GREEN_SLIME]) {
                 if (!Slimed) {
                     You("suck in some slime and don't feel very well.");
@@ -2707,7 +2761,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
             break;
         }
 
-        (void) eat_brains(&youmonst, mdef, TRUE, &tmp);
+        (void) eat_brains(&youmonst, mdef, TRUE, &damage);
         break;
     }
     case AD_STCK:
@@ -2718,7 +2772,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
         if (!sticks(pd)) {
             if (!u.ustuck && !rn2(10)) {
                 if (m_slips_free(mdef, mattk)) {
-                    tmp = 0;
+                    damage = 0;
                 } else {
                     You("swing yourself around %s!", mon_nam(mdef));
                     u.ustuck = mdef;
@@ -2728,20 +2782,20 @@ int specialdmg; /* blessed and/or silver bonus against various things */
                 if (is_pool(u.ux, u.uy) && !is_swimmer(pd)
                     && !amphibious(pd)) {
                     You("drown %s...", mon_nam(mdef));
-                    tmp = mdef->mhp;
+					damage = mdef->mhp;
                 } else if (mattk->aatyp == AT_HUGS)
                     pline("%s is being crushed.", Monnam(mdef));
             } else {
-                tmp = 0;
+				damage = 0;
                 if (flags.verbose)
                     You("brush against %s %s.", s_suffix(mon_nam(mdef)),
                         mbodypart(mdef, LEG));
             }
         } else
-            tmp = 0;
+			damage = 0;
         break;
     case AD_PLYS:
-        if (!negated && !resists_paralysis(mdef) && tmp < mdef->mhp)
+        if (!negated && !resists_paralysis(mdef) && damage < ((double)mdef->mhp + ((double)mdef->mhp_fraction)/10000))
 		{
             if (!Blind)
                 pline("%s is frozen by you!", Monnam(mdef));
@@ -2771,7 +2825,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
             /* munslime attempt could have been fatal */
             if (DEADMONSTER(mdef))
                 return 2; /* skip death message */
-            tmp = 0;
+			damage = 0;
         }
         break;
     case AD_ENCH: /* KMH -- remove enchantment (disenchanter) */
@@ -2791,7 +2845,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
         }
         break;
 	case AD_DMNS:
-		tmp = 0;
+		damage = 0;
 		chance = mattk->damp;
 		if(chance > 0 && !Summon_forbidden)
 		{
@@ -2809,36 +2863,46 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 	case AD_UNDO: //Not implemented, demon prince ability
 	case AD_GHUL: //Not implemented, demon prince ability
 	case AD_GNOL: //Not implemented, demon prince ability
-		tmp = 0;
+		damage = 0;
 		break;
 	case AD_LYCA: //Not implemented
-		tmp = 0;
+		damage = 0;
 		break;
 	default:
-        tmp = 0;
+		damage = 0;
         break;
     }
 
     mdef->mstrategy &= ~STRAT_WAITFORU; /* in case player is very fast */
-    mdef->mhp -= tmp;
+	int hp_before = mdef->mhp;
+	deduct_monster_hp(mdef, damage);
+	int hp_after = mdef->mhp;
+	int damagedealt = hp_after - hp_before;
 
-    if (DEADMONSTER(mdef)) {
+    if (DEADMONSTER(mdef)) 
+	{
 		if(poisondamage && mdef->mhp > -poisondamage)
 			Your("poison was deadly...");
 		
-		if (is_tame(mdef) && !cansee(mdef->mx, mdef->my)) {
+		if (is_tame(mdef) && !cansee(mdef->mx, mdef->my)) 
+		{
             You_feel("embarrassed for a moment.");
-            if (tmp)
+            if (damage > 0)
                 xkilled(mdef, XKILL_NOMSG); /* !tmp but hp<1: already killed */
-        } else if (!flags.verbose) {
+        } 
+		else if (!flags.verbose) 
+		{
             You("destroy it!");
-            if (tmp)
+            if (damage > 0)
                 xkilled(mdef, XKILL_NOMSG);
-        } else if (tmp)
+        } 
+		else if (damage > 0)
             killed(mdef);
+
         return 2;
-    } else if (flags.verbose && tmp > 0)
-		You("inflict %d damage.", tmp);
+    } 
+	else if (flags.verbose && damagedealt > 0)
+		You("inflict %d damage.", damagedealt);
 
     return 1;
 }
@@ -2849,14 +2913,14 @@ register struct monst *mdef;
 register struct attack *mattk;
 {
     boolean resistance; /* only for cold/fire/elec */
-    register int tmp = d((int) mattk->damn, (int) mattk->damd);
+    double damage = adjust_damage(d((int) mattk->damn, (int) mattk->damd), &youmonst, mdef, mattk->adtyp, FALSE);
 
     You("explode!");
     switch (mattk->adtyp) {
     case AD_BLND:
         if (!resists_blnd(mdef)) {
             pline("%s is blinded by your flash of light!", Monnam(mdef));
-			increase_mon_property(mdef, BLINDED, tmp);
+			increase_mon_property(mdef, BLINDED, (int)ceil(damage));
         }
         break;
     case AD_HALU:
@@ -2876,7 +2940,7 @@ register struct attack *mattk;
  common:
         if (!resistance) {
             pline("%s gets blasted!", Monnam(mdef));
-            mdef->mhp -= tmp;
+			deduct_monster_hp(mdef, damage);
             if (DEADMONSTER(mdef)) {
                 killed(mdef);
                 return 2;
@@ -2884,7 +2948,7 @@ register struct attack *mattk;
         } else {
             shieldeff(mdef->mx, mdef->my);
             if (is_golem(mdef->data))
-                golemeffects(mdef, (int) mattk->adtyp, tmp);
+                golemeffects(mdef, (int) mattk->adtyp, damage);
             else
                 pline_The("blast doesn't seem to affect %s.", mon_nam(mdef));
         }
@@ -2929,8 +2993,9 @@ register struct attack *mattk;
     static char msgbuf[BUFSZ]; /* for nomovemsg */
 #endif
     register int tmp;
-    register int dam = d((int) mattk->damn, (int) mattk->damd);
-    boolean fatal_gulp;
+    //register int dam = d((int) mattk->damn, (int) mattk->damd);
+	double damage = adjust_damage(d((int)mattk->damn, (int)mattk->damd), &youmonst, mdef, mattk->adtyp, FALSE);
+	boolean fatal_gulp;
     struct obj *otmp;
     struct permonst *pd = mdef->data;
 
@@ -2945,14 +3010,16 @@ register struct attack *mattk;
     if (!engulf_target(&youmonst, mdef))
         return 0;
 
-    if (u.uhunger < 1500 && !u.uswallow) {
+    if (u.uhunger < 1500 && !u.uswallow)
+	{
         for (otmp = mdef->minvent; otmp; otmp = otmp->nobj)
             (void) snuff_lit(otmp);
 
         /* force vampire in bat, cloud, or wolf form to revert back to
            vampire form now instead of dealing with that when it dies */
         if (is_vampshifter(mdef)
-            && newcham(mdef, &mons[mdef->cham], FALSE, FALSE)) {
+            && newcham(mdef, &mons[mdef->cham], FALSE, FALSE))
+		{
             You("engulf it, then expel it.");
             if (canspotmon(mdef))
                 pline("It turns into %s.", a_monnam(mdef));
@@ -2970,7 +3037,8 @@ register struct attack *mattk;
         if ((mattk->adtyp == AD_DGST && !Slow_digestion) || fatal_gulp)
             eating_conducts(pd);
 
-        if (fatal_gulp && !is_rider(pd)) { /* petrification */
+        if (fatal_gulp && !is_rider(pd)) 
+		{ /* petrification */
             char kbuf[BUFSZ];
             const char *mname = pd->mname;
 
@@ -2979,12 +3047,16 @@ register struct attack *mattk;
             You("englut %s.", mon_nam(mdef));
             Sprintf(kbuf, "swallowing %s whole", mname);
             instapetrify(kbuf);
-        } else {
+        } 
+		else
+		{
             start_engulf(mdef);
-            switch (mattk->adtyp) {
+            switch (mattk->adtyp) 
+			{
             case AD_DGST:
                 /* eating a Rider or its corpse is fatal */
-                if (is_rider(pd)) {
+                if (is_rider(pd)) 
+				{
                     pline("Unfortunately, digesting any of it is fatal.");
                     end_engulf();
                     Sprintf(killer.name, "unwisely tried to eat %s",
@@ -2994,8 +3066,9 @@ register struct attack *mattk;
                     return 0; /* lifesaved */
                 }
 
-                if (Slow_digestion) {
-                    dam = 0;
+                if (Slow_digestion)
+				{
+					damage = 0;
                     break;
                 }
 
@@ -3017,13 +3090,17 @@ register struct attack *mattk;
                 } else {
                     tmp = 1 + (pd->cwt >> 8);
                     if (corpse_chance(mdef, &youmonst, TRUE)
-                        && !(mvitals[monsndx(pd)].mvflags & G_NOCORPSE)) {
+                        && !(mvitals[monsndx(pd)].mvflags & G_NOCORPSE)) 
+					{
                         /* nutrition only if there can be a corpse */
                         u.uhunger += (pd->cnutrit + 1) / 2;
-                    } else
+                    } 
+					else
                         tmp = 0;
+
                     Sprintf(msgbuf, "You totally digest %s.", mon_nam(mdef));
-                    if (tmp != 0) {
+                    if (tmp != 0) 
+					{
                         /* setting afternmv = end_engulf is tempting,
                          * but will cause problems if the player is
                          * attacked (which uses his real location) or
@@ -3035,96 +3112,112 @@ register struct attack *mattk;
                         nomul(-tmp);
                         multi_reason = "digesting something";
                         nomovemsg = msgbuf;
-                    } else
+                    }
+					else
                         pline1(msgbuf);
-                    if (pd == &mons[PM_GREEN_SLIME]) {
+                    if (pd == &mons[PM_GREEN_SLIME]) 
+					{
                         Sprintf(msgbuf, "%s isn't sitting well with you.",
                                 The(pd->mname));
-                        if (!Unchanging) {
+                        if (!Unchanging)
+						{
                             make_slimed(5L, (char *) 0);
                         }
-                    } else
+                    } 
+					else
                         exercise(A_CON, TRUE);
                 }
                 end_engulf();
                 return 2;
             case AD_PHYS:
-                if (youmonst.data == &mons[PM_FOG_CLOUD]) {
+                if (youmonst.data == &mons[PM_FOG_CLOUD])
+				{
                     pline("%s is laden with your moisture.", Monnam(mdef));
-                    if (amphibious(pd) && !flaming(pd)) {
-                        dam = 0;
+                    if (amphibious(pd) && !flaming(pd))
+					{
+						damage = 0;
                         pline("%s seems unharmed.", Monnam(mdef));
                     }
-                } else
+                } 
+				else
                     pline("%s is pummeled with your debris!", Monnam(mdef));
                 break;
             case AD_ACID:
                 pline("%s is covered with your goo!", Monnam(mdef));
                 if (resists_acid(mdef)) {
                     pline("It seems harmless to %s.", mon_nam(mdef));
-                    dam = 0;
+					damage = 0;
                 }
                 break;
             case AD_BLND:
                 if (can_blnd(&youmonst, mdef, mattk->aatyp,
-                             (struct obj *) 0)) {
+                             (struct obj *) 0)) 
+				{
                     if (!is_blinded(mdef))
                         pline("%s can't see in there!", Monnam(mdef));
 
-					nonadditive_increase_mon_property(mdef, BLINDED, dam);
+					nonadditive_increase_mon_property(mdef, BLINDED, (int)ceil(damage));
                 }
-                dam = 0;
+				damage = 0;
                 break;
             case AD_ELEC:
-                if (rn2(2)) {
+                if (rn2(2))
+				{
                     pline_The("air around %s crackles with electricity.",
                               mon_nam(mdef));
-                    if (resists_elec(mdef)) {
+                    if (resists_elec(mdef)) 
+					{
                         pline("%s seems unhurt.", Monnam(mdef));
-                        dam = 0;
+						damage = 0;
                     }
-                    golemeffects(mdef, (int) mattk->adtyp, dam);
+                    golemeffects(mdef, (int) mattk->adtyp, damage);
                 } else
-                    dam = 0;
+					damage = 0;
                 break;
             case AD_COLD:
-                if (rn2(2)) {
-                    if (resists_cold(mdef)) {
+                if (rn2(2)) 
+				{
+                    if (resists_cold(mdef))
+					{
                         pline("%s seems mildly chilly.", Monnam(mdef));
-                        dam = 0;
+						damage = 0;
                     } else
                         pline("%s is freezing to death!", Monnam(mdef));
-                    golemeffects(mdef, (int) mattk->adtyp, dam);
+                    golemeffects(mdef, (int) mattk->adtyp, damage);
                 } else
-                    dam = 0;
+					damage = 0;
                 break;
             case AD_FIRE:
-                if (rn2(2)) {
-                    if (resists_fire(mdef)) {
+                if (rn2(2)) 
+				{
+                    if (resists_fire(mdef))
+					{
                         pline("%s seems mildly hot.", Monnam(mdef));
-                        dam = 0;
+						damage = 0;
                     } else
                         pline("%s is burning to a crisp!", Monnam(mdef));
-                    golemeffects(mdef, (int) mattk->adtyp, dam);
+                    golemeffects(mdef, (int) mattk->adtyp, damage);
                 } else
-                    dam = 0;
+					damage = 0;
                 break;
             case AD_DREN:
                 if (!rn2(4))
                     xdrainenergym(mdef, TRUE);
-                dam = 0;
+				damage = 0;
                 break;
             }
             end_engulf();
-            mdef->mhp -= dam;
-            if (DEADMONSTER(mdef)) {
+			deduct_monster_hp(mdef, damage);
+            if (DEADMONSTER(mdef))
+			{
                 killed(mdef);
                 if (DEADMONSTER(mdef)) /* not lifesaved */
                     return 2;
             }
             You("%s %s!", is_animal(youmonst.data) ? "regurgitate" : "expel",
                 mon_nam(mdef));
-            if (Slow_digestion || is_animal(youmonst.data)) {
+            if (Slow_digestion || is_animal(youmonst.data))
+			{
                 pline("Obviously, you didn't like %s taste.",
                       s_suffix(mon_nam(mdef)));
             }
@@ -4010,13 +4103,12 @@ int dmg;
 }
 
 double
-adjust_damage(basedamage, magr, mdef, adtyp, is_spell_damage, use_lethal_damage)
+adjust_damage(basedamage, magr, mdef, adtyp, is_spell_damage)
 int basedamage;
 struct monst* magr;
 struct monst* mdef;
 int adtyp;
 boolean is_spell_damage;
-boolean use_lethal_damage;
 {
 	double base_dmg_d = (double)basedamage;
 	boolean you_attack = (magr && magr == &youmonst);
@@ -4048,19 +4140,6 @@ boolean use_lethal_damage;
 
 	if (mdef)
 	{
-		if (use_lethal_damage)
-		{
-			if (you_defend)
-			{
-				if (Upolyd)
-					return u.mh;
-				else
-					return u.uhp;
-			}
-			else
-				return mdef->mhp;
-		}
-
 		/* Physical and spell damage adjustments */
 		if (!is_spell_damage && adtyp == AD_PHYS &&
 			((you_defend ? Half_physical_damage : has_half_physical_damage(mdef)))
@@ -4136,16 +4215,19 @@ double hp_d;
 
 	int* target_integer_part_ptr = (int*)0;
 	int* target_fractional_part_ptr = (int*)0;
+	int* target_max_ptr = (int*)0;
 
 	if (Upolyd)
 	{
 		target_integer_part_ptr = &u.mh;
 		target_fractional_part_ptr = &u.mh_fraction;
+		target_max_ptr = &u.mhmax;
 	}
 	else
 	{
 		target_integer_part_ptr = &u.uhp;
 		target_fractional_part_ptr = &u.uhp_fraction;
+		target_max_ptr = &u.uhpmax;
 	}
 
 	*target_integer_part_ptr -= integer_hp;
@@ -4157,7 +4239,22 @@ double hp_d;
 		*target_integer_part_ptr -= multiple;
 		*target_fractional_part_ptr += multiple * 10000;
 	}
+	else if (*target_fractional_part_ptr >= 10000)
+	{
+		int multiple = *target_fractional_part_ptr / 10000;
+		*target_integer_part_ptr += multiple;
+		*target_fractional_part_ptr -= multiple * 10000;
+	}
+
+	if (*target_integer_part_ptr >= *target_max_ptr)
+	{
+		*target_integer_part_ptr = *target_max_ptr;
+		*target_fractional_part_ptr = 0;
+	}
+
 }
+
+
 
 void
 deduct_monster_hp(mtmp, hp_d)
@@ -4181,6 +4278,18 @@ double hp_d;
 		int multiple = (abs(mtmp->mhp_fraction) / 10000) + 1;
 		mtmp->mhp -= multiple;
 		mtmp->mhp_fraction += multiple * 10000;
+	}
+	else if (mtmp->mhp_fraction >= 10000)
+	{
+		int multiple = mtmp->mhp_fraction / 10000;
+		mtmp->mhp += multiple;
+		mtmp->mhp_fraction -= multiple * 10000;
+	}
+
+	if (mtmp->mhp >= mtmp->mhpmax)
+	{
+		mtmp->mhp = mtmp->mhpmax;
+		mtmp->mhp_fraction = 0;
 	}
 
 }

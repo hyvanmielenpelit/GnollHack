@@ -406,7 +406,7 @@ int expltype;
                 idamnonres += destroy_mitem(mtmp, RING_CLASS, (int) adtyp);
 
                 if (explmask[i][j] == 1) {
-                    golemeffects(mtmp, (int) adtyp, dam + idamres);
+                    golemeffects(mtmp, (int) adtyp, (double)(dam + idamres));
                     mtmp->mhp -= idamnonres;
                 } else {
                     /* call resist with 0 and do damage manually so 1) we can

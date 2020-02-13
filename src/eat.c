@@ -499,11 +499,12 @@ int
 eat_brains(magr, mdef, visflag, dmg_p)
 struct monst *magr, *mdef;
 boolean visflag;
-int *dmg_p; /* for dishing out extra damage in lieu of Int loss */
+double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
 {
     struct permonst *pd = mdef->data;
     boolean give_nutrit = FALSE;
-	int result = MM_HIT, xtra_dmg = 0;
+	int result = MM_HIT;
+	double xtra_dmg = 0;
 	int int_loss = rnd(2);
 
 	if (noncorporeal(pd)) {

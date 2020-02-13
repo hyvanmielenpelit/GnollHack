@@ -947,6 +947,7 @@ register struct obj* omonwep;
 	int critstrikeroll = rn2(100);
 
 	int tmp = 0, extratmp = 0;
+	double damage = 0;
 
 	struct obj* mweapon = omonwep; // MON_WEP(magr);
 	boolean uses_spell_flags = omonwep ? object_uses_spellbook_wand_flags_and_properties(omonwep) : FALSE;
@@ -1127,7 +1128,7 @@ register struct obj* omonwep;
             if (vis && canseemon(mdef))
                 pline_The("fire doesn't seem to burn %s!", mon_nam(mdef));
             shieldeff(mdef->mx, mdef->my);
-            golemeffects(mdef, AD_FIRE, tmp);
+            golemeffects(mdef, AD_FIRE, (double)tmp);
             tmp = 0;
         }
         /* only potions damage resistant players in destroy_item */
@@ -1144,7 +1145,7 @@ register struct obj* omonwep;
             if (vis && canseemon(mdef))
                 pline_The("frost doesn't seem to chill %s!", mon_nam(mdef));
             shieldeff(mdef->mx, mdef->my);
-            golemeffects(mdef, AD_COLD, tmp);
+            golemeffects(mdef, AD_COLD, (double)tmp);
             tmp = 0;
         }
         tmp += destroy_mitem(mdef, POTION_CLASS, AD_COLD);
@@ -1161,7 +1162,7 @@ register struct obj* omonwep;
             if (vis && canseemon(mdef))
                 pline_The("zap doesn't shock %s!", mon_nam(mdef));
             shieldeff(mdef->mx, mdef->my);
-            golemeffects(mdef, AD_ELEC, tmp);
+            golemeffects(mdef, AD_ELEC, (double)tmp);
             tmp = 0;
         }
         /* only rings damage resistant players in destroy_item */
@@ -1543,7 +1544,7 @@ register struct obj* omonwep;
             }
             break;
         }
-        res = eat_brains(magr, mdef, vis, &tmp);
+        res = eat_brains(magr, mdef, vis, &damage);
         break;
     case AD_SLIM:
         if (cancelled)
@@ -1973,7 +1974,7 @@ int mdead;
             if (resists_cold(magr)) {
                 if (canseemon(magr)) {
                     pline("%s is mildly chilly.", Monnam(magr));
-                    golemeffects(magr, AD_COLD, tmp);
+                    golemeffects(magr, AD_COLD, (double)tmp);
                 }
                 tmp = 0;
                 break;
@@ -2006,7 +2007,7 @@ int mdead;
 						pline("%s is engulfed in %s flames, but they do not burn %s.", Monnam(magr), s_suffix(mon_nam(mdef)), mon_nam(magr));
 					else
 						pline("%s is mildly warmed.", Monnam(magr));
-                    golemeffects(magr, AD_FIRE, tmp);
+                    golemeffects(magr, AD_FIRE, (double)tmp);
                 }
                 tmp = 0;
                 break;
@@ -2023,7 +2024,7 @@ int mdead;
             if (resists_elec(magr)) {
                 if (canseemon(magr)) {
                     pline("%s is mildly tingled.", Monnam(magr));
-                    golemeffects(magr, AD_ELEC, tmp);
+                    golemeffects(magr, AD_ELEC, (double)tmp);
                 }
                 tmp = 0;
                 break;

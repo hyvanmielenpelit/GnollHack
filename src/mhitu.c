@@ -1854,7 +1854,7 @@ register struct obj* omonwep;
                regardless of current shape) or is noncorporeal
                (can't happen here; no one can poly into a ghost
                or shade) so this check for missing is academic */
-            if (eat_brains(mtmp, &youmonst, TRUE, (int *) 0) == MM_MISS)
+            if (eat_brains(mtmp, &youmonst, TRUE, (double *) 0) == MM_MISS)
                 break;
         }
         /* adjattrib gives dunce cap message when appropriate */
@@ -3914,7 +3914,7 @@ struct attack *mattk;
             if (resists_cold(mtmp)) {
                 shieldeff(mtmp->mx, mtmp->my);
                 pline("%s is mildly chilly.", Monnam(mtmp));
-                golemeffects(mtmp, AD_COLD, tmp);
+                golemeffects(mtmp, AD_COLD, (double)tmp);
                 tmp = 0;
                 break;
             }
@@ -3942,7 +3942,7 @@ struct attack *mattk;
 					pline("%s is engulfed in your flames, but they do not burn %s.", Monnam(mtmp), mon_nam(mtmp));
 				else
 					pline("%s is mildly warm.", Monnam(mtmp));
-                golemeffects(mtmp, AD_FIRE, tmp);
+                golemeffects(mtmp, AD_FIRE, (double)tmp);
                 tmp = 0;
                 break;
             }
@@ -3955,7 +3955,7 @@ struct attack *mattk;
             if (resists_elec(mtmp)) {
                 shieldeff(mtmp->mx, mtmp->my);
                 pline("%s is slightly tingled.", Monnam(mtmp));
-                golemeffects(mtmp, AD_ELEC, tmp);
+                golemeffects(mtmp, AD_ELEC, (double)tmp);
                 tmp = 0;
                 break;
             }
