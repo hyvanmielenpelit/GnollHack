@@ -940,14 +940,15 @@ register struct obj* omonwep;
     struct permonst *pa = magr->data, *pd = mdef->data;
     int num,res = MM_MISS;
     boolean cancelled;
-	int poisondamage = 0;
+	double poisondamage = 0;
 	boolean isdisintegrated = FALSE;
 	boolean hittxtalreadydisplayed = FALSE;
 	boolean objectshatters = FALSE;
 	int critstrikeroll = rn2(100);
 
-	int tmp = 0, extratmp = 0;
+	int extratmp = 0;
 	double damage = 0;
+	int increase_damage_adtyp = mattk->adtyp;
 
 	struct obj* mweapon = omonwep; // MON_WEP(magr);
 	boolean uses_spell_flags = omonwep ? object_uses_spellbook_wand_flags_and_properties(omonwep) : FALSE;
@@ -956,34 +957,38 @@ register struct obj* omonwep;
 	cancelled = is_cancelled(magr) || check_magic_cancellation_success(mdef, mattk->mcadj);
 
 
-	tmp += magr->mdaminc;
-
 	if (mweapon)
 	{
 		if (is_launcher(mweapon))
-			tmp += d(1, 2);
+			damage += adjust_damage(d(1, 2), magr, mdef, objects[mweapon->otyp].oc_damagetype, FALSE);
 		else
 		{
-			tmp += weapon_dmg_value(mweapon, mdef, magr);
-			extratmp = weapon_extra_dmg_value(mweapon, mdef, magr, tmp);
-			tmp += extratmp;
+			int basedmg = weapon_dmg_value(mweapon, mdef, magr);
+			damage += adjust_damage(basedmg, magr, mdef, objects[mweapon->otyp].oc_damagetype, FALSE);
+			extratmp = weapon_extra_dmg_value(mweapon, mdef, magr, basedmg);
+			damage += extratmp;
 		}
+		increase_damage_adtyp = objects[mweapon->otyp].oc_damagetype;
 	}
 	else
 	{
+		int basedmg = 0;
 		if (mattk->damn > 0 && mattk->damd > 0)
-			tmp += d((int)mattk->damn, (int)mattk->damd);
-		tmp += (int)mattk->damp;
+			basedmg += d((int)mattk->damn, (int)mattk->damd);
+		basedmg += (int)mattk->damp;
+		damage += adjust_damage(basedmg, magr, mdef, mattk->adtyp, FALSE);
 	}
 
 	//Damage bonus is obtained in any case
 	if (mattk->adtyp == AD_PHYS || mattk->adtyp == AD_DRIN)
 	{
 		if (omonwep || mattk->aatyp == AT_WEAP || mattk->aatyp == AT_HUGS)
-			tmp += m_str_dmg_bonus(magr);
+			damage += adjust_damage(m_str_dmg_bonus(magr), magr, mdef, mattk->adtyp, FALSE);
 		else
-			tmp += m_str_dmg_bonus(magr) / 2;
+			damage += adjust_damage(m_str_dmg_bonus(magr) / 2, magr, mdef, mattk->adtyp, FALSE);
 	}
+
+	damage += adjust_damage(magr->mdaminc, magr, mdef, increase_damage_adtyp, FALSE);
 
     if ((touch_petrifies(pd) /* or flesh_petrifies() */
          || (mattk->adtyp == AD_DGST && pd == &mons[PM_MEDUSA]))
@@ -1050,7 +1055,7 @@ register struct obj* omonwep;
 		goto physical;
     case AD_LEGS:
         if (is_cancelled(magr)) {
-            tmp = 0;
+			damage = 0;
             break;
         }
         goto physical;
@@ -1059,20 +1064,21 @@ register struct obj* omonwep;
     case AD_PHYS:
  physical:
         if (mattk->aatyp == AT_KICK && thick_skinned(pd)) {
-            tmp = 0;
+			damage = 0;
         } else if (mattk->aatyp == AT_WEAP) {
             if (otmp) {
                 if (otmp->otyp == CORPSE
                     && touch_petrifies(&mons[otmp->corpsenm]))
                     goto do_stone;
-                //tmp += weapon_dmg_value(otmp, mdef,magr);
-				//tmp += m_str_dmg_bonus(magr);
+                //damage += weapon_dmg_value(otmp, mdef,magr);
+				//damage += m_str_dmg_bonus(magr);
 
-				if (tmp < 1) /* is this necessary?  mhitu.c has it... */
-                    tmp = 1;
+				if (damage < 1) /* is this necessary?  mhitu.c has it... */
+					damage = 1;
+
                 if (otmp->oartifact) 
 				{
-                    (void) artifact_hit(magr, mdef, otmp, &tmp, dieroll);
+                    (void) artifact_hit(magr, mdef, otmp, &damage, dieroll);
                     if (DEADMONSTER(mdef))
                         return (MM_DEF_DIED
                                 | (grow_up(magr, mdef) ? 0 : MM_AGR_DIED));
@@ -1082,18 +1088,17 @@ register struct obj* omonwep;
 				if (special_hit_dmg < 0)
 				{
 					hittxtalreadydisplayed = TRUE;
-					tmp += 2 * mdef->mhp + 200;
+					damage += 2 * mdef->mhp + 200;
 					if (special_hit_dmg == -2)
 						isdisintegrated = TRUE;
 				}
 				else if (special_hit_dmg > 0)
 				{
-					tmp += special_hit_dmg;
+					damage += adjust_damage(special_hit_dmg, magr, mdef, spec_adtyp, FALSE);
 				}
 
 				/* Check if the object shatters */
-
-                if (tmp)
+                if (damage > 0)
                     rustm(mdef, otmp);
             }
         } else if (pa == &mons[PM_PURPLE_WORM] && pd == &mons[PM_SHRIEKER]) {
@@ -1101,13 +1106,13 @@ register struct obj* omonwep;
                worm's bite attack to kill a shrieker because then it
                won't swallow the corpse; but if the target survives,
                the subsequent engulf attack should accomplish that */
-            if (tmp >= mdef->mhp && mdef->mhp > 1)
-                tmp = mdef->mhp - 1;
+            if (damage >= (double)mdef->mhp && mdef->mhp > 1)
+				damage = (double)mdef->mhp - 1;
         }
         break;
     case AD_FIRE:
         if (cancelled) {
-            tmp = 0;
+			damage = 0;
             break;
         }
         if (vis && canseemon(mdef))
@@ -1122,21 +1127,21 @@ register struct obj* omonwep;
                 pline("May %s roast in peace.", mon_nam(mdef));
             return (MM_DEF_DIED | (grow_up(magr, mdef) ? 0 : MM_AGR_DIED));
         }
-        tmp += destroy_mitem(mdef, SCROLL_CLASS, AD_FIRE);
-        tmp += destroy_mitem(mdef, SPBOOK_CLASS, AD_FIRE);
+		damage += adjust_damage(destroy_mitem(mdef, SCROLL_CLASS, AD_FIRE), magr, mdef, AD_FIRE, FALSE);
+		damage += adjust_damage(destroy_mitem(mdef, SPBOOK_CLASS, AD_FIRE), magr, mdef, AD_FIRE, FALSE);
         if (resists_fire(mdef)) {
             if (vis && canseemon(mdef))
                 pline_The("fire doesn't seem to burn %s!", mon_nam(mdef));
             shieldeff(mdef->mx, mdef->my);
-            golemeffects(mdef, AD_FIRE, (double)tmp);
-            tmp = 0;
+            golemeffects(mdef, AD_FIRE, damage);
+			damage = 0;
         }
         /* only potions damage resistant players in destroy_item */
-        tmp += destroy_mitem(mdef, POTION_CLASS, AD_FIRE);
+        damage += adjust_damage(destroy_mitem(mdef, POTION_CLASS, AD_FIRE), magr, mdef, AD_FIRE, FALSE);
         break;
     case AD_COLD:
         if (cancelled) {
-            tmp = 0;
+			damage = 0;
             break;
         }
         if (vis && canseemon(mdef))
@@ -1145,39 +1150,44 @@ register struct obj* omonwep;
             if (vis && canseemon(mdef))
                 pline_The("frost doesn't seem to chill %s!", mon_nam(mdef));
             shieldeff(mdef->mx, mdef->my);
-            golemeffects(mdef, AD_COLD, (double)tmp);
-            tmp = 0;
+            golemeffects(mdef, AD_COLD, damage);
+			damage = 0;
         }
-        tmp += destroy_mitem(mdef, POTION_CLASS, AD_COLD);
+		damage += adjust_damage(destroy_mitem(mdef, POTION_CLASS, AD_COLD), magr, mdef, AD_COLD, FALSE);
         break;
     case AD_ELEC:
-        if (cancelled) {
-            tmp = 0;
+        if (cancelled) 
+		{
+            damage = 0;
             break;
         }
-        if (vis && canseemon(mdef))
+        
+		if (vis && canseemon(mdef))
             pline("%s gets zapped!", Monnam(mdef));
-        tmp += destroy_mitem(mdef, WAND_CLASS, AD_ELEC);
-        if (resists_elec(mdef)) {
+        
+		damage += adjust_damage(destroy_mitem(mdef, WAND_CLASS, AD_ELEC), magr, mdef, AD_COLD, FALSE);
+        
+		if (resists_elec(mdef)) 
+		{
             if (vis && canseemon(mdef))
                 pline_The("zap doesn't shock %s!", mon_nam(mdef));
             shieldeff(mdef->mx, mdef->my);
-            golemeffects(mdef, AD_ELEC, (double)tmp);
-            tmp = 0;
+            golemeffects(mdef, AD_ELEC, damage);
+            damage = 0;
         }
         /* only rings damage resistant players in destroy_item */
-        tmp += destroy_mitem(mdef, RING_CLASS, AD_ELEC);
+        damage += adjust_damage(destroy_mitem(mdef, RING_CLASS, AD_ELEC), magr, mdef, AD_ELEC, FALSE);
         break;
     case AD_ACID:
         if (is_cancelled(magr)) {
-            tmp = 0;
+            damage = 0;
             break;
         }
         if (resists_acid(mdef)) {
             if (vis && canseemon(mdef))
                 pline("%s is covered in %s, but it seems harmless.",
                       Monnam(mdef), hliquid("acid"));
-            tmp = 0;
+            damage = 0;
         } else if (vis && canseemon(mdef)) {
             pline("%s is covered in %s!", Monnam(mdef), hliquid("acid"));
             pline("It burns %s!", mon_nam(mdef));
@@ -1202,14 +1212,14 @@ register struct obj* omonwep;
         }
         erode_armor(mdef, ERODE_RUST);
         mdef->mstrategy &= ~STRAT_WAITFORU;
-        tmp = 0;
+        damage = 0;
         break;
     case AD_CORR:
         if (is_cancelled(magr))
             break;
         erode_armor(mdef, ERODE_CORRODE);
         mdef->mstrategy &= ~STRAT_WAITFORU;
-        tmp = 0;
+        damage = 0;
         break;
     case AD_DCAY:
         if (is_cancelled(magr))
@@ -1226,7 +1236,7 @@ register struct obj* omonwep;
         }
         erode_armor(mdef, ERODE_CORRODE);
         mdef->mstrategy &= ~STRAT_WAITFORU;
-        tmp = 0;
+        damage = 0;
         break;
     case AD_STON:
         if (cancelled) //changed to respect MC
@@ -1250,10 +1260,10 @@ register struct obj* omonwep;
 			else
 				start_delayed_petrification(mdef, FALSE);
 		}
-        tmp = (mattk->adtyp == AD_STON ? 0 : 1);
+        damage = (mattk->adtyp == AD_STON ? 0 : 1);
         break;
     case AD_TLPT:
-        if (!cancelled && tmp < mdef->mhp && !tele_restrict(mdef)) {
+        if (!cancelled && damage < mdef->mhp && !tele_restrict(mdef)) {
             char mdef_Monnam[BUFSZ];
             boolean wasseen = canspotmon(mdef);
 
@@ -1265,10 +1275,10 @@ register struct obj* omonwep;
             (void) rloc(mdef, TRUE);
             if (vis && wasseen && !canspotmon(mdef) && mdef != u.usteed)
                 pline("%s suddenly disappears!", mdef_Monnam);
-            if (tmp >= mdef->mhp) { /* see hitmu(mhitu.c) */
+            if (damage >= (double)mdef->mhp) { /* see hitmu(mhitu.c) */
                 if (mdef->mhp == 1)
                     ++mdef->mhp;
-                tmp = mdef->mhp - 1;
+                damage = (double)mdef->mhp - 1;
             }
         }
         break;
@@ -1326,7 +1336,7 @@ register struct obj* omonwep;
 			nonadditive_increase_mon_property(mdef, BLINDED, rnd_tmp);
             mdef->mstrategy &= ~STRAT_WAITFORU;
         }
-        tmp = 0;
+        damage = 0;
         break;
 	case AD_CNCL:
 		if (cancelled)
@@ -1370,7 +1380,7 @@ register struct obj* omonwep;
 			nonadditive_increase_mon_property(mdef, HALLUC, 100 + rnd(50));
             mdef->mstrategy &= ~STRAT_WAITFORU;
         }
-        tmp = 0;
+        damage = 0;
         break;
     case AD_CURS:
         if (!night() && (pa == &mons[PM_GREMLIN]))
@@ -1403,7 +1413,7 @@ register struct obj* omonwep;
         }
         break;
     case AD_SGLD:
-        tmp = 0;
+        damage = 0;
         if (is_cancelled(magr))
             break;
         /* technically incorrect; no check for stealing gold from
@@ -1432,12 +1442,12 @@ register struct obj* omonwep;
     case AD_DRLI:
         if (!cancelled && !resists_drli(mdef)) //!rn2(3) && 
 		{
-            tmp = d(2, 6);
+            int basehpdrain = d(2, 6);
             if (vis && canspotmon(mdef))
                 pline("%s suddenly seems weaker!", Monnam(mdef));
-            mdef->mbasehpmax -= tmp;
+            mdef->mbasehpmax -= basehpdrain;
             if (mdef->m_lev == 0)
-                tmp = mdef->mhp;
+                damage = (double)mdef->mhp + 1;
             else
                 mdef->m_lev--;
 
@@ -1499,13 +1509,13 @@ register struct obj* omonwep;
                     pline("%s suddenly disappears!", buf);
             }
         }
-        tmp = 0;
+        damage = 0;
         break;
     case AD_DREN:
         if (!cancelled && !rn2(4))
             xdrainenergym(mdef, (boolean) (vis && canspotmon(mdef)
                                            && mattk->aatyp != AT_ENGL));
-        tmp = 0;
+		damage = 0;
         break;
     case AD_DRST:
     case AD_DRDX:
@@ -1520,11 +1530,11 @@ register struct obj* omonwep;
                               mon_nam(mdef));
             } else {
                 if (rn2(10))
-					poisondamage = rn1(10, 6);
+					poisondamage = adjust_damage(rn1(10, 6), magr, mdef, AD_DRCO, FALSE);
                 else {
-					poisondamage = d(6, 6) + 10; // mdef->mhp;
+					poisondamage = adjust_damage(d(6, 6) + 10, magr, mdef, AD_DRCO, FALSE); // mdef->mhp;
                 }
-				tmp += poisondamage;
+				damage += poisondamage;
             }
         }
         break;
@@ -1533,7 +1543,7 @@ register struct obj* omonwep;
             if (vis && canspotmon(mdef))
                 pline("%s doesn't seem harmed.", Monnam(mdef));
             /* Not clear what to do for green slimes */
-            tmp = 0;
+			damage = 0;
             break;
         }
         if ((mdef->worn_item_flags & W_ARMH) && rn2(8)) {
@@ -1566,17 +1576,17 @@ register struct obj* omonwep;
                 res |= MM_AGR_DIED;
             if (DEADMONSTER(mdef))
                 res |= MM_DEF_DIED;
-            tmp = 0;
+			damage = 0;
 #endif
         }
         break;
     case AD_STCK:
         if (cancelled)
-            tmp = 0;
+			damage = 0;
         break;
     case AD_WRAP: /* monsters cannot grab one another, it's too hard */
         if (is_cancelled(magr))
-            tmp = 0;
+			damage = 0;
         break;
     case AD_ENCH:
         /* there's no msomearmor() function, so just do damage */
@@ -1590,10 +1600,10 @@ register struct obj* omonwep;
 		}
 		break;
 	default:
-        tmp = 0;
+		damage = 0;
         break;
     }
-    if (!tmp)
+    if (!damage)
         return res;
 
 	/* Wounding */
@@ -1616,7 +1626,7 @@ register struct obj* omonwep;
 	{
 		int extradmg = extratmp;
 		if (objects[mweapon->otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
-			extradmg = tmp;
+			extradmg = (int)ceil(damage);
 
 		mdef->mbasehpmax -= extradmg;
 
@@ -1649,7 +1659,7 @@ register struct obj* omonwep;
 	{
 		int extradmg = extratmp;
 		if (objects[mweapon->otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
-			extradmg = tmp;
+			extradmg = (int)ceil(damage);
 
 		magr->mhp += extradmg;
 		if (magr->mhp > magr->mhpmax)
@@ -1664,10 +1674,8 @@ register struct obj* omonwep;
 		}
 	}
 
-
-
 	//Reduce HP
-	mdef->mhp -= tmp;
+	deduct_monster_hp(mdef, damage);
 	update_mon_maxhp(mdef);
 
 	//Adjust further if mhpmax is smaller
@@ -1677,7 +1685,7 @@ register struct obj* omonwep;
 
     if (DEADMONSTER(mdef)) 
 	{
-		if (poisondamage && mdef->mhp > -poisondamage && vis && canspotmon(mdef) && !isdisintegrated)
+		if (poisondamage && ((double)mdef->mhp + ((double)mdef->mhp_fraction)/10000) > -poisondamage && vis && canspotmon(mdef) && !isdisintegrated)
 			pline_The("poison was deadly...");
 
 		if (m_at(mdef->mx, mdef->my) == magr) { /* see gulpmm() */

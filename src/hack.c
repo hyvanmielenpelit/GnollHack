@@ -2256,13 +2256,11 @@ boolean pick;
                 You("are almost hit by %s!",
                     x_monnam(mtmp, ARTICLE_A, "falling", 0, TRUE));
             } else {
-                int dmg;
+                double dmg;
 
                 You("are hit by %s!",
                     x_monnam(mtmp, ARTICLE_A, "falling", 0, TRUE));
-                dmg = d(4, 6);
-                if (Half_physical_damage)
-                    dmg = (dmg + 1) / 2;
+                dmg = adjust_damage(d(4, 6), (struct monst*)0, &youmonst, AD_PHYS, FALSE);
                 mdamageu(mtmp, dmg, TRUE);
             }
             break;
@@ -2997,18 +2995,16 @@ maybe_wail()
 
 void
 losehp(n, knam, k_format)
-register int n;
+double n;
 register const char *knam;
 boolean k_format;
 {
 	if (Invulnerable) //Note you must set damage to zero so it does not get displayed to the player
 		return;
 
-    if (Upolyd) {
-        u.mh -= n;
-        if (u.mhmax < u.mh)
-            u.mhmax = u.mh;
-        context.botl = 1;
+    if (Upolyd) 
+	{
+		deduct_player_hp(n);
         if (u.mh < 1)
             rehumanize();
         else if (n > 0 && u.mh * 10 < u.mhmax && Unchanging)
@@ -3016,19 +3012,21 @@ boolean k_format;
         return;
     }
 
-    u.uhp -= n;
-    if (u.uhp > u.uhpmax)
-        u.uhpmax = u.uhp; /* perhaps n was negative */
-    else
+	deduct_player_hp(n);
+
+	if(n > 0)
         context.travel = context.travel1 = context.mv = context.run = 0;
-    context.botl = 1;
-    if (u.uhp < 1) {
+
+    if (u.uhp < 1) 
+	{
         killer.format = k_format;
         if (killer.name != knam) /* the thing that killed you */
             Strcpy(killer.name, knam ? knam : "");
         You("die...");
         done(DIED);
-    } else if (n > 0 && u.uhp * 10 < u.uhpmax) {
+    } 
+	else if (n > 0 && u.uhp * 10 < u.uhpmax) 
+	{
         maybe_wail();
     }
 }

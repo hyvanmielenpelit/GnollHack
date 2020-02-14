@@ -39,8 +39,8 @@ STATIC_DCL void FDECL(cursetxt, (struct monst *, BOOLEAN_P));
 STATIC_DCL int FDECL(choose_magic_spell, (int));
 STATIC_DCL int FDECL(choose_clerical_spell, (int));
 STATIC_DCL int FDECL(m_cure_self, (struct monst *, int));
-STATIC_DCL void FDECL(cast_wizard_spell, (struct monst *, int, int));
-STATIC_DCL void FDECL(cast_cleric_spell, (struct monst *, int, int));
+STATIC_DCL void FDECL(cast_wizard_spell, (struct monst *, double, int));
+STATIC_DCL void FDECL(cast_cleric_spell, (struct monst *, double, int));
 STATIC_DCL boolean FDECL(is_undirected_spell, (unsigned int, int));
 STATIC_DCL boolean
 FDECL(spell_would_be_useless, (struct monst *, unsigned int, int));
@@ -187,7 +187,7 @@ register struct attack *mattk;
 boolean thinks_it_foundyou;
 boolean foundyou;
 {
-	int dmg;
+	double dmg;
     int ret;
     int spellnum = 0;
 	int  ml = 0;
@@ -294,22 +294,21 @@ boolean foundyou;
      * As these are spells, the damage is related to the level
      * of the monster casting the spell.
      */
-    if (!foundyou) {
+    if (!foundyou)
+	{
         dmg = 0;
-        if (mattk->adtyp != AD_SPEL && mattk->adtyp != AD_CLRC) {
+        if (mattk->adtyp != AD_SPEL && mattk->adtyp != AD_CLRC) 
+		{
             impossible(
               "%s casting non-hand-to-hand version of hand-to-hand spell %d?",
                        Monnam(mtmp), mattk->adtyp);
             return (0);
         }
-    } else if (mattk->damd)
-        dmg = d((int) ((ml / 2) + mattk->damn), (int) mattk->damd);
+    } 
+	else if (mattk->damd)
+        dmg = adjust_damage(d((int) ((ml / 2) + mattk->damn), (int) mattk->damd), mtmp, &youmonst, mattk->adtyp, TRUE);
     else
-        dmg = d((int) ((ml / 2) + 1), 6);
-    if (Half_spell_damage)
-        dmg = (dmg + 1) / 2;
-	if (Invulnerable)
-		dmg = 0;
+        dmg = adjust_damage(d((int) ((ml / 2) + 1), 6), mtmp, &youmonst, mattk->adtyp, TRUE);
 
     ret = 1;
 
@@ -338,7 +337,7 @@ boolean foundyou;
             pline_The("missiles bounce off!");
             dmg = 0;
         } else
-            dmg = d((int) mtmp->m_lev / 2 + 1, 6);
+            dmg = adjust_damage(d((int) mtmp->m_lev / 2 + 1, 6), mtmp, &youmonst, mattk->adtyp, TRUE);
         break;
     case AD_SPEL: /* wizard spell */
 		cast_wizard_spell(mtmp, dmg, spellnum);
@@ -349,7 +348,7 @@ boolean foundyou;
         dmg = 0; /* done by the spell casting functions */
         break;
     }
-    if (dmg)
+    if (dmg > 0)
         mdamageu(mtmp, dmg, TRUE);
     return (ret);
 }
@@ -383,7 +382,7 @@ STATIC_OVL
 void
 cast_wizard_spell(mtmp, dmg, spellnum)
 struct monst *mtmp;
-int dmg;
+double dmg;
 int spellnum;
 {
     if (dmg == 0 && !is_undirected_spell(AD_SPEL, spellnum)) {
@@ -481,14 +480,16 @@ int spellnum;
         if (Antimagic) {
             shieldeff(u.ux, u.uy);
             You_feel("momentarily weakened.");
-        } else {
+        }
+		else 
+		{
             You("suddenly feel weaker!");
-            dmg = mtmp->m_lev - 6;
+			int strloss = mtmp->m_lev - 6;
             if (Half_spell_damage)
-                dmg = (dmg + 1) / 2;
+				strloss = (strloss + 1) / 2;
 			if (Invulnerable)
-				dmg = 0;
-			losestr(rnd(dmg));
+				strloss = 0;
+			losestr(rnd(strloss));
             if (u.uhp < 1)
                 done_in_by(mtmp, DIED);
         }
@@ -515,10 +516,10 @@ int spellnum;
             make_stunned(1L, FALSE);
         } else {
             You(Stunned ? "struggle to keep your balance." : "reel...");
-            dmg = d(ACURR(A_DEX) < 12 ? 6 : 4, 4);
+            int stun_duration = d(ACURR(A_DEX) < 12 ? 6 : 4, 4);
             if (Half_spell_damage)
-                dmg = (dmg + 1) / 2;
-            make_stunned((HStun & TIMEOUT) + (long) dmg, FALSE);
+				stun_duration = (stun_duration + 1) / 2;
+            make_stunned((HStun & TIMEOUT) + (long)stun_duration, FALSE);
         }
         dmg = 0;
         break;
@@ -527,14 +528,15 @@ int spellnum;
 		dmg = 0;
         break;
     case MGC_CURE_SELF:
-        dmg = m_cure_self(mtmp, dmg);
+        dmg = (double)m_cure_self(mtmp, (int)dmg);
         break;
     case MGC_PSI_BOLT:
         /* prior to 3.4.0 Antimagic was setting the damage to 1--this
            made the spell virtually harmless to players with magic res. */
-        if (Antimagic || Invulnerable) {
+        if (Antimagic || Invulnerable) 
+		{
             shieldeff(u.ux, u.uy);
-            dmg = (dmg + 1) / 2;
+            dmg = dmg / 2;
         }
         if (dmg <= 5)
             You("get a slight %sache.", body_part(HEAD));
@@ -551,7 +553,7 @@ int spellnum;
         break;
     }
 
-    if (dmg)
+    if (dmg > 0)
         mdamageu(mtmp, dmg, TRUE);
 }
 
@@ -559,7 +561,7 @@ STATIC_OVL
 void
 cast_cleric_spell(mtmp, dmg, spellnum)
 struct monst *mtmp;
-int dmg;
+double dmg;
 int spellnum;
 {
     if (dmg == 0 && !is_undirected_spell(AD_CLRC, spellnum)) {
@@ -573,19 +575,16 @@ int spellnum;
          * not magical damage or fire damage
          */
         pline("A sudden geyser slams into you from nowhere!");
-        dmg = d(8, 6);
-        if (Half_physical_damage)
-            dmg = (dmg + 1) / 2;
+        dmg = adjust_damage(d(8, 6), mtmp, &youmonst, AD_PHYS, TRUE);
         break;
     case CLC_FIRE_PILLAR:
         pline("A pillar of fire strikes all around you!");
-        if (Fire_resistance) {
+        if (Fire_resistance) 
+		{
             shieldeff(u.ux, u.uy);
             dmg = 0;
         } else
-            dmg = d(8, 6);
-        if (Half_spell_damage)
-            dmg = (dmg + 1) / 2;
+            dmg = adjust_damage(d(8, 6), mtmp, &youmonst, AD_FIRE, TRUE);
         burn_away_slime();
         (void) burnarmor(&youmonst);
         destroy_item(SCROLL_CLASS, AD_FIRE);
@@ -604,9 +603,7 @@ int spellnum;
             if (reflects)
                 break;
         } else
-            dmg = d(8, 6);
-        if (Half_spell_damage)
-            dmg = (dmg + 1) / 2;
+            dmg = adjust_damage(d(8, 6), mtmp, &youmonst, AD_ELEC, TRUE);
         destroy_item(WAND_CLASS, AD_ELEC);
         destroy_item(RING_CLASS, AD_ELEC);
         (void) flashburn((long) rnd(100));
@@ -712,13 +709,15 @@ int spellnum;
                 You("stiffen briefly.");
             nomul(-1);
             multi_reason = "paralyzed by a monster";
-        } else {
+        } 
+		else 
+		{
             if (multi >= 0)
                 You("are frozen in place!");
-            dmg = 4 + (int) mtmp->m_lev;
+            int duration = 4 + (int) mtmp->m_lev;
             if (Half_spell_damage)
-                dmg = (dmg + 1) / 2;
-            nomul(-dmg);
+				duration = (duration + 1) / 2;
+            nomul(-duration);
             multi_reason = "paralyzed by a monster";
         }
         nomovemsg = 0;
@@ -731,10 +730,10 @@ int spellnum;
         } else {
             boolean oldprop = !!Confusion;
 
-            dmg = (int) mtmp->m_lev;
+			int duration = (int) mtmp->m_lev;
             if (Half_spell_damage)
-                dmg = (dmg + 1) / 2;
-            make_confused(itimeout_incr(HConfusion, dmg), TRUE);
+				duration = (duration + 1) / 2;
+            make_confused(itimeout_incr(HConfusion, duration), TRUE);
             if (Hallucination)
                 You_feel("%s!", oldprop ? "trippier" : "trippy");
             else
@@ -743,12 +742,13 @@ int spellnum;
         dmg = 0;
         break;
     case CLC_CURE_SELF:
-        dmg = m_cure_self(mtmp, dmg);
+        dmg = (double)m_cure_self(mtmp, (int)dmg);
         break;
     case CLC_OPEN_WOUNDS:
-        if (Antimagic) {
+        if (Antimagic)
+		{
             shieldeff(u.ux, u.uy);
-            dmg = (dmg + 1) / 2;
+            dmg = dmg / 2;
         }
         if (dmg <= 5)
             Your("skin itches badly for a moment.");
@@ -765,7 +765,7 @@ int spellnum;
         break;
     }
 
-    if (dmg)
+    if (dmg > 0)
         mdamageu(mtmp, dmg, TRUE);
 }
 

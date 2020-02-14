@@ -774,7 +774,7 @@ int thrown; /* HMON_xxx (0 => hand-to-hand, other => ranged) */
 int dieroll;
 boolean* obj_destroyed;
 {
-	int tmp = 0, extratmp = 0;
+	int extratmp = 0;
 	double damage = 0;
 	struct permonst* mdat = mon->data;
 	int barehand_silver_rings = 0;
@@ -831,6 +831,7 @@ boolean* obj_destroyed;
 		else
 		{
 			boolean martial_arts_applies = martial_bonus() && !(uarmg && is_metallic(uarmg));
+			int tmp = 0;
 			if (martial_arts_applies)
 			{
 				/* bonus for martial arts */
@@ -1034,18 +1035,14 @@ boolean* obj_destroyed;
 				}
 
 				int ahres = 0;
-				tmp = (int)ceil(damage);
-				int tmpbefore = tmp;
 				if (obj->oartifact
-					&& (ahres = artifact_hit(&youmonst, mon, obj, &tmp, dieroll))) 
+					&& (ahres = artifact_hit(&youmonst, mon, obj, &damage, dieroll))) 
 				{
 					if (DEADMONSTER(mon)) /* artifact killed monster */
 						return FALSE;
 					
-					if (tmp == 0)
+					if (damage == 0)
 						return TRUE;
-					else
-						damage += (double)(max(0, tmp - tmpbefore));
 
 					hittxt = TRUE;
 					if(ahres == 1)
@@ -1056,7 +1053,7 @@ boolean* obj_destroyed;
 				int special_hit_dmg = pseudo_artifact_hit(&youmonst, mon, obj, extratmp, dieroll, critstrikeroll, &spec_adtyp);
 				if (special_hit_dmg < 0)
 				{
-					damage += 2 * mon->mhp + 200;
+					damage += 2 * (double)mon->mhp + 200;
 					if (special_hit_dmg == -2)
 						isdisintegrated = TRUE;
 					hide_damage_amount = TRUE;
@@ -4140,8 +4137,13 @@ boolean is_spell_damage;
 
 	if (mdef)
 	{
+		if (you_defend ? Invulnerable : has_invulnerable(mdef))
+		{
+			return 0;
+		}
+
 		/* Physical and spell damage adjustments */
-		if (!is_spell_damage && adtyp == AD_PHYS &&
+		if ((adtyp == AD_PHYS || adtyp == AD_ACID || adtyp == AD_DGST) &&
 			((you_defend ? Half_physical_damage : has_half_physical_damage(mdef)))
 			|| (magr && (you_defend ? Half_physical_damage_against_undead_and_demons : has_half_physical_damage_against_undead_and_demons(mdef)) && (is_undead(magr->data) || is_demon(magr->data)))
 			)
@@ -4149,7 +4151,7 @@ boolean is_spell_damage;
 			base_dmg_d /= 2;
 		}
 
-		if (!is_spell_damage && adtyp == AD_PHYS &&
+		if ((adtyp == AD_PHYS || adtyp == AD_ACID || adtyp == AD_DGST) &&
 			((you_defend ? Double_physical_damage : has_double_physical_damage(mdef)))
 			)
 		{
@@ -4199,6 +4201,7 @@ boolean is_spell_damage;
 			if (!magr || (magr && !(you_attack || is_tame(magr)))) /* Only hostile and non-tame peaceful attacking monsters get damage bonus */
 				base_dmg_d *= monster_damage_multiplier;
 		}
+
 	}
 
 	return base_dmg_d;
@@ -4251,7 +4254,7 @@ double hp_d;
 		*target_integer_part_ptr = *target_max_ptr;
 		*target_fractional_part_ptr = 0;
 	}
-
+	context.botl = 1;
 }
 
 

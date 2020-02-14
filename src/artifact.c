@@ -22,7 +22,7 @@ extern boolean notonhead; /* for long worms */
 STATIC_DCL boolean FDECL(bane_applies, (const struct artifact *, struct monst *));
 STATIC_DCL int FDECL(spec_applies, (const struct artifact *, struct monst *));
 STATIC_DCL int FDECL(arti_invoke, (struct obj *));
-STATIC_DCL boolean FDECL(Mb_hit, (struct monst * magr, struct monst *mdef, struct obj *, int *, int, BOOLEAN_P, char *));
+STATIC_DCL boolean FDECL(Mb_hit, (struct monst * magr, struct monst *mdef, struct obj *, double *, int, BOOLEAN_P, char *));
 STATIC_DCL int FDECL(glow_strength, (int));
 STATIC_DCL boolean FDECL(untouchable, (struct obj *, BOOLEAN_P));
 STATIC_DCL int FDECL(count_surround_traps, (int, int));
@@ -946,11 +946,11 @@ struct monst *mon;
 }
 
 /* special damage bonus */
-int
-spec_dbon(otmp, mon, tmp)
+double
+spec_dbon(otmp, mon, damage)
 struct obj *otmp;
 struct monst *mon;
-int tmp;
+double damage;
 {
     register const struct artifact *weap = get_artifact(otmp);
 
@@ -962,11 +962,11 @@ int tmp;
 
 	if (spec_dbon_applies)
 	{
-		int dbon = weap->attk.damp;
+		double dbon = 0;
 		if (weap->attk.damd > 0 && weap->attk.damn > 0)
-			dbon += d(weap->attk.damn, weap->attk.damd);
+			dbon += adjust_damage(d(weap->attk.damn, weap->attk.damd) + weap->attk.damp, (struct monst*)0, mon, !weap ? AD_PHYS : weap->attk.adtyp, FALSE);
 		else if(weap->attk.damn < 0)
-			dbon += max(-weap->attk.damn * tmp, 0);
+			dbon += max(-((double)weap->attk.damn) * damage, 0);
 
 		return dbon;
 	}
@@ -1076,7 +1076,7 @@ STATIC_OVL boolean
 Mb_hit(magr, mdef, mb, dmgptr, dieroll, vis, hittee)
 struct monst *magr, *mdef; /* attacker and defender */
 struct obj *mb;            /* Magicbane */
-int *dmgptr;               /* extra damage target will suffer */
+double *dmgptr;               /* extra damage target will suffer */
 int dieroll;               /* d20 that has already scored a hit */
 boolean vis;               /* whether the action can be seen */
 char *hittee;              /* target's name: "you" or mon_nam(mdef) */
@@ -1110,18 +1110,18 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
        [note that a successful save against AD_STUN doesn't actually
        prevent the target from ending up stunned] */
     attack_indx = MB_INDEX_PROBE;
-    *dmgptr += rnd(4); /* (2..3)d4 */
+    *dmgptr += adjust_damage(rnd(4), magr, mdef, objects[mb->otyp].oc_damagetype, FALSE); /* (2..3)d4 */
     if (do_stun) {
         attack_indx = MB_INDEX_STUN;
-        *dmgptr += rnd(4); /* (3..4)d4 */
+        *dmgptr += adjust_damage(rnd(4), magr, mdef, objects[mb->otyp].oc_damagetype, FALSE); /* (3..4)d4 */
     }
     if (dieroll <= scare_dieroll) {
         attack_indx = MB_INDEX_SCARE;
-        *dmgptr += rnd(4); /* (3..5)d4 */
+        *dmgptr += adjust_damage(rnd(4), magr, mdef, objects[mb->otyp].oc_damagetype, FALSE); /* (3..5)d4 */
     }
     if (dieroll <= (scare_dieroll / 2)) {
         attack_indx = MB_INDEX_CANCEL;
-        *dmgptr += rnd(4); /* (4..6)d4 */
+        *dmgptr += adjust_damage(rnd(4), magr, mdef, objects[mb->otyp].oc_damagetype, FALSE); /* (4..6)d4 */
     }
 
     /* give the hit message prior to inflicting the effects */
@@ -1268,7 +1268,7 @@ int
 artifact_hit(magr, mdef, otmp, dmgptr, dieroll)
 struct monst *magr, *mdef;
 struct obj *otmp;
-int *dmgptr;
+double *dmgptr;
 int dieroll; /* needed for Magicbane and vorpal blades */
 {
     boolean youattack = (magr == &youmonst);
@@ -1385,7 +1385,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
             if (youattack && u.uswallow && mdef == u.ustuck) 
 			{
                 You("slice %s wide open!", mon_nam(mdef));
-                *dmgptr = 2 * mdef->mhp + FATAL_DAMAGE_MODIFIER;
+                *dmgptr = 2 * (double)mdef->mhp + FATAL_DAMAGE_MODIFIER;
                 return 2;
             }
             if (!youdefend) 
@@ -1404,7 +1404,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                     *dmgptr *= 2;
                     return 2;
                 }
-                *dmgptr = 2 * mdef->mhp + FATAL_DAMAGE_MODIFIER;
+                *dmgptr = 2 * (double)mdef->mhp + FATAL_DAMAGE_MODIFIER;
                 pline("%s cuts %s in half!", wepdesc, mon_nam(mdef));
                 otmp->dknown = TRUE;
                 return 2;
@@ -1424,7 +1424,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                  * value to the damage so that this reduction in
                  * damage does not prevent death.
                  */
-                *dmgptr = 2 * (Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER;
+                *dmgptr = 2 * (double)(Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER;
                 pline("%s cuts you in half!", wepdesc);
                 otmp->dknown = 2;
                 return 2;
@@ -1456,7 +1456,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                           s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
                     return 2;
                 }
-                *dmgptr = 2 * mdef->mhp + FATAL_DAMAGE_MODIFIER;
+                *dmgptr = 2 * (double)mdef->mhp + FATAL_DAMAGE_MODIFIER;
                 pline(behead_msg[rn2(SIZE(behead_msg))], The(wepdesc),
                       mon_nam(mdef));
                 if (Hallucination && !flags.female)
@@ -1478,7 +1478,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                           body_part(NECK));
                     return 2;
                 }
-                *dmgptr = 2 * (Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER;
+                *dmgptr = 2 * (double)(Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER;
                 pline(behead_msg[rn2(SIZE(behead_msg))], The(wepdesc), "you");
                 otmp->dknown = TRUE;
                 /* Should amulets fall off? */
@@ -1506,13 +1506,13 @@ int dieroll; /* needed for Magicbane and vorpal blades */
             }
             if (mdef->m_lev == 0) 
 			{
-                *dmgptr = 2 * mdef->mhp + FATAL_DAMAGE_MODIFIER;
+                *dmgptr = 2 * (double)mdef->mhp + FATAL_DAMAGE_MODIFIER;
             }
 			else 
 			{
                 int drain = monhp_per_lvl(mdef);
 
-                *dmgptr += drain;
+                *dmgptr += (double)drain;
                 mdef->mbasehpmax -= drain;
                 mdef->m_lev--;
 				update_mon_maxhp(mdef);
@@ -1522,11 +1522,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 					if (youattack)
 						healup(drain, 0, FALSE, FALSE, FALSE, FALSE, FALSE);
 					else
-					{
-						magr->mhp += drain;
-						if (magr->mhp > magr->mhpmax)
-							magr->mhp = magr->mhpmax;
-					}
+						deduct_monster_hp(magr, -drain);
 				}
             }
             return vis;
@@ -1659,7 +1655,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 	if ((objects[otmp->otyp].oc_damagetype == AD_STUN || (extradamagedone && objects[otmp->otyp].oc_extra_damagetype == AD_STUN)) && dieroll <= MB_MAX_DIEROLL)
 	{
 		/* Magicbane's special attacks (possibly modifies hittee[]) */
-		(void) Mb_hit(magr, mdef, otmp, &totaldamagedone, dieroll, vis, hittee);
+		//(void) Mb_hit(magr, mdef, otmp, &totaldamagedone, dieroll, vis, hittee);
 	}
 
 	/* We really want "on a natural 20" but GnollHack does it in */

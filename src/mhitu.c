@@ -1443,6 +1443,7 @@ register struct obj* omonwep;
     struct permonst *mdat = mtmp->data;
     int uncancelled, ptmp;
 	int dmg = 0, extradmg = 0, permdmg, tmphp;
+	double damage = 0;
     char buf[BUFSZ];
     struct permonst *olduasmon = youmonst.data;
     int res;
@@ -1476,8 +1477,7 @@ register struct obj* omonwep;
         }
     }
 
-	dmg = 0;
-	dmg += mtmp->mdaminc;
+	damage = 0;
     /*  First determine the base damage done */
 	struct obj* mweapon = omonwep; // MON_WEP(mtmp);
 	boolean uses_spell_flags = omonwep ? object_uses_spellbook_wand_flags_and_properties(omonwep) : FALSE;
@@ -1486,7 +1486,7 @@ register struct obj* omonwep;
 	{
 		//Use weapon damage
 		if (is_launcher(mweapon))
-			dmg += d(1, 2);
+			damage += d(1, 2);
 		else
 		{
 			dmg += weapon_dmg_value(mweapon, &youmonst, mtmp);
@@ -1502,6 +1502,8 @@ register struct obj* omonwep;
 		dmg += (int)mattk->damp;
 	}
 	
+	dmg += mtmp->mdaminc;
+
 	//Get damage bonus in both cases if physical
 	if(mattk->adtyp == AD_PHYS || mattk->adtyp == AD_DRIN)
 	{
@@ -1631,7 +1633,7 @@ register struct obj* omonwep;
 				int ahres = 0;
 
 				hittxt = (otmp->oartifact
-					&& (ahres = artifact_hit(mtmp, &youmonst, otmp, &dmg, dieroll)));
+					&& (ahres = artifact_hit(mtmp, &youmonst, otmp, &damage, dieroll)));
 
 				if (ahres == 1)
 					displaysustain = TRUE;
@@ -2537,8 +2539,10 @@ register struct obj* omonwep;
 		permdmg2 = 0;
 	}
 
-	if (dmg) {
-		if (permdmg > 0) { /* Death's life force drain */
+	if (dmg)
+	{
+		if (permdmg > 0) 
+		{ /* Death's life force drain */
 			int lowerlimit, * hpmax_p;
 			/*
 			 * Apply some of the damage to permanent hit points:
@@ -2733,10 +2737,15 @@ struct monst *mtmp;
 struct attack *mattk;
 {
     struct trap *t = t_at(u.ux, u.uy);
-	int tmp = 0;
+	double damage = 0;
+
+	int basedmg = 0;
 	if(mattk->damn > 0 && mattk->damd > 0)
-		tmp += d((int)mattk->damn, (int)mattk->damd);
-	tmp += mattk->damp;
+		basedmg += d((int)mattk->damn, (int)mattk->damd);
+	basedmg += mattk->damp;
+
+	damage += adjust_damage(basedmg, mtmp, &youmonst, mattk->adtyp, FALSE);
+
 	int tim_tmp;
     struct obj *otmp2;
     int i;
@@ -2839,16 +2848,19 @@ struct attack *mattk;
     switch (mattk->adtyp) {
     case AD_DGST:
         physical_damage = TRUE;
-        if (Slow_digestion) {
+        if (Slow_digestion) 
+		{
             /* Messages are handled below */
             u.uswldtim = 0;
-            tmp = 0;
-        } else if (u.uswldtim == 0) {
+            damage = 0;
+        }
+		else if (u.uswldtim == 0) 
+		{
             pline("%s totally digests you!", Monnam(mtmp));
-            tmp = u.uhp;
-            if (Half_physical_damage)
-                tmp *= 2; /* sorry */
-        } else {
+			damage = u.uhp;
+        } 
+		else
+		{
             pline("%s%s digests you!", Monnam(mtmp),
                   (u.uswldtim == 2) ? " thoroughly"
                                     : (u.uswldtim == 1) ? " utterly" : "");
@@ -2857,7 +2869,8 @@ struct attack *mattk;
         break;
     case AD_PHYS:
         physical_damage = TRUE;
-        if (mtmp->data == &mons[PM_FOG_CLOUD]) {
+        if (mtmp->data == &mons[PM_FOG_CLOUD]) 
+		{
             You("are laden with moisture and %s",
                 flaming(youmonst.data)
                     ? "are smoldering out!"
@@ -2867,16 +2880,19 @@ struct attack *mattk;
                                        : "can barely breathe!");
             /* NB: Amphibious includes Breathless */
             if (Amphibious && !flaming(youmonst.data))
-                tmp = 0;
-        } else {
+                damage = 0;
+        } 
+		else
+		{
             You("are pummeled with debris!");
             exercise(A_STR, FALSE);
         }
         break;
     case AD_ACID:
-        if (Acid_resistance || Invulnerable) {
+        if (Acid_resistance || Invulnerable) 
+		{
             You("are covered with a seemingly harmless goo.");
-            tmp = 0;
+            damage = 0;
         } else {
             if (Hallucination)
                 pline("Ouch!  You've been slimed!");
@@ -2892,14 +2908,14 @@ struct attack *mattk;
 
                 if (!Blinded)
                     You_cant("see in here!");
-                make_blinded((long) tmp, FALSE);
+                make_blinded((long)ceil(damage), FALSE);
                 if (!was_blinded && !Blind)
                     Your1(vision_clears);
             } else
                 /* keep him blind until disgorged */
                 make_blinded(Blinded + 1, FALSE);
         }
-        tmp = 0;
+        damage = 0;
         break;
     case AD_ELEC:
         if (!is_cancelled(mtmp) && rn2(2)) {
@@ -2907,61 +2923,56 @@ struct attack *mattk;
             if (Shock_resistance || Invulnerable) {
                 shieldeff(u.ux, u.uy);
                 You("seem unhurt.");
-                ugolemeffects(AD_ELEC, tmp);
-                tmp = 0;
+                ugolemeffects(AD_ELEC, damage);
+				damage = 0;
             }
         } else
-            tmp = 0;
+			damage = 0;
         break;
     case AD_COLD:
         if (!is_cancelled(mtmp) && rn2(2)) {
             if (Cold_resistance || Invulnerable) {
                 shieldeff(u.ux, u.uy);
                 You_feel("mildly chilly.");
-                ugolemeffects(AD_COLD, tmp);
-                tmp = 0;
+                ugolemeffects(AD_COLD, damage);
+				damage = 0;
             } else
                 You("are freezing to death!");
         } else
-            tmp = 0;
+			damage = 0;
         break;
     case AD_FIRE:
         if (!is_cancelled(mtmp) && rn2(2)) {
             if (Fire_resistance || Invulnerable) {
                 shieldeff(u.ux, u.uy);
                 You_feel("mildly hot.");
-                ugolemeffects(AD_FIRE, tmp);
-                tmp = 0;
+                ugolemeffects(AD_FIRE, damage);
+				damage = 0;
             } else
                 You("are burning to a crisp!");
             burn_away_slime();
         } else
-            tmp = 0;
+			damage = 0;
         break;
     case AD_DISE:
         if (!diseasemu(mtmp->data))
-            tmp = 0;
+			damage = 0;
         break;
     case AD_DREN:
         /* AC magic cancellation doesn't help when engulfed */
         if (!is_cancelled(mtmp) && rn2(4)) /* 75% chance */
-            drain_en(tmp);
-        tmp = 0;
+            drain_en((int)ceil(damage));
+		damage = 0;
         break;
     default:
         physical_damage = TRUE;
-        tmp = 0;
+		damage = 0;
         break;
     }
 
-    if (physical_damage)
-        tmp = Maybe_Half_Phys(tmp);
+    mdamageu(mtmp, damage, TRUE);
 
-	if (Invulnerable)
-		tmp = 0;
-
-    mdamageu(mtmp, tmp, TRUE);
-    if (tmp)
+    if (damage > 0)
         stop_occupation();
 
     if (!u.uswallow) {
@@ -3352,19 +3363,21 @@ struct attack *mattk;
 void
 mdamageu(mtmp, n, verbose)
 struct monst *mtmp;
-int n;
+double n;
 boolean verbose;
 {
-    context.botl = 1;
-	if (verbose && n > 0)
-		You("sustain %d damage!", n);
+	int hp_before = Upolyd ? u.mh : u.uhp;
+	deduct_player_hp(n);
+	int hp_after = Upolyd ? u.mh : u.uhp;
+	int damagedealt = hp_before - hp_after;
+
+	if (verbose && damagedealt > 0)
+		You("sustain %d damage!", damagedealt);
 
 	if (Upolyd) {
-        u.mh -= n;
         if (u.mh < 1)
             rehumanize();
     } else {
-        u.uhp -= n;
         if (u.uhp < 1)
             done_in_by(mtmp, DIED);
     }
@@ -3790,48 +3803,61 @@ struct permonst *olduasmon;
 struct monst *mtmp;
 struct attack *mattk;
 {
-    int i, tmp;
+	if (!mtmp)
+		return 0;
+
+    int i;
+	double damage = 0;
     struct attack *oldu_mattk = 0;
+	int damagedealt = 0;
 
     /*
      * mattk      == mtmp's attack that hit you;
      * oldu_mattk == your passive counterattack (even if mtmp's attack
      *               has already caused you to revert to normal form).
      */
-    for (i = 0; !oldu_mattk; i++) {
+    for (i = 0; !oldu_mattk; i++) 
+	{
         if (i >= NATTK)
             return 1;
         if (olduasmon->mattk[i].aatyp == AT_NONE
             || olduasmon->mattk[i].aatyp == AT_BOOM)
             oldu_mattk = &olduasmon->mattk[i];
     }
+
     if (oldu_mattk->damn > 0 && oldu_mattk->damd > 0)
-        tmp = d((int) oldu_mattk->damn, (int) oldu_mattk->damd);
+        damage = adjust_damage(d((int)oldu_mattk->damn, (int)oldu_mattk->damd) + oldu_mattk->damp, &youmonst, mtmp, mattk->adtyp, FALSE);
     else if (oldu_mattk->damd > 0)
-        tmp = d((int) olduasmon->mlevel + 1, (int) oldu_mattk->damd);
+        damage = adjust_damage(d((int) olduasmon->mlevel + 1, (int) oldu_mattk->damd) + oldu_mattk->damp, &youmonst, mtmp, mattk->adtyp, FALSE);
     else
-        tmp = 0;
-	tmp += oldu_mattk->damp;
+        damage = 0;
 
     /* These affect the enemy even if you were "killed" (rehumanized) */
-    switch (oldu_mattk->adtyp) {
+    switch (oldu_mattk->adtyp)
+	{
     case AD_ACID:
-        if (!rn2(2)) {
+        if (!rn2(2))
+		{
             pline("%s is splashed by %s%s!", Monnam(mtmp),
                   /* temporary? hack for sequencing issue:  "your acid"
                      looks strange coming immediately after player has
                      been told that hero has reverted to normal form */
                   !Upolyd ? "" : "your ", hliquid("acid"));
-            if (resists_acid(mtmp)) {
+            if (resists_acid(mtmp)) 
+			{
                 pline("%s is not affected.", Monnam(mtmp));
-                tmp = 0;
+                damage = 0;
             }
-        } else
-            tmp = 0;
+        } 
+		else
+            damage = 0;
+
         if (!rn2(30))
             erode_armor(mtmp, ERODE_CORRODE);
+
         if (!rn2(6))
             acid_damage(MON_WEP(mtmp));
+
         goto assess_dmg;
     case AD_STON: /* cockatrice */
     {
@@ -3845,8 +3871,10 @@ struct attack *mattk;
         if (!resists_ston(mtmp)
             && (protector == 0L
                 || (protector != ~0L
-                    && (wornitems & protector) != protector))) {
-            if (poly_when_stoned(mtmp->data)) {
+                    && (wornitems & protector) != protector))) 
+		{
+            if (poly_when_stoned(mtmp->data))
+			{
                 mon_to_stone(mtmp);
                 return 1;
             }
@@ -3860,7 +3888,8 @@ struct attack *mattk;
         return 1;
     }
     case AD_ENCH: /* KMH -- remove enchantment (disenchanter) */
-        if (mon_currwep) {
+        if (mon_currwep) 
+		{
             /* by_you==True: passive counterattack to hero's action
                is hero's fault */
             (void) drain_item(mon_currwep, TRUE);
@@ -3875,9 +3904,11 @@ struct attack *mattk;
 
     /* These affect the enemy only if you are still a monster */
     if (rn2(3))
-        switch (oldu_mattk->adtyp) {
+        switch (oldu_mattk->adtyp) 
+		{
         case AD_PHYS:
-            if (oldu_mattk->aatyp == AT_BOOM) {
+            if (oldu_mattk->aatyp == AT_BOOM) 
+			{
                 You("explode!");
                 /* KMH, balance patch -- this is okay with unchanging */
                 rehumanize();
@@ -3885,41 +3916,47 @@ struct attack *mattk;
             }
             break;
         case AD_PLYS: /* Floating eye */
-            if (tmp > 127)
-                tmp = 127;
-            if (u.umonnum == PM_FLOATING_EYE) {
+		{
+			int paralyse_duration = (int)ceil(damage);
+			if (u.umonnum == PM_FLOATING_EYE)
+			{
                 if (!rn2(20))
-                    tmp = 24;
+					paralyse_duration = 24;
                 if (!is_blinded(mtmp) && haseyes(mtmp->data) && rn2(3)
-                    && (has_see_invisible(mtmp) || !Invis)) {
+                    && (has_see_invisible(mtmp) || !Invis))
+				{
                     if (Blind)
                         pline("As a blind %s, you cannot defend yourself.",
                               youmonst.data->mname);
-                    else {
-                        if (mon_reflects(mtmp,
-                                         "Your gaze is reflected by %s %s."))
+                    else
+					{
+                        if (mon_reflects(mtmp, "Your gaze is reflected by %s %s."))
                             return 1;
                         pline("%s is frozen by your gaze!", Monnam(mtmp));
-                        paralyze_monst(mtmp, tmp, FALSE);
+                        paralyze_monst(mtmp, paralyse_duration, FALSE);
                         return 3;
                     }
                 }
-            } else { /* gelatinous cube */
+            } 
+			else 
+			{ /* gelatinous cube */
                 pline("%s is frozen by you.", Monnam(mtmp));
-                paralyze_monst(mtmp, tmp, FALSE);
+                paralyze_monst(mtmp, paralyse_duration, FALSE);
                 return 3;
             }
             return 1;
+		}
         case AD_COLD: /* Brown mold or blue jelly */
-            if (resists_cold(mtmp)) {
+            if (resists_cold(mtmp)) 
+			{
                 shieldeff(mtmp->mx, mtmp->my);
                 pline("%s is mildly chilly.", Monnam(mtmp));
-                golemeffects(mtmp, AD_COLD, (double)tmp);
-                tmp = 0;
+                golemeffects(mtmp, AD_COLD, damage);
+                damage = 0;
                 break;
             }
             pline("%s is suddenly very cold!", Monnam(mtmp));
-            u.mh += tmp / 2;
+            u.mh += (int)damage / 2;
             if (u.mh - u.mhmax > 0)
                 u.basemhmax += u.mh - u.mhmax;
 			updatemaxhp();
@@ -3927,12 +3964,13 @@ struct attack *mattk;
                 (void) split_mon(&youmonst, mtmp);
             break;
         case AD_STUN: /* Yellow mold */
-            if (!is_stunned(mtmp)) {
+            if (!is_stunned(mtmp)) 
+			{
 				nonadditive_increase_mon_property(mtmp, STUNNED, 5 + rnd(5));
 				pline("%s %s.", Monnam(mtmp),
                       makeplural(stagger(mtmp->data, "stagger")));
             }
-            tmp = 0;
+            damage = 0;
             break;
         case AD_FIRE: /* Red mold */
             if (resists_fire(mtmp)) 
@@ -3942,8 +3980,8 @@ struct attack *mattk;
 					pline("%s is engulfed in your flames, but they do not burn %s.", Monnam(mtmp), mon_nam(mtmp));
 				else
 					pline("%s is mildly warm.", Monnam(mtmp));
-                golemeffects(mtmp, AD_FIRE, (double)tmp);
-                tmp = 0;
+                golemeffects(mtmp, AD_FIRE, damage);
+				damage = 0;
                 break;
             }
 			if (alternative_passive_defense_text(youmonst.data))
@@ -3952,27 +3990,35 @@ struct attack *mattk;
 				pline("%s is suddenly very hot!", Monnam(mtmp));
             break;
         case AD_ELEC:
-            if (resists_elec(mtmp)) {
+            if (resists_elec(mtmp)) 
+			{
                 shieldeff(mtmp->mx, mtmp->my);
                 pline("%s is slightly tingled.", Monnam(mtmp));
-                golemeffects(mtmp, AD_ELEC, (double)tmp);
-                tmp = 0;
+                golemeffects(mtmp, AD_ELEC, damage);
+				damage = 0;
                 break;
             }
             pline("%s is jolted with your electricity!", Monnam(mtmp));
             break;
         default:
-            tmp = 0;
+			damage = 0;
             break;
         }
     else
-        tmp = 0;
+	damage = 0;
 
 assess_dmg:
-	if (canseemon(mtmp) && tmp > 0)
-		pline("%s sustains %d damage!", Monnam(mtmp), tmp);
 
-    if ((mtmp->mhp -= tmp) <= 0)
+	damagedealt = 0;
+	int mhp_before = mtmp->mhp;
+	deduct_monster_hp(mtmp, damage);
+	int mhp_after = mtmp->mhp;
+	damagedealt = mhp_before - mhp_after;
+
+	if (canseemon(mtmp) && damagedealt > 0)
+		pline("%s sustains %d damage!", Monnam(mtmp), damagedealt);
+
+    if (mtmp->mhp <= 0)
 	{
         pline("%s dies!", Monnam(mtmp));
         xkilled(mtmp, XKILL_NOMSG);

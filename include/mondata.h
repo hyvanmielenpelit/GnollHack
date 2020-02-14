@@ -449,6 +449,9 @@
 #define has_magm_vulnerability(mon) \
 	(has_innate((mon)->data, MR_VULNERABLITY_MAGM) || has_property(mon, MAGM_VULNERABILITY))
 
+#define has_invulnerable(mon) \
+	(has_property(mon, INVULNERABLE))
+
 #define has_double_physical_damage(mon) \
 	(has_property(mon, DOUBLE_PHYSICAL_DAMAGE))
 

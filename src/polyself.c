@@ -2240,9 +2240,10 @@ poly_gender()
 
 void
 ugolemeffects(damtype, dam)
-int damtype, dam;
+int damtype;
+double dam;
 {
-    int heal = 0;
+    double heal = 0;
 
     /* We won't bother with "slow"/"haste" since players do not
      * have a monster-specific slow/haste so there is no way to
@@ -2250,21 +2251,27 @@ int damtype, dam;
      */
     if (u.umonnum != PM_FLESH_GOLEM && u.umonnum != PM_IRON_GOLEM)
         return;
-    switch (damtype) {
+
+    switch (damtype) 
+	{
     case AD_ELEC:
         if (u.umonnum == PM_FLESH_GOLEM)
-            heal = (dam + 5) / 6; /* Approx 1 per die */
+            heal = dam / 6; /* Approx 1 per die */
         break;
     case AD_FIRE:
         if (u.umonnum == PM_IRON_GOLEM)
             heal = dam;
         break;
     }
-    if (heal && (u.mh < u.mhmax)) {
+    if (heal && (u.mh < u.mhmax)) 
+	{
+		deduct_player_hp(-heal);
+#if 0
         u.mh += heal;
         if (u.mh > u.mhmax)
             u.mh = u.mhmax;
         context.botl = 1;
+#endif
         pline("Strangely, you feel better than before.");
         exercise(A_STR, TRUE);
     }

@@ -1440,15 +1440,14 @@ boolean hitsroof;
         return FALSE;
     } else { /* neither potion nor other breaking object */
         boolean less_damage = uarmh && is_metallic(uarmh), artimsg = FALSE;
-        int dmg = is_launcher(obj) ? d(1, 2) : weapon_total_dmg_value(obj, &youmonst, &youmonst);
+        double dmg = adjust_damage(is_launcher(obj) ? d(1, 2) : weapon_total_dmg_value(obj, &youmonst, &youmonst), &youmonst, &youmonst, objects[obj->otyp].oc_damagetype, FALSE);
 
         if (obj->oartifact)
             /* need a fake die roll here; rn1(18,2) avoids 1 and 20 */
-            artimsg = artifact_hit((struct monst *) 0, &youmonst, obj, &dmg,
-                                   rn1(18, 2));
+            artimsg = artifact_hit((struct monst *) 0, &youmonst, obj, &dmg, rn1(18, 2));
 
-        if (!dmg) { /* probably wasn't a weapon; base damage on weight */
-            dmg = (int) obj->owt / 100;
+        if (dmg == 0) { /* probably wasn't a weapon; base damage on weight */
+            dmg = ((double) obj->owt) / 100;
             if (dmg < 1)
                 dmg = 1;
             else if (dmg > 6)
@@ -1460,24 +1459,29 @@ boolean hitsroof;
         if (dmg > 1 && less_damage)
             dmg = 1;
         if (dmg > 0)
-            dmg += u.ubasedaminc + u.udaminc;
+            dmg += adjust_damage(u.ubasedaminc + u.udaminc, &youmonst, &youmonst, objects[obj->otyp].oc_damagetype, FALSE);
         if (dmg < 0)
             dmg = 0; /* beware negative rings of increase damage */
-        dmg = Maybe_Half_Phys(dmg);
 
-        if (uarmh) {
-            if (less_damage && dmg < (Upolyd ? u.mh : u.uhp)) {
+        if (uarmh)
+		{
+            if (less_damage && dmg < (Upolyd ? u.mh : u.uhp)) 
+			{
                 if (!artimsg)
                     pline("Fortunately, you are wearing a hard helmet.");
                 /* helmet definitely protects you when it blocks petrification
                  */
-            } else if (!petrifier) {
+            }
+			else if (!petrifier) 
+			{
                 if (flags.verbose)
                     Your("%s does not protect you.", helm_simple_name(uarmh));
             }
-        } else if (petrifier && !Stone_resistance
+        } 
+		else if (petrifier && !Stone_resistance
                    && !(poly_when_stoned(youmonst.data)
-                        && polymon(PM_STONE_GOLEM))) {
+                        && polymon(PM_STONE_GOLEM)))
+		{
  petrify:
             killer.format = KILLED_BY;
             Strcpy(killer.name, "elementary physics"); /* "what goes up..." */
@@ -1490,7 +1494,7 @@ boolean hitsroof;
         }
         hitfloor(obj, TRUE);
         thrownobj = 0;
-        losehp(Maybe_Half_Phys(dmg), "falling object", KILLED_BY_AN);
+        losehp(dmg, "falling object", KILLED_BY_AN);
     }
     return TRUE;
 }
@@ -1775,28 +1779,33 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
 					}
                     if (cansee(bhitpos.x, bhitpos.y))
                         newsym(bhitpos.x, bhitpos.y);
-                } else {
-                    int dmg = rn2(2);
+                }
+				else 
+				{
+                    double dmg = adjust_damage(rn2(2), &youmonst, &youmonst, objects[obj->otyp].oc_damagetype, FALSE);
 
-                    if (!dmg) {
+                    if (!dmg) 
+					{
                         pline(Blind ? "%s lands %s your %s."
                                     : "%s back to you, landing %s your %s.",
                               Blind ? Something : Tobjnam(obj, "return"),
                               Levitation ? "beneath" : "at",
                               makeplural(body_part(FOOT)));
-                    } else {
-                        dmg += rnd(3);
+                    }
+					else 
+					{
+                        dmg += adjust_damage(rnd(3), &youmonst, &youmonst, objects[obj->otyp].oc_damagetype, FALSE);
                         pline(Blind ? "%s your %s!"
                                     : "%s back toward you, hitting your %s!",
                               Tobjnam(obj, Blind ? "hit" : "fly"),
                               body_part(ARM));
                         if (obj->oartifact)
-                            (void) artifact_hit((struct monst *) 0, &youmonst,
-                                                obj, &dmg, 0);
-                        losehp(Maybe_Half_Phys(dmg), killer_xname(obj),
+                            (void) artifact_hit((struct monst *) 0, &youmonst, obj, &dmg, 0);
+                        losehp(dmg, killer_xname(obj),
                                KILLED_BY);
                     }
-                    if (ship_object(obj, u.ux, u.uy, FALSE)) {
+                    if (ship_object(obj, u.ux, u.uy, FALSE))
+					{
                         thrownobj = (struct obj *) 0;
                         return;
                     }

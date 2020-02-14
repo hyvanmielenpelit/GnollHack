@@ -1231,25 +1231,24 @@ healup(nhp, nxtra, curesick, cureblind, curehallucination, curestun, cureconfusi
 int nhp, nxtra;
 register boolean curesick, cureblind, curehallucination, curestun, cureconfusion;
 {
-	if (nxtra > 0) {
-		if (Upolyd) {
+	if (nxtra > 0) 
+	{
+		if (Upolyd) 
+		{
 			u.basemhmax += nxtra;
 		}
-		else {
+		else 
+		{
 			u.ubasehpmax += nxtra;
 		}
 		updatemaxhp();
 	}
 
-	if (nhp > 0) {
-        if (Upolyd) {
-            u.mh += nhp;
-        } else {
-			u.uhp += nhp;
-        }
-    }
+	if (nhp > 0)
+		deduct_player_hp((double)(-nhp));
 	
-    if (cureblind) {
+    if (cureblind)
+	{
         /* 3.6.1: it's debatible whether healing magic should clean off
            mundane 'dirt', but if it doesn't, blindness isn't cured */
         u.ucreamed = 0;
@@ -1257,18 +1256,25 @@ register boolean curesick, cureblind, curehallucination, curestun, cureconfusion
         /* heal deafness too */
         make_deaf(0L, TRUE);
     }
-    if (curesick) {
+
+    if (curesick)
+	{
         make_vomiting(0L, TRUE);
         make_sick(0L, (char *) 0, TRUE, SICK_ALL);
     }
 
-	if (curehallucination) {
+	if (curehallucination) 
+	{
 		(void)make_hallucinated(0L, TRUE, 0L);
 	}
-	if (curestun) {
+
+	if (curestun)
+	{
 		make_stunned(0L, TRUE);
 	}
-	if (cureconfusion) {
+
+	if (cureconfusion)
+	{
 		make_confused(0L, TRUE);
 	}
 
