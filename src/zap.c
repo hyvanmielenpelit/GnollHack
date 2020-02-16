@@ -6389,13 +6389,13 @@ xchar sx, sy;
 	else
 		dam = d(dmgdice, dicesize) + dmgplus;
 
-
+	double damage = adjust_damage(dam, (struct monst*)0, &youmonst, (abstyp % 10) + 1, !(abstyp >= 20 && abstyp <= 29));
 
     switch (abstyp % 10) {
     case ZT_MAGIC_MISSILE:
         if (Antimagic || Invulnerable) {
             shieldeff(sx, sy);
-			dam = 0;
+			damage = 0;
             pline_The("missiles bounce off!");
         } else {
             //dam = d(nd, 6);
@@ -6406,8 +6406,8 @@ xchar sx, sy;
         if (Fire_resistance || Invulnerable) {
             shieldeff(sx, sy);
 			You("don't feel hot!");
-            ugolemeffects(AD_FIRE, dam);
-			dam = 0;
+            ugolemeffects(AD_FIRE, damage);
+			damage = 0;
 		} else {
             //dam = d(nd, 6);
         }
@@ -6426,8 +6426,8 @@ xchar sx, sy;
         if (Cold_resistance || Invulnerable) {
             shieldeff(sx, sy);
             You("don't feel cold.");
-            ugolemeffects(AD_COLD, dam);
-			dam = 0;
+            ugolemeffects(AD_COLD, damage);
+			damage = 0;
 		} else {
             //dam = d(nd, 6);
         }
@@ -6435,7 +6435,7 @@ xchar sx, sy;
             destroy_item(POTION_CLASS, AD_COLD);
         break;
     case ZT_SLEEP:
-		dam = 0;
+		damage = 0;
 		if (Sleep_resistance || magic_resistance_success)
 		{
             shieldeff(u.ux, u.uy);
@@ -6445,7 +6445,7 @@ xchar sx, sy;
         }
         break;
     case ZT_DISINTEGRATION:
-		dam = 0;
+		damage = 0;
 		if (Disint_resistance || noncorporeal(youmonst.data) || magic_resistance_success || Invulnerable) 
 		{					// if (abstyp == ZT_BREATH(ZT_DISINTEGRATION)) {
             You("are not disintegrated.");
@@ -6482,7 +6482,7 @@ xchar sx, sy;
         done(DIED);
         return; /* lifesaved */
 	case ZT_DEATH:
-		dam = 0;
+		damage = 0;
 		if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance || Invulnerable
 			|| check_magic_resistance_and_halve_damage(&youmonst, origobj, 12, 0, NOTELL)) 
 		{
@@ -6503,8 +6503,8 @@ xchar sx, sy;
         if (Shock_resistance || Invulnerable) {
             shieldeff(sx, sy);
 			You("aren't affected.");
-            ugolemeffects(AD_ELEC, dam);
-			dam = 0;
+            ugolemeffects(AD_ELEC, damage);
+			damage = 0;
 		} else {
             //dam = d(nd, 6);
             exercise(A_CON, FALSE);
@@ -6515,13 +6515,13 @@ xchar sx, sy;
             destroy_item(RING_CLASS, AD_ELEC);
         break;
     case ZT_POISON_GAS:
-		dam = 0;
+		damage = 0;
 		poisoned("blast", A_DEX, "poisoned blast", 15, FALSE);
         break;
     case ZT_ACID:
         if (Acid_resistance || Invulnerable) {
             pline_The("%s doesn't hurt.", hliquid("acid"));
-            dam = 0;
+			damage = 0;
         } else {
             pline_The("%s burns!", hliquid("acid"));
             //dam = d(nd, 6);
@@ -6539,9 +6539,9 @@ xchar sx, sy;
 
     /* Half_spell_damage protection yields half-damage for wands & spells,
        including hero's own ricochets; breath attacks do full damage */
-    if (dam && Half_spell_damage && !(abstyp >= 20 && abstyp <= 29))
-        dam = (dam + 1) / 2;
-    losehp(dam, fltxt, KILLED_BY_AN);
+    //if (dam && Half_spell_damage && !(abstyp >= 20 && abstyp <= 29))
+    //    dam = (dam + 1) / 2;
+    losehp(damage, fltxt, KILLED_BY_AN);
     return;
 }
 

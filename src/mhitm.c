@@ -1889,10 +1889,15 @@ register struct monst *magr, *mdef;
 boolean mhit;
 int mdead;
 {
+	if (!magr || !mdef)
+		return 0;
+
     register struct permonst *mddat = mdef->data;
     register struct permonst *madat = magr->data;
     char buf[BUFSZ];
-    int i, tmp;
+    int i;
+	double damage = 0;
+	int basedmg = 0;
 
     for (i = 0;; i++) {
         if (i >= NATTK)
@@ -1901,13 +1906,14 @@ int mdead;
             break;
     }
     if (mddat->mattk[i].damn > 0 && mddat->mattk[i].damd)
-        tmp = d((int) mddat->mattk[i].damn, (int) mddat->mattk[i].damd);
+		basedmg = d((int) mddat->mattk[i].damn, (int) mddat->mattk[i].damd);
     else if (mddat->mattk[i].damd)
-        tmp = d((int) mddat->mlevel + 1, (int) mddat->mattk[i].damd);
+		basedmg = d((int) mddat->mlevel + 1, (int) mddat->mattk[i].damd);
     else
-        tmp = 0;
+		basedmg = 0;
+	basedmg += (int)mddat->mattk[i].damp;
 
-	tmp += (int)mddat->mattk[i].damp;
+	damage += adjust_damage(basedmg, magr, mdef, mddat->mattk[i].adtyp, FALSE);
 	
 	/* These affect the enemy even if defender killed */
     switch (mddat->mattk[i].adtyp) {
@@ -1920,10 +1926,10 @@ int mdead;
             if (resists_acid(magr)) {
                 if (canseemon(magr))
                     pline("%s is not affected.", Monnam(magr));
-                tmp = 0;
+				damage = 0;
             }
         } else
-            tmp = 0;
+			damage = 0;
         if (!rn2(30))
             erode_armor(magr, ERODE_CORRODE);
         if (!rn2(6))
@@ -1945,11 +1951,11 @@ int mdead;
     if (rn2(3))
         switch (mddat->mattk[i].adtyp) {
         case AD_PLYS: /* Floating eye */
-            if (tmp > 127)
-                tmp = 127;
+            if (basedmg > 127)
+				basedmg = 127;
             if (mddat == &mons[PM_FLOATING_EYE]) {
                 if (!rn2(20))
-                    tmp = 24;
+					basedmg = 24;
                 if (!is_blinded(magr) && haseyes(madat) && !is_blinded(mdef)
                     && (is_invisible(magr) || !is_invisible(mdef))) 
 				{
@@ -1966,7 +1972,7 @@ int mdead;
 						if (canseemon(magr))
 							pline("%s is frozen by %s gaze!", buf,
 								  s_suffix(mon_nam(mdef)));
-						paralyze_monst(magr, tmp, FALSE);
+						paralyze_monst(magr, basedmg, FALSE);
 					}
                     return (mdead | mhit);
                 }
@@ -1974,7 +1980,7 @@ int mdead;
                 Strcpy(buf, Monnam(magr));
                 if (canseemon(magr))
                     pline("%s is frozen by %s.", buf, mon_nam(mdef));
-                paralyze_monst(magr, tmp, FALSE);
+                paralyze_monst(magr, basedmg, FALSE);
                 return (mdead | mhit);
             }
             return 1;
@@ -1982,14 +1988,14 @@ int mdead;
             if (resists_cold(magr)) {
                 if (canseemon(magr)) {
                     pline("%s is mildly chilly.", Monnam(magr));
-                    golemeffects(magr, AD_COLD, (double)tmp);
+                    golemeffects(magr, AD_COLD, damage);
                 }
-                tmp = 0;
+                damage = 0;
                 break;
             }
             if (canseemon(magr))
                 pline("%s is suddenly very cold!", Monnam(magr));
-            mdef->mhp += tmp / 2;
+            mdef->mhp += (int)ceil(damage) / 2;
             if (mdef->mhpmax < mdef->mhp)
                 mdef->mbasehpmax += (mdef->mhp - mdef->mhpmax);
 			update_mon_maxhp(mdef);
@@ -2005,7 +2011,7 @@ int mdead;
                     pline("%s %s...", Monnam(magr),
                           makeplural(stagger(magr->data, "stagger")));
             }
-            tmp = 0;
+            damage = 0;
             break;
         case AD_FIRE:
             if (resists_fire(magr)) {
@@ -2015,9 +2021,9 @@ int mdead;
 						pline("%s is engulfed in %s flames, but they do not burn %s.", Monnam(magr), s_suffix(mon_nam(mdef)), mon_nam(magr));
 					else
 						pline("%s is mildly warmed.", Monnam(magr));
-                    golemeffects(magr, AD_FIRE, (double)tmp);
+                    golemeffects(magr, AD_FIRE, damage);
                 }
-                tmp = 0;
+				damage = 0;
                 break;
             }
             if (canseemon(magr))
@@ -2032,31 +2038,38 @@ int mdead;
             if (resists_elec(magr)) {
                 if (canseemon(magr)) {
                     pline("%s is mildly tingled.", Monnam(magr));
-                    golemeffects(magr, AD_ELEC, (double)tmp);
+                    golemeffects(magr, AD_ELEC, damage);
                 }
-                tmp = 0;
+				damage = 0;
                 break;
             }
             if (canseemon(magr))
                 pline("%s is jolted with electricity!", Monnam(magr));
             break;
         default:
-            tmp = 0;
+			damage = 0;
             break;
         }
     else
-        tmp = 0;
+	damage = 0;
 
- assess_dmg:
-	if (canseemon(magr) && tmp > 0)
-		pline("%s sustains %d damage!", Monnam(magr), tmp);
-
-	if ((magr->mhp -= tmp) <= 0)
+assess_dmg:
 	{
-        monkilled(magr, "", (int) mddat->mattk[i].adtyp);
-        return (mdead | mhit | MM_AGR_DIED);
-    }
-    return (mdead | mhit);
+		int mhp_before = magr->mhp;
+		deduct_monster_hp(magr, damage); //(magr->mhp -= tmp);
+		int mhp_after = magr->mhp;
+		int damagedealt = mhp_before - mhp_after;
+
+		if (canseemon(magr) && damagedealt > 0)
+			pline("%s sustains %d damage!", Monnam(magr), damagedealt);
+
+		if (magr->mhp <= 0)
+		{
+			monkilled(magr, "", (int) mddat->mattk[i].adtyp);
+			return (mdead | mhit | MM_AGR_DIED);
+		}
+	}
+	return (mdead | mhit);
 }
 
 /* hero or monster has successfully hit target mon with drain energy attack */

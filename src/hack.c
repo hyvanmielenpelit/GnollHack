@@ -2256,12 +2256,12 @@ boolean pick;
                 You("are almost hit by %s!",
                     x_monnam(mtmp, ARTICLE_A, "falling", 0, TRUE));
             } else {
-                double dmg;
+                double damage;
 
                 You("are hit by %s!",
                     x_monnam(mtmp, ARTICLE_A, "falling", 0, TRUE));
-                dmg = adjust_damage(d(4, 6), (struct monst*)0, &youmonst, AD_PHYS, FALSE);
-                mdamageu(mtmp, dmg, TRUE);
+				damage = adjust_damage(d(4, 6), (struct monst*)0, &youmonst, AD_PHYS, FALSE);
+                mdamageu(mtmp, damage, TRUE);
             }
             break;
         default: /* monster surprises you. */

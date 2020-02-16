@@ -3588,7 +3588,7 @@ register struct monst *mon;
                                         || mon->data->mlet == S_LESSER_UNDEAD)
                         && rn2(5) && !Sick_resistance && !Invulnerable) {
                         You_feel("%ssick.", (Sick) ? "very " : "");
-                        mdamageu(mon, rnd(8), TRUE);
+                        mdamageu(mon, adjust_damage(rnd(8), mon, &youmonst, mattk->adtyp, FALSE), TRUE);
                     }
                 }
             } else {
@@ -3662,28 +3662,36 @@ uchar aatyp;
 boolean wep_was_destroyed;
 {
     register struct permonst *ptr = mon->data;
-    register int i, tmp;
+    register int i, basedmg = 0;
+	double damage = 0;
 
-    for (i = 0;; i++) {
+    for (i = 0;; i++) 
+	{
         if (i >= NATTK)
             return (malive | mhit); /* no passive attacks */
         if (ptr->mattk[i].aatyp == AT_NONE)
             break; /* try this one */
     }
+
     /* Note: tmp not always used */
     if (ptr->mattk[i].damn)
-        tmp = d((int) ptr->mattk[i].damn, (int) ptr->mattk[i].damd);
+		basedmg = d((int) ptr->mattk[i].damn, (int) ptr->mattk[i].damd);
     else if (ptr->mattk[i].damd)
-        tmp = d((int) mon->m_lev + 1, (int) ptr->mattk[i].damd);
+		basedmg = d((int) mon->m_lev + 1, (int) ptr->mattk[i].damd);
     else
-        tmp = 0;
+		basedmg = 0;
+
+	damage += adjust_damage(basedmg, mon, &youmonst, ptr->mattk[i].adtyp, FALSE);
 
     /*  These affect you even if they just died.
      */
-    switch (ptr->mattk[i].adtyp) {
+    switch (ptr->mattk[i].adtyp)
+	{
     case AD_FIRE:
-        if (mhit && !is_cancelled(mon) && weapon) {
-            if (aatyp == AT_KICK) {
+        if (mhit && !is_cancelled(mon) && weapon)
+		{
+            if (aatyp == AT_KICK)
+			{
                 if (uarmf && !rn2(6))
                     (void) erode_obj(uarmf, xname(uarmf), ERODE_BURN,
                                      EF_GREASE | EF_VERBOSE);
@@ -3693,7 +3701,8 @@ boolean wep_was_destroyed;
         }
         break;
     case AD_ACID:
-        if (mhit && rn2(2)) {
+        if (mhit && rn2(2)) 
+		{
             if (Blind || !flags.verbose)
                 You("are splashed!");
             else
@@ -3701,7 +3710,7 @@ boolean wep_was_destroyed;
                     hliquid("acid"));
 
             if (!Acid_resistance && !Invulnerable)
-                mdamageu(mon, tmp, TRUE);
+                mdamageu(mon, damage, TRUE);
             if (!rn2(30))
                 erode_armor(&youmonst, ERODE_CORRODE);
         }
@@ -3769,7 +3778,7 @@ boolean wep_was_destroyed;
             pline("A hail of magic missiles narrowly misses you!");
         } else {
             You("are hit by magic missiles appearing from thin air!");
-            mdamageu(mon, tmp, TRUE);
+            mdamageu(mon, damage, TRUE);
         }
         break;
     case AD_ENCH: /* KMH -- remove enchantment (disenchanter) */
@@ -3810,7 +3819,7 @@ boolean wep_was_destroyed;
                               !rn2(2) ? "numb" : "stupified");
                     } else {
                         You("are frozen by %s gaze!", s_suffix(mon_nam(mon)));
-						incr_itimeout(&HParalyzed, (ACURR(A_WIS) > 12 || rn2(4)) ? tmp : 127);
+						incr_itimeout(&HParalyzed, (ACURR(A_WIS) > 12 || rn2(4)) ? basedmg : 127);
 						context.botl = context.botlx = 1;
 
 #if 0
@@ -3829,7 +3838,7 @@ boolean wep_was_destroyed;
                 You("momentarily stiffen.");
             } else { /* gelatinous cube */
                 You("are frozen by %s!", mon_nam(mon));
-				incr_itimeout(&HParalyzed, tmp);
+				incr_itimeout(&HParalyzed, basedmg);
 				context.botl = context.botlx = 1;
 
 #if 0
@@ -3845,13 +3854,13 @@ boolean wep_was_destroyed;
                 if (Cold_resistance || Invulnerable) {
                     shieldeff(u.ux, u.uy);
                     You_feel("a mild chill.");
-                    ugolemeffects(AD_COLD, tmp);
+                    ugolemeffects(AD_COLD, damage);
                     break;
                 }
                 You("are suddenly very cold!");
-                mdamageu(mon, tmp, TRUE);
+                mdamageu(mon, damage, TRUE);
                 /* monster gets stronger with your heat! */
-                mon->mhp += tmp / 2;
+                mon->mhp += (int)ceil(damage) / 2;
                 if (mon->mhpmax < mon->mhp)
                     mon->mbasehpmax += mon->mhp - mon->mhpmax;
 				update_mon_maxhp(mon);
@@ -3863,35 +3872,38 @@ boolean wep_was_destroyed;
             break;
         case AD_STUN: /* specifically yellow mold */
             if (!Stunned)
-                make_stunned((long) tmp, TRUE);
+                make_stunned((long)basedmg, TRUE);
             break;
         case AD_FIRE:
-            if (monnear(mon, u.ux, u.uy)) {
-                if (Fire_resistance || Invulnerable) {
+            if (monnear(mon, u.ux, u.uy))
+			{
+                if (Fire_resistance || Invulnerable) 
+				{
                     shieldeff(u.ux, u.uy);
 					if (alternative_passive_defense_text(mon->data))
 						You("are engulfed in %s flames, but they do not burn you!", s_suffix(mon_nam(mon)));
 					else
 						You_feel("mildly warm.");
-                    ugolemeffects(AD_FIRE, tmp);
+                    ugolemeffects(AD_FIRE, damage);
                     break;
                 }
 				if (alternative_passive_defense_text(mon->data))
 					You("are engulfed in %s flames!", s_suffix(mon_nam(mon)));
 				else
 					You("are suddenly very hot!");
-                mdamageu(mon, tmp, TRUE); /* fire damage */
+                mdamageu(mon, damage, TRUE); /* fire damage */
             }
             break;
         case AD_ELEC:
-            if (Shock_resistance || Invulnerable) {
+            if (Shock_resistance || Invulnerable) 
+			{
                 shieldeff(u.ux, u.uy);
                 You_feel("a mild tingle.");
-                ugolemeffects(AD_ELEC, tmp);
+                ugolemeffects(AD_ELEC, damage);
                 break;
             }
             You("are jolted with electricity!");
-            mdamageu(mon, tmp, TRUE);
+            mdamageu(mon, damage, TRUE);
             break;
         default:
             break;

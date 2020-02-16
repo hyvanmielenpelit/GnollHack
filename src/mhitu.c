@@ -3109,21 +3109,28 @@ boolean ufound;
     if (is_cancelled(mtmp))
         return 0;
 
-    if (!ufound) {
+    if (!ufound)
+	{
         pline("%s explodes at a spot in %s!",
               canseemon(mtmp) ? Monnam(mtmp) : "It",
               levl[mtmp->mux][mtmp->muy].typ == WATER ? "empty water"
                                                       : "thin air");
-    } else {
-		int tmp = 0;
+    } 
+	else
+	{
+		double damage = 0;
+		int basedmg = 0;
 		if(mattk->damn > 0 && mattk->damd > 0)
-			tmp += d((int)mattk->damn, (int)mattk->damd);
-		tmp += (int)mattk->damp;
+			basedmg += d((int)mattk->damn, (int)mattk->damd);
+		basedmg += (int)mattk->damp;
+		damage += adjust_damage(basedmg, mtmp, &youmonst, mattk->adtyp, FALSE);
+
 		boolean not_affected = 0;
 
         hitmsg(mtmp, mattk, -1);
 
-        switch (mattk->adtyp) {
+        switch (mattk->adtyp)
+		{
         case AD_COLD:
             physical_damage = FALSE;
             not_affected |= Cold_resistance;
@@ -3144,34 +3151,44 @@ boolean ufound;
                place means one less thing to update if AD_PHYS gets added */
  common:
 
-            if (!not_affected) {
-                if (ACURR(A_DEX) > rnd(20)) {
+            if (!not_affected)
+			{
+                if (ACURR(A_DEX) > rnd(20)) 
+				{
                     You("duck some of the blast.");
-                    tmp = (tmp + 1) / 2;
-                } else {
+					damage = damage / 2;
+                } 
+				else 
+				{
                     if (flags.verbose)
                         You("get blasted!");
                 }
                 if (mattk->adtyp == AD_FIRE)
                     burn_away_slime();
-                if (physical_damage)
+
+#if 0
+				if (physical_damage)
                     tmp = Maybe_Half_Phys(tmp);
 				if (Invulnerable)
 					tmp = 0;
-				mdamageu(mtmp, tmp, TRUE);
+#endif
+				mdamageu(mtmp, damage, TRUE);
             }
             break;
 
         case AD_BLND:
             not_affected = resists_blnd(&youmonst) || Flash_resistance;
-            if (!not_affected) {
+            if (!not_affected)
+			{
                 /* sometimes you're affected even if it's invisible */
-                if (mon_visible(mtmp) || (rnd(tmp /= 2) > u.ulevel)) {
+                if (mon_visible(mtmp) || (rnd(basedmg /= 2) > u.ulevel)) 
+				{
                     You("are blinded by a blast of light!");
-                    make_blinded((long) tmp, FALSE);
+                    make_blinded((long)basedmg, FALSE);
                     if (!Blind)
                         Your1(vision_clears);
-                } else if (flags.verbose)
+                } 
+				else if (flags.verbose)
                     You("get the impression it was not terribly bright.");
             }
             break;
@@ -3180,7 +3197,8 @@ boolean ufound;
             not_affected = Blind || Halluc_resistance || (u.umonnum == PM_BLACK_LIGHT
                                       || u.umonnum == PM_VIOLET_FUNGUS
                                       || dmgtype(youmonst.data, AD_STUN));
-            if (!not_affected) {
+            if (!not_affected) 
+			{
                 boolean chg;
                 if (!Hallucination)
                     You("are caught in a blast of kaleidoscopic light!");
@@ -3188,7 +3206,7 @@ boolean ufound;
                 mondead(mtmp);    /* remove it from map now */
                 kill_agr = FALSE; /* already killed (maybe lifesaved) */
                 chg =
-                    make_hallucinated(HHallucination + (long) tmp, FALSE, 0L);
+                    make_hallucinated(HHallucination + (long)basedmg, FALSE, 0L);
                 You("%s.", chg ? "are freaked out" : "seem unaffected");
             }
             break;
@@ -3196,9 +3214,10 @@ boolean ufound;
         default:
             break;
         }
-        if (not_affected) {
+        if (not_affected) 
+		{
             You("seem unaffected by it.");
-            ugolemeffects((int) mattk->adtyp, tmp);
+            ugolemeffects((int) mattk->adtyp, damage);
         }
     }
     if (kill_agr)
