@@ -2081,7 +2081,7 @@ boolean* obj_destroyed;
 			}
 		} else if (u.umconf && hand_to_hand) {
 			nohandglow(mon);
-			if (!is_confused(mon) && !check_magic_resistance_and_halve_damage(mon, (struct obj*) 0, 8, 0, NOTELL)) {
+			if (!is_confused(mon) && !check_magic_resistance_and_halve_damage(mon, (struct obj*) 0, 8, 0, 0, NOTELL)) {
 				increase_mon_property(mon, CONFUSION, d(1, 20) + 20);
 				if (!is_stunned(mon) && mon_can_move(mon)
 					&& canseemon(mon))
@@ -4155,7 +4155,7 @@ boolean is_spell_damage;
 		}
 
 		/* Physical and spell damage adjustments */
-		if ((adtyp == AD_PHYS || adtyp == AD_ACID || adtyp == AD_DGST) &&
+		if ((adtyp == AD_PHYS || adtyp == AD_ACID || adtyp == AD_DGST || adtyp == AD_MAGM) &&
 			((you_defend ? Half_physical_damage : has_half_physical_damage(mdef)))
 			|| (magr && (you_defend ? Half_physical_damage_against_undead_and_demons : has_half_physical_damage_against_undead_and_demons(mdef)) && (is_undead(magr->data) || is_demon(magr->data)))
 			)
@@ -4163,7 +4163,7 @@ boolean is_spell_damage;
 			base_dmg_d /= 2;
 		}
 
-		if ((adtyp == AD_PHYS || adtyp == AD_ACID || adtyp == AD_DGST) &&
+		if ((adtyp == AD_PHYS || adtyp == AD_ACID || adtyp == AD_DGST || adtyp == AD_MAGM) &&
 			((you_defend ? Double_physical_damage : has_double_physical_damage(mdef)))
 			)
 		{

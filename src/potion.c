@@ -673,7 +673,7 @@ register struct obj *otmp;
                         you_unwere(FALSE);
                     set_ulycn(NON_PM); /* cure lycanthropy */
                 }
-                losehp(Maybe_Half_Phys(d(2, 6)), "potion of holy water",
+                losehp(adjust_damage(d(2, 6), (struct monst*)0, &youmonst, AD_ACID, FALSE), "potion of holy water",
                        KILLED_BY_AN);
             } else if (otmp->cursed) {
                 You_feel("quite proud of yourself.");
@@ -694,7 +694,7 @@ register struct obj *otmp;
             } else {
                 if (u.ualign.type == A_LAWFUL) {
                     pline("This burns like %s!", hliquid("acid"));
-                    losehp(Maybe_Half_Phys(d(2, 6)), "potion of unholy water",
+                    losehp(adjust_damage(d(2, 6), (struct monst*)0, &youmonst, AD_ACID, FALSE), "potion of unholy water",
                            KILLED_BY_AN);
                 } else
                     You_feel("full of dread.");
@@ -879,7 +879,7 @@ register struct obj *otmp;
             pline("(But in fact it was mildly stale %s.)", fruitname(TRUE));
             if (!Role_if(PM_HEALER)) {
                 /* NB: blessed otmp->fromsink is not possible */
-                losehp(1, "mildly contaminated potion", KILLED_BY_AN);
+                losehp(adjust_damage(1, (struct monst*)0, &youmonst, AD_DRST, FALSE), "mildly contaminated potion", KILLED_BY_AN);
             }
         } else {
             if (Poison_resistance)
@@ -902,14 +902,14 @@ register struct obj *otmp;
                 }
                 if (!Poison_resistance) {
                     if (otmp->fromsink)
-                        losehp(rnd(10) + 5 * !!(otmp->cursed), contaminant,
+                        losehp(adjust_damage(rnd(10) + 5 * !!(otmp->cursed), (struct monst*)0, &youmonst, AD_DRST, FALSE), contaminant,
                                KILLED_BY);
                     else
-                        losehp(rnd(10) + 5 * !!(otmp->cursed), contaminant,
+                        losehp(adjust_damage(rnd(10) + 5 * !!(otmp->cursed), (struct monst*)0, &youmonst, AD_DRST, FALSE), contaminant,
                                KILLED_BY_AN);
                 } else {
                     /* rnd loss is so that unblessed poorer than blessed */
-                    losehp(1 + rn2(2), contaminant,
+                    losehp(adjust_damage(1 + rn2(2), (struct monst*)0, &youmonst, AD_DRST, FALSE), contaminant,
                            (otmp->fromsink) ? KILLED_BY : KILLED_BY_AN);
                 }
                 exercise(A_CON, FALSE);
@@ -1098,7 +1098,7 @@ register struct obj *otmp;
 
                 You("hit your %s on the %s.", body_part(HEAD),
                     ceiling(u.ux, u.uy));
-                losehp(Maybe_Half_Phys(dmg), "colliding with the ceiling",
+                losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "colliding with the ceiling",
                        KILLED_BY);
                 nothing = 0; /* not nothing after all */
             }
@@ -1178,17 +1178,22 @@ register struct obj *otmp;
     case POT_OIL: { /* P. Winner */
         boolean good_for_you = FALSE;
 
-        if (otmp->lamplit) {
-            if (likes_fire(youmonst.data)) {
+        if (otmp->lamplit) 
+		{
+            if (likes_fire(youmonst.data))
+			{
                 pline("Ahh, a refreshing drink.");
                 good_for_you = TRUE;
-            } else {
-                You("burn your %s.", body_part(FACE));
+            }
+			else
+			{
+                You("burn your %s%s.", body_part(FACE), Fire_resistance ? ", but you just get a nice tan" : "");
                 /* fire damage */
-                losehp(d(Fire_resistance ? 1 : 3, 4), "burning potion of oil",
+                losehp(adjust_damage(d(3, 4), (struct monst*)0, &youmonst, AD_FIRE, FALSE), "burning potion of oil",
                        KILLED_BY_AN);
             }
-        } else if (otmp->cursed)
+        } 
+		else if (otmp->cursed)
             pline("This tastes like castor oil.");
         else
             pline("That was smooth!");
@@ -1206,7 +1211,7 @@ register struct obj *otmp;
                   otmp->blessed ? " a little" : otmp->cursed ? " a lot"
                                                              : " like acid");
             dmg = d(otmp->cursed ? 8 : 6, otmp->blessed ? 6 : 8);
-            losehp(Maybe_Half_Phys(dmg), "potion of acid", KILLED_BY_AN);
+            losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_ACID, FALSE), "potion of acid", KILLED_BY_AN);
             exercise(A_CON, FALSE);
         }
         if (Stoned)
@@ -1409,7 +1414,7 @@ int how;
         distance = 0;
         pline_The("%s crashes on your %s and breaks into shards.", botlnam,
                   body_part(HEAD));
-        losehp(Maybe_Half_Phys(rnd(2)),
+        losehp(adjust_damage(rnd(2), (struct monst*)0, &youmonst, AD_PHYS, FALSE),
                (how == POTHIT_OTHER_THROW) ? "propelled potion" /* scatter */
                                            : "thrown potion",
                KILLED_BY_AN);
@@ -1471,7 +1476,7 @@ int how;
                       obj->blessed ? " a little"
                                    : obj->cursed ? " a lot" : "");
                 dmg = d(obj->cursed ? 4 : 3, obj->blessed ? 6 : 8);
-                losehp(Maybe_Half_Phys(dmg), "potion of acid", KILLED_BY_AN);
+                losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_ACID, FALSE), "potion of acid", KILLED_BY_AN);
             }
             break;
         }
@@ -1538,10 +1543,10 @@ int how;
                 break;
             }
  do_illness:
-            if ((mon->mbasehpmax > 3) && !check_magic_resistance_and_halve_damage(mon, obj, 0, 0, NOTELL))
+            if ((mon->mbasehpmax > 3) && !check_magic_resistance_and_halve_damage(mon, obj, 0, 0, 0, NOTELL))
                 mon->mbasehpmax /= 2;
 			update_mon_maxhp(mon);
-			if ((mon->mhp > 2) && !check_magic_resistance_and_halve_damage(mon, obj, 0, 0, NOTELL))
+			if ((mon->mhp > 2) && !check_magic_resistance_and_halve_damage(mon, obj, 0, 0, 0, NOTELL))
                 mon->mhp /= 2;
             if (mon->mhp > mon->mhpmax)
                 mon->mhp = mon->mhpmax;
@@ -1552,7 +1557,7 @@ int how;
 			increase_mon_property_verbosely(mon, CONFUSION, rn1(9, 8));
 			break;
 		case POT_BOOZE:
-            if (!check_magic_resistance_and_halve_damage(mon, obj, 0, 0, NOTELL))
+            if (!check_magic_resistance_and_halve_damage(mon, obj, 0, 0, 0, NOTELL))
                 increase_mon_property_verbosely(mon, CONFUSION, 4 + rnd(4));
             break;
         case POT_INVISIBILITY: {
@@ -1587,7 +1592,7 @@ int how;
         case POT_BLINDNESS:
             if (haseyes(mon->data)) 
 			{
-                int btmp = d(1, 8) + d(3, 8) * !check_magic_resistance_and_halve_damage(mon, obj, 0, 0, NOTELL);
+                int btmp = d(1, 8) + d(3, 8) * !check_magic_resistance_and_halve_damage(mon, obj, 0, 0, 0, NOTELL);
 
 				increase_mon_property_verbosely(mon, BLINDED, btmp);
             }
@@ -1634,7 +1639,7 @@ int how;
                 explode_oil(obj, tx, ty);
             break;
         case POT_ACID:
-            if (!resists_acid(mon) && !check_magic_resistance_and_halve_damage(mon, obj, 0, 0, NOTELL)) {
+            if (!resists_acid(mon) && !check_magic_resistance_and_halve_damage(mon, obj, 0, 0, 0, NOTELL)) {
                 pline("%s %s in pain!", Monnam(mon),
                       is_silent(mon->data) ? "writhes" : "shrieks");
                 if (!is_silent(mon->data))
@@ -2225,7 +2230,7 @@ dodip()
             if (!has_innate_breathless(youmonst.data) || haseyes(youmonst.data))
                 potionbreathe(obj);
             useupall(obj);
-            losehp(amt + rnd(9), /* not physical damage */
+            losehp(adjust_damage(amt + rnd(9), (struct monst*)0, &youmonst, AD_MAGM, FALSE), /* not physical damage */
                    "alchemic blast", KILLED_BY_AN);
             return 1;
         }

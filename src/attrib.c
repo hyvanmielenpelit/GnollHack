@@ -438,7 +438,7 @@ const char* reason,    /* controls what messages we display */
 int sptype;
 boolean lifesavedalready;
 {
-	int i, loss, kprefix = KILLED_BY_AN;
+	int i, kprefix = KILLED_BY_AN;
 	double damage = 0;
 
 	boolean plural = (reason[strlen(reason) - 1] == 's') ? 1 : 0;

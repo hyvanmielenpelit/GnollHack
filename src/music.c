@@ -76,7 +76,7 @@ int distance;
                 && (mtmp->mstrategy & STRAT_WAITMASK) != 0)
                 mtmp->mstrategy &= ~STRAT_WAITMASK;
             else if (distm < distance / 3
-                     && !check_magic_resistance_and_halve_damage(mtmp, (struct obj*)0, 8, 0, NOTELL)
+                     && !check_magic_resistance_and_halve_damage(mtmp, (struct obj*)0, 8, 0, 0, NOTELL)
                      /* some monsters are immune */
                      && onscary(0, 0, mtmp))
                 monflee(mtmp, 0, FALSE, TRUE);
@@ -200,7 +200,7 @@ struct monst *bugler; /* monster that played instrument */
             if (!unique_corpstat(mtmp->data)
                 && (mtmp->mstrategy & STRAT_WAITMASK) != 0)
                 mtmp->mstrategy &= ~STRAT_WAITMASK;
-            else if (distm < distance / 3 && !check_magic_resistance_and_halve_damage(mtmp, (struct obj*)0, 8, 0, NOTELL))
+            else if (distm < distance / 3 && !check_magic_resistance_and_halve_damage(mtmp, (struct obj*)0, 8, 0, 0, NOTELL))
                 monflee(mtmp, 0, FALSE, TRUE);
         }
     }
@@ -217,7 +217,7 @@ int distance;
 
     if (u.uswallow)
 	{
-        if (!check_magic_resistance_and_halve_damage(u.ustuck, (struct obj*)0, 8, 0, NOTELL))
+        if (!check_magic_resistance_and_halve_damage(u.ustuck, (struct obj*)0, 8, 0, 0, NOTELL))
             (void) tamedog(u.ustuck, (struct obj *) 0, FALSE, TRUE, 200 + rnd(100), TRUE);
     }
 	else
@@ -230,7 +230,7 @@ int distance;
 
             if (distu(mtmp->mx, mtmp->my) <= distance) 
 			{
-                if (!check_magic_resistance_and_halve_damage(mtmp, (struct obj*)0, 8, 0, NOTELL))
+                if (!check_magic_resistance_and_halve_damage(mtmp, (struct obj*)0, 8, 0, 0, NOTELL))
                     (void) tamedog(mtmp, (struct obj *) 0, FALSE, TRUE, 200 + rnd(100), TRUE);
             }
         }

@@ -1318,7 +1318,7 @@ register struct obj *otmp;
 		{
             tmp = d(2, 12);
             hit("wand", mtmp, exclam(tmp), 0); //Do not tell the damage here, since resist will
-            (void) check_magic_resistance_and_halve_damage(mtmp, otmp, 0, tmp, TELL);
+            (void) check_magic_resistance_and_halve_damage(mtmp, otmp, 0, tmp, AD_MAGM, TELL);
             if (cansee(mtmp->mx, mtmp->my) && zap_oseen)
                 makeknown(WAN_STRIKING);
         } 

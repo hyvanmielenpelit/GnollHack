@@ -616,7 +616,7 @@ int curse_bless;
                 Ring_gone(obj);
             s = rnd(3 * abs(obj->spe)); /* amount of damage */
             useup(obj);
-            losehp(Maybe_Half_Phys(s), "exploding ring", KILLED_BY_AN);
+            losehp(adjust_damage(s, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "exploding ring", KILLED_BY_AN);
         } else {
             long mask = is_on ? (obj == uleft ? LEFT_RING : RIGHT_RING) : 0L;
 
@@ -1022,7 +1022,7 @@ struct obj *sobj;
 		{
 			pline("%s is unaffected.", Monnam(mtmp));
 		}
-		else if (!check_magic_resistance_and_halve_damage(mtmp, sobj, 0, 0, NOTELL) && !check_ability_resistance_success(mtmp, A_WIS, objects[sobj->otyp].oc_spell_saving_throw_adjustment))
+		else if (!check_magic_resistance_and_halve_damage(mtmp, sobj, 0, 0, 0, NOTELL) && !check_ability_resistance_success(mtmp, A_WIS, objects[sobj->otyp].oc_spell_saving_throw_adjustment))
 		{
 			int duration = 0;
 			boolean charmed = FALSE;
@@ -1415,7 +1415,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 					mtmp->mcanmove = 1;
 					mtmp->mprops[FEARFUL] = 0;
 				}
-				else if (!check_magic_resistance_and_halve_damage(mtmp, sobj, 0, 0, NOTELL)) 
+				else if (!check_magic_resistance_and_halve_damage(mtmp, sobj, 0, 0, 0, NOTELL))
 				{
 					duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus;
 					make_mon_fearful(mtmp, duration ? duration : 100 + rnd(50));
@@ -1734,7 +1734,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 				{
 					++candidates;
 					res = 0;
-					if (!mtmp->mtame && !is_peaceful(mtmp) && !check_magic_resistance_and_halve_damage(mtmp, sobj, 0, 0, TELL))
+					if (!mtmp->mtame && !is_peaceful(mtmp) && !check_magic_resistance_and_halve_damage(mtmp, sobj, 0, 0, 0, TELL))
 					{
 						if (mtmp->m_lev < u.ulevel - 10)
 						{
@@ -2043,7 +2043,8 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
         if (!already_known)
             (void) learnscrolltyp(SCR_FIRE);
         if (confused) {
-            if (Fire_resistance || Invulnerable) {
+            if (Fire_resistance || Invulnerable) 
+			{
                 shieldeff(u.ux, u.uy);
                 if (!Blind)
                     pline("Oh, look, what a pretty fire in your %s.",
@@ -2051,10 +2052,12 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
                 else
                     You_feel("a pleasant warmth in your %s.",
                              makeplural(body_part(HAND)));
-            } else {
+            }
+			else
+			{
                 pline_The("scroll catches fire and you burn your %s.",
                           makeplural(body_part(HAND)));
-                losehp(1, "scroll of fire", KILLED_BY_AN);
+                losehp(adjust_damage(1, (struct monst*)0, &youmonst, AD_FIRE, FALSE), "scroll of fire", KILLED_BY_AN);
             }
             break;
         }
@@ -2204,7 +2207,7 @@ boolean confused, helmet_protects, byu, skip_uswallow;
         newsym(u.ux, u.uy);
     }
     if (dmg)
-        losehp(Maybe_Half_Phys(dmg), "scroll of earth", KILLED_BY_AN);
+        losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "scroll of earth", KILLED_BY_AN);
 }
 
 boolean
@@ -2326,7 +2329,7 @@ int chg; /* recharging */
     dmg = d(n, k);
     obj->in_use = TRUE; /* in case losehp() is fatal (or --More--^C) */
     pline("%s %s explodes!", Yname2(obj), expl);
-    losehp(Maybe_Half_Phys(dmg), "exploding wand", KILLED_BY_AN);
+    losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_MAGM, TRUE), "exploding wand", KILLED_BY_AN);
     useup(obj);
     /* obscure side-effect */
     exercise(A_STR, FALSE);

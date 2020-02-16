@@ -127,7 +127,7 @@ register struct monst *mtmp;
     nmon = 0;
 #endif
     /* perhaps the monster will resist Conflict */
-    if (check_magic_resistance_and_halve_damage(mtmp, (struct obj*) 0, 5, 0, 0))
+    if (check_magic_resistance_and_halve_damage(mtmp, (struct obj*) 0, 5, 0, 0, 0))
         return 0;
 
     if (u.ustuck == mtmp) {
@@ -1800,7 +1800,7 @@ int amt, lvl, tellstyle;
 			
 		shieldeff(mon->mx, mon->my);
 	}
-	else if(lvl >= 0 && check_magic_resistance_and_halve_damage(mon, otmp, lvl, 0, tellstyle))
+	else if(lvl >= 0 && check_magic_resistance_and_halve_damage(mon, otmp, lvl, 0, 0, tellstyle))
 	{
 		/* no futher action here */
 	}

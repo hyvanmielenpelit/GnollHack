@@ -966,7 +966,7 @@ genericptr_t p2;
             pline("%s is burning your %s!", Something,
                   makeplural(body_part(LUNG)));
             You("cough and spit blood!");
-            losehp(Maybe_Half_Phys(rnd(dam) + 5), "gas cloud", KILLED_BY_AN);
+            losehp(adjust_damage(rnd(dam) + 5, (struct monst*)0, &youmonst, AD_DRST, FALSE), "gas cloud", KILLED_BY_AN);
             return FALSE;
         } else {
             You("cough!");

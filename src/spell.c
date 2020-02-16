@@ -165,9 +165,11 @@ struct obj *bp;
         was_in_use = bp->in_use;
         bp->in_use = FALSE;
         losestr(Poison_resistance ? rn1(2, 1) : rn1(4, 3));
-        losehp(rnd(Poison_resistance ? 6 : 10), "contact-poisoned spellbook",
+        losehp(adjust_damage(rnd(10), (struct monst*)0, &youmonst, AD_DRST, FALSE), "contact-poisoned spellbook",
                KILLED_BY_AN);
-        bp->in_use = was_in_use;
+		losehp(rnd(Poison_resistance ? 6 : 10), "contact-poisoned spellbook",
+			KILLED_BY_AN);
+		bp->in_use = was_in_use;
         break;
     case 6:
         if (Antimagic) {
@@ -177,7 +179,7 @@ struct obj *bp;
             pline("As you read the book, it %s in your %s!", explodes,
                   body_part(FACE));
             dmg = 2 * rnd(10) + 5;
-            losehp(Maybe_Half_Phys(dmg), "exploding rune", KILLED_BY_AN);
+            losehp(adjust_damage(rnd(10), (struct monst*)0, &youmonst, AD_MAGM, FALSE), "exploding rune", KILLED_BY_AN);
         }
         return TRUE;
     default:
@@ -4113,14 +4115,14 @@ int spell;
 		{
 			//One more damage
 			Your("concoction explodes in a large ball of fire!");
-			losehp(Maybe_Half_Phys(dmg), buf, NO_KILLER_PREFIX);
+			losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_FIRE, FALSE), buf, NO_KILLER_PREFIX);
 			explode(u.ux, u.uy, RAY_FIRE, 1, 0, 0,
 				EXPL_MAGICAL);
 		}
 		else
 		{
 			Your("concoction flares up, burning you!");
-			losehp(Maybe_Half_Phys(dmg), buf, NO_KILLER_PREFIX);
+			losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_FIRE, FALSE), buf, NO_KILLER_PREFIX);
 		}
 	}
 	else

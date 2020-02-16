@@ -679,7 +679,7 @@ register struct monst *mtmp;
         }
         pline("A wave of psychic energy pours over you!");
         if (is_peaceful(mtmp)
-            && (!Conflict || check_magic_resistance_and_halve_damage(mtmp, (struct obj*) 0, 5, 0, 0))) 
+            && (!Conflict || check_magic_resistance_and_halve_damage(mtmp, (struct obj*) 0, 5, 0, 0, 0)))
 		{
             pline("It feels quite soothing.");
         } 
@@ -834,7 +834,7 @@ register struct monst *mtmp;
     /*  Now, attack the player if possible - one attack set per monst
      */
 
-    if (!is_peaceful(mtmp) || (Conflict && !check_magic_resistance_and_halve_damage(mtmp, (struct obj*) 0, 5, 0, 0)))
+    if (!is_peaceful(mtmp) || (Conflict && !check_magic_resistance_and_halve_damage(mtmp, (struct obj*) 0, 5, 0, 0, 0)))
 	{
         if (inrange && !noattacks(mdat)
             && (Upolyd ? u.mh : u.uhp) > 0 && !scared && tmp != 3)
@@ -1289,7 +1289,7 @@ register int after;
     nix = omx;
     niy = omy;
     flag = 0L;
-    if (is_peaceful(mtmp) && (!(Conflict) || check_magic_resistance_and_halve_damage(mtmp, (struct obj*)0, 5, 0, 0)))
+    if (is_peaceful(mtmp) && (!(Conflict) || check_magic_resistance_and_halve_damage(mtmp, (struct obj*)0, 5, 0, 0, 0)))
         flag |= (ALLOW_SANCT | ALLOW_SSM);
     else
 	{
