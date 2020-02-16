@@ -80,6 +80,8 @@
 #define AD_ENCH 41  /* remove enchantment (disenchanter) */
 #define AD_CORR 42  /* corrode armor (black pudding) */
 #define AD_CNCL 43  /* cancel target */
+#define AD_PSIO 44  /* psionic damage */
+#define AD_SHOC 45  /* system shock */
 
 #define AD_CLRC 240 /* random clerical spell */
 #define AD_SPEL 241 /* random magic spell */

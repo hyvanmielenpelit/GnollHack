@@ -433,7 +433,7 @@ int psflags;
         && !isvamp) {
         if (rn2(20) > ACURR(A_CON)) {
             You1(shudder_for_moment);
-            losehp(rnd(30), "system shock", KILLED_BY_AN);
+            losehp(adjust_damage(rnd(30), (struct monst*)0, &youmonst, AD_SHOC, TRUE), "system shock", KILLED_BY_AN);
             exercise(A_CON, FALSE);
             return;
         }

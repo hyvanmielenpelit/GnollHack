@@ -361,6 +361,7 @@ int typ, fatal;        /* if fatal is 0, limit damage to adjattrib */
 boolean thrown_weapon; /* thrown weapons are less deadly */
 {
     int i, loss, kprefix = KILLED_BY_AN;
+	double damage = 0;
 
     /* inform player about being poisoned unless that's already been done;
        "blast" has given a "blast of poison gas" message; "poison arrow",
@@ -395,8 +396,8 @@ boolean thrown_weapon; /* thrown weapons are less deadly */
     i = !fatal ? 1 : rn2(fatal + (thrown_weapon ? 20 : 0));
     if (i == 0 && typ != A_CHA) {
         /* no more instant kill but 6d6 + 10 damage */
-		loss = d(6, 6) + thrown_weapon ? 0 : 10;
-		losehp(loss, pkiller, kprefix); /* poison damage */
+		damage = adjust_damage(d(6, 6) + thrown_weapon ? 0 : 10, (struct monst*)0, &youmonst, AD_DRST, FALSE);
+		losehp(damage, pkiller, kprefix); /* poison damage */
 		
 		//Attribute loss
 		loss = (thrown_weapon || !fatal) ? 1 : d(2, 2); /* was rn1(3,3) */
@@ -407,8 +408,8 @@ boolean thrown_weapon; /* thrown weapons are less deadly */
         context.botl = TRUE;
     } else if (i > 5) {
         /* HP damage; more likely--but less severe--with missiles */
-        loss = thrown_weapon ? rnd(6) : rn1(10, 6); //10...15
-        losehp(loss, pkiller, kprefix); /* poison damage */
+		damage = adjust_damage(thrown_weapon ? rnd(6) : rn1(10, 6), (struct monst*)0, & youmonst, AD_DRST, FALSE); //10...15
+        losehp(damage, pkiller, kprefix); /* poison damage */
     } else {
         /* attribute loss; if typ is A_STR, reduction in current and
            maximum HP will occur once strength has dropped down to 3 */
@@ -429,7 +430,7 @@ boolean thrown_weapon; /* thrown weapons are less deadly */
 }
 
 
-/* called when an attack or trap has poisoned hero (used to be in mon.c) */
+/* called when an attack with elemental enchantment has hit the hero (used to be in mon.c) */
 void
 extra_enchantment_damage(reason, sptype, pkiller, lifesavedalready)
 const char* reason,    /* controls what messages we display */
@@ -438,6 +439,7 @@ int sptype;
 boolean lifesavedalready;
 {
 	int i, loss, kprefix = KILLED_BY_AN;
+	double damage = 0;
 
 	boolean plural = (reason[strlen(reason) - 1] == 's') ? 1 : 0;
 
@@ -467,17 +469,8 @@ boolean lifesavedalready;
 			return;
 		}
 
-
-		if (sptype == COLD_ENCHANTMENT) {
-			loss = rnd(6);
-			losehp(loss, pkiller, kprefix); 
-		}
-		else
-		{
-			loss = rnd(6);
-			losehp(loss, pkiller, kprefix);
-			//+Slow Damage
-		}
+		damage = adjust_damage(rnd(6), (struct monst*)0, &youmonst, AD_COLD, FALSE);
+		losehp(damage, pkiller, kprefix);
 	}
 	else if (sptype == FIRE_ENCHANTMENT)
 	{
@@ -490,17 +483,8 @@ boolean lifesavedalready;
 			return;
 		}
 
-
-		if (sptype == FIRE_ENCHANTMENT) {
-			loss = d(2, 6);
-			losehp(loss, pkiller, kprefix); 
-		}
-		else
-		{
-			//Explosion like fire ball!
-			loss = d(2, 6);
-			losehp(loss, pkiller, kprefix); 
-		}
+		damage = adjust_damage(d(2, 6), (struct monst*)0, &youmonst, AD_FIRE, FALSE);
+		losehp(damage, pkiller, kprefix);
 	}
 	else if (sptype == LIGHTNING_ENCHANTMENT)
 	{
@@ -513,17 +497,8 @@ boolean lifesavedalready;
 			return;
 		}
 
-
-		if (sptype == LIGHTNING_ENCHANTMENT || Invulnerable) {
-			loss = d(3, 6);
-			losehp(loss, pkiller, kprefix);
-		}
-		else
-		{
-			//Lightning bolt in a line!
-			loss = d(3, 6);
-			losehp(loss, pkiller, kprefix); 
-		}
+		damage = adjust_damage(d(3, 6), (struct monst*)0, &youmonst, AD_ELEC, FALSE);
+		losehp(damage, pkiller, kprefix);
 	}
 	else if (sptype == DEATH_ENCHANTMENT)
 	{
@@ -539,8 +514,8 @@ boolean lifesavedalready;
 
 		if (lifesavedalready) {
 			//Just do 10d6 damage if life was saved by amulet of life saving
-			loss = rn1(10, 6);
-			losehp(loss, pkiller, kprefix);
+			damage = adjust_damage(d(10, 6), (struct monst*)0, &youmonst, AD_DRAY, FALSE);
+			losehp(damage, pkiller, kprefix);
 		}
 		else
 		{

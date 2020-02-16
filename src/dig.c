@@ -335,7 +335,7 @@ dig(VOID_ARGS)
                 You("hit yourself in the %s.", body_part(FOOT));
                 Sprintf(kbuf, "chopping off %s own %s", uhis(),
                         body_part(FOOT));
-                losehp(Maybe_Half_Phys(dmg), kbuf, KILLED_BY);
+                losehp(adjust_damage(dmg, &youmonst, &youmonst, AD_PHYS, FALSE), kbuf, KILLED_BY);
             } else {
                 You("destroy the bear trap with %s.",
                     yobjnam(uwep, (const char *) 0));
@@ -1093,7 +1093,7 @@ struct obj *obj;
             dam = 1;
         You("hit yourself with %s.", yname(uwep));
         Sprintf(buf, "%s own %s", uhis(), OBJ_NAME(objects[obj->otyp]));
-        losehp(Maybe_Half_Phys(dam), buf, KILLED_BY);
+        losehp(adjust_damage(dam, &youmonst, &youmonst, AD_PHYS, FALSE), buf, KILLED_BY);
         context.botl = 1;
         return 1;
     } else if (u.dz == 0) {
@@ -1138,7 +1138,7 @@ struct obj *obj;
                       sobj_at(STATUE, rx, ry) ? "statue" : "boulder",
                       vibrate ? " The axe-handle vibrates violently!" : "");
                 if (vibrate)
-                    losehp(Maybe_Half_Phys(2), "axing a hard object",
+                    losehp(adjust_damage(2, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "axing a hard object",
                            KILLED_BY);
             } else if (u.utrap && u.utraptype == TT_PIT && trap
                        && (trap_with_u = t_at(u.ux, u.uy))
@@ -1488,7 +1488,7 @@ struct obj* origobj;
                 You("loosen a rock from the %s.", ceiling(u.ux, u.uy));
                 pline("It falls on your %s!", body_part(HEAD));
                 dmg = rnd((uarmh && is_metallic(uarmh)) ? 2 : 6);
-                losehp(Maybe_Half_Phys(dmg), "falling rock", KILLED_BY_AN);
+                losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "falling rock", KILLED_BY_AN);
                 otmp = mksobj_at(ROCK, u.ux, u.uy, FALSE, FALSE);
                 if (otmp) {
                     (void) xname(otmp); /* set dknown, maybe bknown */

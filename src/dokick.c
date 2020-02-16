@@ -1531,7 +1531,7 @@ dokick() {
             if (!rn2(3))
                 set_wounded_legs(RIGHT_SIDE, 5 + rnd(5));
             dmg = rnd(ACURR(A_CON) > 15 ? 3 : 5);
-            losehp(Maybe_Half_Phys(dmg), kickstr(buf, kickobjnam), KILLED_BY);
+            losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, FALSE), kickstr(buf, kickobjnam), KILLED_BY);
             if (Is_airlevel(&u.uz) || Levitation)
                 hurtle(-u.dx, -u.dy, rn1(2, 4), TRUE); /* assume it's heavy */
             return 1;

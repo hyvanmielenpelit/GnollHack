@@ -1928,14 +1928,14 @@ struct obj *otmp;
     } else if (acidic(&mons[mnum]) && !Acid_resistance) {
 		tp++;
         You("have a very bad case of stomach acid.");   /* not body_part() */
-        losehp(rnd(15), !glob ? "acidic corpse" : "acidic glob",
+        losehp(adjust_damage(rnd(15), (struct monst*)0, &youmonst, AD_ACID, FALSE), !glob ? "acidic corpse" : "acidic glob",
                KILLED_BY_AN); /* acid damage */
     } else if (poisonous(&mons[mnum]) && rn2(5)) {
 		tp++;
         pline("Ecch - that must have been poisonous!");
         if (!Poison_resistance) {
             losestr(rnd(4));
-            losehp(rnd(15), !glob ? "poisonous corpse" : "poisonous glob",
+            losehp(adjust_damage(rnd(15), (struct monst*)0, &youmonst, AD_DRST, FALSE), !glob ? "poisonous corpse" : "poisonous glob",
                    KILLED_BY_AN);
         } else
             You("seem unaffected by the poison.");
@@ -1943,7 +1943,7 @@ struct obj *otmp;
     } else if ((rotted > 5L || (rotted > 3L && rn2(5))) && !Sick_resistance) {
 		tp++;
         You_feel("%ssick.", (Sick) ? "very " : "");
-        losehp(rnd(8), !glob ? "cadaver" : "rotted glob", KILLED_BY_AN);
+        losehp(adjust_damage(rnd(8), (struct monst*)0, &youmonst, AD_DISE, FALSE), !glob ? "cadaver" : "rotted glob", KILLED_BY_AN);
     }
 
     /* delay is weight dependent */
@@ -2964,7 +2964,7 @@ doeat()
             pline("Ecch - that must have been poisonous!");
             if (!Poison_resistance) {
                 losestr(rnd(4));
-                losehp(rnd(15), xname(otmp), KILLED_BY_AN);
+                losehp(adjust_damage(rnd(15), (struct monst*)0, &youmonst, AD_DRST, FALSE), xname(otmp), KILLED_BY_AN);
             } else
                 You("seem unaffected by the poison.");
         } else if (!nodelicious) {
@@ -3078,7 +3078,7 @@ doeat()
 		}
 		else if (objects[otmp->otyp].oc_edible_subtype == EDIBLE_ACIDIC && !Acid_resistance) {
 			You("have a very bad case of stomach acid.");   /* not body_part() */
-			losehp(rnd(15), "acidic food",
+			losehp(adjust_damage(rnd(15), (struct monst*)0, &youmonst, AD_ACID, FALSE), "acidic food",
 				KILLED_BY_AN); /* acid damage */
 			consume_oeaten(otmp, 2); /* oeaten >>= 2 */
 		}
@@ -3086,7 +3086,7 @@ doeat()
 			pline("Ecch - that must have been poisonous!");
 			if (!Poison_resistance) {
 				losestr(rnd(4));
-				losehp(rnd(15), "poisonous food",
+				losehp(adjust_damage(rnd(15), (struct monst*)0, &youmonst, AD_DRST, FALSE), "poisonous food",
 					KILLED_BY_AN);
 			}
 			else
@@ -3097,7 +3097,7 @@ doeat()
 			pline("Ecch - that must have been terribly poisonous!");
 			if (!Poison_resistance) {
 				losestr(d(2, 6));
-				losehp(d(5, 20), "poisonous food",
+				losehp(adjust_damage(d(5, 20), (struct monst*)0, &youmonst, AD_DRST, FALSE), "poisonous food",
 					KILLED_BY_AN);
 			}
 			else
@@ -3107,7 +3107,7 @@ doeat()
 		else if (objects[otmp->otyp].oc_edible_subtype == EDIBLE_SICKENING && !Sick_resistance)
 		{
 			You_feel("%ssick.", (Sick) ? "very " : "");
-			losehp(rnd(8), "sickening food", KILLED_BY_AN);
+			losehp(adjust_damage(rnd(8), (struct monst*)0, &youmonst, AD_DISE, FALSE), "sickening food", KILLED_BY_AN);
 			consume_oeaten(otmp, 2); /* oeaten >>= 2 */
 		}
 		else if (objects[otmp->otyp].oc_edible_subtype == EDIBLE_HALLUCINATING && !Halluc_resistance)

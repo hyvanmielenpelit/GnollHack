@@ -712,6 +712,7 @@ struct monst *mon;
 			|| (badalign && (!yours || !rn2(4)))))
 	{
 			int dmg = 0, tmp = 0;
+			double damage = 0;
 			char buf[BUFSZ];
 
 			if (!yours)
@@ -728,9 +729,11 @@ struct monst *mon;
 				dmg += d((Antimagic ? 2 : 4), (self_willed ? 10 : 4));
 			/* add half (maybe quarter) of the usual silver damage bonus */
 			if (objects[obj->otyp].oc_material == MAT_SILVER && Hate_silver)
-				tmp = rnd(10), dmg += Maybe_Half_Phys(tmp);
+				dmg += rnd(10);
+			damage = adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, FALSE);
+
 			Sprintf(buf, "touching %s", (oart ? oart->name : an(cxname(obj))));
-			losehp(dmg, buf, KILLED_BY); /* magic damage, not physical */
+			losehp(damage, buf, KILLED_BY); /* magic damage, not physical */
 			exercise(A_WIS, FALSE);
     }
 
@@ -2439,7 +2442,7 @@ struct obj *obj;
 			pseudo.otyp = SPE_FINGER_OF_DEATH;
 			pseudo.quan = 20L; /* do not let useup get it */
 			int otyp = pseudo.otyp;
-			int damage = 0;
+			double damage = 0;
 
 			if (!getdir((char*)0)) 
 			{
@@ -2448,7 +2451,8 @@ struct obj *obj;
 			}
 			if (!u.dx && !u.dy && !u.dz) 
 			{
-				if ((damage = zapyourself(&pseudo, TRUE)) != 0) {
+				if ((damage = zapyourself(&pseudo, TRUE)) > 0)
+				{
 					char buf[BUFSZ];
 
 					Sprintf(buf, "zapped %sself with %s", uhim(), cxname(obj));
@@ -3119,7 +3123,7 @@ boolean loseit;    /* whether to drop it if hero can longer touch it */
 
     if (touch_artifact(obj, &youmonst)) {
         char buf[BUFSZ];
-        int dmg = 0, tmp;
+		double damage = 0;
         boolean ag = (objects[obj->otyp].oc_material == MAT_SILVER && Hate_silver),
                 bane = bane_applies(get_artifact(obj), &youmonst);
 
@@ -3136,11 +3140,11 @@ boolean loseit;    /* whether to drop it if hero can longer touch it */
             /* damage is somewhat arbitrary; half the usual 1d20 physical
                for silver, 1d10 magical for <foo>bane, potentially both */
             if (ag)
-                tmp = rnd(10), dmg += Maybe_Half_Phys(tmp);
+                damage = adjust_damage(rnd(10), (struct monst*)0, &youmonst, AD_PHYS, FALSE);
             if (bane)
-                dmg += rnd(10);
-            Sprintf(buf, "handling %s", killer_xname(obj));
-            losehp(dmg, buf, KILLED_BY);
+				damage += adjust_damage(rnd(10), (struct monst*)0, &youmonst, AD_PHYS, FALSE);
+			Sprintf(buf, "handling %s", killer_xname(obj));
+            losehp(damage, buf, KILLED_BY);
             exercise(A_CON, FALSE);
         }
     }

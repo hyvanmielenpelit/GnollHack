@@ -67,25 +67,34 @@ const char *name; /* if null, then format `*objp' */
 
 	//TO-HIT IS DONE HERE
 	dieroll = rnd(20);
-    if (u.uac + tlev <= dieroll) {
+    if (u.uac + tlev <= dieroll) 
+	{
         ++mesg_given;
-        if (Blind || !flags.verbose) {
+        if (Blind || !flags.verbose) 
+		{
             pline("It misses.");
-        } else if (u.uac + tlev <= dieroll - 2) {
+        }
+		else if (u.uac + tlev <= dieroll - 2) 
+		{
             if (onm != onmbuf)
                 Strcpy(onmbuf, onm); /* [modifiable buffer for upstart()] */
             pline("%s %s you.", upstart(onmbuf), vtense(onmbuf, "miss"));
         } else
             You("are almost hit by %s.", onm);
         return 0;
-    } else {
-        if ((is_acid && Acid_resistance)) {
+    } 
+	else 
+	{
+        if ((is_acid && Acid_resistance))
+		{
 			if (Blind || !flags.verbose)
 				You("are hit, but it does not seem to hurt you%s", exclam(dam));
 			else
 				You("are hit by %s, but it doesn't seem to hurt you%s", onm, exclam(dam));
 			//pline("It doesn't seem to hurt you.");
-        } else if (obj && obj->oclass == POTION_CLASS) {
+        } 
+		else if (obj && obj->oclass == POTION_CLASS)
+		{
             /* an explosion which scatters objects might hit hero with one
                (potions deliberately thrown at hero are handled by m_throw) */
 			if (Blind || !flags.verbose)
@@ -94,8 +103,11 @@ const char *name; /* if null, then format `*objp' */
 				You("are hit by %s%s", onm, exclam(dam));
 			potionhit(&youmonst, obj, POTHIT_OTHER_THROW);
             *objp = obj = 0; /* potionhit() uses up the potion */
-        } else {
-			if(dam <1)
+        } 
+		else 
+		{
+			double damage = adjust_damage(dam, (struct monst*)0, &youmonst, obj ? objects[obj->otyp].oc_damagetype : AD_PHYS, FALSE);
+			if(damage == 0)
 			{
 				if (Blind || !flags.verbose)
 					You("are hit, but it does not seem to hurt you%s", exclam(dam));
@@ -104,13 +116,15 @@ const char *name; /* if null, then format `*objp' */
 			}
 			else
 			{
+				int damagedealt = (int)damage + ((damage - (double)((int)damage) - ((double)(Upolyd ? u.mh_fraction : u.uhp_fraction) / 10000)) > 0 ? 1 : 0);
+
 				if (Blind || !flags.verbose)
-					You("are hit for %d damage%s", dam, exclam(dam));
+					You("are hit for %d damage%s", damagedealt, exclam(damagedealt));
 				else
-					You("are hit by %s for %d damage%s", onm, dam, exclam(dam));
+					You("are hit by %s for %d damage%s", onm, damagedealt, exclam(damagedealt));
 			}
-			if (obj && objects[obj->otyp].oc_material == MAT_SILVER
-                && Hate_silver) {
+			if (obj && objects[obj->otyp].oc_material == MAT_SILVER && Hate_silver) 
+			{
                 /* extra damage already applied by weapon_dmg_value() */
                 pline_The("silver sears your flesh!");
                 exercise(A_CON, FALSE);
@@ -119,7 +133,7 @@ const char *name; /* if null, then format `*objp' */
                 pline("It burns!"); /* acid damage */
 
 			//DAMAGE IS DONE HERE
-            losehp(dam, knm, kprefix);
+            losehp(damage, knm, kprefix);
             exercise(A_STR, FALSE);
         }
         return 1;

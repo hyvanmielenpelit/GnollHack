@@ -1803,7 +1803,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
                 known = TRUE;
             litroom(!confused && !scursed, sobj);
             if (!confused && !scursed) {
-                if (lightdamage(sobj, TRUE, 5))
+                if (lightdamage(sobj, TRUE, 5) > 0)
                     known = TRUE;
             }
         } else {

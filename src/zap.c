@@ -3376,7 +3376,7 @@ register struct obj *obj;
         litroom(TRUE, obj);
         if (!Blind)
             known = TRUE;
-        if (lightdamage(obj, TRUE, 5))
+        if (lightdamage(obj, TRUE, 5) > 0)
             known = TRUE;
         break;
 	case SPE_BLACK_BLADE_OF_DISASTER:
@@ -4219,7 +4219,7 @@ int
 dozap()
 {
     register struct obj *obj;
-    int damage;
+    double damage;
 	boolean taketurn = TRUE;
 
     if (check_capacity((char *) 0))
@@ -4261,7 +4261,7 @@ dozap()
             char buf[BUFSZ];
 
             Sprintf(buf, "zapped %sself with a wand", uhim());
-            losehp(Maybe_Half_Phys(damage), buf, NO_KILLER_PREFIX);
+            losehp(damage, buf, NO_KILLER_PREFIX);
         }
     } else {
         /*      Are we having fun yet?
@@ -4283,41 +4283,52 @@ dozap()
     return taketurn;
 }
 
-int
+double
 zapyourself(obj, ordinary)
 struct obj *obj;
 boolean ordinary;
 {
     boolean learn_it = FALSE;
     int meteors = 0;
-	int damage = d(objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize) + objects[obj->otyp].oc_spell_dmg_plus;
+	int basedmg = d(objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize) + objects[obj->otyp].oc_spell_dmg_plus;
 	int duration = d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_diesize) + objects[obj->otyp].oc_spell_dur_plus;
+	double damage = 0;
 	boolean magic_resistance_success = check_magic_resistance_and_halve_damage(&youmonst, obj, 0, 0, NOTELL);
 
     switch (obj->otyp) {
     case WAN_STRIKING:
     case SPE_FORCE_BOLT:
         learn_it = TRUE;
-        if (Antimagic || Invulnerable) {
+        if (Antimagic || Invulnerable)
+		{
             shieldeff(u.ux, u.uy);
 			damage = 0;
             pline("Boing!");
-        } else {
-            if (ordinary) {
+        }
+		else
+		{
+            if (ordinary)
+			{
                 You("bash yourself!");
-			} else
-                damage = d(1 + obj->spe, 6);
-            exercise(A_STR, FALSE);
+			} 
+			else
+                basedmg = d(1 + obj->spe, 6);
+
+			damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_PHYS, TRUE);
+			exercise(A_STR, FALSE);
         }
         break;
 
 	case SPE_MAGIC_ARROW:
 		learn_it = TRUE;
-		if (ordinary) {
+		if (ordinary) 
+		{
 			You("shoot yourself with a magical arrow!");
 		}
 		else
-			damage = d(1 + obj->spe, 3);
+			basedmg = d(1 + obj->spe, 3);
+
+		damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_PHYS, TRUE);
 		exercise(A_STR, FALSE);
 		break;
 
@@ -4326,7 +4337,7 @@ boolean ordinary;
 		if (!Shock_resistance && !Invulnerable) {
 			You("shock yourself!");
 			exercise(A_CON, FALSE);
-			damage = d(1, 4);
+			damage = adjust_damage(d(1, 4), &youmonst, &youmonst, AD_ELEC, TRUE);
 		}
 		else
 		{
@@ -4338,10 +4349,11 @@ boolean ordinary;
 		break;
 	case SPE_BURNING_HANDS:
 		learn_it = TRUE;
-		if (!Fire_resistance && !Invulnerable) {
+		if (!Fire_resistance && !Invulnerable)
+		{
 			You("burn yourself!");
 			exercise(A_CON, FALSE);
-			damage = d(1, 4);
+			damage = adjust_damage(d(1, 4), &youmonst, &youmonst, AD_FIRE, TRUE);
 		}
 		else
 		{
@@ -4356,7 +4368,7 @@ boolean ordinary;
 		if (!Cold_resistance && !Invulnerable) {
 			You("freeze yourself!");
 			exercise(A_CON, FALSE);
-			damage = d(1, 4);
+			damage = adjust_damage(d(1, 4), &youmonst, &youmonst, AD_COLD, TRUE);
 		}
 		else
 		{
@@ -4365,10 +4377,12 @@ boolean ordinary;
 			ugolemeffects(AD_COLD, damage);
 			damage = 0;
 		}
-	break;	case SPE_LIGHTNING_BOLT:
+	break;	
+	case SPE_LIGHTNING_BOLT:
 	case WAN_LIGHTNING:
         learn_it = TRUE;
-        if (!Shock_resistance && !Invulnerable) {
+		damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_ELEC, TRUE);
+		if (!Shock_resistance && !Invulnerable) {
             You("shock yourself!");
 			exercise(A_CON, FALSE);
         } else {
@@ -4383,43 +4397,42 @@ boolean ordinary;
         break;
 	case SPE_FIREBALL:
 		You("explode a fireball on top of yourself!");
-        explode(u.ux, u.uy, RAY_FIRE, damage, obj->otyp, obj->oclass, EXPL_FIERY);
+        explode(u.ux, u.uy, RAY_FIRE, basedmg, obj->otyp, obj->oclass, EXPL_FIERY);
         break;
 	case SPE_FIRE_STORM:
 		You("conjure a fire storm on top of yourself!");
-		explode(u.ux, u.uy, RAY_FIRE, damage, obj->otyp, obj->oclass, EXPL_FIERY);
+		explode(u.ux, u.uy, RAY_FIRE, basedmg, obj->otyp, obj->oclass, EXPL_FIERY);
 		break;
 	case SPE_METEOR_SWARM:
 		pline("A meteor shoots at you!");
-		meteors = d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_diesize) + objects[obj->otyp].oc_spell_dur_plus;
-		damage = d(objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize) + objects[obj->otyp].oc_spell_dmg_plus;
-		explode(u.ux, u.uy, RAY_FIRE, damage, obj->otyp, obj->oclass, EXPL_FIERY);
+		explode(u.ux, u.uy, RAY_FIRE, basedmg, obj->otyp, obj->oclass, EXPL_FIERY);
 		break;
 	case SPE_ICE_STORM:
 		You("conjure an ice storm on top of yourself!");
-		explode(u.ux, u.uy, RAY_FIRE, damage, obj->otyp, obj->oclass, EXPL_FROSTY);
+		explode(u.ux, u.uy, RAY_FIRE, basedmg, obj->otyp, obj->oclass, EXPL_FROSTY);
 		break;
 	case SPE_MAGICAL_IMPLOSION:
 		You("engulf yourself in a magical implosion!");
-		explode(u.ux, u.uy, RAY_MAGIC_MISSILE, damage, obj->otyp, obj->oclass, EXPL_MAGICAL);
+		explode(u.ux, u.uy, RAY_MAGIC_MISSILE, basedmg, obj->otyp, obj->oclass, EXPL_MAGICAL);
 		break;
 	case SPE_MAGIC_STORM:
 		You("conjure a storm of arcane magic on top of yourself!");
-		explode(u.ux, u.uy, RAY_MAGIC_MISSILE, damage, obj->otyp, obj->oclass, EXPL_MAGICAL);
+		explode(u.ux, u.uy, RAY_MAGIC_MISSILE, basedmg, obj->otyp, obj->oclass, EXPL_MAGICAL);
 		break;
 	case SPE_THUNDERSTORM:
 		You("conjure a thunderstorm on top of yourself!");
-		explode(u.ux, u.uy, RAY_LIGHTNING, damage, obj->otyp, obj->oclass, EXPL_MAGICAL);
+		explode(u.ux, u.uy, RAY_LIGHTNING, basedmg, obj->otyp, obj->oclass, EXPL_MAGICAL);
 		break;
 	case SPE_DEATHSPELL:
 		You("conjure a death field on top of yourself!");
-		explode(u.ux, u.uy, RAY_DEATH, damage, obj->otyp, obj->oclass, EXPL_MAGICAL);
+		explode(u.ux, u.uy, RAY_DEATH, basedmg, obj->otyp, obj->oclass, EXPL_MAGICAL);
 		break;
 	case SPE_FIRE_BOLT:
 	case WAN_FIRE:
     case FIRE_HORN:
         learn_it = TRUE;
-        if (Fire_resistance || Invulnerable) {
+		damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_FIRE, TRUE);
+		if (Fire_resistance || Invulnerable) {
             shieldeff(u.ux, u.uy);
             You_feel("rather warm.");
             ugolemeffects(AD_FIRE, damage);
@@ -4454,7 +4467,8 @@ boolean ordinary;
     case SPE_CONE_OF_COLD:
     case FROST_HORN:
         learn_it = TRUE;
-        if (Cold_resistance || Invulnerable) {
+		damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_COLD, TRUE);
+		if (Cold_resistance || Invulnerable) {
             shieldeff(u.ux, u.uy);
             You_feel("a little chill.");
             ugolemeffects(AD_COLD, damage);
@@ -4468,7 +4482,8 @@ boolean ordinary;
     case WAN_MAGIC_MISSILE:
     case SPE_MAGIC_MISSILE:
         learn_it = TRUE;
-        if (Antimagic || Invulnerable) {
+		damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_MAGM, TRUE);
+		if (Antimagic || Invulnerable) {
             shieldeff(u.ux, u.uy);
             pline_The("missiles bounce!");
 			damage = 0;
@@ -4745,7 +4760,7 @@ boolean ordinary;
 		if(is_living(youmonst.data))
 		{
 			learn_it = TRUE; /* (no effect for spells...) */
-			healup(damage, 0, FALSE, (obj->blessed || (obj->otyp != SPE_HEALING && obj->otyp != SPE_MINOR_HEALING)),
+			healup(basedmg, 0, FALSE, (obj->blessed || (obj->otyp != SPE_HEALING && obj->otyp != SPE_MINOR_HEALING)),
 				(obj->blessed || (obj->otyp != SPE_HEALING && obj->otyp != SPE_MINOR_HEALING)), FALSE, FALSE);
 			You_feel("%sbetter.", obj->otyp == SPE_GREATER_HEALING ? "much, much " : obj->otyp == SPE_EXTRA_HEALING ? "much " : "");
 		}
@@ -4778,7 +4793,7 @@ boolean ordinary;
 		if (is_undead(youmonst.data))
 		{
 			learn_it = TRUE; /* (no effect for spells...) */
-			healup(damage, 0, FALSE, (obj->blessed || obj->otyp == SPE_GREATER_UNDEATH_REPLENISHMENT), (obj->blessed || obj->otyp == SPE_GREATER_UNDEATH_REPLENISHMENT), FALSE, FALSE);
+			healup(basedmg, 0, FALSE, (obj->blessed || obj->otyp == SPE_GREATER_UNDEATH_REPLENISHMENT), (obj->blessed || obj->otyp == SPE_GREATER_UNDEATH_REPLENISHMENT), FALSE, FALSE);
 			You_feel("%sbetter.", obj->otyp == SPE_GREATER_UNDEATH_REPLENISHMENT ? "much " : "");
 		}
 		else
@@ -4787,14 +4802,14 @@ boolean ordinary;
 		break;
 	case WAN_LIGHT: /* (broken wand) */
         /* assert( !ordinary ); */
-        damage = d(obj->spe, 25);
-        /*FALLTHRU*/
+		damage = adjust_damage(d(obj->spe, 25), &youmonst, &youmonst, AD_ELEC, TRUE);
+		/*FALLTHRU*/
     case EXPENSIVE_CAMERA:
-        if (!damage)
-            damage = 5;
-        damage = lightdamage(obj, ordinary, damage);
-        damage += rnd(25);
-        if (flashburn((long) damage))
+        if (basedmg == 0)
+			basedmg = 5;
+        damage = lightdamage(obj, ordinary, basedmg);
+        damage += adjust_damage(rnd(25), &youmonst, &youmonst, AD_PHYS, FALSE);
+        if (flashburn((long)ceil(damage)))
             learn_it = TRUE;
         damage = 0; /* reset */
         break;
@@ -4906,7 +4921,7 @@ struct attack *mattk;
 }
 
 /* light damages hero in gremlin form */
-int
+double
 lightdamage(obj, ordinary, amt)
 struct obj *obj;  /* item making light (fake book if spell) */
 boolean ordinary; /* wand/camera zap vs wand destruction */
@@ -4915,8 +4930,10 @@ int amt;          /* pseudo-damage used to determine blindness duration */
     char buf[BUFSZ];
     const char *how;
     int dmg = amt;
+	double damage = 0;
 
-    if (dmg && youmonst.data == &mons[PM_GREMLIN]) {
+    if (dmg && youmonst.data == &mons[PM_GREMLIN]) 
+	{
         /* reduce high values (from destruction of wand with many charges) */
         dmg = rnd(dmg);
         if (dmg > 10)
@@ -4934,9 +4951,10 @@ int amt;          /* pseudo-damage used to determine blindness duration */
         Sprintf(buf, "%s %sself with %s", ordinary ? "zapped" : "blasted",
                 uhim(), how);
         /* might rehumanize(); could be fatal, but only for Unchanging */
-        losehp(Maybe_Half_Phys(dmg), buf, NO_KILLER_PREFIX);
+		damage = adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, FALSE);
+        losehp(damage, buf, NO_KILLER_PREFIX);
     }
-    return dmg;
+    return damage;
 }
 
 /* light[ning] causes blindness */

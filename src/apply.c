@@ -1977,7 +1977,7 @@ int magic; /* 0=Physical, otherwise skill level */
                 long side = rn2(3) ? LEFT_SIDE : RIGHT_SIDE;
 
                 You("rip yourself free of the bear trap!  Ouch!");
-                losehp(Maybe_Half_Phys(rnd(10)), "jumping out of a bear trap",
+                losehp(adjust_damage(rnd(10), (struct monst*)0, &youmonst, AD_PHYS, FALSE), "jumping out of a bear trap",
                        KILLED_BY);
                 set_wounded_legs(side, rn1(1000, 500));
                 break;
@@ -2594,7 +2594,7 @@ struct obj* obj;
 			//Shoot accidently yourself!!
 
 			pline("The wand slips and you accidently zap yourself with it!");
-			return zapyourself(obj, TRUE);
+			return (zapyourself(obj, TRUE) > 0 ? 1 : 0);
 		}
 
 		//Normal effect
@@ -3302,7 +3302,7 @@ struct obj *obj;
             dam = 1;
         You("hit your %s with your bullwhip.", body_part(FOOT));
         Sprintf(buf, "killed %sself with %s bullwhip", uhim(), uhis());
-        losehp(Maybe_Half_Phys(dam), buf, NO_KILLER_PREFIX);
+        losehp(adjust_damage(dam, &youmonst, &youmonst, objects[obj->otyp].oc_damagetype, FALSE), buf, NO_KILLER_PREFIX);
         return 1;
 
     } else if ((Fumbling || Glib) && !rn2(5)) {
@@ -3864,7 +3864,7 @@ struct obj *obj;
     default: /* Yourself (oops!) */
         if (P_SKILL(typ) <= P_BASIC) {
             You("hook yourself!");
-            losehp(Maybe_Half_Phys(rn1(10, 10)), "a grappling hook",
+            losehp(adjust_damage(rn1(10, 10), &youmonst, &youmonst, objects[obj->otyp].oc_damagetype, FALSE), "a grappling hook",
                    KILLED_BY);
             return 1;
         }
@@ -3884,7 +3884,8 @@ struct obj *obj;
     static const char nothing_else_happens[] = "But nothing else happens...";
     register int i, x, y;
     register struct monst *mon;
-    int dmg, damage;
+	int dmg;
+	double damage = 0;
     boolean affects_objects;
     boolean shop_damage = FALSE;
     boolean fillmsg = FALSE;
@@ -4077,9 +4078,10 @@ struct obj *obj;
                     bot(); /* potion effects */
             }
             damage = zapyourself(obj, FALSE);
-            if (damage) {
+            if (damage > 0) 
+			{
                 Sprintf(buf, "killed %sself by breaking a wand", uhim());
-                losehp(Maybe_Half_Phys(damage), buf, NO_KILLER_PREFIX);
+                losehp(damage, buf, NO_KILLER_PREFIX);
             }
             if (context.botl)
                 bot(); /* blindness */

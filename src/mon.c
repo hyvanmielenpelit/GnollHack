@@ -3020,33 +3020,43 @@ boolean was_swallowed; /* digestion */
     struct permonst *mdat = mon->data;
     int i, tmp;
 
-    if (corpse_crumbles_to_dust(mdat)) {
+    if (corpse_crumbles_to_dust(mdat)) 
+	{
         if (cansee(mon->mx, mon->my) && !was_swallowed)
             pline("%s body crumbles into dust.", s_suffix(Monnam(mon)));
         return FALSE;
     }
 
     /* Gas spores always explode upon death */
-    for (i = 0; i < NATTK; i++) {
-        if (mdat->mattk[i].aatyp == AT_BOOM) {
+    for (i = 0; i < NATTK; i++) 
+	{
+        if (mdat->mattk[i].aatyp == AT_BOOM) 
+		{
             if (mdat->mattk[i].damn)
                 tmp = d((int) mdat->mattk[i].damn, (int) mdat->mattk[i].damd);
             else if (mdat->mattk[i].damd)
                 tmp = d((int) mdat->mlevel + 1, (int) mdat->mattk[i].damd);
             else
                 tmp = 0;
-            if (was_swallowed && magr) {
-                if (magr == &youmonst) {
+
+            if (was_swallowed && magr) 
+			{
+                if (magr == &youmonst) 
+				{
                     There("is an explosion in your %s!", body_part(STOMACH));
                     Sprintf(killer.name, "%s explosion",
                             s_suffix(mdat->mname));
-                    losehp(Maybe_Half_Phys(tmp), killer.name, KILLED_BY_AN);
-                } else {
+                    losehp(adjust_damage(tmp, mon, &youmonst, AD_PHYS, FALSE), killer.name, KILLED_BY_AN);
+                } 
+				else
+				{
                     You_hear("an explosion.");
-                    magr->mhp -= tmp;
+					deduct_monster_hp(magr, adjust_damage(tmp, mon, magr, AD_PHYS, FALSE));
+                    //magr->mhp -= tmp;
                     if (DEADMONSTER(magr))
                         mondied(magr);
-                    if (DEADMONSTER(magr)) { /* maybe lifesaved */
+                    if (DEADMONSTER(magr))
+					{ /* maybe lifesaved */
                         if (canspotmon(magr))
                             pline("%s rips open!", Monnam(magr));
                     } else if (canseemon(magr))

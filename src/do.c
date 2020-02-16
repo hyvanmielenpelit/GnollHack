@@ -2721,7 +2721,7 @@ boolean pushing;
                     hliquid("lava"), Fire_resistance ? '.' : '!');
                 burn_away_slime();
                 dmg = d((Fire_resistance ? 1 : 3), 6);
-                losehp(Maybe_Half_Phys(dmg), /* lava damage */
+                losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, FALSE), /* lava damage */
                        "molten lava", KILLED_BY);
             } else if (!fills_up && flags.verbose
                        && (pushing ? !Blind : cansee(rx, ry)))
@@ -2812,7 +2812,7 @@ const char *verb;
                 mtmp->mtrapped = 0;
             } else {
                 if (!Passes_walls && !throws_rocks(youmonst.data)) {
-                    losehp(Maybe_Half_Phys(rnd(15)),
+                    losehp(adjust_damage(rnd(15), (struct monst*)0, &youmonst, AD_PHYS, FALSE),
                            "squished under a boulder", NO_KILLER_PREFIX);
                     return FALSE; /* player remains trapped */
                 } else
@@ -3706,7 +3706,7 @@ dodown()
             if (yn(qbuf) == 'y') {
                 if (!rn2(3)) {
                     actn = "manage to squeeze";
-                    losehp(Maybe_Half_Phys(rnd(4)),
+                    losehp(adjust_damage(rnd(4), (struct monst*)0, &youmonst, AD_PHYS, FALSE),
                            "contusion from a small passage", KILLED_BY);
                 } else {
                     You("were unable to fit %s.", down_or_thru);
@@ -4149,7 +4149,7 @@ boolean at_stairs, falling, portal;
                 if (u.usteed)
                     dismount_steed(DISMOUNT_FELL);
                 else
-                    losehp(Maybe_Half_Phys(rnd(3)),
+                    losehp(adjust_damage(rnd(3), (struct monst*)0, &youmonst, AD_PHYS, FALSE),
                            at_ladder ? "falling off a ladder"
                                      : "tumbling down a flight of stairs",
                            KILLED_BY);

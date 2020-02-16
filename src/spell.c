@@ -1493,7 +1493,8 @@ spelleffects(spell, atme)
 int spell;
 boolean atme;
 {
-	int damage, chance, n; // , intell;
+	double damage = 0;
+	int chance, n; // , intell;
     int otyp, skill, role_skill, res = 0;
     boolean confused = (Confusion != 0);
     boolean physical_damage = FALSE;
@@ -1888,8 +1889,6 @@ boolean atme;
                     char buf[BUFSZ];
 
                     Sprintf(buf, "zapped %sself with a spell", uhim());
-                    if (physical_damage)
-                        damage = Maybe_Half_Phys(damage);
                     losehp(damage, buf, NO_KILLER_PREFIX);
                 }
 			}

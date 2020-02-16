@@ -1278,40 +1278,52 @@ register struct obj *otmp;
     int tmp;
     boolean reveal_invis = FALSE;
 
-    if (mtmp != &youmonst) {
+    if (mtmp != &youmonst)
+	{
         mtmp->msleeping = 0;
         if (mtmp->m_ap_type)
             seemimic(mtmp);
     }
-    switch (otmp->otyp) {
+
+    switch (otmp->otyp) 
+	{
     case WAN_STRIKING:
         reveal_invis = TRUE;
-        if (mtmp == &youmonst) {
+        if (mtmp == &youmonst)
+		{
             if (zap_oseen)
                 makeknown(WAN_STRIKING);
-            if (Antimagic) {
+            if (Antimagic) 
+			{
                 shieldeff(u.ux, u.uy);
                 pline("Boing!");
-            } else if (rnd(20) < 10 + u.uac) {
+            } 
+			else if (rnd(20) < 10 + u.uac)
+			{
                 pline_The("wand hits you!");
-                tmp = d(2, 12);
-                if (Half_spell_damage)
-                    tmp = (tmp + 1) / 2;
-                losehp(tmp, "wand", KILLED_BY_AN);
-            } else
+                losehp(adjust_damage(d(2, 12), (struct monst*)0, &youmonst, AD_PHYS, TRUE), "wand", KILLED_BY_AN);
+            }
+			else
                 pline_The("wand misses you.");
+
             stop_occupation();
             nomul(0);
-        } else if (resists_magicmissile(mtmp) || resists_magic(mtmp)) {
+        } 
+		else if (resists_magicmissile(mtmp) || resists_magic(mtmp))
+		{
             shieldeff(mtmp->mx, mtmp->my);
             pline("Boing!");
-        } else if (rnd(20) < 10 + find_mac(mtmp)) {
+        } 
+		else if (rnd(20) < 10 + find_mac(mtmp)) 
+		{
             tmp = d(2, 12);
             hit("wand", mtmp, exclam(tmp), 0); //Do not tell the damage here, since resist will
             (void) check_magic_resistance_and_halve_damage(mtmp, otmp, 0, tmp, TELL);
             if (cansee(mtmp->mx, mtmp->my) && zap_oseen)
                 makeknown(WAN_STRIKING);
-        } else {
+        } 
+		else 
+		{
             miss("wand", mtmp);
             if (cansee(mtmp->mx, mtmp->my) && zap_oseen)
                 makeknown(WAN_STRIKING);

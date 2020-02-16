@@ -403,8 +403,7 @@ int force;
                                not in it even if there was */
                             You("fall into a chasm!");
                             set_utrap(rn1(6, 2), TT_PIT);
-                            losehp(Maybe_Half_Phys(rnd(6)),
-                                   "fell into a chasm", NO_KILLER_PREFIX);
+                            losehp(adjust_damage(rnd(6), (struct monst*)0, &youmonst, AD_PHYS, FALSE), "fell into a chasm", NO_KILLER_PREFIX);
                             selftouch("Falling, you");
                         } else if (u.utrap && u.utraptype == TT_PIT) {
                             boolean keepfooting =
@@ -414,7 +413,7 @@ int force;
 
                             You("are jostled around violently!");
                             set_utrap(rn1(6, 2), TT_PIT);
-                            losehp(Maybe_Half_Phys(rnd(keepfooting ? 2 : 4)),
+                            losehp(adjust_damage(rnd(keepfooting ? 2 : 4), (struct monst*)0, &youmonst, AD_PHYS, FALSE), //Maybe_Half_Phys(rnd(keepfooting ? 2 : 4)),
                                    "hurt in a chasm", NO_KILLER_PREFIX);
                             if (keepfooting)
                                 exercise(A_DEX, TRUE);
@@ -472,7 +471,8 @@ STATIC_OVL int
 do_improvisation(instr)
 struct obj *instr;
 {
-    int damage, mode, do_spec = !(Stunned || Confusion);
+	double damage = 0;
+    int mode, do_spec = !(Stunned || Confusion);
     struct obj itmp;
     boolean mundane = FALSE;
 

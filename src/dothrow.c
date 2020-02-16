@@ -1046,14 +1046,14 @@ int x, y;
             else
                 s = "bumping into a door";
             dmg = rnd(2 + *range);
-            losehp(Maybe_Half_Phys(dmg), s, KILLED_BY);
+            losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, FALSE), s, KILLED_BY);
             wake_nearto(x,y, 10);
             return FALSE;
         }
         if (levl[x][y].typ == IRONBARS) {
             You("crash into some iron bars.  Ouch!");
             dmg = rnd(2 + *range);
-            losehp(Maybe_Half_Phys(dmg), "crashing into iron bars",
+            losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "crashing into iron bars",
                    KILLED_BY);
             wake_nearto(x,y, 20);
             return FALSE;
@@ -1061,7 +1061,7 @@ int x, y;
         if ((obj = sobj_at(BOULDER, x, y)) != 0) {
             You("bump into a %s.  Ouch!", xname(obj));
             dmg = rnd(2 + *range);
-            losehp(Maybe_Half_Phys(dmg), "bumping into a boulder", KILLED_BY);
+            losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "bumping into a boulder", KILLED_BY);
             wake_nearto(x,y, 10);
             return FALSE;
         }
@@ -1069,7 +1069,7 @@ int x, y;
             /* did we hit a no-dig non-wall position? */
             You("smack into something!");
             dmg = rnd(2 + *range);
-            losehp(Maybe_Half_Phys(dmg), "touching the edge of the universe",
+            losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "touching the edge of the universe",
                    KILLED_BY);
             wake_nearto(x,y, 10);
             return FALSE;
@@ -1083,7 +1083,7 @@ int x, y;
                 You("%sget forcefully wedged into a crevice.",
                     too_much ? "and all your belongings " : "");
                 dmg = rnd(2 + *range);
-                losehp(Maybe_Half_Phys(dmg), "wedging into a narrow crevice",
+                losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "wedging into a narrow crevice",
                        KILLED_BY);
                 wake_nearto(x,y, 10);
                 return FALSE;
@@ -1440,7 +1440,7 @@ boolean hitsroof;
         return FALSE;
     } else { /* neither potion nor other breaking object */
         boolean less_damage = uarmh && is_metallic(uarmh), artimsg = FALSE;
-        double dmg = adjust_damage(is_launcher(obj) ? d(1, 2) : weapon_total_dmg_value(obj, &youmonst, &youmonst), &youmonst, &youmonst, objects[obj->otyp].oc_damagetype, FALSE);
+        int dmg = is_launcher(obj) ? d(1, 2) : weapon_total_dmg_value(obj, &youmonst, &youmonst);
 
         if (obj->oartifact)
             /* need a fake die roll here; rn1(18,2) avoids 1 and 20 */
@@ -1459,7 +1459,7 @@ boolean hitsroof;
         if (dmg > 1 && less_damage)
             dmg = 1;
         if (dmg > 0)
-            dmg += adjust_damage(u.ubasedaminc + u.udaminc, &youmonst, &youmonst, objects[obj->otyp].oc_damagetype, FALSE);
+            dmg += u.ubasedaminc + u.udaminc;
         if (dmg < 0)
             dmg = 0; /* beware negative rings of increase damage */
 
@@ -1494,7 +1494,7 @@ boolean hitsroof;
         }
         hitfloor(obj, TRUE);
         thrownobj = 0;
-        losehp(dmg, "falling object", KILLED_BY_AN);
+        losehp(adjust_damage(dmg, &youmonst, &youmonst, objects[obj->otyp].oc_damagetype, FALSE), "falling object", KILLED_BY_AN);
     }
     return TRUE;
 }

@@ -562,13 +562,13 @@ dosinkfall()
         ELevitation = HLevitation = 0L;
         You("crash to the floor!");
         dmg = rn1(8, 25 - (int) ACURR(A_CON));
-        losehp(Maybe_Half_Phys(dmg), fell_on_sink, NO_KILLER_PREFIX);
+        losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, FALSE), fell_on_sink, NO_KILLER_PREFIX);
         exercise(A_DEX, FALSE);
         selftouch("Falling, you");
         for (obj = level.objects[u.ux][u.uy]; obj; obj = obj->nexthere)
             if (obj->oclass == WEAPON_CLASS || is_weptool(obj)) {
                 You("fell on %s.", doname(obj));
-                losehp(Maybe_Half_Phys(rnd(3)), fell_on_sink,
+                losehp(adjust_damage(rnd(3), (struct monst*)0, &youmonst, AD_PHYS, FALSE), fell_on_sink,
                        NO_KILLER_PREFIX);
                 exercise(A_CON, FALSE);
             }

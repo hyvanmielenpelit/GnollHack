@@ -3223,9 +3223,9 @@ E int FDECL(bhitpile, (struct obj *, int (*)(OBJ_P, OBJ_P), int, int, SCHAR_P, B
 E int FDECL(zappable, (struct obj *));
 E void FDECL(zapnodir, (struct obj *));
 E int NDECL(dozap);
-E int FDECL(zapyourself, (struct obj *, BOOLEAN_P));
+E double FDECL(zapyourself, (struct obj *, BOOLEAN_P));
 E void FDECL(ubreatheu, (struct attack *));
-E int FDECL(lightdamage, (struct obj *, BOOLEAN_P, int));
+E double FDECL(lightdamage, (struct obj *, BOOLEAN_P, int));
 E boolean FDECL(flashburn, (long));
 E boolean FDECL(cancel_monst, (struct monst *, struct obj *, BOOLEAN_P,
                                BOOLEAN_P, BOOLEAN_P, int));

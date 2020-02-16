@@ -689,14 +689,10 @@ register struct monst *mtmp;
 
             if (m_sen || ((Blind_telepat || Unblind_telepat) && rn2(2)) || !rn2(10)) 
 			{
-                int dmg;
                 pline("It locks on to your %s!",
                       m_sen ? "telepathy" : (Blind_telepat || Unblind_telepat) ? "latent telepathy"
                                                           : "mind");
-                dmg = rnd(15);
-                if (Half_spell_damage)
-                    dmg = (dmg + 1) / 2;
-                losehp(dmg, "psychic blast", KILLED_BY_AN);
+                losehp(adjust_damage(rnd(15), mtmp, &youmonst, AD_PSIO, TRUE), "psychic blast", KILLED_BY_AN);
             }
         }
 		else
@@ -716,7 +712,8 @@ register struct monst *mtmp;
             if (m2 == mtmp)
                 continue;
             if (( (has_telepathy(m2) || (is_blinded(m2) && has_blind_telepathy(m2))) && (rn2(2) || is_blinded(m2)))
-                || !rn2(10)) {
+                || !rn2(10))
+			{
                 if (cansee(m2->mx, m2->my))
                     pline("It locks on to %s.", mon_nam(m2));
                 m2->mhp -= rnd(15);

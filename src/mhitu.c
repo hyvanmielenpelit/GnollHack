@@ -3788,7 +3788,7 @@ struct monst *mon;
             You_feel("exhausted.");
             exercise(A_STR, FALSE);
             tmp = rn1(10, 6);
-            losehp(Maybe_Half_Phys(tmp), "exhaustion", KILLED_BY);
+            losehp(adjust_damage(tmp, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "exhaustion", KILLED_BY);
             break;
         } /* case 4 */
         } /* switch */
