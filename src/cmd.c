@@ -2662,7 +2662,15 @@ int final;
 
 	const char* game_dif_text = get_game_difficulty_text(context.game_difficulty);
 	strcpy(buf, game_dif_text);
-	enl_msg("Your game difficulty ", "is ", "was ", buf, "");
+	double monster_damage_mult = 1;
+	double monster_hp_mult = 1;
+	get_game_difficulty_multipliers(&monster_damage_mult, &monster_hp_mult);
+	int pct_monster_dmg_mult = (int)(monster_damage_mult * 100);
+	int pct_player_dmg_mult = (int)((1 / monster_hp_mult) * 100);
+	char difficultybuf[BUFSIZ] = "";
+	if(pct_monster_dmg_mult != 100 || pct_player_dmg_mult != 100)
+		Sprintf(difficultybuf, " (%d%% monster damage, %d%% player damage)", pct_monster_dmg_mult, pct_player_dmg_mult);
+	enl_msg("Your game difficulty ", "is ", "was ", buf, difficultybuf);
 
 
 }
@@ -3115,8 +3123,8 @@ int final;
         /* "you have no/basic/expert/master/grand-master skill with <skill>"
            or "you are unskilled/skilled in <skill>" */
 
-		int hitbonus = weapon_skill_hit_bonus(uwep, wtype); /* Gives only pure skill bonuses */
-		int dmgbonus = weapon_skill_dmg_bonus(uwep, wtype); /* Gives only pure skill bonuses */
+		int hitbonus = weapon_skill_hit_bonus(uwep, wtype, FALSE); /* Gives only pure skill bonuses */
+		int dmgbonus = weapon_skill_dmg_bonus(uwep, wtype, FALSE); /* Gives only pure skill bonuses */
 
         Sprintf(buf, "%s %s %s (%s%d to hit and %s%d to damage)", sklvlbuf,
                 hav ? "skill with" : "in", skill_name(wtype, TRUE), hitbonus >=0 ? "+" : "", hitbonus, dmgbonus >= 0 ? "+" : "", dmgbonus);
@@ -3143,8 +3151,8 @@ int final;
 		/* "you have no/basic/expert/master/grand-master skill with <skill>"
 		   or "you are unskilled/skilled in <skill>" */
 
-		int hitbonus = weapon_skill_hit_bonus(uwep, wtype); /* Gives only pure skill bonuses */
-		int dmgbonus = weapon_skill_dmg_bonus(uwep, wtype); /* Gives only pure skill bonuses */
+		int hitbonus = weapon_skill_hit_bonus(uwep, wtype, FALSE); /* Gives only pure skill bonuses */
+		int dmgbonus = weapon_skill_dmg_bonus(uwep, wtype, FALSE); /* Gives only pure skill bonuses */
 
 		Sprintf(buf, "%s %s %s (%s%d to hit and %s%d to damage)", sklvlbuf,
 			hav ? "skill with" : "in", skill_name(wtype, TRUE), hitbonus >= 0 ? "+" : "", hitbonus, dmgbonus >= 0 ? "+" : "", dmgbonus);
@@ -3171,8 +3179,8 @@ int final;
 		/* "you have no/basic/expert/master/grand-master skill with <skill>"
 		   or "you are unskilled/skilled in <skill>" */
 
-		int hitbonus = weapon_skill_hit_bonus(uwep, wtype); /* Gives only pure skill bonuses */
-		int dmgbonus = weapon_skill_dmg_bonus(uwep, wtype); /* Gives only pure skill bonuses */
+		int hitbonus = weapon_skill_hit_bonus(uwep, wtype, FALSE); /* Gives only pure skill bonuses */
+		int dmgbonus = weapon_skill_dmg_bonus(uwep, wtype, FALSE); /* Gives only pure skill bonuses */
 
 		Sprintf(buf, "%s %s %s (%s%d to hit and %s%d to damage)", sklvlbuf,
 			hav ? "skill with" : "in", skill_name(wtype, TRUE), hitbonus >= 0 ? "+" : "", hitbonus, dmgbonus >= 0 ? "+" : "", dmgbonus);

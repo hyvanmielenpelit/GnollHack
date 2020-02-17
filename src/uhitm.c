@@ -324,9 +324,9 @@ int *attk_count, *role_roll_penalty;
             tmp += weapon_to_hit_value(weapon, mtmp, &youmonst);
 		else if(uarmg)
 			tmp += weapon_to_hit_value(uarmg, mtmp, &youmonst);
-		tmp += weapon_skill_hit_bonus(weapon, P_NONE);
+		tmp += weapon_skill_hit_bonus(weapon, P_NONE, FALSE);
     } else if (aatyp == AT_KICK && martial_bonus()) {
-        tmp += weapon_skill_hit_bonus((struct obj *) 0, P_NONE);
+        tmp += weapon_skill_hit_bonus((struct obj *) 0, P_NONE, FALSE);
     }
 
     return tmp;
@@ -1468,7 +1468,7 @@ boolean* obj_destroyed;
 
 		/* to be valid a projectile must have had the correct projector */
 		wep = (is_golf_swing_with_stone || PROJECTILE(obj)) ? uwep : obj;
-		damage += adjust_damage(weapon_skill_dmg_bonus(wep, is_golf_swing_with_stone ? P_THROWN_WEAPON : P_NONE), &youmonst, mon, wep ? objects[wep->otyp].oc_damagetype : AD_PHYS, FALSE);
+		damage += adjust_damage(weapon_skill_dmg_bonus(wep, is_golf_swing_with_stone ? P_THROWN_WEAPON : P_NONE, FALSE), &youmonst, mon, wep ? objects[wep->otyp].oc_damagetype : AD_PHYS, FALSE);
 		/* [this assumes that `!thrown' implies wielded...] */
 		wtype = is_golf_swing_with_stone ? P_THROWN_WEAPON :
 			!obj ? (P_SKILL(P_BARE_HANDED_COMBAT) < P_EXPERT ? P_BARE_HANDED_COMBAT : P_MARTIAL_ARTS) :
@@ -4128,27 +4128,7 @@ boolean is_spell_damage;
 	double monster_damage_multiplier = 1;
 	double monster_hp_multiplier = 1;
 
-	switch (context.game_difficulty)
-	{
-	case -2:
-		monster_damage_multiplier = 0.63;
-		monster_hp_multiplier = 0.40;
-		break;
-	case -1:
-		monster_damage_multiplier = 0.79;
-		monster_hp_multiplier = 0.63;
-		break;
-	case 1:
-		monster_damage_multiplier = 1.26;
-		monster_hp_multiplier = 1.59;
-		break;
-	case 2:
-		monster_damage_multiplier = 1.59;
-		monster_hp_multiplier = 2.52;
-		break;
-	default:
-		break;
-	}
+	get_game_difficulty_multipliers(&monster_damage_multiplier, &monster_hp_multiplier);
 
 	if (mdef)
 	{
@@ -4221,6 +4201,43 @@ boolean is_spell_damage;
 
 	return base_dmg_d;
 }
+
+
+void
+get_game_difficulty_multipliers(monster_damage_multiplier_ptr, monster_hp_multiplier_ptr)
+double *monster_damage_multiplier_ptr;
+double *monster_hp_multiplier_ptr;
+{
+	if (!monster_damage_multiplier_ptr || !monster_hp_multiplier_ptr)
+		return;
+
+	*monster_damage_multiplier_ptr = 1;
+	*monster_hp_multiplier_ptr = 1;
+
+	switch (context.game_difficulty)
+	{
+	case -2:
+		*monster_damage_multiplier_ptr = 0.63;
+		*monster_hp_multiplier_ptr = 0.40;
+		break;
+	case -1:
+		*monster_damage_multiplier_ptr = 0.79;
+		*monster_hp_multiplier_ptr = 0.63;
+		break;
+	case 1:
+		*monster_damage_multiplier_ptr = 1.26;
+		*monster_hp_multiplier_ptr = 1.59;
+		break;
+	case 2:
+		*monster_damage_multiplier_ptr = 1.59;
+		*monster_hp_multiplier_ptr = 2.52;
+		break;
+	default:
+		break;
+	}
+
+}
+
 
 int
 deduct_player_hp(hp_d)

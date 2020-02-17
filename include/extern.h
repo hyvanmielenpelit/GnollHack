@@ -2558,6 +2558,8 @@ E int FDECL(spelleffects, (int, BOOLEAN_P));
 E int FDECL(spelldescription, (int));
 E int FDECL(setspellhotkey, (int));
 E int FDECL(forgetspell, (int));
+E int FDECL(spell_skill_success_bonus, (int));
+E int FDECL(spell_skill_mana_cost_multiplier, (int));
 E int FDECL(dospellmanagemenu, (int));
 E int FDECL(tport_spell, (int));
 E void NDECL(losespells);
@@ -2786,6 +2788,7 @@ E void FDECL(light_hits_gremlin, (struct monst *, int));
 E double FDECL(adjust_damage, (int, struct monst*, struct monst*, int, boolean));
 E int FDECL(deduct_player_hp, (double));
 E int FDECL(deduct_monster_hp, (struct monst*, double));
+E void FDECL(get_game_difficulty_multipliers, (double*, double*));
 
 /* ### unixmain.c ### */
 
@@ -3037,8 +3040,8 @@ E void FDECL(add_weapon_skill, (int));
 E void FDECL(lose_weapon_skill, (int));
 E int FDECL(weapon_skill_type, (struct obj *));
 E int NDECL(uwep_skill_type);
-E int FDECL(weapon_skill_hit_bonus, (struct obj *, int));
-E int FDECL(weapon_skill_dmg_bonus, (struct obj *, int));
+E int FDECL(weapon_skill_hit_bonus, (struct obj *, int, boolean));
+E int FDECL(weapon_skill_dmg_bonus, (struct obj *, int, boolean));
 E void FDECL(skill_init, (const struct def_skill*, const struct def_skill *));
 
 /* ### were.c ### */

@@ -1057,8 +1057,21 @@ int objid;
 
 	int skill = objects[objid].oc_skill;
 	int skill_level = P_SKILL(skill);
-	double multiplier = 100;
-	switch (skill_level)
+	double multiplier = (double)spell_skill_mana_cost_multiplier(skill_level);
+	double energy = max(0.1, ((double)objects[objid].oc_spell_mana_cost * multiplier) / 100);
+
+	if (energy >= 100)
+		energy = floor(energy);
+
+	return energy;
+}
+
+int
+spell_skill_mana_cost_multiplier(level)
+int level;
+{
+	int multiplier = 100;
+	switch (level)
 	{
 	case P_BASIC:
 		multiplier = 85;
@@ -1073,14 +1086,8 @@ int objid;
 		break;
 	}
 
-	double energy = max(0.1, ((double)objects[objid].oc_spell_mana_cost * multiplier) / 100);
-
-	if (energy >= 100)
-		energy = floor(energy);
-
-	return energy;
+	return multiplier;
 }
-
 
 
 int
@@ -3668,7 +3675,7 @@ int spell;
     //    (spellev(spell) - 1) * 4 - ((skill * 6) + ((u.ulevel - 1) * 2) + 0);
 
 	chance += -50 * (spellev(spell) + 1);
-	chance += 80 * skill;
+	chance += spell_skill_success_bonus(skill);
 	chance += 20 * u.ulevel;
 	chance += -5 * splcaster;
 
@@ -3724,6 +3731,12 @@ int spell;
         chance = 0;
 
     return chance;
+}
+
+int spell_skill_success_bonus(level)
+int level;
+{
+	return 80 * level;
 }
 
 STATIC_OVL
