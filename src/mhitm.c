@@ -1685,7 +1685,7 @@ register struct obj* omonwep;
 
     if (DEADMONSTER(mdef)) 
 	{
-		if (poisondamage && ((double)mdef->mhp + ((double)mdef->mhp_fraction)/10000) > -poisondamage && vis && canspotmon(mdef) && !isdisintegrated)
+		if (poisondamage > 0 && ((double)mdef->mhp + ((double)mdef->mhp_fraction)/10000 - 1) > -poisondamage && vis && canspotmon(mdef) && !isdisintegrated)
 			pline_The("poison was deadly...");
 
 		if (m_at(mdef->mx, mdef->my) == magr) { /* see gulpmm() */

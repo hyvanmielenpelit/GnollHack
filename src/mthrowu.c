@@ -684,7 +684,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
             //mtmp->mhp -= dmg;
             if (DEADMONSTER(mtmp))
 			{
-				if (poisondamage > 0 && ((double)mtmp->mhp + ((double)mtmp->mhp_fraction)/10000) > -poisondamage && vis)
+				if (poisondamage > 0 && (((double)mtmp->mhp + ((double)mtmp->mhp_fraction)/10000) - 1) > -poisondamage && vis)
 					pline_The("poison was deadly...");
 				if (vis || (verbose && !target))
                     pline("%s is %s!", Monnam(mtmp),

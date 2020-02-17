@@ -1695,7 +1695,7 @@ boolean* obj_destroyed;
 	if (DEADMONSTER(mon))
 	{
 		destroyed = TRUE;
-		if (((double)mon->mhp + ((double)mon->mhp_fraction) / 10000) > -poisondamage)
+		if (poisondamage > 0 && ((double)mon->mhp + ((double)mon->mhp_fraction) / 10000 - 1) > -poisondamage)
 		{
 			poiskilled = TRUE;
 			hide_damage_amount = TRUE;
@@ -2881,7 +2881,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 
     if (DEADMONSTER(mdef)) 
 	{
-		if(poisondamage && mdef->mhp > -poisondamage)
+		if(poisondamage > 0 && ((double)mdef->mhp + ((double)mdef->mhp_fraction)/10000 - 1) > -poisondamage)
 			Your("poison was deadly...");
 		
 		if (is_tame(mdef) && !cansee(mdef->mx, mdef->my)) 
