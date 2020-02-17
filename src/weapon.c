@@ -1691,14 +1691,20 @@ enhance_weapon_skill()
 				MENU_UNSELECTED);
 		}
 
-		if (!speedy || eventually_advance > 0 || maxxed_cnt > 0)
+		if (!speedy)
+		{
+			any = zeroany;
+			Sprintf(buf, "Bonuses are to-hit/damage for weapons, success/cost for spells");
+			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, MENU_UNSELECTED);
+			Sprintf(buf, "and arrow/magic trap untrap chance for disarm traps");
+			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, MENU_UNSELECTED);
+			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, "",
+				MENU_UNSELECTED);
+		}
+
+		if (eventually_advance > 0 || maxxed_cnt > 0)
 		{
             any = zeroany;
-			if (!speedy)
-			{
-				Sprintf(buf, "Bonuses are to-hit/damage for weapons and success/cost for spells");
-				add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, MENU_UNSELECTED);
-			}
 			if (eventually_advance > 0)
 			{
                 Sprintf(buf, "*: Can be enhanced %s.",
@@ -1838,7 +1844,6 @@ enhance_weapon_skill()
 						Sprintf(hbuf, "%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
 						Sprintf(dbuf, "%s%d", dmgbonus >= 0 ? "+" : "", dmgbonus);
 						Sprintf(bonusbuf, "%5s/%s", hbuf, dbuf);
-						//Sprintf(bonusbuf, "%s%d/%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus, dmgbonus >= 0 ? "+" : "", dmgbonus);
 
 						if (can_advance(i, speedy) || could_advance(i))
 						{
@@ -1860,7 +1865,6 @@ enhance_weapon_skill()
 						Sprintf(sbuf, "%s%d%%", successbonus >= 0 ? "+" : "", successbonus);
 						Sprintf(cbuf, "%s%d%%", costdiscount >= 0 ? "+" : "", costdiscount);
 						Sprintf(bonusbuf, "%5s/%s", sbuf, cbuf);
-						//Sprintf(bonusbuf, "%s%d%%/%s%d%%", successbonus >= 0 ? "+" : "", successbonus, costdiscount >= 0 ? "+" : "", costdiscount);
 						if (can_advance(i, speedy) || could_advance(i))
 						{
 							int nextlevel = min(P_MAX_SKILL(i) - 1, max(0, P_SKILL(i) - 1) + 1);
@@ -1873,7 +1877,28 @@ enhance_weapon_skill()
 							Sprintf(nextbonusbuf, "%5s/%s", sbuf2, cbuf2);
 						}
 					}
-                    if (!iflags.menu_tab_sep)
+					else if (i == P_DISARM_TRAP)
+					{
+						int arrowtrap_chance = untrap_probability(ARROW_TRAP, max(0, P_SKILL(i) - 1));
+						int magictrap_chance = untrap_probability(MAGIC_TRAP, max(0, P_SKILL(i) - 1));
+						char abuf[BUFSZ] = "";
+						char mbuf[BUFSZ] = "";
+						Sprintf(abuf, "%d%%", arrowtrap_chance);
+						Sprintf(mbuf, "%d%%", magictrap_chance);
+						Sprintf(bonusbuf, "%5s/%s", abuf, mbuf);
+						if (can_advance(i, speedy) || could_advance(i))
+						{
+							int nextlevel = min(P_MAX_SKILL(i) - 1, max(0, P_SKILL(i) - 1) + 1);
+							int arrowtrap_chance2 = untrap_probability(ARROW_TRAP, nextlevel);
+							int magictrap_chance2 = untrap_probability(MAGIC_TRAP, nextlevel);
+							char abuf2[BUFSZ] = "";
+							char mbuf2[BUFSZ] = "";
+							Sprintf(abuf2, "%d%%", arrowtrap_chance2);
+							Sprintf(mbuf2, "%d%%", magictrap_chance2);
+							Sprintf(nextbonusbuf, "%5s/%s", abuf2, mbuf2);
+						}
+					}
+					if (!iflags.menu_tab_sep)
                         Sprintf(buf, " %s %-*s %-12s %-12s %-10s %s", prefix, longest,
 							skillnamebuf, sklnambuf, skillmaxbuf, bonusbuf, nextbonusbuf);
                     else

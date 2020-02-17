@@ -4066,15 +4066,46 @@ STATIC_OVL boolean
 succeed_untrap(ttmp)
 struct trap *ttmp;
 {
+	if (!ttmp)
+		return FALSE;
+
 	boolean res = FALSE;
 	int probability = 0;
 	int usedskilllevel = max(P_UNSKILLED, min(P_EXPERT, P_SKILL(P_DISARM_TRAP) + ((Role_if(PM_ROGUE) && u.uhave.questart) ? 1 : 0)));
 
-	switch (usedskilllevel)
+	probability = untrap_probability(ttmp->ttyp, usedskilllevel);
+
+    /* Only spiders know how to deal with webs reliably */
+    if (ttmp->ttyp == WEB && !webmaker(youmonst.data))
+		probability = 3;
+    if (Confusion || Hallucination)
+		probability = probability / 2;
+    if (Blind)
+		probability = (probability * 2) / 3;
+    if (Stunned)
+        probability = probability / 2;
+    if (Fumbling)
+		probability = probability / 2;
+    
+	/* Your own traps are better known than others. */
+    if (ttmp && ttmp->madeby_u)
+		probability = probability * 2;
+
+	res = (rn2(100) < probability);
+    return res;
+}
+
+int
+untrap_probability(trap_type, skill_level)
+int trap_type;
+int skill_level;
+{
+	int probability = 0;
+	switch (skill_level)
 	{
 	case P_UNSKILLED:
 	{
-		switch (ttmp->ttyp)
+		switch (trap_type)
 		{
 		case WEB:
 			probability = webmaker(youmonst.data) ? 50 : 1;
@@ -4101,7 +4132,7 @@ struct trap *ttmp;
 	}
 	case P_BASIC:
 	{
-		switch (ttmp->ttyp)
+		switch (trap_type)
 		{
 		case WEB:
 			probability = webmaker(youmonst.data) ? 100 : 3;
@@ -4127,7 +4158,7 @@ struct trap *ttmp;
 	}
 	case P_SKILLED:
 	{
-		switch (ttmp->ttyp)
+		switch (trap_type)
 		{
 		case WEB:
 			probability = webmaker(youmonst.data) ? 200 : 10;
@@ -4153,7 +4184,7 @@ struct trap *ttmp;
 	}
 	case P_EXPERT:
 	{
-		switch (ttmp->ttyp)
+		switch (trap_type)
 		{
 		case WEB:
 			probability = webmaker(youmonst.data) ? 400 : 33;
@@ -4181,24 +4212,7 @@ struct trap *ttmp;
 		break;
 	}
 
-    /* Only spiders know how to deal with webs reliably */
-    if (ttmp->ttyp == WEB && !webmaker(youmonst.data))
-		probability = 3;
-    if (Confusion || Hallucination)
-		probability = probability / 2;
-    if (Blind)
-		probability = (probability * 2) / 3;
-    if (Stunned)
-        probability = probability / 2;
-    if (Fumbling)
-		probability = probability / 2;
-    
-	/* Your own traps are better known than others. */
-    if (ttmp && ttmp->madeby_u)
-		probability = probability * 2;
-
-	res = (rn2(100) < probability);
-    return res;
+	return probability;
 }
 
 /* Replace trap with object(s).  Helge Hafting */

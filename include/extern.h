@@ -2762,6 +2762,7 @@ E boolean FDECL(uteetering_at_seen_pit, (struct trap *));
 E boolean NDECL(lava_effects);
 E void NDECL(sink_into_lava);
 E void NDECL(sokoban_guilt);
+E int FDECL(untrap_probability, (int, int));
 
 /* ### u_init.c ### */
 
