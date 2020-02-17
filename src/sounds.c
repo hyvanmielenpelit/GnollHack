@@ -3001,8 +3001,14 @@ m_sellable_item(otmp, mtmp)
 struct obj* otmp;
 struct monst* mtmp;
 {
+	if (!otmp || !mtmp)
+		return FALSE;
+
 	if (!otmp->owornmask
 		&& otmp->oclass != COIN_CLASS
+		&& otmp->oclass != WEAPON_CLASS /* monsters do not currently sell their weapons */
+		&& otmp->oclass != ROCK_CLASS /* or giants their boulders */
+		&& !(is_pick(otmp) && needspick(mtmp->data)) /* or dwarves their picks */
 		&& !(
 			(otmp->cursed && (objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED))
 			|| (otmp->otyp == AMULET_OF_YENDOR && (mtmp->data->mflags3 & M3_WANTSAMUL))
