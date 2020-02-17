@@ -1599,25 +1599,27 @@ int how;
             break;
         case POT_WATER:
             if (is_undead(mon->data) || is_demon(mon->data)
-                || is_were(mon->data) || is_vampshifter(mon)) {
-                if (obj->blessed) {
+                || is_were(mon->data) || is_vampshifter(mon))
+			{
+                if (obj->blessed) 
+				{
                     pline("%s %s in pain!", Monnam(mon),
                           is_silent(mon->data) ? "writhes" : "shrieks");
                     if (!is_silent(mon->data))
                         wake_nearto(tx, ty, mon->data->mlevel * 10);
-                    mon->mhp -= d(2, 6);
-                    /* should only be by you */
+					deduct_monster_hp(mon, adjust_damage(d(2, 6), &youmonst, mon, AD_CLRC, FALSE));
+					/* should only be by you */
                     if (DEADMONSTER(mon))
                         killed(mon);
                     else if (is_were(mon->data) && !is_human(mon->data))
                         new_were(mon); /* revert to human */
-                } else if (obj->cursed) {
+                } 
+				else if (obj->cursed)
+				{
                     angermon = FALSE;
                     if (canseemon(mon))
                         pline("%s looks healthier.", Monnam(mon));
-                    mon->mhp += d(2, 6);
-                    if (mon->mhp > mon->mhpmax)
-                        mon->mhp = mon->mhpmax;
+					deduct_monster_hp(mon, adjust_damage(-d(2, 6), &youmonst, mon, AD_CLRC, FALSE));
                     if (is_were(mon->data) && is_human(mon->data)
                         && !Protection_from_shape_changers)
                         new_were(mon); /* transform into beast */
@@ -1628,7 +1630,7 @@ int how;
             } else if (mon->data == &mons[PM_IRON_GOLEM]) {
                 if (canseemon(mon))
                     pline("%s rusts.", Monnam(mon));
-                mon->mhp -= d(1, 6);
+				deduct_monster_hp(mon, adjust_damage(d(1, 6), &youmonst, mon, AD_PHYS, FALSE));
                 /* should only be by you */
                 if (DEADMONSTER(mon))
                     killed(mon);
@@ -1644,7 +1646,7 @@ int how;
                       is_silent(mon->data) ? "writhes" : "shrieks");
                 if (!is_silent(mon->data))
                     wake_nearto(tx, ty, mon->data->mlevel * 10);
-                mon->mhp -= d(obj->cursed ? 4 : 3, obj->blessed ? 6 : 8);
+				deduct_monster_hp(mon, adjust_damage(d(obj->cursed ? 4 : 3, obj->blessed ? 6 : 8), &youmonst, mon, AD_ACID, FALSE));
                 if (DEADMONSTER(mon)) {
                     if (your_fault)
                         killed(mon);

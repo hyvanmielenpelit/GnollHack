@@ -290,8 +290,8 @@ typedef struct sortloot_item Loot;
 #define MM_FEMALE					0x00020000UL /* always female */
 #define MM_NORMAL_HIT_DICE			0x00040000UL /* use normal hit dice */
 #define MM_EMIN_COALIGNED			0x00080000UL /* minion is of the same alignment as player */
-#define MM_NO_DIFFICULTY_HP_CHANGE  0x00100000UL /* HP remains unadjusted due to difficulty */
-#define MM_ADJUST_HP_FROM_EXISTING  0x00200000UL /* Calculate only new maxhp and adjust HP proportionally */
+#define MM_NO_DIFFICULTY_HP_CHANGE  0x00100000UL /* OBSOLETE - HP remains unadjusted due to difficulty */
+#define MM_ADJUST_HP_FROM_EXISTING  0x00200000UL /* OBSOLETE - Calculate only new maxhp and adjust HP proportionally */
 
 /* flags for make_corpse() and mkcorpstat() */
 #define CORPSTAT_NONE 0x00

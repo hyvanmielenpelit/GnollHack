@@ -511,7 +511,7 @@ register struct monst *mtmp;
                 if (3 + find_mac(mtmp) <= rnd(20)) {
                     pline("%s is hit by a falling piercer (you)!",
                           Monnam(mtmp));
-                    if ((mtmp->mhp -= d(3, 6)) < 1)
+                    if (deduct_monster_hp(mtmp, adjust_damage(d(3, 6), &youmonst, mtmp, AD_PHYS, FALSE)) < 1)
                         killed(mtmp);
                 } else
                     pline("%s is almost hit by a falling piercer (you)!",

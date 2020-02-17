@@ -1663,10 +1663,13 @@ dogaze()
 						int dmg = d(2, 6), lev = (int)u.ulevel;
 
 						You("attack %s with a fiery gaze!", mon_nam(mtmp));
-						if (resists_fire(mtmp)) {
+
+						if (resists_fire(mtmp)) 
+						{
 							pline_The("fire doesn't burn %s!", mon_nam(mtmp));
 							dmg = 0;
 						}
+
 						if (lev > rn2(20))
 							(void)destroy_mitem(mtmp, SCROLL_CLASS, AD_FIRE);
 						if (lev > rn2(20))
@@ -1674,7 +1677,7 @@ dogaze()
 						if (lev > rn2(25))
 							(void)destroy_mitem(mtmp, SPBOOK_CLASS, AD_FIRE);
 						if (dmg)
-							mtmp->mhp -= dmg;
+							deduct_monster_hp(mtmp, adjust_damage(dmg, &youmonst, mtmp, adtyp, FALSE));
 						if (DEADMONSTER(mtmp))
 							killed(mtmp);
 						break;
@@ -2029,8 +2032,8 @@ domindblast()
             You("lock in on %s %s.", s_suffix(mon_nam(mtmp)),
                 u_sen ? "telepathy"
                       : has_telepathy(mtmp) ? "latent telepathy" : "mind");
-            mtmp->mhp -= rnd(15);
-            if (DEADMONSTER(mtmp))
+			deduct_monster_hp(mtmp, adjust_damage(rnd(15), &youmonst, mtmp, AD_PSIO, FALSE));
+			if (DEADMONSTER(mtmp))
                 killed(mtmp);
         }
     }

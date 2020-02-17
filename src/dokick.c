@@ -220,7 +220,7 @@ boolean clumsy;
     }
 
     if (dmg > 0)
-        mon->mhp -= dmg;
+        deduct_monster_hp(mon, adjust_damage(dmg, &youmonst, mon, AD_PHYS, FALSE));
 
 
 	boolean hurtles = FALSE;

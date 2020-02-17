@@ -2678,7 +2678,9 @@ register struct monst *mtmp;
 
                 if (in_sight)
                     seetrap(trap);
-                mtmp->mhp -= dmgval2;
+
+				deduct_monster_hp(mtmp, adjust_damage(dmgval2, (struct monst*)0, mtmp, AD_MAGM, FALSE));
+
                 if (DEADMONSTER(mtmp))
                     monkilled(mtmp,
                               in_sight
@@ -4322,8 +4324,10 @@ boolean force_failure;
                 if (ttype == BEAR_TRAP) {
                     if (mtmp->mtame)
                         abuse_dog(mtmp);
-                    mtmp->mhp -= rnd(4);
-                    if (DEADMONSTER(mtmp))
+
+					deduct_monster_hp(mtmp, adjust_damage(rnd(4), (struct monst*)0, mtmp, AD_PHYS, FALSE));
+
+					if (DEADMONSTER(mtmp))
                         killed(mtmp);
                 } else if (ttype == WEB) {
                     if (!webmaker(youmonst.data)) {
@@ -5573,17 +5577,22 @@ boolean nocorpse;
     /* Actually more accurate than thitu, which doesn't take
      * obj->spe into account.
      */
-    if (!strike) {
+    if (!strike) 
+	{
         if (obj && cansee(mon->mx, mon->my))
             pline("%s is almost hit by %s!", Monnam(mon), doname(obj));
-    } else {
+    } 
+	else 
+	{
         int dam = 1;
 
         if (obj && cansee(mon->mx, mon->my))
             pline("%s is hit by %s!", Monnam(mon), doname(obj));
-        if (d_override)
+        
+		if (d_override)
             dam = d_override;
-        else if (obj) {
+        else if (obj) 
+		{
 			if (is_launcher(obj))
 				dam = d(1, 2);
 			else
@@ -5592,21 +5601,28 @@ boolean nocorpse;
 			if (dam < 1)
                 dam = 1;
         }
-        mon->mhp -= dam;
-        if (DEADMONSTER(mon)) {
+		
+		deduct_monster_hp(mon, adjust_damage(dam, (struct monst*)0, mon, obj ? objects[obj->otyp].oc_damagetype : AD_PHYS, FALSE));
+
+		if (DEADMONSTER(mon)) 
+		{
             int xx = mon->mx, yy = mon->my;
 
             monkilled(mon, "", nocorpse ? -AD_RBRE : AD_PHYS);
-            if (DEADMONSTER(mon)) {
+            if (DEADMONSTER(mon)) 
+			{
                 newsym(xx, yy);
                 trapkilled = TRUE;
             }
         }
     }
-    if (obj && (!strike || d_override)) {
+
+    if (obj && (!strike || d_override)) 
+	{
         place_object(obj, mon->mx, mon->my);
         stackobj(obj);
-    } else if (obj)
+    }
+	else if (obj)
         dealloc_obj(obj);
 
     return trapkilled;

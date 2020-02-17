@@ -643,15 +643,15 @@ int value; /* -1 sets the intrinsic and -2 clears it; -3 clears both temporary a
 	if (was_tame && !is_tame(mtmp))
 	{
 		newsym(mtmp->mx, mtmp->my);
-		if (context.game_difficulty != 0)
-			newmonhp(mtmp, mtmp->mnum, MM_ADJUST_HP_FROM_EXISTING);
+		//if (context.game_difficulty != 0)
+		//	newmonhp(mtmp, mtmp->mnum, MM_ADJUST_HP_FROM_EXISTING);
 
 	}
 	else if (is_tame(mtmp) && !was_tame)
 	{
 		newsym(mtmp->mx, mtmp->my);
-		if (context.game_difficulty != 0)
-			newmonhp(mtmp, mtmp->mnum, MM_NO_DIFFICULTY_HP_CHANGE | MM_ADJUST_HP_FROM_EXISTING);
+		//if (context.game_difficulty != 0)
+		//	newmonhp(mtmp, mtmp->mnum, MM_NO_DIFFICULTY_HP_CHANGE | MM_ADJUST_HP_FROM_EXISTING);
 	}
 
 }
@@ -1440,20 +1440,19 @@ boolean silently;
     if (!silently && (unseen ^ !canseemon(mon)))
         newsym(mon->mx, mon->my);
 
-
 	/* Adjustments */
 	if (was_tame && !is_tame(mon))
 	{
 		newsym(mon->mx, mon->my);
-		if (context.game_difficulty != 0)
-			newmonhp(mon, mon->mnum, MM_ADJUST_HP_FROM_EXISTING);
+		//if (context.game_difficulty != 0)
+		//	newmonhp(mon, mon->mnum, MM_ADJUST_HP_FROM_EXISTING);
 
 	}
 	else if (is_tame(mon) && !was_tame)
 	{
 		newsym(mon->mx, mon->my);
-		if (context.game_difficulty != 0)
-			newmonhp(mon, mon->mnum, MM_NO_DIFFICULTY_HP_CHANGE | MM_ADJUST_HP_FROM_EXISTING);
+		//if (context.game_difficulty != 0)
+		//	newmonhp(mon, mon->mnum, MM_NO_DIFFICULTY_HP_CHANGE | MM_ADJUST_HP_FROM_EXISTING);
 	}
 
 

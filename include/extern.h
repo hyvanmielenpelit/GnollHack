@@ -2784,8 +2784,8 @@ E void FDECL(stumble_onto_mimic, (struct monst *));
 E int FDECL(flash_hits_mon, (struct monst *, struct obj *));
 E void FDECL(light_hits_gremlin, (struct monst *, int));
 E double FDECL(adjust_damage, (int, struct monst*, struct monst*, int, boolean));
-E void FDECL(deduct_player_hp, (double));
-E void FDECL(deduct_monster_hp, (struct monst*, double));
+E int FDECL(deduct_player_hp, (double));
+E int FDECL(deduct_monster_hp, (struct monst*, double));
 
 /* ### unixmain.c ### */
 
@@ -3242,7 +3242,7 @@ E struct monst *FDECL(bhit, (int, int, int, int, enum bhit_call_types,
                              int (*)(MONST_P, OBJ_P),
                              int (*)(OBJ_P, OBJ_P), struct obj **, BOOLEAN_P, BOOLEAN_P));
 E struct monst *FDECL(boomhit, (struct obj *, int, int));
-E int FDECL(zhitm, (struct monst *, int, struct obj*, int, int, int, struct obj **));
+E double FDECL(zhitm, (struct monst *, int, struct obj*, int, int, int, struct obj **));
 E int FDECL(burn_floor_objects, (int, int, BOOLEAN_P, BOOLEAN_P));
 E void FDECL(buzz, (int, struct obj*, int, int, int, XCHAR_P, XCHAR_P, int, int));
 E void FDECL(dobuzz, (int, struct obj*, int, int, int, XCHAR_P, XCHAR_P, int, int, BOOLEAN_P));

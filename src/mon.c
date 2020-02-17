@@ -1162,22 +1162,29 @@ register struct monst *mtmp;
      * keep going down, and when it gets to 1 hit point the clone
      * function will fail.
      */
-    if (mtmp->data == &mons[PM_GREMLIN] && (inpool || infountain) && rn2(3)) {
+    if (mtmp->data == &mons[PM_GREMLIN] && (inpool || infountain) && rn2(3)) 
+	{
         if (split_mon(mtmp, (struct monst *) 0))
             dryup(mtmp->mx, mtmp->my, FALSE);
         if (inpool)
             water_damage_chain(mtmp->minvent, FALSE);
         return 0;
-    } else if (mtmp->data == &mons[PM_IRON_GOLEM] && inpool && !rn2(5)) {
+    } 
+	else if (mtmp->data == &mons[PM_IRON_GOLEM] && inpool && !rn2(5)) 
+	{
         int dam = d(2, 6);
 
         if (cansee(mtmp->mx, mtmp->my))
             pline("%s rusts.", Monnam(mtmp));
-        mtmp->mhp -= dam;
+		deduct_monster_hp(mtmp, adjust_damage(dam, (struct monst*)0, mtmp, AD_PHYS, FALSE));
+        //mtmp->mhp -= dam;
+
         if (mtmp->mhpmax > dam)
             mtmp->mbasehpmax -= dam;
+		
 		update_mon_maxhp(mtmp);
-        if (DEADMONSTER(mtmp)) {
+        if (DEADMONSTER(mtmp)) 
+		{
             mondead(mtmp);
             if (DEADMONSTER(mtmp))
                 return 1;
@@ -1186,21 +1193,26 @@ register struct monst *mtmp;
         return 0;
     }
 
-    if (inlava) {
+    if (inlava) 
+	{
         /*
          * Lava effects much as water effects. Lava likers are able to
          * protect their stuff. Fire resistant monsters can only protect
          * themselves  --ALI
          */
-        if (!is_clinger(mtmp->data) && !likes_lava(mtmp->data)) {
+        if (!is_clinger(mtmp->data) && !likes_lava(mtmp->data)) 
+		{
             /* not fair...?  hero doesn't automatically teleport away
                from lava, just from water */
-            if (has_teleportation(mtmp) && !tele_restrict(mtmp)) {
+            if (has_teleportation(mtmp) && !tele_restrict(mtmp)) 
+			{
                 if (rloc(mtmp, TRUE))
                     return 0;
             }
-            if (!resists_fire(mtmp)) {
-                if (cansee(mtmp->mx, mtmp->my)) {
+            if (!resists_fire(mtmp)) 
+			{
+                if (cansee(mtmp->mx, mtmp->my)) 
+				{
                     struct attack *dummy = &mtmp->data->mattk[0];
                     const char *how = on_fire(mtmp->data, dummy);
 
@@ -1217,16 +1229,21 @@ register struct monst *mtmp;
                     mondead(mtmp);
                 else
                     xkilled(mtmp, XKILL_NOMSG);
-            } else {
-                mtmp->mhp -= 1;
-                if (DEADMONSTER(mtmp)) {
+            } 
+			else
+			{
+				deduct_monster_hp(mtmp, adjust_damage(1, (struct monst*)0, mtmp, AD_FIRE, FALSE));
+                if (DEADMONSTER(mtmp)) 
+				{
                     if (cansee(mtmp->mx, mtmp->my))
                         pline("%s surrenders to the fire.", Monnam(mtmp));
                     mondead(mtmp);
-                } else if (cansee(mtmp->mx, mtmp->my))
+                } 
+				else if (cansee(mtmp->mx, mtmp->my))
                     pline("%s burns slightly.", Monnam(mtmp));
             }
-            if (!DEADMONSTER(mtmp)) {
+            if (!DEADMONSTER(mtmp)) 
+			{
                 (void) fire_damage_chain(mtmp->minvent, FALSE, FALSE,
                                          mtmp->mx, mtmp->my);
                 (void) rloc(mtmp, FALSE);
@@ -1234,27 +1251,33 @@ register struct monst *mtmp;
             }
             return 1;
         }
-    } else if (inpool) {
+    } 
+	else if (inpool) 
+	{
         /* Most monsters drown in pools.  flooreffects() will take care of
          * water damage to dead monsters' inventory, but survivors need to
          * be handled here.  Swimmers are able to protect their stuff...
          */
         if (!is_clinger(mtmp->data) && !is_swimmer(mtmp->data)
-            && !amphibious(mtmp->data)) {
+            && !amphibious(mtmp->data)) 
+		{
             /* like hero with teleport intrinsic or spell, teleport away
                if possible */
-            if (has_teleportation(mtmp) && !tele_restrict(mtmp)) {
+            if (has_teleportation(mtmp) && !tele_restrict(mtmp)) 
+			{
                 if (rloc(mtmp, TRUE))
                     return 0;
             }
-            if (cansee(mtmp->mx, mtmp->my)) {
+            if (cansee(mtmp->mx, mtmp->my)) 
+			{
                 if (context.mon_moving)
                     pline("%s drowns.", Monnam(mtmp));
                 else
                     /* hero used fire to melt ice that monster was on */
                     You("drown %s.", mon_nam(mtmp));
             }
-            if (u.ustuck && u.uswallow && u.ustuck == mtmp) {
+            if (u.ustuck && u.uswallow && u.ustuck == mtmp) 
+			{
                 /* This can happen after a purple worm plucks you off a
                    flying steed while you are over water. */
                 pline("%s sinks as %s rushes in and flushes you out.",
@@ -1264,7 +1287,8 @@ register struct monst *mtmp;
                 mondead(mtmp);
             else
                 xkilled(mtmp, XKILL_NOMSG);
-            if (!DEADMONSTER(mtmp)) {
+            if (!DEADMONSTER(mtmp)) 
+			{
                 water_damage_chain(mtmp->minvent, FALSE);
                 (void) rloc(mtmp, FALSE);
                 return 0;

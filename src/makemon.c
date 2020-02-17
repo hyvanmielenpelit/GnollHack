@@ -1819,14 +1819,14 @@ unsigned long mmflags;
     struct permonst *ptr = &mons[mndx];
 	boolean use_maxhp = !!(mmflags & MM_MAX_HP);
 	boolean use_normalhd = !!(mmflags & MM_NORMAL_HIT_DICE);
-	boolean no_dif_level_adj = !!(mmflags & MM_NO_DIFFICULTY_HP_CHANGE);
-	boolean adj_existing_hp = !!(mmflags & MM_ADJUST_HP_FROM_EXISTING);
+	//boolean no_dif_level_adj = !!(mmflags & MM_NO_DIFFICULTY_HP_CHANGE);
+	//boolean adj_existing_hp = !!(mmflags & MM_ADJUST_HP_FROM_EXISTING);
 	int old_maxhp = mon->mhpmax;
 	int old_basemaxhp = mon->mbasehpmax;
 	int old_hp = mon->mhp;
 
-	if(!adj_existing_hp)
-		mon->m_lev = use_normalhd ? ptr->mlevel : adj_lev(ptr);
+	//if(!adj_existing_hp)
+	mon->m_lev = use_normalhd ? ptr->mlevel : adj_lev(ptr);
 
 	boolean dragonmaxhp = !!(ptr->mlet == S_DRAGON && mndx >= PM_GRAY_DRAGON && In_endgame(&u.uz));
 
@@ -1865,11 +1865,13 @@ unsigned long mmflags;
 		hp = use_maxhp || dragonmaxhp ? basemaxhp : d((int)mon->m_lev, 8); // +mon->m_lev * constitution_hp_bonus(m_acurr(mon, A_CON));
 	}
 
+#if 0
 	/* Override hp if adjusting */
 	if (adj_existing_hp && mon->max_hp_percentage > 0)
 	{
 		hp = (mon->max_hp_percentage * basemaxhp) / 100;
 	}
+#endif
 
 	if (hp < 1)
 		hp = 1;
@@ -1881,10 +1883,11 @@ unsigned long mmflags;
 	int max_hp_percentage = (int)(((unsigned long)hp * 100) / (unsigned long)basemaxhp);
 	mon->max_hp_percentage = max_hp_percentage;
 
+#if 0
 	/* Difficulty  and dungeon level adjustments */
 	if (!no_dif_level_adj)
 		hp = monhp_difficulty_adjustment(hp, context.game_difficulty);
-
+#endif
 	if (is_home_elemental(ptr))
 		hp *= 2;
 
@@ -1894,6 +1897,9 @@ unsigned long mmflags;
 		mon->mbasehpmax = 1;
 	update_mon_maxhp(mon);
 
+	mon->mhp = mon->mhpmax;
+
+#if 0
 	/* If adjusting, new hp = old_hp proportionally to old and new mhpmax's */
 	if (adj_existing_hp && old_hp > 0 && old_maxhp > 0 && mon->mhpmax > 0)
 	{
@@ -1902,6 +1908,7 @@ unsigned long mmflags;
 	}
 	else
 		mon->mhp = mon->mhpmax;
+#endif
 
 	if (mon->mhp < 1)
 		mon->mhp = 1;

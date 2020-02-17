@@ -751,27 +751,35 @@ register xchar x, y;
     register struct obj *otmp;
     register struct monst *mtmp;
 
-    for (otmp = invent; otmp; otmp = otmp->nobj) {
+    for (otmp = invent; otmp; otmp = otmp->nobj) 
+	{
         if (otmp->otyp != LEASH || otmp->leashmon == 0)
             continue;
-        for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
+        for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+		{
             if (DEADMONSTER(mtmp))
                 continue;
             if ((int) mtmp->m_id == otmp->leashmon)
                 break;
         }
-        if (!mtmp) {
+        if (!mtmp) 
+		{
             impossible("leash in use isn't attached to anything?");
             otmp->leashmon = 0;
             continue;
         }
         if (dist2(u.ux, u.uy, mtmp->mx, mtmp->my)
-            > dist2(x, y, mtmp->mx, mtmp->my)) {
-            if (!um_dist(mtmp->mx, mtmp->my, 3)) {
+            > dist2(x, y, mtmp->mx, mtmp->my)) 
+		{
+            if (!um_dist(mtmp->mx, mtmp->my, 3)) 
+			{
                 ; /* still close enough */
-            } else if (otmp->cursed && !has_innate_breathless(mtmp->data)) {
+            } 
+			else if (otmp->cursed && !has_innate_breathless(mtmp->data)) 
+			{
                 if (um_dist(mtmp->mx, mtmp->my, 5)
-                    || (mtmp->mhp -= rnd(2)) <= 0) {
+                    || deduct_monster_hp(mtmp, rnd(2)) <= 0) 
+				{
                     long save_pacifism = u.uconduct.killer;
 
                     Your("leash chokes %s to death!", mon_nam(mtmp));
@@ -783,7 +791,9 @@ register xchar x, y;
                     /* life-saving doesn't ordinarily reset this */
                     if (!DEADMONSTER(mtmp))
                         u.uconduct.killer = save_pacifism;
-                } else {
+                } 
+				else 
+				{
                     pline("%s is choked by the leash!", Monnam(mtmp));
                     /* tameness eventually drops to 1 here (never 0) */
                     if (mtmp->mtame/**/ && rn2(mtmp->mtame/**/))
@@ -793,14 +803,20 @@ register xchar x, y;
 						mtmp->ispartymember = FALSE;
 
                 }
-            } else {
-                if (um_dist(mtmp->mx, mtmp->my, 5)) {
+            } 
+			else 
+			{
+                if (um_dist(mtmp->mx, mtmp->my, 5))
+				{
                     pline("%s leash snaps loose!", s_suffix(Monnam(mtmp)));
                     m_unleash(mtmp, FALSE);
-                } else {
+                } 
+				else 
+				{
                     You("pull on the leash.");
                     if (mtmp->data->msound != MS_SILENT)
-                        switch (rn2(3)) {
+                        switch (rn2(3))
+						{
                         case 0:
                             growl(mtmp);
                             break;

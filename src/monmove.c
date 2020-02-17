@@ -24,7 +24,8 @@ boolean
 mb_trapped(mtmp)
 struct monst *mtmp;
 {
-    if (flags.verbose) {
+    if (flags.verbose)
+	{
         if (cansee(mtmp->mx, mtmp->my) && !Unaware)
             pline("KABOOM!!  You see a door explode.");
         else if (!Deaf)
@@ -32,8 +33,9 @@ struct monst *mtmp;
     }
     wake_nearto(mtmp->mx, mtmp->my, 7 * 7);
 	increase_mon_property(mtmp, STUNNED, 5 + rnd(10));
-	mtmp->mhp -= rnd(15);
-    if (DEADMONSTER(mtmp)) {
+	deduct_monster_hp(mtmp, adjust_damage(rnd(15), (struct monst*)0, mtmp, AD_PHYS, FALSE));
+    if (DEADMONSTER(mtmp)) 
+	{
         mondied(mtmp);
         if (!DEADMONSTER(mtmp)) /* lifesaved */
             return FALSE;
@@ -716,7 +718,8 @@ register struct monst *mtmp;
 			{
                 if (cansee(m2->mx, m2->my))
                     pline("It locks on to %s.", mon_nam(m2));
-                m2->mhp -= rnd(15);
+				deduct_monster_hp(m2, adjust_damage(rnd(15), mtmp, m2, AD_PSIO, FALSE));
+				//m2->mhp -= rnd(15);
                 if (DEADMONSTER(m2))
                     monkilled(m2, "", AD_DRIN);
                 else

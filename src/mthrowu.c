@@ -392,9 +392,11 @@ int range;          /* how much farther will object travel if it misses;
                        unless it's gone (used for rolling_boulder_traps) */
 boolean verbose;    /* give message(s) even when you can't see what happened */
 {
-    int damage, tmp;
+    int dmg, tmp;
+	double damage = 0;
 	boolean vis, ismimic;
-    int objgone = 1, poisondamage = 0;
+	int objgone = 1;
+	double poisondamage = 0;
     struct obj *mon_launcher = archer ? MON_WEP(archer) : NULL;
 
     notonhead = (bhitpos.x != mtmp->mx || bhitpos.y != mtmp->my);
@@ -405,22 +407,28 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
     /* High level monsters will be more likely to hit */
     /* This check applies only if this monster is the target
      * the archer was aiming at. */
-    if (archer && mtmp && target == mtmp) {
+    if (archer && mtmp && target == mtmp) 
+	{
         if (archer->m_lev > 5)
             tmp += archer->m_lev - 5;
 //        if (mon_launcher && mon_launcher->oartifact)
 //            tmp += spec_abon(mon_launcher, mtmp);
-		if (otmp && mon_launcher && is_ammo(otmp)) {
-			if (!ammo_and_launcher(otmp, mon_launcher)) {
+		if (otmp && mon_launcher && is_ammo(otmp)) 
+		{
+			if (!ammo_and_launcher(otmp, mon_launcher)) 
+			{
 				tmp -= 4;
 			}
-			else {
+			else
+			{
 				tmp += weapon_to_hit_value(mon_launcher, mtmp, (struct monst*)0);
 				//tmp += weapon_skill_hit_bonus(uwep);  //Monsters do not get skill-based to-hit bonuses
 
 				//Penalty for shooting short range
-				if (archer && distmin(archer->mx, archer->my, mtmp->mx, mtmp->my) <= 1) {
-					switch (objects[mon_launcher->otyp].oc_skill) {
+				if (archer && distmin(archer->mx, archer->my, mtmp->mx, mtmp->my) <= 1) 
+				{
+					switch (objects[mon_launcher->otyp].oc_skill) 
+					{
 					case P_BOW:
 						tmp -= 10;
 						break;
@@ -434,20 +442,25 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 				}
 			}
 		}
-
     }
-    if (tmp < rnd(20)) {
-        if (!ismimic) {
+
+    if (tmp < rnd(20)) 
+	{
+        if (!ismimic) 
+		{
             if (vis)
                 miss(distant_name(otmp, mshot_xname), mtmp);
             else if (verbose && !target)
                 pline("It is missed.");
         }
-        if (!range) { /* Last position; object drops */
+        if (!range) 
+		{ /* Last position; object drops */
             (void) drop_throw(otmp, 0, mtmp->mx, mtmp->my);
             return 1;
         }
-    } else if (otmp->oclass == POTION_CLASS) {
+    } 
+	else if (otmp->oclass == POTION_CLASS)
+	{
         if (ismimic)
             seemimic(mtmp);
         mtmp->msleeping = 0;
@@ -457,120 +470,144 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
            distinction only matters when hitting the hero */
         potionhit(mtmp, otmp, POTHIT_OTHER_THROW);
         return 1;
-    } else {
+    }
+	else
+	{
 		if (is_launcher(otmp))
-			damage = d(1, 2);
+			dmg = d(1, 2);
 		else
-			damage = weapon_total_dmg_value(otmp, mtmp, (struct monst*)0);
+			dmg = weapon_total_dmg_value(otmp, mtmp, (struct monst*)0);
 
 		if (otmp && mon_launcher && ammo_and_launcher(otmp, mon_launcher)) 
 		{
-			damage += weapon_total_dmg_value(mon_launcher, mtmp, (struct monst*)0);
+			dmg += weapon_total_dmg_value(mon_launcher, mtmp, (struct monst*)0);
 
-			//Add strength damage, no skill damage
+			//Add strength dmg, no skill dmg
 			if (objects[mon_launcher->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH)
-				damage += objects[mon_launcher->otyp].oc_fixed_damage_bonus;
+				dmg += objects[mon_launcher->otyp].oc_fixed_damage_bonus;
 			else
-				damage += archer ? m_str_dmg_bonus(archer) : 0;
+				dmg += archer ? m_str_dmg_bonus(archer) : 0;
 
 			/*
 			if (mon_launcher->otyp == CROSSBOW) {
-				damage += 3;
+				dmg += 3;
 			}
 			else if (mon_launcher->otyp == HEAVY_CROSSBOW) {
-				damage += 6;
+				dmg += 6;
 			}
 			else if (mon_launcher->otyp == HAND_CROSSBOW) {
-				damage += 0;
+				dmg += 0;
 			}
 			else if (mon_launcher->otyp == REPEATING_CROSSBOW) {
-				damage += 0;
+				dmg += 0;
 			}
 			else {
 				if(archer)
-					damage += m_str_dmg_bonus(archer);
+					dmg += m_str_dmg_bonus(archer);
 			}
 			*/
 			//Bracers here, if need be
 		}
 
         if (otmp->otyp == ACID_VENOM && resists_acid(mtmp))
-            damage = 0;
+            dmg = 0;
+
         if (ismimic)
             seemimic(mtmp);
+
         mtmp->msleeping = 0;
-        if (vis) {
+
+		damage = adjust_damage(dmg, (struct monst*)0, mtmp, objects[otmp->otyp].oc_damagetype, FALSE);
+
+        if (vis) 
+		{
             if (otmp->otyp == EGG)
                 pline("Splat!  %s is hit with %s egg!", Monnam(mtmp),
                       otmp->known ? an(mons[otmp->corpsenm].mname) : "an");
             else
-                hit(distant_name(otmp, mshot_xname), mtmp, exclam(damage), damage);
-        } else if (verbose && !target)
+                hit(distant_name(otmp, mshot_xname), mtmp, exclam((int)ceil(damage)), (int)ceil(damage));
+        } 
+		else if (verbose && !target)
             pline("%s%s is hit%s", (otmp->otyp == EGG) ? "Splat!  " : "",
-                  Monnam(mtmp), exclam(damage));
+                  Monnam(mtmp), exclam((int)ceil(damage)));
 
-        if (otmp->opoisoned && is_poisonable(otmp)) {
-            if (resists_poison(mtmp)) {
+        if (otmp->opoisoned && is_poisonable(otmp)) 
+		{
+            if (resists_poison(mtmp)) 
+			{
                 if (vis)
                     pline_The("poison doesn't seem to affect %s.",
                               mon_nam(mtmp));
-            } else {
-                if (rn2(30)) {
-					poisondamage = rnd(6);
-                } else {
-					poisondamage = d(6, 6); // mtmp->mhp;
+            } 
+			else 
+			{
+                if (rn2(30)) 
+				{
+					poisondamage = adjust_damage(rnd(6), (struct monst*)0, mtmp, AD_DRST, FALSE);
+                } 
+				else
+				{
+					poisondamage = adjust_damage(d(6, 6), (struct monst*)0, mtmp, AD_DRST, FALSE); // mtmp->mhp;
                 }
 				damage += poisondamage;
             }
         }
-		if (otmp->elemental_enchantment) {
+
+		if (otmp->elemental_enchantment)
+		{
 			switch(otmp->elemental_enchantment)
 			{
 			case COLD_ENCHANTMENT:
-				if (resists_cold(mtmp)) {
+				if (resists_cold(mtmp)) 
+				{
 					if (vis)
 						pline_The("cold doesn't seem to affect %s.",
 							mon_nam(mtmp));
 				}
-				else {
+				else 
+				{
 					if (vis)
 						pline_The("cold sears %s!", mon_nam(mtmp));
 					else if (verbose && !target)
 						pline_The("cold sears it!", mon_nam(mtmp));
-					damage += rnd(6);
+					damage += adjust_damage(rnd(6), (struct monst*)0, mtmp, AD_COLD, FALSE);
 				}
 				if (!rn2(10))
 					otmp->elemental_enchantment = 0;
 				break;
 			case FIRE_ENCHANTMENT:
-				if (resists_fire(mtmp)) {
+				if (resists_fire(mtmp)) 
+				{
 					if (vis)
 						pline_The("fire doesn't seem to affect %s.",
 							mon_nam(mtmp));
 				}
-				else {
+				else 
+				{
 					if (vis)
 						pline_The("fire burns %s!", mon_nam(mtmp));
 					else if (verbose && !target)
 						pline_The("fire burns it!");
-					damage += d(2, 6);
+					damage += adjust_damage(d(2, 6), (struct monst*)0, mtmp, AD_FIRE, FALSE);
 				}
 				if (!rn2(3))
 					otmp->elemental_enchantment = 0;
 				break;
 			case LIGHTNING_ENCHANTMENT:
-				if (resists_elec(mtmp)) {
+				if (resists_elec(mtmp)) 
+				{
 					if (vis)
 						pline_The("lightning doesn't seem to affect %s.",
 							mon_nam(mtmp));
 				}
-				else {
+				else
+				{
 					if (vis)
 						pline("%s is jolted by lightning!", Monnam(mtmp));
 					else if (verbose && !target)
 						pline("It is jolted by lightning!");
 
-					damage += d(4, 6);
+					damage += adjust_damage(d(4, 6), (struct monst*)0, mtmp, AD_ELEC, FALSE);
 				}
 				otmp->elemental_enchantment = 0;
 				break;
@@ -585,12 +622,13 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 						pline_The("death magic doesn't seem to affect %s.",
 							mon_nam(mtmp));
 				}
-				else {
+				else 
+				{
 					if (vis)
 						pline("%s is slain!", Monnam(mtmp));
 					else if (verbose && !target)
 						pline("It is slain!");
-					damage = mtmp->mhp;
+					damage = (double)mtmp->mhp + 1;
 				}
 				otmp->elemental_enchantment = 0;
 				break;
@@ -601,18 +639,23 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 		}
 
 		if (objects[otmp->otyp].oc_material == MAT_SILVER
-            && mon_hates_silver(mtmp)) {
+            && mon_hates_silver(mtmp))
+		{
             if (vis)
                 pline_The("silver sears %s flesh!", s_suffix(mon_nam(mtmp)));
             else if (verbose && !target)
                 pline("Its flesh is seared!");
         }
 
-        if (otmp->otyp == ACID_VENOM && cansee(mtmp->mx, mtmp->my)) {
-            if (resists_acid(mtmp)) {
+        if (otmp->otyp == ACID_VENOM && cansee(mtmp->mx, mtmp->my)) 
+		{
+            if (resists_acid(mtmp)) 
+			{
                 if (vis || (verbose && !target))
                     pline("%s is unaffected.", Monnam(mtmp));
-            } else {
+            } 
+			else 
+			{
                 if (vis)
                     pline_The("%s burns %s!", hliquid("acid"), mon_nam(mtmp));
                 else if (verbose && !target)
@@ -637,10 +680,11 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 
         if (!DEADMONSTER(mtmp))
 		{ /* might already be dead (if petrified) */
-            mtmp->mhp -= damage;
+			deduct_monster_hp(mtmp, damage);
+            //mtmp->mhp -= dmg;
             if (DEADMONSTER(mtmp))
 			{
-				if (poisondamage && mtmp->mhp > -poisondamage && vis)
+				if (poisondamage > 0 && ((double)mtmp->mhp + ((double)mtmp->mhp_fraction)/10000) > -poisondamage && vis)
 					pline_The("poison was deadly...");
 				if (vis || (verbose && !target))
                     pline("%s is %s!", Monnam(mtmp),

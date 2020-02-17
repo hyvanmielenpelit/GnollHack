@@ -152,8 +152,10 @@ struct obj *obj;
                         ? "nearby" : "in the distance");
         }
         m_useup(mon, obj);
-        mon->mhp -= dam;
-        if (DEADMONSTER(mon)) {
+		deduct_monster_hp(mon, adjust_damage(dam, (struct monst*)0, mon, AD_MAGM, FALSE));
+        //mon->mhp -= dam;
+        if (DEADMONSTER(mon))
+		{
             monkilled(mon, "", AD_RBRE);
             return 1;
         }
@@ -2500,8 +2502,9 @@ boolean stoning; /* True: stop petrification, False: cure stun && confusion */
     m_useup(mon, obj);
     /* obj is now gone */
 
-    if (acid && !tinned && !resists_acid(mon)) {
-        mon->mhp -= rnd(15);
+    if (acid && !tinned && !resists_acid(mon)) 
+	{
+		deduct_monster_hp(mon, adjust_damage(rnd(15), (struct monst*)0, mon, AD_ACID, FALSE));
         if (vis)
             pline("%s has a very bad case of stomach acid.", Monnam(mon));
         if (DEADMONSTER(mon)) {
@@ -2674,7 +2677,8 @@ struct trap *trap;
 boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
 {               /* [by_you not honored if 'mon' triggers fire trap]. */
     struct obj *odummyp;
-    int otyp = obj->otyp, dmg = 0;
+	int otyp = obj->otyp;
+	double damage = 0;
     boolean vis = canseemon(mon), res = TRUE;
 
     if (vis)
@@ -2713,7 +2717,7 @@ boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
         if (!rn2(3))
             mon->mspec_used = rn1(10, 5);
         /* -21 => monster's fire breath; 1 => # of damage dice */
-        dmg = zhitm(mon, by_you ? 21 : -21, (struct obj*)0, 1, 8, 0, &odummyp);
+		damage = zhitm(mon, by_you ? 21 : -21, (struct obj*)0, 1, 8, 0, &odummyp);
     } else if (otyp == SCR_FIRE) {
         mreadmsg(mon, obj);
         if (is_confused(mon)) {
@@ -2727,21 +2731,21 @@ boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
             res = FALSE;       /* failed to cure sliming */
         } else {
             m_useup(mon, obj); /* before explode() */
-            dmg = (2 * (rn1(3, 3) + 2 * bcsign(obj)) + 1) / 3;
+            int dmg = (2 * (rn1(3, 3) + 2 * bcsign(obj)) + 1) / 3;
             /* -11 => monster's fireball */
             explode(mon->mx, mon->my, -11, dmg, otyp, SCROLL_CLASS,
                     /* by_you: override -11 for mon but not others */
                     by_you ? -EXPL_FIERY : EXPL_FIERY);
-            dmg = 0; /* damage has been applied by explode() */
+            damage = 0; /* damage has been applied by explode() */
         }
     } else { /* wand/horn of fire w/ positive charge count */
         mzapmsg(mon, obj, TRUE);
         obj->spe--;
         /* -1 => monster's wand of fire; 2 => # of damage dice */
-        dmg = zhitm(mon, by_you ? 1 : -1, (struct obj*)0, 2, 8, 0, &odummyp);
+        damage = zhitm(mon, by_you ? 1 : -1, (struct obj*)0, 2, 8, 0, &odummyp);
     }
 
-    if (dmg) {
+    if (damage > 0) {
         /* zhitm() applies damage but doesn't kill creature off;
            for fire breath, dmg is going to be 0 (fire breathers are
            immune to fire damage) but for wand of fire or fire horn,
@@ -2760,7 +2764,7 @@ boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
         } else {
             /* non-fatal damage occurred */
             if (vis)
-                pline("%s is burned%s", Monnam(mon), exclam(dmg));
+                pline("%s is burned%s", Monnam(mon), exclam((int)damage));
         }
     }
     if (vis) {

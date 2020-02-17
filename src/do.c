@@ -2760,58 +2760,73 @@ const char *verb;
     /* make sure things like water_damage() have no pointers to follow */
     obj->nobj = obj->nexthere = (struct obj *) 0;
 
-    if (obj->otyp == BOULDER && boulder_hits_pool(obj, x, y, FALSE)) {
+    if (obj->otyp == BOULDER && boulder_hits_pool(obj, x, y, FALSE))
+	{
         return TRUE;
-    } else if (obj->otyp == BOULDER && (t = t_at(x, y)) != 0
-               && (is_pit(t->ttyp) || is_hole(t->ttyp))) {
+    }
+	else if (obj->otyp == BOULDER && (t = t_at(x, y)) != 0
+               && (is_pit(t->ttyp) || is_hole(t->ttyp)))
+	{
         ttyp = t->ttyp;
         tseen = t->tseen ? TRUE : FALSE;
         if (((mtmp = m_at(x, y)) && mtmp->mtrapped)
-            || (u.utrap && u.ux == x && u.uy == y)) {
+            || (u.utrap && u.ux == x && u.uy == y)) 
+		{
             if (*verb && (cansee(x, y) || distu(x, y) == 0))
                 pline("%s boulder %s into the pit%s.",
                       Blind ? "A" : "The",
                       vtense((const char *) 0, verb),
                       mtmp ? "" : " with you");
-            if (mtmp) {
-                if (!passes_walls(mtmp->data) && !throws_rocks(mtmp->data)) {
+
+            if (mtmp)
+			{
+                if (!passes_walls(mtmp->data) && !throws_rocks(mtmp->data))
+				{
                     /* dieroll was rnd(20); 1: maximum chance to hit
                        since trapped target is a sitting duck */
-                    int damage, dieroll = 1;
+                    int dmg, dieroll = 1;
 
                     /* 3.6.2: this was calling hmon() unconditionally
                        so always credited/blamed the hero but the boulder
                        might have been thrown by a giant or launched by
                        a rolling boulder trap triggered by a monster or
                        dropped by a scroll of earth read by a monster */
-                    if (context.mon_moving) {
+                    if (context.mon_moving) 
+					{
                         /* normally we'd use ohitmon() but it can call
                            drop_throw() which calls flooreffects() */
 						if (is_launcher(obj))
-							damage = d(1, 2);
+							dmg = d(1, 2);
 						else
-							damage = weapon_total_dmg_value(obj, mtmp, &youmonst);
+							dmg = weapon_total_dmg_value(obj, mtmp, &youmonst);
 
-                        mtmp->mhp -= damage;
-                        if (DEADMONSTER(mtmp)) {
+                        deduct_monster_hp(mtmp, adjust_damage(dmg, (struct monst*)0, mtmp, objects[obj->otyp].oc_damagetype, FALSE));
+                        if (DEADMONSTER(mtmp)) 
+						{
                             if (canspotmon(mtmp))
                                 pline("%s is %s!", Monnam(mtmp),
                                       (is_not_living(mtmp->data) || is_vampshifter(mtmp))
                                       ? "destroyed" : "killed");
                             mondied(mtmp);
                         }
-                    } else {
+                    }
+					else 
+					{
 						boolean obj_destroyed = FALSE;
                         (void) hmon(mtmp, obj, HMON_THROWN, dieroll, &obj_destroyed);
 						if (obj_destroyed)
 							obj = 0;
                     }
+
                     if (!DEADMONSTER(mtmp) && !is_whirly(mtmp->data))
                         return FALSE; /* still alive */
                 }
                 mtmp->mtrapped = 0;
-            } else {
-                if (!Passes_walls && !throws_rocks(youmonst.data)) {
+            } 
+			else 
+			{
+                if (!Passes_walls && !throws_rocks(youmonst.data)) 
+				{
                     losehp(adjust_damage(rnd(15), (struct monst*)0, &youmonst, AD_PHYS, FALSE),
                            "squished under a boulder", NO_KILLER_PREFIX);
                     return FALSE; /* player remains trapped */
@@ -2819,10 +2834,14 @@ const char *verb;
                     reset_utrap(TRUE);
             }
         }
-        if (*verb) {
-            if (Blind && (x == u.ux) && (y == u.uy)) {
+        if (*verb) 
+		{
+            if (Blind && (x == u.ux) && (y == u.uy)) 
+			{
                 You_hear("a CRASH! beneath you.");
-            } else if (!Blind && cansee(x, y)) {
+            } 
+			else if (!Blind && cansee(x, y)) 
+			{
                 pline_The("boulder %s%s.",
                           (ttyp == TRAPDOOR && !tseen)
                               ? "triggers and " : "",
@@ -2830,7 +2849,9 @@ const char *verb;
                               ? "plugs a trap door"
                               : (ttyp == HOLE) ? "plugs a hole"
                                                : "fills a pit");
-            } else {
+            } 
+			else 
+			{
                 You_hear("a boulder %s.", verb);
             }
         }
@@ -2845,18 +2866,27 @@ const char *verb;
         bury_objs(x, y);
         newsym(x, y);
         return TRUE;
-    } else if (is_lava(x, y)) {
+    } 
+	else if (is_lava(x, y))
+	{
         return lava_damage(obj, x, y);
-    } else if (is_pool(x, y)) {
+    } 
+	else if (is_pool(x, y)) 
+	{
         /* Reasonably bulky objects (arbitrary) splash when dropped.
          * If you're floating above the water even small things make
          * noise.  Stuff dropped near fountains always misses */
         if ((Blind || (Levitation || Flying)) && !Deaf
-            && ((x == u.ux) && (y == u.uy))) {
-            if (!Underwater) {
-                if (weight(obj) > 9) {
+            && ((x == u.ux) && (y == u.uy))) 
+		{
+            if (!Underwater) 
+			{
+                if (weight(obj) > 9) 
+				{
                     pline("Splash!");
-                } else if (Levitation || Flying) {
+                } 
+				else if (Levitation || Flying) 
+				{
                     pline("Plop!");
                 }
             }
@@ -2864,16 +2894,21 @@ const char *verb;
             newsym(x, y);
         }
         return water_damage(obj, NULL, FALSE) == ER_DESTROYED;
-    } else if (u.ux == x && u.uy == y && (t = t_at(x, y)) != 0
-               && uteetering_at_seen_pit(t)) {
+    }
+	else if (u.ux == x && u.uy == y && (t = t_at(x, y)) != 0
+               && uteetering_at_seen_pit(t)) 
+	{
         if (Blind && !Deaf)
             You_hear("%s tumble downwards.", the(xname(obj)));
         else
             pline("%s %s into %s pit.", The(xname(obj)),
                   otense(obj, "tumble"), the_your[t->madeby_u]);
-    } else if (obj->globby) {
+    } 
+	else if (obj->globby) 
+	{
         /* Globby things like puddings might stick together */
-        while (obj && (otmp = obj_nexto_xy(obj, x, y, TRUE)) != 0) {
+        while (obj && (otmp = obj_nexto_xy(obj, x, y, TRUE)) != 0) 
+		{
             pudding_merge_message(obj, otmp);
             /* intentionally not getting the melded object; obj_meld may set
              * obj to null. */

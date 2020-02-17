@@ -360,12 +360,17 @@ int force;
                             /* Falling is okay for falling down
                                 within a pit from jostling too */
                             mselftouch(mtmp, "Falling, ", TRUE);
-                            if (!DEADMONSTER(mtmp)) {
-                                mtmp->mhp -= rnd(m_already_trapped ? 4 : 6);
-                                if (DEADMONSTER(mtmp)) {
-                                    if (!cansee(x, y)) {
+                            if (!DEADMONSTER(mtmp)) 
+							{
+								deduct_monster_hp(mtmp, adjust_damage(rnd(m_already_trapped ? 4 : 6), (struct monst*)0, mtmp, AD_PHYS, FALSE));
+                                if (DEADMONSTER(mtmp)) 
+								{
+                                    if (!cansee(x, y)) 
+									{
                                         pline("It is destroyed!");
-                                    } else {
+                                    }
+									else 
+									{
                                         You("destroy %s!",
                                             mtmp->mtame
                                               ? x_monnam(mtmp, ARTICLE_THE,

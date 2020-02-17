@@ -839,20 +839,31 @@ struct obj *otmp;
 		res = 1;
 		if (disguised_mimic)
             seemimic(mtmp);
-        dmg = monhp_per_lvl(mtmp);
-        if (otyp == SPE_DRAIN_LIFE)
+        
+		dmg = monhp_per_lvl(mtmp);
+        
+		if (otyp == SPE_DRAIN_LIFE)
             dmg = spell_damage_bonus(dmg);
-        if (resists_drli(mtmp)) {
+        
+		if (resists_drli(mtmp)) 
+		{
             shieldeff(mtmp->mx, mtmp->my);
-        } else if (!check_magic_resistance_and_halve_damage(mtmp, otmp, 0, dmg, AD_DRLI, NOTELL)
-                   && !DEADMONSTER(mtmp)) {
-            mtmp->mhp -= dmg;
-            mtmp->mbasehpmax -= dmg;
+        } 
+		else if (!check_magic_resistance_and_halve_damage(mtmp, otmp, 0, dmg, AD_DRLI, NOTELL) && !DEADMONSTER(mtmp)) 
+		{
+			double damage = adjust_damage(dmg, &youmonst, mtmp, AD_DRLI, TRUE);
+
+			deduct_monster_hp(mtmp, damage);
+            mtmp->mbasehpmax -= (int)floor(damage);
 			update_mon_maxhp(mtmp);
+
             /* die if already level 0, regardless of hit points */
-            if (DEADMONSTER(mtmp) || mtmp->mhpmax <= 0 || mtmp->m_lev < 1) {
+            if (DEADMONSTER(mtmp) || mtmp->mhpmax <= 0 || mtmp->m_lev < 1) 
+			{
                 killed(mtmp);
-            } else {
+            } 
+			else 
+			{
                 mtmp->m_lev--;
                 if (canseemon(mtmp))
                     pline("%s suddenly seems weaker!", Monnam(mtmp));
@@ -866,6 +877,7 @@ struct obj *otmp;
         impossible("What an interesting effect (%d)", otyp);
         break;
     }
+
     if (wake)
 	{
         if (!DEADMONSTER(mtmp))
@@ -881,15 +893,18 @@ struct obj *otmp;
 		else if (M_AP_TYPE(mtmp))
             seemimic(mtmp); /* might unblock if mimicing a boulder/door */
     }
+
     /* note: bhitpos won't be set if swallowed, but that's okay since
      * reveal_invis will be false.  We can't use mtmp->mx, my since it
      * might be an invisible worm hit on the tail.
      */
-    if (reveal_invis) {
+    if (reveal_invis) 
+	{
         if (!DEADMONSTER(mtmp) && cansee(bhitpos.x, bhitpos.y)
             && !canspotmon(mtmp))
             map_invisible(bhitpos.x, bhitpos.y);
     }
+
     /* if effect was observable then discover the wand type provided
        that the wand itself has been seen */
     if (learn_it)
@@ -6196,7 +6211,7 @@ int dx, dy;
 
 /* used by buzz(); also used by munslime(muse.c); returns damage applied
    to mon; note: caller is responsible for killing mon if damage is fatal */
-int
+double
 zhitm(mon, type, origobj, dmgdice, dicesize, dmgplus, ootmp)
 register struct monst *mon;
 register int type;
@@ -6204,7 +6219,8 @@ struct obj* origobj;
 int dmgdice, dicesize, dmgplus;
 struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 {
-    register int tmp = 0;
+	double damage = 0;
+	int dmg = 0;
     register int abstype = abs(type) % 10;
     boolean sho_shieldeff = FALSE;
     boolean spellcaster = is_hero_spell(type); /* maybe get a bonus! */
@@ -6217,25 +6233,23 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 	//Base damage here, set to zero, if not needed
 	if (origobj)
 	{
-		int dam = 0;
-		dam = d(objects[origobj->otyp].oc_spell_dmg_dice, objects[origobj->otyp].oc_spell_dmg_diesize) + objects[origobj->otyp].oc_spell_dmg_plus; //Same for smal and big
-
-		tmp = dam;
+		dmg = d(objects[origobj->otyp].oc_spell_dmg_dice, objects[origobj->otyp].oc_spell_dmg_diesize) + objects[origobj->otyp].oc_spell_dmg_plus; //Same for smal and big
 	}
 	else
-		tmp = d(dmgdice, dicesize) + dmgplus;
+		dmg = d(dmgdice, dicesize) + dmgplus;
 
 	if(origobj)
 		duration = d(objects[origobj->otyp].oc_spell_dur_dice, objects[origobj->otyp].oc_spell_dur_diesize) + objects[origobj->otyp].oc_spell_dur_plus; //Same for smal and big
+
+	damage = adjust_damage(dmg, (struct monst*)0, mon, abstype + 1, (abs(type) >= 20 && abs(type) <=29) ? FALSE : TRUE);
 
     switch (abstype) {
     case ZT_MAGIC_MISSILE:
         if (resists_magicmissile(mon) || resists_magic(mon)) {
             sho_shieldeff = TRUE;
-			tmp = 0;
+			damage = 0;
             break;
         }
-
 		/*
         tmp = d(nd, 6);
         if (spellcaster)
@@ -6245,7 +6259,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
     case ZT_FIRE:
         if (resists_fire(mon)) {
             sho_shieldeff = TRUE;
-			tmp = 0;
+			damage = 0;
 			break;
         }
 		/*
@@ -6268,7 +6282,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
     case ZT_COLD:
         if (resists_cold(mon)) {
             sho_shieldeff = TRUE;
-			tmp = 0;
+			damage = 0;
 			break;
         }
 		/*
@@ -6282,11 +6296,11 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
             (void) destroy_mitem(mon, POTION_CLASS, AD_COLD);
         break;
     case ZT_SLEEP:
-        tmp = 0;
+		damage = 0;
         (void) sleep_monst(mon, origobj, !origobj ? rn1(5, 8) : duration, 0, NOTELL); // Duration 0 = permanent sleep
         break;
     case ZT_DISINTEGRATION:  /* disintegration */
-		tmp = 0;
+		damage = 0;
 		if (resists_disint(mon) || noncorporeal(mon->data) || magic_resistance_success)
 		{
 			sho_shieldeff = TRUE;
@@ -6301,7 +6315,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
         } else {
             /* no body armor, victim dies; destroy cloak
                 and shirt now in case target gets life-saved */
-            tmp = DISINTEGRATION_DUMMY_DAMAGE;
+			damage = DISINTEGRATION_DUMMY_DAMAGE;
             if ((otmp2 = which_armor(mon, W_ARMC)) != 0)
                 m_useup(mon, otmp2);
             if ((otmp2 = which_armor(mon, W_ARMU)) != 0)
@@ -6317,23 +6331,23 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 				mon->mbasehpmax = DISINTEGRATION_DUMMY_DAMAGE / 2 - 1;
 			update_mon_maxhp(mon);
 			mon->mhp = mon->mhpmax;
-			tmp = 0;
+			damage = 0;
 			break;
 		}
 		if (is_not_living(mon->data) || is_demon(mon->data) || magic_resistance_success
 			|| is_vampshifter(mon) || resists_death(mon) || resists_magic(mon)) {
 			/* similar to player */
 			sho_shieldeff = TRUE;
-			tmp = 0;
+			damage = 0;
 			break;
 		}
 		type = -1; /* so they don't get saving throws */
-		tmp = mon->mhp + 1;
+		damage = (double)mon->mhp + 1;
 		break;
 	case ZT_LIGHTNING:
         if (resists_elec(mon)) {
             sho_shieldeff = TRUE;
-            tmp = 0;
+			damage = 0;
             /* can still blind the monster */
 		}
 		/*
@@ -6356,7 +6370,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
     case ZT_POISON_GAS:
         if (resists_poison(mon)) {
             sho_shieldeff = TRUE;
-			tmp = 0;
+			damage = 0;
 			break;
         }
         //tmp = d(nd, 6);
@@ -6364,7 +6378,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
     case ZT_ACID:
         if (resists_acid(mon)) {
             sho_shieldeff = TRUE;
-			tmp = 0;
+			damage = 0;
 			break;
         }
         //tmp = d(nd, 6);
@@ -6378,14 +6392,15 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
         shieldeff(mon->mx, mon->my);
 //    if (is_hero_spell(type) && (Role_if(PM_KNIGHT) && u.uhave.questart))
 //        tmp *= 2;
-    if (tmp > 0 && type >= 0 && magic_resistance_success)
-        tmp /= 2;
-    if (tmp < 0)
-        tmp = 0; /* don't allow negative damage */
-    debugpline3("zapped monster hp = %d (= %d - %d)", mon->mhp - tmp,
-                mon->mhp, tmp);
-    mon->mhp -= tmp;
-    return tmp;
+    
+	if (damage > 0 && type >= 0 && magic_resistance_success)
+		damage /= 2;
+    if (damage < 0)
+		damage = 0; /* don't allow negative damage */
+
+    debugpline3("zapped monster hp = %d (= %d - %d)", mon->mhp - (int)damage, mon->mhp, (int)damage);
+	deduct_monster_hp(mon, damage);
+    return damage;
 }
 
 STATIC_OVL void
@@ -6831,18 +6846,18 @@ boolean say; /* Announce out of sight hit/miss events if true */
 
     if (u.uswallow)
 	{
-        register int tmp;
+        double damage = 0;
 
         if (type < 0)
             return;
-        tmp = zhitm(u.ustuck, type, origobj, dmgdice, dicesize, dmgplus, &otmp);
+		damage = zhitm(u.ustuck, type, origobj, dmgdice, dicesize, dmgplus, &otmp);
         if (!u.ustuck)
             u.uswallow = 0;
         else
             pline("%s rips into %s%s", The(fltxt), mon_nam(u.ustuck),
-                  exclam(tmp));
+                  exclam((int)damage));
         /* Using disintegration from the inside only makes a hole... */
-        if (tmp == DISINTEGRATION_DUMMY_DAMAGE)
+        if (damage == DISINTEGRATION_DUMMY_DAMAGE)
             u.ustuck->mhp = 0;
         if (DEADMONSTER(u.ustuck))
             killed(u.ustuck);
@@ -6925,7 +6940,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
 					boolean mon_could_move = mon_can_move(mon);
 					
 					/* Ray does damage and actually reduces mon's hit points */
-					int tmp = zhitm(mon, type, origobj, dmgdice, dicesize, dmgplus, &otmp);
+					double damage = zhitm(mon, type, origobj, dmgdice, dicesize, dmgplus, &otmp);
 
 					/* Rider non-disintegration */
                     if (abstype == ZT_DISINTEGRATION && check_rider_disintegration(mon, fltxt))
@@ -6947,7 +6962,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
 					}
 
 					/* Disintegrate */
-					if (tmp == DISINTEGRATION_DUMMY_DAMAGE)
+					if (damage == DISINTEGRATION_DUMMY_DAMAGE)
 					{ /* disintegration */
                         disintegrate_mon(mon, type, fltxt);
                     } 
@@ -6981,7 +6996,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
 						{
                             /* normal non-fatal hit text */
                             if (say || canseemon(mon))
-                                hit(fltxt, mon, exclam(tmp), tmp);
+                                hit(fltxt, mon, exclam((int)ceil(damage)), (int)ceil(damage));
                         } 
 						else 
 						{

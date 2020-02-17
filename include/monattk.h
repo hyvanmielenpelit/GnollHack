@@ -82,6 +82,7 @@
 #define AD_CNCL 43  /* cancel target */
 #define AD_PSIO 44  /* psionic damage */
 #define AD_SHOC 45  /* system shock */
+#define AD_ADJU 46  /* hit point adjustment, e.g. due to size shrinkage */
 
 #define AD_CLRC 240 /* random clerical spell */
 #define AD_SPEL 241 /* random magic spell */

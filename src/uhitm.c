@@ -2677,14 +2677,17 @@ int specialdmg; /* blessed and/or silver bonus against various things */
             pline("%s suddenly seems weaker!", Monnam(mdef));
             mdef->mbasehpmax -= xtmp;
 			update_mon_maxhp(mdef);
-            mdef->mhp -= xtmp;
+			deduct_monster_hp(mdef, adjust_damage(xtmp, &youmonst, mdef, mattk->adtyp, FALSE));
             /* !m_lev: level 0 monster is killed regardless of hit points
                rather than drop to level -1 */
-            if (DEADMONSTER(mdef) || !mdef->m_lev) {
+            if (DEADMONSTER(mdef) || !mdef->m_lev) 
+			{
                 pline("%s dies!", Monnam(mdef));
                 xkilled(mdef, XKILL_NOMSG);
-            } else
+            } 
+			else
                 mdef->m_lev--;
+
             damage = 0;
         }
         break;
@@ -4099,7 +4102,7 @@ int dmg;
 {
     pline("%s %s!", Monnam(mon),
           (dmg > mon->mhp / 2) ? "wails in agony" : "cries out in pain");
-    mon->mhp -= dmg;
+	deduct_monster_hp(mon, adjust_damage(dmg, (struct monst*)0, mon, AD_PHYS, FALSE));
     wake_nearto(mon->mx, mon->my, 30);
     if (DEADMONSTER(mon)) {
         if (context.mon_moving)
@@ -4219,7 +4222,7 @@ boolean is_spell_damage;
 	return base_dmg_d;
 }
 
-void
+int
 deduct_player_hp(hp_d)
 double hp_d;
 {
@@ -4267,17 +4270,19 @@ double hp_d;
 		*target_fractional_part_ptr = 0;
 	}
 	context.botl = 1;
+
+	return *target_integer_part_ptr;
 }
 
 
 
-void
+int
 deduct_monster_hp(mtmp, hp_d)
 struct monst* mtmp;
 double hp_d;
 {
 	if (!mtmp)
-		return;
+		return 0;
 
 //	mtmp->mhp -= (int)ceil(hp_d);
 
@@ -4307,6 +4312,7 @@ double hp_d;
 		mtmp->mhp_fraction = 0;
 	}
 
+	return mtmp->mhp;
 }
 
 /*uhitm.c*/

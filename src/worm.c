@@ -250,8 +250,9 @@ register struct monst *worm;
 {
     shrink_worm((int) worm->wormno); /* shrink */
 
-    if (worm->mhp > 3)
-        worm->mhp -= 3; /* mhpmax not changed ! */
+	double shrinkage = adjust_damage(3, (struct monst*)0, worm, AD_ADJU, FALSE);
+	if (worm->mhp > (int)ceil(shrinkage))
+		deduct_monster_hp(worm, shrinkage); //worm->mhp -= 3; /* mhpmax not changed ! */
     else
         worm->mhp = 1;
 }

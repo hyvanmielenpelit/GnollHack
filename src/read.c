@@ -2257,8 +2257,11 @@ boolean confused, byu;
                           xname(helmet), mhim(mtmp));
             }
         }
-        mtmp->mhp -= mdmg;
-        if (DEADMONSTER(mtmp)) {
+
+		deduct_monster_hp(mtmp, adjust_damage(mdmg, byu ? &youmonst : (struct monst*)0, mtmp, AD_PHYS, FALSE));
+        
+		if (DEADMONSTER(mtmp)) 
+		{
             if (byu) {
                 killed(mtmp);
             } else {
