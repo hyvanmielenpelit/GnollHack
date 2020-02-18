@@ -148,6 +148,9 @@ const struct propname {
 	{ MAGM_VULNERABILITY, "vulnerable to magic damage", "magic damage vulnerability" },
 	{ DOUBLE_PHYSICAL_DAMAGE, "receiving double physical damage", "double physical damage" },
 	{ DOUBLE_SPELL_DAMAGE, "receiving double spell damage", "double spell damage" },
+	{ ENHANCED_UNTRAP, "enhanced in untrapping", "enhanced untrapping" },
+	{ BLOCKS_LEVITATION, "blocking levitation", "blocks levitation" },
+	{ BLOCKS_FLYING, "blocking flying", "blocks flying" },
 	{ LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
 	{  0, 0 },
 };
@@ -684,7 +687,7 @@ nh_timeout()
 				break;
 			case INVISIBILITY:
 				newsym(u.ux, u.uy);
-				if (!Invis && !Blocks_Invisibility && !BInvis && !Blind) {
+				if (!Invis && !Blocks_Invisibility && !Blind) {
 					You(!See_invisible
 						? "are no longer invisible."
 						: "can no longer see through yourself.");

@@ -3374,7 +3374,9 @@ int final;
         you_have("infravision", from_what(INFRAVISION));
     if (Detect_monsters)
         you_are("sensing the presence of monsters", "");
-    if (u.umconf)
+	if (Enhanced_untrap)
+		you_have("enhanced untrapping", from_what(ENHANCED_UNTRAP));
+	if (u.umconf)
         you_are("going to confuse monsters", "");
 
     /*** Appearance and behavior ***/
@@ -3420,16 +3422,13 @@ int final;
     if (Teleport_control)
         you_have("teleport control", from_what(TELEPORT_CONTROL));
     /* actively levitating handled earlier as a status condition */
-    if (BLevitation) { /* levitation is blocked */
-        long save_BLev = BLevitation;
-
-        BLevitation = 0L;
-        if (Levitation) {
+    if (Blocks_Levitation) { /* levitation is blocked */
+        if (ELevitation || HLevitation) {
             /* either trapped in the floor or inside solid rock
                (or both if chained to buried iron ball and have
                moved one step into solid rock somehow) */
-            boolean trapped = (save_BLev & I_SPECIAL) != 0L,
-                    terrain = (save_BLev & FROM_ACQUIRED) != 0L;
+            boolean trapped = (HBlocks_Levitation & I_SPECIAL) != 0L,
+                    terrain = (HBlocks_Levitation & FROM_ACQUIRED) != 0L;
 
             Sprintf(buf, "%s%s%s",
                     trapped ? " if not trapped" : "",
@@ -3437,16 +3436,12 @@ int final;
                     terrain ? if_surroundings_permitted : "");
             enl_msg(You_, "would levitate", "would have levitated", buf, "");
         }
-        BLevitation = save_BLev;
     }
 	if (Levitation_control)
 		you_have("levitation control", from_what(LEVITATION_CONTROL));
 	/* actively flying handled earlier as a status condition */
-    if (BFlying) { /* flight is blocked */
-        long save_BFly = BFlying;
-
-        BFlying = 0L;
-        if (Flying) {
+    if (Blocks_Flying) { /* flight is blocked */
+        if (HFlying || EFlying) {
             enl_msg(You_, "would fly", "would have flown",
                     /* wording quibble: for past tense, "hadn't been"
                        would sound better than "weren't" (and
@@ -3455,19 +3450,18 @@ int final;
                        extra complexity to handle that isn't worth it */
                     Levitation
                        ? " if you weren't levitating"
-                       : (save_BFly == I_SPECIAL)
+                       : (HBlocks_Flying == I_SPECIAL)
                           /* this is an oversimpliction; being trapped
                              might also be blocking levitation so flight
                              would still be blocked after escaping trap */
                           ? " if you weren't trapped"
-                          : (save_BFly == FROM_ACQUIRED)
+                          : (HBlocks_Flying == FROM_ACQUIRED)
                              ? if_surroundings_permitted
                              /* two or more of levitation, surroundings,
                                 and being trapped in the floor */
                              : " if circumstances permitted",
                     "");
         }
-        BFlying = save_BFly;
     }
     /* actively walking on water handled earlier as a status condition */
     if (Wwalking && !walking_on_water())

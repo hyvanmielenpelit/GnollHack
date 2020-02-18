@@ -1974,7 +1974,7 @@ boolean atme;
 		use_magic_whistle((struct obj*) 0);
 		break;
 	case SPE_CLAIRVOYANCE:
-        if (!BClairvoyant) {
+        if (!Blocks_Clairvoyance) {
             if (role_skill >= P_SKILLED)
                 pseudo->blessed = 1; /* detect monsters as well as map */
             do_vicinity_map(pseudo);

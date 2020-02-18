@@ -748,7 +748,7 @@ register struct obj *otmp;
         }
         /* FALLTHRU */
     case POT_INVISIBILITY:
-        if (Invis || Blind || Blocks_Invisibility || BInvis) 
+        if (Invis || Blind || Blocks_Invisibility) 
 		{
             nothing++;
         } 
@@ -1068,7 +1068,7 @@ register struct obj *otmp;
          * (which will take effect after escaping from the rock if it hasn't
          * expired by then).
          */
-        if (!Levitation && !BLevitation) {
+        if (!Levitation && !Blocks_Levitation) {
             /* kludge to ensure proper operation of float_up() */
             set_itimeout(&HLevitation, 1L);
             float_up();
@@ -1084,7 +1084,7 @@ register struct obj *otmp;
                aside from ~I_SPECIAL; it was not clear whether that was
                intentional; either way, it no longer does (as of 3.6.1) */
             HLevitation &= ~I_SPECIAL; /* can't descend upon demand */
-            if (BLevitation) {
+            if (Blocks_Levitation) {
                 ; /* rising via levitation is blocked */
             } else if ((u.ux == xupstair && u.uy == yupstair)
                     || (sstairs.up && u.ux == sstairs.sx && u.uy == sstairs.sy)

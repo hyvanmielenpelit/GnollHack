@@ -25,19 +25,23 @@
 /* Blocking abiliities */
 #define HBlocks_Invisibility u.uprops[BLOCKS_INVISIBILITY].intrinsic
 #define EBlocks_Invisibility u.uprops[BLOCKS_INVISIBILITY].extrinsic
-#define BBlocks_Invisibility u.uprops[BLOCKS_INVISIBILITY].blocked
-#define Blocks_Invisibility ((HBlocks_Invisibility || EBlocks_Invisibility) && !BBlocks_Invisibility)
+#define Blocks_Invisibility (HBlocks_Invisibility || EBlocks_Invisibility)
 
 #define HBlocks_Blindness u.uprops[BLOCKS_BLINDNESS].intrinsic
 #define EBlocks_Blindness u.uprops[BLOCKS_BLINDNESS].extrinsic
-#define BBlocks_Blindness u.uprops[BLOCKS_BLINDNESS].blocked
-#define Blocks_Blindness ((HBlocks_Blindness|| EBlocks_Blindness) && !BBlocks_Blindness)
+#define Blocks_Blindness (HBlocks_Blindness|| EBlocks_Blindness)
 
 #define HBlocks_Clairvoyance u.uprops[BLOCKS_CLAIRVOYANCE].intrinsic
 #define EBlocks_Clairvoyance u.uprops[BLOCKS_CLAIRVOYANCE].extrinsic
-#define BBlocks_Clairvoyance u.uprops[BLOCKS_CLAIRVOYANCE].blocked
-#define Blocks_Clairvoyance ((HBlocks_Clairvoyance|| EBlocks_Clairvoyance) && !BBlocks_Clairvoyance)
+#define Blocks_Clairvoyance (HBlocks_Clairvoyance|| EBlocks_Clairvoyance)
 
+#define HBlocks_Levitation u.uprops[BLOCKS_LEVITATION].intrinsic
+#define EBlocks_Levitation u.uprops[BLOCKS_LEVITATION].extrinsic
+#define Blocks_Levitation (HBlocks_Levitation || EBlocks_Levitation)
+
+#define HBlocks_Flying u.uprops[BLOCKS_FLYING].intrinsic
+#define EBlocks_Flying u.uprops[BLOCKS_FLYING].extrinsic
+#define Blocks_Flying (HBlocks_Flying || EBlocks_Flying)
 
 /*** Resistances to troubles ***/
 /* With intrinsics and extrinsics */
@@ -176,6 +180,10 @@
 #define EEnhanced_vision u.uprops[ENHANCED_VISION].extrinsic
 #define Enhanced_vision (HEnhanced_vision || EEnhanced_vision)
 
+#define HEnhanced_untrap u.uprops[ENHANCED_UNTRAP].intrinsic
+#define EEnhanced_untrap u.uprops[ENHANCED_UNTRAP].extrinsic
+#define Enhanced_untrap (HEnhanced_untrap || EEnhanced_untrap)
+
 #define HEye_protection u.uprops[EYE_PROTECTION].intrinsic
 #define EEye_protection u.uprops[EYE_PROTECTION].extrinsic
 #define Eye_protection (HEye_protection || EEye_protection)
@@ -186,18 +194,15 @@
 
 #define HMagical_shielding u.uprops[MAGICAL_SHIELDING].intrinsic
 #define EMagical_shielding u.uprops[MAGICAL_SHIELDING].extrinsic
-#define BMagical_shielding u.uprops[MAGICAL_SHIELDING].blocked
-#define Magical_shielding ((HMagical_shielding || EMagical_shielding) && !BMagical_shielding)
+#define Magical_shielding (HMagical_shielding || EMagical_shielding)
 
 #define HMagical_barkskin u.uprops[MAGICAL_BARKSKIN].intrinsic
 #define EMagical_barkskin u.uprops[MAGICAL_BARKSKIN].extrinsic
-#define BMagical_barkskin u.uprops[MAGICAL_BARKSKIN].blocked
-#define Magical_barkskin ((HMagical_barkskin || EMagical_barkskin) && !BMagical_barkskin)
+#define Magical_barkskin (HMagical_barkskin || EMagical_barkskin)
 
 #define HMagical_stoneskin u.uprops[MAGICAL_STONESKIN].intrinsic
 #define EMagical_stoneskin u.uprops[MAGICAL_STONESKIN].extrinsic
-#define BMagical_stoneskin u.uprops[MAGICAL_STONESKIN].blocked
-#define Magical_stoneskin ((HMagical_stoneskin || EMagical_stoneskin) && !BMagical_stoneskin)
+#define Magical_stoneskin (HMagical_stoneskin || EMagical_stoneskin)
 
 #define HLaughing u.uprops[LAUGHING].intrinsic
 #define ELaughing u.uprops[LAUGHING].extrinsic
@@ -315,8 +320,7 @@
 
 #define HClairvoyant u.uprops[CLAIRVOYANT].intrinsic
 #define EClairvoyant u.uprops[CLAIRVOYANT].extrinsic
-#define BClairvoyant u.uprops[CLAIRVOYANT].blocked
-#define Clairvoyant ((HClairvoyant || EClairvoyant) && !BClairvoyant && !Blocks_Clairvoyance)
+#define Clairvoyant ((HClairvoyant || EClairvoyant) && !Blocks_Clairvoyance)
 
 #define HInfravision u.uprops[INFRAVISION].intrinsic
 #define EInfravision u.uprops[INFRAVISION].extrinsic
@@ -331,8 +335,7 @@
 
 #define HInvis u.uprops[INVISIBILITY].intrinsic
 #define EInvis u.uprops[INVISIBILITY].extrinsic
-#define BInvis u.uprops[INVISIBILITY].blocked
-#define Invis ((HInvis || EInvis) && !BInvis && !Blocks_Invisibility)
+#define Invis ((HInvis || EInvis) && !Blocks_Invisibility)
 #define Invisible (Invis && !See_invisible)
 /* Note: invisibility also hides inventory and steed */
 
@@ -341,13 +344,11 @@
 
 #define HStealth u.uprops[STEALTH].intrinsic
 #define EStealth u.uprops[STEALTH].extrinsic
-#define BStealth u.uprops[STEALTH].blocked
-#define Stealth ((HStealth || EStealth) && !BStealth)
+#define Stealth (HStealth || EStealth)
 
 #define HMagical_kicking u.uprops[MAGICAL_KICKING].intrinsic
 #define EMagical_kicking u.uprops[MAGICAL_KICKING].extrinsic
-#define BMagical_kicking u.uprops[MAGICAL_KICKING].blocked
-#define Magical_kicking ((HMagical_kicking || EMagical_kicking) && !BMagical_kicking)
+#define Magical_kicking (HMagical_kicking || EMagical_kicking)
 
 #define HAggravate_monster u.uprops[AGGRAVATE_MONSTER].intrinsic
 #define EAggravate_monster u.uprops[AGGRAVATE_MONSTER].extrinsic
@@ -376,8 +377,7 @@
 #define ELevitation u.uprops[LEVITATION].extrinsic
 /* BLevitation has I_SPECIAL set if trapped in the floor,
    FROM_ACQUIRED set if inside solid rock (or in water on Plane of Water) */
-#define BLevitation u.uprops[LEVITATION].blocked
-#define Levitation ((HLevitation || ELevitation) && !BLevitation)
+#define Levitation ((HLevitation || ELevitation) && !Blocks_Levitation)
 
 #define HLevitation_control u.uprops[LEVITATION_CONTROL].intrinsic
 #define ELevitation_control u.uprops[LEVITATION_CONTROL].extrinsic
@@ -394,10 +394,9 @@
 #define EFlying u.uprops[FLYING].extrinsic
 /* BFlying has I_SPECIAL set if levitating or trapped in the floor or both,
    FROM_ACQUIRED set if inside solid rock (or in water on Plane of Water) */
-#define BFlying u.uprops[FLYING].blocked
 #define Flying                                                      \
     ((HFlying || EFlying || (u.usteed && is_flyer(u.usteed->data))) \
-     && !BFlying)
+     && !Blocks_Flying)
 /* May touch surface; does not override any others */
 
 #define HWwalking u.uprops[WATER_WALKING].intrinsic

@@ -93,8 +93,7 @@ boolean on;
         return;
 
     if (!oldprop /* extrinsic stealth from something else */
-        && !HStealth /* intrinsic stealth */
-        && !BStealth) { /* stealth blocked by something */
+        && !HStealth) { /* stealth blocked by something */
         if (obj->otyp == RIN_STEALTH)
             learnring(obj, TRUE);
         else
@@ -128,7 +127,6 @@ boolean on;
 
     if (!oldprop /* extrinsic displacement from something else */
         && !(u.uprops[DISPLACED].intrinsic) /* (theoretical) */
-        && !(u.uprops[DISPLACED].blocked) /* (also theoretical) */
         /* we don't use canseeself() here because it augments vision
            with touch, which isn't appropriate for deciding whether
            we'll notice that monsters have trouble spotting the hero */

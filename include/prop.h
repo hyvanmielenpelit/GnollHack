@@ -142,7 +142,10 @@ enum prop_types {
 	MAGM_VULNERABILITY = 118,
 	DOUBLE_PHYSICAL_DAMAGE = 119,
 	DOUBLE_SPELL_DAMAGE = 120,
-	LAUGHING		  = 121 //KEEP THIS LAST
+	ENHANCED_UNTRAP	  = 121,
+	BLOCKS_LEVITATION = 122,
+	BLOCKS_FLYING     = 123,
+	LAUGHING		  = 124 //KEEP THIS LAST
 };
 #define LAST_PROP (LAUGHING)
 
@@ -207,9 +210,6 @@ struct prop {
 /*0x20000000 used by I_SPECIAL */
 #define W_ARTIFACT_INVOKED 0x40000000L    /* Invoked artifact  (not really worn) */
 #define W_CARRIED 0x80000000L  /* Carried */
-
-    /*** Property is blocked by an object ***/
-    long blocked; /* Same assignments as extrinsic */
 
     /*** Timeouts, permanent properties, and other flags ***/
     long intrinsic;

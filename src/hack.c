@@ -545,7 +545,7 @@ dosinkfall()
                levitate but being blocked, then moving onto adjacent sink;
                no need to worry about being blocked by terrain because we
                couldn't be over a sink at the same time */
-            blockd_lev = (BLevitation == I_SPECIAL),
+            blockd_lev = (HBlocks_Levitation == I_SPECIAL),
             ufall = (!innate_lev && !blockd_lev
                      && !(HFlying || EFlying)); /* BFlying */
 
@@ -2037,21 +2037,21 @@ switch_terrain()
         /* called from spoteffects(), stop levitating but skip float_down() */
         if (Levitation)
             You_cant("levitate in here.");
-        BLevitation |= FROM_ACQUIRED;
-    } else if (BLevitation) {
-        BLevitation &= ~FROM_ACQUIRED;
+		HBlocks_Levitation |= FROM_ACQUIRED;
+    } else if (HBlocks_Levitation) {
+		HBlocks_Levitation &= ~FROM_ACQUIRED;
         /* we're probably levitating now; if not, we must be chained
            to a buried iron ball so get float_up() feedback for that */
-        if (Levitation || BLevitation)
+        if (Levitation || HBlocks_Levitation)
             float_up();
     }
     /* the same terrain that blocks levitation also blocks flight */
     if (blocklev) {
         if (Flying)
             You_cant("fly in here.");
-        BFlying |= FROM_ACQUIRED;
-    } else if (BFlying) {
-        BFlying &= ~FROM_ACQUIRED;
+        HBlocks_Flying |= FROM_ACQUIRED;
+    } else if (Blocks_Flying) {
+		HBlocks_Flying &= ~FROM_ACQUIRED;
         float_vs_flight(); /* maybe toggle (BFlying & I_SPECIAL) */
         /* [minor bug: we don't know whether this is beginning flight or
            resuming it; that could be tracked so that this message could
@@ -3034,7 +3034,7 @@ boolean k_format;
 int
 weight_cap()
 {
-    long carrcap, save_ELev = ELevitation, save_BLev = BLevitation;
+    long carrcap, save_ELev = ELevitation, save_BLev = HBlocks_Levitation;
 
     /* boots take multiple turns to wear but any properties they
        confer are enabled at the start rather than the end; that
@@ -3046,7 +3046,7 @@ weight_cap()
     }
     /* levitation is blocked by being trapped in the floor, but it still
        functions enough in that situation to enhance carrying capacity */
-    BLevitation &= ~I_SPECIAL;
+	HBlocks_Levitation &= ~I_SPECIAL;
 
 	//3.5 lbs for each point of STR and CON + 3 lbs
     carrcap = ((long)(3.5 * 16)) * (ACURRSTR + ACURR(A_CON)) + 48;
@@ -3109,9 +3109,9 @@ weight_cap()
 		carrcap = 0;
 	*/
 
-    if (ELevitation != save_ELev || BLevitation != save_BLev) {
+    if (ELevitation != save_ELev || HBlocks_Levitation != save_BLev) {
         ELevitation = save_ELev;
-        BLevitation = save_BLev;
+		HBlocks_Levitation = save_BLev;
         float_vs_flight();
     }
 

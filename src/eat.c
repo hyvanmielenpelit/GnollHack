@@ -1147,7 +1147,7 @@ int pm;
     case PM_STALKER:
         if (!Invis) {
             set_itimeout(&HInvis, (long) rn1(100, 50));
-            if (!Blind && !Blocks_Invisibility && !BInvis)
+            if (!Blind && !Blocks_Invisibility)
                 self_invis_message();
         } else {
             if (!(HInvis & INTRINSIC))
@@ -2272,7 +2272,7 @@ struct obj *otmp;
 				else
 					; /* FALLTHRU */
             case RIN_INVISIBILITY:
-                if (!oldprop && !EInvis && !BInvis && !Blocks_Invisibility && !See_invisible
+                if (!oldprop && !EInvis && !Blocks_Invisibility && !See_invisible
                     && !Blind) {
                     newsym(u.ux, u.uy);
                     Your("body takes on a %s transparency...",

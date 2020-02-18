@@ -637,7 +637,6 @@ update_extrinsics()
 	for (int i = 0; i <= LAST_PROP; i++)
 	{
 		u.uprops[i].extrinsic = 0L; // &= ~W_CARRIED;
-		u.uprops[i].blocked = 0L;
 	}
 	context.warntype.obj = 0;
 
@@ -808,6 +807,7 @@ struct obj* uitem;
 				|| ((objects[otyp].oc_power_permissions & PERMITTED_RACE_ELF) && Race_if(PM_ELF))
 				|| ((objects[otyp].oc_power_permissions & PERMITTED_RACE_DWARF) && Race_if(PM_DWARF))
 				|| ((objects[otyp].oc_power_permissions & PERMITTED_RACE_GNOLL) && Race_if(PM_GNOLL))
+				|| ((objects[otyp].oc_power_permissions & PERMITTED_RACE_GNOME) && Race_if(PM_GNOME))
 				|| ((objects[otyp].oc_power_permissions & PERMITTED_RACE_ORC) && Race_if(PM_ORC))
 				)
 			{
@@ -828,7 +828,10 @@ struct obj* uitem;
 				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_KNIGHT) && Role_if(PM_KNIGHT))
 				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_MONK) && Role_if(PM_MONK))
 				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_PRIEST) && Role_if(PM_PRIEST))
+				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_RANGER) && Role_if(PM_RANGER))
+				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_ROGUE) && Role_if(PM_ROGUE))
 				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_TOURIST) && Role_if(PM_TOURIST))
+				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_SAMURAI) && Role_if(PM_SAMURAI))
 				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_VALKYRIE) && Role_if(PM_VALKYRIE))
 				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_WIZARD) && Role_if(PM_WIZARD))
 				)
@@ -1096,7 +1099,7 @@ exerper()
     /* status checks */
     if (!(moves % 5)) {
         debugpline0("exerper: Status checks");
-        if ((HClairvoyant & (INTRINSIC | TIMEOUT)) && !BClairvoyant)
+        if ((HClairvoyant & (INTRINSIC | TIMEOUT)) && !Blocks_Clairvoyance)
             exercise(A_WIS, TRUE);
         if (HRegeneration)
             exercise(A_STR, TRUE);

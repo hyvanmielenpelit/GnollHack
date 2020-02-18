@@ -307,7 +307,7 @@ NON_DIGGABLE:(00,00,75,20)
 # One trap to keep the gnomes at bay.
 TRAP:"spiked pit",(37,07)
 # Objects
-OBJECT:('(',"skeleton key"),(38,10),blessed,0,name:"The Master Key of Thievery"
+OBJECT:('(',"master key"),(38,10),blessed,0,name:"The Master Key of Thievery"
 OBJECT:('%',"tin"),(26,12),montype:"chameleon"
 OBJECT:random,random
 OBJECT:random,random

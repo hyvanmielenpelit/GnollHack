@@ -3028,12 +3028,12 @@ long hmask, emask; /* might cancel timeout */
     ELevitation &= ~emask;
     if (Levitation)
         return 0; /* maybe another ring/potion/boots */
-    if (BLevitation) {
+    if (Blocks_Levitation) {
         /* if blocked by terrain, we haven't actually been levitating so
            we don't give any end-of-levitation feedback or side-effects,
            but if blocking is solely due to being trapped in/on floor,
            do give some feedback but skip other float_down() effects */
-        boolean trapped = (BLevitation == I_SPECIAL);
+        boolean trapped = (HBlocks_Levitation == I_SPECIAL);
 
         float_vs_flight();
         if (trapped && u.utrap) /* u.utrap => paranoia */
@@ -3048,7 +3048,7 @@ long hmask, emask; /* might cancel timeout */
     }
     context.botl = TRUE;
     nomul(0); /* stop running or resting */
-    if (BFlying) {
+    if (Blocks_Flying) {
         /* controlled flight no longer overridden by levitation */
         float_vs_flight(); /* clears BFlying & I_SPECIAL
                             * unless hero is stuck in floor */
@@ -4071,7 +4071,7 @@ struct trap *ttmp;
 
 	boolean res = FALSE;
 	int probability = 0;
-	int usedskilllevel = max(P_UNSKILLED, min(P_EXPERT, P_SKILL(P_DISARM_TRAP) + ((Role_if(PM_ROGUE) && u.uhave.questart) ? 1 : 0)));
+	int usedskilllevel = max(P_UNSKILLED, min(P_EXPERT, P_SKILL(P_DISARM_TRAP) + (Enhanced_untrap ? 1 : 0))); /* (Role_if(PM_ROGUE) && u.uhave.questart) */
 
 	probability = untrap_probability(ttmp->ttyp, usedskilllevel);
 

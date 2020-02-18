@@ -134,16 +134,16 @@ float_vs_flight()
     /* floating overrides flight; so does being trapped in the floor */
     if ((HLevitation || ELevitation)
         || ((HFlying || EFlying) && stuck_in_floor))
-        BFlying |= I_SPECIAL;
+		HBlocks_Flying |= I_SPECIAL;
     else
-        BFlying &= ~I_SPECIAL;
+		HBlocks_Flying &= ~I_SPECIAL;
     /* being trapped on the ground (bear trap, web, molten lava survived
        with fire resistance, former lava solidified via cold, tethered
        to a buried iron ball) overrides floating--the floor is reachable */
     if ((HLevitation || ELevitation) && stuck_in_floor)
-        BLevitation |= I_SPECIAL;
+		HBlocks_Levitation |= I_SPECIAL;
     else
-        BLevitation &= ~I_SPECIAL;
+		HBlocks_Levitation &= ~I_SPECIAL;
     context.botl = TRUE;
 }
 

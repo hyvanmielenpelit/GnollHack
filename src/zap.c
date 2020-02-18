@@ -4541,7 +4541,7 @@ boolean ordinary;
 		/* have to test before changing HInvis but must change
          * HInvis before doing newsym().
          */
-        int msg = !Invis && !Blind && !Blocks_Invisibility && !BInvis;
+        int msg = !Invis && !Blind && !Blocks_Invisibility;
 
 		struct obj* block_otmp = what_gives_monster(&youmonst, BLOCKS_INVISIBILITY);
 

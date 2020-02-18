@@ -2541,7 +2541,7 @@ struct obj *obj;
 		obj->invokeon = switch_on;
 
 
-        if ((u.uprops[oart->inv_prop].extrinsic & ~W_ARTIFACT_INVOKED) || u.uprops[oart->inv_prop].intrinsic || u.uprops[oart->inv_prop].blocked) {
+        if ((u.uprops[oart->inv_prop].extrinsic & ~W_ARTIFACT_INVOKED) || u.uprops[oart->inv_prop].intrinsic) {
  nothing_special:
             /* you had the property from some other source too */
             if (carried(obj))

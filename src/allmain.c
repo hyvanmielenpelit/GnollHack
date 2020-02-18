@@ -374,7 +374,7 @@ boolean resuming;
             if (context.bypasses)
                 clear_bypasses();
             if ((u.uhave.amulet || Clairvoyant) && !In_endgame(&u.uz)
-                && !BClairvoyant && !(moves % 15) && !rn2(2))
+                && !Blocks_Clairvoyance && !(moves % 15) && !rn2(2))
                 do_vicinity_map((struct obj *) 0);
             if (u.utrap && u.utraptype == TT_LAVA)
                 sink_into_lava();

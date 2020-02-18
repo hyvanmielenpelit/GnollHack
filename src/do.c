@@ -3667,7 +3667,7 @@ dodown()
                 return 1; /* did something, effectively moved */
             }
         }
-        if (BLevitation) {
+        if (Blocks_Levitation) {
             ; /* weren't actually floating after all */
         } else if (Blind) {
             /* Avoid alerting player to an unknown stair or ladder.

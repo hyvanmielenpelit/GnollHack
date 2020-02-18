@@ -250,7 +250,7 @@ A("The Palantir of Westernesse",        CRYSTAL_BALL, CRYSTAL_BALL,
     /* MKoT has an additional carry property if the Key is not cursed (for
        rogues) or blessed (for non-rogues):  #untrap of doors and chests
        will always find any traps and disarming those will always succeed */
-    A("The Master Key of Thievery", "ornamental key", None, SKELETON_KEY, SKELETON_KEY,
+    A("The Master Key of Thievery", "ornamental key", None, MASTER_KEY, SKELETON_KEY,
 		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_SPEAK | AF_FAMOUS), SPFX_NONE, (SPFX_WARNING | SPFX_TCTRL | SPFX_HPHDAM), 0, 
 		0, 0, 0, NO_ATTK, NO_POWER, NO_POWER, UNTRAP, A_CHAOTIC, PM_ROGUE, NON_PM, 3500L, 
 		NO_COLOR, CLR_MAGENTA),

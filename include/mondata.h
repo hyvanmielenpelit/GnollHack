@@ -389,14 +389,21 @@
 #define has_flying(mon) \
 	has_innate_or_property(mon, FLYING)
 
+#define has_blocks_levitation(mon) \
+	has_property(mon, BLOCKS_LEVITATION)
+
+#define has_blocks_flying(mon) \
+	has_property(mon, BLOCKS_FLYING)
+
 #define is_flying(mon) \
-	(has_flying(mon))
+	(has_flying(mon) && !has_blocks_flying(mon))
 
 #define is_levitating(mon) \
-	(has_levitation(mon) && !has_flying(mon))
+	(has_levitation(mon) && !is_flying(mon) && !has_blocks_levitation(mon))
 
 #define mon_can_reach_floor(mon) \
 	(!is_levitating(mon) || Is_airlevel(&u.uz)|| Is_waterlevel(&u.uz))
+
 
 
 /* invisibility */
