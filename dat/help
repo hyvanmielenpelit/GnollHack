@@ -192,10 +192,11 @@ Commands:
         If the "number_pad" option is on, some additional letter commands
         are available:
 
-        h       displays the help menu, like '?'
+        h       displays the help menu, like '?'.
         j       Jump to another location.
         k       Kick (for doors, usually).
         l       Loot a box on the floor.
+        L       What-is, tell what a symbol represents, like '/'.
         n       followed by number of times to repeat the next command.
         N       Name a monster, an individual object, or a type of object.
         u       Untrap a trapped object or door.
