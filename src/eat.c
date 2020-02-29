@@ -21,7 +21,7 @@ STATIC_DCL void FDECL(cprefx, (int));
 STATIC_DCL boolean FDECL(intrinsic_possible, (int, struct permonst *));
 STATIC_DCL void FDECL(givit, (int, struct permonst *));
 STATIC_DCL void FDECL(temporary_givit, (int, int));
-STATIC_DCL void FDECL(cpostfx, (int));
+STATIC_DCL void FDECL(corpse_after_effect, (int));
 STATIC_DCL void FDECL(consume_tin, (const char *));
 STATIC_DCL void FDECL(start_tin, (struct obj *));
 STATIC_DCL int FDECL(eatcorpse, (struct obj *));
@@ -147,7 +147,7 @@ static const struct {
                 { "", 0, 0, 0 } };
 #define TTSZ SIZE(tintxts)
 
-static char *eatmbuf = 0; /* set by cpostfx() */
+static char *eatmbuf = 0; /* set by corpse_after_effect() */
 
 /* called after mimicing is over */
 STATIC_PTR int
@@ -469,7 +469,7 @@ boolean message;
         You("finish eating %s.", food_xname(piece, TRUE));
 
     if (piece->otyp == CORPSE || piece->globby)
-        cpostfx(piece->corpsenm);
+        corpse_after_effect(piece->corpsenm);
     else
         food_after_effect(piece);
 
@@ -1090,7 +1090,7 @@ register struct permonst *ptr;
 
 /* called after completely consuming a corpse */
 STATIC_OVL void
-cpostfx(pm)
+corpse_after_effect(pm)
 int pm;
 {
     int tmp = 0;
@@ -1120,11 +1120,6 @@ int pm;
                 context.botl = 1;
             }
         }
-        break;
-	case PM_WRAITH:
-	case PM_SPECTRE:
-	case PM_KING_WRAITH:
-        pluslvl(FALSE);
         break;
     case PM_HUMAN_WERERAT:
         catch_lycanthropy = PM_WERERAT;
@@ -1258,7 +1253,14 @@ int pm;
         break;
     }
 
-    /* possibly convey an intrinsic */
+	/* Level gain has been moved here, 100% chance */
+	if (mons[pm].mconveys & MC_LEVEL_GAIN)
+	{
+		pluslvl(FALSE);
+		check_intrinsics = FALSE;
+	}
+
+    /* Possibly convey an intrinsic */
     if (check_intrinsics)
 	{
         struct permonst *ptr = &mons[pm];
@@ -1295,6 +1297,8 @@ int pm;
 
 		if (ptr->mlet == S_NYMPH)
 			percent = 33;
+		else if (ptr == &mons[PM_FLOATING_EYE])
+			percent = 100;
 		else if (mdifficulty >= 3)
 		{
 			if (ptr->mlet == S_GIANT)
@@ -1634,7 +1638,7 @@ const char *mesg;
 
         tin->dknown = tin->known = 1;
         cprefx(mnum);
-        cpostfx(mnum);
+        corpse_after_effect(mnum);
 
         /* charge for one at pre-eating cost */
         tin = costly_tin(COST_OPEN);

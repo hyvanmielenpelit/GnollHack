@@ -2235,7 +2235,7 @@ long flag;
 
     nodiag = NODIAG(mdat - mons);
     wantpool = mdat->mlet == S_EEL;
-    poolok = (is_flyer(mdat) || is_clinger(mdat)
+    poolok = (((is_flyer(mdat) || is_clinger(mdat)) && !Is_waterlevel(&u.uz))
               || (is_swimmer(mdat) && !wantpool));
     lavaok = (is_flyer(mdat) || is_clinger(mdat) || likes_lava(mdat));
     thrudoor = ((flag & (ALLOW_WALL | BUSTDOOR)) != 0L);
@@ -2485,7 +2485,8 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
                 cnt++;
             }
         }
-    if (!cnt && wantpool && !is_pool(x, y)) {
+    if (!cnt && wantpool && !is_pool(x, y)) 
+	{
         wantpool = FALSE;
         goto nexttry;
     }
