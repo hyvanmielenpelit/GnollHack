@@ -131,8 +131,13 @@
 #define HConfusion u.uprops[CONFUSION].intrinsic
 #define Confusion HConfusion
 
+#define HBlindfolded u.uprops[BLINDFOLDED].intrinsic
+#define EBlindfolded u.uprops[BLINDFOLDED].extrinsic
+#define Blindfolded (HBlindfolded|| EBlindfolded)
+
+/* Certain troubles act as timers only */
 #define Blinded u.uprops[BLINDED].intrinsic
-#define Blindfolded (ublindf != 0)
+
 /* ...means blind because of a cover */
 #define Blind                                     \
     ((u.uroleplay.blind || Blinded || Blindfolded \

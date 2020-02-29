@@ -151,12 +151,13 @@ struct obj *obj;
             dry_a_towel(obj, -1, drying_feedback);
         return 1;
     } else if (u.ucreamed) {
-        Blinded -= u.ucreamed;
+		Blinded -= u.ucreamed;
         u.ucreamed = 0;
-        if (!Blinded) {
+        if (!Blinded)
+		{
             pline("You've got the glop off.");
             if (!gulp_blnd_check()) {
-                Blinded = 1;
+				Blinded = 1;
                 make_blinded(0L, TRUE);
             }
         } else {
@@ -3726,7 +3727,7 @@ struct obj *obj;
     if (can_blnd((struct monst *) 0, &youmonst, AT_WEAP, obj)) {
         int blindinc = rnd(25);
         u.ucreamed += blindinc;
-        make_blinded(Blinded + (long) blindinc, FALSE);
+        make_blinded((Blinded& TIMEOUT) + (long) blindinc, FALSE);
         if (!Blind || (Blind && wasblind))
             pline("There's %ssticky goop all over your %s.",
                   wascreamed ? "more " : "", body_part(FACE));

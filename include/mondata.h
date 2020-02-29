@@ -322,8 +322,11 @@
 #define has_blinded(mon) \
 	has_property(mon, BLINDED)
 
+#define has_blindfolded(mon) \
+	has_property(mon, BLINDFOLDED)
+
 #define is_blinded(mon) \
-	has_blinded(mon)
+	(has_blinded(mon) || has_blindfolded(mon))
 
 #define mon_can_see(mon) \
 	(!is_blinded(mon))
