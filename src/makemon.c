@@ -1600,7 +1600,7 @@ xchar x, y; /* clone's preferred location or 0 (near mon) */
     struct monst *m2;
 
     /* may be too weak or have been extinguished for population control */
-    if (mon->mhp <= 1 || (mvitals[monsndx(mon->data)].mvflags & G_EXTINCT))
+    if (mon->mhp <= 1 || mon->mbasehpmax <= 1 || mon->mhpmax <= 1 || (mvitals[monsndx(mon->data)].mvflags & G_EXTINCT))
         return (struct monst *) 0;
 
     if (x == 0)

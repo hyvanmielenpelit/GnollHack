@@ -1162,7 +1162,8 @@ register struct monst *mtmp;
      * keep going down, and when it gets to 1 hit point the clone
      * function will fail.
      */
-    if (mtmp->data == &mons[PM_GREMLIN] && (inpool || infountain) && rn2(3)) 
+    if (mtmp->data == &mons[PM_GREMLIN] && (inpool || infountain) 
+		&& ((rn2(3) && !Is_waterlevel(&u.uz)) || (0 && Is_waterlevel(&u.uz)))) /* Limit gremlin reproduction on the water level just in case */
 	{
         if (split_mon(mtmp, (struct monst *) 0))
             dryup(mtmp->mx, mtmp->my, FALSE);

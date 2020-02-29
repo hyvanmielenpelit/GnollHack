@@ -2565,9 +2565,11 @@ struct monst *mon,  /* monster being split */
                 (mtmp == &youmonst) ? the_your[1]
                                     : (const char *) s_suffix(mon_nam(mtmp)));
 
-    if (mon == &youmonst) {
+    if (mon == &youmonst) 
+	{
         mtmp2 = cloneu();
-        if (mtmp2) {
+        if (mtmp2)
+		{
             mtmp2->mbasehpmax = u.basemhmax / 2;
             u.basemhmax -= mtmp2->mbasehpmax;
 			updatemaxhp();
@@ -2575,12 +2577,16 @@ struct monst *mon,  /* monster being split */
 			context.botl = 1;
             You("multiply%s!", reason);
         }
-    } else {
+    } 
+	else 
+	{
         mtmp2 = clone_mon(mon, 0, 0);
-        if (mtmp2) {
+        if (mtmp2)
+		{
+			/* Gremlins are half strength */
             mtmp2->mbasehpmax = mon->mbasehpmax / 2;
             mon->mbasehpmax -= mtmp2->mbasehpmax;
-			update_mon_maxhp(mtmp);
+			update_mon_maxhp(mon);
 			update_mon_maxhp(mtmp2);
 			if (canspotmon(mon))
                 pline("%s multiplies%s!", Monnam(mon), reason);
