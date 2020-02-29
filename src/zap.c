@@ -30,7 +30,7 @@ STATIC_DCL void FDECL(zhitu, (int, struct obj*, int, int, int, const char *, XCH
 STATIC_DCL void FDECL(revive_egg, (struct obj *));
 STATIC_DCL boolean FDECL(zap_steed, (struct obj *));
 STATIC_DCL void FDECL(skiprange, (int, int *, int *));
-STATIC_DCL int FDECL(zap_hit, (int, int));
+STATIC_DCL int FDECL(zap_hit, (int, int, struct obj*));
 STATIC_DCL void FDECL(backfire, (struct obj *));
 STATIC_DCL int FDECL(spell_hit_bonus, (int));
 STATIC_DCL void FDECL(wishcmdassist, (int));
@@ -1673,7 +1673,7 @@ boolean replaceundead;
         /* use saved traits */
         xy.x = x, xy.y = y;
         mtmp = montraits(corpse, &xy, FALSE, animateintomon >= 0 || replaceundead ? montype : -1);
-        if (mtmp && mtmp->mtame && !mtmp->isminion)
+        if (mtmp && mtmp->mtame && !mtmp->isminion && !mtmp->isfaithful)
             wary_dog(mtmp, TRUE);
     } else {
         /* make a new monster */
@@ -5626,13 +5626,13 @@ int dmg; /* base amount to be adjusted by bonus or penalty */
  * spell class and dexterity.
  */
 STATIC_OVL int
-spell_hit_bonus(skill)
-int skill;
+spell_hit_bonus(otyp)
+int otyp;
 {
     int hit_bon = 0;
     int dex = ACURR(A_DEX);
 
-    switch (P_SKILL(spell_skilltype(skill))) {
+    switch (P_SKILL_LEVEL(spell_skilltype(otyp))) {
     case P_ISRESTRICTED:
     case P_UNSKILLED:
         hit_bon = -4;
@@ -6663,21 +6663,23 @@ boolean u_caused;
 
 /* will zap/spell/breath attack score a hit against armor class `ac'? */
 STATIC_OVL int
-zap_hit(ac, type)
+zap_hit(ac, type, origobj)
 int ac;
-int type; /* either hero cast spell type or 0 */
+int type;
+struct obj* origobj;
 {
     int chance = rn2(20);
-    int spell_bonus = type ? spell_hit_bonus(type) : 0;
+    int spell_bonus = origobj ? spell_hit_bonus(origobj->otyp) : 0;
+	int accuracy_bonus = type >=0 ? u.uhitinc : 0;
 
     /* small chance for naked target to avoid being hit */
     if (!chance)
-        return rnd(10) < ac + spell_bonus;
+        return rnd(10) < ac + spell_bonus + accuracy_bonus;
 
     /* very high armor protection does not achieve invulnerability */
     ac = AC_VALUE(ac);
 
-    return (3 - chance < ac + spell_bonus);
+    return (3 - chance < ac + spell_bonus + accuracy_bonus);
 }
 
 boolean
@@ -6848,7 +6850,6 @@ boolean say; /* Announce out of sight hit/miss events if true */
     boolean shopdamage = FALSE;
     const char *fltxt;
     struct obj *otmp;
-    int spell_type;
 	int zaptype = 0;
 
 	if (abstype > ZT_DEATH)
@@ -6861,9 +6862,6 @@ boolean say; /* Announce out of sight hit/miss events if true */
 	boolean isexplosioneffect = FALSE;
 	if (origobj && objects[origobj->otyp].oc_aflags & S1_SPELL_EXPLOSION_EFFECT) // (type == ZT_SPELL(ZT_FIRE));
 		isexplosioneffect = TRUE;
-
-    /* if its a Hero Spell then get its SPE_TYPE */
-    spell_type = is_hero_spell(type) ? SPE_MAGIC_MISSILE + abstype : 0;
 
 	fltxt = flash_types[(type <= -30) ? abstype : abs(type)];
 
@@ -6941,7 +6939,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
             
 			notonhead = (mon->mx != bhitpos.x || mon->my != bhitpos.y);
             
-			if (zap_hit(find_mac(mon), spell_type))
+			if (zap_hit(find_mac(mon), type, origobj))
 			{
                 if (mon_reflects(mon, (char *) 0)) 
 				{
@@ -7051,7 +7049,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                 mon = u.usteed;
                 goto buzzmonst;
             } 
-			else if (zap_hit((int) u.uac, 0))
+			else if (zap_hit((int) u.uac, -1, (struct obj*)0)) /* No accuracy or skill bonus for hitting yourself */
 			{
                 range -= 2;
                 pline("%s hits you!", The(fltxt));

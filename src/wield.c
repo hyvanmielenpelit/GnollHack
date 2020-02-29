@@ -534,7 +534,7 @@ dowield()
 			setuswapwep(oldwep, W_SWAPWEP);
 
 #if 0
-		if (uwep && (!oldwep || uwep != oldwep) && is_launcher(uwep) && P_SKILL(objects[uwep->otyp].oc_skill) >= P_SKILLED)
+		if (uwep && (!oldwep || uwep != oldwep) && is_launcher(uwep) && P_SKILL_LEVEL(objects[uwep->otyp].oc_skill) >= P_SKILLED)
 		{
 			/* The player should be able to fire multishots */
 			if (ACURR(A_STR) < objects[uwep->otyp].oc_multishot_str)
@@ -633,7 +633,7 @@ long mask;
 	}
 
 #if 0
-	if (mask == W_WEP && uwep && (!oldweapon || uwep != oldweapon) && is_launcher(uwep) && P_SKILL(objects[uwep->otyp].oc_skill) >= P_SKILLED)
+	if (mask == W_WEP && uwep && (!oldweapon || uwep != oldweapon) && is_launcher(uwep) && P_SKILL_LEVEL(objects[uwep->otyp].oc_skill) >= P_SKILLED)
 	{
 		/* The player should be able to fire multishots */
 		if (ACURR(A_STR) < objects[uwep->otyp].oc_multishot_str)
@@ -811,7 +811,7 @@ doswapweapon()
 	}
 
 #if 0
-	if (uwep && (!oldweapon || uwep != oldweapon) && is_launcher(uwep) && P_SKILL(objects[uwep->otyp].oc_skill) >= P_SKILLED)
+	if (uwep && (!oldweapon || uwep != oldweapon) && is_launcher(uwep) && P_SKILL_LEVEL(objects[uwep->otyp].oc_skill) >= P_SKILLED)
 	{
 		/* The player should be able to fire multishots */
 		if (ACURR(A_STR) < objects[uwep->otyp].oc_multishot_str)

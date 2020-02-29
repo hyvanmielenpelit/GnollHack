@@ -1152,9 +1152,9 @@ u_init()
 		knows_object(GNOLLISH_LEATHER_ARMOR);
 		knows_object(GNOLLISH_STUDDED_LEATHER_ARMOR);
 		knows_object(GNOLLISH_QUARREL);
-		P_MAX_SKILL(P_FLAIL) = P_EXPERT;
-		if(P_MAX_SKILL(P_CROSSBOW) < P_SKILLED)
-			P_MAX_SKILL(P_CROSSBOW) = P_SKILLED;
+		P_MAX_SKILL_LEVEL(P_FLAIL) = P_EXPERT;
+		if(P_MAX_SKILL_LEVEL(P_CROSSBOW) < P_SKILLED)
+			P_MAX_SKILL_LEVEL(P_CROSSBOW) = P_SKILLED;
 		break;
 
     case PM_ORC:
@@ -1241,9 +1241,9 @@ add_school_specific_spellbooks()
 {
 	for (int skill = P_FIRST_SPELL; skill <= P_LAST_SPELL; skill++)
 	{
-		if (P_SKILL(skill) >= P_BASIC)
+		if (P_SKILL_LEVEL(skill) >= P_BASIC)
 		{
-			int cnt = max(0, P_SKILL(skill) - 1);
+			int cnt = max(0, P_SKILL_LEVEL(skill) - 1);
 
 			for (int i = 0; i < cnt; i++)
 			{
@@ -1253,7 +1253,7 @@ add_school_specific_spellbooks()
 				while (otyp == SPE_BLANK_PAPER
 					|| already_learnt_spell_type(otyp)
 					|| objects[otyp].oc_skill != skill
-					|| (objects[otyp].oc_spell_level > 2 + P_SKILL(skill)
+					|| (objects[otyp].oc_spell_level > 2 + P_SKILL_LEVEL(skill)
 						|| restricted_spell_discipline(otyp)
 						|| (Role_if(PM_WIZARD) && !(objects[otyp].oc_spell_attribute == A_INT
 							|| objects[otyp].oc_spell_attribute == A_MAX_INT_WIS

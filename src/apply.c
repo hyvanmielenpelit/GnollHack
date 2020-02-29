@@ -3149,7 +3149,7 @@ struct obj *otmp;
         trapinfo.time_needed += (tmp > 12) ? 1 : (tmp > 7) ? 2 : 4;
     /*[fumbling and/or confusion and/or cursed object check(s)
        should be incorporated here instead of in set_trap]*/
-    if (u.usteed && P_SKILL(P_RIDING) < P_BASIC) {
+    if (u.usteed && P_SKILL_LEVEL(P_RIDING) < P_BASIC) {
         boolean chance;
 
         if (Fumbling || otmp->cursed)
@@ -3626,12 +3626,12 @@ struct obj *obj;
 
 #if 0
 	typ = uwep_skill_type();
-    if (typ == P_NONE || P_SKILL(typ) <= P_BASIC)
+    if (typ == P_NONE || P_SKILL_LEVEL(typ) <= P_BASIC)
         max_range = 4;
-    else if (P_SKILL(typ) == P_SKILLED)
+    else if (P_SKILL_LEVEL(typ) == P_SKILLED)
         max_range = 5;
     else
-        max_range = 8; /* (P_SKILL(typ) >= P_EXPERT) */
+        max_range = 8; /* (P_SKILL_LEVEL(typ) >= P_EXPERT) */
 #endif
 
     polearm_range_min = min_range;
@@ -3775,9 +3775,9 @@ struct obj *obj;
 
     /* Calculate range; unlike use_pole(), there's no minimum for range */
     typ = uwep_skill_type();
-    if (typ == P_NONE || P_SKILL(typ) <= P_BASIC)
+    if (typ == P_NONE || P_SKILL_LEVEL(typ) <= P_BASIC)
         max_range = 4;
-    else if (P_SKILL(typ) == P_SKILLED)
+    else if (P_SKILL_LEVEL(typ) == P_SKILLED)
         max_range = 5;
     else
         max_range = 8;
@@ -3794,7 +3794,7 @@ struct obj *obj;
 
     /* What do you want to hit? */
     tohit = rn2(5);
-    if (typ != P_NONE && P_SKILL(typ) >= P_SKILLED) {
+    if (typ != P_NONE && P_SKILL_LEVEL(typ) >= P_SKILLED) {
         winid tmpwin = create_nhwindow(NHW_MENU);
         anything any;
         char buf[BUFSZ];
@@ -3817,7 +3817,7 @@ struct obj *obj;
         end_menu(tmpwin, "Aim for what?");
         tohit = rn2(4);
         if (select_menu(tmpwin, PICK_ONE, &selected) > 0
-            && rn2(P_SKILL(typ) > P_SKILLED ? 20 : 2))
+            && rn2(P_SKILL_LEVEL(typ) > P_SKILLED ? 20 : 2))
             tohit = selected[0].item.a_int - 1;
         free((genericptr_t) selected);
         destroy_nhwindow(tmpwin);
@@ -3878,7 +3878,7 @@ struct obj *obj;
         }
         return 1;
     default: /* Yourself (oops!) */
-        if (P_SKILL(typ) <= P_BASIC) {
+        if (P_SKILL_LEVEL(typ) <= P_BASIC) {
             You("hook yourself!");
             losehp(adjust_damage(rn1(10, 10), &youmonst, &youmonst, objects[obj->otyp].oc_damagetype, FALSE), "a grappling hook",
                    KILLED_BY);
@@ -4195,8 +4195,7 @@ char class_list[];
 int
 dobreak()
 {
-	struct obj* obj;
-	register int res = 1;
+	int res = 1;
 	char class_list[MAXOCLASSES + 2];
 
 	//Cannot break when overloaded?
@@ -4205,7 +4204,7 @@ dobreak()
 
 	setbreakclasses(class_list);
 
-	obj = getobj(class_list, "break", 0, "");
+	struct obj* obj = getobj(class_list, "break", 0, "");
 	if (!obj)
 		return 0;
 
@@ -4225,7 +4224,8 @@ dobreak()
 				"?", obj, yname, ysimple_name, "the item")))
 			return 0;
 
-		if (nohands(youmonst.data)) {
+		if (nohands(youmonst.data)) 
+		{
 			You_cant("break %s without hands!", yname(obj));
 			return 0;
 		}

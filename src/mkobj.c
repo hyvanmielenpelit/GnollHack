@@ -309,7 +309,7 @@ char oclass;
 			switch (randomizationclass)
 			{
 			case 0: /* Disregard spell books of too low and high level, stat, and school */
-				if (P_SKILL(objects[i].oc_skill) < P_BASIC)
+				if (P_SKILL_LEVEL(objects[i].oc_skill) < P_BASIC)
 					unacceptable = TRUE;
 				/* FALLTHRU */
 			case 1: /* Disregard spell books of too low and high level and stat */
@@ -1207,11 +1207,13 @@ boolean makingboxcontents;
             otmp->recharged = 0; /* used to control recharging */
             break;
         case RING_CLASS:
-            if (objects[otmp->otyp].oc_charged == CHARGED_RING_NORMAL || objects[otmp->otyp].oc_charged == CHARGED_RING_DOUBLE || objects[otmp->otyp].oc_charged == CHARGED_RING_POWER)
+            if (objects[otmp->otyp].oc_charged == CHARGED_RING_NORMAL || objects[otmp->otyp].oc_charged == CHARGED_RING_1_7 || objects[otmp->otyp].oc_charged == CHARGED_RING_DOUBLE || objects[otmp->otyp].oc_charged == CHARGED_RING_POWER)
 			{
 				int addition = 0;
 				if (objects[otmp->otyp].oc_charged == CHARGED_RING_NORMAL)
 					addition += rnd(2) + !rn2(2) ? 0 : !rn2(2) ? 1 : !rn2(2) ? 2 : 3;
+				else if (objects[otmp->otyp].oc_charged == CHARGED_RING_1_7)
+					addition += rnd(3) + !rn2(3) ? 0 : !rn2(3) ? 1 : !rn2(3) ? 2 : !rn2(3) ? 3 : 4;
 				else if (objects[otmp->otyp].oc_charged == CHARGED_RING_DOUBLE)
 					addition += rnd(4) + !rn2(4) ? 0 : !rn2(4) ? 1 : !rn2(4) ? 2 : !rn2(4) ? 3 : !rn2(4) ? 4 : !rn2(4) ? 5 : 6;
 				else
@@ -1427,6 +1429,9 @@ int charge_init_index;
 	case CHARGED_RING_NORMAL:
 		charge = rnd(5);
 		break;
+	case CHARGED_RING_1_7:
+		charge = rnd(7);
+		break;
 	case CHARGED_RING_DOUBLE:
 		charge = rnd(10);
 		break;
@@ -1512,6 +1517,9 @@ int charge_init_index;
 		break;
 	case CHARGED_RING_NORMAL:
 		charge = 7;
+		break;
+	case CHARGED_RING_1_7:
+		charge = 11;
 		break;
 	case CHARGED_RING_DOUBLE:
 		charge = 15;

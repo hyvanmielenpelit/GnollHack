@@ -122,7 +122,7 @@ int shotlimit;
                          || Fumbling || ACURR(A_DEX) <= 6);
         /* Bonus if the player is proficient in this weapon... */
 		/*
-        switch (P_SKILL(weapon_skill_type(obj))) {
+        switch (P_SKILL_LEVEL(weapon_skill_type(obj))) {
         case P_EXPERT:
 			if (!weakmultishot)
 				multishot++;
@@ -148,7 +148,7 @@ int shotlimit;
 
 		if (otmpmulti && objects[otmpmulti->otyp].oc_multishot_style > 1)
 		{
-			int skilllevel = P_SKILL(weapon_skill_type(otmpmulti));
+			int skilllevel = P_SKILL_LEVEL(weapon_skill_type(otmpmulti));
 			boolean multishotok = TRUE;
 
 			/*
@@ -296,7 +296,7 @@ int* output_multishot_rnd;
 		/* martial arts */
 		if (magr == &youmonst)
 		{
-			skilllevel = P_SKILL(P_MARTIAL_ARTS);
+			skilllevel = P_SKILL_LEVEL(P_MARTIAL_ARTS);
 		}
 		else
 		{
@@ -372,7 +372,7 @@ int* output_multishot_rnd;
 	/* Find skill level */
 	if (magr == &youmonst)
 	{
-		skilllevel = P_SKILL(weapon_skill_type(otmpmulti));
+		skilllevel = P_SKILL_LEVEL(weapon_skill_type(otmpmulti));
 	}
 	else
 	{

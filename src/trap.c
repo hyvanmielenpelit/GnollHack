@@ -4071,7 +4071,7 @@ struct trap *ttmp;
 
 	boolean res = FALSE;
 	int probability = 0;
-	int usedskilllevel = max(P_UNSKILLED, min(P_EXPERT, P_SKILL(P_DISARM_TRAP) + (Enhanced_untrap ? 1 : 0))); /* (Role_if(PM_ROGUE) && u.uhave.questart) */
+	int usedskilllevel = max(P_UNSKILLED, min(P_EXPERT, P_SKILL_LEVEL(P_DISARM_TRAP) + (Enhanced_untrap ? 1 : 0))); /* (Role_if(PM_ROGUE) && u.uhave.questart) */
 
 	probability = untrap_probability(ttmp->ttyp, usedskilllevel);
 
@@ -4322,7 +4322,7 @@ boolean force_failure;
     }
     /* untrappable traps are located on the ground. */
     if (!can_reach_floor(under_u)) {
-        if (u.usteed && P_SKILL(P_RIDING) < P_BASIC)
+        if (u.usteed && P_SKILL_LEVEL(P_RIDING) < P_BASIC)
             rider_cant_reach();
         else
             You("are unable to reach the %s!",

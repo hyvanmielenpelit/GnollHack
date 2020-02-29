@@ -125,15 +125,15 @@ struct skills {
     unsigned short advance;
 };
 
-#define P_SKILL(type) (u.weapon_skills[type].skill)
-#define P_MAX_SKILL(type) (u.weapon_skills[type].max_skill)
+#define P_SKILL_LEVEL(type) (u.weapon_skills[type].skill)
+#define P_MAX_SKILL_LEVEL(type) (u.weapon_skills[type].max_skill)
 #define P_ADVANCE(type) (u.weapon_skills[type].advance)
 #define P_RESTRICTED(type) (u.weapon_skills[type].skill == P_ISRESTRICTED)
 
 #define P_SKILL_LIMIT 60 /* Max number of skill advancements */
 
 /* These roles qualify for a martial arts bonus */
-#define martial_bonus() (P_SKILL(P_MARTIAL_ARTS) >= P_BASIC) // (Role_if(PM_SAMURAI) || Role_if(PM_MONK))
+#define martial_bonus() (P_SKILL_LEVEL(P_MARTIAL_ARTS) >= P_BASIC) // (Role_if(PM_SAMURAI) || Role_if(PM_MONK))
 
 
 /* Initial skill matrix structure; used in u_init.c and weapon.c */

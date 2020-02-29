@@ -326,7 +326,7 @@ moverock()
                               && (inv_cnt(FALSE) < 52 || !carrying(BOULDER))),
                     willpickup = (canpickup && autopick_testobj(otmp, TRUE) && flags.pickup);
 
-                if (u.usteed && P_SKILL(P_RIDING) < P_BASIC) {
+                if (u.usteed && P_SKILL_LEVEL(P_RIDING) < P_BASIC) {
                     You("aren't skilled enough to %s %s from %s.",
                         willpickup ? "pick up" : "push aside",
                         the(xname(otmp)), y_monnam(u.usteed));
@@ -2662,7 +2662,7 @@ pickup_checks()
         struct trap *traphere = t_at(u.ux, u.uy);
         if (traphere && uteetering_at_seen_pit(traphere))
             You("cannot reach the bottom of the pit.");
-        else if (u.usteed && P_SKILL(P_RIDING) < P_BASIC)
+        else if (u.usteed && P_SKILL_LEVEL(P_RIDING) < P_BASIC)
             rider_cant_reach();
         else if (Blind && !can_reach_floor(TRUE))
             You("cannot reach anything here.");

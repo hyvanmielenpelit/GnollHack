@@ -3113,7 +3113,7 @@ int final;
      */
     if ((wtype = uwep_skill_type()) != P_NONE) {
         char sklvlbuf[20];
-        int sklvl = P_SKILL(wtype);
+        int sklvl = P_SKILL_LEVEL(wtype);
         boolean hav = (sklvl != P_UNSKILLED && sklvl != P_SKILLED);
 
         if (sklvl == P_ISRESTRICTED)
@@ -3138,10 +3138,10 @@ int final;
             you_are(buf, "");
     }
 
-	if (!uwep && P_SKILL(P_MARTIAL_ARTS) > P_UNSKILLED) {
+	if (!uwep && P_SKILL_LEVEL(P_MARTIAL_ARTS) > P_UNSKILLED) {
 		wtype = P_MARTIAL_ARTS;
 		char sklvlbuf[20];
-		int sklvl = P_SKILL(wtype);
+		int sklvl = P_SKILL_LEVEL(wtype);
 		boolean hav = (sklvl != P_UNSKILLED && sklvl != P_SKILLED);
 
 		if (sklvl == P_ISRESTRICTED)
@@ -3169,7 +3169,7 @@ int final;
 	if (u.twoweap) {
 		wtype = P_TWO_WEAPON_COMBAT;
 		char sklvlbuf[20];
-		int sklvl = P_SKILL(wtype);
+		int sklvl = P_SKILL_LEVEL(wtype);
 		boolean hav = (sklvl != P_UNSKILLED && sklvl != P_SKILLED);
 
 		if (sklvl == P_ISRESTRICTED)
@@ -4182,7 +4182,7 @@ struct ext_func_tab extcmdlist[] = {
 			doattributes, IFBURIED | AUTOCOMPLETE | INCMDMENU },
 	{ '@', "autopickup", "toggle the pickup option on/off",
             dotogglepickup, IFBURIED },
-	{ C('b'), "break", "break something", dobreak, IFBURIED | AUTOCOMPLETE | INCMDMENU },
+	{ C('b'), "break", "break something", dobreak, AUTOCOMPLETE | INCMDMENU },
     { 'c', "close", "close a door", doclose },
 	{ 'C', "chat", "talk to someone", dotalk, IFBURIED | AUTOCOMPLETE },
 	{ C('c'), "call", "call (name) something", docallcmd, IFBURIED | AUTOCOMPLETE },

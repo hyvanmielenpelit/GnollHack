@@ -65,7 +65,7 @@ boolean clumsy;
 	{
 		basedmg = rnd(8) + 3;
 		strdmg = ((10 + extratenths) * u_str_dmg_bonus()) / 10;
-		switch (P_SKILL(P_MARTIAL_ARTS))
+		switch (P_SKILL_LEVEL(P_MARTIAL_ARTS))
 		{
 		case P_BASIC:
 			basedmg = d(2, 4) + 3;
@@ -103,7 +103,7 @@ boolean clumsy;
         dmg /= 2;
 
     /* kicking a dragon or an elephant will not harm it */
-    if (thick_skinned(mon->data) && !Magical_kicking && P_SKILL(P_MARTIAL_ARTS) <= P_SKILLED)
+    if (thick_skinned(mon->data) && !Magical_kicking && P_SKILL_LEVEL(P_MARTIAL_ARTS) <= P_SKILLED)
         dmg = 0;
 
     /* attacking a shade is normally useless */
@@ -135,7 +135,7 @@ boolean clumsy;
 		}
 		else if (martial_bonus())
 		{
-			int skilllevel = P_SKILL(P_MARTIAL_ARTS);
+			int skilllevel = P_SKILL_LEVEL(P_MARTIAL_ARTS);
 			if (!rn2(7 - skilllevel))
 				kicksuccessful = TRUE;
 		}
@@ -228,7 +228,7 @@ boolean clumsy;
 
 	if (kicksuccessful && !DEADMONSTER(mon))
 	{
-		int skilllevel = P_SKILL(P_MARTIAL_ARTS) + Jumping ? 1 : 0;
+		int skilllevel = P_SKILL_LEVEL(P_MARTIAL_ARTS) + Jumping ? 1 : 0;
 		if (verysmall(mon->data) || mon->data->msize == MZ_SMALL)
 			hurtles = TRUE;
 		else if (!bigmonst(mon->data))

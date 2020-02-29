@@ -698,7 +698,7 @@ register struct obj *spellbook;
 				int read_ability = attribute_value_for_spellbook(spellbook->otyp)
 					+ 8 
 					+ u.ulevel
-					+ 4 * max(0, P_SKILL(spell_skilltype(spellbook->otyp)) - 1)
+					+ 4 * max(0, P_SKILL_LEVEL(spell_skilltype(spellbook->otyp)) - 1)
 					- 2 * objects[booktype].oc_spell_level
 					+ (Enhanced_vision ? 2 : 0);
 
@@ -1056,7 +1056,7 @@ int objid;
 		return 0;
 
 	int skill = objects[objid].oc_skill;
-	int skill_level = P_SKILL(skill);
+	int skill_level = P_SKILL_LEVEL(skill);
 	double multiplier = (double)spell_skill_mana_cost_multiplier(skill_level);
 	double energy = max(0.1, ((double)objects[objid].oc_spell_mana_cost * multiplier) / 100);
 
@@ -1696,7 +1696,7 @@ boolean atme;
      */
     otyp = pseudo->otyp;
     skill = spell_skilltype(otyp);
-    role_skill = P_SKILL(skill);
+    role_skill = P_SKILL_LEVEL(skill);
 
     switch (otyp) {
     /*
@@ -3671,7 +3671,7 @@ int spell;
      * The difficulty is based on the hero's level and their skill level
      * in that spell type.
      */
-    skill = P_SKILL(spell_skilltype(spellid(spell)));
+    skill = P_SKILL_LEVEL(spell_skilltype(spellid(spell)));
     skill = max(skill, P_UNSKILLED) - 1; /* unskilled => 0 */
     //difficulty =
     //    (spellev(spell) - 1) * 4 - ((skill * 6) + ((u.ulevel - 1) * 2) + 0);
@@ -3779,7 +3779,7 @@ char *outbuf;
     long turnsleft, percent, accuracy;
     int skill;
 
-    skill = P_SKILL(spell_skilltype(spellid(idx)));
+    skill = P_SKILL_LEVEL(spell_skilltype(spellid(idx)));
     skill = max(skill, P_UNSKILLED); /* restricted same as unskilled */
     turnsleft = spellknow(idx);
     *outbuf = '\0'; /* lint suppression */

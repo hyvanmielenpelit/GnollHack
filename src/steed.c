@@ -97,7 +97,7 @@ struct obj *otmp;
         chance -= 10 * mtmp->m_lev;
     if (Role_if(PM_KNIGHT))
         chance += 20;
-    switch (P_SKILL(P_RIDING)) {
+    switch (P_SKILL_LEVEL(P_RIDING)) {
     case P_ISRESTRICTED:
     case P_UNSKILLED:
     default:
@@ -290,10 +290,10 @@ boolean force;      /* Quietly force this animal */
     }
 
 	/* Reduce tameness */
-	if (!force && mtmp->mtame > 0 && !Role_if(PM_KNIGHT) && P_SKILL(P_RIDING) < P_EXPERT &&
+	if (!force && mtmp->mtame > 0 && !Role_if(PM_KNIGHT) && P_SKILL_LEVEL(P_RIDING) < P_EXPERT &&
 		!rn2(
-			P_SKILL(P_RIDING) < P_BASIC ? 10 : 
-			P_SKILL(P_RIDING) == P_BASIC ? 20 : 50 /* P_SKILLED */
+			P_SKILL_LEVEL(P_RIDING) < P_BASIC ? 10 : 
+			P_SKILL_LEVEL(P_RIDING) == P_BASIC ? 20 : 50 /* P_SKILLED */
 		)) /* must be tame at this point*/
 		mtmp->mtame--; /* reduce tameness if not knight */
 

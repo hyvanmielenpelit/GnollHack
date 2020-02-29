@@ -2009,7 +2009,7 @@ const char* headertext;
                  && ((otmp->oclass == TOOL_CLASS && otyp != OIL_LAMP
                       && otyp != MAGIC_LAMP && otyp != BRASS_LANTERN)
                      || (otmp->oclass == GEM_CLASS && !is_graystone(otmp))))
-             || (!strcmp(word, "use or apply")
+				|| (!strcmp(word, "use or apply")
                  /* Picks, axes, pole-weapons, bullwhips */
                  && ((otmp->oclass == WEAPON_CLASS
                       && !is_pick(otmp) && !is_axe(otmp)

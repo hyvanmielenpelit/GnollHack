@@ -835,7 +835,7 @@ boolean* obj_destroyed;
 			if (martial_arts_applies)
 			{
 				/* bonus for martial arts */
-				switch (P_SKILL(P_MARTIAL_ARTS))
+				switch (P_SKILL_LEVEL(P_MARTIAL_ARTS))
 				{
 				case P_BASIC:
 					tmp = rnd(4);
@@ -1004,7 +1004,7 @@ boolean* obj_destroyed;
 						|| (Role_if(PM_SAMURAI) && obj->otyp == KATANA
 							&& !uarms))
 					&& ((wtype = uwep_skill_type()) != P_NONE
-						&& P_SKILL(wtype) >= P_SKILLED)
+						&& P_SKILL_LEVEL(wtype) >= P_SKILLED)
 					&& ((monwep = MON_WEP(mon)) != 0
 						&& !is_flimsy(monwep)
 						&& !obj_resists(monwep,
@@ -1416,7 +1416,7 @@ boolean* obj_destroyed;
 			{
 				if(!martial_bonus() || (uarmg && is_metallic(uarmg)))
 					damage += adjust_damage(u_str_dmg_bonus() / 2, &youmonst, mon, AD_PHYS, FALSE);
-				else if(P_SKILL(P_MARTIAL_ARTS) >= P_BASIC)
+				else if(P_SKILL_LEVEL(P_MARTIAL_ARTS) >= P_BASIC)
 					damage += adjust_damage(u_str_dmg_bonus(), &youmonst, mon, AD_PHYS, FALSE);
 			}
 			else
@@ -1471,7 +1471,7 @@ boolean* obj_destroyed;
 		damage += adjust_damage(weapon_skill_dmg_bonus(wep, is_golf_swing_with_stone ? P_THROWN_WEAPON : P_NONE, FALSE), &youmonst, mon, wep ? objects[wep->otyp].oc_damagetype : AD_PHYS, FALSE);
 		/* [this assumes that `!thrown' implies wielded...] */
 		wtype = is_golf_swing_with_stone ? P_THROWN_WEAPON :
-			!obj ? (P_SKILL(P_BARE_HANDED_COMBAT) < P_EXPERT ? P_BARE_HANDED_COMBAT : P_MARTIAL_ARTS) :
+			!obj ? (P_SKILL_LEVEL(P_BARE_HANDED_COMBAT) < P_EXPERT ? P_BARE_HANDED_COMBAT : P_MARTIAL_ARTS) :
 			thrown ? weapon_skill_type(wep) : uwep_skill_type();
 		use_skill(wtype, 1);
 	}
@@ -1651,7 +1651,7 @@ boolean* obj_destroyed;
 	else if (unarmed && damage > 1 && !thrown && !obj && !Upolyd) 
 	{
 		/* VERY small chance of stunning opponent if unarmed. */
-		if (rnd(100) < 2 * P_SKILL(P_MARTIAL_ARTS) && !bigmonst(mdat)
+		if (rnd(100) < 2 * P_SKILL_LEVEL(P_MARTIAL_ARTS) && !bigmonst(mdat)
 			&& !thick_skinned(mdat)) 
 		{
 			if (canspotmon(mon))
@@ -2235,9 +2235,9 @@ struct obj *obj;   /* weapon */
         return 0;
 
     /* if using two weapons, use worse of lance and two-weapon skills */
-    skill_rating = P_SKILL(weapon_skill_type(obj)); /* lance skill */
-    if (u.twoweap && P_SKILL(P_TWO_WEAPON_COMBAT) < skill_rating)
-        skill_rating = P_SKILL(P_TWO_WEAPON_COMBAT);
+    skill_rating = P_SKILL_LEVEL(weapon_skill_type(obj)); /* lance skill */
+    if (u.twoweap && P_SKILL_LEVEL(P_TWO_WEAPON_COMBAT) < skill_rating)
+        skill_rating = P_SKILL_LEVEL(P_TWO_WEAPON_COMBAT);
     if (skill_rating == P_ISRESTRICTED)
         skill_rating = P_UNSKILLED; /* 0=>1 */
 
