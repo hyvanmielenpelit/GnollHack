@@ -583,6 +583,8 @@ struct obj *otmp;
         (void) cancel_monst(mtmp, otmp, TRUE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus);
         break;
 	case SPE_LOWER_MAGIC_RESISTANCE:
+	case SPE_HALVE_MAGIC_RESISTANCE:
+	case SPE_DIMINISH_MAGIC_RESISTANCE:
 	case SPE_NEGATE_MAGIC_RESISTANCE:
 	case SPE_FORBID_SUMMONING:
 		res = 1;
@@ -1464,7 +1466,9 @@ int mnum_override; /* Use this mnum instead */
 			mtmp2->mprops[CANCELLED] = 0;
 		}
 		mtmp2->mprops[NO_MAGIC_RES] = 0;
+		mtmp2->mprops[ONE_FOURTH_MAGIC_RES] = 0;
 		mtmp2->mprops[HALF_MAGIC_RES] = 0;
+		mtmp2->mprops[THREE_FOURTHS_MAGIC_RES] = 0;
 		mtmp2->mprops[SUMMON_FORBIDDEN] = 0;
 		mtmp2->mprops[BLINDED] = 0;
 		mtmp2->mprops[STUNNED] = 0;
@@ -3041,6 +3045,8 @@ struct obj *obj, *otmp;
         case WAN_MAKE_INVISIBLE:
             break;
 		case SPE_LOWER_MAGIC_RESISTANCE:
+		case SPE_HALVE_MAGIC_RESISTANCE:
+		case SPE_DIMINISH_MAGIC_RESISTANCE:
 		case SPE_NEGATE_MAGIC_RESISTANCE:
 		case SPE_FORBID_SUMMONING:
 		case WAN_UNDEAD_TURNING:
@@ -4523,6 +4529,8 @@ boolean ordinary;
         break;
 
 	case SPE_LOWER_MAGIC_RESISTANCE:
+	case SPE_HALVE_MAGIC_RESISTANCE:
+	case SPE_DIMINISH_MAGIC_RESISTANCE:
 	case SPE_NEGATE_MAGIC_RESISTANCE:
 	case SPE_FORBID_SUMMONING:
 		(void)add_temporary_property(&youmonst, obj, TRUE, TRUE, TRUE, d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_diesize) + objects[obj->otyp].oc_spell_dur_plus);
@@ -5027,6 +5035,8 @@ struct obj *obj; /* wand or spell */
     case WAN_CANCELLATION:
     case SPE_CANCELLATION:
 	case SPE_LOWER_MAGIC_RESISTANCE:
+	case SPE_HALVE_MAGIC_RESISTANCE:
+	case SPE_DIMINISH_MAGIC_RESISTANCE:
 	case SPE_NEGATE_MAGIC_RESISTANCE:
 	case SPE_FORBID_SUMMONING:
 	case WAN_POLYMORPH:
@@ -5206,18 +5216,31 @@ int duration;
 		pline("A dim shimmer surrounds %s.", mon_nam(mdef));
 	}
 
+	int prop = 0;
+	switch (obj->otyp)
+	{
+	case SPE_LOWER_MAGIC_RESISTANCE:
+		prop = THREE_FOURTHS_MAGIC_RES;
+		break;
+	case SPE_HALVE_MAGIC_RESISTANCE:
+		prop = HALF_MAGIC_RES;
+		break;
+	case SPE_DIMINISH_MAGIC_RESISTANCE:
+		prop = ONE_FOURTH_MAGIC_RES;
+		break;
+	case SPE_NEGATE_MAGIC_RESISTANCE:
+		prop = NO_MAGIC_RES;
+		break;
+	case SPE_FORBID_SUMMONING:
+		prop = SUMMON_FORBIDDEN;
+		break;
+	default:
+		break;
+	}
 
-	if (obj->otyp == SPE_LOWER_MAGIC_RESISTANCE)
+	if (prop > 0)
 	{
-		increase_mon_property(mdef, HALF_MAGIC_RES, duration);
-	}
-	else if (obj->otyp == SPE_NEGATE_MAGIC_RESISTANCE)
-	{
-		increase_mon_property(mdef, NO_MAGIC_RES, duration);
-	}
-	else if (obj->otyp == SPE_FORBID_SUMMONING)
-	{
-		increase_mon_property(mdef, SUMMON_FORBIDDEN, duration);
+		increase_mon_property(mdef, prop, duration);
 	}
 		
 	return TRUE;
@@ -8102,14 +8125,24 @@ int dmg, adtyp, tell;
 		}
 
 		boolean nomr = is_you ? No_magic_resistance : has_no_magic_resistance(mtmp);
+		boolean quartermr = is_you ? One_fourth_magic_resistance : has_one_fourth_magic_resistance(mtmp);
 		boolean halfmr = is_you ? Half_magic_resistance : has_half_magic_resistance(mtmp);
+		boolean threequartersmr = is_you ? Three_fourths_magic_resistance : has_three_fourths_magic_resistance(mtmp);
 
+		int applicable_mr = mtmp->data->mr;
 		if (nomr)
-			resisted = FALSE;
-		else if (mtmp->data->mr == 0)
+			applicable_mr = 0;
+		else if(quartermr)
+			applicable_mr = mtmp->data->mr / 4;
+		else if (halfmr)
+			applicable_mr = mtmp->data->mr / 2;
+		else if (threequartersmr)
+			applicable_mr = (mtmp->data->mr * 3) / 4;
+
+		if (applicable_mr == 0)
 			resisted = FALSE;
 		else
-			resisted = (rn2(100 + alev - dlev) < (mtmp->data->mr / (halfmr ? 2 : 1)));
+			resisted = (rn2(100 + alev - dlev) < applicable_mr);
 	}
 
 	double damage = dmg == 0 ? 0 : adjust_damage(dmg, (struct monst*)0, mtmp, adtyp, TRUE);

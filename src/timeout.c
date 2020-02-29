@@ -85,8 +85,8 @@ const struct propname {
 	{ MAGICAL_BREATHING, "magical breathing", "magical breathing" },
 	{ PASSES_WALLS, "passing thru walls", "pass thru walls" },
 	{ SLOW_DIGESTION, "digesting slowly", "slow digestion" },
-	{ HALF_SPDAM, "receiving half spell damage", "half spell damage" },
-	{ HALF_PHDAM, "receiving half physical damage", "half physical damage" },
+	{ HALF_SPELL_DAMAGE, "receiving half spell damage", "half spell damage" },
+	{ HALF_PHYSICAL_DAMAGE, "receiving half physical damage", "half physical damage" },
 	{ REGENERATION, "regenerating", "regeneration" },
 	{ ENERGY_REGENERATION, "regenerating mana", "mana regeneration" },
 	{ PROTECTION, "extra protected", "extra protection" },
@@ -151,6 +151,8 @@ const struct propname {
 	{ ENHANCED_UNTRAP, "enhanced in untrapping", "enhanced untrapping" },
 	{ BLOCKS_LEVITATION, "blocking levitation", "blocks levitation" },
 	{ BLOCKS_FLYING, "blocking flying", "blocks flying" },
+	{ ONE_FOURTH_MAGIC_RES, "having 25% of normal magic resistance", "25% of normal magic resistance" },
+	{ THREE_FOURTHS_MAGIC_RES, "having 75% of normal magic resistance", "75% of normal  magic resistance" },
 	{ LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
 	{  0, 0 },
 };
@@ -911,8 +913,16 @@ nh_timeout()
 				if (!Cancelled)
 					You("feel your magic is flowing more normally.");
 				break;
+			case THREE_FOURTHS_MAGIC_RES:
+				if (!Three_fourths_magic_resistance && !Half_magic_resistance && !One_fourth_magic_resistance && !No_magic_resistance)
+					You("feel your magic resistance is working more properly.");
+				break;
 			case HALF_MAGIC_RES:
-				if (!Half_magic_resistance)
+				if (!Half_magic_resistance && !One_fourth_magic_resistance && !No_magic_resistance)
+					You("feel your magic resistance is working more properly.");
+				break;
+			case ONE_FOURTH_MAGIC_RES:
+				if (!One_fourth_magic_resistance && !No_magic_resistance)
 					You("feel your magic resistance is working more properly.");
 				break;
 			case NO_MAGIC_RES:
@@ -1087,8 +1097,17 @@ nh_timeout()
 			case CANCELLED:
 				You("feel your magic is starting to flow more normally.");
 				break;
+			case THREE_FOURTHS_MAGIC_RES:
+				if (!Half_magic_resistance && !One_fourth_magic_resistance && !No_magic_resistance)
+					You("feel your magic resistance is starting to work more properly.");
+				break;
 			case HALF_MAGIC_RES:
-				You("feel your magic resistance is starting to work more properly.");
+				if (!One_fourth_magic_resistance && !No_magic_resistance)
+					You("feel your magic resistance is starting to work more properly.");
+				break;
+			case ONE_FOURTH_MAGIC_RES:
+				if (!No_magic_resistance)
+					You("feel your magic resistance is starting to work more properly.");
 				break;
 			case NO_MAGIC_RES:
 				You("feel your magic resistance is starting to work more properly.");

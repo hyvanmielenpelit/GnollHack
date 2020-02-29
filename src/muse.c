@@ -1352,6 +1352,8 @@ register struct obj *otmp;
         (void) cancel_monst(mtmp, otmp, FALSE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus);
         break;
 	case SPE_LOWER_MAGIC_RESISTANCE:
+	case SPE_HALVE_MAGIC_RESISTANCE:
+	case SPE_DIMINISH_MAGIC_RESISTANCE:
 	case SPE_NEGATE_MAGIC_RESISTANCE:
 	case SPE_FORBID_SUMMONING:
 		(void)add_temporary_property(mtmp, otmp, FALSE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus);

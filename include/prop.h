@@ -74,8 +74,8 @@ enum prop_types {
     PASSES_WALLS      = 52,
     /* Physical attributes */
     SLOW_DIGESTION    = 53,
-    HALF_SPDAM        = 54,
-    HALF_PHDAM        = 55,
+    HALF_SPELL_DAMAGE = 54,
+    HALF_PHYSICAL_DAMAGE = 55,
     REGENERATION      = 56,
     ENERGY_REGENERATION = 57,
     PROTECTION        = 58,
@@ -145,7 +145,9 @@ enum prop_types {
 	ENHANCED_UNTRAP	  = 121,
 	BLOCKS_LEVITATION = 122,
 	BLOCKS_FLYING     = 123,
-	LAUGHING		  = 124 //KEEP THIS LAST
+	ONE_FOURTH_MAGIC_RES = 124,
+	THREE_FOURTHS_MAGIC_RES = 125,
+	LAUGHING		  = 126 //KEEP THIS LAST
 };
 #define LAST_PROP (LAUGHING)
 

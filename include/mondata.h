@@ -252,8 +252,14 @@
 #define is_cancelled(mon) \
 	has_cancelled(mon)
 
+#define has_three_fourths_magic_resistance(mon) \
+	has_property(mon, THREE_FOURTHS_MAGIC_RES)
+
 #define has_half_magic_resistance(mon) \
 	has_property(mon, HALF_MAGIC_RES)
+
+#define has_one_fourth_magic_resistance(mon) \
+	has_property(mon, ONE_FOURTH_MAGIC_RES)
 
 #define has_no_magic_resistance(mon) \
 	has_property(mon, NO_MAGIC_RES)
@@ -269,10 +275,10 @@
 
 /* half damage */
 #define has_half_physical_damage(mon) \
-	has_property(mon, HALF_PHDAM)
+	has_property(mon, HALF_PHYSICAL_DAMAGE)
 
 #define has_half_spell_damage(mon) \
-	has_property(mon, HALF_SPDAM)
+	has_property(mon, HALF_SPELL_DAMAGE)
 
 #define has_half_physical_damage_against_undead_and_demons(mon) \
 	has_property(mon, HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS)

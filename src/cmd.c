@@ -2241,13 +2241,13 @@ int final;
     char buf[BUFSZ];
 
     switch (category) {
-    case HALF_PHDAM:
+    case HALF_PHYSICAL_DAMAGE:
         category_name = "physical";
         break;
 	case HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS:
 		category_name = "physical";
 		break;
-	case HALF_SPDAM:
+	case HALF_SPELL_DAMAGE:
         category_name = "spell";
         break;
     default:
@@ -3496,11 +3496,11 @@ int final;
 	if (Magical_stoneskin)
 		you_have("magical stoneskin (-10 to AC)", from_what(MAGICAL_STONESKIN));
 	if (Half_physical_damage)
-        enlght_halfdmg(HALF_PHDAM, final);
+        enlght_halfdmg(HALF_PHYSICAL_DAMAGE, final);
 	if (Half_physical_damage_against_undead_and_demons)
 		enlght_halfdmg(HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS, final);
 	if (Half_spell_damage)
-        enlght_halfdmg(HALF_SPDAM, final);
+        enlght_halfdmg(HALF_SPELL_DAMAGE, final);
 	if (Fire_vulnerability)
 		you_are("vulnerable to fire", from_what(FIRE_VULNERABILITY));
 	if (Cold_vulnerability)
@@ -3594,8 +3594,12 @@ int final;
 
 	if (No_magic_resistance)
 		you_have("no magic resistance", from_what(NO_MAGIC_RES));
+	else if (One_fourth_magic_resistance)
+		you_have("25% of normal magic resistance", from_what(ONE_FOURTH_MAGIC_RES));
 	else if (Half_magic_resistance)
 		you_have("half normal magic resistance", from_what(HALF_MAGIC_RES));
+	else if (Three_fourths_magic_resistance)
+		you_have("75% of normal magic resistance", from_what(THREE_FOURTHS_MAGIC_RES));
 
 	if (Charmed)
 		you_are("charmed", from_what(CHARMED));

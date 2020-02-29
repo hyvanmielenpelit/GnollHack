@@ -1460,14 +1460,14 @@ int spell;
 	if (objects[booktype].oc_short_description)
 	{
 		/* One empty line here */
-		Sprintf(buf, "");
+		strcpy(buf, "");
 		txt = buf;
 		putstr(datawin, 0, txt);
 
-		Sprintf(buf, "Description:");
+		strcpy(buf, "Description:");
 		txt = buf;
 		putstr(datawin, 0, txt);
-		Sprintf(buf, objects[booktype].oc_short_description);
+		strcpy(buf, objects[booktype].oc_short_description);
 		txt = buf;
 		putstr(datawin, 0, txt);
 
@@ -1780,6 +1780,8 @@ boolean atme;
     case SPE_TELEPORT_MONSTER:
     case SPE_CANCELLATION:
 	case SPE_LOWER_MAGIC_RESISTANCE:
+	case SPE_HALVE_MAGIC_RESISTANCE:
+	case SPE_DIMINISH_MAGIC_RESISTANCE:
 	case SPE_NEGATE_MAGIC_RESISTANCE:
 	case SPE_FORBID_SUMMONING:
 	case SPE_FINGER_OF_DEATH:

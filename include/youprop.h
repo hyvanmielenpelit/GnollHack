@@ -438,8 +438,8 @@
 #define ESlow_digestion u.uprops[SLOW_DIGESTION].extrinsic
 #define Slow_digestion (HSlow_digestion || ESlow_digestion) /* KMH */
 
-#define HHalf_spell_damage u.uprops[HALF_SPDAM].intrinsic
-#define EHalf_spell_damage u.uprops[HALF_SPDAM].extrinsic
+#define HHalf_spell_damage u.uprops[HALF_SPELL_DAMAGE].intrinsic
+#define EHalf_spell_damage u.uprops[HALF_SPELL_DAMAGE].extrinsic
 #define Half_spell_damage (HHalf_spell_damage || EHalf_spell_damage)
 
 /*
@@ -484,8 +484,8 @@
  *   Any passive attack                              [most don't qualify]
  */
 
-#define HHalf_physical_damage u.uprops[HALF_PHDAM].intrinsic
-#define EHalf_physical_damage u.uprops[HALF_PHDAM].extrinsic
+#define HHalf_physical_damage u.uprops[HALF_PHYSICAL_DAMAGE].intrinsic
+#define EHalf_physical_damage u.uprops[HALF_PHYSICAL_DAMAGE].extrinsic
 #define Half_physical_damage (HHalf_physical_damage || EHalf_physical_damage)
 
 #define HHalf_physical_damage_against_undead_and_demons u.uprops[HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS].intrinsic
@@ -551,9 +551,17 @@
 #define ECancelled u.uprops[CANCELLED].extrinsic
 #define Cancelled (HCancelled || ECancelled)
 
+#define HThree_fourths_magic_resistance u.uprops[THREE_FOURTHS_MAGIC_RES].intrinsic
+#define EThree_fourths_magic_resistance u.uprops[THREE_FOURTHS_MAGIC_RES].extrinsic
+#define Three_fourths_magic_resistance (HThree_fourths_magic_resistance || EThree_fourths_magic_resistance)
+
 #define HHalf_magic_resistance u.uprops[HALF_MAGIC_RES].intrinsic
 #define EHalf_magic_resistance u.uprops[HALF_MAGIC_RES].extrinsic
 #define Half_magic_resistance (HHalf_magic_resistance || EHalf_magic_resistance)
+
+#define HOne_fourth_magic_resistance u.uprops[ONE_FOURTH_MAGIC_RES].intrinsic
+#define EOne_fourth_magic_resistance u.uprops[ONE_FOURTH_MAGIC_RES].extrinsic
+#define One_fourth_magic_resistance (HOne_fourth_magic_resistance || EOne_fourth_magic_resistance)
 
 #define HNo_magic_resistance u.uprops[NO_MAGIC_RES].intrinsic
 #define ENo_magic_resistance u.uprops[NO_MAGIC_RES].extrinsic
