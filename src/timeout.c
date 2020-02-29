@@ -152,7 +152,7 @@ const struct propname {
 	{ BLOCKS_LEVITATION, "blocking levitation", "blocks levitation" },
 	{ BLOCKS_FLYING, "blocking flying", "blocks flying" },
 	{ ONE_FOURTH_MAGIC_RES, "having 25% of normal magic resistance", "25% of normal magic resistance" },
-	{ THREE_FOURTHS_MAGIC_RES, "having 75% of normal magic resistance", "75% of normal  magic resistance" },
+	{ THREE_FOURTHS_MAGIC_RES, "having 75% of normal magic resistance", "75% of normal magic resistance" },
 	{ LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
 	{  0, 0 },
 };
