@@ -1630,19 +1630,20 @@ RING("supreme power", "golden runed", /* Base item for the One Ring */
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, manabonus, hpbonus, bonusattrs, attrbonus, splcastpen, 0, \
 		   20, HI_METAL, 0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
-AMULET("amulet of ESP",                "circular", 90,	TELEPAT, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-AMULET("amulet of life saving",       "spherical", 75,  LIFESAVED, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+AMULET("amulet of ESP",                "circular", 70,	TELEPAT, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+AMULET("amulet of life saving",       "spherical", 70,  LIFESAVED, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 AMULET("amulet of strangulation",          "oval", 100, STRANGLED, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
 AMULET("amulet of restful sleep",    "triangular", 100, SLEEPY, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
-AMULET("amulet versus poison",        "pyramidal", 90,	POISON_RES, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-AMULET("amulet versus life draining",   "cubical", 75,	DRAIN_RES, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+AMULET("amulet versus poison",        "pyramidal", 70,	POISON_RES, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+AMULET("amulet versus life draining",   "cubical", 70,	DRAIN_RES, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+AMULET("amulet versus death magic","dodecahedral", 70,  DEATH_RES, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 AMULET("amulet of change",               "square", 100, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
-AMULET("amulet of unchanging",          "concave", 45,  UNCHANGING, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0, O1_POLYMORPH_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
-AMULET("amulet of reflection",        "hexagonal", 75,  REFLECTING, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-AMULET("amulet of mana",		        "convex",  75,	NO_POWER, NO_POWER, NO_POWER, P1_NONE, 75, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-AMULET("demon blood talisman",	   "tetrahedral",  35,	NO_POWER, NO_POWER, NO_POWER, P1_MANA_PERCENTAGE_BONUS, 100, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), //doubles mana capacity
-AMULET("periapt of vitality",	        "linear",  75,	NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 25, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-AMULET("amulet of magical breathing", "octagonal", 65,  MAGICAL_BREATHING, 0, 0, P1_NONE, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+AMULET("amulet of unchanging",          "concave", 40,  UNCHANGING, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0, O1_POLYMORPH_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
+AMULET("amulet of reflection",        "hexagonal", 70,  REFLECTING, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+AMULET("amulet of mana",		        "convex",  70,	NO_POWER, NO_POWER, NO_POWER, P1_NONE, 75, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+AMULET("demon blood talisman",	   "tetrahedral",  30,	NO_POWER, NO_POWER, NO_POWER, P1_MANA_PERCENTAGE_BONUS, 100, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), //doubles mana capacity
+AMULET("periapt of vitality",	        "linear",  70,	NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 25, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+AMULET("amulet of magical breathing", "octagonal", 70,  MAGICAL_BREATHING, 0, 0, P1_NONE, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 AMULET("amulet",					"cylindrical",  0,  NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* Base item for artifact amulets */
 /* fixed descriptions; description duplication is deliberate;
  * fake one must come before real one because selection for

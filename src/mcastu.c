@@ -90,7 +90,7 @@ int spellval;
     switch (spellval) {
     case 24:
     case 23:
-        if (Antimagic || Hallucination)
+        if (Antimagic || Death_resistance || Hallucination)
             return MGC_PSI_BOLT;
         /*FALLTHRU*/
     case 22:

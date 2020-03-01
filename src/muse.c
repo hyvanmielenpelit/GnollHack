@@ -1492,7 +1492,7 @@ struct monst *mtmp;
             makeknown(otmp->otyp);
         m_using = TRUE;
 
-		raytype = -30 - objects[otmp->otyp].oc_dir_subtype; //-30...-38;
+		raytype = -40 - objects[otmp->otyp].oc_dir_subtype; //-40...-48;
 
         buzz(raytype, otmp, 0, 0, 0, mtmp->mx, mtmp->my,
              sgn(mtmp->mux - mtmp->mx), sgn(mtmp->muy - mtmp->my));
@@ -1507,7 +1507,7 @@ struct monst *mtmp;
             You_hear("a horn being played.");
         otmp->spe--;
         m_using = TRUE;
-        buzz(-30 - objects[otmp->otyp].oc_dir_subtype, otmp, 0, 0, 0,
+        buzz(-40 - objects[otmp->otyp].oc_dir_subtype, otmp, 0, 0, 0,
              mtmp->mx, mtmp->my, sgn(mtmp->mux - mtmp->mx),
              sgn(mtmp->muy - mtmp->my));
         m_using = FALSE;

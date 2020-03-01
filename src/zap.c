@@ -49,6 +49,7 @@ STATIC_DCL void FDECL(wishcmdassist, (int));
 #define ZT_WAND(x) (x)
 #define ZT_SPELL(x) (10 + (x))
 #define ZT_BREATH(x) (20 + (x))
+#define ZT_EYESTALK(x) (30 + (x))
 
 #define is_hero_spell(type) ((type) >= 10 && (type) < 20)
 
@@ -72,7 +73,12 @@ const char *const flash_types[] =       /* also used in buzzmu(mcastu.c) */
         "blast of missiles", /* Dragon breath equivalents 20-29*/
         "blast of fire", "blast of frost", "blast of sleep gas",
         "blast of disintegration", "blast of lightning",
-        "blast of poison gas", "blast of acid", "blast of death ray", ""
+        "blast of poison gas", "blast of acid", "blast of death ray", "",
+
+		"magic missile", /* Eyestalk equivalents must be 30-39 */
+		"bolt of fire", "bolt of cold", "sleep ray", "disintegration ray",
+		"bolt of lightning", "", "", "death ray", ""
+
 };
 
 /*
@@ -6324,7 +6330,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
         break;
     case ZT_DISINTEGRATION:  /* disintegration */
 		damage = 0;
-		if (resists_disint(mon) || noncorporeal(mon->data) || magic_resistance_success)
+		if (resists_disint(mon) || noncorporeal(mon->data) || (magic_resistance_success && !(abs(type) >= 20 && abs(type) <= 39)))
 		{
 			sho_shieldeff = TRUE;
         } else if (mon->worn_item_flags & W_ARMS) {
@@ -6357,8 +6363,9 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 			damage = 0;
 			break;
 		}
-		if (is_not_living(mon->data) || is_demon(mon->data) || magic_resistance_success
-			|| is_vampshifter(mon) || resists_death(mon) || resists_magic(mon)) {
+		if (is_not_living(mon->data) || is_demon(mon->data)
+			|| is_vampshifter(mon) || resists_death(mon) || ((resists_magic(mon) || magic_resistance_success) && !(abs(type) >= 20 && abs(type) <= 39)))
+		{
 			/* similar to player */
 			sho_shieldeff = TRUE;
 			damage = 0;
@@ -6445,7 +6452,7 @@ xchar sx, sy;
 	else
 		dam = d(dmgdice, dicesize) + dmgplus;
 
-	double damage = adjust_damage(dam, (struct monst*)0, &youmonst, (abstyp % 10) + 1, !(abstyp >= 20 && abstyp <= 29));
+	double damage = adjust_damage(dam, (struct monst*)0, &youmonst, (abstyp % 10) + 1, !(abstyp >= 20 && abstyp <= 39));
 
     switch (abstyp % 10) {
     case ZT_MAGIC_MISSILE:
@@ -6502,7 +6509,7 @@ xchar sx, sy;
         break;
     case ZT_DISINTEGRATION:
 		damage = 0;
-		if (Disint_resistance || noncorporeal(youmonst.data) || magic_resistance_success || Invulnerable) 
+		if (Disint_resistance || noncorporeal(youmonst.data) || (magic_resistance_success && !(abstyp >= 20 && abstyp <= 39)) || Invulnerable)
 		{					// if (abstyp == ZT_BREATH(ZT_DISINTEGRATION)) {
             You("are not disintegrated.");
             break;
@@ -6533,20 +6540,21 @@ xchar sx, sy;
             (void) destroy_arm(uarmu);
         killer.format = KILLED_BY_AN;
         Strcpy(killer.name, fltxt ? fltxt : "");
-        /* when killed by disintegration breath, don't leave corpse */
-        u.ugrave_arise = (type == -ZT_BREATH(ZT_DISINTEGRATION)) ? -3 : NON_PM;
+        /* when killed by disintegration attack, don't leave corpse */
+        u.ugrave_arise = (abstyp % 10 == ZT_DISINTEGRATION) ? -3 : NON_PM;
         done(DIED);
         return; /* lifesaved */
 	case ZT_DEATH:
 		damage = 0;
-		if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance || Invulnerable
-			|| check_magic_resistance_and_halve_damage(&youmonst, origobj, 12, 0, 0, NOTELL))
+		if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance || Invulnerable)
 		{
 			shieldeff(sx, sy);
 			You("seem unaffected.");
 			break;
 		}
-		else if (Antimagic) {
+		else if ((Antimagic || check_magic_resistance_and_halve_damage(&youmonst, origobj, 12, 0, 0, NOTELL)) 
+			&& !(abstyp >= 20 && abstyp <= 39)) /* Antimagic does not work breath weapons and eyestalks, just spells and wands */
+		{
 			shieldeff(sx, sy);
 			You("aren't affected.");
 			break;
@@ -6829,9 +6837,11 @@ int dx, dy;
  * type ==   0 to   9 : you shooting a wand
  * type ==  10 to  19 : you casting a spell
  * type ==  20 to  29 : you breathing as a monster
+ * type ==  30 to  39 : you firing an eyestalk as a monster
  * type == -10 to -19 : monster casting spell
  * type == -20 to -29 : monster breathing at you
- * type == -30 to -39 : monster shooting a wand
+ * type == -30 to -39 : monster firing an eyestalk
+ * type == -40 to -49 : monster shooting a wand
  * called with dx = dy = 0 with vertical bolts
  */
 void
@@ -6863,7 +6873,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
 	if (origobj && objects[origobj->otyp].oc_aflags & S1_SPELL_EXPLOSION_EFFECT) // (type == ZT_SPELL(ZT_FIRE));
 		isexplosioneffect = TRUE;
 
-	fltxt = flash_types[(type <= -30) ? abstype : abs(type)];
+	fltxt = flash_types[(type <= -40) ? abstype : abs(type)];
 
     if (u.uswallow)
 	{
@@ -8128,6 +8138,10 @@ int dmg, adtyp, tell;
 		boolean threequartersmr = is_you ? Three_fourths_magic_resistance : has_three_fourths_magic_resistance(mtmp);
 
 		int applicable_mr = mtmp->data->mr;
+
+		if (resists_magic(mtmp) && applicable_mr < 100)
+			applicable_mr = 100;
+
 		if (nomr)
 			applicable_mr = 0;
 		else if(quartermr)

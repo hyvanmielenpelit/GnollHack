@@ -1825,7 +1825,7 @@ doeyestalk()
 		if ((typ >= AD_MAGM) && (typ <= AD_DRAY))
 		{
 			pline("One of your eyestalks fires %s!", get_eyestalk_ray_name(typ));
-			buzz((int)(0 + (typ - 1)), (struct obj*)0, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp,
+			buzz((int)(30 + (typ - 1)), (struct obj*)0, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp,
 				u.ux, u.uy, u.dx, u.dy);
 			attacksperformed++;
 		}
