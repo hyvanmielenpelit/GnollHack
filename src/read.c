@@ -604,11 +604,12 @@ int curse_bless;
 	{
         /* charging does not affect ring's curse/bless status */
 		int maxcharge = get_obj_max_charge(obj);
-        int s = is_blessed ? rnd(min(2, maxcharge / 2)) : is_cursed ? -rnd(min(2, maxcharge / 3)) : maxcharge >= 14 ? rnd(min(2, maxcharge / 7)) : 1;
+		int safecharge = get_obj_max_charge(obj) / 3;
+		int s = is_blessed ? rnd(max(1, maxcharge / 3)) : is_cursed ? -rnd(max(1, maxcharge / 3)) : maxcharge >= 12 ? rnd(max(1, maxcharge / 6)) : 1;
         boolean is_on = (obj == uleft || obj == uright);
 
         /* destruction depends on current state, not adjustment */
-        if (obj->spe > rn2(maxcharge) || obj->spe <= -(5 * maxcharge) / 7)
+        if (obj->spe > rn2(max(2, maxcharge - safecharge)) + safecharge || obj->spe <= -(5 * maxcharge) / 7)
 		{
             pline("%s momentarily, then %s!", Yobjnam2(obj, "pulsate"),
                   otense(obj, "explode"));
@@ -617,7 +618,9 @@ int curse_bless;
             s = rnd(3 * abs(obj->spe)); /* amount of damage */
             useup(obj);
             losehp(adjust_damage(s, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "exploding ring", KILLED_BY_AN);
-        } else {
+        }
+		else 
+		{
             long mask = is_on ? (obj == uleft ? LEFT_RING : RIGHT_RING) : 0L;
 
             pline("%s spins %sclockwise for a moment.", Yname2(obj),

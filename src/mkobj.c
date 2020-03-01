@@ -1516,19 +1516,19 @@ int charge_init_index;
 		charge = 5;
 		break;
 	case CHARGED_RING_NORMAL:
-		charge = 7;
+		charge = 6;
 		break;
 	case CHARGED_RING_1_7:
-		charge = 11;
+		charge = 9;
 		break;
 	case CHARGED_RING_DOUBLE:
-		charge = 15;
+		charge = 12;
 		break;
 	case CHARGED_MISCELLANEOUS_NORMAL:
 		charge = 7;
 		break;
 	case CHARGED_RING_POWER:
-		charge = 5;
+		charge = 3;
 		break;
 	case CHARGED_WAND_NORMAL_NODIR:
 		charge = 15;
