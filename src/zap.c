@@ -8131,11 +8131,11 @@ int dmg, adtyp, tell;
 		if (nomr)
 			applicable_mr = 0;
 		else if(quartermr)
-			applicable_mr = mtmp->data->mr / 4;
+			applicable_mr = max(0, mtmp->data->mr - 75);
 		else if (halfmr)
-			applicable_mr = mtmp->data->mr / 2;
+			applicable_mr = max(0, mtmp->data->mr - 50);
 		else if (threequartersmr)
-			applicable_mr = (mtmp->data->mr * 3) / 4;
+			applicable_mr = max(0, mtmp->data->mr - 25);
 
 		if (applicable_mr == 0)
 			resisted = FALSE;
