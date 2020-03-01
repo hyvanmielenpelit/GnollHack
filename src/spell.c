@@ -4005,7 +4005,7 @@ int spell;
 
 		int quan_mult = mc->amount > 0 ? otmp->quan / mc->amount : 1;
 
-		if (quan_mult < lowest_multiplier)
+		if (!(mc->flags & MATCOMP_NOT_SPENT) && quan_mult < lowest_multiplier)
 			lowest_multiplier = quan_mult;
 
 		//Note: You might ask for another pick from another type (e.g., using both blessed and uncursed items), but this gets a bit too complicated
