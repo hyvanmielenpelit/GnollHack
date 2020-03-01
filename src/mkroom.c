@@ -997,12 +997,13 @@ mkdragonlair()
 
 	coord c = { 0 };
 	int dragons[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-	int maxdragons = (sroom->hx - sroom->lx + 1) * (sroom->hy - sroom->ly + 1);
+	int maxdragons = min(10, max(2, (sroom->hx - sroom->lx + 1) * (sroom->hy - sroom->ly + 1)));
 	int dragonindex = 0;
 
 	if (!rn2(3))
 	{
 		dragons[0] = PM_ANCIENT_GRAY_DRAGON + rn2(9);
+		dragonindex++;
 	}
 	else
 	{
@@ -1063,14 +1064,14 @@ mkdragonlair()
 			{
 				/* Ancient dragons have 5-10 true gems */
 				int gemcnt = 5 + rn2(6);
-				for (int i = 0; i < gemcnt; i++)
+				for (int j = 0; j < gemcnt; j++)
 				{
 					struct obj* otmp = mksobj_at(randomtruegem(), sx, sy, FALSE, FALSE);
 				}
 
 				/* Ancient dragons have 1-6 other items */
 				int itemcnt = rnd(6);
-				for (int i = 0; i < itemcnt; i++)
+				for (int j = 0; j < itemcnt; j++)
 				{
 					struct obj* otmp = mkobj_at(0, sx, sy, FALSE);
 				}
@@ -1080,14 +1081,14 @@ mkdragonlair()
 			{
 				/* Adult dragons have 0-5 gems */
 				int gemcnt = rn2(6);
-				for (int i = 0; i < gemcnt; i++)
+				for (int j = 0; j < gemcnt; j++)
 				{
 					struct obj* otmp = mkobj_at(GEM_CLASS, sx, sy, FALSE);
 				}
 
 				/* Adult dragons have 0-3 other items */
 				int itemcnt = rn2(4);
-				for (int i = 0; i < itemcnt; i++)
+				for (int j = 0; j < itemcnt; j++)
 				{
 					struct obj* otmp = mkobj_at(0, sx, sy, FALSE);
 				}
@@ -1096,14 +1097,14 @@ mkdragonlair()
 			{
 				/* Hatchlings dragons have 0-2 gems */
 				int gemcnt = rn2(3);
-				for (int i = 0; i < gemcnt; i++)
+				for (int j = 0; j < gemcnt; j++)
 				{
 					struct obj* otmp = mkobj_at(GEM_CLASS, sx, sy, FALSE);
 				}
 
 				/* Adult dragons have 0-1 other items */
 				int itemcnt = rn2(2);
-				for (int i = 0; i < itemcnt; i++)
+				for (int j = 0; j < itemcnt; j++)
 				{
 					struct obj* otmp = mkobj_at(0, sx, sy, FALSE);
 				}
