@@ -1619,21 +1619,29 @@ int fd;
     mread(fd, (genericptr_t) &ymin, sizeof(int));
     mread(fd, (genericptr_t) &xmax, sizeof(int));
     mread(fd, (genericptr_t) &ymax, sizeof(int));
-    for (i = 0; i < n; i++) {
+    for (i = 0; i < n; i++) 
+	{
         btmp = b;
         b = (struct bubble *) alloc(sizeof(struct bubble));
-        mread(fd, (genericptr_t) b, sizeof(struct bubble));
-        if (bbubbles) {
-            btmp->next = b;
-            b->prev = btmp;
-        } else {
-            bbubbles = b;
-            b->prev = (struct bubble *) 0;
-        }
-        mv_bubble(b, 0, 0, TRUE);
+		if(b)
+		{
+			mread(fd, (genericptr_t) b, sizeof(struct bubble));
+			if (bbubbles && btmp) 
+			{
+				btmp->next = b;
+				b->prev = btmp;
+			}
+			else
+			{
+				bbubbles = b;
+				b->prev = (struct bubble *) 0;
+			}
+			mv_bubble(b, 0, 0, TRUE);
+		}
     }
     ebubbles = b;
-    b->next = (struct bubble *) 0;
+	if(b)
+	    b->next = (struct bubble *) 0;
     was_waterlevel = TRUE;
 }
 
@@ -1768,7 +1776,7 @@ int x, y, n;
     b->dy = 1 - rn2(3);
     /* y dimension is the length of bitmap data - see bmask above */
     (void) memcpy((genericptr_t) b->bm, (genericptr_t) bmask[n],
-                  (bmask[n][1] + 2) * sizeof(b->bm[0]));
+                  ((size_t)bmask[n][1] + 2) * sizeof(b->bm[0]));
     b->cons = 0;
     if (!bbubbles)
         bbubbles = b;

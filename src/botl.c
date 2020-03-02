@@ -1107,6 +1107,9 @@ STATIC_OVL int
 compare_blstats(bl1, bl2)
 struct istat_s *bl1, *bl2;
 {
+	if (!bl1 || !bl2)
+		return 0;
+
     int anytype, result = 0;
 
     if (!bl1 || !bl2) {
@@ -1130,6 +1133,9 @@ struct istat_s *bl1, *bl2;
                      : (bl1->a.a_int > bl2->a.a_int) ? -1 : 0;
         break;
     case ANY_IPTR:
+		if (!bl1->a.a_iptr || !bl2->a.a_iptr)
+			return 0;
+
         result = (*bl1->a.a_iptr < *bl2->a.a_iptr)
                      ? 1
                      : (*bl1->a.a_iptr > *bl2->a.a_iptr) ? -1 : 0;
@@ -1140,7 +1146,9 @@ struct istat_s *bl1, *bl2;
                      : (bl1->a.a_long > bl2->a.a_long) ? -1 : 0;
         break;
     case ANY_LPTR:
-        result = (*bl1->a.a_lptr < *bl2->a.a_lptr)
+		if (!bl1->a.a_lptr || !bl2->a.a_lptr)
+			return 0;
+		result = (*bl1->a.a_lptr < *bl2->a.a_lptr)
                      ? 1
                      : (*bl1->a.a_lptr > *bl2->a.a_lptr) ? -1 : 0;
         break;
@@ -1150,7 +1158,9 @@ struct istat_s *bl1, *bl2;
                      : (bl1->a.a_uint > bl2->a.a_uint) ? -1 : 0;
         break;
     case ANY_UPTR:
-        result = (*bl1->a.a_uptr < *bl2->a.a_uptr)
+		if (!bl1->a.a_uptr || !bl2->a.a_uptr)
+			return 0;
+		result = (*bl1->a.a_uptr < *bl2->a.a_uptr)
                      ? 1
                      : (*bl1->a.a_uptr > *bl2->a.a_uptr) ? -1 : 0;
         break;
@@ -1160,7 +1170,10 @@ struct istat_s *bl1, *bl2;
                      : (bl1->a.a_ulong > bl2->a.a_ulong) ? -1 : 0;
         break;
     case ANY_ULPTR:
-        result = (*bl1->a.a_ulptr < *bl2->a.a_ulptr)
+		if (!bl1->a.a_ulptr || !bl2->a.a_ulptr)
+			return 0;
+
+		result = (*bl1->a.a_ulptr < *bl2->a.a_ulptr)
                      ? 1
                      : (*bl1->a.a_ulptr > *bl2->a.a_ulptr) ? -1 : 0;
         break;

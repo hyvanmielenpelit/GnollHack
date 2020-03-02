@@ -808,7 +808,7 @@ grep0(inputfp0, outputfp0)
 FILE *inputfp0;
 FILE *outputfp0;
 {
-    char buf[16384]; /* looong, just in case */
+    char buf[16350]; /* looong, just in case */
 
     while (!feof(inputfp0) && !ferror(inputfp0)) {
         char *tmp;
@@ -1033,6 +1033,9 @@ do_rumors()
 
     /* get ready to transfer the contents of temp file to output file */
     line = malloc(BUFSZ + MAXFNAMELEN);
+	if (!line)
+		return;
+
     Sprintf(line, "rewind of \"%s\"", tempfile);
     if (rewind(tfp) != 0) {
         perror(line);
@@ -1984,6 +1987,9 @@ do_data()
 
     /* update the first record of the output file; prepare error msg 1st */
     line = malloc(BUFSZ + MAXFNAMELEN);
+	if (!line)
+		return;
+
     Sprintf(line, "rewind of \"%s\"", filename);
     ok = (rewind(ofp) == 0);
     if (ok) {
@@ -2843,6 +2849,7 @@ FILE *fd;
     static const int inc = 256;
     int len = inc;
     char *c = malloc(len), *ret;
+	char* c2;
 
     for (;;) {
         ret = fgets(c + len - inc, inc, fd);
@@ -2855,7 +2862,15 @@ FILE *fd;
             break;
         }
         len += inc;
-        c = realloc(c, len);
+        c2 = realloc(c, len);
+		if (!c2 && c)
+		{
+			free(c);
+			c = c2;
+			break;
+		}
+		else
+			c = c2;
     }
     return c;
 }

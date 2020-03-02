@@ -207,27 +207,39 @@ long mask;
 		wepinotherhand = uwep;
 	}
 
-    if (!wep) {
+    if (!wep)
+	{
         /* No weapon */
-        if (wepinhand) {
+        if (wepinhand)
+		{
             You("are empty %s.", body_part(HANDED));
             setuwep((struct obj *) 0, mask);
             res++;
-        } else
+        } 
+		else
             You("are already empty %s.", body_part(HANDED));
-    } else if (wep->otyp == CORPSE && cant_wield_corpse(wep)) {
+    } 
+	else if (wep->otyp == CORPSE && cant_wield_corpse(wep)) 
+	{
         /* hero must have been life-saved to get here; use a turn */
         res++; /* corpse won't be wielded */
-    } else if (wepinotherhand && bimanual(wep)) {
+    } 
+	else if (wepinotherhand && bimanual(wep)) 
+	{
         You("cannot wield a two-handed %s while %s.",
             is_sword(wep) ? "sword" : wep->otyp == BATTLE_AXE ? "axe"
                                                               : "weapon", is_shield(wepinotherhand) ? "wearing a shield" : "wielding a weapon in the other hand");
-    } else if (!retouch_object(&wep, FALSE)) {
+    } 
+	else if (!retouch_object(&wep, FALSE))
+	{
         res++; /* takes a turn even though it doesn't get wielded */
-    } else {
+    } 
+	else 
+	{
         /* Weapon WILL be wielded after this point */
         res++;
-        if (will_weld(wep, &youmonst)) {
+        if (will_weld(wep, &youmonst)) 
+		{
             const char *tmp = xname(wep), *thestr = "The ";
 
             if (strncmp(tmp, thestr, 4) && !strncmp(The(tmp), thestr, 4))
@@ -239,7 +251,9 @@ long mask;
                   bimanual(wep) ? (const char *) makeplural(body_part(HAND))
                                 : body_part(HAND));
             wep->bknown = TRUE;
-        } else {
+        } 
+		else 
+		{
             /* The message must be printed before setuwep (since
              * you might die and be revived from changing weapons),
              * and the message must be before the death message and
@@ -282,7 +296,8 @@ long mask;
             change_luck(-1);
         }
 #endif
-        if (wep->unpaid) {
+        if (wep && wep->unpaid)
+		{
             struct monst *this_shkp;
 
             if ((this_shkp = shop_keeper(inside_shop(u.ux, u.uy)))
@@ -881,7 +896,7 @@ dowieldquiver()
         You("cannot ready that!");
         return 0;
     }
-	else if (newquiver == uwep) {
+	else if (newquiver == uwep && uwep) {
         int weld_res = !uwep->bknown;
 
         if (welded(uwep, &youmonst)) {
@@ -924,7 +939,7 @@ dowieldquiver()
         //untwoweapon();
         was_uwep = TRUE;
     }
-	else if (newquiver == uarms) 
+	else if (newquiver == uarms && uarms) 
 	{
 		int weld_res = !uarms->bknown;
 
@@ -969,7 +984,7 @@ dowieldquiver()
 		//untwoweapon();
 		was_uarms = TRUE;
 	}
-	else if (newquiver == uswapwep)
+	else if (newquiver == uswapwep && uswapwep)
 	{
         if (uswapwep->quan > 1L && inv_cnt(FALSE) < 52
             && splittable(uswapwep)) {
@@ -1009,7 +1024,7 @@ dowieldquiver()
         setuswapwep((struct obj *) 0, W_SWAPWEP);
         //untwoweapon();
     } 
-	else if (newquiver == uswapwep2)
+	else if (newquiver == uswapwep2 && uswapwep2)
 	{
 		if (uswapwep2->quan > 1L && inv_cnt(FALSE) < 52
 			&& splittable(uswapwep2)) {
@@ -1032,7 +1047,7 @@ dowieldquiver()
 		}
 		else 
 		{
-			boolean use_plural = (is_plural(uswapwep) || pair_of(uswapwep));
+			boolean use_plural = (is_plural(uswapwep2) || pair_of(uswapwep2));
 
 			Sprintf(qbuf, "%s your %s weapon.  Ready %s instead?",
 				!use_plural ? "That is" : "Those are",
@@ -1042,14 +1057,14 @@ dowieldquiver()
 
 		/* require confirmation to ready the alternate weapon */
 		if (ynq(qbuf) != 'y') {
-			(void)Shk_Your(qbuf, uswapwep); /* replace qbuf[] contents */
+			(void)Shk_Your(qbuf, uswapwep2); /* replace qbuf[] contents */
 			pline("%s%s %s %s.", qbuf,
-				simpleonames(uswapwep), otense(uswapwep, "remain"),
+				simpleonames(uswapwep2), otense(uswapwep2, "remain"),
 				"as alternate weapon");
 			return 0;
 		}
 		/* quivering alternate weapon, so no more uswapwep */
-		setuswapwep((struct obj*) 0, W_SWAPWEP);
+		setuswapwep((struct obj*) 0, W_SWAPWEP2);
 		//untwoweapon();
 	}
 

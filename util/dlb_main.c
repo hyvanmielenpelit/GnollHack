@@ -158,7 +158,8 @@ char **argv;
 {
 #ifdef DLB
 #ifdef DLBLIB
-    int i, r;
+	int i;
+	size_t r;
     int ap = 2;                            /* argument pointer */
     int cp;                                /* command pointer */
     int iseen = 0, fseen = 0, verbose = 0; /* flags */
@@ -263,7 +264,8 @@ char **argv;
         xexit(EXIT_SUCCESS);
 
     case 'x': { /* extract archive contents */
-        int f, n;
+		int f;
+		size_t n;
         long remainder, total_read;
         char buf[BUFSIZ];
 
@@ -304,7 +306,7 @@ char **argv;
             do {
                 remainder = lib.dir[i].fsize - total_read;
                 if (remainder > (long) sizeof(buf))
-                    r = (int) sizeof(buf);
+                    r = sizeof(buf);
                 else
                     r = remainder;
 
@@ -313,7 +315,7 @@ char **argv;
                     printf("Read Error in '%s'\n", lib.dir[i].fname);
                     xexit(EXIT_FAILURE);
                 }
-                if (write(f, buf, n) != n) {
+                if (write(f, buf, (int)n) != (int)n) {
                     printf("Write Error in '%s'\n", lib.dir[i].fname);
                     xexit(EXIT_FAILURE);
                 }

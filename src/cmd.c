@@ -383,7 +383,7 @@ doextlist(VOID_ARGS)
     char buf[BUFSZ], searchbuf[BUFSZ], promptbuf[QBUFSZ];
     winid menuwin;
     anything any;
-    menu_item *selected;
+	menu_item* selected = (menu_item*)0;
     int n, pass;
     int menumode = 0, menushown[2], onelist = 0;
     boolean redisplay = TRUE, search = FALSE;
@@ -706,12 +706,12 @@ doability(VOID_ARGS)
 	start_menu(win);
 		
 
-#define MAXABILITYNUM 100
+#define MAXABILITYNUM 50
 
 	struct available_ability 
 	{
 		int charnum;
-		char name[BUFSZ];
+		char name[80];
 		int (*function_ptr)();
 	};
 	struct available_ability available_ability_list[MAXABILITYNUM] = { { 0 } };

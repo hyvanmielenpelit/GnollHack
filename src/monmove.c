@@ -397,6 +397,9 @@ int fleetime;
 boolean first;
 boolean fleemsg;
 {
+	if (!mtmp)
+		return;
+
     /* shouldn't happen; maybe warrants impossible()? */
     if (DEADMONSTER(mtmp))
         return;
@@ -1420,21 +1423,24 @@ register int after;
 			struct monst* mtmp2 = m_at(nix, niy);
 			int mstatus;
 
-            notonhead = mtmp2 && (nix != mtmp2->mx || niy != mtmp2->my);
-            /* note: mstatus returns 0 if mtmp2 is nonexistent */
-            mstatus = mattackm(mtmp, mtmp2);
+			if(mtmp2)
+			{
+				notonhead = mtmp2 && (nix != mtmp2->mx || niy != mtmp2->my);
+				/* note: mstatus returns 0 if mtmp2 is nonexistent */
+				mstatus = mattackm(mtmp, mtmp2);
 
-            if (mstatus & MM_AGR_DIED) /* aggressor died */
-                return 2;
+				if (mstatus & MM_AGR_DIED) /* aggressor died */
+					return 2;
 
-            if ((mstatus & MM_HIT) && !(mstatus & MM_DEF_DIED) && rn2(4)
-                && mtmp2->movement >= NORMAL_SPEED) {
-                mtmp2->movement -= NORMAL_SPEED;
-                notonhead = 0;
-                mstatus = mattackm(mtmp2, mtmp); /* return attack */
-                if (mstatus & MM_DEF_DIED)
-                    return 2;
-            }
+				if ((mstatus & MM_HIT) && !(mstatus & MM_DEF_DIED) && rn2(4)
+					&& mtmp2->movement >= NORMAL_SPEED) {
+					mtmp2->movement -= NORMAL_SPEED;
+					notonhead = 0;
+					mstatus = mattackm(mtmp2, mtmp); /* return attack */
+					if (mstatus & MM_DEF_DIED)
+						return 2;
+				}
+			}
             return 3;
         }
 
@@ -1827,6 +1833,9 @@ undesirable_disp(mtmp, x, y)
 struct monst *mtmp;
 xchar x, y;
 {
+	if (!mtmp)
+		return TRUE;
+
     boolean is_pet = (mtmp && is_tame(mtmp) && !mtmp->isminion);
     struct trap *trap = t_at(x, y);
 
@@ -1916,6 +1925,9 @@ struct monst *mon;
 struct permonst *ptr;
 boolean domsg;
 {
+	if (!mon)
+		return 0;
+
     int reslt = 0;
     char oldmtype[BUFSZ];
 

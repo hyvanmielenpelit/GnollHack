@@ -718,9 +718,13 @@ gazemm(magr, mdef, mattk)
 register struct monst *magr, *mdef;
 struct attack *mattk;
 {
+	if (!magr || !mdef)
+		return 0;
+
     char buf[BUFSZ];
 
-    if (vis) {
+    if (vis) 
+	{
         if (mdef->data->mlet == S_MIMIC
             && M_AP_TYPE(mdef) != M_AP_NOTHING)
             seemimic(mdef);
@@ -737,19 +741,23 @@ struct attack *mattk;
         return MM_MISS;
     }
     /* call mon_reflects 2x, first test, then, if visible, print message */
-    if (magr->data == &mons[PM_MEDUSA] && mon_reflects(mdef, (char *) 0)) {
+    if (magr->data == &mons[PM_MEDUSA] && mon_reflects(mdef, (char *) 0))
+	{
         if (canseemon(mdef))
             (void) mon_reflects(mdef, "The gaze is reflected away by %s %s.");
         if (!is_blinded(mdef)) 
 		{
-            if (mon_reflects(magr, (char *) 0)) {
+            if (mon_reflects(magr, (char *) 0)) 
+			{
                 if (canseemon(magr))
                     (void) mon_reflects(magr,
                                       "The gaze is reflected away by %s %s.");
                 return MM_MISS;
             }
-            if (is_invisible(mdef) && !has_see_invisible(magr)) {
-                if (canseemon(magr)) {
+            if (is_invisible(mdef) && !has_see_invisible(magr))
+			{
+                if (canseemon(magr)) 
+				{
                     pline(
                       "%s doesn't seem to notice that %s gaze was reflected.",
                           Monnam(magr), mhis(magr));
@@ -1088,7 +1096,7 @@ register struct obj* omonwep;
 				if (special_hit_dmg < 0)
 				{
 					hittxtalreadydisplayed = TRUE;
-					damage += 2 * mdef->mhp + 200;
+					damage += 2 * (double)mdef->mhp + 200;
 					if (special_hit_dmg == -2)
 						isdisintegrated = TRUE;
 				}

@@ -831,14 +831,17 @@ angry_priest()
                 != eprip->shralign)) {
             if (!EMIN(priest))
                 newemin(priest);
-            priest->ispriest = 0; /* now a roaming minion */
-            priest->isminion = 1;
-            EMIN(priest)->min_align = eprip->shralign;
-            EMIN(priest)->renegade = FALSE;
-            /* discard priest's memory of his former shrine;
-               if we ever implement the re-conversion mentioned
-               above, this will need to be removed */
-            free_epri(priest);
+			if (EMIN(priest))
+			{
+				priest->ispriest = 0; /* now a roaming minion */
+				priest->isminion = 1;
+				EMIN(priest)->min_align = eprip->shralign;
+				EMIN(priest)->renegade = FALSE;
+				/* discard priest's memory of his former shrine;
+				   if we ever implement the re-conversion mentioned
+				   above, this will need to be removed */
+				free_epri(priest);
+			}
         }
     }
 }

@@ -2600,7 +2600,7 @@ register struct obj *atmp;
 #define DESTROY_ARM(o)                            \
     ((otmp = (o)) != 0 && (!atmp || atmp == otmp) \
              && (!obj_resists(otmp, 0, 90))       \
-         ? (otmp->in_use = TRUE)                  \
+         ? (otmp->in_use = TRUE) != 0             \
          : FALSE)
 
     if (DESTROY_ARM(uarmc)) {

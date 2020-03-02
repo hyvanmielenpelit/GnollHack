@@ -2952,7 +2952,8 @@ boolean to_plural;            /* true => makeplural, false => makesingular */
         "tegu", "vela", "da", "hy", "lu", "no", "nu", "ra", "ru", "se", "vi",
         "ya", "o", "a",
     };
-    int i, al;
+	int i;
+	size_t al;
     const char *endstr, *spot;
 
     if (!basestr || strlen(basestr) < 4)
@@ -2962,7 +2963,7 @@ boolean to_plural;            /* true => makeplural, false => makesingular */
 
     if (to_plural) {
         for (i = 0; i < SIZE(no_men); i++) {
-            al = (int) strlen(no_men[i]);
+            al = strlen(no_men[i]);
             spot = endstr - (al + 3);
             if (!BSTRNCMPI(basestr, spot, no_men[i], al)
                 && (spot == basestr || *(spot - 1) == ' '))
@@ -2970,7 +2971,7 @@ boolean to_plural;            /* true => makeplural, false => makesingular */
         }
     } else {
         for (i = 0; i < SIZE(no_man); i++) {
-            al = (int) strlen(no_man[i]);
+            al = strlen(no_man[i]);
             spot = endstr - (al + 3);
             if (!BSTRNCMPI(basestr, spot, no_man[i], al)
                 && (spot == basestr || *(spot - 1) == ' '))
@@ -4732,6 +4733,9 @@ struct obj *obj;
 char *FDECL((*func), (OBJ_P)), *FDECL((*altfunc), (OBJ_P));
 const char *lastR;
 {
+	if (!qbuf)
+		return qbuf;
+
     char *bufp, *endp;
     /* convert size_t (or int for ancient systems) to ordinary unsigned */
     unsigned len, lenlimit,

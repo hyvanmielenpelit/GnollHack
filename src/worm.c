@@ -595,8 +595,12 @@ struct monst *worm;
 {
     struct wseg *curr;
 
-    if (!worm)
-        panic("no worm!");
+	if (!worm)
+	{
+		panic("no worm!");
+		return;
+	}
+
     if (!worm->wormno)
         panic("not a worm?!");
 

@@ -9,6 +9,9 @@ void
 were_change(mon)
 register struct monst *mon;
 {
+	if (!mon)
+		return;
+
     if (!is_were(mon->data))
         return;
 
@@ -95,6 +98,9 @@ void
 new_were(mon)
 register struct monst *mon;
 {
+	if (!mon)
+		return;
+
     register int pm;
 
     pm = counter_were(monsndx(mon->data));

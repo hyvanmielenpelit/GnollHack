@@ -435,6 +435,9 @@ STATIC_OVL void
 use_whistle(obj)
 struct obj *obj;
 {
+	if (!obj)
+		return;
+
     if (!can_blow(&youmonst)) {
         You("are incapable of using the whistle.");
     } else if (Underwater) {
@@ -560,6 +563,9 @@ m_unleash(mtmp, feedback)
 register struct monst *mtmp;
 boolean feedback;
 {
+	if (!mtmp)
+		return;
+
     register struct obj *otmp;
 
     if (feedback) {
@@ -2406,16 +2412,19 @@ long timeout;
 
                 mon = figurine->ocarry;
                 /* figurine carrying monster might be invisible */
-                if (canseemon(figurine->ocarry)
-                    && (!mon->wormno || cansee(mon->mx, mon->my)))
-                    Sprintf(carriedby, "%s pack", s_suffix(a_monnam(mon)));
-                else if (is_pool(mon->mx, mon->my))
-                    Strcpy(carriedby, "empty water");
-                else
-                    Strcpy(carriedby, "thin air");
-                You_see("%s %s out of %s%s!", monnambuf,
-                        locomotion(mtmp->data, "drop"), carriedby,
-                        and_vanish);
+				if (mon)
+				{
+					if (canseemon(mon)
+						&& (!mon->wormno || cansee(mon->mx, mon->my)))
+						Sprintf(carriedby, "%s pack", s_suffix(a_monnam(mon)));
+					else if (is_pool(mon->mx, mon->my))
+						Strcpy(carriedby, "empty water");
+					else
+						Strcpy(carriedby, "thin air");
+					You_see("%s %s out of %s%s!", monnambuf,
+						locomotion(mtmp->data, "drop"), carriedby,
+						and_vanish);
+				}
             }
             break;
 #if 0

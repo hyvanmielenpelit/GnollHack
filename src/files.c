@@ -1312,7 +1312,8 @@ void
 free_saved_games(saved)
 char **saved;
 {
-    if (saved) {
+    if (saved) 
+	{
         int i = 0;
 
         while (saved[i])
@@ -3822,7 +3823,7 @@ recover_savefile()
             if (lfd >= 0) {
                 /* any or all of these may not exist */
                 levc = (xchar) lev;
-                write(sfd, (genericptr_t) &levc, sizeof(levc));
+                (void)write(sfd, (genericptr_t) &levc, sizeof(levc));
                 if (!copy_bytes(lfd, sfd)) {
                     (void) nhclose(lfd);
                     (void) nhclose(sfd);

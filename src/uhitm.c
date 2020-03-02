@@ -3250,6 +3250,9 @@ STATIC_OVL boolean
 hmonas(mon)
 register struct monst *mon;
 {
+	if (!mon)
+		return FALSE;
+
     struct attack *mattk, alt_attk;
     struct obj *weapon, **originalweapon;
     boolean altwep = FALSE, weapon_used = FALSE, weapon2_used = FALSE, odd_claw = TRUE;
@@ -4057,6 +4060,9 @@ flash_hits_mon(mtmp, otmp)
 struct monst *mtmp;
 struct obj *otmp; /* source of flash */
 {
+	if (!mtmp)
+		return 0;
+
     int tmp, amt, res = 0, useeit = canseemon(mtmp);
 
     if (mtmp->msleeping) {

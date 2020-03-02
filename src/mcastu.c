@@ -566,6 +566,9 @@ struct monst *mtmp;
 double damage;
 int spellnum;
 {
+	if (!mtmp)
+		return;
+
     if (damage == 0 && !is_undirected_spell(AD_CLRC, spellnum)) {
         impossible("cast directed cleric spell (%d) with damage=0?", spellnum);
         return;

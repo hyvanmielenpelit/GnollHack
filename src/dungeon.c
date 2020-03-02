@@ -98,7 +98,7 @@ dumpit()
                 DD.flags.rogue_like ? " rogue_like" : "",
                 DD.flags.maze_like ? " maze_like" : "",
                 DD.flags.hellish ? " hellish" : "");
-        getchar();
+        (void)getchar();
     }
     fprintf(stderr, "\nSpecial levels:\n");
     for (x = sp_levchn; x; x = x->next) {
@@ -109,7 +109,7 @@ dumpit()
                 x->flags.maze_like ? " maze_like" : "",
                 x->flags.hellish ? " hellish" : "",
                 x->flags.town ? " town" : "");
-        getchar();
+		(void)getchar();
     }
     fprintf(stderr, "\nBranches:\n");
     for (br = branches; br; br = br->next) {
@@ -126,9 +126,9 @@ dumpit()
                 br->end1.dnum, br->end1.dlevel, br->end2.dnum,
                 br->end2.dlevel, br->end1_up ? "end1 up" : "end1 down");
     }
-    getchar();
+	(void)getchar();
     fprintf(stderr, "\nDone\n");
-    getchar();
+	(void)getchar();
 }
 #endif
 
@@ -355,9 +355,11 @@ int *adjusted_base;
 
     if (chain >= 0) { /* relative to a special level */
         s_level *levtmp = pd->final_lev[chain];
-        if (!levtmp)
-            panic("level_range: empty chain level!");
-
+		if (!levtmp)
+		{
+			panic("level_range: empty chain level!");
+			return 0;
+		}
         base += levtmp->dlevel.dlevel;
     } else { /* absolute in the dungeon */
         /* from end of dungeon */
@@ -365,9 +367,11 @@ int *adjusted_base;
             base = (lmax + base + 1);
     }
 
-    if (base < 1 || base > lmax)
-        panic("level_range: base value out of range");
-
+	if (base < 1 || base > lmax)
+	{
+		panic("level_range: base value out of range");
+		return 0;
+	}
     *adjusted_base = base;
 
     if (randc == -1) { /* from base to end of dungeon */
@@ -443,9 +447,13 @@ boolean extract_first;
             if (curr == new_branch)
                 break;
 
-        if (!curr)
-            panic("insert_branch: not found");
-        if (prev)
+		if (!curr)
+		{
+			panic("insert_branch: not found");
+			return;
+		}
+
+		if (prev)
             prev->next = curr->next;
         else
             branches = curr->next;
@@ -893,8 +901,11 @@ init_dungeons()
          * routine will attempt all possible combinations before giving
          * up.
          */
-        if (!place_level(pd.start, &pd))
-            panic("init_dungeon:  couldn't place levels");
+		if (!place_level(pd.start, &pd))
+		{
+			panic("init_dungeon:  couldn't place levels");
+			return;
+		}
 #ifdef DDEBUG
         fprintf(stderr, "--- end of dungeon %d ---\n", i);
         fflush(stderr);
@@ -905,8 +916,12 @@ init_dungeons()
                 add_level(pd.final_lev[pd.start]);
 
         pd.n_brs += pd.tmpdungeon[i].branches;
-        if (pd.n_brs > BRANCH_LIMIT)
-            panic("init_dungeon: too many branches");
+		if (pd.n_brs > BRANCH_LIMIT)
+		{
+			panic("init_dungeon: too many branches");
+			return;
+		}
+
         for (; cb < pd.n_brs; cb++)
             Fread((genericptr_t) &pd.tmpbranch[cb], sizeof(struct tmpbranch),
                   1, dgn_file);
@@ -1381,9 +1396,11 @@ int levnum;
                 for (br = branches; br; br = br->next)
                     if (br->end2.dnum == dgn)
                         break;
-                if (!br)
-                    panic("get_level: can't find parent dungeon");
-
+				if (!br)
+				{
+					panic("get_level: can't find parent dungeon");
+					return;
+				}
                 dgn = br->end1.dnum;
             } while (levnum < dungeons[dgn].depth_start);
         }

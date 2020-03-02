@@ -277,6 +277,7 @@ const char *s;
     if (!winchoices[0].procs) {
         raw_printf("No window types?");
         nh_terminate(EXIT_FAILURE);
+		return;
     }
     if (!winchoices[1].procs) {
         config_error_add(

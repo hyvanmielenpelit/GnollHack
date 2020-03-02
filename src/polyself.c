@@ -1257,7 +1257,7 @@ int alone;
             if (u.twoweap) {
                 otmp = uarms;
                 uwep2gone();
-                if (otmp->in_use)
+                if (otmp && otmp->in_use)
                     updateinv = FALSE;
                 else if (candropwep2)
                     dropx(otmp);

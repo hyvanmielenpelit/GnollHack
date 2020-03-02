@@ -112,8 +112,8 @@ struct obj *obj;
         k = objects[otyp].oc_armor_category;
         /* oc_armor_category overloads oc_subtyp which is an 'schar' so guard
            against somebody assigning something unexpected to it */
-        if (k < 0 || k >= 11)
-            k = 11;
+        if (k < 0 || k >= 9)
+            k = 9;
         k = armcat[k];
         break;
     case WEAPON_CLASS:

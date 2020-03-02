@@ -45,8 +45,11 @@ int FDECL((*fn), (int));
     unsigned i;
     int rngindx = whichrng(fn);
 
-    if (rngindx < 0)
-        panic("Bad rng function passed to init_isaac64().");
+	if (rngindx < 0)
+	{
+		panic("Bad rng function passed to init_isaac64().");
+		return;
+	}
 
     for (i = 0; i < sizeof seed; i++) {
         new_rng_state[i] = (unsigned char) (seed & 0xFF);

@@ -1019,8 +1019,11 @@ int x, y;
         break;
     }
 
-    if (!tglyph)
-        panic("tmp_at: tglyph not initialized");
+	if (!tglyph)
+	{
+		panic("tmp_at: tglyph not initialized");
+		return;
+	}
 
     switch (x) {
     case DISP_CHANGE:

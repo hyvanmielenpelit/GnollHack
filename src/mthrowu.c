@@ -150,6 +150,9 @@ register struct obj *obj;
 boolean ohit;
 int x, y;
 {
+	if (!obj)
+		return 1;
+
     int retvalu = 1;
     int create;
     struct monst *mtmp;
@@ -327,6 +330,9 @@ monshoot(mtmp, otmp, mwep)
 struct monst *mtmp;
 struct obj *otmp, *mwep;
 {
+	if (!mtmp)
+		return;
+
     struct monst *mtarg = target;
 
 	//This is monster's weapon range -- looks like unlimited
@@ -392,6 +398,9 @@ int range;          /* how much farther will object travel if it misses;
                        unless it's gone (used for rolling_boulder_traps) */
 boolean verbose;    /* give message(s) even when you can't see what happened */
 {
+	if (!mtmp || !otmp)
+		return 1;
+
     int dmg, tmp;
 	double damage = 0;
 	boolean vis, ismimic;
@@ -1142,6 +1151,9 @@ spitmm(mtmp, mattk, mtarg)
 struct monst *mtmp, *mtarg;
 struct attack *mattk;
 {
+	if (!mtmp)
+		return 0;
+
     struct obj *otmp;
 
     if (is_cancelled(mtmp)) {
@@ -1194,6 +1206,10 @@ breamm(mtmp, mattk, mtarg)
 struct monst *mtmp, *mtarg;
 struct attack  *mattk;
 {
+	if (!mtmp || !mattk)
+		return 0;
+
+
     /* if new breath types are added, change AD_ACID to max type */
     int typ = (mattk->adtyp == AD_RBRE) ? rnd(AD_ACID) : mattk->adtyp ; // Does not include death ray
 
@@ -1247,6 +1263,9 @@ eyesmm(mtmp, mattk, mtarg)
 struct monst* mtmp, * mtarg;
 struct attack* mattk;
 {
+	if (!mtmp || !mattk)
+		return 0;
+
 	int effect_choices[6] = { AD_DISN, AD_DRAY, AD_ELEC, AD_MAGM, AD_SLEE, AD_COLD };
 	int ray1_effect_choices[3] = { AD_DISN, AD_ELEC, AD_COLD }; /* Elemental */
 	int ray2_effect_choices[3] = { AD_DRAY, AD_MAGM, AD_SLEE }; /* Magic */
@@ -1411,6 +1430,9 @@ spitmu(mtmp, mattk)
 struct monst *mtmp;
 struct attack *mattk;
 {
+	if (!mtmp || !mattk)
+		return 0;
+
     struct obj *otmp;
 
     if (is_cancelled(mtmp)) 

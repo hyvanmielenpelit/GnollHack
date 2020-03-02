@@ -1716,7 +1716,8 @@ xchar x, y; /* clone's preferred location or 0 (near mon) */
 			m2->mtame = 0;
 			if (tamedog(m2, (struct obj*) 0, FALSE, FALSE, 0, FALSE))
 			{
-				*(EDOG(m2)) = *(EDOG(mon));
+				if(m2->mextra && mon->mextra)
+					*(EDOG(m2)) = *(EDOG(mon));
 			}
 		}
 	}

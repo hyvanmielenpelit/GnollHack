@@ -2499,6 +2499,9 @@ STATIC_OVL const char *
 foodword(otmp)
 struct obj *otmp;
 {
+	if (!otmp)
+		return "invalid item";
+
 	static const char food[] = "food";
 
     if (otmp->oclass == FOOD_CLASS)

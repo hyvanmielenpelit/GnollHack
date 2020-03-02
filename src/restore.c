@@ -1239,8 +1239,11 @@ register int fd;
         mread(fd, (genericptr_t) &msgsize, sizeof(msgsize));
         if (msgsize == -1)
             break;
-        if (msgsize > (BUFSZ - 1))
-            panic("restore_msghistory: msg too big (%d)", msgsize);
+		if (msgsize > (BUFSZ - 1))
+		{
+			panic("restore_msghistory: msg too big (%d)", msgsize);
+			return;
+		}
         mread(fd, (genericptr_t) msg, msgsize);
         msg[msgsize] = '\0';
         putmsghistory(msg, TRUE);

@@ -1602,8 +1602,12 @@ winid window;
     register struct WinDesc *cw = 0;
 
     HUPSKIP();
-    if (window == WIN_ERR || (cw = wins[window]) == (struct WinDesc *) 0)
-        panic(winpanicstr, window);
+	if (window == WIN_ERR || (cw = wins[window]) == (struct WinDesc*) 0)
+	{
+		panic(winpanicstr, window);
+		return;
+	}
+
     ttyDisplay->lastwin = window;
 
     print_vt_code2(AVTC_SELECT_WINDOW, window);
@@ -2401,7 +2405,10 @@ winid window;
 
     HUPSKIP();
     if (window == WIN_ERR || (cw = wins[window]) == (struct WinDesc *) 0)
-        panic(winpanicstr, window);
+	{
+		panic(winpanicstr, window);
+		return;
+	}
 
     print_vt_code2(AVTC_SELECT_WINDOW, window);
 
@@ -2446,7 +2453,10 @@ winid window;
     register struct WinDesc *cw = 0;
 
     if (window == WIN_ERR || (cw = wins[window]) == (struct WinDesc *) 0)
-        panic(winpanicstr, window);
+	{
+		panic(winpanicstr, window);
+		return;
+	}
 
     if (cw->active)
         tty_dismiss_nhwindow(window);
@@ -2472,8 +2482,12 @@ register int x, y; /* not xchar: perhaps xchar is unsigned and
 
     HUPSKIP();
     if (window == WIN_ERR || (cw = wins[window]) == (struct WinDesc *) 0)
-        panic(winpanicstr, window);
-    ttyDisplay->lastwin = window;
+	{
+		panic(winpanicstr, window);
+		return;
+	}
+	
+	ttyDisplay->lastwin = window;
 
     print_vt_code2(AVTC_SELECT_WINDOW, window);
 
@@ -2571,7 +2585,10 @@ char ch;
 
     HUPSKIP();
     if (window == WIN_ERR || (cw = wins[window]) == (struct WinDesc *) 0)
-        panic(winpanicstr, window);
+	{
+		panic(winpanicstr, window);
+		return;
+	}
 
     print_vt_code2(AVTC_SELECT_WINDOW, window);
 
@@ -2932,7 +2949,10 @@ boolean preselected;        /* item is marked as selected */
     if (window == WIN_ERR
         || (cw = wins[window]) == (struct WinDesc *) 0
         || cw->type != NHW_MENU)
-        panic(winpanicstr, window);
+	{
+		panic(winpanicstr, window);
+		return;
+	}
 
     cw->nitems++;
     if (identifier->a_void) {
@@ -3100,7 +3120,10 @@ menu_item **menu_list;
 
     if (window == WIN_ERR || (cw = wins[window]) == (struct WinDesc *) 0
         || cw->type != NHW_MENU)
-        panic(winpanicstr, window);
+	{
+		panic(winpanicstr, window);
+		return 0;
+	}
 
     *menu_list = (menu_item *) 0;
     cw->how = (short) how;
@@ -4146,9 +4169,12 @@ int x, y;
     int i, n, ncols, nrows, lth = 0;
     struct WinDesc *cw = 0;
 
-    if (WIN_STATUS == WIN_ERR
-        || (cw = wins[WIN_STATUS]) == (struct WinDesc *) 0)
-        panic("tty_putstatusfield: Invalid WinDesc\n");
+	if (WIN_STATUS == WIN_ERR
+		|| (cw = wins[WIN_STATUS]) == (struct WinDesc*) 0)
+	{
+		panic("tty_putstatusfield: Invalid WinDesc\n");
+		return;
+	}
 
     ncols = cw->cols;
     nrows = cw->maxrow;

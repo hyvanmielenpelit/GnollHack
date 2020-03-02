@@ -343,6 +343,7 @@ init_dungeon()
 		    MAXDUNGEON);
 	    (void) fprintf(stderr, "To increase the limit edit MAXDUNGEON in global.h\n");
 	    exit(EXIT_FAILURE);
+		return;
 	}
 
 	in_dungeon = 1;

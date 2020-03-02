@@ -2117,7 +2117,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 							pline("%s hits %s.", The(xname(otmp)), mon_nam(mdef));
 							struct obj* otmp2 = (struct obj*) 0;
 
-							if (resists_disint(mdef) || noncorporeal(mdef->data))
+							if (resists_disint(mdef))
 							{
 								/* should never go here */
 								shieldeff(mdef->mx, mdef->my);
@@ -3119,7 +3119,10 @@ retouch_object(objp, loseit)
 struct obj **objp; /* might be destroyed or unintentionally dropped */
 boolean loseit;    /* whether to drop it if hero can longer touch it */
 {
-    struct obj *obj = *objp;
+	if (!objp || !*objp)
+		return 0;
+	
+	struct obj *obj = *objp;
 
     if (touch_artifact(obj, &youmonst)) {
         char buf[BUFSZ];
@@ -3366,6 +3369,9 @@ is_magic_key(mon, obj)
 struct monst *mon; /* if null, non-rogue is assumed */
 struct obj *obj;
 {
+	if (!obj)
+		return FALSE;
+
     if (((obj && obj->oartifact == ART_MASTER_KEY_OF_THIEVERY)
          && ((mon == &youmonst) ? Role_if(PM_ROGUE)
                                 : (mon && mon->data == &mons[PM_ROGUE])))
@@ -3384,8 +3390,10 @@ struct monst *mon; /* if null, hero assumed */
 
     if (!mon)
         mon = &youmonst;
+
     for (o = ((mon == &youmonst) ? invent : mon->minvent); o;
-         o = nxtobj(o, key, FALSE)) {
+         o = nxtobj(o, key, FALSE)) 
+	{
         if (is_magic_key(mon, o))
             return o;
     }

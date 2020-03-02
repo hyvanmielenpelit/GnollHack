@@ -250,11 +250,12 @@ docharacterstatistics()
 		{
 			intrinsic_count++;
 
-			char buf2[BUFSIZ] = "";
-			char buf3[BUFSIZ] = "";
+			char buf2[BUFSZ];
+			char buf3[BUFSZ];
 
 			strcpy(buf2, get_property_name(i));
 			*buf2 = highc(*buf2);
+			strcpy(buf3, "");
 
 			if (innate_intrinsic & FROM_RACE)
 			{
@@ -3514,7 +3515,7 @@ int retry;
     int n, i, n_dropped = 0;
     long cnt;
     struct obj *otmp, *otmp2;
-    menu_item *pick_list;
+	menu_item* pick_list = (menu_item*)0;
     boolean all_categories = TRUE;
     boolean drop_everything = FALSE;
 

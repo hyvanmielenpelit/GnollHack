@@ -1299,12 +1299,12 @@ dochat()
 	start_menu(win);
 
 
-#define MAXCHATNUM 100
+#define MAXCHATNUM 50
 
 	struct available_chat_item
 	{
 		int charnum;
-		char name[BUFSZ];
+		char name[80];
 		int (*function_ptr)();
 	};
 	struct available_chat_item available_chat_list[MAXCHATNUM];

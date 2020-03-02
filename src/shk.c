@@ -1119,6 +1119,9 @@ make_happy_shk(shkp, silentkops)
 register struct monst *shkp;
 register boolean silentkops;
 {
+	if (!shkp)
+		return;
+
     boolean wasmad = ANGRY(shkp);
     struct eshk *eshkp = ESHK(shkp);
 
@@ -3633,6 +3636,9 @@ struct damage *tmp_dam;
 int *once;
 boolean catchup; /* restoring a level */
 {
+	if (!shkp)
+		return 0;
+
     xchar x, y;
     xchar litter[9];
     struct monst *mtmp;

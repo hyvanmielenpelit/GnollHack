@@ -171,6 +171,9 @@ struct monst *mtmp;
 struct obj *otmp;
 boolean self;
 {
+	if (!mtmp || !otmp)
+		return;
+
     if (!canseemon(mtmp)) {
         int range = couldsee(mtmp->mx, mtmp->my) /* 9 or 5 */
                        ? (BOLT_LIM + 1) : (BOLT_LIM - 3);
@@ -191,6 +194,9 @@ mreadmsg(mtmp, otmp)
 struct monst *mtmp;
 struct obj *otmp;
 {
+	if (!mtmp || !otmp)
+		return;
+
     boolean vismon = canseemon(mtmp);
     char onambuf[BUFSZ];
     short saverole;
@@ -612,6 +618,9 @@ int
 use_defensive(mtmp)
 struct monst *mtmp;
 {
+	if (!mtmp)
+		return 0;
+
     int i, fleetim, how = 0;
     struct obj *otmp = m.defensive;
     boolean vis, vismon, oseen;
@@ -660,6 +669,8 @@ struct monst *mtmp;
         if ((mtmp->isshk && inhishop(mtmp)) || mtmp->isgd || mtmp->ispriest)
             return 2;
         m_flee(mtmp);
+		if (!otmp)
+			return 2;
         mzapmsg(mtmp, otmp, TRUE);
         otmp->spe--;
         how = WAN_TELEPORTATION;
@@ -683,6 +694,8 @@ struct monst *mtmp;
         return 2;
     case MUSE_WAN_TELEPORTATION:
         zap_oseen = oseen;
+		if (!otmp)
+			return 2;
         mzapmsg(mtmp, otmp, FALSE);
         otmp->spe--;
         m_using = TRUE;
@@ -693,6 +706,9 @@ struct monst *mtmp;
         m_using = FALSE;
         return 2;
     case MUSE_SCR_TELEPORTATION: {
+		if (!otmp)
+			return 2;
+
         int obj_is_cursed = otmp->cursed;
 
         if (mtmp->isshk || mtmp->isgd || mtmp->ispriest)
@@ -728,8 +744,9 @@ struct monst *mtmp;
     }
     case MUSE_WAN_DIGGING: {
         struct trap *ttmp;
-
         m_flee(mtmp);
+		if (!otmp)
+			return 2;
         mzapmsg(mtmp, otmp, FALSE);
         otmp->spe--;
         if (oseen)
@@ -766,7 +783,9 @@ struct monst *mtmp;
         return 2;
     }
     case MUSE_WAN_CREATE_MONSTER: {
-        coord cc;
+		if (!otmp)
+			return 2;
+		coord cc;
         /* pm: 0 => random, eel => aquatic, croc => amphibious */
         struct permonst *pm =
             !is_pool(mtmp->mx, mtmp->my)
@@ -784,7 +803,9 @@ struct monst *mtmp;
         return 2;
     }
     case MUSE_SCR_CREATE_MONSTER: {
-        coord cc;
+		if (!otmp)
+			return 2;
+		coord cc;
         struct permonst *pm = 0, *fish = 0;
         int cnt = 1;
         struct monst *mon;
@@ -944,7 +965,9 @@ struct monst *mtmp;
 
         goto mon_tele;
     case MUSE_POT_HEALING:
-        mquaffmsg(mtmp, otmp);
+		if (!otmp)
+			return 2;
+		mquaffmsg(mtmp, otmp);
         i = d(6 + 2 * bcsign(otmp), 4);
         mtmp->mhp += i;
 		if (mtmp->mhp > mtmp->mhpmax)
@@ -958,7 +981,9 @@ struct monst *mtmp;
         m_useup(mtmp, otmp);
         return 2;
     case MUSE_POT_EXTRA_HEALING:
-        mquaffmsg(mtmp, otmp);
+		if (!otmp)
+			return 2;
+		mquaffmsg(mtmp, otmp);
         i = d(6 + 2 * bcsign(otmp), 8);
         mtmp->mhp += i;
         if (mtmp->mhp > mtmp->mhpmax)
@@ -972,6 +997,8 @@ struct monst *mtmp;
         m_useup(mtmp, otmp);
         return 2;
 	case MUSE_POT_GREATER_HEALING:
+		if (!otmp)
+			return 2;
 		mquaffmsg(mtmp, otmp);
 		i = d(10 + 2 * bcsign(otmp), 8) + 8;
 		mtmp->mhp += i;
@@ -986,7 +1013,9 @@ struct monst *mtmp;
 		m_useup(mtmp, otmp);
 		return 2;
 	case MUSE_POT_FULL_HEALING:
-        mquaffmsg(mtmp, otmp);
+		if (!otmp)
+			return 2;
+		mquaffmsg(mtmp, otmp);
         if (otmp->otyp == POT_SICKNESS)
             unbless(otmp); /* Pestilence */
         mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? 8 : 4));
@@ -999,7 +1028,9 @@ struct monst *mtmp;
         m_useup(mtmp, otmp);
         return 2;
     case MUSE_LIZARD_CORPSE:
-        /* not actually called for its unstoning effect */
+		if (!otmp)
+			return 2;
+		/* not actually called for its unstoning effect */
         mon_consume_unstone(mtmp, otmp, FALSE, FALSE);
         return 2;
     case 0:
@@ -1468,6 +1499,9 @@ int
 use_offensive(mtmp)
 struct monst *mtmp;
 {
+	if (!mtmp)
+		return 0;
+
     int i;
     struct obj *otmp = m.offensive;
     boolean oseen;
@@ -1486,6 +1520,9 @@ struct monst *mtmp;
     case MUSE_WAN_COLD:
     case MUSE_WAN_LIGHTNING:
     case MUSE_WAN_MAGIC_MISSILE:
+		if (!otmp)
+			return 2;
+
         mzapmsg(mtmp, otmp, FALSE);
         otmp->spe--;
         if (oseen)
@@ -1500,6 +1537,9 @@ struct monst *mtmp;
         return (DEADMONSTER(mtmp)) ? 1 : 2;
     case MUSE_FIRE_HORN:
     case MUSE_FROST_HORN:
+		if (!otmp)
+			return 2;
+
         if (oseen) {
             makeknown(otmp->otyp);
             pline("%s plays a %s!", Monnam(mtmp), xname(otmp));
@@ -1515,6 +1555,8 @@ struct monst *mtmp;
     case MUSE_WAN_TELEPORTATION:
     case MUSE_WAN_STRIKING:
         zap_oseen = oseen;
+		if (!otmp)
+			return 2;
         mzapmsg(mtmp, otmp, FALSE);
         otmp->spe--;
         m_using = TRUE;
@@ -1522,7 +1564,9 @@ struct monst *mtmp;
         m_using = FALSE;
         return 2;
     case MUSE_SCR_EARTH: {
-        /* TODO: handle steeds */
+		if (!otmp)
+			return 2;
+		/* TODO: handle steeds */
         register int x, y;
         /* don't use monster fields after killing it */
         boolean confused = (is_confused(mtmp) ? TRUE : FALSE);
@@ -1619,7 +1663,9 @@ struct monst *mtmp;
     case MUSE_POT_CONFUSION:
     case MUSE_POT_SLEEPING:
     case MUSE_POT_ACID:
-        /* Note: this setting of dknown doesn't suffice.  A monster
+		if (!otmp)
+			return 2;
+		/* Note: this setting of dknown doesn't suffice.  A monster
          * which is out of sight might throw and it hits something _in_
          * sight, a problem not existing with wands because wand rays
          * are not objects.  Also set dknown in mthrowu.c.
@@ -1849,6 +1895,9 @@ int
 use_misc(mtmp)
 struct monst *mtmp;
 {
+	if (!mtmp)
+		return 0;
+
     int i;
     struct obj *otmp = m.misc;
     boolean vis, vismon, oseen;
@@ -1862,7 +1911,9 @@ struct monst *mtmp;
 
     switch (m.has_misc) {
     case MUSE_POT_GAIN_LEVEL:
-        mquaffmsg(mtmp, otmp);
+		if (!otmp)
+			return 2;
+		mquaffmsg(mtmp, otmp);
         if (otmp->cursed) {
             if (Can_rise_up(mtmp->mx, mtmp->my, &u.uz)) {
                 register int tolev = depth(&u.uz) - 1;
@@ -1906,7 +1957,9 @@ struct monst *mtmp;
         return 2;
     case MUSE_WAN_MAKE_INVISIBLE:
     case MUSE_POT_INVISIBILITY:
-        if (otmp->otyp == WAN_MAKE_INVISIBLE) {
+		if (!otmp)
+			return 2;
+		if (otmp->otyp == WAN_MAKE_INVISIBLE) {
             mzapmsg(mtmp, otmp, TRUE);
             otmp->spe--;
         } else
@@ -1934,24 +1987,32 @@ struct monst *mtmp;
         }
         return 2;
     case MUSE_WAN_SPEED_MONSTER:
-        mzapmsg(mtmp, otmp, TRUE);
+		if (!otmp)
+			return 2;
+		mzapmsg(mtmp, otmp, TRUE);
         otmp->spe--;
 		increase_mon_property_verbosely(mtmp, VERY_FAST, rn1(10, 100 + 60 * bcsign(otmp)) );
 		return 2;
     case MUSE_POT_SPEED:
-        mquaffmsg(mtmp, otmp);
+		if (!otmp)
+			return 2;
+		mquaffmsg(mtmp, otmp);
 		increase_mon_property_verbosely(mtmp, VERY_FAST, rn1(10, 100 + 60 * bcsign(otmp)));
 		m_useup(mtmp, otmp);
         return 2;
     case MUSE_WAN_POLYMORPH:
-        mzapmsg(mtmp, otmp, TRUE);
+		if (!otmp)
+			return 2;
+		mzapmsg(mtmp, otmp, TRUE);
         otmp->spe--;
         (void) newcham(mtmp, muse_newcham_mon(mtmp), TRUE, FALSE);
         if (oseen)
             makeknown(WAN_POLYMORPH);
         return 2;
     case MUSE_POT_POLYMORPH:
-        mquaffmsg(mtmp, otmp);
+		if (!otmp)
+			return 2;
+		mquaffmsg(mtmp, otmp);
         if (vismon)
             pline("%s suddenly mutates!", Monnam(mtmp));
         (void) newcham(mtmp, muse_newcham_mon(mtmp), FALSE, FALSE);
@@ -2683,7 +2744,10 @@ boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
 	double damage = 0;
     boolean vis = canseemon(mon), res = TRUE;
 
-    if (vis)
+	if (!mon)
+		return FALSE;
+	
+	if (vis)
         pline("%s starts turning %s.", Monnam(mon),
               green_mon(mon) ? "into ooze" : hcolor(NH_GREEN));
     /* -4 => sliming, causes quiet loss of enhanced speed */

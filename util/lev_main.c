@@ -1563,6 +1563,9 @@ write_level_file(filename, lvl)
 char *filename;
 sp_lev *lvl;
 {
+	if (!lvl)
+		return FALSE;
+
     int fout;
     char lbuf[60];
 

@@ -689,8 +689,8 @@ long silverhit;
         rtyp = ((uright && (silverhit & W_RINGR) != 0L)
                 ? uright->otyp : STRANGE_OBJECT);
     boolean both,
-        l_ag = (objects[ltyp].oc_material == MAT_SILVER && uleft->dknown),
-        r_ag = (objects[rtyp].oc_material == MAT_SILVER && uright->dknown);
+        l_ag = (objects[ltyp].oc_material == MAT_SILVER && uleft && uleft->dknown),
+        r_ag = (objects[rtyp].oc_material == MAT_SILVER && uright && uright->dknown);
 
     if ((silverhit & (W_RINGL | W_RINGR)) != 0L) {
         /* plural if both the same type (so not multi_claw and both rings
@@ -699,7 +699,7 @@ long silverhit;
            and both known; singular if multi_claw (where one of ltyp or
            rtyp will always be STRANGE_OBJECT) even if both rings are known
            silver [see hmonas(uhitm.c) for explanation of 'multi_claw'] */
-        both = ((ltyp == rtyp && uleft->dknown == uright->dknown)
+        both = ((ltyp == rtyp && uleft && uright && uleft->dknown == uright->dknown)
                 || (l_ag && r_ag));
         Sprintf(rings, "ring%s", both ? "s" : "");
         Your("%s%s %s %s!",
@@ -1065,6 +1065,9 @@ mon_wield_item(mon, verbose_fail)
 register struct monst *mon;
 boolean verbose_fail;
 {
+	if (!mon)
+		return 0;
+
     struct obj *obj;
 
     /* This case actually should never happen */
@@ -2426,8 +2429,9 @@ setmnotwielded(mon, obj)
 register struct monst *mon;
 register struct obj *obj;
 {
-    if (!obj)
+    if (!mon || !obj)
         return;
+
     if ((artifact_light(obj) || (objects[obj->otyp].oc_flags2 & O2_SHINES_MAGICAL_LIGHT)) && obj->lamplit) {
         end_burn(obj, FALSE);
         if (canseemon(mon))

@@ -139,7 +139,7 @@ char *str;
     char drive;
     if ((ptr = index(str, ':')) != (char *) 0) {
         drive = toupper((uchar) *(ptr - 1));
-        _chdrive((drive - 'A') + 1);
+		(void)_chdrive((drive - 'A') + 1);
     }
 }
 
@@ -252,7 +252,7 @@ win32_abort()
     is_tty = WINDOWPORT("tty");
 #endif
     if (wizard) {
-        int c, ci, ct;
+        int c = 0, ci, ct;
 
         if (!iflags.window_inited)
             c = 'n';

@@ -979,6 +979,9 @@ int
 use_pick_axe(obj)
 struct obj *obj;
 {
+	if (!obj)
+		return 0;
+
     const char *sdp, *verb;
     char *dsp, dirsyms[12], qbuf[BUFSZ];
     boolean ispick;

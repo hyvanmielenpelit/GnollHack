@@ -1155,6 +1155,9 @@ strbuf_append(strbuf, str)
 strbuf_t *strbuf;
 const char *str;
 {
+	if (!strbuf || !strbuf->str)
+		return;
+
     int len = (int) strlen(str) + 1;
 
     strbuf_reserve(strbuf,

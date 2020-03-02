@@ -2793,6 +2793,9 @@ void
 punish(sobj)
 struct obj *sobj;
 {
+	if (!sobj)
+		return;
+
     struct obj *reuse_ball = (sobj && sobj->otyp == HEAVY_IRON_BALL)
                                 ? sobj : (struct obj *) 0;
 

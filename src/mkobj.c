@@ -514,13 +514,17 @@ struct obj *obj2, *obj1;
         oname(obj2, ONAME(obj1));
 	if (has_uoname(obj1))
 		uoname(obj2, UONAME(obj1));
-	if (has_omonst(obj1)) {
+	if (has_omonst(obj1))
+	{
         if (!OMONST(obj2))
             newomonst(obj2);
-        (void) memcpy((genericptr_t) OMONST(obj2),
-                      (genericptr_t) OMONST(obj1), sizeof (struct monst));
-        OMONST(obj2)->mextra = (struct mextra *) 0;
-        OMONST(obj2)->nmon = (struct monst *) 0;
+		if (OMONST(obj2))
+		{
+			(void)memcpy((genericptr_t)OMONST(obj2),
+				(genericptr_t)OMONST(obj1), sizeof(struct monst));
+			OMONST(obj2)->mextra = (struct mextra*) 0;
+			OMONST(obj2)->nmon = (struct monst*) 0;
+		}
 #if 0
         OMONST(obj2)->m_id = context.ident++;
         if (OMONST(obj2)->m_id) /* ident overflowed */
@@ -529,16 +533,19 @@ struct obj *obj2, *obj1;
         if (OMONST(obj1)->mextra)
             copy_mextra(OMONST(obj2), OMONST(obj1));
     }
-    if (has_omid(obj1)) {
+    if (has_omid(obj1)) 
+	{
         if (!OMID(obj2))
             newomid(obj2);
-        (void) memcpy((genericptr_t) OMID(obj2), (genericptr_t) OMID(obj1),
+		if(OMID(obj2))
+			(void) memcpy((genericptr_t) OMID(obj2), (genericptr_t) OMID(obj1),
                       sizeof (unsigned));
     }
     if (has_olong(obj1)) {
         if (!OLONG(obj2))
             newolong(obj2);
-        (void) memcpy((genericptr_t) OLONG(obj2), (genericptr_t) OLONG(obj1),
+		if(OLONG(obj2))
+	        (void) memcpy((genericptr_t) OLONG(obj2), (genericptr_t) OLONG(obj1),
                       sizeof (long));
     }
     if (has_omailcmd(obj1)) {

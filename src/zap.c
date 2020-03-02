@@ -6330,7 +6330,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
         break;
     case ZT_DISINTEGRATION:  /* disintegration */
 		damage = 0;
-		if (resists_disint(mon) || noncorporeal(mon->data) || (magic_resistance_success && !(abs(type) >= 20 && abs(type) <= 39)))
+		if (resists_disint(mon) || (magic_resistance_success && !(abs(type) >= 20 && abs(type) <= 39)))
 		{
 			sho_shieldeff = TRUE;
         } else if (mon->worn_item_flags & W_ARMS) {

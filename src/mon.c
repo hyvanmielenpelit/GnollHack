@@ -1163,7 +1163,7 @@ register struct monst *mtmp;
      * function will fail.
      */
     if (mtmp->data == &mons[PM_GREMLIN] && (inpool || infountain) 
-		&& ((rn2(3) && !Is_waterlevel(&u.uz)) || (0 && Is_waterlevel(&u.uz)))) /* Limit gremlin reproduction on the water level just in case */
+		&& ((rn2(3) && !Is_waterlevel(&u.uz)) || (!rn2(100) && Is_waterlevel(&u.uz)))) /* Limit gremlin reproduction on the water level just in case */
 	{
         if (split_mon(mtmp, (struct monst *) 0))
             dryup(mtmp->mx, mtmp->my, FALSE);
@@ -1854,6 +1854,9 @@ int
 meatobj(mtmp) /* for gelatinous cubes */
 struct monst *mtmp;
 {
+	if (!mtmp)
+		return 0;
+
     struct obj *otmp, *otmp2;
     struct permonst *ptr, *original_ptr = mtmp->data;
     int poly, grow, heal, eyes, count = 0, ecount = 0;
@@ -2639,6 +2642,9 @@ relmon(mon, monst_list)
 struct monst *mon;
 struct monst **monst_list; /* &migrating_mons or &mydogs or null */
 {
+	if (!mon)
+		return;
+
     struct monst *mtmp;
     int mx = mon->mx, my = mon->my;
     boolean on_map = (m_at(mx, my) == mon),
@@ -2714,22 +2720,26 @@ struct monst *mtmp2, *mtmp1;
     if (EPRI(mtmp1)) {
         if (!EPRI(mtmp2))
             newepri(mtmp2);
-        *EPRI(mtmp2) = *EPRI(mtmp1);
+		if(EPRI(mtmp2))
+	        *EPRI(mtmp2) = *EPRI(mtmp1);
     }
     if (ESHK(mtmp1)) {
         if (!ESHK(mtmp2))
             neweshk(mtmp2);
-        *ESHK(mtmp2) = *ESHK(mtmp1);
+		if (ESHK(mtmp2))
+			*ESHK(mtmp2) = *ESHK(mtmp1);
     }
     if (EMIN(mtmp1)) {
         if (!EMIN(mtmp2))
             newemin(mtmp2);
-        *EMIN(mtmp2) = *EMIN(mtmp1);
+		if (EMIN(mtmp2))
+			*EMIN(mtmp2) = *EMIN(mtmp1);
     }
     if (EDOG(mtmp1)) {
         if (!EDOG(mtmp2))
             newedog(mtmp2);
-        *EDOG(mtmp2) = *EDOG(mtmp1);
+		if (EDOG(mtmp2))
+			*EDOG(mtmp2) = *EDOG(mtmp1);
     }
     if (has_mcorpsenm(mtmp1))
         MCORPSENM(mtmp2) = MCORPSENM(mtmp1);
@@ -2834,6 +2844,9 @@ STATIC_OVL void
 lifesaved_monster(mtmp)
 struct monst *mtmp;
 {
+	if (!mtmp)
+		return;
+
     boolean surviver;
     struct obj *lifesave = mlifesaver(mtmp);
 
@@ -3548,18 +3561,27 @@ void
 mon_to_stone(mtmp)
 struct monst *mtmp;
 {
-    if (mtmp->data->mlet == S_GOLEM) {
+	if (!mtmp)
+		return;
+
+	if (mtmp->data->mlet == S_GOLEM) 
+	{
         /* it's a golem, and not a stone golem */
         if (canseemon(mtmp))
             pline("%s solidifies...", Monnam(mtmp));
-        if (newcham(mtmp, &mons[PM_STONE_GOLEM], FALSE, FALSE)) {
+
+        if (newcham(mtmp, &mons[PM_STONE_GOLEM], FALSE, FALSE))
+		{
             if (canseemon(mtmp))
                 pline("Now it's %s.", an(mtmp->data->mname));
-        } else {
+        } 
+		else 
+		{
             if (canseemon(mtmp))
                 pline("... and returns to normal.");
         }
-    } else
+    } 
+	else
         impossible("Can't polystone %s!", a_monnam(mtmp));
 }
 
@@ -4190,17 +4212,20 @@ boolean construct;
 STATIC_OVL int
 pick_animal()
 {
-    int res;
+    int res = PM_NEWT;
 
     if (!animal_list)
         mon_animal_list(TRUE);
 
-    res = animal_list[rn2(animal_list_count)];
-    /* rogue level should use monsters represented by uppercase letters
-       only, but since chameleons aren't generated there (not uppercase!)
-       we don't perform a lot of retries */
-    if (Is_rogue_level(&u.uz) && !isupper((uchar) mons[res].mlet))
-        res = animal_list[rn2(animal_list_count)];
+	if (animal_list)
+	{
+		res = animal_list[rn2(animal_list_count)];
+		/* rogue level should use monsters represented by uppercase letters
+		   only, but since chameleons aren't generated there (not uppercase!)
+		   we don't perform a lot of retries */
+		if (Is_rogue_level(&u.uz) && !isupper((uchar)mons[res].mlet))
+			res = animal_list[rn2(animal_list_count)];
+	}
     return res;
 }
 
@@ -4209,6 +4234,9 @@ decide_to_shapeshift(mon, shiftflags)
 struct monst *mon;
 int shiftflags;
 {
+	if (!mon)
+		return;
+
     struct permonst *ptr = 0;
     int mndx;
     unsigned was_female = mon->female;

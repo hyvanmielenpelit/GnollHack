@@ -384,6 +384,9 @@ STATIC_OVL void
 prisoner_speaks(mtmp)
 struct monst *mtmp;
 {
+	if (!mtmp)
+		return;
+
     if (mtmp->data == &mons[PM_PRISONER]
         && (mtmp->mstrategy & STRAT_WAITMASK)) {
         /* Awaken the prisoner */

@@ -434,19 +434,21 @@ light_sources_sanity_check()
     light_source *ls;
     struct monst *mtmp;
     struct obj *otmp;
-    unsigned int auint;
+    unsigned int auint = 0;
 
     for (ls = light_base; ls; ls = ls->next) {
         if (!ls->id.a_monst)
             panic("insane light source: no id!");
         if (ls->type == LS_OBJECT) {
             otmp = (struct obj *) ls->id.a_obj;
-            auint = otmp->o_id;
+			if(otmp)
+	            auint = otmp->o_id;
             if (find_oid(auint) != otmp)
                 panic("insane light source: can't find obj #%u!", auint);
         } else if (ls->type == LS_MONSTER) {
             mtmp = (struct monst *) ls->id.a_monst;
-            auint = mtmp->m_id;
+			if(mtmp)
+	            auint = mtmp->m_id;
             if (find_mid(auint, FM_EVERYWHERE) != mtmp)
                 panic("insane light source: can't find mon #%u!", auint);
         } else {

@@ -337,7 +337,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
 	else 
 	{
         hackpid = GetCurrentProcessId();
-        write(fd, (genericptr_t) &hackpid, sizeof(hackpid));
+        (void)write(fd, (genericptr_t) &hackpid, sizeof(hackpid));
         nhclose(fd);
     }
     /*
@@ -686,8 +686,8 @@ fakeconsole(void)
             AllocConsole();
             AttachConsole(GetCurrentProcessId());
             /* 	rval = SetStdHandle(STD_OUTPUT_HANDLE, hWrite); */
-            freopen("CON", "w", stdout);
-            freopen("CON", "r", stdin);
+			(void)freopen("CON", "w", stdout);
+			(void)freopen("CON", "r", stdin);
         }
         has_fakeconsole = TRUE;
     }
