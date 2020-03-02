@@ -4269,14 +4269,20 @@ doapply()
 		return use_wand_on_object(obj); // do_break_wand(obj);
 	}
 
-    switch (obj->otyp) {
+    switch (obj->otyp) 
+	{
     case BLINDFOLD:
-        if (obj == ublindf) {
+        if (obj == ublindf) 
+		{
             if (!cursed(obj))
                 Blindf_off(obj);
-        } else if (!ublindf) {
+        } 
+		else if (!ublindf) 
+		{
             Blindf_on(obj);
-        } else {
+        }
+		else 
+		{
             You("are already %s.", ublindf->otyp == TOWEL
                                        ? "covered by a towel"
                                        :  "wearing a blindfold");
@@ -4351,17 +4357,22 @@ doapply()
         /* MRKR: Every Australian knows that a gum leaf makes an excellent
          * whistle, especially if your pet is a tame kangaroo named Skippy.
          */
-        if (obj->blessed) {
+        if (obj->blessed) 
+		{
             use_magic_whistle(obj);
             /* sometimes the blessing will be worn off */
-            if (!rn2(49)) {
-                if (!Blind) {
+            if (!rn2(49)) 
+			{
+                if (!Blind) 
+				{
                     pline("%s %s.", Yobjnam2(obj, "glow"), hcolor("brown"));
                     obj->bknown = 1;
                 }
                 unbless(obj);
             }
-        } else {
+        } 
+		else 
+		{
             use_whistle(obj);
         }
         break;
@@ -4444,10 +4455,13 @@ doapply()
         break;
     default:
         /* Pole-weapons can strike at a distance */
-        if (is_pole(obj)) {
+        if (is_pole(obj)) 
+		{
             res = use_pole(obj);
             break;
-        } else if (is_pick(obj) || is_axe(obj)) {
+        } 
+		else if (is_pick(obj) || is_axe(obj))
+		{
             res = use_pick_axe(obj);
             break;
         }
@@ -4459,6 +4473,75 @@ doapply()
         arti_speak(obj);
     nomul(0);
     return res;
+}
+
+int
+count_other_containers(this_container, last_container_ptr)
+struct obj* this_container;
+struct obj** last_container_ptr;
+{
+	if (!invent)
+	{
+		*last_container_ptr = (struct obj*)0;
+		return 0;
+	}
+	
+	int cnt = 0;
+	for (struct obj* otmp = invent; otmp; otmp = otmp->nobj)
+	{
+		if (Is_container(otmp) && otmp != this_container)
+		{
+			cnt++;
+			*last_container_ptr = otmp;
+		}
+	}
+
+	return cnt;
+}
+
+struct obj*
+select_other_container(this_container)
+struct obj* this_container;
+{
+	if (!invent)
+	{
+		return (struct obj*)0;
+	}
+
+	int n = 0;
+	winid win;
+	
+	win = create_nhwindow(NHW_MENU);
+	start_menu(win);
+
+	for (struct obj* otmp = invent; otmp; otmp = otmp->nobj)
+	{
+		if (Is_container(otmp) && otmp != this_container)
+		{
+			anything any = zeroany;
+			any.a_obj = otmp;
+			char applied_invlet = otmp->invlet;
+			char applied_group_accelerator = 0; // def_oc_syms[(int)objects[otmp->otyp].oc_class].sym;
+
+			add_menu(win, obj_to_glyph(otmp, rn2_on_display_rng), &any,
+				applied_invlet,
+				applied_group_accelerator,
+				ATR_NONE, 
+				cxname(otmp), 
+				MENU_UNSELECTED);
+		}
+	}
+
+	end_menu(win, "Choose another container:");
+	menu_item* selected = (menu_item*)0;
+	n = select_menu(win, PICK_ONE, &selected);
+	destroy_nhwindow(win);
+
+	if (n > 0) 
+	{
+		return selected->item.a_obj;
+	}
+	return (struct obj*)0;
 }
 
 /* Keep track of unfixable troubles for purposes of messages saying you feel
@@ -4504,7 +4587,8 @@ int arrowtype, quan; //ObjID and quantity
 {
 	struct obj* otmp;
 	otmp = mksobj(arrowtype, FALSE, FALSE, FALSE);
-	if (otmp && otmp != &zeroobj) {
+	if (otmp && otmp != &zeroobj) 
+	{
 		otmp->quan = quan;
 		otmp->owt = weight(otmp);
 
@@ -4675,12 +4759,15 @@ struct obj* obj;
 		}
 		return 1;
 	}
-	else if (u.utrap && u.utraptype == TT_PIT) {
+	else if (u.utrap && u.utraptype == TT_PIT) 
+	{
 		/* must be Passes_walls */
 		You("swing at the side of the pit.");
 		return 1;
 	}
-	if (Levitation) {
+
+	if (Levitation) 
+	{
 		int xx, yy;
 
 		xx = u.ux - u.dx;
@@ -4691,7 +4778,8 @@ struct obj* obj;
 		 */
 		if (isok(xx, yy) && !IS_ROCK(levl[xx][yy].typ)
 			&& !IS_DOOR(levl[xx][yy].typ)
-			&& (!Is_airlevel(&u.uz) || !OBJ_AT(xx, yy))) {
+			&& (!Is_airlevel(&u.uz) || !OBJ_AT(xx, yy))) 
+		{
 			You("have nothing to brace yourself against.");
 			return 0;
 		}
@@ -4750,11 +4838,14 @@ struct obj* obj;
 			   to an unseen square doesn't leave an I behind */
 			&& mtmp->mx == x && mtmp->my == y
 			&& !glyph_is_invisible(glyph)
-			&& !(u.uswallow && mtmp == u.ustuck)) {
+			&& !(u.uswallow && mtmp == u.ustuck)) 
+		{
 			map_invisible(x, y);
 		}
+
 		/* recoil if floating */
-		if ((Is_airlevel(&u.uz) || Levitation) && context.move) {
+		if ((Is_airlevel(&u.uz) || Levitation) && context.move) 
+		{
 			int range;
 
 			range =
@@ -4769,8 +4860,11 @@ struct obj* obj;
 		}
 		return 1;
 	}
+
 	(void)unmap_invisible(x, y);
-	if (is_pool(x, y) ^ !!u.uinwater) {
+
+	if (is_pool(x, y) ^ !!u.uinwater) 
+	{
 		/* objects normally can't be removed from water by kicking */
 		You("splash some %s around.", hliquid("water"));
 		return 1;
@@ -4796,10 +4890,12 @@ struct obj* obj;
 			pline("Thump!  Your swing uncovers a secret door!");
 			return 1;
 		}
+
 		if (maploc->typ == SCORR) 
 		{
 			goto thump;
 		}
+
 		if (IS_THRONE(maploc->typ)) 
 		{
 			if (Levitation)
@@ -4807,44 +4903,56 @@ struct obj* obj;
 
 			goto thump;
 		}
-		if (IS_ALTAR(maploc->typ)) {
+
+		if (IS_ALTAR(maploc->typ)) 
+		{
 			if (Levitation)
 				goto dumb;
 			You("swing your %s at %s.", cxname(obj), (Blind ? something : "the altar"));
 			altar_wrath(x, y);
 			return 1;
 		}
-		if (IS_FOUNTAIN(maploc->typ)) {
+		if (IS_FOUNTAIN(maploc->typ)) 
+		{
 			if (Levitation)
 				goto dumb;
 			You("swing at %s.", (Blind ? something : "the fountain"));
 			pline("%s wet.", Yobjnam2(obj, "get"));
 			return 1;
 		}
-		if (IS_GRAVE(maploc->typ)) {
+
+		if (IS_GRAVE(maploc->typ))
+		{
 			if (Levitation)
 				goto dumb;
+
 			if (Role_if(PM_ARCHEOLOGIST) || Role_if(PM_SAMURAI)
-				|| ((u.ualign.type == A_LAWFUL) && (u.ualign.record > -10))) {
+				|| ((u.ualign.type == A_LAWFUL) && (u.ualign.record > -10))) 
+			{
 				adjalign(-sgn(u.ualign.type));
 			}
+
 			goto thump;
 		}
+
 		if (maploc->typ == IRONBARS)
 		{
 			pline("Klunk!");
 			return 1;
 
 		}
+
 		if (IS_TREE(maploc->typ)) 
 		{
 			goto thump;
 		}
+
 		if (IS_SINK(maploc->typ)) 
 		{
 			pline("Klunk!");
 			return 1;
 		}
+
 		if (maploc->typ == STAIRS || maploc->typ == LADDER || IS_STWALL(maploc->typ))
 		{
 			if (!IS_STWALL(maploc->typ) && maploc->ladder == LA_DOWN)
@@ -4852,6 +4960,7 @@ struct obj* obj;
 
 			goto thump;
 		}
+
 		goto dumb;
 	}
 

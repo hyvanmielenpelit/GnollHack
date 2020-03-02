@@ -115,8 +115,8 @@ struct obj {
     Bitfield(bypass, 1); /* mark this as an object to be skipped by bhito() */
     Bitfield(cknown, 1); /* contents of container assumed to be known */
     Bitfield(lknown, 1); /* locked/unlocked status is known */
-	Bitfield(nknown, 1); /* true name is known */
-	Bitfield(aknown, 1); /* artifact status is known; if set, the artifact will be termed "the Artifact" instead of item named Artifact */
+	Bitfield(nknown, 1); /* artifact's true name is known */
+	Bitfield(aknown, 1); /* artifact status is known; if set, the artifact will be termed "the Artifact" instead of "item named Artifact" */
 	/* 4 free bits */
 
     int corpsenm;         /* type of corpse is mons[corpsenm] */
@@ -306,12 +306,12 @@ struct obj {
 #define Has_contents(o)                                \
     (/* (Is_container(o) || (o)->otyp == STATUE) && */ \
      (o)->cobj != (struct obj *) 0)
-#define Is_container(o) ((objects[o->otyp].oc_flags2 & O2_CONTAINER) != 0)
-#define Is_box(o) ((objects[o->otyp].oc_flags2 & O2_CONTAINER_BOX) != 0)
+#define Is_container(o) ((objects[(o)->otyp].oc_flags2 & O2_CONTAINER) != 0)
+#define Is_box(o) ((objects[(o)->otyp].oc_flags2 & O2_CONTAINER_BOX) != 0)
 #define Is_mbag(o) \
-	((objects[o->otyp].oc_flags2 & O2_CONTAINER_MAGIC_BAG) != 0)
+	((objects[(o)->otyp].oc_flags2 & O2_CONTAINER_MAGIC_BAG) != 0)
 #define Is_weight_changing_bag(o) \
-	((objects[o->otyp].oc_flags2 & O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG) != 0)
+	((objects[(o)->otyp].oc_flags2 & O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG) != 0)
 #define SchroedingersBox(o) ((o)->otyp == LARGE_BOX && (o)->spe == 1)
 
 /* dragon gear */
