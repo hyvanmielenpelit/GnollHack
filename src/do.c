@@ -14,7 +14,6 @@ STATIC_DCL void FDECL(trycall, (struct obj *));
 STATIC_DCL void NDECL(polymorph_sink);
 STATIC_DCL boolean NDECL(teleport_sink);
 STATIC_DCL void FDECL(dosinkring, (struct obj *));
-STATIC_PTR int FDECL(drop, (struct obj *));
 STATIC_PTR int NDECL(wipeoff);
 STATIC_DCL int FDECL(menu_drop, (int));
 STATIC_DCL int NDECL(currentlevel_rewrite);
@@ -3271,7 +3270,7 @@ const char *word;
     return TRUE;
 }
 
-STATIC_PTR int
+int
 drop(obj)
 register struct obj *obj;
 {

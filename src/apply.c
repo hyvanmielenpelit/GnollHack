@@ -4488,18 +4488,20 @@ doapply()
 }
 
 int
-count_other_containers(this_container, last_container_ptr)
+count_other_containers(objchain, this_container, last_container_ptr, usenexthere)
+struct obj* objchain;
 struct obj* this_container;
 struct obj** last_container_ptr;
+boolean usenexthere;
 {
-	if (!invent)
+	if (!objchain)
 	{
 		*last_container_ptr = (struct obj*)0;
 		return 0;
 	}
 	
 	int cnt = 0;
-	for (struct obj* otmp = invent; otmp; otmp = otmp->nobj)
+	for (struct obj* otmp = objchain; otmp; otmp = usenexthere ? otmp->nexthere : otmp->nobj)
 	{
 		if ((Is_proper_container(otmp) || (Is_container(otmp) && !objects[otmp->otyp].oc_name_known)) && otmp != this_container)
 		{
@@ -4512,10 +4514,12 @@ struct obj** last_container_ptr;
 }
 
 struct obj*
-select_other_container(this_container)
+select_other_container(objchain, this_container, usenexthere)
+struct obj* objchain;
 struct obj* this_container;
+boolean usenexthere;
 {
-	if (!invent)
+	if (!objchain)
 	{
 		return (struct obj*)0;
 	}
@@ -4525,14 +4529,18 @@ struct obj* this_container;
 	
 	win = create_nhwindow(NHW_MENU);
 	start_menu(win);
+	int cnt = 0;
 
-	for (struct obj* otmp = invent; otmp; otmp = otmp->nobj)
+	for (struct obj* otmp = objchain; otmp; otmp = usenexthere ? otmp->nexthere : otmp->nobj)
 	{
+		if (cnt >= 52)
+			break;
+
 		if ((Is_proper_container(otmp) || (Is_container(otmp) && !objects[otmp->otyp].oc_name_known)) && otmp != this_container)
 		{
 			anything any = zeroany;
 			any.a_obj = otmp;
-			char applied_invlet = otmp->invlet;
+			char applied_invlet = usenexthere ? 'a' + cnt :  otmp->invlet;
 			char applied_group_accelerator = 0; // def_oc_syms[(int)objects[otmp->otyp].oc_class].sym;
 
 			add_menu(win, obj_to_glyph(otmp, rn2_on_display_rng), &any,
@@ -4541,6 +4549,8 @@ struct obj* this_container;
 				ATR_NONE, 
 				cxname(otmp), 
 				MENU_UNSELECTED);
+
+			cnt++;
 		}
 	}
 

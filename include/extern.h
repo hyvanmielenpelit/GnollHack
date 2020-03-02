@@ -60,8 +60,8 @@ E int FDECL(uthito, (struct obj*, struct obj*));
 E int FDECL(endlessarrows, (struct obj*, int, int));
 E struct obj* FDECL(elemental_enchant_quan, (struct obj*, int, int));
 E void FDECL(use_magic_whistle, (struct obj*));
-E int FDECL(count_other_containers, (struct obj*, struct obj**));
-E struct obj* FDECL(select_other_container, (struct obj*));
+E int FDECL(count_other_containers, (struct obj*, struct obj*, struct obj**, boolean));
+E struct obj* FDECL(select_other_container, (struct obj*, struct obj*, boolean));
 
 
 /* ### artifact.c ### */
@@ -437,6 +437,7 @@ E boolean FDECL(boulder_hits_pool, (struct obj *, int, int, BOOLEAN_P));
 E boolean FDECL(flooreffects, (struct obj *, int, int, const char *));
 E void FDECL(doaltarobj, (struct obj *));
 E boolean FDECL(canletgo, (struct obj *, const char *));
+E int FDECL(drop, (struct obj*));
 E void FDECL(dropx, (struct obj *));
 E void FDECL(dropy, (struct obj *));
 E void FDECL(dropz, (struct obj *, BOOLEAN_P));

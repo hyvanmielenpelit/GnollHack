@@ -34,6 +34,8 @@ STATIC_DCL long FDECL(boh_loss, (struct obj *container, int));
 STATIC_PTR int FDECL(in_container, (struct obj*));
 STATIC_PTR int FDECL(out_container, (struct obj*));
 STATIC_PTR int FDECL(move_container, (struct obj*));
+STATIC_PTR int FDECL(out_container_and_drop, (struct obj*));
+STATIC_PTR int FDECL(pickup_and_in_container, (struct obj*));
 STATIC_DCL void FDECL(removed_from_icebox, (struct obj *));
 STATIC_DCL long FDECL(mbag_item_gone, (int, struct obj *));
 STATIC_DCL void FDECL(explain_container_prompt, (BOOLEAN_P));
@@ -2411,6 +2413,49 @@ register struct obj* obj;
 	return res;
 }
 
+/* Returns: -1 to stop, 1 item was moved, 0 item was not moved. */
+STATIC_PTR int
+out_container_and_drop(obj)
+register struct obj* obj;
+{
+	if (!obj)
+		return -1;
+
+	int res = 0;
+	if ((res = out_container(obj)) <= 0)
+		return res;
+
+	if (obj->where != OBJ_INVENT)
+		return 0;
+
+	res = drop(obj);
+
+	return res;
+}
+
+
+/* Returns: -1 to stop, 1 item was moved, 0 item was not moved. */
+STATIC_PTR int
+pickup_and_in_container(obj)
+register struct obj* obj;
+{
+	if (!obj)
+		return -1;
+
+	int res = 0;
+
+	if ((res = pickup_object(obj, obj->quan, FALSE)) <= 0)
+		return res;
+
+	if (obj->where != OBJ_INVENT)
+		return 0;
+
+	res = in_container(obj);
+
+	return res;
+}
+
+
 /* Returns: -1 to stop, 1 item was removed, 0 item was not removed. */
 STATIC_PTR int
 out_container(obj)
@@ -2651,7 +2696,8 @@ boolean more_containers; /* True iff #loot multiple and this isn't last one */
 {
     struct obj *otmp, *obj = *objp;
     boolean quantum_cat, cursed_mbag, loot_out, loot_in, loot_in_first,
-        stash_one, move_to_another, inokay, outokay, outmaybe;
+        stash_one, move_to_another, move_to_another_on_floor, loot_out_and_drop,
+		pickup_and_loot_in, inokay, outokay, outmaybe;
     char c, emptymsg[BUFSZ], qbuf[QBUFSZ], pbuf[QBUFSZ], xbuf[QBUFSZ];
     int used = 0;
     long loss;
@@ -2726,8 +2772,10 @@ boolean more_containers; /* True iff #loot multiple and this isn't last one */
                 (quantum_cat || cursed_mbag) ? "now " : "");
 
 	struct obj* last_container = (struct obj*)0;
-	int other_containter_count = count_other_containers(obj, &last_container);
-	
+	struct obj* last_floor_container = (struct obj*)0;
+	int other_containter_count = count_other_containers(invent, obj, &last_container, FALSE);
+	int floor_containter_count = count_other_containers(level.objects[u.ux][u.uy], obj, &last_floor_container, TRUE);
+
 	/*
      * What-to-do prompt's list of possible actions:
      * always include the look-inside choice (':');
@@ -2791,7 +2839,12 @@ boolean more_containers; /* True iff #loot multiple and this isn't last one */
             Strcat(inokay ? pbuf : xbuf, "i");   /* put in */
             Strcat(outmaybe ? pbuf : xbuf, "b"); /* both */
             Strcat(inokay ? pbuf : xbuf, "rs");  /* reversed, stash */
-			Strcat(outmaybe && other_containter_count > 0 ? pbuf : xbuf, "m"); /* move */
+			Strcat(outmaybe && other_containter_count > 0 ? pbuf : xbuf, "m"); /* move to inventory container */
+			Strcat(outmaybe && floor_containter_count > 0 ? pbuf : xbuf, "c"); /* move to floor container */
+			Strcat(outmaybe ? pbuf : xbuf, "d"); /* take out and drop */
+			Strcat(inokay &&
+				(level.objects[u.ux][u.uy] && !(level.objects[u.ux][u.uy] == current_container && !level.objects[u.ux][u.uy]->nexthere)) ? pbuf : xbuf,
+				"p"); /* pick up and put in */
 			Strcat(pbuf, " ");                   /* separator */
             Strcat(more_containers ? pbuf : xbuf, "n"); /* next container */
             Strcat(pbuf, "q");                   /* quit */
@@ -2829,9 +2882,12 @@ boolean more_containers; /* True iff #loot multiple and this isn't last one */
     loot_in_first = (c == 'r'); /* both, reversed */
     stash_one = (c == 's');
 	move_to_another = (c == 'm');
+	move_to_another_on_floor = (c == 'c');
+	loot_out_and_drop = (c == 'd');
+	pickup_and_loot_in = (c == 'p');
 
     /* out-only or out before in */
-    if (move_to_another || (loot_out && !loot_in_first))
+    if (move_to_another || move_to_another_on_floor || (loot_out && !loot_in_first) || loot_out_and_drop)
 	{
         if (!Has_contents(current_container)) 
 		{
@@ -2844,9 +2900,17 @@ boolean more_containers; /* True iff #loot multiple and this isn't last one */
 		{
             add_valid_menu_class(0); /* reset */
             if (flags.menu_style == MENU_TRADITIONAL)
-                used |= traditional_loot(move_to_another ? 2 : 0, current_container, other_containter_count == 1 && last_container ? last_container : (struct obj*)0);
+                used |= traditional_loot(
+					move_to_another ? 2 : move_to_another_on_floor ? 3 : loot_out_and_drop ? 4 : 0,
+					current_container, 
+					move_to_another_on_floor ? (floor_containter_count == 1 && last_floor_container ? last_floor_container : (struct obj*)0) : (other_containter_count == 1 && last_container ? last_container : (struct obj*)0)
+				);
             else
-                used |= (menu_loot(0, move_to_another ? 2 : 0, current_container, other_containter_count == 1 && last_container ? last_container : (struct obj*)0) > 0);
+                used |= (menu_loot(0, 
+					move_to_another ? 2 : move_to_another_on_floor ? 3 : loot_out_and_drop ? 4 : 0, 
+					current_container, 
+					move_to_another_on_floor ? (floor_containter_count == 1 && last_floor_container ? last_floor_container : (struct obj*)0) : (other_containter_count == 1 && last_container ? last_container : (struct obj*)0)
+				) > 0 );
             add_valid_menu_class(0);
         }
     }
@@ -2858,18 +2922,25 @@ boolean more_containers; /* True iff #loot multiple and this isn't last one */
             stash_one ? "stash" : "put in");
         loot_in = stash_one = FALSE;
     }
+	else if (pickup_and_loot_in 
+		&& (!level.objects[u.ux][u.uy] || (level.objects[u.ux][u.uy] == current_container && !level.objects[u.ux][u.uy]->nexthere)))
+	{
+		pline("There is nothing%s to %s.", level.objects[u.ux][u.uy] ? " else" : "",
+			"pick up and put in");
+		pickup_and_loot_in = FALSE;
+	}
 
     /*
      * Gone: being nice about only selecting food if we know we are
      * putting things in an ice chest.
      */
-    if (loot_in) 
+    if (loot_in || pickup_and_loot_in)
 	{
         add_valid_menu_class(0); /* reset */
         if (flags.menu_style == MENU_TRADITIONAL)
-            used |= traditional_loot(1, (struct obj*)0, (struct obj*)0);
+            used |= traditional_loot(pickup_and_loot_in ? 5 : 1, (struct obj*)0, (struct obj*)0);
         else
-            used |= (menu_loot(0, 1, (struct obj*)0, (struct obj*)0) > 0);
+            used |= (menu_loot(0, pickup_and_loot_in ? 5 : 1, (struct obj*)0, (struct obj*)0) > 0);
         add_valid_menu_class(0);
     } 
 	else if (stash_one) 
@@ -2938,7 +3009,14 @@ containerdone:
 /* loot current_container (take things out or put things in), by prompting */
 STATIC_OVL int
 traditional_loot(command_id, applied_container, other_container)
-int command_id;  /* 0 = take out, 1 = put in, 2 = move to another container*/
+int command_id;
+/* 0 = take out,
+   1 = put in,
+   2 = move items in a container to a(nother) container in inventory,
+   3 = move items in a container to a(nother) container on floor,
+   4 = take items out of a container and drop them on floor, and
+   5 = pick up items from floor and put them in a container
+ */
 struct obj* applied_container;
 struct obj* other_container;
 {
@@ -2949,37 +3027,67 @@ struct obj* other_container;
     boolean one_by_one, allflag;
     int used = 0, menu_on_request = 0;
 
-    if (command_id == 1)
+	switch (command_id)
 	{
-        action = "put in";
-        objlist = &invent;
-        actionfunc = in_container;
-        checkfunc = ck_bag;
-    } 
-	else if (command_id == 2)
-	{
-		if(0 && other_container)
+	default:
+	case 0:
+		action = "take out";
+		objlist = &(current_container->cobj);
+		actionfunc = out_container;
+		checkfunc = (int FDECL((*), (OBJ_P))) 0;
+		break;
+	case 1:
+		action = "put in";
+		objlist = &invent;
+		actionfunc = in_container;
+		checkfunc = ck_bag;
+		break;
+	case 2:
+		if (0 && other_container)
 			move_target_container = other_container;
 		else
 		{
 			move_target_container = (struct obj*)0;
 			/* Select container here */
-			move_target_container = select_other_container(applied_container);
+			move_target_container = select_other_container(invent, applied_container, FALSE);
 			if (!move_target_container)
 				return 0;
 		}
 
-		action = "move to another container";
+		action = "move to another container in inventory";
 		objlist = &(current_container->cobj);
 		actionfunc = move_container;
 		checkfunc = (int FDECL((*), (OBJ_P))) 0;
-	}
-	else
-	{
-		action = "take out";
+		break;
+	case 3:
+		if (0 && other_container)
+			move_target_container = other_container;
+		else
+		{
+			move_target_container = (struct obj*)0;
+			/* Select container here */
+			move_target_container = select_other_container(level.objects[u.ux][u.uy], applied_container, TRUE);
+			if (!move_target_container)
+				return 0;
+		}
+
+		action = "move to another container on floor";
 		objlist = &(current_container->cobj);
-		actionfunc = out_container;
+		actionfunc = move_container;
 		checkfunc = (int FDECL((*), (OBJ_P))) 0;
+		break;
+	case 4:
+		action = "take out and drop";
+		objlist = &(current_container->cobj);
+		actionfunc = out_container_and_drop;
+		checkfunc = (int FDECL((*), (OBJ_P))) 0;
+		break;
+	case 5:
+		action = "pick up and put in";
+		objlist = &level.objects[u.ux][u.uy];
+		actionfunc = pickup_and_in_container;
+		checkfunc = ck_bag;
+		break;
 	}
 
     if (query_classes(selection, &one_by_one, &allflag, action, *objlist,
@@ -2997,30 +3105,75 @@ struct obj* other_container;
 
 /* loot current_container (take things out or put things in), using a menu */
 STATIC_OVL int
-menu_loot(retry, command_id, applied_container, other_container) /* 0 = take out, 1 = put in, 2 = move to another container*/
+menu_loot(retry, command_id, applied_container, other_container) 
 int retry;
-int command_id;
+int command_id; 
+/* 0 = take out, 
+   1 = put in, 
+   2 = move items in a container to a(nother) container in inventory, 
+   3 = move items in a container to a(nother) container on floor,
+   4 = take items out of a container and drop them on floor, and
+   5 = pick up items from floor and put them in a container
+ */
 struct obj* applied_container;
 struct obj* other_container;
 {
     int n, i, n_looted = 0;
     boolean all_categories = TRUE, loot_everything = FALSE;
     char buf[BUFSZ];
-    const char *action = command_id == 1 ? "Put in" : command_id == 2 ? "Move" : "Take out";
 	struct obj* otmp, * otmp2;
     menu_item *pick_list;
     int mflags, res;
     long count;
 
+	const char* action = "";
+	switch (command_id)
+	{
+	case 0:
+		action = "Take out";
+		break;
+	case 1:
+		action = "Put in";
+		break;
+	case 2:
+		action = "Move";
+		break;
+	case 3:
+		action = "Move";
+		break;
+	case 4:
+		action = "Take out and drop";
+		break;
+	case 5:
+		action = "Pick up and put in";
+		break;
+	default:
+		break;
+	}
+
+	/* Select target container if necessary */
 	if (command_id == 2)
 	{
-		if(0 && other_container)
+		if (0 && other_container)
 			move_target_container = other_container;
 		else
 		{
 			move_target_container = (struct obj*)0;
 			/* Choose another container */
-			move_target_container = select_other_container(applied_container);
+			move_target_container = select_other_container(invent, applied_container, FALSE);
+			if (!move_target_container)
+				return 0;
+		}
+	}
+	else if (command_id == 3)
+	{
+		if (0 && other_container)
+			move_target_container = other_container;
+		else
+		{
+			move_target_container = (struct obj*)0;
+			/* Choose another container */
+			move_target_container = select_other_container(level.objects[u.ux][u.uy], applied_container, TRUE);
 			if (!move_target_container)
 				return 0;
 		}
@@ -3035,7 +3188,7 @@ struct obj* other_container;
         all_categories = FALSE;
         Sprintf(buf, "%s what type of objects?", action);
         mflags = (ALL_TYPES | UNPAID_TYPES | BUCX_TYPES | CHOOSE_ALL);
-        n = query_category(buf, command_id == 1 ? invent : current_container->cobj,
+        n = query_category(buf, command_id == 1 ? invent : command_id == 5 ? level.objects[u.ux][u.uy] : current_container->cobj,
                            mflags, &pick_list, PICK_ANY);
         if (!n)
             return 0;
@@ -3052,31 +3205,30 @@ struct obj* other_container;
 
     if (loot_everything) 
 	{
-        if (command_id == 0)
+		switch (command_id)
 		{
-            current_container->cknown = 1;
-            for (otmp = current_container->cobj; otmp; otmp = otmp2) 
+		case 0:
+			current_container->cknown = 1;
+			for (otmp = current_container->cobj; otmp; otmp = otmp2)
 			{
-                otmp2 = otmp->nobj;
-                res = out_container(otmp);
-                if (res < 0)
-                    break;
-                n_looted += res;
-            }
-        } 
-		else if (command_id == 1)
-		{
-            for (otmp = invent; otmp && current_container; otmp = otmp2) 
+				otmp2 = otmp->nobj;
+				res = out_container(otmp);
+				if (res < 0)
+					break;
+				n_looted += res;
+			}
+			break;
+		case 1:
+			for (otmp = invent; otmp && current_container; otmp = otmp2)
 			{
-                otmp2 = otmp->nobj;
-                res = in_container(otmp);
-                if (res < 0)
-                    break;
-                n_looted += res;
-            }
-        }
-		else if (command_id == 2)
-		{
+				otmp2 = otmp->nobj;
+				res = in_container(otmp);
+				if (res < 0)
+					break;
+				n_looted += res;
+			}
+			break;
+		case 2:
 			current_container->cknown = 1;
 			for (otmp = current_container->cobj; otmp; otmp = otmp2)
 			{
@@ -3086,22 +3238,61 @@ struct obj* other_container;
 					break;
 				n_looted += res;
 			}
+			break;
+		case 3:
+			current_container->cknown = 1;
+			for (otmp = current_container->cobj; otmp; otmp = otmp2)
+			{
+				otmp2 = otmp->nobj;
+				res = move_container(otmp);
+				if (res < 0)
+					break;
+				n_looted += res;
+			}
+			break;
+		case 4:
+			current_container->cknown = 1;
+			for (otmp = current_container->cobj; otmp; otmp = otmp2)
+			{
+				otmp2 = otmp->nobj;
+				res = out_container_and_drop(otmp);
+				if (res < 0)
+					break;
+				n_looted += res;
+			}
+			break;
+		case 5:
+			current_container->cknown = 1;
+			for (otmp = level.objects[u.ux][u.uy]; otmp; otmp = otmp2)
+			{
+				otmp2 = otmp->nexthere;
+				res = pickup_and_in_container(otmp);
+				if (res < 0)
+					break;
+				n_looted += res;
+			}
+			break;
+		default:
+			break;
+
 		}
 	}
 	else 
 	{
-        mflags = INVORDER_SORT;
+		mflags = INVORDER_SORT;
         if (command_id == 1 && flags.invlet_constant)
             mflags |= USE_INVLET;
-        if (command_id == 0 || command_id == 2)
+		if (command_id == 5)
+			mflags |= BY_NEXTHERE;
+		if (command_id == 0 || command_id == 2)
             current_container->cknown = 1;
 
 		char movebuf[BUFSZ] = "";
-		if (command_id == 2)
+		if (command_id == 2 || command_id == 3)
 			Sprintf(movebuf, " from %s to %s", cxname(current_container), cxname(move_target_container));
 
         Sprintf(buf, "%s what%s?", action, movebuf);
-        n = query_objlist(buf, command_id == 1 ? &invent : &(current_container->cobj),
+        n = query_objlist(buf, command_id == 1 ? &invent : command_id == 5 ? &level.objects[u.ux][u.uy] : &(current_container->cobj),
                           mflags, &pick_list, PICK_ANY,
                           all_categories ? allow_all : allow_category, 2);
         if (n)
@@ -3127,6 +3318,15 @@ struct obj* other_container;
 					break;
 				case 2:
 					res = move_container(otmp);
+					break;
+				case 3:
+					res = move_container(otmp);
+					break;
+				case 4:
+					res = out_container_and_drop(otmp);
+					break;
+				case 5:
+					res = pickup_and_in_container(otmp);
 					break;
 				default:
 					res = -1;
@@ -3162,7 +3362,7 @@ struct obj *obj;
 boolean outokay, inokay, alreadyused, more_containers;
 {
     /* underscore is not a choice; it's used to skip element [0] */
-    static const char lootchars[] = "_:oibrsnqm", abc_chars[] = "_:abcdenqm";
+    static const char lootchars[] = "_:oibrsnqmcdp", abc_chars[] = "_:abcdenqfghi";
     winid win;
     anything any;
     menu_item *pick_list;
@@ -3171,7 +3371,8 @@ boolean outokay, inokay, alreadyused, more_containers;
     const char *menuselector = flags.lootabc ? abc_chars : lootchars;
 
 	struct obj* last_container = (struct obj*)0;
-	int other_containter_count = count_other_containers(obj, &last_container);
+	int other_containter_count = count_other_containers(invent, obj, &last_container, FALSE);
+	int floor_containter_count = count_other_containers(level.objects[u.ux][u.uy], obj, &last_container, TRUE);
 
     any = zeroany;
     win = create_nhwindow(NHW_MENU);
@@ -3218,7 +3419,32 @@ boolean outokay, inokay, alreadyused, more_containers;
 	if (outokay && other_containter_count > 0)
 	{
 		any.a_int = 9; /* 'm' */
-		Sprintf(buf, "move %s to %s", something, ((0 && other_containter_count == 1 && last_container) ? thesimpleoname(last_container) : "another container"));
+		char contbuf[BUFSZ] = "";
+		Sprintf(contbuf, "%s container in inventory", current_container->where == OBJ_INVENT ? "another" : "a");
+		Sprintf(buf, "move %s to %s", something, ((0 && other_containter_count == 1 && last_container) ? thesimpleoname(last_container) : contbuf));
+		add_menu(win, NO_GLYPH, &any, menuselector[any.a_int], 0, ATR_NONE,
+			buf, MENU_UNSELECTED);
+	}
+	if (outokay && floor_containter_count > 0)
+	{
+		any.a_int = 10; /* 'c' */
+		char contbuf[BUFSZ] = "";
+		Sprintf(contbuf, "%s container on floor", current_container->where == OBJ_FLOOR ? "another" : "a");
+		Sprintf(buf, "move %s to %s", something, ((0 && other_containter_count == 1 && last_container) ? thesimpleoname(last_container) : contbuf));
+		add_menu(win, NO_GLYPH, &any, menuselector[any.a_int], 0, ATR_NONE,
+			buf, MENU_UNSELECTED);
+	}
+	if (outokay)
+	{
+		any.a_int = 11; /* 'd' */
+		Sprintf(buf, "take %s out and drop it on floor", something);
+		add_menu(win, NO_GLYPH, &any, menuselector[any.a_int], 0, ATR_NONE,
+			buf, MENU_UNSELECTED);
+	}
+	if (inokay && level.objects[u.ux][u.uy] && !(level.objects[u.ux][u.uy] == current_container && !level.objects[u.ux][u.uy]->nexthere))
+	{
+		any.a_int = 12; /* 'p' */
+		Sprintf(buf, "pick %s up and put it in %s", something, thesimpleoname(current_container));
 		add_menu(win, NO_GLYPH, &any, menuselector[any.a_int], 0, ATR_NONE,
 			buf, MENU_UNSELECTED);
 	}
@@ -3243,7 +3469,7 @@ boolean outokay, inokay, alreadyused, more_containers;
         if (n > 1 && k == (more_containers ? 7 : 8))
             k = pick_list[1].item.a_int;
         free((genericptr_t) pick_list);
-        return lootchars[k]; /* :,o,i,b,r,s,n,q,m */
+        return lootchars[k]; /* :,o,i,b,r,s,n,q,m,c,d,p */
     }
     return (n == 0 && more_containers) ? 'n' : 'q'; /* next or quit */
 }
