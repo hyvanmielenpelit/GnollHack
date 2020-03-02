@@ -3081,7 +3081,7 @@ struct o_range {
 
 /* wishable subranges of objects */
 STATIC_OVL NEARDATA const struct o_range o_ranges[] = {
-    { "bag", TOOL_CLASS, SACK, BAG_OF_TRICKS },
+    { "bag", TOOL_CLASS, LEATHER_BAG, ORIENTAL_SILK_SACK },
     { "lamp", TOOL_CLASS, OIL_LAMP, MAGIC_LAMP },
     { "candle", TOOL_CLASS, TALLOW_CANDLE, MAGIC_CANDLE },
     { "horn", TOOL_CLASS, TOOLED_HORN, HORN_OF_PLENTY },

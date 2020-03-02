@@ -1879,29 +1879,32 @@ CONTAINER("bookshelf",		 None, None,
 	1, 0, CHARGED_NOT_CHARGED,  0, 1600, 36, 0, 0, 0, 0, 0, P1_NONE, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 CONTAINER("backpack",		 None, None,
 	1, 0, CHARGED_NOT_CHARGED,  5,  15,   5, 0, 0, 0, 0, 0, P1_NONE, MAT_CLOTH, HI_CLOTH, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-CONTAINER("leather bag",	 "bag", None,
+
+/* shuffled bags start here */
+CONTAINER("leather bag",	 "brown bag", None, //STARTMARKER FOR SHUFFLED BAGS AND BAG WISHCLASS
 	0, 0, CHARGED_NOT_CHARGED,  5,  15,  25, 0, 0, 0, 0, 0, P1_NONE, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-CONTAINER("oriental silk sack", "bag", None,
-	0, 0, CHARGED_NOT_CHARGED,  5,  3,  50, 0, 0, 0, 0, 0, P1_NONE, MAT_SILK, HI_CLOTH, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-CONTAINER("expensive handbag", "bag", None,
-	0, 0, CHARGED_NOT_CHARGED, 2, 5, 500, 0, 0, 0, BONUS_TO_CHA, 2, P1_ATTRIBUTE_BONUS_APPLIES_WHEN_CARRIED, MAT_SILK, HI_GOLD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_GENDER_FEMALE),
-CONTAINER("sack",           "bag", None,
+CONTAINER("sack",           "vintage bag", None,
 	0, 0, CHARGED_NOT_CHARGED, 10,  10,   5, 0, 0, 0, 0, 0, P1_NONE, MAT_CLOTH, HI_CLOTH, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-CONTAINER("oilskin sack",   "bag", None,
+CONTAINER("oilskin sack",   "decorative bag", None,
 	0, 0, CHARGED_NOT_CHARGED,  5,  10, 100, 0, 0, 0, 0, 0, P1_NONE, MAT_CLOTH, HI_CLOTH, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 /* magic bags start here */
-CONTAINER("bag of holding", "bag", "Reduces the weight of contents by half",
+CONTAINER("bag of holding", "ornamental bag", "Reduces the weight of contents by half",
 	0, 1, CHARGED_NOT_CHARGED, 20, 15, 100, 0, 0, 0, 0, 0, P1_NONE, MAT_CLOTH, HI_CLOTH, O1_NONE, O2_CONTAINER_MAGIC_BAG | O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG, O3_NONE, PERMITTED_ALL), //STARTMARKER 2
-CONTAINER("bag of wizardry", "bag", "Reduces the weight of spellbooks, scrolls, reagents, and wands to 1/8",
+CONTAINER("bag of wizardry", "antiquated bag", "Reduces the weight of spellbooks, scrolls, reagents, and wands to 1/8",
 	0, 1, CHARGED_NOT_CHARGED, 15, 15, 100, 0, 0, 0, 0, 0, P1_NONE, MAT_CLOTH, HI_CLOTH, O1_NONE, O2_CONTAINER_MAGIC_BAG | O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG, O3_NONE, PERMITTED_ALL),
-CONTAINER("bag of treasure hauling", "bag", "Reduces the weight of coins, gems, and other treasure to 1/32",
-	0, 1, CHARGED_NOT_CHARGED, 15, 15, 100, 0, 0, 0, 0, 0, P1_NONE, MAT_CLOTH, HI_CLOTH, O1_NONE, O2_CONTAINER_MAGIC_BAG | O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG, O3_NONE, PERMITTED_ALL),
-CONTAINER("quiver of infinite arrows", "bag", None,
+CONTAINER("bag of treasure hauling", "silvery bag", "Reduces the weight of coins, gems, and other treasure to 1/32",
+	0, 1, CHARGED_NOT_CHARGED, 15, 15, 100, 0, 0, 0, 0, 0, P1_NONE, MAT_CLOTH, HI_SILVER, O1_NONE, O2_CONTAINER_MAGIC_BAG | O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG, O3_NONE, PERMITTED_ALL),
+CONTAINER("pouch of endless bolts", "old-fashioned bag", None,
 	0, 1, CHARGED_NOT_CHARGED, 4, 15, 100, 300, 0, 0, 0, 0, P1_NONE, MAT_CLOTH, HI_CLOTH, O1_NONE, O2_CONTAINER_NONCONTAINER, O3_ELEMENTAL_ENCHANTABLE, PERMITTED_ALL),
-CONTAINER("pouch of endless bolts", "bag", None,
-	0, 1, CHARGED_NOT_CHARGED, 4, 15, 100, 300, 0, 0, 0, 0, P1_NONE, MAT_CLOTH, HI_CLOTH, O1_NONE, O2_CONTAINER_NONCONTAINER, O3_ELEMENTAL_ENCHANTABLE, PERMITTED_ALL),
-CONTAINER("bag of tricks", "bag", None,
+CONTAINER("bag of tricks", "runed bag", None, //ENDMARKER FOR SHUFFLED
 	0, 1, CHARGED_BAG_OF_TRICKS, 20, 15, 100, 0, 0, 0, 0, 0, P1_NONE, MAT_CLOTH, HI_CLOTH, O1_NONE, O2_CONTAINER_NONCONTAINER | O2_CONTAINER_MAGIC_BAG, O3_NONE, PERMITTED_ALL), //ENDMARKER 1&2
+/* end of shuffled bags */
+CONTAINER("expensive handbag", "gold-encrusted bag", None,
+	0, 0, CHARGED_NOT_CHARGED, 2, 5, 500, 0, 0, 0, BONUS_TO_CHA, 2, P1_ATTRIBUTE_BONUS_APPLIES_WHEN_CARRIED, MAT_SILK, HI_GOLD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_GENDER_FEMALE),
+CONTAINER("oriental silk sack", "silk-woven bag", None, //ENDMARKER BAG WISHCLASS
+	0, 0, CHARGED_NOT_CHARGED,  5,  3,  50, 0, 0, 0, 0, 0, P1_NONE, MAT_SILK, HI_CLOTH, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+CONTAINER("quiver of infinite arrows", "cylindrical bag", None,
+	0, 1, CHARGED_NOT_CHARGED, 4, 15, 100, 300, 0, 0, 0, 0, P1_NONE, MAT_CLOTH, HI_CLOTH, O1_NONE, O2_CONTAINER_NONCONTAINER, O3_ELEMENTAL_ENCHANTABLE, PERMITTED_ALL),
 #undef CONTAINER
 
 /* lock opening tools */
