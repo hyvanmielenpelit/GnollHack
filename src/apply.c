@@ -4269,206 +4269,218 @@ doapply()
 		return use_wand_on_object(obj); // do_break_wand(obj);
 	}
 
-    switch (obj->otyp) 
+	if (Is_proper_container(obj))
 	{
-    case BLINDFOLD:
-        if (obj == ublindf) 
+		/* Regular containers */
+		res = use_container(&obj, 1, FALSE);
+	}
+	else
+	{
+		/* All others */
+		switch (obj->otyp)
 		{
-            if (!cursed(obj))
-                Blindf_off(obj);
-        } 
-		else if (!ublindf) 
-		{
-            Blindf_on(obj);
-        }
-		else 
-		{
-            You("are already %s.", ublindf->otyp == TOWEL
-                                       ? "covered by a towel"
-                                       :  "wearing a blindfold");
-        }
-        break;
-    case CREAM_PIE:
-        res = use_cream_pie(obj);
-        break;
-    case BULLWHIP:
-        res = use_whip(obj);
-        break;
-    case GRAPPLING_HOOK:
-        res = use_grapple(obj);
-        break;
-    case LARGE_BOX:
-    case CHEST:
-    case ICE_BOX:
-	case BOOKSHELF:
-	case SACK:
-	case BACKPACK:
-	case LEATHER_BAG:
-	case ORIENTAL_SILK_SACK:
-	case EXPENSIVE_HANDBAG:
-	case GOLDEN_CHEST:
-	case BAG_OF_HOLDING:
-	case BAG_OF_WIZARDRY:
-	case BAG_OF_TREASURE_HAULING:
-	case OILSKIN_SACK:
-        res = use_container(&obj, 1, FALSE);
-        break;
-    case BAG_OF_TRICKS:
-        (void)bagotricks(obj, FALSE, (int *) 0);
-        break;
-	case POUCH_OF_ENDLESS_BOLTS:
-		(void)endlessarrows(obj, CROSSBOW_BOLT, rnd(10) + 10);
-		break;
-	case QUIVER_OF_INFINITE_ARROWS:
-		(void)endlessarrows(obj, ARROW, rnd(10) + 10);
-		break;
-	case CAN_OF_GREASE:
-        use_grease(obj);
-        break;
-    case LOCK_PICK:
-    case CREDIT_CARD:
-    case SKELETON_KEY:
-        res = (pick_lock(obj) != 0);
-        break;
-    case PICK_AXE:
-    case DWARVISH_MATTOCK:
-	case SHOVEL:
-		res = use_pick_axe(obj);
-        break;
-	case GOLF_CLUB:
-		res = use_golf_club(obj);
-		break;
-	case TINNING_KIT:
-        use_tinning_kit(obj);
-        break;
-    case LEASH:
-        res = use_leash(obj);
-        break;
-    case SADDLE:
-        res = use_saddle(obj);
-        break;
-    case MAGIC_WHISTLE:
-        use_magic_whistle(obj);
-        break;
-    case TIN_WHISTLE:
-        use_whistle(obj);
-        break;
-    case EUCALYPTUS_LEAF:
-        /* MRKR: Every Australian knows that a gum leaf makes an excellent
-         * whistle, especially if your pet is a tame kangaroo named Skippy.
-         */
-        if (obj->blessed) 
-		{
-            use_magic_whistle(obj);
-            /* sometimes the blessing will be worn off */
-            if (!rn2(49)) 
+		case BLINDFOLD:
+			if (obj == ublindf)
 			{
-                if (!Blind) 
+				if (!cursed(obj))
+					Blindf_off(obj);
+			}
+			else if (!ublindf)
+			{
+				Blindf_on(obj);
+			}
+			else
+			{
+				You("are already %s.", ublindf->otyp == TOWEL
+					? "covered by a towel"
+					: "wearing a blindfold");
+			}
+			break;
+		case CREAM_PIE:
+			res = use_cream_pie(obj);
+			break;
+		case BULLWHIP:
+			res = use_whip(obj);
+			break;
+		case GRAPPLING_HOOK:
+			res = use_grapple(obj);
+			break;
+#if 0
+		case LARGE_BOX:
+		case CHEST:
+		case ICE_BOX:
+		case BOOKSHELF:
+		case SACK:
+		case BACKPACK:
+		case LEATHER_BAG:
+		case ORIENTAL_SILK_SACK:
+		case EXPENSIVE_HANDBAG:
+		case GOLDEN_CHEST:
+		case BAG_OF_HOLDING:
+		case BAG_OF_WIZARDRY:
+		case BAG_OF_TREASURE_HAULING:
+		case OILSKIN_SACK:
+			res = use_container(&obj, 1, FALSE);
+			break;
+#endif
+		case BAG_OF_TRICKS:
+			(void)bagotricks(obj, FALSE, (int*)0);
+			break;
+		case POUCH_OF_ENDLESS_BOLTS:
+			(void)endlessarrows(obj, CROSSBOW_BOLT, rnd(10) + 10);
+			break;
+		case QUIVER_OF_INFINITE_ARROWS:
+			(void)endlessarrows(obj, ARROW, rnd(10) + 10);
+			break;
+		case CAN_OF_GREASE:
+			use_grease(obj);
+			break;
+		case LOCK_PICK:
+		case CREDIT_CARD:
+		case SKELETON_KEY:
+			res = (pick_lock(obj) != 0);
+			break;
+		case PICK_AXE:
+		case DWARVISH_MATTOCK:
+		case SHOVEL:
+			res = use_pick_axe(obj);
+			break;
+		case GOLF_CLUB:
+			res = use_golf_club(obj);
+			break;
+		case TINNING_KIT:
+			use_tinning_kit(obj);
+			break;
+		case LEASH:
+			res = use_leash(obj);
+			break;
+		case SADDLE:
+			res = use_saddle(obj);
+			break;
+		case MAGIC_WHISTLE:
+			use_magic_whistle(obj);
+			break;
+		case TIN_WHISTLE:
+			use_whistle(obj);
+			break;
+		case EUCALYPTUS_LEAF:
+			/* MRKR: Every Australian knows that a gum leaf makes an excellent
+			 * whistle, especially if your pet is a tame kangaroo named Skippy.
+			 */
+			if (obj->blessed)
+			{
+				use_magic_whistle(obj);
+				/* sometimes the blessing will be worn off */
+				if (!rn2(49))
 				{
-                    pline("%s %s.", Yobjnam2(obj, "glow"), hcolor("brown"));
-                    obj->bknown = 1;
-                }
-                unbless(obj);
-            }
-        } 
-		else 
-		{
-            use_whistle(obj);
-        }
-        break;
-    case STETHOSCOPE:
-        res = use_stethoscope(obj);
-        break;
-    case MIRROR:
-	case MAGIC_MIRROR:
-		res = use_mirror(obj);
-        break;
-	case HOLY_SYMBOL:
-		res = use_holysymbol(obj);
-		break;
-	case BELL:
-    case BELL_OF_OPENING:
-        use_bell(&obj);
-        break;
-    case CANDELABRUM_OF_INVOCATION:
-        use_candelabrum(obj);
-        break;
-    case WAX_CANDLE:
-    case TALLOW_CANDLE:
-	case MAGIC_CANDLE:
-		use_candle(&obj);
-        break;
-    case OIL_LAMP:
-    case MAGIC_LAMP:
-    case BRASS_LANTERN:
-        use_lamp(obj);
-        break;
-    case POT_OIL:
-        light_cocktail(&obj);
-        break;
-    case EXPENSIVE_CAMERA:
-        res = use_camera(obj);
-        break;
-    case TOWEL:
-        res = use_towel(obj);
-        break;
-    case CRYSTAL_BALL:
-        use_crystal_ball(&obj);
-        break;
-    case MAGIC_MARKER:
-        res = dowrite(obj);
-        break;
-    case TIN_OPENER:
-        res = use_tin_opener(obj);
-        break;
-    case FIGURINE:
-        use_figurine(&obj);
-        break;
-    case UNICORN_HORN:
-        use_unicorn_horn(obj);
-        break;
-    case WOODEN_FLUTE:
-    case MAGIC_FLUTE:
-    case TOOLED_HORN:
-    case FROST_HORN:
-    case FIRE_HORN:
-    case WOODEN_HARP:
-    case MAGIC_HARP:
-    case BUGLE:
-    case LEATHER_DRUM:
-    case DRUM_OF_EARTHQUAKE:
-        res = do_play_instrument(obj);
-        break;
-    case HORN_OF_PLENTY: /* not a musical instrument */
-        (void) hornoplenty(obj, FALSE);
-        break;
-    case LAND_MINE:
-    case BEARTRAP:
-        use_trap(obj);
-        break;
-    case FLINT:
-    case LUCKSTONE:
-    case LOADSTONE:
-	case JINXSTONE:
-	case TOUCHSTONE:
-        use_stone(obj);
-        break;
-    default:
-        /* Pole-weapons can strike at a distance */
-        if (is_pole(obj)) 
-		{
-            res = use_pole(obj);
-            break;
-        } 
-		else if (is_pick(obj) || is_axe(obj))
-		{
-            res = use_pick_axe(obj);
-            break;
-        }
-        pline("Sorry, I don't know how to use that.");
-        nomul(0);
-        return 0;
-    }
+					if (!Blind)
+					{
+						pline("%s %s.", Yobjnam2(obj, "glow"), hcolor("brown"));
+						obj->bknown = 1;
+					}
+					unbless(obj);
+				}
+			}
+			else
+			{
+				use_whistle(obj);
+			}
+			break;
+		case STETHOSCOPE:
+			res = use_stethoscope(obj);
+			break;
+		case MIRROR:
+		case MAGIC_MIRROR:
+			res = use_mirror(obj);
+			break;
+		case HOLY_SYMBOL:
+			res = use_holysymbol(obj);
+			break;
+		case BELL:
+		case BELL_OF_OPENING:
+			use_bell(&obj);
+			break;
+		case CANDELABRUM_OF_INVOCATION:
+			use_candelabrum(obj);
+			break;
+		case WAX_CANDLE:
+		case TALLOW_CANDLE:
+		case MAGIC_CANDLE:
+			use_candle(&obj);
+			break;
+		case OIL_LAMP:
+		case MAGIC_LAMP:
+		case BRASS_LANTERN:
+			use_lamp(obj);
+			break;
+		case POT_OIL:
+			light_cocktail(&obj);
+			break;
+		case EXPENSIVE_CAMERA:
+			res = use_camera(obj);
+			break;
+		case TOWEL:
+			res = use_towel(obj);
+			break;
+		case CRYSTAL_BALL:
+			use_crystal_ball(&obj);
+			break;
+		case MAGIC_MARKER:
+			res = dowrite(obj);
+			break;
+		case TIN_OPENER:
+			res = use_tin_opener(obj);
+			break;
+		case FIGURINE:
+			use_figurine(&obj);
+			break;
+		case UNICORN_HORN:
+			use_unicorn_horn(obj);
+			break;
+		case WOODEN_FLUTE:
+		case MAGIC_FLUTE:
+		case TOOLED_HORN:
+		case FROST_HORN:
+		case FIRE_HORN:
+		case WOODEN_HARP:
+		case MAGIC_HARP:
+		case BUGLE:
+		case LEATHER_DRUM:
+		case DRUM_OF_EARTHQUAKE:
+			res = do_play_instrument(obj);
+			break;
+		case HORN_OF_PLENTY: /* not a musical instrument */
+			(void)hornoplenty(obj, FALSE);
+			break;
+		case LAND_MINE:
+		case BEARTRAP:
+			use_trap(obj);
+			break;
+		case FLINT:
+		case LUCKSTONE:
+		case LOADSTONE:
+		case JINXSTONE:
+		case TOUCHSTONE:
+			use_stone(obj);
+			break;
+		default:
+			/* Pole-weapons can strike at a distance */
+			if (is_pole(obj))
+			{
+				res = use_pole(obj);
+				break;
+			}
+			else if (is_pick(obj) || is_axe(obj))
+			{
+				res = use_pick_axe(obj);
+				break;
+			}
+			pline("Sorry, I don't know how to use that.");
+			nomul(0);
+			return 0;
+		}
+	}
+
     if (res && obj && obj->oartifact)
         arti_speak(obj);
     nomul(0);
@@ -4489,7 +4501,7 @@ struct obj** last_container_ptr;
 	int cnt = 0;
 	for (struct obj* otmp = invent; otmp; otmp = otmp->nobj)
 	{
-		if (Is_container(otmp) && otmp != this_container)
+		if ((Is_proper_container(otmp) || (Is_container(otmp) && !objects[otmp->otyp].oc_name_known)) && otmp != this_container)
 		{
 			cnt++;
 			*last_container_ptr = otmp;
@@ -4516,7 +4528,7 @@ struct obj* this_container;
 
 	for (struct obj* otmp = invent; otmp; otmp = otmp->nobj)
 	{
-		if (Is_container(otmp) && otmp != this_container)
+		if ((Is_proper_container(otmp) || (Is_container(otmp) && !objects[otmp->otyp].oc_name_known)) && otmp != this_container)
 		{
 			anything any = zeroany;
 			any.a_obj = otmp;

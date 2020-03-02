@@ -2398,6 +2398,12 @@ register struct obj* obj;
 	if (obj->where != OBJ_INVENT)
 		return 0;
 
+	if (!Is_proper_container(move_target_container))
+	{
+		pline("For some reason, you cannot put %s in %s!", thesimpleoname(obj), thesimpleoname(move_target_container));
+		return -1;
+	}
+
 	struct obj* savedcontainer = current_container;
 	current_container = move_target_container;
 	res = in_container(obj);
@@ -2952,7 +2958,7 @@ struct obj* other_container;
     } 
 	else if (command_id == 2)
 	{
-		if(other_container)
+		if(0 && other_container)
 			move_target_container = other_container;
 		else
 		{
@@ -3008,7 +3014,7 @@ struct obj* other_container;
 
 	if (command_id == 2)
 	{
-		if(other_container)
+		if(0 && other_container)
 			move_target_container = other_container;
 		else
 		{
@@ -3212,7 +3218,7 @@ boolean outokay, inokay, alreadyused, more_containers;
 	if (outokay && other_containter_count > 0)
 	{
 		any.a_int = 9; /* 'm' */
-		Sprintf(buf, "move %s to %s", something, ((other_containter_count == 1 && last_container) ? thesimpleoname(last_container) : "another container"));
+		Sprintf(buf, "move %s to %s", something, ((0 && other_containter_count == 1 && last_container) ? thesimpleoname(last_container) : "another container"));
 		add_menu(win, NO_GLYPH, &any, menuselector[any.a_int], 0, ATR_NONE,
 			buf, MENU_UNSELECTED);
 	}

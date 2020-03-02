@@ -307,6 +307,8 @@ struct obj {
     (/* (Is_container(o) || (o)->otyp == STATUE) && */ \
      (o)->cobj != (struct obj *) 0)
 #define Is_container(o) ((objects[(o)->otyp].oc_flags2 & O2_CONTAINER) != 0)
+#define Is_noncontainer(o) ((objects[(o)->otyp].oc_flags2 & O2_CONTAINER_NONCONTAINER) != 0)
+#define Is_proper_container(o) (Is_container(o) && !Is_noncontainer(o))
 #define Is_box(o) ((objects[(o)->otyp].oc_flags2 & O2_CONTAINER_BOX) != 0)
 #define Is_mbag(o) \
 	((objects[(o)->otyp].oc_flags2 & O2_CONTAINER_MAGIC_BAG) != 0)
