@@ -1326,7 +1326,7 @@ register struct obj *otmp;
 		{
             if (zap_oseen)
                 makeknown(WAN_STRIKING);
-            if (Antimagic) 
+            if (Antimagic_or_resistance) 
 			{
                 shieldeff(u.ux, u.uy);
                 pline("Boing!");

@@ -172,7 +172,7 @@ struct obj *bp;
 		bp->in_use = was_in_use;
         break;
     case 6:
-        if (Antimagic) {
+        if (Antimagic_or_resistance) {
             shieldeff(u.ux, u.uy);
             pline_The("book %s, but you are unharmed!", explodes);
         } else {

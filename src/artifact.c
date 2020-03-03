@@ -726,7 +726,7 @@ struct monst *mon;
 			if (badappropriate)
 				dmg = weapon_total_dmg_value(obj, &youmonst, &youmonst);
 			if(badclass || badalign)
-				dmg += d((Antimagic ? 2 : 4), (self_willed ? 10 : 4));
+				dmg += d((Antimagic_or_resistance ? 2 : 4), (self_willed ? 10 : 4));
 			/* add half (maybe quarter) of the usual silver damage bonus */
 			if (objects[obj->otyp].oc_material == MAT_SILVER && Hate_silver)
 				dmg += rnd(10);
@@ -842,7 +842,7 @@ struct monst *mtmp;
 			return !(yours ? Lycanthropy_resistance : resists_lycanthropy(mtmp));
 		case AD_MAGM:
         case AD_STUN:
-            return !(yours ? Antimagic : (resists_magic(mtmp) || resists_magicmissile(mtmp) || (rn2(100) < ptr->mr)));
+            return !check_magic_resistance_and_inflict_damage(mtmp, (struct obj*)0, FALSE, 0, 0, NOTELL);
         case AD_DRST:
             return !(yours ? Poison_resistance : resists_poison(mtmp));
         case AD_DRLI:
@@ -1178,7 +1178,7 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
 
     case MB_INDEX_SCARE:
         if (youdefend) {
-            if (Antimagic || Fear_resistance) {
+            if (Antimagic_or_resistance || Fear_resistance) {
                 resisted = TRUE;
             } else {
                 nomul(-3);
@@ -1649,7 +1649,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 			(void)destroy_mitem(mdef, WAND_CLASS, AD_ELEC);
 	}
 
-	if (!(youdefend ? Antimagic : (resists_magicmissile(mdef) || resists_magic(mdef))) && (objects[otmp->otyp].oc_damagetype == AD_MAGM || (extradamagedone && objects[otmp->otyp].oc_extra_damagetype == AD_MAGM)))
+	if (!check_magic_resistance_and_inflict_damage(mdef, (struct obj*)0, FALSE, 0, 0, NOTELL) && (objects[otmp->otyp].oc_damagetype == AD_MAGM || (extradamagedone && objects[otmp->otyp].oc_extra_damagetype == AD_MAGM)))
 	{
 		if (realizes_damage)
 			pline("A hail of magic missiles strikes from %s hits %s!", the(xname(otmp)), hittee);
@@ -1966,7 +1966,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 	{
 		if (!is_rider(mdef->data) && !is_undead(mdef->data) //Demons are affected
 			&& !(youdefend ? Drain_resistance : resists_drli(mdef))
-			&& !((objects[otmp->otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS) ? (youdefend ? Antimagic : resists_magic(mdef)) : 0)
+			&& !((objects[otmp->otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS) ? check_magic_resistance_and_inflict_damage(mdef, (struct obj*)0, FALSE, 0, 0, NOTELL) : 0)
 			&& ((objects[otmp->otyp].oc_aflags & A1_LEVEL_DRAIN_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mdef, magr))
 			&& ((objects[otmp->otyp].oc_aflags & A1_LEVEL_DRAIN_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
 			&& (
@@ -2044,20 +2044,20 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 				if (
 					((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_USES_EXTRA_DAMAGE_TYPE
 					&& ((objects[otmp->otyp].oc_extra_damagetype == AD_FIRE && (youdefend ? Fire_resistance : resists_fire(mdef)))
-						|| ((objects[otmp->otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS) ? (youdefend ? Antimagic : resists_magic(mdef)) : 0)
+						|| ((objects[otmp->otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS) ? check_magic_resistance_and_inflict_damage(mdef, (struct obj*)0, FALSE, 0, 0, NOTELL) : 0)
 						|| (objects[otmp->otyp].oc_extra_damagetype == AD_COLD && (youdefend ? Cold_resistance : resists_cold(mdef)))
 						|| (objects[otmp->otyp].oc_extra_damagetype == AD_ELEC && (youdefend ? Shock_resistance : resists_elec(mdef)))))
 					||
 					((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK
 						&& ((youdefend ? Death_resistance : resists_death(mdef))
-							|| ((objects[otmp->otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS) ? (youdefend ? Antimagic : resists_magic(mdef)) : 0)
+							|| ((objects[otmp->otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS) ? check_magic_resistance_and_inflict_damage(mdef, (struct obj*)0, FALSE, 0, 0, NOTELL) : 0)
 							|| (!(objects[otmp->otyp].oc_aflags & A1_BYPASSES_MC) && check_magic_cancellation_success(mdef,
 								objects[otmp->otyp].oc_mc_adjustment + (objects[otmp->otyp].oc_flags & O1_SPE_AFFECTS_MC_ADJUSTMENT ? -otmp->spe : 0)))
 							))
 					||
 					((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK
 						&& ((youdefend ? (Disint_resistance || Invulnerable) : resists_disint(mdef))
-							|| ((objects[otmp->otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS) ? (youdefend ? Antimagic : resists_magic(mdef)) : 0)
+							|| ((objects[otmp->otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS) ? check_magic_resistance_and_inflict_damage(mdef, (struct obj*)0, FALSE, 0, 0, NOTELL) : 0)
 							|| (!(objects[otmp->otyp].oc_aflags & A1_BYPASSES_MC) && check_magic_cancellation_success(mdef,
 								objects[otmp->otyp].oc_mc_adjustment + (objects[otmp->otyp].oc_flags & O1_SPE_AFFECTS_MC_ADJUSTMENT ? -otmp->spe : 0)))
 							))

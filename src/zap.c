@@ -277,6 +277,11 @@ struct obj *otmp;
 			pline("%s is unaffected by your touch!", Monnam(mtmp));
 			break; /* skip makeknown */
 		} 
+		else if (check_magic_cancellation_success(mtmp, objects[otyp].oc_spell_saving_throw_adjustment))
+		{
+			pline("Luckily for %s, it didn't work!", mon_nam(mtmp));
+			break; /* skip makeknown */
+		}
 		else
 		{ //Otherwise dead
 			mtmp->mhp = 0;
@@ -286,11 +291,22 @@ struct obj *otmp;
 		}
 		break;
 	case SPE_FLESH_TO_STONE:
-	case SPE_TOUCH_OF_PETRIFICATION:
 		res = 1;
 		if (resists_ston(mtmp))
 			pline("%s is unaffected.", Monnam(mtmp));
-		else if (!check_magic_cancellation_success(mtmp, objects[otyp].oc_spell_saving_throw_adjustment))  // check_magic_resistance_and_inflict_damage(mtmp, otmp, FALSE, 0, 0, TELL))
+		else if (check_ability_resistance_success(mtmp, A_DEX, objects[otyp].oc_spell_saving_throw_adjustment))
+			pline("%s dodges your spell.", Monnam(mtmp));
+		else
+			start_delayed_petrification(mtmp, TRUE);
+		break;
+	case SPE_TOUCH_OF_PETRIFICATION:
+		res = 1;
+		You("reach out with your petrifying touch...");
+		if (resists_ston(mtmp))
+			pline("%s is unaffected.", Monnam(mtmp));
+		else if (check_magic_cancellation_success(mtmp, objects[otyp].oc_spell_saving_throw_adjustment))
+			pline("Luckily for %s, it didn't work!", mon_nam(mtmp));
+		else
 			start_delayed_petrification(mtmp, TRUE);
 		break;
 
@@ -302,6 +318,7 @@ struct obj *otmp;
 		{
 			if (canseemon(mtmp))
 				(void)mon_reflects(mtmp, "Your gaze is reflected by %s %s.");
+
 			if (!Blind) 
 			{
 				if (Reflecting) 
@@ -310,7 +327,8 @@ struct obj *otmp;
 						s_suffix(Monnam(mtmp)));
 				}
 				if (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my)
-					&& !Stone_resistance) {
+					&& !Stone_resistance)
+				{
 					You("meet your own reflected gaze.");
 					stop_occupation();
 					if (poly_when_stoned(youmonst.data) && polymon(PM_STONE_GOLEM))
@@ -330,7 +348,7 @@ struct obj *otmp;
 			/* nothing else */
 		}
 #endif
-		else
+		else /* You cannot dodge the gaze of Medusa! */
 			minstapetrify(mtmp, TRUE);
 
 		break;
@@ -496,7 +514,8 @@ struct obj *otmp;
 		break;
 	case SPE_BANISH_DEMON:
 		wake = FALSE;
-		if (is_demon(mtmp->data)) {
+		if (is_demon(mtmp->data))
+		{
 			res = 1;
 			reveal_invis = TRUE;
 			wake = TRUE;
@@ -4331,7 +4350,7 @@ boolean ordinary;
     case WAN_STRIKING:
     case SPE_FORCE_BOLT:
         learn_it = TRUE;
-        if (Antimagic || Invulnerable)
+        if (Antimagic_or_resistance || Invulnerable)
 		{
             shieldeff(u.ux, u.uy);
 			damage = 0;
@@ -4515,7 +4534,7 @@ boolean ordinary;
     case SPE_MAGIC_MISSILE:
         learn_it = TRUE;
 		damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_MAGM, TRUE);
-		if (Antimagic || Invulnerable) {
+		if (Antimagic_or_resistance || Invulnerable) {
             shieldeff(u.ux, u.uy);
             pline_The("missiles bounce!");
 			damage = 0;
@@ -4705,7 +4724,6 @@ boolean ordinary;
         break;
 	case SPE_TOUCH_OF_PETRIFICATION:
 	case SPE_FLESH_TO_STONE:
-	case SPE_GAZE_OF_MEDUSA:
 		if (!Stoned && !Stone_resistance
 			&& !(poly_when_stoned(youmonst.data)
 				&& polymon(PM_STONE_GOLEM))) {
@@ -4714,6 +4732,9 @@ boolean ordinary;
 			Sprintf(kname, "cast a petrification spell on %sself", uhim());
 			make_stoned(5L, (char*)0, kformat, kname);
 		}
+		break;
+	case SPE_GAZE_OF_MEDUSA:
+		You("try to gaze at yourself but cannot!");
 		break;
 	case SPE_POWER_WORD_STUN:
 	{
@@ -5114,7 +5135,7 @@ int duration;
         "Some writing vanishes from %s head!";
     static const char your[] = "your"; /* should be extern */
 
-    if (youdefend ? (!youattack && Antimagic)
+    if (youdefend ? (!youattack && Antimagic_or_resistance)
                   : check_magic_resistance_and_inflict_damage(mdef, obj, FALSE, 0, 0, NOTELL))
         return FALSE; /* resisted cancellation */
 
@@ -5211,7 +5232,7 @@ int duration;
 	{
 		if (objects[obj->otyp].oc_aflags & S1_SPELL_BYPASSES_MAGIC_RESISTANCE)
 			; //OK;
-		else if (!youattack && Antimagic)
+		else if (!youattack && Antimagic_or_resistance)
 			return FALSE; /* resisted cancellation */
 			
 		pline("A dim shimmer surrounds you.");
@@ -6462,7 +6483,6 @@ const char *fltxt;
 xchar sx, sy;
 {
     int dam = 0, abstyp = abs(type);
-	boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(&youmonst, origobj, type < ZT_SPELL(0) ? 12 : u.ulevel, 0, 0, NOTELL);
 
 	//Base damage here, set to zero, if not needed
 	if (origobj)
@@ -6477,7 +6497,7 @@ xchar sx, sy;
     switch (abstyp % 10) 
 	{
     case ZT_MAGIC_MISSILE:
-        if (Antimagic || magic_resistance_success || Invulnerable) 
+        if (Antimagic_or_resistance || Invulnerable)
 		{
             shieldeff(sx, sy);
 			damage = 0;
@@ -8130,7 +8150,7 @@ int dmg, adtyp, tell;
 	if (oclass == RING_CLASS && !dmg && !tell && is_mplayer(mtmp->data))
         return 1;
 
-	if (otmp && objects[otmp->otyp].oc_aflags & S1_SPELL_BYPASSES_MAGIC_RESISTANCE)
+	if (otmp && (oclass == SPBOOK_CLASS || oclass == WAND_CLASS) && objects[otmp->otyp].oc_aflags & S1_SPELL_BYPASSES_MAGIC_RESISTANCE)
 		resisted = FALSE;
 	else
 	{
@@ -8185,6 +8205,9 @@ int dmg, adtyp, tell;
 		if (resists_magic(mtmp) && applicable_mr < 100)
 			applicable_mr = 100;
 
+		if (is_you && Antimagic && applicable_mr < 100)
+			applicable_mr = 100;
+
 		if (nomr)
 			applicable_mr = 0;
 		else if(quartermr)
@@ -8200,11 +8223,17 @@ int dmg, adtyp, tell;
 			resisted = (rn2(100) < applicable_mr);  //(rn2(100 + alev - dlev) < applicable_mr);
 	}
 
+	/* No need to go any further */
+	if (dmg == 0 && tell == NOTELL)
+		return resisted;
+
 	double damage = dmg == 0 ? 0 : adjust_damage(dmg, (struct monst*)0, mtmp, adtyp, TRUE);
 
 	if (resisted)
 	{
-		damage = resisting_halves_damage ? damage / 2 : 0;
+		if(damage > 0)
+			damage = resisting_halves_damage ? damage / 2 : 0;
+
 		if (tell) 
 		{
 			if (is_you)

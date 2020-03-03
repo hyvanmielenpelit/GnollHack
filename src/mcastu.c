@@ -340,7 +340,7 @@ boolean foundyou;
         break;
     case AD_MAGM:
         You("are hit by a shower of missiles!");
-        if (Antimagic || Invulnerable) {
+        if (Antimagic_or_resistance || Invulnerable) {
             shieldeff(u.ux, u.uy);
             pline_The("missiles bounce off!");
             damage = 0;
@@ -474,7 +474,7 @@ int spellnum;
         damage = 0;
         break;
     case MGC_DESTRY_ARMR:
-		if (Antimagic) {
+		if (Antimagic_or_resistance) {
 			shieldeff(u.ux, u.uy);
 			pline("A field of force surrounds you!");
 		}
@@ -488,7 +488,7 @@ int spellnum;
         damage = 0;
         break;
     case MGC_WEAKEN_YOU: /* drain strength */
-        if (Antimagic) {
+        if (Antimagic_or_resistance) {
             shieldeff(u.ux, u.uy);
             You_feel("momentarily weakened.");
         }
@@ -520,7 +520,7 @@ int spellnum;
             impossible("no reason for monster to cast disappear spell?");
         break;
     case MGC_STUN_YOU:
-        if (Antimagic || Free_action || Invulnerable) {
+        if (Antimagic_or_resistance || Free_action || Invulnerable) {
             shieldeff(u.ux, u.uy);
             if (!Stunned)
                 You_feel("momentarily disoriented.");
@@ -544,7 +544,7 @@ int spellnum;
     case MGC_PSI_BOLT:
         /* prior to 3.4.0 Antimagic was setting the damage to 1--this
            made the spell virtually harmless to players with magic res. */
-        if (Antimagic || Invulnerable) 
+        if (Antimagic_or_resistance || Invulnerable)
 		{
             shieldeff(u.ux, u.uy);
             damage = damage / 2;
@@ -744,7 +744,7 @@ int spellnum;
             impossible("no reason for monster to cast blindness spell?");
         break;
     case CLC_PARALYZE:
-        if (Antimagic || Free_action) {
+        if (Antimagic_or_resistance || Free_action) {
             shieldeff(u.ux, u.uy);
             if (multi >= 0)
                 You("stiffen briefly.");
@@ -765,7 +765,7 @@ int spellnum;
         damage = 0;
         break;
     case CLC_CONFUSE_YOU:
-        if (Antimagic) {
+        if (Antimagic_or_resistance) {
             shieldeff(u.ux, u.uy);
             You_feel("momentarily dizzy.");
         } else {
@@ -786,7 +786,7 @@ int spellnum;
         damage = m_cure_self(mtmp, damage);
         break;
     case CLC_OPEN_WOUNDS:
-        if (Antimagic)
+        if (Antimagic_or_resistance)
 		{
             shieldeff(u.ux, u.uy);
             damage = damage / 2;

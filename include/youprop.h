@@ -103,6 +103,8 @@
 #define EAntimagic u.uprops[ANTIMAGIC].extrinsic
 #define Antimagic (HAntimagic || EAntimagic)
 
+#define Antimagic_or_resistance check_magic_resistance_and_inflict_damage(&youmonst, (struct obj*)0, FALSE, 0, 0, NOTELL)
+
 #define HAcid_resistance u.uprops[ACID_RES].intrinsic
 #define EAcid_resistance u.uprops[ACID_RES].extrinsic
 #define Acid_resistance (HAcid_resistance || EAcid_resistance)

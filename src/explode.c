@@ -173,7 +173,7 @@ int expltype;
                     explmask[i][j] = 0;
                     break;
                 case AD_MAGM:
-                    explmask[i][j] = !!Antimagic;
+                    explmask[i][j] = !!Antimagic_or_resistance;
                     break;
                 case AD_FIRE:
                     explmask[i][j] = !!Fire_resistance;

@@ -2479,7 +2479,7 @@ register struct obj* omonwep;
         case 2:
         case 1:
         case 0:
-            if (Antimagic)
+            if (Death_resistance)
                 shieldeff(u.ux, u.uy);
             pline("Lucky for you, it didn't work!");
 			damage = 0;

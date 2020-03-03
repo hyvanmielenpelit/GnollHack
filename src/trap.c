@@ -1464,7 +1464,7 @@ unsigned trflags;
         /* hero without magic resistance loses spell energy,
            hero with magic resistance takes damage instead;
            possibly non-intuitive but useful for play balance */
-        if (!Antimagic) 
+        if (!Antimagic_or_resistance)
 		{
             drain_en(-1);
         } 
@@ -1505,7 +1505,7 @@ unsigned trflags;
                     Levitation ? (const char *) "float"
                                : locomotion(youmonst.data, "step"));
         You("%s a polymorph trap!", verbbuf);
-        if (Antimagic || Unchanging) {
+        if (Antimagic_or_resistance || Unchanging) {
             shieldeff(u.ux, u.uy);
             You_feel("momentarily different.");
             /* Trap did nothing; don't remove it --KAA */

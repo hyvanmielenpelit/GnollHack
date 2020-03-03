@@ -3780,7 +3780,7 @@ boolean wep_was_destroyed;
         break;
     case AD_MAGM:
         /* wrath of gods for attacking Oracle */
-        if (Antimagic || Invulnerable) {
+        if (Antimagic_or_resistance || Invulnerable) {
             shieldeff(u.ux, u.uy);
             pline("A hail of magic missiles narrowly misses you!");
         } else {

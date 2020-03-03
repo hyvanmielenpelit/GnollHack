@@ -337,6 +337,7 @@ rndcurse()
     int cnt, onum;
     struct obj *otmp;
     static const char mal_aura[] = "feel a malignant aura surround %s.";
+	boolean antimagicsuccess = Antimagic_or_resistance;
 
     if (((uwep && uwep->oartifact && artifact_has_flag(uwep, AF_MAGIC_ABSORBING)) || (uarms && uarms->oartifact && artifact_has_flag(uarms, AF_MAGIC_ABSORBING))) && rn2(20)) {
         You(mal_aura, "the magic-absorbing blade");
@@ -349,7 +350,8 @@ rndcurse()
 		return;
 	}
 
-    if (Antimagic) {
+    if (antimagicsuccess)
+	{
         shieldeff(u.ux, u.uy);
         You(mal_aura, "you");
     }
@@ -361,7 +363,7 @@ rndcurse()
         nobj++;
     }
     if (nobj) {
-        for (cnt = rnd(6 / ((!!Antimagic) + (!!Half_spell_damage) + 1));
+        for (cnt = rnd(6 / ((!!antimagicsuccess) + (!!Half_spell_damage) + 1));
              cnt > 0; cnt--) {
             onum = rnd(nobj);
             for (otmp = invent; otmp; otmp = otmp->nobj) {
