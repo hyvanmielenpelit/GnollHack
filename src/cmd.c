@@ -3249,12 +3249,12 @@ int final;
         you_are("cold resistant", from_what(COLD_RES));
     if (Sleep_resistance)
         you_are("sleep resistant", from_what(SLEEP_RES));
-    if (Disint_resistance)
+	if (Disint_resistance)
         you_are("disintegration resistant", from_what(DISINT_RES));
     if (Shock_resistance)
         you_are("shock resistant", from_what(SHOCK_RES));
 	if (Death_resistance)
-		you_are("immune to death magic", from_what(DEATH_RES));
+		you_are("immune to death attacks", from_what(DEATH_RES));
 	if (Charm_resistance)
 		you_are("immune to charming", from_what(CHARM_RES));
 	if (Fear_resistance)

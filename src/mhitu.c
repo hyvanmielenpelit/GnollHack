@@ -1245,7 +1245,7 @@ check_magic_cancellation_success(mtmp, adjustment_to_roll)
 struct monst* mtmp;
 int adjustment_to_roll;
 {
-	boolean success = (rn2(100) < magic_negation_percentage(((mtmp == &youmonst) ? u.umc: magic_negation(mtmp)) + adjustment_to_roll));
+	boolean success = (rn2(100) < magic_negation_percentage(((mtmp == &youmonst) ? u.umc : magic_negation(mtmp)) + adjustment_to_roll));
 	return success;
 }
 
@@ -2447,8 +2447,8 @@ register struct obj* omonwep;
     case AD_DETH:
 	{
         pline("%s reaches out with its deadly touch.", Monnam(mtmp));
-		boolean magic_resistance_success = check_magic_resistance_and_halve_damage(&youmonst, (struct obj*)0, mtmp->m_lev, 0, 0, NOTELL);
-        if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance || magic_resistance_success) 
+		//boolean magic_resistance_success = check_magic_resistance_and_halve_damage(&youmonst, (struct obj*)0, mtmp->m_lev, 0, 0, NOTELL);
+        if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance) //  || magic_resistance_success
 		{
             /* Still does normal damage */
             pline("Was that the touch of death?");

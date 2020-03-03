@@ -32,7 +32,8 @@ enum mcast_cleric_spells {
     CLC_CURSE_ITEMS,
     CLC_LIGHTNING,
     CLC_FIRE_PILLAR,
-    CLC_GEYSER
+    CLC_GEYSER,
+	CLC_DEATH_TOUCH
 };
 
 STATIC_DCL void FDECL(cursetxt, (struct monst *, BOOLEAN_P));
@@ -90,7 +91,7 @@ int spellval;
     switch (spellval) {
     case 24:
     case 23:
-        if (Antimagic || Death_resistance || Hallucination)
+        if (Death_resistance || Hallucination) //Antimagic || 
             return MGC_PSI_BOLT;
         /*FALLTHRU*/
     case 22:
@@ -139,11 +140,18 @@ int spellnum;
 {
     /* for 3.4.3 and earlier, num greater than 13 selected the default spell
      */
-    while (spellnum > 15 && rn2(16))
+    while (spellnum > 18 && rn2(19))
         spellnum = rn2(spellnum);
 
     switch (spellnum) {
-    case 15:
+	case 18:
+	case 17:
+		if (Death_resistance || Hallucination)
+			return CLC_OPEN_WOUNDS;
+		/*FALLTHRU*/
+	case 16:
+		return CLC_DEATH_TOUCH;
+	case 15:
     case 14:
         if (rn2(3))
             return CLC_OPEN_WOUNDS;
@@ -392,16 +400,17 @@ int spellnum;
         return;
     }
 
-    switch (spellnum) {
+    switch (spellnum) 
+	{
     case MGC_DEATH_TOUCH:
         pline("Oh no, %s's using the touch of death!", mhe(mtmp));
-		boolean magic_resistance_success = check_magic_resistance_and_halve_damage(&youmonst, (struct obj*)0, mtmp->m_lev, 0, 0, NOTELL);
+		//boolean magic_resistance_success = check_magic_resistance_and_halve_damage(&youmonst, (struct obj*)0, mtmp->m_lev, 0, 0, NOTELL);
 
         if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance)
 		{ //Invulnerability does not protect against death attacks
             You("seem no deader than before.");
         }
-		else if (!Antimagic && !magic_resistance_success && rn2(mtmp->m_lev) > 12) 
+		else if (!check_magic_cancellation_success(&youmonst, -4)) //(rn2(mtmp->m_lev) > 12) //!Antimagic && !magic_resistance_success && 
 		{
             if (Hallucination) 
 			{
@@ -416,8 +425,8 @@ int spellnum;
         } 
 		else 
 		{
-            if (Antimagic || magic_resistance_success)
-                shieldeff(u.ux, u.uy);
+            //if (Antimagic || magic_resistance_success)
+            //    shieldeff(u.ux, u.uy);
             pline("Lucky for you, it didn't work!");
         }
         damage = 0;
@@ -574,8 +583,35 @@ int spellnum;
         return;
     }
 
-    switch (spellnum) {
-    case CLC_GEYSER:
+    switch (spellnum) 
+	{
+	case CLC_DEATH_TOUCH:
+		pline("Oh no, %s's using the touch of death!", mhe(mtmp));
+
+		if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance)
+		{
+			You("seem no deader than before.");
+		}
+		else if (!check_magic_cancellation_success(&youmonst, -4))
+		{
+			if (Hallucination)
+			{
+				You("have an out of body experience.");
+			}
+			else
+			{
+				killer.format = KILLED_BY_AN;
+				Strcpy(killer.name, "touch of death");
+				done(DIED);
+			}
+		}
+		else
+		{
+			pline("Lucky for you, it didn't work!");
+		}
+		damage = 0;
+		break;
+	case CLC_GEYSER:
         /* this is physical damage (force not heat),
          * not magical damage or fire damage
          */
@@ -820,18 +856,23 @@ int spellnum;
      */
     boolean mcouldseeu = couldsee(mtmp->mx, mtmp->my);
 
-    if (adtyp == AD_SPEL) {
+    if (adtyp == AD_SPEL) 
+	{
         /* aggravate monsters, etc. won't be cast by peaceful monsters */
+
         if (is_peaceful(mtmp)
             && (spellnum == MGC_AGGRAVATION || spellnum == MGC_SUMMON_MONS
                 || spellnum == MGC_CLONE_WIZ))
             return TRUE;
+
         /* haste self when already fast */
         if (has_very_fast(mtmp) && spellnum == MGC_HASTE_SELF)
             return TRUE;
+
         /* invisibility when already invisible */
         if ((has_invisibility(mtmp) || has_blocks_invisibility(mtmp)) && spellnum == MGC_DISAPPEAR)
             return TRUE;
+
         /* peaceful monster won't cast invisibility if you can't see
            invisible,
            same as when monsters drink potions of invisibility.  This doesn't
@@ -839,18 +880,27 @@ int spellnum;
            peaceful monsters by mistake */
         if (is_peaceful(mtmp) && !See_invisible && spellnum == MGC_DISAPPEAR)
             return TRUE;
+
         /* healing when already healed */
         if (mtmp->mhp == mtmp->mhpmax && spellnum == MGC_CURE_SELF)
             return TRUE;
+
         /* don't summon monsters if it doesn't think you're around */
         if (!mcouldseeu && (spellnum == MGC_SUMMON_MONS
                             || (!mtmp->iswiz && spellnum == MGC_CLONE_WIZ)))
             return TRUE;
+
         if ((!mtmp->iswiz || context.no_of_wizards > 1)
             && spellnum == MGC_CLONE_WIZ)
             return TRUE;
-        /* aggravation (global wakeup) when everyone is already active */
-        if (spellnum == MGC_AGGRAVATION) {
+
+		if (mtmp->mnum != PM_HIGH_PRIEST && mtmp->mnum != PM_WIZARD_OF_YENDOR && !((mtmp->data->geno & G_UNIQ) && (mtmp->data->mlet == S_DEMON))
+			&& (spellnum == MGC_DEATH_TOUCH || spellnum == CLC_DEATH_TOUCH))
+			return TRUE;
+
+		/* aggravation (global wakeup) when everyone is already active */
+        if (spellnum == MGC_AGGRAVATION) 
+		{
             /* if nothing needs to be awakened then this spell is useless
                but caster might not realize that [chance to pick it then
                must be very small otherwise caller's many retry attempts
@@ -858,7 +908,9 @@ int spellnum;
             if (!has_aggravatables(mtmp))
                 return rn2(100) ? TRUE : FALSE;
         }
-    } else if (adtyp == AD_CLRC) {
+    } 
+	else if (adtyp == AD_CLRC) 
+	{
         /* summon insects/sticks to snakes won't be cast by peaceful monsters
          */
         if (is_peaceful(mtmp) && spellnum == CLC_INSECTS)

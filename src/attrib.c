@@ -29,26 +29,26 @@ static const struct innate
 
   bar_abil[] = { { 1, POISON_RES, "", "" },
                  { 7, FAST, "quick", "slow" },
-                 { 15, STEALTH, "stealthy", "" },
+                 { 14, STEALTH, "stealthy", "" },
                  { 0, 0, 0, 0 } },
 
   cav_abil[] = { { 7, FAST, "quick", "slow" },
-                 { 10, WARN_TROLL, "sensitive to trolls", "" },
+                 { 11, WARN_TROLL, "sensitive to trolls", "" },
 				 { 15, WARN_GIANT, "sensitive to giants", "" },
-				 { 20, WARN_DRAGON, "sensitive to dragons", "" },
+				 { 19, WARN_DRAGON, "sensitive to dragons", "" },
 				 { 0, 0, 0, 0 } },
 
   hea_abil[] = { { 1, POISON_RES, "", "" },
-				 { 10, SLEEP_RES, "awake", "tired" },
-				 { 15, BRAIN_PROTECTION, "hard-brained", "" },
-				 { 20, DEATH_RES, "less mortal", "more mortal" },
-				 { 25, REGENERATION, "regenerative", "" },
+				 { 9, SLEEP_RES, "awake", "tired" },
+				 { 14, BRAIN_PROTECTION, "hard-brained", "" },
+				 { 19, DEATH_RES, "less mortal", "more mortal" },
+				 { 24, REGENERATION, "regenerative", "" },
                  { 0, 0, 0, 0 } },
 
   kni_abil[] = { { 7, FAST, "quick", "slow" },
-				 { 15, WARN_UNDEAD, "sensitive to undead", "" },
-				 { 20, WARN_DEMON, "sensitive to demons", "" },
-				 { 25, CURSE_RES, "holy", "less holy" },
+				 { 11, WARN_UNDEAD, "sensitive to undead", "" },
+				 { 15, WARN_DEMON, "sensitive to demons", "" },
+				 { 19, CURSE_RES, "holy", "less holy" },
 				 { 0, 0, 0, 0 } },
 
   mon_abil[] = { { 1, FAST, "", "" },
@@ -58,18 +58,18 @@ static const struct innate
 				 { 10, JUMPING, "jumpy", "" },
 				 { 13, SICK_RES, "even healthier", "" },
 				 { 16, VERY_FAST, "very quick", "slow" },
-				 { 19, STEALTH, "stealthy", "" },
-                 { 22, SEARCHING, "perceptive", "unaware" },
-                 { 25, WARNING, "sensitive", "" },
-                 { 28, TELEPORT_CONTROL, "controlled", "uncontrolled" },
-				 { 31, DEATH_RES, "less mortal", "more mortal" },
+				 { 19, DEATH_RES, "less mortal", "more mortal" },
+				 { 22, STEALTH, "stealthy", "" },
+                 { 25, SEARCHING, "perceptive", "unaware" },
+                 { 28, WARNING, "sensitive", "" },
+                 { 31, TELEPORT_CONTROL, "controlled", "uncontrolled" },
 				 { 0, 0, 0, 0 } },
 
-  pri_abil[] = { { 12, WARN_UNDEAD, "sensitive to undead", "" },
-                 { 15, WARN_DEMON, "sensitive to demons", "" },
-				 { 18, WARN_ANGEL, "sensitive to angels", "" },
-				 { 21, CURSE_RES, "holy", "less holy" },
-				 { 24, DEATH_RES, "less mortal", "more mortal" },
+  pri_abil[] = { {  7, WARN_UNDEAD, "sensitive to undead", "" },
+                 { 10, WARN_DEMON, "sensitive to demons", "" },
+				 { 13, WARN_ANGEL, "sensitive to angels", "" },
+				 { 16, CURSE_RES, "holy", "less holy" },
+				 { 19, DEATH_RES, "less mortal", "more mortal" },
 				 { 0, 0, 0, 0 } },
 
   ran_abil[] = { { 1, SEARCHING, "", "" },
@@ -85,10 +85,10 @@ static const struct innate
                  { 15, STEALTH, "stealthy", "" },
                  { 0, 0, 0, 0 } },
 
-  tou_abil[] = { { 10, SEARCHING, "perceptive", "" },
-				 { 15, SICK_RES, "healthy", "" },
-				 { 20, POISON_RES, "hardy", "" },
-				 { 25, SEE_INVISIBLE, "", "" },
+  tou_abil[] = { { 9, SEARCHING, "perceptive", "" },
+				 { 14, SICK_RES, "healthy", "" },
+				 { 19, POISON_RES, "hardy", "" },
+				 { 24, SEE_INVISIBLE, "", "" },
 				 { 0, 0, 0, 0 } },
 
   val_abil[] = { { 1, COLD_RES, "", "" },
@@ -97,8 +97,8 @@ static const struct innate
 				 { 15, SHOCK_RES, "insulated", "conductive" },
 				 { 0, 0, 0, 0 } },
 
-  wiz_abil[] = { { 15, ENHANCED_VISION, "studious", "" },
-                 { 20, TELEPORT_CONTROL, "controlled", "uncontrolled" },
+  wiz_abil[] = { { 14, ENHANCED_VISION, "studious", "" },
+                 { 19, TELEPORT_CONTROL, "controlled", "uncontrolled" },
 				 { 0, 0, 0, 0 } },
 
   /* Intrinsics conferred by race */
@@ -446,13 +446,15 @@ boolean lifesavedalready;
 	//Handle killer
 	/* suppress killer prefix if it already has one */
 	i = name_to_mon(pkiller);
-	if (i >= LOW_PM && (mons[i].geno & G_UNIQ)) {
+	if (i >= LOW_PM && (mons[i].geno & G_UNIQ))
+	{
 		kprefix = KILLED_BY;
 		if (!type_is_pname(&mons[i]))
 			pkiller = the(pkiller);
 	}
 	else if (!strncmpi(pkiller, "the ", 4) || !strncmpi(pkiller, "an ", 3)
-		|| !strncmpi(pkiller, "a ", 2)) {
+		|| !strncmpi(pkiller, "a ", 2)) 
+	{
 		/*[ does this need a plural check too? ]*/
 		kprefix = KILLED_BY;
 	}
@@ -463,7 +465,8 @@ boolean lifesavedalready;
 		pline("%s%s %s ice-cold!",
 			isupper((uchar)* reason) ? "" : "The ", reason,
 			plural ? "are" : "is");
-		if (Cold_resistance || Invulnerable) {
+		if (Cold_resistance || Invulnerable) 
+		{
 			shieldeff(u.ux, u.uy);
 			pline_The("cold doesn't seem to affect you.");
 			return;
@@ -477,7 +480,8 @@ boolean lifesavedalready;
 		pline("%s%s %s burning hot!",
 			isupper((uchar)* reason) ? "" : "The ", reason,
 			plural ? "are" : "is");
-		if (Fire_resistance || Invulnerable) {
+		if (Fire_resistance || Invulnerable)
+		{
 			shieldeff(u.ux, u.uy);
 			pline_The("fire doesn't seem to affect you.");
 			return;
@@ -491,7 +495,8 @@ boolean lifesavedalready;
 		pline("%s%s %s you with lightning!",
 			isupper((uchar)* reason) ? "" : "The ", reason,
 			plural ? "jolt" : "jolts");
-		if (Shock_resistance || Invulnerable) {
+		if (Shock_resistance || Invulnerable) 
+		{
 			shieldeff(u.ux, u.uy);
 			pline_The("lightning doesn't seem to affect you.");
 			return;
@@ -505,14 +510,16 @@ boolean lifesavedalready;
 		pline("%s%s %s imbued by death magic!",
 			isupper((uchar)* reason) ? "" : "The ", reason,
 			plural ? "were" : "was");
-		if (Death_resistance || is_not_living(youmonst.data) || is_demon(youmonst.data) || Invulnerable) {
+		if (Death_resistance || is_not_living(youmonst.data) || is_demon(youmonst.data))
+		{
 			shieldeff(u.ux, u.uy);
 			pline_The("death magic doesn't seem to affect you.");
 			return;
 		}
 
 
-		if (lifesavedalready) {
+		if (lifesavedalready)
+		{
 			//Just do 10d6 damage if life was saved by amulet of life saving
 			damage = adjust_damage(d(10, 6), (struct monst*)0, &youmonst, AD_DRAY, FALSE);
 			losehp(damage, pkiller, kprefix);

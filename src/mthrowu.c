@@ -625,7 +625,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 				{
 					/* no further action */
 				}
-				else if (resists_death(mtmp) || is_not_living(mtmp->data) || is_demon(mtmp->data) || is_vampshifter(mtmp)) 
+				else if (resists_death(mtmp)) 
 				{
 					if (vis)
 						pline_The("death magic doesn't seem to affect %s.",

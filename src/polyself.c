@@ -44,13 +44,11 @@ set_uasmon()
 
     set_mon_data(&youmonst, mdat);
 
-#define PROPSET(PropIndx, condition)                          \
-    do {                                               \
-        if (condition)                                        \
-            u.uprops[PropIndx].intrinsic |= FROM_FORM;  \
-        else                                           \
-            u.uprops[PropIndx].intrinsic &= ~FROM_FORM; \
-    } while (0)
+	/* Clear out FROM_FORMs*/
+	for (int i = 1; i <= LAST_PROP; i++)
+	{
+		u.uprops[i].intrinsic &= ~FROM_FORM;
+	}
 
 	unsigned long bit = 1UL;
 	for (int i = 1; i <= 32; i++)
@@ -62,11 +60,22 @@ set_uasmon()
 		prop = innate_to_prop(bit);
 		if (prop > 0)
 		{
-			PROPSET(prop, has_innate(youmonst.data, bit));
+			if (has_innate(youmonst.data, bit))
+				u.uprops[prop].intrinsic |= FROM_FORM;
 		}
 	}
-#if 0
-    PROPSET(FIRE_RES, resists_fire(&youmonst));
+
+#define PROPSET(PropIndx, condition)                          \
+    do {                                               \
+        if (condition)                                        \
+            u.uprops[PropIndx].intrinsic |= FROM_FORM;  \
+    } while (0)
+
+//			else                                           \
+//			u.uprops[PropIndx].intrinsic &= ~FROM_FORM; \
+
+	/* We add these additionally in the case creature type (e.g., undead) has resistances not conferred explicitly by MR_ fields */
+	PROPSET(FIRE_RES, resists_fire(&youmonst));
     PROPSET(COLD_RES, resists_cold(&youmonst));
     PROPSET(SLEEP_RES, resists_sleep(&youmonst));
     PROPSET(DISINT_RES, resists_disint(&youmonst));
@@ -77,7 +86,10 @@ set_uasmon()
     PROPSET(POISON_RES, resists_poison(&youmonst));
     PROPSET(ACID_RES, resists_acid(&youmonst));
     PROPSET(STONE_RES, resists_ston(&youmonst));
-    {
+	PROPSET(DRAIN_RES, resists_drli(&youmonst));
+
+#if 0
+	{
         /* resists_drli() takes wielded weapon into account; suppress it */
         struct obj *save_uwep = uwep;
 

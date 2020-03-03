@@ -1564,7 +1564,7 @@ boolean* obj_destroyed;
 			}
 			break;
 		case DEATH_ENCHANTMENT:
-			if (mon->mnum == PM_DEATH || resists_death(mon) || is_not_living(mon->data) || is_demon(mon->data) || is_vampshifter(mon))
+			if (resists_death(mon))
 			{
 				needenchantmsg = -obj->elemental_enchantment;
 			}

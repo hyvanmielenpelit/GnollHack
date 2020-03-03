@@ -271,13 +271,13 @@ struct obj *otmp;
 			/* no further action */
 			break;
 		}
-		else if (is_not_living(mtmp->data) || is_demon(mtmp->data) || resists_death(mtmp) || magic_resistance_success)
+		else if (resists_death(mtmp))
 		{ /* match effect on player */
 			shieldeff(mtmp->mx, mtmp->my);
 			pline("%s is unaffected by your touch!", Monnam(mtmp));
 			break; /* skip makeknown */
-		} else if (!check_magic_resistance_and_halve_damage(mtmp, otmp, 0, 0, 0, TELL) //Get no damage upon successful magic resistance
-			&& !DEADMONSTER(mtmp))
+		} 
+		else
 		{ //Otherwise dead
 			mtmp->mhp = 0;
 			if (DEADMONSTER(mtmp)) {
@@ -340,14 +340,13 @@ struct obj *otmp;
 			/* no further action */
 			break;
 		}
-		else if (is_not_living(mtmp->data) || is_demon(mtmp->data) || resists_death(mtmp) || mindless(mtmp->data) || magic_resistance_success)
+		else if (resists_death(mtmp))
 		{ /* match effect on player */
 			shieldeff(mtmp->mx, mtmp->my);
 			pline("%s is unaffected by the power word!", Monnam(mtmp));
 			break; /* skip makeknown */
 		}
-		else if (!check_magic_resistance_and_halve_damage(mtmp, otmp, 0, 0, 0, TELL) //Get no effect upon successful magic resistance
-			&& !DEADMONSTER(mtmp))
+		else
 		{ //Otherwise dead
 			mtmp->mhp = 0;
 			if (DEADMONSTER(mtmp)) {
@@ -4684,7 +4683,7 @@ boolean ordinary;
 	case SPE_TOUCH_OF_DEATH:
 	case SPE_POWER_WORD_KILL:
 		damage = 0;
-		if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance || magic_resistance_success)
+		if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance) // || magic_resistance_success
 		{
             pline((obj->otyp == WAN_DEATH)
                       ? "The wand shoots an apparently harmless beam at you."
@@ -6363,8 +6362,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 			damage = 0;
 			break;
 		}
-		if (is_not_living(mon->data) || is_demon(mon->data)
-			|| is_vampshifter(mon) || resists_death(mon) || ((resists_magic(mon) || magic_resistance_success) && !(abs(type) >= 20 && abs(type) <= 39)))
+		if (resists_death(mon))
 		{
 			/* similar to player */
 			sho_shieldeff = TRUE;
@@ -6552,6 +6550,7 @@ xchar sx, sy;
 			You("seem unaffected.");
 			break;
 		}
+#if 0
 		else if ((Antimagic || check_magic_resistance_and_halve_damage(&youmonst, origobj, 12, 0, 0, NOTELL)) 
 			&& !(abstyp >= 20 && abstyp <= 39)) /* Antimagic does not work breath weapons and eyestalks, just spells and wands */
 		{
@@ -6559,6 +6558,7 @@ xchar sx, sy;
 			You("aren't affected.");
 			break;
 		}
+#endif
 		killer.format = KILLED_BY_AN;
 		Strcpy(killer.name, fltxt ? fltxt : "");
 		done(DIED);

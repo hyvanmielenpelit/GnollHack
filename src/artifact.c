@@ -889,7 +889,7 @@ int dmgtype;
 	case AD_ACID:
 		return (yours ? Acid_resistance : resists_acid(mtmp));
 	case AD_DRAY:
-		return (yours ? Antimagic || Death_resistance : resists_magic(mtmp) || resists_death(mtmp));
+		return (yours ? Death_resistance : resists_death(mtmp));
 	case AD_BLND:
 		return (yours ? Flash_resistance || Blind || Unaware : resists_blnd(mtmp));
 	case AD_WERE:
