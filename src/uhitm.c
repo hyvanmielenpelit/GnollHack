@@ -2081,7 +2081,7 @@ boolean* obj_destroyed;
 			}
 		} else if (u.umconf && hand_to_hand) {
 			nohandglow(mon);
-			if (!is_confused(mon) && !check_magic_resistance_and_halve_damage(mon, (struct obj*) 0, 8, 0, 0, NOTELL)) {
+			if (!is_confused(mon) && !check_ability_resistance_success(mon, A_WIS, 0)) {
 				increase_mon_property(mon, CONFUSION, d(1, 20) + 20);
 				if (!is_stunned(mon) && mon_can_move(mon)
 					&& canseemon(mon))
@@ -2803,7 +2803,8 @@ int specialdmg; /* blessed and/or silver bonus against various things */
         }
         break;
     case AD_SLEE:
-        if (!negated && !mdef->msleeping && sleep_monst(mdef, (struct obj*)0, rn1(3,8), u.ulevel, FALSE)) {
+        if (!negated && !mdef->msleeping && sleep_monst(mdef, (struct obj*)0, rn1(3,8), mattk->mcadj, FALSE)) 
+		{
             if (!Blind)
                 pline("%s is put to sleep by you!", Monnam(mdef));
             slept_monst(mdef);

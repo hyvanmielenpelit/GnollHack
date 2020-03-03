@@ -1598,7 +1598,7 @@ const char *mesg;
         }
 
         which = 0; /* 0=>plural, 1=>as-is, 2=>"the" prefix */
-        if ((mnum == PM_COCKATRICE || mnum == PM_CHICKATRICE)
+        if (touch_petrifies(&mons[mnum]) // (mnum == PM_COCKATRICE || mnum == PM_CHICKATRICE)
             && (Stone_resistance || Hallucination)) {
             what = "chicken";
             which = 1; /* suppress pluralization */
@@ -1973,7 +1973,7 @@ struct obj *otmp;
 
         if (!retcode)
             consume_oeaten(otmp, 2); /* oeaten >>= 2 */
-    } else if ((mnum == PM_COCKATRICE || mnum == PM_CHICKATRICE)
+    } else if (touch_petrifies(&mons[mnum]) //(mnum == PM_COCKATRICE || mnum == PM_CHICKATRICE)
                && (Stone_resistance || Hallucination)) {
         pline("This tastes just like chicken!");
     } else if (mnum == PM_FLOATING_EYE && u.umonnum == PM_RAVEN) {

@@ -1832,7 +1832,7 @@ register struct obj* omonwep;
 		hitmsg(mtmp, mattk, damagedealt);
 		if (uncancelled && multi >= 0) 
 		{
-            if (Sleep_resistance || check_magic_resistance_and_halve_damage(&youmonst, (struct obj*)0, u.ulevel, 0, 0, NOTELL))
+            if (Sleep_resistance || check_ability_resistance_success(&youmonst, A_WIS, mattk->mcadj))
                 break;
             fall_asleep(-rn1(3, 8), TRUE);
 			if (Sleeping)
@@ -2447,8 +2447,8 @@ register struct obj* omonwep;
     case AD_DETH:
 	{
         pline("%s reaches out with its deadly touch.", Monnam(mtmp));
-		//boolean magic_resistance_success = check_magic_resistance_and_halve_damage(&youmonst, (struct obj*)0, mtmp->m_lev, 0, 0, NOTELL);
-        if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance) //  || magic_resistance_success
+		//boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(&youmonst, (struct obj*)0, mtmp->m_lev, 0, 0, NOTELL);
+        if (resists_death(&youmonst) || Death_resistance) //  || magic_resistance_success
 		{
             /* Still does normal damage */
             pline("Was that the touch of death?");
@@ -2462,7 +2462,7 @@ register struct obj* omonwep;
 			mcadj -= 4;
 		case 17:
 			mcadj -= 4;
-			if (!Antimagic && !check_magic_cancellation_success(&youmonst, mcadj)) {
+			if (!Death_resistance && !check_magic_cancellation_success(&youmonst, mcadj)) {
                 killer.format = KILLED_BY_AN;
                 Strcpy(killer.name, "touch of death");
                 done(DIED);

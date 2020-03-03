@@ -446,6 +446,7 @@ struct mkroom *sroom;
 		//Note in library we place only a monster in one in every 2 squares
 
 		/* FALLTHRU: Here we place the mainlibrarymonst */
+	case COCKNEST:
 	case BEEHIVE:
         tx = sroom->lx + (sroom->hx - sroom->lx + 1) / 2;
         ty = sroom->ly + (sroom->hy - sroom->ly + 1) / 2;
@@ -506,7 +507,9 @@ struct mkroom *sroom;
                                      : (type == LEPREHALL)
                                          ? &mons[PM_LEPRECHAUN]
                                          : (type == COCKNEST)
-                                             ? &mons[PM_COCKATRICE]
+											? (sx == tx && sy == ty
+												? (hd >= 24 ? &mons[PM_GARGANTUAN_COCKATRICE] : &mons[PM_GIANT_COCKATRICE])
+												: (hd >= 24 && !rn2(4) ? &mons[PM_GIANT_COCKATRICE] : &mons[PM_COCKATRICE]))
                                              : (type == ANTHOLE)
                                                  ? antholemon()
                                                  : (struct permonst *) 0,

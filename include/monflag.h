@@ -144,8 +144,8 @@
 #define M1_FLOATER		0x00800000UL   /* can float */
 #define M1_TELEKINETIC_OPERATOR \
 						0x01000000UL   /* can use telekinesis as hands for certain purposes (for beholder opening doors etc.) */
-/* free bit */
-/* free bit */
+#define M1_TOUCH_PETRIFIES 0x02000000UL   /* touching the corpse petrifies */
+#define M1_ROCKTHROW	0x04000000UL    /* throws boulders */
 /* free bit */
 /* free bit */
 #define M1_CARNIVORE	0x20000000UL   /* eats corpses */
@@ -175,17 +175,17 @@
 #define M2_MINION		0x00004000UL       /* is a minion of a deity */
 #define M2_GIANT		0x00008000UL        /* is a giant */
 #define M2_SHAPESHIFTER 0x00010000UL /* is a shapeshifting species */
-#define M2_MALE			0x00020000UL         /* always male */
-#define M2_FEMALE		0x00040000UL       /* always female */
-#define M2_NEUTER		0x00080000UL       /* neither male nor female */
-#define M2_PNAME		0x00100000UL        /* monster name is a proper name */
-#define M2_HOSTILE		0x00200000UL      /* always starts hostile */
-#define M2_PEACEFUL		0x00400000UL     /* always starts peaceful */
-#define M2_DOMESTIC		0x00800000UL     /* can be tamed by feeding */
-#define M2_WANDER		0x01000000UL       /* wanders randomly */
-#define M2_STALK		0x02000000UL        /* follows you to other levels */
-#define M2_NASTY		0x04000000UL        /* extra-nasty monster (more xp) */
-#define M2_ROCKTHROW	0x08000000UL    /* throws boulders */
+#define M2_MIND_FLAYER  0x00020000UL   /* is a mindflayer */
+#define M2_MALE			0x00040000UL         /* always male */
+#define M2_FEMALE		0x00080000UL       /* always female */
+#define M2_NEUTER		0x00100000UL       /* neither male nor female */
+#define M2_PNAME		0x00200000UL        /* monster name is a proper name */
+#define M2_HOSTILE		0x00400000UL      /* always starts hostile */
+#define M2_PEACEFUL		0x00800000UL     /* always starts peaceful */
+#define M2_DOMESTIC		0x01000000UL     /* can be tamed by feeding */
+#define M2_WANDER		0x02000000UL       /* wanders randomly */
+#define M2_STALK		0x04000000UL        /* follows you to other levels */
+#define M2_NASTY		0x08000000UL        /* extra-nasty monster (more xp) */
 #define M2_GREEDY		0x10000000UL       /* likes gold */
 #define M2_JEWELS		0x20000000UL       /* likes gems */
 #define M2_COLLECT		0x40000000UL      /* picks up weapons and food */

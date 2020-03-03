@@ -3820,7 +3820,7 @@ struct monst *shkp;
 
     if ((udist = distu(omx, omy)) < 3 && (shkp->data != &mons[PM_GRID_BUG]
                                           || (omx == u.ux || omy == u.uy))) {
-        if (ANGRY(shkp) || (Conflict && !check_magic_resistance_and_halve_damage(shkp, (struct obj*) 0, 5, 0, 0, 0))) {
+        if (ANGRY(shkp) || (Conflict && !check_ability_resistance_success(shkp, A_WIS, 0))) {
             if (Displaced)
                 Your("displaced image doesn't fool %s!", shkname(shkp));
             (void) mattacku(shkp);

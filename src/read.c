@@ -1025,7 +1025,7 @@ struct obj *sobj;
 		{
 			pline("%s is unaffected.", Monnam(mtmp));
 		}
-		else if (!check_magic_resistance_and_halve_damage(mtmp, sobj, 0, 0, 0, NOTELL) && !check_ability_resistance_success(mtmp, A_WIS, objects[sobj->otyp].oc_spell_saving_throw_adjustment))
+		else if (!check_ability_resistance_success(mtmp, A_WIS, objects[sobj->otyp].oc_spell_saving_throw_adjustment))
 		{
 			int duration = 0;
 			boolean charmed = FALSE;
@@ -1418,7 +1418,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 					mtmp->mcanmove = 1;
 					mtmp->mprops[FEARFUL] = 0;
 				}
-				else if (!check_magic_resistance_and_halve_damage(mtmp, sobj, 0, 0, 0, NOTELL))
+				else if (!check_ability_resistance_success(mtmp, A_WIS, objects[sobj->otyp].oc_spell_saving_throw_adjustment))
 				{
 					duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus;
 					make_mon_fearful(mtmp, duration ? duration : 100 + rnd(50));
@@ -1685,7 +1685,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 					{
 						++candidates;
 						res = 0;
-						if (sleep_monst(mtmp, sobj, duration, u.ulevel, TELL))
+						if (sleep_monst(mtmp, sobj, duration, objects[otyp].oc_spell_saving_throw_adjustment, TELL))
 						{
 							slept_monst(mtmp);
 							res = 1;
@@ -1737,7 +1737,8 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 				{
 					++candidates;
 					res = 0;
-					if (!mtmp->mtame && !is_peaceful(mtmp) && !check_magic_resistance_and_halve_damage(mtmp, sobj, 0, 0, 0, TELL))
+					if (!mtmp->mtame && !is_peaceful(mtmp) 
+						&& !check_ability_resistance_success(&youmonst, A_CON, objects[otyp].oc_spell_saving_throw_adjustment))
 					{
 						if (mtmp->m_lev < u.ulevel - 10)
 						{

@@ -458,6 +458,8 @@ boolean createcorpse;
 	case PM_RAVEN:
 	case PM_PHOENIX:
 	case PM_HARPY:
+	case PM_GARGANTUAN_COCKATRICE:
+	case PM_GIANT_COCKATRICE:
 	case PM_COCKATRICE:
 	case PM_CHICKATRICE:
 	case PM_COUATL:
@@ -468,9 +470,11 @@ boolean createcorpse;
 			obj = mksobj_at(FEATHER, x, y, TRUE, FALSE);
 			switch (mndx)
 			{
+			case PM_GARGANTUAN_COCKATRICE:
 			case PM_ROC:
 				obj->quan = rnd(3) + 1;
 				break;
+			case PM_GIANT_COCKATRICE:
 			case PM_HARPY:
 			case PM_RAVEN:
 				obj->quan = rnd(2);

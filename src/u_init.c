@@ -1406,10 +1406,7 @@ register struct trobj *trop;
                    || (otyp == RIN_POISON_RESISTANCE && Race_if(PM_ORC))
                    /* Monks don't use weapons */
                    || (otyp == SCR_ENCHANT_WEAPON && Role_if(PM_MONK))
-                   /* wizard patch -- they already have one */
-                   || (otyp == SPE_FORCE_BOLT && Role_if(PM_WIZARD))
-				   || (otyp == SPE_MAGIC_ARROW && Role_if(PM_WIZARD))
-				/* powerful spells are either useless to
+				   /* powerful spells are either useless to
                       low level players or unbalancing; also
                       spells in restricted skill categories */
                    || (obj->oclass == SPBOOK_CLASS

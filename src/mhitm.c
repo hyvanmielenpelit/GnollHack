@@ -127,7 +127,7 @@ register struct monst *mtmp;
     nmon = 0;
 #endif
     /* perhaps the monster will resist Conflict */
-    if (check_magic_resistance_and_halve_damage(mtmp, (struct obj*) 0, 5, 0, 0, 0))
+    if (check_ability_resistance_success(mtmp, A_WIS, 0))
         return 0;
 
     if (u.ustuck == mtmp) {
@@ -1292,7 +1292,7 @@ register struct obj* omonwep;
         break;
     case AD_SLEE:
         if (!cancelled && !is_sleeping(mdef)
-            && sleep_monst(mdef, (struct obj *)0, rn1(3,8), magr->m_lev, FALSE)) 
+            && sleep_monst(mdef, (struct obj *)0, rn1(3,8), mattk->mcadj, FALSE)) 
 		{
             if (vis && canspotmon(mdef))
 			{
@@ -1796,10 +1796,10 @@ boolean verbosely;
 /* `mon' is hit by a sleep attack; return 1 if it's affected, 0 otherwise */
 /* lvl needs to specified only if otmp == 0, level -1 == cannot be resisted */
 int
-sleep_monst(mon, otmp, amt, lvl, tellstyle)
+sleep_monst(mon, otmp, amt, saving_throw_adjustment, tellstyle)
 struct monst *mon;
 struct obj* otmp;
-int amt, lvl, tellstyle;
+int amt, saving_throw_adjustment, tellstyle;
 {
 	if (resists_sleep(mon))
 	{
@@ -1808,9 +1808,12 @@ int amt, lvl, tellstyle;
 			
 		shieldeff(mon->mx, mon->my);
 	}
-	else if(lvl >= 0 && check_magic_resistance_and_halve_damage(mon, otmp, lvl, 0, 0, tellstyle))
+	else if(saving_throw_adjustment > -100 && check_ability_resistance_success(mon, A_WIS, 0)) // check_magic_resistance_and_inflict_damage(mon, otmp, FALSE, 0, 0, tellstyle))
 	{
-		/* no futher action here */
+		if (tellstyle != NOTELL)
+			pline("%s is unaffected!", Monnam(mon));
+
+		shieldeff(mon->mx, mon->my);
 	}
 	else
 	{

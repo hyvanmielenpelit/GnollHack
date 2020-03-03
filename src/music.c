@@ -32,7 +32,7 @@ STATIC_DCL void FDECL(awaken_monsters, (int));
 STATIC_DCL void FDECL(put_monsters_to_sleep, (int));
 STATIC_DCL void FDECL(charm_snakes, (int));
 STATIC_DCL void FDECL(calm_nymphs, (int));
-STATIC_DCL void FDECL(charm_monsters, (int));
+STATIC_DCL void FDECL(charm_monsters, (int, int));
 STATIC_DCL void FDECL(do_earthquake, (int));
 STATIC_DCL int FDECL(do_improvisation, (struct obj *));
 
@@ -76,7 +76,7 @@ int distance;
                 && (mtmp->mstrategy & STRAT_WAITMASK) != 0)
                 mtmp->mstrategy &= ~STRAT_WAITMASK;
             else if (distm < distance / 3
-                     && !check_magic_resistance_and_halve_damage(mtmp, (struct obj*)0, 8, 0, 0, NOTELL)
+                     && !check_ability_resistance_success(mtmp, A_WIS, 0)
                      /* some monsters are immune */
                      && onscary(0, 0, mtmp))
                 monflee(mtmp, 0, FALSE, TRUE);
@@ -98,7 +98,7 @@ int distance;
         if (DEADMONSTER(mtmp))
             continue;
         if (distu(mtmp->mx, mtmp->my) < distance
-            && sleep_monst(mtmp, (struct obj*)0, d(10, 10), 10, FALSE)) {
+            && sleep_monst(mtmp, (struct obj*)0, d(10, 10), 0, FALSE)) {
             mtmp->msleeping = 1; /* 10d10 turns + wake_nearby to rouse */
             slept_monst(mtmp);
         }
@@ -200,7 +200,7 @@ struct monst *bugler; /* monster that played instrument */
             if (!unique_corpstat(mtmp->data)
                 && (mtmp->mstrategy & STRAT_WAITMASK) != 0)
                 mtmp->mstrategy &= ~STRAT_WAITMASK;
-            else if (distm < distance / 3 && !check_magic_resistance_and_halve_damage(mtmp, (struct obj*)0, 8, 0, 0, NOTELL))
+            else if (distm < distance / 3 && !check_ability_resistance_success(mtmp, A_WIS, 0))
                 monflee(mtmp, 0, FALSE, TRUE);
         }
     }
@@ -210,14 +210,14 @@ struct monst *bugler; /* monster that played instrument */
  * If swallowed, range is reduced to 0.
  */
 STATIC_OVL void
-charm_monsters(distance)
-int distance;
+charm_monsters(distance, saving_throw_adjustment)
+int distance, saving_throw_adjustment;
 {
     struct monst *mtmp, *mtmp2;
 
     if (u.uswallow)
 	{
-        if (!check_magic_resistance_and_halve_damage(u.ustuck, (struct obj*)0, 8, 0, 0, NOTELL))
+        if (!check_ability_resistance_success(u.ustuck, A_WIS, saving_throw_adjustment))
             (void) tamedog(u.ustuck, (struct obj *) 0, FALSE, TRUE, 200 + rnd(100), TRUE);
     }
 	else
@@ -230,7 +230,7 @@ int distance;
 
             if (distu(mtmp->mx, mtmp->my) <= distance) 
 			{
-                if (!check_magic_resistance_and_halve_damage(mtmp, (struct obj*)0, 8, 0, 0, NOTELL))
+                if (!check_ability_resistance_success(mtmp, A_WIS, saving_throw_adjustment))
                     (void) tamedog(mtmp, (struct obj *) 0, FALSE, TRUE, 200 + rnd(100), TRUE);
             }
         }
@@ -595,7 +595,7 @@ struct obj *instr;
         consume_obj_charge(instr, TRUE);
 
         pline("%s very attractive music.", Tobjnam(instr, "produce"));
-        charm_monsters((u.ulevel - 1) / 3 + 1);
+        charm_monsters((u.ulevel - 1) / 3 + 1, objects[instr->otyp].oc_mc_adjustment);
         exercise(A_DEX, TRUE);
         break;
     case WOODEN_HARP: /* May calm Nymph */

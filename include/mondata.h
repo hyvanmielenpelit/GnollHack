@@ -101,7 +101,7 @@
 #define cantwield(ptr) (nohands(ptr) || verysmall(ptr))
 #define could_twoweap(ptr) ((ptr)->mattk[1].aatyp == AT_WEAP)
 #define cantweararm(ptr) (breakarm(ptr) || sliparm(ptr))
-#define throws_rocks(ptr) (((ptr)->mflags2 & M2_ROCKTHROW) != 0L)
+#define throws_rocks(ptr) (((ptr)->mflags1 & M1_ROCKTHROW) != 0L)
 #define type_is_pname(ptr) (((ptr)->mflags2 & M2_PNAME) != 0L)
 #define is_lord(ptr) (((ptr)->mflags2 & M2_LORD) != 0L)
 #define is_prince(ptr) (((ptr)->mflags2 & M2_PRINCE) != 0L)
@@ -588,10 +588,10 @@
      || likes_lava(ptr))
 
 #define touch_petrifies(ptr) \
-    ((ptr) == &mons[PM_COCKATRICE] || (ptr) == &mons[PM_CHICKATRICE])
+    (((ptr)->mflags1 & M1_TOUCH_PETRIFIES) != 0)
 
 #define is_mind_flayer(ptr) \
-    ((ptr) == &mons[PM_MIND_FLAYER] || (ptr) == &mons[PM_MASTER_MIND_FLAYER] || (ptr) == &mons[PM_ILLITHILICH])
+    (((ptr)->mflags2 & M2_MIND_FLAYER) != 0)
 
 #define is_mimic(ptr) \
     ((ptr->mlet == S_MIMIC)

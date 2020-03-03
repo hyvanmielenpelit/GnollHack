@@ -155,7 +155,7 @@ struct obj *otmp;
 	int duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus;
 	int dmg = d(objects[otyp].oc_spell_dmg_dice, objects[otyp].oc_spell_dmg_diesize) + objects[otyp].oc_spell_dmg_plus;
 
-	boolean magic_resistance_success = check_magic_resistance_and_halve_damage(mtmp, otmp, 0, 0, 0, NOTELL);
+	boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(mtmp, otmp, 0, 0, 0, NOTELL);
 	if (u.uswallow && mtmp == u.ustuck)
         reveal_invis = FALSE;
 
@@ -183,7 +183,7 @@ struct obj *otmp;
 
 			/* resist deals the damage and displays the damage dealt */
 			hit(zap_type_text, mtmp, exclam(dmg), -1);
-			(void) check_magic_resistance_and_halve_damage(mtmp, otmp, 0, dmg, AD_MAGM, TELL);
+			(void) check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_MAGM, TELL);
 
         } 
 		else
@@ -205,7 +205,7 @@ struct obj *otmp;
 		}
 		/* resist deals the damage and displays the damage dealt */
 		Your("touch jolts %s with electricity!", mon_nam(mtmp));
-		(void)check_magic_resistance_and_halve_damage(mtmp, otmp, 0, dmg, AD_ELEC, TELL);
+		(void)check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_ELEC, TELL);
 		learn_it = TRUE;
 		break;
 	case SPE_BURNING_HANDS:
@@ -223,7 +223,7 @@ struct obj *otmp;
 		}
 		/* resist deals the damage and displays the damage dealt */
 		Your("fiery touch burns %s!", mon_nam(mtmp));
-		(void)check_magic_resistance_and_halve_damage(mtmp, otmp, 0, dmg, AD_FIRE, TELL);
+		(void)check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_FIRE, TELL);
 		learn_it = TRUE;
 		break;
 	case SPE_FREEZING_TOUCH:
@@ -241,7 +241,7 @@ struct obj *otmp;
 		}
 		/* resist deals the damage and displays the damage dealt */
 		Your("freezing touch sears %s!", mon_nam(mtmp));
-		(void)check_magic_resistance_and_halve_damage(mtmp, otmp, 0, dmg, AD_COLD, TELL);
+		(void)check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_COLD, TELL);
 		learn_it = TRUE;
 		break;
 	case SPE_MAGIC_ARROW:
@@ -256,7 +256,7 @@ struct obj *otmp;
 
 			/* resist deals the damage and displays the damage dealt */
 			hit(zap_type_text, mtmp, exclam(dmg), -1);
-			(void)check_magic_resistance_and_halve_damage(mtmp, otmp, 0, dmg, AD_MAGM, TELL);
+			(void)check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_MAGM, TELL);
 		}
 		else
 			miss(zap_type_text, mtmp);
@@ -290,7 +290,7 @@ struct obj *otmp;
 		res = 1;
 		if (resists_ston(mtmp))
 			pline("%s is unaffected.", Monnam(mtmp));
-		else if (!check_magic_resistance_and_halve_damage(mtmp, otmp, 0, 0, 0, TELL))
+		else if (!check_magic_cancellation_success(mtmp, objects[otyp].oc_spell_saving_throw_adjustment))  // check_magic_resistance_and_inflict_damage(mtmp, otmp, FALSE, 0, 0, TELL))
 			start_delayed_petrification(mtmp, TRUE);
 		break;
 
@@ -324,10 +324,12 @@ struct obj *otmp;
 		}
 		else if (resists_ston(mtmp) || !mon_can_see(mtmp) || !haseyes(mtmp->data))
 			pline("%s is unaffected.", Monnam(mtmp));
-		else if (check_magic_resistance_and_halve_damage(mtmp, otmp, 0, 0, 0, TELL))
+#if 0
+		else if (check_magic_resistance_and_inflict_damage(mtmp, otmp, FALSE, 0, 0, TELL))
 		{
 			/* nothing else */
 		}
+#endif
 		else
 			minstapetrify(mtmp, TRUE);
 
@@ -346,7 +348,7 @@ struct obj *otmp;
 			pline("%s is unaffected by the power word!", Monnam(mtmp));
 			break; /* skip makeknown */
 		}
-		else
+		else if(!check_ability_resistance_success(mtmp, A_CON, objects[otyp].oc_spell_saving_throw_adjustment)) // if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, FALSE, 0, 0, TELL))
 		{ //Otherwise dead
 			mtmp->mhp = 0;
 			if (DEADMONSTER(mtmp)) {
@@ -366,8 +368,7 @@ struct obj *otmp;
 			pline("%s does not seem more stunned than before.", Monnam(mtmp));
 			break; /* skip makeknown */
 		}
-		else if (!check_magic_resistance_and_halve_damage(mtmp, otmp, 0, 0, 0, TELL) //Get no effect upon successful magic resistance
-			&& !DEADMONSTER(mtmp))
+		else if (!check_ability_resistance_success(mtmp, A_CON, objects[otyp].oc_spell_saving_throw_adjustment))
 		{
 			increase_mon_property_verbosely(mtmp, STUNNED, 10 + rnd(10));
 		}
@@ -386,8 +387,7 @@ struct obj *otmp;
 			pline("%s does not seem more blind than before.", Monnam(mtmp));
 			break; /* skip makeknown */
 		}
-		else if (!check_magic_resistance_and_halve_damage(mtmp, otmp, 0, 0, 0, TELL) //Get no effect upon successful magic resistance
-			&& !DEADMONSTER(mtmp))
+		else if (!check_ability_resistance_success(mtmp, A_CON, objects[otyp].oc_spell_saving_throw_adjustment))
 		{
 			increase_mon_property_verbosely(mtmp, BLINDED, duration);
 		}
@@ -396,7 +396,7 @@ struct obj *otmp;
     case SPE_SLOW_MONSTER:
 	case SPE_MASS_SLOW:
 		res = 1;
-		if (!check_magic_resistance_and_halve_damage(mtmp, otmp, 0, 0, 0, NOTELL)) {
+		if (!check_ability_resistance_success(mtmp, A_WIS, objects[otyp].oc_spell_saving_throw_adjustment)) {
             if (disguised_mimic)
                 seemimic(mtmp);
 			increase_mon_property_verbosely(mtmp, SLOWED, otmp->oclass == WAND_CLASS ? rn1(10, 100 + 60 * bcsign(otmp)) : duration);
@@ -414,8 +414,7 @@ struct obj *otmp;
 	case SPE_HOLD_MONSTER:
 	case SPE_MASS_HOLD:
 		res = 1;
-		if (!check_magic_resistance_and_halve_damage(mtmp, otmp, 0, 0, 0, NOTELL)
-			&& !check_ability_resistance_success(mtmp, A_WIS, objects[otmp->otyp].oc_spell_saving_throw_adjustment))
+		if (!check_ability_resistance_success(mtmp, A_WIS, objects[otmp->otyp].oc_spell_saving_throw_adjustment))
 		{
 			if (disguised_mimic)
 				seemimic(mtmp);
@@ -435,18 +434,16 @@ struct obj *otmp;
 		break;
 	case WAN_SPEED_MONSTER:
 		res = 1;
-		if (!check_magic_resistance_and_halve_damage(mtmp, otmp, 0, 0, 0, NOTELL)) {
-            if (disguised_mimic)
-                seemimic(mtmp);
-			increase_mon_property_verbosely(mtmp, VERY_FAST, 150 + rnd(50));
-            m_dowear(mtmp, FALSE); /* might want speed boots */
-        }
+        if (disguised_mimic)
+            seemimic(mtmp);
+		increase_mon_property_verbosely(mtmp, VERY_FAST, 150 + rnd(50));
+        m_dowear(mtmp, FALSE); /* might want speed boots */
         if (is_tame(mtmp))
             helpful_gesture = TRUE;
         break;
 	case SPE_SILENCE:
 		res = 1;
-		if (!check_magic_resistance_and_halve_damage(mtmp, otmp, 0, 0, 0, NOTELL))
+		if (!check_ability_resistance_success(mtmp, A_CHA, objects[otyp].oc_spell_saving_throw_adjustment))
 		{
 			increase_mon_property_verbosely(mtmp, SILENCED, duration);
 		}
@@ -459,7 +456,7 @@ struct obj *otmp;
             reveal_invis = TRUE;
             wake = TRUE;
             context.bypasses = TRUE; /* for make_corpse() */
-            if (!check_magic_resistance_and_halve_damage(mtmp, otmp, 0, dmg, AD_CLRC, TELL))
+            if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_CLRC, TELL))
 			{
                 if (!DEADMONSTER(mtmp))
 					monflee(mtmp, duration, FALSE, TRUE);
@@ -468,7 +465,8 @@ struct obj *otmp;
         break;
 	case SPE_FEAR:
 		res = 1;
-		if (!DEADMONSTER(mtmp) && !resists_fear(mtmp) && !check_magic_resistance_and_halve_damage(mtmp, otmp, 0, 0, 0, NOTELL)) {
+		if (!DEADMONSTER(mtmp) && !resists_fear(mtmp) && !check_ability_resistance_success(mtmp, A_WIS, objects[otmp->otyp].oc_spell_saving_throw_adjustment))
+		{
 			make_mon_fearful(mtmp, duration);
 		}
 		break;
@@ -489,7 +487,8 @@ struct obj *otmp;
 			wake = TRUE;
 			dmg = max(mtmp->mhp, dmg);
 			context.bypasses = TRUE; /* for make_corpse() */
-			if (!check_magic_resistance_and_halve_damage(mtmp, otmp, 0, dmg, AD_CLRC, TELL_LETHAL_STYLE)) {
+			if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_CLRC, TELL_LETHAL_STYLE)) 
+			{
 				if (!DEADMONSTER(mtmp))
 					monflee(mtmp, duration, FALSE, TRUE);
 			}
@@ -503,7 +502,8 @@ struct obj *otmp;
 			wake = TRUE;
 			dmg = max(mtmp->mhp, dmg);
 			context.bypasses = TRUE; /* for make_corpse() */
-			if (!check_magic_resistance_and_halve_damage(mtmp, otmp, 0, dmg, AD_CLRC, TELL_LETHAL_STYLE)) {
+			if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_CLRC, TELL_LETHAL_STYLE))
+			{
 				if (!DEADMONSTER(mtmp))
 					monflee(mtmp, duration, FALSE, TRUE);
 			}
@@ -518,15 +518,20 @@ struct obj *otmp;
     case SPE_POLYMORPH:
     case POT_POLYMORPH:
 		res = 1;
-		if (mtmp->data == &mons[PM_LONG_WORM] && has_mcorpsenm(mtmp)) {
+		if (mtmp->data == &mons[PM_LONG_WORM] && has_mcorpsenm(mtmp)) 
+		{
             /* if a long worm has mcorpsenm set, it was polymophed by
                the current zap and shouldn't be affected if hit again */
             ;
-        } else if (resists_magic(mtmp)) {
+        } 
+		else if (resists_magic(mtmp))
+		{
             /* magic missile resistance protects from polymorph traps, so make
                it guard against involuntary polymorph attacks too... */
             shieldeff(mtmp->mx, mtmp->my);
-        } else if (!check_magic_resistance_and_halve_damage(mtmp, otmp, 0, 0, 0, NOTELL)) {
+        }
+		else if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, FALSE, 0, 0, NOTELL))
+		{
             boolean polyspot = (otyp != POT_POLYMORPH),
                     give_msg = (!Hallucination
                                 && (canseemon(mtmp)
@@ -542,22 +547,23 @@ struct obj *otmp;
             /* natural shapechangers aren't affected by system shock
                (unless protection from shapechangers is interfering
                with their metabolism...) */
-            if (mtmp->cham == NON_PM && !rn2(25)) {
-                if (canseemon(mtmp)) {
+            if (mtmp->cham == NON_PM && !rn2(25)) 
+			{
+                if (canseemon(mtmp)) 
+				{
                     pline("%s shudders!", Monnam(mtmp));
                     learn_it = TRUE;
                 }
                 /* context.bypasses = TRUE; ## for make_corpse() */
                 /* no corpse after system shock */
                 xkilled(mtmp, XKILL_GIVEMSG | XKILL_NOCORPSE);
-            } else if (newcham(mtmp, (struct permonst *) 0,
-                               polyspot, give_msg) != 0
+            } 
+			else if (newcham(mtmp, (struct permonst *) 0, polyspot, give_msg) != 0
                        /* if shapechange failed because there aren't
                           enough eligible candidates (most likely for
                           vampshifter), try reverting to original form */
-                       || (mtmp->cham >= LOW_PM
-                           && newcham(mtmp, &mons[mtmp->cham],
-                                      polyspot, give_msg) != 0)) {
+                       || (mtmp->cham >= LOW_PM && newcham(mtmp, &mons[mtmp->cham], polyspot, give_msg) != 0)) 
+			{
                 if (give_msg && (canspotmon(mtmp)
                                  || (u.uswallow && mtmp == u.ustuck)))
                     learn_it = TRUE;
@@ -588,8 +594,8 @@ struct obj *otmp;
         (void) cancel_monst(mtmp, otmp, TRUE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus);
         break;
 	case SPE_LOWER_MAGIC_RESISTANCE:
-	case SPE_HALVE_MAGIC_RESISTANCE:
 	case SPE_DIMINISH_MAGIC_RESISTANCE:
+	case SPE_ABOLISH_MAGIC_RESISTANCE:
 	case SPE_NEGATE_MAGIC_RESISTANCE:
 	case SPE_FORBID_SUMMONING:
 		res = 1;
@@ -767,7 +773,7 @@ struct obj *otmp;
 		else if (mtmp->data == &mons[PM_PESTILENCE])
 		{ /* Pestilence */
             /* Pestilence will always resist; damage is half of 3d{4,8,12} */
-            (void) check_magic_resistance_and_halve_damage(mtmp, otmp, 0,
+            (void) check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE,
                           d(3, otyp == SPE_FULL_HEALING ? 12 : otyp == SPE_EXTRA_HEALING ? 8 : 4), AD_CLRC, TELL);
         }
 		else
@@ -856,7 +862,7 @@ struct obj *otmp;
 		{
             shieldeff(mtmp->mx, mtmp->my);
         } 
-		else if (!check_magic_resistance_and_halve_damage(mtmp, otmp, 0, dmg, AD_DRLI, NOTELL) && !DEADMONSTER(mtmp)) 
+		else if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, 0, dmg, AD_DRLI, NOTELL) && !DEADMONSTER(mtmp)) 
 		{
 			double damage = adjust_damage(dmg, &youmonst, mtmp, AD_DRLI, TRUE);
 
@@ -3050,8 +3056,8 @@ struct obj *obj, *otmp;
         case WAN_MAKE_INVISIBLE:
             break;
 		case SPE_LOWER_MAGIC_RESISTANCE:
-		case SPE_HALVE_MAGIC_RESISTANCE:
 		case SPE_DIMINISH_MAGIC_RESISTANCE:
+		case SPE_ABOLISH_MAGIC_RESISTANCE:
 		case SPE_NEGATE_MAGIC_RESISTANCE:
 		case SPE_FORBID_SUMMONING:
 		case WAN_UNDEAD_TURNING:
@@ -3935,9 +3941,9 @@ register struct obj *obj;
 					setmangry(mon, FALSE);
 
 				/* No other saving throw */
-				boolean magic_resistance_success = check_magic_resistance_and_halve_damage(mon, (struct obj*)0,  u.ulevel, 0, 0, NOTELL);
+				boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(mon, (struct obj*)0,  u.ulevel, 0, 0, NOTELL);
 
-				if (resists_disint(mon) || magic_resistance_success)
+				if (resists_disint(mon))
 				{
 					if (canspotmon(mon))
 					{
@@ -3975,7 +3981,7 @@ register struct obj *obj;
 				}
 				else if (!DEADMONSTER(mon) && mon != u.usteed)
 				{
-					(void)check_magic_resistance_and_halve_damage(mon, (struct obj*)0, u.ulevel, dmg, AD_FIRE, canspotmon(mon) ? TELL : NOTELL);
+					(void)check_magic_resistance_and_inflict_damage(mon, (struct obj*)0, TRUE, dmg, AD_FIRE, canspotmon(mon) ? TELL : NOTELL);
 				}
 			}
 		}
@@ -4003,7 +4009,7 @@ register struct obj *obj;
 				}
 				else if (!DEADMONSTER(mon) && mon != u.usteed)
 				{
-					(void)check_magic_resistance_and_halve_damage(mon, (struct obj*)0, u.ulevel, dmg, AD_COLD, canspotmon(mon) ? TELL : NOTELL);
+					(void)check_magic_resistance_and_inflict_damage(mon, (struct obj*)0, TRUE, dmg, AD_COLD, canspotmon(mon) ? TELL : NOTELL);
 				}
 			}
 		}
@@ -4031,7 +4037,7 @@ register struct obj *obj;
 				}
 				else if (!DEADMONSTER(mon) && mon != u.usteed)
 				{
-					(void)check_magic_resistance_and_halve_damage(mon, (struct obj*)0, u.ulevel, dmg, AD_ELEC, canspotmon(mon) ? TELL : NOTELL);
+					(void)check_magic_resistance_and_inflict_damage(mon, (struct obj*)0, TRUE, dmg, AD_ELEC, canspotmon(mon) ? TELL : NOTELL);
 				}
 			}
 		}
@@ -4059,7 +4065,7 @@ register struct obj *obj;
 				}
 				else if (!DEADMONSTER(mon) && mon != u.usteed)
 				{
-					(void)check_magic_resistance_and_halve_damage(mon, (struct obj*)0, u.ulevel, dmg, AD_MAGM, canspotmon(mon) ? TELL : NOTELL);
+					(void)check_magic_resistance_and_inflict_damage(mon, (struct obj*)0, FALSE, dmg, AD_MAGM, canspotmon(mon) ? TELL : NOTELL);
 				}
 			}
 		}
@@ -4074,7 +4080,7 @@ register struct obj *obj;
 			if (dist2(u.ux, u.uy, mon->mx, mon->my) <= radius * (radius + 1))
 			{
 				if (!DEADMONSTER(mon) && mon != u.usteed && mon != &youmonst
-					&& !check_magic_resistance_and_halve_damage(mon, (struct obj*)0, u.ulevel, 0, 0, canspotmon(mon) ? TELL : NOTELL))
+					&& !check_magic_resistance_and_inflict_damage(mon, (struct obj*)0, FALSE, 0, 0, canspotmon(mon) ? TELL : NOTELL))
 				{
 					(void)u_teleport_mon(mon, TRUE);
 
@@ -4319,7 +4325,7 @@ boolean ordinary;
 	int basedmg = d(objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize) + objects[obj->otyp].oc_spell_dmg_plus;
 	int duration = d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_diesize) + objects[obj->otyp].oc_spell_dur_plus;
 	double damage = 0;
-	boolean magic_resistance_success = check_magic_resistance_and_halve_damage(&youmonst, obj, 0, 0, 0, NOTELL);
+	boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(&youmonst, obj, FALSE, 0, 0, NOTELL);
 
     switch (obj->otyp) {
     case WAN_STRIKING:
@@ -4534,8 +4540,8 @@ boolean ordinary;
         break;
 
 	case SPE_LOWER_MAGIC_RESISTANCE:
-	case SPE_HALVE_MAGIC_RESISTANCE:
 	case SPE_DIMINISH_MAGIC_RESISTANCE:
+	case SPE_ABOLISH_MAGIC_RESISTANCE:
 	case SPE_NEGATE_MAGIC_RESISTANCE:
 	case SPE_FORBID_SUMMONING:
 		(void)add_temporary_property(&youmonst, obj, TRUE, TRUE, TRUE, d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_diesize) + objects[obj->otyp].oc_spell_dur_plus);
@@ -4639,8 +4645,7 @@ boolean ordinary;
 	case SPE_HOLD_MONSTER:
 	case SPE_MASS_HOLD:
 		damage = 0;
-		if (!check_magic_resistance_and_halve_damage(&youmonst, obj, 0, 0, 0, NOTELL)
-			&& !check_ability_resistance_success(&youmonst, A_WIS, objects[obj->otyp].oc_spell_saving_throw_adjustment))
+		if (!check_ability_resistance_success(&youmonst, A_WIS, objects[obj->otyp].oc_spell_saving_throw_adjustment))
 		{
 			boolean was_paralyzed = Paralyzed;
 			incr_itimeout(&HParalyzed, duration);
@@ -4722,7 +4727,7 @@ boolean ordinary;
 	}
 	case WAN_DISINTEGRATION:
 		damage = 0;
-		if (Disint_resistance || noncorporeal(youmonst.data) || magic_resistance_success || Invulnerable)
+		if (Disint_resistance || noncorporeal(youmonst.data) || Invulnerable)
 		{
 			pline((obj->otyp == WAN_DISINTEGRATION)
 				? "The wand shoots an apparently harmless beam at you."
@@ -5040,8 +5045,8 @@ struct obj *obj; /* wand or spell */
     case WAN_CANCELLATION:
     case SPE_CANCELLATION:
 	case SPE_LOWER_MAGIC_RESISTANCE:
-	case SPE_HALVE_MAGIC_RESISTANCE:
 	case SPE_DIMINISH_MAGIC_RESISTANCE:
+	case SPE_ABOLISH_MAGIC_RESISTANCE:
 	case SPE_NEGATE_MAGIC_RESISTANCE:
 	case SPE_FORBID_SUMMONING:
 	case WAN_POLYMORPH:
@@ -5110,7 +5115,7 @@ int duration;
     static const char your[] = "your"; /* should be extern */
 
     if (youdefend ? (!youattack && Antimagic)
-                  : check_magic_resistance_and_halve_damage(mdef, obj, 0, 0, 0, NOTELL))
+                  : check_magic_resistance_and_inflict_damage(mdef, obj, FALSE, 0, 0, NOTELL))
         return FALSE; /* resisted cancellation */
 
     if (self_cancel)
@@ -5215,7 +5220,7 @@ int duration;
 	{
 		if (objects[obj->otyp].oc_aflags & S1_SPELL_BYPASSES_MAGIC_RESISTANCE)
 			; //OK;
-		else if (check_magic_resistance_and_halve_damage(mdef, obj, 0, 0, 0, TELL))
+		else if (check_magic_resistance_and_inflict_damage(mdef, obj, FALSE, 0, 0, TELL))
 			return FALSE;
 
 		pline("A dim shimmer surrounds %s.", mon_nam(mdef));
@@ -5227,10 +5232,10 @@ int duration;
 	case SPE_LOWER_MAGIC_RESISTANCE:
 		prop = THREE_FOURTHS_MAGIC_RES;
 		break;
-	case SPE_HALVE_MAGIC_RESISTANCE:
+	case SPE_DIMINISH_MAGIC_RESISTANCE:
 		prop = HALF_MAGIC_RES;
 		break;
-	case SPE_DIMINISH_MAGIC_RESISTANCE:
+	case SPE_ABOLISH_MAGIC_RESISTANCE:
 		prop = ONE_FOURTH_MAGIC_RES;
 		break;
 	case SPE_NEGATE_MAGIC_RESISTANCE:
@@ -6253,7 +6258,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
     boolean sho_shieldeff = FALSE;
     boolean spellcaster = is_hero_spell(type); /* maybe get a bonus! */
 	int duration = 0;
-	boolean magic_resistance_success = check_magic_resistance_and_halve_damage(mon, origobj, type < ZT_SPELL(0) ? 12 : u.ulevel, 0, 0, NOTELL);
+	boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(mon, origobj, type < ZT_SPELL(0) ? 12 : u.ulevel, 0, 0, NOTELL);
 
     *ootmp = (struct obj *) 0;
 	struct obj* otmp2;
@@ -6271,9 +6276,11 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 
 	damage = adjust_damage(dmg, (struct monst*)0, mon, abstype + 1, (abs(type) >= 20 && abs(type) <=29) ? FALSE : TRUE);
 
-    switch (abstype) {
+    switch (abstype)
+	{
     case ZT_MAGIC_MISSILE:
-        if (resists_magicmissile(mon) || resists_magic(mon)) {
+        if (resists_magicmissile(mon) || resists_magic(mon) || magic_resistance_success)
+		{
             sho_shieldeff = TRUE;
 			damage = 0;
             break;
@@ -6285,7 +6292,8 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 		*/
         break;
     case ZT_FIRE:
-        if (resists_fire(mon)) {
+        if (resists_fire(mon))
+		{
             sho_shieldeff = TRUE;
 			damage = 0;
 			break;
@@ -6297,7 +6305,8 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
         if (spellcaster)
             tmp = spell_damage_bonus(tmp);
 		*/
-        if (burnarmor(mon)) {
+        if (burnarmor(mon)) 
+		{
             if (!rn2(3))
                 (void) destroy_mitem(mon, POTION_CLASS, AD_FIRE);
             if (!rn2(3))
@@ -6308,7 +6317,8 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
         }
         break;
     case ZT_COLD:
-        if (resists_cold(mon)) {
+        if (resists_cold(mon)) 
+		{
             sho_shieldeff = TRUE;
 			damage = 0;
 			break;
@@ -6329,10 +6339,12 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
         break;
     case ZT_DISINTEGRATION:  /* disintegration */
 		damage = 0;
-		if (resists_disint(mon) || (magic_resistance_success && !(abs(type) >= 20 && abs(type) <= 39)))
+		if (resists_disint(mon)) // || (magic_resistance_success && !(abs(type) >= 20 && abs(type) <= 39)))
 		{
 			sho_shieldeff = TRUE;
-        } else if (mon->worn_item_flags & W_ARMS) {
+        } 
+		else if (mon->worn_item_flags & W_ARMS)
+		{
             /* destroy shield; victim survives */
             *ootmp = which_armor(mon, W_ARMS);
         } else if (mon->worn_item_flags & W_ARM) {
@@ -6340,7 +6352,9 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
             *ootmp = which_armor(mon, W_ARM);
             if ((otmp2 = which_armor(mon, W_ARMC)) != 0)
                 m_useup(mon, otmp2);
-        } else {
+        }
+		else 
+		{
             /* no body armor, victim dies; destroy cloak
                 and shirt now in case target gets life-saved */
 			damage = DISINTEGRATION_DUMMY_DAMAGE;
@@ -6373,7 +6387,8 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 		damage = (double)mon->mhp + 1;
 		break;
 	case ZT_LIGHTNING:
-        if (resists_elec(mon)) {
+        if (resists_elec(mon)) 
+		{
             sho_shieldeff = TRUE;
 			damage = 0;
             /* can still blind the monster */
@@ -6385,7 +6400,8 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 			
 		*/
         if (!resists_blnd(mon)
-            && !(type > 0 && u.uswallow && mon == u.ustuck)) {
+            && !(type > 0 && u.uswallow && mon == u.ustuck)) 
+		{
             register unsigned rnd_tmp = rnd(50);
 			nonadditive_increase_mon_property(mon, BLINDED, rnd_tmp);
         }
@@ -6396,7 +6412,8 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
             (void) destroy_mitem(mon, RING_CLASS, AD_ELEC);
         break;
     case ZT_POISON_GAS:
-        if (resists_poison(mon)) {
+        if (resists_poison(mon)) 
+		{
             sho_shieldeff = TRUE;
 			damage = 0;
 			break;
@@ -6404,7 +6421,8 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
         //tmp = d(nd, 6);
         break;
     case ZT_ACID:
-        if (resists_acid(mon)) {
+        if (resists_acid(mon)) 
+		{
             sho_shieldeff = TRUE;
 			damage = 0;
 			break;
@@ -6421,9 +6439,13 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 //    if (is_hero_spell(type) && (Role_if(PM_KNIGHT) && u.uhave.questart))
 //        tmp *= 2;
     
-	if (damage > 0 && type >= 0 && magic_resistance_success)
+
+	/* Magic resistance may halve the damage */
+	if (damage > 0 && type >= 0 && (resists_magic(mon) || magic_resistance_success) && damage != DISINTEGRATION_DUMMY_DAMAGE)
 		damage /= 2;
-    if (damage < 0)
+    
+
+	if (damage < 0)
 		damage = 0; /* don't allow negative damage */
 
     debugpline3("zapped monster hp = %d (= %d - %d)", mon->mhp - (int)damage, mon->mhp, (int)damage);
@@ -6440,7 +6462,7 @@ const char *fltxt;
 xchar sx, sy;
 {
     int dam = 0, abstyp = abs(type);
-	boolean magic_resistance_success = check_magic_resistance_and_halve_damage(&youmonst, origobj, type < ZT_SPELL(0) ? 12 : u.ulevel, 0, 0, NOTELL);
+	boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(&youmonst, origobj, type < ZT_SPELL(0) ? 12 : u.ulevel, 0, 0, NOTELL);
 
 	//Base damage here, set to zero, if not needed
 	if (origobj)
@@ -6452,28 +6474,36 @@ xchar sx, sy;
 
 	double damage = adjust_damage(dam, (struct monst*)0, &youmonst, (abstyp % 10) + 1, !(abstyp >= 20 && abstyp <= 39));
 
-    switch (abstyp % 10) {
+    switch (abstyp % 10) 
+	{
     case ZT_MAGIC_MISSILE:
-        if (Antimagic || Invulnerable) {
+        if (Antimagic || magic_resistance_success || Invulnerable) 
+		{
             shieldeff(sx, sy);
 			damage = 0;
             pline_The("missiles bounce off!");
-        } else {
+        } 
+		else 
+		{
             //dam = d(nd, 6);
             exercise(A_STR, FALSE);
         }
         break;
     case ZT_FIRE:
-        if (Fire_resistance || Invulnerable) {
+        if (Fire_resistance || Invulnerable)
+		{
             shieldeff(sx, sy);
 			You("don't feel hot!");
             ugolemeffects(AD_FIRE, damage);
 			damage = 0;
-		} else {
+		}
+		else 
+		{
             //dam = d(nd, 6);
         }
         burn_away_slime();
-        if (burnarmor(&youmonst)) { /* "body hit" */
+        if (burnarmor(&youmonst))
+		{ /* "body hit" */
             if (!rn2(3))
                 destroy_item(POTION_CLASS, AD_FIRE);
             if (!rn2(3))
@@ -6484,12 +6514,15 @@ xchar sx, sy;
         }
         break;
     case ZT_COLD:
-        if (Cold_resistance || Invulnerable) {
+        if (Cold_resistance || Invulnerable)
+		{
             shieldeff(sx, sy);
             You("don't feel cold.");
             ugolemeffects(AD_COLD, damage);
 			damage = 0;
-		} else {
+		} 
+		else 
+		{
             //dam = d(nd, 6);
         }
         if (!rn2(3))
@@ -6497,7 +6530,7 @@ xchar sx, sy;
         break;
     case ZT_SLEEP:
 		damage = 0;
-		if (Sleep_resistance || magic_resistance_success)
+		if (Sleep_resistance)
 		{
             shieldeff(u.ux, u.uy);
             You("don't feel sleepy.");
@@ -6507,7 +6540,7 @@ xchar sx, sy;
         break;
     case ZT_DISINTEGRATION:
 		damage = 0;
-		if (Disint_resistance || noncorporeal(youmonst.data) || (magic_resistance_success && !(abstyp >= 20 && abstyp <= 39)) || Invulnerable)
+		if (Disint_resistance || noncorporeal(youmonst.data) || Invulnerable) // || (magic_resistance_success && !(abstyp >= 20 && abstyp <= 39))
 		{					// if (abstyp == ZT_BREATH(ZT_DISINTEGRATION)) {
             You("are not disintegrated.");
             break;
@@ -6544,14 +6577,14 @@ xchar sx, sy;
         return; /* lifesaved */
 	case ZT_DEATH:
 		damage = 0;
-		if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance || Invulnerable)
+		if (resists_death(&youmonst) || Death_resistance || Invulnerable)
 		{
 			shieldeff(sx, sy);
 			You("seem unaffected.");
 			break;
 		}
 #if 0
-		else if ((Antimagic || check_magic_resistance_and_halve_damage(&youmonst, origobj, 12, 0, 0, NOTELL)) 
+		else if ((Antimagic || check_magic_resistance_and_inflict_damage(&youmonst, origobj, 12, 0, 0, NOTELL)) 
 			&& !(abstyp >= 20 && abstyp <= 39)) /* Antimagic does not work breath weapons and eyestalks, just spells and wands */
 		{
 			shieldeff(sx, sy);
@@ -6564,12 +6597,15 @@ xchar sx, sy;
 		done(DIED);
 		return; /* lifesaved */
 	case ZT_LIGHTNING:
-        if (Shock_resistance || Invulnerable) {
+        if (Shock_resistance || Invulnerable) 
+		{
             shieldeff(sx, sy);
 			You("aren't affected.");
             ugolemeffects(AD_ELEC, damage);
 			damage = 0;
-		} else {
+		} 
+		else 
+		{
             //dam = d(nd, 6);
             exercise(A_CON, FALSE);
         }
@@ -6583,10 +6619,13 @@ xchar sx, sy;
 		poisoned("blast", A_DEX, "poisoned blast", 15, FALSE);
         break;
     case ZT_ACID:
-        if (Acid_resistance || Invulnerable) {
+        if (Acid_resistance || Invulnerable)
+		{
             pline_The("%s doesn't hurt.", hliquid("acid"));
 			damage = 0;
-        } else {
+        }
+		else 
+		{
             pline_The("%s burns!", hliquid("acid"));
             //dam = d(nd, 6);
             exercise(A_STR, FALSE);
@@ -7158,6 +7197,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
         }
     }
     tmp_at(DISP_END, 0);
+
 	if (isexplosioneffect) //type == ZT_SPELL(ZT_FIRE))
 	{
 		int damage = 0;
@@ -7179,6 +7219,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
 		case ZT_ACID:
 			expltype = EXPL_NOXIOUS;
 			break;
+		case ZT_MAGIC_MISSILE:
 		case ZT_SLEEP:
 		case ZT_DEATH:
 		case ZT_DISINTEGRATION:
@@ -8069,14 +8110,14 @@ int osym, dmgtyp;
 }
 
 boolean
-check_magic_resistance_and_halve_damage(mtmp, otmp, lvl, dmg, adtyp, tell)
+check_magic_resistance_and_inflict_damage(mtmp, otmp, resisting_halves_damage, dmg, adtyp, tell)
 struct monst *mtmp;
 struct obj* otmp;
-int lvl;
+boolean resisting_halves_damage;
 int dmg, adtyp, tell;
 {
     boolean resisted;
-    int alev, dlev;
+    //int alev, dlev;
 	char oclass = ILLOBJ_CLASS;
 	boolean is_you = (mtmp == &youmonst);
 
@@ -8093,6 +8134,7 @@ int dmg, adtyp, tell;
 		resisted = FALSE;
 	else
 	{
+#if 0
 		/* attack level */
 		switch (oclass) {
 		case WAND_CLASS:
@@ -8131,6 +8173,7 @@ int dmg, adtyp, tell;
 			else if (dlev < 1)
 				dlev = 1; //  is_mplayer(mtmp->data) ? u.ulevel : 1;
 		}
+#endif
 
 		boolean nomr = is_you ? No_magic_resistance : has_no_magic_resistance(mtmp);
 		boolean quartermr = is_you ? One_fourth_magic_resistance : has_one_fourth_magic_resistance(mtmp);
@@ -8154,14 +8197,14 @@ int dmg, adtyp, tell;
 		if (applicable_mr == 0)
 			resisted = FALSE;
 		else
-			resisted = (rn2(100 + alev - dlev) < applicable_mr);
+			resisted = (rn2(100) < applicable_mr);  //(rn2(100 + alev - dlev) < applicable_mr);
 	}
 
 	double damage = dmg == 0 ? 0 : adjust_damage(dmg, (struct monst*)0, mtmp, adtyp, TRUE);
 
 	if (resisted)
 	{
-		damage = damage / 2;
+		damage = resisting_halves_damage ? damage / 2 : 0;
 		if (tell) 
 		{
 			if (is_you)

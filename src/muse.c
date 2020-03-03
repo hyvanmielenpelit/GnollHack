@@ -1351,7 +1351,7 @@ register struct obj *otmp;
 		{
             tmp = d(2, 12);
             hit("wand", mtmp, exclam(tmp), 0); //Do not tell the damage here, since resist will
-            (void) check_magic_resistance_and_halve_damage(mtmp, otmp, 0, tmp, AD_MAGM, TELL);
+            (void) check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, tmp, AD_MAGM, TELL);
             if (cansee(mtmp->mx, mtmp->my) && zap_oseen)
                 makeknown(WAN_STRIKING);
         } 
@@ -1383,8 +1383,8 @@ register struct obj *otmp;
         (void) cancel_monst(mtmp, otmp, FALSE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus);
         break;
 	case SPE_LOWER_MAGIC_RESISTANCE:
-	case SPE_HALVE_MAGIC_RESISTANCE:
 	case SPE_DIMINISH_MAGIC_RESISTANCE:
+	case SPE_ABOLISH_MAGIC_RESISTANCE:
 	case SPE_NEGATE_MAGIC_RESISTANCE:
 	case SPE_FORBID_SUMMONING:
 		(void)add_temporary_property(mtmp, otmp, FALSE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus);

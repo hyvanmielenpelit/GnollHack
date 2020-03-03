@@ -1178,7 +1178,7 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
 
     case MB_INDEX_SCARE:
         if (youdefend) {
-            if (Antimagic) {
+            if (Antimagic || Fear_resistance) {
                 resisted = TRUE;
             } else {
                 nomul(-3);
@@ -1190,7 +1190,7 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
                 }
             }
         } else {
-			if (rn2(2) && check_magic_resistance_and_halve_damage(mdef, mb, 10, 0, 0, NOTELL))
+			if (rn2(2) && check_ability_resistance_success(mdef, A_WIS, objects[mb->otyp].oc_mc_adjustment))
 				resisted = TRUE;
 			else
 				make_mon_fearful(mdef, 3); // monflee(mdef, 3, FALSE, (mdef->mhp > * dmgptr));

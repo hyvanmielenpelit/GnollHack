@@ -1543,10 +1543,10 @@ int how;
                 break;
             }
  do_illness:
-            if ((mon->mbasehpmax > 3) && !check_magic_resistance_and_halve_damage(mon, obj, 0, 0, 0, NOTELL))
+            if ((mon->mbasehpmax > 3) && !check_ability_resistance_success(mon, A_CON, objects[obj->otyp].oc_mc_adjustment))
                 mon->mbasehpmax /= 2;
 			update_mon_maxhp(mon);
-			if ((mon->mhp > 2) && !check_magic_resistance_and_halve_damage(mon, obj, 0, 0, 0, NOTELL))
+			if ((mon->mhp > 2) && !check_ability_resistance_success(mon, A_CON, objects[obj->otyp].oc_mc_adjustment))
                 mon->mhp /= 2;
             if (mon->mhp > mon->mhpmax)
                 mon->mhp = mon->mhpmax;
@@ -1557,7 +1557,7 @@ int how;
 			increase_mon_property_verbosely(mon, CONFUSION, rn1(9, 8));
 			break;
 		case POT_BOOZE:
-            if (!check_magic_resistance_and_halve_damage(mon, obj, 0, 0, 0, NOTELL))
+            if (!check_ability_resistance_success(mon, A_CON, objects[obj->otyp].oc_mc_adjustment))
                 increase_mon_property_verbosely(mon, CONFUSION, 4 + rnd(4));
             break;
         case POT_INVISIBILITY: {
@@ -1592,7 +1592,7 @@ int how;
         case POT_BLINDNESS:
             if (haseyes(mon->data)) 
 			{
-                int btmp = d(1, 8) + d(3, 8) * !check_magic_resistance_and_halve_damage(mon, obj, 0, 0, 0, NOTELL);
+                int btmp = d(1, 8) + d(3, 8) * !check_ability_resistance_success(mon, A_CON, objects[obj->otyp].oc_mc_adjustment);
 
 				increase_mon_property_verbosely(mon, BLINDED, btmp);
             }
@@ -1641,7 +1641,7 @@ int how;
                 explode_oil(obj, tx, ty);
             break;
         case POT_ACID:
-            if (!resists_acid(mon) && !check_magic_resistance_and_halve_damage(mon, obj, 0, 0, 0, NOTELL)) {
+            if (!resists_acid(mon) && !check_ability_resistance_success(mon, A_DEX, objects[obj->otyp].oc_mc_adjustment)) {
                 pline("%s %s in pain!", Monnam(mon),
                       is_silent(mon->data) ? "writhes" : "shrieks");
                 if (!is_silent(mon->data))

@@ -202,7 +202,7 @@ register struct monst *priest;
     gy += rn1(3, -1);
 
     if (!is_peaceful(priest)
-        || (Conflict && !check_magic_resistance_and_halve_damage(priest, (struct obj*)0, 5, 0, 0, 0))) {
+        || (Conflict && !check_ability_resistance_success(priest, A_WIS, 0))) {
         if (monnear(priest, u.ux, u.uy)) {
             if (Displaced)
                 Your("displaced image doesn't fool %s!", mon_nam(priest));

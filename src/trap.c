@@ -1667,7 +1667,7 @@ struct obj *otmp;
     case SLP_GAS_TRAP:
         if (!resists_sleep(steed) && !has_innate_breathless(steed->data)
             && mon_can_move(steed)) {
-            if (sleep_monst(steed, (struct obj*)0, rn1(7,8), -1, FALSE))
+            if (sleep_monst(steed, (struct obj*)0, rn1(7,8), -100, FALSE))
                 /* no in_sight check here; you can feel it even if blind */
                 pline("%s suddenly falls asleep!", Monnam(steed));
         }
@@ -1685,7 +1685,7 @@ struct obj *otmp;
         steedhit = TRUE;
         break;
     case POLY_TRAP:
-        if (!resists_magic(steed) && !check_magic_resistance_and_halve_damage(steed, (struct obj*) 0, 12, 0, 0, NOTELL)) {
+        if (!resists_magic(steed) && !check_magic_resistance_and_inflict_damage(steed, (struct obj*) 0, FALSE, 0, 0, NOTELL)) {
             (void) newcham(steed, (struct permonst *) 0, FALSE, FALSE);
             if (!can_saddle(steed) || !can_ride(steed))
                 dismount_steed(DISMOUNT_POLY);
@@ -2376,7 +2376,7 @@ register struct monst *mtmp;
             break;
         case SLP_GAS_TRAP:
             if (!resists_sleep(mtmp) && !has_innate_breathless(mptr) && mon_can_move(mtmp)) {
-                if (sleep_monst(mtmp, (struct obj*)0, rn1(7,8), -1, FALSE) && in_sight) {
+                if (sleep_monst(mtmp, (struct obj*)0, rn1(7,8), -100, FALSE) && in_sight) {
                     pline("%s suddenly falls asleep!", Monnam(mtmp));
                     seetrap(trap);
                 }
@@ -2742,7 +2742,7 @@ register struct monst *mtmp;
         case POLY_TRAP:
             if (resists_magic(mtmp)) {
                 shieldeff(mtmp->mx, mtmp->my);
-            } else if (!check_magic_resistance_and_halve_damage(mtmp, (struct obj*) 0, 12, 0, 0, NOTELL)) {
+            } else if (!check_magic_resistance_and_inflict_damage(mtmp, (struct obj*) 0, FALSE, 0, 0, NOTELL)) {
                 if (newcham(mtmp, (struct permonst *) 0, FALSE, FALSE))
                     /* we're done with mptr but keep it up to date */
                     mptr = mtmp->data;
