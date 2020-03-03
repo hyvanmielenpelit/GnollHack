@@ -2768,7 +2768,7 @@ int *spell_no;
 	winid tmpwin;
 	int i, n, how, splnum;
 	char buf[BUFSZ], descbuf[BUFSZ], fmt[BUFSZ];
-	char colorbufs[BUFSZ][MAXSPELL];
+	char* colorbufs[MAXSPELL];
 	int colorbufcnt = 0;
     //const char *fmt;
     menu_item *selected;
@@ -2776,7 +2776,10 @@ int *spell_no;
 	const char* nodesc = "(No short description)";
 
 	for (int j = 0; j < MAXSPELL; j++)
+	{
+		colorbufs[j] = (char*)malloc(BUFSZ * sizeof(char));
 		strcpy(colorbufs[j], "");
+	}
 
     tmpwin = create_nhwindow(NHW_MENU);
     start_menu(tmpwin);
@@ -3013,6 +3016,7 @@ int *spell_no;
 	for (int j = 0; j < colorbufcnt; j++)
 	{
 		free_menu_coloring_str(colorbufs[j]);
+		free(colorbufs[j]);
 	}
 
     if (n > 0) {
