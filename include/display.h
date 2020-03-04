@@ -292,7 +292,7 @@
  *
  * The following are offsets used to convert to and from a glyph.
  */
-#define NUM_ZAP 9 /* number of zap beam types */
+#define NUM_ZAP 10 /* number of zap beam types */
 
 #define GLYPH_MON_OFF     0
 #define GLYPH_PET_OFF     (NUMMONS + GLYPH_MON_OFF)

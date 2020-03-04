@@ -21,13 +21,13 @@ STATIC_DCL boolean FDECL(m_lined_up, (struct monst *, struct monst *, BOOLEAN_P,
 STATIC_OVL NEARDATA const char *breathwep[] = {
     "fragments", "fire", "frost", "sleep gas", "a disintegration blast",
     "lightning", "poison gas", "acid", "a death ray",
-    "strange breath #9"
+    "a cloud of petrifying vapors"
 };
 
 STATIC_OVL NEARDATA const char* eyestalk[] = {
 	"a ray of magical energy", "a fire ray", "a frost ray", "a sleep ray", "a disintegration ray",
 	"a ray of lightning", "a ray of negative energy", "an acid ray", "a death ray",
-	"strange eyestalk #9"
+	"a petrification ray"
 };
 
 extern boolean notonhead; /* for long worms */
@@ -1227,7 +1227,7 @@ struct attack  *mattk;
         }
         if (!mtmp->mspec_used && rn2(3)) 
 		{
-            if ((typ >= AD_MAGM) && (typ <= AD_DRAY))
+            if ((typ >= AD_MAGM) && (typ <= AD_STON))
 			{
                 if (canseemon(mtmp))
                     pline("%s breathes %s!", Monnam(mtmp), breathwep[typ - 1]);
@@ -1266,9 +1266,9 @@ struct attack* mattk;
 	if (!mtmp || !mattk)
 		return 0;
 
-	int effect_choices[6] = { AD_DISN, AD_DRAY, AD_ELEC, AD_MAGM, AD_SLEE, AD_COLD };
+	int effect_choices[6] = { AD_DISN, AD_DRAY, AD_ELEC, AD_STON, AD_SLEE, AD_COLD };
 	int ray1_effect_choices[3] = { AD_DISN, AD_ELEC, AD_COLD }; /* Elemental */
-	int ray2_effect_choices[3] = { AD_DRAY, AD_MAGM, AD_SLEE }; /* Magic */
+	int ray2_effect_choices[3] = { AD_DRAY, AD_STON, AD_SLEE }; /* Magic */
 	int typ = (mattk->adtyp == AD_RBRE) ? effect_choices[rn2(6)] :
 		(mattk->adtyp == AD_REY1) ? ray1_effect_choices[rn2(3)] :
 		(mattk->adtyp == AD_REY2) ? ray2_effect_choices[rn2(3)] :
@@ -1283,7 +1283,7 @@ struct attack* mattk;
 			return 0;
 		}
 
-		if ((typ >= AD_MAGM) && (typ <= AD_DRAY))
+		if ((typ >= AD_MAGM) && (typ <= AD_STON))
 		{
 			if (canseemon(mtmp))
 				pline("One of %s eyestalks fires %s!", s_suffix(mon_nam(mtmp)), eyestalk[typ - 1]);
@@ -1487,9 +1487,9 @@ struct attack *mattk;
 		return 0;
 
 	/* if new breath types are added, change AD_ACID to max type */
-	int effect_choices[6] = { AD_DISN, AD_DRAY, AD_ELEC, AD_MAGM, AD_SLEE, AD_COLD };
+	int effect_choices[6] = { AD_DISN, AD_DRAY, AD_ELEC, AD_STON, AD_SLEE, AD_COLD };
 	int ray1_effect_choices[3] = { AD_DISN, AD_ELEC, AD_COLD }; /* Elemental */
-	int ray2_effect_choices[3] = { AD_DRAY, AD_MAGM, AD_SLEE }; /* Magic */
+	int ray2_effect_choices[3] = { AD_DRAY, AD_STON, AD_SLEE }; /* Magic */
 	int typ = (mattk->adtyp == AD_RBRE) ? effect_choices[rn2(6)] :
 		(mattk->adtyp == AD_REY1) ? ray1_effect_choices[rn2(3)] :
 		(mattk->adtyp == AD_REY2) ? ray2_effect_choices[rn2(3)] :
@@ -1504,7 +1504,7 @@ struct attack *mattk;
                 pline("%s blinks.", Monnam(mtmp));
             return 0;
         }
-        if ((typ >= AD_MAGM) && (typ <= AD_DRAY))
+        if ((typ >= AD_MAGM) && (typ <= AD_STON))
 		{
             if (canseemon(mtmp))
                 pline("One of %s eyestalks fires %s!", s_suffix(mon_nam(mtmp)),
@@ -1546,7 +1546,7 @@ You_hear("a cough.");
 			return 0;
 		}
 		if (!mtmp->mspec_used && rn2(3)) {
-			if ((typ >= AD_MAGM) && (typ <= AD_DRAY)) {
+			if ((typ >= AD_MAGM) && (typ <= AD_STON)) {
 				if (canseemon(mtmp))
 					pline("%s breathes %s!", Monnam(mtmp),
 						breathwep[typ - 1]);

@@ -944,7 +944,7 @@ register struct attack *mattk;
 	/* don't print constant stream of curse messages for 'normal'
        spellcasting monsters at range */
 
-    if (mattk->adtyp > AD_SPC2)
+    if (mattk->adtyp > AD_STON)
         return (0);
 
     if (is_cancelled(mtmp) || is_silenced(mtmp)) {
@@ -954,7 +954,7 @@ register struct attack *mattk;
     if (lined_up(mtmp, TRUE, mattk->adtyp, TRUE) && rn2(3))
 	{
         nomul(0);
-        if (mattk->adtyp && (mattk->adtyp <= AD_SPC2))
+        if (mattk->adtyp && (mattk->adtyp <= AD_STON))
 		{ /* no cf unsigned >0 */
             if (canseemon(mtmp))
                 pline("%s zaps you with a %s!", Monnam(mtmp),

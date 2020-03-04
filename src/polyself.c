@@ -1826,15 +1826,15 @@ doeyestalk()
 		context.botl = 1;
 
 		uchar adtyp = mattk->adtyp;
-		int effect_choices[6] = { AD_DISN, AD_DRAY, AD_ELEC, AD_MAGM, AD_SLEE, AD_COLD };
+		int effect_choices[6] = { AD_DISN, AD_DRAY, AD_ELEC, AD_STON, AD_SLEE, AD_COLD };
 		int ray1_effect_choices[3] = { AD_DISN, AD_ELEC, AD_COLD }; /* Elemental */
-		int ray2_effect_choices[3] = { AD_DRAY, AD_MAGM, AD_SLEE }; /* Magic */
+		int ray2_effect_choices[3] = { AD_DRAY, AD_STON, AD_SLEE }; /* Magic */
 		int typ = (mattk->adtyp == AD_RBRE) ? effect_choices[rn2(6)] :
 			(mattk->adtyp == AD_REY1) ? ray1_effect_choices[rn2(3)] :
 			(mattk->adtyp == AD_REY2) ? ray2_effect_choices[rn2(3)] :
 			mattk->adtyp;
 
-		if ((typ >= AD_MAGM) && (typ <= AD_DRAY))
+		if ((typ >= AD_MAGM) && (typ <= AD_STON))
 		{
 			pline("One of your eyestalks fires %s!", get_eyestalk_ray_name(typ));
 			buzz((int)(30 + (typ - 1)), (struct obj*)0, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp,

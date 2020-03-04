@@ -1109,6 +1109,7 @@ struct monst *mtmp;
 #define MUSE_POT_SLEEPING 16
 #define MUSE_SCR_EARTH 17
 #define MUSE_WAN_DISINTEGRATION 18
+#define MUSE_WAN_PETRIFICATION 19
 
 /* Select an offensive item/action for a monster.  Returns TRUE iff one is
  * found.
@@ -1129,6 +1130,7 @@ struct monst *mtmp;
 	boolean sleep_resistant_skip = (Sleep_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
 	boolean death_resistant_skip = (Death_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
 	boolean disintegration_resistant_skip = (Disint_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
+	boolean petrification_resistant_skip = Stoned || (Stone_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
 	boolean fire_resistant_skip = (Fire_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
 	boolean cold_resistant_skip = (Cold_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
 	boolean shock_resistant_skip = (Shock_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
@@ -1162,7 +1164,7 @@ struct monst *mtmp;
         if (!reflection_skip) 
 		{
             nomore(MUSE_WAN_DEATH);
-            if (obj->otyp == WAN_DEATH && obj->spe > 0 && !antimagic_skip && !death_resistant_skip && !level_skip_powerful_wand
+            if (obj->otyp == WAN_DEATH && obj->spe > 0 && !death_resistant_skip && !level_skip_powerful_wand
 				&& lined_up(mtmp, TRUE, AD_DRAY, TRUE)) 
 			{
                 m.offensive = obj;
@@ -1174,6 +1176,13 @@ struct monst *mtmp;
 			{
 				m.offensive = obj;
 				m.has_offense = MUSE_WAN_DISINTEGRATION;
+			}
+			nomore(MUSE_WAN_PETRIFICATION);
+			if (obj->otyp == WAN_PETRIFICATION && obj->spe > 0 && !petrification_resistant_skip && !level_skip_powerful_wand
+				&& lined_up(mtmp, TRUE, AD_STON, TRUE))
+			{
+				m.offensive = obj;
+				m.has_offense = MUSE_WAN_PETRIFICATION;
 			}
 			nomore(MUSE_WAN_SLEEP);
             if (obj->otyp == WAN_SLEEP && obj->spe > 0 && multi >= 0 && !sleep_resistant_skip && !antimagic_skip && !level_skip_normal_wand && 
@@ -1515,6 +1524,7 @@ struct monst *mtmp;
     switch (m.has_offense) {
     case MUSE_WAN_DEATH:
 	case MUSE_WAN_DISINTEGRATION:
+	case MUSE_WAN_PETRIFICATION:
 	case MUSE_WAN_SLEEP:
     case MUSE_WAN_FIRE:
     case MUSE_WAN_COLD:

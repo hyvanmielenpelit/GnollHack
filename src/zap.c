@@ -13,6 +13,7 @@
  * indicate that the monster should be disintegrated.
  */
 #define DISINTEGRATION_DUMMY_DAMAGE 5000
+#define PETRIFICATION_DUMMY_DAMAGE 6000
 
 static NEARDATA boolean obj_zapped;
 static NEARDATA int poly_zapped;
@@ -44,6 +45,7 @@ STATIC_DCL void FDECL(wishcmdassist, (int));
 #define ZT_POISON_GAS (AD_DRST - 1)
 #define ZT_ACID (AD_ACID - 1)
 #define ZT_DEATH (AD_DRAY - 1)
+#define ZT_PETRIFICATION (AD_STON - 1)
 /* 9 is currently unassigned */
 
 #define ZT_WAND(x) (x)
@@ -63,21 +65,21 @@ const char *const flash_types[] =       /* also used in buzzmu(mcastu.c) */
     {
         "magic missile", /* Wands must be 0-9 */
         "bolt of fire", "bolt of cold", "sleep ray", "disintegration ray",
-        "bolt of lightning", "", "", "death ray", "",
+        "bolt of lightning", "", "", "death ray", "petrification ray",
 
         "magic missile", /* Spell equivalents must be 10-19 */
         "bolt of fire", "cone of cold", "sleep ray", "disintegrate",
         "bolt of lightning", /* there is no spell, used for retribution */
-        "", "", "finger of death", "",
+        "", "", "finger of death", "petrification ray",
 
         "blast of missiles", /* Dragon breath equivalents 20-29*/
         "blast of fire", "blast of frost", "blast of sleep gas",
         "blast of disintegration", "blast of lightning",
-        "blast of poison gas", "blast of acid", "blast of death ray", "",
+        "blast of poison gas", "blast of acid", "blast of death magic", "blast of petrififying vapors",
 
 		"magic missile", /* Eyestalk equivalents must be 30-39 */
 		"bolt of fire", "bolt of cold", "sleep ray", "disintegration ray",
-		"bolt of lightning", "", "", "death ray", ""
+		"bolt of lightning", "", "", "death ray", "petrification ray"
 
 };
 
@@ -5566,6 +5568,7 @@ struct obj *obj;
 		case RAY_ACID:
 		case RAY_DEATH:
 		case RAY_DISINTEGRATION:
+		case RAY_PETRIFICATION:
 		case RAY_WND_MAGIC_MISSILE:
 		case RAY_WND_FIRE:
 		case RAY_WND_COLD:
@@ -5575,6 +5578,7 @@ struct obj *obj;
 		case RAY_WND_ACID:
 		case RAY_WND_DEATH:
 		case RAY_WND_DISINTEGRATION:
+		case RAY_WND_PETRIFICATION:
 			buzz(osubtype, obj, 0, 0, 0, u.ux, u.uy, u.dx, u.dy);
 			break;
 		default:
@@ -6407,6 +6411,18 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 		type = -1; /* so they don't get saving throws */
 		damage = (double)mon->mhp + 1;
 		break;
+	case ZT_PETRIFICATION: 
+		if (resists_ston(mon))
+		{
+			/* similar to player */
+			sho_shieldeff = TRUE;
+			damage = 0;
+			break;
+		}
+		else
+			damage = PETRIFICATION_DUMMY_DAMAGE;
+		type = -1; /* so they don't get saving throws */
+		break;
 	case ZT_LIGHTNING:
         if (resists_elec(mon)) 
 		{
@@ -6460,6 +6476,8 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 //    if (is_hero_spell(type) && (Role_if(PM_KNIGHT) && u.uhave.questart))
 //        tmp *= 2;
     
+	if (damage == PETRIFICATION_DUMMY_DAMAGE) /* caller starts delayed petrification */
+		return damage;
 
 	/* Magic resistance may halve the damage */
 	if (damage > 0 && type >= 0 && (resists_magic(mon) || magic_resistance_success) && damage != DISINTEGRATION_DUMMY_DAMAGE)
@@ -6616,6 +6634,37 @@ xchar sx, sy;
 		Strcpy(killer.name, fltxt ? fltxt : "");
 		done(DIED);
 		return; /* lifesaved */
+	case ZT_PETRIFICATION:
+		damage = 0;
+		if (Stoned || Stone_resistance)
+		{
+			shieldeff(sx, sy);
+			You("aren't affected.");
+		}
+		else if (Stoned)
+		{
+			if ((Stoned & TIMEOUT) > 1)
+			{
+				Stoned = Stoned - 1;
+				You("feel a bit more stiff.");
+			}
+			else
+			{
+				You("aren't affected.");
+			}
+		}
+		else if (poly_when_stoned(youmonst.data) && polymon(PM_STONE_GOLEM))
+		{
+			//Nothing more
+		}
+		else
+		{
+			int kformat = KILLED_BY_AN;
+			char kname[BUFSZ];
+			Strcpy(kname, fltxt ? fltxt : "");
+			make_stoned(5L, (char*)0, kformat, kname);
+		}
+		return;
 	case ZT_LIGHTNING:
         if (Shock_resistance || Invulnerable) 
 		{
@@ -6921,11 +6970,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
     struct obj *otmp;
 	int zaptype = 0;
 
-	if (abstype > ZT_DEATH)
-		zaptype = ZT_DISINTEGRATION;
-	else
-		zaptype = abstype;
-
+	zaptype = abstype;
 
 	//Define if explosion effect
 	boolean isexplosioneffect = FALSE;
@@ -6941,15 +6986,22 @@ boolean say; /* Announce out of sight hit/miss events if true */
         if (type < 0)
             return;
 		damage = zhitm(u.ustuck, type, origobj, dmgdice, dicesize, dmgplus, &otmp);
+
         if (!u.ustuck)
             u.uswallow = 0;
         else
             pline("%s rips into %s%s", The(fltxt), mon_nam(u.ustuck),
                   exclam((int)damage));
-        /* Using disintegration from the inside only makes a hole... */
+
+		/* Using disintegration from the inside only makes a hole... */
         if (damage == DISINTEGRATION_DUMMY_DAMAGE)
             u.ustuck->mhp = 0;
-        if (DEADMONSTER(u.ustuck))
+		else if (damage == PETRIFICATION_DUMMY_DAMAGE)
+		{
+			start_delayed_petrification(u.ustuck, TRUE);
+			damage = 0;
+		}
+		if (DEADMONSTER(u.ustuck))
             killed(u.ustuck);
         return;
     }
@@ -7055,7 +7107,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
 					if (damage == DISINTEGRATION_DUMMY_DAMAGE)
 					{ /* disintegration */
                         disintegrate_mon(mon, type, fltxt);
-                    } 
+                    }
 					else if (DEADMONSTER(mon)) 
 					{
 						/* Already dead monsters */
@@ -7081,6 +7133,10 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     }
 					else
 					{
+						boolean start_petrification = FALSE;
+						if (damage == PETRIFICATION_DUMMY_DAMAGE)
+							damage = 0, start_petrification = TRUE;
+
 						/* Normal hit */
 						if (!otmp)
 						{
@@ -7097,9 +7153,11 @@ boolean say; /* Announce out of sight hit/miss events if true */
                                       distant_name(otmp, xname));
                             m_useup(mon, otmp);
                         }
-                        if (mon_could_move && !mon_can_move(mon)) /* ZT_SLEEP */
-                            slept_monst(mon);
-                    }
+						if (mon_could_move && !mon_can_move(mon)) /* ZT_SLEEP */
+							slept_monst(mon);
+						if (start_petrification)
+							start_delayed_petrification(mon, TRUE);
+					}
                 }
                 range -= 2;
             } 
@@ -7242,6 +7300,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
 		case ZT_MAGIC_MISSILE:
 		case ZT_SLEEP:
 		case ZT_DEATH:
+		case ZT_PETRIFICATION:
 		case ZT_DISINTEGRATION:
 		default:
 			expltype = EXPL_MAGICAL;
@@ -7268,6 +7327,8 @@ boolean say; /* Announce out of sight hit/miss events if true */
                                 ? "damage"
                                 : abstype == ZT_DISINTEGRATION
                                    ? "disintegrate"
+								  : abstype == ZT_PETRIFICATION
+									 ? "shatter"
 									: abstype == ZT_DEATH
 										? "destroy" : "destroy",
 												   FALSE);
@@ -7604,6 +7665,11 @@ short exploding_wand_typ;
 			new_doormask = D_BROKEN;
 			see_txt = "The door withers away!";
 			sense_txt = "feel death lurking nearby.";
+			break;
+		case ZT_PETRIFICATION:
+			new_doormask = D_NODOOR;
+			see_txt = "The door petrifies and shatters!";
+			sense_txt = "hear stone cracking.";
 			break;
 		case ZT_LIGHTNING:
             new_doormask = D_BROKEN;

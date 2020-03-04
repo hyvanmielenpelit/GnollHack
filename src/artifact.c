@@ -2755,6 +2755,7 @@ struct abil2adtyp_tag {
 	{ POISON_RES, AD_DRST },
 	{ DRAIN_RES, AD_DRLI },
 	{ FLASH_RES, AD_BLND },
+	{ STONE_RES, AD_STON },
 };
 
 uchar

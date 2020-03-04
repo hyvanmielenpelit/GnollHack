@@ -37,7 +37,7 @@
  */
 #define AD_ANY (-1) /* fake damage; attacktype_fordmg wildcard */
 #define AD_PHYS 0   /* ordinary physical */
-#define AD_MAGM 1   /* magic missiles */
+#define AD_MAGM 1   /* magic missiles FIRST RAY */
 #define AD_FIRE 2   /* fire damage */
 #define AD_COLD 3   /* frost damage */
 #define AD_SLEE 4   /* sleep ray */
@@ -46,7 +46,7 @@
 #define AD_DRST 7   /* drains str (poison) */
 #define AD_ACID 8   /* acid damage */
 #define AD_DRAY 9   /* death ray */
-#define AD_SPC2 10  /* for extension of buzz() */
+#define AD_STON 10  /* petrifies (Medusa, cockatrice, gorgon) LAST RAY */
 #define AD_BLND 11  /* blinds (yellow light) */
 #define AD_STUN 12  /* stuns */
 #define AD_SLOW 13  /* slows */
@@ -54,7 +54,7 @@
 #define AD_DRLI 15  /* drains life levels (Vampire) */
 #define AD_DREN 16  /* drains magic energy */
 #define AD_LEGS 17  /* damages legs (xan) */
-#define AD_STON 18  /* petrifies (Medusa, cockatrice) */
+#define AD_SPEC 18  /* special */
 #define AD_STCK 19  /* sticks to you (mimic) */
 #define AD_SGLD 20  /* steals gold (leppie) */
 #define AD_SITM 21  /* steals item (nymphs) */

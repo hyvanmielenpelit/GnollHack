@@ -2001,35 +2001,32 @@ register struct obj* omonwep;
     }
     case AD_STON: /* cockatrice */
         hitmsg(mtmp, mattk, damagedealt);
-        if (!rn2(3))
+        if (!uncancelled) //Needs to bypass MC
 		{
-            if (!uncancelled) //Needs to bypass MC
-			{
-                if (!Deaf)
-                    You_hear("a cough from %s!", mon_nam(mtmp));
-            } 
-			else
-			{
-                if (!Deaf)
-                    You_hear("%s hissing!", s_suffix(mon_nam(mtmp)));
+            if (!Deaf)
+                You_hear("a cough from %s!", mon_nam(mtmp));
+        } 
+		else
+		{
+            if (!Deaf)
+                You_hear("%s hissing!", s_suffix(mon_nam(mtmp)));
  do_stone:
-                if (!Stoned && !Stone_resistance
-                    && !(poly_when_stoned(youmonst.data)
-                            && polymon(PM_STONE_GOLEM)))
-				{
-                    int kformat = KILLED_BY_AN;
-                    const char *kname = mtmp->data->mname;
+            if (!Stoned && !Stone_resistance
+                && !(poly_when_stoned(youmonst.data)
+                        && polymon(PM_STONE_GOLEM)))
+			{
+                int kformat = KILLED_BY_AN;
+                const char *kname = mtmp->data->mname;
 
-                    if (mtmp->data->geno & G_UNIQ)
-					{
-                        if (!type_is_pname(mtmp->data))
-                            kname = the(kname);
-                        kformat = KILLED_BY;
-                    }
-                    make_stoned(5L, (char *) 0, kformat, kname);
-                    return 1;
-                    /* done_in_by(mtmp, STONING); */
+                if (mtmp->data->geno & G_UNIQ)
+				{
+                    if (!type_is_pname(mtmp->data))
+                        kname = the(kname);
+                    kformat = KILLED_BY;
                 }
+                make_stoned(5L, (char *) 0, kformat, kname);
+                return 1;
+                /* done_in_by(mtmp, STONING); */
             }
         }
         break;
@@ -3256,7 +3253,8 @@ struct attack *mattk;
 
     switch (mattk->adtyp) {
     case AD_STON:
-        if (cancelled || is_blinded(mtmp)) {
+        if (cancelled || is_blinded(mtmp))
+		{
             if (!canseemon(mtmp))
                 break; /* silently */
             pline("%s %s.", Monnam(mtmp),
@@ -3266,7 +3264,8 @@ struct attack *mattk;
             break;
         }
         if (Reflecting && couldsee(mtmp->mx, mtmp->my)
-            && mtmp->data == &mons[PM_MEDUSA]) {
+            && mtmp->data == &mons[PM_MEDUSA]) 
+		{
             /* hero has line of sight to Medusa and she's not blind */
             boolean useeit = canseemon(mtmp);
 

@@ -186,6 +186,7 @@ const int zapcolors[NUM_ZAP] = {
     CLR_YELLOW, /* 6 - poison gas */
     CLR_GREEN,  /* 7 - acid */
 	CLR_GRAY,   /* 8 - death */
+	CLR_BROWN   /* 9 - petrification */
 };
 #endif /* text color */
 
