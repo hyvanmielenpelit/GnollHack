@@ -1284,7 +1284,12 @@ int how;
     if (have_windows)
         display_nhwindow(WIN_MESSAGE, FALSE);
 
-    if (how != PANICKED) {
+	if (discover || wizard)
+	{
+		You("were in %s mode.", discover ? "non-scoring explore" : "debug");
+	}
+
+	if (how != PANICKED) {
         struct obj *obj;
 
         /*
@@ -1458,7 +1463,7 @@ int how;
     dump_forward_putstr(endwin, 0, pbuf, done_stopprint);
     dump_forward_putstr(endwin, 0, "", done_stopprint);
 
-    if (how == ESCAPED || how == ASCENDED) {
+	if (how == ESCAPED || how == ASCENDED) {
         struct monst *mtmp;
         struct obj *otmp;
         register struct val_list *val;

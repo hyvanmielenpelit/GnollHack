@@ -419,20 +419,27 @@ describe_level(buf)
 char *buf;
 {
     int ret = 1;
+	char modebuf[BUFSZ];
+	if (wizard)
+		strcpy(modebuf, "W ");
+	else if(discover)
+		strcpy(modebuf, "E ");
+	else
+		strcpy(modebuf, "");
 
     /* TODO:    Add in dungeon name */
     if (Is_knox(&u.uz)) {
-        Sprintf(buf, "%s ", dungeons[u.uz.dnum].dname);
+        Sprintf(buf, "%s%s ", modebuf, dungeons[u.uz.dnum].dname);
     } else if (In_quest(&u.uz)) {
-        Sprintf(buf, "Home %d ", dunlev(&u.uz));
+        Sprintf(buf, "%sHome %d ", modebuf, dunlev(&u.uz));
     } else if (In_endgame(&u.uz)) {
         /* [3.6.2: this used to be "Astral Plane" or generic "End Game"] */
         (void) endgamelevelname(buf, depth(&u.uz));
         (void) strsubst(buf, "Plane of ", ""); /* just keep <element> */
-        Strcat(buf, " ");
+        Sprintf("%s%s ", modebuf, buf);
     } else {
         /* ports with more room may expand this one */
-        Sprintf(buf, "DL:%-2d ", depth(&u.uz));
+        Sprintf(buf, "%sDL:%-2d ", modebuf, depth(&u.uz));
         ret = 0;
     }
     return ret;

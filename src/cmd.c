@@ -1137,6 +1137,7 @@ enter_explore_mode(VOID_ARGS)
             clear_nhwindow(WIN_MESSAGE);
             You("are now in non-scoring explore mode.");
             discover = TRUE;
+			context.botl = context.botlx = 1;
         } else {
             clear_nhwindow(WIN_MESSAGE);
             pline("Resuming normal game.");
