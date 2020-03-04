@@ -62,8 +62,13 @@ boolean set_tameness;
 STATIC_OVL int
 pet_type()
 {
-    if (urole.petnum != NON_PM)
-        return  urole.petnum;
+	if (urole.petnum != NON_PM)
+	{
+		if (urole.petnum == PM_PONY && urace.malenum == PM_DWARF)
+			return PM_RAM;
+		else
+			return  urole.petnum;
+	}
     else if (preferred_pet == 'c')
         return  PM_KITTEN;
     else if (preferred_pet == 'd')
@@ -180,7 +185,9 @@ makedog()
         petname = dogname;
     else if (pettype == PM_PONY)
         petname = horsename;
-    else
+	else if (pettype == PM_RAM)
+		petname = ramname;
+	else
         petname = catname;
 
     /* default pet names */
@@ -222,8 +229,8 @@ makedog()
 		mtmp->isfaithful = 1; /* Hachiko is well-known for its faithfulness -- JG */
 
 	context.startingpet_mid = mtmp->m_id;
-    /* Horses already wear a saddle */
-    if (pettype == PM_PONY && !!(otmp = mksobj(SADDLE, TRUE, FALSE, FALSE))) {
+    /* Horses and rams already wear a saddle */
+    if ((pettype == PM_PONY || pettype == PM_RAM )&& !!(otmp = mksobj(SADDLE, TRUE, FALSE, FALSE))) {
         otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
         put_saddle_on_mon(otmp, mtmp);
     }

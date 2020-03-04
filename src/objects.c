@@ -420,11 +420,18 @@ WEAPON("crysknife", None,
 
 /* axes */
 WEAPON("axe", None,
-	1, 0, 0, 0, 22, MULTIGEN_SINGLE, 50,   8, 
+	1, 0, 0, 0, 19, MULTIGEN_SINGLE, 50,   8, 
 	AD_PHYS, 1, 6, 1, 1, 8, 1, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, P1_NONE, S, WEP_AXE, P_AXE, MAT_IRON, HI_METAL, 
 	O1_NONE, O2_NONE, O3_NONE, 
+	PERMITTED_ALL, ALL_TARGETS),
+WEAPON("dwarvish axe", "broad axe",
+	0, 0, 0, 0, 3, MULTIGEN_SINGLE, 50,   8, 
+	AD_PHYS, 1, 6, 2, 1, 8, 2, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+	0, 0, 0, P1_NONE, S, WEP_AXE, P_AXE, MAT_IRON, HI_METAL, 
+	O1_NONE, O2_DWARVEN_ITEM, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("infernal axe", "black axe",
 	0, 0, 0, 0, 0, MULTIGEN_SINGLE, 60, 200, 
@@ -1223,13 +1230,13 @@ DRGN_ARMR("silver dragon scale mail",  1, REFLECTING, 0, 0, P1_NONE, 6000, 1, 4,
 #if 0 /* DEFERRED */
 DRGN_ARMR("shimmering dragon scale mail", 1, DISPLACED, 1200, 1, CLR_CYAN),
 #endif
-DRGN_ARMR("red dragon scale mail",     1, FIRE_RES,   0, 0, P1_NONE, 4000, 1, 4, 0, 0, 0, 0, 20, CLR_RED, O1_FIRE_RESISTANT, O2_DRAGON_ITEM | O2_MONSTER_SCALE_MAIL, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("red dragon scale mail",     1, FIRE_RES,   NO_POWER, 0, P1_NONE, 4000, 1, 4, 0, 0, 0, 0, 20, CLR_RED, O1_FIRE_RESISTANT, O2_DRAGON_ITEM | O2_MONSTER_SCALE_MAIL, O3_NONE, PERMITTED_ALL),
 DRGN_ARMR("white dragon scale mail",   1, COLD_RES,   0, 0, P1_NONE, 3000, 1, 4, 0, 0, 0, 0, 20, CLR_WHITE, O1_COLD_RESISTANT, O2_DRAGON_ITEM | O2_MONSTER_SCALE_MAIL, O3_NONE, PERMITTED_ALL),
 DRGN_ARMR("orange dragon scale mail",  1, SLEEP_RES,  0, 0, P1_NONE, 3000, 1, 4, 0, 0, 0, 0, 20, CLR_ORANGE, O1_NONE, O2_DRAGON_ITEM | O2_MONSTER_SCALE_MAIL, O3_NONE, PERMITTED_ALL),
 DRGN_ARMR("black dragon scale mail",   1, DISINT_RES, 0, 0, P1_NONE, 5000, 1, 4, 0, 0, 0, 0, 20, CLR_BLACK, O1_DISINTEGRATION_RESISTANT, O2_DRAGON_ITEM | O2_MONSTER_SCALE_MAIL, O3_NONE, PERMITTED_ALL),
 DRGN_ARMR("blue dragon scale mail",    1, SHOCK_RES,  0, 0, P1_NONE, 4000, 1, 4, 0, 0, 0, 0, 20, CLR_BLUE, O1_LIGHTNING_RESISTANT, O2_DRAGON_ITEM | O2_MONSTER_SCALE_MAIL, O3_NONE, PERMITTED_ALL),
 DRGN_ARMR("green dragon scale mail",   1, POISON_RES, 0, 0, P1_NONE, 3000, 1, 4, 0, 0, 0, 0, 20, CLR_GREEN, O1_NONE, O2_DRAGON_ITEM | O2_MONSTER_SCALE_MAIL, O3_NONE, PERMITTED_ALL),
-DRGN_ARMR("yellow dragon scale mail",  1, ACID_RES,   0, 0, P1_NONE, 3000, 1, 4, 0, 0, 0, 0, 20, CLR_YELLOW, O1_NONE, O2_DRAGON_ITEM | O2_MONSTER_SCALE_MAIL, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("yellow dragon scale mail",  1, ACID_RES, STONE_RES, NO_POWER, P1_NONE, 3000, 1, 4, 0, 0, 0, 0, 20, CLR_YELLOW, O1_NONE, O2_DRAGON_ITEM | O2_MONSTER_SCALE_MAIL, O3_NONE, PERMITTED_ALL),
 /* For now, only dragons leave these. */
 /* 3.4.1: dragon scales left classified as "non-magic"; they confer
    magical properties but are produced "naturally" */
@@ -1244,7 +1251,7 @@ DRGN_ARMR("orange dragon scales",      0, SLEEP_RES,  0, 0, P1_NONE, 750, 7, 1, 
 DRGN_ARMR("black dragon scales",       0, DISINT_RES, 0, 0, P1_NONE, 1250, 7, 1, 0, 0, 0, 0, 20, CLR_BLACK, O1_DISINTEGRATION_RESISTANT, O2_DRAGON_ITEM | O2_MONSTER_SCALES, O3_NONE, PERMITTED_ALL),
 DRGN_ARMR("blue dragon scales",        0, SHOCK_RES,  0, 0, P1_NONE, 1000, 7, 1, 0, 0, 0, 0, 20, CLR_BLUE, O1_LIGHTNING_RESISTANT, O2_DRAGON_ITEM | O2_MONSTER_SCALES, O3_NONE, PERMITTED_ALL),
 DRGN_ARMR("green dragon scales",       0, POISON_RES, 0, 0, P1_NONE, 750, 7, 1, 0, 0, 0, 0, 20, CLR_GREEN, O1_NONE, O2_DRAGON_ITEM | O2_MONSTER_SCALES, O3_NONE, PERMITTED_ALL),
-DRGN_ARMR("yellow dragon scales",      0, ACID_RES,   0, 0, P1_NONE, 750, 7, 1, 0, 0, 0, 0, 20, CLR_YELLOW, O1_NONE, O2_DRAGON_ITEM | O2_MONSTER_SCALES, O3_NONE, PERMITTED_ALL),
+DRGN_ARMR("yellow dragon scales",      0, ACID_RES, STONE_RES, NO_POWER, P1_NONE, 1000, 7, 1, 0, 0, 0, 0, 20, CLR_YELLOW, O1_NONE, O2_DRAGON_ITEM | O2_MONSTER_SCALES, O3_NONE, PERMITTED_ALL),
 #undef DRGN_ARMR
 /* other suits */
 ARMOR("adamantium full plate mail", None, 1, 

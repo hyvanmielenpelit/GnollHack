@@ -328,7 +328,14 @@ static struct inv_sub {
     { PM_DWARF, HELMET, DWARVISH_IRON_HELM },
     /* { PM_DWARF, SMALL_SHIELD, DWARVISH_ROUNDSHIELD }, */
     /* { PM_DWARF, PICK_AXE, DWARVISH_MATTOCK }, */
-    { PM_DWARF, LEMBAS_WAFER, CRAM_RATION },
+	{ PM_DWARF, AXE, DWARVISH_AXE },
+	{ PM_DWARF, LANCE, DWARVISH_SPEAR },
+	{ PM_DWARF, LONG_SWORD, DWARVISH_AXE },
+	{ PM_DWARF, HELMET, DWARVISH_IRON_HELM },
+	{ PM_DWARF, SMALL_SHIELD, DWARVISH_ROUNDSHIELD },
+	{ PM_DWARF, APPLE, PENNY_BUN },
+	{ PM_DWARF, CARROT, CHANTERELLE },
+	{ PM_DWARF, LEMBAS_WAFER, CRAM_RATION },
 	{ PM_GNOLL, LONG_SWORD, FLAIL },
 	{ PM_GNOLL, SHORT_SWORD, FLAIL },
 	{ PM_GNOLL, SCALPEL, BONE_DAGGER },
@@ -1581,22 +1588,46 @@ register struct trobj *trop;
 		{
 			if (otyp == LEATHER_BAG)
 			{
-				(void)add_to_container(obj, mksobj(SILVER_FORK, FALSE, FALSE, TRUE));
-				(void)add_to_container(obj, mksobj(SILVER_KNIFE, FALSE, FALSE, TRUE));
-				(void)add_to_container(obj, mksobj(FOOD_RATION, FALSE, FALSE, TRUE));
-				if(!rn2(2))
+				if (Race_if(PM_DWARF))
+				{
+					(void)add_to_container(obj, mksobj(CRAM_RATION, FALSE, FALSE, TRUE));
+					if (!rn2(2))
+						(void)add_to_container(obj, mksobj(CRAM_RATION, FALSE, FALSE, TRUE));
+					(void)add_to_container(obj, mksobj(POT_FRUIT_JUICE, FALSE, FALSE, TRUE));
+					(void)add_to_container(obj, mksobj(CHANTERELLE, TRUE, FALSE, TRUE));
+					(void)add_to_container(obj, mksobj(CHANTERELLE, TRUE, FALSE, TRUE));
+					if (!rn2(2))
+						(void)add_to_container(obj, mksobj(CHANTERELLE, TRUE, FALSE, TRUE));
+					(void)add_to_container(obj, mksobj(PENNY_BUN, TRUE, FALSE, TRUE));
+					(void)add_to_container(obj, mksobj(PENNY_BUN, TRUE, FALSE, TRUE));
+					if (!rn2(2))
+						(void)add_to_container(obj, mksobj(PENNY_BUN, TRUE, FALSE, TRUE));
+					knows_object(CHANTERELLE);
+					knows_object(PENNY_BUN);
+					knows_object(POT_FRUIT_JUICE);
+					obj->owt = weight(obj);
+				}
+				else
+				{
+					(void)add_to_container(obj, mksobj(SILVER_FORK, FALSE, FALSE, TRUE));
+					(void)add_to_container(obj, mksobj(SILVER_KNIFE, FALSE, FALSE, TRUE));
 					(void)add_to_container(obj, mksobj(FOOD_RATION, FALSE, FALSE, TRUE));
-				(void)add_to_container(obj, mksobj(APPLE, TRUE, FALSE, TRUE));
-				(void)add_to_container(obj, mksobj(APPLE, TRUE, FALSE, TRUE));
-				(void)add_to_container(obj, mksobj(APPLE, TRUE, FALSE, TRUE));
-				(void)add_to_container(obj, mksobj(APPLE, TRUE, FALSE, TRUE));
-				(void)add_to_container(obj, mksobj(APPLE, TRUE, FALSE, TRUE));
-				(void)add_to_container(obj, mksobj(CARROT, TRUE, FALSE, TRUE));
-				(void)add_to_container(obj, mksobj(CARROT, TRUE, FALSE, TRUE));
-				(void)add_to_container(obj, mksobj(CARROT, TRUE, FALSE, TRUE));
-				(void)add_to_container(obj, mksobj(POT_WATER, FALSE, FALSE, TRUE));
-				knows_object(POT_WATER);
-				obj->owt = weight(obj);
+					if (!rn2(2))
+						(void)add_to_container(obj, mksobj(FOOD_RATION, FALSE, FALSE, TRUE));
+					(void)add_to_container(obj, mksobj(APPLE, TRUE, FALSE, TRUE));
+					(void)add_to_container(obj, mksobj(APPLE, TRUE, FALSE, TRUE));
+					(void)add_to_container(obj, mksobj(APPLE, TRUE, FALSE, TRUE));
+					(void)add_to_container(obj, mksobj(APPLE, TRUE, FALSE, TRUE));
+					if (!rn2(2))
+						(void)add_to_container(obj, mksobj(APPLE, TRUE, FALSE, TRUE));
+					(void)add_to_container(obj, mksobj(CARROT, TRUE, FALSE, TRUE));
+					(void)add_to_container(obj, mksobj(CARROT, TRUE, FALSE, TRUE));
+					if (!rn2(2))
+						(void)add_to_container(obj, mksobj(CARROT, TRUE, FALSE, TRUE));
+					(void)add_to_container(obj, mksobj(POT_WATER, FALSE, FALSE, TRUE));
+					knows_object(POT_WATER);
+					obj->owt = weight(obj);
+				}
 			}
 		}
 		else if (Role_if(PM_WIZARD))

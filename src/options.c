@@ -392,7 +392,9 @@ static struct Comp_Opt {
       DISP_IN_GAME },
     { "race", "your starting race (e.g., Human, Elf)", PL_CSIZ,
       DISP_IN_GAME },
-    { "role", "your starting role (e.g., Barbarian, Valkyrie)", PL_CSIZ,
+	{ "ramname", "the name of your (first) ram (e.g., ramname:Silver)",
+	  PL_PSIZ, DISP_IN_GAME },
+	{ "role", "your starting role (e.g., Barbarian, Valkyrie)", PL_CSIZ,
       DISP_IN_GAME },
     { "runmode", "display frequency when `running' or `travelling'",
       sizeof "teleport", SET_IN_GAME },
@@ -2282,7 +2284,24 @@ boolean tinitial, tfrom_file;
         return retval;
     }
 
-    fullname = "mouse_support";
+	fullname = "ramname";
+	if (match_optname(opts, fullname, 5, TRUE)) {
+		if (duplicate)
+			complain_about_duplicate(opts, 1);
+		if (negated) {
+			bad_negation(fullname, FALSE);
+			return FALSE;
+		}
+		else if ((op = string_for_env_opt(fullname, opts, FALSE)) != 0) {
+			nmcpy(ramname, op, PL_PSIZ);
+		}
+		else
+			return FALSE;
+		sanitize_name(ramname);
+		return retval;
+	}
+
+	fullname = "mouse_support";
     if (match_optname(opts, fullname, 13, TRUE)) {
         boolean compat = (strlen(opts) <= 13);
 
@@ -5613,7 +5632,9 @@ char *buf;
         Sprintf(buf, "%s", rolestring(flags.initgend, genders, adj));
     else if (!strcmp(optname, "horsename"))
         Sprintf(buf, "%s", horsename[0] ? horsename : none);
-    else if (!strcmp(optname, "map_mode")) {
+	else if (!strcmp(optname, "ramname"))
+		Sprintf(buf, "%s", ramname[0] ? ramname : none);
+	else if (!strcmp(optname, "map_mode")) {
         i = iflags.wc_map_mode;
         Sprintf(buf, "%s",
                 (i == MAP_MODE_TILES) ? "tiles"

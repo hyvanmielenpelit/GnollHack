@@ -5172,8 +5172,11 @@ struct permonst *mdat;
                 msg_given = TRUE;
                 break;
             case S_UNICORN:
-                You("detect a%s odor reminiscent of a stable.",
-                    (mndx == PM_PONY) ? "n" : " strong");
+				if(mndx == PM_RAM || mndx == PM_LARGE_RAM || mndx == PM_WARRAM)
+					You("smell a sheep!");
+				else
+					You("detect a%s odor reminiscent of a stable.",
+						(mndx == PM_PONY) ? "n" : " strong");
                 msg_given = TRUE;
                 break;
             case S_LESSER_UNDEAD:
