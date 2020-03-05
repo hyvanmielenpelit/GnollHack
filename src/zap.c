@@ -4955,7 +4955,8 @@ boolean ordinary;
         break;
     }
     default:
-        impossible("zapyourself: object %d used?", obj->otyp);
+		/* All other spells do not do anything */
+        //impossible("zapyourself: object %d used?", obj->otyp);
         break;
     }
     /* if effect was observable then discover the wand type provided
@@ -5559,16 +5560,6 @@ struct obj *obj;
 		case RAY_WND_EVAPORATION:
 			zap_evaporation(obj);
 			break;
-		case RAY_MAGIC_MISSILE:
-		case RAY_FIRE:
-		case RAY_COLD:
-		case RAY_LIGHTNING:
-		case RAY_SLEEP:
-		case RAY_POISON_GAS:
-		case RAY_ACID:
-		case RAY_DEATH:
-		case RAY_DISINTEGRATION:
-		case RAY_PETRIFICATION:
 		case RAY_WND_MAGIC_MISSILE:
 		case RAY_WND_FIRE:
 		case RAY_WND_COLD:
@@ -5579,12 +5570,25 @@ struct obj *obj;
 		case RAY_WND_DEATH:
 		case RAY_WND_DISINTEGRATION:
 		case RAY_WND_PETRIFICATION:
+		case RAY_MAGIC_MISSILE:
+			use_skill(P_WAND, 1);
+			/* FALLTHRU*/
+		case RAY_FIRE:
+		case RAY_COLD:
+		case RAY_LIGHTNING:
+		case RAY_SLEEP:
+		case RAY_POISON_GAS:
+		case RAY_ACID:
+		case RAY_DEATH:
+		case RAY_DISINTEGRATION:
+		case RAY_PETRIFICATION:
 			buzz(osubtype, obj, 0, 0, 0, u.ux, u.uy, u.dx, u.dy);
 			break;
 		default:
 			impossible("weffects: unexpected spell or wand");
 			break;
 		}
+
 
 		/*
         if (otyp == WAN_DIGGING || otyp == SPE_DIG)
@@ -5670,16 +5674,16 @@ int otyp;
     switch (P_SKILL_LEVEL(spell_skilltype(otyp))) {
     case P_ISRESTRICTED:
     case P_UNSKILLED:
-        hit_bon = -4;
-        break;
-    case P_BASIC:
         hit_bon = 0;
         break;
+    case P_BASIC:
+        hit_bon = 3;
+        break;
     case P_SKILLED:
-        hit_bon = 2;
+        hit_bon = 6;
         break;
     case P_EXPERT:
-        hit_bon = 3;
+        hit_bon = 9;
         break;
     }
 
@@ -6785,17 +6789,18 @@ int type;
 struct obj* origobj;
 {
     int chance = rn2(20);
-    int spell_bonus = origobj ? spell_hit_bonus(origobj->otyp) : 0;
+    int spell_bonus = origobj ? spell_hit_bonus(origobj->otyp) : 0; /* Seems to apply for both wands (DEX only) and spells */
+	int wand_bonus = origobj && origobj->oclass == WAND_CLASS ? wand_skill_hit_bonus(P_SKILL_LEVEL(P_WAND)) : 0; /* And extra bonus for wands */
 	int accuracy_bonus = type >=0 ? u.uhitinc : 0;
 
     /* small chance for naked target to avoid being hit */
     if (!chance)
-        return rnd(10) < ac + spell_bonus + accuracy_bonus;
+        return 4 + rnd(10) < ac + spell_bonus + wand_bonus + accuracy_bonus;
 
     /* very high armor protection does not achieve invulnerability */
     ac = AC_VALUE(ac);
 
-    return (3 - chance < ac + spell_bonus + accuracy_bonus);
+    return (7 - chance < ac + spell_bonus + wand_bonus + accuracy_bonus);
 }
 
 boolean

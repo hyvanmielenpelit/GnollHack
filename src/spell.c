@@ -3742,7 +3742,7 @@ int spell;
 int spell_skill_success_bonus(level)
 int level;
 {
-	return 80 * level;
+	return 80 * max(0, level - 1);
 }
 
 STATIC_OVL

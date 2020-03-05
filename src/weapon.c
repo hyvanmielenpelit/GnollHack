@@ -40,6 +40,7 @@ STATIC_DCL void FDECL(skill_advance, (int));
 #define PN_BLUDGEONING_WEAPON (-20)
 #define PN_THROWN_WEAPON (-21)
 #define PN_MARTIAL_ARTS (-22)
+#define PN_WANDS (-23)
 
 
 STATIC_VAR NEARDATA const short skill_names_indices[P_NUM_SKILLS] = {
@@ -48,7 +49,7 @@ STATIC_VAR NEARDATA const short skill_names_indices[P_NUM_SKILLS] = {
     CROSSBOW, PN_THROWN_WEAPON, PN_WHIP,
     PN_ARCANE_SPELL, PN_CLERIC_SPELL, PN_HEALING_SPELL, PN_DIVINATION_SPELL,
     PN_ABJURATION_SPELL, PN_MOVEMENT_SPELL, PN_TRANSMUTATION_SPELL, PN_ENCHANTMENT_SPELL, PN_CONJURATION_SPELL, PN_NECROMANCY_SPELL,
-    PN_BARE_HANDED, PN_MARTIAL_ARTS, PN_TWO_WEAPONS, PN_RIDING, PN_DISARM_TRAP
+    PN_BARE_HANDED, PN_MARTIAL_ARTS, PN_TWO_WEAPONS, PN_WANDS, PN_RIDING, PN_DISARM_TRAP
 };
 
 /* note: entry [0] isn't used */
@@ -57,7 +58,7 @@ STATIC_VAR NEARDATA const char *const odd_skill_names[] = {
     "two weapon combat", "riding", "polearm", "saber", "hammer", "whip",
     "arcane spell", "clerical spell", "healing spell", "divination spell", "abjuration spell",
 	"movement spell", "transmutation spell", "enchantment spell", "conjuration spell", "necromancy spell", "disarm trap", "sword",
-	"bludgeoning weapon", "thrown weapon", "martial arts",
+	"bludgeoning weapon", "thrown weapon", "martial arts", "wand",
 };
 
 STATIC_VAR NEARDATA const char* const odd_skill_names_plural[] = {
@@ -65,7 +66,7 @@ STATIC_VAR NEARDATA const char* const odd_skill_names_plural[] = {
 	"two weapon combat", "riding", "polearms", "sabers", "hammers", "whips",
 	"arcane spells", "clerical spells", "healing spells", "divination spells", "abjuration spells",
 	"movement spells", "transmutation spells", "enchantment spells", "conjuration spells", "necromancy spells", "disarm traps", "swords",
-	"bludgeoning weapons", "thrown weapons", "martial arts",
+	"bludgeoning weapons", "thrown weapons", "martial arts", "wands",
 };
 
 #define P_NAME(type)                                    \
@@ -1627,7 +1628,7 @@ static const struct skill_range {
     short first, last;
     const char *name;
 } skill_ranges[] = {
-    { P_FIRST_H_TO_H, P_LAST_H_TO_H, "Fighting Skills" },
+    { P_FIRST_H_TO_H, P_LAST_H_TO_H, "Combat Skills" },
     { P_FIRST_WEAPON, P_LAST_WEAPON, "Weapon Skills" },
     { P_FIRST_SPELL, P_LAST_SPELL, "Spell Casting Skills" },
 	{ P_FIRST_NONCOMBAT, P_LAST_NONCOMBAT, "Non-Combat Skills" },
@@ -1697,9 +1698,11 @@ enhance_weapon_skill()
 		if (!speedy)
 		{
 			any = zeroany;
-			Sprintf(buf, "Bonuses are to-hit/damage for weapons, success/cost for spells");
+			Sprintf(buf, "Bonuses are to-hit/damage for weapons and unarmed combat,");
 			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, MENU_UNSELECTED);
-			Sprintf(buf, "and arrow/magic trap untrap chance for disarm traps");
+			Sprintf(buf, "success/cost for spells, to-hit for wands, and");
+			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, MENU_UNSELECTED);
+			Sprintf(buf, "arrow/magic trap untrap chance for disarm traps");
 			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, MENU_UNSELECTED);
 			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, "",
 				MENU_UNSELECTED);
@@ -1837,7 +1840,25 @@ enhance_weapon_skill()
 				{
 					char bonusbuf[BUFSZ] = "";
 					char nextbonusbuf[BUFSZ] = "";
-					if ((i >= P_FIRST_WEAPON && i <= P_LAST_WEAPON)
+
+					if (i == P_WAND)
+					{
+						int tohitbonus = wand_skill_hit_bonus(P_SKILL_LEVEL(i));
+						char hbuf[BUFSZ] = "";
+						Sprintf(hbuf, "%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
+						Sprintf(bonusbuf, "%5s", hbuf);
+
+						if (can_advance(i, speedy) || could_advance(i))
+						{
+							int nextlevel = min(P_MAX_SKILL_LEVEL(i), max(0, P_SKILL_LEVEL(i) - 1) + 2);
+							int tohitbonus2 = wand_skill_hit_bonus(nextlevel);
+							char hbuf2[BUFSZ] = "";
+							Sprintf(hbuf2, "%s%d", tohitbonus2 >= 0 ? "+" : "", tohitbonus2);
+							Sprintf(nextbonusbuf, "%5s", hbuf2);
+						}
+
+					}
+					else if ((i >= P_FIRST_WEAPON && i <= P_LAST_WEAPON)
 						|| (i >= P_FIRST_H_TO_H && i <= P_LAST_H_TO_H))
 					{
 						int tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, FALSE);
@@ -1861,8 +1882,8 @@ enhance_weapon_skill()
 					}
 					else if (i >= P_FIRST_SPELL && i <= P_LAST_SPELL)
 					{
-						int successbonus = spell_skill_success_bonus(max(0, P_SKILL_LEVEL(i) - 1));
-						int costdiscount = spell_skill_mana_cost_multiplier(max(0, P_SKILL_LEVEL(i) - 1)) - 100;
+						int successbonus = spell_skill_success_bonus(P_SKILL_LEVEL(i));
+						int costdiscount = spell_skill_mana_cost_multiplier(P_SKILL_LEVEL(i)) - 100;
 						char sbuf[BUFSZ] = "";
 						char cbuf[BUFSZ] = "";
 						Sprintf(sbuf, "%s%d%%", successbonus >= 0 ? "+" : "", successbonus);
@@ -1870,7 +1891,7 @@ enhance_weapon_skill()
 						Sprintf(bonusbuf, "%5s/%s", sbuf, cbuf);
 						if (can_advance(i, speedy) || could_advance(i))
 						{
-							int nextlevel = min(P_MAX_SKILL_LEVEL(i) - 1, max(0, P_SKILL_LEVEL(i) - 1) + 1);
+							int nextlevel = min(P_MAX_SKILL_LEVEL(i), max(0, P_SKILL_LEVEL(i) - 1) + 2);
 							int successbonus2 = spell_skill_success_bonus(nextlevel);
 							int costdiscount2 = spell_skill_mana_cost_multiplier(nextlevel) - 100;
 							char sbuf2[BUFSZ] = "";
@@ -1891,7 +1912,7 @@ enhance_weapon_skill()
 						Sprintf(bonusbuf, "%5s/%s", abuf, mbuf);
 						if (can_advance(i, speedy) || could_advance(i))
 						{
-							int nextlevel = min(P_MAX_SKILL_LEVEL(i) - 1, max(0, P_SKILL_LEVEL(i) - 1) + 1);
+							int nextlevel = min(P_MAX_SKILL_LEVEL(i), max(0, P_SKILL_LEVEL(i) - 1) + 2);
 							int arrowtrap_chance2 = untrap_probability(ARROW_TRAP, nextlevel);
 							int magictrap_chance2 = untrap_probability(MAGIC_TRAP, nextlevel);
 							char abuf2[BUFSZ] = "";
@@ -2316,6 +2337,35 @@ boolean nextlevel;
 
     return bonus;
 }
+
+
+int
+wand_skill_hit_bonus(skill_level)
+int skill_level;
+{
+	int hit_bon = 0;
+
+	switch (skill_level) 
+	{
+	case P_ISRESTRICTED:
+	case P_UNSKILLED:
+		hit_bon = 0;
+		break;
+	case P_BASIC:
+		hit_bon = 3;
+		break;
+	case P_SKILLED:
+		hit_bon = 6;
+		break;
+	case P_EXPERT:
+		hit_bon = 9;
+		break;
+	}
+
+	return hit_bon;
+}
+
+
 
 /*
  * Initialize weapon skill array for the game.  Start by setting all

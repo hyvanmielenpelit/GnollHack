@@ -383,6 +383,7 @@ static const struct def_skill Skill_A_Max[] = {
     { P_RIDING, P_BASIC },
     { P_TWO_WEAPON_COMBAT, P_BASIC },
     { P_BARE_HANDED_COMBAT, P_EXPERT },
+	{ P_WAND, P_BASIC },
 	{ P_DISARM_TRAP, P_SKILLED },
 	{ P_NONE, 0 }
 };
@@ -460,6 +461,7 @@ static const struct def_skill Skill_H_Max[] = {
 	{ P_ABJURATION_SPELL, P_SKILLED },
 	{ P_CLERIC_SPELL, P_BASIC },
 	{ P_BARE_HANDED_COMBAT, P_BASIC },
+	{ P_WAND, P_BASIC },
 	{ P_DISARM_TRAP, P_SKILLED },
 	{ P_NONE, 0 }
 };
@@ -519,6 +521,7 @@ static const struct def_skill Skill_Monk_Max[] = {
 	{ P_BARE_HANDED_COMBAT, P_EXPERT },
 	{ P_MARTIAL_ARTS, P_GRAND_MASTER },
 	{ P_TWO_WEAPON_COMBAT, P_EXPERT },
+	{ P_WAND, P_BASIC },
 	{ P_DISARM_TRAP, P_BASIC },
 	{ P_NONE, 0 }
 };
@@ -550,7 +553,8 @@ static const struct def_skill Skill_P_Max[] = {
 	{ P_CONJURATION_SPELL, P_SKILLED },
 	{ P_NECROMANCY_SPELL, P_EXPERT },
 	{ P_BARE_HANDED_COMBAT, P_BASIC },
-    { P_NONE, 0 }
+	{ P_WAND, P_BASIC },
+	{ P_NONE, 0 }
 };
 
 static const struct def_skill Skill_P_Init_Chaotic[] = {
@@ -585,6 +589,7 @@ static const struct def_skill Skill_Rogue_Max[] = {
     { P_RIDING, P_BASIC },
     { P_TWO_WEAPON_COMBAT, P_EXPERT },
     { P_BARE_HANDED_COMBAT, P_EXPERT },
+	{ P_WAND, P_SKILLED },
 	{ P_DISARM_TRAP, P_EXPERT },
 	{ P_NONE, 0 }
 };
@@ -689,6 +694,7 @@ static const struct def_skill Skill_T_Max[] = {
 	{ P_RIDING, P_BASIC },
     { P_TWO_WEAPON_COMBAT, P_SKILLED },
     { P_BARE_HANDED_COMBAT, P_SKILLED },
+	{ P_WAND, P_BASIC },
 	{ P_DISARM_TRAP, P_SKILLED },
 	{ P_NONE, 0 }
 };
@@ -747,6 +753,7 @@ static const struct def_skill Skill_W_Max[] = {
 	{ P_NECROMANCY_SPELL, P_SKILLED },
 	{ P_RIDING, P_BASIC },
     { P_BARE_HANDED_COMBAT, P_BASIC },
+	{ P_WAND, P_EXPERT },
 	{ P_DISARM_TRAP, P_BASIC },
 	{ P_NONE, 0 }
 };
@@ -755,12 +762,14 @@ static const struct def_skill Skill_W_Init_Chaotic[] = {
 	{ P_ARCANE_SPELL, P_BASIC },
 	{ P_ENCHANTMENT_SPELL, P_BASIC },
 	{ P_TRANSMUTATION_SPELL, P_BASIC },
+	{ P_WAND, P_BASIC },
 	{ P_NONE, 0 }
 };
 static const struct def_skill Skill_W_Init_NonChaotic[] = {
 	{ P_ARCANE_SPELL, P_BASIC },
 	{ P_ENCHANTMENT_SPELL, P_BASIC },
 	{ P_TRANSMUTATION_SPELL, P_BASIC },
+	{ P_WAND, P_BASIC },
 	{ P_NONE, 0 }
 };
 
