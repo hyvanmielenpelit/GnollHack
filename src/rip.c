@@ -45,7 +45,7 @@ static const char *rip_txt[] = {
     "             /          \\                    /          \\",
     "            /    REST    \\                  /    This    \\",
     "           /      IN      \\                /  release of  \\",
-    "          /     PEACE      \\              /   GnollHack is   \\",
+    "          /     PEACE      \\              /   GnollHack is \\",
     "         /                  \\            /   dedicated to   \\",
     "         |                  |            |  the memory of   |",
     "         |                  |            |                  |",
