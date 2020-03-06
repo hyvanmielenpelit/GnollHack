@@ -199,8 +199,11 @@ register int x, y;
         return "altar";
     else if (IS_GRAVE(levl[x][y].typ))
         return "headstone";
-    else if (IS_FOUNTAIN(levl[x][y].typ))
-        return "fountain";
+	else if (IS_FOUNTAIN(levl[x][y].typ))
+	{
+		int ftyp = (levl[x][y].fountaintype & FOUNTAIN_TYPE_MASK);
+		return FOUNTAIN_IS_KNOWN(x, y) ? fountain_type_text(ftyp) : "fountain";
+	}
     else if ((IS_ROOM(lev->typ) && !Is_earthlevel(&u.uz))
              || IS_WALL(lev->typ) || IS_DOOR(lev->typ) || lev->typ == SDOOR)
         return "floor";

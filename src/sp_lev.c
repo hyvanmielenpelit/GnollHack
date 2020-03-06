@@ -4296,7 +4296,14 @@ genericptr_t arg;
 {
     if (IS_FURNITURE(levl[x][y].typ))
         return;
+
     levl[x][y].typ = (*(int *) arg);
+
+	if (levl[x][y].typ == FOUNTAIN)
+	{
+		levl[x][y].fountaintype &= ~FOUNTAIN_TYPE_MASK;
+		levl[x][y].fountaintype |= rn2(6);
+	}
 }
 
 void

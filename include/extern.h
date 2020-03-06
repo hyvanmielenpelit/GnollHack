@@ -953,6 +953,7 @@ E boolean FDECL(read_tribute, (const char *, const char *, int,
                                char *, int, unsigned));
 E boolean FDECL(Death_quote, (char *, int));
 
+
 /* ### fountain.c ### */
 
 E void FDECL(floating_above, (const char *));
@@ -965,6 +966,9 @@ E void NDECL(drinkfountain);
 E void FDECL(dipfountain, (struct obj *));
 E void FDECL(breaksink, (int, int));
 E void NDECL(drinksink);
+E const char* FDECL(fountain_type_text, (int));
+E const char* FDECL(get_fountain_name, (int, int));
+
 
 /* ### hack.c ### */
 

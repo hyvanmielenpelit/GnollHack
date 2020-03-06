@@ -4109,9 +4109,22 @@ struct obj *no_wish;
         if (!BSTRCMPI(bp, p - 8, "fountain")) {
             lev->typ = FOUNTAIN;
             level.flags.nfountains++;
-            if (!strncmpi(bp, "magic ", 6))
+            if (!strncmpi(bp, "enchanted magic ", 16))
                 lev->blessedftn = 1;
-            pline("A %sfountain.", lev->blessedftn ? "magic " : "");
+			if (!strncmpi(bp, "magic ", 6))
+				lev->fountaintype |= FOUNTAIN_MAGIC; /* does nothing */
+			if (!strncmpi(bp, "healing ", 8))
+				lev->fountaintype |= FOUNTAIN_HEALING;
+			if (!strncmpi(bp, "mana ", 5))
+				lev->fountaintype |= FOUNTAIN_MANA;
+			if (!strncmpi(bp, "power ", 6))
+				lev->fountaintype |= FOUNTAIN_POWER;
+			if (!strncmpi(bp, "water ", 6))
+				lev->fountaintype |= FOUNTAIN_WATER;
+			if (!strncmpi(bp, "poison ", 7))
+				lev->fountaintype |= FOUNTAIN_POISON;
+			int ftyp = (lev->fountaintype & FOUNTAIN_TYPE_MASK);
+			pline("A %s.", ftyp > 0 ? fountain_type_text(ftyp) : lev->blessedftn ? "enchanted fountain" : "magic fountain");
             newsym(x, y);
             return (struct obj *) &zeroobj;
         }

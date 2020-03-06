@@ -344,14 +344,18 @@ extern struct symsetentry symset[NUM_GRAPHICS]; /* from drawing.c */
 /*
  * Fountains have limits, and special warnings.
  */
-#define F_LOOTED 1
-#define F_WARNED 2
+#define F_LOOTED 16
+#define F_WARNED 32
+#define F_KNOWN 64
 #define FOUNTAIN_IS_WARNED(x, y) (levl[x][y].looted & F_WARNED)
 #define FOUNTAIN_IS_LOOTED(x, y) (levl[x][y].looted & F_LOOTED)
+#define FOUNTAIN_IS_KNOWN(x, y) (levl[x][y].looted & F_KNOWN)
 #define SET_FOUNTAIN_WARNED(x, y) levl[x][y].looted |= F_WARNED;
 #define SET_FOUNTAIN_LOOTED(x, y) levl[x][y].looted |= F_LOOTED;
+#define SET_FOUNTAIN_KNOWN(x, y) levl[x][y].looted |= F_KNOWN;
 #define CLEAR_FOUNTAIN_WARNED(x, y) levl[x][y].looted &= ~F_WARNED;
 #define CLEAR_FOUNTAIN_LOOTED(x, y) levl[x][y].looted &= ~F_LOOTED;
+#define CLEAR_FOUNTAIN_KNOWN(x, y) levl[x][y].looted &= ~F_KNOWN;
 
 /*
  * Doors are even worse :-) The special warning has a side effect
@@ -523,6 +527,16 @@ struct rm {
 
 #define doormask flags
 #define altarmask flags
+#define fountaintype flags
+
+#define FOUNTAIN_MAGIC 0
+#define FOUNTAIN_HEALING 1
+#define FOUNTAIN_MANA 2
+#define FOUNTAIN_POWER 3
+#define FOUNTAIN_WATER 4
+#define FOUNTAIN_POISON 5
+#define FOUNTAIN_TYPE_MASK 15
+
 #define wall_info flags
 #define ladder flags
 #define drawbridgemask flags

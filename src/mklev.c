@@ -1799,6 +1799,9 @@ struct mkroom *croom;
 
     /* Put a fountain at m.x, m.y */
     levl[m.x][m.y].typ = FOUNTAIN;
+	levl[m.x][m.y].fountaintype &= ~FOUNTAIN_TYPE_MASK;
+	levl[m.x][m.y].fountaintype |= rn2(6);
+
     /* Is it a "blessed" fountain? (affects drinking from fountain) */
     if (!rn2(7))
         levl[m.x][m.y].blessedftn = 1;

@@ -6241,14 +6241,18 @@ boolean doit;
     win = create_nhwindow(NHW_MENU);
     start_menu(win);
 
-    if (IS_FOUNTAIN(typ) || IS_SINK(typ)) {
-        Sprintf(buf, "Drink from the %s",
-                defsyms[IS_FOUNTAIN(typ) ? S_fountain : S_sink].explanation);
+    if (IS_FOUNTAIN(typ) || IS_SINK(typ)) 
+	{
+		int ftyp = (levl[u.ux][u.uy].fountaintype & FOUNTAIN_TYPE_MASK);
+        Sprintf(buf, "Drink from the %s", IS_FOUNTAIN(typ) ? (FOUNTAIN_IS_KNOWN(u.ux, u.uy) ? fountain_type_text(ftyp) : defsyms[S_fountain].explanation) : defsyms[S_sink].explanation);
         add_herecmd_menuitem(win, dodrink, buf);
     }
-    if (IS_FOUNTAIN(typ))
-        add_herecmd_menuitem(win, dodip,
-                             "Dip something into the fountain");
+	if (IS_FOUNTAIN(typ))
+	{
+		int ftyp = (levl[u.ux][u.uy].fountaintype & FOUNTAIN_TYPE_MASK);
+		Sprintf(buf, "Dip something into the %s", FOUNTAIN_IS_KNOWN(u.ux, u.uy) ? fountain_type_text(ftyp) : defsyms[S_fountain].explanation);
+		add_herecmd_menuitem(win, dodip, buf);
+	}
     if (IS_THRONE(typ))
         add_herecmd_menuitem(win, dosit,
                              "Sit on the throne");

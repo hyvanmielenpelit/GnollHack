@@ -505,8 +505,13 @@ dodrink()
     /* Is there a fountain to drink from here? */
     if (IS_FOUNTAIN(levl[u.ux][u.uy].typ)
         /* not as low as floor level but similar restrictions apply */
-        && can_reach_floor(FALSE)) {
-        if (yn("Drink from the fountain?") == 'y') {
+        && can_reach_floor(FALSE)) 
+	{
+		char qbuf[BUFSZ];
+		Sprintf(qbuf, "Drink from the %s?", get_fountain_name(u.ux, u.uy));
+
+        if (yn(qbuf) == 'y') 
+		{
             drinkfountain();
             return 1;
         }
@@ -2107,27 +2112,37 @@ dodip()
 
     here = levl[u.ux][u.uy].typ;
     /* Is there a fountain to dip into here? */
-    if (IS_FOUNTAIN(here)) {
-        Sprintf(qbuf, "%s%s into the fountain?", Dip_,
-                flags.verbose ? obuf : shortestname);
-        /* "Dip <the object> into the fountain?" */
-        if (yn(qbuf) == 'y') {
+    if (IS_FOUNTAIN(here)) 
+	{
+        Sprintf(qbuf, "%s%s into the %s?", Dip_, flags.verbose ? obuf : shortestname, get_fountain_name(u.ux, u.uy));
+        
+		/* "Dip <the object> into the fountain?" */
+        if (yn(qbuf) == 'y') 
+		{
             dipfountain(obj);
             return 1;
         }
-    } else if (is_pool(u.ux, u.uy)) {
+    }
+	else if (is_pool(u.ux, u.uy)) 
+	{
         const char *pooltype = waterbody_name(u.ux, u.uy);
 
         Sprintf(qbuf, "%s%s into the %s?", Dip_,
                 flags.verbose ? obuf : shortestname, pooltype);
+
         /* "Dip <the object> into the {pool, moat, &c}?" */
-        if (yn(qbuf) == 'y') {
-            if (Levitation && !Levitation_control) {
+        if (yn(qbuf) == 'y')
+		{
+            if (Levitation && !Levitation_control) 
+			{
                 floating_above(pooltype);
-            } else if (u.usteed && !is_swimmer(u.usteed->data)
-                       && P_SKILL_LEVEL(P_RIDING) < P_BASIC) {
+            }
+			else if (u.usteed && !is_swimmer(u.usteed->data) && P_SKILL_LEVEL(P_RIDING) < P_BASIC) 
+			{
                 rider_cant_reach(); /* not skilled enough to reach */
-            } else {
+            } 
+			else 
+			{
                 if (obj->otyp == POT_ACID)
                     obj->in_use = 1;
                 if (water_damage(obj, 0, TRUE) != ER_DESTROYED && obj->in_use)

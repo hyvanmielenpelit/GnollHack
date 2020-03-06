@@ -2976,7 +2976,8 @@ polymorph_sink()
         sym = S_fountain;
         levl[u.ux][u.uy].typ = FOUNTAIN;
         levl[u.ux][u.uy].blessedftn = 0;
-        if (sinklooted)
+		levl[u.ux][u.uy].fountaintype |= rn2(6);
+		if (sinklooted)
             SET_FOUNTAIN_LOOTED(u.ux, u.uy);
         level.flags.nfountains++;
         break;
