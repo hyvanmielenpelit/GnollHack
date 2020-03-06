@@ -278,7 +278,6 @@ drinkfountain()
 
 		if (ftyp == FOUNTAIN_MANA)
 		{
-
 			pline("The water makes magical energies course through your body.");
 			if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
 			{
