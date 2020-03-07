@@ -364,11 +364,14 @@ init_dungeon()
 void
 init_level()
 {
-	if(++n_levs > LEV_LIMIT) {
+	n_levs++;
+	if(n_levs > LEV_LIMIT || n_levs >= sizeof(tmplevel) / sizeof(tmplevel[0])) {
 
 		yyerror("FATAL - Too many special levels defined.");
 		exit(EXIT_FAILURE);
+		return;
 	}
+
 	tmplevel[n_levs].lev.base = 0;
 	tmplevel[n_levs].lev.rand = 0;
 	tmplevel[n_levs].chance = 100;
@@ -381,10 +384,12 @@ init_level()
 void
 init_branch()
 {
-	if(++n_brs > BRANCH_LIMIT) {
+	n_brs++;
+	if(n_brs > BRANCH_LIMIT || n_brs >= sizeof(tmpbranch) / sizeof(tmpbranch[0])) {
 
 		yyerror("FATAL - Too many special levels defined.");
 		exit(EXIT_FAILURE);
+		return;
 	}
 	tmpbranch[n_brs].lev.base = 0;
 	tmpbranch[n_brs].lev.rand = 0;
