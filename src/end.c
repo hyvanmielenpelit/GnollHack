@@ -2269,7 +2269,7 @@ build_english_list(in)
 char *in;
 {
     char *out, *p = in;
-    int len = (int) strlen(p), words = wordcount(p);
+	size_t len = strlen(p), words = (size_t)wordcount(p);
 
     /* +3: " or " - " "; +(words - 1): (N-1)*(", " - " ") */
     if (words > 1)

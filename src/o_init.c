@@ -386,7 +386,7 @@ restnames(fd)
 register int fd;
 {
     register int i;
-    unsigned int len;
+    size_t len;
 
     mread(fd, (genericptr_t) bases, sizeof bases);
     mread(fd, (genericptr_t) disco, sizeof disco);

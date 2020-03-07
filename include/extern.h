@@ -1077,7 +1077,7 @@ E int NDECL(night);
 E int NDECL(midnight);
 E void FDECL(strbuf_init, (strbuf_t *));
 E void FDECL(strbuf_append, (strbuf_t *, const char *));
-E void FDECL(strbuf_reserve, (strbuf_t *, int));
+E void FDECL(strbuf_reserve, (strbuf_t *, size_t));
 E void FDECL(strbuf_empty, (strbuf_t *));
 E void FDECL(strbuf_nl_to_crlf, (strbuf_t *));
 
@@ -1874,7 +1874,7 @@ E char *FDECL(cxname, (struct obj *));
 E char *FDECL(cxname_singular, (struct obj *));
 E char *FDECL(killer_xname, (struct obj *));
 E char *FDECL(short_oname,
-              (struct obj *, char *(*)(OBJ_P), char *(*)(OBJ_P), unsigned));
+              (struct obj *, char *(*)(OBJ_P), char *(*)(OBJ_P), size_t));
 E const char *FDECL(singular, (struct obj *, char *(*)(OBJ_P)));
 E char *FDECL(an, (const char *));
 E char *FDECL(An, (const char *));

@@ -67,7 +67,10 @@ mswin_init_main_window()
                      );
 
     if (!ret)
+	{
         panic("Cannot create main window");
+		return (HWND)0;
+	}
 
     if (GetNHApp()->regMainMinX != CW_USEDEFAULT) {
         wp.length = sizeof(wp);
@@ -201,8 +204,11 @@ MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_CREATE:
         /* set window data */
         data = (PNHMainWindow) malloc(sizeof(NHMainWindow));
-        if (!data)
-            panic("out of memory");
+		if (!data)
+		{
+			panic("out of memory");
+			return (LRESULT)0;
+		}
         ZeroMemory(data, sizeof(NHMainWindow));
         data->mapAcsiiModeSave = MAP_MODE_ASCII12x16;
         SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR) data);
@@ -378,7 +384,7 @@ MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
             c = 0;
             ZeroMemory(kbd_state, sizeof(kbd_state));
-            GetKeyboardState(kbd_state);
+            (void)GetKeyboardState(kbd_state);
 
             if (ToAscii((UINT) wParam, (lParam >> 16) & 0xFF, kbd_state, &c, 0)) {
                 NHEVENT_KBD(c & 0xFF);
@@ -961,8 +967,11 @@ onWMCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
         tlen = strlen(text);
         wtext = (wchar_t *) malloc(tlen * sizeof(wchar_t));
-        if (!wtext)
-            panic("out of memory");
+		if (!wtext)
+		{
+			panic("out of memory");
+			return (LRESULT)0;
+		}
         MultiByteToWideChar(NH_CODEPAGE, 0, text, -1, wtext, tlen);
         fwrite(wtext, tlen * sizeof(wchar_t), 1, pFile);
         fclose(pFile);

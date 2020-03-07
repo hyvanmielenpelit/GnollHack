@@ -503,8 +503,11 @@ shkveg()
             maxprob += objects[i].oc_prob;
         }
     }
-    if (maxprob < 1)
-        panic("shkveg no veggy objects");
+	if (maxprob < 1)
+	{
+		panic("shkveg no veggy objects");
+		return 0;
+	}
     prob = rnd(maxprob);
 
     j = 0;
@@ -969,6 +972,7 @@ struct monst *mtmp;
 		impossible("shkname: \"%s\" is not a shopkeeper.", nam);
     } else if (!has_eshk(mtmp)) {
 		panic("shkname: shopkeeper \"%s\" lacks 'eshk' data.", nam);
+		return "";
     } else {
         const char *shknm = ESHK(mtmp)->shknam;
 

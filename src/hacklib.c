@@ -574,8 +574,11 @@ int y;
     int r, m;
     int divsgn = 1;
 
-    if (y == 0)
-        panic("division by zero in rounddiv");
+	if (y == 0)
+	{
+		panic("division by zero in rounddiv");
+		return 0;
+	}
     else if (y < 0) {
         divsgn = -divsgn;
         y = -y;
@@ -1158,10 +1161,10 @@ const char *str;
 	if (!strbuf || !strbuf->str)
 		return;
 
-    int len = (int) strlen(str) + 1;
+    size_t len = strlen(str) + 1;
 
     strbuf_reserve(strbuf,
-                   len + (strbuf->str ? (int) strlen(strbuf->str) : 0));
+                   len + (strbuf->str ? strlen(strbuf->str) : 0));
     Strcat(strbuf->str, str);
 }
 
@@ -1169,18 +1172,20 @@ const char *str;
 void
 strbuf_reserve(strbuf, len)
 strbuf_t *strbuf;
-int len;
+size_t len;
 {
-    if (strbuf->str == NULL) {
+    if (strbuf->str == NULL) 
+	{
         strbuf->str = strbuf->buf;
         strbuf->str[0] = '\0';
-        strbuf->len = (int) sizeof strbuf->buf;
+        strbuf->len = sizeof strbuf->buf;
     }
 
-    if (len > strbuf->len) {
+    if (len > strbuf->len) 
+	{
         char *oldbuf = strbuf->str;
 
-        strbuf->len = len + (int) sizeof strbuf->buf;
+        strbuf->len = len + sizeof strbuf->buf;
         strbuf->str = (char *) alloc(strbuf->len);
         Strcpy(strbuf->str, oldbuf);
         if (oldbuf != strbuf->buf)
@@ -1204,7 +1209,7 @@ strbuf_nl_to_crlf(strbuf)
 strbuf_t *strbuf;
 {
     if (strbuf->str) {
-        int len = (int) strlen(strbuf->str);
+        size_t len = strlen(strbuf->str);
         int count = 0;
         char *cp = strbuf->str;
 
@@ -1213,7 +1218,7 @@ strbuf_t *strbuf;
                 count++;
         if (count) {
             strbuf_reserve(strbuf, len + count + 1);
-            for (cp = strbuf->str + len + count; count; --cp)
+            for (cp = strbuf->str + len + (size_t)count; count; --cp)
                 if ((*cp = cp[-count]) == '\n') {
                     *--cp = '\r';
                     --count;

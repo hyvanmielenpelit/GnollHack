@@ -338,7 +338,10 @@ YYSTYPE yyvs[YYSTACKSIZE];
 void
 init_dungeon()
 {
-	if(++n_dgns > MAXDUNGEON) {
+	n_dgns++;
+
+	if(n_dgns > MAXDUNGEON || n_dgns >= sizeof(tmpdungeon) / sizeof(tmpdungeon[0]))
+	{
 	    (void) fprintf(stderr, "FATAL - Too many dungeons (limit: %d).\n",
 		    MAXDUNGEON);
 	    (void) fprintf(stderr, "To increase the limit edit MAXDUNGEON in global.h\n");

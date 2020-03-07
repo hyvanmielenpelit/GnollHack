@@ -2684,8 +2684,11 @@ genericptr_t arg;
     }
 
     if (range) {
-        if (range > MAX_RADIUS || range < 1)
-            panic("view_from called with range %d", range);
+		if (range > MAX_RADIUS || range < 1)
+		{
+			panic("view_from called with range %d", range);
+			return;
+		}
         limits = circle_ptr(range) + 1; /* start at next row */
         if (left < scol - range)
             left = scol - range;
@@ -2764,8 +2767,12 @@ genericptr_t arg;
         override_vision =
             (Is_waterlevel(&u.uz) || Is_airlevel(&u.uz)) && detecting(func);
 
-        if (range > MAX_RADIUS || range < 1)
-            panic("do_clear_area:  illegal range %d", range);
+		if (range > MAX_RADIUS || range < 1)
+		{
+			panic("do_clear_area:  illegal range %d", range);
+			return;
+		}
+
         if (vision_full_recalc)
             vision_recalc(0); /* recalc vision if dirty */
         limits = circle_ptr(range);

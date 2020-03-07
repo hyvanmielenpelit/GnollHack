@@ -384,7 +384,7 @@ dlb *fp;
     (void) dlb_fgets(line, sizeof line, fp);
     if (sscanf(line, "%5d\n", &cnt) == 1 && cnt > 0) {
         oracle_cnt = (unsigned) cnt;
-        oracle_loc = (unsigned long *) alloc((unsigned) cnt * sizeof(long));
+        oracle_loc = (unsigned long *) alloc((size_t)cnt * sizeof(long));
         for (i = 0; i < cnt; i++) {
             (void) dlb_fgets(line, sizeof line, fp);
             (void) sscanf(line, "%5lx\n", &oracle_loc[i]);
@@ -416,7 +416,7 @@ int fd;
 {
     mread(fd, (genericptr_t) &oracle_cnt, sizeof oracle_cnt);
     if (oracle_cnt) {
-        oracle_loc = (unsigned long *) alloc(oracle_cnt * sizeof(long));
+        oracle_loc = (unsigned long *) alloc((size_t)oracle_cnt * sizeof(long));
         mread(fd, (genericptr_t) oracle_loc, oracle_cnt * sizeof(long));
         oracle_flg = 1; /* no need to call init_oracles() */
     }

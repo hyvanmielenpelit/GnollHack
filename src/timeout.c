@@ -2653,7 +2653,10 @@ anything *arg;
 	timer_element* gnu;
 
 	if (func_index < 0 || func_index >= NUM_TIME_FUNCS)
+	{
 		panic("start_timer");
+		return FALSE;
+	}
 
 	gnu = (timer_element*)alloc(sizeof(timer_element));
 	(void)memset((genericptr_t)gnu, 0, sizeof(timer_element));
@@ -3244,28 +3247,44 @@ boolean ghostly;
         if (curr->needs_fixup) {
             if (curr->kind == TIMER_OBJECT) {
                 if (ghostly) {
-                    if (!lookup_id_mapping(curr->arg.a_uint, &nid))
-                        panic("relink_timers 1");
+					if (!lookup_id_mapping(curr->arg.a_uint, &nid))
+					{
+						panic("relink_timers 1");
+						return;
+					}
                 } else
                     nid = curr->arg.a_uint;
                 curr->arg.a_obj = find_oid(nid);
-                if (!curr->arg.a_obj)
-                    panic("cant find o_id %d", nid);
+				if (!curr->arg.a_obj)
+				{
+					panic("cant find o_id %d", nid);
+					return;
+				}
                 curr->needs_fixup = 0;
             } else if (curr->kind == TIMER_MONSTER) {
 //				panic("relink_timers: no monster timer implemented");
 				if (ghostly) {
 					if (!lookup_id_mapping(curr->arg.a_uint, &nid))
+					{
 						panic("relink_timers 1");
+						return;
+					}
 				}
 				else
 					nid = curr->arg.a_uint;
 				curr->arg.a_monst = find_mid_ew(nid);
 				if (!curr->arg.a_monst)
+				{
 					panic("cant find m_id %d", nid);
+					return;
+				}
 				curr->needs_fixup = 0;
-			} else
-                panic("relink_timers 2");
+			}
+			else
+			{
+				panic("relink_timers 2");
+				return;
+			}
         }
     }
 }

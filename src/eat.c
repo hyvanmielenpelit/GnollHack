@@ -2489,11 +2489,12 @@ eatspecial()
 /* NOTE: the order of these words exactly corresponds to the
    order of oc_material values #define'd in objclass.h. */
 static const char *foodwords[] = {
-    "meal",    "liquid",  "wax",       "food", "meat",     "paper",
-    "cloth",   "leather", "wood",      "bone", "scale",    "metal",
-    "metal",   "metal",   "silver",    "gold", "platinum", "mithril",
-    "plastic", "glass",   "rich food", "stone"
+    "meal",    "liquid",  "wax",       "food",  "meat",       "food",       "paper",
+    "cloth",   "silk",    "leather",   "wood",  "bone",       "scale",      "metal",
+    "metal",   "copper",  "silver",    "gold",  "platinum",   "orichalcum", "adamantium", "mithril",
+    "plastic", "glass",   "rich food", "stone", "alien food", "void food",  "magic food"
 };
+
 
 STATIC_OVL const char *
 foodword(otmp)

@@ -1774,20 +1774,27 @@ char *str;
     char pattern[256];
     char msgtype[11];
 
-    if (sscanf(str, "%10s \"%255[^\"]\"", msgtype, pattern) == 2) {
+    if (sscanf(str, "%10s \"%255[^\"]\"", msgtype, pattern) == 2) 
+	{
+		msgtype[10] = '\0';
         int typ = -1;
         int i;
 
         for (i = 0; i < SIZE(msgtype_names); i++)
-            if (!strncmpi(msgtype_names[i].name, msgtype, strlen(msgtype))) {
+            if (!strncmpi(msgtype_names[i].name, msgtype, strlen(msgtype))) 
+			{
                 typ = msgtype_names[i].msgtyp;
                 break;
             }
+
         if (typ != -1)
             return msgtype_add(typ, pattern);
         else
             config_error_add("Unknown message type '%s'", msgtype);
-    } else {
+
+    } 
+	else 
+	{
         config_error_add("Malformed MSGTYPE");
     }
     return FALSE;
@@ -4646,20 +4653,31 @@ doset() /* changing options via menu by Per Liboriussen */
                 (void) special_handling("autopickup_exception", setinitial,
                                         fromfile);
 #ifdef STATUS_HILITES
-            } else if (opt_indx == OPT_OTHER_STATHILITE) {
-                if (!status_hilite_menu()) {
+            } 
+			else if (opt_indx == OPT_OTHER_STATHILITE)
+			{
+                if (!status_hilite_menu())
+				{
                     pline("Bad status hilite(s) specified.");
-                } else {
+                } 
+				else 
+				{
                     if (wc2_supported("hilite_status"))
                         preference_update("hilite_status");
                 }
 #endif
-            } else if (opt_indx == OPT_OTHER_MENUCOLOR) {
+            } 
+			else if (opt_indx == OPT_OTHER_MENUCOLOR) 
+			{
                     (void) special_handling("menu_colors", setinitial,
                                             fromfile);
-            } else if (opt_indx == OPT_OTHER_MSGTYPE) {
+            } 
+			else if (opt_indx == OPT_OTHER_MSGTYPE) 
+			{
                     (void) special_handling("msgtype", setinitial, fromfile);
-            } else if (opt_indx < boolcount) {
+            } 
+			else if (opt_indx < boolcount) 
+			{
                 /* boolean option */
                 Sprintf(buf, "%s%s", *boolopt[opt_indx].addr ? "!" : "",
                         boolopt[opt_indx].name);
@@ -6270,7 +6288,7 @@ const char *str;
     char *s;
 
     if (!buf)
-        *(buf = (char *) alloc(BUFSZ)) = '\0';
+        *(buf = (char *) alloc((size_t)BUFSZ)) = '\0';
 
     if (!*str) {
         s = eos(buf);

@@ -483,7 +483,7 @@ int alloc_incr;
 {
     static libdir zerolibdir;
     int i = 0, newlimit = *ldlimit_p + alloc_incr;
-    libdir *newld = (libdir *) alloc(newlimit * sizeof *newld);
+    libdir *newld = (libdir *) alloc((size_t)newlimit * sizeof *newld);
 
     if (*ld_p) {
         for (; i < *ldlimit_p; ++i)

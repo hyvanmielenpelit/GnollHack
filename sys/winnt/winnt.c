@@ -352,7 +352,8 @@ char *buf;
     char *tmp = buf;
     HGLOBAL hglbCopy; 
     WCHAR *w, w2[2];
-    int cc, rc, abytes;
+	size_t cc;
+	size_t rc, abytes;
     LPWSTR lpwstrCopy;
     HANDLE hresult;
 
@@ -361,7 +362,7 @@ char *buf;
  
     cc = strlen(buf);
     /* last arg=0 means "tell me the size of the buffer that I need" */
-    rc = MultiByteToWideChar(GetConsoleOutputCP(), 0, buf, -1, w2, 0);
+    rc = (size_t)MultiByteToWideChar(GetConsoleOutputCP(), 0, buf, -1, w2, 0);
     if (!rc) return;
 
     abytes = rc * sizeof(WCHAR);
@@ -394,6 +395,8 @@ char *buf;
     lpwstrCopy = (LPWSTR)GlobalLock(hglbCopy);
     /* Housekeeping need: +GlobalUnlock(hglbCopy), GlobalFree(hglbCopy),
                             CloseClipboard(), free(w) */
+	if (!lpwstrCopy)
+		return;
 
     memcpy(lpwstrCopy, w, abytes);
     GlobalUnlock(hglbCopy);

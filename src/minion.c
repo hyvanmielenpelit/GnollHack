@@ -872,8 +872,11 @@ boolean fromspell;
 			mtmp->mhp = mtmp->mhpmax;
             if ((otmp = select_hwep(mtmp)) == 0) {
                 otmp = mksobj(SILVER_SABER, FALSE, FALSE, FALSE);
-                if (mpickobj(mtmp, otmp))
-                    panic("merged weapon?");
+				if (mpickobj(mtmp, otmp))
+				{
+					panic("merged weapon?");
+					return;
+				}
             }
             bless(otmp);
             if (otmp->spe < 4)

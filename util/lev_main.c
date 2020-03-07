@@ -60,7 +60,7 @@
 
 #define ERR (-1)
 
-#define NewTab(type, size) (type **) alloc(sizeof(type *) * size)
+#define NewTab(type, size) (type **) alloc(sizeof(type *) * (size_t)size)
 #define Free(ptr) \
     if (ptr)      \
         free((genericptr_t)(ptr))
@@ -834,7 +834,7 @@ struct lc_funcdefs *f;
 {
     int i = 0;
     struct lc_funcdefs_parm *fp = f->params;
-    char *tmp = (char *) alloc((f->n_params) + 1);
+    char *tmp = (char *) alloc(((size_t)f->n_params) + 1);
 
     if (!tmp)
         return NULL;
@@ -1070,7 +1070,7 @@ struct opvar *ov;
         } break;
         case SPOVAR_VARIABLE:
         case SPOVAR_STRING: {
-            int len = strlen(ov->vardata.str);
+            size_t len = strlen(ov->vardata.str);
             tmpov->spovartyp = ov->spovartyp;
             tmpov->vardata.str = (char *) alloc(len + 1);
             (void) memcpy((genericptr_t) tmpov->vardata.str,
@@ -1348,7 +1348,7 @@ genericptr_t dat;
     if ((opc < 0) || (opc >= MAX_SP_OPCODES))
         lc_error("Unknown opcode '%ld'", VA_PASS1((long) opc));
 
-    tmp = (_opcode *) alloc(sizeof(_opcode) * (nop + 1));
+    tmp = (_opcode *) alloc(sizeof(_opcode) * ((size_t)nop + 1));
     if (!tmp) { /* lint suppression */
         /*NOTREACHED*/
 #if 0
@@ -1379,12 +1379,12 @@ scan_map(map, sp)
 char *map;
 sp_lev *sp;
 {
-    register int i, len;
+	size_t i, len;
     register char *s1, *s2;
-    int max_len = 0;
-    int max_hig = 0;
+    size_t max_len = 0;
+    size_t max_hig = 0;
     char *tmpmap[MAP_Y_LIM+1];
-    int dx, dy;
+    size_t dx, dy;
     char *mbuf;
 
     /* First, strip out digits 0-9 (line numbering) */
@@ -1398,10 +1398,10 @@ sp_lev *sp;
     while (s1 && *s1) {
         s2 = index(s1, '\n');
         if (s2) {
-            len = (int) (s2 - s1);
+            len = (s2 - s1);
             s1 = s2 + 1;
         } else {
-            len = (int) strlen(s1);
+            len = strlen(s1);
             s1 = (char *) 0;
         }
         if (len > max_len)
@@ -1415,15 +1415,16 @@ sp_lev *sp;
         tmpmap[max_hig] = (char *) alloc(max_len);
         s1 = index(map, '\n');
         if (s1) {
-            len = (int) (s1 - map);
+            len = (s1 - map);
             s1++;
         } else {
-            len = (int) strlen(map);
+            len = strlen(map);
             s1 = map + len;
         }
         for (i = 0; i < len; i++)
             if ((tmpmap[max_hig][i] = what_map_char(map[i]))
-                == INVALID_TYPE) {
+                == INVALID_TYPE)
+			{
                 lc_warning(
                 "Invalid character '%ld' @ (%ld, %ld) - replacing with stone",
                            VA_PASS3((long) map[i], (long) max_hig, (long) i));
@@ -1498,8 +1499,11 @@ sp_lev *maze;
 
         Write(fd, &(tmpo.opcode), sizeof(tmpo.opcode));
 
-        if (tmpo.opcode < SPO_NULL || tmpo.opcode >= MAX_SP_OPCODES)
-            panic("write_maze: unknown opcode (%d).", tmpo.opcode);
+		if (tmpo.opcode < SPO_NULL || tmpo.opcode >= MAX_SP_OPCODES)
+		{
+			panic("write_maze: unknown opcode (%d).", tmpo.opcode);
+			return FALSE;
+		}
 
         if (tmpo.opcode == SPO_PUSH) {
             genericptr_t opdat = tmpo.opdat;
@@ -1533,9 +1537,14 @@ sp_lev *maze;
                 default:
                     panic("write_maze: unknown data type (%d).",
                           ov->spovartyp);
+					return FALSE;
                 }
-            } else
-                panic("write_maze: PUSH with no data.");
+            }
+			else
+			{
+				panic("write_maze: PUSH with no data.");
+				return FALSE;
+			}
         } else {
             /* sanity check */
             genericptr_t opdat = tmpo.opdat;
@@ -1584,8 +1593,11 @@ sp_lev *lvl;
     if (fout < 0)
         return FALSE;
 
-    if (!lvl)
-        panic("write_level_file");
+	if (!lvl)
+	{
+		panic("write_level_file");
+		return FALSE;
+	}
 
     if (be_verbose)
         fprintf(stdout, "File: '%s', opcodes: %ld\n", lbuf, lvl->n_opcodes);

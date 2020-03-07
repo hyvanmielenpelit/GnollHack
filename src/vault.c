@@ -1002,8 +1002,11 @@ register struct monst *grd;
 
     if ((nx != gx || ny != gy) || (grd->mx != gx || grd->my != gy)) {
         fcp = &(egrd->fakecorr[egrd->fcend]);
-        if (egrd->fcend++ == FCSIZ)
-            panic("fakecorr overflow");
+		if (egrd->fcend++ == FCSIZ)
+		{
+			panic("fakecorr overflow");
+			return 0;
+		}
         fcp->fx = nx;
         fcp->fy = ny;
         fcp->ftyp = typ;

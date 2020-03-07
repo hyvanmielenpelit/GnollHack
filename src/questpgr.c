@@ -83,8 +83,7 @@ long hdr_offset;
 
     (void) dlb_fseek(msg_file, hdr_offset, SEEK_SET);
     Fread(&n_msgs, sizeof(int), 1, msg_file);
-    msg_list = (struct qtmsg *) alloc((unsigned) (n_msgs + 1)
-                                      * sizeof (struct qtmsg));
+    msg_list = (struct qtmsg *) alloc(((size_t)n_msgs + 1) * sizeof (struct qtmsg));
 
     /*
      * Load up the list.
@@ -104,8 +103,11 @@ load_qtlist()
     long qt_offsets[N_HDR];
 
     msg_file = dlb_fopen(QTEXT_FILE, RDBMODE);
-    if (!msg_file)
-        panic("CANNOT OPEN QUEST TEXT FILE %s.", QTEXT_FILE);
+	if (!msg_file)
+	{
+		panic("CANNOT OPEN QUEST TEXT FILE %s.", QTEXT_FILE);
+		return;
+	}
 
     /*
      * Read in the number of classes, then the ID's & offsets for
@@ -507,8 +509,11 @@ char *in_line, *out_line;
             break;
         }
     }
-    if (cc > &out_line[BUFSZ-1])
-        panic("convert_line: overflow");
+	if (cc > & out_line[BUFSZ - 1])
+	{
+		panic("convert_line: overflow");
+		return;
+	}
     *cc = 0;
     return;
 }

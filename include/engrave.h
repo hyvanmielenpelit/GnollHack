@@ -23,7 +23,7 @@ struct engr {
 };
 
 #define newengr(lth) \
-    (struct engr *) alloc((unsigned)(lth) + sizeof(struct engr))
+    (struct engr *) alloc((size_t)(lth) + sizeof(struct engr))
 #define dealloc_engr(engr) free((genericptr_t)(engr))
 
 #endif /* ENGRAVE_H */

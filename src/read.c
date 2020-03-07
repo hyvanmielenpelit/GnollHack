@@ -2803,11 +2803,14 @@ struct obj *sobj;
     /* KMH -- Punishment is still okay when you are riding */
     if (!reuse_ball)
         You("are being punished for your misbehavior!");
-    if (Punished) {
+
+    if (Punished)
+	{
         Your("iron ball gets heavier.");
         uball->owt += IRON_BALL_W_INCR * (1 + sobj->cursed);
         return;
     }
+
     if (amorphous(youmonst.data) || is_whirly(youmonst.data)
         || unsolid(youmonst.data) || noncorporeal(youmonst.data)) {
         if (!reuse_ball) {
@@ -2823,7 +2826,9 @@ struct obj *sobj;
         setworn(mkobj(BALL_CLASS, TRUE, FALSE), W_BALL);
     else
         setworn(reuse_ball, W_BALL);
-    uball->spe = 1; /* special ball (see save) */
+
+	if(Punished) /* Check that punishment succeeded */
+	    uball->spe = 1; /* special ball (see save) */
 
     /*
      *  Place ball & chain if not swallowed.  If swallowed, the ball & chain

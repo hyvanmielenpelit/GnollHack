@@ -116,16 +116,22 @@ mswin_init_status_window()
                        width,   /* window width */
                        height,  /* window height */
                        GetNHApp()->hMainWnd, NULL, GetNHApp()->hApp, NULL);
-    if (!ret)
-        panic("Cannot create status window");
+	if (!ret)
+	{
+		panic("Cannot create status window");
+		return (HWND)0;
+	}
 
     /* Set window caption */
     SetWindowText(ret, "Status");
 
     /* create window data */
     data = (PNHStatusWindow) malloc(sizeof(NHStatusWindow));
-    if (!data)
-        panic("out of memory");
+	if (!data)
+	{
+		panic("out of memory");
+		return (HWND)0;
+	}
 
     ZeroMemory(data, sizeof(NHStatusWindow));
     SetWindowLongPtr(ret, GWLP_USERDATA, (LONG_PTR) data);

@@ -100,7 +100,7 @@ schar bg_typ, fg_typ;
         }
 }
 
-#define new_loc(i, j) *(new_locations + ((j) * (WIDTH + 1)) + (i))
+#define new_loc(i, j) *(new_locations + (((size_t)j) * (size_t)(WIDTH + 1)) + ((size_t)i))
 
 STATIC_OVL void
 pass_two(bg_typ, fg_typ)
@@ -257,10 +257,12 @@ wallify_map()
 
     for (x = 1; x < COLNO; x++)
         for (y = 0; y < ROWNO; y++)
-            if (levl[x][y].typ == STONE) {
+            if (levl[x][y].typ == STONE) 
+			{
                 for (yy = y - 1; yy <= y + 1; yy++)
                     for (xx = x - 1; xx <= x + 1; xx++)
-                        if (isok(xx, yy) && levl[xx][yy].typ == ROOM) {
+                        if (isok(xx, yy) && levl[xx][yy].typ == ROOM) 
+						{
                             if (yy != y)
                                 levl[x][y].typ = HWALL;
                             else
@@ -460,7 +462,7 @@ lev_init *init_lev;
     if (lit < 0)
         lit = (rnd(1 + abs(depth(&u.uz))) < 11 && rn2(77)) ? 1 : 0;
 
-    new_locations = (char *) alloc((WIDTH + 1) * HEIGHT);
+    new_locations = (char *) alloc((size_t)((WIDTH + 1) * HEIGHT));
 
     init_map(bg_typ);
     init_fill(bg_typ, fg_typ);

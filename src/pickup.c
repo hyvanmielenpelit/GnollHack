@@ -797,7 +797,7 @@ menu_item **pick_list; /* list of objects and counts to pick up */
     }
 
     if (n) {
-        *pick_list = pi = (menu_item *) alloc(sizeof (menu_item) * n);
+        *pick_list = pi = (menu_item *) alloc(sizeof (menu_item) * (size_t)n);
         for (n = 0, curr = olist; curr; curr = FOLLOW(curr, follow)) {
             if (autopick_testobj(curr, FALSE)) {
                 pi[n].item.a_obj = curr;
@@ -1249,6 +1249,7 @@ struct obj *container, *obj;
             break;
     if (!*prev) {
         panic("delta_cwt: obj not inside container?");
+		return 0;
     } else {
         /* temporarily remove the object and calculate resulting weight */
         *prev = obj->nobj;
@@ -2347,8 +2348,11 @@ register struct obj *obj;
             useup(current_container);
         else if (obj_here(current_container, u.ux, u.uy))
             useupf(current_container, current_container->quan);
-        else
-            panic("in_container:  bag not found.");
+		else
+		{
+			panic("in_container:  bag not found.");
+			return 0;
+		}
 
         losehp(adjust_damage(d(6, 6), (struct monst*)0, &youmonst, AD_PHYS, TRUE), "magical explosion", KILLED_BY_AN);
         current_container = 0; /* baggone = TRUE; */

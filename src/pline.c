@@ -10,7 +10,7 @@ static unsigned pline_flags = 0;
 static char prevmsg[BUFSZ];
 
 static void FDECL(putmesg, (const char *));
-static char *FDECL(You_buf, (int));
+static char *FDECL(You_buf, (size_t));
 #if defined(MSGHANDLER) && (defined(POSIX_TYPES) || defined(__GNUC__))
 static void FDECL(execplinehandler, (const char *));
 #endif
@@ -246,17 +246,17 @@ VA_DECL(const char *, line)
 
 /* work buffer for You(), &c and verbalize() */
 static char *you_buf = 0;
-static int you_buf_siz = 0;
+static size_t you_buf_siz = 0;
 
 static char *
 You_buf(siz)
-int siz;
+size_t siz;
 {
     if (siz > you_buf_siz) {
         if (you_buf)
             free((genericptr_t) you_buf);
         you_buf_siz = siz + 10;
-        you_buf = (char *) alloc((unsigned) you_buf_siz);
+        you_buf = (char *) alloc(you_buf_siz);
     }
     return you_buf;
 }
@@ -271,7 +271,7 @@ free_youbuf()
 
 /* `prefix' must be a string literal, not a pointer */
 #define YouPrefix(pointer, prefix, text) \
-    Strcpy((pointer = You_buf((int) (strlen(text) + sizeof prefix))), prefix)
+    Strcpy((pointer = You_buf(strlen(text) + sizeof prefix)), prefix)
 
 #define YouMessage(pointer, prefix, text) \
     strcat((YouPrefix(pointer, prefix, text), pointer), text)
@@ -402,7 +402,7 @@ VA_DECL(const char *, line)
 
     VA_START(line);
     VA_INIT(line, const char *);
-    tmp = You_buf((int) strlen(line) + sizeof "\"\"");
+    tmp = You_buf(strlen(line) + sizeof "\"\"");
     Strcpy(tmp, "\"");
     Strcat(tmp, line);
     Strcat(tmp, "\"");
@@ -474,15 +474,21 @@ VA_DECL(const char *, s)
 
     VA_START(s);
     VA_INIT(s, const char *);
-    if (program_state.in_impossible)
-        panic("impossible called impossible");
+	if (program_state.in_impossible)
+	{
+		panic("impossible called impossible");
+		return;
+	}
 
     program_state.in_impossible = 1;
     Vsprintf(pbuf, s, VA_ARGS);
     pbuf[BUFSZ - 1] = '\0'; /* sanity */
     paniclog("impossible", pbuf);
-    if (iflags.debug_fuzzer)
-        panic("%s", pbuf);
+	if (iflags.debug_fuzzer)
+	{
+		panic("%s", pbuf);
+		return;
+	}
     pline("%s", VA_PASS1(pbuf));
     /* reuse pbuf[] */
     Strcpy(pbuf, "Program in disorder!");

@@ -132,25 +132,40 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     _GnollHack_app.hMainWnd = NULL;
     _GnollHack_app.hPopupWnd = NULL;
     _GnollHack_app.bmpTiles = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_TILES));
-    if (_GnollHack_app.bmpTiles == NULL)
-        panic("cannot load tiles bitmap");
+	if (_GnollHack_app.bmpTiles == NULL)
+	{
+		panic("cannot load tiles bitmap");
+		return 0;
+	}
     _GnollHack_app.bmpPetMark =
         LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_PETMARK));
-    if (_GnollHack_app.bmpPetMark == NULL)
-        panic("cannot load pet mark bitmap");
+	if (_GnollHack_app.bmpPetMark == NULL)
+	{
+		panic("cannot load pet mark bitmap");
+		return 0;
+	}
 #ifdef USE_PILEMARK
     _GnollHack_app.bmpPileMark =
         LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_PILEMARK));
-    if (_GnollHack_app.bmpPileMark == NULL)
-        panic("cannot load pile mark bitmap");
+	if (_GnollHack_app.bmpPileMark == NULL)
+	{
+		panic("cannot load pile mark bitmap");
+		return 0;
+	}
 #endif
     _GnollHack_app.bmpRip = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_RIP));
-    if (_GnollHack_app.bmpRip == NULL)
-        panic("cannot load rip bitmap");
+	if (_GnollHack_app.bmpRip == NULL)
+	{
+		panic("cannot load rip bitmap");
+		return 0;
+	}
     _GnollHack_app.bmpSplash =
         LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_SPLASH));
-    if (_GnollHack_app.bmpSplash == NULL)
-        panic("cannot load splash bitmap");
+	if (_GnollHack_app.bmpSplash == NULL)
+	{
+		panic("cannot load splash bitmap");
+		return 0;
+	}
     _GnollHack_app.bmpMapTiles = _GnollHack_app.bmpTiles;
     _GnollHack_app.mapTile_X = TILE_X;
     _GnollHack_app.mapTile_Y = TILE_Y;
@@ -183,6 +198,7 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
                 "For further information, refer to the installation notes at",
                 INSTALL_NOTES);
         panic(buf);
+		return 0;
     }
     if (major < MIN_COMCTLMAJOR
         || (major == MIN_COMCTLMAJOR && minor < MIN_COMCTLMINOR)) {
@@ -193,7 +209,8 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
                 "For further information, refer to the installation notes at",
                 INSTALL_NOTES);
         panic(buf);
-    }
+		return 0;
+	}
     ZeroMemory(&InitCtrls, sizeof(InitCtrls));
     InitCtrls.dwSize = sizeof(InitCtrls);
     InitCtrls.dwICC = ICC_LISTVIEW_CLASSES;

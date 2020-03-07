@@ -102,7 +102,7 @@ int nrect;
         reg->bounding_box.hy = 0;
     }
     reg->nrects = nrect;
-    reg->rects = (nrect > 0) ? (NhRect *) alloc(nrect * sizeof (NhRect)) : 0;
+    reg->rects = (nrect > 0) ? (NhRect *) alloc((size_t)nrect * sizeof (NhRect)) : 0;
     for (i = 0; i < nrect; i++) {
         if (rects[i].lx < reg->bounding_box.lx)
             reg->bounding_box.lx = rects[i].lx;
@@ -145,7 +145,7 @@ NhRect *rect;
 {
     NhRect *tmp_rect;
 
-    tmp_rect = (NhRect *) alloc((reg->nrects + 1) * sizeof (NhRect));
+    tmp_rect = (NhRect *) alloc(((size_t)reg->nrects + 1) * sizeof (NhRect));
     if (reg->nrects > 0) {
         (void) memcpy((genericptr_t) tmp_rect, (genericptr_t) reg->rects,
                       reg->nrects * sizeof (NhRect));
@@ -297,7 +297,7 @@ NhRegion *reg;
     if (max_regions <= n_regions) {
         tmp_reg = regions;
         regions =
-            (NhRegion **) alloc((max_regions + 10) * sizeof (NhRegion *));
+            (NhRegion **) alloc(((size_t)max_regions + 10) * sizeof (NhRegion *));
         if (max_regions > 0) {
             (void) memcpy((genericptr_t) regions, (genericptr_t) tmp_reg,
                           max_regions * sizeof (NhRegion *));
@@ -691,7 +691,7 @@ boolean ghostly; /* If a bones file restore */
     mread(fd, (genericptr_t) &n_regions, sizeof(n_regions));
     max_regions = n_regions;
     if (n_regions > 0)
-        regions = (NhRegion **) alloc(sizeof(NhRegion *) * n_regions);
+        regions = (NhRegion **) alloc(sizeof(NhRegion *) * (size_t)n_regions);
     for (i = 0; i < n_regions; i++) {
         regions[i] = (NhRegion *) alloc(sizeof(NhRegion));
         mread(fd, (genericptr_t) &regions[i]->bounding_box, sizeof(NhRect));
@@ -699,7 +699,7 @@ boolean ghostly; /* If a bones file restore */
 
         if (regions[i]->nrects > 0)
             regions[i]->rects =
-                (NhRect *) alloc(sizeof(NhRect) * regions[i]->nrects);
+                (NhRect *) alloc(sizeof(NhRect) * (size_t)regions[i]->nrects);
         for (j = 0; j < regions[i]->nrects; j++)
             mread(fd, (genericptr_t) &regions[i]->rects[j], sizeof(NhRect));
         mread(fd, (genericptr_t) &regions[i]->attach_2_u, sizeof(boolean));
@@ -707,7 +707,7 @@ boolean ghostly; /* If a bones file restore */
 
         mread(fd, (genericptr_t) &n, sizeof n);
         if (n > 0) {
-            msg_buf = (char *) alloc(n + 1);
+            msg_buf = (char *) alloc((size_t)n + 1);
             mread(fd, (genericptr_t) msg_buf, n);
             msg_buf[n] = '\0';
             regions[i]->enter_msg = (const char *) msg_buf;
@@ -743,7 +743,7 @@ boolean ghostly; /* If a bones file restore */
         mread(fd, (genericptr_t) &regions[i]->n_monst, sizeof(short));
         if (regions[i]->n_monst > 0)
             regions[i]->monsters =
-                (unsigned *) alloc(sizeof(unsigned) * regions[i]->n_monst);
+                (unsigned *) alloc(sizeof(unsigned) * (size_t)regions[i]->n_monst);
         else
             regions[i]->monsters = (unsigned int *) 0;
         regions[i]->max_monst = regions[i]->n_monst;

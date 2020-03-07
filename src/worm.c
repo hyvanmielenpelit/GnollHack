@@ -601,17 +601,26 @@ struct monst *worm;
 		return;
 	}
 
-    if (!worm->wormno)
-        panic("not a worm?!");
+	if (!worm->wormno)
+	{
+		panic("not a worm?!");
+		return;
+	}
 
     curr = wtails[worm->wormno];
 
     while (curr != wheads[worm->wormno]) {
         if (curr->wx) {
-            if (!isok(curr->wx, curr->wy))
-                panic("worm seg not isok");
-            if (level.monsters[curr->wx][curr->wy] != worm)
-                panic("worm not at seg location");
+			if (!isok(curr->wx, curr->wy))
+			{
+				panic("worm seg not isok");
+				return;
+			}
+			if (level.monsters[curr->wx][curr->wy] != worm)
+			{
+				panic("worm not at seg location");
+				return;
+			}
         }
         curr = curr->nseg;
     }

@@ -493,8 +493,11 @@ int mode;
     if (iflags.purge_monsters)
         dmonsfree();
 
-    if (fd < 0)
-        panic("Save on bad file!"); /* impossible */
+	if (fd < 0)
+	{
+		panic("Save on bad file!"); /* impossible */
+		return;
+	}
 #ifdef MFLOPPY
     count_only = (mode & COUNT_SAVE);
 #endif

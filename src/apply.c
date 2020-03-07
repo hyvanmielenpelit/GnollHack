@@ -2304,8 +2304,12 @@ struct obj *obj;
             if (idx >= 0 && idx < A_MAX) {
                 ABASE(idx) += 1;
                 did_attr++;
-            } else
-                panic("use_unicorn_horn: bad trouble? (%d)", idx);
+            }
+			else
+			{
+				panic("use_unicorn_horn: bad trouble? (%d)", idx);
+				return;
+			}
             break;
         }
     }

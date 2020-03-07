@@ -148,8 +148,11 @@ register int fd;
 
     sp_levchn = (s_level *) 0;
     mread(fd, (genericptr_t) &cnt, sizeof(int));
-    for (; cnt > 0; cnt--) {
+    for (; cnt > 0; cnt--) 
+	{
         tmplev = (s_level *) alloc(sizeof(s_level));
+		if (!tmplev)
+			return;
         mread(fd, (genericptr_t) tmplev, sizeof(s_level));
         if (!sp_levchn)
             sp_levchn = tmplev;
@@ -257,7 +260,7 @@ struct obj *otmp;
         /* omailcmd - feedback mechanism for scroll of mail */
         mread(fd, (genericptr_t) &buflen, sizeof(buflen));
         if (buflen > 0) {
-            char *omailcmd = (char *) alloc(buflen);
+            char *omailcmd = (char *) alloc((size_t)buflen);
 
             mread(fd, (genericptr_t) omailcmd, buflen);
             new_omailcmd(otmp, omailcmd);
@@ -281,6 +284,9 @@ boolean ghostly, frozen;
             break;
 
         otmp = newobj();
+		if (!otmp)
+			return (struct obj*)0;
+
         restobj(fd, otmp);
         if (!first)
             first = otmp;
@@ -302,14 +308,17 @@ boolean ghostly, frozen;
             otmp->age = monstermoves - omoves + otmp->age;
 
         /* get contents of a container or statue */
-        if (Has_contents(otmp)) {
+        if (Has_contents(otmp)) 
+		{
             struct obj *otmp3;
 
             otmp->cobj = restobjchn(fd, ghostly, Is_IceBox(otmp));
             /* restore container back pointers */
             for (otmp3 = otmp->cobj; otmp3; otmp3 = otmp3->nobj)
                 otmp3->ocontainer = otmp;
-        } else if (SchroedingersBox(otmp)) {
+        } 
+		else if (SchroedingersBox(otmp)) 
+		{
             struct obj *catcorpse;
 
             /*
@@ -431,6 +440,9 @@ boolean ghostly;
             break;
 
         mtmp = newmonst();
+		if (!mtmp)
+			return (struct monst*) 0;
+
         restmon(fd, mtmp);
         if (!first)
             first = mtmp;
@@ -743,16 +755,22 @@ unsigned int stuckid, steedid;
         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
             if (mtmp->m_id == stuckid)
                 break;
-        if (!mtmp)
-            panic("Cannot find the monster ustuck.");
+		if (!mtmp)
+		{
+			panic("Cannot find the monster ustuck.");
+			return;
+		}
         u.ustuck = mtmp;
     }
     if (steedid) {
         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
             if (mtmp->m_id == steedid)
                 break;
-        if (!mtmp)
-            panic("Cannot find the monster usteed.");
+		if (!mtmp)
+		{
+			panic("Cannot find the monster usteed.");
+			return;
+		}
         u.usteed = mtmp;
         remove_monster(mtmp->mx, mtmp->my);
     }
@@ -775,6 +793,7 @@ xchar ltmp;
         /* BUG: should suppress any attempt to write a panic
            save file if file creation is now failing... */
         panic("restlevelfile: %s", whynot);
+		return 0;
     }
 #ifdef MFLOPPY
     if (!savelev(nfd, ltmp, COUNT_SAVE)) {
@@ -1191,8 +1210,11 @@ boolean ghostly;
                 for (trap = ftrap; trap; trap = trap->ntrap)
                     if (trap->ttyp == MAGIC_PORTAL)
                         break;
-                if (!trap)
-                    panic("getlev: need portal but none found");
+				if (!trap)
+				{
+					panic("getlev: need portal but none found");
+					return;
+				}
                 assign_level(&trap->dst, &ltmp);
                 break;
             }
@@ -1661,6 +1683,7 @@ register unsigned int len;
                 error("Error restoring old game.");
             }
             panic("Error reading level file.");
+			return;
         }
     }
 }

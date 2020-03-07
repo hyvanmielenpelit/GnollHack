@@ -502,7 +502,7 @@ boolean FDECL((*filterfunc), (OBJ_P));
     for (n = 0, o = *olist; o; o = by_nexthere ? o->nexthere : o->nobj)
         ++n;
     /* note: if there is a filter function, this might overallocate */
-    sliarray = (Loot *) alloc((n + 1) * sizeof *sliarray);
+    sliarray = (Loot *) alloc(((size_t)n + 1) * sizeof *sliarray);
 
     /* the 'keep cockatrice corpses' flag is overloaded with sort mode */
     augment_filter = (mode & SORTLOOT_PETRIFY) ? TRUE : FALSE;
@@ -1297,8 +1297,11 @@ struct obj *obj;
 	int oldmc = u.umc;
 
 
-     if (obj->where != OBJ_FREE)
-        panic("addinv: obj not free");
+	if (obj->where != OBJ_FREE)
+	{
+		panic("addinv: obj not free");
+		return (struct obj*)0;
+	}
     /* normally addtobill() clears no_charge when items in a shop are
        picked up, but won't do so if the shop has become untended */
     obj->no_charge = 0; /* should not be set in hero's invent */
@@ -1314,16 +1317,22 @@ struct obj *obj;
        extra to quivered stack is more useful than to wielded one */
     if (uquiver && merged(&uquiver, &obj)) {
         obj = uquiver;
-        if (!obj)
-            panic("addinv: null obj after quiver merge otyp=%d", saved_otyp);
+		if (!obj)
+		{
+			panic("addinv: null obj after quiver merge otyp=%d", saved_otyp);
+			return (struct obj*)0;
+		}
         goto added;
     }
     /* merge if possible; find end of chain in the process */
     for (prev = 0, otmp = invent; otmp; prev = otmp, otmp = otmp->nobj)
         if (merged(&otmp, &obj)) {
             obj = otmp;
-            if (!obj)
-                panic("addinv: null obj after merge otyp=%d", saved_otyp);
+			if (!obj)
+			{
+				panic("addinv: null obj after merge otyp=%d", saved_otyp);
+				return (struct obj*)0;
+			}
             goto added;
         }
     /* didn't merge, so insert into chain */
@@ -4688,7 +4697,7 @@ STATIC_VAR NEARDATA const char oth_symbols[] = { CONTAINED_SYM, '\0' };
 STATIC_VAR NEARDATA const char *oth_names[] = { "Bagged/Boxed items" };
 
 STATIC_VAR NEARDATA char *invbuf = (char *) 0;
-STATIC_VAR NEARDATA unsigned invbufsiz = 0;
+STATIC_VAR NEARDATA size_t invbufsiz = 0;
 
 char *
 let_to_name(let, unpaid, showsym)
@@ -4700,7 +4709,7 @@ boolean unpaid, showsym;
     const char *class_name;
     const char *pos;
     int oclass = (let >= 1 && let < MAXOCLASSES) ? let : 0;
-    unsigned len;
+    size_t len;
 
     if (oclass)
         class_name = names[oclass];

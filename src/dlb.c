@@ -138,7 +138,7 @@ library *lp; /* library pointer to fill in */
         return FALSE;
 
     lp->dir = (libdir *) alloc(lp->nentries * sizeof(libdir));
-    lp->sspace = (char *) alloc(lp->strsize);
+    lp->sspace = (char *) alloc((size_t)lp->strsize);
 
     /* read in each directory entry */
     for (i = 0, sp = lp->sspace; i < lp->nentries; i++) {

@@ -2654,8 +2654,12 @@ struct monst **monst_list; /* &migrating_mons or &mydogs or null */
     boolean on_map = (m_at(mx, my) == mon),
             unhide = (monst_list != 0);
 
-    if (!fmon)
-        panic("relmon: no fmon available.");
+	if (!fmon)
+	{
+		panic("relmon: no fmon available.");
+		return;
+
+	}
 
     if (unhide) {
         /* can't remain hidden across level changes (exception: wizard
@@ -2683,8 +2687,11 @@ struct monst **monst_list; /* &migrating_mons or &mydogs or null */
 
         if (mtmp)
             mtmp->nmon = mon->nmon;
-        else
-            panic("relmon: mon not in list.");
+		else
+		{
+			panic("relmon: mon not in list.");
+			return;
+		}
     }
 
     if (unhide) {
@@ -2781,8 +2788,11 @@ void
 dealloc_monst(mon)
 struct monst *mon;
 {
-    if (mon->nmon)
-        panic("dealloc_monst with nmon");
+	if (mon->nmon)
+	{
+		panic("dealloc_monst with nmon");
+		return;
+	}
     if (mon->mextra)
         dealloc_mextra(mon);
 	if(mon->timed)

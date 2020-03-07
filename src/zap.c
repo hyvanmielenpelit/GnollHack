@@ -1003,9 +1003,11 @@ struct monst* mtmp;
 
 		if (has_property)
 		{
-			char endbuf[BUFSZ] = "";
-			char endbuf2[BUFSZ] = "";
-			
+			char endbuf[BUFSZ];
+			char endbuf2[BUFSZ];
+			strcpy(endbuf, "");
+			strcpy(endbuf2, "");
+
 			if (0 && has_innate)
 			{
 				if (strcmp(endbuf, ""))

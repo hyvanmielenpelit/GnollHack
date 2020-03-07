@@ -514,6 +514,7 @@ plselInitDialog(HWND hWnd)
             lvitem.pszText = NH_A2W(roles[i].name.m, wbuf, BUFSZ);
         if (ListView_InsertItem(data->control_role, &lvitem) == -1) {
             panic("cannot insert menu item");
+			return;
         }
         data->role_count++;
     }
@@ -533,6 +534,7 @@ plselInitDialog(HWND hWnd)
         lvitem.pszText = NH_A2W(races[i].noun, wbuf, BUFSZ);
         if (ListView_InsertItem(data->control_race, &lvitem) == -1) {
             panic("cannot insert menu item");
+			return;
         }
         data->race_count++;
     }

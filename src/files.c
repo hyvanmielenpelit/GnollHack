@@ -644,8 +644,11 @@ int lev, oflag;
         if (lftrack.oflag == oflag) {
             fd = lftrack.fd;
             reslt = lseek(fd, 0L, SEEK_SET);
-            if (reslt == -1L)
-                panic("open_levelfile_exclusively: lseek failed %d", errno);
+			if (reslt == -1L)
+			{
+				panic("open_levelfile_exclusively: lseek failed %d", errno);
+				return 0;
+			}
             lftrack.GnollHack_thinks_it_is_open = TRUE;
         } else {
             really_close();
@@ -1199,8 +1202,8 @@ get_saved_games()
             } while (findnext());
         }
         if (n > 0) {
-            result = (char **) alloc((n + 1) * sizeof(char *)); /* at most */
-            (void) memset((genericptr_t) result, 0, (n + 1) * sizeof(char *));
+            result = (char **) alloc(((size_t)n + 1) * sizeof(char *)); /* at most */
+            (void) memset((genericptr_t) result, 0, ((size_t)n + 1) * sizeof(char *));
             if (findfirst((char *) fq_save)) {
                 j = n = 0;
                 do {
@@ -3874,7 +3877,7 @@ int ifd, ofd;
 
     do {
         nfrom = read(ifd, buf, BUFSIZ);
-        nto = write(ofd, buf, nfrom);
+        nto = write(ofd, buf, min(sizeof(buf)/sizeof(buf[0]), nfrom));
         if (nto != nfrom)
             return FALSE;
     } while (nfrom == BUFSIZ);

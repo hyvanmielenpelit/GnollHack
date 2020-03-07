@@ -127,6 +127,7 @@ mswin_init_map_window()
         NULL);                /* window-creation data */
     if (!hWnd) {
         panic("Cannot create map window");
+		return (HWND)0;
     }
 
     /* Set window caption */
@@ -499,6 +500,7 @@ register_map_window_class()
 
     if (!RegisterClass(&wcex)) {
         panic("cannot register Map window class");
+		return;
     }
 }
 
@@ -740,9 +742,11 @@ onCreate(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
     /* set window data */
     data = (PNHMapWindow) malloc(sizeof(NHMapWindow));
-    if (!data)
-        panic("out of memory");
-
+	if (!data)
+	{
+		panic("out of memory");
+		return;
+	}
     ZeroMemory(data, sizeof(NHMapWindow));
 
     data->hWnd = hWnd;

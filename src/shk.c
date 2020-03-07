@@ -2511,9 +2511,12 @@ STATIC_OVL void
 add_to_billobjs(obj)
 struct obj *obj;
 {
-    if (obj->where != OBJ_FREE)
-        panic("add_to_billobjs: obj not free");
-    if (obj->timed)
+	if (obj->where != OBJ_FREE)
+	{
+		panic("add_to_billobjs: obj not free");
+		return;
+	}
+	if (obj->timed)
         obj_stop_timers(obj);
 
     obj->nobj = billobjs;
@@ -3468,7 +3471,7 @@ long cost;
             tmp_dam->when = monstermoves; /* needed by pay_for_damage() */
             return;
         }
-    tmp_dam = (struct damage *) alloc((unsigned) sizeof *tmp_dam);
+    tmp_dam = (struct damage *) alloc(sizeof *tmp_dam);
     (void) memset((genericptr_t) tmp_dam, 0, sizeof *tmp_dam);
     tmp_dam->when = monstermoves;
     tmp_dam->place.x = x;

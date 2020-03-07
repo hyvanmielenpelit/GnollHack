@@ -240,17 +240,28 @@ do_statusline2()
      * wider displays can still show wider status than the map if the
      * interface supports that.
      */
-    if ((dln - dx) + 1 + hln + 1 + xln + tln + 1 + sln + 1 + cln <= COLNO) {
+    if ((dln - dx) + 1 + hln + 1 + xln + tln + 1 + sln + 1 + cln <= COLNO) 
+	{
         Sprintf(newbot2, "%s %s %s %s %s %s", dloc, hlth, expr, tmmv, skll, cond);
-    } else {
-        if (dln + 1 + hln + 1 + xln + 1 + tln + 1 + cln + 1 > MAXCO) {
+    }
+	else
+	{
+        if (dln + 1 + hln + 1 + xln + 1 + tln + 1 + cln + 1 > MAXCO)
+		{
             panic("bot2: second status line exceeds MAXCO (%u > %d)",
                   (dln + 1 + hln + 1 + xln + 1 + tln + 1 + cln + 1), MAXCO);
-        } else if ((dln - dx) + 1 + hln + 1 + xln + 1 + cln <= COLNO) {
+			return "";
+        } 
+		else if ((dln - dx) + 1 + hln + 1 + xln + 1 + cln <= COLNO) 
+		{
             Sprintf(newbot2, "%s %s %s %s %s", dloc, hlth, expr, cond, tmmv);
-        } else if ((dln - dx) + 1 + hln + 1 + cln <= COLNO) {
+        } 
+		else if ((dln - dx) + 1 + hln + 1 + cln <= COLNO) 
+		{
             Sprintf(newbot2, "%s %s %s %s %s", dloc, hlth, cond, expr, tmmv);
-        } else {
+        }
+		else 
+		{
             Sprintf(newbot2, "%s %s %s %s %s", hlth, cond, dloc, expr, tmmv);
         }
         /* only two or three consecutive spaces available to squeeze out */
@@ -606,9 +617,11 @@ bot_via_windowport()
     int i, idx, cap;
     long money;
 
-    if (!blinit)
-        panic("bot before init.");
-
+	if (!blinit)
+	{
+		panic("bot before init.");
+		return;
+	}
     /* toggle from previous iteration */
     idx = 1 - now_or_before_idx; /* 0 -> 1, 1 -> 0 */
     now_or_before_idx = idx;
@@ -1009,8 +1022,11 @@ boolean reassessment; /* TRUE: just recheck fields w/o other initialization */
         init_blstats();
         (*windowprocs.win_status_init)();
         blinit = TRUE;
-    } else if (!blinit) {
+    }
+	else if (!blinit) 
+	{
         panic("status 'reassess' before init");
+		return;
     }
     for (i = 0; i < MAXBLSTATS; ++i) {
         fld = initblstats[i].fld;
@@ -1080,7 +1096,7 @@ init_blstats()
             blstats[i][j] = initblstats[j];
             blstats[i][j].a = zeroany;
             if (blstats[i][j].valwidth) {
-                blstats[i][j].val = (char *) alloc(blstats[i][j].valwidth);
+                blstats[i][j].val = (char *) alloc((size_t)blstats[i][j].valwidth);
                 blstats[i][j].val[0] = '\0';
             } else
                 blstats[i][j].val = (char *) 0;
@@ -1119,9 +1135,11 @@ struct istat_s *bl1, *bl2;
 
     int anytype, result = 0;
 
-    if (!bl1 || !bl2) {
+    if (!bl1 || !bl2)
+	{
         panic("compare_blstat: bad istat pointer %s, %s",
               fmt_ptr((genericptr_t) bl1), fmt_ptr((genericptr_t) bl2));
+		return 0;
     }
 
     anytype = bl1->anytype;
@@ -1131,6 +1149,7 @@ struct istat_s *bl1, *bl2;
         panic("compare_blstat: invalid pointer %s, %s",
               fmt_ptr((genericptr_t) bl1->a.a_void),
               fmt_ptr((genericptr_t) bl2->a.a_void));
+		return 0;
     }
 
     switch (anytype) {

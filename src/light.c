@@ -277,9 +277,12 @@ int fd, mode, range;
         count = maybe_write_ls(fd, range, FALSE);
         bwrite(fd, (genericptr_t) &count, sizeof count);
         actual = maybe_write_ls(fd, range, TRUE);
-        if (actual != count)
-            panic("counted %d light sources, wrote %d! [range=%d]", count,
-                  actual, range);
+		if (actual != count)
+		{
+			panic("counted %d light sources, wrote %d! [range=%d]", count,
+				actual, range);
+			return;
+		}
     }
 
     if (release_data(mode)) {
@@ -436,23 +439,39 @@ light_sources_sanity_check()
     struct obj *otmp;
     unsigned int auint = 0;
 
-    for (ls = light_base; ls; ls = ls->next) {
-        if (!ls->id.a_monst)
-            panic("insane light source: no id!");
-        if (ls->type == LS_OBJECT) {
+    for (ls = light_base; ls; ls = ls->next)
+	{
+		if (!ls->id.a_monst)
+		{
+			panic("insane light source: no id!");
+			return;
+		}
+        if (ls->type == LS_OBJECT)
+		{
             otmp = (struct obj *) ls->id.a_obj;
 			if(otmp)
 	            auint = otmp->o_id;
-            if (find_oid(auint) != otmp)
-                panic("insane light source: can't find obj #%u!", auint);
-        } else if (ls->type == LS_MONSTER) {
-            mtmp = (struct monst *) ls->id.a_monst;
+			if (find_oid(auint) != otmp)
+			{
+				panic("insane light source: can't find obj #%u!", auint);
+				return;
+			}
+        }
+		else if (ls->type == LS_MONSTER) 
+		{
+			mtmp = (struct monst *) ls->id.a_monst;
 			if(mtmp)
 	            auint = mtmp->m_id;
-            if (find_mid(auint, FM_EVERYWHERE) != mtmp)
-                panic("insane light source: can't find mon #%u!", auint);
-        } else {
+			if (find_mid(auint, FM_EVERYWHERE) != mtmp)
+			{
+				panic("insane light source: can't find mon #%u!", auint);
+				return;
+			}
+        }
+		else 
+		{
             panic("insane light source: bad ls type %d", ls->type);
+			return;
         }
     }
 }

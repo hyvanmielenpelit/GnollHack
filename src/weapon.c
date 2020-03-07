@@ -2041,9 +2041,12 @@ int n; /* number of slots to lose; normally one */
             u.weapon_slots--;
         } else if (u.skills_advanced) {
             skill = u.skill_record[--u.skills_advanced];
-            if (P_SKILL_LEVEL(skill) <= P_UNSKILLED)
-                panic("lose_weapon_skill (%d)", skill);
-            P_SKILL_LEVEL(skill)--; /* drop skill one level */
+			if (P_SKILL_LEVEL(skill) <= P_UNSKILLED)
+			{
+				panic("lose_weapon_skill (%d)", skill);
+				return;
+			}
+			P_SKILL_LEVEL(skill)--; /* drop skill one level */
             /* Lost skill might have taken more than one slot; refund rest. */
             u.weapon_slots = slots_required(skill) - 1;
             /* It might now be possible to advance some other pending

@@ -997,7 +997,7 @@ int lth; /* desired length (caller handles adding 1 for terminator) */
             mon->mextra = newmextra();
         else
             free_mname(mon); /* already has mextra, might also have name */
-        MNAME(mon) = (char *) alloc((unsigned) lth);
+        MNAME(mon) = (char *) alloc((size_t)lth);
     } else {
         /* zero length: the new name is empty; get rid of the old name */
         if (has_mname(mon))
@@ -1022,13 +1022,14 @@ new_umname(mon, lth)
 struct monst* mon;
 int lth; /* desired length (caller handles adding 1 for terminator) */
 {
-	if (lth) {
+	if (lth) 
+	{
 		/* allocate mextra if necessary; otherwise get rid of old name */
 		if (!mon->mextra)
 			mon->mextra = newmextra();
 		else
 			free_umname(mon); /* already has mextra, might also have name */
-		UMNAME(mon) = (char*)alloc((unsigned)lth);
+		UMNAME(mon) = (char*)alloc((size_t)lth);
 	}
 	else {
 		/* zero length: the new name is empty; get rid of the old name */
@@ -1060,7 +1061,7 @@ int lth; /* desired length (caller handles adding 1 for terminator) */
             obj->oextra = newoextra();
         else
             free_oname(obj); /* already has oextra, might also have name */
-        ONAME(obj) = (char *) alloc((unsigned) lth);
+        ONAME(obj) = (char *) alloc((size_t)lth);
     } else {
         /* zero length: the new name is empty; get rid of the old name */
         if (has_oname(obj))
@@ -1106,7 +1107,7 @@ int lth; /* desired length (caller handles adding 1 for terminator) */
 			obj->oextra = newoextra();
 		else
 			free_uoname(obj); /* already has oextra, might also have name */
-		UONAME(obj) = (char*)alloc((unsigned)lth);
+		UONAME(obj) = (char*)alloc((size_t)lth);
 	}
 	else {
 		/* zero length: the new name is empty; get rid of the old name */

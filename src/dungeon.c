@@ -216,9 +216,12 @@ int fd;
     }
 
     mread(fd, (genericptr_t) &count, sizeof(count));
-    if (count >= MAXLINFO)
-        panic("level information count larger (%d) than allocated size",
-              count);
+	if (count >= MAXLINFO)
+	{
+		panic("level information count larger (%d) than allocated size",
+			count);
+		return;
+	}
     mread(fd, (genericptr_t) level_info,
           (unsigned) count * sizeof(struct linfo));
     mread(fd, (genericptr_t) &inv_pos, sizeof inv_pos);
@@ -290,8 +293,11 @@ struct proto_dungeon *pd;
         for (i = 0; i < pd->n_brs; i++)
             if (!strcmp(pd->tmpbranch[i].name, s))
                 break;
-        if (i == pd->n_brs)
-            panic("find_branch: can't find %s", s);
+		if (i == pd->n_brs)
+		{
+			panic("find_branch: can't find %s", s);
+			return 0;
+		}
     } else {
         /* support for level tport by name */
         branch *br;
@@ -764,18 +770,22 @@ init_dungeons()
      */
     if (iflags.window_inited)
         clear_nhwindow(WIN_MAP);
-   if (!check_version(&vers_info, DUNGEON_FILE, TRUE))
-        panic("Dungeon description not valid.");
-
+	if (!check_version(&vers_info, DUNGEON_FILE, TRUE))
+	{
+		panic("Dungeon description not valid.");
+		return;
+	}
     /*
      * Read in each dungeon and transfer the results to the internal
      * dungeon arrays.
      */
     sp_levchn = (s_level *) 0;
     Fread((genericptr_t) &n_dgns, sizeof(int), 1, dgn_file);
-    if (n_dgns >= MAXDUNGEON)
-        panic("init_dungeons: too many dungeons");
-
+	if (n_dgns >= MAXDUNGEON)
+	{
+		panic("init_dungeons: too many dungeons");
+		return;
+	}
     for (i = 0; i < n_dgns; i++) {
         Fread((genericptr_t) &pd.tmpdungeon[i], sizeof(struct tmpdungeon), 1,
               dgn_file);
@@ -885,9 +895,12 @@ init_dungeons()
 
         pd.start = pd.n_levs; /* save starting point */
         pd.n_levs += pd.tmpdungeon[i].levels;
-        if (pd.n_levs > LEV_LIMIT)
-            panic("init_dungeon: too many special levels");
-        /*
+		if (pd.n_levs > LEV_LIMIT)
+		{
+			panic("init_dungeon: too many special levels");
+			return;
+		}
+		/*
          * Read in the prototype special levels.  Don't add generated
          * special levels until they are all placed.
          */
@@ -911,7 +924,7 @@ init_dungeons()
         fflush(stderr);
         getchar();
 #endif
-        for (; pd.start < pd.n_levs; pd.start++)
+        for (; max(0, pd.start) < min(LEV_LIMIT, pd.n_levs); pd.start++)
             if (pd.final_lev[pd.start])
                 add_level(pd.final_lev[pd.start]);
 
@@ -2263,7 +2276,7 @@ int fd;
     mread(fd, (genericptr_t) &load->custom_lth, sizeof load->custom_lth);
     if (load->custom_lth) {
         /* length doesn't include terminator (which isn't saved & restored) */
-        load->custom = (char *) alloc(load->custom_lth + 1);
+        load->custom = (char *) alloc((size_t)load->custom_lth + 1);
         mread(fd, (genericptr_t) load->custom, load->custom_lth);
         load->custom[load->custom_lth] = '\0';
     } else
@@ -2645,7 +2658,7 @@ recalc_mapseen()
                      * For 3.6.0 and earlier, it was always in direct line:
                      * both throne and door on the lower of the two rows.
                      */
-                    for (ty = y - 1; ty <= y + 1; ++ty)
+                    for (ty = max(0, y - 1); ty <= min(ROWNO, y + 1); ++ty)
                         if (isok(tx, ty) && IS_THRONE(levl[tx][ty].typ)) {
                             mptr->flags.ludios = 1;
                             break;

@@ -1503,13 +1503,11 @@ int type;
     }
 
     if (newwin->maxrow) {
-        newwin->data = (char **) alloc(
-                               (unsigned) (newwin->maxrow * sizeof (char *)));
-        newwin->datlen = (short *) alloc(
-                                (unsigned) (newwin->maxrow * sizeof (short)));
+        newwin->data = (char **) alloc(((size_t)newwin->maxrow * sizeof (char *)));
+        newwin->datlen = (short *) alloc(((size_t)newwin->maxrow * sizeof (short)));
         for (i = 0; i < newwin->maxrow; i++) {
             if (newwin->maxcol) { /* WIN_STATUS */
-                newwin->data[i] = (char *) alloc((unsigned) newwin->maxcol);
+                newwin->data[i] = (char *) alloc((size_t)newwin->maxcol);
                 newwin->datlen[i] = (short) newwin->maxcol;
             } else {
                 newwin->data[i] = (char *) 0;
@@ -1855,7 +1853,7 @@ struct WinDesc *cw;
     curr_page = page_lines = 0;
     page_start = page_end = 0;
     msave = cw->morestr; /* save the morestr */
-    cw->morestr = morestr = (char *) alloc((unsigned) QBUFSZ);
+    cw->morestr = morestr = (char *) alloc((size_t)QBUFSZ);
     counting = FALSE;
     count = 0L;
     reset_count = TRUE;
@@ -1900,9 +1898,11 @@ struct WinDesc *cw;
 
         if (!page_start) {
             /* new page to be displayed */
-            if (curr_page < 0 || (cw->npages > 0 && curr_page >= cw->npages))
-                panic("bad menu screen page #%d", curr_page);
-
+			if (curr_page < 0 || (cw->npages > 0 && curr_page >= cw->npages))
+			{
+				panic("bad menu screen page #%d", curr_page);
+				return;
+			}
             /* clear screen */
             if (!cw->offx) { /* if not corner, do clearscreen */
                 if (cw->offy) {
@@ -2311,8 +2311,12 @@ boolean blocking; /* with ttys, all windows are blocking */
     short s_maxcol;
 
     HUPSKIP();
-    if (window == WIN_ERR || (cw = wins[window]) == (struct WinDesc *) 0)
-        panic(winpanicstr, window);
+	if (window == WIN_ERR || (cw = wins[window]) == (struct WinDesc*) 0)
+	{
+		panic(winpanicstr, window);
+		return;
+	}
+
     if (cw->flags & WIN_CANCELLED)
         return;
     ttyDisplay->lastwin = window;
@@ -2785,7 +2789,7 @@ const char *str;
             char **tmp;
 
             cw->rows += 12;
-            tmp = (char **) alloc(sizeof(char *) * (unsigned) cw->rows);
+            tmp = (char **) alloc(sizeof(char *) * (size_t)cw->rows);
             for (i = 0; i < cw->maxrow; i++)
                 tmp[i] = cw->data[i];
             if (cw->data)
@@ -2798,7 +2802,7 @@ const char *str;
         if (cw->data[cw->cury])
             free((genericptr_t) cw->data[cw->cury]);
         n0 = (long) strlen(str) + 1L;
-        ob = cw->data[cw->cury] = (char *) alloc((unsigned) n0 + 1);
+        ob = cw->data[cw->cury] = (char *) alloc((size_t)n0 + 1);
         *ob++ = (char) (attr + 1); /* avoid nuls, for convenience */
         Strcpy(ob, str);
 
@@ -3016,10 +3020,12 @@ const char *prompt; /* prompt to for menu */
     int lmax, n;
     char menu_ch;
 
-    if (window == WIN_ERR || (cw = wins[window]) == (struct WinDesc *) 0
-        || cw->type != NHW_MENU)
-        panic(winpanicstr, window);
-
+	if (window == WIN_ERR || (cw = wins[window]) == (struct WinDesc*) 0
+		|| cw->type != NHW_MENU)
+	{
+		panic(winpanicstr, window);
+		return;
+	}
     /* Reverse the list so that items are in correct order. */
     cw->mlist = reverse(cw->mlist);
 
@@ -3043,7 +3049,7 @@ const char *prompt; /* prompt to for menu */
         if (cw->plist)
             free((genericptr_t) cw->plist);
         cw->plist_size = cw->npages + 1;
-        cw->plist = (tty_menu_item **) alloc(cw->plist_size
+        cw->plist = (tty_menu_item **) alloc((size_t)cw->plist_size
                                              * sizeof (tty_menu_item *));
     }
 
@@ -3141,7 +3147,7 @@ menu_item **menu_list;
     }
 
     if (n > 0) {
-        *menu_list = (menu_item *) alloc(n * sizeof(menu_item));
+        *menu_list = (menu_item *) alloc((size_t)n * sizeof(menu_item));
         for (mi = *menu_list, curr = cw->mlist; curr; curr = curr->next)
             if (curr->selected) {
                 mi->item = curr->identifier;

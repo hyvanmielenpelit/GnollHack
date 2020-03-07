@@ -47,8 +47,11 @@ const char *name; /* if null, then format `*objp' */
     char onmbuf[BUFSZ], knmbuf[BUFSZ];
 
     if (!name) {
-        if (!obj)
-            panic("thitu: name & obj both null?");
+		if (!obj)
+		{
+			panic("thitu: name & obj both null?");
+			return 0;
+		}
         name = strcpy(onmbuf,
                       (obj->quan > 1L) ? doname(obj) : mshot_xname(obj));
         knm = strcpy(knmbuf, killer_xname(obj));

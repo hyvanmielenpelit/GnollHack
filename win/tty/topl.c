@@ -164,7 +164,7 @@ remember_topl()
 {
     register struct WinDesc *cw = wins[WIN_MESSAGE];
     int idx = cw->maxrow;
-    unsigned len = strlen(toplines) + 1;
+    size_t len = strlen(toplines) + 1;
 
     if ((cw->flags & WIN_LOCKHISTORY) || !*toplines)
         return;
@@ -563,7 +563,7 @@ boolean purge; /* clear message history buffer as we copy it */
     if (!purge)
         cw->flags |= WIN_LOCKHISTORY;
 
-    snapshot_mesgs = (char **) alloc((cw->rows + 1) * sizeof(char *));
+    snapshot_mesgs = (char **) alloc(((size_t)cw->rows + 1) * sizeof(char *));
     outidx = 0;
     inidx = cw->maxrow;
     for (i = 0; i < cw->rows; ++i) {

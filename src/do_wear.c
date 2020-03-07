@@ -1769,8 +1769,11 @@ struct obj *obj;
 			afternmv = Robe_on;
 		else if (obj == uarmu)
             afternmv = Shirt_on;
-        else
-            panic("wearing armor not worn as armor? [%08lx]", obj->owornmask);
+		else
+		{
+			panic("wearing armor not worn as armor? [%08lx]", obj->owornmask);
+			return 0;
+		}
 
         delay = -objects[obj->otyp].oc_delay;
         if (delay) {

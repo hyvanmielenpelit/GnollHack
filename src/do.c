@@ -2754,9 +2754,11 @@ const char *verb;
     boolean tseen;
     int ttyp = NO_TRAP;
 
-    if (obj->where != OBJ_FREE)
-        panic("flooreffects: obj not free");
-
+	if (obj->where != OBJ_FREE)
+	{
+		panic("flooreffects: obj not free");
+		return FALSE;
+	}
     /* make sure things like water_damage() have no pointers to follow */
     obj->nobj = obj->nexthere = (struct obj *) 0;
 
@@ -4140,8 +4142,11 @@ boolean at_stairs, falling, portal;
             if (ttrap->ttyp == MAGIC_PORTAL)
                 break;
 
-        if (!ttrap)
-            panic("goto_level: no corresponding portal!");
+		if (!ttrap)
+		{
+			panic("goto_level: no corresponding portal!");
+			return;
+		}
         seetrap(ttrap);
         u_on_newpos(ttrap->tx, ttrap->ty);
     } else if (at_stairs && !In_endgame(&u.uz)) {

@@ -17,20 +17,31 @@ void win10_init()
     {
         HINSTANCE hUser32 = LoadLibraryA("user32.dll");
 
-        if (hUser32 == NULL) 
-            panic("Unable to load user32.dll");
+		if (hUser32 == NULL)
+		{
+			panic("Unable to load user32.dll");
+			return;
+		}
 
         gWin10.GetThreadDpiAwarenessContext = (GetThreadDpiAwarenessContextProc) GetProcAddress(hUser32, "GetThreadDpiAwarenessContext");
-        if (gWin10.GetThreadDpiAwarenessContext == NULL)
-            panic("Unable to get address of GetThreadDpiAwarenessContext()");
-
+		if (gWin10.GetThreadDpiAwarenessContext == NULL)
+		{
+			panic("Unable to get address of GetThreadDpiAwarenessContext()");
+			return;
+		}
         gWin10.AreDpiAwarenessContextsEqual = (AreDpiAwarenessContextsEqualProc) GetProcAddress(hUser32, "AreDpiAwarenessContextsEqual");
         if (gWin10.AreDpiAwarenessContextsEqual == NULL)
+		{
             panic("Unable to get address of AreDpiAwarenessContextsEqual");
+			return;
+		}
 
         gWin10.GetDpiForWindow = (GetDpiForWindowProc) GetProcAddress(hUser32, "GetDpiForWindow");
         if (gWin10.GetDpiForWindow == NULL)
+		{
             panic("Unable to get address of GetDpiForWindow");
+			return;
+		}
 
         FreeLibrary(hUser32);
 
@@ -38,10 +49,13 @@ void win10_init()
     }
 
     if (gWin10.Valid) {
-        if (!gWin10.AreDpiAwarenessContextsEqual(
-                gWin10.GetThreadDpiAwarenessContext(),
-                DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2))
-            panic("Unexpected DpiAwareness state");
+		if (!gWin10.AreDpiAwarenessContextsEqual(
+			gWin10.GetThreadDpiAwarenessContext(),
+			DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2))
+		{
+			panic("Unexpected DpiAwareness state");
+			return;
+		}
     }
 
 }

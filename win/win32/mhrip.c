@@ -42,18 +42,23 @@ static void onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam);
 HWND
 mswin_init_RIP_window()
 {
-    HWND ret;
-    PNHRIPWindow data;
+	HWND ret;
+	PNHRIPWindow data;
 
-    ret = CreateDialog(GetNHApp()->hApp, MAKEINTRESOURCE(IDD_NHRIP),
-                       GetNHApp()->hMainWnd, NHRIPWndProc);
-    if (!ret)
-        panic("Cannot create rip window");
+	ret = CreateDialog(GetNHApp()->hApp, MAKEINTRESOURCE(IDD_NHRIP),
+		GetNHApp()->hMainWnd, NHRIPWndProc);
+	if (!ret)
+	{
+		panic("Cannot create rip window");
+		return (HWND)0;
+	}
 
-    data = (PNHRIPWindow) malloc(sizeof(NHRIPWindow));
-    if (!data)
-        panic("out of memory");
-
+	data = (PNHRIPWindow)malloc(sizeof(NHRIPWindow));
+	if (!data)
+	{
+		panic("out of memory");
+		return (HWND)0;
+	}
     ZeroMemory(data, sizeof(NHRIPWindow));
     SetWindowLongPtr(ret, GWLP_USERDATA, (LONG_PTR) data);
     return ret;

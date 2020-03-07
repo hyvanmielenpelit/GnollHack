@@ -203,7 +203,7 @@ int ifd, ofd;
 
     do {
         nfrom = read(ifd, buf, BUFSIZ);
-        nto = write(ofd, buf, nfrom);
+        nto = write(ofd, buf, min(BUFSIZ, nfrom));
         if (nto != nfrom) {
             Fprintf(stderr, "file copy failed!\n");
             exit(EXIT_FAILURE);
@@ -329,7 +329,7 @@ char *basename;
         return -1;
     }
 
-    if (write(sfd, (genericptr_t) plbuf, pltmpsiz) != pltmpsiz) {
+    if (write(sfd, (genericptr_t) plbuf, min(PL_NSIZ, pltmpsiz)) != pltmpsiz) {
         Fprintf(stderr, "Error writing %s; recovery failed (player name).\n",
                 savename);
         Close(gfd);

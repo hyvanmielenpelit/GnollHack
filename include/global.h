@@ -294,7 +294,7 @@ extern char *FDECL(nhdupstr, (const char *, const char *, int));
 #define free(a) nhfree(a, __FILE__, (int) __LINE__)
 #define dupstr(s) nhdupstr(s, __FILE__, (int) __LINE__)
 #else /* !MONITOR_HEAP */
-extern long *FDECL(alloc, (unsigned int));  /* alloc.c */
+extern long *FDECL(alloc, (size_t));  /* alloc.c */
 extern char *FDECL(dupstr, (const char *)); /* ditto */
 #endif
 

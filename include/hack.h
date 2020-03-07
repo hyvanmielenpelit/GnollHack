@@ -164,7 +164,7 @@ enum game_end_types {
 };
 
 typedef struct strbuf {
-    int    len;
+    size_t len;
     char * str;
     char   buf[256];
 } strbuf_t;

@@ -56,7 +56,7 @@ long *
 alloca(cnt)
 unsigned cnt;
 {
-    return cnt ? alloc(cnt) : (long *) 0;
+    return cnt ? alloc((size_t)cnt) : (long *) 0;
 }
 #endif
 

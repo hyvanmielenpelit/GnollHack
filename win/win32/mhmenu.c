@@ -113,6 +113,7 @@ mswin_init_menu_window(int type)
                        GetNHApp()->hMainWnd, MenuWndProc);
     if (!ret) {
         panic("Cannot create menu window");
+		return (HWND)0;
     }
 
     /* move it in the predefined position */
@@ -229,8 +230,11 @@ mswin_menu_window_select_menu(HWND hWnd, int how, MENU_ITEM_P **_selected,
 
                 selected =
                     (MENU_ITEM_P *) malloc(ret_val * sizeof(MENU_ITEM_P));
-                if (!selected)
-                    panic("out of memory");
+				if (!selected)
+				{
+					panic("out of memory");
+					return 0;
+				}
 
                 sel_ind = 0;
                 for (i = 0; i < data->menu.size; i++) {
@@ -559,8 +563,11 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         _tcscat(data->text.text, TEXT("\r\n"));
 
         text_view = GetDlgItem(hWnd, IDC_MENU_TEXT);
-        if (!text_view)
-            panic("cannot get text view window");
+		if (!text_view)
+		{
+			panic("cannot get text view window");
+			return;
+		}
         SetWindowText(text_view, data->text.text);
 
         /* calculate dimensions of the added line of text */
@@ -841,6 +848,7 @@ SetMenuListType(HWND hWnd, int how)
         break;
     default:
         panic("how should be one of PICK_NONE, PICK_ONE or PICK_ANY");
+		return;
     };
 
     if (strlen(data->menu.prompt) == 0) {
@@ -852,8 +860,11 @@ SetMenuListType(HWND hWnd, int how)
     control = CreateWindow(WC_LISTVIEW, NULL, dwStyles, rt.left, rt.top,
                            rt.right - rt.left, rt.bottom - rt.top, hWnd,
                            (HMENU) IDC_MENU_LIST, GetNHApp()->hApp, NULL);
-    if (!control)
-        panic("cannot create menu control");
+	if (!control)
+	{
+		panic("cannot create menu control");
+		return;
+	}
 
     /* install the hook for the control window procedure */
     wndProcListViewOrig = (WNDPROC) GetWindowLongPtr(control, GWLP_WNDPROC);
@@ -900,6 +911,7 @@ SetMenuListType(HWND hWnd, int how)
                                   (LPARAM) buf);
         if (ListView_InsertItem(control, &lvitem) == -1) {
             panic("cannot insert menu item");
+			return;
         }
     }
     if (data->is_active)

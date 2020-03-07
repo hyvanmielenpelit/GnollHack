@@ -1793,7 +1793,8 @@ winid where;
     c = flags.initrace;
     g = flags.initgend;
     a = flags.initalign;
-    if (r >= 0) {
+    if (r >= 0) 
+	{
         allowmask = roles[r].allow;
         if ((allowmask & ROLE_RACEMASK) == MH_HUMAN)
             c = 0; /* races[human] */

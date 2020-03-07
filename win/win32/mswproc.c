@@ -162,6 +162,7 @@ mswin_init_nhwindows(int *argc, char **argv)
     GetNHApp()->hMainWnd = mswin_init_main_window();
     if (!GetNHApp()->hMainWnd) {
         panic("Cannot create main window");
+		return;
     }
 
     /* Set menu check mark for interface mode */
@@ -767,8 +768,11 @@ mswin_create_nhwindow(int type)
         if (GetNHApp()->windowlist[i].win == NULL
             && !GetNHApp()->windowlist[i].dead)
             break;
-    if (i == MAXWINDOWS)
-        panic("ERROR:  No windows available...\n");
+	if (i == MAXWINDOWS)
+	{
+		panic("ERROR:  No windows available...\n");
+		return 0;
+	}
 
     switch (type) {
     case NHW_MAP: {
@@ -1327,7 +1331,7 @@ void
 mswin_raw_print_flush()
 {
     if (raw_print_strbuf.str != NULL) {
-        int wlen = strlen(raw_print_strbuf.str) + 1;
+        size_t wlen = strlen(raw_print_strbuf.str) + 1;
         TCHAR * wbuf = (TCHAR *) alloc(wlen * sizeof(TCHAR));
         if (wbuf != NULL) {
             NHMessageBox(GetNHApp()->hMainWnd,
@@ -2705,8 +2709,11 @@ mswin_color_from_string(char *colorstring, HBRUSH *brushptr,
             }
         }
     }
-    if (max_brush > TOTAL_BRUSHES)
-        panic("Too many colors!");
+	if (max_brush > TOTAL_BRUSHES)
+	{
+		panic("Too many colors!");
+		return;
+	}
     *brushptr = CreateSolidBrush(*colorptr);
     brush_table[max_brush++] = *brushptr;
 }

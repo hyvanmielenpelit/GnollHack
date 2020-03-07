@@ -2177,6 +2177,9 @@ int
 mintrap(mtmp)
 register struct monst *mtmp;
 {
+	if (!mtmp)
+		return 0;
+
     register struct trap *trap = t_at(mtmp->mx, mtmp->my);
     boolean trapkilled = FALSE;
     struct permonst *mptr = mtmp->data;
@@ -4413,16 +4416,16 @@ struct trap *ttmp;
        There's no need for a cockatrice test, only the trap is touched */
     if ((mtmp = m_at(ttmp->tx, ttmp->ty)) != 0) {
         mtmp->mtrapped = 0;
-        You("remove %s %s from %s.", the_your[ttmp->madeby_u],
+        You("remove %s %s from %s.", the_your[ttmp->madeby_u ? 1 : 0],
             (ttmp->ttyp == BEAR_TRAP) ? "bear trap" : "webbing",
             mon_nam(mtmp));
         reward_untrap(ttmp, mtmp);
     } else {
         if (ttmp->ttyp == BEAR_TRAP) {
-            You("disarm %s bear trap.", the_your[ttmp->madeby_u]);
+            You("disarm %s bear trap.", the_your[ttmp->madeby_u ? 1 : 0]);
             cnv_trap_obj(BEARTRAP, 1, ttmp, FALSE);
         } else /* if (ttmp->ttyp == WEB) */ {
-            You("succeed in removing %s web.", the_your[ttmp->madeby_u]);
+            You("succeed in removing %s web.", the_your[ttmp->madeby_u ? 1 : 0]);
             deltrap(ttmp);
         }
     }
@@ -5059,7 +5062,7 @@ boolean *noticed; /* set to true iff hero notices the effect; */
     if (!trapdescr)
         trapdescr = defsyms[trap_to_defsym(t->ttyp)].explanation;
     if (!which)
-        which = t->tseen ? the_your[t->madeby_u]
+        which = t->tseen ? the_your[t->madeby_u ? 1 : 0]
                          : index(vowels, *trapdescr) ? "an" : "a";
     if (*which)
         which = strcat(strcpy(whichbuf, which), " ");
@@ -5401,8 +5404,11 @@ register struct trap *trap;
         for (ttmp = ftrap; ttmp; ttmp = ttmp->ntrap)
             if (ttmp->ntrap == trap)
                 break;
-        if (!ttmp)
-            panic("deltrap: no preceding trap!");
+		if (!ttmp)
+		{
+			panic("deltrap: no preceding trap!");
+			return;
+		}
         ttmp->ntrap = trap->ntrap;
     }
     if (Sokoban && (trap->ttyp == PIT || trap->ttyp == HOLE))

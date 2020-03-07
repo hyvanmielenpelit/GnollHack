@@ -295,7 +295,10 @@ char oclass;
 			i++;
 
 		if (objects[i].oc_class != oclass || !OBJ_NAME(objects[i]))
+		{
 			panic("probtype error, oclass=%d i=%d", (int)oclass, i);
+			return STRANGE_OBJECT;
+		}
 
 		if (objects[i].oc_flags3 & O3_NO_GENERATION)
 		{
@@ -566,8 +569,11 @@ long num;
 {
     struct obj *otmp;
 
-    if (obj->cobj || num <= 0L || obj->quan <= num)
-        panic("splitobj"); /* can't split containers */
+	if (obj->cobj || num <= 0L || obj->quan <= num)
+	{
+		panic("splitobj"); /* can't split containers */
+		return (struct obj*)0;
+	}
     otmp = newobj();
     *otmp = *obj; /* copies whole structure */
     otmp->oextra = (struct oextra *) 0;
@@ -2366,9 +2372,11 @@ int x, y;
 {
     register struct obj *otmp2 = level.objects[x][y];
 
-    if (otmp->where != OBJ_FREE)
-        panic("place_object: obj not free");
-
+	if (otmp->where != OBJ_FREE)
+	{
+		panic("place_object: obj not free");
+		return;
+	}
     obj_no_longer_held(otmp);
     /* (could bypass this vision update if there is already a boulder here) */
     if (otmp->otyp == BOULDER)
@@ -2522,8 +2530,11 @@ register struct obj *otmp;
     xchar x = otmp->ox;
     xchar y = otmp->oy;
 
-    if (otmp->where != OBJ_FLOOR)
-        panic("remove_object: obj not on floor");
+	if (otmp->where != OBJ_FLOOR)
+	{
+		panic("remove_object: obj not on floor");
+		return;
+	}
     extract_nexthere(otmp, &level.objects[x][y]);
     extract_nobj(otmp, &fobj);
     /* update vision iff this was the only boulder at its spot */
@@ -2631,8 +2642,11 @@ struct obj *obj, **head_ptr;
             break;
         }
     }
-    if (!curr)
-        panic("extract_nobj: object lost");
+	if (!curr)
+	{
+		panic("extract_nobj: object lost");
+		return;
+	}
     obj->where = OBJ_FREE;
     obj->nobj = (struct obj *) 0;
 }
@@ -2659,8 +2673,11 @@ struct obj *obj, **head_ptr;
             break;
         }
     }
-    if (!curr)
-        panic("extract_nexthere: object lost");
+	if (!curr)
+	{
+		panic("extract_nexthere: object lost");
+		return;
+	}
     obj->nexthere = (struct obj *) 0;
 }
 
@@ -2676,9 +2693,11 @@ struct obj *obj;
 {
     struct obj *otmp;
 
-    if (obj->where != OBJ_FREE)
-        panic("add_to_minv: obj not free");
-
+	if (obj->where != OBJ_FREE)
+	{
+		panic("add_to_minv: obj not free");
+		return 0;
+	}
     /* merge if possible */
     for (otmp = mon->minvent; otmp; otmp = otmp->nobj)
         if (merged(&otmp, &obj))
@@ -2701,8 +2720,11 @@ struct obj *container, *obj;
 {
     struct obj *otmp;
 
-    if (obj->where != OBJ_FREE)
-        panic("add_to_container: obj not free");
+	if (obj->where != OBJ_FREE)
+	{
+		panic("add_to_container: obj not free");
+		return (struct obj*)0;
+	}
     if (container->where != OBJ_INVENT && container->where != OBJ_MINVENT)
         obj_no_longer_held(obj);
 
@@ -2722,8 +2744,11 @@ void
 add_to_migration(obj)
 struct obj *obj;
 {
-    if (obj->where != OBJ_FREE)
-        panic("add_to_migration: obj not free");
+	if (obj->where != OBJ_FREE)
+	{
+		panic("add_to_migration: obj not free");
+		return;
+	}
 
     /* lock picking context becomes stale if it's for this object */
     if (Is_container(obj))
@@ -2739,7 +2764,10 @@ add_to_buried(obj)
 struct obj *obj;
 {
     if (obj->where != OBJ_FREE)
-        panic("add_to_buried: obj not free");
+	{
+		panic("add_to_buried: obj not free");
+		return;
+	}
 
     obj->where = OBJ_BURIED;
     obj->nobj = level.buriedobjlist;
@@ -3107,8 +3135,11 @@ const char *mesg;
 
     for (obj = container->cobj; obj; obj = obj->nobj) {
         /* catch direct cycle to avoid unbounded recursion */
-        if (obj == container)
-            panic("failed sanity check: container holds itself");
+		if (obj == container)
+		{
+			panic("failed sanity check: container holds itself");
+			return;
+		}
         if (obj->where != OBJ_CONTAINED)
             insane_object(obj, "%s obj %s %s: %s", mesg, (struct monst *) 0);
         else if (obj->ocontainer != container)
@@ -3121,8 +3152,11 @@ const char *mesg;
             /* catch most likely indirect cycle; we won't notice if
                parent is present when something comes before it, or
                notice more deeply embedded cycles (grandparent, &c) */
-            if (obj->cobj == container)
-                panic("failed sanity check: container holds its parent");
+			if (obj->cobj == container)
+			{
+				panic("failed sanity check: container holds its parent");
+				return;
+			}
             /* change "contained... sanity" to "nested contained... sanity"
                and "nested contained..." to "nested nested contained..." */
             Strcpy(nestedmesg, "nested ");

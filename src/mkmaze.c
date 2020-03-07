@@ -135,9 +135,11 @@ int x1, y1, x2, y2;
     struct rm *lev;
 
     /* sanity check on incoming variables */
-    if (x1 < 0 || x2 >= COLNO || x1 > x2 || y1 < 0 || y2 >= ROWNO || y1 > y2)
-        panic("wall_cleanup: bad bounds (%d,%d) to (%d,%d)", x1, y1, x2, y2);
-
+	if (x1 < 0 || x2 >= COLNO || x1 > x2 || y1 < 0 || y2 >= ROWNO || y1 > y2)
+	{
+		panic("wall_cleanup: bad bounds (%d,%d) to (%d,%d)", x1, y1, x2, y2);
+		return;
+	}
     /* change walls surrounded by rock to rock. */
     for (x = x1; x <= x2; x++)
         for (y = y1; y <= y2; y++) {
@@ -180,8 +182,11 @@ int x1, y1, x2, y2;
                                      VWALL, TLWALL,   TRWALL,   CROSSWALL };
 
     /* sanity check on incoming variables */
-    if (x1 < 0 || x2 >= COLNO || x1 > x2 || y1 < 0 || y2 >= ROWNO || y1 > y2)
-        panic("wall_extends: bad bounds (%d,%d) to (%d,%d)", x1, y1, x2, y2);
+	if (x1 < 0 || x2 >= COLNO || x1 > x2 || y1 < 0 || y2 >= ROWNO || y1 > y2)
+	{
+		panic("wall_extends: bad bounds (%d,%d) to (%d,%d)", x1, y1, x2, y2);
+		return;
+	}
 
     /* set the correct wall type. */
     for (x = x1; x <= x2; x++)
@@ -1431,9 +1436,13 @@ movebubbles()
          * Pick up everything inside of a bubble then fill all bubble
          * locations.
          */
-        for (b = up ? bbubbles : ebubbles; b; b = up ? b->next : b->prev) {
-            if (b->cons)
-                panic("movebubbles: cons != null");
+        for (b = up ? bbubbles : ebubbles; b; b = up ? b->next : b->prev) 
+		{
+			if (b->cons)
+			{
+				panic("movebubbles: cons != null");
+				return;
+			}
             for (i = 0, x = b->x; i < (int) b->bm[0]; i++, x++)
                 for (j = 0, y = b->y; j < (int) b->bm[1]; j++, y++)
                     if (b->bm[j + 2] & (1 << i)) {
@@ -1764,6 +1773,7 @@ int x, y, n;
     }
     if (bmask[n][1] > MAX_BMASK) {
         panic("bmask size is larger than MAX_BMASK");
+		return;
     }
     b = (struct bubble *) alloc(sizeof(struct bubble));
     if ((x + (int) bmask[n][0] - 1) > bxmax)

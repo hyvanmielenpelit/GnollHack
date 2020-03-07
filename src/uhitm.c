@@ -338,6 +338,9 @@ boolean
 attack(mtmp)
 register struct monst *mtmp;
 {
+	if (!mtmp)
+		return FALSE;
+
     register struct permonst *mdat = mtmp->data;
 
     /* This section of code provides protection against accidentally
@@ -1572,7 +1575,7 @@ boolean* obj_destroyed;
 			else
 			{
 				needenchantmsg = 0; //Since gets killed message
-				damage = mon->mhp + 1;
+				damage = (double)mon->mhp + 1;
 				hide_damage_amount = TRUE;
 				enchantkilled = TRUE;
 			}
@@ -1738,8 +1741,7 @@ boolean* obj_destroyed;
 	}
 
 	if (!hittxt /*( thrown => obj exists )*/
-		&& (1 == 1 //!destroyed
-			|| (thrown && m_shot.n > 1 && m_shot.o == obj->otyp))) 
+		&& thrown && m_shot.n > 1 && m_shot.o == obj->otyp) 
 	{
 		if (thrown)
 			hit(mshot_xname(obj), mon, exclam(destroyed ? 100 : damagedealt), hide_damage_amount ? -1 : damagedealt);
@@ -2332,8 +2334,11 @@ struct attack *mattk;
         minvent_ptr = &mdef->minvent;
         while ((otmp = *minvent_ptr) != 0)
             if (otmp->owornmask & W_ARM) {
-                if (stealoid)
-                    panic("steal_it: multiple worn suits");
+				if (stealoid)
+				{
+					panic("steal_it: multiple worn suits");
+					return;
+				}
                 *minvent_ptr = otmp->nobj; /* take armor out of minvent */
                 stealoid = otmp;
                 stealoid->nobj = (struct obj *) 0;
@@ -2642,7 +2647,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 			{ /* see hitmu(mhitu.c) */
                 if (mdef->mhp == 1)
                     ++mdef->mhp;
-                damage = (double)(mdef->mhp - 1);
+                damage = (double)mdef->mhp - 1;
             }
         }
         break;

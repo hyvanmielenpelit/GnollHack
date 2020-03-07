@@ -116,6 +116,9 @@ pixel (*pixels)[TILE_X];
     if (fscanf(txtfile, "# %s %d (%[^)])", ttype, &i, buf) <= 0)
         return FALSE;
 
+	buf[BUFSZ - 1] = '\0';
+	ttype[BUFSZ - 1] = '\0';
+
     ph = strcmp(ttype, "placeholder") == 0;
 
     if (!ph && strcmp(ttype, "tile") != 0)

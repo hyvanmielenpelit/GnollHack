@@ -766,7 +766,8 @@ struct permonst *ptr;
     register int i;
 
     i = (int) (ptr - &mons[0]);
-    if (i < LOW_PM || i >= NUMMONS) {
+    if (i < LOW_PM || i >= NUMMONS) 
+	{
         panic("monsndx - could not index monster (%s)",
               fmt_ptr((genericptr_t) ptr));
         return NON_PM; /* will not get here */

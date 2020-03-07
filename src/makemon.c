@@ -2579,7 +2579,10 @@ rndmonst()
 					continue;
 				ct = (int) (ptr->geno & G_FREQ) + align_shift(ptr);
 				if (ct < 0 || ct > 127)
+				{
 					panic("rndmonst: bad count [#%d: %d]", mndx, ct);
+					return (struct permonst*) 0;
+				}
 				rndmonst_state.choice_count += ct;
 				rndmonst_state.mchoices[mndx] = (char) ct;
 			}

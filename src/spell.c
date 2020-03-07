@@ -3151,8 +3151,11 @@ boolean usehotkey;
 		strcpy(addsbuf, "N/A");
 
 	//Shorten matcomp description, if needed
-	char shortenedmatcompdesc[BUFSZ] = "";
+	char shortenedmatcompdesc[BUFSZ];
 	char fullmatcompdesc[BUFSZ];
+
+	strcpy(shortenedmatcompdesc, "");
+	strcpy(fullmatcompdesc, "");
 
 	strcpy(fullmatcompdesc, matlists[spellmatcomp(splnum)].description_short);
 

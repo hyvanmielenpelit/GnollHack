@@ -1921,7 +1921,7 @@ short_oname(obj, func, altfunc, lenlimit)
 struct obj *obj;
 char *FDECL((*func), (OBJ_P)),    /* main formatting routine */
      *FDECL((*altfunc), (OBJ_P)); /* alternate for shortest result */
-unsigned lenlimit;
+size_t lenlimit;
 {
     struct obj save_obj;
     char unamebuf[12], onamebuf[12], *save_oname, *save_uname, *outbuf;
@@ -4751,10 +4751,10 @@ const char *lastR;
 
     char *bufp, *endp;
     /* convert size_t (or int for ancient systems) to ordinary unsigned */
-    unsigned len, lenlimit,
-        len_qpfx = (unsigned) (qprefix ? strlen(qprefix) : 0),
-        len_qsfx = (unsigned) (qsuffix ? strlen(qsuffix) : 0),
-        len_lastR = (unsigned) strlen(lastR);
+    size_t len, lenlimit,
+        len_qpfx = (qprefix ? strlen(qprefix) : 0),
+        len_qsfx = (qsuffix ? strlen(qsuffix) : 0),
+        len_lastR = strlen(lastR);
 
     lenlimit = QBUFSZ - 1;
     endp = qbuf + lenlimit;
@@ -4772,32 +4772,44 @@ const char *lastR;
 
     /* the output buffer might be the same as the prefix if caller
        has already partially filled it */
-    if (qbuf == qprefix) {
+    if (qbuf == qprefix) 
+	{
         /* prefix is already in the buffer */
         *endp = '\0';
-    } else if (qprefix) {
+    } 
+	else if (qprefix) 
+	{
         /* put prefix into the buffer */
         (void) strncpy(qbuf, qprefix, lenlimit);
         *endp = '\0';
-    } else {
+    }
+	else 
+	{
         /* no prefix; output buffer starts out empty */
         qbuf[0] = '\0';
     }
-    len = (unsigned) strlen(qbuf);
 
-    if (len + len_lastR + len_qsfx > lenlimit) {
+
+    len = strlen(qbuf);
+
+    if (len + len_lastR + len_qsfx > lenlimit)
+	{
         /* too long; skip formatting, last resort output is truncated */
-        if (len < lenlimit) {
+        if (len < lenlimit) 
+		{
             (void) strncpy(&qbuf[len], lastR, lenlimit - len);
             *endp = '\0';
-            len = (unsigned) strlen(qbuf);
-            if (qsuffix && len < lenlimit) {
+            len = strlen(qbuf);
+            if (qsuffix && len < lenlimit)
+			{
                 (void) strncpy(&qbuf[len], qsuffix, lenlimit - len);
                 *endp = '\0';
                 /* len = (unsigned) strlen(qbuf); */
             }
         }
-    } else {
+    } 
+	else 
+	{
         /* suffix and last resort are guaranteed to fit */
         len += len_qsfx; /* include the pending suffix */
         /* format the object */

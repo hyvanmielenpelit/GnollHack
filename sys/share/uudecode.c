@@ -123,6 +123,7 @@ char **argv;
             break;
     }
     (void) sscanf(buf, "begin %o %s", &mode, dest);
+	dest[127] = '\0';
 
 #if !defined(MSDOS) && !defined(VMS) && !defined(WIN32)
     /* handle ~user/file format */

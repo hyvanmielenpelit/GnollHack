@@ -104,9 +104,11 @@ mswin_init_message_window()
         GetNHApp()->hApp,     /* handle to application instance */
         NULL);                /* window-creation data */
 
-    if (!ret)
-        panic("Cannot create message window");
-
+	if (!ret)
+	{
+		panic("Cannot create message window");
+		return (HWND)0;
+	}
     /* Set window caption */
     SetWindowText(ret, "Messages");
 
@@ -724,8 +726,11 @@ onCreate(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
     /* set window data */
     data = (PNHMessageWindow) malloc(sizeof(NHMessageWindow));
-    if (!data)
-        panic("out of memory");
+	if (!data)
+	{
+		panic("out of memory");
+		return;
+	}
     ZeroMemory(data, sizeof(NHMessageWindow));
     data->max_text = MAXWINDOWTEXT;
     SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR) data);

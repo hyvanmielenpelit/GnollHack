@@ -337,8 +337,11 @@ losedogs()
                         mtmp0->nmon = mtmp->nmon;
                         break;
                     }
-                if (!mtmp0)
-                    panic("losedogs: can't find migrating mon");
+				if (!mtmp0)
+				{
+					panic("losedogs: can't find migrating mon");
+					return;
+				}
             }
             mon_arrive(mtmp, FALSE);
         }
@@ -824,7 +827,7 @@ register struct obj *obj;
         if (obj->otyp == CORPSE && is_rider(fptr))
             return TABU;
 
-        if ((obj->otyp == CORPSE || obj->otyp == EGG) && touch_petrifies(fptr)
+        if ((obj->otyp == CORPSE || obj->otyp == EGG) && fptr && touch_petrifies(fptr)
             && !resists_ston(mon))
             return POISON;
 
