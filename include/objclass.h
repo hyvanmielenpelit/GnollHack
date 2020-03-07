@@ -805,7 +805,7 @@ struct objclass {
 #define O3_ELEMENTAL_ENCHANTABLE					0x00080000UL
 #define O3_EATING_IDENTIFIES						0x00100000UL	
 #define O3_NONROTTING_FOOD							0x00200000UL
-/* free bit */
+#define O3_POISONABLE								0x00400000UL
 /* free bit */
 /* free bit */
 

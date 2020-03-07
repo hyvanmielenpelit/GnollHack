@@ -959,7 +959,7 @@ boolean makingboxcontents;
                 otmp->opoisoned = 1;
 			else if (is_elemental_enchantable(otmp) && ((objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED) || (is_multigen(otmp) ? !rn2(40) : !rn2(160))))
 			{
-				if (is_deathenchantable(otmp) && ((objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED) || !rn2(5)))
+				if (is_death_enchantable(otmp) && ((objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED) || !rn2(5)))
 				{
 					otmp->elemental_enchantment = DEATH_ENCHANTMENT;
 					if (is_multigen(otmp))
@@ -2808,23 +2808,32 @@ boolean tipping; /* caller emptying entire contents; affects shop handling */
 {
     int objcount = 0;
 
-    if (!horn || horn->otyp != HORN_OF_PLENTY) {
+    if (!horn || horn->otyp != HORN_OF_PLENTY)
+	{
         impossible("bad horn o' plenty");
-    } else if (horn->spe < 1) {
+    } 
+	else if (horn->spe < 1)
+	{
         pline1(nothing_happens);
-    } else {
+    }
+	else 
+	{
         struct obj *obj;
         const char *what;
 
         consume_obj_charge(horn, !tipping);
-        if (!rn2(13)) {
+        if (!rn2(13)) 
+		{
             obj = mkobj(POTION_CLASS, FALSE, FALSE);
             if (objects[obj->otyp].oc_magic)
-                do {
+                do 
+				{
                     obj->otyp = rnd_class(POT_BOOZE, POT_WATER);
-                } while (obj->otyp == POT_SICKNESS);
+                } while (obj->otyp == POT_SICKNESS || obj->otyp == POT_POISON || obj->otyp == POT_URINE);
             what = (obj->quan > 1L) ? "Some potions" : "A potion";
-        } else {
+        }
+		else 
+		{
             obj = mkobj(FOOD_CLASS, FALSE, FALSE);
             if (obj->otyp == FOOD_RATION && !rn2(7))
                 obj->otyp = LUMP_OF_ROYAL_JELLY;
@@ -2842,7 +2851,8 @@ boolean tipping; /* caller emptying entire contents; affects shop handling */
         /* if it ended up on bill, we don't want "(unpaid, N zorkids)"
            being included in its formatted name during next message */
         iflags.suppress_price++;
-        if (!tipping) {
+        if (!tipping) 
+		{
             obj = hold_another_object(obj,
                                       u.uswallow
                                         ? "Oops!  %s out of your reach!"
@@ -2854,11 +2864,16 @@ boolean tipping; /* caller emptying entire contents; affects shop handling */
                                           : "Oops!  %s to the floor!",
                                       The(aobjnam(obj, "slip")), (char *) 0);
             nhUse(obj);
-        } else {
+        } 
+		else
+		{
             /* assumes this is taking place at hero's location */
-            if (!can_reach_floor(TRUE)) {
+            if (!can_reach_floor(TRUE))
+			{
                 hitfloor(obj, TRUE); /* does altar check, message, drop */
-            } else {
+            }
+			else 
+			{
                 if (IS_ALTAR(levl[u.ux][u.uy].typ))
                     doaltarobj(obj); /* does its own drop message */
                 else

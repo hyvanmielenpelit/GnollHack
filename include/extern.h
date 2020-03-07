@@ -768,7 +768,7 @@ E void FDECL(lesshungry, (int));
 E boolean NDECL(is_fainted);
 E void NDECL(reset_faint);
 E void NDECL(violated_vegetarian);
-E void FDECL(newuhs, (BOOLEAN_P));
+E void FDECL(update_hunger_status, (BOOLEAN_P));
 E struct obj *FDECL(floorfood, (const char *, int));
 E void NDECL(vomit);
 E int FDECL(eaten_stat, (int, struct obj *));

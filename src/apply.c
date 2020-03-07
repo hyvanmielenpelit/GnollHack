@@ -2628,7 +2628,7 @@ struct obj* obj;
 			switch (obj->otyp)
 			{
 			case WAN_DEATH:
-				if (is_elemental_enchantable(otmp) && is_deathenchantable(otmp))
+				if (is_elemental_enchantable(otmp) && is_death_enchantable(otmp))
 				{
 					wandknown = TRUE;
 					You("enchant %s with death magic.", yname(otmp));
@@ -2930,7 +2930,7 @@ int enchantmenttype;
 
 	if (is_elemental_enchantable(otmp))
 	{
-		if (enchantmenttype == DEATH_ENCHANTMENT && !is_deathenchantable(otmp))
+		if (enchantmenttype == DEATH_ENCHANTMENT && !is_death_enchantable(otmp))
 			otmp->elemental_enchantment = LIGHTNING_ENCHANTMENT;
 		else
 			otmp->elemental_enchantment = enchantmenttype;
@@ -4635,7 +4635,7 @@ int arrowtype, quan; //ObjID and quantity
 		}
 		if (bag->elemental_enchantment)
 		{
-			if (bag->elemental_enchantment != DEATH_ENCHANTMENT || (bag->elemental_enchantment == DEATH_ENCHANTMENT && is_deathenchantable(otmp)))
+			if (bag->elemental_enchantment != DEATH_ENCHANTMENT || (bag->elemental_enchantment == DEATH_ENCHANTMENT && is_death_enchantable(otmp)))
 				otmp->elemental_enchantment = bag->elemental_enchantment;
 
 			if (otmp->elemental_enchantment == DEATH_ENCHANTMENT && quan > 2)

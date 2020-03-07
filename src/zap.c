@@ -2100,7 +2100,8 @@ register struct obj *obj;
                          || obj->oclass == WEAPON_CLASS || is_weptool(obj)))
         || otyp == POT_ACID
         || otyp == POT_SICKNESS
-        || (otyp == POT_WATER && (obj->blessed || obj->cursed))) {
+		|| otyp == POT_POISON
+		|| (otyp == POT_WATER && (obj->blessed || obj->cursed))) {
         if (obj->spe != ((obj->oclass == WAND_CLASS) ? -1 : 0)
             && otyp != WAN_CANCELLATION /* can't cancel cancellation */
             && otyp != MAGIC_LAMP /* cancelling doesn't remove djinni */
@@ -2127,13 +2128,17 @@ register struct obj *obj;
                               (otyp != POT_WATER)
                                   ? COST_CANCEL
                                   : obj->cursed ? COST_UNCURS : COST_UNBLSS);
-            if (otyp == POT_SICKNESS || otyp == POT_SEE_INVISIBLE) {
+            
+			if (otyp == POT_SICKNESS || otyp == POT_SEE_INVISIBLE) 
+			{
                 /* sickness is "biologically contaminated" fruit juice;
                    cancel it and it just becomes fruit juice...
                    whereas see invisible tastes like "enchanted" fruit
                    juice, it similarly cancels */
                 obj->otyp = POT_FRUIT_JUICE;
-            } else {
+            } 
+			else 
+			{
                 obj->otyp = POT_WATER;
                 obj->odiluted = 0; /* same as any other water */
             }

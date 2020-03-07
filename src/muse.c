@@ -331,33 +331,42 @@ struct monst *mtmp;
     /* since unicorn horns don't get used up, the monster would look
      * silly trying to use the same cursed horn round after round
      */
-    if (is_confused(mtmp) || is_stunned(mtmp) || is_blinded(mtmp)) {
-        if (!is_unicorn(mtmp->data) && can_operate_objects(mtmp->data)) {
+    if (is_confused(mtmp) || is_stunned(mtmp) || is_blinded(mtmp))
+	{
+        if (!is_unicorn(mtmp->data) && can_operate_objects(mtmp->data)) 
+		{
             for (obj = mtmp->minvent; obj; obj = obj->nobj)
                 if (obj->otyp == UNICORN_HORN && !obj->cursed)
                     break;
         }
-        if (obj || is_unicorn(mtmp->data)) {
+        if (obj || is_unicorn(mtmp->data)) 
+		{
             m.defensive = obj;
             m.has_defense = MUSE_UNICORN_HORN;
             return TRUE;
         }
     }
 
-    if (is_confused(mtmp) || is_stunned(mtmp)) {
+    if (is_confused(mtmp) || is_stunned(mtmp)) 
+	{
         struct obj *liztin = 0;
 
-        for (obj = mtmp->minvent; obj; obj = obj->nobj) {
-            if (obj->otyp == CORPSE && obj->corpsenm == PM_LIZARD) {
+        for (obj = mtmp->minvent; obj; obj = obj->nobj)
+		{
+            if (obj->otyp == CORPSE && obj->corpsenm == PM_LIZARD)
+			{
                 m.defensive = obj;
                 m.has_defense = MUSE_LIZARD_CORPSE;
                 return TRUE;
-            } else if (obj->otyp == TIN && obj->corpsenm == PM_LIZARD) {
+            } 
+			else if (obj->otyp == TIN && obj->corpsenm == PM_LIZARD) 
+			{
                 liztin = obj;
             }
         }
         /* confused or stunned monster might not be able to open tin */
-        if (liztin && mcould_eat_tin(mtmp) && rn2(3)) {
+        if (liztin && mcould_eat_tin(mtmp) && rn2(3))
+		{
             m.defensive = liztin;
             /* tin and corpse ultimately end up being handled the same */
             m.has_defense = MUSE_LIZARD_CORPSE;
@@ -374,7 +383,8 @@ struct monst *mtmp;
      * Pestilence won't use healing even when blind.
      */
     if (is_blinded(mtmp) && can_operate_objects(mtmp->data)
-        && mtmp->data != &mons[PM_PESTILENCE]) {
+        && mtmp->data != &mons[PM_PESTILENCE]) 
+	{
         if (m_use_healing(mtmp))
             return TRUE;
     }
@@ -384,37 +394,55 @@ struct monst *mtmp;
         || (mtmp->mhp >= 10 && mtmp->mhp * fraction >= mtmp->mhpmax))
         return FALSE;
 
-    if (is_peaceful(mtmp)) {
-        if (can_operate_objects(mtmp->data)) {
+    if (is_peaceful(mtmp))
+	{
+        if (can_operate_objects(mtmp->data)) 
+		{
             if (m_use_healing(mtmp))
                 return TRUE;
         }
         return FALSE;
     }
 
-    if (stuck || immobile) {
+    if (stuck || immobile) 
+	{
         ; /* fleeing by stairs or traps is not possible */
-    } else if (levl[x][y].typ == STAIRS) {
-        if (x == xdnstair && y == ydnstair) {
+    }
+	else if (levl[x][y].typ == STAIRS) 
+	{
+        if (x == xdnstair && y == ydnstair)
+		{
             if (!is_floater(mtmp->data))
                 m.has_defense = MUSE_DOWNSTAIRS;
-        } else if (x == xupstair && y == yupstair) {
+        } else if (x == xupstair && y == yupstair) 
+		{
             m.has_defense = MUSE_UPSTAIRS;
-        } else if (sstairs.sx && x == sstairs.sx && y == sstairs.sy) {
+        } 
+		else if (sstairs.sx && x == sstairs.sx && y == sstairs.sy) 
+		{
             if (sstairs.up || !is_floater(mtmp->data))
                 m.has_defense = MUSE_SSTAIRS;
         }
-    } else if (levl[x][y].typ == LADDER) {
-        if (x == xupladder && y == yupladder) {
+    }
+	else if (levl[x][y].typ == LADDER) 
+	{
+        if (x == xupladder && y == yupladder)
+		{
             m.has_defense = MUSE_UP_LADDER;
-        } else if (x == xdnladder && y == ydnladder) {
+        }
+		else if (x == xdnladder && y == ydnladder) 
+		{
             if (!is_floater(mtmp->data))
                 m.has_defense = MUSE_DN_LADDER;
-        } else if (sstairs.sx && x == sstairs.sx && y == sstairs.sy) {
+        } 
+		else if (sstairs.sx && x == sstairs.sx && y == sstairs.sy)
+		{
             if (sstairs.up || !is_floater(mtmp->data))
                 m.has_defense = MUSE_SSTAIRS;
         }
-    } else {
+    } 
+	else 
+	{
         /* Note: trap doors take precedence over teleport traps. */
         int xx, yy, i, locs[10][2];
         boolean ignore_boulders = (verysmall(mtmp->data)
@@ -429,12 +457,14 @@ struct monst *mtmp;
         i = 1;
         for (xx = x - 1; xx <= x + 1; xx++)
             for (yy = y - 1; yy <= y + 1; yy++)
-                if (isok(xx, yy) && (xx != x || yy != y)) {
+                if (isok(xx, yy) && (xx != x || yy != y)) 
+				{
                     locs[i][0] = xx, locs[i][1] = yy;
                     ++i;
                 }
         /* look for a suitable trap among the viable spots */
-        for (i = 0; i < 10; ++i) {
+        for (i = 0; i < 10; ++i)
+		{
             xx = locs[i][0], yy = locs[i][1];
             if (!xx)
                 break; /* we've run out of spots */
@@ -459,7 +489,9 @@ struct monst *mtmp;
                 trapy = yy;
                 m.has_defense = MUSE_TRAPDOOR;
                 break; /* no need to look at any other spots */
-            } else if (t->ttyp == TELEP_TRAP) {
+            }
+			else if (t->ttyp == TELEP_TRAP) 
+			{
                 trapx = xx;
                 trapy = yy;
                 m.has_defense = MUSE_TELEPORT_TRAP;
@@ -470,7 +502,8 @@ struct monst *mtmp;
     if (!can_operate_objects(mtmp->data)) /* can't use objects */
         goto botm;
 
-    if (is_mercenary(mtmp->data) && (obj = m_carrying(mtmp, BUGLE)) != 0) {
+    if (is_mercenary(mtmp->data) && (obj = m_carrying(mtmp, BUGLE)) != 0)
+	{
         int xx, yy;
         struct monst *mon;
 
@@ -478,8 +511,10 @@ struct monst *mtmp;
          * have the soldier play the bugle when it sees or
          * remembers soldiers nearby...
          */
-        for (xx = x - 3; xx <= x + 3; xx++) {
-            for (yy = y - 3; yy <= y + 3; yy++) {
+        for (xx = x - 3; xx <= x + 3; xx++) 
+		{
+            for (yy = y - 3; yy <= y + 3; yy++)
+			{
                 if (!isok(xx, yy) || (xx == x && yy == y))
                     continue;
                 if ((mon = m_at(xx, yy)) != 0 && is_mercenary(mon->data)
@@ -509,7 +544,8 @@ struct monst *mtmp;
 #define nomore(x)       if (m.has_defense == x) continue;
     /* selection could be improved by collecting all possibilities
        into an array and then picking one at random */
-    for (obj = mtmp->minvent; obj; obj = obj->nobj) {
+    for (obj = mtmp->minvent; obj; obj = obj->nobj) 
+	{
         /* don't always use the same selection pattern */
         if (m.has_defense && !rn2(3))
             break;
@@ -527,13 +563,15 @@ struct monst *mtmp;
             && !(Is_botlevel(&u.uz) || In_endgame(&u.uz))
             && !(is_ice(x, y) || is_pool(x, y) || is_lava(x, y))
             && !(mtmp->data == &mons[PM_VLAD_THE_IMPALER]
-                 && In_V_tower(&u.uz))) {
+                 && In_V_tower(&u.uz)))
+		{
             m.defensive = obj;
             m.has_defense = MUSE_WAN_DIGGING;
         }
         nomore(MUSE_WAN_TELEPORTATION_SELF);
         nomore(MUSE_WAN_TELEPORTATION);
-        if (obj->otyp == WAN_TELEPORTATION && obj->spe > 0) {
+        if (obj->otyp == WAN_TELEPORTATION && obj->spe > 0) 
+		{
             /* use the TELEP_TRAP bit to determine if they know
              * about noteleport on this level or not.  Avoids
              * ineffective re-use of teleportation.  This does
@@ -541,7 +579,8 @@ struct monst *mtmp;
              * about teleport traps.
              */
             if (!level.flags.noteleport
-                || !(mtmp->mtrapseen & (1 << (TELEP_TRAP - 1)))) {
+                || !(mtmp->mtrapseen & (1 << (TELEP_TRAP - 1)))) 
+			{
                 m.defensive = obj;
                 m.has_defense = (mon_has_amulet(mtmp))
                                     ? MUSE_WAN_TELEPORTATION
@@ -552,55 +591,68 @@ struct monst *mtmp;
         if (obj->otyp == SCR_TELEPORTATION && !is_blinded(mtmp)
             && haseyes(mtmp->data)
             && (!obj->cursed || (!(mtmp->isshk && inhishop(mtmp))
-                                 && !mtmp->isgd && !mtmp->ispriest))) {
+                                 && !mtmp->isgd && !mtmp->ispriest)))
+		{
             /* see WAN_TELEPORTATION case above */
             if (!level.flags.noteleport
-                || !(mtmp->mtrapseen & (1 << (TELEP_TRAP - 1)))) {
+                || !(mtmp->mtrapseen & (1 << (TELEP_TRAP - 1)))) 
+			{
                 m.defensive = obj;
                 m.has_defense = MUSE_SCR_TELEPORTATION;
             }
         }
 
-        if (mtmp->data != &mons[PM_PESTILENCE]) {
+        if (mtmp->data != &mons[PM_PESTILENCE])
+		{
             nomore(MUSE_POT_FULL_HEALING);
-            if (obj->otyp == POT_FULL_HEALING) {
+            if (obj->otyp == POT_FULL_HEALING) 
+			{
                 m.defensive = obj;
                 m.has_defense = MUSE_POT_FULL_HEALING;
             }
 			nomore(MUSE_POT_GREATER_HEALING);
-			if (obj->otyp == POT_GREATER_HEALING) {
+			if (obj->otyp == POT_GREATER_HEALING) 
+			{
 				m.defensive = obj;
 				m.has_defense = MUSE_POT_GREATER_HEALING;
 			}
 			nomore(MUSE_POT_EXTRA_HEALING);
-            if (obj->otyp == POT_EXTRA_HEALING) {
+            if (obj->otyp == POT_EXTRA_HEALING) 
+			{
                 m.defensive = obj;
                 m.has_defense = MUSE_POT_EXTRA_HEALING;
             }
             nomore(MUSE_WAN_CREATE_MONSTER);
-            if (obj->otyp == WAN_CREATE_MONSTER && obj->spe > 0) {
+            if (obj->otyp == WAN_CREATE_MONSTER && obj->spe > 0) 
+			{
                 m.defensive = obj;
                 m.has_defense = MUSE_WAN_CREATE_MONSTER;
             }
             nomore(MUSE_POT_HEALING);
-            if (obj->otyp == POT_HEALING) {
+            if (obj->otyp == POT_HEALING) 
+			{
                 m.defensive = obj;
                 m.has_defense = MUSE_POT_HEALING;
             }
-        } else { /* Pestilence */
+        }
+		else
+		{ /* Pestilence */
             nomore(MUSE_POT_FULL_HEALING);
-            if (obj->otyp == POT_SICKNESS) {
+            if (obj->otyp == POT_SICKNESS) 
+			{
                 m.defensive = obj;
                 m.has_defense = MUSE_POT_FULL_HEALING;
             }
             nomore(MUSE_WAN_CREATE_MONSTER);
-            if (obj->otyp == WAN_CREATE_MONSTER && obj->spe > 0) {
+            if (obj->otyp == WAN_CREATE_MONSTER && obj->spe > 0)
+			{
                 m.defensive = obj;
                 m.has_defense = MUSE_WAN_CREATE_MONSTER;
             }
         }
         nomore(MUSE_SCR_CREATE_MONSTER);
-        if (obj->otyp == SCR_CREATE_MONSTER) {
+        if (obj->otyp == SCR_CREATE_MONSTER)
+		{
             m.defensive = obj;
             m.has_defense = MUSE_SCR_CREATE_MONSTER;
         }

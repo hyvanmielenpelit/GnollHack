@@ -178,36 +178,36 @@ struct obj {
  *	#define is_poisonable(otyp) (otyp <= BEC_DE_CORBIN)
  */
 #define is_blade(otmp)                           \
-    (otmp->oclass == WEAPON_CLASS                \
-     && objects[otmp->otyp].oc_skill >= P_DAGGER \
-     && objects[otmp->otyp].oc_skill <= P_SWORD)
+    ((otmp)->oclass == WEAPON_CLASS                \
+     && objects[(otmp)->otyp].oc_skill >= P_DAGGER \
+     && objects[(otmp)->otyp].oc_skill <= P_SWORD)
 #define is_axe(otmp)                                              \
-    ((otmp->oclass == WEAPON_CLASS || otmp->oclass == TOOL_CLASS) \
-     && objects[otmp->otyp].oc_skill == P_AXE)
+    (((otmp)->oclass == WEAPON_CLASS || (otmp)->oclass == TOOL_CLASS) \
+     && objects[(otmp)->otyp].oc_skill == P_AXE)
 #define is_pick(otmp)                                             \
-    ((otmp->oclass == WEAPON_CLASS || otmp->oclass == TOOL_CLASS) \
-     && objects[otmp->otyp].oc_skill == P_PICK_AXE)
+    (((otmp)->oclass == WEAPON_CLASS || (otmp)->oclass == TOOL_CLASS) \
+     && objects[(otmp)->otyp].oc_skill == P_PICK_AXE)
 #define is_sword(otmp)                                \
-    (otmp->oclass == WEAPON_CLASS                     \
-     && objects[otmp->otyp].oc_skill == P_SWORD)
+    ((otmp)->oclass == WEAPON_CLASS                     \
+     && objects[(otmp)->otyp].oc_skill == P_SWORD)
 #define is_pole(otmp)                                             \
-    ((otmp->oclass == WEAPON_CLASS || otmp->oclass == TOOL_CLASS) \
-     && (objects[otmp->otyp].oc_skill == P_POLEARM))
+    (((otmp)->oclass == WEAPON_CLASS || (otmp)->oclass == TOOL_CLASS) \
+     && (objects[(otmp)->otyp].oc_skill == P_POLEARM))
 #define is_spear(otmp) \
-    (otmp->oclass == WEAPON_CLASS && objects[otmp->otyp].oc_skill == P_SPEAR)
+    ((otmp)->oclass == WEAPON_CLASS && objects[(otmp)->otyp].oc_skill == P_SPEAR)
 #define is_launcher(otmp)                                                  \
-    (otmp->oclass == WEAPON_CLASS && objects[otmp->otyp].oc_skill >= P_BOW \
-     && objects[otmp->otyp].oc_skill <= P_CROSSBOW)
+    ((otmp)->oclass == WEAPON_CLASS && objects[(otmp)->otyp].oc_skill >= P_BOW \
+     && objects[(otmp)->otyp].oc_skill <= P_CROSSBOW)
 #define is_ammo(otmp)                                            \
-    ((otmp->oclass == WEAPON_CLASS || otmp->oclass == GEM_CLASS) \
-     && objects[otmp->otyp].oc_skill >= -P_CROSSBOW              \
-     && objects[otmp->otyp].oc_skill <= -P_BOW)
+    (((otmp)->oclass == WEAPON_CLASS || (otmp)->oclass == GEM_CLASS) \
+     && objects[(otmp)->otyp].oc_skill >= -P_CROSSBOW              \
+     && objects[(otmp)->otyp].oc_skill <= -P_BOW)
 #define matching_launcher(a, l) \
     ((l) && objects[(a)->otyp].oc_skill == -objects[(l)->otyp].oc_skill)
 #define ammo_and_launcher(a, l) (is_ammo(a) && matching_launcher(a, l))
 #define is_missile(otmp)                                          \
-    ((otmp->oclass == WEAPON_CLASS || otmp->oclass == TOOL_CLASS) \
-     && objects[otmp->otyp].oc_skill == -P_THROWN_WEAPON)
+    (((otmp)->oclass == WEAPON_CLASS || (otmp)->oclass == TOOL_CLASS) \
+     && objects[(otmp)->otyp].oc_skill == -P_THROWN_WEAPON)
 #define is_weptool(o) \
     ((o)->oclass == TOOL_CLASS && objects[(o)->otyp].oc_skill != P_NONE)
         /* towel is not a weptool:  spe isn't an enchantment, cursed towel
@@ -218,86 +218,85 @@ struct obj {
 	((o)->oclass == AMULET_CLASS)
 #define is_wet_towel(o) ((o)->otyp == TOWEL && (o)->spe > 0)
 #define bimanual(otmp)                                            \
-    ((otmp->oclass == WEAPON_CLASS || otmp->oclass == TOOL_CLASS) \
-     && objects[otmp->otyp].oc_bimanual)
+    (((otmp)->oclass == WEAPON_CLASS || (otmp)->oclass == TOOL_CLASS) \
+     && objects[(otmp)->otyp].oc_bimanual)
 #define is_multigen(otmp)                           \
-	(objects[otmp->otyp].oc_multigen_type > MULTIGEN_SINGLE)
+	(objects[(otmp)->otyp].oc_multigen_type > MULTIGEN_SINGLE)
 
-#define is_poisonable(otmp)                         \
-    (otmp->oclass == WEAPON_CLASS                   \
-     && objects[otmp->otyp].oc_skill >= -P_THROWN_WEAPON \
-     && objects[otmp->otyp].oc_skill <= -P_BOW && objects[otmp->otyp].oc_dir > WHACK)
+#define is_poisonable(otmp) \
+    (((otmp)->oclass == WEAPON_CLASS && !is_launcher(otmp) && objects[(otmp)->otyp].oc_dir > WHACK) || objects[(otmp)->otyp].oc_flags3 & O3_POISONABLE)
+
 #define uslinging() (uwep && objects[uwep->otyp].oc_skill == P_SLING)
 /* 'is_quest_artifact()' only applies to the current role's artifact */
 #define any_quest_artifact(o) ((o)->oartifact >= ART_ORB_OF_DETECTION)
 
 #define is_elemental_enchantable(otmp)                                            \
-	((otmp->oclass == WEAPON_CLASS && !is_launcher(otmp)) || objects[otmp->otyp].oc_flags3 & O3_ELEMENTAL_ENCHANTABLE)
-#define is_deathenchantable(otmp)                                            \
-    (objects[otmp->otyp].oc_material == MAT_BONE || objects[otmp->otyp].oc_material == MAT_GLASS)
+	(((otmp)->oclass == WEAPON_CLASS && !is_launcher(otmp)) || objects[(otmp)->otyp].oc_flags3 & O3_ELEMENTAL_ENCHANTABLE)
+#define is_death_enchantable(otmp)                                            \
+    (objects[(otmp)->otyp].oc_material == MAT_BONE || objects[(otmp)->otyp].oc_material == MAT_GLASS)
 
 #define is_cursed_magic_item(otmp)                                            \
-	(objects[otmp->otyp].oc_flags2 & O2_CURSED_MAGIC_ITEM)
+	(objects[(otmp)->otyp].oc_flags2 & O2_CURSED_MAGIC_ITEM)
 
 #define is_generated_cursed(otmp)                                            \
-	(objects[otmp->otyp].oc_flags2 & O2_GENERATED_CURSED)
+	(objects[(otmp)->otyp].oc_flags2 & O2_GENERATED_CURSED)
 
 #define is_generated_blessed(otmp)                                            \
-	(objects[otmp->otyp].oc_flags2 & O2_GENERATED_BLESSED)
+	(objects[(otmp)->otyp].oc_flags2 & O2_GENERATED_BLESSED)
 
-#define oresist_disintegration(obj)                                       \
-    (objects[obj->otyp].oc_flags & O1_DISINTEGRATION_RESISTANT || objects[obj->otyp].oc_flags & O1_INDESTRUCTIBLE || objects[obj->otyp].oc_oprop == DISINT_RES  || objects[obj->otyp].oc_oprop2 == DISINT_RES || objects[obj->otyp].oc_oprop3 == DISINT_RES || obj_resists(obj, 5, 50) \
-     || is_quest_artifact(obj) )
+#define oresist_disintegration(otmp)                                       \
+    (objects[(otmp)->otyp].oc_flags & O1_DISINTEGRATION_RESISTANT || objects[(otmp)->otyp].oc_flags & O1_INDESTRUCTIBLE || objects[(otmp)->otyp].oc_oprop == DISINT_RES  || objects[(otmp)->otyp].oc_oprop2 == DISINT_RES || objects[(otmp)->otyp].oc_oprop3 == DISINT_RES || obj_resists(otmp, 5, 50) \
+     || is_quest_artifact(otmp) )
 
 
 
 /* Armor */
 #define is_shield(otmp)          \
-    (otmp->oclass == ARMOR_CLASS \
-     && objects[otmp->otyp].oc_armor_category == ARM_SHIELD)
+    ((otmp)->oclass == ARMOR_CLASS \
+     && objects[(otmp)->otyp].oc_armor_category == ARM_SHIELD)
 #define is_helmet(otmp) \
-    (otmp->oclass == ARMOR_CLASS && objects[otmp->otyp].oc_armor_category == ARM_HELM)
+    ((otmp)->oclass == ARMOR_CLASS && objects[(otmp)->otyp].oc_armor_category == ARM_HELM)
 #define is_conical_hat(otmp) \
     ((otmp)->otyp >= CORNUTHAUM && (otmp)->otyp <= GNOMISH_FELT_HAT)
 #define is_boots(otmp)           \
-    (otmp->oclass == ARMOR_CLASS \
-     && objects[otmp->otyp].oc_armor_category == ARM_BOOTS)
+    ((otmp)->oclass == ARMOR_CLASS \
+     && objects[(otmp)->otyp].oc_armor_category == ARM_BOOTS)
 #define is_gloves(otmp)          \
-    (otmp->oclass == ARMOR_CLASS \
-     && objects[otmp->otyp].oc_armor_category == ARM_GLOVES)
+    ((otmp)->oclass == ARMOR_CLASS \
+     && objects[(otmp)->otyp].oc_armor_category == ARM_GLOVES)
 #define is_cloak(otmp)           \
-    (otmp->oclass == ARMOR_CLASS \
-     && objects[otmp->otyp].oc_armor_category == ARM_CLOAK)
+    ((otmp)->oclass == ARMOR_CLASS \
+     && objects[(otmp)->otyp].oc_armor_category == ARM_CLOAK)
 #define is_shirt(otmp)           \
-    (otmp->oclass == ARMOR_CLASS \
-     && objects[otmp->otyp].oc_armor_category == ARM_SHIRT)
+    ((otmp)->oclass == ARMOR_CLASS \
+     && objects[(otmp)->otyp].oc_armor_category == ARM_SHIRT)
 #define is_robe(otmp)           \
-    (otmp->oclass == ARMOR_CLASS \
-     && objects[otmp->otyp].oc_armor_category == ARM_ROBE)
+    ((otmp)->oclass == ARMOR_CLASS \
+     && objects[(otmp)->otyp].oc_armor_category == ARM_ROBE)
 #define is_bracers(otmp)           \
-    (otmp->oclass == ARMOR_CLASS \
-     && objects[otmp->otyp].oc_armor_category == ARM_BRACERS)
+    ((otmp)->oclass == ARMOR_CLASS \
+     && objects[(otmp)->otyp].oc_armor_category == ARM_BRACERS)
 #define is_suit(otmp) \
-    (otmp->oclass == ARMOR_CLASS && objects[otmp->otyp].oc_armor_category == ARM_SUIT)
+    ((otmp)->oclass == ARMOR_CLASS && objects[(otmp)->otyp].oc_armor_category == ARM_SUIT)
 #define is_elven_armor(otmp)                                              \
-    (otmp->oclass == ARMOR_CLASS && is_elven_obj(otmp))
+    ((otmp)->oclass == ARMOR_CLASS && is_elven_obj(otmp))
 #define is_orcish_armor(otmp)                                            \
-    (otmp->oclass == ARMOR_CLASS && is_orcish_obj(otmp))
+    ((otmp)->oclass == ARMOR_CLASS && is_orcish_obj(otmp))
 #define is_dwarvish_armor(otmp)               \
-    (otmp->oclass == ARMOR_CLASS && is_dwarvish_obj(otmp))
+    ((otmp)->oclass == ARMOR_CLASS && is_dwarvish_obj(otmp))
 #define is_gnollish_armor(otmp) \
-	(otmp->oclass == ARMOR_CLASS && is_gnollish_obj(otmp))
+	((otmp)->oclass == ARMOR_CLASS && is_gnollish_obj(otmp))
 #define is_gnomish_armor(otmp) \
-	(otmp->oclass == ARMOR_CLASS && is_gnomish_obj(otmp))
+	((otmp)->oclass == ARMOR_CLASS && is_gnomish_obj(otmp))
 
 /* Eggs and other food */
 #define MAX_EGG_HATCH_TIME 200 /* longest an egg can remain unhatched */
 #define stale_egg(egg) \
     ((monstermoves - (egg)->age) > (2 * MAX_EGG_HATCH_TIME))
 #define ofood(o) ((o)->otyp == CORPSE || (o)->otyp == EGG || (o)->otyp == TIN)
-#define polyfodder(obj) (ofood(obj) && pm_to_cham((obj)->corpsenm) != NON_PM)
-#define mlevelgain(obj) (ofood(obj) && (obj)->corpsenm >= LOW_PM && (mons[(obj)->corpsenm].mconveys & MC_LEVEL_GAIN))
-#define mhealup(obj) (ofood(obj) && (obj)->corpsenm == PM_NURSE)
+#define polyfodder(o) (ofood(o) && pm_to_cham((o)->corpsenm) != NON_PM)
+#define mlevelgain(o) (ofood(o) && (o)->corpsenm >= LOW_PM && (mons[(o)->corpsenm].mconveys & MC_LEVEL_GAIN))
+#define mhealup(o) (ofood(o) && (o)->corpsenm == PM_NURSE)
 #define Is_pudding(o) ((o)->oclass == FOOD_CLASS && objects[(o)->otyp].oc_subtyp == FOODTYPE_GLOB)
 
 /* Containers */

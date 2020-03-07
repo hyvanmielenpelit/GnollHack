@@ -392,11 +392,11 @@ newman()
             killer.format = KILLED_BY_AN;
             Strcpy(killer.name, "unsuccessful polymorph");
             done(DIED);
-            newuhs(FALSE);
+            update_hunger_status(FALSE);
             return; /* lifesaved */
         }
     }
-    newuhs(FALSE);
+    update_hunger_status(FALSE);
     polyman("feel like a new %s!",
             /* use saved gender we're about to revert to, not current */
             ((Upolyd ? u.mfemale : flags.female) && urace.individual.f)

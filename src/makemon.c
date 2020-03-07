@@ -1304,29 +1304,37 @@ register struct monst *mtmp;
 			if (!rn2(2))
 				(void)mongetsgold(mtmp, 5 + rn2(26));
 
-			if (!rn2(20))
-				(void)mongets(mtmp, WAN_ORE_DETECTION);
 		}
 		else if (ptr == &mons[PM_DWARF_LORD])
 		{
 			if (!rn2(2))
 				(void)mongetsgold(mtmp, 10 + rn2(51));
-
-			if (!rn2(15))
-				(void)mongets(mtmp, WAN_ORE_DETECTION);
 		}
 		else if (ptr == &mons[PM_DWARF_KING])
 		{
 			if (!rn2(2))
 				(void)mongetsgold(mtmp, 100 + rn2(401));
-
-			if (!rn2(10))
-				(void)mongets(mtmp, WAN_ORE_DETECTION);
 		}
 		else if (ptr == &mons[PM_BUGBEAR])
 		{
 			if (!rn2(2))
 				(void)mongetsgold(mtmp, 10 + rn2(21));
+		}
+
+		if (is_dwarf(ptr))
+		{
+			/* Essential gear */
+			if (!rn2(20))
+				(void)mongets(mtmp, WAN_ORE_DETECTION);
+
+			/* Food and drink */
+			if (!rn2(4))
+				(void)mongets(mtmp, CRAM_RATION);
+			if (!rn2(4))
+				(void)mongets(mtmp, POT_DWARVEN_STOUT);
+			if (!rn2(12))
+				(void)mongets(mtmp, POT_DWARVEN_STOUT);
+
 		}
 
 		if (n > 0)

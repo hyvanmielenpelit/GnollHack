@@ -1095,9 +1095,10 @@ boolean* obj_destroyed;
 							&& uwep->otyp == ELVEN_LONG_BOW)
 							damage++;
 					}
-					if (obj->opoisoned && is_poisonable(obj))
-						ispoisoned = TRUE;
 				}
+
+				if (obj->opoisoned && is_poisonable(obj))
+					ispoisoned = TRUE;
 			}
 		}
 		else if (obj->oclass == POTION_CLASS) 
@@ -3077,7 +3078,7 @@ register struct attack *mattk;
                 if ((otmp = mlifesaver(mdef)) != 0)
                     m_useup(mdef, otmp);
 
-                newuhs(FALSE);
+                update_hunger_status(FALSE);
                 /* start_engulf() issues "you engulf <mdef>" above; this
                    used to specify XKILL_NOMSG but we need "you kill <mdef>"
                    in case we're also going to get "welcome to level N+1";

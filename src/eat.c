@@ -425,7 +425,7 @@ do_reset_eat()
      * canchoke always gets recalculated anyway.
      */
     stop_occupation();
-    newuhs(FALSE);
+    update_hunger_status(FALSE);
 }
 
 /* called each move during eating process */
@@ -459,8 +459,8 @@ boolean message;
     struct obj *piece = context.victual.piece;
 
     piece->in_use = TRUE;
-    occupation = 0; /* do this early, so newuhs() knows we're done */
-    newuhs(FALSE);
+    occupation = 0; /* do this early, so update_hunger_status() knows we're done */
+    update_hunger_status(FALSE);
     if (nomovemsg) {
         if (message)
             pline1(nomovemsg);
@@ -3297,7 +3297,7 @@ gethungry()
             break;
         }
     }
-    newuhs(TRUE);
+    update_hunger_status(TRUE);
 }
 
 /* called after vomiting and after performing feats of magic */
@@ -3306,7 +3306,7 @@ morehungry(num)
 int num;
 {
     u.uhunger -= num;
-    newuhs(TRUE);
+    update_hunger_status(TRUE);
 }
 
 /* called after eating (and after drinking fruit juice) */
@@ -3314,7 +3314,7 @@ void
 lesshungry(num)
 int num;
 {
-    /* See comments in newuhs() for discussion on force_save_hs */
+    /* See comments in update_hunger_status() for discussion on force_save_hs */
     boolean iseating = (occupation == eatfood) || force_save_hs;
 
     debugpline1("lesshungry(%d)", num);
@@ -3355,7 +3355,7 @@ int num;
             }
         }
     }
-    newuhs(FALSE);
+    update_hunger_status(FALSE);
 }
 
 STATIC_PTR
@@ -3386,7 +3386,7 @@ reset_faint()
 
 /* compute and comment on your (new?) hunger status */
 void
-newuhs(incr)
+update_hunger_status(incr)
 boolean incr;
 {
     unsigned newhs;
@@ -3470,7 +3470,7 @@ boolean incr;
             killer.format = KILLED_BY;
             Strcpy(killer.name, "starvation");
             done(STARVING);
-            /* if we return, we lifesaved, and that calls newuhs */
+            /* if we return, we lifesaved, and that calls update_hunger_status */
             return;
         }
     }

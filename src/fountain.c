@@ -300,7 +300,7 @@ drinkfountain()
 	{
 		pline_The("tasty spring water refreshes you.");
 		u.uhunger += rnd(10); /* don't choke on water */
-		newuhs(FALSE);
+		update_hunger_status(FALSE);
 		if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
 		{
 			pline("That was a fountain of spring water.");
@@ -366,7 +366,7 @@ drinkfountain()
     if (fate < 10) {
         pline_The("cool draught refreshes you.");
         u.uhunger += rnd(10); /* don't choke on water */
-        newuhs(FALSE);
+        update_hunger_status(FALSE);
         if (mgkftn)
             return;
     } else {
@@ -598,7 +598,7 @@ register struct obj *obj;
 				SET_FOUNTAIN_KNOWN(u.ux, u.uy);
 			}
 		}
-		else if (obj && obj->otyp == POT_SICKNESS)
+		else if (obj && (obj->otyp == POT_SICKNESS || obj->otyp == POT_POISON))
 		{
 			if (carried(obj))
 				pline("%s is purified.", Yobjnam2(obj, "dilute"));
@@ -803,9 +803,15 @@ register struct obj *obj;
 const char* get_fountain_name(x, y)
 int x, y;
 {
+	if (!isok(x, y))
+		return "invalid coordinates";
+
+	if (!IS_FOUNTAIN(levl[x][y].typ))
+		return "a non-fountain";
+
 	int ftyp = (levl[x][y].fountaintype & FOUNTAIN_TYPE_MASK);
 
-	return FOUNTAIN_IS_KNOWN(x, y) ? (ftyp > FOUNTAIN_MAGIC ? fountain_type_text(ftyp) : levl[x][y].blessedftn ? "enchanted magic fountain" : "magic fountain") : "fountain";
+	return FOUNTAIN_IS_KNOWN(x, y) ? (ftyp > FOUNTAIN_MAGIC ? fountain_type_text(ftyp) : levl[x][y].blessedftn ? "enchanted magic fountain" : "magic fountain") : defsyms[S_fountain].explanation;
 }
 
 
