@@ -610,6 +610,7 @@ struct objclass {
 #define EDIBLE_ROYAL_JELLY -11
 #define EDIBLE_APPLE -12
 #define EDIBLE_EGG -13
+#define EDIBLE_RESTORE_ABILITY -14
 
 
 /* spells */

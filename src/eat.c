@@ -2614,6 +2614,17 @@ struct obj *otmp;
 		(void)adjattrib(A_CHA, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1,
 			TRUE ? -1 : 1);
 		break;
+	case EDIBLE_RESTORE_ABILITY:
+	{
+		int otyp = POT_RESTORE_ABILITY;
+		struct obj* pseudo = mksobj(otyp, FALSE, FALSE, FALSE);
+		pseudo->blessed = otmp->blessed;
+		pseudo->cursed = otmp->cursed;
+		pseudo->quan = 20L; /* do not let useup get it */
+		peffects(pseudo);
+		obfree(pseudo, (struct obj*)0);
+		break;
+	}
 	case EDIBLE_EGG:
         if (flesh_petrifies(&mons[otmp->corpsenm])) {
             if (!Stone_resistance

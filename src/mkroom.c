@@ -737,8 +737,10 @@ antholemon()
     indx = (int) ((long) ubirthday % 3L);
     indx += level_difficulty();
     /* Same monsters within a level, different ones between levels */
-    do {
-        switch ((indx + trycnt) % 3) {
+    do 
+	{
+        switch ((indx + trycnt) % 3) 
+		{
         case 0:
             mtyp = PM_SOLDIER_ANT;
             break;
@@ -773,11 +775,13 @@ mkswamp() /* Michiel Huisjes & Fred de Wilde */
         sroom->rtype = SWAMP;
         for (sx = sroom->lx; sx <= sroom->hx; sx++)
             for (sy = sroom->ly; sy <= sroom->hy; sy++)
-                if (!OBJ_AT(sx, sy) && !MON_AT(sx, sy) && !t_at(sx, sy)
-                    && !nexttodoor(sx, sy)) {
-                    if ((sx + sy) % 2) {
+                if (!OBJ_AT(sx, sy) && !MON_AT(sx, sy) && !t_at(sx, sy) && !nexttodoor(sx, sy))
+				{
+                    if ((sx + sy) % 2)
+					{
                         levl[sx][sy].typ = POOL;
-                        if (!eelct || !rn2(4)) {
+                        if (!eelct || !rn2(4)) 
+						{
                             /* mkclass() won't do, as we might get kraken */
                             (void) makemon(rn2(5)
                                               ? &mons[PM_GIANT_EEL]
@@ -787,10 +791,12 @@ mkswamp() /* Michiel Huisjes & Fred de Wilde */
                                            sx, sy, NO_MM_FLAGS);
                             eelct++;
                         }
-                    } else if (!rn2(4)) /* swamps tend to be moldy */
-                        (void) makemon(mkclass(S_FUNGUS, 0), sx, sy,
-                                       NO_MM_FLAGS);
-                }
+                    } 
+					else if (!rn2(4)) /* swamps tend to be moldy */
+                        (void) makemon(mkclass(S_FUNGUS, 0), sx, sy, NO_MM_FLAGS);
+					else if (!rn2(7)) /* swamps may have cloudberries */
+						(void)mksobj_at(CLOUDBERRY, sx, sy, TRUE, FALSE);
+				}
         level.flags.has_swamp = 1;
 		swampnumber++;
     }
