@@ -876,7 +876,7 @@ mkgarden()
 					int itemtype = SPRIG_OF_WOLFSBANE;
 					int quan = 1;
 
-					switch (rn2(18))
+					switch (rn2(20))
 					{
 					case 0:
 						itemtype = CLOVE_OF_GARLIC;
@@ -949,6 +949,14 @@ mkgarden()
 					case 17:
 						itemtype = rn2(4) ? PEAR : POMEGRANATE;
 						quan = 1;
+						break;
+					case 18:
+						itemtype = CLOUDBERRY;
+						quan = 1;
+						break;
+					case 19:
+						itemtype = FIG;
+						quan = rnd(2);
 						break;
 					default:
 						break;
