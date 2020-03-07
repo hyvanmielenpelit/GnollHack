@@ -363,7 +363,7 @@ struct monst* mattacker;
     if (otyp == CREAM_PIE)
         return 0;
 	
-	if(Is_weapon || Is_worn_gauntlets || objects[otyp].oc_class == GEM_CLASS)
+	if(Is_weapon || Is_worn_gauntlets || objects[otyp].oc_class == GEM_CLASS || otmp->oclass == ROCK_CLASS)
 	{
 		if (
 			(objects[otyp].oc_damagetype == AD_FIRE && (youdefend ? Fire_resistance : resists_fire(mon)))
@@ -431,7 +431,7 @@ struct monst* mattacker;
 
     /* Put weapon vs. monster type damage bonuses in below: */
     if (Is_weapon || Is_worn_gauntlets || otmp->oclass == GEM_CLASS || otmp->oclass == BALL_CLASS
-        || otmp->oclass == CHAIN_CLASS) {
+        || otmp->oclass == CHAIN_CLASS || otmp->oclass == ROCK_CLASS) {
         int bonus = 0;
 
         if (otmp->blessed
