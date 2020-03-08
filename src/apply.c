@@ -4516,7 +4516,7 @@ boolean usenexthere;
 	int cnt = 0;
 	for (struct obj* otmp = objchain; otmp; otmp = usenexthere ? otmp->nexthere : otmp->nobj)
 	{
-		if ((Is_proper_container(otmp) || (Is_container(otmp) && !objects[otmp->otyp].oc_name_known)) && otmp != this_container)
+		if ((Is_proper_container(otmp) || (Is_container(otmp) && !objects[otmp->otyp].oc_name_known)) && otmp != this_container && !otmp->olocked)
 		{
 			cnt++;
 			*last_container_ptr = otmp;
@@ -4549,7 +4549,7 @@ boolean usenexthere;
 		if (cnt >= 52)
 			break;
 
-		if ((Is_proper_container(otmp) || (Is_container(otmp) && !objects[otmp->otyp].oc_name_known)) && otmp != this_container)
+		if ((Is_proper_container(otmp) || (Is_container(otmp) && !objects[otmp->otyp].oc_name_known)) && otmp != this_container && !otmp->olocked)
 		{
 			anything any = zeroany;
 			any.a_obj = otmp;
@@ -4560,7 +4560,7 @@ boolean usenexthere;
 				applied_invlet,
 				applied_group_accelerator,
 				ATR_NONE, 
-				cxname(otmp), 
+				doname(otmp), 
 				MENU_UNSELECTED);
 
 			cnt++;

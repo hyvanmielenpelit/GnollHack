@@ -1702,7 +1702,7 @@ enhance_weapon_skill()
 			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, MENU_UNSELECTED);
 			Sprintf(buf, "success/cost for spells, to-hit for wands, and");
 			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, MENU_UNSELECTED);
-			Sprintf(buf, "arrow/magic trap untrap chance for disarm traps");
+			Sprintf(buf, "arrow/magic trap untrap chance for disarm trap");
 			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, MENU_UNSELECTED);
 			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, "",
 				MENU_UNSELECTED);
