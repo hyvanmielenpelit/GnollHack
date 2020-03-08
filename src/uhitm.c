@@ -1740,8 +1740,7 @@ boolean* obj_destroyed;
 		}
 	}
 
-	if (!hittxt /*( thrown => obj exists )*/
-		&& thrown && m_shot.n > 1 && m_shot.o == obj->otyp) 
+	if (!hittxt) /* && (1 = 1 || (thrown && m_shot.n > 1 && m_shot.o == obj->otyp)) */
 	{
 		if (thrown)
 			hit(mshot_xname(obj), mon, exclam(destroyed ? 100 : damagedealt), hide_damage_amount ? -1 : damagedealt);
