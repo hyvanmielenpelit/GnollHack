@@ -1460,7 +1460,7 @@ int how;
                     : urole.name.m)
                 : (const char *) (flags.female ? "Demigoddess" : "Demigod"));
     dump_forward_putstr(endwin, 0, pbuf, done_stopprint);
-    dump_forward_putstr(endwin, 0, "", done_stopprint);
+    //dump_forward_putstr(endwin, 0, "", done_stopprint);
 
 	if (how == ESCAPED || how == ASCENDED) {
         struct monst *mtmp;
