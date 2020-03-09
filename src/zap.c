@@ -757,6 +757,7 @@ struct obj *otmp;
 	case SPE_HEALING:
     case SPE_EXTRA_HEALING:
 	case SPE_GREATER_HEALING:
+	case SPE_PRODIGIOUS_HEALING:
 	case SPE_FULL_HEALING:
 		res = 1;
 		reveal_invis = TRUE;
@@ -785,7 +786,7 @@ struct obj *otmp;
                         mimic_hit_msg(mtmp, otyp);
                 } else
                     pline("%s looks %s.", Monnam(mtmp),
-                          otyp == SPE_GREATER_HEALING ? "much, much better" : otyp == SPE_EXTRA_HEALING ? "much better" : otyp == SPE_FULL_HEALING ? "completely healed" : "better");
+                          otyp == SPE_PRODIGIOUS_HEALING ? "vastly better" : SPE_GREATER_HEALING ? "much, much better" : otyp == SPE_EXTRA_HEALING ? "much better" : otyp == SPE_FULL_HEALING ? "completely healed" : "better");
             }
             if (is_tame(mtmp) || is_peaceful(mtmp)) {
                 adjalign(Role_if(PM_HEALER) ? 1 : sgn(u.ualign.type));
@@ -3320,6 +3321,7 @@ struct obj *obj, *otmp;
 		case SPE_HEALING:
         case SPE_EXTRA_HEALING:
 		case SPE_GREATER_HEALING:
+		case SPE_PRODIGIOUS_HEALING:
 		case SPE_FULL_HEALING:
 		case SPE_REPLENISH_UNDEATH:
 		case SPE_GREATER_UNDEATH_REPLENISHMENT:
@@ -4820,12 +4822,13 @@ boolean ordinary;
 	case SPE_HEALING:
     case SPE_EXTRA_HEALING:
 	case SPE_GREATER_HEALING:
+	case SPE_PRODIGIOUS_HEALING:
 		if(is_living(youmonst.data))
 		{
 			learn_it = TRUE; /* (no effect for spells...) */
 			healup(basedmg, 0, FALSE, (obj->blessed || (obj->otyp != SPE_HEALING && obj->otyp != SPE_MINOR_HEALING)),
 				(obj->blessed || (obj->otyp != SPE_HEALING && obj->otyp != SPE_MINOR_HEALING)), FALSE, FALSE);
-			You_feel("%sbetter.", obj->otyp == SPE_GREATER_HEALING ? "much, much " : obj->otyp == SPE_EXTRA_HEALING ? "much " : "");
+			You_feel("%sbetter.", obj->otyp == SPE_GREATER_HEALING ? "vastly " : obj->otyp == SPE_GREATER_HEALING ? "much, much " : obj->otyp == SPE_EXTRA_HEALING ? "much " : "");
 		}
 		else
 			You_feel("no different than before.");
@@ -5110,6 +5113,7 @@ struct obj *obj; /* wand or spell */
 	case SPE_HEALING:
     case SPE_EXTRA_HEALING:
 	case SPE_GREATER_HEALING:
+	case SPE_PRODIGIOUS_HEALING:
 	case SPE_FULL_HEALING:
 	case SPE_REPLENISH_UNDEATH:
 	case SPE_GREATER_UNDEATH_REPLENISHMENT:

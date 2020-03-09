@@ -3424,7 +3424,7 @@ boolean outokay, inokay, alreadyused, more_containers;
 	{
 		any.a_int = 9; /* 'm' */
 		char contbuf[BUFSZ] = "";
-		Sprintf(contbuf, "%s container in inventory", current_container->where == OBJ_INVENT ? "another" : "a");
+		Sprintf(contbuf, "%s container in the inventory", current_container->where == OBJ_INVENT ? "another" : "a");
 		Sprintf(buf, "move %s to %s", something, ((0 && other_containter_count == 1 && last_container) ? thesimpleoname(last_container) : contbuf));
 		add_menu(win, NO_GLYPH, &any, menuselector[any.a_int], 0, ATR_NONE,
 			buf, MENU_UNSELECTED);
@@ -3433,7 +3433,7 @@ boolean outokay, inokay, alreadyused, more_containers;
 	{
 		any.a_int = 10; /* 'c' */
 		char contbuf[BUFSZ] = "";
-		Sprintf(contbuf, "%s container on floor", current_container->where == OBJ_FLOOR ? "another" : "a");
+		Sprintf(contbuf, "%s container on the %s", current_container->where == OBJ_FLOOR ? "another" : "a", IS_ALTAR(levl[u.ux][u.uy].typ) ? "altar" : "floor");
 		Sprintf(buf, "move %s to %s", something, ((0 && other_containter_count == 1 && last_container) ? thesimpleoname(last_container) : contbuf));
 		add_menu(win, NO_GLYPH, &any, menuselector[any.a_int], 0, ATR_NONE,
 			buf, MENU_UNSELECTED);
@@ -3441,7 +3441,7 @@ boolean outokay, inokay, alreadyused, more_containers;
 	if (outokay)
 	{
 		any.a_int = 11; /* 'd' */
-		Sprintf(buf, "take %s out and drop it on floor", something);
+		Sprintf(buf, "take %s out and drop it on the %s", something, IS_ALTAR(levl[u.ux][u.uy].typ) ? "altar" : "floor");
 		add_menu(win, NO_GLYPH, &any, menuselector[any.a_int], 0, ATR_NONE,
 			buf, MENU_UNSELECTED);
 	}

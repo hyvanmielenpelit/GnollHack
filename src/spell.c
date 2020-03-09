@@ -1857,6 +1857,7 @@ boolean atme;
 	case SPE_HEALING:
     case SPE_EXTRA_HEALING:
 	case SPE_GREATER_HEALING:
+	case SPE_PRODIGIOUS_HEALING:
 	case SPE_FULL_HEALING:
 	case SPE_DRAIN_LIFE:
 	case SPE_PROBE_MONSTER:
@@ -1873,7 +1874,7 @@ boolean atme;
 	case SPE_PORTAL:
 		if (objects[otyp].oc_dir != NODIR)
 		{
-            if (otyp == SPE_MINOR_HEALING || otyp == SPE_HEALING || otyp == SPE_EXTRA_HEALING || otyp == SPE_GREATER_HEALING || otyp == SPE_FULL_HEALING
+            if (otyp == SPE_MINOR_HEALING || otyp == SPE_HEALING || otyp == SPE_EXTRA_HEALING || otyp == SPE_GREATER_HEALING || otyp == SPE_PRODIGIOUS_HEALING || otyp == SPE_FULL_HEALING
 				|| otyp == SPE_REPLENISH_UNDEATH || otyp == SPE_GREATER_UNDEATH_REPLENISHMENT
 				) {
                 /* healing and extra healing are actually potion effects,
