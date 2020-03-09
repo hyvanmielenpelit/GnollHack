@@ -191,10 +191,13 @@ struct obj {
     ((otmp)->oclass == WEAPON_CLASS                     \
      && objects[(otmp)->otyp].oc_skill == P_SWORD)
 #define is_pole(otmp)                                             \
-    (((otmp)->oclass == WEAPON_CLASS || (otmp)->oclass == TOOL_CLASS) \
-     && (objects[(otmp)->otyp].oc_skill == P_POLEARM || objects[(otmp)->otyp].oc_subtyp == WEP_LANCE))
+    ((otmp)->oclass == WEAPON_CLASS && objects[(otmp)->otyp].oc_subtyp == WEP_POLEARM)
 #define is_spear(otmp) \
-    ((otmp)->oclass == WEAPON_CLASS && objects[(otmp)->otyp].oc_skill == P_SPEAR)
+    ((otmp)->oclass == WEAPON_CLASS && objects[(otmp)->otyp].oc_subtyp == WEP_SPEAR)
+#define is_lance(otmp) \
+    ((otmp)->oclass == WEAPON_CLASS && objects[(otmp)->otyp].oc_subtyp == WEP_LANCE)
+#define is_appliable_pole_type_weapon(otmp)   \
+    (is_pole(otmp) || is_spear(otmp) || is_lance(otmp))
 #define is_launcher(otmp)                                                  \
     ((otmp)->oclass == WEAPON_CLASS && objects[(otmp)->otyp].oc_skill >= P_BOW \
      && objects[(otmp)->otyp].oc_skill <= P_CROSSBOW)

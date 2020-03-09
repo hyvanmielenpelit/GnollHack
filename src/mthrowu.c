@@ -1119,7 +1119,7 @@ struct monst *mtmp, *mtarg;
     otmp = select_rwep(mtmp);
     if (!otmp)
         return 0;
-    ispole = is_pole(otmp);
+    ispole = is_appliable_pole_type_weapon(otmp);
 
     x = mtmp->mx;
     y = mtmp->my;
@@ -1369,13 +1369,17 @@ struct monst *mtmp;
     if (!otmp)
         return;
 
-    if (is_pole(otmp)) 
+    if (is_appliable_pole_type_weapon(otmp))
 	{
         int dam, hitv;
+		int min_range = 1, max_range = 2;
+		get_pole_type_weapon_min_max_distances(otmp, mtmp, &min_range, &max_range);
+		int distance2 = dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy);
 
         if (otmp != MON_WEP(mtmp))
             return; /* polearm must be wielded */
-        if (dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) > (has_otyp_extended_polearm_reach(otmp->otyp) ? POLEARM_EXTENDED_MAX_DISTANCE : POLEARM_NORMAL_MAX_DISTANCE)
+
+        if (distance2 > max_range || distance2 < min_range
             || !couldsee(mtmp->mx, mtmp->my))
             return; /* Out of range, or intervening wall */
 

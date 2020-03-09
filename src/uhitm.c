@@ -802,7 +802,7 @@ boolean* obj_destroyed;
 	boolean unarmed = !uwep && !uarm && !uarms;
 	boolean hand_to_hand = (thrown == HMON_MELEE
 		/* not grapnels; applied implies uwep */
-		|| (thrown == HMON_APPLIED && is_pole(uwep)));
+		|| (thrown == HMON_APPLIED && is_appliable_pole_type_weapon(uwep)));
 	boolean hide_damage_amount = FALSE;
 	boolean isdisintegrated = FALSE;
 	int damage_increase_adtyp = AD_MAGM; /* base assumption if nothing else is set */
@@ -925,7 +925,7 @@ boolean* obj_destroyed;
 				/* or strike with a missile in your hand... */
 				|| (!thrown && (is_missile(obj) || is_ammo(obj)))
 				/* or use a pole at short range and not mounted... */
-				|| (!thrown && !u.usteed && is_pole(obj))
+				|| (!thrown && !u.usteed && is_appliable_pole_type_weapon(obj))
 				/* or throw a missile without the proper bow... */
 				|| (is_ammo(obj) && !is_golf_swing_with_stone && (thrown != HMON_THROWN
 					|| !ammo_and_launcher(obj, uwep)))) 

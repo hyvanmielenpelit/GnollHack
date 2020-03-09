@@ -31,6 +31,7 @@ STATIC_PTR int NDECL(set_trap); /* occupation callback */
 STATIC_DCL int FDECL(use_whip, (struct obj *));
 STATIC_PTR void FDECL(display_polearm_positions, (int));
 STATIC_DCL int FDECL(use_pole, (struct obj *));
+
 STATIC_DCL int FDECL(use_cream_pie, (struct obj *));
 STATIC_DCL int FDECL(use_grapple, (struct obj *));
 STATIC_DCL int FDECL(do_break_wand, (struct obj *));
@@ -3594,6 +3595,86 @@ int state;
     }
 }
 
+/* Note that ranges are squared distances */
+void
+get_pole_type_weapon_min_max_distances(obj, mon, min_range, max_range)
+struct obj* obj;
+struct monst* mon;
+int* min_range;
+int* max_range;
+{
+	if (!obj || !mon)
+		return;
+
+	boolean is_you = (mon == &youmonst);
+	int skill_level = is_you ? P_SKILL_LEVEL(objects[obj->otyp].oc_skill) : is_prince(mon->data) ? P_EXPERT : is_lord(mon->data) ? P_SKILLED : P_BASIC;
+
+	if (is_pole(obj))
+	{
+		*min_range = POLEARM_MIN_DISTANCE;
+		*max_range = (has_otyp_extended_polearm_reach(obj->otyp) ? POLEARM_EXTENDED_MAX_DISTANCE : POLEARM_NORMAL_MAX_DISTANCE);
+
+	}
+	else if (is_spear(obj))
+	{
+		*min_range = SPEAR_MIN_DISTANCE;
+		if (has_otyp_extended_polearm_reach(obj->otyp))
+		{
+			*max_range = POLEARM_EXTENDED_MAX_DISTANCE;
+		}
+		else
+		{
+			switch (skill_level)
+			{
+			case P_BASIC:
+				*max_range = SPEAR_BASIC_MAX_DISTANCE;
+				break;
+			case P_SKILLED:
+				*max_range = SPEAR_SKILLED_MAX_DISTANCE;
+				break;
+			case P_EXPERT:
+				*max_range = SPEAR_EXPERT_MAX_DISTANCE;
+				break;
+			default:
+				*max_range = SPEAR_UNSKILLED_MAX_DISTANCE;
+				break;
+			}
+		}
+	}
+	else if (is_lance(obj))
+	{
+		*min_range = LANCE_MIN_DISTANCE;
+		if (has_otyp_extended_polearm_reach(obj->otyp))
+		{
+			*max_range = POLEARM_EXTENDED_MAX_DISTANCE;
+		}
+		else
+		{
+			switch (skill_level)
+			{
+			case P_BASIC:
+				*max_range = LANCE_BASIC_MAX_DISTANCE;
+				break;
+			case P_SKILLED:
+				*max_range = LANCE_SKILLED_MAX_DISTANCE;
+				break;
+			case P_EXPERT:
+				*max_range = LANCE_EXPERT_MAX_DISTANCE;
+				break;
+			default:
+				*max_range = LANCE_UNSKILLED_MAX_DISTANCE;
+				break;
+			}
+		}
+	}
+	else
+	{
+		/* Should not happen */
+		*min_range = 1;
+		*max_range = 2;
+	}
+}
+
 /* Distance attacks by pole-weapons */
 STATIC_OVL int
 use_pole(obj)
@@ -3602,7 +3683,7 @@ struct obj *obj;
 	if (!obj)
 		return 0;
 
-    int res = 0, max_range, min_range, glyph;
+    int res = 0, max_range = 2, min_range = 1, glyph;
     coord cc;
     struct monst *mtmp;
     struct monst *hitm = context.polearm.hitmon;
@@ -3635,8 +3716,10 @@ struct obj *obj;
      *  (Note: no roles in GnollHack can become expert or better
      *  for polearm skill; Yeoman in slash'em can become expert.)
      */
-    min_range = POLEARM_MIN_DISTANCE;
-	max_range = (has_otyp_extended_polearm_reach(obj->otyp) ? POLEARM_EXTENDED_MAX_DISTANCE : POLEARM_NORMAL_MAX_DISTANCE);
+
+	get_pole_type_weapon_min_max_distances(obj, &youmonst, &min_range, &max_range);
+    //min_range = POLEARM_MIN_DISTANCE;
+	//max_range = (has_otyp_extended_polearm_reach(obj->otyp) ? POLEARM_EXTENDED_MAX_DISTANCE : POLEARM_NORMAL_MAX_DISTANCE);
 
 #if 0
 	typ = uwep_skill_type();
@@ -4477,8 +4560,8 @@ doapply()
 			use_stone(obj);
 			break;
 		default:
-			/* Pole-weapons can strike at a distance */
-			if (is_pole(obj))
+			/* Pole-type-weapons can strike at a distance */
+			if (is_appliable_pole_type_weapon(obj))
 			{
 				res = use_pole(obj);
 				break;

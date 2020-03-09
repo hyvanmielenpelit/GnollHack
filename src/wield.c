@@ -148,7 +148,7 @@ update_unweapon()
 	if (uwep) {
 		unweapon1 = (uwep->oclass == WEAPON_CLASS)
 			? is_launcher(uwep) || is_ammo(uwep) || is_missile(uwep)
-			|| (is_pole(uwep) && !u.usteed)
+			|| (is_appliable_pole_type_weapon(uwep) && !u.usteed)
 			: !is_weptool(uwep) && !is_wet_towel(uwep);
 	}
 	else
@@ -157,7 +157,7 @@ update_unweapon()
 	if (u.twoweap && uarms) {
 		unweapon2 = (uarms->oclass == WEAPON_CLASS)
 			? is_launcher(uarms) || is_ammo(uarms) || is_missile(uarms)
-			|| (is_pole(uarms) && !u.usteed)
+			|| (is_appliable_pole_type_weapon(uarms) && !u.usteed)
 			: !is_weptool(uarms) && !is_wet_towel(uarms);
 	}
 	else

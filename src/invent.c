@@ -124,7 +124,7 @@ struct obj *obj;
         k = (k < 0) ? ((k >= -P_CROSSBOW && k <= -P_BOW) ? 1 : 3)
                     : ((k >= P_BOW && k <= P_CROSSBOW) ? 2
                        : (k == P_SPEAR || k == P_DAGGER) ? 4
-                          : !is_pole(obj) ? 5 : 6);
+                          : !is_pole(obj) && !is_lance(obj) ? 5 : 6);
         break;
     case TOOL_CLASS:
         if (seen && discovered
@@ -2022,7 +2022,7 @@ const char* headertext;
                  /* Picks, axes, pole-weapons, bullwhips */
                  && ((otmp->oclass == WEAPON_CLASS
                       && !is_pick(otmp) && !is_axe(otmp)
-                      && !is_pole(otmp) && otyp != BULLWHIP)
+                      && !is_appliable_pole_type_weapon(otmp) && otyp != BULLWHIP)
                      || (otmp->oclass == POTION_CLASS
                          /* only applicable potion is oil, and it will only
                             be offered as a choice when already discovered */
