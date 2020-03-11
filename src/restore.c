@@ -333,7 +333,7 @@ boolean ghostly, frozen;
              * will take the Has_contents() code path above.]
              */
             if ((catcorpse = mksobj(CORPSE, TRUE, FALSE, FALSE)) != 0) {
-                otmp->spe = 1; /* flag for special SchroedingersBox */
+				otmp->speflags |= SPEFLAGS_SCHROEDINGERS_BOX;  //otmp->spe = 1; /* flag for special SchroedingersBox */
                 set_corpsenm(catcorpse, PM_HOUSECAT);
                 (void) stop_timer(ROT_CORPSE, obj_to_any(catcorpse));
                 add_to_container(otmp, catcorpse);
@@ -538,13 +538,13 @@ register struct obj *otmp;
     register struct fruit *oldf;
 
     for (oldf = oldfruit; oldf; oldf = oldf->nextf)
-        if (oldf->fid == otmp->spe)
+        if (oldf->fid == otmp->special_quality)
             break;
 
     if (!oldf)
         impossible("no old fruit?");
     else
-        otmp->spe = fruitadd(oldf->fname, (struct fruit *) 0);
+        otmp->special_quality = fruitadd(oldf->fname, (struct fruit *) 0);
 }
 
 #ifdef ANDROID

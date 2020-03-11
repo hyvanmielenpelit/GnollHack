@@ -3253,7 +3253,7 @@ struct monst *mdef;
         }
         /* Archeologists should not break unique statues */
         if (mdef->data->geno & G_UNIQ)
-            otmp->spe = 1;
+            otmp->speflags |= SPEFLAGS_STATUE_HISTORIC;
         otmp->owt = weight(otmp);
     } else
         otmp = mksobj_at(ROCK, x, y, TRUE, FALSE);

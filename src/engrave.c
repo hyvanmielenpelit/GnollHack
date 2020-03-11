@@ -809,7 +809,7 @@ doengrave()
                "can't reach floor" message below */
             if (can_reach_floor(TRUE)) {
                 /* cancelled wand turns to dust */
-                if (otmp->spe < 0)
+                if (otmp->charges < 0)
                     zapwand = TRUE;
                 /* empty wand just doesn't write */
                 else
@@ -835,7 +835,7 @@ doengrave()
         }
         switch (otmp->otyp) {
         case MAGIC_MARKER:
-            if (otmp->spe <= 0)
+            if (otmp->charges <= 0)
                 Your("marker has dried out.");
             else
                 type = MARK;
@@ -914,7 +914,7 @@ doengrave()
             pline_The("engraving now reads: \"%s\".", buf);
         ptext = FALSE;
     }
-    if (zapwand && (otmp->spe < 0)) {
+    if (zapwand && (otmp->charges < 0)) {
         pline("%s %sturns to dust.", The(xname(otmp)),
               Blind ? "" : "glows violently, then ");
         if (!IS_GRAVE(levl[u.ux][u.uy].typ))
@@ -1118,15 +1118,15 @@ doengrave()
     case MARK:
         multi = -(len / 10);
         if (otmp->otyp == MAGIC_MARKER) {
-            maxelen = otmp->spe * 2; /* one charge / 2 letters */
+            maxelen = otmp->charges * 2; /* one charge / 2 letters */
             if (len > maxelen) {
                 Your("marker dries out.");
-                otmp->spe = 0;
+                otmp->charges = 0;
                 multi = -(maxelen / 10);
             } else if (len > 1)
-                otmp->spe -= len >> 1;
+                otmp->charges -= len >> 1;
             else
-                otmp->spe -= 1; /* Prevent infinite graffiti */
+                otmp->charges -= 1; /* Prevent infinite graffiti */
         }
         if (multi)
             nomovemsg = "You finish defacing the dungeon.";

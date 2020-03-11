@@ -849,7 +849,7 @@ struct obj *otmp;
 		/* [wakeup() doesn't rouse victims of temporary sleep,
            so it's okay to leave `wake' set to TRUE here] */
         reveal_invis = TRUE;
-        if (sleep_monst(mtmp, otmp, d(1 + otmp->spe, 8), 0, TRUE))
+        if (sleep_monst(mtmp, otmp, d(1 + otmp->charges, 8), 0, TRUE))
             slept_monst(mtmp);
         if (!Blind)
             learn_it = TRUE;
@@ -2099,26 +2099,28 @@ register struct obj *obj;
     int otyp = obj->otyp;
 
     if (objects[otyp].oc_magic
+		|| (obj->charges && objects[otyp].oc_charged)
         || (obj->spe && (obj->oclass == ARMOR_CLASS
-                         || obj->oclass == WEAPON_CLASS || is_weptool(obj)))
+                         || obj->oclass == WEAPON_CLASS || is_weptool(obj) || objects[otyp].oc_spe_type))
         || otyp == POT_ACID
         || otyp == POT_SICKNESS
 		|| otyp == POT_POISON
-		|| (otyp == POT_WATER && (obj->blessed || obj->cursed))) {
-        if (obj->spe != ((obj->oclass == WAND_CLASS) ? -1 : 0)
-            && otyp != WAN_CANCELLATION /* can't cancel cancellation */
-            && otyp != MAGIC_LAMP /* cancelling doesn't remove djinni */
-			&& otyp != MAGIC_CANDLE
-			&& otyp != CANDELABRUM_OF_INVOCATION) {
+		|| (otyp == POT_WATER && (obj->blessed || obj->cursed))) 
+	{
+        
+		if (otyp != WAN_CANCELLATION /* can't cancel cancellation */) 
+		{
             costly_alteration(obj, COST_CANCEL);
-            obj->spe = (obj->oclass == WAND_CLASS) ? -1 : 0;
+			obj->charges = (obj->oclass == WAND_CLASS) ? -1 : 0;
+			obj->spe = 0;
         }
         switch (obj->oclass) {
         case SCROLL_CLASS:
             costly_alteration(obj, COST_CANCEL);
             obj->otyp = SCR_BLANK_PAPER;
             obj->spe = 0;
-            break;
+			obj->special_quality = 0;
+			break;
         case SPBOOK_CLASS:
             if (otyp != SPE_CANCELLATION && otyp != SPE_NOVEL
                 && otyp != SPE_BOOK_OF_THE_DEAD) {
@@ -2170,9 +2172,9 @@ boolean by_you;
 
     /* Is this a charged/enchanted object? */
     if (!obj
-        || (!objects[obj->otyp].oc_charged && obj->oclass != WEAPON_CLASS
-            && obj->oclass != ARMOR_CLASS && !is_weptool(obj))
-        || obj->spe <= 0)
+        || !(objects[obj->otyp].oc_charged || objects[obj->otyp].oc_spe_type || obj->oclass == WEAPON_CLASS
+            || obj->oclass == ARMOR_CLASS || is_weptool(obj))
+        || (obj->spe <= 0 && obj->charges <= 0))
         return FALSE;
     
 	if (obj_resists(obj, 10, 90))
@@ -2183,7 +2185,11 @@ boolean by_you;
         costly_alteration(obj, COST_DRAIN);
 
     /* Drain the object and any implied effects */
-    obj->spe--;
+	if(objects[obj->otyp].oc_spe_type && obj->spe > 0)
+	    obj->spe--;
+
+	if (objects[obj->otyp].oc_charged && obj->charges > 0)
+		obj->charges--;
 
 	context.botl = 1;
 
@@ -2445,9 +2451,11 @@ struct obj *obj;
 
 /* classes of items whose current charge count carries over across polymorph
  */
-static const char charged_objs[] = { WAND_CLASS, WEAPON_CLASS, ARMOR_CLASS,
+static const char charged_objs[] = { WAND_CLASS, 
                                      '\0' };
 
+static const char enchanted_objs[] = { WEAPON_CLASS, ARMOR_CLASS,
+									 '\0' };
 /*
  * Polymorph the object to the given object ID.  If the ID is STRANGE_OBJECT
  * then pick random object from the source's class (this is the standard
@@ -2512,12 +2520,13 @@ int id;
      */
     if (obj->otyp == SCR_MAIL) {
         otmp->otyp = SCR_MAIL;
-        otmp->spe = 1;
+        otmp->special_quality = 1;
     }
 #endif
 
     /* avoid abusing eggs laid by you */
-    if (obj->otyp == EGG && obj->spe) {
+    if (obj->otyp == EGG && (obj->speflags & SPEFLAGS_YOURS))
+	{
         int mnum, tryct = 100;
 
         /* first, turn into a generic egg */
@@ -2528,13 +2537,13 @@ int id;
             otmp->owt = weight(otmp);
         }
         otmp->corpsenm = NON_PM;
-        otmp->spe = 0;
+        otmp->speflags &= ~SPEFLAGS_YOURS;
 
         /* now change it into something laid by the hero */
         while (tryct--) {
             mnum = can_be_hatched(random_monster(rn2));
             if (mnum != NON_PM && !dead_species(mnum, TRUE)) {
-                otmp->spe = 1;            /* laid by hero */
+                otmp->speflags |= SPEFLAGS_YOURS;            /* laid by hero */
                 set_corpsenm(otmp, mnum); /* also sets hatch timer */
                 break;
             }
@@ -2542,9 +2551,15 @@ int id;
     }
 
     /* keep special fields (including charges on wands) */
-    if (index(charged_objs, otmp->oclass))
-        otmp->spe = obj->spe;
-    otmp->recharged = obj->recharged;
+	if (index(charged_objs, otmp->oclass))
+	{
+		otmp->charges = obj->charges;
+	}
+	if (index(enchanted_objs, otmp->oclass))
+	{
+		otmp->spe = obj->spe;
+	}
+	otmp->recharged = obj->recharged;
 
     otmp->cursed = obj->cursed;
     otmp->blessed = obj->blessed;
@@ -2574,7 +2589,8 @@ int id;
             otmp->otyp = LOW_BOOTS;
             otmp->oclass = ARMOR_CLASS;
             otmp->spe = 0;
-            otmp->oeroded = 0;
+			otmp->charges = 0;
+			otmp->oeroded = 0;
             otmp->oerodeproof = TRUE;
             otmp->quan = 1L;
             otmp->cursed = FALSE;
@@ -3403,11 +3419,11 @@ int
 zappable(wand)
 register struct obj *wand;
 {
-    if (wand->spe < 0 || (wand->spe == 0 && rn2(121)))
+    if (wand->charges < 0 || (wand->charges == 0 && rn2(121)))
         return 0;
-    if (wand->spe == 0)
+    if (wand->charges == 0)
         You("wrest one last charge from the worn-out wand.");
-    wand->spe--;
+    wand->charges--;
     return 1;
 }
 
@@ -4269,7 +4285,7 @@ struct obj *otmp;
 
     otmp->in_use = TRUE; /* in case losehp() is fatal */
     pline("%s suddenly explodes!", The(xname(otmp)));
-    dmg = d(otmp->spe + 2, 6);
+    dmg = d(otmp->charges + 2, 6);
     losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_MAGM, FALSE), "exploding wand", KILLED_BY_AN);
     useup(otmp);
 }
@@ -4337,7 +4353,7 @@ dozap()
         obj = current_wand;
         current_wand = 0;
     }
-    if (obj && obj->spe < 0) {
+    if (obj && obj->charges < 0) {
         pline("%s to dust.", Tobjnam(obj, "turn"));
         useup(obj);
     }
@@ -4374,7 +4390,7 @@ boolean ordinary;
                 You("bash yourself!");
 			} 
 			else
-                basedmg = d(1 + obj->spe, 6);
+                basedmg = d(1 + obj->charges, 6);
 
 			damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_PHYS, TRUE);
 			exercise(A_STR, FALSE);
@@ -4388,7 +4404,7 @@ boolean ordinary;
 			You("shoot yourself with a magical arrow!");
 		}
 		else
-			basedmg = d(1 + obj->spe, 3);
+			basedmg = d(1 + obj->charges, 3);
 
 		damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_PHYS, TRUE);
 		exercise(A_STR, FALSE);
@@ -4607,7 +4623,7 @@ boolean ordinary;
 		{ /* permanent */
             HInvis |= FROM_ACQUIRED;
         } else { /* temporary */
-            incr_itimeout(&HInvis, d(obj->spe, 250));
+            incr_itimeout(&HInvis, d(obj->charges, 250));
         }
 #endif
 
@@ -4868,7 +4884,7 @@ boolean ordinary;
 		break;
 	case WAN_LIGHT: /* (broken wand) */
         /* assert( !ordinary ); */
-		damage = adjust_damage(d(obj->spe, 25), &youmonst, &youmonst, AD_ELEC, TRUE);
+		damage = adjust_damage(d(obj->charges, 25), &youmonst, &youmonst, AD_ELEC, TRUE);
 		/*FALLTHRU*/
     case EXPENSIVE_CAMERA:
         if (basedmg == 0)
@@ -7825,11 +7841,12 @@ register struct obj *obj;
         obj_extract_self(item);
         place_object(item, obj->ox, obj->oy);
     }
-    if (by_you && Role_if(PM_ARCHEOLOGIST) && (obj->spe & STATUE_HISTORIC)) {
+    if (by_you && Role_if(PM_ARCHEOLOGIST) && (obj->speflags & SPEFLAGS_STATUE_HISTORIC))
+	{
         You_feel("guilty about damaging such a historic statue.");
         adjalign(-1);
     }
-    obj->spe = 0;
+    obj->speflags &= ~SPEFLAGS_STATUE_HISTORIC;
     fracture_rock(obj);
     return TRUE;
 }

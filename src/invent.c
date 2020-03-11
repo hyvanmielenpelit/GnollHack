@@ -232,7 +232,10 @@ struct obj *obj;
     saveo.odiluted = obj->odiluted;
     saveo.blessed = obj->blessed, saveo.cursed = obj->cursed;
     saveo.spe = obj->spe;
-    saveo.owt = obj->owt;
+	saveo.special_quality = obj->special_quality;
+	saveo.charges = obj->charges;
+	saveo.speflags = obj->speflags;
+	saveo.owt = obj->owt;
     save_oname = has_oname(obj) ? ONAME(obj) : 0;
 	save_uoname = has_uoname(obj) ? UONAME(obj) : 0;
 	save_debug = flags.debug;
@@ -246,7 +249,7 @@ struct obj *obj;
     /* make "wet towel" and "moist towel" format as "towel" so that all
        three group together */
     if (obj->otyp == TOWEL)
-        obj->spe = 0;
+        obj->special_quality = 0;
     /* group "<size> glob of <foo>" by <foo> rather than by <size> */
     if (obj->globby)
         obj->owt = 200; /* 200: weight of combined glob from ten creatures
@@ -279,11 +282,11 @@ struct obj *obj;
             obj->blessed = saveo.blessed, obj->cursed = saveo.cursed;
     }
     if (obj->otyp == TOWEL) {
-        obj->spe = saveo.spe;
+        obj->special_quality = saveo.special_quality;
         /* give "towel" a suffix that will force wet ones to come first,
            moist ones next, and dry ones last regardless of whether
            they've been flagged as having spe known */
-        Strcat(res, is_wet_towel(obj) ? ((obj->spe >= 3) ? "x" : "y") : "z");
+        Strcat(res, is_wet_towel(obj) ? ((obj->special_quality >= 3) ? "x" : "y") : "z");
     }
     if (obj->globby) {
         obj->owt = saveo.owt;
@@ -1536,7 +1539,7 @@ boolean maybe_unpaid; /* false if caller handles shop billing */
 {
     if (maybe_unpaid)
         check_unpaid(obj);
-    obj->spe -= 1;
+    obj->charges -= 1;
     if (obj->known)
         update_inventory();
 }
@@ -4394,7 +4397,8 @@ register struct obj *otmp, *obj;
         return TRUE;
 
     if (obj->unpaid != otmp->unpaid || obj->spe != otmp->spe || obj->elemental_enchantment != otmp->elemental_enchantment
-        || obj->cursed != otmp->cursed || obj->blessed != otmp->blessed
+		|| obj->charges != otmp->charges || obj->special_quality != otmp->special_quality || obj->speflags != otmp->speflags
+		|| obj->cursed != otmp->cursed || obj->blessed != otmp->blessed
         || obj->no_charge != otmp->no_charge || obj->obroken != otmp->obroken
         || obj->otrapped != otmp->otrapped || obj->lamplit != otmp->lamplit
         || obj->bypass != otmp->bypass)

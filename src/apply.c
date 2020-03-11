@@ -66,7 +66,7 @@ struct obj *obj;
     if (!getdir((char *) 0))
         return 0;
 
-    if (obj->spe <= 0) {
+    if (obj->charges <= 0) {
         pline1(nothing_happens);
         return 1;
     }
@@ -1207,7 +1207,7 @@ struct obj **optr;
     register struct obj *obj = *optr;
     struct monst *mtmp;
     boolean wakem = FALSE, learno = FALSE,
-            ordinary = (obj->otyp != BELL_OF_OPENING || !obj->spe),
+            ordinary = (obj->otyp != BELL_OF_OPENING || !obj->charges),
             invoking =
                 (obj->otyp == BELL_OF_OPENING && invocation_pos(u.ux, u.uy)
                  && !On_stairs(u.ux, u.uy));
@@ -1336,18 +1336,21 @@ STATIC_OVL void
 use_candelabrum(obj)
 register struct obj *obj;
 {
-    const char *s = (obj->spe != 1) ? "candles" : "candle";
+    const char *s = (obj->special_quality != 1) ? "candles" : "candle";
 
-    if (obj->lamplit) {
+    if (obj->lamplit)
+	{
         You("snuff the %s.", s);
         end_burn(obj, TRUE);
         return;
     }
-    if (obj->spe <= 0) {
+    if (obj->special_quality <= 0) 
+	{
         pline("This %s has no %s.", xname(obj), s);
         return;
     }
-    if (Underwater) {
+    if (Underwater) 
+	{
         You("cannot make fire under water.");
         return;
     }
@@ -1357,11 +1360,11 @@ register struct obj *obj;
                       vtense(s, "die"));
         return;
     }
-    if (obj->spe < 7) {
-        There("%s only %d %s in %s.", vtense(s, "are"), obj->spe, s,
+    if (obj->special_quality < 7) {
+        There("%s only %d %s in %s.", vtense(s, "are"), obj->special_quality, s,
               the(xname(obj)));
         if (!Blind)
-            pline("%s lit.  %s dimly.", obj->spe == 1 ? "It is" : "They are",
+            pline("%s lit.  %s dimly.", obj->special_quality == 1 ? "It is" : "They are",
                   Tobjnam(obj, "shine"));
     } else {
         pline("%s's %s burn%s", The(xname(obj)), s,
@@ -1374,7 +1377,7 @@ register struct obj *obj;
            unlightable, unrefillable candelabrum; round up instead */
         obj->age = (obj->age + 1L) / 2L;
     } else {
-        if (obj->spe == 7) {
+        if (obj->special_quality == 7) {
             if (Blind)
                 pline("%s a strange warmth!", Tobjnam(obj, "radiate"));
             else
@@ -1400,7 +1403,7 @@ struct obj **optr;
     }
 
     otmp = carrying(CANDELABRUM_OF_INVOCATION);
-	if (!otmp || otmp->spe == 7)
+	if (!otmp || otmp->special_quality == 7)
 	{
 		boolean objsplitted = FALSE;
 		struct obj* lightedcandle = (struct obj*)0;
@@ -1456,18 +1459,18 @@ struct obj **optr;
         use_lamp(obj);
         return;
     } else {
-        if ((long) otmp->spe + obj->quan > 7L) {
-            obj = splitobj(obj, 7L - (long) otmp->spe);
+        if ((long) otmp->special_quality + obj->quan > 7L) {
+            obj = splitobj(obj, 7L - (long) otmp->special_quality);
             /* avoid a grammatical error if obj->quan gets
                reduced to 1 candle from more than one */
             s = (obj->quan != 1) ? "candles" : "candle";
         } else
             *optr = 0;
-        You("attach %ld%s %s to %s.", obj->quan, !otmp->spe ? "" : " more", s,
+        You("attach %ld%s %s to %s.", obj->quan, !otmp->special_quality ? "" : " more", s,
             the(xname(otmp)));
-        if (!otmp->spe || otmp->age > obj->age)
+        if (!otmp->special_quality || otmp->age > obj->age)
             otmp->age = obj->age;
-        otmp->spe += (int) obj->quan;
+        otmp->special_quality += (int) obj->quan;
         if (otmp->lamplit && !obj->lamplit)
             pline_The("new %s magically %s!", s, vtense(s, "ignite"));
         else if (!otmp->lamplit && obj->lamplit)
@@ -1477,7 +1480,7 @@ struct obj **optr;
                       otmp->lamplit ? "burn" : "use",
                       (obj->quan > 1L) ? "them" : "it",
                       (obj->quan > 1L) ? "them" : "it");
-        if (obj->quan < 7L && otmp->spe == 7)
+        if (obj->quan < 7L && otmp->special_quality == 7)
             pline("%s now has seven%s candles attached.", The(xname(otmp)),
                   otmp->lamplit ? " lit" : "");
         /* candelabrum's light range might increase */
@@ -1505,7 +1508,7 @@ struct obj *otmp;
         && otmp->lamplit) {
         char buf[BUFSZ];
         xchar x, y;
-        boolean many = candle ? (otmp->quan > 1L) : (otmp->spe > 1);
+        boolean many = candle ? (otmp->quan > 1L) : (otmp->special_quality > 1);
 
         (void) get_obj_location(otmp, &x, &y, 0);
         if (otmp->where == OBJ_MINVENT ? cansee(x, y) : !Blind)
@@ -1550,9 +1553,11 @@ struct obj *obj;
 {
     xchar x, y;
 
-    if (!obj->lamplit && (obj->otyp == MAGIC_LAMP || ignitable(obj))) {
-        if ((obj->otyp == MAGIC_LAMP || obj->otyp == MAGIC_CANDLE
-             || obj->otyp == CANDELABRUM_OF_INVOCATION) && obj->spe == 0)
+    if (!obj->lamplit && (obj->otyp == MAGIC_LAMP || ignitable(obj)))
+	{
+		if (obj->otyp == MAGIC_LAMP && obj->special_quality == 0)
+			return FALSE;
+		if ((obj->otyp == MAGIC_CANDLE || obj->otyp == CANDELABRUM_OF_INVOCATION) && obj->special_quality == 0)
             return FALSE;
         else if (obj->otyp != MAGIC_LAMP && obj->otyp != MAGIC_CANDLE && obj->age == 0)
             return FALSE;
@@ -1586,7 +1591,8 @@ struct obj *obj;
 {
     char buf[BUFSZ];
 
-    if (obj->lamplit) {
+    if (obj->lamplit) 
+	{
         if (obj->otyp == OIL_LAMP || obj->otyp == MAGIC_LAMP
             || obj->otyp == BRASS_LANTERN)
             pline("%slamp is now off.", Shk_Your(buf, obj));
@@ -1595,21 +1601,25 @@ struct obj *obj;
         end_burn(obj, TRUE);
         return;
     }
-    if (Underwater) {
+
+    if (Underwater)
+	{
         pline(!is_candle(obj) ? "This is not a diving lamp"
                               : "Sorry, fire and water don't mix.");
         return;
     }
+
     /* magic lamps with an spe == 0 (wished for) cannot be lit */
     if ((!is_candle(obj) && obj->age == 0)
-        || (obj->otyp == MAGIC_LAMP && obj->spe == 0)) {
+        || (obj->otyp == MAGIC_LAMP && obj->special_quality  == 0))
+	{
         if (obj->otyp == BRASS_LANTERN)
             Your("lamp has run out of power.");
         else
             pline("This %s has no oil.", xname(obj));
         return;
     }
-    if ((obj->cursed && !rn2(2)) || (obj->otyp == MAGIC_CANDLE && obj->spe == 0))
+    if ((obj->cursed && !rn2(2)) || (obj->otyp == MAGIC_CANDLE && obj->special_quality == 0))
 	{
         if (!Blind)
             pline("%s for a moment, then %s.", Tobjnam(obj, "flicker"),
@@ -1719,7 +1729,7 @@ dorub()
 
     /* now uwep is obj */
     if (uwep->otyp == MAGIC_LAMP) {
-        if (uwep->spe > 0 && !rn2(3)) {
+        if ((uwep->special_quality == 1) && !rn2(3)) {
             check_unpaid_usage(uwep, TRUE); /* unusual item use */
             /* bones preparation:  perform the lamp transformation
                before releasing the djinni in case the latter turns out
@@ -1727,7 +1737,7 @@ dorub()
                but an indebted one who grants a wish might bestow an
                artifact which blasts the hero with lethal results) */
             uwep->otyp = OIL_LAMP;
-            uwep->spe = 0; /* for safety */
+            uwep->speflags = 0; /* for safety */
             uwep->age = rn1(500, 1000);
             if (uwep->lamplit)
                 begin_burn(uwep, TRUE);
@@ -2080,7 +2090,8 @@ struct obj *obj;
     /* This takes only 1 move.  If this is to be changed to take many
      * moves, we've got to deal with decaying corpses...
      */
-    if (obj->spe <= 0) {
+    if (obj->charges <= 0) 
+	{
         You("seem to be out of tins.");
         return;
     }
@@ -2147,13 +2158,24 @@ void
 use_unicorn_horn(obj)
 struct obj *obj;
 {
+	if (!obj)
+		return;
+
 #define PROP_COUNT 7           /* number of properties we're dealing with */
 #define ATTR_COUNT (A_MAX * 3) /* number of attribute points we might fix */
     int idx, val, val_limit, trouble_count, unfixable_trbl, did_prop,
         did_attr;
     int trouble_list[PROP_COUNT + ATTR_COUNT];
 
-    if (obj && obj->cursed) {
+
+	if (obj->charges <= 0) {
+		pline1(nothing_happens);
+		return;
+	}
+	consume_obj_charge(obj, TRUE);
+
+	if (obj->cursed)
+	{
         long lcount = (long) rn1(90, 10);
 
         switch (rn2(13) / 2) { /* case 6 is half as likely as the others */
@@ -2221,6 +2243,7 @@ struct obj *obj;
 
     unfixable_trbl = unfixable_trouble_count(TRUE);
 
+#if 0
     /* collect attribute troubles */
     for (idx = 0; idx < A_MAX; idx++) {
         if (ABASE(idx) >= AMAX(idx))
@@ -2243,11 +2266,15 @@ struct obj *obj;
         /* keep track of unfixed trouble, for message adjustment below */
         unfixable_trbl += (AMAX(idx) - val_limit);
     }
+#endif
 
-    if (trouble_count == 0) {
+    if (trouble_count == 0) 
+	{
         pline1(nothing_happens);
         return;
-    } else if (trouble_count > 1) { /* shuffle */
+    } 
+	else if (trouble_count > 1)
+	{ /* shuffle */
         int i, j, k;
 
         for (i = trouble_count - 1; i > 0; i--)
@@ -2264,7 +2291,7 @@ struct obj *obj;
      *   blessed:  22.7%  22.7%  19.5%  15.4%  10.7%   5.7%   2.6%   0.8%
      *  uncursed:  35.4%  35.4%  22.9%   6.3%    0      0      0      0
      */
-    val_limit = rn2(d(2, (obj && obj->blessed) ? 4 : 2));
+	val_limit = (obj && obj->blessed) ? 2 : 1; // rn2(d(2, (obj&& obj->blessed) ? 4 : 2));
     if (val_limit > trouble_count)
         val_limit = trouble_count;
 
@@ -2545,7 +2572,7 @@ struct obj *obj;
         return;
     }
 
-    if (obj->spe > 0) {
+    if (obj->charges > 0) {
         if ((obj->cursed || Fumbling) && !rn2(2)) {
             consume_obj_charge(obj, TRUE);
 
@@ -2605,7 +2632,7 @@ struct obj* obj;
 		return 0;
 	}
 
-	if (obj->spe > 0) {
+	if (obj->charges > 0) {
 		otmp = getobj(wand_application_objects, "use wand on", 0, "");
 		if (!otmp)
 			return 0;
@@ -2800,7 +2827,7 @@ struct obj* obj;
 				}
 				break;
 			case WAN_CANCELLATION:
-				if (objects[otmp->otyp].oc_magic || otmp->spe > 0 || otmp->elemental_enchantment > 0 || otmp->blessed || otmp->cursed)
+				if (objects[otmp->otyp].oc_magic || otmp->spe != 0 || otmp->charges > (otmp->oclass == WAND_CLASS ? -1 : 0) || otmp->elemental_enchantment > 0 || otmp->blessed || otmp->cursed)
 				{
 					suggestnamingwand = TRUE;
 					pline("%s in gray for a while.", Tobjnam(otmp, "flicker"));
@@ -4039,18 +4066,18 @@ struct obj *obj;
         goto discard_broken_wand;
     }
     /* successful call to zappable() consumes a charge; put it back */
-    obj->spe++;
+    obj->charges++;
     /* might have "wrested" a final charge, taking it from 0 to -1;
        if so, we just brought it back up to 0, which wouldn't do much
        below so give it 1..3 charges now, usually making it stronger
        than an ordinary last charge (the wand is already gone from
        inventory, so perm_invent can't accidentally reveal this) */
-    if (!obj->spe)
-        obj->spe = rnd(3);
+    if (!obj->charges)
+        obj->charges = rnd(3);
 
     obj->ox = u.ux;
     obj->oy = u.uy;
-    dmg = obj->spe * 4;
+    dmg = obj->charges * 4;
     affects_objects = FALSE;
 
     switch (obj->otyp) {
@@ -4087,7 +4114,7 @@ struct obj *obj;
     case WAN_STRIKING:
         /* we want this before the explosion instead of at the very end */
         pline("A wall of force smashes down around you!");
-        dmg = d(1 + obj->spe, 6); /* normally 2d12 */
+        dmg = d(1 + obj->charges, 6); /* normally 2d12 */
         /*FALLTHRU*/
     case WAN_CANCELLATION:
     case WAN_POLYMORPH:
@@ -4142,7 +4169,7 @@ struct obj *obj;
                                   : "Some holes are quickly filled with %s!");
                     fillmsg = TRUE;
                 } else
-                    digactualhole(x, y, BY_OBJECT, (rn2(obj->spe) < 3
+                    digactualhole(x, y, BY_OBJECT, (rn2(obj->charges) < 3
                                                     || (!Can_dig_down(&u.uz)
                                                         && !levl[x][y].candig))
                                                       ? PIT

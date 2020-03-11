@@ -2296,14 +2296,14 @@ boolean quietly;
                 if (Deaf || muteshk(shkp)) {
                     pline("%s seems %s that you want to sell that.",
                           Shknam(shkp),
-                          (obj->spe < 7) ? "horrified" : "concerned");
+                          (obj->special_quality < 7) ? "horrified" : "concerned");
                 } else {
                     verbalize("No thanks, I'd hang onto that if I were you.");
-                    if (obj->spe < 7)
+                    if (obj->special_quality < 7)
                         verbalize(
                              "You'll need %d%s candle%s to go along with it.",
-                                (7 - obj->spe), (obj->spe > 0) ? " more" : "",
-                                  plur(7 - obj->spe));
+                                (7 - obj->special_quality), (obj->special_quality > 0) ? " more" : "",
+                                  plur(7 - obj->special_quality));
                     /* [what if hero is already carrying enough candles?
                        should Izchak explain how to attach them instead?] */
                 }
@@ -3391,7 +3391,7 @@ boolean shk_buying;
             tmp = 0L;
         break;
     case WAND_CLASS:
-        if (obj->spe == -1)
+        if (obj->charges == -1)
             tmp = 0L;
         break;
     case POTION_CLASS:
@@ -4499,7 +4499,8 @@ boolean altusage; /* some items have an "alternate" use with different cost */
     /* The idea is to make the exhaustive use of an unpaid item
      * more expensive than buying it outright.
      */
-    if (otmp->otyp == MAGIC_LAMP) { /* 1 */
+    if (otmp->otyp == MAGIC_LAMP)
+	{ /* 1 */
         /* normal use (ie, as light source) of a magic lamp never
            degrades its value, but not charging anything would make
            identification too easy; charge an amount comparable to
@@ -4509,30 +4510,46 @@ boolean altusage; /* some items have an "alternate" use with different cost */
             tmp = (long) objects[OIL_LAMP].oc_cost;
         else
             tmp += tmp / 3L;                 /* djinni is being released */
-    } else if (otmp->otyp == MAGIC_MARKER) { /* 70 - 100 */
+    } 
+	else if (otmp->otyp == MAGIC_MARKER)
+	{ /* 70 - 100 */
         /* No way to determine in advance how many charges will be
          * wasted.  So, arbitrarily, one half of the price per use.
          */
         tmp /= 2L;
-    } else if (otmp->otyp == BAG_OF_TRICKS /* 1 - 20 */
-               || otmp->otyp == HORN_OF_PLENTY) {
+    }
+	else if (otmp->otyp == BAG_OF_TRICKS /* 1 - 20 */
+               || otmp->otyp == HORN_OF_PLENTY)
+	{
         /* altusage: emptying of all the contents at once */
         if (!altusage)
             tmp /= 5L;
-    } else if (otmp->otyp == CRYSTAL_BALL               /* 1 - 5 */
-               || otmp->otyp == OIL_LAMP                /* 1 - 10 */
-               || otmp->otyp == BRASS_LANTERN
+    } 
+	else if (otmp->otyp == CRYSTAL_BALL               /* 1 - 5 */
                || (otmp->otyp >= MAGIC_FLUTE
                    && otmp->otyp <= DRUM_OF_EARTHQUAKE) /* 5 - 9 */
-               || otmp->oclass == WAND_CLASS) {         /* 3 - 11 */
-        if (otmp->spe > 1)
+               || otmp->oclass == WAND_CLASS)
+	{         /* 3 - 11 */
+        if (otmp->charges > 1)
             tmp /= 4L;
-    } else if (otmp->oclass == SPBOOK_CLASS) {
+    }
+	else if (otmp->otyp == OIL_LAMP                /* 1 - 10 */
+		|| otmp->otyp == BRASS_LANTERN)
+	{         /* 3 - 11 */
+		if (otmp->special_quality > 1)
+			tmp /= 4L;
+	}
+	else if (otmp->oclass == SPBOOK_CLASS)
+	{
         tmp -= tmp / 5L;
-    } else if (otmp->otyp == CAN_OF_GREASE || otmp->otyp == TINNING_KIT
-               || otmp->otyp == EXPENSIVE_CAMERA) {
+    } 
+	else if (otmp->otyp == CAN_OF_GREASE || otmp->otyp == TINNING_KIT
+               || otmp->otyp == EXPENSIVE_CAMERA) 
+	{
         tmp /= 10L;
-    } else if (otmp->otyp == POT_OIL) {
+    } 
+	else if (otmp->otyp == POT_OIL) 
+	{
         tmp /= 5L;
     }
     return tmp;
@@ -4554,7 +4571,7 @@ boolean altusage;
     long tmp;
 
     if (!otmp->unpaid || !*u.ushops
-        || (otmp->spe <= 0 && objects[otmp->otyp].oc_charged))
+        || (otmp->charges <= 0 && objects[otmp->otyp].oc_charged))
         return;
     if (!(shkp = shop_keeper(*u.ushops)) || !inhishop(shkp))
         return;
@@ -4562,21 +4579,28 @@ boolean altusage;
         return;
 
     arg1 = arg2 = "";
-    if (otmp->oclass == SPBOOK_CLASS) {
+    if (otmp->oclass == SPBOOK_CLASS) 
+	{
         fmt = "%sYou owe%s %ld %s.";
         Sprintf(buf, "This is no free library, %s!  ", cad(FALSE));
         arg1 = rn2(2) ? buf : "";
         arg2 = ESHK(shkp)->debit > 0L ? " an additional" : "";
-    } else if (otmp->otyp == POT_OIL) {
+    } 
+	else if (otmp->otyp == POT_OIL) 
+	{
         fmt = "%s%sThat will cost you %ld %s (Yendorian Fuel Tax).";
-    } else if (altusage && (otmp->otyp == BAG_OF_TRICKS
-                            || otmp->otyp == HORN_OF_PLENTY)) {
+    }
+	else if (altusage && (otmp->otyp == BAG_OF_TRICKS
+                            || otmp->otyp == HORN_OF_PLENTY))
+	{
         fmt = "%s%sEmptying that will cost you %ld %s.";
         if (!rn2(3))
             arg1 = "Whoa!  ";
         if (!rn2(3))
             arg1 = "Watch it!  ";
-    } else {
+    }
+	else 
+	{
         fmt = "%s%sUsage fee, %ld %s.";
         if (!rn2(3))
             arg1 = "Hey!  ";
@@ -4584,7 +4608,8 @@ boolean altusage;
             arg2 = "Ahem.  ";
     }
 
-    if (!Deaf && !muteshk(shkp)) {
+    if (!Deaf && !muteshk(shkp)) 
+	{
         verbalize(fmt, arg1, arg2, tmp, currency(tmp));
         exercise(A_WIS, TRUE); /* you just got info */
     }

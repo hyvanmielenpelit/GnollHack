@@ -6333,7 +6333,7 @@ struct fruit *replace_fruit;
      * a bones level or from orctown raider's loot...
      */
 
-    /* Note: every fruit has an id (kept in obj->spe) of at least 1;
+    /* Note: every fruit has an id (kept in obj->special_quality) of at least 1;
      * 0 is an error.
      */
     if (user_specified) {
@@ -6422,7 +6422,7 @@ struct fruit *replace_fruit;
     if (f)
         goto nonew;
 
-    /* Maximum number of named fruits is 127, even if obj->spe can
+    /* Maximum number of named fruits is 127, even if obj->special_quality can
        handle bigger values.  If adding another fruit would overflow,
        use a random fruit instead... we've got a lot to choose from.
        current_fruit remains as is. */

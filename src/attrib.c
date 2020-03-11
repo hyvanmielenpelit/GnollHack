@@ -2003,7 +2003,7 @@ struct monst* mon;
 								if (objects[otyp].oc_bonus_attributes & FIXED_IS_MAXIMUM)
 								{
 									int afixmaxcandidate = objects[otyp].oc_attribute_bonus;
-									if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
+									if (objects[otyp].oc_spe_type && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
 										afixmaxcandidate += applicable_spe;
 
 									/* Take the lowest maximum (most constraining) */
@@ -2013,7 +2013,7 @@ struct monst* mon;
 								else
 								{
 									int afixmincandidate = objects[otyp].oc_attribute_bonus;
-									if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
+									if (objects[otyp].oc_spe_type && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
 										afixmincandidate += applicable_spe;
 
 									/* Take the highest minimum (most constraining) */
@@ -2024,44 +2024,44 @@ struct monst* mon;
 							else
 							{
 								*abon_ptr[i] += multiplier * objects[otyp].oc_attribute_bonus;
-								if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
+								if (objects[otyp].oc_spe_type && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
 									*abon_ptr[i] += multiplier * applicable_spe;
 							}
 						}
 						else if (i == A_MAX + 0)
 						{
 							*daminc_ptr += multiplier * objects[otyp].oc_attribute_bonus;
-							if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
+							if (objects[otyp].oc_spe_type && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
 								*daminc_ptr += multiplier * applicable_spe;
 						}
 						else if (i == A_MAX + 1)
 						{
 							*hitinc_ptr += multiplier * objects[otyp].oc_attribute_bonus;
-							if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
+							if (objects[otyp].oc_spe_type && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
 								*hitinc_ptr += multiplier * applicable_spe;
 						}
 						else if (i == A_MAX + 2)
 						{
 							*acbonus_ptr += multiplier * objects[otyp].oc_attribute_bonus;
-							if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
+							if (objects[otyp].oc_spe_type && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
 								*acbonus_ptr += multiplier * applicable_spe;
 						}
 						else if (i == A_MAX + 3)
 						{
 							*mcbonus_ptr += multiplier * objects[otyp].oc_attribute_bonus;
-							if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
+							if (objects[otyp].oc_spe_type && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
 								*mcbonus_ptr += multiplier * applicable_spe;
 						}
 						else if (i == A_MAX + 4 && is_you)
 						{
 							u.uspellcastingbonus += multiplier * objects[otyp].oc_attribute_bonus;
-							if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
+							if (objects[otyp].oc_spe_type && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
 								u.uspellcastingbonus += multiplier * applicable_spe;
 						}
 						else if (i == A_MAX + 5 && is_you)
 						{
 							u.uexperiencebonus += multiplier * objects[otyp].oc_attribute_bonus;
-							if (objects[otyp].oc_charged && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
+							if (objects[otyp].oc_spe_type && !(objects[otyp].oc_bonus_attributes & IGNORE_SPE))
 								u.uexperiencebonus += multiplier * applicable_spe;
 						}
 					}

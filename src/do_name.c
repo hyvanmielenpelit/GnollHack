@@ -1584,7 +1584,7 @@ struct obj *obj;
 	else if (otemp.oclass == POTION_CLASS)
         otemp.odiluted = 0; /* not diluted */
     else if (otemp.otyp == TOWEL || otemp.otyp == STATUE)
-        otemp.spe = 0; /* not wet or historic */
+        otemp.special_quality = 0; /* not wet or historic */
     else if (otemp.otyp == TIN)
         otemp.known = 0; /* suppress tin type (homemade, &c) and mon type */
     else if (otemp.otyp == FIGURINE)

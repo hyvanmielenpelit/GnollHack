@@ -499,7 +499,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 			))
             Strcpy(buf, "pair of ");
         else if (is_wet_towel(obj))
-            Strcpy(buf, (obj->spe < 3) ? "moist " : "wet ");
+            Strcpy(buf, (obj->special_quality < 3) ? "moist " : "wet ");
 
         if (!dknown)
             Strcat(buf, dn);
@@ -520,7 +520,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
                     mons[omndx].mname);
         } else if (is_wet_towel(obj)) {
             if (wizard)
-                Sprintf(eos(buf), " (%d)", obj->spe);
+                Sprintf(eos(buf), " (%d)", obj->special_quality);
         }
         break;
     case ARMOR_CLASS:
@@ -568,10 +568,10 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         break;
     case FOOD_CLASS:
         if (typ == SLIME_MOLD) {
-            struct fruit *f = fruit_from_indx(obj->spe);
+            struct fruit *f = fruit_from_indx(obj->special_quality);
 
             if (!f) {
-                impossible("Bad fruit #%d?", obj->spe);
+                impossible("Bad fruit #%d?", obj->special_quality);
                 Strcpy(buf, "fruit");
             } else {
                 Strcpy(buf, f->fname);
@@ -624,7 +624,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             char anbuf[10];
 
             Sprintf(buf, "%s%s of %s%s",
-                    (Role_if(PM_ARCHEOLOGIST) && (obj->spe & STATUE_HISTORIC))
+                    (Role_if(PM_ARCHEOLOGIST) && (obj->speflags & SPEFLAGS_STATUE_HISTORIC))
                        ? "historic "
                        : "",
                     actualn,
@@ -743,7 +743,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         break;
     }
     default:
-        Sprintf(buf, "glorkum %d %d %d", obj->oclass, typ, obj->spe);
+        Sprintf(buf, "glorkum %d %d %d %d", obj->oclass, typ, obj->spe, obj->charges);
     }
     if (pluralize)
         Strcpy(buf, makeplural(buf));
@@ -836,7 +836,7 @@ struct obj *obj;
     /* but suppressing fruit details leads to "bad fruit #0"
        [perhaps we should force "slime mold" rather than use xname?] */
     if (obj->otyp == SLIME_MOLD)
-        bareobj.spe = obj->spe;
+        bareobj.special_quality = obj->special_quality;
 
     bufp = distant_name(&bareobj, xname); /* xname(&bareobj) */
     if (!strncmp(bufp, "uncursed ", 9))
@@ -1068,7 +1068,7 @@ unsigned doname_flags;
            isn't set when emptiness gets discovered because then
            charging magic would yield known number of new charges) */
         && ((obj->otyp == BAG_OF_TRICKS)
-             ? (obj->spe == 0 && !obj->known)
+             ? (obj->charges == 0 && !obj->known)
              /* not bag of tricks: empty if container which has no contents */
              : ((Is_container(obj) || obj->otyp == STATUE)
                 && !Has_contents(obj))))
@@ -1095,7 +1095,7 @@ unsigned doname_flags;
              * printed to avoid ambiguity between an item whose curse
              * status is unknown, and an item known to be uncursed.
              */
-                 || ((!known || !objects[obj->otyp].oc_charged
+                 || ((!known || !objects[obj->otyp].oc_spe_type
                       || obj->oclass == ARMOR_CLASS
                       || obj->oclass == RING_CLASS
 					  || obj->oclass == MISCELLANEOUS_CLASS
@@ -1135,11 +1135,16 @@ unsigned doname_flags;
                 plur(itemcount));
     }
 
+	/* charges */
+	if (objects[obj->otyp].oc_charged && known)
+		Sprintf(eos(bp), " (%d:%d)", (int)obj->recharged, obj->charges);
+
+	/* post and prefixes */
     switch (is_weptool(obj) ? WEAPON_CLASS : obj->oclass) {
     case AMULET_CLASS:
         if (obj->owornmask & W_AMUL)
             Strcat(bp, " (being worn)");
-        break;
+		break;
 	case MISCELLANEOUS_CLASS:
 		if (obj->owornmask & W_MISCITEMS)
 		{
@@ -1161,7 +1166,8 @@ unsigned doname_flags;
 				Strcat(bp, ")");
 			}
 		}
-		if (known && objects[obj->otyp].oc_charged) {
+		if (known && objects[obj->otyp].oc_spe_type) 
+		{
 			Strcat(prefix, sitoa(obj->spe));
 			Strcat(prefix, " ");
 		}
@@ -1261,7 +1267,7 @@ unsigned doname_flags;
             Strcat(prefix, sitoa(obj->spe));
             Strcat(prefix, " ");
         }
-        break;
+		break;
     case TOOL_CLASS:
 		if (isenchanted)
 		{
@@ -1301,11 +1307,11 @@ unsigned doname_flags;
         }
         if (obj->otyp == CANDELABRUM_OF_INVOCATION) 
 		{
-            if (!obj->spe)
+            if (!obj->special_quality)
                 Strcpy(tmpbuf, "no");
             else
-                Sprintf(tmpbuf, "%d", obj->spe);
-            Sprintf(eos(bp), " (%s candle%s%s)", tmpbuf, plur(obj->spe),
+                Sprintf(tmpbuf, "%d", obj->special_quality);
+            Sprintf(eos(bp), " (%s candle%s%s)", tmpbuf, plur(obj->special_quality),
                     !obj->lamplit ? " attached" : ", lit");
             break;
         } 
@@ -1314,20 +1320,18 @@ unsigned doname_flags;
 		{
             if ((is_candle(obj) && obj->otyp != MAGIC_CANDLE
                 && obj->age < 30L * (long) objects[obj->otyp].oc_cost)
-				|| (obj->otyp == MAGIC_CANDLE && obj->spe < 2)
+				|| (obj->otyp == MAGIC_CANDLE && obj->special_quality < 2)
 				)
                 Strcat(prefix, "partly used ");
             if (obj->lamplit)
                 Strcat(bp, " (lit)");
             break;
         }
-        if (objects[obj->otyp].oc_charged)
-            goto charges;
+//        if (objects[obj->otyp].oc_charged)
+//            goto charges;
         break;
     case WAND_CLASS:
- charges:
-        if (known)
-            Sprintf(eos(bp), " (%d:%d)", (int) obj->recharged, obj->spe);
+ //charges:
         break;
     case POTION_CLASS:
         if (obj->otyp == POT_OIL && obj->lamplit)
@@ -1343,7 +1347,7 @@ unsigned doname_flags;
             Strcat(bp, body_part(HAND));
             Strcat(bp, ")");
         }
-        if (known && objects[obj->otyp].oc_charged) {
+        if (known && objects[obj->otyp].oc_spe_type) {
             Strcat(prefix, sitoa(obj->spe));
             Strcat(prefix, " ");
         }
@@ -1371,7 +1375,7 @@ unsigned doname_flags;
                 && (known || (mvitals[omndx].mvflags & MV_KNOWS_EGG))) {
                 Strcat(prefix, mons[omndx].mname);
                 Strcat(prefix, " ");
-                if (obj->spe)
+                if (obj->speflags & SPEFLAGS_YOURS)
                     Strcat(bp, " (laid by you)");
             }
         }
@@ -3314,6 +3318,7 @@ struct obj *no_wish;
     register int i;
     register struct obj *otmp;
     int cnt, spe, spesgn, typ, very, rechrg;
+	int charges, chargesfound;
     int blessed, uncursed, iscursed, ispoisoned, isgreased;
     int eroded, eroded2, erodeproof, locked, unlocked, broken;
     int halfeaten, mntmp, contents;
@@ -3342,7 +3347,7 @@ struct obj *no_wish;
     const char *name = 0;
 	boolean isartifact = FALSE;
 
-    cnt = spe = spesgn = typ = 0;
+    cnt = spe = charges = chargesfound = spesgn = typ = 0;
     very = rechrg = blessed = uncursed = iscursed = ispoisoned = elemental_enchantment =
         isgreased = eroded = eroded2 = erodeproof = halfeaten =
         islit = unlabeled = ishistoric = isdiluted = trapped =
@@ -3521,25 +3526,25 @@ struct obj *no_wish;
             islit = 1;
             p += 4 - 1; /* point at ')' */
         } else {
-            spe = atoi(p);
+			charges = atoi(p);
             while (digit(*p))
                 p++;
             if (*p == ':') {
                 p++;
-                rechrg = spe;
-                spe = atoi(p);
+                rechrg = charges;
+				charges = atoi(p);
                 while (digit(*p))
                     p++;
             }
             if (*p != ')') {
-                spe = rechrg = 0;
+				charges = rechrg = 0;
                 /* mis-matched parentheses; rest of string will be ignored
                  * [probably we should restore everything back to '('
                  * instead since it might be part of "named ..."]
                  */
                 keeptrailingchars = FALSE;
             } else {
-                spesgn = 1;
+                chargesfound = 1;
             }
         }
         if (keeptrailingchars) {
@@ -3563,7 +3568,11 @@ struct obj *no_wish;
     }
     if (spe > SCHAR_LIM)
         spe = SCHAR_LIM;
-    if (rechrg < 0 || rechrg > 7)
+
+	if (charges > SCHAR_LIM)
+		charges = SCHAR_LIM;
+
+	if (rechrg < 0 || rechrg > 7)
         rechrg = 7; /* recharge_limit */
 
     /* now we have the actual name, as delivered by xname, say
@@ -4287,9 +4296,8 @@ struct obj *no_wish;
 	if (oclass == GEM_CLASS && !wizard)
 		otmp->quan = 1;
 
-    if (oclass == VENOM_CLASS)
-        otmp->spe = 1;
 
+	/* set spe */
     if (spesgn == 0) {
         spe = otmp->spe;
     }
@@ -4299,15 +4307,18 @@ struct obj *no_wish;
     }
 	else if (oclass == ARMOR_CLASS || oclass == WEAPON_CLASS
                || is_weptool(otmp)
-               || (oclass == RING_CLASS && objects[typ].oc_charged)) 
+               || (oclass == RING_CLASS && objects[typ].oc_spe_type)
+			   || objects[typ].oc_spe_type
+		) 
 	{
-        if (spe > get_obj_init_charge(otmp) && spe > otmp->spe)
+        if (spe > get_obj_init_spe(otmp) && spe > otmp->spe)
             spe = 0;
-        if (spe > get_obj_max_charge(otmp) / 3 && Luck < 0)
+        if (spe > get_obj_max_spe(otmp) / 3 && Luck < 0)
             spesgn = -1;
     }
 	else 
 	{
+#if 0
         if (oclass == WAND_CLASS) {
             if (spe > 1 && spesgn == -1)
                 spe = 1;
@@ -4315,30 +4326,70 @@ struct obj *no_wish;
             if (spe > 0 && spesgn == -1)
                 spe = 0;
         }
-        if (spe > otmp->spe)
-            spe = otmp->spe;
-    }
+		if (spe > otmp->spe)
+			spe = otmp->spe;
+#endif
+		if (spe > 0 && spesgn == -1)
+			spe = 0;
+		if (spe > otmp->spe)
+			spe = otmp->spe;
+	}
 
     if (spesgn == -1)
         spe = -spe;
 
-    /* set otmp->spe.  This may, or may not, use spe... */
+	if (!objects[typ].oc_spe_type)
+		spe = 0;
+
+	otmp->spe = spe;
+
+
+	/* set charges */
+	if (!objects[typ].oc_charged)
+		charges = 0;
+	else if (!chargesfound)
+		charges = otmp->charges;
+	else if (wizard)
+	{
+		; /* no alteration to charges */
+	}
+	else if (oclass == WAND_CLASS
+		|| objects[typ].oc_charged
+		)
+	{
+		int maxcharges = get_obj_max_charge(otmp);
+		if (charges > maxcharges)
+			charges = maxcharges;
+
+		if (charges < 0)
+			charges = 0;
+
+		if (typ == WAN_WISHING && !wizard)
+		{
+			charges = (rn2(10) ? -1 : 0);
+		}
+	}
+		
+	otmp->charges = charges;
+
+
+	/* set special_quality */
     switch (typ) {
     case TIN:
         if (contents == CONTAINER_EMPTY) {
             otmp->corpsenm = NON_PM;
-            otmp->spe = 0;
+            otmp->special_quality = 0;
         } else if (contents == CONTAINER_SPINACH) {
             otmp->corpsenm = NON_PM;
-            otmp->spe = 1;
+            otmp->special_quality = 1;
         }
         break;
     case TOWEL:
         if (wetness)
-            otmp->spe = wetness;
+            otmp->special_quality = wetness;
         break;
     case SLIME_MOLD:
-        otmp->spe = ftype;
+        otmp->special_quality = ftype;
     /* Fall through */
     case SKELETON_KEY:
     case CHEST:
@@ -4352,18 +4403,17 @@ struct obj *no_wish;
     case SCR_MAIL:
         /* 0: delivered in-game via external event (or randomly for fake mail);
            1: from bones or wishing; 2: written with marker */
-        otmp->spe = 1;
+        otmp->special_quality = 1;
         break;
 #endif
-    case WAN_WISHING:
-        if (!wizard) {
-            otmp->spe = (rn2(10) ? -1 : 0);
-            break;
-        }
-        /*FALLTHRU*/
     default:
-        otmp->spe = spe;
-    }
+		break;
+	}
+
+	/* set speflags */
+	if (oclass == VENOM_CLASS)
+		otmp->speflags |= SPEFLAGS_YOURS;
+
 
     /* set otmp->corpsenm or dragon scale [mail] */
     if (mntmp >= LOW_PM) {
@@ -4372,7 +4422,7 @@ struct obj *no_wish;
 
         switch (typ) {
         case TIN:
-            otmp->spe = 0; /* No spinach */
+            otmp->special_quality = 0; /* No spinach */
             if (dead_species(mntmp, FALSE)) {
                 otmp->corpsenm = NON_PM; /* it's empty */
             } else if ((!(mons[mntmp].geno & G_UNIQ) || wizard)
@@ -4406,8 +4456,13 @@ struct obj *no_wish;
             otmp->corpsenm = mntmp;
             if (Has_contents(otmp) && verysmall(&mons[mntmp]))
                 delete_contents(otmp); /* no spellbook */
-            otmp->spe = ishistoric ? STATUE_HISTORIC : 0;
-            break;
+			
+			if(ishistoric)
+	            otmp->speflags |= SPEFLAGS_STATUE_HISTORIC;
+			else
+				otmp->speflags &= ~SPEFLAGS_STATUE_HISTORIC;
+
+			break;
         case SCALE_MAIL:
             /* Dragon mail - depends on the order of objects & dragons. */
             if (mntmp >= PM_GRAY_DRAGON && mntmp <= PM_YELLOW_DRAGON)
@@ -4481,8 +4536,8 @@ struct obj *no_wish;
 	/* empty for containers rather than for tins */
     if (contents == CONTAINER_EMPTY) {
         if (otmp->otyp == BAG_OF_TRICKS || otmp->otyp == HORN_OF_PLENTY) {
-            if (otmp->spe > 0)
-                otmp->spe = 0;
+            if (otmp->charges > 0)
+                otmp->charges = 0;
         } else if (Has_contents(otmp)) {
             /* this assumes that artifacts can't be randomly generated
                inside containers */

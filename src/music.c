@@ -487,7 +487,7 @@ struct obj *instr;
                                           there is one */
 
     /* if won't yield special effect, make sound of mundane counterpart */
-    if (!do_spec || instr->spe <= 0)
+    if (!do_spec || instr->charges <= 0)
         while (objects[itmp.otyp].oc_magic) {
             itmp.otyp -= 1;
             mundane = TRUE;

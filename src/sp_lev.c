@@ -1925,9 +1925,21 @@ struct mkroom *croom;
             otmp = mkobj_at(oclass, x, y, !named);
     }
 
-    if (o->spe != -127) /* That means NOT RANDOM! */
-        otmp->spe = (schar) o->spe;
-
+	if (o->spe != -127) /* That means NOT RANDOM! */
+	{
+		if(otmp->oclass == WAND_CLASS || objects[otmp->otyp].oc_charged)
+			otmp->charges = (schar)o->spe;
+		else if (otmp->otyp == TIN || otmp->otyp == MAGIC_LAMP || otmp->otyp == MAGIC_CANDLE || otmp->otyp == TOWEL || otmp->otyp == CANDELABRUM_OF_INVOCATION || otmp->oclass == SCROLL_CLASS)
+			otmp->special_quality = (schar)o->spe;
+		else if (otmp->otyp == CHEST && o->spe)
+			otmp->speflags |= SPEFLAGS_SCHROEDINGERS_BOX;
+		else if (otmp->otyp == STATUE && o->spe)
+			otmp->speflags |= SPEFLAGS_STATUE_HISTORIC;
+		else if (otmp->otyp == EGG && o->spe)
+			otmp->speflags |= SPEFLAGS_YOURS;
+		else
+			otmp->spe = (schar)o->spe;
+	}
     switch (o->curse_state) {
     case 1:
         bless(otmp);

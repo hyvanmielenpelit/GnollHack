@@ -1497,7 +1497,7 @@ char *buf;
         else if (mnum == NON_PM)
             Strcpy(buf, "empty tin");
         else {
-            if ((obj->cknown || iflags.override_ID) && obj->spe < 0) {
+            if ((obj->cknown || iflags.override_ID) && obj->special_quality < 0) {
                 if (r == ROTTEN_TIN || r == HOMEMADE_TIN) {
                     /* put these before the word tin */
                     Sprintf(buf2, "%s %s of ", tintxts[r].txt, buf);
@@ -1528,7 +1528,7 @@ int forcetype;
             && (obj->corpsenm == NON_PM /* empty or already spinach */
                 || !vegetarian(&mons[obj->corpsenm])))) { /* replace meat */
         obj->corpsenm = NON_PM; /* not based on any monster */
-        obj->spe = 1;           /* spinach */
+        obj->special_quality = 1;           /* spinach */
         return;
     } else if (forcetype == HEALTHY_TIN) {
         r = tin_variety(obj, FALSE);
@@ -1543,7 +1543,7 @@ int forcetype;
         if (r == ROTTEN_TIN && nonrotting_corpse(obj->corpsenm))
             r = HOMEMADE_TIN; /* lizards don't rot */
     }
-    obj->spe = -(r + 1); /* offset by 1 to allow index 0 */
+    obj->special_quality = -(r + 1); /* offset by 1 to allow index 0 */
 }
 
 STATIC_OVL int
@@ -1553,12 +1553,12 @@ boolean disp; /* we're just displaying so leave things alone */
 {
     register int r;
 
-    if (obj->spe == 1) {
+    if (obj->special_quality == 1) {
         r = SPINACH_TIN;
     } else if (obj->cursed || obj->orotten) {
         r = ROTTEN_TIN; /* always rotten if cursed */
-    } else if (obj->spe < 0) {
-        r = -(obj->spe);
+    } else if (obj->special_quality < 0) {
+        r = -(obj->special_quality);
         --r; /* get rid of the offset */
     } else
         r = rn2(TTSZ - 1);
@@ -2132,7 +2132,7 @@ struct obj *otmp;
         /*FALLTHRU*/
     default:
         if (otmp->otyp == SLIME_MOLD && !otmp->cursed
-            && otmp->spe == context.current_fruit) {
+            && otmp->special_quality == context.current_fruit) {
             pline("My, that was a %s %s!",
                   Hallucination ? "primo" : "yummy",
                   singular(otmp, xname));
@@ -3290,7 +3290,7 @@ gethungry()
            Slow digestion cancels move hunger but still causes ring hunger. */
         switch ((int) (moves % 20)) { /* note: use even cases only */
         case 4:
-            if (uleft && (uleft->spe || !objects[uleft->otyp].oc_charged))
+            if (uleft && (uleft->spe || !objects[uleft->otyp].oc_spe_type))
                 u.uhunger--;
             break;
         case 8:
@@ -3298,7 +3298,7 @@ gethungry()
                 u.uhunger--;
             break;
         case 12:
-            if (uright && (uright->spe || !objects[uright->otyp].oc_charged))
+            if (uright && (uright->spe || !objects[uright->otyp].oc_spe_type))
                 u.uhunger--;
             break;
         case 16:
@@ -3806,7 +3806,7 @@ int threat;
     switch (threat) {
     /* note: not used; hunger code bypasses stop_occupation() when eating */
     case HUNGER:
-        return (boolean) (mndx != NON_PM || otin->spe == 1);
+        return (boolean) (mndx != NON_PM || otin->special_quality == 1);
     /* flesh from lizards and acidic critters stops petrification */
     case STONED:
         return (boolean) (mndx >= LOW_PM

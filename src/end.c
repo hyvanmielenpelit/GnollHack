@@ -1304,16 +1304,19 @@ int how;
             /* we resolve Schroedinger's cat now in case of both
                disclosure and dumplog, where the 50:50 chance for
                live cat has to be the same both times */
-            if (SchroedingersBox(obj)) {
-                if (!Schroedingers_cat) {
+            if (SchroedingersBox(obj))
+			{
+                if (!Schroedingers_cat)
+				{
                     /* tell observe_quantum_cat() not to create a cat; if it
                        chooses live cat in this situation, it will leave the
                        SchroedingersBox flag set (for container_contents()) */
                     observe_quantum_cat(obj, FALSE, FALSE);
                     if (SchroedingersBox(obj))
                         Schroedingers_cat = TRUE;
-                } else
-                    obj->spe = 0; /* ordinary box with cat corpse in it */
+                } 
+				else
+					obj->speflags &= ~SPEFLAGS_SCHROEDINGERS_BOX; /* ordinary box with cat corpse in it */
             }
         }
 

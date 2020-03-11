@@ -2565,7 +2565,8 @@ dodip()
             return 1;
         }
         /* Adding oil to an empty magic lamp renders it into an oil lamp */
-        if ((obj->otyp == MAGIC_LAMP) && obj->spe == 0) {
+        if ((obj->otyp == MAGIC_LAMP) && obj->special_quality == 0)
+		{
             obj->otyp = OIL_LAMP;
             obj->age = 0;
         }
@@ -2585,7 +2586,7 @@ dodip()
             exercise(A_WIS, TRUE);
         }
         makeknown(POT_OIL);
-        obj->spe = 1;
+        obj->special_quality = 1;
         update_inventory();
         return 1;
     }

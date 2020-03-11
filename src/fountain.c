@@ -624,7 +624,6 @@ register struct obj *obj;
 		/* Recharges wands */
 		if (obj && objects[obj->otyp].oc_charged && (obj->oclass == WAND_CLASS || obj->oclass == TOOL_CLASS))
 		{
-
 			recharge(obj, 0);
 			if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
 			{

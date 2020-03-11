@@ -1081,48 +1081,53 @@ register struct obj* obj;
 	{
 		strcpy(buf, "");
 
-		if(objects[otyp].oc_class == WAND_CLASS || (objects[otyp].oc_class == TOOL_CLASS && is_wand_like_tool(obj)))
-			Sprintf(buf, "Charges left:           %d", obj->spe);
-		else
-		{
-			char bonusbuf[BUFSZ] = "";
-			if (obj->oclass == WEAPON_CLASS || is_weptool(obj))
-			{
-				int enchplus = obj->spe;
-				if (!uses_spell_flags && stats_known && (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
-				{
-					enchplus *= 2;
-				}
-
-				Sprintf(bonusbuf, " (%s%d to hit and damage)", enchplus >= 0 ? "+" : "", enchplus);
-			}
-
-			if (obj->oclass == ARMOR_CLASS || (stats_known && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)))
-			{
-				if (objects[otyp].oc_flags & O1_SPE_AFFECTS_MC)
-				{
-					Sprintf(eos(bonusbuf), " (%s%d to AC and %s%d to MC)", 
-						obj->spe <= 0 ? "+" : "",
-						-obj->spe,
-						obj->spe >= 0 ? "+" : "",
-						obj->spe
-					);
-				}
-				else
-				{
-					Sprintf(eos(bonusbuf), " (%s%d %s to AC)", 
-						obj->spe <= 0 ? "+" : "", 
-						-obj->spe,
-						obj->spe >= 0 ? "bonus" : "penalty");
-				}
-			}
-
-			Sprintf(buf, "Enchantment status:     %s%d%s", obj->spe >= 0 ? "+" : "", obj->spe, bonusbuf);
-		}
-
+		Sprintf(buf, "Charges left:           %d", obj->charges);
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
+
+	if (obj->known && objects[otyp].oc_spe_type)
+	{
+		strcpy(buf, "");
+
+		char bonusbuf[BUFSZ] = "";
+		if (obj->oclass == WEAPON_CLASS || is_weptool(obj))
+		{
+			int enchplus = obj->spe;
+			if (!uses_spell_flags && stats_known && (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
+			{
+				enchplus *= 2;
+			}
+
+			Sprintf(bonusbuf, " (%s%d to hit and damage)", enchplus >= 0 ? "+" : "", enchplus);
+		}
+
+		if (obj->oclass == ARMOR_CLASS || (stats_known && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)))
+		{
+			if (objects[otyp].oc_flags & O1_SPE_AFFECTS_MC)
+			{
+				Sprintf(eos(bonusbuf), " (%s%d to AC and %s%d to MC)",
+					obj->spe <= 0 ? "+" : "",
+					-obj->spe,
+					obj->spe >= 0 ? "+" : "",
+					obj->spe
+				);
+			}
+			else
+			{
+				Sprintf(eos(bonusbuf), " (%s%d %s to AC)",
+					obj->spe <= 0 ? "+" : "",
+					-obj->spe,
+					obj->spe >= 0 ? "bonus" : "penalty");
+			}
+		}
+
+		Sprintf(buf, "Enchantment status:     %s%d%s", obj->spe >= 0 ? "+" : "", obj->spe, bonusbuf);
+	
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
 	if (obj->rknown && (obj->oeroded || obj->oeroded2 || obj->oerodeproof))
 	{
 		char erodebuf[BUFSZ] = "";
@@ -1345,7 +1350,7 @@ register struct obj* obj;
 						{
 							strcpy(buf2, "");
 							int stat = objects[otyp].oc_attribute_bonus;
-							if (objects[otyp].oc_charged && !(prop & IGNORE_SPE))
+							if (objects[otyp].oc_spe_type && !(prop & IGNORE_SPE))
 								stat += obj->spe;
 
 							if(prop & SETS_FIXED_ATTRIBUTE)

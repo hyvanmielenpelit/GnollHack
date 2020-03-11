@@ -318,25 +318,36 @@ enum charged_init_types {
 	CHARGED_ALWAYS_3 = 4,
 	CHARGED_ALWAYS_4 = 5,
 	CHARGED_ALWAYS_5 = 6,
-	CHARGED_RING_NORMAL = 7,
-	CHARGED_RING_1_7 = 8,
-	CHARGED_RING_DOUBLE = 9,
-	CHARGED_RING_POWER  = 10,
-	CHARGED_WAND_NORMAL_NODIR = 11,
-	CHARGED_WAND_NORMAL_DIR = 12,
-	CHARGED_WAND_WISHING = 13,
-	CHARGED_HORN_NORMAL = 14,
-	CHARGED_BAG_OF_TRICKS = 15,
-	CHARGED_CRYSTAL_BALL = 16,
-	CHARGED_CAN_OF_GREASE = 17,
-	CHARGED_MAGIC_MARKER = 18,
-	CHARGED_MISCELLANEOUS_NORMAL = 19,
-	CHARGED_1D6_6  = 20,
-	CHARGED_1D15_15 = 21,
-	CHARGED_1D30_30 = 22,
-	CHARGED_1D45_45 = 23,
-	CHARGED_1D75_75 = 24
+	CHARGED_WAND_NORMAL_NODIR = 7,
+	CHARGED_WAND_NORMAL_DIR = 8,
+	CHARGED_WAND_WISHING = 9,
+	CHARGED_HORN_NORMAL = 10,
+	CHARGED_BAG_OF_TRICKS = 11,
+	CHARGED_CRYSTAL_BALL = 12,
+	CHARGED_CAN_OF_GREASE = 13,
+	CHARGED_MAGIC_MARKER = 14,
+	CHARGED_1D6_6  = 15,
+	CHARGED_1D15_15 = 16,
+	CHARGED_1D30_30 = 17,
+	CHARGED_1D45_45 = 18,
+	CHARGED_1D75_75 = 19
 };
+
+enum spe_init_types {
+	SPETYPE_NO_SPE = 0,
+	SPETYPE_GENERAL = 1,
+	SPETYPE_ALWAYS_1 = 2,
+	SPETYPE_ALWAYS_2 = 3,
+	SPETYPE_ALWAYS_3 = 4,
+	SPETYPE_ALWAYS_4 = 5,
+	SPETYPE_ALWAYS_5 = 6,
+	SPETYPE_RING_NORMAL = 7,
+	SPETYPE_RING_1_7 = 8,
+	SPETYPE_RING_DOUBLE = 9,
+	SPETYPE_RING_POWER = 10,
+	SPETYPE_MISCELLANEOUS_NORMAL = 11
+};
+
 
 struct objclass {
     short oc_name_idx;              /* index of actual name */
@@ -353,7 +364,8 @@ struct objclass {
     Bitfield(oc_pre_discovered, 1); /* Already known at start of game;
                                        won't be listed as a discovery. */
     Bitfield(oc_magic, 1);          /* inherently magical object */
-    uchar oc_charged;		        /* may have +n or (n) charges */
+	uchar oc_spe_type;				/* Uses +X statistic (spe) */
+	uchar oc_charged;		        /* may have +n or (n) charges */
     Bitfield(oc_unique, 1);         /* special one-of-a-kind object */
     Bitfield(oc_nowish, 1);         /* cannot wish for this object */
 

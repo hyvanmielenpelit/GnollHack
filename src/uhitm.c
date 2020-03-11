@@ -1216,7 +1216,7 @@ boolean* obj_destroyed;
 					if (obj == uwep)
 						unweapon = TRUE;
 					*/
-					if (obj->spe && obj->corpsenm >= LOW_PM) 
+					if ((obj->speflags & SPEFLAGS_YOURS) && obj->corpsenm >= LOW_PM) 
 					{
 						if (obj->quan < 5L)
 							luck_change += (schar)-(obj->quan);
@@ -1268,7 +1268,7 @@ boolean* obj_destroyed;
 							obj->otyp = ROCK;
 							obj->oclass = GEM_CLASS;
 							obj->oartifact = 0;
-							obj->spe = 0;
+							obj->speflags = 0;
 							obj->known = obj->dknown = obj->bknown = 0;
 							obj->owt = weight(obj);
 							if (thrown)
@@ -1374,8 +1374,8 @@ boolean* obj_destroyed;
 						/* wielded wet towel should probably use whip skill
 						   (but not by setting objects[TOWEL].oc_skill==P_WHIP
 						   because that would turn towel into a weptool) */
-						damage += obj->spe;
-						if (rn2(obj->spe + 1)) /* usually lose some wetness */
+						damage += obj->special_quality;
+						if (rn2(obj->special_quality + 1)) /* usually lose some wetness */
 							dry_a_towel(obj, -1, TRUE);
 					}
 					if (damage < 1)
@@ -4089,7 +4089,7 @@ struct obj *otmp; /* source of flash */
             }
             if (mtmp->data == &mons[PM_GREMLIN]) {
                 /* Rule #1: Keep them out of the light. */
-                amt = otmp->otyp == WAN_LIGHT ? d(1 + otmp->spe, 4)
+                amt = otmp->otyp == WAN_LIGHT ? d(1 + otmp->charges, 4)
                                               : rn2(min(mtmp->mhp, 4));
                 light_hits_gremlin(mtmp, amt);
             }

@@ -720,7 +720,7 @@ const char *gang;
         Strcpy(UONAME(otmp), gang);
         if (otyp >= TRIPE_RATION && otyp <= TIN) {
             if (otyp == SLIME_MOLD)
-                otmp->spe = fruitadd((char *) orcfruit[rn2(SIZE(orcfruit))],
+                otmp->special_quality = fruitadd((char *) orcfruit[rn2(SIZE(orcfruit))],
                                      (struct fruit *) 0);
             otmp->quan += (long) rn2(3);
             otmp->owt = weight(otmp);

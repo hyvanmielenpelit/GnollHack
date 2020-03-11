@@ -21,7 +21,7 @@ static const char all_count[] = { ALLOW_COUNT, ALL_CLASSES, 0 };
 STATIC_DCL boolean FDECL(learnscrolltyp, (SHORT_P));
 STATIC_DCL char *FDECL(erode_obj_text, (struct obj *, char *));
 STATIC_DCL char *FDECL(apron_text, (struct obj *, char *buf));
-STATIC_DCL void FDECL(stripspe, (struct obj *));
+STATIC_DCL void FDECL(strip_charges, (struct obj *));
 STATIC_DCL void FDECL(p_glow1, (struct obj *));
 STATIC_DCL void FDECL(p_glow2, (struct obj *, const char *));
 STATIC_DCL void FDECL(forget_single_object, (int));
@@ -385,7 +385,7 @@ doread()
            maintained illiterate conduct so far, and this mail
            scroll didn't come from bones, ask for confirmation */
         if (!u.uconduct.literate) {
-            if (!scroll->spe && yn(
+            if (!scroll->special_quality && yn(
              "Reading mail will violate \"illiterate\" conduct.  Read anyway?"
                                    ) != 'y')
                 return 0;
@@ -471,18 +471,21 @@ struct obj* otmp;
 }
 
 STATIC_OVL void
-stripspe(obj)
+strip_charges(obj)
 register struct obj *obj;
 {
-    if (obj->blessed || obj->spe <= 0) {
+    if (obj->blessed || obj->charges <= 0)
+	{
         pline1(nothing_happens);
-    } else {
+    } 
+	else 
+	{
         /* order matters: message, shop handling, actual transformation */
         pline("%s briefly.", Yobjnam2(obj, "vibrate"));
         costly_alteration(obj, COST_UNCHRG);
-        obj->spe = 0;
-        if (obj->otyp == OIL_LAMP || obj->otyp == BRASS_LANTERN)
-            obj->age = 0;
+        obj->charges = 0;
+//        if (obj->otyp == OIL_LAMP || obj->otyp == BRASS_LANTERN)
+//            obj->age = 0;
     }
 }
 
@@ -510,17 +513,21 @@ struct obj *obj;
 {
     if (obj->oclass == WAND_CLASS)
         return TRUE;
-    /* known && !oc_name_known is possible after amnesia/mind flayer */
-    if (obj->oclass == RING_CLASS)
+
+	/* known && !oc_name_known is possible after amnesia/mind flayer */
+//    if (obj->oclass == RING_CLASS)
         return (boolean) (objects[obj->otyp].oc_charged
                           && (obj->known
                               || (obj->dknown
                                   && objects[obj->otyp].oc_name_known)));
+
+#if 0
     if (is_weptool(obj)) /* specific check before general tools */
         return FALSE;
     if (obj->oclass == TOOL_CLASS)
-        return (boolean) (objects[obj->otyp].oc_charged != 0);
+		return (boolean) (objects[obj->otyp].oc_charged != 0);
     return FALSE; /* why are weapons/armor considered charged anyway? */
+#endif
 }
 
 /* recharge an object; curse_bless is -1 if the recharging implement
@@ -536,12 +543,13 @@ int curse_bless;
     is_cursed = curse_bless < 0;
     is_blessed = curse_bless > 0;
 
-    if (obj->oclass == WAND_CLASS) {
+    if (obj->oclass == WAND_CLASS)
+	{
 		int lim = get_obj_max_charge(obj);
 		
         /* undo any prior cancellation, even when is_cursed */
-        if (obj->spe == -1)
-            obj->spe = 0;
+        if (obj->charges == -1)
+            obj->charges = 0;
 
         /*
          * Recharging might cause wands to explode.
@@ -570,7 +578,7 @@ int curse_bless;
         /* now handle the actual recharging */
         if (is_cursed) 
 		{
-            stripspe(obj);
+            strip_charges(obj);
         } 
 		else 
 		{
@@ -578,17 +586,17 @@ int curse_bless;
 			if (!is_blessed)
                 n = rnd(n);
 
-            if (obj->spe < n)
-                obj->spe = n;
+            if (obj->charges < n)
+                obj->charges = n;
             else
-                obj->spe++;
+                obj->charges++;
 
-            if (objects[obj->otyp].oc_charged == CHARGED_WAND_WISHING && obj->spe > lim)
+            if (objects[obj->otyp].oc_charged == CHARGED_WAND_WISHING && obj->charges > lim)
 			{
                 wand_explode(obj, 1);
                 return;
             }
-            if (obj->spe >= lim)
+            if (obj->charges >= lim)
                 p_glow2(obj, NH_BLUE);
             else
                 p_glow1(obj);
@@ -600,11 +608,12 @@ int curse_bless;
         }
 
     }
-	else if (obj->oclass == RING_CLASS && objects[obj->otyp].oc_charged)
+	else if (obj->oclass == RING_CLASS && objects[obj->otyp].oc_spe_type)
 	{
+		/* CONSIDER MOVING TO SCROLL OF ENCHANT RING OR THE LIKE */
         /* charging does not affect ring's curse/bless status */
-		int maxcharge = get_obj_max_charge(obj);
-		int safecharge = get_obj_max_charge(obj) / 3;
+		int maxcharge = get_obj_max_spe(obj);
+		int safecharge = get_obj_max_spe(obj) / 3;
 		int s = is_blessed ? rnd(max(1, maxcharge / 3)) : is_cursed ? -rnd(max(1, maxcharge / 3)) : maxcharge >= 12 ? rnd(max(1, maxcharge / 6)) : 1;
         boolean is_on = (obj == uleft || obj == uright);
 
@@ -654,85 +663,88 @@ int curse_bless;
         switch (obj->otyp) {
         case BELL_OF_OPENING:
             if (is_cursed)
-                stripspe(obj);
+                strip_charges(obj);
             else if (is_blessed)
-                obj->spe += rnd(3);
+                obj->charges += rnd(3);
             else
-                obj->spe += 1;
-            if (obj->spe > 5)
-                obj->spe = 5;
+                obj->charges += 1;
+            if (obj->charges > 5)
+                obj->charges = 5;
             break;
         case MAGIC_MARKER:
         case TINNING_KIT:
         case EXPENSIVE_CAMERA:
             if (is_cursed)
-                stripspe(obj);
+                strip_charges(obj);
             else if (rechrg
                      && obj->otyp
                             == MAGIC_MARKER) { /* previously recharged */
                 obj->recharged = 1; /* override increment done above */
-                if (obj->spe < 3)
+                if (obj->charges < 3)
                     Your("marker seems permanently dried out.");
                 else
                     pline1(nothing_happens);
             } else if (is_blessed) {
                 n = rn1(16, 15); /* 15..30 */
-                if (obj->spe + n <= 50)
-                    obj->spe = 50;
-                else if (obj->spe + n <= 75)
-                    obj->spe = 75;
+                if (obj->charges + n <= 50)
+                    obj->charges = 50;
+                else if (obj->charges + n <= 75)
+                    obj->charges = 75;
                 else {
-                    int chrg = (int) obj->spe;
+                    int chrg = (int) obj->charges;
                     if ((chrg + n) > 127)
-                        obj->spe = 127;
+                        obj->charges = 127;
                     else
-                        obj->spe += n;
+                        obj->charges += n;
                 }
                 p_glow2(obj, NH_BLUE);
             } else {
                 n = rn1(11, 10); /* 10..20 */
-                if (obj->spe + n <= 50)
-                    obj->spe = 50;
+                if (obj->charges + n <= 50)
+                    obj->charges = 50;
                 else {
-                    int chrg = (int) obj->spe;
+                    int chrg = (int) obj->charges;
                     if ((chrg + n) > 127)
-                        obj->spe = 127;
+                        obj->charges = 127;
                     else
-                        obj->spe += n;
+                        obj->charges += n;
                 }
                 p_glow2(obj, NH_WHITE);
             }
             break;
+#if 0
+			/* Charging does not add oil anymore, just charges of charged objects */
         case OIL_LAMP:
         case BRASS_LANTERN:
             if (is_cursed) {
-                stripspe(obj);
+                strip_charges(obj);
                 if (obj->lamplit) {
                     if (!Blind)
                         pline("%s out!", Tobjnam(obj, "go"));
                     end_burn(obj, TRUE);
                 }
             } else if (is_blessed) {
-                obj->spe = 1;
+                obj->special_quality = 1;
                 obj->age = 1500;
                 p_glow2(obj, NH_BLUE);
             } else {
-                obj->spe = 1;
+                obj->special_quality = 1;
                 obj->age += 750;
                 if (obj->age > 1500)
                     obj->age = 1500;
                 p_glow1(obj);
             }
             break;
+#endif
         case CRYSTAL_BALL:
             if (is_cursed) {
-                stripspe(obj);
+                strip_charges(obj);
             } else if (is_blessed) {
-                obj->spe = 6;
+                obj->charges = 6;
                 p_glow2(obj, NH_BLUE);
             } else {
-                if (obj->spe < 5) {
-                    obj->spe++;
+                if (obj->charges < 5) {
+                    obj->charges++;
                     p_glow1(obj);
                 } else
                     pline1(nothing_happens);
@@ -742,19 +754,19 @@ int curse_bless;
         case BAG_OF_TRICKS:
         case CAN_OF_GREASE:
             if (is_cursed) {
-                stripspe(obj);
+                strip_charges(obj);
             } else if (is_blessed) {
-                if (obj->spe <= 10)
-                    obj->spe += rn1(10, 6);
+                if (obj->charges <= 10)
+                    obj->charges += rn1(10, 6);
                 else
-                    obj->spe += rn1(5, 6);
-                if (obj->spe > 50)
-                    obj->spe = 50;
+                    obj->charges += rn1(5, 6);
+                if (obj->charges > 50)
+                    obj->charges = 50;
                 p_glow2(obj, NH_BLUE);
             } else {
-                obj->spe += rnd(5);
-                if (obj->spe > 50)
-                    obj->spe = 50;
+                obj->charges += rnd(5);
+                if (obj->charges > 50)
+                    obj->charges = 50;
                 p_glow1(obj);
             }
             break;
@@ -762,18 +774,19 @@ int curse_bless;
         case MAGIC_HARP:
         case FROST_HORN:
         case FIRE_HORN:
-        case DRUM_OF_EARTHQUAKE:
+		case UNICORN_HORN:
+		case DRUM_OF_EARTHQUAKE:
             if (is_cursed) {
-                stripspe(obj);
+                strip_charges(obj);
             } else if (is_blessed) {
-                obj->spe += d(2, 4);
-                if (obj->spe > 20)
-                    obj->spe = 20;
+                obj->charges += d(2, 4);
+                if (obj->charges > 20)
+                    obj->charges = 20;
                 p_glow2(obj, NH_BLUE);
             } else {
-                obj->spe += rnd(4);
-                if (obj->spe > 20)
-                    obj->spe = 20;
+                obj->charges += rnd(4);
+                if (obj->charges > 20)
+                    obj->charges = 20;
                 p_glow1(obj);
             }
             break;
@@ -1127,10 +1140,10 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 #ifdef MAIL
 	case SCR_MAIL:
 		known = TRUE;
-		if (sobj->spe == 2)
+		if (sobj->special_quality == 2)
 			/* "stamped scroll" created via magic marker--without a stamp */
 			pline("This scroll is marked \"postage due\".");
-		else if (sobj->spe)
+		else if (sobj->special_quality)
 			/* scroll of mail obtained from bones file or from wishing;
 			 * note to the puzzled: the game Larn actually sends you junk
 			 * mail if you win!
@@ -2303,7 +2316,7 @@ int chg; /* recharging */
     /* number of damage dice */
     if (!chg)
         chg = 2; /* zap/engrave adjustment */
-    n = obj->spe + chg;
+    n = obj->charges + chg;
     if (n < 2)
         n = 2; /* arbitrary minimum */
     /* size of damage dice */
@@ -2828,7 +2841,7 @@ struct obj *sobj;
         setworn(reuse_ball, W_BALL);
 
 	if(Punished) /* Check that punishment succeeded */
-	    uball->spe = 1; /* special ball (see save) */
+	    uball->special_quality = 1; /* special ball (see save) */
 
     /*
      *  Place ball & chain if not swallowed.  If swallowed, the ball & chain
@@ -2852,7 +2865,7 @@ unpunish()
     newsym(uchain->ox, uchain->oy);
     setworn((struct obj *) 0, W_CHAIN);
     dealloc_obj(savechain);
-    uball->spe = 0;
+    uball->special_quality = 0;
     setworn((struct obj *) 0, W_BALL);
 }
 

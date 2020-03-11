@@ -680,7 +680,7 @@ struct obj *obj;
          *       4..6 candles, range 3 (normal lamp range);
          *          7 candles, range 4 (bright).
          */
-        radius = (obj->spe < 4) ? 2 : (obj->spe < 7) ? 3 : 4;
+        radius = (obj->special_quality < 4) ? 2 : (obj->special_quality < 7) ? 3 : 4;
     } else if (is_candle(obj)) {
         /*
          *      Range is incremented by powers of 7 so that it will take

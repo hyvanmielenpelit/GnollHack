@@ -2016,7 +2016,7 @@ invocation_message()
 
         You_feel("a strange vibration %s.", buf);
         u.uevent.uvibrated = 1;
-        if (otmp && otmp->spe == 7 && otmp->lamplit)
+        if (otmp && otmp->special_quality == 7 && otmp->lamplit)
             pline("%s %s!", The(xname(otmp)),
                   Blind ? "throbs palpably" : "glows with a strange light");
     }

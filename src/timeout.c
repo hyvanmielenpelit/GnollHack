@@ -1307,7 +1307,7 @@ long timeout;
     mon = mon2 = (struct monst *) 0;
     mnum = big_to_little(egg->corpsenm);
     /* The identity of one's father is learned, not innate */
-    yours = (egg->spe || (!flags.female && carried(egg) && !rn2(2)));
+    yours = ((egg->speflags & SPEFLAGS_YOURS) || (!flags.female && carried(egg) && !rn2(2)));
     silent = (timeout != monstermoves); /* hatched while away */
 
     /* only can hatch when in INVENT, FLOOR, MINVENT */
@@ -1390,7 +1390,7 @@ long timeout;
             if (yours) {
                 pline("%s cries sound like \"%s%s\"",
                       siblings ? "Their" : "Its",
-                      flags.female ? "mommy" : "daddy", egg->spe ? "." : "?");
+                      flags.female ? "mommy" : "daddy", (egg->speflags & SPEFLAGS_YOURS) ? "." : "?");
             } else if (mon->data->mlet == S_DRAGON && !Deaf) {
                 verbalize("Gleep!"); /* Mything eggs :-) */
             }
@@ -1681,7 +1681,7 @@ long timeout;
     char whose[BUFSZ];
 
     menorah = obj->otyp == CANDELABRUM_OF_INVOCATION;
-    many = menorah ? obj->spe > 1 : obj->quan > 1L;
+    many = menorah ? obj->special_quality > 1 : obj->quan > 1L;
 
     /* timeout while away */
     if (timeout != monstermoves) {
@@ -1692,7 +1692,7 @@ long timeout;
             end_burn(obj, FALSE);
 
             if (menorah) {
-                obj->spe = 0; /* no more candles */
+                obj->special_quality = 0; /* no more candles */
                 obj->owt = weight(obj);
             } else if (is_candle(obj) || obj->otyp == POT_OIL) {
                 /* get rid of candles and burning oil potions;
@@ -1911,7 +1911,7 @@ long timeout;
             end_burn(obj, FALSE);
 
             if (menorah) {
-                obj->spe = 0;
+                obj->special_quality = 0;
                 obj->owt = weight(obj);
             } else {
                 if (carried(obj)) {
@@ -1968,7 +1968,7 @@ long timeout;
  *              spe = 0 not lightable, 1 lightable forever
  *      candelabrum:
  *              age = # of turns of fuel left
- *              spe = # of candles
+ *              special_quality = # of candles
  *
  * Once the burn begins, the age will be set to the amount of fuel
  * remaining _once_the_burn_finishes_.  If the burn is terminated
@@ -1999,8 +1999,8 @@ boolean already_lit;
         break;
 	case MAGIC_CANDLE:
 		obj->lamplit = 1;
-		if (obj->spe == 2)
-			obj->spe = 1;
+		if (obj->special_quality == 2)
+			obj->special_quality = 1;
 
 		do_timer = FALSE;
 		break;

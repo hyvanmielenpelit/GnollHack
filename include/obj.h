@@ -42,7 +42,8 @@ struct obj {
     unsigned owt;
     long quan; /* number of items */
 
-    short spe; /* quality of weapon, weptool, armor or ring (+ or -);
+    short spe; /* Always set to zero by cancellation
+			      quality of weapon, weptool, armor or ring (+ or -);
                   number of charges for wand or charged tool ( >= -1 );
                   number of candles attached to candelabrum;
                   marks your eggs, tin variety and spinach tins;
@@ -51,9 +52,15 @@ struct obj {
                   special for uball and amulet;
                   scroll of mail (normal==0, bones or wishing==1, written==2);
                   historic and gender for statues */
-#define STATUE_HISTORIC 0x01
-#define STATUE_MALE 0x02
-#define STATUE_FEMALE 0x04
+	short charges; /* number of charges for wand or charged tool ( >= -1 ), always set to -1/0 by cancellation */
+	int special_quality; /* item-specific special quality, e.g., the amount of wetness of a towel, number of candles attached to candelabrum, not affected by cancellation */
+	unsigned long speflags; /* anything else that might be going on with an item, not affected by cancellation */
+#define SPEFLAGS_SCHROEDINGERS_BOX			0x00000001UL
+#define SPEFLAGS_YOURS						0x00000002UL
+#define SPEFLAGS_STATUE_HISTORIC			0x00000004UL
+#define SPEFLAGS_STATUE_MALE				0x00000008UL
+#define SPEFLAGS_STATUE_FEMALE				0x00000010UL
+
     char oclass;    /* object class */
     char invlet;    /* designation in inventory */
     char oartifact; /* artifact array index */
@@ -74,8 +81,8 @@ struct obj {
     Bitfield(blessed, 1);
     Bitfield(unpaid, 1);    /* on some bill */
     Bitfield(no_charge, 1); /* if shk shouldn't charge for this */
-    Bitfield(known, 1);     /* exact nature known */
-    Bitfield(dknown, 1);    /* color or text known */
+    Bitfield(known, 1);     /* exact nature & spe & charges known */
+    Bitfield(dknown, 1);    /* description = color or text known */
     Bitfield(bknown, 1);    /* blessing or curse known */
     Bitfield(rknown, 1);    /* rustproof or not known */
 
@@ -219,7 +226,7 @@ struct obj {
 	((o)->oclass == WEAPON_CLASS || is_weptool(o) || (objects[(o)->otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED))
 #define is_amulet(o) \
 	((o)->oclass == AMULET_CLASS)
-#define is_wet_towel(o) ((o)->otyp == TOWEL && (o)->spe > 0)
+#define is_wet_towel(o) ((o)->otyp == TOWEL && (o)->special_quality > 0)
 #define bimanual(otmp)                                            \
     (((otmp)->oclass == WEAPON_CLASS || (otmp)->oclass == TOOL_CLASS) \
      && objects[(otmp)->otyp].oc_bimanual)
@@ -316,7 +323,7 @@ struct obj {
 	((objects[(o)->otyp].oc_flags2 & O2_CONTAINER_MAGIC_BAG) != 0)
 #define Is_weight_changing_bag(o) \
 	((objects[(o)->otyp].oc_flags2 & O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG) != 0)
-#define SchroedingersBox(o) ((o)->otyp == LARGE_BOX && (o)->spe == 1)
+#define SchroedingersBox(o) ((o)->otyp == LARGE_BOX && ((o)->speflags & SPEFLAGS_SCHROEDINGERS_BOX) != 0)
 
 /* dragon gear */
 #define is_dragon_scales(obj) \

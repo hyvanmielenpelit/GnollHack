@@ -1457,7 +1457,7 @@ register struct trobj *trop;
             }
 
             /* Don't start with +0 or negative rings */
-            if (objects[otyp].oc_charged && obj->spe <= 0)
+            if (objects[otyp].oc_spe_type && obj->spe <= 0)
                 obj->spe = rne(3);
 
             /* Heavily relies on the fact that 1) we create wands

@@ -623,7 +623,7 @@ xchar x, y; /* coordinates where object was before the impact, not after */
 			
 			if (otmp->otyp == MIRROR || otmp->otyp == MAGIC_MIRROR)
                 change_luck(-2, TRUE);
-			else if (otmp->otyp == EGG && otmp->spe && otmp->corpsenm >= LOW_PM)
+			else if (otmp->otyp == EGG && (otmp->speflags & SPEFLAGS_YOURS) && otmp->corpsenm >= LOW_PM)
 				change_luck(-1, TRUE);
 			/* eggs laid by you.  penalty is -1 per egg, max 5,
 			 * but it's always exactly 1 that breaks */
@@ -1890,7 +1890,7 @@ boolean shop_floor_obj;
             /* penalty for breaking eggs laid by you */
 			result = "splat";
 			You_hear("a muffled %s.", result);
-			if (otmp->otyp == EGG && otmp->spe && otmp->corpsenm >= LOW_PM)
+			if (otmp->otyp == EGG && (otmp->speflags & SPEFLAGS_YOURS) && otmp->corpsenm >= LOW_PM)
                 change_luck((schar) -min(otmp->quan, 5L), TRUE);
         }
         obj_extract_self(otmp);

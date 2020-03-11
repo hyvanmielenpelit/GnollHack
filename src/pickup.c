@@ -1475,7 +1475,7 @@ boolean telekinesis;
     }
 
     if (obj->otyp == SCR_SCARE_MONSTER && result <= 0 && !container)
-        obj->spe = 0;
+        obj->special_quality = 0;
     return result;
 }
 
@@ -1513,8 +1513,8 @@ boolean telekinesis; /* not picking it up directly by hand */
     } else if (obj->otyp == SCR_SCARE_MONSTER) {
         if (obj->blessed)
             obj->blessed = 0;
-        else if (!obj->spe && !obj->cursed)
-            obj->spe = 1;
+        else if (!obj->special_quality && !obj->cursed)
+            obj->special_quality = 1;
         else {
             pline_The("scroll%s %s to dust as you %s %s up.", plur(obj->quan),
                       otense(obj, "turn"), telekinesis ? "raise" : "pick",
@@ -1988,7 +1988,7 @@ reverse_loot()
         otmp = 0;
         for (coffers = fobj; coffers; coffers = coffers->nobj)
             if (coffers->otyp == CHEST) {
-                if (coffers->spe == 2)
+                if (coffers->special_quality == 2)
                     break; /* a throne room chest */
                 if (!otmp
                     || distu(coffers->ox, coffers->oy)
@@ -2111,15 +2111,15 @@ int depthin;
 {
     /* these won't cause an explosion when they're empty */
     if ((obj->otyp == WAN_CANCELLATION || obj->otyp == BAG_OF_TRICKS)
-        && obj->spe <= 0)
+        && obj->charges <= 0)
         return FALSE;
 
 	if ((container->otyp == BAG_OF_WIZARDRY || container->otyp == GOLDEN_CHEST) &&
 		(obj->otyp == WAN_CANCELLATION || obj->otyp == BAG_OF_TRICKS)
-		&& obj->spe > 0)
+		&& obj->charges > 0)
 	{
 		//Bag of wizardry will drain the charges of explosing-causing items
-		obj->spe = 0;
+		obj->charges = 0;
 		return FALSE;
 	}
 
@@ -2609,12 +2609,12 @@ boolean makecat, givemsg;
                 obfree(deadcat, (struct obj *) 0), deadcat = 0;
             }
             box->owt = weight(box);
-            box->spe = 0;
+            box->speflags &= ~SPEFLAGS_SCHROEDINGERS_BOX;
         }
     } 
 	else 
 	{
-        box->spe = 0; /* now an ordinary box (with a cat corpse inside) */
+		box->speflags &= ~SPEFLAGS_SCHROEDINGERS_BOX; /* now an ordinary box (with a cat corpse inside) */
         if (deadcat)
 		{
             /* set_corpsenm() will start the rot timer that was removed
@@ -3593,10 +3593,10 @@ dotip()
         spillage = "wax";
     } else if ((cobj->otyp == POT_OIL && cobj->lamplit)
                || (cobj->otyp == OIL_LAMP && cobj->age != 0L)
-               || (cobj->otyp == MAGIC_LAMP && cobj->spe != 0)) {
+               || (cobj->otyp == MAGIC_LAMP && cobj->special_quality == 1)) {
         spillage = "oil";
         /* todo: reduce potion's remaining burn timer or oil lamp's fuel */
-    } else if (cobj->otyp == CAN_OF_GREASE && cobj->spe > 0) {
+    } else if (cobj->otyp == CAN_OF_GREASE && cobj->charges > 0) {
         /* charged consumed below */
         spillage = "grease";
     } else if (cobj->otyp == FOOD_RATION || cobj->otyp == CRAM_RATION
@@ -3615,7 +3615,7 @@ dotip()
         pline("Some %s %s onto the %s%s.", spillage,
               vtense(spillage, "spill"), surface(u.ux, u.uy), buf);
         /* shop usage message comes after the spill message */
-        if (cobj->otyp == CAN_OF_GREASE && cobj->spe > 0) {
+        if (cobj->otyp == CAN_OF_GREASE && cobj->charges > 0) {
             consume_obj_charge(cobj, TRUE);
         }
         /* something [useless] happened */
@@ -3675,7 +3675,7 @@ struct obj *box; /* or bag */
         }
     } else if (box->otyp == BAG_OF_TRICKS || box->otyp == HORN_OF_PLENTY) {
         boolean bag = box->otyp == BAG_OF_TRICKS;
-        int old_spe = box->spe, seen = 0;
+        int old_charges = box->charges, seen = 0;
 
         if (maybeshopgoods && !box->no_charge)
             addtobill(box, FALSE, FALSE, TRUE);
@@ -3685,17 +3685,17 @@ struct obj *box; /* or bag */
             if (!(bag ? bagotricks(box, TRUE, &seen)
                       : hornoplenty(box, TRUE)))
                 break;
-        } while (box->spe > 0);
+        } while (box->charges > 0);
 
-        if (box->spe < old_spe) {
+        if (box->charges < old_charges) {
             if (bag)
                 pline((seen == 0) ? "Nothing seems to happen."
                                   : (seen == 1) ? "A monster appears."
                                                 : "Monsters appear!");
             /* check_unpaid wants to see a non-zero charge count */
-            box->spe = old_spe;
+            box->charges = old_charges;
             check_unpaid_usage(box, TRUE);
-            box->spe = 0; /* empty */
+            box->charges = 0; /* empty */
             box->cknown = 1;
         }
         if (maybeshopgoods && !box->no_charge)

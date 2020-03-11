@@ -235,7 +235,7 @@ found:
 
     /* see if there's enough ink */
     basecost = cost(new_obj);
-    if (pen->spe < basecost / 2) {
+    if (pen->charges < basecost / 2) {
         Your("marker is too dry to write that!");
         obfree(new_obj, (struct obj *) 0);
         return 1;
@@ -247,8 +247,8 @@ found:
     curseval = bcsign(pen) + bcsign(paper);
     exercise(A_WIS, TRUE);
     /* dry out marker */
-    if (pen->spe < actualcost) {
-        pen->spe = 0;
+    if (pen->charges < actualcost) {
+        pen->charges = 0;
         Your("marker dries out!");
         /* scrolls disappear, spellbooks don't */
         if (paper->oclass == SPBOOK_CLASS) {
@@ -261,7 +261,7 @@ found:
         obfree(new_obj, (struct obj *) 0);
         return 1;
     }
-    pen->spe -= actualcost;
+    pen->charges -= actualcost;
 
     /*
      * Writing by name requires that the hero knows the scroll or
@@ -339,7 +339,7 @@ found:
     if (new_obj->otyp == SCR_MAIL)
         /* 0: delivered in-game via external event (or randomly for fake mail);
            1: from bones or wishing; 2: written with marker */
-        new_obj->spe = 2;
+        new_obj->special_quality = 2;
 #endif
     /* unlike alchemy, for example, a successful result yields the
        specifically chosen item so hero recognizes it even if blind;

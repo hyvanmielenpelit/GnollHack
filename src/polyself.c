@@ -1386,7 +1386,7 @@ dospit()
             otmp = mksobj(ACID_VENOM, TRUE, FALSE, FALSE);
             break;
         }
-        otmp->spe = 1; /* to indicate it's yours */
+        otmp->speflags |= SPEFLAGS_YOURS; /* to indicate it's yours */
         throwit(otmp, 0L);
     }
     return 1;
@@ -2001,7 +2001,7 @@ dolayegg()
 		}
 	}
 	uegg = mksobj(EGG, FALSE, FALSE, FALSE);
-	uegg->spe = 1;
+	uegg->speflags |= SPEFLAGS_YOURS;
 	uegg->quan = 1L;
 	uegg->owt = weight(uegg);
 	/* this sets hatch timers if appropriate */

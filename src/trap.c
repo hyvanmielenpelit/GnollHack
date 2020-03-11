@@ -72,9 +72,9 @@ struct monst *victim;
     item = hitting_u ? carrying(TOWEL) : m_carrying(victim, TOWEL);
     while (item) {
         if (is_wet_towel(item)) {
-            oldspe = item->spe;
+            oldspe = item->special_quality;
             dry_a_towel(item, rn2(oldspe + 1), TRUE);
-            if (item->spe != oldspe)
+            if (item->special_quality != oldspe)
                 break; /* stop once one towel has been affected */
         }
         item = item->nobj;
@@ -599,7 +599,7 @@ int *fail_reason;
     struct obj *item;
     coord cc;
     boolean historic = (Role_if(PM_ARCHEOLOGIST)
-                        && (statue->spe & STATUE_HISTORIC) != 0),
+                        && (statue->spe & SPEFLAGS_STATUE_HISTORIC) != 0),
             golem_xform = FALSE, use_saved_traits;
     const char *comes_to_life;
     char statuename[BUFSZ], tmpbuf[BUFSZ];
@@ -656,9 +656,9 @@ int *fail_reason;
     }
 
     /* a non-montraits() statue might specify gender */
-    if (statue->spe & STATUE_MALE)
+    if (statue->speflags & SPEFLAGS_STATUE_MALE)
         mon->female = FALSE;
-    else if (statue->spe & STATUE_FEMALE)
+    else if (statue->speflags & SPEFLAGS_STATUE_FEMALE)
         mon->female = TRUE;
 
     /* if statue has been named, give same name to the monster */
@@ -3608,7 +3608,7 @@ struct obj *obj;
             }
         }
         obj->otyp = SCR_BLANK_PAPER;
-        obj->spe = 0;
+        obj->special_quality = 0;
         obj->dknown = 0;
     } else
         erode_obj(obj, (char *) 0, ERODE_CORRODE, EF_GREASE | EF_VERBOSE);
@@ -3643,9 +3643,9 @@ boolean force;
     if (!ostr)
         ostr = cxname(obj);
 
-    if (obj->otyp == CAN_OF_GREASE && obj->spe > 0) {
+    if (obj->otyp == CAN_OF_GREASE && obj->charges > 0) {
         return ER_NOTHING;
-    } else if (obj->otyp == TOWEL && obj->spe < 7) {
+    } else if (obj->otyp == TOWEL && obj->special_quality < 7) {
         wet_a_towel(obj, rnd(7), TRUE);
         return ER_NOTHING;
     } else if (obj->greased) {
@@ -3688,7 +3688,7 @@ boolean force;
 
         obj->otyp = SCR_BLANK_PAPER;
         obj->dknown = 0;
-        obj->spe = 0;
+        obj->special_quality = 0;
         if (carried(obj))
             update_inventory();
         return ER_DAMAGED;
@@ -4598,7 +4598,7 @@ struct trap *ttmp;
 
     bad_tool = (obj->cursed
                 || ((obj->otyp != POT_OIL || obj->lamplit)
-                    && (obj->otyp != CAN_OF_GREASE || !obj->spe)));
+                    && (obj->otyp != CAN_OF_GREASE || !obj->charges)));
     fails = try_disarm(ttmp, bad_tool);
     if (fails < 2)
         return fails;

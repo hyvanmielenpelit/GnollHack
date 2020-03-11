@@ -471,7 +471,10 @@ struct obj *box;
                 if (Is_mbag(otmp)) {
                     otmp->otyp = SACK;
                     otmp->spe = 0;
-                    otmp->owt = weight(otmp);
+					otmp->special_quality = 0;
+					otmp->charges = 0;
+					otmp->speflags = 0;
+					otmp->owt = weight(otmp);
                 } else
                     while (otmp->otyp == WAN_CANCELLATION)
                         otmp->otyp = rnd_class(WAN_LIGHT, WAN_LIGHTNING);
@@ -946,8 +949,13 @@ boolean makingboxcontents;
 
     if (init) 
 	{
+		/* quantity */
 		if(objects[otmp->otyp].oc_merge && !is_obj_unique(otmp))
 			otmp->quan = get_multigen_quan(objects[otmp->otyp].oc_multigen_type);
+
+		/* charges if any */
+		if (objects[otmp->otyp].oc_charged)
+			otmp->charges = get_obj_init_charge(otmp);
 
 		switch (let) {
         case WEAPON_CLASS:
@@ -995,8 +1003,8 @@ boolean makingboxcontents;
 
 			if (artif && !rn2(20))
                 otmp = mk_artifact(otmp, (aligntyp) A_NONE);
-            break;
-        case FOOD_CLASS:
+			break;
+		case FOOD_CLASS:
             otmp->oeaten = 0;
             switch (otmp->otyp) {
             case CORPSE:
@@ -1043,7 +1051,7 @@ boolean makingboxcontents;
                 blessorcurse(otmp, 10);
                 break;
             case SLIME_MOLD:
-                otmp->spe = context.current_fruit;
+                otmp->special_quality = context.current_fruit;
                 flags.made_fruit = TRUE;
                 break;
             case KELP_FROND:
@@ -1077,7 +1085,7 @@ boolean makingboxcontents;
             switch (otmp->otyp) {
             case TALLOW_CANDLE:
             case WAX_CANDLE:
-				otmp->spe = 1;
+				otmp->special_quality = 1;
                 otmp->age = 30L * /* 600 or 300 */
                             (long) objects[otmp->otyp].oc_cost;
                 otmp->lamplit = 0;
@@ -1086,18 +1094,18 @@ boolean makingboxcontents;
                 break;
 			case BRASS_LANTERN:
             case OIL_LAMP:
-                otmp->spe = 1;
+                otmp->special_quality = 1;
                 otmp->age = (long) rn1(500, 1000);
                 otmp->lamplit = 0;
                 blessorcurse(otmp, 5);
                 break;
 			case MAGIC_CANDLE:
-                otmp->spe = 2;
+                otmp->special_quality = 2;
                 otmp->lamplit = 0;
                 blessorcurse(otmp, 2);
                 break;
 			case MAGIC_LAMP:
-				otmp->spe = 1;
+				otmp->special_quality = 1;
 				otmp->lamplit = 0;
 				blessorcurse(otmp, 2);
 				break;
@@ -1129,15 +1137,15 @@ boolean makingboxcontents;
 			case MAGIC_HARP:
 			case FROST_HORN:
 			case FIRE_HORN:
+			case UNICORN_HORN:
 			case DRUM_OF_EARTHQUAKE:
-				otmp->spe = get_obj_init_charge(otmp);
                 break;
 			case CAN_OF_GREASE:
-                otmp->spe = get_obj_init_charge(otmp);
+                otmp->charges = get_obj_init_charge(otmp);
                 blessorcurse(otmp, 10);
                 break;
             case CRYSTAL_BALL:
-                otmp->spe = get_obj_init_charge(otmp);
+                otmp->charges = get_obj_init_charge(otmp);
                 blessorcurse(otmp, 2);
                 break;
             case FIGURINE:
@@ -1148,7 +1156,8 @@ boolean makingboxcontents;
                 blessorcurse(otmp, 4);
                 break;
             }
-            break;
+			//otmp->charges = get_obj_init_charge(otmp);
+			break;
         case AMULET_CLASS:
             if (otmp->otyp == AMULET_OF_YENDOR)
                 context.made_amulet = TRUE;
@@ -1215,19 +1224,19 @@ boolean makingboxcontents;
 				if (otmp->otyp == WAN_WISHING)
 					otmp->otyp = WAN_POLYMORPH;
 			}
-            otmp->spe = get_obj_init_charge(otmp);
+            otmp->charges = get_obj_init_charge(otmp);
             blessorcurse(otmp, 17);
             otmp->recharged = 0; /* used to control recharging */
             break;
         case RING_CLASS:
-            if (objects[otmp->otyp].oc_charged == CHARGED_RING_NORMAL || objects[otmp->otyp].oc_charged == CHARGED_RING_1_7 || objects[otmp->otyp].oc_charged == CHARGED_RING_DOUBLE || objects[otmp->otyp].oc_charged == CHARGED_RING_POWER)
+            if (objects[otmp->otyp].oc_spe_type == SPETYPE_RING_NORMAL || objects[otmp->otyp].oc_spe_type == SPETYPE_RING_1_7 || objects[otmp->otyp].oc_spe_type == SPETYPE_RING_DOUBLE || objects[otmp->otyp].oc_spe_type == SPETYPE_RING_POWER)
 			{
 				int addition = 0;
-				if (objects[otmp->otyp].oc_charged == CHARGED_RING_NORMAL)
+				if (objects[otmp->otyp].oc_spe_type == SPETYPE_RING_NORMAL)
 					addition += rnd(2) + !rn2(2) ? 0 : !rn2(2) ? 1 : !rn2(2) ? 2 : 3;
-				else if (objects[otmp->otyp].oc_charged == CHARGED_RING_1_7)
+				else if (objects[otmp->otyp].oc_spe_type == SPETYPE_RING_1_7)
 					addition += rnd(3) + !rn2(3) ? 0 : !rn2(3) ? 1 : !rn2(3) ? 2 : !rn2(3) ? 3 : 4;
-				else if (objects[otmp->otyp].oc_charged == CHARGED_RING_DOUBLE)
+				else if (objects[otmp->otyp].oc_spe_type == SPETYPE_RING_DOUBLE)
 					addition += rnd(4) + !rn2(4) ? 0 : !rn2(4) ? 1 : !rn2(4) ? 2 : !rn2(4) ? 3 : !rn2(4) ? 4 : !rn2(4) ? 5 : 6;
 				else
 					addition += rnd(2);
@@ -1245,14 +1254,14 @@ boolean makingboxcontents;
                 }
                 /* make useless +0 rings much less common */
                 if (otmp->spe == 0)
-                    otmp->spe = ((objects[otmp->otyp].oc_charged == CHARGED_RING_POWER) ? rnd(3) - 2 : rn2(4) - rn2(3));
+                    otmp->spe = ((objects[otmp->otyp].oc_spe_type == SPETYPE_RING_POWER) ? rnd(3) - 2 : rn2(4) - rn2(3));
                 /* negative rings are usually cursed */
                 if (otmp->spe < 0 && rn2(5))
                     curse(otmp);
             }
-			else if (objects[otmp->otyp].oc_charged)
+			else if (objects[otmp->otyp].oc_spe_type)
 			{
-				int addition = get_obj_init_charge(otmp);
+				int addition = get_obj_init_spe(otmp);
 				blessorcurse(otmp, 3);
 				otmp->spe = bcsign(otmp) * addition;
 				/* negative rings are usually cursed */
@@ -1264,7 +1273,7 @@ boolean makingboxcontents;
             }
             break;
 		case MISCELLANEOUS_CLASS:
-			if (objects[otmp->otyp].oc_charged == CHARGED_MISCELLANEOUS_NORMAL) 
+			if (objects[otmp->otyp].oc_spe_type == SPETYPE_MISCELLANEOUS_NORMAL) 
 			{
 				int addition = rnd(2);
 				if (otmp->otyp != STRANGE_OBJECT)
@@ -1288,16 +1297,16 @@ boolean makingboxcontents;
 				if (otmp->spe < 0 && rn2(5))
 					curse(otmp);
 			}
-			else if (objects[otmp->otyp].oc_charged)
+			else if (objects[otmp->otyp].oc_spe_type)
 			{
 				if (rn2(10) && (is_cursed_magic_item(otmp) || !rn2(11))) {
 					curse(otmp);
-					otmp->spe = -get_obj_init_charge(otmp);
+					otmp->spe = -get_obj_init_spe(otmp);
 				}
 				else if (!rn2(10)) 
 				{
 					otmp->blessed = (objects[otmp->otyp].oc_flags2 & O2_GENERATED_BLESSED) ? 1 : rn2(2);
-					otmp->spe = get_obj_init_charge(otmp);
+					otmp->spe = get_obj_init_spe(otmp);
 				}
 				else
 					blessorcurse(otmp, 10);
@@ -1439,21 +1448,6 @@ int charge_init_index;
 	case CHARGED_ALWAYS_5:
 		charge = 5;
 		break;
-	case CHARGED_RING_NORMAL:
-		charge = rnd(5);
-		break;
-	case CHARGED_RING_1_7:
-		charge = rnd(7);
-		break;
-	case CHARGED_RING_DOUBLE:
-		charge = rnd(10);
-		break;
-	case CHARGED_MISCELLANEOUS_NORMAL:
-		charge = rnd(5);
-		break;
-	case CHARGED_RING_POWER:
-		charge = rnd(3);
-		break;
 	case CHARGED_WAND_NORMAL_NODIR:
 		charge = rn1(5, 11);
 		break;
@@ -1528,21 +1522,6 @@ int charge_init_index;
 	case CHARGED_ALWAYS_5:
 		charge = 5;
 		break;
-	case CHARGED_RING_NORMAL:
-		charge = 6;
-		break;
-	case CHARGED_RING_1_7:
-		charge = 9;
-		break;
-	case CHARGED_RING_DOUBLE:
-		charge = 12;
-		break;
-	case CHARGED_MISCELLANEOUS_NORMAL:
-		charge = 7;
-		break;
-	case CHARGED_RING_POWER:
-		charge = 3;
-		break;
 	case CHARGED_WAND_NORMAL_NODIR:
 		charge = 15;
 		break;
@@ -1585,6 +1564,132 @@ int charge_init_index;
 	}
 
 	return charge;
+}
+
+
+int
+get_obj_init_spe(otmp)
+struct obj* otmp;
+{
+	if (!otmp)
+		return 0;
+
+	int init_spe = get_init_spe(objects[otmp->otyp].oc_spe_type);
+
+	/* Possible extra modifications here */
+
+	return init_spe;
+}
+
+int
+get_obj_max_spe(otmp)
+struct obj* otmp;
+{
+	if (!otmp)
+		return 0;
+
+	int init_spe = get_max_spe(objects[otmp->otyp].oc_spe_type);
+
+	/* Possible extra modifications here */
+
+	return init_spe;
+}
+
+int
+get_init_spe(spe_type_index)
+int spe_type_index;
+{
+	int initspe = 1;
+
+	switch (spe_type_index)
+	{
+	case SPETYPE_NO_SPE:
+		initspe = 0;
+		break;
+	case SPETYPE_GENERAL:
+		initspe = rne(3);
+		break;
+	case SPETYPE_ALWAYS_1:
+		initspe = 1;
+		break;
+	case SPETYPE_ALWAYS_2:
+		initspe = 2;
+		break;
+	case SPETYPE_ALWAYS_3:
+		initspe = 3;
+		break;
+	case SPETYPE_ALWAYS_4:
+		initspe = 4;
+		break;
+	case SPETYPE_ALWAYS_5:
+		initspe = 5;
+		break;
+	case SPETYPE_RING_NORMAL:
+		initspe = rnd(5);
+		break;
+	case SPETYPE_RING_1_7:
+		initspe = rnd(7);
+		break;
+	case SPETYPE_RING_DOUBLE:
+		initspe = rnd(10);
+		break;
+	case SPETYPE_MISCELLANEOUS_NORMAL:
+		initspe = rnd(5);
+		break;
+	case SPETYPE_RING_POWER:
+		initspe = rnd(3);
+		break;
+	}
+
+	return initspe;
+}
+
+
+int
+get_max_spe(spe_type_index)
+int spe_type_index;
+{
+	int maxspe = 1;
+
+	switch (spe_type_index)
+	{
+	case SPETYPE_NO_SPE:
+		maxspe = 0;
+		break;
+	case SPETYPE_GENERAL:
+		maxspe = 5;
+		break;
+	case SPETYPE_ALWAYS_1:
+		maxspe = 1;
+		break;
+	case SPETYPE_ALWAYS_2:
+		maxspe = 2;
+		break;
+	case SPETYPE_ALWAYS_3:
+		maxspe = 3;
+		break;
+	case SPETYPE_ALWAYS_4:
+		maxspe = 4;
+		break;
+	case SPETYPE_ALWAYS_5:
+		maxspe = 5;
+		break;
+	case SPETYPE_RING_NORMAL:
+		maxspe = 6;
+		break;
+	case SPETYPE_RING_1_7:
+		maxspe = 9;
+		break;
+	case SPETYPE_RING_DOUBLE:
+		maxspe = 12;
+		break;
+	case SPETYPE_MISCELLANEOUS_NORMAL:
+		maxspe = 7;
+		break;
+
+	}
+
+	return maxspe;
 }
 
 int 
@@ -2100,8 +2205,8 @@ register struct obj *obj;
         return (int) ((obj->quan) / 10L) + 1;
     } else if (obj->otyp == HEAVY_IRON_BALL && obj->owt != 0) {
         return (int) obj->owt; /* kludge for "very" heavy iron ball */
-    } else if (obj->otyp == CANDELABRUM_OF_INVOCATION && obj->spe) {
-        return wt + obj->spe * (int) objects[TALLOW_CANDLE].oc_weight;
+    } else if (obj->otyp == CANDELABRUM_OF_INVOCATION && obj->special_quality) {
+        return wt + obj->special_quality * (int) objects[TALLOW_CANDLE].oc_weight;
     }
     return (wt ? wt * (int) obj->quan : ((int) obj->quan + 1) >> 1);
 }
@@ -2840,7 +2945,7 @@ boolean tipping; /* caller emptying entire contents; affects shop handling */
 	{
         impossible("bad horn o' plenty");
     } 
-	else if (horn->spe < 1)
+	else if (horn->charges < 1)
 	{
         pline1(nothing_happens);
     }

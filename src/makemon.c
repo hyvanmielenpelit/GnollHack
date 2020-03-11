@@ -1408,7 +1408,7 @@ register struct monst *mtmp;
 			   disclosing the box's contents, the corpse might be revived,
 			   otherwise it's given a rot timer; weight is now ordinary */
 			if ((catcorpse = mksobj(CORPSE, TRUE, FALSE, FALSE)) != 0) {
-				otmp->spe = 1; /* flag for special SchroedingersBox */
+				otmp->speflags |= SPEFLAGS_SCHROEDINGERS_BOX; /* flag for special SchroedingersBox */
 				set_corpsenm(catcorpse, PM_HOUSECAT);
 				(void)stop_timer(ROT_CORPSE, obj_to_any(catcorpse));
 				add_to_container(otmp, catcorpse);
@@ -3060,7 +3060,8 @@ int otyp;
 
         if (otmp->otyp == CANDELABRUM_OF_INVOCATION) {
             otmp->spe = 0;
-            otmp->age = 0L;
+			otmp->special_quality = 0;
+			otmp->age = 0L;
             otmp->lamplit = FALSE;
             otmp->blessed = otmp->cursed = FALSE;
         } else if (otmp->otyp == BELL_OF_OPENING) {
@@ -3424,7 +3425,7 @@ int *seencount;  /* secondary output */
 
     if (!bag || bag->otyp != BAG_OF_TRICKS) {
         impossible("bad bag o' tricks");
-    } else if (bag->spe < 1) {
+    } else if (bag->charges < 1) {
         /* if tipping known empty bag, give normal empty container message */
         pline1((tipping && bag->cknown) ? "It's empty." : nothing_happens);
         /* now known to be empty if sufficiently discovered */

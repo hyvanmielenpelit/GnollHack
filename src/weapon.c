@@ -1421,14 +1421,14 @@ struct obj *obj;
 int amt; /* positive: new value; negative: increment by -amt; zero: no-op */
 boolean verbose;
 {
-    int newspe = (amt <= 0) ? obj->spe - amt : amt;
+    int newspe = (amt <= 0) ? obj->special_quality - amt : amt;
 
     /* new state is only reported if it's an increase */
-    if (newspe > obj->spe) {
+    if (newspe > obj->special_quality) {
         if (verbose) {
             const char *wetness = (newspe < 3)
-                                     ? (!obj->spe ? "damp" : "damper")
-                                     : (!obj->spe ? "wet" : "wetter");
+                                     ? (!obj->special_quality ? "damp" : "damper")
+                                     : (!obj->special_quality ? "wet" : "wetter");
 
             if (carried(obj))
                 pline("%s gets %s.", Yobjnam2(obj, (const char *) 0),
@@ -1438,7 +1438,7 @@ boolean verbose;
                       xname(obj), wetness);
         }
     }
-    obj->spe = min(newspe, 7);
+    obj->special_quality = min(newspe, 7);
 
     /* if hero is wielding this towel, don't give "you begin bashing
        with your wet towel" message on next attack with it */
@@ -1456,10 +1456,10 @@ struct obj *obj;
 int amt; /* positive: new value; negative: decrement by -amt; zero: no-op */
 boolean verbose;
 {
-    int newspe = (amt <= 0) ? obj->spe + amt : amt;
+    int newspe = (amt <= 0) ? obj->special_quality + amt : amt;
 
     /* new state is only reported if it's a decrease */
-    if (newspe < obj->spe) {
+    if (newspe < obj->special_quality) {
         if (verbose) {
             if (carried(obj))
                 pline("%s dries%s.", Yobjnam2(obj, (const char *) 0),
@@ -1470,7 +1470,7 @@ boolean verbose;
         }
     }
     newspe = min(newspe, 7);
-    obj->spe = max(newspe, 0);
+    obj->special_quality = max(newspe, 0);
 
     /* if hero is wielding this towel and it is now dry, give "you begin
        bashing with your towel" message on next attack with it */

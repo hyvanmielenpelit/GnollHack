@@ -369,7 +369,10 @@ typedef struct {
     Str_or_Len name;
     int corpsenm;
     short id, spe;
-    packed_coord coord;
+	short charges;
+	int special_quality;
+	unsigned long speflags;
+	packed_coord coord;
     xchar x, y, class, containment;
     schar curse_state;
     int quan;

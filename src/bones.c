@@ -128,16 +128,16 @@ boolean restore;
             }
 
             if (otmp->otyp == SLIME_MOLD) {
-                goodfruit(otmp->spe);
+                goodfruit(otmp->special_quality);
 #ifdef MAIL
             } else if (otmp->otyp == SCR_MAIL) {
                 /* 0: delivered in-game via external event;
                    1: from bones or wishing; 2: written with marker */
-                if (otmp->spe == 0)
-                    otmp->spe = 1;
+                if (otmp->special_quality == 0)
+                    otmp->special_quality = 1;
 #endif
             } else if (otmp->otyp == EGG) {
-                otmp->spe = 0; /* not "laid by you" in next game */
+                otmp->speflags &= ~SPEFLAGS_YOURS; /* not "laid by you" in next game */
             } else if (otmp->otyp == TIN) {
                 /* make tins of unique monster's meat be empty */
                 if (otmp->corpsenm >= LOW_PM
@@ -179,9 +179,9 @@ boolean restore;
                     end_burn(otmp, TRUE);
                 otmp->otyp = WAX_CANDLE;
                 otmp->age = 50L; /* assume used */
-                if (otmp->spe > 0)
-                    otmp->quan = (long) otmp->spe;
-                otmp->spe = 0;
+                if (otmp->special_quality > 0)
+                    otmp->quan = (long) otmp->special_quality;
+                otmp->special_quality = 0;
                 otmp->owt = weight(otmp);
                 curse(otmp);
             } else if (otmp->otyp == BELL_OF_OPENING) {
@@ -247,7 +247,7 @@ int x, y;
             end_burn(otmp, TRUE); /* smother in statue */
 
         if (otmp->otyp == SLIME_MOLD)
-            goodfruit(otmp->spe);
+            goodfruit(otmp->special_quality);
 
         if (rn2(5))
             curse(otmp);

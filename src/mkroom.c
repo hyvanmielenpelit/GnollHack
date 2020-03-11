@@ -593,7 +593,7 @@ struct mkroom *sroom;
         chest = mksobj_at(CHEST, mm.x, mm.y, TRUE, FALSE);
         add_to_container(chest, gold);
         chest->owt = weight(chest);
-        chest->spe = 2; /* so it can be found later */
+        chest->special_quality = 2; /* so it can be found later */
         level.flags.has_court = 1;
         break;
     }

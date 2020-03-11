@@ -534,12 +534,12 @@ register struct monst *mtmp;
                 if (obj || u.umonnum == PM_TRAPPER
                     || (youmonst.data->mlet == S_EEL
                         && is_pool(u.ux, u.uy))) {
-                    int save_spe = 0; /* suppress warning */
+                    unsigned long save_speflags = 0; /* suppress warning */
 
                     if (obj) {
-                        save_spe = obj->spe;
+						save_speflags = obj->speflags;
                         if (obj->otyp == EGG)
-                            obj->spe = 0;
+                            obj->speflags = 0;
                     }
                     /* note that m_monnam() overrides hallucination, which is
                        what we want when message is from mtmp's perspective */
@@ -554,7 +554,7 @@ register struct monst *mtmp;
                               m_monnam(mtmp), youmonst.data->mname, plname,
                               doname(level.objects[u.ux][u.uy]));
                     if (obj)
-                        obj->spe = save_spe;
+                        obj->speflags = save_speflags;
                 } else
                     impossible("hiding under nothing?");
             }

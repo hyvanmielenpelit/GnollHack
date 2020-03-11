@@ -1117,7 +1117,7 @@ struct obj **optr;
         return;
     }
     oops = (rnd(20) > ACURR(A_INT) || obj->cursed);
-    if (oops && (obj->spe > 0)) {
+    if (oops && (obj->charges > 0)) {
         switch (rnd(obj->oartifact ? 4 : 5)) {
         case 1:
             pline("%s too much to comprehend!", Tobjnam(obj, "are"));
@@ -1158,7 +1158,7 @@ struct obj **optr;
     }
 
     if (Hallucination) {
-        if (!obj->spe) {
+        if (!obj->charges) {
             pline("All you see is funky %s haze.", hcolor((char *) 0));
         } else {
             switch (rnd(6)) {
@@ -1203,7 +1203,7 @@ struct obj **optr;
     nomul(-rnd(10));
     multi_reason = "gazing into a crystal ball";
     nomovemsg = "";
-    if (obj->spe <= 0) {
+    if (obj->charges <= 0) {
         pline_The("vision is unclear.");
     } else {
         int class, i;
