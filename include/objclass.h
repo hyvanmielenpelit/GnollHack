@@ -330,7 +330,11 @@ enum charged_init_types {
 	CHARGED_1D15_15 = 16,
 	CHARGED_1D30_30 = 17,
 	CHARGED_1D45_45 = 18,
-	CHARGED_1D75_75 = 19
+	CHARGED_1D75_75 = 19,
+	CHARGED_ALWAYS_6 = 20,
+	CHARGED_ALWAYS_7 = 21,
+	CHARGED_ALWAYS_8 = 22,
+	CHARGED_ALWAYS_9 = 23
 };
 
 enum spe_init_types {
@@ -507,7 +511,7 @@ struct objclass {
 /* Extra weapon options */
 #define A1_STUN														0x00200000UL  /* stuns target, not implemented */
 #define A1_HITS_ADJACENT_SQUARES									0x00400000UL  /* like Cleaver */
-/* free bit*/
+#define A1_REQUIRES_AND_EXPENDS_A_CHARGE							0x00800000UL  /* Nine lives stealer */
 
 /* General */
 #define A1_MAGIC_RESISTANCE_PROTECTS								0x01000000UL

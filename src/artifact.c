@@ -2039,8 +2039,15 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 			&& ((objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
 			)
 		{
-			if (criticalstrikeroll < objects[otmp->otyp].oc_critical_strike_percentage)
+			if (criticalstrikeroll < objects[otmp->otyp].oc_critical_strike_percentage 
+				&& (!(objects[otmp->otyp].oc_aflags & A1_REQUIRES_AND_EXPENDS_A_CHARGE) || ((objects[otmp->otyp].oc_aflags & A1_REQUIRES_AND_EXPENDS_A_CHARGE) && otmp->charges > 0)))
 			{
+				/* Expend a charge */
+				if ((objects[otmp->otyp].oc_aflags & A1_REQUIRES_AND_EXPENDS_A_CHARGE) && otmp->charges > 0)
+				{
+					consume_obj_charge(otmp, TRUE);
+				}
+
 				if (
 					((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_USES_EXTRA_DAMAGE_TYPE
 					&& ((objects[otmp->otyp].oc_extra_damagetype == AD_FIRE && (youdefend ? Fire_resistance : resists_fire(mdef)))

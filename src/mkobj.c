@@ -1448,6 +1448,18 @@ int charge_init_index;
 	case CHARGED_ALWAYS_5:
 		charge = 5;
 		break;
+	case CHARGED_ALWAYS_6:
+		charge = 6;
+		break;
+	case CHARGED_ALWAYS_7:
+		charge = 7;
+		break;
+	case CHARGED_ALWAYS_8:
+		charge = 8;
+		break;
+	case CHARGED_ALWAYS_9:
+		charge = 9;
+		break;
 	case CHARGED_WAND_NORMAL_NODIR:
 		charge = rn1(5, 11);
 		break;

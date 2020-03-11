@@ -3834,13 +3834,16 @@ struct obj *no_wish;
         && strncmpi(bp, "leather armor", 13)
         && strncmpi(bp, "tooled horn", 11)
         && strncmpi(bp, "food ration", 11)
-        && strncmpi(bp, "meat ring", 9))
-        for (i = 0; i < (int) (sizeof wrpsym); i++) {
+		&& strncmpi(bp, "meat ring", 9))
+        for (i = 0; i < (int) (sizeof wrpsym); i++)
+		{
             register int j = strlen(wrp[i]);
 
-            if (!strncmpi(bp, wrp[i], j)) {
+            if (!strncmpi(bp, wrp[i], j))
+			{
                 oclass = wrpsym[i];
-                if (oclass != AMULET_CLASS) {
+                if (oclass != AMULET_CLASS) 
+				{
                     bp += j;
                     if (!strncmpi(bp, " of ", 4))
                         actualn = bp + 4;
@@ -3849,6 +3852,10 @@ struct obj *no_wish;
                     actualn = bp;
                 goto srch;
             }
+			
+			if (!strncmpi("ring", wrp[i], j) && strncmpi(bp, "enchant ring", 12))
+				continue;
+
             if (!BSTRCMPI(bp, p - j, wrp[i])) {
                 oclass = wrpsym[i];
                 p -= j;

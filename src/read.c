@@ -537,6 +537,9 @@ recharge(obj, curse_bless)
 struct obj *obj;
 int curse_bless;
 {
+	if (!obj)
+		return;
+
     register int n;
     boolean is_cursed, is_blessed;
 
@@ -608,50 +611,8 @@ int curse_bless;
         }
 
     }
-	else if (obj->oclass == RING_CLASS && objects[obj->otyp].oc_spe_type)
-	{
-		/* CONSIDER MOVING TO SCROLL OF ENCHANT RING OR THE LIKE */
-        /* charging does not affect ring's curse/bless status */
-		int maxcharge = get_obj_max_spe(obj);
-		int safecharge = get_obj_max_spe(obj) / 3;
-		int s = is_blessed ? rnd(max(1, maxcharge / 3)) : is_cursed ? -rnd(max(1, maxcharge / 3)) : maxcharge >= 12 ? rnd(max(1, maxcharge / 6)) : 1;
-        boolean is_on = (obj == uleft || obj == uright);
-
-        /* destruction depends on current state, not adjustment */
-        if (obj->spe > rn2(max(2, maxcharge - safecharge)) + safecharge || obj->spe <= -(5 * maxcharge) / 7)
-		{
-            pline("%s momentarily, then %s!", Yobjnam2(obj, "pulsate"),
-                  otense(obj, "explode"));
-            if (is_on)
-                Ring_gone(obj);
-            s = rnd(3 * abs(obj->spe)); /* amount of damage */
-            useup(obj);
-            losehp(adjust_damage(s, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "exploding ring", KILLED_BY_AN);
-        }
-		else 
-		{
-            long mask = is_on ? (obj == uleft ? LEFT_RING : RIGHT_RING) : 0L;
-
-            pline("%s spins %sclockwise for a moment.", Yname2(obj),
-                  s < 0 ? "counter" : "");
-            if (s < 0)
-                costly_alteration(obj, COST_DECHNT);
-            /* cause attributes and/or properties to be updated */
-            if (is_on)
-                Ring_off(obj);
-            obj->spe += s; /* update the ring while it's off */
-            if (is_on)
-                setworn(obj, mask), Ring_on(obj);
-            /* oartifact: if a touch-sensitive artifact ring is
-               ever created the above will need to be revised  */
-            /* update shop bill to reflect new higher price */
-            if (s > 0 && obj->unpaid)
-                alter_cost(obj, 0L);
-        }
-
-    } 
 	else if (obj->oclass == TOOL_CLASS) 
-{
+	{
         int rechrg = (int) obj->recharged;
 
         if (objects[obj->otyp].oc_charged) 
@@ -796,10 +757,118 @@ int curse_bless;
             break;
         } /* switch */
 
-    } else {
+    } 
+	else if (objects[obj->otyp].oc_charged)  // obj->oclass == WEAPON_CLASS)
+	{
+		/* All other charged items here */
+		int lim = get_obj_max_charge(obj);
+
+		switch (obj->otyp)
+		{
+		case NINE_LIVES_STEALER:
+			if (is_cursed) 
+			{
+				strip_charges(obj);
+				obj->recharged++;
+			}
+			else if (!rn2(max(2, is_blessed ? 4 : 3 - obj->recharged)))
+			{
+				int dmg = d(3, 9);
+				obj->in_use = TRUE; /* in case losehp() is fatal (or --More--^C) */
+				pline("%s %s explodes!", Yname2(obj), expl);
+				losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_MAGM, TRUE), "exploding sword", KILLED_BY_AN);
+				useup(obj);
+			}
+			else if (obj->charges < lim)
+			{
+				if (is_blessed)
+				{
+					obj->charges = lim;
+					p_glow2(obj, NH_BLUE);
+				}
+				else if (obj->charges < lim)
+				{
+					obj->charges += 1 + rnd(5);
+					if (obj->charges > lim)
+						obj->charges = lim;
+					p_glow1(obj);
+				}
+				obj->recharged++;
+			}
+			else
+			{
+				obj->recharged++;
+				goto not_chargable;
+			}
+			break;
+		default:
+			goto not_chargable;
+			break;
+		}
+
+	}
+	else
+	{
     not_chargable:
         You("have a feeling of loss.");
     }
+}
+
+void
+enchant_ring(obj, curse_bless)
+struct obj* obj;
+int curse_bless;
+{
+	boolean is_cursed, is_blessed;
+
+	is_cursed = curse_bless < 0;
+	is_blessed = curse_bless > 0;
+
+	if (obj && obj->oclass == RING_CLASS && objects[obj->otyp].oc_spe_type)
+	{
+		/* enchantment does not affect ring's curse/bless status */
+		int maxcharge = get_obj_max_spe(obj);
+		int safecharge = get_obj_max_spe(obj) / 3;
+		int s = is_blessed ? rnd(max(1, maxcharge / 3)) : is_cursed ? -rnd(max(1, maxcharge / 3)) : maxcharge >= 12 ? rnd(max(1, maxcharge / 6)) : 1;
+		boolean is_on = (obj == uleft || obj == uright);
+
+		/* destruction depends on current state, not adjustment */
+		if (obj->spe > rn2(max(2, maxcharge - safecharge)) + safecharge || obj->spe <= -(5 * maxcharge) / 7)
+		{
+			pline("%s momentarily, then %s!", Yobjnam2(obj, "pulsate"),
+				otense(obj, "explode"));
+			if (is_on)
+				Ring_gone(obj);
+			s = rnd(3 * abs(obj->spe)); /* amount of damage */
+			useup(obj);
+			losehp(adjust_damage(s, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "exploding ring", KILLED_BY_AN);
+		}
+		else
+		{
+			long mask = is_on ? (obj == uleft ? LEFT_RING : RIGHT_RING) : 0L;
+
+			pline("%s spins %sclockwise for a moment.", Yname2(obj),
+				s < 0 ? "counter" : "");
+			if (s < 0)
+				costly_alteration(obj, COST_DECHNT);
+			/* cause attributes and/or properties to be updated */
+			if (is_on)
+				Ring_off(obj);
+			obj->spe += s; /* update the ring while it's off */
+			if (is_on)
+				setworn(obj, mask), Ring_on(obj);
+			/* oartifact: if a touch-sensitive artifact ring is
+			   ever created the above will need to be revised  */
+			   /* update shop bill to reflect new higher price */
+			if (s > 0 && obj->unpaid)
+				alter_cost(obj, 0L);
+		}
+	}
+	else
+	{
+		You("have a feeling of loss.");
+	}
+
 }
 
 /* Forget known information about this object type. */
@@ -1984,7 +2053,30 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
         if (otmp)
             recharge(otmp, scursed ? -1 : sblessed ? 1 : 0);
         break;
-    case SCR_MAGIC_MAPPING:
+	case SCR_ENCHANT_RING:
+		if (confused) 
+		{
+			Your("head spins.");
+			make_stunned((HStun& TIMEOUT) + rn1(scursed ? 90 : 40, 10), TRUE);;
+			context.botl = context.botlx = 1;
+			break;
+		}
+		boolean rightok = uright && objects[uright->otyp].oc_spe_type;
+		boolean leftok = uleft && objects[uleft->otyp].oc_spe_type;
+
+		otmp = rightok && leftok ? (!rn2(2) ? uright : uleft) : rightok ? uright : leftok ? uleft : (struct obj*)0;
+
+		if (otmp)
+		{
+			enchant_ring(otmp, scursed ? -1 : sblessed ? 1 : 0);
+		}
+		else
+			Your("%s tingle.", makeplural(body_part(FINGER)));
+
+		known = TRUE;
+
+		break;
+	case SCR_MAGIC_MAPPING:
         if (level.flags.nommap) {
             Your("mind is filled with crazy lines!");
             if (Hallucination)

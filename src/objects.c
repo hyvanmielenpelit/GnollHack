@@ -107,6 +107,19 @@ NEARDATA struct objclass objects[] =
 			   0, 0, 0, 0, \
 			   powconfermask,permittedtargets, flags, flags2, flags3)
 
+#define CHARGEDWEAPON(name,desc,nmkn,mrg,mgc,charged,bi,prob,multigen,wt,cost,\
+				dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,critpct, \
+				hitbon,mcadj,throwrange,acbon,mcbon,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,\
+				power,power2,power3,pflags,typ,sub,skill,metal,color,\
+				flags,flags2,flags3,powconfermask,permittedtargets) \
+	    OBJECT(OBJ(name,desc), None, None,                                         \
+	           BITS(nmkn, mrg, 1, 0, mgc, SPETYPE_GENERAL, charged, 0, 0, bi, 0, typ, sub, skill, metal),  \
+	           power, power2, power3, pflags, WEAPON_CLASS, prob, multigen, 0, wt, cost, \
+			   dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, critpct, \
+			   hitbon, mcadj, 0, throwrange, acbon, mcbon, manabon, hpbon, bonusattrs, attrbonus, splcastpen, multicount, \
+			   wt, color, \
+			   0, 0, 0, 0, \
+			   powconfermask,permittedtargets, flags, flags2, flags3)
 
 	#define PROJECTILE(name,desc,  nmkn,mgc,prob,multigen,wt,cost,  dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,critpct,  hitbon,mcadj,  metal,sub,launcher_skill,skill,color,  flags,flags2,flags3, permittedtargets) \
 	    OBJECT(OBJ(name,desc), None, None,   \
@@ -600,6 +613,12 @@ WEAPON("sword of life stealing", "gold-hilted long sword",
 	0, -2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, P1_NONE, S, WEP_LONG_SWORD, P_SWORD, MAT_IRON, HI_GOLD,
 	O1_SPE_AFFECTS_MC_ADJUSTMENT, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
+CHARGEDWEAPON("nine lives stealer", "black-hilted long sword",
+	0, 0, 1, CHARGED_ALWAYS_9, 0, 2, MULTIGEN_SINGLE, 60, 4500,
+	AD_PHYS, 1, 8, 0, 1, 12, 0, AD_PHYS, 0, 0, 0, A1_CRITICAL_STRIKE | A1_CRITICAL_STRIKE_IS_DEADLY | A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK | A1_MAGIC_RESISTANCE_PROTECTS | A1_REQUIRES_AND_EXPENDS_A_CHARGE, 100,
+	0, -2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, P1_NONE, S, WEP_LONG_SWORD, P_SWORD, MAT_IRON, HI_GOLD,
+	O1_SPE_AFFECTS_MC_ADJUSTMENT, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 WEAPON("sword of orc slaying", "silver-hilted long sword",
 	0, 0, 1, 0, 3, MULTIGEN_SINGLE, 60, 500,
 	AD_PHYS, 1, 8, 0, 1, 12, 0, AD_PHYS, 1, 12, 0, A1_NONE, 0,
@@ -731,7 +750,7 @@ WEAPON("voulge", "pole cleaver",
 	O1_NONE, O2_NONE, O3_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("dwarvish mattock", "broad pick",
-	0, 0, 0, 1, 13, MULTIGEN_SINGLE, 120, 50, 
+	0, 0, 0, 1, 11, MULTIGEN_SINGLE, 120, 50, 
 	AD_PHYS, 2, 6, 0, 3, 6, 1, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, P1_NONE, B, WEP_PICK_AXE, P_PICK_AXE, MAT_IRON, HI_METAL, 
@@ -1047,6 +1066,7 @@ BOW("repeating heavy crossbow", None,		1, 0, 1, 1, MULTIGEN_SINGLE, 360, 1000,
 #undef B
 
 #undef WEAPON
+#undef CHARGEDWEAPON
 #undef PROJECTILE
 #undef BOW
 
@@ -2300,24 +2320,25 @@ POTION("urine",           "pale yellow",  0, 0, 30,   5,  CLR_YELLOW, O1_NONE, O
 		   6, HI_PAPER, 0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
 SCROLL("enchant armor",              "ZELGO MER",  1,  60,  80, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SCROLL("destroy armor",         "JUYED AWK YACC",  1,  45, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("protect armor",				   "VEX DOL",  1,  33,  50, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("confuse monster",                 "NR 9",  1,  33, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("protect armor",				   "VEX DOL",  1,  30,  50, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("confuse monster",                 "NR 9",  1,  30, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SCROLL("scare monster",   "XIXAXA XOXAXA XUXAXA",  1,  35, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SCROLL("remove curse",             "PRATYAVAYAH",  1,  65,  80, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SCROLL("enchant weapon",         "DAIYEN FOOELS",  1,  80,  60, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SCROLL("protect weapon",			   "ZEPH NI",  1,  30,  50, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("create monster",       "LEP GEX VEN ZEA",  1,  45, 200, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("enchant ring",		          "REX SAPH",  1,  35,  60, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("create monster",       "LEP GEX VEN ZEA",  1,  40, 200, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SCROLL("taming",                   "PRIRUTSENIE",  1,  15, 200, S1_SPELL_IS_NONREVERSIBLE_PERMANENT, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SCROLL("genocide",                  "ELBIB YLOH",  1,  15, 300, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SCROLL("light",                 "VERR YED HORRE",  1,  50,  50, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("teleportation",        "VENZAR BORGAVVE",  1,  55, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("gold detection",                 "THARR",  1,  33, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("teleportation",        "VENZAR BORGAVVE",  1,  50, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("gold detection",                 "THARR",  1,  30, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SCROLL("food detection",               "YUM YUM",  1,  25, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SCROLL("identify",                  "KERNOD WEL",  1, 180,  20, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("magic mapping",              "ELAM EBOW",  1,  45, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("amnesia",                   "DUAM XNAHT",  1,  35, 200, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("magic mapping",              "ELAM EBOW",  1,  40, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("amnesia",                   "DUAM XNAHT",  1,  30, 200, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SCROLL("fire",                  "ANDOVA BEGARIN",  1,  30, 100, S1_NONE, O1_FIRE_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("earth",                          "KIRJE",  1,  18, 200, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("earth",                          "KIRJE",  1,  15, 200, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SCROLL("punishment",            "VE FORBRYDERNE",  1,  15, 300, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SCROLL("charging",                "HACKEM MUCHE",  1,  15, 300, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SCROLL("stinking cloud",             "VELOX NEB",  1,  15, 300, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
@@ -2354,7 +2375,7 @@ SCROLL(None, "STRC PRST SKRZ KRK",  1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_N
 #ifdef MAIL
 SCROLL("mail",          "stamped",  0,   0,   0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 #endif
-SCROLL("blank paper", "unlabeled",  0,  28,  60, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("blank paper", "unlabeled",  0,  25,  60, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 #undef SCROLL
 
 /* spellbooks ... */
