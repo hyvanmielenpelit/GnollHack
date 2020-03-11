@@ -423,7 +423,7 @@ boolean createcorpse;
 		if (oneinchance > 0 && basemonsterindex > 0 && (oneinchance == 1 || !rn2(oneinchance))) {
 			num = GRAY_DRAGON_SCALES + monsndx(mdat) - basemonsterindex;
 			obj = mksobj_at(num, x, y, FALSE, FALSE);
-			obj->spe = 0;
+			obj->enchantment = 0;
 			obj->cursed = obj->blessed = FALSE;
 		}
 		goto default_1;

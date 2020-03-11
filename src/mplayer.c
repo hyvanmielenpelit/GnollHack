@@ -113,7 +113,7 @@ short typ;
      * have it because the wizard or other monsters cursed it, so its
      * chances of having plusses is the same as usual....
      */
-    obj->spe = rn2(10) ? (rn2(3) ? rn2(5) : rn1(4, 4)) : -rnd(3);
+    obj->enchantment = rn2(10) ? (rn2(3) ? rn2(5) : rn1(4, 4)) : -rnd(3);
     (void) mpickobj(mon, obj);
 }
 
@@ -270,7 +270,7 @@ register boolean special;
 
         if (weapon != STRANGE_OBJECT) {
             otmp = mksobj(weapon, TRUE, FALSE, FALSE);
-            otmp->spe = (special ? rn1(5, 4) : rn2(4));
+            otmp->enchantment = (special ? rn1(5, 4) : rn2(4));
             if (!rn2(3))
                 otmp->oerodeproof = 1;
             else if (!rn2(2))
@@ -283,7 +283,7 @@ register boolean special;
                 otmp->quan += (long) rn2(is_spear(otmp) ? 4 : 8);
             /* mplayers knew better than to overenchant Magicbane */
             if (otmp->oartifact && artifact_has_flag(otmp, AF_MAGIC_ABSORBING))
-                otmp->spe = rnd(4);
+                otmp->enchantment = rnd(4);
             (void) mpickobj(mtmp, otmp);
         }
 

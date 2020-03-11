@@ -588,7 +588,7 @@ int psflags;
                        is singular, dragon scales are plural */
                     Your("%s reverts to scales as you merge with them.",
                          dsmail);
-                    /* uarm->spe enchantment remains unchanged;
+                    /* uarm->enchantment enchantment remains unchanged;
                        re-converting scales to mail poses risk
                        of evaporation due to over enchanting */
                     uarm->otyp += GRAY_DRAGON_SCALES - GRAY_DRAGON_SCALE_MAIL;

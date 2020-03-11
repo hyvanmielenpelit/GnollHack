@@ -984,7 +984,7 @@ register struct obj* obj;
 		}
 	}
 
-	int mcadj = objects[otyp].oc_mc_adjustment + (objects[otyp].oc_flags & O1_SPE_AFFECTS_MC_ADJUSTMENT) ? obj->spe : 0;
+	int mcadj = objects[otyp].oc_mc_adjustment + (objects[otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC_ADJUSTMENT) ? obj->enchantment : 0;
 	if (objects[otyp].oc_mc_adjustment != 0 || mcadj != 0)
 	{
 		if (mcadj >= 0)
@@ -1004,8 +1004,8 @@ register struct obj* obj;
 		putstr(datawin, 0, txt);
 
 		int mc = objects[otyp].oc_magic_cancellation;
-		//if (objects[otyp].oc_flags & O1_SPE_AFFECTS_MC)
-		//	mc+= obj->spe;
+		//if (objects[otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC)
+		//	mc+= obj->enchantment;
 
 		/* magic cancellation */
 		Sprintf(buf2, "%s%d", mc >= 0 ? "+" : "", mc);
@@ -1086,14 +1086,14 @@ register struct obj* obj;
 		putstr(datawin, 0, txt);
 	}
 
-	if (obj->known && objects[otyp].oc_spe_type)
+	if (obj->known && objects[otyp].oc_enchantable)
 	{
 		strcpy(buf, "");
 
 		char bonusbuf[BUFSZ] = "";
 		if (obj->oclass == WEAPON_CLASS || is_weptool(obj))
 		{
-			int enchplus = obj->spe;
+			int enchplus = obj->enchantment;
 			if (!uses_spell_flags && stats_known && (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
 			{
 				enchplus *= 2;
@@ -1104,25 +1104,25 @@ register struct obj* obj;
 
 		if (obj->oclass == ARMOR_CLASS || (stats_known && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)))
 		{
-			if (objects[otyp].oc_flags & O1_SPE_AFFECTS_MC)
+			if (objects[otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC)
 			{
 				Sprintf(eos(bonusbuf), " (%s%d to AC and %s%d to MC)",
-					obj->spe <= 0 ? "+" : "",
-					-obj->spe,
-					obj->spe >= 0 ? "+" : "",
-					obj->spe
+					obj->enchantment <= 0 ? "+" : "",
+					-obj->enchantment,
+					obj->enchantment >= 0 ? "+" : "",
+					obj->enchantment
 				);
 			}
 			else
 			{
 				Sprintf(eos(bonusbuf), " (%s%d %s to AC)",
-					obj->spe <= 0 ? "+" : "",
-					-obj->spe,
-					obj->spe >= 0 ? "bonus" : "penalty");
+					obj->enchantment <= 0 ? "+" : "",
+					-obj->enchantment,
+					obj->enchantment >= 0 ? "bonus" : "penalty");
 			}
 		}
 
-		Sprintf(buf, "Enchantment status:     %s%d%s", obj->spe >= 0 ? "+" : "", obj->spe, bonusbuf);
+		Sprintf(buf, "Enchantment status:     %s%d%s", obj->enchantment >= 0 ? "+" : "", obj->enchantment, bonusbuf);
 	
 		txt = buf;
 		putstr(datawin, 0, txt);
@@ -1350,8 +1350,8 @@ register struct obj* obj;
 						{
 							strcpy(buf2, "");
 							int stat = objects[otyp].oc_attribute_bonus;
-							if (objects[otyp].oc_spe_type && !(prop & IGNORE_SPE))
-								stat += obj->spe;
+							if (objects[otyp].oc_enchantable && !(prop & IGNORE_ENCHANTMENT))
+								stat += obj->enchantment;
 
 							if(prop & SETS_FIXED_ATTRIBUTE)
 								stat = min((k == 0 ? STR19(25) : 25), max(1, stat));
@@ -3095,41 +3095,41 @@ register struct obj *obj;
     case RIN_GAIN_STRENGTH:
         pline_The("%s flow seems %ser now.",
                   hliquid("water"),
-                  (obj->spe < 0) ? "weak" : "strong");
+                  (obj->enchantment < 0) ? "weak" : "strong");
         break;
 	case RIN_GAIN_DEXTERITY:
 		pline_The("%s flow seems %ser now.",
 			hliquid("water"),
-			(obj->spe < 0) ? "stiff" : "nimbl");
+			(obj->enchantment < 0) ? "stiff" : "nimbl");
 		break;
 	case RIN_GAIN_CONSTITUTION:
         pline_The("%s flow seems %ser now.",
                   hliquid("water"),
-                  (obj->spe < 0) ? "less" : "great");
+                  (obj->enchantment < 0) ? "less" : "great");
         break;
 	case RIN_GAIN_INTELLIGENCE:
 		pline_The("%s flow seems %ser now.",
 			hliquid("water"),
-			(obj->spe < 0) ? "coars" : "fin");
+			(obj->enchantment < 0) ? "coars" : "fin");
 		break;
 	case RIN_GAIN_WISDOM:
 		pline_The("%s flow seems %s now.",
 			hliquid("water"),
-			(obj->spe < 0) ? "less sensible" : "more sensible");
+			(obj->enchantment < 0) ? "less sensible" : "more sensible");
 		break;
 	case RIN_POWER:
 		pline_The("%s flow seems %s now.",
 			hliquid("water"),
-			(obj->spe < 0) ? "much worse" : "much better");
+			(obj->enchantment < 0) ? "much worse" : "much better");
 		break;
 	case RIN_INCREASE_ACCURACY: /* KMH */
         pline_The("%s flow %s the drain.",
                   hliquid("water"),
-                  (obj->spe < 0) ? "misses" : "hits");
+                  (obj->enchantment < 0) ? "misses" : "hits");
         break;
     case RIN_INCREASE_DAMAGE:
         pline_The("water's force seems %ser now.",
-                  (obj->spe < 0) ? "small" : "great");
+                  (obj->enchantment < 0) ? "small" : "great");
         break;
     case RIN_HUNGER:
         ideed = FALSE;
@@ -3205,7 +3205,7 @@ register struct obj *obj;
             break;
         case RIN_PROTECTION:
             pline_The("sink glows %s for a moment.",
-                      hcolor((obj->spe < 0) ? NH_BLACK : NH_SILVER));
+                      hcolor((obj->enchantment < 0) ? NH_BLACK : NH_SILVER));
             break;
         case RIN_WARNING:
             pline_The("sink glows %s for a moment.", hcolor(NH_WHITE));

@@ -265,7 +265,7 @@ boolean mod;
                 otmp->oartifact = (char) (mod ? m : 0);
                 otmp->age = 0;
                 if (otmp->otyp == RIN_INCREASE_DAMAGE)
-                    otmp->spe = 0;
+                    otmp->enchantment = 0;
                 artiexist[m] = mod;
 				if (otmp->oartifact)
 				{
@@ -1041,10 +1041,10 @@ winid tmpwin; /* supplied by dodiscover() */
 /*
  * Magicbane's intrinsic magic is incompatible with normal
  * enchantment magic.  Thus, its effects have a negative
- * dependence on spe.  Against low mr victims, it typically
+ * dependence on enchantment.  Against low mr victims, it typically
  * does "double athame" damage, 2d4.  Occasionally, it will
  * cast unbalancing magic which effectively averages out to
- * 4d4 damage (3d4 against high mr victims), for spe = 0.
+ * 4d4 damage (3d4 against high mr victims), for enchantment = 0.
  *
  * Prior to 3.4.1, the cancel (aka purge) effect always
  * included the scare effect too; now it's one or the other.
@@ -1092,8 +1092,8 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
 
     result = FALSE; /* no message given yet */
     /* the most severe effects are less likely at higher enchantment */
-    if (mb->spe >= 3)
-        scare_dieroll /= (1 << (mb->spe / 3));
+    if (mb->enchantment >= 3)
+        scare_dieroll /= (1 << (mb->enchantment / 3));
     /* if target successfully resisted the artifact damage bonus,
        reduce overall likelihood of the assorted special effects */
     if (!spec_dbon_applies)
@@ -1103,7 +1103,7 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
        in that case it will only happen if the other effect fails;
        extra damage will apply regardless; 3.4.1: sometimes might
        just probe even when it hasn't been enchanted */
-    do_stun = (max(mb->spe, 0) < rn2(spec_dbon_applies ? 11 : 7));
+    do_stun = (max(mb->enchantment, 0) < rn2(spec_dbon_applies ? 11 : 7));
 
     /* the special effects also boost physical damage; increments are
        generally cumulative, but since the stun effect is based on a
@@ -1204,7 +1204,7 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
         break;
 
     case MB_INDEX_PROBE:
-        if (youattack && (mb->spe == 0 || !rn2(3 * abs(mb->spe)))) {
+        if (youattack && (mb->enchantment == 0 || !rn2(3 * abs(mb->enchantment)))) {
             pline_The("%s is insightful.", verb);
             /* pre-damage status */
             probe_monster(mdef);
@@ -1983,7 +1983,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 					&& 1)
 				)
 			&& ((objects[otmp->otyp].oc_aflags & A1_BYPASSES_MC) || !check_magic_cancellation_success(mdef,
-				objects[otmp->otyp].oc_mc_adjustment + (objects[otmp->otyp].oc_flags & O1_SPE_AFFECTS_MC_ADJUSTMENT  ? -otmp->spe : 0)))
+				objects[otmp->otyp].oc_mc_adjustment + (objects[otmp->otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC_ADJUSTMENT  ? -otmp->enchantment : 0)))
 			)
 		{
 			/* some non-living creatures (golems, vortices) are
@@ -2059,14 +2059,14 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 						&& ((youdefend ? Death_resistance : resists_death(mdef))
 							|| ((objects[otmp->otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS) ? check_magic_resistance_and_inflict_damage(mdef, (struct obj*)0, FALSE, 0, 0, NOTELL) : 0)
 							|| (!(objects[otmp->otyp].oc_aflags & A1_BYPASSES_MC) && check_magic_cancellation_success(mdef,
-								objects[otmp->otyp].oc_mc_adjustment + (objects[otmp->otyp].oc_flags & O1_SPE_AFFECTS_MC_ADJUSTMENT ? -otmp->spe : 0)))
+								objects[otmp->otyp].oc_mc_adjustment + (objects[otmp->otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC_ADJUSTMENT ? -otmp->enchantment : 0)))
 							))
 					||
 					((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK
 						&& ((youdefend ? (Disint_resistance || Invulnerable) : resists_disint(mdef))
 							|| ((objects[otmp->otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS) ? check_magic_resistance_and_inflict_damage(mdef, (struct obj*)0, FALSE, 0, 0, NOTELL) : 0)
 							|| (!(objects[otmp->otyp].oc_aflags & A1_BYPASSES_MC) && check_magic_cancellation_success(mdef,
-								objects[otmp->otyp].oc_mc_adjustment + (objects[otmp->otyp].oc_flags & O1_SPE_AFFECTS_MC_ADJUSTMENT ? -otmp->spe : 0)))
+								objects[otmp->otyp].oc_mc_adjustment + (objects[otmp->otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC_ADJUSTMENT ? -otmp->enchantment : 0)))
 							))
 					)
 				{
@@ -2169,7 +2169,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 							pline("%s hits you.", The(xname(otmp)));
 							if (Disint_resistance || noncorporeal(youmonst.data) || Invulnerable
 								|| (!(objects[otmp->otyp].oc_aflags & A1_BYPASSES_MC) && check_magic_cancellation_success(mdef,
-									objects[otmp->otyp].oc_mc_adjustment + (objects[otmp->otyp].oc_flags & O1_SPE_AFFECTS_MC_ADJUSTMENT ? -otmp->spe : 0)))
+									objects[otmp->otyp].oc_mc_adjustment + (objects[otmp->otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC_ADJUSTMENT ? -otmp->enchantment : 0)))
 								) 
 							{					// if (abstyp == ZT_BREATH(ZT_DISINTEGRATION)) {
 								You("are not disintegrated.");
@@ -2428,12 +2428,12 @@ struct obj *obj;
             otmp->cursed = obj->cursed;
             otmp->bknown = obj->bknown;
             if (obj->blessed) {
-                if (otmp->spe < 0)
-                    otmp->spe = 0;
+                if (otmp->enchantment < 0)
+                    otmp->enchantment = 0;
                 otmp->quan += rnd(10);
             } else if (obj->cursed) {
-                if (otmp->spe > 0)
-                    otmp->spe = 0;
+                if (otmp->enchantment > 0)
+                    otmp->enchantment = 0;
             } else
                 otmp->quan += rnd(5);
             otmp->owt = weight(otmp);

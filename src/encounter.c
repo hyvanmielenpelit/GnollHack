@@ -1518,12 +1518,12 @@ int selected_encounter, x, y;
 
 							if (!(flags & MI_IGNORE_SPE))
 							{
-								int spe = encounter_list[selected_encounter].encounter_monsters[i].monster_items[j].random_monster_items[selected_item].spe_constant;
+								int enchantment = encounter_list[selected_encounter].encounter_monsters[i].monster_items[j].random_monster_items[selected_item].spe_constant;
 
 								if (encounter_list[selected_encounter].encounter_monsters[i].monster_items[j].random_monster_items[selected_item].spe_random > 0)
-									spe += rn2(1 + encounter_list[selected_encounter].encounter_monsters[i].monster_items[j].random_monster_items[selected_item].spe_random);
+									enchantment += rn2(1 + encounter_list[selected_encounter].encounter_monsters[i].monster_items[j].random_monster_items[selected_item].spe_random);
 
-								otmp->spe = spe;
+								otmp->enchantment = enchantment;
 							}
 
 							(void)mpickobj(mon, otmp);

@@ -266,12 +266,12 @@ struct monst* mattacker;
 	if(mattacker && cursed_items_are_positive_mon(mattacker) && otmp->cursed)
 	{ 
 		if (Is_weapon || Is_worn_gauntlets)
-			tmp += abs(otmp->spe);
+			tmp += abs(otmp->enchantment);
 	}
 	else
 	{
 		if (Is_weapon || Is_worn_gauntlets)
-			tmp += otmp->spe;
+			tmp += otmp->enchantment;
 	}
 	tmp += objects[otmp->otyp].oc_hitbonus;
 
@@ -385,9 +385,9 @@ struct monst* mattacker;
 			}
 
 			if (mattacker && cursed_items_are_positive_mon(mattacker) && otmp->cursed)
-				tmp += abs(otmp->spe);
+				tmp += abs(otmp->enchantment);
 			else
-				tmp += otmp->spe;
+				tmp += otmp->enchantment;
 		}
         /* negative enchantment mustn't produce negative damage */
         if (tmp < 0)

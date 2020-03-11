@@ -1289,8 +1289,8 @@ struct monst *mon;
 			else
 				item_mc_bonus += max(0, objects[o->otyp].oc_magic_cancellation - (int)greatest_erosion(o));
 
-			if (objects[o->otyp].oc_flags & O1_SPE_AFFECTS_MC)
-				item_mc_bonus += o->spe;
+			if (objects[o->otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC)
+				item_mc_bonus += o->enchantment;
 		}
 
 		if ((worn || (!worn && (objects[otyp].oc_pflags & P1_ATTRIBUTE_BONUS_APPLIES_WHEN_CARRIED)))
@@ -1305,8 +1305,8 @@ struct monst *mon;
 			if (objects[o->otyp].oc_bonus_attributes & BONUS_TO_MC)
 			{
 				item_mc_bonus += objects[o->otyp].oc_attribute_bonus;
-				if (!(objects[o->otyp].oc_bonus_attributes & IGNORE_SPE))
-					item_mc_bonus += o->spe;
+				if (!(objects[o->otyp].oc_bonus_attributes & IGNORE_ENCHANTMENT))
+					item_mc_bonus += o->enchantment;
 			}
 		}
 

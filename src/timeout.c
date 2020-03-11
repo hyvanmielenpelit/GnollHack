@@ -1668,7 +1668,7 @@ struct obj *obj;
 
 /*
  * Timeout callback for for objects that are burning. E.g. lamps, candles.
- * See begin_burn() for meanings of obj->age and obj->spe.
+ * See begin_burn() for meanings of obj->age and obj->enchantment.
  */
 void
 burn_object(arg, timeout)
@@ -1962,10 +1962,10 @@ long timeout;
  * Burn rules:
  *      potions of oil, lamps & candles:
  *              age = # of turns of fuel left
- *              spe = <unused>
+ *              enchantment = <unused>
  *      magic lamps:
  *              age = <unused>
- *              spe = 0 not lightable, 1 lightable forever
+ *              enchantment = 0 not lightable, 1 lightable forever
  *      candelabrum:
  *              age = # of turns of fuel left
  *              special_quality = # of candles

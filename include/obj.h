@@ -42,7 +42,7 @@ struct obj {
     unsigned owt;
     long quan; /* number of items */
 
-    short spe; /* Always set to zero by cancellation
+    short enchantment; /* Always set to zero by cancellation
 			      quality of weapon, weptool, armor or ring (+ or -);
                   number of charges for wand or charged tool ( >= -1 );
                   number of candles attached to candelabrum;
@@ -81,7 +81,7 @@ struct obj {
     Bitfield(blessed, 1);
     Bitfield(unpaid, 1);    /* on some bill */
     Bitfield(no_charge, 1); /* if shk shouldn't charge for this */
-    Bitfield(known, 1);     /* exact nature & spe & charges known */
+    Bitfield(known, 1);     /* exact nature & enchantment & charges known */
     Bitfield(dknown, 1);    /* description = color or text known */
     Bitfield(bknown, 1);    /* blessing or curse known */
     Bitfield(rknown, 1);    /* rustproof or not known */
@@ -220,7 +220,7 @@ struct obj {
      && objects[(otmp)->otyp].oc_skill == -P_THROWN_WEAPON)
 #define is_weptool(o) \
     ((o)->oclass == TOOL_CLASS && objects[(o)->otyp].oc_skill != P_NONE)
-        /* towel is not a weptool:  spe isn't an enchantment, cursed towel
+        /* towel is not a weptool:  enchantment isn't an enchantment, cursed towel
            doesn't weld to hand, and twoweapon won't work with one */
 #define is_weapon(o) \
 	((o)->oclass == WEAPON_CLASS || is_weptool(o) || (objects[(o)->otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED))

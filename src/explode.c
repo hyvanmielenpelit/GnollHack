@@ -776,7 +776,7 @@ struct obj *obj; /* only scatter this obj        */
 
                         if (multi)
                             nomul(0);
-                        hitvalu = 8 + stmp->obj->spe;
+                        hitvalu = 8 + stmp->obj->enchantment;
                         if (bigmonst(youmonst.data))
                             hitvalu++;
                         hitu = thitu(hitvalu, weapon_total_dmg_value(stmp->obj, &youmonst, (struct monst*)0),

@@ -771,11 +771,12 @@ int curse_bless;
 				strip_charges(obj);
 				obj->recharged++;
 			}
-			else if (!rn2(max(2, is_blessed ? 4 : 3 - obj->recharged)))
+			else if (!rn2(max(2, 4 - obj->recharged)))
 			{
+				const char* expltext = !obj->charges ? "suddenly" : "vibrates violently and";
 				int dmg = d(3, 9);
 				obj->in_use = TRUE; /* in case losehp() is fatal (or --More--^C) */
-				pline("%s %s explodes!", Yname2(obj), expl);
+				pline("%s %s explodes!", Yname2(obj), expltext);
 				losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_MAGM, TRUE), "exploding sword", KILLED_BY_AN);
 				useup(obj);
 			}
@@ -788,7 +789,7 @@ int curse_bless;
 				}
 				else if (obj->charges < lim)
 				{
-					obj->charges += 1 + rnd(5);
+					obj->charges += 1 + rnd(3);
 					if (obj->charges > lim)
 						obj->charges = lim;
 					p_glow1(obj);
@@ -824,7 +825,7 @@ int curse_bless;
 	is_cursed = curse_bless < 0;
 	is_blessed = curse_bless > 0;
 
-	if (obj && obj->oclass == RING_CLASS && objects[obj->otyp].oc_spe_type)
+	if (obj && obj->oclass == RING_CLASS && objects[obj->otyp].oc_enchantable)
 	{
 		/* enchantment does not affect ring's curse/bless status */
 		int maxcharge = get_obj_max_spe(obj);
@@ -833,13 +834,13 @@ int curse_bless;
 		boolean is_on = (obj == uleft || obj == uright);
 
 		/* destruction depends on current state, not adjustment */
-		if (obj->spe > rn2(max(2, maxcharge - safecharge)) + safecharge || obj->spe <= -(5 * maxcharge) / 7)
+		if (obj->enchantment > rn2(max(2, maxcharge - safecharge)) + safecharge || obj->enchantment <= -(5 * maxcharge) / 7)
 		{
 			pline("%s momentarily, then %s!", Yobjnam2(obj, "pulsate"),
 				otense(obj, "explode"));
 			if (is_on)
 				Ring_gone(obj);
-			s = rnd(3 * abs(obj->spe)); /* amount of damage */
+			s = rnd(3 * abs(obj->enchantment)); /* amount of damage */
 			useup(obj);
 			losehp(adjust_damage(s, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "exploding ring", KILLED_BY_AN);
 		}
@@ -854,7 +855,7 @@ int curse_bless;
 			/* cause attributes and/or properties to be updated */
 			if (is_on)
 				Ring_off(obj);
-			obj->spe += s; /* update the ring while it's off */
+			obj->enchantment += s; /* update the ring while it's off */
 			if (is_on)
 				setworn(obj, mask), Ring_on(obj);
 			/* oartifact: if a touch-sensitive artifact ring is
@@ -1306,7 +1307,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 			same_color = FALSE;
 
 		/* KMH -- catch underflow */
-		s = scursed ? -otmp->spe : otmp->spe;
+		s = scursed ? -otmp->enchantment : otmp->enchantment;
 		if (s > (special_armor ? 5 : 3) && rn2(max(1, s))) {
 			otmp->in_use = TRUE;
 			pline("%s violently %s%s%s for a while, then %s.", Yname2(otmp),
@@ -1320,10 +1321,10 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 			break;
 		}
 		s = scursed ? -1
-			: (otmp->spe >= 9)
-			? (rn2(max(1, otmp->spe)) == 0)
+			: (otmp->enchantment >= 9)
+			? (rn2(max(1, otmp->enchantment)) == 0)
 			: sblessed
-			? rnd(3 - otmp->spe / 3)
+			? rnd(3 - otmp->enchantment / 3)
 			: 1;
 		if (s >= 0 && is_dragon_scales(otmp)) {
 			/* dragon scales get turned into dragon scale mail */
@@ -1332,7 +1333,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 			/* assumes same order */
 			otmp->otyp += GRAY_DRAGON_SCALE_MAIL - GRAY_DRAGON_SCALES;
 			if (sblessed) {
-				otmp->spe++;
+				otmp->enchantment++;
 				if (!otmp->blessed)
 					bless(otmp);
 			}
@@ -1362,7 +1363,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 		else if (!scursed && otmp->cursed)
 			uncurse(otmp);
 		if (s) {
-			otmp->spe += s;
+			otmp->enchantment += s;
 			//adj_abon(otmp, s);
 			updateabon();
 			updatemaxen();
@@ -1373,7 +1374,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 				alter_cost(otmp, 0L);
 		}
 
-		if ((otmp->spe > (special_armor ? 5 : 3))
+		if ((otmp->enchantment > (special_armor ? 5 : 3))
 			&& (special_armor || !rn2(7)))
 			pline("%s %s.", Yobjnam2(otmp, "suddenly vibrate"),
 				Blind ? "again" : "unexpectedly");
@@ -1424,8 +1425,8 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 			}
 			else { /* armor and scroll both cursed */
 				pline("%s.", Yobjnam2(otmp, "vibrate"));
-				if (otmp->spe >= -6) {
-					otmp->spe += -1;
+				if (otmp->enchantment >= -6) {
+					otmp->enchantment += -1;
 					//adj_abon(otmp, -1);
 					updateabon();
 					updatemaxen();
@@ -1689,8 +1690,8 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 
 		if (!enchant_weapon(sobj, otmp, scursed ? -1
 			: !otmp ? 1
-			: (otmp->spe >= 9) ? !rn2(max(1, otmp->spe))
-			: sblessed ? rnd(max(1, 3 - otmp->spe / 3))
+			: (otmp->enchantment >= 9) ? !rn2(max(1, otmp->enchantment))
+			: sblessed ? rnd(max(1, 3 - otmp->enchantment / 3))
 			: 1))
 			sobj = 0; /* nothing enchanted: strange_feeling -> useup */
 		break;
@@ -2061,8 +2062,8 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 			context.botl = context.botlx = 1;
 			break;
 		}
-		boolean rightok = uright && objects[uright->otyp].oc_spe_type;
-		boolean leftok = uleft && objects[uleft->otyp].oc_spe_type;
+		boolean rightok = uright && objects[uright->otyp].oc_enchantable;
+		boolean leftok = uleft && objects[uleft->otyp].oc_enchantable;
 
 		otmp = rightok && leftok ? (!rn2(2) ? uright : uleft) : rightok ? uright : leftok ? uleft : (struct obj*)0;
 

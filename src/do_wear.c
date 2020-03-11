@@ -671,7 +671,7 @@ boolean observed;
 		/* make enchantment of charged ring known (might be +0) and update
 	   perm invent window if we've seen this ring and know its type */
 		if (ring->dknown && objects[ringtype].oc_name_known) {
-			if (objects[ringtype].oc_spe_type)
+			if (objects[ringtype].oc_enchantable)
 				ring->known = 1;
 			update_inventory();
 		}
@@ -1931,9 +1931,9 @@ find_ac()
 	/* Kludge removed by JG -- Now in u.uacbonus */
 	/*
 	if (uleft && uleft->otyp == RIN_PROTECTION)
-		uac -= uleft->spe;
+		uac -= uleft->enchantment;
 	if (uright && uright->otyp == RIN_PROTECTION)
-		uac -= uright->spe;
+		uac -= uright->enchantment;
 	*/
 
 	/* DEX Bonus */

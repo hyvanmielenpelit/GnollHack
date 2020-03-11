@@ -3400,8 +3400,8 @@ boolean shk_buying;
         break;
     case ARMOR_CLASS:
     case WEAPON_CLASS:
-        if (obj->spe > 0)
-            tmp += 10L * (long) obj->spe;
+        if (obj->enchantment > 0)
+            tmp += 10L * (long) obj->enchantment;
         break;
     case TOOL_CLASS:
         if (is_candle(obj)

@@ -298,7 +298,7 @@ dig(VOID_ARGS)
     }
 
     context.digging.effort +=
-        10 + rn2(5) + u_strdex_to_hit_bonus() + uwep->spe - greatest_erosion(uwep) + u.ubasedaminc + u.udaminc;
+        10 + rn2(5) + u_strdex_to_hit_bonus() + uwep->enchantment - greatest_erosion(uwep) + u.ubasedaminc + u.udaminc;
     if (Race_if(PM_DWARF))
         context.digging.effort *= 2;
     if (context.digging.down) {
@@ -1091,7 +1091,7 @@ struct obj *obj;
         char buf[BUFSZ];
         int dam;
 
-        dam = rnd(2) + u_str_dmg_bonus() + obj->spe;
+        dam = rnd(2) + u_str_dmg_bonus() + obj->enchantment;
         if (dam <= 0)
             dam = 1;
         You("hit yourself with %s.", yname(uwep));

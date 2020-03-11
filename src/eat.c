@@ -2196,9 +2196,9 @@ int old, inc, typ;
     /* don't include any amount coming from worn rings (caller handles
        'protection' differently) */
     if (uright && uright->otyp == typ && typ != RIN_PROTECTION)
-        old -= uright->spe;
+        old -= uright->enchantment;
     if (uleft && uleft->otyp == typ && typ != RIN_PROTECTION)
-        old -= uleft->spe;
+        old -= uleft->enchantment;
     absold = abs(old), absinc = abs(inc);
     sgnold = sgn(old), sgninc = sgn(inc);
 
@@ -2219,9 +2219,9 @@ int old, inc, typ;
     }
     /* put amount from worn rings back */
     if (uright && uright->otyp == typ && typ != RIN_PROTECTION)
-        old += uright->spe;
+        old += uright->enchantment;
     if (uleft && uleft->otyp == typ && typ != RIN_PROTECTION)
-        old += uleft->spe;
+        old += uleft->enchantment;
     return old + inc;
 }
 
@@ -2301,57 +2301,57 @@ struct obj *otmp;
 
         case RIN_GAIN_STRENGTH:
             accessory_has_effect(otmp);
-            if (adjattrib(A_STR, otmp->spe, -1))
+            if (adjattrib(A_STR, otmp->enchantment, -1))
                 makeknown(typ);
             break;
 		case RIN_GAIN_DEXTERITY:
 			accessory_has_effect(otmp);
-			if (adjattrib(A_DEX, otmp->spe, -1))
+			if (adjattrib(A_DEX, otmp->enchantment, -1))
 				makeknown(typ);
 			break;
 		case RIN_GAIN_CONSTITUTION:
             accessory_has_effect(otmp);
-            if (adjattrib(A_CON, otmp->spe, -1))
+            if (adjattrib(A_CON, otmp->enchantment, -1))
                 makeknown(typ);
             break;
 		case RIN_GAIN_INTELLIGENCE:
 			accessory_has_effect(otmp);
-			if (adjattrib(A_INT, otmp->spe, -1))
+			if (adjattrib(A_INT, otmp->enchantment, -1))
 				makeknown(typ);
 			break;
 		case RIN_GAIN_WISDOM:
 			accessory_has_effect(otmp);
-			if (adjattrib(A_WIS, otmp->spe, -1))
+			if (adjattrib(A_WIS, otmp->enchantment, -1))
 				makeknown(typ);
 			break;
 		case RIN_ADORNMENT:
 			accessory_has_effect(otmp);
-			if (adjattrib(A_CHA, otmp->spe, -1))
+			if (adjattrib(A_CHA, otmp->enchantment, -1))
 				makeknown(typ);
 			break;
 		case RIN_POWER:
 			accessory_has_effect(otmp);
-			if (adjattrib(A_STR, otmp->spe, -1) || adjattrib(A_DEX, otmp->spe, -1) 
-				|| adjattrib(A_CON, otmp->spe, -1) || adjattrib(A_INT, otmp->spe, -1) 
-				|| adjattrib(A_WIS, otmp->spe, -1) || adjattrib(A_CHA, otmp->spe, -1))
+			if (adjattrib(A_STR, otmp->enchantment, -1) || adjattrib(A_DEX, otmp->enchantment, -1) 
+				|| adjattrib(A_CON, otmp->enchantment, -1) || adjattrib(A_INT, otmp->enchantment, -1) 
+				|| adjattrib(A_WIS, otmp->enchantment, -1) || adjattrib(A_CHA, otmp->enchantment, -1))
 				makeknown(typ);
 			break;
 		case RIN_INCREASE_ACCURACY:
             accessory_has_effect(otmp);
-            u.ubasehitinc = (schar) bounded_increase((int) u.ubasehitinc, otmp->spe,
+            u.ubasehitinc = (schar) bounded_increase((int) u.ubasehitinc, otmp->enchantment,
                                                  RIN_INCREASE_ACCURACY);
             break;
         case RIN_INCREASE_DAMAGE:
             accessory_has_effect(otmp);
-            u.ubasedaminc = (schar) bounded_increase((int) u.ubasedaminc, otmp->spe,
+            u.ubasedaminc = (schar) bounded_increase((int) u.ubasedaminc, otmp->enchantment,
                                                  RIN_INCREASE_DAMAGE);
             break;
         case RIN_PROTECTION:
             accessory_has_effect(otmp);
             HProtection |= FROM_ACQUIRED;
-			u.ubaseacbonus = (schar)bounded_increase((int)u.ubaseacbonus, otmp->spe,
+			u.ubaseacbonus = (schar)bounded_increase((int)u.ubaseacbonus, otmp->enchantment,
 				RIN_PROTECTION);
-			//u.ublessed = bounded_increase(u.ublessed, otmp->spe,
+			//u.ublessed = bounded_increase(u.ublessed, otmp->enchantment,
             //                              RIN_PROTECTION);
             context.botl = 1;
             break;
@@ -3290,7 +3290,7 @@ gethungry()
            Slow digestion cancels move hunger but still causes ring hunger. */
         switch ((int) (moves % 20)) { /* note: use even cases only */
         case 4:
-            if (uleft && (uleft->spe || !objects[uleft->otyp].oc_spe_type))
+            if (uleft && (uleft->enchantment || !objects[uleft->otyp].oc_enchantable))
                 u.uhunger--;
             break;
         case 8:
@@ -3298,7 +3298,7 @@ gethungry()
                 u.uhunger--;
             break;
         case 12:
-            if (uright && (uright->spe || !objects[uright->otyp].oc_spe_type))
+            if (uright && (uright->enchantment || !objects[uright->otyp].oc_enchantable))
                 u.uhunger--;
             break;
         case 16:

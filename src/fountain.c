@@ -542,8 +542,8 @@ register struct obj *obj;
                   hliquid("water"));
             pline_The("fountain disappears!");
             curse(obj);
-            if (obj->spe > -6 && !rn2(3))
-                obj->spe--;
+            if (obj->enchantment > -6 && !rn2(3))
+                obj->enchantment--;
             obj->oerodeproof = FALSE;
             exercise(A_WIS, FALSE);
         } 

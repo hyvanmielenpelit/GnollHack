@@ -1609,7 +1609,7 @@ struct obj *obj;
         return;
     }
 
-    /* magic lamps with an spe == 0 (wished for) cannot be lit */
+    /* magic lamps with an enchantment == 0 (wished for) cannot be lit */
     if ((!is_candle(obj) && obj->age == 0)
         || (obj->otyp == MAGIC_LAMP && obj->special_quality  == 0))
 	{
@@ -2827,7 +2827,7 @@ struct obj* obj;
 				}
 				break;
 			case WAN_CANCELLATION:
-				if (objects[otmp->otyp].oc_magic || otmp->spe != 0 || otmp->charges > (otmp->oclass == WAND_CLASS ? -1 : 0) || otmp->elemental_enchantment > 0 || otmp->blessed || otmp->cursed)
+				if (objects[otmp->otyp].oc_magic || otmp->enchantment != 0 || otmp->charges > (otmp->oclass == WAND_CLASS ? -1 : 0) || otmp->elemental_enchantment > 0 || otmp->blessed || otmp->cursed)
 				{
 					suggestnamingwand = TRUE;
 					pline("%s in gray for a while.", Tobjnam(otmp, "flicker"));
@@ -2845,7 +2845,7 @@ struct obj* obj;
 					suggestnamingwand = TRUE;
 					//This will prompt weapon glow
 					pline("%s black-bluish for a while.", Yobjnam2(otmp, "glow"));
-					otmp->spe += 3 - otmp->spe / 3;
+					otmp->enchantment += 3 - otmp->enchantment / 3;
 					break;
 				}
 
@@ -3355,7 +3355,7 @@ struct obj *obj;
                 return 1;
             }
         }
-        dam = rnd(2) + u_str_dmg_bonus() + obj->spe;
+        dam = rnd(2) + u_str_dmg_bonus() + obj->enchantment;
         if (dam <= 0)
             dam = 1;
         You("hit your %s with your bullwhip.", body_part(FOOT));
@@ -3471,7 +3471,7 @@ struct obj *obj;
                            so proficient at catching weapons */
                         int hitu, hitvalu;
 
-                        hitvalu = 8 + otmp->spe;
+                        hitvalu = 8 + otmp->enchantment;
                         hitu = thitu(hitvalu, weapon_total_dmg_value(otmp, &youmonst, mtmp),
                                      &otmp, (char *)0);
                         if (hitu) {
@@ -4740,12 +4740,12 @@ int arrowtype, quan; //ObjID and quantity
 		if (bag->blessed)
 		{
 			otmp->blessed = TRUE;
-			otmp->spe = rnd(3);
+			otmp->enchantment = rnd(3);
 		}
 		if (bag->cursed)
 		{
 			otmp->cursed = TRUE;
-			otmp->spe = -rnd(3);
+			otmp->enchantment = -rnd(3);
 		}
 		if (bag->elemental_enchantment)
 		{

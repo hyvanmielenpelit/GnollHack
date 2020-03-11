@@ -296,8 +296,8 @@ struct obj *otmp, *mwep;
         if (ammo_and_launcher(otmp, uwep) && mwep->otyp == ELVEN_BOW
             && !mwep->cursed)
             multishot++;
-        if (ammo_and_launcher(otmp, mwep) && mwep->spe > 1)
-            multishot += (long) rounddiv(mwep->spe, 3);*/
+        if (ammo_and_launcher(otmp, mwep) && mwep->enchantment > 1)
+            multishot += (long) rounddiv(mwep->enchantment, 3);*/
 
 		/* 1/3 of launcher enchantment */
 
@@ -926,7 +926,7 @@ struct obj *obj;         /* missile (or stack providing it) */
 					{
 						//Fitting ammo gets launcher's weapon_to_hit_value and weapon_dmg_value and str damage bonus if bow, fixed for crossbows
 						//LAUNCHER HITVAL
-						hitv += weapon_to_hit_value(MON_WEP(mon), &youmonst, mon); //MON_WEP(mon)->spe - greatest_erosion(MON_WEP(mon));
+						hitv += weapon_to_hit_value(MON_WEP(mon), &youmonst, mon); //MON_WEP(mon)->enchantment - greatest_erosion(MON_WEP(mon));
 						//hitv += weapon_skill_hit_bonus(MON_WEP(mon)); //Monsters do not get skill bonuses
 						//LAUNCHER DMGVAL
 						dam += weapon_total_dmg_value(MON_WEP(mon), &youmonst, mon);

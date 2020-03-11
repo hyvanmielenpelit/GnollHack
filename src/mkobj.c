@@ -470,7 +470,7 @@ struct obj *box;
             if (Is_weight_changing_bag(box)) {
                 if (Is_mbag(otmp)) {
                     otmp->otyp = SACK;
-                    otmp->spe = 0;
+                    otmp->enchantment = 0;
 					otmp->special_quality = 0;
 					otmp->charges = 0;
 					otmp->speflags = 0;
@@ -962,11 +962,11 @@ boolean makingboxcontents;
 			otmp->quan = get_multigen_quan(objects[otmp->otyp].oc_multigen_type);// is_multigen(otmp) ? (long) rn1(6, 6) : 1L;
             if (!rn2(11) && !is_cursed_magic_item(otmp))
 			{
-                otmp->spe = rne(3);
+                otmp->enchantment = rne(3);
                 otmp->blessed = rn2(2);
             } else if (!rn2(10) || is_cursed_magic_item(otmp)) {
                 curse(otmp);
-                otmp->spe = -rne(3);
+                otmp->enchantment = -rne(3);
             } else
                 blessorcurse(otmp, 10);
             if (is_poisonable(otmp) && !rn2(100) && !(objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED))
@@ -1186,10 +1186,10 @@ boolean makingboxcontents;
             if (rn2(10)
                 && (is_cursed_magic_item(otmp) || !rn2(11))) {
                 curse(otmp);
-                otmp->spe = -rne(3);
+                otmp->enchantment = -rne(3);
             } else if (!rn2(10)) {
                 otmp->blessed = (objects[otmp->otyp].oc_flags2 & O2_GENERATED_BLESSED) ? 1 : rn2(2);
-                otmp->spe = rne(3);
+                otmp->enchantment = rne(3);
             } else
                 blessorcurse(otmp, 10);
             if (artif && !rn2(40))
@@ -1229,14 +1229,14 @@ boolean makingboxcontents;
             otmp->recharged = 0; /* used to control recharging */
             break;
         case RING_CLASS:
-            if (objects[otmp->otyp].oc_spe_type == SPETYPE_RING_NORMAL || objects[otmp->otyp].oc_spe_type == SPETYPE_RING_1_7 || objects[otmp->otyp].oc_spe_type == SPETYPE_RING_DOUBLE || objects[otmp->otyp].oc_spe_type == SPETYPE_RING_POWER)
+            if (objects[otmp->otyp].oc_enchantable == SPETYPE_RING_NORMAL || objects[otmp->otyp].oc_enchantable == SPETYPE_RING_1_7 || objects[otmp->otyp].oc_enchantable == SPETYPE_RING_DOUBLE || objects[otmp->otyp].oc_enchantable == SPETYPE_RING_POWER)
 			{
 				int addition = 0;
-				if (objects[otmp->otyp].oc_spe_type == SPETYPE_RING_NORMAL)
+				if (objects[otmp->otyp].oc_enchantable == SPETYPE_RING_NORMAL)
 					addition += rnd(2) + !rn2(2) ? 0 : !rn2(2) ? 1 : !rn2(2) ? 2 : 3;
-				else if (objects[otmp->otyp].oc_spe_type == SPETYPE_RING_1_7)
+				else if (objects[otmp->otyp].oc_enchantable == SPETYPE_RING_1_7)
 					addition += rnd(3) + !rn2(3) ? 0 : !rn2(3) ? 1 : !rn2(3) ? 2 : !rn2(3) ? 3 : 4;
-				else if (objects[otmp->otyp].oc_spe_type == SPETYPE_RING_DOUBLE)
+				else if (objects[otmp->otyp].oc_enchantable == SPETYPE_RING_DOUBLE)
 					addition += rnd(4) + !rn2(4) ? 0 : !rn2(4) ? 1 : !rn2(4) ? 2 : !rn2(4) ? 3 : !rn2(4) ? 4 : !rn2(4) ? 5 : 6;
 				else
 					addition += rnd(2);
@@ -1248,24 +1248,24 @@ boolean makingboxcontents;
 
                 if (rn2(10)) {
 					if (rn2(10) && bcsign(otmp))
-						otmp->spe = bcsign(otmp) * addition; // rne(3);
+						otmp->enchantment = bcsign(otmp) * addition; // rne(3);
 					else
-						otmp->spe = rn2(2) ? addition : -addition; //rne(3) : -rne(3);
+						otmp->enchantment = rn2(2) ? addition : -addition; //rne(3) : -rne(3);
                 }
                 /* make useless +0 rings much less common */
-                if (otmp->spe == 0)
-                    otmp->spe = ((objects[otmp->otyp].oc_spe_type == SPETYPE_RING_POWER) ? rnd(3) - 2 : rn2(4) - rn2(3));
+                if (otmp->enchantment == 0)
+                    otmp->enchantment = ((objects[otmp->otyp].oc_enchantable == SPETYPE_RING_POWER) ? rnd(3) - 2 : rn2(4) - rn2(3));
                 /* negative rings are usually cursed */
-                if (otmp->spe < 0 && rn2(5))
+                if (otmp->enchantment < 0 && rn2(5))
                     curse(otmp);
             }
-			else if (objects[otmp->otyp].oc_spe_type)
+			else if (objects[otmp->otyp].oc_enchantable)
 			{
 				int addition = get_obj_init_spe(otmp);
 				blessorcurse(otmp, 3);
-				otmp->spe = bcsign(otmp) * addition;
+				otmp->enchantment = bcsign(otmp) * addition;
 				/* negative rings are usually cursed */
-				if (otmp->spe < 0 && rn2(5))
+				if (otmp->enchantment < 0 && rn2(5))
 					curse(otmp);
 			}
 			else if (rn2(10) && (is_cursed_magic_item(otmp) || !rn2(9))) {
@@ -1273,7 +1273,7 @@ boolean makingboxcontents;
             }
             break;
 		case MISCELLANEOUS_CLASS:
-			if (objects[otmp->otyp].oc_spe_type == SPETYPE_MISCELLANEOUS_NORMAL) 
+			if (objects[otmp->otyp].oc_enchantable == SPETYPE_MISCELLANEOUS_NORMAL) 
 			{
 				int addition = rnd(2);
 				if (otmp->otyp != STRANGE_OBJECT)
@@ -1286,31 +1286,31 @@ boolean makingboxcontents;
 
 				if (rn2(10)) {
 					if (rn2(10) && bcsign(otmp))
-						otmp->spe = bcsign(otmp) * addition; // rne(3);
+						otmp->enchantment = bcsign(otmp) * addition; // rne(3);
 					else
-						otmp->spe = rn2(2) ? addition : -addition; //rne(3) : -rne(3);
+						otmp->enchantment = rn2(2) ? addition : -addition; //rne(3) : -rne(3);
 				}
 				/* make useless +0 miscellaneous items much less common */
-				if (otmp->spe == 0)
-					otmp->spe = ((otmp->otyp == STRANGE_OBJECT) ? rnd(3) - 2 : rn2(4) - rn2(3));
+				if (otmp->enchantment == 0)
+					otmp->enchantment = ((otmp->otyp == STRANGE_OBJECT) ? rnd(3) - 2 : rn2(4) - rn2(3));
 				/* negative miscellaneous items are usually cursed */
-				if (otmp->spe < 0 && rn2(5))
+				if (otmp->enchantment < 0 && rn2(5))
 					curse(otmp);
 			}
-			else if (objects[otmp->otyp].oc_spe_type)
+			else if (objects[otmp->otyp].oc_enchantable)
 			{
 				if (rn2(10) && (is_cursed_magic_item(otmp) || !rn2(11))) {
 					curse(otmp);
-					otmp->spe = -get_obj_init_spe(otmp);
+					otmp->enchantment = -get_obj_init_spe(otmp);
 				}
 				else if (!rn2(10)) 
 				{
 					otmp->blessed = (objects[otmp->otyp].oc_flags2 & O2_GENERATED_BLESSED) ? 1 : rn2(2);
-					otmp->spe = get_obj_init_spe(otmp);
+					otmp->enchantment = get_obj_init_spe(otmp);
 				}
 				else
 					blessorcurse(otmp, 10);
-				if (otmp->spe < 0 && rn2(5))
+				if (otmp->enchantment < 0 && rn2(5))
 					curse(otmp);
 			}
 			else if (rn2(10) && (is_cursed_magic_item(otmp) || !rn2(9))) {
@@ -1340,7 +1340,7 @@ boolean makingboxcontents;
 	if (is_generated_blessed(otmp))
 	{
 		otmp->cursed = 0;
-		otmp->spe = abs(otmp->spe);
+		otmp->enchantment = abs(otmp->enchantment);
 		otmp->blessed = 1;
 	}
 	else if (is_generated_cursed(otmp))
@@ -1460,6 +1460,9 @@ int charge_init_index;
 	case CHARGED_ALWAYS_9:
 		charge = 9;
 		break;
+	case CHARGED_ALWAYS_1D8_1:
+		charge = rnd(8) + 1;
+		break;
 	case CHARGED_WAND_NORMAL_NODIR:
 		charge = rn1(5, 11);
 		break;
@@ -1534,6 +1537,21 @@ int charge_init_index;
 	case CHARGED_ALWAYS_5:
 		charge = 5;
 		break;
+	case CHARGED_ALWAYS_6:
+		charge = 6;
+		break;
+	case CHARGED_ALWAYS_7:
+		charge = 7;
+		break;
+	case CHARGED_ALWAYS_8:
+		charge = 8;
+		break;
+	case CHARGED_ALWAYS_9:
+		charge = 9;
+		break;
+	case CHARGED_ALWAYS_1D8_1:
+		charge = 9;
+		break;
 	case CHARGED_WAND_NORMAL_NODIR:
 		charge = 15;
 		break;
@@ -1586,7 +1604,7 @@ struct obj* otmp;
 	if (!otmp)
 		return 0;
 
-	int init_spe = get_init_spe(objects[otmp->otyp].oc_spe_type);
+	int init_spe = get_init_spe(objects[otmp->otyp].oc_enchantable);
 
 	/* Possible extra modifications here */
 
@@ -1600,7 +1618,7 @@ struct obj* otmp;
 	if (!otmp)
 		return 0;
 
-	int init_spe = get_max_spe(objects[otmp->otyp].oc_spe_type);
+	int init_spe = get_max_spe(objects[otmp->otyp].oc_enchantable);
 
 	/* Possible extra modifications here */
 

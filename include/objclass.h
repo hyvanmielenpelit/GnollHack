@@ -334,7 +334,8 @@ enum charged_init_types {
 	CHARGED_ALWAYS_6 = 20,
 	CHARGED_ALWAYS_7 = 21,
 	CHARGED_ALWAYS_8 = 22,
-	CHARGED_ALWAYS_9 = 23
+	CHARGED_ALWAYS_9 = 23,
+	CHARGED_ALWAYS_1D8_1 = 24
 };
 
 enum spe_init_types {
@@ -368,7 +369,7 @@ struct objclass {
     Bitfield(oc_pre_discovered, 1); /* Already known at start of game;
                                        won't be listed as a discovery. */
     Bitfield(oc_magic, 1);          /* inherently magical object */
-	uchar oc_spe_type;				/* Uses +X statistic (spe) */
+	uchar oc_enchantable;				/* Uses +X statistic (enchantment) */
 	uchar oc_charged;		        /* may have +n or (n) charges */
     Bitfield(oc_unique, 1);         /* special one-of-a-kind object */
     Bitfield(oc_nowish, 1);         /* cannot wish for this object */
@@ -543,8 +544,8 @@ struct objclass {
 	int oc_oc2;		/* Used for spell level; weapons and armors: mc bonus */
 	int oc_oc3;		/* Used for spell mana cost; other items: mana pool bonus */
 	int oc_oc4;		/* Used for spell attributes; other items: hit point bonus */
-	int oc_oc5;		/* Used for spell range; non-spellbooks: specification of attributes or other properties item gives bonuses to using otmp->spe */
-	int oc_oc6;		/* Used for spell radius; non-spellbooks: 0 => spe is used, otherise fixed bonus */
+	int oc_oc5;		/* Used for spell range; non-spellbooks: specification of attributes or other properties item gives bonuses to using otmp->enchantment */
+	int oc_oc6;		/* Used for spell radius; non-spellbooks: 0 => enchantment is used, otherise fixed bonus */
 	int oc_oc7;		/* Used for spell casting penalty */
 	int oc_oc8;		/* Used for multishot count */
 
@@ -553,8 +554,8 @@ struct objclass {
 #define oc_magic_cancellation oc_oc2				/* weapons and armor: MC, i.e., resistance level to magical attacks */
 #define oc_mana_bonus oc_oc3						/* non-spellbooks: mana pool bonus: Fixed points unless O1_MANA_PERCENTAGE_BONUS is specified */
 #define oc_hp_bonus oc_oc4							/* non-spellbooks: hit point bonus: Fixed points unless O1_HP_PERCENTAGE_BONUS is specified */
-#define oc_bonus_attributes oc_oc5					/* non-spellbooks: gives bonuses using spe / oc_oc6 to attributes and properties */
-#define oc_attribute_bonus oc_oc6					/* non-spellbooks: 0 => spe is used, otherise fixed bonus */
+#define oc_bonus_attributes oc_oc5					/* non-spellbooks: gives bonuses using enchantment / oc_oc6 to attributes and properties */
+#define oc_attribute_bonus oc_oc6					/* non-spellbooks: 0 => enchantment is used, otherise fixed bonus */
 #define oc_spell_casting_penalty oc_oc7				/* non-spells/wands: spell casting penalty when worn */
 #define oc_multishot_style oc_oc8					/* multishot style specifying when the weapon can multishot and how many times */
 
@@ -575,7 +576,7 @@ struct objclass {
 
 #define SETS_FIXED_ATTRIBUTE 0x1000
 #define FIXED_IS_MAXIMUM 0x2000
-#define IGNORE_SPE 0x4000
+#define IGNORE_ENCHANTMENT 0x4000
 
 
 /* weapons */
@@ -583,8 +584,8 @@ struct objclass {
 /* oc_oc2 MC bonus, to make wielded objects consistent with armors, but a wielded object needs to be a weapon */
 /* oc_oc3 mana pool bonus */
 /* oc_oc4 hit point bonus */
-/* oc_oc5 attributes giving bonus to using spe / oc_oc6 to attributes and properties */
-/* oc_oc6 modifier to oc_oc5: 0 => spe is used, otherise fixed bonus */
+/* oc_oc5 attributes giving bonus to using enchantment / oc_oc6 to attributes and properties */
+/* oc_oc6 modifier to oc_oc5: 0 => enchantment is used, otherise fixed bonus */
 /* oc_oc7 spell casting penalty */
 /* oc_oc8 multishot style */
 
@@ -594,8 +595,8 @@ struct objclass {
 /* oc_oc2 MC bonus */
 /* oc_oc3 mana pool bonus */
 /* oc_oc4 hit point bonus */
-/* oc_oc5 attributes giving bonus to using spe / oc_oc6 to attributes and properties */
-/* oc_oc6 modifier to oc_oc5: 0 => spe is used, otherise fixed bonus */
+/* oc_oc5 attributes giving bonus to using enchantment / oc_oc6 to attributes and properties */
+/* oc_oc6 modifier to oc_oc5: 0 => enchantment is used, otherise fixed bonus */
 /* oc_oc7 spell casting penalty */
 /* oc_oc8 multishot style */
 
@@ -722,13 +723,13 @@ struct objclass {
 #define O1_RUST_RESISTANT					0x00000040UL
 #define O1_CORROSION_RESISTANT				0x00000080UL
 
-#define O1_SPE_AFFECTS_MC					0x00000100UL			/* +X of the item influences also its MC */
+#define O1_ENCHANTMENT_AFFECTS_MC			0x00000100UL			/* +X of the item influences also its MC */
 #define O1_EROSION_DOES_NOT_AFFECT_MC		0x00000200UL			/* erosion level does not affect the item's MC */
-#define O1_SPE_DOES_NOT_AFFECT_AC			0x00000400UL			/* +X of the item does not affect its AC bonus */
+#define O1_ENCHANTMENT_DOES_NOT_AFFECT_AC	0x00000400UL			/* +X of the item does not affect its AC bonus */
 #define O1_EROSION_DOES_NOT_AFFECT_AC		0x00000800UL			/* erosion level does not affect the item's MC */
 #define O1_IS_ARMOR_WHEN_WIELDED			0x00001000UL			/* acts as an armor when wielded giving AC using oc_armor_class, which must be specified */
 #define O1_IS_WEAPON_WHEN_WIELDED			0x00002000UL			/* acts as a weapon when wielded (or worn in shield slot in two-weapon fighting) using damage statistics */
-#define O1_SPE_AFFECTS_MC_ADJUSTMENT		0x00004000UL			/* +X of the item influences also its MC adjustment (i.e., saving throw penalty for attacks) */
+#define O1_ENCHANTMENT_AFFECTS_MC_ADJUSTMENT 0x00004000UL			/* +X of the item influences also its MC adjustment (i.e., saving throw penalty for attacks) */
 
 #define O1_EDIBLE_NONFOOD					0x00008000UL
 
@@ -801,7 +802,7 @@ struct objclass {
 #define O3_NO_WISH									0x00000002UL  /* item is special, it cannot be wished for, mimics oc_nowish */
 #define O3_UNIQUE									0x00000004UL  /* the item is unique, mimics oc_unique */
 
-#define O3_GENERATED_WITH_DOUBLE_SPE				0x00000008UL  /* is generated with double normal spe */
+#define O3_GENERATED_WITH_DOUBLE_ENCHANTMENT		0x00000008UL  /* is generated with double normal enchantment */
 #define O3_EXTENDED_POLEARM_REACH					0x00000010UL  /* range is max 13 instead of normal 8 */
 /* free bit */
 /* free bit */

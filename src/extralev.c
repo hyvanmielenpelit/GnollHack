@@ -322,22 +322,22 @@ makerogueghost()
     }
     if (rn2(2)) {
         ghostobj = mksobj_at(MACE, x, y, FALSE, FALSE);
-        ghostobj->spe = rnd(3);
+        ghostobj->enchantment = rnd(3);
         if (rn2(4))
             curse(ghostobj);
     } else {
         ghostobj = mksobj_at(TWO_HANDED_SWORD, x, y, FALSE, FALSE);
-        ghostobj->spe = rnd(5) - 2;
+        ghostobj->enchantment = rnd(5) - 2;
         if (rn2(4))
             curse(ghostobj);
     }
     ghostobj = mksobj_at(LONG_BOW, x, y, FALSE, FALSE);
-    ghostobj->spe = 1;
+    ghostobj->enchantment = 1;
     if (rn2(4))
         curse(ghostobj);
 
     ghostobj = mksobj_at(ARROW, x, y, FALSE, FALSE);
-    ghostobj->spe = 0;
+    ghostobj->enchantment = 0;
     ghostobj->quan = (long) rn1(10, 25);
     ghostobj->owt = weight(ghostobj);
     if (rn2(4))
@@ -345,14 +345,14 @@ makerogueghost()
 
     if (rn2(2)) {
         ghostobj = mksobj_at(RING_MAIL, x, y, FALSE, FALSE);
-        ghostobj->spe = rn2(3);
+        ghostobj->enchantment = rn2(3);
         if (!rn2(3))
             ghostobj->oerodeproof = TRUE;
         if (rn2(4))
             curse(ghostobj);
     } else {
         ghostobj = mksobj_at(PLATE_MAIL, x, y, FALSE, FALSE);
-        ghostobj->spe = rnd(5) - 2;
+        ghostobj->enchantment = rnd(5) - 2;
         if (!rn2(3))
             ghostobj->oerodeproof = TRUE;
         if (rn2(4))

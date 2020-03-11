@@ -1446,8 +1446,8 @@ register int amount;
             pline("%s %s.", Yobjnam2(weapon, "faintly glow"), color);
         return 1;
     }
-    /* there is a (soft) upper and lower limit to weapon->spe */
-    if (((weapon->spe > 5 && amount >= 0) || (weapon->spe < -5 && amount < 0))
+    /* there is a (soft) upper and lower limit to weapon->enchantment */
+    if (((weapon->enchantment > 5 && amount >= 0) || (weapon->enchantment < -5 && amount < 0))
         && rn2(3)) {
         if (!Blind)
             pline("%s %s for a while and then %s.",
@@ -1470,7 +1470,7 @@ register int amount;
     }
     if (amount < 0)
         costly_alteration(weapon, COST_DECHNT);
-    weapon->spe += amount;
+    weapon->enchantment += amount;
     if (amount > 0) {
         if (weapon->cursed)
             uncurse(weapon);
@@ -1482,16 +1482,16 @@ register int amount;
     /*
      * Enchantment, which normally improves a weapon, has an
      * addition adverse reaction on Magicbane whose effects are
-     * spe dependent.  Give an obscure clue here.
+     * enchantment dependent.  Give an obscure clue here.
      */
-    if (weapon->oartifact && artifact_has_flag(weapon, AF_MAGIC_ABSORBING) && weapon->spe >= 0) {
+    if (weapon->oartifact && artifact_has_flag(weapon, AF_MAGIC_ABSORBING) && weapon->enchantment >= 0) {
         Your("right %s %sches!", body_part(HAND),
-             (((amount > 1) && (weapon->spe > 1)) ? "flin" : "it"));
+             (((amount > 1) && (weapon->enchantment > 1)) ? "flin" : "it"));
     }
 
     /* an elven magic clue, cookie@keebler */
     /* elven weapons vibrate warningly when enchanted beyond a limit */
-    if ((weapon->spe > get_obj_max_spe(weapon))
+    if ((weapon->enchantment > get_obj_max_spe(weapon))
         && (is_elven_weapon(weapon) || weapon->oartifact || !rn2(7)))
         pline("%s unexpectedly.", Yobjnam2(weapon, "suddenly vibrate"));
 

@@ -743,7 +743,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         break;
     }
     default:
-        Sprintf(buf, "glorkum %d %d %d %d", obj->oclass, typ, obj->spe, obj->charges);
+        Sprintf(buf, "glorkum %d %d %d %d", obj->oclass, typ, obj->enchantment, obj->charges);
     }
     if (pluralize)
         Strcpy(buf, makeplural(buf));
@@ -1095,7 +1095,7 @@ unsigned doname_flags;
              * printed to avoid ambiguity between an item whose curse
              * status is unknown, and an item known to be uncursed.
              */
-                 || ((!known || !objects[obj->otyp].oc_spe_type
+                 || ((!known || !objects[obj->otyp].oc_enchantable
                       || obj->oclass == ARMOR_CLASS
                       || obj->oclass == RING_CLASS
 					  || obj->oclass == MISCELLANEOUS_CLASS
@@ -1166,9 +1166,9 @@ unsigned doname_flags;
 				Strcat(bp, ")");
 			}
 		}
-		if (known && objects[obj->otyp].oc_spe_type) 
+		if (known && objects[obj->otyp].oc_enchantable) 
 		{
-			Strcat(prefix, sitoa(obj->spe));
+			Strcat(prefix, sitoa(obj->enchantment));
 			Strcat(prefix, " ");
 		}
 		break;
@@ -1264,7 +1264,7 @@ unsigned doname_flags;
 		}
 		add_erosion_words(obj, prefix);
         if (known) {
-            Strcat(prefix, sitoa(obj->spe));
+            Strcat(prefix, sitoa(obj->enchantment));
             Strcat(prefix, " ");
         }
 		break;
@@ -1347,8 +1347,8 @@ unsigned doname_flags;
             Strcat(bp, body_part(HAND));
             Strcat(bp, ")");
         }
-        if (known && objects[obj->otyp].oc_spe_type) {
-            Strcat(prefix, sitoa(obj->spe));
+        if (known && objects[obj->otyp].oc_enchantable) {
+            Strcat(prefix, sitoa(obj->enchantment));
             Strcat(prefix, " ");
         }
         break;
@@ -3317,7 +3317,7 @@ struct obj *no_wish;
     register char *p;
     register int i;
     register struct obj *otmp;
-    int cnt, spe, spesgn, typ, very, rechrg;
+    int cnt, enchantment, spesgn, typ, very, rechrg;
 	int charges, chargesfound;
     int blessed, uncursed, iscursed, ispoisoned, isgreased;
     int eroded, eroded2, erodeproof, locked, unlocked, broken;
@@ -3347,7 +3347,7 @@ struct obj *no_wish;
     const char *name = 0;
 	boolean isartifact = FALSE;
 
-    cnt = spe = charges = chargesfound = spesgn = typ = 0;
+    cnt = enchantment = charges = chargesfound = spesgn = typ = 0;
     very = rechrg = blessed = uncursed = iscursed = ispoisoned = elemental_enchantment =
         isgreased = eroded = eroded2 = erodeproof = halfeaten =
         islit = unlabeled = ishistoric = isdiluted = trapped =
@@ -3392,7 +3392,7 @@ struct obj *no_wish;
             l = 0;
         } else if (*bp == '+' || *bp == '-') {
             spesgn = (*bp++ == '+') ? 1 : -1;
-            spe = atoi(bp);
+            enchantment = atoi(bp);
             while (digit(*bp))
                 bp++;
             while (*bp == ' ')
@@ -3558,16 +3558,16 @@ struct obj *no_wish;
         }
     }
     /*
-     * otmp->spe is type schar, so we don't want spe to be any bigger or
-     * smaller.  Also, spe should always be positive --some cheaters may
+     * otmp->enchantment is type schar, so we don't want enchantment to be any bigger or
+     * smaller.  Also, enchantment should always be positive --some cheaters may
      * try to confuse atoi().
      */
-    if (spe < 0) {
+    if (enchantment < 0) {
         spesgn = -1; /* cheaters get what they deserve */
-        spe = abs(spe);
+        enchantment = abs(enchantment);
     }
-    if (spe > SCHAR_LIM)
-        spe = SCHAR_LIM;
+    if (enchantment > SCHAR_LIM)
+        enchantment = SCHAR_LIM;
 
 	if (charges > SCHAR_LIM)
 		charges = SCHAR_LIM;
@@ -4304,51 +4304,51 @@ struct obj *no_wish;
 		otmp->quan = 1;
 
 
-	/* set spe */
+	/* set enchantment */
     if (spesgn == 0) {
-        spe = otmp->spe;
+        enchantment = otmp->enchantment;
     }
 	else if (wizard)
 	{
-        ; /* no alteration to spe */
+        ; /* no alteration to enchantment */
     }
 	else if (oclass == ARMOR_CLASS || oclass == WEAPON_CLASS
                || is_weptool(otmp)
-               || (oclass == RING_CLASS && objects[typ].oc_spe_type)
-			   || objects[typ].oc_spe_type
+               || (oclass == RING_CLASS && objects[typ].oc_enchantable)
+			   || objects[typ].oc_enchantable
 		) 
 	{
-        if (spe > get_obj_init_spe(otmp) && spe > otmp->spe)
-            spe = 0;
-        if (spe > get_obj_max_spe(otmp) / 3 && Luck < 0)
+        if (enchantment > get_obj_init_spe(otmp) && enchantment > otmp->enchantment)
+            enchantment = 0;
+        if (enchantment > get_obj_max_spe(otmp) / 3 && Luck < 0)
             spesgn = -1;
     }
 	else 
 	{
 #if 0
         if (oclass == WAND_CLASS) {
-            if (spe > 1 && spesgn == -1)
-                spe = 1;
+            if (enchantment > 1 && spesgn == -1)
+                enchantment = 1;
         } else {
-            if (spe > 0 && spesgn == -1)
-                spe = 0;
+            if (enchantment > 0 && spesgn == -1)
+                enchantment = 0;
         }
-		if (spe > otmp->spe)
-			spe = otmp->spe;
+		if (enchantment > otmp->enchantment)
+			enchantment = otmp->enchantment;
 #endif
-		if (spe > 0 && spesgn == -1)
-			spe = 0;
-		if (spe > otmp->spe)
-			spe = otmp->spe;
+		if (enchantment > 0 && spesgn == -1)
+			enchantment = 0;
+		if (enchantment > otmp->enchantment)
+			enchantment = otmp->enchantment;
 	}
 
     if (spesgn == -1)
-        spe = -spe;
+        enchantment = -enchantment;
 
-	if (!objects[typ].oc_spe_type)
-		spe = 0;
+	if (!objects[typ].oc_enchantable)
+		enchantment = 0;
 
-	otmp->spe = spe;
+	otmp->enchantment = enchantment;
 
 
 	/* set charges */

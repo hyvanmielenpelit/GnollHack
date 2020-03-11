@@ -1457,8 +1457,8 @@ register struct trobj *trop;
             }
 
             /* Don't start with +0 or negative rings */
-            if (objects[otyp].oc_spe_type && obj->spe <= 0)
-                obj->spe = rne(3);
+            if (objects[otyp].oc_enchantable && obj->enchantment <= 0)
+                obj->enchantment = rne(3);
 
             /* Heavily relies on the fact that 1) we create wands
              * before rings, 2) that we create rings before
@@ -1741,7 +1741,7 @@ register struct trobj *trop;
                 obj->quan = 1L;
             }
             if (trop->trspe != UNDEF_SPE)
-                obj->spe = trop->trspe;
+                obj->enchantment = trop->trspe;
             if (trop->trbless != UNDEF_BLESS)
                 obj->blessed = trop->trbless;
 			if (trop->elemental_enchantment > 0)

@@ -3385,9 +3385,9 @@ int final;
         int adorn = 0;
 
         if (uleft && uleft->otyp == RIN_ADORNMENT)
-            adorn += uleft->spe;
+            adorn += uleft->enchantment;
         if (uright && uright->otyp == RIN_ADORNMENT)
-            adorn += uright->spe;
+            adorn += uright->enchantment;
         /* the sum might be 0 (+0 ring or two which negate each other);
            that yields "you are charismatic" (which isn't pointless
            because it potentially impacts seduction attacks) */

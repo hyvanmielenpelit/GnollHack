@@ -231,7 +231,7 @@ struct obj *obj;
      */
     saveo.odiluted = obj->odiluted;
     saveo.blessed = obj->blessed, saveo.cursed = obj->cursed;
-    saveo.spe = obj->spe;
+    saveo.enchantment = obj->enchantment;
 	saveo.special_quality = obj->special_quality;
 	saveo.charges = obj->charges;
 	saveo.speflags = obj->speflags;
@@ -285,7 +285,7 @@ struct obj *obj;
         obj->special_quality = saveo.special_quality;
         /* give "towel" a suffix that will force wet ones to come first,
            moist ones next, and dry ones last regardless of whether
-           they've been flagged as having spe known */
+           they've been flagged as having enchantment known */
         Strcat(res, is_wet_towel(obj) ? ((obj->special_quality >= 3) ? "x" : "y") : "z");
     }
     if (obj->globby) {
@@ -428,14 +428,14 @@ const genericptr vptr2;
         return val2 - val1; /* bigger is better */
 
     /* Sort by enchantment.  Map unknown to -1000, which is comfortably
-       below the range of obj->spe.  oc_uses_known means that obj->known
-       matters, which usually indirectly means that obj->spe is relevant.
-       Lots of objects use obj->spe for some other purpose (see obj.h). */
+       below the range of obj->enchantment.  oc_uses_known means that obj->known
+       matters, which usually indirectly means that obj->enchantment is relevant.
+       Lots of objects use obj->enchantment for some other purpose (see obj.h). */
     if (objects[obj1->otyp].oc_uses_known
         /* exclude eggs (laid by you) and tins (homemade, pureed, &c) */
         && obj1->oclass != FOOD_CLASS) {
-        val1 = obj1->known ? obj1->spe : -1000;
-        val2 = obj2->known ? obj2->spe : -1000;
+        val1 = obj1->known ? obj1->enchantment : -1000;
+        val2 = obj2->known ? obj2->enchantment : -1000;
         if (val1 != val2)
             return val2 - val1; /* bigger is better */
     }
@@ -4396,7 +4396,7 @@ register struct obj *otmp, *obj;
     if (obj->oclass == COIN_CLASS)
         return TRUE;
 
-    if (obj->unpaid != otmp->unpaid || obj->spe != otmp->spe || obj->elemental_enchantment != otmp->elemental_enchantment
+    if (obj->unpaid != otmp->unpaid || obj->enchantment != otmp->enchantment || obj->elemental_enchantment != otmp->elemental_enchantment
 		|| obj->charges != otmp->charges || obj->special_quality != otmp->special_quality || obj->speflags != otmp->speflags
 		|| obj->cursed != otmp->cursed || obj->blessed != otmp->blessed
         || obj->no_charge != otmp->no_charge || obj->obroken != otmp->obroken

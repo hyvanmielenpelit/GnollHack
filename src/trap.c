@@ -599,7 +599,7 @@ int *fail_reason;
     struct obj *item;
     coord cc;
     boolean historic = (Role_if(PM_ARCHEOLOGIST)
-                        && (statue->spe & SPEFLAGS_STATUE_HISTORIC) != 0),
+                        && (statue->speflags & SPEFLAGS_STATUE_HISTORIC) != 0),
             golem_xform = FALSE, use_saved_traits;
     const char *comes_to_life;
     char statuename[BUFSZ], tmpbuf[BUFSZ];
@@ -1922,7 +1922,7 @@ int style;
         } else if (bhitpos.x == u.ux && bhitpos.y == u.uy) {
             if (multi)
                 nomul(0);
-            if (thitu(10 + singleobj->spe, weapon_total_dmg_value(singleobj, &youmonst, (struct monst*)0),
+            if (thitu(10 + singleobj->enchantment, weapon_total_dmg_value(singleobj, &youmonst, (struct monst*)0),
                       &singleobj, (char *) 0))
                 stop_occupation();
         }
@@ -5590,12 +5590,12 @@ boolean nocorpse;
     if (d_override)
         strike = 1;
     else if (obj)
-        strike = (find_mac(mon) + tlev + obj->spe <= rnd(20));
+        strike = (find_mac(mon) + tlev + obj->enchantment <= rnd(20));
     else
         strike = (find_mac(mon) + tlev <= rnd(20));
 
     /* Actually more accurate than thitu, which doesn't take
-     * obj->spe into account.
+     * obj->enchantment into account.
      */
     if (!strike) 
 	{

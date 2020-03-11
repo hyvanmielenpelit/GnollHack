@@ -1925,20 +1925,20 @@ struct mkroom *croom;
             otmp = mkobj_at(oclass, x, y, !named);
     }
 
-	if (o->spe != -127) /* That means NOT RANDOM! */
+	if (o->enchantment != -127) /* That means NOT RANDOM! */
 	{
 		if(otmp->oclass == WAND_CLASS || objects[otmp->otyp].oc_charged)
-			otmp->charges = (schar)o->spe;
+			otmp->charges = (schar)o->enchantment;
 		else if (otmp->otyp == TIN || otmp->otyp == MAGIC_LAMP || otmp->otyp == MAGIC_CANDLE || otmp->otyp == TOWEL || otmp->otyp == CANDELABRUM_OF_INVOCATION || otmp->oclass == SCROLL_CLASS)
-			otmp->special_quality = (schar)o->spe;
-		else if (otmp->otyp == CHEST && o->spe)
+			otmp->special_quality = (schar)o->enchantment;
+		else if (otmp->otyp == CHEST && o->enchantment)
 			otmp->speflags |= SPEFLAGS_SCHROEDINGERS_BOX;
-		else if (otmp->otyp == STATUE && o->spe)
+		else if (otmp->otyp == STATUE && o->enchantment)
 			otmp->speflags |= SPEFLAGS_STATUE_HISTORIC;
-		else if (otmp->otyp == EGG && o->spe)
+		else if (otmp->otyp == EGG && o->enchantment)
 			otmp->speflags |= SPEFLAGS_YOURS;
 		else
-			otmp->spe = (schar)o->spe;
+			otmp->enchantment = (schar)o->enchantment;
 	}
     switch (o->curse_state) {
     case 1:
@@ -3230,7 +3230,7 @@ struct sp_coder *coder;
     struct opvar *id, *containment;
     object tmpobj;
 
-    tmpobj.spe = -127;
+    tmpobj.enchantment = -127;
     tmpobj.curse_state = -1;
     tmpobj.corpsenm = NON_PM;
     tmpobj.name.str = (char *) 0;
@@ -3292,7 +3292,7 @@ struct sp_coder *coder;
             break;
         case SP_O_V_SPE:
             if (OV_typ(parm) == SPOVAR_INT)
-                tmpobj.spe = OV_i(parm);
+                tmpobj.enchantment = OV_i(parm);
             break;
         case SP_O_V_QUAN:
             if (OV_typ(parm) == SPOVAR_INT)

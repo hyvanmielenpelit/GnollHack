@@ -909,7 +909,7 @@ gcrownu()
         } else if (!already_exists) {
             obj = mksobj(LONG_SWORD, FALSE, FALSE, FALSE);
             obj = oname(obj, artiname(ART_VORPAL_BLADE));
-            obj->spe = 1;
+            obj->enchantment = 1;
             at_your_feet("A sword");
             dropy(obj);
             u.ugifts++;
@@ -931,7 +931,7 @@ gcrownu()
         } else if (!already_exists) {
             obj = mksobj(RUNESWORD, FALSE, FALSE, FALSE);
             obj = oname(obj, artiname(ART_STORMBRINGER));
-            obj->spe = 1;
+            obj->enchantment = 1;
             at_your_feet(An(swordbuf));
             dropy(obj);
             u.ugifts++;
@@ -953,8 +953,8 @@ gcrownu()
         obj->oeroded = obj->oeroded2 = 0;
         obj->oerodeproof = TRUE;
         obj->bknown = obj->rknown = obj->nknown = TRUE;
-        if (obj->spe < 1)
-            obj->spe = 1;
+        if (obj->enchantment < 1)
+            obj->enchantment = 1;
         /* acquire skill in this weapon */
         unrestrict_weapon_skill(weapon_skill_type(obj));
     } else if (class_gift == STRANGE_OBJECT) {
@@ -1812,8 +1812,8 @@ dosacrifice()
                 && !rn2(10 + (2 * u.ugifts * nartifacts))) {
                 otmp = mk_artifact((struct obj *) 0, a_align(u.ux, u.uy));
                 if (otmp) {
-                    if (otmp->spe < 0)
-                        otmp->spe = 0;
+                    if (otmp->enchantment < 0)
+                        otmp->enchantment = 0;
                     if (otmp->cursed)
                         uncurse(otmp);
                     otmp->oerodeproof = TRUE;
@@ -1834,7 +1834,7 @@ dosacrifice()
 							otmp2->quan = 50;
 							otmp2->oerodeproof = TRUE;
 							bless(otmp2);
-							otmp2->spe = rn2(4);
+							otmp2->enchantment = rn2(4);
 							otmp2->owt = weight(otmp2);
 							dropy(otmp2);
 						}

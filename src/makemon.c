@@ -406,7 +406,7 @@ register struct monst *mtmp;
                    || quest_mon_represents_role(ptr, PM_PRIEST)) {
             otmp = mksobj(MACE, FALSE, FALSE, FALSE);
             if (otmp) {
-                otmp->spe = rnd(3);
+                otmp->enchantment = rnd(3);
                 if (!rn2(2))
                     curse(otmp);
                 (void) mpickobj(mtmp, otmp);
@@ -507,7 +507,7 @@ register struct monst *mtmp;
             bless(otmp);
             otmp->oerodeproof = TRUE;
             spe2 = rnd(4);
-            otmp->spe = max(otmp->spe, spe2);
+            otmp->enchantment = max(otmp->enchantment, spe2);
             (void) mpickobj(mtmp, otmp);
 
             otmp = mksobj(!rn2(4) || is_lord(ptr) ? SHIELD_OF_REFLECTION
@@ -515,7 +515,7 @@ register struct monst *mtmp;
                           FALSE, FALSE, FALSE);
             otmp->cursed = FALSE;
             otmp->oerodeproof = TRUE;
-            otmp->spe = 0;
+            otmp->enchantment = 0;
             (void) mpickobj(mtmp, otmp);
         }
         break;
@@ -547,7 +547,7 @@ register struct monst *mtmp;
 					{
 						otmp->oerodeproof = TRUE;
 						spe2 = rnd(4);
-						otmp->spe = max(otmp->spe, spe2);
+						otmp->enchantment = max(otmp->enchantment, spe2);
 					}
 				}
 				(void)mpickobj(mtmp, otmp);
@@ -787,7 +787,7 @@ register struct monst *mtmp;
 		{
 			otmp = mksobj(BULLWHIP, TRUE, FALSE, FALSE);
 			spe2 = rnd(4);
-			otmp->spe = max(otmp->spe, spe2);
+			otmp->enchantment = max(otmp->enchantment, spe2);
 			otmp->elemental_enchantment = FIRE_ENCHANTMENT;
 			(void)mpickobj(mtmp, otmp);
 
@@ -795,7 +795,7 @@ register struct monst *mtmp;
 			{
 				otmp = mksobj(BROADSWORD, TRUE, FALSE, FALSE);
 				spe2 = rnd(2);
-				otmp->spe = max(otmp->spe, spe2);
+				otmp->enchantment = max(otmp->enchantment, spe2);
 				otmp->elemental_enchantment = FIRE_ENCHANTMENT;
 				(void)mpickobj(mtmp, otmp);
 			}
@@ -803,7 +803,7 @@ register struct monst *mtmp;
 			{
 				otmp = mksobj(INFERNAL_AXE, TRUE, FALSE, FALSE);
 				spe2 = 1 + rnd(2);
-				otmp->spe = max(otmp->spe, spe2);
+				otmp->enchantment = max(otmp->enchantment, spe2);
 				(void)mpickobj(mtmp, otmp);
 			}
 			break;
@@ -819,7 +819,7 @@ register struct monst *mtmp;
 			curse(otmp);
 			otmp->oerodeproof = TRUE;
 			spe2 = 2 + rnd(3);
-			otmp->spe = max(otmp->spe, spe2);
+			otmp->enchantment = max(otmp->enchantment, spe2);
 			(void)mpickobj(mtmp, otmp);
 
 			break;
@@ -847,7 +847,7 @@ register struct monst *mtmp;
 			curse(otmp);
 			otmp->oerodeproof = TRUE;
 			spe2 = 1 + rnd(3);
-			otmp->spe = max(otmp->spe, spe2);
+			otmp->enchantment = max(otmp->enchantment, spe2);
 			(void)mpickobj(mtmp, otmp);
 			break;
 		case PM_BAPHOMET:
@@ -856,7 +856,7 @@ register struct monst *mtmp;
 			curse(otmp);
 			otmp->oerodeproof = TRUE;
 			spe2 = 2 + rnd(3);
-			otmp->spe = max(otmp->spe, spe2);
+			otmp->enchantment = max(otmp->enchantment, spe2);
 			(void)mpickobj(mtmp, otmp);
 
 			/* And his nose ring, of course */
@@ -1214,8 +1214,8 @@ register struct monst *mtmp;
 		else if (ptr == &mons[PM_ARCH_LICH] && !rn2(3)) {
 			otmp = mksobj(rn2(3) ? ATHAME : QUARTERSTAFF, TRUE,
 				rn2(13) ? FALSE : TRUE, FALSE);
-			if (otmp->spe < 2)
-				otmp->spe = rnd(3);
+			if (otmp->enchantment < 2)
+				otmp->enchantment = rnd(3);
 			if (!rn2(4))
 				otmp->oerodeproof = 1;
 			(void)mpickobj(mtmp, otmp);
@@ -3038,7 +3038,7 @@ register struct monst *mtmp;
 int otyp;
 {
     register struct obj *otmp;
-    int spe;
+    int enchantment;
 
     if (!otyp)
         return 0;
@@ -3051,15 +3051,15 @@ int otyp;
         } else if (is_lminion(mtmp)) {
             /* lawful minions don't get cursed, bad, or rusting objects */
             otmp->cursed = FALSE;
-            if (otmp->spe < 0)
-                otmp->spe = 0;
+            if (otmp->enchantment < 0)
+                otmp->enchantment = 0;
             otmp->oerodeproof = TRUE;
         } else if (is_mplayer(mtmp->data) && is_sword(otmp)) {
-            otmp->spe = (3 + rn2(4));
+            otmp->enchantment = (3 + rn2(4));
         }
 
         if (otmp->otyp == CANDELABRUM_OF_INVOCATION) {
-            otmp->spe = 0;
+            otmp->enchantment = 0;
 			otmp->special_quality = 0;
 			otmp->age = 0L;
             otmp->lamplit = FALSE;
@@ -3073,15 +3073,15 @@ int otyp;
 
         /* leaders don't tolerate inferior quality battle gear */
         if (is_prince(mtmp->data)) {
-            if (otmp->oclass == WEAPON_CLASS && otmp->spe < 1)
-                otmp->spe = 1;
-            else if (otmp->oclass == ARMOR_CLASS && otmp->spe < 0)
-                otmp->spe = 0;
+            if (otmp->oclass == WEAPON_CLASS && otmp->enchantment < 1)
+                otmp->enchantment = 1;
+            else if (otmp->oclass == ARMOR_CLASS && otmp->enchantment < 0)
+                otmp->enchantment = 0;
         }
 
-        spe = otmp->spe;
+        enchantment = otmp->enchantment;
         (void) mpickobj(mtmp, otmp); /* might free otmp */
-        return spe;
+        return enchantment;
     }
     return 0;
 }

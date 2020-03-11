@@ -2027,7 +2027,7 @@ register boolean is_golf;
 			}
 			//Bracers bonus
 			if(uarmb && uarmb->otyp == BRACERS_OF_ARCHERY)
-				tmp += (uarmb->cursed ? -2 : 2) + (uarmb->blessed ? 1 : 0) + uarmb->spe;
+				tmp += (uarmb->cursed ? -2 : 2) + (uarmb->blessed ? 1 : 0) + uarmb->enchantment;
 		}
 		else
 		{
@@ -2124,7 +2124,7 @@ register boolean is_golf;
             } 
 			else if (uwep)
 			{
-				tmp += weapon_to_hit_value(uwep, mon, &youmonst);	//tmp += uwep->spe - greatest_erosion(uwep);
+				tmp += weapon_to_hit_value(uwep, mon, &youmonst);	//tmp += uwep->enchantment - greatest_erosion(uwep);
                 tmp += weapon_skill_hit_bonus(uwep, is_golf_swing_with_stone ? P_THROWN_WEAPON : P_NONE, FALSE); //Players get skill bonuses
 //                if (uwep->oartifact)
 //                    tmp += spec_abon(uwep, mon);
@@ -2199,7 +2199,7 @@ register boolean is_golf;
                  */
                 int broken, chance;
 
-                chance = 0 + greatest_erosion(obj) - obj->spe;
+                chance = 0 + greatest_erosion(obj) - obj->enchantment;
                 if (chance > 1)
                     broken = rn2(chance);
                 else

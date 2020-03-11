@@ -820,7 +820,7 @@ doengrave()
 
     case WEAPON_CLASS:
         if (is_blade(otmp)) {
-            if ((int) otmp->spe > -3)
+            if ((int) otmp->enchantment > -3)
                 type = ENGRAVE;
             else
                 pline("%s too dull for engraving.", Yobjnam2(otmp, "are"));
@@ -1087,7 +1087,7 @@ doengrave()
         if (otmp->oclass == WEAPON_CLASS
             && (otmp->otyp != ATHAME || otmp->cursed)) {
             multi = -len;
-            maxelen = ((otmp->spe + 3) * 2) + 1;
+            maxelen = ((otmp->enchantment + 3) * 2) + 1;
             /* -2 => 3, -1 => 5, 0 => 7, +1 => 9, +2 => 11
              * Note: this does not allow a +0 anything (except an athame)
              * to engrave "Elbereth" all at once.
@@ -1097,11 +1097,11 @@ doengrave()
             costly_alteration(otmp, COST_DEGRD);
             if (len > maxelen) {
                 multi = -maxelen;
-                otmp->spe = -3;
+                otmp->enchantment = -3;
             } else if (len > 1)
-                otmp->spe -= len >> 1;
+                otmp->enchantment -= len >> 1;
             else
-                otmp->spe -= 1; /* Prevent infinite engraving */
+                otmp->enchantment -= 1; /* Prevent infinite engraving */
         } else if (otmp->oclass == RING_CLASS || otmp->oclass == GEM_CLASS) {
             multi = -len;
         }

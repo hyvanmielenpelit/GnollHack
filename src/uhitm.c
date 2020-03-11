@@ -1454,7 +1454,7 @@ boolean* obj_destroyed;
 
 			//Bracers give extra +2 damage, blessed even +3 + their bonus
 			if (uarmb && uarmb->otyp == BRACERS_OF_ARCHERY)
-				damage += adjust_damage((uarmb->cursed ? -2 : 2) + (uarmb->blessed ? 1 : 0) + uarmb->spe,
+				damage += adjust_damage((uarmb->cursed ? -2 : 2) + (uarmb->blessed ? 1 : 0) + uarmb->enchantment,
 					&youmonst, mon, objects[obj->otyp].oc_damagetype, FALSE);
 
 		}

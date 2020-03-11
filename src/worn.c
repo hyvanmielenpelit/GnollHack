@@ -1772,9 +1772,9 @@ boolean racialexception;
         if (obj->owornmask)
             continue;
         /* I'd like to define a VISIBLE_ARM_BONUS which doesn't assume the
-         * monster knows obj->spe, but if I did that, a monster would keep
+         * monster knows obj->enchantment, but if I did that, a monster would keep
          * switching forever between two -2 caps since when it took off one
-         * it would forget spe and once again think the object is better
+         * it would forget enchantment and once again think the object is better
          * than what it already has.
          */
         if (best && (ARM_AC_BONUS(best, mon->data) + extra_pref(mon, best)

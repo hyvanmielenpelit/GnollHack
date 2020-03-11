@@ -368,7 +368,7 @@ typedef struct {
 typedef struct {
     Str_or_Len name;
     int corpsenm;
-    short id, spe;
+    short id, enchantment;
 	short charges;
 	int special_quality;
 	unsigned long speflags;

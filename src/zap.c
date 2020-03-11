@@ -2100,8 +2100,8 @@ register struct obj *obj;
 
     if (objects[otyp].oc_magic
 		|| (obj->charges && objects[otyp].oc_charged)
-        || (obj->spe && (obj->oclass == ARMOR_CLASS
-                         || obj->oclass == WEAPON_CLASS || is_weptool(obj) || objects[otyp].oc_spe_type))
+        || (obj->enchantment && (obj->oclass == ARMOR_CLASS
+                         || obj->oclass == WEAPON_CLASS || is_weptool(obj) || objects[otyp].oc_enchantable))
         || otyp == POT_ACID
         || otyp == POT_SICKNESS
 		|| otyp == POT_POISON
@@ -2112,13 +2112,13 @@ register struct obj *obj;
 		{
             costly_alteration(obj, COST_CANCEL);
 			obj->charges = (obj->oclass == WAND_CLASS) ? -1 : 0;
-			obj->spe = 0;
+			obj->enchantment = 0;
         }
         switch (obj->oclass) {
         case SCROLL_CLASS:
             costly_alteration(obj, COST_CANCEL);
             obj->otyp = SCR_BLANK_PAPER;
-            obj->spe = 0;
+            obj->enchantment = 0;
 			obj->special_quality = 0;
 			break;
         case SPBOOK_CLASS:
@@ -2172,9 +2172,9 @@ boolean by_you;
 
     /* Is this a charged/enchanted object? */
     if (!obj
-        || !(objects[obj->otyp].oc_charged || objects[obj->otyp].oc_spe_type || obj->oclass == WEAPON_CLASS
+        || !(objects[obj->otyp].oc_charged || objects[obj->otyp].oc_enchantable || obj->oclass == WEAPON_CLASS
             || obj->oclass == ARMOR_CLASS || is_weptool(obj))
-        || (obj->spe <= 0 && obj->charges <= 0))
+        || (obj->enchantment <= 0 && obj->charges <= 0))
         return FALSE;
     
 	if (obj_resists(obj, 10, 90))
@@ -2185,8 +2185,8 @@ boolean by_you;
         costly_alteration(obj, COST_DRAIN);
 
     /* Drain the object and any implied effects */
-	if(objects[obj->otyp].oc_spe_type && obj->spe > 0)
-	    obj->spe--;
+	if(objects[obj->otyp].oc_enchantable && obj->enchantment > 0)
+	    obj->enchantment--;
 
 	if (objects[obj->otyp].oc_charged && obj->charges > 0)
 		obj->charges--;
@@ -2557,7 +2557,7 @@ int id;
 	}
 	if (index(enchanted_objs, otmp->oclass))
 	{
-		otmp->spe = obj->spe;
+		otmp->enchantment = obj->enchantment;
 	}
 	otmp->recharged = obj->recharged;
 
@@ -2588,7 +2588,7 @@ int id;
         if (obj->corpsenm == PM_CROCODILE) {
             otmp->otyp = LOW_BOOTS;
             otmp->oclass = ARMOR_CLASS;
-            otmp->spe = 0;
+            otmp->enchantment = 0;
 			otmp->charges = 0;
 			otmp->oeroded = 0;
             otmp->oerodeproof = TRUE;
@@ -6272,7 +6272,7 @@ int dx, dy;
                 /* we hit ourselves */
 				int dmg = weapon_dmg_value(obj, &youmonst, (struct monst*)0);
 				int extradmg = weapon_extra_dmg_value(obj, &youmonst, (struct monst*)0, dmg);
-                (void) thitu(10 + obj->spe, dmg + extradmg, &obj,
+                (void) thitu(10 + obj->enchantment, dmg + extradmg, &obj,
                              "boomerang");
                 endmultishot(TRUE);
                 break;
