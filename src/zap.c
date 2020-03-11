@@ -8353,15 +8353,30 @@ int dmg, adtyp, tell;
 		int hp_before = 0, hp_after = 0;
 		if (is_you)
 		{
+			boolean was_polyd = Upolyd;
 			hp_before = Upolyd ? u.mh : u.uhp;
 			losehp(dmg, otmp ? cxname(otmp) : "damage source", KILLED_BY);
 			hp_after = Upolyd ? u.mh : u.uhp;
+			boolean polyd_same = (Upolyd && was_polyd) || (!Upolyd && !was_polyd);
+
+			int damagedealt = hp_before - hp_after;
+			if (tell && damagedealt > 0 && polyd_same && !(tell == TELL_LETHAL_STYLE && !resisted))
+			{//Lethal damage not shown, resisted though yes
+				You("sustain %d damage!", damagedealt);
+			}
 		}
 		else
 		{
 			hp_before = mtmp->mhp;
 			deduct_monster_hp(mtmp, dmg);
 			hp_after = mtmp->mhp;
+
+			int damagedealt = hp_before - hp_after;
+			if (tell && damagedealt > 0 && !(tell == TELL_LETHAL_STYLE && !resisted))
+			{//Lethal damage not shown, resisted though yes
+				pline("%s sustains %d damage!", Monnam(mtmp), damagedealt);
+			}
+
 			if (DEADMONSTER(mtmp))
 			{
 				if (m_using)
@@ -8371,15 +8386,6 @@ int dmg, adtyp, tell;
 			}
 		}
 
-		int damagedealt = hp_before - hp_after;
-
-		if (tell && damagedealt > 0 && !(tell == TELL_LETHAL_STYLE && !resisted))
-		{//Lethal damage not shown, resisted though yes
-			if (is_you)
-				You("sustain %d damage!", damagedealt);
-			else
-				pline("%s sustains %d damage!", Monnam(mtmp), damagedealt);
-		}
 	}
     return resisted;
 }
