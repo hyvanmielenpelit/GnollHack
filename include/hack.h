@@ -80,6 +80,7 @@ enum hunger_state_types {
 #define BY_ORACLE 0
 #define BY_COOKIE 1
 #define BY_PAPER 2
+#define BY_SPELL 3
 #define BY_OTHER 9
 
 /* Macros for why you are no longer riding */

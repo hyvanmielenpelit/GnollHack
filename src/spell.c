@@ -1985,7 +1985,13 @@ boolean atme;
         } else if (uarmh && uarmh->otyp == CORNUTHAUM)
             You("sense a pointy hat on top of your %s.", body_part(HEAD));
         break;
-    case SPE_PROTECTION:
+	case SPE_MINOR_CONSULTATION:
+		outrumor(1, BY_SPELL);
+		break;
+	case SPE_MAJOR_CONSULTATION:
+		outoracle(FALSE, 2);
+		break;
+	case SPE_PROTECTION:
 	case SPE_SHIELD:
 	case SPE_BARKSKIN:
 	case SPE_STONESKIN:

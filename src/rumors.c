@@ -367,7 +367,10 @@ int mechanism;
     case BY_PAPER:
         pline("It reads:");
         break;
-    }
+	case BY_SPELL:
+		pline("You sense a magical message in your mind:");
+		break;
+	}
     pline1(line);
 }
 
@@ -423,9 +426,9 @@ int fd;
 }
 
 void
-outoracle(special, delphi)
+outoracle(special, oraclesstyle)
 boolean special;
-boolean delphi;
+int oraclesstyle; /* 0 = cookie, 1 = oracle, 2 = spell */
 {
     winid tmpwin;
     dlb *oracles;
@@ -456,12 +459,14 @@ boolean delphi;
             oracle_loc[oracle_idx] = oracle_loc[--oracle_cnt];
 
         tmpwin = create_nhwindow(NHW_TEXT);
-        if (delphi)
+        if (oraclesstyle == 1)
             putstr(tmpwin, 0,
                    special
                      ? "The Oracle scornfully takes all your money and says:"
                      : "The Oracle meditates for a moment and then intones:");
-        else
+		else if (oraclesstyle == 2)
+			putstr(tmpwin, 0, "You sense a magical message in your mind:");
+		else
             putstr(tmpwin, 0, "The message reads:");
         putstr(tmpwin, 0, "");
 
@@ -549,7 +554,7 @@ struct monst *oracl;
 	case 2:
 		cheapskate = u_pay < major_cost;
 
-		outoracle(cheapskate, TRUE);
+		outoracle(cheapskate, 1);
 		if (!cheapskate && !u.uevent.major_oracle)
 			add_xpts = u_pay / (u.uevent.minor_oracle ? 25 : 10);
 		/* ~100 pts if very 1st, ~40 pts if minor already done */

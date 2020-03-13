@@ -2008,7 +2008,7 @@ struct monst* mtmp;
 
 	if (is_silenced(mtmp))
 	{
-		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), mhis(mtmp));
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), upstart(mhis(mtmp)));
 		return 0;
 	}
 
@@ -2673,7 +2673,7 @@ struct monst* mtmp;
 	}
 	else if (is_silenced(mtmp))
 	{
-		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), mhis(mtmp));
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), upstart(mhis(mtmp)));
 		return 0;
 	}
 
@@ -2734,7 +2734,7 @@ struct monst* mtmp;
 
 	if (is_silenced(mtmp))
 	{
-		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), mhis(mtmp));
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), upstart(mhis(mtmp)));
 		return 0;
 	}
 
@@ -3040,7 +3040,7 @@ struct monst* mtmp;
 {
 	if (is_silenced(mtmp))
 	{
-		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), mhis(mtmp));
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), upstart(mhis(mtmp)));
 		return 0;
 	}
 
@@ -3053,7 +3053,7 @@ struct monst* mtmp;
 {
 	if (is_silenced(mtmp))
 	{
-		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), mhis(mtmp));
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), upstart(mhis(mtmp)));
 		return 0;
 	}
 
@@ -3067,7 +3067,7 @@ struct monst* mtmp;
 {
 	if (is_silenced(mtmp))
 	{
-		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), mhis(mtmp));
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), upstart(mhis(mtmp)));
 		return 0;
 	}
 
@@ -3097,7 +3097,7 @@ struct monst* mtmp;
 	}
 	else if (is_silenced(mtmp))
 	{
-		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), mhis(mtmp));
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), upstart(mhis(mtmp)));
 		return 0;
 	}
 	else if (!umoney)
@@ -3184,7 +3184,7 @@ struct monst* mtmp;
 	}
 	else if (is_silenced(mtmp))
 	{
-		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), mhis(mtmp));
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), upstart(mhis(mtmp)));
 		return 0;
 	}
 	else if (!umoney)
@@ -3243,7 +3243,7 @@ struct monst* mtmp;
 	}
 	else if (is_silenced(mtmp))
 	{
-		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), mhis(mtmp));
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), upstart(mhis(mtmp)));
 		return 0;
 	}
 	else if (!umoney)
@@ -3288,7 +3288,7 @@ struct monst* mtmp;
 {
 	if (is_silenced(mtmp))
 	{
-		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), mhis(mtmp));
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), upstart(mhis(mtmp)));
 		return 0;
 	}
 
@@ -3316,7 +3316,7 @@ struct monst* mtmp;
 	}
 	else if (is_silenced(mtmp))
 	{
-		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), mhis(mtmp));
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), upstart(mhis(mtmp)));
 		return 0;
 	}
 	else if (!umoney)
@@ -3420,7 +3420,7 @@ struct monst* mtmp;
 {
 	if (is_silenced(mtmp))
 	{
-		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), mhis(mtmp));
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), upstart(mhis(mtmp)));
 		return 0;
 	}
 
@@ -3454,7 +3454,7 @@ struct monst* mtmp;
 	}
 	else if (is_silenced(mtmp))
 	{
-		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), mhis(mtmp));
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), upstart(mhis(mtmp)));
 		return 0;
 	}
 	else if (!umoney) {
@@ -3548,7 +3548,7 @@ struct monst* mtmp;
 	}
 	else if (is_silenced(mtmp))
 	{
-		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), mhis(mtmp));
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), upstart(mhis(mtmp)));
 		return 0;
 	}
 
@@ -3607,7 +3607,7 @@ struct monst* mtmp;
 	}
 	else if (is_silenced(mtmp))
 	{
-		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), mhis(mtmp));
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), upstart(mhis(mtmp)));
 		return 0;
 	}
 	else if (mvitals[PM_WATCHMAN].died > 0 || mvitals[PM_WATCH_CAPTAIN].died > 0) {
@@ -3655,7 +3655,7 @@ struct monst* mtmp;
 {
 	if (is_silenced(mtmp))
 	{
-		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), mhis(mtmp));
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), upstart(mhis(mtmp)));
 		return 0;
 	}
 	quest_chat(mtmp);
