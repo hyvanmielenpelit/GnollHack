@@ -403,6 +403,16 @@ dog_hunger(mtmp, edog)
 struct monst *mtmp;
 struct edog *edog;
 {
+	if (!mtmp)
+		return FALSE;
+
+	/* Nonliving creatures do not get hungry */
+	if (is_nonliving(mtmp->data))
+	{
+		edog->hungrytime = monstermoves + 500;
+		return FALSE;
+	}
+
     if (monstermoves >= edog->hungrytime + 500) 
 	{
 		if (!carnivorous(mtmp->data) && !herbivorous(mtmp->data))
@@ -458,7 +468,7 @@ struct edog *edog;
 			stop_occupation();
 		}
 	}
-	else if (monstermoves >= edog->hungrytime)
+	else if (monstermoves >= edog->hungrytime && (carnivorous(mtmp->data) || herbivorous(mtmp->data)))
 	{
 		if (context.hungry_message_displayed == FALSE && (monstermoves - edog->hungrytime) % 100 == 0)
 		{

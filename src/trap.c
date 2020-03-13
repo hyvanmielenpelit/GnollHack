@@ -26,7 +26,6 @@ STATIC_DCL int FDECL(try_disarm, (struct trap *, BOOLEAN_P));
 STATIC_DCL void FDECL(reward_untrap, (struct trap *, struct monst *));
 STATIC_DCL int FDECL(disarm_holdingtrap, (struct trap *));
 STATIC_DCL int FDECL(disarm_magical_trap, (struct trap*));
-STATIC_DCL const char* FDECL(get_trap_name, (int));
 STATIC_DCL int FDECL(disarm_landmine, (struct trap *));
 STATIC_DCL int FDECL(disarm_squeaky_board, (struct trap *));
 STATIC_DCL int FDECL(disarm_shooting_trap, (struct trap *, int));
@@ -4553,7 +4552,7 @@ struct trap* ttmp;
 /*
  * Find the type of a trap in the table, knowing its name.
  */
-STATIC_OVL const char*
+const char*
 get_trap_name(trapid)
 int trapid;
 {

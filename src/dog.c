@@ -818,6 +818,9 @@ register struct obj *obj;
     if (is_quest_artifact(obj) || obj_resists(obj, 0, 95))
         return obj->cursed ? TABU : APPORT;
 
+	if (is_nonliving(mptr))
+		return TABU;
+
     switch (obj->oclass) 
 	{
 	case FOOD_CLASS:
@@ -915,7 +918,7 @@ register struct obj *obj;
         }
 	case REAGENT_CLASS:
 	{
-		//Nothing
+		/*FALLTHRU*/
 	}
     default:
         if (obj->otyp == AMULET_OF_STRANGULATION

@@ -3680,9 +3680,6 @@ int spell;
      * in that spell type.
      */
     skill = P_SKILL_LEVEL(spell_skilltype(spellid(spell)));
-    skill = max(skill, P_UNSKILLED) - 1; /* unskilled => 0 */
-    //difficulty =
-    //    (spellev(spell) - 1) * 4 - ((skill * 6) + ((u.ulevel - 1) * 2) + 0);
 
 	chance += -50 * (spellev(spell) + 1);
 	chance += spell_skill_success_bonus(skill);

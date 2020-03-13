@@ -1376,12 +1376,15 @@ domove_core()
         nomul(0);
         return;
     }
-    if (u.uswallow) {
+    if (u.uswallow) 
+	{
         u.dx = u.dy = 0;
         u.ux = x = u.ustuck->mx;
         u.uy = y = u.ustuck->my;
         mtmp = u.ustuck;
-    } else {
+    } 
+	else
+	{
         if (Is_airlevel(&u.uz) && rn2(4) && !Levitation && !Flying) {
             switch (rn2(3)) {
             case 0:
@@ -1401,16 +1404,20 @@ domove_core()
 
         /* check slippery ice */
         on_ice = !Levitation && is_ice(u.ux, u.uy);
-        if (on_ice) {
+        if (on_ice)
+		{
             static int skates = 0;
 
             if (!skates)
                 skates = find_skates();
             if ((uarmf && uarmf->otyp == skates) || resists_cold(&youmonst)
                 || Flying || is_floater(youmonst.data)
-                || is_clinger(youmonst.data) || is_whirly(youmonst.data)) {
+                || is_clinger(youmonst.data) || is_whirly(youmonst.data)) 
+			{
                 on_ice = FALSE;
-            } else if (!rn2(Cold_resistance ? 3 : 2)) {
+            } 
+			else if (!rn2(Cold_resistance ? 3 : 2)) 
+			{
                 HFumbling |= FROM_ACQUIRED;
                 HFumbling &= ~TIMEOUT;
                 HFumbling += 1; /* slip on next move */
@@ -1421,23 +1428,29 @@ domove_core()
 
         x = u.ux + u.dx;
         y = u.uy + u.dy;
-        if (Stunned || (Confusion && !rn2(5))) {
+        if (Stunned || (Confusion && !rn2(5))) 
+		{
             register int tries = 0;
 
-            do {
-                if (tries++ > 50) {
+            do
+			{
+                if (tries++ > 50) 
+				{
                     nomul(0);
                     return;
                 }
                 confdir();
                 x = u.ux + u.dx;
                 y = u.uy + u.dy;
-            } while (!isok(x, y) || bad_rock(youmonst.data, x, y));
+            } 
+			while (!isok(x, y) || bad_rock(youmonst.data, x, y));
         }
         /* turbulence might alter your actual destination */
-        if (u.uinwater) {
+        if (u.uinwater) 
+		{
             water_friction();
-            if (!u.dx && !u.dy) {
+            if (!u.dx && !u.dy) 
+			{
                 nomul(0);
                 return;
             }
@@ -1446,7 +1459,8 @@ domove_core()
 
             /* are we trying to move out of water while carrying too much? */
             if (isok(x, y) && !is_pool(x, y) && !Is_waterlevel(&u.uz)
-                && wtcap > (Swimming ? MOD_ENCUMBER : SLT_ENCUMBER)) {
+                && wtcap > (Swimming ? MOD_ENCUMBER : SLT_ENCUMBER))
+			{
                 /* when escaping from drowning you need to be unencumbered
                    in order to crawl out of water, but when not drowning,
                    doing so while encumbered is feasible; if in an aquatic
@@ -1457,16 +1471,23 @@ domove_core()
                 return;
             }
         }
-        if (!isok(x, y)) {
+        if (!isok(x, y)) 
+		{
             nomul(0);
             return;
         }
         if (((trap = t_at(x, y)) && trap->tseen)
             || (Blind && !Levitation && !Flying && !is_clinger(youmonst.data)
-                && is_pool_or_lava(x, y) && levl[x][y].seenv)) {
-            if (context.run) {
-                if (iflags.mention_walls) {
-                    if (trap && trap->tseen) {
+                /* && is_pool_or_lava(x, y) */ 
+				&& levl[x][y].seenv))
+		{
+            if (context.run) 
+			{
+
+                if (iflags.mention_walls) 
+				{
+                    if (trap && trap->tseen)
+					{
                         int tt = what_trap(trap->ttyp, rn2_on_display_rng);
 
                         You("stop in front of %s.",
@@ -1483,39 +1504,54 @@ domove_core()
                 nomul(0);
         }
 
-		if (is_pool_or_lava(x, y) && levl[x][y].seenv && !Stunned && !Confusion && !Hallucination && !m_at(x, y))
+		if(levl[x][y].seenv && !Stunned && !Confusion && !Hallucination && !m_at(x, y))
 		{
-			if (
-				(is_pool(x, y) && 
-					(Wwalking 
-						|| Amphibious 
-						|| Breathless
-						|| Swimming
-						|| Flying 
-						|| Levitation
-						|| is_swimmer(youmonst.data)
-						|| is_flyer(youmonst.data)
-						|| is_floater(youmonst.data)
+			if (is_pool_or_lava(x, y))
+			{
+				if (
+					(is_pool(x, y) && 
+						(Wwalking 
+							|| Amphibious 
+							|| Breathless
+							|| Swimming
+							|| Flying 
+							|| Levitation
+							|| is_swimmer(youmonst.data)
+							|| is_flyer(youmonst.data)
+							|| is_floater(youmonst.data)
+						)
+					)
+					|| 
+					(is_lava(x, y) && 
+						(Levitation 
+							|| Flying
+							|| likes_lava(youmonst.data)
+							|| is_flyer(youmonst.data)
+						)
 					)
 				)
-				|| 
-				(is_lava(x, y) && 
-					(Levitation 
-						|| Flying
-						|| likes_lava(youmonst.data)
-						|| is_flyer(youmonst.data)
-					)
-				)
-			)
-			{
-				/* Survives, so no question*/
-			}
-			else
-			{
-				/* If blind, you still get the question */
+				{
+					/* Survives, so no question*/
+				}
+				else
+				{
+					/* If blind, you still get the question */
 
+					char ynqbuf[BUFSZ] = "";
+					Sprintf(ynqbuf, "Are you sure you want to enter the %s?", is_pool(x, y) ? "pool" : is_lava(x, y) ? "lava" : "location");
+
+					char ans = ynq(ynqbuf);
+					if (ans != 'y')
+					{
+						nomul(0);
+						return;
+					}
+				}
+			}
+			else if(trap && trap->tseen)
+			{
 				char ynqbuf[BUFSZ] = "";
-				Sprintf(ynqbuf, "Are you sure you want to enter the %s?", is_pool(x, y) ? "pool" : is_lava(x, y) ? "lava" : "location");
+				Sprintf(ynqbuf, "There is %s. Step into it?", an(get_trap_name(trap->ttyp)));
 
 				char ans = ynq(ynqbuf);
 				if (ans != 'y')
