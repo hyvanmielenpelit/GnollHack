@@ -2525,7 +2525,7 @@ struct obj *obj;
 		{
 			if (obj->charges <= 0)
 			{
-				pline("Unfortunately, nothing much happes.");
+				pline("Unfortunately, nothing happens.");
 				break;
 			}
 			consume_obj_charge(obj, TRUE);
