@@ -335,7 +335,8 @@ enum charged_init_types {
 	CHARGED_ALWAYS_7 = 21,
 	CHARGED_ALWAYS_8 = 22,
 	CHARGED_ALWAYS_9 = 23,
-	CHARGED_ALWAYS_1D8_1 = 24
+	CHARGED_1D8_1 = 24,
+	CHARGED_LUCK_BLADE = 25
 };
 
 enum spe_init_types {

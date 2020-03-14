@@ -2521,6 +2521,16 @@ struct obj *obj;
 			}
 
 		}
+		case INVOKE_WISHING:
+		{
+			if (obj->charges <= 0)
+			{
+				pline("Unfortunately, nothing much happes.");
+				break;
+			}
+			consume_obj_charge(obj, TRUE);
+			makewish();
+		}
 
         } /* switch */
     } else {

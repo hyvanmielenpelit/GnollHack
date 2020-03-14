@@ -268,7 +268,7 @@ struct obj *book2;
         } else if (arti1_primed && arti2_primed) {
             unsigned soon =
                 (unsigned) d(2, 6); /* time til next intervene() */
-
+			
             /* successful invocation */
             mkinvokearea();
             u.uevent.invoked = 1;

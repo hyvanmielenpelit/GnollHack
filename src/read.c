@@ -599,7 +599,7 @@ int curse_bless;
                 wand_explode(obj, 1);
                 return;
             }
-            if (obj->charges >= lim)
+			if (obj->charges >= lim)
                 p_glow2(obj, NH_BLUE);
             else
                 p_glow1(obj);
@@ -771,7 +771,7 @@ int curse_bless;
 				strip_charges(obj);
 				obj->recharged++;
 			}
-			else if (!rn2(max(2, 4 - obj->recharged)))
+			else if (obj->recharged >= 6 || !rn2(max(2, 4 - obj->recharged)))
 			{
 				const char* expltext = !obj->charges ? "suddenly" : "vibrates violently and";
 				int dmg = d(3, 9);
@@ -801,6 +801,55 @@ int curse_bless;
 				obj->recharged++;
 				goto not_chargable;
 			}
+			break;
+		case SWORD_OF_LUCKINESS:
+			if (objects[obj->otyp].oc_charged == CHARGED_LUCK_BLADE)
+			{
+				if (obj->recharged >= 1)
+				{
+					obj->charges = 0;
+					pline("The glow arounds %s %s.", yname(obj), obj->recharged == 1 ? "dims" : "stays dim");
+					break;
+				}
+
+				int lim = get_obj_max_charge(obj);
+				if (is_cursed)
+				{
+					strip_charges(obj);
+					obj->recharged++;
+				}
+
+				if (obj->charges > lim)
+				{
+					obj->charges = 0;
+					pline("The glow arounds %s suddenly dims.", yname(obj));
+					break;
+				}
+				else if (obj->charges < lim)
+				{
+					if (is_blessed)
+					{
+						obj->charges = lim;
+						p_glow2(obj, NH_BLUE);
+					}
+					else if (obj->charges < lim)
+					{
+						obj->charges += rnd(3);
+						if (obj->charges > lim)
+							obj->charges = lim;
+						p_glow1(obj);
+					}
+					obj->recharged++;
+				}
+				else
+				{
+					obj->recharged++;
+					goto not_chargable;
+				}
+			}
+			else
+				goto not_chargable;
+
 			break;
 		default:
 			goto not_chargable;

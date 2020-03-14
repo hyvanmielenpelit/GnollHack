@@ -1460,7 +1460,7 @@ int charge_init_index;
 	case CHARGED_ALWAYS_9:
 		charge = 9;
 		break;
-	case CHARGED_ALWAYS_1D8_1:
+	case CHARGED_1D8_1:
 		charge = rnd(8) + 1;
 		break;
 	case CHARGED_WAND_NORMAL_NODIR:
@@ -1486,6 +1486,9 @@ int charge_init_index;
 		break;
 	case CHARGED_MAGIC_MARKER:
 		charge = rn1(70, 30);
+		break;
+	case CHARGED_LUCK_BLADE:
+		charge = rnd(3) + 1;
 		break;
 	case CHARGED_1D6_6:
 		charge = rnd(6) + 6;
@@ -1549,7 +1552,7 @@ int charge_init_index;
 	case CHARGED_ALWAYS_9:
 		charge = 9;
 		break;
-	case CHARGED_ALWAYS_1D8_1:
+	case CHARGED_1D8_1:
 		charge = 9;
 		break;
 	case CHARGED_WAND_NORMAL_NODIR:
@@ -1575,6 +1578,9 @@ int charge_init_index;
 		break;
 	case CHARGED_MAGIC_MARKER:
 		charge = 100;
+		break;
+	case CHARGED_LUCK_BLADE:
+		charge = 4;
 		break;
 	case CHARGED_1D6_6:
 		charge = 12;

@@ -109,7 +109,8 @@ enum invoke_prop_types {
     ENLIGHTENING,
     CREATE_AMMO,
 	WAND_OF_DEATH,
-	BLESS_CONTENTS
+	BLESS_CONTENTS,
+	INVOKE_WISHING
 };
 
 #endif /* ARTIFACT_H */

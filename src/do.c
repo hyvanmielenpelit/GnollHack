@@ -996,13 +996,27 @@ register struct obj* obj;
 		putstr(datawin, 0, txt);
 	}
 
-	if (objects[otyp].oc_class == ARMOR_CLASS || (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
+
+
+	boolean affectsac = obj->oclass == ARMOR_CLASS
+			|| (stats_known && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED));
+
+	boolean affectsmc = obj->oclass == ARMOR_CLASS
+		|| (stats_known && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)
+			|| (objects[otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC)
+			|| objects[otyp].oc_magic_cancellation != 0);
+
+
+	if (affectsac)
 	{
 		Sprintf(buf2, "%d", 10 - objects[otyp].oc_armor_class);
 		Sprintf(buf, "Base armor class:       %s", buf2);
 		txt = buf;
 		putstr(datawin, 0, txt);
+	}
 
+	if(affectsmc)
+	{
 		int mc = objects[otyp].oc_magic_cancellation;
 		//if (objects[otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC)
 		//	mc+= obj->enchantment;
@@ -1102,24 +1116,28 @@ register struct obj* obj;
 			Sprintf(bonusbuf, " (%s%d to hit and damage)", enchplus >= 0 ? "+" : "", enchplus);
 		}
 
-		if (obj->oclass == ARMOR_CLASS || (stats_known && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)))
+		if (affectsac && affectsmc)
 		{
-			if (objects[otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC)
-			{
-				Sprintf(eos(bonusbuf), " (%s%d to AC and %s%d to MC)",
-					obj->enchantment <= 0 ? "+" : "",
-					-obj->enchantment,
-					obj->enchantment >= 0 ? "+" : "",
-					obj->enchantment
-				);
-			}
-			else
-			{
-				Sprintf(eos(bonusbuf), " (%s%d %s to AC)",
-					obj->enchantment <= 0 ? "+" : "",
-					-obj->enchantment,
-					obj->enchantment >= 0 ? "bonus" : "penalty");
-			}
+			Sprintf(eos(bonusbuf), " (%s%d to AC and %s%d to MC)",
+				obj->enchantment <= 0 ? "+" : "",
+				-obj->enchantment,
+				obj->enchantment >= 0 ? "+" : "",
+				obj->enchantment
+			);
+		}
+		else if(affectsac)
+		{
+			Sprintf(eos(bonusbuf), " (%s%d %s to AC)",
+				obj->enchantment <= 0 ? "+" : "",
+				-obj->enchantment,
+				obj->enchantment >= 0 ? "bonus" : "penalty");
+		}
+		else if (affectsmc)
+		{
+			Sprintf(eos(bonusbuf), " (%s%d %s to MC)",
+				obj->enchantment >= 0 ? "+" : "",
+				obj->enchantment,
+				obj->enchantment >= 0 ? "bonus" : "penalty");
 		}
 
 		Sprintf(buf, "Enchantment status:     %s%d%s", obj->enchantment >= 0 ? "+" : "", obj->enchantment, bonusbuf);
@@ -2646,7 +2664,7 @@ int defensetype;
 
 static const char* artifact_invoke_names[] = { 
 	"taming", "healing", "mana replenishment", "untrapping", "charging",
-	"level teleportation", "portal creation", "enlightenment", "arrow creation", "death ray", "blessing of contents",
+	"level teleportation", "portal creation", "enlightenment", "arrow creation", "death ray", "blessing of contents", "wishing",
 };
 
 const char* get_artifact_invoke_name(specialpropindex)
