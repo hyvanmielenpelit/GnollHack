@@ -2626,6 +2626,17 @@ struct obj *otmp;
 		obfree(pseudo, (struct obj*)0);
 		break;
 	}
+	case EDIBLE_GAIN_LEVEL:
+	{
+		int otyp = otmp->cursed ? POT_POISON : POT_GAIN_LEVEL;
+		struct obj* pseudo = mksobj(otyp, FALSE, FALSE, FALSE);
+		pseudo->blessed = otmp->blessed;
+		pseudo->cursed = FALSE;
+		pseudo->quan = 20L; /* do not let useup get it */
+		peffects(pseudo);
+		obfree(pseudo, (struct obj*)0);
+		break;
+	}
 	case EDIBLE_EGG:
         if (flesh_petrifies(&mons[otmp->corpsenm])) {
             if (!Stone_resistance

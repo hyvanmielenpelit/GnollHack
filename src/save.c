@@ -40,12 +40,12 @@ STATIC_DCL void FDECL(savelevl, (int fd, BOOLEAN_P));
 STATIC_DCL void FDECL(def_bufon, (int));
 STATIC_DCL void FDECL(def_bufoff, (int));
 STATIC_DCL void FDECL(def_bflush, (int));
-STATIC_DCL void FDECL(def_bwrite, (int, genericptr_t, unsigned int));
+STATIC_DCL void FDECL(def_bwrite, (int, genericptr_t, size_t));
 #ifdef ZEROCOMP
 STATIC_DCL void FDECL(zerocomp_bufon, (int));
 STATIC_DCL void FDECL(zerocomp_bufoff, (int));
 STATIC_DCL void FDECL(zerocomp_bflush, (int));
-STATIC_DCL void FDECL(zerocomp_bwrite, (int, genericptr_t, unsigned int));
+STATIC_DCL void FDECL(zerocomp_bwrite, (int, genericptr_t, size_t));
 STATIC_DCL void FDECL(zerocomp_bputc, (int));
 #endif
 
@@ -54,7 +54,7 @@ static struct save_procs {
     void FDECL((*save_bufon), (int));
     void FDECL((*save_bufoff), (int));
     void FDECL((*save_bflush), (int));
-    void FDECL((*save_bwrite), (int, genericptr_t, unsigned int));
+    void FDECL((*save_bwrite), (int, genericptr_t, size_t));
     void FDECL((*save_bclose), (int));
 } saveprocs = {
 #if !defined(ZEROCOMP) || (defined(COMPRESS) || defined(ZLIB_COMP))
@@ -398,7 +398,7 @@ savestateinlock()
         if (tricked_fileremoved(fd, whynot))
             return;
 
-        (void) read(fd, (genericptr_t) &hpid, sizeof(hpid));
+        (void) read(fd, (genericptr_t) &hpid, (readLenType)sizeof(hpid));
         if (hackpid != hpid) {
             Sprintf(whynot, "Level #0 pid (%d) doesn't match ours (%d)!",
                     hpid, hackpid);
@@ -649,7 +649,7 @@ void
 bwrite(fd, loc, num)
 int fd;
 genericptr_t loc;
-register unsigned num;
+register size_t num;
 {
     (*saveprocs.save_bwrite)(fd, loc, num);
     return;
@@ -708,7 +708,7 @@ STATIC_OVL void
 def_bwrite(fd, loc, num)
 register int fd;
 register genericptr_t loc;
-register unsigned num;
+register size_t num;
 {
     boolean failed;
 
@@ -857,7 +857,7 @@ STATIC_OVL void
 zerocomp_bwrite(fd, loc, num)
 int fd;
 genericptr_t loc;
-register unsigned num;
+register size_t num;
 {
     register unsigned char *bp = (unsigned char *) loc;
 
@@ -867,7 +867,7 @@ register unsigned num;
         if (count_only)
             return;
 #endif
-        if ((unsigned) write(fd, loc, num) != num) {
+        if ((size_t) write(fd, loc, num) != num) {
 #if defined(UNIX) || defined(VMS) || defined(__EMX__)
             if (program_state.done_hup)
                 nh_terminate(EXIT_FAILURE);
@@ -1088,10 +1088,11 @@ struct monst *mtmp;
 {
     int buflen;
 
-    buflen = sizeof(struct monst);
+    buflen = (int)sizeof(struct monst);
     bwrite(fd, (genericptr_t) &buflen, sizeof(int));
     bwrite(fd, (genericptr_t) mtmp, buflen);
-    if (mtmp->mextra) {
+    if (mtmp->mextra) 
+	{
         if (MNAME(mtmp))
             buflen = strlen(MNAME(mtmp)) + 1;
         else
@@ -1254,7 +1255,8 @@ save_msghistory(fd, mode)
 int fd, mode;
 {
     char *msg;
-    int msgcount = 0, msglen;
+	int msgcount = 0;
+	int msglen = 0;
     int minusone = -1;
     boolean init = TRUE;
 
@@ -1297,7 +1299,7 @@ int fd;
 
     bufoff(fd);
     /* bwrite() before bufon() uses plain write() */
-    bwrite(fd, (genericptr_t) &sfsaveinfo, (unsigned) (sizeof sfsaveinfo));
+    bwrite(fd, (genericptr_t) &sfsaveinfo, sizeof sfsaveinfo);
     bufon(fd);
     return;
 }

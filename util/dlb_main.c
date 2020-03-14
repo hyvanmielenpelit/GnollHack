@@ -34,7 +34,7 @@ static void FDECL(Write, (int, char *, long));
 static void NDECL(usage);
 static void NDECL(verbose_help);
 static void FDECL(write_dlb_directory,
-                  (int, int, libdir *, long, long, long));
+                  (int, int, libdir *, size_t, size_t, size_t));
 
 static char default_progname[] = "dlb";
 static char *progname = default_progname;
@@ -251,7 +251,7 @@ char **argv;
         for (i = 0; i < lib.nentries; i++) {
             if (verbose)
                 printf("%-14s %6ld %6ld\n", lib.dir[i].fname,
-                       lib.dir[i].foffset, lib.dir[i].fsize);
+                       (long)lib.dir[i].foffset, (long)lib.dir[i].fsize);
             else
                 printf("%s\n", lib.dir[i].fname);
         }
@@ -266,7 +266,7 @@ char **argv;
     case 'x': { /* extract archive contents */
 		int f;
 		size_t n;
-        long remainder, total_read;
+        size_t remainder, total_read;
         char buf[BUFSIZ];
 
         if (!open_library(library_file, &lib)) {
@@ -292,7 +292,7 @@ char **argv;
                  */
                 continue;
             }
-            fseek(lib.fdata, lib.dir[i].foffset, SEEK_SET);
+            fseek(lib.fdata, (long)lib.dir[i].foffset, SEEK_SET);
 
             f = open(lib.dir[i].fname,
                      O_WRONLY | O_TRUNC | O_BINARY | O_CREAT, 0640);
@@ -339,7 +339,7 @@ char **argv;
         int ldlimit = 0;
         char buf[BUFSIZ];
         int fd, out, nfiles = 0;
-        long dir_size, slen, flen, fsiz;
+        size_t dir_size, slen, flen, fsiz;
         boolean rewrite_directory = FALSE;
 
         /*
@@ -411,7 +411,7 @@ char **argv;
 
         /* caculate directory size */
         dir_size = 40                    /* header line (see below) */
-                   + ((nfiles + 1) * 11) /* handling+file offset+SP+newline */
+                   + (((size_t)nfiles + 1) * 11) /* handling+file offset+SP+newline */
                    + slen + strlen(DLB_DIRECTORY); /* file names */
 
         /* write directory */
@@ -429,7 +429,7 @@ char **argv;
                 printf("%s\n", ld[i].fname);
 
             fsiz = 0L;
-            while ((r = read(fd, buf, sizeof buf)) != 0) {
+            while ((r = read(fd, buf, (unsigned int)sizeof buf)) != 0) {
                 if (r == -1) {
                     printf("Read Error in '%s'\n", ld[i].fname);
                     xexit(EXIT_FAILURE);
@@ -499,7 +499,7 @@ static void
 write_dlb_directory(out, nfiles, ld, slen, dir_size, flen)
 int out, nfiles;
 libdir *ld;
-long slen, dir_size, flen;
+size_t slen, dir_size, flen;
 {
     char buf[BUFSIZ];
     int i;
@@ -510,7 +510,7 @@ long slen, dir_size, flen;
                                /* string length + room for nulls */
             (long) slen + (long) strlen(DLB_DIRECTORY) + nfiles + 1,
             (long) dir_size,         /* start of first file */
-            (long) flen + dir_size); /* total file size */
+            (long) flen + (long)dir_size); /* total file size */
     Write(out, buf, strlen(buf));
 
 /* write each file entry */
@@ -520,7 +520,7 @@ long slen, dir_size, flen;
     for (i = 0; i < nfiles; i++) {
         sprintf(buf, ENTRY_FORMAT, ENC_NORMAL, /* encoding */
                 ld[i].fname,                   /* name */
-                ld[i].foffset + dir_size);     /* offset */
+			(long)(ld[i].foffset + dir_size));     /* offset */
         Write(out, buf, strlen(buf));
     }
 }

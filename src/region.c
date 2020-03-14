@@ -177,8 +177,7 @@ struct monst *mon;
     unsigned *tmp_m;
 
     if (reg->max_monst <= reg->n_monst) {
-        tmp_m = (unsigned *) alloc(sizeof (unsigned)
-                                   * (reg->max_monst + MONST_INC));
+        tmp_m = (unsigned *) alloc(sizeof (unsigned) * ((size_t)reg->max_monst + MONST_INC));
         if (reg->max_monst > 0) {
             for (i = 0; i < reg->max_monst; i++)
                 tmp_m[i] = reg->monsters[i];
@@ -252,7 +251,7 @@ NhRegion *reg;
     ret_reg->n_monst = reg->n_monst;
     if (reg->n_monst > 0) {
         ret_reg->monsters = (unsigned int *)
-                                    alloc((sizeof (unsigned)) * reg->n_monst);
+                                    alloc((sizeof (unsigned)) * (size_t)reg->n_monst);
         (void) memcpy((genericptr_t) ret_reg->monsters,
                       (genericptr_t) reg->monsters,
                       sizeof (unsigned) * reg->n_monst);
@@ -622,7 +621,7 @@ int fd;
 int mode;
 {
     int i, j;
-    unsigned n;
+    size_t n;
 
     if (!perform_bwrite(mode))
         goto skip_lots;
@@ -768,23 +767,24 @@ void
 region_stats(hdrfmt, hdrbuf, count, size)
 const char *hdrfmt;
 char *hdrbuf;
-long *count, *size;
+long* count;
+size_t *size;
 {
     NhRegion *rg;
     int i;
 
     /* other stats formats take one parameter; this takes two */
-    Sprintf(hdrbuf, hdrfmt, (long) sizeof (NhRegion), (long) sizeof (NhRect));
+    Sprintf(hdrbuf, hdrfmt, (long) sizeof (NhRegion), sizeof (NhRect));
     *count = (long) n_regions; /* might be 0 even though max_regions isn't */
-    *size = (long) max_regions * (long) sizeof (NhRegion);
+    *size = (size_t) max_regions * sizeof (NhRegion);
     for (i = 0; i < n_regions; ++i) {
         rg = regions[i];
-        *size += (long) rg->nrects * (long) sizeof (NhRect);
+        *size += (size_t) rg->nrects * sizeof (NhRect);
         if (rg->enter_msg)
-            *size += (long) (strlen(rg->enter_msg) + 1);
+            *size += strlen(rg->enter_msg) + 1;
         if (rg->leave_msg)
-            *size += (long) (strlen(rg->leave_msg) + 1);
-        *size += (long) rg->max_monst * (long) sizeof *rg->monsters;
+            *size += strlen(rg->leave_msg) + 1;
+        *size += (size_t) rg->max_monst * sizeof *rg->monsters;
     }
     /* ? */
 }

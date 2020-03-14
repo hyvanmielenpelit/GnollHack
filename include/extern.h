@@ -10,7 +10,7 @@
 /* ### alloc.c ### */
 
 #if 0
-E long *FDECL(alloc, (unsigned int));
+E long *FDECL(alloc, (size_t));
 #endif
 E char *FDECL(fmt_ptr, (const genericptr));
 
@@ -744,7 +744,7 @@ E void NDECL(recalc_mapseen);
 E void FDECL(mapseen_temple, (struct monst *));
 E void FDECL(room_discovered, (int));
 E void FDECL(recbranch_mapseen, (d_level *, d_level *));
-E void FDECL(overview_stats, (winid, const char *, long *, long *));
+E void FDECL(overview_stats, (winid, const char *, long *, size_t *));
 E void FDECL(remdun_mapseen, (int));
 E const char *FDECL(endgamelevelname, (char *, int));
 
@@ -848,7 +848,7 @@ E int NDECL(doengrave);
 E void NDECL(sanitize_engravings);
 E void FDECL(save_engravings, (int, int));
 E void FDECL(rest_engravings, (int));
-E void FDECL(engr_stats, (const char *, char *, long *, long *));
+E void FDECL(engr_stats, (const char *, char *, long *, size_t *));
 E void FDECL(del_engr, (struct engr *));
 E void FDECL(rloc_engr, (struct engr *));
 E void FDECL(make_grave, (int, int, const char *));
@@ -1188,7 +1188,7 @@ E struct monst* FDECL(find_mid_ew, (unsigned));
 E struct monst *FDECL(find_mid, (unsigned, unsigned));
 E void FDECL(save_light_sources, (int, int, int));
 E void FDECL(restore_light_sources, (int));
-E void FDECL(light_stats, (const char *, char *, long *, long *));
+E void FDECL(light_stats, (const char *, char *, long *, size_t *));
 E void FDECL(relink_light_sources, (BOOLEAN_P));
 E void NDECL(light_sources_sanity_check);
 E void FDECL(obj_move_light_source, (struct obj *, struct obj *));
@@ -2289,7 +2289,7 @@ E NhRegion *FDECL(visible_region_at, (XCHAR_P, XCHAR_P));
 E void FDECL(show_region, (NhRegion *, XCHAR_P, XCHAR_P));
 E void FDECL(save_regions, (int, int));
 E void FDECL(rest_regions, (int, BOOLEAN_P));
-E void FDECL(region_stats, (const char *, char *, long *, long *));
+E void FDECL(region_stats, (const char *, char *, long *, size_t *));
 E NhRegion *FDECL(create_gas_cloud, (XCHAR_P, XCHAR_P, int, int));
 E boolean NDECL(region_danger);
 E void NDECL(region_safety);
@@ -2307,7 +2307,7 @@ E int FDECL(restore_menu, (winid));
 #endif
 E void NDECL(minit);
 E boolean FDECL(lookup_id_mapping, (unsigned, unsigned *));
-E void FDECL(mread, (int, genericptr_t, unsigned int));
+E void FDECL(mread, (int, genericptr_t, size_t));
 E int FDECL(validate, (int, const char *));
 E void NDECL(reset_restpref);
 E void FDECL(set_restpref, (const char *));
@@ -2398,7 +2398,7 @@ E genericptr_t FDECL(mon_to_buffer, (struct monst *, int *));
 E void FDECL(bufon, (int));
 E void FDECL(bufoff, (int));
 E void FDECL(bflush, (int));
-E void FDECL(bwrite, (int, genericptr_t, unsigned int));
+E void FDECL(bwrite, (int, genericptr_t, size_t));
 E void FDECL(bclose, (int));
 E void FDECL(def_bclose, (int));
 #if defined(ZEROCOMP)
@@ -2697,7 +2697,7 @@ E long FDECL(spot_time_left, (XCHAR_P, XCHAR_P, SHORT_P));
 E boolean FDECL(obj_is_local, (struct obj *));
 E void FDECL(save_timers, (int, int, int));
 E void FDECL(restore_timers, (int, int, BOOLEAN_P, long));
-E void FDECL(timer_stats, (const char *, char *, long *, long *));
+E void FDECL(timer_stats, (const char *, char *, long *, size_t *));
 E void FDECL(relink_timers, (BOOLEAN_P));
 E int NDECL(wiz_timeout_queue);
 E void NDECL(timer_sanity_check);

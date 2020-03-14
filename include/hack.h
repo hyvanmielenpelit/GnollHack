@@ -597,5 +597,10 @@ enum bodypart_types {
 
 static const char empty_string[] = "";
 
+#if defined(BSD) || defined(ULTRIX)
+#define readLenType int
+#else /* e.g. SYSV, __TURBOC__ */
+#define readLenType unsigned
+#endif
 
 #endif /* HACK_H */

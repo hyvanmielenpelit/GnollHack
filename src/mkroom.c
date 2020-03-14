@@ -796,6 +796,8 @@ mkswamp() /* Michiel Huisjes & Fred de Wilde */
                         (void) makemon(mkclass(S_FUNGUS, 0), sx, sy, NO_MM_FLAGS);
 					else if (!rn2(7)) /* swamps may have cloudberries */
 						(void)mksobj_at(CLOUDBERRY, sx, sy, TRUE, FALSE);
+					else if (!rn2(20)) /* swamps may have phantomberries */
+						(void)mksobj_at(PHANTOMBERRY, sx, sy, TRUE, FALSE);
 				}
         level.flags.has_swamp = 1;
 		swampnumber++;

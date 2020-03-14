@@ -1599,7 +1599,7 @@ char *
 doname(obj)
 struct obj *obj;
 {
-    return doname_base(obj, (unsigned) 0);
+    return doname_base(obj, 0U);
 }
 
 /* Name of object including price. */
@@ -1931,7 +1931,7 @@ size_t lenlimit;
     char unamebuf[12], onamebuf[12], *save_oname, *save_uname, *outbuf;
 
     outbuf = (*func)(obj);
-    if ((unsigned) strlen(outbuf) <= lenlimit)
+    if (strlen(outbuf) <= lenlimit)
         return outbuf;
 
     /* shorten called string to fairly small amount */
@@ -1943,7 +1943,7 @@ size_t lenlimit;
         releaseobuf(outbuf);
         outbuf = (*func)(obj);
         objects[obj->otyp].oc_uname = save_uname; /* restore called string */
-        if ((unsigned) strlen(outbuf) <= lenlimit)
+        if (strlen(outbuf) <= lenlimit)
             return outbuf;
     }
 
@@ -1956,7 +1956,7 @@ size_t lenlimit;
         releaseobuf(outbuf);
         outbuf = (*func)(obj);
         ONAME(obj) = save_oname; /* restore named string */
-        if ((unsigned) strlen(outbuf) <= lenlimit)
+        if (strlen(outbuf) <= lenlimit)
             return outbuf;
     }
 
@@ -1968,7 +1968,7 @@ size_t lenlimit;
         ONAME(obj) = onamebuf;
         releaseobuf(outbuf);
         outbuf = (*func)(obj);
-        if ((unsigned) strlen(outbuf) <= lenlimit) {
+        if (strlen(outbuf) <= lenlimit) {
             objects[obj->otyp].oc_uname = save_uname;
             ONAME(obj) = save_oname;
             return outbuf;
@@ -1982,7 +1982,7 @@ size_t lenlimit;
     obj->oeroded = obj->oeroded2 = 0;
     releaseobuf(outbuf);
     outbuf = (*func)(obj);
-    if (altfunc && (unsigned) strlen(outbuf) > lenlimit) {
+    if (altfunc && strlen(outbuf) > lenlimit) {
         /* still long; use the alternate function (usually one of
            the jackets around minimal_xname()) */
         releaseobuf(outbuf);
@@ -3065,7 +3065,7 @@ boolean retry_inverted; /* optional extra "of" handling */
         /* catch "{potion(s),ring} of {gain,restore,sustain} abilities" */
         if ((p = strstri(u_str, "abilities")) != 0
             && !*(p + sizeof "abilities" - 1)) {
-            (void) strncpy(buf, u_str, (unsigned) (p - u_str));
+            (void) strncpy(buf, u_str, (size_t) (p - u_str));
             Strcpy(buf + (p - u_str), "ability");
             return fuzzymatch(buf, o_str, " -", TRUE);
         }

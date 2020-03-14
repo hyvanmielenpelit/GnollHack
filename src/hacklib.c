@@ -501,7 +501,7 @@ int n; /* which occurrence to replace; 0 => all */
 {
     char *bp, *op, workbuf[BUFSZ];
     const char *rp;
-    unsigned len = (unsigned) strlen(orig);
+    size_t len = strlen(orig);
     int ocount = 0, /* number of times 'orig' has been matched */
         rcount = 0; /* number of subsitutions made */
 

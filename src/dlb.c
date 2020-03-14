@@ -31,7 +31,7 @@ typedef struct dlb_procs {
     void NDECL((*dlb_cleanup_proc));
     boolean FDECL((*dlb_fopen_proc), (DLB_P, const char *, const char *));
     int FDECL((*dlb_fclose_proc), (DLB_P));
-    int FDECL((*dlb_fread_proc), (char *, int, int, DLB_P));
+    int FDECL((*dlb_fread_proc), (char *, long, long, DLB_P));
     int FDECL((*dlb_fseek_proc), (DLB_P, long, int));
     char *FDECL((*dlb_fgets_proc), (char *, int, DLB_P));
     int FDECL((*dlb_fgetc_proc), (DLB_P));
@@ -68,7 +68,7 @@ STATIC_DCL boolean NDECL(lib_dlb_init);
 STATIC_DCL void NDECL(lib_dlb_cleanup);
 STATIC_DCL boolean FDECL(lib_dlb_fopen, (dlb *, const char *, const char *));
 STATIC_DCL int FDECL(lib_dlb_fclose, (dlb *));
-STATIC_DCL int FDECL(lib_dlb_fread, (char *, int, int, dlb *));
+STATIC_DCL int FDECL(lib_dlb_fread, (char *, long, long, dlb *));
 STATIC_DCL int FDECL(lib_dlb_fseek, (dlb *, long, int));
 STATIC_DCL char *FDECL(lib_dlb_fgets, (char *, int, dlb *));
 STATIC_DCL int FDECL(lib_dlb_fgetc, (dlb *));
@@ -129,11 +129,13 @@ library *lp; /* library pointer to fill in */
 {
     int i;
     char *sp;
-    long liboffset, totalsize;
+	long liboffset;
+	long totalsize;
 
     if (fscanf(lp->fdata, "%ld %ld %ld %ld %ld\n", &lp->rev, &lp->nentries,
                &lp->strsize, &liboffset, &totalsize) != 5)
         return FALSE;
+
     if (lp->rev > DLB_MAX_VERS || lp->rev < DLB_MIN_VERS)
         return FALSE;
 
@@ -270,7 +272,7 @@ dlb *dp;
 const char *name;
 const char *mode UNUSED;
 {
-    long start, size;
+	long start, size;
     library *lp;
 
     /* look up file in directory */
@@ -297,10 +299,10 @@ dlb *dp UNUSED;
 STATIC_OVL int
 lib_dlb_fread(buf, size, quan, dp)
 char *buf;
-int size, quan;
+long size, quan;
 dlb *dp;
 {
-    long pos, nread, nbytes;
+	long pos, nread, nbytes;
 
     /* make sure we don't read into the next file */
     if ((dp->size - dp->mark) < (size * quan))
@@ -314,7 +316,7 @@ dlb *dp;
         dp->lib->fmark = pos;
     }
 
-    nread = fread(buf, size, quan, dp->lib->fdata);
+    nread = (long)fread(buf, (size_t)size, (size_t)quan, dp->lib->fdata);
     nbytes = nread * size;
     dp->mark += nbytes;
     dp->lib->fmark += nbytes;
@@ -510,13 +512,13 @@ dlb *dp;
 int
 dlb_fread(buf, size, quan, dp)
 char *buf;
-int size, quan;
+long size, quan;
 dlb *dp;
 {
     if (!dlb_initialized || size <= 0 || quan <= 0)
         return 0;
     if (dp->fp)
-        return (int) fread(buf, size, quan, dp->fp);
+        return (int) fread(buf, (size_t)size, (size_t)quan, dp->fp);
     return do_dlb_fread(buf, size, quan, dp);
 }
 

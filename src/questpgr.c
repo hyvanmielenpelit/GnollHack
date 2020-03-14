@@ -63,7 +63,7 @@ dump_qtlist()
 static void
 Fread(ptr, size, nitems, stream)
 genericptr_t ptr;
-int size, nitems;
+size_t size, nitems;
 dlb *stream;
 {
     int cnt;

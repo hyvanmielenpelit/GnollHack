@@ -203,7 +203,10 @@ int ifd, ofd;
 
     do {
         nfrom = read(ifd, buf, BUFSIZ);
-        nto = write(ofd, buf, nfrom);
+		unsigned unfrom = (unsigned)nfrom;
+		if (unfrom > BUFSIZ)
+			unfrom = BUFSIZ;
+        nto = write(ofd, buf, unfrom);
         if (nto != nfrom) {
             Fprintf(stderr, "file copy failed!\n");
             exit(EXIT_FAILURE);
@@ -216,7 +219,8 @@ restore_savefile(basename)
 char *basename;
 {
     int gfd, lfd, sfd;
-    int res = 0, lev, savelev, hpid, pltmpsiz;
+	int res = 0, lev, savelev, hpid;
+	size_t pltmpsiz;
     xchar levc;
     struct version_info version_data;
     struct savefile_info sfi;

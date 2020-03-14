@@ -554,7 +554,7 @@ struct obj *corpse;
         store_version(fd);
         store_savefileinfo(fd);
         bwrite(fd, (genericptr_t) &c, sizeof c);
-        bwrite(fd, (genericptr_t) bonesid, (unsigned) c); /* DD.nnn */
+        bwrite(fd, (genericptr_t) bonesid, (size_t) c); /* DD.nnn */
         savefruitchn(fd, COUNT_SAVE);
         bflush(fd);
         if (bytes_counted > freediskspace(bones)) { /* not enough room */
@@ -571,7 +571,7 @@ struct obj *corpse;
     store_version(fd);
     store_savefileinfo(fd);
     bwrite(fd, (genericptr_t) &c, sizeof c);
-    bwrite(fd, (genericptr_t) bonesid, (unsigned) c); /* DD.nnn */
+    bwrite(fd, (genericptr_t) bonesid, (size_t) c); /* DD.nnn */
     savefruitchn(fd, WRITE_SAVE | FREE_SAVE);
     update_mlstmv(); /* update monsters for eventual restoration */
     savelev(fd, ledger_no(&u.uz), WRITE_SAVE | FREE_SAVE);
@@ -616,7 +616,7 @@ getbones()
             }
         }
         mread(fd, (genericptr_t) &c, sizeof c); /* length incl. '\0' */
-        mread(fd, (genericptr_t) oldbonesid, (unsigned) c); /* DD.nnn */
+        mread(fd, (genericptr_t) oldbonesid, (size_t) c); /* DD.nnn */
         if (strcmp(bonesid, oldbonesid) != 0
             /* from 3.3.0 through 3.6.0, bones in the quest branch stored
                a bogus bonesid in the file; 3.6.1 fixed that, but for

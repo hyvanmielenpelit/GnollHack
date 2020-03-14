@@ -145,7 +145,7 @@ boolean perform_write, free_data;
     if (perform_write) {
         bwrite(fd, (genericptr_t) &n_dgns, sizeof n_dgns);
         bwrite(fd, (genericptr_t) dungeons,
-               sizeof(dungeon) * (unsigned) n_dgns);
+               sizeof(dungeon) * (size_t) n_dgns);
         bwrite(fd, (genericptr_t) &dungeon_topology, sizeof dungeon_topology);
         bwrite(fd, (genericptr_t) tune, sizeof tune);
 
@@ -159,7 +159,7 @@ boolean perform_write, free_data;
         count = maxledgerno();
         bwrite(fd, (genericptr_t) &count, sizeof count);
         bwrite(fd, (genericptr_t) level_info,
-               (unsigned) count * sizeof(struct linfo));
+               (size_t) count * sizeof(struct linfo));
         bwrite(fd, (genericptr_t) &inv_pos, sizeof inv_pos);
 
         for (count = 0, curr_ms = mapseenchn; curr_ms;
@@ -197,7 +197,7 @@ int fd;
     mapseen *curr_ms, *last_ms;
 
     mread(fd, (genericptr_t) &n_dgns, sizeof(n_dgns));
-    mread(fd, (genericptr_t) dungeons, sizeof(dungeon) * (unsigned) n_dgns);
+    mread(fd, (genericptr_t) dungeons, sizeof(dungeon) * (size_t) n_dgns);
     mread(fd, (genericptr_t) &dungeon_topology, sizeof dungeon_topology);
     mread(fd, (genericptr_t) tune, sizeof tune);
 
@@ -223,7 +223,7 @@ int fd;
 		return;
 	}
     mread(fd, (genericptr_t) level_info,
-          (unsigned) count * sizeof(struct linfo));
+          (size_t) count * sizeof(struct linfo));
     mread(fd, (genericptr_t) &inv_pos, sizeof inv_pos);
 
     mread(fd, (genericptr_t) &count, sizeof(count));
@@ -242,7 +242,7 @@ int fd;
 static void
 Fread(ptr, size, nitems, stream)
 genericptr_t ptr;
-int size, nitems;
+size_t size, nitems;
 dlb *stream;
 {
     int cnt;
@@ -250,7 +250,7 @@ dlb *stream;
     if ((cnt = dlb_fread(ptr, size, nitems, stream)) != nitems) {
         panic(
   "Premature EOF on dungeon description file!\r\nExpected %d bytes - got %d.",
-              (size * nitems), (size * cnt));
+              (size * nitems), (size * (size_t)cnt));
         nh_terminate(EXIT_FAILURE);
     }
 }
@@ -2292,24 +2292,27 @@ void
 overview_stats(win, statsfmt, total_count, total_size)
 winid win;
 const char *statsfmt;
-long *total_count, *total_size;
+long* total_count;
+size_t* total_size;
 {
     char buf[BUFSZ], hdrbuf[QBUFSZ];
-    long ocount, osize, bcount, bsize, acount, asize;
-    struct cemetery *ce;
+    long ocount, bcount, acount;
+	size_t osize, bsize, asize;
+	struct cemetery *ce;
     mapseen *mptr = find_mapseen(&u.uz);
 
-    ocount = bcount = acount = osize = bsize = asize = 0L;
-    for (mptr = mapseenchn; mptr; mptr = mptr->next) {
+    ocount = bcount = acount = 0L;
+	osize = bsize = asize = 0;
+	for (mptr = mapseenchn; mptr; mptr = mptr->next) {
         ++ocount;
-        osize += (long) sizeof *mptr;
+        osize += sizeof *mptr;
         for (ce = mptr->final_resting_place; ce; ce = ce->next) {
             ++bcount;
-            bsize += (long) sizeof *ce;
+            bsize += sizeof *ce;
         }
         if (mptr->custom_lth) {
             ++acount;
-            asize += (long) (mptr->custom_lth + 1);
+            asize += (mptr->custom_lth + 1);
         }
     }
 

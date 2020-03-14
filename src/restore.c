@@ -18,12 +18,12 @@ extern void FDECL(substitute_tiles, (d_level *)); /* from tile.c */
 
 #ifdef ZEROCOMP
 STATIC_DCL void NDECL(zerocomp_minit);
-STATIC_DCL void FDECL(zerocomp_mread, (int, genericptr_t, unsigned int));
+STATIC_DCL void FDECL(zerocomp_mread, (int, genericptr_t, size_t));
 STATIC_DCL int NDECL(zerocomp_mgetc);
 #endif
 
 STATIC_DCL void NDECL(def_minit);
-STATIC_DCL void FDECL(def_mread, (int, genericptr_t, unsigned int));
+STATIC_DCL void FDECL(def_mread, (int, genericptr_t, size_t));
 
 STATIC_DCL void NDECL(find_lev_obj);
 STATIC_DCL void FDECL(restlevchn, (int));
@@ -46,7 +46,7 @@ static struct restore_procs {
     const char *name;
     int mread_flags;
     void NDECL((*restore_minit));
-    void FDECL((*restore_mread), (int, genericptr_t, unsigned int));
+    void FDECL((*restore_mread), (int, genericptr_t, size_t));
     void FDECL((*restore_bclose), (int));
 } restoreprocs = {
 #if !defined(ZEROCOMP) || (defined(COMPRESS) || defined(ZLIB_COMP))
@@ -1245,8 +1245,8 @@ int fd;
 char *plbuf;
 {
     int pltmpsiz = 0;
-    (void) read(fd, (genericptr_t) &pltmpsiz, sizeof(pltmpsiz));
-    (void) read(fd, (genericptr_t) plbuf, pltmpsiz);
+    (void) read(fd, (genericptr_t) &pltmpsiz, (readLenType)sizeof(pltmpsiz));
+    (void) read(fd, (genericptr_t) plbuf, (readLenType) pltmpsiz);
     return;
 }
 
@@ -1450,7 +1450,7 @@ void
 mread(fd, buf, len)
 register int fd;
 register genericptr_t buf;
-register unsigned int len;
+register size_t len;
 {
     (*restoreprocs.restore_mread)(fd, buf, len);
     return;
@@ -1476,7 +1476,7 @@ const char *name;
     if (!(reslt = uptodate(fd, name)))
         return 1;
 
-    rlen = read(fd, (genericptr_t) &sfi, sizeof sfi);
+    rlen = read(fd, (genericptr_t) &sfi, (readLenType)sizeof sfi);
     minit(); /* ZEROCOMP */
     if (rlen == 0) {
         if (verbose) {
@@ -1626,7 +1626,7 @@ STATIC_OVL void
 zerocomp_mread(fd, buf, len)
 int fd;
 genericptr_t buf;
-register unsigned len;
+register size_t len;
 {
     /*register int readlen = 0;*/
     if (fd < 0)
@@ -1661,14 +1661,9 @@ STATIC_OVL void
 def_mread(fd, buf, len)
 register int fd;
 register genericptr_t buf;
-register unsigned int len;
+register size_t len;
 {
     register int rlen;
-#if defined(BSD) || defined(ULTRIX)
-#define readLenType int
-#else /* e.g. SYSV, __TURBOC__ */
-#define readLenType unsigned
-#endif
 
     rlen = read(fd, buf, (readLenType) len);
     if ((readLenType) rlen != (readLenType) len) {

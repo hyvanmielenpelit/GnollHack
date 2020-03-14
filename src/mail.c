@@ -103,7 +103,7 @@ getmailstatus()
         (void) memcpy(&ppasswd, getpwuid(getuid()), sizeof (struct passwd));
         if (ppasswd.pw_dir) {
             /* note: 'sizeof "LITERAL"' includes +1 for terminating '\0' */
-            mailbox = (char *) alloc((unsigned) (strlen(ppasswd.pw_dir)
+            mailbox = (char *) alloc((size_t) (strlen(ppasswd.pw_dir)
                                                  + sizeof AMS_MAILBOX));
             Strcpy(mailbox, ppasswd.pw_dir);
             Strcat(mailbox, AMS_MAILBOX);
@@ -112,7 +112,7 @@ getmailstatus()
         const char *pw_name = getpwuid(getuid())->pw_name;
 
         /* note: 'sizeof "LITERAL"' includes +1 for terminating '\0' */
-        mailbox = (char *) alloc((unsigned) (strlen(pw_name)
+        mailbox = (char *) alloc((size_t) (strlen(pw_name)
                                              + sizeof MAILPATH));
         Strcpy(mailbox, MAILPATH);
         Strcat(mailbox, pw_name);

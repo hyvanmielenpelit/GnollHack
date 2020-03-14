@@ -2055,6 +2055,10 @@ mswin_getmsghistory(BOOLEAN_P init)
     if (init) {
         text = (PMSNHMsgGetText) malloc(sizeof(MSNHMsgGetText)
                                         + TEXT_BUFFER_SIZE);
+
+		if (!text)
+			return (char*)0;
+
         text->max_size =
             TEXT_BUFFER_SIZE
             - 1; /* make sure we always have 0 at the end of the buffer */

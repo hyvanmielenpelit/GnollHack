@@ -3680,7 +3680,8 @@ boolean
 recover_savefile()
 {
     int gfd, lfd, sfd;
-    int lev, savelev, hpid, pltmpsiz;
+	int lev, savelev, hpid;
+	size_t pltmpsiz;
     xchar levc;
     struct version_info version_data;
     int processed[256];
@@ -3704,14 +3705,14 @@ recover_savefile()
         raw_printf("%s\n", errbuf);
         return FALSE;
     }
-    if (read(gfd, (genericptr_t) &hpid, sizeof hpid) != sizeof hpid) {
+    if (read(gfd, (genericptr_t) &hpid, (readLenType)sizeof hpid) != sizeof hpid) {
         raw_printf("\n%s\n%s\n",
             "Checkpoint data incompletely written or subsequently clobbered.",
                    "Recovery impossible.");
         (void) nhclose(gfd);
         return FALSE;
     }
-    if (read(gfd, (genericptr_t) &savelev, sizeof(savelev))
+    if (read(gfd, (genericptr_t) &savelev, (readLenType)sizeof(savelev))
         != sizeof(savelev)) {
         raw_printf(
          "\nCheckpointing was not in effect for %s -- recovery impossible.\n",
@@ -3719,14 +3720,14 @@ recover_savefile()
         (void) nhclose(gfd);
         return FALSE;
     }
-    if ((read(gfd, (genericptr_t) savename, sizeof savename)
+    if ((read(gfd, (genericptr_t) savename, (readLenType)sizeof savename)
          != sizeof savename)
-        || (read(gfd, (genericptr_t) &version_data, sizeof version_data)
+        || (read(gfd, (genericptr_t) &version_data, (readLenType)sizeof version_data)
             != sizeof version_data)
-        || (read(gfd, (genericptr_t) &sfi, sizeof sfi) != sizeof sfi)
-        || (read(gfd, (genericptr_t) &pltmpsiz, sizeof pltmpsiz)
+        || (read(gfd, (genericptr_t) &sfi, (readLenType)sizeof sfi) != sizeof sfi)
+        || (read(gfd, (genericptr_t) &pltmpsiz, (readLenType)sizeof pltmpsiz)
             != sizeof pltmpsiz) || (pltmpsiz > PL_NSIZ)
-        || (read(gfd, (genericptr_t) &tmpplbuf, pltmpsiz) != pltmpsiz)) {
+        || (read(gfd, (genericptr_t) &tmpplbuf, (readLenType)pltmpsiz) != pltmpsiz)) {
         raw_printf("\nError reading %s -- can't recover.\n", lock);
         (void) nhclose(gfd);
         return FALSE;

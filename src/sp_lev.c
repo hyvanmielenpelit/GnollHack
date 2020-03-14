@@ -184,7 +184,7 @@ STATIC_DCL boolean FDECL(sp_level_coder, (sp_lev *));
 #define Fread (void) dlb_fread
 #define Fgetc (schar) dlb_fgetc
 #define New(type) (type *) alloc(sizeof(type))
-#define NewTab(type, size) (type **) alloc(sizeof(type *) * (unsigned) size)
+#define NewTab(type, size) (type **) alloc(sizeof(type *) * (size_t) size)
 #define Free(ptr) if (ptr) free((genericptr_t) (ptr))
 
 extern struct engr *head_engr;

@@ -53,7 +53,7 @@ static unsigned long true_rumor_start, false_rumor_start;
 static long true_rumor_end, false_rumor_end;
 /* oracles are handled differently from rumors... */
 static int oracle_flg = 0; /* -1=>don't use, 0=>need init, 1=>init done */
-static unsigned oracle_cnt = 0;
+static size_t oracle_cnt = 0;
 static unsigned long *oracle_loc = 0;
 
 STATIC_OVL void
@@ -386,7 +386,7 @@ dlb *fp;
     (void) dlb_fgets(line, sizeof line, fp); /* skip "don't edit" comment*/
     (void) dlb_fgets(line, sizeof line, fp);
     if (sscanf(line, "%5d\n", &cnt) == 1 && cnt > 0) {
-        oracle_cnt = (unsigned) cnt;
+        oracle_cnt = (size_t) cnt;
         oracle_loc = (unsigned long *) alloc((size_t)cnt * sizeof(long));
         for (i = 0; i < cnt; i++) {
             (void) dlb_fgets(line, sizeof line, fp);
@@ -419,7 +419,7 @@ int fd;
 {
     mread(fd, (genericptr_t) &oracle_cnt, sizeof oracle_cnt);
     if (oracle_cnt) {
-        oracle_loc = (unsigned long *) alloc((size_t)oracle_cnt * sizeof(long));
+        oracle_loc = (unsigned long *) alloc(oracle_cnt * sizeof(long));
         mread(fd, (genericptr_t) oracle_loc, oracle_cnt * sizeof(long));
         oracle_flg = 1; /* no need to call init_oracles() */
     }

@@ -99,7 +99,7 @@ void
 sort_rooms()
 {
 #if defined(SYSV) || defined(DGUX)
-#define CAST_nroom (unsigned) nroom
+#define CAST_nroom (size_t) nroom
 #else
 #define CAST_nroom nroom /*as-is*/
 #endif

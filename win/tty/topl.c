@@ -169,7 +169,7 @@ remember_topl()
     if ((cw->flags & WIN_LOCKHISTORY) || !*toplines)
         return;
 
-    if (len > (unsigned) cw->datlen[idx]) {
+    if (len > (size_t) cw->datlen[idx]) {
         if (cw->data[idx])
             free(cw->data[idx]);
         len += (8 - (len & 7)); /* pad up to next multiple of 8 */

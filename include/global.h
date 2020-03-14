@@ -281,7 +281,7 @@ typedef uchar nhsym;
 
 /* primitive memory leak debugging; see alloc.c */
 #ifdef MONITOR_HEAP
-extern long *FDECL(nhalloc, (unsigned int, const char *, int));
+extern long *FDECL(nhalloc, (size_t, const char *, int));
 extern void FDECL(nhfree, (genericptr_t, const char *, int));
 extern char *FDECL(nhdupstr, (const char *, const char *, int));
 #ifndef __FILE__

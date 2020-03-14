@@ -356,7 +356,7 @@ savenames(fd, mode)
 int fd, mode;
 {
     register int i;
-    unsigned int len;
+    size_t len;
 
     if (perform_bwrite(mode)) {
         bwrite(fd, (genericptr_t) bases, sizeof bases);

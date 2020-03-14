@@ -342,15 +342,16 @@ void
 light_stats(hdrfmt, hdrbuf, count, size)
 const char *hdrfmt;
 char *hdrbuf;
-long *count, *size;
+long* count;
+size_t *size;
 {
     light_source *ls;
 
-    Sprintf(hdrbuf, hdrfmt, (long) sizeof (light_source));
+    Sprintf(hdrbuf, hdrfmt, sizeof (light_source));
     *count = *size = 0L;
     for (ls = light_base; ls; ls = ls->next) {
         ++*count;
-        *size += (long) sizeof *ls;
+        *size += sizeof *ls;
     }
 }
 

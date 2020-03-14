@@ -169,18 +169,18 @@ extern void FDECL(show_borlandc_stats, (winid));
 #ifdef DEBUG_MIGRATING_MONS
 STATIC_PTR int NDECL(wiz_migrate_mons);
 #endif
-STATIC_DCL int FDECL(size_monst, (struct monst *, BOOLEAN_P));
-STATIC_DCL int FDECL(size_obj, (struct obj *));
-STATIC_DCL void FDECL(count_obj, (struct obj *, long *, long *,
+STATIC_DCL size_t FDECL(size_monst, (struct monst *, BOOLEAN_P));
+STATIC_DCL size_t FDECL(size_obj, (struct obj *));
+STATIC_DCL void FDECL(count_obj, (struct obj *, long *, size_t *,
                                   BOOLEAN_P, BOOLEAN_P));
 STATIC_DCL void FDECL(obj_chain, (winid, const char *, struct obj *,
-                                  BOOLEAN_P, long *, long *));
+                                  BOOLEAN_P, long *, size_t *));
 STATIC_DCL void FDECL(mon_invent_chain, (winid, const char *, struct monst *,
-                                         long *, long *));
+                                         long *, size_t *));
 STATIC_DCL void FDECL(mon_chain, (winid, const char *, struct monst *,
-                                  BOOLEAN_P, long *, long *));
-STATIC_DCL void FDECL(contained_stats, (winid, const char *, long *, long *));
-STATIC_DCL void FDECL(misc_stats, (winid, long *, long *));
+                                  BOOLEAN_P, long *, size_t *));
+STATIC_DCL void FDECL(contained_stats, (winid, const char *, long *, size_t *));
+STATIC_DCL void FDECL(misc_stats, (winid, long *, size_t *));
 STATIC_PTR int NDECL(wiz_show_stats);
 STATIC_DCL boolean FDECL(accept_menu_prefix, (int NDECL((*))));
 STATIC_PTR int NDECL(wiz_rumor_check);
@@ -4641,26 +4641,26 @@ static const char template[] = "%-27s  %4ld  %6ld";
 static const char stats_hdr[] = "                             count  bytes";
 static const char stats_sep[] = "---------------------------  ----- -------";
 
-STATIC_OVL int
+STATIC_OVL size_t
 size_obj(otmp)
 struct obj *otmp;
 {
-    int sz = (int) sizeof (struct obj);
+    size_t sz = sizeof (struct obj);
 
     if (otmp->oextra) {
-        sz += (int) sizeof (struct oextra);
+        sz += sizeof (struct oextra);
         if (ONAME(otmp))
-            sz += (int) strlen(ONAME(otmp)) + 1;
+            sz += strlen(ONAME(otmp)) + 1;
 		if (UONAME(otmp))
-			sz += (int)strlen(UONAME(otmp)) + 1;
+			sz += strlen(UONAME(otmp)) + 1;
 		if (OMONST(otmp))
             sz += size_monst(OMONST(otmp), FALSE);
         if (OMID(otmp))
-            sz += (int) sizeof (unsigned);
+            sz += sizeof (unsigned);
         if (OLONG(otmp))
-            sz += (int) sizeof (long);
+            sz += sizeof (long);
         if (OMAILCMD(otmp))
-            sz += (int) strlen(OMAILCMD(otmp)) + 1;
+            sz += strlen(OMAILCMD(otmp)) + 1;
     }
     return sz;
 }
@@ -4669,11 +4669,12 @@ STATIC_OVL void
 count_obj(chain, total_count, total_size, top, recurse)
 struct obj *chain;
 long *total_count;
-long *total_size;
+size_t *total_size;
 boolean top;
 boolean recurse;
 {
-    long count, size;
+	long count;
+	size_t size;
     struct obj *obj;
 
     for (count = size = 0, obj = chain; obj; obj = obj->nobj) {
@@ -4695,10 +4696,11 @@ const char *src;
 struct obj *chain;
 boolean force;
 long *total_count;
-long *total_size;
+size_t *total_size;
 {
     char buf[BUFSZ];
-    long count = 0L, size = 0L;
+	long count = 0L;
+	size_t size = 0;
 
     count_obj(chain, &count, &size, TRUE, FALSE);
 
@@ -4716,10 +4718,11 @@ winid win;
 const char *src;
 struct monst *chain;
 long *total_count;
-long *total_size;
+size_t *total_size;
 {
     char buf[BUFSZ];
-    long count = 0, size = 0;
+	long count = 0;
+	size_t size = 0;
     struct monst *mon;
 
     for (mon = chain; mon; mon = mon->nmon)
@@ -4738,10 +4741,11 @@ contained_stats(win, src, total_count, total_size)
 winid win;
 const char *src;
 long *total_count;
-long *total_size;
+size_t *total_size;
 {
     char buf[BUFSZ];
-    long count = 0, size = 0;
+	long count = 0;
+	size_t size = 0;
     struct monst *mon;
 
     count_obj(invent, &count, &size, FALSE, TRUE);
@@ -4763,32 +4767,32 @@ long *total_size;
     }
 }
 
-STATIC_OVL int
+STATIC_OVL size_t
 size_monst(mtmp, incl_wsegs)
 struct monst *mtmp;
 boolean incl_wsegs;
 {
-    int sz = (int) sizeof (struct monst);
+    size_t sz = sizeof (struct monst);
 
     if (mtmp->wormno && incl_wsegs)
         sz += size_wseg(mtmp);
 
     if (mtmp->mextra) {
-        sz += (int) sizeof (struct mextra);
+        sz += sizeof (struct mextra);
         if (MNAME(mtmp))
-            sz += (int) strlen(MNAME(mtmp)) + 1;
+            sz += strlen(MNAME(mtmp)) + 1;
 		if (UMNAME(mtmp))
-			sz += (int)strlen(UMNAME(mtmp)) + 1;
+			sz += strlen(UMNAME(mtmp)) + 1;
 		if (EGD(mtmp))
-            sz += (int) sizeof (struct egd);
+            sz += sizeof (struct egd);
         if (EPRI(mtmp))
-            sz += (int) sizeof (struct epri);
+            sz += sizeof (struct epri);
         if (ESHK(mtmp))
-            sz += (int) sizeof (struct eshk);
+            sz += sizeof (struct eshk);
         if (EMIN(mtmp))
-            sz += (int) sizeof (struct emin);
+            sz += sizeof (struct emin);
         if (EDOG(mtmp))
-            sz += (int) sizeof (struct edog);
+            sz += sizeof (struct edog);
         /* mextra->mcorpsenm doesn't point to more memory */
     }
     return sz;
@@ -4801,15 +4805,15 @@ const char *src;
 struct monst *chain;
 boolean force;
 long *total_count;
-long *total_size;
+size_t *total_size;
 {
     char buf[BUFSZ];
-    long count, size;
+	long count = 0L;
+	size_t size = 0;
     struct monst *mon;
     /* mon->wormno means something different for migrating_mons and mydogs */
     boolean incl_wsegs = !strcmpi(src, "fmon");
 
-    count = size = 0L;
     for (mon = chain; mon; mon = mon->nmon) {
         count++;
         size += size_monst(mon, incl_wsegs);
@@ -4826,10 +4830,11 @@ STATIC_OVL void
 misc_stats(win, total_count, total_size)
 winid win;
 long *total_count;
-long *total_size;
+size_t *total_size;
 {
     char buf[BUFSZ], hdrbuf[QBUFSZ];
-    long count, size;
+	long count = 0L;
+	size_t size = 0;
     int idx;
     struct trap *tt;
     struct damage *sd; /* shop damage */
@@ -4839,10 +4844,9 @@ long *total_size;
     /* traps and engravings are output unconditionally;
      * others only if nonzero
      */
-    count = size = 0L;
     for (tt = ftrap; tt; tt = tt->ntrap) {
         ++count;
-        size += (long) sizeof *tt;
+        size += sizeof *tt;
     }
     *total_count += count;
     *total_size += size;
@@ -4850,14 +4854,16 @@ long *total_size;
     Sprintf(buf, template, hdrbuf, count, size);
     putstr(win, 0, buf);
 
-    count = size = 0L;
-    engr_stats("engravings, size %ld+text", hdrbuf, &count, &size);
+	count = 0L;
+	size = 0;
+	engr_stats("engravings, size %ld+text", hdrbuf, &count, &size);
     *total_count += count;
     *total_size += size;
     Sprintf(buf, template, hdrbuf, count, size);
     putstr(win, 0, buf);
 
-    count = size = 0L;
+    count = 0L;
+	size = 0;
     light_stats("light sources, size %ld", hdrbuf, &count, &size);
     if (count || size) {
         *total_count += count;
@@ -4866,8 +4872,9 @@ long *total_size;
         putstr(win, 0, buf);
     }
 
-    count = size = 0L;
-    timer_stats("timers, size %ld", hdrbuf, &count, &size);
+	count = 0L;
+	size = 0;
+	timer_stats("timers, size %ld", hdrbuf, &count, &size);
     if (count || size) {
         *total_count += count;
         *total_size += size;
@@ -4875,10 +4882,11 @@ long *total_size;
         putstr(win, 0, buf);
     }
 
-    count = size = 0L;
-    for (sd = level.damagelist; sd; sd = sd->next) {
+	count = 0L;
+	size = 0;
+	for (sd = level.damagelist; sd; sd = sd->next) {
         ++count;
-        size += (long) sizeof *sd;
+        size += sizeof *sd;
     }
     if (count || size) {
         *total_count += count;
@@ -4889,8 +4897,9 @@ long *total_size;
         putstr(win, 0, buf);
     }
 
-    count = size = 0L;
-    region_stats("regions, size %ld+%ld*rect+N", hdrbuf, &count, &size);
+	count = 0L;
+	size = 0;
+	region_stats("regions, size %ld+%ld*rect+N", hdrbuf, &count, &size);
     if (count || size) {
         *total_count += count;
         *total_size += size;
@@ -4898,10 +4907,11 @@ long *total_size;
         putstr(win, 0, buf);
     }
 
-    count = size = 0L;
-    for (k = killer.next; k; k = k->next) {
+	count = 0L;
+	size = 0;
+	for (k = killer.next; k; k = k->next) {
         ++count;
-        size += (long) sizeof *k;
+        size += sizeof *k;
     }
     if (count || size) {
         *total_count += count;
@@ -4912,8 +4922,9 @@ long *total_size;
         putstr(win, 0, buf);
     }
 
-    count = size = 0L;
-    for (bi = level.bonesinfo; bi; bi = bi->next) {
+	count = 0L;
+	size = 0;
+	for (bi = level.bonesinfo; bi; bi = bi->next) {
         ++count;
         size += (long) sizeof *bi;
     }
@@ -4926,11 +4937,12 @@ long *total_size;
         putstr(win, 0, buf);
     }
 
-    count = size = 0L;
-    for (idx = 0; idx < NUM_OBJECTS; ++idx)
+	count = 0L;
+	size = 0;
+	for (idx = 0; idx < NUM_OBJECTS; ++idx)
         if (objects[idx].oc_uname) {
             ++count;
-            size += (long) (strlen(objects[idx].oc_uname) + 1);
+            size += strlen(objects[idx].oc_uname) + 1;
         }
     if (count || size) {
         *total_count += count;
@@ -4949,12 +4961,10 @@ wiz_show_stats()
 {
     char buf[BUFSZ];
     winid win;
-    long total_obj_size, total_obj_count,
-         total_mon_size, total_mon_count,
-         total_ovr_size, total_ovr_count,
-         total_misc_size, total_misc_count;
-
-    win = create_nhwindow(NHW_TEXT);
+    long total_obj_count, total_mon_count, total_ovr_count, total_misc_count;
+	size_t total_obj_size, total_mon_size, total_ovr_size, total_misc_size;
+	
+	win = create_nhwindow(NHW_TEXT);
     putstr(win, 0, "Current memory statistics:");
 
     total_obj_count = total_obj_size = 0L;

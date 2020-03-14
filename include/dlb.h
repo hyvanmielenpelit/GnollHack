@@ -49,9 +49,9 @@ typedef struct dlb_handle {
     FILE *fp; /* pointer to an external file, use if non-null */
 #ifdef DLBLIB
     library *lib; /* pointer to library structure */
-    long start;   /* offset of start of file */
-    long size;    /* size of file */
-    long mark;    /* current file marker */
+	long start;   /* offset of start of file */
+	long size;    /* size of file */
+	long mark;    /* current file marker */
 #endif
 #ifdef DLBRSRC
     int fd; /* HandleFile file descriptor */
@@ -72,7 +72,7 @@ void NDECL(dlb_cleanup);
 
 dlb *FDECL(dlb_fopen, (const char *, const char *));
 int FDECL(dlb_fclose, (DLB_P));
-int FDECL(dlb_fread, (char *, int, int, DLB_P));
+int FDECL(dlb_fread, (char *, long, long, DLB_P));
 int FDECL(dlb_fseek, (DLB_P, long, int));
 char *FDECL(dlb_fgets, (char *, int, DLB_P));
 int FDECL(dlb_fgetc, (DLB_P));
@@ -84,7 +84,7 @@ boolean rsrc_dlb_init(void);
 void rsrc_dlb_cleanup(void);
 boolean rsrc_dlb_fopen(dlb *dp, const char *name, const char *mode);
 int rsrc_dlb_fclose(dlb *dp);
-int rsrc_dlb_fread(char *buf, int size, int quan, dlb *dp);
+int rsrc_dlb_fread(char *buf, size_t size, size_t quan, dlb *dp);
 int rsrc_dlb_fseek(dlb *dp, long pos, int whence);
 char *rsrc_dlb_fgets(char *buf, int len, dlb *dp);
 int rsrc_dlb_fgetc(dlb *dp);

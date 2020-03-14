@@ -3223,7 +3223,8 @@ void
 timer_stats(hdrfmt, hdrbuf, count, size)
 const char *hdrfmt;
 char *hdrbuf;
-long *count, *size;
+long* count;
+size_t *size;
 {
     timer_element *te;
 
@@ -3231,7 +3232,7 @@ long *count, *size;
     *count = *size = 0L;
     for (te = timer_base; te; te = te->next) {
         ++*count;
-        *size += (long) sizeof *te;
+        *size += sizeof *te;
     }
 }
 

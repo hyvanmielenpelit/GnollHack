@@ -1185,7 +1185,7 @@ save_engravings(fd, mode)
 int fd, mode;
 {
     struct engr *ep, *ep2;
-    unsigned no_more_engr = 0;
+    size_t no_more_engr = 0;
 
     for (ep = head_engr; ep; ep = ep2) {
         ep2 = ep->nxt_engr;
@@ -1207,7 +1207,7 @@ rest_engravings(fd)
 int fd;
 {
     struct engr *ep;
-    unsigned lth;
+    size_t lth;
 
     head_engr = 0;
     while (1) {
@@ -1232,15 +1232,17 @@ void
 engr_stats(hdrfmt, hdrbuf, count, size)
 const char *hdrfmt;
 char *hdrbuf;
-long *count, *size;
+long* count;
+size_t* size;
 {
     struct engr *ep;
 
-    Sprintf(hdrbuf, hdrfmt, (long) sizeof (struct engr));
-    *count = *size = 0L;
+    Sprintf(hdrbuf, hdrfmt, sizeof (struct engr));
+	*count = 0L;
+	*size = 0;
     for (ep = head_engr; ep; ep = ep->nxt_engr) {
         ++*count;
-        *size += (long) sizeof *ep + (long) ep->engr_lth;
+        *size += sizeof *ep + ep->engr_lth;
     }
 }
 

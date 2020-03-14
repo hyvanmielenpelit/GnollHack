@@ -47,7 +47,7 @@ register size_t lth;
 #ifndef MONITOR_HEAP
 	if (!ptr)
 	{
-		panic("Memory allocation failure; cannot get %u bytes", lth);
+		panic("Memory allocation failure; cannot get %zu bytes", lth);
 		return (long*)0;
 	}
 #endif
@@ -108,7 +108,7 @@ heapmon_init()
 
 long *
 nhalloc(lth, file, line)
-unsigned int lth;
+size_t lth;
 const char *file;
 int line;
 {

@@ -10,7 +10,7 @@ struct engr {
     struct engr *nxt_engr;
     char *engr_txt;
     xchar engr_x, engr_y;
-    unsigned engr_lth; /* for save & restore; not length of text */
+    size_t engr_lth; /* for save & restore; not length of text */
     long engr_time;    /* moment engraving was (will be) finished */
     xchar engr_type;
 #define DUST 1
