@@ -3681,7 +3681,7 @@ recover_savefile()
 {
     int gfd, lfd, sfd;
 	int lev, savelev, hpid;
-	size_t pltmpsiz;
+	int pltmpsiz;
     xchar levc;
     struct version_info version_data;
     int processed[256];

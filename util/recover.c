@@ -220,7 +220,7 @@ char *basename;
 {
     int gfd, lfd, sfd;
 	int res = 0, lev, savelev, hpid;
-	size_t pltmpsiz;
+	int pltmpsiz;
     xchar levc;
     struct version_info version_data;
     struct savefile_info sfi;

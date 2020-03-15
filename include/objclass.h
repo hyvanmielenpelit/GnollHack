@@ -184,8 +184,13 @@ enum obj_armor_types {
     ARM_CLOAK   = 5,
     ARM_SHIRT   = 6,
 	ARM_ROBE	= 7,
-	ARM_BRACERS = 8
+	ARM_BRACERS = 8 //END MARKER FOR ARMOR TYPES
 };
+
+static const char* armor_type_names[] = {
+	"suit of armor", "shield", "helmet", "gloves", "boots", "cloak", "shirt", "robe", "bracers",
+};
+
 
 enum obj_weapon_types {
 	WEP_SHORT_SWORD = 0,
@@ -309,6 +314,24 @@ static const char* misc_type_worn_texts[] = {
 	"orbiting head", "", "", "", "", "", "", "attached to body", "", ""
 };
 
+/* Note: there are only those where the description is not suitable for !dknown, others are of general tooltype */
+enum obj_tool_types {
+	TOOLTYPE_GENERAL = 0,
+	TOOLTYPE_BOX = 1,
+	TOOLTYPE_CHEST = 2,
+	TOOLTYPE_BAG = 3,
+	TOOLTYPE_PICK_AXE = 4,
+	TOOLTYPE_SHOVEL = 5,
+	TOOLTYPE_GOLF_CLUB = 6,
+	TOOLTYPE_HOOK = 7,
+	TOOLTYPE_HORN = 8,
+	TOOLTYPE_CANDELABRUM = 9,
+	TOOLTYPE_BELL = 10,
+};
+
+static const char* tool_type_names[] = {
+	"tool", "box", "chest", "bag", "pick-axe", "shovel", "golf club", "hook", "horn", "candelabrum", "bell",
+};
 
 enum charged_init_types {
 	CHARGED_NOT_CHARGED = 0,

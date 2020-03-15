@@ -573,6 +573,11 @@ register struct obj* obj;
 		strcpy(buf3, food_type_names[objects[otyp].oc_subtyp]);
 		*buf3 = highc(*buf3);
 	}
+	else if (objects[otyp].oc_class == TOOL_CLASS && objects[otyp].oc_subtyp > TOOLTYPE_GENERAL)
+	{
+		strcpy(buf3, tool_type_names[objects[otyp].oc_subtyp]);
+		*buf3 = highc(*buf3);
+	}
 	else if (objects[otyp].oc_class == TOOL_CLASS)
 	{
 		if (is_weptool(obj))

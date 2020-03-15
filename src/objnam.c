@@ -472,22 +472,24 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             Sprintf(buf, "%s amulet", dn);
         break;
     case WEAPON_CLASS:
-        if (is_poisonable(obj) && obj->opoisoned)
+        if (is_poisonable(obj) && obj->opoisoned && dknown)
             Strcpy(buf, "poisoned ");
 		/*FALLTHRU*/
     case VENOM_CLASS:
 	case REAGENT_CLASS:
 	case MISCELLANEOUS_CLASS:
 	case TOOL_CLASS:
-		if (obj->elemental_enchantment == COLD_ENCHANTMENT)
-			Strcat(buf, "freezing ");
-		else if (obj->elemental_enchantment == FIRE_ENCHANTMENT)
-			Strcat(buf, "flaming ");
-		else if (obj->elemental_enchantment == LIGHTNING_ENCHANTMENT)
-			Strcat(buf, "electrified ");
-		else if (obj->elemental_enchantment == DEATH_ENCHANTMENT)
-			Strcat(buf, "deathly ");
-
+		if (dknown)
+		{
+			if (obj->elemental_enchantment == COLD_ENCHANTMENT)
+				Strcat(buf, "freezing ");
+			else if (obj->elemental_enchantment == FIRE_ENCHANTMENT)
+				Strcat(buf, "flaming ");
+			else if (obj->elemental_enchantment == LIGHTNING_ENCHANTMENT)
+				Strcat(buf, "electrified ");
+			else if (obj->elemental_enchantment == DEATH_ENCHANTMENT)
+				Strcat(buf, "deathly ");
+		}
 
 		if (obj->oclass == MISCELLANEOUS_CLASS && (
 			objects[obj->otyp].oc_subtyp == MISC_EARRINGS
@@ -501,8 +503,17 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         else if (is_wet_towel(obj))
             Strcpy(buf, (obj->special_quality < 3) ? "moist " : "wet ");
 
-        if (!dknown)
-            Strcat(buf, dn);
+		if (!dknown)
+		{
+			if (obj->oclass == WEAPON_CLASS)
+				Strcat(buf, weapon_type_names[objects[obj->otyp].oc_subtyp]);
+			else if (obj->oclass == MISCELLANEOUS_CLASS)
+				Strcat(buf, misc_type_names[objects[obj->otyp].oc_subtyp]);
+			else if (obj->oclass == TOOL_CLASS && objects[obj->otyp].oc_subtyp > TOOLTYPE_GENERAL)
+				Strcat(buf, tool_type_names[objects[obj->otyp].oc_subtyp]);
+			else
+				Strcat(buf, dn);
+		}
         else if (nn)
             Strcat(buf, actualn);
         else if (un) {
@@ -542,10 +553,14 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             break;
         }
 
-        if (nn) {
+		if (!dknown)
+			Strcat(buf, armor_class_simple_name(obj));
+		else if (nn) {
             Strcat(buf, actualn);
         } else if (un) {
-            if (is_boots(obj))
+			Strcat(buf, dn);
+#if 0
+			if (is_boots(obj))
                 Strcat(buf, "boots");
             else if (is_gloves(obj))
                 Strcat(buf, "gloves");
@@ -561,6 +576,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
                 Strcpy(buf, "shield");
             else
                 Strcpy(buf, "armor");
+#endif
             Strcat(buf, " called ");
             Strcat(buf, un);
         } else
@@ -599,7 +615,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         }
 
 		if (!dknown)
-			Strcat(buf, dn);
+			Strcat(buf, food_type_names[objects[obj->otyp].oc_subtyp]);
 		else if (nn)
 			Strcat(buf, actualn);
 		else if (un) {
@@ -4738,26 +4754,22 @@ const char*
 armor_class_simple_name(item)
 struct obj* item;
 {
+	if (!item)
+		return "armor";
+
 	if (is_suit(item))
 		return suit_simple_name(item);
 	else if (is_robe(item))
 		return robe_simple_name(item);
 	else if (is_cloak(item))
 		return cloak_simple_name(item);
-	else if (is_shirt(item))
-		return "shirt";
 	else if (is_helmet(item))
 		return helm_simple_name(item);
-	else if (is_gloves(item))
-		return "gloves";
-	else if (is_boots(item))
-		return "boots";
-	else if (is_bracers(item))
-		return "bracers";
-	else if (is_shield(item))
-		return "shield";
+	else if(objects[item->otyp].oc_subtyp >= 0 && objects[item->otyp].oc_subtyp <= ARM_BRACERS)
+		return armor_type_names[objects[item->otyp].oc_subtyp];
+	else
+		return "armor";
 
-	return "armor";
 }
 
 

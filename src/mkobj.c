@@ -906,7 +906,8 @@ int alter_type;
     }
 }
 
-static const char dknowns[] = { WAND_CLASS,   RING_CLASS, POTION_CLASS,
+/* These are the classes where dknown is zero by default! */
+static const char dknowns[] = { WAND_CLASS,   RING_CLASS, POTION_CLASS, ARMOR_CLASS, MISCELLANEOUS_CLASS, REAGENT_CLASS,
                                 SCROLL_CLASS, GEM_CLASS,  SPBOOK_CLASS,
                                 WEAPON_CLASS, TOOL_CLASS, FOOD_CLASS, 0 };
 
