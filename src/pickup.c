@@ -2397,9 +2397,14 @@ register struct obj* obj;
 	if (!obj || !move_target_container)
 		return -1;
 
+	obj->nomerge = 1;
 	int res = 0;
 	if ((res = out_container(obj)) <= 0)
+	{
+		obj->nomerge = 0;
 		return res;
+	}
+	obj->nomerge = 0;
 
 	if (obj->where != OBJ_INVENT)
 		return 0;
@@ -2409,6 +2414,7 @@ register struct obj* obj;
 		pline("For some reason, you cannot put %s in %s!", thesimpleoname(obj), thesimpleoname(move_target_container));
 		return -1;
 	}
+
 
 	struct obj* savedcontainer = current_container;
 	current_container = move_target_container;
@@ -2425,9 +2431,15 @@ register struct obj* obj;
 	if (!obj)
 		return -1;
 
+	obj->nomerge = 1;
 	int res = 0;
 	if ((res = out_container(obj)) <= 0)
+	{
+		obj->nomerge = 0;
 		return res;
+	}
+
+	obj->nomerge = 0;
 
 	if (obj->where != OBJ_INVENT)
 		return 0;
@@ -2446,13 +2458,19 @@ register struct obj* obj;
 	if (!obj)
 		return -1;
 
+	obj->nomerge = 1;
 	int res = 0;
-
 	if ((res = pickup_object(obj, obj->quan, FALSE)) <= 0)
+	{
+		obj->nomerge = 0;
 		return res;
+	}
+
+	obj->nomerge = 0;
 
 	if (obj->where != OBJ_INVENT)
 		return 0;
+
 
 	res = in_container(obj);
 
