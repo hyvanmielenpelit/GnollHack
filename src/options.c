@@ -4676,7 +4676,7 @@ doset() /* changing options via menu by Per Liboriussen */
 			{
                     (void) special_handling("msgtype", setinitial, fromfile);
             } 
-			else if (opt_indx < boolcount) 
+			else if (opt_indx < boolcount && opt_indx >= 0)
 			{
                 /* boolean option */
                 Sprintf(buf, "%s%s", *boolopt[opt_indx].addr ? "!" : "",
@@ -4689,19 +4689,22 @@ doset() /* changing options via menu by Per Liboriussen */
                 /* compound option */
                 opt_indx -= boolcount;
 
-                if (!special_handling(compopt[opt_indx].name, setinitial,
-                                      fromfile)) {
-                    Sprintf(buf, "Set %s to what?", compopt[opt_indx].name);
-                    getlin(buf, buf2);
-                    if (buf2[0] == '\033')
-                        continue;
-                    Sprintf(buf, "%s:%s", compopt[opt_indx].name, buf2);
-                    /* pass the buck */
-                    (void) parseoptions(buf, setinitial, fromfile);
-                }
-                if (wc_supported(compopt[opt_indx].name)
-                    || wc2_supported(compopt[opt_indx].name))
-                    preference_update(compopt[opt_indx].name);
+				if (opt_indx >= 0)
+				{
+					if (!special_handling(compopt[opt_indx].name, setinitial,
+						fromfile)) {
+						Sprintf(buf, "Set %s to what?", compopt[opt_indx].name);
+						getlin(buf, buf2);
+						if (buf2[0] == '\033')
+							continue;
+						Sprintf(buf, "%s:%s", compopt[opt_indx].name, buf2);
+						/* pass the buck */
+						(void)parseoptions(buf, setinitial, fromfile);
+					}
+					if (wc_supported(compopt[opt_indx].name)
+						|| wc2_supported(compopt[opt_indx].name))
+						preference_update(compopt[opt_indx].name);
+				}
             }
         }
         free((genericptr_t) pick_list), pick_list = (menu_item *) 0;

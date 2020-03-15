@@ -568,7 +568,7 @@ unsigned int *stuckid, *steedid;
 #ifdef SYSFLAGS
     struct sysflag newgamesysflags;
 #endif
-    struct context_info newgamecontext; /* all 0, but has some pointers */
+	struct context_info *newgamecontext = (struct context_info*)malloc(sizeof(struct context_info));; /* all 0, but has some pointers */
     struct obj *otmp, *tmp_bc;
     char timebuf[15];
     unsigned long uid;
@@ -584,7 +584,7 @@ unsigned int *stuckid, *steedid;
             return FALSE;
     }
 
-    newgamecontext = context; /* copy statically init'd context */
+    *newgamecontext = context; /* copy statically init'd context */
     mread(fd, (genericptr_t) &context, sizeof (struct context_info));
     context.warntype.species = (context.warntype.speciesidx >= LOW_PM)
                                   ? &mons[context.warntype.speciesidx]
@@ -661,9 +661,12 @@ unsigned int *stuckid, *steedid;
 #ifdef SYSFLAGS
         sysflags = newgamesysflags;
 #endif
-        context = newgamecontext;
+        context = *newgamecontext;
+		free(newgamecontext);
         return FALSE;
     }
+	free(newgamecontext);
+
     /* in case hangup save occurred in midst of level change */
     assign_level(&u.uz0, &u.uz);
 
@@ -1416,7 +1419,7 @@ winid bannerwin; /* if not WIN_ERR, clear window and show copyright in menu */
         end_menu(tmpwin, (char *) 0);
         if (select_menu(tmpwin, PICK_ONE, &chosen_game) > 0) {
             ch = chosen_game->item.a_int;
-            if (ch > 0)
+            if (ch > 0 && saved[ch - 1] > 0)
                 Strcpy(plname, saved[ch - 1]);
             else if (ch < 0)
                 ++ch; /* -1 -> 0 (new game), -2 -> -1 (quit) */

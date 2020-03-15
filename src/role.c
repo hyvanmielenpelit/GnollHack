@@ -1502,6 +1502,14 @@ int buflen, rolenum, racenum, gendnum, alignnum;
     char buf[BUFSZ];
     static char err_ret[] = " character's";
     boolean donefirst = FALSE;
+	int maxroles = sizeof(roles) / sizeof(roles[0]);
+	int maxraces = sizeof(races) / sizeof(races[0]);
+
+	if (rolenum >= maxroles)
+		rolenum = maxroles - 1;
+
+	if (racenum >= maxraces)
+		racenum = maxraces - 1;
 
     if (!suppliedbuf || buflen < 1)
         return err_ret;

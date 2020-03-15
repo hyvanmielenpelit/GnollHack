@@ -206,7 +206,9 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
             text_size = strlen(msg_data->text) + 4;
             data->window_text =
                 (TCHAR *) malloc(text_size * sizeof(data->window_text[0]));
-            ZeroMemory(data->window_text,
+			if (!data->window_text)
+				return;
+			ZeroMemory(data->window_text,
                        text_size * sizeof(data->window_text[0]));
         } else {
             text_size =

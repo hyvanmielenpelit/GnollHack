@@ -285,6 +285,8 @@ MenuWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         HDC hdc = GetDC(control);
         data = (PNHMenuWindow) malloc(sizeof(NHMenuWindow));
+		if (!data)
+			return (INT_PTR)0;
         ZeroMemory(data, sizeof(NHMenuWindow));
         data->type = MENU_TYPE_TEXT;
         data->how = PICK_NONE;
@@ -620,6 +622,8 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
             data->menu.items = (PNHMenuItem) realloc(
                 data->menu.items, data->menu.allocated * sizeof(NHMenuItem));
         }
+		if (!data->menu.items)
+			return;
 
         new_item = data->menu.size;
         ZeroMemory(&data->menu.items[new_item],

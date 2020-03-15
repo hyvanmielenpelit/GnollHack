@@ -2350,8 +2350,8 @@ char *limits;   /* points at range limit for current row, or NULL */
     } else
         lim_max = COLNO - 1;
 
-    while (left <= right_mark) {
-        right_edge = right_ptrs[row][left];
+    while (left <= right_mark && left <= lim_max) {
+	    right_edge = right_ptrs[row][left];
         if (right_edge > lim_max)
             right_edge = lim_max;
 

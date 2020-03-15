@@ -3570,9 +3570,12 @@ int retry;
     boolean all_categories = TRUE;
     boolean drop_everything = FALSE;
 
-    if (retry) {
+    if (retry) 
+	{
         all_categories = (retry == -2);
-    } else if (flags.menu_style == MENU_FULL) {
+    } 
+	else if (flags.menu_style == MENU_FULL) 
+	{
         all_categories = FALSE;
         n = query_category("Drop what type of items?", invent,
                            UNPAID_TYPES | ALL_TYPES | CHOOSE_ALL | BUC_BLESSED
@@ -3580,7 +3583,8 @@ int retry;
                            &pick_list, PICK_ANY);
         if (!n)
             goto drop_done;
-        for (i = 0; i < n; i++) {
+        for (i = 0; i < n; i++) 
+		{
             if (pick_list[i].item.a_int == ALL_TYPES_SELECTED)
                 all_categories = TRUE;
             else if (pick_list[i].item.a_int == 'A')
@@ -3589,7 +3593,9 @@ int retry;
                 add_valid_menu_class(pick_list[i].item.a_int);
         }
         free((genericptr_t) pick_list);
-    } else if (flags.menu_style == MENU_COMBINATION) {
+    } 
+	else if (flags.menu_style == MENU_COMBINATION) 
+	{
         unsigned ggoresults = 0;
 
         all_categories = FALSE;
@@ -3597,13 +3603,15 @@ int retry;
         i = ggetobj("drop", drop, 0, TRUE, &ggoresults, 3);
         if (i == -2)
             all_categories = TRUE;
-        if (ggoresults & ALL_FINISHED) {
+        if (ggoresults & ALL_FINISHED) 
+		{
             n_dropped = i;
             goto drop_done;
         }
     }
 
-    if (drop_everything) {
+    if (drop_everything) 
+	{
         /*
          * Dropping a burning potion of oil while levitating can cause
          * an explosion which might destroy some of hero's inventory,
@@ -3624,12 +3632,15 @@ int retry;
         /* we might not have dropped everything (worn armor, welded weapon,
            cursed loadstones), so reset any remaining inventory to normal */
         bypass_objlist(invent, FALSE);
-    } else {
+    } 
+	else 
+	{
         /* should coordinate with perm invent, maybe not show worn items */
         n = query_objlist("What would you like to drop?", &invent,
                           (USE_INVLET | INVORDER_SORT), &pick_list, PICK_ANY,
                           all_categories ? allow_all : allow_category, 3);
-        if (n > 0) {
+        if (n > 0 && pick_list)
+		{
             /*
              * picklist[] contains a set of pointers into inventory, but
              * as soon as something gets dropped, they might become stale
@@ -3643,7 +3654,8 @@ int retry;
              * to verify that it is in invent and has that bit set.
              */
             bypass_objlist(invent, TRUE);
-            for (i = 0; i < n; i++) {
+            for (i = 0; i < n; i++) 
+			{
                 otmp = pick_list[i].item.a_obj;
                 for (otmp2 = invent; otmp2; otmp2 = otmp2->nobj)
                     if (otmp2 == otmp)
@@ -3652,13 +3664,19 @@ int retry;
                     continue;
                 /* found next selected invent item */
                 cnt = pick_list[i].count;
-                if (cnt < otmp->quan) {
-                    if (welded(otmp, &youmonst)) {
+                if (cnt < otmp->quan) 
+				{
+                    if (welded(otmp, &youmonst))
+					{
                         ; /* don't split */
-                    } else if ((objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && otmp->cursed) {
+                    } 
+					else if ((objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && otmp->cursed) 
+					{
                         /* same kludge as getobj(), for canletgo()'s use */
                         otmp->corpsenm = (int) cnt; /* don't split */
-                    } else {
+                    }
+					else 
+					{
                         otmp = splitobj(otmp, cnt);
                     }
                 }

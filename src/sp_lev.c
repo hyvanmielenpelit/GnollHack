@@ -3105,7 +3105,7 @@ struct sp_coder *coder;
     if (!OV_pop_i(varparam))
         return;
 
-    while ((nparams++ < (SP_M_V_END + 1)) && (OV_typ(varparam) == SPOVAR_INT)
+    while ((nparams++ < (SP_M_V_END + 1)) && varparam && (OV_typ(varparam) == SPOVAR_INT)
            && (OV_i(varparam) >= 0) && (OV_i(varparam) < SP_M_V_END)) 
 	{
         struct opvar *parm = NULL;
@@ -3253,7 +3253,7 @@ struct sp_coder *coder;
     if (!OV_pop_i(varparam))
         return;
 
-    while ((nparams++ < (SP_O_V_END + 1)) && (OV_typ(varparam) == SPOVAR_INT)
+    while ((nparams++ < (SP_O_V_END + 1)) && varparam && (OV_typ(varparam) == SPOVAR_INT)
            && (OV_i(varparam) >= 0) && (OV_i(varparam) < SP_O_V_END)) 
 	{
         struct opvar *parm;

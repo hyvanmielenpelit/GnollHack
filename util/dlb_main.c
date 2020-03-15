@@ -305,8 +305,8 @@ char **argv;
             total_read = 0;
             do {
                 remainder = lib.dir[i].fsize - total_read;
-                if (remainder > (long) sizeof(buf))
-                    r = sizeof(buf);
+                if (remainder >= (long) sizeof(buf))
+                    r = sizeof(buf) - 1;
                 else
                     r = remainder;
 
@@ -315,7 +315,9 @@ char **argv;
                     printf("Read Error in '%s'\n", lib.dir[i].fname);
                     xexit(EXIT_FAILURE);
                 }
-                if (write(f, buf, (int)n) != (int)n) {
+
+                if (write(f, buf, (int)n) != (int)n) 
+				{
                     printf("Write Error in '%s'\n", lib.dir[i].fname);
                     xexit(EXIT_FAILURE);
                 }

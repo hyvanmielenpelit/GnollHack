@@ -902,8 +902,11 @@ onWMCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         }
 
         p_copy = (char *) GlobalLock(hglbCopy);
-        strncpy(p_copy, p, len);
-        p_copy[len] = 0; // null character
+		if (p_copy)
+		{
+			strncpy(p_copy, p, len);
+			p_copy[len] = 0; // null character
+		}
         GlobalUnlock(hglbCopy);
 
         SetClipboardData(SYMHANDLING(H_IBM) ? CF_OEMTEXT : CF_TEXT, hglbCopy);
@@ -1261,6 +1264,10 @@ nh_compose_ascii_screenshot()
 
     text =
         (PMSNHMsgGetText) malloc(sizeof(MSNHMsgGetText) + TEXT_BUFFER_SIZE);
+
+	if (!text)
+		return "";
+
     text->max_size =
         TEXT_BUFFER_SIZE
         - 1; /* make sure we always have 0 at the end of the buffer */

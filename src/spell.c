@@ -3168,7 +3168,10 @@ boolean usehotkey;
 	strcpy(fullmatcompdesc, matlists[spellmatcomp(splnum)].description_short);
 
 	if (strlen(fullmatcompdesc) > 39)
+	{
 		strncpy(shortenedmatcompdesc, fullmatcompdesc, 39);
+		shortenedmatcompdesc[39] = '\0';
+	}
 	else
 		strcpy(shortenedmatcompdesc, fullmatcompdesc);
 
