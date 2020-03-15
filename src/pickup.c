@@ -3094,6 +3094,9 @@ struct obj* other_container;
 		break;
 	}
 
+	if(command_id == 4 && *u.ushops)
+		sellobj_state(SELL_DELIBERATE);
+
     if (query_classes(selection, &one_by_one, &allflag, action, *objlist,
                       FALSE, &menu_on_request)) {
         if (askchain(objlist, (one_by_one ? (char *) 0 : selection), allflag,
@@ -3104,6 +3107,10 @@ struct obj* other_container;
 	{
         used = (menu_loot(menu_on_request, command_id, applied_container, other_container) > 0);
     }
+
+	if (command_id == 4 && *u.ushops)
+		sellobj_state(SELL_NORMAL);
+
     return used;
 }
 
@@ -3182,6 +3189,9 @@ struct obj* other_container;
 				return 0;
 		}
 	}
+	else if (command_id == 4 && *u.ushops)
+		sellobj_state(SELL_DELIBERATE);
+
 
     if (retry) 
 	{
@@ -3356,6 +3366,10 @@ struct obj* other_container;
             free((genericptr_t) pick_list);
         }
     }
+
+	if (command_id == 4 && *u.ushops)
+		sellobj_state(SELL_NORMAL);
+
     return n_looted;
 }
 
