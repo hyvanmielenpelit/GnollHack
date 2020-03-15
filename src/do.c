@@ -706,6 +706,31 @@ register struct obj* obj;
 			Sprintf(buf, "Hands to use:           %s", buf2);
 			txt = buf;
 			putstr(datawin, 0, txt);
+
+			if (is_appliable_weapon(obj))
+			{
+				/* Single or two-handed */
+				if (is_appliable_pole_type_weapon(obj))
+				{
+					int polemin = 1, polemax = 2;
+					get_pole_type_weapon_min_max_distances(obj, &youmonst, &polemin, &polemax);
+					Sprintf(buf2, "Yes, for a ranged attack (min: %.0f\', max: %.0f\')", floor(sqrt((double)polemin) * 5), ceil(sqrt((double)polemax) * 5));
+				}
+				else if (is_pick(obj))
+				{
+					strcpy(buf2, "Yes, for cutting rock");
+				}
+				else if (is_axe(obj))
+				{
+					strcpy(buf2, "Yes, for chopping wood");
+				}
+				else
+					strcpy(buf2, "Yes");
+
+				Sprintf(buf, "Appliable:              %s", buf2);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
 		}
 
 		/* Skill */

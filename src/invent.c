@@ -2036,9 +2036,7 @@ const char* headertext;
                      || (otmp->oclass == GEM_CLASS && !is_graystone(otmp))))
 				|| (!strcmp(word, "use or apply")
                  /* Picks, axes, pole-weapons, bullwhips */
-                 && ((otmp->oclass == WEAPON_CLASS
-                      && !is_pick(otmp) && !is_axe(otmp)
-                      && !is_appliable_pole_type_weapon(otmp) && otyp != BULLWHIP)
+                 && ((otmp->oclass == WEAPON_CLASS && !is_appliable_weapon(otmp))
                      || (otmp->oclass == POTION_CLASS
                          /* only applicable potion is oil, and it will only
                             be offered as a choice when already discovered */

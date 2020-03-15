@@ -205,6 +205,8 @@ struct obj {
     ((otmp)->oclass == WEAPON_CLASS && objects[(otmp)->otyp].oc_subtyp == WEP_LANCE)
 #define is_appliable_pole_type_weapon(otmp)   \
     (is_pole(otmp) || is_spear(otmp) || is_lance(otmp))
+#define is_appliable_weapon(otmp) \
+    ((otmp)->oclass == WEAPON_CLASS && (is_pick(otmp) || is_axe(otmp) || is_appliable_pole_type_weapon(otmp) || (objects[(otmp)->otyp].oc_flags3 & O3_APPLIABLE) != 0))
 #define is_launcher(otmp)                                                  \
     ((otmp)->oclass == WEAPON_CLASS && objects[(otmp)->otyp].oc_skill >= P_BOW \
      && objects[(otmp)->otyp].oc_skill <= P_CROSSBOW)
