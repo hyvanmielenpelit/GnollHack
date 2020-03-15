@@ -3496,6 +3496,9 @@ int final;
 		you_have("magical barkskin (+7 to MC)", from_what(MAGICAL_BARKSKIN));
 	if (Magical_stoneskin)
 		you_have("magical stoneskin (-10 to AC)", from_what(MAGICAL_STONESKIN));
+	if (Titan_strength)
+		you_have("titan strength", from_what(TITAN_STRENGTH));
+
 	if (Half_physical_damage)
         enlght_halfdmg(HALF_PHYSICAL_DAMAGE, final);
 	if (Half_physical_damage_against_undead_and_demons)
@@ -3613,6 +3616,7 @@ int final;
         you_have("fixed abilities", from_what(FIXED_ABIL));
     if (Lifesaved)
         enl_msg("Your life ", "will be", "would have been", " saved", "");
+
 
     /*** Miscellany ***/
     if (Luck) {

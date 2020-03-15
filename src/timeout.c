@@ -154,6 +154,7 @@ const struct propname {
 	{ ONE_FOURTH_MAGIC_RES, "having 25% of normal magic resistance", "25% of normal magic resistance" },
 	{ THREE_FOURTHS_MAGIC_RES, "having 75% of normal magic resistance", "75% of normal magic resistance" },
 	{ BLINDFOLDED, "blindfolded", "blindness due to a blindfold" },
+	{ TITAN_STRENGTH, "strong as a titan", "titan strength" },
 	{ LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
 	{  0, 0 },
 };
@@ -1022,6 +1023,10 @@ nh_timeout()
 				if (!Magical_stoneskin)
 					Your("skin feels less stone-like than before.");
 				break;
+			case TITAN_STRENGTH:
+				if (!Titan_strength)
+					You("feel less strong than before.");
+				break;
 			}
 		}
 		else if ((upp->intrinsic & TIMEOUT) && ((upp->intrinsic & TIMEOUT) == 3) && !(upp->intrinsic & ~TIMEOUT) && !(upp->extrinsic))
@@ -1184,6 +1189,9 @@ nh_timeout()
 				break;
 			case MAGICAL_STONESKIN:
 				Your("skin is starting to feel less stone-like than before.");
+				break;
+			case TITAN_STRENGTH:
+				You("are starting to feel less strong than before.");
 				break;
 			}
 		}

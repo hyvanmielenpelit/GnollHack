@@ -909,6 +909,7 @@ boolean verbose;
 	boolean had_magical_shielding= Magical_shielding;
 	boolean had_magical_barkskin = Magical_barkskin;
 	boolean had_magical_stoneskin = Magical_stoneskin;
+	boolean had_titan_strength = Titan_strength;
 	boolean was_fast = Fast;
 	boolean was_very_fast = Very_fast;
 	boolean was_slowed = Slowed;
@@ -1234,7 +1235,7 @@ boolean verbose;
 		state_change_detected = TRUE;
 		Your("skin thickens into bark!");
 	}
-	else if (!Magical_stoneskin && had_magical_stoneskin)
+	else if (!Magical_barkskin && had_magical_barkskin)
 	{
 		state_change_detected = TRUE;
 		Your("skin softens!");
@@ -1250,6 +1251,18 @@ boolean verbose;
 		state_change_detected = TRUE;
 		Your("skin unstones!");
 	}
+
+	if (Titan_strength && !had_titan_strength)
+	{
+		state_change_detected = TRUE;
+		You("feel as strong as a titan!");
+	}
+	else if (!Titan_strength && had_titan_strength)
+	{
+		state_change_detected = TRUE;
+		You("feel less strong than before.");
+	}
+
 
 	if (otmp && state_change_detected)
 	{

@@ -1864,6 +1864,10 @@ struct monst* mon;
 	schar* acbonus_ptr = 0;
 	schar* mcbonus_ptr = 0;
 
+	/* props influencing attribute bonuses */
+	boolean prop_titan_strength = FALSE;
+	boolean prop_wounded_legs = FALSE;
+
 	/* Set pointers etc. */
 	if(is_you)
 	{
@@ -1886,6 +1890,9 @@ struct monst* mon;
 		u.moreluck = 0;
 		u.luck_does_not_timeout = 0;
 		u.unluck_does_not_timeout = 0;
+
+		prop_titan_strength = Titan_strength;
+		prop_wounded_legs = Wounded_legs;
 	}
 	else
 	{
@@ -1899,6 +1906,9 @@ struct monst* mon;
 		hitinc_ptr = &mon->mhitinc;
 		acbonus_ptr = &mon->macbonus;
 		mcbonus_ptr = &mon->mmcbonus;
+
+		prop_titan_strength = has_titan_strength(mon);
+		prop_wounded_legs = has_wounded_legs(mon);
 	}
 
 
@@ -1918,8 +1928,10 @@ struct monst* mon;
 
 	boolean cursed_are_good = cursed_items_are_positive(mon->data);
 
-	/* Set wounded legs here */
-	if (Wounded_legs)
+	/* Set props here */
+	if (prop_titan_strength)
+		*afixmin_ptr[A_STR] = STR19(25);
+	if (prop_wounded_legs)
 		*abon_ptr[A_DEX] = -1;
 
 	/* add them back again */
@@ -2017,7 +2029,7 @@ struct monst* mon;
 										afixmincandidate += applicable_enchantment;
 
 									/* Take the highest minimum (most constraining) */
-									if (afixmincandidate > * afixmin_ptr[i])
+									if (afixmincandidate > *afixmin_ptr[i])
 										*afixmin_ptr[i] = afixmincandidate;
 								}
 							}
@@ -2069,47 +2081,48 @@ struct monst* mon;
 			}
 		}
 
-			/* Following are for all items */
-			/* Luck */
-			if (is_you)
+		/* Following are for all items */
+		/* Luck */
+		if (is_you)
+		{
+			if ((artifact_confers_luck(uitem) || confers_luck(uitem)))
 			{
-				if ((artifact_confers_luck(uitem) || confers_luck(uitem)))
-				{
-					/* Note cursed luckstone is now handled in confers_unluck */
-					u.moreluck += uitem->quan;
-					if (uitem->blessed)
-						blessed_luck_count += uitem->quan;
-					else
-						uncursed_luck_count += uitem->quan;
-				}
+				/* Note cursed luckstone is now handled in confers_unluck */
+				u.moreluck += uitem->quan;
+				if (uitem->blessed)
+					blessed_luck_count += uitem->quan;
+				else
+					uncursed_luck_count += uitem->quan;
+			}
 
-				if ((artifact_confers_unluck(uitem) || confers_unluck(uitem)))
-				{
-					u.moreluck -= uitem->quan;
-					if (uitem->cursed)
-						cursed_luck_count += uitem->quan;
-					else
-						uncursed_luck_count -= uitem->quan;
-				}
+			if ((artifact_confers_unluck(uitem) || confers_unluck(uitem)))
+			{
+				u.moreluck -= uitem->quan;
+				if (uitem->cursed)
+					cursed_luck_count += uitem->quan;
+				else
+					uncursed_luck_count -= uitem->quan;
 			}
 		}
+	}
 
-		if(is_you)
-		{
-			if (blessed_luck_count > cursed_luck_count)
-				u.luck_does_not_timeout = 1;
+	if(is_you)
+	{
+		if (blessed_luck_count > cursed_luck_count)
+			u.luck_does_not_timeout = 1;
 
-			if (cursed_luck_count > blessed_luck_count)
-				u.unluck_does_not_timeout = 1;
+		if (cursed_luck_count > blessed_luck_count)
+			u.unluck_does_not_timeout = 1;
 
-			find_ac();
-			find_mc();
-			context.botl = 1;
-		}
-		else
-		{
-			/* Nothing needs to be done here, since monster scores are not stored anywhere */
-		}
+		find_ac();
+		find_mc();
+		context.botl = 1;
+	}
+	else
+	{
+		/* Nothing needs to be done here, since monster scores are not stored anywhere */
+	}
+
 }
 
 boolean is_obj_worn(uitem)

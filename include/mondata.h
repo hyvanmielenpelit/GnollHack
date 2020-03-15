@@ -474,6 +474,12 @@
 #define has_double_spell_damage(mon) \
 	(has_property(mon, DOUBLE_SPELL_DAMAGE))
 
+#define has_titan_strength(mon) \
+	has_property(mon, TITAN_STRENGTH)
+
+#define has_wounded_legs(mon) \
+	has_property(mon, WOUNDED_LEGS)
+
 
 /* resistances at the time of acquisition */
 #define resists_fire(mon) \

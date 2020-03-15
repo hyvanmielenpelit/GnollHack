@@ -628,6 +628,13 @@
 #define ELifesaved u.uprops[LIFESAVED].extrinsic
 #define Lifesaved (HLifesaved || ELifesaved)
 
+
+#define HTitan_strength u.uprops[TITAN_STRENGTH].intrinsic
+#define ETitan_strength u.uprops[TITAN_STRENGTH].extrinsic
+#define Titan_strength (HTitan_strength || ETitan_strength)
+
+
+
 /*
  * Some pseudo-properties.
  */
