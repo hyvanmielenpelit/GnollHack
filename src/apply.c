@@ -4305,7 +4305,7 @@ char class_list[];
 
 STATIC_OVL void
 setbreakclasses(class_list)
-char class_list[];
+char* class_list;
 {
 	register struct obj* otmp;
 
@@ -4321,6 +4321,7 @@ dobreak()
 {
 	int res = 1;
 	char class_list[MAXOCLASSES + 2];
+	strcpy(class_list, "");
 
 	//Cannot break when overloaded?
 	if (check_capacity((char*)0))
