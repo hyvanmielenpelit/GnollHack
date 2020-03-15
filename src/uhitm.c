@@ -4229,20 +4229,20 @@ double *monster_hp_multiplier_ptr;
 	switch (context.game_difficulty)
 	{
 	case -2:
-		*monster_damage_multiplier_ptr = 0.63;
-		*monster_hp_multiplier_ptr = 0.40;
-		break;
-	case -1:
 		*monster_damage_multiplier_ptr = 0.79;
 		*monster_hp_multiplier_ptr = 0.63;
 		break;
+	case -1:
+		*monster_damage_multiplier_ptr = 0.89;
+		*monster_hp_multiplier_ptr = 0.79;
+		break;
 	case 1:
-		*monster_damage_multiplier_ptr = 1.26;
-		*monster_hp_multiplier_ptr = 1.59;
+		*monster_damage_multiplier_ptr = 1.12;
+		*monster_hp_multiplier_ptr = 1.26;
 		break;
 	case 2:
-		*monster_damage_multiplier_ptr = 1.59;
-		*monster_hp_multiplier_ptr = 2.52;
+		*monster_damage_multiplier_ptr = 1.26;
+		*monster_hp_multiplier_ptr = 1.59;
 		break;
 	default:
 		break;
