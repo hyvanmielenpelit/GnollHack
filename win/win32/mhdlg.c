@@ -142,7 +142,7 @@ GetlinDlgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             SendDlgItemMessage(hWnd, IDC_GETLIN_EDIT, WM_GETTEXT,
                                (WPARAM) sizeof(wbuf), (LPARAM) wbuf);
             NH_W2A(wbuf, data->result, data->result_size);
-
+			wbuf[BUFSZ - 1] = '\0';
         /* Fall through. */
 
         /* cancel button was pressed */

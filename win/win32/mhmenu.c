@@ -551,13 +551,17 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
             text_size = strlen(msg_data->text) + 4;
             data->text.text =
                 (TCHAR *) malloc(text_size * sizeof(data->text.text[0]));
+			if (!data->text.text)
+				return;
             ZeroMemory(data->text.text,
                        text_size * sizeof(data->text.text[0]));
         } else {
             text_size = _tcslen(data->text.text) + strlen(msg_data->text) + 4;
             data->text.text = (TCHAR *) realloc(
                 data->text.text, text_size * sizeof(data->text.text[0]));
-        }
+			if (!data->text.text)
+				return;
+		}
         if (!data->text.text)
             break;
 
@@ -621,6 +625,8 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
             data->menu.allocated += 10;
             data->menu.items = (PNHMenuItem) realloc(
                 data->menu.items, data->menu.allocated * sizeof(NHMenuItem));
+			if (!data->menu.items)
+				return;
         }
 		if (!data->menu.items)
 			return;

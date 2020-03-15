@@ -929,6 +929,7 @@ onWMCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
             break;
 
         ZeroMemory(filename, sizeof(filename));
+		filename[1023] = '\0';
         ZeroMemory(&ofn, sizeof(ofn));
         ofn.lStructSize = sizeof(OPENFILENAME);
         ofn.hwndOwner = hWnd;

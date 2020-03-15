@@ -3744,8 +3744,9 @@ const char *mapping;
     if (sscanf(mapping, "MESG \"%255[^\"]\"%*[\t ]\"%255[^\"]\" %d", text,
                filename, &volume) == 3) {
         audio_mapping *new_map;
+		filename[255] = '\0';
 
-        if (strlen(sounddir) + strlen(filename) > 254) {
+		if (strlen(sounddir) + strlen(filename) > 254) {
             raw_print("sound file name too long");
             return 0;
         }

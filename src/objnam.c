@@ -4811,7 +4811,7 @@ const char *lastR;
 	if (!qbuf)
 		return qbuf;
 
-    char *bufp, *endp;
+    char *bufp;
     /* convert size_t (or int for ancient systems) to ordinary unsigned */
     size_t len, lenlimit,
         len_qpfx = (qprefix ? strlen(qprefix) : 0),
@@ -4819,17 +4819,16 @@ const char *lastR;
         len_lastR = strlen(lastR);
 
     lenlimit = QBUFSZ - 1;
-    endp = qbuf + lenlimit;
     /* sanity check, aimed mainly at paniclog (it's conceivable for
        the result of short_oname() to be shorter than the length of
        the last resort string, but we ignore that possibility here) */
     if (len_qpfx > lenlimit)
-        impossible("safe_qbuf: prefix too long (%u characters).", len_qpfx);
+        impossible("safe_qbuf: prefix too long (%zu characters).", len_qpfx);
     else if (len_qpfx + len_qsfx > lenlimit)
-        impossible("safe_qbuf: suffix too long (%u + %u characters).",
+        impossible("safe_qbuf: suffix too long (%zu + %zu characters).",
                    len_qpfx, len_qsfx);
     else if (len_qpfx + len_lastR + len_qsfx > lenlimit)
-        impossible("safe_qbuf: filler too long (%u + %u + %u characters).",
+        impossible("safe_qbuf: filler too long (%zu + %zu + %zu characters).",
                    len_qpfx, len_lastR, len_qsfx);
 
     /* the output buffer might be the same as the prefix if caller
@@ -4837,13 +4836,13 @@ const char *lastR;
     if (qbuf == qprefix) 
 	{
         /* prefix is already in the buffer */
-        *endp = '\0';
+		qbuf[lenlimit] = '\0';
     } 
 	else if (qprefix) 
 	{
         /* put prefix into the buffer */
         (void) strncpy(qbuf, qprefix, lenlimit);
-        *endp = '\0';
+		qbuf[lenlimit] = '\0';
     }
 	else 
 	{
@@ -4860,13 +4859,13 @@ const char *lastR;
         if (len < lenlimit) 
 		{
             (void) strncpy(&qbuf[len], lastR, lenlimit - len);
-            *endp = '\0';
+			qbuf[lenlimit] = '\0';
             len = strlen(qbuf);
             if (qsuffix && len < lenlimit)
 			{
                 (void) strncpy(&qbuf[len], qsuffix, lenlimit - len);
-                *endp = '\0';
-                /* len = (unsigned) strlen(qbuf); */
+				qbuf[lenlimit] = '\0';
+				/* len = (unsigned) strlen(qbuf); */
             }
         }
     } 

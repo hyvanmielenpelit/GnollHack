@@ -2785,7 +2785,7 @@ sp_lev *lvl;
 		}
 
         if (opcode == SPO_PUSH) {
-            int nsize;
+            long nsize;
             struct opvar *ov = (struct opvar *) alloc(sizeof(struct opvar));
 
             opdat = ov;

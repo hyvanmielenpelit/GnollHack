@@ -19,7 +19,7 @@
 extern char *lev_message;
 
 static void NDECL(dump_qtlist);
-static void FDECL(Fread, (genericptr_t, int, int, dlb *));
+static void FDECL(Fread, (genericptr_t, long, long, dlb *));
 STATIC_DCL struct qtmsg *FDECL(construct_qtlist, (long));
 STATIC_DCL const char *NDECL(intermed);
 STATIC_DCL struct obj *FDECL(find_qarti, (struct obj *));
@@ -63,10 +63,10 @@ dump_qtlist()
 static void
 Fread(ptr, size, nitems, stream)
 genericptr_t ptr;
-size_t size, nitems;
+long size, nitems;
 dlb *stream;
 {
-    int cnt;
+    long cnt;
 
     if ((cnt = dlb_fread(ptr, size, nitems, stream)) != nitems) {
         panic("PREMATURE EOF ON QUEST TEXT FILE! Expected %d bytes, got %d",

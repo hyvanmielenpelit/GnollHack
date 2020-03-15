@@ -38,7 +38,7 @@ struct lchoice {
     char menuletter;
 };
 
-static void FDECL(Fread, (genericptr_t, int, int, dlb *));
+static void FDECL(Fread, (genericptr_t, long, long, dlb *));
 STATIC_DCL xchar FDECL(dname_to_dnum, (const char *));
 STATIC_DCL int FDECL(find_branch, (const char *, struct proto_dungeon *));
 STATIC_DCL xchar FDECL(parent_dnum, (const char *, struct proto_dungeon *));
@@ -242,15 +242,15 @@ int fd;
 static void
 Fread(ptr, size, nitems, stream)
 genericptr_t ptr;
-size_t size, nitems;
+long size, nitems;
 dlb *stream;
 {
-    int cnt;
+    long cnt;
 
     if ((cnt = dlb_fread(ptr, size, nitems, stream)) != nitems) {
         panic(
   "Premature EOF on dungeon description file!\r\nExpected %d bytes - got %d.",
-              (size * nitems), (size * (size_t)cnt));
+              (size * nitems), (size * cnt));
         nh_terminate(EXIT_FAILURE);
     }
 }

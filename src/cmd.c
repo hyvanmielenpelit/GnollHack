@@ -504,8 +504,10 @@ doextlist(VOID_ARGS)
 
         end_menu(menuwin, (char *) 0);
         n = select_menu(menuwin, PICK_ONE, &selected);
-        if (n > 0) {
-            switch (selected[0].item.a_int) {
+        if (n > 0 && selected)
+		{
+            switch (selected[0].item.a_int) 
+			{
             case 1: /* 'a': toggle show/hide non-autocomplete */
                 menumode = 1 - menumode;  /* toggle 0 -> 1, 1 -> 0 */
                 redisplay = TRUE;

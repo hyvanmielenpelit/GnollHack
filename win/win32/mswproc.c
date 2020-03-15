@@ -2713,13 +2713,14 @@ mswin_color_from_string(char *colorstring, HBRUSH *brushptr,
             }
         }
     }
-	if (max_brush > TOTAL_BRUSHES)
+	if (max_brush >= TOTAL_BRUSHES)
 	{
 		panic("Too many colors!");
 		return;
 	}
     *brushptr = CreateSolidBrush(*colorptr);
-    brush_table[max_brush++] = *brushptr;
+    brush_table[max_brush] = *brushptr;
+	max_brush++;
 }
 
 void
