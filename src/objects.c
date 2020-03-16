@@ -1702,166 +1702,166 @@ OBJECT(OBJ("Amulet of Yendor", /* note: description == name */
 #undef AMULET
 
 /* miscellaneous (magic) items */
-#define MISCELLANEOUSITEM(name,desc,sub,specialworntext,shortdesc,kn,magic,mergeable,spetype,charged,prob,cost,wt,power,power2,power3,pflags,manabonus,hpbonus,bonusattrs,attrbonus,splcastpen,nut,material,color,flags,flags2,flags3,powconfermask) \
-    OBJECT(OBJ(name, desc), specialworntext, shortdesc,                                          \
+#define MISCELLANEOUSITEM(name,desc,sub,shortdesc,kn,magic,mergeable,spetype,charged,prob,cost,wt,power,power2,power3,pflags,manabonus,hpbonus,bonusattrs,attrbonus,splcastpen,nut,material,color,flags,flags2,flags3,powconfermask) \
+    OBJECT(OBJ(name, desc), None, shortdesc,                                          \
            BITS(kn, mergeable, charged, 0, magic, spetype, charged, 0, 0, 0, 0, 0, sub, 0, material),        \
            power, power2, power3, pflags, MISCELLANEOUS_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost,  \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, manabonus, hpbonus, bonusattrs, attrbonus, splcastpen, 0, \
 		   nut, color, 0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
-MISCELLANEOUSITEM("brooch of shielding", "golden brooch", MISC_BROOCH, None, None,
+MISCELLANEOUSITEM("brooch of shielding", "golden brooch", MISC_BROOCH, None,
 	0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 50, 150, 5,
 	NO_POWER, 0, 0, P1_NONE, 0, 0, BONUS_TO_MC, 5, 0,
 	20, MAT_GOLD, HI_GOLD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("nose ring of bull strength", "golden nose ring", MISC_NOSERING, None, None,
+MISCELLANEOUSITEM("nose ring of bull strength", "golden nose ring", MISC_NOSERING, None,
 	0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 50, 200, 2, //STARTMARKER FOR NOSE RING WISH-CLASS, SHUFFLE
 	0, 0, 0, P1_NONE, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE, STR18(76), 0,
 	50, MAT_GOLD, HI_GOLD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("nose ring of bullheadedness", "silver nose ring", MISC_NOSERING, None, None,
+MISCELLANEOUSITEM("nose ring of bullheadedness", "silver nose ring", MISC_NOSERING,  None,
 	0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 50, 200, 2,
 	0, 0, 0, P1_NONE, 0, 0, BONUS_TO_WIS | SETS_FIXED_ATTRIBUTE | FIXED_IS_MAXIMUM, 3, 0,
 	50, MAT_SILVER, HI_SILVER, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("nose ring of cerebral safeguarding", "bronze nose ring", MISC_NOSERING, None, None,
+MISCELLANEOUSITEM("nose ring of cerebral safeguarding", "bronze nose ring", MISC_NOSERING, None,
 	0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 50, 200, 2, //ENDMARKER FOR NOSE RING WISH-CLASS, SHUFFLE
 	BRAIN_PROTECTION, 0, 0, P1_NONE, 0, 0, 0, 0, 0,
 	50, MAT_COPPER, HI_COPPER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("headband of intellect", "shining blue headband", MISC_HEADBAND, None, None,
+MISCELLANEOUSITEM("headband of intellect", "shining blue headband", MISC_HEADBAND, None,
 	0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 30, 200, 3,
 	0, 0, 0, P1_NONE, 0, 0, BONUS_TO_INT | SETS_FIXED_ATTRIBUTE, 19, 0,
 	50, MAT_CLOTH, CLR_BLUE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("golden earrings", None, MISC_EARRINGS, None, None,
+MISCELLANEOUSITEM("golden earrings", None, MISC_EARRINGS, None,
 	1, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 10, 200, 2,
 	0, 0, 0, P1_NONE, 0, 0, BONUS_TO_CHA, 1, 0,
 	50, MAT_GOLD, HI_GOLD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_GENDER_FEMALE),
-MISCELLANEOUSITEM("ioun stone of protection", "red ioun stone", MISC_IOUN_STONE, None, None,
+MISCELLANEOUSITEM("ioun stone of protection", "red ioun stone", MISC_IOUN_STONE, None,
 	0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 15, 200, 10, //STARTMARKER FOR IOUNSTONE WISH-CLASS
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, BONUS_TO_MC, 4, 0,
 	50, MAT_MINERAL, CLR_RED, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("ioun stone of spell mastery", "blue ioun stone", MISC_IOUN_STONE, None, None,
+MISCELLANEOUSITEM("ioun stone of spell mastery", "blue ioun stone", MISC_IOUN_STONE, None,
 	0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 15, 200, 10,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, 50, 0, 0, 0, -20,
 	50, MAT_MINERAL, CLR_BLUE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("ioun stone of magic resistance", "brown ioun stone", MISC_IOUN_STONE, None, None,
+MISCELLANEOUSITEM("ioun stone of magic resistance", "brown ioun stone", MISC_IOUN_STONE, None,
 	0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 15, 200, 10,
 	ANTIMAGIC, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
 	50, MAT_MINERAL, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("ioun stone of strength", "pink ioun stone", MISC_IOUN_STONE, None, None,
+MISCELLANEOUSITEM("ioun stone of strength", "pink ioun stone", MISC_IOUN_STONE, None,
 	0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 15, 200, 10,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, BONUS_TO_STR, 2, 0,
 	50, MAT_MINERAL, CLR_BRIGHT_MAGENTA, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("ioun stone of dexterity", "green ioun stone", MISC_IOUN_STONE, None, None,
+MISCELLANEOUSITEM("ioun stone of dexterity", "green ioun stone", MISC_IOUN_STONE, None,
 	0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 15, 200, 10,
 	0, 0, 0, P1_NONE, 0, 0, BONUS_TO_DEX, 2, 0,
 	50, MAT_MINERAL, CLR_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("ioun stone of constitution", "purple ioun stone", MISC_IOUN_STONE, None, None,
+MISCELLANEOUSITEM("ioun stone of constitution", "purple ioun stone", MISC_IOUN_STONE, None,
 	0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 15, 200, 10,
 	0, 0, 0, P1_NONE, 0, 0, BONUS_TO_CON, 2, 0,
 	50, MAT_MINERAL, CLR_MAGENTA, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("ioun stone of intelligence", "yellow ioun stone", MISC_IOUN_STONE, None, None,
+MISCELLANEOUSITEM("ioun stone of intelligence", "yellow ioun stone", MISC_IOUN_STONE, None,
 	0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 15, 200, 50,
 	0, 0, 0, P1_NONE, 0, 0, BONUS_TO_INT, 2, 0,
 	50, MAT_MINERAL, CLR_YELLOW, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("ioun stone of wisdom", "white ioun stone", MISC_IOUN_STONE, None, None,
+MISCELLANEOUSITEM("ioun stone of wisdom", "white ioun stone", MISC_IOUN_STONE, None,
 	0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 15, 200, 10,
 	0, 0, 0, P1_NONE, 0, 0, BONUS_TO_WIS, 2, 0,
 	50, MAT_MINERAL, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("ioun stone of charisma", "black ioun stone", MISC_IOUN_STONE, None, None,
+MISCELLANEOUSITEM("ioun stone of charisma", "black ioun stone", MISC_IOUN_STONE, None,
 	0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 15, 200, 10,
 	0, 0, 0, P1_NONE, 0, 0, BONUS_TO_CHA, 2, 0,
 	50, MAT_MINERAL, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("ioun stone of experience", "bright blue ioun stone", MISC_IOUN_STONE, None, None,
+MISCELLANEOUSITEM("ioun stone of experience", "bright blue ioun stone", MISC_IOUN_STONE, None,
 	0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 15, 200, 10,
 	0, 0, 0, P1_NONE, 0, 0, BONUS_TO_EXPERIENCE, 3, 0,
 	50, MAT_MINERAL, CLR_BRIGHT_BLUE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("ioun stone of awareness", "gray ioun stone", MISC_IOUN_STONE, None, None,
+MISCELLANEOUSITEM("ioun stone of awareness", "gray ioun stone", MISC_IOUN_STONE, None,
 	0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 15, 200, 10,
 	WARNING, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
 	50, MAT_MINERAL, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("ioun stone of regeneration", "orange ioun stone", MISC_IOUN_STONE, None, None,
+MISCELLANEOUSITEM("ioun stone of regeneration", "orange ioun stone", MISC_IOUN_STONE, None,
 	0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 15, 200, 10,
 	REGENERATION, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
 	50, MAT_MINERAL, CLR_ORANGE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("ioun stone of incessant hunger", "bright green ioun stone", MISC_IOUN_STONE, None, None,
+MISCELLANEOUSITEM("ioun stone of incessant hunger", "bright green ioun stone", MISC_IOUN_STONE, None,
 	0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 15, 200, 10,
 	HUNGER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
 	50, MAT_MINERAL, CLR_BRIGHT_GREEN, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("ioun stone of restful sleep", "transparent ioun stone", MISC_IOUN_STONE, None, None,
+MISCELLANEOUSITEM("ioun stone of restful sleep", "transparent ioun stone", MISC_IOUN_STONE, None,
 	0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 15, 200, 10,
 	SLEEPY, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
 	50, MAT_MINERAL, CLR_BRIGHT_CYAN, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("ioun stone of sustenance", "cyan ioun stone", MISC_IOUN_STONE, None, None,
+MISCELLANEOUSITEM("ioun stone of sustenance", "cyan ioun stone", MISC_IOUN_STONE, None,
 	0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 15, 200, 10, //ENDMARKER FOR IOUNSTONE WISH-CLASS
 	SLOW_DIGESTION, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
 	50, MAT_MINERAL, CLR_CYAN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("wings of flying", "artificial wings", MISC_WINGS, None, None,
+MISCELLANEOUSITEM("wings of flying", "artificial wings", MISC_WINGS, None,
 	0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 10, 200, 50,
 	FLYING, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
 	50, MAT_MODRONITE, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("lenses", "gold-framed eyeglasses", MISC_EYEGLASSES, None, None,
+MISCELLANEOUSITEM("lenses", "gold-framed eyeglasses", MISC_EYEGLASSES, None,
 	0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 40, 80, 3, //STARTMARKER FOR EYEGLASSES WISH-CLASS AND SHUFFLED EYEGLASSES
 	ENHANCED_VISION, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
 	20, MAT_GLASS, HI_GLASS, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("eyeglasses of hallucination", "oval eyeglasses", MISC_EYEGLASSES, None, None,
+MISCELLANEOUSITEM("eyeglasses of hallucination", "oval eyeglasses", MISC_EYEGLASSES, None,
 	0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 40, 150, 3,
 	HALLUC, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
 	20, MAT_GLASS, HI_GLASS, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("eyeglasses of awkwardness", "square eyeglasses", MISC_EYEGLASSES, None, None,
+MISCELLANEOUSITEM("eyeglasses of awkwardness", "square eyeglasses", MISC_EYEGLASSES, None,
 	0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 40, 150, 3,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, BONUS_TO_CHA | SETS_FIXED_ATTRIBUTE | FIXED_IS_MAXIMUM, 3, 0,
 	20, MAT_GLASS, HI_GLASS, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("eyeglasses of see invisible", "round eyeglasses", MISC_EYEGLASSES, None, None,
+MISCELLANEOUSITEM("eyeglasses of see invisible", "round eyeglasses", MISC_EYEGLASSES, None,
 	0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 40, 150, 3,  //ENDMARKER FOR SHUFFLED EYEGLASSES
 	SEE_INVISIBLE, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
 	20, MAT_GLASS, HI_GLASS, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("sunglasses", "shaded eyeglasses", MISC_EYEGLASSES, None, None,
+MISCELLANEOUSITEM("sunglasses", "shaded eyeglasses", MISC_EYEGLASSES, None,
 	0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 20, 80, 3,   //ENDMARKER FOR EYEGLASSES WISH-CLASS
 	FLASH_RES, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
 	20, MAT_GLASS, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("goggles of night", "leather-framed goggles", MISC_EYEGLASSES, None, None,
+MISCELLANEOUSITEM("goggles of night", "leather-framed goggles", MISC_EYEGLASSES, None,
 	0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 40, 100, 3,  //STARTMARKER FOR GOGGLES WISH-CLASS, SHUFFLED GOGGLES
 	INFRAVISION, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
 	20, MAT_PLASTIC, HI_GLASS, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("goggles of eye protection", "transparent goggles", MISC_EYEGLASSES, None, None,
+MISCELLANEOUSITEM("goggles of eye protection", "transparent goggles", MISC_EYEGLASSES, None,
 	0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 40, 100, 3, //ENDMARKER FOR GOGGLES WISH-CLASS, ENDMARKER FOR SHUFFLED GOGGLES
 	EYE_PROTECTION, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
 	20, MAT_PLASTIC, HI_GLASS, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("expensive watch", None, MISC_WRIST_WATCH, "on left wrist", None,
+MISCELLANEOUSITEM("expensive watch", None, MISC_WRIST_WATCH, None,
 	1, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 10, 200, 6,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, BONUS_TO_CHA, 1, 0,
 	50, MAT_GOLD, HI_GOLD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_GENDER_MALE),
-MISCELLANEOUSITEM("leather belt", "old belt", MISC_BELT, None, None,
+MISCELLANEOUSITEM("leather belt", "old belt", MISC_BELT, None,
 	0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 50, 5, 5, //STARTMARKER FOR BELTS
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
 	20, MAT_CLOTH, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("belt of change", "brown belt", MISC_BELT, None, None,
+MISCELLANEOUSITEM("belt of change", "brown belt", MISC_BELT, None,
 	0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 50, 250, 5,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0,
 	20, MAT_CLOTH, HI_LEATHER, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("belt of dwarvenkind", "sturdy belt", MISC_BELT, None, None,
+MISCELLANEOUSITEM("belt of dwarvenkind", "sturdy belt", MISC_BELT, None,
 	0, 1, 0, SPETYPE_NO_SPE, CHARGED_GENERAL, 40, 250, 5,
 	POISON_RES, NO_POWER, NO_POWER, P1_NONE, 0, 0, BONUS_TO_CON, 0, 0,
 	20, MAT_CLOTH, HI_LEATHER, O1_NONE, O2_DWARVEN_ITEM, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("belt of fortitude", "runed belt", MISC_BELT, None, None,
+MISCELLANEOUSITEM("belt of fortitude", "runed belt", MISC_BELT, None,
 	0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 40, 250, 5,
 	0, 0, 0, P1_HP_PERCENTAGE_BONUS, 0, 50, 0, 0, 0,
 	20, MAT_CLOTH, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("belt of hill giant strength", "ornamental belt", MISC_BELT, None, None,
+MISCELLANEOUSITEM("belt of hill giant strength", "ornamental belt", MISC_BELT, None,
 	0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 25, 250, 5,
 	0, 0, 0, P1_NONE, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE, STR19(20), 0,
 	20, MAT_CLOTH, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("belt of stone giant strength", "heavy belt", MISC_BELT, None, None,
+MISCELLANEOUSITEM("belt of stone giant strength", "heavy belt", MISC_BELT, None,
 	0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 20, 250, 5,
 	0, 0, 0, P1_NONE, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE, STR19(21), 0,
 	20, MAT_CLOTH, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("belt of frost giant strength", "decorative belt", MISC_BELT, None, None,
+MISCELLANEOUSITEM("belt of frost giant strength", "decorative belt", MISC_BELT, None,
 	0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 15, 250, 5,
 	0, 0, 0, P1_NONE, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE, STR19(22), 0,
 	20, MAT_CLOTH, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("belt of fire giant strength", "coarse belt", MISC_BELT, None, None,
+MISCELLANEOUSITEM("belt of fire giant strength", "coarse belt", MISC_BELT, None,
 	0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 10, 250, 5,
 	0, 0, 0, P1_NONE, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE, STR19(23), 0,
 	20, MAT_CLOTH, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-MISCELLANEOUSITEM("belt of storm giant strength", "rudimentary belt", MISC_BELT, None, None,
+MISCELLANEOUSITEM("belt of storm giant strength", "rudimentary belt", MISC_BELT, None,
 	0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 5, 250, 5, //ENDMARKER FOR BELTS
 	0, 0, 0, P1_NONE, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE, STR19(24), 0,
 	20, MAT_CLOTH, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
@@ -2064,7 +2064,7 @@ WEPTOOL("unicorn horn", None, None,
         /* 3.4.1: unicorn horn left classified as "magic" */
 #endif
 //		nmkn, mrg, uskn, ctnr, mgc, chrg, uniq, nwsh, big, tuf, dir, sub, skill, mtrl
-OBJECT(OBJ("unicorn horn", None),None, None,
+OBJECT(OBJ("unicorn horn", None), None, None,
        BITS(1, 0, 1, 0, 1, SPETYPE_GENERAL, CHARGED_HORN_NORMAL, 0, 0, 0, 0, 0, TOOLTYPE_HORN, P_SPEAR, MAT_BONE),
        NO_POWER, NO_POWER, NO_POWER, P1_NONE, TOOL_CLASS, 0, MULTIGEN_SINGLE, 0, 20, 100,
 	   AD_PHYS, 1, 12, 0, 1, 12, 0, 0, 0, 0, 0, A1_NONE, 0,
@@ -2278,116 +2278,118 @@ FOOD("tin", None, None, FOODTYPE_TIN, 1,
 #undef FOOD
 
 /* potions ... */
-#define POTION(name,desc,mgc,power,prob,cost,color,flags,flags2,flags3,powconfermask) \
-    OBJECT(OBJ(name, desc), None, None,                                           \
+#define POTION(name,desc,shortdesc,mgc,power,prob,cost,color,flags,flags2,flags3,powconfermask) \
+    OBJECT(OBJ(name, desc), None, shortdesc,                                           \
            BITS(0, 1, 0, 0, mgc, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 0, 0, 0, 0, 0, 0, P_NONE, MAT_GLASS),      \
            power, 0, 0, P1_NONE, POTION_CLASS, prob, MULTIGEN_SINGLE, 0, 12, cost,  \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
 		   10, color, 0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
-POTION("gain ability",           "ruby",  1, 0, 20, 400, CLR_RED, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-POTION("restore ability",        "pink",  1, 0, 30, 100, CLR_BRIGHT_MAGENTA, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-POTION("confusion",            "orange",  1, CONFUSION, 40, 100, CLR_ORANGE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-POTION("blindness",            "yellow",  1, BLINDED, 30, 150, CLR_YELLOW, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-POTION("paralysis",           "emerald",  1, 0, 40, 300, CLR_BRIGHT_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-POTION("speed",            "dark green",  1, VERY_FAST, 30, 200, CLR_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-POTION("levitation",             "cyan",  1, LEVITATION, 30, 200, CLR_CYAN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-POTION("hallucination",      "sky blue",  1, HALLUC, 40, 100, CLR_CYAN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-POTION("invisibility", "brilliant blue",  1, INVISIBILITY, 40, 150, CLR_BRIGHT_BLUE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-POTION("see invisible",       "magenta",  1, SEE_INVISIBLE, 40, 50, CLR_MAGENTA, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-POTION("magic resistance",		 "gray",  1, ANTIMAGIC, 30, 100, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-POTION("healing",          "purple-red",  1, 0, 50, 100, CLR_MAGENTA, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-POTION("extra healing",          "puce",  1, 0, 40, 150, CLR_RED, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-POTION("greater healing",	 "deep red",  1, 0, 20, 200, CLR_RED, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-POTION("full healing",          "black",  1, 0, 10, 300, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-POTION("gain level",            "milky",  1, 0, 20, 400, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-POTION("enlightenment",        "swirly",  1, 0, 20, 150, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-POTION("monster detection",    "bubbly",  1, 0, 30, 150, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-POTION("object detection",      "smoky",  1, 0, 30, 150, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-POTION("gain energy",          "cloudy",  1, 0, 40, 150, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-POTION("greater energy",     "greenish",  1, 0, 20, 200, CLR_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-POTION("full energy",		  "silvery",  1, 0, 10, 300, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-POTION("sleeping",       "effervescent",  1, 0, 30, 100, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-POTION("polymorph",            "golden",  1, 0, 10, 200, CLR_YELLOW, O1_POLYMORPH_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
-POTION("booze",                 "brown",  0, 0, 30,  50, CLR_BROWN, O1_COLD_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
-POTION("sickness",              "fizzy",  0, 0, 30,  50, CLR_CYAN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-POTION("fruit juice",            "dark",  0, 0, 30,  50, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-POTION("acid",                  "white",  0, 0, 10, 250, CLR_WHITE, O1_COLD_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
-POTION("oil",                   "murky",  0, 0, 30, 250, CLR_BROWN, O1_COLD_RESISTANT, O3_NONE, O3_IGNITABLE | O3_RELATIVE_AGE, PERMITTED_ALL),
-POTION("poison",             "sapphire",  0, 0, 30,  50, CLR_BLUE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("gain ability",           "ruby", None, 1, 0, 20, 400, CLR_RED, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("restore ability",        "pink",
+	"Restores one or more lost ability points and experience levels",
+	1, 0, 30, 100, CLR_BRIGHT_MAGENTA, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("confusion",            "orange", None, 1, CONFUSION, 40, 100, CLR_ORANGE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("blindness",            "yellow", None, 1, BLINDED, 30, 150, CLR_YELLOW, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("paralysis",           "emerald", None, 1, 0, 40, 300, CLR_BRIGHT_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("speed",            "dark green", None, 1, VERY_FAST, 30, 200, CLR_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("levitation",             "cyan", None, 1, LEVITATION, 30, 200, CLR_CYAN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("hallucination",      "sky blue", None, 1, HALLUC, 40, 100, CLR_CYAN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("invisibility", "brilliant blue", None, 1, INVISIBILITY, 40, 150, CLR_BRIGHT_BLUE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("see invisible",       "magenta", None, 1, SEE_INVISIBLE, 40, 50, CLR_MAGENTA, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("magic resistance",		 "gray", None, 1, ANTIMAGIC, 30, 100, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("healing",          "purple-red", None, 1, 0, 50, 100, CLR_MAGENTA, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("extra healing",          "puce", None, 1, 0, 40, 150, CLR_RED, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("greater healing",	 "deep red", None, 1, 0, 20, 200, CLR_RED, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("full healing",          "black", None, 1, 0, 10, 300, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("gain level",            "milky", None, 1, 0, 20, 400, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("enlightenment",        "swirly", None, 1, 0, 20, 150, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("monster detection",    "bubbly", None, 1, 0, 30, 150, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("object detection",      "smoky", None, 1, 0, 30, 150, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("gain energy",          "cloudy", None, 1, 0, 40, 150, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("greater energy",     "greenish", None, 1, 0, 20, 200, CLR_GREEN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("full energy",		  "silvery", None, 1, 0, 10, 300, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("sleeping",       "effervescent", None, 1, 0, 30, 100, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("polymorph",            "golden", None, 1, 0, 10, 200, CLR_YELLOW, O1_POLYMORPH_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("booze",                 "brown", None, 0, 0, 30,  50, CLR_BROWN, O1_COLD_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("sickness",              "fizzy", None, 0, 0, 30,  50, CLR_CYAN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("fruit juice",            "dark", None, 0, 0, 30,  50, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("acid",                  "white", None, 0, 0, 10, 250, CLR_WHITE, O1_COLD_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("oil",                   "murky", None, 0, 0, 30, 250, CLR_BROWN, O1_COLD_RESISTANT, O3_NONE, O3_IGNITABLE | O3_RELATIVE_AGE, PERMITTED_ALL),
+POTION("poison",             "sapphire", None, 0, 0, 30,  50, CLR_BLUE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 /* fixed description
  */
-POTION("water",                 "clear",  0, 0, 80, 100, CLR_CYAN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* MARKER FOR FIRST NON-SHUFFLED */
-POTION("dwarven stout",     "dark ruby",  0, 0, 30,   5,  CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-POTION("urine",           "pale yellow",  0, 0, 30,   5,  CLR_YELLOW, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("water",                 "clear", None, 0, 0, 80, 100, CLR_CYAN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* MARKER FOR FIRST NON-SHUFFLED */
+POTION("dwarven stout",     "dark ruby", None, 0, 0, 30,   5,  CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("urine",           "pale yellow", None, 0, 0, 30,   5,  CLR_YELLOW, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 #undef POTION
 
 /* scrolls ... */
-#define SCROLL(name,text,mgc,prob,cost,sflags,flags,flags2,flags3,powconfermask)   \
-    OBJECT(OBJ(name, text), None, None,   \
+#define SCROLL(name,text,shortdesc,mgc,prob,cost,sflags,flags,flags2,flags3,powconfermask)   \
+    OBJECT(OBJ(name, text), None, shortdesc,   \
            BITS(0, 1, 0, 0, mgc, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 0, 0, 0, 0, 0, 0, P_NONE, MAT_PAPER),    \
            0, 0, 0, P1_NONE, SCROLL_CLASS, prob, MULTIGEN_SINGLE, 0, 4, cost, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, sflags, 0, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
 		   6, HI_PAPER, 0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
-SCROLL("enchant armor",              "ZELGO MER",  1,  60,  80, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("destroy armor",         "JUYED AWK YACC",  1,  45, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("protect armor",				   "VEX DOL",  1,  30,  50, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("confuse monster",                 "NR 9",  1,  30, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("scare monster",   "XIXAXA XOXAXA XUXAXA",  1,  35, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("remove curse",             "PRATYAVAYAH",  1,  65,  80, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("enchant weapon",         "DAIYEN FOOELS",  1,  80,  60, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("protect weapon",			   "ZEPH NI",  1,  30,  50, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("enchant ring",		          "REX SAPH",  1,  35,  60, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("create monster",       "LEP GEX VEN ZEA",  1,  40, 200, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("taming",                   "PRIRUTSENIE",  1,  15, 200, S1_SPELL_IS_NONREVERSIBLE_PERMANENT, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("genocide",                  "ELBIB YLOH",  1,  15, 300, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("light",                 "VERR YED HORRE",  1,  50,  50, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("teleportation",        "VENZAR BORGAVVE",  1,  50, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("gold detection",                 "THARR",  1,  30, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("food detection",               "YUM YUM",  1,  25, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("identify",                  "KERNOD WEL",  1, 180,  20, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("magic mapping",              "ELAM EBOW",  1,  40, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("amnesia",                   "DUAM XNAHT",  1,  30, 200, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("fire",                  "ANDOVA BEGARIN",  1,  30, 100, S1_NONE, O1_FIRE_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("earth",                          "KIRJE",  1,  15, 200, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("punishment",            "VE FORBRYDERNE",  1,  15, 300, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("charging",                "HACKEM MUCHE",  1,  15, 300, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("stinking cloud",             "VELOX NEB",  1,  15, 300, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("enchant armor",              "ZELGO MER", None, 1,  60,  80, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("destroy armor",         "JUYED AWK YACC", None, 1,  45, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("protect armor",				   "VEX DOL", None, 1,  30,  50, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("confuse monster",                 "NR 9", None, 1,  30, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("scare monster",   "XIXAXA XOXAXA XUXAXA", None, 1,  35, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("remove curse",             "PRATYAVAYAH", None, 1,  65,  80, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("enchant weapon",         "DAIYEN FOOELS", None, 1,  80,  60, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("protect weapon",			   "ZEPH NI", None, 1,  30,  50, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("enchant ring",		          "REX SAPH", None, 1,  35,  60, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("create monster",       "LEP GEX VEN ZEA", None, 1,  40, 200, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("taming",                   "PRIRUTSENIE", None, 1,  15, 200, S1_SPELL_IS_NONREVERSIBLE_PERMANENT, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("genocide",                  "ELBIB YLOH", None, 1,  15, 300, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("light",                 "VERR YED HORRE", None, 1,  50,  50, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("teleportation",        "VENZAR BORGAVVE", None, 1,  50, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("gold detection",                 "THARR", None, 1,  30, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("food detection",               "YUM YUM", None, 1,  25, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("identify",                  "KERNOD WEL", None, 1, 180,  20, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("magic mapping",              "ELAM EBOW", None, 1,  40, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("amnesia",                   "DUAM XNAHT", None, 1,  30, 200, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("fire",                  "ANDOVA BEGARIN", None, 1,  30, 100, S1_NONE, O1_FIRE_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("earth",                          "KIRJE", None, 1,  15, 200, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("punishment",            "VE FORBRYDERNE", None, 1,  15, 300, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("charging",                "HACKEM MUCHE", None, 1,  15, 300, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("stinking cloud",             "VELOX NEB", None, 1,  15, 300, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
     /* Extra descriptions, shuffled into use at start of new game.
      * Code in win/share/tilemap.c depends on SCR_STINKING_CLOUD preceding
      * these and on how many of them there are.  If a real scroll gets added
      * after stinking cloud or the number of extra descriptions changes,
      * tilemap.c must be modified to match.
      */
-SCROLL(None,      "FOOBIE BLETCH",  1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL(None,              "TEMOV",  1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL(None,         "GARVEN DEH",  1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL(None,            "READ ME",  1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL(None,      "ETAOIN SHRDLU",  1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL(None,        "LOREM IPSUM",  1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL(None,              "FNORD",  1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* Illuminati */
-SCROLL(None,            "KO BATE",  1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* Kurd Lasswitz */
-SCROLL(None,      "ABRA KA DABRA",  1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* traditional incantation */
-SCROLL(None,       "ASHPD SODALG",  1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* Portal */
-SCROLL(None,            "ZLORFIK",  1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* Zak McKracken */
-SCROLL(None,      "GNIK SISI VLE",  1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* Zak McKracken */
-SCROLL(None,    "HAPAX LEGOMENON",  1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL(None,  "EIRIS SAZUN IDISI",  1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* Merseburg Incantations */
-SCROLL(None,    "PHOL ENDE WODAN",  1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* Merseburg Incantations */
-SCROLL(None,              "GHOTI",  1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* pronounced as 'fish',
+SCROLL(None,      "FOOBIE BLETCH", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL(None,              "TEMOV", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL(None,         "GARVEN DEH", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL(None,            "READ ME", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL(None,      "ETAOIN SHRDLU", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL(None,        "LOREM IPSUM", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL(None,              "FNORD", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* Illuminati */
+SCROLL(None,            "KO BATE", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* Kurd Lasswitz */
+SCROLL(None,      "ABRA KA DABRA", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* traditional incantation */
+SCROLL(None,       "ASHPD SODALG", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* Portal */
+SCROLL(None,            "ZLORFIK", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* Zak McKracken */
+SCROLL(None,      "GNIK SISI VLE", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* Zak McKracken */
+SCROLL(None,    "HAPAX LEGOMENON", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL(None,  "EIRIS SAZUN IDISI", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* Merseburg Incantations */
+SCROLL(None,    "PHOL ENDE WODAN", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* Merseburg Incantations */
+SCROLL(None,              "GHOTI", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* pronounced as 'fish',
                                                         George Bernard Shaw */
-SCROLL(None, "MAPIRO MAHAMA DIROMAT", 1, 0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* Wizardry */
-SCROLL(None,  "VAS CORP BET MANI",  1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* Ultima */
-SCROLL(None,            "XOR OTA",  1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* Aarne Haapakoski */
-SCROLL(None, "STRC PRST SKRZ KRK",  1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* Czech and Slovak
+SCROLL(None, "MAPIRO MAHAMA DIROMAT", None, 1, 0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* Wizardry */
+SCROLL(None,  "VAS CORP BET MANI", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* Ultima */
+SCROLL(None,            "XOR OTA", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* Aarne Haapakoski */
+SCROLL(None, "STRC PRST SKRZ KRK", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* Czech and Slovak
                                                         tongue-twister */
     /* These must come last because they have special fixed descriptions.
      */
 #ifdef MAIL
 SCROLL("mail",          "stamped",  0,   0,   0, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 #endif
-SCROLL("blank paper", "unlabeled",  0,  25,  60, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("blank paper", "unlabeled", None, 0,  25,  60, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 #undef SCROLL
 
 /* spellbooks ... */
@@ -2826,50 +2828,50 @@ OBJECT(OBJ("Book of the Dead", "papyrus"), None, None,
 #undef SPELL
 
 /* wands ... */
-#define WAND(name,typ,charged,prob,cost,mgc,dir,dirsubtype,range,radius,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,sflags,metal,color,flags,flags2,flags3) \
-    OBJECT(OBJ(name, typ),  None, None,                                             \
+#define WAND(name,typ,shortdesc,charged,prob,cost,mgc,dir,dirsubtype,range,radius,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,sflags,metal,color,flags,flags2,flags3) \
+    OBJECT(OBJ(name, typ),  None, shortdesc,                                             \
            BITS(0, 0, 1, 0, mgc, SPETYPE_NO_SPE, charged, 0, 0, 0, 0, dir, 0, P_NONE, metal),    \
            0, 0, 0, P1_NONE, WAND_CLASS, prob, MULTIGEN_SINGLE, 0, 6, cost, \
 		   0, sdice,sdam,sdmgplus,ldice,ldam,ldmgplus, 0, 0, 0, 0, sflags, 0, \
 		   0, 0, 0, 0, 0, 0, 0, 0, range, radius, 0, 0, \
 		   30, color, dirsubtype, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, flags, flags2, flags3)
-WAND("light",           "glass", CHARGED_WAND_NORMAL_NODIR, 60, 100, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_GLASS, HI_GLASS, O1_NONE, O2_NONE, O3_NONE),
+WAND("light",           "glass", None, CHARGED_WAND_NORMAL_NODIR, 60, 100, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_GLASS, HI_GLASS, O1_NONE, O2_NONE, O3_NONE),
 WAND("secret door detection",
-                        "balsa", CHARGED_WAND_NORMAL_NODIR, 30, 150, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE),
+                        "balsa", None, CHARGED_WAND_NORMAL_NODIR, 30, 150, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE),
 WAND("ore detection", 
-				   "orichalcum", CHARGED_WAND_NORMAL_NODIR, 30, 200, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_ORICHALCUM, HI_GOLD, O1_NONE, O2_NONE, O3_NONE),
-WAND("enlightenment", "crystal", CHARGED_WAND_NORMAL_NODIR, 15, 150, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_GLASS, HI_GLASS, O1_NONE, O2_NONE, O3_NONE),
-WAND("create monster",  "maple", CHARGED_WAND_NORMAL_NODIR, 45, 200, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE),
-WAND("wishing",          "pine", CHARGED_WAND_NORMAL_NODIR, 5, 500, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_WOOD, HI_WOOD, O1_LIGHTNING_RESISTANT, O2_NONE, O3_NONE),
-WAND("identify",	  "mithril", CHARGED_WAND_NORMAL_NODIR, 10, 200, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE),
-WAND("nothing",           "oak", CHARGED_WAND_NORMAL_DIR, 25, 100, 0, IMMEDIATE, 0,  0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE),
-WAND("striking",        "ebony", CHARGED_1D45_45, 70, 150, 1, IMMEDIATE, 0, 10, 0, 3, 6, 0, 0, 0, 0, S1_NONE, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE),
-WAND("make invisible", "marble", CHARGED_WAND_NORMAL_DIR, 45, 150, 1, IMMEDIATE, 0,  8, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_MINERAL, HI_MINERAL, O1_NONE, O2_NONE, O3_NONE),
-WAND("slow monster",      "tin", CHARGED_WAND_NORMAL_DIR, 50, 150, 1, IMMEDIATE, 0, 12, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_METAL, HI_METAL, O1_NONE, O2_NONE, O3_NONE),
-WAND("speed monster",   "brass", CHARGED_WAND_NORMAL_DIR, 50, 150, 1, IMMEDIATE, 0, 12, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_COPPER, HI_COPPER, O1_NONE, O2_NONE, O3_NONE),
-WAND("undead turning", "copper", CHARGED_WAND_NORMAL_DIR, 45, 150, 1, IMMEDIATE, 0,  8, 0, 3, 6, 0, 1, 50, 200, S1_NONE, MAT_COPPER, HI_COPPER, O1_NONE, O2_NONE, O3_NONE),
-WAND("polymorph",      "silver", CHARGED_WAND_NORMAL_DIR, 45, 200, 1, IMMEDIATE, 0,  6, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_SILVER, HI_SILVER, O1_POLYMORPH_RESISTANT, O2_NONE, O3_NONE),
-WAND("cancellation", "platinum", CHARGED_WAND_NORMAL_DIR, 45, 200, 1, IMMEDIATE, 0, 10, 0, 0, 0, 0, 1, 20, 30, S1_SPELL_BYPASSES_MAGIC_RESISTANCE, MAT_PLATINUM, CLR_WHITE, O1_LIGHTNING_RESISTANT | O1_POLYMORPH_RESISTANT | O1_DISINTEGRATION_RESISTANT, O2_NONE, O3_NONE),
-WAND("teleportation", "iridium", CHARGED_WAND_NORMAL_DIR, 45, 200, 1, IMMEDIATE, 0, 10, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_METAL, CLR_BRIGHT_CYAN, O1_NONE, O2_NONE, O3_NONE),
-WAND("opening",          "zinc", CHARGED_WAND_NORMAL_DIR, 25, 150, 1, IMMEDIATE, 0, 12, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_METAL, HI_METAL, O1_NONE, O2_NONE, O3_NONE),
-WAND("locking",      "aluminum", CHARGED_WAND_NORMAL_DIR, 25, 150, 1, IMMEDIATE, 0, 12, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_METAL, HI_METAL, O1_NONE, O2_NONE, O3_NONE),
-WAND("probing",       "uranium", CHARGED_1D15_15, 30, 200, 1, IMMEDIATE, 0, 12, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_METAL, HI_METAL, O1_NONE, O2_NONE, O3_NONE),
-WAND("digging",          "iron", CHARGED_WAND_NORMAL_DIR, 50, 150, 1, RAY, RAY_WND_DIGGING,			10, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE),
-WAND("magic missile",   "steel", CHARGED_1D75_75, 50, 150, 1, RAY, RAY_WND_MAGIC_MISSILE,	12, 0, 2, 6, 0, 0, 0, 0, S1_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE),
-WAND("fire",        "hexagonal", CHARGED_1D30_30, 40, 175, 1, RAY, RAY_WND_FIRE,				 8, 0, 4, 6, 0, 0, 0, 0, S1_NONE, MAT_IRON, HI_METAL, O1_FIRE_RESISTANT, O2_NONE, O3_NONE),
-WAND("cold",            "short", CHARGED_1D6_6, 40, 175, 1, RAY, RAY_WND_COLD,				12, 0, 12, 6, 0, 0, 0, 0, S1_NONE, MAT_IRON, HI_METAL, O1_COLD_RESISTANT, O2_NONE, O3_NONE),
-WAND("sleep",		    "runed", CHARGED_WAND_NORMAL_DIR, 45, 175, 1, RAY, RAY_WND_SLEEP,			10, 0, 0, 0, 0, 4, 6, 0, S1_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE),
-WAND("disintegration",   "long", CHARGED_WAND_NORMAL_DIR, 5, 500, 1, RAY, RAY_WND_DISINTEGRATION,	 8, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_IRON, HI_METAL, O1_DISINTEGRATION_RESISTANT, O2_NONE, O3_NONE),
-WAND("petrification", "adamantium", CHARGED_WAND_NORMAL_DIR, 5, 500, 1, RAY, RAY_WND_PETRIFICATION, 8, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE),
-WAND("lightning",      "curved", CHARGED_1D15_15, 40, 175, 1, RAY, RAY_WND_LIGHTNING,		14, 0, 6, 6, 0, 0, 0, 0, S1_NONE, MAT_IRON, HI_METAL, O1_LIGHTNING_RESISTANT, O2_NONE, O3_NONE),
-WAND("death",	 "skull-headed", CHARGED_WAND_NORMAL_DIR, 5, 500, 1, RAY, RAY_WND_DEATH,			 8, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_BONE, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE),
+				   "orichalcum", None, CHARGED_WAND_NORMAL_NODIR, 30, 200, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_ORICHALCUM, HI_GOLD, O1_NONE, O2_NONE, O3_NONE),
+WAND("enlightenment", "crystal", None, CHARGED_WAND_NORMAL_NODIR, 15, 150, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_GLASS, HI_GLASS, O1_NONE, O2_NONE, O3_NONE),
+WAND("create monster",  "maple", None, CHARGED_WAND_NORMAL_NODIR, 45, 200, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE),
+WAND("wishing",          "pine", None, CHARGED_WAND_NORMAL_NODIR, 5, 500, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_WOOD, HI_WOOD, O1_LIGHTNING_RESISTANT, O2_NONE, O3_NONE),
+WAND("identify",	  "mithril", None, CHARGED_WAND_NORMAL_NODIR, 10, 200, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE),
+WAND("nothing",           "oak", None, CHARGED_WAND_NORMAL_DIR, 25, 100, 0, IMMEDIATE, 0,  0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE),
+WAND("striking",        "ebony", None, CHARGED_1D45_45, 70, 150, 1, IMMEDIATE, 0, 10, 0, 3, 6, 0, 0, 0, 0, S1_NONE, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE),
+WAND("make invisible", "marble", None, CHARGED_WAND_NORMAL_DIR, 45, 150, 1, IMMEDIATE, 0,  8, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_MINERAL, HI_MINERAL, O1_NONE, O2_NONE, O3_NONE),
+WAND("slow monster",      "tin", None, CHARGED_WAND_NORMAL_DIR, 50, 150, 1, IMMEDIATE, 0, 12, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_METAL, HI_METAL, O1_NONE, O2_NONE, O3_NONE),
+WAND("speed monster",   "brass", None, CHARGED_WAND_NORMAL_DIR, 50, 150, 1, IMMEDIATE, 0, 12, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_COPPER, HI_COPPER, O1_NONE, O2_NONE, O3_NONE),
+WAND("undead turning", "copper", None, CHARGED_WAND_NORMAL_DIR, 45, 150, 1, IMMEDIATE, 0,  8, 0, 3, 6, 0, 1, 50, 200, S1_NONE, MAT_COPPER, HI_COPPER, O1_NONE, O2_NONE, O3_NONE),
+WAND("polymorph",      "silver", None, CHARGED_WAND_NORMAL_DIR, 45, 200, 1, IMMEDIATE, 0,  6, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_SILVER, HI_SILVER, O1_POLYMORPH_RESISTANT, O2_NONE, O3_NONE),
+WAND("cancellation", "platinum", None, CHARGED_WAND_NORMAL_DIR, 45, 200, 1, IMMEDIATE, 0, 10, 0, 0, 0, 0, 1, 20, 30, S1_SPELL_BYPASSES_MAGIC_RESISTANCE, MAT_PLATINUM, CLR_WHITE, O1_LIGHTNING_RESISTANT | O1_POLYMORPH_RESISTANT | O1_DISINTEGRATION_RESISTANT, O2_NONE, O3_NONE),
+WAND("teleportation", "iridium", None, CHARGED_WAND_NORMAL_DIR, 45, 200, 1, IMMEDIATE, 0, 10, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_METAL, CLR_BRIGHT_CYAN, O1_NONE, O2_NONE, O3_NONE),
+WAND("opening",          "zinc", None, CHARGED_WAND_NORMAL_DIR, 25, 150, 1, IMMEDIATE, 0, 12, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_METAL, HI_METAL, O1_NONE, O2_NONE, O3_NONE),
+WAND("locking",      "aluminum", None, CHARGED_WAND_NORMAL_DIR, 25, 150, 1, IMMEDIATE, 0, 12, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_METAL, HI_METAL, O1_NONE, O2_NONE, O3_NONE),
+WAND("probing",       "uranium", None, CHARGED_1D15_15, 30, 200, 1, IMMEDIATE, 0, 12, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_METAL, HI_METAL, O1_NONE, O2_NONE, O3_NONE),
+WAND("digging",          "iron", None, CHARGED_WAND_NORMAL_DIR, 50, 150, 1, RAY, RAY_WND_DIGGING,			10, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE),
+WAND("magic missile",   "steel", None, CHARGED_1D75_75, 50, 150, 1, RAY, RAY_WND_MAGIC_MISSILE,	12, 0, 2, 6, 0, 0, 0, 0, S1_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE),
+WAND("fire",        "hexagonal", None, CHARGED_1D30_30, 40, 175, 1, RAY, RAY_WND_FIRE,				 8, 0, 4, 6, 0, 0, 0, 0, S1_NONE, MAT_IRON, HI_METAL, O1_FIRE_RESISTANT, O2_NONE, O3_NONE),
+WAND("cold",            "short", None, CHARGED_1D6_6, 40, 175, 1, RAY, RAY_WND_COLD,				12, 0, 12, 6, 0, 0, 0, 0, S1_NONE, MAT_IRON, HI_METAL, O1_COLD_RESISTANT, O2_NONE, O3_NONE),
+WAND("sleep",		    "runed", None, CHARGED_WAND_NORMAL_DIR, 45, 175, 1, RAY, RAY_WND_SLEEP,			10, 0, 0, 0, 0, 4, 6, 0, S1_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE),
+WAND("disintegration",   "long", None, CHARGED_WAND_NORMAL_DIR, 5, 500, 1, RAY, RAY_WND_DISINTEGRATION,	 8, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_IRON, HI_METAL, O1_DISINTEGRATION_RESISTANT, O2_NONE, O3_NONE),
+WAND("petrification", "adamantium", None, CHARGED_WAND_NORMAL_DIR, 5, 500, 1, RAY, RAY_WND_PETRIFICATION, 8, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE),
+WAND("lightning",      "curved", None, CHARGED_1D15_15, 40, 175, 1, RAY, RAY_WND_LIGHTNING,		14, 0, 6, 6, 0, 0, 0, 0, S1_NONE, MAT_IRON, HI_METAL, O1_LIGHTNING_RESISTANT, O2_NONE, O3_NONE),
+WAND("death",	 "skull-headed", None, CHARGED_WAND_NORMAL_DIR, 5, 500, 1, RAY, RAY_WND_DEATH,			 8, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_BONE, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE),
 WAND("resurrection", 
-	               "ornamental", CHARGED_WAND_NORMAL_DIR, 5, 200, 1, IMMEDIATE, 0,					 6, 0, 0, 0, 0, 0, 0, 0, S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE),
-WAND("evaporation",    "flimsy", CHARGED_WAND_NORMAL_DIR, 20, 150, 1, RAY, RAY_WND_EVAPORATION,		10, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE),
+	               "ornamental", None, CHARGED_WAND_NORMAL_DIR, 5, 200, 1, IMMEDIATE, 0,					 6, 0, 0, 0, 0, 0, 0, 0, S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE),
+WAND("evaporation",    "flimsy", None, CHARGED_WAND_NORMAL_DIR, 20, 150, 1, RAY, RAY_WND_EVAPORATION,		10, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE),
 /* extra descriptions, shuffled into use at start of new game */
-WAND(None,             "forked", CHARGED_WAND_NORMAL_DIR, 0, 150, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE),
-WAND(None,             "spiked", CHARGED_WAND_NORMAL_DIR, 0, 150, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE),
-WAND(None,            "jeweled", CHARGED_WAND_NORMAL_DIR, 0, 150, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_IRON, HI_MINERAL, O1_NONE, O2_NONE, O3_NONE),
+WAND(None,             "forked", None, CHARGED_WAND_NORMAL_DIR, 0, 150, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE),
+WAND(None,             "spiked", None, CHARGED_WAND_NORMAL_DIR, 0, 150, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE),
+WAND(None,            "jeweled", None, CHARGED_WAND_NORMAL_DIR, 0, 150, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_IRON, HI_MINERAL, O1_NONE, O2_NONE, O3_NONE),
 #undef WAND
 
 /* coins ... - so far, gold is all there is */

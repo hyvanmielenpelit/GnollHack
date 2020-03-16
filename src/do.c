@@ -598,7 +598,7 @@ register struct obj* obj;
 			hidemainclass = TRUE;
 		}
 	}
-	else if (objects[otyp].oc_class == AMULET_CLASS || objects[otyp].oc_class == RING_CLASS)
+	else if (objects[otyp].oc_class == AMULET_CLASS || objects[otyp].oc_class == RING_CLASS || objects[otyp].oc_class == POTION_CLASS)
 	{
 		if (stats_known)
 		{
@@ -2173,23 +2173,23 @@ register struct obj* obj;
 				putstr(datawin, 0, txt);
 			}
 		}
+	}
 
 
-		/* Description*/
-		if (objects[otyp].oc_short_description && !(obj->oartifact && obj->nknown))
-		{
-			/* One empty line here */
-			Sprintf(buf, "");
-			txt = buf;
-			putstr(datawin, 0, txt);
+	/* Description */
+	if (stats_known && objects[otyp].oc_short_description && !(obj->oartifact && obj->nknown))
+	{
+		/* One empty line here */
+		Sprintf(buf, "");
+		txt = buf;
+		putstr(datawin, 0, txt);
 
-			Sprintf(buf, "Description:");
-			txt = buf;
-			putstr(datawin, 0, txt);
-			Sprintf(buf, objects[otyp].oc_short_description);
-			txt = buf;
-			putstr(datawin, 0, txt);
-		}
+		Sprintf(buf, "Description:");
+		txt = buf;
+		putstr(datawin, 0, txt);
+		Sprintf(buf, objects[otyp].oc_short_description);
+		txt = buf;
+		putstr(datawin, 0, txt);
 	}
 
 

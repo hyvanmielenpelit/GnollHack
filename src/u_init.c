@@ -1254,6 +1254,10 @@ u_init()
 	updatemaxen();
 	updatemaxhp();
 
+	/* Make sure that hp and mana are at maximum */
+	u.uhp = u.uhpmax;
+	u.uen = u.uenmax;
+
     return;
 }
 

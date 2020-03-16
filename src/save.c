@@ -741,7 +741,7 @@ register size_t num;
             nh_terminate(EXIT_FAILURE);
         else
 #endif
-            panic("cannot write %u bytes to file #%d", num, fd);
+            panic("cannot write %zu bytes to file #%d", num, fd);
     }
 }
 

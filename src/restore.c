@@ -1674,7 +1674,7 @@ register size_t len;
             restoreprocs.mread_flags = -1;
             return;
         } else {
-            pline("Read %d instead of %u bytes.", rlen, len);
+            pline("Read %d instead of %zu bytes.", rlen, len);
             if (restoring) {
                 (void) nhclose(fd);
                 (void) delete_savefile();
