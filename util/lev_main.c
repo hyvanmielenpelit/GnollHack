@@ -1509,7 +1509,7 @@ sp_lev *maze;
             genericptr_t opdat = tmpo.opdat;
             if (opdat) {
                 struct opvar *ov = (struct opvar *) opdat;
-                size_t size;
+                int size;
                 Write(fd, &(ov->spovartyp), sizeof(ov->spovartyp));
                 switch (ov->spovartyp) {
                 case SPOVAR_NULL:
