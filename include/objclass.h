@@ -327,10 +327,18 @@ enum obj_tool_types {
 	TOOLTYPE_HORN = 8,
 	TOOLTYPE_CANDELABRUM = 9,
 	TOOLTYPE_BELL = 10,
+	TOOLTYPE_CANDLE = 11,
+	TOOLTYPE_LAMP = 12,
+	TOOLTYPE_LANTERN = 14,
+	TOOLTYPE_WHISTLE = 15,
+	TOOLTYPE_FLUTE = 16,
+	TOOLTYPE_HARP = 17,
+	TOOLTYPE_DRUM = 18,
 };
 
 static const char* tool_type_names[] = {
-	"tool", "box", "chest", "bag", "pick-axe", "shovel", "golf club", "hook", "horn", "candelabrum", "bell",
+	"tool", "box", "chest", "bag", "pick-axe", "shovel", "long club-headed weapon", "hook", "horn", "candelabrum", "bell", 
+	"candle", "lamp", "lantern", "whistle", "flute", "harp", "drum",
 };
 
 enum charged_init_types {

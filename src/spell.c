@@ -59,6 +59,7 @@ STATIC_DCL void FDECL(add_spell_prepare_menu_item, (winid, int, int, int, int, B
 STATIC_DCL void FDECL(add_spell_prepare_menu_heading, (winid, int, int, BOOLEAN_P));
 STATIC_DCL boolean FDECL(is_acceptable_component_object_type, (struct materialcomponent*, int));
 STATIC_DCL boolean FDECL(is_acceptable_component_monster_type, (struct materialcomponent*, int));
+STATIC_DCL int FDECL(count_matcomp_alternatives, (struct materialcomponent*));
 
 /* The roles[] table lists the role-specific values for tuning
  * percent_success().
@@ -4075,7 +4076,9 @@ int spell;
 		if (!otmp || !mc)
 			continue;
 
-		if (!failure)
+		int mc_alternatives = count_matcomp_alternatives(mc);
+
+		if (!failure && mc_alternatives == 1)
 			makeknown(otmp->otyp);
 
 		boolean usecomps = !(mc->flags & MATCOMP_NOT_SPENT);
@@ -4189,6 +4192,24 @@ int spell;
 }
 
 STATIC_OVL
+int
+count_matcomp_alternatives(mc)
+struct materialcomponent* mc;
+{
+	int cnt = 0;
+	for (int i = 0; i < MAX_MATCOMP_ALTERNATIVES; i++)
+	{
+		if (mc->objectid[i] == STRANGE_OBJECT)
+			break;
+
+		cnt++;
+	}
+
+	return cnt;
+}
+
+
+STATIC_OVL
 boolean
 is_acceptable_component_object_type(mc, otyp)
 struct materialcomponent *mc;
@@ -4244,7 +4265,9 @@ struct materialcomponent* mc;
 		return empty_string;
 
 	static char buf3[BUFSZ];
-	char buf2[BUFSZ], buf4[BUFSZ] = "";
+	char buf2[BUFSZ], buf4[BUFSZ];
+	strcpy(buf2, "");
+	strcpy(buf4, "");
 
 	if (permon && perobj)
 	{

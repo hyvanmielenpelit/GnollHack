@@ -237,6 +237,20 @@ int *lo_p, *hi_p; /* output: range that item belongs among */
 	case TOOL_CLASS:
 		if (otyp >= LEATHER_BAG && otyp <= BAG_OF_TRICKS)
 			*lo_p = LEATHER_BAG, * hi_p = BAG_OF_TRICKS;
+		if (otyp >= TALLOW_CANDLE && otyp <= MAGIC_CANDLE)
+			*lo_p = TALLOW_CANDLE, * hi_p = MAGIC_CANDLE;
+		if (otyp >= OIL_LAMP && otyp <= MAGIC_LAMP)
+			*lo_p = OIL_LAMP, * hi_p = MAGIC_LAMP;
+		if (otyp >= TIN_WHISTLE && otyp <= MAGIC_WHISTLE)
+			*lo_p = TIN_WHISTLE, * hi_p = MAGIC_WHISTLE;
+		if (otyp >= WOODEN_FLUTE && otyp <= MAGIC_FLUTE)
+			*lo_p = WOODEN_FLUTE, * hi_p = MAGIC_FLUTE;
+		if (otyp >= WOODEN_HARP && otyp <= MAGIC_HARP)
+			*lo_p = WOODEN_HARP, * hi_p = MAGIC_HARP;
+		if (otyp >= LEATHER_DRUM && otyp <= DRUM_OF_EARTHQUAKE)
+			*lo_p = LEATHER_DRUM, * hi_p = DRUM_OF_EARTHQUAKE;
+		if (otyp >= TOOLED_HORN && otyp <= HORN_OF_PLENTY)
+			*lo_p = TOOLED_HORN, * hi_p = HORN_OF_PLENTY;
 		break;
 	case MISCELLANEOUS_CLASS:
 		if (otyp >= IOUN_STONE_OF_PROTECTION && otyp <= IOUN_STONE_OF_SUSTENANCE)
@@ -302,7 +316,8 @@ shuffle_all()
     };
     /* armor sub-class type ranges (one item from each group) */
     static short shuffle_types[] = {
-        HELMET, LEATHER_GLOVES, SHIRT_OF_UNCONTROLLABLE_LAUGHTER, CLOAK_OF_PROTECTION, SPEED_BOOTS, SWORD_OF_DEFENSE, STAFF_OF_THE_MAGI, LEATHER_BAG
+        HELMET, LEATHER_GLOVES, SHIRT_OF_UNCONTROLLABLE_LAUGHTER, CLOAK_OF_PROTECTION, SPEED_BOOTS, SWORD_OF_DEFENSE, STAFF_OF_THE_MAGI, LEATHER_BAG,
+		TALLOW_CANDLE, OIL_LAMP, TIN_WHISTLE, WOODEN_FLUTE, TOOLED_HORN, WOODEN_HARP, LEATHER_DRUM
     };
 	static short shuffle_types_with_material[] = {
 		 ROBE, LEATHER_BRACERS, NOSE_RING_OF_BULL_STRENGTH, IOUN_STONE_OF_PROTECTION, 

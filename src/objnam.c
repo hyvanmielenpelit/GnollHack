@@ -3119,10 +3119,8 @@ STATIC_OVL NEARDATA const struct o_range o_ranges[] = {
     { "shirt", ARMOR_CLASS, HAWAIIAN_SHIRT, T_SHIRT },
 	{ "robe", ARMOR_CLASS, ROBE, MUMMY_WRAPPING },
 	{ "bracers", ARMOR_CLASS, LEATHER_BRACERS, BRACERS_OF_MAGIC_RESISTANCE },
-	{ "dragon scales", ARMOR_CLASS, GRAY_DRAGON_SCALES,
-      YELLOW_DRAGON_SCALES },
-    { "dragon scale mail", ARMOR_CLASS, GRAY_DRAGON_SCALE_MAIL,
-      YELLOW_DRAGON_SCALE_MAIL },
+	{ "dragon scales", ARMOR_CLASS, GRAY_DRAGON_SCALES, YELLOW_DRAGON_SCALES },
+    { "dragon scale mail", ARMOR_CLASS, GRAY_DRAGON_SCALE_MAIL, YELLOW_DRAGON_SCALE_MAIL },
     { "sword", WEAPON_CLASS, SHORT_SWORD, KATANA },
     { "venom", VENOM_CLASS, BLINDING_VENOM, ACID_VENOM },
 	{ "reagent", REAGENT_CLASS, THREAD_OF_SPIDER_SILK, FEATHER },
@@ -3135,6 +3133,10 @@ STATIC_OVL NEARDATA const struct o_range o_ranges[] = {
 	{ "gray stone", GEM_CLASS, LUCKSTONE, FLINT },
     { "grey stone", GEM_CLASS, LUCKSTONE, FLINT },
 	{ "mushroom", FOOD_CLASS, CHAMPIGNON, MAGIC_MUSHROOM },
+	{ "whistle", TOOL_CLASS, TIN_WHISTLE, MAGIC_WHISTLE },
+	{ "flute", TOOL_CLASS, WOODEN_FLUTE, MAGIC_FLUTE },
+	{ "harp", TOOL_CLASS, WOODEN_HARP, MAGIC_HARP },
+	{ "drum", TOOL_CLASS, LEATHER_DRUM, DRUM_OF_EARTHQUAKE },
 };
 
 /* alternate spellings; if the difference is only the presence or
