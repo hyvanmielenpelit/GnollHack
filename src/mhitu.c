@@ -2457,15 +2457,12 @@ register struct obj* omonwep;
             pline("Was that the touch of death?");
             break;
         }
-		int mcadj = 0;
         switch (rn2(20)) {
         case 19:
-			mcadj -= 4;
         case 18:
-			mcadj -= 4;
 		case 17:
-			mcadj -= 4;
-			if (!Death_resistance && !check_magic_cancellation_success(&youmonst, mcadj)) {
+			if (!Death_resistance) // && !check_magic_cancellation_success(&youmonst, mcadj)) 
+			{
                 killer.format = KILLED_BY_AN;
                 Strcpy(killer.name, "touch of death");
                 done(DIED);
