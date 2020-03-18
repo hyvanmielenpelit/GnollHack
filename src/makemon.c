@@ -2183,7 +2183,10 @@ unsigned long mmflags;
 	
 	/* set up level and hit points */
 	newmonhp(mtmp, mndx, mmflags);
-	
+
+	/* set up the number of heads */
+	mtmp->heads_left = ptr->heads;
+		
 	if (is_female(ptr))
         mtmp->female = TRUE;
     else if (is_male(ptr))

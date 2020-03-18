@@ -653,6 +653,7 @@ register struct monst *mtmp;
 
 	int tmp2 = tmp;
 	int weaponattackcount = 0;
+	int bite_butt_count = 0;
 
     for (i = 0; i < NATTK; i++) 
 	{
@@ -663,6 +664,11 @@ register struct monst *mtmp;
         if ((u.uswallow && mattk->aatyp != AT_ENGL)
             || (skipnonmagc && mattk->aatyp != AT_MAGC && mattk->aatyp != AT_SMMN))
             continue;
+
+		if (mattk->aatyp == AT_BITE || mattk->aatyp == AT_BUTT)
+			bite_butt_count++;
+		if (mtmp->data->heads > 1 && mtmp->heads_left < bite_butt_count)
+			continue;
 
         switch (mattk->aatyp) {
         case AT_CLAW: /* "hand to hand" attacks */

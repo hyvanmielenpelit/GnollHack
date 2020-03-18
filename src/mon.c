@@ -345,6 +345,7 @@ boolean createcorpse;
 	case PM_HELL_BAT:
 	case PM_PHOENIX:
 		additionalash++;
+	case PM_PYROHYDRA:
 	case PM_RED_NAGA:
 	case PM_FIRE_VORTEX:
 	case PM_SALAMANDER:
@@ -1375,6 +1376,16 @@ update_monster_timouts()
 
         /* regenerate hit points */
         monster_regeneration_and_timeout(mtmp, FALSE);
+
+		/* regenerate heads */
+		if (does_regenerate_bodyparts(mtmp->data) && mtmp->data->heads > 1 && mtmp->heads_left < mtmp->data->heads && !rn2(4))
+		{
+			mtmp->heads_left++;
+			if (canseemon(mtmp))
+			{
+				pline("%s grows a new head!", Monnam(mtmp));
+			}
+		}
 
         /* possibly polymorph shapechangers and lycanthropes */
         if (mtmp->cham >= LOW_PM)
@@ -2901,6 +2912,7 @@ struct monst *mtmp;
             mtmp->mbasehpmax = 10;
 		update_mon_maxhp(mtmp);
         mtmp->mhp = mtmp->mhpmax;
+		mtmp->heads_left = mtmp->data->heads;
 
         if (!surviver) {
             /* genocided monster can't be life-saved */
@@ -2959,6 +2971,7 @@ register struct monst *mtmp;
 				mtmp->mbasehpmax = 10;
 			update_mon_maxhp(mtmp);
 			mtmp->mhp = mtmp->mhpmax;
+			mtmp->heads_left = mtmp->data->heads;
 			/* mtmp==u.ustuck can happen if previously a fog cloud
                or poly'd hero is hugging a vampire bat */
             if (mtmp == u.ustuck) {

@@ -3276,10 +3276,17 @@ register struct monst *mon;
             ++multi_claw;
     }
     multi_claw = (multi_claw > 1); /* switch from count to yes/no */
+	int bite_butt_count = 0;
 
     for (i = 0; i < NATTK; i++) {
         /* sum[i] = 0; -- now done above */
         mattk = getmattk(&youmonst, mon, i, sum, &alt_attk);
+
+		if (mattk->aatyp == AT_BITE || mattk->aatyp == AT_BUTT)
+			bite_butt_count++;
+		if (youmonst.data->heads > 1 && youmonst.heads_left < bite_butt_count)
+			continue;
+
         weapon = 0;
         switch (mattk->aatyp) {
         case AT_WEAP:

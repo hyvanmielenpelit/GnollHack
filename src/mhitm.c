@@ -361,12 +361,20 @@ register struct monst *magr, *mdef;
 	int weaponattackcount = 0;
 
 	int tmp2 = tmp;
+	int bite_butt_count = 0;
+
     /* Now perform all attacks for the monster. */
     for (i = 0; i < NATTK; i++) {
 		tmp = tmp2; //Reset hitv to original start value
 		res[i] = MM_MISS;
         mattk = getmattk(magr, mdef, i, res, &alt_attk);
-        otmp = (struct obj *) 0;
+
+		if (mattk->aatyp == AT_BITE || mattk->aatyp == AT_BUTT)
+			bite_butt_count++;
+		if (magr->data->heads > 1 && magr->heads_left < bite_butt_count)
+			continue;
+
+		otmp = (struct obj *) 0;
         attk = 1;
 		int multistrike = 1;
 		int multistrikernd = 0;

@@ -570,6 +570,7 @@
 /* return TRUE if the monster tends to revive */
 #define is_reviver(ptr) (((ptr)->mflags3 & M3_REVIVES_FROM_DEAD) != 0)
 #define is_reviver_corpse(mnum) ((mons[(mnum)].mflags3 & M3_REVIVES_FROM_DEAD) != 0)
+#define does_regenerate_bodyparts(ptr) (((ptr)->mflags3 & M3_REGENERATES_LOST_BODY_PARTS) != 0)
 //(is_rider(ptr) || (ptr) == &mons[PM_PHOENIX] || (ptr)->mlet == S_TROLL)
 /* monsters whose corpses and statues need special handling;
    note that high priests and the Wizard of Yendor are flagged

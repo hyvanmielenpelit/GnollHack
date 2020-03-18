@@ -1518,6 +1518,10 @@ int mnum_override; /* Use this mnum instead */
             mtmp->isshk = 1;
         }
 
+		/* grow the heads back */
+		if (mtmp2->data->heads > 0 && mtmp->heads_left == 0)
+			mtmp->heads_left = mtmp2->data->heads;
+
 		/* heal the monster */
 		if (mtmp->mbasehpmax > mtmp2->mbasehpmax&& is_rider(mtmp2->data))
 			mtmp2->mbasehpmax = mtmp->mbasehpmax;

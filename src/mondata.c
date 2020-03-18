@@ -209,6 +209,7 @@ struct permonst *ptr;
 
     mon->data = ptr;
     mon->mnum = (short) monsndx(ptr);
+	mon->heads_left = mon->data->heads;
 
     if (mon->movement) { /* used to adjust poly'd hero as well as monsters */
         new_speed = ptr->mmove;

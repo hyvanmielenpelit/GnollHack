@@ -464,7 +464,8 @@ struct obj *corpse;
 		update_mon_maxhp(mtmp);
 		mtmp->mhp = mtmp->mhpmax;
 		mtmp->female = flags.female;
-        mtmp->msleeping = 1;
+		mtmp->heads_left = mtmp->data->heads;
+		mtmp->msleeping = 1;
     }
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         resetobjs(mtmp->minvent, FALSE);

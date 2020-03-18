@@ -100,6 +100,8 @@ struct monst {
 
 	int men, mbaseenmax, menmax;
 	int men_fraction;
+
+	uchar heads_left;
 	
 	unsigned mappearance; /* for undetected mimics and the wiz */
     uchar m_ap_type;      /* what mappearance is describing, m_ap_types */

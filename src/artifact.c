@@ -1437,7 +1437,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                    && (dieroll == 1 || mdef->data == &mons[PM_JABBERWOCK])) 
 		{
             static const char *const behead_msg[2] = { "%s beheads %s!",
-                                                       "%s decapitates %s!" };
+                                                       "%s decapitates %s!"};
 
             if (youattack && u.uswallow && mdef == u.ustuck)
                 return FALSE;
@@ -1459,13 +1459,27 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                           s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
                     return 2;
                 }
-                *dmgptr = 2 * (double)mdef->mhp + FATAL_DAMAGE_MODIFIER;
-                pline(behead_msg[rn2(SIZE(behead_msg))], The(wepdesc),
-                      mon_nam(mdef));
-                if (Hallucination && !flags.female)
-                    pline("Good job Henry, but that wasn't Anne.");
-                otmp->dknown = TRUE;
-                return 2;
+				if (mdef->heads_left > 1)
+				{
+					mdef->heads_left--;
+					*dmgptr += 0.625 * (double)mdef->mhpmax / (double)max(1, mdef->data->heads); //Adjusted based on Tiamat in AD&D
+					pline("%s cuts one of %s heads off!", The(wepdesc),
+						s_suffix(mon_nam(mdef)));
+					otmp->dknown = TRUE;
+					return 1;
+				}
+				else
+				{
+					if (mdef->heads_left > 0)
+						mdef->heads_left--;
+					*dmgptr = 2 * (double)mdef->mhp + FATAL_DAMAGE_MODIFIER;
+					pline(behead_msg[rn2(SIZE(behead_msg))], The(wepdesc),
+						mon_nam(mdef));
+					if (Hallucination && !flags.female)
+						pline("Good job Henry, but that wasn't Anne.");
+					otmp->dknown = TRUE;
+					return 2;
+				}
             }
 			else
 			{
@@ -1481,11 +1495,25 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                           body_part(NECK));
                     return 2;
                 }
-                *dmgptr = 2 * (double)(Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER;
-                pline(behead_msg[rn2(SIZE(behead_msg))], The(wepdesc), "you");
-                otmp->dknown = TRUE;
-                /* Should amulets fall off? */
-                return 2;
+
+				if (mdef->heads_left > 1)
+				{
+					mdef->heads_left--;
+					*dmgptr += 0.625 * (double)(Upolyd ? u.mh : u.uhp) / (double)max(1, mdef->data->heads); //Adjusted based on Tiamat in AD&D
+					pline("%s cuts one of your %s off!", The(wepdesc), makeplural(body_part(HEAD)));
+					otmp->dknown = TRUE;
+					return 1;
+				}
+				else
+				{
+					if (mdef->heads_left > 0)
+						mdef->heads_left--;
+					*dmgptr = 2 * (double)(Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER;
+					pline(behead_msg[rn2(SIZE(behead_msg))], The(wepdesc), "you");
+					otmp->dknown = TRUE;
+					/* Should amulets fall off? */
+					return 2;
+				}
             }
         }
     }
@@ -1703,7 +1731,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 
 					totaldamagedone += damagedone;
 
-					if(!(mons[mdef->mnum].mflags3 & M3_REGENERATES_LOST_BODY_PARTS))
+					if(!does_regenerate_bodyparts(mdef->data))
 					{
 						/* Max HP does not go down if the creature can regenerate the lost body part */
 						mdef->mbasehpmax -= damagedone;
@@ -1747,7 +1775,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 
 						totaldamagedone += damagedone;
 
-						if (!(youmonst.data->mflags3 & M3_REGENERATES_LOST_BODY_PARTS))
+						if (!does_regenerate_bodyparts(youmonst.data))
 						{
 							/* Max HP does not go down if the creature can regenerate the lost body part */
 							u.basemhmax -= damagedone;
@@ -1764,7 +1792,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 
 						totaldamagedone += damagedone;
 
-						if (!(youmonst.data->mflags3 & M3_REGENERATES_LOST_BODY_PARTS))
+						if (!does_regenerate_bodyparts(youmonst.data))
 						{
 							/* Max HP does not go down if the creature can regenerate the lost body part */
 							u.ubasehpmax -= damagedone;
@@ -1825,7 +1853,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 
 					totaldamagedone += damagedone;
 
-					if (!(mons[mdef->mnum].mflags3 & M3_REGENERATES_LOST_BODY_PARTS))
+					if (!does_regenerate_bodyparts(mdef->data))
 					{
 						/* Max HP does not go down if the creature can regenerate the lost body part */
 						mdef->mbasehpmax -= damagedone;
@@ -1864,7 +1892,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 
 						totaldamagedone += damagedone;
 
-						if (!(youmonst.data->mflags3 & M3_REGENERATES_LOST_BODY_PARTS))
+						if (!does_regenerate_bodyparts(youmonst.data))
 						{
 							/* Max HP does not go down if the creature can regenerate the lost body part */
 							u.basemhmax -= damagedone;
@@ -1881,7 +1909,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 
 						totaldamagedone += damagedone;
 
-						if (!(youmonst.data->mflags3 & M3_REGENERATES_LOST_BODY_PARTS))
+						if (!does_regenerate_bodyparts(youmonst.data))
 						{
 							/* Max HP does not go down if the creature can regenerate the lost body part */
 							u.uhpmax -= damagedone;
@@ -1933,12 +1961,25 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 				}
 				else
 				{
-					pline(behead_msg[rn2(SIZE(behead_msg))], The(xname(otmp)),
-						mon_nam(mdef));
-					if (Hallucination && !flags.female)
-						pline("Good job Henry, but that wasn't Anne.");
-					otmp->dknown = TRUE;
-					lethaldamage = TRUE;
+					if (mdef->heads_left > 1)
+					{
+						mdef->heads_left--;
+						totaldamagedone += (int)(0.625 * (double)mdef->mhpmax / (double)max(1, mdef->data->heads)); //Adjusted based on Tiamat in AD&D
+						pline("%s cuts one of %s heads off!", The(xname(otmp)), s_suffix(mon_nam(mdef)));
+						otmp->dknown = TRUE;
+					}
+					else
+					{
+						if(mdef->heads_left > 0)
+							mdef->heads_left--;
+
+						pline(behead_msg[rn2(SIZE(behead_msg))], The(xname(otmp)),
+							mon_nam(mdef));
+						if (Hallucination && !flags.female)
+							pline("Good job Henry, but that wasn't Anne.");
+						otmp->dknown = TRUE;
+						lethaldamage = TRUE;
+					}
 				}
 			}
 			else
@@ -1953,9 +1994,22 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 				}
 				else
 				{
-					pline(behead_msg[rn2(SIZE(behead_msg))], The(xname(otmp)), "you");
-					otmp->dknown = TRUE;
-					lethaldamage = TRUE;
+					if (mdef->heads_left > 1)
+					{
+						mdef->heads_left--;
+						totaldamagedone += (int)(0.625 * (double)(Upolyd ? u.mhmax : u.uhpmax) / (double)max(1, mdef->data->heads)); //Adjusted based on Tiamat in AD&D
+						pline("%s cuts one of your %s off!", The(xname(otmp)), makeplural(body_part(HEAD)));
+						otmp->dknown = TRUE;
+					}
+					else
+					{
+						if (mdef->heads_left > 0)
+							mdef->heads_left--;
+
+						pline(behead_msg[rn2(SIZE(behead_msg))], The(xname(otmp)), "you");
+						otmp->dknown = TRUE;
+						lethaldamage = TRUE;
+					}
 				}
 			}
 		}
