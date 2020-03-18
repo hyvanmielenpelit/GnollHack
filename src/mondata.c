@@ -79,7 +79,7 @@ static NEARDATA struct mflag_description m1flag_descriptions[] = {
 	{ M1_MINDLESS, "mindless", "mindless monsters" },
 	{ M1_NOEYES, "eyeless", "eyeless monsters" },
 	{ M1_NOHANDS, "handless", "handless monsters" },
-	{ M1_NOHEAD, "headless", "headless monsters" },
+	{ M1_NONECK, "headless", "headless monsters" },
 	{ M1_NOLIMBS, "limbless", "limbless monsters" },
 	{ M1_OMNIVORE, "omnivore", "omnivores" },
 	{ M1_OVIPAROUS, "oviparious", "oviparious monsters" },
@@ -478,7 +478,7 @@ struct monst *mon;
        who don't need to breathe (brain, if any, doesn't care).
        Mindless creatures who do need to breath are vulnerable, as
        are non-breathing creatures which have higher brain function. */
-    if (!has_head(mon->data))
+    if (!has_neck(mon->data))
         return FALSE;
     if (mon == &youmonst) {
         /* hero can't be mindless but poly'ing into mindless form can

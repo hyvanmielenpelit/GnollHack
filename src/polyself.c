@@ -1148,9 +1148,9 @@ break_armor()
         }
 	}
 	//Helmet
-    if (has_horns(youmonst.data) || !has_head(youmonst.data)) {
+    if (has_horns(youmonst.data) || !has_place_to_put_helmet_on(youmonst.data)) {
         if ((otmp = uarmh) != 0) {
-            if (is_flimsy(otmp) && !donning(otmp) && has_head(youmonst.data)) {
+            if (is_flimsy(otmp) && !donning(otmp) && has_place_to_put_helmet_on(youmonst.data)) {
                 char hornbuf[BUFSZ];
 
                 /* Future possibilities: This could damage/destroy helmet */

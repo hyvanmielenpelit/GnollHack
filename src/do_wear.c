@@ -1446,9 +1446,9 @@ boolean noisy;
                           plur(num_horns(youmonst.data)));
             err++;
 		}
-		else if (Upolyd && !has_head(youmonst.data)) {
+		else if (Upolyd && !has_place_to_put_helmet_on(youmonst.data)) {
 			if (noisy)
-				You("have no head to put your %s on.",
+				You("have no place to put your %s on.",
 					helm_simple_name(otmp));
 			err++;
 		} else

@@ -39,7 +39,9 @@
 #define notake(ptr) (((ptr)->mflags1 & M1_NOTAKE) != 0L)
 #define can_operate_objects(ptr) (!(nohands(ptr) || verysmall(ptr)) || is_telekinetic_operator(ptr))
 
-#define has_head(ptr) (((ptr)->mflags1 & M1_NOHEAD) == 0L)
+#define has_head(ptr) ((ptr)->heads > 0)
+#define has_neck(ptr) (((ptr)->mflags1 & M1_NONECK) == 0L && has_head(ptr))
+#define has_place_to_put_helmet_on(ptr) has_head(ptr)
 #define has_horns(ptr) (num_horns(ptr) > 0)
 #define is_whirly(ptr) \
     ((ptr)->mlet == S_VORTEX || (ptr) == &mons[PM_AIR_ELEMENTAL])

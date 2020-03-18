@@ -1585,7 +1585,7 @@ boolean creation;
 	}
 
 	/* Other armor types */
-	if (has_head(mon->data))
+	if (has_place_to_put_helmet_on(mon->data))
 		wears_helmet = m_dowear_type(mon, W_ARMH, creation, FALSE);
     if (!nohands(mon->data) && (!MON_WEP(mon) || !bimanual(MON_WEP(mon))))
 		wears_shield = m_dowear_type(mon, W_ARMS, creation, FALSE);
@@ -1598,7 +1598,7 @@ boolean creation;
 
 
 	/* Accessories */
-	if (has_head(mon->data))
+	if (has_neck(mon->data))
 		wears_amulet = m_dowear_type(mon, W_AMUL, creation, FALSE);
 	if (!nohands(mon->data) && (cursed_items_are_positive_mon(mon) || !(MON_WEP(mon) && mwelded(MON_WEP(mon), mon)) && !(old_gloves && old_gloves->cursed)))
 		wears_ringr = m_dowear_type(mon, W_RINGR, creation, FALSE);

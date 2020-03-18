@@ -957,7 +957,12 @@ struct monst *mtmp;
     char info[BUFSZ], monnambuf[BUFSZ];
 
     info[0] = 0;
-    if (is_tame(mtmp)) {
+	if (mtmp->data->heads > 1)
+	{
+		Sprintf(eos(info), "  %d(%d) heads", mtmp->heads_left, mtmp->data->heads);
+	}
+
+	if (is_tame(mtmp)) {
         Strcat(info, ", tame");
         if (wizard) {
             Sprintf(eos(info), " (%d", is_tame(mtmp));
@@ -1066,6 +1071,12 @@ ustatusline()
     char info[BUFSZ];
 
     info[0] = '\0';
+
+	if (youmonst.data->heads > 1)
+	{
+		Sprintf(eos(info), "  %d(%d) heads", youmonst.heads_left, youmonst.data->heads);
+	}
+
     if (Sick) {
         Strcat(info, ", dying from");
         if (u.usick_type & SICK_VOMITABLE)

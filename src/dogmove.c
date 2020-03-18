@@ -134,7 +134,7 @@ struct monst* mon;
 					continue;
 				if ((is_cloak(obj)) && (cantweararm(mon->data) && mon->data->msize != MZ_SMALL))
 					continue;
-				if ((obj->oclass == AMULET_CLASS || is_helmet(obj)) && !has_head(mon->data))
+				if ((obj->oclass == AMULET_CLASS || is_helmet(obj)) && !has_place_to_put_helmet_on(mon->data))
 					continue;
 				if ((obj->oclass == RING_CLASS || is_gloves(obj) || is_bracers(obj)) && nohands(mon->data))
 					continue;

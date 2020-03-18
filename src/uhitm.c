@@ -3508,7 +3508,7 @@ register struct monst *mon;
                     unconcerned = (byhand && !can_be_strangled(mon));
 
             if (sticks(mon->data) || u.uswallow || notonhead
-                || (byhand && (uwep || !has_head(mon->data)))) {
+                || (byhand && (uwep || !has_neck(mon->data)))) {
                 /* can't hold a holder due to subsequent ambiguity over
                    who is holding whom; can't hug engulfer from inside;
                    can't hug a worm tail (would immobilize entire worm!);

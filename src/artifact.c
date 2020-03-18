@@ -1444,7 +1444,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 			strcpy(wepdesc, artifact_hit_desc);
             if (!youdefend)
 			{
-                if (!has_head(mdef->data) || notonhead || u.uswallow) 
+                if (!has_neck(mdef->data) || notonhead || u.uswallow)
 				{
                     if (youattack)
                         pline("Somehow, you miss %s wildly.", mon_nam(mdef));
@@ -1483,7 +1483,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
             }
 			else
 			{
-                if (!has_head(youmonst.data)) {
+                if (!has_neck(youmonst.data)) {
                     pline("Somehow, %s misses you wildly.",
                           magr ? mon_nam(magr) : the(wepdesc));
                     *dmgptr = 0;
@@ -1949,7 +1949,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 			if (youattack && u.uswallow && mdef == u.ustuck)
 				;
 			else if (!youdefend) {
-				if (!has_head(mdef->data) || notonhead || u.uswallow) {
+				if (!has_neck(mdef->data) || notonhead || u.uswallow) {
 					if (youattack)
 						pline("Somehow, you miss %s wildly.", mon_nam(mdef));
 					else if (vis)
@@ -1984,7 +1984,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 			}
 			else
 			{
-				if (!has_head(youmonst.data)) 
+				if (!has_neck(youmonst.data))
 				{
 					pline("Somehow, %s misses you wildly.", (magr ? mon_nam(magr) : the(xname(otmp))) );
 				}
