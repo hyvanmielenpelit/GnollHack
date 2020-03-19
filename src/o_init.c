@@ -130,7 +130,6 @@ init_objects()
 	{
 		/* initialize object descriptions */
 		objects[i].oc_name_idx = objects[i].oc_descr_idx = i;
-
 	}
 	
 	/* initialize object material components, if many pointing to the same spell, the last index remains */
@@ -382,7 +381,8 @@ int fd, mode;
     /* as long as we use only one version of Hack we
        need not save oc_name and oc_descr, but we must save
        oc_uname for all objects */
-    for (i = 0; i < NUM_OBJECTS; i++)
+	for (i = 0; i < NUM_OBJECTS; i++)
+	{
         if (objects[i].oc_uname) {
             if (perform_bwrite(mode)) {
                 len = strlen(objects[i].oc_uname) + 1;
@@ -394,6 +394,7 @@ int fd, mode;
                 objects[i].oc_uname = 0;
             }
         }
+	}
 }
 
 void
@@ -406,12 +407,14 @@ register int fd;
     mread(fd, (genericptr_t) bases, sizeof bases);
     mread(fd, (genericptr_t) disco, sizeof disco);
     mread(fd, (genericptr_t) objects, sizeof(struct objclass) * NUM_OBJECTS);
-    for (i = 0; i < NUM_OBJECTS; i++)
+	for (i = 0; i < NUM_OBJECTS; i++)
+	{
         if (objects[i].oc_uname) {
             mread(fd, (genericptr_t) &len, sizeof len);
             objects[i].oc_uname = (char *) alloc(len);
             mread(fd, (genericptr_t) objects[i].oc_uname, len);
         }
+	}
 #ifdef USE_TILES
     shuffle_tiles();
 #endif

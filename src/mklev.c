@@ -994,6 +994,7 @@ makelevel()
 				|| IS_FURNITURE(levl[x][y].typ) || IS_ALTAR(levl[x][y].typ) || (x == sstairs.sx && y == sstairs.sy)
 				));
 
+			/* Stash has now some random contents */
 			struct obj* stash = mksobj_at(CHEST, x, y, FALSE, FALSE);
 			stash->olocked = FALSE;
 			stash->otrapped = FALSE;
@@ -1001,8 +1002,19 @@ makelevel()
 			Sprintf(namebuf, "%s stash", s_suffix(plname));
 			stash = uoname(stash, namebuf);
 
+			/* Stash has now some random contents */
 			struct obj* otmp = (struct obj*)0;
 
+			/* 2-3 items in stash */
+			int itemnum = 2 + (!rn2(4) ? 1 : 0);
+			for (int icnt = 0; icnt < itemnum; icnt++)
+			{
+				otmp = mkobj(RANDOM_CLASS, FALSE, TRUE);
+				otmp->bknown = 1;
+				(void)add_to_container(stash, otmp);
+			}
+
+#if 0
 			if (!carrying(AXE) && !carrying(BATTLE_AXE))
 			{
 				otmp = mksobj(AXE, FALSE, FALSE, FALSE);
@@ -1019,22 +1031,12 @@ makelevel()
 				(void)add_to_container(stash, otmp);
 			}
 
-
-			otmp = mksobj(SCR_IDENTIFY, FALSE, FALSE, FALSE);
-			otmp->bknown = 1;
-			(void)add_to_container(stash, otmp);
-
 			otmp = mkobj(FOOD_CLASS, FALSE, FALSE);
 			otmp->bknown = 1;
 			(void)add_to_container(stash, otmp);
-
-			otmp = mkobj(SCROLL_CLASS, FALSE, FALSE);
-			otmp->bknown = 1;
-			(void)add_to_container(stash, otmp);
-			stash->owt = weight(stash);
+#endif
 
 		}
-
 
         x = 80 - (depth(&u.uz) * 2);
         if (x < 2)

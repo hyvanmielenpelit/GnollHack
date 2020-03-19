@@ -295,6 +295,8 @@ static struct trobj KnightSilverGauntlets[] = { { SILVER_GAUNTLETS, 0, ARMOR_CLA
 								{ 0, 0, 0, 0, 0, 0 } };
 static struct trobj PriestSilverGauntlets[] = { { SILVER_GAUNTLETS, 0, ARMOR_CLASS, 1, 1, 0 },
 								{ 0, 0, 0, 0, 0, 0 } };
+static struct trobj ScrollOfIdentify[] = { { SCR_IDENTIFY, 0, SCROLL_CLASS, 1, 0, 0 },
+									{ 0, 0, 0, 0, 0, 0 } };
 
 /* race-based substitutions for initial inventory;
    the weaker cloak for elven rangers is intentional--they shoot better */
@@ -1123,6 +1125,13 @@ u_init()
         break;
     }
 
+	/* Everybody starts with one scroll of identify */
+	ini_inv(ScrollOfIdentify);
+
+	/* Scroll of identify self-identifies itself, in the case previous did not do it automatically */
+	knows_object(SCR_IDENTIFY);
+
+
     /*** Race-specific initializations ***/
     switch (Race_switch) {
     case PM_HUMAN:
@@ -1201,7 +1210,6 @@ u_init()
     default: /* impossible */
         break;
     }
-
 
 	/* Add school-specific spells */
 	add_school_specific_spellbooks();

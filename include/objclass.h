@@ -389,9 +389,7 @@ enum spe_init_types {
 struct objclass {
     short oc_name_idx;              /* index of actual name */
     short oc_descr_idx;             /* description when name unknown */
-    char *oc_uname;                 /* called by user */
-	const char* oc_content_desc;    /* high-level books: description of contents */
-	const char* oc_short_description; /* spellbooks: one line summary of what the spell does */
+	char *oc_uname;                 /* called by user */
 	Bitfield(oc_name_known, 1);     /* discovered */
     Bitfield(oc_merge, 1);          /* merge otherwise equal objects */
     Bitfield(oc_uses_known, 1);     /* obj->known affects full description;
@@ -933,6 +931,8 @@ struct class_sym {
 struct objdescr {
     const char *oc_name;  /* actual name */
     const char *oc_descr; /* description when name unknown */
+	const char* oc_content_description; /* description of contents (spellbooks) */
+	const char* oc_item_description; /* description of the item */
 };
 
 extern NEARDATA struct objclass objects[];
@@ -1016,6 +1016,8 @@ struct fruit {
 
 #define OBJ_NAME(obj) (obj_descr[(obj).oc_name_idx].oc_name)
 #define OBJ_DESCR(obj) (obj_descr[(obj).oc_descr_idx].oc_descr)
+#define OBJ_CONTENT_DESC(obj) (obj_descr[(obj).oc_name_idx].oc_content_description)
+#define OBJ_ITEM_DESC(obj) (obj_descr[(obj).oc_name_idx].oc_item_description)
 
 
 
