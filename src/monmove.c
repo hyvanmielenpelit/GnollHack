@@ -273,8 +273,21 @@ struct monst *mtmp;
                 || (Displaced && mtmp->mux == x && mtmp->muy == y))
             && !(mtmp->isshk || mtmp->isgd || is_blinded(mtmp)
                  || is_peaceful(mtmp) || mtmp->data->mlet == S_HUMAN
-                 || mtmp->data == &mons[PM_MINOTAUR]
+                 || ignores_Elbereth(mtmp->data)
                  || Inhell || In_endgame(&u.uz)));
+}
+
+boolean
+onnopickup(x, y, mtmp)
+int x, y;
+struct monst* mtmp;
+{
+	if (onscary(x, y, mtmp))
+		return FALSE;
+
+	return (sengr_at("Gilthoniel", x, y, TRUE)
+		&& !(mtmp->isshk || mtmp->isgd || mtmp->iswiz)
+		);
 }
 
 
@@ -583,7 +596,9 @@ register struct monst *mtmp;
     }
 
     /* not frozen or sleeping: wipe out texts written in the dust */
-    wipe_engr_at(mtmp->mx, mtmp->my, 1, FALSE);
+	struct engr* ep = engr_at(mtmp->mx, mtmp->my);
+	if(ep && ep->engr_type != HEADSTONE && !sengr_at("Gilthoniel", mtmp->mx, mtmp->my, TRUE))
+	    wipe_engr_at(mtmp->mx, mtmp->my, 1, FALSE);
 
     /* some monsters teleport */
     if (is_fleeing(mtmp) && !rn2(40) && has_teleportation(mtmp) && !mtmp->iswiz
@@ -1212,7 +1227,8 @@ register int after;
                  * searches_for_item().  We need to do this check in
                  * mpickstuff() as well.
                  */
-                if (xx >= lmx && xx <= oomx && yy >= lmy && yy <= oomy) {
+                if (xx >= lmx && xx <= oomx && yy >= lmy && yy <= oomy) 
+				{
                     /* don't get stuck circling around object that's
                        underneath an immobile or hidden monster;
                        paralysis victims excluded */
@@ -1240,17 +1256,19 @@ register int after;
                          || (likegems && otmp->oclass == GEM_CLASS
                              && objects[otmp->otyp].oc_material != MAT_MINERAL)
                          || (conceals && !cansee(otmp->ox, otmp->oy))
-                         || (ptr == &mons[PM_GELATINOUS_CUBE]
+                         || (slurps_items(ptr)
                              && !index(indigestion, otmp->oclass)
                              && !(otmp->otyp == CORPSE
                                   && touch_petrifies(&mons[otmp->corpsenm]))))
-                        && touch_artifact(otmp, mtmp)) {
+                        && touch_artifact(otmp, mtmp))
+					{
                         if (can_carry(mtmp, otmp) > 0
                             && (throws_rocks(ptr) || !sobj_at(BOULDER, xx, yy))
                             && (!is_unicorn(ptr)
                                 || objects[otmp->otyp].oc_material == MAT_GEMSTONE)
-                            /* Don't get stuck circling an Elbereth */
-                            && !onscary(xx, yy, mtmp)) {
+                            /* Don't get stuck circling an Elbereth or Gilthoniel */
+                            && !onnopickup(xx, yy, mtmp)) 
+						{
                             minr = distmin(omx, omy, xx, yy);
                             oomx = min(COLNO - 1, omx + minr);
                             oomy = min(ROWNO - 1, omy + minr);
@@ -1649,7 +1667,7 @@ register int after;
                 newsym(mtmp->mx, mtmp->my);
         }
 
-        if (OBJ_AT(mtmp->mx, mtmp->my) && mon_can_move(mtmp) && !mtmp->issummoned && mon_can_reach_floor(mtmp)) 
+        if (OBJ_AT(mtmp->mx, mtmp->my) && mon_can_move(mtmp) && !mtmp->issummoned && mon_can_reach_floor(mtmp) && !onnopickup(mtmp->mx, mtmp->my, mtmp))
 		{
             /* recompute the likes tests, in case we polymorphed
              * or if the "likegold" case got taken above */
@@ -1677,7 +1695,7 @@ register int after;
                 mpickgold(mtmp);
 
             /* Maybe a cube ate just about anything */
-            if (ptr == &mons[PM_GELATINOUS_CUBE]) {
+            if (slurps_items(ptr)) {
                 if (meatobj(mtmp) == 2)
                     return 2; /* it died */
             }

@@ -256,6 +256,8 @@
 #define M4_ALTERNATIVE_PASSIVE_DEFENSE_TEXT	0x00000080UL		/* e.g. engulfed in X's flames rather than feel very hot */
 
 #define M4_PITWALK					0x00000100UL		/* can walk in and out of pits without trouble */
+#define M4_IGNORES_ELBERETH			0x00000200UL		/* is unaffected by Elbereth like a minotaur */
+#define M4_SLURPS_ITEMS				0x00000400UL		/* hoovers up items like a gelatinous cube */
 
 
 #define MZ_TINY 0          /* < 2' */

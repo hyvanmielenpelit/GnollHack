@@ -850,7 +850,8 @@ struct trap *trap;
     struct permonst *mptr = mtmp->data;
 
     if (amorphous(mptr) || is_whirly(mptr) || flaming(mptr)
-        || unsolid(mptr) || noncorporeal(mptr) || mptr == &mons[PM_GELATINOUS_CUBE]) {
+        || unsolid(mptr) || noncorporeal(mptr) || slurps_items(mptr))
+	{
         xchar x = trap->tx;
         xchar y = trap->ty;
 
@@ -4587,18 +4588,20 @@ STATIC_OVL int
 disarm_squeaky_board(ttmp)
 struct trap *ttmp;
 {
-    struct obj *obj;
-    boolean bad_tool;
     int fails;
 
-    obj = getobj(oil, "untrap with", 0, "");
+#if 0
+	struct obj* obj;
+	boolean bad_tool;
+	obj = getobj(oil, "untrap with", 0, "");
     if (!obj)
         return 0;
 
     bad_tool = (obj->cursed
                 || ((obj->otyp != POT_OIL || obj->lamplit)
                     && (obj->otyp != CAN_OF_GREASE || !obj->charges)));
-    fails = try_disarm(ttmp, bad_tool);
+
+	fails = try_disarm(ttmp,  bad_tool);
     if (fails < 2)
         return fails;
 
@@ -4609,7 +4612,11 @@ struct trap *ttmp;
         useup(obj); /* oil */
         makeknown(POT_OIL);
     }
-    You("repair the squeaky board."); /* no madeby_u */
+#endif
+	fails = try_disarm(ttmp, FALSE);
+	if (fails < 2)
+		return fails;
+	You("repair the squeaky board."); /* no madeby_u */
     deltrap(ttmp);
     newsym(u.ux + u.dx, u.uy + u.dy);
 

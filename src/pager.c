@@ -461,7 +461,10 @@ char *buf, *monbuf;
         bhitpos.x = x;
         bhitpos.y = y;
         if ((mtmp = m_at(x, y)) != 0) {
-            look_at_monster(buf, monbuf, mtmp, x, y);
+			if (is_tame(mtmp))
+				print_mstatusline(buf, mtmp, ARTICLE_NONE);
+			else
+	            look_at_monster(buf, monbuf, mtmp, x, y);
             pm = mtmp->data;
         } else if (Hallucination) {
             /* 'monster' must actually be a statue */

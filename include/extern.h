@@ -1666,6 +1666,7 @@ E boolean FDECL(monhaskey, (struct monst *, BOOLEAN_P));
 E void FDECL(monster_regeneration_and_timeout, (struct monst *, BOOLEAN_P));
 E int FDECL(dochugw, (struct monst *));
 E boolean FDECL(onscary, (int, int, struct monst *));
+E boolean FDECL(onnopickup, (int, int, struct monst*));
 E void FDECL(monflee, (struct monst *, int, BOOLEAN_P, BOOLEAN_P));
 E void FDECL(make_mon_fearful, (struct monst*, int));
 E void FDECL(mon_yells, (struct monst *, const char *, const char *, const char*, BOOLEAN_P));
@@ -2204,6 +2205,7 @@ E void FDECL(free_epri, (struct monst *));
 E const char *FDECL(align_str, (ALIGNTYP_P));
 E char *FDECL(piousness, (BOOLEAN_P, const char *));
 E void FDECL(mstatusline, (struct monst *));
+E void FDECL(print_mstatusline, (char*, struct monst*, int));
 E void NDECL(ustatusline);
 
 /* ### quest.c ### */

@@ -156,6 +156,10 @@
 #define is_vegan_food(ptr) (((ptr)->mflags4 & M4_VEGAN_FOOD) != 0L)
 #define alternative_passive_defense_text(ptr) \
     (((ptr)->mflags4 & M4_ALTERNATIVE_PASSIVE_DEFENSE_TEXT) != 0)
+#define ignores_Elbereth(ptr) \
+    (((ptr)->mflags4 & M4_IGNORES_ELBERETH) != 0)
+#define slurps_items(ptr) \
+    (((ptr)->mflags4 & M4_SLURPS_ITEMS) != 0)
 
 
 

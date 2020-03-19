@@ -331,7 +331,7 @@ int x, y;
                       is_ice(x, y) ? "frost" : "dust");
             }
             break;
-        case ENGRAVE:
+		case ENGRAVE:
         case HEADSTONE:
             if (!Blind || can_reach_floor(TRUE)) {
                 sensed = 1;
@@ -403,7 +403,7 @@ xchar e_type;
     ep->engr_txt = (char *) (ep + 1);
     Strcpy(ep->engr_txt, s);
     /* engraving Elbereth shows wisdom */
-    if (!in_mklev && !strcmp(s, "Elbereth"))
+    if (!in_mklev && (!strcmp(s, "Elbereth") || !strcmp(s, "Gilthoniel")))
         exercise(A_WIS, TRUE);
     ep->engr_time = e_time;
     ep->engr_type = e_type > 0 ? e_type : rnd(N_ENGRAVE - 1);
@@ -998,7 +998,7 @@ doengrave()
     case HEADSTONE:
         everb = (oep && !eow ? "add to the epitaph on" : "engrave on");
         break;
-    case ENGRAVE:
+	case ENGRAVE:
         everb = (oep && !eow ? "add to the engraving in" : "engrave in");
         break;
     case BURN:
@@ -1082,7 +1082,7 @@ doengrave()
             nomovemsg = "You finish writing in the dust.";
         break;
     case HEADSTONE:
-    case ENGRAVE:
+	case ENGRAVE:
         multi = -(len / 10);
         if (otmp->oclass == WEAPON_CLASS
             && (otmp->otyp != ATHAME || otmp->cursed)) {
@@ -1154,6 +1154,7 @@ doengrave()
     if (oep) /* add to existing engraving */
         Strcpy(buf, oep->engr_txt);
     (void) strncat(buf, ebuf, BUFSZ - (int) strlen(buf) - 1);
+
     /* Put the engraving onto the map */
     make_engr_at(u.ux, u.uy, buf, moves - multi, type);
 

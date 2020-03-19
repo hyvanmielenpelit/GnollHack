@@ -536,7 +536,7 @@ int udist;
 
             carryamt = can_carry(mtmp, obj);
             if (carryamt > 0 && !obj->cursed && !mtmp->issummoned && !mtmp->ispartymember && !Is_container(obj)
-                && could_reach_item(mtmp, obj->ox, obj->oy))
+                && could_reach_item(mtmp, obj->ox, obj->oy) && !onnopickup(obj->ox, obj->oy, mtmp))
 			{
                 if (rn2(20) < edog->apport + 3)
 				{
@@ -1150,7 +1150,7 @@ int after; /* this is extra fast monster movement */
                 || (mtmp2->data == &mons[PM_FLOATING_EYE] && rn2(10)
                     && !is_blinded(mtmp) && haseyes(mtmp->data) && !is_blinded(mtmp2)
                     && (has_see_invisible(mtmp) || !is_invisible(mtmp2)))
-                || (mtmp2->data == &mons[PM_GELATINOUS_CUBE] && rn2(10))
+                || (slurps_items(mtmp2->data) && rn2(10))
                 || (is_tame(mtmp2) && !Conflict)
 				|| (max_passive_dmg(mtmp2, mtmp) >= mtmp->mhp)
 				|| (((!mon_disregards_own_health(mtmp) && mtmp->mhp * 4 < mtmp->mhpmax)

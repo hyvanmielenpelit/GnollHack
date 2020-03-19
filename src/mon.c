@@ -2012,6 +2012,9 @@ register struct monst *mtmp;
     register struct obj *gold;
     int mat_idx;
 
+	if (onnopickup(mtmp->mx, mtmp->my, mtmp))
+		return FALSE;
+
     if ((gold = g_at(mtmp->mx, mtmp->my)) != 0) {
         mat_idx = objects[gold->otyp].oc_material;
         obj_extract_self(gold);
@@ -2037,6 +2040,9 @@ register const char *str;
     if (mtmp->isshk && inhishop(mtmp))
         return FALSE;
 
+	if (onnopickup(mtmp->mx, mtmp->my, mtmp))
+		return FALSE;
+
     for (otmp = level.objects[mtmp->mx][mtmp->my]; otmp; otmp = otmp2) 
 	{
         otmp2 = otmp->nexthere;
@@ -2052,7 +2058,7 @@ register const char *str;
                 continue;
             if (!touch_artifact(otmp, mtmp))
                 continue;
-            carryamt = can_carry(mtmp, otmp);
+			carryamt = can_carry(mtmp, otmp);
             if (carryamt == 0)
                 continue;
             if (is_pool(mtmp->mx, mtmp->my))

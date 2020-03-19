@@ -953,55 +953,69 @@ void
 mstatusline(mtmp)
 struct monst *mtmp;
 {
-    aligntyp alignment = mon_aligntyp(mtmp);
-    char info[BUFSZ], monnambuf[BUFSZ];
+    char buf[BUFSZ];
+	print_mstatusline(buf, mtmp, ARTICLE_THE);
+    pline("Status of %s", buf);
+}
 
-    info[0] = 0;
+/* stethoscope or probing applied to monster -- one-line feedback */
+void
+print_mstatusline(buf, mtmp, monsternamearticle)
+char* buf;
+struct monst* mtmp;
+int monsternamearticle;
+{
+	aligntyp alignment = mon_aligntyp(mtmp);
+	char info[BUFSZ], monnambuf[BUFSZ];
+
+	info[0] = 0;
 	if (mtmp->data->heads > 1)
 	{
 		Sprintf(eos(info), "  %d(%d) heads", mtmp->heads_left, mtmp->data->heads);
 	}
 
 	if (is_tame(mtmp)) {
-        Strcat(info, ", tame");
-        if (wizard) {
-            Sprintf(eos(info), " (%d", is_tame(mtmp));
-            if (!mtmp->isminion)
-                Sprintf(eos(info), "; hungry %ld; apport %d",
-                        EDOG(mtmp)->hungrytime, EDOG(mtmp)->apport);
-            Strcat(info, ")");
-        }
-    } else if (is_peaceful(mtmp))
-        Strcat(info, ", peaceful");
+		Strcat(info, ", tame");
+		if (wizard) {
+			Sprintf(eos(info), " (%d", is_tame(mtmp));
+			if (!mtmp->isminion)
+				Sprintf(eos(info), "; hungry %ld; apport %d",
+					EDOG(mtmp)->hungrytime, EDOG(mtmp)->apport);
+			Strcat(info, ")");
+		}
+	}
+	else if (is_peaceful(mtmp))
+		Strcat(info, ", peaceful");
 
-    if (mtmp->data == &mons[PM_LONG_WORM]) {
-        int segndx, nsegs = count_wsegs(mtmp);
+	if (mtmp->data == &mons[PM_LONG_WORM]) {
+		int segndx, nsegs = count_wsegs(mtmp);
 
-        /* the worm code internals don't consider the head of be one of
-           the worm's segments, but we count it as such when presenting
-           worm feedback to the player */
-        if (!nsegs) {
-            Strcat(info, ", single segment");
-        } else {
-            ++nsegs; /* include head in the segment count */
-            segndx = wseg_at(mtmp, bhitpos.x, bhitpos.y);
-            Sprintf(eos(info), ", %d%s of %d segments",
-                    segndx, ordin(segndx), nsegs);
-        }
-    }
-    if (mtmp->cham >= LOW_PM && mtmp->data != &mons[mtmp->cham])
-        /* don't reveal the innate form (chameleon, vampire, &c),
-           just expose the fact that this current form isn't it */
-        Strcat(info, ", shapechanger");
-    /* pets eating mimic corpses mimic while eating, so this comes first */
-    if (mtmp->meating)
-        Strcat(info, ", eating");
-    /* a stethoscope exposes mimic before getting here so this
-       won't be relevant for it, but wand of probing doesn't */
-    if (mtmp->mundetected || mtmp->m_ap_type)
-        mhidden_description(mtmp, TRUE, eos(info));
-    if (is_cancelled(mtmp))
-        Strcat(info, ", cancelled");
+		/* the worm code internals don't consider the head of be one of
+		   the worm's segments, but we count it as such when presenting
+		   worm feedback to the player */
+		if (!nsegs) {
+			Strcat(info, ", single segment");
+		}
+		else {
+			++nsegs; /* include head in the segment count */
+			segndx = wseg_at(mtmp, bhitpos.x, bhitpos.y);
+			Sprintf(eos(info), ", %d%s of %d segments",
+				segndx, ordin(segndx), nsegs);
+		}
+	}
+	if (mtmp->cham >= LOW_PM && mtmp->data != &mons[mtmp->cham])
+		/* don't reveal the innate form (chameleon, vampire, &c),
+		   just expose the fact that this current form isn't it */
+		Strcat(info, ", shapechanger");
+	/* pets eating mimic corpses mimic while eating, so this comes first */
+	if (mtmp->meating)
+		Strcat(info, ", eating");
+	/* a stethoscope exposes mimic before getting here so this
+	   won't be relevant for it, but wand of probing doesn't */
+	if (mtmp->mundetected || mtmp->m_ap_type)
+		mhidden_description(mtmp, TRUE, eos(info));
+	if (is_cancelled(mtmp))
+		Strcat(info, ", cancelled");
 	if (is_silenced(mtmp))
 		Strcat(info, ", silenced");
 	if (has_no_magic_resistance(mtmp))
@@ -1011,9 +1025,9 @@ struct monst *mtmp;
 	if (has_summon_forbidden(mtmp))
 		Strcat(info, ", unable to summon");
 	if (is_confused(mtmp))
-        Strcat(info, ", confused");
-    if (is_blinded(mtmp))
-        Strcat(info, ", blind");
+		Strcat(info, ", confused");
+	if (is_blinded(mtmp))
+		Strcat(info, ", blind");
 	if (is_sick(mtmp))
 		Strcat(info, ", terminally ill");
 	if (is_stoning(mtmp))
@@ -1025,43 +1039,43 @@ struct monst *mtmp;
 	if (is_paralyzed(mtmp))
 		Strcat(info, ", paralyzed");
 	if (is_stunned(mtmp))
-        Strcat(info, ", stunned");
+		Strcat(info, ", stunned");
 	if (is_sleeping(mtmp))
 		Strcat(info, ", asleep");
 	if (mtmp->mfrozen || !mtmp->mcanmove)
-        Strcat(info, ", can't move");
-    else if (mtmp->mstrategy & STRAT_WAITMASK)
-        Strcat(info, ", meditating");
-    if (is_fleeing(mtmp))
-        Strcat(info, ", scared");
-    if (mtmp->mtrapped)
-        Strcat(info, ", trapped");
-    if (is_slow(mtmp))
+		Strcat(info, ", can't move");
+	else if (mtmp->mstrategy & STRAT_WAITMASK)
+		Strcat(info, ", meditating");
+	if (is_fleeing(mtmp))
+		Strcat(info, ", scared");
+	if (mtmp->mtrapped)
+		Strcat(info, ", trapped");
+	if (is_slow(mtmp))
 		Strcat(info, ", slow");
 	else if (is_very_fast(mtmp))
 		Strcat(info, ", very fast");
 	else if (is_fast(mtmp))
 		Strcat(info, ", fast");
-    if (is_invisible(mtmp))
-        Strcat(info, ", invisible");
+	if (is_invisible(mtmp))
+		Strcat(info, ", invisible");
 	if (mtmp == u.ustuck)
-        Strcat(info, sticks(youmonst.data) ? ", held by you"
-                      : !u.uswallow ? ", holding you"
-                         : attacktype_fordmg(u.ustuck->data, AT_ENGL, AD_DGST)
-                            ? ", digesting you"
-                            : is_animal(u.ustuck->data) ? ", swallowing you"
-                               : ", engulfing you");
-    if (mtmp == u.usteed)
-        Strcat(info, ", carrying you");
+		Strcat(info, sticks(youmonst.data) ? ", held by you"
+			: !u.uswallow ? ", holding you"
+			: attacktype_fordmg(u.ustuck->data, AT_ENGL, AD_DGST)
+			? ", digesting you"
+			: is_animal(u.ustuck->data) ? ", swallowing you"
+			: ", engulfing you");
+	if (mtmp == u.usteed)
+		Strcat(info, ", carrying you");
 
-    /* avoid "Status of the invisible newt ..., invisible" */
-    /* and unlike a normal mon_nam, use "saddled" even if it has a name */
-    Strcpy(monnambuf, x_monnam(mtmp, ARTICLE_THE, (char *) 0,
-                               (SUPPRESS_IT | SUPPRESS_INVISIBLE), FALSE));
+	/* avoid "Status of the invisible newt ..., invisible" */
+	/* and unlike a normal mon_nam, use "saddled" even if it has a name */
+	Strcpy(monnambuf, x_monnam(mtmp, monsternamearticle, (char*)0,
+		(SUPPRESS_IT | SUPPRESS_INVISIBLE), FALSE));
 
-    pline("Status of %s (%s):  Level %d  HP %d(%d)  AC %d%s.", monnambuf,
-          align_str(alignment), mtmp->m_lev, mtmp->mhp, mtmp->mhpmax,
-          find_mac(mtmp), info);
+	Sprintf(buf, "%s (%s):  Level %d  HP %d(%d)  AC %d%s.", monnambuf,
+		align_str(alignment), mtmp->m_lev, mtmp->mhp, mtmp->mhpmax,
+		find_mac(mtmp), info);
 }
 
 /* stethoscope or probing applied to hero -- one-line feedback */
