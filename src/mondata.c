@@ -79,7 +79,7 @@ static NEARDATA struct mflag_description m1flag_descriptions[] = {
 	{ M1_MINDLESS, "mindless", "mindless monsters" },
 	{ M1_NOEYES, "eyeless", "eyeless monsters" },
 	{ M1_NOHANDS, "handless", "handless monsters" },
-	{ M1_NONECK, "headless", "headless monsters" },
+	{ M1_NONECK, "neckless", "neckless monsters" },
 	{ M1_NOLIMBS, "limbless", "limbless monsters" },
 	{ M1_OMNIVORE, "omnivore", "omnivores" },
 	{ M1_OVIPAROUS, "oviparious", "oviparious monsters" },
