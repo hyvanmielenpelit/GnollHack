@@ -2013,7 +2013,7 @@ register struct monst *mtmp;
     int mat_idx;
 
 	if (onnopickup(mtmp->mx, mtmp->my, mtmp))
-		return FALSE;
+		return;
 
     if ((gold = g_at(mtmp->mx, mtmp->my)) != 0) {
         mat_idx = objects[gold->otyp].oc_material;
