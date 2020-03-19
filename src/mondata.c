@@ -119,9 +119,15 @@ static NEARDATA struct mflag_description m3flag_descriptions[] = {
 	{ M3_NONCORPOREAL, "noncorporeal", "noncorporeal monsters" },
 	{ M3_NONLIVING, "nonliving", "nonliving monster" },
 	{ M3_PRIEST, "priest", "priests" },
-//	{ M3_REGENERATES_LOST_BODY_PARTS, "regenerates lost body parts", "monsters that regenerate lost body parts" },
-//	{ M3_REVIVES_FROM_DEAD, "revives from dead", "monsters that revive from dead" },
+	{ M3_REGENERATES_LOST_BODY_PARTS, "regenerates lost body parts", "monsters that regenerate lost body parts" },
+	{ M3_REVIVES_FROM_DEAD, "revives from dead", "monsters that revive from dead" },
 	{ M3_SPEAKING, "speaking", "speaking monsters" },
+	{ 0 , "", "" }
+};
+
+static NEARDATA struct mflag_description m4flag_descriptions[] = {
+	{ M4_PITWALK, "pitwalking", "pitwalker" },
+	{ M4_SLURPS_ITEMS, "item-engulfing", "item-engulfing monster" },
 	{ 0 , "", "" }
 };
 
@@ -138,6 +144,8 @@ unsigned char mindex;
 		mtable = m2flag_descriptions;
 	else if (mindex == 3)
 		mtable = m3flag_descriptions;
+	else if (mindex == 4)
+		mtable = m4flag_descriptions;
 
 	for (int i = 0; mtable[i].mflag_bit != 0 ; i++)
 	{

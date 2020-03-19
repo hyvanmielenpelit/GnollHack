@@ -1076,7 +1076,7 @@ struct monst* mtmp;
 
 	abilcnt = 0;
 
-	for (int j = 1; j <= 3; j++)
+	for (int j = 1; j <= 4; j++)
 	{
 		for (int i = 0; i < 32; i++)
 		{
@@ -1084,7 +1084,7 @@ struct monst* mtmp;
 			if (i > 0)
 				bit = bit << i;
 
-			unsigned long flags = j == 1 ? mtmp->data->mflags1 : j == 2 ? mtmp->data->mflags2 : mtmp->data->mflags3;
+			unsigned long flags = j == 1 ? mtmp->data->mflags1 : j == 2 ? mtmp->data->mflags2 : j == 3 ? mtmp->data->mflags3 : mtmp->data->mflags4;
 
 			if (flags & bit)
 			{
@@ -1303,6 +1303,38 @@ struct monst* mtmp;
 		putstr(datawin, 0, txt);
 	}
 #endif
+
+	/* Heads */
+	if (!(mtmp->data->heads == 1 && mtmp->heads_left == 1))
+	{
+		char headbuf[BUFSZ];
+		switch (mtmp->data->heads)
+		{
+		case 0:
+			strcpy(headbuf, "Headless");
+			break;
+		case 1:
+			strcpy(headbuf, "Single-headed");
+			break;
+		case 2:
+			strcpy(headbuf, "Two-headed");
+			break;
+		case 3:
+			strcpy(headbuf, "Three-headed");
+			break;
+		default:
+			Sprintf(headbuf, "%d-headed", mtmp->data->heads);
+			break;
+		}
+
+		if (mtmp->heads_left != mtmp->data->heads)
+			Sprintf(eos(headbuf), " (%d head%s left)", mtmp->heads_left, plur(mtmp->heads_left));
+
+		abilcnt++;
+		Sprintf(buf, " %2d - %s", abilcnt, headbuf);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
 
 	if (!abilcnt)
 	{
