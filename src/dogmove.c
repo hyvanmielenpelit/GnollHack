@@ -54,7 +54,8 @@ struct monst *mon;
 
     for (obj = mon->minvent; obj; obj = obj->nobj) {
         switch (obj->otyp) {
-        case DWARVISH_MATTOCK:
+		case SPADE_OF_COLOSSAL_EXCAVATION:
+		case DWARVISH_MATTOCK:
             /* reject mattock if couldn't wield it */
             if (which_armor(mon, W_ARMS))
                 break;

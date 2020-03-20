@@ -729,6 +729,10 @@ register struct obj* obj;
 				{
 					strcpy(buf2, "Yes, for chopping wood");
 				}
+				else if (is_saw(obj))
+				{
+					strcpy(buf2, "Yes, for cutting wood");
+				}
 				else
 					strcpy(buf2, "Yes");
 
@@ -1673,7 +1677,14 @@ register struct obj* obj;
 			if (objects[otyp].oc_flags3 & O3_EXTENDED_POLEARM_REACH)
 			{
 				powercnt++;
-				Sprintf(buf, " %2d - Has extended polearm reach", powercnt);
+				Sprintf(buf, " %2d - Extended reach", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (objects[otyp].oc_flags3 & O3_DOUBLE_DIGGING_EFFORT)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Double digging or cutting speed", powercnt);
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
@@ -1995,6 +2006,23 @@ register struct obj* obj;
 				else if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M3_FLAG)
 				{
 					//Nothing here yet
+				}
+				else if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M4_FLAG)
+				{
+					if (objects[otyp].oc_target_permissions & M4_STONY)
+					{
+						powercnt++;
+						Sprintf(buf, " %2d - Monsters made of stone", powercnt);
+						txt = buf;
+						putstr(datawin, 0, txt);
+					}
+					if (objects[otyp].oc_target_permissions & M4_WOODEN)
+					{
+						powercnt++;
+						Sprintf(buf, " %2d - Monsters made of wood", powercnt);
+						txt = buf;
+						putstr(datawin, 0, txt);
+					}
 				}
 				else if (objects[otyp].oc_target_permissions > 0 && objects[otyp].oc_target_permissions < MAXMCLASSES)
 				{

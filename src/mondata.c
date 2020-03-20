@@ -126,8 +126,10 @@ static NEARDATA struct mflag_description m3flag_descriptions[] = {
 };
 
 static NEARDATA struct mflag_description m4flag_descriptions[] = {
-	{ M4_PITWALK, "pitwalking", "pitwalker" },
-	{ M4_SLURPS_ITEMS, "item-engulfing", "item-engulfing monster" },
+	{ M4_PITWALK, "pitwalking", "pitwalkers" },
+	{ M4_SLURPS_ITEMS, "item-engulfing", "item-engulfing monsters" },
+	{ M4_STONY, "stony", "monsters made of stone" },
+	{ M4_WOODEN, "wooden", "monsters made of wood" },
 	{ 0 , "", "" }
 };
 

@@ -2281,7 +2281,7 @@ long flag;
                    && mon->weapon_strategy == NO_WEAPON_WANTED) 
 		{
             rockok = is_pick(mw_tmp);
-            treeok = is_axe(mw_tmp);
+            treeok = is_axe(mw_tmp) || is_saw(mw_tmp);
         }
 		else
 		{

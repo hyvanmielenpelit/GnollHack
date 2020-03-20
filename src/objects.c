@@ -1892,13 +1892,13 @@ MISCELLANEOUSITEM("belt of storm giant strength", "rudimentary belt", MISC_BELT,
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattr, attrbonus, 0, 0, \
 		   wt, color, 0, 0, cooldown, 0, powconfermask, ALL_TARGETS, flags, O2_CONTAINER | flags2, flags3)
-#define WEPTOOL(name,desc,itemdesc,kn,mgc,bi,prob,wt,cost,sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, aflags, critpct, hitbon,splcastpen,sub,skill,cooldown,mat,clr,flags,flags2,flags3,powconfermask)\
+#define WEPTOOL(name,desc,itemdesc,kn,mgc,bi,prob,wt,cost, dmgtype, sdice, sdiesize, sdmgplus, ldice, ldiesize, ldmgplus, edmgtype, edice, ediesize, edmgplus, aflags, critpct, hitbon,splcastpen,sub,skill,cooldown,mat,clr,flags,flags2,flags3,powconfermask,permittedtargets)\
     OBJECT(OBJ(name, desc, None, itemdesc),                                           \
            BITS(kn, 0, 1, 0, mgc, SPETYPE_GENERAL, CHARGED_NOT_CHARGED, 0, 0, bi, 0, hitbon, sub, skill, mat),    \
            0, 0, 0, P1_NONE,  TOOL_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, \
-		   AD_PHYS, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, 0, 0, 0, 0, aflags, critpct, \
+		   dmgtype, sdice, sdiesize, sdmgplus, ldice, ldiesize, ldmgplus, edmgtype, edice, ediesize, edmgplus, aflags, critpct, \
 		   hitbon, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
-		   wt, clr, 0, 0, cooldown, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
+		   wt, clr, 0, 0, cooldown, 0, powconfermask, permittedtargets, flags, flags2, flags3)
 
 /* containers */
 CONTAINER("large box",       None, None, TOOLTYPE_BOX,
@@ -2008,7 +2008,7 @@ TOOL("beartrap",            None, None, TOOLTYPE_GENERAL, 1, 0, 0, 0, SPETYPE_NO
 
 /* instruments;
    "If tin whistles are made out of tin, what do they make foghorns out of?" */
-TOOL("tin whistle",    "old whistle", None, TOOLTYPE_WHISTLE, 0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED,100, 2, 10, 0, 0, 0, 0, 0, 0, //STARTMARKER
+TOOL("tin whistle",    "old whistle", None, TOOLTYPE_WHISTLE, 0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 96, 2, 10, 0, 0, 0, 0, 0, 0, //STARTMARKER
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_METAL, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 TOOL("magic whistle",  "shiny whistle", None, TOOLTYPE_WHISTLE, 0, 0, 1, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 45, 2, 10, 0, 0, 0, 0, 0, 0, //ENDMARKER
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_METAL, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
@@ -2038,36 +2038,40 @@ TOOL("drum of earthquake","antiquated drum", None, TOOLTYPE_DRUM, 0, 0, 1, SPETY
 /* tools useful as weapons */
 WEPTOOL("pick-axe", None, None,
 	1, 0, 0, 15, 75, 50,  
-	1, 6, 0, 1, 3, 0, A1_NONE, 0, 
+	AD_PHYS, 1, 6, 0, 1, 3, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,
 	WHACK, 0, TOOLTYPE_PICK_AXE, P_PICK_AXE, 0, MAT_IRON, HI_METAL, 
-	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-WEPTOOL("shovel", None, None,
-	1, 0, 0,  5, 60, 20,
-	1, 5, 0, 1, 3, 0, A1_NONE, 0, 
+	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
+WEPTOOL("spade of colossal excavation", "large shovel", None,
+	0, 1, 1,  5, 60, 100,
+	AD_PHYS, 1, 10, 1, 2, 6, 0, AD_PHYS, 0, 0, 0, A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS, 0,
 	SLASH, 0, TOOLTYPE_SHOVEL, P_PICK_AXE, 0, MAT_IRON, HI_METAL, 
-	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	O1_NONE, O2_NONE, O3_DOUBLE_DIGGING_EFFORT | O3_TARGET_PERMISSION_IS_M4_FLAG, PERMITTED_ALL, M4_STONY),
+WEPTOOL("saw of mighty cutting", "silvery saw", None,
+	0, 1, 1,  4, 15, 50,
+	AD_PHYS, 1, 3, 0, 1, 4, 0, AD_PHYS, 4, 8, 0, A1_NONE, 0,
+	SLASH, 0, TOOLTYPE_SAW, P_SWORD, 0, MAT_ADAMANTIUM, HI_SILVER, 
+	O1_INDESTRUCTIBLE, O2_NONE, O3_DOUBLE_DIGGING_EFFORT | O3_TARGET_PERMISSION_IS_M4_FLAG, PERMITTED_ALL, M4_WOODEN),
 WEPTOOL("golf club", "club-headed metal rod", None,
 	0, 0, 0,  1, 12, 50,
-	1, 3, 0, 1, 2, 0, A1_NONE, 0, 
+	AD_PHYS, 1, 3, 0, 1, 2, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,
 	WHACK, 0, TOOLTYPE_GOLF_CLUB, P_BLUDGEONING_WEAPON, 0, MAT_IRON, HI_METAL, 
-	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 WEPTOOL("grappling hook", "iron hook", None,
 	0, 0, 0,  4, 30,  50,
-	1, 2, 0, 1, 6, 0, A1_NONE, 0, WHACK, 0, TOOLTYPE_HOOK, P_THROWN_WEAPON, 0, MAT_IRON, HI_METAL, 
-	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	AD_PHYS, 1, 2, 0, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, WHACK, 0, TOOLTYPE_HOOK, P_THROWN_WEAPON, 0, MAT_IRON, HI_METAL,
+	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 #if 0
 WEPTOOL("unicorn horn", None, None,
 	1, 1, 1,  0, 20, 100, 
 	1, 12, 0, 1, 12, 0, A1_NONE, 0, 
 	PIERCE, 0, TOOLTYPE_HORN, P_SPEAR, 100, MAT_BONE, CLR_WHITE,
-	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
         /* 3.4.1: unicorn horn left classified as "magic" */
 #endif
-//		nmkn, mrg, uskn, ctnr, mgc, chrg, uniq, nwsh, big, tuf, dir, sub, skill, mtrl
 OBJECT(OBJ("unicorn horn", None, None, None),
        BITS(1, 0, 1, 0, 1, SPETYPE_GENERAL, CHARGED_HORN_NORMAL, 0, 0, 0, 0, 0, TOOLTYPE_HORN, P_SPEAR, MAT_BONE),
        NO_POWER, NO_POWER, NO_POWER, P1_NONE, TOOL_CLASS, 0, MULTIGEN_SINGLE, 0, 20, 100,
-	   AD_PHYS, 1, 12, 0, 1, 12, 0, 0, 0, 0, 0, A1_NONE, 0,
+	   AD_PHYS, 1, 12, 0, 1, 12, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	   100, CLR_WHITE, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_NONE, O2_NONE, O3_NONE),
 

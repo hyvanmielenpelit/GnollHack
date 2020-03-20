@@ -382,6 +382,11 @@ struct obj {
 #define is_wand_like_tool(otmp) \
 	((objects[(otmp)->otyp].oc_flags & O1_WAND_LIKE_TOOL) != 0)
 
+/* Other tools */
+#define is_saw(otmp)                                              \
+    ((otmp)->oclass == TOOL_CLASS \
+     && objects[(otmp)->otyp].oc_subtyp == TOOLTYPE_SAW)
+
 #define MAX_OIL_IN_FLASK 400 /* maximum amount of oil in a potion of oil */
 
 /* MAGIC_LAMP intentionally excluded below */
@@ -436,6 +441,8 @@ struct obj {
 
 #define has_otyp_extended_polearm_reach(otyp) \
     ((objects[(otyp)].oc_flags3 & O3_EXTENDED_POLEARM_REACH) != 0)
+#define has_otyp_double_digging_effort(otyp) \
+    ((objects[(otyp)].oc_flags3 & O3_DOUBLE_DIGGING_EFFORT) != 0)
 
 
 /* 'PRIZE' values override obj->corpsenm so prizes mustn't be object types

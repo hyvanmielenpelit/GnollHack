@@ -144,19 +144,21 @@ dig_typ(otmp, x, y)
 struct obj *otmp;
 xchar x, y;
 {
-    boolean ispick;
+    boolean ispick, isaxe, issaw;
 
     if (!otmp)
         return DIGTYP_UNDIGGABLE;
     ispick = is_pick(otmp);
-    if (!ispick && !is_axe(otmp))
+	isaxe = is_axe(otmp);
+	issaw = is_saw(otmp);
+    if (!ispick && !isaxe && !issaw)
         return DIGTYP_UNDIGGABLE;
 
     return ((ispick && sobj_at(STATUE, x, y))
                ? DIGTYP_STATUE
                : (ispick && sobj_at(BOULDER, x, y))
                   ? DIGTYP_BOULDER
-                  : closed_door(x, y)
+                  : (!issaw && closed_door(x, y))
                      ? DIGTYP_DOOR
                      : IS_TREE(levl[x][y].typ)
                         ? (ispick ? DIGTYP_UNDIGGABLE : DIGTYP_TREE)
@@ -187,7 +189,9 @@ int x, y;
 {
     struct trap *ttmp = t_at(x, y);
     const char *verb =
-        (madeby == BY_YOU && uwep && is_axe(uwep)) ? "chop" : "dig in";
+        (madeby == BY_YOU && uwep && is_axe(uwep)) ? "chop" : 
+		(madeby == BY_YOU && uwep && is_saw(uwep)) ? "cut" :
+		"dig in";
 
     if (On_stairs(x, y)) {
         if (x == xdnladder || x == xupladder) {
@@ -243,12 +247,14 @@ dig(VOID_ARGS)
     register struct rm *lev;
     register xchar dpx = context.digging.pos.x, dpy = context.digging.pos.y;
     register boolean ispick = uwep && is_pick(uwep);
-    const char *verb = (!uwep || is_pick(uwep)) ? "dig into" : "chop through";
+	register boolean isaxe = uwep && is_axe(uwep);
+	register boolean issaw = uwep && is_saw(uwep);
+	const char *verb = (!uwep || is_pick(uwep)) ? "dig into" : isaxe ? "chop through" : issaw ? "cut into" : "dig into";
 
     lev = &levl[dpx][dpy];
     /* perhaps a nymph stole your pick-axe while you were busy digging */
     /* or perhaps you teleported away */
-    if (u.uswallow || !uwep || (!ispick && !is_axe(uwep))
+    if (u.uswallow || !uwep || (!ispick && !isaxe && !issaw)
         || !on_level(&context.digging.level, &u.uz)
         || ((context.digging.down ? (dpx != u.ux || dpy != u.uy)
                                   : (distu(dpx, dpy) > 2))))
@@ -291,6 +297,9 @@ dig(VOID_ARGS)
                   the(xname(uwep)));
             break;
         default:
+			if(issaw)
+				Your("fail to position your saw properly.");
+			else
             Your("swing misses its mark.");
             break;
         }
@@ -299,9 +308,14 @@ dig(VOID_ARGS)
 
     context.digging.effort +=
         10 + rn2(5) + u_strdex_to_hit_bonus() + uwep->enchantment - greatest_erosion(uwep) + u.ubasedaminc + u.udaminc;
-    if (Race_if(PM_DWARF))
+    
+	if (Race_if(PM_DWARF))
         context.digging.effort *= 2;
-    if (context.digging.down) {
+	if (has_otyp_double_digging_effort(uwep->otyp))
+		context.digging.effort *= 2;
+
+	if (context.digging.down) 
+	{
         struct trap *ttmp = t_at(dpx, dpy);
 
         if (context.digging.effort > 250 || (ttmp && ttmp->ttyp == HOLE)) {
@@ -333,7 +347,7 @@ dig(VOID_ARGS)
                 else if (uarmf)
                     dmg = (dmg + 1) / 2;
                 You("hit yourself in the %s.", body_part(FOOT));
-                Sprintf(kbuf, "chopping off %s own %s", uhis(),
+                Sprintf(kbuf, "%s off %s own %s", issaw ? "slicing" : "chopping", uhis(),
                         body_part(FOOT));
                 losehp(adjust_damage(dmg, &youmonst, &youmonst, AD_PHYS, FALSE), kbuf, KILLED_BY);
             } else {
@@ -499,13 +513,17 @@ dig(VOID_ARGS)
         context.digging.level.dnum = 0;
         context.digging.level.dlevel = -1;
         return 0;
-    } else { /* not enough effort has been spent yet */
+    } 
+	else 
+	{ /* not enough effort has been spent yet */
         static const char *const d_target[6] = { "",        "rock", "statue",
                                                  "boulder", "door", "tree" };
         int dig_target = dig_typ(uwep, dpx, dpy);
 
-        if (IS_WALL(lev->typ) || dig_target == DIGTYP_DOOR) {
-            if (*in_rooms(dpx, dpy, SHOPBASE)) {
+        if (IS_WALL(lev->typ) || dig_target == DIGTYP_DOOR) 
+		{
+            if (*in_rooms(dpx, dpy, SHOPBASE)) 
+			{
                 pline("This %s seems too hard to %s.",
                       IS_DOOR(lev->typ) ? "door" : "wall", verb);
                 return 0;
@@ -514,8 +532,9 @@ dig(VOID_ARGS)
                    || (dig_target == DIGTYP_ROCK && !IS_ROCK(lev->typ)))
             return 0; /* statue or boulder got taken */
 
-        if (!did_dig_msg) {
-            You("hit the %s with all your might.", d_target[dig_target]);
+        if (!did_dig_msg) 
+		{
+            You("%s the %s with all your might.", issaw ? "cut" : "hit", d_target[dig_target]);
             did_dig_msg = TRUE;
         }
     }
@@ -959,7 +978,13 @@ coord *cc;
 
     switch (rn2(5)) {
     case 0:
-    case 1:
+		You("unearth some bones.");
+		(void)mk_tt_object(BONE, dig_x, dig_y);
+		(void)mk_tt_object(BONE, dig_x, dig_y);
+		if(!rn2(2))
+			(void)mk_tt_object(HUMAN_SKULL, dig_x, dig_y);
+		break;
+	case 1:
         You("unearth a corpse.");
         if ((otmp = mk_tt_object(CORPSE, dig_x, dig_y)) != 0)
             otmp->age -= 100; /* this is an *OLD* corpse */
@@ -996,19 +1021,21 @@ struct obj *obj;
 
     const char *sdp, *verb;
     char *dsp, dirsyms[12], qbuf[BUFSZ];
-    boolean ispick;
+    boolean ispick, isaxe, issaw;
     int rx, ry, downok, res = 0;
-	boolean isshovel = (obj && (obj->otyp == SHOVEL));
+
+	ispick = is_pick(obj);
+	isaxe = is_axe(obj);
+	issaw = is_saw(obj);
 
     /* Check tool */
     if (obj != uwep) {
-        if (!wield_tool(obj, "swing"))
+        if (!wield_tool(obj, issaw ? "use" : "swing"))
             return 0;
         else
             res = 1;
     }
-    ispick = is_pick(obj);
-    verb = ispick ? "dig" : "chop";
+	verb = ispick ? "dig" : isaxe ? "chop" : issaw ? "cut" : "dig";
 
     if (u.utrap && u.utraptype == TT_WEB) {
         pline("%s you can't %s while entangled in a web.",
@@ -1018,6 +1045,7 @@ struct obj *obj;
         return res;
     }
 
+	/*
 	if (isshovel)
 	{
 		if(!can_reach_floor(FALSE))
@@ -1038,7 +1066,7 @@ struct obj *obj;
 			return use_pick_axe2(obj);
 		}
 	}
-
+	*/
     /* construct list of directions to show player for likely choices */
     downok = !!can_reach_floor(FALSE);
     dsp = dirsyms;
@@ -1087,19 +1115,27 @@ struct obj *obj;
     struct trap *trap, *trap_with_u;
     int dig_target;
     boolean ispick = is_pick(obj);
-    const char *verbing = ispick ? "digging" : "chopping";
-	boolean isshovel = (obj && (obj->otyp == SHOVEL));
+	boolean isaxe = is_axe(obj);
+	boolean issaw = is_saw(obj);
+	const char *verbing = ispick ? "digging" : isaxe ? "chopping" : "cutting";
 
-    if (u.uswallow && attack(u.ustuck)) {
+    if (u.uswallow && attack(u.ustuck))
+	{
         ; /* return 1 */
-    } else if (Underwater) {
+    } 
+	else if (Underwater)
+	{
         pline("Turbulence torpedoes your %s attempts.", verbing);
-    } else if (u.dz < 0) {
+    } 
+	else if (u.dz < 0) 
+	{
         if (Levitation)
             You("don't have enough leverage.");
         else
             You_cant("reach the %s.", ceiling(u.ux, u.uy));
-    } else if (!u.dx && !u.dy && !u.dz) {
+    } 
+	else if (!u.dx && !u.dy && !u.dz)
+	{
         char buf[BUFSZ];
         int dam;
 
@@ -1111,12 +1147,15 @@ struct obj *obj;
         losehp(adjust_damage(dam, &youmonst, &youmonst, AD_PHYS, FALSE), buf, KILLED_BY);
         context.botl = 1;
         return 1;
-    } else if (u.dz == 0) {
+    }
+	else if (u.dz == 0)
+	{
         if (Stunned || (Confusion && !rn2(5)))
             confdir();
         rx = u.ux + u.dx;
         ry = u.uy + u.dy;
-        if (!isok(rx, ry)) {
+        if (!isok(rx, ry))
+		{
             pline("Clash!");
             return 1;
         }
@@ -1124,11 +1163,14 @@ struct obj *obj;
         if (MON_AT(rx, ry) && attack(m_at(rx, ry)))
             return 1;
         dig_target = dig_typ(obj, rx, ry);
-        if (dig_target == DIGTYP_UNDIGGABLE) {
+        if (dig_target == DIGTYP_UNDIGGABLE) 
+		{
             /* ACCESSIBLE or POOL */
             trap = t_at(rx, ry);
-            if (trap && trap->ttyp == WEB) {
-                if (!trap->tseen) {
+            if (trap && trap->ttyp == WEB)
+			{
+                if (!trap->tseen) 
+				{
                     seetrap(trap);
                     There("is a spider web there!");
                 }
@@ -1138,30 +1180,48 @@ struct obj *obj;
                 nomul(-d(2, 2));
                 multi_reason = "stuck in a spider web";
                 nomovemsg = "You pull free.";
-            } else if (lev->typ == IRONBARS) {
+            } 
+			else if (lev->typ == IRONBARS) 
+			{
                 pline("Clang!");
                 wake_nearby();
-            } else if (IS_TREE(lev->typ)) {
-                You("need an axe to cut down a tree.");
-            } else if (IS_ROCK(lev->typ)) {
+            }
+			else if (IS_TREE(lev->typ)) 
+			{
+                You("need an axe or a saw to cut down a tree.");
+            }
+			else if (IS_ROCK(lev->typ)) 
+			{
                 You("need a pick to dig rock.");
-            } else if (!ispick && (sobj_at(STATUE, rx, ry)
-                                   || sobj_at(BOULDER, rx, ry))) {
-                boolean vibrate = !rn2(3);
+            }
+			else if (!ispick && ((sobj_at(STATUE, rx, ry) && !issaw) || sobj_at(BOULDER, rx, ry)))
+			{
+				if (isaxe)
+				{
+					boolean vibrate = !rn2(3);
 
-                pline("Sparks fly as you whack the %s.%s",
-                      sobj_at(STATUE, rx, ry) ? "statue" : "boulder",
-                      vibrate ? " The axe-handle vibrates violently!" : "");
-                if (vibrate)
-                    losehp(adjust_damage(2, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "axing a hard object",
-                           KILLED_BY);
-            } else if (u.utrap && u.utraptype == TT_PIT && trap
+					pline("Sparks fly as you whack the %s.%s",
+						sobj_at(STATUE, rx, ry) ? "statue" : "boulder",
+						vibrate ? " The axe-handle vibrates violently!" : "");
+					if (vibrate)
+						losehp(adjust_damage(2, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "axing a hard object",
+							KILLED_BY);
+				}
+				else if(issaw)
+				{
+					pline("Sparks fly as you cut the %s, but nothing much else happens.",
+						sobj_at(STATUE, rx, ry) ? "statue" : "boulder");
+				}
+            }
+			else if (u.utrap && u.utraptype == TT_PIT && trap
                        && (trap_with_u = t_at(u.ux, u.uy))
                        && is_pit(trap->ttyp)
-                       && !conjoined_pits(trap, trap_with_u, FALSE)) {
+                       && !conjoined_pits(trap, trap_with_u, FALSE)) 
+			{
                 int idx;
 
-                for (idx = 0; idx < 8; idx++) {
+                for (idx = 0; idx < 8; idx++) 
+				{
                     if (xdir[idx] == u.dx && ydir[idx] == u.dy)
                         break;
                 }
@@ -1173,19 +1233,33 @@ struct obj *obj;
                     trap->conjoined |= (1 << adjidx);
                     pline("You clear some debris from between the pits.");
                 }
-            } else if (u.utrap && u.utraptype == TT_PIT
-                       && (trap_with_u = t_at(u.ux, u.uy)) != 0) {
+            } 
+			else if (u.utrap && u.utraptype == TT_PIT
+                       && (trap_with_u = t_at(u.ux, u.uy)) != 0)
+			{
                 You("swing %s, but the rubble has no place to go.",
                     yobjnam(obj, (char *) 0));
-            } else {
+            } 
+			else 
+			{
                 You("swing %s through thin air.", yobjnam(obj, (char *) 0));
             }
-        } else {
-            static const char *const d_action[6] = { "swinging", "digging",
+        }
+		else 
+		{
+            static const char *const d_action[6] = { "swinging", 
+													 "digging",
                                                      "chipping the statue",
                                                      "hitting the boulder",
                                                      "chopping at the door",
                                                      "cutting the tree" };
+
+			static const char* const d_action_saw[6] = { "positioning the saw",
+										 "cutting",
+										 "cutting the statue",
+										 "cutting the boulder",
+										 "cutting at the door",
+										 "cutting the tree" };
 
             did_dig_msg = FALSE;
             context.digging.quiet = FALSE;
@@ -1209,15 +1283,19 @@ struct obj *obj;
                 assign_level(&context.digging.level, &u.uz);
                 context.digging.effort = 0;
                 if (!context.digging.quiet)
-                    You("start %s.", d_action[dig_target]);
-            } else {
+                    You("start %s.", issaw ? d_action_saw[dig_target] : d_action[dig_target]);
+            }
+			else 
+			{
                 You("%s %s.", context.digging.chew ? "begin" : "continue",
-                    d_action[dig_target]);
+					issaw ? d_action_saw[dig_target] : d_action[dig_target]);
                 context.digging.chew = FALSE;
             }
             set_occupation(dig, verbing, 0);
         }
-    } else if (Is_airlevel(&u.uz) || Is_waterlevel(&u.uz)) {
+    } 
+	else if (Is_airlevel(&u.uz) || Is_waterlevel(&u.uz)) 
+	{
         /* it must be air -- water checked above */
         You("swing %s through thin air.", yobjnam(obj, (char *) 0));
     } else if (!can_reach_floor(FALSE)) {
@@ -2428,7 +2506,7 @@ wiz_debug_cmd_bury()
 int
 dodig()
 {
-	if (uwep && (uwep->otyp == PICK_AXE || uwep->otyp == DWARVISH_MATTOCK || uwep->otyp == SHOVEL))
+	if (uwep && (uwep->otyp == PICK_AXE || uwep->otyp == DWARVISH_MATTOCK || uwep->otyp == SPADE_OF_COLOSSAL_EXCAVATION))
 	{
 		u.dx = u.dy = 0;
 		u.dz = 1;

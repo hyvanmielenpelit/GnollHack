@@ -258,6 +258,8 @@
 #define M4_PITWALK					0x00000100UL		/* can walk in and out of pits without trouble */
 #define M4_IGNORES_ELBERETH			0x00000200UL		/* is unaffected by Elbereth like a minotaur */
 #define M4_SLURPS_ITEMS				0x00000400UL		/* hoovers up items like a gelatinous cube */
+#define M4_STONY					0x00000800UL		/* is made of stone, sand or the like, gets double damage from spade of colossal excavation */
+#define M4_WOODEN					0x00001000UL		/* is made of wooden, extra damage from axes */
 
 
 #define MZ_TINY 0          /* < 2' */

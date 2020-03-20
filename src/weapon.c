@@ -440,7 +440,7 @@ struct monst* mattacker;
 		if (otmp->cursed
 			&& (is_angel(ptr)))
 			bonus += rnd(4);
-		if (is_axe(otmp) && is_wooden(ptr))
+		if ((is_axe(otmp) || is_saw(otmp)) && is_wooden(ptr))
             bonus += rnd(4);
         if (objects[otyp].oc_material == MAT_SILVER && mon_hates_silver(mon))
             bonus += rnd(20);
@@ -570,7 +570,8 @@ struct monst* mattacker;
 		((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M1_FLAG) && (ptr->mflags1 & objects[otyp].oc_target_permissions))
 			|| ((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M2_FLAG) && (ptr->mflags2 & objects[otyp].oc_target_permissions))
 			|| ((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M3_FLAG) && (ptr->mflags3 & objects[otyp].oc_target_permissions))
-			|| (((objects[otyp].oc_flags3 & (O3_TARGET_PERMISSION_IS_M1_FLAG | O3_TARGET_PERMISSION_IS_M2_FLAG | O3_TARGET_PERMISSION_IS_M3_FLAG)) == 0) && (ptr->mlet == objects[otyp].oc_target_permissions))
+			|| ((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M4_FLAG) && (ptr->mflags4 & objects[otyp].oc_target_permissions))
+			|| (((objects[otyp].oc_flags3 & (O3_TARGET_PERMISSION_IS_M1_FLAG | O3_TARGET_PERMISSION_IS_M2_FLAG | O3_TARGET_PERMISSION_IS_M3_FLAG | O3_TARGET_PERMISSION_IS_M4_FLAG)) == 0) && (ptr->mlet == objects[otyp].oc_target_permissions))
 			|| ((objects[otyp].oc_flags3 & O3_PERMTTED_TARGET_CHAOTIC) && mon->malign < 0)
 			|| ((objects[otyp].oc_flags3 & O3_PERMTTED_TARGET_NEUTRAL) && mon->malign == 0)
 			|| ((objects[otyp].oc_flags3 & O3_PERMTTED_TARGET_LAWFUL) && mon->malign > 0)
@@ -1092,7 +1093,9 @@ boolean verbose_fail;
         /* KMH -- allow other picks */
         if (!obj && !which_armor(mon, W_ARMS))
             obj = m_carrying(mon, DWARVISH_MATTOCK);
-        break;
+		if (!obj && !which_armor(mon, W_ARMS))
+			obj = m_carrying(mon, SPADE_OF_COLOSSAL_EXCAVATION);
+		break;
     case NEED_AXE:
         /* currently, only 2 types of axe */
         obj = m_carrying(mon, BATTLE_AXE);
@@ -1103,10 +1106,13 @@ boolean verbose_fail;
         break;
     case NEED_PICK_OR_AXE:
         /* prefer pick for fewer switches on most levels */
-        obj = m_carrying(mon, DWARVISH_MATTOCK);
+		obj = m_carrying(mon, SPADE_OF_COLOSSAL_EXCAVATION);
+		if (!obj)
+			obj = m_carrying(mon, DWARVISH_MATTOCK);
         if (!obj)
             obj = m_carrying(mon, BATTLE_AXE);
-        if (!obj || which_armor(mon, W_ARMS)) {
+        if (!obj || which_armor(mon, W_ARMS)) 
+		{
             obj = m_carrying(mon, PICK_AXE);
             if (!obj)
                 obj = m_carrying(mon, AXE);

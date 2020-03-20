@@ -626,27 +626,45 @@ char *enterstring;
         int cnt;
         const char *tool;
         struct obj *pick = carrying(PICK_AXE),
-                   *mattock = carrying(DWARVISH_MATTOCK);
+                   *mattock = carrying(DWARVISH_MATTOCK),
+				   *spade = carrying(SPADE_OF_COLOSSAL_EXCAVATION);
 
-        if (pick || mattock) {
-            cnt = 1;               /* so far */
-            if (pick && mattock) { /* carrying both types */
+        if (pick || mattock || spade) 
+		{
+			int typecnt = (pick ? 1 : 0) + (mattock ? 1 : 0) + (spade ? 1 : 0);
+            cnt = 1;
+            if (typecnt > 1) 
+			{ /* carrying both types */
                 tool = "digging tool";
-                cnt = 2; /* `more than 1' is all that matters */
-            } else if (pick) {
+                cnt = typecnt; /* `more than 1' is all that matters */
+            }
+			else if (pick)
+			{
                 tool = "pick-axe";
                 /* hack: `pick' already points somewhere into inventory */
                 while ((pick = pick->nobj) != 0)
                     if (pick->otyp == PICK_AXE)
                         ++cnt;
-            } else { /* assert(mattock != 0) */
-                tool = "mattock";
+            }
+			else if (mattock)
+			{
+				tool = "mattock";
+				while ((mattock = mattock->nobj) != 0)
+					if (mattock->otyp == DWARVISH_MATTOCK)
+						++cnt;
+				/* [ALI] Shopkeeper identifies mattock(s) */
+				if (!Blind)
+					makeknown(DWARVISH_MATTOCK);
+			}
+			else 
+			{ /* assert(mattock != 0) */
+                tool = "spade";
                 while ((mattock = mattock->nobj) != 0)
-                    if (mattock->otyp == DWARVISH_MATTOCK)
+                    if (mattock->otyp == SPADE_OF_COLOSSAL_EXCAVATION)
                         ++cnt;
-                /* [ALI] Shopkeeper identifies mattock(s) */
+                /* [ALI] Shopkeeper identifies spade(s) */
                 if (!Blind)
-                    makeknown(DWARVISH_MATTOCK);
+                    makeknown(SPADE_OF_COLOSSAL_EXCAVATION);
             }
             if (!Deaf && !muteshk(shkp))
                 verbalize(NOTANGRY(shkp)
@@ -673,7 +691,8 @@ char *enterstring;
         } else {
             should_block =
                 (Fast && (sobj_at(PICK_AXE, u.ux, u.uy)
-                          || sobj_at(DWARVISH_MATTOCK, u.ux, u.uy)));
+                          || sobj_at(DWARVISH_MATTOCK, u.ux, u.uy) 
+						  || sobj_at(SPADE_OF_COLOSSAL_EXCAVATION, u.ux, u.uy)));
         }
         if (should_block)
             (void) dochug(shkp); /* shk gets extra move */
@@ -3888,9 +3907,10 @@ struct monst *shkp;
             uondoor = (u.ux == eshkp->shd.x && u.uy == eshkp->shd.y);
             if (uondoor) {
                 badinv =
-                    (carrying(PICK_AXE) || carrying(DWARVISH_MATTOCK)
+                    (carrying(PICK_AXE) || carrying(DWARVISH_MATTOCK) || carrying(SPADE_OF_COLOSSAL_EXCAVATION)
                      || (Fast && (sobj_at(PICK_AXE, u.ux, u.uy)
-                                  || sobj_at(DWARVISH_MATTOCK, u.ux, u.uy))));
+                                  || sobj_at(DWARVISH_MATTOCK, u.ux, u.uy) || sobj_at(SPADE_OF_COLOSSAL_EXCAVATION, u.ux, u.uy)
+						 )));
                 if (satdoor && badinv)
                     return 0;
                 avoid = !badinv;
@@ -4722,7 +4742,7 @@ register xchar x, y;
 
     if (shkp->mx == sx && shkp->my == sy && mon_can_move(shkp)
         && (x == sx - 1 || x == sx + 1 || y == sy - 1 || y == sy + 1)
-        && (Invis || carrying(PICK_AXE) || carrying(DWARVISH_MATTOCK)
+        && (Invis || carrying(PICK_AXE) || carrying(DWARVISH_MATTOCK) || carrying(SPADE_OF_COLOSSAL_EXCAVATION)
             || u.usteed)) {
         pline("%s%s blocks your way!", Shknam(shkp),
               Invis ? " senses your motion and" : "");

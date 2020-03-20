@@ -4466,7 +4466,8 @@ doapply()
 			break;
 		case PICK_AXE:
 		case DWARVISH_MATTOCK:
-		case SHOVEL:
+		case SPADE_OF_COLOSSAL_EXCAVATION:
+		case SAW_OF_MIGHTY_CUTTING:
 			res = use_pick_axe(obj);
 			break;
 		case GOLF_CLUB:
@@ -4594,7 +4595,7 @@ doapply()
 				res = use_pole(obj);
 				break;
 			}
-			else if (is_pick(obj) || is_axe(obj))
+			else if (is_pick(obj) || is_axe(obj) || is_saw(obj))
 			{
 				res = use_pick_axe(obj);
 				break;

@@ -892,7 +892,7 @@ int mode;
             if (sobj_at(BOULDER, ux, uy) && !Sokoban) {
                 if (!Passes_walls
                     && !(tunnels(youmonst.data) && !needspick(youmonst.data))
-                    && !carrying(PICK_AXE) && !carrying(DWARVISH_MATTOCK)
+                    && !carrying(PICK_AXE) && !carrying(DWARVISH_MATTOCK) && !carrying(SPADE_OF_COLOSSAL_EXCAVATION)
                     && !((obj = carrying(WAN_DIGGING))
                          && !objects[obj->otyp].oc_name_known))
                     return FALSE;
@@ -1548,7 +1548,7 @@ domove_core()
 					}
 				}
 			}
-			else if(trap && trap->tseen)
+			else if(trap && trap->tseen && trap->ttyp != STATUE_TRAP && trap->ttyp != VIBRATING_SQUARE)
 			{
 				char ynqbuf[BUFSZ] = "";
 				Sprintf(ynqbuf, "There is %s. Step into it?", an(get_trap_name(trap->ttyp)));

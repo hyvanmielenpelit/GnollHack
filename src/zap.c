@@ -1969,6 +1969,11 @@ int montype;
 						if (mons[montype].mflags3 & objects[otyp].oc_target_permissions)
 							return TRUE;
 					}
+					else if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M4_FLAG)
+					{
+						if (mons[montype].mflags4 & objects[otyp].oc_target_permissions)
+							return TRUE;
+					}
 					else
 					{
 						if (mons[montype].mlet == objects[otyp].oc_target_permissions)
@@ -2059,6 +2064,11 @@ int montype;
 					else if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M3_FLAG)
 					{
 						if (mons[montype].mflags3 & objects[otyp].oc_target_permissions)
+							return TRUE;
+					}
+					else if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M4_FLAG)
+					{
+						if (mons[montype].mflags4 & objects[otyp].oc_target_permissions)
 							return TRUE;
 					}
 					else

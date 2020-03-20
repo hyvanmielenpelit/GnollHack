@@ -329,16 +329,17 @@ enum obj_tool_types {
 	TOOLTYPE_BELL = 10,
 	TOOLTYPE_CANDLE = 11,
 	TOOLTYPE_LAMP = 12,
-	TOOLTYPE_LANTERN = 14,
-	TOOLTYPE_WHISTLE = 15,
-	TOOLTYPE_FLUTE = 16,
-	TOOLTYPE_HARP = 17,
-	TOOLTYPE_DRUM = 18,
+	TOOLTYPE_LANTERN = 13,
+	TOOLTYPE_WHISTLE = 14,
+	TOOLTYPE_FLUTE = 15,
+	TOOLTYPE_HARP = 16,
+	TOOLTYPE_DRUM = 17,
+	TOOLTYPE_SAW = 18
 };
 
 static const char* tool_type_names[] = {
 	"tool", "box", "chest", "bag", "pick-axe", "shovel", "long club-headed weapon", "hook", "horn", "candelabrum", "bell", 
-	"candle", "lamp", "lantern", "whistle", "flute", "harp", "drum",
+	"candle", "lamp", "lantern", "whistle", "flute", "harp", "drum", "saw",
 };
 
 enum charged_init_types {
@@ -835,7 +836,7 @@ struct objclass {
 
 #define O3_GENERATED_WITH_DOUBLE_ENCHANTMENT		0x00000008UL  /* is generated with double normal enchantment */
 #define O3_EXTENDED_POLEARM_REACH					0x00000010UL  /* range is max 13 instead of normal 8 */
-/* free bit */
+#define O3_DOUBLE_DIGGING_EFFORT					0x00000020UL  /* double normal digging effort */
 /* free bit */
 /* free bit */
 /* free bit */
@@ -856,15 +857,15 @@ struct objclass {
 #define O3_NONROTTING_FOOD							0x00200000UL
 #define O3_POISONABLE								0x00400000UL
 /* free bit */
-/* free bit */
 
-#define O3_PERMTTED_TARGET_LAWFUL					0x02000000UL
-#define O3_PERMTTED_TARGET_NEUTRAL					0x04000000UL
-#define O3_PERMTTED_TARGET_CHAOTIC					0x08000000UL
+#define O3_PERMTTED_TARGET_LAWFUL					0x01000000UL
+#define O3_PERMTTED_TARGET_NEUTRAL					0x02000000UL
+#define O3_PERMTTED_TARGET_CHAOTIC					0x04000000UL
 
-#define O3_TARGET_PERMISSION_IS_M1_FLAG				0x10000000UL /* Note: if no flag, then default is a monster symbol */
-#define O3_TARGET_PERMISSION_IS_M2_FLAG				0x20000000UL
-#define O3_TARGET_PERMISSION_IS_M3_FLAG				0x40000000UL 
+#define O3_TARGET_PERMISSION_IS_M1_FLAG				0x80000000UL /* Note: if no flag, then default is a monster symbol */
+#define O3_TARGET_PERMISSION_IS_M2_FLAG				0x10000000UL
+#define O3_TARGET_PERMISSION_IS_M3_FLAG				0x20000000UL 
+#define O3_TARGET_PERMISSION_IS_M4_FLAG				0x40000000UL 
 
 #define O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH 0x80000000UL 
 

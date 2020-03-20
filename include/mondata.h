@@ -54,7 +54,6 @@
 #define humanoid(ptr) (((ptr)->mflags1 & M1_HUMANOID) != 0L)
 #define is_animal(ptr) (((ptr)->mflags1 & M1_ANIMAL) != 0L)
 #define slithy(ptr) (((ptr)->mflags1 & M1_SLITHY) != 0L)
-#define is_wooden(ptr) ((ptr) == &mons[PM_WOOD_GOLEM])
 #define thick_skinned(ptr) (((ptr)->mflags1 & M1_THICK_HIDE) != 0L)
 #define hug_throttles(ptr) ((ptr) == &mons[PM_ROPE_GOLEM])
 #define lays_eggs(ptr) (((ptr)->mflags1 & M1_OVIPAROUS) != 0L)
@@ -158,8 +157,9 @@
     (((ptr)->mflags4 & M4_ALTERNATIVE_PASSIVE_DEFENSE_TEXT) != 0)
 #define ignores_Elbereth(ptr) \
     (((ptr)->mflags4 & M4_IGNORES_ELBERETH) != 0)
-#define slurps_items(ptr) \
-    (((ptr)->mflags4 & M4_SLURPS_ITEMS) != 0)
+#define slurps_items(ptr) (((ptr)->mflags4 & M4_SLURPS_ITEMS) != 0)
+#define is_stony(ptr) (((ptr)->mflags4 & M4_STONY) != 0)
+#define is_wooden(ptr) (((ptr)->mflags4 & M4_WOODEN) != 0)
 
 
 

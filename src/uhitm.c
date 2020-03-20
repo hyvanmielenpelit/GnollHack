@@ -426,9 +426,11 @@ register struct monst *mtmp;
         || overexertion())
         goto atk_done;
 
-    if (unweapon) {
+    if (unweapon) 
+	{
         unweapon = FALSE;
-        if (flags.verbose) {
+        if (flags.verbose) 
+		{
             if (uwep)
                 You("begin bashing monsters with %s.", yname(uwep));
             else if (!cantwield(youmonst.data))

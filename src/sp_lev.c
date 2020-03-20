@@ -4525,7 +4525,8 @@ struct opvar *ov;
     static const char nhFunc[] = "generate_way_out_method";
     const int escapeitems[] = { PICK_AXE,
                                 DWARVISH_MATTOCK,
-                                WAN_DIGGING,
+								SPADE_OF_COLOSSAL_EXCAVATION,
+								WAN_DIGGING,
                                 WAN_TELEPORTATION,
                                 SCR_TELEPORTATION,
                                 RIN_TELEPORTATION };
