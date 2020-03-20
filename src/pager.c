@@ -462,7 +462,7 @@ char *buf, *monbuf;
         bhitpos.y = y;
         if ((mtmp = m_at(x, y)) != 0) {
 			if (is_tame(mtmp))
-				print_mstatusline(buf, mtmp, ARTICLE_NONE);
+				print_mstatusline(buf, mtmp, ARTICLE_NONE, TRUE);
 			else
 	            look_at_monster(buf, monbuf, mtmp, x, y);
             pm = mtmp->data;

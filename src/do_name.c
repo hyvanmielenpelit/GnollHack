@@ -1879,6 +1879,9 @@ boolean called;
     if (do_saddle && (mtmp->worn_item_flags & W_SADDLE) && !Blind
         && !Hallucination)
         Strcat(buf, "saddled ");
+
+
+
     has_adjectives = (buf[0] != '\0');
 
     /* Put the actual monster name or type into the buffer now */

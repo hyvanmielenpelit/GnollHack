@@ -2205,7 +2205,7 @@ E void FDECL(free_epri, (struct monst *));
 E const char *FDECL(align_str, (ALIGNTYP_P));
 E char *FDECL(piousness, (BOOLEAN_P, const char *));
 E void FDECL(mstatusline, (struct monst *));
-E void FDECL(print_mstatusline, (char*, struct monst*, int));
+E void FDECL(print_mstatusline, (char*, struct monst*, int, boolean));
 E void NDECL(ustatusline);
 
 /* ### quest.c ### */

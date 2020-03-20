@@ -100,7 +100,8 @@ struct flag {
     boolean time;            /* display elapsed 'time' */
     boolean tombstone;       /* print tombstone */
     boolean verbose;         /* max battle info */
-    int end_top, end_around; /* describe desired score list */
+	boolean wiz_mstatusline; /* extra information on monsters */
+	int end_top, end_around; /* describe desired score list */
     unsigned moonphase;
     unsigned long suppress_alert;
 #define NEW_MOON 0

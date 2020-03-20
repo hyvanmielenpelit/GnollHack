@@ -954,38 +954,26 @@ mstatusline(mtmp)
 struct monst *mtmp;
 {
     char buf[BUFSZ];
-	print_mstatusline(buf, mtmp, ARTICLE_THE);
+	print_mstatusline(buf, mtmp, ARTICLE_THE, FALSE);
     pline("Status of %s", buf);
 }
 
 /* stethoscope or probing applied to monster -- one-line feedback */
 void
-print_mstatusline(buf, mtmp, monsternamearticle)
+print_mstatusline(buf, mtmp, monsternamearticle, showheads)
 char* buf;
 struct monst* mtmp;
 int monsternamearticle;
+boolean showheads;
 {
 	aligntyp alignment = mon_aligntyp(mtmp);
 	char info[BUFSZ], monnambuf[BUFSZ];
 
 	info[0] = 0;
-	if (mtmp->data->heads > 1)
+	if (showheads && mtmp->data->heads > 1)
 	{
-		Sprintf(eos(info), "  %d(%d) heads", mtmp->heads_left, mtmp->data->heads);
+		Sprintf(eos(info), "  Heads %d(%d)", mtmp->heads_left, mtmp->data->heads);
 	}
-
-	if (is_tame(mtmp)) {
-		Strcat(info, ", tame");
-		if (wizard) {
-			Sprintf(eos(info), " (%d", is_tame(mtmp));
-			if (!mtmp->isminion)
-				Sprintf(eos(info), "; hungry %ld; apport %d",
-					EDOG(mtmp)->hungrytime, EDOG(mtmp)->apport);
-			Strcat(info, ")");
-		}
-	}
-	else if (is_peaceful(mtmp))
-		Strcat(info, ", peaceful");
 
 	if (mtmp->data == &mons[PM_LONG_WORM]) {
 		int segndx, nsegs = count_wsegs(mtmp);
@@ -1007,6 +995,29 @@ int monsternamearticle;
 		/* don't reveal the innate form (chameleon, vampire, &c),
 		   just expose the fact that this current form isn't it */
 		Strcat(info, ", shapechanger");
+
+	if (is_tame(mtmp) && (carnivorous(mtmp->data) || herbivorous(mtmp->data)) && !mtmp->isminion && mtmp->mextra && EDOG(mtmp) && monstermoves >= EDOG(mtmp)->hungrytime)
+	{
+		struct edog* edog = EDOG(mtmp);
+
+		if (monstermoves >= edog->hungrytime + 500)
+			Sprintf(eos(info), ", %s from hunger", monstermoves >= edog->hungrytime + 650 ? "crazed" : "confused");
+		else
+			Sprintf(eos(info), ", %shungry", monstermoves >= edog->hungrytime + 400 ? "extremely " : monstermoves >= edog->hungrytime + 200 ? "very " : "");
+	}
+
+	if (is_tame(mtmp))
+	{
+		if (wizard && flags.wiz_mstatusline)
+		{
+			Sprintf(eos(info), " (%d", is_tame(mtmp));
+			if (!mtmp->isminion)
+				Sprintf(eos(info), "; hungry %ld; apport %d",
+					EDOG(mtmp)->hungrytime, EDOG(mtmp)->apport);
+			Strcat(info, ")");
+		}
+	}
+
 	/* pets eating mimic corpses mimic while eating, so this comes first */
 	if (mtmp->meating)
 		Strcat(info, ", eating");
@@ -1070,12 +1081,16 @@ int monsternamearticle;
 
 	/* avoid "Status of the invisible newt ..., invisible" */
 	/* and unlike a normal mon_nam, use "saddled" even if it has a name */
-	Strcpy(monnambuf, x_monnam(mtmp, monsternamearticle, (char*)0,
+	char adjbuf[BUFSZ], alignbuf[BUFSZ];
+	Sprintf(adjbuf, "level %d%s", mtmp->m_lev, is_tame(mtmp) ? " tame" : is_peaceful(mtmp) ? " peaceful" : "");
+	strcpy(alignbuf, align_str(alignment));
+	*alignbuf = highc(*alignbuf);
+
+	Strcpy(monnambuf, x_monnam(mtmp, monsternamearticle, adjbuf,
 		(SUPPRESS_IT | SUPPRESS_INVISIBLE), FALSE));
 
-	Sprintf(buf, "%s (%s):  Level %d  HP %d(%d)  AC %d%s.", monnambuf,
-		align_str(alignment), mtmp->m_lev, mtmp->mhp, mtmp->mhpmax,
-		find_mac(mtmp), info);
+	Sprintf(buf, "%s:  HP:%d(%d) AC:%d %s%s.", monnambuf,
+		mtmp->mhp, mtmp->mhpmax, find_mac(mtmp), alignbuf, info);
 }
 
 /* stethoscope or probing applied to hero -- one-line feedback */
