@@ -4432,7 +4432,7 @@ struct trap *ttmp;
     newsym(u.ux + u.dx, u.uy + u.dy);
 
 	/* gain skill for untrap */
-	use_skill(P_DISARM_TRAP, ttmp->madeby_u ? 0: 3);
+	use_skill(P_DISARM_TRAP, ttmp->madeby_u ? 0: 5);
 
     return 1;
 }
@@ -4448,27 +4448,39 @@ struct trap* ttmp;
 	You("disarm %s %s.", the_your[ttmp->madeby_u], get_trap_name(ttmp->ttyp));
 	
 	/* Skills gained */
-	int skillgained = 4;
+	int skillgained = 5;
 
 	switch (ttmp->ttyp)
 	{
 	case POLY_TRAP:
-		skillgained = skillgained + 2;
+		skillgained = 16;
+		break;
 	case MAGIC_TRAP:
-		skillgained++;
+		skillgained = 14;
+		break;
 	case LEVEL_TELEP:
-		skillgained++;
+		skillgained = 13;
+		break;
 	case ANTI_MAGIC:
+		skillgained = 12;
+		break;
 	case TELEP_TRAP:
-		skillgained++;
+		skillgained = 11;
+		break;
 	case SLP_GAS_TRAP:
-		skillgained++;
+		skillgained = 10;
+		break;
 	case RUST_TRAP:
+		skillgained = 9;
+		break;
 	case FIRE_TRAP:
-		skillgained++;
-	case ROCKTRAP:
+		skillgained = 8;
+		break;
 	case ROLLING_BOULDER_TRAP:
-		skillgained++;
+		skillgained = 7;
+		break;
+	case ROCKTRAP:
+		skillgained = 6;
 		break;
 	default:
 		break;
@@ -4507,6 +4519,7 @@ struct trap* ttmp;
 		break;
 	case ROCKTRAP:
 		genotyp = ROCK;
+		break;
 	default:
 		break;
 	}
@@ -4574,7 +4587,7 @@ struct trap *ttmp;
     cnv_trap_obj(LAND_MINE, 1, ttmp, FALSE);
 
 	/* gain skill for untrap */
-	use_skill(P_DISARM_TRAP, ttmp->madeby_u ? 0 : 4);
+	use_skill(P_DISARM_TRAP, ttmp->madeby_u ? 0 : 7);
 
     return 1;
 }
@@ -4621,7 +4634,7 @@ struct trap *ttmp;
     newsym(u.ux + u.dx, u.uy + u.dy);
 
 	/* gain skill for untrap */
-	use_skill(P_DISARM_TRAP, ttmp->madeby_u ? 0 : 2);
+	use_skill(P_DISARM_TRAP, ttmp->madeby_u ? 0 : 5);
 
     more_experienced(1, 5);
     newexplevel();
@@ -4642,7 +4655,7 @@ int otyp;
     cnv_trap_obj(otyp, 50 - rnl(50), ttmp, FALSE);
 
 	/* gain skill for untrap */
-	use_skill(P_DISARM_TRAP, ttmp->madeby_u ? 0 : 4);
+	use_skill(P_DISARM_TRAP, ttmp->madeby_u ? 0 : 5);
 
     return 1;
 }

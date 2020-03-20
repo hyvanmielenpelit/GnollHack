@@ -1704,8 +1704,7 @@ enhance_weapon_skill()
 			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, MENU_UNSELECTED);
 			Sprintf(buf, "arrow/magic trap untrap chance for disarm trap");
 			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, MENU_UNSELECTED);
-			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, "",
-				MENU_UNSELECTED);
+			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, "", MENU_UNSELECTED);
 		}
 
 		if (eventually_advance > 0 || maxxed_cnt > 0)
@@ -1850,7 +1849,7 @@ enhance_weapon_skill()
 
 						if (can_advance(i, speedy) || could_advance(i))
 						{
-							int nextlevel = min(P_MAX_SKILL_LEVEL(i), max(0, P_SKILL_LEVEL(i) - 1) + 2);
+							int nextlevel = min(P_MAX_SKILL_LEVEL(i), P_SKILL_LEVEL(i) + 1);
 							int tohitbonus2 = wand_skill_hit_bonus(nextlevel);
 							char hbuf2[BUFSZ] = "";
 							Sprintf(hbuf2, "%s%d", tohitbonus2 >= 0 ? "+" : "", tohitbonus2);
@@ -1891,7 +1890,7 @@ enhance_weapon_skill()
 						Sprintf(bonusbuf, "%5s/%s", sbuf, cbuf);
 						if (can_advance(i, speedy) || could_advance(i))
 						{
-							int nextlevel = min(P_MAX_SKILL_LEVEL(i), max(0, P_SKILL_LEVEL(i) - 1) + 2);
+							int nextlevel = min(P_MAX_SKILL_LEVEL(i), P_SKILL_LEVEL(i) + 1);
 							int successbonus2 = spell_skill_success_bonus(nextlevel);
 							int costdiscount2 = spell_skill_mana_cost_multiplier(nextlevel) - 100;
 							char sbuf2[BUFSZ] = "";
@@ -1903,8 +1902,8 @@ enhance_weapon_skill()
 					}
 					else if (i == P_DISARM_TRAP)
 					{
-						int arrowtrap_chance = untrap_probability(ARROW_TRAP, max(0, P_SKILL_LEVEL(i) - 1));
-						int magictrap_chance = untrap_probability(MAGIC_TRAP, max(0, P_SKILL_LEVEL(i) - 1));
+						int arrowtrap_chance = untrap_probability(ARROW_TRAP, P_SKILL_LEVEL(i));
+						int magictrap_chance = untrap_probability(MAGIC_TRAP,  P_SKILL_LEVEL(i));
 						char abuf[BUFSZ] = "";
 						char mbuf[BUFSZ] = "";
 						Sprintf(abuf, "%d%%", arrowtrap_chance);
@@ -1912,7 +1911,7 @@ enhance_weapon_skill()
 						Sprintf(bonusbuf, "%5s/%s", abuf, mbuf);
 						if (can_advance(i, speedy) || could_advance(i))
 						{
-							int nextlevel = min(P_MAX_SKILL_LEVEL(i), max(0, P_SKILL_LEVEL(i) - 1) + 2);
+							int nextlevel = min(P_MAX_SKILL_LEVEL(i), P_SKILL_LEVEL(i) + 1); /* restricted is not able to advance, so we need not consider it here */
 							int arrowtrap_chance2 = untrap_probability(ARROW_TRAP, nextlevel);
 							int magictrap_chance2 = untrap_probability(MAGIC_TRAP, nextlevel);
 							char abuf2[BUFSZ] = "";
