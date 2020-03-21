@@ -837,7 +837,7 @@ struct objclass {
 #define O3_GENERATED_WITH_DOUBLE_ENCHANTMENT		0x00000008UL  /* is generated with double normal enchantment */
 #define O3_EXTENDED_POLEARM_REACH					0x00000010UL  /* range is max 13 instead of normal 8 */
 #define O3_DOUBLE_DIGGING_EFFORT					0x00000020UL  /* double normal digging effort */
-/* free bit */
+#define O3_BURIED_SEARCHABLE						0x00000040UL  /* if buried, can be found by explicit searching */
 /* free bit */
 /* free bit */
 /* free bit */

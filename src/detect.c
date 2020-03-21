@@ -1715,61 +1715,78 @@ register int aflag; /* intrinsic autosearch vs explicit searching */
 		else if (fund < -10)
 			fund = -10;
 
-		for (x = u.ux - 1; x < u.ux + 2; x++)
-            for (y = u.uy - 1; y < u.uy + 2; y++) {
-                if (!isok(x, y))
-                    continue;
-                if (x == u.ux && y == u.uy)
-                    continue;
+		int itemsfound = 0;
+		if (!aflag && !rn2(7 - fund))
+			itemsfound = unearth_objs(u.ux, u.uy, TRUE, TRUE);
 
-                if (Blind && !aflag)
-                    feel_location(x, y);
-                if (levl[x][y].typ == SDOOR) {
-                    if (rn2(7 - fund))
-                        continue;
-                    cvt_sdoor_to_door(&levl[x][y]); /* .typ = DOOR */
-                    exercise(A_WIS, TRUE);
-                    nomul(0);
-                    feel_location(x, y); /* make sure it shows up */
-                    You("find a hidden door.");
-                } else if (levl[x][y].typ == SCORR) {
-                    if (rn2(7 - fund))
-                        continue;
-                    levl[x][y].typ = CORR;
-                    unblock_point(x, y); /* vision */
-                    exercise(A_WIS, TRUE);
-                    nomul(0);
-                    feel_newsym(x, y); /* make sure it shows up */
-                    You("find a hidden passage.");
-                } else {
-                    /* Be careful not to find anything in an SCORR or SDOOR */
-                    if ((mtmp = m_at(x, y)) != 0 && !aflag) {
-                        int mfres = mfind0(mtmp, 0);
+		if (!itemsfound)
+		{
+			for (x = u.ux - 1; x <= u.ux + 1; x++)
+			{
+				for (y = u.uy - 1; y <= u.uy + 1; y++) 
+				{
+					if (!isok(x, y))
+						continue;
+					if (x == u.ux && y == u.uy)
+						continue;
 
-                        if (mfres == -1)
-                            continue;
-                        else if (mfres > 0)
-                            return mfres;
-                    }
+					if (Blind && !aflag)
+						feel_location(x, y);
 
-                    /* see if an invisible monster has moved--if Blind,
-                     * feel_location() already did it
-                     */
-                    if (!aflag && !mtmp && !Blind)
-                        (void) unmap_invisible(x, y);
+					if (levl[x][y].typ == SDOOR)
+					{
+						if (rn2(7 - fund))
+							continue;
+						cvt_sdoor_to_door(&levl[x][y]); /* .typ = DOOR */
+						exercise(A_WIS, TRUE);
+						nomul(0);
+						feel_location(x, y); /* make sure it shows up */
+						You("find a hidden door.");
+					} 
+					else if (levl[x][y].typ == SCORR) 
+					{
+						if (rn2(7 - fund))
+							continue;
+						levl[x][y].typ = CORR;
+						unblock_point(x, y); /* vision */
+						exercise(A_WIS, TRUE);
+						nomul(0);
+						feel_newsym(x, y); /* make sure it shows up */
+						You("find a hidden passage.");
+					}
+					else
+					{
+						/* Be careful not to find anything in an SCORR or SDOOR */
+						if ((mtmp = m_at(x, y)) != 0 && !aflag) 
+						{
+							int mfres = mfind0(mtmp, 0);
 
-                    if ((trap = t_at(x, y)) && !trap->tseen && !rnl(8)) {
-                        nomul(0);
-                        if (trap->ttyp == STATUE_TRAP) {
-                            if (activate_statue_trap(trap, x, y, FALSE))
-                                exercise(A_WIS, TRUE);
-                            return 1;
-                        } else {
-                            find_trap(trap);
-                        }
-                    }
-                }
-            }
+							if (mfres == -1)
+								continue;
+							else if (mfres > 0)
+								return mfres;
+						}
+
+						/* see if an invisible monster has moved--if Blind,
+						 * feel_location() already did it
+						 */
+						if (!aflag && !mtmp && !Blind)
+							(void) unmap_invisible(x, y);
+
+						if ((trap = t_at(x, y)) && !trap->tseen && !rnl(8)) {
+							nomul(0);
+							if (trap->ttyp == STATUE_TRAP) {
+								if (activate_statue_trap(trap, x, y, FALSE))
+									exercise(A_WIS, TRUE);
+								return 1;
+							} else {
+								find_trap(trap);
+							}
+						}
+					}
+				}
+			}
+		}
     }
     return 1;
 }

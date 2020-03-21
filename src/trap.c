@@ -456,7 +456,7 @@ long flags;
                            ? ROOM
                            : level.flags.is_cavernous_lev ? CORR : DOOR;
 
-        unearth_objs(x, y, FALSE);
+        unearth_objs(x, y, FALSE, FALSE);
         break;
     }
 

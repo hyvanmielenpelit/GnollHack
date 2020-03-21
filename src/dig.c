@@ -797,7 +797,7 @@ const char *fillmsg;
     if (ttmp)
         (void) delfloortrap(ttmp);
     /* if any objects were frozen here, they're released now */
-    (void)unearth_objs(x, y, FALSE);
+    (void)unearth_objs(x, y, FALSE, FALSE);
 
     if (fillmsg)
         pline(fillmsg, hliquid(typ == LAVAPOOL ? "lava" : "water"));
@@ -2250,9 +2250,9 @@ int x, y;
 
 /* move objects from buriedobjlist to fobj/nexthere lists */
 int
-unearth_objs(x, y, verbose)
+unearth_objs(x, y, verbose, buriedsearchableonly)
 int x, y;
-boolean verbose;
+boolean verbose, buriedsearchableonly;
 {
     struct obj *otmp, *otmp2, *bball;
     coord cc;
@@ -2265,11 +2265,11 @@ boolean verbose;
     for (otmp = level.buriedobjlist; otmp; otmp = otmp2) 
 	{
         otmp2 = otmp->nobj;
-        if (otmp->ox == x && otmp->oy == y) 
+        if (otmp->ox == x && otmp->oy == y && (!buriedsearchableonly || (buriedsearchableonly && is_otyp_buried_searchable(otmp->otyp))))
 		{
 			cnt++;
 			if (verbose)
-				You("find %s.", doname(otmp));
+				You("find %s%s.", doname(otmp), buriedsearchableonly ? " buried close to the surface of the ground" : "");
 
 			if (bball && otmp == bball
                 && u.utrap && u.utraptype == TT_BURIEDBALL) 
@@ -2540,7 +2540,7 @@ dodig()
 	/* Normal digging */
 	You("dig the ground with %s.", digbuf);
 
-	int itemsfound = unearth_objs(u.ux, u.uy, TRUE);
+	int itemsfound = unearth_objs(u.ux, u.uy, TRUE, FALSE);
 	if (!itemsfound)
 	{
 		pline("However, you do not find anything.");
