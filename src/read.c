@@ -2189,7 +2189,25 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
             pline("Thinking of Maud you forget everything else.");
         exercise(A_WIS, FALSE);
         break;
-    case SCR_FIRE: {
+	case SCR_RETRAINING:
+		known = TRUE;
+		int maxslots = u.max_weapon_slots;
+		lose_weapon_skill(u.ulevel - 1);
+		u.max_weapon_slots = maxslots;
+		u.weapon_slots = u.max_weapon_slots;
+		context.botl = context.botlx = 1;
+
+		if (Hallucination) /* Ommmmmm! */
+			Your("mind releases itself from epistemological concerns.");
+		else if (!strncmpi(plname, "Maud", 4))
+			pline(
+				"As your mind turns inward on itself, you forget the skills you have learned.");
+		else if (rn2(2))
+			You("wonder if Maud wanted you to learn something.");
+		else
+			pline("Your mind releases itself from the skills you've learned.");
+		break;
+	case SCR_FIRE: {
         coord cc;
         int dam;
 

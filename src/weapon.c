@@ -2025,7 +2025,8 @@ int n; /* number of slots to gain; normally one */
         if (can_advance(i, FALSE))
             before++;
     u.weapon_slots += n;
-    for (i = 0, after = 0; i < P_NUM_SKILLS; i++)
+	u.max_weapon_slots += n;
+	for (i = 0, after = 0; i < P_NUM_SKILLS; i++)
         if (can_advance(i, FALSE))
             after++;
     if (before < after)
@@ -2044,7 +2045,8 @@ int n; /* number of slots to lose; normally one */
         /* deduct first from unused slots then from last placed one, if any */
         if (u.weapon_slots) {
             u.weapon_slots--;
-        } else if (u.skills_advanced) {
+			u.max_weapon_slots--;
+		} else if (u.skills_advanced) {
             skill = u.skill_record[--u.skills_advanced];
 			if (P_SKILL_LEVEL(skill) <= P_UNSKILLED)
 			{
@@ -2054,7 +2056,8 @@ int n; /* number of slots to lose; normally one */
 			P_SKILL_LEVEL(skill)--; /* drop skill one level */
             /* Lost skill might have taken more than one slot; refund rest. */
             u.weapon_slots = slots_required(skill) - 1;
-            /* It might now be possible to advance some other pending
+			u.max_weapon_slots--;
+			/* It might now be possible to advance some other pending
                skill by using the refunded slots, but giving a message
                to that effect would seem pretty confusing.... */
         }
@@ -2390,14 +2393,16 @@ const struct def_skill* class_skill_max;
     int sklvl, skill;
 
     /* initialize skill array; by default, everything is restricted */
-    for (skill = 0; skill < P_NUM_SKILLS; skill++) {
+    for (skill = 0; skill < P_NUM_SKILLS; skill++) 
+	{
         P_SKILL_LEVEL(skill) = P_ISRESTRICTED;
         P_MAX_SKILL_LEVEL(skill) = P_ISRESTRICTED;
         P_ADVANCE(skill) = 0;
     }
 
     /* walk through array to set skill maximums */
-    for (; class_skill_max->skill != P_NONE; class_skill_max++) {
+    for (; class_skill_max->skill != P_NONE; class_skill_max++) 
+	{
         sklvl = class_skill_max->sklvl;
         skill = class_skill_max->skill;
 
@@ -2408,7 +2413,8 @@ const struct def_skill* class_skill_max;
 
 
 	/* walk through array to set skill initial levels */
-	for (; class_skill_initial->skill != P_NONE; class_skill_initial++) {
+	for (; class_skill_initial->skill != P_NONE; class_skill_initial++) 
+	{
 		sklvl = class_skill_initial->sklvl;
 		skill = class_skill_initial->skill;
 
@@ -2418,7 +2424,8 @@ const struct def_skill* class_skill_max;
 
 
 	/* Set skill for all weapons in inventory to be basic */
-	for (obj = invent; obj; obj = obj->nobj) {
+	for (obj = invent; obj; obj = obj->nobj) 
+	{
 		/* don't give skill just because of carried ammo, wait until
 		   we see the relevant launcher (prevents an archeologist's
 		   touchstone from inadvertently providing skill in sling) */
@@ -2467,9 +2474,12 @@ const struct def_skill* class_skill_max;
      * Make sure we haven't missed setting the max on a skill
      * & set advance
      */
-    for (skill = 0; skill < P_NUM_SKILLS; skill++) {
-        if (!P_RESTRICTED(skill)) {
-            if (P_MAX_SKILL_LEVEL(skill) < P_SKILL_LEVEL(skill)) {
+    for (skill = 0; skill < P_NUM_SKILLS; skill++) 
+	{
+        if (!P_RESTRICTED(skill)) 
+		{
+            if (P_MAX_SKILL_LEVEL(skill) < P_SKILL_LEVEL(skill))
+			{
                 impossible("skill_init: curr > max: %s", P_NAME(skill));
                 P_MAX_SKILL_LEVEL(skill) = P_SKILL_LEVEL(skill);
             }

@@ -404,6 +404,7 @@ struct you {
     int umortality;          /* how many times you died */
     int ugrave_arise;    /* you die and become something aside from a ghost */
     int weapon_slots;        /* unused skill slots */
+	int max_weapon_slots;        /* max skill slots */
 	int skills_advanced;     /* # of advances made so far */
     xchar skill_record[P_SKILL_LIMIT]; /* skill advancements */
     struct skills weapon_skills[P_NUM_SKILLS];

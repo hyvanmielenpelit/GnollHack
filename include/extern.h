@@ -2783,6 +2783,7 @@ E const char* FDECL(get_trap_name, (int));
 
 E void NDECL(u_init);
 E void NDECL(props_init);
+E void NDECL(u_skills_init);
 
 /* ### uhitm.c ### */
 

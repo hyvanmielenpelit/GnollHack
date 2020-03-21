@@ -943,7 +943,6 @@ u_init()
 		knows_object(SACK);
 		knows_object(BACKPACK);
         knows_object(TOUCHSTONE);
-        skill_init(Skill_A_Init, Skill_A_Max);
         break;
     case PM_BARBARIAN:
         if (rn2(100) >= 50) { /* see above comment */
@@ -955,7 +954,6 @@ u_init()
             ini_inv(Lamp);
         //knows_class(WEAPON_CLASS);
         //knows_class(ARMOR_CLASS);
-        skill_init(Skill_B_Init, Skill_B_Max);
         break;
     case PM_CAVEMAN:
         Cave_man[C_AMMO].trquan = rn1(11, 10); /* 10..20 */
@@ -971,7 +969,6 @@ u_init()
 		knows_object(POT_EXTRA_HEALING);
 		knows_object(POT_GREATER_HEALING);
 		knows_object(POT_FULL_HEALING);
-        skill_init(Skill_H_Init, Skill_H_Max);
         break;
     case PM_KNIGHT:
         ini_inv(Knight);
@@ -987,7 +984,6 @@ u_init()
 
         //knows_class(WEAPON_CLASS);
         //knows_class(ARMOR_CLASS);
-        skill_init(Skill_K_Init, Skill_K_Max);
         break;
     case PM_MONK: {
         ini_inv(Monk);
@@ -998,7 +994,6 @@ u_init()
         //knows_class(ARMOR_CLASS);
         /* sufficiently martial-arts oriented item to ignore language issue */
         knows_object(SHURIKEN);
-        skill_init(Skill_Monk_Init, Skill_Monk_Max);
         break;
     }
     case PM_PRIEST:
@@ -1023,10 +1018,6 @@ u_init()
             ini_inv(Lamp);
 
         knows_object(POT_WATER);
-		if(u.ualign.type == A_CHAOTIC)
-	        skill_init(Skill_P_Init_Chaotic, Skill_P_Max);
-		else
-			skill_init(Skill_P_Init_NonChaotic, Skill_P_Max);
 		/* KMH, conduct --
          * Some may claim that this isn't agnostic, since they
          * are literally "priests" and they have holy water.
@@ -1049,7 +1040,6 @@ u_init()
 		else
 			ini_inv(LightningArrow);
 
-        skill_init(Skill_Ranger_Init, Skill_Ranger_Max);
         break;
     case PM_ROGUE:
         Rogue[R_DAGGERS].trquan = rn1(5, 6);
@@ -1059,7 +1049,6 @@ u_init()
             ini_inv(Blindfold);
         knows_object(SACK);
 		knows_object(BAG_OF_TREASURE_HAULING);
-		skill_init(Skill_Rogue_Init, Skill_Rogue_Max);
         break;
     case PM_SAMURAI:
         Samurai[S_ARROWS].trquan = rn1(20, 26);
@@ -1068,7 +1057,6 @@ u_init()
             ini_inv(Blindfold);
         //knows_class(WEAPON_CLASS);
         //knows_class(ARMOR_CLASS);
-        skill_init(Skill_S_Init, Skill_S_Max);
         break;
     case PM_TOURIST:
 		u.umoney0 = 300 + rnd(700);
@@ -1089,7 +1077,6 @@ u_init()
             ini_inv(Leash);
         else if (!rn2(25))
             ini_inv(Magicmarker);
-        skill_init(Skill_T_Init, Skill_T_Max);
 		knows_object(EXPENSIVE_HANDBAG);
 		knows_object(LEATHER_BAG);
 		break;
@@ -1105,7 +1092,6 @@ u_init()
             ini_inv(Lamp);
         //knows_class(WEAPON_CLASS);
         //knows_class(ARMOR_CLASS);
-        skill_init(Skill_V_Init, Skill_V_Max);
         break;
     case PM_WIZARD:
         ini_inv(!rn2(2) ? Wizard : WizardAlternate);
@@ -1113,17 +1099,15 @@ u_init()
             ini_inv(Magicmarker);
         if (!rn2(5))
             ini_inv(Blindfold);
-
-		if (u.ualign.type == A_CHAOTIC)
-			skill_init(Skill_W_Init_Chaotic, Skill_W_Max);
-		else
-			skill_init(Skill_W_Init_NonChaotic, Skill_W_Max);
-
         break;
 
     default: /* impossible */
         break;
     }
+
+
+	/* Initilize skills based on roles */
+	u_skills_init();
 
 	/* Everybody starts with one scroll of identify */
 	ini_inv(ScrollOfIdentify);
@@ -1269,6 +1253,62 @@ u_init()
     return;
 }
 
+
+void
+u_skills_init()
+{
+	/*** Role-specific skill initializations ***/
+	switch (Role_switch) 
+	{
+	case PM_ARCHEOLOGIST:
+		skill_init(Skill_A_Init, Skill_A_Max);
+		break;
+	case PM_BARBARIAN:
+		skill_init(Skill_B_Init, Skill_B_Max);
+		break;
+	case PM_CAVEMAN:
+		skill_init(Skill_C_Init, Skill_C_Max);
+		break;
+	case PM_HEALER:
+		skill_init(Skill_H_Init, Skill_H_Max);
+		break;
+	case PM_KNIGHT:
+		skill_init(Skill_K_Init, Skill_K_Max);
+		break;
+	case PM_MONK:
+		skill_init(Skill_Monk_Init, Skill_Monk_Max);
+		break;
+	case PM_PRIEST:
+		if (u.ualign.type == A_CHAOTIC)
+			skill_init(Skill_P_Init_Chaotic, Skill_P_Max);
+		else
+			skill_init(Skill_P_Init_NonChaotic, Skill_P_Max);
+		break;
+	case PM_RANGER:
+		skill_init(Skill_Ranger_Init, Skill_Ranger_Max);
+		break;
+	case PM_ROGUE:
+		skill_init(Skill_Rogue_Init, Skill_Rogue_Max);
+		break;
+	case PM_SAMURAI:
+		skill_init(Skill_S_Init, Skill_S_Max);
+		break;
+	case PM_TOURIST:
+		skill_init(Skill_T_Init, Skill_T_Max);
+		break;
+	case PM_VALKYRIE:
+		skill_init(Skill_V_Init, Skill_V_Max);
+		break;
+	case PM_WIZARD:
+		if (u.ualign.type == A_CHAOTIC)
+			skill_init(Skill_W_Init_Chaotic, Skill_W_Max);
+		else
+			skill_init(Skill_W_Init_NonChaotic, Skill_W_Max);
+		break;
+	default: /* impossible */
+		break;
+	}
+}
 
 STATIC_OVL
 void
@@ -1425,6 +1465,7 @@ register struct trobj *trop;
                    || otyp == POT_HALLUCINATION
                    || otyp == POT_ACID
                    || otyp == SCR_AMNESIA
+                   || otyp == SCR_RETRAINING /* No need in the beginning */
                    || otyp == SCR_FIRE
                    || otyp == SCR_BLANK_PAPER
                    || otyp == SPE_BLANK_PAPER
