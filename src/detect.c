@@ -1716,7 +1716,7 @@ register int aflag; /* intrinsic autosearch vs explicit searching */
 			fund = -10;
 
 		int itemsfound = 0;
-		if (!aflag && !rn2(7 - fund))
+		if (!rn2(7 - fund))
 			itemsfound = unearth_objs(u.ux, u.uy, TRUE, TRUE);
 
 		if (!itemsfound)
