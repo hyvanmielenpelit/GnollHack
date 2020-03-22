@@ -1685,8 +1685,8 @@ xchar x, y; /* clone's preferred location or 0 (near mon) */
     if (mon->ispriest)
         m2->ispriest = FALSE;
     place_monster(m2, m2->mx, m2->my);
-    if (emits_light(m2->data))
-        new_light_source(m2->mx, m2->my, emits_light(m2->data), LS_MONSTER,
+    if (emitted_light_range(m2->data))
+        new_light_source(m2->mx, m2->my, emitted_light_range(m2->data), LS_MONSTER,
                          monst_to_any(m2));
     if (has_mname(mon)) 
 	{
@@ -2255,7 +2255,7 @@ unsigned long mmflags;
 			mtmp->mprops[VERY_FAST] |= M_INTRINSIC_ACQUIRED;
         break;
     }
-    if ((ct = emits_light(mtmp->data)) > 0)
+    if ((ct = emitted_light_range(mtmp->data)) > 0)
         new_light_source(mtmp->mx, mtmp->my, ct, LS_MONSTER,
                          monst_to_any(mtmp));
     mitem = 0; /* extra inventory item for this monster */

@@ -10,8 +10,7 @@
 #define hugemonst(ptr) ((ptr)->msize >= MZ_HUGE)
 
 #define is_vampshifter(mon)                                      \
-    ((mon)->cham == PM_VAMPIRE || (mon)->cham == PM_VAMPIRE_LORD || (mon)->cham == PM_VAMPIRE_MAGE \
-     || (mon)->cham == PM_VLAD_THE_IMPALER)
+    (mons[(mon)->cham].mlet == S_VAMPIRE && (mons[(mon)->cham].mflags2 & M2_SHAPESHIFTER) != 0)
 
 /* M1-4 flags*/
 #define is_flyer(ptr) (((ptr)->mflags1 & M1_FLY) != 0L)
@@ -33,7 +32,9 @@
     (!haseyes(ptr) ? 0 : ((ptr) == &mons[PM_CYCLOPS]          \
                           || (ptr) == &mons[PM_FLOATING_EYE]) \
                              ? 1                              \
-                             : 2)
+							 : (ptr) == &mons[PM_BEHOLDER] || (ptr) == &mons[PM_ELDER_ORB] ? 7	\
+							 : (ptr) == &mons[PM_DEATH_TYRANT] ? 4	\
+                             : 2 * (ptr)->heads)
 #define nolimbs(ptr) (((ptr)->mflags1 & M1_NOLIMBS) == M1_NOLIMBS) /* two bits */
 #define nohands(ptr) (((ptr)->mflags1 & M1_NOHANDS) != 0L) /* also covers no limbs because of the bit in M1_NOLIMBS  */
 #define notake(ptr) (((ptr)->mflags1 & M1_NOTAKE) != 0L)
@@ -43,11 +44,6 @@
 #define has_neck(ptr) (((ptr)->mflags1 & M1_NONECK) == 0L && has_head(ptr))
 #define has_place_to_put_helmet_on(ptr) has_head(ptr)
 #define has_horns(ptr) (num_horns(ptr) > 0)
-#define is_whirly(ptr) \
-    ((ptr)->mlet == S_VORTEX || (ptr) == &mons[PM_AIR_ELEMENTAL])
-#define flaming(ptr)                                                     \
-    ((ptr) == &mons[PM_FIRE_VORTEX] || (ptr) == &mons[PM_FLAMING_SPHERE] \
-     || (ptr) == &mons[PM_FIRE_ELEMENTAL] || (ptr) == &mons[PM_SALAMANDER])
 #define is_silent(ptr) ((ptr)->msound == MS_SILENT)
 #define unsolid(ptr) (((ptr)->mflags1 & M1_UNSOLID) != 0L)
 #define mindless(ptr) (((ptr)->mflags1 & M1_MINDLESS) != 0L)
@@ -74,10 +70,6 @@
 #define is_gnome(ptr) (((ptr)->mflags2 & M2_GNOME) != 0L)
 #define is_human(ptr) (((ptr)->mflags2 & M2_HUMAN) != 0L)
 #define your_race(ptr) (((ptr)->mflags2 & urace.selfmask) != 0L)
-#define is_bat(ptr)                                         \
-    ((ptr) == &mons[PM_BAT] || (ptr) == &mons[PM_GIANT_BAT] \
-     || (ptr) == &mons[PM_VAMPIRE_BAT] || (ptr) == &mons[PM_HELL_BAT])
-#define is_bird(ptr) ((ptr)->mlet == S_BAT && !is_bat(ptr))
 #define is_giant(ptr) (((ptr)->mflags2 & M2_GIANT) != 0L)
 #define is_golem(ptr) ((ptr)->mlet == S_GOLEM)
 #define is_treant(ptr) ((ptr)->mlet == S_TREANT)
@@ -160,6 +152,13 @@
 #define slurps_items(ptr) (((ptr)->mflags4 & M4_SLURPS_ITEMS) != 0)
 #define is_stony(ptr) (((ptr)->mflags4 & M4_STONY) != 0)
 #define is_wooden(ptr) (((ptr)->mflags4 & M4_WOODEN) != 0)
+#define flaming(ptr) (((ptr)->mflags4 & M4_FLAMING) != 0L)
+#define is_whirly(ptr) (((ptr)->mflags4 & M4_WHIRLY) != 0L)
+#define is_bat(ptr) (((ptr)->mflags4 & M4_BAT) != 0L)
+#define is_bird(ptr) ((ptr)->mlet == S_BAT && !is_bat(ptr))
+#define likes_lava(ptr) (((ptr)->mflags4 & M4_LIKES_LAVA) != 0)
+#define likes_fire(ptr) (((ptr)->mflags4 & M4_LIKES_FIRE) != 0)
+
 
 
 
@@ -583,33 +582,10 @@
    as unique even though they really aren't; that's ok here */
 #define unique_corpstat(ptr) (((ptr)->geno & G_UNIQ) != 0)
 
-/* this returns the light's range, or 0 if none; if we add more light emitting
-   monsters, we'll likely have to add a new light range field to mons[] */
-#define emits_light(ptr)                                          \
-    (((ptr)->mlet == S_LIGHT || (ptr) == &mons[PM_FLAMING_SPHERE] \
-      || (ptr) == &mons[PM_SHOCKING_SPHERE]                       \
-      || (ptr) == &mons[PM_FIRE_VORTEX])                          \
-         ? 1                                                      \
-         : ((ptr) == &mons[PM_FIRE_ELEMENTAL]) ? 1 : 0)
-/*	[note: the light ranges above were reduced to 1 for performance...] */
-#define likes_lava(ptr) \
-    (ptr == &mons[PM_FIRE_ELEMENTAL] || ptr == &mons[PM_SALAMANDER])
-
-/* could probably add more */
-#define likes_fire(ptr)                                                  \
-    ((ptr) == &mons[PM_FIRE_VORTEX] || (ptr) == &mons[PM_FLAMING_SPHERE] \
-     || likes_lava(ptr))
-
-#define touch_petrifies(ptr) \
-    (((ptr)->mflags1 & M1_TOUCH_PETRIFIES) != 0)
-
-#define is_mind_flayer(ptr) \
-    (((ptr)->mflags2 & M2_MIND_FLAYER) != 0)
-
-#define is_mimic(ptr) \
-    ((ptr->mlet == S_MIMIC)
-
-
+#define emitted_light_range(ptr) ((ptr)->lightrange)
+#define touch_petrifies(ptr) (((ptr)->mflags1 & M1_TOUCH_PETRIFIES) != 0)
+#define is_mind_flayer(ptr) (((ptr)->mflags2 & M2_MIND_FLAYER) != 0)
+#define is_mimic(ptr) ((ptr->mlet == S_MIMIC)
 #define is_vampire(ptr) ((ptr)->mlet == S_VAMPIRE)
 #define hates_light(ptr) ((ptr) == &mons[PM_GREMLIN])
 
@@ -631,14 +607,10 @@
 #define vegetarian(ptr) \
     (vegan(ptr) || is_vegetarian_food(ptr))
 
-#define nonrotting_corpse(mnum) \
-    ((mons[(mnum)].mflags4 & M4_NONROTTING_CORPSE) != 0)
-
-#define nonrotting_corpse_ptr(ptr) \
-    (((ptr)->mflags4 & M4_NONROTTING_CORPSE) != 0)
-
-#define has_pitwalk(ptr) \
-    (((ptr)->mflags4 & M4_PITWALK) != 0)
+#define nonrotting_corpse_ptr(ptr) (((ptr)->mflags4 & M4_NONROTTING_CORPSE) != 0)
+#define nonrotting_corpse(mnum) nonrotting_corpse_ptr(&mons[mnum])
+#define has_pitwalk(ptr) (((ptr)->mflags4 & M4_PITWALK) != 0)
+#define can_speak_language(ptr) ((ptr)->msound >= MS_LAUGH || (ptr)->msound == MS_ORC || is_speaking_monster(ptr))
 
 /* Overall resistances */
 #define resists_drli(mon) \

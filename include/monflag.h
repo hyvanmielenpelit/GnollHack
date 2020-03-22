@@ -260,6 +260,11 @@
 #define M4_SLURPS_ITEMS				0x00000400UL		/* hoovers up items like a gelatinous cube */
 #define M4_STONY					0x00000800UL		/* is made of stone, sand or the like, gets double damage from spade of colossal excavation */
 #define M4_WOODEN					0x00001000UL		/* is made of wooden, extra damage from axes */
+#define M4_FLAMING					0x00002000UL		/* a flaming monster */
+#define M4_WHIRLY					0x00004000UL		/* a whirly monster */
+#define M4_BAT						0x00008000UL		/* a bat */
+#define M4_LIKES_LAVA				0x00010000UL		/* likes lava */
+#define M4_LIKES_FIRE				0x00020000UL		/* likes fire */
 
 
 #define MZ_TINY 0          /* < 2' */

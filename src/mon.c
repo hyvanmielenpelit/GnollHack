@@ -2636,9 +2636,9 @@ struct monst *mtmp, *mtmp2;
         place_monster(mtmp2, mtmp2->mx, mtmp2->my);
     if (mtmp2->wormno)      /* update level.monsters[wseg->wx][wseg->wy] */
         place_wsegs(mtmp2, NULL); /* locations to mtmp2 not mtmp. */
-    if (emits_light(mtmp2->data)) {
+    if (emitted_light_range(mtmp2->data)) {
         /* since this is so rare, we don't have any `mon_move_light_source' */
-        new_light_source(mtmp2->mx, mtmp2->my, emits_light(mtmp2->data),
+        new_light_source(mtmp2->mx, mtmp2->my, emitted_light_range(mtmp2->data),
                          LS_MONSTER, monst_to_any(mtmp2));
         /* here we rely on fact that `mtmp' hasn't actually been deleted */
         del_light_source(LS_MONSTER, monst_to_any(mtmp));
@@ -2840,7 +2840,7 @@ struct permonst *mptr; /* reflects mtmp->data _prior_ to mtmp's death */
         else
             remove_monster(mtmp->mx, mtmp->my);
     }
-    if (emits_light(mptr))
+    if (emitted_light_range(mptr))
         del_light_source(LS_MONSTER, monst_to_any(mtmp));
     if (M_AP_TYPE(mtmp))
         seemimic(mtmp);
@@ -4720,13 +4720,13 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
     /* take on the new form... */
     set_mon_data(mtmp, mdat);
 
-    if (emits_light(olddata) != emits_light(mtmp->data)) {
+    if (emitted_light_range(olddata) != emitted_light_range(mtmp->data)) {
         /* used to give light, now doesn't, or vice versa,
            or light's range has changed */
-        if (emits_light(olddata))
+        if (emitted_light_range(olddata))
             del_light_source(LS_MONSTER, monst_to_any(mtmp));
-        if (emits_light(mtmp->data))
-            new_light_source(mtmp->mx, mtmp->my, emits_light(mtmp->data),
+        if (emitted_light_range(mtmp->data))
+            new_light_source(mtmp->mx, mtmp->my, emitted_light_range(mtmp->data),
                              LS_MONSTER, monst_to_any(mtmp));
     }
 

@@ -130,6 +130,9 @@ static NEARDATA struct mflag_description m4flag_descriptions[] = {
 	{ M4_SLURPS_ITEMS, "item-engulfing", "item-engulfing monsters" },
 	{ M4_STONY, "stony", "monsters made of stone" },
 	{ M4_WOODEN, "wooden", "monsters made of wood" },
+	{ M4_FLAMING, "flaming", "flaming monsters" },
+	{ M4_FLAMING, "whirly", "whirly monsters" },
+	{ M4_BAT, "bat", "bats" },
 	{ 0 , "", "" }
 };
 

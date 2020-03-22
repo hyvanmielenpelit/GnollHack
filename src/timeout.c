@@ -463,7 +463,7 @@ struct kinfo *kptr;
      * [formerly implicit] change of form; polymon() takes care of that.
      * Temporarily ungenocide if necessary.
      */
-    if (emits_light(youmonst.data))
+    if (emitted_light_range(youmonst.data))
         del_light_source(LS_MONSTER, monst_to_any(&youmonst));
     save_mvflags = mvitals[PM_GREEN_SLIME].mvflags;
     mvitals[PM_GREEN_SLIME].mvflags = save_mvflags & ~G_GENOD;

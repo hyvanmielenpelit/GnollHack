@@ -1055,7 +1055,8 @@ u_init()
             ini_inv(Blindfold);
         knows_object(SACK);
 		knows_object(BAG_OF_TREASURE_HAULING);
-        break;
+		knows_object(POT_POISON);
+		break;
     case PM_SAMURAI:
         Samurai[S_ARROWS].trquan = rn1(20, 26);
         ini_inv(Samurai);

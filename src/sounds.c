@@ -1152,50 +1152,61 @@ dochat()
     int tx, ty;
     struct obj *otmp;
 
-    if (is_silent(youmonst.data)) {
+    if (is_silent(youmonst.data) || !can_speak_language(youmonst.data))
+	{
         pline("As %s, you cannot speak.", an(youmonst.data->mname));
         return 0;
     }
-    if (Strangled) {
+    if (Strangled) 
+	{
         You_cant("speak.  You're choking!");
         return 0;
     }
-	if (Silenced) {
+	if (Silenced) 
+	{
 		You_cant("speak.  Your voice is gone!");
 		return 0;
 	}
-	if (u.uswallow) {
+	if (u.uswallow) 
+	{
         pline("They won't hear you out there.");
         return 0;
     }
-    if (Underwater) {
+    if (Underwater) 
+	{
         Your("speech is unintelligible underwater.");
         return 0;
     }
-    if (Deaf) {
+    if (Deaf) 
+	{
         pline("How can you hold a conversation when you cannot hear?");
         return 0;
     }
 
-    if (!getdir("Talk to whom? (in what direction)")) {
+    if (!getdir("Talk to whom? (in what direction)")) 
+	{
         /* decided not to chat */
         return 0;
     }
 
-    if (u.usteed && u.dz > 0) {
-        if (!mon_can_move(u.usteed)) {
+    if (u.usteed && u.dz > 0)
+	{
+        if (!mon_can_move(u.usteed)) 
+		{
             pline("%s seems not to notice you.", Monnam(u.usteed));
             return 1;
         } else
             return domonnoise(u.usteed);
     }
 
-    if (u.dz) {
+    if (u.dz)
+	{
         pline("They won't hear you %s there.", u.dz < 0 ? "up" : "down");
         return 0;
     }
 
-    if (u.dx == 0 && u.dy == 0) {
+    if (u.dx == 0 && u.dy == 0) 
+	{
         /*
          * Let's not include this.
          * It raises all sorts of questions: can you wear
@@ -1219,9 +1230,11 @@ dochat()
     mtmp = m_at(tx, ty);
 
     if ((!mtmp || mtmp->mundetected)
-        && (otmp = vobj_at(tx, ty)) != 0 && otmp->otyp == STATUE) {
+        && (otmp = vobj_at(tx, ty)) != 0 && otmp->otyp == STATUE)
+	{
         /* Talking to a statue */
-        if (!Blind) {
+        if (!Blind) 
+		{
             pline_The("%s seems not to notice you.",
                       /* if hallucinating, you can't tell it's a statue */
                       Hallucination ? rndmonnam((char *) 0) : "statue");

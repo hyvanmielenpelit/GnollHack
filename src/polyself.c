@@ -450,7 +450,7 @@ int psflags;
             return;
         }
     }
-    old_light = emits_light(youmonst.data);
+    old_light = emitted_light_range(youmonst.data);
     mntmp = NON_PM;
 
     if (monsterpoly && isvamp)
@@ -662,7 +662,7 @@ int psflags;
     sex_change_ok--; /* reset */
 
 made_change:
-    new_light = emits_light(youmonst.data);
+    new_light = emitted_light_range(youmonst.data);
     if (old_light != new_light) {
         if (old_light)
             del_light_source(LS_MONSTER, monst_to_any(&youmonst));
@@ -1307,7 +1307,7 @@ rehumanize()
         }
     }
 
-    if (emits_light(youmonst.data))
+    if (emitted_light_range(youmonst.data))
         del_light_source(LS_MONSTER, monst_to_any(&youmonst));
     polyman("return to %s form!", urace.adj);
 

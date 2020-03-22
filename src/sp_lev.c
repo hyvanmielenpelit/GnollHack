@@ -1799,14 +1799,14 @@ struct mkroom *croom;
 
                     mgender_from_permonst(mtmp, mdat);
                     set_mon_data(mtmp, mdat);
-                    if (emits_light(olddata) != emits_light(mtmp->data)) {
+                    if (emitted_light_range(olddata) != emitted_light_range(mtmp->data)) {
                         /* used to give light, now doesn't, or vice versa,
                            or light's range has changed */
-                        if (emits_light(olddata))
+                        if (emitted_light_range(olddata))
                             del_light_source(LS_MONSTER, (genericptr_t) mtmp);
-                        if (emits_light(mtmp->data))
+                        if (emitted_light_range(mtmp->data))
                             new_light_source(mtmp->mx, mtmp->my,
-                                             emits_light(mtmp->data),
+                                             emitted_light_range(mtmp->data),
                                              LS_MONSTER, (genericptr_t) mtmp);
                     }
                 }
