@@ -305,7 +305,7 @@ doread()
               (flags.verbose || Blind) ? "." : "");
         u.uconduct.literate++;
         return 1;
-    } else if (scroll->otyp == CAN_OF_GREASE) {
+    } else if (scroll->otyp == CAN_OF_GREASE || scroll->otyp == JAR_OF_HEALING_SALVE || scroll->otyp == JAR_OF_EXTRA_HEALING_SALVE) {
         pline("This %s has no label.", singular(scroll, xname));
         return 0;
     } else if (scroll->otyp == MAGIC_MARKER) {

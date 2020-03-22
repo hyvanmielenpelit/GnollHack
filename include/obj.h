@@ -445,6 +445,8 @@ struct obj {
     ((objects[(otyp)].oc_flags3 & O3_DOUBLE_DIGGING_EFFORT) != 0)
 #define is_otyp_buried_searchable(otyp) \
     ((objects[(otyp)].oc_flags3 & O3_BURIED_SEARCHABLE) != 0)
+#define is_content_description_shuffled(otyp) \
+    ((objects[(otyp)].oc_flags3 & O3_CONTENT_DESCRIPTION_SHUFFLED) != 0)
 
 
 /* 'PRIZE' values override obj->corpsenm so prizes mustn't be object types

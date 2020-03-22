@@ -80,12 +80,35 @@ struct obj* obj;
 		You("throw some %s on the %s.", OBJ_CONTENT_DESC(obj->otyp),
 			(u.dz > 0) ? surface(u.ux, u.uy) : ceiling(u.ux, u.uy));
 	}
-	else if (!u.dx && !u.dy) {
+	else if (!u.dx && !u.dy) 
+	{
+		You("apply some %s on yourself.", OBJ_CONTENT_DESC(obj->otyp));
 		(void)zapyourself(obj, TRUE);
 	}
 	else
-		weffects(obj);
+	{
+		if (isok(u.ux + u.dx, u.uy + u.dy))
+		{
+			struct monst* mtmp = m_at(u.ux + u.dx, u.uy + u.dy);
+			if (mtmp)
+			{
+				You("apply some %s on %s.", OBJ_CONTENT_DESC(obj->otyp), mon_nam(mtmp));
+			}
+			else if(IS_WALL(levl[u.ux + u.dx][u.uy + u.dy].typ))
+			{
+				You("throw some %s on the wall.", OBJ_CONTENT_DESC(obj->otyp));
+			}
+			else
+			{
+				const char* dfeat = dfeature_at(u.ux + u.dx, u.uy + u.dy);
+				You("throw some %s on the %s.", OBJ_CONTENT_DESC(obj->otyp), dfeat ? dfeat : "floor");
+			}
+		}
+		else
+			You("throw some %s away.", OBJ_CONTENT_DESC(obj->otyp));
 
+		weffects(obj);
+	}
 	return 1;
 }
 

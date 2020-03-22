@@ -841,7 +841,7 @@ struct objclass {
 #define O3_EXTENDED_POLEARM_REACH					0x00000010UL  /* range is max 13 instead of normal 8 */
 #define O3_DOUBLE_DIGGING_EFFORT					0x00000020UL  /* double normal digging effort */
 #define O3_BURIED_SEARCHABLE						0x00000040UL  /* if buried, can be found by explicit searching */
-/* free bit */
+#define O3_CONTENT_DESCRIPTION_SHUFFLED				0x00000080UL  /* uses (shuffled) description index instead of name index for content description */
 /* free bit */
 /* free bit */
 
@@ -1021,7 +1021,7 @@ struct fruit {
 #define OBJ_NAME(obj) (obj_descr[(obj).oc_name_idx].oc_name)
 #define OBJ_DESCR(obj) (obj_descr[(obj).oc_descr_idx].oc_descr)
 
-#define OBJ_CONTENT_DESC(otyp) (obj_descr[objects[(otyp)].oc_name_idx].oc_content_description)
+#define OBJ_CONTENT_DESC(otyp) (obj_descr[is_content_description_shuffled(otyp) ?  objects[(otyp)].oc_descr_idx :objects[(otyp)].oc_name_idx].oc_content_description)
 #define OBJ_ITEM_DESC(otyp) (obj_descr[objects[(otyp)].oc_name_idx].oc_item_description)
 
 

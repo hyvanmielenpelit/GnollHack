@@ -417,7 +417,8 @@ char *buf, *monbuf;
     if (u.ux == x && u.uy == y && canspotself()
         && !(iflags.save_uswallow &&
              glyph == mon_to_glyph(u.ustuck, rn2_on_display_rng))
-        && (!iflags.terrainmode || (iflags.terrainmode & TER_MON) != 0)) {
+        && (!iflags.terrainmode || (iflags.terrainmode & TER_MON) != 0))
+	{
         /* fill in buf[] */
         (void) self_lookat(buf);
 
@@ -432,7 +433,8 @@ char *buf, *monbuf;
            Sensing self while blind or swallowed is treated as if it
            were by normal vision (cf canseeself()). */
         if ((Invisible || u.uundetected) && !Blind
-            && !(u.uswallow || iflags.save_uswallow)) {
+            && !(u.uswallow || iflags.save_uswallow)) 
+		{
             unsigned how = 0;
 
             if (Infravision)
@@ -452,28 +454,39 @@ char *buf, *monbuf;
                         ((how & 7) > 4) ? ", " : "",
                         (how & 4) ? "monster detection" : "");
         }
-    } else if (u.uswallow) {
+    } 
+	else if (u.uswallow)
+	{
         /* when swallowed, we're only called for spots adjacent to hero,
            and blindness doesn't prevent hero from feeling what holds him */
         Sprintf(buf, "interior of %s", a_monnam(u.ustuck));
         pm = u.ustuck->data;
-    } else if (glyph_is_monster(glyph)) {
+    } 
+	else if (glyph_is_monster(glyph))
+	{
         bhitpos.x = x;
         bhitpos.y = y;
-        if ((mtmp = m_at(x, y)) != 0) {
+        if ((mtmp = m_at(x, y)) != 0)
+		{
 			if (is_tame(mtmp))
 				print_mstatusline(buf, mtmp, ARTICLE_NONE, TRUE);
 			else
 	            look_at_monster(buf, monbuf, mtmp, x, y);
             pm = mtmp->data;
-        } else if (Hallucination) {
+        } 
+		else if (Hallucination) 
+		{
             /* 'monster' must actually be a statue */
             Strcpy(buf, rndmonnam((char *) 0));
         }
-    } else if (glyph_is_object(glyph)) {
+    }
+	else if (glyph_is_object(glyph))
+	{
 		noarticle = TRUE;
 		look_at_object(buf, x, y, glyph); /* fill in buf[] */
-    } else if (glyph_is_trap(glyph)) {
+    } 
+	else if (glyph_is_trap(glyph))
+	{
         int tnum = what_trap(glyph_to_trap(glyph), rn2_on_display_rng);
 
         /* Trap detection displays a bear trap at locations having
@@ -487,22 +500,27 @@ char *buf, *monbuf;
             Strcpy(buf, "trapped door"); /* not "trap door"... */
         else
             Strcpy(buf, defsyms[trap_to_defsym(tnum)].explanation);
-    } else if (glyph_is_warning(glyph)) {
+    }
+	else if (glyph_is_warning(glyph))
+	{
         int warnindx = glyph_to_warning(glyph);
 
         Strcpy(buf, def_warnsyms[warnindx].explanation);
-    } else if (!glyph_is_cmap(glyph)) {
+    } 
+	else if (!glyph_is_cmap(glyph)) 
+	{
         Strcpy(buf, "unexplored area");
-    } else
-        switch (glyph_to_cmap(glyph)) {
+    } 
+	else
+        switch (glyph_to_cmap(glyph))
+		{
         case S_altar:
             Sprintf(buf, "%s %saltar",
                     /* like endgame high priests, endgame high altars
                        are only recognizable when immediately adjacent */
                     (Is_astralevel(&u.uz) && distu(x, y) > 2)
                         ? "aligned"
-                        : align_str(
-                              Amask2align(levl[x][y].altarmask & ~AM_SHRINE)),
+                        : align_str(Amask2align(levl[x][y].altarmask & ~AM_SHRINE)),
                     ((levl[x][y].altarmask & AM_SHRINE)
                      && (Is_astralevel(&u.uz) || Is_sanctum(&u.uz)))
                         ? "high "
@@ -517,20 +535,24 @@ char *buf, *monbuf;
                 Strcpy(buf, "doorway");
             break;
         case S_cloud:
-            Strcpy(buf,
-                   Is_airlevel(&u.uz) ? "cloudy area" : "fog/vapor cloud");
+            Strcpy(buf, Is_airlevel(&u.uz) ? "cloudy area" : "fog/vapor cloud");
             break;
         case S_stone:
 			noarticle = TRUE;
-            if (!levl[x][y].seenv) {
+            if (!levl[x][y].seenv) 
+			{
                 Strcpy(buf, "unexplored");
                 break;
-            } else if (Underwater && !Is_waterlevel(&u.uz)) {
+            }
+			else if (Underwater && !Is_waterlevel(&u.uz))
+			{
                 /* "unknown" == previously mapped but not visible when
                    submerged; better terminology appreciated... */
                 Strcpy(buf, (distu(x, y) <= 2) ? "land" : "unknown");
                 break;
-            } else if (levl[x][y].typ == STONE || levl[x][y].typ == SCORR) {
+            }
+			else if (levl[x][y].typ == STONE || levl[x][y].typ == SCORR) 
+			{
                 Strcpy(buf, "stone");
                 break;
             }

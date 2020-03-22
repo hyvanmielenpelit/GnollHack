@@ -162,7 +162,7 @@ const struct symdef defsyms[MAXPCHARS] = {
        { '#', "iron bars", C(HI_METAL) },            /* bars */
        { '#', "tree", C(CLR_GREEN) },                /* tree */
        { '.', "floor of a room", C(CLR_GRAY) },      /* room */
-	   { '.', "grass", C(CLR_GREEN) },				 /* grass */
+/*+1*/ { '.', "grass", C(CLR_GREEN) },				 /* grass */
 /*20*/ { '.', "dark part of a room", C(CLR_BLACK) }, /* dark room */
        { '#', "corridor", C(CLR_GRAY) },             /* dark corr */
        { '#', "lit corridor", C(CLR_GRAY) },   /* lit corr (see mapglyph.c) */
@@ -208,8 +208,8 @@ const struct symdef defsyms[MAXPCHARS] = {
        { '^', "anti-magic field", C(HI_ZAP) },         /* trap */
        { '^', "polymorph trap", C(CLR_BRIGHT_GREEN) }, /* trap */
        { '~', "vibrating square", C(CLR_MAGENTA) },    /* "trap" */
-	   { '^', "octahedral magic portal", C(CLR_CYAN) }, /* trap */
-	   { '^', "tetrahedral magic portal", C(CLR_CYAN) }, /* trap */
+/*+1*/ { '^', "octahedral magic portal", C(CLR_CYAN) }, /* trap */
+/*+1*/ { '^', "tetrahedral magic portal", C(CLR_CYAN) }, /* trap */
 	   /* zap colors are changed by mapglyph() to match type of beam */
        { '|', "", C(CLR_GRAY) },                /* vbeam */
        { '-', "", C(CLR_GRAY) },                /* hbeam */

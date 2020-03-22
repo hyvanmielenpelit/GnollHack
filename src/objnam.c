@@ -1146,7 +1146,7 @@ unsigned doname_flags;
 	if (obj->oclass == TOOL_CLASS 
 		&& (objects[obj->otyp].oc_subtyp == TOOLTYPE_JAR || objects[obj->otyp].oc_subtyp == TOOLTYPE_CAN) 
 		&& OBJ_CONTENT_DESC(obj->otyp)
-		&& objects[obj->otyp].oc_name_known == 0 && !known && obj->charges > 1)
+		&& objects[obj->otyp].oc_name_known == 0 && !known && obj->charges > 0)
 	{
 		Sprintf(eos(bp), " containing %s", OBJ_CONTENT_DESC(obj->otyp));
 	}

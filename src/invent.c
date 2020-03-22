@@ -4070,9 +4070,8 @@ dotypeinv()
 /* return a string describing the dungeon feature at <x,y> if there
    is one worth mentioning at that location; otherwise null */
 const char *
-dfeature_at(x, y, buf)
+dfeature_at(x, y)
 int x, y;
-char *buf;
 {
     struct rm *lev = &levl[x][y];
     int ltyp = lev->typ, cmap = -1;
@@ -4116,7 +4115,7 @@ char *buf;
                  && (Is_astralevel(&u.uz) || Is_sanctum(&u.uz)))
                     ? "high "
                     : "",
-                a_gname(),
+                a_gname_at(x, y),
                 align_str(Amask2align(lev->altarmask & ~AM_SHRINE)));
         dfeature = altbuf;
     } else if ((x == xupstair && y == yupstair)
@@ -4142,8 +4141,6 @@ char *buf;
 
     if (cmap >= 0)
         dfeature = defsyms[cmap].explanation;
-    if (dfeature)
-        Strcpy(buf, dfeature);
     return dfeature;
 }
 
@@ -4158,7 +4155,7 @@ boolean picked_some;
     struct trap *trap;
     const char *verb = Blind ? "feel" : "see";
     const char *dfeature = (char *) 0;
-    char fbuf[BUFSZ], fbuf2[BUFSZ];
+    char fbuf[BUFSZ];
     winid tmpwin;
     boolean skip_objects, felt_cockatrice = FALSE;
 
@@ -4195,7 +4192,7 @@ boolean picked_some;
               an(defsyms[trap_to_defsym(trap->ttyp)].explanation));
 
     otmp = level.objects[u.ux][u.uy];
-    dfeature = dfeature_at(u.ux, u.uy, fbuf2);
+    dfeature = dfeature_at(u.ux, u.uy);
     if (dfeature && !strcmp(dfeature, "pool of water") && Underwater)
         dfeature = 0;
 

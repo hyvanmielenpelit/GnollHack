@@ -1993,7 +1993,7 @@ TOOL("tinning kit",         None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, SPETYPE
 TOOL("tin opener",          None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 20,  4, 30, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 TOOL("can of grease",       "metal can", "viscous fluid", None, TOOLTYPE_CAN, 0, 0, 0, SPETYPE_NO_SPE, CHARGED_CAN_OF_GREASE, 15, 15, 20, 0, 0, 0, 0, 0, 0,
-	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_READABLE, PERMITTED_ALL),
+	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_READABLE | O3_CONTENT_DESCRIPTION_SHUFFLED, PERMITTED_ALL),
 TOOL("figurine",            None, None, None, TOOLTYPE_GENERAL, 1, 0, 1, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 0, 50, 80, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_MINERAL, HI_MINERAL, O1_NONE, O2_NONE, O3_NO_WISH | O3_NO_GENERATION, PERMITTED_ALL),
         /* FIGURINE REMOVED FROM THE GAME -- JG -- monster type specified by obj->corpsenm */
@@ -2036,9 +2036,9 @@ TOOL("leather drum",      "old drum", None, None, TOOLTYPE_DRUM, 0, 0, 0, SPETYP
 TOOL("drum of earthquake","antiquated drum", None, None, TOOLTYPE_DRUM, 0, 0, 1, SPETYPE_NO_SPE, CHARGED_HORN_NORMAL,  2, 25, 25, 0, 0, 0, 0, 0, 0, //ENDMARKER
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SPELLTOOL("jar of healing salve", "glass jar", "yellow ointment", "Heals a target for 6d6 hit points", TOOLTYPE_JAR, 0, 0, 1, CHARGED_1D6_3, //STARTMARKER
-	20, 15, 100, TOUCH, 0, 6, 6, 0, 0, 0, 0, 5, MAT_GLASS, HI_GLASS, O1_NONE, O2_NONE, O3_NONE),
-SPELLTOOL("jar of extra healing salve", "crystal jar", "yellow ointment", "Heals a target for 12d6 hit points", TOOLTYPE_JAR, 0, 0, 1, CHARGED_1D6_3,  //ENDMARKER
-	10, 15, 300, IMMEDIATE, 0, 12, 6, 0, 0, 0, 0, 5, MAT_GLASS, HI_GLASS, O1_NONE, O2_NONE, O3_NONE),
+	20, 15, 100, TOUCH, 0, 6, 6, 0, 0, 0, 0, 5, MAT_GLASS, HI_GLASS, O1_NONE, O2_NONE, O3_READABLE | O3_CONTENT_DESCRIPTION_SHUFFLED),
+SPELLTOOL("jar of extra healing salve", "crystal jar", "purple ointment", "Heals a target for 12d6 hit points", TOOLTYPE_JAR, 0, 0, 1, CHARGED_1D6_3,  //ENDMARKER
+	10, 15, 300, IMMEDIATE, 0, 12, 6, 0, 0, 0, 0, 5, MAT_GLASS, HI_GLASS, O1_NONE, O2_NONE, O3_READABLE | O3_CONTENT_DESCRIPTION_SHUFFLED),
 
 /* tools useful as weapons */
 WEPTOOL("pick-axe", None, None,
