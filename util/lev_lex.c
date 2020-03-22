@@ -1375,7 +1375,7 @@ YY_RULE_SETUP
 {
 		  savetoken(yytext);
 		  BEGIN(INITIAL);
-		  yylval.map = (char *) alloc((size_t)map_cnt + 1);
+		  yylval.map = (char *) alloc(map_cnt + 1);
 		  (void) strncpy(yylval.map, map, map_cnt);
 		  yylval.map[map_cnt] = 0;
 		  map_cnt = 0;
@@ -3221,7 +3221,7 @@ void yyfree (ptr )
 #ifdef	AMIGA
 long *
 alloc(n)
-size_t n;
+    unsigned n;
 {
     return (long *) malloc(n);
 }
