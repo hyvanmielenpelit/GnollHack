@@ -970,7 +970,12 @@ u_init()
 		knows_object(POT_EXTRA_HEALING);
 		knows_object(POT_GREATER_HEALING);
 		knows_object(POT_FULL_HEALING);
-        break;
+		knows_object(POT_SLEEPING);
+		knows_object(POT_SICKNESS);
+		knows_object(POT_POISON);
+		knows_object(JAR_OF_HEALING_SALVE);
+		knows_object(JAR_OF_EXTRA_HEALING_SALVE);
+		break;
     case PM_KNIGHT:
         ini_inv(Knight);
 		if (!rn2(10))

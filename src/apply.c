@@ -75,14 +75,16 @@ struct obj* obj;
 
 	consume_obj_charge(obj, TRUE);
 
+	const char* healing_salve = "healing salve";
+
 	if (u.dz) 
 	{
-		You("throw some %s on the %s.", OBJ_CONTENT_DESC(obj->otyp),
+		You("throw some %s on the %s.", objects[obj->otyp].oc_name_known ? healing_salve : OBJ_CONTENT_DESC(obj->otyp),
 			(u.dz > 0) ? surface(u.ux, u.uy) : ceiling(u.ux, u.uy));
 	}
 	else if (!u.dx && !u.dy) 
 	{
-		You("apply some %s on yourself.", OBJ_CONTENT_DESC(obj->otyp));
+		You("apply some %s on yourself.", objects[obj->otyp].oc_name_known ? healing_salve : OBJ_CONTENT_DESC(obj->otyp));
 		(void)zapyourself(obj, TRUE);
 	}
 	else
@@ -92,20 +94,20 @@ struct obj* obj;
 			struct monst* mtmp = m_at(u.ux + u.dx, u.uy + u.dy);
 			if (mtmp)
 			{
-				You("apply some %s on %s.", OBJ_CONTENT_DESC(obj->otyp), mon_nam(mtmp));
+				You("apply some %s on %s.", objects[obj->otyp].oc_name_known ? healing_salve : OBJ_CONTENT_DESC(obj->otyp), mon_nam(mtmp));
 			}
 			else if(IS_WALL(levl[u.ux + u.dx][u.uy + u.dy].typ))
 			{
-				You("throw some %s on the wall.", OBJ_CONTENT_DESC(obj->otyp));
+				You("throw some %s on the wall.", objects[obj->otyp].oc_name_known ? healing_salve : OBJ_CONTENT_DESC(obj->otyp));
 			}
 			else
 			{
 				const char* dfeat = dfeature_at(u.ux + u.dx, u.uy + u.dy);
-				You("throw some %s on the %s.", OBJ_CONTENT_DESC(obj->otyp), dfeat ? dfeat : "floor");
+				You("throw some %s on the %s.", objects[obj->otyp].oc_name_known ? healing_salve : OBJ_CONTENT_DESC(obj->otyp), dfeat ? dfeat : "floor");
 			}
 		}
 		else
-			You("throw some %s away.", OBJ_CONTENT_DESC(obj->otyp));
+			You("throw some %s away.", objects[obj->otyp].oc_name_known ? healing_salve : OBJ_CONTENT_DESC(obj->otyp));
 
 		weffects(obj);
 	}
