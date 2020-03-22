@@ -2785,7 +2785,7 @@ sp_lev *lvl;
 		}
 
         if (opcode == SPO_PUSH) {
-            long nsize;
+            size_t nsize;
             struct opvar *ov = (struct opvar *) alloc(sizeof(struct opvar));
 
             opdat = ov;
@@ -2812,7 +2812,7 @@ sp_lev *lvl;
                 char *opd;
 
                 Fread((genericptr_t) &nsize, 1, sizeof(nsize), fd);
-                opd = (char *) alloc((size_t)nsize + 1);
+                opd = (char *) alloc(nsize + 1);
 
                 if (nsize)
                     Fread(opd, 1, nsize, fd);
