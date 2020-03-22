@@ -753,6 +753,8 @@ struct obj *otmp;
 			pline("Nothing much seems to happen to %s.", mon_nam(mtmp));
 		break;
 	}
+	case JAR_OF_HEALING_SALVE:
+	case JAR_OF_EXTRA_HEALING_SALVE:
 	case SPE_MINOR_HEALING:
 	case SPE_HEALING:
     case SPE_EXTRA_HEALING:
@@ -786,7 +788,11 @@ struct obj *otmp;
                         mimic_hit_msg(mtmp, otyp);
                 } else
                     pline("%s looks %s.", Monnam(mtmp),
-                          otyp == SPE_PRODIGIOUS_HEALING ? "vastly better" : SPE_GREATER_HEALING ? "much, much better" : otyp == SPE_EXTRA_HEALING ? "much better" : otyp == SPE_FULL_HEALING ? "completely healed" : "better");
+                          otyp == SPE_PRODIGIOUS_HEALING ? "vastly better" : 
+						otyp == SPE_GREATER_HEALING ? "much, much better" : 
+						otyp == SPE_EXTRA_HEALING || otyp == JAR_OF_EXTRA_HEALING_SALVE ? "much better" : 
+						otyp == SPE_FULL_HEALING ? "completely healed" : 
+						"better");
             }
             if (is_tame(mtmp) || is_peaceful(mtmp)) {
                 adjalign(Role_if(PM_HEALER) ? 1 : sgn(u.ualign.type));
@@ -3381,6 +3387,8 @@ struct obj *obj, *otmp;
 		case SPE_CURE_SICKNESS:
 		case SPE_CURE_PETRIFICATION:
 		case SPE_MINOR_HEALING:
+		case JAR_OF_HEALING_SALVE:
+		case JAR_OF_EXTRA_HEALING_SALVE:
 		case SPE_HEALING:
         case SPE_EXTRA_HEALING:
 		case SPE_GREATER_HEALING:
@@ -4881,6 +4889,8 @@ boolean ordinary;
 		learn_it = TRUE;
 		(void)revive_from_inventory(&youmonst);
 		break;
+	case JAR_OF_HEALING_SALVE:
+	case JAR_OF_EXTRA_HEALING_SALVE:
 	case SPE_MINOR_HEALING:
 	case SPE_HEALING:
     case SPE_EXTRA_HEALING:
@@ -4888,10 +4898,14 @@ boolean ordinary;
 	case SPE_PRODIGIOUS_HEALING:
 		if(is_living(youmonst.data))
 		{
-			learn_it = TRUE; /* (no effect for spells...) */
-			healup(basedmg, 0, FALSE, (obj->blessed || (obj->otyp != SPE_HEALING && obj->otyp != SPE_MINOR_HEALING)),
-				(obj->blessed || (obj->otyp != SPE_HEALING && obj->otyp != SPE_MINOR_HEALING)), FALSE, FALSE);
-			You_feel("%sbetter.", obj->otyp == SPE_GREATER_HEALING ? "vastly " : obj->otyp == SPE_GREATER_HEALING ? "much, much " : obj->otyp == SPE_EXTRA_HEALING ? "much " : "");
+			//learn_it = TRUE; /* (no effect for spells...) */
+			healup(basedmg, 0, FALSE, (obj->blessed || (obj->otyp != SPE_HEALING && obj->otyp != JAR_OF_HEALING_SALVE && obj->otyp != SPE_MINOR_HEALING)),
+				(obj->blessed || (obj->otyp != SPE_HEALING && obj->otyp != JAR_OF_HEALING_SALVE && obj->otyp != SPE_MINOR_HEALING)), FALSE, FALSE);
+			You_feel("%sbetter.", 
+				obj->otyp == SPE_GREATER_HEALING ? "vastly " : 
+				obj->otyp == SPE_GREATER_HEALING ? "much, much " : 
+				obj->otyp == SPE_EXTRA_HEALING || obj->otyp == JAR_OF_EXTRA_HEALING_SALVE ? "much " :
+				"");
 		}
 		else
 			You_feel("no different than before.");
@@ -5173,6 +5187,8 @@ struct obj *obj; /* wand or spell */
 	case SPE_CURE_SICKNESS:
 	case SPE_CURE_PETRIFICATION:
 	case SPE_MINOR_HEALING:
+	case JAR_OF_HEALING_SALVE:
+	case JAR_OF_EXTRA_HEALING_SALVE:
 	case SPE_HEALING:
     case SPE_EXTRA_HEALING:
 	case SPE_GREATER_HEALING:

@@ -7,6 +7,7 @@
 
 extern boolean notonhead; /* for long worms */
 
+STATIC_DCL int FDECL(use_salve, (struct obj*));
 STATIC_DCL int FDECL(use_camera, (struct obj *));
 STATIC_DCL int FDECL(use_towel, (struct obj *));
 STATIC_DCL boolean FDECL(its_dead, (int, int, int *));
@@ -52,6 +53,41 @@ void FDECL(amii_speaker, (struct obj *, char *, int));
 
 static const char no_elbow_room[] =
     "don't have enough elbow-room to maneuver.";
+
+STATIC_OVL int
+use_salve(obj)
+struct obj* obj;
+{
+	if (obj->charges <= 0)
+	{
+		pline("%s empty.", Tobjnam(obj, "are"));
+		return 0;
+	}
+
+	if (Underwater)
+	{
+		pline("Using %s underwater would spoil it.", yname(obj));
+		return 0;
+	}
+
+	if (!getdir((char*)0))
+		return 0;
+
+	consume_obj_charge(obj, TRUE);
+
+	if (u.dz) 
+	{
+		You("throw some %s on the %s.", OBJ_CONTENT_DESC(obj->otyp),
+			(u.dz > 0) ? surface(u.ux, u.uy) : ceiling(u.ux, u.uy));
+	}
+	else if (!u.dx && !u.dy) {
+		(void)zapyourself(obj, TRUE);
+	}
+	else
+		weffects(obj);
+
+	return 1;
+}
 
 STATIC_OVL int
 use_camera(obj)
@@ -2572,8 +2608,10 @@ struct obj *obj;
         return;
     }
 
-    if (obj->charges > 0) {
-        if ((obj->cursed || Fumbling) && !rn2(2)) {
+    if (obj->charges > 0)
+	{
+        if ((obj->cursed || Fumbling) && !rn2(2)) 
+		{
             consume_obj_charge(obj, TRUE);
 
             pline("%s from your %s.", Tobjnam(obj, "slip"),
@@ -2581,26 +2619,35 @@ struct obj *obj;
             dropx(obj);
             return;
         }
-        otmp = getobj(lubricables, "grease", 0, "");
+
+        otmp = getobj(lubricables, objects[obj->otyp].oc_name_known ? "grease" : "apply viscous fluid on", 0, "");
         if (!otmp)
             return;
-        if (inaccessible_equipment(otmp, "grease", FALSE))
+        if (inaccessible_equipment(otmp, objects[obj->otyp].oc_name_known ? "grease" : "apply viscous fluid on", FALSE))
             return;
+
         consume_obj_charge(obj, TRUE);
 
-        if (otmp != &zeroobj) {
+        if (otmp != &zeroobj) 
+		{
             You("cover %s with a thick layer of grease.", yname(otmp));
             otmp->greased = 1;
-            if (obj->cursed && !nohands(youmonst.data)) {
+            if (obj->cursed && !nohands(youmonst.data)) 
+			{
                 incr_itimeout(&Glib, rnd(15));
                 pline("Some of the grease gets all over your %s.",
                       makeplural(body_part(HAND)));
             }
-        } else {
+        }
+		else
+		{
             incr_itimeout(&Glib, rnd(15));
             You("coat your %s with grease.", makeplural(body_part(FINGER)));
         }
-    } else {
+		makeknown(obj->otyp);
+    } 
+	else 
+	{
         if (obj->known)
             pline("%s empty.", Tobjnam(obj, "are"));
         else
@@ -4573,6 +4620,10 @@ doapply()
 		case LEATHER_DRUM:
 		case DRUM_OF_EARTHQUAKE:
 			res = do_play_instrument(obj);
+			break;
+		case JAR_OF_HEALING_SALVE:
+		case JAR_OF_EXTRA_HEALING_SALVE:
+			res = use_salve(obj);
 			break;
 		case HORN_OF_PLENTY: /* not a musical instrument */
 			(void)hornoplenty(obj, FALSE);

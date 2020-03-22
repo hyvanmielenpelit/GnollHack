@@ -581,10 +581,10 @@ register struct obj *spellbook;
 			{
 				if (objects[spellbook->otyp].oc_aflags & S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY)
 				{
-					if(!OBJ_CONTENT_DESC(objects[spellbook->otyp]) || strcmp(OBJ_CONTENT_DESC(objects[spellbook->otyp]), "") == 0)
+					if(!OBJ_CONTENT_DESC(spellbook->otyp) || strcmp(OBJ_CONTENT_DESC(spellbook->otyp), "") == 0)
 						Sprintf(buf, "The topic of %s is unclear. Read it?", the(cxname(spellbook)));
 					else
-						Sprintf(buf, "This spellbook contains %s. Read it?", OBJ_CONTENT_DESC(objects[spellbook->otyp]));
+						Sprintf(buf, "This spellbook contains %s. Read it?", OBJ_CONTENT_DESC(spellbook->otyp));
 					takeround = 1;
 					perusetext = 1;
 				}
@@ -1458,7 +1458,7 @@ int spell;
 	}
 
 	/* Description*/
-	if (OBJ_ITEM_DESC(objects[booktype]))
+	if (OBJ_ITEM_DESC(booktype))
 	{
 		/* One empty line here */
 		strcpy(buf, "");
@@ -1468,7 +1468,7 @@ int spell;
 		strcpy(buf, "Description:");
 		txt = buf;
 		putstr(datawin, 0, txt);
-		strcpy(buf, OBJ_ITEM_DESC(objects[booktype]));
+		strcpy(buf, OBJ_ITEM_DESC(booktype));
 		txt = buf;
 		putstr(datawin, 0, txt);
 
@@ -2822,8 +2822,8 @@ int *spell_no;
 		{
 			int desclen = 0;
 			splnum = !spl_orderindx ? i : spl_orderindx[i];
-			if (OBJ_ITEM_DESC(objects[spellid(splnum)]))
-				desclen = strlen(OBJ_ITEM_DESC(objects[spellid(splnum)]));
+			if (OBJ_ITEM_DESC(spellid(splnum)))
+				desclen = strlen(OBJ_ITEM_DESC(spellid(splnum)));
 			else
 				desclen = strlen(nodesc);
 			if (desclen > maxlen)
@@ -2888,9 +2888,9 @@ int *spell_no;
 			char shorteneddesc[BUFSZ] = "";
 			char fulldesc[BUFSZ];
 
-			if(OBJ_ITEM_DESC(objects[spellid(splnum)]))
+			if(OBJ_ITEM_DESC(spellid(splnum)))
 			{
-				strcpy(fulldesc, OBJ_ITEM_DESC(objects[spellid(splnum)]));
+				strcpy(fulldesc, OBJ_ITEM_DESC(spellid(splnum)));
 
 				if (strlen(fulldesc) > 57)
 					strncpy(shorteneddesc, fulldesc, 57);

@@ -1076,7 +1076,8 @@ unsigned doname_flags;
     }
 
     /* "empty" goes at the beginning, but item count goes at the end */
-    if (cknown
+    if ((obj->oclass == TOOL_CLASS && (objects[obj->otyp].oc_subtyp == TOOLTYPE_JAR || objects[obj->otyp].oc_subtyp == TOOLTYPE_CAN) && obj->charges == 0 && !known)
+		|| (cknown
         /* bag of tricks: include "empty" prefix if it's known to
            be empty but its precise number of charges isn't known
            (when that is known, suffix of "(n:0)" will be appended,
@@ -1084,10 +1085,10 @@ unsigned doname_flags;
            isn't set when emptiness gets discovered because then
            charging magic would yield known number of new charges) */
         && ((obj->otyp == BAG_OF_TRICKS)
-             ? (obj->charges == 0 && !obj->known)
+             ? (obj->charges == 0 && !known)
              /* not bag of tricks: empty if container which has no contents */
              : ((Is_container(obj) || obj->otyp == STATUE)
-                && !Has_contents(obj))))
+                && !Has_contents(obj)))))
         Strcat(prefix, "empty ");
 
     if (bknown && obj->oclass != COIN_CLASS
@@ -1140,6 +1141,16 @@ unsigned doname_flags;
 
     if (obj->greased)
         Strcat(prefix, "greased ");
+
+	/* contents for unknown jars and cans */
+	if (obj->oclass == TOOL_CLASS 
+		&& (objects[obj->otyp].oc_subtyp == TOOLTYPE_JAR || objects[obj->otyp].oc_subtyp == TOOLTYPE_CAN) 
+		&& OBJ_CONTENT_DESC(obj->otyp)
+		&& objects[obj->otyp].oc_name_known == 0 && !known && obj->charges > 1)
+	{
+		Sprintf(eos(bp), " containing %s", OBJ_CONTENT_DESC(obj->otyp));
+	}
+
 
     if (cknown && Has_contents(obj)) {
         /* we count the number of separate stacks, which corresponds
@@ -3137,6 +3148,8 @@ STATIC_OVL NEARDATA const struct o_range o_ranges[] = {
 	{ "flute", TOOL_CLASS, WOODEN_FLUTE, MAGIC_FLUTE },
 	{ "harp", TOOL_CLASS, WOODEN_HARP, MAGIC_HARP },
 	{ "drum", TOOL_CLASS, LEATHER_DRUM, DRUM_OF_EARTHQUAKE },
+	{ "jar", TOOL_CLASS, JAR_OF_HEALING_SALVE, JAR_OF_EXTRA_HEALING_SALVE },
+	{ "salve", TOOL_CLASS, JAR_OF_HEALING_SALVE, JAR_OF_EXTRA_HEALING_SALVE },
 };
 
 /* alternate spellings; if the difference is only the presence or
@@ -3236,7 +3249,9 @@ static const struct alt_spellings {
     { "load stone", LOADSTONE },
     { "touch stone", TOUCHSTONE },
     { "flintstone", FLINT },
-    { (const char *) 0, 0 },
+	{ "healing salve", JAR_OF_HEALING_SALVE },
+	{ "extra healing salve", JAR_OF_EXTRA_HEALING_SALVE },
+	{ (const char *) 0, 0 },
 };
 
 STATIC_OVL short

@@ -334,12 +334,14 @@ enum obj_tool_types {
 	TOOLTYPE_FLUTE = 15,
 	TOOLTYPE_HARP = 16,
 	TOOLTYPE_DRUM = 17,
-	TOOLTYPE_SAW = 18
+	TOOLTYPE_SAW = 18,
+	TOOLTYPE_JAR = 19,
+	TOOLTYPE_CAN = 20
 };
 
 static const char* tool_type_names[] = {
 	"tool", "box", "chest", "bag", "pick-axe", "shovel", "long club-headed weapon", "hook", "horn", "candelabrum", "bell", 
-	"candle", "lamp", "lantern", "whistle", "flute", "harp", "drum", "saw",
+	"candle", "lamp", "lantern", "whistle", "flute", "harp", "drum", "saw", "jar", "can",
 };
 
 enum charged_init_types {
@@ -368,7 +370,8 @@ enum charged_init_types {
 	CHARGED_ALWAYS_8 = 22,
 	CHARGED_ALWAYS_9 = 23,
 	CHARGED_1D8_1 = 24,
-	CHARGED_LUCK_BLADE = 25
+	CHARGED_LUCK_BLADE = 25,
+	CHARGED_1D6_3 = 26
 };
 
 enum spe_init_types {
@@ -1017,8 +1020,9 @@ struct fruit {
 
 #define OBJ_NAME(obj) (obj_descr[(obj).oc_name_idx].oc_name)
 #define OBJ_DESCR(obj) (obj_descr[(obj).oc_descr_idx].oc_descr)
-#define OBJ_CONTENT_DESC(obj) (obj_descr[(obj).oc_name_idx].oc_content_description)
-#define OBJ_ITEM_DESC(obj) (obj_descr[(obj).oc_name_idx].oc_item_description)
+
+#define OBJ_CONTENT_DESC(otyp) (obj_descr[objects[(otyp)].oc_name_idx].oc_content_description)
+#define OBJ_ITEM_DESC(otyp) (obj_descr[objects[(otyp)].oc_name_idx].oc_item_description)
 
 
 

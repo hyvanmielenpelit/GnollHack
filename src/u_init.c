@@ -71,7 +71,8 @@ static struct trobj Healer[] = {
 	{ STETHOSCOPE, 0, TOOL_CLASS, 1, 0 },
     { POT_HEALING, 0, POTION_CLASS, 4, UNDEF_BLESS, 0 },
     { POT_EXTRA_HEALING, 0, POTION_CLASS, 4, UNDEF_BLESS, 0 },
-    { WAN_SLEEP, UNDEF_SPE, WAND_CLASS, 1, UNDEF_BLESS, 0 },
+	{ JAR_OF_HEALING_SALVE, 0, POTION_CLASS, 1, UNDEF_BLESS, 0 },
+	{ WAN_SLEEP, UNDEF_SPE, WAND_CLASS, 1, UNDEF_BLESS, 0 },
     /* always blessed, so it's guaranteed readable */
 	{ SPE_MINOR_HEALING, 0, SPBOOK_CLASS, 1, 1, 0 },
 	{ SPE_HEALING, 0, SPBOOK_CLASS, 1, 1, 0 },

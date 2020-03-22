@@ -1871,15 +1871,15 @@ MISCELLANEOUSITEM("belt of storm giant strength", "rudimentary belt", MISC_BELT,
 
 /* tools ... */
 /* tools with weapon characteristics come last */
-#define TOOL(name,desc,itemdesc,subtype,kn,mrg,mgc,spetype,charged,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,splcastpen,power1,power2,power3,pflags,mat,color,flags,flags2,flags3,powconfermask) \
-    OBJECT(OBJ(name, desc, None, itemdesc),                                           \
+#define TOOL(name,desc,contentdesc,itemdesc,subtype,kn,mrg,mgc,spetype,charged,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,splcastpen,power1,power2,power3,pflags,mat,color,flags,flags2,flags3,powconfermask) \
+    OBJECT(OBJ(name, desc, contentdesc, itemdesc),                                           \
            BITS(kn, mrg, charged || spetype ? 1 : 0, 0, mgc, spetype, charged, 0, 0, 0, 0, 0, subtype, P_NONE, mat), \
            power1, power2, power3, pflags,  TOOL_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattr, attrbonus, splcastpen, 0, \
 		   wt, color, 0, 0, cooldown, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
-#define SPELLTOOL(name,desc,itemdesc,subtype,kn,mrg,mgc,charged,prob,wt,cost,dir,dirsubtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus,cooldown,mat,color,flags,flags2,flags3) \
-    OBJECT(OBJ(name, desc, None, itemdesc),                                           \
+#define SPELLTOOL(name,desc,contentdesc,itemdesc,subtype,kn,mrg,mgc,charged,prob,wt,cost,dir,dirsubtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus,cooldown,mat,color,flags,flags2,flags3) \
+    OBJECT(OBJ(name, desc, contentdesc, itemdesc),                                           \
            BITS(kn, mrg, charged ? 1 : 0, 0, mgc, SPETYPE_NO_SPE, charged, 0, 0, 0, 0, dir, subtype, P_NONE, mat), \
            0, 0, 0, P1_NONE,  TOOL_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, \
 		   AD_PHYS, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, 0, 0, 0, 0, A1_NONE, 0, \
@@ -1944,97 +1944,102 @@ CONTAINER("quiver of infinite arrows", "cylindrical bag", None, TOOLTYPE_BAG,
 #undef CONTAINER
 
 /* lock opening tools */
-TOOL("skeleton key",       "key", None, TOOLTYPE_GENERAL, 0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 80,  2, 10, 0, 0, 0, 0, 0, 0,
+TOOL("skeleton key",       "key", None, None, TOOLTYPE_GENERAL, 0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 80,  2, 10, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-TOOL("master key",		   "key", None, TOOLTYPE_GENERAL, 0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED,  0, 2, 10, 0, 0, 0, 0, 0, 0, /* base item for master key of thievery */
+TOOL("master key",		   "key", None, None, TOOLTYPE_GENERAL, 0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED,  0, 2, 10, 0, 0, 0, 0, 0, 0, /* base item for master key of thievery */
 	ENHANCED_UNTRAP, NO_POWER, NO_POWER, P1_POWER_1_APPLIES_WHEN_CARRIED, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NO_WISH | O3_NO_GENERATION, PERMITTED_ROLE_ROGUE),
-TOOL("lock pick",           None, None, TOOLTYPE_GENERAL, 1, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 60,  2, 20, 0, 0, 0, 0, 0, 0,
+TOOL("lock pick",           None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 60,  2, 20, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-TOOL("credit card",         None, None, TOOLTYPE_GENERAL, 1, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 15,  1, 10, 0, 0, 0, 0, 0, 0,
+TOOL("credit card",         None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 15,  1, 10, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_PLASTIC, CLR_WHITE, O1_NONE, O2_NONE, O3_READABLE, PERMITTED_ALL),
 
 /* light sources */
-TOOL("tallow candle",   "old-fashioned candle", None, TOOLTYPE_CANDLE, 0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 18,  1, 10, 0, 0, 0, 0, 0, 0, //STARTMARKER
+TOOL("tallow candle",   "old-fashioned candle", None, None, TOOLTYPE_CANDLE, 0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 18,  1, 10, 0, 0, 0, 0, 0, 0, //STARTMARKER
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_WAX, CLR_WHITE, O1_NONE, O2_CANDLE, O3_IGNITABLE | O3_RELATIVE_AGE, PERMITTED_ALL),
-TOOL("wax candle",      "twisted candle", None, TOOLTYPE_CANDLE, 0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED,  9,  1, 20, 0, 0, 0, 0, 0, 0,
+TOOL("wax candle",      "twisted candle", None, None, TOOLTYPE_CANDLE, 0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED,  9,  1, 20, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_WAX, CLR_WHITE, O1_NONE, O2_CANDLE, O3_IGNITABLE | O3_RELATIVE_AGE, PERMITTED_ALL), //ENDMARKER
-TOOL("magic candle",	"handcrafted candle", None, TOOLTYPE_CANDLE, 0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED,  3,  1, 20, 0, 0, 0, 0, 0, 0,
+TOOL("magic candle",	"handcrafted candle", None, None, TOOLTYPE_CANDLE, 0, 1, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED,  3,  1, 20, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_WAX, CLR_WHITE, O1_NONE, O2_CANDLE, O3_IGNITABLE | O3_RELATIVE_AGE, PERMITTED_ALL),
-TOOL("brass lantern",       None, None, TOOLTYPE_LANTERN, 1, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 30, 30, 12, 0, 0, 0, 0, 0, 0,
+TOOL("brass lantern",       None, None, None, TOOLTYPE_LANTERN, 1, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 30, 30, 12, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_COPPER, CLR_YELLOW, O1_NONE, O2_NONE, O3_IGNITABLE | O3_RELATIVE_AGE, PERMITTED_ALL),
-TOOL("oil lamp",          "antiquated brass lamp", None, TOOLTYPE_LAMP, 0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 40, 20, 10, 0, 0, 0, 0, 0, 0, //STARTMARKER
+TOOL("oil lamp",          "antiquated brass lamp", None, None, TOOLTYPE_LAMP, 0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 40, 20, 10, 0, 0, 0, 0, 0, 0, //STARTMARKER
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_COPPER, CLR_YELLOW, O1_NONE, O2_NONE, O3_IGNITABLE | O3_RELATIVE_AGE, PERMITTED_ALL),
-TOOL("magic lamp",        "oriental brass lamp", None, TOOLTYPE_LAMP, 0, 0, 1, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 15, 20, 50, 0, 0, 0, 0, 0, 0,
+TOOL("magic lamp",        "oriental brass lamp", None, None, TOOLTYPE_LAMP, 0, 0, 1, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 15, 20, 50, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_COPPER, CLR_YELLOW, O1_NONE, O2_NONE, O3_NONE /*intentionally not O3_IGNITABLE*/, PERMITTED_ALL), //ENDMARKER
 
 /* other tools */
-TOOL("expensive camera",    None, None, TOOLTYPE_GENERAL, 1, 0, 0, SPETYPE_NO_SPE, CHARGED_MAGIC_MARKER, 15, 12,200, 0, 0, 0, 0, 0, 0,
+TOOL("expensive camera",    None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, SPETYPE_NO_SPE, CHARGED_MAGIC_MARKER, 15, 12,200, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_PLASTIC, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-TOOL("mirror",   "looking glass", None, TOOLTYPE_GENERAL, 0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 35, 13, 10, 0, 0, 0, 0, 0, 0,
+TOOL("mirror",   "looking glass", None, None, TOOLTYPE_GENERAL, 0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 35, 13, 10, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_GLASS, HI_SILVER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-TOOL("magic mirror", "looking glass", None, TOOLTYPE_GENERAL, 0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 0, 13, 10, 0, 30, 0, 0, 0, 0,
+TOOL("magic mirror", "looking glass", None, None, TOOLTYPE_GENERAL, 0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 0, 13, 10, 0, 30, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_MANA_BONUS_APPLIES_WHEN_CARRIED | P1_MANA_PERCENTAGE_BONUS, MAT_GLASS, HI_SILVER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-TOOL("holy symbol", "religious symbol", "Religious symbol that can be applied to turn undead", TOOLTYPE_GENERAL, 0, 0, 1, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 10, 10,100, 0, 0, 0, 0, 0, 0,
+TOOL("holy symbol", "religious symbol", None, "Religious symbol that can be applied to turn undead", TOOLTYPE_GENERAL, 0, 0, 1, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 10, 10,100, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_SILVER, HI_SILVER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-TOOL("crystal ball", "glass orb", None, TOOLTYPE_GENERAL, 0, 0, 1, SPETYPE_NO_SPE, CHARGED_CRYSTAL_BALL, 15,150, 60, 100, 0, 0, 0, 0, 0,
+TOOL("crystal ball", "glass orb", None, None, TOOLTYPE_GENERAL, 0, 0, 1, SPETYPE_NO_SPE, CHARGED_CRYSTAL_BALL, 15,150, 60, 100, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_GLASS, HI_GLASS, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-TOOL("blindfold",           None, None, TOOLTYPE_GENERAL, 1, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 50, 2, 20, 0, 0, 0, 0, 0, 0,
+TOOL("blindfold",           None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 50, 2, 20, 0, 0, 0, 0, 0, 0,
 	BLINDFOLDED, NO_POWER, NO_POWER, P1_NONE, MAT_CLOTH, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-TOOL("towel",               None, None, TOOLTYPE_GENERAL, 1, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 50, 2, 50, 0, 0, 0, 0, 0, 0,
+TOOL("towel",               None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 50, 2, 50, 0, 0, 0, 0, 0, 0,
 	BLINDFOLDED, NO_POWER, NO_POWER, P1_NONE, MAT_CLOTH, CLR_MAGENTA, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-TOOL("saddle",              None, None, TOOLTYPE_GENERAL, 1, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED,  5,200,150, 0, 0, 0, 0, 0, 0,
+TOOL("saddle",              None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED,  5,200,150, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-TOOL("leash",               None, None, TOOLTYPE_GENERAL, 1, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 50, 12, 20, 0, 0, 0, 0, 0, 0,
+TOOL("leash",               None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 40, 12, 20, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-TOOL("stethoscope",         None, None, TOOLTYPE_GENERAL, 1, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 25,  4, 75, 0, 0, 0, 0, 0, 0,
+TOOL("stethoscope",         None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 25,  4, 75, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-TOOL("tinning kit",         None, None, TOOLTYPE_GENERAL, 1, 0, 0, SPETYPE_NO_SPE, CHARGED_MAGIC_MARKER, 15,100, 30, 0, 0, 0, 0, 0, 0,
+TOOL("tinning kit",         None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, SPETYPE_NO_SPE, CHARGED_MAGIC_MARKER, 15,100, 30, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-TOOL("tin opener",          None, None, TOOLTYPE_GENERAL, 1, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 30,  4, 30, 0, 0, 0, 0, 0, 0,
+TOOL("tin opener",          None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 20,  4, 30, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-TOOL("can of grease",       None, None, TOOLTYPE_GENERAL, 1, 0, 0, SPETYPE_NO_SPE, CHARGED_CAN_OF_GREASE, 15, 15, 20, 0, 0, 0, 0, 0, 0,
+TOOL("can of grease",       "metal can", "viscous fluid", None, TOOLTYPE_CAN, 0, 0, 0, SPETYPE_NO_SPE, CHARGED_CAN_OF_GREASE, 15, 15, 20, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_READABLE, PERMITTED_ALL),
-TOOL("figurine",            None, None, TOOLTYPE_GENERAL, 1, 0, 1, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 0, 50, 80, 0, 0, 0, 0, 0, 0,
+TOOL("figurine",            None, None, None, TOOLTYPE_GENERAL, 1, 0, 1, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 0, 50, 80, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_MINERAL, HI_MINERAL, O1_NONE, O2_NONE, O3_NO_WISH | O3_NO_GENERATION, PERMITTED_ALL),
         /* FIGURINE REMOVED FROM THE GAME -- JG -- monster type specified by obj->corpsenm */
-TOOL("magic marker",        None, None, TOOLTYPE_GENERAL, 1, 0, 1, SPETYPE_NO_SPE, CHARGED_MAGIC_MARKER, 25,  2, 50, 0, 0, 0, 0, 0, 0,
+TOOL("magic marker",        None, None, None, TOOLTYPE_GENERAL, 1, 0, 1, SPETYPE_NO_SPE, CHARGED_MAGIC_MARKER, 25,  2, 50, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_PLASTIC, CLR_RED, O1_NONE, O2_NONE, O3_READABLE, PERMITTED_ALL),
 
 /* traps */
-TOOL("land mine",           None, None, TOOLTYPE_GENERAL, 1, 0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 300,180, 0, 0, 0, 0, 0, 0,
+TOOL("land mine",           None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 300,180, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_IRON, CLR_RED, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-TOOL("beartrap",            None, None, TOOLTYPE_GENERAL, 1, 0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 200, 60, 0, 0, 0, 0, 0, 0,
+TOOL("beartrap",            None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 200, 60, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_IRON, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 
 /* instruments;
    "If tin whistles are made out of tin, what do they make foghorns out of?" */
-TOOL("tin whistle",    "old whistle", None, TOOLTYPE_WHISTLE, 0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 96, 2, 10, 0, 0, 0, 0, 0, 0, //STARTMARKER
+TOOL("tin whistle",    "old whistle", None, None, TOOLTYPE_WHISTLE, 0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 86, 2, 10, 0, 0, 0, 0, 0, 0, //STARTMARKER
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_METAL, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-TOOL("magic whistle",  "shiny whistle", None, TOOLTYPE_WHISTLE, 0, 0, 1, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 45, 2, 10, 0, 0, 0, 0, 0, 0, //ENDMARKER
+TOOL("magic whistle",  "shiny whistle", None, None, TOOLTYPE_WHISTLE, 0, 0, 1, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED, 45, 2, 10, 0, 0, 0, 0, 0, 0, //ENDMARKER
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_METAL, HI_METAL, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-TOOL("wooden flute",     "oak flute", None, TOOLTYPE_FLUTE, 0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED,  4, 5, 12, 0, 0, 0, 0, 0, 0, //STARTMARKER
+TOOL("wooden flute",     "oak flute", None, None, TOOLTYPE_FLUTE, 0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED,  4, 5, 12, 0, 0, 0, 0, 0, 0, //STARTMARKER
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-TOOL("magic flute",      "blackwood flute", None, TOOLTYPE_FLUTE, 0, 0, 1, SPETYPE_NO_SPE, CHARGED_HORN_NORMAL,  2, 5, 36, 0, 0, 0, 0, 0, 0, //ENDMARKER
+TOOL("magic flute",      "blackwood flute", None, None, TOOLTYPE_FLUTE, 0, 0, 1, SPETYPE_NO_SPE, CHARGED_HORN_NORMAL,  2, 5, 36, 0, 0, 0, 0, 0, 0, //ENDMARKER
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-TOOL("tooled horn",       "arched horn", None, TOOLTYPE_HORN, 0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED,  5, 18, 15, 0, 0, 0, 0, 0, 0, //STARTMARKER
+TOOL("tooled horn",       "arched horn", None, None, TOOLTYPE_HORN, 0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED,  5, 18, 15, 0, 0, 0, 0, 0, 0, //STARTMARKER
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_BONE, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SPELLTOOL("frost horn",   "spiral horn", None, TOOLTYPE_HORN, 0, 0, 1, CHARGED_HORN_NORMAL,  2, 18, 50, RAY, RAY_WND_COLD, 6, 6, 0, 0, 0, 0, 5, MAT_BONE, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE),
-SPELLTOOL("fire horn",    "curved horn", None, TOOLTYPE_HORN, 0, 0, 1, CHARGED_HORN_NORMAL,  2, 18, 50, RAY, RAY_WND_FIRE, 6, 6, 0, 0, 0, 0, 5, MAT_BONE, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE),
-TOOL("horn of plenty",    "twisted horn", None, TOOLTYPE_HORN, 0, 0, 1, SPETYPE_NO_SPE, CHARGED_BAG_OF_TRICKS,  2, 18, 50, 300, 0, 0, 0, 0, 0,
+SPELLTOOL("frost horn",   "spiral horn", None, None, TOOLTYPE_HORN, 0, 0, 1, CHARGED_HORN_NORMAL,  2, 18, 50, RAY, RAY_WND_COLD, 6, 6, 0, 0, 0, 0, 5, MAT_BONE, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE),
+SPELLTOOL("fire horn",    "curved horn", None, None, TOOLTYPE_HORN, 0, 0, 1, CHARGED_HORN_NORMAL,  2, 18, 50, RAY, RAY_WND_FIRE, 6, 6, 0, 0, 0, 0, 5, MAT_BONE, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE),
+TOOL("horn of plenty",    "twisted horn", None, None, TOOLTYPE_HORN, 0, 0, 1, SPETYPE_NO_SPE, CHARGED_BAG_OF_TRICKS,  2, 18, 50, 300, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_BONE, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),//ENDMARKER
         /* horn, but not an instrument */
-TOOL("wooden harp",       "ornamental harp", None, TOOLTYPE_HARP, 0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED,  4, 30, 50, 0, 0, 0, 0, 0, 0, //STARTMARKER
+TOOL("wooden harp",       "ornamental harp", None, None, TOOLTYPE_HARP, 0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED,  4, 30, 50, 0, 0, 0, 0, 0, 0, //STARTMARKER
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-TOOL("magic harp",        "runed harp", None, TOOLTYPE_HARP, 0, 0, 1, SPETYPE_NO_SPE, CHARGED_HORN_NORMAL,  2, 30, 50, 0, 0, 0, 0, 0, 0, //ENDMARKER
+TOOL("magic harp",        "runed harp", None, None, TOOLTYPE_HARP, 0, 0, 1, SPETYPE_NO_SPE, CHARGED_HORN_NORMAL,  2, 30, 50, 0, 0, 0, 0, 0, 0, //ENDMARKER
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-TOOL("bell",                None, None, TOOLTYPE_GENERAL, 1, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED,  2, 30, 50, 0, 0, 0, 0, 0, 0,
+TOOL("bell",                None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED,  2, 30, 50, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_COPPER, HI_COPPER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-TOOL("bugle",               None, None, TOOLTYPE_GENERAL, 1, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED,  4, 10, 15, 0, 0, 0, 0, 0, 0,
+TOOL("bugle",               None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED,  4, 10, 15, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_COPPER, HI_COPPER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-TOOL("leather drum",      "old drum", None, TOOLTYPE_DRUM, 0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED,  4, 25, 25, 0, 0, 0, 0, 0, 0, //STARTMARKER
+TOOL("leather drum",      "old drum", None, None, TOOLTYPE_DRUM, 0, 0, 0, SPETYPE_NO_SPE, CHARGED_NOT_CHARGED,  4, 25, 25, 0, 0, 0, 0, 0, 0, //STARTMARKER
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-TOOL("drum of earthquake","antiquated drum", None, TOOLTYPE_DRUM, 0, 0, 1, SPETYPE_NO_SPE, CHARGED_HORN_NORMAL,  2, 25, 25, 0, 0, 0, 0, 0, 0, //ENDMARKER
+TOOL("drum of earthquake","antiquated drum", None, None, TOOLTYPE_DRUM, 0, 0, 1, SPETYPE_NO_SPE, CHARGED_HORN_NORMAL,  2, 25, 25, 0, 0, 0, 0, 0, 0, //ENDMARKER
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SPELLTOOL("jar of healing salve", "glass jar", "yellow ointment", "Heals a target for 6d6 hit points", TOOLTYPE_JAR, 0, 0, 1, CHARGED_1D6_3, //STARTMARKER
+	20, 15, 100, TOUCH, 0, 6, 6, 0, 0, 0, 0, 5, MAT_GLASS, HI_GLASS, O1_NONE, O2_NONE, O3_NONE),
+SPELLTOOL("jar of extra healing salve", "crystal jar", "yellow ointment", "Heals a target for 12d6 hit points", TOOLTYPE_JAR, 0, 0, 1, CHARGED_1D6_3,  //ENDMARKER
+	10, 15, 300, IMMEDIATE, 0, 12, 6, 0, 0, 0, 0, 5, MAT_GLASS, HI_GLASS, O1_NONE, O2_NONE, O3_NONE),
+
 /* tools useful as weapons */
 WEPTOOL("pick-axe", None, None,
 	1, 0, 0, 15, 75, 50,  

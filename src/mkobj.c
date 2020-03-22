@@ -1506,6 +1506,9 @@ int charge_init_index;
 	case CHARGED_1D75_75:
 		charge = rnd(75) + 75;
 		break;
+	case CHARGED_1D6_3:
+		charge = rnd(6) + 3;
+		break;
 	}
 
 	return charge;
@@ -1597,6 +1600,9 @@ int charge_init_index;
 		break;
 	case CHARGED_1D75_75:
 		charge = 150;
+		break;
+	case CHARGED_1D6_3:
+		charge = 9;
 		break;
 	}
 

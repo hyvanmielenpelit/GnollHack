@@ -2205,7 +2205,7 @@ register struct obj* obj;
 
 
 	/* Description */
-	if (stats_known && OBJ_ITEM_DESC(objects[otyp]) && !(obj->oartifact && obj->nknown))
+	if (stats_known && OBJ_ITEM_DESC(otyp) && !(obj->oartifact && obj->nknown))
 	{
 		/* One empty line here */
 		Sprintf(buf, "");
@@ -2215,7 +2215,7 @@ register struct obj* obj;
 		Sprintf(buf, "Description:");
 		txt = buf;
 		putstr(datawin, 0, txt);
-		Sprintf(buf, OBJ_ITEM_DESC(objects[otyp]));
+		Sprintf(buf, OBJ_ITEM_DESC(otyp));
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
