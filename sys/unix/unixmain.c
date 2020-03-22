@@ -498,7 +498,7 @@ boolean wr;
          * system's layout is being used.
          */
 #ifdef VAR_PLAYGROUND
-        int len = strlen(VAR_PLAYGROUND);
+        size_t len = strlen(VAR_PLAYGROUND);
 
         fqn_prefix[SCOREPREFIX] = (char *) alloc(len + 2);
         Strcpy(fqn_prefix[SCOREPREFIX], VAR_PLAYGROUND);

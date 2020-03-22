@@ -214,7 +214,7 @@ restobj(fd, otmp)
 int fd;
 struct obj *otmp;
 {
-    int buflen;
+    size_t buflen;
 
     mread(fd, (genericptr_t) otmp, sizeof(struct obj));
 
@@ -260,7 +260,7 @@ struct obj *otmp;
         /* omailcmd - feedback mechanism for scroll of mail */
         mread(fd, (genericptr_t) &buflen, sizeof(buflen));
         if (buflen > 0) {
-            char *omailcmd = (char *) alloc((size_t)buflen);
+            char *omailcmd = (char *) alloc(buflen);
 
             mread(fd, (genericptr_t) omailcmd, buflen);
             new_omailcmd(otmp, omailcmd);
@@ -276,11 +276,11 @@ boolean ghostly, frozen;
 {
     register struct obj *otmp, *otmp2 = 0;
     register struct obj *first = (struct obj *) 0;
-    int buflen;
+    size_t buflen;
 
     while (1) {
         mread(fd, (genericptr_t) &buflen, sizeof buflen);
-        if (buflen == -1)
+        if (buflen == 0)
             break;
 
         otmp = newobj();
@@ -367,7 +367,7 @@ restmon(fd, mtmp)
 int fd;
 struct monst *mtmp;
 {
-    int buflen;
+    size_t buflen;
 
     mread(fd, (genericptr_t) mtmp, sizeof(struct monst));
 
@@ -432,11 +432,11 @@ boolean ghostly;
 {
     register struct monst *mtmp, *mtmp2 = 0;
     register struct monst *first = (struct monst *) 0;
-    int offset, buflen;
+    size_t buflen;
 
     while (1) {
         mread(fd, (genericptr_t) &buflen, sizeof(buflen));
-        if (buflen == -1)
+        if (buflen == 0)
             break;
 
         mtmp = newmonst();
@@ -454,8 +454,7 @@ boolean ghostly;
             add_id_mapping(mtmp->m_id, nid);
             mtmp->m_id = nid;
         }
-        offset = mtmp->mnum;
-        mtmp->data = &mons[offset];
+        mtmp->data = &mons[mtmp->mnum];
         if (ghostly) {
             int mndx = monsndx(mtmp->data);
             if (propagate(mndx, TRUE, ghostly) == 0) {

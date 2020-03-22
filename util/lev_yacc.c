@@ -49,7 +49,7 @@
 
 #define New(type) \
         (type *) memset((genericptr_t) alloc(sizeof (type)), 0, sizeof (type))
-#define NewTab(type, size)      (type **) alloc(sizeof (type *) * size)
+#define NewTab(type, size)      (type **) alloc(sizeof (type *) * (size_t)size)
 #define Free(ptr)               free((genericptr_t) ptr)
 
 extern void VDECL(lc_error, (const char *, ...));
@@ -4710,7 +4710,7 @@ case 362:
 break;
 case 363:
 {
-			      long len = strlen( yyvsp[-2].map );
+			      size_t len = strlen( yyvsp[-2].map );
 			      char *tmp = (char *) alloc(len + 2);
 			      sprintf(tmp, "%c%s", (char) yyvsp[0].i, yyvsp[-2].map );
 			      Free( yyvsp[-2].map );

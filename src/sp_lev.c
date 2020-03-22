@@ -5320,7 +5320,7 @@ struct sp_coder *coder;
             if (tmpvar->array_len) {
                 idx = tmpvar->array_len;
                 tmpvar->data.arrayvalues =
-                    (struct opvar **) alloc(sizeof(struct opvar *) * idx);
+                    (struct opvar **) alloc(sizeof(struct opvar *) * (size_t)idx);
                 while (idx-- > 0) {
                     tmpvar->data.arrayvalues[idx] =
                         opvar_clone(tmp2->data.arrayvalues[idx]);
@@ -5335,7 +5335,7 @@ struct sp_coder *coder;
             idx = OV_i(arraylen);
             tmpvar->array_len = idx;
             tmpvar->data.arrayvalues =
-                (struct opvar **) alloc(sizeof(struct opvar *) * idx);
+                (struct opvar **) alloc(sizeof(struct opvar *) * (size_t)idx);
             while (idx-- > 0) {
                 OV_pop(vvalue);
 				if (!vvalue)

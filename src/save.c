@@ -980,10 +980,10 @@ saveobj(fd, otmp)
 int fd;
 struct obj *otmp;
 {
-    int buflen, zerobuf = 0;
+    size_t buflen, zerobuf = 0;
 
     buflen = sizeof(struct obj);
-    bwrite(fd, (genericptr_t) &buflen, sizeof(int));
+    bwrite(fd, (genericptr_t) &buflen, sizeof buflen);
     bwrite(fd, (genericptr_t) otmp, buflen);
     if (otmp->oextra) {
         if (ONAME(otmp))
@@ -1040,7 +1040,8 @@ register int fd, mode;
 register struct obj *otmp;
 {
     register struct obj *otmp2;
-    int minusone = -1;
+    //int minusone = -1;
+	size_t zero = 0;
 
     while (otmp) {
         otmp2 = otmp->nobj;
@@ -1078,7 +1079,7 @@ register struct obj *otmp;
         otmp = otmp2;
     }
     if (perform_bwrite(mode))
-        bwrite(fd, (genericptr_t) &minusone, sizeof(int));
+        bwrite(fd, (genericptr_t) &zero, sizeof(zero));
 }
 
 STATIC_OVL void
@@ -1086,10 +1087,10 @@ savemon(fd, mtmp)
 int fd;
 struct monst *mtmp;
 {
-    int buflen;
+    size_t buflen;
 
-    buflen = (int)sizeof(struct monst);
-    bwrite(fd, (genericptr_t) &buflen, sizeof(int));
+    buflen = sizeof(struct monst);
+    bwrite(fd, (genericptr_t) &buflen, sizeof buflen);
     bwrite(fd, (genericptr_t) mtmp, buflen);
     if (mtmp->mextra) 
 	{
@@ -1113,7 +1114,7 @@ struct monst *mtmp;
             buflen = sizeof(struct egd);
         else
             buflen = 0;
-        bwrite(fd, (genericptr_t) &buflen, sizeof(int));
+        bwrite(fd, (genericptr_t) &buflen, sizeof buflen);
         if (buflen > 0)
             bwrite(fd, (genericptr_t) EGD(mtmp), buflen);
 
@@ -1121,7 +1122,7 @@ struct monst *mtmp;
             buflen = sizeof(struct epri);
         else
             buflen = 0;
-        bwrite(fd, (genericptr_t) &buflen, sizeof(int));
+        bwrite(fd, (genericptr_t) &buflen, sizeof buflen);
         if (buflen > 0)
             bwrite(fd, (genericptr_t) EPRI(mtmp), buflen);
 
@@ -1129,7 +1130,7 @@ struct monst *mtmp;
             buflen = sizeof(struct eshk);
         else
             buflen = 0;
-        bwrite(fd, (genericptr_t) &buflen, sizeof(int));
+        bwrite(fd, (genericptr_t) &buflen, sizeof buflen);
         if (buflen > 0)
             bwrite(fd, (genericptr_t) ESHK(mtmp), buflen);
 
@@ -1137,7 +1138,7 @@ struct monst *mtmp;
             buflen = sizeof(struct emin);
         else
             buflen = 0;
-        bwrite(fd, (genericptr_t) &buflen, sizeof(int));
+        bwrite(fd, (genericptr_t) &buflen, sizeof buflen);
         if (buflen > 0)
             bwrite(fd, (genericptr_t) EMIN(mtmp), buflen);
 
@@ -1145,7 +1146,7 @@ struct monst *mtmp;
             buflen = sizeof(struct edog);
         else
             buflen = 0;
-        bwrite(fd, (genericptr_t) &buflen, sizeof(int));
+        bwrite(fd, (genericptr_t) &buflen, sizeof buflen);
         if (buflen > 0)
             bwrite(fd, (genericptr_t) EDOG(mtmp), buflen);
 
@@ -1161,7 +1162,8 @@ register int fd, mode;
 register struct monst *mtmp;
 {
     register struct monst *mtmp2;
-    int minusone = -1;
+    //int minusone = -1;
+	size_t zero = 0;
 
     while (mtmp) {
         mtmp2 = mtmp->nmon;
@@ -1184,7 +1186,7 @@ register struct monst *mtmp;
         mtmp = mtmp2;
     }
     if (perform_bwrite(mode))
-        bwrite(fd, (genericptr_t) &minusone, sizeof(int));
+        bwrite(fd, (genericptr_t) &zero, sizeof(zero));
 }
 
 /* save traps; ftrap is the only trap chain so the 2nd arg is superfluous */
