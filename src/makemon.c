@@ -2255,7 +2255,7 @@ unsigned long mmflags;
 			mtmp->mprops[VERY_FAST] |= M_INTRINSIC_ACQUIRED;
         break;
     }
-    if ((ct = emitted_light_range(mtmp->data)) > 0)
+    if ((ct = emitted_light_range(mtmp->data)) != 0)
         new_light_source(mtmp->mx, mtmp->my, ct, LS_MONSTER,
                          monst_to_any(mtmp));
     mitem = 0; /* extra inventory item for this monster */

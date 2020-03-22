@@ -532,10 +532,13 @@ int control;
     get_unused_cs(&next_array, &next_rmin, &next_rmax);
 
     /* You see nothing, nothing can see you --- if swallowed or refreshing. */
-    if (u.uswallow || control == 2) {
+    if (u.uswallow || control == 2) 
+	{
         /* do nothing -- get_unused_cs() nulls out the new work area */
         ;
-    } else if (Blind) {
+    } 
+	else if (Blind) 
+	{
         /*
          * Calculate the could_see array even when blind so that monsters
          * can see you, even if you can't see them.  Note that the current
@@ -558,7 +561,8 @@ int control;
         temp_array = viz_array; /* set viz_array so newsym() will work */
         viz_array = next_array;
 
-        for (row = 0; row < ROWNO; row++) {
+        for (row = 0; row < ROWNO; row++)
+		{
             old_row = temp_array[row];
 
             /* Find the min and max positions on the row. */
@@ -572,12 +576,17 @@ int control;
 
         /* skip the normal update loop */
         goto skip;
-    } else if (Is_rogue_level(&u.uz)) {
+    }
+	else if (Is_rogue_level(&u.uz))
+	{
         rogue_vision(next_array, next_rmin, next_rmax);
-    } else {
+    }
+	else 
+	{
         int has_night_vision = 1; /* hero has night vision */
 
-        if (Underwater && !Is_waterlevel(&u.uz)) {
+        if (Underwater && !Is_waterlevel(&u.uz)) 
+		{
             /*
              * The hero is under water.  Only see surrounding locations if
              * they are also underwater.  This overrides night vision but
@@ -596,7 +605,9 @@ int control;
                 }
 
         /* if in a pit, just update for immediate locations */
-        } else if (u.utrap && u.utraptype == TT_PIT) {
+        } 
+		else if (u.utrap && u.utraptype == TT_PIT)
+		{
             for (row = u.uy - 1; row <= u.uy + 1; row++) {
                 if (row < 0)
                     continue;
@@ -610,7 +621,8 @@ int control;
                 for (col = next_rmin[row]; col <= next_rmax[row]; col++)
                     next_row[col] = IN_SIGHT | COULD_SEE;
             }
-        } else
+        } 
+		else
             view_from(u.uy, u.ux, next_array, next_rmin, next_rmax, 0,
                       (void FDECL((*), (int, int, genericptr_t))) 0,
                       (genericptr_t) 0);
@@ -618,8 +630,10 @@ int control;
         /*
          * Set the IN_SIGHT bit for xray and night vision.
          */
-        if (u.xray_range >= 0) {
-            if (u.xray_range) {
+        if (u.xray_range >= 0) 
+		{
+            if (u.xray_range)
+			{
                 ranges = circle_ptr(u.xray_range);
 
                 for (row = u.uy - u.xray_range; row <= u.uy + u.xray_range;
@@ -634,7 +648,8 @@ int control;
                     start = max(0, u.ux - ranges[dy]);
                     stop = min(COLNO - 1, u.ux + ranges[dy]);
 
-                    for (col = start; col <= stop; col++) {
+                    for (col = start; col <= stop; col++) 
+					{
                         char old_row_val = next_row[col];
                         next_row[col] |= IN_SIGHT;
                         oldseenv = levl[col][row].seenv;
@@ -648,7 +663,9 @@ int control;
                     next_rmax[row] = max(stop, next_rmax[row]);
                 }
 
-            } else { /* range is 0 */
+            }
+			else 
+			{ /* range is 0 */
                 next_array[u.uy][u.ux] |= IN_SIGHT;
                 levl[u.ux][u.uy].seenv = SVALL;
                 next_rmin[u.uy] = min(u.ux, next_rmin[u.uy]);
@@ -656,17 +673,22 @@ int control;
             }
         }
 
-        if (has_night_vision && u.xray_range < u.nv_range) {
-            if (!u.nv_range) { /* range is 0 */
+        if (has_night_vision && u.xray_range < u.nv_range)
+		{
+            if (!u.nv_range) 
+			{ /* range is 0 */
                 next_array[u.uy][u.ux] |= IN_SIGHT;
                 levl[u.ux][u.uy].seenv = SVALL;
                 next_rmin[u.uy] = min(u.ux, next_rmin[u.uy]);
                 next_rmax[u.uy] = max(u.ux, next_rmax[u.uy]);
-            } else if (u.nv_range > 0) {
+            } 
+			else if (u.nv_range > 0)
+			{
                 ranges = circle_ptr(u.nv_range);
 
                 for (row = u.uy - u.nv_range; row <= u.uy + u.nv_range;
-                     row++) {
+                     row++) 
+				{
                     if (row < 0)
                         continue;
                     if (row >= ROWNO)
@@ -714,7 +736,8 @@ int control;
      *      enough for now.
      */
     colbump[u.ux] = colbump[u.ux + 1] = 1;
-    for (row = 0; row < ROWNO; row++) {
+    for (row = 0; row < ROWNO; row++) 
+	{
         dy = u.uy - row;
         dy = sign(dy);
         next_row = next_array[row];
@@ -728,8 +751,10 @@ int control;
         sv = &seenv_matrix[dy + 1][start < u.ux ? 0 : (start > u.ux ? 2 : 1)];
 
         for (col = start; col <= stop;
-             lev += ROWNO, sv += (int) colbump[++col]) {
-            if (next_row[col] & IN_SIGHT) {
+             lev += ROWNO, sv += (int) colbump[++col]) 
+		{
+            if (next_row[col] & IN_SIGHT) 
+			{
                 /*
                  * We see this position because of night- or xray-vision.
                  */
@@ -741,13 +766,16 @@ int control;
                 if (!(old_row[col] & IN_SIGHT) || oldseenv != lev->seenv)
                     newsym(col, row);
 
-            } else if ((next_row[col] & COULD_SEE)
-                     && (lev->lit || (next_row[col] & TEMP_LIT))) {
+            } 
+			else if ((next_row[col] & COULD_SEE)
+                     && (lev->lit || (next_row[col] & TEMP_LIT)) && !(next_row[col] & TEMP_MAGICAL_DARKNESS) ) 
+			{
                 /*
                  * We see this position because it is lit.
                  */
                 if ((IS_DOOR(lev->typ) || lev->typ == SDOOR
-                     || IS_WALL(lev->typ)) && !viz_clear[row][col]) {
+                     || IS_WALL(lev->typ)) && !viz_clear[row][col])
+				{
                     /*
                      * Make sure doors, walls, boulders or mimics don't show
                      * up
@@ -758,8 +786,8 @@ int control;
                     dx = u.ux - col;
                     dx = sign(dx);
                     flev = &(levl[col + dx][row + dy]);
-                    if (flev->lit
-                        || next_array[row + dy][col + dx] & TEMP_LIT) {
+                    if ((flev->lit || (next_array[row + dy][col + dx] & TEMP_LIT)) && !(next_array[row + dy][col + dx] & TEMP_MAGICAL_DARKNESS))
+					{
                         next_row[col] |= IN_SIGHT; /* we see it */
 
                         oldseenv = lev->seenv;
@@ -770,10 +798,13 @@ int control;
                         if (!(old_row[col] & IN_SIGHT)
                             || oldseenv != lev->seenv)
                             newsym(col, row);
-                    } else
+                    } 
+					else
                         goto not_in_sight; /* we don't see it */
 
-                } else {
+                } 
+				else 
+				{
                     next_row[col] |= IN_SIGHT; /* we see it */
 
                     oldseenv = lev->seenv;
@@ -783,7 +814,9 @@ int control;
                     if (!(old_row[col] & IN_SIGHT) || oldseenv != lev->seenv)
                         newsym(col, row);
                 }
-            } else if ((next_row[col] & COULD_SEE) && lev->waslit) {
+            } 
+			else if ((next_row[col] & COULD_SEE) && lev->waslit)
+			{
                 /*
                  * If we make it here, the hero _could see_ the location,
                  * but doesn't see it (location is not lit).
@@ -807,7 +840,9 @@ int control;
              *   versa.  Update the spot because there there may be an
              *   infrared monster there.
              */
-            } else {
+            }
+			else 
+			{
             not_in_sight:
                 if ((old_row[col] & IN_SIGHT)
                     || ((next_row[col] & COULD_SEE)

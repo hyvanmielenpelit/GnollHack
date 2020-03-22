@@ -41,6 +41,7 @@
 /* flags */
 #define LSF_SHOW 0x1        /* display the light source */
 #define LSF_NEEDS_FIXUP 0x2 /* need oid fixup */
+#define LSF_DARKNESS_SOURCE 0x4 /* emits darkness rather than light */
 
 static light_source *light_base = 0;
 
@@ -59,8 +60,9 @@ int range, type;
 anything *id;
 {
     light_source *ls;
+	int absrange = abs(range);
 
-    if (range > MAX_RADIUS || range < 1) {
+    if (absrange > MAX_RADIUS || absrange < 1) {
         impossible("new_light_source:  illegal range %d", range);
         return;
     }
@@ -70,10 +72,10 @@ anything *id;
     ls->next = light_base;
     ls->x = x;
     ls->y = y;
-    ls->range = range;
+    ls->range = absrange;
     ls->type = type;
     ls->id = *id;
-    ls->flags = 0;
+    ls->flags = range < 0 ? LSF_DARKNESS_SOURCE : 0;
     light_base = ls;
 
     vision_full_recalc = 1; /* make the source show up */
@@ -198,12 +200,12 @@ char **cs_rows;
                      */
                     for (x = min_x; x <= max_x; x++)
                         if (row[x] & COULD_SEE)
-                            row[x] |= TEMP_LIT;
+                            row[x] |= ((ls->flags & LSF_DARKNESS_SOURCE) ? TEMP_MAGICAL_DARKNESS : TEMP_LIT);
                 } else {
                     for (x = min_x; x <= max_x; x++)
                         if ((ls->x == x && ls->y == y)
                             || clear_path((int) ls->x, (int) ls->y, x, y))
-                            row[x] |= TEMP_LIT;
+                            row[x] |= ((ls->flags & LSF_DARKNESS_SOURCE) ? TEMP_MAGICAL_DARKNESS : TEMP_LIT);
                 }
             }
         }

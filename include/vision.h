@@ -14,6 +14,7 @@ extern char *viz_rmax;			/* max could see indices */
 #define COULD_SEE 0x1 /* location could be seen, if it were lit */
 #define IN_SIGHT 0x2  /* location can be seen */
 #define TEMP_LIT 0x4  /* location is temporarily lit */
+#define TEMP_MAGICAL_DARKNESS 0x8  /* location is darkened by magic darkness source (overrides TEMP_LIT and lit) */
 
 /*
  * Light source sources
