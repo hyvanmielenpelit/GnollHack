@@ -5663,11 +5663,15 @@ register char *cmd;
         /* <prefix><escape> */
         /* don't report "unknown command" for change of heart... */
         bad_command = FALSE;
-    } else if (*cmd == ' ' && !flags.rest_on_space) {
-        bad_command = TRUE; /* skip cmdlist[] loop */
+    }
+	else if (*cmd == ' ' || *cmd == '\n') // && !flags.rest_on_space)
+	{
+		bad_command = FALSE;//TRUE; /* skip cmdlist[] loop */
 
     /* handle all other commands */
-    } else {
+    } 
+	else
+	{
         register const struct ext_func_tab *tlist;
         int res, NDECL((*func));
 
@@ -5697,7 +5701,8 @@ register char *cmd;
         bad_command = TRUE;
     }
 
-    if (bad_command) {
+    if (bad_command)
+	{
         char expcmd[20]; /* we expect 'cmd' to point to 1 or 2 chars */
         char c, c1 = cmd[1];
 
