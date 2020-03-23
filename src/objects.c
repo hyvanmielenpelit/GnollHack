@@ -1652,7 +1652,7 @@ RING("protection from shape changers", "shiny", /* ENDMARKER FOR SHUFFLED RINGS 
 
 /* without shuffled apprearances */
 RING("supreme power", "golden runed", /* Base item for the One Ring */
-    0, INVISIBILITY, CLAIRVOYANT, SEE_INVISIBLE, P1_MANA_PERCENTAGE_BONUS, 10000, 1, SPETYPE_NO_SPE,  5, 100, 0, BONUS_TO_ALLSTATS, 5, -20, MAT_GOLD, HI_GOLD,
+    0, INVISIBILITY, CLAIRVOYANT, SEE_INVISIBLE, P1_MANA_PERCENTAGE_BONUS, 10000, 1, SPETYPE_NO_SPE,  5, 100, 0, BONUS_TO_ALLSTATS, 3, -20, MAT_GOLD, HI_GOLD,
 	O1_INDESTRUCTIBLE | O1_DISINTEGRATION_RESISTANT | O1_FIRE_RESISTANT | O1_COLD_RESISTANT | O1_LIGHTNING_RESISTANT,
 	O2_NONE, 
 	O3_NO_WISH | O3_NO_GENERATION | O3_READABLE, PERMITTED_ALL),
@@ -2592,8 +2592,8 @@ SPELL("negate undeath",		  "inspiring", None, "Destroys the target undead",
 	P_CLERIC_SPELL,				5, 4,			10, 7,100, A_WIS, 8, 0, 100, 0, 1, IMMEDIATE, 0, 20, 6, 0, 1, 50, 100, S1_NONE, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
 SPELL("banish demon",		  "squamous", None, "Destroys the target demon",
 	P_CLERIC_SPELL,				5, 4,			10, 8,150, A_WIS, 8, 0, 100, 0, 1, IMMEDIATE, 0, 30, 6, 0, 1, 50, 100, S1_NONE, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
-SPELL("prayer",			   "biblical", "some aeon-old prayer", "May invoke a divine intervention from your god",
-	P_CLERIC_SPELL,			    5, 5,		   175, 4, 30, A_WIS, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE),
+SPELL("prayer",			   "biblical", None, "You safely pray to your god",
+	P_CLERIC_SPELL,			    5, 5,		   175, 4, 30, A_WIS, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NONE, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE),
 SPELL("absolution",		   "ecclesiastical", "some aeon-old prayer", "Absolves your sins",
 	P_CLERIC_SPELL,			    5, 5,		  1000, 6,175, A_WIS, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE),
 

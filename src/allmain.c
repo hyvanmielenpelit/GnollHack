@@ -531,17 +531,23 @@ create_monster_or_encounter()
 {
 	struct monst* nazgul = (struct monst*)0;
 	boolean nazgul_appeared = FALSE;
-	int maxlevel = 4 * u.ulevel;
+	int maxlevel = 2 * u.ulevel;
 	int mdx = NON_PM;
-	if (maxlevel >= mons[PM_NAZGUL].difficulty && !(mvitals[PM_NAZGUL].mvflags & G_GONE))
+	boolean nazgulok = (7 * maxlevel) / 5 >= mons[PM_NAZGUL].difficulty && !(mvitals[PM_NAZGUL].mvflags & G_GONE);
+	boolean kingwraithok = (6 * maxlevel) / 5 >= mons[PM_KING_WRAITH].difficulty && !(mvitals[PM_KING_WRAITH].mvflags & G_GONE);
+	boolean spectreok = maxlevel >= mons[PM_SPECTRE].difficulty && !(mvitals[PM_SPECTRE].mvflags & G_GONE);
+	boolean barrowwightok = maxlevel >= mons[PM_BARROW_WIGHT].difficulty && !(mvitals[PM_BARROW_WIGHT].mvflags & G_GONE);
+	boolean wraithok = maxlevel >= mons[PM_WRAITH].difficulty && !(mvitals[PM_WRAITH].mvflags & G_GONE);
+
+	if (nazgulok)
 		mdx = PM_NAZGUL;
-	else if (maxlevel >= mons[PM_KING_WRAITH].difficulty && !(mvitals[PM_KING_WRAITH].mvflags & G_GONE))
+	else if (kingwraithok)
 		mdx = PM_KING_WRAITH;
-	else if (maxlevel >= mons[PM_SPECTRE].difficulty && !(mvitals[PM_SPECTRE].mvflags & G_GONE))
+	else if (spectreok && (rn2(3) || !(barrowwightok || wraithok)))
 		mdx = PM_SPECTRE;
-	else if (maxlevel >= mons[PM_BARROW_WIGHT].difficulty && !(mvitals[PM_BARROW_WIGHT].mvflags & G_GONE))
+	else if (barrowwightok && (!rn2(2) || !wraithok))
 		mdx = PM_BARROW_WIGHT;
-	else if (maxlevel >= mons[PM_WRAITH].difficulty && !(mvitals[PM_WRAITH].mvflags & G_GONE))
+	else if (wraithok)
 		mdx = PM_WRAITH;
 
 	if(!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && !(u.uz.dnum == modron_dnum) && mdx >= LOW_PM)
