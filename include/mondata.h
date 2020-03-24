@@ -508,7 +508,7 @@
 #define resists_ston(mon) \
     (has_innate((mon)->data, MR_STONE) || has_property(mon, STONE_RES) || noncorporeal((mon)->data))
 #define resists_magicmissile(mon) \
-    has_innate((mon)->data, MR_MAGICMISSILE)
+    (has_innate((mon)->data, MR_MAGIC_MISSILE) || has_property(mon, MAGIC_MISSILE_RES))
 #define resists_magic(mon) \
     (has_innate((mon)->data, MR_MAGIC) || has_property(mon, ANTIMAGIC))
 #define resists_charm(mon) \

@@ -3246,7 +3246,9 @@ int final;
         you_are("invulnerable", from_what(INVULNERABLE));
     if (Antimagic)
         you_are("magic-protected", from_what(ANTIMAGIC));
-    if (Fire_resistance)
+	if (Magic_missile_resistance)
+		you_are("magic missile resistant", from_what(MAGIC_MISSILE_RES));
+	if (Fire_resistance)
         you_are("fire resistant", from_what(FIRE_RES));
     if (Cold_resistance)
         you_are("cold resistant", from_what(COLD_RES));

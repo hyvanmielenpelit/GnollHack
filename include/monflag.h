@@ -60,7 +60,7 @@
 #define MR_STONE		0x00000080UL			/* resists petrification */
 #define MR_DEATH		0x00000100UL			/* resists death */
 #define MR_LYCANTHROPY	0x00000200UL			/* resists lycanthropy */
-#define MR_MAGICMISSILE 0x00000400UL			/* resists magic missiles */
+#define MR_MAGIC_MISSILE 0x00000400UL			/* resists magic missiles */
 #define MR_MAGIC		0x00000800UL			/* resists magic */
 #define MR_CHARM		0x00001000UL			/* resists charm */
 #define MR_DRAIN		0x00002000UL			/* resists life draining */

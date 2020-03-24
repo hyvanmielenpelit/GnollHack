@@ -1179,6 +1179,7 @@ struct monst *mtmp;
 	boolean very_low_level_skip = (mtmp->data->difficulty > 5 && mtmp->data->difficulty <= 10);
 	boolean reflection_skip = (Reflecting && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 15 || (mtmp->data->intl > 10 && rn2(4)) || rn2(2)));
 	boolean antimagic_skip = (Antimagic && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 15 || (mtmp->data->intl > 10 && rn2(4)) || rn2(2)));
+	boolean magic_missile_resistant_skip = (Magic_missile_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 15 || (mtmp->data->intl > 10 && rn2(4)) || rn2(2)));
 	boolean sleep_resistant_skip = (Sleep_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
 	boolean death_resistant_skip = (Death_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
 	boolean disintegration_resistant_skip = (Disint_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
@@ -1244,44 +1245,44 @@ struct monst *mtmp;
                 m.has_offense = MUSE_WAN_SLEEP;
             }
             nomore(MUSE_WAN_FIRE);
-            if (obj->otyp == WAN_FIRE && obj->charges > 0 && fire_resistant_skip && !level_skip_normal_wand && lined_up(mtmp, TRUE, AD_FIRE, TRUE))
+            if (obj->otyp == WAN_FIRE && obj->charges > 0 && !fire_resistant_skip && !level_skip_normal_wand && lined_up(mtmp, TRUE, AD_FIRE, TRUE))
 			{
                 m.offensive = obj;
                 m.has_offense = MUSE_WAN_FIRE;
             }
             nomore(MUSE_FIRE_HORN);
-            if (obj->otyp == FIRE_HORN && obj->charges > 0 && can_blow(mtmp) && fire_resistant_skip && !level_skip_normal_wand && lined_up(mtmp, TRUE, AD_FIRE, TRUE))
+            if (obj->otyp == FIRE_HORN && obj->charges > 0 && can_blow(mtmp) && !fire_resistant_skip && !level_skip_normal_wand && lined_up(mtmp, TRUE, AD_FIRE, TRUE))
 			{
                 m.offensive = obj;
                 m.has_offense = MUSE_FIRE_HORN;
             }
             nomore(MUSE_WAN_COLD);
-            if (obj->otyp == WAN_COLD && obj->charges > 0 && cold_resistant_skip && !level_skip_normal_wand && lined_up(mtmp, TRUE, AD_COLD, TRUE))
+            if (obj->otyp == WAN_COLD && obj->charges > 0 && !cold_resistant_skip && !level_skip_normal_wand && lined_up(mtmp, TRUE, AD_COLD, TRUE))
 			{
                 m.offensive = obj;
                 m.has_offense = MUSE_WAN_COLD;
             }
             nomore(MUSE_FROST_HORN);
-            if (obj->otyp == FROST_HORN && obj->charges > 0 && can_blow(mtmp) && cold_resistant_skip && !level_skip_normal_wand && lined_up(mtmp, TRUE, AD_COLD, TRUE))
+            if (obj->otyp == FROST_HORN && obj->charges > 0 && can_blow(mtmp) && !cold_resistant_skip && !level_skip_normal_wand && lined_up(mtmp, TRUE, AD_COLD, TRUE))
 			{
                 m.offensive = obj;
                 m.has_offense = MUSE_FROST_HORN;
             }
             nomore(MUSE_WAN_LIGHTNING);
-            if (obj->otyp == WAN_LIGHTNING && obj->charges > 0 && shock_resistant_skip && !level_skip_normal_wand && lined_up(mtmp, TRUE, AD_ELEC, TRUE))
+            if (obj->otyp == WAN_LIGHTNING && obj->charges > 0 && !shock_resistant_skip && !level_skip_normal_wand && lined_up(mtmp, TRUE, AD_ELEC, TRUE))
 			{
                 m.offensive = obj;
                 m.has_offense = MUSE_WAN_LIGHTNING;
             }
             nomore(MUSE_WAN_MAGIC_MISSILE);
-            if (obj->otyp == WAN_MAGIC_MISSILE && obj->charges > 0 && antimagic_skip && !level_skip_weak_wand && lined_up(mtmp, TRUE, AD_MAGM, TRUE))
+            if (obj->otyp == WAN_MAGIC_MISSILE && obj->charges > 0 && !magic_missile_resistant_skip && !antimagic_skip && !level_skip_weak_wand && lined_up(mtmp, TRUE, AD_MAGM, TRUE))
 			{
                 m.offensive = obj;
                 m.has_offense = MUSE_WAN_MAGIC_MISSILE;
             }
         }
         nomore(MUSE_WAN_STRIKING);
-        if (obj->otyp == WAN_STRIKING && obj->charges > 0 && antimagic_skip && !level_skip_weak_wand && lined_up(mtmp, TRUE, AD_MAGM, FALSE))
+        if (obj->otyp == WAN_STRIKING && obj->charges > 0 && !magic_missile_resistant_skip && !antimagic_skip && !level_skip_weak_wand && lined_up(mtmp, TRUE, AD_MAGM, FALSE))
 		{
             m.offensive = obj;
             m.has_offense = MUSE_WAN_STRIKING;
@@ -1387,7 +1388,7 @@ register struct obj *otmp;
 		{
             if (zap_oseen)
                 makeknown(WAN_STRIKING);
-            if (Antimagic_or_resistance) 
+            if (Magic_missile_resistance || Antimagic_or_resistance) 
 			{
                 shieldeff(u.ux, u.uy);
                 pline("Boing!");

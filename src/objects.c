@@ -1417,8 +1417,8 @@ BRACERS("bracers of archery", "deerskin bracers",
 	0, 1, 0,		  0, 0, P1_NONE, 10, 1, 10, 300, 9, 1, 0, 0, 0, 0, 4, MAT_CLOTH, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 BRACERS("bracers of spell casting", "shining bracers",
 	0, 1, 0,		  0, 0, P1_MANA_PERCENTAGE_BONUS, 10, 1, 10, 300, 9, 1, 10, 0, 0, 0, -7, MAT_CLOTH, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-BRACERS("bracers of magic resistance", "ornamental bracers",//ENDMARKER 1 & 2
-	0, 1, ANTIMAGIC,  0, 0, P1_NONE, 10, 1, 10, 300, 9, 1, 0, 0, 0, 0, 0, MAT_CLOTH, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+BRACERS("bracers against magic missiles", "ornamental bracers",//ENDMARKER 1 & 2
+	0, 1, MAGIC_MISSILE_RES,  0, 0, P1_NONE, 10, 1, 10, 300, 9, 1, 0, 0, 0, 0, 0, MAT_CLOTH, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 
 
 
@@ -1715,7 +1715,7 @@ OBJECT(OBJ("Amulet of Yendor", /* note: description == name */
 		   nut, color, 0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
 MISCELLANEOUSITEM("brooch of shielding", "golden brooch", MISC_BROOCH, None,
 	0, 1, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, 50, 150, 5,
-	NO_POWER, 0, 0, P1_NONE, 0, 0, BONUS_TO_MC, 5, 0,
+	MAGIC_MISSILE_RES, NO_POWER, NO_POWER, P1_NONE, 0, 0, BONUS_TO_MC, 5, 0,
 	20, MAT_GOLD, HI_GOLD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 MISCELLANEOUSITEM("nose ring of bull strength", "golden nose ring", MISC_NOSERING, None,
 	0, 1, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, 50, 200, 2, //STARTMARKER FOR NOSE RING WISH-CLASS, SHUFFLE

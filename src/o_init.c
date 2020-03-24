@@ -222,8 +222,8 @@ int *lo_p, *hi_p; /* output: range that item belongs among */
             *lo_p = SPEED_BOOTS, *hi_p = LEVITATION_BOOTS;
 		else if (otyp >= ROBE && otyp <= ROBE_OF_STARRY_WISDOM)
 			* lo_p = ROBE, * hi_p = ROBE_OF_STARRY_WISDOM;
-		else if (otyp >= LEATHER_BRACERS && otyp <= BRACERS_OF_MAGIC_RESISTANCE)
-			* lo_p = LEATHER_BRACERS, * hi_p = BRACERS_OF_MAGIC_RESISTANCE;
+		else if (otyp >= LEATHER_BRACERS && otyp <= BRACERS_AGAINST_MAGIC_MISSILES)
+			* lo_p = LEATHER_BRACERS, * hi_p = BRACERS_AGAINST_MAGIC_MISSILES;
 		else if (otyp >= SHIRT_OF_UNCONTROLLABLE_LAUGHTER && otyp <= T_SHIRT)
 			* lo_p = SHIRT_OF_UNCONTROLLABLE_LAUGHTER, * hi_p = T_SHIRT;
 		break;

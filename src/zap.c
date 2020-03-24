@@ -4432,7 +4432,7 @@ boolean ordinary;
     case WAN_STRIKING:
     case SPE_FORCE_BOLT:
         learn_it = TRUE;
-        if (Antimagic_or_resistance || Invulnerable)
+        if (Magic_missile_resistance || Antimagic_or_resistance || Invulnerable)
 		{
             shieldeff(u.ux, u.uy);
 			damage = 0;
@@ -4454,17 +4454,25 @@ boolean ordinary;
 
 	case SPE_MAGIC_ARROW:
 		learn_it = TRUE;
-		if (ordinary) 
+		if (Magic_missile_resistance || Invulnerable)
 		{
-			You("shoot yourself with a magical arrow!");
+			shieldeff(u.ux, u.uy);
+			damage = 0;
+			pline("Boing!");
 		}
 		else
-			basedmg = d(1 + obj->charges, 3);
+		{
+			if (ordinary)
+			{
+				You("shoot yourself with a magical arrow!");
+			}
+			else
+				basedmg = d(1 + obj->charges, 3);
 
-		damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_PHYS, TRUE);
-		exercise(A_STR, FALSE);
+			damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_PHYS, TRUE);
+			exercise(A_STR, FALSE);
+		}
 		break;
-
 	case SPE_SHOCKING_TOUCH:
 		learn_it = TRUE;
 		if (!Shock_resistance && !Invulnerable) {
@@ -4616,7 +4624,7 @@ boolean ordinary;
     case SPE_MAGIC_MISSILE:
         learn_it = TRUE;
 		damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_MAGM, TRUE);
-		if (Antimagic_or_resistance || Invulnerable) {
+		if (Magic_missile_resistance || Antimagic_or_resistance || Invulnerable) {
             shieldeff(u.ux, u.uy);
             pline_The("missiles bounce!");
 			damage = 0;
@@ -6609,7 +6617,7 @@ xchar sx, sy;
     switch (abstyp % 10) 
 	{
     case ZT_MAGIC_MISSILE:
-        if (Antimagic_or_resistance || Invulnerable)
+        if (Magic_missile_resistance || Antimagic_or_resistance || Invulnerable)
 		{
             shieldeff(sx, sy);
 			damage = 0;

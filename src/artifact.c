@@ -873,7 +873,7 @@ int dmgtype;
 	switch (dmgtype)
 	{
 	case AD_MAGM:
-		return (yours ? Antimagic : (resists_magic(mtmp) || resists_magicmissile(mtmp)));
+		return (yours ? (Antimagic || Magic_missile_resistance) : (resists_magic(mtmp) || resists_magicmissile(mtmp)));
 	case AD_FIRE:
 		return (yours ? Fire_resistance : resists_fire(mtmp));
 	case AD_COLD:
@@ -2821,7 +2821,7 @@ struct abil2adtyp_tag {
 	{ SHOCK_RES, AD_ELEC },
 	{ DEATH_RES, AD_DRAY },
 	{ LYCANTHROPY_RES, AD_WERE },
-	{ ANTIMAGIC, AD_MAGM },
+	{ MAGIC_MISSILE_RES, AD_MAGM },
 	{ DISINT_RES, AD_DISN },
 	{ POISON_RES, AD_DRST },
 	{ DRAIN_RES, AD_DRLI },

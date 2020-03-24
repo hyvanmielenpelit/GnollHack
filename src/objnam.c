@@ -2643,7 +2643,7 @@ char *str;
           " named ",  " above", /* lurkers above */
           " versus ", " from ",    " in ",
           " on ",     " a la ",    " with", /* " with "? */
-          " de ",     " d'",       " du ",
+          " de ",     " d'",       " du ", " against ",
           "-in-",     "-at-",      0
         }, /* list of first characters for all compounds[] entries */
         compound_start[] = " -";
@@ -3129,7 +3129,7 @@ STATIC_OVL NEARDATA const struct o_range o_ranges[] = {
     { "cloak", ARMOR_CLASS, ELVEN_CLOAK, CLOAK_OF_DISPLACEMENT },
     { "shirt", ARMOR_CLASS, HAWAIIAN_SHIRT, T_SHIRT },
 	{ "robe", ARMOR_CLASS, ROBE, MUMMY_WRAPPING },
-	{ "bracers", ARMOR_CLASS, LEATHER_BRACERS, BRACERS_OF_MAGIC_RESISTANCE },
+	{ "bracers", ARMOR_CLASS, LEATHER_BRACERS, BRACERS_AGAINST_MAGIC_MISSILES },
 	{ "dragon scales", ARMOR_CLASS, GRAY_DRAGON_SCALES, YELLOW_DRAGON_SCALES },
     { "dragon scale mail", ARMOR_CLASS, GRAY_DRAGON_SCALE_MAIL, YELLOW_DRAGON_SCALE_MAIL },
     { "sword", WEAPON_CLASS, SHORT_SWORD, KATANA },

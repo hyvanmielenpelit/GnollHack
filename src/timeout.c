@@ -155,6 +155,7 @@ const struct propname {
 	{ THREE_FOURTHS_MAGIC_RES, "having 75% of normal magic resistance", "75% of normal magic resistance" },
 	{ BLINDFOLDED, "blindfolded", "blindness due to a blindfold" },
 	{ TITAN_STRENGTH, "strong as a titan", "titan strength" },
+	{ MAGIC_MISSILE_RES, "resistant to magic missiles", "magic missile resistance" },
 	{ LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
 	{  0, 0 },
 };
@@ -911,6 +912,10 @@ nh_timeout()
 				if (!Antimagic)
 					You("feel less protected from magic.");
 				break;
+			case MAGIC_MISSILE_RES:
+				if (!Magic_missile_resistance)
+					You("feel less protected from magic missiles.");
+				break;
 			case CANCELLED:
 				if (!Cancelled)
 					You("feel your magic is flowing more normally.");
@@ -1099,6 +1104,9 @@ nh_timeout()
 				break;
 			case ANTIMAGIC:
 				You("are starting to feel less protected from magic.");
+				break;
+			case MAGIC_MISSILE_RES:
+				You("are starting to feel less protected from magic missiles.");
 				break;
 			case CANCELLED:
 				You("feel your magic is starting to flow more normally.");

@@ -2220,6 +2220,9 @@ int otyp;
 		case ANTIMAGIC:
 			You_feel("more protected from magic.");
 			break;
+		case MAGIC_MISSILE_RES:
+			You_feel("more protected from magic missiles.");
+			break;
 		case DEATH_RES:
 			Your("soul's silver cord feels thicker than before.");
 			break;

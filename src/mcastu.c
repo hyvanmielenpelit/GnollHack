@@ -340,7 +340,7 @@ boolean foundyou;
         break;
     case AD_MAGM:
         You("are hit by a shower of missiles!");
-        if (Antimagic_or_resistance || Invulnerable) {
+        if (Magic_missile_resistance || Antimagic_or_resistance || Invulnerable) {
             shieldeff(u.ux, u.uy);
             pline_The("missiles bounce off!");
             damage = 0;
@@ -544,7 +544,7 @@ int spellnum;
     case MGC_PSI_BOLT:
         /* prior to 3.4.0 Antimagic was setting the damage to 1--this
            made the spell virtually harmless to players with magic res. */
-        if (Antimagic_or_resistance || Invulnerable)
+        if (Magic_missile_resistance || Antimagic_or_resistance || Invulnerable)
 		{
             shieldeff(u.ux, u.uy);
             damage = damage / 2;

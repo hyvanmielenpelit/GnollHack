@@ -1223,7 +1223,7 @@ register struct monst *mtmp;
 
 		//Bracers
 		if (!rn2(4))
-			(void)mongets(mtmp, rn2(2) ? BRACERS_OF_DEFENSE : BRACERS_OF_MAGIC_RESISTANCE);
+			(void)mongets(mtmp, rn2(2) ? BRACERS_OF_DEFENSE : BRACERS_AGAINST_MAGIC_MISSILES);
 
 		//Ring
 		if (!rn2(4))
@@ -1264,7 +1264,7 @@ register struct monst *mtmp;
 		{
 			//Bracers
 			if (!rn2(4))
-				(void)mongets(mtmp, rn2(2) ? BRACERS_OF_DEFENSE : BRACERS_OF_MAGIC_RESISTANCE);
+				(void)mongets(mtmp, rn2(2) ? BRACERS_OF_DEFENSE : BRACERS_AGAINST_MAGIC_MISSILES);
 
 			//Ring
 			if (!rn2(4))
