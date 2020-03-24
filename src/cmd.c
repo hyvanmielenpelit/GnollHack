@@ -5675,7 +5675,7 @@ register char *cmd;
 	else
 	{
         register const struct ext_func_tab *tlist;
-        int res, NDECL((*func));
+        int res = 0, NDECL((*func));
 
         /* current - use *cmd to directly index cmdlist array */
         if ((tlist = Cmd.commands[*cmd & 0xff]) != 0) {
@@ -5689,9 +5689,12 @@ register char *cmd;
                 /* we discard 'const' because some compilers seem to have
                    trouble with the pointer passed to set_occupation() */
                 func = ((struct ext_func_tab *) tlist)->ef_funct;
-                if (tlist->f_text && !occupation && multi)
-                    set_occupation(func, tlist->f_text, multi);
-                res = (*func)(); /* perform the command */
+				if (func)
+				{
+					if (tlist->f_text && !occupation && multi)
+						set_occupation(func, tlist->f_text, multi);
+					res = (*func)(); /* perform the command */
+				}
             }
             if (!res) {
                 context.move = FALSE;

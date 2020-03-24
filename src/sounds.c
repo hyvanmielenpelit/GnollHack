@@ -1326,7 +1326,7 @@ dochat()
 		char name[80];
 		int (*function_ptr)();
 	};
-	struct available_chat_item available_chat_list[MAXCHATNUM];
+	struct available_chat_item available_chat_list[MAXCHATNUM] = { {0} };
 	int chatnum = 0;
 
 	any = zeroany;

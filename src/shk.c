@@ -659,8 +659,8 @@ char *enterstring;
 			else 
 			{ /* assert(mattock != 0) */
                 tool = "spade";
-                while ((mattock = mattock->nobj) != 0)
-                    if (mattock->otyp == SPADE_OF_COLOSSAL_EXCAVATION)
+                while ((spade = spade->nobj) != 0)
+                    if (spade->otyp == SPADE_OF_COLOSSAL_EXCAVATION)
                         ++cnt;
                 /* [ALI] Shopkeeper identifies spade(s) */
                 if (!Blind)
