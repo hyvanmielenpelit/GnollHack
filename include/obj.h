@@ -184,6 +184,11 @@ struct obj {
  *	#define is_multigen(otyp) (otyp <= SHURIKEN)
  *	#define is_poisonable(otyp) (otyp <= BEC_DE_CORBIN)
  */
+#define is_otyp_appliable(otyp) ((objects[(otyp)].oc_flags3 & O3_APPLIABLE) != 0)
+#define is_otyp_invokable(otyp) ((objects[(otyp)].oc_flags3 & O3_INVOKABLE) != 0)
+#define is_obj_appliable(otmp) is_otyp_appliable((otmp)->otyp)
+#define is_obj_invokable(otmp) is_otyp_invokable((otmp)->otyp)
+
 #define is_blade(otmp)                           \
     ((otmp)->oclass == WEAPON_CLASS                \
      && objects[(otmp)->otyp].oc_skill >= P_DAGGER \
@@ -206,7 +211,7 @@ struct obj {
 #define is_appliable_pole_type_weapon(otmp)   \
     (is_pole(otmp) || is_spear(otmp) || is_lance(otmp))
 #define is_appliable_weapon(otmp) \
-    ((otmp)->oclass == WEAPON_CLASS && (is_pick(otmp) || is_axe(otmp) || is_appliable_pole_type_weapon(otmp) || (objects[(otmp)->otyp].oc_flags3 & O3_APPLIABLE) != 0))
+    ((otmp)->oclass == WEAPON_CLASS && (is_pick(otmp) || is_axe(otmp) || is_appliable_pole_type_weapon(otmp) || is_obj_appliable(otmp)))
 #define is_launcher(otmp)                                                  \
     ((otmp)->oclass == WEAPON_CLASS && objects[(otmp)->otyp].oc_skill >= P_BOW \
      && objects[(otmp)->otyp].oc_skill <= P_CROSSBOW)

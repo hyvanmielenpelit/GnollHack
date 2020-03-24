@@ -1933,6 +1933,7 @@ boolean atme;
     case SPE_DETECT_FOOD:
     case SPE_MASS_FEAR:
     case SPE_IDENTIFY:
+	case SPE_DETECT_BLESSEDNESS:
 	case SPE_BLESS:
 	case SPE_CURSE:
 	case SPE_ENCHANT_ARMOR:

@@ -2048,15 +2048,13 @@ const char* headertext;
              || (!strcmp(word, "invoke")
                  && !otmp->oartifact
                  && !is_otyp_unique(otyp)
-                 && (otyp != FAKE_AMULET_OF_YENDOR || otmp->known)
-                 && otyp != CRYSTAL_BALL /* synonym for apply */
+				 && !is_otyp_invokable(otyp)
+				 && (otyp != FAKE_AMULET_OF_YENDOR || otmp->known)
                  /* note: presenting the possibility of invoking non-artifact
                     mirrors and/or lamps is simply a cruel deception... */
-                 && otyp != MIRROR && otyp != MAGIC_MIRROR
-                 && otyp != MAGIC_LAMP
                  && (otyp != OIL_LAMP /* don't list known oil lamp */
                      || (otmp->dknown && objects[OIL_LAMP].oc_name_known)))
-             || (!strcmp(word, "untrap with")
+				|| (!strcmp(word, "untrap with")
                  && ((otmp->oclass == TOOL_CLASS && otyp != CAN_OF_GREASE)
                      || (otmp->oclass == POTION_CLASS
                          /* only applicable potion is oil, and it will only
@@ -2067,7 +2065,8 @@ const char* headertext;
                  /* include horn of plenty if sufficiently discovered */
                  && (otmp->otyp != HORN_OF_PLENTY || !otmp->dknown
                      || !objects[HORN_OF_PLENTY].oc_name_known))
-             || (!strcmp(word, "charge") && !is_chargeable(otmp))
+ 			 || (!strcmp(word, "detect blessedness for") && otmp->bknown)
+			 || (!strcmp(word, "charge") && !is_chargeable(otmp))
              || (!strcmp(word, "open") && otyp != TIN)
              || (!strcmp(word, "call") && !objtyp_is_callable(otyp))
              || (!strcmp(word, "adjust") && otmp->oclass == COIN_CLASS
@@ -2150,7 +2149,7 @@ const char* headertext;
         else if (iflags.force_invmenu) {
             /* don't overwrite a possible quitchars */
             if (!oneloop)
-                ilet = *let ? '?' : '*';
+                ilet = /* *let */ buf[0] ? '?' : '*';
             if (!msggiven)
                 putmsghistory(qbuf, FALSE);
             msggiven = TRUE;

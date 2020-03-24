@@ -1997,9 +1997,47 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
             pline("You're not carrying anything to be identified.");
         }
         break;
-	case SPE_CURSE:
+	case SPE_DETECT_BLESSEDNESS:
+		allowall[0] = ALL_CLASSES;
+		allowall[1] = '\0';
+		if (invent && (!confused || !rn2(2)))
+		{
+			otmp = getobj(allowall, "detect blessedness for", 0, "");
+			if (otmp)
+			{
+				if (otmp->oclass != COIN_CLASS) 
+				{
+					u.uconduct.gnostic++;
+				}
+				else 
+				{
+					otmp->blessed = otmp->cursed = 0;
+				}
+
+				if (otmp->blessed || otmp->cursed) 
+				{
+					There("is %s flash as you cast the spell on %s.",
+						an(hcolor(otmp->blessed ? NH_AMBER : NH_BLACK)), the(cxname(otmp)));
+					otmp->bknown = 1;
+				}
+				else 
+				{
+					pline("The spell glimmers around %s for a moment and then fades.", the(cxname(otmp)));
+					if (otmp->oclass != COIN_CLASS)
+						otmp->bknown = 1;
+				}
+			}
+		}
+		else
+		{
+			if(confused)
+				pline("The spell fizzles in the air.");
+			else
+				pline("You're not carrying anything to detect beautitude for.");
+		}
+		break;
+	break;	case SPE_CURSE:
 	case SPE_BLESS:
-		cval = 1;
 		allowall[0] = ALL_CLASSES;
 		allowall[1] = '\0';
 		if (invent && !confused) {
@@ -2061,6 +2099,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 					/* finally, change curse/bless state */
 					(*func)(otmp);
 				}
+				update_inventory();
 			}
 		}
 		else

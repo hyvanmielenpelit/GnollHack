@@ -1230,14 +1230,14 @@ boolean makingboxcontents;
             otmp->recharged = 0; /* used to control recharging */
             break;
         case RING_CLASS:
-            if (objects[otmp->otyp].oc_enchantable == SPETYPE_RING_NORMAL || objects[otmp->otyp].oc_enchantable == SPETYPE_RING_1_7 || objects[otmp->otyp].oc_enchantable == SPETYPE_RING_DOUBLE || objects[otmp->otyp].oc_enchantable == SPETYPE_RING_POWER)
+            if (objects[otmp->otyp].oc_enchantable == ENCHTYPE_RING_NORMAL || objects[otmp->otyp].oc_enchantable == ENCHTYPE_RING_1_7 || objects[otmp->otyp].oc_enchantable == ENCHTYPE_RING_DOUBLE || objects[otmp->otyp].oc_enchantable == ENCHTYPE_RING_POWER)
 			{
 				int addition = 0;
-				if (objects[otmp->otyp].oc_enchantable == SPETYPE_RING_NORMAL)
+				if (objects[otmp->otyp].oc_enchantable == ENCHTYPE_RING_NORMAL)
 					addition += rnd(2) + !rn2(2) ? 0 : !rn2(2) ? 1 : !rn2(2) ? 2 : 3;
-				else if (objects[otmp->otyp].oc_enchantable == SPETYPE_RING_1_7)
+				else if (objects[otmp->otyp].oc_enchantable == ENCHTYPE_RING_1_7)
 					addition += rnd(3) + !rn2(3) ? 0 : !rn2(3) ? 1 : !rn2(3) ? 2 : !rn2(3) ? 3 : 4;
-				else if (objects[otmp->otyp].oc_enchantable == SPETYPE_RING_DOUBLE)
+				else if (objects[otmp->otyp].oc_enchantable == ENCHTYPE_RING_DOUBLE)
 					addition += rnd(4) + !rn2(4) ? 0 : !rn2(4) ? 1 : !rn2(4) ? 2 : !rn2(4) ? 3 : !rn2(4) ? 4 : !rn2(4) ? 5 : 6;
 				else
 					addition += rnd(2);
@@ -1255,7 +1255,7 @@ boolean makingboxcontents;
                 }
                 /* make useless +0 rings much less common */
                 if (otmp->enchantment == 0)
-                    otmp->enchantment = ((objects[otmp->otyp].oc_enchantable == SPETYPE_RING_POWER) ? rnd(3) - 2 : rn2(4) - rn2(3));
+                    otmp->enchantment = ((objects[otmp->otyp].oc_enchantable == ENCHTYPE_RING_POWER) ? rnd(3) - 2 : rn2(4) - rn2(3));
                 /* negative rings are usually cursed */
                 if (otmp->enchantment < 0 && rn2(5))
                     curse(otmp);
@@ -1274,7 +1274,7 @@ boolean makingboxcontents;
             }
             break;
 		case MISCELLANEOUS_CLASS:
-			if (objects[otmp->otyp].oc_enchantable == SPETYPE_MISCELLANEOUS_NORMAL) 
+			if (objects[otmp->otyp].oc_enchantable == ENCHTYPE_MISCELLANEOUS_NORMAL) 
 			{
 				int addition = rnd(2);
 				if (otmp->otyp != STRANGE_OBJECT)
@@ -1646,40 +1646,40 @@ int spe_type_index;
 
 	switch (spe_type_index)
 	{
-	case SPETYPE_NO_SPE:
+	case ENCHTYPE_NO_ENCHANTMENT:
 		initspe = 0;
 		break;
-	case SPETYPE_GENERAL:
+	case ENCHTYPE_GENERAL:
 		initspe = rne(3);
 		break;
-	case SPETYPE_ALWAYS_1:
+	case ENCHTYPE_ALWAYS_1:
 		initspe = 1;
 		break;
-	case SPETYPE_ALWAYS_2:
+	case ENCHTYPE_ALWAYS_2:
 		initspe = 2;
 		break;
-	case SPETYPE_ALWAYS_3:
+	case ENCHTYPE_ALWAYS_3:
 		initspe = 3;
 		break;
-	case SPETYPE_ALWAYS_4:
+	case ENCHTYPE_ALWAYS_4:
 		initspe = 4;
 		break;
-	case SPETYPE_ALWAYS_5:
+	case ENCHTYPE_ALWAYS_5:
 		initspe = 5;
 		break;
-	case SPETYPE_RING_NORMAL:
+	case ENCHTYPE_RING_NORMAL:
 		initspe = rnd(5);
 		break;
-	case SPETYPE_RING_1_7:
+	case ENCHTYPE_RING_1_7:
 		initspe = rnd(7);
 		break;
-	case SPETYPE_RING_DOUBLE:
+	case ENCHTYPE_RING_DOUBLE:
 		initspe = rnd(10);
 		break;
-	case SPETYPE_MISCELLANEOUS_NORMAL:
+	case ENCHTYPE_MISCELLANEOUS_NORMAL:
 		initspe = rnd(5);
 		break;
-	case SPETYPE_RING_POWER:
+	case ENCHTYPE_RING_POWER:
 		initspe = rnd(3);
 		break;
 	}
@@ -1696,37 +1696,37 @@ int spe_type_index;
 
 	switch (spe_type_index)
 	{
-	case SPETYPE_NO_SPE:
+	case ENCHTYPE_NO_ENCHANTMENT:
 		maxspe = 0;
 		break;
-	case SPETYPE_GENERAL:
+	case ENCHTYPE_GENERAL:
 		maxspe = 5;
 		break;
-	case SPETYPE_ALWAYS_1:
+	case ENCHTYPE_ALWAYS_1:
 		maxspe = 1;
 		break;
-	case SPETYPE_ALWAYS_2:
+	case ENCHTYPE_ALWAYS_2:
 		maxspe = 2;
 		break;
-	case SPETYPE_ALWAYS_3:
+	case ENCHTYPE_ALWAYS_3:
 		maxspe = 3;
 		break;
-	case SPETYPE_ALWAYS_4:
+	case ENCHTYPE_ALWAYS_4:
 		maxspe = 4;
 		break;
-	case SPETYPE_ALWAYS_5:
+	case ENCHTYPE_ALWAYS_5:
 		maxspe = 5;
 		break;
-	case SPETYPE_RING_NORMAL:
+	case ENCHTYPE_RING_NORMAL:
 		maxspe = 6;
 		break;
-	case SPETYPE_RING_1_7:
+	case ENCHTYPE_RING_1_7:
 		maxspe = 9;
 		break;
-	case SPETYPE_RING_DOUBLE:
+	case ENCHTYPE_RING_DOUBLE:
 		maxspe = 12;
 		break;
-	case SPETYPE_MISCELLANEOUS_NORMAL:
+	case ENCHTYPE_MISCELLANEOUS_NORMAL:
 		maxspe = 7;
 		break;
 
