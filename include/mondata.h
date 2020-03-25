@@ -358,6 +358,8 @@
 #define is_sick(mon) \
 	(has_sick(mon) && !has_sickness_resistance(mon) && !is_undead((mon)->data) && !is_demon((mon)->data) && !is_vampshifter(mon))
 
+#define has_vomiting(mon) \
+	has_property(mon, VOMITING)
 
 /* charmed and tame */
 #define has_charmed(mon) \
@@ -584,6 +586,7 @@
 
 #define emitted_light_range(ptr) ((ptr)->lightrange)
 #define touch_petrifies(ptr) (((ptr)->mflags1 & M1_TOUCH_PETRIFIES) != 0)
+#define flesh_petrifies(ptr) (touch_petrifies(ptr) || (ptr) == &mons[PM_MEDUSA])
 #define is_mind_flayer(ptr) (((ptr)->mflags2 & M2_MIND_FLAYER) != 0)
 #define is_mimic(ptr) ((ptr->mlet == S_MIMIC)
 #define is_vampire(ptr) ((ptr)->mlet == S_VAMPIRE)

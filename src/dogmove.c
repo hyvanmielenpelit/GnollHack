@@ -19,6 +19,7 @@ STATIC_DCL long FDECL(score_targ, (struct monst *, struct monst *));
 STATIC_DCL boolean FDECL(can_reach_location, (struct monst *, XCHAR_P,
                                               XCHAR_P, XCHAR_P, XCHAR_P));
 STATIC_DCL void FDECL(quickmimic, (struct monst *));
+STATIC_DCL void FDECL(dog_food_after_effect, (struct monst* , struct obj*, boolean));
 
 /* pick a carried item for pet to drop */
 struct obj *
@@ -257,6 +258,9 @@ register struct obj *obj; /* if unpaid, then thrown or kicked by hero */
 int x, y; /* dog's starting location, might be different from current */
 boolean devour;
 {
+	if (!mtmp || !obj)
+		return 0;
+
 	register struct edog* edog = EDOG(mtmp);
 	boolean poly, grow, heal, eyes, slimer, deadmimic;
 	int nutrit;
@@ -283,16 +287,20 @@ boolean devour;
     }
     edog->hungrytime += nutrit;
 	mtmp->mprops[CONFUSION] &= ~M_INTRINSIC_ACQUIRED;
-	if (edog->mhpmax_penalty) {
+	if (edog->mhpmax_penalty) 
+	{
         /* no longer starving */
         mtmp->mhpmax += edog->mhpmax_penalty;
         edog->mhpmax_penalty = 0;
     }
+
     if (mtmp->mflee && mtmp->mflee_timer > 1)
         mtmp->mflee_timer /= 2;
     if (mtmp->mtame > 0 && mtmp->mtame < 20)
         mtmp->mtame++;
-    if (x != mtmp->mx || y != mtmp->my) { /* moved & ate on same turn */
+
+    if (x != mtmp->mx || y != mtmp->my)
+	{ /* moved & ate on same turn */
         newsym(x, y);
         newsym(mtmp->mx, mtmp->my);
     }
@@ -302,10 +310,13 @@ boolean devour;
         obj = splitobj(obj, 1L);
     if (obj->unpaid)
         iflags.suppress_price++;
-    if (is_pool(x, y) && !Underwater) {
+    if (is_pool(x, y) && !Underwater)
+	{
         /* Don't print obj */
         /* TODO: Reveal presence of sea monster (especially sharks) */
-    } else {
+    }
+	else 
+	{
         /* food is at monster's current location, <mx,my>;
            <x,y> was monster's location at start of this turn;
            they might be the same but will be different when
@@ -318,7 +329,8 @@ boolean devour;
            unseen spot to eat the food there, avoid referring to that
            pet as "it".  However, we want "it" if invisible/unsensed
            pet eats visible food. */
-        if (sawpet || (seeobj && canspotmon(mtmp))) {
+        if (sawpet || (seeobj && canspotmon(mtmp)))
+		{
             if (tunnels(mtmp->data))
                 pline("%s digs in.", noit_Monnam(mtmp));
             else
@@ -328,10 +340,13 @@ boolean devour;
             pline("It %s %s.", devour ? "devours" : "eats",
                   distant_name(obj, doname));
     }
-    if (obj->unpaid) {
+
+    if (obj->unpaid)
+	{
         Strcpy(objnambuf, xname(obj));
         iflags.suppress_price--;
     }
+
     /* It's a reward if it's DOGFOOD and the player dropped/threw it.
        We know the player had it if invlet is set. -dlc */
     if (dogfood(mtmp, obj) == DOGFOOD && obj->invlet)
@@ -341,23 +356,37 @@ boolean devour;
         edog->apport += (int) (200L / ((long) edog->dropdist + monstermoves
                                        - edog->droptime));
 #endif
-    if (mtmp->data == &mons[PM_RUST_MONSTER] && obj->oerodeproof) {
+
+
+    if (mtmp->data == &mons[PM_RUST_MONSTER] && obj->oerodeproof) 
+	{
         /* The object's rustproofing is gone now */
         if (obj->unpaid)
             costly_alteration(obj, COST_DEGRD);
         obj->oerodeproof = 0;
 		increase_mon_property(mtmp, STUNNED, 5 + rnd(10));
-        if (canseemon(mtmp) && flags.verbose) {
+        if (canseemon(mtmp) && flags.verbose) 
+		{
             pline("%s spits %s out in disgust!", Monnam(mtmp),
                   distant_name(obj, doname));
         }
-    } else if (obj == uball) {
+    } 
+	else if (obj == uball) 
+	{
         unpunish();
         delobj(obj); /* we assume this can't be unpaid */
-    } else if (obj == uchain) {
+    } 
+	else if (obj == uchain) 
+	{
         unpunish();
-    } else {
-        if (obj->unpaid) {
+    } 
+	else 
+	{
+		/* Dog food after effects */
+		dog_food_after_effect(mtmp, obj, canseemon(mtmp));
+
+		if (obj->unpaid)
+		{
             /* edible item owned by shop has been thrown or kicked
                by hero and caught by tame or food-tameable monst */
             oprice = unpaid_cost(obj, TRUE);
@@ -378,14 +407,18 @@ boolean devour;
     }
 #endif
 
-    if (poly || slimer) {
+
+	/* Original food effects */
+    if (poly || slimer) 
+	{
         struct permonst *ptr = slimer ? &mons[PM_GREEN_SLIME] : 0;
 
         (void) newcham(mtmp, ptr, FALSE, cansee(mtmp->mx, mtmp->my));
     }
 
     /* limit "instant" growth to prevent potential abuse */
-    if (grow && (int) mtmp->m_lev < (int) mtmp->data->mlevel + 15) {
+    if (grow && (int) mtmp->m_lev < (int) mtmp->data->mlevel + 15) 
+	{
         if (!grow_up(mtmp, (struct monst *) 0))
             return 2;
     }
@@ -395,8 +428,174 @@ boolean devour;
         mcureblindness(mtmp, canseemon(mtmp));
     if (deadmimic)
         quickmimic(mtmp);
+
     return 1;
 }
+
+
+/* called after consuming (non-corpse) food */
+STATIC_OVL void
+dog_food_after_effect(mtmp, otmp, verbose)
+struct monst* mtmp;
+struct obj* otmp;
+boolean verbose;
+{
+	if (!mtmp || !otmp)
+		return;
+
+	if (!(otmp->oclass == FOOD_CLASS || (objects[otmp->otyp].oc_flags & O1_EDIBLE_NONFOOD)))
+		return;
+
+	if (rn2(100) >= objects[otmp->otyp].oc_critical_strike_percentage)
+		return;
+
+	/* Properties */
+	int duration = d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus;
+	if (objects[otmp->otyp].oc_edible_effect > 0)
+	{
+		if (duration > 0)
+			set_mon_property_b(mtmp, objects[otmp->otyp].oc_edible_effect, duration, verbose);
+		else
+			set_mon_property_b(mtmp, objects[otmp->otyp].oc_edible_effect, -1, verbose);
+	}
+
+	switch (objects[otmp->otyp].oc_edible_effect)
+	{
+	case EDIBLE_CURE_LYCANTHROPY:
+		/* Nothing currently */
+		break;
+	case EDIBLE_CURE_BLIDNESS:
+		mcureblindness(mtmp, canseemon(mtmp));
+		break;
+	case EDIBLE_READ_FORTUNE:
+		/* Nothing currently */
+		break;
+	case EDIBLE_ROYAL_JELLY:
+	{
+		/* This stuff seems to be VERY healthy! */
+		m_gainstr(mtmp, otmp, 1);
+		mtmp->mhp += otmp->cursed ? -rnd(20) : rnd(20);
+		if (mtmp->mhp > mtmp->mhpmax)
+		{
+			if (!rn2(17))
+				mtmp->mbasehpmax++;
+			update_mon_maxhp(mtmp);
+			mtmp->mhp = mtmp->mhpmax;
+		}
+		else if (DEADMONSTER(mtmp))
+		{
+			xkilled(mtmp, XKILL_NOMSG);
+		}
+		if (!otmp->cursed)
+			set_mon_property_b(mtmp, WOUNDED_LEGS, 0, FALSE);
+
+		break;
+	}
+	case EDIBLE_GAIN_STRENGTH:
+		m_gainstr(mtmp, otmp, 1);
+		break;
+	case EDIBLE_GAIN_DEXTERITY:
+		(void)m_adjattrib(mtmp, A_DEX, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1);
+		break;
+	case EDIBLE_GAIN_CONSTITUTION:
+		(void)m_adjattrib(mtmp, A_CON, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1);
+		break;
+	case EDIBLE_GAIN_INTELLIGENCE:
+		(void)m_adjattrib(mtmp, A_INT, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1);
+		break;
+	case EDIBLE_GAIN_WISDOM:
+		(void)m_adjattrib(mtmp, A_WIS, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1);
+		break;
+	case EDIBLE_GAIN_CHARISMA:
+		(void)m_adjattrib(mtmp, A_CHA, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1);
+		break;
+	case EDIBLE_RESTORE_ABILITY:
+	{
+		if (otmp->cursed)
+		{
+			if(verbose)
+				pline("Ulch!  That made %s feel mediocre!", mon_nam(mtmp));
+			break;
+		}
+		else
+		{
+			int i, ii, lim;
+			pline("Wow!  This made %s feel %s!", mon_nam(mtmp),
+				(otmp->blessed)
+				? (unfixable_trouble_count(FALSE) ? "better" : "great")
+				: "good");
+			i = rn2(A_MAX); /* start at a random point */
+			for (ii = 0; ii < A_MAX; ii++) 
+			{
+				lim = M_AMAX(mtmp, i);
+				/* this used to adjust 'lim' for A_STR when u.uhs was
+				   WEAK or worse, but that's handled via ATEMP(A_STR) now */
+				if (M_ABASE(mtmp, i) < lim)
+				{
+					M_ABASE(mtmp, i) = lim;
+					/* only first found if not blessed */
+					if (!otmp->blessed)
+						break;
+				}
+				if (++i >= A_MAX)
+					i = 0;
+			}
+		}
+		break;
+	}
+	case EDIBLE_GAIN_LEVEL:
+	{
+		if ((int)mtmp->m_lev < (int)mtmp->data->mlevel + 15)
+		{
+			(void)grow_up(mtmp, (struct monst*) 0);
+		}
+		break;
+	}
+	case EDIBLE_EGG:
+		if (flesh_petrifies(&mons[otmp->corpsenm]))
+		{
+			if (!has_petrification_resistance(mtmp))
+			{
+				if (poly_when_stoned(mtmp->data))
+					mon_to_stone(mtmp);
+				else
+					start_delayed_petrification(mtmp, FALSE);
+			}
+		}
+		break;
+	case EDIBLE_CURE_SICKNESS:
+		if (is_sick(mtmp) && !otmp->cursed)
+			set_mon_property_b(mtmp, SICK, 0, TRUE);
+		if (has_vomiting(mtmp) && !otmp->cursed)
+			set_mon_property_b(mtmp, VOMITING, 0, TRUE);
+		break;
+	case EDIBLE_APPLE:
+		/* Nothing */
+		break;
+	}
+	return;
+}
+
+void
+m_gainstr(mtmp, otmp, num)
+struct monst* mtmp;
+struct obj* otmp;
+int num;
+{
+	if (!num)
+	{
+		if (ABASE(A_STR) < 18)
+			num = (rn2(4) ? 1 : rnd(6));
+		else if (ABASE(A_STR) < STR18(85))
+			num = rnd(10);
+		else
+			num = 1;
+	}
+	(void)m_adjattrib(mtmp, A_STR, (otmp && otmp->cursed) ? -num : (otmp && otmp->blessed) ? num + rn2(2) : num);
+
+}
+
+
 
 /* hunger effects -- returns TRUE on starvation */
 STATIC_OVL boolean

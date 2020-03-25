@@ -23,6 +23,7 @@ STATIC_DCL int FDECL(do_chat_pet_dowield_ranged, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_dowield_pickaxe, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_dowield_axe, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_dounwield, (struct monst*));
+STATIC_DCL int FDECL(do_chat_pet_feed, (struct monst*));
 STATIC_DCL int FDECL(do_chat_buy_items, (struct monst*));
 STATIC_DCL int FDECL(do_chat_join_party, (struct monst*));
 STATIC_DCL int FDECL(do_chat_oracle_consult, (struct monst*));
@@ -1492,6 +1493,22 @@ dochat()
 			chatnum++;
 		}
 
+		if (carnivorous(mtmp->data) || herbivorous(mtmp->data))
+		{
+			Sprintf(available_chat_list[chatnum].name, "Feed %s", mon_nam(mtmp));
+			available_chat_list[chatnum].function_ptr = &do_chat_pet_feed;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+		}
+
 	}
 
 	if (is_tame(mtmp) && invent) /*  && !mtmp->issummoned */
@@ -2453,6 +2470,118 @@ struct monst* mtmp;
 }
 
 
+STATIC_OVL int
+do_chat_pet_feed(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp)
+		return 0;
+
+	int n, i, n_given = 0;
+	long cnt;
+	struct obj* otmp, * otmp2;
+	menu_item* pick_list;
+
+	char qbuf[BUFSIZ] = "";
+	Sprintf(qbuf, "What would you like to feed to %s?", mon_nam(mtmp));
+
+	add_valid_menu_class(0); /* clear any classes already there */
+	add_valid_menu_class(FOOD_CLASS);
+	//add_valid_menu_class(POTION_CLASS);
+	//add_valid_menu_class(REAGENT_CLASS);
+
+	n = query_objlist(qbuf, &invent,
+		(USE_INVLET | INVORDER_SORT), &pick_list, PICK_ONE,
+		allow_category, 3);
+
+	if (n > 0)
+	{
+		bypass_objlist(invent, TRUE);
+		for (i = 0; i < n; i++)
+		{
+			otmp = pick_list[i].item.a_obj;
+
+			for (otmp2 = invent; otmp2; otmp2 = otmp2->nobj)
+				if (otmp2 == otmp)
+					break;
+			if (!otmp2 || !otmp2->bypass)
+				continue;
+
+			/* found next selected invent item */
+			cnt = pick_list[i].count;
+			/* only one food item or potion can be fed at a time*/
+			if (cnt > 1)
+				cnt = 1;
+
+			if (cnt < otmp->quan) 
+			{
+				if (welded(otmp, &youmonst)) 
+				{
+					; /* don't split */
+				}
+				else if ((objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && otmp->cursed) 
+				{
+					/* same kludge as getobj(), for canletgo()'s use */
+					otmp->corpsenm = (int)cnt; /* don't split */
+				}
+				else 
+				{
+					otmp = splitobj(otmp, cnt);
+				}
+			}
+
+			/* Feed here */
+			if (otmp)
+			{
+				if (otmp->owornmask & (W_ARMOR | W_ACCESSORY))
+				{
+					You("cannot pass %s over to %s. You are wearing it.", doname(otmp), mon_nam(mtmp));
+				}
+				else
+				{
+					if (otmp->oclass == POTION_CLASS)
+					{
+						You("try to make %s drink %s.", mon_nam(mtmp), doname(otmp));
+					}
+					else if(otmp->oclass == FOOD_CLASS)
+					{
+						You("offer %s to %s.", doname(otmp), mon_nam(mtmp));
+						int tasty = MANFOOD;
+						int releasesuccess = FALSE;
+						if (mon_can_move(mtmp) && !mtmp->meating
+							&& ((tasty = dogfood(mtmp, otmp)) < (objects[otmp->otyp].oc_material == MAT_VEGGY ? APPORT : MANFOOD))
+							&& (releasesuccess = release_item_from_hero_inventory(otmp)))
+						{
+							n_given++;
+							/* dog_eat expects a floor object */
+							place_object(otmp, mtmp->mx, mtmp->my);
+							(void)dog_eat(mtmp, otmp, mtmp->mx, mtmp->my, FALSE);
+						}
+						else
+						{
+							if (!mon_can_move(mtmp))
+								pline("%s does not seem to be able to move in order to eat %s.", Monnam(mtmp), doname(otmp));
+							else if (mtmp->meating)
+								pline("%s is already eating something else.", Monnam(mtmp), doname(otmp));
+							else if (tasty >= MANFOOD)
+								pline("%s refuses to eat %s.", Monnam(mtmp), doname(otmp));
+							else if (!releasesuccess)
+								; /* Nothing here */
+
+						}
+					}
+				}
+			}
+		}
+		bypass_objlist(invent, FALSE); /* reset invent to normal */
+		free((genericptr_t)pick_list);
+	}
+
+	return (n_given > 0);
+}
+
+
+
 int
 release_item_from_hero_inventory(obj)
 struct obj* obj;
@@ -3114,7 +3243,9 @@ struct monst* mtmp;
 {
 
 	long umoney = money_cnt(invent);
-	int u_pay, bless_cost = 200 + 10 * u.ulevel, curse_cost = 100 + 5 * u.ulevel;
+	int u_pay, 
+		bless_cost = max(1, (int)((200 + 10 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))),
+		curse_cost = max(1, (int)((100 + 5 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
 	int priest_action = 0;
 	char qbuf[QBUFSZ];
 
@@ -3204,7 +3335,7 @@ struct monst* mtmp;
 {
 
 	long umoney = money_cnt(invent);
-	int u_pay, extrahealing_cost = 50;
+	int u_pay, extrahealing_cost = max(1, (int)(50 * service_cost_charisma_adjustment(ACURR(A_CHA))));
 	char qbuf[QBUFSZ];
 
 	if (!mtmp) 
@@ -3266,7 +3397,7 @@ struct monst* mtmp;
 {
 
 	long umoney = money_cnt(invent);
-	int u_pay, fullhealing_cost = 250 + 5 * u.ulevel;
+	int u_pay, fullhealing_cost = max(1, (int)((250 + 5 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
 	char qbuf[QBUFSZ];
 
 	if (!mtmp)
@@ -3345,7 +3476,7 @@ do_chat_priest_divination(mtmp)
 struct monst* mtmp;
 {
 	long umoney = money_cnt(invent);
-	int u_pay, divination_cost = 25;
+	int u_pay, divination_cost = max(1, (int)(25 * service_cost_charisma_adjustment(ACURR(A_CHA))));
 	char qbuf[QBUFSZ];
 
 	if (!mtmp)
@@ -3487,7 +3618,7 @@ struct monst* mtmp;
 
 	long umoney;
 	int u_pay;
-	int minor_id_cost = ESHK(mtmp)->shoptype == SHOPBASE ? 150 + 10 * u.ulevel : 75 + 5 * u.ulevel;
+	int minor_id_cost = max(1, (int)((ESHK(mtmp)->shoptype == SHOPBASE ? 150 + 10 * (double)u.ulevel : 75 + 5 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
 	char qbuf[QBUFSZ];
 
 	multi = 0;
@@ -3588,7 +3719,7 @@ struct monst* mtmp;
 
 	long umoney;
 	long u_pay;
-	long reconcile_cost = 1000 + u.ulevel * 100 + (mtmp->mrevived ? u.ulevel * 100 : 0) + max(0, ESHK(mtmp)->robbed + ESHK(mtmp)->debit - ESHK(mtmp)->credit);
+	long reconcile_cost = max(1, (int)((1000 + u.ulevel * 100 + (mtmp->mrevived ? u.ulevel * 100 : 0) + max(0, ESHK(mtmp)->robbed + ESHK(mtmp)->debit - ESHK(mtmp)->credit)) * service_cost_charisma_adjustment(ACURR(A_CHA))));
 	char qbuf[QBUFSZ];
 	
 	multi = 0;
@@ -3650,7 +3781,7 @@ struct monst* mtmp;
 
 	long umoney;
 	long u_pay;
-	long reconcile_cost = 500;
+	long reconcile_cost = max(1, (int)(500 * service_cost_charisma_adjustment(ACURR(A_CHA))));
 	char qbuf[QBUFSZ];
 
 	multi = 0;
@@ -3723,6 +3854,18 @@ struct monst* mtmp;
 	quest_chat(mtmp);
 	return 1;
 }
+
+
+double
+service_cost_charisma_adjustment(cha)
+int cha;
+{
+	if (cha < 1 || cha > 25)
+		return 1;
+
+	return pow(2.0, (11.0 - (double)cha) / 8.0);
+}
+
 
 
 #ifdef USER_SOUNDS

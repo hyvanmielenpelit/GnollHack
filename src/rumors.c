@@ -579,7 +579,7 @@ struct monst* oracl;
 	long umoney;
 	int u_pay;
 	//int unid_cnt = count_unidentified(invent);
-	int minor_id_cost = 150 + 10 * u.ulevel; // 175 + 15 * u.ulevel;
+	int minor_id_cost = max(1, (int)((150 + 10 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))) ; // 175 + 15 * u.ulevel;
 	//int major_id_cost = minor_id_cost * 3;
 	//int oracleaction = 0;
 	char qbuf[QBUFSZ];
@@ -661,7 +661,7 @@ do_oracle_enlightenment(oracl)
 struct monst* oracl;
 {
 	long umoney;
-	int u_pay, enl_cost = objects[POT_ENLIGHTENMENT].oc_cost + 5 * u.ulevel;
+	int u_pay, enl_cost = max(1, (int)((objects[POT_ENLIGHTENMENT].oc_cost + 5 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
 	char qbuf[QBUFSZ];
 
 	multi = 0;

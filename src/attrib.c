@@ -280,7 +280,8 @@ boolean givemsg;
 {
     int num = incr;
 
-    if (!num) {
+    if (!num) 
+	{
         if (ABASE(A_STR) < 18)
             num = (rn2(4) ? 1 : rnd(6));
         else if (ABASE(A_STR) < STR18(85))

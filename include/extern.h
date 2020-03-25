@@ -616,6 +616,7 @@ E void FDECL(wantdoor, (int, int, genericptr_t));
 #endif
 E void FDECL(finish_meating, (struct monst *));
 E boolean FDECL(could_reach_item, (struct monst*, XCHAR_P, XCHAR_P));
+E void FDECL(m_gainstr, (struct monst*, struct obj*, int));
 
 /* ### dokick.c ### */
 
@@ -2526,6 +2527,7 @@ E long FDECL(m_contained_cost, (struct obj*, struct monst*));
 E boolean FDECL(is_shop_item_type, (struct obj*, int));
 E int FDECL(release_item_from_hero_inventory, (struct obj*));
 E int FDECL(ask_shk_reconciliation, (struct monst*));
+E double FDECL(service_cost_charisma_adjustment, (int));
 
 /* ### sys.c ### */
 
