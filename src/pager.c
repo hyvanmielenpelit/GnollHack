@@ -1303,6 +1303,12 @@ coord *click_cc;
                 else
                     pline("Pick an object.");
 
+#ifdef CURSES_GRAPHICS
+				if (WINDOWPORT("curses")) {
+					pline("");
+				}
+#endif
+
                 ans = getpos(&cc, quick, what_is_an_unknown_object);
                 if (ans < 0 || cc.x < 0)
                     break; /* done */
@@ -1316,7 +1322,7 @@ coord *click_cc;
         /* Finally, print out our explanation. */
         if (found) {
             /* use putmixed() because there may be an encoded glyph present */
-            putmixed(WIN_MESSAGE, 0, out_str);
+			putmixed(WIN_MESSAGE, 0, out_str);
 #ifdef DUMPLOG
             {
                 char dmpbuf[BUFSZ];
