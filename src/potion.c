@@ -829,7 +829,7 @@ register struct obj *otmp;
 		unkn++;
 		pline("Ooph!  This tastes like %s%s!",
 			otmp->odiluted ? "watered down " : "",
-			Hallucination ? "dwarven ale" : objects[POT_URINE].oc_name_known ? "pee" : "a urine sample");
+			Hallucination ? "dwarven ale" : objects[POT_URINE].oc_name_known ? "pee" : "urine sample");
 		break;
 	case POT_ENLIGHTENMENT:
         if (otmp->cursed) {
@@ -925,6 +925,11 @@ register struct obj *otmp;
 			pline("Yecch!  This tastes like %s%s, but it has %s flavor.", otmp->odiluted ? "particularly light " : "", beertype, flavortype);
 		else
 			pline("This tastes like %s%s.", otmp->odiluted ? "particularly light " : "", beertype);
+
+		if (otmp->cursed)
+			pline("Nevertheless, you feel refreshed%s.", !otmp->odiluted ? " although somewhat intoxicated" : "");
+		else
+			You("feel refreshed.");
 
 		u.uhunger += (otmp->odiluted ? 10 : 20);
 		update_hunger_status(FALSE);
