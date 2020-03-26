@@ -679,12 +679,6 @@ const char *goal;
         pline("(For instructions type a '%s')",
               visctrl(Cmd.spkeys[NHKF_GETPOS_HELP]));
 
-#ifdef CURSES_GRAPHICS
-		if (WINDOWPORT("curses")) {
-			pline(" ");
-		}
-#endif
-		
 		msg_given = TRUE;
     }
     cx = ccp->x;
