@@ -993,7 +993,7 @@ menu_win_size(nhmenu *menu)
 
     maxwidth = 38;              /* Reasonable minimum usable width */
 
-    if ((3 * term_cols) / 4) > maxwidth) {
+    if ((3 * term_cols) / 4 > maxwidth) {
         maxwidth = ((3 * term_cols) / 4);     /* 3/4 of the screen */
     }
 
