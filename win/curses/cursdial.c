@@ -1244,9 +1244,12 @@ menu_get_selections(WINDOW * win, nhmenu *menu, int how)
             dismiss = TRUE;
         }
 
-        if (curletter == '\033') {
-            curletter = curses_convert_keys(curletter);
-        }
+		if (curletter == '\033') {
+			curletter = curses_convert_keys(curletter);
+		}
+		else if (curletter == GOLD_SYM_ALTERNATE) {
+			curletter = GOLD_SYM;
+		}
 
         switch (how) {
         case PICK_NONE:
