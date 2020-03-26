@@ -1303,12 +1303,6 @@ coord *click_cc;
                 else
                     pline("Pick an object.");
 
-#ifdef CURSES_GRAPHICS
-				if (WINDOWPORT("curses")) {
-					pline("");
-				}
-#endif
-
                 ans = getpos(&cc, quick, what_is_an_unknown_object);
                 if (ans < 0 || cc.x < 0)
                     break; /* done */
