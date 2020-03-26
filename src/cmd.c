@@ -1936,7 +1936,7 @@ wiz_intrinsic(VOID_ARGS)
         winid win;
         anything any;
         char buf[BUFSZ];
-        int i, j, n, p, amt, typ;
+        int i, j, n, p, amt;
         long oldtimeout, newtimeout;
         const char *propname;
         menu_item *pick_list = (menu_item *) 0;
@@ -1977,7 +1977,8 @@ wiz_intrinsic(VOID_ARGS)
             newtimeout = oldtimeout + (long) amt;
             switch (p) {
             case SICK:
-            case SLIMED:
+			case FOOD_POISONED:
+			case SLIMED:
             case STONED:
                 if (oldtimeout > 0L && newtimeout > oldtimeout)
                     newtimeout = oldtimeout;
@@ -2001,10 +2002,12 @@ wiz_intrinsic(VOID_ARGS)
                 make_hallucinated(newtimeout, TRUE, 0L);
                 break;
             case SICK:
-                typ = !rn2(2) ? SICK_VOMITABLE : SICK_NONVOMITABLE;
-                make_sick(newtimeout, wizintrinsic, TRUE, typ);
+                make_sick(newtimeout, wizintrinsic, TRUE);
                 break;
-            case SLIMED:
+			case FOOD_POISONED:
+				make_food_poisoned(newtimeout, wizintrinsic, TRUE);
+				break;
+			case SLIMED:
                 Sprintf(buf, fmt,
                         !Slimed ? "" : " still", "turning into slime");
                 make_slimed(newtimeout, buf);
@@ -2908,14 +2911,11 @@ int final;
 			you_are(buf, from_what(AIRLESS_ENVIRONMENT));
 	}
 
-	if (Sick) {
-        /* prayer lumps these together; botl puts Ill before FoodPois */
-        if (u.usick_type & SICK_NONVOMITABLE)
-            you_are("terminally sick from illness", "");
-        if (u.usick_type & SICK_VOMITABLE)
-            you_are("terminally sick from food poisoning", "");
-    }
-    if (Vomiting)
+	if (Sick) 
+        you_are("terminally sick from illness", "");
+	if (FoodPoisoned)
+		you_are("terminally sick from food poisoning", "");
+	if (Vomiting)
         you_are("nauseated", "");
     if (Stunned)
         you_are("stunned", "");
@@ -3280,7 +3280,9 @@ int final;
         you_are("immune to sickness", from_what(SICK_RES));
     if (Stone_resistance)
         you_are("petrification resistant", from_what(STONE_RES));
-    if (Halluc_resistance)
+	if (Stun_resistance)
+		you_are("stun resistant", from_what(STUN_RES));
+	if (Halluc_resistance)
         enl_msg(You_, "resist", "resisted", " hallucinations",
                 from_what(HALLUC_RES));
     if (u.uedibility || maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)))

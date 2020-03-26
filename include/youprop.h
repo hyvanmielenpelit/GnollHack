@@ -156,6 +156,7 @@
      && !u.uroleplay.blind && !Blinded && haseyes(youmonst.data))
 
 #define Sick u.uprops[SICK].intrinsic
+#define FoodPoisoned u.uprops[FOOD_POISONED].intrinsic
 #define Stoned u.uprops[STONED].intrinsic
 #define Strangled u.uprops[STRANGLED].intrinsic
 #define Vomiting u.uprops[VOMITING].intrinsic
@@ -186,6 +187,11 @@
 #define HFlash_resistance u.uprops[FLASH_RES].intrinsic
 #define EFlash_resistance u.uprops[FLASH_RES].extrinsic
 #define Flash_resistance (HFlash_resistance || EFlash_resistance)
+
+#define HStun_resistance u.uprops[STUN_RES].intrinsic
+#define EStun_resistance u.uprops[STUN_RES].extrinsic
+#define Stun_resistance (HStun_resistance || EStun_resistance)
+
 
 #define HEnhanced_vision u.uprops[ENHANCED_VISION].intrinsic
 #define EEnhanced_vision u.uprops[ENHANCED_VISION].extrinsic

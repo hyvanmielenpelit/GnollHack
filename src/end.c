@@ -878,9 +878,19 @@ int how;
     }
     /* cure impending doom of sickness hero won't have time to fix */
     if ((Sick & TIMEOUT) == 1L) {
-        make_sick(0L, (char *) 0, FALSE, SICK_ALL);
+        make_sick(0L, (char *) 0, FALSE);
     }
-    nomovemsg = "You survived that attempt on your life.";
+	if ((FoodPoisoned & TIMEOUT) == 1L) {
+		make_food_poisoned(0L, (char*)0, FALSE);
+	}
+	if ((Confusion & TIMEOUT) == 1L) {
+		make_confused(0L, FALSE);
+	}
+	if ((Stunned & TIMEOUT) == 1L) {
+		make_stunned(0L, FALSE);
+	}
+
+	nomovemsg = "You survived that attempt on your life.";
     context.move = 0;
     if (multi > 0)
         multi = 0;

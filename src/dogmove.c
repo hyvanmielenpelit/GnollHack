@@ -566,6 +566,8 @@ boolean verbose;
 	case EDIBLE_CURE_SICKNESS:
 		if (is_sick(mtmp) && !otmp->cursed)
 			set_mon_property_b(mtmp, SICK, 0, TRUE);
+		if (is_food_poisoned(mtmp) && !otmp->cursed)
+			set_mon_property_b(mtmp, FOOD_POISONED, 0, TRUE);
 		if (has_vomiting(mtmp) && !otmp->cursed)
 			set_mon_property_b(mtmp, VOMITING, 0, TRUE);
 		break;

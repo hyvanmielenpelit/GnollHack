@@ -936,7 +936,7 @@ boolean silently;
 		}
 
 		/* Stunned */
-		if (is_stunned(mtmp) && !was_sleeping)
+		if (is_sleeping(mtmp) && !was_sleeping)
 		{
 			pline("%s falls asleep.", Monnam(mtmp));
 		}

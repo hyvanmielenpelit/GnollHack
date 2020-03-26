@@ -1434,6 +1434,24 @@ update_monster_timouts()
 							pline("%s is gasping for air!", Monnam(mtmp));
 						}
 						break;
+					case SICK:
+						if (canseemon(mtmp) && is_living(mtmp->data))
+						{
+							if(has_head(mtmp->data) && !rn2(3))
+								pline("%s coughs%s%s!", Monnam(mtmp),
+									duration >= 10 ? (!rn2(2) ? " roughly" : "") : duration >= 5 ? " feverishly" : " morbidly",
+									!is_tame(mtmp) ? " at your general direction" : "");
+							else if (duration < 9)
+							{
+								pline("%s looks %s!", Monnam(mtmp), duration >= 6 ? "very feverish" : duration >= 4 ? "gravely ill" : "deathly sick");
+							}
+							if (duration <= 8)
+								nonadditive_increase_mon_property_verbosely(mtmp, CONFUSION, duration + 1);
+							if (duration <= 4)
+								nonadditive_increase_mon_property_verbosely(mtmp, STUNNED, duration + 1);
+
+						}
+						break;
 					}
 
 				}
@@ -1445,6 +1463,7 @@ update_monster_timouts()
 					case STONED:
 					case SLIMED:
 					case SICK:
+					case FOOD_POISONED:
 					case STRANGLED:
 					case AIRLESS_ENVIRONMENT:
 					case LAUGHING:
@@ -1500,6 +1519,21 @@ update_monster_timouts()
 							if (canseemon(mtmp))
 							{
 								pline("%s dies of %s terminal illness!", Monnam(mtmp), mhis(mtmp));
+							}
+							mtmp->mhp = 0;
+							mondied(mtmp);
+							if (mtmp == u.ustuck)
+								u.ustuck = 0;
+							if (is_tame(mtmp) && !canspotmon(mtmp))
+								You("have a peculiarly sad feeling for a moment, then it passes.");
+						}
+						break;
+					case FOOD_POISONED:
+						if (!resists_sickness(mtmp))
+						{
+							if (canseemon(mtmp))
+							{
+								pline("%s dies of %s food poisoning!", Monnam(mtmp), mhis(mtmp));
 							}
 							mtmp->mhp = 0;
 							mondied(mtmp);

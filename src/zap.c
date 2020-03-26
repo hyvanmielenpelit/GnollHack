@@ -705,18 +705,26 @@ struct obj *otmp;
 		boolean had_sick = !!mtmp->mprops[SICK];
 		mtmp->mprops[SICK] &= ~(M_INTRINSIC_ACQUIRED | M_TIMEOUT);
 
+		boolean was_food_poisoned = is_food_poisoned(mtmp);
+		boolean had_food_poisoned = !!mtmp->mprops[FOOD_POISONED];
+		mtmp->mprops[FOOD_POISONED] &= ~(M_INTRINSIC_ACQUIRED | M_TIMEOUT);
+
 		boolean was_turning_into_slime = is_turning_into_slime(mtmp);
 		boolean had_slimed = !!mtmp->mprops[SLIMED];
 		mtmp->mprops[SLIMED] &= ~(M_INTRINSIC_ACQUIRED | M_TIMEOUT);
 
-		if (!is_sick(mtmp) && !is_turning_into_slime(mtmp) && (was_sick || was_turning_into_slime))
+		if (!is_sick(mtmp) && !is_food_poisoned(mtmp) && !is_turning_into_slime(mtmp) && (was_sick || was_food_poisoned || was_turning_into_slime))
 			pline("%s looks much better!", Monnam(mtmp));
-		else if (!is_sick(mtmp) && was_sick)
+		else if (!is_sick(mtmp) && was_sick && is_food_poisoned(mtmp) && was_food_poisoned)
+			pline("%s is no longer terminally ill but is still food poisoned!", Monnam(mtmp));
+		else if (!is_sick(mtmp) && was_sick && is_turning_into_slime(mtmp) && was_turning_into_slime)
 			pline("%s is no longer terminally ill but is still turning into slime!", Monnam(mtmp));
-		else if (!is_turning_into_slime(mtmp) && was_turning_into_slime)
+		else if (!is_turning_into_slime(mtmp) && was_turning_into_slime && (is_sick(mtmp) || is_food_poisoned(mtmp)))
 			pline("%s is no longer turning into slime but is still terminally ill!", Monnam(mtmp));
 		else if (!mtmp->mprops[SICK] && had_sick)
 			pline("%s is cured of its terminal illness!", Monnam(mtmp));
+		else if (!mtmp->mprops[FOOD_POISONED] && had_food_poisoned)
+			pline("%s is cured of its food poisoning!", Monnam(mtmp));
 		else if (!mtmp->mprops[SLIMED] && had_slimed)
 			pline("%s is cured of its sliming!", Monnam(mtmp));
 		else
@@ -4929,7 +4937,7 @@ boolean ordinary;
 		healup(0, 0, FALSE, TRUE, FALSE, FALSE, FALSE);
 		break;
 	case SPE_CURE_SICKNESS:
-		if (Sick)
+		if (Sick || FoodPoisoned)
 			You("are no longer ill.");
 		if (Slimed)
 			make_slimed(0L, "The slime disappears!");

@@ -1037,7 +1037,7 @@ struct permonst *mdat;
     } else
 	{
         make_sick(Sick ? Sick / 3L + 1L : (long) rn1(ACURR(A_CON), 20),
-                  mdat->mname, TRUE, SICK_NONVOMITABLE);
+                  mdat->mname, TRUE);
         return TRUE;
     }
 }
@@ -2338,8 +2338,10 @@ register struct obj* omonwep;
             if (!rn2(3))
                 exercise(A_CON, TRUE);
             if (Sick)
-                make_sick(0L, (char *) 0, FALSE, SICK_ALL);
-            context.botl = 1;
+                make_sick(0L, (char *) 0, FALSE);
+			if (FoodPoisoned)
+				make_food_poisoned(0L, (char*)0, FALSE);
+			context.botl = 1;
 
             if (goaway)
 			{
@@ -2391,7 +2393,7 @@ register struct obj* omonwep;
         }
         break;
     case AD_STUN:
-		if (uncancelled && !rn2(4)) 
+		if (uncancelled && !Stun_resistance && !rn2(4)) 
 		{
 			damage /= 2;
 			damagedealt = (int)damage + ((damage - (double)((int)damage) - ((double)(Upolyd ? u.mh_fraction : u.uhp_fraction) / 10000)) > 0 ? 1 : 0);
@@ -3328,31 +3330,47 @@ struct attack *mattk;
         break;
     case AD_STUN:
         if (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my) && !is_blinded(mtmp)
-            && !mtmp->mspec_used && rn2(5)) {
-            if (cancelled) {
+            && !mtmp->mspec_used && rn2(5)) 
+		{
+            if (cancelled) 
+			{
                 react = 1; /* "stunned" */
                 already = (is_stunned(mtmp) != 0);
-            } else {
-                int stun = d(2, 6);
+            } 
+			else
+			{
+				pline("%s stares piercingly at you!", Monnam(mtmp));
+				if (!Stun_resistance)
+				{
+					int stun = d(2, 6);
 
-                mtmp->mspec_used = mtmp->mspec_used + (stun + rn2(6));
-                pline("%s stares piercingly at you!", Monnam(mtmp));
-                make_stunned((HStun & TIMEOUT) + (long) stun, TRUE);
-                stop_occupation();
+					mtmp->mspec_used = mtmp->mspec_used + (stun + rn2(6));
+					make_stunned((HStun & TIMEOUT) + (long)stun, TRUE);
+					stop_occupation();
+				}
+				else
+				{
+					You("resist!");
+					shieldeff(u.ux, u.uy);
+				}
             }
         }
         break;
     case AD_BLND:
         if (canseemon(mtmp) && !resists_blnd(&youmonst) && !Flash_resistance
-            && distu(mtmp->mx, mtmp->my) <= BOLT_LIM * BOLT_LIM) {
-            if (cancelled) {
+            && distu(mtmp->mx, mtmp->my) <= BOLT_LIM * BOLT_LIM) 
+		{
+            if (cancelled) 
+			{
                 react = rn1(2, 2); /* "puzzled" || "dazzled" */
                 already = (mtmp->mprops[BLINDED] != 0);
                 /* Archons gaze every round; we don't want cancelled ones
                    giving the "seems puzzled/dazzled" message that often */
                 if (is_cancelled(mtmp) && mtmp->data == &mons[PM_ARCHON] && rn2(5))
                     react = -1;
-            } else {
+            }
+			else 
+			{
 				int blnd = 0;
 				if(mattk->damn > 0 && mattk->damd > 0)
 					blnd += d((int)mattk->damn, (int)mattk->damd);
@@ -3364,10 +3382,13 @@ struct attack *mattk;
                 /* not blind at this point implies you're wearing
                    the Eyes of the Overworld; make them block this
                    particular stun attack too */
-                if (!Blind) {
+                if (!Blind) 
+				{
 					pline("But you can still see!");
                     //Your1(vision_clears);
-                } else {
+                } 
+				else 
+				{
                     long oldstun = (HStun & TIMEOUT), newstun = (long) rnd(3);
 
                     /* we don't want to increment stun duration every time

@@ -1106,16 +1106,17 @@ ustatusline()
 		Sprintf(eos(info), "  %d(%d) heads", youmonst.heads_left, youmonst.data->heads);
 	}
 
-    if (Sick) {
+    if (Sick || FoodPoisoned) {
         Strcat(info, ", dying from");
-        if (u.usick_type & SICK_VOMITABLE)
+        if (FoodPoisoned)
             Strcat(info, " food poisoning");
-        if (u.usick_type & SICK_NONVOMITABLE) {
-            if (u.usick_type & SICK_VOMITABLE)
+        if (Sick) {
+            if (FoodPoisoned)
                 Strcat(info, " and");
             Strcat(info, " illness");
         }
     }
+
     if (Stoned)
         Strcat(info, ", solidifying");
     if (Slimed)

@@ -18,6 +18,8 @@ STATIC_DCL void NDECL(get_odd_idea);
 STATIC_DCL void FDECL(see_lamp_flicker, (struct obj *, const char *));
 STATIC_DCL void FDECL(lantern_message, (struct obj *));
 STATIC_DCL void FDECL(cleanup_burn, (ANY_P *, long));
+STATIC_DCL void NDECL(sick_dialogue);
+STATIC_DCL void NDECL(food_poisoned_dialogue);
 
 
 /* used by wizard mode #timeout and #wizintrinsic; order by 'interest'
@@ -156,9 +158,114 @@ const struct propname {
 	{ BLINDFOLDED, "blindfolded", "blindness due to a blindfold" },
 	{ TITAN_STRENGTH, "strong as a titan", "titan strength" },
 	{ MAGIC_MISSILE_RES, "resistant to magic missiles", "magic missile resistance" },
+	{ STUN_RES, "stun resistant", "stun resistance" },
+	{ FOOD_POISONED, "fatally food poisoned", "fatal food poisoning" },
 	{ LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
 	{  0, 0 },
 };
+
+
+static boolean alternate_sick_text = FALSE;
+
+static NEARDATA const char* const sick_texts[] = {
+	"You are starting to feel badly feverish.",        /* 8 */
+	"Your fever is rising very high.",    /* 7 */
+	"You are feeling extremely feverish.",          /* 6 */
+	"Your condition is starting to deteriorate badly.",       /* 5 */
+	"You feel your condition is becoming critical.",      /* 4 */
+	"You are feeling really deathly sick.", /* 3 */
+	"You feel you are at death's door.",        /* 2 */
+	"The sickness is fatal."			/* 1 */
+};
+
+STATIC_OVL void
+sick_dialogue()
+{
+	if (!is_living(youmonst.data))
+		return;
+
+	register long i = (Sick & TIMEOUT);
+
+	if (i > 0L && i <= SIZE(sick_texts)) {
+		char buf[BUFSZ];
+
+		Strcpy(buf, sick_texts[SIZE(sick_texts) - i]);
+		pline1(buf);
+	}
+	else if (has_head(youmonst.data) && !rn2(3))
+	{
+		if(!rn2(2))
+			You("cough%s.", (alternate_sick_text ? " roughly" : ""));
+		else
+			You("have a %sbout of coughing.", (alternate_sick_text ? "severe " : "terrible "));
+
+		alternate_sick_text = !alternate_sick_text;
+		if (multi > 0)
+			nomul(0);
+	}
+
+	if (i <= 8)
+	{
+		set_itimeout(&HConfusion, max((HConfusion & TIMEOUT), i + 1));
+	}
+
+	if (i <= 4)
+	{
+		set_itimeout(&HStun, max((HStun & TIMEOUT), i + 1));
+	}
+
+}
+
+
+static NEARDATA const char* const food_poisoned_texts[] = {
+	"You are feeling very feverish.",        /* 8 */
+	"Your stomach is hurting terribly.",    /* 7 */
+	"You are feeling extremely feverish.",          /* 6 */
+	"You are experiencing massive stomach pains.",       /* 5 */
+	"You feel your condition is becoming critical.",      /* 4 */
+	"You are feeling really deathly sick.", /* 3 */
+	"You feel you are at death's door.",        /* 2 */
+	"The food poisoning is fatal."			/* 1 */
+};
+
+STATIC_OVL void
+food_poisoned_dialogue()
+{
+	if (!is_living(youmonst.data))
+		return;
+
+	register long i = (FoodPoisoned & TIMEOUT);
+
+	if (i > 0L && i <= SIZE(food_poisoned_texts)) {
+		char buf[BUFSZ];
+
+		Strcpy(buf, food_poisoned_texts[SIZE(food_poisoned_texts) - i]);
+		pline1(buf);
+	}
+	else if (!rn2(3))
+	{
+		if (!rn2(2))
+			Your("stomach hurts%s.", (alternate_sick_text ? " badly" : ""));
+		else
+			You("experience a %sbout of stomach cramps.", (alternate_sick_text ? "severe " : "terrible "));
+
+		alternate_sick_text = !alternate_sick_text;
+
+		if (multi > 0)
+			nomul(0);
+	}
+
+	if (i <= 8)
+	{
+		set_itimeout(&HConfusion, max((HConfusion & TIMEOUT), i + 1));
+	}
+
+	if (i <= 4)
+	{
+		set_itimeout(&HStun, max((HStun & TIMEOUT), i + 1));
+	}
+
+}
 
 
 /* He is being petrified - dialogue by inmet!tower */
@@ -548,7 +655,11 @@ nh_timeout()
         vomiting_dialogue();
     if (Strangled)
         choke_dialogue();
-    if (HLevitation & TIMEOUT)
+	if (Sick)
+		sick_dialogue();
+	if (FoodPoisoned)
+		food_poisoned_dialogue();
+	if (HLevitation & TIMEOUT)
         levitation_dialogue();
     if (HPasses_walls & TIMEOUT)
         phaze_dialogue();
@@ -623,27 +734,33 @@ nh_timeout()
 				make_vomiting(0L, TRUE);
 				break;
 			case SICK:
+			case FOOD_POISONED:
 				You("die from your illness.");
-				if (kptr && kptr->name[0]) {
+				
+				if (kptr && kptr->name[0]) 
+				{
 					killer.format = kptr->format;
 					Strcpy(killer.name, kptr->name);
 				}
-				else {
+				else 
+				{
 					killer.format = KILLED_BY_AN;
 					killer.name[0] = 0; /* take the default */
 				}
 				dealloc_killer(kptr);
 
-				if ((m_idx = name_to_mon(killer.name)) >= LOW_PM) {
-					if (type_is_pname(&mons[m_idx])) {
+				if ((m_idx = name_to_mon(killer.name)) >= LOW_PM) 
+				{
+					if (type_is_pname(&mons[m_idx])) 
+					{
 						killer.format = KILLED_BY;
 					}
-					else if (mons[m_idx].geno & G_UNIQ) {
+					else if (mons[m_idx].geno & G_UNIQ) 
+					{
 						Strcpy(killer.name, the(killer.name));
 						killer.format = KILLED_BY;
 					}
 				}
-				u.usick_type = 0;
 				done(POISONING);
 				break;
 			case FAST:

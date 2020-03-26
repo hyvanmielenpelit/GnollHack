@@ -76,11 +76,12 @@
 #define MR_FEAR			0x00800000UL			/* immune to fear */
 #define MR_SICK			0x01000000UL			/* immune to sickness */
 #define MR_FREE_ACTION	0x02000000UL			/* immune to paralysis */
-#define MR_LEVITATION_CONTROL	0x04000000UL		
-#define MR_VULNERABLITY_FIRE	0x08000000UL		
-#define MR_VULNERABLITY_COLD	0x10000000UL		
-#define MR_VULNERABLITY_ELEC	0x20000000UL		
-#define MR_VULNERABLITY_MAGM	0x40000000UL		
+#define MR_STUN			0x04000000UL			/* immune to stun */
+#define MR_LEVITATION_CONTROL	0x08000000UL		
+#define MR_VULNERABLITY_FIRE	0x10000000UL		
+#define MR_VULNERABLITY_COLD	0x20000000UL		
+#define MR_VULNERABLITY_ELEC	0x40000000UL		
+#define MR_VULNERABLITY_MAGM	0x80000000UL		
 
 
 /* conveyances: resistances, teleport, teleport control, telepathy, as well as other properties from eating the corpse */

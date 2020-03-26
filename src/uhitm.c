@@ -2454,10 +2454,13 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 
     switch (mattk->adtyp) {
     case AD_STUN:
-        if (!Blind)
-            pline("%s %s for a moment.", Monnam(mdef),
-                  makeplural(stagger(pd, "stagger")));
-		nonadditive_increase_mon_property(mdef, STUNNED, 5 + rnd(5));
+		if (!resists_stun(mdef))
+		{
+			if (!Blind)
+				pline("%s %s for a moment.", Monnam(mdef), makeplural(stagger(pd, "stagger")));
+
+			nonadditive_increase_mon_property(mdef, STUNNED, 5 + rnd(5));
+		}
 		goto physical;
     case AD_LEGS:
 #if 0
@@ -3892,7 +3895,7 @@ boolean wep_was_destroyed;
             }
             break;
         case AD_STUN: /* specifically yellow mold */
-            if (!Stunned)
+            if (!Stunned && !Stun_resistance)
                 make_stunned((long)basedmg, TRUE);
             break;
         case AD_FIRE:

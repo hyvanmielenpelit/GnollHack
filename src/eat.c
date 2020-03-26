@@ -1914,10 +1914,10 @@ struct obj *otmp;
 
             sick_time = (long) rn1(10, 10);
             /* make sure new ill doesn't result in improvement */
-            if (Sick && (sick_time > Sick))
-                sick_time = (Sick > 1L) ? Sick - 1L : 1L;
-            make_sick(sick_time, corpse_xname(otmp, "rotted", CXN_NORMAL),
-                      TRUE, SICK_VOMITABLE);
+            if (FoodPoisoned && (sick_time > Sick))
+                sick_time = (FoodPoisoned > 1L) ? FoodPoisoned - 1L : 1L;
+            make_food_poisoned(sick_time, corpse_xname(otmp, "rotted", CXN_NORMAL),
+                      TRUE);
 
             pline("(It must have died too long ago to be safe to eat.)");
         }
@@ -1943,7 +1943,7 @@ struct obj *otmp;
     /* now any corpse left too long will make you mildly ill */
     } else if ((rotted > 5L || (rotted > 3L && rn2(5))) && !Sick_resistance) {
 		tp++;
-        You_feel("%ssick.", (Sick) ? "very " : "");
+        You_feel("%ssick.", (FoodPoisoned) ? "very " : "");
         losehp(adjust_damage(rnd(8), (struct monst*)0, &youmonst, AD_DISE, FALSE), !glob ? "cadaver" : "rotted glob", KILLED_BY_AN);
     }
 
@@ -2650,8 +2650,10 @@ struct obj *otmp;
         break;
     case EDIBLE_CURE_SICKNESS:
         if (Sick && !otmp->cursed)
-            make_sick(0L, (char *) 0, TRUE, SICK_ALL);
-        if (Vomiting && !otmp->cursed)
+            make_sick(0L, (char *) 0, TRUE);
+		if (FoodPoisoned && !otmp->cursed)
+			make_food_poisoned(0L, (char*)0, TRUE);
+		if (Vomiting && !otmp->cursed)
             make_vomiting(0L, TRUE);
         break;
     case EDIBLE_APPLE:
@@ -3092,10 +3094,9 @@ doeat()
 
 				sick_time = (long)rn1(10, 10);
 				/* make sure new ill doesn't result in improvement */
-				if (Sick && (sick_time > Sick))
-					sick_time = (Sick > 1L) ? Sick - 1L : 1L;
-				make_sick(sick_time, doname(otmp),
-					TRUE, SICK_VOMITABLE);
+				if (FoodPoisoned && (sick_time > FoodPoisoned))
+					sick_time = (FoodPoisoned > 1L) ? FoodPoisoned - 1L : 1L;
+				make_food_poisoned(sick_time, doname(otmp), TRUE);
 			}
 			if (carried(otmp))
 				useup(otmp);
@@ -3133,7 +3134,7 @@ doeat()
 		}
 		else if (objects[otmp->otyp].oc_edible_subtype == EDIBLE_SICKENING && !Sick_resistance)
 		{
-			You_feel("%ssick.", (Sick) ? "very " : "");
+			You_feel("%ssick.", (FoodPoisoned) ? "very " : "");
 			losehp(adjust_damage(rnd(8), (struct monst*)0, &youmonst, AD_DISE, FALSE), "sickening food", KILLED_BY_AN);
 			consume_oeaten(otmp, 2); /* oeaten >>= 2 */
 		}
@@ -3673,13 +3674,17 @@ skipfloor:
 void
 vomit() /* A good idea from David Neves */
 {
-    if (cantvomit(youmonst.data)) {
+    if (cantvomit(youmonst.data)) 
+	{
         /* doesn't cure food poisoning; message assumes that we aren't
            dealing with some esoteric body_part() */
         Your("jaw gapes convulsively.");
-    } else {
-        if (Sick && (u.usick_type & SICK_VOMITABLE) != 0)
-            make_sick(0L, (char *) 0, TRUE, SICK_VOMITABLE);
+    }
+	else 
+	{
+        if (FoodPoisoned)
+            make_food_poisoned(0L, (char *) 0, TRUE);
+
         /* if not enough in stomach to actually vomit then dry heave;
            vomiting_dialog() gives a vomit message when its countdown
            reaches 0, but only if u.uhs < FAINTING (and !cantvomit()) */
@@ -3690,7 +3695,8 @@ vomit() /* A good idea from David Neves */
     /* nomul()/You_can_move_again used to be unconditional, which was
        viable while eating but not for Vomiting countdown where hero might
        be immobilized for some other reason at the time vomit() is called */
-    if (multi >= -2) {
+    if (multi >= -2) 
+	{
         nomul(-2);
         multi_reason = "vomiting";
         nomovemsg = You_can_move_again;
@@ -3822,7 +3828,8 @@ int threat;
     /* no tins can cure these (yet?) */
     case SLIMED:
     case SICK:
-    case VOMITING:
+	case FOOD_POISONED:
+	case VOMITING:
         break;
     default:
         break;

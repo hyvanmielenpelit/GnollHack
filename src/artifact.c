@@ -841,8 +841,9 @@ struct monst *mtmp;
 		case AD_WERE:
 			return !(yours ? Lycanthropy_resistance : resists_lycanthropy(mtmp));
 		case AD_MAGM:
-        case AD_STUN:
-            return !check_magic_resistance_and_inflict_damage(mtmp, (struct obj*)0, FALSE, 0, 0, NOTELL);
+			return !check_magic_resistance_and_inflict_damage(mtmp, (struct obj*)0, FALSE, 0, 0, NOTELL);
+		case AD_STUN:
+            return !(yours ? Stun_resistance : resists_stun(mtmp));
         case AD_DRST:
             return !(yours ? Poison_resistance : resists_poison(mtmp));
         case AD_DRLI:
@@ -895,7 +896,7 @@ int dmgtype;
 	case AD_WERE:
 		return (yours ? Lycanthropy_resistance : resists_lycanthropy(mtmp));
 	case AD_STUN:
-		return (yours ? Antimagic : resists_magic(mtmp));
+		return (yours ? Stun_resistance : resists_stun(mtmp));
 	case AD_DRLI:
 		return (yours ? Drain_resistance : resists_drli(mtmp));
 	case AD_STON:
@@ -1103,7 +1104,7 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
        in that case it will only happen if the other effect fails;
        extra damage will apply regardless; 3.4.1: sometimes might
        just probe even when it hasn't been enchanted */
-    do_stun = (max(mb->enchantment, 0) < rn2(spec_dbon_applies ? 11 : 7));
+    do_stun = !Stun_resistance && (max(mb->enchantment, 0) < rn2(spec_dbon_applies ? 11 : 7));
 
     /* the special effects also boost physical damage; increments are
        generally cumulative, but since the stun effect is based on a
@@ -1200,7 +1201,7 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
         break;
 
     case MB_INDEX_STUN:
-        do_stun = TRUE; /* (this is redundant...) */
+        do_stun = !Stun_resistance; /* (this is redundant...) */
         break;
 
     case MB_INDEX_PROBE:
@@ -2396,7 +2397,7 @@ struct obj *obj;
 
             if (Upolyd)
                 healamt = (u.mhmax + 1 - u.mh) / 2;
-            if (healamt || Sick || Slimed || Blinded > creamed)
+            if (healamt || Sick || FoodPoisoned || Slimed || Blinded > creamed)
                 You_feel("better.");
             else
                 goto nothing_special;
@@ -2407,8 +2408,10 @@ struct obj *obj;
                     u.uhp += healamt;
             }
             if (Sick)
-                make_sick(0L, (char *) 0, FALSE, SICK_ALL);
-            if (Slimed)
+                make_sick(0L, (char *) 0, FALSE);
+			if (FoodPoisoned)
+				make_food_poisoned(0L, (char*)0, FALSE);
+			if (Slimed)
                 make_slimed(0L, (char *) 0);
             if (Blinded > creamed)
                 make_blinded(creamed, FALSE);
@@ -2827,6 +2830,7 @@ struct abil2adtyp_tag {
 	{ DRAIN_RES, AD_DRLI },
 	{ FLASH_RES, AD_BLND },
 	{ STONE_RES, AD_STON },
+	{ STUN_RES, AD_STUN },
 };
 
 uchar

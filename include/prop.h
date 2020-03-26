@@ -150,7 +150,9 @@ enum prop_types {
 	BLINDFOLDED       = 126,
 	TITAN_STRENGTH    = 127,
 	MAGIC_MISSILE_RES = 128,
-	LAUGHING		  = 129 //KEEP THIS LAST
+	STUN_RES          = 129,
+    FOOD_POISONED     = 130,
+	LAUGHING		  = 131 //KEEP THIS LAST
 };
 #define LAST_PROP (LAUGHING)
 

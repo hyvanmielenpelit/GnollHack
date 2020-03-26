@@ -379,8 +379,10 @@ newman()
 
     u.uhunger = rn1(500, 500);
     if (Sick)
-        make_sick(0L, (char *) 0, FALSE, SICK_ALL);
-    if (Stoned)
+        make_sick(0L, (char *) 0, FALSE);
+	if (FoodPoisoned)
+		make_food_poisoned(0L, (char*)0, FALSE);
+	if (Stoned)
         make_stoned(0L, (char *) 0, 0, (char *) 0);
     if (u.uhp <= 0) {
         if (Polymorph_control) { /* even when Stunned || Unaware */
@@ -780,9 +782,12 @@ int mntmp;
         make_stoned(0L, "You no longer seem to be petrifying.", 0,
                     (char *) 0);
     }
-    if (Sick_resistance && Sick) {
-        make_sick(0L, (char *) 0, FALSE, SICK_ALL);
-        You("no longer feel sick.");
+    if (Sick_resistance && (Sick || FoodPoisoned)) {
+		if(Sick)
+	        make_sick(0L, (char *) 0, FALSE);
+		if (FoodPoisoned)
+			make_food_poisoned(0L, (char*)0, FALSE);
+		You("no longer feel sick.");
     }
     if (Slimed) {
         if (flaming(youmonst.data)) {

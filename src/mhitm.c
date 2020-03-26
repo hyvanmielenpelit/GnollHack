@@ -1062,7 +1062,7 @@ register struct obj* omonwep;
 		// mdef->mhp;
         break;
     case AD_STUN:
-        if (is_cancelled(magr))
+        if (is_cancelled(magr) || resists_stun(mdef))
             break;
         if (canseemon(mdef))
             pline("%s %s for a moment.", Monnam(mdef),
@@ -2032,7 +2032,7 @@ int mdead;
                 (void) split_mon(mdef, magr);
             break;
         case AD_STUN:
-            if (!is_stunned(magr)) {
+            if (!is_stunned(magr) || !resists_stun(magr)) {
 				nonadditive_increase_mon_property(magr, STUNNED, 5 + rnd(5));
 				if (canseemon(magr))
                     pline("%s %s...", Monnam(magr),

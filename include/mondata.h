@@ -358,6 +358,12 @@
 #define is_sick(mon) \
 	(has_sick(mon) && !has_sickness_resistance(mon) && !is_undead((mon)->data) && !is_demon((mon)->data) && !is_vampshifter(mon))
 
+#define has_food_poisoned(mon) \
+	has_property(mon, FOOD_POISONED)
+
+#define is_food_poisoned(mon) \
+	(has_food_poisoned(mon) && !has_sickness_resistance(mon) && !is_undead((mon)->data) && !is_demon((mon)->data) && !is_vampshifter(mon))
+
 #define has_vomiting(mon) \
 	has_property(mon, VOMITING)
 
@@ -527,6 +533,8 @@
     (has_innate((mon)->data, MR_SICK) || has_property(mon, SICK_RES) ||  is_not_living((mon)->data) || is_demon((mon)->data) || is_vampshifter(mon) )
 #define resists_paralysis(mon) \
     (has_innate((mon)->data, MR_FREE_ACTION) || has_property(mon, FREE_ACTION) ||  is_not_living((mon)->data) || is_vampshifter(mon))
+#define resists_stun(mon) \
+    (has_innate((mon)->data, MR_STUN) || has_property(mon, STUN_RES) ||  mindless((mon)->data) || is_not_living((mon)->data) || is_vampshifter(mon))
 
 
 /* Conveyed propreties */

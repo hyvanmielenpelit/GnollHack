@@ -106,15 +106,15 @@ boolean talk;
     set_itimeout(&HStun, xtime);
 }
 
+
 /* Sick is overloaded with both fatal illness and food poisoning (via
    u.usick_type bit mask), but delayed killer can only support one or
    the other at a time.  They should become separate intrinsics.... */
 void
-make_sick(xtime, cause, talk, type)
+make_sick(xtime, cause, talk)
 long xtime;
 const char *cause; /* sickness cause */
 boolean talk;
-int type;
 {
     struct kinfo *kptr;
     long old = Sick;
@@ -123,50 +123,130 @@ int type;
     if (Unaware)
         talk = FALSE;
 #endif
-    if (xtime > 0L) {
+
+    if (xtime > 0L) 
+	{
         if (Sick_resistance)
             return;
-        if (!old) {
+    
+		if (!old) 
+		{
             /* newly sick */
             You_feel("deathly sick.");
-        } else {
+        }
+		else
+		{
             /* already sick */
             if (talk)
                 You_feel("%s worse.", xtime <= Sick / 2L ? "much" : "even");
         }
         set_itimeout(&Sick, xtime);
-        u.usick_type |= type;
         context.botl = TRUE;
-    } else if (old && (type & u.usick_type)) {
+    }
+	else if (old)
+	{
         /* was sick, now not */
-        u.usick_type &= ~type;
-        if (u.usick_type) { /* only partly cured */
-            if (talk)
-                You_feel("somewhat better.");
-            set_itimeout(&Sick, Sick * 2); /* approximation */
-        } else {
-            if (talk)
-                You_feel("cured.  What a relief!");
-            Sick = 0L; /* set_itimeout(&Sick, 0L) */
-        }
-        context.botl = TRUE;
+		if (talk)
+		{
+			if (FoodPoisoned)
+				You_feel("somewhat better.");
+			else
+				You_feel("cured.  What a relief!");
+		}
+		Sick = 0L; /* set_itimeout(&Sick, 0L) */
+		context.botl = TRUE;
     }
 
     kptr = find_delayed_killer(SICK);
-    if (Sick) {
+    if (Sick)
+	{
         exercise(A_CON, FALSE);
         /* setting delayed_killer used to be unconditional, but that's
            not right when make_sick(0) is called to cure food poisoning
            if hero was also fatally ill; this is only approximate */
-        if (xtime || !old || !kptr) {
+        if (xtime || !old || !kptr) 
+		{
             int kpfx = ((cause && !strcmp(cause, "#wizintrinsic"))
                         ? KILLED_BY : KILLED_BY_AN);
 
             delayed_killer(SICK, kpfx, cause);
         }
-    } else
+    } 
+	else
         dealloc_killer(kptr);
 }
+
+
+/* Sick is overloaded with both fatal illness and food poisoning (via
+   u.usick_type bit mask), but delayed killer can only support one or
+   the other at a time.  They should become separate intrinsics.... */
+void
+make_food_poisoned(xtime, cause, talk)
+long xtime;
+const char* cause; /* sickness cause */
+boolean talk;
+{
+	struct kinfo* kptr;
+	long old = FoodPoisoned;
+
+#if 0   /* tell player even if hero is unconscious */
+	if (Unaware)
+		talk = FALSE;
+#endif
+
+	if (xtime > 0L)
+	{
+		if (Sick_resistance)
+			return;
+
+		if (!old)
+		{
+			/* newly sick */
+			You_feel("terminally ill from food poisoning.");
+		}
+		else
+		{
+			/* already sick */
+			if (talk)
+				You_feel("%s worse.", xtime <= FoodPoisoned / 2L ? "much" : "even");
+		}
+		set_itimeout(&FoodPoisoned, xtime);
+		context.botl = TRUE;
+	}
+	else if (old)
+	{
+		/* was sick, now not */
+		if (talk)
+		{
+			if (Sick)
+				You_feel("somewhat better.");
+			else
+				You_feel("cured.  What a relief!");
+		}
+		FoodPoisoned = 0L;
+		context.botl = TRUE;
+	}
+
+	kptr = find_delayed_killer(FOOD_POISONED);
+	if (FoodPoisoned)
+	{
+		exercise(A_CON, FALSE);
+		/* setting delayed_killer used to be unconditional, but that's
+		   not right when make_sick(0) is called to cure food poisoning
+		   if hero was also fatally ill; this is only approximate */
+		if (xtime || !old || !kptr)
+		{
+			int kpfx = ((cause && !strcmp(cause, "#wizintrinsic"))
+				? KILLED_BY : KILLED_BY_AN);
+
+			delayed_killer(FOOD_POISONED, kpfx, cause);
+		}
+	}
+	else
+		dealloc_killer(kptr);
+}
+
+
 
 void
 make_slimed(xtime, msg)
@@ -706,8 +786,9 @@ register struct obj *otmp;
         } else {
             if (otmp->blessed) {
                 You_feel("full of awe.");
-                make_sick(0L, (char *) 0, TRUE, SICK_ALL);
-                exercise(A_WIS, TRUE);
+                make_sick(0L, (char *) 0, TRUE);
+				make_food_poisoned(0L, (char*)0, TRUE);
+				exercise(A_WIS, TRUE);
                 exercise(A_CON, TRUE);
                 if (u.ulycn >= LOW_PM)
                     you_unwere(TRUE); /* "Purified" */
@@ -948,8 +1029,8 @@ register struct obj *otmp;
                         (otmp->fromsink) ? "contaminated tap water"
                                          : "contaminated potion");
 
-				make_sick(Sick ? Sick / 3L + 1L : (long)rn1(ACURR(max(2, A_CON)), 20),
-					contaminant, TRUE, SICK_VOMITABLE);
+				make_food_poisoned(FoodPoisoned ? FoodPoisoned / 3L + 1L : (long)rn1(ACURR(max(2, A_CON)), 20),
+					contaminant, TRUE);
 
 				exercise(A_CON, FALSE);
             }
@@ -1334,8 +1415,9 @@ register boolean curesick, cureblind, curehallucination, curestun, cureconfusion
     if (curesick)
 	{
         make_vomiting(0L, TRUE);
-        make_sick(0L, (char *) 0, TRUE, SICK_ALL);
-    }
+        make_sick(0L, (char *) 0, TRUE);
+		make_food_poisoned(0L, (char*)0, TRUE);
+	}
 
 	if (curehallucination) 
 	{
@@ -1637,8 +1719,8 @@ int how;
 
 			if (!check_ability_resistance_success(mon, A_CON, objects[obj->otyp].oc_mc_adjustment))
 			{
-				set_mon_property_verbosely(mon, SICK,
-					is_sick(mon) ? max(1, (get_mon_property(mon, SICK) + 1) / 3) : rn1(M_ACURR(mon, A_CON), 20));
+				set_mon_property_verbosely(mon, FOOD_POISONED,
+					is_food_poisoned(mon) ? max(1, (get_mon_property(mon, FOOD_POISONED) + 1) / 3) : rn1(M_ACURR(mon, A_CON), 20));
 			}
 			else
 			{

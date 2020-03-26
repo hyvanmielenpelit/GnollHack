@@ -962,7 +962,9 @@ struct obj *obj;
                 You(look_str, hcolor((char *) 0));
             else if (Sick)
                 You(look_str, "peaked");
-            else if (u.uhs >= WEAK)
+			else if (FoodPoisoned)
+				You(look_str, "ill");
+			else if (u.uhs >= WEAK)
                 You(look_str, "undernourished");
             else
                 You("look as %s as ever.", uvisage);
@@ -2243,7 +2245,7 @@ struct obj *obj;
         case 0:
             make_sick((Sick & TIMEOUT) ? (Sick & TIMEOUT) / 3L + 1L
                                        : (long) rn1(ACURR(A_CON), 20),
-                      xname(obj), TRUE, SICK_NONVOMITABLE);
+                      xname(obj), TRUE);
             break;
         case 1:
             make_blinded((Blinded & TIMEOUT) + lcount, TRUE);
@@ -2287,7 +2289,9 @@ struct obj *obj;
     /* collect property troubles */
     if (TimedTrouble(Sick))
         prop_trouble(SICK);
-    if (TimedTrouble(Blinded) > (long) u.ucreamed
+	if (TimedTrouble(FoodPoisoned))
+		prop_trouble(FOOD_POISONED);
+	if (TimedTrouble(Blinded) > (long) u.ucreamed
         && !(u.uswallow
              && attacktype_fordmg(u.ustuck->data, AT_ENGL, AD_BLND)))
         prop_trouble(BLINDED);
@@ -2362,10 +2366,14 @@ struct obj *obj;
 
         switch (idx) {
         case prop2trbl(SICK):
-            make_sick(0L, (char *) 0, TRUE, SICK_ALL);
+            make_sick(0L, (char *) 0, TRUE);
             did_prop++;
             break;
-        case prop2trbl(BLINDED):
+		case prop2trbl(FOOD_POISONED):
+			make_food_poisoned(0L, (char*)0, TRUE);
+			did_prop++;
+			break;
+		case prop2trbl(BLINDED):
             make_blinded((long) u.ucreamed, TRUE);
             did_prop++;
             break;
@@ -4790,7 +4798,9 @@ boolean is_horn;
         unfixable_trbl++;
     if (!is_horn || (Sick & ~TIMEOUT))
         unfixable_trbl++;
-    if (!is_horn || (HHallucination & ~TIMEOUT))
+	if (!is_horn || (FoodPoisoned & ~TIMEOUT))
+		unfixable_trbl++;
+	if (!is_horn || (HHallucination & ~TIMEOUT))
         unfixable_trbl++;
     if (!is_horn || (Vomiting & ~TIMEOUT))
         unfixable_trbl++;

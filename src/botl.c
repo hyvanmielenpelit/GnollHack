@@ -199,13 +199,11 @@ do_statusline2()
 		Strcpy(nb = eos(nb), " Sleep");
 	if (Cancelled)
 		Strcpy(nb = eos(nb), " Cancl");
-	if (Sick) {
-        if (u.usick_type & SICK_VOMITABLE)
-            Strcpy(nb = eos(nb), " FoodPois");
-        if (u.usick_type & SICK_NONVOMITABLE)
-            Strcpy(nb = eos(nb), " TermIll");
-    }
-    if (u.uhs != NOT_HUNGRY)
+	if (Sick) 
+        Strcpy(nb = eos(nb), " TermIll");
+	if (FoodPoisoned)
+		Strcpy(nb = eos(nb), " FoodPois");
+	if (u.uhs != NOT_HUNGRY)
         Sprintf(nb = eos(nb), " %s", hu_stat[u.uhs]);
     if ((cap = near_capacity()) > UNENCUMBERED)
         Sprintf(nb = eos(nb), " %s", enc_stat[cap]);
@@ -785,10 +783,10 @@ bot_via_windowport()
         blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_STRNGL;
 	if (Airless_environment && !Survives_without_air)
 		blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_SUFFOC;
-	if (Sick && (u.usick_type & SICK_VOMITABLE) != 0)
+	if (Sick)
+		blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_TERMILL;
+	if (FoodPoisoned)
         blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_FOODPOIS;
-    if (Sick && (u.usick_type & SICK_NONVOMITABLE) != 0)
-        blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_TERMILL;
 	if (Slowed)
 		blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_SLOWED;
 	if (Silenced)
