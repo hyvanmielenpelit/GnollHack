@@ -791,6 +791,9 @@ curses_convert_keys(int key)
 
     /* Handle arrow keys */
     switch (key) {
+	case GOLD_SYM_ALTERNATE:
+		ret = GOLD_SYM;
+		break;
     case KEY_LEFT:
         if (iflags.num_pad) {
             ret = '4';

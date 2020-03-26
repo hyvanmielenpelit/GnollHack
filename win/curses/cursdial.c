@@ -993,8 +993,8 @@ menu_win_size(nhmenu *menu)
 
     maxwidth = 38;              /* Reasonable minimum usable width */
 
-    if ((term_cols / 2) > maxwidth) {
-        maxwidth = (term_cols / 2);     /* Half the screen */
+    if ((3 * term_cols) / 4) > maxwidth) {
+        maxwidth = ((3 * term_cols) / 4);     /* 3/4 of the screen */
     }
 
     maxheight = menu_max_height();
@@ -1229,8 +1229,10 @@ menu_get_selections(WINDOW * win, nhmenu *menu, int how)
     int curpage = !menu->bottom_heavy ? 1 : menu->num_pages;
     int num_selected = 0;
     boolean dismiss = FALSE;
+	boolean iscounting = FALSE;
     char search_key[BUFSZ];
     nhmenu_item *menu_item_ptr = menu->entries;
+	boolean is_group_accelerator = FALSE;
 
     menu_display_page(menu, win, curpage);
 
@@ -1279,10 +1281,27 @@ menu_get_selections(WINDOW * win, nhmenu *menu, int how)
             case MENU_INVERT_ALL:
                 curpage = menu_operation(win, menu, INVERT, 0);
                 break;
-            }
+			}
             /*FALLTHRU*/
         default:
-            if (isdigit(curletter)) {
+			if(curletter == MENU_START_COUNT)
+				iscounting = TRUE;
+
+			is_group_accelerator = FALSE;
+			menu_item_ptr = menu->entries;
+			while (menu_item_ptr != NULL) {
+				if (menu_item_ptr->identifier.a_void != NULL) 
+				{
+					if ((menu_item_ptr->group_accel && curletter == menu_item_ptr->group_accel))
+					{
+						is_group_accelerator = TRUE;
+						break;
+					}
+				}
+				menu_item_ptr = menu_item_ptr->next_item;
+			}
+			
+            if ((iscounting || !is_group_accelerator) && isdigit(curletter)) {
                 count = curses_get_count(curletter - '0');
                 touchwin(win);
                 refresh();
