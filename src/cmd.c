@@ -5529,6 +5529,24 @@ register char *cmd;
     context.travel = context.travel1 = 0;
     spkey = ch2spkeys(*cmd, NHKF_RUN, NHKF_CLICKLOOK);
 
+	if (flags.prefer_fast_move)
+	{
+		switch (spkey) {
+		case NHKF_RUSH:
+			spkey = NHKF_RUN;
+			break;
+		case NHKF_RUN:
+			spkey = NHKF_RUSH;
+			break;
+		case NHKF_NOPICKUP:
+			spkey = NHKF_RUN_NOPICKUP;
+			break;
+		case NHKF_RUN_NOPICKUP:
+			spkey = NHKF_NOPICKUP;
+			break;
+		}
+	}
+
     switch (spkey) {
     case NHKF_RUSH:
         if (movecmd(cmd[1])) {

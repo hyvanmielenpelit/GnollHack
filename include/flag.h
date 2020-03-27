@@ -46,7 +46,8 @@ struct flag {
     boolean p__obsolete;     /* [3.6.2: perm_invent moved to iflags] */
     boolean pickup;          /* whether you pickup or move and look */
     boolean pickup_thrown;   /* auto-pickup items you threw */
-    boolean pushweapon; /* When wielding, push old weapon into second slot */
+	boolean prefer_fast_move;/* g and G are swapped, and likewise for m and M */
+	boolean pushweapon; /* When wielding, push old weapon into second slot */
     boolean rest_on_space;   /* space means rest */
     boolean safe_dog;        /* give complete protection to the dog */
     boolean showexp;         /* show experience points */
