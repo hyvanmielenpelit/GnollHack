@@ -918,11 +918,11 @@ register struct obj *otmp;
 		const char* hallubeertypes[6] = { "ale", "bitter", "pale lager", "pale ale", "imperial stout" };
 		const char* halluflavors[6] = { "a rusty", "a strange crunchy", "an odd mineral", "a marked sweet", "a dry" };
 
-		const char* beertype = Hallucination ? hallubeertypes[rn2(6)] : "dwarven stout";
+		const char* beertype = Hallucination ? hallubeertypes[rn2(6)] : "stout";
 		const char* flavortype = Hallucination ? halluflavors[rn2(6)] : "a nasty metallic";
 
 		if (otmp->cursed)
-			pline("Yecch!  This tastes like %s%s, but it has %s flavor.", otmp->odiluted ? "particularly light " : "", beertype, flavortype);
+			pline("Yecch!  This tastes like %s%s, but it has %s flavor.", otmp->odiluted ? "particularly light " : "finely brewed ", beertype, flavortype);
 		else
 			pline("This tastes like %s%s.", otmp->odiluted ? "particularly light " : "", beertype);
 
