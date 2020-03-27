@@ -1088,7 +1088,7 @@ unsigned long *colormasks UNUSED;
 					/* skill==" " - keep it, end up with " ";
 					   skill!=" " - insert space and get "  skill" */
 					if (strcmp(val, " "))
-						Strcpy(nb = eos(nb), " ");
+						++val;
 					break;
 				case BL_CAP:
                     /* cap==" " - suppress it, retain "  hunger" or " ";

@@ -185,7 +185,7 @@ unsigned long *colormasks;
                                     ? status_fieldfmt[fldidx] : "%s",
                         text);
                 /* strip trailing spaces; core ought to do this for us */
-                if (fldidx == BL_HUNGER || fldidx == BL_LEVELDESC)
+                if (fldidx == BL_HUNGER || fldidx == BL_2WEP || fldidx == BL_LEVELDESC)
                     (void) trimspaces(status_vals[fldidx]);
             }
 
@@ -281,9 +281,9 @@ boolean border;
           /*xspace*/ BL_AC, 
 		  /*xspace*/ BL_MC_LVL, BL_MC_PCT,
           /*xspace*/ BL_XP, BL_EXP, BL_HD,
-		{ /*xspace*/ BL_TIME,
+		  /*xspace*/ BL_TIME,
 		  BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
-		  /*xspace*/ BL_SKILL, BL_2WEP,
+		{ /*xspace*/ BL_SKILL, BL_2WEP,
 		  /*xspace*/ BL_HUNGER, BL_CAP,
 		  /*xspecial*/ BL_CONDITION,
           BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
@@ -360,8 +360,11 @@ boolean border;
         for (i = 0; (fld = fieldorder[j][i]) != BL_FLUSH; ++i)
             valline[fld] = j;
 
+    enum statusfields first_status_field = BL_FLUSH;
+
     /* iterate 0 and 1 and maybe 2 for status lines 1 and 2 and maybe 3 */
-    for (j = 0; j < number_of_lines; ++j) {
+    for (j = 0; j < number_of_lines; ++j) 
+    {
 
  startover:
         /* first pass for line #j -- figure out spacing */
@@ -375,7 +378,9 @@ boolean border;
             if (!status_activefields[fld])
                 *status_vals[fld] = '\0';
             text = status_vals[fld];
-            while (i == 0 && *text == ' ')
+            if(!strcmp(text, " "))
+                ++text;
+            if (i == 0 && *text == ' ')
                 ++text;
 			/* most fields already include a leading space; we don't try to
                count those separately, they're just part of field's length */
@@ -410,20 +415,50 @@ boolean border;
                 spacing[fld] = (i > 0 ? 1 : 0); /* extra space unless first */
                 break;
 			case BL_SKILL:
-				spacing[fld] = (i > 0 ? ((skill_and_2wep & 1) ? 1 : 0) : 0);
+				spacing[fld] = (number_of_lines < 3 && (skill_and_2wep & 1)) ? 1 : 0;
+                if(first_status_field == BL_FLUSH && *text)
+                {
+                    first_status_field = fld;
+                    if (number_of_lines == 3 && *text == ' ')
+                        ++text;
+                }
 				break;
 			case BL_2WEP:
-				spacing[fld] = ((skill_and_2wep & 2) && !(skill_and_2wep & 1));
+				spacing[fld] = (number_of_lines < 3 && (skill_and_2wep & 2) && !(skill_and_2wep & 1)) ? 1 : 0;
+                if(first_status_field == BL_FLUSH && *text)
+                {
+                    first_status_field = fld;
+                    if (number_of_lines == 3 && *text == ' ')
+                        ++text;
+                }
 				break;
 			case BL_HUNGER:
-                spacing[fld] = !skill_and_2wep && (cap_and_hunger & 1) ? 1 : 0;
+                spacing[fld] = (number_of_lines < 3 && !skill_and_2wep  && (cap_and_hunger & 1)) ? 1 : 0;
+                if(first_status_field == BL_FLUSH && *text)
+                {
+                    first_status_field = fld;
+                    if (number_of_lines == 3 && *text == ' ')
+                        ++text;
+                }
                 break;
             case BL_CAP:
-                spacing[fld] = !skill_and_2wep && ((cap_and_hunger & 2) && !(cap_and_hunger & 1)) ? 1 : 0;
+                spacing[fld] = (number_of_lines < 3 && !skill_and_2wep && ((cap_and_hunger & 2) && !(cap_and_hunger & 1)))? 1 : 0;
+                if(first_status_field == BL_FLUSH && *text)
+                {
+                    first_status_field = fld;
+                    if (number_of_lines == 3 && *text == ' ')
+                        ++text;
+                }
                 break;
             case BL_CONDITION:
                 text = cbuf; /* for 'w += strlen(text)' below */
-                spacing[fld] = (!cap_and_hunger && ! skill_and_2wep) ? 1 : 0;
+                spacing[fld] = (number_of_lines < 3 && !cap_and_hunger && !skill_and_2wep) ? 1 : 0;
+                if(first_status_field == BL_FLUSH && *text)
+                {
+                    first_status_field = fld;
+                    if (number_of_lines == 3 && *text == ' ')
+                        ++text;
+                }
                 break;
 			case BL_HP:
 				spacing[fld] = (i > 0 ? 1 : 0); /* extra space unless first */
@@ -460,17 +495,25 @@ boolean border;
         }
         /* if the line is too long, first avoid extra spaces */
         fld = MAXBLSTATS;
-        while (xtra > 0 && w + xtra > width) {
-            while (--fld >= 0) /* [assumes 'fld' is not unsigned!] */
-                if (spacing[fld] > 0) {
-                    xtra -= spacing[fld];
-                    spacing[fld] = 0;
-                    break;
+        while (xtra > 0 && w + xtra > width) 
+        {
+            if(fld > 0)
+            {
+                while (--fld >= 0) /* [assumes 'fld' is not unsigned!] */
+                    if (spacing[fld] > 0) {
+                        xtra -= spacing[fld];
+                        spacing[fld] = 0;
+                        break;
                 }
+            }
+            else
+            {
+                break;
+            }
         }
         w += xtra; /* simplify further width checks */
         /* if showing exper points and line is too wide, don't show them */
-        if (w > width && exp_points && j == valline[BL_EXP]
+        if (number_of_lines < 3 && w > width && exp_points && j == valline[BL_EXP]
             && ((*cbuf && j == valline[BL_CONDITION])
                 || (cap_and_hunger && j == valline[BL_HUNGER]))) {
             exp_points = 0;
@@ -512,8 +555,14 @@ boolean border;
                 waddch(win, ' ');
 
             text = status_vals[fld];
+            if(!strcmp(text, " "))
+                ++text;
             if (i == 0 && *text == ' ')
                 ++text; /* for first field of line, discard leading space */
+
+            /* Discard first space in three-line setup */
+            if (first_status_field != BL_FLUSH && fld == first_status_field && *text == ' ')
+                ++text;     
 
             switch (fld) {
             case BL_EXP:
@@ -621,7 +670,8 @@ boolean border;
                         x = width - (border ? -1 : 0), /* (width-=2 above) */
                         y = j + (border ? 1 : 0);
                     /* cbuf[] was populated above; clen is its length */
-                    if (number_of_lines == 3) {
+                    if (0 && number_of_lines == 3) 
+                    {
                         /*
                          * For 3-line status, align conditions with hunger
                          * (or where it would have been, when not shown),
