@@ -435,6 +435,7 @@ boolean border;
 			case BL_GOLD:
                 spacing[fld] = 1; /* always extra space */
                 break;
+                
             case BL_XP:
             case BL_HD:
             case BL_TIME:
