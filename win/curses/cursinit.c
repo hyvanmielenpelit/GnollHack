@@ -585,7 +585,7 @@ curses_choose_character()
             else if (sel == ROLE_NONE) {        /* Quit */
                 clearlocks();
                 curses_bail(0);
-            }
+           }
             flags.initrace = sel;
             free((genericptr_t) choices);
             free((genericptr_t) pickmap);
@@ -759,8 +759,7 @@ curses_character_dialog(const char **choices, const char *prompt)
     if (ret == 1) {
         ret = (selected->item.a_int);
     } else {                    /* Cancelled selection */
-
-        ret = ROLE_NONE;
+        ret = ROLE_RANDOM;
     }
 
     if (ret > 0) {
