@@ -34,7 +34,7 @@ static void NDECL(draw_status);
 static void FDECL(draw_vertical, (BOOLEAN_P));
 static void FDECL(draw_horizontal, (BOOLEAN_P));
 static void curs_HPbar(char *, int);
-static void curs_stat_conds(int, int *, int *, char *, boolean *);
+static void curs_stat_conds(int, int *, int *, char *, boolean *, boolean);
 static void curs_vert_status_vals(int);
 #ifdef STATUS_HILITES
 #ifdef TEXTCOLOR
@@ -336,7 +336,7 @@ boolean border;
     /* collect active conditions in cbuf[], space separated, suitable
        for direct output if no highlighting is requested ('asis') but
        primarily used to measure the length */
-    curs_stat_conds(0, &x, &y, cbuf, &asis);
+    curs_stat_conds(0, &x, &y, cbuf, &asis, FALSE);
     clen = (int) strlen(cbuf);
 
 	skill_and_2wep = 0;
@@ -459,7 +459,12 @@ boolean border;
                 {
                     first_status_field = fld;
                     if (number_of_lines == 3 && *text == ' ')
+                    {
                         ++text;
+                        char tmpbuf[BUFSZ];
+                        strcpy(tmpbuf, text);
+                        strcpy(cbuf, tmpbuf);
+                    }
                 }
                 break;
 			case BL_HP:
@@ -707,7 +712,7 @@ boolean border;
                     if (asis)
                         waddstr(win, cbuf);
                     else /* cond by cond if any cond specifies highlighting */
-                        curs_stat_conds(0, &x, &y, (char *) 0, (boolean *) 0);
+                        curs_stat_conds(0, &x, &y, (char *) 0, (boolean *) 0, (number_of_lines == 3 && first_status_field == BL_CONDITION ? TRUE : FALSE));
                 } /* curses_condition_bits */
             } /* hitpointbar vs regular field vs conditions */
         } /* i (fld) */
@@ -981,7 +986,7 @@ boolean border;
             if (cond_count) {
                 /* output active conditions, three per line;
                    cursor is already positioned where they should start */
-                curs_stat_conds(1, &x, &y, (char *) 0, (boolean *) 0);
+                curs_stat_conds(1, &x, &y, (char *) 0, (boolean *) 0, FALSE);
             }
         } /* hitpointbar vs regular field vs conditions */
     } /* fld loop */
@@ -1065,7 +1070,8 @@ static void
 curs_stat_conds(int vert_cond, /* 0 => horizontal, 1 => vertical */
                 int *x, int *y,  /* real for vertical, ignored otherwise */
                 char *condbuf, /* optional output; collect string of conds */
-                boolean *nohilite) /* optional output; indicates whether -*/
+                boolean *nohilite,
+                boolean no_leading_space) /* optional output; indicates whether -*/
 {                                  /*+ condbuf[] could be used as-is      */
     char condnam[20];
     int i;
@@ -1100,6 +1106,7 @@ curs_stat_conds(int vert_cond, /* 0 => horizontal, 1 => vertical */
         int attrmask = 0, color = NO_COLOR;
 #endif /* STATUS_HILITES */
         boolean border, do_vert = (vert_cond != 0);
+        boolean first_status = TRUE;
         WINDOW *win = curses_get_nhwin(STATUS_WIN);
 
         getmaxyx(win, height, width);
@@ -1127,8 +1134,12 @@ curs_stat_conds(int vert_cond, /* 0 => horizontal, 1 => vertical */
                 }
                 cond_bits &= ~bitmsk; /* nonzero if another cond after this */
                 /* output unhighlighted leading space unless at #1 of 3 */
-                if (!do_vert || (vert_cond % 3) != 1)
+                if ((!first_status || !no_leading_space) && (!do_vert  || (vert_cond % 3) != 1))
                     waddch(win, ' ');
+
+                if(first_status)
+                    first_status = FALSE;
+                    
 #ifdef STATUS_HILITES
                 if (iflags.hilite_delta) {
                     if ((attrmask = condattr(bitmsk, curses_colormasks))

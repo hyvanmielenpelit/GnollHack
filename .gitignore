@@ -13,6 +13,7 @@ dat/quest_levs
 dat/spec_levs
 doc/Guidebook
 src/GnollHack
+src/gnollhack
 src/Sysunix
 src/config.h-t
 src/hack.h-t
@@ -21,6 +22,7 @@ util/dlb
 util/lev_comp
 util/makedefs
 util/recover
+util/tilemap
 dat/*.lev
 dat/dungeon
 dat/options
