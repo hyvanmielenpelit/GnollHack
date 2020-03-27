@@ -496,6 +496,7 @@ boolean border;
             prev_fld = fld;
         }
         
+        
         /* if the line is too long, first avoid extra spaces */
         fld = MAXBLSTATS;
         while (xtra > 0 && w + xtra > width) 
