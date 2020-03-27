@@ -378,8 +378,10 @@ boolean border;
             if (!status_activefields[fld])
                 *status_vals[fld] = '\0';
             text = status_vals[fld];
+
             if(!strcmp(text, " "))
                 ++text;
+                
             if (i == 0 && *text == ' ')
                 ++text;
 			/* most fields already include a leading space; we don't try to
