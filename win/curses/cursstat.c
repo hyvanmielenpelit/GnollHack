@@ -410,7 +410,7 @@ boolean border;
                 spacing[fld] = (i > 0 ? 1 : 0); /* extra space unless first */
                 break;
 			case BL_SKILL:
-				spacing[fld] = (skill_and_2wep & 1) ? 1 : 0;
+				spacing[fld] = (i > 0 ? ((skill_and_2wep & 1) ? 1 : 0) : 0);
 				break;
 			case BL_2WEP:
 				spacing[fld] = ((skill_and_2wep & 2) && !(skill_and_2wep & 1));
