@@ -1779,14 +1779,23 @@ enhance_weapon_skill()
                 any = zeroany;
                 if (i == skill_ranges[pass].first)
 				{
+					int skillcount = 0;
+					for (int j = skill_ranges[pass].first; j <= skill_ranges[pass].last; j++)
+					{
+						if (!P_RESTRICTED(j))
+							skillcount++;
+					}
 					/*
 					if (!firstheader)
 						add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE,
 							"", MENU_UNSELECTED);
 					*/
-                    add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings,
-                             skill_ranges[pass].name, MENU_UNSELECTED);
-					firstheader = FALSE;
+					if (skillcount > 0)
+					{
+						add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings,
+							skill_ranges[pass].name, MENU_UNSELECTED);
+						firstheader = FALSE;
+					}
 				}
                 if (P_RESTRICTED(i))
                     continue;
