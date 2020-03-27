@@ -407,7 +407,7 @@ curses_count_window(const char *count_text)
     startx = 0;
     starty = 0;
 
-    mvwprintw(countwin, starty, startx, "%s", count_text);
+    mvwprintw(countwin, starty, startx, "%-*s", messagew, count_text);
     wrefresh(countwin);
 }
 
