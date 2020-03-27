@@ -276,17 +276,16 @@ boolean border;
           BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
         { //BL_ALIGN,
           /*xspace*/ //BL_GOLD,
-          /*xspace*/ BL_HP, BL_HPMAX,
+          /*xspace*/ BL_LEVELDESC, BL_HP, BL_HPMAX,
           /*xspace*/ BL_ENE, BL_ENEMAX,
           /*xspace*/ BL_AC, 
 		  /*xspace*/ BL_MC_LVL, BL_MC_PCT,
           /*xspace*/ BL_XP, BL_EXP, BL_HD,
-          /*xspace*/ BL_HUNGER, BL_CAP,
-          BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
-        { BL_LEVELDESC,
-          /*xspace*/ BL_TIME,
+		{ /*xspace*/ BL_TIME,
+		  BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
 		  /*xspace*/ BL_SKILL, BL_2WEP,
-          /*xspecial*/ BL_CONDITION,
+		  /*xspace*/ BL_HUNGER, BL_CAP,
+		  /*xspecial*/ BL_CONDITION,
           BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
           blPAD, blPAD, blPAD, blPAD, blPAD, blPAD }
     };
@@ -376,9 +375,9 @@ boolean border;
             if (!status_activefields[fld])
                 *status_vals[fld] = '\0';
             text = status_vals[fld];
-            if (i == 0 && *text == ' ')
+            while (i == 0 && *text == ' ')
                 ++text;
-            /* most fields already include a leading space; we don't try to
+			/* most fields already include a leading space; we don't try to
                count those separately, they're just part of field's length */
             switch (fld) {
             case BL_EXP:
@@ -426,9 +425,11 @@ boolean border;
                 text = cbuf; /* for 'w += strlen(text)' below */
                 spacing[fld] = (!cap_and_hunger && ! skill_and_2wep) ? 1 : 0;
                 break;
-            case BL_STR:
-            case BL_HP:
-            case BL_ENE:
+			case BL_HP:
+				spacing[fld] = (i > 0 ? 1 : 0); /* extra space unless first */
+				break;
+			case BL_STR:
+			case BL_ENE:
             case BL_AC:
 			case BL_MC_LVL:
 			case BL_GOLD:
