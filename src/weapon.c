@@ -1736,15 +1736,36 @@ enhance_weapon_skill()
 
 		if (!speedy)
 		{
+			boolean disarmtrapslast = (P_SKILL_LEVEL(P_DISARM_TRAP) > P_ISRESTRICTED);
+			boolean wandsshown = (P_SKILL_LEVEL(P_WAND) > P_ISRESTRICTED);
+			boolean martialartsshown = (P_SKILL_LEVEL(P_MARTIAL_ARTS) > P_ISRESTRICTED);
 			any = zeroany;
-			Sprintf(buf, "Bonuses are to-hit/damage for weapons and unarmed combat,");
+			
+			Sprintf(buf, "Bonuses are to-hit/damage for weapon and combat skills,");
 			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, MENU_UNSELECTED);
-			Sprintf(buf, "to-hit/damage/double-hit chance for martial arts,");
+
+			if (martialartsshown)
+			{
+				Sprintf(buf, "to-hit/damage/double-hit chance for martial arts,");
+				add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, MENU_UNSELECTED);
+			}
+
+			if(disarmtrapslast)
+				Sprintf(buf, "success/cost for spells, to-hit for wands, and");
+			else
+			{
+				if(wandsshown)
+					Sprintf(buf, "success/cost for spells, and to-hit for wands");
+				else
+					Sprintf(buf, "and success/cost adjustment for spells");
+			}
 			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, MENU_UNSELECTED);
-			Sprintf(buf, "success/cost for spells, to-hit for wands, and");
-			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, MENU_UNSELECTED);
-			Sprintf(buf, "arrow/magic trap untrap chance for disarm trap");
-			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, MENU_UNSELECTED);
+
+			if (disarmtrapslast)
+			{
+				Sprintf(buf, "arrow/magic trap untrap chance for disarm trap");
+				add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, MENU_UNSELECTED);
+			}
 			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, "", MENU_UNSELECTED);
 		}
 
