@@ -373,7 +373,8 @@ int x, y, gloc;
                     || is_cmap_drawbridge(glyph_to_cmap(glyph))
                     || glyph_to_cmap(glyph) == S_ndoor
                     || glyph_to_cmap(glyph) == S_room
-                    || glyph_to_cmap(glyph) == S_darkroom
+					|| glyph_to_cmap(glyph) == S_grass
+					|| glyph_to_cmap(glyph) == S_darkroom
                     || glyph_to_cmap(glyph) == S_corr
                     || glyph_to_cmap(glyph) == S_litcorr)
                 && (IS_UNEXPLORED_LOC(x + 1, y)
@@ -398,7 +399,8 @@ int x, y, gloc;
                      || glyph_to_cmap(glyph) == S_pool
                      || glyph_to_cmap(glyph) == S_ndoor
                      || glyph_to_cmap(glyph) == S_room
-                     || glyph_to_cmap(glyph) == S_darkroom
+					 || glyph_to_cmap(glyph) == S_grass
+					 || glyph_to_cmap(glyph) == S_darkroom
                      || glyph_to_cmap(glyph) == S_corr
                      || glyph_to_cmap(glyph) == S_litcorr));
     }
@@ -884,7 +886,8 @@ const char *goal;
                     if (IS_DOOR(sidx) || IS_WALL(sidx)
                         || sidx == SDOOR || sidx == SCORR
                         || glyph_to_cmap(k) == S_room
-                        || glyph_to_cmap(k) == S_darkroom
+						|| glyph_to_cmap(k) == S_grass
+						|| glyph_to_cmap(k) == S_darkroom
                         || glyph_to_cmap(k) == S_corr
                         || glyph_to_cmap(k) == S_litcorr)
                         continue;

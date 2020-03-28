@@ -162,7 +162,7 @@ const struct symdef defsyms[MAXPCHARS] = {
        { '#', "iron bars", C(HI_METAL) },            /* bars */
        { '#', "tree", C(CLR_GREEN) },                /* tree */
        { '.', "floor of a room", C(CLR_GRAY) },      /* room */
-/*+1*/ { '.', "grass", C(CLR_GREEN) },				 /* grass */
+/*+1*/ { '.', "grass", C(CLR_BRIGHT_GREEN) },		 /* grass */
 /*20*/ { '.', "dark part of a room", C(CLR_BLACK) }, /* dark room */
        { '#', "corridor", C(CLR_GRAY) },             /* dark corr */
        { '#', "lit corridor", C(CLR_GRAY) },   /* lit corr (see mapglyph.c) */
@@ -617,7 +617,8 @@ struct symparse loadsyms[] = {
     { SYM_PCHAR, S_bars, "S_bars" },
     { SYM_PCHAR, S_tree, "S_tree" },
     { SYM_PCHAR, S_room, "S_room" },
-    { SYM_PCHAR, S_darkroom, "S_darkroom" },
+	{ SYM_PCHAR, S_grass, "S_grass" },
+	{ SYM_PCHAR, S_darkroom, "S_darkroom" },
     { SYM_PCHAR, S_corr, "S_corr" },
     { SYM_PCHAR, S_litcorr, "S_litcorr" },
     { SYM_PCHAR, S_upstair, "S_upstair" },
@@ -663,7 +664,10 @@ struct symparse loadsyms[] = {
     { SYM_PCHAR, S_anti_magic_trap, "S_anti_magic_trap" },
     { SYM_PCHAR, S_polymorph_trap, "S_polymorph_trap" },
     { SYM_PCHAR, S_vibrating_square, "S_vibrating_square" },
-    { SYM_PCHAR, S_vbeam, "S_vbeam" },
+	{ SYM_PCHAR, S_vibrating_square, "S_vibrating_square" },
+	{ SYM_PCHAR, S_octagonal_portal, "S_octagonal_portal" },
+	{ SYM_PCHAR, S_tetragonal_portal, "S_tetragonal_portal" },
+	{ SYM_PCHAR, S_vbeam, "S_vbeam" },
     { SYM_PCHAR, S_hbeam, "S_hbeam" },
     { SYM_PCHAR, S_lslant, "S_lslant" },
     { SYM_PCHAR, S_rslant, "S_rslant" },

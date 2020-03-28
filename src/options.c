@@ -620,14 +620,14 @@ reglyph_darkroom()
             if (!flags.dark_room || !iflags.use_color
                 || Is_rogue_level(&u.uz)) {
                 if (lev->glyph == cmap_to_glyph(S_darkroom))
-                    lev->glyph = lev->waslit ? cmap_to_glyph(S_room)
+                    lev->glyph = lev->waslit ? (lev->typ == GRASS ? cmap_to_glyph(S_grass) : cmap_to_glyph(S_room))
                                              : cmap_to_glyph(S_stone);
             } else {
                 if (lev->glyph == cmap_to_glyph(S_room) && lev->seenv
                     && lev->waslit && !cansee(x, y))
                     lev->glyph = cmap_to_glyph(S_darkroom);
                 else if (lev->glyph == cmap_to_glyph(S_stone)
-                         && lev->typ == ROOM && lev->seenv && !cansee(x, y))
+                         && (lev->typ == ROOM || lev->typ == GRASS) && lev->seenv && !cansee(x, y))
                     lev->glyph = cmap_to_glyph(S_darkroom);
             }
         }

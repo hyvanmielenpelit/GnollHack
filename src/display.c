@@ -653,7 +653,7 @@ xchar x, y;
             do_room_glyph = FALSE;
             if (lev->glyph == objnum_to_glyph(BOULDER)
                 || glyph_is_invisible(lev->glyph)) {
-                if (lev->typ != ROOM && lev->seenv)
+                if (lev->typ != ROOM && lev->typ != GRASS && lev->seenv)
                     map_background(x, y, 1);
                 else
                     do_room_glyph = TRUE;
@@ -677,8 +677,8 @@ xchar x, y;
             if (lev->typ == CORR && lev->glyph == cmap_to_glyph(S_litcorr)
                 && !lev->waslit)
                 show_glyph(x, y, lev->glyph = cmap_to_glyph(S_corr));
-            else if (lev->typ == ROOM && flags.dark_room && iflags.use_color
-                     && lev->glyph == cmap_to_glyph(S_room))
+            else if (((lev->typ == ROOM && lev->glyph == cmap_to_glyph(S_room)) || (lev->typ == GRASS && lev->glyph == cmap_to_glyph(S_grass)))
+				&& flags.dark_room && iflags.use_color)
                 show_glyph(x, y, lev->glyph = cmap_to_glyph(S_darkroom));
         }
     } else {
@@ -707,7 +707,7 @@ xchar x, y;
         }
 
         /* Floor spaces are dark if unlit.  Corridors are dark if unlit. */
-        if (lev->typ == ROOM && lev->glyph == cmap_to_glyph(S_room)
+        if (((lev->typ == ROOM && lev->glyph == cmap_to_glyph(S_room)) || (lev->typ == GRASS && lev->glyph == cmap_to_glyph(S_grass)))
             && (!lev->waslit || (flags.dark_room && iflags.use_color)))
             show_glyph(x, y, lev->glyph = cmap_to_glyph(
                                  flags.dark_room ? S_darkroom : S_stone));
@@ -875,7 +875,9 @@ register int x, y;
                 show_glyph(x, y, lev->glyph = cmap_to_glyph(S_corr));
             else if (lev->glyph == cmap_to_glyph(S_room) && lev->typ == ROOM)
                 show_glyph(x, y, lev->glyph = cmap_to_glyph(DARKROOMSYM));
-            else
+			else if (lev->glyph == cmap_to_glyph(S_grass) && lev->typ == GRASS)
+				show_glyph(x, y, lev->glyph = cmap_to_glyph(DARKROOMSYM));
+			else
                 goto show_mem;
         } else {
  show_mem:
