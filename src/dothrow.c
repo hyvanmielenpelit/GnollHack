@@ -319,32 +319,10 @@ int* output_multishot_rnd;
 			}
 		}
 
-		switch (skilllevel)
-		{
-		case P_BASIC:
-			*output_multishot_constant = 1;
-			break;
-		case P_SKILLED:
-			*output_multishot_constant = 1;
-			if (rn2(4) < 1)
-				(*output_multishot_constant)++;
-			break;
-		case P_EXPERT:
-			*output_multishot_constant = 1;
-			if (rn2(4) < 2)
-				(*output_multishot_constant)++;
-			break;
-		case P_MASTER:
-			*output_multishot_constant = 1;
-			if (rn2(4) < 3)
-				(*output_multishot_constant)++;
-			break;
-		case P_GRAND_MASTER:
-			*output_multishot_constant = 2;
-			break;
-		default:
-			break;
-		}
+		*output_multishot_constant = 1;
+		if (rn2(100) < martial_arts_multishot_percentage_chance(skilllevel))
+			(*output_multishot_constant)++;
+
 		return;
 	}
 

@@ -2783,8 +2783,8 @@ int mode, final, attrindx;
 		int dmgbonus_constant = (currstr < STR18(100) ? strength_damage_bonus(min(18, currstr)) : strength_damage_bonus(currstr));
 		int dmgbonus_random = ((currstr > 18 && currstr < STR18(100)) ? 2 : 0);
 		int random_chance = ((currstr > 18 && currstr < STR18(100)) ? currstr - 18 : 0);
-		char tohitbuf[BUFSIZ] = "";
-		char dmgbuf[BUFSIZ] = "";
+		char tohitbuf[BUFSIZ];
+		char dmgbuf[BUFSIZ];
 
 		Sprintf(tohitbuf, "-%d", tohitbonus_constant + tohitbonus_random);
 		Sprintf(dmgbuf, "-%d", dmgbonus_constant + dmgbonus_random);
@@ -3167,6 +3167,24 @@ int final;
 			you_have(buf, "");
 		else
 			you_are(buf, "");
+	}
+
+	if (!uwep)
+	{
+		if (martial_bonus())
+			wtype = P_MARTIAL_ARTS;
+		else
+			wtype = P_BARE_HANDED_COMBAT;
+
+		char mbuf[BUFSZ];
+		strcpy(mbuf, "");
+		if (martial_bonus())
+		{
+			int multihitchance = martial_arts_multishot_percentage_chance(P_SKILL_LEVEL(wtype));
+			Sprintf(mbuf, ", %d%% double-hit chance", multihitchance); // due to% s", multihitchance, skill_name(wtype, TRUE));
+		}
+		Sprintf(buf, "fighting weaponless (%s%s)", martial_bonus() ? "full strength bonus" : "half strength damage bonus", mbuf);
+		you_are(buf, "");
 	}
 
 	if (u.twoweap) {

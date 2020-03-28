@@ -3064,6 +3064,7 @@ E int FDECL(weapon_skill_hit_bonus, (struct obj *, int, boolean));
 E int FDECL(weapon_skill_dmg_bonus, (struct obj *, int, boolean));
 E int FDECL(wand_skill_hit_bonus, (int));
 E void FDECL(skill_init, (const struct def_skill*, const struct def_skill *));
+E int FDECL(martial_arts_multishot_percentage_chance, (int));
 
 /* ### were.c ### */
 

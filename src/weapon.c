@@ -1532,6 +1532,35 @@ boolean plural;
     return plural ? P_NAME_PLURAL(skill) : P_NAME(skill);
 }
 
+int
+martial_arts_multishot_percentage_chance(skill_level)
+int skill_level;
+{
+	int percentage = 0;
+	switch (skill_level)
+	{
+	case P_BASIC:
+		percentage = 0;
+		break;
+	case P_SKILLED:
+		percentage = 25;
+		break;
+	case P_EXPERT:
+		percentage = 50;
+		break;
+	case P_MASTER:
+		percentage = 75;
+		break;
+	case P_GRAND_MASTER:
+		percentage = 100;
+		break;
+	default:
+		break;
+	}
+
+	return percentage;
+}
+
 /* return the # of slots required to advance the skill */
 STATIC_OVL int
 slots_required(skill)
@@ -1541,19 +1570,23 @@ int skill;
 
     /* The more difficult the training, the more slots it takes.
      *  unskilled -> basic      1
-     *  basic -> skilled        2
-     *  skilled -> expert       3
+     *  basic -> skilled        1
+     *  skilled -> expert       2
      */
 	 /* More slots used up for martial.
-	  *  unskilled -> basic      4
-	  *  basic -> skilled        5
-	  *  skilled -> expert       6
-	  *  expert -> master        7
-	  *  master -> grand master  8
+	  *  unskilled -> basic      2
+	  *  basic -> skilled        3
+	  *  skilled -> expert       3
+	  *  expert -> master        4
+	  *  master -> grand master  4
 	  */
+	if (skill == P_BARE_HANDED_COMBAT)
+		return (tmp + 1) / 2;
+
 	if (skill == P_MARTIAL_ARTS)
-		return tmp + 3;
-	
+		return (tmp + 4) / 2;
+
+
 //	if (skill <= P_LAST_WEAPON || skill == P_TWO_WEAPON_COMBAT)
  //       return tmp;
 
@@ -1706,6 +1739,8 @@ enhance_weapon_skill()
 			any = zeroany;
 			Sprintf(buf, "Bonuses are to-hit/damage for weapons and unarmed combat,");
 			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, MENU_UNSELECTED);
+			Sprintf(buf, "to-hit/damage/double-hit chance for martial arts,");
+			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, MENU_UNSELECTED);
 			Sprintf(buf, "success/cost for spells, to-hit for wands, and");
 			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, MENU_UNSELECTED);
 			Sprintf(buf, "arrow/magic trap untrap chance for disarm trap");
@@ -1762,7 +1797,7 @@ enhance_weapon_skill()
 		else
 		{
 			if (!iflags.menu_tab_sep)
-				Sprintf(headerbuf, " %s %-*s %-12s %-12s %s %s ", prefix, longest, "Skill", "Current", "Maximum", "  Bonuses ", 
+				Sprintf(headerbuf, " %s %-*s %-12s %-12s %s %s ", prefix, longest, "Skill", "Current", "Maximum", "  Bonuses   ", 
 					to_advance + eventually_advance > 0 ? "  Advanced  " : "");
 			else
 				Sprintf(headerbuf, " %s%s\t%s\t%s\t%s\t%s", prefix, "Skill", "Current", "Maximum", "Bonuses", 
@@ -1870,6 +1905,34 @@ enhance_weapon_skill()
 							Sprintf(hbuf2, "%s%d", tohitbonus2 >= 0 ? "+" : "", tohitbonus2);
 							Sprintf(nextbonusbuf, "%5s", hbuf2);
 						}
+					}
+					else if (i == P_MARTIAL_ARTS)
+					{
+						int tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, FALSE);
+						int dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, i, FALSE);
+						int multihitpct = martial_arts_multishot_percentage_chance(P_SKILL_LEVEL(i));
+						char hbuf[BUFSZ];
+						char dbuf[BUFSZ];
+						char mbuf[BUFSZ];
+						Sprintf(hbuf, "%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
+						Sprintf(dbuf, "%s%d", dmgbonus >= 0 ? "+" : "", dmgbonus);
+						Sprintf(mbuf, "%d%%", multihitpct);
+						Sprintf(bonusbuf, "%5s/%s/%s", hbuf, dbuf, mbuf);
+
+						if (can_advance(i, speedy) || could_advance(i))
+						{
+							int tohitbonus2 = weapon_skill_hit_bonus((struct obj*)0, i, TRUE);
+							int dmgbonus2 = weapon_skill_dmg_bonus((struct obj*)0, i, TRUE);
+							int multihitpct2 = martial_arts_multishot_percentage_chance(min(P_MAX_SKILL_LEVEL(i), P_SKILL_LEVEL(i) + 1));
+							char hbuf2[BUFSZ] = "";
+							char dbuf2[BUFSZ] = "";
+							char mbuf2[BUFSZ] = "";
+							Sprintf(mbuf2, "%d%%", multihitpct);
+							Sprintf(hbuf2, "%s%d", tohitbonus2 >= 0 ? "+" : "", tohitbonus2);
+							Sprintf(dbuf2, "%s%d", dmgbonus2 >= 0 ? "+" : "", dmgbonus2);
+							Sprintf(mbuf2, "%d%%", multihitpct2);
+							Sprintf(nextbonusbuf, "%5s/%s/%s", hbuf2, dbuf2, mbuf2);
+						}
 
 					}
 					else if ((i >= P_FIRST_WEAPON && i <= P_LAST_WEAPON)
@@ -1937,7 +2000,7 @@ enhance_weapon_skill()
 						}
 					}
 					if (!iflags.menu_tab_sep)
-                        Sprintf(buf, " %s %-*s %-12s %-12s %-10s %s", prefix, longest,
+                        Sprintf(buf, " %s %-*s %-12s %-12s %-12s %s", prefix, longest,
 							skillnamebuf, sklnambuf, skillmaxbuf, bonusbuf, nextbonusbuf);
                     else
                         Sprintf(buf, " %s%s\t%s\t%s\t%s\t%s", prefix, skillnamebuf,
