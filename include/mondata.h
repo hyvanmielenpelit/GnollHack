@@ -145,10 +145,7 @@
 #define does_split_upon_hit(ptr) (((ptr)->mflags4 & M4_SPLITS_UPON_HIT) != 0L)
 #define is_vegetarian_food(ptr) (((ptr)->mflags4 & M4_VEGETARIAN_FOOD) != 0L)
 #define is_vegan_food(ptr) (((ptr)->mflags4 & M4_VEGAN_FOOD) != 0L)
-#define alternative_passive_defense_text(ptr) \
-    (((ptr)->mflags4 & M4_ALTERNATIVE_PASSIVE_DEFENSE_TEXT) != 0)
-#define ignores_Elbereth(ptr) \
-    (((ptr)->mflags4 & M4_IGNORES_ELBERETH) != 0)
+#define ignores_Elbereth(ptr) (((ptr)->mflags4 & M4_IGNORES_ELBERETH) != 0)
 #define slurps_items(ptr) (((ptr)->mflags4 & M4_SLURPS_ITEMS) != 0)
 #define is_stony(ptr) (((ptr)->mflags4 & M4_STONY) != 0)
 #define is_wooden(ptr) (((ptr)->mflags4 & M4_WOODEN) != 0)
@@ -158,8 +155,7 @@
 #define is_bird(ptr) ((ptr)->mlet == S_BAT && !is_bat(ptr))
 #define likes_lava(ptr) (((ptr)->mflags4 & M4_LIKES_LAVA) != 0)
 #define likes_fire(ptr) (((ptr)->mflags4 & M4_LIKES_FIRE) != 0)
-
-
+#define smells_buried_searchable(ptr) (((ptr)->mflags4 & M4_SMELLS_BURIED_SEARCHABLE) != 0)
 
 
 /* combinations */

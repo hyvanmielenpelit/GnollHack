@@ -1592,6 +1592,33 @@ newdogpos:
 				if (dog_eat(mtmp, obj, omx, omy, FALSE) == 2)
 					return 2;
 			}
+			else
+			{
+				if (smells_buried_searchable(mtmp->data))
+				{
+					int buriedsearchablefound = FALSE;
+					struct obj* otmp2;
+					for (struct obj* otmp = level.buriedobjlist; otmp; otmp = otmp2)
+					{
+						otmp2 = otmp->nobj;
+						if (otmp->ox == nix && otmp->oy == niy && is_otyp_buried_searchable(otmp->otyp))
+						{
+							buriedsearchablefound = TRUE;
+							break;
+						}
+					}
+					if (buriedsearchablefound)
+					{
+						if(canseemon(mtmp))
+							pline("%s starts digging the ground frentically.", Monnam(mtmp), vtense((char*)0, growl_sound(mtmp)));
+
+						int itemsfound = unearth_objs(mtmp, nix, niy, canseemon(mtmp), TRUE);
+
+						if (!itemsfound && canseemon(mtmp))
+							pline("%s looks disappointed.", Monnam(mtmp));
+					}
+				}
+			}
 		} 
 		else if (mtmp->mleashed && distu(omx, omy) > 4)
 		{

@@ -310,7 +310,26 @@ boolean resuming;
                         }
                     }
 
-                    if (Searching && multi >= 0)
+					if (smells_buried_searchable(&mons[Upolyd ? u.umonnum : urace.malenum]) && multi >= 0)
+					{
+						int buriedsearchablefound = FALSE;
+						struct obj* otmp2;
+						for (struct obj* otmp = level.buriedobjlist; otmp; otmp = otmp2)
+						{
+							otmp2 = otmp->nobj;
+							if (otmp->ox == u.ux && otmp->oy == u.uy && is_otyp_buried_searchable(otmp->otyp))
+							{
+								buriedsearchablefound = TRUE;
+								break;
+							}
+						}
+						if (buriedsearchablefound)
+						{
+							You("smell something buried underground.");
+							(void)unearth_objs(&youmonst, u.ux, u.uy, TRUE, TRUE);
+						}
+					}
+					if (Searching && multi >= 0)
                         (void) dosearch0(1);
                     if (Warning || Any_warning)
                         warnreveal();

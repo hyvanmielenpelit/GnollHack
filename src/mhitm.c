@@ -2044,7 +2044,7 @@ int mdead;
             if (resists_fire(magr)) {
                 if (canseemon(magr)) 
 				{
-					if (alternative_passive_defense_text(mdef->data))
+					if (flaming(mdef->data))
 						pline("%s is engulfed in %s flames, but they do not burn %s.", Monnam(magr), s_suffix(mon_nam(mdef)), mon_nam(magr));
 					else
 						pline("%s is mildly warmed.", Monnam(magr));
@@ -2055,7 +2055,7 @@ int mdead;
             }
             if (canseemon(magr))
 			{
-				if (alternative_passive_defense_text(mdef->data))
+				if (flaming(mdef->data))
 					pline("%s is engulfed in %s flames!", Monnam(magr), s_suffix(mon_nam(mdef)));
 				else
 	                pline("%s is suddenly very hot!", Monnam(magr));

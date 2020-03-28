@@ -254,8 +254,7 @@
 #define M4_VEGAN_FOOD				0x00000020UL		/* monsters for a vegan */
 #define M4_NONROTTING_CORPSE		0x00000040UL		/* corpse does not rot */
 
-#define M4_ALTERNATIVE_PASSIVE_DEFENSE_TEXT	0x00000080UL		/* e.g. engulfed in X's flames rather than feel very hot */
-
+#define M4_SMELLS_BURIED_SEARCHABLE	0x00000080UL		/* can smell buried objects close to the surface of the ground such as roots */
 #define M4_PITWALK					0x00000100UL		/* can walk in and out of pits without trouble */
 #define M4_IGNORES_ELBERETH			0x00000200UL		/* is unaffected by Elbereth like a minotaur */
 #define M4_SLURPS_ITEMS				0x00000400UL		/* hoovers up items like a gelatinous cube */
@@ -266,7 +265,6 @@
 #define M4_BAT						0x00008000UL		/* a bat */
 #define M4_LIKES_LAVA				0x00010000UL		/* likes lava */
 #define M4_LIKES_FIRE				0x00020000UL		/* likes fire */
-
 
 #define MZ_TINY 0          /* < 2' */
 #define MZ_SMALL 1         /* 2-4' */

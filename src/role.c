@@ -702,7 +702,7 @@ const struct Race races[] = {
         "gnollkind",
         "Gno",
         { 0, 0 },
-		{ "Smells rotten food", "Triple nutrition from tripe ration", "", "", ""},
+		{ "Smells rotten food", "Smells underground roots", "Triple nutrition from tripe ration", "", ""},
 		PM_GNOLL,
         NON_PM,
         PM_GNOLL_MUMMY,

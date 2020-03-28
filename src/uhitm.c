@@ -3904,14 +3904,14 @@ boolean wep_was_destroyed;
                 if (Fire_resistance || Invulnerable) 
 				{
                     shieldeff(u.ux, u.uy);
-					if (alternative_passive_defense_text(mon->data))
+					if (flaming(mon->data))
 						You("are engulfed in %s flames, but they do not burn you!", s_suffix(mon_nam(mon)));
 					else
 						You_feel("mildly warm.");
                     ugolemeffects(AD_FIRE, damage);
                     break;
                 }
-				if (alternative_passive_defense_text(mon->data))
+				if (flaming(mon->data))
 					You("are engulfed in %s flames!", s_suffix(mon_nam(mon)));
 				else
 					You("are suddenly very hot!");

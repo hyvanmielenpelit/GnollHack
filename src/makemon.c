@@ -660,23 +660,11 @@ register struct monst *mtmp;
         break;
     case S_OGRE:
 		if (!rn2(3)) {
-			if (ptr == &mons[PM_OGRE] || ptr == &mons[PM_OGRE_LORD]) {
-				if (rn2(2))
-				{
-					(void)mongets(mtmp, rn2(2) ? COMPOSITE_LONG_BOW : LONG_BOW);
-					m_initthrow(mtmp, ARROW, 10, 12, FALSE, 0);
-				}
-				else
-				{
-					(void)mongets(mtmp, rn2(2) ? HEAVY_CROSSBOW : CROSSBOW);
-					m_initthrow(mtmp, CROSSBOW_BOLT, 10, 12, FALSE, 0);
-				}
-			}
-			else 
-			{
+			if (ptr != &mons[PM_OGRE] && ptr != &mons[PM_OGRE_MAGE] && ptr != &mons[PM_OGRE_ARCHMAGE]) {
 				(void)mongets(mtmp, HEAVY_CROSSBOW);
 				m_initthrow(mtmp, CROSSBOW_BOLT, 10, 12, FALSE, 0);
 			}
+			(void)mongets(mtmp, CLUB);
 		}
 		else
 		{
@@ -685,7 +673,6 @@ register struct monst *mtmp;
 			else
 				(void)mongets(mtmp, CLUB);
 		}
-
         break;
     case S_TROLL:
         if (!rn2(2))

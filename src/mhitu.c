@@ -4124,7 +4124,7 @@ struct attack *mattk;
             if (resists_fire(mtmp)) 
 			{
                 shieldeff(mtmp->mx, mtmp->my);
-				if (alternative_passive_defense_text(youmonst.data))
+				if (flaming(youmonst.data))
 					pline("%s is engulfed in your flames, but they do not burn %s.", Monnam(mtmp), mon_nam(mtmp));
 				else
 					pline("%s is mildly warm.", Monnam(mtmp));
@@ -4132,7 +4132,7 @@ struct attack *mattk;
 				damage = 0;
                 break;
             }
-			if (alternative_passive_defense_text(youmonst.data))
+			if (flaming(youmonst.data))
 				pline("%s is engulfed in your flames!", Monnam(mtmp));
 			else
 				pline("%s is suddenly very hot!", Monnam(mtmp));

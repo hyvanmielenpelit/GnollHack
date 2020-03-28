@@ -363,7 +363,7 @@ E void FDECL(zap_dig, (struct obj*));
 E void FDECL(zap_evaporation, (struct obj*));
 E struct obj *FDECL(bury_an_obj, (struct obj *, boolean *));
 E void FDECL(bury_objs, (int, int));
-E int FDECL(unearth_objs, (int, int, BOOLEAN_P, BOOLEAN_P));
+E int FDECL(unearth_objs, (struct monst*, int, int, BOOLEAN_P, BOOLEAN_P));
 E void FDECL(rot_organic, (ANY_P *, long));
 E void FDECL(rot_corpse, (ANY_P *, long));
 E struct obj *FDECL(buried_ball, (coord *));
