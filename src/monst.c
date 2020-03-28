@@ -2567,7 +2567,7 @@ struct permonst _mons2[] = {
         M1_BREATHLESS | M1_FLY | M1_HUMANOID | M1_UNSOLID,
         M2_UNDEAD | M2_STALK | M2_HOSTILE, 
 		M3_NONCORPOREAL | M3_RANDOM_CORPSE | M3_SPEAKING, 
-		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS, 31, HI_GOLD),
+		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS, 31, HI_LORD),
 	/* Nazguls are something between corporeal and non-corporeal */
     MON("Nazgul", S_WRAITH, LVL(24, 12, 0, 15, 60, -17),
         (G_GENO | G_NOCORPSE | 1),
@@ -2579,7 +2579,7 @@ struct permonst _mons2[] = {
 		M1_BREATHLESS | M1_HUMANOID,
         M2_NOPOLY | M2_UNDEAD | M2_STALK | M2_HOSTILE | M2_MALE | M2_COLLECT, 
 		M3_NONCORPOREAL | M3_MULTIWEAPON | M3_SPEAKING, 
-		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS, 55, HI_LORD),
+		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS, 55, CLR_BRIGHT_MAGENTA),
     /*
      * Xorn
      */
