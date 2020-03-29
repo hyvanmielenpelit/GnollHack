@@ -201,6 +201,14 @@
 	has_innate(ptr, MR_TELEPATHY)
 
 
+/* fixed ability */
+#define has_fixed_ability(mon) \
+	has_property(mon, FIXED_ABIL)
+
+#define has_brain_protection(mon) \
+	has_property(mon, BRAIN_PROTECTION)
+
+
 /* slow, stoning, and sliming */
 #define has_slowed(mon) \
 	has_property(mon, SLOWED)

@@ -521,23 +521,30 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
 	if (!magr || !mdef)
 		return MM_MISS;
 
-    if (flesh_petrifies(pd)) {
+    if (flesh_petrifies(pd))
+	{
         /* mind flayer has attempted to eat the brains of a petrification
            inducing critter (most likely Medusa; attacking a cockatrice via
            tentacle-touch should have been caught before reaching this far) */
-        if (magr == &youmonst) {
+        if (magr == &youmonst) 
+		{
             if (!Stone_resistance && !Stoned)
                 make_stoned(5L, (char *) 0, KILLED_BY_AN, pd->mname);
-        } else {
+        }
+		else
+		{
             /* no need to check for poly_when_stoned or Stone_resistance;
                mind flayers don't have those capabilities */
             if (visflag && canseemon(magr))
                 pline("%s turns to stone!", Monnam(magr));
             monstone(magr);
-            if (!DEADMONSTER(magr)) {
+            if (!DEADMONSTER(magr))
+			{
                 /* life-saved; don't continue eating the brains */
                 return MM_MISS;
-            } else {
+            }
+			else 
+			{
                 if (is_tame(magr) && !visflag)
                     /* parallels mhitm.c's brief_feeling */
                     You("have a sad thought for a moment, then it passes.");
@@ -546,16 +553,20 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
         }
     }
 
-    if (magr == &youmonst) {
+    if (magr == &youmonst) 
+	{
         /*
          * player mind flayer is eating something's brain
          */
         eating_conducts(pd);
-        if (mindless(pd)) { /* (cannibalism not possible here) */
+        if (mindless(pd) || has_fixed_ability(mdef) || has_brain_protection(mdef))
+		{ /* (cannibalism not possible here) */
             pline("%s doesn't notice.", Monnam(mdef));
             /* all done; no extra harm inflicted upon target */
             return MM_MISS;
-        } else if (is_rider(pd)) {
+        }
+		else if (is_rider(pd))
+		{
             pline("Ingesting that is fatal.");
             Sprintf(killer.name, "unwisely ate the brain of %s", pd->mname);
             killer.format = NO_KILLER_PREFIX;
@@ -568,7 +579,8 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
 			if (M_ABASE(mdef, A_INT) < M_ATTRMIN(mdef, A_INT))
 				*dmg_p += mdef->mhp;
 
-			pline("%s loses %d intelligence %s.", Monnam(mdef), int_loss, int_loss == 1 ? "point" : "points");
+			if (!has_fixed_ability(mdef))
+				pline("%s loses %d intelligence %s.", Monnam(mdef), int_loss, int_loss == 1 ? "point" : "points");
 		} 
 		else
 		{
@@ -589,19 +601,23 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
 			if (M_ABASE(mdef, A_INT) < M_ATTRMIN(mdef, A_INT))
 				*dmg_p += mdef->mhp;
 
-			pline("%s loses %d intelligence %s.", Monnam(mdef), int_loss, int_loss == 1 ? "point" : "points");
+			if (!has_fixed_ability(mdef))
+				pline("%s loses %d intelligence %s.", Monnam(mdef), int_loss, int_loss == 1 ? "point" : "points");
 		}
         /* targetting another mind flayer or your own underlying species
            is cannibalism */
         (void) maybe_cannibal(monsndx(pd), TRUE);
 
-    } else if (mdef == &youmonst) {
+    } 
+	else if (mdef == &youmonst) 
+	{
         /*
          * monster mind flayer is eating hero's brain
          */
         /* no such thing as mindless players */
 
-		if (Brain_protection) {
+		if (Brain_protection || Fixed_abil)
+		{
 			pline("However, your brain is unharmed.");
 			/* all done; no extra harm inflicted upon target */
 			return MM_MISS;
@@ -611,12 +627,16 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
 		(void)adjattrib(A_INT, -int_loss, FALSE);
 		forget_levels(25);  /* lose memory of 25% of levels */
 		forget_objects(25); /* lose memory of 25% of objects */
-		You("lose %d intelligence %s!", int_loss, int_loss > 1 ? "points" : "point");
 
-		if (ABASE(A_INT) < ATTRMIN(A_INT)) {
+		if(!Fixed_abil)
+			You("lose %d intelligence %s!", int_loss, int_loss > 1 ? "points" : "point");
+
+		if (ABASE(A_INT) < ATTRMIN(A_INT)) 
+		{
             static NEARDATA const char brainlessness[] = "brainlessness";
 
-            if (Lifesaved) {
+            if (Lifesaved)
+			{
                 Strcpy(killer.name, brainlessness);
                 killer.format = KILLED_BY;
                 done(DIED);
@@ -625,7 +645,9 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
                 /* sanity check against adding other forms of life-saving */
                 u.uprops[LIFESAVED].extrinsic =
                     u.uprops[LIFESAVED].intrinsic = 0L;
-            } else {
+            }
+			else
+			{
                 Your("last thought fades away.");
             }
             Strcpy(killer.name, brainlessness);
@@ -640,15 +662,20 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
         exercise(A_WIS, FALSE);
         /* caller handles Int and memory loss */
 
-    } else { /* mhitm */
+    }
+	else 
+{ /* mhitm */
         /*
          * monster mind flayer is eating another monster's brain
          */
-        if (mindless(pd)) {
+        if (mindless(pd) || has_fixed_ability(mdef) || has_brain_protection(mdef))
+		{
             if (visflag && canspotmon(mdef))
                 pline("%s doesn't notice.", Monnam(mdef));
             return MM_MISS;
-        } else if (is_rider(pd)) {
+        } 
+		else if (is_rider(pd)) 
+		{
             mondied(magr);
             if (DEADMONSTER(magr))
                 result = MM_AGR_DIED;
@@ -668,7 +695,8 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
         }
     }
 
-    if (give_nutrit && magr->mtame && !magr->isminion) {
+    if (give_nutrit && magr->mtame && !magr->isminion)
+	{
         EDOG(magr)->hungrytime += rnd(60);
         magr->mprops[CONFUSION] &= ~M_INTRINSIC_ACQUIRED;
     }
