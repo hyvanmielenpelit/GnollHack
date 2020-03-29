@@ -602,9 +602,13 @@ create_monster_or_encounter()
 		}
 	}
 
-	if (!nazgul_appeared && !(u.uz.dnum == modron_dnum)) /* Modrons cannot be currently randomly generated, not even on the modron plane */
+	if (!nazgul_appeared)
 	{
-		if (!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && !rn2(ENCOUNTER_ONE_IN_CHANCE))
+		if (u.uz.dnum == modron_dnum)
+		{
+			(void)makemon(mkclass(S_MODRON, 0), 0, 0, NO_MM_FLAGS);
+		}
+		else if (!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && (flags.wiz_alwaysenc || !rn2(ENCOUNTER_ONE_IN_CHANCE)))
 		{
 			randomize_encounter(0, 0);
 		}

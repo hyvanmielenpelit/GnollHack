@@ -913,7 +913,7 @@ makelevel()
         if (u.uhave.amulet || !rn2(3)) {
             x = somex(croom);
             y = somey(croom);
-			if (!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !rn2(ENCOUNTER_ONE_IN_CHANCE))
+			if (!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && (flags.wiz_alwaysenc || !rn2(ENCOUNTER_ONE_IN_CHANCE)))
 			{
 				randomize_encounter(x, y);
 			}

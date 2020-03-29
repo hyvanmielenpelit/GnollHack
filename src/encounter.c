@@ -1229,6 +1229,8 @@ int x, y;
 	double totalrollprob = 0;
 	int selected_encounter = 0;
 	double totalselectedprob = 0;
+	int acceptable_encounter_count = 0;
+	int maxmlev = 0, minmlev = 0;
 
 	int max_attk_monsters = 1;
 	if (Is_bigroom(&u.uz))
@@ -1238,12 +1240,11 @@ int x, y;
 
 	for (int i = 1; i <= 1; i++)
 	{
-		int maxmlev = 0, minmlev = 0;
 		totalselectedprob = 0;
 
 		get_generated_monster_minmax_levels(i, &minmlev, &maxmlev);
 
-		for (int j = 1; j < MAX_ENCOUNTERS; j++)
+		for (int j = 0; j < MAX_ENCOUNTERS && encounter_list[j].probability > 0; j++)
 		{
 			encounter_list[j].insearch = FALSE;
 
@@ -1265,8 +1266,12 @@ int x, y;
 
 			if (
 				(encounter_list[j].difficulty_point_estimate[max_attk_monsters] >= minmlev && encounter_list[j].difficulty_point_estimate[max_attk_monsters] <= maxmlev)
-			   )
-				encounter_list[j].insearch = TRUE, totalselectedprob += encounter_list[j].probability;
+				)
+			{
+				encounter_list[j].insearch = TRUE;
+				totalselectedprob += encounter_list[j].probability;
+				acceptable_encounter_count++;
+			}
 
 		}
 		if (totalselectedprob > 0)
@@ -1274,7 +1279,7 @@ int x, y;
 	}
 
 	int roll_int = rn2(32000); /* totalprob should be 1000, but just in case it is accidently less or more */
-	double roll = (double)roll_int / ((double)32000) * totalselectedprob;
+	double roll = (double)roll_int / 32000.0 * totalselectedprob;
 
 	if (totalselectedprob > 0)
 	{
@@ -1298,7 +1303,7 @@ int x, y;
 	}
 	else
 	{
-		makemon((struct permonst*)0, 0, 0, 0);
+		makemon((struct permonst*)0, x, y, NO_MM_FLAGS);
 	}
 
 	return;

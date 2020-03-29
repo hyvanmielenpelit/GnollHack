@@ -102,6 +102,7 @@ struct flag {
     boolean tombstone;       /* print tombstone */
     boolean verbose;         /* max battle info */
 	boolean wiz_mstatusline; /* extra information on monsters */
+	boolean wiz_alwaysenc;   /* creates always an encounter */
 	int end_top, end_around; /* describe desired score list */
     unsigned moonphase;
     unsigned long suppress_alert;
