@@ -1153,6 +1153,11 @@ struct obj *sobj;
 	{
 		if (mtmp->isshk)
 			make_happy_shk(mtmp, FALSE);
+		else if (is_tame(mtmp) && !is_charmed(mtmp))
+		{
+			/* already as tame as it gets */
+			return 0;
+		}
 		else if (resists_charm(mtmp))
 		{
 			pline("%s is unaffected.", Monnam(mtmp));
@@ -1771,8 +1776,8 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 				for (j = -bd; j <= bd; j++) {
 					if (!isok(u.ux + i, u.uy + j))
 						continue;
-					if ((mtmp = m_at(u.ux + i, u.uy + j)) != 0
-						|| (!i && !j && (mtmp = u.usteed) != 0)) {
+					if ((mtmp = m_at(u.ux + i, u.uy + j)) != 0 || (!i && !j && (mtmp = u.usteed) != 0))
+					{
 						++candidates;
 						res = maybe_tame(mtmp, sobj);
 						results += res;

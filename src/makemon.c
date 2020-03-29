@@ -2620,22 +2620,12 @@ int* maxlvl;
 	long min_multiplier = 1;
 	long min_divisor = 1;
 	int zlevel = level_difficulty();
+	int zlevel_formin = min(MAXULEV, zlevel);
+	int zlevel_formax = zlevel;
 	int i = attempt;
 
 	int minmlev = 0;
-	int midmlev = 0;
 	int maxmlev = 0;
-
-	if (In_endgame(&u.uz))
-	{
-		max_multiplier *= 2;
-		max_divisor *= 1;
-	}
-	else if (u.uhave.amulet)
-	{
-		max_multiplier *= 3;
-		max_divisor *= 2;
-	}
 
 	switch (context.game_difficulty)
 	{
@@ -2668,19 +2658,31 @@ int* maxlvl;
 	if (i == 1)
 	{
 		/* Try first with a tighter range */
+		minmlev = min(25, max(0, (((zlevel_formin + u.ulevel) * 1 * max_multiplier) / (2 * max_divisor)) - 2));
+		maxmlev = max(1, (((zlevel_formax + u.ulevel) * 1 * max_multiplier) / (1 * max_divisor)) - 1);
+#if 0
 		midmlev = (zlevel * 2 + u.ulevel) / 3;
 		maxmlev = ((zlevel * 2 + u.ulevel) * max_multiplier) / (2 * max_divisor);
 		minmlev = (max(0, midmlev - (maxmlev - midmlev)) * min_multiplier) / min_divisor; //equates to midmlev/2 = (2z+c)/6
+#endif
 	}
 	else if (i == 2)
 	{
+		minmlev = min(18, max(0, (((zlevel_formin + u.ulevel) * 1 * max_multiplier) / (3 * max_divisor)) - 2));
+		maxmlev = max(1, (((zlevel_formax + u.ulevel) * 3 * max_multiplier) / (2 * max_divisor)) - 1);
+#if 0
 		minmlev = ((zlevel * 2 + u.ulevel) * min_multiplier) / (12 * min_divisor);
 		maxmlev = ((zlevel * 2 + u.ulevel) * max_multiplier) / (2 * max_divisor);
+#endif
 	}
 	else
 	{
 		minmlev = 0;
+		maxmlev = max(1, (((zlevel_formax + u.ulevel) * 3 * max_multiplier) / (1 * max_divisor)) - 2);
+#if 0
+		minmlev = 0;
 		maxmlev = max((zlevel * 2 + u.ulevel), ((zlevel * 2 + u.ulevel) * max_multiplier) / (max_divisor));
+#endif
 	}
 
 	*minlvl = minmlev;

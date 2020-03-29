@@ -552,8 +552,8 @@ create_monster_or_encounter()
 	boolean nazgul_appeared = FALSE;
 	int maxlevel = 2 * u.ulevel;
 	int mdx = NON_PM;
-	boolean nazgulok = (7 * maxlevel) / 5 >= mons[PM_NAZGUL].difficulty && !(mvitals[PM_NAZGUL].mvflags & G_GONE);
-	boolean kingwraithok = (6 * maxlevel) / 5 >= mons[PM_KING_WRAITH].difficulty && !(mvitals[PM_KING_WRAITH].mvflags & G_GONE);
+	boolean nazgulok = maxlevel >= mons[PM_NAZGUL].difficulty && !(mvitals[PM_NAZGUL].mvflags & G_GONE);
+	boolean kingwraithok = maxlevel >= mons[PM_KING_WRAITH].difficulty && !(mvitals[PM_KING_WRAITH].mvflags & G_GONE);
 	boolean spectreok = maxlevel >= mons[PM_SPECTRE].difficulty && !(mvitals[PM_SPECTRE].mvflags & G_GONE);
 	boolean barrowwightok = maxlevel >= mons[PM_BARROW_WIGHT].difficulty && !(mvitals[PM_BARROW_WIGHT].mvflags & G_GONE);
 	boolean wraithok = maxlevel >= mons[PM_WRAITH].difficulty && !(mvitals[PM_WRAITH].mvflags & G_GONE);
