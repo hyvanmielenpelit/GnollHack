@@ -5159,7 +5159,8 @@ struct permonst *mdat;
         mndx = monsndx(mdat);
         switch (mndx) {
         case PM_ROTHE:
-        case PM_MINOTAUR:
+		case PM_BAPHOMET:
+		case PM_MINOTAUR:
             You("notice a bovine smell.");
             msg_given = TRUE;
             break;
@@ -5190,7 +5191,10 @@ struct permonst *mdat;
         case PM_WERERAT:
         case PM_WEREWOLF:
         case PM_OWLBEAR:
-            You("detect an odor reminiscent of an animal's den.");
+		case PM_OWLBEAR_SHAMAN:
+		case PM_OWLBEAR_MATRIARCH:
+		case PM_OWLBEAR_PATRIARCH:
+			You("detect an odor reminiscent of an animal's den.");
             msg_given = TRUE;
             break;
         /*

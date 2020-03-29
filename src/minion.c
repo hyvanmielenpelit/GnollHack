@@ -743,7 +743,7 @@ aligntyp atyp;
     int tryct, pm;
 
     for (tryct = !In_endgame(&u.uz) ? 20 : 0; tryct > 0; --tryct) {
-        pm = rn1(PM_YEENOGHU + 1 - PM_JUIBLEX, PM_JUIBLEX);
+        pm = rn1(PM_BAPHOMET + 1 - PM_JUIBLEX, PM_JUIBLEX);
         if (!(mvitals[pm].mvflags & G_GONE)
             && (atyp == A_NONE || sgn(mons[pm].maligntyp) == sgn(atyp)))
             return pm;
