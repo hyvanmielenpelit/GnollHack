@@ -3169,6 +3169,7 @@ struct monst* mtmp;
 		&& otmp->oclass != WEAPON_CLASS /* monsters do not currently sell their weapons */
 		&& otmp->oclass != ROCK_CLASS /* or giants their boulders */
 		&& !(is_pick(otmp) && needspick(mtmp->data)) /* or dwarves their picks */
+		&& !(is_dwarvish_obj(otmp) && is_dwarf(mtmp->data)) /* or dwarves any other of their items */
 		&& !(
 			(otmp->cursed && (objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED))
 			|| (otmp->otyp == AMULET_OF_YENDOR && (mtmp->data->mflags3 & M3_WANTSAMUL))

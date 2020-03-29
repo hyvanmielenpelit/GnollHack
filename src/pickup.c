@@ -3142,7 +3142,7 @@ int command_id;
    2 = move items in a container to a(nother) container in inventory, 
    3 = move items in a container to a(nother) container on floor,
    4 = take items out of a container and drop them on floor, and
-   5 = pick up items from floor and put them in a container
+   5 = pick up items from the floor and put them in a container
  */
 struct obj* applied_container;
 struct obj* other_container;
@@ -3220,6 +3220,8 @@ struct obj* other_container;
         all_categories = FALSE;
         Sprintf(buf, "%s what type of objects?", action);
         mflags = (ALL_TYPES | UNPAID_TYPES | BUCX_TYPES | CHOOSE_ALL);
+		if (command_id == 5)
+			mflags |= BY_NEXTHERE;
         n = query_category(buf, command_id == 1 ? invent : command_id == 5 ? level.objects[u.ux][u.uy] : current_container->cobj,
                            mflags, &pick_list, PICK_ANY);
         if (!n)

@@ -2333,7 +2333,7 @@ POTION("poison",             "sapphire", None, 0, 0, 30,  50, CLR_BLUE, O1_NONE,
 /* fixed description
  */
 POTION("water",                 "clear", None, 0, 0, 80, 100, CLR_CYAN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL), /* MARKER FOR FIRST NON-SHUFFLED */
-POTION("dwarven stout",     "dark ruby", None, 0, 0, 30,   5,  CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+POTION("dwarven stout",     "dark ruby", None, 0, 0, 30,   5,  CLR_BLACK, O1_NONE, O2_DWARVEN_ITEM, O3_NONE, PERMITTED_ALL),
 POTION("urine",           "pale yellow", None, 0, 0, 30,   5,  CLR_YELLOW, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 #undef POTION
 
