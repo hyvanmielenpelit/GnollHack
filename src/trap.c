@@ -2601,7 +2601,10 @@ register struct monst *mtmp;
             tear_web = FALSE;
             switch (monsndx(mptr)) {
             case PM_OWLBEAR: /* Eric Backus */
-            case PM_BUGBEAR:
+			case PM_OWLBEAR_SHAMAN:
+			case PM_OWLBEAR_MATRIARCH:
+			case PM_OWLBEAR_PATRIARCH:
+			case PM_BUGBEAR:
                 if (!in_sight) {
                     You_hear("the roaring of a confused bear!");
                     mtmp->mtrapped = 1;

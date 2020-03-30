@@ -156,6 +156,7 @@
 #define likes_lava(ptr) (((ptr)->mflags4 & M4_LIKES_LAVA) != 0)
 #define likes_fire(ptr) (((ptr)->mflags4 & M4_LIKES_FIRE) != 0)
 #define smells_buried_searchable(ptr) (((ptr)->mflags4 & M4_SMELLS_BURIED_SEARCHABLE) != 0)
+#define has_vorpal_vulnerability(ptr) (((ptr)->mflags4 & M4_VORPAL_VULNERABILITY) != 0)
 
 
 /* combinations */

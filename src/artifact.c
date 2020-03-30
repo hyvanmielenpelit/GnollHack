@@ -1435,7 +1435,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
             }
         } 
 		else if (artifact_has_flag(otmp, AF_BEHEAD)
-                   && (dieroll == 1 || mdef->data == &mons[PM_JABBERWOCK])) 
+                   && (dieroll == 1 || has_vorpal_vulnerability(mdef->data))) 
 		{
             static const char *const behead_msg[2] = { "%s beheads %s!",
                                                        "%s decapitates %s!"};
@@ -1933,14 +1933,14 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 		((objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
 			&& (
 			((objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-				&& dieroll <= objects[otmp->otyp].oc_critical_strike_percentage)
+				&& (dieroll <= objects[otmp->otyp].oc_critical_strike_percentage || has_vorpal_vulnerability(mdef->data)))
 				||
 				(!(objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-					&& criticalstrikeroll < objects[otmp->otyp].oc_critical_strike_percentage))
+					&& (criticalstrikeroll < objects[otmp->otyp].oc_critical_strike_percentage || has_vorpal_vulnerability(mdef->data))))
 			)
 			||
 			(!(objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
-				&& dieroll <= 1)
+				&& (dieroll <= 1 || has_vorpal_vulnerability(mdef->data)))
 			)
 		)
 	{
