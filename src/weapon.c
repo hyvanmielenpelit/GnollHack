@@ -2166,7 +2166,7 @@ struct obj *obj;
     int type;
 
     if (!obj || (is_gloves(obj) && (obj->owornmask & W_ARMG)))
-        return P_BARE_HANDED_COMBAT; /* Not using a weapon */
+        return (P_SKILL_LEVEL(P_BARE_HANDED_COMBAT) < P_EXPERT ? P_BARE_HANDED_COMBAT : P_MARTIAL_ARTS); /* Not using a weapon */
 
 	/* JG -- Now all items have a skill */
 	/*

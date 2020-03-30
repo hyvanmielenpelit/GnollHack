@@ -1477,9 +1477,12 @@ boolean* obj_destroyed;
 		damage += adjust_damage(weapon_skill_dmg_bonus(wep, is_golf_swing_with_stone ? P_THROWN_WEAPON : P_NONE, FALSE), &youmonst, mon, wep ? objects[wep->otyp].oc_damagetype : AD_PHYS, FALSE);
 		/* [this assumes that `!thrown' implies wielded...] */
 		wtype = is_golf_swing_with_stone ? P_THROWN_WEAPON :
-			!obj ? (P_SKILL_LEVEL(P_BARE_HANDED_COMBAT) < P_EXPERT ? P_BARE_HANDED_COMBAT : P_MARTIAL_ARTS) :
-			thrown ? weapon_skill_type(wep) : uwep_skill_type();
+			(!obj || !wep) ? (P_SKILL_LEVEL(P_BARE_HANDED_COMBAT) < P_EXPERT ? P_BARE_HANDED_COMBAT : P_MARTIAL_ARTS) :
+			weapon_skill_type(wep); //: uwep_skill_type();
 		use_skill(wtype, 1);
+
+		if(u.twoweap && obj && uarms && obj == uarms) /* Two weapon combat skill is increased when you successfully hit with a weapon in your left hand */
+			use_skill(P_TWO_WEAPON_COMBAT, 1);
 	}
 
 	if (ispoisoned && !isdisintegrated) 
