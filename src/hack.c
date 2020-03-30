@@ -2095,8 +2095,8 @@ switch_terrain()
         if (Flying)
             You("start flying.");
     }
-    if ((!Levitation ^ was_levitating) || (!Flying ^ was_flying))
-        context.botl = TRUE; /* update Lev/Fly status condition */
+	if ((!Levitation ^ was_levitating) || (!Flying ^ was_flying))
+		context.botl = context.botlx = TRUE; /* update Lev/Fly status condition */
 }
 
 /* extracted from spoteffects; called by spoteffects to check for entering or

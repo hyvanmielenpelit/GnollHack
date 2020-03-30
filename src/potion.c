@@ -72,7 +72,7 @@ boolean talk;
             You_feel("less %s now.", Hallucination ? "trippy" : "confused");
     }
     if ((xtime && !old) || (!xtime && old))
-        context.botl = TRUE;
+		context.botl = context.botlx = TRUE;
 
     set_itimeout(&HConfusion, xtime);
 }
@@ -101,7 +101,7 @@ boolean talk;
         }
     }
     if ((!xtime && old) || (xtime && !old))
-        context.botl = TRUE;
+        context.botl = context.botlx = TRUE;
 
     set_itimeout(&HStun, xtime);
 }
@@ -141,8 +141,8 @@ boolean talk;
                 You_feel("%s worse.", xtime <= Sick / 2L ? "much" : "even");
         }
         set_itimeout(&Sick, xtime);
-        context.botl = TRUE;
-    }
+		context.botl = context.botlx = TRUE;
+	}
 	else if (old)
 	{
         /* was sick, now not */
@@ -154,8 +154,8 @@ boolean talk;
 				You_feel("cured.  What a relief!");
 		}
 		Sick = 0L; /* set_itimeout(&Sick, 0L) */
-		context.botl = TRUE;
-    }
+		context.botl = context.botlx = TRUE;
+	}
 
     kptr = find_delayed_killer(SICK);
     if (Sick)
@@ -211,7 +211,7 @@ boolean talk;
 				You_feel("%s worse.", xtime <= FoodPoisoned / 2L ? "much" : "even");
 		}
 		set_itimeout(&FoodPoisoned, xtime);
-		context.botl = TRUE;
+		context.botl = context.botlx = TRUE;
 	}
 	else if (old)
 	{
@@ -224,7 +224,7 @@ boolean talk;
 				You_feel("cured.  What a relief!");
 		}
 		FoodPoisoned = 0L;
-		context.botl = TRUE;
+		context.botl = context.botlx = TRUE;
 	}
 
 	kptr = find_delayed_killer(FOOD_POISONED);
@@ -261,8 +261,8 @@ const char *msg;
 #endif
     set_itimeout(&Slimed, xtime);
     if ((xtime != 0L) ^ (old != 0L)) {
-        context.botl = TRUE;
-        if (msg)
+		context.botl = context.botlx = TRUE;
+		if (msg)
             pline("%s", msg);
     }
     if (!Slimed)
@@ -285,8 +285,8 @@ const char *killername;
 #endif
     set_itimeout(&Stoned, xtime);
     if ((xtime != 0L) ^ (old != 0L)) {
-        context.botl = TRUE;
-        if (msg)
+		context.botl = context.botlx = TRUE;
+		if (msg)
             pline("%s", msg);
     }
     if (!Stoned)
@@ -306,8 +306,8 @@ boolean talk;
         talk = FALSE;
 
     set_itimeout(&Vomiting, xtime);
-    context.botl = TRUE;
-    if (!xtime && old)
+	context.botl = context.botlx = TRUE;
+	if (!xtime && old)
         if (talk)
             You_feel("much less nauseated now.");
 }
@@ -398,7 +398,8 @@ toggle_blindness()
 {
 	/* Note this is a kludge that works only with wielded weapons; */
 	/* blindness has just been toggled */
-    context.botl = TRUE; /* status conditions need update */
+	context.botl = context.botlx = TRUE;
+	/* status conditions need update */
     vision_full_recalc = 1; /* vision has changed */
     /* this vision recalculation used to be deferred until moveloop(),
        but that made it possible for vision irregularities to occur
@@ -513,8 +514,8 @@ long mask; /* nonzero if resistance status should change by mask */
         (eg. Qt windowport's equipped items display) */
         update_inventory();
 
-        context.botl = TRUE;
-        if (talk)
+		context.botl = context.botlx = TRUE;
+		if (talk)
             pline(message, verb);
     }
 
@@ -533,8 +534,8 @@ boolean talk;
 
     set_itimeout(&HDeaf, xtime);
     if ((xtime != 0L) ^ (old != 0L)) {
-        context.botl = TRUE;
-        if (talk)
+		context.botl = context.botlx = TRUE;
+		if (talk)
             You(old ? "can hear again." : "are unable to hear anything.");
     }
 }
@@ -1439,7 +1440,7 @@ register boolean curesick, cureblind, curehallucination, curestun, cureconfusion
 		make_confused(0L, TRUE);
 	}
 
-	context.botl = 1;
+	context.botl = context.botlx = TRUE;
 	return;
 }
 
@@ -1953,25 +1954,25 @@ register struct obj *obj;
         break;
     case POT_FULL_HEALING:
         if (Upolyd && u.mh < u.mhmax)
-            u.mh++, context.botl = 1;
+            u.mh++, context.botl = context.botlx = 1;
         if (u.uhp < u.uhpmax)
-            u.uhp++, context.botl = 1;
+            u.uhp++, context.botl = context.botlx = 1;
         cureblind = TRUE;
         /*FALLTHRU*/
 	case POT_GREATER_HEALING:
 	case POT_EXTRA_HEALING:
         if (Upolyd && u.mh < u.mhmax)
-            u.mh++, context.botl = 1;
+            u.mh++, context.botl = context.botlx = 1;
         if (u.uhp < u.uhpmax)
-            u.uhp++, context.botl = 1;
+            u.uhp++, context.botl = context.botlx = 1;
         if (!obj->cursed)
             cureblind = TRUE;
         /*FALLTHRU*/
     case POT_HEALING:
         if (Upolyd && u.mh < u.mhmax)
-            u.mh++, context.botl = 1;
+            u.mh++, context.botl = context.botlx = 1;
         if (u.uhp < u.uhpmax)
-            u.uhp++, context.botl = 1;
+            u.uhp++, context.botl = context.botlx = 1;
         if (obj->blessed)
             cureblind = TRUE;
         if (cureblind) {
@@ -2850,7 +2851,7 @@ struct monst *mon,  /* monster being split */
             u.basemhmax -= mtmp2->mbasehpmax;
 			updatemaxhp();
 			update_mon_maxhp(mtmp2);
-			context.botl = 1;
+			context.botl = context.botlx = 1;
             You("multiply%s!", reason);
         }
     } 

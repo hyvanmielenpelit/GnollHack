@@ -1850,8 +1850,8 @@ Hear_again(VOID_ARGS)
     /* Chance of deafness going away while fainted/sleeping/etc. */
     if (!rn2(2)) {
         make_deaf(0L, FALSE);
-        context.botl = TRUE;
-    }
+		context.botl = context.botlx = TRUE;
+	}
     return 0;
 }
 
@@ -1887,8 +1887,8 @@ struct obj *obj;
             where = (u.usteed) ? "saddle" : surface(u.ux, u.uy);
         pline_The("world spins and %s %s.", what, where);
         incr_itimeout(&HDeaf, duration);
-        context.botl = TRUE;
-        nomul(-duration);
+		context.botl = context.botlx = TRUE;
+		nomul(-duration);
         multi_reason = "unconscious from rotten food";
         nomovemsg = "You are conscious again.";
         afternmv = Hear_again;
@@ -3415,8 +3415,8 @@ unfaint(VOID_ARGS)
     if (u.uhs > FAINTING)
         u.uhs = FAINTING;
     stop_occupation();
-    context.botl = 1;
-    return 0;
+	context.botl = context.botlx = TRUE;
+	return 0;
 }
 
 boolean
@@ -3513,8 +3513,8 @@ boolean incr;
            now uhunger becomes more negative at a slower rate */
         } else if (u.uhunger < -(100 + 10 * (int) ACURR(A_CON))) {
             u.uhs = STARVED;
-            context.botl = 1;
-            bot();
+			context.botl = context.botlx = TRUE;
+			bot();
             You("die from starvation.");
             killer.format = KILLED_BY;
             Strcpy(killer.name, "starvation");
@@ -3579,8 +3579,8 @@ boolean incr;
             break;
         }
         u.uhs = newhs;
-        context.botl = 1;
-        bot();
+		context.botl = context.botlx = TRUE;
+		bot();
         if ((Upolyd ? u.mh : u.uhp) < 1) {
             You("die from hunger and exhaustion.");
             killer.format = KILLED_BY;

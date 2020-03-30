@@ -216,7 +216,7 @@ dosit()
                 make_sick(0L, (char *) 0, FALSE);
 				make_food_poisoned(0L, (char*)0, FALSE);
 				heal_legs(0);
-                context.botl = 1;
+                context.botl = context.botlx = 1;
                 break;
             case 5:
                 take_gold();

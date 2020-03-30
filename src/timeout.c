@@ -803,7 +803,7 @@ nh_timeout()
 			case DEAF:
 				set_itimeout(&HDeaf, 1L);
 				make_deaf(0L, TRUE);
-				context.botl = TRUE;
+				context.botl = context.botlx = TRUE;
 				if (!Deaf)
 					stop_occupation();
 				break;
@@ -852,7 +852,7 @@ nh_timeout()
 			case FLYING:
 				/* timed Flying is via #wizintrinsic only */
 				if (was_flying && !Flying) {
-					context.botl = 1;
+					context.botl = context.botlx = 1;
 					You("land.");
 					spoteffects(TRUE);
 				}
@@ -1367,7 +1367,7 @@ boolean wakeup_msg;
         /* caller can follow with a direct call to Hear_again() if
            there's a need to override this when wakeup_msg is true */
         incr_itimeout(&HDeaf, how_long);
-        context.botl = TRUE;
+        context.botl = context.botlx = TRUE;
         afternmv = Hear_again; /* this won't give any messages */
     }
     /* early wakeup from combat won't be possible until next monster turn */
@@ -2485,7 +2485,7 @@ do_storms()
         /* Even if already deaf, we sense the thunder's vibrations. */
         pline("Kaboom!!!  Boom!!  Boom!!");
         incr_itimeout(&HDeaf, rn1(20, 30));
-        context.botl = TRUE;
+        context.botl = context.botlx = TRUE;
         if (!u.uinvulnerable) {
             stop_occupation();
             nomul(-3);

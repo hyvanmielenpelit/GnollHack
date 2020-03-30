@@ -898,8 +898,8 @@ int how;
         multi = -1;
     if (u.utrap && u.utraptype == TT_LAVA)
         reset_utrap(FALSE);
-    context.botl = 1;
-    u.ugrave_arise = NON_PM;
+	context.botl = context.botlx = TRUE;
+	u.ugrave_arise = NON_PM;
     HUnchanging = 0L;
 	HSleeping = 0L;
 	HParalyzed = 0L;

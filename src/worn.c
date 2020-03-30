@@ -242,7 +242,7 @@ boolean verbose;
 				}
 			}
 		}
-		context.botl = 1;
+		context.botl = context.botlx = 1;
 		if (needbecomecursedmsg)
 		{
 			if (Blind)
@@ -354,7 +354,7 @@ boolean verbose;
 			//Nonobservable ring
 			learnring(obj, FALSE);
 		}
-		context.botl = 1;
+		context.botl = context.botlx = 1;
 	}
 	update_inventory();
 }

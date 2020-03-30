@@ -583,8 +583,8 @@ Amulet_on()
         if (can_be_strangled(&youmonst)) {
             makeknown(AMULET_OF_STRANGULATION);
             Strangled = 6L;
-            context.botl = TRUE;
-            pline("It constricts your throat!");
+			context.botl = context.botlx = TRUE;
+			pline("It constricts your throat!");
         }
         break;
     }
@@ -600,8 +600,8 @@ Amulet_off()
     case AMULET_OF_STRANGULATION:
         if (Strangled) {
             Strangled = 0L;
-            context.botl = TRUE;
-            if (Breathless)
+			context.botl = context.botlx = TRUE;
+			if (Breathless)
                 Your("%s is no longer constricted!", body_part(NECK));
             else
                 You("can breathe more easily!");

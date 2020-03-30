@@ -2938,7 +2938,7 @@ boolean byplayer;
 void
 float_up()
 {
-    context.botl = TRUE;
+    context.botl = context.botlx = TRUE;
     if (u.utrap) {
         if (u.utraptype == TT_PIT) {
             reset_utrap(FALSE);
@@ -3049,7 +3049,7 @@ long hmask, emask; /* might cancel timeout */
         (void) encumber_msg(); /* carrying capacity might have changed */
         return 0;
     }
-    context.botl = TRUE;
+    context.botl = context.botlx = TRUE;
     nomul(0); /* stop running or resting */
     if (Blocks_Flying) {
         /* controlled flight no longer overridden by levitation */
@@ -3322,12 +3322,12 @@ domagictrap()
         if (!Deaf) {
             You_hear("a deafening roar!");
             incr_itimeout(&HDeaf, rn1(20, 30));
-            context.botl = TRUE;
+            context.botl = context.botlx = TRUE;
         } else {
             /* magic vibrations still hit you */
             You_feel("rankled.");
             incr_itimeout(&HDeaf, rn1(5, 15));
-            context.botl = TRUE;
+            context.botl = context.botlx = TRUE;
         }
         while (cnt--)
             (void) makemon((struct permonst *) 0, u.ux, u.uy, NO_MM_FLAGS);

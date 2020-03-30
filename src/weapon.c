@@ -2066,13 +2066,13 @@ update_can_advance_any_skill()
 	for (i = 0; i < P_NUM_SKILLS; i++) {
 		if (can_advance(i, FALSE)) {
 			if(!u.canadvanceskill);
-				context.botl = TRUE;
+				context.botl = context.botlx = TRUE;
 			u.canadvanceskill = TRUE;
 			return;
 		}
 	}
 	if (u.canadvanceskill);
-		context.botl = TRUE;
+		context.botl = context.botlx = TRUE;
 
 	u.canadvanceskill = FALSE;
 	return;

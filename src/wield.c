@@ -130,7 +130,7 @@ boolean verbose;
             pline("%s shining.", Tobjnam(olduwep, "stop"));
     }
 	
-	context.botl = 1;
+	context.botl = context.botlx = 1;
 	
 	/* Note: Explicitly wielding a pick-axe will not give a "bashing"
      * message.  Wielding one via 'a'pplying it will.
@@ -1269,7 +1269,7 @@ dotwoweapon()
         //You("switch to your primary weapon.");
 		You("stop two-weapon fighting.");
         u.twoweap = 0;
-		context.botl = TRUE;
+		context.botl = context.botlx = TRUE;
         update_inventory();
         return 0;
     }
@@ -1280,7 +1280,7 @@ dotwoweapon()
         /* Success! */
         You("begin two-weapon fighting.");
         u.twoweap = 1;
-		context.botl = TRUE;
+		context.botl = context.botlx = TRUE;
 		update_inventory();
 		return 0; // (rnd(20) > ACURR(A_DEX));
     }

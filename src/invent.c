@@ -1028,7 +1028,7 @@ boolean verbose;
 		}
 
 		update_inventory();
-		context.botl = TRUE;
+		context.botl = context.botlx = TRUE;
 		pline("Everything %s SO boring now.", (!Blind) ? "looks" : "feels");
 	}
 
@@ -1269,7 +1269,7 @@ boolean verbose;
 		makeknown(otmp->otyp);
 	}
 
-	context.botl = TRUE;
+	context.botl = context.botlx = TRUE;
 
 }
 

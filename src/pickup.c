@@ -1627,8 +1627,8 @@ encumber_msg()
                 newcap == 4 ? "can barely" : "can't even");
             break;
         }
-        context.botl = 1;
-    } else if (oldcap > newcap) {
+		context.botl = context.botlx = TRUE;
+	} else if (oldcap > newcap) {
         switch (newcap) {
         case 0:
             Your("movements are now unencumbered.");
@@ -1644,8 +1644,8 @@ encumber_msg()
                 stagger(youmonst.data, "stagger"));
             break;
         }
-        context.botl = 1;
-    }
+		context.botl = context.botlx = TRUE;
+	}
 
 	u.carrying_capacity_level = newcap;
     return newcap;

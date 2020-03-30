@@ -395,7 +395,7 @@ int trouble;
         }
         You("can breathe again.");
         Strangled = 0;
-        context.botl = 1;
+        context.botl = context.botlx = 1;
         break;
     case TROUBLE_LAVA:
         You("are back on solid ground.");
@@ -409,7 +409,7 @@ int trouble;
     case TROUBLE_HUNGRY:
         Your("%s feels content.", body_part(STOMACH));
         init_uhunger();
-        context.botl = 1;
+        context.botl = context.botlx = 1;
         break;
     case TROUBLE_SICK:
         You_feel("better.");
@@ -1177,7 +1177,7 @@ aligntyp g_align;
                rather than issuing a pat-on-head */
             u.ucreamed = 0;
             make_blinded(0L, TRUE);
-            context.botl = 1;
+            context.botl = context.botlx = 1;
             break;
         case 4: {
             register struct obj *otmp;

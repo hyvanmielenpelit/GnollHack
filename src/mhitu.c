@@ -2341,7 +2341,7 @@ register struct obj* omonwep;
                 make_sick(0L, (char *) 0, FALSE);
 			if (FoodPoisoned)
 				make_food_poisoned(0L, (char*)0, FALSE);
-			context.botl = 1;
+			context.botl = context.botlx = TRUE;
 
             if (goaway)
 			{

@@ -4712,7 +4712,7 @@ boolean ordinary;
 		boolean was_fast = Fast;
 		boolean was_very_fast = Very_fast;
 		incr_itimeout(&HVery_fast, 150 + rnd(50));
-		context.botl = TRUE;
+		context.botl = context.botlx = TRUE;
 		if (Very_fast && !was_very_fast)
 		{
 			learn_it = TRUE;
@@ -5269,7 +5269,7 @@ int duration;
 	{
 		You_feel("your magic is not flowing properly.");
 		incr_itimeout(&HCancelled, duration);
-		context.botl = TRUE;
+		context.botl = context.botlx = TRUE;
 
         if (Upolyd) { /* includes lycanthrope in creature form */
             /*

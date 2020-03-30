@@ -3378,7 +3378,7 @@ struct monst *mtmp;
         }
         u.ustuck = 0;
 		update_all_character_properties((struct obj*)0, TRUE);
-		context.botl = TRUE;
+		context.botl = context.botlx = TRUE;
 	}
 }
 

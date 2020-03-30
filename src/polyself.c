@@ -157,7 +157,7 @@ float_vs_flight()
 		HBlocks_Levitation |= I_SPECIAL;
     else
 		HBlocks_Levitation &= ~I_SPECIAL;
-    context.botl = TRUE;
+	context.botl = context.botlx = TRUE;
 }
 
 /* for changing into form that's immune to strangulation */
@@ -172,8 +172,8 @@ boolean on;
         if (uamul && uamul->otyp == AMULET_OF_STRANGULATION
             && can_be_strangled(&youmonst)) {
             Strangled = 6L;
-            context.botl = TRUE;
-            Your("%s %s your %s!", simpleonames(uamul),
+			context.botl = context.botlx = TRUE;
+			Your("%s %s your %s!", simpleonames(uamul),
                  Strangled ? "still constricts" : "begins constricting",
                  body_part(NECK)); /* "throat" */
             makeknown(AMULET_OF_STRANGULATION);
@@ -183,8 +183,8 @@ boolean on;
     } else {
         if (Strangled && !can_be_strangled(&youmonst)) {
             Strangled = 0L;
-            context.botl = TRUE;
-            You("are no longer being strangled.");
+			context.botl = context.botlx = TRUE;
+			You("are no longer being strangled.");
         }
     }
 }
@@ -412,8 +412,8 @@ newman()
         make_slimed(10L, (const char *) 0);
     }
 
-    context.botl = 1;
-    see_monsters();
+	context.botl = context.botlx = TRUE;
+	see_monsters();
     (void) encumber_msg();
 
     retouch_equipment(2);
@@ -963,8 +963,8 @@ int mntmp;
     }
     check_strangling(TRUE); /* maybe start strangling */
 
-    context.botl = 1;
-    vision_full_recalc = 1;
+	context.botl = context.botlx = TRUE;
+	vision_full_recalc = 1;
     see_monsters();
     (void) encumber_msg();
 
@@ -1327,8 +1327,8 @@ rehumanize()
     }
     nomul(0);
 
-    context.botl = 1;
-    vision_full_recalc = 1;
+	context.botl = context.botlx = TRUE;
+	vision_full_recalc = 1;
     (void) encumber_msg();
     if (was_flying && !Flying && u.usteed)
         You("and %s return gently to the %s.",
