@@ -1359,7 +1359,7 @@ int after; /* this is extra fast monster movement */
                      || mtmp2->data->msound == MS_GUARDIAN
                      || mtmp2->data->msound == MS_LEADER || !mon_has_bloodlust(mtmp) /*mtmp->ispacifist*/) && is_peaceful(mtmp2)
                     && !Conflict && !mon_has_bloodlust(mtmp))
-                || (touch_petrifies(mtmp2->data) && !resists_ston(mtmp)))
+                || (touch_petrifies(mtmp2->data) && !resists_ston(mtmp) && !MON_WEP(mtmp)))
                 continue;
 
             if (after)

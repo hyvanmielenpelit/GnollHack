@@ -429,12 +429,10 @@ char *buf;
 {
     int ret = 1;
 	char modebuf[BUFSZ];
-	if (wizard)
-		strcpy(modebuf, "W ");
-	else if(discover)
-		strcpy(modebuf, "E ");
-	else
-		strcpy(modebuf, "");
+
+	Sprintf(modebuf, "%s%s%s", wizard ? "W" : discover ? "X" : "",
+		context.game_difficulty == -2 ? "E" : context.game_difficulty == -1 ? "e" : context.game_difficulty == 1 ? "h" : context.game_difficulty == 2 ? "H" : "",
+		(wizard || discover || context.game_difficulty != 0) ? " " : "");
 
     /* TODO:    Add in dungeon name */
     if (Is_knox(&u.uz)) {
