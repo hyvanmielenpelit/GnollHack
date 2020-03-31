@@ -737,7 +737,7 @@ int udist;
                 return dog_eat(mtmp, obj, omx, omy, FALSE);
 
             carryamt = can_carry(mtmp, obj);
-            if (carryamt > 0 && !obj->cursed && !mtmp->issummoned && !mtmp->ispartymember && !Is_container(obj)
+            if (carryamt > 0 && !obj->cursed && !is_obj_unique(obj) && !is_quest_artifact(obj) && !mtmp->issummoned && !mtmp->ispartymember && !Is_container(obj)
                 && could_reach_item(mtmp, obj->ox, obj->oy) && !onnopickup(obj->ox, obj->oy, mtmp))
 			{
                 if (rn2(20) < edog->apport + 3)

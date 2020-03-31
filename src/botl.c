@@ -443,9 +443,10 @@ char *buf;
         Sprintf(buf, "%sHome %d ", modebuf, dunlev(&u.uz));
     } else if (In_endgame(&u.uz)) {
         /* [3.6.2: this used to be "Astral Plane" or generic "End Game"] */
-        (void) endgamelevelname(buf, depth(&u.uz));
-        (void) strsubst(buf, "Plane of ", ""); /* just keep <element> */
-        Sprintf("%s%s ", modebuf, buf);
+		char buf2[BUFSZ];
+		(void) endgamelevelname(buf2, depth(&u.uz));
+        (void) strsubst(buf2, "Plane of ", ""); /* just keep <element> */
+        Sprintf(buf, "%s%s ", modebuf, buf2);
     } else {
         /* ports with more room may expand this one */
         Sprintf(buf, "%sDL:%-2d ", modebuf, depth(&u.uz));

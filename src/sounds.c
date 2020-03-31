@@ -2668,10 +2668,23 @@ struct monst* mtmp;
 	if (!otmp)
 		otmp = which_armor(mtmp, W_AMUL);
 	if (!otmp)
+		otmp = which_armor(mtmp, W_MISC);
+	if (!otmp)
+		otmp = which_armor(mtmp, W_MISC2);
+	if (!otmp)
+		otmp = which_armor(mtmp, W_MISC3);
+	if (!otmp)
+		otmp = which_armor(mtmp, W_MISC4);
+	if (!otmp)
+		otmp = which_armor(mtmp, W_MISC5);
+	if (!otmp)
 	{
 		otmp = which_armor(mtmp, W_SADDLE);
 		issaddle = TRUE;
 	}
+
+	if (!otmp)
+		return 0;
 
 	if(otmp->owornmask)
 	{

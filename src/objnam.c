@@ -4009,6 +4009,12 @@ struct obj *no_wish;
         }
     }
 
+	if (wizard && wishymatch(actualn, OBJ_NAME(objects[AMULET_OF_YENDOR]), TRUE))
+	{
+		typ = AMULET_OF_YENDOR;
+		goto typfnd;
+	}
+
     if (((typ = rnd_otyp_by_namedesc(actualn, oclass, 1)) != STRANGE_OBJECT)
         || ((typ = rnd_otyp_by_namedesc(dn, oclass, 1)) != STRANGE_OBJECT)
         || ((typ = rnd_otyp_by_namedesc(un, oclass, 1)) != STRANGE_OBJECT)

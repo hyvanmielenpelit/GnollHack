@@ -895,7 +895,7 @@ int spellnum;
             return TRUE;
 
 		if (mtmp->mnum != PM_HIGH_PRIEST && mtmp->mnum != PM_WIZARD_OF_YENDOR && !((mtmp->data->geno & G_UNIQ) && (mtmp->data->mlet == S_DEMON))
-			&& (spellnum == MGC_DEATH_TOUCH || spellnum == CLC_DEATH_TOUCH))
+			&& spellnum == MGC_DEATH_TOUCH)
 			return TRUE;
 
 		/* aggravation (global wakeup) when everyone is already active */
@@ -924,7 +924,11 @@ int spellnum;
         /* blindness spell on blinded player */
         if (Blinded && spellnum == CLC_BLIND_YOU)
             return TRUE;
-    }
+		if (mtmp->mnum != PM_HIGH_PRIEST && mtmp->mnum != PM_WIZARD_OF_YENDOR && !((mtmp->data->geno & G_UNIQ) && (mtmp->data->mlet == S_DEMON))
+			&& spellnum == CLC_DEATH_TOUCH)
+			return TRUE;
+
+	}
     return FALSE;
 }
 
