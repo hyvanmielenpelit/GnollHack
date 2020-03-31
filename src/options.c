@@ -975,8 +975,8 @@ int maxlen;
  */
 STATIC_OVL void
 escapes(cp, tp)
-const char *cp;
-char *tp;
+const char *cp; /* might be 'tp', updating in place */
+char *tp; /* result is never longer than 'cp' */
 {
     static NEARDATA const char oct[] = "01234567", dec[] = "0123456789",
                                hex[] = "00112233445566778899aAbBcCdDeEfF";
@@ -1091,7 +1091,7 @@ boolean val_optional;
 
     if (!colon || !*++colon) {
         if (!val_optional)
-            config_error_add("Missing parameter for '%s'", opts);
+            config_error_add("Missing parameter for '%.60s'", opts);
         return (char *) 0;
     }
     return colon;
@@ -1442,13 +1442,14 @@ char *str;
             c = colornames[i].color;
             break;
         }
-    if (i == SIZE(colornames) && (*str >= '0' && *str <= '9'))
+	if (i == SIZE(colornames) && digit(*str))
         c = atoi(str);
 
-    if (c == CLR_MAX)
-        config_error_add("Unknown color '%s'", str);
-
-    return c;
+	if (c < 0 || c >= CLR_MAX) {
+		config_error_add("Unknown color '%.60s'", str);
+		c = CLR_MAX; /* "none of the above" */
+	}    
+	return c;
 }
 
 STATIC_OVL const char *
@@ -1478,7 +1479,7 @@ boolean complain;
         }
 
     if (a == -1 && complain)
-        config_error_add("Unknown text attribute '%s'", str);
+        config_error_add("Unknown text attribute '%.60s'", str);
 
     return a;
 }
@@ -1860,15 +1861,17 @@ int c, a;
 /* parse '"regex_string"=color&attr' and add it to menucoloring */
 boolean
 add_menu_coloring(tmpstr)
-char *tmpstr;
+char *tmpstr; /* never Null but could be empty */
 {
     int c = NO_COLOR, a = ATR_NONE;
     char *tmps, *cs, *amp;
     char str[BUFSZ];
 
-    Sprintf(str, "%s", tmpstr);
+    //Sprintf(str, "%s", tmpstr);
+	(void)strncpy(str, tmpstr, sizeof str - 1);
+	str[sizeof str - 1] = '\0';
 
-    if (!tmpstr || (cs = index(str, '=')) == 0) {
+    if ((cs = index(str, '=')) == 0) {
         config_error_add("Malformed MENUCOLOR");
         return FALSE;
     }
@@ -1879,7 +1882,7 @@ char *tmpstr;
         *amp = '\0';
 
     c = match_str2clr(tmps);
-    if (c >= CLR_MAX)
+    if (c >= CLR_MAX || c < 0)
         return FALSE;
 
     if (amp) {
@@ -6174,9 +6177,9 @@ char *buf;
 
 int
 sym_val(strval)
-const char *strval;
+const char *strval; /* up to 4*BUFSZ-1 long; only first few chars matter */
 {
-    char buf[QBUFSZ];
+    char buf[QBUFSZ], tmp[QBUFSZ]; /* to hold trucated copy of 'strval' */
 
     buf[0] = '\0';
     if (!strval[0] || !strval[1]) { /* empty, or single character */
@@ -6197,8 +6200,9 @@ const char *strval;
         /* not simple quote or basic backslash;
            strip closing quote and let escapes() deal with it */
         } else {
-            char *p, tmp[QBUFSZ];
+            char *p;
 
+			/* +1: skip opening single quote */
             (void) strncpy(tmp, strval + 1, sizeof tmp - 1);
             tmp[sizeof tmp - 1] = '\0';
             if ((p = rindex(tmp, '\'')) != 0) {
@@ -6206,8 +6210,11 @@ const char *strval;
                 escapes(tmp, buf);
             } /* else buf[0] stays '\0' */
         }
-    } else /* not lone char nor single quote */
-        escapes(strval, buf);
+    } else { /* not lone char nor single quote */
+        (void) strncpy(tmp, strval, sizeof tmp - 1);
+        tmp[sizeof tmp - 1] = '\0';
+        escapes(tmp, buf);
+    }
 
     return (int) *buf;
 }

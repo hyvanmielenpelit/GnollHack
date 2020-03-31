@@ -2348,10 +2348,15 @@ char *origbuf;
     boolean retval = TRUE;
     int src = iflags.parse_config_file_src;
 
+	while (*origbuf == ' ' || *origbuf == '\t') /* skip leading whitespace */
+		++origbuf;                   /* (caller probably already did this) */
+	(void)strncpy(buf, origbuf, sizeof buf - 1);
+	buf[sizeof buf - 1] = '\0'; /* strncpy not guaranteed to NUL terminate */
+
     /* convert any tab to space, condense consecutive spaces into one,
        remove leading and trailing spaces (exception: if there is nothing
        but spaces, one of them will be kept even though it leads/trails) */
-    mungspaces(strcpy(buf, origbuf));
+	mungspaces(buf);
 
     /* find the '=' or ':' */
     bufp = find_optparam(buf);
@@ -3053,7 +3058,11 @@ boolean
 proc_wizkit_line(buf)
 char *buf;
 {
-    struct obj *otmp = readobjnam(buf, (struct obj *) 0);
+    struct obj *otmp;
+
+	if (strlen(buf) >= BUFSZ)
+		buf[BUFSZ - 1] = '\0';
+	otmp = readobjnam(buf, (struct obj*) 0);
 
     if (otmp) {
         if (otmp != &zeroobj)
@@ -3160,6 +3169,7 @@ boolean FDECL((*proc), (char *));
 
                 /* merge now read line with previous ones, if necessary */
                 if (!ignoreline) {
+#if 0 
                     len = strlen(inbuf) + 1;
                     if (buf)
                         len += strlen(buf);
@@ -3170,12 +3180,25 @@ boolean FDECL((*proc), (char *));
                     } else
                         Strcpy(tmpbuf, inbuf);
                     buf = tmpbuf;
+#endif
+					len = (int)strlen(ep) + 1; /* +1: final '\0' */
+					if (buf)
+						len += (int)strlen(buf) + 1; /* +1: space */
+					tmpbuf = (char*)alloc(len);
+					*tmpbuf = '\0';
+					if (buf) {
+						Strcat(strcpy(tmpbuf, buf), " ");
+						free(buf);
+					}
+					buf = strcat(tmpbuf, ep);
+					if (strlen(buf) >= sizeof inbuf)
+						buf[sizeof inbuf - 1] = '\0';
                 }
 
                 if (morelines || (ignoreline && !oldline))
                     continue;
 
-                if (handle_config_section(ep)) {
+                if (handle_config_section(buf)) { //ep
                     free(buf);
                     buf = (char *) 0;
                     continue;
@@ -3196,11 +3219,11 @@ boolean FDECL((*proc), (char *));
                     }
                     bufp++;
                     if (config_section_chosen)
-                        free(config_section_chosen);
+                        free(config_section_chosen), config_section_chosen = 0;
                     section = choose_random_part(bufp, ',');
-                    if (section)
+                    if (section) {
                         config_section_chosen = dupstr(section);
-                    else {
+					} else {
                         config_error_add("No config section to choose");
                         rv = FALSE;
                     }
@@ -3301,6 +3324,9 @@ int which_set;
     int val, i;
     struct symparse *symp = (struct symparse *) 0;
     char *bufp, *commentp, *altp;
+
+	if (strlen(buf) >= BUFSZ)
+		buf[BUFSZ - 1] = '\0';
 
     /* convert each instance of whitespace (tabs, consecutive spaces)
        into a single space; leading and trailing spaces are stripped */

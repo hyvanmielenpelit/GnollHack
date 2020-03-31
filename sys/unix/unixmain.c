@@ -385,7 +385,7 @@ char *argv[];
                 load_symset("DECGraphics", PRIMARY);
                 switch_symbols(TRUE);
             } else {
-                raw_printf("Unknown option: %s", *argv);
+                raw_printf("Unknown option: %.60s", *argv);
             }
             break;
         case 'X':
@@ -415,7 +415,7 @@ char *argv[];
                 load_symset("RogueIBM", ROGUESET);
                 switch_symbols(TRUE);
             } else {
-                raw_printf("Unknown option: %s", *argv);
+                raw_printf("Unknown option: %.60s", *argv);
             }
             break;
         case 'p': /* profession (role) */
@@ -453,7 +453,7 @@ char *argv[];
                 flags.initrole = i;
                 break;
             }
-            /* else raw_printf("Unknown option: %s", *argv); */
+            /* else raw_printf("Unknown option: %.60s", *argv); */
         }
     }
 

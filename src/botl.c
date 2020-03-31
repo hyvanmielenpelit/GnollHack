@@ -2291,7 +2291,7 @@ boolean from_configfile;
             else {
                 int c = match_str2clr(subfields[i]);
 
-                if (c >= CLR_MAX || coloridx != -1)
+                if (c >= CLR_MAX || c < 0 || coloridx != -1)
                     return FALSE;
                 coloridx = c;
             }
@@ -2613,7 +2613,7 @@ int sidx;
             } else {
                 int k = match_str2clr(subfields[i]);
 
-                if (k >= CLR_MAX)
+                if (k >= CLR_MAX || k < 0)
                     return FALSE;
                 coloridx = k;
             }

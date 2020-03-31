@@ -1690,7 +1690,7 @@ struct obj *otmp;
             if (!can_saddle(steed) || !can_ride(steed))
                 dismount_steed(DISMOUNT_POLY);
             else
-                You("have to adjust yourself in the saddle on %s.",
+                You("adjust yourself in the saddle on %s.",
                     x_monnam(steed, ARTICLE_A, (char *) 0, SUPPRESS_SADDLE,
                              FALSE));
         }
