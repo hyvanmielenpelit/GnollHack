@@ -1912,10 +1912,10 @@ void
 start_corpse_timeout(body)
 struct obj *body;
 {
-    long when;       /* rot away when this old */
-    long corpse_age; /* age of corpse          */
-    int rot_adjust;
-    short action;
+    long when = 0;       /* rot away when this old */
+    long corpse_age = 0; /* age of corpse          */
+    int rot_adjust= 0;
+    short action = -1;
 
 #define TAINT_AGE (50L)        /* age when corpses go bad */
 #define TROLL_REVIVE_CHANCE 37 /* 1/37 chance for 50 turns ~ 75% chance */
@@ -1923,20 +1923,20 @@ struct obj *body;
 #define GENERAL_REVIVE_CHANCE 40 /* 1/40 chance for 50 turns ~ 70% chance */
 #define ROT_AGE (250L)         /* age when corpses rot away */
 
-    /* lizards and lichen don't rot or revive */
-    if (nonrotting_corpse(body->corpsenm))
-        return;
+    /* lizards and lichen don't rot */
+    if (!nonrotting_corpse(body->corpsenm))
+	{ 
+		action = ROT_CORPSE;             /* default action: rot away */
+		rot_adjust = in_mklev ? 25 : 10; /* give some variation */
+		corpse_age = monstermoves - body->age;
+		if (corpse_age > ROT_AGE)
+			when = rot_adjust;
+		else
+			when = ROT_AGE - corpse_age;
+		when += (long)(rnz(rot_adjust) - rot_adjust);
+	}
 
-    action = ROT_CORPSE;             /* default action: rot away */
-    rot_adjust = in_mklev ? 25 : 10; /* give some variation */
-    corpse_age = monstermoves - body->age;
-    if (corpse_age > ROT_AGE)
-        when = rot_adjust;
-    else
-        when = ROT_AGE - corpse_age;
-    when += (long) (rnz(rot_adjust) - rot_adjust);
-
-	if (mons[body->corpsenm].mflags3 & M3_REVIVES_FROM_DEAD)
+	if (is_reviver(&mons[body->corpsenm]))
 	{
 		if (is_rider(&mons[body->corpsenm])) {
 			/*
@@ -1988,7 +1988,10 @@ struct obj *body;
 
     if (body->norevive)
         body->norevive = 0;
-    (void) start_timer(when, TIMER_OBJECT, action, obj_to_any(body));
+
+	if(action > -1 && when > 0)
+	    (void) start_timer(when, TIMER_OBJECT, action, obj_to_any(body));
+
 }
 
 STATIC_OVL void
