@@ -376,7 +376,7 @@ int how;
             genders[flags.initgend].filecode, XLOG_SEP,
             aligns[1 - u.ualignbase[A_ORIGINAL]].filecode);
     Fprintf(rfile, "%cflags=0x%lx", XLOG_SEP, encodexlogflags());
-	Fprintf(rfile, "%cdifficulty=%d", XLOG_SEP, context.game_difficulty);
+	Fprintf(rfile, "%cdifficulty=%d", XLOG_SEP, (int)context.game_difficulty);
 	Fprintf(rfile, "\n");
 #undef XLOG_SEP
 }
