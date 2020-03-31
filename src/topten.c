@@ -377,6 +377,7 @@ int how;
             aligns[1 - u.ualignbase[A_ORIGINAL]].filecode);
     Fprintf(rfile, "%cflags=0x%lx", XLOG_SEP, encodexlogflags());
 	Fprintf(rfile, "%cdifficulty=%d", XLOG_SEP, (int)context.game_difficulty);
+	Fprintf(rfile, "%cmode=%s", XLOG_SEP, wizard ? "debug" : discover ? "explore" : "normal");
 	Fprintf(rfile, "\n");
 #undef XLOG_SEP
 }
