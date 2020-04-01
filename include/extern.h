@@ -3087,6 +3087,8 @@ E void FDECL(setuswapwep, (struct obj *, long));
 E void FDECL(setuqwepquietly, (struct obj*));
 E void FDECL(setuswapwepquietly, (struct obj*, long));
 E int NDECL(dowield);
+E int NDECL(doswaphandedness);
+E int NDECL(doswapweapon_right_or_both);
 E int NDECL(doswapweapon);
 E int FDECL(dosingleswapweapon, (long));
 E int NDECL(dowieldquiver);

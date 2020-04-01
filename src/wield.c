@@ -591,7 +591,8 @@ long mask;
 
 	/* May we attempt this? */
 	multi = 0;
-	if (cantwield(youmonst.data)) {
+	if (cantwield(youmonst.data)) 
+	{
 		pline("Don't be ridiculous!");
 		return 0;
 	}
@@ -604,7 +605,13 @@ long mask;
 
 	if (wep && altwep && swapwep && bimanual(swapwep))
 	{
-		You("cannot swap to a two-handed weapon while holding something in the other hand.");
+		You("cannot swap to a two-handed weapon while holding something in the other %s.", body_part(HAND));
+		return 0;
+	}
+
+	if (!wep && !swapwep)
+	{
+		Your("%s %s is already empty.", mask == W_WEP ? "right" : "left", body_part(HAND));
 		return 0;
 	}
 
@@ -616,7 +623,8 @@ long mask;
 		setuswapwep((struct obj*)0, W_SWAPWEP);
 		result = ready_weapon(oldswap, W_WEP);
 		/* Set your new secondary weapon */
-		if (uwep == oldwep) {
+		if (uwep == oldwep) 
+		{
 			/* Wield failed for some reason */
 			setuswapwep(oldswap, W_SWAPWEP);
 		}
@@ -634,11 +642,13 @@ long mask;
 		setuswapwep((struct obj*)0, W_SWAPWEP2);
 		result = ready_weapon(oldswap, W_WEP2);
 		/* Set your new secondary weapon */
-		if (uarms == oldwep) {
+		if (uarms == oldwep) 
+		{
 			/* Wield failed for some reason */
 			setuswapwep(oldswap, W_SWAPWEP2);
 		}
-		else {
+		else 
+		{
 			setuswapwep(oldwep, W_SWAPWEP2);
 			if (uswapwep2)
 				prinv((char*)0, uswapwep2, 0L);
@@ -661,6 +671,29 @@ long mask;
 	//Do not take a turn
 	return 0; // result;
 
+}
+
+int
+doswaphandedness()
+{
+	flags.swap_rhand_only = !flags.swap_rhand_only;
+
+	if (flags.swap_rhand_only)
+		You("are now swapping weapons only in your right %s.", body_part(HAND));
+	else
+		You("are now swapping weapons in your both %s.", makeplural(body_part(HAND)));
+
+	return 1;
+}
+
+
+int
+doswapweapon_right_or_both()
+{
+	if (flags.swap_rhand_only)
+		return dosingleswapweapon(W_WEP);
+	else
+		return doswapweapon();
 }
 
 
@@ -688,6 +721,11 @@ doswapweapon()
 		}
 		if (uarms && welded(uarms, &youmonst)) {
 			weldmsg(uarms);
+			return 0;
+		}
+		if (!uwep && !uswapwep && !uarms && !uswapwep2)
+		{
+			Your("both %s are already empty.", makeplural(body_part(HAND)));
 			return 0;
 		}
 
@@ -754,6 +792,11 @@ doswapweapon()
 			weldmsg(uarms);
 			return 0;
 		}
+		if (!uwep && !uswapwep && !uarms && !uswapwep2)
+		{
+			You("are already empty %s.", body_part(HANDED));
+			return 0;
+		}
 
 		/* Unwield your current secondary weapon */
 		oldwep = uwep;
@@ -777,11 +820,15 @@ doswapweapon()
 
 		/* Set your new primary weapon */
 		result = ready_weapon(oldswap, W_WEP);
+
 		/* Set your new secondary weapon */
-		if (uwep == oldwep) {
+		if (uwep == oldwep)
+		{
 			/* Wield failed for some reason */
 			setuswapwep(oldswap, W_SWAPWEP);
-		} else {
+		} 
+		else 
+		{
 			setuswapwep(oldwep, W_SWAPWEP);
 			if (uswapwep)
 				prinv((char *) 0, uswapwep, 0L);
@@ -810,11 +857,13 @@ doswapweapon()
 			else if (erodeable_wep(oldswap2))
 				ready_weapon(oldswap2, W_WEP2);
 
-			if (uarms == oldwep2) {
+			if (uarms == oldwep2)
+			{
 				/* Wield failed for some reason */
 				setuswapwep(oldswap2, W_SWAPWEP2);
 			}
-			else {
+			else 
+			{
 				setuswapwep(oldwep2, W_SWAPWEP2);
 				if (uswapwep2)
 					prinv((char*)0, uswapwep2, 0L);

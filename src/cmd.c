@@ -4234,10 +4234,12 @@ struct ext_func_tab extcmdlist[] = {
 	{ M('f'), "force", "force a lock", doforce, AUTOCOMPLETE | INCMDMENU },
 	{ ';', "glance", "show what type of thing a map symbol corresponds to",
             doquickwhatis, IFBURIED | GENERALCMD },
-    { '?', "help", "give a help message", dohelp, IFBURIED | GENERALCMD },
+	{ M('h'), "handedness", "toggle swap weapon handedness",
+			doswaphandedness, IFBURIED | AUTOCOMPLETE | INCMDMENU },
+	{ '?', "help", "give a help message", dohelp, IFBURIED | GENERALCMD },
     { '\0', "herecmdmenu", "show menu of commands you can do here",
             doherecmdmenu, IFBURIED },
-    { 'i', "inventory", "show your inventory", ddoinv, IFBURIED },
+	{ 'i', "inventory", "show your inventory", ddoinv, IFBURIED },
     { 'I', "inventtype", "inventory specific item types",
             dotypeinv, IFBURIED },
     { M('i'), "invoke", "invoke an object's special powers",
@@ -4368,7 +4370,7 @@ struct ext_func_tab extcmdlist[] = {
             dowhatis, IFBURIED | GENERALCMD },
 	{ 'w', "wield", "wield (put in use) a weapon", dowield },
     { M('w'), "wipe", "wipe off your face", dowipe, AUTOCOMPLETE | INCMDMENU },
-	{ 'x', "swap", "swap wielded and secondary weapons", doswapweapon, INCMDMENU },
+	{ 'x', "swap", "swap wielded and secondary weapons", doswapweapon_right_or_both, INCMDMENU },
 	{ M('x'), "examine", "describe an item", doitemdescriptions, IFBURIED | AUTOCOMPLETE | INCMDMENU },
 	{ M('y'), "you", "describe your character", docharacterstatistics, IFBURIED | AUTOCOMPLETE | INCMDMENU },
 	{ 'z', "zap", "zap a wand", dozap },
@@ -4484,7 +4486,8 @@ commands_init()
 
     /* alt keys: */
     (void) bind_key(M('O'), "overview");
-    (void) bind_key(M('2'), "twoweapon");
+	(void) bind_key(M('1'), "handedness");
+	(void) bind_key(M('2'), "twoweapon");
 
     /* wait_on_space */
     (void) bind_key(' ',    "wait");

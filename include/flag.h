@@ -98,6 +98,7 @@ struct flag {
     boolean sortpack;        /* sorted inventory */
     boolean sparkle;         /* show "resisting" special FX (Scott Bigham) */
     boolean standout;        /* use standout for --More-- */
+	boolean	swap_rhand_only; /* swap only right hand */
     boolean time;            /* display elapsed 'time' */
     boolean tombstone;       /* print tombstone */
     boolean verbose;         /* max battle info */
