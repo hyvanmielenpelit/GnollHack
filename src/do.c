@@ -685,6 +685,105 @@ register struct obj* obj;
 			txt = buf;
 			putstr(datawin, 0, txt);
 		}
+		if (stats_known && is_obj_normally_edible(obj))
+		{
+			if (objects[obj->otyp].oc_edible_subtype > EDIBLE_NORMAL)
+			{
+				switch (objects[obj->otyp].oc_edible_subtype)
+				{
+				case EDIBLE_ROTTEN:
+					strcpy(buf2, "Rotten");
+					break;
+				case EDIBLE_SICKENING:
+					strcpy(buf2, "Sickening");
+					break;
+				case EDIBLE_ACIDIC:
+					strcpy(buf2, "Acidic");
+					break;
+				case EDIBLE_POISONOUS:
+					strcpy(buf2, "Poisonous");
+					break;
+				case EDIBLE_TAINTED:
+					strcpy(buf2, "Tainted");
+					break;
+				case EDIBLE_HALLUCINATING:
+					strcpy(buf2, "Hallucinating");
+					break;
+				case EDIBLE_DEADLY_POISONOUS:
+					strcpy(buf2, "Highly poisonous");
+					break;
+				default:
+					strcpy(buf2, "Normal");
+					break;
+				}
+				Sprintf(buf, "Comestible type:        %s", buf2);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (objects[obj->otyp].oc_edible_effect != EDIBLE_NO_EFFECT
+				&& objects[obj->otyp].oc_edible_effect != EDIBLE_APPLE
+				&& objects[obj->otyp].oc_edible_effect != EDIBLE_EGG
+				)
+			{
+				strcpy(buf2, "No effect");
+
+				if (objects[obj->otyp].oc_edible_effect > 0)
+				{
+					strcpy(buf2, get_property_name(objects[obj->otyp].oc_edible_effect));
+					*buf2 = highc(*buf2);
+				}
+				else if (objects[obj->otyp].oc_edible_effect < 0)
+				{
+					switch (objects[obj->otyp].oc_edible_effect)
+					{
+					case EDIBLE_GAIN_STRENGTH:
+						strcpy(buf2, "Confers strength");
+						break;
+					case EDIBLE_GAIN_DEXTERITY:
+						strcpy(buf2, "Confers dexterity");
+						break;
+					case EDIBLE_GAIN_CONSTITUTION:
+						strcpy(buf2, "Confers constitution");
+						break;
+					case EDIBLE_GAIN_INTELLIGENCE:
+						strcpy(buf2, "Confers intelligence");
+						break;
+					case EDIBLE_GAIN_WISDOM:
+						strcpy(buf2, "Confers wisdom");
+						break;
+					case EDIBLE_GAIN_CHARISMA:
+						strcpy(buf2, "Confers charisma");
+						break;
+					case EDIBLE_CURE_LYCANTHROPY:
+						strcpy(buf2, "Cures lycanthropy");
+						break;
+					case EDIBLE_CURE_BLIDNESS:
+						strcpy(buf2, "Cures blindness");
+						break;
+					case EDIBLE_READ_FORTUNE:
+						strcpy(buf2, "Contains a fortune");
+						break;
+					case EDIBLE_CURE_SICKNESS:
+						strcpy(buf2, "Cures sickness");
+						break;
+					case EDIBLE_ROYAL_JELLY:
+						strcpy(buf2, "Confers strength and other jelly effects");
+						break;
+					case EDIBLE_RESTORE_ABILITY:
+						strcpy(buf2, "Restores abilities");
+						break;
+					case EDIBLE_GAIN_LEVEL:
+						strcpy(buf2, "Confers one level");
+						break;
+					default:
+						break;
+					}
+				}
+				Sprintf(buf, "Comestible effect:      %s", buf2);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+		}
 	}
 
 	/* Material */
@@ -1033,12 +1132,15 @@ register struct obj* obj;
 
 
 	boolean affectsac = obj->oclass == ARMOR_CLASS
-			|| (stats_known && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED));
+			|| (stats_known && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)
+			|| (stats_known && obj->oclass == MISCELLANEOUS_CLASS && objects[otyp].oc_armor_class != 0)
+				);
 
 	boolean affectsmc = obj->oclass == ARMOR_CLASS
 		|| (stats_known && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)
-			|| (objects[otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC)
-			|| objects[otyp].oc_magic_cancellation != 0);
+			|| (stats_known && objects[otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC)
+			|| (stats_known && obj->oclass == MISCELLANEOUS_CLASS && objects[otyp].oc_magic_cancellation != 0)
+			);
 
 
 	if (affectsac)

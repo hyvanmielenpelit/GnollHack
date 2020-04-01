@@ -103,7 +103,7 @@ register struct obj *obj;
 	boolean isorc = is_orc(youmonst.data);
 
     /* return (boolean) !!index(comestibles, obj->oclass); */
-    return (boolean) (obj->oclass == FOOD_CLASS || objects[obj->otyp].oc_flags & O1_EDIBLE_NONFOOD);
+    return (boolean)is_obj_normally_edible(obj);
 }
 
 /* used for hero init, life saving (if choking), and prayer results of fix
@@ -2551,7 +2551,7 @@ STATIC_OVL void
 food_after_effect(otmp)
 struct obj *otmp;
 {
-	if (!(otmp->oclass == FOOD_CLASS || (objects[otmp->otyp].oc_flags & O1_EDIBLE_NONFOOD)))
+	if (!is_obj_normally_edible(otmp))
 		return;
 
 	if (rn2(100) >= objects[otmp->otyp].oc_critical_strike_percentage)
@@ -2980,7 +2980,7 @@ doeat()
             docall(otmp);
         return 1;
     }
-    if (otmp->oclass != FOOD_CLASS && !(objects[otmp->otyp].oc_flags & O1_EDIBLE_NONFOOD)) {
+    if (!is_obj_normally_edible(otmp)) {
         int material;
 
         context.victual.reqtime = 1;

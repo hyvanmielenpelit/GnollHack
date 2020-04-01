@@ -443,7 +443,7 @@ boolean verbose;
 	if (!mtmp || !otmp)
 		return;
 
-	if (!(otmp->oclass == FOOD_CLASS || (objects[otmp->otyp].oc_flags & O1_EDIBLE_NONFOOD)))
+	if (!is_obj_normally_edible(otmp))
 		return;
 
 	if (rn2(100) >= objects[otmp->otyp].oc_critical_strike_percentage)
