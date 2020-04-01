@@ -334,10 +334,10 @@ struct obj {
 
 /* dragon gear */
 #define is_dragon_scales(obj) \
-	(is_dragon_obj(obj) && (objects[obj->otyp].oc_flags2 & O2_MONSTER_SCALES))
+	(is_dragon_obj(obj) && (objects[(obj)->otyp].oc_flags2 & O2_MONSTER_SCALES))
     //((obj)->otyp >= GRAY_DRAGON_SCALES && (obj)->otyp <= YELLOW_DRAGON_SCALES)
 #define is_dragon_mail(obj)                \
-	(is_dragon_obj(obj) && (objects[obj->otyp].oc_flags2 & O2_MONSTER_SCALE_MAIL))
+	(is_dragon_obj(obj) && (objects[(obj)->otyp].oc_flags2 & O2_MONSTER_SCALE_MAIL))
 //    ((obj)->otyp >= GRAY_DRAGON_SCALE_MAIL \
 //     && (obj)->otyp <= YELLOW_DRAGON_SCALE_MAIL)
 #define is_dragon_scale_armor(obj) \
@@ -350,38 +350,38 @@ struct obj {
 
 #define is_dragon_armor(obj) \
 	(obj->oclass == ARMOR_CLASS && is_dragon_obj(obj))
-#define is_dragon_obj(obj) ((objects[obj->otyp].oc_flags2 & O2_DRAGON_ITEM) != 0)
+#define is_dragon_obj(obj) ((objects[(obj)->otyp].oc_flags2 & O2_DRAGON_ITEM) != 0)
 
 /* Elven gear */
 #define is_elven_weapon(otmp)                                             \
-    (otmp->oclass == WEAPON_CLASS && is_elven_obj(otmp))
-#define is_elven_obj(otmp) ((objects[otmp->otyp].oc_flags2 & O2_ELVEN_ITEM) != 0)
+    ((otmp)->oclass == WEAPON_CLASS && is_elven_obj(otmp))
+#define is_elven_obj(otmp) ((objects[(otmp)->otyp].oc_flags2 & O2_ELVEN_ITEM) != 0)
 
 /* Orcish gear */
-#define is_orcish_obj(otmp) ((objects[otmp->otyp].oc_flags2 & O2_ORCISH_ITEM) != 0)
+#define is_orcish_obj(otmp) ((objects[(otmp)->otyp].oc_flags2 & O2_ORCISH_ITEM) != 0)
 
 /* Dwarvish gear */
-#define is_dwarvish_obj(otmp) ((objects[otmp->otyp].oc_flags2 & O2_DWARVEN_ITEM) != 0)
+#define is_dwarvish_obj(otmp) ((objects[(otmp)->otyp].oc_flags2 & O2_DWARVEN_ITEM) != 0)
 
 /* Gnomish gear */
-#define is_gnomish_obj(otmp) ((objects[otmp->otyp].oc_flags2 & O2_GNOMISH_ITEM) != 0)
+#define is_gnomish_obj(otmp) ((objects[(otmp)->otyp].oc_flags2 & O2_GNOMISH_ITEM) != 0)
 
 /* Gnollish gear */
-#define is_gnollish_obj(otmp) ((objects[otmp->otyp].oc_flags2 & O2_GNOLLISH_ITEM) != 0)
+#define is_gnollish_obj(otmp) ((objects[(otmp)->otyp].oc_flags2 & O2_GNOLLISH_ITEM) != 0)
 
 /* Modron gear */
-#define is_modron_obj(otmp) ((objects[otmp->otyp].oc_flags2 & O2_MODRON_ITEM) != 0)
+#define is_modron_obj(otmp) ((objects[(otmp)->otyp].oc_flags2 & O2_MODRON_ITEM) != 0)
 
 /* Demon gear */
-#define is_demon_obj(otmp) ((objects[otmp->otyp].oc_flags2 & O2_DEMON_ITEM) != 0)
+#define is_demon_obj(otmp) ((objects[(otmp)->otyp].oc_flags2 & O2_DEMON_ITEM) != 0)
 
 /* Angel gear */
-#define is_angel_obj(otmp) ((objects[otmp->otyp].oc_flags2 & O2_ANGEL_ITEM) != 0)
+#define is_angel_obj(otmp) ((objects[(otmp)->otyp].oc_flags2 & O2_ANGEL_ITEM) != 0)
 
 
 /* Light sources */
 #define is_candle(otmp) \
-	((objects[otmp->otyp].oc_flags2 & O2_CANDLE) != 0)
+	((objects[(otmp)->otyp].oc_flags2 & O2_CANDLE) != 0)
 
 /* Wand-like tools */
 #define is_wand_like_tool(otmp) \
@@ -397,10 +397,10 @@ struct obj {
 /* MAGIC_LAMP intentionally excluded below */
 /* age field of this is relative age rather than absolute */
 #define age_is_relative(otmp)                                       \
-    ((objects[otmp->otyp].oc_flags3 & O3_RELATIVE_AGE) != 0)
+    ((objects[(otmp)->otyp].oc_flags3 & O3_RELATIVE_AGE) != 0)
 /* object can be ignited */
 #define ignitable(otmp)                                             \
-    ((objects[otmp->otyp].oc_flags3 & O3_IGNITABLE) != 0)
+    ((objects[(otmp)->otyp].oc_flags3 & O3_IGNITABLE) != 0)
 
 /* things that can be read */
 #define is_readable(otmp)                                                    \
@@ -424,7 +424,7 @@ struct obj {
 /* misc helpers, simple enough to be macros */
 #define is_flimsy(otmp)                           \
     (objects[(otmp)->otyp].oc_material <= MAT_LEATHER \
-     || (objects[otmp->otyp].oc_flags2 & O2_FLIMSY))
+     || (objects[(otmp)->otyp].oc_flags2 & O2_FLIMSY))
 #define is_plural(o) \
     ((o)->quan != 1L                                                    \
      /* "the Eyes of the Overworld" are plural, but                     \
@@ -432,7 +432,7 @@ struct obj {
      || ((o)->oartifact == ART_EYES_OF_THE_OVERWORLD && (o)->nknown && (o)->known))
 
 #define pair_of(o) ((o->oclass == MISCELLANEOUS_CLASS && \
-	(objects[o->otyp].oc_subtyp == MISC_EYEGLASSES || objects[o->otyp].oc_subtyp == MISC_EARRINGS || objects[o->otyp].oc_subtyp == MISC_PANTS || objects[o->otyp].oc_subtyp == MISC_WINGS || objects[o->otyp].oc_subtyp == MISC_EXTRA_ARMS)) \
+	(objects[(o)->otyp].oc_subtyp == MISC_EYEGLASSES || objects[(o)->otyp].oc_subtyp == MISC_EARRINGS || objects[(o)->otyp].oc_subtyp == MISC_PANTS || objects[(o)->otyp].oc_subtyp == MISC_WINGS || objects[(o)->otyp].oc_subtyp == MISC_EXTRA_ARMS)) \
 	 || is_gloves(o) || is_boots(o) || is_bracers(o))
 
 #define is_otyp_unique(otyp) (objects[otyp].oc_unique || (objects[otyp].oc_flags3 & O3_UNIQUE))
