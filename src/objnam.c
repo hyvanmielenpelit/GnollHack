@@ -4009,7 +4009,7 @@ struct obj *no_wish;
         }
     }
 
-	if (wizard && wishymatch(actualn, OBJ_NAME(objects[AMULET_OF_YENDOR]), TRUE))
+	if (wizard && actualn && wishymatch(actualn, OBJ_NAME(objects[AMULET_OF_YENDOR]), TRUE))
 	{
 		typ = AMULET_OF_YENDOR;
 		goto typfnd;
