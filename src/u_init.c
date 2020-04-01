@@ -1471,7 +1471,9 @@ register struct trobj *trop;
 				   || objects[otyp].oc_flags2 & O2_GENERATED_CURSED
                    || otyp == POT_HALLUCINATION
                    || otyp == POT_ACID
-                   || otyp == SCR_AMNESIA
+				   || otyp == POT_URINE
+				   || (otyp == POT_DWARVEN_STOUT && !Race_if(PM_DWARF))
+				   || otyp == SCR_AMNESIA
                    || otyp == SCR_RETRAINING /* No need in the beginning */
                    || otyp == SCR_FIRE
                    || otyp == SCR_BLANK_PAPER

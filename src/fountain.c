@@ -525,6 +525,9 @@ register struct obj *obj;
 
 	register int zlevel;
 	zlevel = level_difficulty();
+	boolean nowaterdamage = FALSE;
+	boolean nodryup = FALSE;
+	boolean effecthappened = FALSE;
 
 	int ftyp = (levl[u.ux][u.uy].fountaintype & FOUNTAIN_TYPE_MASK);
 
@@ -570,110 +573,250 @@ register struct obj *obj;
             (void) angry_guards(FALSE);
         return;
     } 
-	else if(ftyp == FOUNTAIN_WATER || ftyp == FOUNTAIN_MAGIC)
-	{
-        int er = water_damage(obj, NULL, TRUE);
-
-        if (obj->otyp == POT_ACID
-            && er != ER_DESTROYED)
-		{ /* Acid and water don't mix */
-            useup(obj);
-            return;
-        } 
-		else if (er != ER_NOTHING && ftyp == FOUNTAIN_MAGIC && !rn2(2))
-		{ /* no further effect */
-            return;
-        }
-    }
 
 	if (ftyp == FOUNTAIN_HEALING)
 	{
+		boolean identified = FALSE;
 		if (obj && is_weapon(obj) && is_poisonable(obj) && obj->opoisoned)
 		{
 			pline("A coating wears off %s.", the(xname(obj)));
 			obj->opoisoned = 0;
-
-			if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
-			{
-				pline("That was a fountain of healing.");
-				SET_FOUNTAIN_KNOWN(u.ux, u.uy);
-			}
+			identified = TRUE;
+			effecthappened = TRUE;
 		}
 		else if (obj && (obj->otyp == POT_SICKNESS || obj->otyp == POT_POISON))
 		{
 			if (carried(obj))
-				pline("%s is purified.", Yobjnam2(obj, "dilute"));
-
+			{
+				if(objects[obj->otyp].oc_name_known)
+					pline("%s purified.", Yobjnam2(obj, "are"));
+				else 
+					pline("%s.", Yobjnam2(obj, "clear"));
+			}
 			obj->otyp = POT_WATER;
 			obj->dknown = 0;
 			obj->blessed = obj->cursed = 0;
 			obj->odiluted = 0;
 			if (carried(obj))
 				update_inventory();
+			identified = TRUE;
+			nowaterdamage = TRUE;
+			effecthappened = TRUE;
+		}
+		else if (obj && obj->oclass == POTION_CLASS)
+		{
+			if (carried(obj))
+				pline("%s imbued with %s%s energies.", Yobjnam2(obj, "are"), (objects[obj->otyp].oc_name_known && (obj->otyp == POT_HEALING || obj->otyp == POT_EXTRA_HEALING || obj->otyp == POT_GREATER_HEALING)) ? "further " : "",
+					obj->otyp == POT_FULL_HEALING ? "arcane" : "healing");
 
+			switch (obj->otyp)
+			{
+			case POT_RESTORE_ABILITY:
+			case POT_GAIN_ENERGY:
+			case POT_HEALING:
+				obj->otyp = POT_EXTRA_HEALING;
+				break;
+			case POT_GAIN_ABILITY:
+			case POT_GREATER_ENERGY:
+			case POT_EXTRA_HEALING:
+				obj->otyp = POT_GREATER_HEALING;
+				break;
+			case POT_GAIN_LEVEL:
+			case POT_FULL_ENERGY:
+			case POT_GREATER_HEALING:
+				obj->otyp = POT_FULL_HEALING;
+				break;
+			case POT_FULL_HEALING:
+				obj->otyp = POT_GAIN_ABILITY;
+				break;
+			default:
+				obj->otyp = POT_HEALING;
+				break;
+			}
+			obj->dknown = 0;
+			obj->odiluted = 0;
+
+			if (carried(obj))
+				update_inventory();
+			identified = TRUE;
+			nowaterdamage = TRUE;
+			effecthappened = TRUE;
+		}
+
+		if (identified)
+		{
 			if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
 			{
 				pline("That was a fountain of healing.");
 				SET_FOUNTAIN_KNOWN(u.ux, u.uy);
 			}
 		}
-		else
-			pline("Nothing much happens.");
 	}
 	else if (ftyp == FOUNTAIN_MANA)
 	{
-		/* Recharges wands */
-		if (obj && objects[obj->otyp].oc_charged && (obj->oclass == WAND_CLASS || obj->oclass == TOOL_CLASS))
+		boolean identified = FALSE;
+
+		if (obj && objects[obj->otyp].oc_charged)
 		{
 			recharge(obj, 0);
+			identified = TRUE;
+			nowaterdamage = TRUE;
+			effecthappened = TRUE;
+		}
+		else if (obj && obj->oclass == POTION_CLASS)
+		{
+			if (carried(obj))
+				pline("%s imbued with %s%s energies.", Yobjnam2(obj, "are"), (objects[obj->otyp].oc_name_known && (obj->otyp == POT_GAIN_ENERGY || obj->otyp == POT_GREATER_ENERGY)) ? "further " : "",
+					obj->otyp == POT_FULL_HEALING ? "arcane" : "magical");
+
+			switch (obj->otyp)
+			{
+			case POT_GAIN_ENERGY:
+			case POT_GAIN_ABILITY:
+			case POT_RESTORE_ABILITY:
+			case POT_EXTRA_HEALING:
+			case POT_GREATER_HEALING:
+				obj->otyp = POT_GREATER_ENERGY;
+				break;
+			case POT_GAIN_LEVEL:
+			case POT_FULL_HEALING:
+			case POT_GREATER_ENERGY:
+				obj->otyp = POT_FULL_ENERGY;
+				break;
+			case POT_FULL_ENERGY:
+				obj->otyp = POT_GAIN_ABILITY;
+				break;
+			default:
+				obj->otyp = POT_GAIN_ENERGY;
+				break;
+			}
+			obj->dknown = 0;
+			obj->odiluted = 0;
+
+			if (carried(obj))
+				update_inventory();
+			identified = TRUE;
+			nowaterdamage = TRUE;
+			effecthappened = TRUE;
+		}
+
+		if (identified)
+		{
 			if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
 			{
 				pline("That was a fountain of mana.");
 				SET_FOUNTAIN_KNOWN(u.ux, u.uy);
 			}
 		}
-		else
-			pline("Nothing much happens.");
 	}
 	else if (ftyp == FOUNTAIN_POWER)
 	{
+		boolean identified = FALSE;
+
 		if (obj && objects[obj->otyp].oc_charged)
 		{
 			recharge(obj, 0);
+			identified = TRUE;
+			nowaterdamage = TRUE;
+			effecthappened = TRUE;
+		}
+		else if (obj && obj->oclass == POTION_CLASS && obj->otyp != POT_GAIN_LEVEL)
+		{
+			if (carried(obj))
+				pline("%s imbued with powerful energies.", Yobjnam2(obj, "are"));
+
+			switch (obj->otyp)
+			{
+			case POT_GAIN_ENERGY:
+			case POT_GREATER_ENERGY:
+				obj->otyp = POT_FULL_ENERGY;
+				break;
+			case POT_HEALING:
+			case POT_EXTRA_HEALING:
+			case POT_GREATER_HEALING:
+				obj->otyp = POT_FULL_HEALING;
+				break;
+			case POT_RESTORE_ABILITY:
+				obj->otyp = POT_GAIN_ABILITY;
+				break;
+			case POT_GAIN_ABILITY:
+				obj->otyp = POT_GAIN_LEVEL;
+				break;
+			default:
+				obj->otyp = POT_ENLIGHTENMENT;
+				break;
+			}
+			obj->dknown = 0;
+			obj->odiluted = 0;
+
+			if (carried(obj))
+				update_inventory();
+			identified = TRUE;
+			nowaterdamage = TRUE;
+			effecthappened = TRUE;
+		}
+
+		if (identified)
+		{
 			if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
 			{
 				pline("That was a fountain of power.");
 				SET_FOUNTAIN_KNOWN(u.ux, u.uy);
 			}
 		}
-		else
-			pline("Nothing much happens.");
 	}
 	else if (ftyp == FOUNTAIN_WATER)
 	{
 		if (!rn2(2))
 		{ /* no dryup */
-			return;
+			nodryup = TRUE;
 		}
 	}
 	else if (ftyp == FOUNTAIN_POISON)
 	{
+		nowaterdamage = TRUE;
+		boolean identified = FALSE;
+
 		if (obj && is_weapon(obj) && is_poisonable(obj) && !obj->opoisoned)
 		{
 			pline("The fountain forms a coating on %s.", the(xname(obj)));
 			obj->opoisoned = TRUE;
+			identified = TRUE;
+			effecthappened = TRUE;
+		}
+		else if (obj && obj->oclass == POTION_CLASS && obj->otyp != POT_POISON)
+		{
+			pline("%s to smell foul.", Yobjnam2(obj, "start"));
+			obj->otyp = POT_POISON;
+			obj->dknown = 0;
+			obj->odiluted = 0;
+			if (carried(obj))
+				update_inventory();
+			identified = TRUE;
+			effecthappened = TRUE;
+		}
+		else if (obj && obj->oclass == SCROLL_CLASS)
+			nowaterdamage = FALSE;
+
+		if (identified)
+		{
 			if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
 			{
 				pline("That was a fountain of poison.");
 				SET_FOUNTAIN_KNOWN(u.ux, u.uy);
 			}
 		}
-		else
-			pline("Nothing much happens.");
 	}
 	else
 	{
-		switch (rnd(30)) {
+		boolean identified = TRUE;
+		effecthappened = TRUE;
+		switch (rnd(30))
+		{
+		default:
+			identified = FALSE;
+			effecthappened = FALSE;
+			break;
 		case 16: /* Curse the item */
 			curse(obj);
 			break;
@@ -788,7 +931,8 @@ register struct obj *obj;
 			newsym(u.ux, u.uy);
 			break;
 		}
-		if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
+
+		if (identified && !FOUNTAIN_IS_KNOWN(u.ux, u.uy))
 		{
 			pline("That was a magic fountain.");
 			SET_FOUNTAIN_KNOWN(u.ux, u.uy);
@@ -796,8 +940,32 @@ register struct obj *obj;
 
 	}
 
+	if (!nowaterdamage)
+	{
+		int er = water_damage(obj, NULL, TRUE);
+
+		if (er != ER_NOTHING)
+			effecthappened = TRUE;
+#if 0
+		if (obj->otyp == POT_ACID && er != ER_DESTROYED)
+		{ /* Acid and water don't mix */
+			useup(obj);
+			nodryup = TRUE;
+		}
+		else if (er != ER_NOTHING && ftyp == FOUNTAIN_MAGIC && !rn2(2))
+		{ /* no further effect */
+			nodryup = TRUE;
+		}
+#endif
+	}
+
+	if(!effecthappened)
+		pline("Nothing much happens.");
+
     update_inventory();
-    dryup(u.ux, u.uy, TRUE);
+
+	if(!nodryup)
+	    dryup(u.ux, u.uy, TRUE);
 }
 
 const char* get_fountain_name(x, y)
