@@ -1115,6 +1115,7 @@ boolean* obj_destroyed;
 			freeinv(obj);
 			potionhit(mon, obj,
 				hand_to_hand ? POTHIT_HERO_BASH : POTHIT_HERO_THROW);
+			obj = (struct obj*)0;
 			if (DEADMONSTER(mon))
 				return FALSE; /* killed */
 			hittxt = TRUE;
@@ -1122,7 +1123,8 @@ boolean* obj_destroyed;
 			mdat = mon->data;
 			damage = (mdat == &mons[PM_SHADE]) ? 0 : 1;
 		}
-		else {
+		else
+		{
 			if (mdat == &mons[PM_SHADE] && !shade_aware(obj)) 
 			{
 				damage = 0;
