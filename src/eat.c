@@ -17,7 +17,7 @@ STATIC_DCL void NDECL(recalc_wt);
 STATIC_DCL struct obj *FDECL(touchfood, (struct obj *));
 STATIC_DCL void NDECL(do_reset_eat);
 STATIC_DCL void FDECL(done_eating, (BOOLEAN_P));
-STATIC_DCL void FDECL(cprefx, (int));
+STATIC_DCL void FDECL(corpse_pre_effect, (int));
 STATIC_DCL boolean FDECL(intrinsic_possible, (int, struct permonst *));
 STATIC_DCL void FDECL(givit, (int, struct permonst *));
 STATIC_DCL void FDECL(temporary_givit, (int, int));
@@ -26,7 +26,7 @@ STATIC_DCL void FDECL(consume_tin, (const char *));
 STATIC_DCL void FDECL(start_tin, (struct obj *));
 STATIC_DCL int FDECL(eatcorpse, (struct obj *));
 STATIC_DCL void FDECL(start_eating, (struct obj *));
-STATIC_DCL void FDECL(fprefx, (struct obj *));
+STATIC_DCL void FDECL(food_pre_effect, (struct obj *));
 STATIC_DCL void FDECL(food_after_effect, (struct obj *));
 STATIC_DCL int NDECL(bite);
 STATIC_DCL int FDECL(edibility_prompts, (struct obj *));
@@ -741,7 +741,7 @@ boolean allowmsg;
 }
 
 STATIC_OVL void
-cprefx(pm)
+corpse_pre_effect(pm)
 register int pm;
 {
     (void) maybe_cannibal(pm, TRUE);
@@ -773,9 +773,16 @@ register int pm;
         }
         break;
     case PM_LIZARD:
-        if (Stoned)
-            fix_petrification();
-        break;
+	{
+		if (Stoned)
+			fix_petrification();
+		else
+			You_feel("a bit more limber than before.");
+
+		/* Grants temporary stoning resistance */
+		incr_itimeout(&HStone_resistance, 13);
+		break;
+	}
     case PM_DEATH:
     case PM_PESTILENCE:
     case PM_FAMINE: {
@@ -1662,7 +1669,7 @@ const char *mesg;
         eating_conducts(&mons[mnum]);
 
         tin->dknown = tin->known = 1;
-        cprefx(mnum);
+        corpse_pre_effect(mnum);
         corpse_after_effect(mnum);
 
         /* charge for one at pre-eating cost */
@@ -2058,7 +2065,7 @@ struct obj *otmp;
     context.victual.eating = TRUE;
 
     if (otmp->otyp == CORPSE || otmp->globby) {
-        cprefx(context.victual.piece->corpsenm);
+        corpse_pre_effect(context.victual.piece->corpsenm);
         if (!context.victual.piece || !context.victual.eating) {
             /* rider revived, or died and lifesaved */
             return;
@@ -2097,7 +2104,7 @@ struct obj *otmp;
  * used for non-rotten non-tin non-corpse food
  */
 STATIC_OVL void
-fprefx(otmp)
+food_pre_effect(otmp)
 struct obj *otmp;
 {
     switch (otmp->otyp) {
@@ -3187,7 +3194,7 @@ doeat()
             }
             consume_oeaten(otmp, 1); /* oeaten >>= 1 */
 		} else
-				fprefx(otmp);
+				food_pre_effect(otmp);
     }
 
 	/* re-calc the nutrition */

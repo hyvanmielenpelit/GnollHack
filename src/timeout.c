@@ -1011,7 +1011,7 @@ nh_timeout()
 				break;
 			case STONE_RES:
 				if (!Stone_resistance)
-					Your("skin feels less limb than before.");
+					You("feel less limber than before.");
 				break;
 			case DRAIN_RES:
 				if (!Drain_resistance)
@@ -1208,7 +1208,7 @@ nh_timeout()
 				Your("skin is starting to feel more prone to acid than before.");
 				break;
 			case STONE_RES:
-				Your("skin is starting to feel less limb than before.");
+				You("are starting to feel a bit less limber than before.");
 				break;
 			case DRAIN_RES:
 				You("are starting to feel more suspectible to draining than before.");
