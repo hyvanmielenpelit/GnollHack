@@ -1234,11 +1234,11 @@ boolean makingboxcontents;
 			{
 				int addition = 0;
 				if (objects[otmp->otyp].oc_enchantable == ENCHTYPE_RING_NORMAL)
-					addition += rnd(2) + !rn2(2) ? 0 : !rn2(2) ? 1 : !rn2(2) ? 2 : 3;
+					addition += rnd(2) + (!rn2(2) ? 0 : !rn2(2) ? 1 : !rn2(2) ? 2 : 3);
 				else if (objects[otmp->otyp].oc_enchantable == ENCHTYPE_RING_1_7)
-					addition += rnd(3) + !rn2(3) ? 0 : !rn2(3) ? 1 : !rn2(3) ? 2 : !rn2(3) ? 3 : 4;
+					addition += rnd(3) + (!rn2(3) ? 0 : !rn2(3) ? 1 : !rn2(3) ? 2 : !rn2(3) ? 3 : 4);
 				else if (objects[otmp->otyp].oc_enchantable == ENCHTYPE_RING_DOUBLE)
-					addition += rnd(4) + !rn2(4) ? 0 : !rn2(4) ? 1 : !rn2(4) ? 2 : !rn2(4) ? 3 : !rn2(4) ? 4 : !rn2(4) ? 5 : 6;
+					addition += rnd(4) + (!rn2(4) ? 0 : !rn2(4) ? 1 : !rn2(4) ? 2 : !rn2(4) ? 3 : !rn2(4) ? 4 : !rn2(4) ? 5 : 6);
 				else
 					addition += rnd(2);
 
