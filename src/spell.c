@@ -3275,12 +3275,19 @@ boolean usehotkey;
 			Sprintf(fmt, "%%-%ds  %%s   %%-13s %%4.*f  %%s %%3d%%%% %%4d  %%4s", namelength);
 		//		fmt = "%-20s  %2d   %-12s %4d %3d%% %8s";
 	}
-	else {
+	else 
+	{
+		if (spellknow(splnum) <= 0)
+			Sprintf(fmt, "%%-%ds\t%%s", namelength);
+		else
+			Sprintf(fmt, "%%-%ds\t%%s\t%%-13s\t%%4.*f\t%%s\t%%3d%%%%\t%%4d\t%%4s", namelength);
+#if 0
 		if (spellknow(splnum) <= 0)
 			strcpy(fmt, "%s\t%s");
 		else
 			strcpy(fmt, "%s\t%s\t%s\t%.*f\t%-d%%\t%-d\t%s");
 		//		fmt = "%s\t%-d\t%s\t%-d\t%-d%%\t%s";
+#endif
 	}
 
 	Sprintf(fullname, "%s%s", spellcooldownleft(splnum) > 0 ? "-" : "",

@@ -20,9 +20,13 @@ boolean showmsg;
             pline("Startled, you drop the iron ball.");
         if (uwep == uball)
             setuwep((struct obj *) 0, W_WEP);
-        if (uswapwep == uball)
+		if (uarms == uball)
+			setuwep((struct obj*) 0, W_WEP2);
+		if (uswapwep == uball)
             setuswapwep((struct obj *) 0, W_SWAPWEP);
-        if (uquiver == uball)
+		if (uswapwep2 == uball)
+			setuswapwep((struct obj*) 0, W_SWAPWEP2);
+		if (uquiver == uball)
             setuqwep((struct obj *) 0);
         /* [this used to test 'if (uwep != uball)' but that always passes
            after the setuwep() above] */
