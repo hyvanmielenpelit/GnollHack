@@ -638,31 +638,31 @@ struct objclass {
 #define oc_edible_subtype oc_oc1		/* edibles: is rotten, poisoned, etc. */
 #define oc_edible_effect oc_oc2			/* edibles: gain ability score, etc., need two, since sprig of wolfsbane is both poisonous and cures lycanthropy */
 
-#define EDIBLE_NORMAL 0 
-#define EDIBLE_ROTTEN 1 
-#define EDIBLE_SICKENING 2 
-#define EDIBLE_ACIDIC 3 
-#define EDIBLE_POISONOUS 4 
-#define EDIBLE_TAINTED 5 
-#define EDIBLE_HALLUCINATING 6 
-#define EDIBLE_DEADLY_POISONOUS 7 
+#define EDIBLETYPE_NORMAL 0 
+#define EDIBLETYPE_ROTTEN 1 
+#define EDIBLETYPE_SICKENING 2 
+#define EDIBLETYPE_ACIDIC 3 
+#define EDIBLETYPE_POISONOUS 4 
+#define EDIBLETYPE_TAINTED 5 
+#define EDIBLETYPE_HALLUCINATING 6 
+#define EDIBLETYPE_DEADLY_POISONOUS 7 
 
-#define EDIBLE_NO_EFFECT 0 
-#define EDIBLE_GAIN_STRENGTH -1 
-#define EDIBLE_GAIN_DEXTERITY -2 
-#define EDIBLE_GAIN_CONSTITUTION -3 
-#define EDIBLE_GAIN_INTELLIGENCE -4
-#define EDIBLE_GAIN_WISDOM -5
-#define EDIBLE_GAIN_CHARISMA -6
-#define EDIBLE_CURE_LYCANTHROPY -7
-#define EDIBLE_CURE_BLIDNESS -8
-#define EDIBLE_READ_FORTUNE -9
-#define EDIBLE_CURE_SICKNESS -10
-#define EDIBLE_ROYAL_JELLY -11
-#define EDIBLE_APPLE -12
-#define EDIBLE_EGG -13
-#define EDIBLE_RESTORE_ABILITY -14
-#define EDIBLE_GAIN_LEVEL -15
+#define EDIBLEFX_NO_EFFECT 0 
+#define EDIBLEFX_GAIN_STRENGTH -1 
+#define EDIBLEFX_GAIN_DEXTERITY -2 
+#define EDIBLEFX_GAIN_CONSTITUTION -3 
+#define EDIBLEFX_GAIN_INTELLIGENCE -4
+#define EDIBLEFX_GAIN_WISDOM -5
+#define EDIBLEFX_GAIN_CHARISMA -6
+#define EDIBLEFX_CURE_LYCANTHROPY -7
+#define EDIBLEFX_CURE_BLINDNESS -8
+#define EDIBLEFX_READ_FORTUNE -9
+#define EDIBLEFX_CURE_SICKNESS -10
+#define EDIBLEFX_ROYAL_JELLY -11
+#define EDIBLEFX_APPLE -12
+#define EDIBLEFX_EGG -13
+#define EDIBLEFX_RESTORE_ABILITY -14
+#define EDIBLEFX_GAIN_LEVEL -15
 
 
 /* spells */

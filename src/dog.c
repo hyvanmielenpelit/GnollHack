@@ -838,7 +838,7 @@ register struct obj *obj;
 			(polyfodder(obj) || obj->corpsenm == PM_GREEN_SLIME || (obj->corpsenm >= LOW_PM && mons[obj->corpsenm].mlet == S_MIMIC)))
 			return POISON;
 
-		if (objects[obj->otyp].oc_edible_subtype > EDIBLE_NORMAL)
+		if (objects[obj->otyp].oc_edible_subtype > EDIBLETYPE_NORMAL)
 			return POISON;
 
 		if (!carni && !herbi)

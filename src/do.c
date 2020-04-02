@@ -687,29 +687,29 @@ register struct obj* obj;
 		}
 		if (stats_known && is_obj_normally_edible(obj))
 		{
-			if (objects[obj->otyp].oc_edible_subtype > EDIBLE_NORMAL)
+			if (objects[obj->otyp].oc_edible_subtype > EDIBLETYPE_NORMAL)
 			{
 				switch (objects[obj->otyp].oc_edible_subtype)
 				{
-				case EDIBLE_ROTTEN:
+				case EDIBLETYPE_ROTTEN:
 					strcpy(buf2, "Rotten");
 					break;
-				case EDIBLE_SICKENING:
+				case EDIBLETYPE_SICKENING:
 					strcpy(buf2, "Sickening");
 					break;
-				case EDIBLE_ACIDIC:
+				case EDIBLETYPE_ACIDIC:
 					strcpy(buf2, "Acidic");
 					break;
-				case EDIBLE_POISONOUS:
+				case EDIBLETYPE_POISONOUS:
 					strcpy(buf2, "Poisonous");
 					break;
-				case EDIBLE_TAINTED:
+				case EDIBLETYPE_TAINTED:
 					strcpy(buf2, "Tainted");
 					break;
-				case EDIBLE_HALLUCINATING:
+				case EDIBLETYPE_HALLUCINATING:
 					strcpy(buf2, "Hallucinating");
 					break;
-				case EDIBLE_DEADLY_POISONOUS:
+				case EDIBLETYPE_DEADLY_POISONOUS:
 					strcpy(buf2, "Highly poisonous");
 					break;
 				default:
@@ -720,9 +720,9 @@ register struct obj* obj;
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
-			if (objects[obj->otyp].oc_edible_effect != EDIBLE_NO_EFFECT
-				&& objects[obj->otyp].oc_edible_effect != EDIBLE_APPLE
-				&& objects[obj->otyp].oc_edible_effect != EDIBLE_EGG
+			if (objects[obj->otyp].oc_edible_effect != EDIBLEFX_NO_EFFECT
+				&& objects[obj->otyp].oc_edible_effect != EDIBLEFX_APPLE
+				&& objects[obj->otyp].oc_edible_effect != EDIBLEFX_EGG
 				)
 			{
 				strcpy(buf2, "No effect");
@@ -736,43 +736,43 @@ register struct obj* obj;
 				{
 					switch (objects[obj->otyp].oc_edible_effect)
 					{
-					case EDIBLE_GAIN_STRENGTH:
+					case EDIBLEFX_GAIN_STRENGTH:
 						strcpy(buf2, "Confers strength");
 						break;
-					case EDIBLE_GAIN_DEXTERITY:
+					case EDIBLEFX_GAIN_DEXTERITY:
 						strcpy(buf2, "Confers dexterity");
 						break;
-					case EDIBLE_GAIN_CONSTITUTION:
+					case EDIBLEFX_GAIN_CONSTITUTION:
 						strcpy(buf2, "Confers constitution");
 						break;
-					case EDIBLE_GAIN_INTELLIGENCE:
+					case EDIBLEFX_GAIN_INTELLIGENCE:
 						strcpy(buf2, "Confers intelligence");
 						break;
-					case EDIBLE_GAIN_WISDOM:
+					case EDIBLEFX_GAIN_WISDOM:
 						strcpy(buf2, "Confers wisdom");
 						break;
-					case EDIBLE_GAIN_CHARISMA:
+					case EDIBLEFX_GAIN_CHARISMA:
 						strcpy(buf2, "Confers charisma");
 						break;
-					case EDIBLE_CURE_LYCANTHROPY:
+					case EDIBLEFX_CURE_LYCANTHROPY:
 						strcpy(buf2, "Cures lycanthropy");
 						break;
-					case EDIBLE_CURE_BLIDNESS:
+					case EDIBLEFX_CURE_BLINDNESS:
 						strcpy(buf2, "Cures blindness");
 						break;
-					case EDIBLE_READ_FORTUNE:
+					case EDIBLEFX_READ_FORTUNE:
 						strcpy(buf2, "Contains a fortune");
 						break;
-					case EDIBLE_CURE_SICKNESS:
+					case EDIBLEFX_CURE_SICKNESS:
 						strcpy(buf2, "Cures sickness");
 						break;
-					case EDIBLE_ROYAL_JELLY:
+					case EDIBLEFX_ROYAL_JELLY:
 						strcpy(buf2, "Confers strength and other jelly effects");
 						break;
-					case EDIBLE_RESTORE_ABILITY:
+					case EDIBLEFX_RESTORE_ABILITY:
 						strcpy(buf2, "Restores abilities");
 						break;
-					case EDIBLE_GAIN_LEVEL:
+					case EDIBLEFX_GAIN_LEVEL:
 						strcpy(buf2, "Confers one level");
 						break;
 					default:

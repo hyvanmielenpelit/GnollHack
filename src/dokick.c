@@ -1410,7 +1410,7 @@ dokick() {
                 && (treefruit = rnd_treefruit_at(x, y))) {
                 long nfruit = 8L - rnl(7), nfall;
                 short frtype = treefruit->otyp;
-				if (treefruit && (objects[treefruit->otyp].oc_edible_effect == EDIBLE_NO_EFFECT || objects[treefruit->otyp].oc_edible_effect == EDIBLE_APPLE))
+				if (treefruit && (objects[treefruit->otyp].oc_edible_effect == EDIBLEFX_NO_EFFECT || objects[treefruit->otyp].oc_edible_effect == EDIBLEFX_APPLE))
 				{
 					treefruit->quan = nfruit;
 					treefruit->owt = weight(treefruit);

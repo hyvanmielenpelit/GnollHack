@@ -461,16 +461,16 @@ boolean verbose;
 
 	switch (objects[otmp->otyp].oc_edible_effect)
 	{
-	case EDIBLE_CURE_LYCANTHROPY:
+	case EDIBLEFX_CURE_LYCANTHROPY:
 		/* Nothing currently */
 		break;
-	case EDIBLE_CURE_BLIDNESS:
+	case EDIBLEFX_CURE_BLINDNESS:
 		mcureblindness(mtmp, canseemon(mtmp));
 		break;
-	case EDIBLE_READ_FORTUNE:
+	case EDIBLEFX_READ_FORTUNE:
 		/* Nothing currently */
 		break;
-	case EDIBLE_ROYAL_JELLY:
+	case EDIBLEFX_ROYAL_JELLY:
 	{
 		/* This stuff seems to be VERY healthy! */
 		m_gainstr(mtmp, otmp, 1);
@@ -491,25 +491,25 @@ boolean verbose;
 
 		break;
 	}
-	case EDIBLE_GAIN_STRENGTH:
+	case EDIBLEFX_GAIN_STRENGTH:
 		m_gainstr(mtmp, otmp, 1);
 		break;
-	case EDIBLE_GAIN_DEXTERITY:
+	case EDIBLEFX_GAIN_DEXTERITY:
 		(void)m_adjattrib(mtmp, A_DEX, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1);
 		break;
-	case EDIBLE_GAIN_CONSTITUTION:
+	case EDIBLEFX_GAIN_CONSTITUTION:
 		(void)m_adjattrib(mtmp, A_CON, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1);
 		break;
-	case EDIBLE_GAIN_INTELLIGENCE:
+	case EDIBLEFX_GAIN_INTELLIGENCE:
 		(void)m_adjattrib(mtmp, A_INT, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1);
 		break;
-	case EDIBLE_GAIN_WISDOM:
+	case EDIBLEFX_GAIN_WISDOM:
 		(void)m_adjattrib(mtmp, A_WIS, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1);
 		break;
-	case EDIBLE_GAIN_CHARISMA:
+	case EDIBLEFX_GAIN_CHARISMA:
 		(void)m_adjattrib(mtmp, A_CHA, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1);
 		break;
-	case EDIBLE_RESTORE_ABILITY:
+	case EDIBLEFX_RESTORE_ABILITY:
 	{
 		if (otmp->cursed)
 		{
@@ -543,7 +543,7 @@ boolean verbose;
 		}
 		break;
 	}
-	case EDIBLE_GAIN_LEVEL:
+	case EDIBLEFX_GAIN_LEVEL:
 	{
 		if ((int)mtmp->m_lev < (int)mtmp->data->mlevel + 15)
 		{
@@ -551,7 +551,7 @@ boolean verbose;
 		}
 		break;
 	}
-	case EDIBLE_EGG:
+	case EDIBLEFX_EGG:
 		if (flesh_petrifies(&mons[otmp->corpsenm]))
 		{
 			if (!has_petrification_resistance(mtmp))
@@ -563,7 +563,7 @@ boolean verbose;
 			}
 		}
 		break;
-	case EDIBLE_CURE_SICKNESS:
+	case EDIBLEFX_CURE_SICKNESS:
 		if (is_sick(mtmp) && !otmp->cursed)
 			set_mon_property_b(mtmp, SICK, 0, TRUE);
 		if (is_food_poisoned(mtmp) && !otmp->cursed)
@@ -571,7 +571,7 @@ boolean verbose;
 		if (has_vomiting(mtmp) && !otmp->cursed)
 			set_mon_property_b(mtmp, VOMITING, 0, TRUE);
 		break;
-	case EDIBLE_APPLE:
+	case EDIBLEFX_APPLE:
 		/* Nothing */
 		break;
 	}

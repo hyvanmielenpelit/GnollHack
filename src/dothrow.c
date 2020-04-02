@@ -1982,14 +1982,12 @@ boolean is_golf;
         disttmp = -4;
     tmp += disttmp;
 
-		//Bows have point black penalty
-		//OTHER BONUSES FROM BOW ARE GIVEN BELOW, THIS IS FOR POINT BLACK RANGE ONLY
-	if (hmode == HMON_THROWN) 
+	//Bows and thrown weapons have point black penalty
+	//OTHER BONUSES FROM BOW ARE GIVEN BELOW, THIS IS FOR POINT BLACK RANGE ONLY
+	if (hmode == HMON_THROWN && obj && mon && mindistance <= 1)
 	{
-		if (obj && uwep && mon && ammo_and_launcher(obj, uwep))
+		if (uwep && ammo_and_launcher(obj, uwep))
 		{
-			if (mindistance <= 1) 
-			{
 				switch (objects[uwep->otyp].oc_skill) 
 				{
 				case P_BOW:
@@ -2002,15 +2000,20 @@ boolean is_golf;
 					tmp -= 20;
 					break;
 				}
-			}
-			//Bracers bonus
-			if(uarmb && uarmb->otyp == BRACERS_OF_ARCHERY)
-				tmp += (uarmb->cursed ? -2 : 2) + (uarmb->blessed ? 1 : 0) + uarmb->enchantment;
+				You("feel it is very hard to hit with %s at melee range.", an(cxname(uwep)));
 		}
 		else
 		{
-			tmp -= 0;
+			tmp -= 20;
+			You("feel it is very hard to hit by throwing %s at melee range.", an(cxname(obj)));
 		}
+	}
+
+	/* Bracers of archery */
+	if (hmode == HMON_THROWN && obj && uwep && ammo_and_launcher(obj, uwep))
+	{
+		if (uarmb && uarmb->otyp == BRACERS_OF_ARCHERY)
+			tmp += (uarmb->cursed ? -2 : 2) + (uarmb->blessed ? 1 : 0) + uarmb->enchantment;
 	}
 
 	//Bonus from weapon_to_hit_value(obj) and other if monster is still etc.

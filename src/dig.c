@@ -428,14 +428,14 @@ dig(VOID_ARGS)
 				if (!rn2(3))
 				{
 					struct obj* otmp = rnd_treefruit_at(dpx, dpy);
-					if (otmp && (objects[otmp->otyp].oc_edible_effect == EDIBLE_NO_EFFECT 
-						|| objects[otmp->otyp].oc_edible_effect == EDIBLE_APPLE
+					if (otmp && (objects[otmp->otyp].oc_edible_effect == EDIBLEFX_NO_EFFECT 
+						|| objects[otmp->otyp].oc_edible_effect == EDIBLEFX_APPLE
 						))
 					{
 						otmp->quan = rnd(16) + 4;
 						otmp->owt = weight(otmp);
 					}
-					else if (otmp && objects[otmp->otyp].oc_edible_effect == EDIBLE_CURE_SICKNESS)
+					else if (otmp && objects[otmp->otyp].oc_edible_effect == EDIBLEFX_CURE_SICKNESS)
 					{
 						otmp->quan = rnd(8) + 2;
 						otmp->owt = weight(otmp);
@@ -1466,7 +1466,7 @@ register struct monst *mtmp;
 		if (pile && pile < 5)
 		{
 			struct obj* otmp = rnd_treefruit_at(mtmp->mx, mtmp->my);
-			if (otmp && (objects[otmp->otyp].oc_edible_effect == EDIBLE_NO_EFFECT || objects[otmp->otyp].oc_edible_effect == EDIBLE_APPLE))
+			if (otmp && (objects[otmp->otyp].oc_edible_effect == EDIBLEFX_NO_EFFECT || objects[otmp->otyp].oc_edible_effect == EDIBLEFX_APPLE))
 			{
 				otmp->quan = rnd(16) + 4;
 				otmp->owt = weight(otmp);
