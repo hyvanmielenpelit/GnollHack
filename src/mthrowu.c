@@ -859,7 +859,7 @@ struct obj *obj;         /* missile (or stack providing it) */
             if (singleobj->oclass == POTION_CLASS) {
                 if (!Blind)
                     singleobj->dknown = 1;
-                potionhit(&youmonst, singleobj, POTHIT_MONST_THROW);
+                potionhit(&youmonst, &singleobj, POTHIT_MONST_THROW);
                 break;
             }
             oldumort = u.umortality;
