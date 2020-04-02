@@ -104,7 +104,7 @@ const char *name; /* if null, then format `*objp' */
 				You("are hit by something%s", exclam(dam));
 			else
 				You("are hit by %s%s", onm, exclam(dam));
-			potionhit(&youmonst, &obj, POTHIT_OTHER_THROW);
+			potionhit(&youmonst, obj, POTHIT_OTHER_THROW);
             *objp = obj = 0; /* potionhit() uses up the potion */
         } 
 		else 
@@ -480,7 +480,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
             otmp->dknown = 1;
         /* probably thrown by a monster rather than 'other', but the
            distinction only matters when hitting the hero */
-        potionhit(mtmp, &otmp, POTHIT_OTHER_THROW);
+        potionhit(mtmp, otmp, POTHIT_OTHER_THROW);
         return 1;
     }
 	else
@@ -859,7 +859,7 @@ struct obj *obj;         /* missile (or stack providing it) */
             if (singleobj->oclass == POTION_CLASS) {
                 if (!Blind)
                     singleobj->dknown = 1;
-                potionhit(&youmonst, &singleobj, POTHIT_MONST_THROW);
+                potionhit(&youmonst, singleobj, POTHIT_MONST_THROW);
                 break;
             }
             oldumort = u.umortality;
