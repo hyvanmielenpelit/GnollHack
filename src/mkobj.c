@@ -2041,7 +2041,10 @@ void
 bless(otmp)
 register struct obj *otmp;
 {
-    int old_light = 0;
+	if (!otmp)
+		return;
+
+	int old_light = 0;
 
     if (otmp->oclass == COIN_CLASS)
         return;
@@ -2064,6 +2067,9 @@ void
 unbless(otmp)
 register struct obj *otmp;
 {
+	if (!otmp)
+		return;
+
     int old_light = 0;
 
     if (otmp->lamplit)
@@ -2081,7 +2087,10 @@ void
 curse(otmp)
 register struct obj *otmp;
 {
-    unsigned already_cursed;
+	if (!otmp)
+		return;
+
+	unsigned already_cursed;
     int old_light = 0;
 
     if (otmp->oclass == COIN_CLASS)
@@ -2126,6 +2135,9 @@ void
 uncurse(otmp)
 register struct obj *otmp;
 {
+	if (!otmp)
+		return;
+
     int old_light = 0;
 
     if (otmp->lamplit)
@@ -2147,6 +2159,9 @@ blessorcurse(otmp, chance)
 register struct obj *otmp;
 register int chance;
 {
+	if (!otmp)
+		return;
+
     if (otmp->blessed || otmp->cursed)
         return;
 

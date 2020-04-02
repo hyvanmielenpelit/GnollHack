@@ -175,9 +175,10 @@ boolean verbose;
 
 	boolean needbecomecursedmsg = FALSE;
 	/* curse first */
-	if (obj && (objects[obj->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_WORN) && !obj->cursed) {
+	if (obj && (objects[obj->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_WORN) && !obj->cursed && (mask & (W_WEP | W_WEP2 | W_ARMOR | W_ACCESSORY)))
+	{
 		needbecomecursedmsg = TRUE;
-		curse(uarmh);
+		curse(obj);
 	}
 
 	/* Readying a weapon to quiver or swap weapon slot does not trigger artifact name discovery -- JG */
