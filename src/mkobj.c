@@ -3513,8 +3513,8 @@ struct obj *obj;
             /* hero can quiver gold but not wield it (hence not alt-wield
                it either); also catches monster wielding gold */
             else if (obj->oclass == COIN_CLASS
-                     && (owornmask & (W_WEAPON | W_SWAP_WEAPON)) != 0L)
-                what = (owornmask & W_WEP) != 0L ? "weapon" : "alt weapon";
+                     && (owornmask & (W_WIELDED_WEAPON | W_SWAP_WEAPON)) != 0L)
+                what = (owornmask & W_WIELDED_WEAPON) != 0L ? "weapon" : "alt weapon";
         } else if (owornmask & W_AMUL) {
             if (obj->oclass != AMULET_CLASS)
                 what = "amulet";
