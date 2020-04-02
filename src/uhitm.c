@@ -1118,7 +1118,7 @@ boolean* obj_destroyed;
 					setuwep((struct obj*) 0, W_ARMS);
 			}
 			freeinv(obj);
-			potionhit(mon, obj,
+			potionhit(mon, &obj,
 				hand_to_hand ? POTHIT_HERO_BASH : POTHIT_HERO_THROW);
 			obj = (struct obj*)0;
 			*obj_destroyed = TRUE;

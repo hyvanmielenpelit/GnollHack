@@ -1374,7 +1374,7 @@ boolean hitsroof;
     /* object now hits you */
 
     if (obj->oclass == POTION_CLASS) {
-        potionhit(&youmonst, obj, POTHIT_HERO_THROW);
+        potionhit(&youmonst, &obj, POTHIT_HERO_THROW);
     } else if (breaktest(obj)) {
         int otyp = obj->otyp;
         int blindinc;
@@ -1600,7 +1600,7 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
                    && rn2(6)) {
             /* alternative to prayer or wand of opening/spell of knock
                for dealing with cursed saddle:  throw holy water > */
-            potionhit(u.usteed, obj, POTHIT_HERO_THROW);
+            potionhit(u.usteed, &obj, POTHIT_HERO_THROW);
         } else {
             hitfloor(obj, TRUE);
         }
@@ -1941,9 +1941,9 @@ boolean maybe_wakeup;
  */
 int
 thitmonst(mon, obj, is_golf)
-register struct monst *mon;
-register struct obj *obj; /* thrownobj or kickedobj or uwep */
-register boolean is_golf;
+struct monst *mon;
+struct obj *obj; /* thrownobj or kickedobj or uwep */
+boolean is_golf;
 {
 	if (!mon || !obj)
 		return 0;
@@ -2256,7 +2256,7 @@ register boolean is_golf;
     } 
 	else if (obj->oclass == POTION_CLASS && (guaranteed_hit || ACURR(A_DEX) > rnd(25))) 
 	{
-        potionhit(mon, obj, POTHIT_HERO_THROW);
+        potionhit(mon, &obj, POTHIT_HERO_THROW);
         return 1;
 
     } 

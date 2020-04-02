@@ -576,7 +576,7 @@ ghost_from_bottle()
 int
 dodrink()
 {
-    register struct obj *otmp;
+    struct obj *otmp;
     const char *potion_descr;
 
     if (Strangled) {
@@ -671,7 +671,7 @@ dodrink()
 
 int
 dopotion(otmp)
-register struct obj *otmp;
+struct obj *otmp;
 {
     int retval;
 
@@ -698,9 +698,9 @@ register struct obj *otmp;
 
 int
 peffects(otmp)
-register struct obj *otmp;
+struct obj *otmp;
 {
-    register int i, ii, lim;
+    int i, ii, lim;
 	
 	if (!otmp)
 		return 0;
@@ -1159,7 +1159,7 @@ register struct obj *otmp;
                     You(riseup, ceiling(u.ux, u.uy));
                     goto_level(&earth_level, FALSE, FALSE, FALSE);
                 } else {
-                    register int newlev = depth(&u.uz) - 1;
+                    int newlev = depth(&u.uz) - 1;
                     d_level newlevel;
 
                     get_level(&newlevel, newlev);
@@ -1555,12 +1555,12 @@ const char *objphrase; /* "Your widget glows" or "Steed's saddle glows" */
 
 /* potion obj hits monster mon, which might be youmonst; obj always used up */
 void
-potionhit(mon, obj, how)
+potionhit(mon, obj_ptr, how)
 struct monst *mon;
-struct obj *obj;
+struct obj **obj_ptr;
 int how;
 {
-	if (!mon || !obj)
+	if (!mon || !obj_ptr)
 		return;
 
     const char *botlnam = bottlename();
@@ -1568,6 +1568,10 @@ int how;
     int distance, tx, ty;
     struct obj *saddle = (struct obj *) 0;
     boolean hit_saddle = FALSE, your_fault = (how <= POTHIT_HERO_THROW);
+	struct obj* obj = *obj_ptr;
+
+	if (!obj)
+		return;
 
     if (isyou) 
 	{
@@ -1912,12 +1916,14 @@ do_illness: /* Pestilence's potion of healing effect */
                                 FALSE);
     }
     obfree(obj, (struct obj *) 0);
+	*obj_ptr = (struct obj *)0;
+
 }
 
 /* vapors are inhaled or get in your eyes */
 void
 potionbreathe(obj)
-register struct obj *obj;
+struct obj *obj;
 {
     int i, ii, isdone, kn = 0;
     boolean cureblind = FALSE;
@@ -2133,7 +2139,7 @@ register struct obj *obj;
 /* returns the potion type when o1 is dipped in o2 */
 STATIC_OVL short
 mixtype(o1, o2)
-register struct obj *o1, *o2;
+struct obj *o1, *o2;
 {
     /* cut down on the number of cases below */
     if (o1->oclass == POTION_CLASS
@@ -2305,7 +2311,7 @@ int
 dodip()
 {
     static const char Dip_[] = "Dip ";
-    register struct obj *potion, *obj;
+    struct obj *potion, *obj;
     struct obj *singlepotion;
     uchar here;
     char allowall[2];
