@@ -98,7 +98,9 @@ int expltype;
         switch (abs(type) % 10)
 		{
         case 0:
-            str = "magical blast";
+		case 3:
+		case 9:
+			str = "magical blast";
             adtyp = AD_MAGM;
             break;
         case 1:

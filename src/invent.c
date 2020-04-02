@@ -136,7 +136,8 @@ struct obj *obj;
             switch (otyp) {
             case WOODEN_FLUTE:
             case MAGIC_FLUTE:
-            case TOOLED_HORN:
+			case BRASS_HORN:
+			case TOOLED_HORN:
             case FROST_HORN:
             case FIRE_HORN:
             case WOODEN_HARP:

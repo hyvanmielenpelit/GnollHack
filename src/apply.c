@@ -4211,7 +4211,7 @@ struct obj *obj;
     /* [TODO?  This really ought to prevent the explosion from being
        fatal so that we never leave a bones file where none of the
        surrounding targets (or underlying objects) got affected yet.] */
-    explode(obj->ox, obj->oy, objects[obj->otyp].oc_dir_subtype, rnd(dmg), obj->otyp, WAND_CLASS,
+    explode(obj->ox, obj->oy, objects[obj->otyp].oc_dir == RAY && objects[obj->otyp].oc_dir_subtype <= RAY_WND_PETRIFICATION ? objects[obj->otyp].oc_dir_subtype : 0, rnd(dmg), obj->otyp, WAND_CLASS,
             EXPL_MAGICAL);
 
     /* prepare for potential feedback from polymorph... */
@@ -4644,6 +4644,7 @@ doapply()
 			break;
 		case WOODEN_FLUTE:
 		case MAGIC_FLUTE:
+		case BRASS_HORN:
 		case TOOLED_HORN:
 		case FROST_HORN:
 		case FIRE_HORN:

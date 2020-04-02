@@ -581,10 +581,15 @@ struct obj *instr;
         }
         makeknown(instr->otyp);
         break;
-    case TOOLED_HORN: /* Awaken or scare monsters */
-        You("produce a frightful, grave sound.");
-        awaken_monsters(u.ulevel * 30);
-        exercise(A_WIS, FALSE);
+	case BRASS_HORN: /* Just make noise and wake nearby monsters */
+		You("produce a loud, deep sound.");
+		wake_nearby();
+		break;
+	case TOOLED_HORN: /* Awaken or scare monsters */
+		consume_obj_charge(instr, TRUE);
+		You("produce a frightful, grave sound.");
+		awaken_monsters(u.ulevel * 30);
+		exercise(A_WIS, FALSE);
         break;
     case BUGLE: /* Awaken & attract soldiers */
         You("extract a loud noise from %s.", yname(instr));
@@ -655,7 +660,7 @@ struct obj *instr;
         You_cant("play music underwater!");
         return 0;
     } else if ((instr->otyp == WOODEN_FLUTE || instr->otyp == MAGIC_FLUTE
-                || instr->otyp == TOOLED_HORN || instr->otyp == FROST_HORN
+                || instr->otyp == TOOLED_HORN || instr->otyp == BRASS_HORN || instr->otyp == FROST_HORN
                 || instr->otyp == FIRE_HORN || instr->otyp == BUGLE)
                && !can_blow(&youmonst)) {
         You("are incapable of playing %s.", the(distant_name(instr, xname)));
@@ -848,7 +853,8 @@ char *buf;
         case MAGIC_FLUTE:
             (void) write(fd, ">ol", 1); /* up one octave & lock */
             break;
-        case TOOLED_HORN:
+		case BRASS_HORN:
+		case TOOLED_HORN:
         case FROST_HORN:
         case FIRE_HORN:
             (void) write(fd, "<<ol", 2); /* drop two octaves & lock */
@@ -917,7 +923,8 @@ char *buf;
     case MAGIC_FLUTE:
         playstring(">ol", 1); /* up one octave & lock */
         break;
-    case TOOLED_HORN:
+	case BRASS_HORN:
+	case TOOLED_HORN:
     case FROST_HORN:
     case FIRE_HORN:
         playstring("<<ol", 2); /* drop two octaves & lock */
