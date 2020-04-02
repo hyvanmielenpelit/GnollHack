@@ -1557,7 +1557,7 @@ const char *objphrase; /* "Your widget glows" or "Steed's saddle glows" */
 void
 potionhit(mon, obj_ptr, how)
 struct monst *mon;
-struct obj **obj_ptr;
+struct obj** obj_ptr;
 int how;
 {
 	if (!mon || !obj_ptr)
