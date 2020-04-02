@@ -2289,7 +2289,8 @@ boolean verbose, buriedsearchableonly;
             }
         }
     }
-    del_engr_at(x, y);
+	if(!buriedsearchableonly)
+	    del_engr_at(x, y);
     newsym(x, y);
 	return cnt;
 }

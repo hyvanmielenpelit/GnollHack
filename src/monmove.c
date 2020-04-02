@@ -236,7 +236,6 @@ struct monst *mtmp;
      * inside their own shop, priests inside their own temple */
     if (mtmp->iswiz || is_lminion(mtmp) || mtmp->data == &mons[PM_ANGEL]
         || is_rider(mtmp->data)
-		|| mindless(mtmp->data)
 		|| (mtmp->isshk && inhishop(mtmp))
         || (mtmp->ispriest && inhistemple(mtmp)))
         return FALSE;
@@ -268,13 +267,15 @@ struct monst *mtmp;
      * Elbereth doesn't work in Gehennom, the Elemental Planes, or the
      * Astral Plane; the influence of the Valar only reaches so far.
      */
-    return (sengr_at("Elbereth", x, y, TRUE)
+	boolean res = (sengr_at("Elbereth", x, y, TRUE)
             && ((u.ux == x && u.uy == y)
                 || (Displaced && mtmp->mux == x && mtmp->muy == y))
             && !(mtmp->isshk || mtmp->isgd || is_blinded(mtmp)
                  || is_peaceful(mtmp) || mtmp->data->mlet == S_HUMAN
                  || ignores_Elbereth(mtmp->data)
                  || Inhell || In_endgame(&u.uz)));
+
+	return res;
 }
 
 boolean
@@ -1333,7 +1334,7 @@ register int after;
         flag |= ALLOW_BARS;
     if (can_tunnel)
         flag |= ALLOW_DIG;
-    if (is_human(ptr) || ptr == &mons[PM_MINOTAUR])
+    if (is_human(ptr) || ignores_Elbereth(ptr))
         flag |= ALLOW_SSM;
     if ((is_undead(ptr) && ptr->mlet != S_GHOST) || is_vampshifter(mtmp))
         flag |= NOGARLIC;
