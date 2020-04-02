@@ -792,6 +792,7 @@ boolean* obj_destroyed;
 	 * a hit message.
 	 */
 	boolean hittxt = FALSE, displaysustain = FALSE, destroyed = FALSE, already_killed = FALSE;
+	boolean strikefrombehind = FALSE;
 	boolean get_dmg_bonus = TRUE;
 	boolean ispoisoned = FALSE, needpoismsg = FALSE, poiskilled = FALSE,
 		unpoisonmsg = FALSE;
@@ -999,9 +1000,9 @@ boolean* obj_destroyed;
 					/* multi-shot throwing is too powerful here */
 					&& hand_to_hand) 
 				{
-					You("strike %s from behind!", mon_nam(mon));
+					//You("strike %s from behind!", mon_nam(mon));
 					damage += adjust_damage(rnd(u.ulevel), &youmonst, mon, objects[obj->otyp].oc_damagetype, FALSE);
-					hittxt = TRUE;
+					strikefrombehind = TRUE;
 				}
 				else if (dieroll == 2 && obj == uwep
 					&& obj->oclass == WEAPON_CLASS
@@ -1757,27 +1758,34 @@ boolean* obj_destroyed;
 
 	if (!hittxt) /* && (1 = 1 || (thrown && m_shot.n > 1 && m_shot.o == obj->otyp)) */
 	{
+		const char* striketext = strikefrombehind ? "strike" : "hit";
+		const char* frombehindtext = strikefrombehind ? " from behind" : "";
+		const char* strikemark = strikefrombehind ? "!" : ".";
+
 		if (thrown)
 			hit(mshot_xname(obj), mon, exclam(destroyed ? 100 : damagedealt), hide_damage_amount ? -1 : damagedealt);
 		else if (!hide_damage_amount && damagedealt > 0) 
 		{
+
 			if (!flags.verbose)
-				You("hit it for %d damage.", damagedealt);
+				You("%s it for %d damage%s%s", striketext, damagedealt, frombehindtext, strikemark);
 			else
-				You("%s %s for %d damage%s",
+				You("%s %s for %d damage%s%s",
 				(obj && (is_shield(obj) || obj->otyp == HEAVY_IRON_BALL))
-					? "bash" : Role_if(PM_BARBARIAN) ? "smite" : "hit",
-					mon_nam(mon), damagedealt, canseemon(mon) ? exclam(damagedealt) : ".");
+					? "bash" : Role_if(PM_BARBARIAN) ? "smite" : striketext,
+					mon_nam(mon), damagedealt, frombehindtext,
+					canseemon(mon) && !strikefrombehind ? exclam(damagedealt) : strikemark);
 		}
 		else 
 		{
 			if (!flags.verbose)
-				You("hit it.");
+				You("%s it%s%s", striketext, frombehindtext, strikemark);
 			else
 				You("%s %s%s",
 				(obj && (is_shield(obj) || obj->otyp == HEAVY_IRON_BALL))
-					? "bash" : Role_if(PM_BARBARIAN) ? "smite" : "hit",
-					mon_nam(mon), canseemon(mon) ? exclam(damagedealt) : ".");
+					? "bash" : Role_if(PM_BARBARIAN) ? "smite" : striketext,
+					mon_nam(mon), 
+					canseemon(mon) && !strikefrombehind ? exclam(damagedealt) : strikemark);
 		}
 	}
 	else if (hittxt && displaysustain && damagedealt > 0)
