@@ -2595,7 +2595,7 @@ boolean in_view;
     to_pieces = "";
     switch (obj->oclass == POTION_CLASS ? POT_WATER : obj->otyp) {
     default: /* glass or crystal wand */
-        if (obj->oclass != WAND_CLASS)
+        if (objects[obj->otyp].oc_material != MAT_GLASS)
             impossible("breaking odd object?");
         /*FALLTHRU*/
     case CRYSTAL_PLATE_MAIL:
@@ -2608,7 +2608,7 @@ boolean in_view;
 	case EXPENSIVE_CAMERA:
         to_pieces = " into a thousand pieces";
     /*FALLTHRU*/
-    case POT_WATER: /* really, all potions */
+	case POT_WATER: /* really, all potions */
         if (!in_view)
             You_hear("%s shatter!", something);
         else
