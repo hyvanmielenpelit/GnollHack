@@ -3327,8 +3327,9 @@ struct obj *obj;
 {
 #if defined(BETA) || defined(DEBUG)
     static unsigned long wearbits[] = {
-        W_ARM,    W_ARMC,   W_ARMH,    W_ARMS, W_ARMG,  W_ARMF,  W_ARMU,
-        W_WEP,    W_QUIVER, W_SWAPWEP, W_AMUL, W_RINGL, W_RINGR, W_BLINDFOLD,
+        W_ARM,    W_ARMC,   W_ARMH,    W_ARMS,     W_ARMG, W_ARMF,  W_ARMU,  W_ARMO,      W_ARMB,
+        W_WEP,    W_QUIVER, W_SWAPWEP, W_SWAPWEP2, W_AMUL, W_RINGL, W_RINGR, W_BLINDFOLD,
+		W_MISC,   W_MISC2,  W_MISC3,   W_MISC4,    W_MISC5,
         W_SADDLE, W_BALL,   W_CHAIN,   0
         /* [W_ARTIFACT_CARRIED,W_ARTIFACT_INVOKED are property bits for items which aren't worn] */
     };
@@ -3497,7 +3498,7 @@ struct obj *obj;
         /* check for items worn in invalid slots; practically anything can
            be wielded/alt-wielded/quivered, so tests on those are limited */
         what = 0;
-        if (owornmask & W_ARMOR) {
+        if (owornmask & (W_ARMOR & ~W_ARMS)) {
             if (obj->oclass != ARMOR_CLASS)
                 what = "armor";
             /* 3.6: dragon scale mail reverts to dragon scales when
@@ -3506,13 +3507,13 @@ struct obj *obj;
                 what = "skin";
         } else if (owornmask & W_WEAPON) {
             /* monsters don't maintain alternate weapon or quiver */
-            if (mcarried(obj) && (owornmask & (W_SWAPWEP | W_QUIVER)) != 0L)
-                what = (owornmask & W_SWAPWEP) != 0L ? "monst alt weapon?"
+            if (mcarried(obj) && (owornmask & (W_SWAP_WEAPON | W_QUIVER)) != 0L)
+                what = (owornmask & W_SWAP_WEAPON) != 0L ? "monst alt weapon?"
                                                      : "monst quiver?";
             /* hero can quiver gold but not wield it (hence not alt-wield
                it either); also catches monster wielding gold */
             else if (obj->oclass == COIN_CLASS
-                     && (owornmask & (W_WEP | W_SWAPWEP)) != 0L)
+                     && (owornmask & (W_WEAPON | W_SWAP_WEAPON)) != 0L)
                 what = (owornmask & W_WEP) != 0L ? "weapon" : "alt weapon";
         } else if (owornmask & W_AMUL) {
             if (obj->oclass != AMULET_CLASS)
