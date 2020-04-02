@@ -1555,16 +1555,23 @@ const char *objphrase; /* "Your widget glows" or "Steed's saddle glows" */
 
 /* potion obj hits monster mon, which might be youmonst; obj always used up */
 void
-potionhit(mon, obj, how)
+potionhit(mon, obj_ptr, how)
 struct monst *mon;
-struct obj *obj;
+struct obj **obj_ptr;
 int how;
 {
+	if (!mon || !obj_ptr)
+		return;
+
     const char *botlnam = bottlename();
     boolean isyou = (mon == &youmonst);
     int distance, tx, ty;
     struct obj *saddle = (struct obj *) 0;
     boolean hit_saddle = FALSE, your_fault = (how <= POTHIT_HERO_THROW);
+	struct obj *obj = *obj_ptr;
+
+	if (!obj)
+		return;
 
     if (isyou) 
 	{
@@ -1909,6 +1916,7 @@ do_illness: /* Pestilence's potion of healing effect */
                                 FALSE);
     }
     obfree(obj, (struct obj *) 0);
+	*obj_ptr = (struct obj*) 0;
 }
 
 /* vapors are inhaled or get in your eyes */

@@ -1111,11 +1111,17 @@ boolean* obj_destroyed;
 			if (obj->quan > 1L)
 				obj = splitobj(obj, 1L);
 			else
-				setuwep((struct obj*) 0, W_WEP);
+			{
+				if(obj == uwep)
+					setuwep((struct obj*) 0, W_WEP);
+				else if (obj == uarms)
+					setuwep((struct obj*) 0, W_ARMS);
+			}
 			freeinv(obj);
-			potionhit(mon, obj,
+			potionhit(mon, &obj,
 				hand_to_hand ? POTHIT_HERO_BASH : POTHIT_HERO_THROW);
 			obj = (struct obj*)0;
+			*obj_destroyed = TRUE;
 			if (DEADMONSTER(mon))
 				return FALSE; /* killed */
 			hittxt = TRUE;
@@ -1420,6 +1426,8 @@ boolean* obj_destroyed;
 		{
 			if (thrown == HMON_THROWN)
 				damage += adjust_damage(u_thrown_str_dmg_bonus(), &youmonst, mon, AD_PHYS, FALSE);
+			else if (*obj_destroyed)
+				damage += 0;
 			else if (!obj || obj == uarmg)
 			{
 				if(!martial_bonus() || (uarmg && is_metallic(uarmg)))
