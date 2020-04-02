@@ -28,21 +28,21 @@ STATIC_DCL unsigned long FDECL(strategy, (struct monst *));
    their chaotic counterparts */
 static NEARDATA const int nasties[] = {
     /* neutral */
-	PM_GARGANTUAN_COCKATRICE, PM_GIANT_COCKATRICE, PM_COCKATRICE, PM_STALKER, PM_MINOTAUR, //PM_ETTIN, 
-    PM_OWLBEAR, PM_PURPLE_WORM, PM_XAN, PM_UMBER_HULK,
-    PM_XORN, PM_ZRUTY, PM_LEOCROTTA, PM_BALUCHITHERIUM,
-    PM_CARNIVOROUS_APE, PM_FIRE_ELEMENTAL, PM_JABBERWOCK,
-    PM_IRON_GOLEM, PM_OCHRE_JELLY, PM_GREEN_SLIME,
+	PM_GARGANTUAN_COCKATRICE, PM_GIANT_COCKATRICE, PM_MINOTAUR,
+    PM_OWLBEAR_PATRIARCH, PM_OWLBEAR_MATRIARCH, PM_PURPLE_WORM, 
+    PM_LERNAEAN_HYDRA, PM_ROC, PM_NEO_OTYUGH, PM_MASTODON, PM_GORGON,
+	PM_MUCILAGINOUS_CUBE, PM_GIANT_ANACONDA, PM_JABBERWOCK, PM_ELDER_TREANT,
+    PM_SILVER_GOLEM, PM_SKELETON_KING, PM_GREEN_SLIME,
     /* chaotic */
 	PM_ANCIENT_BLACK_DRAGON, PM_ANCIENT_RED_DRAGON,
-    PM_BLACK_DRAGON, PM_RED_DRAGON, PM_ARCH_LICH, PM_VAMPIRE_LORD, PM_VAMPIRE_MAGE,
-    PM_MASTER_MIND_FLAYER, PM_DISENCHANTER, PM_WINGED_GARGOYLE,
+    PM_BLACK_DRAGON, PM_RED_DRAGON, PM_VAMPIRE_LORD, PM_VAMPIRE_MAGE, PM_KING_WRAITH,
+    PM_MASTER_MIND_FLAYER, PM_DISENCHANTER, PM_WINGED_GARGOYLE, PM_FLIND_LORD,
     PM_STORM_GIANT, PM_OLOG_HAI, PM_ELDER_DRACOLICH, PM_DRACOLICH,
-    PM_OGRE_KING, PM_ILLITHILICH, PM_GREMLIN, PM_BEHOLDER, PM_ELDER_ORB, PM_DEATH_TYRANT,
+    PM_OGRE_KING, PM_ILLITHILICH, PM_BEHOLDER, PM_ELDER_ORB, PM_DEATH_TYRANT,
     /* lawful */
 	PM_ANCIENT_SILVER_DRAGON, PM_ANCIENT_ORANGE_DRAGON, PM_ANCIENT_GREEN_DRAGON,
 	PM_ANCIENT_YELLOW_DRAGON, PM_SILVER_DRAGON, PM_ORANGE_DRAGON, PM_GREEN_DRAGON,
-    PM_YELLOW_DRAGON, PM_GUARDIAN_NAGA, PM_FIRE_GIANT,
+    PM_YELLOW_DRAGON, PM_GUARDIAN_NAGA, PM_FIRE_GIANT, PM_PHOENIX,
     PM_ALEAX, PM_COUATL, PM_HORNED_DEVIL, PM_BARBED_DEVIL,
     /* (titans, ki-rin, and golden nagas are suitably nasty, but
        they're summoners so would aggravate excessive summoning) */
@@ -598,14 +598,21 @@ struct monst *summoner;
 		else
 			tmp = max(1, u.ulevel / 3);
 			*/
-
-		tmp = 1;
+		if (summoner)
+		{
+			if (summoner != &youmonst && (summoner->iswiz || summoner->m_lev >= 50))
+				tmp = rnd(2);
+			else
+				tmp = 1;
+		}
+		else
+			tmp = rnd(2);
 
 		/* if we don't have a casting monster, nasties appear around hero,
            otherwise they'll appear around spot summoner thinks she's at */
         bypos.x = u.ux;
         bypos.y = u.uy;
-        for (i = tmp /* rnd(tmp)*/; i > 0 && count < MAXNASTIES; --i)
+        for (i = tmp; i > 0 && count < MAXNASTIES; --i)
             /* Of the 42 nasties[], 10 are lawful, 14 are chaotic,
              * and 18 are neutral.
              *
