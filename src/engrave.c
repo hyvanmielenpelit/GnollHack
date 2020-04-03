@@ -701,11 +701,11 @@ doengrave()
                 break;
             case WAN_NOTHING:
             case WAN_UNDEAD_TURNING:
-			case WAN_RESURRECTION:
 			case WAN_OPENING:
             case WAN_LOCKING:
             case WAN_PROBING:
-                break;
+			case WAN_EVAPORATION:
+				break;
             /* RAY wands */
             case WAN_MAGIC_MISSILE:
                 ptext = TRUE;
@@ -723,7 +723,25 @@ doengrave()
                             surface(u.ux, u.uy));
                 }
                 break;
-            case WAN_COLD:
+			case WAN_DISINTEGRATION:
+				if (!Blind) {
+					Sprintf(post_engr_text, "The bugs on the %s vanish!",
+						surface(u.ux, u.uy));
+				}
+				break;
+			case WAN_PETRIFICATION:
+				if (!Blind) {
+					Sprintf(post_engr_text, "The bugs on the %s turn into grains of sand!",
+						surface(u.ux, u.uy));
+				}
+				break;
+			case WAN_RESURRECTION:
+				if (!Blind) {
+					Sprintf(post_engr_text, "Suddenly, it seems that there are more bugs on the %s than before!",
+						surface(u.ux, u.uy));
+				}
+				break;
+			case WAN_COLD:
                 if (!Blind)
                     Strcpy(post_engr_text,
                            "A few ice cubes drop from the wand.");
