@@ -2705,7 +2705,22 @@ struct obj *otmp;
             fall_asleep(-rn1(6, 15), TRUE);
         }
         break;
-    }
+	case EDIBLEFX_CURE_PETRIFICATION:
+		if (!otmp->cursed)
+		{
+			if (Stoned)
+				fix_petrification();
+			else
+				You_feel("a bit more limber than before.");
+
+			/* Grants temporary stoning resistance */
+			incr_itimeout(&HStone_resistance, 13);
+		}
+		else
+			pline("Ulch! That %s had a nasty slimy texture.", cxname(otmp));
+
+		break;
+	}
     return;
 }
 

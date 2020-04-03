@@ -775,6 +775,9 @@ register struct obj* obj;
 					case EDIBLEFX_GAIN_LEVEL:
 						strcpy(buf2, "Confers one level");
 						break;
+					case EDIBLEFX_CURE_PETRIFICATION:
+						strcpy(buf2, "Cures petrification");
+						break;
 					default:
 						break;
 					}

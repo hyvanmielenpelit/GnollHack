@@ -565,15 +565,28 @@ boolean verbose;
 		break;
 	case EDIBLEFX_CURE_SICKNESS:
 		if (is_sick(mtmp) && !otmp->cursed)
-			set_mon_property_b(mtmp, SICK, 0, TRUE);
+			set_mon_property_b(mtmp, SICK, 0, canseemon(mtmp));
 		if (is_food_poisoned(mtmp) && !otmp->cursed)
-			set_mon_property_b(mtmp, FOOD_POISONED, 0, TRUE);
+			set_mon_property_b(mtmp, FOOD_POISONED, 0, canseemon(mtmp));
 		if (has_vomiting(mtmp) && !otmp->cursed)
-			set_mon_property_b(mtmp, VOMITING, 0, TRUE);
+			set_mon_property_b(mtmp, VOMITING, 0, canseemon(mtmp));
 		break;
 	case EDIBLEFX_APPLE:
 		/* Nothing */
 		break;
+	case EDIBLEFX_CURE_PETRIFICATION:
+		if (!otmp->cursed)
+		{
+			if (has_stoned(mtmp))
+			{
+				set_mon_property_b(mtmp, STONED, 0, canseemon(mtmp));
+				if(canseemon(mtmp))
+					pline("%s looks limber!", Monnam(mtmp));
+
+			}
+
+			increase_mon_property(mtmp, STONE_RES, 13);
+		}
 	}
 	return;
 }

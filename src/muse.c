@@ -2668,7 +2668,8 @@ boolean stoning; /* True: stop petrification, False: cure stun && confusion */
     }
     /* use up monster's next move */
 	mon->mprops[STONED] &= ~M_TIMEOUT;
-    mon->movement -= NORMAL_SPEED;
+	increase_mon_property(mon, STONE_RES, 13);
+	mon->movement -= NORMAL_SPEED;
     mon->mlstmv = monstermoves;
 }
 
