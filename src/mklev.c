@@ -994,6 +994,9 @@ makelevel()
 				|| IS_FURNITURE(levl[x][y].typ) || IS_ALTAR(levl[x][y].typ) || (x == sstairs.sx && y == sstairs.sy)
 				));
 
+			/* First, write Gilthoniel underneath */
+			make_engr_at(x, y, "Gilthoniel", 0L, ENGRAVE);
+
 			/* Stash has now some random contents */
 			struct obj* stash = mksobj_at(CHEST, x, y, FALSE, FALSE);
 			stash->olocked = FALSE;

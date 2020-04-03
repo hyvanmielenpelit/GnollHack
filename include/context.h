@@ -157,6 +157,7 @@ struct context_info
     boolean door_opened; /* set to true if door was opened during test_move */
 	boolean time_stopped; /* time has been stopped */
 	boolean multishot_target_killed;
+	boolean hide_melee_range_warning;
 	boolean suit_yielding_ac_bonus;
 	boolean suit_yielding_mc_bonus;
 	boolean robe_yielding_ac_bonus;

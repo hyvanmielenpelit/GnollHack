@@ -2000,12 +2000,18 @@ boolean is_golf;
 					tmp -= 20;
 					break;
 				}
-				You("feel it is very hard to hit with %s at melee range.", an(cxname(uwep)));
+				if(!context.hide_melee_range_warning)
+					You("find it very hard to hit with %s at melee range.", an(cxname(uwep)));
+
+				context.hide_melee_range_warning = TRUE;
 		}
 		else
 		{
 			tmp -= 20;
-			You("feel it is very hard to hit by throwing %s at melee range.", an(cxname(obj)));
+			if (!context.hide_melee_range_warning)
+				You("find it very hard to hit by throwing %s at melee range.", an(cxname(obj)));
+
+			context.hide_melee_range_warning = TRUE;
 		}
 	}
 

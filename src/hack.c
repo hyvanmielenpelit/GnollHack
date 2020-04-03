@@ -1357,6 +1357,8 @@ domove_core()
     int bc_control = 0;                 /* control for ball&chain */
     boolean cause_delay = FALSE;        /* dragging ball will skip a move */
 
+	context.hide_melee_range_warning = FALSE;
+
     if (context.travel) {
         if (!findtravelpath(FALSE))
             (void) findtravelpath(TRUE);

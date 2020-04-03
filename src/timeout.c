@@ -160,7 +160,7 @@ const struct propname {
 	{ MAGIC_MISSILE_RES, "resistant to magic missiles", "magic missile resistance" },
 	{ STUN_RES, "stun resistant", "stun resistance" },
 	{ FOOD_POISONED, "fatally food poisoned", "fatal food poisoning" },
-	{ BISECTION_RES, "impervious to bisection", "imperviousness to bisection" },
+	{ BISECTION_RES, "protected from bisection", "protection from bisection" },
 	{ LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
 	{  0, 0 },
 };

@@ -532,7 +532,7 @@ IF [50%] {
 } ELSE {
   OBJECT:('"',"amulet of reflection"),$place[0]
 }
-ENGRAVING:$place[0],burn,"Elbereth"
+ENGRAVING:$place[0],burn,"Gilthoniel"
 OBJECT:('?', "scare monster"),$place[0],cursed
 
 
