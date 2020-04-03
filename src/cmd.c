@@ -3300,6 +3300,8 @@ int final;
         you_are("petrification resistant", from_what(STONE_RES));
 	if (Stun_resistance)
 		you_are("stun resistant", from_what(STUN_RES));
+	if (Bisection_resistance)
+		you_cannot("be bisected", from_what(BISECTION_RES));
 	if (Halluc_resistance)
         enl_msg(You_, "resist", "resisted", " hallucinations",
                 from_what(HALLUC_RES));

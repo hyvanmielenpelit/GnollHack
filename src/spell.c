@@ -2206,7 +2206,7 @@ int otyp;
 			Your("skin feels less prone to acid than before.");
 			break;
 		case STONE_RES:
-			Your("skin feels limber than before.");
+			Your("skin feels more limber than before.");
 			break;
 		case DRAIN_RES:
 			You_feel("less suspectible to draining than before.");
@@ -2279,6 +2279,9 @@ int otyp;
 			break;
 		case MAGICAL_STONESKIN:
 			Your("skin hardens into stone!");
+			break;
+		case BISECTION_RES:
+			Your("skin feels strong as steel!");
 			break;
 		default:
 			break;

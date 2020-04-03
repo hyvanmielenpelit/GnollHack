@@ -498,6 +498,9 @@
 #define has_wounded_legs(mon) \
 	has_property(mon, WOUNDED_LEGS)
 
+#define has_bisection_resistance(mon) \
+	(has_property(mon, BISECTION_RES))
+
 
 /* resistances at the time of acquisition */
 #define resists_fire(mon) \
@@ -540,6 +543,10 @@
     (has_innate((mon)->data, MR_FREE_ACTION) || has_property(mon, FREE_ACTION) ||  is_not_living((mon)->data) || is_vampshifter(mon))
 #define resists_stun(mon) \
     (has_innate((mon)->data, MR_STUN) || has_property(mon, STUN_RES) ||  mindless((mon)->data) || is_not_living((mon)->data) || is_vampshifter(mon))
+
+/* other "resists" definitions */
+#define resists_bisection(mon) \
+    (has_property(mon, BISECTION_RES) ||  noncorporeal((mon)->data) || amorphous((mon)->data))
 
 
 /* Conveyed propreties */

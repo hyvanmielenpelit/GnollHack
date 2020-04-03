@@ -1382,10 +1382,10 @@ int dieroll; /* needed for Magicbane and vorpal blades */
     /* reverse from AD&D. */
     if (artifact_has_flag(otmp, (AF_BEHEAD | AF_BISECT)))
 	{
-        if (artifact_has_flag(otmp, AF_BISECT) && dieroll == 1)
+        if (artifact_has_flag(otmp, AF_BISECT) && dieroll == 1 && !(youdefend ? Bisection_resistance : resists_bisection(mdef)))
 		{
             strcpy(wepdesc, The(artifact_hit_desc));
-            /* not really beheading, but so close, why add another SPFX */
+            /* not really beheading, but close */
             if (youattack && u.uswallow && mdef == u.ustuck) 
 			{
                 You("slice %s wide open!", mon_nam(mdef));
@@ -1692,7 +1692,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 
 	/* We really want "on a natural 20" but GnollHack does it in */
 	/* reverse from AD&D. */
-	if ((objects[otmp->otyp].oc_aflags & A1_SVB_MASK) == A1_BISECT)
+	if ((objects[otmp->otyp].oc_aflags & A1_SVB_MASK) == A1_BISECT && !(youdefend ? Bisection_resistance : has_bisection_resistance(mdef)))
 	{
 		if (
 			((objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mdef, magr))

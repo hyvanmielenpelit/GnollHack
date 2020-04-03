@@ -192,6 +192,10 @@
 #define EStun_resistance u.uprops[STUN_RES].extrinsic
 #define Stun_resistance (HStun_resistance || EStun_resistance)
 
+#define HBisection_resistance u.uprops[BISECTION_RES].intrinsic
+#define EBisection_resistance u.uprops[BISECTION_RES].extrinsic
+#define Bisection_resistance (HBisection_resistance || EBisection_resistance)
+
 
 #define HEnhanced_vision u.uprops[ENHANCED_VISION].intrinsic
 #define EEnhanced_vision u.uprops[ENHANCED_VISION].extrinsic

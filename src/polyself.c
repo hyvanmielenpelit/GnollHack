@@ -89,6 +89,7 @@ set_uasmon()
 	PROPSET(DRAIN_RES, resists_drli(&youmonst));
 	PROPSET(MAGIC_MISSILE_RES, resists_magicmissile(&youmonst));
 	PROPSET(STUN_RES, resists_stun(&youmonst));
+	PROPSET(BISECTION_RES, resists_bisection(&youmonst));
 
 #if 0
 	{

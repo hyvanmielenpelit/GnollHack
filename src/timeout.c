@@ -160,6 +160,7 @@ const struct propname {
 	{ MAGIC_MISSILE_RES, "resistant to magic missiles", "magic missile resistance" },
 	{ STUN_RES, "stun resistant", "stun resistance" },
 	{ FOOD_POISONED, "fatally food poisoned", "fatal food poisoning" },
+	{ BISECTION_RES, "impervious to bisection", "imperviousness to bisection" },
 	{ LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
 	{  0, 0 },
 };
@@ -1144,6 +1145,9 @@ nh_timeout()
 			case MAGICAL_STONESKIN:
 				if (!Magical_stoneskin)
 					Your("skin feels less stone-like than before.");
+			case BISECTION_RES:
+				if (!Bisection_resistance)
+					Your("skin feels less steel-like than before.");
 				break;
 			case TITAN_STRENGTH:
 				if (!Titan_strength)
@@ -1314,6 +1318,9 @@ nh_timeout()
 				break;
 			case MAGICAL_STONESKIN:
 				Your("skin is starting to feel less stone-like than before.");
+				break;
+			case BISECTION_RES:
+				Your("skin is starting to feel less steel-like than before.");
 				break;
 			case TITAN_STRENGTH:
 				You("are starting to feel less strong than before.");

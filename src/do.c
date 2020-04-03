@@ -1718,7 +1718,7 @@ register struct obj* obj;
 			if (!uses_spell_flags && (objects[otyp].oc_aflags & A1_SVB_MASK) == A1_BISECT)
 			{
 				powercnt++;
-				Sprintf(buf, " %2d - Besects target on hit", powercnt);
+				Sprintf(buf, " %2d - Bisects target on hit", powercnt);
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
