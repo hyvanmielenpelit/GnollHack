@@ -269,7 +269,9 @@ struct obj *otmp;
 #define MUSE_POT_GREATER_HEALING 18
 #define MUSE_POT_FULL_HEALING 19
 #define MUSE_LIZARD_CORPSE 20
-/*
+#define MUSE_DRAGON_FRUIT 21
+
+ /*
 #define MUSE_INNATE_TPT 9999
  * We cannot use this.  Since monsters get unlimited teleportation, if they
  * were allowed to teleport at will you could never catch them.  Instead,
@@ -347,7 +349,7 @@ struct monst *mtmp;
         }
     }
 
-    if (is_confused(mtmp) || is_stunned(mtmp)) 
+    if (has_stoned(mtmp)) 
 	{
         struct obj *liztin = 0;
 
@@ -364,7 +366,17 @@ struct monst *mtmp;
                 liztin = obj;
             }
         }
-        /* confused or stunned monster might not be able to open tin */
+
+		for (obj = mtmp->minvent; obj; obj = obj->nobj)
+		{
+			if (obj->otyp == DRAGON_FRUIT)
+			{
+				m.defensive = obj;
+				m.has_defense = MUSE_DRAGON_FRUIT;
+				return TRUE;
+			}
+		}
+		/* confused or stunned monster might not be able to open tin */
         if (liztin && mcould_eat_tin(mtmp) && rn2(3))
 		{
             m.defensive = liztin;
@@ -1079,7 +1091,8 @@ struct monst *mtmp;
             makeknown(otmp->otyp);
         m_useup(mtmp, otmp);
         return 2;
-    case MUSE_LIZARD_CORPSE:
+	case MUSE_DRAGON_FRUIT:
+	case MUSE_LIZARD_CORPSE:
 		if (!otmp)
 			return 2;
 		/* not actually called for its unstoning effect */
@@ -2608,7 +2621,8 @@ boolean stoning; /* True: stop petrification, False: cure stun && confusion */
             acid = obj->otyp == POT_ACID
                    || (food && acidic(&mons[obj->corpsenm])),
             lizard = food && obj->corpsenm == PM_LIZARD;
-    int nutrit = food ? dog_nutrition(mon, obj) : 0; /* also sets meating */
+	boolean dragonfruit = (obj->otyp == DRAGON_FRUIT);
+    int nutrit = food || dragonfruit ? dog_nutrition(mon, obj) : 0; /* also sets meating */
 
     if (vis) {
         long save_quan = obj->quan;
@@ -2682,7 +2696,9 @@ boolean tinok;
 {
     if (obj->otyp == POT_ACID)
         return TRUE;
-    if (obj->otyp != CORPSE && (obj->otyp != TIN || !tinok))
+	if (obj->otyp == DRAGON_FRUIT)
+		return TRUE;
+	if (obj->otyp != CORPSE && (obj->otyp != TIN || !tinok))
         return FALSE;
     /* corpse, or tin that mon can open */
     return (boolean) (obj->corpsenm == PM_LIZARD
