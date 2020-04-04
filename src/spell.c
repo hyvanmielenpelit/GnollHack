@@ -3032,8 +3032,13 @@ int *spell_no;
 	for (int j = 0; j < colorbufcnt; j++)
 	{
 		free_menu_coloring_str(colorbufs[j]);
+	}
+
+	for (int j = 0; j < MAXSPELL; j++)
+	{
 		free(colorbufs[j]);
 	}
+
 
     if (n > 0) {
         *spell_no = selected[0].item.a_int - 1;
