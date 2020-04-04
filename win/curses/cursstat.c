@@ -571,7 +571,7 @@ boolean border;
                 ++text; /* for first field of line, discard leading space */
 
             /* Discard first space in three-line setup */
-            if (first_status_field != BL_FLUSH && fld == first_status_field && *text == ' ')
+            if (number_of_lines == 3 && first_status_field != BL_FLUSH && fld == first_status_field && *text == ' ')
                 ++text;     
 
             switch (fld) {
