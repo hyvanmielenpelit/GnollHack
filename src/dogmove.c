@@ -1623,7 +1623,7 @@ newdogpos:
 					if (buriedsearchablefound)
 					{
 						if(canseemon(mtmp))
-							pline("%s starts digging the ground frentically.", Monnam(mtmp), vtense((char*)0, growl_sound(mtmp)));
+							pline("%s starts digging the ground.", Monnam(mtmp), vtense((char*)0, growl_sound(mtmp)));
 
 						int itemsfound = unearth_objs(mtmp, nix, niy, canseemon(mtmp), TRUE);
 
