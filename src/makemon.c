@@ -1493,7 +1493,7 @@ register struct monst *mtmp;
 
 			if (mtmp->mnum == PM_GNOMISH_WIZARD)
 			{
-				if (!rn2(4))
+				if (!rn2(5))
 				{
 					if (!rn2(20))
 						(void)mongets(mtmp, !rn2(2) ? CORNUTHAUM : DUNCE_CAP);
@@ -1503,7 +1503,7 @@ register struct monst *mtmp;
 			}
 			else
 			{
-				if (!rn2(4))
+				if (!rn2(8))
 				{
 					if (!rn2(20))
 						(void)mongets(mtmp, DUNCE_CAP);

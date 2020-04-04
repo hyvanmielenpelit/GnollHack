@@ -2487,8 +2487,6 @@ struct monst* mtmp;
 
 	add_valid_menu_class(0); /* clear any classes already there */
 	add_valid_menu_class(FOOD_CLASS);
-	//add_valid_menu_class(POTION_CLASS);
-	//add_valid_menu_class(REAGENT_CLASS);
 
 	n = query_objlist(qbuf, &invent,
 		(USE_INVLET | INVORDER_SORT), &pick_list, PICK_ONE,
@@ -2513,9 +2511,17 @@ struct monst* mtmp;
 			if (cnt > 1)
 				cnt = 1;
 
-			if (cnt < otmp->quan) 
+			int tasty = MANFOOD;
+			tasty = dogfood(mtmp, otmp);
+
+			if (cnt < otmp->quan)
 			{
-				if (welded(otmp, &youmonst)) 
+				
+				if (welded(otmp, &youmonst)
+					|| (tasty >= (objects[otmp->otyp].oc_material == MAT_VEGGY ? APPORT : MANFOOD))
+					|| !mon_can_move(mtmp) 
+					|| mtmp->meating
+					)
 				{
 					; /* don't split */
 				}
@@ -2535,40 +2541,32 @@ struct monst* mtmp;
 			{
 				if (otmp->owornmask & (W_ARMOR | W_ACCESSORY))
 				{
-					You("cannot pass %s over to %s. You are wearing it.", doname(otmp), mon_nam(mtmp));
+					You("cannot pass %s over to %s. You are wearing it.", an(singular(otmp, cxname)), mon_nam(mtmp));
 				}
 				else
 				{
-					if (otmp->oclass == POTION_CLASS)
+					You("offer %s to %s.", an(singular(otmp, cxname)), mon_nam(mtmp));
+					int releasesuccess = FALSE;
+					if (mon_can_move(mtmp) && !mtmp->meating
+						&& (tasty < (objects[otmp->otyp].oc_material == MAT_VEGGY ? APPORT : MANFOOD))
+						&& (releasesuccess = release_item_from_hero_inventory(otmp)))
 					{
-						You("try to make %s drink %s.", mon_nam(mtmp), doname(otmp));
+						n_given++;
+						/* dog_eat expects a floor object */
+						place_object(otmp, mtmp->mx, mtmp->my);
+						(void)dog_eat(mtmp, otmp, mtmp->mx, mtmp->my, FALSE);
 					}
-					else if(otmp->oclass == FOOD_CLASS)
+					else
 					{
-						You("offer %s to %s.", doname(otmp), mon_nam(mtmp));
-						int tasty = MANFOOD;
-						int releasesuccess = FALSE;
-						if (mon_can_move(mtmp) && !mtmp->meating
-							&& ((tasty = dogfood(mtmp, otmp)) < (objects[otmp->otyp].oc_material == MAT_VEGGY ? APPORT : MANFOOD))
-							&& (releasesuccess = release_item_from_hero_inventory(otmp)))
-						{
-							n_given++;
-							/* dog_eat expects a floor object */
-							place_object(otmp, mtmp->mx, mtmp->my);
-							(void)dog_eat(mtmp, otmp, mtmp->mx, mtmp->my, FALSE);
-						}
-						else
-						{
-							if (!mon_can_move(mtmp))
-								pline("%s does not seem to be able to move in order to eat %s.", Monnam(mtmp), doname(otmp));
-							else if (mtmp->meating)
-								pline("%s is already eating something else.", Monnam(mtmp), doname(otmp));
-							else if (tasty >= MANFOOD)
-								pline("%s refuses to eat %s.", Monnam(mtmp), doname(otmp));
-							else if (!releasesuccess)
-								; /* Nothing here */
+						if (!mon_can_move(mtmp))
+							pline("%s does not seem to be able to move in order to eat %s.", Monnam(mtmp), the(singular(otmp, cxname)));
+						else if (mtmp->meating)
+							pline("%s is already eating something else.", Monnam(mtmp));
+						else if (tasty >= MANFOOD)
+							pline("%s refuses to eat %s.", Monnam(mtmp), the(singular(otmp, cxname)));
+						else if (!releasesuccess)
+							; /* Nothing here */
 
-						}
 					}
 				}
 			}
