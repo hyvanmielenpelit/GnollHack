@@ -2830,15 +2830,16 @@ int defensetype;
 static const char* artifact_invoke_names[] = { 
 	"taming", "healing", "mana replenishment", "untrapping", "charging",
 	"level teleportation", "portal creation", "enlightenment", "arrow creation", "death ray", "blessing of contents", "wishing",
+	"time stop",
 };
 
 const char* get_artifact_invoke_name(specialpropindex)
 int specialpropindex;
 {
-	if (specialpropindex < TAMING || specialpropindex >= TAMING + SIZE(artifact_invoke_names))
+	if (specialpropindex < ARTINVOKE_TAMING || specialpropindex >= ARTINVOKE_TAMING + SIZE(artifact_invoke_names))
 		return empty_string;
 
-	return artifact_invoke_names[specialpropindex - TAMING];
+	return artifact_invoke_names[specialpropindex - ARTINVOKE_TAMING];
 }
 
 /* Called when a boulder is dropped, thrown, or pushed.  If it ends up

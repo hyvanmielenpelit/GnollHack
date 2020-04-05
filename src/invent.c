@@ -2390,6 +2390,48 @@ struct obj *otmp;
             : FALSE;
 }
 
+boolean
+is_worn_correctly(otmp)
+struct obj* otmp;
+{
+	if (otmp->owornmask == 0)
+		return FALSE;
+
+	if (is_suit(otmp) && (otmp->owornmask & W_ARM) != 0)
+		return TRUE;
+	if (is_boots(otmp) && (otmp->owornmask & W_ARMF) != 0)
+		return TRUE;
+	if (is_helmet(otmp) && (otmp->owornmask & W_ARMH) != 0)
+		return TRUE;
+	if (is_shirt(otmp) && (otmp->owornmask & W_ARMU) != 0)
+		return TRUE;
+	if (is_robe(otmp) && (otmp->owornmask & W_ARMO) != 0)
+		return TRUE;
+	if (is_cloak(otmp) && (otmp->owornmask & W_ARMC) != 0)
+		return TRUE;
+	if (is_gloves(otmp) && (otmp->owornmask & W_ARMG) != 0)
+		return TRUE;
+	if (is_bracers(otmp) && (otmp->owornmask & W_ARMB) != 0)
+		return TRUE;
+	if (is_shield(otmp) && (otmp->owornmask & (W_ARMS | W_WEP)) != 0)
+		return TRUE;
+	if (is_weapon(otmp) && (otmp->owornmask & (W_ARMS | W_WEP)) != 0)
+		return TRUE;
+	if (is_amulet(otmp) && (otmp->owornmask & W_AMUL) != 0)
+		return TRUE;
+	if (otmp->oclass == RING_CLASS && (otmp->owornmask & W_RING) != 0)
+		return TRUE;
+	if (otmp->oclass == MISCELLANEOUS_CLASS && (otmp->owornmask & W_MISCITEMS) != 0)
+		return TRUE;
+	if (otmp->otyp == SADDLE && (otmp->owornmask & W_SADDLE) != 0)
+		return TRUE;
+	if ((otmp->otyp == BLINDFOLD || otmp->otyp == TOWEL) && (otmp->owornmask & W_BLINDFOLD) != 0)
+		return TRUE;
+
+	return FALSE;
+}
+
+
 /* extra xprname() input that askchain() can't pass through safe_qbuf() */
 STATIC_VAR struct xprnctx {
     char let;

@@ -4894,10 +4894,11 @@ boolean ordinary;
                      Stunned ? "even more " : "");
             make_stunned((HStun & TIMEOUT) + (long) rnd(30), FALSE);
         } else
-            You("shudder in dread.");
+            You("don't feel much different than you did before.");
         break;
 	case SPE_FEAR:
-		You("shudder in dread.");
+		if(!Fear_resistance)
+			You("shudder in dread.");
 		break;
 	case WAN_RESURRECTION:
 	case SPE_RESURRECTION:

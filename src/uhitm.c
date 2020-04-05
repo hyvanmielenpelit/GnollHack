@@ -273,8 +273,10 @@ int *attk_count, *role_roll_penalty;
 		pline("It is complicated to hit with %s in melee combat.", the(cxname(weapon)));
 		tmp -= 18;
 	}
+
     /* some actions should occur only once during multiple attacks */
-    if (!(*attk_count)++) {
+    if (!(*attk_count)++) 
+	{
         /* knight's chivalry or samurai's giri */
         check_caitiff(mtmp);
     }
@@ -285,25 +287,31 @@ int *attk_count, *role_roll_penalty;
     if (is_fleeing(mtmp))
         tmp += 2;
 
-    if (mtmp->msleeping) {
+    if (mtmp->msleeping) 
+	{
         mtmp->msleeping = 0;
         tmp += 2;
     }
-    if (!mtmp->mcanmove) {
+
+    if (!mtmp->mcanmove)
+	{
         tmp += 4;
-        if (!rn2(10)) {
+        if (!rn2(10))
+		{
             mtmp->mcanmove = 1;
             mtmp->mfrozen = 0;
         }
     }
 
     /* role/race adjustments */
-    if (Role_if(PM_MONK) && !Upolyd) {
+    if (Role_if(PM_MONK) && !Upolyd)
+	{
         if (uarm)
             tmp -= (*role_roll_penalty = urole.spelarmr);
         else if (!uwep && !uarms)
             tmp += (u.ulevel / 3) + 2;
     }
+
     if (is_orc(mtmp->data)
         && maybe_polyd(is_elf(youmonst.data), Race_if(PM_ELF)))
         tmp++;
@@ -319,14 +327,21 @@ int *attk_count, *role_roll_penalty;
      * weapon_skill_hit_bonus applies if doing a weapon attack even bare-handed
      * or if kicking as martial artist
      */
-    if (aatyp == AT_WEAP || aatyp == AT_CLAW) {
+    if (aatyp == AT_WEAP || aatyp == AT_CLAW)
+	{
         if (weapon)
             tmp += weapon_to_hit_value(weapon, mtmp, &youmonst);
 		else if(uarmg)
 			tmp += weapon_to_hit_value(uarmg, mtmp, &youmonst);
 		tmp += weapon_skill_hit_bonus(weapon, P_NONE, FALSE);
-    } else if (aatyp == AT_KICK && martial_bonus()) {
-        tmp += weapon_skill_hit_bonus((struct obj *) 0, P_NONE, FALSE);
+    } 
+	else if (aatyp == AT_KICK && martial_bonus()) 
+	{
+		if (weapon)
+			tmp += weapon_to_hit_value(weapon, mtmp, &youmonst);
+		else if (uarmf)
+			tmp += weapon_to_hit_value(uarmf, mtmp, &youmonst);
+		tmp += weapon_skill_hit_bonus((struct obj *) 0, P_NONE, FALSE);
     }
 
     return tmp;
@@ -635,12 +650,13 @@ struct monst *mon;
 struct attack *uattk;
 {
     boolean malive = TRUE, wep_was_destroyed = FALSE;
-    struct obj *wepbefore = uwep;
 	int armorpenalty, attknum = 0, x = u.ux + u.dx, y = u.uy + u.dy;
 	int multistrike = 1;
 	int multistrikernd = 0;
+	struct obj* wep = (uwep ? uwep : uarmg ? uarmg : (struct obj*)0);
+	struct obj* wepbefore = wep;
 
-	get_multishot_stats(&youmonst, uwep, uwep, FALSE, &multistrike, &multistrikernd);
+	get_multishot_stats(&youmonst, wep, wep, FALSE, &multistrike, &multistrikernd);
 
 	if (multistrikernd > 0)
 		multistrike += rn2(multistrikernd + 1);
@@ -651,7 +667,7 @@ struct attack *uattk;
 		if (uwep)
 			strcpy(strikebuf, Yobjnam2(uwep, "strike"));
 		else if (u.twoweap)
-			Sprintf(strikebuf, "You strike with your right %s", body_part(HAND));
+			Sprintf(strikebuf, "You strike with your right %s%s", uarmg ? "gloved " : "", body_part(HAND));
 		else
 			Sprintf(strikebuf, "You strike");
 
@@ -659,16 +675,16 @@ struct attack *uattk;
 			pline("%s %s!", strikebuf, strikeindex == 1 ? "a second time" : strikeindex == 2 ? "a third time" : "once more");
 
 		//DETERMINE IF YOU HIT THE MONSTER
-		int tmp = find_roll_to_hit(mon, uattk->aatyp, uwep, &attknum, &armorpenalty);
+		int tmp = find_roll_to_hit(mon, uattk->aatyp, wep, &attknum, &armorpenalty);
 		int dieroll = rnd(20);
 		int mhit = (tmp > dieroll || u.uswallow);
-		boolean uses_spell_flags = uwep ? object_uses_spellbook_wand_flags_and_properties(uwep) : FALSE;
+		boolean uses_spell_flags = wep ? object_uses_spellbook_wand_flags_and_properties(wep) : FALSE;
 
-		if (uwep && !uses_spell_flags &&((objects[uwep->otyp].oc_aflags & A1_HITS_ADJACENT_SQUARES) || (uwep->oartifact && artifact_has_flag(uwep, AF_HITS_ADJACENT_SQUARES)))
+		if (wep && !uses_spell_flags &&((objects[wep->otyp].oc_aflags & A1_HITS_ADJACENT_SQUARES) || (wep->oartifact && artifact_has_flag(wep, AF_HITS_ADJACENT_SQUARES)))
 			&& !u.uswallow && !u.ustuck && !NODIAG(u.umonnum))
 		{
-			malive = hitum_cleave(mon, uattk, uwep);
-			if (wepbefore && !uwep)
+			malive = hitum_cleave(mon, uattk, wep);
+			if (wepbefore && !wep)
 				wep_was_destroyed = TRUE;
 		}
 		else
@@ -676,10 +692,10 @@ struct attack *uattk;
 			if (tmp > dieroll)
 				exercise(A_DEX, TRUE);
 			/* bhitpos is set up by caller */
-			malive = known_hitum(mon, uwep, &mhit, tmp, armorpenalty, uattk, dieroll);
-			if (wepbefore && !uwep)
+			malive = known_hitum(mon, wep, &mhit, tmp, armorpenalty, uattk, dieroll);
+			if (wepbefore && !wep)
 				wep_was_destroyed = TRUE;
-			(void)passive(mon, uwep, mhit, malive, AT_WEAP, wep_was_destroyed);
+			(void)passive(mon, wep, mhit, malive, AT_WEAP, wep_was_destroyed);
 		}
 
 		if (!malive || m_at(x, y) != mon || wep_was_destroyed)
@@ -689,19 +705,20 @@ struct attack *uattk;
 
 	/* second attack for two-weapon combat */
 	wep_was_destroyed = FALSE;
-	wepbefore = uarms;
 
 	if (u.twoweap && !(uwep && bimanual(uwep)) && malive && m_at(x, y) == mon) //&& !override_confirmation 
 	{
 		if (uarms && is_weapon(uarms))
 			You("strike with your left-hand weapon.");
 		else
-			You("strike with your left %s.", body_part(HAND));
+			You("strike with your left %s%s.", uarmg ? "gloved " : "", body_part(HAND));
 
 		int multistrike2 = 1;
 		int multistrikernd2 = 0;
+		wep = (uarms ? uarms : uarmg ? uarmg : (struct obj*)0);
+		wepbefore = wep;
 
-		get_multishot_stats(&youmonst, uarms, uarms, FALSE, &multistrike2, &multistrikernd2);
+		get_multishot_stats(&youmonst, wep, wep, FALSE, &multistrike2, &multistrikernd2);
 
 		if (multistrikernd2 > 0)
 			multistrike += rn2(multistrikernd + 1);
@@ -712,34 +729,35 @@ struct attack *uattk;
 			if (uarms)
 				strcpy(strikebuf, Yobjnam2(uarms, "strike"));
 			else
-				Sprintf(strikebuf, "You strike with your left %s", body_part(HAND));
+				Sprintf(strikebuf, "You strike with your left %s%s", uarmg ? "gloved " : "", body_part(HAND));
 
 			if (strike2index > 0)
 				pline("%s %s!", strikebuf, strike2index == 1 ? "a second time" : strike2index == 2 ? "a third time" : "once more");
 
-			int tmp = find_roll_to_hit(mon, uattk->aatyp, uarms, &attknum,
+			int tmp = find_roll_to_hit(mon, uattk->aatyp, wep, &attknum,
 				&armorpenalty);
+
 			int dieroll = rnd(20);
 			int mhit = (tmp > dieroll || u.uswallow);
-			boolean uses_spell_flags = uarms ? object_uses_spellbook_wand_flags_and_properties(uarms) : FALSE;
+			boolean uses_spell_flags = wep ? object_uses_spellbook_wand_flags_and_properties(wep) : FALSE;
 
-			if (uarms && !uses_spell_flags && ((objects[uarms->otyp].oc_aflags & A1_HITS_ADJACENT_SQUARES) || (uarms->oartifact && artifact_has_flag(uarms, AF_HITS_ADJACENT_SQUARES)))
+			if (wep && !uses_spell_flags && ((objects[wep->otyp].oc_aflags & A1_HITS_ADJACENT_SQUARES) || (wep->oartifact && artifact_has_flag(wep, AF_HITS_ADJACENT_SQUARES)))
 				&& !u.uswallow && !u.ustuck && !NODIAG(u.umonnum))
 			{
-				malive = hitum_cleave(mon, uattk, uarms);
-				if (wepbefore && !uarms)
+				malive = hitum_cleave(mon, uattk, wep);
+				if (wepbefore && !wep)
 					wep_was_destroyed = TRUE;
 			}
 			else
 			{
 
-				malive = known_hitum(mon, uarms, &mhit, tmp, armorpenalty, uattk,
+				malive = known_hitum(mon, wep, &mhit, tmp, armorpenalty, uattk,
 					dieroll);
 				/* second passive counter-attack only occurs if second attack hits */
-				if (wepbefore && !uarms)
+				if (wepbefore && !wep)
 					wep_was_destroyed = TRUE;
 				if (mhit)
-					(void)passive(mon, uarms, mhit, malive, AT_WEAP, wep_was_destroyed);
+					(void)passive(mon, wep, mhit, malive, AT_WEAP, wep_was_destroyed);
 			}
 
 			if (!malive || m_at(x, y) != mon || wep_was_destroyed)
@@ -826,7 +844,7 @@ boolean* obj_destroyed;
 	saved_oname[0] = '\0';
 
 	wakeup(mon, TRUE);
-	if (!obj) 
+	if (!obj || (uarmg && obj == uarmg)) 
 	{ 
 		/* attack with bare hands */
 		/* All gloves give bonuses when fighting 'bare-handed'. -- JG
@@ -896,6 +914,38 @@ boolean* obj_destroyed;
 				damage += adjust_damage(basedmg, &youmonst, mon, objects[uarmg->otyp].oc_damagetype, FALSE);
 				extratmp = weapon_extra_dmg_value(uarmg, mon, &youmonst, basedmg);
 				damage += adjust_damage(extratmp, &youmonst, mon, objects[uarmg->otyp].oc_extra_damagetype, FALSE);
+				
+				/* artifact gauntlets*/
+				int ahres = 0;
+				if (uarmg->oartifact
+					&& (ahres = artifact_hit(&youmonst, mon, uarmg, &damage, dieroll)))
+				{
+					if (DEADMONSTER(mon)) /* artifact killed monster */
+						return FALSE;
+
+					if (damage == 0)
+						return TRUE;
+
+					hittxt = TRUE;
+					if (ahres == 1)
+						displaysustain = TRUE;
+				}
+
+				int spec_adtyp = 0;
+				int special_hit_dmg = pseudo_artifact_hit(&youmonst, mon, uarmg, extratmp, dieroll, critstrikeroll, &spec_adtyp);
+				if (special_hit_dmg < 0)
+				{
+					damage += 2 * (double)mon->mhp + 200;
+					if (special_hit_dmg == -2)
+						isdisintegrated = TRUE;
+					hide_damage_amount = TRUE;
+					hittxt = TRUE; /* This means that hit text is already given */
+				}
+				else if (special_hit_dmg > 0)
+				{
+					damage += adjust_damage(special_hit_dmg, &youmonst, mon, spec_adtyp, FALSE);
+				}
+				
 				/* silver gauntelts? */
 				damage += adjust_damage(special_dmgval(&youmonst, mon, W_ARMG, &silverhit), &youmonst, mon, AD_PHYS, FALSE);
 				barehand_silver_gauntlets = !!(silverhit & W_ARMG);

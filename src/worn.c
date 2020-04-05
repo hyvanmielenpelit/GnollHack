@@ -185,7 +185,10 @@ boolean verbose;
 	if ((mask & (W_WEP | W_WEP2 | W_ARMOR | W_ACCESSORY)) && obj && obj->oartifact && !obj->nknown && (artilist[obj->oartifact].aflags & (AF_FAMOUS | AF_NAME_KNOWN_WHEN_PICKED_UP | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED)))
 	{
 		if(verbose)
-			pline("As you %s %s, you suddenly become aware that it is named %s!", (mask == W_WEP || (u.twoweap && mask == W_WEP2)) ? "wield" : "wear", the(cxname(obj)), bare_artifactname(obj));
+			pline("As you %s %s, you suddenly become aware that %s named %s!", 
+			(mask == W_WEP || (u.twoweap && mask == W_WEP2)) ? "wield" : "wear", the(cxname(obj)), 
+				(pair_of(obj) || obj->quan > 1) ? "they are" : "it is",
+				bare_artifactname(obj));
 		obj->nknown = TRUE;
 	}
 

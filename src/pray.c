@@ -833,126 +833,146 @@ gcrownu()
 	HLycanthropy_resistance |= FROM_ACQUIRED;
 	HSleep_resistance |= FROM_ACQUIRED;
     HPoison_resistance |= FROM_ACQUIRED;
+	HFear_resistance |= FROM_ACQUIRED;
+
     godvoice(u.ualign.type, (char *) 0);
 
     obj = ok_wep(uwep) ? uwep : 0;
     already_exists = in_hand = FALSE; /* lint suppression */
-    switch (u.ualign.type) {
-    case A_LAWFUL:
-        u.uevent.uhand_of_elbereth = 1;
-        verbalize("I crown thee...  The Hand of Elbereth!");
-        break;
-    case A_NEUTRAL:
-        u.uevent.uhand_of_elbereth = 2;
-        in_hand = (uwep && uwep->oartifact == ART_VORPAL_BLADE) || (uarms && uarms->oartifact == ART_VORPAL_BLADE);
-        already_exists =
-            exist_artifact(LONG_SWORD, artiname(ART_VORPAL_BLADE));
-        verbalize("Thou shalt be my Envoy of Balance!");
-        break;
-    case A_CHAOTIC:
-        u.uevent.uhand_of_elbereth = 3;
-        in_hand = (uwep && uwep->oartifact == ART_STORMBRINGER) || (uarms && uarms->oartifact == ART_STORMBRINGER);
-        already_exists =
-            exist_artifact(RUNESWORD, artiname(ART_STORMBRINGER));
-        verbalize("Thou art chosen to %s for My Glory!",
-                  already_exists && !in_hand ? "take lives" : "steal souls");
-        break;
-    }
+	boolean monkgauntlets = (Role_if(PM_MONK) && !exist_artifact(LONG_SWORD, artiname(ART_GAUNTLETS_OF_YIN_AND_YANG)));
 
-    class_gift = STRANGE_OBJECT;
-    /* 3.3.[01] had this in the A_NEUTRAL case below,
-       preventing chaotic wizards from receiving a spellbook */
-    if (Role_if(PM_WIZARD)
-        && (!uwep || (uwep->oartifact != ART_VORPAL_BLADE
-                      && uwep->oartifact != ART_STORMBRINGER))
-		&& (!uarms || (uarms->oartifact != ART_VORPAL_BLADE
-			&& uarms->oartifact != ART_STORMBRINGER))
-		&& !carrying(SPE_FINGER_OF_DEATH)) {
-        class_gift = SPE_FINGER_OF_DEATH;
-    make_splbk:
-        obj = mksobj(class_gift, TRUE, FALSE, FALSE);
-        bless(obj);
-        obj->bknown = TRUE;
-        at_your_feet("A spellbook");
-        dropy(obj);
-        u.ugifts++;
-        /* when getting a new book for known spell, enhance
-           currently wielded weapon rather than the book */
-        for (sp_no = 0; sp_no < MAXSPELL; sp_no++)
-            if (spl_book[sp_no].sp_id == class_gift) {
-                if (ok_wep(uwep))
-                    obj = uwep; /* to be blessed,&c */
-                break;
-            }
-    } else if (Role_if(PM_MONK) && (!uwep || !uwep->oartifact)
-               && !carrying(SPE_RESTORE_ABILITY)) {
-        /* monks rarely wield a weapon */
-        class_gift = SPE_RESTORE_ABILITY;
-        goto make_splbk;
-    }
+	switch (u.ualign.type) {
+	case A_LAWFUL:
+		u.uevent.uhand_of_elbereth = 1;
+		verbalize("I crown thee...  The Hand of Elbereth!");
+		break;
+	case A_NEUTRAL:
+		u.uevent.uhand_of_elbereth = 2;
+		in_hand = (uwep && uwep->oartifact == ART_VORPAL_BLADE) || (uarms && uarms->oartifact == ART_VORPAL_BLADE);
+		already_exists = monkgauntlets ? exist_artifact(GAUNTLETS_OF_OGRE_POWER, artiname(ART_GAUNTLETS_OF_YIN_AND_YANG)) :
+			exist_artifact(LONG_SWORD, artiname(ART_VORPAL_BLADE));
+		verbalize("Thou shalt be my Envoy of Balance!");
+		break;
+	case A_CHAOTIC:
+		u.uevent.uhand_of_elbereth = 3;
+		in_hand = (uwep && uwep->oartifact == ART_STORMBRINGER) || (uarms && uarms->oartifact == ART_STORMBRINGER);
+		already_exists = monkgauntlets ? exist_artifact(GAUNTLETS_OF_OGRE_POWER, artiname(ART_GAUNTLETS_OF_YIN_AND_YANG)) :
+			exist_artifact(RUNESWORD, artiname(ART_STORMBRINGER));
+		verbalize("Thou art chosen to %s for My Glory!",
+					already_exists && !in_hand ? "take lives" : "steal souls");
+		break;
+	}
 
-    switch (u.ualign.type) {
-    case A_LAWFUL:
-        if (class_gift != STRANGE_OBJECT) {
-            ; /* already got bonus above */
-        } else if (obj && obj->otyp == LONG_SWORD && !obj->oartifact) {
-            if (!Blind)
-                Your("sword shines brightly for a moment.");
-            obj = oname(obj, artiname(ART_EXCALIBUR));
-            if (obj && obj->oartifact == ART_EXCALIBUR)
-                u.ugifts++;
-        }
-        /* acquire Excalibur's skill regardless of weapon or gift */
-        unrestrict_weapon_skill(P_SWORD);
-        if (obj && obj->oartifact == ART_EXCALIBUR)
-            discover_artifact(ART_EXCALIBUR);
-        break;
-    case A_NEUTRAL:
-        if (class_gift != STRANGE_OBJECT) {
-            ; /* already got bonus above */
-        } else if (obj && in_hand) {
-            Your("%s goes snicker-snack!", xname(obj));
-            obj->dknown = TRUE;
-        } else if (!already_exists) {
-            obj = mksobj(LONG_SWORD, FALSE, FALSE, FALSE);
-            obj = oname(obj, artiname(ART_VORPAL_BLADE));
-            obj->enchantment = 1;
-            at_your_feet("A sword");
-            dropy(obj);
-            u.ugifts++;
-        }
-        /* acquire Vorpal Blade's skill regardless of weapon or gift */
-        unrestrict_weapon_skill(P_SWORD);
-        if (obj && obj->oartifact == ART_VORPAL_BLADE)
-            discover_artifact(ART_VORPAL_BLADE);
-        break;
-    case A_CHAOTIC: {
-        char swordbuf[BUFSZ];
+	if (monkgauntlets)
+	{
+		obj = mksobj(GAUNTLETS_OF_OGRE_POWER, FALSE, FALSE, FALSE);
+		obj = oname(obj, artiname(ART_GAUNTLETS_OF_YIN_AND_YANG));
+		obj->enchantment = 1;
+		at_your_feet("A pair of gauntlets");
+		dropy(obj);
+		u.ugifts++;
+		if (obj && obj->oartifact == ART_GAUNTLETS_OF_YIN_AND_YANG)
+			discover_artifact(ART_GAUNTLETS_OF_YIN_AND_YANG);
+	}
+	else
+	{
+		class_gift = STRANGE_OBJECT;
+		/* 3.3.[01] had this in the A_NEUTRAL case below,
+		   preventing chaotic wizards from receiving a spellbook */
+		if (Role_if(PM_WIZARD)
+			&& (!uwep || (uwep->oartifact != ART_VORPAL_BLADE
+						  && uwep->oartifact != ART_STORMBRINGER))
+			&& (!uarms || (uarms->oartifact != ART_VORPAL_BLADE
+				&& uarms->oartifact != ART_STORMBRINGER))
+			&& !carrying(SPE_FINGER_OF_DEATH)
+			&& !already_learnt_spell_type(SPE_FINGER_OF_DEATH)
+			) {
+			class_gift = SPE_FINGER_OF_DEATH;
+		make_splbk:
+			obj = mksobj(class_gift, TRUE, FALSE, FALSE);
+			bless(obj);
+			obj->bknown = TRUE;
+			at_your_feet("A spellbook");
+			dropy(obj);
+			u.ugifts++;
+			/* when getting a new book for known spell, enhance
+			   currently wielded weapon rather than the book */
+			for (sp_no = 0; sp_no < MAXSPELL; sp_no++)
+				if (spl_book[sp_no].sp_id == class_gift) {
+					if (ok_wep(uwep))
+						obj = uwep; /* to be blessed,&c */
+					break;
+				}
+		} else if (Role_if(PM_MONK) && (!uwep || !uwep->oartifact)
+				   && !carrying(BELT_OF_STORM_GIANT_STRENGTH)) {
+			/* monks rarely wield a weapon */
+			class_gift = BELT_OF_STORM_GIANT_STRENGTH;
+			goto make_splbk;
+		}
 
-        Sprintf(swordbuf, "%s sword", hcolor(NH_BLACK));
-        if (class_gift != STRANGE_OBJECT) {
-            ; /* already got bonus above */
-        } else if (obj && in_hand) {
-            Your("%s hums ominously!", swordbuf);
-            obj->dknown = TRUE;
-        } else if (!already_exists) {
-            obj = mksobj(RUNESWORD, FALSE, FALSE, FALSE);
-            obj = oname(obj, artiname(ART_STORMBRINGER));
-            obj->enchantment = 1;
-            at_your_feet(An(swordbuf));
-            dropy(obj);
-            u.ugifts++;
-        }
-        /* acquire Stormbringer's skill regardless of weapon or gift */
-        unrestrict_weapon_skill(P_SWORD);
-        if (obj && obj->oartifact == ART_STORMBRINGER)
-            discover_artifact(ART_STORMBRINGER);
-        break;
-    }
-    default:
-        obj = 0; /* lint */
-        break;
-    }
+		switch (u.ualign.type) {
+		case A_LAWFUL:
+			if (class_gift != STRANGE_OBJECT) {
+				; /* already got bonus above */
+			} else if (obj && obj->otyp == LONG_SWORD && !obj->oartifact) {
+				if (!Blind)
+					Your("sword shines brightly for a moment.");
+				obj = oname(obj, artiname(ART_EXCALIBUR));
+				if (obj && obj->oartifact == ART_EXCALIBUR)
+					u.ugifts++;
+			}
+			/* acquire Excalibur's skill regardless of weapon or gift */
+			unrestrict_weapon_skill(P_SWORD);
+			if (obj && obj->oartifact == ART_EXCALIBUR)
+				discover_artifact(ART_EXCALIBUR);
+			break;
+		case A_NEUTRAL:
+			if (class_gift != STRANGE_OBJECT) {
+				; /* already got bonus above */
+			} else if (obj && in_hand) {
+				Your("%s goes snicker-snack!", xname(obj));
+				obj->dknown = obj->aknown = obj->nknown = TRUE;
+			} else if (!already_exists) {
+				obj = mksobj(LONG_SWORD, FALSE, FALSE, FALSE);
+				obj = oname(obj, artiname(ART_VORPAL_BLADE));
+				obj->enchantment = 1;
+				at_your_feet("A sword");
+				dropy(obj);
+				u.ugifts++;
+			}
+			/* acquire Vorpal Blade's skill regardless of weapon or gift */
+			unrestrict_weapon_skill(P_SWORD);
+			if (obj && obj->oartifact == ART_VORPAL_BLADE)
+				discover_artifact(ART_VORPAL_BLADE);
+			break;
+		case A_CHAOTIC: {
+			char swordbuf[BUFSZ];
+
+			Sprintf(swordbuf, "%s sword", hcolor(NH_BLACK));
+			if (class_gift != STRANGE_OBJECT) {
+				; /* already got bonus above */
+			} else if (obj && in_hand) {
+				Your("%s hums ominously!", swordbuf);
+				obj->dknown = obj->aknown = obj->nknown = TRUE;
+			} else if (!already_exists) {
+				obj = mksobj(RUNESWORD, FALSE, FALSE, FALSE);
+				obj = oname(obj, artiname(ART_STORMBRINGER));
+				obj->enchantment = 1;
+				at_your_feet(An(swordbuf));
+				dropy(obj);
+				u.ugifts++;
+			}
+			/* acquire Stormbringer's skill regardless of weapon or gift */
+			unrestrict_weapon_skill(P_SWORD);
+			if (obj && obj->oartifact == ART_STORMBRINGER)
+				discover_artifact(ART_STORMBRINGER);
+			break;
+		}
+		default:
+			obj = 0; /* lint */
+			break;
+		}
+	}
 
     /* enhance weapon regardless of alignment or artifact status */
     if (ok_wep(obj)) {

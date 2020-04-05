@@ -286,14 +286,13 @@ struct monst* mattacker;
 {
     int tmp = 0;
     struct permonst *ptr = mon->data;
-	boolean Is_weapon = is_weapon(otmp);
 
 	tmp += basehitval(otmp, mon, mattacker);
 
     /* Put weapon vs. monster type "to hit" bonuses in below: */
 
-    /* Blessed weapons used against undead or demons */
-    if (Is_weapon && otmp->blessed
+    /* Blessed weapons, gloves, and boots used against undead or demons */
+    if ((is_weapon(otmp) || is_gloves(otmp) || is_boots(otmp)) && otmp->blessed
         && (is_demon(ptr) || is_undead(ptr) || is_vampshifter(mon)))
         tmp += 2;
 
@@ -301,7 +300,8 @@ struct monst* mattacker;
         tmp += 2;
 
     /* trident is highly effective against swimmers */
-    if (otmp->otyp == TRIDENT && is_swimmer(ptr)) {
+    if (otmp->otyp == TRIDENT && is_swimmer(ptr))
+	{
         if (is_pool(mon->mx, mon->my))
             tmp += 4;
         else if (ptr->mlet == S_EEL || ptr->mlet == S_SNAKE)

@@ -1117,6 +1117,7 @@ E void FDECL(reduce_item_cooldown, (struct obj*));
 E boolean FDECL(obj_here, (struct obj *, int, int));
 E boolean NDECL(wearing_armor);
 E boolean FDECL(is_worn, (struct obj *));
+E boolean FDECL(is_worn_correctly, (struct obj*));
 E struct obj *FDECL(g_at, (int, int));
 E boolean FDECL(splittable, (struct obj *));
 E struct obj *FDECL(getobj, (const char *, const char *, int, const char*));

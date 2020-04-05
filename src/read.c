@@ -1544,7 +1544,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 		{
 			if (DEADMONSTER(mtmp))
 				continue;
-			if (otyp == SPE_MASS_FEAR && (mindless(mtmp->data) || is_undead(mtmp->data) || is_vampshifter(mtmp)))
+			if (resists_fear(mtmp) || check_ability_resistance_success(mtmp, A_WIS, objects[sobj->otyp].oc_spell_saving_throw_adjustment))
 				continue;
 
 			if (cansee(mtmp->mx, mtmp->my)) 
@@ -1555,7 +1555,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 					mtmp->mcanmove = 1;
 					mtmp->mprops[FEARFUL] = 0;
 				}
-				else if (!check_ability_resistance_success(mtmp, A_WIS, objects[sobj->otyp].oc_spell_saving_throw_adjustment))
+				else
 				{
 					duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus;
 					make_mon_fearful(mtmp, duration ? duration : 100 + rnd(50));
@@ -1564,10 +1564,13 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 					ct++; /* pets don't laugh at you */
 			}
 		}
-		if (otyp == SCR_SCARE_MONSTER || !ct)
+		if (otyp == SCR_SCARE_MONSTER)
 			You_hear("%s %s.", (confused || scursed) ? "sad wailing"
 				: "maniacal laughter",
 				!ct ? "in the distance" : "close by");
+		else if (!ct)
+			pline("Nothing much seems to happen.");
+
 		break;
 	}
 	case SCR_BLANK_PAPER:

@@ -2353,9 +2353,9 @@ struct obj *obj;
 
 	if (obj && obj->oartifact && !obj->nknown && (artilist[obj->oartifact].aflags & (AF_FAMOUS | AF_NAME_KNOWN_WHEN_INVOKED)))
 	{
-		pline("As you invoke %s, %syou suddenly become aware that it is named %s!", the(cxname(obj)),
+		pline("As you invoke %s, %syou suddenly become aware that %s named %s!", the(cxname(obj)),
 			obj->oartifact == ART_HOWLING_FLAIL ? "it lets loose a majestic howl and " : "",
-			bare_artifactname(obj));
+		    (pair_of(obj) || obj->quan > 1) ? "they are" : "it is",	bare_artifactname(obj));
 		obj->nknown = TRUE;
 	}
 
@@ -2375,7 +2375,7 @@ struct obj *obj;
 
         switch (oart->inv_prop) 
 		{
-        case TAMING: {
+        case ARTINVOKE_TAMING: {
             struct obj pseudo;
             pseudo = zeroobj; /* neither cursed nor blessed, zero oextra too */
             pseudo.otyp = SCR_TAMING;
@@ -2391,7 +2391,7 @@ struct obj *obj;
 
 			break;
         }
-        case HEALING: {
+        case ARTINVOKE_HEALING: {
             int healamt = (u.uhpmax + 1 - u.uhp) / 2;
             long creamed = (long) u.ucreamed;
 
@@ -2419,7 +2419,7 @@ struct obj *obj;
 			obj->cooldownleft = 100 + rnz(100);
 			break;
         }
-        case ENERGY_BOOST: {
+        case ARTINVOKE_ENERGY_BOOST: {
             int epboost = (u.uenmax + 1 - u.uen) / 2;
 
             if (epboost > 120)
@@ -2435,7 +2435,7 @@ struct obj *obj;
 			obj->cooldownleft = 100 + rnz(100);
 			break;
         }
-        case UNTRAP: {
+        case ARTINVOKE_UNTRAP: {
             if (!untrap(TRUE)) {
                 //obj->age = 0; /* don't charge for changing their mind */
                 return 0;
@@ -2444,7 +2444,7 @@ struct obj *obj;
 				obj->cooldownleft = 25 + rnz(25);
 			break;
         }
-        case CHARGE_OBJ: {
+        case ARTINVOKE_CHARGE_OBJ: {
             struct obj *otmp = getobj(recharge_type, "charge", 0, "");
             boolean b_effect;
 
@@ -2459,11 +2459,11 @@ struct obj *obj;
 			obj->cooldownleft = 100 + rnz(100);
 			break;
         }
-        case LEV_TELE:
+        case ARTINVOKE_LEVEL_TELEPORT:
             level_tele(2, FALSE);
 			obj->cooldownleft = 25 + rnz(25);
 			break;
-        case CREATE_PORTAL:
+        case ARTINVOKE_CREATE_PORTAL:
 		{
 			int portal_res = create_portal();
 			if (!portal_res)
@@ -2472,11 +2472,11 @@ struct obj *obj;
 			obj->cooldownleft = 25 + rnz(25);
 			break;
         }
-        case ENLIGHTENING:
+        case ARTINVOKE_ENLIGHTENING:
             enlightenment(MAGICENLIGHTENMENT, ENL_GAMEINPROGRESS);
 			obj->cooldownleft = 25 + rnz(25);
 			break;
-        case CREATE_AMMO: {
+        case ARTINVOKE_CREATE_AMMO: {
             struct obj *otmp = mksobj(ARROW, TRUE, FALSE, FALSE);
 
             if (!otmp)
@@ -2500,7 +2500,7 @@ struct obj *obj;
 			obj->cooldownleft = 50 + rnz(50);
 			break;
         }
-		case WAND_OF_DEATH:
+		case ARTINVOKE_WAND_OF_DEATH:
 		{
 			struct obj pseudo = zeroobj;
 			pseudo.otyp = SPE_FINGER_OF_DEATH;
@@ -2537,7 +2537,7 @@ struct obj *obj;
 				losexp("life drainage");
 			}
 		}
-		case BLESS_CONTENTS:
+		case ARTINVOKE_BLESS_CONTENTS:
 		{
 			int cnt = 0;
 			for (struct obj* otmp = obj->cobj; otmp; otmp = otmp->nobj) {
@@ -2578,7 +2578,7 @@ struct obj *obj;
 			}
 
 		}
-		case INVOKE_WISHING:
+		case ARTINVOKE_WISHING:
 		{
 			if (obj->charges <= 0)
 			{
@@ -2587,6 +2587,25 @@ struct obj *obj;
 			}
 			consume_obj_charge(obj, TRUE);
 			makewish();
+		}
+		case ARTINVOKE_TIME_STOP:
+		{
+			if (obj->oclass == ARMOR_CLASS && !is_worn_correctly(obj))
+			{
+				You("must wear %s to invoke %s.", the(cxname(obj)),
+					(pair_of(obj) || obj->quan > 1) ? "them" : "it" 
+					);
+			}
+			else
+			{
+				timestop();
+				obj->cooldownleft = 1000 + rnd(100);
+				if (!rn2(2))
+				{
+					u.uen = 0;
+					pline("%s your energy!", Tobjnam(obj, "draw"));
+				}
+			}
 		}
 
         } /* switch */

@@ -1481,6 +1481,15 @@ WEAPONGLOVES("gauntlets of ogre power", "riding gloves",
 	O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL, ALL_TARGETS),
 GLOVES("gauntlets of dexterity", "fencing gloves",
        0, 1,        0, 0, 0, P1_NONE, 8, 1, 10, 100, 9, 0, 0, 0, BONUS_TO_DEX, 0, 0, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+WEAPONGLOVES("gauntlets of balance", "runed gloves", /* Base item for Gauntlets of Yin and Yang */
+	0, 1, 1, 0, 10, 1000,
+	AD_PHYS, 1, 2, 0, 1, 2, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,
+	0, 0, 0, 1, 0, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE | IGNORE_ENCHANTMENT, STR19(19), 0, 0,
+	VERY_FAST, FREE_ACTION, NO_POWER, P1_NONE, WHACK, MAT_LEATHER, CLR_BROWN,
+	O1_CORROSION_RESISTANT | O1_RUST_RESISTANT | O1_POLYMORPH_RESISTANT | O1_FIRE_RESISTANT,
+	O2_NONE,
+	O3_NO_WISH | O3_NO_GENERATION,
+	PERMITTED_ALL, ALL_TARGETS),
 
 /* without shuffled appearances */
 WEAPONGLOVES("spiked gauntlets", None,

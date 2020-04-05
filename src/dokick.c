@@ -102,8 +102,8 @@ boolean clumsy;
     if (clumsy)
         dmg /= 2;
 
-    /* kicking a dragon or an elephant will not harm it */
-    if (thick_skinned(mon->data) && !Magical_kicking && P_SKILL_LEVEL(P_MARTIAL_ARTS) <= P_SKILLED)
+    /* kicking a dragon or an elephant will not harm it, unless you are a martial artist */
+    if (thick_skinned(mon->data) && !Magical_kicking && P_SKILL_LEVEL(P_MARTIAL_ARTS) < P_BASIC)
         dmg = 0;
 
     /* attacking a shade is normally useless */

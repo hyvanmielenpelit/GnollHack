@@ -77,6 +77,7 @@ int distance;
                 mtmp->mstrategy &= ~STRAT_WAITMASK;
             else if (distm < distance / 3
                      && !check_ability_resistance_success(mtmp, A_WIS, 0)
+					 && !resists_fear(mtmp)
                      /* some monsters are immune */
                      && onscary(0, 0, mtmp))
                 monflee(mtmp, 0, FALSE, TRUE);
