@@ -591,7 +591,8 @@ struct obj *instr;
 		You("produce a frightful, grave sound.");
 		awaken_monsters(u.ulevel * 30);
 		exercise(A_WIS, FALSE);
-        break;
+		makeknown(instr->otyp);
+		break;
     case BUGLE: /* Awaken & attract soldiers */
         You("extract a loud noise from %s.", yname(instr));
         awaken_soldiers(&youmonst);

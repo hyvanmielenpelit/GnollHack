@@ -1576,7 +1576,7 @@ dokick() {
 			if(!rn2(2))
 			{
 				struct obj* otmp = mksobj_at(PIECE_OF_WOOD, x, y, FALSE, FALSE);
-				otmp->quan = rnd(2);
+				otmp->quan = 1;
 				otmp->owt = weight(otmp);
 			}
         } else if (ACURR(A_STR) > 18 && !rn2(5) && !shopdoor) {
@@ -1585,7 +1585,7 @@ dokick() {
             maploc->doormask = D_NODOOR;
 
 			struct obj* otmp = mksobj_at(PIECE_OF_WOOD, x, y, FALSE, FALSE);
-			otmp->quan = rnd(2);
+			otmp->quan = 1;
 			otmp->owt = weight(otmp);
 
         } else {
