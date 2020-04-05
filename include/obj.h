@@ -189,6 +189,9 @@ struct obj {
 #define is_obj_appliable(otmp) is_otyp_appliable((otmp)->otyp)
 #define is_obj_invokable(otmp) is_otyp_invokable((otmp)->otyp)
 
+#define is_otyp_indestructible(otyp) ((objects[(otyp)].oc_flags & O1_INDESTRUCTIBLE) != 0)
+#define is_obj_indestructible(otmp) is_otyp_indestructible((otmp)->otyp)
+
 #define is_blade(otmp)                           \
     ((otmp)->oclass == WEAPON_CLASS                \
      && objects[(otmp)->otyp].oc_skill >= P_DAGGER \
@@ -262,7 +265,7 @@ struct obj {
 	(objects[(otmp)->otyp].oc_flags2 & O2_GENERATED_BLESSED)
 
 #define oresist_disintegration(otmp)                                       \
-    (objects[(otmp)->otyp].oc_flags & O1_DISINTEGRATION_RESISTANT || objects[(otmp)->otyp].oc_flags & O1_INDESTRUCTIBLE || objects[(otmp)->otyp].oc_oprop == DISINT_RES  || objects[(otmp)->otyp].oc_oprop2 == DISINT_RES || objects[(otmp)->otyp].oc_oprop3 == DISINT_RES || obj_resists(otmp, 5, 50) \
+    (objects[(otmp)->otyp].oc_flags & O1_DISINTEGRATION_RESISTANT || is_obj_indestructible(otmp) || objects[(otmp)->otyp].oc_oprop == DISINT_RES  || objects[(otmp)->otyp].oc_oprop2 == DISINT_RES || objects[(otmp)->otyp].oc_oprop3 == DISINT_RES || obj_resists(otmp, 5, 50) \
      || is_quest_artifact(otmp) )
 
 

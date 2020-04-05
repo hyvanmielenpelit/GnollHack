@@ -1998,7 +1998,7 @@ boolean* obj_destroyed;
 	boolean objectshatters = FALSE;
 	/* message for shattering blades and objects here */
 	if (obj && objects[obj->otyp].oc_material == MAT_GLASS 
-		&& !(objects[obj->otyp].oc_flags & O1_INDESTRUCTIBLE)
+		&& !is_obj_indestructible(obj)
 		&& !is_quest_artifact(obj)
 		&& !obj->oartifact
 		)

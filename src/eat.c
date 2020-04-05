@@ -77,7 +77,7 @@ register struct obj *obj;
     /* protect invocation tools but not Rider corpses (handled elsewhere)*/
     /* if (obj->oclass != FOOD_CLASS && obj_resists(obj, 0, 0)) */
     if (is_obj_unique(obj) || obj->oartifact
-		|| objects[obj->otyp].oc_flags & O1_INDESTRUCTIBLE)
+		|| is_obj_indestructible(obj))
         return FALSE;
     /* above also prevents the Amulet from being eaten, so we must never
        allow fake amulets to be eaten either [which is already the case] */

@@ -2274,7 +2274,7 @@ int ochance, achance; /* percent chance for ordinary objects, artifacts */
         || obj->otyp == SPE_BOOK_OF_THE_DEAD
         || obj->otyp == CANDELABRUM_OF_INVOCATION
         || obj->otyp == BELL_OF_OPENING
-		|| (objects[obj->otyp].oc_flags & O1_INDESTRUCTIBLE)
+		|| is_obj_indestructible(obj)
 		|| (obj->otyp == CORPSE && is_rider(&mons[obj->corpsenm]))) 
 	{
         return TRUE;
@@ -7976,7 +7976,8 @@ boolean forcedestroy;
 
     switch (dmgtyp) {
     case AD_COLD:
-        if (osym == POTION_CLASS && obj->otyp != POT_OIL && !(objects[obj->otyp].oc_flags & (O1_COLD_RESISTANT | O1_INDESTRUCTIBLE))) {
+        if (osym == POTION_CLASS && obj->otyp != POT_OIL && !is_obj_indestructible(obj) && !(objects[obj->otyp].oc_flags & O1_COLD_RESISTANT))
+		{
             quan = obj->quan;
             dindx = 0;
             dmg = rnd(4);
@@ -7992,7 +7993,7 @@ boolean forcedestroy;
                 pline("%s glows a strange %s, but remains intact.",
                       The(xname(obj)), hcolor("dark red"));
         }
-		else if (objects[obj->otyp].oc_flags & (O1_FIRE_RESISTANT | O1_INDESTRUCTIBLE))
+		else if (is_obj_indestructible(obj) || (objects[obj->otyp].oc_flags & O1_FIRE_RESISTANT))
 			skip++;
 
 		quan = obj->quan;
@@ -8027,7 +8028,7 @@ boolean forcedestroy;
         quan = obj->quan;
         switch (osym) {
         case RING_CLASS:
-            if (objects[obj->otyp].oc_flags & (O1_LIGHTNING_RESISTANT | O1_INDESTRUCTIBLE)) {
+            if (is_obj_indestructible(obj) || (objects[obj->otyp].oc_flags & O1_LIGHTNING_RESISTANT)) {
                 skip++;
                 break;
             }
@@ -8035,7 +8036,7 @@ boolean forcedestroy;
             dmg = 0;
             break;
         case WAND_CLASS:
-            if (objects[obj->otyp].oc_flags & (O1_LIGHTNING_RESISTANT | O1_INDESTRUCTIBLE)) {
+            if (is_obj_indestructible(obj) || (objects[obj->otyp].oc_flags & O1_LIGHTNING_RESISTANT)) {
                 skip++;
                 break;
             }

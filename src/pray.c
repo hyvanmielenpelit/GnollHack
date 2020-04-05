@@ -839,7 +839,8 @@ gcrownu()
 
     obj = ok_wep(uwep) ? uwep : 0;
     already_exists = in_hand = FALSE; /* lint suppression */
-	boolean monkgauntlets = (Role_if(PM_MONK) && !exist_artifact(LONG_SWORD, artiname(ART_GAUNTLETS_OF_YIN_AND_YANG)));
+	boolean gauntlets_already_exists = exist_artifact(GAUNTLETS_OF_BALANCE, artiname(ART_GAUNTLETS_OF_YIN_AND_YANG));
+	boolean monkgauntlets = (Role_if(PM_MONK) && !gauntlets_already_exists);
 
 	switch (u.ualign.type) {
 	case A_LAWFUL:
@@ -849,15 +850,13 @@ gcrownu()
 	case A_NEUTRAL:
 		u.uevent.uhand_of_elbereth = 2;
 		in_hand = (uwep && uwep->oartifact == ART_VORPAL_BLADE) || (uarms && uarms->oartifact == ART_VORPAL_BLADE);
-		already_exists = monkgauntlets ? exist_artifact(GAUNTLETS_OF_OGRE_POWER, artiname(ART_GAUNTLETS_OF_YIN_AND_YANG)) :
-			exist_artifact(LONG_SWORD, artiname(ART_VORPAL_BLADE));
+		already_exists = exist_artifact(LONG_SWORD, artiname(ART_VORPAL_BLADE));
 		verbalize("Thou shalt be my Envoy of Balance!");
 		break;
 	case A_CHAOTIC:
 		u.uevent.uhand_of_elbereth = 3;
 		in_hand = (uwep && uwep->oartifact == ART_STORMBRINGER) || (uarms && uarms->oartifact == ART_STORMBRINGER);
-		already_exists = monkgauntlets ? exist_artifact(GAUNTLETS_OF_OGRE_POWER, artiname(ART_GAUNTLETS_OF_YIN_AND_YANG)) :
-			exist_artifact(RUNESWORD, artiname(ART_STORMBRINGER));
+		already_exists = exist_artifact(RUNESWORD, artiname(ART_STORMBRINGER));
 		verbalize("Thou art chosen to %s for My Glory!",
 					already_exists && !in_hand ? "take lives" : "steal souls");
 		break;
@@ -865,12 +864,13 @@ gcrownu()
 
 	if (monkgauntlets)
 	{
-		obj = mksobj(GAUNTLETS_OF_OGRE_POWER, FALSE, FALSE, FALSE);
+		obj = mksobj(GAUNTLETS_OF_BALANCE, FALSE, FALSE, FALSE);
 		obj = oname(obj, artiname(ART_GAUNTLETS_OF_YIN_AND_YANG));
 		obj->enchantment = 1;
 		at_your_feet("A pair of gauntlets");
 		dropy(obj);
 		u.ugifts++;
+		obj->aknown = obj->nknown = 1;
 		if (obj && obj->oartifact == ART_GAUNTLETS_OF_YIN_AND_YANG)
 			discover_artifact(ART_GAUNTLETS_OF_YIN_AND_YANG);
 	}
@@ -2396,6 +2396,16 @@ int dx, dy;
         return TRUE;
 
     return FALSE;
+}
+
+
+
+
+int
+wiz_crown()
+{
+	gcrownu();
+	return 0;
 }
 
 /*pray.c*/

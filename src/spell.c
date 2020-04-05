@@ -4121,7 +4121,7 @@ int spell;
 			if((objects[otmp->otyp].oc_flags & O1_DISINTEGRATION_RESISTANT)
 				|| (objects[otmp->otyp].oc_flags & O1_FIRE_RESISTANT)
 				|| (objects[otmp->otyp].oc_flags & O1_LIGHTNING_RESISTANT)
-				|| (objects[otmp->otyp].oc_flags & O1_INDESTRUCTIBLE)
+				|| is_obj_indestructible(otmp)
 				|| Is_container(otmp)
 				|| objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED
 				|| objects[otmp->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED

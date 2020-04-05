@@ -1710,7 +1710,7 @@ register struct obj* omonwep;
 
 				/* Check if the object should shatter */
 				if (omonwep && objects[omonwep->otyp].oc_material == MAT_GLASS
-					&& !(objects[omonwep->otyp].oc_flags & O1_INDESTRUCTIBLE)
+					&& !is_obj_indestructible(omonwep)
 					&& !is_quest_artifact(omonwep)
 					&& !omonwep->oartifact
 					)

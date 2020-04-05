@@ -438,12 +438,12 @@ struct objclass {
 
 /* primary damage: fire/rust/--- */
 /* is_flammable(otmp), is_rottable(otmp) in mkobj.c */
-#define is_rustprone(otmp) (objects[otmp->otyp].oc_material == MAT_IRON)
+#define is_rustprone(otmp) (objects[(otmp)->otyp].oc_material == MAT_IRON && !(objects[(otmp)->otyp].oc_flags & O1_RUST_RESISTANT))
 
 /* secondary damage: rot/acid/acid */
 #define is_corrodeable(otmp)                   \
-    (objects[otmp->otyp].oc_material == MAT_COPPER \
-     || objects[otmp->otyp].oc_material == MAT_IRON)
+    ((objects[otmp->otyp].oc_material == MAT_COPPER \
+     || objects[otmp->otyp].oc_material == MAT_IRON) && !(objects[otmp->otyp].oc_flags & O1_CORROSION_RESISTANT))
 
 #define is_damageable(otmp)                                        \
     (is_rustprone(otmp) || is_flammable(otmp) || is_rottable(otmp) \
@@ -759,26 +759,26 @@ struct objclass {
 #define O1_POLYMORPH_RESISTANT				0x00000020UL
 #define O1_RUST_RESISTANT					0x00000040UL
 #define O1_CORROSION_RESISTANT				0x00000080UL
+#define O1_ROT_RESISTANT					0x00000100UL
 
-#define O1_ENCHANTMENT_AFFECTS_MC			0x00000100UL			/* +X of the item influences also its MC */
-#define O1_EROSION_DOES_NOT_AFFECT_MC		0x00000200UL			/* erosion level does not affect the item's MC */
-#define O1_ENCHANTMENT_DOES_NOT_AFFECT_AC	0x00000400UL			/* +X of the item does not affect its AC bonus */
-#define O1_EROSION_DOES_NOT_AFFECT_AC		0x00000800UL			/* erosion level does not affect the item's MC */
-#define O1_IS_ARMOR_WHEN_WIELDED			0x00001000UL			/* acts as an armor when wielded giving AC using oc_armor_class, which must be specified */
-#define O1_IS_WEAPON_WHEN_WIELDED			0x00002000UL			/* acts as a weapon when wielded (or worn in shield slot in two-weapon fighting) using damage statistics */
-#define O1_ENCHANTMENT_AFFECTS_MC_ADJUSTMENT 0x00004000UL			/* +X of the item influences also its MC adjustment (i.e., saving throw penalty for attacks) */
+#define O1_ENCHANTMENT_AFFECTS_MC			0x00000200UL			/* +X of the item influences also its MC */
+#define O1_EROSION_DOES_NOT_AFFECT_MC		0x00000400UL			/* erosion level does not affect the item's MC */
+#define O1_ENCHANTMENT_DOES_NOT_AFFECT_AC	0x00000800UL			/* +X of the item does not affect its AC bonus */
+#define O1_EROSION_DOES_NOT_AFFECT_AC		0x00001000UL			/* erosion level does not affect the item's MC */
+#define O1_IS_ARMOR_WHEN_WIELDED			0x00002000UL			/* acts as an armor when wielded giving AC using oc_armor_class, which must be specified */
+#define O1_IS_WEAPON_WHEN_WIELDED			0x00004000UL			/* acts as a weapon when wielded (or worn in shield slot in two-weapon fighting) using damage statistics */
+#define O1_ENCHANTMENT_AFFECTS_MC_ADJUSTMENT 0x00008000UL			/* +X of the item influences also its MC adjustment (i.e., saving throw penalty for attacks) */
 
-#define O1_EDIBLE_NONFOOD					0x00008000UL
+#define O1_EDIBLE_NONFOOD					0x00010000UL
 
-#define O1_BECOMES_CURSED_WHEN_WORN							0x00010000UL
-#define O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED		0x00020000UL
-#define O1_CANNOT_BE_DROPPED_IF_CURSED						0x00040000UL
+#define O1_BECOMES_CURSED_WHEN_WORN							0x00020000UL
+#define O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED		0x00040000UL
+#define O1_CANNOT_BE_DROPPED_IF_CURSED						0x00080000UL
 
-#define O1_FLICKERS_WHEN_MONSTERS_DETECTED					0x00080000UL
-#define O1_OFLAG_POWERS_APPLY_TO_ALL_CHARACTERS				0x00100000UL
-#define O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY	0x00200000UL
-#define O1_OFLAG_POWERS_APPLY_WHEN_CARRIED					0x00400000UL
-	/* free bit */
+#define O1_FLICKERS_WHEN_MONSTERS_DETECTED					0x00100000UL
+#define O1_OFLAG_POWERS_APPLY_TO_ALL_CHARACTERS				0x00200000UL
+#define O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY	0x00400000UL
+#define O1_OFLAG_POWERS_APPLY_WHEN_CARRIED					0x00800000UL
 
 #define O1_THROWN_WEAPON_ONLY				0x01000000UL			/* says "Thrown weapon" instead of "Melee weapon", default range is larger, can use throwrange data value, gets penalties in melee combat */
 #define O1_MELEE_AND_THROWN_WEAPON			0x02000000UL			/* says "Melee and thrown weapon" instead of "Melee weapon", default range is larger, can use throwrange data value */

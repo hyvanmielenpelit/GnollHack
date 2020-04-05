@@ -1086,51 +1086,97 @@ break_armor()
     register struct obj *otmp;
 
 	//Suit, cloak, robe, shirt
-    if (breakarm(youmonst.data)) {
-        if ((otmp = uarm) != 0) {
+    if (breakarm(youmonst.data)) 
+	{
+        if ((otmp = uarm) != 0)
+		{
             if (donning(otmp))
                 cancel_don();
-            You("break out of your armor!");
-            exercise(A_STR, FALSE);
-            (void) Armor_gone();
-            useup(otmp);
+
+			if (otmp->oartifact || is_obj_indestructible(otmp))
+			{
+				/* Luckily, you do not die, just the armor pops off, so having an indestructible armor is not life-threatening --JG */
+				pline("%s falls off!", Yname2(otmp));
+				(void)Armor_off();
+				dropx(otmp);
+			}
+			else
+			{
+				You("break out of %s!", yname(otmp));
+				exercise(A_STR, FALSE);
+				(void)Armor_gone();
+				useup(otmp);
+			}
         }
-        if ((otmp = uarmc) != 0) {
+        if ((otmp = uarmc) != 0) 
+		{
 			if (donning(otmp))
 				cancel_don();
-			if (otmp->oartifact) {
+
+			if (otmp->oartifact || is_obj_indestructible(otmp))
+			{
                 Your("%s falls off!", cloak_simple_name(otmp));
                 (void) Cloak_off();
                 dropx(otmp);
-            } else {
+            } 
+			else 
+			{
                 Your("%s tears apart!", cloak_simple_name(otmp));
                 (void) Cloak_off();
                 useup(otmp);
             }
         }
-		if ((otmp = uarmo) != 0) {
+		if ((otmp = uarmo) != 0)
+		{
 			if (donning(otmp))
 				cancel_don();
-			Your("%s in torn to pieces!", robe_simple_name(otmp));
-			(void)Robe_off();
-			useup(otmp);
+
+			if (otmp->oartifact || is_obj_indestructible(otmp))
+			{
+				/* Not sure how this happens but at least it is not life-threatening */
+				Your("%s falls off!", robe_simple_name(otmp));
+				(void)Robe_off();
+				dropx(otmp);
+			}
+			else
+			{
+				Your("%s in torn to pieces!", robe_simple_name(otmp));
+				(void)Robe_off();
+				useup(otmp);
+			}
 		}
-		if ((otmp = uarmu) != 0) {
+		if ((otmp = uarmu) != 0)
+		{
 			if (donning(otmp))
 				cancel_don();
-			Your("shirt rips to shreds!");
-			(void)Shirt_off();
-			useup(otmp);
+
+			if (otmp->oartifact || is_obj_indestructible(otmp))
+			{
+				/* Not sure how this happens but at least it is not life-threatening */
+				Your("shirt falls off!");
+				(void)Shirt_off();
+				dropx(otmp);
+			}
+			else
+			{
+				Your("shirt rips to shreds!");
+				(void)Shirt_off();
+				useup(otmp);
+			}
         }
-	} else if (sliparm(youmonst.data)) {
-        if (((otmp = uarm) != 0) && (racial_exception(&youmonst, otmp) < 1)) {
+	} 
+	else if (sliparm(youmonst.data)) 
+	{
+        if (((otmp = uarm) != 0) && (racial_exception(&youmonst, otmp) < 1))
+		{
             if (donning(otmp))
                 cancel_don();
             Your("armor falls around you!");
             (void) Armor_gone();
             dropx(otmp);
         }
-		if ((otmp = uarmo) != 0) {
+		if ((otmp = uarmo) != 0)
+		{
 			if (is_whirly(youmonst.data))
 				Your("%s falls, unsupported!", robe_simple_name(otmp));
 			else
@@ -1146,7 +1192,8 @@ break_armor()
             (void) Cloak_off();
             dropx(otmp);
         }
-        if ((otmp = uarmu) != 0) {
+        if ((otmp = uarmu) != 0) 
+		{
             if (is_whirly(youmonst.data))
                 You("seep right through your shirt!");
             else
@@ -1155,17 +1202,23 @@ break_armor()
             dropx(otmp);
         }
 	}
+
 	//Helmet
-    if (has_horns(youmonst.data) || !has_place_to_put_helmet_on(youmonst.data)) {
-        if ((otmp = uarmh) != 0) {
-            if (is_flimsy(otmp) && !donning(otmp) && has_place_to_put_helmet_on(youmonst.data)) {
+    if (has_horns(youmonst.data) || !has_place_to_put_helmet_on(youmonst.data))
+	{
+        if ((otmp = uarmh) != 0) 
+		{
+            if (is_flimsy(otmp) && !donning(otmp) && has_place_to_put_helmet_on(youmonst.data))
+			{
                 char hornbuf[BUFSZ];
 
                 /* Future possibilities: This could damage/destroy helmet */
                 Sprintf(hornbuf, "horn%s", plur(num_horns(youmonst.data)));
                 Your("%s %s through %s.", hornbuf, vtense(hornbuf, "pierce"),
                      yname(otmp));
-            } else {
+            }
+			else 
+			{
                 if (donning(otmp))
                     cancel_don();
                 Your("%s falls to the %s!", helm_simple_name(otmp),
@@ -1175,9 +1228,12 @@ break_armor()
             }
         }
     }
+
 	//Gloves and weapons
-    if (nohands(youmonst.data) || nolimbs(youmonst.data) || verysmall(youmonst.data)) {
-        if ((otmp = uarmg) != 0) {
+    if (nohands(youmonst.data) || nolimbs(youmonst.data) || verysmall(youmonst.data))
+	{
+        if ((otmp = uarmg) != 0) 
+		{
             if (donning(otmp))
                 cancel_don();
             /* Drop weapon along with gloves */
@@ -1186,7 +1242,8 @@ break_armor()
             (void) Gloves_off();
             dropx(otmp);
         }
-        if ((otmp = uarms) != 0) {
+        if ((otmp = uarms) != 0)
+		{
 			if(is_shield(otmp))
 			{
 				You("can no longer hold your shield!");
@@ -1199,7 +1256,8 @@ break_armor()
 			}
             dropx(otmp);
         }
-        if ((otmp = uarmh) != 0) {
+        if ((otmp = uarmh) != 0) 
+		{
             if (donning(otmp))
                 cancel_don();
             Your("%s falls to the %s!", helm_simple_name(otmp),
@@ -1208,10 +1266,13 @@ break_armor()
             dropx(otmp);
         }
     }
+
 	//Boots
     if (nohands(youmonst.data) || nolimbs(youmonst.data) || verysmall(youmonst.data)
-        || slithy(youmonst.data) || youmonst.data->mlet == S_CENTAUR) {
-        if ((otmp = uarmf) != 0) {
+        || slithy(youmonst.data) || youmonst.data->mlet == S_CENTAUR)
+	{
+        if ((otmp = uarmf) != 0)
+		{
             if (donning(otmp))
                 cancel_don();
             if (is_whirly(youmonst.data))
@@ -1223,8 +1284,10 @@ break_armor()
             dropx(otmp);
         }
     }
+
 	//Bracers
-	if (nohands(youmonst.data) || nolimbs(youmonst.data) || verysmall(youmonst.data)) {
+	if (nohands(youmonst.data) || nolimbs(youmonst.data) || verysmall(youmonst.data))
+	{
 		if ((otmp = uarmb) != 0) {
 			if (donning(otmp))
 				cancel_don();

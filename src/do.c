@@ -2273,6 +2273,13 @@ register struct obj* obj;
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
+			if (objects[otyp].oc_flags & O1_ROT_RESISTANT)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Rot-resistant", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
 			if (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)
 			{
 				powercnt++;

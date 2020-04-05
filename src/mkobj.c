@@ -2515,7 +2515,7 @@ register struct obj *otmp;
     if (is_candle(otmp))
         return FALSE;
 
-    if (objects[otyp].oc_flags & O1_FIRE_RESISTANT || objects[otyp].oc_oprop == FIRE_RES || objects[otyp].oc_oprop2 == FIRE_RES || objects[otyp].oc_oprop3 == FIRE_RES || otyp == WAN_FIRE)
+    if ((objects[otyp].oc_flags & O1_FIRE_RESISTANT) != 0 || objects[otyp].oc_oprop == FIRE_RES || objects[otyp].oc_oprop2 == FIRE_RES || objects[otyp].oc_oprop3 == FIRE_RES || otyp == WAN_FIRE)
         return FALSE;
 
     return (boolean) ((omat <= MAT_WOOD && omat != MAT_LIQUID) || omat == MAT_PLASTIC);
@@ -2526,6 +2526,9 @@ is_rottable(otmp)
 register struct obj *otmp;
 {
     int otyp = otmp->otyp;
+
+	if (objects[otyp].oc_flags & O1_ROT_RESISTANT)
+		return FALSE;
 
     return (boolean) (objects[otyp].oc_material <= MAT_WOOD
                       && objects[otyp].oc_material != MAT_LIQUID);

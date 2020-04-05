@@ -3552,8 +3552,9 @@ xchar x, y;
        note: potions are glass so fall through to fire_damage() and boil */
     if (objects[otyp].oc_material < MAT_DRAGON_HIDE
         && ocls != SCROLL_CLASS && ocls != SPBOOK_CLASS
-        && objects[otyp].oc_oprop != FIRE_RES && objects[otyp].oc_oprop2 != FIRE_RES && objects[otyp].oc_oprop3 != FIRE_RES 
-		&& !(objects[otyp].oc_flags & (O1_FIRE_RESISTANT | O1_INDESTRUCTIBLE))
+        && objects[otyp].oc_oprop != FIRE_RES && objects[otyp].oc_oprop2 != FIRE_RES && objects[otyp].oc_oprop3 != FIRE_RES
+		&& !is_otyp_indestructible(otyp)
+		&& !(objects[otyp].oc_flags & O1_FIRE_RESISTANT)
         && otyp != WAN_FIRE && otyp != FIRE_HORN
         /* assumes oerodeproof isn't overloaded for some other purpose on
            non-eroding items */

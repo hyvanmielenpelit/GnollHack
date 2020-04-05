@@ -4406,6 +4406,8 @@ struct ext_func_tab extcmdlist[] = {
             wiz_save_monsters, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
 	{ '\0', "wizsaveenc", "save encounters into a file",
 			wiz_save_encounters, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
+	{ '\0', "wizcrown", "make the god crown you",
+			wiz_crown, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
 	{ '\0', "wizrumorcheck", "verify rumor boundaries",
             wiz_rumor_check, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { '\0', "wizsmell", "smell monster",
