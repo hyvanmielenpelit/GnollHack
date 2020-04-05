@@ -262,7 +262,7 @@ boolean devour;
 		return 0;
 
 	register struct edog* edog = EDOG(mtmp);
-	boolean poly, grow, heal, eyes, slimer, deadmimic;
+	boolean poly, grow, heal, eyes, slimer, deadmimic, catavenged;
 	int nutrit;
 	long oprice;
 	char objnambuf[BUFSZ];
@@ -278,8 +278,10 @@ boolean devour;
     grow = mlevelgain(obj);
     heal = mhealup(obj);
     eyes = (obj->otyp == CARROT);
+	catavenged = ((is_domestic(mtmp->data) && mtmp->data->mlet == S_FELINE) && (obj->otyp == CORPSE && obj->corpsenm == PM_QUANTUM_MECHANIC));
 
-    if (devour) {
+    if (devour) 
+	{
         if (mtmp->meating > 1)
             mtmp->meating /= 2;
         if (nutrit > 1)
@@ -333,10 +335,16 @@ boolean devour;
 		{
             if (tunnels(mtmp->data))
                 pline("%s digs in.", noit_Monnam(mtmp));
-            else
-                pline("%s %s %s.", noit_Monnam(mtmp),
-                      devour ? "devours" : "eats", distant_name(obj, doname));
-        } else if (seeobj)
+			else
+			{
+				pline("%s %s %s.", noit_Monnam(mtmp),
+					devour ? "devours" : "eats", distant_name(obj, doname));
+
+				if (catavenged)
+					You_feel("Schroedinger's cat has been avenged.");
+			}
+        } 
+		else if (seeobj)
             pline("It %s %s.", devour ? "devours" : "eats",
                   distant_name(obj, doname));
     }
