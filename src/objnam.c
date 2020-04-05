@@ -3735,10 +3735,12 @@ struct obj *no_wish;
     /* Find corpse type w/o "of" (red dragon scale mail, yeti corpse) */
     if (strncmpi(bp, "samurai sword", 13)  /* not the "samurai" monster! */
         && strncmpi(bp, "wizard lock", 11) /* not the "wizard" monster! */
-		&& strncmpi(bp, "bat guano", 9) /* not the "wizard" monster! */
+		&& strncmpi(bp, "bat guano", 9) /* not the "bat" monster! */
 		&& strncmpi(bp, "ninja-to", 8)     /* not the "ninja" rank */
         && strncmpi(bp, "master key", 10)  /* not the "master" rank */
-        && strncmpi(bp, "magenta", 7)) {   /* not the "mage" rank */
+		&& strncmpi(bp, "death cap", 9)  /* not the "death" monster */
+		&& strncmpi(bp, "magenta", 7))   /* not the "mage" rank */
+	{
         if (mntmp < LOW_PM && strlen(bp) > 2
             && (mntmp = name_to_mon(bp)) >= LOW_PM) {
             int mntmptoo, mntmplen; /* double check for rank title */

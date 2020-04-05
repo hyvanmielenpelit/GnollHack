@@ -41,7 +41,7 @@ LOOP [1 + 1d2] {
     } ELSE {
         IF [33%] {
           IF [50%] {
-            OBJECT: ('%', "fly agaris"), random
+            OBJECT: ('%', "fly agaric"), random
           } ELSE {
             OBJECT: ('%', "panther cap"), random
           }

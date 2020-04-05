@@ -925,7 +925,7 @@ mkgarden()
 						quan = rnd(2);
 						break;
 					case 11:
-						itemtype = FLY_AGARIS;
+						itemtype = FLY_AGARIC;
 						quan = rnd(2);
 						break;
 					case 12:
