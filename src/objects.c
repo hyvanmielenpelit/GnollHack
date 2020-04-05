@@ -2031,7 +2031,7 @@ TOOL("magic flute",      "blackwood flute", None, None, TOOLTYPE_FLUTE, 0, 0, 1,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 TOOL("brass horn",       None, None, None, TOOLTYPE_HORN, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED,  5, 18, 10, 0, 0, 0, 0, 0, 0, //STARTMARKER FOR HORN WISH CLASS
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_COPPER, CLR_YELLOW, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-TOOL("tooled horn",       "arched horn", None, None, TOOLTYPE_HORN, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_1D6_6,  5, 18, 15, 0, 0, 0, 0, 0, 0, //STARTMARKER FOR SHUFFLED HORNS
+TOOL("tooled horn",       "arched horn", None, None, TOOLTYPE_HORN, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_1D15_15,  5, 18, 15, 0, 0, 0, 0, 0, 0, //STARTMARKER FOR SHUFFLED HORNS
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_BONE, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SPELLTOOL("frost horn",   "spiral horn", None, None, TOOLTYPE_HORN, 0, 0, 1, CHARGED_HORN_NORMAL,  2, 18, 50, RAY, RAY_WND_COLD, 6, 6, 0, 0, 0, 0, 5, MAT_BONE, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE),
 SPELLTOOL("fire horn",    "curved horn", None, None, TOOLTYPE_HORN, 0, 0, 1, CHARGED_HORN_NORMAL,  2, 18, 50, RAY, RAY_WND_FIRE, 6, 6, 0, 0, 0, 0, 5, MAT_BONE, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE),
@@ -2050,9 +2050,9 @@ TOOL("leather drum",      "old drum", None, None, TOOLTYPE_DRUM, 0, 0, 0, ENCHTY
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 TOOL("drum of earthquake","antiquated drum", None, None, TOOLTYPE_DRUM, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_HORN_NORMAL,  2, 25, 25, 0, 0, 0, 0, 0, 0, //ENDMARKER
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SPELLTOOL("jar of healing salve", "glass jar", "yellow ointment", "Heals a target for 6d6 hit points", TOOLTYPE_JAR, 0, 0, 1, CHARGED_1D6_3, //STARTMARKER
-	20, 15, 100, TOUCH, 0, 6, 6, 0, 0, 0, 0, 5, MAT_GLASS, HI_GLASS, O1_NONE, O2_NONE, O3_READABLE | O3_CONTENT_DESCRIPTION_SHUFFLED),
-SPELLTOOL("jar of extra healing salve", "crystal jar", "purple ointment", "Heals a target for 12d6 hit points", TOOLTYPE_JAR, 0, 0, 1, CHARGED_1D6_3,  //ENDMARKER
+SPELLTOOL("jar of healing salve", "glass jar", "yellow ointment", "Heals a target for 6d6 hit points", TOOLTYPE_JAR, 0, 0, 1, CHARGED_2D6_8, //STARTMARKER
+	20, 15, 200, TOUCH, 0, 6, 6, 0, 0, 0, 0, 5, MAT_GLASS, HI_GLASS, O1_NONE, O2_NONE, O3_READABLE | O3_CONTENT_DESCRIPTION_SHUFFLED),
+SPELLTOOL("jar of extra healing salve", "crystal jar", "purple ointment", "Heals a target for 12d6 hit points", TOOLTYPE_JAR, 0, 0, 1, CHARGED_1D6_6,  //ENDMARKER
 	10, 15, 300, IMMEDIATE, 0, 12, 6, 0, 0, 0, 0, 5, MAT_GLASS, HI_GLASS, O1_NONE, O2_NONE, O3_READABLE | O3_CONTENT_DESCRIPTION_SHUFFLED),
 
 /* tools useful as weapons */

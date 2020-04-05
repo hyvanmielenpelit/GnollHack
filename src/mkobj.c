@@ -1494,6 +1494,9 @@ int charge_init_index;
 	case CHARGED_1D6_6:
 		charge = rnd(6) + 6;
 		break;
+	case CHARGED_2D6_8:
+		charge = d(2, 6) + 8;
+		break;
 	case CHARGED_1D15_15:
 		charge = rnd(15) + 15;
 		break;
@@ -1588,6 +1591,9 @@ int charge_init_index;
 		break;
 	case CHARGED_1D6_6:
 		charge = 12;
+		break;
+	case CHARGED_2D6_8:
+		charge = 20;
 		break;
 	case CHARGED_1D15_15:
 		charge = 30;

@@ -371,7 +371,8 @@ enum charged_init_types {
 	CHARGED_ALWAYS_9 = 23,
 	CHARGED_1D8_1 = 24,
 	CHARGED_LUCK_BLADE = 25,
-	CHARGED_1D6_3 = 26
+	CHARGED_1D6_3 = 26,
+	CHARGED_2D6_8 = 27
 };
 
 enum enchantment_init_types {
