@@ -819,8 +819,8 @@ const char *str;
 STATIC_OVL void
 gcrownu()
 {
-    struct obj *obj;
-    boolean already_exists, in_hand;
+    struct obj *obj, *obj2;
+    boolean already_exists, in_hand, in_hand2;
     short class_gift;
     int sp_no;
 #define ok_wep(o) ((o) && ((o)->oclass == WEAPON_CLASS || is_weptool(o)))
@@ -838,9 +838,14 @@ gcrownu()
     godvoice(u.ualign.type, (char *) 0);
 
     obj = ok_wep(uwep) ? uwep : 0;
-    already_exists = in_hand = FALSE; /* lint suppression */
+	obj2 = ok_wep(uarms) ? uarms : 0;
+	already_exists = in_hand = in_hand2 = FALSE; /* lint suppression */
 	boolean gauntlets_already_exists = exist_artifact(GAUNTLETS_OF_BALANCE, artiname(ART_GAUNTLETS_OF_YIN_AND_YANG));
 	boolean monkgauntlets = (Role_if(PM_MONK) && !gauntlets_already_exists);
+	boolean usegnollchaoticgift = (Race_if(PM_GNOLL) && !exist_artifact(FLAIL, artiname(ART_HOWLING_FLAIL)));
+	int chaotic_crowning_gift_oartifact = usegnollchaoticgift ? ART_HOWLING_FLAIL : ART_STORMBRINGER;
+	int chaotic_crowning_gift_baseitem = usegnollchaoticgift ? RUNED_FLAIL : RUNESWORD;
+	int chaotic_crowning_gift_skill = usegnollchaoticgift ? P_FLAIL : P_SWORD;
 
 	switch (u.ualign.type) {
 	case A_LAWFUL:
@@ -849,16 +854,18 @@ gcrownu()
 		break;
 	case A_NEUTRAL:
 		u.uevent.uhand_of_elbereth = 2;
-		in_hand = (uwep && uwep->oartifact == ART_VORPAL_BLADE) || (uarms && uarms->oartifact == ART_VORPAL_BLADE);
+		in_hand = (uwep && uwep->oartifact == ART_VORPAL_BLADE);
+		in_hand2 = (uarms && uarms->oartifact == ART_VORPAL_BLADE);
 		already_exists = exist_artifact(LONG_SWORD, artiname(ART_VORPAL_BLADE));
 		verbalize("Thou shalt be my Envoy of Balance!");
 		break;
 	case A_CHAOTIC:
 		u.uevent.uhand_of_elbereth = 3;
-		in_hand = (uwep && uwep->oartifact == ART_STORMBRINGER) || (uarms && uarms->oartifact == ART_STORMBRINGER);
-		already_exists = exist_artifact(RUNESWORD, artiname(ART_STORMBRINGER));
+		in_hand = (uwep && uwep->oartifact == chaotic_crowning_gift_oartifact);
+		in_hand2 = (uarms && uarms->oartifact == chaotic_crowning_gift_oartifact);
+		already_exists = exist_artifact(chaotic_crowning_gift_baseitem, artiname(chaotic_crowning_gift_oartifact));
 		verbalize("Thou art chosen to %s for My Glory!",
-					already_exists && !in_hand ? "take lives" : "steal souls");
+					((already_exists && !in_hand && !in_hand2) || chaotic_crowning_gift_oartifact != ART_STORMBRINGER) ? "take lives" : "steal souls");
 		break;
 	}
 
@@ -881,9 +888,9 @@ gcrownu()
 		   preventing chaotic wizards from receiving a spellbook */
 		if (Role_if(PM_WIZARD)
 			&& (!uwep || (uwep->oartifact != ART_VORPAL_BLADE
-						  && uwep->oartifact != ART_STORMBRINGER))
+						  && uwep->oartifact != chaotic_crowning_gift_oartifact))
 			&& (!uarms || (uarms->oartifact != ART_VORPAL_BLADE
-				&& uarms->oartifact != ART_STORMBRINGER))
+				&& uarms->oartifact != chaotic_crowning_gift_oartifact))
 			&& !carrying(SPE_FINGER_OF_DEATH)
 			&& !already_learnt_spell_type(SPE_FINGER_OF_DEATH)
 			) {
@@ -914,58 +921,102 @@ gcrownu()
 		case A_LAWFUL:
 			if (class_gift != STRANGE_OBJECT) {
 				; /* already got bonus above */
-			} else if (obj && obj->otyp == LONG_SWORD && !obj->oartifact) {
+			}
+			else if (obj && obj->otyp == LONG_SWORD && !obj->oartifact)
+			{
 				if (!Blind)
 					Your("sword shines brightly for a moment.");
 				obj = oname(obj, artiname(ART_EXCALIBUR));
 				if (obj && obj->oartifact == ART_EXCALIBUR)
+				{
 					u.ugifts++;
+					obj->aknown = obj->nknown = TRUE;
+				}
 			}
 			/* acquire Excalibur's skill regardless of weapon or gift */
+			else if (obj2 && obj2->otyp == LONG_SWORD && !obj2->oartifact)
+			{
+				if (!Blind)
+					Your("sword shines brightly for a moment.");
+				obj2 = oname(obj2, artiname(ART_EXCALIBUR));
+				if (obj2 && obj2->oartifact == ART_EXCALIBUR)
+				{
+					u.ugifts++;
+					obj2->aknown = obj2->nknown = TRUE;
+				}
+			}
 			unrestrict_weapon_skill(P_SWORD);
-			if (obj && obj->oartifact == ART_EXCALIBUR)
+			if ((obj && obj->oartifact == ART_EXCALIBUR) || (obj2 && obj2->oartifact == ART_EXCALIBUR))
 				discover_artifact(ART_EXCALIBUR);
 			break;
 		case A_NEUTRAL:
-			if (class_gift != STRANGE_OBJECT) {
+			if (class_gift != STRANGE_OBJECT)
+			{
 				; /* already got bonus above */
-			} else if (obj && in_hand) {
+			}
+			else if (obj && in_hand) 
+			{
 				Your("%s goes snicker-snack!", xname(obj));
 				obj->dknown = obj->aknown = obj->nknown = TRUE;
-			} else if (!already_exists) {
+			} 
+			else if (obj2 && in_hand2)
+			{
+				Your("%s goes snicker-snack!", xname(obj2));
+				obj2->dknown = obj2->aknown = obj2->nknown = TRUE;
+			}
+			else if (!already_exists)
+			{
 				obj = mksobj(LONG_SWORD, FALSE, FALSE, FALSE);
 				obj = oname(obj, artiname(ART_VORPAL_BLADE));
 				obj->enchantment = 1;
 				at_your_feet("A sword");
 				dropy(obj);
 				u.ugifts++;
+				obj->aknown = obj->nknown = TRUE;
 			}
 			/* acquire Vorpal Blade's skill regardless of weapon or gift */
 			unrestrict_weapon_skill(P_SWORD);
-			if (obj && obj->oartifact == ART_VORPAL_BLADE)
+			if ((obj && obj->oartifact == ART_VORPAL_BLADE) || (obj2 && obj2->oartifact == ART_VORPAL_BLADE))
 				discover_artifact(ART_VORPAL_BLADE);
 			break;
 		case A_CHAOTIC: {
 			char swordbuf[BUFSZ];
 
-			Sprintf(swordbuf, "%s sword", hcolor(NH_BLACK));
-			if (class_gift != STRANGE_OBJECT) {
+			if(chaotic_crowning_gift_oartifact == ART_STORMBRINGER)
+				Sprintf(swordbuf, "%s sword", hcolor(NH_BLACK));
+			else if (chaotic_crowning_gift_oartifact == ART_HOWLING_FLAIL)
+				Sprintf(swordbuf, "runed flail");
+			else
+				Sprintf(swordbuf, "item");
+
+			if (class_gift != STRANGE_OBJECT) 
+			{
 				; /* already got bonus above */
-			} else if (obj && in_hand) {
+			}
+			else if (obj && in_hand) 
+			{
 				Your("%s hums ominously!", swordbuf);
 				obj->dknown = obj->aknown = obj->nknown = TRUE;
-			} else if (!already_exists) {
-				obj = mksobj(RUNESWORD, FALSE, FALSE, FALSE);
-				obj = oname(obj, artiname(ART_STORMBRINGER));
+			}
+			else if (obj2 && in_hand2)
+			{
+				Your("%s hums ominously!", swordbuf);
+				obj2->dknown = obj2->aknown = obj2->nknown = TRUE;
+			}
+			else if (!already_exists)
+			{
+				obj = mksobj(chaotic_crowning_gift_baseitem, FALSE, FALSE, FALSE);
+				obj = oname(obj, artiname(chaotic_crowning_gift_oartifact));
 				obj->enchantment = 1;
 				at_your_feet(An(swordbuf));
 				dropy(obj);
 				u.ugifts++;
+				obj->aknown = obj->nknown = TRUE;
 			}
 			/* acquire Stormbringer's skill regardless of weapon or gift */
-			unrestrict_weapon_skill(P_SWORD);
-			if (obj && obj->oartifact == ART_STORMBRINGER)
-				discover_artifact(ART_STORMBRINGER);
+			unrestrict_weapon_skill(chaotic_crowning_gift_skill);
+			if (obj && obj->oartifact == chaotic_crowning_gift_oartifact)
+				discover_artifact(chaotic_crowning_gift_oartifact);
 			break;
 		}
 		default:
@@ -975,16 +1026,30 @@ gcrownu()
 	}
 
     /* enhance weapon regardless of alignment or artifact status */
-    if (ok_wep(obj)) {
+    if (ok_wep(obj) || in_hand)
+	{
         bless(obj);
         obj->oeroded = obj->oeroded2 = 0;
         obj->oerodeproof = TRUE;
-        obj->bknown = obj->rknown = obj->nknown = TRUE;
+        obj->bknown = obj->rknown = obj->nknown = obj->aknown = TRUE;
         if (obj->enchantment < 1)
             obj->enchantment = 1;
         /* acquire skill in this weapon */
         unrestrict_weapon_skill(weapon_skill_type(obj));
-    } else if (class_gift == STRANGE_OBJECT) {
+    }
+	else if (ok_wep(obj2) || in_hand2)
+	{
+		bless(obj2);
+		obj2->oeroded = obj2->oeroded2 = 0;
+		obj2->oerodeproof = TRUE;
+		obj2->bknown = obj2->rknown = TRUE;
+		if (obj2->enchantment < 1)
+			obj2->enchantment = 1;
+		/* acquire skill in this weapon */
+		unrestrict_weapon_skill(weapon_skill_type(obj2));
+	}
+	else if (class_gift == STRANGE_OBJECT)
+	{
         /* opportunity knocked, but there was nobody home... */
         You_feel("unworthy.");
     }
