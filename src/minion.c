@@ -340,9 +340,72 @@ yeenoghu_ghoul_summon()
 		else
 		{
 			if (canseemonnumber == 1 && mtmp2)
-				pline("%s  crawls out of nowhere!", Amonnam(mtmp2));
+				pline("%s crawls out of nowhere!", Amonnam(mtmp2));
 			else
 				pline("%s ghouls crawl out of nowhere!", numberword);
+		}
+	}
+
+	/* how many monsters exist now compared to before? */
+	if (result)
+		result = monster_census(FALSE) - census;
+
+	return result;
+}
+
+/* Yacc summons bison */
+int
+yacc_bison_summon()
+{
+	int dtype = NON_PM, cnt = 0, result = 0, census;
+	struct monst* mtmp = (struct monst*) 0;
+
+	cnt = d(1, 3);
+
+	/* some candidates can generate a group of monsters, so simple
+	   count of non-null makemon() result is not sufficient */
+	census = monster_census(FALSE);
+
+	int canseemonnumber = 0;
+	struct monst* mtmp2 = (struct monst*) 0;
+
+	while (cnt > 0)
+	{
+		dtype = PM_BISON;
+
+		if (mvitals[dtype].mvflags & G_GONE)
+		{
+			cnt--;
+			break;
+		}
+
+		mtmp = makemon(&mons[dtype], u.ux, u.uy, MM_EMIN);
+		if (mtmp)
+		{
+			result++;
+			if (canseemon(mtmp))
+			{
+				canseemonnumber++;
+				mtmp2 = mtmp;
+			}
+		}
+		cnt--;
+	}
+
+	char numberword[BUFSZ] = "Some";
+	if (canseemonnumber >= 3)
+		strcpy(numberword, "Several");
+
+	if (result > 0 && canseemonnumber > 0)
+	{
+		if (result == 1 && mtmp)
+			pline("%s appears in a cloud of smoke!", Amonnam(mtmp));
+		else
+		{
+			if (canseemonnumber == 1 && mtmp2)
+				pline("%s appears in a cloud of smoke!", Amonnam(mtmp2));
+			else
+				pline("%s bison appear in a cloud of smoke!", numberword);
 		}
 	}
 

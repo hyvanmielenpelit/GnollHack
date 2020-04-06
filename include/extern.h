@@ -1379,6 +1379,7 @@ E int FDECL(monster_census, (BOOLEAN_P));
 E int FDECL(msummon, (struct monst *));
 E int NDECL(yeenoghu_gnoll_summon);
 E int NDECL(yeenoghu_ghoul_summon);
+E int NDECL(yacc_bison_summon);
 E int NDECL(orcus_undead_summon);
 E void FDECL(summon_minion, (ALIGNTYP_P, BOOLEAN_P));
 E int FDECL(demon_talk, (struct monst *));

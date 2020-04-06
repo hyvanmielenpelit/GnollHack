@@ -1990,15 +1990,19 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
         /*FALLTHRU*/
     case SPE_IDENTIFY:
         cval = 1;
-        if (sblessed || (!scursed && !rn2(5))) {
-            cval = rn2(5);
+        if (sblessed || (!scursed && !rn2(5)))
+		{
+			cval = rnd(3); //rn2(5);
             /* note: if cval==0, identify all items */
             if (cval == 1 && sblessed && Luck > 0)
                 ++cval;
         }
-		if (invent && !confused) {
+		if (invent && !confused)
+		{
             identify_pack(cval, !already_known);
-        } else if (otyp == SPE_IDENTIFY) {
+        } 
+		else if (otyp == SPE_IDENTIFY) 
+		{
             /* when casting a spell we know we're not confused,
                so inventory must be empty (another message has
                already been given above if reading a scroll) */

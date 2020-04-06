@@ -944,7 +944,7 @@ register struct monst *mtmp;
 				}
 				else if (mattk->adtyp == AD_GHUL)
 				{
-					/*  Special gnoll handling code */
+					/*  Special ghoul handling code */
 					if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
 						int chance = mattk->mcadj;
 						if (!is_cancelled(mtmp) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
@@ -961,6 +961,26 @@ register struct monst *mtmp;
 								pline("%s howls!", Monnam(mtmp));
 						}
 					}
+				}
+				else if (mattk->adtyp == AD_BISN)
+				{
+				/*  Special bison handling code */
+				if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
+					int chance = mattk->mcadj;
+					if (!is_cancelled(mtmp) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
+					{
+						pline("%s summons some bison!", Monnam(mtmp));
+						(void)yacc_bison_summon();
+						sum[i] = 1;
+					}
+					else if (!is_silenced(mtmp))
+					{
+						if (!rn2(2))
+							pline("%s grunts threateningly!", Monnam(mtmp));
+						else
+							pline("%s raises its head in rage!", Monnam(mtmp));
+					}
+				}
 				}
 				else if (mattk->adtyp == AD_UNDO)
 				{

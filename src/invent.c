@@ -2845,19 +2845,23 @@ STATIC_OVL void
 menu_identify(id_limit)
 int id_limit;
 {
+	int original_id_limit = id_limit;
     menu_item *pick_list;
     int n, i, first = 1, tryct = 5;
     char buf[BUFSZ];
     /* assumptions:  id_limit > 0 and at least one unID'd item is present */
 
-    while (id_limit) {
-        Sprintf(buf, "What would you like to identify %s?",
-                first ? "first" : "next");
+    while (id_limit) 
+	{
+        Sprintf(buf, "What would you like to identify%s?",
+			original_id_limit <= 1 ? "" : first ? " first" : " next");
+
         n = query_objlist(buf, &invent, (SIGNAL_NOMENU | SIGNAL_ESCAPE
                                          | USE_INVLET | INVORDER_SORT),
                           &pick_list, PICK_ANY, not_fully_identified, 0);
 
-        if (n > 0) {
+        if (n > 0)
+		{
             if (n > id_limit)
                 n = id_limit;
             for (i = 0; i < n; i++, id_limit--)
@@ -2865,15 +2869,22 @@ int id_limit;
             free((genericptr_t) pick_list);
             mark_synch(); /* Before we loop to pop open another menu */
             first = 0;
-        } else if (n == -2) { /* player used ESC to quit menu */
+        } 
+		else if (n == -2)
+		{ /* player used ESC to quit menu */
             break;
-        } else if (n == -1) { /* no eligible items found */
+        } 
+		else if (n == -1)
+		{ /* no eligible items found */
             pline("That was all.");
             break;
-        } else if (!--tryct) { /* stop re-prompting */
+        }
+		else if (!--tryct) { /* stop re-prompting */
             pline1(thats_enough_tries);
             break;
-        } else { /* try again */
+        } 
+		else
+		{ /* try again */
             pline("Choose an item; use ESC to decline.");
         }
     }
@@ -2901,29 +2912,38 @@ boolean learning_id; /* true if we just read unknown identify scroll */
     struct obj *obj;
     int n, unid_cnt = count_unidentified(invent);
 
-    if (!unid_cnt) {
+    if (!unid_cnt)
+	{
         You("have already identified all %sof your possessions.",
             learning_id ? "the rest " : "");
-    } else if (!id_limit || id_limit >= unid_cnt) {
+    } 
+	else if (!id_limit || id_limit >= unid_cnt)
+	{
         /* identify everything */
         /* TODO:  use fully_identify_obj and cornline/menu/whatever here */
-        for (obj = invent; obj; obj = obj->nobj) {
-            if (not_fully_identified(obj)) {
+        for (obj = invent; obj; obj = obj->nobj) 
+		{
+            if (not_fully_identified(obj)) 
+			{
                 (void) identify(obj);
                 if (unid_cnt == 1)
                     break;
             }
         }
-    } else {
+    } 
+	else 
+	{
         /* identify up to `id_limit' items */
         n = 0;
         if (flags.menu_style == MENU_TRADITIONAL)
-            do {
+            do
+			{
                 n = ggetobj("identify", identify, id_limit, FALSE,
                             (unsigned *) 0, 0);
                 if (n < 0)
                     break; /* quit or no eligible items */
             } while ((id_limit -= n) > 0);
+
         if (n == 0 || n < -1)
             menu_identify(id_limit);
     }

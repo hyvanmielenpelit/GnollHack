@@ -89,12 +89,13 @@
 #define AD_RBRE 242 /* random breath weapon */
 #define AD_DMNS 243 /* Summons demons */
 #define AD_LYCA 244 /* Lycanthrope summon */
-#define AD_GNOL 245 /* Summons gnolls, Yeenoghu */
-#define AD_GHUL 246 /* Summons ghouls, Yeenoghu */
-#define AD_UNDO 247 /* Summons undead, Orcus */
-#define AD_MINO 248 /* Summons a minotaur, Baphomet and Geryon */
+#define AD_GNOL 245 /* summons gnolls, Yeenoghu */
+#define AD_GHUL 246 /* summons ghouls, Yeenoghu */
+#define AD_UNDO 247 /* summons undead, Orcus */
+#define AD_MINO 248 /* summons a minotaur, Baphomet and Geryon */
 #define AD_REY1 249 /* random eyestalk 1 */
 #define AD_REY2 250 /* random eyestalk 2 */
+#define AD_BISN 251 /* summons bison, Yacc */
 
 #define AD_SAMU 252 /* hits, may steal Amulet (Wizard) */
 #define AD_CURS 253 /* random curse (ex. gremlin) */
