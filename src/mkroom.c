@@ -839,7 +839,7 @@ mkgarden()
 			{
 				levl[sx][sy].typ = GRASS;
 				/* Buried items */
-				if (rn2(100) < 42) /* Half-way between !rn2(2) and !rn2(3) */
+				if (!rn2(3))
 				{
 					int itemtype = MANDRAKE_ROOT;
 					int quan = 1;
@@ -873,7 +873,7 @@ mkgarden()
 				}
 
 				/* Non-buried items */
-				if (!rn2(3))
+				if (!rn2(4))
 				{
 					int itemtype = SPRIG_OF_WOLFSBANE;
 					int quan = 1;
@@ -985,7 +985,7 @@ mkgarden()
 				}
 				else if (!rn2(8))
 				{
-					//Sleepy ogre
+					//Sleepy ogre or bugbear
 					struct permonst* pm = (level_difficulty() > 3 && !rn2(3)) || level_difficulty() > 7 ? mkclass(S_OGRE, 0) : &mons[PM_BUGBEAR];
 					struct monst* mon = makemon(!pm ? (&mons[!rn2(5) && level_difficulty() > 10 ? PM_OGRE_LORD : (level_difficulty() > 3 && !rn2(3)) || level_difficulty() > 7 ? PM_OGRE : PM_BUGBEAR]) : pm, sx, sy, NO_MM_FLAGS);
 					if(mon)
@@ -997,7 +997,6 @@ mkgarden()
 	}
 	level.flags.has_garden = 1;
 	return 1;
-
 }
 
 STATIC_OVL int

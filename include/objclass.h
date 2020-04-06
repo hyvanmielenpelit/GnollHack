@@ -823,16 +823,16 @@ struct objclass {
 #define O2_ROCK					0x00400000UL	
 #define O2_ORE					0x00800000UL	
 #define O2_FLIMSY				0x01000000UL
-	/* free bit */
+
+#define O2_GLOWS_WHEN_BLESSED_AND_SAFE_TO_PRAY 0x02000000UL
 	/* free bit */
 	/* free bit */
 
 #define O2_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED 0x10000000UL			/* if deathenchantable item, then death, otherwise lightning*/
-#define O2_GENERATED_BLESSED	0x20000000UL								/* Always generated blessed */									
-#define O2_GENERATED_CURSED		0x40000000UL								/* Always generated cursed */								
-#define O2_CURSED_MAGIC_ITEM	0x80000000UL								/* The effect of the item is negative; typically 90% chance of being cursed */									
+#define O2_GENERATED_BLESSED	0x20000000UL							/* Always generated blessed */									
+#define O2_GENERATED_CURSED		0x40000000UL							/* Always generated cursed */								
+#define O2_CURSED_MAGIC_ITEM	0x80000000UL							/* The effect of the item is negative; typically 90% chance of being cursed */									
 
-/* Artifact flags - to do: Attack type, half physical and spell damage, bonus to monsters only */
 /* Flags 3 */
 #define O3_NONE										0x00000000UL
 #define O3_NO_GENERATION							0x00000001UL  /* item is not generated normally */
@@ -873,9 +873,6 @@ struct objclass {
 #define O3_TARGET_PERMISSION_IS_M4_FLAG				0x40000000UL 
 
 #define O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH 0x80000000UL 
-
-
-
 
 
 

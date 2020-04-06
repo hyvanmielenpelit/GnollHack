@@ -1077,11 +1077,28 @@ aligntyp g_align;
                        : Hallucination ? "full" : "satisfied");
 
     /* not your deity */
-    if (on_altar() && p_aligntyp != u.ualign.type) {
+    if (on_altar() && p_aligntyp != u.ualign.type)
+	{
         adjalign(-1);
         return;
-    } else if (u.ualign.record < 2 && trouble <= 0)
+    } 
+	else if (u.ualign.record < 2 && trouble <= 0)
         adjalign(1);
+	
+	if (on_altar() && p_aligntyp == u.ualign.type)
+	{
+		for (struct obj* otmp = invent; otmp; otmp = otmp->nobj)
+		{
+			if ((objects[otmp->otyp].oc_flags2 & O2_GLOWS_WHEN_BLESSED_AND_SAFE_TO_PRAY) && !otmp->blessed)
+			{
+				if(!Blind)
+					pline("%s with %s aura.", Yobjnam2(otmp, "softly glow"), an(hcolor(NH_LIGHT_BLUE)));
+				bless(otmp);
+				otmp->bknown = 1;
+				break;
+			}
+		}
+	}
 
     /*
      * Depending on your luck & align level, the god you prayed to will:
@@ -1159,7 +1176,8 @@ aligntyp g_align;
             break;
         case 1:
             if (uwep && (welded(uwep, &youmonst) || uwep->oclass == WEAPON_CLASS
-                         || is_weptool(uwep))) {
+                         || is_weptool(uwep)))
+			{
                 char repair_buf[BUFSZ];
 
                 *repair_buf = '\0';
@@ -1167,26 +1185,28 @@ aligntyp g_align;
                     Sprintf(repair_buf, " and %s now as good as new",
                             otense(uwep, "are"));
 
-                if (uwep->cursed) {
-                    if (!Blind) {
-                        pline("%s %s%s.", Yobjnam2(uwep, "softly glow"),
-                              hcolor(NH_AMBER), repair_buf);
+                if (uwep->cursed) 
+				{
+                    if (!Blind)
+					{
+                        pline("%s %s%s.", Yobjnam2(uwep, "softly glow"), hcolor(NH_AMBER), repair_buf);
                         iflags.last_msg = PLNMSG_OBJ_GLOWS;
-                    } else
-                        You_feel("the power of %s over %s.", u_gname(),
-                                 yname(uwep));
+                    }
+					else
+                        You_feel("the power of %s over %s.", u_gname(), yname(uwep));
                     uncurse(uwep);
                     uwep->bknown = TRUE;
                     *repair_buf = '\0';
-                } else if (!uwep->blessed) {
-                    if (!Blind) {
-                        pline("%s with %s aura%s.",
-                              Yobjnam2(uwep, "softly glow"),
-                              an(hcolor(NH_LIGHT_BLUE)), repair_buf);
+                } 
+				else if (!uwep->blessed) 
+				{
+                    if (!Blind)
+					{
+                        pline("%s with %s aura%s.", Yobjnam2(uwep, "softly glow"), an(hcolor(NH_LIGHT_BLUE)), repair_buf);
                         iflags.last_msg = PLNMSG_OBJ_GLOWS;
-                    } else
-                        You_feel("the blessing of %s over %s.", u_gname(),
-                                 yname(uwep));
+                    }
+					else
+                        You_feel("the blessing of %s over %s.", u_gname(), yname(uwep));
                     bless(uwep);
                     uwep->bknown = TRUE;
                     *repair_buf = '\0';
@@ -1194,7 +1214,8 @@ aligntyp g_align;
 
                 /* fix any rust/burn/rot damage, but don't protect
                    against future damage */
-                if (uwep->oeroded || uwep->oeroded2) {
+                if (uwep->oeroded || uwep->oeroded2)
+				{
                     uwep->oeroded = uwep->oeroded2 = 0;
                     /* only give this message if we didn't just bless
                        or uncurse (which has already given a message) */
@@ -1838,6 +1859,9 @@ dosacrifice()
         }
 
         consume_offering(otmp);
+
+		boolean bless_savestone = FALSE;
+
         /* OK, you get brownie points. */
         if (u.ugangr) {
             u.ugangr -= ((value * (u.ualign.type == A_CHAOTIC ? 2 : 3))
@@ -1872,7 +1896,11 @@ dosacrifice()
                 value = -u.ualign.record;
             adjalign(value);
             You_feel("partially absolved.");
-        } else if (u.ublesscnt > 0) {
+        }
+		else if (u.ublesscnt > 0)
+		{
+			bless_savestone = TRUE;
+
             u.ublesscnt -= ((value * (u.ualign.type == A_CHAOTIC ? 500 : 300) / (Role_if(PM_PRIEST) ? 2 : 1))
                             / MAXVALUE);
             if (u.ublesscnt < 0)
@@ -1894,7 +1922,11 @@ dosacrifice()
                         u.uluck = 0;
                 }
             }
-        } else {
+        }
+		else
+		{
+			bless_savestone = TRUE;
+
             int nartifacts = nartifact_exist();
 
             /* you were already in pretty good standing */
@@ -1966,6 +1998,21 @@ dosacrifice()
                         makeplural(body_part(FOOT)));
             }
         }
+
+		if (bless_savestone)
+		{
+			for (struct obj* otmp = invent; otmp; otmp = otmp->nobj)
+			{
+				if ((objects[otmp->otyp].oc_flags2 & O2_GLOWS_WHEN_BLESSED_AND_SAFE_TO_PRAY) && !otmp->blessed)
+				{
+					if(!Blind)
+						pline("%s with %s aura.", Yobjnam2(otmp, "softly glow"), an(hcolor(NH_LIGHT_BLUE)));
+					bless(otmp);
+					otmp->bknown = 1;
+					break;
+				}
+			}
+		}
     }
 	change_luck(luck_change, TRUE);
 	return 1;

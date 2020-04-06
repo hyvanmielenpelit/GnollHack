@@ -2301,6 +2301,13 @@ register struct obj* obj;
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
+			if (objects[otyp].oc_flags2 & O2_GLOWS_WHEN_BLESSED_AND_SAFE_TO_PRAY)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - If blessed, shimmers when it is safe to pray", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
 			if (objects[otyp].oc_flags3 & O3_ELEMENTAL_ENCHANTABLE)
 			{
 				powercnt++;

@@ -2354,7 +2354,34 @@ dodip()
             return 1;
         }
     }
-	else if (is_pool(u.ux, u.uy)) 
+	else if (IS_SINK(here))
+	{
+		Sprintf(qbuf, "Put %s into the sink and open tap?", flags.verbose ? obuf : shortestname);
+
+		/* "Dip <the object> into the sink?" */
+		if (yn(qbuf) == 'y')
+		{
+			if (Levitation && !Levitation_control)
+			{
+				floating_above("sink");
+			}
+			else
+			{
+				You("open the tap and let the water run.");
+				if (obj->otyp == POT_ACID)
+					obj->in_use = 1;
+				if (water_damage(obj, 0, TRUE) != ER_DESTROYED && obj->in_use)
+					useup(obj);
+				if (!rn2(20))
+				{
+					/* The same probability as with drinking from the sink */
+					breaksink(u.ux, u.uy);
+				}
+			}
+			return 1;
+		}
+	}
+	else if (is_pool(u.ux, u.uy))
 	{
         const char *pooltype = waterbody_name(u.ux, u.uy);
 

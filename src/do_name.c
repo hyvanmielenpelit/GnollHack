@@ -2329,14 +2329,14 @@ char* s;
 			/* with middle syllable */
 			/* with no vowel end*/
 			if(!rn2(3))
-				Sprintf(eos(s), "%s%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
+				Sprintf(s, "%s%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
 					middle_novowel_end[rn2(SIZE(middle_novowel_end))], end_previous_novowel[rn2(SIZE(end_previous_novowel))]);
 			else
-				Sprintf(eos(s), "%s%s%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
+				Sprintf(s, "%s%s%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
 					middle_vowel_end[rn2(SIZE(middle_vowel_end))], mv[rn2(SIZE(mv))], end_previous_vowel[rn2(SIZE(end_previous_vowel))]);
 		}
 		else
-			Sprintf(eos(s), "%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
+			Sprintf(s, "%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
 				end_previous_vowel[rn2(SIZE(end_previous_vowel))]);
 	}
 	return s;
