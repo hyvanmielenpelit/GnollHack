@@ -93,6 +93,7 @@ static int p_type; /* (-1)-3: (-1)=really naughty, 3=really good */
 #define TROUBLE_CONFUSED (-10)
 #define TROUBLE_HALLUCINATION (-11)
 #define TROUBLE_LAUGHING (-12)
+#define TROUBLE_TELEPORTITIS (-13)
 
 
 #define ugod_is_angry() (u.ualign.record < 0)
@@ -240,12 +241,16 @@ in_trouble()
     if (Blindfolded && ublindf->cursed)
         return TROUBLE_CURSED_BLINDFOLD;
 
+
+
     /*
      * minor troubles
      */
     if (Punished || (u.utrap && u.utraptype == TT_BURIEDBALL))
         return TROUBLE_PUNISHED;
-    if (Cursed_obj(uarmg, GAUNTLETS_OF_FUMBLING)
+	if ((HTeleportation & ~TIMEOUT) && !Teleport_control)
+		return TROUBLE_TELEPORTITIS;
+	if (Cursed_obj(uarmg, GAUNTLETS_OF_FUMBLING)
         || Cursed_obj(uarmf, FUMBLE_BOOTS))
         return TROUBLE_FUMBLING;
 	if (Cursed_obj(uarmu, SHIRT_OF_UNCONTROLLABLE_LAUGHTER))
@@ -542,6 +547,10 @@ int trouble;
 			otmp = uarmu;
 		goto decurse;
 		/*NOTREACHED*/
+		break;
+	case TROUBLE_TELEPORTITIS:
+		You_feel("much more composed.");
+		u.uprops[TELEPORT].intrinsic = (u.uprops[TELEPORT].intrinsic & TIMEOUT);
 		break;
 	case TROUBLE_CURSED_ITEMS:
         otmp = worst_cursed_item();
