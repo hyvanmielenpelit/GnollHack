@@ -15,6 +15,7 @@ STATIC_DCL boolean FDECL(no_bones_level, (d_level *));
 STATIC_DCL void FDECL(goodfruit, (int));
 STATIC_DCL void FDECL(resetobjs, (struct obj *, BOOLEAN_P));
 STATIC_DCL boolean FDECL(fixuporacle, (struct monst *));
+STATIC_DCL void FDECL(mark_all_fruits_good, (struct obj*));
 
 STATIC_OVL boolean
 no_bones_level(lev)
@@ -232,12 +233,12 @@ int x, y;
 {
     struct obj *otmp;
 
+	/* Mark all player-specified fruits in inventory good */
+	mark_all_fruits_good(invent);
+
     u.twoweap = 0; /* ensure curse() won't cause swapwep to drop twice */
     while ((otmp = invent) != 0) 
 	{
-		if (otmp->otyp == SLIME_MOLD)
-			goodfruit(otmp->special_quality);
-
 		obj_extract_self(otmp);
         /* when turning into green slime, all gear remains held;
            other types "arise from the dead" do aren't holding
@@ -261,6 +262,24 @@ int x, y;
     }
     if (cont)
         cont->owt = weight(cont);
+}
+
+STATIC_OVL
+void
+mark_all_fruits_good(objchn)
+struct obj* objchn;
+{
+	if (!objchn)
+		return;
+	
+	for (struct obj* otmp = objchn; otmp; otmp = otmp->nobj)
+	{
+		if (otmp->otyp == SLIME_MOLD)
+			goodfruit(otmp->special_quality);
+		else if (Is_proper_container(otmp) && otmp->cobj)
+			mark_all_fruits_good(otmp->cobj);
+	}
+
 }
 
 /* possibly restore oracle's room and/or put her back inside it; returns
