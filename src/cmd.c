@@ -3515,7 +3515,7 @@ int final;
     if (u.ubasedaminc + u.udaminc)
         you_have(enlght_combatinc("damage", u.ubasedaminc + u.udaminc, final, buf), "");
 	if (Protection)
-		you_have("magical protection (-3 to AC and +3 to MC)", from_what(PROTECTION));
+		you_have("magical protection (-4 to AC and +2 to MC)", from_what(PROTECTION));
 	if (Magical_shielding)
 		you_have("magical shielding (-4 to AC)", from_what(MAGICAL_SHIELDING));
 	if (Magical_barkskin)

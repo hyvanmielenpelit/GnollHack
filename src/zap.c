@@ -3533,6 +3533,70 @@ register struct obj *obj;
 		pline("An armor-shaped force field forms before you!");
 		summonmagearmor(obj);
 		break;
+	case SPE_CREATE_FOOD:
+	{
+		known = TRUE;
+		struct obj* otmp = mksobj(FOOD_RATION, FALSE, FALSE, FALSE);
+		(void)hold_another_object(otmp, "You drop %s!",
+			doname(otmp), "A delicious food item forms before you!");
+		break;
+	}
+	case SPE_CREATE_FRUITS:
+	{
+		known = TRUE;
+		int roll = rnd(7);
+		int fruittype = APPLE;
+		int fruitnum = 6;
+
+		switch (roll)
+		{
+		case 1:
+			fruittype = CLOUDBERRY;
+			fruitnum = rnd(2);
+			break;
+		case 2:
+			fruittype = DRAGON_FRUIT;
+			fruitnum = rnd(2);
+			break;
+		case 3:
+			fruittype = FIG;
+			fruitnum = rnd(2);
+			break;
+		case 4:
+			fruittype = APPLE;
+			fruitnum = rnd(3) + 4;
+			break;
+		case 5:
+			fruittype = PEAR;
+			fruitnum = rnd(3) + 4;
+			break;
+		case 6:
+			fruittype = ORANGE;
+			fruitnum = rnd(3) + 4;
+			break;
+		case 7:
+			fruittype = MELON;
+			fruitnum = rnd(2);
+			break;
+		default:
+			break;
+		}
+
+		struct obj* otmp = mksobj(fruittype, FALSE, FALSE, FALSE);
+		otmp->quan = fruitnum;
+		otmp->owt = weight(otmp);
+		(void)hold_another_object(otmp, "You drop %s!",
+			doname(otmp), fruitnum == 1 ? "A delicious fruit forms before you!" : "Delicious fruits form before you!");
+		break;
+	}
+	case SPE_CREATE_WATER:
+	{
+		known = TRUE;
+		struct obj* otmp = mksobj(POT_WATER, FALSE, FALSE, FALSE);
+		(void)hold_another_object(otmp, "You drop %s!",
+			doname(otmp), "A potion appears out of thin air!");
+		break;
+	}
 	case SPE_ARMAGEDDON:
 		known = TRUE;
 		You("chant an invocation:");

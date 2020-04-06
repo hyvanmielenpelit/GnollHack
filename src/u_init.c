@@ -95,7 +95,8 @@ static struct trobj Knight[] = {
 	{ 0, 0, 0, 0, 0, 0 }
 };
 static struct trobj Monk[] = {
-    { LEATHER_GLOVES, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
+#define M_FOOD_SPELLBOOK 8
+	{ LEATHER_GLOVES, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
     { ROBE, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
     { POT_HEALING, 0, POTION_CLASS, 3, UNDEF_BLESS, 0 },
     { FOOD_RATION, 0, FOOD_CLASS, 1, 0, 0 },
@@ -103,6 +104,7 @@ static struct trobj Monk[] = {
     { ORANGE, 0, FOOD_CLASS, 1, UNDEF_BLESS, 0 },
 	{ HANDFUL_OF_NUTS, 0, FOOD_CLASS, 1, UNDEF_BLESS, 0 },
 	{ SPE_MINOR_HEALING, 0, SPBOOK_CLASS, 1, 1, 0 },
+	{ SPE_CREATE_FOOD, 0, SPBOOK_CLASS, 1, 1, 0 },
 	/* Yes, we know fortune cookies aren't really from China.  They were
      * invented by George Jung in Los Angeles, California, USA in 1916.
      */
@@ -520,7 +522,7 @@ static const struct def_skill Skill_Monk_Max[] = {
     { P_ENCHANTMENT_SPELL, P_SKILLED },
     { P_CLERIC_SPELL, P_SKILLED },
     { P_MOVEMENT_SPELL, P_EXPERT },
-    { P_TRANSMUTATION_SPELL, P_BASIC },
+    { P_TRANSMUTATION_SPELL, P_SKILLED },
 	{ P_BARE_HANDED_COMBAT, P_EXPERT },
 	{ P_MARTIAL_ARTS, P_GRAND_MASTER },
 	{ P_TWO_WEAPON_COMBAT, P_EXPERT },
@@ -535,6 +537,7 @@ static const struct def_skill Skill_Monk_Init[] = {
 	{ P_ENCHANTMENT_SPELL, P_BASIC },
 	{ P_MOVEMENT_SPELL, P_BASIC },
 	{ P_ABJURATION_SPELL, P_BASIC },
+	{ P_TRANSMUTATION_SPELL, P_BASIC },
 	{ P_NONE, 0 }
 };
 
@@ -992,6 +995,10 @@ u_init()
         //knows_class(ARMOR_CLASS);
         break;
     case PM_MONK: {
+		/* Alternatively, may have create fruits instead of create food */
+		if (!rn2(2))
+			Monk[M_FOOD_SPELLBOOK].trotyp = SPE_CREATE_FRUITS;
+
         ini_inv(Monk);
         if (!rn2(5))
             ini_inv(Magicmarker);

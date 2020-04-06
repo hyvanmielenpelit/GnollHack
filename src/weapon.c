@@ -2287,10 +2287,10 @@ boolean nextlevel;
 	if ((!use_this_skill && apply_martial_arts_bonus) || type == P_MARTIAL_ARTS)
 	{
 		int skill_level = min(P_MAX_SKILL_LEVEL(P_MARTIAL_ARTS), P_SKILL_LEVEL(P_MARTIAL_ARTS) + (nextlevel ? 1 : 0));
-		bonus += 1 * max(skill_level - 1, 0); /* unskilled => 0 */
-		/* unskilled: +0, basic: +1, skilled: +2, expert: +3 */
+		bonus += 2 * max(skill_level - 1, 0); /* unskilled => 0 */
+		/* unskilled: +0, basic: +2, skilled: +4, expert: +6 */
 		/* total with expert in bare-handed combat: */
-		/* unskilled: +2, basic: +3, skilled: +4, expert: +5 */
+		/* unskilled: +2, basic: +4, skilled: +6, expert: +8 */
 	}
 
 
@@ -2413,10 +2413,10 @@ boolean nextlevel;
 	if ((!use_this_skill && apply_martial_arts_bonus) || type == P_MARTIAL_ARTS)
 	{
 		int skill_level = min(P_MAX_SKILL_LEVEL(P_MARTIAL_ARTS), P_SKILL_LEVEL(P_MARTIAL_ARTS) + (nextlevel ? 1 : 0));
-		bonus += 1 * max(skill_level - 1, 0); /* unskilled => 0 */
-		/* unskilled: +0, basic: +1, skilled: +2, expert: +3 */
+		bonus += 2 * max(skill_level - 1, 0); /* unskilled => 0 */
+		/* unskilled: +0, basic: +2, skilled: +4, expert: +6 */
 		/* total with expert in bare-handed combat: */
-		/* unskilled: +3, basic: +4, skilled: +5, expert: +6 */
+		/* unskilled: +3, basic: +5, skilled: +7, expert: +9 */
 		/* note: damage is also increased by higher strength damage bonus */
 	}
 
