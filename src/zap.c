@@ -3538,7 +3538,7 @@ register struct obj *obj;
 		known = TRUE;
 		struct obj* otmp = mksobj(FOOD_RATION, FALSE, FALSE, FALSE);
 		(void)hold_another_object(otmp, "You drop %s!",
-			doname(otmp), "A delicious food item forms before you!");
+			doname(otmp), "A delicious food ration forms before you!");
 		break;
 	}
 	case SPE_CREATE_FRUITS:
@@ -3586,7 +3586,7 @@ register struct obj *obj;
 		otmp->quan = fruitnum;
 		otmp->owt = weight(otmp);
 		(void)hold_another_object(otmp, "You drop %s!",
-			doname(otmp), fruitnum == 1 ? "A delicious fruit forms before you!" : "Delicious fruits form before you!");
+			doname(otmp), fruitnum == 1 ? "A delicious fruit appears out of nowhere!" : "Delicious fruits appear out of nowhere!");
 		break;
 	}
 	case SPE_CREATE_WATER:

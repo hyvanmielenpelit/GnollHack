@@ -2360,7 +2360,7 @@ struct materialcomponentlist matlists[] =
 	},
 
 	{ SPE_CREATE_FOOD,
-	"bat guano or sporal powder",
+	"Bat guano or sporal powder",
 	STRANGE_OBJECT,
 	1,
 		{
