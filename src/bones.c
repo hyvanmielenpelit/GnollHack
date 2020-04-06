@@ -233,8 +233,12 @@ int x, y;
     struct obj *otmp;
 
     u.twoweap = 0; /* ensure curse() won't cause swapwep to drop twice */
-    while ((otmp = invent) != 0) {
-        obj_extract_self(otmp);
+    while ((otmp = invent) != 0) 
+	{
+		if (otmp->otyp == SLIME_MOLD)
+			goodfruit(otmp->special_quality);
+
+		obj_extract_self(otmp);
         /* when turning into green slime, all gear remains held;
            other types "arise from the dead" do aren't holding
            equipment during their brief interval as a corpse */
@@ -245,9 +249,6 @@ int x, y;
         /* lamps don't go out when dropped */
         if ((cont || (artifact_light(otmp) || (objects[otmp->otyp].oc_flags2 & O2_SHINES_MAGICAL_LIGHT)) && obj_is_burning(otmp)))
             end_burn(otmp, TRUE); /* smother in statue */
-
-        if (otmp->otyp == SLIME_MOLD)
-            goodfruit(otmp->special_quality);
 
         if (rn2(5))
             curse(otmp);

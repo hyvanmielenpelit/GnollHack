@@ -508,8 +508,8 @@ int fd;
     register struct fruit *flist, *fnext;
 
     flist = 0;
-    while (fnext = newfruit(), mread(fd, (genericptr_t) fnext, sizeof *fnext),
-           fnext->fid != 0) {
+    while (fnext = newfruit(), mread(fd, (genericptr_t) fnext, sizeof *fnext), fnext->fid != 0)
+	{
         fnext->nextf = flist;
         flist = fnext;
     }
@@ -523,7 +523,8 @@ register struct fruit *flist;
 {
     register struct fruit *fnext;
 
-    while (flist) {
+    while (flist) 
+	{
         fnext = flist->nextf;
         dealloc_fruit(flist);
         flist = fnext;
