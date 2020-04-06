@@ -937,7 +937,7 @@ register struct monst *mtmp;
 						{
 							if (!rn2(2) || is_silenced(mtmp))
 								pline("%s swings his flail commandingly.", Monnam(mtmp));
-							else
+							else if (!Deaf)
 								pline("%s growls menacingly.", Monnam(mtmp));
 						}
 					}
@@ -953,7 +953,7 @@ register struct monst *mtmp;
 							(void)yeenoghu_ghoul_summon();
 							sum[i] = 1;
 						}
-						else if(!is_silenced(mtmp))
+						else if(!is_silenced(mtmp) && !Deaf)
 						{
 							if (!rn2(2))
 								pline("%s lets loose a blood-curdling howl!", Monnam(mtmp));
@@ -973,12 +973,12 @@ register struct monst *mtmp;
 						(void)yacc_bison_summon();
 						sum[i] = 1;
 					}
-					else if (!is_silenced(mtmp))
+					else if (canseemon(mtmp))
 					{
-						if (!rn2(2))
-							pline("%s grunts threateningly!", Monnam(mtmp));
-						else
+						if (!rn2(2) || is_silenced(mtmp))
 							pline("%s raises its head in rage!", Monnam(mtmp));
+						else if(!Deaf)
+							pline("%s grunts threateningly!", Monnam(mtmp));
 					}
 				}
 				}
@@ -995,9 +995,9 @@ register struct monst *mtmp;
 						}
 						else
 						{
-							if (!rn2(2) || !canseemon(mtmp) || (!m_carrying(mtmp, MACE_OF_DEATH) && !m_carrying(mtmp, WAN_DEATH)) && !is_silenced(mtmp))
+							if ((!rn2(2) || !canseemon(mtmp) || (!m_carrying(mtmp, MACE_OF_DEATH) && !m_carrying(mtmp, WAN_DEATH))) && !is_silenced(mtmp) && !Deaf)
 								pline("%s laughs at you!", Monnam(mtmp));
-							else
+							else if(canseemon(mtmp) && (m_carrying(mtmp, MACE_OF_DEATH) || m_carrying(mtmp, WAN_DEATH)))
 								pline("%s swings his wand menacingly.", Monnam(mtmp));
 						}
 					}
@@ -1013,7 +1013,7 @@ register struct monst *mtmp;
 								pline("%s summons %s.", Monnam(mtmp), a_monnam(mtmp2));
 							sum[i] = 1;
 						}
-						else if(!is_silenced(mtmp))
+						else if(!is_silenced(mtmp) && canseemon(mtmp))
 						{
 							if (!rn2(2))
 								pline("%s curses at you!", Monnam(mtmp));
