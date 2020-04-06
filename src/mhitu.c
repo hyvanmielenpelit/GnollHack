@@ -1338,7 +1338,14 @@ struct monst *mon;
 		if (Magical_barkskin)
 			mc += 7;
 		else if (Protection)
-			mc += 2;
+			mc += 3;
+
+		/* Divine protection */
+		mc += u.ublessed / 2;
+
+		/* Monk protection */
+		if(Role_if(PM_MONK))
+			mc += u.ulevel / 4;
 	}
 	else
 	{

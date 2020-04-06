@@ -794,7 +794,7 @@ aligntyp resp_god;
         god_zaps_you(resp_god);
         break;
     }
-    u.ublesscnt = Role_if(PM_PRIEST) ? rnz(150) : rnz(300);
+    u.uprayer_timeout = Role_if(PM_PRIEST) ? rnz(150) : rnz(300);
     return;
 }
 
@@ -1328,12 +1328,12 @@ aligntyp g_align;
             } else if (!(HStealth & INTRINSIC)) {
                 HStealth |= FROM_ACQUIRED;
                 pline(msg, "Stealth");
-            } else {
-                if (!(HProtection & INTRINSIC)) {
-                    HProtection |= FROM_ACQUIRED;
-                    if (!u.ublessed)
-                        u.ublessed = rn1(3, 2);
-                } else
+            }
+			else
+			{
+                if (!u.ublessed)
+                    u.ublessed = rnd(3);
+				else
                     u.ublessed++;
                 pline(msg, "my protection");
             }
@@ -1381,13 +1381,17 @@ aligntyp g_align;
             break;
         }
 
-	u.ublesscnt = Role_if(PM_PRIEST) ? rnz(175) : rnz(350);
+	u.uprayer_timeout = Role_if(PM_PRIEST) ? rnz(175) : rnz(350);
 
     kick_on_butt = u.uevent.udemigod ? 1 : 0;
     if (u.uevent.uhand_of_elbereth)
         kick_on_butt++;
     if (kick_on_butt)
-        u.ublesscnt += kick_on_butt * (Role_if(PM_PRIEST) ? rnz(500) : rnz(1000));
+        u.uprayer_timeout += kick_on_butt * (Role_if(PM_PRIEST) ? rnz(500) : rnz(1000));
+
+	find_ac();
+	find_mc();
+	context.botl = 1;
 
     return;
 }
@@ -1783,7 +1787,7 @@ dosacrifice()
         gods_upset(altaralign);
     } else {
         int saved_anger = u.ugangr;
-        int saved_cnt = u.ublesscnt;
+        int saved_cnt = u.uprayer_timeout;
         int saved_luck = u.uluck;
 
         /* Sacrificing at an altar of a different alignment */
@@ -1801,7 +1805,7 @@ dosacrifice()
                     uchangealign(altaralign, 0);
                     /* Beware, Conversion is costly */
 					luck_change += -3;
-                    u.ublesscnt += Role_if(PM_PRIEST) ? 150 : 300;
+                    u.uprayer_timeout += Role_if(PM_PRIEST) ? 150 : 300;
                 } else {
                     u.ugangr += 3;
                     adjalign(-5);
@@ -1897,16 +1901,16 @@ dosacrifice()
             adjalign(value);
             You_feel("partially absolved.");
         }
-		else if (u.ublesscnt > 0)
+		else if (u.uprayer_timeout > 0)
 		{
 			bless_savestone = TRUE;
 
-            u.ublesscnt -= ((value * (u.ualign.type == A_CHAOTIC ? 500 : 300) / (Role_if(PM_PRIEST) ? 2 : 1))
+            u.uprayer_timeout -= ((value * (u.ualign.type == A_CHAOTIC ? 500 : 300) / (Role_if(PM_PRIEST) ? 2 : 1))
                             / MAXVALUE);
-            if (u.ublesscnt < 0)
-                u.ublesscnt = 0;
-            if (u.ublesscnt != saved_cnt) {
-                if (u.ublesscnt) {
+            if (u.uprayer_timeout < 0)
+                u.uprayer_timeout = 0;
+            if (u.uprayer_timeout != saved_cnt) {
+                if (u.uprayer_timeout) {
                     if (Hallucination)
                         You("realize that the gods are not like you and I.");
                     else
@@ -1965,7 +1969,7 @@ dosacrifice()
 					}
                     godvoice(u.ualign.type, "Use my gift wisely!");
                     u.ugifts++;
-                    u.ublesscnt = Role_if(PM_PRIEST) ? rnz(150 + (25 * nartifacts)) : rnz(300 + (50 * nartifacts));
+                    u.uprayer_timeout = Role_if(PM_PRIEST) ? rnz(150 + (25 * nartifacts)) : rnz(300 + (50 * nartifacts));
                     exercise(A_WIS, TRUE);
                     /* make sure we can use this weapon */
                     unrestrict_weapon_skill(weapon_skill_type(otmp));
@@ -2045,9 +2049,9 @@ boolean praying; /* false means no messages should be given */
     else
         alignment = u.ualign.record;
 
-    if ((p_trouble > 0) ? (u.ublesscnt > 200)      /* big trouble */
-           : (p_trouble < 0) ? (u.ublesscnt > 100) /* minor difficulties */
-              : (u.ublesscnt > 0))                 /* not in trouble */
+    if ((p_trouble > 0) ? (u.uprayer_timeout > 200)      /* big trouble */
+           : (p_trouble < 0) ? (u.uprayer_timeout > 100) /* minor difficulties */
+              : (u.uprayer_timeout > 0))                 /* not in trouble */
         p_type = 0;                     /* too soon... */
     else if ((int) Luck < 0 || u.ugangr || alignment < 0)
         p_type = 1; /* too naughty... */
@@ -2084,7 +2088,7 @@ dopray()
 
     if (wizard && p_type >= 0) {
         if (yn("Force the gods to be pleased?") == 'y') {
-            u.ublesscnt = 0;
+            u.uprayer_timeout = 0;
             if (u.uluck < 0)
                 u.uluck = 0;
             if (u.ualign.record <= 0)
@@ -2140,7 +2144,7 @@ prayer_done() /* M. Stephenson (1.0.3b) */
     if (p_type == 0) {
         if (on_altar() && u.ualign.type != alignment)
             (void) water_prayer(FALSE);
-        u.ublesscnt += Role_if(PM_PRIEST) ? rnz(125) : rnz(250);
+        u.uprayer_timeout += Role_if(PM_PRIEST) ? rnz(125) : rnz(250);
         gods_upset(u.ualign.type);
 		change_luck(-3, TRUE);
 	} else if (p_type == 1) {
@@ -2150,7 +2154,7 @@ prayer_done() /* M. Stephenson (1.0.3b) */
     } else if (p_type == 2) {
         if (water_prayer(FALSE)) {
             /* attempted water prayer on a non-coaligned altar */
-            u.ublesscnt += Role_if(PM_PRIEST) ? rnz(125) : rnz(250);
+            u.uprayer_timeout += Role_if(PM_PRIEST) ? rnz(125) : rnz(250);
             gods_upset(u.ualign.type);
 			change_luck(-3, TRUE);
 		} else
@@ -2171,7 +2175,7 @@ absolution_spell()
 	/* You are absolved for your sins */
 	boolean sins_absolved = FALSE;
 
-	u.ublesscnt = 0;
+	u.uprayer_timeout = 0;
 	if (u.uluck < 0)
 		u.uluck = 0, sins_absolved = TRUE;
 	if (u.ualign.record <= 0)

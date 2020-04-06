@@ -421,6 +421,10 @@ const char *drainer; /* cause of death, if drain should be fatal */
             rehumanize();
     }
 
+	/* Monks */
+	find_ac();
+	find_mc();
+
     context.botl = TRUE;
 }
 
@@ -483,6 +487,11 @@ boolean incr; /* true iff via incremental experience growth */
     }
 	updatemaxhp();
 	updatemaxen();
+
+	/* Monks */
+	find_ac();
+	find_mc();
+
 	context.botl = TRUE;
 }
 

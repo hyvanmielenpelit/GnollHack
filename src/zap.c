@@ -4353,16 +4353,16 @@ register struct obj *obj;
 			if (u.ugangr)
 				You("also feel that %s is %sangry with you.", u_gname(), u.ugangr > 6 ? "extremely " : u.ugangr > 3 ? "very " : "");
 
-			if (u.ublesscnt > 0)
+			if (u.uprayer_timeout > 0)
 			{
-				You("query about your prayer conduct. The number %d appears before you.", u.ublesscnt / 10 + 1);
+				You("query about your prayer conduct. The number %d appears before you.", u.uprayer_timeout / 10 + 1);
 
-				if (u.ublesscnt > 300)
+				if (u.uprayer_timeout > 300)
 					You_feel("that %s is quite tired of your constant whining.", u_gname());
 
 				pline("It feels that %s wait %sbefore bothering %s again.",
-					u.ublesscnt >= 50 ? "it would be wise to" : "you must",
-					u.ublesscnt < 50 ? "a little longer " : u.ublesscnt > 200 ? "a long time " : "",
+					u.uprayer_timeout >= 50 ? "it would be wise to" : "you must",
+					u.uprayer_timeout < 50 ? "a little longer " : u.uprayer_timeout > 200 ? "a long time " : "",
 					u_gname());
 			}
 		}
@@ -4381,12 +4381,12 @@ register struct obj *obj;
 		break;
 	case SPE_PRAYER:
 	{
-		int orig_blesscnt = u.ublesscnt;
-		u.ublesscnt = 0;
+		int orig_blesscnt = u.uprayer_timeout;
+		u.uprayer_timeout = 0;
 		context.spellpray = TRUE;
 		(void)dopray();
 		context.spellpray = FALSE;
-		u.ublesscnt = orig_blesscnt;
+		u.uprayer_timeout = orig_blesscnt;
 		break;
 
 	}
@@ -8659,7 +8659,7 @@ retry:
         (void) hold_another_object(otmp, oops_msg,
                                    The(aobjnam(otmp, verb)),
                                    (const char *) 0);
-        u.ublesscnt += rn1(100, 50) / (Role_if(PM_PRIEST) ? 2 : 1); /* the gods take notice */
+        u.uprayer_timeout += rn1(100, 50) / (Role_if(PM_PRIEST) ? 2 : 1); /* the gods take notice */
     }
 }
 

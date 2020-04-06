@@ -911,7 +911,7 @@ u_init()
 	init_uhunger();
     for (i = 0; i <= MAXSPELL; i++)
         spl_book[i].sp_id = NO_SPELL;
-    u.ublesscnt = Role_if(PM_PRIEST) ? 150 : 300; /* no prayers just yet */
+    u.uprayer_timeout = Role_if(PM_PRIEST) ? 150 : 300; /* no prayers just yet */
     u.ualignbase[A_CURRENT] = u.ualignbase[A_ORIGINAL] = u.ualign.type =
         aligns[flags.initalign].value;
 

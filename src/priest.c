@@ -620,28 +620,36 @@ register struct monst *priest;
                       enabled via something other than worn gear
                       (theft by gremlin clears the intrinsic but not
                       its former magnitude, making it recoverable) */
-                   && (!(HProtection & INTRINSIC)
+                   && (u.ublessed == 0
                        || (u.ublessed < 20
-                           && (u.ublessed < 9 || !rn2(u.ublessed))))) {
+                           && (u.ublessed < 9 || !rn2(u.ublessed)))))
+		{
             verbalize("Thy devotion has been rewarded.");
-            if (!(HProtection & INTRINSIC)) {
-                HProtection |= FROM_ACQUIRED;
-                if (!u.ublessed)
-                    u.ublessed = rn1(3, 2);
-            } else
+            if (u.ublessed == 0)
+                u.ublessed = rnd(3);
+			else
                 u.ublessed++;
-        } else {
+        }
+		else
+		{
             verbalize("Thy selfless generosity is deeply appreciated.");
-            if (money_cnt(invent) < (offer * 2L) && coaligned) {
-                if (strayed && (moves - u.ucleansed) > 5000L) {
+            if (money_cnt(invent) < (offer * 2L) && coaligned)
+			{
+                if (strayed && (moves - u.ucleansed) > 5000L) 
+				{
                     u.ualign.record = 0; /* cleanse thee */
                     u.ucleansed = moves;
-                } else {
+                } 
+				else 
+				{
                     adjalign(2);
                 }
             }
         }
     }
+	find_ac();
+	find_mc();
+	context.botl = 1;
 }
 
 struct monst *

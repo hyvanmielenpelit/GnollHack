@@ -217,8 +217,8 @@ boolean resuming;
                     nh_timeout();
                     run_regions();
 
-                    if (u.ublesscnt)
-                        u.ublesscnt--;
+                    if (u.uprayer_timeout)
+                        u.uprayer_timeout--;
                     if (flags.time && !context.run)
                         iflags.time_botl = TRUE;
 

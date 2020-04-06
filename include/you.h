@@ -386,7 +386,8 @@ struct you {
 	int uhp_fraction, uen_fraction, mh_fraction;
     int ugangr;              /* if the gods are angry at you */
     int ugifts;              /* number of artifacts bestowed */
-    int ublessed, ublesscnt; /* blessing/duration from #pray */
+	int ublessed;			 /* amount of permanent divine protection bestowed upon you */
+	int uprayer_timeout;     /* duration from #pray */
     long umoney0;
     long uspare1;
     long uexp, u_gamescore;

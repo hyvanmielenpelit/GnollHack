@@ -1950,6 +1950,13 @@ find_ac()
 	else if (Protection)
 		uac -= 3;
 	
+	/* Divine protection */
+	uac -= u.ublessed;
+
+	/* Monk protection */
+	if (Role_if(PM_MONK))
+		uac -= u.ulevel / 2;
+
 	/* [The magic binary numbers 127 and -128 should be replaced with the
      * mystic decimal numbers 99 and -99 which require no explanation to
      * the uninitiated and would cap the width of a status line value at

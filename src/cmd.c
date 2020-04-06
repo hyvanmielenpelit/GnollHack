@@ -3114,7 +3114,11 @@ int final;
      *
      * TODO?  Maybe merge wielding line and skill line into one sentence.
      */
-    if ((wtype = uwep_skill_type()) != P_NONE) {
+    if ((wtype = uwep_skill_type()) != P_NONE) 
+	{
+		if (wtype == P_MARTIAL_ARTS)
+			wtype = P_BARE_HANDED_COMBAT; /* Martial arts is separately below */
+
         char sklvlbuf[20];
         int sklvl = P_SKILL_LEVEL(wtype);
         boolean hav = (sklvl != P_UNSKILLED && sklvl != P_SKILLED);
@@ -3141,7 +3145,8 @@ int final;
             you_are(buf, "");
     }
 
-	if (!uwep && P_SKILL_LEVEL(P_MARTIAL_ARTS) > P_UNSKILLED) {
+	if (!uwep && P_SKILL_LEVEL(P_MARTIAL_ARTS) > P_UNSKILLED)
+	{
 		wtype = P_MARTIAL_ARTS;
 		char sklvlbuf[20];
 		int sklvl = P_SKILL_LEVEL(wtype);
@@ -3514,8 +3519,20 @@ int final;
         you_have(enlght_combatinc("to hit", u.ubasehitinc + u.uhitinc, final, buf), "");
     if (u.ubasedaminc + u.udaminc)
         you_have(enlght_combatinc("damage", u.ubasedaminc + u.udaminc, final, buf), "");
+	if (u.ublessed > 0)
+	{
+		char protbuf[BUFSZ];
+		Sprintf(protbuf, "endowed with divine protection (-%d to AC and +%d to MC)", u.ublessed, u.ublessed / 2);
+		you_are(protbuf, "");
+	}
+	if (Role_if(PM_MONK) && (u.ulevel / 2) >= 1)
+	{
+		char protbuf[BUFSZ];
+		Sprintf(protbuf, "innate protection (-%d to AC and +%d to MC)", u.ulevel / 2, u.ulevel / 4);
+		you_have(protbuf, "");
+	}
 	if (Protection)
-		you_have("magical protection (-4 to AC and +2 to MC)", from_what(PROTECTION));
+		you_have("magical protection (-3 to AC and +3 to MC)", from_what(PROTECTION));
 	if (Magical_shielding)
 		you_have("magical shielding (-4 to AC)", from_what(MAGICAL_SHIELDING));
 	if (Magical_barkskin)
@@ -3685,7 +3702,7 @@ int final;
             Sprintf(buf, "safely pray");
 #endif
             if (wizard)
-                Sprintf(eos(buf), " (%d)", u.ublesscnt);
+                Sprintf(eos(buf), " (%d)", u.uprayer_timeout);
 
 			if(can_pray(FALSE))
 	            you_can(buf, "");

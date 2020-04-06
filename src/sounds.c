@@ -3545,16 +3545,16 @@ struct monst* mtmp;
 		if (u.ugangr)
 			verbalize("I see that %s is %sangry with you.", u_gname(), u.ugangr > 6 ? "extremely " : u.ugangr > 3 ? "very " : "");
 
-		if (u.ublesscnt > 0)
+		if (u.uprayer_timeout > 0)
 		{
-			verbalize("For your prayer conduct, the number %d appears before me.", u.ublesscnt / 10 + 1);
+			verbalize("For your prayer conduct, the number %d appears before me.", u.uprayer_timeout / 10 + 1);
 
-			if (u.ublesscnt > 300)
+			if (u.uprayer_timeout > 300)
 				verbalize("I can see that %s is quite tired of your constant whining.", u_gname());
 
 			verbalize("Thus, %s wait %sbefore bothering %s again.",
-				u.ublesscnt >= 50 ? "it would be wise to" : "you must",
-				u.ublesscnt < 50 ? "a little longer " : u.ublesscnt > 200 ? "a long time " : "",
+				u.uprayer_timeout >= 50 ? "it would be wise to" : "you must",
+				u.uprayer_timeout < 50 ? "a little longer " : u.uprayer_timeout > 200 ? "a long time " : "",
 				u_gname());
 		}
 	}

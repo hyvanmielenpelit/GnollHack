@@ -1211,13 +1211,6 @@ const char *verb; /* "rub",&c */
 		if (uswapwep == obj)
 			return FALSE;
 	}
-	else if (bimanual(obj) && uswapwep2 == obj)
-	{
-		(void)doswapweapon();
-		/* doswapweapon might fail */
-		if (uswapwep2 == obj)
-			return FALSE;
-	}
 	else if (uswapwep == obj)
 	{
         (void) dosingleswapweapon(W_WEP);
@@ -1225,13 +1218,12 @@ const char *verb; /* "rub",&c */
         if (uswapwep == obj)
             return FALSE;
     }
-	else if (uswapwep2 == obj) {
-		(void)dosingleswapweapon(W_WEP2);
-		/* doswapweapon might fail */
-		if (uswapwep2 == obj)
-			return FALSE;
-	}
-	else {
+	else 
+	{
+		/* unwield first if swapweapon2*/
+		if (uswapwep2 == obj) 
+			setuswapwep((struct obj*)0, W_SWAPWEP2);
+
         struct obj *oldwep = uwep;
 
         if (will_weld(obj, &youmonst)) {
