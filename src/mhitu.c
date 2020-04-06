@@ -935,7 +935,10 @@ register struct monst *mtmp;
 						}
 						else
 						{
-							if (!rn2(2) || is_silenced(mtmp))
+							if ((!rn2(2) || is_silenced(mtmp))
+								&& (m_carrying(mtmp, TRIPLE_HEADED_FLAIL_OF_LIFE_DRAINING) || m_carrying(mtmp, TRIPLE_HEADED_FLAIL) 
+									|| m_carrying(mtmp, DOUBLE_HEADED_FLAIL) || m_carrying(mtmp, FLAIL)
+									|| m_carrying(mtmp, SILVER_FLAIL) || m_carrying(mtmp, RUNED_FLAIL)))
 								pline("%s swings his flail commandingly.", Monnam(mtmp));
 							else if (!Deaf)
 								pline("%s growls menacingly.", Monnam(mtmp));
