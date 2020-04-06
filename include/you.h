@@ -151,7 +151,7 @@ struct Role {
     int spelheal; /* penalty (-bonus) for healing spells */
 
     int spelshld; /* OBSOLETE: penalty for wearing any shield */
-    int spelarmr; /* OBSOLETE: penalty for wearing metal armour */
+    int spelarmr; /* Except for Monks, OBSOLETE: penalty for wearing metal armour */
     int spelstat; /* OBSOLETE: which stat (A_) is used */
     int spelspec; /* spell (SPE_) the class excels at */
     int spelsbon; /* penalty (-bonus) for that spell */
