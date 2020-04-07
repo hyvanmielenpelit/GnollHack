@@ -2784,7 +2784,7 @@ SPELL("protection from acid", "incomplete", None, "Grants immunity to acid attac
 SPELL("protection from poison", "intimidating-looking", None, "Grants immunity to poison",
 	P_ABJURATION_SPELL,			5, 1,		   120, 1, 10, A_MAX_INT_WIS, 0, 0, 100, 0, 1, NODIR, POISON_RES, 0, 0, 0, 10, 6, 25, S1_NONE, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
 SPELL("protection from life draining", "adorned", None, "Grants immunity to life draining",
-	P_ABJURATION_SPELL,			5, 1,		   120, 0, 7, A_MAX_INT_WIS, 0, 0, 100, 0, 1, NODIR, DRAIN_RES, 0, 0, 0, 10, 6, 25, S1_NONE, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
+	P_ABJURATION_SPELL,			5, 1,		   120, 3, 20, A_MAX_INT_WIS, 0, 0, 100, 0, 1, NODIR, DRAIN_RES, 0, 0, 0, 10, 6, 25, S1_NONE, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
 SPELL("protection from death magic", "decorated", None, "Grants immunity to death magic",
 	P_ABJURATION_SPELL,			5, 1,		   120, 3, 20, A_MAX_INT_WIS, 0, 0, 100, 0, 1, NODIR, DEATH_RES, 0, 0, 0, 10, 6, 25, S1_NONE, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
 SPELL("protection from disintegration", "aberrant", None, "Grants immunity to disintegration",
