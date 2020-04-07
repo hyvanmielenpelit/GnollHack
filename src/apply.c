@@ -1460,7 +1460,8 @@ struct obj **optr;
     const char *s = (obj->quan != 1) ? "candles" : "candle";
     char qbuf[QBUFSZ], qsfx[QBUFSZ], *q;
 
-    if (u.uswallow) {
+    if (u.uswallow)
+	{
         You(no_elbow_room);
         return;
     }
@@ -1473,7 +1474,8 @@ struct obj **optr;
 		char qbuf[BUFSIZ] = "";
 		Sprintf(qbuf, "%s only one?", obj->lamplit ? "Snuff out" : "Light");
 
-		if (obj->quan > 1L && yn(qbuf) == 'y') {
+		if (obj->quan > 1L && yn(qbuf) == 'y') 
+		{
 			objsplitted = TRUE;
 			if (!carried(obj))
 			{
@@ -1487,9 +1489,17 @@ struct obj **optr;
 		else
 			lightedcandle = obj;
 
-		if (lightedcandle && carried(lightedcandle) && objsplitted) {
+		if (lightedcandle)
+		{
+			use_lamp(lightedcandle);
+		}
+
+		if (lightedcandle && carried(lightedcandle) && objsplitted)
+		{
 			freeinv(lightedcandle);
-			if (inv_cnt(FALSE) >= 52) {
+			if (inv_cnt(FALSE) >= 52)
+			{
+				pline("Oops! %s from your %s.", Tobjnam(lightedcandle, "slip"), body_part(HAND));
 				sellobj_state(SELL_DONTSELL);
 				dropy(lightedcandle);
 				sellobj_state(SELL_NORMAL);
@@ -1498,14 +1508,10 @@ struct obj **optr;
 			{
 				lightedcandle->nomerge = 1; /* used to prevent merge */
 				lightedcandle = addinv(lightedcandle);
+				lightedcandle->nomerge = 0;
 			}
 		}
 
-		if (lightedcandle)
-		{
-			use_lamp(lightedcandle);
-			lightedcandle->nomerge = 0;
-		}
         return;
     }
 
