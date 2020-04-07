@@ -179,6 +179,7 @@ enum bl_conditions {
 	BL_COND_STONE,
 	BL_COND_SLIME,
 	BL_COND_STRNGL,
+	BL_COND_SUFFOC,
 	BL_COND_FOODPOIS,
 	BL_COND_TERMILL,
 	BL_COND_BLIND,
@@ -188,18 +189,24 @@ enum bl_conditions {
 	BL_COND_HALLU,
 	BL_COND_LEV,
 	BL_COND_FLY,
-	BL_COND_RIDE
+	BL_COND_RIDE,
+	BL_COND_SLOWED,
+	BL_COND_PARALYZED,
+	BL_COND_FEARFUL,
+	BL_COND_SLEEPING,
+	BL_COND_CANCELLED,
+	BL_COND_SILENCED
 };
 
-#define MAXBLCONDITIONS 13
+#define MAXBLCONDITIONS 20
 extern char *status_vals[MAXBLSTATS];
 static int status_colors[MAXBLSTATS];
 extern boolean status_activefields[MAXBLSTATS];
 static unsigned long* cond_hilites;
 static unsigned long active_conditions;
 static const char* cond_names[] = {
-	"Stone", "Slime", "Strngl", "FoodPois", "TermIll", "Blind",
-	"Deaf", "Stun", "Conf", "Hallu", "Lev", "Fly", "Ride"
+	"Stone", "Slime", "Strngl", "Suffoc", "FoodPois", "TermIll", "Blind",
+	"Deaf", "Stun", "Conf", "Hallu", "Lev", "Fly", "Ride", "Slow", "Paral", "Fear", "Sleep", "Cancl", "Silent",
 };
 
 
