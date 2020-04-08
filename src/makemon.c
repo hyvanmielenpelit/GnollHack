@@ -327,8 +327,23 @@ register struct monst *mtmp;
 		}
 		break;
 	case S_GIANT:
-        if (rn2(2))
-			(void)mongets(mtmp, (mm != PM_ETTIN) ? BOULDER : CLUB);
+        if (mm == PM_MINOTAUR)
+        {
+        }
+        else if (mm = PM_HELL_BOVINE)
+        {
+            int bovine_weapons[15] = { HALBERD, HALBERD, POLEARM_OF_REACH, 
+                HUGE_INFERNAL_BARDICHE, INFERNAL_ANCUS,
+                RANSEUR, SPETUM, GLAIVE, BARDICHE, VOULGE, FAUCHARD, GUISARME,
+                BILL_GUISARME, LUCERN_HAMMER, BEC_DE_CORBIN };
+
+            (void)mongets(mtmp, bovine_weapons[rn2(SIZE(bovine_weapons))]);
+        }
+        else
+        {
+            if (rn2(2))
+                (void)mongets(mtmp, (mm != PM_ETTIN) ? BOULDER : CLUB);
+        }
         break;
     case S_HUMAN:
         if (is_mercenary(ptr)) {

@@ -463,6 +463,9 @@ register struct monst *mtmp;
 	case MS_BLEAT:
 		ret = "bleat";
 		break;
+	case MS_MOO:
+		ret = "moo";
+		break;
 	case MS_WAIL:
         ret = "wail";
         break;
@@ -874,6 +877,9 @@ register struct monst *mtmp;
         break;
 	case MS_BLEAT:
 		pline_msg = "bleats.";
+		break;
+	case MS_MOO:
+		pline_msg = "moos.";
 		break;
 	case MS_WAIL:
         pline_msg = "wails mournfully.";

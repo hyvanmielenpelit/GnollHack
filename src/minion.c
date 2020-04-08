@@ -91,6 +91,11 @@ struct monst *mon;
 			dtype = ndemon(atyp);
 		cnt = 1;
 	}
+	else if (ptr == &mons[PM_YACC])
+	{
+		dtype = PM_HELL_BOVINE; 
+		cnt = !rn2(3) ? 2 : 1;
+	}
 	else if (is_dprince(ptr) || (ptr == &mons[PM_WIZARD_OF_YENDOR]))
 	{
         dtype = (!rn2(20)) ? dlord(atyp) : ndemon(atyp); //(!rn2(50)) ? dprince(atyp) : 
