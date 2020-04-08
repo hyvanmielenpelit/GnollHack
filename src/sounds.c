@@ -879,7 +879,7 @@ register struct monst *mtmp;
 		pline_msg = "bleats.";
 		break;
 	case MS_MOO:
-		pline_msg = "moos.";
+		pline_msg = is_peaceful(mtmp) ? "moos." : "moos threateningly."; 
 		break;
 	case MS_WAIL:
         pline_msg = "wails mournfully.";
@@ -1249,15 +1249,23 @@ dochat()
         return 0;
     }
 
-    if (!mtmp || mtmp->mundetected || M_AP_TYPE(mtmp) == M_AP_FURNITURE
-        || M_AP_TYPE(mtmp) == M_AP_OBJECT)
-        return 0;
+	if (!mtmp || mtmp->mundetected || M_AP_TYPE(mtmp) == M_AP_FURNITURE
+		|| M_AP_TYPE(mtmp) == M_AP_OBJECT)
+	{
+		pline("There is no-one to talk to.");
+		return 0;
+	}
 
 	/* Non-speaking monster */
 	if (!is_speaking_monster(mtmp->data) && !is_tame(mtmp))
 	{
 		if (canspotmon(mtmp))
-			pline("%s does not seem to be of the type that engages in conversation.", Monnam(mtmp));
+		{
+			if (mtmp->data->msound <= MS_ANIMAL)
+				domonnoise(mtmp);
+			else
+				pline("%s does not seem to be of the type that engages in conversation.", Monnam(mtmp));
+		}
 
 		return 0;
 	}
