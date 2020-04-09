@@ -2642,27 +2642,31 @@ int* maxlvl;
 
 	switch (context.game_difficulty)
 	{
-	case -2:
+	case -3:
 		min_multiplier /= 2;
 		max_multiplier /= 1.682;
 		break;
-	case -1:
-		min_multiplier /= 1.682;
+	case -2:
+		min_multiplier /= 1.414;
 		max_multiplier /= 1.414;
 		break;
-	case 0:
-		min_multiplier /= 1.414;
+	case -1:
+		min_multiplier /= 1.189;
 		max_multiplier /= 1.189;
 		break;
-	case 1:
-		min_multiplier /= 1.189;
+	case 0:
+        min_multiplier *= 1;
 		max_multiplier *= 1;
 		break;
-	case 2:
-		min_multiplier *= 1;
+	case 1:
+		min_multiplier *= 1.189;
 		max_multiplier *= 1.189;
 		break;
-	}
+    case 2:
+        min_multiplier *= 1.414;
+        max_multiplier *= 1.414;
+        break;
+    }
 
 	if (i == 1)
 	{
