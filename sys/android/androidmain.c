@@ -398,3 +398,47 @@ sys_random_seed()
     }
     return seed;
 }
+
+boolean
+check_user_string(optstr)
+char *optstr;
+{
+
+#if 0
+
+    struct passwd *pw = get_unix_pw();
+    int pwlen;
+    char *eop, *w;
+    char *pwname;
+#endif
+    if (optstr[0] == '*')
+        return TRUE; /* allow any user */
+#if 0
+    if (!pw)
+        return FALSE;
+
+    if (sysopt.check_plname)
+        pwname = plname;
+    else
+        pwname = pw->pw_name;
+    pwlen = strlen(pwname);
+    eop = eos(optstr);
+    w = optstr;
+    while (w + pwlen <= eop) {
+        if (!*w)
+            break;
+        if (isspace(*w)) {
+            w++;
+            continue;
+        }
+        if (!strncmp(w, pwname, pwlen)) {
+            if (!w[pwlen] || isspace(w[pwlen]))
+                return TRUE;
+        }
+        while (*w && !isspace(*w))
+            w++;
+    }
+#endif
+    return FALSE;
+}
+

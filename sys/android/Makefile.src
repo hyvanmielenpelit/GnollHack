@@ -116,9 +116,9 @@ CC   := $($(CC_VAR))
 LINK := $(CC)
 
 # Compile normally
-#CFLAGS = -DANDROID -O2 -g -Wno-format -fsigned-char -fPIC -I../include
-CFLAGS = -DANDROID -DDEBUG -g -Wno-format -fsigned-char -fPIC -I../include
-LFLAGS = -shared -Wl,--fix-cortex-a8
+CFLAGS = -DANDROID -O2 -g -Wno-format -fsigned-char -fPIC -I../include
+#CFLAGS = -DANDROID -DDEBUG -g -Wno-format -fsigned-char -fPIC -I../include
+LFLAGS = -shared -lm -Wl,--fix-cortex-a8
 
 # LFLAGS = -L/usr/X11R6/lib
 #   OR compile backwards compatible a.out format

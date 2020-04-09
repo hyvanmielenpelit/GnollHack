@@ -30,6 +30,13 @@ E void FDECL(welcome, (BOOLEAN_P));
 E time_t NDECL(get_realtime);
 E int FDECL(argcheck, (int, char **, enum earlyarg));
 
+
+/* ### androidmain.c ### */
+#ifdef ANDROID
+E boolean FDECL(check_user_string, (char *));
+#endif
+
+
 /* ### apply.c ### */
 
 E int NDECL(doapply);
