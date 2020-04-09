@@ -2643,7 +2643,7 @@ int* maxlvl;
 	switch (context.game_difficulty)
 	{
 	case -3:
-		min_multiplier /= 2;
+		min_multiplier /= 2.0;
 		max_multiplier /= 1.682;
 		break;
 	case -2:
@@ -2655,8 +2655,8 @@ int* maxlvl;
 		max_multiplier /= 1.189;
 		break;
 	case 0:
-        min_multiplier *= 1;
-		max_multiplier *= 1;
+        min_multiplier *= 1.0;
+		max_multiplier *= 1.0;
 		break;
 	case 1:
 		min_multiplier *= 1.189;
@@ -2671,8 +2671,8 @@ int* maxlvl;
 	if (i == 1)
 	{
 		/* Try first with a tighter range */
-		minmlev = (int)min(25, max(0, (((zlevel_formin + (long)u.ulevel) * 1 * max_multiplier) / 2) - 2));
-		maxmlev = (int)max(1, (((zlevel_formax + (long)u.ulevel) * 1 * max_multiplier) / 1) - 1);
+		minmlev = (int)min(25.0, max(0.0, (zlevel_formin + (double)u.ulevel) * max_multiplier / 2.0 - 2.0));
+		maxmlev = (int)max(1.0, (zlevel_formax + (double)u.ulevel) * max_multiplier - 1.0);
 #if 0
 		midmlev = (zlevel * 2 + u.ulevel) / 3;
 		maxmlev = ((zlevel * 2 + u.ulevel) * max_multiplier) / (2 * max_divisor);
@@ -2681,8 +2681,8 @@ int* maxlvl;
 	}
 	else if (i == 2)
 	{
-		minmlev = (int)min(18, max(0, (((zlevel_formin + u.ulevel) * 1 * max_multiplier) / 3) - 2));
-		maxmlev = (int)max(1, (((zlevel_formax + u.ulevel) * 3 * max_multiplier) / 2) - 1);
+		minmlev = (int)min(18.0, max(0, (zlevel_formin + (double)u.ulevel) * max_multiplier / 4.0 - 2.0));
+		maxmlev = (int)max(1.0, (zlevel_formax + (double)u.ulevel) * 1.189 * max_multiplier - 1.0);
 #if 0
 		minmlev = ((zlevel * 2 + u.ulevel) * min_multiplier) / (12 * min_divisor);
 		maxmlev = ((zlevel * 2 + u.ulevel) * max_multiplier) / (2 * max_divisor);
@@ -2691,7 +2691,7 @@ int* maxlvl;
 	else
 	{
 		minmlev = 0;
-		maxmlev = (int)max(1, (((zlevel_formax + (long)u.ulevel) * 3 * max_multiplier) / 1) - 2);
+		maxmlev = (int)max(1.0, (zlevel_formax + (double)u.ulevel) * 1.414 * max_multiplier - 2.0);
 #if 0
 		minmlev = 0;
 		maxmlev = max((zlevel * 2 + u.ulevel), ((zlevel * 2 + u.ulevel) * max_multiplier) / (max_divisor));
