@@ -87,7 +87,7 @@ SYSOBJ = ioctl.o androidmain.o unixtty.o androidunix.o
 # CC = arm-linux-gcc
 #
 # For cross-compiling with Android NDK
-NDK = /path/to/android-ndk-r19c
+NDK = /home/janne/Android/sdk/android-ndk-r21
 
 NDK_TOOLCHAIN = $(NDK)/toolchains/llvm/prebuilt/linux-x86_64/bin
 
@@ -116,8 +116,8 @@ CC   := $($(CC_VAR))
 LINK := $(CC)
 
 # Compile normally
-CFLAGS = -DANDROID -O2 -g -Wno-format -fsigned-char -fPIC -I../include
-#CFLAGS = -DANDROID -DDEBUG -g -Wno-format -fsigned-char -fPIC -I../include
+#CFLAGS = -DANDROID -O2 -g -Wno-format -fsigned-char -fPIC -I../include
+CFLAGS = -DANDROID -DDEBUG -g -Wno-format -fsigned-char -fPIC -I../include
 LFLAGS = -shared -Wl,--fix-cortex-a8
 
 # LFLAGS = -L/usr/X11R6/lib
@@ -288,8 +288,8 @@ WINLIB = $(WINTTYLIB)
 #
 LIBS =
 
-# make NetHack
-GAME     = nethack
+# make GnollHack
+GAME     = gnollhack
 # GAME     = nethack.prg
 
 # if you defined RANDOM in unixconf.h/tosconf.h since your system did not come

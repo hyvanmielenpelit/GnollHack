@@ -127,6 +127,7 @@ spec_levs: ../util/lev_comp \
 	../util/lev_comp knox.des
 	../util/lev_comp medusa.des
 	../util/lev_comp mines.des
+	../util/lev_comp modron.des
 	../util/lev_comp oracle.des
 	../util/lev_comp sokoban.des
 	../util/lev_comp tower.des

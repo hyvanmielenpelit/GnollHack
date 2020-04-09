@@ -3,7 +3,7 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	package="com.tbd.GnollHack"
 	android:versionCode="40210"
-	android:versionName="4.0.21"
+	android:versionName="4.0.22"
 	android:installLocation="auto">
 	<uses-sdk android:minSdkVersion="7"
 	          android:targetSdkVersion="28"/>
@@ -19,7 +19,7 @@
 		android:allowBackup="true">
 		<activity
 			android:name="com.tbd.forkfront.ForkFront"
-			android:label="NetHack"
+			android:label="GnollHack"
 			android:windowSoftInputMode="adjustResize|stateAlwaysHidden"
 			android:launchMode="singleTask"
 			android:configChanges="mcc|mnc|locale|keyboard|keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|fontScale">
