@@ -594,9 +594,9 @@ obj_is_burning(obj)
 struct obj *obj;
 {
     return (boolean) (obj->lamplit && (obj->otyp == MAGIC_LAMP || obj->otyp == MAGIC_CANDLE
-                                       || ignitable(obj)
-                                       || artifact_light(obj)
-		|| (objects[obj->otyp].oc_flags2 & O2_SHINES_MAGICAL_LIGHT)
+                                    || ignitable(obj)
+                                    || artifact_light(obj)
+                                	|| obj_shines_magical_light(obj)
 		));
 }
 
@@ -721,7 +721,7 @@ struct obj *obj;
      */
 
     /* sanity check [simplifies usage by bless()/curse()/&c] */
-    if (!obj->lamplit || !(artifact_light(obj) || (objects[obj->otyp].oc_flags2 & O2_SHINES_MAGICAL_LIGHT)))
+    if (!obj->lamplit || !(artifact_light(obj) || obj_shines_magical_light(obj)))
         return 0;
 
     /* cursed radius of 1 is not noticeable for an item that's

@@ -2351,7 +2351,7 @@ POTION("booze",                 "brown", None, 0, 0, 30,  50, CLR_BROWN, O1_COLD
 POTION("sickness",              "fizzy", None, 0, 0, 30,  50, CLR_CYAN, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 POTION("fruit juice",            "dark", None, 0, 0, 30,  50, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 POTION("acid",                  "white", None, 0, 0, 10, 250, CLR_WHITE, O1_COLD_RESISTANT, O2_NONE, O3_NONE, PERMITTED_ALL),
-POTION("oil",                   "murky", None, 0, 0, 30, 250, CLR_BROWN, O1_COLD_RESISTANT, O3_NONE, O3_IGNITABLE | O3_RELATIVE_AGE, PERMITTED_ALL),
+POTION("oil",                   "murky", None, 0, 0, 30,  50, CLR_BROWN, O1_COLD_RESISTANT, O3_NONE, O3_IGNITABLE | O3_RELATIVE_AGE, PERMITTED_ALL),
 POTION("poison",             "sapphire", None, 0, 0, 30,  50, CLR_BLUE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 /* fixed description
  */

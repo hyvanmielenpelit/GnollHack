@@ -2008,7 +2008,7 @@ boolean is_golf;
 		else
 		{
 			tmp -= 20;
-			if (!context.hide_melee_range_warning)
+			if (!context.hide_melee_range_warning && !is_obj_normally_edible(obj))
 				You("find it very hard to hit by throwing %s at melee range.", an(cxname(obj)));
 
 			context.hide_melee_range_warning = TRUE;

@@ -2615,7 +2615,7 @@ struct obj *obj;
             if (u.uswallow) {
                 pline("It seems even darker in here than before.");
             } else {
-                if (uwep && (artifact_light(uwep) || (objects[uwep->otyp].oc_flags2 & O2_SHINES_MAGICAL_LIGHT)) && uwep->lamplit)
+                if (uwep && (artifact_light(uwep) || obj_shines_magical_light(uwep)) && uwep->lamplit)
                     pline("Suddenly, the only light left comes from %s!",
                           the(xname(uwep)));
                 else

@@ -385,6 +385,10 @@ struct obj {
 /* Light sources */
 #define is_candle(otmp) \
 	((objects[(otmp)->otyp].oc_flags2 & O2_CANDLE) != 0)
+#define otyp_shines_magical_light(otyp)                                             \
+    ((objects[(otyp)].oc_flags2 & O2_SHINES_MAGICAL_LIGHT) != 0)
+#define obj_shines_magical_light(otmp)     \
+    otyp_shines_magical_light((otmp)->otyp)
 
 /* Wand-like tools */
 #define is_wand_like_tool(otmp) \

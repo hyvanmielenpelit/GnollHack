@@ -19,6 +19,7 @@ STATIC_DCL void FDECL(knows_object, (int));
 STATIC_DCL void FDECL(knows_class, (CHAR_P));
 STATIC_DCL boolean FDECL(restricted_spell_discipline, (int));
 STATIC_DCL void NDECL(add_school_specific_spellbooks);
+STATIC_DCL struct obj* FDECL(mk_obj_in_container_known, (struct obj*, int));
 
 #define UNDEF_TYP 0
 #define UNDEF_SPE '\177'
@@ -1612,9 +1613,9 @@ register struct trobj *trop;
 		{
 			if (otyp == LEATHER_BAG || otyp == EXPENSIVE_HANDBAG)
 			{
-				(void)add_to_container(obj, mksobj(BATHROBE, FALSE, FALSE, TRUE));
-				(void)add_to_container(obj, mksobj(COTTON_SLIPPERS, FALSE, FALSE, TRUE));
-				(void)add_to_container(obj, mksobj(TOWEL, FALSE, FALSE, TRUE));
+				(void)mk_obj_in_container_known(obj, BATHROBE);
+				(void)mk_obj_in_container_known(obj, COTTON_SLIPPERS);
+				(void)mk_obj_in_container_known(obj, TOWEL);
 				knows_object(BATHROBE);
 				obj->owt = weight(obj);
 			}
@@ -1623,23 +1624,23 @@ register struct trobj *trop;
 		{
 			if (otyp == ORIENTAL_SILK_SACK)
 			{
-				(void)add_to_container(obj, mksobj(GINSENG_ROOT, TRUE, FALSE, TRUE));
-				(void)add_to_container(obj, mksobj(GINSENG_ROOT, TRUE, FALSE, TRUE));
-				(void)add_to_container(obj, mksobj(APPLE, TRUE, FALSE, TRUE));
-				(void)add_to_container(obj, mksobj(APPLE, TRUE, FALSE, TRUE));
-				(void)add_to_container(obj, mksobj(APPLE, TRUE, FALSE, TRUE));
-				(void)add_to_container(obj, mksobj(APPLE, TRUE, FALSE, TRUE));
-				(void)add_to_container(obj, mksobj(APPLE, TRUE, FALSE, TRUE));
-				(void)add_to_container(obj, mksobj(ORANGE, TRUE, FALSE, TRUE));
-				(void)add_to_container(obj, mksobj(ORANGE, TRUE, FALSE, TRUE));
-				(void)add_to_container(obj, mksobj(ORANGE, TRUE, FALSE, TRUE));
-				(void)add_to_container(obj, mksobj(ORANGE, TRUE, FALSE, TRUE));
-				(void)add_to_container(obj, mksobj(ORANGE, TRUE, FALSE, TRUE));
-				(void)add_to_container(obj, mksobj(HANDFUL_OF_NUTS, TRUE, FALSE, TRUE));
+				(void)mk_obj_in_container_known(obj, GINSENG_ROOT);
+				(void)mk_obj_in_container_known(obj, GINSENG_ROOT);
+				(void)mk_obj_in_container_known(obj, APPLE);
+				(void)mk_obj_in_container_known(obj, APPLE);
+				(void)mk_obj_in_container_known(obj, APPLE);
+				(void)mk_obj_in_container_known(obj, APPLE);
+				(void)mk_obj_in_container_known(obj, APPLE);
+				(void)mk_obj_in_container_known(obj, ORANGE);
+				(void)mk_obj_in_container_known(obj, ORANGE);
+				(void)mk_obj_in_container_known(obj, ORANGE);
+				(void)mk_obj_in_container_known(obj, ORANGE);
+				(void)mk_obj_in_container_known(obj, ORANGE);
+				(void)mk_obj_in_container_known(obj, HANDFUL_OF_NUTS);
 				if(!rn2(2))
-					(void)add_to_container(obj, mksobj(MELON, FALSE, FALSE, TRUE));
+					(void)mk_obj_in_container_known(obj, MELON);
 				if (!rn2(2))
-					(void)add_to_container(obj, mksobj(FOOD_RATION, FALSE, FALSE, TRUE));
+					(void)mk_obj_in_container_known(obj, FOOD_RATION);
 				obj->owt = weight(obj);
 			}
 		}
@@ -1647,15 +1648,15 @@ register struct trobj *trop;
 		{
 			if (otyp == BACKPACK)
 			{
-				(void)add_to_container(obj, mksobj(BANANA, TRUE, FALSE, TRUE));
-				(void)add_to_container(obj, mksobj(POT_WATER, FALSE, FALSE, TRUE));
-				(void)add_to_container(obj, mksobj(SCR_BLANK_PAPER, FALSE, FALSE, TRUE));
-				(void)add_to_container(obj, mksobj(SPE_BLANK_PAPER, FALSE, FALSE, TRUE));
-				(void)add_to_container(obj, mksobj(HANDFUL_OF_NUTS, TRUE, FALSE, TRUE));
+				(void)mk_obj_in_container_known(obj, BANANA);
+				(void)mk_obj_in_container_known(obj, POT_WATER);
+				(void)mk_obj_in_container_known(obj, SCR_BLANK_PAPER);
+				(void)mk_obj_in_container_known(obj, SPE_BLANK_PAPER);
+				(void)mk_obj_in_container_known(obj, HANDFUL_OF_NUTS);
 				if (!rn2(2))
-					(void)add_to_container(obj, mksobj(FOOD_RATION, FALSE, FALSE, TRUE));
+					(void)mk_obj_in_container_known(obj, FOOD_RATION);
 				if (!rn2(2))
-					(void)add_to_container(obj, mksobj(FOOD_RATION, FALSE, FALSE, TRUE));
+					(void)mk_obj_in_container_known(obj, FOOD_RATION);
 				knows_object(POT_WATER);
 				knows_object(SCR_BLANK_PAPER);
 				knows_object(SPE_BLANK_PAPER);
@@ -1668,18 +1669,18 @@ register struct trobj *trop;
 			{
 				if (Race_if(PM_DWARF))
 				{
-					(void)add_to_container(obj, mksobj(CRAM_RATION, FALSE, FALSE, TRUE));
+					(void)mk_obj_in_container_known(obj, CRAM_RATION);
 					if (!rn2(2))
-						(void)add_to_container(obj, mksobj(CRAM_RATION, FALSE, FALSE, TRUE));
-					(void)add_to_container(obj, mksobj(POT_FRUIT_JUICE, FALSE, FALSE, TRUE));
-					(void)add_to_container(obj, mksobj(CHANTERELLE, TRUE, FALSE, TRUE));
-					(void)add_to_container(obj, mksobj(CHANTERELLE, TRUE, FALSE, TRUE));
+						(void)mk_obj_in_container_known(obj, CRAM_RATION);
+					(void)mk_obj_in_container_known(obj, POT_FRUIT_JUICE);
+					(void)mk_obj_in_container_known(obj, CHANTERELLE);
+					(void)mk_obj_in_container_known(obj, CHANTERELLE);
 					if (!rn2(2))
-						(void)add_to_container(obj, mksobj(CHANTERELLE, TRUE, FALSE, TRUE));
-					(void)add_to_container(obj, mksobj(PENNY_BUN, TRUE, FALSE, TRUE));
-					(void)add_to_container(obj, mksobj(PENNY_BUN, TRUE, FALSE, TRUE));
+						(void)mk_obj_in_container_known(obj, CHANTERELLE);
+					(void)mk_obj_in_container_known(obj, PENNY_BUN);
+					(void)mk_obj_in_container_known(obj, PENNY_BUN);
 					if (!rn2(2))
-						(void)add_to_container(obj, mksobj(PENNY_BUN, TRUE, FALSE, TRUE));
+						(void)mk_obj_in_container_known(obj, PENNY_BUN);
 					knows_object(CHANTERELLE);
 					knows_object(PENNY_BUN);
 					knows_object(POT_FRUIT_JUICE);
@@ -1687,22 +1688,22 @@ register struct trobj *trop;
 				}
 				else
 				{
-					(void)add_to_container(obj, mksobj(SILVER_FORK, FALSE, FALSE, TRUE));
-					(void)add_to_container(obj, mksobj(SILVER_KNIFE, FALSE, FALSE, TRUE));
-					(void)add_to_container(obj, mksobj(FOOD_RATION, FALSE, FALSE, TRUE));
+					(void)mk_obj_in_container_known(obj, SILVER_FORK);
+					(void)mk_obj_in_container_known(obj, SILVER_KNIFE);
+					(void)mk_obj_in_container_known(obj, FOOD_RATION);
 					if (!rn2(2))
-						(void)add_to_container(obj, mksobj(FOOD_RATION, FALSE, FALSE, TRUE));
-					(void)add_to_container(obj, mksobj(APPLE, TRUE, FALSE, TRUE));
-					(void)add_to_container(obj, mksobj(APPLE, TRUE, FALSE, TRUE));
-					(void)add_to_container(obj, mksobj(APPLE, TRUE, FALSE, TRUE));
-					(void)add_to_container(obj, mksobj(APPLE, TRUE, FALSE, TRUE));
+						(void)mk_obj_in_container_known(obj, FOOD_RATION);
+					(void)mk_obj_in_container_known(obj, APPLE);
+					(void)mk_obj_in_container_known(obj, APPLE);
+					(void)mk_obj_in_container_known(obj, APPLE);
+					(void)mk_obj_in_container_known(obj, APPLE);
 					if (!rn2(2))
-						(void)add_to_container(obj, mksobj(APPLE, TRUE, FALSE, TRUE));
-					(void)add_to_container(obj, mksobj(CARROT, TRUE, FALSE, TRUE));
-					(void)add_to_container(obj, mksobj(CARROT, TRUE, FALSE, TRUE));
+						(void)mk_obj_in_container_known(obj, APPLE);
+					(void)mk_obj_in_container_known(obj, CARROT);
+					(void)mk_obj_in_container_known(obj, CARROT);
 					if (!rn2(2))
-						(void)add_to_container(obj, mksobj(CARROT, TRUE, FALSE, TRUE));
-					(void)add_to_container(obj, mksobj(POT_WATER, FALSE, FALSE, TRUE));
+						(void)mk_obj_in_container_known(obj, CARROT);
+					(void)mk_obj_in_container_known(obj, POT_WATER);
 					knows_object(POT_WATER);
 					obj->owt = weight(obj);
 				}
@@ -1717,7 +1718,7 @@ register struct trobj *trop;
 				otmp = mksobj(PINCH_OF_SULFUROUS_ASH, FALSE, FALSE, TRUE);
 				otmp->known = 1;
 				otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
-				(void)add_to_container(obj, otmp);
+				otmp = add_to_container(obj, otmp);
 
 
 				/* Add some food */
@@ -1727,14 +1728,14 @@ register struct trobj *trop;
 					knows_object(otmp->otyp);
 					otmp->known = 1;
 					otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
-					(void)add_to_container(obj, otmp);
+					otmp = add_to_container(obj, otmp);
 				}
 
 				otmp = mksobj(SLIME_MOLD, TRUE, FALSE, TRUE);
 				knows_object(otmp->otyp);
 				otmp->known = 1;
 				otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
-				(void)add_to_container(obj, otmp);
+				otmp = add_to_container(obj, otmp);
 
 
 				/* Add arrows for magic arrow */
@@ -1743,18 +1744,18 @@ register struct trobj *trop;
 				otmp->owt = weight(otmp);
 				otmp->known = 1;
 				otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
-				(void)add_to_container(obj, otmp);
+				otmp = add_to_container(obj, otmp);
 
 				int n = 2 + rn2(4); //2...5
 				for (int i = 0; i < n; i++)
 				{
-					struct obj* otmp = mksobj(randomreagent(FALSE, 2), FALSE, FALSE, FALSE);
+					struct obj* otmp2 = mksobj(randomreagent(FALSE, 2), FALSE, FALSE, FALSE);
 					if (otmp)
 					{
-						knows_object(otmp->otyp);
-						otmp->known = 1;
-						otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
-						(void)add_to_container(obj, otmp);
+						knows_object(otmp2->otyp);
+						otmp2->known = 1;
+						otmp2->dknown = otmp2->bknown = otmp2->rknown = otmp2->nknown = 1;
+						(void)add_to_container(obj, otmp2);
 					}
 				}
 
@@ -1768,18 +1769,19 @@ register struct trobj *trop;
 			if (otyp == LEATHER_BAG)
 			{
 				/* Add ginseng roots */
-				(void)add_to_container(obj, mksobj(GINSENG_ROOT, FALSE, FALSE, TRUE));
-				(void)add_to_container(obj, mksobj(GINSENG_ROOT, FALSE, FALSE, TRUE));
-				(void)add_to_container(obj, mksobj(GINSENG_ROOT, TRUE, FALSE, TRUE));
+				(void)mk_obj_in_container_known(obj, GINSENG_ROOT);
+				(void)mk_obj_in_container_known(obj, GINSENG_ROOT);
+				(void)mk_obj_in_container_known(obj, GINSENG_ROOT);
 
 				int n = rnd(3); //1...3
 				for (int i = 0; i < n; i++)
 				{
 					struct obj* otmp = mkobj(REAGENT_CLASS, FALSE, TRUE);
+					otmp->bknown = 1;
 					if (otmp)
 					{
 						knows_object(otmp->otyp);
-						(void)add_to_container(obj, otmp);
+						otmp = add_to_container(obj, otmp);
 					}
 				}
 
@@ -1925,5 +1927,19 @@ register struct trobj *trop;
         trop++;
     }
 }
+
+STATIC_OVL
+struct obj* 
+mk_obj_in_container_known(container, itemtype)
+struct obj* container;
+int itemtype;
+{
+	struct obj* otmp = add_to_container(container, mksobj(itemtype, FALSE, FALSE, TRUE));
+	if (otmp)
+		otmp->bknown = 1;
+
+	return otmp;
+}
+
 
 /*u_init.c*/

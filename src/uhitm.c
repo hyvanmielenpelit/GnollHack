@@ -966,7 +966,7 @@ boolean* obj_destroyed;
 	}
 	else 
 	{
-		if (!((artifact_light(obj) || (objects[obj->otyp].oc_flags2 & O2_SHINES_MAGICAL_LIGHT)) && obj->lamplit))
+		if (!((artifact_light(obj) || obj_shines_magical_light(obj)) && obj->lamplit))
 			Strcpy(saved_oname, cxname(obj));
 		else
 			Strcpy(saved_oname, bare_artifactname(obj));
@@ -1125,7 +1125,7 @@ boolean* obj_destroyed;
 					silvermsg = TRUE;
 					silverobj = TRUE;
 				}
-				if ((artifact_light(obj) || (objects[obj->otyp].oc_flags2 & O2_SHINES_MAGICAL_LIGHT)) && obj->lamplit
+				if ((artifact_light(obj) || obj_shines_magical_light(obj)) && obj->lamplit
 					&& mon_hates_light(mon))
 					lightobj = TRUE;
 				if (u.usteed && !thrown && damage > 0
