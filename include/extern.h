@@ -2255,7 +2255,7 @@ E void FDECL(learnscroll, (struct obj *));
 E char *FDECL(tshirt_text, (struct obj *, char *));
 E int NDECL(doread);
 E boolean FDECL(is_chargeable, (struct obj *));
-E void FDECL(recharge, (struct obj *, int));
+E void FDECL(recharge, (struct obj *, int, boolean));
 E void FDECL(forget_objects, (int));
 E void FDECL(forget_levels, (int));
 E void NDECL(forget_traps);
@@ -2276,6 +2276,7 @@ E boolean FDECL(cant_revive, (int *, BOOLEAN_P, struct obj *));
 E boolean NDECL(create_particular);
 E int FDECL(maybe_tame, (struct monst*, struct obj*));
 E void FDECL(read_the_one_ring, (struct obj*));
+E void FDECL(strip_charges, (struct obj*, boolean));
 
 /* ### rect.c ### */
 

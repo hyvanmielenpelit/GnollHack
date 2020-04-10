@@ -250,8 +250,12 @@ struct obj {
 /* 'is_quest_artifact()' only applies to the current role's artifact */
 #define any_quest_artifact(o) ((o)->oartifact >= ART_ORB_OF_DETECTION)
 
-#define is_elemental_enchantable(otmp)                                            \
-	(((otmp)->oclass == WEAPON_CLASS && !is_launcher(otmp)) || objects[(otmp)->otyp].oc_flags3 & O3_ELEMENTAL_ENCHANTABLE)
+#define is_otyp_elemental_enchantable(otyp)     \
+	(objects[(otyp)].oc_flags3 & O3_ELEMENTAL_ENCHANTABLE)
+
+/* Unusual definition to account for weapons appropriately */
+#define is_elemental_enchantable(o)	 (((o)->oclass == WEAPON_CLASS && !is_launcher(o)) || is_otyp_elemental_enchantable((o)->otyp))
+
 #define is_death_enchantable(otmp)                                            \
     (objects[(otmp)->otyp].oc_material == MAT_BONE || objects[(otmp)->otyp].oc_material == MAT_GLASS)
 
@@ -389,6 +393,10 @@ struct obj {
     ((objects[(otyp)].oc_flags2 & O2_SHINES_MAGICAL_LIGHT) != 0)
 #define obj_shines_magical_light(otmp)     \
     otyp_shines_magical_light((otmp)->otyp)
+#define is_otyp_special_praying_item(otyp)                                             \
+    ((objects[(otyp)].oc_flags2 & O2_SPECIAL_PRAYING_ITEM) != 0)
+#define is_obj_special_praying_item(otmp)     \
+    is_otyp_special_praying_item((otmp)->otyp)
 
 /* Wand-like tools */
 #define is_wand_like_tool(otmp) \
@@ -457,8 +465,12 @@ struct obj {
     ((objects[(otyp)].oc_flags3 & O3_DOUBLE_DIGGING_EFFORT) != 0)
 #define is_otyp_buried_searchable(otyp) \
     ((objects[(otyp)].oc_flags3 & O3_BURIED_SEARCHABLE) != 0)
-#define is_content_description_shuffled(otyp) \
+#define is_otyp_content_description_shuffled(otyp) \
     ((objects[(otyp)].oc_flags3 & O3_CONTENT_DESCRIPTION_SHUFFLED) != 0)
+#define otyp_consumes_nutrition_every_20_rounds(otyp) \
+    ((objects[(otyp)].oc_flags3 & O3_CONSUMES_NUTRITION_EVERY_20_ROUNDS) != 0)
+#define obj_consumes_nutrition_every_20_rounds(otmp) \
+    otyp_consumes_nutrition_every_20_rounds((otmp)->otyp)
 
 #define is_obj_normally_edible(otmp) \
 	((otmp)->oclass == FOOD_CLASS || ((otmp)->oclass == REAGENT_CLASS && (objects[(otmp)->otyp].oc_flags & O1_EDIBLE_NONFOOD) != 0))

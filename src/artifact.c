@@ -2454,7 +2454,7 @@ struct obj *obj;
             }
             b_effect = (obj->blessed && (oart->role == Role_switch
                                          || oart->role == NON_PM));
-            recharge(otmp, b_effect ? 1 : obj->cursed ? -1 : 0);
+            recharge(otmp, b_effect ? 1 : obj->cursed ? -1 : 0, TRUE);
             update_inventory();
 			obj->cooldownleft = 100 + rnz(100);
 			break;

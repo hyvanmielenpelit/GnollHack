@@ -824,7 +824,7 @@ struct objclass {
 #define O2_ORE					0x00800000UL	
 #define O2_FLIMSY				0x01000000UL
 
-#define O2_GLOWS_WHEN_BLESSED_AND_SAFE_TO_PRAY 0x02000000UL
+#define O2_SPECIAL_PRAYING_ITEM 0x02000000UL
 	/* free bit */
 	/* free bit */
 
@@ -839,12 +839,12 @@ struct objclass {
 #define O3_NO_WISH									0x00000002UL  /* item is special, it cannot be wished for, mimics oc_nowish */
 #define O3_UNIQUE									0x00000004UL  /* the item is unique, mimics oc_unique */
 
-#define O3_GENERATED_WITH_DOUBLE_ENCHANTMENT		0x00000008UL  /* is generated with double normal enchantment */
+/* free bit */
 #define O3_EXTENDED_POLEARM_REACH					0x00000010UL  /* range is max 13 instead of normal 8 */
 #define O3_DOUBLE_DIGGING_EFFORT					0x00000020UL  /* double normal digging effort */
 #define O3_BURIED_SEARCHABLE						0x00000040UL  /* if buried, can be found by explicit searching */
 #define O3_CONTENT_DESCRIPTION_SHUFFLED				0x00000080UL  /* uses (shuffled) description index instead of name index for content description */
-/* free bit */
+#define O3_CONSUMES_NUTRITION_EVERY_20_ROUNDS		0x00000100UL  /* consumes nutrition every 20 rounds when worn. WORKS ONLY FOR MISCELLANEOUS MAGIC ITEMS */
 /* free bit */
 
 #define O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS	0x00000400UL  /* wielding or wearing prohibits the revival of permitted targets */
@@ -1020,7 +1020,7 @@ struct fruit {
 #define OBJ_NAME(obj) (obj_descr[(obj).oc_name_idx].oc_name)
 #define OBJ_DESCR(obj) (obj_descr[(obj).oc_descr_idx].oc_descr)
 
-#define OBJ_CONTENT_DESC(otyp) (obj_descr[is_content_description_shuffled(otyp) ?  objects[(otyp)].oc_descr_idx :objects[(otyp)].oc_name_idx].oc_content_description)
+#define OBJ_CONTENT_DESC(otyp) (obj_descr[is_otyp_content_description_shuffled(otyp) ?  objects[(otyp)].oc_descr_idx :objects[(otyp)].oc_name_idx].oc_content_description)
 #define OBJ_ITEM_DESC(otyp) (obj_descr[objects[(otyp)].oc_name_idx].oc_item_description)
 
 

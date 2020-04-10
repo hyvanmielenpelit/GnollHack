@@ -1101,6 +1101,14 @@ struct obj* obj;
 
 	u.uconduct.gnostic++;
 
+    if (obj->charges <= 0)
+    {
+        You("raise %s high, but nothing happens.", yname(obj));
+        return 0;
+    }
+
+    consume_obj_charge(obj, TRUE);
+
 	if ((u.ualign.type != A_CHAOTIC
 		&& (is_demon(youmonst.data) || is_undead(youmonst.data)))
 		|| u.ugangr > 6 || Inhell) { /* "Die, mortal!" */

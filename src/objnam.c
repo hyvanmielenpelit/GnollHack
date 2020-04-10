@@ -1575,7 +1575,7 @@ unsigned doname_flags;
 	}
 
 	/* Mark if glowing when detected something */
-	if ((objects[obj->otyp].oc_flags2 & O2_GLOWS_WHEN_BLESSED_AND_SAFE_TO_PRAY) && obj->where == OBJ_INVENT && obj->blessed && can_pray(FALSE))
+	if (is_obj_special_praying_item(obj) && obj->where == OBJ_INVENT && obj->blessed && can_pray(FALSE))
 	{
 		if (!Blind)
 			Sprintf(eos(bp), " (%s)", "shimmering");

@@ -927,7 +927,7 @@ struct obj *otmp;
         wake = FALSE;
         break;
     default:
-        impossible("What an interesting effect (%d)", otyp);
+        //impossible("What an interesting effect (%d)", otyp);
         break;
     }
 
@@ -3421,7 +3421,7 @@ struct obj *obj, *otmp;
             res = stone_to_flesh_obj(obj);
             break;
         default:
-            impossible("What an interesting effect (%d)", otmp->otyp);
+            //impossible("What an interesting effect (%d)", otmp->otyp);
             break;
         }
     /* if effect was observable then discover the wand type provided
@@ -5688,16 +5688,24 @@ struct obj *obj;
 
     exercise(A_WIS, TRUE);
     if (u.usteed && (objects[otyp].oc_dir != NODIR) && !u.dx && !u.dy
-        && (u.dz > 0) && zap_steed(obj)) {
+        && (u.dz > 0) && zap_steed(obj)) 
+    {
         disclose = TRUE;
-    } else if (objects[otyp].oc_dir == IMMEDIATE || objects[otyp].oc_dir == IMMEDIATE_MULTIPLE_TARGETS || objects[otyp].oc_dir == TOUCH) {
+    } 
+    else if (objects[otyp].oc_dir == IMMEDIATE || objects[otyp].oc_dir == IMMEDIATE_MULTIPLE_TARGETS || objects[otyp].oc_dir == TOUCH)
+    {
         zapsetup(); /* reset obj_zapped */
-        if (u.uswallow) {
+        if (u.uswallow) 
+        {
             (void) bhitm(u.ustuck, obj);
             /* [how about `bhitpile(u.ustuck->minvent)' effect?] */
-        } else if (u.dz) {
+        }
+        else if (u.dz) 
+        {
             disclose = zap_updown(obj);
-        } else {
+        } 
+        else
+        {
 			int range = 1, radius = 0;
 
 			if (objects[otyp].oc_dir == TOUCH)
@@ -5718,10 +5726,14 @@ struct obj *obj;
         }
         zapwrapup(); /* give feedback for obj_zapped */
 
-    } else if (objects[otyp].oc_dir == NODIR) {
+    } 
+    else if (objects[otyp].oc_dir == NODIR) 
+    {
         zapnodir(obj);
 
-    } else if (objects[otyp].oc_dir == RAY) {
+    } 
+    else if (objects[otyp].oc_dir == RAY)
+    {
         /* neither immediate nor directionless */
 		int osubtype = objects[otyp].oc_dir_subtype;
 

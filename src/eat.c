@@ -3332,14 +3332,17 @@ gethungry()
         && !Slow_digestion)
         u.uhunger--; /* ordinary food consumption */
 
-    if (moves % 2) { /* odd turns */
+    if (moves % 2)
+    { /* odd turns */
         /* Regeneration uses up food, unless due to an artifact */
         if ((HRegeneration & ~FROM_FORM)
             || (ERegeneration & ~(W_ARTIFACT_INVOKED | W_WEP)))
             u.uhunger--;
         if (near_capacity() > SLT_ENCUMBER)
             u.uhunger--;
-    } else { /* even turns */
+    } 
+    else 
+    { /* even turns */
         if (Hunger)
             u.uhunger--;
         /* Conflict uses up food too */
@@ -3348,20 +3351,40 @@ gethungry()
         /* +0 charged rings don't do anything, so don't affect hunger.
            Slow digestion cancels move hunger but still causes ring hunger. */
         switch ((int) (moves % 20)) { /* note: use even cases only */
+        case 2:
+            if(umisc && obj_consumes_nutrition_every_20_rounds(umisc))
+                u.uhunger--;
+            break;
         case 4:
-            if (uleft && (uleft->enchantment || !objects[uleft->otyp].oc_enchantable))
+            if (uleft && objects[uleft->otyp].oc_magic && (uleft->enchantment || !objects[uleft->otyp].oc_enchantable))
+                u.uhunger--;
+            break;
+        case 6:
+            if (umisc2 && obj_consumes_nutrition_every_20_rounds(umisc2))
                 u.uhunger--;
             break;
         case 8:
-            if (uamul)
+            if (uamul && objects[uamul->otyp].oc_magic)
+                u.uhunger--;
+            break;
+        case 10:
+            if (umisc3 && obj_consumes_nutrition_every_20_rounds(umisc3))
                 u.uhunger--;
             break;
         case 12:
-            if (uright && (uright->enchantment || !objects[uright->otyp].oc_enchantable))
+            if (uright && objects[uright->otyp].oc_magic && (uright->enchantment || !objects[uright->otyp].oc_enchantable))
+                u.uhunger--;
+            break;
+        case 14:
+            if (umisc4 && obj_consumes_nutrition_every_20_rounds(umisc4))
                 u.uhunger--;
             break;
         case 16:
             if (u.uhave.amulet)
+                u.uhunger--;
+            break;
+        case 18:
+            if (umisc5 && obj_consumes_nutrition_every_20_rounds(umisc5))
                 u.uhunger--;
             break;
         default:

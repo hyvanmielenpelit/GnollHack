@@ -21,7 +21,6 @@ static const char all_count[] = { ALLOW_COUNT, ALL_CLASSES, 0 };
 STATIC_DCL boolean FDECL(learnscrolltyp, (SHORT_P));
 STATIC_DCL char *FDECL(erode_obj_text, (struct obj *, char *));
 STATIC_DCL char *FDECL(apron_text, (struct obj *, char *buf));
-STATIC_DCL void FDECL(strip_charges, (struct obj *));
 STATIC_DCL void FDECL(p_glow1, (struct obj *));
 STATIC_DCL void FDECL(p_glow2, (struct obj *, const char *));
 STATIC_DCL void FDECL(forget_single_object, (int));
@@ -470,18 +469,21 @@ struct obj* otmp;
 	}
 }
 
-STATIC_OVL void
-strip_charges(obj)
+void
+strip_charges(obj, verbose)
 register struct obj *obj;
+boolean verbose;
 {
     if (obj->blessed || obj->charges <= 0)
 	{
-        pline1(nothing_happens);
+        if(verbose)
+            pline1(nothing_happens);
     } 
 	else 
 	{
         /* order matters: message, shop handling, actual transformation */
-        pline("%s briefly.", Yobjnam2(obj, "vibrate"));
+        if (verbose)
+            pline("%s briefly.", Yobjnam2(obj, "vibrate"));
         costly_alteration(obj, COST_UNCHRG);
         obj->charges = 0;
 //        if (obj->otyp == OIL_LAMP || obj->otyp == BRASS_LANTERN)
@@ -533,9 +535,10 @@ struct obj *obj;
 /* recharge an object; curse_bless is -1 if the recharging implement
    was cursed, +1 if blessed, 0 otherwise. */
 void
-recharge(obj, curse_bless)
+recharge(obj, curse_bless, verbose)
 struct obj *obj;
 int curse_bless;
+boolean verbose;
 {
 	if (!obj)
 		return;
@@ -581,7 +584,7 @@ int curse_bless;
         /* now handle the actual recharging */
         if (is_cursed) 
 		{
-            strip_charges(obj);
+            strip_charges(obj, verbose);
         } 
 		else 
 		{
@@ -599,10 +602,13 @@ int curse_bless;
                 wand_explode(obj, 1);
                 return;
             }
-			if (obj->charges >= lim)
-                p_glow2(obj, NH_BLUE);
-            else
-                p_glow1(obj);
+            if (verbose)
+            {
+                if (obj->charges >= lim)
+                    p_glow2(obj, NH_BLUE);
+                else
+                    p_glow1(obj);
+            }
 #if 0 /*[shop price doesn't vary by charge count]*/
             /* update shop bill to reflect new higher price */
             if (obj->unpaid)
@@ -624,7 +630,7 @@ int curse_bless;
         switch (obj->otyp) {
         case BELL_OF_OPENING:
             if (is_cursed)
-                strip_charges(obj);
+                strip_charges(obj, verbose);
             else if (is_blessed)
                 obj->charges += rnd(3);
             else
@@ -636,41 +642,52 @@ int curse_bless;
         case TINNING_KIT:
         case EXPENSIVE_CAMERA:
             if (is_cursed)
-                strip_charges(obj);
+                strip_charges(obj, verbose);
             else if (rechrg
                      && obj->otyp
                             == MAGIC_MARKER) { /* previously recharged */
                 obj->recharged = 1; /* override increment done above */
-                if (obj->charges < 3)
-                    Your("marker seems permanently dried out.");
-                else
-                    pline1(nothing_happens);
-            } else if (is_blessed) {
+                if (verbose)
+                {
+                    if (obj->charges < 3)
+                        Your("marker seems permanently dried out.");
+                    else
+                        pline1(nothing_happens);
+                }
+            }
+            else if (is_blessed) 
+            {
                 n = rn1(16, 15); /* 15..30 */
                 if (obj->charges + n <= 50)
                     obj->charges = 50;
                 else if (obj->charges + n <= 75)
                     obj->charges = 75;
-                else {
+                else 
+                {
                     int chrg = (int) obj->charges;
                     if ((chrg + n) > 127)
                         obj->charges = 127;
                     else
                         obj->charges += n;
                 }
-                p_glow2(obj, NH_BLUE);
-            } else {
+                if(verbose)
+                    p_glow2(obj, NH_BLUE);
+            } 
+            else
+            {
                 n = rn1(11, 10); /* 10..20 */
                 if (obj->charges + n <= 50)
                     obj->charges = 50;
-                else {
+                else
+                {
                     int chrg = (int) obj->charges;
                     if ((chrg + n) > 127)
                         obj->charges = 127;
                     else
                         obj->charges += n;
                 }
-                p_glow2(obj, NH_WHITE);
+                if (verbose)
+                    p_glow2(obj, NH_WHITE);
             }
             break;
 #if 0
@@ -678,7 +695,7 @@ int curse_bless;
         case OIL_LAMP:
         case BRASS_LANTERN:
             if (is_cursed) {
-                strip_charges(obj);
+                strip_charges(obj, verbose);
                 if (obj->lamplit) {
                     if (!Blind)
                         pline("%s out!", Tobjnam(obj, "go"));
@@ -687,26 +704,36 @@ int curse_bless;
             } else if (is_blessed) {
                 obj->special_quality = 1;
                 obj->age = 1500;
-                p_glow2(obj, NH_BLUE);
+                if (verbose)
+                    p_glow2(obj, NH_BLUE);
             } else {
                 obj->special_quality = 1;
                 obj->age += 750;
                 if (obj->age > 1500)
                     obj->age = 1500;
-                p_glow1(obj);
+                if (verbose)
+                    p_glow1(obj);
             }
             break;
 #endif
         case CRYSTAL_BALL:
-            if (is_cursed) {
-                strip_charges(obj);
-            } else if (is_blessed) {
+            if (is_cursed) 
+            {
+                strip_charges(obj, verbose);
+            }
+            else if (is_blessed)
+            {
                 obj->charges = 6;
-                p_glow2(obj, NH_BLUE);
-            } else {
-                if (obj->charges < 5) {
+                if (verbose)
+                    p_glow2(obj, NH_BLUE);
+            }
+            else
+            {
+                if (obj->charges < 5)
+                {
                     obj->charges++;
-                    p_glow1(obj);
+                    if (verbose)
+                        p_glow1(obj);
                 } else
                     pline1(nothing_happens);
             }
@@ -714,21 +741,50 @@ int curse_bless;
         case HORN_OF_PLENTY:
         case BAG_OF_TRICKS:
         case CAN_OF_GREASE:
-            if (is_cursed) {
-                strip_charges(obj);
-            } else if (is_blessed) {
+            if (is_cursed)
+            {
+                strip_charges(obj, verbose);
+            } 
+            else if (is_blessed)
+            {
                 if (obj->charges <= 10)
                     obj->charges += rn1(10, 6);
                 else
                     obj->charges += rn1(5, 6);
                 if (obj->charges > 50)
                     obj->charges = 50;
-                p_glow2(obj, NH_BLUE);
-            } else {
+                if (verbose)
+                    p_glow2(obj, NH_BLUE);
+            }
+            else
+            {
                 obj->charges += rnd(5);
                 if (obj->charges > 50)
                     obj->charges = 50;
-                p_glow1(obj);
+                if (verbose)
+                    p_glow1(obj);
+            }
+            break;
+        case HOLY_SYMBOL:
+            if (is_cursed)
+            {
+                strip_charges(obj, verbose);
+            }
+            else if (is_blessed) 
+            {
+                obj->charges += rn1(10, 10);
+                if (obj->charges > 30)
+                    obj->charges = 30;
+                if(verbose)
+                    p_glow2(obj, NH_BLUE);
+            }
+            else 
+            {
+                obj->charges += rnd(5) + 4;
+                if (obj->charges > 30)
+                    obj->charges = 30;
+                if (verbose)
+                    p_glow1(obj);
             }
             break;
         case MAGIC_FLUTE:
@@ -737,18 +793,25 @@ int curse_bless;
         case FIRE_HORN:
 		case UNICORN_HORN:
 		case DRUM_OF_EARTHQUAKE:
-            if (is_cursed) {
-                strip_charges(obj);
-            } else if (is_blessed) {
+            if (is_cursed)
+            {
+                strip_charges(obj, verbose);
+            }
+            else if (is_blessed)
+            {
                 obj->charges += d(2, 4);
                 if (obj->charges > 20)
                     obj->charges = 20;
-                p_glow2(obj, NH_BLUE);
-            } else {
+                if (verbose)
+                    p_glow2(obj, NH_BLUE);
+            }
+            else 
+            {
                 obj->charges += rnd(4);
                 if (obj->charges > 20)
                     obj->charges = 20;
-                p_glow1(obj);
+                if (verbose)
+                    p_glow1(obj);
             }
             break;
         default:
@@ -768,7 +831,7 @@ int curse_bless;
 		case NINE_LIVES_STEALER:
 			if (is_cursed) 
 			{
-				strip_charges(obj);
+				strip_charges(obj, verbose);
 				obj->recharged++;
 			}
 			else if (obj->recharged >= 6 || !rn2(max(2, 4 - obj->recharged)))
@@ -776,7 +839,8 @@ int curse_bless;
 				const char* expltext = !obj->charges ? "suddenly" : "vibrates violently and";
 				int dmg = d(3, 9);
 				obj->in_use = TRUE; /* in case losehp() is fatal (or --More--^C) */
-				pline("%s %s explodes!", Yname2(obj), expltext);
+                if (verbose)
+                    pline("%s %s explodes!", Yname2(obj), expltext);
 				losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_MAGM, TRUE), "exploding sword", KILLED_BY_AN);
 				useup(obj);
 			}
@@ -785,14 +849,16 @@ int curse_bless;
 				if (is_blessed)
 				{
 					obj->charges = lim;
-					p_glow2(obj, NH_BLUE);
+                    if (verbose)
+                        p_glow2(obj, NH_BLUE);
 				}
 				else if (obj->charges < lim)
 				{
 					obj->charges += 1 + rnd(3);
 					if (obj->charges > lim)
 						obj->charges = lim;
-					p_glow1(obj);
+                    if (verbose)
+                        p_glow1(obj);
 				}
 				obj->recharged++;
 			}
@@ -808,21 +874,23 @@ int curse_bless;
 				if (obj->recharged >= 1)
 				{
 					obj->charges = 0;
-					pline("The glow arounds %s %s.", yname(obj), obj->recharged == 1 ? "dims" : "stays dim");
+                    if (verbose)
+                        pline("The glow arounds %s %s.", yname(obj), obj->recharged == 1 ? "dims" : "stays dim");
 					break;
 				}
 
 				int lim = get_obj_max_charge(obj);
 				if (is_cursed)
 				{
-					strip_charges(obj);
+					strip_charges(obj, verbose);
 					obj->recharged++;
 				}
 
 				if (obj->charges > lim)
 				{
 					obj->charges = 0;
-					pline("The glow arounds %s suddenly dims.", yname(obj));
+                    if (verbose)
+                        pline("The glow arounds %s suddenly dims.", yname(obj));
 					break;
 				}
 				else if (obj->charges < lim)
@@ -830,14 +898,16 @@ int curse_bless;
 					if (is_blessed)
 					{
 						obj->charges = lim;
-						p_glow2(obj, NH_BLUE);
+                        if (verbose)
+                            p_glow2(obj, NH_BLUE);
 					}
 					else if (obj->charges < lim)
 					{
 						obj->charges += rnd(3);
 						if (obj->charges > lim)
 							obj->charges = lim;
-						p_glow1(obj);
+                        if (verbose)
+                            p_glow1(obj);
 					}
 					obj->recharged++;
 				}
@@ -860,7 +930,8 @@ int curse_bless;
 	else
 	{
     not_chargable:
-        You("have a feeling of loss.");
+        if (verbose)
+            You("have a feeling of loss.");
     }
 }
 
@@ -2152,7 +2223,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
         sobj = 0; /* it's gone */
         otmp = getobj(all_count, "charge", 0, "");
         if (otmp)
-            recharge(otmp, scursed ? -1 : sblessed ? 1 : 0);
+            recharge(otmp, scursed ? -1 : sblessed ? 1 : 0, TRUE);
         break;
 	case SCR_ENCHANT_RING:
 		if (confused) 

@@ -1880,15 +1880,19 @@ boolean atme;
 		{
             if (otyp == SPE_MINOR_HEALING || otyp == SPE_HEALING || otyp == SPE_EXTRA_HEALING || otyp == SPE_GREATER_HEALING || otyp == SPE_PRODIGIOUS_HEALING || otyp == SPE_FULL_HEALING
 				|| otyp == SPE_REPLENISH_UNDEATH || otyp == SPE_GREATER_UNDEATH_REPLENISHMENT
-				) {
+				)
+			{
                 /* healing and extra healing are actually potion effects,
                    but they've been extended to take a direction like wands */
                 if (role_skill >= P_SKILLED)
                     pseudo->blessed = 1;
             }
-            if (atme) {
+            if (atme) 
+			{
                 u.dx = u.dy = u.dz = 0;
-            } else if (!getdir((char *) 0)) {
+            } 
+			else if (!getdir((char *) 0))
+			{
                 /* getdir cancelled, re-use previous direction */
                 /*
                  * FIXME:  reusing previous direction only makes sense
@@ -1900,8 +1904,10 @@ boolean atme;
                  */
                 pline_The("magical energy is released!");
             }
-            if (!u.dx && !u.dy && !u.dz) {
-                if ((damage = zapyourself(pseudo, TRUE)) != 0) {
+            if (!u.dx && !u.dy && !u.dz)
+			{
+                if ((damage = zapyourself(pseudo, TRUE)) != 0)
+				{
                     char buf[BUFSZ];
 
                     Sprintf(buf, "zapped %sself with a spell", uhim());

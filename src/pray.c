@@ -19,6 +19,8 @@ STATIC_DCL void FDECL(gods_angry, (ALIGNTYP_P));
 STATIC_DCL void FDECL(gods_upset, (ALIGNTYP_P));
 STATIC_DCL void FDECL(consume_offering, (struct obj *));
 STATIC_DCL boolean FDECL(water_prayer, (BOOLEAN_P));
+STATIC_DCL boolean FDECL(symbol_prayer, (BOOLEAN_P));
+STATIC_DCL boolean FDECL(altar_prayer, (BOOLEAN_P));
 STATIC_DCL boolean FDECL(blocked_boulder, (int, int));
 
 /* simplify a few tests */
@@ -1098,7 +1100,7 @@ aligntyp g_align;
 	{
 		for (struct obj* otmp = invent; otmp; otmp = otmp->nobj)
 		{
-			if ((objects[otmp->otyp].oc_flags2 & O2_GLOWS_WHEN_BLESSED_AND_SAFE_TO_PRAY) && !otmp->blessed)
+			if (is_obj_special_praying_item(otmp) && !otmp->blessed)
 			{
 				if(!Blind)
 					pline("%s with %s aura.", Yobjnam2(otmp, "softly glow"), an(hcolor(NH_LIGHT_BLUE)));
@@ -1416,18 +1418,23 @@ boolean bless_water;
     register long changed = 0;
     boolean other = FALSE, bc_known = !(Blind || Hallucination);
 
-    for (otmp = level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere) {
+    for (otmp = level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere) 
+    {
         /* turn water into (un)holy water */
         if (otmp->otyp == POT_WATER
-            && (bless_water ? !otmp->blessed : !otmp->cursed)) {
+            && (bless_water ? !otmp->blessed : !otmp->cursed))
+        {
             otmp->blessed = bless_water;
             otmp->cursed = !bless_water;
             otmp->bknown = bc_known;
             changed += otmp->quan;
-        } else if (otmp->oclass == POTION_CLASS)
+        } 
+        else if (otmp->oclass == POTION_CLASS)
             other = TRUE;
     }
-    if (!Blind && changed) {
+
+    if (!Blind && changed)
+    {
         pline("%s potion%s on the altar glow%s %s for a moment.",
               ((other && changed > 1L) ? "Some of the"
                                        : (other ? "One of the" : "The")),
@@ -1435,6 +1442,86 @@ boolean bless_water;
               (bless_water ? hcolor(NH_LIGHT_BLUE) : hcolor(NH_BLACK)));
     }
     return (boolean) (changed > 0L);
+}
+
+/* either blesses or curses holy symbols and prayer stones on the altar, and either charges a holy symbol or strips charges to zero
+ * returns true if it found any holy´symbols here.
+ */
+STATIC_OVL boolean
+symbol_prayer(bless_stuff)
+boolean bless_stuff;
+{
+    register struct obj* otmp;
+    register long changed = 0;
+    boolean other = FALSE, bc_known = !(Blind || Hallucination);
+    char buf[BUFSZ];
+    strcpy(buf, "");
+    boolean use_items = FALSE;
+
+    for (otmp = level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere)
+    {
+        /* make holy symbols and prayerstones blessed or cursed first */
+        if (is_obj_special_praying_item(otmp))
+        {
+            boolean something_happened = FALSE;
+
+            if(bless_stuff ? !otmp->blessed : !otmp->cursed)
+            {
+                something_happened = TRUE;
+                otmp->blessed = bless_stuff;
+                otmp->cursed = !bless_stuff;
+                otmp->bknown = bc_known;
+            }
+
+            if (objects[otmp->otyp].oc_charged > 0)
+            {
+                int lim = get_obj_max_charge(otmp);
+                if (!bless_stuff)
+                {
+                    something_happened = TRUE;
+                    strip_charges(otmp, FALSE);
+                }
+                else if (bless_stuff && otmp->charges < lim)
+                {
+                    something_happened = TRUE;
+                    otmp->charges += rn1(10, 10);
+                    if (otmp->charges > lim)
+                        otmp->charges = lim;
+                }
+            }
+
+            if(something_happened)
+                changed += otmp->quan;
+            else
+                other = TRUE;
+
+            if (!strcmp(buf, ""))
+                strcpy(buf, cxname_singular(otmp));
+            else if (strcmp(buf, cxname_singular(otmp)))
+                use_items = TRUE;
+        }
+    }
+
+    if (!Blind && changed)
+    {
+        pline("%s %s%s on the altar glow%s %s for a moment.",
+            ((other && changed > 1L) ? "Some of the"
+                : (other ? "One of the" : "The")),
+            use_items || !strcmp(buf, "") ? "religious item" : buf,
+            ((other || changed > 1L) ? "s" : ""), (changed > 1L ? "" : "s"),
+            (bless_stuff ? hcolor(NH_LIGHT_BLUE) : hcolor(NH_BLACK)));
+    }
+
+    return (boolean)(changed > 0L);
+}
+
+STATIC_OVL boolean
+altar_prayer(bless_stuff)
+boolean bless_stuff;
+{
+    boolean water = water_prayer(bless_stuff);
+    boolean symbol = symbol_prayer(bless_stuff);
+    return (water || symbol);
 }
 
 STATIC_OVL void
@@ -2016,7 +2103,7 @@ dosacrifice()
 		{
 			for (struct obj* otmp = invent; otmp; otmp = otmp->nobj)
 			{
-				if ((objects[otmp->otyp].oc_flags2 & O2_GLOWS_WHEN_BLESSED_AND_SAFE_TO_PRAY) && !otmp->blessed)
+				if (is_obj_special_praying_item(otmp) && !otmp->blessed)
 				{
 					if(!Blind)
 						pline("%s with %s aura.", Yobjnam2(otmp, "softly glow"), an(hcolor(NH_LIGHT_BLUE)));
@@ -2128,7 +2215,9 @@ prayer_done() /* M. Stephenson (1.0.3b) */
     aligntyp alignment = p_aligntyp;
 
     u.uinvulnerable = FALSE;
-    if (p_type == -1) {
+
+    if (p_type == -1) 
+    {
         godvoice(alignment,
                  (alignment == A_LAWFUL)
                     ? "Vile creature, thou durst call upon me?"
@@ -2141,7 +2230,9 @@ prayer_done() /* M. Stephenson (1.0.3b) */
         exercise(A_CON, FALSE);
         return 1;
     }
-    if (Inhell) {
+
+    if (Inhell) 
+    {
         pline("Since you are in Gehennom, %s won't help you.",
               align_gname(alignment));
         /* haltingly aligned is least likely to anger */
@@ -2150,28 +2241,39 @@ prayer_done() /* M. Stephenson (1.0.3b) */
         return 0;
     }
 
-    if (p_type == 0) {
+    if (p_type == 0)
+    {
         if (on_altar() && u.ualign.type != alignment)
-            (void) water_prayer(FALSE);
+            (void)altar_prayer(FALSE);
+
         u.uprayer_timeout += Role_if(PM_PRIEST) ? rnz(125) : rnz(250);
         gods_upset(u.ualign.type);
 		change_luck(-3, TRUE);
-	} else if (p_type == 1) {
+	} 
+    else if (p_type == 1) 
+    {
         if (on_altar() && u.ualign.type != alignment)
-            (void) water_prayer(FALSE);
+            (void) altar_prayer(FALSE);
         angrygods(u.ualign.type); /* naughty */
-    } else if (p_type == 2) {
-        if (water_prayer(FALSE)) {
+    } 
+    else if (p_type == 2) 
+    {
+        if (altar_prayer(FALSE))
+        {
             /* attempted water prayer on a non-coaligned altar */
             u.uprayer_timeout += Role_if(PM_PRIEST) ? rnz(125) : rnz(250);
             gods_upset(u.ualign.type);
 			change_luck(-3, TRUE);
-		} else
+		} 
+        else
             pleased(alignment);
-    } else {
+    } 
+    else
+    {
         /* coaligned */
         if (on_altar())
-            (void) water_prayer(TRUE);
+            (void) altar_prayer(TRUE);
+
         pleased(alignment); /* nice */
     }
     return 1;
