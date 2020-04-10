@@ -2630,8 +2630,10 @@ int attempt;
 int* minlvl;
 int* maxlvl;
 {
-	double max_multiplier = 1;
-	double min_multiplier = 1;
+    /* Initial adjustment */
+	double max_multiplier = 0.8;
+	double min_multiplier = 0.8;
+
 	double zlevel = (double)level_difficulty();
 	double zlevel_formin = min(MAXULEV, zlevel);
 	double zlevel_formax = zlevel;
@@ -2639,11 +2641,16 @@ int* maxlvl;
 
 	int minmlev = 0;
 	int maxmlev = 0;
-
+    
+    /* Difficult level adjustments, lower levels saving multipliers for future use */
 	switch (context.game_difficulty)
 	{
-	case -3:
-		min_multiplier /= 2.0;
+    case -4:
+        min_multiplier /= 2.0;
+        max_multiplier /= 2.0;
+        break;
+    case -3:
+		min_multiplier /= 1.682;
 		max_multiplier /= 1.682;
 		break;
 	case -2:
