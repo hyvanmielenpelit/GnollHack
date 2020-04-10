@@ -238,7 +238,7 @@ NEARDATA struct permonst mons[] = {
         M1_ANIMAL | M1_NOHANDS | M1_OMNIVORE | M1_OVIPAROUS | M1_TOUCH_PETRIFIES,
 		M2_HOSTILE,
         M3_INFRAVISIBLE, 
-		M4_NONE, 17, CLR_ORANGE),
+		M4_NONE, 25, CLR_ORANGE),
     MON("gargantuan cockatrice", S_COCKATRICE, LVL(20, 18, -2, 8, 30, 0), (G_GENO | 5),
         A(ATTK(AT_BITE, AD_PHYS, 4, 6, 0, 0), ATTK(AT_TUCH, AD_STON, 0, 0, 0, -6),
           ATTK(AT_NONE, AD_STON, 0, 0, 0, -6), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -247,7 +247,7 @@ NEARDATA struct permonst mons[] = {
         M1_ANIMAL | M1_NOHANDS | M1_OMNIVORE | M1_OVIPAROUS | M1_TOUCH_PETRIFIES,
 		M2_HOSTILE,
         M3_INFRAVISIBLE, 
-		M4_NONE, 33, CLR_BRIGHT_GREEN),
+		M4_NONE, 40, CLR_BRIGHT_GREEN),
     /*
      * dogs & other canines + hyenas
      */
@@ -1084,7 +1084,7 @@ NEARDATA struct permonst mons[] = {
         M2_HOSTILE, 
 		M3_INFRAVISIBLE, 
 		M4_NONE, 
-		20, HI_LORD),
+		25, HI_LORD),
     MON("mastodon", S_QUADRUPED, LVL(20, 12, 5, 0, 0, 0), (G_GENO | 1),
         A(ATTK(AT_BUTT, AD_PHYS, 4, 8, 0, 0), ATTK(AT_BUTT, AD_PHYS, 4, 8, 0, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),

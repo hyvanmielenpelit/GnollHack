@@ -4796,10 +4796,12 @@ int animateintomon; // monstid to be animated into
 		if (container_where == OBJ_MINVENT && mtmp2)
 			mcarry = mtmp2;
 	}
-	mtmp = revive(corpse, FALSE, animateintomon, FALSE); /* corpse is gone if successful */
+	mtmp = revive(corpse, TRUE, animateintomon, FALSE); /* corpse is gone if successful */
 
-	if (mtmp) {
-		switch (where) {
+	if (mtmp)
+	{
+		switch (where) 
+		{
 		case OBJ_INVENT:
 			if (is_uwep)
 				pline_The("%s writhes out of your grasp!", cname);
@@ -4814,7 +4816,8 @@ int animateintomon; // monstid to be animated into
 			break;
 
 		case OBJ_MINVENT: /* probably a nymph's */
-			if (cansee(mtmp->mx, mtmp->my)) {
+			if (cansee(mtmp->mx, mtmp->my)) 
+			{
 				if (canseemon(mcarry))
 					pline("Startled, %s drops %s as it gets animated!",
 						mon_nam(mcarry), an(cname));
@@ -4823,15 +4826,18 @@ int animateintomon; // monstid to be animated into
 						The(mons[oldcorpsenum].mname), an(mons[animateintomon].mname));
 			}
 			break;
-		case OBJ_CONTAINED: {
+		case OBJ_CONTAINED: 
+		{
 			char sackname[BUFSZ];
 
 			if (container_where == OBJ_MINVENT && cansee(mtmp->mx, mtmp->my)
-				&& mcarry && canseemon(mcarry) && container) {
+				&& mcarry && canseemon(mcarry) && container)
+			{
 				pline("%s writhes out of %s!", Amonnam(mtmp),
 					yname(container));
 			}
-			else if (container_where == OBJ_INVENT && container) {
+			else if (container_where == OBJ_INVENT && container)
+			{
 				Strcpy(sackname, an(xname(container)));
 				pline("%s %s out of %s in your pack!",
 					Blind ? Something : Amonnam(mtmp),

@@ -2631,8 +2631,8 @@ int* minlvl;
 int* maxlvl;
 {
     /* Initial adjustment */
-	double max_multiplier = 0.8;
-	double min_multiplier = 0.8;
+	double max_multiplier = 0.67;
+	double min_multiplier = 0.67;
 
 	double zlevel = (double)level_difficulty();
 	double zlevel_formin = min(MAXULEV, zlevel);

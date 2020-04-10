@@ -1877,7 +1877,7 @@ boolean replaceundead;
 	if (animateintomon >= 0)
 	{
 		//Animated are tamed
-		tamedog(mtmp, (struct obj*) 0, FALSE, FALSE, 0, FALSE);
+		tamedog(mtmp, (struct obj*) 0, TRUE, FALSE, 0, FALSE);
 		mtmp->disregards_enemy_strength = TRUE;
 		mtmp->disregards_own_health = TRUE;
 	}
