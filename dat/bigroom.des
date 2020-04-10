@@ -103,16 +103,16 @@ MONSTER:random,random
 MONSTER:random,random
 MONSTER:random,random
 MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
 
 #	Here, just play with the lighting...
 
@@ -202,16 +202,16 @@ MONSTER:random,random
 MONSTER:random,random
 MONSTER:random,random
 MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
 
 #	Now, let's get fancy...
 
@@ -268,33 +268,33 @@ TRAP:random,random
 TRAP:random,random
 TRAP:random,random
 # Random monsters.
-MONSTER:random,(01,01)
+#MONSTER:random,(01,01)
 MONSTER:random,(13,01)
-MONSTER:random,(25,01)
+#MONSTER:random,(25,01)
 MONSTER:random,(37,01)
 MONSTER:random,(49,01)
-MONSTER:random,(61,01)
+#MONSTER:random,(61,01)
 MONSTER:random,(73,01)
 MONSTER:random,(07,07)
-MONSTER:random,(13,07)
+#MONSTER:random,(13,07)
 MONSTER:random,(25,07)
 MONSTER:random,(37,07)
-MONSTER:random,(49,07)
+#MONSTER:random,(49,07)
 MONSTER:random,(61,07)
 MONSTER:random,(67,07)
-MONSTER:random,(07,09)
+#MONSTER:random,(07,09)
 MONSTER:random,(13,09)
 MONSTER:random,(25,09)
-MONSTER:random,(37,09)
+#MONSTER:random,(37,09)
 MONSTER:random,(49,09)
 MONSTER:random,(61,09)
-MONSTER:random,(67,09)
+#MONSTER:random,(67,09)
 MONSTER:random,(01,16)
 MONSTER:random,(13,16)
-MONSTER:random,(25,16)
+#MONSTER:random,(25,16)
 MONSTER:random,(37,16)
 MONSTER:random,(49,16)
-MONSTER:random,(61,16)
+#MONSTER:random,(61,16)
 MONSTER:random,(73,16)
 MAZE:"bigrm-4",' '
 GEOMETRY:center,center
@@ -372,16 +372,16 @@ MONSTER:random,random
 MONSTER:random,random
 MONSTER:random,random
 MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
 
 #	Try an oval room...
 
@@ -457,16 +457,16 @@ MONSTER:random,random
 MONSTER:random,random
 MONSTER:random,random
 MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
-MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
+#MONSTER:random,random
 
 
 # The Four Circles
@@ -509,7 +509,7 @@ LOOP [15] {
 LOOP [6] {
   TRAP:random,random
 }
-LOOP [28] {
+LOOP [18] {
   MONSTER:random,random
 }
 
@@ -560,7 +560,7 @@ LOOP [15] {
 LOOP [6] {
   TRAP:random,random
 }
-LOOP [28] {
+LOOP [18] {
   MONSTER:random,random
 }
 
@@ -611,7 +611,7 @@ LOOP [15] {
 LOOP [6] {
   TRAP:random,random
 }
-LOOP [28] {
+LOOP [18] {
   MONSTER:random,random
 }
 
@@ -659,7 +659,7 @@ LOOP [15] {
 LOOP [6] {
   TRAP:random,random
 }
-LOOP [28] {
+LOOP [18] {
   MONSTER:random,random
 }
 
@@ -711,7 +711,7 @@ LOOP [15] {
 LOOP [6] {
   TRAP:random,random
 }
-LOOP [28] {
+LOOP [18] {
   MONSTER:random,random
 }
 
