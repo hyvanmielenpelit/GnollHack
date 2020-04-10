@@ -686,7 +686,7 @@ dothrow()
     if (!ok_to_throw(&shotlimit))
         return 0;
 
-    obj = getobj(uslinging() ? bullets : toss_objs, "throw", 0, "");
+    obj = getobj(toss_objs, "throw", 0, "");
     /* it is also possible to throw food */
     /* (or jewels, or iron balls... ) */
 
@@ -704,26 +704,34 @@ autoquiver()
         return;
 
     /* Scan through the inventory */
-    for (otmp = invent; otmp; otmp = otmp->nobj) {
-        if (otmp->owornmask || otmp->oartifact || !otmp->dknown) {
+    for (otmp = invent; otmp; otmp = otmp->nobj) 
+    {
+        if (otmp->owornmask || otmp->oartifact || !otmp->dknown) 
+        {
             ; /* Skip it */
-        } else if (is_rock(otmp)
+        }
+        else if (is_rock(otmp)
                    /* seen rocks or known flint or known glass */
                    || (otmp->otyp == FLINT
                        && objects[otmp->otyp].oc_name_known)
                    || (otmp->oclass == GEM_CLASS
                        && objects[otmp->otyp].oc_material == MAT_GLASS
-                       && objects[otmp->otyp].oc_name_known)) {
+                       && objects[otmp->otyp].oc_name_known))
+        {
             if (uslinging())
                 oammo = otmp;
             else if (ammo_and_launcher(otmp, uswapwep))
                 altammo = otmp;
             else if (!omisc)
                 omisc = otmp;
-        } else if (otmp->oclass == GEM_CLASS) {
+        } 
+        else if (otmp->oclass == GEM_CLASS)
+        {
             ; /* skip non-rock gems--they're ammo but
                  player has to select them explicitly */
-        } else if (is_ammo(otmp)) {
+        }
+        else if (is_ammo(otmp))
+        {
             if (ammo_and_launcher(otmp, uwep))
                 /* Ammo matched with launcher (bow+arrow, crossbow+bolt) */
                 oammo = otmp;
@@ -732,10 +740,14 @@ autoquiver()
             else
                 /* Mismatched ammo (no better than an ordinary weapon) */
                 omisc = otmp;
-        } else if (is_missile(otmp)) {
+        } 
+        else if (is_missile(otmp)) 
+        {
             /* Missile (dart, shuriken, etc.) */
             omissile = otmp;
-        } else if (otmp->oclass == WEAPON_CLASS && throwing_weapon(otmp)) {
+        } 
+        else if (otmp->oclass == WEAPON_CLASS && throwing_weapon(otmp))
+        {
             /* Ordinary weapon */
             if (objects[otmp->otyp].oc_skill == P_DAGGER && !omissile)
                 omissile = otmp;
@@ -789,32 +801,47 @@ dofire()
 	if (!ok_to_throw(&shotlimit))
         return 0;
 
-    if ((obj = uquiver) == 0) {
-        if (!flags.autoquiver) {
+    if ((obj = uquiver) == 0) 
+    {
+        if (!flags.autoquiver)
+        {
             You("have no ammunition readied.");
-        } else {
+        } 
+        else 
+        {
             autoquiver();
             if ((obj = uquiver) == 0)
                 You("have nothing appropriate for your quiver.");
         }
+
         /* if autoquiver is disabled or has failed, prompt for missile;
            fill quiver with it if it's not wielded or worn */
-        if (!obj) {
+        if (!obj) 
+        {
             /* in case we're using ^A to repeat prior 'f' command, don't
                use direction of previous throw as getobj()'s choice here */
             in_doagain = 0;
             /* choose something from inventory, then usually quiver it */
-            obj = getobj(uslinging() ? bullets : toss_objs, "throw", 0, "");
+            obj = getobj(uslinging() ? bullets : toss_objs, "fire", 0, "");
+
             /* Q command doesn't allow gold in quiver */
             if (obj && !obj->owornmask && obj->oclass != COIN_CLASS)
-                setuqwep(obj); /* demi-autoquiver */
+                setuqwep(obj); /* demi-autoquiver */     
         }
+
         /* give feedback if quiver has now been filled */
-        if (uquiver) {
+        if (uquiver) 
+        {
             uquiver->owornmask &= ~W_QUIVER; /* less verbose */
             prinv("You ready:", uquiver, 0L);
             uquiver->owornmask |= W_QUIVER;
         }
+    }
+
+    if (obj && !ammo_and_launcher(obj, uwep))
+    {
+        You("cannot fire %s with %s.", an(cxname_singular(obj)), an(cxname_singular(uwep)));
+        return 0;
     }
 
     return obj ? throw_obj(obj, shotlimit) : 0;

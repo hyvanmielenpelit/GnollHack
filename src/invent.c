@@ -2068,6 +2068,7 @@ const char* headertext;
                      || !objects[HORN_OF_PLENTY].oc_name_known))
  			 || (!strcmp(word, "detect blessedness for") && otmp->bknown)
 			 || (!strcmp(word, "charge") && !is_chargeable(otmp))
+ 			 || (!strcmp(word, "fire") && (!uwep || !otmp || (otmp && uwep && !ammo_and_launcher(otmp, uwep))))
              || (!strcmp(word, "open") && otyp != TIN)
              || (!strcmp(word, "call") && !objtyp_is_callable(otyp))
              || (!strcmp(word, "adjust") && otmp->oclass == COIN_CLASS
@@ -2272,7 +2273,8 @@ const char* headertext;
                 return (struct obj *) 0;
             }
         }
-        if (cntgiven && !strcmp(word, "throw")) {
+        if (cntgiven && (!strcmp(word, "throw") || !strcmp(word, "fire"))) 
+        {
             /* permit counts for throwing gold, but don't accept
              * counts for other things since the throw code will
              * split off a single item anyway */
@@ -2280,7 +2282,7 @@ const char* headertext;
                 return (struct obj *) 0;
             if (cnt > 1 && (ilet != def_oc_syms[COIN_CLASS].sym
                 && !(otmp && otmp->oclass == COIN_CLASS))) {
-                You("can only throw one item at a time.");
+                You("can only %s one item at a time.", word);
                 continue;
             }
         }

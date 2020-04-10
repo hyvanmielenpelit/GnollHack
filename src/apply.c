@@ -1143,7 +1143,8 @@ struct obj* otmp;
 
 	wake = FALSE;
 
-	if (is_undead(mtmp->data) || is_vampshifter(mtmp) || is_demon(mtmp->data)) {
+	if (is_undead(mtmp->data) || is_vampshifter(mtmp) || is_demon(mtmp->data)) 
+    {
 		reveal_invis = TRUE;
 		wake = TRUE;
 		if(otmp->blessed)
