@@ -2181,7 +2181,7 @@ register struct obj* obj;
 		if (objects[otyp].oc_flags & ~(O1_THROWN_WEAPON_ONLY | O1_MELEE_AND_THROWN_WEAPON
 			| O1_WAND_LIKE_TOOL | O1_NON_SPELL_SPELLBOOK | O1_EDIBLE_NONFOOD) 
 			|| otyp_shines_magical_light(otyp)
-			|| is_otyp_elemental_enchantable(otyp) || is_otyp_special_praying_item(otyp) || otyp_consumes_nutrition_every_20_rounds(otyp)
+			|| is_otyp_special_praying_item(otyp) || otyp_consumes_nutrition_every_20_rounds(otyp) //|| is_otyp_elemental_enchantable(otyp) 
 			)
 		{
 			int powercnt = 0;
@@ -2317,7 +2317,7 @@ register struct obj* obj;
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
-
+#if 0
 			if (is_otyp_elemental_enchantable(otyp))
 			{
 				powercnt++;
@@ -2325,6 +2325,7 @@ register struct obj* obj;
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
+#endif
 			if (powercnt == 0)
 			{
 				Sprintf(buf, " (None)");

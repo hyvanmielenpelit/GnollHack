@@ -479,61 +479,81 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 	case REAGENT_CLASS:
 	case MISCELLANEOUS_CLASS:
 	case TOOL_CLASS:
-		if (dknown)
-		{
-			if (obj->elemental_enchantment == COLD_ENCHANTMENT)
-				Strcat(buf, "freezing ");
-			else if (obj->elemental_enchantment == FIRE_ENCHANTMENT)
-				Strcat(buf, "flaming ");
-			else if (obj->elemental_enchantment == LIGHTNING_ENCHANTMENT)
-				Strcat(buf, "electrified ");
-			else if (obj->elemental_enchantment == DEATH_ENCHANTMENT)
-				Strcat(buf, "deathly ");
-		}
+    case GEM_CLASS:
+    {
+        if (dknown)
+        {
+            if (obj->elemental_enchantment == COLD_ENCHANTMENT)
+                Strcat(buf, "freezing ");
+            else if (obj->elemental_enchantment == FIRE_ENCHANTMENT)
+                Strcat(buf, "flaming ");
+            else if (obj->elemental_enchantment == LIGHTNING_ENCHANTMENT)
+                Strcat(buf, "electrified ");
+            else if (obj->elemental_enchantment == DEATH_ENCHANTMENT)
+                Strcat(buf, "deathly ");
+        }
 
-		if (obj->oclass == MISCELLANEOUS_CLASS && (
-			objects[obj->otyp].oc_subtyp == MISC_EARRINGS
-			|| objects[obj->otyp].oc_subtyp == MISC_EYEGLASSES
-			|| objects[obj->otyp].oc_subtyp == MISC_PANTS
-			|| objects[obj->otyp].oc_subtyp == MISC_BRACERS
-			|| objects[obj->otyp].oc_subtyp == MISC_WINGS
-			|| objects[obj->otyp].oc_subtyp == MISC_EXTRA_ARMS
-			))
+        if (obj->oclass == MISCELLANEOUS_CLASS && (
+            objects[obj->otyp].oc_subtyp == MISC_EARRINGS
+            || objects[obj->otyp].oc_subtyp == MISC_EYEGLASSES
+            || objects[obj->otyp].oc_subtyp == MISC_PANTS
+            || objects[obj->otyp].oc_subtyp == MISC_BRACERS
+            || objects[obj->otyp].oc_subtyp == MISC_WINGS
+            || objects[obj->otyp].oc_subtyp == MISC_EXTRA_ARMS
+            ))
             Strcpy(buf, "pair of ");
         else if (is_wet_towel(obj))
             Strcpy(buf, (obj->special_quality < 3) ? "moist " : "wet ");
 
-		if (!dknown)
-		{
-			if (obj->oclass == WEAPON_CLASS)
-				Strcat(buf, weapon_type_names[objects[obj->otyp].oc_subtyp]);
-			else if (obj->oclass == MISCELLANEOUS_CLASS)
-				Strcat(buf, misc_type_names[objects[obj->otyp].oc_subtyp]);
-			else if (obj->oclass == TOOL_CLASS && objects[obj->otyp].oc_subtyp > TOOLTYPE_GENERAL)
-				Strcat(buf, tool_type_names[objects[obj->otyp].oc_subtyp]);
-			else
-				Strcat(buf, dn);
-		}
+        const char* rock = is_ore(obj) ? "nugget of ore" : is_graystone(obj) ? "stone" : (ocl->oc_material == MAT_MINERAL) ? "stone" : "gem";
+        boolean isgem = (obj->oclass == GEM_CLASS);
+
+        if (!dknown)
+        {
+            if (obj->oclass == WEAPON_CLASS)
+                Strcat(buf, weapon_type_names[objects[obj->otyp].oc_subtyp]);
+            else if (obj->oclass == MISCELLANEOUS_CLASS)
+                Strcat(buf, misc_type_names[objects[obj->otyp].oc_subtyp]);
+            else if (obj->oclass == TOOL_CLASS && objects[obj->otyp].oc_subtyp > TOOLTYPE_GENERAL)
+                Strcat(buf, tool_type_names[objects[obj->otyp].oc_subtyp]);
+            else if (obj->oclass == GEM_CLASS)
+                Strcpy(buf, rock);
+            else
+                Strcat(buf, dn);
+        }
         else if (nn)
+        {
             Strcat(buf, actualn);
-        else if (un) {
-            Strcat(buf, dn);
+            if (isgem && GemStone(typ))
+                Strcat(buf, " stone");
+        }
+        else if (un)
+        {
+            Strcat(buf, isgem ? rock : dn);
             Strcat(buf, " called ");
             Strcat(buf, un);
-        } else
-            Strcat(buf, dn);
+        }
+        else
+        {
+            if (isgem)
+                Sprintf(buf, "%s %s", dn, rock);
+            else
+                Strcat(buf, dn);
+        }
 
         if (typ == FIGURINE && omndx != NON_PM) {
             char anbuf[10]; /* [4] would be enough: 'a','n',' ','\0' */
 
             Sprintf(eos(buf), " of %s%s",
-                    just_an(anbuf, mons[omndx].mname),
-                    mons[omndx].mname);
-        } else if (is_wet_towel(obj)) {
+                just_an(anbuf, mons[omndx].mname),
+                mons[omndx].mname);
+        }
+        else if (is_wet_towel(obj)) {
             if (wizard)
                 Sprintf(eos(buf), " (%d)", obj->special_quality);
         }
         break;
+    }
     case ARMOR_CLASS:
         /* depends on order of the dragon scales objects */
         if (typ >= GRAY_DRAGON_SCALES && typ <= YELLOW_DRAGON_SCALES) {
@@ -741,23 +761,6 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         else
             Sprintf(buf, "%s ring", dn);
         break;
-    case GEM_CLASS: {
-        const char *rock = is_ore(obj) ? "nugget of ore" : is_graystone(obj) ? "stone" : (ocl->oc_material == MAT_MINERAL) ? "stone" : "gem";
-
-        if (!dknown) {
-            Strcpy(buf, rock);
-        } else if (!nn) {
-            if (un)
-                Sprintf(buf, "%s called %s", rock, un);
-            else
-                Sprintf(buf, "%s %s", dn, rock);
-        } else {
-            Strcpy(buf, actualn);
-            if (GemStone(typ))
-                Strcat(buf, " stone");
-        }
-        break;
-    }
     default:
         Sprintf(buf, "glorkum %d %d %d %d", obj->oclass, typ, obj->enchantment, obj->charges);
     }
@@ -1006,6 +1009,9 @@ doname_base(obj, doname_flags)
 struct obj *obj;
 unsigned doname_flags;
 {
+    if (!obj)
+        return "";
+
     boolean ispoisoned = FALSE,
             with_price = (doname_flags & DONAME_WITH_PRICE) != 0,
             vague_quan = (doname_flags & DONAME_VAGUE_QUAN) != 0,
@@ -1116,7 +1122,7 @@ unsigned doname_flags;
                       || obj->oclass == ARMOR_CLASS
                       || obj->oclass == RING_CLASS
 					  || obj->oclass == MISCELLANEOUS_CLASS
-					 )
+                     )
 #ifdef MAIL
                      && obj->otyp != SCR_MAIL
 #endif
@@ -1267,6 +1273,7 @@ unsigned doname_flags;
 		}
         /*FALLTHRU*/
     case WEAPON_CLASS:
+weapon_here:
         if (ispoisoned)
             Strcat(prefix, "poisoned ");
 		if (isenchanted)
@@ -1414,6 +1421,10 @@ unsigned doname_flags;
         add_erosion_words(obj, prefix);
         if (obj->owornmask & W_BALL)
             Strcat(bp, " (chained to you)");
+        break;
+    case GEM_CLASS:
+        if (objects[obj->otyp].oc_enchantable && (obj->enchantment != 0 || obj->elemental_enchantment != 0))
+            goto weapon_here;
         break;
     }
 

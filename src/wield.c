@@ -1414,7 +1414,8 @@ register int amount;
     boolean multiple;
     int otyp = STRANGE_OBJECT;
 
-    if (!weapon || (weapon->oclass != WEAPON_CLASS && !is_weptool(weapon))) {
+    if (!weapon || !((is_weapon(weapon) || is_ammo(weapon)) && objects[weapon->otyp].oc_enchantable)) 
+	{
         char buf[BUFSZ];
 
         if (amount >= 0 && weapon && will_weld(weapon, &youmonst)) { /* cursed tin opener */

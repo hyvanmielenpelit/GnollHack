@@ -2942,9 +2942,9 @@ COIN("gold piece", 1000, MAT_GOLD, 1),
 		   0, 1, 3, 0, 1, 3, 0, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
 		   nutr, color, WEP_SLING, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
-#define ROCK(name,desc,power1,power2,power3,pflags,kn,prob,wt,gval, sdice, sdam, splus, ldice, ldam, lplus, mgc,nutr,mohs,glass,color,flags,flags2,flags3,powconfermask) \
+#define ROCK(name,desc,power1,power2,power3,pflags,kn,prob,wt,gval, enchtype, sdice, sdam, splus, ldice, ldam, lplus, mgc,nutr,mohs,glass,color,flags,flags2,flags3,powconfermask) \
     OBJECT(OBJ(name, desc, None, None),                                            \
-           BITS(kn, 1, 0, 0, mgc, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, 0, 0, 0,                           \
+           BITS(kn, 1, (enchtype > 0 ? 1 : 0), 0, mgc, enchtype, CHARGED_NOT_CHARGED, 0, 0, 0,                           \
                 HARDGEM(mohs), 0, WEP_SLING_BULLET, -P_SLING, glass), \
            power1, power2, power3, pflags, GEM_CLASS, prob, MULTIGEN_SINGLE, 0, wt, gval, \
 		   0, sdice, sdam, splus, ldice, ldam, lplus, 0, 0, 0, 0, A1_NONE, 0, \
@@ -3000,50 +3000,50 @@ GEM("worthless piece of violet glass", "violet",
  */
 ROCK("luckstone", "gray",	//Gray stone start marker
 	NO_POWER, NO_POWER, NO_POWER, P1_CONFERS_LUCK | P1_LUCK_APPLIES_WHEN_CARRIED | P1_CURSED_ITEM_YIELDS_NEGATIVE,
-	0,  10,  10, 60, 1, 3, 0, 1, 3, 0, 1, 10, 7, MAT_MINERAL, CLR_GRAY, 
+	0,  10,  10, 60, ENCHTYPE_NO_ENCHANTMENT, 1, 3, 0, 1, 3, 0, 1, 10, 7, MAT_MINERAL, CLR_GRAY,
 	O1_THROWN_WEAPON_ONLY, 
 	O2_GRAYSTONE, O3_NONE, PERMITTED_ALL),
 ROCK("loadstone", "gray", 
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE,
-	0,  10, 500,  1, 1, 10, 0, 1, 10, 0, 1, 10, 6, MAT_MINERAL, CLR_GRAY,
+	0,  10, 500,  1, ENCHTYPE_NO_ENCHANTMENT, 1, 10, 0, 1, 10, 0, 1, 10, 6, MAT_MINERAL, CLR_GRAY,
 	O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED | O1_CANNOT_BE_DROPPED_IF_CURSED | O1_THROWN_WEAPON_ONLY,
 	O2_GRAYSTONE | O2_CURSED_MAGIC_ITEM | O2_GENERATED_CURSED, O3_NONE, PERMITTED_ALL),
 ROCK("jinxstone", "gray",  
 	FUMBLING, NO_POWER, NO_POWER, P1_POWER_1_APPLIES_WHEN_CARRIED | P1_CONFERS_UNLUCK | P1_LUCK_APPLIES_WHEN_CARRIED,
-	0,  10,  10,  1, 1, 3, 0, 1, 3, 0, 1, 10, 6, MAT_MINERAL, CLR_GRAY, 
+	0,  10,  10,  1, ENCHTYPE_NO_ENCHANTMENT, 1, 3, 0, 1, 3, 0, 1, 10, 6, MAT_MINERAL, CLR_GRAY,
 	O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED | O1_CANNOT_BE_DROPPED_IF_CURSED | O1_THROWN_WEAPON_ONLY,
 	O2_GRAYSTONE | O2_CURSED_MAGIC_ITEM | O2_GENERATED_CURSED, O3_NONE, PERMITTED_ALL),
 ROCK("prayerstone", "gray",
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE,
-	0,  10,  10, 60, 1, 3, 0, 1, 3, 0, 1, 10, 7, MAT_MINERAL, CLR_GRAY, 
+	0,  10,  10, 60, ENCHTYPE_NO_ENCHANTMENT, 1, 3, 0, 1, 3, 0, 1, 10, 7, MAT_MINERAL, CLR_GRAY,
 	O1_THROWN_WEAPON_ONLY, 
 	O2_GRAYSTONE | O2_SPECIAL_PRAYING_ITEM, O3_NONE, PERMITTED_ALL),
 ROCK("touchstone", "gray", 
-	0, 0, 0, P1_NONE, 0,   8,  10, 45, 1, 3, 0, 1, 3, 0, 1, 10, 6, MAT_MINERAL, CLR_GRAY, O1_THROWN_WEAPON_ONLY, O2_GRAYSTONE, O3_NONE, PERMITTED_ALL),
+	0, 0, 0, P1_NONE, 0,   8,  10, 45, ENCHTYPE_NO_ENCHANTMENT, 1, 3, 0, 1, 3, 0, 1, 10, 6, MAT_MINERAL, CLR_GRAY, O1_THROWN_WEAPON_ONLY, O2_GRAYSTONE, O3_NONE, PERMITTED_ALL),
 ROCK("flint", "gray",      //Gray stone end marker 
-	0, 0, 0, P1_NONE, 0,   8,  10,  1, 1, 8, 0, 1, 8, 0, 0, 10, 7, MAT_MINERAL, CLR_GRAY, O1_THROWN_WEAPON_ONLY, O2_GRAYSTONE, O3_NONE, PERMITTED_ALL),
+	0, 0, 0, P1_NONE, 0,   8,  10,  1, ENCHTYPE_GENERAL_ALWAYS_START_0, 1, 8, 0, 1, 8, 0, 0, 10, 7, MAT_MINERAL, CLR_GRAY, O1_THROWN_WEAPON_ONLY, O2_GRAYSTONE, O3_ELEMENTAL_ENCHANTABLE, PERMITTED_ALL),
 ROCK("rock", None,         
-	0, 0, 0, P1_NONE, 1,  26,  10,  0, 1, 6, 0, 1, 6, 0, 0, 10, 7, MAT_MINERAL, CLR_GRAY, O1_THROWN_WEAPON_ONLY, O2_ROCK, O3_NONE, PERMITTED_ALL),
+	0, 0, 0, P1_NONE, 1,  26,  10,  0, ENCHTYPE_GENERAL_ALWAYS_START_0, 1, 6, 0, 1, 6, 0, 0, 10, 7, MAT_MINERAL, CLR_GRAY, O1_THROWN_WEAPON_ONLY, O2_ROCK, O3_ELEMENTAL_ENCHANTABLE, PERMITTED_ALL),
 ROCK("stone pebble", None,         
-	0, 0, 0, P1_NONE, 1,  40,	  2, 0, 1, 4, 0, 1, 4, 0, 0, 10, 7, MAT_MINERAL, CLR_GRAY, O1_THROWN_WEAPON_ONLY, O2_ROCK, O3_NONE, PERMITTED_ALL),
+	0, 0, 0, P1_NONE, 1,  40,	  2, 0, ENCHTYPE_GENERAL_ALWAYS_START_0, 1, 4, 0, 1, 4, 0, 0, 10, 7, MAT_MINERAL, CLR_GRAY, O1_THROWN_WEAPON_ONLY, O2_ROCK, O3_ELEMENTAL_ENCHANTABLE, PERMITTED_ALL),
 ROCK("clay pebble", None,         
-	0, 0, 0, P1_NONE, 1,  40,   2, 0, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_MINERAL, CLR_BROWN, O1_THROWN_WEAPON_ONLY, O2_ROCK, O3_NONE, PERMITTED_ALL),
+	0, 0, 0, P1_NONE, 1,  40,   2, 0, ENCHTYPE_GENERAL_ALWAYS_START_0, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_MINERAL, CLR_BROWN, O1_THROWN_WEAPON_ONLY, O2_ROCK, O3_ELEMENTAL_ENCHANTABLE, PERMITTED_ALL),
 ROCK("nugget of iron ore", None,         //Ore startmarker
-	0, 0, 0, P1_NONE, 1,  10,  16,    1, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_IRON, HI_METAL, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
+	0, 0, 0, P1_NONE, 1,  10,  16,    1, ENCHTYPE_NO_ENCHANTMENT, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_IRON, HI_METAL, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
 ROCK("nugget of copper ore", None,
-	0, 0, 0, P1_NONE, 1,   9,  16,    2, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_COPPER, HI_GOLD, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
+	0, 0, 0, P1_NONE, 1,   9,  16,    2, ENCHTYPE_NO_ENCHANTMENT, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_COPPER, HI_GOLD, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
 ROCK("nugget of silver ore", None,
-	0, 0, 0, P1_NONE, 1,   5,  16,    5, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_SILVER, HI_SILVER, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
+	0, 0, 0, P1_NONE, 1,   5,  16,    5, ENCHTYPE_NO_ENCHANTMENT, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_SILVER, HI_SILVER, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
 ROCK("nugget of gold ore", None,
-	0, 0, 0, P1_NONE, 1,   4,  16,   25, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_GOLD, HI_GOLD, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
+	0, 0, 0, P1_NONE, 1,   4,  16,   25, ENCHTYPE_NO_ENCHANTMENT, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_GOLD, HI_GOLD, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
 ROCK("nugget of platinum ore", None,
-	0, 0, 0, P1_NONE, 1,   3,  16,   50, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_PLATINUM, HI_SILVER, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
+	0, 0, 0, P1_NONE, 1,   3,  16,   50, ENCHTYPE_NO_ENCHANTMENT, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_PLATINUM, HI_SILVER, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
 ROCK("nugget of orichalcum ore", None,
-	0, 0, 0, P1_NONE, 1,   2,  16,  200, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_ORICHALCUM, HI_SILVER, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
+	0, 0, 0, P1_NONE, 1,   2,  16,  200, ENCHTYPE_NO_ENCHANTMENT, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_ORICHALCUM, HI_SILVER, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
 ROCK("nugget of adamantium ore", None,
-	0, 0, 0, P1_NONE, 1,   2,  16,  150, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_ADAMANTIUM, HI_SILVER, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
+	0, 0, 0, P1_NONE, 1,   2,  16,  150, ENCHTYPE_NO_ENCHANTMENT, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_ADAMANTIUM, HI_SILVER, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
 ROCK("nugget of mithril ore", None,		//Ore endmarker
-	0, 0, 0, P1_NONE, 1,   2,  16,  100, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_MITHRIL, HI_SILVER, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
+	0, 0, 0, P1_NONE, 1,   2,  16,  100, ENCHTYPE_NO_ENCHANTMENT, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_MITHRIL, HI_SILVER, O1_NONE, O2_ORE, O3_NONE, PERMITTED_ALL),
 
 
 #undef GEM

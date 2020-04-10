@@ -1623,7 +1623,7 @@ struct obj* otmp;
 	if (!otmp)
 		return 0;
 
-	int init_spe = get_init_spe(objects[otmp->otyp].oc_enchantable);
+	int init_spe = get_init_enchantment(objects[otmp->otyp].oc_enchantable);
 
 	/* Possible extra modifications here */
 
@@ -1637,7 +1637,7 @@ struct obj* otmp;
 	if (!otmp)
 		return 0;
 
-	int init_spe = get_max_spe(objects[otmp->otyp].oc_enchantable);
+	int init_spe = get_max_enchantment(objects[otmp->otyp].oc_enchantable);
 
 	/* Possible extra modifications here */
 
@@ -1645,7 +1645,7 @@ struct obj* otmp;
 }
 
 int
-get_init_spe(spe_type_index)
+get_init_enchantment(spe_type_index)
 int spe_type_index;
 {
 	int initspe = 1;
@@ -1658,7 +1658,10 @@ int spe_type_index;
 	case ENCHTYPE_GENERAL:
 		initspe = rne(3);
 		break;
-	case ENCHTYPE_ALWAYS_1:
+    case ENCHTYPE_GENERAL_ALWAYS_START_0:
+        initspe = 0;
+        break;
+    case ENCHTYPE_ALWAYS_1:
 		initspe = 1;
 		break;
 	case ENCHTYPE_ALWAYS_2:
@@ -1695,7 +1698,7 @@ int spe_type_index;
 
 
 int
-get_max_spe(spe_type_index)
+get_max_enchantment(spe_type_index)
 int spe_type_index;
 {
 	int maxspe = 1;
@@ -1708,7 +1711,10 @@ int spe_type_index;
 	case ENCHTYPE_GENERAL:
 		maxspe = 5;
 		break;
-	case ENCHTYPE_ALWAYS_1:
+    case ENCHTYPE_GENERAL_ALWAYS_START_0:
+        maxspe = 5;
+        break;
+    case ENCHTYPE_ALWAYS_1:
 		maxspe = 1;
 		break;
 	case ENCHTYPE_ALWAYS_2:
