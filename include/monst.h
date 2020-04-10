@@ -158,8 +158,10 @@ struct monst {
 	Bitfield(leaves_no_corpse, 1);				/* this particular monster does not leave a corpse */
 	Bitfield(delayed_killer_by_you, 1);			/* is petrification or other delayed killer initiated by you */
 	int notalktimer;
-	Bitfield(u_know_mname, 1); /* you know the monster's name */
-	int max_hp_percentage;						/* % of the monster's maximum theoretical hit points at the time of creation */
+	Bitfield(u_know_mname, 1);                  /* you know the monster's name */
+    short rumorsleft;                           /* how many rumors the monster still knows, -1 means that the monster has already told the player that it does not know any more rumors */
+    Bitfield(told_rumor, 1);			        /* the monster had told the player at least one rumor */
+    int max_hp_percentage;						/* % of the monster's maximum theoretical hit points at the time of creation */
 
     Bitfield(iswiz, 1);     /* is the Wizard of Yendor */
     Bitfield(wormno, 5);    /* at most 31 worms on any level */

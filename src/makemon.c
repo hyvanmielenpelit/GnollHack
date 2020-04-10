@@ -2188,6 +2188,14 @@ unsigned long mmflags;
 
 	/* set up the number of heads */
 	mtmp->heads_left = ptr->heads;
+
+    /* set up known rumors */
+    mtmp->told_rumor = 0;
+    mtmp->rumorsleft = 0;
+    if (is_speaking_monster(mtmp->data))
+    {
+        mtmp->rumorsleft = (!rn2(2) ? 1 : 0) + (is_lord(mtmp->data) && !rn2(3) ? 1 : 0) + (ptr->intl > 15 && !rn2(2) ? 1 : 0);
+    }
 		
 	if (is_female(ptr))
         mtmp->female = TRUE;

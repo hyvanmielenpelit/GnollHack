@@ -8,6 +8,7 @@ STATIC_DCL boolean FDECL(mon_is_gecko, (struct monst *));
 STATIC_DCL int FDECL(domonnoise, (struct monst *));
 STATIC_DCL int NDECL(dochat);
 STATIC_DCL int FDECL(do_chat_whoareyou, (struct monst*));
+STATIC_DCL int FDECL(do_chat_rumors, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_sit, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_givepaw, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_stay, (struct monst*));
@@ -1375,6 +1376,24 @@ dochat()
 			available_chat_list[chatnum].name, MENU_UNSELECTED);
 
 		chatnum++;
+
+
+		if (mtmp->rumorsleft >= 0)
+		{
+			/* Who are you? */
+			strcpy(available_chat_list[chatnum].name, mtmp->told_rumor ? "Ask for further adventuring advice" : "Ask for adventuring advice");
+			available_chat_list[chatnum].function_ptr = &do_chat_rumors;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+		}
 	}
 
 	/* Tame dog and cat commands */
@@ -2059,7 +2078,7 @@ struct monst* mtmp;
 		return 0;
 	}
 
-	char ansbuf[BUFSZ] = "";
+	char ansbuf[BUFSZ];
 	int msound = mtmp->data->msound;
 
 	if (mtmp->isshk)
@@ -2182,13 +2201,60 @@ struct monst* mtmp;
 
 
 STATIC_OVL int
+do_chat_rumors(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp)
+		return 0;
+
+	if (!is_peaceful(mtmp))
+	{
+		pline("%s is not in the mood for chatting.", Monnam(mtmp));
+		return 0;
+	}
+
+	if (is_silenced(mtmp))
+	{
+		char Mhis[BUFSIZ];
+		strcpy(Mhis, mhis(mtmp));
+		*Mhis = highc(*Mhis);
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), Mhis);
+		return 0;
+	}
+
+	char ansbuf[BUFSZ];
+	char* rumor = getrumor(0, ansbuf, TRUE);
+		
+	if (mtmp->rumorsleft == 0 || !rumor)
+	{
+		pline("%s answers: \"Unfortunately, I don't have any %s advice for you.\"", Monnam(mtmp), mtmp->told_rumor ? "further" : "useful");
+		mtmp->rumorsleft = 0;
+	}
+	else
+	{
+		if (mtmp->told_rumor)
+			pline("%s answers: \"Let me think. Maybe keep this in mind:\"", Monnam(mtmp));
+		else
+			pline("%s answers: \"Yes, here's a piece of advice for you:\"", Monnam(mtmp));
+
+		/* Tell a rumor */
+		verbalize(rumor);
+	}
+
+	mtmp->rumorsleft--;
+
+	return 1;
+}
+
+
+STATIC_OVL int
 do_chat_pet_sit(mtmp)
 struct monst* mtmp;
 {
 	if (mtmp->mtame > 5 || (mtmp->mtame > 0 && rn2(mtmp->mtame + 1)))
 	{
 		pline("%s sits down!", Monnam(mtmp));
-		mtmp->mstaying = 2+ rn2(5);
+		mtmp->mstaying = 2 + rn2(5);
 		mtmp->mwantstomove = 0;
 	}
 	else
@@ -2211,7 +2277,7 @@ struct monst* mtmp;
 	else if (mtmp->mtame >= 5)
 		givepawsuccess = TRUE;
 
-	if(givepawsuccess)
+	if (givepawsuccess)
 	{
 		pline("%s gives you the paw!", Monnam(mtmp));
 		if (mtmp->mtame > 0 && mtmp->mtame < 5)
