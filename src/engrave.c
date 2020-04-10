@@ -17,8 +17,16 @@ char *outbuf;
 
     /* a random engraving may come from the "rumors" file,
        or from the "engrave" file (formerly in an array here) */
-    if (!rn2(4) || !(rumor = getrumor(0, outbuf, TRUE)) || !*rumor)
-        (void) get_rnd_text(ENGRAVEFILE, outbuf, rn2);
+    if (!rn2(10))
+    {
+        /* Somebody has tried to protect himself or herself with Elbereth */
+        rumor = "Elbereth";
+    }
+    else
+    {
+        if (!rn2(4) || !(rumor = getrumor(0, outbuf, TRUE)) || !*rumor)
+            (void)get_rnd_text(ENGRAVEFILE, outbuf, rn2);
+    }
 
     wipeout_text(outbuf, (int) (strlen(outbuf) / 4), 0);
     return outbuf;
