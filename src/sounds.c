@@ -2239,6 +2239,7 @@ struct monst* mtmp;
 
 		/* Tell a rumor */
 		verbalize(rumor);
+		mtmp->told_rumor = TRUE;
 	}
 
 	mtmp->rumorsleft--;
