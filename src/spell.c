@@ -913,7 +913,8 @@ int spell_list_type;
             Sprintf(lets, "a-zA-%c", 'A' + nspells - 27);
 
         for (;;) {
-            Sprintf(qbuf, "%s which spell? [%s *?]", (spell_list_type == 2 ? "Provide information on" : spell_list_type == 1 ? "Prepare" : "Cast"), lets);
+            Sprintf(qbuf, "%s which spell? [%s *?]", 
+				(spell_list_type == 5 ? "Forget" : spell_list_type == 4 ? "Set a hotkey for" : spell_list_type == 3 ? "Manage" : spell_list_type == 2 ? "View" : spell_list_type == 1 ? "Prepare" : "Cast"), lets);
             ilet = yn_function(qbuf, (char *) 0, '\0');
             if (ilet == '*' || ilet == '?')
                 break; /* use menu mode */
@@ -929,8 +930,8 @@ int spell_list_type;
             return TRUE;
         }
     }
-    return dospellmenu((spell_list_type == 2 ? "Choose a spell to view or manage" : spell_list_type == 1 ? "Choose a spell to prepare" : "Choose a spell to cast"),
-		(spell_list_type == 2 ? SPELLMENU_DETAILS : spell_list_type == 1 ? SPELLMENU_PREPARE : SPELLMENU_CAST),
+    return dospellmenu((spell_list_type == 5 ? "Choose a spell to forget" : spell_list_type == 4 ? "Choose a spell to set a hotkey for" : spell_list_type == 3 ? "Choose a spell to view" : spell_list_type == 2 ? "Choose a spell to manage" : spell_list_type == 1 ? "Choose a spell to prepare" : "Choose a spell to cast"),
+		(spell_list_type >= 2 ? SPELLMENU_DETAILS : spell_list_type == 1 ? SPELLMENU_PREPARE : SPELLMENU_CAST),
                        spell_no);
 }
 
@@ -940,23 +941,42 @@ docast()
 {
     int spell_no;
 
-    if (getspell(&spell_no, FALSE))
+    if (getspell(&spell_no, 0))
         return spelleffects(spell_no, FALSE);
 
     return 0;
 }
 
-/* the M('z') command -- spell info / descriptions */
 int
-dospellviewormanage()
+dospellmanage()
 {
 	int spell_no;
+	int action = dospellmanagemenu();
 
-	if (getspell(&spell_no, 2))
-		return dospellmanagemenu(spell_no);
+	if (action <= 0)
+		return 0;
+
+	if (getspell(&spell_no, action))
+	{
+		if(action == 4)
+			return setspellhotkey(spell_no);
+		else if (action == 5)
+			return forgetspell(spell_no);
+	}
 	return 0;
 }
 
+
+/* the M('z') command -- spell info / descriptions */
+int
+dospellview()
+{
+	int spell_no;
+
+	if (getspell(&spell_no, 3))
+		return spelldescription(spell_no);
+	return 0;
+}
 
 STATIC_OVL const char *
 spelltypemnemonic(skill)
@@ -2742,7 +2762,6 @@ spellsortmenu()
     return FALSE;
 }
 
-/* the '+' command -- view known spells */
 int
 dovspell()
 {
@@ -2784,6 +2803,7 @@ dovspell()
     return 0;
 }
 
+/* the '+' command -- view known spells */
 STATIC_OVL boolean
 dospellmenu(prompt, splaction, spell_no)
 const char *prompt;
@@ -3433,8 +3453,7 @@ boolean usehotkey;
 }
 
 int
-dospellmanagemenu(spell)
-int spell;
+dospellmanagemenu()
 {
 	int i = '\0';
 
@@ -3451,12 +3470,13 @@ int spell;
 	{
 		int charnum;
 		char name[BUFSZ];
-		int (*function_ptr)(int);
+		int action;
+		//int (*function_ptr)(int);
 	};
 	struct available_selection_item available_selection_item[10] = { 0 };
 	int selnum = 0;
 
-
+#if 0
 	/* Spell description */
 	strcpy(available_selection_item[selnum].name, "Detailed spell description");
 	available_selection_item[selnum].function_ptr = &spelldescription;
@@ -3470,14 +3490,11 @@ int spell;
 		available_selection_item[selnum].name, MENU_UNSELECTED);
 
 	selnum++;
+#endif
 
-	/* Set or clear hotkey */
-	char hotbuf[BUFSZ] = "";
-	if(spellhotkey(spell))
-		Sprintf(hotbuf, " (currently \'%d\')", (spellhotkey(spell) % 10));
-
-	Sprintf(available_selection_item[selnum].name, "Set or clear hotkey%s", hotbuf);
-	available_selection_item[selnum].function_ptr = &setspellhotkey;
+	strcpy(available_selection_item[selnum].name, "Set or clear a hotkey for a spell");
+	//available_selection_item[selnum].function_ptr = &setspellhotkey;
+	available_selection_item[selnum].action = 4;
 	available_selection_item[selnum].charnum = 'a' + selnum;
 
 	any = zeroany;
@@ -3491,8 +3508,9 @@ int spell;
 
 
 	/* Forget spell */
-	strcpy(available_selection_item[selnum].name, "Forget spell");
-	available_selection_item[selnum].function_ptr = &forgetspell;
+	strcpy(available_selection_item[selnum].name, "Forget a spell");
+	//available_selection_item[selnum].function_ptr = &forgetspell;
+	available_selection_item[selnum].action = 5;
 	available_selection_item[selnum].charnum = 'a' + selnum;
 
 	any = zeroany;
@@ -3507,7 +3525,7 @@ int spell;
 
 	/* Finalize the menu */
 	char qbuf[BUFSZ] = "";
-	Sprintf(qbuf, "What do you want to do with \'%s\'?", spellname(spell));
+	strcpy(qbuf, "What do you want to do?");
 
 	/* Finish the menu */
 	end_menu(win, qbuf);
@@ -3515,7 +3533,7 @@ int spell;
 
 	if (selnum <= 0)
 	{
-		You("can't do anything with this spell.");
+		You("do not have management actions available.");
 		destroy_nhwindow(win);
 		return 0;
 	}
@@ -3539,7 +3557,7 @@ int spell;
 		{
 			if (i != '\0')
 			{
-				res = (available_selection_item[j].function_ptr)(spell);
+				res = available_selection_item[j].action; // (available_selection_item[j].function_ptr)(spell);
 			}
 			break;
 		}
@@ -3558,7 +3576,13 @@ int spell;
 	char answerchar = '\0';
 	char buf[BUFSZ] = "";
 	const char* letters = "1234567890-q";
-	Sprintf(promptbuf, "Which hotkey do you want to use for \'%s\'?", spellname(spell));
+
+	/* Set or clear hotkey */
+	char hotbuf[BUFSZ] = "";
+	if (spellhotkey(spell))
+		Sprintf(hotbuf, "(\'%d\')", (spellhotkey(spell) % 10));
+
+	Sprintf(promptbuf, "Which hotkey do you want to use for \'%s\'? %s", spellname(spell), hotbuf);
 	//getlin(promptbuf, answerbuf);
 	answerchar = yn_function(promptbuf, letters, '-');
 	//(void)mungspaces(answerbuf);

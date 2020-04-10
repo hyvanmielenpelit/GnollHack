@@ -3931,7 +3931,7 @@ docommandmenu(VOID_ARGS)
 
 /* '+' command */
 STATIC_PTR int
-dospellmenu(VOID_ARGS)
+dospellmainmenu(VOID_ARGS)
 {
 	winid menuwin;
 	menu_item* selected = (menu_item*)0;
@@ -4331,7 +4331,7 @@ struct ext_func_tab extcmdlist[] = {
     { RING_SYM, "seerings", "show the ring(s) currently worn",
             doprring, IFBURIED },
     { SPBOOK_SYM, "spellmenu", "spell main menu",
-            dospellmenu, AUTOCOMPLETE | IFBURIED | INCMDMENU },
+            dospellmainmenu, AUTOCOMPLETE | IFBURIED | INCMDMENU },
     { TOOL_SYM, "seetools", "show the tools currently in use",
             doprtool, IFBURIED },
     { '^', "seetrap", "show the type of adjacent trap", doidtrap, IFBURIED },
@@ -4396,8 +4396,10 @@ struct ext_func_tab extcmdlist[] = {
 	{ 'Z', "cast", "cast a spell", docast, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
 	{ 'X', "mix", "prepare a spell from material components",
 			domix, AUTOCOMPLETE | INSPELLMENU },
-	{ M('z'), "viewspell", "view or manage spells", dospellviewormanage, IFBURIED | AUTOCOMPLETE | INCMDMENU | INSPELLMENU },
-	{ '\0', "reorderspells", "sort and reorder known spells",
+	{ M('z'), "viewspell", "view spells", dospellview, IFBURIED | AUTOCOMPLETE | INCMDMENU | INSPELLMENU },
+    { '\0', "managespell", "manage spells",
+            dospellmanage, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
+    { '\0', "reorderspells", "sort and reorder known spells",
 			dovspell, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
 
 
