@@ -2936,7 +2936,7 @@ struct attack *mattk;
             remove_monster(mtmp->mx, mtmp->my); /* u.ux,u.uy */
             place_monster(mtmp, omx, omy);
 			int existing_stoning = get_mon_property(mtmp, STONED);
-			set_mon_property_verbosely(mtmp, STONED, max(1, min(existing_stoning - 1, 5)));
+            (void)set_mon_property_verbosely(mtmp, STONED, max(1, min(existing_stoning - 1, 5)));
 			//minstapetrify(mtmp, TRUE);
             /* normally unstuck() would do this, but we're not
                fully swallowed yet so that won't work here */

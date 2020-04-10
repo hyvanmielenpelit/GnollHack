@@ -462,9 +462,9 @@ boolean verbose;
 	if (objects[otmp->otyp].oc_edible_effect > 0)
 	{
 		if (duration > 0)
-			set_mon_property_b(mtmp, objects[otmp->otyp].oc_edible_effect, duration, verbose);
+            (void)set_mon_property_b(mtmp, objects[otmp->otyp].oc_edible_effect, duration, verbose);
 		else
-			set_mon_property_b(mtmp, objects[otmp->otyp].oc_edible_effect, -1, verbose);
+            (void)set_mon_property_b(mtmp, objects[otmp->otyp].oc_edible_effect, -1, verbose);
 	}
 
 	switch (objects[otmp->otyp].oc_edible_effect)
@@ -495,7 +495,7 @@ boolean verbose;
 			xkilled(mtmp, XKILL_NOMSG);
 		}
 		if (!otmp->cursed)
-			set_mon_property_b(mtmp, WOUNDED_LEGS, 0, FALSE);
+            (void)set_mon_property_b(mtmp, WOUNDED_LEGS, 0, FALSE);
 
 		break;
 	}
@@ -573,11 +573,11 @@ boolean verbose;
 		break;
 	case EDIBLEFX_CURE_SICKNESS:
 		if (is_sick(mtmp) && !otmp->cursed)
-			set_mon_property_b(mtmp, SICK, 0, canseemon(mtmp));
+            (void)set_mon_property_b(mtmp, SICK, 0, canseemon(mtmp));
 		if (is_food_poisoned(mtmp) && !otmp->cursed)
-			set_mon_property_b(mtmp, FOOD_POISONED, 0, canseemon(mtmp));
+            (void)set_mon_property_b(mtmp, FOOD_POISONED, 0, canseemon(mtmp));
 		if (has_vomiting(mtmp) && !otmp->cursed)
-			set_mon_property_b(mtmp, VOMITING, 0, canseemon(mtmp));
+            (void)set_mon_property_b(mtmp, VOMITING, 0, canseemon(mtmp));
 		break;
 	case EDIBLEFX_APPLE:
 		/* Nothing */
@@ -587,7 +587,7 @@ boolean verbose;
 		{
 			if (has_stoned(mtmp))
 			{
-				set_mon_property_b(mtmp, STONED, 0, canseemon(mtmp));
+                (void)set_mon_property_b(mtmp, STONED, 0, canseemon(mtmp));
 				if(canseemon(mtmp))
 					pline("%s looks limber!", Monnam(mtmp));
 

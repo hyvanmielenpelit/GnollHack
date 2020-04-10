@@ -1608,7 +1608,7 @@ E boolean FDECL(angry_guards, (BOOLEAN_P));
 E void NDECL(pacify_guards);
 E void FDECL(decide_to_shapeshift, (struct monst *, int));
 E boolean FDECL(vamp_stone, (struct monst *));
-E void FDECL(m_detach, (struct monst*, struct permonst*));
+E void FDECL(m_detach, (struct monst*, struct permonst*, boolean));
 E int NDECL(randomtruegem);
 E int FDECL(randomreagent, (boolean, int));
 E int NDECL(randomore);
@@ -2610,7 +2610,7 @@ E void FDECL(stealamulet, (struct monst *));
 E void FDECL(maybe_absorb_item, (struct monst *, struct obj *, int, int));
 E void FDECL(mdrop_obj, (struct monst *, struct obj *, BOOLEAN_P));
 E void FDECL(mdrop_special_objs, (struct monst *));
-E void FDECL(relobj, (struct monst *, int, BOOLEAN_P));
+E void FDECL(relobj, (struct monst *, int, BOOLEAN_P, BOOLEAN_P));
 E void FDECL(mdrop_droppable_objs, (struct monst*));
 E struct obj *FDECL(findgold, (struct obj *));
 E struct obj* FDECL(findobjecttype, (struct obj*, int));
@@ -3213,17 +3213,16 @@ E struct obj *FDECL(nxt_unbypassed_obj, (struct obj *));
 E struct obj *FDECL(nxt_unbypassed_loot, (Loot *, struct obj *));
 E int FDECL(racial_exception, (struct monst *, struct obj *));
 E void FDECL(nonadditive_increase_mon_property, (struct monst*, int, int));
-E void FDECL(nonadditive_increase_mon_property_verbosely, (struct monst*, int, int));
+E boolean FDECL(nonadditive_increase_mon_property_verbosely, (struct monst*, int, int));
 E void FDECL(increase_mon_property, (struct monst*, int, int));
 E int FDECL(get_mon_property, (struct monst*, int));
 E void FDECL(set_mon_property, (struct monst*, int, int));
-E void FDECL(set_mon_property_verbosely, (struct monst*, int, int));
-E void FDECL(verbose_wrapper, (enum verbose_function_types, struct monst*, int, int, BOOLEAN_P));
-E void FDECL(increase_mon_property_verbosely, (struct monst*, int, int));
-
-E void FDECL(increase_mon_property_b, (struct monst*, int, int, BOOLEAN_P));
-E void FDECL(nonadditive_increase_mon_property_b, (struct monst*, int, int, BOOLEAN_P));
-E void FDECL(set_mon_property_b, (struct monst*, int, int, BOOLEAN_P));
+E boolean FDECL(set_mon_property_verbosely, (struct monst*, int, int));
+E boolean FDECL(verbose_wrapper, (enum verbose_function_types, struct monst*, int, int, BOOLEAN_P));
+E boolean FDECL(increase_mon_property_verbosely, (struct monst*, int, int));
+E boolean FDECL(increase_mon_property_b, (struct monst*, int, int, BOOLEAN_P));
+E boolean FDECL(nonadditive_increase_mon_property_b, (struct monst*, int, int, BOOLEAN_P));
+E boolean FDECL(set_mon_property_b, (struct monst*, int, int, BOOLEAN_P));
 
 /* ### write.c ### */
 

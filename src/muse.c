@@ -2067,13 +2067,13 @@ struct monst *mtmp;
 			return 2;
 		mzapmsg(mtmp, otmp, TRUE);
         otmp->charges--;
-		increase_mon_property_verbosely(mtmp, VERY_FAST, rn1(10, 100 + 60 * bcsign(otmp)) );
+        (void)increase_mon_property_verbosely(mtmp, VERY_FAST, rn1(10, 100 + 60 * bcsign(otmp)));
 		return 2;
     case MUSE_POT_SPEED:
 		if (!otmp)
 			return 2;
 		mquaffmsg(mtmp, otmp);
-		increase_mon_property_verbosely(mtmp, VERY_FAST, rn1(10, 100 + 60 * bcsign(otmp)));
+        (void)increase_mon_property_verbosely(mtmp, VERY_FAST, rn1(10, 100 + 60 * bcsign(otmp)));
 		m_useup(mtmp, otmp);
         return 2;
     case MUSE_WAN_POLYMORPH:
@@ -2831,7 +2831,7 @@ boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
         pline("%s starts turning %s.", Monnam(mon),
               green_mon(mon) ? "into ooze" : hcolor(NH_GREEN));
     /* -4 => sliming, causes quiet loss of enhanced speed */
-	increase_mon_property_verbosely(mon, SLIMED, 10);
+    (void)increase_mon_property_verbosely(mon, SLIMED, 10);
 
     if (trap) {
         const char *Mnam = vis ? Monnam(mon) : 0;

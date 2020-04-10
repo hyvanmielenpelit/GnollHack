@@ -33,6 +33,8 @@ static struct trobj Archeologist[] = {
     /* if adventure has a name...  idea from tan@uvm-gen */
     { BULLWHIP, 2, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
     { LEATHER_JACKET, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
+	{ HAND_CROSSBOW, 0, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
+	{ CROSSBOW_BOLT, 0, WEAPON_CLASS, 10, UNDEF_BLESS, 0 },
 	{ FEDORA, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
     { FOOD_RATION, 0, FOOD_CLASS, 1, 0, 0 },
 	{ HANDFUL_OF_NUTS, 0, FOOD_CLASS, 1, 0, 0 },

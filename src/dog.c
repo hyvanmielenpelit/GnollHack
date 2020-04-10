@@ -1063,7 +1063,7 @@ boolean verbose;
 
 	if (charm)
 	{
-		set_mon_property_b(mtmp, CHARMED, !duration ? -1 : duration, verbose);
+        (void)set_mon_property_b(mtmp, CHARMED, !duration ? -1 : duration, verbose);
 	}
 	else if(is_tame(mtmp) && !was_tame)
 	{
@@ -1098,7 +1098,7 @@ boolean verbose;
 	/* break charm */
 	if (has_charmed(mtmp))
 	{
-		set_mon_property_verbosely(mtmp, CHARMED, -3);
+		(void)set_mon_property_verbosely(mtmp, CHARMED, -3);
 	}
 }
 

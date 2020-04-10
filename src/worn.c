@@ -470,16 +470,16 @@ int amount;
 	set_mon_property(mon, prop_index, max(get_mon_property(mon, prop_index), amount));
 }
 
-void
+boolean
 nonadditive_increase_mon_property_verbosely(mtmp, prop_index, amount)
 struct monst* mtmp;
 int prop_index;
 int amount;
 {
-	set_mon_property_verbosely(mtmp, prop_index, max(get_mon_property(mtmp, prop_index), amount));
+	return set_mon_property_verbosely(mtmp, prop_index, max(get_mon_property(mtmp, prop_index), amount));
 }
 
-void
+boolean
 nonadditive_increase_mon_property_b(mtmp, prop_index, duration, verbose)
 struct monst* mtmp;
 int prop_index;
@@ -487,9 +487,12 @@ int duration;
 boolean verbose;
 {
 	if (verbose)
-		nonadditive_increase_mon_property_verbosely(mtmp, prop_index, duration);
+		return nonadditive_increase_mon_property_verbosely(mtmp, prop_index, duration);
 	else
+	{
 		nonadditive_increase_mon_property(mtmp, prop_index, duration);
+		return FALSE;
+	}
 }
 
 
@@ -550,7 +553,7 @@ int duration;
 #endif
 }
 
-void
+boolean
 increase_mon_property_verbosely(mtmp, prop_index, duration)
 struct monst* mtmp;
 int prop_index;
@@ -559,10 +562,10 @@ int duration;
 	int maxvalue = (int)M_TIMEOUT;
 	unsigned short value = (unsigned short)max(0, min(maxvalue, (get_mon_property(mtmp, prop_index) + duration)));
 
-	set_mon_property_verbosely(mtmp, prop_index, value);
+	return set_mon_property_verbosely(mtmp, prop_index, value);
 }
 
-void
+boolean
 increase_mon_property_b(mtmp, prop_index, duration, verbose)
 struct monst* mtmp;
 int prop_index;
@@ -570,9 +573,12 @@ int duration;
 boolean verbose;
 {
 	if (verbose)
-		increase_mon_property_verbosely(mtmp, prop_index, duration);
+		return increase_mon_property_verbosely(mtmp, prop_index, duration);
 	else
+	{
 		increase_mon_property(mtmp, prop_index, duration);
+		return 0;
+	}
 }
 
 
@@ -603,7 +609,7 @@ unsigned short amount;
 }
 
 
-void
+boolean
 set_mon_property_b(mtmp, prop_index, value, verbose)
 struct monst* mtmp;
 int prop_index;
@@ -611,9 +617,12 @@ int value; /* -1 sets the intrinsic and -2 clears it; -3 clears both temporary a
 boolean verbose;
 {
 	if (verbose)
-		set_mon_property_verbosely(mtmp, prop_index, value);
+		return set_mon_property_verbosely(mtmp, prop_index, value);
 	else
+	{
 		set_mon_property(mtmp, prop_index, value);
+		return FALSE;
+	}
 }
 
 void
@@ -760,17 +769,17 @@ struct obj *obj; /* item to make known if effect can be seen */
 }
 #endif
 
-void
+boolean
 set_mon_property_verbosely(mtmp, prop_index, value)
 struct monst* mtmp;
 int prop_index;
 int value; /* -1 sets the intrinsic and -2 clears it; -3 clears both temporary and permanent instrinsic */
 {
-	verbose_wrapper(VERBOSE_FUNCTION_SET_MON_PROPERTY, mtmp, prop_index, value, FALSE);
+	return verbose_wrapper(VERBOSE_FUNCTION_SET_MON_PROPERTY, mtmp, prop_index, value, FALSE);
 }
 
-
-void
+/* return TRUE if a visible effect (something was printed in pline) */
+boolean
 verbose_wrapper(function_choice, mtmp, prop_index, value, silently)
 enum verbose_function_types function_choice;
 struct monst* mtmp;
@@ -778,6 +787,8 @@ int prop_index;
 int value;
 boolean silently;
 {
+	boolean res = FALSE;
+
 	/* works for fast, very fast, and slowed */
 	char savedname[BUFSIZ] = "";
 	strcpy(savedname, mon_nam(mtmp));
@@ -825,13 +836,14 @@ boolean silently;
 	}
 
 	if (silently)
-		return;
+		return FALSE;
 
 	if (canspotmon(mtmp))
 	{
 
 		if (!could_spot_mon)
 		{
+			res = TRUE;
 			pline("Suddenly, you can see %s!", mon_nam(mtmp));
 		}
 		else
@@ -839,10 +851,12 @@ boolean silently;
 			/* Most such messages here */
 			if (is_invisible(mtmp) && !was_invisible && knowninvisible(mtmp))
 			{
+				res = TRUE;
 				pline("%s turns transparent!", SavedName);
 			}
 			else if (!is_invisible(mtmp) && was_invisible)
 			{
+				res = TRUE;
 				pline("%s body loses its transparency!", s_suffix(Monnam(mtmp)));
 			}
 		}
@@ -850,34 +864,41 @@ boolean silently;
 		/* Stoned */
 		if (is_stoning(mtmp) && !was_stoning)
 		{
+			res = TRUE;
 			pline("%s starts turning into stone!", Monnam(mtmp));
 		}
 		else if (!is_stoning(mtmp) && was_stoning)
 		{
+			res = TRUE;
 			pline("%s stops turning into stone.", Monnam(mtmp));
 		}
 
 		/* Slimed */
 		if (is_turning_into_slime(mtmp) && !was_turning_into_slime)
 		{
+			res = TRUE;
 			pline("%s is turning into green slime!", Monnam(mtmp));
 		}
 		else if (!is_turning_into_slime(mtmp) && was_turning_into_slime)
 		{
+			res = TRUE;
 			pline("%s is not turning into green slime anymore.", Monnam(mtmp));
 		}
 
 		/* Speed */
 		if ((is_very_fast(mtmp) && !was_very_fast) || (is_fast(mtmp) && was_slow))
 		{
+			res = TRUE;
 			pline("%s is moving %sfaster.", Monnam(mtmp), !was_fast ? "much " : "");
 		}
 		else if (is_fast(mtmp) && !was_fast && !was_very_fast)
 		{
+			res = TRUE;
 			pline("%s is moving faster.", Monnam(mtmp));
 		}
 		else if (is_slow(mtmp) && !was_slow)
 		{
+			res = TRUE;
 			if ((prop_index == STONED || prop_index == SLIMED) && value > 0)
 				pline("%s is slowing down!", Monnam(mtmp));
 			else if (prop_index == SLOWED && value > 0)
@@ -889,40 +910,48 @@ boolean silently;
 		/* Silenced */
 		if (is_silenced(mtmp) && !was_silenced)
 		{
+			res = TRUE;
 			pline("%s voice disappears.", s_suffix(Monnam(mtmp)));
 		}
 		else if (!is_silenced(mtmp) && was_silenced)
 		{
+			res = TRUE;
 			pline("%s voice returns.", s_suffix(Monnam(mtmp)));
 		}
 
 		/* Cancellation */
 		if (is_cancelled(mtmp) && !was_cancelled)
 		{
+			res = TRUE;
 			pline("%s magic seems to stop flowing properly.", s_suffix(Monnam(mtmp)));
 		}
 		else if (!is_cancelled(mtmp) && was_cancelled)
 		{
+			res = TRUE;
 			pline("%s magic seems to start flowing properly.", s_suffix(Monnam(mtmp)));
 		}
 
 		/* Sleeping */
 		if (is_sleeping(mtmp) && !was_sleeping)
 		{
+			res = TRUE;
 			pline("%s falls asleep.", Monnam(mtmp));
 		}
 		else if (!is_sleeping(mtmp) && was_sleeping)
 		{
+			res = TRUE;
 			pline("%s wakes up.", Monnam(mtmp));
 		}
 
 		/* Paralysis */
 		if (is_paralyzed(mtmp) && !was_paralyzed)
 		{
+			res = TRUE;
 			pline("%s is paralyzed!", Monnam(mtmp));
 		}
 		else if (!is_paralyzed(mtmp) && was_paralyzed)
 		{
+			res = TRUE;
 			if (mon_can_move(mtmp))
 				pline("%s can move again!", Monnam(mtmp));
 			else
@@ -932,40 +961,48 @@ boolean silently;
 		/* Blindness */
 		if (is_blinded(mtmp) && !was_blinded)
 		{
+			res = TRUE;
 			pline("%s is blinded!", Monnam(mtmp));
 		}
 		else if (!has_blinded(mtmp) && was_blinded)
 		{
+			res = TRUE;
 			pline("%s can see again!", Monnam(mtmp));
 		}
 
 		/* Stunned */
 		if (is_sleeping(mtmp) && !was_sleeping)
 		{
+			res = TRUE;
 			pline("%s falls asleep.", Monnam(mtmp));
 		}
 		else if (!is_sleeping(mtmp) && was_sleeping)
 		{
+			res = TRUE;
 			pline("%s wakes up.", Monnam(mtmp));
 		}
 
 		/* Confusion */
 		if (is_confused(mtmp) && !was_confused)
 		{
+			res = TRUE;
 			pline("%s is confused!", Monnam(mtmp));
 		}
 		else if (!is_confused(mtmp) && was_confused)
 		{
+			res = TRUE;
 			pline("%s looks less confused.", Monnam(mtmp));
 		}
 
 		/* Hallucination */
 		if (is_hallucinating(mtmp) && !was_hallucinating)
 		{
+			res = TRUE;
 			pline("%s looks seriously confused!", Monnam(mtmp));
 		}
 		else if (!is_hallucinating(mtmp) && was_hallucinating)
 		{
+			res = TRUE;
 			pline("%s looks more straight-minded.", Monnam(mtmp));
 		}
 
@@ -975,6 +1012,7 @@ boolean silently;
 		{
 			if (M_AP_TYPE(mtmp) != M_AP_FURNITURE && M_AP_TYPE(mtmp) != M_AP_OBJECT)
 			{
+				res = TRUE;
 				if (!mon_can_move(mtmp) || !mtmp->data->mmove)
 					pline("%s looks frightened.", Monnam(mtmp));
 				else
@@ -983,10 +1021,12 @@ boolean silently;
 		}
 		else if (is_fearful(mtmp) && !was_fearful && was_fleeing)
 		{
+			res = TRUE;
 			pline("%s looks even more frightened than before.", Monnam(mtmp));
 		}
 		else if (!is_fleeing(mtmp) && was_fleeing)
 		{
+			res = TRUE;
 			pline("%s %sstops fleeing.", Monnam(mtmp), !is_fearful(mtmp) && was_fearful ? "looks less frightened and " : "");
 		}
 
@@ -994,6 +1034,7 @@ boolean silently;
 		/* Charm */
 		if (is_charmed(mtmp) && !was_charmed)
 		{
+			res = TRUE;
 			pline("%s is charmed!", Monnam(mtmp));
 			if (is_tame(mtmp) && !was_tame)
 				pline("%s looks friendly.", Monnam(mtmp));
@@ -1003,6 +1044,7 @@ boolean silently;
 		}
 		if (!is_charmed(mtmp) && was_charmed)
 		{
+			res = TRUE;
 			if (is_tame(mtmp))
 				pline("%s looks perplexed for a while.", Monnam(mtmp));
 			else
@@ -1016,47 +1058,57 @@ boolean silently;
 		/* Levitation */
 		if (is_levitating(mtmp) && !was_levitating)
 		{
+			res = TRUE;
 			pline("%s starts levitating.", Monnam(mtmp));
 		}
 		else if (!is_levitating(mtmp) && was_levitating)
 		{
+			res = TRUE;
 			pline("%s stops levitating.", Monnam(mtmp));
 		}
 
 		/* Levitation */
 		if (is_flying(mtmp) && !was_flying)
 		{
+			res = TRUE;
 			pline("%s starts flying.", Monnam(mtmp));
 		}
 		else if (!is_flying(mtmp) && was_flying)
 		{
+			res = TRUE;
 			pline("%s stops flying.", Monnam(mtmp));
 		}
 
 		if (is_being_strangled(mtmp) && !was_strangled)
 		{
+			res = TRUE;
 			pline("%s is being strangled to death!", Monnam(mtmp));
 		}
 		else if (!is_being_strangled(mtmp) && was_strangled)
 		{
+			res = TRUE;
 			pline("%s stops being strangled.", Monnam(mtmp));
 		}
 
 		if (is_suffocating(mtmp) && !was_suffocating)
 		{
+			res = TRUE;
 			pline("%s is suffocating!", Monnam(mtmp));
 		}
 		else if (!is_suffocating(mtmp) && was_suffocating)
 		{
+			res = TRUE;
 			pline("%s stops being suffocated.", Monnam(mtmp));
 		}
 
 		if (is_sick(mtmp) && !was_sick)
 		{
+			res = TRUE;
 			pline("%s looks terminally ill!", Monnam(mtmp));
 		}
 		else if (!is_sick(mtmp) && was_sick)
 		{
+			res = TRUE;
 			pline("%s is cured from its terminal illness.", Monnam(mtmp));
 		}
 
@@ -1073,9 +1125,11 @@ boolean silently;
 	}
 	else if (could_spot_mon)
 	{
+		res = TRUE;
 		pline("Suddenly, you cannot see %s anymore!", savedname);
 	}
 
+	return res;
 }
 
 
@@ -1096,7 +1150,7 @@ struct monst* mon;
 boolean silently;
 {
 
-	verbose_wrapper(VERBOSE_FUNCTION_UPDATE_MON_STATISTICS, mon, 0, 0, silently);
+	(void)verbose_wrapper(VERBOSE_FUNCTION_UPDATE_MON_STATISTICS, mon, 0, 0, silently);
 
 #if 0
 	/* save properties */

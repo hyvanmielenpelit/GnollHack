@@ -1325,7 +1325,7 @@ register struct obj* omonwep;
     case AD_SLOW:
         if (!cancelled) 
 		{
-			set_mon_property_verbosely(mdef, SLOWED, max(mdef->mprops[SLOWED] & M_TIMEOUT, 20 + rnd(10)));
+            (void)set_mon_property_verbosely(mdef, SLOWED, max(mdef->mprops[SLOWED] & M_TIMEOUT, 20 + rnd(10)));
 			mdef->mstrategy &= ~STRAT_WAITFORU;
         }
         break;
@@ -1385,7 +1385,7 @@ register struct obj* omonwep;
 				else
 					pline("%s focuses %s anti-magic gaze on %s.", Monnam(magr), mhis(magr), mon_nam(mdef));
 			}
-			nonadditive_increase_mon_property_verbosely(mdef, CANCELLED, 7);
+            (void)nonadditive_increase_mon_property_verbosely(mdef, CANCELLED, 7);
 		}
 		break;    
 	case AD_HALU:
@@ -1793,9 +1793,9 @@ int amt;
 boolean verbosely;
 {
 	if (verbosely)
-		nonadditive_increase_mon_property_verbosely(mon, PARALYZED, amt);
+        (void)nonadditive_increase_mon_property_verbosely(mon, PARALYZED, amt);
 	else
-		nonadditive_increase_mon_property(mon, PARALYZED, amt);
+        nonadditive_increase_mon_property(mon, PARALYZED, amt);
 
 #if 0
     if (amt > 127)
@@ -1840,14 +1840,14 @@ int amt, saving_throw_adjustment, tellstyle;
 			if(tellstyle == NOTELL)
 				nonadditive_increase_mon_property(mon, SLEEPING, amt);
 			else
-				nonadditive_increase_mon_property_verbosely(mon, SLEEPING, amt);
+                (void)nonadditive_increase_mon_property_verbosely(mon, SLEEPING, amt);
         }
 		else 
 		{ /* sleep until awakened */
 			if (tellstyle == NOTELL)
 				mon->mprops[SLEEPING] |= M_INTRINSIC_ACQUIRED;
 			else
-				set_mon_property_verbosely(mon, SLEEPING, -1);
+                (void)set_mon_property_verbosely(mon, SLEEPING, -1);
 		}
         return 1;
     }

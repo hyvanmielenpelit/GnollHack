@@ -2414,7 +2414,7 @@ long timeout;
 	if (glyph_is_invisible(levl[mon->mx][mon->my].glyph))
 		unmap_object(mon->mx, mon->my);
 
-	m_detach(mon, mptr);
+	m_detach(mon, mptr, FALSE);
 
 }
 

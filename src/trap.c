@@ -2869,7 +2869,7 @@ boolean by_you;
 	mtmp->delayed_killer_by_you = by_you;
 
 	int existing_stoning = get_mon_property(mtmp, STONED);
-	set_mon_property_verbosely(mtmp, STONED, existing_stoning == 0 ? 5 : max(1, existing_stoning - 1));
+    (void)set_mon_property_verbosely(mtmp, STONED, existing_stoning == 0 ? 5 : max(1, existing_stoning - 1));
 
 	/* unstoned is checked every round in a delayed fashion */
 }
@@ -2881,7 +2881,7 @@ boolean by_you;
 	mtmp->delayed_killer_by_you = by_you;
 
 	int existing_sliming = get_mon_property(mtmp, SLIMED);
-	set_mon_property_verbosely(mtmp, SLIMED, existing_sliming == 0 ? 10 : max(1, existing_sliming - 1));
+    (void)set_mon_property_verbosely(mtmp, SLIMED, existing_sliming == 0 ? 10 : max(1, existing_sliming - 1));
 
 }
 

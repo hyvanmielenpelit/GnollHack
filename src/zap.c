@@ -453,14 +453,18 @@ struct obj *otmp;
 		}
 		break;
 	case WAN_SPEED_MONSTER:
-		res = 1;
+    {
+        res = 1;
         if (disguised_mimic)
             seemimic(mtmp);
-		increase_mon_property_verbosely(mtmp, VERY_FAST, 150 + rnd(50));
+        boolean visible_effect = increase_mon_property_verbosely(mtmp, VERY_FAST, 150 + rnd(50));
+        if (visible_effect)
+            makeknown(WAN_SPEED_MONSTER);
         m_dowear(mtmp, FALSE); /* might want speed boots */
         if (is_tame(mtmp))
             helpful_gesture = TRUE;
         break;
+    }
 	case SPE_SILENCE:
 		res = 1;
 		if (!check_ability_resistance_success(mtmp, A_CHA, objects[otyp].oc_spell_saving_throw_adjustment))

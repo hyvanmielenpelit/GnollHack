@@ -1446,9 +1446,9 @@ update_monster_timouts()
 								pline("%s looks %s!", Monnam(mtmp), duration >= 6 ? "very feverish" : duration >= 4 ? "gravely ill" : "deathly sick");
 							}
 							if (duration <= 8)
-								nonadditive_increase_mon_property_verbosely(mtmp, CONFUSION, duration + 1);
+                                (void)nonadditive_increase_mon_property_verbosely(mtmp, CONFUSION, duration + 1);
 							if (duration <= 4)
-								nonadditive_increase_mon_property_verbosely(mtmp, STUNNED, duration + 1);
+                                (void)nonadditive_increase_mon_property_verbosely(mtmp, STUNNED, duration + 1);
 
 						}
 						break;
@@ -1475,7 +1475,7 @@ update_monster_timouts()
 						break;
 					default:
 						/* State change message */
-						set_mon_property_verbosely(mtmp, i, 0);
+                        (void)set_mon_property_verbosely(mtmp, i, 0);
 						break;
 					}
 
@@ -1612,7 +1612,7 @@ update_monster_timouts()
 						}
 						break;
 					case SLEEPY:
-						increase_mon_property_verbosely(mtmp, SLEEPING, rnd(20));
+                        (void)increase_mon_property_verbosely(mtmp, SLEEPING, rnd(20));
 						break;
 					default:
 						break;
@@ -2854,9 +2854,10 @@ struct monst *mon;
 
 /* remove effects of mtmp from other data structures */
 void
-m_detach(mtmp, mptr)
+m_detach(mtmp, mptr, is_mon_dead)
 struct monst *mtmp;
 struct permonst *mptr; /* reflects mtmp->data _prior_ to mtmp's death */
+boolean is_mon_dead;
 {
     boolean onmap = (mtmp->mx > 0);
 
@@ -2867,7 +2868,7 @@ struct permonst *mptr; /* reflects mtmp->data _prior_ to mtmp's death */
     /* to prevent an infinite relobj-flooreffects-hmon-killed loop */
     mtmp->mtrapped = 0;
     mtmp->mhp = 0; /* simplify some tests: force mhp to 0 */
-    relobj(mtmp, 0, FALSE);
+    relobj(mtmp, 0, FALSE, is_mon_dead);
     if (onmap || mtmp == level.monsters[0][0]) {
         if (mtmp->wormno)
             remove_worm(mtmp);
@@ -3113,7 +3114,7 @@ register struct monst *mtmp;
         u.uachieve.killed_medusa = 1;
     if (glyph_is_invisible(levl[mtmp->mx][mtmp->my].glyph))
         unmap_object(mtmp->mx, mtmp->my);
-    m_detach(mtmp, mptr);
+    m_detach(mtmp, mptr, TRUE);
 }
 
 /* TRUE if corpse might be dropped, magr may die if mon was swallowed */
@@ -3234,7 +3235,7 @@ struct monst *mdef;
     mdrop_special_objs(mdef);
     /* release rest of monster's inventory--it is removed from game */
     discard_minvent(mdef);
-    m_detach(mdef, mdef->data);
+    m_detach(mdef, mdef->data, FALSE);
 }
 
 /* drop a statue or rock and remove monster */
@@ -5046,7 +5047,7 @@ double damage;
 
     if (slow) 
 	{
-		increase_mon_property_verbosely(mon, SLOWED, 30 + rnd(10));
+        (void)increase_mon_property_verbosely(mon, SLOWED, 30 + rnd(10));
 	}
 
     if (heal) 

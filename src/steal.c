@@ -679,9 +679,11 @@ boolean verbosely;
     int omx = mon->mx, omy = mon->my;
     boolean update_mon = FALSE;
 
-    if (obj->owornmask) {
+    if (obj->owornmask) 
+    {
         /* perform worn item handling if the monster is still alive */
-        if (!DEADMONSTER(mon)) {
+        if (!DEADMONSTER(mon)) 
+        {
             mon->worn_item_flags &= ~obj->owornmask;
             update_mon = TRUE;
 
@@ -691,7 +693,8 @@ boolean verbosely;
                    && !obj->unpaid && costly_spot(omx, omy)
                    /* being at costly_spot guarantees lev->roomno is not 0 */
                    && index(in_rooms(u.ux, u.uy, SHOPBASE),
-                            levl[omx][omy].roomno)) {
+                            levl[omx][omy].roomno)) 
+        {
             obj->no_charge = 1;
         }
         /* this should be done even if the monster has died */
@@ -702,7 +705,8 @@ boolean verbosely;
     /* obj_no_longer_held(obj); -- done by place_object */
     if (verbosely && cansee(omx, omy))
         pline("%s drops %s.", Monnam(mon), distant_name(obj, doname));
-    if (!flooreffects(obj, omx, omy, "fall")) {
+    if (!flooreffects(obj, omx, omy, "fall")) 
+    {
         place_object(obj, omx, omy);
         stackobj(obj);
     }
@@ -725,18 +729,24 @@ struct monst *mon;
 {
     struct obj *obj, *otmp;
 
-    for (obj = mon->minvent; obj; obj = otmp) {
+    for (obj = mon->minvent; obj; obj = otmp)
+    {
         otmp = obj->nobj;
         /* the Amulet, invocation tools, and Rider corpses resist even when
            artifacts and ordinary objects are given 0% resistance chance;
            current role's quest artifact is rescued too--quest artifacts
            for the other roles are not */
-        if (obj_resists(obj, 0, 0) || is_quest_artifact(obj)) {
+        if (obj_resists(obj, 0, 0) || is_quest_artifact(obj))
+        {
             obj_extract_self(obj);
-            if (mon->mx) {
+            if (mon->mx) 
+            {
                 mdrop_obj(mon, obj, FALSE);
-            } else { /* migrating monster not on map */
-                if (obj->owornmask) {
+            }
+            else 
+            { /* migrating monster not on map */
+                if (obj->owornmask)
+                {
                     mon->worn_item_flags &= ~obj->owornmask;
                     if (obj->owornmask & W_WEP)
                         setmnotwielded(mon, obj);
@@ -750,16 +760,18 @@ struct monst *mon;
 
 /* release the objects the creature is carrying */
 void
-relobj(mtmp, show, is_pet)
+relobj(mtmp, show, is_pet, is_mon_dead)
 struct monst *mtmp;
 int show;
 boolean is_pet; /* If true, pet should keep wielded/worn items */
+boolean is_mon_dead;
 {
     struct obj *otmp;
     int omx = mtmp->mx, omy = mtmp->my;
 
     /* vault guard's gold goes away rather than be dropped... */
-    if (mtmp->isgd && (otmp = findgold(mtmp->minvent)) != 0) {
+    if (mtmp->isgd && (otmp = findgold(mtmp->minvent)) != 0)
+    {
         if (canspotmon(mtmp))
             pline("%s gold %s.", s_suffix(Monnam(mtmp)),
                   canseemon(mtmp) ? "vanishes" : "seems to vanish");
@@ -767,11 +779,16 @@ boolean is_pet; /* If true, pet should keep wielded/worn items */
         obfree(otmp, (struct obj *) 0);
     } /* isgd && has gold */
 
-	while ((otmp = (is_pet ? droppables(mtmp) : mtmp->minvent)) != 0) {
+	while ((otmp = (is_pet ? droppables(mtmp) : mtmp->minvent)) != 0) 
+    {
         obj_extract_self(otmp);
-		if ((mtmp->issummoned || mtmp->ispartymember) // Summoned and joined monsters take their possessions with them, except central artifacts
+		if (((mtmp->issummoned || mtmp->ispartymember) && (!is_mon_dead || otmp->oclass == COIN_CLASS)) 
+            /* When leaving without dying, summoned and joined monsters take their possessions with them, except central artifacts 
+             * Just their money mysteriously disappears when they die normally, to prevent hiring monsters always with the same money
+             */
 			&& otmp->otyp != AMULET_OF_YENDOR
-			&& otmp->otyp != CANDELABRUM_OF_INVOCATION
+            && otmp->otyp != FAKE_AMULET_OF_YENDOR
+            && otmp->otyp != CANDELABRUM_OF_INVOCATION
 			&& otmp->otyp != SPE_BOOK_OF_THE_DEAD
 			&& !is_quest_artifact(otmp)
 			)
@@ -779,9 +796,11 @@ boolean is_pet; /* If true, pet should keep wielded/worn items */
 			int omx = mtmp->mx, omy = mtmp->my;
 			boolean update_mon = FALSE;
 
-			if (otmp->owornmask) {
+			if (otmp->owornmask)
+            {
 				/* perform worn item handling if the monster is still alive */
-				if (!DEADMONSTER(mtmp)) {
+				if (!DEADMONSTER(mtmp)) 
+                {
 					mtmp->worn_item_flags &= ~otmp->owornmask;
 					update_mon = TRUE;
 
@@ -792,7 +811,8 @@ boolean is_pet; /* If true, pet should keep wielded/worn items */
 					&& !otmp->unpaid && costly_spot(omx, omy)
 					/* being at costly_spot guarantees lev->roomno is not 0 */
 					&& index(in_rooms(u.ux, u.uy, SHOPBASE),
-						levl[omx][omy].roomno)) {
+						levl[omx][omy].roomno))
+                {
 					otmp->no_charge = 1;
 				}
 				/* this should be done even if the monster has died */

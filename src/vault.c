@@ -179,7 +179,7 @@ struct monst *grd;
 
     if (!dispose) {
         /* destroy guard's gold; drop any other inventory */
-        relobj(grd, 0, FALSE);
+        relobj(grd, 0, FALSE, TRUE);
         grd->mhp = 0;
         parkguard(grd);
         dispose = clear_fcorr(grd, TRUE);

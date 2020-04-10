@@ -1732,7 +1732,7 @@ int how;
 
 			if (!check_ability_resistance_success(mon, A_CON, objects[obj->otyp].oc_mc_adjustment))
 			{
-				set_mon_property_verbosely(mon, FOOD_POISONED,
+                (void)set_mon_property_verbosely(mon, FOOD_POISONED,
 					is_food_poisoned(mon) ? max(1, (get_mon_property(mon, FOOD_POISONED) + 1) / 3) : rn1(M_ACURR(mon, A_CON), 20));
 			}
 			else
@@ -1763,7 +1763,7 @@ do_illness: /* Pestilence's potion of healing effect */
 				pline("%s looks rather ill.", Monnam(mon));
 			break;
 		case POT_CONFUSION:
-			increase_mon_property_verbosely(mon, CONFUSION, rn1(9, 8));
+            (void)increase_mon_property_verbosely(mon, CONFUSION, rn1(9, 8));
 			break;
 		case POT_URINE:
 			if (canseemon(mon) && !noncorporeal(mon->data))

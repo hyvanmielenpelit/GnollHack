@@ -2917,7 +2917,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
     case AD_SLOW:
         if (!negated) 
 		{
-			set_mon_property_verbosely(mdef, SLOWED, max(mdef->mprops[SLOWED] & M_TIMEOUT, 20 + rnd(10)));
+			(void)set_mon_property_verbosely(mdef, SLOWED, max(mdef->mprops[SLOWED] & M_TIMEOUT, 20 + rnd(10)));
 		}
         break;
     case AD_CONF:

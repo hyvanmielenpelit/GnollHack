@@ -535,7 +535,7 @@ int spellnum;
         damage = 0;
         break;
     case MGC_HASTE_SELF:
-		increase_mon_property_verbosely(mtmp, VERY_FAST, 150 + rnd(50));
+        (void)increase_mon_property_verbosely(mtmp, VERY_FAST, 150 + rnd(50));
 		damage = 0;
         break;
     case MGC_CURE_SELF:
