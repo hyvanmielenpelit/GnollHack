@@ -2688,7 +2688,7 @@ int* maxlvl;
 	}
 	else if (i == 2)
 	{
-		minmlev = (int)min(18.0, max(0, (zlevel_formin + (double)u.ulevel) * max_multiplier / 4.0 - 2.0));
+		minmlev = (int)min(18.0, max(0.0, (zlevel_formin + (double)u.ulevel) * max_multiplier / 4.0 - 2.0));
 		maxmlev = (int)max(1.0, (zlevel_formax + (double)u.ulevel) * 1.189 * max_multiplier - 1.0);
 #if 0
 		minmlev = ((zlevel * 2 + u.ulevel) * min_multiplier) / (12 * min_divisor);
