@@ -908,7 +908,7 @@ register struct obj *obj;
         case CARROT:
             return (herbi || mblind) ? DOGFOOD : starving ? ACCFOOD : MANFOOD;
         case BANANA:
-            return (mptr->mlet == S_YETI && herbi)
+            return (mptr->mflags4 & M4_LOVES_BANANAS)
                       ? DOGFOOD /* for monkey and ape (tameable), sasquatch */
                       : (herbi || starving)
                          ? ACCFOOD

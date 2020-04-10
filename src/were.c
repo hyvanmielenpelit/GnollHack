@@ -27,6 +27,9 @@ register struct monst *mon;
                 case PM_WEREWOLF:
                     howler = "wolf";
                     break;
+                case PM_WEREBEAR:
+                    howler = "bear";
+                    break;
                 case PM_WEREJACKAL:
                     howler = "jackal";
                     break;
@@ -54,6 +57,10 @@ int pm;
         return PM_HUMAN_WEREWOLF;
     case PM_HUMAN_WEREWOLF:
         return PM_WEREWOLF;
+    case PM_WEREBEAR:
+        return PM_HUMAN_WEREBEAR;
+    case PM_HUMAN_WEREBEAR:
+        return PM_WEREBEAR;
     case PM_WEREJACKAL:
         return PM_HUMAN_WEREJACKAL;
     case PM_HUMAN_WEREJACKAL:
@@ -88,6 +95,9 @@ int pm;
     case PM_WARG:
     case PM_WINTER_WOLF:
         return PM_WEREWOLF;
+    case PM_WEREBEAR:
+    case PM_GRIZZLY_BEAR:
+        return PM_WEREBEAR;
     default:
         break;
     }
@@ -165,6 +175,12 @@ char *genbuf;
             typ = rn2(5) ? PM_WOLF : rn2(2) ? PM_WARG : PM_WINTER_WOLF;
             if (genbuf)
                 Strcpy(genbuf, "wolf");
+            break;
+        case PM_WEREBEAR:
+        case PM_HUMAN_WEREBEAR:
+            typ = PM_GRIZZLY_BEAR;
+            if (genbuf)
+                Strcpy(genbuf, "bear");
             break;
         default:
             continue;

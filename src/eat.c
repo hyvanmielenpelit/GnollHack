@@ -1162,6 +1162,9 @@ int pm;
     case PM_HUMAN_WEREWOLF:
         catch_lycanthropy = PM_WEREWOLF;
         break;
+    case PM_HUMAN_WEREBEAR:
+        catch_lycanthropy = PM_WEREBEAR;
+        break;
     case PM_NURSE:
         if (Upolyd)
             u.mh = u.mhmax;

@@ -605,29 +605,26 @@ register struct obj *obj;
 		}
 		else if (obj && obj->oclass == POTION_CLASS)
 		{
-			if (carried(obj))
-				pline("%s imbued with %s%s energies.", Yobjnam2(obj, "are"), (objects[obj->otyp].oc_name_known && (obj->otyp == POT_HEALING || obj->otyp == POT_EXTRA_HEALING || obj->otyp == POT_GREATER_HEALING)) ? "further " : "",
-					obj->otyp == POT_FULL_HEALING ? "arcane" : "healing");
+			int oldotyp = obj->otyp;
+			char oldnameturns[BUFSZ];
+			strcpy(oldnameturns, Tobjnam(obj, "turn"));
+			char oldnameare[BUFSZ];
+			strcpy(oldnameare, Tobjnam(obj, "are"));
+			unsigned int olddiluted = obj->odiluted;
 
 			switch (obj->otyp)
 			{
-			case POT_RESTORE_ABILITY:
 			case POT_GAIN_ENERGY:
-			case POT_HEALING:
+			case POT_EXTRA_HEALING:
 				obj->otyp = POT_EXTRA_HEALING;
 				break;
-			case POT_GAIN_ABILITY:
 			case POT_GREATER_ENERGY:
-			case POT_EXTRA_HEALING:
+			case POT_GREATER_HEALING:
 				obj->otyp = POT_GREATER_HEALING;
 				break;
-			case POT_GAIN_LEVEL:
 			case POT_FULL_ENERGY:
-			case POT_GREATER_HEALING:
-				obj->otyp = POT_FULL_HEALING;
-				break;
 			case POT_FULL_HEALING:
-				obj->otyp = POT_GAIN_ABILITY;
+				obj->otyp = POT_FULL_HEALING;
 				break;
 			default:
 				obj->otyp = POT_HEALING;
@@ -635,12 +632,26 @@ register struct obj *obj;
 			}
 			obj->dknown = 0;
 			obj->odiluted = 0;
+			nowaterdamage = TRUE;
+
+			if (obj->otyp != oldotyp)
+			{
+				identified = TRUE;
+				effecthappened = TRUE;
+				pline("%s imbued with healing energies of the fountain.", oldnameare);
+				pline("%s into %s.", oldnameturns, doname(obj));
+			}
+			else if (obj->odiluted != olddiluted)
+			{
+				effecthappened = TRUE;
+				pline("%s undiluted.", Tobjnam(obj, "become"));
+			}
 
 			if (carried(obj))
+			{
 				update_inventory();
-			identified = TRUE;
-			nowaterdamage = TRUE;
-			effecthappened = TRUE;
+			}
+
 		}
 
 		if (identified)
@@ -665,26 +676,23 @@ register struct obj *obj;
 		}
 		else if (obj && obj->oclass == POTION_CLASS)
 		{
-			if (carried(obj))
-				pline("%s imbued with %s%s energies.", Yobjnam2(obj, "are"), (objects[obj->otyp].oc_name_known && (obj->otyp == POT_GAIN_ENERGY || obj->otyp == POT_GREATER_ENERGY)) ? "further " : "",
-					obj->otyp == POT_FULL_HEALING ? "arcane" : "magical");
+			int oldotyp = obj->otyp;
+			char oldnameturns[BUFSZ];
+			strcpy(oldnameturns, Tobjnam(obj, "turn"));
+			char oldnameare[BUFSZ];
+			strcpy(oldnameare, Tobjnam(obj, "are"));
+			unsigned int olddiluted = obj->odiluted;
 
 			switch (obj->otyp)
 			{
-			case POT_GAIN_ENERGY:
-			case POT_GAIN_ABILITY:
-			case POT_RESTORE_ABILITY:
 			case POT_EXTRA_HEALING:
 			case POT_GREATER_HEALING:
+			case POT_GREATER_ENERGY:
 				obj->otyp = POT_GREATER_ENERGY;
 				break;
-			case POT_GAIN_LEVEL:
 			case POT_FULL_HEALING:
-			case POT_GREATER_ENERGY:
-				obj->otyp = POT_FULL_ENERGY;
-				break;
 			case POT_FULL_ENERGY:
-				obj->otyp = POT_GAIN_ABILITY;
+				obj->otyp = POT_FULL_ENERGY;
 				break;
 			default:
 				obj->otyp = POT_GAIN_ENERGY;
@@ -692,12 +700,26 @@ register struct obj *obj;
 			}
 			obj->dknown = 0;
 			obj->odiluted = 0;
+			nowaterdamage = TRUE;
+
+			if (obj->otyp != oldotyp)
+			{
+				identified = TRUE;
+				effecthappened = TRUE;
+				pline("%s imbued with magical energies of the fountain.", oldnameare);
+				pline("%s into %s.", oldnameturns, doname(obj));
+			}
+			else if (obj->odiluted != olddiluted)
+			{
+				effecthappened = TRUE;
+				pline("%s undiluted.", Tobjnam(obj, "become"));
+			}
 
 			if (carried(obj))
+			{
 				update_inventory();
-			identified = TRUE;
-			nowaterdamage = TRUE;
-			effecthappened = TRUE;
+			}
+
 		}
 
 		if (identified)
@@ -720,26 +742,39 @@ register struct obj *obj;
 			nowaterdamage = TRUE;
 			effecthappened = TRUE;
 		}
-		else if (obj && obj->oclass == POTION_CLASS && obj->otyp != POT_GAIN_LEVEL)
+		else if (obj && obj->oclass == POTION_CLASS)
 		{
-			if (carried(obj))
-				pline("%s imbued with powerful energies.", Yobjnam2(obj, "are"));
+			int oldotyp = obj->otyp;
+			char oldnameturns[BUFSZ];
+			strcpy(oldnameturns, Tobjnam(obj, "turn"));
+			char oldnameare[BUFSZ];
+			strcpy(oldnameare, Tobjnam(obj, "are"));
+			unsigned int olddiluted = obj->odiluted;
 
 			switch (obj->otyp)
 			{
 			case POT_GAIN_ENERGY:
+				obj->otyp = POT_GREATER_ENERGY;
+				break;
 			case POT_GREATER_ENERGY:
+			case POT_FULL_ENERGY:
 				obj->otyp = POT_FULL_ENERGY;
 				break;
 			case POT_HEALING:
+				obj->otyp = POT_EXTRA_HEALING;
+				break;
 			case POT_EXTRA_HEALING:
+				obj->otyp = POT_GREATER_HEALING;
+				break;
 			case POT_GREATER_HEALING:
+			case POT_FULL_HEALING:
 				obj->otyp = POT_FULL_HEALING;
 				break;
 			case POT_RESTORE_ABILITY:
+			case POT_GAIN_ABILITY:
 				obj->otyp = POT_GAIN_ABILITY;
 				break;
-			case POT_GAIN_ABILITY:
+			case POT_GAIN_LEVEL:
 				obj->otyp = POT_GAIN_LEVEL;
 				break;
 			default:
@@ -748,12 +783,26 @@ register struct obj *obj;
 			}
 			obj->dknown = 0;
 			obj->odiluted = 0;
+			nowaterdamage = TRUE;
+
+			if (obj->otyp != oldotyp)
+			{
+				identified = TRUE;
+				effecthappened = TRUE;
+				pline("%s empowered by the energies of the fountain.", oldnameare);
+				pline("%s into %s.", oldnameturns, doname(obj));
+			}
+			else if (obj->odiluted != olddiluted)
+			{
+				effecthappened = TRUE;
+				pline("%s undiluted.", Tobjnam(obj, "become"));
+			}
 
 			if (carried(obj))
+			{
 				update_inventory();
-			identified = TRUE;
-			nowaterdamage = TRUE;
-			effecthappened = TRUE;
+			}
+
 		}
 
 		if (identified)
@@ -818,17 +867,35 @@ register struct obj *obj;
 			effecthappened = FALSE;
 			break;
 		case 16: /* Curse the item */
-			curse(obj);
+			if (!obj->cursed)
+			{
+				curse(obj);
+				if (!Blind)
+					pline("%s %s for a moment.", Tobjnam(obj, "glows"), hcolor(NH_BLACK));
+				else
+				{
+					identified = FALSE;
+					effecthappened = FALSE;	/* This is just apparently so */
+				}
+			}
+			else
+			{
+				identified = FALSE;
+				effecthappened = FALSE;
+			}
 			break;
 		case 17:
 		case 18:
 		case 19:
 		case 20: /* Uncurse the item */
-			if (obj->cursed) {
+			if (obj->cursed) 
+			{
 				if (!Blind)
 					pline_The("%s glows for a moment.", hliquid("water"));
 				uncurse(obj);
-			} else {
+			} 
+			else 
+			{
 				pline("A feeling of loss comes over you.");
 			}
 			break;

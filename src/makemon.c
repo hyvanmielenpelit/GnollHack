@@ -2631,8 +2631,8 @@ int* minlvl;
 int* maxlvl;
 {
     /* Initial adjustment */
-	double max_multiplier = 0.67;
-	double min_multiplier = 0.67;
+	double max_multiplier = 0.60;
+	double min_multiplier = 0.60;
 
 	double zlevel = (double)level_difficulty();
 	double zlevel_formin = min(MAXULEV, zlevel);
@@ -2678,7 +2678,7 @@ int* maxlvl;
 	if (i == 1)
 	{
 		/* Try first with a tighter range */
-		minmlev = (int)min(25.0, max(0.0, (zlevel_formin + (double)u.ulevel) * max_multiplier / 2.0 - 2.0));
+		minmlev = (int)min(25.0, max(0.0, (zlevel_formin + (double)u.ulevel) * max_multiplier / 2.5 - 2.0));
 		maxmlev = (int)max(1.0, (zlevel_formax + (double)u.ulevel) * max_multiplier - 1.0);
 #if 0
 		midmlev = (zlevel * 2 + u.ulevel) / 3;
@@ -2688,7 +2688,7 @@ int* maxlvl;
 	}
 	else if (i == 2)
 	{
-		minmlev = (int)min(18.0, max(0.0, (zlevel_formin + (double)u.ulevel) * max_multiplier / 4.0 - 2.0));
+		minmlev = (int)min(15.0, max(0.0, (zlevel_formin + (double)u.ulevel) * max_multiplier / 5.0 - 2.0));
 		maxmlev = (int)max(1.0, (zlevel_formax + (double)u.ulevel) * 1.189 * max_multiplier - 1.0);
 #if 0
 		minmlev = ((zlevel * 2 + u.ulevel) * min_multiplier) / (12 * min_divisor);

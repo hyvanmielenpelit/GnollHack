@@ -3067,6 +3067,8 @@ register struct monst *mtmp;
         set_mon_data(mtmp, &mons[PM_HUMAN_WEREJACKAL]);
     else if (mtmp->data == &mons[PM_WEREWOLF])
         set_mon_data(mtmp, &mons[PM_HUMAN_WEREWOLF]);
+    else if (mtmp->data == &mons[PM_WEREBEAR])
+        set_mon_data(mtmp, &mons[PM_HUMAN_WEREBEAR]);
     else if (mtmp->data == &mons[PM_WERERAT])
         set_mon_data(mtmp, &mons[PM_HUMAN_WERERAT]);
 
@@ -5188,9 +5190,11 @@ struct permonst *mdat;
         case PM_HUMAN_WEREJACKAL:
         case PM_HUMAN_WERERAT:
         case PM_HUMAN_WEREWOLF:
+        case PM_HUMAN_WEREBEAR:
         case PM_WEREJACKAL:
         case PM_WERERAT:
         case PM_WEREWOLF:
+        case PM_WEREBEAR:
         case PM_OWLBEAR:
 		case PM_OWLBEAR_SHAMAN:
 		case PM_OWLBEAR_MATRIARCH:

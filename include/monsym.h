@@ -62,7 +62,7 @@ enum mon_class_types {
     S_VAMPIRE    = 48, /* V */
     S_WRAITH     = 49, /* W */
     S_XORN       = 50, /* X */
-    S_YETI       = 51, /* Y: includes owlbear, monkey */
+    S_YETI       = 51, /* Y: includes owlbear, monkey, grizzly bear */
     S_GREATER_UNDEAD     = 52, /* Z */
     S_HUMAN      = 53, /* @ */
     S_GHOST      = 54, /* <space> */

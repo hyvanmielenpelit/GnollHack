@@ -267,6 +267,8 @@
 #define M4_LIKES_LAVA				0x00010000UL		/* likes lava */
 #define M4_LIKES_FIRE				0x00020000UL		/* likes fire */
 #define M4_VORPAL_VULNERABILITY		0x00040000UL		/* vorpal weapons always cut off head */
+#define M4_LOVES_BANANAS		    0x00080000UL		/* tamed with bananas */
+#define M4_PAWED		            0x00100000UL		/* has paws instead of hands */
 
 #define MZ_TINY 0          /* < 2' */
 #define MZ_SMALL 1         /* 2-4' */

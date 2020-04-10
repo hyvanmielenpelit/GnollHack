@@ -2233,7 +2233,8 @@ int part;
 
     /* some special cases */
     if (mptr->mlet == S_DOG || mptr->mlet == S_FELINE
-        || mptr->mlet == S_RODENT || mptr == &mons[PM_OWLBEAR]) {
+        || mptr->mlet == S_RODENT || (mptr->mflags4 & M4_PAWED))
+    {
         switch (part) {
         case HAND:
             return "paw";
@@ -2247,7 +2248,8 @@ int part;
         default:
             break; /* for other parts, use animal_parts[] below */
         }
-    } else if (mptr->mlet == S_YETI) { /* excl. owlbear due to 'if' above */
+    } else if (mptr->mlet == S_YETI) 
+    { /* excl. owlbear due to 'if' above and M4_PAWED */
         /* opposable thumbs, hence "hands", "arms", "legs", &c */
         return humanoid_parts[part]; /* yeti/sasquatch, monkey/ape */
     }
