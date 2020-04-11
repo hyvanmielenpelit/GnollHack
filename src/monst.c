@@ -2414,7 +2414,7 @@ struct permonst _mons2[] = {
         M2_UNDEAD | M2_HOSTILE | M2_MAGIC, 
 		M3_WANTSBOOK | M3_INFRAVISION | M3_WIZARD | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY | M3_CORPSE_CRUMBLES_TO_DUST,
 		M4_NONE,
-        33, HI_LORD),
+        33, CLR_BRIGHT_MAGENTA),
 
 	/*
      * modrons
