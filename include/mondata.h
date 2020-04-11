@@ -578,9 +578,10 @@
 #define has_telepathy(mon) \
 	(has_innate_telepathy((mon)->data) || has_property(mon, TELEPAT))
 
-#define acidic(ptr) (((ptr)->mconveys & MC_ACIDIC_CORPSE) != 0L)
-#define poisonous(ptr) (((ptr)->mconveys & MC_POISONOUS_CORPSE) != 0L)
-#define hallucinating_corpse(ptr) (((ptr)->mconveys & MC_HALLUCINATING_CORPSE) != 0L)
+#define has_acidic_corpse(ptr) (((ptr)->mconveys & MC_ACIDIC_CORPSE) != 0L)
+#define has_poisonous_corpse(ptr) (((ptr)->mconveys & MC_POISONOUS_CORPSE) != 0L)
+#define has_hallucinating_corpse(ptr) (((ptr)->mconveys & MC_HALLUCINATING_CORPSE) != 0L)
+#define has_sickening_corpse(ptr) (((ptr)->mconveys & MC_SICKENING_CORPSE) != 0L)
 
 #define is_armed(ptr) attacktype(ptr, AT_WEAP)
 

@@ -118,6 +118,7 @@
 #define MC_POISONOUS_CORPSE	0x08000000UL		/* the corpse is poisonous to eat */
 #define MC_ACIDIC_CORPSE	0x10000000UL		/* the corpse is acidic to eat */
 #define MC_HALLUCINATING_CORPSE	0x20000000UL	/* the corpse is hallucinating to eat */
+#define MC_SICKENING_CORPSE	0x40000000UL		/* the corpse is sickening to eat */
 
 
 #define M1_NONE			0x00000000UL

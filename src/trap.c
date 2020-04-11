@@ -855,7 +855,7 @@ struct trap *trap;
         xchar x = trap->tx;
         xchar y = trap->ty;
 
-        if (flaming(mptr) || acidic(mptr)) {
+        if (flaming(mptr) || has_acidic_corpse(mptr)) {
             if (domsg) {
                 if (isyou)
                     You("%s %s spider web!",

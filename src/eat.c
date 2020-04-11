@@ -809,7 +809,7 @@ register int pm;
         }
     /* Fall through */
     default:
-        if (acidic(&mons[pm]) && Stoned)
+        if (has_acidic_corpse(&mons[pm]) && Stoned)
             fix_petrification();
         break;
     }
@@ -1307,7 +1307,7 @@ int pm;
 		boolean conveys_CHA = conveys_charisma(ptr);
 		int i, count;
 
-        if (hallucinating_corpse(ptr)) 
+        if (has_hallucinating_corpse(ptr)) 
 		{
             pline("Oh wow!  Great stuff!");
             (void) make_hallucinated((HHallucination & TIMEOUT) + 200L, FALSE,
@@ -1936,7 +1936,8 @@ struct obj *otmp;
             rotted -= 2L;
     }
 
-    if (mnum != PM_ACID_BLOB && !stoneable && !slimeable && rotted > 5L) {
+    if (mnum != PM_ACID_BLOB && !stoneable && !slimeable && rotted > 5L)
+    {
         boolean cannibal = maybe_cannibal(mnum, FALSE);
 
 		pline("Ulch - that %s was tainted%s!",
@@ -1947,12 +1948,14 @@ struct obj *otmp;
               cannibal ? ", you cannibal" : "");
         if (Sick_resistance) {
             pline("It doesn't seem at all sickening, though...");
-        } else {
+        }
+        else
+        {
             long sick_time;
 
             sick_time = (long) rn1(10, 10);
             /* make sure new ill doesn't result in improvement */
-            if (FoodPoisoned && (sick_time > Sick))
+            if (FoodPoisoned && (sick_time > FoodPoisoned))
                 sick_time = (FoodPoisoned > 1L) ? FoodPoisoned - 1L : 1L;
             make_food_poisoned(sick_time, corpse_xname(otmp, "rotted", CXN_NORMAL),
                       TRUE);
@@ -1964,22 +1967,51 @@ struct obj *otmp;
         else
             useupf(otmp, 1L);
         return 2;
-    } else if (acidic(&mons[mnum]) && !Acid_resistance) {
+    } 
+    else if (has_sickening_corpse(&mons[mnum]) && rn2(5))
+    {
+        pline("Ulch - that must have been infected by terminal disease!");
+        if (Sick_resistance) 
+        {
+            pline("It doesn't seem at all sickening, though...");
+        }
+        else
+        {
+            long sick_time;
+
+            sick_time = (long)rn1(10, 10);
+            /* make sure new ill doesn't result in improvement */
+            if (Sick && (sick_time > Sick))
+                sick_time = (Sick > 1L) ? Sick - 1L : 1L;
+            make_sick(sick_time, corpse_xname(otmp, "", CXN_NORMAL), TRUE);
+
+            (void)touchfood(otmp);
+            return 1;
+        }
+    }
+    else if (has_acidic_corpse(&mons[mnum]) && !Acid_resistance)
+    {
 		tp++;
         You("have a very bad case of stomach acid.");   /* not body_part() */
         losehp(adjust_damage(rnd(15), (struct monst*)0, &youmonst, AD_ACID, FALSE), !glob ? "acidic corpse" : "acidic glob",
                KILLED_BY_AN); /* acid damage */
-    } else if (poisonous(&mons[mnum]) && rn2(5)) {
+    } 
+    else if (has_poisonous_corpse(&mons[mnum]) && rn2(5))
+    {
 		tp++;
         pline("Ecch - that must have been poisonous!");
-        if (!Poison_resistance) {
+        if (!Poison_resistance)
+        {
             losestr(rnd(4));
             losehp(adjust_damage(rnd(15), (struct monst*)0, &youmonst, AD_DRST, FALSE), !glob ? "poisonous corpse" : "poisonous glob",
                    KILLED_BY_AN);
-        } else
+        } 
+        else
             You("seem unaffected by the poison.");
     /* now any corpse left too long will make you mildly ill */
-    } else if ((rotted > 5L || (rotted > 3L && rn2(5))) && !Sick_resistance) {
+    } 
+    else if ((rotted > 5L || (rotted > 3L && rn2(5))) && !Sick_resistance)
+    {
 		tp++;
         You_feel("%ssick.", (FoodPoisoned) ? "very " : "");
         losehp(adjust_damage(rnd(8), (struct monst*)0, &youmonst, AD_DISE, FALSE), !glob ? "cadaver" : "rotted glob", KILLED_BY_AN);
@@ -2806,7 +2838,7 @@ struct obj *otmp;
         else
             return 2;
     }
-    if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_HALLUCINATING || objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_SICKENING || stoneorslime) {
+    if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_HALLUCINATING || objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_SICKENING || stoneorslime || (cadaver && has_sickening_corpse(&mons[mnum]) && !Sick_resistance)) {
         Sprintf(buf, "%s like %s could be something very dangerous!  %s",
                 foodsmell, it_or_they, eat_it_anyway);
         if (yn_function(buf, ynchars, 'n') == 'n')
@@ -2823,7 +2855,7 @@ struct obj *otmp;
         else
             return 2;
     }
-    if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_POISONOUS || objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_DEADLY_POISONOUS || (cadaver && poisonous(&mons[mnum]) && !Poison_resistance)) {
+    if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_POISONOUS || objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_DEADLY_POISONOUS || (cadaver && has_poisonous_corpse(&mons[mnum]) && !Poison_resistance)) {
         /* poisonous */
         Sprintf(buf, "%s like %s might be poisonous!  %s", foodsmell,
                 it_or_they, eat_it_anyway);
@@ -2846,7 +2878,7 @@ struct obj *otmp;
         else
             return 2;
     }
-    if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_ACIDIC || cadaver && acidic(&mons[mnum]) && !Acid_resistance) {
+    if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_ACIDIC || cadaver && has_acidic_corpse(&mons[mnum]) && !Acid_resistance) {
         Sprintf(buf, "%s rather acidic.  %s", foodsmell, eat_it_anyway);
         if (yn_function(buf, ynchars, 'n') == 'n')
             return 1;
@@ -3900,7 +3932,7 @@ int threat;
     /* flesh from lizards and acidic critters stops petrification */
     case STONED:
         return (boolean) (mndx >= LOW_PM
-                          && (mndx == PM_LIZARD || acidic(&mons[mndx])));
+                          && (mndx == PM_LIZARD || has_acidic_corpse(&mons[mndx])));
     /* no tins can cure these (yet?) */
     case SLIMED:
     case SICK:

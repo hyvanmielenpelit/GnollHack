@@ -879,8 +879,10 @@ register struct obj *obj;
             if ((peek_at_iced_corpse_age(obj) + 50L <= monstermoves
                  && !nonrotting_corpse(obj->corpsenm)
                  && mptr->mlet != S_FUNGUS)
-                || (acidic(fptr) && !resists_acid(mon))
-                || (poisonous(fptr) && !resists_poison(mon)))
+                || (has_acidic_corpse(fptr) && !resists_acid(mon))
+                || (has_poisonous_corpse(fptr) && !resists_poison(mon))
+                || (has_sickening_corpse(fptr) && !resists_sickness(mon))
+                )
                 return POISON;
             /* turning into slime is preferable to starvation */
             else if (fptr == &mons[PM_GREEN_SLIME] && !slimeproof(mon->data))

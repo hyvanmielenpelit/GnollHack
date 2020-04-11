@@ -2089,7 +2089,7 @@ register const char *str;
                 /* let a handful of corpse types thru to can_carry() */
                 && !touch_petrifies(&mons[otmp->corpsenm])
                 && otmp->corpsenm != PM_LIZARD
-                && !acidic(&mons[otmp->corpsenm]))
+                && !has_acidic_corpse(&mons[otmp->corpsenm]))
                 continue;
             if (!touch_artifact(otmp, mtmp))
                 continue;
