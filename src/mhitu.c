@@ -1637,21 +1637,39 @@ register struct obj* omonwep;
 				{
 					u.ustuck = mtmp;
 					if (damagedealt > 0)
-						pline("%s grabs you! You sustain %d damage.", Monnam(mtmp), damagedealt);
+						pline("%s grabs you%s! You sustain %d damage.", Monnam(mtmp), (hug_throttles(mtmp->data) && has_neck(youmonst.data)) ? " by the throat" : "", damagedealt);
 					else
-						pline("%s grabs you!", Monnam(mtmp));
+						pline("%s grabs you%s!", Monnam(mtmp), (hug_throttles(mtmp->data) && has_neck(youmonst.data)) ? " by the throat" : "");
 
-				}
+                    update_extrinsics();
+                    context.botl = context.botlx = 1;
+
+                    if (is_constrictor(mtmp->data))
+                    {
+                        if (hug_throttles(mtmp->data))
+                        {
+                            if (!has_neck(youmonst.data) || Magical_breathing || !can_be_strangled(&youmonst))
+                                You("do not feel particularly concerned.", Monnam(mtmp));
+                            else
+                                pline("%s is choking you to death!", Monnam(mtmp));
+                        }
+                        else
+                            pline("%s is constricting you to death!", Monnam(mtmp));
+                    }
+                }
 			}
 			else if (u.ustuck == mtmp)
 			{
 				exercise(A_STR, FALSE);
-				if (damagedealt > 0)
-					You("are being %s. You sustain %d damage.", (mtmp->data == &mons[PM_ROPE_GOLEM])
-						? "choked"
-						: "crushed", damagedealt);
-				else
-					You("are being %s%s.", (mtmp->data == &mons[PM_ROPE_GOLEM])
+                if (damagedealt > 0)
+					You("are being %s%s You sustain %d damage.", 
+                        hug_throttles(mtmp->data) ? "choked" : "crushed",
+                        is_constrictor(mtmp->data) ? " to death!" : ".",
+                        damagedealt);
+                else if (is_constrictor(mtmp->data))
+                    pline("%s is %s you to death!", Monnam(mtmp), hug_throttles(mtmp->data) ? "choking" : "constricting");
+                else
+					You("are being %s%s.", hug_throttles(mtmp->data)
 						? "choked"
 						: "crushed", damage == 0 ? ", but sustain no damage" : "");
 			}
@@ -2092,8 +2110,10 @@ register struct obj* omonwep;
 					else if (is_constrictor(mtmp->data))
 						pline("%s is constricting you to death!", Monnam(mtmp));
 
-					u.ustuck = mtmp;
-					context.botl = TRUE;
+                    u.ustuck = mtmp;
+
+                    update_extrinsics();
+                    context.botl = context.botlx = 1;
                 }
             } 
 			else if (u.ustuck == mtmp) 
@@ -2121,7 +2141,7 @@ register struct obj* omonwep;
 					pline("%s is constricting you to death!", Monnam(mtmp));
 				else if (mattk->aatyp == AT_HUGS)
 					if(damagedealt > 0)
-						You("are being crushed, sustaining %d damage.", damagedealt);
+						You("are being crushed! You sustain %d damage.", damagedealt);
 					else
 						You("are being crushed%s.", damage == 0 ? ", but sustain no damage" : "");
             } 

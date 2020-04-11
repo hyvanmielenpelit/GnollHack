@@ -195,10 +195,11 @@ enum bl_conditions {
 	BL_COND_FEARFUL,
 	BL_COND_SLEEPING,
 	BL_COND_CANCELLED,
-	BL_COND_SILENCED
+	BL_COND_SILENCED,
+	BL_COND_GRAB
 };
 
-#define MAXBLCONDITIONS 20
+#define MAXBLCONDITIONS 21
 extern char *status_vals[MAXBLSTATS];
 static int status_colors[MAXBLSTATS];
 extern boolean status_activefields[MAXBLSTATS];
@@ -206,7 +207,7 @@ static unsigned long* cond_hilites;
 static unsigned long active_conditions;
 static const char* cond_names[] = {
 	"Stone", "Slime", "Strngl", "Suffoc", "FoodPois", "TermIll", "Blind",
-	"Deaf", "Stun", "Conf", "Hallu", "Lev", "Fly", "Ride", "Slow", "Paral", "Fear", "Sleep", "Cancl", "Silent",
+	"Deaf", "Stun", "Conf", "Hallu", "Lev", "Fly", "Ride", "Slow", "Paral", "Fear", "Sleep", "Cancl", "Silent", "Grab",
 };
 
 

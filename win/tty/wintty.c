@@ -3697,6 +3697,7 @@ static struct condition_t {
     const char *text[3]; /* 3: potential display vals, progressively shorter */
 } conditions[] = {
     /* The sequence order of these matters */
+    { BL_MASK_GRAB,     { "Grab",     "Grb",   "Gr"  } },
     { BL_MASK_STONE,    { "Stone",    "Ston",  "Sto" } },
     { BL_MASK_SLIME,    { "Slime",    "Slim",  "Slm" } },
     { BL_MASK_STRNGL,   { "Strngl",   "Stngl", "Str" } },

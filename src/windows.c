@@ -986,6 +986,8 @@ unsigned long *colormasks UNUSED;
             cond = condptr ? *condptr : 0L;
             nb = status_vals[idx];
             *nb = '\0';
+            if (cond & BL_MASK_GRAB)
+                Strcpy(nb = eos(nb), " Grab");
             if (cond & BL_MASK_STONE)
                 Strcpy(nb = eos(nb), " Stone");
             if (cond & BL_MASK_SLIME)

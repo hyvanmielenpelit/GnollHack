@@ -483,7 +483,6 @@ boolean
 can_be_strangled(mon)
 struct monst *mon;
 {
-    struct obj *mamul;
     boolean nonbreathing, nobrainer;
 
     /* For amulet of strangulation support:  here we're considering
@@ -495,18 +494,19 @@ struct monst *mon;
        are non-breathing creatures which have higher brain function. */
     if (!has_neck(mon->data))
         return FALSE;
-    if (mon == &youmonst) {
+    if (mon == &youmonst)
+    {
         /* hero can't be mindless but poly'ing into mindless form can
            confer strangulation protection */
         nobrainer = mindless(youmonst.data);
         nonbreathing = Breathless;
-    } else {
+    }
+    else
+    {
         nobrainer = mindless(mon->data);
         /* monsters don't wear amulets of magical breathing,
            so second part doesn't achieve anything useful... */
-        nonbreathing = (has_innate_breathless(mon->data)
-                        || ((mamul = which_armor(mon, W_AMUL)) != 0
-                            && (mamul->otyp == AMULET_OF_MAGICAL_BREATHING)));
+        nonbreathing = is_breathless(mon);
     }
     return (boolean) (!nobrainer || !nonbreathing);
 }

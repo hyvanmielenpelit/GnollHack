@@ -181,6 +181,8 @@ do_statusline2()
      * shortest time left?  [Probably not worth the effort, since it's
      * unusual for more than one of them to apply at a time.]
      */
+    if (u.ustuck && !u.uswallow)
+        Strcpy(nb = eos(nb), " Grab");
     if (Stoned)
         Strcpy(nb = eos(nb), " Stone");
     if (Slimed)
@@ -774,6 +776,8 @@ bot_via_windowport()
 
     /* Conditions */
     blstats[idx][BL_CONDITION].a.a_ulong = 0L;
+    if (u.ustuck && !u.uswallow)
+        blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_GRAB;
     if (Stoned)
         blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_STONE;
     if (Slimed)
@@ -2336,6 +2340,7 @@ boolean from_configfile;
 #endif /* STATUS_HILITES */
 
 const struct condmap valid_conditions[] = {
+    { "grab",     BL_MASK_GRAB },
     { "stone",    BL_MASK_STONE },
     { "slime",    BL_MASK_SLIME },
     { "strngl",   BL_MASK_STRNGL },
@@ -2369,7 +2374,7 @@ const struct condmap condition_aliases[] = {
                         | BL_MASK_CONF | BL_MASK_HALLU | BL_MASK_SUFFOC
                         | BL_MASK_LEV | BL_MASK_FLY | BL_MASK_RIDE | BL_MASK_SLOWED 
 						| BL_MASK_PARALYZED | BL_MASK_FEARFUL | BL_MASK_SLEEPING 
-						| BL_MASK_CANCELLED | BL_MASK_SILENCED },
+						| BL_MASK_CANCELLED | BL_MASK_SILENCED | BL_MASK_GRAB },
     { "major_troubles", BL_MASK_STONE | BL_MASK_SLIME | BL_MASK_STRNGL
                         | BL_MASK_FOODPOIS | BL_MASK_TERMILL },
     { "minor_troubles", BL_MASK_BLIND | BL_MASK_DEAF | BL_MASK_STUN

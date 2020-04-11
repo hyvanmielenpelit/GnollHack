@@ -374,6 +374,13 @@ unsigned long *colormasks;
             MaybeDisplayCond(BL_MASK_LEV, colormasks, "Lev");
             MaybeDisplayCond(BL_MASK_FLY, colormasks, "Fly");
             MaybeDisplayCond(BL_MASK_RIDE, colormasks, "Ride");
+            MaybeDisplayCond(BL_MASK_SLOWED, colormasks, "Slow");
+            MaybeDisplayCond(BL_MASK_PARALYZED, colormasks, "Paral");
+            MaybeDisplayCond(BL_MASK_FEARFUL, colormasks, "Fear");
+            MaybeDisplayCond(BL_MASK_SLEEPING, colormasks, "Sleep");
+            MaybeDisplayCond(BL_MASK_CANCELLED, colormasks, "Cancl");
+            MaybeDisplayCond(BL_MASK_SILENCED, colormasks, "Silent");
+            MaybeDisplayCond(BL_MASK_GRAB, colormasks, "Grab");
         } else {
             label = X11_status_labels[fld];
             text = status_vals[fld];

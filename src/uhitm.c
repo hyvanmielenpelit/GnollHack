@@ -3577,14 +3577,16 @@ register struct monst *mon;
             }
             break;
 
-        case AT_HUGS: {
+        case AT_HUGS: 
+		{
             int specialdmg;
             long silverhit = 0L;
             boolean byhand = hug_throttles(&mons[u.umonnum]), /* rope golem */
                     unconcerned = (byhand && !can_be_strangled(mon));
 
             if (sticks(mon->data) || u.uswallow || notonhead
-                || (byhand && (uwep || !has_neck(mon->data)))) {
+                || (byhand && (uwep || !has_neck(mon->data))))
+			{
                 /* can't hold a holder due to subsequent ambiguity over
                    who is holding whom; can't hug engulfer from inside;
                    can't hug a worm tail (would immobilize entire worm!);
@@ -3607,9 +3609,11 @@ register struct monst *mon;
                                         byhand ? (W_ARMG | W_RINGL | W_RINGR)
                                                : (W_ARMC | W_ARM | W_ARMU),
                                         &silverhit);
-            if (unconcerned) {
+            if (unconcerned)
+			{
                 /* strangling something which can't be strangled */
-                if (mattk != &alt_attk) {
+                if (mattk != &alt_attk) 
+				{
                     alt_attk = *mattk;
                     mattk = &alt_attk;
                 }
@@ -3623,15 +3627,18 @@ register struct monst *mon;
                     || mon->mhp <= 1 + max(u.ubasedaminc + u.udaminc, 1))
                     unconcerned = FALSE;
             }
-            if (mon->data == &mons[PM_SHADE]) {
+            if (mon->data == &mons[PM_SHADE])
+			{
                 const char *verb = byhand ? "grasp" : "hug";
 
                 /* hugging a shade; successful if blessed outermost armor
                    for normal hug, or blessed gloves or silver ring(s) for
                    choking hug; deals damage but never grabs hold */
-                if (specialdmg) {
-                    You("%s %s%s", verb, mon_nam(mon), exclam(specialdmg));
-                    if (silverhit && flags.verbose)
+                if (specialdmg)
+				{
+                    You("%s %s%s%s", verb, mon_nam(mon), byhand ? " by the throat" : "", exclam(specialdmg));
+                    
+					if (silverhit && flags.verbose)
                         silver_sears(&youmonst, mon, silverhit);
                     sum[i] = damageum(mon, mattk, specialdmg);
                 } else {
@@ -3641,7 +3648,8 @@ register struct monst *mon;
                 break;
             }
             /* hug attack against ordinary foe */
-            if (mon == u.ustuck) {
+            if (mon == u.ustuck)
+			{
                 pline("%s is being %s%s.", Monnam(mon),
                       byhand ? "throttled" : "crushed",
                       /* extra feedback for non-breather being choked */
@@ -3649,7 +3657,9 @@ register struct monst *mon;
                 if (silverhit && flags.verbose)
                     silver_sears(&youmonst, mon, silverhit);
                 sum[i] = damageum(mon, mattk, specialdmg);
-            } else if (i >= 2 && sum[i - 1] && sum[i - 2]) {
+            }
+			else if (i >= 2 && sum[i - 1] && sum[i - 2]) 
+			{
                 /* in case we're hugging a new target while already
                    holding something else; yields feedback
                    "<u.ustuck> is no longer in your clutches" */
