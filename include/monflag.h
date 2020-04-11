@@ -218,10 +218,10 @@
 #define M3_DISPLACES								0x00000400UL			/* moves monsters out of its way */
 #define M3_NONCORPOREAL								0x00000800UL      /* is noncorporeal, different from unsolid in the sense that
 																	an unsolid monster can be disintegrated, but noncorporeal not */
-/* free bit */
-#define M3_NONLIVING								0x00002000UL			/* is nonliving, such as a golem or other construct or a vortex (unaffected by death attacks)*/
-#define M3_MULTIWEAPON								0x00004000UL		/* fights with more than one weapon (i.e., the wielded weapon), if available*/
-#define M3_CONSTRICTOR								0x00008000UL       /* grabbing / sticking itself causes constriction */
+#define M3_NONLIVING								0x00001000UL	/* is nonliving, such as a golem or other construct or a vortex (unaffected by death attacks)*/
+#define M3_MULTIWEAPON								0x00002000UL    /* fights with more than one weapon (i.e., the wielded weapon), if available*/
+#define M3_CONSTRICTOR								0x00004000UL    /* grabbing / sticking itself causes constriction */
+#define M3_STRANGLES_NECK_BY_HAND						0x00008000UL    /* rope golem's strangulation attack */
 
 #define M3_WIZARD									0x00010000UL			/* monster can use wizard items */
 #define M3_PRIEST									0x00020000UL			/* monster can use priest items */
@@ -269,6 +269,7 @@
 #define M4_VORPAL_VULNERABILITY		0x00040000UL		/* vorpal weapons always cut off head */
 #define M4_LOVES_BANANAS		    0x00080000UL		/* tamed with bananas */
 #define M4_PAWED		            0x00100000UL		/* has paws instead of hands */
+#define M4_WATERY					0x00200000UL		/* composed of water like a water elemental */
 
 #define MZ_TINY 0          /* < 2' */
 #define MZ_SMALL 1         /* 2-4' */

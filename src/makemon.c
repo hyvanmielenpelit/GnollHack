@@ -36,12 +36,16 @@ struct permonst *ptr;
 {
     if (ptr->mlet == S_ELEMENTAL)
         switch (monsndx(ptr)) {
+        case PM_ELDER_AIR_ELEMENTAL:
         case PM_AIR_ELEMENTAL:
             return Is_airlevel(&u.uz);
+        case PM_ELDER_FIRE_ELEMENTAL:
         case PM_FIRE_ELEMENTAL:
             return Is_firelevel(&u.uz);
+        case PM_ELDER_EARTH_ELEMENTAL:
         case PM_EARTH_ELEMENTAL:
             return Is_earthlevel(&u.uz);
+        case PM_ELDER_WATER_ELEMENTAL:
         case PM_WATER_ELEMENTAL:
             return Is_waterlevel(&u.uz);
         }
@@ -2948,7 +2952,8 @@ struct monst *mtmp, *victim;
         newtype = PM_PRIESTESS;
 
     /* growth limits differ depending on method of advancement */
-    if (victim) {                       /* killed a monster */
+    if (victim)
+    {                       /* killed a monster */
         /*
          * The HP threshold is the maximum number of hit points for the
          * current level; once exceeded, a level will be gained.
@@ -2958,10 +2963,13 @@ struct monst *mtmp, *victim;
         hp_threshold = mtmp->m_lev * 8; /* normal limit */
         if (!mtmp->m_lev)
             hp_threshold = 4;
+#if 0
         else if (is_golem(ptr)) /* strange creatures */
             hp_threshold = ((mtmp->mhpmax / 10) + 1) * 10 - 1;
         else if (is_home_elemental(ptr))
             hp_threshold *= 2;
+#endif
+
         lev_limit = 3 * (int) ptr->mlevel / 2; /* same as adj_lev() */
         /* If they can grow up, be sure the level is high enough for that */
         if (oldtype != newtype && mons[newtype].mlevel > lev_limit)

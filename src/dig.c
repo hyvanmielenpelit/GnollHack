@@ -492,7 +492,7 @@ dig(VOID_ARGS)
 
             switch (rn2(2)) {
             case 0:
-                mtmp = makemon(&mons[PM_EARTH_ELEMENTAL], dpx, dpy,
+                mtmp = makemon(&mons[!rn2(2) ? PM_ELDER_EARTH_ELEMENTAL : PM_EARTH_ELEMENTAL], dpx, dpy,
                                NO_MM_FLAGS);
                 break;
             default:
@@ -1835,7 +1835,7 @@ struct obj* origobj;
 		mtmp = m_at(zx, zy);
 		if (mtmp)
 		{
-			if (mtmp->mnum == PM_WATER_ELEMENTAL)
+			if (is_watery(mtmp->data))
 			{
 				mtmp->mhp = 0;
 				if (DEADMONSTER(mtmp))
@@ -2457,7 +2457,7 @@ escape_tomb()
         if (amorphous(youmonst.data) || Passes_walls
             || noncorporeal(youmonst.data)
             || (unsolid(youmonst.data)
-                && youmonst.data != &mons[PM_WATER_ELEMENTAL])
+                && !is_watery(youmonst.data))
             || (tunnels(youmonst.data) && !needspick(youmonst.data))) {
             You("%s up through the %s.",
                 (tunnels(youmonst.data) && !needspick(youmonst.data))

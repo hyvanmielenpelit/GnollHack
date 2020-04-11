@@ -1229,11 +1229,15 @@ boolean makingboxcontents;
             blessorcurse(otmp, 17);
             otmp->recharged = 0; /* used to control recharging */
             break;
+        case MISCELLANEOUS_CLASS:
         case RING_CLASS:
-            if (objects[otmp->otyp].oc_enchantable == ENCHTYPE_RING_NORMAL || objects[otmp->otyp].oc_enchantable == ENCHTYPE_RING_1_7 || objects[otmp->otyp].oc_enchantable == ENCHTYPE_RING_DOUBLE || objects[otmp->otyp].oc_enchantable == ENCHTYPE_RING_POWER)
+            if (objects[otmp->otyp].oc_enchantable == ENCHTYPE_RING_NORMAL || objects[otmp->otyp].oc_enchantable == ENCHTYPE_RING_1_7
+                || objects[otmp->otyp].oc_enchantable == ENCHTYPE_RING_DOUBLE || objects[otmp->otyp].oc_enchantable == ENCHTYPE_RING_POWER
+                || objects[otmp->otyp].oc_enchantable == ENCHTYPE_MISCELLANEOUS_NORMAL
+                )
 			{
 				int addition = 0;
-				if (objects[otmp->otyp].oc_enchantable == ENCHTYPE_RING_NORMAL)
+				if (objects[otmp->otyp].oc_enchantable == ENCHTYPE_RING_NORMAL || objects[otmp->otyp].oc_enchantable == ENCHTYPE_MISCELLANEOUS_NORMAL)
 					addition += rnd(2) + (!rn2(2) ? 0 : !rn2(2) ? 1 : !rn2(2) ? 2 : 3);
 				else if (objects[otmp->otyp].oc_enchantable == ENCHTYPE_RING_1_7)
 					addition += rnd(3) + (!rn2(3) ? 0 : !rn2(3) ? 1 : !rn2(3) ? 2 : !rn2(3) ? 3 : 4);
@@ -1247,7 +1251,8 @@ boolean makingboxcontents;
 				else
 					blessorcurse(otmp, 3);
 
-                if (rn2(10)) {
+                if (rn2(10)) 
+                {
 					if (rn2(10) && bcsign(otmp))
 						otmp->enchantment = bcsign(otmp) * addition; // rne(3);
 					else
@@ -1262,7 +1267,7 @@ boolean makingboxcontents;
             }
 			else if (objects[otmp->otyp].oc_enchantable)
 			{
-				int addition = get_obj_init_spe(otmp);
+				int addition = get_obj_init_enchantment(otmp);
 				blessorcurse(otmp, 3);
 				otmp->enchantment = bcsign(otmp) * addition;
 				/* negative rings are usually cursed */
@@ -1273,51 +1278,6 @@ boolean makingboxcontents;
                 curse(otmp);
             }
             break;
-		case MISCELLANEOUS_CLASS:
-			if (objects[otmp->otyp].oc_enchantable == ENCHTYPE_MISCELLANEOUS_NORMAL) 
-			{
-				int addition = rnd(2);
-				if (otmp->otyp != STRANGE_OBJECT)
-					addition += !rn2(2) ? 0 : !rn2(2) ? 1 : !rn2(2) ? 2 : 3;
-
-				if((is_cursed_magic_item(otmp) || !rn2(11)))
-					curse(otmp);
-				else
-					blessorcurse(otmp, 3);
-
-				if (rn2(10)) {
-					if (rn2(10) && bcsign(otmp))
-						otmp->enchantment = bcsign(otmp) * addition; // rne(3);
-					else
-						otmp->enchantment = rn2(2) ? addition : -addition; //rne(3) : -rne(3);
-				}
-				/* make useless +0 miscellaneous items much less common */
-				if (otmp->enchantment == 0)
-					otmp->enchantment = ((otmp->otyp == STRANGE_OBJECT) ? rnd(3) - 2 : rn2(4) - rn2(3));
-				/* negative miscellaneous items are usually cursed */
-				if (otmp->enchantment < 0 && rn2(5))
-					curse(otmp);
-			}
-			else if (objects[otmp->otyp].oc_enchantable)
-			{
-				if (rn2(10) && (is_cursed_magic_item(otmp) || !rn2(11))) {
-					curse(otmp);
-					otmp->enchantment = -get_obj_init_spe(otmp);
-				}
-				else if (!rn2(10)) 
-				{
-					otmp->blessed = (objects[otmp->otyp].oc_flags2 & O2_GENERATED_BLESSED) ? 1 : rn2(2);
-					otmp->enchantment = get_obj_init_spe(otmp);
-				}
-				else
-					blessorcurse(otmp, 10);
-				if (otmp->enchantment < 0 && rn2(5))
-					curse(otmp);
-			}
-			else if (rn2(10) && (is_cursed_magic_item(otmp) || !rn2(9))) {
-				curse(otmp);
-			}
-			break;
 		case ROCK_CLASS:
             switch (otmp->otyp) {
             case STATUE:
@@ -1338,13 +1298,13 @@ boolean makingboxcontents;
     }
 
 	/* Blessed or cursed */
-	if (is_generated_blessed(otmp))
+	if (is_obj_generated_blessed(otmp))
 	{
 		otmp->cursed = 0;
 		otmp->enchantment = abs(otmp->enchantment);
 		otmp->blessed = 1;
 	}
-	else if (is_generated_cursed(otmp))
+	else if (is_obj_generated_cursed(otmp))
 		curse(otmp);
 
 
@@ -1617,7 +1577,7 @@ int charge_init_index;
 
 
 int
-get_obj_init_spe(otmp)
+get_obj_init_enchantment(otmp)
 struct obj* otmp;
 {
 	if (!otmp)

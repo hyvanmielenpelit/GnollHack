@@ -821,8 +821,10 @@ int mntmp;
 		}
 		else
             hp = d(mlvl, 8) + constitution_hp_bonus(ACURR(A_CON)) * mlvl;
+        /*
         if (is_home_elemental(&mons[mntmp]))
             hp *= 2;
+         */
     }
 	if (hp < 1)
 		hp = 1;

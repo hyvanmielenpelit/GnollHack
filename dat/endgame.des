@@ -56,8 +56,8 @@ MONSTER:('@',"Elvenking"),(67,16)
 MONSTER:('H',"minotaur"),(67,14)
 #  An assortment of earth-appropriate nasties
 #  in each cavern.
-MONSTER:('E',"earth elemental"),(52,13),hostile
-MONSTER:('E',"earth elemental"),(53,13),hostile
+MONSTER:('E',"elder earth elemental"),(52,13),hostile
+MONSTER:('E',"elder earth elemental"),(53,13),hostile
 MONSTER:('T',"rock troll"),(53,12)
 MONSTER:('H',"stone giant"),(54,12)
 #
@@ -66,11 +66,11 @@ MONSTER:('&',"barbed devil"),(69,06)
 MONSTER:('H',"stone giant"),(69,08)
 MONSTER:(''',"stone golem"),(71,08)
 MONSTER:('&',"pit fiend"),(70,09)
-MONSTER:('E',"earth elemental"),(70,08),hostile
+MONSTER:('E',"elder earth elemental"),(70,08),hostile
 #
 MONSTER:('E',"earth elemental"),(60,03),hostile
 MONSTER:('H',"stone giant"),(61,04)
-MONSTER:('E',"earth elemental"),(62,04),hostile
+MONSTER:('E',"elder earth elemental"),(62,04),hostile
 MONSTER:('E',"earth elemental"),(61,05),hostile
 MONSTER:('s',"scorpion"),(62,05)
 MONSTER:('p',"rock piercer"),(63,05)
@@ -78,51 +78,51 @@ MONSTER:('p',"rock piercer"),(63,05)
 MONSTER:('U',"umber hulk"),(40,05)
 MONSTER:('v',"dust vortex"),(42,05)
 MONSTER:('T',"rock troll"),(38,06)
-MONSTER:('E',"earth elemental"),(39,06),hostile
-MONSTER:('E',"earth elemental"),(41,06),hostile
+MONSTER:('E',"elder earth elemental"),(39,06),hostile
+MONSTER:('E',"elder earth elemental"),(41,06),hostile
 MONSTER:('E',"earth elemental"),(38,07),hostile
 MONSTER:('H',"stone giant"),(39,07)
-MONSTER:('E',"earth elemental"),(43,07),hostile
+MONSTER:('E',"elder earth elemental"),(43,07),hostile
 MONSTER:(''',"stone golem"),(37,08)
 MONSTER:('S',"pit viper"),(43,08)
 MONSTER:('S',"pit viper"),(43,09)
 MONSTER:('T',"rock troll"),(44,10)
 #
-MONSTER:('E',"earth elemental"),(02,01),hostile
+MONSTER:('E',"elder earth elemental"),(02,01),hostile
 MONSTER:('E',"earth elemental"),(03,01),hostile
 MONSTER:(''',"stone golem"),(01,02)
-MONSTER:('E',"earth elemental"),(02,02),hostile
+MONSTER:('E',"elder earth elemental"),(02,02),hostile
 MONSTER:('T',"rock troll"),(04,03)
 MONSTER:('T',"rock troll"),(03,03)
 MONSTER:('&',"pit fiend"),(03,04)
 MONSTER:('E',"earth elemental"),(04,05),hostile
 MONSTER:('S',"pit viper"),(05,06)
 #
-MONSTER:('E',"earth elemental"),(21,02),hostile
+MONSTER:('E',"elder earth elemental"),(21,02),hostile
 MONSTER:('E',"earth elemental"),(21,03),hostile
 MONSTER:('H',"minotaur"),(21,04)
-MONSTER:('E',"earth elemental"),(21,05),hostile
+MONSTER:('E',"elder earth elemental"),(21,05),hostile
 MONSTER:('T',"rock troll"),(22,05)
-MONSTER:('E',"earth elemental"),(22,06),hostile
+MONSTER:('E',"elder earth elemental"),(22,06),hostile
 MONSTER:('E',"earth elemental"),(23,06),hostile
 #
 MONSTER:('S',"pit viper"),(14,08)
 MONSTER:('&',"barbed devil"),(14,09)
-MONSTER:('E',"earth elemental"),(13,10),hostile
+MONSTER:('E',"elder earth elemental"),(13,10),hostile
 MONSTER:('T',"rock troll"),(12,11)
-MONSTER:('E',"earth elemental"),(14,12),hostile
+MONSTER:('E',"elder earth elemental"),(14,12),hostile
 MONSTER:('E',"earth elemental"),(15,13),hostile
 MONSTER:('H',"stone giant"),(17,13)
 MONSTER:(''',"stone golem"),(18,13)
 MONSTER:('&',"pit fiend"),(18,12)
-MONSTER:('E',"earth elemental"),(18,11),hostile
+MONSTER:('E',"elder earth elemental"),(18,11),hostile
 MONSTER:('E',"earth elemental"),(18,10),hostile
 #
 MONSTER:('&',"barbed devil"),(02,16)
-MONSTER:('E',"earth elemental"),(03,16),hostile
+MONSTER:('E',"elder earth elemental"),(03,16),hostile
 MONSTER:('T',"rock troll"),(02,17)
 MONSTER:('E',"earth elemental"),(04,17),hostile
-MONSTER:('E',"earth elemental"),(04,18),hostile
+MONSTER:('E',"elder earth elemental"),(04,18),hostile
 
 OBJECT:('`',"boulder"),random
 
@@ -169,17 +169,17 @@ TELEPORT_REGION:levregion(01,00,24,20),levregion(25,00,79,20),up
 TELEPORT_REGION:levregion(56,00,79,20),levregion(01,00,55,20),down
 PORTAL:levregion(57,01,78,19),(0,0,0,0),"fire"
 REGION:(00,00,75,19),lit,"ordinary"
+MONSTER:('E',"elder air elemental"),random,hostile
 MONSTER:('E',"air elemental"),random,hostile
+MONSTER:('E',"elder air elemental"),random,hostile
 MONSTER:('E',"air elemental"),random,hostile
+MONSTER:('E',"elder air elemental"),random,hostile
 MONSTER:('E',"air elemental"),random,hostile
+MONSTER:('E',"elder air elemental"),random,hostile
 MONSTER:('E',"air elemental"),random,hostile
+MONSTER:('E',"elder air elemental"),random,hostile
 MONSTER:('E',"air elemental"),random,hostile
-MONSTER:('E',"air elemental"),random,hostile
-MONSTER:('E',"air elemental"),random,hostile
-MONSTER:('E',"air elemental"),random,hostile
-MONSTER:('E',"air elemental"),random,hostile
-MONSTER:('E',"air elemental"),random,hostile
-MONSTER:('E',"air elemental"),random,hostile
+MONSTER:('E',"elder air elemental"),random,hostile
 
 MONSTER:('e',"floating eye"),random,hostile
 MONSTER:('e',"floating eye"),random,hostile
@@ -304,8 +304,8 @@ TRAP:"fire",random
 #  An assortment of fire-appropriate nasties
 MONSTER:('D',"red dragon"),random
 MONSTER:('&',"balrog"),random
-MONSTER:('E',"fire elemental"),random,hostile
-MONSTER:('E',"fire elemental"),random,hostile
+MONSTER:('E',"elder fire elemental"),random,hostile
+MONSTER:('E',"elder fire elemental"),random,hostile
 MONSTER:('v',"fire vortex"),random
 MONSTER:('d',"hell hound"),random
 #
@@ -314,21 +314,21 @@ MONSTER:('&',"barbed devil"),random
 MONSTER:('d',"hell hound"),random
 MONSTER:(''',"stone golem"),random
 MONSTER:('&',"pit fiend"),random
-MONSTER:('E',"fire elemental"),random,hostile
+MONSTER:('E',"elder fire elemental"),random,hostile
 #
-MONSTER:('E',"fire elemental"),random,hostile
+MONSTER:('E',"elder fire elemental"),random,hostile
 MONSTER:('d',"hell hound"),random
 MONSTER:('E',"fire elemental"),random,hostile
-MONSTER:('E',"fire elemental"),random,hostile
+MONSTER:('E',"elder fire elemental"),random,hostile
 MONSTER:('s',"scorpion"),random
 MONSTER:('H',"fire giant"),random
 #
 MONSTER:('d',"hell hound"),random
 MONSTER:('v',"dust vortex"),random
 MONSTER:('v',"fire vortex"),random
+MONSTER:('E',"elder fire elemental"),random,hostile
 MONSTER:('E',"fire elemental"),random,hostile
-MONSTER:('E',"fire elemental"),random,hostile
-MONSTER:('E',"fire elemental"),random,hostile
+MONSTER:('E',"elder fire elemental"),random,hostile
 MONSTER:('d',"hell hound"),random
 MONSTER:('E',"fire elemental"),random,hostile
 MONSTER:(''',"stone golem"),random
@@ -336,14 +336,14 @@ MONSTER:('S',"pit viper"),random
 MONSTER:('S',"pit viper"),random
 MONSTER:('v',"fire vortex"),random
 #
-MONSTER:('E',"fire elemental"),random,hostile
+MONSTER:('E',"elder fire elemental"),random,hostile
 MONSTER:('E',"fire elemental"),random,hostile
 MONSTER:('H',"fire giant"),random
 MONSTER:('E',"fire elemental"),random,hostile
 MONSTER:('v',"fire vortex"),random
 MONSTER:('v',"fire vortex"),random
 MONSTER:('&',"pit fiend"),random
-MONSTER:('E',"fire elemental"),random,hostile
+MONSTER:('E',"elder fire elemental"),random,hostile
 MONSTER:('S',"pit viper"),random
 #
 MONSTER:(':',"salamander"),random,hostile
@@ -358,12 +358,12 @@ MONSTER:('H',"fire giant"),random
 MONSTER:('&',"barbed devil"),random
 MONSTER:('E',"fire elemental"),random,hostile
 MONSTER:('v',"fire vortex"),random
-MONSTER:('E',"fire elemental"),random,hostile
+MONSTER:('E',"elder fire elemental"),random,hostile
 MONSTER:('E',"fire elemental"),random,hostile
 MONSTER:('d',"hell hound"),random
 MONSTER:('H',"fire giant"),random
 MONSTER:('&',"pit fiend"),random
-MONSTER:('E',"fire elemental"),random,hostile
+MONSTER:('E',"elder fire elemental"),random,hostile
 MONSTER:('E',"fire elemental"),random,hostile
 #
 MONSTER:('&',"barbed devil"),random
@@ -455,25 +455,25 @@ MONSTER:';',random
 MONSTER:';',random
 MONSTER:';',random
 # These guys feel like home here
+MONSTER:('E',"elder water elemental"),random,hostile
 MONSTER:('E',"water elemental"),random,hostile
+MONSTER:('E',"elder water elemental"),random,hostile
 MONSTER:('E',"water elemental"),random,hostile
+MONSTER:('E',"elder water elemental"),random,hostile
 MONSTER:('E',"water elemental"),random,hostile
+MONSTER:('E',"elder water elemental"),random,hostile
 MONSTER:('E',"water elemental"),random,hostile
+MONSTER:('E',"elder water elemental"),random,hostile
 MONSTER:('E',"water elemental"),random,hostile
+MONSTER:('E',"elder water elemental"),random,hostile
 MONSTER:('E',"water elemental"),random,hostile
+MONSTER:('E',"elder water elemental"),random,hostile
 MONSTER:('E',"water elemental"),random,hostile
+MONSTER:('E',"elder water elemental"),random,hostile
 MONSTER:('E',"water elemental"),random,hostile
+MONSTER:('E',"elder water elemental"),random,hostile
 MONSTER:('E',"water elemental"),random,hostile
-MONSTER:('E',"water elemental"),random,hostile
-MONSTER:('E',"water elemental"),random,hostile
-MONSTER:('E',"water elemental"),random,hostile
-MONSTER:('E',"water elemental"),random,hostile
-MONSTER:('E',"water elemental"),random,hostile
-MONSTER:('E',"water elemental"),random,hostile
-MONSTER:('E',"water elemental"),random,hostile
-MONSTER:('E',"water elemental"),random,hostile
-MONSTER:('E',"water elemental"),random,hostile
-MONSTER:('E',"water elemental"),random,hostile
+MONSTER:('E',"elder water elemental"),random,hostile
 
 
 MAZE:"astral",' '

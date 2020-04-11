@@ -839,7 +839,7 @@ mkgarden()
 			{
 				levl[sx][sy].typ = GRASS;
 				/* Buried items */
-				if (!rn2(3))
+				if (!rn2(5))
 				{
 					int itemtype = MANDRAKE_ROOT;
 					int quan = 1;
@@ -878,7 +878,7 @@ mkgarden()
 					int itemtype = SPRIG_OF_WOLFSBANE;
 					int quan = 1;
 
-					switch (rn2(24))
+					switch (rn2(26))
 					{
 					case 0:
 						itemtype = CLOVE_OF_GARLIC;
@@ -941,33 +941,41 @@ mkgarden()
 						quan = rnd(2);
 						break;
 					case 15:
-						itemtype = rn2(4) ? CHANTERELLE : PANTHER_CAP;
+						itemtype = CHANTERELLE;
 						quan = 1;
 						break;
-					case 16:
+                    case 16:
+                        itemtype = PANTHER_CAP;
+                        quan = 1;
+                        break;
+                    case 17:
 						itemtype = rn2(4) ? APPLE : BANANA;
 						quan = 1;
 						break;
-					case 17:
+					case 18:
 						itemtype = rn2(4) ? PEAR : POMEGRANATE;
 						quan = 1;
 						break;
-					case 18:
 					case 19:
+					case 20:
 						itemtype = CLOUDBERRY;
 						quan = rnd(2);
 						break;
-					case 20:
 					case 21:
+					case 22:
 						itemtype = FIG;
 						quan = rnd(2);
 						break;
-					case 22:
 					case 23:
+					case 24:
 						itemtype = DRAGON_FRUIT;
 						quan = rnd(2);
 						break;
-					default:
+                    case 25: /* second time */
+                        itemtype = HEALING_MUSHROOM;
+                        quan = rnd(2);
+                        break;
+                    default:
 						break;
 					}
 					struct obj* otmp = mksobj_at(itemtype, sx, sy, TRUE, FALSE);

@@ -823,6 +823,13 @@ register struct obj *obj;
 	}
 	else if (ftyp == FOUNTAIN_POISON)
 	{
+		int oldotyp = obj->otyp;
+		char oldnameturns[BUFSZ];
+		strcpy(oldnameturns, Tobjnam(obj, "turn"));
+		char oldnamestart[BUFSZ];
+		strcpy(oldnamestart, Tobjnam(obj, "start"));
+		unsigned int olddiluted = obj->odiluted;
+
 		nowaterdamage = TRUE;
 		boolean identified = FALSE;
 
@@ -833,12 +840,25 @@ register struct obj *obj;
 			identified = TRUE;
 			effecthappened = TRUE;
 		}
-		else if (obj && obj->oclass == POTION_CLASS && obj->otyp != POT_POISON)
+		else if (obj && obj->oclass == POTION_CLASS)
 		{
-			pline("%s to smell foul.", Yobjnam2(obj, "start"));
 			obj->otyp = POT_POISON;
 			obj->dknown = 0;
 			obj->odiluted = 0;
+
+			if (obj->otyp != oldotyp)
+			{
+				identified = TRUE;
+				effecthappened = TRUE;
+				pline("%s to smell foul.", oldnamestart);
+				pline("%s into %s.", oldnameturns, doname(obj));
+			}
+			else if (obj->odiluted != olddiluted)
+			{
+				effecthappened = TRUE;
+				pline("%s undiluted.", Tobjnam(obj, "become"));
+			}
+
 			if (carried(obj))
 				update_inventory();
 			identified = TRUE;

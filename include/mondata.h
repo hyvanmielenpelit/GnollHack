@@ -51,7 +51,6 @@
 #define is_animal(ptr) (((ptr)->mflags1 & M1_ANIMAL) != 0L)
 #define slithy(ptr) (((ptr)->mflags1 & M1_SLITHY) != 0L)
 #define thick_skinned(ptr) (((ptr)->mflags1 & M1_THICK_HIDE) != 0L)
-#define hug_throttles(ptr) ((ptr) == &mons[PM_ROPE_GOLEM])
 #define lays_eggs(ptr) (((ptr)->mflags1 & M1_OVIPAROUS) != 0L)
 #define eggs_in_water(ptr) \
     (lays_eggs(ptr) && (ptr)->mlet == S_EEL && is_swimmer(ptr))
@@ -127,6 +126,7 @@
 #define corpse_crumbles_to_dust(ptr) (((ptr)->mflags3 & M3_CORPSE_CRUMBLES_TO_DUST) != 0L)
 #define is_speaking_monster(ptr) (((ptr)->mflags3 & M3_SPEAKING) != 0L)
 #define is_constrictor(ptr) (((ptr)->mflags3 & M3_CONSTRICTOR) != 0L)
+#define hug_throttles(ptr) (((ptr)->mflags3 & M3_STRANGLES_NECK_BY_HAND) != 0L)
 #define hug_requires_two_previous_attacks(ptr) (((ptr)->mflags3 & M3_HUG_HITS_IF_TWO_FIRST_ATTACKS_SUCCEEDED) != 0L)
 #define knows_pits_and_holes(ptr) \
     (((ptr)->mflags3 & M3_KNOWS_PITS_AND_HOLES) != 0)
@@ -157,6 +157,7 @@
 #define likes_fire(ptr) (((ptr)->mflags4 & M4_LIKES_FIRE) != 0)
 #define smells_buried_searchable(ptr) (((ptr)->mflags4 & M4_SMELLS_BURIED_SEARCHABLE) != 0)
 #define has_vorpal_vulnerability(ptr) (((ptr)->mflags4 & M4_VORPAL_VULNERABILITY) != 0)
+#define is_watery(ptr) (((ptr)->mflags4 & M4_WATERY) != 0)
 
 
 /* combinations */

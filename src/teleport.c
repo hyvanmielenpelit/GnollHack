@@ -1460,34 +1460,47 @@ int in_sight;
 
     if (mtmp == u.ustuck) /* probably a vortex */
         return 0;         /* temporary? kludge */
-    if (teleport_pet(mtmp, force_it)) {
+    if (teleport_pet(mtmp, force_it)) 
+    {
         d_level tolevel;
         int migrate_typ = MIGR_RANDOM;
 
-        if (is_hole(tt)) {
-            if (Is_stronghold(&u.uz)) {
+        if (is_hole(tt))
+        {
+            if (Is_stronghold(&u.uz)) 
+            {
                 assign_level(&tolevel, &valley_level);
-            } else if (Is_botlevel(&u.uz)) {
+            } 
+            else if (Is_botlevel(&u.uz))
+            {
                 if (in_sight && trap->tseen)
                     pline("%s avoids the %s.", Monnam(mtmp),
                           (tt == HOLE) ? "hole" : "trap");
                 return 0;
-            } else {
+            } 
+            else
+            {
                 get_level(&tolevel, depth(&u.uz) + 1);
             }
-        } else if (tt == MAGIC_PORTAL) {
+        }
+        else if (tt == MAGIC_PORTAL) 
+        {
             if (In_endgame(&u.uz)
-                && (mon_has_amulet(mtmp) || is_home_elemental(mtmp->data))) {
+                && (mon_has_amulet(mtmp) || is_home_elemental(mtmp->data))) 
+            {
                 if (in_sight && mtmp->data->mlet != S_ELEMENTAL) {
                     pline("%s seems to shimmer for a moment.", Monnam(mtmp));
                     seetrap(trap);
                 }
                 return 0;
-            } else {
+            } 
+            else
+            {
                 assign_level(&tolevel, &trap->dst);
                 migrate_typ = MIGR_PORTAL;
             }
-        } else if (tt == LEVEL_TELEP || tt == NO_TRAP) {
+        } else if (tt == LEVEL_TELEP || tt == NO_TRAP)
+        {
             int nlev;
 
             if (mon_has_amulet(mtmp) || In_endgame(&u.uz)
@@ -1495,33 +1508,42 @@ int in_sight;
                    onscary(0,0,) is true for the Wizard, Riders, lawful
                    minions, Angels of any alignment, shopkeeper or priest
                    currently inside his or her own special room */
-                || (tt == NO_TRAP && onscary(0, 0, mtmp))) {
+                || (tt == NO_TRAP && onscary(0, 0, mtmp)))
+            {
                 if (in_sight)
                     pline("%s seems very disoriented for a moment.",
                           Monnam(mtmp));
                 return 0;
             }
-            if (tt == NO_TRAP) {
+
+            if (tt == NO_TRAP)
+            {
                 /* creature is being forced off the level to make room;
                    it will try to return to this level (at a random spot
                    rather than its current one) if the level is left by
                    the hero and then revisited */
                 assign_level(&tolevel, &u.uz);
-            } else {
+            } 
+            else
+            {
                 nlev = random_teleport_level();
-                if (nlev == depth(&u.uz)) {
+                if (nlev == depth(&u.uz))
+                {
                     if (in_sight)
                         pline("%s shudders for a moment.", Monnam(mtmp));
                     return 0;
                 }
                 get_level(&tolevel, nlev);
             }
-        } else {
+        } 
+        else
+        {
             impossible("mlevel_tele_trap: unexpected trap type (%d)", tt);
             return 0;
         }
 
-        if (in_sight) {
+        if (in_sight)
+        {
             pline("Suddenly, %s disappears out of sight.", mon_nam(mtmp));
             if (trap)
                 seetrap(trap);

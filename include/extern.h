@@ -1491,7 +1491,7 @@ E int FDECL(get_obj_init_charge, (struct obj*));
 E int FDECL(get_max_charge, (int));
 E int FDECL(get_obj_max_charge, (struct obj*));
 E int FDECL(get_init_enchantment, (int));
-E int FDECL(get_obj_init_spe, (struct obj*));
+E int FDECL(get_obj_init_enchantment, (struct obj*));
 E int FDECL(get_max_enchantment, (int));
 E int FDECL(get_obj_max_spe, (struct obj*));
 E void FDECL(set_corpsenm, (struct obj *, int));

@@ -343,7 +343,8 @@ boolean createcorpse;
 		additionalash++;
 	case PM_RED_DRAGON:
 	case PM_HELL_BAT:
-	case PM_PHOENIX:
+    case PM_ELDER_FIRE_ELEMENTAL:
+    case PM_PHOENIX:
 		additionalash++;
 	case PM_PYROHYDRA:
 	case PM_RED_NAGA:

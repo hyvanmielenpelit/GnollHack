@@ -3275,7 +3275,10 @@ struct obj *obj, *otmp;
 					zombietype = PM_GNOME_ZOMBIE;
 				else if (obj->corpsenm == PM_ORC || mons[obj->corpsenm].mflags2 & M2_ORC)
 					zombietype = PM_ORC_ZOMBIE;
-				if (zombietype > NON_PM && animate_corpse(obj, zombietype))
+                else if (obj->corpsenm == PM_KOBOLD || mons[obj->corpsenm].mlet == S_KOBOLD)
+                    zombietype = PM_KOBOLD_ZOMBIE;
+
+                if (zombietype > NON_PM && animate_corpse(obj, zombietype))
 				{
 					/* success */
 					res = 1;
@@ -3321,7 +3324,10 @@ struct obj *obj, *otmp;
 					zombietype = PM_GNOME_MUMMY;
 				else if (obj->corpsenm == PM_ORC || mons[obj->corpsenm].mflags2 & M2_ORC)
 					zombietype = PM_ORC_MUMMY;
-				if (zombietype > NON_PM && animate_corpse(obj, zombietype))
+                else if (obj->corpsenm == PM_KOBOLD || mons[obj->corpsenm].mlet == S_KOBOLD)
+                    zombietype = PM_KOBOLD_MUMMY;
+                
+                if (zombietype > NON_PM && animate_corpse(obj, zombietype))
 				{
 					/* success */
 					res = 1;

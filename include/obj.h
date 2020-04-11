@@ -262,10 +262,10 @@ struct obj {
 #define is_cursed_magic_item(otmp)                                            \
 	(objects[(otmp)->otyp].oc_flags2 & O2_CURSED_MAGIC_ITEM)
 
-#define is_generated_cursed(otmp)                                            \
+#define is_obj_generated_cursed(otmp)                                            \
 	(objects[(otmp)->otyp].oc_flags2 & O2_GENERATED_CURSED)
 
-#define is_generated_blessed(otmp)                                            \
+#define is_obj_generated_blessed(otmp)                                            \
 	(objects[(otmp)->otyp].oc_flags2 & O2_GENERATED_BLESSED)
 
 #define oresist_disintegration(otmp)                                       \

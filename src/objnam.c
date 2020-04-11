@@ -4376,7 +4376,7 @@ struct obj *no_wish;
 			   || objects[typ].oc_enchantable
 		) 
 	{
-        if (enchantment > get_obj_init_spe(otmp) && enchantment > otmp->enchantment)
+        if (enchantment > get_obj_init_enchantment(otmp) && enchantment > otmp->enchantment)
             enchantment = 0;
         if (enchantment > get_obj_max_spe(otmp) / 3 && Luck < 0)
             spesgn = -1;

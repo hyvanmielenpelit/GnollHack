@@ -1296,10 +1296,12 @@ struct attack *mattk;
     case PM_FLAMING_SPHERE:
     case PM_FIRE_VORTEX:
     case PM_FIRE_ELEMENTAL:
+    case PM_ELDER_FIRE_ELEMENTAL:
     case PM_SALAMANDER:
         what = "already on fire";
         break;
     case PM_WATER_ELEMENTAL:
+    case PM_ELDER_WATER_ELEMENTAL:
     case PM_FOG_CLOUD:
     case PM_STEAM_VORTEX:
         what = "boiling";
@@ -1313,6 +1315,8 @@ struct attack *mattk;
     case PM_GOLD_GOLEM:
     case PM_AIR_ELEMENTAL:
     case PM_EARTH_ELEMENTAL:
+    case PM_ELDER_AIR_ELEMENTAL:
+    case PM_ELDER_EARTH_ELEMENTAL:
     case PM_DUST_VORTEX:
     case PM_ENERGY_VORTEX:
         what = "heating up";

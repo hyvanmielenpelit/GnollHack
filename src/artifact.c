@@ -1316,7 +1316,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
             pline_The("%s %s %s%c", artifact_hit_desc,
                       !spec_dbon_applies
                           ? "hits"
-                          : (mdef->data == &mons[PM_WATER_ELEMENTAL])
+                          : (is_watery(mdef->data))
                                 ? "vaporizes part of"
                                 : "burns",
                       hittee, !spec_dbon_applies ? '.' : '!');
@@ -1644,7 +1644,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 		if (realizes_damage)
 			pline("%s %s %s%c",
 				The(xname(otmp)),
-				(mdef->data == &mons[PM_WATER_ELEMENTAL])
+				(is_watery(mdef->data))
 				? "vaporizes part of"
 				: "burns",
 				hittee, '!');

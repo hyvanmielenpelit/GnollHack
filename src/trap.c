@@ -1444,7 +1444,8 @@ unsigned trflags;
 
     case MAGIC_TRAP: /* A magic trap. */
         seetrap(trap);
-        if (!rn2(30)) {
+        if (!rn2(30)) 
+        {
             deltrap(trap);
             newsym(u.ux, u.uy); /* update position */
             You("are caught in a magical explosion!");
@@ -1453,7 +1454,9 @@ unsigned trflags;
             u.uen = (u.ubaseenmax += 2);
 			updatemaxen();
             break;
-        } else {
+        }
+        else 
+        {
             domagictrap();
         }
         (void) steedintrap(trap, (struct obj *) 0);
@@ -3307,12 +3310,14 @@ domagictrap()
 
     /* What happened to the poor sucker? */
 
-    if (fate < 10) {
+    if (fate < 10) 
+    {
         /* Most of the time, it creates some monsters. */
         int cnt = rnd(4);
 
         /* blindness effects */
-        if (!resists_blnd(&youmonst) && !Flash_resistance) {
+        if (!resists_blnd(&youmonst) && !Flash_resistance)
+        {
             You("are momentarily blinded by a flash of light!");
             make_blinded((long) rn1(5, 10), FALSE);
             if (!Blind)
@@ -3322,11 +3327,14 @@ domagictrap()
         }
 
         /* deafness effects */
-        if (!Deaf) {
+        if (!Deaf) 
+        {
             You_hear("a deafening roar!");
             incr_itimeout(&HDeaf, rn1(20, 30));
             context.botl = context.botlx = TRUE;
-        } else {
+        } 
+        else
+        {
             /* magic vibrations still hit you */
             You_feel("rankled.");
             incr_itimeout(&HDeaf, rn1(5, 15));
@@ -3337,8 +3345,10 @@ domagictrap()
         /* roar: wake monsters in vicinity, after placing trap-created ones */
         wake_nearto(u.ux, u.uy, 7 * 7);
         /* [flash: should probably also hit nearby gremlins with light] */
-    } else
-        switch (fate) {
+    }
+    else
+        switch (fate)
+        {
         case 10:
         case 11:
             /* sometimes nothing happens */
@@ -3387,7 +3397,8 @@ domagictrap()
 
             (void) adjattrib(A_CHA, 1, FALSE);
             for (i = -1; i <= 1; i++)
-                for (j = -1; j <= 1; j++) {
+                for (j = -1; j <= 1; j++) 
+                {
                     if (!isok(u.ux + i, u.uy + j))
                         continue;
                     mtmp = m_at(u.ux + i, u.uy + j);
@@ -5772,7 +5783,7 @@ lava_effects()
         iflags.in_lava_effects--;
 
         /* s/he died... */
-        boil_away = (u.umonnum == PM_WATER_ELEMENTAL
+        boil_away = (is_watery(&mons[u.umonnum])
                      || u.umonnum == PM_STEAM_VORTEX
                      || u.umonnum == PM_FOG_CLOUD);
         for (;;) {
