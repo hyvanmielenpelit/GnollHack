@@ -20,7 +20,7 @@ STATIC_DCL unsigned long FDECL(target_on, (int, struct monst *));
 STATIC_DCL unsigned long FDECL(strategy, (struct monst *));
 
 /* adding more neutral creatures will tend to reduce the number of monsters
-   summoned by nasty(); adding more lawful creatures will reduce the number
+   summoned by summon_nasties(); adding more lawful creatures will reduce the number
    of monsters summoned by lawfuls; adding more chaotic creatures will reduce
    the number of monsters summoned by chaotics; prior to 3.6.1, there were
    only four lawful candidates, so lawful summoners tended to summon more
@@ -563,14 +563,14 @@ int summoner_level;
    creatures on average (in 3.6.0 and earlier, Null was treated as chaotic);
    returns the number of monsters created */
 int
-nasty(summoner)
+summon_nasties(summoner)
 struct monst *summoner;
 {
     register struct monst *mtmp;
     register int i, j;
     int castalign = (summoner ? sgn(summoner->data->maligntyp) : 0);
     coord bypos;
-    int count, census, tmp, makeindex, s_cls, m_cls;
+    int count, census, summon_num, makeindex, s_cls, m_cls;
 
 	if (!summoner || is_cancelled(summoner) || has_summon_forbidden(summoner))
 		return 0;
@@ -581,10 +581,13 @@ struct monst *summoner;
        of non-null makemon() return is inadequate */
     census = monster_census(FALSE);
 
-    if (!rn2(10) && Inhell) {
+    if (!rn2(20) && Inhell)
+    {
         /* this might summon a demon prince or lord */
         count = msummon((struct monst *) 0); /* summons like WoY */
-    } else {
+    }
+    else
+    {
         count = 0;
         s_cls = summoner ? summoner->data->mlet : 0;
 		/*
@@ -601,18 +604,22 @@ struct monst *summoner;
 		if (summoner)
 		{
 			if (summoner != &youmonst && (summoner->iswiz || summoner->m_lev >= 50))
-				tmp = rnd(2);
-			else
-				tmp = 1;
+                summon_num = rnd(3);
+            else if (summoner != &youmonst && summoner->m_lev >= 30)
+                summon_num = rnd(2);
+            else
+                summon_num = 1;
 		}
 		else
-			tmp = rnd(2);
+            summon_num = rnd(3);
 
 		/* if we don't have a casting monster, nasties appear around hero,
            otherwise they'll appear around spot summoner thinks she's at */
         bypos.x = u.ux;
         bypos.y = u.uy;
-        for (i = tmp; i > 0 && count < MAXNASTIES; --i)
+        for (i = 1; i <= summon_num; i++)
+        {
+#if 0
             /* Of the 42 nasties[], 10 are lawful, 14 are chaotic,
              * and 18 are neutral.
              *
@@ -630,41 +637,50 @@ struct monst *summoner;
              * MAXNASTIES sooner, but its number of iterations is
              * randomized so it won't always do so.
              */
-            for (j = 0; j < 20; j++) {
-                /* Don't create more spellcasters of the monsters' level or
-                 * higher--avoids chain summoners filling up the level.
-                 */
-                do {
-                    makeindex = pick_nasty((summoner && summoner != &youmonst) ? summoner->data->difficulty : u.ulevel);
-                    m_cls = mons[makeindex].mlet;
-                } while (summoner
-                         && ((attacktype(&mons[makeindex], AT_MAGC)
-                              && mons[makeindex].difficulty
-                                 >= mons[summoner->mnum].difficulty)
-                             || (s_cls == S_DEMON && m_cls == S_ANGEL)
-                             || (s_cls == S_ANGEL && m_cls == S_DEMON)));
-                /* do this after picking the monster to place */
-                if (summoner && !enexto(&bypos, summoner->mux, summoner->muy,
-                                        &mons[makeindex]))
-                    continue;
-                /* this honors genocide but overrides extinction; it ignores
-                   inside-hell-only (G_HELL) & outside-hell-only (G_NOHELL) */
-                if ((mtmp = makemon(&mons[makeindex], bypos.x, bypos.y,
-                                    NO_MM_FLAGS)) != 0) {
-                    mtmp->msleeping = mtmp->mpeaceful = mtmp->mtame = 0;
-                    set_malign(mtmp);
-                } else /* random monster to substitute for geno'd selection */
-                    mtmp = makemon((struct permonst *) 0, bypos.x, bypos.y,
-                                   NO_MM_FLAGS);
-                if (mtmp) {
-                    /* delay first use of spell or breath attack */
-                    mtmp->mspec_used = rnd(4);
-                    if (++count >= MAXNASTIES
-                        || mtmp->data->maligntyp == 0
-                        || sgn(mtmp->data->maligntyp) == castalign)
-                        break;
-                }
+
+            /* Don't create more spellcasters of the monsters' level or
+                * higher--avoids chain summoners filling up the level.
+                */
+#endif
+            do
+            {
+                makeindex = pick_nasty((summoner && summoner != &youmonst) ? summoner->data->difficulty : u.ulevel);
+                m_cls = mons[makeindex].mlet;
+            } while (summoner
+                        && ((attacktype(&mons[makeindex], AT_MAGC)
+                            && mons[makeindex].difficulty
+                                >= mons[summoner->mnum].difficulty)
+                            || (s_cls == S_DEMON && m_cls == S_ANGEL)
+                            || (s_cls == S_ANGEL && m_cls == S_DEMON)));
+
+            /* do this after picking the monster to place */
+            if (summoner && !enexto(&bypos, summoner->mux, summoner->muy, &mons[makeindex]))
+                continue;
+
+            /* this honors genocide but overrides extinction; it ignores
+                inside-hell-only (G_HELL) & outside-hell-only (G_NOHELL) */
+            if ((mtmp = makemon(&mons[makeindex], bypos.x, bypos.y, NO_MM_FLAGS)) != 0) 
+            {
+                mtmp->msleeping = mtmp->mpeaceful = mtmp->mtame = 0;
+                set_malign(mtmp);
             }
+            else /* random monster to substitute for geno'd selection */
+                mtmp = makemon((struct permonst *) 0, bypos.x, bypos.y, NO_MM_FLAGS);
+
+            if (mtmp)
+            {
+                /* delay first use of spell or breath attack */
+                mtmp->mspec_used = rnd(4);
+                count++;
+
+#if 0
+                if (++count >= MAXNASTIES
+                    || mtmp->data->maligntyp == 0
+                    || sgn(mtmp->data->maligntyp) == castalign)
+                    break;
+#endif 
+            }
+        }
     }
 
     if (count)
@@ -754,7 +770,7 @@ intervene()
         aggravate();
         break;
     case 4:
-        (void) nasty((struct monst *) 0);
+        (void) summon_nasties((struct monst *) 0);
         break;
     case 5:
         resurrect();

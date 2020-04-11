@@ -549,7 +549,7 @@ void
 create_monster_or_encounter()
 {
 	struct monst* nazgul = (struct monst*)0;
-	boolean nazgul_appeared = FALSE;
+	boolean ringwraith_appeared = FALSE;
 	int maxlevel = 2 * u.ulevel;
 	int mdx = NON_PM;
 	boolean nazgulok = maxlevel >= mons[PM_NAZGUL].difficulty && !(mvitals[PM_NAZGUL].mvflags & G_GONE);
@@ -558,6 +558,7 @@ create_monster_or_encounter()
 	boolean barrowwightok = maxlevel >= mons[PM_BARROW_WIGHT].difficulty && !(mvitals[PM_BARROW_WIGHT].mvflags & G_GONE);
 	boolean wraithok = maxlevel >= mons[PM_WRAITH].difficulty && !(mvitals[PM_WRAITH].mvflags & G_GONE);
 
+    /* Select a ringwraith */
 	if (nazgulok)
 		mdx = PM_NAZGUL;
 	else if (kingwraithok)
@@ -571,9 +572,9 @@ create_monster_or_encounter()
 
 	if(!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && !(u.uz.dnum == modron_dnum) && mdx >= LOW_PM)
 	{
-		/* Special Nazgul or wraith appearance if carrying the One Ring */
+		/* Special ringwraith appearance if carrying the One Ring */
 		struct obj* ring = carrying(RIN_SUPREME_POWER);
-		if (ring && ring->oartifact == ART_ONE_RING && mdx >= LOW_PM && !rn2(10))
+		if (ring && ring->oartifact == ART_ONE_RING && mdx >= LOW_PM && !rn2(20))
 		{
 			if (!context.made_witch_king && mdx == PM_NAZGUL && !rn2(9))
 			{
@@ -588,7 +589,7 @@ create_monster_or_encounter()
 				}
 
 				if(nazgul)
-					nazgul_appeared = TRUE;
+					ringwraith_appeared = TRUE;
 			}
 			else
 			{
@@ -596,13 +597,13 @@ create_monster_or_encounter()
 				if (nazgul)
 				{
 					nazgul->leaves_no_corpse = TRUE;
-					nazgul_appeared = TRUE;
+					ringwraith_appeared = TRUE;
 				}
 			}
 		}
 	}
 
-	if (!nazgul_appeared)
+	if (!ringwraith_appeared)
 	{
 		if (u.uz.dnum == modron_dnum)
 		{

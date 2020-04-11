@@ -603,6 +603,12 @@ long mask;
 		return 0;
 	}
 
+	if (wep && bimanual(wep) && altswapwep)
+	{
+		You("cannot ready a two-handed weapon while having something already readied for the other %s.", body_part(HAND));
+		return 0;
+	}
+
 	if (wep && altwep && swapwep && bimanual(swapwep))
 	{
 		You("cannot swap to a two-handed weapon while holding something in the other %s.", body_part(HAND));
@@ -683,7 +689,7 @@ doswaphandedness()
 	else
 		You("are now swapping weapons in your both %s.", makeplural(body_part(HAND)));
 
-	return 1;
+	return 0;
 }
 
 

@@ -3160,7 +3160,7 @@ E boolean FDECL(has_aggravatables, (struct monst *));
 E void NDECL(aggravate);
 E void NDECL(clonewiz);
 E int FDECL(pick_nasty, (int));
-E int FDECL(nasty, (struct monst *));
+E int FDECL(summon_nasties, (struct monst *));
 E void NDECL(resurrect);
 E void NDECL(intervene);
 E void NDECL(wizdead);

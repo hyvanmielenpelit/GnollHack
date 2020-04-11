@@ -99,7 +99,7 @@ struct monst *mon;
 	else if (is_dprince(ptr) || (ptr == &mons[PM_WIZARD_OF_YENDOR]))
 	{
         dtype = (!rn2(20)) ? dlord(atyp) : ndemon(atyp); //(!rn2(50)) ? dprince(atyp) : 
-        cnt = (!rn2(3) && is_ndemon(&mons[dtype])) ? 2 : 1;
+        cnt = (!rn2(3) && is_ndemon(&mons[dtype])) ? rnd(2) + 1 : 1;
     }
 	else if (is_dlord(ptr))
 	{

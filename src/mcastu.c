@@ -443,10 +443,12 @@ int spellnum;
     case MGC_SUMMON_MONS: {
         int count;
 
-        count = nasty(mtmp); /* summon something nasty */
+        count = summon_nasties(mtmp); /* summon something nasty */
+
         if (mtmp->iswiz)
             verbalize("Destroy the thief, my pet%s!", plur(count));
-        else {
+        else
+        {
             const char *mappear =
                 (count == 1) ? "A monster appears" : "Monsters appear";
 

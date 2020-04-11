@@ -3667,7 +3667,7 @@ int spell;
      */
     int chance, splcaster, statused = A_INT;
 //    int difficulty;
-    int skill;
+    int skill, level_multiplier;
 	boolean armorpenalty = TRUE;
 
 	if (Role_if(PM_PRIEST) &&
@@ -3734,8 +3734,8 @@ int spell;
 
     /* Calculate success chance */
 
-	chance = 0;
-	chance += 10 * statused;
+	chance = -70;
+	chance += 15 * statused;
 
     /*
      * High level spells are harder.  Easier for higher level casters.
@@ -3743,10 +3743,11 @@ int spell;
      * in that spell type.
      */
     skill = P_SKILL_LEVEL(spell_skilltype(spellid(spell)));
+	level_multiplier = urole.spell_success_increase_per_level;
 
 	chance += -50 * (spellev(spell) + 1);
 	chance += spell_skill_success_bonus(skill);
-	chance += 20 * u.ulevel;
+	chance += level_multiplier * u.ulevel;
 	chance += -5 * splcaster;
 
 //	if (difficulty > 0) {
