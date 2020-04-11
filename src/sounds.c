@@ -2222,6 +2222,14 @@ struct monst* mtmp;
 		return 0;
 	}
 
+	if (mtmp->data->msound == MS_ORACLE || mtmp->data == &mons[PM_ORACLE])
+	{
+		pline("%s answers: \"Please feel free to have a consultation if you wish to hear my advice.\"", Monnam(mtmp));
+		mtmp->rumorsleft = -1;
+		mtmp->told_rumor = TRUE;
+		return 1;
+	}
+
 	char ansbuf[BUFSZ];
 	char* rumor = getrumor(0, ansbuf, TRUE);
 		
