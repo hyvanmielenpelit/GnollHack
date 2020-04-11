@@ -846,8 +846,12 @@ makelevel()
 			&& (nroom >= room_threshold && (rn2(4)) || (u_depth < depth(&medusa_level) && u_depth >= depth(&oracle_level) + 4)))
 			res = mkroom(DESERTEDSHOP);
 
-		if (!res && u_depth > 1 && u_depth < depth(&medusa_level)
-			&& nroom >= room_threshold && (context.made_shop_count == 0 ? 1 : context.made_shop_count == 1 ? rn2(3) : rn2(u_depth) < 3))
+        boolean shopok = (context.made_shop_count == 0 ? 1 :
+            context.made_shop_count == 1 ? (rn2(3) != 0) : 
+            (rn2(max(2, 1 + context.made_shop_count / 2)) == 0));
+
+        if (!res && u_depth > 1 && u_depth < depth(&medusa_level)
+            && nroom >= room_threshold && shopok)  // rn2(u_depth) < 3))
             res = mkroom(SHOPBASE);
 
 		if (!res && u_depth > 4 && u_depth < 15 && !rn2(8)
