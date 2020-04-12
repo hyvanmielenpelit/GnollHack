@@ -883,7 +883,7 @@ makelevel()
 		if (!res && u_depth > 20 && !rn2(5))
 			res = mkroom(DRAGONLAIR);
 
-		if (u_depth >= 2 && !rn2(4))
+		if (u_depth >= 2 && u_depth < depth(&medusa_level) && !rn2(5))
 			(void)mkroom(GARDEN);
 
 	}
