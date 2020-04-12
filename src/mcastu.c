@@ -85,10 +85,11 @@ int spellval;
 {
     /* for 3.4.3 and earlier, val greater than 22 selected the default spell
      */
-    while (spellval > 24 && rn2(25))
+    while (spellval > 10 && rn2(20))
         spellval = rn2(spellval);
 
     switch (spellval) {
+#if 0
     case 24:
     case 23:
         if (Death_resistance || Hallucination) //Antimagic || 
@@ -98,6 +99,7 @@ int spellval;
     case 21:
     case 20:
         return MGC_DEATH_TOUCH;
+#endif
     case 19:
     case 18:
         return MGC_CLONE_WIZ;
@@ -896,7 +898,7 @@ int spellnum;
             && spellnum == MGC_CLONE_WIZ)
             return TRUE;
 
-		if (mtmp->mnum != PM_HIGH_PRIEST && mtmp->mnum != PM_WIZARD_OF_YENDOR && !((mtmp->data->geno & G_UNIQ) && (mtmp->data->mlet == S_DEMON))
+		if (mtmp->mnum != PM_HIGH_PRIEST && !((mtmp->data->geno & G_UNIQ) && (mtmp->data->mlet == S_DEMON))
 			&& spellnum == MGC_DEATH_TOUCH)
 			return TRUE;
 
@@ -926,7 +928,7 @@ int spellnum;
         /* blindness spell on blinded player */
         if (Blinded && spellnum == CLC_BLIND_YOU)
             return TRUE;
-		if (mtmp->mnum != PM_HIGH_PRIEST && mtmp->mnum != PM_WIZARD_OF_YENDOR && !((mtmp->data->geno & G_UNIQ) && (mtmp->data->mlet == S_DEMON))
+		if (mtmp->mnum != PM_HIGH_PRIEST && !((mtmp->data->geno & G_UNIQ) && (mtmp->data->mlet == S_DEMON))
 			&& spellnum == CLC_DEATH_TOUCH)
 			return TRUE;
 
