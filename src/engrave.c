@@ -21,6 +21,7 @@ char *outbuf;
     {
         /* Somebody has tried to protect himself or herself with Elbereth */
         rumor = "Elbereth";
+        strcpy(outbuf, rumor);
     }
     else
     {
