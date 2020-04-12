@@ -164,6 +164,7 @@ static struct trobj Samurai[] = {
     { YA, 0, WEAPON_CLASS, 25, UNDEF_BLESS, 0 }, /* variable quan */
     { SPLINT_MAIL, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
 	{ ORIENTAL_SILK_SACK, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
+	{ FOOD_RATION, 0, FOOD_CLASS, 1, 0, 0 },
 	{ 0, 0, 0, 0, 0, 0 }
 };
 static struct trobj Tourist[] = {
