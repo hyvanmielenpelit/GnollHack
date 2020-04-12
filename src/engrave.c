@@ -20,8 +20,7 @@ char *outbuf;
     if (!rn2(10))
     {
         /* Somebody has tried to protect himself or herself with Elbereth */
-        rumor = "Elbereth";
-        strcpy(outbuf, rumor);
+        strcpy(outbuf, "Elbereth");
     }
     else
     {
