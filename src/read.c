@@ -1237,7 +1237,7 @@ struct obj *sobj;
 		{
 			int duration = 0;
 			boolean charmed = FALSE;
-			if (sobj && !(objects[sobj->otyp].oc_aflags & S1_SPELL_IS_NONREVERSIBLE_PERMANENT))
+			if (sobj && !(objects[sobj->otyp].oc_spell_flags & S1_SPELL_IS_NONREVERSIBLE_PERMANENT))
 			{
 				int existing_charmed_duration = get_mon_property(mtmp, CHARMED);
 				duration += existing_charmed_duration;

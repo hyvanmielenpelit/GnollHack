@@ -579,7 +579,7 @@ register struct obj *spellbook;
 		{
 			if (!objects[spellbook->otyp].oc_name_known)
 			{
-				if (objects[spellbook->otyp].oc_aflags & S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY)
+				if (objects[spellbook->otyp].oc_spell_flags & S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY)
 				{
 					if(!OBJ_CONTENT_DESC(spellbook->otyp) || strcmp(OBJ_CONTENT_DESC(spellbook->otyp), "") == 0)
 						Sprintf(buf, "The topic of %s is unclear. Read it?", the(cxname(spellbook)));
@@ -1261,7 +1261,7 @@ int spell;
 			strcpy(buf2, "One target in selected direction");
 			break;
 		case RAY:
-			if(objects[booktype].oc_aflags & S1_SPELL_EXPLOSION_EFFECT)
+			if(objects[booktype].oc_spell_flags & S1_SPELL_EXPLOSION_EFFECT)
 				strcpy(buf2, "Ray that explodes on hit");
 			else
 				strcpy(buf2, "Ray in selected direction");
@@ -1449,12 +1449,39 @@ int spell;
 	putstr(datawin, 0, txt);
 
 	/* Flags */
-	if (objects[booktype].oc_aflags & S1_SPELL_BYPASSES_MAGIC_RESISTANCE)
+	if (objects[booktype].oc_spell_flags & S1_SPELL_BYPASSES_MAGIC_RESISTANCE)
 	{
 		Sprintf(buf, "Other:        %s", "Bypasses magic resistance");
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
+
+	strcpy(buf2, "");
+	if (!(objects[booktype].oc_spell_flags & S1_NO_VERBAL_COMPONENT))
+		strcpy(buf2, "Verbal");
+
+	if (!(objects[booktype].oc_spell_flags & S1_NO_SOMATIC_COMPONENT))
+	{
+		if (strcmp(buf2,""))
+			strcpy(eos(buf2), ", ");
+
+		strcpy(eos(buf2), "Somatic");
+	}
+
+	if (objects[booktype].oc_material_components > 0)
+	{
+		if (strcmp(buf2, ""))
+			strcpy(eos(buf2), ", ");
+
+		strcpy(eos(buf2), "Material");
+	}
+
+	if (!strcmp(buf2, ""))
+		strcpy(buf2, "None");
+
+	Sprintf(buf, "Components:   %s", buf2);
+	txt = buf;
+	putstr(datawin, 0, txt);
 
 
 	/* Material components */
@@ -3665,77 +3692,64 @@ int spell;
     /* Intrinsic and learned ability are combined to calculate
      * the probability of player's success at cast a given spell.
      */
-    int chance, splcaster, statused = A_INT;
+    int chance, statused = A_INT;
+	long armor_penalty, level_multiplier;
 //    int difficulty;
-    int skill, level_multiplier;
-	boolean armorpenalty = TRUE;
+    int skill;
 
-	if (Role_if(PM_PRIEST) &&
-		(objects[spellid(spell)].oc_spell_attribute == A_WIS
-			|| objects[spellid(spell)].oc_spell_attribute == A_MAX_INT_WIS
-			|| objects[spellid(spell)].oc_spell_attribute == A_MAX_WIS_CHA
-			|| objects[spellid(spell)].oc_spell_attribute == A_MAX_INT_WIS_CHA
-			|| objects[spellid(spell)].oc_spell_attribute == A_AVG_INT_WIS
-			|| objects[spellid(spell)].oc_spell_attribute == A_AVG_WIS_CHA
-			|| objects[spellid(spell)].oc_spell_attribute == A_AVG_INT_WIS_CHA
-			))
-		armorpenalty = FALSE;
-
-    /* Calculate intrinsic ability (splcaster) */
-	splcaster = 0; // urole.spelbase;
+    /* Calculate intrinsic ability (armor_penalty) */
+	armor_penalty = 0L; // urole.spelbase;
     //special = urole.spelheal;
 	statused = attribute_value_for_spellbook(spellid(spell));
 
-	if (armorpenalty)
+	if (!(objects[spellid(spell)].oc_spell_flags & S1_NO_SOMATIC_COMPONENT))
 	{
 		if (uarm)
-			splcaster += objects[uarm->otyp].oc_spell_casting_penalty;
+			armor_penalty += objects[uarm->otyp].oc_spell_casting_penalty;
 		if (uarms)
-			splcaster += objects[uarms->otyp].oc_spell_casting_penalty;
+			armor_penalty += objects[uarms->otyp].oc_spell_casting_penalty;
 		if (uarmh)
-			splcaster += objects[uarmh->otyp].oc_spell_casting_penalty;
+			armor_penalty += objects[uarmh->otyp].oc_spell_casting_penalty;
 		if (uarmg)
-			splcaster += objects[uarmg->otyp].oc_spell_casting_penalty;
+			armor_penalty += objects[uarmg->otyp].oc_spell_casting_penalty;
 		if (uarmf)
-			splcaster += objects[uarmf->otyp].oc_spell_casting_penalty;
+			armor_penalty += objects[uarmf->otyp].oc_spell_casting_penalty;
 		if (uarmu)
-			splcaster += objects[uarmu->otyp].oc_spell_casting_penalty;
+			armor_penalty += objects[uarmu->otyp].oc_spell_casting_penalty;
 		if (uarmo)
-			splcaster += objects[uarmo->otyp].oc_spell_casting_penalty;
+			armor_penalty += objects[uarmo->otyp].oc_spell_casting_penalty;
 		if (uarmb)
-			splcaster += objects[uarmb->otyp].oc_spell_casting_penalty;
+			armor_penalty += objects[uarmb->otyp].oc_spell_casting_penalty;
 		if (umisc)
-			splcaster += objects[umisc->otyp].oc_spell_casting_penalty;
+			armor_penalty += objects[umisc->otyp].oc_spell_casting_penalty;
 		if (umisc2)
-			splcaster += objects[umisc2->otyp].oc_spell_casting_penalty;
+			armor_penalty += objects[umisc2->otyp].oc_spell_casting_penalty;
 		if (umisc3)
-			splcaster += objects[umisc3->otyp].oc_spell_casting_penalty;
+			armor_penalty += objects[umisc3->otyp].oc_spell_casting_penalty;
 		if (umisc4)
-			splcaster += objects[umisc4->otyp].oc_spell_casting_penalty;
+			armor_penalty += objects[umisc4->otyp].oc_spell_casting_penalty;
 		if (umisc5)
-			splcaster += objects[umisc5->otyp].oc_spell_casting_penalty;
+			armor_penalty += objects[umisc5->otyp].oc_spell_casting_penalty;
 		if (uamul)
-			splcaster += objects[uamul->otyp].oc_spell_casting_penalty;
+			armor_penalty += objects[uamul->otyp].oc_spell_casting_penalty;
 		if (uleft)
-			splcaster += objects[uleft->otyp].oc_spell_casting_penalty;
+			armor_penalty += objects[uleft->otyp].oc_spell_casting_penalty;
 		if (uright)
-			splcaster += objects[uright->otyp].oc_spell_casting_penalty;
+			armor_penalty += objects[uright->otyp].oc_spell_casting_penalty;
 		if (ublindf)
-			splcaster += objects[ublindf->otyp].oc_spell_casting_penalty;
+			armor_penalty += objects[ublindf->otyp].oc_spell_casting_penalty;
 		if (uwep)
-			splcaster += objects[uwep->otyp].oc_spell_casting_penalty;
+			armor_penalty += objects[uwep->otyp].oc_spell_casting_penalty;
 	}
 
-    if (spellid(spell) == urole.spelspec)
-        splcaster += urole.spelsbon;
-
-	splcaster -= u.uspellcastingbonus; /* This is a bonus, not a penalty */
+//    if (spellid(spell) == urole.spelspec)
+//        armor_penalty += urole.spelsbon;
 
 
     /* Calculate success chance */
 
-	chance = -70;
-	chance += 15 * statused;
+	chance = -45;
+	chance += -60 * (spellev(spell) + 1);
 
     /*
      * High level spells are harder.  Easier for higher level casters.
@@ -3743,12 +3757,17 @@ int spell;
      * in that spell type.
      */
     skill = P_SKILL_LEVEL(spell_skilltype(spellid(spell)));
-	level_multiplier = urole.spell_success_increase_per_level;
+	level_multiplier = skill < P_BASIC ? 5L : 5L * (long)skill;
 
-	chance += -50 * (spellev(spell) + 1);
-	chance += spell_skill_success_bonus(skill);
-	chance += level_multiplier * u.ulevel;
-	chance += -5 * splcaster;
+	long bonus = 0L;
+	bonus += 15L * (long)statused;
+	bonus += (long)spell_skill_success_bonus(skill);
+	bonus += level_multiplier * (long)u.ulevel;
+	bonus += 5L * (long)u.uspellcastingbonus; /* items */
+
+	long armor_multiplier = max(0L, 100L - 5L * armor_penalty);
+
+	chance += (int)((bonus * armor_multiplier) / 100L);
 
 //	if (difficulty > 0) {
         /* Player is too low level or unskilled. */
@@ -3793,7 +3812,7 @@ int spell;
      * a player is, intrinsics and encumbrance can prevent casting;
      * and no matter how able, learning is always required.
      */
-	// chance = chance * (20 - splcaster) / 15 - splcaster;
+	// chance = chance * (20 - armor_penalty) / 15 - armor_penalty;
 
     /* Clamp to percentile */
     if (chance > 100)

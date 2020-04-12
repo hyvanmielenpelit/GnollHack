@@ -561,6 +561,8 @@ struct objclass {
 #define A1_ITEM_VANISHES_ONLY_IF_PERMITTED_TARGET					0x80000000UL
 
 
+#define oc_spell_flags oc_aflags
+
 /* Spell flags for spells, scrolls, potions, spell-like tools, and wands */
 #define S1_NONE									0x00000000UL
 #define S1_SPELL_EXPLOSION_EFFECT				0x00000001UL
@@ -568,6 +570,8 @@ struct objclass {
 #define S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY	0x00000004UL
 #define S1_SPELL_IS_NONREVERSIBLE_PERMANENT		0x00000008UL
 #define S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT		0x00000010UL
+#define S1_NO_SOMATIC_COMPONENT					0x00000020UL
+#define S1_NO_VERBAL_COMPONENT					0x00000040UL
 
 
 	int oc_hitbonus;						/* weapons: "to hit" bonus */

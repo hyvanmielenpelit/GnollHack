@@ -5414,7 +5414,7 @@ int duration;
 
 	if (youdefend)
 	{
-		if (objects[obj->otyp].oc_aflags & S1_SPELL_BYPASSES_MAGIC_RESISTANCE)
+		if (objects[obj->otyp].oc_spell_flags & S1_SPELL_BYPASSES_MAGIC_RESISTANCE)
 			; //OK;
 		else if (!youattack && Antimagic_or_resistance)
 			return FALSE; /* resisted cancellation */
@@ -5423,7 +5423,7 @@ int duration;
 	}
 	else
 	{
-		if (objects[obj->otyp].oc_aflags & S1_SPELL_BYPASSES_MAGIC_RESISTANCE)
+		if (objects[obj->otyp].oc_spell_flags & S1_SPELL_BYPASSES_MAGIC_RESISTANCE)
 			; //OK;
 		else if (check_magic_resistance_and_inflict_damage(mdef, obj, FALSE, 0, 0, TELL))
 			return FALSE;
@@ -5607,7 +5607,7 @@ struct obj *obj; /* wand or spell */
 
 	if (u.dz > 0) {
 		/* zapping downward */
-		(void)bhitpile(obj, bhito, x, y, u.dz, (objects[obj->otyp].oc_aflags & S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT));
+		(void)bhitpile(obj, bhito, x, y, u.dz, (objects[obj->otyp].oc_spell_flags& S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT));
 
         /* subset of engraving effects; none sets `disclose' */
         if ((e = engr_at(x, y)) != 0 && e->engr_type != HEADSTONE) {
@@ -5728,7 +5728,7 @@ struct obj *obj;
 			if (objects[otyp].oc_dir == IMMEDIATE_MULTIPLE_TARGETS)
 				hit_only_one = FALSE;
 
-			(void) bhit(u.dx, u.dy, range, radius, ZAPPED_WAND, bhitm, bhito, &obj, hit_only_one, !!(objects[otyp].oc_aflags & S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT));
+			(void) bhit(u.dx, u.dy, range, radius, ZAPPED_WAND, bhitm, bhito, &obj, hit_only_one, !!(objects[otyp].oc_spell_flags& S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT));
         }
         zapwrapup(); /* give feedback for obj_zapped */
 
