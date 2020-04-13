@@ -876,7 +876,7 @@ int spell;
 
 	if (!(objects[spellbookid].oc_spell_flags & S1_NO_VERBAL_COMPONENT) && !can_chant(&youmonst))
 	{
-		You("are unable to chant the incantation.");
+		You("are unable to chant the incantation for a spell with a verbal component!");
 		return TRUE;
 	}
 	else if (!(objects[spellbookid].oc_spell_flags & S1_NO_SOMATIC_COMPONENT) && nohands(youmonst.data))
@@ -890,11 +890,11 @@ int spell;
 		 * weapon) are welded to hands, so "arms" probably doesn't need
 		 * to be makeplural(bodypart(ARM)).
 		 */
-		Your("arms are not free to cast!");
+		Your("arms are not free to cast a spell with a somatic component!");
 		return TRUE;
 	}
 	else if (!(objects[spellbookid].oc_spell_flags & S1_NO_SOMATIC_COMPONENT) && u.uburied) {
-		You("cannot move your hands to cast while buried!");
+		You("cannot cast a spell with a somatic component while being buried!");
 		return TRUE;
 	}
 	return FALSE;
