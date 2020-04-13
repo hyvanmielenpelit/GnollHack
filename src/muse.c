@@ -2042,7 +2042,7 @@ struct monst *mtmp;
             mquaffmsg(mtmp, otmp);
         /* format monster's name before altering its visibility */
         Strcpy(nambuf, mon_nam(mtmp));
-		increase_mon_property(mtmp, INVISIBILITY, d(2, 10) + 80);
+		increase_mon_property(mtmp, INVISIBILITY, otmp->otyp == WAN_MAKE_INVISIBLE ? 100 + rn2(50): d(10, 10) + 400);
 		if (vismon && is_invisible(mtmp)) { /* was seen, now invisible */
             if (canspotmon(mtmp)) {
                 pline("%s body takes on a %s transparency.",

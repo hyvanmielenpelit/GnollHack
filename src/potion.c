@@ -866,7 +866,7 @@ struct obj *otmp;
             self_invis_message();
         }
 
-        incr_itimeout(&HInvis, otmp->oclass == POTION_CLASS ? d(2, 10) + 80 : duration);
+        incr_itimeout(&HInvis, otmp->oclass == POTION_CLASS ? d(10, 10) + 400 : duration);
 
         newsym(u.ux, u.uy); /* update position */
 

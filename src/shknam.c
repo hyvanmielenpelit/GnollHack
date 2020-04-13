@@ -548,7 +548,7 @@ boolean deserted;
 
 	if (deserted && mkspecl)
 	{
-		if (!MON_AT(sx, sy)
+		if (!MON_AT(sx, sy) && !t_at(sx, sy)
 			&& (mtmp = makemon(&mons[PM_GARGANTUAN_MIMIC], sx, sy, NO_MM_FLAGS)) != 0) {
 			/* note: makemon will set the mimic symbol to a shop item */
 			if (rn2(10) >= depth(&u.uz)) {
@@ -575,7 +575,7 @@ boolean deserted;
 			return;
 		}
 	}
-    if ((!deserted && rn2(100) < depth(&u.uz) && !MON_AT(sx, sy)
+    if ((!deserted && rn2(100) < min(10, depth(&u.uz)) && !MON_AT(sx, sy) && !t_at(sx, sy)
         && (ptr = mkclass(S_MIMIC, 0)) != 0
         && (mtmp = makemon(ptr, sx, sy, NO_MM_FLAGS)) != 0) || (deserted && !rn2(4) && !MON_AT(sx, sy)
 			&& (ptr = mkclass(S_MIMIC, 0)) != 0

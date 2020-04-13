@@ -2599,7 +2599,7 @@ SPELL("mage armor",		   "ornamental", None, "Summons a wizard-friendly magical a
 SPELL("commune",	  "beige", None, "Gives hints about your praying and luck status",
 	P_CLERIC_SPELL,				 5,  1,		   0, -1, 4, A_WIS, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, CLR_BROWN, O1_NONE, O2_NONE, O3_NONE),
 SPELL("enlightenment",	  "illuminating", None, "Provides enlightenment about your statistics",
-	P_CLERIC_SPELL,				 5,  1,		   0, 0, 7, A_WIS, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
+	P_CLERIC_SPELL,				 5,  1,		   0, 1, 10, A_WIS, 0, 0, 200, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
 SPELL("stick to snake",	  "stick-patterned", None, "Summons a permanent snake",
 	P_CLERIC_SPELL,				 5,  1,		   0, 1, 10, A_WIS, 0, 0, 200, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
 SPELL("stick to cobra",	  "snake-patterned", None, "Summons a permanent cobra",
