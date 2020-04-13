@@ -39,6 +39,7 @@ STATIC_DCL boolean FDECL(confused_book, (struct obj *));
 STATIC_DCL void FDECL(deadbook, (struct obj *));
 STATIC_PTR int NDECL(learn);
 STATIC_DCL boolean NDECL(rejectcasting);
+STATIC_DCL boolean FDECL(reject_specific_spell_casting, (int));
 STATIC_DCL boolean FDECL(getspell, (int *, int));
 STATIC_PTR int FDECL(CFDECLSPEC spell_cmp, (const genericptr,
                                             const genericptr));
@@ -853,28 +854,50 @@ rejectcasting()
         You("are too impaired to cast a spell.");
         return TRUE;
     } 
-	else if (!can_chant(&youmonst))
-	{
-        You("are unable to chant the incantation.");
-        return TRUE;
-    }
 	else if (Cancelled)
 	{
 		Your("magic is not flowing properly to allow for casting a spell.");
 		return TRUE;
 	}
-	else if (!freehand()) {
-        /* Note: !freehand() occurs when weapon and shield (or two-handed
-         * weapon) are welded to hands, so "arms" probably doesn't need
-         * to be makeplural(bodypart(ARM)).
-         *
-         * But why isn't lack of free arms (for gesturing) an issue when
-         * poly'd hero has no limbs?
-         */
-        Your("arms are not free to cast!");
-        return TRUE;
-    }
     return FALSE;
+}
+
+/* return True if spellcasting is inhibited;
+   only covers a small subset of reasons why casting won't work */
+STATIC_OVL boolean
+reject_specific_spell_casting(spell)
+int spell;
+{
+	/* rejections which take place before selecting a particular spell */
+	int spellbookid = spellid(spell);
+
+	if (spellbookid == NO_SPELL)
+		return TRUE;
+
+	if (!(objects[spellbookid].oc_spell_flags & S1_NO_VERBAL_COMPONENT) && !can_chant(&youmonst))
+	{
+		You("are unable to chant the incantation.");
+		return TRUE;
+	}
+	else if (!(objects[spellbookid].oc_spell_flags & S1_NO_SOMATIC_COMPONENT) && nohands(youmonst.data))
+	{
+		You("do not have hands to cast a spell with a somatic component!");
+		return TRUE;
+	}
+	else if (!(objects[spellbookid].oc_spell_flags & S1_NO_SOMATIC_COMPONENT) && !freehand())
+	{
+		/* Note: !freehand() occurs when weapon and shield (or two-handed
+		 * weapon) are welded to hands, so "arms" probably doesn't need
+		 * to be makeplural(bodypart(ARM)).
+		 */
+		Your("arms are not free to cast!");
+		return TRUE;
+	}
+	else if (!(objects[spellbookid].oc_spell_flags & S1_NO_SOMATIC_COMPONENT) && u.uburied) {
+		You("cannot move your hands to cast while buried!");
+		return TRUE;
+	}
+	return FALSE;
 }
 
 /*
@@ -1570,6 +1593,10 @@ boolean atme;
     if (rejectcasting()) {
         return 0; /* no time elapses */
     }
+
+	if (reject_specific_spell_casting(spell)) {
+		return 0; /* no time elapses */
+	}
 
 	if (spellamount(spell) == 0) {
 		You("do not have the spell's material components prepared.");
