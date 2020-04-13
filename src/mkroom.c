@@ -995,7 +995,12 @@ mkgarden()
 				{
 					//Sleepy ogre or bugbear
 					struct permonst* pm = (level_difficulty() > 3 && !rn2(3)) || level_difficulty() > 7 ? mkclass(S_OGRE, 0) : &mons[PM_BUGBEAR];
-					struct monst* mon = makemon(!pm ? (&mons[!rn2(5) && level_difficulty() > 10 ? PM_OGRE_LORD : (level_difficulty() > 3 && !rn2(3)) || level_difficulty() > 7 ? PM_OGRE : PM_BUGBEAR]) : pm, sx, sy, NO_MM_FLAGS);
+					struct monst* mon = makemon(!pm ? (&mons[
+                         level_difficulty() >= 13 && !rn2(4) ? PM_OGRE_LORD :
+                        (level_difficulty() >=  8 && !rn2(4)) || level_difficulty() >= 11 ? PM_OGRE : 
+                        (level_difficulty() >=  5 && !rn2(4)) || level_difficulty() >= 7 ? PM_BUGBEAR :
+                        PM_HOBGOBLIN]) : pm, sx, sy, NO_MM_FLAGS);
+
 					if(mon)
 						mon->msleeping = 1;
 				}

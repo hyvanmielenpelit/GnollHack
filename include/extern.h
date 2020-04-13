@@ -2490,6 +2490,8 @@ E boolean FDECL(block_entry, (XCHAR_P, XCHAR_P));
 E char *FDECL(shk_your, (char *, struct obj *));
 E char *FDECL(Shk_Your, (char *, struct obj *));
 E long FDECL(get_cost, (struct obj*, struct monst*));
+E int FDECL(shk_chastise_pet, (struct monst* mtmp, struct obj*, boolean));
+
 
 /* ### shknam.c ### */
 

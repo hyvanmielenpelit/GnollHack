@@ -535,7 +535,7 @@ int trap_type;
                 if (rn2(7))
 				{
 					int u_depth = depth(&u.uz);
-					if (u_depth >= 2 && u_depth <= 4 && !context.made_orc_and_a_pie && !rn2(3))
+					if (u_depth >= 3 && u_depth <= 6 && !context.made_orc_and_a_pie && !rn2(3))
 					{
 						dosdoor(xx, yy, aroom, DOOR, D_LOCKED);
 						struct monst* mon = makemon(&mons[PM_ORC], xx, yy + dy, MM_MAX_HP);
@@ -560,7 +560,7 @@ int trap_type;
 							add_to_container(box, pie);
 						}
 					}
-					else if (u_depth >= 5 && u_depth <= 10 && !context.made_orc_and_a_pie2 && !rn2(5))
+					else if (u_depth >= 9 && u_depth <= 14 && !context.made_orc_and_a_pie2 && !rn2(5))
 					{
 						dosdoor(xx, yy, aroom, DOOR, D_LOCKED);
 						struct monst* mon = makemon(&mons[PM_ORC_CAPTAIN], xx, yy + dy, MM_MAX_HP);
@@ -842,7 +842,7 @@ makelevel()
 		if (wizard && nh_getenv("SHOPTYPE"))
 			res = mkroom(SHOPBASE);
 
-		if (!res && u_depth > depth(&oracle_level) && u_depth <= min(depth(&medusa_level), depth(&oracle_level) + 4) && !context.made_deserted_shop
+		if (!res && u_depth > depth(&oracle_level) && u_depth >= 15 && u_depth <= min(depth(&medusa_level), depth(&oracle_level) + 4) && !context.made_deserted_shop
 			&& (nroom >= room_threshold && (rn2(4)) || (u_depth < depth(&medusa_level) && u_depth >= depth(&oracle_level) + 4)))
 			res = mkroom(DESERTEDSHOP);
 

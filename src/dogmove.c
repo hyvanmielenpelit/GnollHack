@@ -754,7 +754,7 @@ int udist;
             if ((edible <= CADAVER
                  /* starving pet is more aggressive about eating */
                  || (edog->mhpmax_penalty && edible == ACCFOOD))
-                && could_reach_item(mtmp, obj->ox, obj->oy))
+                && could_reach_item(mtmp, obj->ox, obj->oy) && !shk_chastise_pet(mtmp, obj, TRUE))
                 return dog_eat(mtmp, obj, omx, omy, FALSE);
 
             carryamt = can_carry(mtmp, obj);
@@ -765,35 +765,10 @@ int udist;
 				{
                     if (rn2(udist) || !rn2(edog->apport)) 
 					{
-						struct monst* shkp = (struct monst*)0;
-						if (obj && obj->unpaid || (obj->where == OBJ_FLOOR && !obj->no_charge && costly_spot(omx, omy)))
-						{
-							shkp = shop_keeper(inside_shop(omx, omy));
-							char shopkeeper_name[BUFSZ] = "";
-							if (shkp)
-							{
-								strcpy(shopkeeper_name, shkname(shkp));
-								if (!edog->chastised)
-								{
-									edog->chastised = 20 + rn2(1000);
-									if (cansee(omx, omy) && flags.verbose)
-									{
-										pline("%s tries to pick up %s.", Monnam(mtmp),
-											distant_name(obj, doname));
+                        int shkpreaction = FALSE;
+                        shkpreaction = shk_chastise_pet(mtmp, obj, FALSE);
 
-										pline("However, %s glances at %s menacingly.", shopkeeper_name,
-											mon_nam(mtmp));
-
-										verbalize("Drop that, now!");
-
-										pline("%s drops %s.", Monnam(mtmp),
-											the(cxname(obj)));
-									}
-								}
-							}
-						}
-
-						if(!shkp)
+						if(!shkpreaction)
 						{
 							otmp = obj;
 							if (carryamt != obj->quan)
@@ -851,7 +826,9 @@ int after, udist, whappr;
         gtyp = APPORT;
         gx = u.ux;
         gy = u.uy;
-    } else {
+    }
+    else
+    {
 #define DDIST(x, y) (dist2(x, y, omx, omy))
 #define SQSRCHRADIUS 5
         int min_x, max_x, min_y, max_y;
@@ -870,34 +847,47 @@ int after, udist, whappr;
             max_y = ROWNO - 1;
 
         /* nearby food is the first choice, then other objects */
-        for (obj = fobj; obj; obj = obj->nobj) {
+        for (obj = fobj; obj; obj = obj->nobj) 
+        {
             nx = obj->ox;
             ny = obj->oy;
-            if (nx >= min_x && nx <= max_x && ny >= min_y && ny <= max_y) {
+            if (nx >= min_x && nx <= max_x && ny >= min_y && ny <= max_y)
+            {
                 otyp = dogfood(mtmp, obj);
                 /* skip inferior goals */
                 if (otyp > gtyp || otyp == UNDEF)
                     continue;
+
                 /* avoid cursed items unless starving */
                 if (cursed_object_at(nx, ny)
                     && !(edog->mhpmax_penalty && otyp < MANFOOD))
                     continue;
+
                 /* skip completely unreachable goals */
                 if (!could_reach_item(mtmp, nx, ny)
                     || !can_reach_location(mtmp, mtmp->mx, mtmp->my, nx, ny))
                     continue;
-                if (otyp < MANFOOD) {
-                    if (otyp < gtyp || DDIST(nx, ny) < DDIST(gx, gy)) {
+
+                /* skip always shop food and other items if chastised */
+                if (edog->chastised && (obj->unpaid || (obj->where == OBJ_FLOOR && !obj->no_charge && costly_spot(obj->ox, obj->oy))))
+                    continue;
+
+                if (otyp < MANFOOD)
+                {
+                    if (otyp < gtyp || DDIST(nx, ny) < DDIST(gx, gy))
+                    {
                         gx = nx;
                         gy = ny;
                         gtyp = otyp;
                     }
-                } else if (gtyp == UNDEF && in_masters_sight
+                }
+                else if (gtyp == UNDEF && in_masters_sight
                            && !dog_has_minvent
                            && (!levl[omx][omy].lit || levl[u.ux][u.uy].lit)
                            && (otyp == MANFOOD || m_cansee(mtmp, nx, ny))
                            && edog->apport > rn2(8)
-                           && can_carry(mtmp, obj) > 0) {
+                           && can_carry(mtmp, obj) > 0)
+                {
                     gx = nx;
                     gy = ny;
                     gtyp = APPORT;
@@ -1448,7 +1438,8 @@ int after; /* this is extra fast monster movement */
 				{
                     cursemsg[i] = TRUE;
                 } 
-				else if ((foodtyp = dogfood(mtmp, obj)) < MANFOOD
+				else if ((foodtyp = dogfood(mtmp, obj)) < MANFOOD && 
+                    (!EDOG(mtmp)->chastised || (EDOG(mtmp)->chastised && !(obj->unpaid || (obj->where == OBJ_FLOOR && !obj->no_charge && costly_spot(obj->ox, obj->oy)))))
                          && (foodtyp < ACCFOOD || edog->hungrytime <= monstermoves))
 				{
                     /* Note: our dog likes the food so much that he
@@ -1608,7 +1599,7 @@ newdogpos:
 			 * move before moving it, but it can't eat until after being
 			 * moved.  Thus the do_eat flag.
 			 */
-			if (do_eat)
+			if (do_eat && !shk_chastise_pet(mtmp, obj, TRUE))
 			{
 				if (dog_eat(mtmp, obj, omx, omy, FALSE) == 2)
 					return 2;

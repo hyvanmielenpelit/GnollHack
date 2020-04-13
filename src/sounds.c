@@ -2416,7 +2416,7 @@ struct monst* mtmp;
 	if (has_edog && edog)
 	{
 		int itemspicked = 0;
-		boolean chastised = FALSE;
+		int shkpreaction = FALSE;
 		struct obj* obj = level.objects[omx][omy];
 		for (int i = 0; obj && i < 20; i++, obj = level.objects[omx][omy])
 		{
@@ -2425,35 +2425,9 @@ struct monst* mtmp;
 				&& could_reach_item(mtmp, obj->ox, obj->oy))
 			{
 				struct monst* shkp = (struct monst*)0;
-				if (obj && obj->unpaid || (obj->where == OBJ_FLOOR && !obj->no_charge && costly_spot(omx, omy)))
-				{
-					shkp = shop_keeper(inside_shop(omx, omy));
-					char shopkeeper_name[BUFSZ] = "";
-					if (shkp)
-					{
-						strcpy(shopkeeper_name, shkname(shkp));
-						if (!edog->chastised)
-						{
-							edog->chastised = 20 + rn2(1000);
-							if (cansee(omx, omy) && flags.verbose)
-							{
-								pline("%s tries to pick up %s.", Monnam(mtmp),
-									distant_name(obj, doname));
+				shkpreaction = shk_chastise_pet(mtmp, obj, FALSE);
 
-								pline("However, %s glances at %s menacingly.", shopkeeper_name,
-									mon_nam(mtmp));
-
-								verbalize("Drop that, now!");
-
-								pline("%s drops %s.", Monnam(mtmp),
-									the(cxname(obj)));
-								chastised = TRUE;
-							}
-						}
-					}
-				}
-
-				if (!shkp)
+				if (!shkpreaction)
 				{
 					struct obj* otmp = obj;
 					if (carryamt != obj->quan)
@@ -2472,7 +2446,7 @@ struct monst* mtmp;
 				}
 			}
 		}
-		if(itemspicked == 0 && !chastised)
+		if(itemspicked == 0 && shkpreaction != 2)
 		{
 			pline("%s stares at you but does nothing.", Monnam(mtmp));
 		}

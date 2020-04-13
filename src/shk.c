@@ -4835,6 +4835,58 @@ boolean altusage; /* used as a verbalized exclamation:  \"Cad! ...\" */
     return res;
 }
 
+/* returns 2 if chastised, 1 if shkp is present and 0 otherwise */
+int
+shk_chastise_pet(mtmp, obj, eating)
+struct monst* mtmp;
+struct obj* obj;
+boolean eating;
+{
+    if (!mtmp || !mtmp->mextra || !EDOG(mtmp) || !obj)
+        return 0;
+
+    boolean chastised = FALSE;
+    struct edog* edog = EDOG(mtmp);
+    struct monst* shkp = (struct monst*)0;
+    int omx = obj->ox, omy = obj->oy;
+
+    if (obj && obj->unpaid || (obj->where == OBJ_FLOOR && !obj->no_charge && costly_spot(omx, omy)))
+    {
+        shkp = shop_keeper(inside_shop(omx, omy));
+        char shopkeeper_name[BUFSZ] = "";
+        if (shkp)
+        {
+            strcpy(shopkeeper_name, shkname(shkp));
+            if (!edog->chastised)
+            {
+                edog->chastised = 20 + rn2(1000);
+                if (cansee(mtmp->mx, mtmp->my) && cansee(omx, omy) && flags.verbose)
+                {
+                    pline("%s tries to %s %s.", Monnam(mtmp), eating ? "eat" : "pick up" ,
+                        distant_name(obj, doname));
+
+                    pline("However, %s glances at %s menacingly.", shopkeeper_name,
+                        mon_nam(mtmp));
+
+                    if (eating)
+                    {
+                        verbalize("Stay away from %s %s!", obj->quan > 1 ? "those" : "that", cxname(obj));
+                        pline("%s backs away from %s.", Monnam(mtmp), the(cxname(obj)));
+                    }
+                    else
+                    {
+                        verbalize("Drop that, now!");
+                        pline("%s drops %s.", Monnam(mtmp), the(cxname(obj)));
+                    }
+                    chastised = TRUE;
+                }
+            }
+        }
+    }
+
+    return shkp ? (chastised ? 2 : 1) : 0;
+}
+
 #ifdef __SASC
 void
 sasc_bug(struct obj *op, unsigned x)
