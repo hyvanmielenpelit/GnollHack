@@ -2518,9 +2518,14 @@ struct monst* mtmp;
 					if (release_item_from_hero_inventory(otmp))
 					{
 						n_given++;
-						(void)mpickobj(mtmp, otmp);
+						
 						if (flags.verbose)
 							You("give %s to %s.", doname(otmp), mon_nam(mtmp));
+
+						if (*u.ushops || otmp->unpaid)
+							check_shop_obj(otmp, mtmp->mx, mtmp->my, FALSE);
+
+						(void)mpickobj(mtmp, otmp);
 					}
 				}
 			}
