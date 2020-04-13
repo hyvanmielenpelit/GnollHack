@@ -1049,7 +1049,11 @@ doability(VOID_ARGS)
 
         if (can_breathe(u.usteed->data))
         {
-            strcpy(available_ability_list[abilitynum].name, "Command steed to use breath weapon");
+            if(u.usteed->mspec_used > 0)
+                strcpy(available_ability_list[abilitynum].name, "(Breath weapon cooling down)");
+            else
+                strcpy(available_ability_list[abilitynum].name, "Command steed to use breath weapon");
+
             available_ability_list[abilitynum].function_ptr = &dosteedbreathe;
             available_ability_list[abilitynum].charnum = 'a' + abilitynum;
 
