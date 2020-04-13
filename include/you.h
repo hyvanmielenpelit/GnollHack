@@ -167,6 +167,8 @@ struct Role {
     /* quest dungeon definition (dat/Xyz.dat) */
     /* quest text (dat/quest.txt) */
     /* dictionary entries (dat/data.bas) */
+    
+    int skill_advance_levels[P_NUM_SKILLS][P_GRAND_MASTER + 1];
 };
 
 extern const struct Role roles[]; /* table of available roles */

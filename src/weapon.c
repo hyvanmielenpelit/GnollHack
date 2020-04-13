@@ -1616,9 +1616,10 @@ boolean speedy;
     if (wizard && speedy)
         return TRUE;
 
-    return (boolean) ((int) P_ADVANCE(skill)
-                      >= practice_needed_to_advance(skill, P_SKILL_LEVEL(skill))
-                      && u.weapon_slots >= slots_required(skill));
+    return (boolean)((
+        ((int)P_ADVANCE(skill) >= practice_needed_to_advance(skill, P_SKILL_LEVEL(skill)))
+            || (P_SKILL_LEVEL(skill) < P_GRAND_MASTER && urole.skill_advance_levels[skill][P_SKILL_LEVEL(skill) + 1] > 0 && u.ulevel >= urole.skill_advance_levels[skill][P_SKILL_LEVEL(skill) + 1])
+            ) && u.weapon_slots >= slots_required(skill));
 }
 
 /* return true if this skill could be advanced if more slots were available */
@@ -1631,8 +1632,12 @@ int skill;
         || u.skills_advanced >= P_SKILL_LIMIT)
         return FALSE;
 
-    return (boolean) ((int) P_ADVANCE(skill)
-                      >= practice_needed_to_advance(skill, P_SKILL_LEVEL(skill)));
+    return (boolean)(
+        ((int)P_ADVANCE(skill) >= practice_needed_to_advance(skill, P_SKILL_LEVEL(skill)))
+        || (P_SKILL_LEVEL(skill) < P_GRAND_MASTER && urole.skill_advance_levels[skill][P_SKILL_LEVEL(skill) + 1] > 0
+            && u.ulevel >= urole.skill_advance_levels[skill][P_SKILL_LEVEL(skill) + 1])
+        );
+
 }
 
 /* return true if this skill has reached its maximum and there's been enough
@@ -1645,8 +1650,11 @@ int skill;
         return FALSE;
 
     return (boolean) (P_SKILL_LEVEL(skill) >= P_MAX_SKILL_LEVEL(skill)
-                      && ((int) P_ADVANCE(skill)
-                          >= practice_needed_to_advance(skill, P_SKILL_LEVEL(skill))));
+                      && (
+                           ((int)P_ADVANCE(skill) >= practice_needed_to_advance(skill, P_SKILL_LEVEL(skill)))
+                              || (P_SKILL_LEVEL(skill) < P_GRAND_MASTER && urole.skill_advance_levels[skill][P_SKILL_LEVEL(skill) + 1] > 0
+                                  && u.ulevel >= urole.skill_advance_levels[skill][P_SKILL_LEVEL(skill) + 1])
+                              ));
 }
 
 STATIC_OVL void

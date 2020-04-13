@@ -67,7 +67,44 @@ const struct Role roles[] = {
       10,
       A_INT,
       SPE_MAGIC_MAPPING,
-      -4 },
+      -4,
+        {
+            {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_AXE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_PICK_AXE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SWORD */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BLUDGEONING_WEAPON */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_FLAIL */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_QUARTERSTAFF */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_POLEARM */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SPEAR */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BOW */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SLING */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_CROSSBOW */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_THROWN_WEAPON */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
+
+            {0, 0, 8,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_CLERIC_SPELL */
+            {0, 0, 6,  0,  0, 0, 0}, /* P_HEALING_SPELL */
+            {0, 0, 1,  7, 14, 0, 0}, /* P_DIVINATION_SPELL */
+            {0, 0, 5,  0,  0, 0, 0}, /* P_ABJURATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_MOVEMENT_SPELL */
+            {0, 0, 4,  0,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_NECROMANCY_SPELL */
+
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BARE_HANDED_COMBAT */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_MARTIAL_ARTS */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_TWO_WEAPON_COMBAT */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_WAND */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_RIDING */
+            {0, 0, 0, 0, 0, 0, 0}  /* P_DISARM_TRAP */
+        }
+    
+    },
     { { "Barbarian", 0 },
       { { "Plunderer", "Plunderess" },
         { "Pillager", 0 },
@@ -110,7 +147,42 @@ const struct Role roles[] = {
       8,
       A_INT,
       SPE_HASTE_SELF,
-      -4 },
+      -4, 
+        {
+            {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_AXE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_PICK_AXE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SWORD */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BLUDGEONING_WEAPON */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_FLAIL */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_QUARTERSTAFF */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_POLEARM */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SPEAR */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BOW */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SLING */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_CROSSBOW */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_THROWN_WEAPON */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
+
+            {0, 0, 0,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_CLERIC_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_HEALING_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_DIVINATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_ABJURATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_MOVEMENT_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_NECROMANCY_SPELL */
+
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BARE_HANDED_COMBAT */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_MARTIAL_ARTS */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_TWO_WEAPON_COMBAT */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_WAND */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_RIDING */
+            {0, 0, 0, 0, 0, 0, 0}  /* P_DISARM_TRAP */        }
+      },
     { { "Caveman", "Cavewoman" },
       { { "Troglodyte", 0 },
         { "Aborigine", 0 },
@@ -153,7 +225,42 @@ const struct Role roles[] = {
       8,
       A_INT,
       SPE_DIG,
-      -4 },
+      -4,
+        {
+            {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_AXE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_PICK_AXE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SWORD */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BLUDGEONING_WEAPON */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_FLAIL */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_QUARTERSTAFF */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_POLEARM */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SPEAR */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BOW */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SLING */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_CROSSBOW */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_THROWN_WEAPON */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
+
+            {0, 0, 0,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_CLERIC_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_HEALING_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_DIVINATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_ABJURATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_MOVEMENT_SPELL */
+            {0, 0, 6, 14,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_NECROMANCY_SPELL */
+
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BARE_HANDED_COMBAT */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_MARTIAL_ARTS */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_TWO_WEAPON_COMBAT */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_WAND */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_RIDING */
+            {0, 0, 0, 0, 0, 0, 0}  /* P_DISARM_TRAP */        }
+      },
     { { "Healer", 0 },
       { { "Rhizotomist", 0 },
         { "Empiric", 0 },
@@ -195,7 +302,42 @@ const struct Role roles[] = {
       10,
       A_WIS,
       SPE_CURE_SICKNESS,
-      -4 },
+      -4,
+        {
+            {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_AXE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_PICK_AXE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SWORD */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BLUDGEONING_WEAPON */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_FLAIL */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_QUARTERSTAFF */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_POLEARM */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SPEAR */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BOW */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SLING */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_CROSSBOW */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_THROWN_WEAPON */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
+
+            {0, 0, 0,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
+            {0, 0, 6,  0,  0, 0, 0}, /* P_CLERIC_SPELL */
+            {0, 0, 1,  1, 10, 0, 0}, /* P_HEALING_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_DIVINATION_SPELL */
+            {0, 0, 1,  8,  0, 0, 0}, /* P_ABJURATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_MOVEMENT_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_NECROMANCY_SPELL */
+
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BARE_HANDED_COMBAT */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_MARTIAL_ARTS */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_TWO_WEAPON_COMBAT */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_WAND */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_RIDING */
+            {0, 0, 0, 0, 0, 0, 0}  /* P_DISARM_TRAP */        }
+      },
     { { "Knight", 0 },
       { { "Gallant", 0 },
         { "Esquire", 0 },
@@ -237,7 +379,42 @@ const struct Role roles[] = {
       6,
       A_WIS,
       SPE_TURN_UNDEAD,
-      -4 },
+      -4,
+        {
+            {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_AXE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_PICK_AXE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SWORD */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BLUDGEONING_WEAPON */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_FLAIL */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_QUARTERSTAFF */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_POLEARM */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SPEAR */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BOW */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SLING */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_CROSSBOW */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_THROWN_WEAPON */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
+
+            {0, 0, 0,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
+            {0, 0, 6, 15,  0, 0, 0}, /* P_CLERIC_SPELL */
+            {0, 0, 7, 16,  0, 0, 0}, /* P_HEALING_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_DIVINATION_SPELL */
+            {0, 0, 8, 17,  0, 0, 0}, /* P_ABJURATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_MOVEMENT_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_NECROMANCY_SPELL */
+
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BARE_HANDED_COMBAT */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_MARTIAL_ARTS */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_TWO_WEAPON_COMBAT */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_WAND */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_RIDING */
+            {0, 0, 0, 0, 0, 0, 0}  /* P_DISARM_TRAP */        }
+      },
     { { "Monk", 0 },
       { { "Candidate", 0 },
         { "Novice", 0 },
@@ -280,7 +457,42 @@ const struct Role roles[] = {
       30,
       A_WIS,
       SPE_RESTORE_ABILITY,
-      -4 },
+      -4,
+        {
+            {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_AXE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_PICK_AXE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SWORD */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BLUDGEONING_WEAPON */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_FLAIL */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_QUARTERSTAFF */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_POLEARM */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SPEAR */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BOW */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SLING */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_CROSSBOW */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_THROWN_WEAPON */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
+
+            {0, 0, 10,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
+            {0, 0,  4, 17,  0, 0, 0}, /* P_CLERIC_SPELL */
+            {0, 0,  1,  8, 16, 0, 0}, /* P_HEALING_SPELL */
+            {0, 0,  5,  0,  0, 0, 0}, /* P_DIVINATION_SPELL */
+            {0, 0,  1,  7, 14, 0, 0}, /* P_ABJURATION_SPELL */
+            {0, 0,  1,  6, 12, 0, 0}, /* P_MOVEMENT_SPELL */
+            {0, 0,  1, 13,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
+            {0, 0,  1, 15,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
+            {0, 0,  0,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
+            {0, 0,  0,  0,  0, 0, 0}, /* P_NECROMANCY_SPELL */
+
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BARE_HANDED_COMBAT */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_MARTIAL_ARTS */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_TWO_WEAPON_COMBAT */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_WAND */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_RIDING */
+            {0, 0, 0, 0, 0, 0, 0}  /* P_DISARM_TRAP */        }
+      },
     { { "Priest", "Priestess" },
       { { "Aspirant", 0 },
         { "Acolyte", 0 },
@@ -323,7 +535,42 @@ const struct Role roles[] = {
       7,
       A_WIS,
       SPE_REMOVE_CURSE,
-      -4 },
+      -4,
+        {
+            {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_AXE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_PICK_AXE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SWORD */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BLUDGEONING_WEAPON */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_FLAIL */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_QUARTERSTAFF */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_POLEARM */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SPEAR */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BOW */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SLING */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_CROSSBOW */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_THROWN_WEAPON */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
+
+            {0, 0, 0,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
+            {0, 0, 1,  6, 13, 0, 0}, /* P_CLERIC_SPELL */
+            {0, 0, 1,  7, 14, 0, 0}, /* P_HEALING_SPELL */
+            {0, 0, 2, 10, 20, 0, 0}, /* P_DIVINATION_SPELL */
+            {0, 0, 2,  9, 18, 0, 0}, /* P_ABJURATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_MOVEMENT_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
+            {0, 0, 4, 12,  0, 0, 0}, /* P_CONJURATION_SPELL */
+            {0, 0, 2,  8, 16, 0, 0}, /* P_NECROMANCY_SPELL */
+
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BARE_HANDED_COMBAT */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_MARTIAL_ARTS */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_TWO_WEAPON_COMBAT */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_WAND */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_RIDING */
+            {0, 0, 0, 0, 0, 0, 0}  /* P_DISARM_TRAP */        }
+      },
     /* Note:  Rogue precedes Ranger so that use of `-R' on the command line
        retains its traditional meaning. */
     { { "Rogue", 0 },
@@ -367,7 +614,42 @@ const struct Role roles[] = {
       9,
       A_INT,
       SPE_DETECT_TREASURE,
-      -4 },
+      -4,
+        {
+            {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_AXE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_PICK_AXE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SWORD */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BLUDGEONING_WEAPON */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_FLAIL */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_QUARTERSTAFF */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_POLEARM */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SPEAR */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BOW */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SLING */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_CROSSBOW */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_THROWN_WEAPON */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
+
+            {0, 0, 0,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_CLERIC_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_HEALING_SPELL */
+            {0, 0, 6,  0,  0, 0, 0}, /* P_DIVINATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_ABJURATION_SPELL */
+            {0, 0, 5,  0,  0, 0, 0}, /* P_MOVEMENT_SPELL */
+            {0, 0, 7,  0,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_NECROMANCY_SPELL */
+
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BARE_HANDED_COMBAT */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_MARTIAL_ARTS */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_TWO_WEAPON_COMBAT */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_WAND */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_RIDING */
+            {0, 0, 0, 0, 0, 0, 0}  /* P_DISARM_TRAP */        }
+      },
     { { "Ranger", 0 },
       {
 #if 0 /* OBSOLETE */
@@ -424,7 +706,42 @@ const struct Role roles[] = {
       9,
       A_INT,
       SPE_INVISIBILITY,
-      -4 },
+      -4,
+        {
+            {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_AXE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_PICK_AXE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SWORD */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BLUDGEONING_WEAPON */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_FLAIL */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_QUARTERSTAFF */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_POLEARM */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SPEAR */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BOW */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SLING */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_CROSSBOW */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_THROWN_WEAPON */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
+
+            {0, 0, 0,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_CLERIC_SPELL */
+            {0, 0, 8,  0,  0, 0, 0}, /* P_HEALING_SPELL */
+            {0, 0, 4, 11, 20, 0, 0}, /* P_DIVINATION_SPELL */
+            {0, 0, 6,  0,  0, 0, 0}, /* P_ABJURATION_SPELL */
+            {0, 0, 5,  0,  0, 0, 0}, /* P_MOVEMENT_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
+            {0, 0, 9,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
+            {0, 0, 1,  7, 14, 0, 0}, /* P_CONJURATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_NECROMANCY_SPELL */
+
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BARE_HANDED_COMBAT */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_MARTIAL_ARTS */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_TWO_WEAPON_COMBAT */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_WAND */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_RIDING */
+            {0, 0, 0, 0, 0, 0, 0}  /* P_DISARM_TRAP */        }
+      },
     { { "Samurai", 0 },
       { { "Hatamoto", 0 },       /* Banner Knight */
         { "Ronin", 0 },          /* no allegiance */
@@ -466,7 +783,42 @@ const struct Role roles[] = {
       7,
       A_INT,
       SPE_CLAIRVOYANCE,
-      -4 },
+      -4,
+        {
+            {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_AXE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_PICK_AXE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SWORD */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BLUDGEONING_WEAPON */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_FLAIL */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_QUARTERSTAFF */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_POLEARM */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SPEAR */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BOW */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SLING */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_CROSSBOW */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_THROWN_WEAPON */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
+
+            {0, 0, 0,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_CLERIC_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_HEALING_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_DIVINATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_ABJURATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_MOVEMENT_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_NECROMANCY_SPELL */
+
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BARE_HANDED_COMBAT */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_MARTIAL_ARTS */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_TWO_WEAPON_COMBAT */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_WAND */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_RIDING */
+            {0, 0, 0, 0, 0, 0, 0}  /* P_DISARM_TRAP */        }
+      },
     { { "Tourist", 0 },
       { { "Rambler", 0 },
         { "Sightseer", 0 },
@@ -508,7 +860,42 @@ const struct Role roles[] = {
       10,
       A_INT,
       SPE_SPHERE_OF_CHARMING,
-      -4 },
+      -4,
+        {
+            {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_AXE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_PICK_AXE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SWORD */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BLUDGEONING_WEAPON */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_FLAIL */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_QUARTERSTAFF */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_POLEARM */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SPEAR */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BOW */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SLING */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_CROSSBOW */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_THROWN_WEAPON */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
+
+            {0, 0, 12,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
+            {0, 0,  9,  0,  0, 0, 0}, /* P_CLERIC_SPELL */
+            {0, 0,  6,  0,  0, 0, 0}, /* P_HEALING_SPELL */
+            {0, 0,  5, 15,  0, 0, 0}, /* P_DIVINATION_SPELL */
+            {0, 0,  0,  0,  0, 0, 0}, /* P_ABJURATION_SPELL */
+            {0, 0,  4, 14, 24, 0, 0}, /* P_MOVEMENT_SPELL */
+            {0, 0,  0,  0,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
+            {0, 0,  7,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
+            {0, 0,  8,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
+            {0, 0, 13,  0,  0, 0, 0}, /* P_NECROMANCY_SPELL */
+
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BARE_HANDED_COMBAT */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_MARTIAL_ARTS */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_TWO_WEAPON_COMBAT */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_WAND */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_RIDING */
+            {0, 0, 0, 0, 0, 0, 0}  /* P_DISARM_TRAP */        }
+      },
     { { "Valkyrie", 0 },
       { { "Stripling", 0 },
         { "Skirmisher", 0 },
@@ -550,7 +937,43 @@ const struct Role roles[] = {
       8,
       A_WIS,
       SPE_CONE_OF_COLD,
-      -4 },
+      -4,
+        {
+            {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_AXE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_PICK_AXE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SWORD */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BLUDGEONING_WEAPON */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_FLAIL */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_QUARTERSTAFF */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_POLEARM */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SPEAR */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BOW */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SLING */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_CROSSBOW */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_THROWN_WEAPON */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
+
+            {0, 0, 0,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_CLERIC_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_HEALING_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_DIVINATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_ABJURATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_MOVEMENT_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_NECROMANCY_SPELL */
+
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BARE_HANDED_COMBAT */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_MARTIAL_ARTS */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_TWO_WEAPON_COMBAT */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_WAND */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_RIDING */
+            {0, 0, 0, 0, 0, 0, 0}  /* P_DISARM_TRAP */
+        }
+      },
     { { "Wizard", 0 },
       { { "Evoker", 0 },
         { "Conjurer", 0 },
@@ -593,7 +1016,43 @@ const struct Role roles[] = {
       10,
       A_INT,
       SPE_MAGIC_MISSILE,
-      -4 },
+      -4,
+        {
+            {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_AXE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_PICK_AXE */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SWORD */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BLUDGEONING_WEAPON */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_FLAIL */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_QUARTERSTAFF */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_POLEARM */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SPEAR */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BOW */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_SLING */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_CROSSBOW */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_THROWN_WEAPON */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
+
+            {0, 0, 1,  6, 12, 0, 0}, /* P_ARCANE_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_CLERIC_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_HEALING_SPELL */
+            {0, 0, 2, 10, 20, 0, 0}, /* P_DIVINATION_SPELL */
+            {0, 0, 2,  8,  0, 0, 0}, /* P_ABJURATION_SPELL */
+            {0, 0, 2,  9, 18, 0, 0}, /* P_MOVEMENT_SPELL */
+            {0, 0, 1,  7, 14, 0, 0}, /* P_TRANSMUTATION_SPELL */
+            {0, 0, 1,  7, 14, 0, 0}, /* P_ENCHANTMENT_SPELL */
+            {0, 0, 2,  9, 18, 0, 0}, /* P_CONJURATION_SPELL */
+            {0, 0, 2, 11,  0, 0, 0}, /* P_NECROMANCY_SPELL */
+
+            {0, 0, 0, 0, 0, 0, 0}, /* P_BARE_HANDED_COMBAT */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_MARTIAL_ARTS */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_TWO_WEAPON_COMBAT */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_WAND */
+            {0, 0, 0, 0, 0, 0, 0}, /* P_RIDING */
+            {0, 0, 0, 0, 0, 0, 0}  /* P_DISARM_TRAP */
+        }
+      },
     /* Array terminator */
     { { 0, 0 } }
 };
@@ -624,8 +1083,42 @@ struct Role urole = {
      4,
     A_INT,
      0,
-    -3
+    -3,
+    {
+        {0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0}
+    }
 };
+
 
 /* Table of all races */
 const struct Race races[] = {
