@@ -723,7 +723,7 @@ doability(VOID_ARGS)
 	any = zeroany;
 	add_menu(win, NO_GLYPH, &any,
 		0, 0, iflags.menu_headings,
-		"View Character Abilities            ", MENU_UNSELECTED);
+		"View Character Abilities              ", MENU_UNSELECTED);
 
 	strcpy(available_ability_list[abilitynum].name, "Statistics [you]");
 	available_ability_list[abilitynum].function_ptr = &docharacterstatistics;
@@ -757,7 +757,7 @@ doability(VOID_ARGS)
 	any = zeroany;
 	add_menu(win, NO_GLYPH, &any,
 		0, 0, iflags.menu_headings,
-		"Use Skill-Based Abilities           ", MENU_UNSELECTED);
+		"Use Skill-Based Abilities             ", MENU_UNSELECTED);
 
 	/* Ride */
 	strcpy(available_ability_list[abilitynum].name, "Ride");
@@ -807,7 +807,7 @@ doability(VOID_ARGS)
 		any = zeroany;
 		add_menu(win, NO_GLYPH, &any,
 			0, 0, iflags.menu_headings,
-			"Use Monster Abilities               ", MENU_UNSELECTED);
+			"Use Monster Abilities                 ", MENU_UNSELECTED);
 		    
 		if (can_breathe(youmonst.data))
 		{
@@ -1036,6 +1036,34 @@ doability(VOID_ARGS)
 		}
 	}
 
+
+    /* Your steed's abilities */
+    if (u.usteed && 
+        can_breathe(u.usteed->data)
+        )
+    {
+        any = zeroany;
+        add_menu(win, NO_GLYPH, &any,
+            0, 0, iflags.menu_headings,
+            "Use Your Steed's Abilities            ", MENU_UNSELECTED);
+
+        if (can_breathe(u.usteed->data))
+        {
+            strcpy(available_ability_list[abilitynum].name, "Command steed to use breath weapon");
+            available_ability_list[abilitynum].function_ptr = &dosteedbreathe;
+            available_ability_list[abilitynum].charnum = 'a' + abilitynum;
+
+            any = zeroany;
+            any.a_char = available_ability_list[abilitynum].charnum;
+
+            add_menu(win, NO_GLYPH, &any,
+                any.a_char, 0, ATR_NONE,
+                available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+            abilitynum++;
+        }
+
+    }
 
 	end_menu(win, "What do you want to do?");
 

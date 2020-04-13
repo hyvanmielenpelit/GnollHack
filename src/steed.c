@@ -4,11 +4,6 @@
 
 #include "hack.h"
 
-/* Monsters that might be ridden */
-static NEARDATA const char steeds[] = { S_QUADRUPED, S_UNICORN, S_ANGEL,
-                                        S_CENTAUR,   S_DRAGON,  S_JABBERWOCK,
-                                        '\0' };
-
 STATIC_DCL boolean FDECL(landing_spot, (coord *, int, int));
 STATIC_DCL void FDECL(maybewakesteed, (struct monst *));
 
@@ -26,11 +21,22 @@ boolean
 can_saddle(mtmp)
 struct monst *mtmp;
 {
+    if (!mtmp)
+        return FALSE;
+
     struct permonst *ptr = mtmp->data;
+    return is_steed(ptr);
+
+#if 0
+    /* Monsters that might be ridden */
+    static NEARDATA const char steeds[] = { S_QUADRUPED, S_UNICORN, S_ANGEL,
+                                            S_CENTAUR,   S_DRAGON,  S_JABBERWOCK,
+                                            '\0' };
 
     return (index(steeds, ptr->mlet) && (ptr->msize >= MZ_MEDIUM)
             && (!humanoid(ptr) || ptr->mlet == S_CENTAUR) && !amorphous(ptr)
             && !noncorporeal(ptr) && !is_whirly(ptr) && !unsolid(ptr));
+#endif
 }
 
 int
@@ -172,13 +178,18 @@ doride()
 {
     boolean forcemount = FALSE;
 
-    if (u.usteed) {
+    if (u.usteed) 
+    {
         dismount_steed(DISMOUNT_BYCHOICE);
-    } else if (getdir((char *) 0) && isok(u.ux + u.dx, u.uy + u.dy)) {
+    } 
+    else if (getdir((char *) 0) && isok(u.ux + u.dx, u.uy + u.dy))
+    {
         if (wizard && yn("Force the mount to succeed?") == 'y')
             forcemount = TRUE;
         return (mount_steed(m_at(u.ux + u.dx, u.uy + u.dy), forcemount));
-    } else {
+    }
+    else
+    {
         return 0;
     }
     return 1;
@@ -195,13 +206,15 @@ boolean force;      /* Quietly force this animal */
     struct permonst *ptr;
 
     /* Sanity checks */
-    if (u.usteed) {
+    if (u.usteed)
+    {
         You("are already riding %s.", mon_nam(u.usteed));
         return (FALSE);
     }
 
     /* Is the player in the right form? */
-    if (Hallucination && !force) {
+    if (Hallucination && !force) 
+    {
         pline("Maybe you should find a designated driver.");
         return (FALSE);
     }
@@ -218,7 +231,8 @@ boolean force;      /* Quietly force this animal */
      * earlier, that unintentionally made the hero's
      * temporary 1 point Dex loss become permanent.]
      */
-    if (Wounded_legs) {
+    if (Wounded_legs)
+    {
         Your("%s are in no shape for riding.", makeplural(body_part(LEG)));
         if (force && wizard && yn("Heal your legs?") == 'y')
             HWounded_legs = EWounded_legs = 0L;
@@ -227,11 +241,13 @@ boolean force;      /* Quietly force this animal */
     }
 
     if (Upolyd && (!humanoid(youmonst.data) || verysmall(youmonst.data)
-                   || bigmonst(youmonst.data) || slithy(youmonst.data))) {
+                   || bigmonst(youmonst.data) || slithy(youmonst.data)))
+    {
         You("won't fit on a saddle.");
         return (FALSE);
     }
-    if (!force && (near_capacity() > SLT_ENCUMBER)) {
+    if (!force && (near_capacity() > SLT_ENCUMBER))
+    {
         You_cant("do that while carrying so much stuff.");
         return (FALSE);
     }
@@ -239,12 +255,14 @@ boolean force;      /* Quietly force this animal */
     /* Can the player reach and see the monster? */
     if (!mtmp || (!force && ((Blind && !(Blind_telepat || Unblind_telepat || Detect_monsters)) || mtmp->mundetected
                              || M_AP_TYPE(mtmp) == M_AP_FURNITURE
-                             || M_AP_TYPE(mtmp) == M_AP_OBJECT))) {
+                             || M_AP_TYPE(mtmp) == M_AP_OBJECT)))
+    {
         pline("I see nobody there.");
         return (FALSE);
     }
     if (mtmp->data == &mons[PM_LONG_WORM]
-        && (u.ux + u.dx != mtmp->mx || u.uy + u.dy != mtmp->my)) {
+        && (u.ux + u.dx != mtmp->mx || u.uy + u.dy != mtmp->my))
+    {
         /* 3.6.2:  test_move(below) is used to check for trying to mount
            diagonally into or out of a doorway or through a tight squeeze;
            attempting to mount a tail segment when hero was not adjacent
@@ -255,7 +273,8 @@ boolean force;      /* Quietly force this animal */
     }
     if (u.uswallow || u.ustuck || u.utrap || Punished
         || !test_move(u.ux, u.uy, mtmp->mx - u.ux, mtmp->my - u.uy,
-                      TEST_MOVE)) {
+                      TEST_MOVE)) 
+    {
         if (Punished || !(u.uswallow || u.ustuck || u.utrap))
             You("are unable to swing your %s over.", body_part(LEG));
         else
@@ -265,23 +284,27 @@ boolean force;      /* Quietly force this animal */
 
     /* Is this a valid monster? */
     otmp = which_armor(mtmp, W_SADDLE);
-    if (!otmp) {
+    if (!otmp)
+    {
         pline("%s is not saddled.", Monnam(mtmp));
         return (FALSE);
     }
     ptr = mtmp->data;
-    if (touch_petrifies(ptr) && !Stone_resistance) {
+    if (touch_petrifies(ptr) && !Stone_resistance)
+    {
         char kbuf[BUFSZ];
 
         You("touch %s.", mon_nam(mtmp));
         Sprintf(kbuf, "attempting to ride %s", an(mtmp->data->mname));
         instapetrify(kbuf);
     }
-    if (!mtmp->mtame || mtmp->isminion) {
+    if (!mtmp->mtame || mtmp->isminion)
+    {
         pline("I think %s would mind.", mon_nam(mtmp));
         return (FALSE);
     }
-    if (mtmp->mtrapped) {
+    if (mtmp->mtrapped)
+    {
         struct trap *t = t_at(mtmp->mx, mtmp->my);
 
         You_cant("mount %s while %s's trapped in %s.", mon_nam(mtmp),
@@ -297,7 +320,8 @@ boolean force;      /* Quietly force this animal */
 		)) /* must be tame at this point*/
 		mtmp->mtame--; /* reduce tameness if not knight */
 
-    if (!force && !Role_if(PM_KNIGHT) && !is_tame(mtmp)) {
+    if (!force && !Role_if(PM_KNIGHT) && !is_tame(mtmp)) 
+    {
         /* no longer tame */
         newsym(mtmp->mx, mtmp->my);
         pline("%s resists%s!", Monnam(mtmp),
@@ -306,30 +330,35 @@ boolean force;      /* Quietly force this animal */
             m_unleash(mtmp, FALSE);
         return (FALSE);
     }
-    if (!force && Underwater && !is_swimmer(ptr)) {
+    if (!force && Underwater && !is_swimmer(ptr))
+    {
         You_cant("ride that creature while under %s.",
                  hliquid("water"));
         return (FALSE);
     }
-    if (!can_saddle(mtmp) || !can_ride(mtmp)) {
+    if (!can_saddle(mtmp) || !can_ride(mtmp))
+    {
         You_cant("ride such a creature.");
         return FALSE;
     }
 
     /* Is the player impaired? */
     if (!force && !is_floater(ptr) && !is_flyer(ptr) && Levitation
-        && !Lev_at_will) {
+        && !Lev_at_will)
+    {
         You("cannot reach %s.", mon_nam(mtmp));
         return (FALSE);
     }
-    if (!force && uarm && is_metallic(uarm) && greatest_erosion(uarm)) {
+    if (!force && uarm && is_metallic(uarm) && greatest_erosion(uarm)) 
+    {
         Your("%s armor is too stiff to be able to mount %s.",
              uarm->oeroded ? "rusty" : "corroded", mon_nam(mtmp));
         return (FALSE);
     }
     if (!force
         && (Confusion || Fumbling || Glib || Wounded_legs || otmp->cursed
-            || (u.ulevel + mtmp->mtame < rnd(MAXULEV / 2 + 5)))) {
+            || (u.ulevel + mtmp->mtame < rnd(MAXULEV / 2 + 5))))
+    {
         if (Levitation) {
             pline("%s slips away from you.", Monnam(mtmp));
             return FALSE;
@@ -348,7 +377,8 @@ boolean force;      /* Quietly force this animal */
 
     /* Success */
     maybewakesteed(mtmp);
-    if (!force) {
+    if (!force)
+    {
         if (Levitation && !is_floater(ptr) && !is_flyer(ptr))
             /* Must have Lev_at_will at this point */
             pline("%s magically floats up!", Monnam(mtmp));

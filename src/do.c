@@ -2035,6 +2035,13 @@ register struct obj* obj;
 						txt = buf;
 						putstr(datawin, 0, txt);
 					}
+					if (objects[otyp].oc_target_permissions & M1_STEED)
+					{
+						powercnt++;
+						Sprintf(buf, " %2d - Steeds", powercnt);
+						txt = buf;
+						putstr(datawin, 0, txt);
+					}
 				}
 				else if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M2_FLAG)
 				{

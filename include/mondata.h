@@ -57,6 +57,7 @@
 #define carnivorous(ptr) (((ptr)->mflags1 & M1_CARNIVORE) != 0L)
 #define herbivorous(ptr) (((ptr)->mflags1 & M1_HERBIVORE) != 0L)
 #define metallivorous(ptr) (((ptr)->mflags1 & M1_METALLIVORE) != 0L)
+#define is_steed(ptr) (((ptr)->mflags1 & M1_STEED) != 0L)
 
 #define polyok(ptr) (((ptr)->mflags2 & M2_NOPOLY) == 0L)
 #define is_shapeshifter(ptr) (((ptr)->mflags2 & M2_SHAPESHIFTER) != 0L)
@@ -158,6 +159,7 @@
 #define smells_buried_searchable(ptr) (((ptr)->mflags4 & M4_SMELLS_BURIED_SEARCHABLE) != 0)
 #define has_vorpal_vulnerability(ptr) (((ptr)->mflags4 & M4_VORPAL_VULNERABILITY) != 0)
 #define is_watery(ptr) (((ptr)->mflags4 & M4_WATERY) != 0)
+#define is_always_faithful(ptr) (((ptr)->mflags4 & M4_FAITHFUL) != 0)
 
 
 /* combinations */

@@ -2200,8 +2200,13 @@ unsigned long mmflags;
     {
         mtmp->rumorsleft = (!rn2(2) ? 1 : 0) + (is_lord(mtmp->data) && !rn2(3) ? 1 : 0) + (ptr->intl > 15 && !rn2(2) ? 1 : 0);
     }
-		
-	if (is_female(ptr))
+
+    /* set if faithful */
+    if (is_always_faithful(ptr))
+        mtmp->isfaithful = TRUE;
+
+    /* set gender */
+    if (is_female(ptr))
         mtmp->female = TRUE;
     else if (is_male(ptr))
         mtmp->female = FALSE;

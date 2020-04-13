@@ -150,7 +150,7 @@
 						0x01000000UL   /* can use telekinesis as hands for certain purposes (for beholder opening doors etc.) */
 #define M1_TOUCH_PETRIFIES 0x02000000UL   /* touching the corpse petrifies */
 #define M1_ROCKTHROW	0x04000000UL    /* throws boulders */
-/* free bit */
+#define M1_STEED        0x08000000UL    /* can be saddled and ridden */
 /* free bit */
 #define M1_CARNIVORE	0x20000000UL   /* eats corpses */
 #define M1_HERBIVORE	0x40000000UL   /* eats fruits */
@@ -271,6 +271,7 @@
 #define M4_LOVES_BANANAS		    0x00080000UL		/* tamed with bananas */
 #define M4_PAWED		            0x00100000UL		/* has paws instead of hands */
 #define M4_WATERY					0x00200000UL		/* composed of water like a water elemental */
+#define M4_FAITHFUL					0x00400000UL		/* always faithful is tame */
 
 #define MZ_TINY 0          /* < 2' */
 #define MZ_SMALL 1         /* 2-4' */

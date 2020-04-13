@@ -8756,7 +8756,10 @@ boolean faithful;
 		mon->disregards_own_health = disregardhealth;
 		mon->hasbloodlust = bloodlust;
 		mon->ispacifist = pacifist;
-		mon->isfaithful = faithful;
+
+        if(!mon->isfaithful)
+    		mon->isfaithful = faithful;
+
 		(void)tamedog(mon, (struct obj*) 0, TRUE, FALSE, 0, FALSE);
 
 		if((objects[spl_otyp].oc_spell_dur_dice > 1 && objects[spl_otyp].oc_spell_dur_diesize > 1) || objects[spl_otyp].oc_spell_dur_plus)

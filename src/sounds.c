@@ -1433,7 +1433,7 @@ dochat()
 		if (!mtmp->mstaying && mtmp->mwantstomove)
 		{
 
-			if (mtmp->data->mflags1 & M1_ANIMAL)
+			if (is_animal(mtmp->data))
 				strcpy(available_chat_list[chatnum].name, "Command to stay put");
 			else if (is_speaking_monster(mtmp->data))
 				strcpy(available_chat_list[chatnum].name, "Command to hold position");
@@ -1456,7 +1456,7 @@ dochat()
 
 		if (mtmp->mstaying || !mtmp->mwantstomove)
 		{
-			if (mtmp->data->mflags1 & M1_ANIMAL)
+			if (is_animal(mtmp->data))
 				strcpy(available_chat_list[chatnum].name, "Command to follow");
 			else if (is_speaking_monster(mtmp->data))
 				strcpy(available_chat_list[chatnum].name, "Command to stop holding position");
@@ -2305,9 +2305,9 @@ struct monst* mtmp;
 {
 	if (mtmp->mtame > 5 || (mtmp->mtame > 0 && rn2(mtmp->mtame + 1)))
 	{
-		if (mtmp->data->mlet == S_UNICORN)
+		if (is_steed(mtmp->data))
 			pline("%s looks determined not to move anywhere.", Monnam(mtmp));
-		else if (mtmp->data->mflags1 & M1_ANIMAL)
+		else if is_animal(mtmp->data)
 			pline("%s sits down and looks determined not to move anywhere.", Monnam(mtmp));
 		else if (is_speaking_monster(mtmp->data))
 			pline("%s starts to hold its position.", Monnam(mtmp));
@@ -2330,9 +2330,9 @@ struct monst* mtmp;
 {
 	if (mtmp->mtame > 0 && mtmp->mstaying)
 	{
-		if (mtmp->data->mlet == S_UNICORN)
+		if (is_steed(mtmp->data))
 			pline("%s seems ready to follow you.", Monnam(mtmp));
-		else if (mtmp->data->mflags1 & M1_ANIMAL)
+		else if is_animal(mtmp->data)
 			pline("%s stands up and seems ready to follow you!", Monnam(mtmp));
 		else if (is_speaking_monster(mtmp->data))
 			pline("%s stops holding its position.", Monnam(mtmp));

@@ -1435,6 +1435,52 @@ dobreathe()
     return 1;
 }
 
+
+int
+dosteedbreathe()
+{
+    struct attack* mattk;
+
+    if (!u.usteed || !can_breathe(u.usteed->data))
+    {
+        You("have no steed that use a breath weapon!");
+        return 0;
+    }
+
+    if (u.usteed->mspec_used > 0)
+    {
+        pline("%s breath weapon is not ready yet.", s_suffix(Monnam(u.usteed)));
+        return 0;
+    }
+
+    if (!getdir((char*)0))
+        return 0;
+    
+    if (!u.dx && !u.dy && !u.dz)
+    {
+        Your("steed cannot breathe at you!");
+        return 0;
+    }
+
+    mattk = attacktype_fordmg(u.usteed->data, AT_BREA, AD_ANY);
+    if (!mattk)
+        impossible("bad breath attack?"); /* mouthwash needed... */
+    else
+    {
+        int typ = (mattk->adtyp == AD_RBRE) ? rnd(AD_ACID) : mattk->adtyp;
+
+        buzz((int)(-(20 + typ - 1)), (struct obj*)0, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp, u.ux, u.uy, u.dx, u.dy);
+
+        if (!rn2(3))
+            u.usteed->mspec_used = 10 + rn2(20);
+        if (typ == AD_SLEE && !Sleep_resistance)
+            u.usteed->mspec_used += rnd(20);
+
+    }
+    return 1;
+}
+
+
 int
 dospit()
 {

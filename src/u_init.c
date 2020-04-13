@@ -384,7 +384,8 @@ static const struct def_skill Skill_A_Max[] = {
     { P_SLING, P_SKILLED },
     { P_THROWN_WEAPON, P_SKILLED },
     { P_WHIP, P_EXPERT },
-    { P_ARCANE_SPELL, P_BASIC },
+	{ P_CROSSBOW, P_SKILLED },
+	{ P_ARCANE_SPELL, P_BASIC },
     { P_HEALING_SPELL, P_BASIC },
 	{ P_ABJURATION_SPELL, P_BASIC },
 	{ P_DIVINATION_SPELL, P_EXPERT },
@@ -398,6 +399,7 @@ static const struct def_skill Skill_A_Max[] = {
 };
 static const struct def_skill Skill_A_Init[] = {
 	{ P_WHIP, P_BASIC },
+	{ P_CROSSBOW, P_BASIC },
 	{ P_DIVINATION_SPELL, P_BASIC },
 	{ P_NONE, 0 }
 };
@@ -1345,6 +1347,8 @@ add_school_specific_spellbooks()
 
 				while (otyp == SPE_BLANK_PAPER
 					|| already_learnt_spell_type(otyp)
+					|| (otyp == SPE_PROTECTION_FROM_LYCANTHROPY && Race_if(PM_GNOLL))
+					|| (otyp == SPE_PROTECTION_FROM_POISON && Race_if(PM_ORC))
 					|| objects[otyp].oc_skill != skill
 					|| (objects[otyp].oc_spell_level > 2 + P_SKILL_LEVEL(skill)
 						|| restricted_spell_discipline(otyp)
@@ -1484,6 +1488,11 @@ register struct trobj *trop;
                    || otyp == POT_ACID
 				   || otyp == POT_URINE
 				   || (otyp == POT_DWARVEN_STOUT && !Race_if(PM_DWARF))
+				   || (otyp == SPE_PROTECTION_FROM_LYCANTHROPY && Race_if(PM_GNOLL))
+				   || (otyp == SPE_PROTECTION_FROM_POISON && Race_if(PM_ORC))
+				   || (otyp == SPE_PROTECTION_FROM_POISON && Role_if(PM_BARBARIAN))
+				   || (otyp == AMULET_VERSUS_POISON && Race_if(PM_ORC))
+				   || (otyp == AMULET_VERSUS_POISON && Role_if(PM_BARBARIAN))
 				   || otyp == SCR_AMNESIA
                    || otyp == SCR_RETRAINING /* No need in the beginning */
                    || otyp == SCR_FIRE
