@@ -948,8 +948,8 @@ int curse_bless;
 	if (obj && obj->oclass == RING_CLASS && objects[obj->otyp].oc_enchantable)
 	{
 		/* enchantment does not affect ring's curse/bless status */
-		int maxcharge = get_obj_max_spe(obj);
-		int safecharge = get_obj_max_spe(obj) / 3;
+		int maxcharge = get_obj_max_enchantment(obj);
+		int safecharge = get_obj_max_enchantment(obj) / 3;
 		int s = is_blessed ? rnd(max(1, maxcharge / 3)) : is_cursed ? -rnd(max(1, maxcharge / 3)) : maxcharge >= 12 ? rnd(max(1, maxcharge / 6)) : 1;
 		boolean is_on = (obj == uleft || obj == uright);
 

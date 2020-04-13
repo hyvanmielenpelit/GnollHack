@@ -1591,7 +1591,7 @@ struct obj* otmp;
 }
 
 int
-get_obj_max_spe(otmp)
+get_obj_max_enchantment(otmp)
 struct obj* otmp;
 {
 	if (!otmp)

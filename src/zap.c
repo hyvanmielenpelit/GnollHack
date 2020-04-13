@@ -2616,14 +2616,22 @@ int id;
     }
 
     /* keep special fields (including charges on wands) */
-	if (index(charged_objs, otmp->oclass))
+	if (objects[otmp->otyp].oc_charged && objects[obj->otyp].oc_charged) //index(charged_objs, otmp->oclass))
 	{
 		otmp->charges = obj->charges;
+
+        int maxcharges = get_obj_max_charge(otmp);
+        if (otmp->charges > maxcharges)
+            otmp->charges = maxcharges;
 	}
-	if (index(enchanted_objs, otmp->oclass))
+	if (objects[otmp->otyp].oc_enchantable && objects[obj->otyp].oc_enchantable)
 	{
 		otmp->enchantment = obj->enchantment;
-	}
+
+        int maxench = get_obj_max_enchantment(otmp);
+        if (otmp->enchantment > maxench)
+            otmp->enchantment = maxench;
+    }
 	otmp->recharged = obj->recharged;
 
     otmp->cursed = obj->cursed;

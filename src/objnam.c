@@ -4378,7 +4378,7 @@ struct obj *no_wish;
 	{
         if (enchantment > get_obj_init_enchantment(otmp) && enchantment > otmp->enchantment)
             enchantment = 0;
-        if (enchantment > get_obj_max_spe(otmp) / 3 && Luck < 0)
+        if (enchantment > get_obj_max_enchantment(otmp) / 3 && Luck < 0)
             spesgn = -1;
     }
 	else 

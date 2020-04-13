@@ -1539,7 +1539,7 @@ register int amount;
 
     /* an elven magic clue, cookie@keebler */
     /* elven weapons vibrate warningly when enchanted beyond a limit */
-    if ((weapon->enchantment > get_obj_max_spe(weapon))
+    if ((weapon->enchantment > get_obj_max_enchantment(weapon))
         && (is_elven_weapon(weapon) || weapon->oartifact || !rn2(7)))
         pline("%s unexpectedly.", Yobjnam2(weapon, "suddenly vibrate"));
 
