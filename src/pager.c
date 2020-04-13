@@ -877,9 +877,9 @@ struct permonst **for_supplement;
         /* Convert glyph at selected position to a symbol for use below. */
         (void) mapglyph(glyph, &sym, &oc, &os, cc.x, cc.y);
 
-        Sprintf(prefix, "%s        ", encglyph(glyph));
+        Sprintf(prefix, "%s - ", encglyph(glyph));
     } else
-        Sprintf(prefix, "%c        ", sym);
+        Sprintf(prefix, "%c - ", sym);
 
     /*
      * Check all the possibilities, saving all explanations in a buffer.
@@ -934,16 +934,21 @@ struct permonst **for_supplement;
 
     /* Check for monsters */
     if (!iflags.terrainmode || (iflags.terrainmode & TER_MON) != 0) {
-        for (i = 1; i < MAXMCLASSES; i++) {
+        for (i = 1; i < MAXMCLASSES; i++)
+        {
             if (sym == (looked ? showsyms[i + SYM_OFF_M] : def_monsyms[i].sym)
-                && def_monsyms[i].explain && *def_monsyms[i].explain) {
+                && def_monsyms[i].explain && *def_monsyms[i].explain)
+            {
                 need_to_look = TRUE;
-                if (!found) {
+                if (!found) 
+                {
                     Sprintf(out_str, "%s%s",
                             prefix, an(def_monsyms[i].explain));
                     *firstmatch = an(def_monsyms[i].explain);
                     found++;
-                } else {
+                }
+                else 
+                {
                     found += append_str(out_str, an(def_monsyms[i].explain));
                 }
             }
@@ -1107,10 +1112,12 @@ struct permonst **for_supplement;
         Sprintf(out_str, "%s", "That can be many things");
 
  didlook:
-    if (looked) {
+    if (looked)
+    {
         struct permonst *pm = (struct permonst *)0;
 
-        if (found > 1 || need_to_look) {
+        if (found > 1 || need_to_look)
+        {
             char monbuf[BUFSZ];
             char temp_buf[BUFSZ];
 
@@ -1118,8 +1125,19 @@ struct permonst **for_supplement;
             if (pm && for_supplement)
                 *for_supplement = pm;
             *firstmatch = look_buf;
-            if (*(*firstmatch)) {
-                Sprintf(temp_buf, " (%s)", *firstmatch);
+            if (*(*firstmatch))
+            {
+                char mdescbuf[BUFSZ];
+                strcpy(mdescbuf, "");
+                if (!Hallucination && pm && pm->mdescription && strcmp(pm->mdescription, ""))
+                {
+                    char mdescbuf2[BUFSZ];
+                    strcpy(mdescbuf2, pm->mdescription);
+                    *mdescbuf2 = lowc(*mdescbuf2);
+                    Sprintf(mdescbuf, ", %s", mdescbuf2);
+                }
+                Sprintf(temp_buf, " (%s%s)", *firstmatch, mdescbuf);
+
                 (void) strncat(out_str, temp_buf,
                                BUFSZ - strlen(out_str) - 1);
                 found = 1; /* we have something to look up */

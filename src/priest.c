@@ -1097,7 +1097,7 @@ boolean showheads;
 	Strcpy(monnambuf, x_monnam(mtmp, monsternamearticle, adjbuf,
 		(SUPPRESS_IT | SUPPRESS_INVISIBLE), FALSE));
 
-	Sprintf(buf, "%s:  HP:%d(%d) AC:%d %s%s.", monnambuf,
+	Sprintf(buf, "%s, HP:%d(%d) AC:%d %s%s", monnambuf,
 		mtmp->mhp, mtmp->mhpmax, find_mac(mtmp), alignbuf, info);
 }
 
