@@ -1837,6 +1837,7 @@ boolean atme;
 	case SPE_DEATHSPELL:
 	case SPE_SLEEP:
     case SPE_MAGIC_MISSILE:
+	case SPE_GREATER_MAGIC_MISSILE:
 	case SPE_KNOCK:
 	case SPE_SILENCE:
 	case SPE_SLOW_MONSTER:

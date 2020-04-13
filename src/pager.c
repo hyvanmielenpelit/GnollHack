@@ -1133,7 +1133,7 @@ struct permonst **for_supplement;
                 {
                     char mdescbuf2[BUFSZ];
                     strcpy(mdescbuf2, pm->mdescription);
-                    *mdescbuf2 = lowc(*mdescbuf2);
+                    //*mdescbuf2 = lowc(*mdescbuf2);
                     Sprintf(mdescbuf, ", %s", mdescbuf2);
                 }
                 Sprintf(temp_buf, " (%s%s)", *firstmatch, mdescbuf);

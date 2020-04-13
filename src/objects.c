@@ -2511,7 +2511,9 @@ SPELL("create water", "moist", None, "Creates a food ration",
 
 
 SPELL("magic missile",   "vellum", None, "Shoots a ray of magic missiles",
-      P_ARCANE_SPELL,			10,  2,			 0, 0, 4, A_INT, 10, 0, 20, 0, 1, RAY, RAY_MAGIC_MISSILE, 2, 6, 0, 0, 0, 0, S1_NONE, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE),
+      P_ARCANE_SPELL,			 5,  2,			 0, 0, 4, A_INT, 10, 0, 20, 0, 1, RAY, RAY_MAGIC_MISSILE, 2, 6, 0, 0, 0, 0, S1_NONE, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE),
+SPELL("greater magic missile", "arrow-patterned", None, "Shoots a massive ray of magic missiles",
+      P_ARCANE_SPELL,			 5,  2,			 0, 6, 35, A_INT, 12, 0, 20, 0, 1, RAY, RAY_MAGIC_MISSILE, 16, 6, 0, 0, 0, 0, S1_NONE, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE),
 SPELL("burning hands",    "hand-patterned", None, "Causes the target to suffer fire damage",
       P_ARCANE_SPELL,			 5,  4,			 0, 2, 7, A_INT, 1, 0, 20, 0, 1, TOUCH, 0, 8, 6, 0, 0, 0, 0, S1_NONE, CLR_RED, O1_FIRE_RESISTANT, O2_NONE, O3_NONE),
 SPELL("fire bolt",        "light red", None, "Shoots a bolt of fire",

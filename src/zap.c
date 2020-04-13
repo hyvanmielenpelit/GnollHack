@@ -4712,6 +4712,7 @@ boolean ordinary;
 
     case WAN_MAGIC_MISSILE:
     case SPE_MAGIC_MISSILE:
+    case SPE_GREATER_MAGIC_MISSILE:
         learn_it = TRUE;
 		damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_MAGM, TRUE);
 		if (Magic_missile_resistance || Antimagic_or_resistance || Invulnerable) {
