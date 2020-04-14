@@ -2577,7 +2577,7 @@ rndmonst()
 			} /* else `mndx' now ready for use below */
 			/* determine the level of the weakest monster to make. */
 			/* determine the level of the strongest monster to make. */
-			get_generated_monster_minmax_levels(i, &minmlev, &maxmlev);
+			get_generated_monster_minmax_levels(i, &minmlev, &maxmlev, 0);
 
 			upper = Is_rogue_level(&u.uz);
 			elemlevel = In_endgame(&u.uz) && !Is_astralevel(&u.uz);
@@ -2642,10 +2642,11 @@ rndmonst()
 
 
 void
-get_generated_monster_minmax_levels(attempt, minlvl, maxlvl)
+get_generated_monster_minmax_levels(attempt, minlvl, maxlvl, difficulty_level_adjustment)
 int attempt;
 int* minlvl;
 int* maxlvl;
+int difficulty_level_adjustment;
 {
     /* Initial adjustment */
 	double max_multiplier = 0.50;
@@ -2659,8 +2660,14 @@ int* maxlvl;
 	int minmlev = 0;
 	int maxmlev = 0;
     
-    /* Difficult level adjustments, lower levels saving multipliers for future use */
-	switch (context.game_difficulty)
+    int applied_difficulty = (int)context.game_difficulty + difficulty_level_adjustment;
+    if (applied_difficulty < -4)
+        applied_difficulty = -4;
+    if (applied_difficulty > 4)
+        applied_difficulty = 4;
+
+    /* Difficult level adjustments */
+	switch (applied_difficulty)
 	{
     case -4:
         min_multiplier /= 2.0;
@@ -2689,6 +2696,14 @@ int* maxlvl;
     case 2:
         min_multiplier *= 1.414;
         max_multiplier *= 1.414;
+        break;
+    case 3:
+        min_multiplier *= 1.682;
+        max_multiplier *= 1.682;
+        break;
+    case 4:
+        min_multiplier *= 2.0;
+        max_multiplier *= 2.0;
         break;
     }
 
@@ -2789,7 +2804,7 @@ aligntyp atyp;
 
 	for(int i = 1; i <= 3; i++)
 	{
-		get_generated_monster_minmax_levels(i, &minmlev, &maxmlev);
+		get_generated_monster_minmax_levels(i, &minmlev, &maxmlev, 0);
 	
 		if (class < 1 || class >= MAXMCLASSES) {
 			impossible("mkclass called with bad class!");

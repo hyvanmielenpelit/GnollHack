@@ -1256,7 +1256,7 @@ int x, y;
 	{
 		totalselectedprob = 0;
 
-		get_generated_monster_minmax_levels(i, &minmlev, &maxmlev);
+		get_generated_monster_minmax_levels(i, &minmlev, &maxmlev, 0);
 
 		for (int j = 0; j < MAX_ENCOUNTERS && encounter_list[j].probability > 0; j++)
 		{

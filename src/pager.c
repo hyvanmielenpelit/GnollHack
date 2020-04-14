@@ -265,7 +265,7 @@ char *buf, *monbuf; /* buf: output, monbuf: optional output */
 struct monst *mtmp;
 int x, y;
 {
-    char *name, *title, monnambuf[BUFSZ], headbuf[BUFSZ];
+    char *name, monnambuf[BUFSZ], headbuf[BUFSZ];
     boolean accurate = !Hallucination;
 
     name = (mtmp->data == &mons[PM_COYOTE] && accurate)

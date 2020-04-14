@@ -3955,7 +3955,7 @@ struct permonst _mons2[] = {
         M3_WANTSAMUL | M3_INFRAVISIBLE | M3_INFRAVISION | M3_SPEAKING | M3_CONSTRICTOR, 
 		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS, 
 		125, HI_LORD),
-	MON("Asmodeus", "Arch-Devil, Ruler of the Nine Hells", None, S_DEMON, LVL(105, 24, -7, 19, 90, 20),
+	MON("Asmodeus", "Arch-Devil, Ruler of the Nine Hells", "powerful major devil capable of casting cold spells and summoning other devils", S_DEMON, LVL(105, 24, -7, 19, 90, 20),
 	(G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
 		A(ATTK(AT_CLAW, AD_PHYS, 2, 6, 2, 0), ATTK(AT_MAGC, AD_COLD, 6, 6, 0, 0), ATTK(AT_SMMN, AD_DMNS, 0, 0, 0, 30),
 			NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),

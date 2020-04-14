@@ -587,11 +587,8 @@ select_ringwraith()
 
     for (int i = 1; i <= 3; i++)
     {
-        get_generated_monster_minmax_levels(i, &minlevel, &maxlevel);
-
-        /* Ringwraiths are one difficulty level tougher */
-        minlevel *= 1.189;
-        maxlevel *= 1.189;
+        /* Difficulty level is one level higher than normal */
+        get_generated_monster_minmax_levels(i, &minlevel, &maxlevel, 1);
 
         nazgulok = maxlevel >= mons[PM_NAZGUL].difficulty && !(mvitals[PM_NAZGUL].mvflags & G_GONE);
         kingwraithok = maxlevel >= mons[PM_KING_WRAITH].difficulty && !(mvitals[PM_KING_WRAITH].mvflags & G_GONE);

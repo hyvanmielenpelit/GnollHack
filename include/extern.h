@@ -1303,7 +1303,7 @@ E struct monst *FDECL(makemon, (struct permonst *, int, int, unsigned long));
 E boolean FDECL(create_critters, (int, struct permonst *, BOOLEAN_P));
 E struct permonst *NDECL(rndmonst);
 E void FDECL(reset_rndmonst, (int));
-E void FDECL(get_generated_monster_minmax_levels, (int, int*, int*));
+E void FDECL(get_generated_monster_minmax_levels, (int, int*, int*, int));
 E struct permonst *FDECL(mkclass, (CHAR_P, int));
 E struct permonst *FDECL(mkclass_aligned, (CHAR_P, int, ALIGNTYP_P));
 E int FDECL(mkclass_poly, (int));
