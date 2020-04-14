@@ -1430,7 +1430,7 @@ struct materialcomponentlist matlists[] =
 		}
 	},
 
-	{ SPE_MAGIC_MISSILE,
+	{ SPE_GREATER_MAGIC_MISSILE,
 	"2 darts, platinum ore",
 	STRANGE_OBJECT,
 	10,
