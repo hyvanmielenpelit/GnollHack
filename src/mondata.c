@@ -136,7 +136,9 @@ static NEARDATA struct mflag_description m4flag_descriptions[] = {
 	{ M4_FLAMING, "flaming", "flaming monsters" },
 	{ M4_FLAMING, "whirly", "whirly monsters" },
 	{ M4_BAT, "bat", "bats" },
-	{ M4_VORPAL_VULNERABILITY, "vorpal vulnerable", "monsters vulnerable to vorpal weapons" },
+    { M4_BEAR, "bear or bear-like monster", "bears or bear-like monsters" },
+    { M4_BIRD, "bird or bird-like monster", "birds or bird-like monsters" },
+    { M4_VORPAL_VULNERABILITY, "vorpal vulnerable", "monsters vulnerable to vorpal weapons" },
 	{ 0 , "", "" }
 };
 

@@ -153,7 +153,7 @@
 #define flaming(ptr) (((ptr)->mflags4 & M4_FLAMING) != 0L)
 #define is_whirly(ptr) (((ptr)->mflags4 & M4_WHIRLY) != 0L)
 #define is_bat(ptr) (((ptr)->mflags4 & M4_BAT) != 0L)
-#define is_bird(ptr) ((ptr)->mlet == S_BAT && !is_bat(ptr))
+#define is_bird(ptr) (((ptr)->mflags4 & M4_BIRD) != 0L)
 #define likes_lava(ptr) (((ptr)->mflags4 & M4_LIKES_LAVA) != 0)
 #define likes_fire(ptr) (((ptr)->mflags4 & M4_LIKES_FIRE) != 0)
 #define smells_buried_searchable(ptr) (((ptr)->mflags4 & M4_SMELLS_BURIED_SEARCHABLE) != 0)

@@ -273,6 +273,7 @@
 #define M4_WATERY					0x00200000UL		/* composed of water like a water elemental */
 #define M4_FAITHFUL					0x00400000UL		/* always faithful is tame */
 #define M4_BEAR						0x00800000UL		/* a bear or bear-like monster */
+#define M4_BIRD						0x01000000UL		/* a bird */
 
 #define MZ_TINY 0          /* < 2' */
 #define MZ_SMALL 1         /* 2-4' */
