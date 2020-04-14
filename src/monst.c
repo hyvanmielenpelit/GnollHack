@@ -4789,6 +4789,6 @@ const struct attack sa_no[NATTK] = SEDUCTION_ATTACKS_NO;
 #undef ATTK
 #undef A
 #undef MON
-
+#undef None
 
 /*monst.c*/

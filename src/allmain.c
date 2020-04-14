@@ -20,6 +20,8 @@ STATIC_DCL void NDECL(regenerate_mana);
 STATIC_DCL void FDECL(interrupt_multi, (const char *));
 STATIC_DCL void FDECL(debug_fields, (const char *));
 STATIC_DCL void NDECL(create_monster_or_encounter);
+STATIC_DCL int NDECL(select_ringwraith);
+STATIC_DCL boolean NDECL(maybe_create_ringwraith);
 
 void
 moveloop(resuming)
@@ -548,60 +550,9 @@ STATIC_OVL
 void
 create_monster_or_encounter()
 {
-	struct monst* nazgul = (struct monst*)0;
-	boolean ringwraith_appeared = FALSE;
-	int maxlevel = 2 * u.ulevel;
-	int mdx = NON_PM;
-	boolean nazgulok = maxlevel >= mons[PM_NAZGUL].difficulty && !(mvitals[PM_NAZGUL].mvflags & G_GONE);
-	boolean kingwraithok = maxlevel >= mons[PM_KING_WRAITH].difficulty && !(mvitals[PM_KING_WRAITH].mvflags & G_GONE);
-	boolean spectreok = maxlevel >= mons[PM_SPECTRE].difficulty && !(mvitals[PM_SPECTRE].mvflags & G_GONE);
-	boolean barrowwightok = maxlevel >= mons[PM_BARROW_WIGHT].difficulty && !(mvitals[PM_BARROW_WIGHT].mvflags & G_GONE);
-	boolean wraithok = maxlevel >= mons[PM_WRAITH].difficulty && !(mvitals[PM_WRAITH].mvflags & G_GONE);
 
-    /* Select a ringwraith */
-	if (nazgulok)
-		mdx = PM_NAZGUL;
-	else if (kingwraithok)
-		mdx = PM_KING_WRAITH;
-	else if (spectreok && (rn2(3) || !(barrowwightok || wraithok)))
-		mdx = PM_SPECTRE;
-	else if (barrowwightok && (!rn2(2) || !wraithok))
-		mdx = PM_BARROW_WIGHT;
-	else if (wraithok)
-		mdx = PM_WRAITH;
-
-	if(!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && !(u.uz.dnum == modron_dnum) && mdx >= LOW_PM)
-	{
-		/* Special ringwraith appearance if carrying the One Ring */
-		struct obj* ring = carrying(RIN_SUPREME_POWER);
-		if (ring && ring->oartifact == ART_ONE_RING && mdx >= LOW_PM && !rn2(20))
-		{
-			if (!context.made_witch_king && mdx == PM_NAZGUL && !rn2(9))
-			{
-				nazgul = makemon(&mons[PM_NAZGUL], 0, 0, MM_MAX_HP | MM_MALE);
-				if (nazgul)
-				{
-					nazgul = christen_monst(nazgul, "Witch-King of Angmar");
-					nazgul->u_know_mname = TRUE; /* He's famous -- JG */
-					nazgul->leaves_no_corpse = TRUE;
-					mongets(nazgul, CROWN_OF_RULERSHIP);
-					context.made_witch_king = TRUE;
-				}
-
-				if(nazgul)
-					ringwraith_appeared = TRUE;
-			}
-			else
-			{
-				nazgul = makemon(&mons[mdx], 0, 0, NO_MM_FLAGS);
-				if (nazgul)
-				{
-					nazgul->leaves_no_corpse = TRUE;
-					ringwraith_appeared = TRUE;
-				}
-			}
-		}
-	}
+    /* Special ringwraith appearance for the One Ring */
+    boolean ringwraith_appeared = maybe_create_ringwraith();
 
 	if (!ringwraith_appeared)
 	{
@@ -620,6 +571,96 @@ create_monster_or_encounter()
 	}
 }
 
+
+STATIC_OVL
+int
+select_ringwraith()
+{
+    /* Special ringwraith appearance for the One Ring */
+    int minlevel = 0, maxlevel = 1;
+    int mdx = NON_PM;
+    boolean nazgulok = FALSE;
+    boolean kingwraithok = FALSE;
+    boolean spectreok = FALSE;
+    boolean barrowwightok = FALSE;
+    boolean wraithok = FALSE;
+
+    for (int i = 1; i <= 3; i++)
+    {
+        get_generated_monster_minmax_levels(i, &minlevel, &maxlevel);
+
+        /* Ringwraiths are one difficulty level tougher */
+        minlevel *= 1.189;
+        maxlevel *= 1.189;
+
+        nazgulok = maxlevel >= mons[PM_NAZGUL].difficulty && !(mvitals[PM_NAZGUL].mvflags & G_GONE);
+        kingwraithok = maxlevel >= mons[PM_KING_WRAITH].difficulty && !(mvitals[PM_KING_WRAITH].mvflags & G_GONE);
+        spectreok = maxlevel >= mons[PM_SPECTRE].difficulty && !(mvitals[PM_SPECTRE].mvflags & G_GONE);
+        barrowwightok = maxlevel >= mons[PM_BARROW_WIGHT].difficulty && !(mvitals[PM_BARROW_WIGHT].mvflags & G_GONE);
+        wraithok = maxlevel >= mons[PM_WRAITH].difficulty && !(mvitals[PM_WRAITH].mvflags & G_GONE);
+
+        if (nazgulok || kingwraithok || spectreok || barrowwightok || wraithok)
+            break;
+    }
+
+    /* Select a ringwraith */
+    if (nazgulok)
+        mdx = PM_NAZGUL;
+    else if (kingwraithok)
+        mdx = PM_KING_WRAITH;
+    else if (spectreok && (rn2(3) || !(barrowwightok || wraithok)))
+        mdx = PM_SPECTRE;
+    else if (barrowwightok && (!rn2(2) || !wraithok))
+        mdx = PM_BARROW_WIGHT;
+    else if (wraithok)
+        mdx = PM_WRAITH;
+
+    return mdx;
+}
+
+STATIC_OVL
+boolean
+maybe_create_ringwraith()
+{
+    struct monst* ringwraith = (struct monst*)0;
+    boolean ringwraith_appeared = FALSE;
+    int mdx = NON_PM;
+
+    if (!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && !(u.uz.dnum == modron_dnum) && (mdx = select_ringwraith()) >= LOW_PM)
+    {
+        /* Special ringwraith appearance if carrying the One Ring */
+        struct obj* ring = carrying(RIN_SUPREME_POWER);
+        if (ring && ring->oartifact == ART_ONE_RING && mdx >= LOW_PM && !rn2(20))
+        {
+            if (!context.made_witch_king && mdx == PM_NAZGUL && !rn2(9))
+            {
+                ringwraith = makemon(&mons[PM_NAZGUL], 0, 0, MM_MAX_HP | MM_MALE);
+                if (ringwraith)
+                {
+                    ringwraith = christen_monst(ringwraith, "Witch-King of Angmar");
+                    ringwraith->u_know_mname = TRUE; /* He's famous -- JG */
+                    ringwraith->leaves_no_corpse = TRUE;
+                    mongets(ringwraith, CROWN_OF_RULERSHIP);
+                    context.made_witch_king = TRUE;
+                }
+
+                if (ringwraith)
+                    ringwraith_appeared = TRUE;
+            }
+            else
+            {
+                ringwraith = makemon(&mons[mdx], 0, 0, NO_MM_FLAGS);
+                if (ringwraith)
+                {
+                    ringwraith->leaves_no_corpse = TRUE;
+                    ringwraith_appeared = TRUE;
+                }
+            }
+        }
+    }
+
+    return ringwraith_appeared;
+}
 
 /* maybe recover some lost health (or lose some when an eel out of water) */
 STATIC_OVL void
