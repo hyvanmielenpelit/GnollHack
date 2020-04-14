@@ -61,13 +61,7 @@ const struct Role roles[] = {
       { 2, 2, 2, 2, 2, 2 }, /* Energy 1d3+1*/
       MAXULEV,
       10,
-      5,
       0,
-      15,
-      10,
-      A_INT,
-      SPE_MAGIC_MAPPING,
-      -4,
         {
             {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
             {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
@@ -141,13 +135,7 @@ const struct Role roles[] = {
       { 1, 2, 1, 2, 1, 2 }, /* Energy 1d3*/
       MAXULEV,
       10,
-      14,
       0,
-      10,
-      8,
-      A_INT,
-      SPE_HASTE_SELF,
-      -4, 
         {
             {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
             {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
@@ -219,13 +207,7 @@ const struct Role roles[] = {
       { 1, 1, 0, 2, 0, 2 }, /* Energy 1d3-1*/
       MAXULEV,
       0,
-      12,
       0,
-      10,
-      8,
-      A_INT,
-      SPE_DIG,
-      -4,
         {
             {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
             {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
@@ -296,13 +278,7 @@ const struct Role roles[] = {
       { 5, 2, 4, 3, 4, 3 }, /* Energy 1d4+3*/
       MAXULEV,
       10,
-      3,
-      -3,
-      15,
-      10,
-      A_WIS,
-      SPE_CURE_SICKNESS,
-      -4,
+      0,
         {
             {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
             {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
@@ -373,13 +349,7 @@ const struct Role roles[] = {
       { 3, 2, 3, 2, 3, 2 }, /* Energy 1d3+2*/
       MAXULEV,
       10,
-      8,
-      -2,
-      15,
-      6,
-      A_WIS,
-      SPE_TURN_UNDEAD,
-      -4,
+      0,
         {
             {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
             {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
@@ -451,13 +421,7 @@ const struct Role roles[] = {
       { 3, 3, 3, 3, 3, 3 }, /* Energy 1d4+2*/
       MAXULEV,
       10,
-      8,
-      -2,
-      15,
       30,
-      A_WIS,
-      SPE_RESTORE_ABILITY,
-      -4,
         {
             {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
             {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
@@ -529,13 +493,7 @@ const struct Role roles[] = {
       { 6, 2, 5, 3, 5, 3 },  /* Energy 1d4+4*/
       10,
       0,
-      3,
-      -2,
-      20,
-      7,
-      A_WIS,
-      SPE_REMOVE_CURSE,
-      -4,
+      0,
         {
             {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
             {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
@@ -608,13 +566,7 @@ const struct Role roles[] = {
       { 2, 1, 1, 2, 1, 2 },  /* Energy 1d3*/
       11,
       10,
-      8,
       0,
-      15,
-      9,
-      A_INT,
-      SPE_DETECT_TREASURE,
-      -4,
         {
             {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
             {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
@@ -700,13 +652,7 @@ const struct Role roles[] = {
       { 2, 1, 1, 2, 1, 2 },  /* Energy 1d3*/
       12,
       10,
-      9,
-      2,
-      15,
-      9,
-      A_INT,
-      SPE_INVISIBILITY,
-      -4,
+      0,
         {
             {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
             {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
@@ -777,13 +723,7 @@ const struct Role roles[] = {
       { 2, 2, 1, 3, 1, 3 }, /* Energy  1d4*/
       MAXULEV,
       10,
-      10,
       0,
-      10,
-      7,
-      A_INT,
-      SPE_CLAIRVOYANCE,
-      -4,
         {
             {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
             {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
@@ -854,13 +794,7 @@ const struct Role roles[] = {
       { 1, 3, 0, 4, 0, 4 }, /* Energy */
 	  MAXULEV,
       0,
-      5,
-      1,
-      15,
-      10,
-      A_INT,
-      SPE_SPHERE_OF_CHARMING,
-      -4,
+      0,
         {
             {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
             {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
@@ -931,13 +865,7 @@ const struct Role roles[] = {
       { 1, 1, 0, 2, 0, 2 },  /* Energy 1d3-1*/
       MAXULEV,
       0,
-      10,
-      -2,
-      10,
-      8,
-      A_WIS,
-      SPE_CONE_OF_COLD,
-      -4,
+      0,
         {
             {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
             {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
@@ -1010,13 +938,7 @@ const struct Role roles[] = {
       { 8, 2, 5, 5, 5, 5 }, /* Energy 1d6+4*/
       MAXULEV,
       0,
-      1,
       0,
-      20,
-      10,
-      A_INT,
-      SPE_MAGIC_MISSILE,
-      -4,
         {
             {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
             {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
@@ -1077,13 +999,7 @@ struct Role urole = {
     { 2, 0, 0, 2, 0, 3 }, /* Energy: initial z, d; low-levels z, d; high-level, z, d */
     14,
      0,
-    10,
      0,
-     0,
-     4,
-    A_INT,
-     0,
-    -3,
     {
         {0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0},

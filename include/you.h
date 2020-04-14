@@ -147,14 +147,7 @@ struct Role {
     xchar initrecord;         /* initial alignment record */
 
     /*** Spell statistics (from spell.c) ***/
-    int spelbase; /* base spellcasting penalty */
-    int spelheal; /* penalty (-bonus) for healing spells */
-
-    int spell_success_increase_per_level; /* The amount of % success chance gained per level */
-    int spelarmr; /* Except for Monks, OBSOLETE: penalty for wearing metal armour */
-    int spelstat; /* OBSOLETE: which stat (A_) is used */
-    int spelspec; /* spell (SPE_) the class excels at */
-    int spelsbon; /* penalty (-bonus) for that spell */
+    int spelarmr; /* Except for monks, penalty for wearing metal armour */
 
     /*** Properties in variable-length arrays ***/
     /* intrinsics (see attrib.c) */

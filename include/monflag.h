@@ -272,6 +272,7 @@
 #define M4_PAWED		            0x00100000UL		/* has paws instead of hands */
 #define M4_WATERY					0x00200000UL		/* composed of water like a water elemental */
 #define M4_FAITHFUL					0x00400000UL		/* always faithful is tame */
+#define M4_BEAR						0x00800000UL		/* a bear or bear-like monster */
 
 #define MZ_TINY 0          /* < 2' */
 #define MZ_SMALL 1         /* 2-4' */

@@ -160,6 +160,7 @@
 #define has_vorpal_vulnerability(ptr) (((ptr)->mflags4 & M4_VORPAL_VULNERABILITY) != 0)
 #define is_watery(ptr) (((ptr)->mflags4 & M4_WATERY) != 0)
 #define is_always_faithful(ptr) (((ptr)->mflags4 & M4_FAITHFUL) != 0)
+#define is_bear(ptr) (((ptr)->mflags4 & M4_BEAR) != 0L)
 
 
 /* combinations */

@@ -1139,7 +1139,7 @@ unsigned trflags;
             pline("%s bear trap closes on your %s!", A_Your[trap->madeby_u],
                   body_part(FOOT));
             set_wounded_legs(rn2(2) ? RIGHT_SIDE : LEFT_SIDE, rn1(10, 10));
-            if (u.umonnum == PM_OWLBEAR || u.umonnum == PM_BUGBEAR)
+            if (is_bear(&mons[u.umonnum]))
                 You("howl in anger!");
             losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "bear trap", KILLED_BY_AN);
         }
@@ -2366,8 +2366,7 @@ register struct monst *mtmp;
                           a_your[trap->madeby_u]);
                     seetrap(trap);
                 } else {
-                    if (mptr == &mons[PM_OWLBEAR]
-                        || mptr == &mons[PM_BUGBEAR])
+                    if (is_bear(mptr))
                         You_hear("the roaring of an angry bear!");
                 }
             } else if (force_mintrap) {
@@ -2603,19 +2602,13 @@ register struct monst *mtmp;
                 break;
             tear_web = FALSE;
             switch (monsndx(mptr)) {
-            case PM_OWLBEAR: /* Eric Backus */
-			case PM_OWLBEAR_SHAMAN:
-			case PM_OWLBEAR_MATRIARCH:
-			case PM_OWLBEAR_PATRIARCH:
-			case PM_BUGBEAR:
-                if (!in_sight) {
+            default:
+                if (is_bear(mptr) && !in_sight) {
                     You_hear("the roaring of a confused bear!");
                     mtmp->mtrapped = 1;
                     break;
                 }
-                /*FALLTHRU*/
-            default:
-                if (mptr->mlet == S_GIANT
+                else if (mptr->mlet == S_GIANT
                     /* exclude baby dragons and relatively short worms */
                     || (mptr->mlet == S_DRAGON && extra_nasty(mptr))
                     || (mtmp->wormno && count_wsegs(mtmp) > 5)) {

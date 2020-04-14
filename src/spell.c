@@ -62,53 +62,6 @@ STATIC_DCL boolean FDECL(is_acceptable_component_object_type, (struct materialco
 STATIC_DCL boolean FDECL(is_acceptable_component_monster_type, (struct materialcomponent*, int));
 STATIC_DCL int FDECL(count_matcomp_alternatives, (struct materialcomponent*));
 
-/* The roles[] table lists the role-specific values for tuning
- * percent_success().
- *
- * Reasoning:
- *   spelbase, spelheal:
- *      Arc are aware of magic through historical research
- *      Bar abhor magic (Conan finds it "interferes with his animal instincts")
- *      Cav are ignorant to magic
- *      Hea are very aware of healing magic through medical research
- *      Kni are moderately aware of healing from Paladin training
- *      Mon use magic to attack and defend in lieu of weapons and armor
- *      Pri are very aware of healing magic through theological research
- *      Ran avoid magic, preferring to fight unseen and unheard
- *      Rog are moderately aware of magic through trickery
- *      Sam have limited magical awareness, preferring meditation to conjuring
- *      Tou are aware of magic from all the great films they have seen
- *      Val have limited magical awareness, preferring fighting
- *      Wiz are trained mages
- *
- *      The arms penalty is lessened for trained fighters Bar, Kni, Ran,
- *      Sam, Val -- the penalty is its metal interference, not encumbrance.
- *      The `spelspec' is a single spell which is fundamentally easier
- *      for that role to cast.
- *
- *  spelspec, spelsbon:
- *      Arc map masters (SPE_MAGIC_MAPPING)
- *      Bar fugue/berserker (SPE_HASTE_SELF)
- *      Cav born to dig (SPE_DIG)
- *      Hea to heal (SPE_CURE_SICKNESS)
- *      Kni to turn back evil (SPE_TURN_UNDEAD)
- *      Mon to preserve their abilities (SPE_RESTORE_ABILITY)
- *      Pri to bless (SPE_REMOVE_CURSE)
- *      Ran to hide (SPE_INVISIBILITY)
- *      Rog to find loot (SPE_DETECT_TREASURE)
- *      Sam to be At One (SPE_CLAIRVOYANCE)
- *      Tou to smile (SPE_SPHERE_OF_CHARMING)
- *      Val control the cold (SPE_CONE_OF_COLD)
- *      Wiz all really, but SPE_MAGIC_MISSILE is their party trick
- *
- *      See percent_success() below for more comments.
- *
- *  uarmbon, uarmsbon, uarmhbon, uarmgbon, uarmfbon:
- *      Fighters find body armour & shield a little less limiting.
- *      Headgear, Gauntlets and Footwear are not role-specific (but
- *      still have an effect, except helm of brilliance, which is designed
- *      to permit magic-use).
- */
 
 /* since the spellbook itself doesn't blow up, don't say just "explodes" */
 static const char explodes[] = "radiates explosive energy";
