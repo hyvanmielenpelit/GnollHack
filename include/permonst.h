@@ -42,6 +42,7 @@ struct attack {
 
 struct permonst {
     const char *mname;          /* full name */
+    const char* mtitle;         /* title or description of a unique monster with proper name, e.g., Prince of Demons or Ixoth, red dragon */
     const char* mdescription;   /* description */
     char mlet;                  /* symbol */
     schar mlevel,               /* base monster level */
