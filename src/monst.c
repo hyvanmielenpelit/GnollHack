@@ -4108,7 +4108,7 @@ struct permonst _mons2[] = {
 	/* other demons
 	 */
 #ifdef MAIL
-	MON("mail daemon", None, S_DEMON, LVL(56, 24, 10, 0, 127, 0), (G_NOGEN | G_NOCORPSE),
+	MON("mail daemon", None, None, S_DEMON, LVL(56, 24, 10, 0, 127, 0), (G_NOGEN | G_NOCORPSE),
 		A(NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
 		SIZ(600, 300, MS_SILENT, MZ_HUMAN, 1, 0), STATS(18, 18, 18, 18, 18, 18),
 		MR_FIRE | MR_COLD | MR_ELEC | MR_SLEEP | MR_POISON | MR_STONE | MR_SEE_INVISIBLE,
