@@ -542,7 +542,7 @@ NEARDATA struct permonst mons[] = {
 		M4_SMELLS_BURIED_SEARCHABLE, 
 		4, CLR_BROWN),
 
-	MON("gnoll warden", "hyena-headed humanoid shaman", S_GNOLL, LVL(5, 10, 2, 5, 0, -7), (G_GENO | 1),
+	MON("gnoll warden", "spell-casting hyena-headed humanoid", S_GNOLL, LVL(5, 10, 2, 5, 0, -7), (G_GENO | 1),
 		A(ATTK(AT_MAGC, AD_CLRC, 0, 0, 0, 0), ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK,
 			NO_ATTK, NO_ATTK, NO_ATTK),
 		SIZ(900, 180, MS_BARK, MZ_SMALL, 1, 0), STATS(12, 13, 14, 12, 15, 10), MR_NONE, MC_NONE, M1_HUMANOID | M1_CARNIVORE,
@@ -622,14 +622,14 @@ NEARDATA struct permonst mons[] = {
         SIZ(100, 20, MS_LAUGH, MZ_SMALL, 1, 0), STATS(9, 14, 16, 12, 9, 8), MR_POISON, MC_POISON | MC_POISONOUS_CORPSE,
         M1_SWIM | M1_HUMANOID, M2_STALK, M3_INFRAVISIBLE, M4_NONE,
         11, CLR_GREEN),
-    MON("gargoyle", "stony monster resembling a monstrous statue", S_GNOME, LVL(6, 10, -4, 10, 0, -9), (G_GENO | 2),
+    MON("gargoyle", "stony creature resembling a monstrous statue", S_GNOME, LVL(6, 10, -4, 10, 0, -9), (G_GENO | 2),
         A(ATTK(AT_CLAW, AD_PHYS, 2, 6, 0, 0), ATTK(AT_CLAW, AD_PHYS, 2, 6, 0, 0),
           ATTK(AT_BITE, AD_PHYS, 2, 4, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1000, 200, MS_GRUNT, MZ_HUMAN, 1, 0), STATS(STR18(100), 14, 18, 6, 1, 1), MR_STONE, MC_STONE,
         M1_HUMANOID | M1_THICK_HIDE | M1_BREATHLESS, M2_HOSTILE,
         M3_NONE, M4_STONY, 
 		20, CLR_WHITE),
-    MON("winged gargoyle", "flying stony monster resembling a monstrous statue", S_GNOME, LVL(9, 15, -2, 14, 0, -12), (G_GENO | 1),
+    MON("winged gargoyle", "flying stony creature resembling a monstrous statue", S_GNOME, LVL(9, 15, -2, 14, 0, -12), (G_GENO | 1),
         A(ATTK(AT_CLAW, AD_PHYS, 3, 6, 0, 0), ATTK(AT_CLAW, AD_PHYS, 3, 6, 0, 0),
           ATTK(AT_BITE, AD_PHYS, 3, 4, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1200, 300, MS_GRUNT, MZ_HUMAN, 1, 0), STATS(STR19(19), 16, 19, 12, 1, 1), MR_STONE, MC_STONE,
@@ -1031,7 +1031,7 @@ NEARDATA struct permonst mons[] = {
     /*
      * quadrupeds
      */
-    MON("rothe", "fierce bovine resembling musk oxen", S_QUADRUPED, LVL(2, 9, 7, 0, 0, 0), (G_GENO | G_SGROUP | 4),
+    MON("rothe", "bovine resembling musk ox", S_QUADRUPED, LVL(2, 9, 7, 0, 0, 0), (G_GENO | G_SGROUP | 4),
         A(ATTK(AT_CLAW, AD_PHYS, 1, 3, 0, 0), ATTK(AT_BITE, AD_PHYS, 1, 3, 0, 0),
           ATTK(AT_BITE, AD_PHYS, 1, 8, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(400, 100, MS_SILENT, MZ_LARGE, 1, 0), STATS(15, 9, 15, 2, 2, 1), MR_NONE, MC_NONE,
@@ -1076,7 +1076,7 @@ NEARDATA struct permonst mons[] = {
         M3_INFRAVISIBLE, 
         M4_NONE, 
 		11, CLR_GRAY),
-    MON("leucrotta", "fast and strong abomination with head of badger and body of stag", S_QUADRUPED, LVL(6, 14, 4, 2, 10, 0), (G_GENO | 2),
+    MON("leucrotta", "fast and strong creature with head of badger and body of stag", S_QUADRUPED, LVL(6, 14, 4, 2, 10, 0), (G_GENO | 2),
         A(ATTK(AT_CLAW, AD_PHYS, 2, 6, 0, 0), ATTK(AT_BITE, AD_PHYS, 2, 6, 0, 0),
           ATTK(AT_CLAW, AD_PHYS, 2, 6, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1200, 500, MS_IMITATE, MZ_LARGE, 1, 0), STATS(STR18(51), 15, 18, 10, 9, 3), MR_NONE, MC_NONE,
@@ -1225,7 +1225,7 @@ NEARDATA struct permonst mons[] = {
     /*
      * unicorns and horses
      */
-    MON("ram", "ram with a butt attack", S_UNICORN, LVL(3, 16, 6, 0, 0, 0), (G_GENO | 2),
+    MON("ram", "male sheep with a butt attack", S_UNICORN, LVL(3, 16, 6, 0, 0, 0), (G_GENO | 2),
         A(ATTK(AT_BUTT, AD_PHYS, 2, 6, 0, 0), NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1300, 250, MS_BLEAT, MZ_MEDIUM, 1, 0), STATS(15, 9, 15, 2, 1, 2), MR_NONE, MC_NONE,
@@ -1243,7 +1243,7 @@ NEARDATA struct permonst mons[] = {
         M3_INFRAVISIBLE, 
         M4_NONE, 
 		6, CLR_BROWN),
-    MON("large ram", "ram with a strong butt attack", S_UNICORN, LVL(5, 20, 5, 0, 0, 0), (G_GENO | 2),
+    MON("large ram", "male sheep with a strong butt attack", S_UNICORN, LVL(5, 20, 5, 0, 0, 0), (G_GENO | 2),
         A(ATTK(AT_BUTT, AD_PHYS, 2, 8, 0, 0), NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1500, 300, MS_BLEAT, MZ_LARGE, 1, 0), STATS(18, 13, 16, 2, 1, 2), MR_NONE, MC_NONE,
@@ -1261,7 +1261,7 @@ NEARDATA struct permonst mons[] = {
         M3_INFRAVISIBLE, 
         M4_NONE, 
 		10, CLR_BROWN),
-    MON("warram", "ram that can cause massive damage by butting", S_UNICORN, LVL(7, 24, 4, 0, 0, 0), (G_GENO | 2),
+    MON("warram", "male sheep that can cause massive damage by butting", S_UNICORN, LVL(7, 24, 4, 0, 0, 0), (G_GENO | 2),
         A(ATTK(AT_BUTT, AD_PHYS, 2, 10, 0, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1800, 350, MS_BLEAT, MZ_LARGE, 1, 0), STATS(STR18(51), 13, 18, 2, 1, 2), MR_NONE, MC_NONE,
