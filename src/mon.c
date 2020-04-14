@@ -713,17 +713,9 @@ boolean createcorpse;
 	case PM_GOLD_GOLEM:
 	{
 		/* Good luck gives more coins */
-		boolean goldcreated = FALSE;
 		if (!rn2(2))
 		{
 			obj = mkgold((long)(195 - rnl(101)), x, y);
-			goldcreated = TRUE;
-		}
-		if (!goldcreated || !rn2(2))
-		{
-			obj = mksobj_at(NUGGET_OF_GOLD_ORE, x, y, FALSE, FALSE);
-			obj->quan = (long)(rnd(3));
-			obj->owt = weight(obj);
 		}
 		free_mname(mtmp);
 		free_umname(mtmp);
