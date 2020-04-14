@@ -1923,7 +1923,7 @@ boolean called;
 		} 
 		else 
 		{
-			char tmpbuf[BUFSIZ] = "";
+			char tmpbuf[BUFSIZ];
 			strcpy(tmpbuf, buf);
 			if (!is_tame(mtmp))
 			{
@@ -2319,9 +2319,9 @@ char* s;
 {
 	static const char* start[] = { "th", "m", "d", "thr", "g",
 		"d", "t", "l", "b", "", "n", "f", "fr", "gr", "aggr" };
-	static const char* v[] = { "a", "e," "i", "o", "u", "u", "eo", "y" };
+	static const char* v[] = { "a", "e", "i", "o", "u", "u", "eo", "y" };
 	static const char* middle_vowel_end[] = { "l", "r", "g", "n" };
-	static const char* mv[] = { "a", "e," "i", "o", "u" };
+	static const char* mv[] = { "a", "e", "i", "o", "u" };
 	static const char* middle_novowel_end[] = { "rog", "rg" };
 	static const char* end_previous_vowel[] = { "din", "ddin", "rdin", "rin", "in", "mli", "lin", "nin", "sek", "rek", "rim", "im" , "r", "ri", "gas", "m", "dis", "di" };
 	static const char* end_previous_novowel[] = { "din", "rin", "in", "lin", "rim", "im", "ri", "as", "dis" };
@@ -2484,7 +2484,7 @@ char* s;
 	if (s)
 	{
 		strcpy(s, "");
-		char ns[BUFSIZ] = "";
+		char ns[BUFSIZ];
 		(void)randomize_gnoll_name(ns);
 		Sprintf(s, "yee%s", ns);
 	}

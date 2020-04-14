@@ -190,7 +190,7 @@ STATIC_OVL void
 m_init_background(mtmp)
 register struct monst* mtmp;
 {
-	char mnamebuf[BUFSZ] = "";
+	char mnamebuf[BUFSZ];
 
 	if (is_dwarf(mtmp->data) && !has_mname(mtmp))
 		christen_monst(mtmp, upstart(randomize_dwarf_name(mnamebuf)));
