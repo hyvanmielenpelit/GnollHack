@@ -960,7 +960,7 @@ const struct Role roles[] = {
             {0, 0, 0,  0,  0, 0, 0}, /* P_CLERIC_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_HEALING_SPELL */
             {0, 0, 2, 10, 20, 0, 0}, /* P_DIVINATION_SPELL */
-            {0, 0, 2,  8,  0, 0, 0}, /* P_ABJURATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_ABJURATION_SPELL */
             {0, 0, 2,  9, 18, 0, 0}, /* P_MOVEMENT_SPELL */
             {0, 0, 1,  7, 14, 0, 0}, /* P_TRANSMUTATION_SPELL */
             {0, 0, 1,  7, 14, 0, 0}, /* P_ENCHANTMENT_SPELL */

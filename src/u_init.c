@@ -751,7 +751,6 @@ static const struct def_skill Skill_W_Max[] = {
     { P_MOVEMENT_SPELL, P_EXPERT },
     { P_TRANSMUTATION_SPELL, P_EXPERT },
 	{ P_CONJURATION_SPELL, P_EXPERT },
-	{ P_ABJURATION_SPELL, P_SKILLED },
 	{ P_RIDING, P_BASIC },
     { P_BARE_HANDED_COMBAT, P_BASIC },
 	{ P_WAND, P_EXPERT },
