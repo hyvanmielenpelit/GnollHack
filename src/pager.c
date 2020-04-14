@@ -564,8 +564,9 @@ char *buf, *monbuf;
 
 	char exbuf[BUFSIZ];
 	strcpy(exbuf, buf);
-	int article = strstri(exbuf, " of a room") ? 2
-		: !(noarticle == TRUE
+	int article = strstri(exbuf, " of a room")? 2 :
+        (!noarticle && pm && (pm->geno & G_UNIQ)) ? 0 : /* for unique monsters, we leave the article out altogether, rather than putting a or the */
+		!(noarticle == TRUE
 			|| strcmp(exbuf, "air") == 0
 			|| strcmp(exbuf, "land") == 0
 			|| strcmp(exbuf, "water") == 0);
