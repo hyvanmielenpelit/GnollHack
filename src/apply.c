@@ -1116,7 +1116,9 @@ struct obj* obj;
 		exercise(A_WIS, FALSE);
 		return 0;
 	}
-	exercise(A_WIS, TRUE);
+
+    You("raise %s high.", yname(obj));
+    exercise(A_WIS, TRUE);
 	(void)bhit(u.dx, u.dy, obj->blessed ? 4 : 3, 0, ZAPPED_WAND, uthitm, uthito,
 		& obj, TRUE, FALSE);
 
@@ -1143,10 +1145,13 @@ struct obj* otmp;
 
 	wake = FALSE;
 
-	if (is_undead(mtmp->data) || is_vampshifter(mtmp) || is_demon(mtmp->data)) 
+	if (is_undead(mtmp->data) || is_vampshifter(mtmp))  // || is_demon(mtmp->data)
     {
+
 		reveal_invis = TRUE;
 		wake = TRUE;
+
+#if 0
 		if(otmp->blessed)
 			dmg = d(2,6) + Role_if(PM_PRIEST) ? u.ulevel / 2 : 0;
 		else
@@ -1158,10 +1163,16 @@ struct obj* otmp;
 
 		if (is_dlord(mtmp->data) || is_dprince(mtmp->data))
 			percentchance = 0;
+#endif
 
-		if (rn2(100) < percentchance)  //
+		if (!(mtmp->data->geno & G_UNIQ) || !check_magic_resistance_and_inflict_damage(mtmp, otmp, FALSE, 0, 0, TELL))  //
 		{
-			if (!otmp->cursed)
+            pline("%s brightly before %s!", Yobjnam2(otmp, "shine"), mon_nam(mtmp));
+            if (!DEADMONSTER(mtmp))
+                monflee(mtmp, 200 + rnd(100), FALSE, TRUE);
+
+#if 0
+            if (!otmp->cursed)
 			{
 				pline("%s shines brightly before %s!", Yname2(otmp), the(mon_nam(mtmp)));
 				if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_CLRC, TELL))
@@ -1189,15 +1200,27 @@ struct obj* otmp;
 					}
 				}
 			}
+#endif
 		}
 		else
 		{
-			if (is_dlord(mtmp->data) || is_dprince(mtmp->data))
-				pline("%s laughs at your feeble attempt.", Monnam(mtmp));
-			else
-				You("fail to turn %s.", the(mon_nam(mtmp)));
+            if (canseemon(mtmp))
+            {
+                if (!Deaf)
+                    pline("%s laughs at your feeble attempt.", Monnam(mtmp));
+                else
+                    You("fail to turn %s.", mon_nam(mtmp));
+            }
 		}
 	}
+    else if (is_demon(mtmp->data))
+    {
+        pline("%s no effect on %s.", Yobjnam2(otmp, "have"), mon_nam(mtmp));
+    }
+    else
+    {
+        pline("%s seems uninterested in %s.", Monnam(mtmp), yname(otmp));
+    }
 
 
 	if (wake) {

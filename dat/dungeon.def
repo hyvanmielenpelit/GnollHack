@@ -25,7 +25,6 @@ CHAINBRANCH:	"Sokoban" "oracle" + (1, 0) up
 RNDLEVEL:	"bigrm" "B" @ (10, 3) 40 10
 CHAINBRANCH:	"The Quest" "oracle" + (6, 2) portal
 BRANCH:		"Fort Ludios" @ (18, 4) portal
-BRANCH:		"Plane of the Modron" @ (12, 5) portal
 RNDLEVEL:	"medusa" "none" @ (-5, 4) 4
 LEVALIGN:	chaotic
 LEVEL:		"castle" "none" @ (-1, 0)
@@ -56,6 +55,7 @@ ALIGNMENT:	noalign
 BRANCH:		"Vlad's Tower" @ (9, 5) up
 LEVEL:		"valley" "V" @ (1, 0)
 LEVEL:		"sanctum" "none" @ (-1, 0)
+BRANCH:		"Plane of the Modron" @ (2, 1) portal
 LEVEL:		"juiblex" "J" @ (4, 4)
 LEVEL:		"baalz" "B" @ (6, 4)
 LEVEL:		"asmodeus" "A" @ (2, 6)

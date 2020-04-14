@@ -616,7 +616,8 @@ struct obj *otmp;
 		res = 1;
 		if (disguised_mimic)
             seemimic(mtmp);
-        (void) cancel_monst(mtmp, otmp, TRUE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus);
+        if(!(mtmp->data->geno & G_UNIQ) || !check_magic_resistance_and_inflict_damage(mtmp, otmp, FALSE, 0, 0, TELL))
+            (void) cancel_monst(mtmp, otmp, TRUE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus);
         break;
 	case SPE_LOWER_MAGIC_RESISTANCE:
 	case SPE_DIMINISH_MAGIC_RESISTANCE:
@@ -5376,8 +5377,11 @@ int duration;
     } 
 	else 
 	{
-		increase_mon_property(mdef, CANCELLED, duration);
+		boolean viseffect = increase_mon_property_b(mdef, CANCELLED, duration, TRUE);
 		break_charm(mdef, TRUE);
+
+        if (viseffect && obj && obj->oclass == WAND_CLASS)
+            makeknown(obj->otyp);
 
 		/* force shapeshifter into its base form */
         if (M_AP_TYPE(mdef) != M_AP_NOTHING)
