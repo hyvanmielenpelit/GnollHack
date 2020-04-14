@@ -183,7 +183,7 @@
 #define M2_MALE			0x00040000UL         /* always male */
 #define M2_FEMALE		0x00080000UL       /* always female */
 #define M2_NEUTER		0x00100000UL       /* neither male nor female */
-#define M2_PNAME		0x00200000UL        /* monster name is a proper name */
+#define M2_PROPER_NAME	0x00200000UL        /* monster name is a proper name */
 #define M2_HOSTILE		0x00400000UL      /* always starts hostile */
 #define M2_PEACEFUL		0x00800000UL     /* always starts peaceful */
 #define M2_DOMESTIC		0x01000000UL     /* can be tamed by feeding */

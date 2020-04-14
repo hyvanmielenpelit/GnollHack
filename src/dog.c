@@ -225,8 +225,11 @@ makedog()
     if (!mtmp)
         return ((struct monst *) 0); /* pets were genocided */
 
-	if (pettype == PM_LITTLE_DOG && Role_if(PM_SAMURAI))
-		mtmp->isfaithful = 1; /* Hachiko is well-known for its faithfulness -- JG */
+    if (pettype == PM_LITTLE_DOG && Role_if(PM_SAMURAI))
+    {
+        mtmp->female = FALSE;
+        mtmp->isfaithful = 1; /* Hachiko is well-known for its faithfulness -- JG */
+    }
 
 	context.startingpet_mid = mtmp->m_id;
     /* Horses and rams already wear a saddle */

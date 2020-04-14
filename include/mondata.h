@@ -95,7 +95,7 @@
 #define could_twoweap(ptr) ((ptr)->mattk[1].aatyp == AT_WEAP)
 #define cantweararm(ptr) (breakarm(ptr) || sliparm(ptr))
 #define throws_rocks(ptr) (((ptr)->mflags1 & M1_ROCKTHROW) != 0L)
-#define type_is_pname(ptr) (((ptr)->mflags2 & M2_PNAME) != 0L)
+#define is_mname_proper_name(ptr) (((ptr)->mflags2 & M2_PROPER_NAME) != 0L)
 #define is_lord(ptr) (((ptr)->mflags2 & M2_LORD) != 0L)
 #define is_prince(ptr) (((ptr)->mflags2 & M2_PRINCE) != 0L)
 #define is_ndemon(ptr) \

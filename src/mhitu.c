@@ -2074,7 +2074,7 @@ register struct obj* omonwep;
 
                 if (mtmp->data->geno & G_UNIQ)
 				{
-                    if (!type_is_pname(mtmp->data))
+                    if (!is_mname_proper_name(mtmp->data))
                         kname = the(kname);
                     kformat = KILLED_BY;
                 }

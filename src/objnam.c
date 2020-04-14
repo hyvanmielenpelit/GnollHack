@@ -664,7 +664,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
                        ? "historic "
                        : "",
                     actualn,
-                    type_is_pname(&mons[omndx])
+                    is_mname_proper_name(&mons[omndx])
                        ? ""
                        : the_unique_pm(&mons[omndx])
                           ? "the "
@@ -908,7 +908,7 @@ struct permonst *ptr;
 
     /* even though monsters with personal names are unique, we want to
        describe them as "Name" rather than "the Name" */
-    if (type_is_pname(ptr))
+    if (is_mname_proper_name(ptr))
         return FALSE;
 
     uniq = (ptr->geno & G_UNIQ) ? TRUE : FALSE;
@@ -1806,11 +1806,11 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         mname = "priest";
     } else {
         mname = mons[omndx].mname;
-        if (the_unique_pm(&mons[omndx]) || type_is_pname(&mons[omndx])) {
+        if (the_unique_pm(&mons[omndx]) || is_mname_proper_name(&mons[omndx])) {
             mname = s_suffix(mname);
             possessive = TRUE;
             /* don't precede personal name like "Medusa" with an article */
-            if (type_is_pname(&mons[omndx]))
+            if (is_mname_proper_name(&mons[omndx]))
                 no_prefix = TRUE;
             /* always precede non-personal unique monster name like
                "Oracle" with "the" unless explicitly overridden */
@@ -2119,7 +2119,7 @@ const char *str;
 
 /*
  * Prepend "the" if necessary; assumes str is a subject derived from xname.
- * Use type_is_pname() for monster names, not the().  the() is idempotent.
+ * Use is_mname_proper_name() for monster names, not the().  the() is idempotent.
  */
 char *
 the(str)

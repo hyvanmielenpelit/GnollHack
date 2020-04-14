@@ -2897,7 +2897,7 @@ do_class_genocide()
                             || Role_if(PM_SAMURAI))) {
                         boolean named, uniq;
 
-                        named = type_is_pname(&mons[i]) ? TRUE : FALSE;
+                        named = is_mname_proper_name(&mons[i]) ? TRUE : FALSE;
                         uniq = (mons[i].geno & G_UNIQ) ? TRUE : FALSE;
                         /* one special case */
                         if (i == PM_HIGH_PRIEST)
@@ -3016,7 +3016,7 @@ int how;
     } else {
         Strcpy(buf, ptr->mname); /* make sure we have standard singular */
         if ((ptr->geno & G_UNIQ) && ptr != &mons[PM_HIGH_PRIEST])
-            which = !type_is_pname(ptr) ? "the " : "";
+            which = !is_mname_proper_name(ptr) ? "the " : "";
     }
     if (how & REALLY) {
         /* setting no-corpse affects wishing and random tin generation */

@@ -4630,7 +4630,7 @@ int mndx;
        polyok() rejects, so we need a special case here */
     if (is_mplayer(mdat))
         return mdat;
-    /* polyok() rules out M2_PNAME, M2_WERE, and all humans except Kops */
+    /* polyok() rules out M2_PROPER_NAME, M2_WERE, and all humans except Kops */
     return polyok(mdat) ? mdat : 0;
 }
 

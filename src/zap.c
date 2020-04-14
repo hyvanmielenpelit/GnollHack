@@ -3237,7 +3237,7 @@ struct obj *obj, *otmp;
 							/* saw corpse but don't see monster: maybe
 							   mtmp is invisible, or has been placed at
 							   a different spot than <ox,oy> */
-							if (!type_is_pname(&mons[corpsenm]))
+							if (!is_mname_proper_name(&mons[corpsenm]))
 								corpsname = The(corpsname);
 							pline("%s disappears.", corpsname);
 						}
@@ -3248,7 +3248,7 @@ struct obj *obj, *otmp;
 						if (Role_if(PM_HEALER) && !Deaf
 							&& !is_not_living(&mons[corpsenm]))
 						{
-							if (!type_is_pname(&mons[corpsenm]))
+							if (!is_mname_proper_name(&mons[corpsenm]))
 								corpsname = an(corpsname);
 							if (!Hallucination)
 								You_hear("%s reviving.", corpsname);

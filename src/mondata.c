@@ -1062,7 +1062,7 @@ boolean override_vis; /* if True then 'no it' unless neuter */
     if (is_neuter(mtmp->data))
         return 2;
     return (humanoid(mtmp->data) || (mtmp->data->geno & G_UNIQ)
-            || type_is_pname(mtmp->data)) ? (int) mtmp->female : 2;
+            || is_mname_proper_name(mtmp->data)) ? (int) mtmp->female : 2;
 }
 
 /* used for nearby monsters when you go to another level */

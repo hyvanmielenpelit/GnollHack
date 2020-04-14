@@ -561,7 +561,7 @@ const struct Role roles[] = {
             {0, 0, 0,  0,  0, 0, 0}, /* P_MOVEMENT_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
-            {0, 0, 4, 12,  0, 0, 0}, /* P_CONJURATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
             {0, 0, 2,  8, 16, 0, 0}, /* P_NECROMANCY_SPELL */
 
             {0, 0, 0, 0, 0, 0, 0}, /* P_BARE_HANDED_COMBAT */
@@ -1043,7 +1043,7 @@ const struct Role roles[] = {
             {0, 0, 1,  7, 14, 0, 0}, /* P_TRANSMUTATION_SPELL */
             {0, 0, 1,  7, 14, 0, 0}, /* P_ENCHANTMENT_SPELL */
             {0, 0, 2,  9, 18, 0, 0}, /* P_CONJURATION_SPELL */
-            {0, 0, 2, 11,  0, 0, 0}, /* P_NECROMANCY_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_NECROMANCY_SPELL */
 
             {0, 0, 0, 0, 0, 0, 0}, /* P_BARE_HANDED_COMBAT */
             {0, 0, 0, 0, 0, 0, 0}, /* P_MARTIAL_ARTS */

@@ -752,7 +752,7 @@ nh_timeout()
 
 				if ((m_idx = name_to_mon(killer.name)) >= LOW_PM) 
 				{
-					if (type_is_pname(&mons[m_idx])) 
+					if (is_mname_proper_name(&mons[m_idx])) 
 					{
 						killer.format = KILLED_BY;
 					}

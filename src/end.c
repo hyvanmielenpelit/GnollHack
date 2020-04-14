@@ -436,7 +436,7 @@ int how;
        "killed by the high priest" alone isn't */
     if ((mptr->geno & G_UNIQ) != 0 && !(imitator && !mimicker)
         && !(mptr == &mons[PM_HIGH_PRIEST] && !mtmp->ispriest)) {
-        if (!type_is_pname(mptr))
+        if (!is_mname_proper_name(mptr))
             Strcat(buf, "the ");
         killer.format = KILLED_BY;
     }
@@ -457,7 +457,7 @@ int how;
 
         if (mimicker) {
             /* realnm is already correct because champtr==mptr;
-               set up fake mptr for type_is_pname/the_unique_pm */
+               set up fake mptr for is_mname_proper_name/the_unique_pm */
             mptr = &mons[mtmp->mappearance];
             fakenm = mptr->mname;
         } else if (alt && strstri(realnm, "vampire")
@@ -469,7 +469,7 @@ int how;
         /* for the alternate format, always suppress any article;
            pname and the_unique should also have s_suffix() applied,
            but vampires don't take on any shapes which warrant that */
-        if (alt || type_is_pname(mptr)) /* no article */
+        if (alt || is_mname_proper_name(mptr)) /* no article */
             Strcpy(shape, fakenm);
         else if (the_unique_pm(mptr)) /* "the"; don't use the() here */
             Sprintf(shape, "the %s", fakenm);
@@ -1982,7 +1982,7 @@ boolean ask;
                 }
                 if (UniqCritterIndx(i)) {
                     Sprintf(buf, "%s%s",
-                            !type_is_pname(&mons[i]) ? "the " : "",
+                            !is_mname_proper_name(&mons[i]) ? "the " : "",
                             mons[i].mname);
                     if (nkilled > 1) {
                         switch (nkilled) {

@@ -1813,7 +1813,7 @@ boolean called;
             && !program_state.gameover && mtmp != u.usteed
             && !(u.uswallow && mtmp == u.ustuck) && !(suppress & SUPPRESS_IT);
     do_saddle = !(suppress & SUPPRESS_SADDLE);
-    do_name = !(suppress & SUPPRESS_NAME) || type_is_pname(mdat);
+    do_name = !(suppress & SUPPRESS_NAME) || is_mname_proper_name(mdat);
 
     buf[0] = '\0';
 
@@ -1950,7 +1950,7 @@ boolean called;
 	else 
 	{
         Strcat(buf, pm_name);
-        name_at_start = (boolean) type_is_pname(mdat);
+        name_at_start = (boolean) is_mname_proper_name(mdat);
     }
 
 	/* Append umname if has one -- called is now obsolete */
@@ -2177,7 +2177,7 @@ char *code;
     do {
         name = rn2_on_display_rng(SPECIAL_PM + BOGUSMONSIZE - LOW_PM) + LOW_PM;
     } while (name < SPECIAL_PM
-             && (type_is_pname(&mons[name]) || (mons[name].geno & G_NOGEN)));
+             && (is_mname_proper_name(&mons[name]) || (mons[name].geno & G_NOGEN)));
 
     if (name >= SPECIAL_PM) {
         mname = bogusmon(buf, code);

@@ -565,7 +565,7 @@ char *buf, *monbuf;
 	char exbuf[BUFSIZ];
 	strcpy(exbuf, buf);
 	int article = strstri(exbuf, " of a room")? 2 :
-        (!noarticle && pm && (pm->geno & G_UNIQ)) ? (type_is_pname(pm) ? 0 : 2) : /* for unique monsters have no article if the name is a proper name, otherwise they have the */
+        (!noarticle && pm && (pm->geno & G_UNIQ)) ? (is_mname_proper_name(pm) ? 0 : 2) : /* for unique monsters have no article if the name is a proper name, otherwise they have the */
 		!(noarticle == TRUE
 			|| strcmp(exbuf, "air") == 0
 			|| strcmp(exbuf, "land") == 0

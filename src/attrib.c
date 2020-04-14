@@ -387,7 +387,7 @@ boolean thrown_weapon; /* thrown weapons are less deadly */
     i = name_to_mon(pkiller);
     if (i >= LOW_PM && (mons[i].geno & G_UNIQ)) {
         kprefix = KILLED_BY;
-        if (!type_is_pname(&mons[i]))
+        if (!is_mname_proper_name(&mons[i]))
             pkiller = the(pkiller);
     } else if (!strncmpi(pkiller, "the ", 4) || !strncmpi(pkiller, "an ", 3)
                || !strncmpi(pkiller, "a ", 2)) {
@@ -451,7 +451,7 @@ boolean lifesavedalready;
 	if (i >= LOW_PM && (mons[i].geno & G_UNIQ))
 	{
 		kprefix = KILLED_BY;
-		if (!type_is_pname(&mons[i]))
+		if (!is_mname_proper_name(&mons[i]))
 			pkiller = the(pkiller);
 	}
 	else if (!strncmpi(pkiller, "the ", 4) || !strncmpi(pkiller, "an ", 3)

@@ -527,7 +527,7 @@ int psflags;
                 pm_name = mons[mntmp].mname;
                 if (the_unique_pm(&mons[mntmp]))
                     pm_name = the(pm_name);
-                else if (!type_is_pname(&mons[mntmp]))
+                else if (!is_mname_proper_name(&mons[mntmp]))
                     pm_name = an(pm_name);
                 You_cant("polymorph into %s.", pm_name);
 			}

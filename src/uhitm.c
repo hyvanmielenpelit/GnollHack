@@ -3124,7 +3124,7 @@ register struct attack *mattk;
             char kbuf[BUFSZ];
             const char *mname = pd->mname;
 
-            if (!type_is_pname(pd))
+            if (!is_mname_proper_name(pd))
                 mname = an(mname);
             You("englut %s.", mon_nam(mdef));
             Sprintf(kbuf, "swallowing %s whole", mname);

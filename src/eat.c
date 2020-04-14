@@ -212,7 +212,7 @@ boolean the_pfx;
                               CXN_SINGULAR | (the_pfx ? CXN_PFX_THE : 0));
         /* not strictly needed since pname values are capitalized
            and the() is a no-op for them */
-        if (type_is_pname(&mons[food->corpsenm]))
+        if (is_mname_proper_name(&mons[food->corpsenm]))
             the_pfx = FALSE;
     } else {
         /* the ordinary case */
@@ -1643,7 +1643,7 @@ const char *mesg;
             what = mons[mnum].mname;
             if (the_unique_pm(&mons[mnum]))
                 which = 2;
-            else if (type_is_pname(&mons[mnum]))
+            else if (is_mname_proper_name(&mons[mnum]))
                 which = 1;
         }
         if (which == 0)
@@ -2063,7 +2063,7 @@ struct obj *otmp;
         if (!strncmpi(pmxnam, "the ", 4))
             pmxnam += 4;
         pline("%s%s %s %s%c",
-              type_is_pname(&mons[mnum])
+              is_mname_proper_name(&mons[mnum])
                  ? "" : the_unique_pm(&mons[mnum]) ? "The " : "This ",
               pmxnam,
               Hallucination ? "is" : "tastes",

@@ -334,7 +334,7 @@ int rx, ry, *resp;
             what = buf;
         } else {
             what = mptr->mname;
-            if (!type_is_pname(mptr))
+            if (!is_mname_proper_name(mptr))
                 what = The(what);
         }
         how = "fine";
