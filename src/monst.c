@@ -3714,6 +3714,7 @@ struct permonst _mons2[] = {
             | M2_COLLECT | M2_MAGIC,
         M3_INFRAVISIBLE | M3_SPEAKING, M4_NONE, 
 		21, HI_LORD),
+
 #ifdef CHARON
     MON("Charon", "Ferryman of Hades", "major daemon with a paralyzing attack", S_HUMAN, LVL(76, 18, -5, 20, 120, 0),
         (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
