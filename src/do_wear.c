@@ -2068,9 +2068,9 @@ struct monst *victim;
 
     otmph = (victim == &youmonst) ? uarmc : which_armor(victim, W_ARMC);
     if (!otmph)
+        otmph = (victim == &youmonst) ? uarmo : which_armor(victim, W_ARMO);
+    if (!otmph)
         otmph = (victim == &youmonst) ? uarm : which_armor(victim, W_ARM);
-	if (!otmph)
-		otmph = (victim == &youmonst) ? uarmo : which_armor(victim, W_ARMO);
 	if (!otmph)
         otmph = (victim == &youmonst) ? uarmu : which_armor(victim, W_ARMU);
 
@@ -2087,7 +2087,7 @@ struct monst *victim;
     if (otmp && (!otmph || !rn2(4)))
         otmph = otmp;
     otmp = (victim == &youmonst) ? uarms : which_armor(victim, W_ARMS);
-    if (otmp && (!otmph || !rn2(4)))
+    if (otmp && otmp->oclass == ARMOR_CLASS && (!otmph || !rn2(4)))
         otmph = otmp;
     return otmph;
 }

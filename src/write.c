@@ -39,7 +39,7 @@ register struct obj *otmp;
         return 10;
 	case SCR_CONFUSE_MONSTER:
         return 12;
-	case SCR_ENCHANT_RING:
+	case SCR_ENCHANT_ACCESSORY:
 	case SCR_IDENTIFY:
         return 14;
     case SCR_ENCHANT_ARMOR:

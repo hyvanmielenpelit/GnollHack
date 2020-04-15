@@ -2378,7 +2378,7 @@ SCROLL("scare monster",   "XIXAXA XOXAXA XUXAXA", None, 1,  35, 100, S1_NONE, O1
 SCROLL("remove curse",             "PRATYAVAYAH", None, 1,  65,  80, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SCROLL("enchant weapon",         "DAIYEN FOOELS", None, 1,  80,  60, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SCROLL("protect weapon",			   "ZEPH NI", None, 1,  30,  50, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-SCROLL("enchant ring",		          "REX SAPH", None, 1,  35,  60, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+SCROLL("enchant accessory",		      "REX SAPH", None, 1,  35,  60, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SCROLL("create monster",       "LEP GEX VEN ZEA", None, 1,  40, 200, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SCROLL("taming",                   "PRIRUTSENIE", None, 1,  15, 200, S1_SPELL_IS_NONREVERSIBLE_PERMANENT, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SCROLL("genocide",                  "ELBIB YLOH", None, 1,  15, 300, S1_NONE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),

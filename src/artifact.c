@@ -2536,6 +2536,7 @@ struct obj *obj;
 				pline("%s your life energy!", Tobjnam(obj, "draw"));
 				losexp("life drainage");
 			}
+			break;
 		}
 		case ARTINVOKE_BLESS_CONTENTS:
 		{
@@ -2576,7 +2577,7 @@ struct obj *obj;
 					obj->cooldownleft = 5 + rnd(5);
 				}
 			}
-
+			break;
 		}
 		case ARTINVOKE_WISHING:
 		{
@@ -2587,6 +2588,7 @@ struct obj *obj;
 			}
 			consume_obj_charge(obj, TRUE);
 			makewish();
+			break;
 		}
 		case ARTINVOKE_TIME_STOP:
 		{
@@ -2606,6 +2608,7 @@ struct obj *obj;
 					pline("%s your energy!", Tobjnam(obj, "draw"));
 				}
 			}
+			break;
 		}
 
         } /* switch */

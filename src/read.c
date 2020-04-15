@@ -874,6 +874,8 @@ boolean verbose;
 				if (obj->recharged >= 1)
 				{
 					obj->charges = 0;
+                    if(obj->recharged < 7)
+                        obj->recharged++;
                     if (verbose)
                         pline("The glow arounds %s %s.", yname(obj), obj->recharged == 1 ? "dims" : "stays dim");
 					break;
@@ -1376,6 +1378,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 		}
 		else
 			otmp = some_armor(&youmonst);
+
 	enchantarmor:
 		if (!otmp) {
 			strange_feeling(sobj, !Blind
@@ -2225,7 +2228,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
         if (otmp)
             recharge(otmp, scursed ? -1 : sblessed ? 1 : 0, TRUE);
         break;
-	case SCR_ENCHANT_RING:
+	case SCR_ENCHANT_ACCESSORY:
 		if (confused) 
 		{
 			Your("head spins.");
@@ -2235,12 +2238,93 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 		}
 		boolean rightok = uright && objects[uright->otyp].oc_enchantable;
 		boolean leftok = uleft && objects[uleft->otyp].oc_enchantable;
+        boolean misc1ok = umisc && objects[umisc->otyp].oc_enchantable;
+        boolean misc2ok = umisc2 && objects[umisc2->otyp].oc_enchantable;
+        boolean misc3ok = umisc3 && objects[umisc3->otyp].oc_enchantable;
+        boolean misc4ok = umisc4 && objects[umisc4->otyp].oc_enchantable;
+        boolean misc5ok = umisc5 && objects[umisc5->otyp].oc_enchantable;
+        boolean amuletok = uamul && objects[uamul->otyp].oc_enchantable;
 
-		otmp = rightok && leftok ? (!rn2(2) ? uright : uleft) : rightok ? uright : leftok ? uleft : (struct obj*)0;
+        int numok = rightok + leftok + misc1ok + misc2ok + misc3ok + misc4ok + misc5ok + amuletok;
+        int rndindex = numok <= 0 ? 0 : rnd(numok);
+        int cnt = 0;
+        otmp = (struct obj*)0;
+        for (int i = 1; i <= 8; i++)
+        {
+            switch (i)
+            {
+            case 1:
+                if (rightok)
+                {
+                    cnt++;
+                    otmp = uright;
+                }
+                break;
+            case 2:
+                if (leftok)
+                {
+                    cnt++;
+                    otmp = uleft;
+                }
+                break;
+            case 3:
+                if (misc1ok)
+                {
+                    cnt++;
+                    otmp = umisc;
+                }
+                break;
+            case 4:
+                if (misc2ok)
+                {
+                    cnt++;
+                    otmp = umisc2;
+                }
+                break;
+            case 5:
+                if (misc3ok)
+                {
+                    cnt++;
+                    otmp = umisc3;
+                }
+                break;
+            case 6:
+                if (misc4ok)
+                {
+                    cnt++;
+                    otmp = umisc4;
+                }
+                break;
+            case 7:
+                if (misc5ok)
+                {
+                    cnt++;
+                    otmp = umisc5;
+                }
+                break;
+            case 8:
+                if (amuletok)
+                {
+                    cnt++;
+                    otmp = uamul;
+                }
+                break;
+            }
+
+            if (cnt == rndindex)
+                break;
+        }
+		//otmp = rightok && leftok ? (!rn2(2) ? uright : uleft) : rightok ? uright : leftok ? uleft : (struct obj*)0;
 
 		if (otmp)
 		{
-			enchant_ring(otmp, scursed ? -1 : sblessed ? 1 : 0);
+            if(otmp->oclass == RING_CLASS)
+    			enchant_ring(otmp, scursed ? -1 : sblessed ? 1 : 0);
+            else
+            {
+                /* misc items and other enchantable accessories are enchanted like armors */
+                goto enchantarmor;
+            }
 		}
 		else
 			Your("%s tingle.", makeplural(body_part(FINGER)));

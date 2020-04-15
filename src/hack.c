@@ -1550,7 +1550,10 @@ domove_core()
 					}
 				}
 			}
-			else if(trap && trap->tseen && trap->ttyp != STATUE_TRAP && trap->ttyp != VIBRATING_SQUARE)
+			else if(trap && trap->tseen && trap->ttyp != STATUE_TRAP && trap->ttyp != VIBRATING_SQUARE
+                && !((is_hole(trap->ttyp) || is_pit(trap->ttyp) || trap->ttyp == BEAR_TRAP) && (Flying || Levitation) && !Sokoban)
+                && !(trap->ttyp == PIT && has_pitwalk(youmonst.data))
+                )
 			{
 				char ynqbuf[BUFSZ] = "";
 				Sprintf(ynqbuf, "There is %s. Step into it?", an(get_trap_name(trap->ttyp)));
