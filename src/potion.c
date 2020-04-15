@@ -2841,7 +2841,7 @@ struct obj *obj;
         break;
     case 1:
         verbalize("Thank you for freeing me!");
-        (void) tamedog(mtmp, (struct obj *) 0, TRUE, FALSE, 0, FALSE);
+        (void) tamedog(mtmp, (struct obj *) 0, TRUE, FALSE, 0, FALSE, FALSE);
         break;
     case 2:
         verbalize("You freed me!");

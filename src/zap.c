@@ -1843,7 +1843,7 @@ boolean replaceundead;
             }
             /* tame the revived monster if its ghost was tame */
             if (ghost->mtame && !mtmp->mtame) {
-                if (tamedog(mtmp, (struct obj *) 0, FALSE, FALSE, 0, FALSE)) {
+                if (tamedog(mtmp, (struct obj *) 0, FALSE, FALSE, 0, FALSE, FALSE)) {
                     /* ghost's edog data is ignored */
                     mtmp->mtame = ghost->mtame;
                 }
@@ -1878,7 +1878,7 @@ boolean replaceundead;
 	if (animateintomon >= 0)
 	{
 		//Animated are tamed
-		tamedog(mtmp, (struct obj*) 0, TRUE, FALSE, 0, FALSE);
+		tamedog(mtmp, (struct obj*) 0, TRUE, FALSE, 0, FALSE, FALSE);
 		mtmp->disregards_enemy_strength = TRUE;
 		mtmp->disregards_own_health = TRUE;
 	}
@@ -8776,7 +8776,7 @@ boolean faithful;
         if(!mon->isfaithful)
     		mon->isfaithful = faithful;
 
-		(void)tamedog(mon, (struct obj*) 0, TRUE, FALSE, 0, FALSE);
+		(void)tamedog(mon, (struct obj*) 0, TRUE, FALSE, 0, FALSE, FALSE);
 
 		if((objects[spl_otyp].oc_spell_dur_dice > 1 && objects[spl_otyp].oc_spell_dur_diesize > 1) || objects[spl_otyp].oc_spell_dur_plus)
 			mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_diesize) + objects[spl_otyp].oc_spell_dur_plus;
@@ -8811,7 +8811,7 @@ int spl_otyp;
 		mon->disregards_enemy_strength = TRUE;
 		mon->disregards_own_health = FALSE;
 		mon->hasbloodlust = TRUE;
-		(void)tamedog(mon, (struct obj*) 0, TRUE, FALSE, 0, FALSE);
+		(void)tamedog(mon, (struct obj*) 0, TRUE, FALSE, 0, FALSE, FALSE);
 		mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_diesize) + objects[spl_otyp].oc_spell_dur_plus;
 		begin_summontimer(mon);
 		pline("%s appears before you in a puff of smoke!", Amonnam(mon));

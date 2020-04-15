@@ -597,7 +597,7 @@ E void FDECL(mon_catchup_elapsed_time, (struct monst *, long));
 E void FDECL(keepdogs, (BOOLEAN_P));
 E void FDECL(migrate_to_level, (struct monst *, XCHAR_P, XCHAR_P, coord *));
 E int FDECL(dogfood, (struct monst *, struct obj *));
-E boolean FDECL(tamedog, (struct monst *, struct obj *, BOOLEAN_P, BOOLEAN_P, unsigned short, BOOLEAN_P));
+E boolean FDECL(tamedog, (struct monst *, struct obj *, BOOLEAN_P, BOOLEAN_P, unsigned short, BOOLEAN_P, BOOLEAN_P));
 E void FDECL(abuse_dog, (struct monst *));
 E void FDECL(wary_dog, (struct monst *, BOOLEAN_P));
 E void FDECL(break_charm, (struct monst*, BOOLEAN_P));
@@ -617,6 +617,7 @@ E void FDECL(wantdoor, (int, int, genericptr_t));
 E void FDECL(finish_meating, (struct monst *));
 E boolean FDECL(could_reach_item, (struct monst*, XCHAR_P, XCHAR_P));
 E void FDECL(m_gainstr, (struct monst*, struct obj*, int));
+E void FDECL(dog_food_after_effect, (struct monst*, struct obj*, boolean));
 
 /* ### dokick.c ### */
 

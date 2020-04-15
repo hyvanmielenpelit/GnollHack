@@ -1248,7 +1248,7 @@ struct obj *sobj;
 			}
 
 			/* tame dog verbosely */
-			if (!tamedog(mtmp, (struct obj*) 0, FALSE, charmed, duration, TRUE) || !is_tame(mtmp))
+			if (!tamedog(mtmp, (struct obj*) 0, FALSE, charmed, duration, TRUE, FALSE) || !is_tame(mtmp))
 			{
 				pline("%s is unaffected!", Monnam(mtmp));
 			}
@@ -3389,7 +3389,7 @@ struct _create_particular_data *d;
         if (d->fem != -1 && !is_male(mtmp->data) && !is_female(mtmp->data))
             mtmp->female = d->fem; /* ignored for is_neuter() */
         if (d->maketame) {
-            (void) tamedog(mtmp, (struct obj *) 0, TRUE, FALSE, 0, FALSE);
+            (void) tamedog(mtmp, (struct obj *) 0, TRUE, FALSE, 0, FALSE, FALSE);
         } else if (d->makepeaceful || d->makehostile) {
             mtmp->mtame = 0; /* sanity precaution */
             mtmp->mpeaceful = d->makepeaceful ? 1 : 0;

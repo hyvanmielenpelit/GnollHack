@@ -848,8 +848,9 @@ register struct obj *obj;
             return obj->cursed ? UNDEF : APPORT;
 
         /* a starving pet will eat almost anything */
-        starving = (mon->mtame && !mon->isminion
+        starving = (mon->mtame && mon->mextra && EDOG(mon) && !mon->isminion
                     && EDOG(mon)->mhpmax_penalty);
+
         /* even carnivores will eat carrots if they're temporarily blind */
         mblind = (is_blinded(mon) && haseyes(mon->data));
 
@@ -958,13 +959,14 @@ register struct obj *obj;
  * succeeded.
  */
 boolean
-tamedog(mtmp, obj, forcetaming, charm, duration, verbose)
+tamedog(mtmp, obj, forcetaming, charm, duration, verbose, thrown)
 register struct monst *mtmp;
 register struct obj *obj;
 boolean forcetaming;
 boolean charm;
 unsigned short duration;
 boolean verbose;
+boolean thrown;
 {
     /* The Wiz, Medusa and the quest nemeses aren't even made peaceful. */
     if (!mtmp || mtmp->iswiz || mtmp->data == &mons[PM_MEDUSA]
@@ -981,7 +983,7 @@ boolean verbose;
 		set_malign(mtmp);
 	}
 
-    if (!forcetaming && flags.moonphase == FULL_MOON && night() && rn2(6) && obj
+    if (!forcetaming && thrown && flags.moonphase == FULL_MOON && night() && rn2(6) && obj
         && mtmp->data->mlet == S_DOG)
         return FALSE;
 
@@ -1003,13 +1005,13 @@ boolean verbose;
 	{
         int tasty;
 
-        if (mon_can_move(mtmp) && !is_confused(mtmp) && !mtmp->meating
+        if (!thrown || (mon_can_move(mtmp) && !is_confused(mtmp) && !mtmp->meating
             && ((tasty = dogfood(mtmp, obj)) == DOGFOOD
                 || (tasty <= ACCFOOD
-                    && EDOG(mtmp)->hungrytime <= monstermoves))) 
+                    && EDOG(mtmp)->hungrytime <= monstermoves)))) 
 		{
             /* pet will "catch" and eat this thrown food */
-			if(verbose)
+			if(verbose && thrown)
 			{
 				if (canseemon(mtmp))
 				{
@@ -1078,6 +1080,9 @@ boolean verbose;
 	}
 
     if (obj) { /* thrown food */
+        if (!thrown)
+            pline("%s takes %s and seems to appreciate it a lot.", Monnam(mtmp), yname(obj));
+
         /* defer eating until the edog extension has been set up */
         place_object(obj, mtmp->mx, mtmp->my); /* put on floor */
         /* devour the food (might grow into larger, genocided monster) */

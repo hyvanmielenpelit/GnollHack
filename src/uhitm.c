@@ -2349,7 +2349,7 @@ demonpet()
     pm = i != NON_PM ? &mons[i] : youmonst.data;
 	if ((dtmp = makemon(pm, u.ux, u.uy, NO_MM_FLAGS)) != 0)
 	{
-		(void)tamedog(dtmp, (struct obj*) 0, TRUE, FALSE, 0, FALSE);
+		(void)tamedog(dtmp, (struct obj*) 0, TRUE, FALSE, 0, FALSE, FALSE);
 
 		dtmp->issummoned = TRUE;
 		dtmp->disregards_enemy_strength = TRUE;

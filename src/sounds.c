@@ -6,6 +6,9 @@
 
 STATIC_DCL boolean FDECL(mon_is_gecko, (struct monst *));
 STATIC_DCL int FDECL(domonnoise, (struct monst *));
+STATIC_DCL boolean NDECL(speak_check);
+STATIC_DCL boolean FDECL(m_speak_check, (struct monst*));
+STATIC_DCL boolean FDECL(m_general_talk_check, (struct monst*, char*));
 STATIC_DCL int NDECL(dochat);
 STATIC_DCL int FDECL(do_chat_whoareyou, (struct monst*));
 STATIC_DCL int FDECL(do_chat_rumors, (struct monst*));
@@ -24,7 +27,7 @@ STATIC_DCL int FDECL(do_chat_pet_dowield_ranged, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_dowield_pickaxe, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_dowield_axe, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_dounwield, (struct monst*));
-STATIC_DCL int FDECL(do_chat_pet_feed, (struct monst*));
+STATIC_DCL int FDECL(do_chat_feed, (struct monst*));
 STATIC_DCL int FDECL(do_chat_buy_items, (struct monst*));
 STATIC_DCL int FDECL(do_chat_join_party, (struct monst*));
 STATIC_DCL int FDECL(do_chat_oracle_consult, (struct monst*));
@@ -1153,6 +1156,75 @@ dotalk()
     return result;
 }
 
+STATIC_OVL boolean
+speak_check()
+{
+	if (is_silent(youmonst.data) || !can_speak_language(youmonst.data))
+	{
+		pline("As %s, you cannot speak.", an(youmonst.data->mname));
+		return 0;
+	}
+	if (Strangled)
+	{
+		You_cant("speak.  You're choking!");
+		return 0;
+	}
+	if (Silenced)
+	{
+		You_cant("speak.  Your voice is gone!");
+		return 0;
+	}
+	if (Underwater)
+	{
+		Your("speech is unintelligible underwater.");
+		return 0;
+	}
+	if (Deaf)
+	{
+		pline("How can you hold a conversation when you cannot hear?");
+		return 0;
+	}
+	return 1;
+}
+
+STATIC_OVL boolean
+m_speak_check(mtmp)
+struct monst* mtmp;
+{
+	if (is_silenced(mtmp))
+	{
+		char Mhis[BUFSIZ];
+		strcpy(Mhis, mhis(mtmp));
+		*Mhis = highc(*Mhis);
+		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), Mhis);
+		return 0;
+	}
+
+	return 1;
+}
+
+STATIC_OVL boolean
+m_general_talk_check(mtmp, nomoodstr)
+struct monst* mtmp;
+char* nomoodstr;
+{
+	if (!nomoodstr || !mtmp)
+		return 0;
+
+	if (!mtmp) 
+	{
+		There("is no one here to talk to.");
+		return 0;
+	}
+	else if (!is_peaceful(mtmp)) 
+	{
+		pline("%s is in no mood for %s.", Monnam(mtmp), nomoodstr);
+		return 0;
+	}
+
+	return 1;
+}
+
 STATIC_OVL int
 dochat()
 {
@@ -1160,36 +1232,11 @@ dochat()
     int tx, ty;
     struct obj *otmp;
 
-    if (is_silent(youmonst.data) || !can_speak_language(youmonst.data))
+	if (u.uswallow)
 	{
-        pline("As %s, you cannot speak.", an(youmonst.data->mname));
-        return 0;
-    }
-    if (Strangled) 
-	{
-        You_cant("speak.  You're choking!");
-        return 0;
-    }
-	if (Silenced) 
-	{
-		You_cant("speak.  Your voice is gone!");
+		pline("They won't hear you out there.");
 		return 0;
 	}
-	if (u.uswallow) 
-	{
-        pline("They won't hear you out there.");
-        return 0;
-    }
-    if (Underwater) 
-	{
-        Your("speech is unintelligible underwater.");
-        return 0;
-    }
-    if (Deaf) 
-	{
-        pline("How can you hold a conversation when you cannot hear?");
-        return 0;
-    }
 
     if (!getdir("Talk to whom? (in what direction)")) 
 	{
@@ -1257,6 +1304,7 @@ dochat()
 		return 0;
 	}
 
+#if 0
 	/* Non-speaking monster */
 	if (!is_speaking_monster(mtmp->data) && !is_tame(mtmp))
 	{
@@ -1277,6 +1325,7 @@ dochat()
 
 		return 0;
 	}
+#endif
 
     /* sleeping monsters won't talk, except priests (who wake up) */
     if (!mon_can_move(mtmp) && !mtmp->ispriest) {
@@ -1361,7 +1410,7 @@ dochat()
 
 	chatnum++;
 
-	if(is_speaking_monster(mtmp->data))
+	if(is_speaking_monster(mtmp->data) && is_peaceful(mtmp))
 	{
 		/* Who are you? */
 		strcpy(available_chat_list[chatnum].name, "\"Who are you?\"");
@@ -1397,7 +1446,7 @@ dochat()
 	}
 
 	/* Tame dog and cat commands */
-	if (has_edog(mtmp) && is_tame(mtmp))
+	if (has_edog(mtmp) && is_tame(mtmp) && is_peaceful(mtmp))
 	{
 		if (mtmp->data->mlet == S_DOG && !mtmp->mstaying && mtmp->mwantstomove)
 		{
@@ -1526,25 +1575,26 @@ dochat()
 			chatnum++;
 		}
 
-		if (carnivorous(mtmp->data) || herbivorous(mtmp->data))
-		{
-			Sprintf(available_chat_list[chatnum].name, "Feed %s", mon_nam(mtmp));
-			available_chat_list[chatnum].function_ptr = &do_chat_pet_feed;
-			available_chat_list[chatnum].charnum = 'a' + chatnum;
-
-			any = zeroany;
-			any.a_char = available_chat_list[chatnum].charnum;
-
-			add_menu(win, NO_GLYPH, &any,
-				any.a_char, 0, ATR_NONE,
-				available_chat_list[chatnum].name, MENU_UNSELECTED);
-
-			chatnum++;
-		}
-
 	}
 
-	if (is_tame(mtmp) && invent) /*  && !mtmp->issummoned */
+	/* This is available also for hostile creatures */
+	if ((is_domestic(mtmp->data) || mtmp->data->mlet == S_DOG || mtmp->data->mlet == S_FELINE || mtmp->data->mlet == S_YETI || mtmp->data->mlet == S_UNICORN || is_tame(mtmp)) && (carnivorous(mtmp->data) || herbivorous(mtmp->data)))
+	{
+		Sprintf(available_chat_list[chatnum].name, "Feed %s", mon_nam(mtmp));
+		available_chat_list[chatnum].function_ptr = &do_chat_feed;
+		available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+		any = zeroany;
+		any.a_char = available_chat_list[chatnum].charnum;
+
+		add_menu(win, NO_GLYPH, &any,
+			any.a_char, 0, ATR_NONE,
+			available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+		chatnum++;
+	}
+
+	if (is_tame(mtmp) && invent && is_peaceful(mtmp)) /*  && !mtmp->issummoned */
 	{
 		Sprintf(available_chat_list[chatnum].name, "Give items to %s", mon_nam(mtmp));
 		available_chat_list[chatnum].function_ptr = &do_chat_pet_giveitems;
@@ -1560,7 +1610,7 @@ dochat()
 		chatnum++;
 	}
 
-	if (is_tame(mtmp) && mtmp->minvent) /*  && !mtmp->issummoned */
+	if (is_tame(mtmp) && mtmp->minvent && is_peaceful(mtmp)) /*  && !mtmp->issummoned */
 	{
 		if(m_has_wearable_armor_or_accessory(mtmp))
 		{
@@ -1594,7 +1644,7 @@ dochat()
 		}
 	}
 
-	if (is_tame(mtmp) && mtmp->minvent && can_operate_objects(mtmp->data) && attacktype(mtmp->data, AT_WEAP)) /*  && !mtmp->issummoned */
+	if (is_tame(mtmp) && mtmp->minvent && can_operate_objects(mtmp->data) && attacktype(mtmp->data, AT_WEAP) && is_peaceful(mtmp)) /*  && !mtmp->issummoned */
 	{
 		if (select_hwep(mtmp))
 		{
@@ -2063,20 +2113,8 @@ struct monst* mtmp;
 	if (!mtmp)
 		return 0;
 
-	if (!is_peaceful(mtmp))
-	{
-		pline("%s is not in the mood for chatting.", Monnam(mtmp));
+	if (!m_general_talk_check(mtmp, "chatting") || !m_speak_check(mtmp))
 		return 0;
-	}
-
-	if (is_silenced(mtmp))
-	{
-		char Mhis[BUFSIZ];
-		strcpy(Mhis, mhis(mtmp));
-		*Mhis = highc(*Mhis);
-		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), Mhis);
-		return 0;
-	}
 
 	char ansbuf[BUFSZ];
 	int msound = mtmp->data->msound;
@@ -2207,20 +2245,8 @@ struct monst* mtmp;
 	if (!mtmp)
 		return 0;
 
-	if (!is_peaceful(mtmp))
-	{
-		pline("%s is not in the mood for chatting.", Monnam(mtmp));
+	if (!m_general_talk_check(mtmp, "giving any advice") || !m_speak_check(mtmp))
 		return 0;
-	}
-
-	if (is_silenced(mtmp))
-	{
-		char Mhis[BUFSIZ];
-		strcpy(Mhis, mhis(mtmp));
-		*Mhis = highc(*Mhis);
-		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), Mhis);
-		return 0;
-	}
 
 	if (mtmp->data->msound == MS_ORACLE || mtmp->data == &mons[PM_ORACLE])
 	{
@@ -2533,13 +2559,17 @@ struct monst* mtmp;
 		bypass_objlist(invent, FALSE); /* reset invent to normal */
 		free((genericptr_t)pick_list);
 	}
-	
+	else
+	{
+		pline("Nevermind.");
+	}
+
 	return (n_given > 0);
 }
 
 
 STATIC_OVL int
-do_chat_pet_feed(mtmp)
+do_chat_feed(mtmp)
 struct monst* mtmp;
 {
 	if (!mtmp)
@@ -2555,6 +2585,7 @@ struct monst* mtmp;
 
 	add_valid_menu_class(0); /* clear any classes already there */
 	add_valid_menu_class(FOOD_CLASS);
+	add_valid_menu_class(REAGENT_CLASS);
 
 	n = query_objlist(qbuf, &invent,
 		(USE_INVLET | INVORDER_SORT), &pick_list, PICK_ONE,
@@ -2579,16 +2610,19 @@ struct monst* mtmp;
 			if (cnt > 1)
 				cnt = 1;
 
-			int tasty = MANFOOD;
-			tasty = dogfood(mtmp, otmp);
+			int tasty = dogfood(mtmp, otmp);
+			boolean foodmakesfriendly = (!is_tame(mtmp) && befriend_with_obj(mtmp->data, otmp) && dogfood(mtmp, otmp) <= ACCFOOD);
+			boolean takesfood = (!is_tame(mtmp) && dogfood(mtmp, otmp) <= (carnivorous(mtmp->data) ? MANFOOD : ACCFOOD));
+			boolean willeat = (is_tame(mtmp) && tasty < (objects[otmp->otyp].oc_material == MAT_VEGGY ? APPORT : MANFOOD) || foodmakesfriendly || takesfood);
 
 			if (cnt < otmp->quan)
 			{
 				
 				if (welded(otmp, &youmonst)
-					|| (tasty >= (objects[otmp->otyp].oc_material == MAT_VEGGY ? APPORT : MANFOOD))
+					|| !willeat
 					|| !mon_can_move(mtmp) 
 					|| mtmp->meating
+					|| (otmp->owornmask & (W_ARMOR | W_ACCESSORY))
 					)
 				{
 					; /* don't split */
@@ -2614,15 +2648,36 @@ struct monst* mtmp;
 				else
 				{
 					You("offer %s to %s.", an(singular(otmp, cxname)), mon_nam(mtmp));
-					int releasesuccess = FALSE;
+					n_given++;
+					int releasesuccess = TRUE;
 					if (mon_can_move(mtmp) && !mtmp->meating
-						&& (tasty < (objects[otmp->otyp].oc_material == MAT_VEGGY ? APPORT : MANFOOD))
+						&& willeat
 						&& (releasesuccess = release_item_from_hero_inventory(otmp)))
 					{
-						n_given++;
 						/* dog_eat expects a floor object */
-						place_object(otmp, mtmp->mx, mtmp->my);
-						(void)dog_eat(mtmp, otmp, mtmp->mx, mtmp->my, FALSE);
+						if (foodmakesfriendly)
+							tamedog(mtmp, otmp, FALSE, FALSE, 0, TRUE, FALSE);
+						else if (is_tame(mtmp) && mtmp->mextra && EDOG(mtmp))
+						{
+							place_object(otmp, mtmp->mx, mtmp->my);
+							(void)dog_eat(mtmp, otmp, mtmp->mx, mtmp->my, FALSE);
+						}
+						else
+						{
+							place_object(otmp, mtmp->mx, mtmp->my);
+							pline("%s eats %s, but does not seem to appreciate it much.", Monnam(mtmp), the(cxname(otmp)));
+							dog_food_after_effect(mtmp, otmp, canseemon(mtmp));
+							if (otmp->unpaid)
+							{
+								/* edible item owned by shop has been thrown or kicked
+								   by hero and caught by tame or food-tameable monst */
+								long oprice = unpaid_cost(otmp, TRUE);
+								pline("That %s will cost you %ld %s.", cxname_singular(otmp), oprice,
+									currency(oprice));
+								/* delobj->obfree will handle actual shop billing update */
+							}
+							delobj(otmp);
+						}
 					}
 					else
 					{
@@ -2630,10 +2685,10 @@ struct monst* mtmp;
 							pline("%s does not seem to be able to move in order to eat %s.", Monnam(mtmp), the(singular(otmp, cxname)));
 						else if (mtmp->meating)
 							pline("%s is already eating something else.", Monnam(mtmp));
-						else if (tasty >= MANFOOD)
-							pline("%s refuses to eat %s.", Monnam(mtmp), the(singular(otmp, cxname)));
 						else if (!releasesuccess)
 							; /* Nothing here */
+						else
+							pline("%s refuses to eat %s.", Monnam(mtmp), the(singular(otmp, cxname)));
 
 					}
 				}
@@ -2641,6 +2696,10 @@ struct monst* mtmp;
 		}
 		bypass_objlist(invent, FALSE); /* reset invent to normal */
 		free((genericptr_t)pick_list);
+	}
+	else
+	{
+		pline("Nevermind.");
 	}
 
 	return (n_given > 0);
@@ -2880,12 +2939,7 @@ struct monst* mtmp;
 	umoney = money_cnt(invent);
 
 
-	if (!mtmp) {
-		There("is no one here to talk to.");
-		return 0;
-	}
-	else if (!is_peaceful(mtmp)) {
-		pline("%s is in no mood for joining.", Monnam(mtmp));
+	if (!m_general_talk_check(mtmp, "joining") || !m_speak_check(mtmp)) {
 		return 0;
 	}
 	else if (is_tame(mtmp)) {
@@ -2893,14 +2947,6 @@ struct monst* mtmp;
 			pline("%s is already in your party.", Monnam(mtmp));
 		else
 			pline("%s is already following you.", Monnam(mtmp));
-		return 0;
-	}
-	else if (is_silenced(mtmp))
-	{
-		char Mhis[BUFSIZ];
-		strcpy(Mhis, mhis(mtmp));
-		*Mhis = highc(*Mhis);
-		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), Mhis);
 		return 0;
 	}
 
@@ -2934,7 +2980,7 @@ struct monst* mtmp;
 		money2mon(mtmp, (long)u_pay);
 		context.botl = 1;
 
-		boolean success = tamedog(mtmp, (struct obj*)0, TRUE, FALSE, 0, FALSE);
+		boolean success = tamedog(mtmp, (struct obj*)0, TRUE, FALSE, 0, FALSE, FALSE);
 		if (success)
 		{
 			mtmp->ispartymember = TRUE;
@@ -2958,17 +3004,8 @@ STATIC_OVL int
 do_chat_buy_items(mtmp)
 struct monst* mtmp;
 {
-
-	if (is_silenced(mtmp))
-	{
-		char Mhis[BUFSIZ];
-		strcpy(Mhis, mhis(mtmp));
-		*Mhis = highc(*Mhis);
-
-		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), Mhis);
+	if (!m_general_talk_check(mtmp, "doing any business") || !m_speak_check(mtmp))
 		return 0;
-	}
-
 
 	int result = 0;
 	int sellable_item_count = 0;
@@ -3270,14 +3307,8 @@ STATIC_OVL int
 do_chat_oracle_consult(mtmp)
 struct monst* mtmp;
 {
-	if (is_silenced(mtmp))
-	{
-		char Mhis[BUFSIZ];
-		strcpy(Mhis, mhis(mtmp));
-		*Mhis = highc(*Mhis);
-		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), Mhis);
+	if (!m_general_talk_check(mtmp, "consulatations") || !m_speak_check(mtmp))
 		return 0;
-	}
 
 	return doconsult(mtmp);
 }
@@ -3286,15 +3317,8 @@ STATIC_OVL int
 do_chat_oracle_identify(mtmp)
 struct monst* mtmp;
 {
-	if (is_silenced(mtmp))
-	{
-		char Mhis[BUFSIZ];
-		strcpy(Mhis, mhis(mtmp));
-		*Mhis = highc(*Mhis);
-		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), Mhis);
+	if (!m_general_talk_check(mtmp, "identification") || !m_speak_check(mtmp))
 		return 0;
-	}
-
 
 	return do_oracle_identify(mtmp);
 }
@@ -3303,15 +3327,8 @@ STATIC_OVL int
 do_chat_oracle_enlightenment(mtmp)
 struct monst* mtmp;
 {
-	if (is_silenced(mtmp))
-	{
-		char Mhis[BUFSIZ];
-		strcpy(Mhis, mhis(mtmp));
-		*Mhis = highc(*Mhis);
-		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), Mhis);
+	if (!m_general_talk_check(mtmp, "providing any enlightenment") || !m_speak_check(mtmp))
 		return 0;
-	}
-
 
 	return do_oracle_enlightenment(mtmp);
 }
@@ -3329,23 +3346,8 @@ struct monst* mtmp;
 	int priest_action = 0;
 	char qbuf[QBUFSZ];
 
-	if (!mtmp) {
-		There("is no one here to talk to.");
+	if (!m_general_talk_check(mtmp, "doing any services") || !m_speak_check(mtmp))
 		return 0;
-	}
-	else if (!is_peaceful(mtmp)) 
-	{
-		pline("%s is in no mood for doing any services.", Monnam(mtmp));
-		return 0;
-	}
-	else if (is_silenced(mtmp))
-	{
-		char Mhis[BUFSIZ];
-		strcpy(Mhis, mhis(mtmp));
-		*Mhis = highc(*Mhis);
-		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), Mhis);
-		return 0;
-	}
 	else if (!umoney)
 	{
 		You("have no money.");
@@ -3418,24 +3420,8 @@ struct monst* mtmp;
 	int u_pay, extrahealing_cost = max(1, (int)(50 * service_cost_charisma_adjustment(ACURR(A_CHA))));
 	char qbuf[QBUFSZ];
 
-	if (!mtmp) 
-	{
-		There("is no one here to talk to.");
+	if (!m_general_talk_check(mtmp, "doing any services") || !m_speak_check(mtmp))
 		return 0;
-	}
-	else if (!is_peaceful(mtmp))
-	{
-		pline("%s is in no mood for doing any services.", Monnam(mtmp));
-		return 0;
-	}
-	else if (is_silenced(mtmp))
-	{
-		char Mhis[BUFSIZ];
-		strcpy(Mhis, mhis(mtmp));
-		*Mhis = highc(*Mhis);
-		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), Mhis);
-		return 0;
-	}
 	else if (!umoney)
 	{
 		You("have no money.");
@@ -3480,24 +3466,8 @@ struct monst* mtmp;
 	int u_pay, fullhealing_cost = max(1, (int)((250 + 5 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
 	char qbuf[QBUFSZ];
 
-	if (!mtmp)
-	{
-		There("is no one here to talk to.");
+	if (!m_general_talk_check(mtmp, "doing any services") || !m_speak_check(mtmp))
 		return 0;
-	}
-	else if (!is_peaceful(mtmp))
-	{
-		pline("%s is in no mood for doing any services.", Monnam(mtmp));
-		return 0;
-	}
-	else if (is_silenced(mtmp))
-	{
-		char Mhis[BUFSIZ];
-		strcpy(Mhis, mhis(mtmp));
-		*Mhis = highc(*Mhis);
-		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), Mhis);
-		return 0;
-	}
 	else if (!umoney)
 	{
 		You("have no money.");
@@ -3538,14 +3508,8 @@ STATIC_OVL int
 do_chat_priest_chat(mtmp)
 struct monst* mtmp;
 {
-	if (is_silenced(mtmp))
-	{
-		char Mhis[BUFSIZ];
-		strcpy(Mhis, mhis(mtmp));
-		*Mhis = highc(*Mhis);
-		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), Mhis);
+	if (!m_speak_check(mtmp))
 		return 0;
-	}
 
 	priest_talk(mtmp);
 	return 1;
@@ -3559,24 +3523,8 @@ struct monst* mtmp;
 	int u_pay, divination_cost = max(1, (int)(25 * service_cost_charisma_adjustment(ACURR(A_CHA))));
 	char qbuf[QBUFSZ];
 
-	if (!mtmp)
-	{
-		There("is no one here to talk to.");
+	if (!m_general_talk_check(mtmp, "doing any services") || !m_speak_check(mtmp))
 		return 0;
-	}
-	else if (!is_peaceful(mtmp))
-	{
-		pline("%s is in no mood for doing any divination.", Monnam(mtmp));
-		return 0;
-	}
-	else if (is_silenced(mtmp))
-	{
-		char Mhis[BUFSIZ];
-		strcpy(Mhis, mhis(mtmp));
-		*Mhis = highc(*Mhis);
-		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), Mhis);
-		return 0;
-	}
 	else if (!umoney)
 	{
 		You("have no money.");
@@ -3676,14 +3624,8 @@ STATIC_OVL int
 do_chat_shk_chat(mtmp)
 struct monst* mtmp;
 {
-	if (is_silenced(mtmp))
-	{
-		char Mhis[BUFSIZ];
-		strcpy(Mhis, mhis(mtmp));
-		*Mhis = highc(*Mhis);
-		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), Mhis);
+	if (!m_speak_check(mtmp))
 		return 0;
-	}
 
 	shk_chat(mtmp);
 	return 1;
@@ -3705,22 +3647,8 @@ struct monst* mtmp;
 	umoney = money_cnt(invent);
 
 
-	if (!mtmp) {
-		There("is no one here to identify items.");
+	if (!m_general_talk_check(mtmp, "doing any services") || !m_speak_check(mtmp))
 		return 0;
-	}
-	else if (!is_peaceful(mtmp)) {
-		pline("%s is in no mood for identification.", Monnam(mtmp));
-		return 0;
-	}
-	else if (is_silenced(mtmp))
-	{
-		char Mhis[BUFSIZ];
-		strcpy(Mhis, mhis(mtmp));
-		*Mhis = highc(*Mhis);
-		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), Mhis);
-		return 0;
-	}
 	else if (!umoney) {
 		You("have no money.");
 		return 0;
@@ -3810,14 +3738,8 @@ struct monst* mtmp;
 		There("is no one here to talk to.");
 		return 0;
 	}
-	else if (is_silenced(mtmp))
-	{
-		char Mhis[BUFSIZ];
-		strcpy(Mhis, mhis(mtmp));
-		*Mhis = highc(*Mhis);
-		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), Mhis);
+	else if (!m_speak_check(mtmp))
 		return 0;
-	}
 
 
 	Sprintf(qbuf, "\"You need to pay %d %s in compensation. Agree?\"", reconcile_cost, currency(reconcile_cost));
@@ -3872,14 +3794,8 @@ struct monst* mtmp;
 		There("is no one here to talk to.");
 		return 0;
 	}
-	else if (is_silenced(mtmp))
-	{
-		char Mhis[BUFSIZ];
-		strcpy(Mhis, mhis(mtmp));
-		*Mhis = highc(*Mhis);
-		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), Mhis);
+	else if (!m_speak_check(mtmp))
 		return 0;
-	}
 	else if (mvitals[PM_WATCHMAN].died > 0 || mvitals[PM_WATCH_CAPTAIN].died > 0) {
 		pline("You will hang for your crimes, scum!", Monnam(mtmp));
 		return 0;
@@ -3923,14 +3839,9 @@ STATIC_OVL int
 do_chat_quest_chat(mtmp)
 struct monst* mtmp;
 {
-	if (is_silenced(mtmp))
-	{
-		char Mhis[BUFSIZ];
-		strcpy(Mhis, mhis(mtmp));
-		*Mhis = highc(*Mhis);
-		pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), Mhis);
+	if (!m_speak_check(mtmp))
 		return 0;
-	}
+
 	quest_chat(mtmp);
 	return 1;
 }

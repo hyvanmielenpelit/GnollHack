@@ -2299,7 +2299,7 @@ boolean is_golf;
 	else if (befriend_with_obj(mon->data, obj)
                || (is_tame(mon) && dogfood(mon, obj) <= ACCFOOD)) 
 	{
-        if (tamedog(mon, obj, FALSE, FALSE, 0, TRUE)) 
+        if (tamedog(mon, obj, FALSE, FALSE, 0, TRUE, TRUE)) 
 		{
             return 1; /* obj is gone */
         } 
