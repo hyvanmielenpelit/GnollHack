@@ -754,7 +754,7 @@ int udist;
             if ((edible <= CADAVER
                  /* starving pet is more aggressive about eating */
                  || (edog->mhpmax_penalty && edible == ACCFOOD))
-                && could_reach_item(mtmp, obj->ox, obj->oy) && !shk_chastise_pet(mtmp, obj, TRUE))
+                && could_reach_item(mtmp, obj->ox, obj->oy) && !shk_chastise_pet(mtmp, obj, TRUE) && !onnopickup(obj->ox, obj->oy, mtmp))
                 return dog_eat(mtmp, obj, omx, omy, FALSE);
 
             carryamt = can_carry(mtmp, obj);
@@ -865,7 +865,8 @@ int after, udist, whappr;
 
                 /* skip completely unreachable goals */
                 if (!could_reach_item(mtmp, nx, ny)
-                    || !can_reach_location(mtmp, mtmp->mx, mtmp->my, nx, ny))
+                    || !can_reach_location(mtmp, mtmp->mx, mtmp->my, nx, ny)
+                    || onnopickup(nx, ny, mtmp))
                     continue;
 
                 /* skip always shop food and other items if chastised */
@@ -1438,7 +1439,7 @@ int after; /* this is extra fast monster movement */
 				{
                     cursemsg[i] = TRUE;
                 } 
-				else if ((foodtyp = dogfood(mtmp, obj)) < MANFOOD && 
+				else if ((foodtyp = dogfood(mtmp, obj)) < MANFOOD && !onnopickup(nx, ny, mtmp) &&
                     (!EDOG(mtmp)->chastised || (EDOG(mtmp)->chastised && !(obj->unpaid || (obj->where == OBJ_FLOOR && !obj->no_charge && costly_spot(obj->ox, obj->oy)))))
                          && (foodtyp < ACCFOOD || edog->hungrytime <= monstermoves))
 				{
@@ -1599,7 +1600,7 @@ newdogpos:
 			 * move before moving it, but it can't eat until after being
 			 * moved.  Thus the do_eat flag.
 			 */
-			if (do_eat && !shk_chastise_pet(mtmp, obj, TRUE))
+			if (do_eat && !shk_chastise_pet(mtmp, obj, TRUE) && !onnopickup(obj->ox, obj->oy, mtmp))
 			{
 				if (dog_eat(mtmp, obj, omx, omy, FALSE) == 2)
 					return 2;
