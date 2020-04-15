@@ -1807,9 +1807,15 @@ dogaze()
 							(void)destroy_mitem(mtmp, POTION_CLASS, AD_FIRE);
 						if (lev > rn2(25))
 							(void)destroy_mitem(mtmp, SPBOOK_CLASS, AD_FIRE);
+
+                        int hp_before = mtmp->mhp;
 						if (dmg)
 							deduct_monster_hp(mtmp, adjust_damage(dmg, &youmonst, mtmp, adtyp, FALSE));
-						if (DEADMONSTER(mtmp))
+                        int hp_after = mtmp->mhp;
+                        int damage_dealt = hp_before - hp_after;
+                        pline("%s sustains %d damage!", Monnam(mtmp), damage_dealt);
+
+                        if (DEADMONSTER(mtmp))
 							killed(mtmp);
 						break;
 					}

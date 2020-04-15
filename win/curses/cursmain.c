@@ -484,9 +484,16 @@ curses_add_menu(winid wid, int glyph, const ANY_P * identifier,
     curses_attr = curses_convert_attr(attr);
 
     if (inv_update) {
-        curses_add_inv(inv_update, glyph, accelerator, curses_attr, str);
-        inv_update++;
-        return;
+        int height = 0, width = 0;
+        curses_get_window_size(INV_WIN, &height, &width);
+        boolean has_border = curses_window_has_border(INV_WIN);
+        int applicable_height = height;
+        if (inv_update <= applicable_height)
+        {
+            int applied_y = inv_update - (has_border ? 0 : 1);
+            curses_add_inv(applied_y, glyph, accelerator, curses_attr, str);
+            inv_update++;
+        }
     }
 
     curses_add_nhmenu_item(wid, glyph, identifier, accelerator, group_accel,
