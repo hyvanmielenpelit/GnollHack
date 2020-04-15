@@ -2223,6 +2223,9 @@ register struct obj *obj;
 	updatemaxen();
 	updatemaxhp();
 
+    if (obj->where == OBJ_INVENT)
+        update_inventory();
+
     return;
 }
 

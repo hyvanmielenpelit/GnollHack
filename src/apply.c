@@ -3084,7 +3084,10 @@ int enchantmenttype;
 			otmp->elemental_enchantment = LIGHTNING_ENCHANTMENT;
 		else
 			otmp->elemental_enchantment = enchantmenttype;
-	}
+
+        if (otmp->where == OBJ_INVENT)
+            update_inventory();
+    }
 
 	if (carried(otmp) && objsplitted) {
 		freeinv(otmp);
@@ -4926,6 +4929,9 @@ int arrowtype, quan; //ObjID and quantity
 				bag->elemental_enchantment == COLD_ENCHANTMENT ? "freezing" :
 				bag->elemental_enchantment == LIGHTNING_ENCHANTMENT ? "electrified" :
 				bag->elemental_enchantment == DEATH_ENCHANTMENT ? "deathly" : "enchanted");
+
+            if (bag->where == OBJ_INVENT)
+                update_inventory();
 		}
 
 	}

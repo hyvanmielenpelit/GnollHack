@@ -1602,6 +1602,8 @@ boolean* obj_destroyed;
 				obj->elemental_enchantment = 0;
 				/* defer "obj is no longer enchanted" until after hit message */
 				unenchantmsg = TRUE;
+				if(obj->where == OBJ_INVENT)
+					update_inventory();
 			}
 			break;
 		case FIRE_ENCHANTMENT:
@@ -1616,6 +1618,8 @@ boolean* obj_destroyed;
 				obj->elemental_enchantment = 0;
 				/* defer "obj is no longer enchanted" until after hit message */
 				unenchantmsg = TRUE;
+				if (obj->where == OBJ_INVENT)
+					update_inventory();
 			}
 			break;
 		case LIGHTNING_ENCHANTMENT:
@@ -1631,6 +1635,8 @@ boolean* obj_destroyed;
 				obj->elemental_enchantment = 0;
 				/* defer "obj is no longer enchanted" until after hit message */
 				unenchantmsg = TRUE;
+				if (obj->where == OBJ_INVENT)
+					update_inventory();
 			}
 			break;
 		case DEATH_ENCHANTMENT:
@@ -1648,6 +1654,8 @@ boolean* obj_destroyed;
 			obj->elemental_enchantment = 0;
 			/* defer "obj is no longer enchanted" until after hit message */
 			unenchantmsg = TRUE;
+			if (obj->where == OBJ_INVENT)
+				update_inventory();
 			break;
 		default:
 			break;

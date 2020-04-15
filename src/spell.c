@@ -2110,6 +2110,7 @@ boolean atme;
 				{
 					pline("The cold energies dispel the flaming enchantment on %s.", yname(otmp));
 					otmp->elemental_enchantment = 0;
+					update_inventory();
 					break;
 				}
 
@@ -2135,6 +2136,7 @@ boolean atme;
 				{
 					pline("The fiery energies dispel the freezing enchantment on %s.", yname(otmp));
 					otmp->elemental_enchantment = 0;
+					update_inventory();
 					break;
 				}
 
@@ -2158,8 +2160,8 @@ boolean atme;
 				}
 				if (is_elemental_enchantable(otmp))
 				{
-					otmp = elemental_enchant_quan(otmp, 5, LIGHTNING_ENCHANTMENT);
 					You("enchant %s with lightning magic.", yname(otmp));
+					otmp = elemental_enchant_quan(otmp, 5, LIGHTNING_ENCHANTMENT);
 					prinv((char*)0, otmp, 0L);
 					//otmp->elemental_enchantment = LIGHTNING_ENCHANTMENT;
 				}
