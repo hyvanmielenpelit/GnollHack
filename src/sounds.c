@@ -2611,8 +2611,8 @@ struct monst* mtmp;
 				cnt = 1;
 
 			int tasty = dogfood(mtmp, otmp);
-			boolean foodmakesfriendly = (!is_tame(mtmp) && befriend_with_obj(mtmp->data, otmp) && dogfood(mtmp, otmp) <= ACCFOOD);
-			boolean takesfood = (!is_tame(mtmp) && dogfood(mtmp, otmp) <= (carnivorous(mtmp->data) ? MANFOOD : ACCFOOD));
+			boolean foodmakesfriendly = (!is_tame(mtmp) && befriend_with_obj(mtmp->data, otmp) && tasty <= ACCFOOD);
+			boolean takesfood = (!is_tame(mtmp) && tasty <= (carnivorous(mtmp->data) ? MANFOOD : ACCFOOD));
 			boolean willeat = (is_tame(mtmp) && tasty < (objects[otmp->otyp].oc_material == MAT_VEGGY ? APPORT : MANFOOD) || foodmakesfriendly || takesfood);
 
 			if (cnt < otmp->quan)
