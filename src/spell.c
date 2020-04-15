@@ -201,7 +201,7 @@ struct obj *book2;
         }
 
         for (otmp = invent; otmp; otmp = otmp->nobj) {
-            if (otmp->otyp == CANDELABRUM_OF_INVOCATION && otmp->enchantment == 7
+            if (otmp->otyp == CANDELABRUM_OF_INVOCATION && otmp->special_quality == 7
                 && otmp->lamplit) {
                 if (!otmp->cursed)
                     arti1_primed = TRUE;
