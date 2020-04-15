@@ -1167,7 +1167,7 @@ const char *verb; /* "rub",&c */
     const char *what;
     boolean more_than_1;
 
-    if (obj == uwep)
+    if (obj == uwep || (u.twoweap && obj == uarms))
         return TRUE; /* nothing to do if already wielding it */
 
     if (!verb)
@@ -1176,13 +1176,37 @@ const char *verb; /* "rub",&c */
     more_than_1 = (obj->quan > 1L || strstri(what, "pair of ") != 0
                    || strstri(what, "s of ") != 0);
 
-    if (obj->owornmask & (W_ARMOR | W_ACCESSORY)) {
+    if ((!u.twoweap && obj->owornmask & (W_ARMOR | W_ACCESSORY)) || (u.twoweap && obj->owornmask & ((W_ARMOR & ~W_ARMS) | W_ACCESSORY)))
+	{
         You_cant("%s %s while wearing %s.", verb, yname(obj),
                  more_than_1 ? "them" : "it");
         return FALSE;
     }
-    if (welded(uwep, &youmonst)) {
-        if (flags.verbose) {
+
+	boolean selected_hand_is_right = TRUE;
+	
+	if (obj == uarms || obj == uswapwep2)
+		selected_hand_is_right = FALSE;
+	else if (!uwep)
+		selected_hand_is_right = TRUE;
+	else if (bimanual(uwep))
+		selected_hand_is_right = TRUE;
+	else if (u.twoweap)
+	{
+		if (uarms && welded(uarms, &youmonst))
+			selected_hand_is_right = TRUE;
+		else if (!uarms)
+			selected_hand_is_right = FALSE;
+		else if (uwep && welded(uwep, &youmonst))
+			selected_hand_is_right = FALSE;
+	}
+
+	struct obj* wep = selected_hand_is_right ? uwep : uarms;
+
+    if (wep && welded(wep, &youmonst))
+	{
+        if (flags.verbose)
+		{
             const char *hand = body_part(HAND);
 
             if (bimanual(uwep))
@@ -1192,19 +1216,26 @@ const char *verb; /* "rub",&c */
             pline(
                "Since your weapon is welded to your %s, you cannot %s %s %s.",
                   hand, verb, more_than_1 ? "those" : "that", xname(obj));
-        } else {
+        }
+		else 
+		{
             You_cant("do that.");
         }
         return FALSE;
     }
-    if (cantwield(youmonst.data)) {
+
+    if (cantwield(youmonst.data))
+	{
         You_cant("hold %s strongly enough.", more_than_1 ? "them" : "it");
         return FALSE;
     }
+
     /* check shield */
-    if (uarms && bimanual(obj)) {
-        You("cannot %s a two-handed %s while wearing a shield.", verb,
-            (obj->oclass == WEAPON_CLASS) ? "weapon" : "tool");
+    if (uarms && bimanual(obj)) 
+	{
+        You("cannot %s a two-handed %s while %s.", verb,
+            (obj->oclass == WEAPON_CLASS) ? "weapon" : "tool", 
+			is_shield(obj) ? "wearing a shield" : is_weapon(obj) ? "wielding a weapon in the other hand" : "wielding an item in the other hand");
         return FALSE;
     }
 
@@ -1217,6 +1248,20 @@ const char *verb; /* "rub",&c */
 		if (uswapwep == obj)
 			return FALSE;
 	}
+	else if (uswapwep == obj && uwep && bimanual(uwep))
+	{
+		(void)doswapweapon();
+		/* doswapweapon might fail */
+		if (uswapwep == obj)
+			return FALSE;
+	}
+	else if (u.twoweap && uswapwep2 == obj && uwep && bimanual(uwep)) /* two-weaponing is needed for swapping, as otherwise the tool wouldn't be ready for use after the function call */
+	{
+		(void)doswapweapon();
+		/* doswapweapon might fail */
+		if (uswapwep2 == obj)
+			return FALSE;
+	}
 	else if (uswapwep == obj)
 	{
         (void) dosingleswapweapon(W_WEP);
@@ -1224,31 +1269,60 @@ const char *verb; /* "rub",&c */
         if (uswapwep == obj)
             return FALSE;
     }
-	else 
+	else if (u.twoweap && uswapwep2 == obj) /* two-weaponing is needed for swapping, as otherwise the tool wouldn't be ready for use after the function call */
 	{
-		/* unwield first if swapweapon2*/
+		(void)dosingleswapweapon(W_WEP2);
+		/* doswapweapon might fail */
+		if (uswapwep2 == obj)
+			return FALSE;
+	}
+	else
+	{
+		long wepslot = selected_hand_is_right ? W_WEP : W_WEP2;
+		long swapwepslot = selected_hand_is_right ? W_SWAPWEP : W_SWAPWEP2;
+
+		/* if not two-weaponing, unwield first if the obj is swapweapon2, so that it can be wielded normally */
 		if (uswapwep2 == obj) 
 			setuswapwep((struct obj*)0, W_SWAPWEP2);
 
-        struct obj *oldwep = uwep;
+        struct obj *oldwep = selected_hand_is_right ? uwep: uarms;
 
-        if (will_weld(obj, &youmonst)) {
+        if (will_weld(obj, &youmonst))
+		{
             /* hope none of ready_weapon()'s early returns apply here... */
-            (void) ready_weapon(obj, W_WEP);
-        } else {
-            You("now wield %s.", doname(obj));
-            setuwep(obj, W_WEP);
+            (void) ready_weapon(obj, wepslot);
+        } 
+		else 
+		{
+			char handbuf[BUFSZ];
+			strcpy(handbuf, "");
+
+			if(u.twoweap)
+				Sprintf(handbuf, "in your %s %s", selected_hand_is_right ? "right" : "left", body_part(HAND));
+
+            You("now wield %s%s.", doname(obj), handbuf);
+
+            setuwep(obj, wepslot);
         }
-        if (flags.pushweapon && oldwep && uwep != oldwep)
-            setuswapwep(oldwep, W_SWAPWEP);
+
+        if (flags.pushweapon && oldwep && wep != oldwep)
+            setuswapwep(oldwep, swapwepslot);
     }
-    if (uwep != obj)
+
+
+	/* refresh wep */
+	wep = selected_hand_is_right ? uwep : uarms;
+
+    if (wep != obj)
         return FALSE; /* rewielded old object after dying */
-    /* applying weapon or tool that gets wielded ends two-weapon combat */
+
+
+	/* applying weapon or tool that gets wielded ends two-weapon combat */
     //if (u.twoweap)
     //    untwoweapon();
     //if (obj->oclass != WEAPON_CLASS)
     //    unweapon = TRUE;
+
     return TRUE;
 }
 

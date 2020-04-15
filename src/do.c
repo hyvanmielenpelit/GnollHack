@@ -3942,29 +3942,46 @@ dodown()
                                                     : surface(u.ux, u.uy));
         return 0; /* didn't move */
     }
-    if (!stairs_down && !ladder_down) {
+
+    if (!stairs_down && !ladder_down)
+	{
         trap = t_at(u.ux, u.uy);
-        if (trap && uteetering_at_seen_pit(trap)) {
+        if (trap && uteetering_at_seen_pit(trap))
+		{
             dotrap(trap, TOOKPLUNGE);
             return 1;
-        } else if (!trap || !is_hole(trap->ttyp)
-                   || !Can_fall_thru(&u.uz) || !trap->tseen) {
-            if (flags.autodig && !context.nopick && uwep && is_pick(uwep)) {
+        } 
+		else if (!trap || !is_hole(trap->ttyp)
+                   || !Can_fall_thru(&u.uz) || !trap->tseen) 
+		{
+            
+			if (flags.autodig && !context.nopick && uwep && is_pick(uwep)) 
+			{
                 return use_pick_axe2(uwep);
-            } else {
+            }
+			else if (flags.autodig && !context.nopick && u.twoweap && uarms && is_pick(uarms))
+			{
+				return use_pick_axe2(uarms);
+			}
+			else
+			{
                 You_cant("go down here.");
                 return 0;
             }
         }
     }
-    if (u.ustuck) {
+
+    if (u.ustuck)
+	{
         You("are %s, and cannot go down.",
             !u.uswallow ? "being held" : is_animal(u.ustuck->data)
                                              ? "swallowed"
                                              : "engulfed");
         return 1;
     }
-    if (on_level(&valley_level, &u.uz) && !u.uevent.gehennom_entered) {
+
+    if (on_level(&valley_level, &u.uz) && !u.uevent.gehennom_entered)
+	{
         You("are standing at the gate to Gehennom.");
         pline("Unspeakable cruelty and harm lurk down there.");
         if (yn("Are you sure you want to enter?") != 'y')
@@ -3974,39 +3991,52 @@ dodown()
         u.uevent.gehennom_entered = 1; /* don't ask again */
     }
 
-    if (!next_to_u()) {
+    if (!next_to_u())
+	{
         You("are held back by your pet!");
         return 0;
     }
 
-    if (trap) {
+    if (trap) 
+	{
         const char *down_or_thru = trap->ttyp == HOLE ? "down" : "through";
         const char *actn = Flying ? "fly" : locomotion(youmonst.data, "jump");
 
-        if (youmonst.data->msize >= MZ_HUGE) {
+        if (youmonst.data->msize >= MZ_HUGE)
+		{
             char qbuf[QBUFSZ];
 
             You("don't fit %s easily.", down_or_thru);
             Sprintf(qbuf, "Try to squeeze %s?", down_or_thru);
-            if (yn(qbuf) == 'y') {
-                if (!rn2(3)) {
+            if (yn(qbuf) == 'y')
+			{
+                if (!rn2(3))
+				{
                     actn = "manage to squeeze";
                     losehp(adjust_damage(rnd(4), (struct monst*)0, &youmonst, AD_PHYS, FALSE),
                            "contusion from a small passage", KILLED_BY);
-                } else {
+                }
+				else
+				{
                     You("were unable to fit %s.", down_or_thru);
                     return 0;
                 }
-            } else {
+            } 
+			else 
+			{
                 return 0;
             }
         }
         You("%s %s the %s.", actn, down_or_thru,
             trap->ttyp == HOLE ? "hole" : "trap door");
     }
-    if (trap && Is_stronghold(&u.uz)) {
+
+    if (trap && Is_stronghold(&u.uz)) 
+	{
         goto_hell(FALSE, TRUE);
-    } else {
+    } 
+	else
+	{
         at_ladder = (boolean) (levl[u.ux][u.uy].typ == LADDER);
         next_level(!trap);
         at_ladder = FALSE;

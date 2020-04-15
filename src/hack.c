@@ -706,12 +706,16 @@ int mode;
     /*
      *  Check for physical obstacles.  First, the place we are going.
      */
-    if (IS_ROCK(tmpr->typ) || tmpr->typ == IRONBARS) {
+    if (IS_ROCK(tmpr->typ) || tmpr->typ == IRONBARS) 
+    {
         if (Blind && mode == DO_MOVE)
             feel_location(x, y);
-        if (Passes_walls && may_passwall(x, y)) {
+        if (Passes_walls && may_passwall(x, y))
+        {
             ; /* do nothing */
-        } else if (Underwater) {
+        } 
+        else if (Underwater)
+        {
             /* note: if water_friction() changes direction due to
                turbulence, new target destination will always be water,
                so we won't get here, hence don't need to worry about
@@ -719,29 +723,46 @@ int mode;
             if (mode == DO_MOVE)
                 pline("There is an obstacle there.");
             return FALSE;
-        } else if (tmpr->typ == IRONBARS) {
+        } 
+        else if (tmpr->typ == IRONBARS) 
+        {
             if ((dmgtype(youmonst.data, AD_RUST)
                  || dmgtype(youmonst.data, AD_CORR)) && mode == DO_MOVE
-                && still_chewing(x, y)) {
+                && still_chewing(x, y))
+            {
                 return FALSE;
             }
-            if (!(Passes_walls || passes_bars(youmonst.data))) {
+            if (!(Passes_walls || passes_bars(youmonst.data)))
+            {
                 if (mode == DO_MOVE && iflags.mention_walls)
                     You("cannot pass through the bars.");
                 return FALSE;
             }
-        } else if (tunnels(youmonst.data) && !needspick(youmonst.data)) {
+        }
+        else if (tunnels(youmonst.data) && !needspick(youmonst.data)) 
+        {
             /* Eat the rock. */
             if (mode == DO_MOVE && still_chewing(x, y))
                 return FALSE;
-        } else if (flags.autodig && !context.run && !context.nopick && uwep
-                   && is_pick(uwep)) {
+        }
+        else if (flags.autodig && !context.run && !context.nopick && uwep && is_pick(uwep))
+        {
             /* MRKR: Automatic digging when wielding the appropriate tool */
             if (mode == DO_MOVE)
                 (void) use_pick_axe2(uwep);
             return FALSE;
-        } else {
-            if (mode == DO_MOVE) {
+        }
+        else if (flags.autodig && !context.run && !context.nopick && u.twoweap && uarms && is_pick(uarms))
+        {
+            /* MRKR: Automatic digging when wielding the appropriate tool */
+            if (mode == DO_MOVE)
+                (void)use_pick_axe2(uarms);
+            return FALSE;
+        }
+        else
+        {
+            if (mode == DO_MOVE)
+            {
                 if (is_db_wall(x, y))
                     pline("That drawbridge is up!");
                 /* sokoban restriction stays even after puzzle is solved */
@@ -756,55 +777,81 @@ int mode;
             }
             return FALSE;
         }
-    } else if (IS_DOOR(tmpr->typ)) {
-        if (closed_door(x, y)) {
+    }
+    else if (IS_DOOR(tmpr->typ)) 
+    {
+        if (closed_door(x, y)) 
+        {
             if (Blind && mode == DO_MOVE)
                 feel_location(x, y);
-            if (Passes_walls) {
+            if (Passes_walls)
+            {
                 ; /* do nothing */
-            } else if (can_ooze(&youmonst)) {
+            }
+            else if (can_ooze(&youmonst)) 
+            {
                 if (mode == DO_MOVE)
                     You("ooze under the door.");
-            } else if (Underwater) {
+            }
+            else if (Underwater)
+            {
                 if (mode == DO_MOVE)
                     pline("There is an obstacle there.");
                 return FALSE;
-            } else if (tunnels(youmonst.data) && !needspick(youmonst.data)) {
+            }
+            else if (tunnels(youmonst.data) && !needspick(youmonst.data))
+            {
                 /* Eat the door. */
                 if (mode == DO_MOVE && still_chewing(x, y))
                     return FALSE;
-            } else {
-                if (mode == DO_MOVE) {
+            }
+            else
+            {
+                if (mode == DO_MOVE)
+                {
                     if (amorphous(youmonst.data))
                         You(
    "try to ooze under the door, but can't squeeze your possessions through.");
                     if (flags.autoopen && !context.run && !Confusion
-                        && !Stunned && !Fumbling) {
+                        && !Stunned && !Fumbling)
+                    {
                         context.door_opened = context.move =
                             doopen_indir(x, y);
-                    } else if (x == ux || y == uy) {
+                    }
+                    else if (x == ux || y == uy) 
+                    {
                         if (Blind || Stunned || ACURR(A_DEX) < 10
-                            || Fumbling) {
-                            if (u.usteed) {
+                            || Fumbling) 
+                        {
+                            if (u.usteed) 
+                            {
                                 You_cant("lead %s through that closed door.",
                                          y_monnam(u.usteed));
-                            } else {
+                            }
+                            else
+                            {
                                 pline("Ouch!  You bump into a door.");
                                 exercise(A_DEX, FALSE);
                             }
-                        } else
+                        } 
+                        else
                             pline("That door is closed.");
                     }
-                } else if (mode == TEST_TRAV || mode == TEST_TRAP)
+                } 
+                else if (mode == TEST_TRAV || mode == TEST_TRAP)
                     goto testdiag;
                 return FALSE;
             }
-        } else {
+        }
+        else
+        {
  testdiag:
             if (dx && dy && !Passes_walls
-                && (!doorless_door(x, y) || block_door(x, y))) {
+                && (!doorless_door(x, y) || block_door(x, y))) 
+            {
                 /* Diagonal moves into a door are not allowed. */
-                if (mode == DO_MOVE) {
+                if (mode == DO_MOVE)
+                {
                     if (Blind)
                         feel_location(x, y);
                     if (Underwater || iflags.mention_walls)
@@ -814,10 +861,13 @@ int mode;
             }
         }
     }
+
     if (dx && dy && bad_rock(youmonst.data, ux, y)
-        && bad_rock(youmonst.data, x, uy)) {
+        && bad_rock(youmonst.data, x, uy)) 
+    {
         /* Move at a diagonal. */
-        switch (cant_squeeze_thru(&youmonst)) {
+        switch (cant_squeeze_thru(&youmonst)) 
+        {
         case 3:
             if (mode == DO_MOVE)
                 You("cannot pass that way.");
@@ -833,17 +883,21 @@ int mode;
         default:
             break; /* can squeeze through */
         }
-    } else if (dx && dy && worm_cross(ux, uy, x, y)) {
+    } 
+    else if (dx && dy && worm_cross(ux, uy, x, y))
+    {
         /* consecutive long worm segments are at <ux,y> and <x,uy> */
         if (mode == DO_MOVE)
             pline("%s is in your way.", Monnam(m_at(ux, y)));
         return FALSE;
     }
+
     /* Pick travel path that does not require crossing a trap.
      * Avoid water and lava using the usual running rules.
      * (but not u.ux/u.uy because findtravelpath walks toward u.ux/u.uy) */
     if (context.run == 8 && (mode != DO_MOVE)
-        && (x != u.ux || y != u.uy)) {
+        && (x != u.ux || y != u.uy)) 
+    {
         struct trap *t = t_at(x, y);
 
         if ((t && t->tseen)
@@ -859,29 +913,37 @@ int mode;
 
     /* Now see if other things block our way . . */
     if (dx && dy && !Passes_walls && IS_DOOR(ust->typ)
-        && (!doorless_door(ux, uy) || block_entry(x, y))) {
+        && (!doorless_door(ux, uy) || block_entry(x, y))) 
+    {
         /* Can't move at a diagonal out of a doorway with door. */
         if (mode == DO_MOVE && iflags.mention_walls)
             You_cant("move diagonally out of an intact doorway.");
         return FALSE;
     }
 
-    if (sobj_at(BOULDER, x, y) && (Sokoban || !Passes_walls)) {
+    if (sobj_at(BOULDER, x, y) && (Sokoban || !Passes_walls))
+    {
         if (!(Blind || Hallucination) && (context.run >= 2)
             && mode != TEST_TRAV) {
             if (mode == DO_MOVE && iflags.mention_walls)
                 pline("A boulder blocks your path.");
             return FALSE;
         }
-        if (mode == DO_MOVE) {
+
+        if (mode == DO_MOVE)
+        {
             /* tunneling monsters will chew before pushing */
             if (tunnels(youmonst.data) && !needspick(youmonst.data)
-                && !Sokoban) {
+                && !Sokoban) 
+            {
                 if (still_chewing(x, y))
                     return FALSE;
-            } else if (moverock() < 0)
+            }
+            else if (moverock() < 0)
                 return FALSE;
-        } else if (mode == TEST_TRAV) {
+        }
+        else if (mode == TEST_TRAV)
+        {
             struct obj *obj;
 
             /* never travel through boulders in Sokoban */
@@ -889,7 +951,8 @@ int mode;
                 return FALSE;
 
             /* don't pick two boulders in a row, unless there's a way thru */
-            if (sobj_at(BOULDER, ux, uy) && !Sokoban) {
+            if (sobj_at(BOULDER, ux, uy) && !Sokoban)
+            {
                 if (!Passes_walls
                     && !(tunnels(youmonst.data) && !needspick(youmonst.data))
                     && !carrying(PICK_AXE) && !carrying(DWARVISH_MATTOCK) && !carrying(SPADE_OF_COLOSSAL_EXCAVATION)
