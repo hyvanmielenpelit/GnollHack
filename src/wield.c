@@ -1176,7 +1176,7 @@ const char *verb; /* "rub",&c */
     more_than_1 = (obj->quan > 1L || strstri(what, "pair of ") != 0
                    || strstri(what, "s of ") != 0);
 
-    if ((!u.twoweap && obj->owornmask & (W_ARMOR | W_ACCESSORY)) || (u.twoweap && obj->owornmask & ((W_ARMOR & ~W_ARMS) | W_ACCESSORY)))
+    if (obj->owornmask & ((W_ARMOR & ~W_ARMS) | W_ACCESSORY))
 	{
         You_cant("%s %s while wearing %s.", verb, yname(obj),
                  more_than_1 ? "them" : "it");
@@ -1185,7 +1185,7 @@ const char *verb; /* "rub",&c */
 
 	boolean selected_hand_is_right = TRUE;
 	
-	if (obj == uarms || obj == uswapwep2)
+	if (u.twoweap && (obj == uarms || obj == uswapwep2))
 		selected_hand_is_right = FALSE;
 	else if (!uwep)
 		selected_hand_is_right = TRUE;
@@ -1281,8 +1281,10 @@ const char *verb; /* "rub",&c */
 		long wepslot = selected_hand_is_right ? W_WEP : W_WEP2;
 		long swapwepslot = selected_hand_is_right ? W_SWAPWEP : W_SWAPWEP2;
 
-		/* if not two-weaponing, unwield first if the obj is swapweapon2, so that it can be wielded normally */
-		if (uswapwep2 == obj) 
+		/* if not two-weaponing, unwield first if the obj is uarms or swapweapon2, so that it can be wielded normally */
+		if (!u.twoweap && uarms == obj)
+			setuwep((struct obj*)0, W_WEP2);
+		else if (uswapwep2 == obj)
 			setuswapwep((struct obj*)0, W_SWAPWEP2);
 
         struct obj *oldwep = selected_hand_is_right ? uwep: uarms;
