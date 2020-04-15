@@ -632,7 +632,7 @@ register struct obj* obj;
 		strcpy(buf4, buf);
 		//Sprintf(buf, "Category:               %s", buf2);
 		if (hidemainclass)
-			strcpy(buf, buf2);
+			Sprintf(buf, "%s", buf2);
 		else
 			Sprintf(buf, "%s %s", buf2, buf4);
 	}
@@ -1334,6 +1334,14 @@ register struct obj* obj;
 			obj->elemental_enchantment == LIGHTNING_ENCHANTMENT ? "Electrified (+3d6 lightning damage)" :
 			obj->elemental_enchantment == DEATH_ENCHANTMENT ? "Deathly (kills on hit)" : "Unknown enchantment"
 		);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	/* Identification status */
+	if (obj->dknown)
+	{
+		Sprintf(buf, "Identification status:  %s", stats_known ? (not_fully_identified(obj) ? "Known" : "Fully known") : "Unidentified");
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
