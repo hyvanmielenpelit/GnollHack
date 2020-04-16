@@ -560,7 +560,11 @@ create_monster_or_encounter()
 		{
 			(void)makemon(mkclass(S_MODRON, 0), 0, 0, NO_MM_FLAGS);
 		}
-		else if (!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && (flags.wiz_alwaysenc || !rn2(ENCOUNTER_ONE_IN_CHANCE)))
+        else if (u.uz.dnum == bovine_dnum)
+        {
+            (void)makemon(&mons[!rn2(2) ? PM_HELL_BOVINE : PM_BISON], 0, 0, NO_MM_FLAGS);
+        }
+        else if (!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && (flags.wiz_alwaysenc || !rn2(ENCOUNTER_ONE_IN_CHANCE)))
 		{
 			randomize_encounter(0, 0);
 		}
@@ -623,7 +627,7 @@ maybe_create_ringwraith()
     boolean ringwraith_appeared = FALSE;
     int mdx = NON_PM;
 
-    if (!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && !(u.uz.dnum == modron_dnum) && (mdx = select_ringwraith()) >= LOW_PM)
+    if (!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && !(u.uz.dnum == modron_dnum) && !(u.uz.dnum == bovine_dnum) && (mdx = select_ringwraith()) >= LOW_PM)
     {
         /* Special ringwraith appearance if carrying the One Ring */
         struct obj* ring = carrying(RIN_SUPREME_POWER);

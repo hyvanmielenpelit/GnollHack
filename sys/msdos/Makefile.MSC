@@ -145,7 +145,7 @@ SPLEVDES = $(DAT)\Arch.des $(DAT)\Barb.des $(DAT)\bigroom.des \
 	$(DAT)\castle.des $(DAT)\Caveman.des $(DAT)\endgame.des \
 	$(DAT)\gehennom.des $(DAT)\Healer.des $(DAT)\Knight.des \
 	$(DAT)\knox.des $(DAT)\Monk.des $(DAT)\medusa.des \
-	$(DAT)\modron.des \
+	$(DAT)\modron.des $(DAT)\bovine.des \
 	$(DAT)\mines.des $(DAT)\oracle.des $(DAT)\Priest.des \
 	$(DAT)\Ranger.des $(DAT)\Rogue.des $(DAT)\Samurai.des \
 	$(DAT)\Tourist.des $(DAT)\tower.des $(DAT)\Valkyrie.des \
@@ -414,6 +414,7 @@ $(O)install.tag: 	$(DAT)\data	$(DAT)\rumors	 $(DAT)\dungeon \
 
 $(O)sp_lev.tag: $(O)utility.tag $(SPLEVDES)
 	cd $(DAT)
+	$(U)lev_comp bovine.des
 	$(U)lev_comp bigroom.des
 	$(U)lev_comp castle.des
 	$(U)lev_comp endgame.des

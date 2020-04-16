@@ -1,0 +1,122 @@
+# NetHack 3.6	Ranger.des	$NHDT-Date: 1432512783 2015/05/25 00:13:03 $  $NHDT-Branch: master $:$NHDT-Revision: 1.9 $
+#	Copyright (c) 1989 by Jean-Christophe Collet
+#	Copyright (c) 1991 by M. Stephenson
+# NetHack may be freely redistributed.  See license for details.
+#
+#
+MAZE: "bovine1",'.'
+FLAGS: noteleport,hardfloor,arboreal
+INIT_MAP:mines,'.','.',true,true,lit,false
+REPLACE_TERRAIN:(0,0,76,19),'.', 'T', 5%
+GEOMETRY:left,center
+#1234567890123456789012345678901234567890123456789012345678901234567890
+MAP
+...........................
+...........................
+...-+----------+--------...
+...|.............|.....|...
+...|.............S.....|...
+...|--S------S------...|...
+...S.....S.........|-+--...
+...|.....|.................
+...S.....S.................
+...|.....|.................
+...S.....S.........|-+--...
+...|--S------S------...|...
+...|.............S.....|...
+...-+-----------+-------...
+...........................
+...........................
+ENDMAP
+# Dungeon Description
+REGION:(00,00,26,15),lit,"ordinary"
+# Doors
+## Portal arrival point; just about anywhere on the right hand side of the map
+BRANCH:levregion(51,2,77,18),(0,0,26,15)
+# Orion
+MONSTER:('&',"Yacc"),(06,08)
+# The treasure of Yacc
+CONTAINER:('(',"chest"),not_trapped,(06,08) {
+    IF [50%] {
+      OBJECT:('/',"disintegration")
+    } ELSE {
+      OBJECT:('(',"magic lamp")
+    }
+    [50%]:OBJECT:('=',"conflict")
+    [50%]:OBJECT:('!',"gain level")
+    [50%]:OBJECT:('!',"gain ability")
+}
+# Decorations
+OBJECT: ('`', "statue"), (21,08), montype:"bison", 1
+FOUNTAIN:(14,08)
+FOUNTAIN:(06,07)
+FOUNTAIN:(06,09)
+
+# Guards for the audience chamber
+MONSTER:('H',"hell bovine"),random,hostile
+MONSTER:('H',"hell bovine"),random,hostile
+MONSTER:('H',"hell bovine"),random,hostile
+MONSTER:('H',"hell bovine"),random,hostile
+MONSTER:('H',"hell bovine"),random,hostile
+MONSTER:('H',"hell bovine"),random,hostile
+MONSTER:('H',"hell bovine"),random,hostile
+MONSTER:('H',"hell bovine"),random,hostile
+# Non diggable walls
+NON_DIGGABLE:(00,00,26,15)
+# Traps
+TRAP:"spiked pit",random
+TRAP:"spiked pit",random
+TRAP:"bear",random
+TRAP:"bear",random
+TRAP:"bear",random
+TRAP:"fire",random
+TRAP:"fire",random
+TRAP:"fire",random
+TRAP:"fire",random
+TRAP:"fire",random
+TRAP:"fire",random
+TRAP:"fire",random
+TRAP:"fire",random
+TRAP:"anti magic", random
+TRAP:"magic", random
+TRAP:"magic", random
+TRAP:"magic", random
+
+# Monsters on siege duty.
+MONSTER: ('H',"minotaur"),random,hostile
+MONSTER: ('H',"hell bovine"),random,hostile
+MONSTER: ('q',"bison"),random,hostile
+MONSTER: ('H',"hell bovine"),random,hostile
+MONSTER: ('q',"bison"),random,hostile
+MONSTER: ('H',"hell bovine"),random,hostile
+MONSTER: ('q',"bison"),random,hostile
+MONSTER: ('H',"hell bovine"),random,hostile
+MONSTER: ('q',"bison"),random,hostile
+MONSTER: ('H',"hell bovine"),random,hostile
+MONSTER: ('q',"bison"),random,hostile
+MONSTER: ('H',"hell bovine"),random,hostile
+MONSTER: ('q',"bison"),random,hostile
+MONSTER: ('H',"hell bovine"),random,hostile
+MONSTER: ('q',"bison"),random,hostile
+MONSTER: ('H',"hell bovine"),random,hostile
+MONSTER: ('q',"bison"),random,hostile
+MONSTER: ('H',"hell bovine"),random,hostile
+MONSTER: ('q',"bison"),random,hostile
+MONSTER: ('H',"hell bovine"),random,hostile
+MONSTER: ('q',"bison"),random,hostile
+MONSTER: ('H',"hell bovine"),random,hostile
+MONSTER: ('q',"bison"),random,hostile
+MONSTER: ('H',"minotaur"),random,hostile
+MONSTER: ('q',"bison"),random,hostile
+
+OBJECT:'[',random
+OBJECT:'[',random
+OBJECT:')',random
+OBJECT:')',random
+OBJECT:'*',random
+OBJECT:'!',random
+OBJECT:'!',random
+OBJECT:'?',random
+OBJECT:'?',random
+OBJECT:'?',random
+

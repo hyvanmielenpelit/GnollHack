@@ -701,11 +701,12 @@ $(O)sp_lev.tag: $(O)utility.tag $(DAT)\bigroom.des  $(DAT)\castle.des \
 	$(DAT)\medusa.des  $(DAT)\oracle.des   $(DAT)\tower.des  \
 	$(DAT)\yendor.des  $(DAT)\arch.des     $(DAT)\barb.des   \
 	$(DAT)\caveman.des $(DAT)\healer.des   $(DAT)\knight.des \
-	$(DAT)\modron.des \
+	$(DAT)\modron.des  $(DAT)\bovine.des \
 	$(DAT)\monk.des    $(DAT)\priest.des   $(DAT)\ranger.des \
 	$(DAT)\rogue.des   $(DAT)\samurai.des  $(DAT)\sokoban.des \
 	$(DAT)\tourist.des $(DAT)\valkyrie.des $(DAT)\wizard.des
 	cd $(DAT)
+	$(U)levcomp bovine.des
 	$(U)levcomp bigroom.des
 	$(U)levcomp castle.des
 	$(U)levcomp endgame.des

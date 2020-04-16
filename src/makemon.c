@@ -2554,6 +2554,17 @@ rndmonst()
 	if (u.uz.dnum == modron_dnum && (ptr = mkclass(S_MODRON, 0)) != (struct permonst*)0)
 		return ptr;
 
+    if (u.uz.dnum == bovine_dnum)
+    {
+        ptr = (struct permonst*)0;
+        if(!(mons[PM_HELL_BOVINE].geno & G_GONE))
+            ptr = &mons[PM_HELL_BOVINE];
+        
+        if (!(mons[PM_BISON].geno & G_GONE) && (!ptr || !rn2(2)))
+            ptr = &mons[PM_BISON];
+
+        return ptr;
+    }
     if (rndmonst_state.choice_count < 0) { /* need to recalculate */
         int minmlev = 0, maxmlev = 0;
         boolean elemlevel;

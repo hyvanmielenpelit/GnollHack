@@ -56,6 +56,7 @@ BRANCH:		"Vlad's Tower" @ (9, 5) up
 LEVEL:		"valley" "V" @ (1, 0)
 LEVEL:		"sanctum" "none" @ (-1, 0)
 BRANCH:		"Plane of the Modron" @ (2, 1) portal
+BRANCH:		"Hellish Pastures" @ (8, 10) portal
 LEVEL:		"juiblex" "J" @ (4, 4)
 LEVEL:		"baalz" "B" @ (6, 4)
 LEVEL:		"asmodeus" "A" @ (2, 6)
@@ -116,6 +117,14 @@ DUNGEON:	"Plane of the Modron" "M" (1, 0)
 DESCRIPTION:	mazelike
 ALIGNMENT:	unaligned
 LEVEL:		"modron1" "M" @ (-1, 0)
+
+#
+#	Hellish Pastures - Domain of Yacc
+#
+DUNGEON:	"Hellish Pastures" "B" (1, 0)
+DESCRIPTION:	mazelike
+ALIGNMENT:	chaotic
+LEVEL:		"bovine1" "B" @ (-1, 0)
 
 #
 #	Vlad's Tower

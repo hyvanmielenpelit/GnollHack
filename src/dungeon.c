@@ -698,6 +698,7 @@ struct level_map {
                   { "astral", &astral_level },
                   { "baalz", &baalzebub_level },
                   { "bigrm", &bigroom_level },
+                  { "bovine", &bovine_level },
                   { "castle", &stronghold_level },
                   { "earth", &earth_level },
                   { "fakewiz1", &portal_level },
@@ -986,6 +987,7 @@ init_dungeons()
     mines_dnum = dname_to_dnum("The Gnomish Mines");
     tower_dnum = dname_to_dnum("Vlad's Tower");
 	modron_dnum = dname_to_dnum("Plane of the Modron");
+    bovine_dnum = dname_to_dnum("Hellish Pastures");
 
     /* one special fixup for dummy surface level */
     if ((x = find_level("dummy")) != 0) {
@@ -1448,6 +1450,14 @@ In_modron_level(lev)
 d_level* lev;
 {
 	return (boolean)(lev->dnum == modron_dnum);
+}
+
+/* are you in the bovine level? */
+boolean
+In_bovine_level(lev)
+d_level* lev;
+{
+    return (boolean)(lev->dnum == bovine_dnum);
 }
 
 /*
