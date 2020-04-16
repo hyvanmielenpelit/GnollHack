@@ -885,7 +885,9 @@ gcrownu()
 
 	if (monkgauntlets)
 	{
-		obj = mksobj(GAUNTLETS_OF_BALANCE, FALSE, FALSE, FALSE);
+        class_gift = GAUNTLETS_OF_BALANCE;
+
+		obj = mksobj(class_gift, FALSE, FALSE, FALSE);
 		obj = oname(obj, artiname(ART_GAUNTLETS_OF_YIN_AND_YANG));
 		obj->enchantment = 1;
 		at_your_feet("A pair of gauntlets");
@@ -897,7 +899,9 @@ gcrownu()
 	}
     else if (Role_if(PM_WIZARD))
     {
-        obj = mksobj(GOLDEN_CHEST, FALSE, FALSE, FALSE);
+        class_gift = GOLDEN_CHEST;
+
+        obj = mksobj(class_gift, FALSE, FALSE, FALSE);
         obj->olocked = FALSE;
         obj->otrapped = FALSE;
 

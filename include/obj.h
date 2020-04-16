@@ -244,7 +244,7 @@ struct obj {
 	(objects[(otmp)->otyp].oc_multigen_type > MULTIGEN_SINGLE)
 
 #define is_poisonable(otmp) \
-    (((otmp)->oclass == WEAPON_CLASS && !is_launcher(otmp) && objects[(otmp)->otyp].oc_dir > WHACK) || objects[(otmp)->otyp].oc_flags3 & O3_POISONABLE)
+    ((is_weapon(otmp) && !is_launcher(otmp) && objects[(otmp)->otyp].oc_dir > WHACK) || objects[(otmp)->otyp].oc_flags3 & O3_POISONABLE)
 
 #define uslinging() (uwep && objects[uwep->otyp].oc_skill == P_SLING)
 /* 'is_quest_artifact()' only applies to the current role's artifact */

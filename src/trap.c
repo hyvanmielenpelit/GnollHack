@@ -3648,28 +3648,39 @@ boolean force;
     if (snuff_lit(obj))
         return ER_DAMAGED;
 
+    boolean erodeprotection = FALSE;
+
     if (!ostr)
         ostr = cxname(obj);
 
-    if (obj->otyp == CAN_OF_GREASE && obj->charges > 0) {
+    if (obj->otyp == CAN_OF_GREASE && obj->charges > 0)
+    {
         return ER_NOTHING;
-    } else if (obj->otyp == TOWEL && obj->special_quality < 7) {
+    } 
+    else if (obj->otyp == TOWEL && obj->special_quality < 7)
+    {
         wet_a_towel(obj, rnd(7), TRUE);
         return ER_NOTHING;
-    } else if (obj->greased) {
+    }
+    else if (obj->greased) 
+    {
         if (!rn2(2))
             obj->greased = 0;
         if (carried(obj))
             update_inventory();
         return ER_GREASED;
-    } else if (Is_container(obj) && !Is_box(obj)
-               && (obj->otyp != OILSKIN_SACK || (obj->cursed && !rn2(3)))) {
+    }
+    else if (Is_container(obj) && !Is_box(obj)
+        && (obj->otyp != OILSKIN_SACK || (obj->cursed && !rn2(3)))) 
+    {
         if (carried(obj))
             pline("Water gets into your %s!", ostr);
 
         water_damage_chain(obj->cobj, FALSE);
         return ER_DAMAGED; /* contents were damaged */
-    } else if (obj->otyp == OILSKIN_SACK) {
+    } 
+    else if (obj->otyp == OILSKIN_SACK)
+    {
         if (carried(obj))
             pline("Some water slides right off your %s.", ostr);
         makeknown(OILSKIN_SACK);
@@ -3678,14 +3689,18 @@ boolean force;
            thus we need to waste any potion they may have used (also,
            flavourwise the water is now on the floor) */
         return ER_DAMAGED;
-    } else if (!force && (Luck + 5) > rn2(20)) {
+    } 
+    else if (!force && (Luck + 5) > rn2(20)) 
+    {
         /*  chance per item of sustaining damage:
             *   max luck:               10%
             *   avg luck (Luck==0):     75%
             *   awful luck (Luck<-4):  100%
             */
         return ER_NOTHING;
-    } else if (obj->oclass == SCROLL_CLASS) {
+    } 
+    else if (obj->oclass == SCROLL_CLASS)
+    {
         if (obj->otyp == SCR_BLANK_PAPER
 #ifdef MAIL
             || obj->otyp == SCR_MAIL
@@ -3700,17 +3715,23 @@ boolean force;
         if (carried(obj))
             update_inventory();
         return ER_DAMAGED;
-    } else if (obj->oclass == SPBOOK_CLASS) {
-        if (obj->otyp == SPE_BOOK_OF_THE_DEAD) {
+    } 
+    else if (obj->oclass == SPBOOK_CLASS)
+    {
+        if (obj->otyp == SPE_BOOK_OF_THE_DEAD)
+        {
             pline("Steam rises from %s.", the(xname(obj)));
             return 0;
-        } else if (obj->otyp == SPE_BLANK_PAPER) {
+        }
+        else if (obj->otyp == SPE_BLANK_PAPER)
+        {
             return 0;
         }
         if (carried(obj))
             pline("Your %s %s.", ostr, vtense(ostr, "fade"));
 
-        if (obj->otyp == SPE_NOVEL) {
+        if (obj->otyp == SPE_NOVEL) 
+        {
             obj->novelidx = 0;
             free_oname(obj);
         }
@@ -3720,7 +3741,9 @@ boolean force;
         if (carried(obj))
             update_inventory();
         return ER_DAMAGED;
-    } else if (obj->oclass == POTION_CLASS) {
+    } 
+    else if (obj->oclass == POTION_CLASS)
+    {
         if (obj->otyp == POT_ACID) {
             char *bufp;
             boolean one = (obj->quan == 1L), update = carried(obj),
@@ -3757,7 +3780,9 @@ boolean force;
             if (update)
                 update_inventory();
             return ER_DESTROYED;
-        } else if (obj->odiluted) {
+        }
+        else if (obj->odiluted)
+        {
             if (carried(obj))
                 pline("Your %s %s further.", ostr, vtense(ostr, "dilute"));
 
@@ -3768,7 +3793,9 @@ boolean force;
             if (carried(obj))
                 update_inventory();
             return ER_DAMAGED;
-        } else if (obj->otyp != POT_WATER) {
+        } 
+        else if (obj->otyp != POT_WATER)
+        {
             if (carried(obj))
                 pline("Your %s %s.", ostr, vtense(ostr, "dilute"));
 
@@ -3777,8 +3804,32 @@ boolean force;
                 update_inventory();
             return ER_DAMAGED;
         }
-    } else {
-        return erode_obj(obj, ostr, ERODE_RUST, EF_NONE);
+    }
+    else 
+    {
+        if (is_poisonable(obj) && obj->opoisoned)
+        {
+            obj->opoisoned = 0;
+            pline("The poison on %s dissolves off.", yname(obj));
+        }
+        else if (is_elemental_enchantable(obj) && obj->elemental_enchantment)
+        {
+            if (obj->elemental_enchantment == FIRE_ENCHANTMENT)
+            {
+                obj->elemental_enchantment = 0;
+                pline("The flames on %s are extinguished.", yname(obj));
+            }
+            else if (obj->elemental_enchantment == LIGHTNING_ENCHANTMENT)
+            {
+                pline("The electricity on %s crackles.", yname(obj));
+            }
+            else if (obj->elemental_enchantment == COLD_ENCHANTMENT)
+            {
+                pline("An icy coating forms on %s.", yname(obj));
+                erodeprotection = TRUE;
+            }
+        }
+        return (erodeprotection ? ER_NOTHING : erode_obj(obj, ostr, ERODE_RUST, EF_NONE));
     }
     return ER_NOTHING;
 }
