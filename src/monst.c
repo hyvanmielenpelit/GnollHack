@@ -2327,7 +2327,7 @@ struct permonst _mons2[] = {
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY,
 		M4_NONE, 
 		17, CLR_ORANGE),
-    MON("hell bovine", None, "devilish antropomorphic cow", S_GIANT, LVL(12, 12, 6, 5, 50, -10), (G_GENO | G_NOGEN),
+    MON("hell bovine", None, "devilish antropomorphic cow", S_GIANT, LVL(12, 12, 6, 5, 50, -10), (G_NOGEN),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 10, 0, 0), ATTK(AT_BUTT, AD_PHYS, 2, 6, 0, 0),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1500, 700, MS_MOO, MZ_LARGE, 1, 0), STATS(18, 12, 18, 12, 3, 5),
