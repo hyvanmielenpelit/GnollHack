@@ -876,7 +876,7 @@ gcrownu()
 		in_hand2 = (uarms && uarms->oartifact == chaotic_crowning_gift_oartifact);
 		already_exists = exist_artifact(chaotic_crowning_gift_baseitem, artiname(chaotic_crowning_gift_oartifact));
         if (Role_if(PM_WIZARD))
-            verbalize("I crown thee... The Harbinger of Chaos!");
+            verbalize("I crown thee... The Glory of Arioch!");
         else
 		    verbalize("Thou art chosen to %s for My Glory!",
                 ((already_exists && !in_hand && !in_hand2) || chaotic_crowning_gift_oartifact != ART_STORMBRINGER) ? "take lives" : "steal souls");
