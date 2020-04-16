@@ -66,6 +66,7 @@ struct u_achieve {
     Bitfield(finish_sokoban, 1);  /* obtained the sokoban prize */
 
     Bitfield(killed_medusa, 1);
+    Bitfield(killed_yacc, 1);
 };
 
 struct u_realtime {

@@ -3107,6 +3107,8 @@ register struct monst *mtmp;
         nemdead();
     if (mtmp->data == &mons[PM_MEDUSA])
         u.uachieve.killed_medusa = 1;
+    if (mtmp->data == &mons[PM_YACC])
+        u.uachieve.killed_yacc = 1;
     if (glyph_is_invisible(levl[mtmp->mx][mtmp->my].glyph))
         unmap_object(mtmp->mx, mtmp->my);
     m_detach(mtmp, mptr, TRUE);

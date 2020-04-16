@@ -943,14 +943,51 @@ gcrownu()
         {
         case 1:
             randomspell = SPE_POWER_WORD_KILL;
-            if(!already_learnt_spell_type(randomspell))
+            if(already_learnt_spell_type(randomspell))
+                randomspell = SPE_BLACK_BLADE_OF_DISASTER;
+            else
                 break;
+
+            if (already_learnt_spell_type(randomspell))
+                randomspell = SPE_TIME_STOP;
+            else
+                break;
+
+            if (already_learnt_spell_type(randomspell))
+                randomspell = 0;
+
+            break;
         case 2:
             randomspell = SPE_BLACK_BLADE_OF_DISASTER;
-            if (!already_learnt_spell_type(randomspell))
+            if (already_learnt_spell_type(randomspell))
+                randomspell = SPE_TIME_STOP;
+            else
                 break;
+
+            if (already_learnt_spell_type(randomspell))
+                randomspell = SPE_POWER_WORD_KILL;
+            else
+                break;
+
+            if (already_learnt_spell_type(randomspell))
+                randomspell = 0;
+
+            break;
         case 3:
             randomspell = SPE_TIME_STOP;
+            if (already_learnt_spell_type(randomspell))
+                randomspell = SPE_BLACK_BLADE_OF_DISASTER;
+            else
+                break;
+
+            if (already_learnt_spell_type(randomspell))
+                randomspell = SPE_POWER_WORD_KILL;
+            else
+                break;
+
+            if (already_learnt_spell_type(randomspell))
+                randomspell = 0;
+
             break;
         default:
             break;

@@ -463,6 +463,8 @@ encodeachieve()
         r |= 1L << 12;
     if (u.uroleplay.nudist)
         r |= 1L << 13;
+    if (u.uachieve.killed_yacc)
+        r |= 1L << 14;
 
     return r;
 }
