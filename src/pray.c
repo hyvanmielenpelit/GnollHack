@@ -875,8 +875,11 @@ gcrownu()
 		in_hand = (uwep && uwep->oartifact == chaotic_crowning_gift_oartifact);
 		in_hand2 = (uarms && uarms->oartifact == chaotic_crowning_gift_oartifact);
 		already_exists = exist_artifact(chaotic_crowning_gift_baseitem, artiname(chaotic_crowning_gift_oartifact));
-		verbalize("Thou art chosen to %s for My Glory!",
-					((already_exists && !in_hand && !in_hand2) || chaotic_crowning_gift_oartifact != ART_STORMBRINGER) ? "take lives" : "steal souls");
+        if (Role_if(PM_WIZARD))
+            verbalize("I crown thee... The Harbinger of Chaos!");
+        else
+		    verbalize("Thou art chosen to %s for My Glory!",
+                ((already_exists && !in_hand && !in_hand2) || chaotic_crowning_gift_oartifact != ART_STORMBRINGER) ? "take lives" : "steal souls");
 		break;
 	}
 
@@ -892,6 +895,73 @@ gcrownu()
 		if (obj && obj->oartifact == ART_GAUNTLETS_OF_YIN_AND_YANG)
 			discover_artifact(ART_GAUNTLETS_OF_YIN_AND_YANG);
 	}
+    else if (Role_if(PM_WIZARD))
+    {
+        obj = mksobj(GOLDEN_CHEST, FALSE, FALSE, FALSE);
+        obj->olocked = FALSE;
+        obj->otrapped = FALSE;
+
+        /* Contents */
+        struct obj* otmp = (struct obj*)0;
+
+        otmp = mksobj(ROBE_OF_THE_ARCHMAGI, FALSE, FALSE, FALSE);
+        bless(otmp);
+        otmp->enchantment = 1 + rnd(3);
+        otmp->oerodeproof = 1;
+        (void)add_to_container(obj, otmp);
+
+        otmp = mksobj(STAFF_OF_THE_MAGI, FALSE, FALSE, FALSE);
+        bless(otmp);
+        otmp->enchantment = 1 + rnd(3);
+        otmp->oerodeproof = 1;
+        (void)add_to_container(obj, otmp);
+
+        otmp = mksobj(MAGIC_MARKER, TRUE, FALSE, TRUE);
+        bless(otmp);
+        (void)add_to_container(obj, otmp);
+
+        if (!already_learnt_spell_type(SPE_GREATER_MAGIC_MISSILE))
+        {
+            otmp = mksobj(SPE_GREATER_MAGIC_MISSILE, TRUE, FALSE, TRUE);
+            bless(otmp);
+            (void)add_to_container(obj, otmp);
+        }
+
+        if (!already_learnt_spell_type(SPE_WISH))
+        {
+            otmp = mksobj(SPE_WISH, TRUE, FALSE, TRUE);
+            bless(otmp);
+            (void)add_to_container(obj, otmp);
+        }
+
+        int randomspell = 0;
+        switch (rnd(3))
+        {
+        case 1:
+            randomspell = SPE_POWER_WORD_KILL;
+            if(!already_learnt_spell_type(randomspell))
+                break;
+        case 2:
+            randomspell = SPE_BLACK_BLADE_OF_DISASTER;
+            if (!already_learnt_spell_type(randomspell))
+                break;
+        case 3:
+            randomspell = SPE_TIME_STOP;
+            break;
+        default:
+            break;
+        }
+        if (randomspell && !already_learnt_spell_type(randomspell))
+        {
+            otmp = mksobj(randomspell, TRUE, FALSE, TRUE);
+            bless(otmp);
+            (void)add_to_container(obj, otmp);
+        }
+
+        at_your_feet("A golden chest");
+        dropy(obj);
+        u.ugifts++;
+    }
 	else
 	{
 		class_gift = STRANGE_OBJECT;
@@ -902,10 +972,10 @@ gcrownu()
 						  && uwep->oartifact != chaotic_crowning_gift_oartifact))
 			&& (!uarms || (uarms->oartifact != ART_VORPAL_BLADE
 				&& uarms->oartifact != chaotic_crowning_gift_oartifact))
-			&& !carrying(SPE_FINGER_OF_DEATH)
-			&& !already_learnt_spell_type(SPE_FINGER_OF_DEATH)
+			&& !carrying(SPE_POWER_WORD_KILL)
+			&& !already_learnt_spell_type(SPE_POWER_WORD_KILL)
 			) {
-			class_gift = SPE_FINGER_OF_DEATH;
+			class_gift = SPE_POWER_WORD_KILL;
 		make_splbk:
 			obj = mksobj(class_gift, TRUE, FALSE, FALSE);
 			bless(obj);
