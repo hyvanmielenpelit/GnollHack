@@ -984,7 +984,9 @@ boolean makingboxcontents;
 				}
 				else
 				{
-					otmp->elemental_enchantment = (objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED) ? LIGHTNING_ENCHANTMENT : rnd(3);
+					otmp->elemental_enchantment = (objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED) ? LIGHTNING_ENCHANTMENT :
+                        level_difficulty() > 11 ? (!rn2(7) ? COLD_ENCHANTMENT : !rn2(3) ? LIGHTNING_ENCHANTMENT  : FIRE_ENCHANTMENT) :
+                        (!rn2(3) ? LIGHTNING_ENCHANTMENT : FIRE_ENCHANTMENT);
                     if (is_multigen(otmp))
 					{
                         otmp->quan = (otmp->quan + 1) / 2;
