@@ -544,7 +544,7 @@ static const struct def_skill Skill_Monk_Init[] = {
 };
 
 
-static const struct def_skill Skill_P_Max[] = {
+static const struct def_skill Skill_P_Max_Chaotic[] = {
     { P_BLUDGEONING_WEAPON, P_EXPERT },
     { P_FLAIL, P_EXPERT },
     { P_QUARTERSTAFF, P_EXPERT },
@@ -563,6 +563,45 @@ static const struct def_skill Skill_P_Max[] = {
 	{ P_WAND, P_BASIC },
 	{ P_NONE, 0 }
 };
+static const struct def_skill Skill_P_Max_Neutral[] = {
+	{ P_BLUDGEONING_WEAPON, P_EXPERT },
+	{ P_FLAIL, P_EXPERT },
+	{ P_QUARTERSTAFF, P_EXPERT },
+	{ P_POLEARM, P_SKILLED },
+	{ P_SPEAR, P_SKILLED },
+	{ P_BOW, P_BASIC },
+	{ P_SLING, P_BASIC },
+	{ P_CROSSBOW, P_BASIC },
+	{ P_THROWN_WEAPON, P_BASIC },
+	{ P_HEALING_SPELL, P_EXPERT },
+	{ P_DIVINATION_SPELL, P_EXPERT },
+	{ P_CLERIC_SPELL, P_EXPERT },
+	{ P_ABJURATION_SPELL, P_EXPERT },
+	{ P_NATURE_SPELL, P_EXPERT },
+	{ P_BARE_HANDED_COMBAT, P_BASIC },
+	{ P_WAND, P_BASIC },
+	{ P_NONE, 0 }
+};
+
+static const struct def_skill Skill_P_Max_Lawful[] = {
+	{ P_BLUDGEONING_WEAPON, P_EXPERT },
+	{ P_FLAIL, P_EXPERT },
+	{ P_QUARTERSTAFF, P_EXPERT },
+	{ P_POLEARM, P_SKILLED },
+	{ P_SPEAR, P_SKILLED },
+	{ P_BOW, P_BASIC },
+	{ P_SLING, P_BASIC },
+	{ P_CROSSBOW, P_BASIC },
+	{ P_THROWN_WEAPON, P_BASIC },
+	{ P_HEALING_SPELL, P_EXPERT },
+	{ P_DIVINATION_SPELL, P_EXPERT },
+	{ P_CLERIC_SPELL, P_EXPERT },
+	{ P_ABJURATION_SPELL, P_EXPERT },
+	{ P_CELESTIAL_SPELL, P_EXPERT },
+	{ P_BARE_HANDED_COMBAT, P_BASIC },
+	{ P_WAND, P_BASIC },
+	{ P_NONE, 0 }
+};
 
 static const struct def_skill Skill_P_Init_Chaotic[] = {
 	{ P_BLUDGEONING_WEAPON, P_BASIC },
@@ -571,15 +610,20 @@ static const struct def_skill Skill_P_Init_Chaotic[] = {
 	{ P_HEALING_SPELL, P_BASIC },
 	{ P_NONE, 0 }
 };
-static const struct def_skill Skill_P_Init_NonChaotic[] = {
+static const struct def_skill Skill_P_Init_Neutral[] = {
 	{ P_BLUDGEONING_WEAPON, P_BASIC },
-	{ P_FLAIL, P_BASIC },
-	{ P_HEALING_SPELL, P_BASIC },
 	{ P_CLERIC_SPELL, P_BASIC },
-	{ P_ABJURATION_SPELL, P_BASIC },
+	{ P_NATURE_SPELL, P_BASIC },
+	{ P_HEALING_SPELL, P_BASIC },
 	{ P_NONE, 0 }
 };
-
+static const struct def_skill Skill_P_Init_Lawful[] = {
+	{ P_BLUDGEONING_WEAPON, P_BASIC },
+	{ P_CLERIC_SPELL, P_BASIC },
+	{ P_CELESTIAL_SPELL, P_BASIC },
+	{ P_HEALING_SPELL, P_BASIC },
+	{ P_NONE, 0 }
+};
 
 static const struct def_skill Skill_Rogue_Max[] = {
     { P_DAGGER, P_EXPERT },
@@ -628,7 +672,8 @@ static const struct def_skill Skill_Ranger_Max[] = {
     { P_DIVINATION_SPELL, P_EXPERT },
     { P_MOVEMENT_SPELL, P_BASIC },
 	{ P_ABJURATION_SPELL, P_BASIC },
-	{ P_CONJURATION_SPELL, P_EXPERT },
+	{ P_CONJURATION_SPELL, P_SKILLED },
+	{ P_NATURE_SPELL, P_EXPERT },
 	{ P_RIDING, P_BASIC },
     { P_BARE_HANDED_COMBAT, P_BASIC },
 	{ P_DISARM_TRAP, P_EXPERT },
@@ -640,7 +685,7 @@ static const struct def_skill Skill_Ranger_Init[] = {
 	{ P_BOW, P_BASIC },
 	{ P_CROSSBOW, P_BASIC },
 	{ P_DISARM_TRAP, P_BASIC },
-	{ P_CONJURATION_SPELL, P_BASIC },
+	{ P_NATURE_SPELL, P_BASIC },
 	{ P_NONE, 0 }
 };
 
@@ -693,7 +738,7 @@ static const struct def_skill Skill_T_Max[] = {
     { P_ENCHANTMENT_SPELL, P_BASIC },
 	{ P_HEALING_SPELL, P_BASIC },
 	{ P_MOVEMENT_SPELL, P_EXPERT },
-	{ P_NECROMANCY_SPELL, P_BASIC },
+	{ P_NATURE_SPELL, P_BASIC },
 	{ P_TRANSMUTATION_SPELL, P_BASIC },
 	{ P_RIDING, P_BASIC },
     { P_TWO_WEAPON_COMBAT, P_SKILLED },
@@ -1288,9 +1333,13 @@ u_skills_init()
 		break;
 	case PM_PRIEST:
 		if (u.ualign.type == A_CHAOTIC)
-			skill_init(Skill_P_Init_Chaotic, Skill_P_Max);
+			skill_init(Skill_P_Init_Chaotic, Skill_P_Max_Chaotic);
+		else if (u.ualign.type == A_NEUTRAL)
+			skill_init(Skill_P_Init_Neutral, Skill_P_Max_Neutral);
+		else if (u.ualign.type == A_LAWFUL)
+			skill_init(Skill_P_Init_Lawful, Skill_P_Max_Lawful);
 		else
-			skill_init(Skill_P_Init_NonChaotic, Skill_P_Max);
+			skill_init(Skill_P_Init_Neutral, Skill_P_Max_Neutral);
 		break;
 	case PM_RANGER:
 		skill_init(Skill_Ranger_Init, Skill_Ranger_Max);
@@ -1402,7 +1451,7 @@ int otyp;
         skills = Skill_Monk_Max;
         break;
     case PM_PRIEST:
-        skills = Skill_P_Max;
+        skills = u.ualign.type == A_CHAOTIC ? Skill_P_Max_Chaotic : u.ualign.type == A_LAWFUL ? Skill_P_Max_Lawful : Skill_P_Max_Neutral;
         break;
     case PM_RANGER:
         skills = Skill_Ranger_Max;

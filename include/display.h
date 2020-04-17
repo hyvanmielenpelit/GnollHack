@@ -60,7 +60,7 @@
 		|| (Gnome_warning && mon->data->mflags2 & M2_GNOME) \
 		|| (Human_warning && mon->data->mflags2 & M2_HUMAN) \
 		|| (Lycanthrope_warning && mon->data->mflags2 & M2_WERE) \
-		|| (Angel_warning && mon->data->mlet == S_ANGEL) \
+		|| (Angel_warning && mon->data->mflags2 & M2_ANGEL) \
 		|| (Ogre_warning && mon->data->mlet == S_OGRE) \
 	) && !is_peaceful((mon)) && (distu((mon)->mx, (mon)->my) < 100))
 

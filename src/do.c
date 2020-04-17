@@ -2060,6 +2060,20 @@ register struct obj* obj;
 						txt = buf;
 						putstr(datawin, 0, txt);
 					}
+					if (objects[otyp].oc_target_permissions & M2_ANGEL)
+					{
+						powercnt++;
+						Sprintf(buf, " %2d - Angels", powercnt);
+						txt = buf;
+						putstr(datawin, 0, txt);
+					}
+					if (objects[otyp].oc_target_permissions & M2_MIND_FLAYER)
+					{
+						powercnt++;
+						Sprintf(buf, " %2d - Mind flayers", powercnt);
+						txt = buf;
+						putstr(datawin, 0, txt);
+					}
 					if (objects[otyp].oc_target_permissions & M2_DWARF)
 					{
 						powercnt++;
@@ -2535,6 +2549,7 @@ register struct obj* obj;
 				((aflags & AF_DFLAG2) && mtype & M2_ORC) ? "orcs" : 
 				((aflags & AF_DFLAG2) && mtype & M2_ELF) ? "elves" :
 				((aflags & AF_DFLAG2) && mtype & M2_DEMON) ? "demons" :
+				((aflags & AF_DFLAG2) && mtype & M2_ANGEL) ? "angels" :
 				((aflags & AF_DFLAG2) && mtype & M2_UNDEAD) ? "undead" :
 				((aflags & AF_DFLAG2) && mtype & M2_GIANT) ? "giants" :
 				((aflags & AF_DFLAG2) && mtype & M2_WERE) ? "lycanthropes" :
@@ -2552,6 +2567,7 @@ register struct obj* obj;
 				((aflags & AF_DFLAG2) && mtype & M2_ORC) ? "orcs" :
 				((aflags & AF_DFLAG2) && mtype & M2_ELF) ? "elves" :
 				((aflags & AF_DFLAG2) && mtype & M2_DEMON) ? "demons" :
+				((aflags & AF_DFLAG2) && mtype & M2_ANGEL) ? "angels" :
 				((aflags & AF_DFLAG2) && mtype & M2_UNDEAD) ? "undead" :
 				((aflags & AF_DFLAG2) && mtype & M2_GIANT) ? "giants" :
 				((aflags & AF_DFLAG2) && mtype & M2_WERE) ? "lycanthropes" :
@@ -2646,6 +2662,7 @@ register struct obj* obj;
 					: (context.warntype.obj & M2_ELF) ? "elves"
 					: (context.warntype.obj & M2_WERE) ? "lycanthropes"
 					: (context.warntype.obj & M2_GIANT) ? "giants"
+					: (context.warntype.obj & M2_ANGEL) ? "angels"
 					: (context.warntype.obj & M2_DEMON) ? "demons" : something, endbuf);
 				txt = buf;
 				putstr(datawin, 0, txt);
@@ -2794,6 +2811,10 @@ register struct obj* obj;
 					strcpy(endbuf, "dwarves");
 				else if (artilist[obj->oartifact].mtype == M2_DEMON)
 					strcpy(endbuf, "demons");
+				else if (artilist[obj->oartifact].mtype == M2_ANGEL)
+					strcpy(endbuf, "angels");
+				else if (artilist[obj->oartifact].mtype == M2_MIND_FLAYER)
+					strcpy(endbuf, "mind flayers");
 				else if (artilist[obj->oartifact].mtype == M2_ELF)
 					strcpy(endbuf, "elves");
 				else if (artilist[obj->oartifact].mtype == M2_GIANT)

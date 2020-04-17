@@ -34,13 +34,15 @@ STATIC_DCL void FDECL(skill_advance, (int));
 #define PN_TRANSMUTATION_SPELL (-14)
 #define PN_ENCHANTMENT_SPELL (-15)
 #define PN_CONJURATION_SPELL (-16)
-#define PN_NECROMANCY_SPELL (-17)
-#define PN_DISARM_TRAP (-18)
-#define PN_SWORD (-19)
-#define PN_BLUDGEONING_WEAPON (-20)
-#define PN_THROWN_WEAPON (-21)
-#define PN_MARTIAL_ARTS (-22)
-#define PN_WANDS (-23)
+#define PN_CELESTIAL_SPELL (-17)
+#define PN_NATURE_SPELL (-18)
+#define PN_NECROMANCY_SPELL (-19)
+#define PN_DISARM_TRAP (-20)
+#define PN_SWORD (-21)
+#define PN_BLUDGEONING_WEAPON (-22)
+#define PN_THROWN_WEAPON (-23)
+#define PN_MARTIAL_ARTS (-24)
+#define PN_WANDS (-25)
 
 
 STATIC_VAR NEARDATA const short skill_names_indices[P_NUM_SKILLS] = {
@@ -48,7 +50,8 @@ STATIC_VAR NEARDATA const short skill_names_indices[P_NUM_SKILLS] = {
     QUARTERSTAFF, PN_POLEARM, SPEAR, BOW, SLING,
     CROSSBOW, PN_THROWN_WEAPON, PN_WHIP,
     PN_ARCANE_SPELL, PN_CLERIC_SPELL, PN_HEALING_SPELL, PN_DIVINATION_SPELL,
-    PN_ABJURATION_SPELL, PN_MOVEMENT_SPELL, PN_TRANSMUTATION_SPELL, PN_ENCHANTMENT_SPELL, PN_CONJURATION_SPELL, PN_NECROMANCY_SPELL,
+    PN_ABJURATION_SPELL, PN_MOVEMENT_SPELL, PN_TRANSMUTATION_SPELL, PN_ENCHANTMENT_SPELL, PN_CONJURATION_SPELL,
+    PN_CELESTIAL_SPELL, PN_NATURE_SPELL, PN_NECROMANCY_SPELL,
     PN_BARE_HANDED, PN_MARTIAL_ARTS, PN_TWO_WEAPONS, PN_WANDS, PN_RIDING, PN_DISARM_TRAP
 };
 
@@ -57,7 +60,8 @@ STATIC_VAR NEARDATA const char *const odd_skill_names[] = {
     "no skill", "bare handed combat", /* use barehands_or_martial[] instead */
     "two weapon combat", "riding", "polearm", "saber", "hammer", "whip",
     "arcane spell", "clerical spell", "healing spell", "divination spell", "abjuration spell",
-	"movement spell", "transmutation spell", "enchantment spell", "conjuration spell", "necromancy spell", "disarm trap", "sword",
+	"movement spell", "transmutation spell", "enchantment spell", "conjuration spell", 
+    "celestial spell", "nature spell", "necromancy spell", "disarm trap", "sword",
 	"bludgeoning weapon", "thrown weapon", "martial arts", "wand",
 };
 
@@ -65,7 +69,8 @@ STATIC_VAR NEARDATA const char* const odd_skill_names_plural[] = {
 	"no skill", "bare handed combat", /* use barehands_or_martial[] instead */
 	"two weapon combat", "riding", "polearms", "sabers", "hammers", "whips",
 	"arcane spells", "clerical spells", "healing spells", "divination spells", "abjuration spells",
-	"movement spells", "transmutation spells", "enchantment spells", "conjuration spells", "necromancy spells", "disarm traps", "swords",
+	"movement spells", "transmutation spells", "enchantment spells", "conjuration spells", 
+    "celestial spells", "nature spells", "necromancy spells", "disarm traps", "swords",
 	"bludgeoning weapons", "thrown weapons", "martial arts", "wands",
 };
 
@@ -1618,7 +1623,7 @@ boolean speedy;
 
     return (boolean)((
         ((int)P_ADVANCE(skill) >= practice_needed_to_advance(skill, P_SKILL_LEVEL(skill)))
-            || (P_SKILL_LEVEL(skill) < P_GRAND_MASTER && urole.skill_advance_levels[skill][P_SKILL_LEVEL(skill) + 1] > 0 && u.ulevel >= urole.skill_advance_levels[skill][P_SKILL_LEVEL(skill) + 1])
+            || (P_SKILL_LEVEL(skill) < P_GRAND_MASTER && P_SKILL_LEVEL(skill) > P_ISRESTRICTED && urole.skill_advance_levels[skill][P_SKILL_LEVEL(skill) + 1] > 0 && u.ulevel >= urole.skill_advance_levels[skill][P_SKILL_LEVEL(skill) + 1])
             ) && u.weapon_slots >= slots_required(skill));
 }
 
@@ -1634,7 +1639,7 @@ int skill;
 
     return (boolean)(
         ((int)P_ADVANCE(skill) >= practice_needed_to_advance(skill, P_SKILL_LEVEL(skill)))
-        || (P_SKILL_LEVEL(skill) < P_GRAND_MASTER && urole.skill_advance_levels[skill][P_SKILL_LEVEL(skill) + 1] > 0
+        || (P_SKILL_LEVEL(skill) < P_GRAND_MASTER && P_SKILL_LEVEL(skill) > P_ISRESTRICTED && urole.skill_advance_levels[skill][P_SKILL_LEVEL(skill) + 1] > 0
             && u.ulevel >= urole.skill_advance_levels[skill][P_SKILL_LEVEL(skill) + 1])
         );
 
@@ -1652,7 +1657,7 @@ int skill;
     return (boolean) (P_SKILL_LEVEL(skill) >= P_MAX_SKILL_LEVEL(skill)
                       && (
                            ((int)P_ADVANCE(skill) >= practice_needed_to_advance(skill, P_SKILL_LEVEL(skill)))
-                              || (P_SKILL_LEVEL(skill) < P_GRAND_MASTER && urole.skill_advance_levels[skill][P_SKILL_LEVEL(skill) + 1] > 0
+                              || (P_SKILL_LEVEL(skill) < P_GRAND_MASTER && P_SKILL_LEVEL(skill) > P_ISRESTRICTED && urole.skill_advance_levels[skill][P_SKILL_LEVEL(skill) + 1] > 0
                                   && u.ulevel >= urole.skill_advance_levels[skill][P_SKILL_LEVEL(skill) + 1])
                               ));
 }

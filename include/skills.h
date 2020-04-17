@@ -65,19 +65,21 @@ enum p_skills {
     P_TRANSMUTATION_SPELL= 21,
 	P_ENCHANTMENT_SPELL  = 22,
 	P_CONJURATION_SPELL  = 23,
-	P_NECROMANCY_SPELL	 = 24,
+    P_CELESTIAL_SPELL    = 24,
+    P_NATURE_SPELL       = 25,
+    P_NECROMANCY_SPELL	 = 26,
 
     /* Other types of combat */
-    P_BARE_HANDED_COMBAT = 25, /* actually weaponless; gloves are ok */
-	P_MARTIAL_ARTS		 = 26, /* actually weaponless; gloves are ok */
-	P_TWO_WEAPON_COMBAT  = 27, /* pair of weapons, one in each hand */
-	P_WAND               = 28, /* shooting rays with wands */
+    P_BARE_HANDED_COMBAT = 27, /* actually weaponless; gloves are ok */
+	P_MARTIAL_ARTS		 = 28, /* actually weaponless; gloves are ok */
+	P_TWO_WEAPON_COMBAT  = 29, /* pair of weapons, one in each hand */
+	P_WAND               = 30, /* shooting rays with wands */
 
 	/* Non-combat skills */
-	P_RIDING			 = 29,	/* how well you control your steed */
-	P_DISARM_TRAP		 = 30,	/* disarming traps */
+	P_RIDING			 = 31,	/* how well you control your steed */
+	P_DISARM_TRAP		 = 32,	/* disarming traps */
 	
-	P_NUM_SKILLS         = 31
+	P_NUM_SKILLS         = 33
 };
 
 //#define P_MARTIAL_ARTS P_BARE_HANDED_COMBAT /* Role distinguishes */

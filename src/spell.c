@@ -977,6 +977,10 @@ int skill;
 		return "conjuration";
 	case P_ABJURATION_SPELL:
 		return "abjuration";
+	case P_CELESTIAL_SPELL:
+		return "celestial";
+	case P_NATURE_SPELL:
+		return "nature";
 	case P_NECROMANCY_SPELL:
 		return "necromancy";
 	default:
@@ -1863,6 +1867,14 @@ boolean atme;
 	case SPE_SUMMON_DEMON:
 	case SPE_FAITHFUL_HOUND:
 	case SPE_CALL_DEMOGORGON:
+	case SPE_CELESTIAL_DOVE:
+	case SPE_CELESTIAL_EAGLE:
+	case SPE_SUMMON_PHOENIX:
+	case SPE_SUMMON_GOLD_DRAGON:
+	case SPE_SUMMON_ANCIENT_GOLD_DRAGON:
+	case SPE_CALL_BAHAMUT:
+	case SPE_SUMMON_TREANT:
+	case SPE_SUMMON_ELDER_TREANT:
 	case SPE_HEAVENLY_WARRIOR:
 	case SPE_GUARDIAN_ANGEL:
 	case SPE_DIVINE_MOUNT:

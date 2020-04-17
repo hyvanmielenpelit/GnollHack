@@ -380,6 +380,7 @@ int x, y;
                     const char *whom = ((mW & M2_HUMAN & m2) ? "human"
                                         : (mW & M2_ELF & m2) ? "elf"
                                           : (mW & M2_ORC & m2) ? "orc"
+                                          : (mW & M2_ANGEL & m2) ? "angel"
                                             : (mW & M2_DEMON & m2) ? "demon"
                                               : mtmp->data->mname);
 

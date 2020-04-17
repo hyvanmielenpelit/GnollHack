@@ -3732,7 +3732,36 @@ register struct obj *obj;
 	case SPE_STICK_TO_COBRA:
 		mtmp = summoncreature(obj->otyp, PM_COBRA, "You throw the stick you prepared in the front of you. It turns into %s!", MM_EMIN_COALIGNED, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE);
 		break;
-	case SPE_GUARDIAN_ANGEL:
+    case SPE_CELESTIAL_DOVE:
+        mtmp = summoncreature(obj->otyp, PM_CELESTIAL_DOVE, "%s descends from the heavens.", NO_MM_FLAGS, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
+        break;
+    case SPE_CELESTIAL_EAGLE:
+        mtmp = summoncreature(obj->otyp, PM_CELESTIAL_EAGLE, "%s descends from the heavens.", NO_MM_FLAGS, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
+        break;
+    case SPE_SUMMON_PHOENIX:
+        mtmp = summoncreature(obj->otyp, PM_PHOENIX, "%s descends from the heavens.", NO_MM_FLAGS, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
+        break;
+    case SPE_SUMMON_GOLD_DRAGON:
+        mtmp = summoncreature(obj->otyp, PM_GOLD_DRAGON, "%s descends from the heavens.", NO_MM_FLAGS, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
+        break;
+    case SPE_SUMMON_ANCIENT_GOLD_DRAGON:
+        mtmp = summoncreature(obj->otyp, PM_ANCIENT_GOLD_DRAGON, "%s descends from the heavens.", NO_MM_FLAGS, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
+        break;
+    case SPE_CALL_BAHAMUT:
+        known = TRUE;
+        You("chant an invocation:");
+        verbalize("O Platinum Dragon, King of all Good Dragons,");
+        verbalize("I call to thee, and I pledge myself to thee!");
+        verbalize("By this meagre offering, please hear this call!");
+        summonbahamut(obj->otyp);
+        break;
+    case SPE_SUMMON_TREANT:
+        mtmp = summoncreature(obj->otyp, PM_TREANT, "%s appears before you.", NO_MM_FLAGS, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
+        break;
+    case SPE_SUMMON_ELDER_TREANT:
+        mtmp = summoncreature(obj->otyp, PM_ELDER_TREANT, "%s appears before you.", NO_MM_FLAGS, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
+        break;
+    case SPE_GUARDIAN_ANGEL:
 		You("recite an ancient prayer to %s.", u_gname());
 		gain_guardian_angel(TRUE);
 		break;
@@ -8846,7 +8875,9 @@ int spl_otyp;
 		mon->disregards_enemy_strength = TRUE;
 		mon->disregards_own_health = FALSE;
 		mon->hasbloodlust = TRUE;
-		mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_diesize) + objects[spl_otyp].oc_spell_dur_plus;
+        if (u.ualign.type == A_CHAOTIC)
+            mon->mpeaceful = TRUE;
+        mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_diesize) + objects[spl_otyp].oc_spell_dur_plus;
 		begin_summontimer(mon);
 		if (!Blind)
 			pline("%s steps through the portal!", Monnam(mon));
@@ -8864,6 +8895,58 @@ int spl_otyp;
 	}
 	else if(!Deaf)
 		You_hear("malicious hissing!");
+}
+
+void
+summonbahamut(spl_otyp)
+int spl_otyp;
+{
+    struct monst* mon = (struct monst*) 0;
+    int monindex = 0;
+
+    if (Deaf)
+        pline("You feel vibrations in the air...");
+    else
+        You("start to hear a distinctive heavenly melody from a distance!");
+
+    if (mvitals[PM_BAHAMUT].mvflags & G_GONE)
+    {
+        pline("However, the music stops suddenly.");
+        return;
+    }
+
+    mon = makemon(&mons[monindex = PM_BAHAMUT], u.ux, u.uy, MM_NOCOUNTBIRTH);
+
+    if (mon)
+    {
+        //Bahamut gets bored and goes back to the heavens
+        mon->issummoned = TRUE;
+        mon->disregards_enemy_strength = TRUE;
+        mon->disregards_own_health = FALSE;
+        mon->hasbloodlust = FALSE;
+        if (u.ualign.type != A_CHAOTIC)
+            mon->mpeaceful = TRUE;
+        mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_diesize) + objects[spl_otyp].oc_spell_dur_plus;
+        begin_summontimer(mon);
+        if (!Blind)
+            pline("%s descends from the heavens!", Monnam(mon));
+        else
+            You_feel("a %s presence near you!", Monnam(mon), is_peaceful(mon) ? "benevolent" : "threatening");
+    }
+    else
+    {
+        pline("However, nothing else happens");
+    }
+
+    if (!Blind)
+    {
+        if(is_peaceful(mon))
+            pline("%s gazes at you and smiles.", Monnam(mon));
+        else
+            pline("%s looks worringly angry.", Monnam(mon));
+    }
+    else if (!Deaf && is_peaceful(mon))
+        You_hear("deep voice greeting you.");
 }
 
 

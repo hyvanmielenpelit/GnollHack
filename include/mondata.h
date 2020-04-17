@@ -76,7 +76,7 @@
 #define is_dragon(ptr) ((ptr)->mlet == S_DRAGON)
 #define is_domestic(ptr) (((ptr)->mflags2 & M2_DOMESTIC) != 0L)
 #define is_demon(ptr) (((ptr)->mflags2 & M2_DEMON) != 0L)
-#define is_angel(ptr) ((ptr)->mlet == S_ANGEL)
+#define is_angel(ptr) (((ptr)->mflags2 & M2_ANGEL) != 0L)
 #define is_mercenary(ptr) (((ptr)->mflags2 & M2_MERC) != 0L)
 #define is_modron(ptr) (((ptr)->mflags2 & M2_MODRON) != 0L)
 #define is_male(ptr) (((ptr)->mflags2 & M2_MALE) != 0L)
@@ -95,7 +95,7 @@
 #define could_twoweap(ptr) ((ptr)->mattk[1].aatyp == AT_WEAP)
 #define cantweararm(ptr) (breakarm(ptr) || sliparm(ptr))
 #define throws_rocks(ptr) (((ptr)->mflags1 & M1_ROCKTHROW) != 0L)
-#define is_mname_proper_name(ptr) (((ptr)->mflags2 & M2_PROPER_NAME) != 0L)
+#define is_mname_proper_name(ptr) (((ptr)->mflags4 & M4_PROPER_NAME) != 0L)
 #define is_lord(ptr) (((ptr)->mflags2 & M2_LORD) != 0L)
 #define is_prince(ptr) (((ptr)->mflags2 & M2_PRINCE) != 0L)
 #define is_ndemon(ptr) \

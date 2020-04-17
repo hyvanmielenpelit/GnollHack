@@ -133,22 +133,44 @@ struct monst* mon;
 						|| (mon->data == &mons[PM_ORACLE]))
 					)
 				{
-					if(count_sellable_items(mon) > 0)
+                    int cnt = count_sellable_items(mon);
+					if(cnt > 0)
 					{
-						talkeff(mon->mx, mon->my);
-						switch (mon->talkstate)
+                        char itembuf[BUFSZ];
+                        char someitembuf[BUFSZ];
+                        struct obj* otmp;
+                        if (cnt == 1 && (otmp = get_first_sellable_item(mon)) != 0)
+                        {
+                            strcpy(itembuf, otmp->quan == 1 ? an(cxname(otmp)) : cxname(otmp));
+                            strcpy(someitembuf, itembuf);
+                        }
+                        else
+                        {
+                            strcpy(itembuf, "items");
+                            strcpy(someitembuf, "some items");
+                        }
+
+                        talkeff(mon->mx, mon->my);
+                        
+                        char yellbuf[BUFSZ];
+
+                        switch (mon->talkstate)
 						{
 						case 0:
-							mon_yells(mon, "Hello, adventurer! How are you? I have fine items for sale.", "say", "politely", TRUE);
+                            Sprintf(yellbuf, "Hello, adventurer! How are you? I have %s for sale.", someitembuf);
+							mon_yells(mon, yellbuf, "say", "politely", TRUE);
 							break;
 						case 1:
-							mon_yells(mon, "Hello again, I still have some items for sale.", "say", "politely", TRUE);
+                            Sprintf(yellbuf, "Hello again, I still have %s for sale.", someitembuf);
+                            mon_yells(mon, yellbuf, "say", "politely", TRUE);
 							break;
 						case 2:
-							mon_yells(mon, "How is your adventuring going? Would you still have interest in some items?", "say", "inquisitively", TRUE);
+                            Sprintf(yellbuf, "How is your adventuring going? Would you still have interest in %s?", someitembuf);
+                            mon_yells(mon, yellbuf, "say", "inquisitively", TRUE);
 							break;
 						case 3:
-							mon_yells(mon, "Hello there again! Any interest in my items?", "say", "politely", TRUE);
+                            Sprintf(yellbuf, "Hello there again! Any interest in my %s?", itembuf);
+                            mon_yells(mon, yellbuf, "say", "politely", TRUE);
 							break;
 						default:
 							break;

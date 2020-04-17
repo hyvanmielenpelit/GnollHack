@@ -3376,6 +3376,7 @@ int final;
         Sprintf(buf, "aware of the presence of %s",
                 (context.warntype.obj & M2_ORC) ? "orcs"
                 : (context.warntype.obj & M2_ELF) ? "elves"
+                : (context.warntype.obj & M2_ANGEL) ? "angels"
                 : (context.warntype.obj & M2_DEMON) ? "demons" : something);
         you_are(buf, from_what(WARN_OF_MON));
     }
@@ -3392,6 +3393,8 @@ int final;
                                       ? "orcs"
                                       : (context.warntype.polyd & M2_DEMON)
                                             ? "demons"
+                                      : (context.warntype.polyd & M2_ANGEL)
+                                            ? "angels"
                                             : "certain monsters");
         you_are(buf, "");
     }

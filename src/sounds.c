@@ -2228,6 +2228,16 @@ struct monst* mtmp;
 		verbalize(ansbuf);
 		mtmp->u_know_mname = 1;
 	}
+	else if (is_mname_proper_name(mtmp->data))
+	{
+		char titlebuf[BUFSZ];
+		strcpy(titlebuf, "");
+		if(mtmp->data->mtitle && strcmp(mtmp->data->mtitle, "")) 
+			Sprintf(titlebuf, ", %s", mtmp->data->mtitle);
+
+		Sprintf(ansbuf, "I am %s%s.", mtmp->data->mname, titlebuf);
+		verbalize(ansbuf);
+	}
 	else
 	{
 		Sprintf(ansbuf, "My name is none of your business.");
@@ -3099,9 +3109,18 @@ struct monst* mtmp;
 			verbalize("But be quick, my patience is limited.");
 		}
 		else if (!Deaf && is_speaking_monster(mtmp->data))
-			verbalize("Hello, adventurer! May I interest you in these fine items:");
+		{
+			char itembuf[BUFSZ];
+			struct obj* otmp;
+			if (sellable_item_count == 1 && (otmp = get_first_sellable_item(mtmp)) != 0)
+				strcpy(itembuf, cxname(otmp));
+			else
+				strcpy(itembuf, "items");
+
+			verbalize("Hello, adventurer! May I interest you in the following %s:", itembuf);
+		}
 		else
-			pline("%s shows you the items that are for sale.", Monnam(mtmp));
+			pline("%s shows you %s merchandise.", Monnam(mtmp), mhis(mtmp));
 	}
 
 
@@ -3138,10 +3157,12 @@ struct monst* mtmp;
 					default:
 					case 'q':
 						doforbreak = TRUE;
+					case 'n':
 						if (buy_count > 0)
 							result = 1;
 						else
 							result = 0;
+						break;
 					case 'y':
 						if (umoney < (long)item_cost) {
 							You("don't have enough money for that!");
@@ -3161,10 +3182,10 @@ struct monst* mtmp;
 							result = 1;
 						else
 							result = 0;
+
 						break; /* for break */
 					}
 					bought = TRUE;
-
 				}
 
 				if (bought)
@@ -3272,6 +3293,24 @@ struct monst* mtmp;
 	return cnt;
 }
 
+struct obj*
+get_first_sellable_item(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp || !mtmp->minvent)
+		return (struct obj*)0;
+
+	for (struct obj* otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
+	{
+		if (m_sellable_item(otmp, mtmp))
+		{
+			return otmp;
+		}
+	}
+	return (struct obj*)0;
+}
+
+
 boolean
 m_sellable_item(otmp, mtmp)
 struct obj* otmp;
@@ -3285,6 +3324,7 @@ struct monst* mtmp;
 		&& otmp->oclass != WEAPON_CLASS /* monsters do not currently sell their weapons */
 		&& otmp->oclass != ROCK_CLASS /* or giants their boulders */
 		&& !(is_pick(otmp) && needspick(mtmp->data)) /* or dwarves their picks */
+		&& !((mtmp->data->geno & G_UNIQ) && !(mtmp->mnum == PM_BAHAMUT && otmp->otyp == FORTUNE_COOKIE)) /* or unique monsters almost anything */
 		&& !(is_dwarvish_obj(otmp) && is_dwarf(mtmp->data)) /* or dwarves any other of their items */
 		&& !(
 			(otmp->cursed && (objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED))

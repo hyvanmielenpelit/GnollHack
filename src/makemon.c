@@ -956,7 +956,11 @@ register struct monst *mtmp;
      */
 	switch (ptr->mlet) 
 	{
-	case S_DOG:
+    case S_DRAGON:
+        if (monsndx(ptr) == PM_BAHAMUT)
+            (void)mon_gets_noinit_item(mtmp, FORTUNE_COOKIE, 8);
+        break;
+    case S_DOG:
 		if(!rn2(7))
 			(void)mon_gets_noinit_item(mtmp, BONE, 1);
 		break;

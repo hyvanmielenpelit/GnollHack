@@ -2532,6 +2532,7 @@ E int FDECL(add_sound_mapping, (const char *));
 E void FDECL(play_sound_for_message, (const char *));
 #endif
 E int FDECL(count_sellable_items, (struct monst*));
+E struct obj* FDECL(get_first_sellable_item, (struct monst*));
 E boolean FDECL(m_sellable_item, (struct obj*, struct monst*));
 E long FDECL(get_cost_of_monster_item, (struct obj*, struct monst*));
 E long FDECL(m_contained_cost, (struct obj*, struct monst*));
@@ -3300,6 +3301,7 @@ E void FDECL(summonmagearmor, (struct obj*));
 E struct monst* FDECL(summoncreature, (int, int, char *, int, boolean, boolean, boolean, boolean, boolean, boolean, boolean));
 E void FDECL(summondemon, (int));
 E void FDECL(summondemogorgon, (int));
+E void FDECL(summonbahamut, (int));
 E void NDECL(armageddon);
 E void NDECL(timestop);
 E boolean FDECL(check_rider_disintegration, (struct monst*, const char*));

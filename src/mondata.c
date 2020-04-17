@@ -97,7 +97,8 @@ static NEARDATA struct mflag_description m1flag_descriptions[] = {
 
 static NEARDATA struct mflag_description m2flag_descriptions[] = {
 	{ M2_DEMON, "demon", "demons" },
-	{ M2_DWARF, "dwarf", "dwarves" },
+    { M2_DEMON, "angelic being", "angelic beings" },
+    { M2_DWARF, "dwarf", "dwarves" },
 	{ M2_ELF, "elf", "elves" },
 	{ M2_GIANT, "giant", "giants" },
 	{ M2_GNOLL, "gnoll", "gnolls" },

@@ -1334,7 +1334,7 @@ see_monsters()
 			new_human_warn_obj_cnt++;
 		if (Lycanthrope_warning && (mon->data->mflags2 & M2_WERE) != 0L)
 			new_were_warn_obj_cnt++;
-		if (Angel_warning && (mon->data->mlet == S_ANGEL))
+		if (Angel_warning && (mon->data->mflags2 & M2_ANGEL) != 0L)
 			new_angel_warn_obj_cnt++;
 	}
 
