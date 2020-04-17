@@ -3117,7 +3117,7 @@ struct monst* mtmp;
 			else
 				strcpy(itembuf, "items");
 
-			verbalize("Hello, adventurer! May I interest you in the following %s:", itembuf);
+			verbalize("Hello, adventurer! May I interest you in the following %s?", itembuf);
 		}
 		else
 			pline("%s shows you %s merchandise.", Monnam(mtmp), mhis(mtmp));
