@@ -1214,7 +1214,7 @@ struct attack  *mattk;
 
 
     /* if new breath types are added, change AD_ACID to max type */
-    int typ = (mattk->adtyp == AD_RBRE) ? rnd(AD_ACID) : mattk->adtyp ; // Does not include death ray
+    int typ = get_ray_adtyp(mattk->adtyp); // Does not include death ray
 
     if (m_lined_up(mtarg, mtmp, TRUE, typ, TRUE))
 	{
@@ -1269,13 +1269,7 @@ struct attack* mattk;
 	if (!mtmp || !mattk)
 		return 0;
 
-	int effect_choices[6] = { AD_DISN, AD_DRAY, AD_ELEC, AD_STON, AD_SLEE, AD_COLD };
-	int ray1_effect_choices[3] = { AD_DISN, AD_ELEC, AD_COLD }; /* Elemental */
-	int ray2_effect_choices[3] = { AD_DRAY, AD_STON, AD_SLEE }; /* Magic */
-	int typ = (mattk->adtyp == AD_RBRE) ? effect_choices[rn2(6)] :
-		(mattk->adtyp == AD_REY1) ? ray1_effect_choices[rn2(3)] :
-		(mattk->adtyp == AD_REY2) ? ray2_effect_choices[rn2(3)] :
-		mattk->adtyp;
+	int typ = get_ray_adtyp(mattk->adtyp);
 
 	if (m_lined_up(mtarg, mtmp, TRUE, typ, TRUE))
 	{
@@ -1493,15 +1487,7 @@ struct attack *mattk;
 	if (!mtmp || !mattk)
 		return 0;
 
-	/* if new breath types are added, change AD_ACID to max type */
-	int effect_choices[6] = { AD_DISN, AD_DRAY, AD_ELEC, AD_STON, AD_SLEE, AD_COLD };
-	int ray1_effect_choices[3] = { AD_DISN, AD_ELEC, AD_COLD }; /* Elemental */
-	int ray2_effect_choices[3] = { AD_DRAY, AD_STON, AD_SLEE }; /* Magic */
-	int typ = (mattk->adtyp == AD_RBRE) ? effect_choices[rn2(6)] :
-		(mattk->adtyp == AD_REY1) ? ray1_effect_choices[rn2(3)] :
-		(mattk->adtyp == AD_REY2) ? ray2_effect_choices[rn2(3)] :
-		mattk->adtyp;
-
+	int typ = get_ray_adtyp(mattk->adtyp);
 
     if (lined_up(mtmp, TRUE, typ, TRUE))
 	{
@@ -1538,7 +1524,7 @@ struct attack* mattk;
 		return 0;
 
 	/* if new breath types are added, change AD_ACID to max type */
-	int typ = (mattk->adtyp == AD_RBRE) ? rnd(AD_ACID) : mattk->adtyp; //NOTE: Does not include death ray
+	int typ = get_ray_adtyp(mattk->adtyp); //NOTE: Does not include death ray
 
 	if (lined_up(mtmp, TRUE, typ, TRUE))
 	{

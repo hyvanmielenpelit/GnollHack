@@ -3750,7 +3750,7 @@ register struct obj *obj;
     case SPE_CALL_BAHAMUT:
         known = TRUE;
         You("chant an invocation:");
-        verbalize("O Platinum Dragon, King of all Good Dragons,");
+        verbalize("O Platinum Dragon, King of Good Dragons,");
         verbalize("I call to thee, and I pledge myself to thee!");
         verbalize("By this meagre offering, please hear this call!");
         summonbahamut(obj->otyp);
@@ -5191,7 +5191,10 @@ void
 ubreatheu(mattk)
 struct attack *mattk;
 {
-    int dtyp = 20 + mattk->adtyp - 1;      /* breath by hero */
+    uchar adtyp = mattk->adtyp;
+    int typ = get_ray_adtyp(adtyp);
+
+    int dtyp = 20 + typ - 1;      /* breath by hero */
     const char *fltxt = flash_types[dtyp]; /* blast of <something> */
 
     zhitu(dtyp, (struct obj*)0, mattk->damn, mattk->damd, mattk->damp, fltxt, u.ux, u.uy);

@@ -1011,7 +1011,7 @@ register struct monst *mtmp;
 						int chance = mattk->mcadj;
 						if (!is_cancelled(mtmp) && !(mvitals[PM_MINOTAUR].mvflags & G_GONE) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
 						{
-							struct monst* mtmp2 = makemon(&mons[PM_MINOTAUR], u.ux, u.uy, MM_EMIN);
+							struct monst* mtmp2 = makemon(&mons[PM_MINOTAUR], u.ux, u.uy, NO_MM_FLAGS);
 							if(mtmp2)
 								pline("%s summons %s.", Monnam(mtmp), a_monnam(mtmp2));
 							sum[i] = 1;
@@ -1025,7 +1025,29 @@ register struct monst *mtmp;
 						}
 					}
 				}
-			}
+                else if (mattk->adtyp == AD_GDRA)
+                {
+                    if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
+                        int chance = mattk->mcadj;
+                        if (!is_cancelled(mtmp) && !((mvitals[PM_ANCIENT_GOLD_DRAGON].mvflags & G_GONE) && (mvitals[PM_GOLD_DRAGON].mvflags & G_GONE)) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
+                        {
+                            struct monst* mtmp2 = makemon(&mons[PM_ANCIENT_GOLD_DRAGON], u.ux, u.uy, NO_MM_FLAGS);
+                            if (!mtmp2)
+                                 mtmp2 = makemon(&mons[PM_GOLD_DRAGON], u.ux, u.uy, NO_MM_FLAGS);
+                            if (mtmp2)
+                                pline("%s summons %s.", Monnam(mtmp), a_monnam(mtmp2));
+                            sum[i] = 1;
+                        }
+                        else if (!is_silenced(mtmp) && canseemon(mtmp))
+                        {
+                            if (!rn2(2))
+                                pline("Fumes raise out of %s nostrils!", s_suffix(mon_nam(mtmp)));
+                            else
+                                pline("%s bellows menacingly.", Monnam(mtmp));
+                        }
+                    }
+                }
+            }
 
 			break;
 

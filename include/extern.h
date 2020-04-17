@@ -2133,6 +2133,7 @@ E int NDECL(poly_gender);
 E void FDECL(ugolemeffects, (int, double));
 E boolean NDECL(ugenocided);
 E const char *NDECL(udeadinside);
+E int FDECL(get_ray_adtyp, (uchar));
 
 /* ### potion.c ### */
 

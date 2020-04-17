@@ -84,6 +84,9 @@
 #define AD_SHOC 45  /* system shock */
 #define AD_ADJU 46  /* hit point adjustment, e.g. due to size shrinkage */
 
+#define AD_RBGD 237 /* random breath weapon, gold dragon */
+#define AD_RBPD 238 /* random breath weapon, Bahamut */
+#define AD_GDRA 239 /* summons an ancient gold dragon, Bahamut */
 #define AD_CLRC 240 /* random clerical spell */
 #define AD_SPEL 241 /* random magic spell */
 #define AD_RBRE 242 /* random breath weapon */

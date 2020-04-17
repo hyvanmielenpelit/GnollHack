@@ -998,7 +998,7 @@ genericptr_t p2;
                adult green dragon and Chromatic Dragon (and iron golem,
                but is_not_living() and has_innate_breathless() tests also catch that) */
             && !(attacktype_fordmg(mtmp->data, AT_BREA, AD_DRST)
-                 || attacktype_fordmg(mtmp->data, AT_BREA, AD_RBRE))) 
+                 || attacktype_fordmg(mtmp->data, AT_BREA, AD_RBRE) || attacktype_fordmg(mtmp->data, AT_BREA, AD_RBGD)))
 		{
             if (cansee(mtmp->mx, mtmp->my))
                 pline("%s coughs!", Monnam(mtmp));

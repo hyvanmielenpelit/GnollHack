@@ -1425,16 +1425,40 @@ dobreathe()
         return 0;
 
     mattk = attacktype_fordmg(youmonst.data, AT_BREA, AD_ANY);
+
     if (!mattk)
         impossible("bad breath attack?"); /* mouthwash needed... */
     else if (!u.dx && !u.dy && !u.dz)
         ubreatheu(mattk);
     else
-        buzz((int) (20 + mattk->adtyp - 1), (struct obj*)0, (int) mattk->damn, (int)mattk->damd, (int)mattk->damp, u.ux, u.uy,
-             u.dx, u.dy);
+    {
+        uchar adtyp = mattk->adtyp;
+        int typ = get_ray_adtyp(adtyp);
+
+        buzz((20 + typ - 1), (struct obj*)0, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp, u.ux, u.uy,
+            u.dx, u.dy);
+
+    }
     return 1;
 }
 
+int
+get_ray_adtyp(adtyp)
+uchar adtyp;
+{
+    int rbgd_effect_choices[2] = { AD_FIRE, AD_DRST };
+    int rbpd_effect_choices[2] = { AD_COLD, AD_DISN };
+    int ray1_effect_choices[3] = { AD_DISN, AD_ELEC, AD_COLD }; /* Elemental */
+    int ray2_effect_choices[3] = { AD_DRAY, AD_STON, AD_SLEE }; /* Magic */
+    int typ = (adtyp == AD_RBRE) ? rnd(AD_ACID) :
+        (adtyp == AD_REY1) ? ray1_effect_choices[rn2(3)] :
+        (adtyp == AD_REY2) ? ray2_effect_choices[rn2(3)] :
+        (adtyp == AD_RBGD) ? rbgd_effect_choices[rn2(2)] :
+        (adtyp == AD_RBPD) ? rbpd_effect_choices[rn2(2)] :
+        adtyp;
+
+    return typ;
+}
 
 int
 dosteedbreathe()
@@ -1467,7 +1491,7 @@ dosteedbreathe()
         impossible("bad breath attack?"); /* mouthwash needed... */
     else
     {
-        int typ = (mattk->adtyp == AD_RBRE) ? rnd(AD_ACID) : mattk->adtyp;
+        int typ = get_ray_adtyp(mattk->adtyp);
 
         buzz((int)(-(20 + typ - 1)), (struct obj*)0, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp, u.ux, u.uy, u.dx, u.dy);
 
@@ -1950,14 +1974,7 @@ doeyestalk()
 		u.uen -= 5;
 		context.botl = 1;
 
-		uchar adtyp = mattk->adtyp;
-		int effect_choices[6] = { AD_DISN, AD_DRAY, AD_ELEC, AD_STON, AD_SLEE, AD_COLD };
-		int ray1_effect_choices[3] = { AD_DISN, AD_ELEC, AD_COLD }; /* Elemental */
-		int ray2_effect_choices[3] = { AD_DRAY, AD_STON, AD_SLEE }; /* Magic */
-		int typ = (mattk->adtyp == AD_RBRE) ? effect_choices[rn2(6)] :
-			(mattk->adtyp == AD_REY1) ? ray1_effect_choices[rn2(3)] :
-			(mattk->adtyp == AD_REY2) ? ray2_effect_choices[rn2(3)] :
-			mattk->adtyp;
+		int typ = get_ray_adtyp(mattk->adtyp); 
 
 		if ((typ >= AD_MAGM) && (typ <= AD_STON))
 		{
