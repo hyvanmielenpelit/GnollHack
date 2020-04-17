@@ -405,8 +405,6 @@ static const struct def_skill Skill_A_Init[] = {
 };
 
 
-
-
 static const struct def_skill Skill_B_Max[] = {
     { P_DAGGER, P_BASIC },
     { P_AXE, P_EXPERT },
@@ -429,6 +427,8 @@ static const struct def_skill Skill_B_Init[] = {
 	{ P_BARE_HANDED_COMBAT, P_BASIC },
 	{ P_NONE, 0 }
 };
+
+
 static const struct def_skill Skill_C_Max[] = {
     { P_DAGGER, P_BASIC },
     { P_AXE, P_SKILLED },
@@ -496,6 +496,7 @@ static const struct def_skill Skill_K_Max[] = {
     { P_CROSSBOW, P_SKILLED },
     { P_HEALING_SPELL, P_SKILLED },
     { P_CLERIC_SPELL, P_SKILLED },
+	{ P_CELESTIAL_SPELL, P_SKILLED },
 	{ P_ABJURATION_SPELL, P_SKILLED },
 	{ P_RIDING, P_EXPERT },
     { P_TWO_WEAPON_COMBAT, P_SKILLED },
@@ -803,14 +804,7 @@ static const struct def_skill Skill_W_Max[] = {
 	{ P_NONE, 0 }
 };
 
-static const struct def_skill Skill_W_Init_Chaotic[] = {
-	{ P_ARCANE_SPELL, P_BASIC },
-	{ P_ENCHANTMENT_SPELL, P_BASIC },
-	{ P_TRANSMUTATION_SPELL, P_BASIC },
-	{ P_WAND, P_BASIC },
-	{ P_NONE, 0 }
-};
-static const struct def_skill Skill_W_Init_NonChaotic[] = {
+static const struct def_skill Skill_W_Init[] = {
 	{ P_ARCANE_SPELL, P_BASIC },
 	{ P_ENCHANTMENT_SPELL, P_BASIC },
 	{ P_TRANSMUTATION_SPELL, P_BASIC },
@@ -1334,8 +1328,6 @@ u_skills_init()
 	case PM_PRIEST:
 		if (u.ualign.type == A_CHAOTIC)
 			skill_init(Skill_P_Init_Chaotic, Skill_P_Max_Chaotic);
-		else if (u.ualign.type == A_NEUTRAL)
-			skill_init(Skill_P_Init_Neutral, Skill_P_Max_Neutral);
 		else if (u.ualign.type == A_LAWFUL)
 			skill_init(Skill_P_Init_Lawful, Skill_P_Max_Lawful);
 		else
@@ -1357,10 +1349,7 @@ u_skills_init()
 		skill_init(Skill_V_Init, Skill_V_Max);
 		break;
 	case PM_WIZARD:
-		if (u.ualign.type == A_CHAOTIC)
-			skill_init(Skill_W_Init_Chaotic, Skill_W_Max);
-		else
-			skill_init(Skill_W_Init_NonChaotic, Skill_W_Max);
+		skill_init(Skill_W_Init, Skill_W_Max);
 		break;
 	default: /* impossible */
 		break;
