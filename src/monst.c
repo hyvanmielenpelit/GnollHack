@@ -2109,7 +2109,7 @@ NEARDATA struct permonst mons[] = {
         M3_INFRAVISIBLE | M3_SPEAKING, 
         M4_BRAVE, 
 		35, HI_GOLD),
-	MON("ancient gold dragon", None, "powerful dragon fiery and poison gas breath weapons", S_DRAGON, LVL(22, 12, -11, 15, 50, 10), (G_NOGEN),
+	MON("ancient gold dragon", None, "powerful dragon with fiery and poison gas breath weapons", S_DRAGON, LVL(22, 12, -11, 15, 50, 10), (G_NOGEN),
 		A(ATTK(AT_BREA, AD_RBGD, 12, 6, 0, 0), ATTK(AT_BITE, AD_PHYS, 8, 6, 0, 0),
 			ATTK(AT_CLAW, AD_PHYS, 2, 8, 0, 0), ATTK(AT_CLAW, AD_PHYS, 2, 8, 0, 0), ATTK(AT_MAGC, AD_SPEL, 0, 0, 0, 0),
 			NO_ATTK, NO_ATTK, NO_ATTK),
