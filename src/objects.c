@@ -2709,7 +2709,7 @@ SPELL("protect armor",		  "glowing", None, "Makes a piece of armor rust- or burn
 SPELL("protect weapon",		  "antiquarian", None, "Makes a weapon rust- or burn-proof",
 	  P_ENCHANTMENT_SPELL,		5, 2,			 0, 2,15, A_MAX_INT_CHA, 0, 0, 200, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NONE, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
 SPELL("cold-enchant item",		"baleful", None, "Cold-enchants one suitable item",
-	P_ENCHANTMENT_SPELL,		5, 1,			 0, 1, 10, A_MAX_INT_CHA, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NONE, HI_PAPER, O1_COLD_RESISTANT, O2_NONE, O3_NONE),
+	P_ENCHANTMENT_SPELL,		5, 1,			 0, 5, 50, A_MAX_INT_CHA, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NONE, HI_PAPER, O1_COLD_RESISTANT, O2_NONE, O3_NONE),
 SPELL("fire-enchant item",		"deformed", None, "Fire-enchants one suitable item",
 	P_ENCHANTMENT_SPELL,		5, 1,			 0, 2, 15, A_MAX_INT_CHA, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NONE, HI_PAPER, O1_FIRE_RESISTANT, O2_NONE, O3_NONE),
 SPELL("lightning-enchant item",	"degraded", None, "Lightning-enchants one suitable item",

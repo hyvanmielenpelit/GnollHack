@@ -985,20 +985,10 @@ boolean makingboxcontents;
 				else
 				{
 					otmp->elemental_enchantment = (objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED) ? LIGHTNING_ENCHANTMENT : rnd(3);
-					if (is_multigen(otmp))
+                    if (is_multigen(otmp))
 					{
-						switch (otmp->elemental_enchantment)
-						{
-						case FIRE_ENCHANTMENT:
-							otmp->quan = (otmp->quan + 1) / 2;
-							break;
-						case LIGHTNING_ENCHANTMENT:
-							otmp->quan = (otmp->quan + 2) / 3;
-							break;
-						default:
-							break;
-						}
-					}
+                        otmp->quan = (otmp->quan + 1) / 2;
+                    }
 				}
 			}
 

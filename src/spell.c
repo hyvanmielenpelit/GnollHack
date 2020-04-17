@@ -2117,7 +2117,7 @@ boolean atme;
 				if (is_elemental_enchantable(otmp))
 				{
 					You("enchant %s with freezing magic.", yname(otmp));
-					otmp = elemental_enchant_quan(otmp, 20, COLD_ENCHANTMENT);
+					otmp = elemental_enchant_quan(otmp, 5, COLD_ENCHANTMENT);
 					prinv((char*)0, otmp, 0L);
 					//otmp->elemental_enchantment = COLD_ENCHANTMENT;
 				}
@@ -2143,7 +2143,7 @@ boolean atme;
 				if (is_elemental_enchantable(otmp))
 				{
 					You("enchant %s with fire magic.", yname(otmp));
-					otmp = elemental_enchant_quan(otmp, 10, FIRE_ENCHANTMENT);
+					otmp = elemental_enchant_quan(otmp, 5, FIRE_ENCHANTMENT);
 					prinv((char*)0, otmp, 0L);
 					//otmp->elemental_enchantment = FIRE_ENCHANTMENT;
 				}

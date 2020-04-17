@@ -1595,9 +1595,9 @@ boolean* obj_destroyed;
 			else
 			{
 				needenchantmsg = obj->elemental_enchantment;
-				damage += adjust_damage(rnd(6), &youmonst, mon, AD_COLD, FALSE);
+				damage += adjust_damage(d(12, 6), &youmonst, mon, AD_COLD, FALSE);
 			}
-			if (is_ammo(obj) || throwing_weapon(obj) || objects[obj->otyp].oc_merge ? !rn2(10) : !rn2(50)) 
+			if (is_ammo(obj) || throwing_weapon(obj) || objects[obj->otyp].oc_merge ? 1 : !rn2(5)) 
 			{
 				obj->elemental_enchantment = 0;
 				/* defer "obj is no longer enchanted" until after hit message */
@@ -1612,9 +1612,9 @@ boolean* obj_destroyed;
 			else
 			{
 				needenchantmsg = obj->elemental_enchantment;
-				damage += adjust_damage(d(2, 6), &youmonst, mon, AD_FIRE, FALSE);
+				damage += adjust_damage(d(4, 6), &youmonst, mon, AD_FIRE, FALSE);
 			}
-			if (is_ammo(obj) || throwing_weapon(obj) || objects[obj->otyp].oc_merge ? !rn2(3) : !rn2(15)) {
+			if (is_ammo(obj) || throwing_weapon(obj) || objects[obj->otyp].oc_merge ? 1 : !rn2(5)) {
 				obj->elemental_enchantment = 0;
 				/* defer "obj is no longer enchanted" until after hit message */
 				unenchantmsg = TRUE;
@@ -1628,7 +1628,7 @@ boolean* obj_destroyed;
 			else
 			{
 				needenchantmsg = obj->elemental_enchantment;
-				damage += adjust_damage(d(3, 6), &youmonst, mon, AD_ELEC, FALSE);
+				damage += adjust_damage(d(6, 6), &youmonst, mon, AD_ELEC, FALSE);
 			}
 			if (is_ammo(obj) || throwing_weapon(obj) || objects[obj->otyp].oc_merge ? 1 : !rn2(5))
 			{

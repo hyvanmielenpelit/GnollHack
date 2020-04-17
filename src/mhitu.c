@@ -2817,11 +2817,11 @@ register struct obj* omonwep;
 			switch (omonwep->elemental_enchantment)
 			{
 			case COLD_ENCHANTMENT:
-				if (is_ammo(omonwep) || throwing_weapon(omonwep) || objects[omonwep->otyp].oc_merge ? !rn2(10) : !rn2(50))
+				if (is_ammo(omonwep) || throwing_weapon(omonwep) || objects[omonwep->otyp].oc_merge ? 1 : !rn2(5))
 					omonwep->elemental_enchantment = 0;
 				break;
 			case FIRE_ENCHANTMENT:
-				if (is_ammo(omonwep) || throwing_weapon(omonwep) || objects[omonwep->otyp].oc_merge ? !rn2(3) : !rn2(15))
+				if (is_ammo(omonwep) || throwing_weapon(omonwep) || objects[omonwep->otyp].oc_merge ? 1 : !rn2(5))
 					omonwep->elemental_enchantment = 0;
 				break;
 			case LIGHTNING_ENCHANTMENT:

@@ -474,7 +474,7 @@ boolean lifesavedalready;
 			return;
 		}
 
-		damage = adjust_damage(rnd(6), (struct monst*)0, &youmonst, AD_COLD, FALSE);
+		damage = adjust_damage(d(12, 6), (struct monst*)0, &youmonst, AD_COLD, FALSE);
 		losehp(damage, pkiller, kprefix);
 	}
 	else if (sptype == FIRE_ENCHANTMENT)
@@ -489,7 +489,7 @@ boolean lifesavedalready;
 			return;
 		}
 
-		damage = adjust_damage(d(2, 6), (struct monst*)0, &youmonst, AD_FIRE, FALSE);
+		damage = adjust_damage(d(4, 6), (struct monst*)0, &youmonst, AD_FIRE, FALSE);
 		losehp(damage, pkiller, kprefix);
 	}
 	else if (sptype == LIGHTNING_ENCHANTMENT)
@@ -504,7 +504,7 @@ boolean lifesavedalready;
 			return;
 		}
 
-		damage = adjust_damage(d(3, 6), (struct monst*)0, &youmonst, AD_ELEC, FALSE);
+		damage = adjust_damage(d(6, 6), (struct monst*)0, &youmonst, AD_ELEC, FALSE);
 		losehp(damage, pkiller, kprefix);
 	}
 	else if (sptype == DEATH_ENCHANTMENT)

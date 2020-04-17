@@ -582,7 +582,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 						pline_The("cold sears %s!", mon_nam(mtmp));
 					else if (verbose && !target)
 						pline_The("cold sears it!", mon_nam(mtmp));
-					damage += adjust_damage(rnd(6), (struct monst*)0, mtmp, AD_COLD, FALSE);
+					damage += adjust_damage(d(12, 6), (struct monst*)0, mtmp, AD_COLD, FALSE);
 				}
 				if (!rn2(10))
 					otmp->elemental_enchantment = 0;
@@ -600,7 +600,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 						pline_The("fire burns %s!", mon_nam(mtmp));
 					else if (verbose && !target)
 						pline_The("fire burns it!");
-					damage += adjust_damage(d(2, 6), (struct monst*)0, mtmp, AD_FIRE, FALSE);
+					damage += adjust_damage(d(4, 6), (struct monst*)0, mtmp, AD_FIRE, FALSE);
 				}
 				if (!rn2(3))
 					otmp->elemental_enchantment = 0;
@@ -619,7 +619,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 					else if (verbose && !target)
 						pline("It is jolted by lightning!");
 
-					damage += adjust_damage(d(4, 6), (struct monst*)0, mtmp, AD_ELEC, FALSE);
+					damage += adjust_damage(d(6, 6), (struct monst*)0, mtmp, AD_ELEC, FALSE);
 				}
 				otmp->elemental_enchantment = 0;
 				break;
@@ -1003,11 +1003,11 @@ struct obj *obj;         /* missile (or stack providing it) */
 				switch (singleobj->elemental_enchantment)
 				{
 				case COLD_ENCHANTMENT:
-					if (is_ammo(singleobj) || throwing_weapon(singleobj) || objects[singleobj->otyp].oc_merge ? !rn2(10) : !rn2(50))
+					if (is_ammo(singleobj) || throwing_weapon(singleobj) || objects[singleobj->otyp].oc_merge ? 1 : !rn2(5))
 						singleobj->elemental_enchantment = 0;
 					break;
 				case FIRE_ENCHANTMENT:
-					if (is_ammo(singleobj) || throwing_weapon(singleobj) || objects[singleobj->otyp].oc_merge ? !rn2(3) : !rn2(15))
+					if (is_ammo(singleobj) || throwing_weapon(singleobj) || objects[singleobj->otyp].oc_merge ? 1 : !rn2(5))
 						singleobj->elemental_enchantment = 0;
 					break;
 				case LIGHTNING_ENCHANTMENT:

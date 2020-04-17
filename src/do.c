@@ -1329,9 +1329,9 @@ register struct obj* obj;
 	}
 	if (obj->elemental_enchantment)
 	{
-		Sprintf(buf, "Elemental enchantment:  %s", obj->elemental_enchantment == FIRE_ENCHANTMENT ? "Flaming (+2d6 fire damage)" :
-			obj->elemental_enchantment == COLD_ENCHANTMENT ? "Freezing (+1d6 cold damage)" :
-			obj->elemental_enchantment == LIGHTNING_ENCHANTMENT ? "Electrified (+3d6 lightning damage)" :
+		Sprintf(buf, "Elemental enchantment:  %s", obj->elemental_enchantment == FIRE_ENCHANTMENT ? "Flaming (+4d6 fire damage)" :
+			obj->elemental_enchantment == COLD_ENCHANTMENT ? "Freezing (+12d6 cold damage)" :
+			obj->elemental_enchantment == LIGHTNING_ENCHANTMENT ? "Electrified (+6d6 lightning damage)" :
 			obj->elemental_enchantment == DEATH_ENCHANTMENT ? "Deathly (kills on hit)" : "Unknown enchantment"
 		);
 		txt = buf;

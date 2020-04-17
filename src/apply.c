@@ -2782,7 +2782,7 @@ struct obj* obj;
 				{
 					wandknown = TRUE;
 					You("enchant %s with death magic.", yname(otmp));
-					otmp = elemental_enchant_quan(otmp, 3 + bcsign(obj) * 2, DEATH_ENCHANTMENT);
+					otmp = elemental_enchant_quan(otmp, 2 + bcsign(obj) * 1, DEATH_ENCHANTMENT);
 					prinv((char*)0, otmp, 0L);
 					//otmp->elemental_enchantment = DEATH_ENCHANTMENT;
 				}
@@ -2817,7 +2817,7 @@ struct obj* obj;
 				{
 					wandknown = TRUE;
 					You("enchant %s with cold magic.", yname(otmp));
-					otmp = elemental_enchant_quan(otmp, 30 + bcsign(obj) * 15, COLD_ENCHANTMENT);
+					otmp = elemental_enchant_quan(otmp, 5 + bcsign(obj) * 3, COLD_ENCHANTMENT);
 					prinv((char*)0, otmp, 0L);
 					//otmp->elemental_enchantment = COLD_ENCHANTMENT;
 				}
@@ -2883,7 +2883,7 @@ struct obj* obj;
 				{
 						wandknown = TRUE;
 						You("enchant %s with fire magic.", yname(otmp));
-						otmp = elemental_enchant_quan(otmp, 20 + bcsign(obj) * 10, FIRE_ENCHANTMENT);
+						otmp = elemental_enchant_quan(otmp, 5 + bcsign(obj) * 3, FIRE_ENCHANTMENT);
 						prinv((char*)0, otmp, 0L);
 						//otmp->elemental_enchantment = FIRE_ENCHANTMENT;
 				}
@@ -2915,7 +2915,7 @@ struct obj* obj;
 				{
 					wandknown = TRUE;
 					You("enchant %s with lightning magic.", yname(otmp));
-					otmp = elemental_enchant_quan(otmp, 10 + bcsign(obj) * 5, LIGHTNING_ENCHANTMENT);
+					otmp = elemental_enchant_quan(otmp, 5 + bcsign(obj) * 3, LIGHTNING_ENCHANTMENT);
 					prinv((char*)0, otmp, 0L);
 					//otmp->elemental_enchantment = LIGHTNING_ENCHANTMENT;
 				}
@@ -4882,17 +4882,17 @@ int arrowtype, quan; //ObjID and quantity
 			if (bag->elemental_enchantment != DEATH_ENCHANTMENT || (bag->elemental_enchantment == DEATH_ENCHANTMENT && is_death_enchantable(otmp)))
 				otmp->elemental_enchantment = bag->elemental_enchantment;
 
-			if (otmp->elemental_enchantment == DEATH_ENCHANTMENT && quan > 2)
+			if (otmp->elemental_enchantment == DEATH_ENCHANTMENT && quan > 1)
 				otmp->quan = min(quan, rnd(2));
 
 			if (otmp->elemental_enchantment == LIGHTNING_ENCHANTMENT && quan > 3)
 				otmp->quan = min(quan, 2 + d(1, 3));
 
-			if (otmp->elemental_enchantment == FIRE_ENCHANTMENT && quan > 5)
-				otmp->quan = min(quan, 4 + d(1, 6));
+			if (otmp->elemental_enchantment == FIRE_ENCHANTMENT && quan > 3)
+				otmp->quan = min(quan, 2 + d(1, 3));
 
-			if (otmp->elemental_enchantment == COLD_ENCHANTMENT && quan > 10)
-				otmp->quan = min(quan, 8 + d(2, 6));
+			if (otmp->elemental_enchantment == COLD_ENCHANTMENT && quan > 3)
+				otmp->quan = min(quan, 2 + d(1, 3));
 
 			otmp->owt = weight(otmp);
 		}
