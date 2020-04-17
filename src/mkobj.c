@@ -970,11 +970,11 @@ boolean makingboxcontents;
                 otmp->enchantment = -rne(3);
             } else
                 blessorcurse(otmp, 10);
-            if (is_poisonable(otmp) && !rn2(100) && !(objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED))
+            if (is_poisonable(otmp) && !rn2(100) && !(objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED))
                 otmp->opoisoned = 1;
-			else if (is_elemental_enchantable(otmp) && ((objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED) || (is_multigen(otmp) ? !rn2(40) : !rn2(160))))
+			else if (is_elemental_enchantable(otmp) && ((objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED) || (is_multigen(otmp) ? !rn2(40) : !rn2(160))))
 			{
-				if (is_death_enchantable(otmp) && ((objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED) || !rn2(5)))
+				if (is_death_enchantable(otmp) && ((objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED) || !rn2(10)))
 				{
 					otmp->elemental_enchantment = DEATH_ENCHANTMENT;
 					if (is_multigen(otmp))
@@ -984,9 +984,10 @@ boolean makingboxcontents;
 				}
 				else
 				{
-					otmp->elemental_enchantment = (objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED) ? LIGHTNING_ENCHANTMENT :
+					otmp->elemental_enchantment = (objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED) ? COLD_ENCHANTMENT :
                         level_difficulty() > 11 ? (!rn2(7) ? COLD_ENCHANTMENT : !rn2(3) ? LIGHTNING_ENCHANTMENT  : FIRE_ENCHANTMENT) :
                         (!rn2(3) ? LIGHTNING_ENCHANTMENT : FIRE_ENCHANTMENT);
+
                     if (is_multigen(otmp))
 					{
                         otmp->quan = (otmp->quan + 1) / 2;

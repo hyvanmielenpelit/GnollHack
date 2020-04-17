@@ -833,7 +833,7 @@ struct objclass {
 	/* free bit */
 	/* free bit */
 
-#define O2_GENERATED_DEATH_OR_LIGHTNING_ENCHANTED 0x10000000UL			/* if deathenchantable item, then death, otherwise lightning*/
+#define O2_GENERATED_DEATH_OR_COLD_ENCHANTED 0x10000000UL			/* if deathenchantable item, then death, otherwise lightning*/
 #define O2_GENERATED_BLESSED	0x20000000UL							/* Always generated blessed */									
 #define O2_GENERATED_CURSED		0x40000000UL							/* Always generated cursed */								
 #define O2_CURSED_MAGIC_ITEM	0x80000000UL							/* The effect of the item is negative; typically 90% chance of being cursed */									
