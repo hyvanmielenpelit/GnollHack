@@ -221,7 +221,7 @@ static struct trobj Wizard[] =
 };
 static struct trobj WizardAlternate[] = 
 {
-	{ STAFF_OF_FROST, 1, WEAPON_CLASS, 1, 1, 0 },
+	{ STAFF_OF_FIRE, 1, WEAPON_CLASS, 1, 1, 0 },
 	{ LEATHER_CLOAK, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
 	{ ROBE, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
 	{ BAG_OF_WIZARDRY, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
