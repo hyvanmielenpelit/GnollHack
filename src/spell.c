@@ -1209,9 +1209,19 @@ int spell;
 	}
 	else
 	{
-		Sprintf(buf2, "None");
+		strcpy(buf2, "None");
 	}
 	Sprintf(buf, "Mana cost:    %s", buf2);
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	/* Casting time*/
+	if(objects[booktype].oc_spell_flags & S1_DOES_NOT_TAKE_A_TURN)
+		strcpy(buf2, "0 rounds");
+	else
+		strcpy(buf2, "1 round");
+
+	Sprintf(buf, "Casting time: %s", buf2);
 	txt = buf;
 	putstr(datawin, 0, txt);
 
@@ -1224,6 +1234,8 @@ int spell;
 	{
 		Sprintf(buf2, "None");
 	}
+
+
 	Sprintf(buf, "Cooldown:     %s", buf2);
 	txt = buf;
 	putstr(datawin, 0, txt);
@@ -2204,7 +2216,7 @@ boolean atme;
 		use_skill(skill, (spellev(spell) + 2) * pointsmultiplier);
 
 	int result = 1;
-	if (pseudo->otyp == SPE_PROBE_MONSTER)
+	if (pseudo->otyp > STRANGE_OBJECT && objects[pseudo->otyp].oc_spell_flags & S1_DOES_NOT_TAKE_A_TURN)
 		result = 0;
 
     obfree(pseudo, (struct obj *) 0); /* now, get rid of it */

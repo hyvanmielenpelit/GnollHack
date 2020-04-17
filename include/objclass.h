@@ -572,6 +572,7 @@ struct objclass {
 #define S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT		0x00000010UL
 #define S1_NO_SOMATIC_COMPONENT					0x00000020UL
 #define S1_NO_VERBAL_COMPONENT					0x00000040UL
+#define S1_DOES_NOT_TAKE_A_TURN					0x00000080UL
 
 
 	int oc_hitbonus;						/* weapons: "to hit" bonus */
