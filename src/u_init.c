@@ -125,6 +125,7 @@ static struct trobj Priest[] = {
 	{ GINSENG_ROOT, 0, REAGENT_CLASS, 2, 0, 0 },
 	{ SPE_MINOR_HEALING, 0, SPBOOK_CLASS, 1, 1, 0 },
 	{ SPE_HEALING, 0, SPBOOK_CLASS, 1, 1, 0 },
+	{ SPE_CONGREGATE, 0, SPBOOK_CLASS, 1, 1, 0 },
 	{ UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 2, UNDEF_BLESS, 0 },
 	{ LEATHER_BAG, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
 	{ 0, 0, 0, 0, 0, 0 }
@@ -283,6 +284,12 @@ static struct trobj LightningOrcishArrow[] = { { ORCISH_ARROW, 0, WEAPON_CLASS,
 static struct trobj PriestSilverMace[] = { { SILVER_MACE, 2, WEAPON_CLASS, 1, 1, 0 },
 								{ 0, 0, 0, 0, 0, 0 } };
 static struct trobj PriestNormalMace[] = { { MACE, 3, WEAPON_CLASS, 1, 1, 0 },
+								{ 0, 0, 0, 0, 0, 0 } };
+static struct trobj PriestLawfulSummonSpell[] = { { SPE_CELESTIAL_DOVE, 0, SPBOOK_CLASS, 1, 0, 0 },
+								{ 0, 0, 0, 0, 0, 0 } };
+static struct trobj PriestNeutralSummonSpell[] = { { SPE_STICK_TO_SNAKE, 0, SPBOOK_CLASS, 1, 0, 0 },
+								{ 0, 0, 0, 0, 0, 0 } };
+static struct trobj PriestChaoticSummonSpell[] = { { SPE_RAISE_MINOR_ZOMBIE, 0, SPBOOK_CLASS, 1, 0, 0 },
 								{ 0, 0, 0, 0, 0, 0 } };
 static struct trobj KnightSmallShield[] = { { SMALL_SHIELD, 0, ARMOR_CLASS, 1, 0, 0 },
 								{ 0, 0, 0, 0, 0, 0 } };
@@ -1046,6 +1053,13 @@ u_init()
 			ini_inv(PriestNormalMace);
 
         ini_inv(Priest);
+
+		if (u.ualign.type == A_CHAOTIC)
+			ini_inv(PriestChaoticSummonSpell);
+		else if (u.ualign.type == A_LAWFUL)
+			ini_inv(PriestLawfulSummonSpell);
+		else
+			ini_inv(PriestNeutralSummonSpell);
 
 		if (!rn2(10))
 			ini_inv(PriestSpikedSilverShield);
