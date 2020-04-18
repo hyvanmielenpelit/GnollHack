@@ -3996,7 +3996,7 @@ struct permonst _mons2[] = {
      */
 
 	 /* Demon lords */
-	MON("Juiblex", "Demon Lord of Slimes", "powerful major demon capable of engulfing opponents and contracting deadly disease", S_DEMON, LVL(50, 3, -7, 18, 65, -15), //STARTMARKER FOR DEMON LORDS
+	MON("Juiblex", "the Faceless Lord, Demon Lord of Slimes", "powerful demon lord capable of engulfing opponents and contracting deadly disease", S_DEMON, LVL(50, 3, -7, 18, 65, -15), //STARTMARKER FOR DEMON LORDS
         (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
         A(ATTK(AT_ENGL, AD_DISE, 4, 10, 0, -12), ATTK(AT_SPIT, AD_ACID, 3, 6, 0, 0),
 		ATTK(AT_SMMN, AD_DMNS, 0, 0, 0, 25), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -4008,7 +4008,7 @@ struct permonst _mons2[] = {
         M3_WAITFORU | M3_WANTSAMUL | M3_INFRAVISION, 
 		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS | M4_PROPER_NAME,
 		46, CLR_BRIGHT_GREEN),
-    MON("Yacc", "Demon Lord of Bovines", "powerful major demon capable of a confusing gaze and summoning bison and hell bovine", S_DEMON, LVL(52, 15, -3, 16, 70, -15),
+    MON("Yacc", "Demon Lord of Bovines", "powerful demon lord capable of a confusing gaze and summoning bison and hell bovine", S_DEMON, LVL(52, 15, -3, 16, 70, -15),
         (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
         A(ATTK(AT_BUTT, AD_PHYS, 5, 12, 0, 0), ATTK(AT_KICK, AD_PHYS, 4, 10, 0, 0),
 			ATTK(AT_GAZE, AD_CONF, 0, 0, 0, 0), ATTK(AT_SMMN, AD_DMNS, 0, 0, 0, 20), ATTK(AT_SMMN, AD_BISN, 0, 0, 0, 30),
@@ -4021,7 +4021,7 @@ struct permonst _mons2[] = {
 		M3_WANTSAMUL | M3_INFRAVISIBLE | M3_INFRAVISION | M3_SPEAKING,
 		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS | M4_IGNORES_ELBERETH | M4_PROPER_NAME,
 		73, HI_LORD),
-    MON("Yeenoghu", "Demon Lord of Gnolls", "powerful major demon capable of paralyzing and confusing attacks, shooting magic missiles, and summoning ghoul, gnolls, and other demons", S_DEMON, LVL(56, 18, -5, 17, 80, -15),
+    MON("Yeenoghu", "Demon Lord of Gnolls", "powerful demon lord capable of paralyzing and confusing attacks, shooting magic missiles, and summoning ghoul, gnolls, and other demons", S_DEMON, LVL(56, 18, -5, 17, 80, -15),
         (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 3, 6, 0, 0), ATTK(AT_CLAW, AD_CONF, 2, 8, 0, 0),
           ATTK(AT_CLAW, AD_PLYS, 1, 6, 0, 0), ATTK(AT_MAGC, AD_MAGM, 2, 6, 0, 0),
@@ -4035,7 +4035,7 @@ struct permonst _mons2[] = {
 		M3_WANTSAMUL | M3_INFRAVISIBLE | M3_INFRAVISION | M3_SPEAKING,
 		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS | M4_PROPER_NAME,
 		87, HI_LORD),
-    MON("Baphomet", "Demon Lord of Minotaurs", "powerful major demon capable of causing massive damage and summoning minotaurs and other demons", S_DEMON, LVL(57, 24, -4, 16, 75, -15), //ENDMARKER FOR DEMON LORDS
+    MON("Baphomet", "Demon Lord of Minotaurs", "powerful demon lord capable of causing massive damage and summoning minotaurs and other demons", S_DEMON, LVL(57, 24, -4, 16, 75, -15), //ENDMARKER FOR DEMON LORDS
         (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 4, 10, 0, 0), ATTK(AT_CLAW, AD_PHYS, 4, 10, 0, 0), ATTK(AT_BUTT, AD_PHYS, 3, 8, 0, 0),
 			ATTK(AT_BITE, AD_PHYS, 1, 4, 1, 0), ATTK(AT_SMMN, AD_DMNS, 0, 0, 0, 10), ATTK(AT_SMMN, AD_MINO, 0, 0, 0, 30),
@@ -4050,7 +4050,7 @@ struct permonst _mons2[] = {
 		121, HI_LORD),
 
 	/* Demon princes */
-    MON("Baalzebub", "Arch-Devil, Lord of Lies", "powerful major devil capable of a stunning gaze, a poisonous bite, and summoning other devils", S_DEMON, LVL(89, 9, -5, 18, 85, 20), //STARTMARKER FOR DEMON PRINCES
+    MON("Baalzebub", "Arch-Devil, Lord of Lies", "powerful arch-devil capable of a stunning gaze, a poisonous bite, and summoning other devils", S_DEMON, LVL(89, 9, -5, 18, 85, 20), //STARTMARKER FOR DEMON PRINCES
         (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
         A(ATTK(AT_BITE, AD_DRST, 2, 6, 0, 0), ATTK(AT_GAZE, AD_STUN, 2, 6, 0, 0), ATTK(AT_SMMN, AD_DMNS, 0, 0, 0, 27),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -4062,7 +4062,7 @@ struct permonst _mons2[] = {
         M3_WANTSAMUL | M3_WAITFORU | M3_INFRAVISIBLE | M3_INFRAVISION | M3_SPEAKING, 
 		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS | M4_PROPER_NAME,
         87, HI_LORD),
-	MON("Dispater", "Arch-Devil", "powerful major devil capable of casting spells and summoning other devils", S_DEMON, LVL(78, 15, -2, 17, 80, 15),
+	MON("Dispater", "Arch-Devil", "powerful arch-devil capable of casting spells and summoning other devils", S_DEMON, LVL(78, 15, -2, 17, 80, 15),
 	(G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
 		A(ATTK(AT_WEAP, AD_PHYS, 4, 6, 0, 0), ATTK(AT_MAGC, AD_SPEL, 6, 6, 0, 0), ATTK(AT_SMMN, AD_DMNS, 0, 0, 0, 25),
 			NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -4074,7 +4074,7 @@ struct permonst _mons2[] = {
 		M3_WANTSAMUL | M3_INFRAVISIBLE | M3_INFRAVISION | M3_SPEAKING,
 		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS | M4_PROPER_NAME,
 		93, HI_LORD),
-    MON("Geryon", "Arch-Devil", "powerful serpent-bodied major devil capable of a constriction attack and summoning minotaurs and other devils", S_DEMON, LVL(72, 18, -3, 16, 75, 15),
+    MON("Geryon", "Arch-Devil", "powerful serpent-bodied arch-devil capable of a constriction attack and summoning minotaurs and other devils", S_DEMON, LVL(72, 18, -3, 16, 75, 15),
         (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
         A(ATTK(AT_CLAW, AD_PHYS, 3, 6, 0, 0), ATTK(AT_CLAW, AD_PHYS, 3, 6, 0, 0),
             ATTK(AT_HUGS, AD_WRAP, 3, 6, 0, 0), ATTK(AT_STNG, AD_DRST, 2, 4, 0, 0),
@@ -4087,7 +4087,7 @@ struct permonst _mons2[] = {
         M3_WANTSAMUL | M3_INFRAVISIBLE | M3_INFRAVISION | M3_SPEAKING | M3_CONSTRICTOR, 
 		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS | M4_PROPER_NAME,
 		125, HI_LORD),
-	MON("Asmodeus", "Arch-Devil, Ruler of the Nine Hells", "powerful major devil capable of casting cold spells and summoning other devils", S_DEMON, LVL(105, 24, -7, 19, 90, 20),
+	MON("Asmodeus", "Arch-Devil, Ruler of the Nine Hells", "powerful arch-devil capable of casting cold spells and summoning other devils", S_DEMON, LVL(105, 24, -7, 19, 90, 20),
 	(G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
 		A(ATTK(AT_CLAW, AD_PHYS, 2, 6, 2, 0), ATTK(AT_MAGC, AD_COLD, 6, 6, 0, 0), ATTK(AT_SMMN, AD_DMNS, 0, 0, 0, 30),
 			NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -4131,7 +4131,7 @@ struct permonst _mons2[] = {
 	/* Riders -- the Four Horsemen of the Apocalypse ("War" == player);
 	 * depicted with '&' but do not have M2_DEMON set.
 	 */
-	MON("Death", "Rider of the Apocalypse", None, S_DEMON, LVL(30, 12, -5, 20, 100, 0), (G_UNIQ | G_NOGEN),
+	MON("Death", "Horseman of the Apocalypse", "personification of death", S_DEMON, LVL(30, 12, -5, 20, 100, 0), (G_UNIQ | G_NOGEN),
 		A(ATTK(AT_TUCH, AD_DETH, 8, 8, 0, -12), ATTK(AT_TUCH, AD_DETH, 8, 8, 0, -12), NO_ATTK,
 			NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
 		SIZ(WT_HUMAN, 1, MS_RIDER, MZ_HUMAN, 1, 0), STATS(STR18(100), 10, 4, 19, 19, 1),
@@ -4142,7 +4142,7 @@ struct permonst _mons2[] = {
 		M3_INFRAVISIBLE | M3_INFRAVISION | M3_DISPLACES | M3_REVIVES_FROM_DEAD | M3_REGENERATES_LOST_BODY_PARTS | M3_SPEAKING,
 		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS | M4_NONROTTING_CORPSE | M4_PROPER_NAME,
 		40, HI_LORD),
-	MON("Pestilence", "Rider of the Apocalypse", None, S_DEMON, LVL(30, 12, -5, 20, 100, 0), (G_UNIQ | G_NOGEN),
+	MON("Pestilence", "Horseman of the Apocalypse", "personification of terminal illness", S_DEMON, LVL(30, 12, -5, 20, 100, 0), (G_UNIQ | G_NOGEN),
 		A(ATTK(AT_TUCH, AD_PEST, 8, 8, 0, -12), ATTK(AT_TUCH, AD_PEST, 8, 8, 0, -12), NO_ATTK,
 			NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
 		SIZ(WT_HUMAN, 1, MS_RIDER, MZ_HUMAN, 1, 0), STATS(STR18(100), 10, 4, 19, 19, 1),
@@ -4153,7 +4153,7 @@ struct permonst _mons2[] = {
 		M3_INFRAVISIBLE | M3_INFRAVISION | M3_DISPLACES | M3_REVIVES_FROM_DEAD | M3_REGENERATES_LOST_BODY_PARTS | M3_SPEAKING,
 		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS | M4_NONROTTING_CORPSE | M4_PROPER_NAME,
 		40, HI_LORD),
-	MON("Famine", "Rider of the Apocalypse", None, S_DEMON, LVL(30, 12, -5, 20, 100, 0), (G_UNIQ | G_NOGEN),
+	MON("Famine", "Horseman of the Apocalypse", "personification of starvation", S_DEMON, LVL(30, 12, -5, 20, 100, 0), (G_UNIQ | G_NOGEN),
 		A(ATTK(AT_TUCH, AD_FAMN, 8, 8, 0, -12), ATTK(AT_TUCH, AD_FAMN, 8, 8, 0, -12), NO_ATTK,
 			NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
 		SIZ(WT_HUMAN, 1, MS_RIDER, MZ_HUMAN, 1, 0), STATS(STR18(100), 10, 4, 19, 19, 1),
@@ -4462,7 +4462,7 @@ struct permonst _mons2[] = {
     /*
      * quest leaders
      */
-    MON("Lord Carnarvon", "Quest Leader of Archeologists", None, S_HUMAN, LVL(20, 12, 0, 0, 30, 20), (G_NOGEN | G_UNIQ),
+    MON("Lord Carnarvon", "quest leader", None, S_HUMAN, LVL(20, 12, 0, 0, 30, 20), (G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 400, MS_LEADER, MZ_HUMAN, 1, 0), STATS(15, 15, 17, 18, 18, 18), MR_CHARM, MC_NONE,
@@ -4471,7 +4471,7 @@ struct permonst _mons2[] = {
             | M2_COLLECT | M2_MAGIC,
         M3_CLOSE | M3_INFRAVISIBLE | M3_SPEAKING, M4_PROPER_NAME,
 		16, HI_LORD),
-    MON("Pelias", "Quest Leader of Barbarians", None, S_HUMAN, LVL(20, 12, 0, 0, 30, 0), (G_NOGEN | G_UNIQ),
+    MON("Pelias", "quest leader", None, S_HUMAN, LVL(20, 12, 0, 0, 30, 0), (G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 400, MS_LEADER, MZ_HUMAN, 1, 0), STATS(STR18(100), 18, 18, 15, 15, 18), MR_POISON | MR_CHARM, MC_NONE,
@@ -4480,7 +4480,7 @@ struct permonst _mons2[] = {
             | M2_COLLECT | M2_MAGIC,
         M3_CLOSE | M3_INFRAVISIBLE | M3_SPEAKING, M4_PROPER_NAME,
 		17, HI_LORD),
-    MON("Shaman Karnov", "Quest Leader of Cavepeople", None, S_HUMAN, LVL(20, 12, 0, 0, 30, 20), (G_NOGEN | G_UNIQ),
+    MON("Shaman Karnov", "quest leader", None, S_HUMAN, LVL(20, 12, 0, 0, 30, 20), (G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 4, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 400, MS_LEADER, MZ_HUMAN, 1, 0), STATS(15, 15, 15, 18, 18, 18), MR_CHARM, MC_NONE,
@@ -4513,7 +4513,7 @@ struct permonst _mons2[] = {
         M3_CLOSE | M3_INFRAVISION | M3_INFRAVISIBLE, M4_PROPER_NAME,
 		22, HI_LORD),
 #endif
-    MON("Hippocrates", "Quest Leader of Healers", None, S_HUMAN, LVL(20, 12, 0, 0, 40, 0), (G_NOGEN | G_UNIQ),
+    MON("Hippocrates", "quest leader", None, S_HUMAN, LVL(20, 12, 0, 0, 40, 0), (G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 400, MS_LEADER, MZ_HUMAN, 1, 0), STATS(15, 18, 15, 18, 18, 18), MR_POISON | MR_CHARM, MC_NONE,
@@ -4522,7 +4522,7 @@ struct permonst _mons2[] = {
             | M2_COLLECT | M2_MAGIC,
         M3_CLOSE | M3_INFRAVISIBLE | M3_HEALER | M3_SPEAKING, M4_PROPER_NAME,
 		16, HI_LORD),
-    MON("King Arthur", "Lord of Camelot, Quest Leader of Knights", None, S_HUMAN, LVL(20, 12, 0, 0, 40, 20), (G_NOGEN | G_UNIQ),
+    MON("King Arthur", "Lord of Camelot, quest leader", None, S_HUMAN, LVL(20, 12, 0, 0, 40, 20), (G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0), ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 400, MS_LEADER, MZ_HUMAN, 1, 0), STATS(STR18(100), 18, 18, 15, 18, 18), MR_CHARM, MC_NONE,
@@ -4531,7 +4531,7 @@ struct permonst _mons2[] = {
             | M2_COLLECT | M2_MAGIC,
         M3_CLOSE | M3_INFRAVISIBLE | M3_KNIGHT | M3_SPEAKING, M4_PROPER_NAME,
 		22, HI_LORD),
-    MON("Grand Master", "Quest Leader of Monks", None, S_HUMAN, LVL(25, 12, 0, 0, 70, 0), (G_NOGEN | G_UNIQ),
+    MON("Grand Master", "quest leader", None, S_HUMAN, LVL(25, 12, 0, 0, 70, 0), (G_NOGEN | G_UNIQ),
         A(ATTK(AT_CLAW, AD_PHYS, 4, 10, 0, 0), ATTK(AT_KICK, AD_PHYS, 2, 8, 0, 0),
           ATTK(AT_MAGC, AD_CLRC, 2, 8, 0, 0), ATTK(AT_MAGC, AD_CLRC, 2, 8, 0, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
@@ -4543,7 +4543,7 @@ struct permonst _mons2[] = {
             | M2_MAGIC,
         M3_CLOSE | M3_INFRAVISIBLE | M3_SPEAKING, M4_NONE, 
 		45, CLR_BLACK),
-    MON("Arch Priest", "Quest Leader of Priests", None, S_HUMAN, LVL(25, 12, 7, 15, 70, 0), (G_NOGEN | G_UNIQ),
+    MON("Arch Priest", "quest leader", None, S_HUMAN, LVL(25, 12, 7, 15, 70, 0), (G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 4, 10, 0, 0), ATTK(AT_KICK, AD_PHYS, 2, 8, 0, 0),
           ATTK(AT_MAGC, AD_CLRC, 2, 8, 0, 0), ATTK(AT_MAGC, AD_CLRC, 2, 8, 0, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
@@ -4554,7 +4554,7 @@ struct permonst _mons2[] = {
             | M2_MAGIC,
         M3_CLOSE | M3_INFRAVISIBLE | M3_PRIEST | M3_SPEAKING, M4_NONE, 
 		46, CLR_WHITE),
-    MON("Orion", "Quest Leader of Rangers", None, S_HUMAN, LVL(20, 12, 0, 0, 30, 0), (G_NOGEN | G_UNIQ),
+    MON("Orion", "quest leader", None, S_HUMAN, LVL(20, 12, 0, 0, 30, 0), (G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(2200, 700, MS_LEADER, MZ_HUGE, 1, 0), STATS(STR18(100), 18, 18, 15, 15, 18), MR_SEE_INVISIBLE | MR_CHARM, MC_NONE,
@@ -4575,7 +4575,7 @@ struct permonst _mons2[] = {
             | M2_JEWELS | M2_COLLECT | M2_MAGIC,
         M3_CLOSE | M3_INFRAVISIBLE | M3_SPEAKING, M4_NONE, 
 		27, HI_LORD),
-    MON("Lord Sato", "Quest Leader of Samurai", None, S_HUMAN, LVL(20, 12, 0, 0, 30, 20), (G_NOGEN | G_UNIQ),
+    MON("Lord Sato", "quest leader", None, S_HUMAN, LVL(20, 12, 0, 0, 30, 20), (G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 8, 0, 0), ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 400, MS_LEADER, MZ_HUMAN, 1, 0), STATS(STR18(100), 18, 18, 18, 18, 18), MR_CHARM, MC_NONE,
@@ -4584,7 +4584,7 @@ struct permonst _mons2[] = {
             | M2_COLLECT | M2_MAGIC,
         M3_CLOSE | M3_INFRAVISIBLE | M3_SPEAKING, M4_PROPER_NAME,
 		22, HI_LORD),
-    MON("Twoflower", "Quest Leader of Tourists", None, S_HUMAN, LVL(20, 12, 10, 0, 20, 0), (G_NOGEN | G_UNIQ),
+    MON("Twoflower", "quest leader", None, S_HUMAN, LVL(20, 12, 10, 0, 20, 0), (G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0), ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 400, MS_LEADER, MZ_HUMAN, 1, 0), STATS(9, 18, 9, 15, 15, 18), MR_CHARM, MC_NONE,
@@ -4593,7 +4593,7 @@ struct permonst _mons2[] = {
             | M2_COLLECT | M2_MAGIC,
         M3_CLOSE | M3_INFRAVISIBLE | M3_SPEAKING, M4_PROPER_NAME,
 		15, HI_DOMESTIC),
-    MON("Norn", "Quest Leader of Valkyries", None, S_HUMAN, LVL(20, 12, 0, 10, 80, 0), (G_NOGEN | G_UNIQ),
+    MON("Norn", "quest leader", None, S_HUMAN, LVL(20, 12, 0, 10, 80, 0), (G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 8, 0, 0), ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1800, 550, MS_LEADER, MZ_HUGE, 1, 0), STATS(STR18(100), 18, 18, 15, 15, 18), MR_COLD | MR_CHARM, MC_NONE,
@@ -4602,7 +4602,7 @@ struct permonst _mons2[] = {
             | M2_COLLECT | M2_MAGIC,
         M3_CLOSE | M3_INFRAVISIBLE | M3_SPEAKING, M4_NONE, 
 		24, HI_LORD),
-    MON("Neferet the Green", "Arch-Sorceress, Quest Leader of Wizards", None, S_HUMAN, LVL(20, 12, 0, 10, 60, 0),
+    MON("Neferet the Green", "Arch-Sorceress, quest leader", None, S_HUMAN, LVL(20, 12, 0, 10, 60, 0),
         (G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0), ATTK(AT_MAGC, AD_SPEL, 2, 8, 0, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
