@@ -274,7 +274,7 @@ int x, y;
 
 	strcpy(headbuf, "");
 
-	if (mtmp->data->heads > 3 || (mtmp->data->heads > 1 && mtmp->heads_left != mtmp->data->heads))
+	if ((mtmp->data->heads > 3 && !(mtmp->data->geno & G_UNIQ) && !is_mname_proper_name(mtmp->data)) || (mtmp->data->heads > 1 && mtmp->heads_left != mtmp->data->heads))
 		Sprintf(headbuf, "%d-headed ", mtmp->heads_left);
 
     Sprintf(buf, "level %d %s%s%s%s", accurate ? mtmp->data->difficulty : rn2(3) ? rnd(30) : rnd(80),

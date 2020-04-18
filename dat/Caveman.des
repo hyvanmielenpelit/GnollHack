@@ -238,7 +238,7 @@ OBJECT:random,random
 OBJECT:random,random
 OBJECT:random,random
 # monsters.
-MONSTER:('D',"Chromatic Dragon"),(23,10),asleep
+MONSTER:('D',"Tiamat"),(23,10),asleep
 MONSTER:('F',"shrieker"),(26,13)
 MONSTER:('F',"shrieker"),(25,8)
 MONSTER:('F',"shrieker"),(45,11)

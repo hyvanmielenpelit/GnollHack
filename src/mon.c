@@ -1371,7 +1371,8 @@ update_monster_timouts()
         monster_regeneration_and_timeout(mtmp, FALSE);
 
 		/* regenerate heads */
-		if (does_regenerate_bodyparts(mtmp->data) && mtmp->data->heads > 1 && mtmp->heads_left < mtmp->data->heads && !rn2(4))
+		if (does_regenerate_bodyparts(mtmp->data) && mtmp->data->heads > 1 && mtmp->heads_left < mtmp->data->heads 
+            && !rn2(has_regeneration(mtmp) ? 4 : 40))
 		{
 			mtmp->heads_left++;
 			if (canseemon(mtmp))

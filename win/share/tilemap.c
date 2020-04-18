@@ -60,7 +60,7 @@ struct conditionals {
     { MON_GLYPH, PM_SHAMAN_KARNOV, "Earendil" },
     { MON_GLYPH, PM_SHAMAN_KARNOV, "Elwing" },
     /* commented out in monst.c at present */
-    { MON_GLYPH, PM_CHROMATIC_DRAGON, "Goblin King" },
+    { MON_GLYPH, PM_TIAMAT, "Goblin King" },
     { MON_GLYPH, PM_NEANDERTHAL, "High-elf" },
     /* objects commented out in objects.c at present */
     { OBJ_GLYPH, SILVER_DRAGON_SCALE_MAIL, "shimmering dragon scale mail" },

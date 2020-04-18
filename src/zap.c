@@ -3371,9 +3371,12 @@ struct obj *obj, *otmp;
 			if (obj->otyp == CORPSE)
 			{
 				int zombietype = NON_PM;
-				if ((obj->corpsenm >= PM_GRAY_DRAGON && obj->corpsenm <= PM_ANCIENT_YELLOW_DRAGON) || obj->corpsenm == PM_CHROMATIC_DRAGON)
+				if ((obj->corpsenm >= PM_GRAY_DRAGON && obj->corpsenm <= PM_ANCIENT_YELLOW_DRAGON)
+                    || obj->corpsenm == PM_GOLD_DRAGON ||  obj->corpsenm == PM_ANCIENT_GOLD_DRAGON
+                    || obj->corpsenm == PM_BAHAMUT || obj->corpsenm == PM_TIAMAT
+                    )
 				{
-					if (obj->corpsenm == PM_CHROMATIC_DRAGON)
+					if ((mons[obj->corpsenm].geno & G_UNIQ))
 						zombietype = PM_ELDER_DRACOLICH;
 					else
 						zombietype = PM_DRACOLICH;
@@ -4090,10 +4093,13 @@ register struct obj *obj;
 			{
 				if (sobj->otyp == CORPSE)
 				{
-					if ((sobj->corpsenm >= PM_GRAY_DRAGON && sobj->corpsenm <= PM_ANCIENT_YELLOW_DRAGON) || sobj->corpsenm == PM_CHROMATIC_DRAGON)
-					{
-						if(sobj->corpsenm == PM_CHROMATIC_DRAGON)
-							zombietype = PM_ELDER_DRACOLICH;
+                    if ((obj->corpsenm >= PM_GRAY_DRAGON && obj->corpsenm <= PM_ANCIENT_YELLOW_DRAGON)
+                        || obj->corpsenm == PM_GOLD_DRAGON || obj->corpsenm == PM_ANCIENT_GOLD_DRAGON
+                        || obj->corpsenm == PM_BAHAMUT || obj->corpsenm == PM_TIAMAT
+                        )
+                    {
+                        if ((mons[obj->corpsenm].geno & G_UNIQ))
+                            zombietype = PM_ELDER_DRACOLICH;
 						else
 							zombietype = PM_DRACOLICH;
 

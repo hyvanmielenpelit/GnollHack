@@ -195,7 +195,7 @@ const struct Role roles[] = {
       PM_LITTLE_DOG,
       PM_SHAMAN_KARNOV,
       PM_NEANDERTHAL,
-      PM_CHROMATIC_DRAGON,
+      PM_TIAMAT,
       PM_BUGBEAR,
       PM_HILL_GIANT,
       S_HUMANOID,
