@@ -1536,19 +1536,33 @@ register struct obj* omonwep;
     case AD_DRST:
     case AD_DRDX:
     case AD_DRCO:
-        if (!cancelled && !rn2(8)) {
+        if (!cancelled && !rn2(2)) 
+        {
             if (vis && canspotmon(magr))
                 pline("%s %s was poisoned!", s_suffix(Monnam(magr)),
                       mpoisons_subj(magr, mattk));
-            if (resists_poison(mdef)) {
+            if (resists_poison(mdef)) 
+            {
                 if (vis && canspotmon(mdef) && canspotmon(magr))
                     pline_The("poison doesn't seem to affect %s.",
                               mon_nam(mdef));
-            } else {
-                if (rn2(10))
-					poisondamage = adjust_damage(rn1(10, 6), magr, mdef, AD_DRCO, FALSE);
-                else {
-					poisondamage = adjust_damage(d(6, 6) + 10, magr, mdef, AD_DRCO, FALSE); // mdef->mhp;
+            }
+            else
+            {
+                if (magr->m_lev <= 2)
+                {
+                    poisondamage = adjust_damage(d(1, 6), magr, mdef, AD_DRCO, FALSE);
+                }
+                else if (magr->m_lev <= 5)
+                {
+                    poisondamage = adjust_damage(d(2, 6), magr, mdef, AD_DRCO, FALSE);
+                }
+                else
+                {
+                    if (rn2(10) || magr->m_lev <= 8)
+                        poisondamage = adjust_damage(d(3, 6), magr, mdef, AD_DRCO, FALSE);
+                    else 
+                        poisondamage = adjust_damage(d(6, 6) + 10, magr, mdef, AD_DRCO, FALSE); // mdef->mhp;
                 }
 				damage += poisondamage;
             }

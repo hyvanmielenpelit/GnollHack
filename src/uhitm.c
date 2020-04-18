@@ -1571,18 +1571,9 @@ boolean* obj_destroyed;
 		}
 		if (resists_poison(mon))
 			needpoismsg = TRUE;
-		else if (rn2(10))
-		{
-			poisondamage = adjust_damage(rnd(6), &youmonst, mon, AD_DRST, FALSE);
-			damage += poisondamage;
-		}
-		else
-		{
-			poisondamage = adjust_damage(d(6, 6), & youmonst, mon, AD_DRST, FALSE);
-			damage += poisondamage;
-			//poiskilled = TRUE;
-			//hide_damage_amount = TRUE;
-		}
+
+		poisondamage = adjust_damage(d(2, 6), &youmonst, mon, AD_DRST, FALSE);
+		damage += poisondamage;
 	}
 
 	if (obj && obj->elemental_enchantment > 0 && !isdisintegrated)
@@ -2808,7 +2799,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
     case AD_DRST:
     case AD_DRDX:
     case AD_DRCO:
-        if (!negated && !rn2(8)) 
+        if (!negated && !rn2(2)) 
 		{
             Your("%s was poisoned!", mpoisons_subj(&youmonst, mattk));
             if (resists_poison(mdef)) 

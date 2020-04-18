@@ -553,14 +553,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
             } 
 			else 
 			{
-                if (rn2(30)) 
-				{
-					poisondamage = adjust_damage(rnd(6), (struct monst*)0, mtmp, AD_DRST, FALSE);
-                } 
-				else
-				{
-					poisondamage = adjust_damage(d(6, 6), (struct monst*)0, mtmp, AD_DRST, FALSE); // mtmp->mhp;
-                }
+				poisondamage = adjust_damage(d(2, 6), (struct monst*)0, mtmp, AD_DRST, FALSE);
 				damage += poisondamage;
             }
         }
@@ -985,7 +978,7 @@ struct obj *obj;         /* missile (or stack providing it) */
                 poisoned(onmbuf, A_STR, knmbuf,
                          /* if damage triggered life-saving,
                             poison is limited to attrib loss */
-                         (u.umortality > oldumort) ? 0 : 10, TRUE);
+                           0, TRUE, 2);
             }
 
 			if (hitu && singleobj->elemental_enchantment)

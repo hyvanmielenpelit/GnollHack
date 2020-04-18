@@ -132,7 +132,7 @@ E boolean FDECL(m_adjattrib, (struct monst*, int, int));
 E void FDECL(gainstr, (struct obj *, int, BOOLEAN_P));
 E void FDECL(losestr, (int));
 E void FDECL(poisontell, (int, BOOLEAN_P));
-E void FDECL(poisoned, (const char *, int, const char *, int, BOOLEAN_P));
+E void FDECL(poisoned, (const char *, int, const char *, int, BOOLEAN_P, int));
 E void FDECL(extra_enchantment_damage, (const char*, int, const char*, boolean));
 E void FDECL(change_luck, (SCHAR_P, BOOLEAN_P));
 E int FDECL(stone_luck, (BOOLEAN_P));
@@ -3273,7 +3273,6 @@ E boolean FDECL(add_temporary_property, (struct monst*, struct obj*, BOOLEAN_P,
 E void NDECL(zapsetup);
 E void NDECL(zapwrapup);
 E void FDECL(weffects, (struct obj *));
-E int FDECL(spell_damage_bonus, (int));
 E const char *FDECL(exclam, (int force));
 E void FDECL(hit, (const char *, struct monst *, const char *, int));
 E void FDECL(miss, (const char *, struct monst *));

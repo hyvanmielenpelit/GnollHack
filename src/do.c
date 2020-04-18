@@ -1323,7 +1323,7 @@ register struct obj* obj;
 	}
 	if (obj->opoisoned)
 	{
-		Sprintf(buf, "Poisoned status:        Poisoned (+6d6 poison damage)");
+		Sprintf(buf, "Poisoned status:        Poisoned (+2d6 poison damage)");
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}

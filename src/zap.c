@@ -889,15 +889,12 @@ struct obj *otmp;
         } else
             wake = FALSE;
         break;
-    case SPE_DRAIN_LIFE:
+    case SPE_DRAIN_LEVEL:
 		res = 1;
 		if (disguised_mimic)
             seemimic(mtmp);
         
 		dmg = monhp_per_lvl(mtmp);
-        
-		if (otyp == SPE_DRAIN_LIFE)
-            dmg = spell_damage_bonus(dmg);
         
 		if (resists_drli(mtmp)) 
 		{
@@ -3167,7 +3164,7 @@ struct obj *obj, *otmp;
             newsym(obj->ox, obj->oy); /* might change color */
 #endif
             break;
-        case SPE_DRAIN_LIFE:
+        case SPE_DRAIN_LEVEL:
 			res = 1;
 			(void) drain_item(obj, TRUE);
             break;
@@ -4439,12 +4436,12 @@ register struct obj *obj;
 		break;
 	case SPE_PRAYER:
 	{
-		int orig_blesscnt = u.uprayer_timeout;
+		int orig_uprayer_timeout = u.uprayer_timeout;
 		u.uprayer_timeout = 0;
 		context.spellpray = TRUE;
 		(void)dopray();
 		context.spellpray = FALSE;
-		u.uprayer_timeout = orig_blesscnt;
+		u.uprayer_timeout = orig_uprayer_timeout;
 		break;
 
 	}
@@ -4787,7 +4784,7 @@ boolean ordinary;
 		(void)add_temporary_property(&youmonst, obj, TRUE, TRUE, TRUE, d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_diesize) + objects[obj->otyp].oc_spell_dur_plus);
 		break;
 	
-	case SPE_DRAIN_LIFE:
+	case SPE_DRAIN_LEVEL:
         if (!Drain_resistance) {
             learn_it = TRUE; /* (no effect for spells...) */
             losexp("life drainage");
@@ -5339,7 +5336,7 @@ struct obj *obj; /* wand or spell */
 	case SPE_FULL_HEALING:
 	case SPE_REPLENISH_UNDEATH:
 	case SPE_GREATER_UNDEATH_REPLENISHMENT:
-	case SPE_DRAIN_LIFE:
+	case SPE_DRAIN_LEVEL:
     case WAN_OPENING:
     case SPE_KNOCK:
         (void) bhitm(u.usteed, obj);
@@ -5881,31 +5878,6 @@ int subdir;
 	}
 
 	return displayedobjtype;
-}
-/* augment damage for a spell dased on the hero's intelligence (and level) */
-int
-spell_damage_bonus(dmg)
-int dmg; /* base amount to be adjusted by bonus or penalty */
-{
-    int intell = ACURR(A_INT);
-
-    /* Punish low intelligence before low level else low intelligence
-       gets punished only when high level */
-    if (intell <= 9) {
-        /* -3 penalty, but never reduce combined amount below 1
-           (if dmg is 0 for some reason, we're careful to leave it there) */
-        if (dmg > 1)
-            dmg = (dmg <= 3) ? 1 : dmg - 3;
-    } else if (intell <= 13 || u.ulevel < 5)
-        ; /* no bonus or penalty; dmg remains same */
-    else if (intell <= 18)
-        dmg += 1;
-    else if (intell <= 24 || u.ulevel < 14)
-        dmg += 2;
-    else
-        dmg += 3; /* Int 25 */
-
-    return dmg;
 }
 
 /*
@@ -6937,7 +6909,7 @@ xchar sx, sy;
         break;
     case ZT_POISON_GAS:
 		damage = 0;
-		poisoned("blast", A_DEX, "poisoned blast", 15, FALSE);
+		poisoned("blast", A_DEX, "poisoned blast", 15, FALSE, dmgdice ? dmgdice : 4);
         break;
     case ZT_ACID:
         if (Acid_resistance || Invulnerable)

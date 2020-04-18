@@ -1042,13 +1042,16 @@ unsigned trflags;
         oldumort = u.umortality;
         if (u.usteed && !rn2(2) && steedintrap(trap, otmp)) {
             ; /* nothing */
-        } else if (thitu(7, weapon_total_dmg_value(otmp, &youmonst, (struct monst*)0), &otmp, "little dart")) {
-            if (otmp) {
+        } 
+        else if (thitu(7, weapon_total_dmg_value(otmp, &youmonst, (struct monst*)0), &otmp, "little dart")) 
+        {
+            if (otmp)
+            {
                 if (otmp->opoisoned)
                     poisoned("dart", A_CON, "little dart",
                              /* if damage triggered life-saving,
                                 poison is limited to attrib loss */
-                             (u.umortality > oldumort) ? 0 : 10, TRUE);
+                             0, TRUE, 2);
                 obfree(otmp, (struct obj *) 0);
             }
         } else {
@@ -1309,7 +1312,7 @@ unsigned trflags;
                                 : "fall onto poison spikes",
                              /* if damage triggered life-saving,
                                 poison is limited to attrib loss */
-                             (u.umortality > oldumort) ? 0 : 8, FALSE);
+                                0, FALSE, 2);
             } else {
                 /* plunging flyers take spike damage but not pit damage */
                 if (!conj_pit
@@ -5379,7 +5382,7 @@ boolean disarm;
         case 18:
         case 17:
             pline("A cloud of noxious gas billows from %s.", the(xname(obj)));
-            poisoned("gas cloud", A_STR, "cloud of poison gas", 15, FALSE);
+            poisoned("gas cloud", A_STR, "cloud of poison gas", 0, FALSE, 2);
             exercise(A_CON, FALSE);
             break;
         case 16:
@@ -5387,7 +5390,7 @@ boolean disarm;
         case 14:
         case 13:
             You_feel("a needle prick your %s.", body_part(bodypart));
-            poisoned("needle", A_CON, "poisoned needle", 10, FALSE);
+            poisoned("needle", A_CON, "poisoned needle", 0, FALSE, 2);
             exercise(A_CON, FALSE);
             break;
         case 12:

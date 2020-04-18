@@ -1946,10 +1946,12 @@ register struct obj* omonwep;
         ptmp = A_CON;
  dopois:
         hitmsg(mtmp, mattk, damagedealt);
-        if (uncancelled && !rn2(8)) {
+        if (uncancelled && !rn2(2))
+        {
             Sprintf(buf, "%s %s", s_suffix(Monnam(mtmp)),
                     mpoisons_subj(mtmp, mattk));
-            poisoned(buf, ptmp, mdat->mname, 30, FALSE);
+
+            poisoned(buf, ptmp, mdat->mname, mtmp->m_lev <= 8 ? 0 : 10, FALSE, mtmp->m_lev <= 2 ? 1 : mtmp->m_lev <= 5 ? 2 : 3);
         }
         break;
     case AD_DRIN:
