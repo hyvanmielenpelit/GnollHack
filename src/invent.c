@@ -911,7 +911,8 @@ boolean verbose;
 	boolean had_magical_barkskin = Magical_barkskin;
 	boolean had_magical_stoneskin = Magical_stoneskin;
 	boolean had_titan_strength = Titan_strength;
-	boolean was_fast = Fast;
+    boolean had_divine_endurance = Divine_endurance;
+    boolean was_fast = Fast;
 	boolean was_very_fast = Very_fast;
 	boolean was_slowed = Slowed;
 	boolean was_silenced = Silenced;
@@ -1263,6 +1264,17 @@ boolean verbose;
 		state_change_detected = TRUE;
 		You("feel less strong than before.");
 	}
+
+    if (Divine_endurance && !had_divine_endurance)
+    {
+        state_change_detected = TRUE;
+        You("feel your constitution is greatly increased!");
+    }
+    else if (!Divine_endurance && had_divine_endurance)
+    {
+        state_change_detected = TRUE;
+        You("feel your constitution is less than before.");
+    }
 
 
 	if (otmp && state_change_detected)

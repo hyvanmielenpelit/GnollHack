@@ -1868,6 +1868,7 @@ struct monst* mon;
 
 	/* props influencing attribute bonuses */
 	boolean prop_titan_strength = FALSE;
+	boolean prop_divine_endurance = FALSE;
 	boolean prop_wounded_legs = FALSE;
 
 	/* Set pointers etc. */
@@ -1894,6 +1895,7 @@ struct monst* mon;
 		u.unluck_does_not_timeout = 0;
 
 		prop_titan_strength = Titan_strength;
+		prop_divine_endurance = Divine_endurance;
 		prop_wounded_legs = Wounded_legs;
 	}
 	else
@@ -1910,6 +1912,7 @@ struct monst* mon;
 		mcbonus_ptr = &mon->mmcbonus;
 
 		prop_titan_strength = has_titan_strength(mon);
+		prop_divine_endurance = has_divine_endurance(mon);
 		prop_wounded_legs = has_wounded_legs(mon);
 	}
 
@@ -1933,6 +1936,8 @@ struct monst* mon;
 	/* Set props here */
 	if (prop_titan_strength)
 		*afixmin_ptr[A_STR] = STR19(25);
+	if (prop_divine_endurance)
+		*afixmin_ptr[A_CON] = 25;
 	if (prop_wounded_legs)
 		*abon_ptr[A_DEX] = -1;
 

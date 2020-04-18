@@ -642,11 +642,14 @@
 #define ELifesaved u.uprops[LIFESAVED].extrinsic
 #define Lifesaved (HLifesaved || ELifesaved)
 
-
+/* Spell intrinsics / buffs */
 #define HTitan_strength u.uprops[TITAN_STRENGTH].intrinsic
 #define ETitan_strength u.uprops[TITAN_STRENGTH].extrinsic
 #define Titan_strength (HTitan_strength || ETitan_strength)
 
+#define HDivine_endurance u.uprops[DIVINE_ENDURANCE].intrinsic
+#define EDivine_endurance u.uprops[DIVINE_ENDURANCE].extrinsic
+#define Divine_endurance (HDivine_endurance || EDivine_endurance)
 
 
 /*

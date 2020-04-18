@@ -499,6 +499,9 @@
 #define has_titan_strength(mon) \
 	has_property(mon, TITAN_STRENGTH)
 
+#define has_divine_endurance(mon) \
+	has_property(mon, DIVINE_ENDURANCE)
+
 #define has_wounded_legs(mon) \
 	has_property(mon, WOUNDED_LEGS)
 

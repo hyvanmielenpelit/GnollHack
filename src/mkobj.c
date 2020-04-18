@@ -251,12 +251,14 @@ boolean init, artif;
     return otmp;
 }
 
+
 /* mkobj(): select a type of item from a class, use mksobj() to create it */
+/* mkobj_type = 0 making contents on the floor, = 1 making box contents, = 2 wishing */
 struct obj *
-mkobj(oclass, artif, makingboxcontents)
+mkobj(oclass, artif, mkobj_type)
 char oclass;
 boolean artif;
-boolean makingboxcontents;
+int mkobj_type;
 {
     int tprob;
 
@@ -273,7 +275,7 @@ boolean makingboxcontents;
 
 	int i = random_objectid_from_class(oclass);
 
-    return mksobj(i, TRUE, artif, makingboxcontents);
+    return mksobj(i, TRUE, artif, mkobj_type);
 }
 
 int
@@ -913,11 +915,11 @@ static const char dknowns[] = { WAND_CLASS,   RING_CLASS, POTION_CLASS, ARMOR_CL
 
 /* mksobj(): create a specific type of object */
 struct obj *
-mksobj(otyp, init, artif, makingboxcontents)
+mksobj(otyp, init, artif, mkobj_type)
 int otyp;
 boolean init;
 boolean artif;
-boolean makingboxcontents;
+int mkobj_type;
 {
     int mndx, tryct;
     struct obj *otmp;
@@ -1201,19 +1203,19 @@ boolean makingboxcontents;
             }
             break;
         case WAND_CLASS:
-			if (!makingboxcontents)
+			if (mkobj_type == 0)
 			{
 				if (otmp->otyp == WAN_DEATH || otmp->otyp == WAN_DISINTEGRATION)
 					otmp->otyp = !rn2(2) ? WAN_LIGHTNING : WAN_FIRE;
 
 			}
-			if (!makingboxcontents && (In_mines(&u.uz) || level_difficulty() < 10))
+			if (mkobj_type == 0 && (In_mines(&u.uz) || level_difficulty() < 10))
 			{
 				if (otmp->otyp == WAN_COLD || otmp->otyp == WAN_FIRE || otmp->otyp == WAN_LIGHTNING)
 					otmp->otyp = !rn2(3) ? WAN_STRIKING : !rn2(2) ? WAN_DIGGING : WAN_SPEED_MONSTER;
 
 			}
-			if (depth(&u.uz) == 1 || depth(&u.uz) == 2 || level_difficulty() < 5)
+			if (mkobj_type <= 1 && (depth(&u.uz) == 1 || depth(&u.uz) == 2 || level_difficulty() < 5))
 			{
 				if (otmp->otyp == WAN_WISHING)
 					otmp->otyp = WAN_POLYMORPH;

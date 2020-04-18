@@ -3858,7 +3858,7 @@ struct obj *no_wish;
             cnt = 5000;
         else if (cnt < 1)
             cnt = 1;
-        otmp = mksobj(GOLD_PIECE, FALSE, FALSE, TRUE);
+        otmp = mksobj(GOLD_PIECE, FALSE, FALSE, 2);
         otmp->quan = (long) cnt;
         otmp->owt = weight(otmp);
         context.botl = 1;
@@ -4340,7 +4340,7 @@ struct obj *no_wish;
     /*
      * Create the object, then fine-tune it.
      */
-    otmp = typ ? mksobj(typ, TRUE, FALSE, TRUE) : mkobj(oclass, FALSE, TRUE);
+    otmp = typ ? mksobj(typ, TRUE, FALSE, 2) : mkobj(oclass, FALSE, 2);
     typ = otmp->otyp, oclass = otmp->oclass; /* what we actually got */
 
     if (islit && (typ == OIL_LAMP || typ == MAGIC_LAMP || typ == BRASS_LANTERN

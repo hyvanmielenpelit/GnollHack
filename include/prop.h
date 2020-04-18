@@ -153,7 +153,8 @@ enum prop_types {
 	STUN_RES          = 129,
     FOOD_POISONED     = 130,
 	BISECTION_RES     = 131,
-	LAUGHING		  = 132 //KEEP THIS LAST
+	DIVINE_ENDURANCE  = 132,
+	LAUGHING		  = 133 //KEEP THIS LAST
 };
 #define LAST_PROP (LAUGHING)
 

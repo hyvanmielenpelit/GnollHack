@@ -156,8 +156,9 @@ const struct propname {
 	{ ONE_FOURTH_MAGIC_RES, "having 25% of normal magic resistance", "25% of normal magic resistance" },
 	{ THREE_FOURTHS_MAGIC_RES, "having 75% of normal magic resistance", "75% of normal magic resistance" },
 	{ BLINDFOLDED, "blindfolded", "blindness due to a blindfold" },
-	{ TITAN_STRENGTH, "strong as a titan", "titan strength" },
-	{ MAGIC_MISSILE_RES, "resistant to magic missiles", "magic missile resistance" },
+	{ TITAN_STRENGTH, "as strong as a titan", "strength equivalent of a titan" },
+    { DIVINE_ENDURANCE, "having as high constitution as a demigod", "constitution equivalent of a demigod" },
+    { MAGIC_MISSILE_RES, "resistant to magic missiles", "magic missile resistance" },
 	{ STUN_RES, "stun resistant", "stun resistance" },
 	{ FOOD_POISONED, "fatally food poisoned", "fatal food poisoning" },
 	{ BISECTION_RES, "protected from bisection", "protection from bisection" },
@@ -1153,7 +1154,11 @@ nh_timeout()
 				if (!Titan_strength)
 					You("feel less strong than before.");
 				break;
-			}
+            case DIVINE_ENDURANCE:
+                if (!Divine_endurance)
+                    You("feel you have less endurance than before.");
+                break;
+            }
 		}
 		else if ((upp->intrinsic & TIMEOUT) && ((upp->intrinsic & TIMEOUT) == 3) && !(upp->intrinsic & ~TIMEOUT) && !(upp->extrinsic))
 		{
@@ -1325,7 +1330,10 @@ nh_timeout()
 			case TITAN_STRENGTH:
 				You("are starting to feel less strong than before.");
 				break;
-			}
+            case DIVINE_ENDURANCE:
+                Your("endurance is starting to feel worse than before.");
+                break;
+            }
 		}
 		else if ((upp->intrinsic & TIMEOUT) > 0)
 		{

@@ -1557,7 +1557,8 @@ int mnum_override; /* Use this mnum instead */
 		mtmp2->mprops[THREE_FOURTHS_MAGIC_RES] = 0;
 		mtmp2->mprops[SUMMON_FORBIDDEN] = 0;
 		mtmp2->mprops[TITAN_STRENGTH] = 0;
-		mtmp2->mprops[BLINDED] = 0;
+        mtmp2->mprops[DIVINE_ENDURANCE] = 0;
+        mtmp2->mprops[BLINDED] = 0;
 		mtmp2->mprops[STUNNED] = 0;
 		mtmp2->mprops[CONFUSION] = 0;
 		if (mtmp2->isshk) {

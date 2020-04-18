@@ -3575,7 +3575,9 @@ int final;
 	if (Magical_stoneskin)
 		you_have("magical stoneskin (-10 to AC)", from_what(MAGICAL_STONESKIN));
 	if (Titan_strength)
-		you_have("titan strength", from_what(TITAN_STRENGTH));
+		you_are("magically as strong as a titan", from_what(TITAN_STRENGTH));
+    if (Divine_endurance)
+        you_have("constitution magically increased to equivalent that of a demigod", from_what(DIVINE_ENDURANCE));
 
 	if (Half_physical_damage)
         enlght_halfdmg(HALF_PHYSICAL_DAMAGE, final);
