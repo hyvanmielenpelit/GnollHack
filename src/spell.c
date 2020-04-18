@@ -1893,6 +1893,8 @@ boolean atme;
 	case SPE_HEAVENLY_ARMY:
 	case SPE_STICK_TO_SNAKE:
 	case SPE_STICK_TO_COBRA:
+	case SPE_STICK_TO_PYTHON:
+	case SPE_STICK_TO_BOA:
 	case SPE_CALL_HIERARCH_MODRON:
 	case SPE_GREAT_YENDORIAN_SUMMONING:
 	case SPE_CALL_GHOUL:
@@ -2036,6 +2038,7 @@ boolean atme;
 	case SPE_CREATE_FAMILIAR:
         (void) make_familiar((struct obj *) 0, u.ux, u.uy, FALSE);
         break;
+	case SPE_CONGREGATE:
 	case SPE_SUMMONING_CALL:
 		use_magic_whistle((struct obj*) 0);
 		break;

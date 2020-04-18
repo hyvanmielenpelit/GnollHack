@@ -449,14 +449,14 @@ const struct Role roles[] = {
             {0, 0, 0, 0, 0, 0, 0}, /* P_THROWN_WEAPON */
             {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
 
-            {0, 0, 10,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
+            {0, 0,  0,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
             {0, 0,  4, 17,  0, 0, 0}, /* P_CLERIC_SPELL */
             {0, 0,  1,  8, 16, 0, 0}, /* P_HEALING_SPELL */
             {0, 0,  5,  0,  0, 0, 0}, /* P_DIVINATION_SPELL */
             {0, 0,  1,  7, 14, 0, 0}, /* P_ABJURATION_SPELL */
             {0, 0,  1,  6, 12, 0, 0}, /* P_MOVEMENT_SPELL */
-            {0, 0,  1, 13,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
-            {0, 0,  1, 15,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
+            {0, 0,  0,  0,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
+            {0, 0,  0,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
             {0, 0,  0,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
             {0, 0,  0,  0,  0, 0, 0}, /* P_CELESTIAL_SPELL */
             {0, 0,  0,  0,  0, 0, 0}, /* P_NATURE_SPELL */

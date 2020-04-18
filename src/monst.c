@@ -2097,7 +2097,7 @@ NEARDATA struct permonst mons[] = {
 		66, HI_LORD),
 
     /* angelic dragons */
-    MON("gold dragon", None, "dragon with fiery and poison gas breath weapons", S_DRAGON, LVL(15, 12, -2, 10, 20, 10), (G_NOGEN),
+    MON("gold dragon", None, "spell-casting dragon with fiery and poison gas breath weapons", S_DRAGON, LVL(15, 12, -2, 10, 20, 10), (G_NOGEN),
         A(ATTK(AT_BREA, AD_RBGD, 6, 6, 0, 0), ATTK(AT_BITE, AD_PHYS, 6, 6, 0, 0),
           ATTK(AT_CLAW, AD_PHYS, 1, 8, 0, 0), ATTK(AT_CLAW, AD_PHYS, 1, 8, 0, 0), ATTK(AT_MAGC, AD_SPEL, 0, 0, 0, 0),
           NO_ATTK, NO_ATTK, NO_ATTK),
@@ -2109,7 +2109,7 @@ NEARDATA struct permonst mons[] = {
         M3_INFRAVISIBLE | M3_SPEAKING, 
         M4_BRAVE, 
 		35, HI_GOLD),
-	MON("ancient gold dragon", None, "powerful dragon with fiery and poison gas breath weapons", S_DRAGON, LVL(22, 12, -11, 15, 50, 10), (G_NOGEN),
+	MON("ancient gold dragon", None, "powerful spell-casting dragon with fiery and poison gas breath weapons", S_DRAGON, LVL(22, 12, -11, 15, 50, 10), (G_NOGEN),
 		A(ATTK(AT_BREA, AD_RBGD, 12, 6, 0, 0), ATTK(AT_BITE, AD_PHYS, 8, 6, 0, 0),
 			ATTK(AT_CLAW, AD_PHYS, 2, 8, 0, 0), ATTK(AT_CLAW, AD_PHYS, 2, 8, 0, 0), ATTK(AT_MAGC, AD_SPEL, 0, 0, 0, 0),
 			NO_ATTK, NO_ATTK, NO_ATTK),
@@ -2120,7 +2120,7 @@ NEARDATA struct permonst mons[] = {
 		M2_HOSTILE | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC | M2_ANGEL,
 		M3_INFRAVISIBLE | M3_SPEAKING, M4_BRAVE, 
 		53, HI_GOLD),
-	MON("Bahamut", "Platinum Dragon, King of Good Dragons", "powerful dragon king with cold and disintegrating breath weapons", S_DRAGON, LVL(33, 12, -13, 18, 80, 14), (G_NOGEN | G_UNIQ),
+	MON("Bahamut", "Platinum Dragon, King of Good Dragons", "powerful spell-casting dragon king with cold and disintegrating breath weapons", S_DRAGON, LVL(33, 12, -13, 18, 80, 14), (G_NOGEN | G_UNIQ),
 		A(ATTK(AT_BREA, AD_RBPD, 18, 6, 0, 0), ATTK(AT_BITE, AD_PHYS, 6, 8, 0, 0),
 			ATTK(AT_CLAW, AD_PHYS, 2, 6, 0, 0), ATTK(AT_CLAW, AD_PHYS, 2, 6, 0, 0), ATTK(AT_MAGC, AD_SPEL, 0, 0, 0, 0),
             ATTK(AT_SMMN, AD_GDRA, 0, 0, 0, 25), NO_ATTK, NO_ATTK),

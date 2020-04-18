@@ -3732,6 +3732,12 @@ register struct obj *obj;
 	case SPE_STICK_TO_COBRA:
 		mtmp = summoncreature(obj->otyp, PM_COBRA, "You throw the stick you prepared in the front of you. It turns into %s!", MM_EMIN_COALIGNED, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE);
 		break;
+    case SPE_STICK_TO_PYTHON:
+        mtmp = summoncreature(obj->otyp, PM_PYTHON, "You throw the stick you prepared in the front of you. It turns into %s!", MM_EMIN_COALIGNED, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE);
+        break;
+    case SPE_STICK_TO_BOA:
+        mtmp = summoncreature(obj->otyp, PM_BOA_CONSTRICTOR, "You throw the stick you prepared in the front of you. It turns into %s!", MM_EMIN_COALIGNED, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE);
+        break;
     case SPE_CELESTIAL_DOVE:
         mtmp = summoncreature(obj->otyp, PM_CELESTIAL_DOVE, "%s descends from the heavens.", NO_MM_FLAGS, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
         break;
