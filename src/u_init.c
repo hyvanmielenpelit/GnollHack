@@ -116,7 +116,7 @@ static struct trobj Monk[] = {
 	{ 0, 0, 0, 0, 0, 0 }
 };
 static struct trobj Priest[] = {
-	{ RING_MAIL, 0, ARMOR_CLASS, 1, 1, 0 },
+	{ BANDED_MAIL, 0, ARMOR_CLASS, 1, 1, 0 },
 	{ CLERICAL_GOWN, 0, ARMOR_CLASS, 1, 1, 0 },
 	{ HOLY_SYMBOL, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 }, //Blessed holy symbol is even more powerful
 	{ POT_WATER, 0, POTION_CLASS, 4, 1, 0 }, /* holy water */
@@ -282,13 +282,13 @@ static struct trobj LightningOrcishArrow[] = { { ORCISH_ARROW, 0, WEAPON_CLASS,
 
 static struct trobj PriestSilverMace[] = { { SILVER_MACE, 2, WEAPON_CLASS, 1, 1, 0 },
 								{ 0, 0, 0, 0, 0, 0 } };
-static struct trobj PriestNormalMace[] = { { MACE, 2, WEAPON_CLASS, 1, 1, 0 },
+static struct trobj PriestNormalMace[] = { { MACE, 3, WEAPON_CLASS, 1, 1, 0 },
 								{ 0, 0, 0, 0, 0, 0 } };
 static struct trobj KnightSmallShield[] = { { SMALL_SHIELD, 0, ARMOR_CLASS, 1, 0, 0 },
 								{ 0, 0, 0, 0, 0, 0 } };
 static struct trobj KnightSpikedSilverShield[] = { { SPIKED_SILVER_SHIELD, 0, ARMOR_CLASS, 1, 0, 0 },
 								{ 0, 0, 0, 0, 0, 0 } };
-static struct trobj PriestSmallShield[] = { { SMALL_SHIELD, 0, ARMOR_CLASS, 1, 1, 0 },
+static struct trobj PriestSmallShield[] = { { SMALL_SHIELD, 1, ARMOR_CLASS, 1, 1, 0 },
 								{ 0, 0, 0, 0, 0, 0 } };
 static struct trobj PriestSpikedSilverShield[] = { { SPIKED_SILVER_SHIELD, 0, ARMOR_CLASS, 1, 1, 0 },
 								{ 0, 0, 0, 0, 0, 0 } };
@@ -358,6 +358,7 @@ static struct inv_sub {
 	{ PM_GNOLL, BONE_ARROW, BONE_QUARREL },
 	{ PM_GNOLL, HELMET, GNOLLISH_HOOD },
 	{ PM_GNOLL, COTTON_HOOD, GNOLLISH_HOOD },
+	{ PM_GNOLL, BANDED_MAIL, GNOLLISH_BONE_MAIL },
 	{ PM_GNOLL, RING_MAIL, GNOLLISH_LEATHER_ARMOR },
 	{ PM_GNOLL, CHAIN_MAIL, GNOLLISH_STUDDED_LEATHER_ARMOR },
 	{ PM_GNOLL, LEATHER_ARMOR, GNOLLISH_LEATHER_ARMOR },
