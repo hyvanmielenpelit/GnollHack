@@ -2884,7 +2884,7 @@ SPELL("summon demon",	  "tenebrous", None, "Summons a permanent demon",
 	P_NECROMANCY_SPELL,		    5,  5,	         0, 6, 75, A_MAX_WIS_CHA, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
 SPELL("call Demogorgon",  "eldritch", "some aeon-old prayer", "Calls the Prince of Demons from the Abyss",
 	P_NECROMANCY_SPELL,		    2, 20,		   999,10,300, A_MAX_WIS_CHA, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 9, 9, 666, S1_NO_SOMATIC_COMPONENT | S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
-SPELL("drain level",      "velvet", None, "Drains one experience level of the target",
+SPELL("drain level",      "velvet", None, "Drains one experience level from the target",
 	P_NECROMANCY_SPELL,			 5,  2,			 0, 3, 20, A_WIS, 5, 0, 20, 0, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, CLR_MAGENTA, O1_NONE, O2_NONE, O3_NONE),
 
 
