@@ -403,14 +403,16 @@ int poison_strength;   /* d6 per level damage*/
         kprefix = KILLED_BY;
     }
 
+	int hp_before = Upolyd ? u.mh : u.uhp;
+
     i = !fatal ? 1 : rn2(fatal);
 
     if (i == 0 && typ != A_CHA)
 	{
-        /* no more instant kill but (4 + poison strength)d6 + 10 damage */
+		/* no more instant kill but (4 + poison strength)d6 + 10 damage */
 		damage = adjust_damage(d(poison_strength ? 4 + poison_strength : 6, 6) + 10, (struct monst*)0, &youmonst, AD_DRST, FALSE);
 		losehp(damage, pkiller, kprefix); /* poison damage */
-		
+
 		//Attribute loss
 		loss = (thrown_weapon || !fatal) ? 1 : d(1, 3); /* was rn1(3,3) */
 
@@ -426,7 +428,7 @@ int poison_strength;   /* d6 per level damage*/
 		damage = adjust_damage(poison_strength ? d(poison_strength, 6) : thrown_weapon ? rnd(6) : rn1(10, 6), (struct monst*)0, & youmonst, AD_DRST, FALSE); //10...15
         losehp(damage, pkiller, kprefix); /* poison damage */
 
-		if (rn2(100) < poison_strength ? 5 * poison_strength : 15)
+		if (rn2(100) < (poison_strength ? 5 * poison_strength : 15))
 		{
 			/* attribute loss; if typ is A_STR, reduction in current and
 				maximum HP will occur once strength has dropped down to 3 */
@@ -438,13 +440,22 @@ int poison_strength;   /* d6 per level damage*/
 		}
     }
 
-    if (u.uhp < 1) {
+    if (u.uhp < 1) 
+	{
 		pline_The("poison was deadly...");
 		killer.format = kprefix;
         Strcpy(killer.name, pkiller);
         /* "Poisoned by a poisoned ___" is redundant */
         done(strstri(pkiller, "poison") ? DIED : POISONING);
     }
+	else
+	{
+		int hp_after = Upolyd ? u.mh : u.uhp;
+		int damage_dealt = hp_before - hp_after;
+		if (damage_dealt > 0)
+			You("sustain %d damage!", damage_dealt);
+	}
+
     (void) encumber_msg();
 }
 
