@@ -4169,13 +4169,13 @@ struct permonst _mons2[] = {
 #ifdef MAIL
 	MON("mail daemon", None, None, S_DEMON, LVL(56, 24, 10, 0, 127, 0), (G_NOGEN | G_NOCORPSE),
 		A(NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
-		SIZ(600, 300, MS_SILENT, MZ_HUMAN, 1, 0), STATS(18, 18, 18 | M4_PROPER_NAME 18, 18, 18),
+		SIZ(600, 300, MS_SILENT, MZ_HUMAN, 1, 0), STATS(18, 18, 18, 18, 18, 18),
 		MR_FIRE | MR_COLD | MR_ELEC | MR_SLEEP | MR_POISON | MR_STONE | MR_SEE_INVISIBLE,
 		MC_NONE,
 		M1_FLY | M1_SWIM | M1_BREATHLESS | M1_HUMANOID,
 		M2_NOPOLY | M2_STALK | M2_PEACEFUL, 
 		M3_INFRAVISIBLE | M3_INFRAVISION, 
-		M4_NONE,
+        M4_NONE,
         26, CLR_BRIGHT_BLUE),
 #endif
     MON("djinni", None, "humanoid-shaped magical being from the elemental plane of air sometimes capable of granting wishes", S_DEMON, LVL(7, 12, 4, 15, 30, 0), (G_NOGEN | G_NOCORPSE),
