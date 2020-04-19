@@ -2134,10 +2134,21 @@ char *outbuf;
     } else {
         Strcpy(outbuf, x_monnam(mon, article, (char *) 0, 0, TRUE));
     }
+
     if (mon->data->mtitle && strcmp(mon->data->mtitle, ""))
     {
         Sprintf(eos(outbuf), ", %s", mon->data->mtitle);
     }
+
+    if (mon->data->msound == MS_LEADER)
+    {
+        strcat(outbuf, ", quest leader");
+    }
+    else if (mon->data->msound == MS_NEMESIS)
+    {
+        strcat(outbuf, ", quest nemesis");
+    }
+
     return outbuf;
 }
 
