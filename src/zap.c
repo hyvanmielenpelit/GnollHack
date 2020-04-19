@@ -292,7 +292,32 @@ struct obj *otmp;
 			}
 		}
 		break;
-	case SPE_FLESH_TO_STONE:
+    case SPE_OBLITERATE:
+        res = 1;
+        reveal_invis = TRUE;
+        You("reach out with your obliterating touch...");
+        if (check_rider_disintegration(mtmp, (const char*)0))
+        {
+            /* no further action */
+            break;
+        }
+        else if (resists_disint(mtmp) || is_peaceful(mtmp))
+        { /* match effect on player */
+            shieldeff(mtmp->mx, mtmp->my);
+            pline("%s is unaffected by your touch!", Monnam(mtmp));
+            break; /* skip makeknown */
+        }
+        else if (check_magic_cancellation_success(mtmp, objects[otyp].oc_spell_saving_throw_adjustment))
+        {
+            pline("Luckily for %s, it didn't work!", mon_nam(mtmp));
+            break; /* skip makeknown */
+        }
+        else
+        { //Otherwise dead
+            disintegrate_mon(mtmp, 1, "obliteration spell");
+        }
+        break;
+    case SPE_FLESH_TO_STONE:
 		res = 1;
 		if (resists_ston(mtmp))
 			pline("%s is unaffected.", Monnam(mtmp));
@@ -312,7 +337,7 @@ struct obj *otmp;
 			start_delayed_petrification(mtmp, TRUE);
 		break;
 
-	case SPE_GAZE_OF_MEDUSA:
+	case SPE_GAZE_OF_PETRIFICATION:
 		res = 1;
 		if (!m_canseeu(mtmp))
 			pline("%s couldn't see your gaze.", Monnam(mtmp));
@@ -3433,7 +3458,7 @@ struct obj *obj, *otmp;
 		case SPE_TOUCH_OF_DEATH:
 		case SPE_TOUCH_OF_PETRIFICATION:
 		case SPE_FLESH_TO_STONE:
-		case SPE_GAZE_OF_MEDUSA:
+		case SPE_GAZE_OF_PETRIFICATION:
 			res = 0;
             break;
         case SPE_STONE_TO_FLESH:
@@ -4957,7 +4982,7 @@ boolean ordinary;
 			make_stoned(5L, (char*)0, kformat, kname);
 		}
 		break;
-	case SPE_GAZE_OF_MEDUSA:
+	case SPE_GAZE_OF_PETRIFICATION:
 		You("try to gaze at yourself but cannot!");
 		break;
 	case SPE_POWER_WORD_STUN:
@@ -5316,7 +5341,7 @@ struct obj *obj; /* wand or spell */
 	case SPE_TOUCH_OF_DEATH:
 	case SPE_TOUCH_OF_PETRIFICATION:
 	case SPE_FLESH_TO_STONE:
-	case SPE_GAZE_OF_MEDUSA:
+	case SPE_GAZE_OF_PETRIFICATION:
 	case SPE_POWER_WORD_KILL:
 	case SPE_POWER_WORD_STUN:
 	case SPE_POWER_WORD_BLIND:
