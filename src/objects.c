@@ -1598,6 +1598,14 @@ WEAPONBOOTS("spiked silver boots", None,
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattrs,attrbonus, splcastpen, 0, \
 		   15, color, 0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
+#define CHARGEDRING(name,desc,prob,power,power2,power3,pflags,cost,mgc,ench,chargetype,mohs,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,color,flags,flags2,flags3,powconfermask) \
+    OBJECT(OBJ(name, desc, None, None),                                         \
+           BITS(0, 0, ench == ENCHTYPE_NO_ENCHANTMENT && chargetype == CHARGED_NOT_CHARGED  ? 0 : 1 , 0, mgc, ench, chargetype, 0, 0, 0,                    \
+                HARDGEM(mohs), 0, 0, P_NONE, metal),                     \
+           power, power2, power3, pflags, RING_CLASS, prob, MULTIGEN_SINGLE, 0, 1, cost,  \
+		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
+		   0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattrs,attrbonus, splcastpen, 0, \
+		   15, color, 0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
 RING("adornment", "wooden", /* STARTMARKER FOR SHUFFLED RINGS */
     30, ADORNED, 0, 0, P1_NONE, 100, 1, ENCHTYPE_RING_NORMAL, 2, 0, 0, BONUS_TO_CHA, 0, 0, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("gain strength", "granite",
@@ -1681,7 +1689,13 @@ RING("supreme power", "golden runed", /* Base item for the One Ring */
 	O1_INDESTRUCTIBLE | O1_DISINTEGRATION_RESISTANT | O1_FIRE_RESISTANT | O1_COLD_RESISTANT | O1_LIGHTNING_RESISTANT,
 	O2_NONE, 
 	O3_NO_WISH | O3_NO_GENERATION | O3_READABLE, PERMITTED_ALL),
+CHARGEDRING("three charges", "ornate golden", /* Base item for the Ring of Three Wishes */
+    0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 1000, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_ALWAYS_3, 9, 0, 0, 0, 0, 0, MAT_GEMSTONE, CLR_RED,
+	O1_INDESTRUCTIBLE,
+	O2_NONE, 
+	O3_NO_WISH | O3_NO_GENERATION, PERMITTED_ALL),
 #undef RING
+#undef CHARGEDRING
 
 /* amulets ... - THE Amulet comes last because it is special */
 #define AMULET(name,desc,prob,power,power2,power3,pflags,manabonus,hpbonus,bonusattrs,attrbonus,splcastpen,flags,flags2,flags3,powconfermask) \

@@ -868,8 +868,9 @@ boolean verbose;
 				goto not_chargable;
 			}
 			break;
-		case SWORD_OF_LUCKINESS:
-			if (objects[obj->otyp].oc_charged == CHARGED_LUCK_BLADE)
+        case RIN_THREE_CHARGES:
+        case SWORD_OF_LUCKINESS:
+            if (objects[obj->otyp].oc_charged == CHARGED_LUCK_BLADE || objects[obj->otyp].oc_charged == CHARGED_ALWAYS_3)
 			{
 				if (obj->recharged >= 1)
 				{
@@ -905,7 +906,7 @@ boolean verbose;
 					}
 					else if (obj->charges < lim)
 					{
-						obj->charges += rnd(3);
+						obj->charges++;
 						if (obj->charges > lim)
 							obj->charges = lim;
                         if (verbose)
@@ -923,7 +924,7 @@ boolean verbose;
 				goto not_chargable;
 
 			break;
-		default:
+        default:
 			goto not_chargable;
 			break;
 		}
@@ -1753,9 +1754,6 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 	case SPE_ENCHANT_WEAPON:
 	case SCR_ENCHANT_WEAPON:
 	{
-		/* [What about twoweapon mode?  Proofing/repairing/enchanting both
-		   would be too powerful, but shouldn't we choose randomly between
-		   primary and secondary instead of always acting on primary?] */
 		const char enchant_weapon_objects[] = { ALL_CLASSES, WEAPON_CLASS, 0 };
 
 		if (otyp == SPE_PROTECT_WEAPON || otyp == SPE_ENCHANT_WEAPON)
@@ -1774,8 +1772,17 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 			}
 
 		}
-		else
-			otmp = uwep;
+        else
+        {
+            if(!uarms || !is_weapon(uarms))
+                otmp = uwep;
+            else if((!uwep || !is_weapon(uwep)) && uarms && is_weapon(uarms))
+                otmp = uarms;
+            else if (uwep && is_weapon(uwep) && uarms && is_weapon(uarms))
+                otmp = !rn2(2) ? uwep : uarms;
+            else
+                otmp = uwep; /* Maybe null or not a weapon */
+        }
 
 		if ((confused || otyp == SPE_PROTECT_WEAPON || otyp == SCR_PROTECT_WEAPON) && otmp
 			&& erosion_matters(otmp) && otmp->oclass != ARMOR_CLASS) {

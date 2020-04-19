@@ -26,6 +26,7 @@ STATIC_DCL boolean FDECL(Mb_hit, (struct monst * magr, struct monst *mdef, struc
 STATIC_DCL int FDECL(glow_strength, (int));
 STATIC_DCL boolean FDECL(untouchable, (struct obj *, BOOLEAN_P));
 STATIC_DCL int FDECL(count_surround_traps, (int, int));
+STATIC_DCL void FDECL(check_arti_name_discovery, (struct obj*));
 
 /* The amount added to the victim's total hit points to insure that the
    victim will be killed even after damage bonus/penalty adjustments.
@@ -2351,14 +2352,6 @@ struct obj *obj;
         return 1;
     }
 
-	if (obj && obj->oartifact && !obj->nknown && (artilist[obj->oartifact].aflags & (AF_FAMOUS | AF_NAME_KNOWN_WHEN_INVOKED)))
-	{
-		pline("As you invoke %s, %syou suddenly become aware that %s named %s!", the(cxname(obj)),
-			obj->oartifact == ART_HOWLING_FLAIL ? "it lets loose a majestic howl and " : "",
-		    (pair_of(obj) || obj->quan > 1) ? "they are" : "it is",	bare_artifactname(obj));
-		obj->nknown = TRUE;
-	}
-
     if (oart->inv_prop > LAST_PROP) {
         /* It's a special power, not "just" a property */
         if (obj->cooldownleft > 0) {
@@ -2376,7 +2369,8 @@ struct obj *obj;
         switch (oart->inv_prop) 
 		{
         case ARTINVOKE_TAMING: {
-            struct obj pseudo;
+			check_arti_name_discovery(obj);
+			struct obj pseudo;
             pseudo = zeroobj; /* neither cursed nor blessed, zero oextra too */
             pseudo.otyp = SCR_TAMING;
             (void) seffects(&pseudo);
@@ -2392,7 +2386,8 @@ struct obj *obj;
 			break;
         }
         case ARTINVOKE_HEALING: {
-            int healamt = (u.uhpmax + 1 - u.uhp) / 2;
+			check_arti_name_discovery(obj);
+			int healamt = (u.uhpmax + 1 - u.uhp) / 2;
             long creamed = (long) u.ucreamed;
 
             if (Upolyd)
@@ -2420,7 +2415,8 @@ struct obj *obj;
 			break;
         }
         case ARTINVOKE_ENERGY_BOOST: {
-            int epboost = (u.uenmax + 1 - u.uen) / 2;
+			check_arti_name_discovery(obj);
+			int epboost = (u.uenmax + 1 - u.uen) / 2;
 
             if (epboost > 120)
                 epboost = 120; /* arbitrary */
@@ -2436,7 +2432,8 @@ struct obj *obj;
 			break;
         }
         case ARTINVOKE_UNTRAP: {
-            if (!untrap(TRUE)) {
+			check_arti_name_discovery(obj);
+			if (!untrap(TRUE)) {
                 //obj->age = 0; /* don't charge for changing their mind */
                 return 0;
             }
@@ -2445,7 +2442,8 @@ struct obj *obj;
 			break;
         }
         case ARTINVOKE_CHARGE_OBJ: {
-            struct obj *otmp = getobj(recharge_type, "charge", 0, "");
+			check_arti_name_discovery(obj);
+			struct obj *otmp = getobj(recharge_type, "charge", 0, "");
             boolean b_effect;
 
             if (!otmp) {
@@ -2460,11 +2458,13 @@ struct obj *obj;
 			break;
         }
         case ARTINVOKE_LEVEL_TELEPORT:
-            level_tele(2, FALSE);
+			check_arti_name_discovery(obj);
+			level_tele(2, FALSE);
 			obj->cooldownleft = 25 + rnz(25);
 			break;
         case ARTINVOKE_CREATE_PORTAL:
 		{
+			check_arti_name_discovery(obj);
 			int portal_res = create_portal();
 			if (!portal_res)
 				goto nothing_special;
@@ -2473,11 +2473,13 @@ struct obj *obj;
 			break;
         }
         case ARTINVOKE_ENLIGHTENING:
-            enlightenment(MAGICENLIGHTENMENT, ENL_GAMEINPROGRESS);
+			check_arti_name_discovery(obj);
+			enlightenment(MAGICENLIGHTENMENT, ENL_GAMEINPROGRESS);
 			obj->cooldownleft = 25 + rnz(25);
 			break;
         case ARTINVOKE_CREATE_AMMO: {
-            struct obj *otmp = mksobj(ARROW, TRUE, FALSE, FALSE);
+			check_arti_name_discovery(obj);
+			struct obj *otmp = mksobj(ARROW, TRUE, FALSE, FALSE);
 
             if (!otmp)
                 goto nothing_special;
@@ -2502,6 +2504,7 @@ struct obj *obj;
         }
 		case ARTINVOKE_WAND_OF_DEATH:
 		{
+			check_arti_name_discovery(obj);
 			struct obj pseudo = zeroobj;
 			pseudo.otyp = SPE_FINGER_OF_DEATH;
 			pseudo.quan = 20L; /* do not let useup get it */
@@ -2568,6 +2571,7 @@ struct obj *obj;
 				}
 				if (blessed)
 				{
+					check_arti_name_discovery(obj);
 					pline("A light blue aura glows inside %s for a while.", the(cxname(obj)));
 					obj->cooldownleft = 150 + rnd(150);
 				}
@@ -2581,11 +2585,17 @@ struct obj *obj;
 		}
 		case ARTINVOKE_WISHING:
 		{
-			if (obj->charges <= 0)
+			if (!is_worn_correctly(obj))
+			{
+				pline("Nothing happens.");
+				break;
+			}
+			else if (obj->charges <= 0)
 			{
 				pline("Unfortunately, nothing happens.");
 				break;
 			}
+			check_arti_name_discovery(obj);
 			consume_obj_charge(obj, TRUE);
 			makewish();
 			break;
@@ -2600,6 +2610,7 @@ struct obj *obj;
 			}
 			else
 			{
+				check_arti_name_discovery(obj);
 				timestop();
 				obj->cooldownleft = 1000 + rnd(100);
 				if (!rn2(2))
@@ -2676,6 +2687,20 @@ struct obj *obj;
     }
 
     return 1;
+}
+
+STATIC_OVL
+void
+check_arti_name_discovery(obj)
+struct obj* obj;
+{
+	if (obj && obj->oartifact && !obj->nknown && (artilist[obj->oartifact].aflags & (AF_FAMOUS | AF_NAME_KNOWN_WHEN_INVOKED)))
+	{
+		pline("As you invoke %s, %syou suddenly become aware that %s named %s!", the(cxname(obj)),
+			obj->oartifact == ART_HOWLING_FLAIL ? "it lets loose a majestic howl and " : "",
+			(pair_of(obj) || obj->quan > 1) ? "they are" : "it is", bare_artifactname(obj));
+		obj->nknown = TRUE;
+	}
 }
 
 int
