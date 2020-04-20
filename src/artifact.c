@@ -2665,7 +2665,7 @@ struct obj *obj;
 			int old_charges = obj->charges;
 			obj->recharged = 0;
 			obj->charges = get_obj_max_charge(obj);
-			obj->cooldownleft = 888 + rnz(100);
+			obj->cooldownleft = 700 + rnz(200);
 			if (obj->charges > old_charges)
 			{
 				pline("%s itself with %s.", Tobjnam(obj, "fill"), OBJ_CONTENT_DESC(obj->otyp));

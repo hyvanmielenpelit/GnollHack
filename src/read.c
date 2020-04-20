@@ -961,17 +961,14 @@ boolean verbose;
                     }
                     else if (obj->charges < lim)
                     {
-                        obj->charges += rnd(3) + 1;
+                        obj->charges += rnd(2);
                         if (obj->charges > lim)
                             obj->charges = lim;
                     }
 
                     if (verbose)
                     {
-                        if (old_charges == 0)
-                            pline("%s magically full of %s.", Tobjnam(obj, "become"), OBJ_CONTENT_DESC(obj->otyp));
-                        else if (old_charges == 0)
-                            pline("%s magically topped up with %s.", Tobjnam(obj, "are"), OBJ_CONTENT_DESC(obj->otyp));
+                        pline("%s itself with %s.", Tobjnam(obj, "fill"), OBJ_CONTENT_DESC(obj->otyp));
                     }
 
                     obj->recharged++;
