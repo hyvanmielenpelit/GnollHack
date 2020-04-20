@@ -15,7 +15,7 @@ cost(otmp)
 register struct obj *otmp;
 {
     if (otmp->oclass == SPBOOK_CLASS)
-        return (10 * objects[otmp->otyp].oc_spell_level);
+        return (10 * (objects[otmp->otyp].oc_spell_level + 2));
 
     switch (otmp->otyp) {
 #ifdef MAIL
@@ -245,7 +245,7 @@ found:
 
     /* we're really going to write now, so calculate cost
      */
-    actualcost = rn1(basecost / 2, basecost / 2);
+    actualcost = rn1(max(2, basecost / 2), basecost / 2);
     curseval = bcsign(pen) + bcsign(paper);
     exercise(A_WIS, TRUE);
     /* dry out marker */
