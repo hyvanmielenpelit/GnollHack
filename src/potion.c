@@ -625,7 +625,7 @@ dodrink()
         case GRAIL_OF_HEALING:
             return use_grail(otmp, TRUE);
         default:
-            pline("That's a silly thing to drink.");
+            pline("That's a silly thing to drink!");
             return 0;
             break;
         }
