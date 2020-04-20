@@ -2642,7 +2642,7 @@ struct obj *obj;
 			}
 			else
 			{
-				pline("Unfortunately, nothing happens.");
+				goto nothing_special;
 			}
 			break;
 		}
