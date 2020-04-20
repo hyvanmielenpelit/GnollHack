@@ -2640,6 +2640,10 @@ struct obj *obj;
 
 				pline("%s appears in a puff of smoke!", Amonnam(mon));
 			}
+			else
+			{
+				pline("Unfortunately, nothing happens.");
+			}
 			break;
 		}
 		case ARTINVOKE_TIME_STOP:
