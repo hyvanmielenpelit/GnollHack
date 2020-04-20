@@ -1841,31 +1841,61 @@ enhance_weapon_skill()
 		add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings,
 			headerbuf, MENU_UNSELECTED);
 		
-		for (pass = 0; pass < SIZE(skill_ranges); pass++)
-            for (i = skill_ranges[pass].first; i <= skill_ranges[pass].last; i++) 
-			{
+        for (pass = 0; pass < SIZE(skill_ranges); pass++)
+        {
+            int sorted_skills[P_NUM_SKILLS] = { 0 };
+            int num_skills = 0;
+            for (i = skill_ranges[pass].first; i <= skill_ranges[pass].last; i++)
+            {
+                const char* skillname1 = P_NAME(i);
+                boolean found = FALSE;
+                for (int j = 0; j < num_skills; j++)
+                {
+                    const char* skillname2 = P_NAME(sorted_skills[j]);
+                    if (strcmp(skillname1, skillname2) < 0)
+                    {
+                        num_skills++;
+                        for (int k = num_skills; k >= j; k--)
+                        {
+                            sorted_skills[k + 1] = sorted_skills[k];
+                        }
+                        sorted_skills[j] = i;
+                        found = TRUE;
+                        break;
+                    }
+                }
+                if (!found)
+                {
+                    sorted_skills[num_skills] = i;
+                    num_skills++;
+                }
+            }
+
+            for (int idx = 0; idx < num_skills; idx++) //(i = skill_ranges[pass].first; i <= skill_ranges[pass].last; i++)
+            {
+                i = sorted_skills[idx];
                 /* Print headings for skill types */
                 any = zeroany;
-                if (i == skill_ranges[pass].first)
-				{
-					int skillcount = 0;
-					for (int j = skill_ranges[pass].first; j <= skill_ranges[pass].last; j++)
-					{
-						if (!P_RESTRICTED(j))
-							skillcount++;
-					}
-					/*
-					if (!firstheader)
-						add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE,
-							"", MENU_UNSELECTED);
-					*/
-					if (skillcount > 0)
-					{
-						add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings,
-							skill_ranges[pass].name, MENU_UNSELECTED);
-						firstheader = FALSE;
-					}
-				}
+                if (idx == 0) //skill_ranges[pass].first)
+                {
+                    int skillcount = 0;
+                    for (int j = 0; j < num_skills; j++) //int j = skill_ranges[pass].first; j <= skill_ranges[pass].last; j++)
+                    {
+                        if (!P_RESTRICTED(sorted_skills[j]))
+                            skillcount++;
+                    }
+                    /*
+                    if (!firstheader)
+                        add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE,
+                            "", MENU_UNSELECTED);
+                    */
+                    if (skillcount > 0)
+                    {
+                        add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings,
+                            skill_ranges[pass].name, MENU_UNSELECTED);
+                        firstheader = FALSE;
+                    }
+                }
                 if (P_RESTRICTED(i))
                     continue;
                 /*
@@ -1877,174 +1907,174 @@ enhance_weapon_skill()
                  */
                 if (can_advance(i, speedy))
 #ifdef ANDROID
-					prefix = "+ ";	/* will be preceded by menu choice */
+                    prefix = "+ ";	/* will be preceded by menu choice */
 #else
-					prefix = ""; /* will be preceded by menu choice */
+                    prefix = ""; /* will be preceded by menu choice */
 #endif
-				else if (could_advance(i))
+                else if (could_advance(i))
 #ifdef ANDROID
-					prefix = "  * ";
+                    prefix = "  * ";
 #else
-					prefix = "  * ";
+                    prefix = "  * ";
 #endif
-				else if (peaked_skill(i))
+                else if (peaked_skill(i))
 #ifdef ANDROID
-					prefix = "  # ";
+                    prefix = "  # ";
 #else
-					prefix = "  # ";
+                    prefix = "  # ";
 #endif
-				else
+                else
 #ifdef ANDROID
-					prefix = (to_advance + eventually_advance + maxxed_cnt > 0) ? "  " : "";
+                    prefix = (to_advance + eventually_advance + maxxed_cnt > 0) ? "  " : "";
 #else
-					prefix = (to_advance + eventually_advance + maxxed_cnt > 0) ? "    " : "";
+                    prefix = (to_advance + eventually_advance + maxxed_cnt > 0) ? "    " : "";
 #endif
-                (void) skill_level_name(i, sklnambuf, FALSE);
-				char skillmaxbuf[BUFSZ] = "";
-				(void)skill_level_name(i, skillmaxbuf, TRUE);
+                (void)skill_level_name(i, sklnambuf, FALSE);
+                char skillmaxbuf[BUFSZ] = "";
+                (void)skill_level_name(i, skillmaxbuf, TRUE);
 
-				char skillnamebuf[BUFSZ] = "";
-				strcpy(skillnamebuf, P_NAME(i));
-				*skillnamebuf = highc(*skillnamebuf);
+                char skillnamebuf[BUFSZ] = "";
+                strcpy(skillnamebuf, P_NAME(i));
+                *skillnamebuf = highc(*skillnamebuf);
 
 
-				if (speedy /*wizard*/) 
-				{
+                if (speedy /*wizard*/)
+                {
                     if (!iflags.menu_tab_sep)
                         Sprintf(buf, " %s%-*s %-12s %-12s %5d (%d)", prefix,
-                                longest, skillnamebuf, sklnambuf, skillmaxbuf, P_ADVANCE(i),
-                                practice_needed_to_advance(i, P_SKILL_LEVEL(i)));
+                            longest, skillnamebuf, sklnambuf, skillmaxbuf, P_ADVANCE(i),
+                            practice_needed_to_advance(i, P_SKILL_LEVEL(i)));
                     else
-                        Sprintf(buf, " %s%s\t%s\t%s\t%5d (%d)", prefix, skillnamebuf, 
-                                sklnambuf, skillmaxbuf, P_ADVANCE(i),
-                                practice_needed_to_advance(i, P_SKILL_LEVEL(i)));
-                } 
-				else 
-				{
-					char bonusbuf[BUFSZ] = "";
-					char nextbonusbuf[BUFSZ] = "";
+                        Sprintf(buf, " %s%s\t%s\t%s\t%5d (%d)", prefix, skillnamebuf,
+                            sklnambuf, skillmaxbuf, P_ADVANCE(i),
+                            practice_needed_to_advance(i, P_SKILL_LEVEL(i)));
+                }
+                else
+                {
+                    char bonusbuf[BUFSZ] = "";
+                    char nextbonusbuf[BUFSZ] = "";
 
-					if (i == P_WAND)
-					{
-						int tohitbonus = wand_skill_hit_bonus(P_SKILL_LEVEL(i));
-						char hbuf[BUFSZ] = "";
-						Sprintf(hbuf, "%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
-						Sprintf(bonusbuf, "%5s", hbuf);
+                    if (i == P_WAND)
+                    {
+                        int tohitbonus = wand_skill_hit_bonus(P_SKILL_LEVEL(i));
+                        char hbuf[BUFSZ] = "";
+                        Sprintf(hbuf, "%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
+                        Sprintf(bonusbuf, "%5s", hbuf);
 
-						if (can_advance(i, speedy) || could_advance(i))
-						{
-							int nextlevel = min(P_MAX_SKILL_LEVEL(i), P_SKILL_LEVEL(i) + 1);
-							int tohitbonus2 = wand_skill_hit_bonus(nextlevel);
-							char hbuf2[BUFSZ] = "";
-							Sprintf(hbuf2, "%s%d", tohitbonus2 >= 0 ? "+" : "", tohitbonus2);
-							Sprintf(nextbonusbuf, "%5s", hbuf2);
-						}
-					}
-					else if (i == P_MARTIAL_ARTS)
-					{
-						int tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, FALSE);
-						int dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, i, FALSE);
-						int multihitpct = martial_arts_multishot_percentage_chance(P_SKILL_LEVEL(i));
-						char hbuf[BUFSZ];
-						char dbuf[BUFSZ];
-						char mbuf[BUFSZ];
-						Sprintf(hbuf, "%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
-						Sprintf(dbuf, "%s%d", dmgbonus >= 0 ? "+" : "", dmgbonus);
-						Sprintf(mbuf, "%d%%", multihitpct);
-						Sprintf(bonusbuf, "%5s/%s/%s", hbuf, dbuf, mbuf);
+                        if (can_advance(i, speedy) || could_advance(i))
+                        {
+                            int nextlevel = min(P_MAX_SKILL_LEVEL(i), P_SKILL_LEVEL(i) + 1);
+                            int tohitbonus2 = wand_skill_hit_bonus(nextlevel);
+                            char hbuf2[BUFSZ] = "";
+                            Sprintf(hbuf2, "%s%d", tohitbonus2 >= 0 ? "+" : "", tohitbonus2);
+                            Sprintf(nextbonusbuf, "%5s", hbuf2);
+                        }
+                    }
+                    else if (i == P_MARTIAL_ARTS)
+                    {
+                        int tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, FALSE);
+                        int dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, i, FALSE);
+                        int multihitpct = martial_arts_multishot_percentage_chance(P_SKILL_LEVEL(i));
+                        char hbuf[BUFSZ];
+                        char dbuf[BUFSZ];
+                        char mbuf[BUFSZ];
+                        Sprintf(hbuf, "%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
+                        Sprintf(dbuf, "%s%d", dmgbonus >= 0 ? "+" : "", dmgbonus);
+                        Sprintf(mbuf, "%d%%", multihitpct);
+                        Sprintf(bonusbuf, "%5s/%s/%s", hbuf, dbuf, mbuf);
 
-						if (can_advance(i, speedy) || could_advance(i))
-						{
-							int tohitbonus2 = weapon_skill_hit_bonus((struct obj*)0, i, TRUE);
-							int dmgbonus2 = weapon_skill_dmg_bonus((struct obj*)0, i, TRUE);
-							int multihitpct2 = martial_arts_multishot_percentage_chance(min(P_MAX_SKILL_LEVEL(i), P_SKILL_LEVEL(i) + 1));
-							char hbuf2[BUFSZ] = "";
-							char dbuf2[BUFSZ] = "";
-							char mbuf2[BUFSZ] = "";
-							Sprintf(mbuf2, "%d%%", multihitpct);
-							Sprintf(hbuf2, "%s%d", tohitbonus2 >= 0 ? "+" : "", tohitbonus2);
-							Sprintf(dbuf2, "%s%d", dmgbonus2 >= 0 ? "+" : "", dmgbonus2);
-							Sprintf(mbuf2, "%d%%", multihitpct2);
-							Sprintf(nextbonusbuf, "%5s/%s/%s", hbuf2, dbuf2, mbuf2);
-						}
+                        if (can_advance(i, speedy) || could_advance(i))
+                        {
+                            int tohitbonus2 = weapon_skill_hit_bonus((struct obj*)0, i, TRUE);
+                            int dmgbonus2 = weapon_skill_dmg_bonus((struct obj*)0, i, TRUE);
+                            int multihitpct2 = martial_arts_multishot_percentage_chance(min(P_MAX_SKILL_LEVEL(i), P_SKILL_LEVEL(i) + 1));
+                            char hbuf2[BUFSZ] = "";
+                            char dbuf2[BUFSZ] = "";
+                            char mbuf2[BUFSZ] = "";
+                            Sprintf(mbuf2, "%d%%", multihitpct);
+                            Sprintf(hbuf2, "%s%d", tohitbonus2 >= 0 ? "+" : "", tohitbonus2);
+                            Sprintf(dbuf2, "%s%d", dmgbonus2 >= 0 ? "+" : "", dmgbonus2);
+                            Sprintf(mbuf2, "%d%%", multihitpct2);
+                            Sprintf(nextbonusbuf, "%5s/%s/%s", hbuf2, dbuf2, mbuf2);
+                        }
 
-					}
-					else if ((i >= P_FIRST_WEAPON && i <= P_LAST_WEAPON)
-						|| (i >= P_FIRST_H_TO_H && i <= P_LAST_H_TO_H))
-					{
-						int tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, FALSE);
-						int dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, i, FALSE);
-						char hbuf[BUFSZ] = "";
-						char dbuf[BUFSZ] = "";
-						Sprintf(hbuf, "%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
-						Sprintf(dbuf, "%s%d", dmgbonus >= 0 ? "+" : "", dmgbonus);
-						Sprintf(bonusbuf, "%5s/%s", hbuf, dbuf);
+                    }
+                    else if ((i >= P_FIRST_WEAPON && i <= P_LAST_WEAPON)
+                        || (i >= P_FIRST_H_TO_H && i <= P_LAST_H_TO_H))
+                    {
+                        int tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, FALSE);
+                        int dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, i, FALSE);
+                        char hbuf[BUFSZ] = "";
+                        char dbuf[BUFSZ] = "";
+                        Sprintf(hbuf, "%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
+                        Sprintf(dbuf, "%s%d", dmgbonus >= 0 ? "+" : "", dmgbonus);
+                        Sprintf(bonusbuf, "%5s/%s", hbuf, dbuf);
 
-						if (can_advance(i, speedy) || could_advance(i))
-						{
-							int tohitbonus2 = weapon_skill_hit_bonus((struct obj*)0, i, TRUE);
-							int dmgbonus2 = weapon_skill_dmg_bonus((struct obj*)0, i, TRUE);
-							char hbuf2[BUFSZ] = "";
-							char dbuf2[BUFSZ] = "";
-							Sprintf(hbuf2, "%s%d", tohitbonus2 >= 0 ? "+" : "", tohitbonus2);
-							Sprintf(dbuf2, "%s%d", dmgbonus2 >= 0 ? "+" : "", dmgbonus2);
-							Sprintf(nextbonusbuf, "%5s/%s", hbuf2, dbuf2);
-						}
-					}
-					else if (i >= P_FIRST_SPELL && i <= P_LAST_SPELL)
-					{
-						int successbonus = spell_skill_success_bonus(P_SKILL_LEVEL(i));
-						int costdiscount = spell_skill_mana_cost_multiplier(P_SKILL_LEVEL(i)) - 100;
-						char sbuf[BUFSZ] = "";
-						char cbuf[BUFSZ] = "";
-						Sprintf(sbuf, "%s%d%%", successbonus >= 0 ? "+" : "", successbonus);
-						Sprintf(cbuf, "%s%d%%", costdiscount >= 0 ? "+" : "", costdiscount);
-						Sprintf(bonusbuf, "%5s/%s", sbuf, cbuf);
-						if (can_advance(i, speedy) || could_advance(i))
-						{
-							int nextlevel = min(P_MAX_SKILL_LEVEL(i), P_SKILL_LEVEL(i) + 1);
-							int successbonus2 = spell_skill_success_bonus(nextlevel);
-							int costdiscount2 = spell_skill_mana_cost_multiplier(nextlevel) - 100;
-							char sbuf2[BUFSZ] = "";
-							char cbuf2[BUFSZ] = "";
-							Sprintf(sbuf2, "%s%d%%", successbonus2 >= 0 ? "+" : "", successbonus2);
-							Sprintf(cbuf2, "%s%d%%", costdiscount2 >= 0 ? "+" : "", costdiscount2);
-							Sprintf(nextbonusbuf, "%5s/%s", sbuf2, cbuf2);
-						}
-					}
-					else if (i == P_DISARM_TRAP)
-					{
-						int arrowtrap_chance = untrap_probability(ARROW_TRAP, P_SKILL_LEVEL(i));
-						int magictrap_chance = untrap_probability(MAGIC_TRAP,  P_SKILL_LEVEL(i));
-						char abuf[BUFSZ] = "";
-						char mbuf[BUFSZ] = "";
-						Sprintf(abuf, "%d%%", arrowtrap_chance);
-						Sprintf(mbuf, "%d%%", magictrap_chance);
-						Sprintf(bonusbuf, "%5s/%s", abuf, mbuf);
-						if (can_advance(i, speedy) || could_advance(i))
-						{
-							int nextlevel = min(P_MAX_SKILL_LEVEL(i), P_SKILL_LEVEL(i) + 1); /* restricted is not able to advance, so we need not consider it here */
-							int arrowtrap_chance2 = untrap_probability(ARROW_TRAP, nextlevel);
-							int magictrap_chance2 = untrap_probability(MAGIC_TRAP, nextlevel);
-							char abuf2[BUFSZ] = "";
-							char mbuf2[BUFSZ] = "";
-							Sprintf(abuf2, "%d%%", arrowtrap_chance2);
-							Sprintf(mbuf2, "%d%%", magictrap_chance2);
-							Sprintf(nextbonusbuf, "%5s/%s", abuf2, mbuf2);
-						}
-					}
-					if (!iflags.menu_tab_sep)
+                        if (can_advance(i, speedy) || could_advance(i))
+                        {
+                            int tohitbonus2 = weapon_skill_hit_bonus((struct obj*)0, i, TRUE);
+                            int dmgbonus2 = weapon_skill_dmg_bonus((struct obj*)0, i, TRUE);
+                            char hbuf2[BUFSZ] = "";
+                            char dbuf2[BUFSZ] = "";
+                            Sprintf(hbuf2, "%s%d", tohitbonus2 >= 0 ? "+" : "", tohitbonus2);
+                            Sprintf(dbuf2, "%s%d", dmgbonus2 >= 0 ? "+" : "", dmgbonus2);
+                            Sprintf(nextbonusbuf, "%5s/%s", hbuf2, dbuf2);
+                        }
+                    }
+                    else if (i >= P_FIRST_SPELL && i <= P_LAST_SPELL)
+                    {
+                        int successbonus = spell_skill_success_bonus(P_SKILL_LEVEL(i));
+                        int costdiscount = spell_skill_mana_cost_multiplier(P_SKILL_LEVEL(i)) - 100;
+                        char sbuf[BUFSZ] = "";
+                        char cbuf[BUFSZ] = "";
+                        Sprintf(sbuf, "%s%d%%", successbonus >= 0 ? "+" : "", successbonus);
+                        Sprintf(cbuf, "%s%d%%", costdiscount >= 0 ? "+" : "", costdiscount);
+                        Sprintf(bonusbuf, "%5s/%s", sbuf, cbuf);
+                        if (can_advance(i, speedy) || could_advance(i))
+                        {
+                            int nextlevel = min(P_MAX_SKILL_LEVEL(i), P_SKILL_LEVEL(i) + 1);
+                            int successbonus2 = spell_skill_success_bonus(nextlevel);
+                            int costdiscount2 = spell_skill_mana_cost_multiplier(nextlevel) - 100;
+                            char sbuf2[BUFSZ] = "";
+                            char cbuf2[BUFSZ] = "";
+                            Sprintf(sbuf2, "%s%d%%", successbonus2 >= 0 ? "+" : "", successbonus2);
+                            Sprintf(cbuf2, "%s%d%%", costdiscount2 >= 0 ? "+" : "", costdiscount2);
+                            Sprintf(nextbonusbuf, "%5s/%s", sbuf2, cbuf2);
+                        }
+                    }
+                    else if (i == P_DISARM_TRAP)
+                    {
+                        int arrowtrap_chance = untrap_probability(ARROW_TRAP, P_SKILL_LEVEL(i));
+                        int magictrap_chance = untrap_probability(MAGIC_TRAP, P_SKILL_LEVEL(i));
+                        char abuf[BUFSZ] = "";
+                        char mbuf[BUFSZ] = "";
+                        Sprintf(abuf, "%d%%", arrowtrap_chance);
+                        Sprintf(mbuf, "%d%%", magictrap_chance);
+                        Sprintf(bonusbuf, "%5s/%s", abuf, mbuf);
+                        if (can_advance(i, speedy) || could_advance(i))
+                        {
+                            int nextlevel = min(P_MAX_SKILL_LEVEL(i), P_SKILL_LEVEL(i) + 1); /* restricted is not able to advance, so we need not consider it here */
+                            int arrowtrap_chance2 = untrap_probability(ARROW_TRAP, nextlevel);
+                            int magictrap_chance2 = untrap_probability(MAGIC_TRAP, nextlevel);
+                            char abuf2[BUFSZ] = "";
+                            char mbuf2[BUFSZ] = "";
+                            Sprintf(abuf2, "%d%%", arrowtrap_chance2);
+                            Sprintf(mbuf2, "%d%%", magictrap_chance2);
+                            Sprintf(nextbonusbuf, "%5s/%s", abuf2, mbuf2);
+                        }
+                    }
+                    if (!iflags.menu_tab_sep)
                         Sprintf(buf, " %s %-*s %-12s %-12s %-12s %s", prefix, longest,
-							skillnamebuf, sklnambuf, skillmaxbuf, bonusbuf, nextbonusbuf);
+                            skillnamebuf, sklnambuf, skillmaxbuf, bonusbuf, nextbonusbuf);
                     else
                         Sprintf(buf, " %s%s\t%s\t%s\t%s\t%s", prefix, skillnamebuf,
-                                sklnambuf, skillmaxbuf, bonusbuf, nextbonusbuf);
+                            sklnambuf, skillmaxbuf, bonusbuf, nextbonusbuf);
                 }
                 any.a_int = can_advance(i, speedy) ? i + 1 : 0;
                 add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf,
-                         MENU_UNSELECTED);
+                    MENU_UNSELECTED);
             }
-
+        }
         Strcpy(buf, (to_advance > 0) ? "Pick a skill to advance:"
                                      : "Current skills:");
         end_menu(win, buf);
