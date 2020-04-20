@@ -276,7 +276,7 @@ STAIR:(03,08),up
 # Non diggable walls
 NON_DIGGABLE:(00,00,75,19)
 # Objects
-OBJECT:(')',"lance"),(50,06),blessed,0,name:"The Rhongomyniad"
+OBJECT:('(',"magic mirror"),(50,06),blessed,0,name:"The Magic Mirror of Merlin"
 OBJECT:random,(33,01)
 OBJECT:random,(33,02)
 OBJECT:random,(33,03)

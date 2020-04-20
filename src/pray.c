@@ -851,7 +851,8 @@ gcrownu()
     obj = ok_wep(uwep) ? uwep : 0;
 	obj2 = ok_wep(uarms) ? uarms : 0;
 	already_exists = in_hand = in_hand2 = FALSE; /* lint suppression */
-	boolean gauntlets_already_exists = exist_artifact(GAUNTLETS_OF_BALANCE, artiname(ART_GAUNTLETS_OF_YIN_AND_YANG));
+    boolean lance_already_exists = exist_artifact(LANCE, artiname(ART_RHONGOMYNIAD));
+    boolean gauntlets_already_exists = exist_artifact(GAUNTLETS_OF_BALANCE, artiname(ART_GAUNTLETS_OF_YIN_AND_YANG));
 	boolean monkgauntlets = (Role_if(PM_MONK) && !gauntlets_already_exists);
 	boolean usegnollchaoticgift = (Race_if(PM_GNOLL) && !exist_artifact(FLAIL, artiname(ART_HOWLING_FLAIL)));
 	int chaotic_crowning_gift_oartifact = usegnollchaoticgift ? ART_HOWLING_FLAIL : ART_STORMBRINGER;
@@ -861,7 +862,9 @@ gcrownu()
 	switch (u.ualign.type) {
 	case A_LAWFUL:
 		u.uevent.uhand_of_elbereth = 1;
-		verbalize("I crown thee...  The Hand of Elbereth!");
+        in_hand = (uwep && uwep->oartifact == ART_RHONGOMYNIAD);
+        in_hand2 = (uarms && uarms->oartifact == ART_RHONGOMYNIAD);
+        verbalize("I crown thee...  The Hand of Elbereth!");
 		break;
 	case A_NEUTRAL:
 		u.uevent.uhand_of_elbereth = 2;
@@ -1235,11 +1238,24 @@ gcrownu()
 			if (class_gift != STRANGE_OBJECT) {
 				; /* already got bonus above */
 			}
-			else if (obj && obj->otyp == LONG_SWORD && !obj->oartifact)
+            else if (Role_if(PM_KNIGHT) && !lance_already_exists)
+            {
+				obj = mksobj(LANCE, FALSE, FALSE, FALSE);
+				obj = oname(obj, artiname(ART_RHONGOMYNIAD));
+				obj->enchantment = 1;
+				at_your_feet("A lance");
+				dropy(obj);
+				u.ugifts++;
+				obj->aknown = obj->nknown = TRUE;
+                if(obj->oartifact == ART_RHONGOMYNIAD)
+                    discover_artifact(ART_RHONGOMYNIAD);
+            }
+			else if (obj && objects[obj->otyp].oc_subtyp == WEP_LONG_SWORD && objects[obj->otyp].oc_cost < 2000 && !obj->oartifact)
 			{
 				if (!Blind)
 					Your("sword shines brightly for a moment.");
-				obj = oname(obj, artiname(ART_EXCALIBUR));
+                obj->otyp = LONG_SWORD;
+                obj = oname(obj, artiname(ART_EXCALIBUR));
 				if (obj && obj->oartifact == ART_EXCALIBUR)
 				{
 					u.ugifts++;
@@ -1247,21 +1263,39 @@ gcrownu()
 				}
 			}
 			/* acquire Excalibur's skill regardless of weapon or gift */
-			else if (obj2 && obj2->otyp == LONG_SWORD && !obj2->oartifact)
+			else if (obj2 && objects[obj2->otyp].oc_subtyp == WEP_LONG_SWORD && objects[obj2->otyp].oc_cost < 2000 && !obj2->oartifact)
 			{
 				if (!Blind)
 					Your("sword shines brightly for a moment.");
-				obj2 = oname(obj2, artiname(ART_EXCALIBUR));
+                obj2->otyp = LONG_SWORD;
+                obj2 = oname(obj2, artiname(ART_EXCALIBUR));
 				if (obj2 && obj2->oartifact == ART_EXCALIBUR)
 				{
 					u.ugifts++;
 					obj2->aknown = obj2->nknown = TRUE;
 				}
 			}
-			unrestrict_weapon_skill(P_SWORD);
+            else
+            {
+                obj = mksobj(SWORD_OF_HOLY_VENGEANCE, FALSE, FALSE, FALSE);
+                obj->enchantment = 1 + rnd(3);
+                at_your_feet("A sword");
+                dropy(obj);
+                u.ugifts++;
+                obj->aknown = obj->nknown = TRUE;
+            }
+
+            /* acquire Excalibur's skill regardless of weapon or gift */
+            unrestrict_weapon_skill(P_SWORD);
 			if ((obj && obj->oartifact == ART_EXCALIBUR) || (obj2 && obj2->oartifact == ART_EXCALIBUR))
 				discover_artifact(ART_EXCALIBUR);
-			break;
+
+            if (Role_if(PM_KNIGHT))
+            {
+                /* acquire Rhongomyniad's skill regardless of weapon or gift */
+                unrestrict_weapon_skill(P_SPEAR);
+            }
+            break;
 		case A_NEUTRAL:
 			if (class_gift != STRANGE_OBJECT)
 			{

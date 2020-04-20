@@ -168,6 +168,11 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
 		1, 5, 0, DRLI(1, 10), NO_POWER, NO_POWER, ARTINVOKE_WAND_OF_DEATH, A_CHAOTIC, NON_PM, NON_PM, 6000L, 
 		NO_COLOR, CLR_BLACK),
 
+    A("Rhongomyniad", "runed lance", None, LANCE, LANCE,
+		(AF_RESTR | AF_FAMOUS), SPFX_NONE, SPFX_NONE, 0,
+		1, 5, 0, PHYS(ARTDMG_TRIPLE_DAMAGE, 0), CURSE_RES, DEATH_RES, 0, A_LAWFUL, PM_KNIGHT, NON_PM, 2500L,
+		NO_COLOR, CLR_MAGENTA),
+
 	/*
      *      Two problems:  1) doesn't let trolls regenerate heads,
      *      2) doesn't give unusual message for 2-headed monsters (but
@@ -247,16 +252,9 @@ A("The Palantir of Westernesse",        CRYSTAL_BALL, CRYSTAL_BALL,
 		0, 0, 0, DRLI(0,0), DRAIN_RES, NO_POWER, ARTINVOKE_HEALING, A_NEUTRAL, PM_HEALER, NON_PM, 5000L, 
 		NO_COLOR, CLR_MAGENTA),
 
-#if 0 /* OBSOLETE */
     A("The Magic Mirror of Merlin", "runed looking glass", None, MAGIC_MIRROR, MIRROR,
-		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_SPEAK | AF_FAMOUS), SPFX_NONE, SPFX_ESP, 0,
-		0, 0, 0, NO_ATTK, NO_POWER, ANTIMAGIC, 0, A_LAWFUL, PM_KNIGHT, NON_PM, 1500L, 
-		NO_COLOR, CLR_MAGENTA),
-#endif
-
-    A("The Rhongomyniad", "runed lance", None, LANCE, LANCE,
-		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_SPEAK | AF_FAMOUS), SPFX_NONE, SPFX_NONE, 0,
-		1, 5, 0, PHYS(ARTDMG_TRIPLE_DAMAGE, 0), ANTIMAGIC, DEATH_RES, 0, A_LAWFUL, PM_KNIGHT, NON_PM, 1500L,
+		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_SPEAK | AF_FAMOUS), SPFX_NONE, SPFX_ESP | SPFX_REFLECT, 0,
+		0, 0, 0, NO_ATTK, NO_POWER, ANTIMAGIC, NO_POWER, A_LAWFUL, PM_KNIGHT, NON_PM, 1500L,
 		NO_COLOR, CLR_MAGENTA),
 
     A("The Eyes of the Overworld", "runed eyeglasses", None, LENSES, LENSES,

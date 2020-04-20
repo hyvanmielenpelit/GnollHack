@@ -1170,21 +1170,22 @@ pure mayst thou return hence."
 been.  Hear now Our words:
 
 "As thou noticed as thou approached %H, a great battle hath
-been fought recently in these fields.  Fiercely We battled the
-foul %n.  In the midst of that battle, %n struck my horse a great
-blow, felling me and the horse on the ground.  Then, as Our forces
-were pressed back, %n stole %o, the precious lance of Ours.
+been fought recently in these fields.  Know thou that Merlin himself
+came to aid Us here as We battled the foul %n.  In the midst of that
+battle, %n struck Merlin a great blow, felling him.  Then, as Our
+forces were pressed back, %n stole %o.
 
-"We eventually turned the tide, but lost many %cP in doing so.  But
-this was of little consolation to Us.  So long as %n possesseth
-%o, the true pleasures of jousting are lost to Us forever.
+"We eventually turned the tide, but lost many %cP in doing so.
+Merlin was taken off by his apprentice, but hath not recovered.  We have
+been told that so long as %n possesseth %o,
+Merlin will not regain his health.
 
 "We hereby charge thee with this most important of duties:
 
 "Go forth from this place, to the fens, and there thou wilt find
 %i.  From there, thou must track down %n.  Destroy the
 beast, and return to Us %o.  Only then can
-We joust once more."
+We restore Merlin to health."
 %E [Pass through %i to reach %n.  Destroy %ni and return with %o.]
 %Cp Kni 00025
 "Remember, %p, follow always the path of %d."
@@ -1283,8 +1284,9 @@ that is the way I like my %c for dinner."
 %E
 %Cc Kni 00070
 As you pick up %o, you feel its protective fields
-form around your body.  You also feel its pointed razor-sharp tip, and
-you understand this is a perfect jousting weapon for any knight.
+form around your body.  You also feel a faint stirring in your mind, as
+if you are in two places at once, and in the second, you are waking from
+a long sleep.
 %E [You feel the magic of %o.]
 %Cc Kni 00080
 As %n sinks to the ground, blood gushing from %nj open mouth, %nh
@@ -1299,21 +1301,20 @@ to the ground and dies in a pool of %nj own blood.
 %Cc Kni 00081
 As you approach %l, %lh beams at you and says:
 
-    "Well done!  Thou art truly the Champion of %H.  However,
-    while thou wereth on the quest of thine, We have come to find
-    another lance from one of the towers of %H,
-    and We have grown to like this new lance.
+    "Well done!  Thou art truly the Champion of %H.  We
+    have received word that Merlin is recovering, and shall soon
+    rejoin Us.
 
-    "Therefore, We are pleased grant thee the guardianship of %o.
-    We feel that thou mayst have need of its powers in thine
-    adventures.  It is Our wish that thou keepest
+    "He hath instructed Us that thou art now to be the guardian of
+    %o.  He feeleth that thou mayst have need of
+    its powers in thine adventures.  It is Our wish that thou keepest
     %o with thee as thou searchest for the fabled
     Amulet of Yendor."
 %E [%oC is yours now.  It will aid in your search for the Amulet.]
-# assumes the artifact lance
+# assumes Magic Mirror of Merlin (glass object)
 %Cc Kni 00082
-"Careful, %p!  %oC is a great weapon and must be used with due
-respect.  Thou art its keeper now, and the time hath come
+"Careful, %p!  %oC might break, and that would
+be a tragic loss.  Thou art its keeper now, and the time hath come
 to resume thy search for the Amulet.  %Z await thy
 return through the magic portal that brought thee here."
 %E [You are the keeper of %o.  Return to %Z and find the Amulet.]
