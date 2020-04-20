@@ -922,6 +922,12 @@ boolean verbose;
 	boolean was_silenced = Silenced;
 	boolean was_cancelled = Cancelled;
 	long previous_warntype_obj = context.warntype.obj;
+    int oldstr = ACURR(A_STR);
+    int olddex = ACURR(A_DEX);
+    int oldcon = ACURR(A_CON);
+    int oldint = ACURR(A_INT);
+    int oldwis = ACURR(A_WIS);
+    int oldcha = ACURR(A_CHA);
 
 	update_extrinsics();
 	updateabon();
@@ -1260,68 +1266,80 @@ boolean verbose;
 
 	if (Titan_strength && !had_titan_strength)
 	{
-		state_change_detected = TRUE;
-		You("feel as strong as a titan!");
+        if(ACURR(A_STR) != oldstr)
+    		state_change_detected = TRUE;
+		//You("feel as strong as a titan!");
 	}
 	else if (!Titan_strength && had_titan_strength)
 	{
-		state_change_detected = TRUE;
-		You("feel less strong than before.");
+        if (ACURR(A_STR) != oldstr)
+            state_change_detected = TRUE;
+		//You("feel less strong than before.");
 	}
 
     if (Divine_endurance && !had_divine_endurance)
     {
-        state_change_detected = TRUE;
-        You("feel your constitution is greatly increased!");
+        if (ACURR(A_CON) != oldcon)
+            state_change_detected = TRUE;
+        //You("feel your constitution is greatly increased!");
     }
     else if (!Divine_endurance && had_divine_endurance)
     {
-        state_change_detected = TRUE;
-        You("feel your constitution is less than before.");
+        if (ACURR(A_CON) != oldcon)
+            state_change_detected = TRUE;
+        //You("feel your constitution is less than before.");
     }
 
     if (Divine_dexterity && !had_divine_dexterity)
     {
-        state_change_detected = TRUE;
-        You("feel your dexterity is greatly increased!");
+        if (ACURR(A_DEX) != olddex)
+            state_change_detected = TRUE;
+        //You("feel your dexterity is greatly increased!");
     }
     else if (!Divine_dexterity && had_divine_dexterity)
     {
-        state_change_detected = TRUE;
-        You("feel your dexterity is less than before.");
+        if (ACURR(A_DEX) != olddex)
+            state_change_detected = TRUE;
+        //You("feel your dexterity is less than before.");
     }
 
     if (Divine_intellect && !had_divine_intellect)
     {
-        state_change_detected = TRUE;
-        You("feel your intelligence is greatly increased!");
+        if (ACURR(A_INT) != oldint)
+            state_change_detected = TRUE;
+        //You("feel your intelligence is greatly increased!");
     }
     else if (!Divine_intellect && had_divine_intellect)
     {
-        state_change_detected = TRUE;
-        You("feel your intelligence is less than before.");
+        if (ACURR(A_INT) != oldint)
+            state_change_detected = TRUE;
+        //You("feel your intelligence is less than before.");
     }
 
     if (Divine_wisdom && !had_divine_wisdom)
     {
-        state_change_detected = TRUE;
-        You("feel your wisdom is greatly increased!");
+        if (ACURR(A_WIS) != oldwis)
+            state_change_detected = TRUE;
+        //You("feel your wisdom is greatly increased!");
     }
     else if (!Divine_wisdom && had_divine_wisdom)
     {
-        state_change_detected = TRUE;
-        You("feel your wisdom is less than before.");
+        if (ACURR(A_WIS) != oldwis)
+            state_change_detected = TRUE;
+        //You("feel your wisdom is less than before.");
     }
 
     if (Divine_charisma && !had_divine_charisma)
     {
-        state_change_detected = TRUE;
-        You("feel your charisma is greatly increased!");
+        if (ACURR(A_CHA) != oldcha)
+            state_change_detected = TRUE;
+        //You("feel your charisma is greatly increased!");
     }
     else if (!Divine_charisma && had_divine_charisma)
     {
-        state_change_detected = TRUE;
-        You("feel your charisma is less than before.");
+        if (ACURR(A_CHA) != oldcha)
+            state_change_detected = TRUE;
+        //You("feel your charisma is less than before.");
     }
 
 
