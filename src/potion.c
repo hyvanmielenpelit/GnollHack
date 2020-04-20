@@ -9,7 +9,7 @@
 boolean notonhead = FALSE;
 
 static NEARDATA int nothing, unkn;
-static NEARDATA const char beverages[] = { POTION_CLASS, 0 };
+static NEARDATA const char beverages[] = { POTION_CLASS, TOOL_CLASS, 0 };
 
 STATIC_DCL long FDECL(itimeout, (long));
 STATIC_DCL void NDECL(ghost_from_bottle);
@@ -618,6 +618,18 @@ dodrink()
     if (!otmp)
         return 0;
 
+    if (otmp->oclass == TOOL_CLASS)
+    {
+        switch (otmp->otyp)
+        {
+        case GRAIL_OF_HEALING:
+            return use_grail(otmp, TRUE);
+        default:
+            pline("That's a silly thing to drink.");
+            return 0;
+            break;
+        }
+    }
     /* quan > 1 used to be left to useup(), but we need to force
        the current potion to be unworn, and don't want to do
        that for the entire stack when starting with more than 1.

@@ -336,12 +336,13 @@ enum obj_tool_types {
 	TOOLTYPE_DRUM = 17,
 	TOOLTYPE_SAW = 18,
 	TOOLTYPE_JAR = 19,
-	TOOLTYPE_CAN = 20
+	TOOLTYPE_CAN = 20,
+	TOOLTYPE_GRAIL = 21
 };
 
 static const char* tool_type_names[] = {
 	"tool", "box", "chest", "bag", "pick-axe", "shovel", "long club-headed weapon", "hook", "horn", "candelabrum", "bell", 
-	"candle", "lamp", "lantern", "whistle", "flute", "harp", "drum", "saw", "jar", "can",
+	"candle", "lamp", "lantern", "whistle", "flute", "harp", "drum", "saw", "jar", "can", "grail"
 };
 
 enum charged_init_types {
@@ -372,7 +373,8 @@ enum charged_init_types {
 	CHARGED_1D8_1 = 24,
 	CHARGED_LUCK_BLADE = 25,
 	CHARGED_1D6_3 = 26,
-	CHARGED_2D6_8 = 27
+	CHARGED_2D6_8 = 27,
+	CHARGED_HOLY_GRAIL = 28
 };
 
 enum enchantment_init_types {
@@ -867,7 +869,7 @@ struct objclass {
 #define O3_EATING_IDENTIFIES						0x00100000UL	
 #define O3_NONROTTING_FOOD							0x00200000UL
 #define O3_POISONABLE								0x00400000UL
-/* free bit */
+#define O3_QUAFFABLE								0x00800000UL
 
 #define O3_PERMTTED_TARGET_LAWFUL					0x01000000UL
 #define O3_PERMTTED_TARGET_NEUTRAL					0x02000000UL

@@ -1082,7 +1082,7 @@ unsigned doname_flags;
     }
 
     /* "empty" goes at the beginning, but item count goes at the end */
-    if ((obj->oclass == TOOL_CLASS && (objects[obj->otyp].oc_subtyp == TOOLTYPE_JAR || objects[obj->otyp].oc_subtyp == TOOLTYPE_CAN) && obj->charges == 0 && !known)
+    if ((obj->oclass == TOOL_CLASS && (objects[obj->otyp].oc_subtyp == TOOLTYPE_JAR || objects[obj->otyp].oc_subtyp == TOOLTYPE_CAN || objects[obj->otyp].oc_subtyp == TOOLTYPE_GRAIL) && obj->charges == 0 && !known)
 		|| (cknown
         /* bag of tricks: include "empty" prefix if it's known to
            be empty but its precise number of charges isn't known
@@ -1150,7 +1150,7 @@ unsigned doname_flags;
 
 	/* contents for unknown jars and cans */
 	if (obj->oclass == TOOL_CLASS 
-		&& (objects[obj->otyp].oc_subtyp == TOOLTYPE_JAR || objects[obj->otyp].oc_subtyp == TOOLTYPE_CAN) 
+		&& (objects[obj->otyp].oc_subtyp == TOOLTYPE_JAR || objects[obj->otyp].oc_subtyp == TOOLTYPE_CAN || objects[obj->otyp].oc_subtyp == TOOLTYPE_GRAIL)
 		&& OBJ_CONTENT_DESC(obj->otyp)
 		&& objects[obj->otyp].oc_name_known == 0 && !known && obj->charges > 0)
 	{

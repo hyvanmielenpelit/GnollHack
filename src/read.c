@@ -304,7 +304,7 @@ doread()
               (flags.verbose || Blind) ? "." : "");
         u.uconduct.literate++;
         return 1;
-    } else if (scroll->otyp == CAN_OF_GREASE || scroll->otyp == JAR_OF_HEALING_SALVE || scroll->otyp == JAR_OF_EXTRA_HEALING_SALVE) {
+    } else if (scroll->otyp == CAN_OF_GREASE || scroll->otyp == JAR_OF_HEALING_SALVE || scroll->otyp == JAR_OF_EXTRA_HEALING_SALVE || scroll->otyp == GRAIL_OF_HEALING) {
         pline("This %s has no label.", singular(scroll, xname));
         return 0;
     } else if (scroll->otyp == MAGIC_MARKER) {
@@ -887,6 +887,8 @@ boolean verbose;
 				{
 					strip_charges(obj, verbose);
 					obj->recharged++;
+                    update_inventory();
+                    break;
 				}
 
 				if (obj->charges > lim)
@@ -894,7 +896,8 @@ boolean verbose;
 					obj->charges = 0;
                     if (verbose)
                         pline("The glow arounds %s suddenly dims.", yname(obj));
-					break;
+                    update_inventory();
+                    break;
 				}
 				else if (obj->charges < lim)
 				{
@@ -913,7 +916,8 @@ boolean verbose;
                             p_glow1(obj);
 					}
 					obj->recharged++;
-				}
+                    update_inventory();
+                }
 				else
 				{
 					obj->recharged++;
@@ -924,6 +928,59 @@ boolean verbose;
 				goto not_chargable;
 
 			break;
+        case GRAIL_OF_HEALING:
+            if (objects[obj->otyp].oc_charged == CHARGED_HOLY_GRAIL)
+            {
+                if (obj->recharged > 3)
+                {
+                    goto not_chargable;
+                    break;
+                }
+
+                int lim = get_obj_max_charge(obj);
+                if (is_cursed)
+                {
+                    strip_charges(obj, verbose);
+                    obj->recharged++;
+                    update_inventory();
+                    break;
+                }
+
+                if (obj->charges >= lim)
+                {
+                    obj->recharged++;
+                    goto not_chargable;
+                    break;
+                }
+                else
+                {
+                    int old_charges = obj->charges;
+                    if (is_blessed)
+                    {
+                        obj->charges = lim;
+                    }
+                    else if (obj->charges < lim)
+                    {
+                        obj->charges += rnd(3) + 1;
+                        if (obj->charges > lim)
+                            obj->charges = lim;
+                    }
+
+                    if (verbose)
+                    {
+                        if (old_charges == 0)
+                            pline("%s magically full of %s.", Tobjnam(obj, "become"), OBJ_CONTENT_DESC(obj->otyp));
+                        else if (old_charges == 0)
+                            pline("%s magically topped up with %s.", Tobjnam(obj, "are"), OBJ_CONTENT_DESC(obj->otyp));
+                    }
+
+                    obj->recharged++;
+                    update_inventory();
+                }
+            }
+            else
+                goto not_chargable;
+            break;
         default:
 			goto not_chargable;
 			break;

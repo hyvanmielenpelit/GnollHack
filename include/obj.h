@@ -422,13 +422,13 @@ struct obj {
     ((objects[(otmp)->otyp].oc_flags3 & O3_READABLE) || ((otmp)->oartifact && artilist[(otmp)->oartifact].aflags & AF_READABLE))
 
 /* special stones */
-#define is_graystone_otyp(otyp)                                 \
-    ((objects[otyp].oc_flags2 & O2_GRAYSTONE) != 0)
 #define is_rock_otyp(otyp)                                 \
     ((objects[otyp].oc_flags2 & O2_ROCK) != 0)
 #define is_ore_otyp(otyp)                                 \
     ((objects[otyp].oc_flags2 & O2_ORE) != 0)
 
+#define is_graystone_otyp(otyp)                                 \
+    ((objects[otyp].oc_flags2 & O2_GRAYSTONE) != 0)
 #define is_graystone(obj)                                 \
     (is_graystone_otyp((obj)->otyp))
 #define is_rock(obj)                                 \
@@ -471,6 +471,10 @@ struct obj {
     ((objects[(otyp)].oc_flags3 & O3_CONSUMES_NUTRITION_EVERY_20_ROUNDS) != 0)
 #define obj_consumes_nutrition_every_20_rounds(otmp) \
     otyp_consumes_nutrition_every_20_rounds((otmp)->otyp)
+#define is_otyp_quaffable(otyp)                                 \
+    ((objects[otyp].oc_flags3 & O3_QUAFFABLE) != 0)
+#define is_obj_quaffable(obj)                                 \
+    is_otyp_quaffable((obj)->otyp)
 
 #define is_obj_normally_edible(otmp) \
 	((otmp)->oclass == FOOD_CLASS || ((otmp)->oclass == REAGENT_CLASS && (objects[(otmp)->otyp].oc_flags & O1_EDIBLE_NONFOOD) != 0))

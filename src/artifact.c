@@ -2393,6 +2393,7 @@ struct obj *obj;
 				losexp("life drainage");
 			}
 
+			update_inventory();
 			break;
         }
         case ARTINVOKE_HEALING: {
@@ -2422,6 +2423,7 @@ struct obj *obj;
                 make_blinded(creamed, FALSE);
             context.botl = TRUE;
 			obj->cooldownleft = 100 + rnz(100);
+			update_inventory();
 			break;
         }
         case ARTINVOKE_ENERGY_BOOST: {
@@ -2439,6 +2441,7 @@ struct obj *obj;
             } else
                 goto nothing_special;
 			obj->cooldownleft = 100 + rnz(100);
+			update_inventory();
 			break;
         }
         case ARTINVOKE_UNTRAP: {
@@ -2449,6 +2452,8 @@ struct obj *obj;
             }
 			else
 				obj->cooldownleft = 25 + rnz(25);
+
+			update_inventory();
 			break;
         }
         case ARTINVOKE_CHARGE_OBJ: {
@@ -2463,14 +2468,15 @@ struct obj *obj;
             b_effect = (obj->blessed && (oart->role == Role_switch
                                          || oart->role == NON_PM));
             recharge(otmp, b_effect ? 1 : obj->cursed ? -1 : 0, TRUE);
-            update_inventory();
 			obj->cooldownleft = 100 + rnz(100);
+			update_inventory();
 			break;
         }
         case ARTINVOKE_LEVEL_TELEPORT:
 			check_arti_name_discovery(obj);
 			level_tele(2, FALSE);
 			obj->cooldownleft = 25 + rnz(25);
+			update_inventory();
 			break;
         case ARTINVOKE_CREATE_PORTAL:
 		{
@@ -2480,12 +2486,14 @@ struct obj *obj;
 				goto nothing_special;
 
 			obj->cooldownleft = 25 + rnz(25);
+			update_inventory();
 			break;
         }
         case ARTINVOKE_ENLIGHTENING:
 			check_arti_name_discovery(obj);
 			enlightenment(MAGICENLIGHTENMENT, ENL_GAMEINPROGRESS);
 			obj->cooldownleft = 25 + rnz(25);
+			update_inventory();
 			break;
         case ARTINVOKE_CREATE_AMMO: {
 			check_arti_name_discovery(obj);
@@ -2510,6 +2518,7 @@ struct obj *obj;
                                        aobjnam(otmp, "fall"), (char *) 0);
             nhUse(otmp);
 			obj->cooldownleft = 50 + rnz(50);
+			update_inventory();
 			break;
         }
 		case ARTINVOKE_WAND_OF_DEATH:
@@ -2549,6 +2558,7 @@ struct obj *obj;
 				pline("%s your life energy!", Tobjnam(obj, "draw"));
 				losexp("life drainage");
 			}
+			update_inventory();
 			break;
 		}
 		case ARTINVOKE_BLESS_CONTENTS:
@@ -2591,6 +2601,7 @@ struct obj *obj;
 					obj->cooldownleft = 5 + rnd(5);
 				}
 			}
+			update_inventory();
 			break;
 		}
 		case ARTINVOKE_WISHING:
@@ -2608,6 +2619,7 @@ struct obj *obj;
 			check_arti_name_discovery(obj);
 			consume_obj_charge(obj, TRUE);
 			makewish();
+			update_inventory();
 			break;
 		}
 		case ARTINVOKE_DEMON_SUMMON:
@@ -2644,6 +2656,30 @@ struct obj *obj;
 			{
 				goto nothing_special;
 			}
+			update_inventory();
+			break;
+		}
+		case ARTINVOKE_RECHARGE_ITSELF: {
+			check_arti_name_discovery(obj);
+			int old_recharged = obj->recharged;
+			int old_charges = obj->charges;
+			obj->recharged = 0;
+			obj->charges = get_obj_max_charge(obj);
+			obj->cooldownleft = 888 + rnz(100);
+			if (obj->charges > old_charges)
+			{
+				pline("%s itself with %s.", Tobjnam(obj, "fill"), OBJ_CONTENT_DESC(obj->otyp));
+			}
+			else if(obj->recharged != old_recharged)
+			{
+				pline("%s a bit more shiny.", Tobjnam(obj, "look"), OBJ_CONTENT_DESC(obj->otyp));
+			}
+			else
+			{
+				update_inventory();
+				goto nothing_special;
+			}
+			update_inventory();
 			break;
 		}
 		case ARTINVOKE_TIME_STOP:

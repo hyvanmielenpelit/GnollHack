@@ -63,6 +63,7 @@ E void FDECL(use_magic_whistle, (struct obj*));
 E int FDECL(count_other_containers, (struct obj*, struct obj*, struct obj**, boolean));
 E struct obj* FDECL(select_other_container, (struct obj*, struct obj*, boolean));
 E void FDECL(get_pole_type_weapon_min_max_distances, (struct obj*, struct monst*, int*, int*));
+E int FDECL(use_grail, (struct obj*));
 
 
 /* ### artifact.c ### */

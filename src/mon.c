@@ -4840,8 +4840,8 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
     possibly_unwield(mtmp, polyspot); /* might lose use of weapon */
     mon_break_armor(mtmp, polyspot);
     if (!(mtmp->worn_item_flags & W_ARMG))
-        mselftouch(mtmp, "No longer petrify-resistant, ",
-                   !context.mon_moving);
+        mselftouch(mtmp, "No longer petrify-resistant, ", !context.mon_moving);
+
     m_dowear(mtmp, FALSE);
 
     /* This ought to re-test can_carry() on each item in the inventory
@@ -5134,7 +5134,7 @@ short otyp;
         break;
     case M_AP_OBJECT:
         if (otyp == SPE_MINOR_HEALING || otyp == SPE_HEALING || otyp == SPE_EXTRA_HEALING || otyp == SPE_GREATER_HEALING || otyp == SPE_PRODIGIOUS_HEALING || otyp == SPE_FULL_HEALING
-			|| otyp == JAR_OF_HEALING_SALVE || otyp == JAR_OF_EXTRA_HEALING_SALVE)
+			|| otyp == JAR_OF_HEALING_SALVE || otyp == JAR_OF_EXTRA_HEALING_SALVE || otyp == GRAIL_OF_HEALING)
 		{
             pline("%s seems a more vivid %s than before.",
                   The(simple_typename(ap)),

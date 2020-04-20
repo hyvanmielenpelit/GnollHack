@@ -76,15 +76,17 @@ struct obj* obj;
 	consume_obj_charge(obj, TRUE);
 
 	const char* healing_salve = "healing salve";
+    const char* red_liquid = "red liquid";
+    const char* contents = objects[obj->otyp].oc_subtyp == TOOLTYPE_JAR ? healing_salve : red_liquid;
 
 	if (u.dz) 
 	{
-		You("throw some %s on the %s.", objects[obj->otyp].oc_name_known ? healing_salve : OBJ_CONTENT_DESC(obj->otyp),
+		You("throw some %s on the %s.", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp),
 			(u.dz > 0) ? surface(u.ux, u.uy) : ceiling(u.ux, u.uy));
 	}
 	else if (!u.dx && !u.dy) 
 	{
-		You("apply some %s on yourself.", objects[obj->otyp].oc_name_known ? healing_salve : OBJ_CONTENT_DESC(obj->otyp));
+		You("apply some %s on yourself.", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp));
 		(void)zapyourself(obj, TRUE);
 	}
 	else
@@ -94,25 +96,89 @@ struct obj* obj;
 			struct monst* mtmp = m_at(u.ux + u.dx, u.uy + u.dy);
 			if (mtmp)
 			{
-				You("apply some %s on %s.", objects[obj->otyp].oc_name_known ? healing_salve : OBJ_CONTENT_DESC(obj->otyp), mon_nam(mtmp));
+				You("apply some %s on %s.", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp), mon_nam(mtmp));
 			}
 			else if(IS_WALL(levl[u.ux + u.dx][u.uy + u.dy].typ))
 			{
-				You("throw some %s on the wall.", objects[obj->otyp].oc_name_known ? healing_salve : OBJ_CONTENT_DESC(obj->otyp));
+				You("throw some %s on the wall.", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp));
 			}
 			else
 			{
 				const char* dfeat = dfeature_at(u.ux + u.dx, u.uy + u.dy);
-				You("throw some %s on the %s.", objects[obj->otyp].oc_name_known ? healing_salve : OBJ_CONTENT_DESC(obj->otyp), dfeat ? dfeat : "floor");
+				You("throw some %s on the %s.", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp), dfeat ? dfeat : "floor");
 			}
 		}
 		else
-			You("throw some %s away.", objects[obj->otyp].oc_name_known ? healing_salve : OBJ_CONTENT_DESC(obj->otyp));
+			You("throw some %s away.", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp));
 
 		weffects(obj);
 	}
 	return 1;
 }
+
+int
+use_grail(obj, drink_yourself)
+struct obj* obj;
+boolean drink_yourself;
+{
+    const char* contents = OBJ_CONTENT_DESC(obj->otyp);
+
+    if (obj->charges <= 0)
+    {
+        pline("%s empty.", Tobjnam(obj, "are"));
+        return 0;
+    }
+
+    if (Underwater)
+    {
+        pline("Using %s underwater would dilute the %s.", yname(obj), contents);
+        return 0;
+    }
+
+    if(drink_yourself)
+        u.dx = u.dy = u.dz = 0;
+    else if (!getdir((char*)0))
+        return 0;
+
+    consume_obj_charge(obj, TRUE);
+
+    if (u.dz)
+    {
+        You("pour some %s on the %s.", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp),
+            (u.dz > 0) ? surface(u.ux, u.uy) : ceiling(u.ux, u.uy));
+    }
+    else if (!u.dx && !u.dy)
+    {
+        You("drink some %s from %s.", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp), the(cxname(obj)));
+        (void)zapyourself(obj, TRUE);
+    }
+    else
+    {
+        if (isok(u.ux + u.dx, u.uy + u.dy))
+        {
+            struct monst* mtmp = m_at(u.ux + u.dx, u.uy + u.dy);
+            if (mtmp)
+            {
+                You("give some %s to %s.", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp), mon_nam(mtmp));
+            }
+            else if (IS_WALL(levl[u.ux + u.dx][u.uy + u.dy].typ))
+            {
+                You("pour some %s on the wall.", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp));
+            }
+            else
+            {
+                const char* dfeat = dfeature_at(u.ux + u.dx, u.uy + u.dy);
+                You("pour some %s on the %s.", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp), dfeat ? dfeat : "floor");
+            }
+        }
+        else
+            You("pour some %s out of %s.", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp), the(cxname(obj)));
+
+        weffects(obj);
+    }
+    return 1;
+}
+
 
 STATIC_OVL int
 use_camera(obj)
@@ -4499,7 +4565,7 @@ doapply()
     if (!obj)
         return 0;
 
-	if (obj->cooldownleft > 0 && !Is_weight_changing_bag(obj)) /* Exception for Ark of the Covenant */
+	if (obj->cooldownleft > 0 && !obj->oartifact) /* Exception for artifacts for which cooldown is invoke cooldown */
 	{
 		You("cannot apply %s before its cooldown has expired.", the(cxname(obj)));
 		return 0;
@@ -4698,7 +4764,10 @@ doapply()
 			break;
 		case JAR_OF_HEALING_SALVE:
 		case JAR_OF_EXTRA_HEALING_SALVE:
-			res = use_salve(obj);
+            res = use_salve(obj);
+            break;
+        case GRAIL_OF_HEALING:
+            res = use_grail(obj, FALSE);
 			break;
 		case HORN_OF_PLENTY: /* not a musical instrument */
 			(void)hornoplenty(obj, FALSE);

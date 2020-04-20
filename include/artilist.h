@@ -219,6 +219,11 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
 		1, 5, 0, PHYS(1, 10), NO_POWER, NO_POWER, ARTINVOKE_TIME_STOP, A_NONE, PM_MONK, NON_PM, 3500L,
 		NO_COLOR, CLR_BLACK),
 
+    A("The Holy Grail", "wooden grail", None, GRAIL_OF_HEALING, GRAIL_OF_HEALING, (AF_RESTR | AF_NAME_KNOWN_WHEN_INVOKED),
+		SPFX_NONE, SPFX_PROTECT, 0,
+		0, 0, 0, NO_ATTK, NO_POWER, SLOW_DIGESTION, ARTINVOKE_RECHARGE_ITSELF, A_NONE, NON_PM, NON_PM, 3000L,
+		NO_COLOR, CLR_RED),
+
 	/*
      *      The artifacts for the quest dungeon, all self-willed.
      */

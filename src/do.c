@@ -2952,7 +2952,7 @@ int defensetype;
 static const char* artifact_invoke_names[] = { 
 	"taming", "healing", "mana replenishment", "untrapping", "charging",
 	"level teleportation", "portal creation", "enlightenment", "arrow creation", "death ray", "blessing of contents", "wishing",
-	"time stop",
+	"summon demon", "recharge itself", "time stop",
 };
 
 const char* get_artifact_invoke_name(specialpropindex)

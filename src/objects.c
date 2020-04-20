@@ -2077,9 +2077,11 @@ TOOL("leather drum",      "old drum", None, None, TOOLTYPE_DRUM, 0, 0, 0, ENCHTY
 TOOL("drum of earthquake","antiquated drum", None, None, TOOLTYPE_DRUM, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_HORN_NORMAL,  2, 25, 25, 0, 0, 0, 0, 0, 0, //ENDMARKER
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 SPELLTOOL("jar of healing salve", "glass jar", "yellow ointment", "Heals a target for 6d6 hit points", TOOLTYPE_JAR, 0, 0, 1, CHARGED_2D6_8, //STARTMARKER
-	20, 15, 200, TOUCH, 0, 6, 6, 0, 0, 0, 0, 5, MAT_GLASS, HI_GLASS, O1_NONE, O2_NONE, O3_READABLE | O3_CONTENT_DESCRIPTION_SHUFFLED),
+	20, 15, 200, TOUCH, 0, 6, 6, 0, 0, 0, 0, 0, MAT_GLASS, HI_GLASS, O1_NONE, O2_NONE, O3_READABLE | O3_CONTENT_DESCRIPTION_SHUFFLED),
 SPELLTOOL("jar of extra healing salve", "crystal jar", "purple ointment", "Heals a target for 12d6 hit points", TOOLTYPE_JAR, 0, 0, 1, CHARGED_1D6_6,  //ENDMARKER
-	10, 15, 300, IMMEDIATE, 0, 12, 6, 0, 0, 0, 0, 5, MAT_GLASS, HI_GLASS, O1_NONE, O2_NONE, O3_READABLE | O3_CONTENT_DESCRIPTION_SHUFFLED),
+	10, 15, 300, TOUCH, 0, 12, 6, 0, 0, 0, 0, 0, MAT_GLASS, HI_GLASS, O1_NONE, O2_NONE, O3_READABLE | O3_CONTENT_DESCRIPTION_SHUFFLED),
+SPELLTOOL("grail of healing", "wooden grail", "red liquid", "Heals a target for 24d6 hit points", TOOLTYPE_GRAIL, 0, 0, 1, CHARGED_HOLY_GRAIL,  //Base item for Holy Grail
+	0, 15, 300, TOUCH, 0, 24, 6, 0, 0, 0, 0, 0, MAT_WOOD, CLR_BROWN, O1_NONE, O2_NONE, O3_NO_WISH | O3_NO_GENERATION | O3_QUAFFABLE),
 
 /* tools useful as weapons */
 WEPTOOL("pick-axe", None, None,

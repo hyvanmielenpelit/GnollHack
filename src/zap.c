@@ -156,7 +156,7 @@ struct obj *otmp;
                                && M_AP_TYPE(mtmp) != M_AP_NOTHING);
 	int duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus;
 	int dmg = d(objects[otyp].oc_spell_dmg_dice, objects[otyp].oc_spell_dmg_diesize) + objects[otyp].oc_spell_dmg_plus;
-
+    boolean surpress_noeffect_message = FALSE;
 	boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(mtmp, otmp, 0, 0, 0, NOTELL);
 	if (u.uswallow && mtmp == u.ustuck)
         reveal_invis = FALSE;
@@ -730,7 +730,8 @@ struct obj *otmp;
         break;
 	case SPE_CURE_SICKNESS:
 	{
-		res = 1;
+cure_sickness_here:
+        res = 1;
 		boolean was_sick = is_sick(mtmp);
 		boolean had_sick = !!mtmp->mprops[SICK];
 		mtmp->mprops[SICK] &= ~(M_INTRINSIC_ACQUIRED | M_TIMEOUT);
@@ -757,7 +758,7 @@ struct obj *otmp;
 			pline("%s is cured of its food poisoning!", Monnam(mtmp));
 		else if (!mtmp->mprops[SLIMED] && had_slimed)
 			pline("%s is cured of its sliming!", Monnam(mtmp));
-		else
+		else if(!surpress_noeffect_message)
 			pline("Nothing much seems to happen to %s.", mon_nam(mtmp));
 
 		break;
@@ -793,7 +794,8 @@ struct obj *otmp;
 	}
 	case JAR_OF_HEALING_SALVE:
 	case JAR_OF_EXTRA_HEALING_SALVE:
-	case SPE_MINOR_HEALING:
+    case GRAIL_OF_HEALING:
+    case SPE_MINOR_HEALING:
 	case SPE_HEALING:
     case SPE_EXTRA_HEALING:
 	case SPE_GREATER_HEALING:
@@ -810,12 +812,14 @@ struct obj *otmp;
 
             if (mtmp->mhp > mtmp->mhpmax)
                 mtmp->mhp = mtmp->mhpmax;
+
             /* plain healing must be blessed to cure blindness; extra
                healing only needs to not be cursed, so spell always cures
                [potions quaffed by monsters behave slightly differently;
                we use the rules for the hero here...] */
-            if (skilled_spell || otyp == SPE_EXTRA_HEALING || otyp == SPE_FULL_HEALING)
+            if (skilled_spell || otyp == SPE_EXTRA_HEALING || otyp == SPE_GREATER_HEALING || otyp == SPE_FULL_HEALING || otyp == GRAIL_OF_HEALING)
                 mcureblindness(mtmp, canseemon(mtmp));
+
 			if (canseemon(mtmp)) {
                 if (disguised_mimic) {
                     if (is_obj_mappear(mtmp,STRANGE_OBJECT)) {
@@ -827,15 +831,23 @@ struct obj *otmp;
                 } else
                     pline("%s looks %s.", Monnam(mtmp),
                           otyp == SPE_PRODIGIOUS_HEALING ? "vastly better" : 
-						otyp == SPE_GREATER_HEALING ? "much, much better" : 
+						otyp == SPE_GREATER_HEALING || otyp == GRAIL_OF_HEALING ? "much, much better" :
 						otyp == SPE_EXTRA_HEALING || otyp == JAR_OF_EXTRA_HEALING_SALVE ? "much better" : 
 						otyp == SPE_FULL_HEALING ? "completely healed" : 
 						"better");
             }
+
             if (is_tame(mtmp) || is_peaceful(mtmp)) {
                 adjalign(Role_if(PM_HEALER) ? 1 : sgn(u.ualign.type));
             }
-        } 
+
+            if (otyp == GRAIL_OF_HEALING)
+            {
+                surpress_noeffect_message = TRUE;
+                goto cure_sickness_here;
+            }
+
+        }
 		else if (mtmp->data == &mons[PM_PESTILENCE])
 		{ /* Pestilence */
             /* Pestilence will always resist; damage is half of 3d{4,8,12} */
@@ -3449,7 +3461,8 @@ struct obj *obj, *otmp;
 		case SPE_MINOR_HEALING:
 		case JAR_OF_HEALING_SALVE:
 		case JAR_OF_EXTRA_HEALING_SALVE:
-		case SPE_HEALING:
+        case GRAIL_OF_HEALING:
+        case SPE_HEALING:
         case SPE_EXTRA_HEALING:
 		case SPE_GREATER_HEALING:
 		case SPE_PRODIGIOUS_HEALING:
@@ -5063,7 +5076,8 @@ boolean ordinary;
 		break;
 	case JAR_OF_HEALING_SALVE:
 	case JAR_OF_EXTRA_HEALING_SALVE:
-	case SPE_MINOR_HEALING:
+    case GRAIL_OF_HEALING:
+    case SPE_MINOR_HEALING:
 	case SPE_HEALING:
     case SPE_EXTRA_HEALING:
 	case SPE_GREATER_HEALING:
@@ -5071,11 +5085,15 @@ boolean ordinary;
 		if(is_living(youmonst.data))
 		{
 			//learn_it = TRUE; /* (no effect for spells...) */
-			healup(basedmg, 0, FALSE, (obj->blessed || (obj->otyp != SPE_HEALING && obj->otyp != JAR_OF_HEALING_SALVE && obj->otyp != SPE_MINOR_HEALING)),
-				(obj->blessed || (obj->otyp != SPE_HEALING && obj->otyp != JAR_OF_HEALING_SALVE && obj->otyp != SPE_MINOR_HEALING)), FALSE, FALSE);
+			healup(basedmg, 0, 
+                obj->otyp == GRAIL_OF_HEALING, 
+                (obj->blessed || (obj->otyp != SPE_HEALING && obj->otyp != JAR_OF_HEALING_SALVE && obj->otyp != SPE_MINOR_HEALING)),
+				(obj->blessed || (obj->otyp != SPE_HEALING && obj->otyp != JAR_OF_HEALING_SALVE && obj->otyp != SPE_MINOR_HEALING)), 
+                obj->otyp == GRAIL_OF_HEALING, 
+                obj->otyp == GRAIL_OF_HEALING);
 			You_feel("%sbetter.", 
 				obj->otyp == SPE_GREATER_HEALING ? "vastly " : 
-				obj->otyp == SPE_GREATER_HEALING ? "much, much " : 
+				obj->otyp == SPE_GREATER_HEALING || obj->otyp == GRAIL_OF_HEALING ? "much, much " :
 				obj->otyp == SPE_EXTRA_HEALING || obj->otyp == JAR_OF_EXTRA_HEALING_SALVE ? "much " :
 				"");
 		}
@@ -5364,7 +5382,8 @@ struct obj *obj; /* wand or spell */
 	case SPE_MINOR_HEALING:
 	case JAR_OF_HEALING_SALVE:
 	case JAR_OF_EXTRA_HEALING_SALVE:
-	case SPE_HEALING:
+    case GRAIL_OF_HEALING:
+    case SPE_HEALING:
     case SPE_EXTRA_HEALING:
 	case SPE_GREATER_HEALING:
 	case SPE_PRODIGIOUS_HEALING:

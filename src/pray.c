@@ -852,6 +852,7 @@ gcrownu()
 	obj2 = ok_wep(uarms) ? uarms : 0;
 	already_exists = in_hand = in_hand2 = FALSE; /* lint suppression */
     boolean lance_already_exists = exist_artifact(LANCE, artiname(ART_RHONGOMYNIAD));
+    boolean grail_already_exists = exist_artifact(GRAIL_OF_HEALING, artiname(ART_HOLY_GRAIL));
     boolean gauntlets_already_exists = exist_artifact(GAUNTLETS_OF_BALANCE, artiname(ART_GAUNTLETS_OF_YIN_AND_YANG));
 	boolean monkgauntlets = (Role_if(PM_MONK) && !gauntlets_already_exists);
 	boolean usegnollchaoticgift = (Race_if(PM_GNOLL) && !exist_artifact(FLAIL, artiname(ART_HOWLING_FLAIL)));
@@ -1240,17 +1241,34 @@ gcrownu()
 			}
             else if (Role_if(PM_KNIGHT) && !lance_already_exists)
             {
-				obj = mksobj(LANCE, FALSE, FALSE, FALSE);
+                class_gift = LANCE;
+                obj = mksobj(LANCE, FALSE, FALSE, FALSE);
 				obj = oname(obj, artiname(ART_RHONGOMYNIAD));
 				obj->enchantment = 1;
 				at_your_feet("A lance");
 				dropy(obj);
 				u.ugifts++;
-				obj->aknown = obj->nknown = TRUE;
-                if(obj->oartifact == ART_RHONGOMYNIAD)
+                if (obj->oartifact == ART_RHONGOMYNIAD)
+                {
+                    obj->aknown = obj->nknown = TRUE;
                     discover_artifact(ART_RHONGOMYNIAD);
+                }
             }
-			else if (obj && objects[obj->otyp].oc_subtyp == WEP_LONG_SWORD && objects[obj->otyp].oc_cost < 2000 && !obj->oartifact)
+            else if ((Role_if(PM_KNIGHT) || Role_if(PM_ARCHEOLOGIST)) && !grail_already_exists)
+            {
+                class_gift = GRAIL_OF_HEALING;
+                obj = mksobj(GRAIL_OF_HEALING, FALSE, FALSE, FALSE);
+                obj = oname(obj, artiname(ART_HOLY_GRAIL));
+                at_your_feet("A grail");
+                dropy(obj);
+                u.ugifts++;
+                if (obj->oartifact == ART_HOLY_GRAIL)
+                {
+                    obj->aknown = obj->nknown = TRUE;
+                    discover_artifact(ART_HOLY_GRAIL);
+                }
+            }
+            else if (obj && objects[obj->otyp].oc_subtyp == WEP_LONG_SWORD && objects[obj->otyp].oc_cost < 2000 && !obj->oartifact)
 			{
 				if (!Blind)
 					Your("sword shines brightly for a moment.");
@@ -1301,7 +1319,21 @@ gcrownu()
 			{
 				; /* already got bonus above */
 			}
-			else if (obj && in_hand) 
+            else if (Role_if(PM_ARCHEOLOGIST) && !grail_already_exists)
+            {
+                class_gift = GRAIL_OF_HEALING;
+                obj = mksobj(GRAIL_OF_HEALING, FALSE, FALSE, FALSE);
+                obj = oname(obj, artiname(ART_HOLY_GRAIL));
+                at_your_feet("A grail");
+                dropy(obj);
+                u.ugifts++;
+                if (obj->oartifact == ART_HOLY_GRAIL)
+                {
+                    obj->aknown = obj->nknown = TRUE;
+                    discover_artifact(ART_HOLY_GRAIL);
+                }
+            }
+            else if (obj && in_hand)
 			{
 				Your("%s goes snicker-snack!", xname(obj));
 				obj->dknown = obj->aknown = obj->nknown = TRUE;

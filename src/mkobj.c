@@ -1467,7 +1467,10 @@ int charge_init_index;
 	case CHARGED_1D6_3:
 		charge = rnd(6) + 3;
 		break;
-	}
+    case CHARGED_HOLY_GRAIL:
+        charge = 0;
+        break;
+    }
 
 	return charge;
 }
@@ -1565,7 +1568,10 @@ int charge_init_index;
 	case CHARGED_1D6_3:
 		charge = 9;
 		break;
-	}
+    case CHARGED_HOLY_GRAIL:
+        charge = 8;
+        break;
+    }
 
 	return charge;
 }
