@@ -157,12 +157,16 @@ const struct propname {
 	{ THREE_FOURTHS_MAGIC_RES, "having 75% of normal magic resistance", "75% of normal magic resistance" },
 	{ BLINDFOLDED, "blindfolded", "blindness due to a blindfold" },
 	{ TITAN_STRENGTH, "as strong as a titan", "strength equivalent of a titan" },
-    { DIVINE_ENDURANCE, "having as high constitution as a demigod", "constitution equivalent of a demigod" },
     { MAGIC_MISSILE_RES, "resistant to magic missiles", "magic missile resistance" },
 	{ STUN_RES, "stun resistant", "stun resistance" },
 	{ FOOD_POISONED, "fatally food poisoned", "fatal food poisoning" },
 	{ BISECTION_RES, "protected from bisection", "protection from bisection" },
-	{ LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
+    { DIVINE_ENDURANCE, "having as high constitution as a demigod", "constitution equivalent of a demigod" },
+    { DIVINE_DEXTERITY, "having as high dexterity as a demigod", "dexterity equivalent of a demigod" },
+    { DIVINE_INTELLECT, "having as high intelligence as a demigod", "intelligence equivalent of a demigod" },
+    { DIVINE_WISDOM, "having as high wisdom as a demigod", "wisdom equivalent of a demigod" },
+    { DIVINE_CHARISMA, "having as high charisma as a demigod", "charisma equivalent of a demigod" },
+    { LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
 	{  0, 0 },
 };
 
@@ -1158,6 +1162,22 @@ nh_timeout()
                 if (!Divine_endurance)
                     You("feel you have less endurance than before.");
                 break;
+            case DIVINE_DEXTERITY:
+                if (!Divine_dexterity)
+                    You("feel less dexterous than before.");
+                break;
+            case DIVINE_INTELLECT:
+                if (!Divine_intellect)
+                    You("feel less smart than before.");
+                break;
+            case DIVINE_WISDOM:
+                if (!Divine_wisdom)
+                    You("feel you have less common sense than before.");
+                break;
+            case DIVINE_CHARISMA:
+                if (!Divine_charisma)
+                    You("feel less charming than before.");
+                break;
             }
 		}
 		else if ((upp->intrinsic & TIMEOUT) && ((upp->intrinsic & TIMEOUT) == 3) && !(upp->intrinsic & ~TIMEOUT) && !(upp->extrinsic))
@@ -1332,6 +1352,18 @@ nh_timeout()
 				break;
             case DIVINE_ENDURANCE:
                 Your("endurance is starting to feel worse than before.");
+                break;
+            case DIVINE_DEXTERITY:
+                You("are starting to feel less dextrous than before.");
+                break;
+            case DIVINE_INTELLECT:
+                You("are starting to feel less smart than before.");
+                break;
+            case DIVINE_WISDOM:
+                Your("common sense is starting to feel less abundant than before.");
+                break;
+            case DIVINE_CHARISMA:
+                You("are starting to feel less charming than before.");
                 break;
             }
 		}

@@ -3888,6 +3888,8 @@ struct obj *no_wish;
         && strncmpi(bp, "food ration", 11)
         && strncmpi(bp, "Ring of Three Wishes", 20)
         && strncmpi(bp, "ring of three wishes", 20)
+        && strncmpi(bp, "Serpent Ring of Set", 19)
+        && strncmpi(bp, "serpent ring of set", 19)
         && strncmpi(bp, "meat ring", 9))
         for (i = 0; i < (int) (sizeof wrpsym); i++)
 		{

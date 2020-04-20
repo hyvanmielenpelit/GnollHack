@@ -502,6 +502,18 @@
 #define has_divine_endurance(mon) \
 	has_property(mon, DIVINE_ENDURANCE)
 
+#define has_divine_intellect(mon) \
+	has_property(mon, DIVINE_INTELLECT)
+
+#define has_divine_wisdom(mon) \
+	has_property(mon, DIVINE_WISDOM)
+
+#define has_divine_dexterity(mon) \
+	has_property(mon, DIVINE_DEXTERITY)
+
+#define has_divine_charisma(mon) \
+	has_property(mon, DIVINE_CHARISMA)
+
 #define has_wounded_legs(mon) \
 	has_property(mon, WOUNDED_LEGS)
 

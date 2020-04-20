@@ -1439,7 +1439,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                    && (dieroll == 1 || has_vorpal_vulnerability(mdef->data))) 
 		{
             static const char *const behead_msg[2] = { "%s beheads %s!",
-                                                       "%s decapitates %s!"};
+                                                       "%s decapitates %s!" };
 
             if (youattack && u.uswallow && mdef == u.ustuck)
                 return FALSE;
@@ -1475,8 +1475,12 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 					if (mdef->heads_left > 0)
 						mdef->heads_left--;
 					*dmgptr = 2 * (double)mdef->mhp + FATAL_DAMAGE_MODIFIER;
-					pline(behead_msg[rn2(SIZE(behead_msg))], The(wepdesc),
-						mon_nam(mdef));
+
+					if(mdef->data->heads <= 1)
+						pline(behead_msg[rn2(SIZE(behead_msg))], The(wepdesc),mon_nam(mdef));
+					else
+							pline("%s cuts off %s last head!", The(wepdesc), s_suffix(mon_nam(mdef)));
+
 					if (Hallucination && !flags.female)
 						pline("Good job Henry, but that wasn't Anne.");
 					otmp->dknown = TRUE;
@@ -1511,7 +1515,12 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 					if (mdef->heads_left > 0)
 						mdef->heads_left--;
 					*dmgptr = 2 * (double)(Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER;
-					pline(behead_msg[rn2(SIZE(behead_msg))], The(wepdesc), "you");
+
+					if (mdef->data->heads <= 1)
+						pline(behead_msg[rn2(SIZE(behead_msg))], The(wepdesc), "you");
+					else
+						pline("%s cuts off %s last %s!", The(wepdesc), "your", body_part(HEAD));
+
 					otmp->dknown = TRUE;
 					/* Should amulets fall off? */
 					return 2;
@@ -1945,8 +1954,9 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 			)
 		)
 	{
-			static const char* const behead_msg[2] = { "%s beheads %s!",
-														"%s decapitates %s!" };
+			static const char* const behead_msg[3] = { "%s beheads %s!",
+														"%s decapitates %s!", 
+														"%s cuts off the last head of %s!" };
 
 			if (youattack && u.uswallow && mdef == u.ustuck)
 				;
@@ -2600,6 +2610,38 @@ struct obj *obj;
 			makewish();
 			break;
 		}
+		case ARTINVOKE_DEMON_SUMMON:
+		{
+			if (!is_worn_correctly(obj))
+			{
+				pline("Nothing happens.");
+				break;
+			}
+			else if (u.uen < 50)
+			{
+				pline("You do not have enough mana to invoke %s.", the(cxname(obj)));
+				break;
+			}
+			check_arti_name_discovery(obj);
+			obj->cooldownleft = 500;
+			u.uen -= 50;
+			context.botl = 1;
+
+			struct monst* mon = (struct monst*)0;
+			mon = makemon(&mons[PM_NALFESHNEE], u.ux, u.uy, MM_NOCOUNTBIRTH);
+			if (mon)
+			{
+				mon->issummoned = TRUE;
+				(void)tamedog(mon, (struct obj*) 0, TRUE, FALSE, 0, FALSE, FALSE);
+
+				mon->summonduration = d(6, 6) + 200;
+				begin_summontimer(mon);
+				mon->mprops[SUMMON_FORBIDDEN] |= M_INTRINSIC_ACQUIRED;
+
+				pline("%s appears in a puff of smoke!", Amonnam(mon));
+			}
+			break;
+		}
 		case ARTINVOKE_TIME_STOP:
 		{
 			if (obj->oclass == ARMOR_CLASS && !is_worn_correctly(obj))
@@ -2932,6 +2974,12 @@ static const struct abil2spfx_tag {
 	{ WARNING, SPFX_WARNING },
 	{ WARN_ORC, SPFX_ORC_WARNING },
 	{ WARN_ELF, SPFX_ELF_WARNING },
+	{ TITAN_STRENGTH, SPFX_STR_25 },
+	{ DIVINE_DEXTERITY, SPFX_DEX_25 },
+	{ DIVINE_ENDURANCE, SPFX_CON_25 },
+	{ DIVINE_INTELLECT, SPFX_INT_25 },
+	{ DIVINE_WISDOM, SPFX_WIS_25 },
+	{ DIVINE_CHARISMA, SPFX_CHA_25 },
 };
 
 unsigned long

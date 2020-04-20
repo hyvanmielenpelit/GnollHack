@@ -2793,6 +2793,48 @@ register struct obj* obj;
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
+			if (specialeffect & SPFX_STR_25)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Raises strength to 25 %s", powercnt, endbuf);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (specialeffect & SPFX_DEX_25)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Raises dexterity to 25 %s", powercnt, endbuf);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (specialeffect & SPFX_CON_25)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Raises constitution to 25 %s", powercnt, endbuf);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (specialeffect & SPFX_INT_25)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Raises intelligence to 25 %s", powercnt, endbuf);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (specialeffect & SPFX_WIS_25)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Raises wisdom to 25 %s", powercnt, endbuf);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (specialeffect & SPFX_CHA_25)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Raises charisma to 25 %s", powercnt, endbuf);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
 		}
 
 		if (artilist[obj->oartifact].mtype > 0)

@@ -72,6 +72,14 @@
 #define SPFX_ORC_WARNING		0x01000000UL  /* Item warns you of orcs */
 #define SPFX_ELF_WARNING		0x02000000UL  /* Item warns you of elves */
 
+#define SPFX_STR_25				0x04000000UL  /* Str is raised to 25 */
+#define SPFX_DEX_25				0x08000000UL  /* Dex is raised to 25 */
+#define SPFX_CON_25				0x10000000UL  /* Con is raised to 25 */
+#define SPFX_INT_25				0x20000000UL  /* Int is raised to 25 */
+#define SPFX_WIS_25				0x40000000UL  /* Wis is raised to 25 */
+#define SPFX_CHA_25				0x80000000UL  /* Cha is raised to 25 */
+
+
 struct artifact {
     short otyp;
 	short maskotyp;
@@ -111,6 +119,7 @@ enum invoke_prop_types {
 	ARTINVOKE_WAND_OF_DEATH,
 	ARTINVOKE_BLESS_CONTENTS,
 	ARTINVOKE_WISHING,
+	ARTINVOKE_DEMON_SUMMON,
 	ARTINVOKE_TIME_STOP
 };
 

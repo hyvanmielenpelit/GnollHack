@@ -1391,8 +1391,6 @@ ROBE("robe of protection", "golden ornamental robe",
 	0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, 10, 1, 25, 400,  7, 8, 0, 0, 0, 0, 0, MAT_CLOTH, HI_GOLD, O1_ENCHANTMENT_AFFECTS_MC, O2_NONE, O3_NONE, PERMITTED_ALL),
 ROBE("robe of magic resistance", "shining white robe",
 	0, 1, ANTIMAGIC, NO_POWER, NO_POWER, P1_NONE, 9, 1, 25, 400,  9, 5, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-ROBE("robe of reflection", "silvery ornamental robe",
-	0, 1, REFLECTING, NO_POWER, NO_POWER, P1_NONE, 9, 1, 25, 400,  9, 5, 0, 0, 0, 0, 0, MAT_CLOTH, HI_SILVER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 ROBE("gown of the archbishops", "shining purple robe",
 	0, 1, CURSE_RES, DEATH_RES, DRAIN_RES, P1_MANA_PERCENTAGE_BONUS | P1_HP_PERCENTAGE_BONUS, 5, 2, 30, 400,  9, 4,15, 15, 0, 0, 0, MAT_CLOTH, CLR_MAGENTA, O1_NOT_CURSEABLE, O2_GENERATED_BLESSED, O3_NONE, PERMITTED_ALL),
 ROBE("robe of powerlessness", "shining green robe",
@@ -1429,9 +1427,10 @@ BRACERS("bracers of archery", "deerskin bracers",
 	0, 1, 0,		  0, 0, P1_NONE, 10, 1, 10, 300, 9, 1, 0, 0, 0, 0, 0, MAT_CLOTH, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 BRACERS("bracers of spell casting", "shining bracers",
 	0, 1, 0,		  0, 0, P1_MANA_PERCENTAGE_BONUS, 10, 1, 10, 300, 9, 1, 10, 0, BONUS_TO_SPELL_CASTING, 8, 0, MAT_CLOTH, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
+BRACERS("bracers of reflection", "silver bracers",
+	0, 1, REFLECTING, NO_POWER, NO_POWER, P1_NONE, 9, 1, 25, 400,  9, 1, 0, 0, 0, 0, 0, MAT_SILVER, HI_SILVER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 BRACERS("bracers against magic missiles", "ornamental bracers",//ENDMARKER 1 & 2
 	0, 1, MAGIC_MISSILE_RES,  0, 0, P1_NONE, 10, 1, 10, 300, 9, 1, 0, 0, 0, 0, 0, MAT_CLOTH, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
-
 
 
 /* shields */

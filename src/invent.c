@@ -912,6 +912,10 @@ boolean verbose;
 	boolean had_magical_stoneskin = Magical_stoneskin;
 	boolean had_titan_strength = Titan_strength;
     boolean had_divine_endurance = Divine_endurance;
+    boolean had_divine_dexterity = Divine_dexterity;
+    boolean had_divine_intellect = Divine_intellect;
+    boolean had_divine_wisdom = Divine_wisdom;
+    boolean had_divine_charisma = Divine_charisma;
     boolean was_fast = Fast;
 	boolean was_very_fast = Very_fast;
 	boolean was_slowed = Slowed;
@@ -1274,6 +1278,50 @@ boolean verbose;
     {
         state_change_detected = TRUE;
         You("feel your constitution is less than before.");
+    }
+
+    if (Divine_dexterity && !had_divine_dexterity)
+    {
+        state_change_detected = TRUE;
+        You("feel your dexterity is greatly increased!");
+    }
+    else if (!Divine_dexterity && had_divine_dexterity)
+    {
+        state_change_detected = TRUE;
+        You("feel your dexterity is less than before.");
+    }
+
+    if (Divine_intellect && !had_divine_intellect)
+    {
+        state_change_detected = TRUE;
+        You("feel your intelligence is greatly increased!");
+    }
+    else if (!Divine_intellect && had_divine_intellect)
+    {
+        state_change_detected = TRUE;
+        You("feel your intelligence is less than before.");
+    }
+
+    if (Divine_wisdom && !had_divine_wisdom)
+    {
+        state_change_detected = TRUE;
+        You("feel your wisdom is greatly increased!");
+    }
+    else if (!Divine_wisdom && had_divine_wisdom)
+    {
+        state_change_detected = TRUE;
+        You("feel your wisdom is less than before.");
+    }
+
+    if (Divine_charisma && !had_divine_charisma)
+    {
+        state_change_detected = TRUE;
+        You("feel your charisma is greatly increased!");
+    }
+    else if (!Divine_charisma && had_divine_charisma)
+    {
+        state_change_detected = TRUE;
+        You("feel your charisma is less than before.");
     }
 
 

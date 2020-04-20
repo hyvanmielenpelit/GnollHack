@@ -1897,6 +1897,10 @@ struct monst* mon;
 	/* props influencing attribute bonuses */
 	boolean prop_titan_strength = FALSE;
 	boolean prop_divine_endurance = FALSE;
+	boolean prop_divine_dexterity = FALSE;
+	boolean prop_divine_intellect = FALSE;
+	boolean prop_divine_wisdom = FALSE;
+	boolean prop_divine_charisma = FALSE;
 	boolean prop_wounded_legs = FALSE;
 
 	/* Set pointers etc. */
@@ -1924,6 +1928,10 @@ struct monst* mon;
 
 		prop_titan_strength = Titan_strength;
 		prop_divine_endurance = Divine_endurance;
+		prop_divine_dexterity = Divine_dexterity;
+		prop_divine_intellect = Divine_intellect;
+		prop_divine_wisdom = Divine_wisdom;
+		prop_divine_charisma = Divine_charisma;
 		prop_wounded_legs = Wounded_legs;
 	}
 	else
@@ -1941,6 +1949,10 @@ struct monst* mon;
 
 		prop_titan_strength = has_titan_strength(mon);
 		prop_divine_endurance = has_divine_endurance(mon);
+		prop_divine_dexterity = has_divine_dexterity(mon);
+		prop_divine_intellect = has_divine_intellect(mon);
+		prop_divine_wisdom = has_divine_wisdom(mon);
+		prop_divine_charisma = has_divine_charisma(mon);
 		prop_wounded_legs = has_wounded_legs(mon);
 	}
 
@@ -1966,6 +1978,14 @@ struct monst* mon;
 		*afixmin_ptr[A_STR] = STR19(25);
 	if (prop_divine_endurance)
 		*afixmin_ptr[A_CON] = 25;
+	if (prop_divine_dexterity)
+		*afixmin_ptr[A_DEX] = 25;
+	if (prop_divine_intellect)
+		*afixmin_ptr[A_INT] = 25;
+	if (prop_divine_wisdom)
+		*afixmin_ptr[A_WIS] = 25;
+	if (prop_divine_charisma)
+		*afixmin_ptr[A_CHA] = 25;
 	if (prop_wounded_legs)
 		*abon_ptr[A_DEX] = -1;
 

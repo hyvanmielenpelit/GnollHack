@@ -647,10 +647,25 @@
 #define ETitan_strength u.uprops[TITAN_STRENGTH].extrinsic
 #define Titan_strength (HTitan_strength || ETitan_strength)
 
+#define HDivine_dexterity u.uprops[DIVINE_DEXTERITY].intrinsic
+#define EDivine_dexterity u.uprops[DIVINE_DEXTERITY].extrinsic
+#define Divine_dexterity (HDivine_dexterity || EDivine_dexterity)
+
 #define HDivine_endurance u.uprops[DIVINE_ENDURANCE].intrinsic
 #define EDivine_endurance u.uprops[DIVINE_ENDURANCE].extrinsic
 #define Divine_endurance (HDivine_endurance || EDivine_endurance)
 
+#define HDivine_intellect u.uprops[DIVINE_INTELLECT].intrinsic
+#define EDivine_intellect u.uprops[DIVINE_INTELLECT].extrinsic
+#define Divine_intellect (HDivine_intellect || EDivine_intellect)
+
+#define HDivine_wisdom u.uprops[DIVINE_WISDOM].intrinsic
+#define EDivine_wisdom u.uprops[DIVINE_WISDOM].extrinsic
+#define Divine_wisdom (HDivine_wisdom || EDivine_wisdom)
+
+#define HDivine_charisma u.uprops[DIVINE_CHARISMA].intrinsic
+#define EDivine_charisma u.uprops[DIVINE_CHARISMA].extrinsic
+#define Divine_charisma (HDivine_charisma || EDivine_charisma)
 
 /*
  * Some pseudo-properties.

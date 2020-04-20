@@ -875,7 +875,7 @@ gcrownu()
 		in_hand = (uwep && uwep->oartifact == chaotic_crowning_gift_oartifact);
 		in_hand2 = (uarms && uarms->oartifact == chaotic_crowning_gift_oartifact);
 		already_exists = exist_artifact(chaotic_crowning_gift_baseitem, artiname(chaotic_crowning_gift_oartifact));
-        if (Role_if(PM_WIZARD))
+        if (Role_if(PM_WIZARD) || Role_if(PM_PRIEST))
             verbalize("I crown thee... The Glory of Arioch!");
         else
 		    verbalize("Thou art chosen to %s for My Glory!",
@@ -1003,7 +1003,198 @@ gcrownu()
         dropy(obj);
         u.ugifts++;
     }
-	else
+    else if (Role_if(PM_PRIEST))
+    {
+        class_gift = GOLDEN_CHEST;
+
+        obj = mksobj(class_gift, FALSE, FALSE, FALSE);
+        obj->olocked = FALSE;
+        obj->otrapped = FALSE;
+
+        /* Contents */
+        if(u.ualign.type == A_LAWFUL)
+        {
+            struct obj* otmp = (struct obj*)0;
+
+            otmp = mksobj(GOWN_OF_THE_ARCHBISHOPS, FALSE, FALSE, FALSE);
+            bless(otmp);
+            otmp->enchantment = 1 + rnd(3);
+            otmp->oerodeproof = 1;
+            (void)add_to_container(obj, otmp);
+
+            otmp = mksobj(MACE_OF_DISRUPTION, FALSE, FALSE, FALSE);
+            bless(otmp);
+            otmp->enchantment = 1 + rnd(3);
+            otmp->oerodeproof = 1;
+            (void)add_to_container(obj, otmp);
+
+            if (!already_learnt_spell_type(SPE_OBLITERATE))
+            {
+                otmp = mksobj(SPE_OBLITERATE, TRUE, FALSE, TRUE);
+                bless(otmp);
+                (void)add_to_container(obj, otmp);
+            }
+
+            if (!already_learnt_spell_type(SPE_HOLY_WORD))
+            {
+                otmp = mksobj(SPE_HOLY_WORD, TRUE, FALSE, TRUE);
+                bless(otmp);
+                (void)add_to_container(obj, otmp);
+            }
+
+            int randomspell = 0;
+            switch (rnd(3))
+            {
+            case 1:
+                randomspell = SPE_SUMMON_GOLD_DRAGON;
+                if (already_learnt_spell_type(randomspell))
+                    randomspell = SPE_DIVINE_MOUNT;
+                else
+                    break;
+
+                if (already_learnt_spell_type(randomspell))
+                    randomspell = SPE_HEAVENLY_ARMY;
+                else
+                    break;
+
+                if (already_learnt_spell_type(randomspell))
+                    randomspell = 0;
+
+                break;
+            case 2:
+                randomspell = SPE_DIVINE_MOUNT;
+                if (already_learnt_spell_type(randomspell))
+                    randomspell = SPE_HEAVENLY_ARMY;
+                else
+                    break;
+
+                if (already_learnt_spell_type(randomspell))
+                    randomspell = SPE_SUMMON_GOLD_DRAGON;
+                else
+                    break;
+
+                if (already_learnt_spell_type(randomspell))
+                    randomspell = 0;
+
+                break;
+            case 3:
+                randomspell = SPE_HEAVENLY_ARMY;
+                if (already_learnt_spell_type(randomspell))
+                    randomspell = SPE_DIVINE_MOUNT;
+                else
+                    break;
+
+                if (already_learnt_spell_type(randomspell))
+                    randomspell = SPE_SUMMON_GOLD_DRAGON;
+                else
+                    break;
+
+                if (already_learnt_spell_type(randomspell))
+                    randomspell = 0;
+
+                break;
+            default:
+                break;
+            }
+            if (randomspell && !already_learnt_spell_type(randomspell))
+            {
+                otmp = mksobj(randomspell, TRUE, FALSE, TRUE);
+                bless(otmp);
+                (void)add_to_container(obj, otmp);
+            }
+
+        }
+        else if (u.ualign.type == A_CHAOTIC)
+        {
+            struct obj* otmp = (struct obj*)0;
+
+            otmp = mksobj(ROBE_OF_MAGIC_RESISTANCE, FALSE, FALSE, FALSE);
+            bless(otmp);
+            otmp->enchantment = 1 + rnd(3);
+            otmp->oerodeproof = 1;
+            (void)add_to_container(obj, otmp);
+
+            otmp = mksobj(MACE_OF_DEATH, FALSE, FALSE, FALSE);
+            bless(otmp);
+            otmp->enchantment = 1 + rnd(3);
+            otmp->oerodeproof = 1;
+            (void)add_to_container(obj, otmp);
+
+            otmp = mksobj(RIN_THE_SERPENT_GOD, TRUE, TRUE, FALSE);
+            bless(otmp);
+            (void)add_to_container(obj, otmp);
+
+            if (!already_learnt_spell_type(SPE_FINGER_OF_DEATH))
+            {
+                otmp = mksobj(SPE_FINGER_OF_DEATH, TRUE, FALSE, TRUE);
+                bless(otmp);
+                (void)add_to_container(obj, otmp);
+            }
+
+            if (!already_learnt_spell_type(SPE_CREATE_DRACOLICH))
+            {
+                otmp = mksobj(SPE_CREATE_DRACOLICH, TRUE, FALSE, TRUE);
+                bless(otmp);
+                (void)add_to_container(obj, otmp);
+            }
+
+            if (!already_learnt_spell_type(SPE_GREATER_UNDEATH_REPLENISHMENT))
+            {
+                otmp = mksobj(SPE_GREATER_UNDEATH_REPLENISHMENT, TRUE, FALSE, TRUE);
+                bless(otmp);
+                (void)add_to_container(obj, otmp);
+            }
+
+        }
+        else
+        {
+            struct obj* otmp = (struct obj*)0;
+
+            otmp = mksobj(BRACERS_OF_REFLECTION, FALSE, FALSE, FALSE);
+            bless(otmp);
+            otmp->enchantment = rnd(3);
+            otmp->oerodeproof = 1;
+            (void)add_to_container(obj, otmp);
+
+            otmp = mksobj(ROBE_OF_MAGIC_RESISTANCE, FALSE, FALSE, FALSE);
+            bless(otmp);
+            otmp->enchantment = 1 + rnd(3);
+            otmp->oerodeproof = 1;
+            (void)add_to_container(obj, otmp);
+
+            otmp = mksobj(STAFF_OF_LIFE, FALSE, FALSE, FALSE);
+            bless(otmp);
+            otmp->enchantment = 1 + rnd(3);
+            otmp->oerodeproof = 1;
+            (void)add_to_container(obj, otmp);
+
+            if (!already_learnt_spell_type(SPE_GAZE_OF_PETRIFICATION))
+            {
+                otmp = mksobj(SPE_GAZE_OF_PETRIFICATION, TRUE, FALSE, TRUE);
+                bless(otmp);
+                (void)add_to_container(obj, otmp);
+            }
+
+            if (!already_learnt_spell_type(SPE_STICK_TO_BOA))
+            {
+                otmp = mksobj(SPE_STICK_TO_BOA, TRUE, FALSE, TRUE);
+                bless(otmp);
+                (void)add_to_container(obj, otmp);
+            }
+
+            if (!already_learnt_spell_type(SPE_SUMMON_ELDER_TREANT))
+            {
+                otmp = mksobj(SPE_SUMMON_ELDER_TREANT, TRUE, FALSE, TRUE);
+                bless(otmp);
+                (void)add_to_container(obj, otmp);
+            }
+
+        }
+        at_your_feet("A golden chest");
+        dropy(obj);
+        u.ugifts++;
+    }
+    else
 	{
 		class_gift = STRANGE_OBJECT;
 		/* 3.3.[01] had this in the A_NEUTRAL case below,
