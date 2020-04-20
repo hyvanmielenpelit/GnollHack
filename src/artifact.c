@@ -3083,7 +3083,7 @@ int prop_index;
     return (struct obj *) 0;
 }
 
-
+/* assumes obj is in mon inventory */
 boolean
 carried_item_is_giving_monster_power(mon, obj, prop_index)
 struct monst* mon;
@@ -3121,6 +3121,18 @@ int prop_index;
 		return TRUE;
 
 	return FALSE;
+}
+
+/* assumes obj is in mon inventory */
+boolean
+carried_artifact_is_giving_monster_power(mon, obj, prop_index)
+struct monst* mon;
+struct obj* obj;
+int prop_index;
+{
+	long spfx = prop_to_spfx(prop_index);
+
+	return (obj && obj->oartifact && (artilist[obj->oartifact].carried_prop == prop_index || (artilist[obj->oartifact].cspfx & spfx)));
 }
 
 boolean

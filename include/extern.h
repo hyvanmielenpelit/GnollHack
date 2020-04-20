@@ -118,6 +118,7 @@ E boolean FDECL(carried_item_is_giving_monster_power, (struct monst*, struct obj
 E boolean FDECL(worn_item_is_giving_monster_power, (struct monst*, struct obj*, int));
 E boolean FDECL(item_is_giving_monster_power, (struct monst*, struct obj*, int));
 E boolean FDECL(item_is_giving_power, (struct obj*, int));
+E boolean FDECL(carried_artifact_is_giving_monster_power, (struct monst*, struct obj*, int));
 E unsigned long FDECL(prop_to_spfx, (int));
 E int FDECL(spfx_to_prop, (unsigned long));
 E uchar FDECL(prop_to_adtyp, (int));

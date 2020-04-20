@@ -2428,8 +2428,10 @@ ureflects(fmt, str)
 const char *fmt, *str;
 {
     /* Check from outermost to innermost objects */
-    if (EReflecting & W_ARMS) {
-        if (fmt && str) {
+    if (EReflecting & W_ARMS) 
+    {
+        if (fmt && str)
+        {
 			if (uarms)
 			{
 				if(is_shield(uarms))
@@ -2451,7 +2453,9 @@ const char *fmt, *str;
 			}
         }
         return TRUE;
-    } else if (EReflecting & W_WEP) {
+    }
+    else if (EReflecting & W_WEP) 
+    {
         /* Due to wielded artifact weapon */
 		if (fmt && str)
 		{
@@ -2480,91 +2484,137 @@ const char *fmt, *str;
 
 		}
         return TRUE;
-    } else if (EReflecting & W_AMUL) {
-        if (fmt && str) {
+    }
+    else if (EReflecting & W_AMUL)
+    {
+        if (fmt && str)
+        {
             pline(fmt, str, "medallion");
-            makeknown(AMULET_OF_REFLECTION);
+            if(uamul)
+                makeknown(uamul->otyp);
         }
         return TRUE;
     }
-	else if (EReflecting & W_ARMC) {
+	else if (EReflecting & W_ARMC)
+    {
 		if (fmt && str)
 			pline(fmt, str, "cloak");
-		return TRUE;
+        if (uarmc)
+            makeknown(uarmc->otyp);
+        return TRUE;
 	}
-	else if (EReflecting & W_ARMO) {
+	else if (EReflecting & W_ARMO)
+    {
 		if (fmt && str)
 			pline(fmt, str, "robe");
-		return TRUE;
+        if (uarmo)
+            makeknown(uarmo->otyp);
+        return TRUE;
 	}
-	else if (EReflecting & W_ARM) {
+	else if (EReflecting & W_ARM) 
+    {
         if (fmt && str)
             pline(fmt, str, uskin ? "luster" : "armor");
         return TRUE;
 	}
-	else if (EReflecting & W_ARMB) {
-		if (fmt && str)
-			pline(fmt, str, "bracers");
+	else if (EReflecting & W_ARMB) 
+    {
+        if (fmt && str)
+        {
+            pline(fmt, str, "bracers");
+            if(uarmb)
+                makeknown(uarmb->otyp);
+        }
 		return TRUE;
 	}
-	else if (is_reflecting(&youmonst)) {  //youmonst.data == &mons[PM_SILVER_DRAGON]) {
+	else if (is_reflecting(&youmonst))
+    {  //youmonst.data == &mons[PM_SILVER_DRAGON]) {
         if (fmt && str)
             pline(fmt, str, "scales");
         return TRUE;
     }
-	else if (HReflecting & TIMEOUT) { //Spell
+	else if (HReflecting & TIMEOUT)
+    { //Spell
 		if (fmt && str)
 			pline(fmt, str, "protective spell");
 		return TRUE;
 	}
-	else if (EReflecting & W_MISC && umisc) {
+	else if ((EReflecting & W_MISC) && umisc)
+    {
 		if (fmt && str)
 			pline(fmt, str, xname(umisc));
 		return TRUE;
 	}
-	else if (EReflecting & W_MISC2 && umisc2) {
+	else if ((EReflecting & W_MISC2) && umisc2) 
+    {
 		if (fmt && str)
 			pline(fmt, str, xname(umisc2));
 		return TRUE;
 	}
-	else if (EReflecting & W_MISC3 && umisc3) {
+	else if (EReflecting & W_MISC3 && umisc3) 
+    {
 		if (fmt && str)
 			pline(fmt, str, xname(umisc3));
 		return TRUE;
 	}
-	else if (EReflecting & W_MISC4 && umisc4) {
+	else if (EReflecting & W_MISC4 && umisc4) 
+    {
 		if (fmt && str)
 			pline(fmt, str, xname(umisc4));
 		return TRUE;
 	}
-	else if (EReflecting & W_MISC5 && umisc5) {
+	else if (EReflecting & W_MISC5 && umisc5) 
+    {
 		if (fmt && str)
 			pline(fmt, str, xname(umisc5));
 		return TRUE;
 	}
-	else if (EReflecting & W_CARRIED) {
+	else if (EReflecting & W_CARRIED)
+    {
+        struct obj* selobj = (struct obj*)0;
+        for (struct obj* otmp = invent; otmp; otmp = otmp->nobj)
+        {
+            if (carried_item_is_giving_monster_power(&youmonst, otmp, REFLECTING))
+            {
+                selobj = otmp;
+                break;
+            }
+        }
 		if (fmt && str)
-			pline(fmt, str, "item-induced force field");
+			pline(fmt, str, selobj ? xname(selobj) :"item-induced force field");
 		return TRUE;
 	}
-	else if (EReflecting & W_ARTIFACT_CARRIED) {
-	if (fmt && str)
-		pline(fmt, str, "artifact");
-	return TRUE;
+	else if (EReflecting & W_ARTIFACT_CARRIED)
+    {
+        struct obj* selobj = (struct obj*)0;
+        for (struct obj* otmp = invent; otmp; otmp = otmp->nobj)
+        {
+            if (carried_artifact_is_giving_monster_power(&youmonst, otmp, REFLECTING))
+            {
+                selobj = otmp;
+                break;
+            }
+        }
+        if (fmt && str)
+		    pline(fmt, str, selobj ? xname(selobj) : "artifact");
+	    return TRUE;
 	}
-	else if (EReflecting & W_ARTIFACT_INVOKED) {
-	if (fmt && str)
-		pline(fmt, str, "artifact-invoked force field");
-	return TRUE;
+	else if (EReflecting & W_ARTIFACT_INVOKED)
+    {
+	    if (fmt && str)
+		    pline(fmt, str, "artifact-invoked force field");
+	    return TRUE;
 	}
-	else if (EReflecting) {
+	else if (EReflecting) 
+    {
 		if (fmt && str)
 			pline(fmt, str, "item");
 		return TRUE;
 	}
-	else if (HReflecting) {
+	else if (HReflecting) 
+    {
 		if (fmt && str)
-			pline(fmt, str, "mere presence");
+			pline(fmt, str, "body");
 		return TRUE;
 	}
 	return FALSE;
