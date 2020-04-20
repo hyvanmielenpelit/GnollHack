@@ -2847,34 +2847,53 @@ register struct obj* obj;
 			else if (artilist[obj->oartifact].aflags & AF_DFLAG1)
 			{
 			}
-			else if (artilist[obj->oartifact].aflags & AF_DFLAG2)
+			else if (artilist[obj->oartifact].aflags & (AF_DFLAG1 | AF_DFLAG2))
 			{
-				if (artilist[obj->oartifact].mtype == M2_DWARF)
-					strcpy(endbuf, "dwarves");
-				else if (artilist[obj->oartifact].mtype == M2_DEMON)
-					strcpy(endbuf, "demons");
-				else if (artilist[obj->oartifact].mtype == M2_ANGEL)
-					strcpy(endbuf, "angels");
-				else if (artilist[obj->oartifact].mtype == M2_MIND_FLAYER)
-					strcpy(endbuf, "mind flayers");
-				else if (artilist[obj->oartifact].mtype == M2_ELF)
-					strcpy(endbuf, "elves");
-				else if (artilist[obj->oartifact].mtype == M2_GIANT)
-					strcpy(endbuf, "giants");
-				else if (artilist[obj->oartifact].mtype == M2_GNOLL)
-					strcpy(endbuf, "gnolls");
-				else if (artilist[obj->oartifact].mtype == M2_GNOME)
-					strcpy(endbuf, "gnomes");
-				else if (artilist[obj->oartifact].mtype == M2_HUMAN)
-					strcpy(endbuf, "human beings");
-				else if (artilist[obj->oartifact].mtype == M2_MODRON)
-					strcpy(endbuf, "modrons");
-				else if (artilist[obj->oartifact].mtype == M2_ORC)
-					strcpy(endbuf, "orcs");
-				else if (artilist[obj->oartifact].mtype == M2_UNDEAD)
-					strcpy(endbuf, "undead creatures");
-				else if (artilist[obj->oartifact].mtype == M2_WERE)
-					strcpy(endbuf, "lycanthropes");
+				char affectbuf[BUFSZ];
+				strcpy(affectbuf, "");
+
+				int cnt = 0;
+				for (int i = 0; i < 32; i++)
+				{
+					unsigned long bit = 1UL;
+
+					if (i > 0)
+						bit = bit << i;
+
+					if (artilist[obj->oartifact].mtype & bit)
+						cnt++;
+				}
+
+				int idx = 0;
+				for (int i = 0; i < 32; i++)
+				{
+					unsigned long bit = 1UL;
+
+					if (i > 0)
+						bit = bit << i;
+
+					if (artilist[obj->oartifact].mtype & bit)
+					{
+						idx++;
+						const char* affdesc = get_mflag_description(bit, TRUE, (artilist[obj->oartifact].aflags & AF_DFLAG1) ? 1 : 2);
+
+						if (cnt > 1 && idx > 1)
+						{
+							if (idx == cnt)
+								Sprintf(eos(affectbuf), "%s and %s", cnt > 2 ? "," : "", affdesc);
+							else
+								Sprintf(eos(affectbuf), ", %s", affdesc);
+						}
+						else
+						{
+							Sprintf(affectbuf, "%s", affdesc);
+							if(cnt == 1)
+								break;
+						}
+					}
+				}
+
+				strcpy(endbuf, affectbuf);
 			}
 			else if (artilist[obj->oartifact].aflags & AF_DCLAS && artilist[obj->oartifact].mtype < MAXMCLASSES)
 			{
