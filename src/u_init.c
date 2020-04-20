@@ -674,11 +674,9 @@ static const struct def_skill Skill_Ranger_Max[] = {
     { P_THROWN_WEAPON, P_EXPERT },
     { P_WHIP, P_BASIC },
     { P_HEALING_SPELL, P_BASIC },
-    { P_DIVINATION_SPELL, P_EXPERT },
-    { P_MOVEMENT_SPELL, P_BASIC },
+    { P_DIVINATION_SPELL, P_SKILLED },
 	{ P_ABJURATION_SPELL, P_BASIC },
-	{ P_CONJURATION_SPELL, P_SKILLED },
-	{ P_NATURE_SPELL, P_EXPERT },
+	{ P_NATURE_SPELL, P_SKILLED },
 	{ P_RIDING, P_BASIC },
     { P_BARE_HANDED_COMBAT, P_BASIC },
 	{ P_DISARM_TRAP, P_EXPERT },
@@ -690,7 +688,6 @@ static const struct def_skill Skill_Ranger_Init[] = {
 	{ P_BOW, P_BASIC },
 	{ P_CROSSBOW, P_BASIC },
 	{ P_DISARM_TRAP, P_BASIC },
-	{ P_NATURE_SPELL, P_BASIC },
 	{ P_NONE, 0 }
 };
 
