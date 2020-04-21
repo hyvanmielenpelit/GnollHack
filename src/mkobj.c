@@ -948,7 +948,8 @@ int mkobj_type;
 	otmp->corpsenm = NON_PM;
 	otmp->elemental_enchantment = 0;
 	otmp->cooldownleft = 0;
-	otmp->blessed = 0;
+    otmp->repowerleft = 0;
+    otmp->blessed = 0;
 
     if (init) 
 	{

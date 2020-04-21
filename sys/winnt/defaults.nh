@@ -77,6 +77,9 @@ MENUCOLOR=" unholy water" = red
 MENUCOLOR=" cursed .* (being worn)" = orange&underline
 #  Show all cooling down items in black
 MENUCOLOR="(cooling down)" = black
+MENUCOLOR=", cooling down)" = black
+MENUCOLOR="(repowering)" = magenta
+MENUCOLOR=", cooling down)" = magenta
 #  Show all forgotten spells in black
 MENUCOLOR="(You cannot recall this spell)" = black
 #  Show all spells that do not have any components in black

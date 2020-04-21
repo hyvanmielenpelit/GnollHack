@@ -4565,7 +4565,7 @@ doapply()
     if (!obj)
         return 0;
 
-	if (obj->cooldownleft > 0 && !obj->oartifact) /* Exception for artifacts for which cooldown is invoke cooldown */
+	if (obj->cooldownleft > 0)
 	{
 		You("cannot apply %s before its cooldown has expired.", the(cxname(obj)));
 		return 0;

@@ -1871,13 +1871,15 @@ register struct obj *objchn;
 		if (objchn->cooldownleft > 0)
 			objchn->cooldownleft--;
 
-		//If has contents, then reduce the cooldown of the contents, too
+        if (objchn->repowerleft > 0)
+            objchn->repowerleft--;
+        
+        //If has contents, then reduce the cooldown of the contents, too
 		if (Has_contents(objchn))
 			reduce_item_cooldown(objchn->cobj);
 		
 		objchn = objchn->nobj;
     }
-    return;
 }
 
 boolean

@@ -1353,6 +1353,13 @@ register struct obj* obj;
 		putstr(datawin, 0, txt);
 	}
 
+	if (obj->repowerleft > 0)
+	{
+		Sprintf(buf, "Repowering time left:   %d rounds", obj->repowerleft);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
 	if (stats_known && obj->invokeon)
 	{
 		Sprintf(buf, "Invoked ability:        Activated");

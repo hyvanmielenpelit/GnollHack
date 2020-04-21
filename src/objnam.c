@@ -1558,8 +1558,12 @@ weapon_here:
 	bp = strprepend(bp, prefix);
 
 	/* Mark if cooling down */
-	if (obj->cooldownleft > 0)
+    if (obj->repowerleft > 0 && obj->cooldownleft > 0)
+        Strcat(bp, " (repowering, cooling down)");
+    else if (obj->cooldownleft > 0)
 		Strcat(bp, " (cooling down)");
+    else if (obj->repowerleft > 0)
+        Strcat(bp, " (repowering)");
 
 	/* Mark if glowing when detected something */
 	if (obj->detectioncount > 0)

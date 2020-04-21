@@ -97,6 +97,7 @@ struct artifact {
 	int worn_prop;		/* property conferred when wielded/worn */
 	int carried_prop;	/* property conferred when carried */
 	int inv_prop;       /* property obtained by invoking artifact */
+	int repower_time;   /* artifact invoke cooldown, if any */
     aligntyp alignment; /* alignment of bequeathing gods */
     short role;         /* character role associated with */
     short race;         /* character race associated with */
