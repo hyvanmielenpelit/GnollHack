@@ -6673,7 +6673,7 @@ parse()
 #else
     static char in_line[COLNO];
 #endif
-    register int foo;
+    register int foo = 0;
 
     iflags.in_parse = TRUE;
     multi = 0;
@@ -6699,15 +6699,22 @@ parse()
                 || Cmd.commands[foo & 0x0ff]->ef_funct == dosh_core)))
         foo = Cmd.spkeys[NHKF_ESC];
 
-    if (foo == Cmd.spkeys[NHKF_ESC]) { /* esc cancels count (TH) */
+    if (foo == Cmd.spkeys[NHKF_ESC]) 
+    { /* esc cancels count (TH) */
         clear_nhwindow(WIN_MESSAGE);
         multi = last_multi = 0;
-    } else if (foo == Cmd.spkeys[NHKF_DOAGAIN] || foo == Cmd.spkeys[NHKF_DOAGAIN2] || in_doagain) {
+    }
+    else if (foo == Cmd.spkeys[NHKF_DOAGAIN] || foo == Cmd.spkeys[NHKF_DOAGAIN2] || in_doagain) {
         multi = last_multi;
-    } else {
+    }
+    else
+    {
         last_multi = multi;
-        savech(0); /* reset input queue */
-        savech((char) foo);
+        if (foo != ' ' && foo != '\n')
+        {
+            savech(0); /* reset input queue */
+            savech((char)foo);
+        }
     }
 
     if (multi) {
