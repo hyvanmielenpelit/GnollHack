@@ -857,11 +857,17 @@ char* outbuf;
 
             if (UMNAME(mtmp))
             {
-                strcat(outbuf, UMNAME(mtmp));
+                char umnbuf[BUFSIZ];
+                strcpy(umnbuf, UMNAME(mtmp));
+                umnbuf[16] = '\0'; /* Limit the length of the name */
+                strcat(outbuf, umnbuf);
             }
             else if (MNAME(mtmp) && mtmp->u_know_mname)
             {
-                strcat(outbuf, MNAME(mtmp));
+                char mnbuf[BUFSIZ];
+                strcpy(mnbuf, MNAME(mtmp));
+                mnbuf[16] = '\0'; /* Limit the length of the name */
+                strcat(outbuf, mnbuf);
             }
             else
             {
@@ -873,8 +879,13 @@ char* outbuf;
             strcat(outbuf, ": HP:");
             Sprintf(eos(outbuf), "%d(%d)", mtmp->mhp, mtmp->mhpmax);
 
-            if(mtmp->mextra && EDOG(mtmp) && EDOG(mtmp)->hungrytime <= monstermoves)
-                strcat(outbuf, " Hungry");
+            if (mtmp->mextra && EDOG(mtmp))
+            {
+                if (EDOG(mtmp)->hungrytime + 500 <= monstermoves)
+                    strcat(outbuf, " Weak");
+                else if (EDOG(mtmp)->hungrytime <= monstermoves)
+                    strcat(outbuf, " Hungry");
+            }
 
             if(mtmp->mprops[STUNNED])
                 strcat(outbuf, " Stunned");
