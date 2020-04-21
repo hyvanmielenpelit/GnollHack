@@ -873,6 +873,39 @@ char* outbuf;
             strcat(outbuf, ": HP:");
             Sprintf(eos(outbuf), "%d(%d)", mtmp->mhp, mtmp->mhpmax);
 
+            if(mtmp->mextra && EDOG(mtmp) && EDOG(mtmp)->hungrytime <= monstermoves)
+                strcat(outbuf, " Hungry");
+
+            if(mtmp->mprops[STUNNED])
+                strcat(outbuf, " Stunned");
+
+            if (mtmp->mprops[BLINDED])
+                strcat(outbuf, " Blind");
+
+            if (mtmp->mprops[CONFUSION])
+                strcat(outbuf, " Conf");
+
+            if (mtmp->mprops[SICK])
+                strcat(outbuf, " TermIll");
+
+            if (mtmp->mprops[FOOD_POISONED])
+                strcat(outbuf, " FoodPois");
+
+            if (mtmp->mprops[HALLUC])
+                strcat(outbuf, " Hallu");
+
+            if (mtmp->mprops[STONED])
+                strcat(outbuf, " Stoned");
+
+            if (mtmp->mprops[SLIMED])
+                strcat(outbuf, " Slime");
+
+            if (mtmp->mprops[SLEEPING])
+                strcat(outbuf, " Sleep");
+
+            if (mtmp->mprops[PARALYZED])
+                strcat(outbuf, " Paral");
+
             if (strlen(outbuf) >= MAXVALWIDTH)
                 break;
         }
