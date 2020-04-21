@@ -20,6 +20,7 @@ STATIC_DCL boolean FDECL(can_reach_location, (struct monst *, XCHAR_P,
                                               XCHAR_P, XCHAR_P, XCHAR_P));
 STATIC_DCL void FDECL(quickmimic, (struct monst *));
 
+
 /* pick a carried item for pet to drop */
 struct obj *
 droppables(mon)
@@ -197,15 +198,18 @@ struct obj *obj;
      * It is arbitrary that the pet takes the same length of time to eat
      * as a human, but gets more nutritional value.
      */
-    if (obj->oclass == FOOD_CLASS) {
-        if (obj->otyp == CORPSE) {
+    if (obj->oclass == FOOD_CLASS) 
+    {
+        if (obj->otyp == CORPSE)
+        {
             mtmp->meating = 3 + (mons[obj->corpsenm].cwt >> 6);
             nutrit = mons[obj->corpsenm].cnutrit;
         } else {
             mtmp->meating = objects[obj->otyp].oc_delay;
             nutrit = objects[obj->otyp].oc_nutrition;
         }
-        switch (mtmp->data->msize) {
+        switch (mtmp->data->msize)
+        {
         case MZ_TINY:
             nutrit *= 8;
             break;
@@ -226,18 +230,22 @@ struct obj *obj;
             nutrit *= 2;
             break;
         }
-        if (obj->oeaten) {
+        if (obj->oeaten)
+        {
             mtmp->meating = eaten_stat(mtmp->meating, obj);
             nutrit = eaten_stat(nutrit, obj);
         }
-    } else if (obj->oclass == COIN_CLASS) {
+    } else if (obj->oclass == COIN_CLASS) 
+    {
         mtmp->meating = (int) (obj->quan / 2000) + 1;
         if (mtmp->meating < 0)
             mtmp->meating = 1;
         nutrit = (int) (obj->quan / 20);
         if (nutrit < 0)
             nutrit = 0;
-    } else {
+    }
+    else 
+    {
         /* Unusual pet such as gelatinous cube eating odd stuff.
          * meating made consistent with wild monsters in mon.c.
          * nutrit made consistent with polymorphed player nutrit in
@@ -758,7 +766,8 @@ int udist;
             if ((edible <= CADAVER
                  /* starving pet is more aggressive about eating */
                  || (edog->mhpmax_penalty && edible == ACCFOOD))
-                && could_reach_item(mtmp, obj->ox, obj->oy) && !shk_chastise_pet(mtmp, obj, TRUE) && !onnopickup(obj->ox, obj->oy, mtmp))
+                && could_reach_item(mtmp, obj->ox, obj->oy) && !shk_chastise_pet(mtmp, obj, TRUE) && !onnopickup(obj->ox, obj->oy, mtmp) && dog_wants_to_eat(mtmp)
+                )
                 return dog_eat(mtmp, obj, omx, omy, FALSE);
 
             carryamt = can_carry(mtmp, obj);
@@ -801,6 +810,18 @@ int udist;
     }
     return 0;
 }
+
+
+boolean
+dog_wants_to_eat(mtmp)
+struct monst* mtmp;
+{
+    if(!mtmp || !mtmp->mextra || !EDOG(mtmp))
+        return FALSE;
+
+    return (EDOG(mtmp)->hungrytime < monstermoves + 3000); /* twice the satiated amount for the player for convenience */
+}
+
 
 /* set dog's goal -- gtyp, gx, gy;
    returns -1/0/1 (dog's desire to approach player) or -2 (abort move) */
@@ -858,6 +879,7 @@ int after, udist, whappr;
             if (nx >= min_x && nx <= max_x && ny >= min_y && ny <= max_y)
             {
                 otyp = dogfood(mtmp, obj);
+
                 /* skip inferior goals */
                 if (otyp > gtyp || otyp == UNDEF)
                     continue;
@@ -871,6 +893,9 @@ int after, udist, whappr;
                 if (!could_reach_item(mtmp, nx, ny)
                     || !can_reach_location(mtmp, mtmp->mx, mtmp->my, nx, ny)
                     || onnopickup(nx, ny, mtmp))
+                    continue;
+
+                if (!dog_wants_to_eat(mtmp) && otyp < MANFOOD)
                     continue;
 
                 /* skip always shop food and other items if chastised */
@@ -1443,7 +1468,7 @@ int after; /* this is extra fast monster movement */
 				{
                     cursemsg[i] = TRUE;
                 } 
-				else if ((foodtyp = dogfood(mtmp, obj)) < MANFOOD && !onnopickup(nx, ny, mtmp) &&
+				else if ((foodtyp = dogfood(mtmp, obj)) < MANFOOD && !onnopickup(nx, ny, mtmp) && dog_wants_to_eat(mtmp) &&
                     (!EDOG(mtmp)->chastised || (EDOG(mtmp)->chastised && !(obj->unpaid || (obj->where == OBJ_FLOOR && !obj->no_charge && costly_spot(obj->ox, obj->oy)))))
                          && (foodtyp < ACCFOOD || edog->hungrytime <= monstermoves))
 				{
@@ -1604,7 +1629,7 @@ newdogpos:
 			 * move before moving it, but it can't eat until after being
 			 * moved.  Thus the do_eat flag.
 			 */
-			if (do_eat && !shk_chastise_pet(mtmp, obj, TRUE) && !onnopickup(obj->ox, obj->oy, mtmp))
+			if (do_eat && !shk_chastise_pet(mtmp, obj, TRUE) && !onnopickup(obj->ox, obj->oy, mtmp) && dog_wants_to_eat(mtmp))
 			{
 				if (dog_eat(mtmp, obj, omx, omy, FALSE) == 2)
 					return 2;

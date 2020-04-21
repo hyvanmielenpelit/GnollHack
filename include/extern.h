@@ -620,6 +620,7 @@ E void FDECL(finish_meating, (struct monst *));
 E boolean FDECL(could_reach_item, (struct monst*, XCHAR_P, XCHAR_P));
 E void FDECL(m_gainstr, (struct monst*, struct obj*, int));
 E void FDECL(dog_food_after_effect, (struct monst*, struct obj*, boolean));
+E boolean FDECL(dog_wants_to_eat, (struct monst*));
 
 /* ### dokick.c ### */
 

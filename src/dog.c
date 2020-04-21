@@ -1001,14 +1001,13 @@ boolean thrown;
     }
 
     /* feeding it treats makes it tamer */
-    if (mtmp->mtame && obj)
+    if (mtmp->mtame && obj && mtmp->mextra && EDOG(mtmp))
 	{
         int tasty;
 
         if (!thrown || (mon_can_move(mtmp) && !is_confused(mtmp) && !mtmp->meating
-            && ((tasty = dogfood(mtmp, obj)) == DOGFOOD
-                || (tasty <= ACCFOOD
-                    && EDOG(mtmp)->hungrytime <= monstermoves)))) 
+            && (((tasty = dogfood(mtmp, obj)) == DOGFOOD && dog_wants_to_eat(mtmp))
+                || (tasty <= ACCFOOD && EDOG(mtmp)->hungrytime <= monstermoves)))) 
 		{
             /* pet will "catch" and eat this thrown food */
 			if(verbose && thrown)
