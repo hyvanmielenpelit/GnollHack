@@ -3740,13 +3740,13 @@ static const enum statusfields
 },
     /* Align moved from 1 to 2, Leveldesc+Time+Condition moved from 2 to 3 */
     threelineorder[3][MAX_PER_ROW] = {
-    { BL_TITLE, BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH, BL_GOLD,
-      BL_SCORE, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
-    { BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX,  //BL_GOLD, BL_ALIGN, 
-      BL_AC,  BL_MC_LVL, BL_MC_PCT, BL_XP, BL_EXP, BL_HD, BL_2WEP, BL_SKILL, BL_HUNGER,
-      BL_CAP, BL_FLUSH, blPAD, blPAD, blPAD },
-    { BL_LEVELDESC, BL_TIME, BL_CONDITION, BL_FLUSH, blPAD, blPAD,
-      blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD  }
+    { BL_TITLE, BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH, BL_GOLD, BL_SCORE, 
+      BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
+    { BL_LEVELDESC, BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX,  //BL_GOLD, BL_ALIGN, 
+      BL_AC,  BL_MC_LVL, BL_MC_PCT, BL_XP, BL_EXP, BL_HD, BL_TIME, BL_FLUSH, 
+      blPAD, blPAD, blPAD, blPAD, blPAD },
+    { BL_2WEP, BL_SKILL, BL_HUNGER, BL_CAP, BL_CONDITION, BL_FLUSH, blPAD, blPAD, blPAD, 
+      blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD  }
 };
 static const enum statusfields (*fieldorder)[MAX_PER_ROW];
 
@@ -4412,7 +4412,9 @@ render_status(VOID_ARGS)
                      */
                     if (!tty_condition_bits)
                         continue;
-                    if (num_rows == 3) {
+
+                    if (0) //num_rows == 3)
+                    {
                         int k;
                         char *dat = &cw->data[y][0];
 
@@ -4445,7 +4447,9 @@ render_status(VOID_ARGS)
                         if (bits & mask) {
                             const char *condtext;
 
-                            tty_putstatusfield(" ", x++, y);
+                            tty_putstatusfield(" ", x, y);
+                            x++;
+
                             if (iflags.hilite_delta) {
                                 attrmask = condattr(mask, tty_colormasks);
                                 Begin_Attr(attrmask);

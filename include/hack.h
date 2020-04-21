@@ -597,6 +597,9 @@ enum bodypart_types {
 
 static const char empty_string[] = "";
 
+#define BOW_TO_HIT_MELEE_PENALTY 30
+#define THROWN_WEAPON_TO_HIT_MELEE_PENALTY 30
+
 #if defined(BSD) || defined(ULTRIX)
 #define readLenType int
 #else /* e.g. SYSV, __TURBOC__ */

@@ -2018,13 +2018,13 @@ boolean is_golf;
 				switch (objects[uwep->otyp].oc_skill) 
 				{
 				case P_BOW:
-					tmp -= 20;
+					tmp -= BOW_TO_HIT_MELEE_PENALTY;
 					break;
 				case P_CROSSBOW:
-					tmp -= 16;
+					tmp -= (BOW_TO_HIT_MELEE_PENALTY * 8) / 10;
 					break;
 				default:
-					tmp -= 20;
+					tmp -= BOW_TO_HIT_MELEE_PENALTY;
 					break;
 				}
 				if(!context.hide_melee_range_warning)
@@ -2034,7 +2034,7 @@ boolean is_golf;
 		}
 		else
 		{
-			tmp -= 20;
+			tmp -= THROWN_WEAPON_TO_HIT_MELEE_PENALTY;
 			if (!context.hide_melee_range_warning && !is_obj_normally_edible(obj))
 				You("find it very hard to hit by throwing %s at melee range.", an(cxname(obj)));
 

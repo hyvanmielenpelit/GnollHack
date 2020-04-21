@@ -897,17 +897,21 @@ struct obj *obj;         /* missile (or stack providing it) */
 					{
 						switch (objects[MON_WEP(mon)->otyp].oc_skill) {
 						case P_BOW:
-							hitv -= 20;
+							hitv -= BOW_TO_HIT_MELEE_PENALTY;
 							break;
 						case P_CROSSBOW:
-							hitv -= 16;
+                            hitv -= (BOW_TO_HIT_MELEE_PENALTY * 8) / 10;
 							break;
 						default:
-							hitv -= 20;
+							hitv -= BOW_TO_HIT_MELEE_PENALTY;
 							break;
 						}
 						//Bracers here, if need be
 					}
+                    else if(singleobj && throwing_weapon(singleobj))
+                    {
+                        hitv -= THROWN_WEAPON_TO_HIT_MELEE_PENALTY;
+                    }
 				}
 				//All cases get dex ranged to-hit bonus
 				hitv += m_ranged_strdex_to_hit_bonus(mon);
@@ -929,24 +933,6 @@ struct obj *obj;         /* missile (or stack providing it) */
 							dam += objects[MON_WEP(mon)->otyp].oc_fixed_damage_bonus;
 						else 
 							dam += m_str_dmg_bonus(mon);
-
-						/*
-						if (MON_WEP(mon)->otyp == CROSSBOW) {
-							dam += 3;
-						}
-						else if (MON_WEP(mon)->otyp == HEAVY_CROSSBOW) {
-							dam += 6;
-						}
-						else if (MON_WEP(mon)->otyp == HAND_CROSSBOW) {
-							dam += 0;
-						}
-						else if (MON_WEP(mon)->otyp == REPEATING_CROSSBOW) {
-							dam += 0;
-						}
-						else {
-							dam += m_str_dmg_bonus(mon);
-						}
-						*/
 					}
 					else
 					{
