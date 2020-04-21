@@ -4640,7 +4640,10 @@ doapply()
 		case POUCH_OF_ENDLESS_BOLTS:
 			(void)endlessarrows(obj, CROSSBOW_BOLT, rnd(10) + 10);
 			break;
-		case QUIVER_OF_INFINITE_ARROWS:
+        case BAG_OF_INFINITE_SLING_BULLETS:
+            (void)endlessarrows(obj, (!rn2(2) ? IRON_SLING_BULLET : LEADEN_SLING_BULLET), rnd(10) + 10);
+            break;
+        case QUIVER_OF_INFINITE_ARROWS:
 			(void)endlessarrows(obj, ARROW, rnd(10) + 10);
 			break;
 		case CAN_OF_GREASE:

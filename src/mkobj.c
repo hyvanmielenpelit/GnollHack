@@ -423,6 +423,7 @@ struct obj *box;
         /*FALLTHRU*/
 	case QUIVER_OF_INFINITE_ARROWS:
 	case POUCH_OF_ENDLESS_BOLTS:
+    case BAG_OF_INFINITE_SLING_BULLETS:
 	case BAG_OF_HOLDING:
 		n = 1;
         break;

@@ -776,7 +776,7 @@ register struct monst *mtmp;
 					if (is_nonwelded_launcher && !select_hwep(mtmp))
 					{
                         if(canseemon(mtmp))
-    						pline("%s unwields %s.", Monnam(mtmp), the(cxname(MON_WEP(mtmp))));
+                            pline("%s unwields %s.", Monnam(mtmp), the(cxname(MON_WEP(mtmp))));
 						setmnotwielded(mtmp, MON_WEP(mtmp));
 					}
                     mtmp->weapon_strategy = NEED_HTH_WEAPON;
@@ -1390,7 +1390,7 @@ struct monst *mon;
 		mc += u.ublessed / 2;
 
 		/* Monk protection */
-		if(Role_if(PM_MONK))
+		if(Role_if(PM_MONK) && !Upolyd && !uarm && !uarms && !uwep)
 			mc += u.ulevel / 4;
 	}
 	else

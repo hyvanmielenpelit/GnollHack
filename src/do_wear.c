@@ -1954,7 +1954,7 @@ find_ac()
 	uac -= u.ublessed;
 
 	/* Monk protection */
-	if (Role_if(PM_MONK))
+	if (Role_if(PM_MONK) && !Upolyd && !uarm && !uarms && !uwep)
 		uac -= u.ulevel / 2;
 
 	/* [The magic binary numbers 127 and -128 should be replaced with the

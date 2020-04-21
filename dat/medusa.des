@@ -76,6 +76,55 @@ OBJECT:random,random
 OBJECT:random,random
 OBJECT:random,random
 OBJECT:random,random
+
+LOOP [4 + 1d4] {
+    IF [50%] {
+        IF [66%] {
+          IF [50%] {
+            OBJECT: ('%', "champignon"), random
+          } ELSE {
+            OBJECT: ('%', "chanterelle"), random
+          }
+        } ELSE {
+          IF [50%] {
+            OBJECT: ('%', "mana mushroom"), random
+          } ELSE {
+            OBJECT: ('%', "healing mushroom"), random
+          }
+        }
+    } ELSE {
+        IF [33%] {
+          IF [50%] {
+            OBJECT: ('%', "fly agaric"), random
+          } ELSE {
+            OBJECT: ('%', "panther cap"), random
+          }
+        } ELSE {
+          IF [40%] {
+            OBJECT: ('%', "death cap"), random
+          } ELSE {
+            OBJECT: ('%', "magic mushroom"), random
+          }
+        }
+      }
+    }
+
+LOOP [1 + 1d3] {
+      IF [66%] {
+        IF [50%] {
+          OBJECT: ('%', "penny bun"), random
+        } ELSE {
+          OBJECT: ('%', "dragon fruit"), random
+        }
+      } ELSE {
+        IF [95%] {
+          OBJECT: ('%', "cloudberry"), random
+        } ELSE {
+          OBJECT: ('%', "phantomberry"), random
+        }
+      }
+    }
+
 # Random traps
 TRAP:random,random
 TRAP:random,random

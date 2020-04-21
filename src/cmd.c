@@ -3560,7 +3560,7 @@ int final;
 		Sprintf(protbuf, "endowed with divine protection (-%d to AC and +%d to MC)", u.ublessed, u.ublessed / 2);
 		you_are(protbuf, "");
 	}
-	if (Role_if(PM_MONK) && (u.ulevel / 2) >= 1)
+	if (Role_if(PM_MONK) && (u.ulevel / 2) >= 1 && !Upolyd && !uarm && !uarms && !uwep)
 	{
 		char protbuf[BUFSZ];
 		Sprintf(protbuf, "innate protection (-%d to AC and +%d to MC)", u.ulevel / 2, u.ulevel / 4);

@@ -389,7 +389,7 @@ char **argv UNUSED;
 
     /* options aren't processed yet so wc2_statuslines might be 0;
        make sure that it has a reasonable value during tty setup */
-    iflags.wc2_statuslines = (iflags.wc2_statuslines < 3) ? 2 : 3;
+    iflags.wc2_statuslines = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 3) ? 4 : 3;
     /*
      *  Remember tty modes, to be restored on exit.
      *
@@ -1455,7 +1455,7 @@ int type;
 #ifndef CLIPPING
             || (LI < 1 + ROWNO + 3)
 #endif
-            || iflags.wc2_statuslines > 3)
+            || iflags.wc2_statuslines > 4)
             iflags.wc2_statuslines = 2;
         newwin->offx = 0;
         rowoffset = ttyDisplay->rows - iflags.wc2_statuslines;
@@ -3746,7 +3746,18 @@ static const enum statusfields
       BL_AC,  BL_MC_LVL, BL_MC_PCT, BL_XP, BL_EXP, BL_HD, BL_TIME, BL_FLUSH, 
       blPAD, blPAD, blPAD, blPAD, blPAD },
     { BL_2WEP, BL_SKILL, BL_HUNGER, BL_CAP, BL_CONDITION, BL_FLUSH, blPAD, blPAD, blPAD, 
-      blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD  }
+      blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD},
+},
+fourlineorder[4][MAX_PER_ROW] = {
+{ BL_TITLE, BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH, BL_GOLD, BL_SCORE,
+  BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
+{ BL_LEVELDESC, BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX,  //BL_GOLD, BL_ALIGN, 
+  BL_AC,  BL_MC_LVL, BL_MC_PCT, BL_XP, BL_EXP, BL_HD, BL_TIME, BL_FLUSH,
+  blPAD, blPAD, blPAD, blPAD, blPAD },
+{ BL_2WEP, BL_SKILL, BL_HUNGER, BL_CAP, BL_CONDITION, BL_FLUSH, blPAD, blPAD, blPAD,
+  blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD  },
+{ BL_PARTYSTATS, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+  blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD  }
 };
 static const enum statusfields (*fieldorder)[MAX_PER_ROW];
 
@@ -3787,8 +3798,8 @@ tty_status_init()
 #ifdef STATUS_HILITES
     int i, num_rows;
 
-    num_rows = (iflags.wc2_statuslines < 3) ? 2 : 3;
-    fieldorder = (num_rows != 3) ? twolineorder : threelineorder;
+    num_rows = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 3) ? 4 : 3;
+    fieldorder = (num_rows > 3) ? fourlineorder : (num_rows != 3) ? twolineorder : threelineorder;
 
     for (i = 0; i < MAXBLSTATS; ++i) {
         tty_status[NOW][i].idx = BL_FLUSH;
@@ -4006,9 +4017,9 @@ make_things_fit(force_update)
 boolean force_update;
 {
     int trycnt, fitting = -1, condsz, requirement;
-    int rowsz[3], num_rows, condrow, otheroptions = 0;
+    int rowsz[10], num_rows, condrow, otheroptions = 0;
 
-    num_rows = (iflags.wc2_statuslines < 3) ? 2 : 3;
+    num_rows = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 3) ? 4 : 3;
     condrow = num_rows - 1; /* always last row, 1 for 0..1 or 2 for 0..2 */
     cond_shrinklvl = 0;
     if (enc_shrinklvl > 0 && num_rows == 2)
@@ -4076,7 +4087,7 @@ int sz[3];
     if (!windowdata_init && !check_windowdata())
         return FALSE;
 
-    num_rows = (iflags.wc2_statuslines < 3) ? 2 : 3;
+    num_rows = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 3) ? 4 : 3;
 
     for (row = 0; row < num_rows; ++row) {
         sz[row] = 0;
@@ -4390,7 +4401,7 @@ render_status(VOID_ARGS)
         return;
     }
 
-    num_rows = (iflags.wc2_statuslines < 3) ? 2 : 3;
+    num_rows = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 3) ? 4 : 3;
     for (row = 0; row < num_rows; ++row) {
         HUPSKIP();
         y = row;

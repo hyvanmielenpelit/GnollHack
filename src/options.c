@@ -3812,8 +3812,8 @@ boolean tinitial, tfrom_file;
         } else if (op) {
             itmp = atoi(op);
         }
-        if (itmp < 2 || itmp > 3) {
-            config_error_add("'%s' requires a value of 2 and 3", fullname);
+        if (itmp < 2 || itmp > 4) {
+            config_error_add("'%s' requires a value of 2 and 4", fullname);
             retval = FALSE;
         } else {
             iflags.wc2_statuslines = itmp;
@@ -5851,7 +5851,7 @@ char *buf;
 #endif
     } else if (!strcmp(optname,"statuslines")) {
         if (wc2_supported(optname))
-            Strcpy(buf, (iflags.wc2_statuslines < 3) ? "2" : "3");
+            Strcpy(buf, (iflags.wc2_statuslines < 3) ? "2" : (iflags.wc2_statuslines > 3) ? "4" : "3");
         /* else default to "unknown" */
     } else if (!strcmp(optname, "suppress_alert")) {
         if (flags.suppress_alert == 0L)

@@ -16,6 +16,7 @@ const char *const enc_stat[] = { "",         "Burdened",  "Stressed",
 STATIC_OVL NEARDATA int mrank_sz = 0; /* loaded by max_rank_sz (from u_init) */
 STATIC_DCL void NDECL(bot_via_windowport);
 STATIC_DCL void NDECL(stat_update_time);
+STATIC_DCL void FDECL(compose_partystatline, (char*));
 
 char*
 get_strength_string(st)
@@ -583,7 +584,8 @@ STATIC_VAR struct istat_s initblstats[MAXBLSTATS] = {
     INIT_BLSTAT("hitpoints-max", "(%s)", ANY_INT, 10, BL_HPMAX),
     INIT_BLSTAT("dungeon-level", "%s", ANY_STR, MAXVALWIDTH, BL_LEVELDESC),
     INIT_BLSTAT("experience", "/%s", ANY_LONG, 20, BL_EXP),
-    INIT_BLSTAT("condition", "%s", ANY_MASK32, 0, BL_CONDITION)
+    INIT_BLSTAT("condition", "%s", ANY_MASK32, 0, BL_CONDITION),
+    INIT_BLSTAT("partystats", "%s", ANY_STR, MAXVALWIDTH, BL_PARTYSTATS)
 };
 
 #undef INIT_BLSTATP
@@ -826,7 +828,56 @@ bot_via_windowport()
 
 	valset[BL_CONDITION] = TRUE;
 
+    /* Partyline */
+    char partybuf[BUFSIZ];
+    compose_partystatline(partybuf);
+    blstats[idx][BL_PARTYSTATS].a.a_int = 1;
+    Strcpy(blstats[idx][BL_PARTYSTATS].val, partybuf);
+    valset[BL_PARTYSTATS] = TRUE;
+
+
     evaluate_and_notify_windowport(valset, idx);
+}
+
+STATIC_OVL
+void
+compose_partystatline(outbuf)
+char* outbuf;
+{
+    strcpy(outbuf, "");
+    //mydogs?
+    for (struct monst* mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+    {
+        if (!DEADMONSTER(mtmp) && is_tame(mtmp))
+        {
+            if (strcmp(outbuf, ""))
+            {
+                strcat(outbuf, "  ");
+            }
+
+            if (UMNAME(mtmp))
+            {
+                strcat(outbuf, UMNAME(mtmp));
+            }
+            else if (MNAME(mtmp))
+            {
+                strcat(outbuf, MNAME(mtmp));
+            }
+            else
+            {
+                char buf[BUFSZ];
+                strcpy(buf, mtmp->data->mname);
+                *buf = highc(*buf);
+                strcat(outbuf, buf);
+            }
+            strcat(outbuf, ": HP:");
+            Sprintf(eos(outbuf), "%d(%d)", mtmp->mhp, mtmp->mhpmax);
+
+            if (strlen(outbuf) >= MAXVALWIDTH)
+                break;
+        }
+    }
+    outbuf[MAXVALWIDTH] = '\0';
 }
 
 /* update just the status lines' 'time' field */
