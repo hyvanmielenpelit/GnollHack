@@ -845,7 +845,7 @@ compose_partystatline(outbuf)
 char* outbuf;
 {
     strcpy(outbuf, "");
-    //mydogs?
+
     for (struct monst* mtmp = fmon; mtmp; mtmp = mtmp->nmon)
     {
         if (!DEADMONSTER(mtmp) && is_tame(mtmp))
@@ -859,7 +859,7 @@ char* outbuf;
             {
                 strcat(outbuf, UMNAME(mtmp));
             }
-            else if (MNAME(mtmp))
+            else if (MNAME(mtmp) && mtmp->u_know_mname)
             {
                 strcat(outbuf, MNAME(mtmp));
             }
