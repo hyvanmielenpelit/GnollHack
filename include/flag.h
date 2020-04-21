@@ -546,6 +546,7 @@ struct ext_func_tab; /* from func_tab.h */
 enum nh_keyfunc {
     NHKF_ESC = 0,
     NHKF_DOAGAIN,
+    NHKF_DOAGAIN2,
 
     NHKF_REQMENU,
 

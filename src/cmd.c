@@ -4632,6 +4632,7 @@ dokeylist(VOID_ARGS)
         { NHKF_REQMENU, "Prefix: request a menu", FALSE },
 #ifdef REDO
         { NHKF_DOAGAIN , "re-do: perform the previous command again", FALSE },
+        { NHKF_DOAGAIN2 , "alternate re-do: perform the previous command again", FALSE },
 #endif
         { 0, (const char *) 0, FALSE }
     };
@@ -5188,6 +5189,7 @@ struct {
 } const spkeys_binds[] = {
     { NHKF_ESC,              '\033', (char *) 0 }, /* no binding */
     { NHKF_DOAGAIN,          DOAGAIN, "repeat" },
+    { NHKF_DOAGAIN2,         '§', "repeat.alternate" },
     { NHKF_REQMENU,          'm', "reqmenu" },
     { NHKF_RUN,              'G', "run" },
     { NHKF_RUN2,             '5', "run.numpad" },
@@ -5599,7 +5601,7 @@ register char *cmd;
 		context.move = FALSE;
         return;
     }
-    if (*cmd == DOAGAIN && !in_doagain && saveq[0]) {
+    if ((*cmd == DOAGAIN || *cmd == Cmd.spkeys[NHKF_DOAGAIN] || *cmd == Cmd.spkeys[NHKF_DOAGAIN2]) && !in_doagain && saveq[0]) {
         in_doagain = TRUE;
         stail = 0;
         rhack((char *) 0); /* read and execute command */
@@ -6700,7 +6702,7 @@ parse()
     if (foo == Cmd.spkeys[NHKF_ESC]) { /* esc cancels count (TH) */
         clear_nhwindow(WIN_MESSAGE);
         multi = last_multi = 0;
-    } else if (foo == Cmd.spkeys[NHKF_DOAGAIN] || in_doagain) {
+    } else if (foo == Cmd.spkeys[NHKF_DOAGAIN] || foo == Cmd.spkeys[NHKF_DOAGAIN2] || in_doagain) {
         multi = last_multi;
     } else {
         last_multi = multi;
