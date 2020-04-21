@@ -125,17 +125,19 @@ const struct class_sym def_monsyms[MAXMCLASSES] = {
 
 const struct symdef def_warnsyms[WARNCOUNT] = {
     /* white warning  */
-    { '0', "unknown creature causing you worry",    C(CLR_WHITE) },
+    { '0', "unknown creature causing you little worry",    C(CLR_WHITE) },
     /* pink warning   */
-    { '1', "unknown creature causing you concern",  C(CLR_RED) },
+    { '1', "unknown creature causing you worry",  C(CLR_RED) },
     /* red warning    */
-    { '2', "unknown creature causing you anxiety",  C(CLR_RED) },
+    { '2', "unknown creature causing you concern",  C(CLR_RED) },
     /* ruby warning   */
-    { '3', "unknown creature causing you disquiet", C(CLR_RED) },
+    { '3', "unknown creature causing you anxiety", C(CLR_RED) },
+    /* ruby warning   */
+    { '4', "unknown creature causing you disquiet", C(CLR_RED) },
     /* purple warning */
-    { '4', "unknown creature causing you alarm",    C(CLR_MAGENTA) },
+    { '5', "unknown creature causing you alarm",    C(CLR_MAGENTA) },
     /* black warning  */
-    { '5', "unknown creature causing you dread",    C(CLR_BRIGHT_MAGENTA) },
+    { '6', "unknown creature causing you dread",    C(CLR_BRIGHT_MAGENTA) },
 };
 
 /*

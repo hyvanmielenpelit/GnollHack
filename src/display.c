@@ -539,16 +539,18 @@ struct monst *mon;
     {
         double power = 0;
         double difficulty_mulplier = pow(1.189, (double)context.game_difficulty);
-        double ratio = mons[mon->mnum].difficulty / (max(u.ulevel, 1));
+        double ratio = ((double)mons[mon->mnum].difficulty) / ((double)(max(u.ulevel, 1)));
 
         tmp = 3;
-        if (ratio <= difficulty_mulplier / 2)
+        if (ratio <= difficulty_mulplier / (2 * 1.682))
             tmp = 0;
-        else if (ratio < difficulty_mulplier / 1.414)
+        else if (ratio < difficulty_mulplier / 1.682)
             tmp = 1;
         else if (ratio < difficulty_mulplier / 1.189)
             tmp = 2;
-        else if (ratio > difficulty_mulplier * 1.414)
+        else if (ratio > difficulty_mulplier * (2 * 1.682))
+            tmp = 6;
+        else if (ratio > difficulty_mulplier * 1.682)
             tmp = 5;
         else if (ratio > difficulty_mulplier * 1.189)
             tmp = 4;

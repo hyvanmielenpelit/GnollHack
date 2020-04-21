@@ -37,7 +37,7 @@ E NEARDATA int nroom;
 E NEARDATA int nsubroom;
 E NEARDATA int occtime;
 
-#define WARNCOUNT 6 /* number of different warning levels */
+#define WARNCOUNT 7 /* number of different warning levels */
 E nhsym warnsyms[WARNCOUNT];
 //E NEARDATA int warn_obj_cnt; /* count of monsters meeting criteria */
 
