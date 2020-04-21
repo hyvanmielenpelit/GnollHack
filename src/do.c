@@ -2499,7 +2499,15 @@ register struct obj* obj;
 		}
 		if (artilist[obj->oartifact].inv_prop > 0)
 		{
-			char invoketext[BUFSIZ] = "";
+			char invoketext[BUFSIZ];
+			char repowertext[BUFSIZ];
+			strcpy(repowertext, "");
+
+			if (artilist[obj->oartifact].repower_time > 0)
+			{
+				Sprintf(repowertext, " (repowers over %d round%s)", artilist[obj->oartifact].repower_time, plur(artilist[obj->oartifact].repower_time));
+			}
+
 			if (artilist[obj->oartifact].inv_prop > LAST_PROP)
 			{
 				const char* invprop = get_artifact_invoke_name(artilist[obj->oartifact].inv_prop);
@@ -2513,7 +2521,7 @@ register struct obj* obj;
 			}
 
 			powercnt++;
-			Sprintf(buf, " %2d - %s when invoked", powercnt, invoketext);
+			Sprintf(buf, " %2d - %s when invoked%s", powercnt, invoketext, repowertext);
 			txt = buf;
 			putstr(datawin, 0, txt);
 		}
