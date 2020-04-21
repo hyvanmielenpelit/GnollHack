@@ -1287,7 +1287,7 @@ register struct obj* obj;
 		putstr(datawin, 0, txt);
 	}
 
-	if (obj->rknown && (obj->oeroded || obj->oeroded2 || obj->oerodeproof))
+	if ((obj->oeroded || obj->oeroded2 || (obj->rknown && obj->oerodeproof)))
 	{
 		char erodebuf[BUFSZ] = "";
 		char penaltybuf[BUFSZ] = "";
