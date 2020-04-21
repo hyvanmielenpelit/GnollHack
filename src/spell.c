@@ -911,17 +911,27 @@ int spell_list_type;
                        spell_no);
 }
 
+
+static int docast_spell_no = -1;
+
 /* the 'Z' command -- cast a spell */
 int
 docast()
 {
-    int spell_no;
-
-    if (getspell(&spell_no, 0))
-        return spelleffects(spell_no, FALSE);
-
-    return 0;
+	if (in_doagain && docast_spell_no > -1)
+	{
+		return spelleffects(docast_spell_no, FALSE);
+	}
+	else
+	{
+		docast_spell_no = -1;
+		if (getspell(&docast_spell_no, 0))
+			return spelleffects(docast_spell_no, FALSE);
+	}
+	docast_spell_no = -1;
+	return 0;
 }
+
 
 int
 dospellmanage()
@@ -3974,18 +3984,25 @@ struct obj *obj;
 
 
 /* Mixing starts here*/
-
+static int domix_spell_no = -1;
 /* the 'X' command, two-weapon moved to M(x) */
 int
 domix()
 {
-	int spell_no;
-
-	if (getspell(&spell_no, 1))
+	if (in_doagain && domix_spell_no > -1)
 	{
-		//Open mixing menu and explain what components are needed
-		return domaterialcomponentsmenu(spell_no);
+		return domaterialcomponentsmenu(domix_spell_no);
 	}
+	else
+	{
+		domix_spell_no = -1;
+		if (getspell(&domix_spell_no, 1))
+		{
+			//Open mixing menu and explain what components are needed
+			return domaterialcomponentsmenu(domix_spell_no);
+		}
+	}
+	domix_spell_no = -1;
 	return 0;
 }
 
