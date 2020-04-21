@@ -775,7 +775,8 @@ register struct monst *mtmp;
 				{
 					if (is_nonwelded_launcher && !select_hwep(mtmp))
 					{
-						pline("%s unwields %s.", Monnam(mtmp), the(cxname(MON_WEP(mtmp))));
+                        if(canseemon(mtmp))
+    						pline("%s unwields %s.", Monnam(mtmp), the(cxname(MON_WEP(mtmp))));
 						setmnotwielded(mtmp, MON_WEP(mtmp));
 					}
                     mtmp->weapon_strategy = NEED_HTH_WEAPON;
