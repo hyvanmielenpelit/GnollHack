@@ -3902,7 +3902,7 @@ unsigned long *colormasks;
         reset_state = FORCE_RESET;
         /*FALLTHRU*/
     case BL_FLUSH:
-        if (make_things_fit(reset_state) || truncation_expected)
+        if (make_things_fit(reset_state) > -1 || truncation_expected)
             render_status();
         return;
     case BL_CONDITION:
@@ -3929,7 +3929,8 @@ unsigned long *colormasks;
            with fields which can be disabled so [any_row][0] suffices */
         if (*fmt == ' ' && (fldidx == fieldorder[0][0]
                             || fldidx == fieldorder[1][0]
-                            || fldidx == fieldorder[2][0]))
+                            || fldidx == fieldorder[2][0]
+            ))
             ++fmt; /* skip leading space for first field on line */
         Sprintf(status_vals[fldidx], fmt, text);
         tty_status[NOW][fldidx].idx = fldidx;
@@ -3945,7 +3946,8 @@ unsigned long *colormasks;
        for carrying-capacity when its unused. Let's suppress that */
     if (fldidx >= 0 && fldidx < MAXBLSTATS
         && tty_status[NOW][fldidx].lth == 1
-        && status_vals[fldidx][0] == ' ') {
+        && status_vals[fldidx][0] == ' ') 
+    {
         status_vals[fldidx][0] = '\0';
         tty_status[NOW][fldidx].lth = 0;
     }
@@ -4003,7 +4005,7 @@ STATIC_OVL int
 make_things_fit(force_update)
 boolean force_update;
 {
-    int trycnt, fitting = 0, condsz, requirement;
+    int trycnt, fitting = -1, condsz, requirement;
     int rowsz[3], num_rows, condrow, otheroptions = 0;
 
     num_rows = (iflags.wc2_statuslines < 3) ? 2 : 3;
@@ -4014,12 +4016,12 @@ boolean force_update;
     if (dlvl_shrinklvl > 0)
         shrink_dlvl(0);
     condsz = condition_size();
-    for (trycnt = 0; trycnt < 6 && !fitting; ++trycnt) {
+    for (trycnt = 0; trycnt < 6 && fitting == -1; ++trycnt) {
         /* FIXME: this remeasures each line every time even though it
            is only attempting to shrink one of them and the other one
            (or two) remains the same */
         if (!check_fields(force_update, rowsz)) {
-            fitting = 0;
+            fitting = -1;
             break;
         }
 
@@ -4393,12 +4395,19 @@ render_status(VOID_ARGS)
         HUPSKIP();
         y = row;
         tty_curs(WIN_STATUS, 1, y);
+        int removedspaces = 0;
         for (i = 0; (idx = fieldorder[row][i]) != BL_FLUSH; ++i) {
             if (!status_activefields[idx])
                 continue;
-            x = tty_status[NOW][idx].x;
+            x = tty_status[NOW][idx].x - removedspaces;
             text = status_vals[idx];
             tlth = (int) tty_status[NOW][idx].lth;
+            if (x <= 1 && *text == ' ')
+            {
+                text++;
+                tlth--;
+                removedspaces++;
+            }
 
             if (tty_status[NOW][idx].redraw || !do_field_opt) {
                 boolean hitpointbar = (idx == BL_TITLE
@@ -4441,14 +4450,18 @@ render_status(VOID_ARGS)
                         tty_status[NOW][BL_CONDITION].x = x;
                         tty_curs(WIN_STATUS, x, y);
                     }
+
                     bits = tty_condition_bits;
                     for (c = 0; c < SIZE(conditions); ++c) {
                         mask = conditions[c].mask;
                         if (bits & mask) {
                             const char *condtext;
 
-                            tty_putstatusfield(" ", x, y);
-                            x++;
+                            if (x > 1)
+                            {
+                                tty_putstatusfield(" ", x, y);
+                                x++;
+                            }
 
                             if (iflags.hilite_delta) {
                                 attrmask = condattr(mask, tty_colormasks);
