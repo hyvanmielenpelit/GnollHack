@@ -124,7 +124,6 @@
 #include "hack.h"
 #include "artifact.h"
 #include "artilist.h"
-#include <math.h>
 
 STATIC_DCL void FDECL(display_monster,
                       (XCHAR_P, XCHAR_P, struct monst *, int, XCHAR_P));
@@ -538,7 +537,8 @@ struct monst *mon;
     if (mon_warning(mon)) 
     {
         double power = 0;
-        double difficulty_mulplier = pow(1.189, (double)context.game_difficulty);
+        double difficulty_mulplier = context.game_difficulty <= -2 ? 0.707 : context.game_difficulty == -1 ? 0.841 : 
+            context.game_difficulty == 0 ? 1.0 : context.game_difficulty == 1 ? 1.189 : 1.414;
         double ratio = ((double)mons[mon->mnum].difficulty) / ((double)(max(u.ulevel, 1)));
 
         tmp = 3;
