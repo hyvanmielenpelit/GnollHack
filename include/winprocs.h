@@ -227,7 +227,8 @@ extern
                                    *    via non-display attribute flag  */
 #define WC2_SUPPRESS_HIST 0x8000UL /* 15 putstr(WIN_MESSAGE) supports history
                                    *    suppression via non-disp attr   */
-                                  /* 16 free bits */
+#define WC2_AUTOSTATUSLINES 0x10000UL /* automatically adjust number of status lines */
+                                  /* 15 free bits */
 
 #define ALIGN_LEFT   1
 #define ALIGN_RIGHT  2

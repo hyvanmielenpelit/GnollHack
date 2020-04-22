@@ -90,6 +90,7 @@ static struct Bool_Opt {
 	{ "autoopen", &flags.autoopen, TRUE, SET_IN_GAME },
     { "autopickup", &flags.pickup, FALSE, SET_IN_GAME },
     { "autoquiver", &flags.autoquiver, FALSE, SET_IN_GAME },
+	{ "autostatuslines", &iflags.wc2_autostatuslines, FALSE, SET_IN_FILE },
 #if defined(MICRO) && !defined(AMIGA)
     { "BIOS", &iflags.BIOS, FALSE, SET_IN_FILE },
 #else
