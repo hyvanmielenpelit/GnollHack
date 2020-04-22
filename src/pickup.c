@@ -523,7 +523,7 @@ int what; /* should be a long */
         }
         /* no pickup if levitating & not on air or water level */
         if (!can_reach_floor(TRUE)) {
-            if ((multi && !context.run) || (autopickup && !flags.pickup)
+            if ((multi && !context.run) || (autopickup && !(flags.pickup || flags.pickup_thrown))
                 || ((ttmp = t_at(u.ux, u.uy)) != 0
                     && uteetering_at_seen_pit(ttmp)))
                 read_engr_at(u.ux, u.uy);
@@ -533,7 +533,7 @@ int what; /* should be a long */
          * action, or possibly paralyzed, sleeping, etc.... and they just
          * teleported onto the object.  They shouldn't pick it up.
          */
-        if ((multi && !context.run) || (autopickup && !flags.pickup)) {
+        if ((multi && !context.run) || (autopickup && !(flags.pickup || flags.pickup_thrown))) {
             check_here(FALSE);
             return 0;
         }
@@ -758,14 +758,17 @@ boolean calc_costly;
         return FALSE;
 
     /* check for pickup_types */
-    pickit = (!*otypes || index(otypes, otmp->oclass));
-    /* check for "always pick up */
-    if (!pickit)
-        pickit = is_autopickup_exception(otmp, TRUE);
-    /* then for "never pick up */
-    if (pickit)
-        pickit = !is_autopickup_exception(otmp, FALSE);
-    /* pickup_thrown overrides pickup_types and exceptions */
+    if (flags.pickup)
+    {
+        pickit = (!*otypes || index(otypes, otmp->oclass));
+        /* check for "always pick up */
+        if (!pickit)
+            pickit = is_autopickup_exception(otmp, TRUE);
+        /* then for "never pick up */
+        if (pickit)
+            pickit = !is_autopickup_exception(otmp, FALSE);
+        /* pickup_thrown overrides pickup_types and exceptions */
+    }
     if (!pickit)
         pickit = (flags.pickup_thrown && otmp->was_thrown);
     return pickit;

@@ -1346,11 +1346,18 @@ register struct obj* obj;
 		putstr(datawin, 0, txt);
 	}
 
-	if (obj->cooldownleft > 0)
+	if (stats_known && objects[obj->otyp].oc_item_cooldown > 0)
 	{
-		Sprintf(buf, "Cooldown left:          %d rounds", obj->cooldownleft);
+		Sprintf(buf, "Cooldown time:          %d rounds", objects[obj->otyp].oc_item_cooldown);
 		txt = buf;
 		putstr(datawin, 0, txt);
+
+		if (obj->cooldownleft > 0)
+		{
+			Sprintf(buf, "Cooldown left:          %d rounds", obj->cooldownleft);
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
 	}
 
 	if (obj->repowerleft > 0)

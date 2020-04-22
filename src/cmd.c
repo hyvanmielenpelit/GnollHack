@@ -2694,7 +2694,12 @@ int final;
         if (iflags.autopickup_exceptions[AP_GRAB]
             || iflags.autopickup_exceptions[AP_LEAVE])
             Strcat(buf, ", with exceptions");
-    } else
+    } 
+    else if (flags.pickup_thrown)
+    {
+        Strcpy(buf, "on for thrown only");
+    }
+    else
         Strcpy(buf, "off");
     enl_msg("Autopickup ", "is ", "was ", buf, "");
 

@@ -324,7 +324,7 @@ moverock()
                                     slot or into the overflow ('#') slot
                                     unless already carrying at least one */
                               && (inv_cnt(FALSE) < 52 || !carrying(BOULDER))),
-                    willpickup = (canpickup && autopick_testobj(otmp, TRUE) && flags.pickup);
+                    willpickup = (canpickup && autopick_testobj(otmp, TRUE) && (flags.pickup || flags.pickup_thrown));
 
                 if (u.usteed && P_SKILL_LEVEL(P_RIDING) < P_BASIC) {
                     You("aren't skilled enough to %s %s from %s.",
