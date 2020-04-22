@@ -206,7 +206,7 @@ curses_create_main_windows()
         int inv_width = 0;
         int map_height = (term_rows - border_space);
         int map_width = (term_cols - border_space);
-        int statusheight = (iflags.wc2_statuslines < 3) ? 2 : 3;
+        int statusheight = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 7) ? 8 : 3;
         boolean status_vertical = (status_orientation == ALIGN_LEFT
                                    || status_orientation == ALIGN_RIGHT);
         boolean msg_vertical = (message_orientation == ALIGN_LEFT
