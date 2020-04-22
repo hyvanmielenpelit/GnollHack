@@ -1567,6 +1567,7 @@ E int FDECL(max_mon_load, (struct monst *));
 E int FDECL(can_carry, (struct monst *, struct obj *));
 E int FDECL(mfndpos, (struct monst *, coord *, long *, long));
 E boolean FDECL(monnear, (struct monst *, int, int));
+E boolean FDECL(mon_somewhat_near, (struct monst*, int, int));
 E void NDECL(dmonsfree);
 E int FDECL(mcalcmove, (struct monst *));
 E void NDECL(update_monster_timouts);

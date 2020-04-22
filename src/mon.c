@@ -2622,6 +2622,18 @@ int x, y;
     return (boolean) (distance < 3);
 }
 
+/* Is the square close enough for a tame monster to follow you to the next level? */
+boolean
+mon_somewhat_near(mon, x, y)
+struct monst* mon;
+int x, y;
+{
+    int distance = dist2(mon->mx, mon->my, x, y);
+
+    return (boolean)(distance < 9);
+}
+
+
 /* really free dead monsters */
 void
 dmonsfree()
