@@ -1629,6 +1629,8 @@ update_monster_timouts()
             mtmp->mflee = 0;
 		if (mtmp->notalktimer > 0)
 			mtmp->notalktimer--;
+        if (mtmp->mcomingtou > 0)
+            mtmp->mcomingtou--;
 
 
 		/* might need to update mon properties */
@@ -2940,7 +2942,7 @@ struct monst *mtmp;
 		mtmp->mstaying = 0;
 		mtmp->mcarrying = 0;
 		mtmp->mwantstodrop = 1;
-		if (mtmp->mtame && !mtmp->isminion) {
+        if (mtmp->mtame && !mtmp->isminion) {
             wary_dog(mtmp, !surviver);
         }
         if (mtmp->mbasehpmax <= 0)
@@ -3002,7 +3004,8 @@ register struct monst *mtmp;
 			mtmp->mstaying = 0;
 			mtmp->mcarrying = 0;
 			mtmp->mwantstodrop = 1;
-			if (mtmp->mbasehpmax <= 0)
+            mtmp->mcomingtou = 0;
+            if (mtmp->mbasehpmax <= 0)
 				mtmp->mbasehpmax = 10;
 			update_mon_maxhp(mtmp);
 			mtmp->mhp = mtmp->mhpmax;
@@ -3681,7 +3684,8 @@ struct monst *mtmp;
 			mtmp->mstaying = 0;
 			mtmp->mcarrying = 0;
 			mtmp->mwantstodrop = 1;
-			if (mtmp->mbasehpmax <= 0)
+            mtmp->mcomingtou = 0;
+            if (mtmp->mbasehpmax <= 0)
 				mtmp->mbasehpmax = 10;
 			update_mon_maxhp(mtmp);
 			mtmp->mhp = mtmp->mhpmax;

@@ -1146,6 +1146,30 @@ register struct monst *mtmp;
     return 1;
 }
 
+/* #yell command */
+int
+doyell()
+{
+	int result = 0;
+
+	if (speak_check())
+	{
+		wake_nearby();
+		boolean petfound = FALSE;
+		for (struct monst* mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+		{
+			if (!DEADMONSTER(mtmp) && is_tame(mtmp) && !is_deaf(mtmp))
+			{
+				mtmp->mcomingtou = 100 + rnd(50);
+				petfound = TRUE;
+			}
+		}
+		You("yell loudly%s!", petfound ? " for your pets" : "");
+	}
+	return result;
+}
+
+
 /* #chat command */
 int
 dotalk()

@@ -562,7 +562,13 @@ long nmv; /* number of moves */
 		else
 			mtmp->mcarrying -= imv;
 	}
-	if (mtmp->mflee_timer) {
+    if (mtmp->mcomingtou) {
+        if (imv >= (int)mtmp->mcomingtou)
+            mtmp->mcomingtou = 1;
+        else
+            mtmp->mcomingtou -= imv;
+    }
+    if (mtmp->mflee_timer) {
         if (imv >= (int) mtmp->mflee_timer)
             mtmp->mflee_timer = 1;
         else
@@ -658,7 +664,8 @@ boolean pets_only; /* true for ascension or final escape */
             mtmp->mfrozen = 0;
 			mtmp->mstaying = 0;
 			mtmp->mcarrying = 0;
-			mtmp->mcanmove = 1;
+            mtmp->mcomingtou = 0;
+            mtmp->mcanmove = 1;
 			mtmp->mwantstomove = 1;
 			mtmp->mwantstodrop = 1;
 		}

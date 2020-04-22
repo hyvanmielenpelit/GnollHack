@@ -140,6 +140,8 @@ struct monst {
 	short mcarrying;
 	Bitfield(mwantstodrop, 1);
 
+    short mcomingtou;
+
     Bitfield(mpeaceful, 1); /* does not attack unprovoked */
     Bitfield(mtrapped, 1);  /* trapped in a pit, web or bear trap */
     Bitfield(mleashed, 1);  /* monster is on a leash */

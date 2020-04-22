@@ -847,7 +847,7 @@ int after, udist, whappr;
     in_masters_sight = couldsee(omx, omy);
     dog_has_minvent = (droppables(mtmp) != 0);
 
-    if (!edog || mtmp->mleashed) { /* he's not going anywhere... */
+    if (!edog || mtmp->mleashed || mtmp->mcomingtou) { /* he's not going anywhere... */
         gtyp = APPORT;
         gx = u.ux;
         gy = u.uy;

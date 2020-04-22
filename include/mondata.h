@@ -345,6 +345,9 @@
 #define mon_can_see(mon) \
 	(!is_blinded(mon))
 
+#define is_deaf(mon) \
+	has_property(mon, DEAF)
+
 
 /* hallucination */
 #define has_hallucination(mon) \

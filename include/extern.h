@@ -2530,6 +2530,7 @@ E void FDECL(growl, (struct monst *));
 E void FDECL(yelp, (struct monst *));
 E void FDECL(whimper, (struct monst *));
 E void FDECL(beg, (struct monst *));
+E int NDECL(doyell);
 E int NDECL(dotalk);
 #ifdef USER_SOUNDS
 E int FDECL(add_sound_mapping, (const char *));
